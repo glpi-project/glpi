@@ -25,20 +25,25 @@ This file is part of GLPI.
     along with GLPI; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
- 
+
 // ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
+// Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
-include ($phproot . "/glpi/contacts/classes.php");
-include ($phproot . "/glpi/contacts/functions.php");
-include ($phproot . "/glpi/enterprises/classes.php");
-include ($phproot . "/glpi/enterprises/functions.php");
-include ($phproot . "/glpi/infocoms/classes.php");
-include ($phproot . "/glpi/infocoms/functions.php");
-include ($phproot . "/glpi/contracts/classes.php");
-include ($phproot . "/glpi/contracts/functions.php");
+$Dir = str_replace('\\', '/', getcwd());
+$Dir = explode('/', $Dir);
+$NDir = count($Dir);
+for($i=count($Dir); $i>0;$i--)
+{
+if(file_exists(implode('/', $Dir) . '/siteroot.php'))
+{
+$phproot = implode('/', $Dir);
+$HTMLRel = str_repeat("../", $NDir - count($Dir));
+$i = 0;
+}
+unset($Dir[$i]);
+}
+
 
 ?>

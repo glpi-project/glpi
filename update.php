@@ -1253,8 +1253,10 @@ $query= "CREATE TABLE `glpi_contracts` (
   `week_end_hour` time NOT NULL default '00:00:00',
   `saturday_begin_hour` time NOT NULL default '00:00:00',
   `saturday_end_hour` time NOT NULL default '00:00:00',
+  `saturday` enum('Y','N') NOT NULL default 'N',
   `monday_begin_hour` time NOT NULL default '00:00:00',
   `monday_end_hour` time NOT NULL default '00:00:00',
+  `monday` enum('Y','N') NOT NULL default 'N',
   PRIMARY KEY  (`ID`),
   KEY `contract_type` (`contract_type`),
   KEY `begin_date` (`begin_date`)
