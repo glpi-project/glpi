@@ -272,6 +272,7 @@ class Identification
      return false;
     }
   ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+  
   if ($rdn=="") $r = ldap_bind ( $ds);
   else $r = ldap_bind ( $ds,$rdn,$rpass);
   if (!$r)
@@ -374,6 +375,8 @@ class Identification
     }
     //echo "CONNECT";
   ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+  ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+  
   if ($rdn=="") {$r = ldap_bind ( $ds);//echo "sans";
   }
   else {$r = ldap_bind ( $ds,$rdn,$rpass);//echo "avec";
