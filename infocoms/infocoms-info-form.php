@@ -59,7 +59,7 @@ else if (isset($_POST["delete"]))
 	checkAuthentication("admin");
 	deleteInfocom($_POST);
 	logEvent($tab["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." deleted item.");
-	header("Location: ".$cfg_install["root"]."/infocoms/");
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["update"]))
 {
