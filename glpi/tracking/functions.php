@@ -1341,6 +1341,7 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 echo "<th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
 		echo "<th width=5>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
 		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["joblist"][5]."</th>";
+		echo "<th>".$lang["tracking"][20]."</th>";
 		echo "<th colspan='2'>".$lang["joblist"][6]."</th>";
 			echo "</tr>";
 			for ($i=0; $i < $numrows_limit; $i++) {
