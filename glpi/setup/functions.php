@@ -1672,7 +1672,7 @@ function showFormExtSources($target) {
 
 		showMailServerConfig($db->result($result,0,"imap_auth_server"));
 //		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][163]."</td><td><input type=\"text\" name=\"imap_auth_server\" value=\"". $db->result($result,0,"imap_auth_server") ."\" ></td></tr>";
-		echo "</table></div>";
+		echo "</table>&nbsp;</div>";
 	}
 	else {
 		echo "<input type=\"hidden\" name=\"IMAP_Test\" value=\"1\" >";

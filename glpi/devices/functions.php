@@ -264,6 +264,7 @@ function compdevice_form_add($target,$device_type,$cID,$withtemplate='') {
 
 	$query = "SELECT `ID`, `designation` FROM `".getDeviceTable($device_type)."`";
 	if($result = $db->query($query)) {
+		echo "<form action=\"$target\" method=\"post\">";
 		echo "<div align=\"center\">";
 		echo "<table class='tab_cadre'>";
 		echo "<tr>";
@@ -272,7 +273,7 @@ function compdevice_form_add($target,$device_type,$cID,$withtemplate='') {
 		echo "</th>";
 		echo "</tr>";
 		echo "<tr><td align='center'>";
-		echo "<form action=\"$target\" method=\"post\">";
+		
 		echo "<select name=\"new_device_id\">";
 		$device = new Device($device_type);
 		while($line = $db->fetch_array($result)){
@@ -285,10 +286,11 @@ function compdevice_form_add($target,$device_type,$cID,$withtemplate='') {
 		echo "<input type=\"hidden\" name=\"device_type\" value=\"".$device_type."\" >";
 		echo "<input type=\"hidden\" name=\"cID\" value=\"".$cID."\" >";
 		echo "<input type=\"submit\" value=\"".$lang["buttons"][2]."\" >";
-		echo "</form>";
+		
 		echo "</td></tr>";
 		echo "</table>";
 		echo "</div>";
+		echo "</form>";
 	} else {
 		
 		//or display an error message.
