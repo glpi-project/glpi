@@ -42,6 +42,8 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_computers.php");
+include ($phproot . "/glpi/includes_tracking.php");
+
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -68,6 +70,9 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	commonHeader("Software",$_SERVER["PHP_SELF"]);
 	showSoftwareForm($_SERVER["PHP_SELF"],$_POST["ID"]);
+	showJobListForItem($_SESSION["glpiname"],6,$_POST["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],6,$_POST["ID"]);
+
 	commonFooter();
 
 } 
@@ -79,6 +84,11 @@ else
 
 	commonHeader("Software",$_SERVER["PHP_SELF"]);
 	showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	if (!empty($_GET["ID"])){
+	showJobListForItem($_SESSION["glpiname"],6,$tab["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],6,$tab["ID"]);
+	}
+
 	commonFooter();
 }
 
