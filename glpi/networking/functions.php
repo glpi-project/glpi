@@ -186,7 +186,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 
 			// Name
 			echo "<th>";
-			if ($sort=="networking.name") {
+			if ($sort=="glpi_networking.name") {
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_networking.name&order=ASC&start=$start\">";
@@ -194,7 +194,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 
 			// Location			
 			echo "<th>";
-			if ($sort=="networking.location") {
+			if ($sort=="glpi_dropdown_locations.name") {
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=ASC&start=$start\">";
@@ -202,7 +202,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 
 			// Type
 			echo "<th>";
-			if ($sort=="networking.type") {
+			if ($sort=="glpi_type_networking.name") {
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_networking.name&order=ASC&start=$start\">";
@@ -211,7 +211,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			
 			// Firmware
 			echo "<th>";
-			if ($sort=="networking.firmware") {
+			if ($sort=="glpi_dropdown_firmware.name") {
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_firmware.name&order=ASC&start=$start\">";
