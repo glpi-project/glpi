@@ -1363,14 +1363,8 @@ function updateWarrantyInfos($table,$type){
 			$duration=0;
 			if ($data['date_fin_garantie']!="0000-00-00")
 				$duration=round(date_diff($achat_date,$data['date_fin_garantie']),2);
-			$query_insert="INSERT INTO glpi_infocoms (buy_date,warranty_duration) VALUES ('".$achat_date."','$duration')";
+			$query_insert="INSERT INTO glpi_infocoms (device_type,FK_device,buy_date,warranty_duration) VALUES ('$type','$IDitem','".$achat_date."','$duration')";
 			$result_insert=$db->query($query_insert);
-			$query_select="SELECT ID FROM glpi_infocoms WHERE buy_date = '$achat_date' AND warranty_duration = '$duration'";
-			if ($result_select=$db->query($query_select)){
-				$IDinfocom=$db->result($result_select,0,"ID");	
-				$query_insert2="INSERT INTO glpi_infocom_device (FK_infocom,FK_device,device_type) VALUES ('$IDinfocom','$IDitem','$type')";
-				$result_insert2=$db->query($query_insert2);	
-			}
 		}
 	}
 // TOADD BEFORE RELEASE
