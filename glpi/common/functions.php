@@ -205,7 +205,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	echo "</style>\n";
 
 	// Some Javascript-Functions which we may need later
-	echo "<script language=\"JavaScript\">";
+	echo "<script type=\"text/javascript\" language=\"JavaScript\">";
 	echo "function jumpTo(URL_List){ var URL = URL_List.options[URL_List.selectedIndex].value;  window.location.href = URL; }\n\n";
 	echo "browserName=navigator.appName;";
   	echo "browserVer=parseInt(navigator.appVersion);";
@@ -225,7 +225,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	
 	// Logo with link to command center
 	echo "<td align='center' width=25% >\n";
-	echo "<a href=\"".$cfg_install["root"]."/central.php\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\" border='0' alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>\n";
+	echo "<a href=\"".$cfg_install["root"]."/central.php\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\" border='0' alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>";
 	echo "</td>";
 
 	echo "<td valign=middle>";
@@ -282,9 +282,9 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	// On the right side of the navigation bar, we have a clock with
 	// date and a logout-link.
 
-	echo "<td align='right' width=100><b><div align='right'>";
+	echo "<td align='right' width=100><div align='right'>";
 	echo date("H")."<blink>:</blink>".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
-	echo "</i><br><a href=\"".$cfg_install["root"]."/logout.php\"><img src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></b></td>";
+	echo "</i><br><a href=\"".$cfg_install["root"]."/logout.php\"><img src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
 
 	// End navigation bar
 
@@ -321,7 +321,7 @@ function helpHeader($title,$url,$name) {
 	}
 
 	// Some Javascript-Functions which we may need later
-	echo "<script language=\"JavaScript\">";
+	echo "<script type=\"text/javascript\" language=\"JavaScript\">";
 	echo "function jumpTo(URL_List){ var URL = URL_List.options[URL_List.selectedIndex].value;  window.location.href = URL; }\n\n";
 	echo "browserName=navigator.appName;";
   	echo "browserVer=parseInt(navigator.appVersion);";
@@ -373,9 +373,9 @@ function helpHeader($title,$url,$name) {
 	echo "</td>";
 	// On the right side of the navigation bar, we have a clock with
 	// date and a logout-link.
-	echo "<td align='right' width=100><b><div align='right'>";
+	echo "<td align='right' width=100><div align='right'>";
 	echo date("H")."<blink>:</blink>".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
-	echo "</i><br><a href=\"".$cfg_install["root"]."/logout.php\"><img src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></b></td>";
+	echo "</i><br><a href=\"".$cfg_install["root"]."/logout.php\"><img src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
 
 	// End navigation bar
 	
@@ -411,7 +411,7 @@ function nullHeader($title,$url) {
 	}
 
 	// Some Javascript-Functions which we may need later
-	echo "<script language=\"JavaScript\">";
+	echo "<script type=\"text/javascript\" language=\"JavaScript\">";
 	echo "function jumpTo(URL_List){ var URL = URL_List.options[URL_List.selectedIndex].value;  window.location.href = URL; }\n\n";
 	echo "browserName=navigator.appName;";
   	echo "browserVer=parseInt(navigator.appVersion);";
@@ -451,9 +451,9 @@ function nullHeader($title,$url) {
 
 	// On the right side of the navigation bar, we have a clock with
 	// date and a logout-link.
-	echo "<td align='right' width=100><b><div align='right'>";
+	echo "<td align='right' width=100><div align='right'>";
 	echo date("H")."<blink>:</blink>".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
-	echo "</i><br><a href=\"".$cfg_install["root"]."/logout.php\"><img src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></b></td>";
+	echo "</i><br><a href=\"".$cfg_install["root"]."/logout.php\"><img src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
 
 	// End navigation bar
 	
@@ -473,7 +473,7 @@ function commonFooter() {
 GLOBAL $cfg_install;
 echo "<div id='footer'><div align='right'>";
 	echo "<a href=\"http://GLPI.indepnet.org/\">";
-	echo "<small><b>GLPI ".$cfg_install["version"]."</b></small>";
+	echo "<small>GLPI ".$cfg_install["version"]."</small>";
 	echo "</a></div>";
 	echo "</div>";
 	echo "</body></html>";
@@ -484,7 +484,7 @@ function helpFooter() {
 GLOBAL $cfg_install;
 echo "<div id='footer'><div align='right'>";
 	echo "<a href=\"http://GLPI.indepnet.org/\">";
-	echo "<small><b>GLPI ".$cfg_install["version"]."</b></small>";
+	echo "<small>GLPI ".$cfg_install["version"]."</small>";
 	echo "</a></div>";
 		echo "</div>";
 
@@ -496,7 +496,7 @@ function nullFooter() {
 GLOBAL $cfg_install;
 echo "<div id='footer'><div align='right'>";
 	echo "<a href=\"http://GLPI.indepnet.org/\">";
-	echo "<small><b>GLPI ".$cfg_install["version"]."</b></small>";
+	echo "<small>GLPI ".$cfg_install["version"]."</small>";
 	echo "</a>";
 		echo "</div></div>";
 
