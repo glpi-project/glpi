@@ -543,7 +543,9 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		echo "<table width='100%'>";
 	
 		// Restant	
+
 		echo "<tr><td align='center'>";
+
 		if ($serial!="free") echo $lang["software"][20].": ".($num_tot-$num_inst);
 		if ($num_tot!=$num_inst||$serial=="free") {
 			// Get first non installed license ID
@@ -568,8 +570,23 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 				echo $lang["buttons"][14];
 				echo "</a></b>";
 				}
+				
 			}
 		}
+		// Dupliquer une licence
+		if ($serial!="free"){
+		$query_new="SELECT glpi_licenses.ID as ID FROM glpi_licenses WHERE $SEARCH_LICENCE";		
+		if ($result_new = $db->query($query_new)) {			
+		$IDdup=$db->result($result_new,0,0);
+		echo "</td><td align='center'>";
+		
+		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?duplicate=duplicate&lID=$IDdup\">";
+		echo $lang["buttons"][8];
+		echo "</a></b>";
+		
+		}
+		}
+		
 		echo "</td></tr>";
 		
 		
@@ -1054,6 +1071,10 @@ function countInstallations($sID) {
 			}			
 			echo "<td>".$lang["software"][20].": <b>$remaining</b></td>";
 			echo "<td>".$lang["software"][21].": <b>".$total."</b></td>";
+			$tobuy=getLicenceToBuy($sID);
+			if ($tobuy>0)
+			echo "<td>".$lang["software"][37].": <b>".$tobuy."</b></td>";
+
 			echo "</tr></table>";
 		} else {
 			// Get installed
@@ -1068,7 +1089,7 @@ function countInstallations($sID) {
 
 function getInstalledLicence($sID){
 	$db=new DB;
-	$query = "SELECT ID,serial FROM glpi_licenses WHERE (sID = '$sID')";
+	$query = "SELECT ID FROM glpi_licenses WHERE (sID = '$sID')";
 	$result = $db->query($query);
 	if ($db->numrows($result)!=0){
 		$installed=0;
@@ -1081,6 +1102,13 @@ function getInstalledLicence($sID){
 		return $installed;
 	} else return 0;
 	
+}
+
+function getLicenceToBuy($sID){
+	$db=new DB;
+	$query = "SELECT ID FROM glpi_licenses WHERE (sID = '$sID' AND buy ='N')";
+	$result = $db->query($query);
+	return $db->numrows($result);
 }
 
 function getLicenceNumber($sID){

@@ -454,6 +454,7 @@ $lang["software"][33]   = "OEM";
 $lang["software"][34]	= "Modifier une licence";
 $lang["software"][35]   = "Acheté";
 $lang["software"][36]   = "mise(s) à jour trouvée(s)";
+$lang["software"][37]   = "A acheter";
 
 
 // Peripherals

@@ -76,6 +76,21 @@ else if (isset($_POST["add"]))
 	
 	header("Location: ".$_SERVER['PHP_SELF']."?form=add&sID=".$tab["sID"]);
 }
+else if (isset($tab["duplicate"]))
+{
+	checkAuthentication("admin");
+	$lic=new License();
+	$lic->getFromDB($tab["lID"]);
+	
+	unset($lic->fields["ID"]);
+	if (is_null($lic->fields["expire"]))
+	unset($lic->fields["expire"]);
+	$lic->addToDB();
+		
+	logEvent($tab["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." added a license.");
+	
+	header("Location: ".$_SERVER['HTTP_REFERER']);
+}
 else if (isset($tab["update"]))
 {
 	checkAuthentication("admin");

@@ -127,7 +127,7 @@ function getEmpty () {
 			}
 		}
 		$query .= ")";
-		//echo $query;
+
 		if ($result=$db->query($query)) {
 			return true;
 		} else {
@@ -211,7 +211,8 @@ class License {
 		// Build query
 		$query = "INSERT INTO glpi_licenses (";
 		$i=0;
-		foreach ($this->fields as $key => $val) {
+		foreach ($this->fields as $key => $val) 
+		if (!is_integer($key)){
 			$fields[$i] = $key;
 			$values[$i] = $val;
 			$i++;
@@ -230,8 +231,7 @@ class License {
 			}
 		}
 		$query .= ")";
-		//echo $query;
-		
+
 		if ($result=$db->query($query)) {
 			return true;
 		} else {
