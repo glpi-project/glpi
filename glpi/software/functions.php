@@ -94,7 +94,7 @@ function searchFormSoftware() {
 	}
 	echo "</select> ";
 	echo "</td><td width=80 align='center' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][0]."\">";
+	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></center></form>";
 }
 
