@@ -121,7 +121,7 @@ echo "<option value='$key' $sel>".$val."</option>";
 
 	switch ($which){
 		case "locations" :
-		showFormDropDown($_SERVER["PHP_SELF"],"locations",$lang["setup"][3]);
+		showFormDropDown($_SERVER["PHP_SELF"],"locations",$lang["setup"][3],$ID);
 		break;
 		case "computers" :
 		showFormTypeDown($_SERVER["PHP_SELF"],"computers",$lang["setup"][4],$ID);
