@@ -292,21 +292,22 @@ function updateUser($input) {
 	$null = array_pop($input);
 
 	// password updated?
-	if (!$input["password"]) {
+	if (empty($input["password"])) {
 		$user->fields["password"]="";
 	}
 
 	// fill array for update
 	$x=0;
 	foreach ($input as $key => $val) {
-		if ($input[$key]!=$user->fields[$key]) {
+		if (empty($input[$key]) ||  $input[$key] != $user->fields[$key]) {
 			$user->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;
 		}
 	}
-
-	$user->updateInDB($updates);
+	if(!empty($updates)) {
+		$user->updateInDB($updates);
+	}
 }
 
 function deleteUser($input) {
@@ -324,7 +325,7 @@ function showFormAssign($target)
 	
 	$db = new DB;
 
-	$query = "SELECT name FROM users where name <> 'Helpdesk' and name <> '".$IRMName."' ORDER BY type DESC";
+	$query = "SELECT name FROM users where name <> 'Helpdesk' and name <> '".$_SESSION["glpiname"]."' ORDER BY type DESC";
 	
 	if ($result = $db->query($query)) {
 

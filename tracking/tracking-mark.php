@@ -43,7 +43,7 @@ include ($phproot . "/glpi/includes_setup.php");
 
 checkAuthentication("admin");
 
-if (!$status)
+if (empty($status))
 {
 	$status = "old";
 }

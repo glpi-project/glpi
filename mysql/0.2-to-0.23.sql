@@ -1,9 +1,9 @@
 
-#partie pour la 0.22
+#partie pour passer d'une version inferieure à  la 0.22
 
 alter table printers add ramSize varchar(6) NOT NULL default '';
  
-# partie pour la .023
+# partie pour passer d'une version inferieure à la 0.23
 
 ALTER TABLE computers MODIFY name VARCHAR(200) NOT NULL default '';
 ALTER TABLE computers MODIFY type VARCHAR(100) NOT NULL default '';
