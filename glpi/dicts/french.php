@@ -397,10 +397,20 @@ $lang["reports"][8]	="Materiel r&eacute;seau";
 $lang["reports"][9]	="Moniteurs";
 $lang["reports"][10]	="S&eacute;lectionnez un type de mat&eacute;riel";
 $lang["reports"][11]    ="Materiel sous contrat de maintenance";
-$lang["reports"][12]    ="Type de materiel";
-$lang["reports"][13]    ="Date d'achat";
+$lang["reports"][12]    ="Type(s) de materiel";
+$lang["reports"][13]    ="Date(s) d'achat";
 $lang["reports"][14]    ="Option de tri";
 $lang["reports"][15]    ="Afficher rapport";
+$lang["reports"][16]    ="Tous";
+$lang["reports"][17]    ="Date achat";
+$lang["reports"][18]    ="N° serie";
+$lang["reports"][19]    ="Nom contact";
+$lang["reports"][20]    ="Lieu";
+$lang["reports"][21]    ="Date fin garantie";
+$lang["reports"][22]    ="Type de date";
+$lang["reports"][23]    ="Date(s)";
+
+
 
 // LDAP
 $lang["ldap"][0]	= "recherche";

@@ -45,57 +45,56 @@ $db = new DB;
 # Titre
 
 
+echo "<form name='form' method='post' action='parAnnee-list.php'>";
 
 echo "<div align='center'>";
-echo "<table border='0' cellpading='1'>";
-echo "<tr><th align='center' colspan='4' ><big><b>Rapport par date d'achat ou de fin de garantie</b></big></th></tr>";
+echo "<table border='0' >";
+echo "<tr><th align='center' colspan='2' ><big><b>Rapport par date d'achat ou de fin de garantie</b></big></th></tr>";
 
 # 3. Selection d'affichage pour generer la liste
-	echo "<tr class='tab_bg_1'>";
-		echo "<td  align='center'>";
 
+echo "<tr class='tab_bg_1'>";
+echo "<td  align='center' width='200'>";
+echo "<p><b>".$lang["reports"][12]."</b></p> ";
+echo "<p><select name='item_type[]' size='5'  multiple>";
+echo "<option value='tous' selected>".$lang["reports"][16]."</option>";
+echo "<option value='glpi_computers'>".$lang["reports"][6]."</option>";
+echo "<option value='glpi_printers'>".$lang["reports"][7]."</option>";
+echo "<option value='glpi_networking'>".$lang["reports"][8]."</option>";
+echo "<option value='glpi_monitors'>".$lang["reports"][9]."</option>";
+echo "</select> </p></td> ";
 
-echo "<form name='form' method='post' action='parAnnee-list.php'>";
-echo "<b>Type de materiel : </b>&nbsp;&nbsp; ";
-echo "<select name='item_type[]' multiple>";
-echo "<option value='tous' selected>Tous</option>";
-echo "<option value='glpi_computers'>Ordinateurs</option>";
-echo "<option value='glpi_printers'>Imprimantes</option>";
-echo "<option value='glpi_networking'>Materiel reseau</option>";
-echo "<option value='glpi_monitors'>Moniteurs</option>";
-echo "</select> &nbsp;&nbsp;<br><br> ";
-
-echo "<b>Type de date : </b>&nbsp;&nbsp; ";
+echo "<td align='center' width='200'><p><b>".$lang["reports"][22]."</b></p> ";
 echo "<select name='date_type' >";
-echo "<option value='achat_date'>Date d'achat</option>";
-echo "<option value='date_fin_garantie'>Date de fin de garantie</option>";
-echo "</select> &nbsp;&nbsp; <br><br>";
-		   
-echo "<b>Pour l'année :</b>&nbsp;&nbsp; ";
-echo " <select name='annee[]' multiple>";
-echo " <option value='toutes' selected>Toutes</option>";
+echo "<option value='achat_date'>".$lang["reports"][17]."</option>";
+echo "<option value='date_fin_garantie'>".$lang["reports"][21]."</option>";
+echo "</select> </td></tr>";
+
+echo "<tr class='tab_bg_1'><td align='center'><p><b>".$lang["reports"][23]."</b></p> ";
+echo "<p> <select name='annee[]'  size='5' multiple>";
+echo " <option value='toutes' selected>".$lang["reports"][16]."</option>";
   $y = date("Y");
   for ($i=$y-5;$i<$y+5;$i++)
   {
    echo " <option value='$i'>$i</option>";
   }
-echo "</select>";
-echo "<br><br><b>Options de tri :</b>&nbsp;&nbsp; ";
-echo "<select name='tri_par' >";
-echo "<option value='achat_date'>Date d'achat</option>";
-echo "<option value='serial'>Numero de serie</option>";
-echo "<option value='contact'>Nom du contact</option>";
-echo "<option value='location'>Lieu</option>";
-echo "<option value='name'>Type de materiel</option>";
-echo "</select> &nbsp;&nbsp; ";
-echo "</td>";
+echo "</select></p></td>";
+echo "<td align='center'><p><b>".$lang["reports"][14]." :</b></p> ";
+echo "<p><select name='tri_par' size='5' >";
+echo "<option value='achat_date'>".$lang["reports"][17]."</option>";
+echo "<option value='serial'>".$lang["reports"][18]."</option>";
+echo "<option value='contact'>".$lang["reports"][19]."</option>";
+echo "<option value='location'>".$lang["reports"][20]."</option>";
+echo "<option value='name'>".$lang["reports"][12]."</option>";
+echo "</select> <p> ";
+echo "</td></tr>";
 
-echo "<td align='center'><input type='submit' value='afficher rapport' class='submit'></td>";
+echo "<tr class='tab_bg_1'><td colspan='2'  align='center'><p><input type='submit' value='".$lang["reports"][15]."' class='submit'></p></td></tr>";
 
-echo "</form>";
 
 echo "</table>";
 echo "</div>";
+echo "</form>";
 
 
 

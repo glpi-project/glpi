@@ -86,17 +86,17 @@ echo "<td  align='center' width='200' >";
 
 echo "<p><b>".$lang["reports"][12]."</b></p> ";
 echo "<p><select name='item_type[]' size='5' multiple>";
-echo "<option value='tous' selected>Tous</option>";
-echo "<option value='glpi_computers'>Ordinateurs</option>";
-echo "<option value='glpi_printers'>Imprimantes</option>";
-echo "<option value='glpi_networking'>Materiel reseau</option>";
-echo "<option value='glpi_monitors'>Moniteurs</option>";
+echo "<option value='tous' selected>".$lang["reports"][16]."</option>";
+echo "<option value='glpi_computers'>".$lang["reports"][6]."</option>";
+echo "<option value='glpi_printers'>".$lang["reports"][7]."</option>";
+echo "<option value='glpi_networking'>".$lang["reports"][8]."</option>";
+echo "<option value='glpi_monitors'>".$lang["reports"][9]."</option>";
 echo "</select></p> </td> ";
 
 echo "<td  align='center'  width='200'>";
 echo "<p><b>".$lang["reports"][13]."</b></p> ";
 echo " <p><select name='annee_achat[]' size='5' multiple>";
-echo " <option value='toutes' selected>Toutes</option>";
+echo " <option value='toutes' selected>".$lang["reports"][16]."</option>";
   $y = date("Y");
   for ($i=$y-5;$i<=$y;$i++)
   {
@@ -108,12 +108,12 @@ echo "<tr  class='tab_bg_1'><td colspan='2' align='center'>";
 
 echo "<p><b>".$lang["reports"][14]." :</b> ";
 echo "<select name='tri_par' >";
-echo "<option value='achat_date'>Date d'achat</option>";
-echo "<option value='serial'>Numero de serie</option>";
-echo "<option value='contact'>Nom du contact</option>";
-echo "<option value='location'>Lieu</option>";
+echo "<option value='achat_date'>".$lang["reports"][17]."</option>";
+echo "<option value='serial'>".$lang["reports"][18]."</option>";
+echo "<option value='contact'>".$lang["reports"][19]."</option>";
+echo "<option value='location'>".$lang["reports"][20]."</option>";
 echo "</select></p>  ";
-	echo "</td>";
+echo "</td>";
 
 echo "</tr>";
 echo "<tr><td class='tab_bg_1' colspan='2' align='center'><p><input type='submit' value='".$lang["reports"][15]."' class='submit'></p></td></tr>";

@@ -48,8 +48,8 @@ $db = new DB;
 
 # Titre
 
-echo "<html><body bgcolor=#ffffff>";
-echo "<big><b><strong>Liste du materiel sous contrat de maintenance</strong></b></big><br><br>";
+echo "";
+echo "<big><b><strong>Liste du materiel</strong></b></big><br><br>";
 
 # Construction  la requete, et appel de la fonction affichant les valeurs.
 if(isset($_POST["item_type"][0])&&$_POST["item_type"][0] != 'tous')
