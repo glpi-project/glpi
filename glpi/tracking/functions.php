@@ -129,10 +129,14 @@ function showJobList($username,$show,$contains,$item) {
 
 	// Build query, two completely different things here, need to be fixed
 	// and made into a more featured query-parser
-	
+
 	if ($show == "individual")
 	{
 		$query = "SELECT ID FROM tracking WHERE $where and (assign = '$username') ORDER BY date ".$prefs["order"]."";
+	}
+	else if ($show == "user")
+	{
+		$query = "SELECT ID FROM tracking WHERE $where and (author = '$username') ORDER BY date ".$prefs["order"]."";
 	}
 	else if ($show == "unassigned")
 	{
@@ -260,6 +264,7 @@ $query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY
 function showJobShort($ID, $followup) {
 	// Prints a job in short form
 	// Should be called in a <table>-segment
+	// Print links or not in case of user view
 
 	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang;
 
@@ -288,7 +293,11 @@ function showJobShort($ID, $followup) {
 		echo "<td align=center><b>$job->priority</b></td>";
 		
 		echo "<td align=center><b>";
+
+		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		echo "<a href=\"".$cfg_install["root"]."/setup/users-info.php?ID=$job->author\">$job->author</a>";
+		else
+		echo "$job->author";
 
 		echo "</b></td>";
 
@@ -301,19 +310,26 @@ function showJobShort($ID, $followup) {
 			echo "<td align=center><b>$job->assign</b></td>";
 		}    
 		
+		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		echo "<td><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$job->computer\"><b>$job->computername ($job->computer)</b></a></td>";
+		else
+		echo "<td><b>$job->computername($job->computer)</b></td>";
 
 		$stripped_content = substr($job->contents,0,$cfg_features["cut"]);
 		echo "<td><b>$stripped_content</b></td>";
 
 		// Job Controls
 		echo "<td width=10% bgcolor=\"".$cfg_layout["tab_bg_2"]."\" align=center>";
+		
+		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		echo "<b><a href=\"".$cfg_install["root"]."/tracking/tracking-followups.php?ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;($job->num_of_followups)&nbsp;<br>";
-
-		if ($job->status == "new")
+		else
+		echo "<b><a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;($job->num_of_followups)&nbsp;<br>";
+		if ($job->status == "new"&&strcmp($_SESSION["glpitype"],"post-only")!=0)
 		{
 			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-mark.php?ID=$job->ID\">".$lang["joblist"][14]."</a><br>";
 		}
+		if(strcmp($_SESSION["glpitype"],"post-only")!=0)
 		echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-assign-form.php?ID=$job->ID\">".$lang["joblist"][15]."</a></b></td>";
 
 		// Finish Line
@@ -337,12 +353,16 @@ function showJobDetails($ID) {
 	// Prints a job in long form with all followups and stuff
 
 	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
-
+	
 	// Make new job object and fill it from database, if success, print it
 
 	$job = new Job;
 	
 	if ($job->getfromDB($ID,0)) {
+		// test if the user if authorized to view this job
+		if (strcmp($_SESSION["glpitype"],"post-only")==0&&!strcmp($_SESSION["glpiname"],$job->author)==0)
+		   { echo "Warning !! ";return;}
+
 		echo "<center><table border=0 width=90% cellpadding=5>\n";
 		echo "<tr><th colspan=2>".$lang["job"][0]." $job->ID:</th></tr>";
 		echo "<tr bgcolor=".$cfg_layout["tab_bg_2"].">";
@@ -362,11 +382,17 @@ function showJobDetails($ID) {
 		echo "<b>".$job->priority."</b></td></tr>";	
 
 		echo "<tr><td>".$lang["joblist"][3]."</td><td>";
+		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		echo "<b><a href=\"".$cfg_install["root"]."/setup/users-info.php?ID=$job->author\">$job->author</a></b>";
+		else 
+		echo "<b>$job->author</b>";
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["joblist"][5]."</td><td>";
+		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		echo "<b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$job->computer\">$job->computername ($job->computer)</a></b>";
+		else
+		echo "<b>computername ($job->computer)</b>";
 		echo "</td></tr>";
 		echo "</table>";
 
@@ -409,6 +435,7 @@ function showJobDetails($ID) {
 		
 		echo "</tr>";
 	
+		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		if ($job->status == "new") {
 			echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
 			echo "<td colspan=2 align=center>";
@@ -418,7 +445,7 @@ function showJobDetails($ID) {
 		echo "</table>";
 		echo "<br><br><table width=90% border=0><tr><th>".$lang["job"][7].":</th></tr></table>";
 		echo "</center>";
-	
+
 		showFollowups($job->ID);
 	} 
 	else
@@ -533,6 +560,7 @@ function showFollowups($ID) {
 	}
 
 	// Show input field only if job is still open
+	if(strcmp($_SESSION["glpitype"],"post-only")!=0)
 	if ($job->closedate=="0000-00-00 00:00:00") {
 		echo "<center><table border=0 width=90%>\n\n";
 		echo "<form method=get action=\"".$cfg_install["root"]."/tracking/tracking-followups.php\">";
