@@ -73,6 +73,7 @@ $lang["search"][3]	= "phrase exacte";
 $lang["search"][4]	= "tri&eacute; par";
 $lang["search"][5]	= "Voir par lieu";
 $lang["search"][6]	= "tri&eacute; par";
+$lang["search"][7]	= "Recherche globale";
 
 // Central
 $lang["central"][0] 	= "Bienvenue ";

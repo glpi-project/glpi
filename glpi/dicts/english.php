@@ -74,6 +74,7 @@ $lang["search"][3]	= "is the exact sentence";
 $lang["search"][4]	= "sorted by";
 $lang["search"][5]	= "View by location";
 $lang["search"][6]	= "sorted by";
+$lang["search"][7]	= "Global search";
 
 // Central
 $lang["central"][0] 	= "Welcome ";

@@ -115,20 +115,52 @@ function searchFormComputers() {
 	echo "</td><td width=80 align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
+	
+	echo "<div align='center'><table border='0' width='90%'>";
+	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
+	echo "<tr><th colspan='2'><b>".$lang["search"][7].":</b></th></tr>";
+	echo "<tr class='tab_bg_1'>";
+	echo "<td align='center'>";
+	echo "<input type=\"hidden\" name=\"glo_search\" value=\"1\" />";
+	echo "<input type=\"text\" name=\"keywords\" />";
+	echo "</td>";
+	echo "</td><td width=80 align='center' class='tab_bg_2'>";
+	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
+	echo "</td></tr>";
+	echo "</form></table></div>";
 }
 
 
 function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start) {
 
+
+	$db = new DB;
 	// Lists Computers
 
 	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
 
 	// Build query
-	if ($phrasetype == "contains") {
-		$where = "($field LIKE '%".$contains."%')";
-	} else {
-		$where = "($field LIKE '".$contains."')";
+	if($field == "all") {
+		$where = "(";
+		$fields = $db->list_fields("computers");
+		$columns = $db->num_fields($fields);
+		
+		for ($i = 0; $i < $columns; $i++) {
+			if($i != 0) {
+				$where .= " OR ";
+			}
+   			$where .= mysql_field_name($fields, $i) . " LIKE '%".$contains."%'";
+		}
+		$where .= ")";
+	$field = "ID";
+	}
+	else {
+		if ($phrasetype == "contains") {
+			$where = "($field LIKE '%".$contains."%')";
+		}
+		else {
+			$where = "($field LIKE '".$contains."')";
+		}
 	}
 	if (!$start) {
 		$start = 0;
@@ -137,9 +169,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 		$order = "ASC";
 	}
 	$query = "SELECT * FROM computers WHERE $where ORDER BY $sort $order";
-
 	// Get it from database	
-	$db = new DB;
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);
 

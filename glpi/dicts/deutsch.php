@@ -69,6 +69,8 @@ $lang["search"][3]	= "hat wie genauer Satz";
 $lang["search"][4]	= "klassifiziert mit";
 $lang["search"][5]	= "Durch Ort zeigen";
 $lang["search"][6]	= "klassifiziert mit";
+//to be translated
+$lang["search"][7]	= "global search";
 
 // Central
 $lang["central"][0] 	= "Willkommen ";

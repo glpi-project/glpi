@@ -47,7 +47,12 @@ if(!isset($_GET["start"])) $_GET["start"] = 0;
 if (!isset($_GET["order"])) $_GET["order"] = "ASC";
 
 
-showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
+if(!isset($_GET["glo_search"])) {
+	showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
+}
+else {
+	showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"all","contains",$_GET["keywords"],"ID",$_GET["order"],$_GET["start"]);
+}
 
 
 commonFooter();
