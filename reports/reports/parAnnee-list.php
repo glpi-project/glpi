@@ -52,9 +52,11 @@ echo "<html><body bgcolor=#ffffff>";
 echo "<big><b><strong>Liste du materiel sous contrat de maintenance</strong></b></big><br><br>";
 
 # Construction  la requete, et appel de la fonction affichant les valeurs.
-if($_POST["item_type"] != 'tous')
+if(isset($_POST["item_type"][0])&&$_POST["item_type"][0] != 'tous')
 {
-		$query = "select * from ".$_POST["item_type"];
+		
+		foreach($_POST["item_type"] as $key => $val){
+		$query = "select * from ".$val;
 		
 			if($_POST["annee"] != 'toutes')
 			{
@@ -63,7 +65,8 @@ if($_POST["item_type"] != 'tous')
 			
 		$query.= " order by ".$_POST["tri_par"]." asc";
 		
-		report_perso($_POST["item_type"],$query);
+		report_perso($val,$query);
+		}
 }
 else
 {
