@@ -60,7 +60,7 @@ function listNetdevices() {
 
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)>0) {
-			echo "<div align='center'><table border='0'><tr>";
+			echo "<div align='center'><table  class='tab_cadre'><tr>";
 			echo "<th>".$lang["networking"][0]."</th><th>".$lang["networking"][1]."</th>";
 			echo "<th>".$lang["networking"][2]."</th><th>".$lang["networking"][3]."</th>";
 			echo "<th>".$lang["networking"][9]."</th></tr>";
@@ -91,8 +91,8 @@ function showNetworkingForm ($target,$ID) {
 
 	$netdev = new Netdevice;
 
-	echo "<div align='center'><form name=form method='post' action=\"$target\">";
-	echo "<table border='0' cellpadding='2'>";
+	echo "<div align='center'><form name='form' method='post' action=\"$target\">";
+	echo "<table class='tab_cadre' cellpadding='2'>";
 	echo "<tr><th colspan='2'><b>";
 	if (empty($ID)) {
 		echo $lang["networking"][11].":";
@@ -108,7 +108,7 @@ function showNetworkingForm ($target,$ID) {
 	echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
 
 	echo "<tr><td>".$lang["networking"][0].":	</td>";
-	echo "<td><input type='text' name=name value=\"".$netdev->fields["name"]."\" size=10></td>";
+	echo "<td><input type='text' name='name' value=\"".$netdev->fields["name"]."\" size='12'></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["networking"][1].": 	</td><td>";
@@ -116,11 +116,11 @@ function showNetworkingForm ($target,$ID) {
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["networking"][4].":	</td>";
-	echo "<td><input type='text' name=contact_num value=\"".$netdev->fields["contact_num"]."\" size=5></td>";
+	echo "<td><input type='text' name='contact_num' value=\"".$netdev->fields["contact_num"]."\" size='12'></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["networking"][3].":	</td>";
-	echo "<td><input type='text' name=contact size=12 value=\"".$netdev->fields["contact"]."\"></td>";
+	echo "<td><input type='text' name='contact' size='12' value=\"".$netdev->fields["contact"]."\"></td>";
 	echo "</tr>";
 	echo "</table>";
 
@@ -134,15 +134,15 @@ function showNetworkingForm ($target,$ID) {
 	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["networking"][5].":	</td>";
-	echo "<td><input type='text' name=ram value=\"".$netdev->fields["ram"]."\" size=3></td>";
+	echo "<td><input type='text' name='ram' value=\"".$netdev->fields["ram"]."\" size='3'></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["networking"][6].":	</td>";
-	echo "<td><input type='text' name=serial size=12 value=\"".$netdev->fields["serial"]."\"></td>";
+	echo "<td><input type='text' name='serial' size='12' value=\"".$netdev->fields["serial"]."\"></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["networking"][7].":</td>";
-	echo "<td><input type='text' size=12 name=otherserial value=\"".$netdev->fields["otherserial"]."\"></td>";
+	echo "<td><input type='text' size='12' name='otherserial' value=\"".$netdev->fields["otherserial"]."\"></td>";
 	echo "</tr>";
 	echo "</table>";
 	
@@ -153,13 +153,13 @@ function showNetworkingForm ($target,$ID) {
 	
 	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
 	echo "<tr><td>".$lang["networking"][39].":	</td>";
-	echo "<td><input type='text' name='achat_date' readonly size=10 value='".$netdev->fields["achat_date"]."'>";
+	echo "<td><input type='text' name='achat_date' readonly size='10' value='".$netdev->fields["achat_date"]."'>";
 	echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('mycalendar.php?form=form&elem=achat_date','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].achat_date.value='0000-00-00'\" value='reset'>";
   echo "</td></tr>";
 	
 	echo "<tr><td>".$lang["networking"][40].":	</td>";
-	echo "<td><input type='text' name='date_fin_garantie' readonly size=10 value='".$netdev->fields["date_fin_garantie"]."'>";
+	echo "<td><input type='text' name='date_fin_garantie' readonly size='10' value='".$netdev->fields["date_fin_garantie"]."'>";
 	echo "&nbsp; <input name='button' type='button' class='button' readonly onClick=\"window.open('mycalendar.php?form=form&elem=date_fin_garantie','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date_fin_garantie.value='0000-00-00'\" value='reset'>";
   echo "</td></tr>";
@@ -167,11 +167,11 @@ function showNetworkingForm ($target,$ID) {
 	echo "<tr><td>".$lang["networking"][41].":	</td>";
 	echo "<td>";
 	if ($netdev->fields["maintenance"] == 1) {
-				echo " OUI <input type='radio' name='maintenance' value=1 checked>";
-				echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value=0>";
+				echo " OUI <input type='radio' name='maintenance' value='1' checked>";
+				echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value='0'>";
 		} else {
-				echo " OUI <input type='radio' name='maintenance' value=1>";
-				echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value=0 checked >";
+				echo " OUI <input type='radio' name='maintenance' value='1'>";
+				echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value='0' checked >";
 			   }
 	echo "</td></tr></table>";
 		
@@ -184,7 +184,7 @@ function showNetworkingForm ($target,$ID) {
 
 	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
 	echo $lang["networking"][8].":	</td>";
-	echo "<td align='center'><textarea cols=35 rows=4 name=comments >".$netdev->fields["comments"]."</textarea>";
+	echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$netdev->fields["comments"]."</textarea>";
 	echo "</td></tr></table>";
 
 	echo "</td>";
@@ -194,7 +194,7 @@ function showNetworkingForm ($target,$ID) {
 
 		echo "<tr>";
 		echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-		echo "<div align='center'><input type='submit' name=add value=\"".$lang["buttons"][8]."\" class='submit'></div>";
+		echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
 		echo "</td>";
 		echo "</form></tr>";
 
@@ -204,13 +204,13 @@ function showNetworkingForm ($target,$ID) {
 
 		echo "<tr>";
 		echo "<td class='tab_bg_2' valign='top'>";
-		echo "<input type='hidden' name=ID value=\"$ID\">\n";
-		echo "<div align='center'><input type='submit' name=update value=\"".$lang["buttons"][7]."\" class='submit'></div>";
+		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+		echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
 		echo "</td></form>\n\n";
 		echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
-		echo "<input type='hidden' name=ID value=\"$ID\">\n";
-		echo "<div align='center'><input type='submit' name=delete value=\"".$lang["buttons"][6]."\" class='submit'></div>";
+		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+		echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
 		echo "</td>";
 		echo "</form></tr>";
 
@@ -302,8 +302,8 @@ function showPorts ($device,$device_type) {
 	$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = $device AND device_type = $device_type) ORDER BY logical_number";
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 
-			echo "<br><div align='center'><table cellpadding='2' width='90%'>";
-			echo "<tr><th colspan=6>";
+			echo "<br><div align='center'><table class='tab_cadre' width='90%'>";
+			echo "<tr><th colspan='6'>";
 			echo $db->numrows($result)." ";
 			if ($db->numrows($result)<2) {
 				echo $lang["networking"][37];
