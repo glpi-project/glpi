@@ -67,25 +67,36 @@ if (isset($_POST["add"])) {
 	commonHeader("Printers",$_SERVER["PHP_SELF"]);
 	showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	commonFooter();
-} else if ($tab["connect"]==1) {
-	checkAuthentication("admin");
-	commonHeader("Printers",$_SERVER["PHP_SELF"]);
-	showConnectSearch($_SERVER["PHP_SELF"],$tab["ID"]);
-	commonFooter();
-} else if ($tab["connect"]==2) {
-	checkAuthentication("admin");
-	commonHeader("Printers",$_SERVER["PHP_SELF"]);
-	listConnectComputers($_SERVER["PHP_SELF"],$tab);
-	commonFooter();
-} else if ($tab["connect"]==3) {
-	checkAuthentication("admin");
-	commonHeader("Printers",$_SERVER["PHP_SELF"]);
-	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],3);
-	logEvent($sID, "printers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
-	showPrintersForm($_SERVER["PHP_SELF"],$tab["sID"]);
-	commonFooter();
+}
+else if(isset($tab["connect"]))
+{
+	if($tab["connect"]==1)
+	{
+		checkAuthentication("admin");
+		commonHeader("Printers",$_SERVER["PHP_SELF"]);
+		showConnectSearch($_SERVER["PHP_SELF"],$tab["ID"]);
+		commonFooter();
+	}	 
+	else if($tab["connect"]==2)
+	{
+		checkAuthentication("admin");
+		commonHeader("Printers",$_SERVER["PHP_SELF"]);
+		listConnectComputers($_SERVER["PHP_SELF"],$tab);
+		commonFooter();
+	} 
+	else if($tab["connect"]==3)
+	{
+		checkAuthentication("admin");
+		commonHeader("Printers",$_SERVER["PHP_SELF"]);
+		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],3);
+		logEvent($tab["sID"], "printers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
+		showPrintersForm($_SERVER["PHP_SELF"],$tab["sID"]);
+		commonFooter();
 
-} else {
+	}
+}
+else
+{
 
 	checkAuthentication("normal");
 	commonHeader("Printers",$_SERVER["PHP_SELF"]);
