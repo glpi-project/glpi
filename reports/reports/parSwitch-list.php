@@ -64,14 +64,11 @@ if ($db->numrows($result)==1){
 
 	echo "<div align='center'><h2>".$lang["reports"][49]." $switch </h2></div><br><br>";
 	
-	$query="SELECT c.name as port,c.ifaddr as ip,c.ifmac as mac,glpi_networking_wire.id as lien,glpi_networking.name as switch,d.name as portordi,d.ifaddr as ip2,d.ifmac as mac2,glpi_computers.name as ordi,e.ID as ID
+	$query="SELECT c.name as port,c.ifaddr as ip,c.ifmac as mac, c.ID AS IDport, glpi_networking.name as switch
         FROM glpi_networking
-        LEFT JOIN glpi_dropdown_locations e ON e.ID=glpi_networking.location
-        LEFT JOIN glpi_networking_ports c ON c.device_type=2 AND c.on_device=glpi_networking.ID
-	LEFT JOIN glpi_networking_wire ON glpi_networking_wire.end2=c.ID
-	LEFT JOIN glpi_networking_ports d ON d.ID=glpi_networking_wire.end1 AND d.device_type=1
-	LEFT JOIN glpi_computers ON glpi_computers.ID= d.on_device
-	WHERE glpi_networking.id=".$_POST["switch"]."";
+        LEFT JOIN glpi_networking_ports c ON c.device_type=".NETWORKING_TYPE." AND c.on_device=glpi_networking.ID
+		WHERE glpi_networking.id=".$_POST["switch"]."";
+
 	/*!
  	on envoie la requête de selection qui varie selon le choix fait dans la dropdown à la fonction report perso qui
  	affiche un rapport en fonction du switch choisi  

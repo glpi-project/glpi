@@ -62,15 +62,11 @@ if ($db->numrows($result)==1){
 
 	// Titre
         echo "<div align='center'><h2>".$lang["reports"][51]." $prise  ($office / $stage)</h2></div><br><br>";
-        $query="SELECT a.name as bureau,a.ID as ID,glpi_dropdown_netpoint.name as prise,c.name as port,c.ifaddr as ip,c.ifmac as mac,glpi_networking_wire.id as lien,glpi_networking.name as switch,d.name as portordi,d.ifaddr as ip2,d.ifmac as mac2,glpi_computers.name as ordi 
+        $query="SELECT a.name as bureau,a.ID as ID,glpi_dropdown_netpoint.name as prise,c.name as port,c.ifaddr as ip,c.ifmac as mac,c.ID AS IDport
 	FROM glpi_dropdown_netpoint
 	LEFT JOIN glpi_dropdown_locations a ON a.id=glpi_dropdown_netpoint.location
-	LEFT JOIN glpi_networking_ports c ON c.netpoint=glpi_dropdown_netpoint.id AND c.device_type=2
-	LEFT JOIN glpi_networking_wire ON glpi_networking_wire.end2=c.id
-	LEFT JOIN glpi_networking ON glpi_networking.id=c.on_device
-	LEFT JOIN glpi_networking_ports d ON d.id=glpi_networking_wire.end1 AND d.device_type=1
-	LEFT JOIN glpi_computers ON glpi_computers.id=d.on_device
-	WHERE glpi_dropdown_netpoint.id=".$_POST["prise"]."";
+	LEFT JOIN glpi_networking_ports c ON c.netpoint=glpi_dropdown_netpoint.id 
+	WHERE glpi_dropdown_netpoint.id=".$_POST["prise"]." AND c.device_type=".NETWORKING_TYPE.";";
 	
 	/*!
  	on envoie la requête de selection qui varie selon le choix fait dans la dropdown à la fonction report perso qui
