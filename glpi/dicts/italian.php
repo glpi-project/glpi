@@ -559,7 +559,7 @@ $lang["setup"][66] 	= "No user found";
 $lang["setup"][68] 	= "Email Followup"; 
 $lang["setup"][71] 	= "Firmware"; 
 
-// to be translated
+// to be translated -----------------
 $lang["setup"][100]="Configuration générale";
 $lang["setup"][101]="Chemin d'installation";
 $lang["setup"][102]="Niveau de log";
@@ -573,7 +573,23 @@ $lang["setup"][109]="Temps en jours de conservation des logs (0 pour infini)";
 $lang["setup"][110]=" Montrer les interventions au login";
 $lang["setup"][111]="Nombre d'élements à afficher par page";
 $lang["setup"][112]="Nombre de caractères maximum pour chaque éléments de la liste";
+$lang["setup"][150]="Sources d'authentification externes";
+$lang["setup"][151]=" Si vous ne souhaitez pas utiliser LDAP comme source(s) de connection laissez les champs vides";
+$lang["setup"][152]="LDAP configuration";
+$lang["setup"][153]="LDAP Host";
+$lang["setup"][154]="Basedn";
+$lang["setup"][155]="rootdn (for non anonymous binds)";
+$lang["setup"][156]="Pass (for non-anonymous binds)";
+$lang["setup"][157]="L'extension LDAP de votre parser PHP n'est pas installé";
+$lang["setup"][158]="Impossible d'utiliser LDAP comme source de connection externe";
 
+$lang["setup"][160]=" Si vous ne souhaitez pas utiliser IMAP/POP comme source(s) de connection laissez les champs vides";
+$lang["setup"][161]="Plus d'informations pour la syntaxe du Auth Server sur <a target=\"_blank\" href=\"http://www.php.net/manual/fr/function.imap-open.php\">php.net</a>. Le paramètre qui vous intéresse est le premier (mailbox).";
+$lang["setup"][162]="IMAP/POP configuration";
+$lang["setup"][163]="IMAP/POP Auth Server";
+$lang["setup"][164]="IMAP/POP Host Name (users email will be login@thishost)";
+$lang["setup"][165]="Votre parser PHP a été compilé sans les fonctions de connection IMAP";
+$lang["setup"][166]=" Impossible d'utiliser IMAP/POP comme source de connection externe";
 
 // Helpdesk
 

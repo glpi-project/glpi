@@ -563,7 +563,26 @@ $lang["setup"][110]=" Montrer les interventions au login";
 $lang["setup"][111]="Nombre d'élements à afficher par page";
 $lang["setup"][112]="Nombre de caractères maximum pour chaque éléments de la liste";
 
+$lang["setup"][150]="Sources d'authentification externes";
+$lang["setup"][151]=" Si vous ne souhaitez pas utiliser LDAP comme source(s) de connection laissez les champs vides";
+$lang["setup"][152]="LDAP configuration";
+$lang["setup"][153]="Hote LDAP ";
+$lang["setup"][154]="Basedn";
+$lang["setup"][155]="rootdn (pour les connections non anonymes)";
+$lang["setup"][156]="Pass (pour les connections non anonymes)";
+$lang["setup"][157]="L'extension LDAP de votre parser PHP n'est pas installé";
+$lang["setup"][158]="Impossible d'utiliser LDAP comme source de connection externe";
 
+$lang["setup"][160]=" Si vous ne souhaitez pas utiliser IMAP/POP comme source(s) de connection laissez les champs vides";
+$lang["setup"][161]="Plus d'informations pour la syntaxe du Auth Server sur <a target=\"_blank\" href=\"http://www.php.net/manual/fr/function.imap-open.php\">php.net</a>. Le paramètre qui vous intéresse est le premier (mailbox).";
+$lang["setup"][162]="IMAP/POP configuration";
+$lang["setup"][163]="Serveur IMAP/POP d'authentification";
+$lang["setup"][164]="Nom d'hote IMAP/POP  (email de type login@hote)";
+$lang["setup"][165]="Votre parser PHP a été compilé sans les fonctions de connection IMAP";
+$lang["setup"][166]=" Impossible d'utiliser IMAP/POP comme source de connection externe";
+
+
+// à faire !!
 $lang["setup"][200]="Suivis par emails";
 
 

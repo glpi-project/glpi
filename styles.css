@@ -182,20 +182,22 @@ margin-top: 100px;
 
 
 
-  A:link
+  a, a:link
   {
     font-wheight: bold;
     text-decoration: none;
   	color : #009966;
   }
 
- A:visited   {
+  /*
+ a:visited   {
     font-wheight: bold;
     text-decoration: none;
      color : #009966;
   }
+*/
 
-  A:hover
+  a:hover
   {
     color: black;
   }

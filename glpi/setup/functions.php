@@ -1170,9 +1170,11 @@ function updateLanguage($input) {
 }
 
 function titleConfigGen(){
+
 GLOBAL  $lang,$HTMLRel;
+
                 echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_nav'>Configuration générale</span>";
+                echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_nav'>".$lang["setup"][100]."</span>";
 		 echo "</b></td></tr></table>&nbsp;</div>";
 
 
@@ -1180,31 +1182,34 @@ GLOBAL  $lang,$HTMLRel;
 
 
 function showFormConfigGen($target){
+	
+	GLOBAL  $lang,$HTMLRel;
+	
 	$db = new DB;
 	$query = "select * from glpi_config where ID = 1";
 	$result = $db->query($query);
 	
 	echo "<form action=\"$target\" method=\"post\">";
 	echo "<div align='center'><table class='tab_cadre'>";
-	echo "<tr><th colspan='2'>Configuration Générale</th></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>Document root </td><td> <input type=\"text\" name=\"root_doc\" value=\"". $db->result($result,0,"root_doc") ."\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>Niveau de log </td><td><select name=\"event_loglevel\">";
+	echo "<tr><th colspan='2'>".$lang["setup"][100]."</th></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][101]." </td><td> <input type=\"text\" name=\"root_doc\" value=\"". $db->result($result,0,"root_doc") ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][102]." </td><td><select name=\"event_loglevel\">";
 	$level=$db->result($result,0,"event_loglevel");
-	echo "<option value=\"1\"";  if($level==1){ echo "selected";} echo ">1- Critique (erreur de login seulement) </option>";
-	echo "<option value=\"2\"";  if($level==2){ echo "selected";} echo ">2- Sévère (Non utilisée) </option>";
-	echo "<option value=\"3\"";  if($level==3){ echo "selected";} echo ">3- Important (logins réussis) </option>";
-	echo "<option value=\"4\"";  if($level==4){ echo "selected";} echo ">4- Notices (Ajout, suppression, tracking) </option>";
-	echo "<option value=\"5\">5- Complet (Log quasiment tout) </option>";
+	echo "<option value=\"1\"";  if($level==1){ echo "selected";} echo ">".$lang["setup"][103]." </option>";
+	echo "<option value=\"2\"";  if($level==2){ echo "selected";} echo ">".$lang["setup"][104]."</option>";
+	echo "<option value=\"3\"";  if($level==3){ echo "selected";} echo ">".$lang["setup"][105]."</option>";
+	echo "<option value=\"4\"";  if($level==4){ echo "selected";} echo ">".$lang["setup"][106]." </option>";
+	echo "<option value=\"5\">".$lang["setup"][107]."</option>";
 	echo "</select></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>Nombre d'évenements de log a afficher</td><td> <input type=\"text\" name=\"num_of_events\" value=\"". $db->result($result,0,"num_of_events") ."\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>Temps en jours durant lequel on conserve les logs (0 pour infini)</td><td><input type=\"text\" name=\"expire_events\" value=\"". $db->result($result,0,"expire_events") ."\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'> Montrer les interventions au login</td><td>   &nbsp;Oui  &nbsp;<input type=\"radio\" name=\"jobs_at_login\" value=\"1\" "; if($db->result($result,0,"jobs_at_login") == 1) echo "checked"; echo " > &nbsp;Non  &nbsp;<input type=\"radio\" name=\"jobs_at_login\" value=\"0\" "; if($db->result($result,0,"jobs_at_login") == 0) echo "checked"; 
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][108]."</td><td> <input type=\"text\" name=\"num_of_events\" value=\"". $db->result($result,0,"num_of_events") ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][109]." </td><td><input type=\"text\" name=\"expire_events\" value=\"". $db->result($result,0,"expire_events") ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][110]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"jobs_at_login\" value=\"1\" "; if($db->result($result,0,"jobs_at_login") == 1) echo "checked"; echo " > &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"jobs_at_login\" value=\"0\" "; if($db->result($result,0,"jobs_at_login") == 0) echo "checked"; 
 	echo " ></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>Nombre d'élements à afficher par page</td><td> <input type=\"text\" name=\"list_limit\" value=\"". $db->result($result,0,"list_limit") ."\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>Nombre de caractères maximum pour chaque éléments de la liste </td><td><input type=\"text\" name=\"cut\" value=\"". $db->result($result,0,"cut") ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][111]."</td><td> <input type=\"text\" name=\"list_limit\" value=\"". $db->result($result,0,"list_limit") ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][112]."</td><td><input type=\"text\" name=\"cut\" value=\"". $db->result($result,0,"cut") ."\"></td></tr>";
 	
 		echo "</table>&nbsp;</div>";	
-	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_confgen\" class=\"submit\" value=\"Valider\" ></p>";
+	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_confgen\" class=\"submit\" value=\"".$lang["buttons"][7]."\" ></p>";
 
 	
 	echo "</form>";
@@ -1214,13 +1219,12 @@ function showFormConfigGen($target){
 
 
 
-//TODO : add entries to french dict
 function titleExtSources(){
 // Un titre pour la gestion des sources externes
 		
 		GLOBAL  $lang,$HTMLRel;
                 echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/authentification.png\" alt='' title=''></td><td><b><span class='icon_nav'>Sources d'authentification externe</span>";
+                echo "<img src=\"".$HTMLRel."pics/authentification.png\" alt='' title=''></td><td><b><span class='icon_nav'>".$lang["setup"][150]."</span>";
 		 echo "</b></td></tr></table>&nbsp;</div>";
 
 }
@@ -1228,9 +1232,11 @@ function titleExtSources(){
 
 
 
-//TODO : add entries to french dict
+
 function showFormExtsources($target) {
 
+	GLOBAL  $lang,$HTMLRel;
+	
 	$db = new DB;
 	$query = "select * from glpi_config where ID = 1";
 	$result = $db->query($query);
@@ -1238,38 +1244,38 @@ function showFormExtsources($target) {
 	echo "<form action=\"$target\" method=\"post\">";
 	if(extension_loaded('ldap'))
 	{
-		echo "<div align='center'><p > Si vous ne souhaitez pas utiliser LDAP comme source(s) de connection laissez les champs vides</p>";
+		echo "<div align='center'><p > ".$lang["setup"][151]."</p>";
 
 		echo "<table class='tab_cadre'>";
-		echo "<tr><th colspan='2'>LDAP configuration</th></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>LDAP Host</td><td><input type=\"text\" name=\"ldap_host\" value=\"". $db->result($result,0,"ldap_host") ."\"></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>Basedn</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"". $db->result($result,0,"ldap_basedn") ."\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>rootdn (for non anonymous binds)</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"". $db->result($result,0,"ldap_rootdn") ."\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>Pass (for non-anonymous binds)</td><td><input type=\"text\" name=\"ldap_pass\" value=\"". $db->result($result,0,"ldap_pass") ."\" ></td></tr>";
+		echo "<tr><th colspan='2'>".$lang["setup"][152]."</th></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][153]."</td><td><input type=\"text\" name=\"ldap_host\" value=\"". $db->result($result,0,"ldap_host") ."\"></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][154]."</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"". $db->result($result,0,"ldap_basedn") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][155]."</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"". $db->result($result,0,"ldap_rootdn") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][156]."</td><td><input type=\"text\" name=\"ldap_pass\" value=\"". $db->result($result,0,"ldap_pass") ."\" ></td></tr>";
 		echo "</table>&nbsp;</div>";
 	}
 	else {
 		echo "<input type=\"hidden\" name=\"LDAP_Test\" value=\"1\" >";
 		echo "<div align='center'><table class='tab_cadre' width='400'>";
-		echo "<tr><th colspan='2'>LDAP configuration</th></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>L'extension LDAP de votre parser PHP n'est pas installé</p><p> Impossible d'utiliser LDAP comme source de connection externe</p></td></th></table></div>";
+		echo "<tr><th colspan='2'>".$lang["setup"][152]."</th></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>".$lang["setup"][157]."</p><p>".$lang["setup"][158]."</p></td></th></table></div>";
 	}
 	if(function_exists('imap_open')) {
 		echo "<div align='center'>";
-		echo "<p > Si vous ne souhaitez pas utiliser IMAP/POP comme source(s) de connection laissez les champs vides<br>";
-		echo "Plus d'informations pour la syntaxe du Auth Server sur <a target=\"_blank\" href=\"http://www.php.net/manual/en/function.imap-open.php\">php.net</a>. Le paramètre qui vous intéresse est le premier (mailbox).</p>";
+		echo "<p >".$lang["setup"][160]."</p>";
+		echo "<p>".$lang["setup"][161]."</p>";
 		echo "<table class='tab_cadre'>";
-		echo "<tr><th colspan='2'>IMAP/POP configuration</th></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>IMAP/POP Auth Server</td><td><input type=\"text\" name=\"imap_auth_server\" value=\"". $db->result($result,0,"imap_auth_server") ."\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>IMAP/POP Host Name (users email will be login@thishost)</td><td><input type=\"text\" name=\"imap_host\" value=\"". $db->result($result,0,"imap_host") ."\" ></td></tr>";
+		echo "<tr><th colspan='2'>".$lang["setup"][162]."</th></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][163]."</td><td><input type=\"text\" name=\"imap_auth_server\" value=\"". $db->result($result,0,"imap_auth_server") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][164]."</td><td><input type=\"text\" name=\"imap_host\" value=\"". $db->result($result,0,"imap_host") ."\" ></td></tr>";
 		echo "</table></div>";
 	}
 	else {
 		echo "<input type=\"hidden\" name=\"IMAP_Test\" value=\"1\" >";
 		
 		echo "<div align='center'>&nbsp;<table class='tab_cadre' width='400'>";
-		echo "<tr><th colspan='2'>IMAP/POP configuration</th></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>Votre parser PHP a été compilé sans les fonctions de connection IMAP</p><p> Impossible d'utiliser IMAP/POP comme source de connection externe</p></td></tr></table></div>";
+		echo "<tr><th colspan='2'>".$lang["setup"][162]."</th></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>".$lang["setup"][165]."</p><p>".$lang["setup"][166]."</p></td></tr></table></div>";
 	}
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_ext\" class=\"submit\" value=\"Valider\" ></p>";
 	echo "</form>";
