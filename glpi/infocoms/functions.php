@@ -38,7 +38,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1) {
 	
 	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel;
 
-	$date_fiscale="2005-12-31";
+	$date_fiscale="0000-12-31";
 	
 	$ic = new Infocom;
 
@@ -117,6 +117,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1) {
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][21].":		</td><td  ".($show_immo==1?"":" colspan='3'")."><input type='text' name='value' value=\"".$ic->fields["value"]."\" size='10'></td>";
 		if ($show_immo==1){
 		echo "<td>Valeur nette comptable :</td><td>";
+				
 		echo  TableauAmort($ic->fields["amort_type"],$ic->fields["value"],$ic->fields["amort_time"],$ic->fields["amort_coeff"],$ic->fields["buy_date"],$ic->fields["use_date"],$date_fiscale,$view="n");
 		
 		echo "</td>";
@@ -484,7 +485,7 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 			break;
 		
 				
-		case "" :
+		default :
 			return "-"; break;
 			
 					
@@ -506,7 +507,12 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 		// on retourne juste la valeur résiduelle
 		
 		
-			if (mktime(0 , 0 , 0, $date_m2, $date_d2, date("Y"))  - mktime(0 , 0 , 0 , date("m") , date("d") , date("Y")) < 0 ){
+			// si on ne trouve pas l'année en cours dans le tableau d'amortissement dans le tableau, le matériel est amorti
+			if (!array_search(date("Y"),$tab["annee"]))
+			{
+			$vnc=0;
+		
+			}elseif (mktime(0 , 0 , 0, $date_m2, $date_d2, date("Y"))  - mktime(0 , 0 , 0 , date("m") , date("d") , date("Y")) < 0 ){
 		
 				// on a dépassé la fin d'exercice de l'année en cours
 		
