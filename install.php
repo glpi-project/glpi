@@ -154,7 +154,6 @@ function footer_html()
 // choose language
 
 function choose_language()
-
 {
 echo "<form action=\"install.php\" method=\"post\">";
 echo "<p align='center'><label>Choose your language <select name=\"language\"><label></p>";
@@ -163,7 +162,7 @@ echo "<p align='center'><label>Choose your language <select name=\"language\"><l
 	echo "<option value=\"deutch\">Deutch</option>";
 	echo "<option value=\"italian\">Italian</option>";
 	echo "</select>"; 
-	echo "<input type=\"hidden\" name=\"install\" value=\"Etap_confirm\" />";
+	echo "<input type=\"hidden\" name=\"install\" value=\"lang_select\" />";
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"OK\" /></p>";
 	echo "</form>";
 }
@@ -171,19 +170,13 @@ echo "<p align='center'><label>Choose your language <select name=\"language\"><l
 // load language
 
 function loadLanguage($language) {
-	
-global $lang;
-	
-	if(empty($language))
-	{	
-		$file= "glpi/dicts/english.php";
-	}
-	else {
-		$file = "glpi/dicts/".$language.".php";
-	}
-		include ( $file);
 		
-	}
+		unset($lang);
+		global $lang;
+		include ("_relpos.php");
+		$file = $phproot ."/glpi/dicts/".$language.".php";
+		include($file);
+}
 
 
 
@@ -192,7 +185,6 @@ function step0()
 {
 
 global $lang;
-
 echo "<h3>".$lang["install"][0]."</h3>";
 echo "<p>".$lang["install"][1]."</p>";
 echo "<p> ".$lang["install"][2]."</p>";
@@ -211,8 +203,7 @@ echo "</form>";
 //Step 1 checking some compatibilty issue and some write tests.
 function step1($update)
 {
-global $lang;
-
+	global $lang;
 	$error = 0;
 	echo "<h3>".$lang["install"][5]."</h3>";
 	echo "<table>";
@@ -627,7 +618,6 @@ function update1($host,$user,$password,$dbname) {
 	if(create_conn_file($host,$user,$password,$dbname)) {
 		
 		include("update.php");
-		
 	}
 	else {
 		echo $lang["install"][70];
@@ -646,8 +636,13 @@ function update1($host,$user,$password,$dbname) {
 
 
 //------------Start of install script---------------------------
+session_start();
 include ("_relpos.php");
+if(empty($_SESSION["dict"])) $_SESSION["dict"] = "french";
+if(isset($_POST["language"])) $_SESSION["dict"] = $_POST["language"];
+loadLanguage($_SESSION["dict"]);
 	if(!isset($_POST["install"])) {
+		$_SESSION = array();
 		if(file_exists($phproot ."/glpi/config/config_db.php")) {
 			include($phproot ."/index.php");
 			die();
@@ -660,16 +655,13 @@ include ("_relpos.php");
 	else {
 		switch ($_POST["install"]) {
 			
-			case "Etap_confirm" :
-			loadLanguage($_POST["language"]);
+			case "lang_select" :
 			header_html("Début de l'installation");
 			step0();
 			break;
 			case "Etape_0" :
-			session_start();
 			header_html("Etape 0");
 			$_SESSION["Test_session_GLPI"] = 1;
-			session_destroy();
 			step1($_POST["update"]);
 			break;
 			case "Etape_1" :
