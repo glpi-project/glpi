@@ -50,27 +50,36 @@ if(empty($_GET["uemail"])) $_GET["uemail"] = "";
 if(empty($_GET["emailupdates"])) $_GET["emailupdates"] = "";
 $error = "";
 
-if (isset($_GET["priority"]) && empty($_GET["contents"]))
+if (!isset($_GET["user"])) $user=$_SESSION["glpiname"];
+else $user=$_GET["user"];
+if (!isset($_GET["assign"])) $assign=$_SESSION["glpiname"];
+else $assign=$_GET["assign"];
+
+
+if (isset($_GET["Modif_Interne"])){
+addFormTracking($_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error,$search);
+}
+elseif (isset($_GET["priority"]) && empty($_GET["contents"]))
 {
 	$error="No Description, please try again.";
-	addFormTracking($_GET["ID"],$_SESSION["glpiname"],$_SERVER["PHP_SELF"],$error);
+	addFormTracking($_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error);
 }
 elseif (isset($_GET["priority"]) && !empty($_GET["contents"]))
 {
-	if (postJob($_GET["ID"],$_SESSION["glpiname"],$_GET["status"],$_GET["priority"],$_GET["isgroup"],$_GET["uemail"],$_GET["emailupdates"],$_GET["contents"]))
+	if (postJob($_GET["ID"],$_GET["user"],$_GET["status"],$_GET["priority"],$_GET["isgroup"],$_GET["uemail"],$_GET["emailupdates"],$_GET["contents"],$_GET["assign"]))
 	{
 		$error="Job posted, next one:";
-		addFormTracking($_GET["ID"],$_SESSION["glpiname"],$_SERVER["PHP_SELF"],$error);
+		addFormTracking($_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error);
 	}
 	else
 	{
 		$error="Couldn't post job, check the database.";
-		addFormTracking($_GET["ID"],$_SESSION["glpiname"],$_SERVER["PHP_SELF"],$error);
+		addFormTracking($_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error);
 	}
 } 
 else
 {
-	addFormTracking($_GET["ID"],$_SESSION["glpiname"],$_SERVER["PHP_SELF"],$error);
+	addFormTracking($_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error);
 }
 
 
