@@ -1420,12 +1420,12 @@ function updateWarrantyInfos($table,$type){
 	$query="SELECT ID,achat_date,date_fin_garantie from $table ORDER BY achat_date,date_fin_garantie";
 	$result=$db->query($query) or die("0.5 select for update warranty ".$lang["update"][90].$db->error());
 	while ($data=$db->fetch_array($result)){
-		if ($data['achat_date']!="0000-00-00"||$data['date_fin_garantie']!="0000-00-00"){
+		if (($data['achat_date']!="0000-00-00"&&!empty($data['achat_date']))||($data['date_fin_garantie']!="0000-00-00"&&!empty($data['date_fin_garantie']))){
 			$IDitem=$data['ID'];
-			if ($data['achat_date']=="0000-00-00") $achat_date=date("Y-m-d");
+			if ($data['achat_date']=="0000-00-00"&&!empty($data['achat_date'])) $achat_date=date("Y-m-d");
 			else $achat_date=$data['achat_date'];
 			$duration=0;
-			if ($data['date_fin_garantie']!="0000-00-00")
+			if ($data['date_fin_garantie']!="0000-00-00"&&!empty($data['date_fin_garantie']))
 				$duration=round(date_diff($achat_date,$data['date_fin_garantie']),2);
 			$query_insert="INSERT INTO glpi_infocoms (device_type,FK_device,buy_date,warranty_duration) VALUES ('$type','$IDitem','".$achat_date."','$duration')";
 			$result_insert=$db->query($query_insert) or die("0.5 insert for update warranty ".$lang["update"][90].$db->error());
@@ -1459,10 +1459,6 @@ function dropMaintenanceField(){
 	}
 }
 
-// Add a tmp_key in order to make the update easily
-
-$query ="ALTER TABLE `glpi_infocoms` ADD UNIQUE `tmp_key` ( `buy_date` , `warranty_duration` ); ";
-$result=$db->query($query) or die("0.5 alter1 for update warranty ".$lang["update"][90].$db->error());
 
 // Update Warranty Infos
 updateWarrantyInfos("glpi_computers",COMPUTER_TYPE);
@@ -1470,10 +1466,6 @@ updateWarrantyInfos("glpi_printers",PRINTER_TYPE);
 updateWarrantyInfos("glpi_networking",NETWORKING_TYPE);
 updateWarrantyInfos("glpi_monitors",MONITOR_TYPE);
 updateWarrantyInfos("glpi_peripherals",PERIPHERAL_TYPE);
-
-// Delete the tmp_key
-$query="ALTER TABLE `glpi_infocoms` DROP INDEX `tmp_key`";
-$result=$db->query($query) or die("0.5 alter2 for update warranty ".$lang["update"][90].$db->error());
 
 // Update Maintenance Infos
 if (isMaintenanceUsed()){
