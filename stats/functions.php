@@ -578,6 +578,9 @@ function constructEntryValues($type,$begin="",$end=""){
 
 if (empty($end)) $end=date("Y-m-d");
 $end.=" 23:59:59";
+// 1 an par defaut
+if (empty($begin)) $begin=date("Y-m-d",mktime(0,0,0,date("m"),date("d"),date("Y")-1));
+$begin.=" 00:00:00";
 
 	$query="";
 	switch($type)	{
@@ -666,9 +669,13 @@ $time=strtotime($key."-01");
 if ($min>$time||$min<0) $min=$time;
 if ($max<$time) $max=$time;
 }
+
 $end_time=strtotime(date("Y-m",strtotime($end))."-01");
+$begin_time=strtotime(date("Y-m",strtotime($begin))."-01");
 
 if ($max<$end_time) $max=$end_time;
+if ($min>$begin_time) $min=$begin_time;
+
 $current=$min;
 //print_r($entrees);
 while ($current<=$max){
