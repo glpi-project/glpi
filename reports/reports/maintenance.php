@@ -97,7 +97,7 @@ echo "<option value='glpi_monitors'>Moniteurs</option>";
 echo "</select> &nbsp;&nbsp; ";
 		   
 echo "<br><br><b>Date d'achat :</b>&nbsp;&nbsp; ";
-echo " <select name='annee_achat'>";
+echo " <select name='annee_achat[]' multiple>";
 echo " <option value='toutes' selected>Toutes</option>";
   $y = date("Y");
   for ($i=$y-5;$i<=$y;$i++)
