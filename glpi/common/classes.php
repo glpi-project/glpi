@@ -694,7 +694,7 @@ class Mailing
 	// Send email 
 	function send()
 	{
-		GLOBAL $cfg_features,$cfg_mailing;
+		GLOBAL $cfg_features,$cfg_mailing,$phproot;
 		if ($cfg_features["mailing"]&&$this->is_valid_email($cfg_mailing["admin_email"]))
 		{
 			if (!is_null($this->job)&&!is_null($this->user)&&(strcmp($this->type,"new")||strcmp($this->type,"attrib")||strcmp($this->type,"followup")||strcmp($this->type,"finish")))
@@ -714,17 +714,27 @@ class Mailing
 				// get reply-to address : user->email ou job_email if not set OK
 				$replyto=$this->get_reply_to_address ();
 				// Send all mails
+				require $phproot."/glpi/common/MIMEMail.php";
 				for ($i=0;$i<count($users);$i++)
 				{
-				mail($users[$i],$subject,$body,
-				"From: $sender\n" .
-				"Reply-To: $replyto\n" .
-				"X-Powered: by GLPI\n" .
-				"X-Mailer: PHP/" . phpversion()."\n".
-				"MIME-Version: 1.0\n" .
-				"Content-Type: text/plain; charset=ISO-8859-1\n" .
-				"Content-Transfer-Encoding: 8bit\n"
-				) ;
+				$mmail=new MIMEMail();
+		  		$mmail->ReplyTo($replyto);
+		  		$mmail->From($sender);
+		  		
+		  		$mmail->To($users[$i]);
+		  		$mmail->Subject($subject);		  
+		  		$mmail->Priority(2);
+		  		$mmail->MessageStream($body);
+		  		
+				
+				
+				// Attach a file
+		  		// $mmail->AttachFile($FILE);
+		  		
+				// Notification reception
+				// $mmail->setHeader('Disposition-Notification-To', "\"".$users[0]['name']."\" <".$users[0]['email'].">"); 
+		  
+		  		$mmail->Send();
 				}
 			} else {
 				echo "Type d'envoi invalide";
