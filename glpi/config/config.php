@@ -50,7 +50,7 @@ This file is part of GLPI.
 class DB extends DBmysql {
 
 	var $dbhost	= "localhost";
-	var $dbuser 	= "root"; 
+	var $dbuser 	= "glpiuser"; 
 	var $dbpassword	= "";
 	var $dbdefault	= "glpidb";
 }
@@ -58,7 +58,7 @@ class DB extends DBmysql {
 
 //root document
 //document root
-$cfg_install["root"]		= "/glpi-gna";
+$cfg_install["root"]		= "/glpi";
 
 
 // *************************** Eléments optionnels  **********************
@@ -222,7 +222,7 @@ $cfg_install["languages"]	= array("english","deutsch","french");
 
 // version number
 // numero de version
-$cfg_install["version"]		=" 0.3 Alpha ";
+$cfg_install["version"]		=" 0.3";
 $cfg_layout["logotxt"]		= "GLPI powered by indepnet";
 
 
