@@ -40,7 +40,7 @@ This file is part of GLPI.
 function getNbIntervTech()
 {
 	$db = new DB;
-	$query = "SELECT distinct(glpi_tracking.assign) as assign FROM glpi_tracking where glpi_tracking.assign != ''";
+	$query = "SELECT distinct(glpi_tracking.assign) as assign FROM glpi_tracking where glpi_tracking.assign != '' order by assign";
 	$result = $db->query($query);
 	if($db->numrows($result) >=1) {
 		$i = 0;
@@ -59,7 +59,7 @@ function getNbIntervTech()
 function getNbIntervLieux()
 {
 	$db = new DB;
-	$query = "SELECT ID from glpi_dropdown_locations";
+	$query = "SELECT ID from glpi_dropdown_locations order by name";
 	$result = $db->query($query);
 	if($db->numrows($result) >=1) {
 		$i = 0;
@@ -78,7 +78,7 @@ function getNbIntervLieux()
 function getNbIntervAuthor()
 {	
 	$db = new DB;
-	$query = "SELECT distinct(glpi_tracking.author) as author FROM glpi_tracking";
+	$query = "SELECT distinct(glpi_tracking.author) as author FROM glpi_tracking order by author";
 	$result = $db->query($query);
 	if($db->numrows($result) >=1) {
 		$i = 0;
