@@ -46,7 +46,9 @@ include ($phproot . "/glpi/includes_tracking.php");
 checkAuthentication("normal");
 commonHeader("Userinfo",$_SERVER["PHP_SELF"]);
 showUserInfo($_SERVER["PHP_SELF"],$_GET["ID"]);
-showJobList($_SERVER["PHP_SELF"],$_GET["ID"],"user","","",0);
+if (isset($_GET["start"])) $start=$_GET["start"];
+else $start=0;
+showJobList($_SERVER["PHP_SELF"],$_GET["ID"],"user","","",$start);
 
 commonFooter();
 
