@@ -120,6 +120,7 @@ class MIMEMail extends MIMEMailCommon {
 
     function MIMEMail($to = FALSE, $from = FALSE, $subject = FALSE, $message = FALSE, $attachments = FALSE) {
         $this->setHeader('X-Mailer', 'PHP/MIMEMail '.MM_VERSION);
+	$this->setHeader('X-Powered', 'by GLPI');
         $this->Priority('Normal');
         //if($to) { $this->To(
         return $this;
