@@ -821,7 +821,7 @@ function listConnectComputers($target,$input) {
 
 function printHelpDesk ($name) {
 
-	GLOBAL $cfg_layout,$cfg_install,$lang;
+	GLOBAL $cfg_layout,$cfg_install,$lang,$cfg_features;
 
 	$db = new DB;
 
@@ -844,20 +844,20 @@ function printHelpDesk ($name) {
 	echo "<option value='1'>".$lang["help"][7]."";
 	echo "</select>";
 	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_1'>";
-	echo "<td>".$lang["help"][8].":</td>";
-	echo "<td>	<select name=emailupdates>";
-	echo "<option value='no selected'>".$lang["help"][9]."";
-	echo "<option value='yes'>".$lang["help"][10]."";
-	echo "</select>";
-	echo "</td></tr>";
-
-
-	echo "<tr class='tab_bg_1'>";
-	echo "<td>".$lang["help"][11].":</td>";
-	echo "<td>	<input name='uemail' value=\"$email\" size='20'>";
-	echo "</td></tr>";
+	if($cfg_features["mailing"] != 0)
+	{
+		echo "<tr class='tab_bg_1'>";
+		echo "<td>".$lang["help"][8].":</td>";
+		echo "<td>	<select name=emailupdates>";
+		echo "<option value='no selected'>".$lang["help"][9]."";
+		echo "<option value='yes'>".$lang["help"][10]."";
+		echo "</select>";
+		echo "</td></tr>";
+		echo "<tr class='tab_bg_1'>";
+		echo "<td>".$lang["help"][11].":</td>";
+		echo "<td>	<input name='uemail' value=\"$email\" size='20'>";
+		echo "</td></tr>";
+	}
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$lang["help"][12]." <a href=\"#\" onClick=\"window.open('".$cfg_install["root"]."/find_num.php','Help','scrollbars=1,resizable=1,width=400,height=400')\"><img src=\"".$cfg_install["root"]."/pics/aide.png\" border='0' alt=\"help\"></a></td>";
