@@ -101,20 +101,20 @@ $border2->set_merge(); # This is the key feature
 */
 
 # Only one cell should contain text, the others should be blank.
-$worksheet->write(0, 0, $lang["peripherals"][23], $border1);
-$worksheet->write(0, 1, $lang["peripherals"][5], $border1);
-$worksheet->write(0, 2, $lang["peripherals"][16],   $border1);
-$worksheet->write(0, 3, $lang["peripherals"][8], $border1);
-$worksheet->write(0, 4, $lang["peripherals"][7], $border1);
-$worksheet->write(0, 5, $lang["peripherals"][12], $border1);
-$worksheet->write(0, 6, $lang["peripherals"][10], $border1);
-$worksheet->write(0, 7, $lang["peripherals"][11], $border1);
-$worksheet->write(0, 8, $lang["peripherals"][25], $border1);
-$worksheet->write(0, 9, $lang["peripherals"][24], $border1);
-$worksheet->write(0, 10, $lang["peripherals"][26], $border1);
-$worksheet->write(0, 11, $lang["peripherals"][13], $border1);
-$worksheet->write(0, 12, $lang["peripherals"][9], $border1);
-$worksheet->write(0, 13, $lang["peripherals"][18], $border1);
+$worksheet->write(0, 0, html_entity_decode($lang["peripherals"][23]), $border1);
+$worksheet->write(0, 1, html_entity_decode($lang["peripherals"][5]), $border1);
+$worksheet->write(0, 2, html_entity_decode($lang["peripherals"][16]),   $border1);
+$worksheet->write(0, 3, html_entity_decode($lang["peripherals"][8]), $border1);
+$worksheet->write(0, 4, html_entity_decode($lang["peripherals"][7]), $border1);
+$worksheet->write(0, 5, html_entity_decode($lang["peripherals"][12]), $border1);
+$worksheet->write(0, 6, html_entity_decode($lang["peripherals"][10]), $border1);
+$worksheet->write(0, 7, html_entity_decode($lang["peripherals"][11]), $border1);
+$worksheet->write(0, 8, html_entity_decode($lang["peripherals"][25]), $border1);
+$worksheet->write(0, 9, html_entity_decode($lang["peripherals"][24]), $border1);
+$worksheet->write(0, 10, html_entity_decode($lang["peripherals"][26]), $border1);
+$worksheet->write(0, 11, html_entity_decode($lang["peripherals"][13]), $border1);
+$worksheet->write(0, 12, html_entity_decode($lang["peripherals"][9]), $border1);
+$worksheet->write(0, 13, html_entity_decode($lang["peripherals"][18]), $border1);
 
 $y=1;
 $old_ID=-1;
@@ -128,12 +128,12 @@ while($ligne = $db->fetch_array($result))
 		for($i=0;$i<$num_field;$i++) {
 			$name=$db->field_name($result,$i);
 		if($name == "location") {
-				$table[$i]=getDropdownName("glpi_dropdown_locations",$ligne[$i]);
+				$table[$i]=html_entity_decode(getDropdownName("glpi_dropdown_locations",$ligne[$i]));
 			}
 		elseif($name == "type") {
-				$table[$i]=getDropdownName("glpi_type_peripherals",$ligne[$i]);
+				$table[$i]=html_entity_decode(getDropdownName("glpi_type_peripherals",$ligne[$i]));
 			}
-		else $table[$i]=$ligne[$i];
+		else $table[$i]=html_entity_decode($ligne[$i]);
 			}
 		$old_ID=$ligne[0];
 	} 
@@ -141,7 +141,7 @@ while($ligne = $db->fetch_array($result))
 		$nb_skip++;
 		// Add the new interface :
 		for($i=$num_field-2;$i<$num_field;$i++)
-		if ($ligne[$i]!="") $table[$i].="\n".$ligne[$i];
+		if ($ligne[$i]!="") $table[$i].="\n".html_entity_decode($ligne[$i]);
 	}
 	$worksheet->write_row($y-$nb_skip, 0, $table);
 	

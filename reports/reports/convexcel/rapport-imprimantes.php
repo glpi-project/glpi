@@ -100,24 +100,24 @@ $border2->set_merge(); # This is the key feature
 */
 
 # Only one cell should contain text, the others should be blank.
-$worksheet->write(0, 0, $lang["printers"][24], $border1);
-$worksheet->write(0, 1, $lang["printers"][5], $border1);
-$worksheet->write(0, 2, $lang["printers"][16],   $border1);
-$worksheet->write(0, 3, $lang["printers"][8], $border1);
-$worksheet->write(0, 4, $lang["printers"][7], $border1);
-$worksheet->write(0, 5, $lang["printers"][10], $border1);
-$worksheet->write(0, 6, $lang["printers"][11], $border1);
-$worksheet->write(0, 7, $lang["printers"][14], $border1);
-$worksheet->write(0, 8, $lang["printers"][15], $border1);
-$worksheet->write(0, 9, $lang["printers"][12], $border1);
-$worksheet->write(0, 10, $lang["printers"][20], $border1);
-$worksheet->write(0, 11, $lang["printers"][21], $border1);
-$worksheet->write(0, 12, $lang["printers"][22], $border1);
-$worksheet->write(0, 13, $lang["printers"][23], $border1);
-$worksheet->write(0, 14, $lang["printers"][13],  $border1);
-$worksheet->write(0, 15, $lang["printers"][9],  $border1);
-$worksheet->write(0, 16, $lang["networking"][14], $border1);
-$worksheet->write(0, 17, $lang["networking"][15], $border1);
+$worksheet->write(0, 0, html_entity_decode($lang["printers"][24]), $border1);
+$worksheet->write(0, 1, html_entity_decode($lang["printers"][5]), $border1);
+$worksheet->write(0, 2, html_entity_decode($lang["printers"][16]),   $border1);
+$worksheet->write(0, 3, html_entity_decode($lang["printers"][8]), $border1);
+$worksheet->write(0, 4, html_entity_decode($lang["printers"][7]), $border1);
+$worksheet->write(0, 5, html_entity_decode($lang["printers"][10]), $border1);
+$worksheet->write(0, 6, html_entity_decode($lang["printers"][11]), $border1);
+$worksheet->write(0, 7, html_entity_decode($lang["printers"][14]), $border1);
+$worksheet->write(0, 8, html_entity_decode($lang["printers"][15]), $border1);
+$worksheet->write(0, 9, html_entity_decode($lang["printers"][12]), $border1);
+$worksheet->write(0, 10, html_entity_decode($lang["printers"][20]), $border1);
+$worksheet->write(0, 11, html_entity_decode($lang["printers"][21]), $border1);
+$worksheet->write(0, 12, html_entity_decode($lang["printers"][22]), $border1);
+$worksheet->write(0, 13, html_entity_decode($lang["printers"][23]), $border1);
+$worksheet->write(0, 14, html_entity_decode($lang["printers"][13]),  $border1);
+$worksheet->write(0, 15, html_entity_decode($lang["printers"][9]),  $border1);
+$worksheet->write(0, 16, html_entity_decode($lang["networking"][14]), $border1);
+$worksheet->write(0, 17, html_entity_decode($lang["networking"][15]), $border1);
 
 
 $y=1;
@@ -134,12 +134,12 @@ while($ligne = $db->fetch_array($result))
 		for($i=0;$i<$num_field;$i++) {
 			$name=$db->field_name($result,$i);
 		if($name == "location") {
-				$table[$i]=getDropdownName("glpi_dropdown_locations",$ligne[$i]);
+				$table[$i]=html_entity_decode(getDropdownName("glpi_dropdown_locations",$ligne[$i]));
 			}
 		elseif($name == "type") {
-				$table[$i]=getDropdownName("glpi_type_printers",$ligne[$i]);
+				$table[$i]=html_entity_decode(getDropdownName("glpi_type_printers",$ligne[$i]));
 			}
-		else $table[$i]=$ligne[$i];
+		else $table[$i]=html_entity_decode($ligne[$i]);
 			}
 		$old_ID=$ligne[0];
 	} 
@@ -147,7 +147,7 @@ while($ligne = $db->fetch_array($result))
 		$nb_skip++;
 		// Add the new interface :
 		for($i=$num_field-2;$i<$num_field;$i++)
-		if ($ligne[$i]!="") $table[$i].="\n".$ligne[$i];
+		if ($ligne[$i]!="") $table[$i].="\n".html_entity_decode($ligne[$i]);
 	}
 	$worksheet->write_row($y-$nb_skip, 0, $table);
 	

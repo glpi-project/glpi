@@ -98,22 +98,22 @@ $border2->set_merge(); # This is the key feature
 */
 
 # Only one cell should contain text, the others should be blank.
-$worksheet->write(0, 0, $lang["networking"][42], $border1);
-$worksheet->write(0, 1, $lang["networking"][0], $border1);
-$worksheet->write(0, 2, $lang["networking"][5],  $border1);
-$worksheet->write(0, 3, $lang["networking"][6], $border1);
-$worksheet->write(0, 4, $lang["networking"][7], $border1);
-$worksheet->write(0, 5, $lang["networking"][3], $border1);
-$worksheet->write(0, 6, $lang["networking"][4], $border1);
-$worksheet->write(0, 7, $lang["networking"][9], $border1);
-$worksheet->write(0, 8, $lang["networking"][8], $border1);
-$worksheet->write(0, 9, $lang["networking"][39], $border1);
-$worksheet->write(0, 10, $lang["networking"][40], $border1);
-$worksheet->write(0, 11, $lang["networking"][41], $border1);
-$worksheet->write(0, 12, $lang["networking"][1],  $border1);
-$worksheet->write(0, 13, $lang["networking"][2],   $border1);
-$worksheet->write(0, 14, $lang["networking"][14], $border1);
-$worksheet->write(0, 15, $lang["networking"][15], $border1);
+$worksheet->write(0, 0, html_entity_decode($lang["networking"][42]), $border1);
+$worksheet->write(0, 1, html_entity_decode($lang["networking"][0]), $border1);
+$worksheet->write(0, 2, html_entity_decode($lang["networking"][5]),  $border1);
+$worksheet->write(0, 3, html_entity_decode($lang["networking"][6]), $border1);
+$worksheet->write(0, 4, html_entity_decode($lang["networking"][7]), $border1);
+$worksheet->write(0, 5, html_entity_decode($lang["networking"][3]), $border1);
+$worksheet->write(0, 6, html_entity_decode($lang["networking"][4]), $border1);
+$worksheet->write(0, 7, html_entity_decode($lang["networking"][9]), $border1);
+$worksheet->write(0, 8, html_entity_decode($lang["networking"][8]), $border1);
+$worksheet->write(0, 9, html_entity_decode($lang["networking"][39]), $border1);
+$worksheet->write(0, 10, html_entity_decode($lang["networking"][40]), $border1);
+$worksheet->write(0, 11, html_entity_decode($lang["networking"][41]), $border1);
+$worksheet->write(0, 12, html_entity_decode($lang["networking"][1]),  $border1);
+$worksheet->write(0, 13, html_entity_decode($lang["networking"][2]),   $border1);
+$worksheet->write(0, 14, html_entity_decode($lang["networking"][14]), $border1);
+$worksheet->write(0, 15, html_entity_decode($lang["networking"][15]), $border1);
 
 
 $y=1;
@@ -128,15 +128,15 @@ while($ligne = $db->fetch_array($result))
 		for($i=0;$i<$num_field;$i++) {
 					$name=$db->field_name($result,$i);
 			if($name == "firmware") {
-				$table[$i]=getDropdownName("glpi_dropdown_firmware",$ligne[$i]);
+				$table[$i]=html_entity_decode(getDropdownName("glpi_dropdown_firmware",$ligne[$i]));
 			}
 			elseif($name == "location") {
-				$table[$i]=getDropdownName("glpi_dropdown_locations",$ligne[$i]);
+				$table[$i]=html_entity_decode(getDropdownName("glpi_dropdown_locations",$ligne[$i]));
 			}
 			elseif($name == "type") {
-				$table[$i]=getDropdownName("glpi_type_networking",$ligne[$i]);
+				$table[$i]=html_entity_decode(getDropdownName("glpi_type_networking",$ligne[$i]));
 			}
-			else $table[$i]=$ligne[$i];
+			else $table[$i]=html_entity_decode($ligne[$i]);
 	}		
 		$old_ID=$ligne[0];
 	} 
@@ -144,7 +144,7 @@ while($ligne = $db->fetch_array($result))
 		$nb_skip++;
 		// Add the new interface :
 		for($i=$num_field-2;$i<$num_field;$i++)
-		if ($ligne[$i]!="") $table[$i].="\n".$ligne[$i];
+		if ($ligne[$i]!="") $table[$i].="\n".html_entity_decode($ligne[$i]);
 	}
 	$worksheet->write_row($y-$nb_skip, 0, $table);
 	
