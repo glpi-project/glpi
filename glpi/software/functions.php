@@ -540,7 +540,7 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 
 	$back = urlencode($back);
 	
-	$query = "SELECT ID FROM glpi_licenses WHERE (sID = $sID)";
+	$query = "SELECT glpi_licenses.ID as ID FROM glpi_licenses LEFT JOIN glpi_inst_software ON glpi_licenses.ID = glpi_inst_software.license WHERE (glpi_licenses.sID = $sID AND glpi_inst_software.ID='NULL')";
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 
 			echo "<br><center><table cellpadding='2' class='tab_cadre' width='50%'>";
