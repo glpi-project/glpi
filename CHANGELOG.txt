@@ -1,6 +1,23 @@
+
+**** GLPI 0.3 ***
+
+
+06/06/2004
+Ajout d'un script d'update de la base de données depuis les versions antérieures à la 0.3.
+Le fichier est sauvegardé dans /mysql/update.inc en cas d'effacement accidentel.
+LE fichier update.php  original est à la racine.
+
+
+01/06/04
+Suppression et abandon du mini-module d'administration LDAP (non applicable à GLPI)
+
+Correction de bugs :
+- Affichage sequentiel des interventions (requetes sur 15 champs au lieu de la totalité = meilleurs perfs)
+- Resolution du bug de page blanche, àl'ajout d'une licence.
+
 26/05/2004
 Implémentation du module de statistiques développé par Mustapha Saddalah
-en janvier 2004, pas mal de modifications sur les fichiers d'orgine.
+en janvier 2004, pas mal de modifications sur les fichiers d'orgines.
 Le fichier fonctions est directement dans le repertoire stats pour l'instant.
 
 22/06/05
@@ -8,10 +25,10 @@ Changement de version de la classe PHPwriteexcel.
 La classe passe dans le dossier reports/reports/convexcel.
 
 02/05/2004
-Fin de la compatibilité avec les derniers recommandations de PHP.
+Fin de la compatibilité avec les dernieres recommandations de PHP.
 Suppression de toutes les erreurs affichées lorsque le php.ini contient error_reporting E_ALL
-GLPI est compatible nativement avec la confoguration de easyphp 1.7 a partir de cette version.
-Le schema de la base de donnée change, plusieurs champs etant marqués comme potentiellement NULL
+GLPI est compatible nativement avec la confoguration de easyphp 1.7 à partir de cette version.
+Le schema de la base de données change, plusieurs champs etant marqués comme potentiellement NULL
 dans le SGBD deviennent not null.
 Le nouveau dump est annoté 0.3-defaults.sql
 
