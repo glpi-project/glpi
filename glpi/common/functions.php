@@ -2671,6 +2671,29 @@ return (@$name);
 }
 
 
+function getTreeItemLevel($table,$ID){
+
+$level=0;
+
+$db=new DB();
+$query="select parentID from $table where ID='$ID'";
+while (1)
+{
+	if (($result=$db->query($query))&&$db->numrows($result)==1){
+		$parentID=$db->result($result,0,"parentID");
+		if ($parentID==0) return $level;
+		else {
+			$level++;
+			$query="select parentID from $table where ID='$parentID'";
+		}
+	}
+}
+
+
+return -1;
+
+}
+
 /**
 * To be commented
 *
