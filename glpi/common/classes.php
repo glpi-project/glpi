@@ -162,7 +162,6 @@ class Identification
 		//echo "il est passé par ici";
 		$this->err = "";
 		$this->user = new User;
-
 	}
 
 
@@ -230,9 +229,18 @@ class Identification
 		session_start();
 		$_SESSION["glpipass"] = $password;
 		$_SESSION["glpiname"] = $name;
+		$_SESSION["glpitype"] = $type;
 		$_SESSION["authorisation"] = true;
 	 	//SetCookie("IRMName", $name, 0, "/");
 		//SetCookie("IRMPass", $password, 0, "/");
+	}
+
+	function eraseCookies()
+	{
+	$_SESSION["glpipass"] = "";
+	$_SESSION["glpiname"] = "bogus";
+	$_SESSION["glpitype"] = "";
+	$_SESSION["authorisation"] = false;
 	}
 
 	//Add an user to DB or update his password if user allready exist.
