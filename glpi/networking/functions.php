@@ -621,6 +621,9 @@ function showPorts ($device,$device_type,$withtemplate='') {
 		case PRINTER_TYPE :
 			$device_real_table_name = "glpi_printers";
 			break;
+		case PERIPHERAL_TYPE :
+			$device_real_table_name = "glpi_peripherals";
+			break;
 	}
 	$query = "SELECT location from ".$device_real_table_name." where ID = ".$device."";
 	$location = $db->result($db->query($query),0,"location");
@@ -850,6 +853,9 @@ function showPortsAdd($ID,$devtype) {
 			break;
 		case PRINTER_TYPE :
 			$device_real_table_name = "glpi_printers";
+			break;
+		case PERIPHERAL_TYPE :
+			$device_real_table_name = "glpi_peripherals";
 			break;
 	}
 	$query = "SELECT location from ".$device_real_table_name." where ID = ".$ID."";
