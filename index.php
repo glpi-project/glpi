@@ -38,6 +38,12 @@ This file is part of GLPI.
  
 
 include ("_relpos.php");
+if(!file_exists($phproot ."/glpi/config/config_db.php")) {
+	include($phproot ."/install.php");
+	die();
+}
+else
+{
 include ($phproot . "/glpi/includes.php");
 
 // Start the page
@@ -46,6 +52,7 @@ echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">"
 echo "<head><title>GLPI Login</title>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1 \" />\n";
 echo "<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\" />\n";
+
 
 // Include CSS
 echo "<style type=\"text/css\">\n";
@@ -57,11 +64,6 @@ echo "</head>";
 // Body with configured stuff
 
 echo "<body>";
-
-
-	
-
-
 
 
 // contenu
@@ -108,7 +110,7 @@ echo "</div>";
 
 	
 	
-
+}
 echo "</body></html>";
 
 
