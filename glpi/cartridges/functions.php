@@ -297,7 +297,11 @@ function showCartridgeTypeForm ($target,$ID) {
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		if ($ct->fields["deleted"]=='N')
 		echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
-		else echo "<div align='center'><input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'></div>";
+		else {
+		echo "<div align='center'><input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+		
+		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'></div>";
+		}
 		echo "</td>";
 		echo "</tr>";
 
@@ -357,11 +361,11 @@ function addCartridgeType($input) {
 }
 
 
-function deleteCartridgeType($input) {
+function deleteCartridgeType($input,$force=0) {
 	// Delete CartridgeType
 	
 	$ct = new CartridgeType;
-	$ct->deleteFromDB($input["ID"]);
+	$ct->deleteFromDB($input["ID"],$force);
 } 
 
 function restoreCartridgeType($input) {

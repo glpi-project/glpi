@@ -72,6 +72,7 @@ $lang["buttons"][18] ="Tout cocher";
 $lang["buttons"][19] ="Tout d&eacute;cocher";
 $lang["buttons"][20] ="D&eacute;placer";
 $lang["buttons"][21] ="Restaurer";
+$lang["buttons"][22] ="Purger";
 
 $lang["choice"][0]	= "Oui";
 $lang["choice"][1]	= "Non";

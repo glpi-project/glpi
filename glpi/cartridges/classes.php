@@ -141,16 +141,20 @@ class CartridgeType {
 
 	}
 
-	function deleteFromDB($ID) {
+	function deleteFromDB($ID,$force=0) {
 
 		$db = new DB;
 		$this->getFromDB($ID);		
-		if ($this->countCartridges()==0){
+		if ($force==1||$this->countCartridges()==0){
 			$query = "DELETE from glpi_cartridges_type WHERE ID = '$ID'";
 			if ($result = $db->query($query)) {
+				// Delete cartridges
+				if ($force==1){
+				$query3 = "DELETE FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = \"$ID\")";
+				$result3 = $db->query($query3);
+				} 
 				// Delete all cartridge assoc
 				$query2 = "DELETE FROM glpi_cartridges_assoc WHERE (FK_glpi_cartridges_type = \"$ID\")";
-	
 				if ($result2 = $db->query($query2)) {
 					return true;
 				}
