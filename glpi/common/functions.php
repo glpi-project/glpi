@@ -620,6 +620,7 @@ function dropdownValue($table,$myname,$value) {
 	$result = $db->query($query);
 	
 	echo "<select name=\"$myname\" size='1'>";
+	echo "<option value=\"NULL\">-----</option>";
 	$i = 0;
 	$number = $db->numrows($result);
 	if ($number > 0) {
