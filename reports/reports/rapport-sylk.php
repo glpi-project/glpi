@@ -215,13 +215,13 @@ switch($table){
 		$query.= " LEFT JOIN glpi_inst_software ON (glpi_inst_software.cID = glpi_computers.ID) ";
 		$query.= " LEFT JOIN glpi_licenses ON (glpi_inst_software.license = glpi_licenses.ID) ";
 		$query.= " LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID) ";
-		$query.= " LEFT JOIN glpi_connect_wire ON (glpi_connect_wire.end1 = glpi_computers.ID) ";
-		$query.= " LEFT JOIN glpi_monitors ON (glpi_connect_wire.end2 = glpi_monitors.ID AND glpi_connect_wire.type = '4') ";
-		$query.= " LEFT JOIN glpi_peripherals ON (glpi_connect_wire.end2 = glpi_peripherals.ID AND glpi_connect_wire.type = '5') ";
-		$query.= " LEFT JOIN glpi_printers ON (glpi_connect_wire.end2 = glpi_printers.ID AND glpi_connect_wire.type = '3') ";
+		$query.= " LEFT JOIN glpi_connect_wire ON (glpi_connect_wire.end2 = glpi_computers.ID) ";
+		$query.= " LEFT JOIN glpi_monitors ON (glpi_connect_wire.end1 = glpi_monitors.ID AND glpi_connect_wire.type = '4') ";
+		$query.= " LEFT JOIN glpi_peripherals ON (glpi_connect_wire.end1 = glpi_peripherals.ID AND glpi_connect_wire.type = '5') ";
+		$query.= " LEFT JOIN glpi_printers ON (glpi_connect_wire.end1 = glpi_printers.ID AND glpi_connect_wire.type = '3') ";
 		$query.= " ORDER by glpi_computers.ID";
 		
-		//echo $query;
+//		echo $query;
 		//exit;
 
 	    $champs = Array(
