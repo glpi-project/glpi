@@ -340,7 +340,7 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 		}
 
 
-	echo "<div align='center'><form method='post' name='form' action=\"$target\">";
+	echo "<div align='center' ><form method='post' name='form' action=\"$target\">";
 		if(strcmp($template,"newtemplate") === 0) {
 			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
 		}
