@@ -55,16 +55,17 @@ function searchFormNetworking() {
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
 
-	$option["networking.name"]				= $lang["printers"][5];
-	$option["networking.ID"]				= $lang["printers"][19];
-	$option["glpi_dropdown_locations.name"]			= $lang["printers"][6];
-	$option["glpi_type_networking.name"]				= $lang["printers"][9];
-	$option["networking.serial"]			= $lang["printers"][10];
-	$option["networking.otherserial"]		= $lang["printers"][11]	;
-	$option["networking.comments"]			= $lang["printers"][12];
-	$option["networking.contact"]			= $lang["printers"][8];
-	$option["networking.contact_num"]		= $lang["printers"][7];
-	$option["networking.date_mod"]			= $lang["printers"][16];
+	$option["networking.name"]				= $lang["networking"][0];
+	$option["networking.ID"]				= $lang["networking"][50];
+	$option["glpi_dropdown_locations.name"]			= $lang["networking"][1];
+	$option["glpi_type_networking.name"]				= $lang["networking"][2];
+	$option["networking.serial"]			= $lang["networking"][6];
+	$option["networking.otherserial"]		= $lang["networking"][7]	;
+	$option["networking.firmware"]		= $lang["networking"][49]	;
+	$option["networking.comments"]			= $lang["networking"][8];
+	$option["networking.contact"]			= $lang["networking"][3];
+	$option["networking.contact_num"]		= $lang["networking"][4];
+	$option["networking.date_mod"]			= $lang["networking"][9];
 	
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/networking/networking-search.php\">";
@@ -119,7 +120,9 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 	}
 	$query = "select networking.ID from glpi_networking as networking LEFT JOIN glpi_dropdown_locations on networking.location=glpi_dropdown_locations.ID ";
 	$query .= "LEFT JOIN glpi_type_networking on networking.type = glpi_type_networking.ID ";
+	$query .= "LEFT JOIN glpi_dropdown_firmware on networking.firmware = glpi_dropdown_firmware.ID ";
 	$query .= "where $where ORDER BY $sort $order";
+	echo $query;
 	// Get it from database	
 	$db = new DB;
 	if ($result = $db->query($query)) {
@@ -165,6 +168,17 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=networking.type&order=ASC&start=$start\">";
 			echo $lang["networking"][2]."</a></th>";
 
+			
+			// Firmqare
+			echo "<th>";
+			if ($sort=="networking.firmware") {
+				echo "&middot;&nbsp;";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=networking.firmware&order=ASC&start=$start\">";
+			echo $lang["networking"][49]."</a></th>";
+
+			
+			
 			// Last modified		
 			echo "<th>";
 			if ($sort=="networking.date_mod") {
@@ -185,7 +199,8 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 				echo $networking->fields["name"]." (".$networking->fields["ID"].")";
 				echo "</a></b></td>";
 				echo "<td>". getDropdownName("glpi_dropdown_locations",$networking->fields["location"]) ."</td>";
-				echo "<td>". getDropdownName("glpi_type_monitors",$networking->fields["type"]) ."</td>";
+				echo "<td>". getDropdownName("glpi_type_networking",$networking->fields["type"]) ."</td>";
+				echo "<td>". getDropdownName("glpi_dropdown_firmware",$networking->fields["firmware"]) ."</td>";
 				echo "<td>".$networking->fields["date_mod"]."</td>";
 				echo "</tr>";
 			}
@@ -206,40 +221,6 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 
 
 
-
-function listNetdevices() {
-	// List all netdevices
-
-	GLOBAL $cfg_install,$cfg_layout, $lang;
-	$db = new DB;
-
-	$query = "SELECT ID FROM glpi_networking";
-
-	if ($result = $db->query($query)) {
-		if ($db->numrows($result)>0) {
-			echo "<div align='center'><table  class='tab_cadre'><tr>";
-			echo "<th>".$lang["networking"][0]."</th><th>".$lang["networking"][1]."</th>";
-			echo "<th>".$lang["networking"][2]."</th><th>".$lang["networking"][3]."</th>";
-			echo "<th>".$lang["networking"][9]."</th></tr>";
-			$i=0;
-			while ($devid=$db->fetch_row($result)) {
-				$netdev = new Netdevice;
-				$netdev->getfromDB(current($devid));
-				echo "<tr class='tab_bg_1'>";
-				echo "<td><a href=\"".$cfg_install["root"]."/networking/networking-info-form.php?ID=".$netdev->fields["ID"]."\">".$netdev->fields["name"];
-				echo " (".$netdev->fields["ID"].")</a></td>";
-				echo "<td>".getDropdownName("glpi_dropdown_locations",$netdev->fields["location"])."</td>";
-				echo "<td>".getDropdownName("glpi_type_networking",$netdev->fields["type"])."</td>";
-				echo "<td>".$netdev->fields["contact"]."</td>";
-				echo "<td>".$netdev->fields["date_mod"]."</td>";
-				echo "</tr>";
-			}	
-			echo "</table></div>";
-		} else {
-			echo "<b><div align='center'>".$lang["networking"][38]."</div></b>";
-		}
-	}
-}
 
 function showNetworkingForm ($target,$ID) {
 	// Show device or blank form
