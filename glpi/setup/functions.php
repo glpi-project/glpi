@@ -628,20 +628,20 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 			}
 			$coco = mysql_field_name($fields, $i);
 			if($coco == "location") {
-				$where .= " glpi_dropdown_locations.name LIKE '%".$contains."%'";
+				$where .= " glpi_dropdown_locations.name LIKE '%".$contains."%' and glpi_users.name != 'Helpdesk'";
 			}
 			else {
-   				$where .= "glpi_users.".$coco . " LIKE '%".$contains."%'";
+   				$where .= "glpi_users.".$coco . " LIKE '%".$contains."%' and glpi_users.name != 'Helpdesk'";
 			}
 		}
 		$where .= ")";
 	}
 	else {
 		if ($phrasetype == "contains") {
-			$where = "($field LIKE '%".$contains."%')";
+			$where = "($field LIKE '%".$contains."%' and glpi_users.name != 'Helpdesk')";
 		}
 		else {
-			$where = "($field LIKE '".$contains."')";
+			$where = "($field LIKE '".$contains."' and glpi_users.name != 'Helpdesk')";
 		}
 	}
 	
