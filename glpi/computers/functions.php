@@ -200,7 +200,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 	$query .= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";
 	$query .= "where $where ORDER BY $sort $order";
 	//$query = "SELECT * FROM glpi_computers WHERE $where ORDER BY $sort $order";
-//	echo $query;
+//echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);
@@ -307,7 +307,6 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 		} else {
 			echo "<div align='center'><b>".$lang["computers"][32]."</b></div>";
 			echo "<hr noshade>";
-		//	searchFormComputers();
 		}
 	}
 }
@@ -339,8 +338,6 @@ function showComputerForm($target,$ID) {
 		echo "</th><th  colspan ='2' align='center'>".$datestring.$date;
 		echo "</th></tr>";
 		
-		//echo "<tr><td class='tab_bg_1' valign='top'>";
-		#echo "<table cellpadding='1px' cellspacing='0' border='0'>\n";
 		echo "<tr class='tab_bg_1'><td>".$lang["computers"][7].":		</td>";
 		echo "<td><input type='text' name='name' value=\"".$comp->fields["name"]."\" size='20'></td>";
 		
@@ -371,10 +368,6 @@ function showComputerForm($target,$ID) {
 		echo "<td><input type='text' size='20' name='otherserial' value=\"".$comp->fields["otherserial"]."\">";
 		echo "</td></tr>";
 
-		//echo "<tr><td valign='top'>".$lang["computers"][19].":</td>";
-		//echo "<td><textarea  cols='20' rows='8' name='comments' >".$comp->fields["comments"]."</textarea>";
-		//echo "</td></tr>";
-		
 		echo "<tr class='tab_bg_1'><td>".$lang["computers"][41].":	</td>";
 		echo "<td><input type='text' name='achat_date' readonly size='10' value=\"".$comp->fields["achat_date"]."\">";
 		echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=achat_date&amp;value=".$comp->fields["achat_date"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
@@ -495,232 +488,6 @@ function showComputerForm($target,$ID) {
                 return false;
         }
 }
-/*
-function showComputerForm ($template,$target,$ID) {
-
-	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel;
-	$comp = new Computer;
-
-	if ($comp->getfromDB($ID,$template)) {
-
-		if ($template) {
-			$datestring = $lang["computers"][14].": ";
-			$date = date("Y-m-d H:i:s"); 
-			
-		} else {
-			$datestring = $lang["computers"][11]." : ";
-			$date = $comp->fields["date_mod"];
-		}
-
-                		echo "<form name='form' method='post' action=\"$target\">";
-				echo "<div align='center'><table border='0' class='tab_cadre' >";
-		echo "<tr><th align='center' width='300px'>";
-		if ($template) {
-			echo $lang["computers"][12].": ".$comp->fields["templname"];
-		} else {
-			echo $lang["computers"][13].": ".$comp->fields["ID"];
-		}
-		
-		echo "</th><th align='center'>".$datestring.$date;
-		echo "</th></tr>";
-		
-		echo "<tr><td class='tab_bg_1' valign='top'>";
-
-
-		echo "<table cellpadding='1px' cellspacing='0' border='0'>\n";
-		
-		echo "<tr><td>".$lang["computers"][7].":		</td>";
-		echo "<td><input type='text' name='name' value=\"".$comp->fields["name"]."\" size='20'></td>";
-		echo "</tr>";
-
-		echo "<tr><td>".$lang["computers"][10].": 	</td>";
-		echo "<td>";
-			dropdownValue("glpi_dropdown_locations", "location", $comp->fields["location"]);
-		echo "</td></tr>";
-
-		echo "<tr><td>".$lang["computers"][15].":		</td>";
-		echo "<td><input type='text' name='contact_num' value=\"".$comp->fields["contact_num"]."\" size='20'>";
-		echo "</td></tr>";
-	
-		echo "<tr><td>".$lang["computers"][16].":	</td>";
-		echo "<td><input type='text' name='contact' size='20' value=\"".$comp->fields["contact"]."\">";
-		echo "</td></tr>";
-
-		echo "<tr><td>".$lang["computers"][17].":	</td>";
-		echo "<td><input type='text' name='serial' size='20' value=\"".$comp->fields["serial"]."\">";
-		echo "</td></tr>";
-
-		echo "<tr><td>".$lang["computers"][18].":	</td>";
-		echo "<td><input type='text' size='20' name='otherserial' value=\"".$comp->fields["otherserial"]."\">";
-		echo "</td></tr>";
-
-		echo "<tr><td valign='top'>".$lang["computers"][19].":</td>";
-		echo "<td><textarea  cols='20' rows='8' name='comments' >".$comp->fields["comments"]."</textarea>";
-		echo "</td></tr>";
-
-		echo "<tr><td>".$lang["reservation"][24].":</td><td><b>";
-		if (!$template)
-		showReservationForm(1,$ID);
-		echo "</b></td></tr>";
-		echo "</table>";
-
-		echo "</td>\n";	
-		echo "<td class='tab_bg_1' valign='top'>\n";
-		echo "<table cellpadding='1px' cellspacing='0' border='0'>";
-
-
-		echo "<tr><td>".$lang["computers"][8].": 	</td>";
-		echo "<td>";
-			dropdownValue("glpi_type_computers", "type", $comp->fields["type"]);
-		echo "</td></tr>";
-
-		echo "<tr><td>".$lang["computers"][9].": 	</td>";
-		echo "<td>";	
-			dropdownValue("glpi_dropdown_os", "os", $comp->fields["os"]);
-		echo "</td></tr>";
-		
-		echo "<tr><td>".$lang["computers"][20].":</td>";
-		echo "<td><input type='text' size='20' name='osver' value=\"".$comp->fields["osver"]."\">";
-		echo "</td></tr>";
-		
-		echo "<tr><td>".$lang["computers"][21].":	</td>";
-		echo "<td>";
-			dropdownValue("glpi_dropdown_processor", "processor", $comp->fields["processor"]);
-		echo "</td></tr>";
-	
-		echo "<tr><td>".$lang["computers"][22].":	</td>";
-		echo "<td><input type='text' name='processor_speed' size='6' value=\"".$comp->fields["processor_speed"]."\">";
-		echo "</td></tr>";
-
-		echo "<tr><td>".$lang["computers"][35].":	</td>";
-		echo "<td>";
-			dropdownValue("glpi_dropdown_moboard", "moboard", $comp->fields["moboard"]);
-		echo "</td></tr>";
-
-		echo "<tr><td>".$lang["computers"][33].":	</td>";
-		echo "<td>";
-			dropdownValue("glpi_dropdown_sndcard", "sndcard", $comp->fields["sndcard"]);
-		echo "</td></tr>";
-		
-		echo "<tr><td>".$lang["computers"][34].":	</td>";
-		echo "<td>";
-			dropdownValue("glpi_dropdown_gfxcard", "gfxcard", $comp->fields["gfxcard"]);
-		echo "</td></tr>";
-				
-		echo "<tr><td>".$lang["computers"][23].":	</td>";
-		echo "<td>";
-			dropdownValue("glpi_dropdown_ram", "ramtype", $comp->fields["ramtype"]);
-		echo "</td></tr>";
-		
-		echo "<tr><td>".$lang["computers"][24].":	</td>";
-		echo "<td><input type='text' name='ram' value=\"".$comp->fields["ram"]."\" size='3'>";
-		echo "</td></tr>";
-
-		echo "<tr><td>".$lang["computers"][36].":	</td>";
-		echo "<td>";
-			dropdownValue("glpi_dropdown_hdtype", "hdtype", $comp->fields["hdtype"]);
-		echo "</td></tr>";
-
-		echo "<tr><td>".$lang["computers"][25].":	</td>";
-		echo "<td><input type='text' name='hdspace' size='6' value=\"".$comp->fields["hdspace"]."\">";
-		echo "</td></tr>";
-
-		echo "<tr><td>".$lang["computers"][26].":	</td>";
-		echo "<td>";
-			dropdownValue("glpi_dropdown_network", "network", $comp->fields["network"]);
-		echo "</td></tr>";
-		
-		echo "<tr><td>".$lang["computers"][41].":	</td>";
-		echo "<td><input type='text' name='achat_date' readonly size='10' value=\"".$comp->fields["achat_date"]."\">";
-		echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=achat_date&amp;value=".$comp->fields["achat_date"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].achat_date.value='0000-00-00'\" value='reset'>";
-    echo "</td></tr>";
-		
-		echo "<tr><td>".$lang["computers"][42].":	</td>";
-		echo "<td><input type='text' name='date_fin_garantie' readonly size='10' value=\"".$comp->fields["date_fin_garantie"]."\">";
-		echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date_fin_garantie&amp;value=".$comp->fields["date_fin_garantie"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date_fin_garantie.value='0000-00-00'\" value='reset'>";
-    echo "</td></tr>";
-		
-		echo "<tr><td>".$lang["computers"][43].":	</td>";
-		echo "<td>";
-		// Maintenance ?
-		if ($comp->fields["maintenance"] == 1) {
-			echo " OUI <input type='radio' name='maintenance' value='1' checked>";
-			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value='0'>";
-		} else {
-			echo " OUI <input type='radio' name='maintenance' value='1'>";
-			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value='0' checked >";
-		}
-		echo "</td></tr>";
-		
-		echo "<tr><td>".$lang["computers"][27].": </td><td>";
-		
-		// Is Server?
-		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
-		echo "<td>";
-		if (isset($comp->fields["flags_server"]))
-		{
-			if($comp->fields["flags_server"]  == 1)
-			{
-				echo "<input type='checkbox' name='flags_server' value='1' checked>";
-			}
-			else
-			{
-			echo "<input type='checkbox' name='flags_server' value='1'>";
-			}
-		}
-		else
-		{
-			echo "<input type='checkbox' name='flags_server' value='1'>";
-		}
-		echo "</td><td>".$lang["computers"][28]."</td>";
-		echo "</tr></table>";
-
-		echo "</td></tr>";
-
-
-		echo "</table>";
-
-		echo "</td>\n";	
-		echo "</tr><tr>";
-
-		if ($template) {
-			echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
-			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
-			//echo "</td></form>\n";
-                        	echo "</td>\n";
-		} else {
-			echo "<td class='tab_bg_2' align='center' valign='top'>\n";
-			echo "<input type='hidden' name='ID' value=$ID>";
-			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
-		//	echo "</td></form>\n";
-				echo "</td>\n";
-                        echo "<td class='tab_bg_2' align='center'>\n";
-		//	echo "<form method='post' action=\"$target\">";
-			echo "<input type='hidden' name='ID' value=$ID>";
-			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-			echo "";
-			echo "</td>";
-		}
-
-		echo "</tr>\n";
-		//echo "</table>\n";
-
-		//echo "</div>\n";
-
-		echo "</table></div></form>";
-		
-		return true;
-	} else {
-		echo "<div align='center'><b>".$lang["computers"][32]."</b></div>";
-		echo "<hr noshade>";
-		searchFormComputers();
-		return false;
-	}
-
-}
-*/
 
 function updateComputer($input) {
 	// Update a computer in the database
@@ -786,7 +553,7 @@ function deleteComputer($input) {
 	$comp->deleteFromDB($input["ID"],$input["template"]);
 } 	
 
-function showConnections($ID) {
+function showConnections($ID,$withtemplate='') {
 
 	GLOBAL $cfg_layout, $cfg_install, $lang;
 
@@ -800,7 +567,7 @@ function showConnections($ID) {
 
 	// Printers
 	echo "<td align='center'>";
-	$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='3'";
+	$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='".PRINTER_TYPE."'";
 	if ($result=$db->query($query)) {
 		$resultnum = $db->numrows($result);
 		if ($resultnum>0) {
@@ -814,7 +581,7 @@ function showConnections($ID) {
 				echo $printer->fields["name"]." (".$printer->fields["ID"].")";
 				echo "</b></a></td>";
 				
-				echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=3\"><b>";
+				echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=".PRINTER_TYPE."&withtemplate=".$withtemplate."\"><b>";
 				echo $lang["buttons"][10];
 				echo "</b></a></td>";
 				echo "</tr>";
@@ -823,7 +590,7 @@ function showConnections($ID) {
 		} else {
 			echo $lang["computers"][38]."<br>";
 		}
-		echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=printer\"><b>";
+		echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=printer&withtemplate=".$withtemplate."\"><b>";
 		echo $lang["buttons"][9];
 		echo "</b></a>";
 
@@ -832,7 +599,7 @@ function showConnections($ID) {
 
 	// Monitors
 	echo "<td align='center'>";
-	$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='4'";
+	$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='".MONITOR_TYPE."'";
 	if ($result=$db->query($query)) {
 		$resultnum = $db->numrows($result);
 		if ($resultnum>0) {
@@ -845,7 +612,7 @@ function showConnections($ID) {
 				echo "<td align='center'><a href=\"".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=$tID\"><b>";
 				echo $monitor->fields["name"]." (".$monitor->fields["ID"].")";
 				echo "</b></a></td>";
-				echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=4\"><b>";
+				echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=".MONITOR_TYPE."&withtemplate=".$withtemplate."\"><b>";
 				echo $lang["buttons"][10];
 				echo "</b></a></td>";
 
@@ -855,7 +622,7 @@ function showConnections($ID) {
 		} else {
 			echo $lang["computers"][37]."<br>";
 		}
-		echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=monitor\"><b>";
+		echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=monitor&withtemplate=".$withtemplate."\"><b>";
 		echo $lang["buttons"][9];
 		echo "</b></a>";
 
@@ -864,7 +631,7 @@ function showConnections($ID) {
 	
 	//Peripherals
 	echo "<td align='center'>";
-	$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='5'";
+	$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='".PERIPHERAL_TYPE."'";
 	if ($result=$db->query($query)) {
 		$resultnum = $db->numrows($result);
 		if ($resultnum>0) {
@@ -877,7 +644,7 @@ function showConnections($ID) {
 				echo "<td align='center'><a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=$tID\"><b>";
 				echo $periph->fields["name"]." (".$periph->fields["ID"].")";
 				echo "</b></a></td>";
-				echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=5\"><b>";
+				echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=".PERIPHERAL_TYPE."&withtemplate=".$withtemplate."\"><b>";
 				echo $lang["buttons"][10];
 				echo "</b></a></td>";
 
@@ -887,7 +654,7 @@ function showConnections($ID) {
 		} else {
 			echo $lang["computers"][47]."<br>";
 		}
-		echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=peripheral\"><b>";
+		echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=peripheral&withtemplate=".$withtemplate."\"><b>";
 		echo $lang["buttons"][9];
 		echo "</b></a>";
 

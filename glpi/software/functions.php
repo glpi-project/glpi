@@ -58,26 +58,7 @@ function searchFormSoftware($field="",$phrasetype= "",$contains="",$sort= "") {
 	$option["glpi_dropdown_locations.name"]			= $lang["software"][4];
 	$option["glpi_software.version"]			= $lang["software"][5];
 	$option["glpi_software.comments"]			= $lang["software"][6];
-/*
-	echo "<form method=get action=\"".$cfg_install["root"]."/software/software-search.php\">";
-	echo "<center><table border='0' width='90%'>";
-	echo "<tr><th colspan='2'><strong>".$lang["search"][5].":</strong></th></tr>";
-	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>";
-		dropdown( "dropdown_locations",  "contains");
-	echo "<input type='hidden' name=field value=location>&nbsp;";
-	echo $lang["search"][6];
-	echo "&nbsp;<select name=sort size=1>";
-	reset($option);
-	foreach ($option as $key => $val) {
-		echo "<option value=$key>$val\n";
-	}
-	echo "</select>";
-	echo "<input type='hidden' name=phrasetype value=exact>";
-	echo "</td><td width='80' align='center' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'>";
-	echo "</td></tr></table></form></center>";
- */
+
 	echo "<form method=get action=\"".$cfg_install["root"]."/software/software-search.php\">";
 	echo "<center><table class='tab_cadre' width='750'>";
 	echo "<tr><th colspan='2'><strong>".$lang["search"][0].":</strong></th></tr>";
@@ -858,14 +839,7 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 							echo "</a>";
 						echo "</strong></td>";
 						echo "</tr>";
-					} /*else {
-						echo "<tr class='tab_bg_1'>";
-						echo "<td><strong>$i</strong></td>";
-						echo "<td colspan='2' align='center'>";
-						echo "<strong>".$lang["software"][18]."</strong>";
-						echo "</td>";
-						echo "</tr>";
-					}*/
+					}
 					$i++;
 				} else {
 					echo "<tr class='tab_bg_1'>";
@@ -919,10 +893,9 @@ function uninstallSoftware($ID) {
 	}
 }
 
-function showSoftwareInstalled($instID) {
+function showSoftwareInstalled($instID,$withtemplate='') {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
-
         $db = new DB;
 	$query = "SELECT glpi_inst_software.license as license, glpi_inst_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_licenses WHERE glpi_inst_software.license = glpi_licenses.ID AND glpi_licenses.sID = glpi_software.ID AND (glpi_inst_software.cID = '$instID') order by glpi_software.name";
 	
@@ -975,7 +948,7 @@ function showSoftwareInstalled($instID) {
 			if ($data["oem"]=='Y') {
 			echo "<br><strong>";
 			if (isset($comp->fields['ID']))
-			echo "<a href='".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
+			echo "<a href='".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."&withtemplate=".$withtemplate."</a>";
 			else echo "N/A";
 			echo "<strong>";
 			} 
@@ -995,6 +968,7 @@ function showSoftwareInstalled($instID) {
 	}
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 	echo "<div class='software-instal'><input type='hidden' name='cID' value='$instID'>";
+	echo "<input type='hidden' name='withtemplate' value='".$withtemplate."'>";
 		dropdownSoftware();
 	echo "</div></td><td align='center' class='tab_bg_2'>";
 	echo "<input type='submit' name='select' value=\"".$lang["buttons"][4]."\" class='submit'>";

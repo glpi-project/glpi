@@ -49,18 +49,27 @@ include ($phproot . "/glpi/includes_reservation.php");
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
-
+if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
+//Add a new computer
 if (isset($tab["add"])) {
 	checkAuthentication("admin");
 	addComputer($tab);
 	logEvent(0, "computers", 4, "inventory", $_SESSION["glpiname"]." added ".$tab["name"].".");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
-} else if (isset($tab["delete"])) {
+}
+// delete a computer
+else if (isset($tab["delete"])) {
 	checkAuthentication("admin");
 	deleteComputer($tab);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
-	header("Location: ".$cfg_install["root"]."/computers/");
-} else if (isset($tab["update"])) {
+	if(!empty($withtemplate)) {
+		header("Location: ".$cfg_install["root"]."/setup/setup-templates/");
+	} else {
+		header("Location: ".$cfg_install["root"]."/computers/");
+	}
+}
+//update a computer
+else if (isset($tab["update"])) {
 	if(empty($tab["show"])) $tab["show"] = "";
 	if(empty($tab["contains"])) $tab["contains"] = "";
 	checkAuthentication("admin");
@@ -75,61 +84,67 @@ if (isset($tab["add"])) {
 	showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
 	commonFooter();
-} 
-else if (isset($tab["disconnect"]))
-{
+}
+//Disconnect a device 
+else if (isset($tab["disconnect"])) {
 	checkAuthentication("admin");
 	Disconnect($tab["eID"],$tab["device_type"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
-	header("Location: ".$_SERVER["PHP_SELF"]."?ID=".$tab["cID"]);
+	header("Location: ".$_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$withtemplate);
 }
-else if(isset($tab["connect"])&&isset($tab["device_type"]))
-{
-	if($tab["connect"]==1)
-	{
+//Connect a peripheral
+else if(isset($tab["connect"])&&isset($tab["device_type"])) {
+	if($tab["connect"]==1) {
 		checkAuthentication("admin");
 		commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
-		showConnectSearch($_SERVER["PHP_SELF"],$tab["ID"],$tab["device_type"]);
+		showConnectSearch($_SERVER["PHP_SELF"],$tab["ID"],$tab["device_type"],$tab["withtemplate"]);
 		commonFooter();
 	}	 
-	else if($tab["connect"]==2)
-	{
+	else if($tab["connect"]==2) {
 		checkAuthentication("admin");
 		commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
 		listConnectElement($_SERVER["PHP_SELF"],$tab);
 		commonFooter();
 	} 
-	else if($tab["connect"]==3)
-	{
+	else if($tab["connect"]==3) {
 		checkAuthentication("admin");
-		Connect($_SERVER["PHP_SELF"],$tab["ID"],$tab["cID"],$tab["device_type"]);
+		Connect($_SERVER["PHP_SELF"],$tab["ID"],$tab["cID"],$tab["device_type"],$tab["withtemplate"]);
 		logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
-		header("Location: ".$_SERVER["PHP_SELF"]."?ID=".$tab["cID"]);
+		header("Location: ".$_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
 	}
-}elseif(isset($_POST["update_device"])) {
+}
+//Update a device specification
+elseif(isset($_POST["update_device"])) {
 	checkAuthentication("admin");
 	update_device_specif($_POST["device_value"],$_POST["compDevID"]);
 	logEvent($_POST["compDevID"],"computers",4,"inventory",$_SESSION["glpiname"] ." modified a computer device spécificity.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
-}elseif(isset($_POST["new_device_type"])){
-	checkAuthentication("admin");
-	commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
-	compdevice_form_add($_SERVER["HTTP_REFERER"],$_POST["new_device_type"],$_POST["cID"]);
-	commonFooter();
-}elseif(isset($_POST["new_device_id"])){
-	checkAuthentication("admin");
-	compdevice_add($_POST["cID"],$_POST["device_type"],$_POST["new_device_id"]);
-	header("Location: ".$_SERVER["PHP_SELF"]."?ID=".$_POST["cID"]);
-}else {
+}
+//add a new device
+elseif (isset($_POST["connect_device"])) {
+	if(isset($_POST["new_device_type"])){
+		checkAuthentication("admin");
+		commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
+		compdevice_form_add($_SERVER["HTTP_REFERER"],$_POST["new_device_type"],$_POST["cID"],$tab["withtemplate"]);
+		commonFooter();
+	}elseif(isset($_POST["new_device_id"])){
+		checkAuthentication("admin");
+		compdevice_add($_POST["cID"],$_POST["device_type"],$_POST["new_device_id"]);
+		header("Location: ".$_SERVER["PHP_SELF"]."?ID=".$_POST["cID"]."&withtemplate=".$tab["withtemplate"]);
+	}
+}
+//print computer informations
+else {
 
 	checkAuthentication("normal");
 	commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
-	if (isset($tab["withtemplate"]))
-	{
+	//show computer form to add
+	if (!empty($tab["withtemplate"])) {
 		showComputerForm($_SERVER["PHP_SELF"],$tab["ID"]);
-	}
-	else
-	{
+		showConnections($tab["ID"],$tab["withtemplate"]);
+		showSoftwareInstalled($tab["ID"],$tab["withtemplate"]);
+		
+	} else {
 	if (isAdmin($_SESSION["glpitype"])&&isset($tab["delete_inter"])&&!empty($tab["todel"])){
 		$j=new Job;
 		foreach ($tab["todel"] as $key => $val){

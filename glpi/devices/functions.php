@@ -209,7 +209,7 @@ function update_device_specif($newValue,$compDevID) {
 }
 
 //print select form for device type
-function device_selecter($target,$cID) {
+function device_selecter($target,$cID,$withtemplate='') {
 	global $lang;
 	echo "<form action=\"$target\" method=\"post\">";
 	echo "<select name=\"new_device_type\">";
@@ -221,18 +221,19 @@ function device_selecter($target,$cID) {
 	echo "<option value=\"".RAM_DEVICE."\">".$lang["devices"][6]."</option>";
 	echo "<option value=\"".SND_DEVICE."\">".$lang["devices"][7]."</option>";
 	echo "</select>";
+	echo "<input type=\"hidden\" name=\"withtemplate\" value=\"".$withtemplate."\" >";
+	echo "<input type=\"hidden\" name=\"connect_device\" value=\"".true."\" >";
 	echo "<input type=\"hidden\" name=\"cID\" value=\"".$cID."\" >";
 	echo "<input type=\"submit\" class ='submit' value=\"".$lang["buttons"][2]."\" />";
 	echo "</form>";
 }
 
 //Print the form/tab to add a new device on a computer
-function compdevice_form_add($target,$device_type,$cID) {
+function compdevice_form_add($target,$device_type,$cID,$withtemplate='') {
 	global $lang;
 	$db = new DB;
 
 	$query = "SELECT `ID`, `designation` FROM `".getDeviceTable($device_type)."`";
-//	echo $query;
 	if($result = $db->query($query)) {
 		echo "<div align=\"center\">";
 		echo "<table class='tab_cadre'>";
@@ -250,6 +251,8 @@ function compdevice_form_add($target,$device_type,$cID) {
 			echo $line["ID"]."\" >".$line["designation"]."</option>"; 
 		}
 		echo "</select>";
+		echo "<input type=\"hidden\" name=\"withtemplate\" value=\"".$withtemplate."\" >";
+		echo "<input type=\"hidden\" name=\"connect_device\" value=\"".true."\" >";
 		echo "<input type=\"hidden\" name=\"device_type\" value=\"".$device_type."\" >";
 		echo "<input type=\"hidden\" name=\"cID\" value=\"".$cID."\" >";
 		echo "<input type=\"submit\" value=\"".$lang["buttons"][2]."\" />";

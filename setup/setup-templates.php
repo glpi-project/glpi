@@ -37,45 +37,11 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(!isset($tab["ID"])) $tab["ID"] = "";
 
-if(isset($tab["add"]))
-{
-	unset($tab["add"]);
-	checkAuthentication("admin");
-	addTemplate($tab);
-	logEvent(0,"Templates", 5, "setup", $_SESSION["glpiname"]." added template ".$tab["templname"].".");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-}
-elseif(isset($tab["delete"]))
-{
-	checkAuthentication("admin");
-	deleteTemplate($tab);
-	logEvent(0,"Templates", 5, "setup", $_SESSION["glpiname"]." deleted template ".$tab["ID"].".");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-}
-elseif(isset($tab["update"]))
-{
-	checkAuthentication("admin");
-	updateTemplate($tab);
-	logEvent(0,"Templates", 5, "setup", $_SESSION["glpiname"]." updated template ".$tab["ID"].".");
-	header("Location: ".$_SERVER["PHP_SELF"]);
-}
-elseif(isset($tab["showform"]))
-{
-	checkAuthentication("admin");
-	commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
-	showTemplateForm($_SERVER["PHP_SELF"],$tab["ID"]);
-	commonFooter();
-}
-else
-{
-	checkAuthentication("normal");
-	commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
-	listTemplates($_SERVER["PHP_SELF"]);
-	commonFooter();
-}
+checkAuthentication("normal");
+commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
+listTemplates($HTMLRel ."computers/computers-info-form.php");
+commonFooter();
+
 
 ?>
