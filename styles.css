@@ -185,6 +185,26 @@ margin-top: 100px;
 	text-decoration: none;
 	}
 
+/* ###### knowledge base / FAQ  ###### */
+
+
+#contenukb {
+/* a voir je suis pas bien sûr  */
+height: 100%;
+position: relative; /*ou absolute */
+left: 35%;
+width: 500px;
+margin-left: -150px;
+}
+
+
+#contenukb fieldset {
+background-color: #eeeeee;
+border: 2px solid #FFC65D;
+padding-bottom:10px;
+}	
+	
+	
 
   /* ###### liens ###### */
 
