@@ -378,6 +378,7 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</td></tr>";
 
 		echo "<tr><td></td><td><b>";
+		if (!$template)
 		showReservationForm(1,$ID);
 		echo "</b></td></tr>";
 		echo "</table>";

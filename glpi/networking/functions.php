@@ -309,6 +309,7 @@ function showNetworkingForm ($target,$ID) {
 	echo "</tr>";
 	
 	echo "<tr><td></td><td><b>";
+	if (!empty($ID))
 	showReservationForm(2,$ID);
 	echo "</b></td></tr>";
 	echo "</table>";

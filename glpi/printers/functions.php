@@ -293,6 +293,7 @@ function showPrintersForm ($target,$ID) {
 	echo "</tr>";
 	
 	echo "<tr><td></td><td><b>";
+	if (!empty($ID))
 	showReservationForm(3,$ID);
 	echo "</b></td></tr>";
 
