@@ -81,7 +81,7 @@ function checkAuthentication($authtype) {
 	$type = $db->result($result, 0, "type");	
 
 	// Check username and password
-	if (!IsSet($_SESSION["glpiname"])) {
+	if (!isset($_SESSION["glpiname"])) {
 		header("Vary: User-Agent");
 		nullHeader($lang["login"][3], $_SERVER["PHP_SELF"]);
 		echo "<center><b>".$lang["login"][0]."</b><br><br>";
@@ -227,7 +227,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	echo "<a href=\"".$cfg_install["root"]."/central.php\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\" border='0' alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>";
 	echo "</td>";
 
-	echo "<td valign=middle>";
+	echo "<td valign='middle'>";
 	
 	// New object from the configured base functions, we check some
 	// object-variables in this object: inventory, maintain, admin
@@ -270,7 +270,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	// On the right side of the navigation bar, we have a clock with
 	// date and a logout-link.
 
-	echo "<td align='right' width=100><div align='right'>";
+	echo "<td align='right' width='100'><div align='right'>";
 	echo date("H").":".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i><br><a href=\"".$cfg_install["root"]."/logout.php\"><img src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
 
@@ -342,7 +342,7 @@ function helpHeader($title,$url,$name) {
 	echo "<a href=\"".$cfg_install["root"]."/central.php\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" ></a>";
 	echo "</td>";
 
-	echo "<td valign=middle>";
+	echo "<td valign='middle'>";
 
 	echo "<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr>";
 
@@ -362,7 +362,7 @@ function helpHeader($title,$url,$name) {
 	echo "</td>";
 	// On the right side of the navigation bar, we have a clock with
 	// date and a logout-link.
-	echo "<td align='right' width=100><div align='right'>";
+	echo "<td align='right' width='100'><div align='right'>";
 	echo date("H").":".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i><br><a href=\"".$cfg_install["root"]."/logout.php\"><img src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
 
@@ -432,7 +432,7 @@ function nullHeader($title,$url) {
 	echo "<a href=\"".$cfg_install["root"]."/central.php\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\" border='0' alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" vspace=10></a>\n";
 	echo "</td>";
 
-	echo "<td valign=middle>";
+	echo "<td valign='middle'>";
 
 	echo "<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr>";
 
@@ -440,7 +440,7 @@ function nullHeader($title,$url) {
 
 	// On the right side of the navigation bar, we have a clock with
 	// date and a logout-link.
-	echo "<td align='right' width=100><div align='right'>";
+	echo "<td align='right' width='100'><div align='right'>";
 	echo date("H").":".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i><br><a href=\"".$cfg_install["root"]."/logout.php\"><img src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
 
@@ -693,7 +693,7 @@ function showConnect($target,$ID,$type) {
 		$connect->type=$type;
 		$computer = $connect->getComputerContact($ID);
 
-		echo "<br><center><table width=50%><tr><th colspan='2'>";
+		echo "<br><center><table width='50%'><tr><th colspan='2'>";
 		echo $lang["connect"][0].":";
 		echo "</th></tr>";
 
@@ -752,8 +752,8 @@ function showConnectSearch($target,$ID) {
 	echo "<option value=id>".$lang["connect"][7]."</option>";
 	echo "</select> ";
 	echo $lang["connect"][8]." <input type='text' size=10 name=comp>";
-	echo "<input type='hidden' name=pID1 value=$ID>";
-	echo "<input type='hidden' name=connect value=2>";
+	echo "<input type='hidden' name='pID1' value=$ID>";
+	echo "<input type='hidden' name='connect' value='2'>";
 	echo "</td><td class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][11]."\" class='submit'>";
 	echo "</td></tr>";	
@@ -833,7 +833,7 @@ function printHelpDesk ($name) {
 	{
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$lang["help"][8].":</td>";
-		echo "<td>	<select name=emailupdates>";
+		echo "<td>	<select name='emailupdates'>";
 		echo "<option value='no selected'>".$lang["help"][9]."";
 		echo "<option value='yes'>".$lang["help"][10]."";
 		echo "</select>";
@@ -949,7 +949,7 @@ switch($item_type)
 		case 'computers' :
 		
 		
-		echo " <b></strong>".$lang["reports"][5]."</strong></b>";
+		echo " <strong>".$lang["reports"][5]."</strong>";
 		echo "<table width='100%' height='60' border='0' bordercolor='black'>";
 		echo "<tr>";
 		echo "<th><div align='center'><b>".$lang["computers"][7]."</b></div></th>";
