@@ -46,7 +46,7 @@ checkAuthentication("normal");
 
 commonHeader("Tracking",$_SERVER["PHP_SELF"]);
 $error = "";
-if (isset($_GET["priority"]) && empty($_GET["contents"])))
+if (isset($_GET["priority"]) && empty($_GET["contents"]))
 {
 	$error="No Description, please try again.";
 }
