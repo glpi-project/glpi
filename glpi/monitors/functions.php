@@ -416,7 +416,7 @@ function updateMonitor($input) {
 	for ($i=0; $i < count($mon->fields); $i++) {
 		list($key,$val) = each($mon->fields);
 		if (eregi("\.*flag\.*",$key)) {
-			if (!$input[$key]) {
+			if (!isset($input[$key])) {
 				$input[$key]=0;
 			}
 		}
