@@ -79,7 +79,7 @@ function getEmpty () {
 			$query .= $this->fields["ID"];	
 			$query .= "'";
 			$result=$db->query($query);
-		echo $query;
+		
 			
 		}
 		

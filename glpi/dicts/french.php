@@ -900,5 +900,5 @@ $lang["knowbase"][8] ="Modifier cet item ";
 $lang["knowbase"][9] ="Supprimer cet item ";
 $lang["knowbase"][10] ="Cet item fait partie de la FAQ publique ";
 $lang["knowbase"][11] ="Cet item ne fait pas partie de la FAQ publique  ";
-
+$lang["knowbase"][12] ="Racine  ";
 ?>

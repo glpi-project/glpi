@@ -117,7 +117,7 @@ else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
 	
 	} else {
 	
-	faqShowCategories();
+	faqShowCategoriesall();
 	}
 }
 //*******************
