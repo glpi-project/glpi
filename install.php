@@ -30,6 +30,12 @@ This file is part of GLPI.
  ----------------------------------------------------------------------
  */
 
+// Ce script génère ses propres messages d'erreur 
+// Pas besoin des warnings de PHP
+error_reporting(0);
+
+
+
 //Print a correct  Html header for application
 function header_html($etape)
 {
@@ -58,18 +64,23 @@ function header_html($etape)
         background-color: #ffffff;
         font-family: Verdana;font-size:12px;
         text-align: justify ; 
-        border: 1px solid #FFC65D;
+        -moz-border-radius: 4px;
+	border: 1px solid #FFC65D;
          margin: 40px; 
          padding: 40px 40px 10px 40px;
        }
 
        table {
+       text-align:center;
        border: 0;
        margin: 20px;
        margin-left: auto;
        margin-right: auto;
        width: 90%;}
 
+       .red { color:red;}
+       .green {color:green;}
+       
        h2 {
         color:#FFC65D;
         text-align:center;}
@@ -118,8 +129,8 @@ function step0()
 {
 echo "<h3>Vous allez installer GLPI, voulez vous continuer ?</h3>";
 echo "<form action=\"install.php\" method=\"post\">";
-echo "<input type=\"hidden\" name=\"install\" value=\"Etape_0\" />";
-echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
+echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_0\" />";
+echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
 echo "</form>";
 }
 
@@ -129,7 +140,7 @@ function step1()
 	$error = 0;
 	echo "Nous allons procéder à des tests afin de vérifier que votre environnement est bien compatible avec l'éxecution de GLPI<br /><br />";
 	echo "<table>";
-	echo "<tr><th>Test effectué</th><th colspan='2'>Résultats</th></tr>";
+	echo "<tr><th>Test effectué</th><th >Résultats</th></tr>";
 // Parser test
 	echo "<tr><td><h4>Test du Parser PHP</h4></td>";
 // PHP Version  - exclude PHP3
@@ -176,7 +187,7 @@ function step1()
 	
 	$fp = fopen("backups/dump/test_glpi.txt",'w');
 	if (empty($fp)) {
-		echo "<td>Le fichier n'a pas pu être créé. Vérifiez que PHP a un droit d'écriture pour les répertoires... Si vous êtes sous un environnement de Microsoft Windows, regardez si c'est en lecture seule.</td></tr>";
+		echo "<td><p class='red'>Le fichier n'a pas pu être créé.</p> Vérifiez que PHP a un droit d'écriture pour le répertoire 'backups/dump/' Si vous êtes sous un environnement de Microsoft Windows, regardez si c'est en lecture seule.</td></tr>";
 		$error = 2;
 	}
 	else {
@@ -192,10 +203,10 @@ function step1()
 
 		}
 	}
-	echo "<tr><td><h4>Test d'ecriture de fichiers Excel</h4></td>";
+	echo "<tr><td><h4>Test d'écriture de fichiers temporaires</h4></td>";
 		$fp = fopen("reports/reports/convexcel/tmp/test_glpi.txt",'w');
 	if (empty($fp)) {
-		echo "<td>Le fichier n'a pas pu être créé. Vérifiez que PHP a un droit d'écriture pour les répertoires... Si vous êtes sous un environnement de Microsoft Windows, regardez si c'est en lecture seule.</td></tr>";
+		echo "<td><p class='red'>Le fichier n'a pas pu être créé.</p> Vérifiez que PHP a un droit d'écriture pour le répertoire : 'reports/reports/convexcel/tmp/' Si vous êtes sous un environnement de Microsoft Windows, regardez si c'est en lecture seule.</td></tr>";
 		$error = 2;
 	}
 	else {
@@ -210,10 +221,10 @@ function step1()
 			echo "<td>Le fichier a été créé et supprimé - Parfait !</td></tr>";
 		}
 	}
-	echo "<tr><td><h4>Test d'ecriture de fichier configuration</h4></td>";
+	echo "<tr><td><h4>Test d'écriture de fichier configuration</h4></td>";
 	$fp = fopen("glpi/config/test_glpi.txt",'w');
 	if (empty($fp)) {
-		echo "<td>Le fichier n'a pas pu être créé. Vérifiez que PHP a un droit d'écriture pour les répertoires... Si vous êtes sous un environnement de Microsoft Windows, regardez si c'est en lecture seule.</td></tr>";
+		echo "<td><p class='red'>Le fichier n'a pas pu être créé.</p> Vérifiez que PHP a un droit d'écriture pour le répertoire : 'glpi/config/' Si vous êtes sous un environnement de Microsoft Windows, regardez si c'est en lecture seule.</td></tr>";
 		$error = 2;
 	}
 	else {
@@ -233,26 +244,26 @@ function step1()
 		case 0 :       
         	echo "<h3>Continuer ?</h3>";
 		echo "<form action=\"install.php\" method=\"post\">";
-		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_1\" />";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
+		echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_1\" />";
+		echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
 		echo "</form>";
 		break;
 		case 1 :       
         	echo "<h3>Continuer ?</h3>";
 		echo "<form action=\"install.php\" method=\"post\">";
-		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_1\" />";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
+		echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_1\" />";
+		echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
 		echo "</form> &nbsp;&nbsp;";
 		echo "<form action=\"install.php\" method=\"post\">";
-		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_0\" />";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Re-essayer\" /></p>";
+		echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_0\" />";
+		echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Re-essayer\" /></p>";
 		echo "</form>";
 		break;
 		case 2 :       
         	echo "<h3>Continuer ?</h3>";
 		echo "<form action=\"install.php\" method=\"post\">";
-		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_0\" />";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Re-essayer\" /></p>";
+		echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_0\" />";
+		echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Re-essayer\" /></p>";
 		echo "</form>";
 		break;
 	}
@@ -344,7 +355,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		include ("_relpos.php");
 		include ($phproot . "/glpi/includes.php");
 		$db = new DB;
-		$db_file = $phproot ."/mysql/glpi-0.3-default.sql";
+		$db_file = $phproot ."/mysql/glpidb-0.4-default.sql";
 		$dbf_handle = fopen($db_file, "rt");
 		$sql_query = fread($dbf_handle, filesize($db_file));
 		fclose($dbf_handle);
