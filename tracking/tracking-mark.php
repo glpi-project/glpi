@@ -39,20 +39,16 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_tracking.php");
+include ($phproot . "/glpi/includes_setup.php");
 
 checkAuthentication("admin");
 
 if (!$status) {
-	$status = "OLD";
+	$status = "old";
 }
 
 markJob ($ID,$status);
 
-// Notify about marking
-if ($cfg_features["job_email"]) {
-	$signature = $cfg_layout["signature"];
-	mail($cfg_features["job_email"], "glpi: Job $ID has been marked old", "Tracking Job $ID has been closed and marked old by $IRMName.\n\n-- \n".$signature."", "From: glpi <glpi>\nReply-To: ".$cfg_features["job_email"]."");			
-}
 
 header("Location: $HTTP_REFERER");
 
