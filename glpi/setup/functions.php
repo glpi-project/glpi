@@ -584,7 +584,7 @@ function listTemplates($target) {
 			
 			echo "<tr>";
 			echo "<td align='center' class='tab_bg_1'>";
-			echo "<a href=\"$target?ID=$ID&showform=showform\">$templname</a></td>";
+			echo "<a href=\"$target?ID=$ID&showform=showform\">&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
 			echo "<td align='center' class='tab_bg_2'>";
 			echo "<b><a href=\"$target?ID=$ID&delete=delete\">".$lang["buttons"][6]."</a></b></td>";
 			echo "</tr>";		
@@ -618,7 +618,6 @@ function showTemplateForm($target,$ID) {
 		$templ->getEmpty();
 	}
 	
-
 	echo "<div align='center'><table class='tab_cadre'>";
 	echo "<form name='form' method='post' action=$target>";
 	echo "<tr><th colspan='2'>";
