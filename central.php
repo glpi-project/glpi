@@ -62,7 +62,7 @@ else
 {
 	showEvents($_SERVER["PHP_SELF"],"","");
 }
-if ($cfg_features["jobs_at_login"]==1)
+if ($_SESSION["tracking_order"] == "yes")
 {
 	if(empty($_GET["start"])) $_GET["start"] = 0;
 	showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"individual","","",$_GET["start"]);

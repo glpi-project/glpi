@@ -61,8 +61,8 @@ if (isset($_POST["changepw"])) {
         echo "</td></tr></table></div>";
 
 	showPasswordForm($_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
-	showSortForm($_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
-	showLangSelect($_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	showSortForm($_SERVER["PHP_SELF"]);
+	showLangSelect($_SERVER["PHP_SELF"]);
 	commonFooter();
 }
 

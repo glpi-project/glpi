@@ -1086,16 +1086,11 @@ function deleteTemplate($input) {
 	
 } 	
 
-function showSortForm($target,$ID) {
+function showSortForm($target) {
 
 	GLOBAL $cfg_layout, $lang;
 	
-	$db = new DB;
-	$query = "SELECT tracking_order FROM glpi_prefs WHERE (user = '$ID')";
-	$result=$db->query($query);
-	if ($db->numrows($result)>0)
-	$order=$db->result($result,0,"tracking_order");
-	else $order="yes";
+	$order = $_SESSION["tracking_order"];
 	
 	echo "<div align='center'>&nbsp;<table class='tab_cadre' cellpadding='5' width='30%'>";
 	echo "<form method='post' action=\"$target\">";
@@ -1104,14 +1099,13 @@ function showSortForm($target,$ID) {
 	echo "<select name='tracking_order'>";
 	echo "<option value=\"yes\"";
 	if ($order=="yes") { echo " selected"; }	
-	echo ">".$lang["choice"][1];
-	echo "<option value=\"no\"";
-	if ($order=="no") { echo " selected"; }	
 	echo ">".$lang["choice"][0];
+	echo "<option value=\"no\"";
+	if ($order=="no") { echo " selected"; }
+	echo ">".$lang["choice"][1];
 	echo "</select>";
 	echo "</td>";
 	echo "<td align='center' class='tab_bg_2'>";
-	echo "<input type='hidden' name='user' value=\"$ID\">";
 	echo "<input type='submit' name='updatesort' value=\"".$lang["buttons"][14]."\" class='submit'>";
 	echo "</td></tr>";
 	echo "</form>";
@@ -1121,24 +1115,21 @@ function showSortForm($target,$ID) {
 function updateSort($input) {
 
 	$db = new DB;
-	$query = "UPDATE glpi_prefs SET tracking_order = '".$input["tracking_order"]."' WHERE (user = '".$input["user"]."')";
+	//print_r($input);
+	$query = "UPDATE glpi_prefs SET tracking_order = '".$input["tracking_order"]."' WHERE (user = '".$_SESSION["glpiname"]."')";
 	if ($result=$db->query($query)) {
+		$_SESSION["tracking_order"] = $input["tracking_order"];
 		return true;
 	} else {
 		return false;
 	}
 }
 
-function showLangSelect($target,$ID) {
+function showLangSelect($target) {
 
 	GLOBAL $cfg_layout, $cfg_install, $lang;
 	
-	$db = new DB;
-	$query = "SELECT language FROM glpi_prefs WHERE (user = '$ID')";
-	$result=$db->query($query);
-	if ($db->numrows($result)>0)
-	$l=$db->result($result,0,"language");
-	else $l="english";
+	$l = $_SESSION["glpilanguage"]; 
 	
 	echo "<form method='post' action=\"$target\">";
 	echo "<div align='center'>&nbsp;<table class='tab_cadre' cellpadding='5' width='30%'>";
@@ -1157,7 +1148,6 @@ function showLangSelect($target,$ID) {
 	echo "</select>";
 	echo "</td>";
 	echo "<td align='center' class='tab_bg_2'>";
-	echo "<input type='hidden' name='user' value=\"$ID\">";
 	echo "<input type='submit' name='changelang' value=\"".$lang["buttons"][14]."\" class='submit'>";
 	echo "</td></tr>";
 	echo "</table></div>";
@@ -1167,7 +1157,7 @@ function showLangSelect($target,$ID) {
 function updateLanguage($input) {
 
 	$db = new DB;
-	$query = "UPDATE glpi_prefs SET language = '".$input["language"]."' WHERE (user = '".$input["user"]."')";
+	$query = "UPDATE glpi_prefs SET language = '".$input["language"]."' WHERE (user = '".$_SESSION["glpiname"]."')";
 	if ($result=$db->query($query)) {
 		$_SESSION["glpilanguage"] = $input["language"];
 		return true;
