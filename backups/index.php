@@ -460,7 +460,17 @@ if (!isset($_GET["fichier"])) {
 if(isset($offsettable))
 $percent=min(100,round(110*$offsettable/33,0));
 else $percent=0;
-echo "<center>".$percent."%</center>";
+//echo "<center>".$percent."%";
+
+if ($percent > 0) {
+ 
+ $percentwitdh=$percent*4;
+
+	echo "<div align='center'><table class='tab_cadre' width='400'><tr><td width='400' align='center'> Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>";
+
+
+}
+
 
 //echo "Sauvegarde de la BDD dans le $fichier.<br>Traitement en cours... ";
 //if ($duree>0) echo "Durée limite de $duree s.<br>";
@@ -478,7 +488,7 @@ if (backupMySql($db,$fichier,$duree,$rowlimit))
     echo "<script>window.location=\"index.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\";</script>";
     }
     else
-     echo "<br>Terminé. Nombre de requêtes totales traitées : $cpt<br>";
+     echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt</p></div>";
 
 }
 }	
@@ -515,9 +525,16 @@ $fsize=filesize($path.$_GET["file"]);
 if(isset($offset))
 $percent=min(100,round(110*$offset/$fsize,0));
 else $percent=0;
-echo "<center>".$percent."%</center>";
+//echo "<center>".$percent."%";
+
+if ($percent > 0) {
+      	
+$percentwitdh=$percent*4;
+
+	echo "<div align='center'><table class='tab_cadre' width='400'><tr><td width='400' align='center'> Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>";
 
 
+}
 //echo "Restauration de $path$file.<br>Traitement en cours... ";
 //if ($duree>0) echo "timeout de $duree s.<br>";
 //if (isset($cpt))
@@ -536,7 +553,7 @@ if (restoreMySqlDump($db,$path.$_GET["file"],$duree))
     echo "<script>window.location=\"index.php?file=".$_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt\";</script>";
     }
     else
-     echo "<br>Terminé. Nombre de requêtes totales traitées : $cpt<br>";
+     echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt<p></div>";
 
 }
 
@@ -565,6 +582,7 @@ if (isset($_GET["delfile"]) && $_GET["delfile"] != ""){
  <table border='0'><tr><td><b><img src="<?php echo $HTMLRel; ?>pics/sauvegardes.png" ></td>
  <td><a href="javascript:dump('<?php echo $lang["backup"][19];?>')" class='icon_consol'><b><?php echo $lang["backup"][0]; ?></b></a></td><td><a href="javascript:xmlnow('<?php echo $lang["backup"][19]; ?>')" class='icon_consol'><b><?php echo $lang["backup"][1]; ?></b></a></td></tr>
 </table>
+
 <br>
   <table border="0" cellpadding="5">
     <tr align="center"> 
