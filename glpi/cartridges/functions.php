@@ -152,7 +152,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 	$query = "SELECT glpi_cartridges_type.*, glpi_enterprises.name FROM glpi_cartridges_type ";
 	$query.= " LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_cartridges_type.FK_glpi_enterprise ";
 	$query.= " LEFT JOIN glpi_dropdown_locations ON glpi_dropdown_locations.ID = glpi_cartridges_type.location ";
-	$query.= " WHERE $where AND glpi_cartridges_type.deleted='$deleted'  ORDER BY $sort";
+	$query.= " WHERE $where AND glpi_cartridges_type.deleted='$deleted'  ORDER BY $sort $order";
 //	echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
@@ -160,10 +160,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 
 		// Limit the result, if no limit applies, use prior result
 		if ($numrows>$cfg_features["list_limit"]) {
-			$query_limit = "SELECT glpi_cartridges_type.ID as ID FROM glpi_cartridges_type ";
-			$query_limit .= " LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_cartridges_type.FK_glpi_enterprise ";
-			$query_limit .= " LEFT JOIN glpi_dropdown_locations ON glpi_dropdown_locations.ID = glpi_cartridges_type.location ";
-			$query_limit .= " WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
+			$query_limit = $query." LIMIT $start,".$cfg_features["list_limit"]." ";
 			$result_limit = $db->query($query_limit);
 			$numrows_limit = $db->numrows($result_limit);
 		} else {

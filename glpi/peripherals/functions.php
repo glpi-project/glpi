@@ -61,6 +61,7 @@ function searchFormperipheral($field="",$phrasetype= "",$contains="",$sort= "") 
 	$option["periph.contact"]			= $lang["peripherals"][8];
 	$option["periph.contact_num"]		= $lang["peripherals"][7];
 	$option["periph.date_mod"]			= $lang["peripherals"][16];
+	$option["glpi_enterprises.name"]			= $lang["common"][5];
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/peripherals/peripherals-search.php\">";
 	echo "<div align='center'><table  width='750' class='tab_cadre'>";
@@ -139,6 +140,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
    				$where .= "periph.".$coco . " LIKE '%".$contains."%'";
 			}
 		}
+		$where.=" OR glpi_enterprises.name LIKE '%".$contains."%'";
 		$where .= ")";
 	}
 	else {
@@ -158,6 +160,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 	}
 	$query = "select periph.ID from glpi_peripherals as periph LEFT JOIN glpi_dropdown_locations on periph.location=glpi_dropdown_locations.ID ";
 	$query .= "LEFT JOIN glpi_type_peripherals on periph.type = glpi_type_peripherals.ID ";
+	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = periph.FK_glpi_enterprise ) ";
 	$query .= "where $where ORDER BY $sort $order";
 
 	// Get it from database	
@@ -186,6 +189,14 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.name&order=ASC&start=$start\">";
 			echo $lang["peripherals"][5]."</a></th>";
 
+			// Manufacturer		
+			echo "<th>";
+			if ($sort=="glpi_enterprises.name") {
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.name&order=ASC&start=$start\">";
+			echo $lang["common"][5]."</a></th>";
+			
 			// Location			
 			echo "<th>";
 			if ($sort=="glpi_dropdown_locations.name") {
@@ -229,6 +240,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 				echo "<a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=$ID\">";
 				echo $mon->fields["name"]." (".$mon->fields["ID"].")";
 				echo "</a></b></td>";
+				echo "<td>". getDropdownName("glpi_enterprises",$mon->fields["FK_glpi_enterprise"]) ."</td>";
 				echo "<td>". getDropdownName("glpi_dropdown_locations",$mon->fields["location"]) ."</td>";
 				echo "<td>". getDropdownName("glpi_type_peripherals",$mon->fields["type"]) ."</td>";
 				echo "<td>".$mon->fields["date_mod"]."</td>";
@@ -304,6 +316,10 @@ function showperipheralForm ($target,$ID) {
 
 	echo "<tr><td>".$lang["peripherals"][9].": 	</td><td>";
 		dropdownValue("glpi_type_peripherals", "type", $mon->fields["type"]);
+	echo "</td></tr>";
+	
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>";
+		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$mon->fields["FK_glpi_enterprise"]);
 	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["peripherals"][18].":</td>";

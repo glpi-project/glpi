@@ -146,7 +146,7 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 	
 	$query = "SELECT glpi_contracts.ID as ID FROM glpi_contracts ";
 	
-	$query.= " WHERE $where AND deleted='$deleted'  ORDER BY $sort";
+	$query.= " WHERE $where AND deleted='$deleted'  ORDER BY $sort $order";
 //	echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
@@ -154,7 +154,7 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 		// Limit the result, if no limit applies, use prior result
 		if ($numrows>$cfg_features["list_limit"]) {
-			$query_limit = "SELECT glpi_contracts.ID as ID FROM glpi_contracts WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
+			$query_limit = $query." LIMIT $start,".$cfg_features["list_limit"]." ";
 			$result_limit = $db->query($query_limit);
 			$numrows_limit = $db->numrows($result_limit);
 		} else {
@@ -558,7 +558,7 @@ function showEnterpriseContract($instID) {
 			$website="<a target=_blank href='$website'>".$db->result($result, $i, "website")."</a>";
 		}
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'><a href='".$HTMLRel."enterprises/enterprises-info-form.php?ID=$ID'>".$db->result($result, $i, "name")."</a></td>";
+	echo "<td align='center'>".getDropdownName("glpi_enterprises",$db->result($result, $i, "entID"))."</td>";
 	echo "<td align='center'>".getDropdownName("glpi_dropdown_enttype",$db->result($result, $i, "type"))."</td>";
 	echo "<td align='center'>".$db->result($result, $i, "phone")."</td>";
 	echo "<td align='center'>".$website."</td>";
@@ -722,7 +722,7 @@ function getContractEnterprises($ID){
 	$result = $db->query($query);
 	$out="";
 	while ($data=$db->fetch_array($result)){
-		$out.="<a href='".$HTMLRel."enterprises/enterprises-info-form.php?ID=".$data["ID"]."'>".$data["name"]."</a><br>";
+		$out.= getDropdownName("glpi_enterprises",$data['ID'])."<br>";
 		
 	}
 	return $out;

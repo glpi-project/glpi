@@ -899,7 +899,7 @@ function dropdownValue($table,$myname,$value) {
 	echo "</select>";
 	
 	if ($table=="glpi_enterprises")	{
-	showEnterpriseLinks($value);
+	echo getEnterpriseLinks($value);
 	}
 
 	}
@@ -1039,7 +1039,7 @@ function dropdownUsers($value, $myname) {
 
 
 function getDropdownName($table,$id) {
-	
+	global $cfg_install;
 	$db = new DB;
 	$name = "";
 	$query = "select * from ". $table ." where ID = '". $id ."'";
@@ -1052,6 +1052,10 @@ function getDropdownName($table,$id) {
 		$name = $db->result($result,0,"name");
 		if ($table=="glpi_dropdown_netpoint")
 			$name .= " (".getDropdownName("glpi_dropdown_locations",$db->result($result,0,"location")).")";
+		}
+		if ($table=="glpi_enterprises"){
+			$name.=getEnterpriseLinks($id);
+			
 		}
 	}
 	return $name;

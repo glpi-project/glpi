@@ -58,6 +58,7 @@ function searchFormSoftware($field="",$phrasetype= "",$contains="",$sort= "") {
 	$option["glpi_dropdown_locations.name"]			= $lang["software"][4];
 	$option["glpi_software.version"]			= $lang["software"][5];
 	$option["glpi_software.comments"]			= $lang["software"][6];
+	$option["glpi_enterprises.name"]			= $lang["common"][5];
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/software/software-search.php\">";
 	echo "<center><table class='tab_cadre' width='750'>";
@@ -139,6 +140,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
    				$where .= "glpi_software.".$coco . " LIKE '%".$contains."%'";
 			}
 		}
+		$where.=" OR glpi_enterprises.name LIKE '%".$contains."%'";
 		$where .= ")";
 	}
 	else {
@@ -161,8 +163,8 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 	$query = "SELECT glpi_software.ID as ID FROM glpi_software ";
 	$query .= "LEFT JOIN glpi_dropdown_os on glpi_software.platform=glpi_dropdown_os.ID ";
 	$query.= " LEFT JOIN glpi_dropdown_locations on glpi_software.location=glpi_dropdown_locations.ID ";
-	
-	$query.= " WHERE $where ORDER BY $sort";
+	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = glpi_software.FK_glpi_enterprise ) ";
+	$query.= " WHERE $where ORDER BY $sort $order";
 //	echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
@@ -170,10 +172,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 		// Limit the result, if no limit applies, use prior result
 		if ($numrows>$cfg_features["list_limit"]) {
-			$query_limit = "SELECT * FROM glpi_software ";
-			$query_limit.= "LEFT JOIN glpi_dropdown_os on glpi_software.platform=glpi_dropdown_os.ID ";
-			$query_limit.= "LEFT JOIN glpi_dropdown_locations on glpi_software.location=glpi_dropdown_locations.ID ";
-			$query_limit.= "WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
+			$query_limit = $query." LIMIT $start,".$cfg_features["list_limit"]." ";
 
 			$result_limit = $db->query($query_limit);
 			$numrows_limit = $db->numrows($result_limit);
@@ -194,6 +193,15 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_software.name&order=ASC&start=$start\">";
 			echo $lang["software"][2]."</a></th>";
 
+			
+			// Manufacturer		
+			echo "<th>";
+			if ($sort=="glpi_enterprises.name") {
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.name&order=ASC&start=$start\">";
+			echo $lang["common"][5]."</a></th>";
+			
 			// Version			
 			echo "<th>";
 			if ($sort=="glpi_software.version") {
@@ -226,6 +234,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "<a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=$ID\">";
 				echo $sw->fields["name"]." (".$sw->fields["ID"].")";
 				echo "</a></strong></td>";
+				echo "<td>". getDropdownName("glpi_enterprises",$sw->fields["FK_glpi_enterprise"]) ."</td>";
 				echo "<td width='5%' align='center'>".$sw->fields["version"]."</td>";
 				echo "<td align='center'>". getDropdownName("glpi_dropdown_os",$sw->fields["platform"]) ."</td>";
 				echo "<td>";
@@ -278,6 +287,9 @@ function showSoftwareForm ($target,$ID,$search_software="") {
 		dropdownValue("glpi_dropdown_locations", "location", $sw->fields["location"]);
 	echo "</td></tr>";
 
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>";
+		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$sw->fields["FK_glpi_enterprise"]);
+	echo "</td></tr>";
 	
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][3].": 	</td><td colspan='2'>";
 		dropdownValue("glpi_dropdown_os", "platform", $sw->fields["platform"]);
