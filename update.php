@@ -1761,7 +1761,7 @@ $db->query($query) or die("Error creating table typedoc ".$query." ".mysql_error
 
 
 
-$query = "INSERT INTO glpi_type_docs (ID, title, ext, icon, mime, upload, date_mod) VALUES  (1, 'JPEG', 'jpg', 'jpg-dist.png', '', 'Y', '2004-12-13 19:47:21'),
+$query = "INSERT INTO glpi_type_docs (ID, name, ext, icon, mime, upload, date_mod) VALUES  (1, 'JPEG', 'jpg', 'jpg-dist.png', '', 'Y', '2004-12-13 19:47:21'),
  (2, 'PNG', 'png', 'png-dist.png', '', 'Y', '2004-12-13 19:47:21'),
  (3, 'GIF', 'gif', 'gif-dist.png', '', 'Y', '2004-12-13 19:47:21'),
  (4, 'BMP', 'bmp', 'bmp-dist.png', '', 'Y', '2004-12-13 19:47:21'),
