@@ -43,10 +43,10 @@ checkAuthentication("normal");
 commonHeader("Stats",$_SERVER["PHP_SELF"]);
 
 
-echo "<center><b>".$lang["stats"][12]."</b></center><hr noshade>";
+echo "<div align ='center'><b>".$lang["stats"][12]."</b></div><hr noshade>";
 //affichage du tableau
 //table displaying
-echo "<center><table border='0' cellpadding=5>";
+echo "<div align ='center'><table border='0' cellpadding=5>";
 echo "<tr><th colspan=\"1\"></th><th>".$lang["stats"][8]."</th><th>".$lang["stats"][9]."</th><th>".$lang["stats"][10]."</th></tr>";
 echo "<tr class='tab_bg_1'>";
 //Nombre d'interventions
@@ -81,6 +81,7 @@ echo "<td>".getResolMax(2)."</td>";
 echo "<td>".getResolMax(1)."</td>";
 echo "</tr>";
 echo "</table>";
+echo "</div>";
 
 commonFooter();
 ?>

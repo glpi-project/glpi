@@ -43,10 +43,10 @@ checkAuthentication("normal");
 
 commonHeader("Stats",$_SERVER["PHP_SELF"]);
 
-echo "<center><b>".$lang["stats"][18]."</b></center><hr noshade>";
+echo "<div align ='center'><b>".$lang["stats"][18]."</b></div><hr noshade>";
 //affichage du tableau
 //table display
-echo "<center><table border='0' cellpadding=5>";
+echo "<div align ='center'><table border='0' cellpadding=5>";
 echo "<tr><th>".$lang["stats"][20]."</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th></tr>";
 
 //On recupere les differents auteurs d'interventions
@@ -72,5 +72,6 @@ foreach($nomUsr as $key)
 	echo "</tr>";
 }
 echo "</table>";
+echo "</div>";
 commonFooter();
 ?>
