@@ -386,10 +386,11 @@ function showJobShort($ID, $followups	) {
 		echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$job->computer\"><b>$job->computername ($job->computer)</b></a></td>";
 		else
 		echo "<td  align='center'><b>$job->computername($job->computer)</b></td>";
-
-		$stripped_content = substr($job->contents,0,$cfg_features["cut"]);
+		
+		$stripped_content=$job->contents;
+		if (!$followups) $stripped_content = substr($job->contents,0,$cfg_features["cut"]);
 		echo "<td><b>$stripped_content</b>";
-		if ($followups==1)
+		if ($followups)
 		{
 			showFollowupsShort($job->ID);
 		}
@@ -415,7 +416,7 @@ function showJobShort($ID, $followups	) {
 	}
 	else
 	{
-    		echo "<tr class='tab_bg_2'><td colspan=6><i>".$lang["joblist"][16]."</i></td></tr>";
+    echo "<tr class='tab_bg_2'><td colspan=6><i>".$lang["joblist"][16]."</i></td></tr>";
 	}
 }
 
@@ -874,9 +875,28 @@ function searchFormTrackingReport() {
 	
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 echo "<tr class='tab_bg_1'><td align='center'>".$lang["search"][8].":&nbsp;<input type=\"texte\" readonly name=\"date1\" value=\"". $_GET["date1"] ."\" />";
-echo "<input name='button' type='button' class='button'  onClick=\"window.open('../../mycalendar.php?form=form&amp;elem=date1','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>&nbsp;&nbsp;&nbsp;&nbsp;";
+echo "<input name='button' type='button' class='button'  onClick=\"window.open('../../mycalendar.php?form=form&amp;elem=date1&amp;value=".$_GET["date1"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+echo "<input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date1.value=''\" value='reset'>";
 echo $lang["search"][9].":&nbsp;<input type=\"texte\" readonly name=\"date2\" value=\"". $_GET["date2"] ."\" />";
-echo "<input name='button' type='button' class='button'  onClick=\"window.open('../../mycalendar.php?form=form&amp;elem=date2','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'></td></tr>";
+echo "<input name='button' type='button' class='button'  onClick=\"window.open('../../mycalendar.php?form=form&amp;elem=date2&amp;value=".$_GET["date2"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+echo "<input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date2.value=''\" value='reset'>";
+echo "</td></tr>";
+
+	echo "<tr class='tab_bg_1'>";
+	echo "<td align='center'>";
+//	echo $lang["search"][1];
+ echo "Description:";
+	echo " &nbsp;<select name='phrasetype2' size='1' >";
+	$selected="";
+	if ($_GET["phrasetype2"]=="contains") $selected="selected";
+	echo "<option value='contains' $selected>".$lang["search"][2]."</option>";
+	$selected="";
+	if ($_GET["phrasetype2"]=="exact") $selected="selected";
+	echo "<option value='exact' $selected>".$lang["search"][3]."</option>";
+	echo "</select>";
+	echo "<input type='text' size='15' name=\"contains2\" value=\"".$_GET["contains2"]."\">";
+	echo "</td></tr>";
+
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
@@ -915,7 +935,7 @@ echo "<input name='button' type='button' class='button'  onClick=\"window.open('
 }
 
 
-function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$start,$date1,$date2,$computers_search) {
+function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$start,$date1,$date2,$computers_search,$field2,$phrasetype2,$contains2) {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -983,6 +1003,15 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 	if ($date1!="") $query.=" AND glpi_tracking.date >= '$date1'";
 	if ($date2!="") $query.=" AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 	
+	if ($contains2!="") {
+		if ($phrasetype2 == "contains") {
+			$query.= " AND (glpi_tracking.contents LIKE '%".$contains2."%')";
+		}
+		else {
+			$query.= " AND (glpi_tracking.contents LIKE '".$contains2."')";
+		}
+	}
+	
    $query.=" ORDER BY ID";
 //	echo $query;
 	// Get it from database	
@@ -1001,7 +1030,7 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 		
 		if ($numrows_limit>0) {
 			// Produce headline
-			echo "<div align='center'><table border='0' class='tab_cadre'><tr>";
+			echo "<div align='center'><table border='0' class='tab_cadre' width='90%'><tr>";
 
 echo "<th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
 		echo "<th width=5>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
@@ -1056,8 +1085,6 @@ function showFollowupsShort($ID) {
 
 		echo "</center></table>";
 	
-	} else {
-		echo "<b>".$lang["job"][8]."</b>";
 	}
 }
 
