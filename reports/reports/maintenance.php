@@ -47,8 +47,8 @@ $db = new DB;
 
 
 echo "<div align='center'>";
-echo "<table border='0' cellpading=1>";
-	echo "<tr><th align='center' colspan=4 ><big><b>Materiel sous contrat de maintenance</b></big></th></tr>";
+echo "<table border='0' >";
+	echo "<tr><th align='center' colspan='4' ><big><b>Materiel sous contrat de maintenance</b></big></th></tr>";
 
 
 
@@ -115,7 +115,7 @@ echo "<option value='location'>Lieu</option>";
 echo "</select> &nbsp;&nbsp; ";
 	echo "</td>";
 
-echo "<td align='center'><input type='submit' value='afficher rapport'></td>";
+echo "<td align='center'><input type='submit' value='afficher rapport' class='submit'></td>";
 echo "</tr>";
 echo "</form>";
 

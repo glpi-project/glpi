@@ -64,8 +64,8 @@ function searchFormSoftware() {
 	}
 	echo "</select>";
 	echo "<input type='hidden' name=phrasetype value=exact>";
-	echo "</td><td width=80 align='center' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][1]."\">";
+	echo "</td><td width='80' align='center' class='tab_bg_2'>";
+	echo "<input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'>";
 	echo "</td></tr></table></form></center>";
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/software/software-search.php\">";
@@ -248,7 +248,7 @@ function showSoftwareForm ($target,$ID) {
 
 		echo "<tr>";
 		echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-		echo "<center><input type='submit' name=add value=\"".$lang["buttons"][8]."\"></center>";
+		echo "<center><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></center>";
 		echo "</td>";
 		echo "</form></tr>";
 
@@ -258,13 +258,13 @@ function showSoftwareForm ($target,$ID) {
 
 		echo "<tr>";
 		echo "<td class='tab_bg_2' valign='top'>";
-		echo "<input type='hidden' name=ID value=\"$ID\">\n";
-		echo "<center><input type='submit' name=update value=\"".$lang["buttons"][7]."\"></center>";
+		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+		echo "<center><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></center>";
 		echo "</td></form>\n\n";
 		echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
 		echo "<input type='hidden' name=ID value=\"$ID\">\n";
-		echo "<center><input type='submit' name=delete value=\"".$lang["buttons"][6]."\"></center>";
+		echo "<center><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></center>";
 		echo "</td>";
 		echo "</form></tr>";
 
@@ -418,8 +418,8 @@ function showLicenseForm($target,$ID) {
 
 	echo "<tr class='tab_bg_2'>";
 	echo "<td align='center' colspan='2'>";
-	echo "<input type='hidden' name=sID value=".$ID.">";
-	echo "<input type='submit' name=add value=\"".$lang["buttons"][8]."\">";
+	echo "<input type='hidden' name='sID' value=".$ID.">";
+	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</td></form>";
 
 	echo "</table>";	
@@ -579,7 +579,7 @@ function showSoftwareInstalled($instID) {
 	echo "<input type='hidden' name=cID value=$instID>";
 		dropdownSoftware();
 	echo "</td><td align='center' class='tab_bg_2'>";
-	echo "<input type='submit' name=select value=\"".$lang["buttons"][4]."\">";
+	echo "<input type='submit' name='select' value=\"".$lang["buttons"][4]."\" class='submit'>";
 	echo "</td></tr>";
         echo "</table></center>";
 	echo "</form>";

@@ -244,7 +244,7 @@ echo "<body bgcolor='#$bgcolor' onUnLoad=''>\n" ;
    echo "</tr>\n" ;
   }
 
-  echo "\n<tr><td colspan='10' align='center'><input type='button' onclick='window.opener.document.forms[\"$form\"].elements[\"$elem\"].value=\"$annee-$mois-$jour\";window.close()' value='Valider'>&nbsp;&nbsp;<input onclick='window.close()' type='button' value='Annuler'></td></tr></table>\n" ;
+  echo "\n<tr><td colspan='10' align='center'><input type='button' class='button' onclick='window.opener.document.forms[\"$form\"].elements[\"$elem\"].value=\"$annee-$mois-$jour\";window.close()' value='Valider'>&nbsp;&nbsp;<input onclick='window.close()' type='button' class='button' value='Annuler'></td></tr></table>\n" ;
 
   echo "\n</tr></table>\n" ;
 

@@ -61,7 +61,7 @@ function searchFormMonitors() {
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 		dropdown( "dropdown_locations",  "contains");
-	echo "<input type='hidden' name=field value=location>&nbsp;";
+	echo "<input type='hidden' name='field' value='location'>&nbsp;";
 	echo $lang["search"][6];
 	echo "&nbsp;<select name=sort size=1>";
 	reset($option);
@@ -69,9 +69,9 @@ function searchFormMonitors() {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select>";
-	echo "<input type='hidden' name=phrasetype value=exact>";
-	echo "</td><td width=80 align='center' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][1]."\">";
+	echo "<input type='hidden' name='phrasetype' value='exact'>";
+	echo "</td><td width='80' align='center' class='tab_bg_2'>";
+	echo "<input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'>";
 	echo "</td></tr></table></form></center>";
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/monitors/monitors-search.php\">";
@@ -79,28 +79,28 @@ function searchFormMonitors() {
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
-	echo "<select name=\"field\" size=1>";
+	echo "<select name=\"field\" size='1'>";
 	reset($option);
 	foreach ($option as $key => $val) {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select>&nbsp;";
 	echo $lang["search"][1];
-	echo "&nbsp;<select name=phrasetype>";
-	echo "<option value=contains>".$lang["search"][2]."</option>";
-	echo "<option value=exact>".$lang["search"][3]."</option>";
+	echo "&nbsp;<select name='phrasetype'>";
+	echo "<option value='contains'>".$lang["search"][2]."</option>";
+	echo "<option value='exact'>".$lang["search"][3]."</option>";
 	echo "</select>";
-	echo "<input type='text' size=5 name=\"contains\">"; 
+	echo "<input type='text' size='5' name=\"contains\">"; 
 	echo "&nbsp;";
 	echo $lang["search"][4];
-	echo "&nbsp;<select name=sort size=1>";
+	echo "&nbsp;<select name='sort' size='1'>";
 	reset($option);
 	foreach ($option as $key => $val) {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select> ";
-	echo "</td><td width=80 align='center' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][0]."\">";
+	echo "</td><td width='80' align='center' class='tab_bg_2'>";
+	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></center></form>";
 }
 
@@ -329,14 +329,14 @@ function showMonitorsForm ($target,$ID) {
 
 		echo "<tr><td>".$lang["computers"][41].":	</td>";
 		echo "<td><input type='text' name='achat_date' readonly size=10 value='".$mon->fields["achat_date"]."'>";
-		echo "&nbsp; <input name='button' type='button'  onClick=\"window.open('mycalendar.php?form=form&elem=achat_date','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-		echo "&nbsp; <input name='button_reset' type='button' onClick=\"document.forms['form'].achat_date.value='0000-00-00'\" value='reset'>";
+		echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('mycalendar.php?form=form&elem=achat_date','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].achat_date.value='0000-00-00'\" value='reset'>";
     echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][42].":	</td>";
 		echo "<td><input type='text' name='date_fin_garantie' readonly size=10 value='".$mon->fields["date_fin_garantie"]."'>";
-		echo "&nbsp; <input name='button' type='button' onClick=\"window.open('mycalendar.php?form=form&elem=date_fin_garantie','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-		echo "&nbsp; <input name='button_reset' type='button' onClick=\"document.forms['form'].date_fin_garantie.value='0000-00-00'\" value='reset'>";
+		echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('mycalendar.php?form=form&elem=date_fin_garantie','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date_fin_garantie.value='0000-00-00'\" value='reset'>";
     echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][43].":	</td>";
@@ -370,7 +370,7 @@ echo "</td></tr>";
 
 		echo "<tr>";
 		echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-		echo "<center><input type='submit' name=add value=\"".$lang["buttons"][8]."\"></center>";
+		echo "<center><input type='submit' name=add value=\"".$lang["buttons"][8]."\" class='submit'></center>";
 		echo "</td>";
 		echo "</form></tr>";
 
@@ -380,13 +380,13 @@ echo "</td></tr>";
 
 		echo "<tr>";
 		echo "<td class='tab_bg_2' valign='top'>";
-		echo "<input type='hidden' name=ID value=\"$ID\">\n";
-		echo "<center><input type='submit' name=update value=\"".$lang["buttons"][7]."\"></center>";
+		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+		echo "<center><input type='submit' name=update value=\"".$lang["buttons"][7]."\" class='submit' class='submit'></center>";
 		echo "</td></form>\n\n";
 		echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
-		echo "<input type='hidden' name=ID value=\"$ID\">\n";
-		echo "<center><input type='submit' name=delete value=\"".$lang["buttons"][6]."\"></center>";
+		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+		echo "<center><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' class='submit'></center>";
 		echo "</td>";
 		echo "</form></tr>";
 
