@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-02-15 00:35
+#GLPI Dump database on 2005-02-15 01:08
 ### Dump table glpi_cartridges
 
 DROP TABLE IF EXISTS glpi_cartridges;
@@ -32,7 +32,7 @@ CREATE TABLE glpi_cartridges_assoc (
    KEY FK_glpi_type_printer_2 (FK_glpi_type_printer)
 );
 
-INSERT INTO glpi_cartridges_assoc VALUES ('3','1','1');
+INSERT INTO glpi_cartridges_assoc VALUES ('1','1','1');
 ### Dump table glpi_cartridges_type
 
 DROP TABLE IF EXISTS glpi_cartridges_type;
@@ -41,14 +41,14 @@ CREATE TABLE glpi_cartridges_type (
     name varchar(255) NOT NULL,
     ref varchar(255) NOT NULL,
     type tinyint(4) DEFAULT '0' NOT NULL,
-    FK_glpi_manufacturer int(11) DEFAULT '0' NOT NULL,
+    FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
     comments text NOT NULL,
    PRIMARY KEY (ID),
-   KEY FK_glpi_manufacturer (FK_glpi_manufacturer)
+   KEY FK_glpi_enterprise (FK_glpi_enterprise)
 );
 
-INSERT INTO glpi_cartridges_type VALUES ('1','HP','45378','2','0','N','');
+INSERT INTO glpi_cartridges_type VALUES ('1','HP','2830X','2','0','N','');
 ### Dump table glpi_computer_device
 
 DROP TABLE IF EXISTS glpi_computer_device;
@@ -238,6 +238,31 @@ CREATE TABLE glpi_connect_wire (
    KEY type (type)
 );
 
+### Dump table glpi_contact
+
+DROP TABLE IF EXISTS glpi_contact;
+CREATE TABLE glpi_contact (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+    phone varchar(30) NOT NULL,
+    phone2 varchar(30) NOT NULL,
+    fax varchar(30) NOT NULL,
+    email varchar(255) NOT NULL,
+    type tinyint(4) DEFAULT '1' NOT NULL,
+    comments text NOT NULL,
+   PRIMARY KEY (ID)
+);
+
+### Dump table glpi_contact_enterprise
+
+DROP TABLE IF EXISTS glpi_contact_enterprise;
+CREATE TABLE glpi_contact_enterprise (
+    ID int(11) NOT NULL auto_increment,
+    FK_enterprise int(11) DEFAULT '0' NOT NULL,
+    FK_contact int(11) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (ID)
+);
+
 ### Dump table glpi_contract
 
 DROP TABLE IF EXISTS glpi_contract;
@@ -274,19 +299,18 @@ CREATE TABLE glpi_contract_device (
     device_type tinyint(4) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_contract (FK_contract),
-   KEY FK_device (FK_device, device_type),
-   KEY FK_device_2 (FK_device, device_type)
+   KEY FK_device (FK_device, device_type)
 );
 
-### Dump table glpi_contract_tiers
+### Dump table glpi_contract_enterprise
 
-DROP TABLE IF EXISTS glpi_contract_tiers;
-CREATE TABLE glpi_contract_tiers (
+DROP TABLE IF EXISTS glpi_contract_enterprise;
+CREATE TABLE glpi_contract_enterprise (
     ID int(11) NOT NULL auto_increment,
-    FK_tiers int(11) DEFAULT '0' NOT NULL,
+    FK_enterprise int(11) DEFAULT '0' NOT NULL,
     FK_contract int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
-   KEY FK_tiers (FK_tiers),
+   KEY FK_enterprise (FK_enterprise),
    KEY FK_contract (FK_contract)
 );
 
@@ -299,9 +323,9 @@ CREATE TABLE glpi_device_gfxcard (
     ram varchar(10) NOT NULL,
     interface enum('AGP','PCI','PCI-X','Other') DEFAULT 'AGP' NOT NULL,
     comment text NOT NULL,
-    FK_glpi_manufacturer int(11) DEFAULT '0' NOT NULL,
+    FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
-   KEY FK_glpi_manufacturer (FK_glpi_manufacturer)
+   KEY FK_glpi_enterprise (FK_glpi_enterprise)
 );
 
 INSERT INTO glpi_device_gfxcard VALUES ('1','ATI Rage Pro 3D AGP','','AGP','','0');
@@ -318,9 +342,9 @@ CREATE TABLE glpi_device_hdd (
     interface enum('IDE','SATA','SCSI') DEFAULT 'IDE' NOT NULL,
     cache varchar(20) NOT NULL,
     comment text NOT NULL,
-    FK_glpi_manufacturer int(11) DEFAULT '0' NOT NULL,
+    FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
-   KEY FK_glpi_manufacturer (FK_glpi_manufacturer)
+   KEY FK_glpi_enterprise (FK_glpi_enterprise)
 );
 
 INSERT INTO glpi_device_hdd VALUES ('1','IBM DTTA 35101','','IDE','','','0');
@@ -333,9 +357,9 @@ CREATE TABLE glpi_device_iface (
     designation varchar(120) NOT NULL,
     bandwidth varchar(20) NOT NULL,
     comment text NOT NULL,
-    FK_glpi_manufacturer int(11) DEFAULT '0' NOT NULL,
+    FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
-   KEY FK_glpi_manufacturer (FK_glpi_manufacturer)
+   KEY FK_glpi_enterprise (FK_glpi_enterprise)
 );
 
 INSERT INTO glpi_device_iface VALUES ('1','3Com (100Mbps)','','','0');
@@ -357,9 +381,9 @@ CREATE TABLE glpi_device_moboard (
     designation varchar(100) NOT NULL,
     chipset varchar(120) NOT NULL,
     comment text NOT NULL,
-    FK_glpi_manufacturer int(11) DEFAULT '0' NOT NULL,
+    FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
-   KEY FK_glpi_manufacturer (FK_glpi_manufacturer)
+   KEY FK_glpi_enterprise (FK_glpi_enterprise)
 );
 
 INSERT INTO glpi_device_moboard VALUES ('1','Asus T2P4S','','','0');
@@ -373,9 +397,9 @@ CREATE TABLE glpi_device_processor (
     designation varchar(120) NOT NULL,
     frequence int(11) DEFAULT '0' NOT NULL,
     comment text NOT NULL,
-    FK_glpi_manufacturer int(11) DEFAULT '0' NOT NULL,
+    FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
-   KEY FK_glpi_manufacturer (FK_glpi_manufacturer)
+   KEY FK_glpi_enterprise (FK_glpi_enterprise)
 );
 
 INSERT INTO glpi_device_processor VALUES ('1','Intel Pentium','0','','0');
@@ -413,9 +437,9 @@ CREATE TABLE glpi_device_ram (
     type enum('EDO','DDR','SDRAM','SDRAM-2') DEFAULT 'EDO' NOT NULL,
     frequence varchar(8) NOT NULL,
     comment text NOT NULL,
-    FK_glpi_manufacturer int(11) DEFAULT '0' NOT NULL,
+    FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
-   KEY FK_glpi_manufacturer (FK_glpi_manufacturer)
+   KEY FK_glpi_enterprise (FK_glpi_enterprise)
 );
 
 INSERT INTO glpi_device_ram VALUES ('1','36pin SIMMS','EDO','','','0');
@@ -435,9 +459,9 @@ CREATE TABLE glpi_device_sndcard (
     designation varchar(120) NOT NULL,
     type varchar(100) NOT NULL,
     comment text NOT NULL,
-    FK_glpi_manufacturer int(11) DEFAULT '0' NOT NULL,
+    FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
-   KEY FK_glpi_manufacturer (FK_glpi_manufacturer)
+   KEY FK_glpi_enterprise (FK_glpi_enterprise)
 );
 
 INSERT INTO glpi_device_sndcard VALUES ('1','Soundblaster 128 PCI','','','0');
@@ -514,15 +538,12 @@ INSERT INTO glpi_dropdown_kbcategories VALUES ('4','2','Toner');
 DROP TABLE IF EXISTS glpi_dropdown_locations;
 CREATE TABLE glpi_dropdown_locations (
     ID int(11) NOT NULL auto_increment,
-    name varchar(255) NOT NULL,
-    parentID int(11) DEFAULT '0' NOT NULL,
-   PRIMARY KEY (ID),
-   UNIQUE name (name, parentID),
-   KEY parentID (parentID)
+    name varchar(255),
+   PRIMARY KEY (ID)
 );
 
-INSERT INTO glpi_dropdown_locations VALUES ('1','1 ier etage','0');
-INSERT INTO glpi_dropdown_locations VALUES ('2','2nd etage','0');
+INSERT INTO glpi_dropdown_locations VALUES ('1','1 ier etage');
+INSERT INTO glpi_dropdown_locations VALUES ('2','2nd etage');
 ### Dump table glpi_dropdown_moboard
 
 DROP TABLE IF EXISTS glpi_dropdown_moboard;
@@ -661,6 +682,19 @@ CREATE TABLE glpi_dropdown_tracking_category (
    PRIMARY KEY (ID)
 );
 
+### Dump table glpi_enterprise
+
+DROP TABLE IF EXISTS glpi_enterprise;
+CREATE TABLE glpi_enterprise (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(50) NOT NULL,
+    address varchar(200) NOT NULL,
+    website varchar(100) NOT NULL,
+    phonenumber varchar(20) NOT NULL,
+    comments text NOT NULL,
+   PRIMARY KEY (ID)
+);
+
 ### Dump table glpi_event_log
 
 DROP TABLE IF EXISTS glpi_event_log;
@@ -677,16 +711,10 @@ CREATE TABLE glpi_event_log (
    KEY date (date)
 );
 
-INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-02-14 19:01:44','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-02-15 00:09:57','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('368','0','cartridge','2005-02-15 00:10:04','inventory','4','glpi added item qsqs.');
-INSERT INTO glpi_event_log VALUES ('369','1','cartridge','2005-02-15 00:10:09','inventory','4','glpi associate type.');
-INSERT INTO glpi_event_log VALUES ('370','1','cartridge','2005-02-15 00:10:12','inventory','4','glpi added a license.');
-INSERT INTO glpi_event_log VALUES ('371','1','cartridge','2005-02-15 00:10:52','inventory','4','glpi updated item.');
-INSERT INTO glpi_event_log VALUES ('372','1','cartridge','2005-02-15 00:10:54','inventory','4','glpi delete type.');
-INSERT INTO glpi_event_log VALUES ('373','1','cartridge','2005-02-15 00:11:05','inventory','4','glpi associate type.');
-INSERT INTO glpi_event_log VALUES ('374','2','cartridge','2005-02-15 00:11:07','inventory','4','glpi delete type.');
-INSERT INTO glpi_event_log VALUES ('375','1','cartridge','2005-02-15 00:11:13','inventory','4','glpi associate type.');
+INSERT INTO glpi_event_log VALUES ('369','1','cartridge','2005-02-15 01:07:59','inventory','4','glpi associate type.');
+INSERT INTO glpi_event_log VALUES ('368','1','cartridge','2005-02-15 01:07:54','inventory','4','glpi added a license.');
+INSERT INTO glpi_event_log VALUES ('367','0','cartridge','2005-02-15 01:07:49','inventory','4','glpi added item HP.');
+INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-02-15 01:04:50','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -715,7 +743,7 @@ CREATE TABLE glpi_infocom (
     buy_date date DEFAULT '0000-00-00' NOT NULL,
     warranty_end_date date DEFAULT '0000-00-00' NOT NULL,
     warranty_info varchar(255) NOT NULL,
-    id_tiers int(11),
+    FK_enterprise int(11),
     num_commande varchar(50) NOT NULL,
     bon_livraison varchar(50) NOT NULL,
     num_immo varchar(50) NOT NULL,
@@ -725,7 +753,7 @@ CREATE TABLE glpi_infocom (
     comments text NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
    PRIMARY KEY (ID),
-   KEY id_tiers (id_tiers),
+   KEY FK_enterprise (FK_enterprise),
    KEY buy_date (buy_date)
 );
 
@@ -738,18 +766,6 @@ CREATE TABLE glpi_infocom_device (
     FK_device int(11) DEFAULT '0' NOT NULL,
     device_type tinyint(4) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
-   KEY FK_infocom (FK_infocom)
-);
-
-### Dump table glpi_infocom_tiers
-
-DROP TABLE IF EXISTS glpi_infocom_tiers;
-CREATE TABLE glpi_infocom_tiers (
-    ID int(11) NOT NULL auto_increment,
-    FK_tiers int(11) DEFAULT '0' NOT NULL,
-    FK_infocom int(11) DEFAULT '0' NOT NULL,
-   PRIMARY KEY (ID),
-   KEY FK_tiers (FK_tiers),
    KEY FK_infocom (FK_infocom)
 );
 
@@ -823,19 +839,6 @@ INSERT INTO glpi_licenses VALUES ('4','4','au-23-as-23-cd',NULL,'N','0','Y');
 INSERT INTO glpi_licenses VALUES ('5','4','qw-as-23-0k-23-dg',NULL,'N','0','Y');
 INSERT INTO glpi_licenses VALUES ('8','3','free',NULL,'N','0','Y');
 INSERT INTO glpi_licenses VALUES ('9','5','free',NULL,'N','0','Y');
-### Dump table glpi_manufacturer
-
-DROP TABLE IF EXISTS glpi_manufacturer;
-CREATE TABLE glpi_manufacturer (
-    ID int(11) NOT NULL auto_increment,
-    name varchar(50) NOT NULL,
-    address varchar(200) NOT NULL,
-    website varchar(100) NOT NULL,
-    phonenumber varchar(20) NOT NULL,
-    comment text NOT NULL,
-   PRIMARY KEY (ID)
-);
-
 ### Dump table glpi_monitors
 
 DROP TABLE IF EXISTS glpi_monitors;

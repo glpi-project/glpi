@@ -973,9 +973,9 @@ if(!TableExists("glpi_device_gfxcard")) {
   `ram` varchar(10) NOT NULL default '',
   `interface` enum('AGP','PCI','PCI-X','Other') NOT NULL default 'AGP',
   `comment` text NOT NULL,
-  `FK_glpi_manufacturer` int(11) NOT NULL default '0',
+  `FK_glpi_enterprise` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  KEY(`FK_glpi_manufacturer`)
+  KEY(`FK_glpi_enterprise`)
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 create table `glpi_device_gfxcard` ".$lang["update"][90].$db->error());
 	compDpd2Device("gfxcard","gfxcard","gfxcard");
@@ -988,9 +988,9 @@ if(!TableExists("glpi_device_hdd")) {
   `interface` enum('IDE','SATA','SCSI') NOT NULL default 'IDE',
   `cache` varchar(20) NOT NULL default '',
   `comment` text NOT NULL,
-  `FK_glpi_manufacturer` int(11) NOT NULL default '0',
+  `FK_glpi_enterprise` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  KEY(`FK_glpi_manufacturer`)
+  KEY(`FK_glpi_enterprise`)
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_hdtype` ".$lang["update"][90].$db->error());
 	compDpd2Device("hdd","hdtype","hdtype","hdspace");
@@ -1001,9 +1001,9 @@ if(!TableExists("glpi_device_iface")) {
   `designation` varchar(120) NOT NULL default '',
   `bandwidth` varchar(20) NOT NULL default '',
   `comment` text NOT NULL,
-  `FK_glpi_manufacturer` int(11) NOT NULL default '0',
+  `FK_glpi_enterprise` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  KEY(`FK_glpi_manufacturer`)
+  KEY(`FK_glpi_enterprise`)
 ) TYPE=MyISAM";
 	$db->query($query) or die("0.5- CREATE TABLE `glpi_device_iface` ".$lang["update"][90].$db->error());
 	compDpd2Device("iface","network","network");
@@ -1014,9 +1014,9 @@ if(!TableExists("glpi_device_moboard")) {
   `designation` varchar(100) NOT NULL default '',
   `chipset` varchar(120) NOT NULL default '',
   `comment` text NOT NULL,
-  `FK_glpi_manufacturer` int(11) NOT NULL default '0',
+  `FK_glpi_enterprise` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  KEY(`FK_glpi_manufacturer`)
+  KEY(`FK_glpi_enterprise`)
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_moboard` ".$lang["update"][90].$db->error());
 	compDpd2Device("moboard","moboard","moboard");
@@ -1027,9 +1027,9 @@ if(!TableExists("glpi_device_processor")) {
   `designation` varchar(120) NOT NULL default '',
   `frequence` int(11) NOT NULL default '0',
   `comment` text NOT NULL,
-  `FK_glpi_manufacturer` int(11) NOT NULL default '0',
+  `FK_glpi_enterprise` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  KEY(`FK_glpi_manufacturer`)
+  KEY(`FK_glpi_enterprise`)
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_processor` ".$lang["update"][90].$db->error());
 	compDpd2Device("processor","processor","processor","processor_speed");
@@ -1041,9 +1041,9 @@ if(!TableExists("glpi_device_ram")) {
   `type` enum('EDO','DDR','SDRAM','SDRAM-2') NOT NULL default 'EDO',
   `frequence` varchar(8) NOT NULL default '',
   `comment` text NOT NULL,
-  `FK_glpi_manufacturer` int(11) NOT NULL default '0',
+  `FK_glpi_enterprise` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  KEY(`FK_glpi_manufacturer`)
+  KEY(`FK_glpi_enterprise`)
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_ram` ".$lang["update"][90].$db->error());
 	compDpd2Device("ram","ram","ramtype","ram");
@@ -1054,25 +1054,25 @@ if(!TableExists("glpi_device_sndcard")) {
   `designation` varchar(120) NOT NULL default '',
   `type` varchar(100) NOT NULL default '',
   `comment` text NOT NULL,
-  `FK_glpi_manufacturer` int(11) NOT NULL default '0',
+  `FK_glpi_enterprise` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  KEY(`FK_glpi_manufacturer`)
+  KEY(`FK_glpi_enterprise`)
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_sndcard ".$lang["update"][90].$db->error());
 	compDpd2Device("sndcard","sndcard","sndcard");
 }
-if(!TableExists("glpi_manufacturer")) {
-	$query = "CREATE TABLE `glpi_manufacturer` (
+if(!TableExists("glpi_enterprise")) {
+	$query = "CREATE TABLE `glpi_enterprise` (
   `ID` int(11) NOT NULL auto_increment,
   `name` varchar(50) NOT NULL default '',
   `address` varchar(200) NOT NULL default '',
   `website` varchar(100) NOT NULL default '',
   `phonenumber` varchar(20) NOT NULL default '',
-  `comment` text NOT NULL,
+  `comments` text NOT NULL,
   PRIMARY KEY  (`ID`)
 ) TYPE=MyISAM;
 ";
-	$db->query($query) or die("0.5 CREATE TABLE `glpi_manufacturer ".$lang["update"][90].$db->error());
+	$db->query($query) or die("0.5 CREATE TABLE `glpi_enterprise ".$lang["update"][90].$db->error());
 }
 
 /// Base connaissance
@@ -1163,11 +1163,11 @@ $query= "CREATE TABLE `glpi_cartridges_type` (
   `name` varchar(255) NOT NULL default '',
   `ref` varchar(255) NOT NULL default '',
   `type` tinyint(4) NOT NULL default '0',
-  `FK_glpi_manufacturer` int(11) NOT NULL default '0',
+  `FK_glpi_enterprise` int(11) NOT NULL default '0',
   `deleted` enum('Y','N') NOT NULL default 'N',
   `comments` text NOT NULL,
   PRIMARY KEY  (`ID`),
-  KEY(`FK_glpi_manufacturer`)
+  KEY(`FK_glpi_enterprise`)
 );
 ";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_cartridges_type ".$lang["update"][90].$db->error());
@@ -1183,6 +1183,113 @@ $query= "CREATE TABLE `glpi_cartridges_assoc` (
 );
 ";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_cartridges_assoc ".$lang["update"][90].$db->error());
+}
+
+// La gestion des contrats
+if(!TableExists("glpi_contract")) {
+$query= "CREATE TABLE `glpi_contact` (
+  `ID` int(11) NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL default '',
+  `phone` varchar(30) NOT NULL default '',
+  `phone2` varchar(30) NOT NULL default '',
+  `fax` varchar(30) NOT NULL default '',
+  `email` varchar(255) NOT NULL default '',
+  `type` tinyint(4) NOT NULL default '1',
+  `comments` text NOT NULL,
+  PRIMARY KEY  (`ID`)
+) TYPE=MyISAM;
+";
+	$db->query($query) or die("0.5 CREATE TABLE glpi_contact ".$lang["update"][90].$db->error());
+
+$query= "CREATE TABLE `glpi_contact_enterprise` (
+  `ID` int(11) NOT NULL auto_increment,
+  `FK_enterprise` int(11) NOT NULL default '0',
+  `FK_contact` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`ID`)
+) TYPE=MyISAM;
+";
+	$db->query($query) or die("0.5 CREATE TABLE glpi_contact_enterprise ".$lang["update"][90].$db->error());
+
+$query= "CREATE TABLE `glpi_contract` (
+  `ID` int(11) NOT NULL auto_increment,
+  `num` varchar(255) NOT NULL default '',
+  `cost` float NOT NULL default '0',
+  `contract_type` int(11) NOT NULL default '0',
+  `begin_date` date default NULL,
+  `duration` float NOT NULL default '0',
+  `notice` float NOT NULL default '0',
+  `bill_type` int(11) NOT NULL default '0',
+  `comments` text NOT NULL,
+  `compta_num` varchar(255) NOT NULL default '',
+  `deleted` enum('Y','N') NOT NULL default 'N',
+  `week_begin_hour` time NOT NULL default '00:00:00',
+  `week_end_hour` time NOT NULL default '00:00:00',
+  `satruday_begin_hour` time NOT NULL default '00:00:00',
+  `satruday_end_hour` time NOT NULL default '00:00:00',
+  `monday_begin_hour` time NOT NULL default '00:00:00',
+  `monday_end_hour` time NOT NULL default '00:00:00',
+  PRIMARY KEY  (`ID`),
+  KEY `contract_type` (`contract_type`),
+  KEY `begin_date` (`begin_date`)
+) TYPE=MyISAM;
+";
+	$db->query($query) or die("0.5 CREATE TABLE glpi_contract ".$lang["update"][90].$db->error());
+
+$query= "CREATE TABLE `glpi_contract_device` (
+  `ID` int(11) NOT NULL auto_increment,
+  `FK_contract` int(11) NOT NULL default '0',
+  `FK_device` int(11) NOT NULL default '0',
+  `device_type` tinyint(4) NOT NULL default '0',
+  PRIMARY KEY  (`ID`),
+  KEY `FK_contract` (`FK_contract`),
+  KEY `FK_device` (`FK_device`,`device_type`),
+) TYPE=MyISAM;
+";
+	$db->query($query) or die("0.5 CREATE TABLE glpi_contract_device ".$lang["update"][90].$db->error());
+
+$query= "CREATE TABLE `glpi_contract_enterprise` (
+  `ID` int(11) NOT NULL auto_increment,
+  `FK_enterprise` int(11) NOT NULL default '0',
+  `FK_contract` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`ID`),
+  KEY `FK_enterprise` (`FK_enterprise`),
+  KEY `FK_contract` (`FK_contract`)
+) TYPE=MyISAM;
+";
+	$db->query($query) or die("0.5 CREATE TABLE glpi_contrat_enterprise ".$lang["update"][90].$db->error());
+
+$query= "CREATE TABLE `glpi_infocom` (
+  `ID` int(11) NOT NULL auto_increment,
+  `buy_date` date NOT NULL default '0000-00-00',
+  `warranty_end_date` date NOT NULL default '0000-00-00',
+  `warranty_info` varchar(255) NOT NULL default '',
+  `FK_enterprise` int(11) default NULL,
+  `num_commande` varchar(50) NOT NULL default '',
+  `bon_livraison` varchar(50) NOT NULL default '',
+  `num_immo` varchar(50) NOT NULL default '',
+  `value` float default NULL,
+  `amort_time` float default NULL,
+  `amort_type` varchar(20) NOT NULL default '',
+  `comments` text NOT NULL,
+  `deleted` enum('Y','N') NOT NULL default 'N',
+  PRIMARY KEY  (`ID`),
+  KEY `FK_enterprise` (`FK_enterprise`),
+  KEY `buy_date` (`buy_date`)
+) TYPE=MyISAM;
+";
+	$db->query($query) or die("0.5 CREATE TABLE glpi_infocom ".$lang["update"][90].$db->error());
+
+$query= "CREATE TABLE `glpi_infocom_device` (
+  `ID` int(11) NOT NULL auto_increment,
+  `FK_infocom` int(11) NOT NULL default '0',
+  `FK_device` int(11) NOT NULL default '0',
+  `device_type` tinyint(4) NOT NULL default '0',
+  PRIMARY KEY  (`ID`),
+  KEY `FK_infocom` (`FK_infocom`)
+) TYPE=MyISAM;
+";
+	$db->query($query) or die("0.5 CREATE TABLE glpi_infocom_device ".$lang["update"][90].$db->error());
+
 }
 
 
