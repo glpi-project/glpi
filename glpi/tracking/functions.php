@@ -432,9 +432,9 @@ function showJobDetails($ID) {
 		   { echo "Warning !! ";return;}
 
 		echo "<div align='center'><table class='tab_cadre' width='90%' cellpadding='5'>\n";
-		echo "<tr><th colspan='2'>".$lang["job"][0]." $job->ID:</th></tr>";
+		echo "<tr><th colspan='3'>".$lang["job"][0]." $job->ID:</th></tr>";
 		echo "<tr class='tab_bg_2'>";
-		echo "<td width='50%' rowspan='2'>";
+		echo "<td width='33%' rowspan='1'>";
 
 		echo "<table cellpadding='2' cellspacing='0' border='0'>";
 
@@ -457,10 +457,10 @@ function showJobDetails($ID) {
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["joblist"][5]."</td><td>";
-		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
+		if (strcmp($_SESSION["glpitype"],"post-only")!=0&&is_integer($job->computer))
 		echo "<b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$job->computer\">$job->computername ($job->computer)</a></b>";
 		else
-		echo "<b>computername ($job->computer)</b>";
+		echo "<b>$job->computername ($job->computer)</b>";
 		echo "</td></tr>";
 		echo "</table>";
 
@@ -484,10 +484,15 @@ function showJobDetails($ID) {
 			echo "<td><b>$job->closedate</b></tr>";
 			echo "<tr><td colspan='2'>".$lang["job"][2].": $opentime</td></tr>";
 		}
+		if ($cfg_features["mailing"]==1){
+		if ($job->emailupdates=='yes') $suivi=$lang["choice"][0];
+		else $suivi=$lang["choice"][1];
+		echo "<tr><td>".$lang["job"][19].":</td><td>$suivi</td></tr>";
+		}
 		echo "</table>";
 		echo "</td>";
 	
-		echo "</tr><tr class='tab_bg_2'>";
+		//echo "</tr><tr class='tab_bg_2'>";
 		echo "<td align='center'>";	
 
 			assignFormTracking($ID,$_SESSION["glpiname"],$cfg_install["root"]."/tracking/tracking-assign-form.php");
@@ -496,7 +501,7 @@ function showJobDetails($ID) {
 		
 		echo "</tr><tr class='tab_bg_2'>";
 		
-		echo "<td colspan='2'>";
+		echo "<td colspan='3'>";
 		echo $lang["joblist"][6].":<br><br>";
 		echo "<b>$job->contents</b>";
 		echo "<br><br></td>";
@@ -506,7 +511,7 @@ function showJobDetails($ID) {
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		if ($job->status == "new") {
 			echo "<tr class='tab_bg_1'>";
-			echo "<td colspan='2' align='center'>";
+			echo "<td colspan='3' align='center'>";
 			echo "<b><a href=\"".$cfg_install["root"]."/tracking/tracking-mark.php?ID=$job->ID\">".$lang["job"][3]."</a></b>";
 			echo "</td></tr>";
 		}
@@ -723,9 +728,9 @@ function addFormTracking ($ID,$author,$assign,$target,$error,$searchauthor='') {
 	if($cfg_features["mailing"] == 1)
 	{
 		echo "<tr class='tab_bg_1'>";
-		echo "<td>".$lang["help"][8].":</td>";
+		echo "<td align='center'>".$lang["help"][8].":</td>";
 		echo "<td align='center' colspan='3'>	<select name='emailupdates'>";
-		echo "<option value='no selected'>".$lang["help"][9]."";
+		echo "<option value='no' selected>".$lang["help"][9]."";
 		echo "<option value='yes'>".$lang["help"][10]."";
 		echo "</select>";
 		echo "</td></tr>";
@@ -745,7 +750,7 @@ function addFormTracking ($ID,$author,$assign,$target,$error,$searchauthor='') {
 	echo "<tr><td colspan='4' height='5'></td></tr>";
 	echo "<tr><th colspan='4' align='center'>".$lang["job"][11].":</th></tr>";
 
-	echo "<tr><td colspan='4'><textarea cols='50' rows='14'  name='contents'></textarea></td></tr>";
+	echo "<tr><td colspan='4'><textarea cols='60' rows='14'  name='contents'></textarea></td></tr>";
 
 	echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][2]."\" class='submit'>";
