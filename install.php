@@ -446,44 +446,60 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 //
 function step5()
 {
-		include ("_relpos.php");
-		include ($phproot . "/glpi/includes.php");
-		$db = new DB;
-		$query = "select * from glpi_config where config_id = 1";
-		$result = $db->query($query);
-		echo "Configuration de GLPI : ";
-		echo "<p>Les valeurs présélectionnées sont les valeurs par defaut, il est recommandé de laisser ces valeurs</p>";
-		echo "<form action=\"install.php\" method=\"post\">";
-		echo "<p><label>Document root : <input type=\"text\" name=\"root_doc\" value=\"". $db->result($result,0,"root_doc") ."\"></label></p>";
-		echo "<p><label>Niveau de log : <select name=\"event_loglevel\"><label></p>";
-		echo "<option value=\"1\">1- Critique (erreur de login seulement) </option>";
-		echo "<option value=\"2\">2- Sévère (Non utilisée) </option>";
-		echo "<option value=\"3\">3- Important (logins réussis) </option>";
-		echo "<option value=\"4\" selected>4- Notices (Ajout, suppression, tracking) </option>";
-		echo "<option value=\"5\">5- Complet (Log quasiment tout) </option>";
-		echo "</select>";
-		echo "<p><label>Nombre d'évenements de log a afficher : <input type=\"text\" name=\"num_of_events\" value=\"". $db->result($result,0,"num_of_events") ."\"><label></p>";
-		echo "<p><label>Temps en jours durant lequel on conserve les logs (0 pour infini) : <input type=\"text\" name=\"expire_events\" value=\"". $db->result($result,0,"expire_events") ."\"><label></p>";
-		echo "<p> Montrer les interventions au login :  <input type=\"radio\" name=\"jobs_at_login\" value=\"1\" checked /><label>Oui</label>";
-		echo " <input type=\"radio\" name=\"jobs_at_login\" value=\"0\" /><label> Non </label></p>";
-		echo "<p><label>Nombre d'élements à afficher par page  : <input type=\"text\" name=\"list_limit\" value=\"". $db->result($result,0,"list_limit") ."\"><label></p>";
-		echo "<p><label>Nombre de caractères maximum pour chaque éléments de la liste : <input type=\"text\" name=\"cut\" value=\"". $db->result($result,0,"cut") ."\"><label></p>";
-		echo "<p>Voulez vous utiliser les fonctionnalitées de mailing ? (Notifications par mail) ";
-		echo " <input type=\"radio\" name=\"mailing\" value=\"1\" /><label>Oui</label>";
-		echo "<input type=\"radio\" name=\"mailing\" value=\"0\" checked /><label>Non<label></p>";
-		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_5\" />";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
-		echo "</form>";
+	include ("_relpos.php");
+	include ($phproot . "/glpi/includes.php");
+	$db = new DB;
+	$query = "select * from glpi_config where config_id = 1";
+	$result = $db->query($query);
+	echo "Configuration de GLPI : ";
+	echo "<p>Les valeurs présélectionnées sont les valeurs par defaut, il est recommandé de laisser ces valeurs</p>";
+	echo "<form action=\"install.php\" method=\"post\">";
+	echo "<p><label>Document root : <input type=\"text\" name=\"root_doc\" value=\"". $db->result($result,0,"root_doc") ."\"></label></p>";
+	echo "<p><label>Niveau de log : <select name=\"event_loglevel\"><label></p>";
+	echo "<option value=\"1\">1- Critique (erreur de login seulement) </option>";
+	echo "<option value=\"2\">2- Sévère (Non utilisée) </option>";
+	echo "<option value=\"3\">3- Important (logins réussis) </option>";
+	echo "<option value=\"4\" selected>4- Notices (Ajout, suppression, tracking) </option>";
+	echo "<option value=\"5\">5- Complet (Log quasiment tout) </option>";
+	echo "</select>";
+	echo "<p><label>Nombre d'évenements de log a afficher : <input type=\"text\" name=\"num_of_events\" value=\"". $db->result($result,0,"num_of_events") ."\"><label></p>";
+	echo "<p><label>Temps en jours durant lequel on conserve les logs (0 pour infini) : <input type=\"text\" name=\"expire_events\" value=\"". $db->result($result,0,"expire_events") ."\"><label></p>";
+	echo "<p> Montrer les interventions au login :  <input type=\"radio\" name=\"jobs_at_login\" value=\"1\" checked /><label>Oui</label>";
+	echo " <input type=\"radio\" name=\"jobs_at_login\" value=\"0\" /><label> Non </label></p>";
+	echo "<p><label>Nombre d'élements à afficher par page  : <input type=\"text\" name=\"list_limit\" value=\"". $db->result($result,0,"list_limit") ."\"><label></p>";
+	echo "<p><label>Nombre de caractères maximum pour chaque éléments de la liste : <input type=\"text\" name=\"cut\" value=\"". $db->result($result,0,"cut") ."\"><label></p>";
+	echo "<input type=\"hidden\" name=\"install\" value=\"Etape_5\" />";
+	echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
+	echo "</form>";
 }
 
 // STEP 6 Get the config and fill database
 // Config the mailing features if enabled by user
 function step6($root_doc, $event_loglevel, $num_of_events, $expire_events, $list_limit, $cut, $mailing)
 {
-	
+	include ("_relpos.php");
+	require_once ($phproot . "/glpi/includes.php");
+	$db = new DB;
+	$query = "update glpi_config set root_doc = '". $root_doc ."', event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', list_limit = '". $list_limit ."', cut = '". $cut ."'"; 
+	$db->query($query);
+	echo "Votre configuration a bien été enregistrée";
+	echo "<p>Voulez vous utiliser les fonctionnalitées de mailing ? (Notifications par mail) ";
+	echo "<br /><form action=\"install.php\" method=\"post\">";
+	echo "<input type=\"radio\" name=\"mailing\" value=\"1\" /><label>Oui</label>";
+	echo "<input type=\"radio\" name=\"mailing\" value=\"0\" checked /><label>Non<label></p>";
+	echo "<input type=\"hidden\" name=\"install\" value=\"Etape_51\" />";
+	echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
+	echo "</form>";
+}
+
+function step61($mailing) {
+
+
+	include ("_relpos.php");
+	require_once ($phproot . "/glpi/includes.php");
+	$db = new DB;
 	//Display a great mailing config form
-	function mailing_form()
-	{
+	function mailing_form() {
 		echo "<br /><form action=\"install.php\" method=\"post\">";
 		echo "<input type=\"hidden\" name=\"mailing\" value=\"1\">";
 		echo "<br />Mail de l'administrateur systeme : <input type=\"text\" name=\"admin_email\" />";
@@ -521,19 +537,12 @@ function step6($root_doc, $event_loglevel, $num_of_events, $expire_events, $list
 		echo "<tr><td>A chaque changement de responsable d'une intervention le concernant</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_user\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_user\" value=\"0\"></td></tr>";
 		echo "<tr><td>Pour chaque nouveau suivi sur une intervention le concernant</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_user\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_followup_user\" value=\"0\"></td></tr>";
 		echo "<tr><td>A chaque fois qu'une intervention le concernant est marquée comme terminée</td><td>Oui : <input type=\"radio\" name=\"mailing_finish_user\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_finish_user\" value=\"0\"></td></tr>";
-		
-				echo "</table>";
-		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_6\" />";
+		echo "</table>";
+		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_61\" />";
 		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
 		echo "</form>";
 	}
 	
-	include ("_relpos.php");
-	require_once ($phproot . "/glpi/includes.php");
-	$db = new DB;
-	$query = "update glpi_config set root_doc = '". $root_doc ."', event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', list_limit = '". $list_limit ."', cut = '". $cut ."'"; 
-	$db->query($query);
-	echo "Votre configuration a bien été enregistrée";
 	if($mailing == 1) {
 		if (function_exists('mail')) {
 			echo "<br />La fonction mail() existe bien sur votre système : Veuillez configurer les envois de mails.";
@@ -551,42 +560,56 @@ function step6($root_doc, $event_loglevel, $num_of_events, $expire_events, $list
 	}
 	else {
 		echo "<br />Vous avez choisi de ne pas utiliser les notification par mail, vous pouvez passer à l'étape suivante";
-		echo "<br /><form action=\"install.php\" method=\"post\">";
-		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_6\" />";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
-		echo "</form>";
-		
+		step62();
 	} 
 	
 
 	
 }
 
+function step62() {
+	echo "<p>Voulez vous configurer des sources d'authetification externes (LDAP, IMAP) pour les usagers ? ";
+	echo "<br /><form action=\"install.php\" method=\"post\">";
+	echo "<input type=\"radio\" name=\"extsources\" value=\"1\" /><label>Oui</label>";
+	echo "<input type=\"radio\" name=\"extsources\" value=\"0\" checked /><label>Non<label></p>";
+	echo "<input type=\"hidden\" name=\"install\" value=\"Etape_6\" />";
+	echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
+	echo "</form>";
+}
 
 // STEP 7 Display a great form for LDAP and IMAP options
-function step7()
+function step7($extsources)
 {	
 	include ("_relpos.php");
 	require_once ($phproot . "/glpi/includes.php");
-	$db = new DB;
-	$query = "select * from glpi_config where config_id = 1";
-	$result = $db->query($query);
-	echo "Configuration des paramètres de connection externe";
-	echo "<br /> Si vous ne souhaitez pas utiliser LDAP ou/et IMAP comme source(s) de connection laissez les champs vides";
-	echo "<br /><form action=\"install.php\" method=\"post\">";
-	echo "<table>";
-	echo "<tr><td>LDAP configuration</td><td></td></tr>";
-	echo "<tr><td>LDAP Host</td><td><input type=\"text\" name=\"ldap_host\" value=\"". $db->result($result,0,"ldap_host") ."\"/></td></tr>";
-	echo "<tr><td>Basedn</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"". $db->result($result,0,"ldap_basedn") ."\" /></td></tr>";
-	echo "<tr><td>rootdn (for non anonymous binds)</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"". $db->result($result,0,"ldap_rootdn") ."\" /></td></tr>";
-	echo "<tr><td>Pass (for non-anonymous binds)</td><td><input type=\"text\" name=\"ldap_pass\" value=\"". $db->result($result,0,"ldap_pass") ."\" /></td></tr>";
-	echo "<tr><td>IMAP configuration</td><td></td></tr>";
-	echo "<tr><td>IMAP Auth Server</td><td><input type=\"text\" name=\"imap_auth_server\" value=\"". $db->result($result,0,"imap_auth_server") ."\" /></td></tr>";
-	echo "<tr><td>IMAP Host Name (users email will be login@thishost)</td><td><input type=\"text\" name=\"imap_host\" value=\"". $db->result($result,0,"imap_host") ."\" /></td></tr>";
-	echo "</table>";
-	echo "<input type=\"hidden\" name=\"install\" value=\"Etape_7\" />";
-	echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
-	echo "</form>";
+	if($extsources == 1) {
+		$db = new DB;
+		$query = "select * from glpi_config where config_id = 1";
+		$result = $db->query($query);
+		echo "Configuration des paramètres de connection externe";
+		echo "<br /> Si vous ne souhaitez pas utiliser LDAP ou/et IMAP comme source(s) de connection laissez les champs vides";
+		echo "<br /><form action=\"install.php\" method=\"post\">";
+		echo "<table>";
+		echo "<tr><td>LDAP configuration</td><td></td></tr>";
+		echo "<tr><td>LDAP Host</td><td><input type=\"text\" name=\"ldap_host\" value=\"". $db->result($result,0,"ldap_host") ."\"/></td></tr>";
+		echo "<tr><td>Basedn</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"". $db->result($result,0,"ldap_basedn") ."\" /></td></tr>";
+		echo "<tr><td>rootdn (for non anonymous binds)</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"". $db->result($result,0,"ldap_rootdn") ."\" /></td></tr>";
+		echo "<tr><td>Pass (for non-anonymous binds)</td><td><input type=\"text\" name=\"ldap_pass\" value=\"". $db->result($result,0,"ldap_pass") ."\" /></td></tr>";
+		echo "<tr><td>IMAP configuration</td><td></td></tr>";
+		echo "<tr><td>IMAP Auth Server</td><td><input type=\"text\" name=\"imap_auth_server\" value=\"". $db->result($result,0,"imap_auth_server") ."\" /></td></tr>";
+		echo "<tr><td>IMAP Host Name (users email will be login@thishost)</td><td><input type=\"text\" name=\"imap_host\" value=\"". $db->result($result,0,"imap_host") ."\" /></td></tr>";
+		echo "</table>";
+		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_7\" />";
+		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
+		echo "</form>";
+	}
+	else {
+		echo "<br />Vous avez choisi de ne pas utiliser des sources externes pour l'identification de vos usagers. Vous pouvez passer à l'etape suivante qui terminera l'installation";
+		echo "<br /><form action=\"install.php\" method=\"post\">";
+		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_71\" />";
+		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
+		echo "</form>";
+	}
 }
 
 //Step 8 : Get and test LDAP and IMAP settings and fill the database And finish the install
@@ -620,6 +643,12 @@ function step8($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$imap_auth_server
 			echo " La librairie IMAP pour PHP ne semble pas installée sur votre système, impossible d'utiliser les identification IMAP pour l'instant";
 		}
 	}
+	step81();
+}
+
+
+function step81() {
+
 	echo "<h2>L'installation s'est bien terminée </h2>";
 	echo "<p>Il est recommandé maintenant d'appliquer un chmod+0 sur le fichier install.php</p>";
 	echo "<p>Vous pouvez utiliser l'application en cliquant <a href=\"index.php\">sur ce lien </a>.</p>";
@@ -707,19 +736,30 @@ include ("_relpos.php");
 				break;
 			case "Etape_5" :
 				header_html("Etape 5");
-				step6($_POST["root_doc"], $_POST["event_loglevel"], $_POST["num_of_events"], $_POST["expire_events"], $_POST["list_limit"], $_POST["cut"], $_POST["mailing"]);
+				step6($_POST["root_doc"], $_POST["event_loglevel"], $_POST["num_of_events"], $_POST["expire_events"], $_POST["list_limit"], $_POST["cut"]);
+				break;
+			case "Etape_51" :
+				header_html("Etape 5.1");
+				step61($_POST["mailing"]);
+				break;
+			case "Etape_61" :
+				header_html("Etape 6");
+				if(!empty($_POST["mailing"])) {
+					mailing_config_to_db($_POST["admin_email"],$_POST["mailing_signature"],$_POST["mailing_new_admin"],$_POST["mailing_attrib_admin"],$_POST["mailing_followup_admin"],$_POST["mailing_finish_admin"],$_POST["mailing_new_all_admin"],$_POST["mailing_attrib_all_admin"],$_POST["mailing_followup_all_admin"],$_POST["mailing_finish_all_admin"],$_POST["mailing_new_all_normal"],$_POST["mailing_attrib_all_normal"],$_POST["mailing_followup_all_normal"],$_POST["mailing_finish_all_normal"],$_POST["mailing_attrib_attrib"],$_POST["mailing_followup_attrib"],$_POST["mailing_finish_attrib"],$_POST["mailing_new_user"],$_POST["mailing_attrib_user"],$_POST["mailing_followup_user"],$_POST["mailing_finish_user"],$_POST["mailing_new_attrib"]);
+				}
+				step62();
 				break;
 			case "Etape_6" :
 				header_html("Etape 6");
-				if(!empty($_POST["mailing"])) {
-				
-				mailing_config_to_db($_POST["admin_email"],$_POST["mailing_signature"],$_POST["mailing_new_admin"],$_POST["mailing_attrib_admin"],$_POST["mailing_followup_admin"],$_POST["mailing_finish_admin"],$_POST["mailing_new_all_admin"],$_POST["mailing_attrib_all_admin"],$_POST["mailing_followup_all_admin"],$_POST["mailing_finish_all_admin"],$_POST["mailing_new_all_normal"],$_POST["mailing_attrib_all_normal"],$_POST["mailing_followup_all_normal"],$_POST["mailing_finish_all_normal"],$_POST["mailing_attrib_attrib"],$_POST["mailing_followup_attrib"],$_POST["mailing_finish_attrib"],$_POST["mailing_new_user"],$_POST["mailing_attrib_user"],$_POST["mailing_followup_user"],$_POST["mailing_finish_user"],$_POST["mailing_new_attrib"]);
-				}
-				step7();
+				step7($_POST["extsources"]);
 				break;
 			case "Etape_7" :
 				header_html("Etape 7");
 				step8($_POST["ldap_host"],$_POST["ldap_basedn"],$_POST["ldap_rootdn"],$_POST["ldap_pass"],$_POST["imap_auth_server"],$_POST["imap_host"]);
+				break;
+			case "Etape_71" :
+				header_html("Etape 7");
+				step81();
 				break;
 		}
 	}
