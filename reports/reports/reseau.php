@@ -80,14 +80,15 @@ echo "<input type='submit' value='".$lang["reports"][15]."' class='submit'>";
 echo "</td></tr></form>";
 
 
-echo "<form name='form' method='post' action='parPrises-list.php'>";
-echo "<tr class='tab_bg_1'><td>".$lang["reports"][42]."</td>";
-echo "<td>";
-dropdownValue("glpi_dropdown_netpoint", "prise", "");
-echo "</td><td>";
-echo "<input type='submit' value='".$lang["reports"][15]."' class='submit'>";
-echo "</td></tr></form>";
-
+if (countElementsInTable("glpi_dropdown_netpoint")>0){
+	echo "<form name='form' method='post' action='parPrises-list.php'>";
+	echo "<tr class='tab_bg_1'><td>".$lang["reports"][42]."</td>";
+	echo "<td>";
+	dropdownValue("glpi_dropdown_netpoint", "prise", "");
+	echo "</td><td>";
+	echo "<input type='submit' value='".$lang["reports"][15]."' class='submit'>";
+	echo "</td></tr></form>";
+}
 echo "</table>";
 echo "</div>";
 
