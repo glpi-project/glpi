@@ -68,6 +68,10 @@ $query = "SELECT count(ID) FROM glpi_networking";
 $result = $db->query($query);
 $number_of_networking = $db->result($result,0,0);
 
+$query = "SELECT count(ID) FROM glpi_monitors";
+$result = $db->query($query);
+$number_of_monitors = $db->result($result,0,0);
+
 # 2. Spew out the data in a table
 
 echo "<table border='0' width='100%'>";
@@ -75,6 +79,8 @@ echo "<tr><td>".$lang["Menu"][0].":</td><td>$number_of_computers</td></tr>";
 echo "<tr><td>".$lang["Menu"][2].":</td><td>$number_of_printers</td></tr>";
 echo "<tr><td>".$lang["Menu"][1].":</td><td>$number_of_networking</td></tr>";
 echo "<tr><td>".$lang["Menu"][4].":</td><td>$number_of_software</td></tr>";
+echo "<tr><td>".$lang["Menu"][3].":</td><td>$number_of_monitors</td></tr>";
+
 echo "<tr><td colspan='2' height=10></td></tr>";
 echo  "<tr><td colspan='2'><b>".$lang["setup"][5].":</b></td></tr>";
 
@@ -87,9 +93,9 @@ $i = 0;
 $number = $db->numrows($result);
 while ($i < $number) {
 	$os = $db->result($result, $i, "name");
-	$query = "SELECT ID,os FROM glpi_computers WHERE (os = '$os')";
+	$query = "SELECT count(*) FROM glpi_computers WHERE (os = '$os')";
 	$result2 = $db->query($query);
-	$counter = $db->numrows($result2);
+	$counter = $db->result($result2,0,0);
 	echo "<tr><td>$os</td><td>$counter</td></tr>";
 	$i++;
 }
@@ -98,7 +104,7 @@ echo "<tr><td colspan='2' height=10></td></tr>";
 echo  "<tr><td colspan='2'><b>".$lang["Menu"][4].":</b></td></tr>";
 
 
-# 3. Get some more number data (operating systems per computer)
+# 4. Get some more number data (installed softwares)
 
 $query = "SELECT ID, name FROM glpi_software ORDER BY name";
 $result = $db->query($query);
@@ -111,6 +117,62 @@ while ($i < $number) {
 	$i++;
 }
 
+echo "<tr><td colspan='2' height=10></td></tr>";
+echo  "<tr><td colspan='2'><b>".$lang["Menu"][1].":</b></td></tr>";
+
+# 4. Get some more number data (Networking)
+
+$query = "SELECT * FROM glpi_type_networking ORDER BY name";
+$result = $db->query($query);
+$i = 0;
+$number = $db->numrows($result);
+while ($i < $number) {
+	$type = $db->result($result, $i, "ID");
+	$net = $db->result($result, $i, "name");
+	$query = "SELECT count(*) FROM glpi_networking WHERE (type = '$type')";
+	$result3 = $db->query($query);
+	$counter = $db->result($result3,0,0);
+	echo "<tr><td>$net</td><td>$counter</td></tr>";
+	$i++;
+}
+
+echo "<tr><td colspan='2' height=10></td></tr>";
+echo  "<tr><td colspan='2'><b>".$lang["Menu"][3].":</b></td></tr>";
+
+# 4. Get some more number data (Monitor)
+
+$query = "SELECT * FROM glpi_type_monitors ORDER BY name";
+$result = $db->query($query);
+$i = 0;
+$number = $db->numrows($result);
+while ($i < $number) {
+	$type = $db->result($result, $i, "ID");
+	$net = $db->result($result, $i, "name");
+	$query = "SELECT count(*) FROM glpi_monitors WHERE (type = '$type')";
+	$result3 = $db->query($query);
+	$counter = $db->result($result3,0,0);
+	echo "<tr><td>$net</td><td>$counter</td></tr>";
+	$i++;
+}
+
+echo "<tr><td colspan='2' height=10></td></tr>";
+echo  "<tr><td colspan='2'><b>".$lang["Menu"][2].":</b></td></tr>";
+
+# 4. Get some more number data (Printers)
+
+$query = "SELECT * FROM glpi_type_printers ORDER BY name";
+$result = $db->query($query);
+$i = 0;
+$number = $db->numrows($result);
+while ($i < $number) {
+	$type = $db->result($result, $i, "ID");
+	$net = $db->result($result, $i, "name");
+	$query = "SELECT count(*) FROM glpi_printers WHERE (type = '$type')";
+	$result3 = $db->query($query);
+	$counter = $db->result($result3,0,0);
+	echo "<tr><td>$net</td><td>$counter</td></tr>";
+	$i++;
+}
 
 echo "</table>";
 echo "</body></html>";
