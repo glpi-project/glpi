@@ -30,6 +30,7 @@ This file is part of GLPI.
  Purpose of file:
  ----------------------------------------------------------------------
 */
+
 ?>
 <?php
 include ("_relpos.php");
@@ -42,8 +43,8 @@ commonHeader("Setup",$_SERVER["PHP_SELF"]);
 
 
 $max_time=min(get_cfg_var("max_execution_time"),get_cfg_var("max_input_time"));
-if ($max_time>5) {$defaulttimeout=$max_time-2;$defaulttimeout=5;}
-else {$defaulttimeout=1;$defaulttimeout=2;}
+if ($max_time>5) {$defaulttimeout=$max_time-2;$defaultrowlimit=5;}
+else {$defaulttimeout=1;$defaultrowlimit=2;}
 
 
 
@@ -107,9 +108,6 @@ flush();
 $conn = mysql_connect($dbhost,$dbuser,$dbpass) or die(mysql_error());
 $path = $path . "dump/";
 if (!is_dir($path)) mkdir($path, 0777);
-
-
-
 
 
 // génére un fichier backup.xml a partir de base dbhost connecté avec l'utilisateur dbuser et le mot de passe
