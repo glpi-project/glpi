@@ -45,6 +45,18 @@ if(!function_exists('loadLang')) {
 	}
 }
 
+//Verifie si il existe bien un utilisateur ayant les droits super-admin
+function superAdminExists() {
+	$db = new DB;
+	$query = "select type from glpi_users";
+	$result = $db->query($query);
+	$var1 = false;
+	while($line = $db->fetch_array($result)) {
+		if($line["type"] == "super-admin") $var1 = true;
+	}
+	return $var1;
+}
+
 //Verifie si la table $tablename existe
 function TableExists($tablename) {
   
@@ -261,6 +273,7 @@ function updatedbUpTo031()
 {
 
 global $lang;
+$ret = array();
 
 $db = new DB;
 if(!TableExists("glpi_config"))
@@ -716,9 +729,33 @@ if(!FieldExists("glpi_config","ldap_condition")) {
 	$db->query($query) or die("48 ".$lang["update"][90].$db->error());
 }
 
-$query = "ALTER TABLE `glpi_users` CHANGE `type` `type` ENUM( 'normal', 'admin', 'post-only', 'super-admin' ) DEFAULT 'normal' NOT NULL";
-$db->query($query) or die("49 ".$lang["update"][90].$db->error());
+$ret["adminchange"] = false;
+//All "admin" users have to be set as "super-admin"
+if(!superAdminExists()) {
+	$query = "update glpi_users set type = 'super-admin' where type = 'admin'";
+	$db->query($query) or die("49 ".$lang["update"][90].$db->error());
+	if($db->affected_rows() != 0) {
+		$ret["adminchange"] = true;
+	}
+}
 
+
+
+return $ret;
+}
+
+function showFormSu() {
+	global $lang;
+	echo "<div align='center'>";
+	echo "<h3>".$lang["update"][97]."</h3>";
+	echo "<p>".$lang["update"][98]."</p>";
+	echo "<p>".$lang["update"][99]."</p>";
+	echo "<form action=\"update.php\" method=\"post\">";
+	echo "<p>".$lang["update"][100]." <input type=\"text\" name=\"login_su\" /></p>";
+	echo "<p>".$lang["update"][101]." <input type=\"password\" name=\"pass_su1\" /></p>";
+	echo "<p>".$lang["update"][102]." <input type=\"password\" name=\"pass_su2\" /></p>";
+	echo "<input type=\"submit\" class='submit' name=\"ajout_su\" value=\"".$lang["install"][25] ."\" />";
+	echo "</div>";
 }
 
 //Debut du script
@@ -821,7 +858,7 @@ $db->query($query) or die("49 ".$lang["update"][90].$db->error());
 	echo "<br/><h3>Update</h3>";
 
 // step 1    avec bouton de confirmation
-if(empty($_POST["continuer"])) {
+if(empty($_POST["continuer"]) && empty($_POST["ajout_su"])) {
 	$db = new DB;
 	echo "<div align='center'>";
 	echo "<h3><span class='red'>".$lang["update"][91]."</span>".$lang["update"][92]. $db->dbdefault ."</h3>";
@@ -831,32 +868,59 @@ if(empty($_POST["continuer"])) {
 	echo "</div></form>";
 }
 // Step 2  
-else {
+elseif(empty($_POST["ajout_su"])) {
 	if(test_connect()) {
 		echo "<h3>".$lang["update"][93]."</h3>";
-		
 		if(!TableExists("glpi_config")) {
 			updateDbTo031();
 			updateDbUpTo031();
 		}
 		else 
 		{
-			updateDbUpTo031();
+			$tab = updateDbUpTo031();
 		}
+		if(!superAdminExists()) {
+			showFormSu();
+		}
+		else {
+			echo "<div align='center'>";
+			echo "<h3>".$lang["update"][94]."</h3>";
+			echo "<p>".$lang["install"][56]."</p>";
+			echo "<p>".$lang["install"][63]."</p></div>";
+			if(!empty($tab) && $tab["adminchange"]) {
+				echo "<div align='center'> <h2>". $lang["update"][96] ."<h2></div>";
+			}
+		
+			echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
+	
+		}
+	}
+	else {
+		echo "<h3> ";
+		echo $lang["update"][95] ."</h3>";
+        }
+	echo "</div></body></html>";
+}
+elseif(!empty($_POST["ajout_su"])) {
+	if(!empty($_POST["pass_su1"]) && !empty($_POST["login_su"]) && $_POST["pass_su1"] == $_POST["pass_su2"]) {
+		$db = new DB;
+		$query = "insert into glpi_users ( `ID` , `name` , `password` , `email` , `phone` , `type` , `realname` , `can_assign_job` , `location` ) VALUES ('', '".$login_su."', PASSWORD( '".$pass_su1."' ) , '', NULL , 'super-admin', '', 'yes', NULL)";
+		$db->query($query) or die(" No SU ".$lang["update"][90].$db->error());
+		echo "<div align='center'>";
+		echo "<h3>".$lang["update"][104]."</h3>";
+		echo "</div>";
 		echo "<div align='center'>";
 		echo "<h3>".$lang["update"][94]."</h3>";
 		echo "<p>".$lang["install"][56]."</p>";
 		echo "<p>".$lang["install"][63]."</p></div>";
 		echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
-	
 	}
 	else {
-		echo "<h3> ";
-		echo $lang["update"][95] ."</h3>";
-	
-      
-        }
-	echo "</div></body></html>";
+		echo "<div align='center' color='red'>";
+		echo "<h3>".$lang["update"][103]."</h3>";
+		echo "</div>";
+		showFormSu();
+	}
 }
 
 
