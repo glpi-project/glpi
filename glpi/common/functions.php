@@ -1317,6 +1317,7 @@ function printHelpDesk ($name,$from_helpdesk) {
 	echo "<option value='3'>".$lang["help"][27]."";
 	echo "<option value='4'>".$lang["help"][28]."";
 	echo "<option value='5'>".$lang["help"][29]."";
+	echo "<option value='6'>".$lang["help"][31]."";
 	echo "</select>";
 	echo "</td></tr>";
 

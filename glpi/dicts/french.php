@@ -199,11 +199,14 @@ $lang["tracking"][14] = "Seulement le matériel reseau";
 $lang["tracking"][15] = "Seulement les imprimantes";
 $lang["tracking"][16] = "Seulement les moniteurs";
 $lang["tracking"][17] = "Seulement les périphériques";
+$lang["tracking"][18] = "Seulement les logiciels";
+
 // 1 computers
 // 2 networking
 // 3 printers
 // 4 monitors
 // 5 peripherals
+// 6 software
 
 $lang["joblist"][0]	= "Statut";
 $lang["joblist"][1]	= "Date";
@@ -692,7 +695,7 @@ $lang["help"][18]	= "Votre signalement a &eacute;t&eacute; envoy&eacute;, le tra
 $lang["help"][19]	= "Merci d'avoir utilis&eacute; notre systeme d'aide automatique.";
 $lang["help"][20]	= "Votre probl&egrave;me ne peut pas être ajout&eacute; dans notre base de donn&eacute;es.";
 $lang["help"][21]	= "Veuillez prendre contact avec un  technicien. SVP";
-$lang["help"][22]	= "Rechercher votre numéro de machine";
+$lang["help"][22]	= "Rechercher votre numéro du matériel";
 $lang["help"][23] 	= "Saisissez les premi&egrave;res lettres  (nom, mat&eacute;riel ou n&deg;  de s&eacute;rie)"; 
 $lang["help"][24] 	= "Type Mat&eacute;riel";
 $lang["help"][25] 	= "Ordinateur";
@@ -701,6 +704,7 @@ $lang["help"][27] 	= "Imprimante";
 $lang["help"][28] 	= "Moniteur";
 $lang["help"][29] 	= "P&eacute;riph&eacute;rique";
 $lang["help"][30] 	= "G&eacute;n&eacute;ral";
+$lang["help"][31] 	= "Logiciel";
 
   // Mois
   $lang["calendarM"][0] = "Janvier" ;

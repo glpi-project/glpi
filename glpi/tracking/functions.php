@@ -92,6 +92,9 @@ function searchFormTracking ($show,$contains,$device) {
 	echo "<option "; if ($device == "5") { echo "selected"; }
 	echo " value=\"5\">".$lang["tracking"][17]."</option>";
 
+	echo "<option "; if ($device == "6") { echo "selected"; }
+	echo " value=\"6\">".$lang["tracking"][18]."</option>";
+
 	echo "</select>";
 	echo "</td>";
 	echo "<td align='center'><input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'></td>";
@@ -741,6 +744,9 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	break;
 	case 5 :
 	$item = "peripherals";
+	break;
+	case 6 :
+	$item = "software";
 	}
 	
 	
