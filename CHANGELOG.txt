@@ -1,10 +1,11 @@
 **** GLPI 0.4 ***
-12/09/2004
-Ajout de liens vers les fichiers d'aide (pas encore rédigés à ce jour)
-directement depuis l'appli.
 
 12/09/2004
-Sécurité générale de l'application (authetifications, insertions mysql etc etc!...)
+Ajout de liens vers les fichiers d'aide (pas encore rédigés à ce jour)
+directement depuis l'appli (console et helpdesk).
+
+12/09/2004
+Sécurité générale de l'application (authentifications, injections mysql etc etc!...)
 revue et corrigée.
 
 09/09/2004
@@ -12,13 +13,15 @@ Ajout d'un nouveau type d'utilisateur : "super-admin".
 
 
 08/09/2004
-Association d'une prise reseau pour chaque port reseau.
-Gestion des prises reseau.
+Association d'une prise réseau pour chaque port reseau.
+Gestion des prises réseau.
 
+07/09/04 
+Recherche possible dans le helpdesk sur le nom ordinateur/contact/numéro de série
 
 07/09/2004
 Ajout de champs de configuration LDAP.
-Permet d'ajouter des filtres de connection pour n'attaquer qu'une partie de l'annuaire.
+Permet d'ajouter des filtres de connection pour "n'attaquer" qu'une partie de l'annuaire.
 
 01/09/2004
 Ajout de transrapido, petite application permettant la traduction des dictionnaires
@@ -27,17 +30,20 @@ depuis un formmulaire web (merci nitwoh).
 30/08/2004
 Configuration des intitulés plus user-friendly.
 
+29/08/2004 
+Prise en compte des ips/mac dans l'affichage des rapports.
+
 29/08/2004
 Gestion des dates d'expiration des licences.
 
 20/08/2004
-Restauration et supprésion des interventions terminées possible.
+Restauration et suppression des interventions terminées possible.
 
 23/07/2004
 Durée réelle d'un intervention en plus de la date d'ouverture et de fermeture.
 
 23/07/2004
-Gestion des firmware pour le matériel reseau.
+Gestion des firmwares pour le matériel réseau.
 
 22/07/2004
 Nouvelle gestion des licences, possibilité d'en ajouter plusieurs à la fois, gestion de la date d'expiration.
@@ -65,7 +71,7 @@ Préfixage des tables dans la base de donnée
 Nouveaux formulaires de recherche pour tous les items
 
 13/07/2004
-Script d'installation et de mise a jour, plus besoin de toucher le fichier config tout se fait via des fomulaires web.
+Script d'installation et de mise à jour, plus besoin de toucher le fichier config tout se fait via des fomulaires web.
 
 11/07/2004
 Refonte de l'interface graphique, nouvelles icones, navigation plus aisée
