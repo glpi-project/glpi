@@ -358,8 +358,8 @@ class Identification
 
 	function eraseCookies()
 	{
-	$_SESSION = array();
-	session_destroy();
+		$_SESSION = array();
+		session_destroy();
 	}
 
 	function getErr()
