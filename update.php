@@ -187,7 +187,7 @@ $query = "ALTER TABLE users MODIFY phone varchar(100) NOT NULL default ''";
 
 //Version Superieur a 0.31 ajout de la table glpi_config
 
-$query = "create tableCREATE TABLE `glpi_config` (
+$query = "CREATE TABLE `glpi_config` (
   `config_id` int(11) NOT NULL auto_increment,
   `num_of_events` varchar(200) NOT NULL default '',
   `jobs_at_login` varchar(200) NOT NULL default '',
