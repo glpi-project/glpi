@@ -960,13 +960,57 @@ function makeConnector($sport,$dport) {
 	$ps=new Netport;
 	$ps->getFromDB($sport);
 	$nps="";
+	$ips="";
+	$macs="";
 	if (isset($ps->fields["netpoint"]))
 		$nps=$ps->fields["netpoint"];
+	if (isset($ps->fields["ifaddr"]))
+		$ips=$ps->fields["ifaddr"];
+	if (isset($ps->fields["ifmac"]))
+		$macs=$ps->fields["ifmac"];
+
 	$pd=new Netport;
 	$pd->getFromDB($dport);
 	$npd="";
+	$ipd="";
+	$macd="";
 	if (isset($pd->fields["netpoint"]))
-	$npd=$pd->fields["netpoint"];
+		$npd=$pd->fields["netpoint"];
+	if (isset($pd->fields["ifaddr"]))
+		$ipd=$pd->fields["ifaddr"];
+	if (isset($pd->fields["ifmac"]))
+		$macd=$pd->fields["ifmac"];
+
+	// Update unknown IP
+	$updates[0]="ifaddr";
+	if (empty($ips)&&!empty($ipd)){
+		$ps->fields["ifaddr"]=$ipd;
+		$ps->updateInDB($updates);
+		echo "<div align='center'><b>".$lang["connect"][19]."</b></div>";
+		}
+	else if (!empty($ips)&&empty($ipd)){
+		$pd->fields["ifaddr"]=$ips;		
+		$pd->updateInDB($updates);
+		echo "<div align='center'><b>".$lang["connect"][19]."</b></div>";
+		}
+	else if ($ips!=$ipd){
+		echo "<div align='center'><b>".$lang["connect"][20]."</b></div>";
+		}
+	// Update unknown MAC
+	$updates[0]="ifmac";
+	if (empty($macs)&&!empty($macd)){
+		$ps->fields["ifmac"]=$macd;
+		$ps->updateInDB($updates);
+		echo "<div align='center'><b>".$lang["connect"][21]."</b></div>";
+		}
+	else if (!empty($macs)&&empty($macd)){
+		$pd->fields["ifmac"]=$macs;		
+		$pd->updateInDB($updates);
+		echo "<div align='center'><b>".$lang["connect"][21]."</b></div>";
+		}
+	else if ($macs!=$macd){
+		echo "<div align='center'><b>".$lang["connect"][22]."</b></div>";
+		}
 	// Update unknown netpoint
 	$updates[0]="netpoint";
 	if (empty($nps)&&!empty($npd)){
