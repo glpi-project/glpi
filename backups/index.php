@@ -36,13 +36,11 @@ This file is part of GLPI.
 ?>
 <?php
 
-
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
 checkauthentication("admin");
-
 
 commonHeader("Setup",$_SERVER["PHP_SELF"]);
 
@@ -80,8 +78,9 @@ function xmlnow(what4){
 
 <?php
 
-// mySQL - variables
 
+
+// mySQL - variables
 $db = new DB;
 $dbhost=$db->dbhost;
 $dbuser=$db->dbuser;
@@ -91,8 +90,6 @@ $dbname=$db->dbdefault;
 
 
 // les deux options qui suivent devraient être incluses dans le fichier de config plutot non ?
-// number of backups to keep
-$backups = 6;
 // 1 only with ZLib support, else change value to 0
 $compression = 0;
 
@@ -100,14 +97,17 @@ $compression = 0;
 $path=$phproot."/backups/";
 
 
+if ($compression==1) $filetype = "sql.gz";
+else $filetype = "sql";
 
 // DO NOT CHANGE THE LINES BELOW
-
-
 flush();
 $conn = mysql_connect($dbhost,$dbuser,$dbpass) or die(mysql_error());
 $path = $path . "dump/";
 if (!is_dir($path)) mkdir($path, 0777);
+
+
+
 
 
 // génére un fichier backup.xml a partir de base dbhost connecté avec l'utilisateur dbuser et le mot de passe
@@ -189,14 +189,56 @@ if ($A->IsError==1)
 
 //fin de fonction xmlbackup
 }
+////////////////////////// DUMP SQL FUNCTIONS
+function init_time() 
+{
+    global $TPSDEB,$TPSCOUR;
+    
+    
+    list ($usec,$sec)=explode(" ",microtime());
+    $TPSDEB=$sec;
+    $TPSCOUR=0;
 
-function get_def($dbname, $table) {
-    global $conn;
-    $db = new DB;
-    $def = "";
-    $def .= "DROP TABLE IF EXISTS $table;#%%\n";
+}
+
+function current_time() 
+{
+    global $TPSDEB,$TPSCOUR;
+    list ($usec,$sec)=explode(" ",microtime());
+    $TPSFIN=$sec;
+    if (round($TPSFIN-$TPSDEB,1)>=$TPSCOUR+1) //une seconde de plus
+    {
+    $TPSCOUR=round($TPSFIN-$TPSDEB,1);
+    flush();
+    }
+
+}
+
+function get_content($db, $table,$from,$limit)
+{
+     $content="";
+     $result = $db->query("SELECT * FROM $table LIMIT $from,$limit");
+     if($result)
+     while($row = $db->fetch_row($result)) {
+         $insert = "INSERT INTO $table VALUES (";
+         for($j=0; $j<$db->num_fields($result);$j++) {
+            if(!isset($row[$j])) $insert .= "NULL,";
+            else if($row[$j] != "") $insert .= "'".addslashes($row[$j])."',";
+            else $insert .= "'',";
+         }
+         $insert = ereg_replace(",$","",$insert);
+         $insert .= ");\n";
+         $content .= $insert;
+     }
+     return $content;
+}
+
+
+function get_def($db, $table) {
+    $def = "### Dump table $table\n\n";
+    $def .= "DROP TABLE IF EXISTS $table;\n";
     $def .= "CREATE TABLE $table (\n";
-    $result = $db->query("SHOW FIELDS FROM $table",$conn);
+    $result = $db->query("SHOW FIELDS FROM $table");
     while($line = $db->fetch_array($result)) {
         $def .= "    $line[Field] $line[Type]";
         if (isset($line["Default"]) && $line["Default"] != "") $def .= " DEFAULT '$line[Default]'";
@@ -205,7 +247,7 @@ function get_def($dbname, $table) {
         	$def .= ",\n";
      }
      $def = ereg_replace(",\n$","", $def);
-     $result = $db->query("SHOW KEYS FROM $table",$conn);
+     $result = $db->query("SHOW KEYS FROM $table");
      while($line = $db->fetch_array($result)) {
           $kname=$line["Key_name"];
           if(($kname != "PRIMARY") && ($line["Non_unique"] == 0)) $kname="UNIQUE|$kname";
@@ -219,69 +261,226 @@ function get_def($dbname, $table) {
           else $def .= "   KEY $x (" . implode($columns, ", ") . ")";
      }
 
-     $def .= "\n);#%%";
+     $def .= "\n);\n\n";
      return (stripslashes($def));
 }
 
-function get_content($dbname, $table)
+
+function restoreMySqlDump($db,$dumpFile , $duree)
 {
-     $db = new DB;
-     global $conn;
-     $content="";
-     $result = $db->query("SELECT * FROM $table",$conn);
-     while($row = $db->fetch_row($result)) {
-         $insert = "INSERT INTO $table VALUES (";
-         for($j=0; $j<$db->num_fields($result);$j++) {
-            if(!isset($row[$j])) $insert .= "NULL,";
-            else if($row[$j] != "") $insert .= "'".addslashes($row[$j])."',";
-            else $insert .= "'',";
-         }
-         $insert = ereg_replace(",$","",$insert);
-         $insert .= ");#%%\n";
-         $content .= $insert;
-     }
-     return $content;
+// $dumpFile, fichier source
+// $database, nom de la base de données cible
+// $mysqlUser, login pouyr la connexion au serveur MySql
+// $mysqlPassword, mot de passe
+// $histMySql, nom de la machine serveur MySQl
+// $duree=timeout pour changement de page (-1 = aucun)
+
+global $TPSCOUR,$offset,$cpt;
+$db=new DB;
+
+if ($db->error)
+{
+     echo "Connexion impossible à $hostMySql pour $mysqlUser";
+     return FALSE;
 }
 
-if ($compression==1) $filetype = "sql.gz";
-else $filetype = "sql";
+if(!file_exists($dumpFile))
+{
+     echo "$dumpFile non trouvé<br>";
+     return FALSE;
+}
+$fileHandle = fopen($dumpFile, "rb");
+
+if(!$fileHandle)
+{
+    echo "Ouverture de $dumpFile non trouvé<br>";
+    return FALSE;
+}
+
+if ($offset!=0)
+{
+     if (fseek($fileHandle,$offset,SEEK_SET)!=0) //erreur
+     {
+        echo "Impossible de trouver l'octet ".number_format($offset,0,""," ")."<br>";
+        return FALSE;
+     }
+    flush();
+}
+    
+$formattedQuery = "";
+
+while(!feof($fileHandle))
+{
+    current_time();
+    if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
+        return TRUE;
+
+//    echo $TPSCOUR."<br>";
+    $buffer=fgets($fileHandle);
+    if (substr($buffer,strlen($buffer),1)==0)
+        $buffer=substr($buffer,0,strlen($buffer)-1);
+    
+    if(substr($buffer, 0, 1) != "#")
+    {
+        $formattedQuery .= $buffer;
+        if (substr($formattedQuery,-1)==";")
+        if ($db->query($formattedQuery)) //réussie sinon continue à conca&téner
+        {
+            $offset=ftell($fileHandle);
+            $formattedQuery = "";
+            $cpt++;
+        }
+		
+    }
+    
+}
+
+if ($db->error)
+     echo "<hr>ERREUR à partir de [$formattedQuery]<br>".mysql_error()."<hr>";
+
+fclose($fileHandle);
+$offset=0;
+return TRUE;
+}
+
+function backupMySql($db,$dumpFile, $duree,$rowlimit)
+{
+// $dumpFile, fichier source
+// $database, nom de la base de données cible
+// $mysqlUser, login pouyr la connexion au serveur MySql
+// $mysqlPassword, mot de passe
+// $histMySql, nom de la machine serveur MySQl
+// $duree=timeout pour changement de page (-1 = aucun)
+
+global $TPSCOUR,$offsettable,$offsetrow,$cpt;
+
+if ($db->error)
+{
+     echo "Connexion impossible à $hostMySql pour $mysqlUser";
+     return FALSE;
+}
+
+$fileHandle = fopen($dumpFile, "a");
+
+if(!$fileHandle)
+{
+    echo "Ouverture de $dumpFile impossible<br>";
+    return FALSE;
+}
+
+if ($offsettable==1&&$offsetrow==0){
+ 	$time_file=date("Y-m-d-h-i");
+	$cur_time=date("Y-m-d H:i");
+	$todump="#GLPI Dump database on $cur_time\n";
+	fwrite ($fileHandle,$todump);
+
+}
+
+$result=$db->list_tables();
+$numtab=0;
+while ($t=$db->fetch_array($result)){
+	$tables[$numtab]=$t[0];
+$numtab++;
+}
+
+
+for (;$offsettable<$numtab;$offsettable++){
+// Dump de la strucutre table
+if ($offsetrow==-1){
+	$todump=get_def($db,$tables[$offsettable]);
+	fwrite ($fileHandle,$todump);
+	$offsetrow++;
+	$cpt++;
+	}
+    current_time();
+    if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
+        return TRUE;
+
+	$fin=0;
+	while (!$fin){
+	$todump=get_content($db,$tables[$offsettable],$offsetrow,$rowlimit);
+	$rowtodump=substr_count($todump, "INSERT INTO");
+	if ($rowtodump>0){
+	fwrite ($fileHandle,$todump);
+	$cpt+=$rowtodump;
+	$offsetrow+=$rowlimit;
+	if ($rowtodump<$rowlimit) $fin=1;
+    current_time();
+    if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
+        return TRUE;
+
+	}
+	else {$fin=1;$offsetrow=-1;}
+	}
+	if ($fin) $offsetrow=-1;
+    current_time();
+    if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
+        return TRUE;
+	
+}
+if (mysql_error())
+     echo "<hr>ERREUR à partir de [$formattedQuery]<br>".mysql_error()."<hr>";
+$offsettable=-1;
+fclose($fileHandle);
+return TRUE;
+}
+
 
 // #################" DUMP sql#################################
 
 if (isset($_GET["dump"]) && $_GET["dump"] != ""){
 
-
- 	$time_file=date("Y-m-d-h-i");
+    $time_file=date("Y-m-d-h-i");
 	$cur_time=date("Y-m-d H:i");
-	$newfile="#GLPI Dump database on $cur_time\r\n";
-	$tables = $db->list_tables($dbname,$conn);
-	$num_tables = @mysql_num_rows($tables);
-	$i = 0;
-	while($i < $num_tables) {
-	   $table = mysql_tablename($tables, $i);
+	$filename=$path."$time_file.$filetype";
+
+if (!isset($_GET["duree"])&&is_file($filename)){
+echo "<center>Le fichier existe déjà</center>";
+} else {
+init_time(); //initialise le temps
+//début de fichier
+if (!isset($_GET["offsettable"])) $offsettable=0; 
+else $offsettable=$_GET["offsettable"]; 
+//début de fichier
+if (!isset($_GET["offsetrow"])) $offsetrow=-1; 
+else $offsetrow=$_GET["offsetrow"];
+//timeout de 5 secondes par défaut, -1 pour utiliser sans timeout
+if (!isset($_GET["duree"])) $duree=2; 
+else $duree=$_GET["duree"];
+//Limite de lignes à dumper à chaque fois
+if (!isset($_GET["rowlimit"])) $rowlimit=4; 
+else  $rowlimit=$_GET["rowlimit"];
+
+ //si le nom du fichier n'est pas en paramètre le mettre ici
+if (!isset($_GET["fichier"])) {
+	$fichier=$filename;
+} else $fichier=$_GET["fichier"];
 	
-	   $newfile .= "\n# ----------------------------------------------------------\n#\n";
-	   $newfile .= "# ".$lang["backup"][6]." '$table' \n#\n";
-	   $newfile .= get_def($dbname,$table);
-	   $newfile .= "\n\n";
-	   $newfile .= "#\n# ".$lang["backup"][7]." '$table' \n#\n";
-	   $newfile .= get_content($dbname,$table);
-	   $newfile .= "\n\n";
-	   $i++;
-	}
-	
-	if ($compression==1) {
-		$fp = gzopen($path."$time_file.$filetype","w");
-		gzwrite ($fp,$newfile);
-		gzclose ($fp);
-	} else {
-		$fp = fopen ($path."$time_file.$filetype","w");
-		fwrite ($fp,$newfile);
-		fclose ($fp);
-	}
+echo "Sauvegarde de la BDD dans le $fichier.<br>Traitement en cours... ";
+if ($duree>0) echo "Durée limite de $duree s.<br>";
+if(isset($cpt))
+echo "<br>Nombre de requêtes traitées à ce stade : $cpt<br>";
+echo "A partir de la table numéro $offsettable à la ligne ".number_format($offsetrow,0,""," ");
+flush();
+
+//nom du fichier, nom de la base, nom d'utilisateur, mot de passe, serveur, duree
+if (backupMySql($db,$fichier,$duree,$rowlimit))
+{
+    if ($offsettable>=0)
+    {
+    echo "<br>Redirection automatique sinon cliquez <a href=\"index.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">ici</a>";
+    echo "<script>window.location=\"index.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\";</script>";
+    }
+    else
+     echo "<br>Terminé. Nombre de requêtes totales traitées : $cpt<br>";
+
+}
+}	
 }
 
 // ##############################   fin dump sql########################""""
+
+
 
 
 // ################################## dump XML #############################
@@ -296,18 +495,38 @@ xmlbackup($dbname, $dbhost, $dbuser, $dbpass);
 
 
 
-if (isset($_GET["file"]) && $_GET["file"] != "") {
-	$file = $_GET["file"];
-	$filename = $file;
-	set_time_limit(180);
-	if ($compression ==1) $file=gzread(gzopen($path.$file, "r"), 10485760);
-	else $file=fread(fopen($path.$file, "r"), 10485760);
-	$query=explode(";#%%\n",$file);
-	for ($i=0;$i < count($query)-1;$i++)
-	{
-		mysql_db_query($dbname,$query[$i],$conn) or die(mysql_error());
-	}
-	echo "<center>".$filename." ".$lang["backup"][8]."</center>";
+if (isset($_GET["file"]) && $_GET["file"] != ""&&is_file($path.$_GET["file"])) {
+
+init_time(); //initialise le temps
+//début de fichier
+if (!isset($_GET["offset"])) $offset=0;
+else  $offset=$_GET["offset"];
+//timeout de 5 secondes par défaut, -1 pour utiliser sans timeout
+if (!isset($_GET["duree"])) $duree=2; 
+else $duree=$_GET["duree"];
+
+echo "Restauration de $path$file.<br>Traitement en cours... ";
+if ($duree>0) echo "timeout de $duree s.<br>";
+if (isset($cpt))
+echo "<br>Nombre de requêtes traitées à ce stade : $cpt<br>";
+echo "<br>mais il faut continuer à l'octet ".number_format($offset,0,""," ");
+flush();
+ 
+//echo "$offset";
+//exit;
+//nom du fichier, nom de la base, nom d'utilisateur, mot de passe, serveur, duree
+if (restoreMySqlDump($db,$path.$_GET["file"],$duree))
+{
+    if ($offset!=0)
+    {
+    echo "<br>Redirection automatique sinon cliquez <a href=\"index.php?file=".$_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt\">ici</a>";
+    echo "<script>window.location=\"index.php?file=".$_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt\";</script>";
+    }
+    else
+     echo "<br>Terminé. Nombre de requêtes totales traitées : $cpt<br>";
+
+}
+
 }
 
 if (isset($_GET["delfile"]) && $_GET["delfile"] != ""){
