@@ -77,12 +77,21 @@ if(!function_exists('loadLang')) {
 			include($file);
 	}
 }
-//computers-dropdowns to devices
-//devname (eg: hdd)
-//dpdname (eg: hdtype)
-//compDpName (eg: hdtype)
-//compcapacityname (eg: hdspace)
 
+/* ----------------------------------------------------------------- */
+/**
+* Get data from old dropdowns to new devices
+*
+* This function assure to keep clean data and integrity, during the change from 
+* computers-dropdown to computers devices. Then delete the unused old elements.
+*
+* @param integer devtype the devtype number 
+* @param string devname the device table name (end of the name (glpi_device_thisparam))
+* @param string dpdname the dropdown table name (end of the name (glpi_dropdown_thisparam))
+* @param string compdpdname the name of the dropdown foreign key on glpi_computers (eg : hdtype, processor) 
+* @param string specif='' the name of the dropdown value entry on glpi_computer (eg : hdspace, processor_speed) optionnal argument.
+* @returns nothing if everything is good, else display mysql query and error.
+*/
 function compDpd2Device($devtype,$devname,$dpdname,$compDpdName,$specif='') {
 	global $lang;
 	$query = "select * from glpi_dropdown_".$dpdname."";
@@ -106,14 +115,24 @@ function compDpd2Device($devtype,$devname,$dpdname,$compDpdName,$specif='') {
 			$db->query($query4) or die("unable to migrate from ".$dpdname." to ".$devname." for item computer:".$lncomp["ID"]."  ".$lang["update"][90].$db->error());
 		}
 	}
-	//TODO decommenter avant la mise en prod.
-	/*$query = "ALTER TABLE glpi_computers drop `".$compDpdName."`";
+	//Delete unused elements (dropdown on the computer table, dropdown table and specif)
+	$query = "ALTER TABLE glpi_computers drop `".$compDpdName."`";
 	$db->query($query) or die("Error : ".$query." ".mysql_error());
 	$query = "DROP TABLE `glpi_dropdown_".$dpdname."`";
-	$db->query($query) or die("Error : ".$query." ".mysql_error());*/
+	$db->query($query) or die("Error : ".$query." ".mysql_error());
+	if(!empty($specif)) {
+		$query = "ALTER TABLE glpi_computers drop `".$specif."`";
+		$db->query($query) or die("Error : ".$query." ".mysql_error());
+	}
 }
 
-//Verifie si il existe bien un utilisateur ayant les droits super-admin
+/*---------------------------------------------------------------------*/
+/**
+* Test if there is an user with superadmin rights
+*
+*
+* @returns boolean true if its ok, elsewhere false.
+*/
 function superAdminExists() {
 	$db = new DB;
 	$query = "select type, password from glpi_users";
@@ -125,6 +144,13 @@ function superAdminExists() {
 	return $var1;
 }
 
+/*---------------------------------------------------------------------*/
+/**
+* Put the correct root_doc value on glpi_config table.
+*
+*
+* @returns nothing if everything is right, display query and mysql error if bad.
+*/
 function updaterootdoc() {
 	
 	// hack pour IIS qui ne connait pas $_SERVER['REQUEST_URI']  grrrr
@@ -138,7 +164,13 @@ function updaterootdoc() {
 	$db->query($query) or die(" root_doc ".$lang["update"][90].$db->error());
 }
 
-//Affiche le formulaire de mise a jour du contenu (pour la compatibilité avec les addslashes de la V0.4)
+/*---------------------------------------------------------------------*/
+/**
+* Display the form of content update (addslashes compatibility (V0.4))
+*
+*
+* @returns nothing (displays)
+*/
 function showContentUpdateForm() {
 	
 	global $lang;
@@ -147,7 +179,6 @@ function showContentUpdateForm() {
 	echo "<p>".$lang["install"][63]."</p>";
 	echo "<p>".$lang["update"][107]."</p></div>";
 	echo "<p class='submit'> <a href=\"update_content.php\"><span class='button'>".$lang["install"][25]."</span></a>";
-//	echo "&nbsp;&nbsp; <a href=\"index.php\"><span class='button'>".$lang["choice"][1]."->".$lang["install"][64]."</span></a></p>";
 }
 
 
@@ -984,7 +1015,7 @@ if(!FieldExists("glpi_computers","is_template")) {
 
 
 
-//New internal peripherals config
+//New internal peripherals ( devices ) config
 
 if(!TableExists("glpi_computer_device")) {
 	$query = "CREATE TABLE `glpi_computer_device` (
@@ -1096,6 +1127,9 @@ if(!TableExists("glpi_device_sndcard")) {
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_sndcard ".$lang["update"][90].$db->error());
 	compDpd2Device(SND_DEVICE,"sndcard","sndcard","sndcard");
 }
+
+// END new internal devices.
+
 if(!TableExists("glpi_enterprises")) {
 	$query = "CREATE TABLE `glpi_enterprises` (
   `ID` int(11) NOT NULL auto_increment,
@@ -1629,6 +1663,30 @@ if(!FieldExists("glpi_printers","is_template")) {
 	$db->query($query) or die("0.5 add field deleted ".$lang["update"][90].$db->error());
 
 }
+// Ajout date_mod
+if(!FieldExists("glpi_printers","date_mod")) {
+	$query = "ALTER TABLE `glpi_printers` ADD `date_mod` DATETIME DEFAULT NULL";
+	$db->query($query) or die("Error : ".$query." ".mysql_error());
+}
+
+// Ajout date_mod
+if(!FieldExists("glpi_monitors","date_mod")) {
+	$query = "ALTER TABLE `glpi_monitors` ADD `date_mod` DATETIME DEFAULT NULL";
+	$db->query($query) or die("Error : ".$query." ".mysql_error());
+}
+
+// Ajout date_mod
+if(!FieldExists("glpi_software","date_mod")) {
+	$query = "ALTER TABLE `glpi_software` ADD `date_mod` DATETIME DEFAULT NULL";
+	$db->query($query) or die("Error : ".$query." ".mysql_error());
+}
+
+// Ajout date_mod
+if(!FieldExists("glpi_networking","date_mod")) {
+	$query = "ALTER TABLE `glpi_networking` ADD `date_mod` DATETIME DEFAULT NULL";
+	$db->query($query) or die("Error : ".$query." ".mysql_error());
+}
+
 
 // Update version number
 $query="UPDATE glpi_config set version='0.5' WHERE ID='1'";
