@@ -37,14 +37,20 @@ include ($phproot . "/glpi/includes.php");
 checkAuthentication("normal");
 
 
-# Titre
+commonHeader("Stats",$_SERVER["PHP_SELF"]);
 
-echo "<html><body bgcolor=#ffffff>";
-echo "<big><b>Génération des rapports excel</b></big><br><br>";
-echo "<b> cliquez sur les liens pour generer et telecharger les fichiers de rapports excel</b><br><br>";
+//Affichage du tableau de présentation
+echo "<center><table border='0' cellpadding=5>";
+echo "<tr><th>".$lang["reports"][10].":</th></tr>";
 
-echo "<a href='convexcel/rapport-computer.php' target=blanc_>Ordinateurs</a><br><br>";
-echo "<a href='convexcel/rapport-imprimantes.php' target=blanc_>Imprimantes</a><br><br>";
-echo "<a href='convexcel/rapport-reseaux.php' target=blanc_>Materiel reseau</a><br><br>";
-echo "<a href='convexcel/rapport-moniteurs.php' target=blanc_>Moniteurs</a>";
+
+	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='convexcel/rapport-computer.php' target=blanc_>".$lang["reports"][6]."</a></b></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='convexcel/rapport-imprimantes.php' target=blanc_>".$lang["reports"][7]."</a></b></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='convexcel/rapport-reseaux.php' target=blanc_>".$lang["reports"][8]."</a></b></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='convexcel/rapport-moniteurs.php' target=blanc_>".$lang["reports"][9]."</a></b></td></tr>";
+
+
+echo "</table></center>";
+
+commonFooter();
 ?>
