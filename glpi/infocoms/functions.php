@@ -60,7 +60,7 @@ function searchFormInfocom($field="",$phrasetype= "",$contains="",$sort= "",$del
 	$option["glpi_enterprises.name"]			= $lang["financial"][26];
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/infocoms/infocoms-search.php\">";
-	echo "<div align='center'><table class='tab_cadre' width='800'>";
+	echo "<div align='center'><table class='tab_cadre' width='900'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";

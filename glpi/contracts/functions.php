@@ -59,7 +59,7 @@ function searchFormContract($field="",$phrasetype= "",$contains="",$sort= "",$de
 	$option["glpi_contracts.compta_num"]			= $lang["financial"][13];
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/contracts/contracts-search.php\">";
-	echo "<div align='center'><table class='tab_cadre' width='800'>";
+	echo "<div align='center'><table class='tab_cadre' width='850px'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
