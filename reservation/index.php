@@ -35,6 +35,7 @@ This file is part of GLPI.
 
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
+include ($phproot . "/glpi/includes_setup.php");
 include ($phproot . "/glpi/includes_computers.php");
 include ($phproot . "/glpi/includes_printers.php");
 include ($phproot . "/glpi/includes_monitors.php");
@@ -46,28 +47,59 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 
-if (isset($_GET["add"]))
-{
-	checkAuthentication("admin");
-	addReservationItem($_GET);
-	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." added reservation item ".$_GET["device_type"]."-".$_GET["id_device"].".");
-	header("Location: $_SERVER[HTTP_REFERER]");
-} 
-else if (isset($_GET["delete"]))
-{
-	checkAuthentication("admin");
-	deleteReservationItem($_GET);
-	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." deleted reservation item.");
-	header("Location: $_SERVER[HTTP_REFERER]");
+
+if (isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"resa") == 0)){
+	checkAuthentication("normal");
+
+	commonHeader("Reservation",$_SERVER["PHP_SELF"]);
+
+	if (isset($_GET["clear"])){
+		if (deleteReservation($_GET["clear"])){
+			logEvent($_GET["clear"], "reservation", 4, "inventory", $_SESSION["glpiname"]."delete a reservation.");
+		}
+	}
+
+	if (isset($_GET["ID"])){
+		printCalendrier($_SERVER["PHP_SELF"],$_GET["ID"]);
+	}
+	else if (isset($_GET["add"])){
+		showAddReservationForm($_SERVER["PHP_SELF"],$_GET["add"],$_GET["date"]);
+	}
+	else if (isset($_POST["add_resa"])){
+		if (addReservation($_POST)){
+			logEvent($_POST["id_item"], "reservation", 4, "inventory", $_SESSION["glpiname"]."add a reservation.");
+			printCalendrier($_SERVER["PHP_SELF"],$_POST["id_item"]);
+		}
+	}
+	else {
+		printReservationItems();
+	}
 }
+else {
 
 
-if(!isset($_GET["start"])) $_GET["start"] = 0;
-if (!isset($_GET["order"])) $_GET["order"] = "ASC";
-if (!isset($_GET["field"])) $_GET["field"] = "glpi_reservation_item.ID";
-if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
-if (!isset($_GET["contains"])) $_GET["contains"] = "";
-if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_reservation_item.ID";
+	if (isset($_GET["add"]))
+	{
+		checkAuthentication("admin");
+		addReservationItem($_GET);
+		logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." added reservation item ".$_GET["device_type"]."-".$_GET["id_device"].".");
+		header("Location: $_SERVER[HTTP_REFERER]");
+	} 
+	else if (isset($_GET["delete"]))
+	{
+		checkAuthentication("admin");
+		deleteReservationItem($_GET);
+		logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." deleted reservation item.");
+		header("Location: $_SERVER[HTTP_REFERER]");
+	}
+
+
+	if(!isset($_GET["start"])) $_GET["start"] = 0;
+	if (!isset($_GET["order"])) $_GET["order"] = "ASC";
+	if (!isset($_GET["field"])) $_GET["field"] = "glpi_reservation_item.ID";
+	if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
+	if (!isset($_GET["contains"])) $_GET["contains"] = "";
+	if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_reservation_item.ID";
 
 
 	if (empty($tab["ID"]))
@@ -79,7 +111,9 @@ if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_reservation_item.ID";
 
 	searchFormReservationItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
 	showReservationItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
-	commonFooter();
+
+}
+commonFooter();
 
 
 ?>

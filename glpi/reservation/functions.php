@@ -201,7 +201,7 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 				showReservationForm($ri->fields["device_type"],$ri->fields["id_device"]);
 				echo "</td>";
 				echo "<td>";
-				echo "<a href='".$HTMLRel."helpdesk.php?show=resa&ID=$ID'>Voir les réservations</a>";
+				echo "<a href='".$target."?show=resa&ID=$ID'>Voir les réservations</a>";
 				echo "</td>";
 				echo "</tr>";
 			}
@@ -352,6 +352,7 @@ for ($i=1;$i<$jour_debut_mois;$i++)
 
 // voici le remplissage proprement dit
 if ($mois_courant<10&&strlen($mois_courant)==1) $mois_courant="0".$mois_courant;
+
 for ($i=1;$i<$nb_jour[$mois_courant-1]+1;$i++){
 	if ($i<10) $ii="0".$i;
 	else $ii=$i;
