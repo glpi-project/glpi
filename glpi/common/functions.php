@@ -173,8 +173,9 @@ $maintain =	array($lang["Menu"][5]=>array("/tracking/index.php","6"),
 		      $lang["Menu"][13]=>array("/stats/index.php"," "));
 
 				
-$config =	array($lang["Menu"][10]=>array("/setup/index.php"," "),
-	              $lang["Menu"][11]=>array("/preferences/index.php"," "),
+$config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
+		       $lang["Menu"][10]=>array("/setup/index.php"," "),
+		      $lang["Menu"][11]=>array("/preferences/index.php"," "),
 	              $lang["Menu"][12]=>array("/backups/index.php"," "));
 
 	// Send extra expires header if configured
@@ -194,13 +195,11 @@ $config =	array($lang["Menu"][10]=>array("/setup/index.php"," "),
 		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
 	}
 
-	// Include CSS
-	//echo "<style type=\"text/css\">\n";
-	//	include ("_relpos.php");
+	//  Appel  CSS
+	
          echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
 
-	//	include ($phproot . "/glpi/config/styles.css");
-	//echo "</style>\n";
+	
 
 	// Some Javascript-Functions which we may need later
 	echo "<script type=\"text/javascript\" language=\"JavaScript\">";
@@ -259,9 +258,9 @@ $config =	array($lang["Menu"][10]=>array("/setup/index.php"," "),
 	}
 	if ($navigation->settings) {
 		echo "<td align='center' valign='top'>";
-				echo "<img class='icon_nav' src=\"".$HTMLRel."pics/config.png\" alt=\"\" title=\"".$lang["setup"][56]."\"><br>";
+				echo "<img class='icon_nav' src=\"".$HTMLRel."pics/config.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>";
 
-		echo "<small>-&nbsp;".$lang["setup"][56]."&nbsp;-</small><br>";
+		echo "<small>-&nbsp;".$lang["Menu"][15]."&nbsp;-</small><br>";
 		foreach ($config as $key => $val) {
 			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
 		}	
@@ -282,7 +281,7 @@ $config =	array($lang["Menu"][10]=>array("/setup/index.php"," "),
 
 	// End headline
 
-	//echo "</td></tr></form>"; -> j'ai supprimé cette fermeture de balise form je vois pas à quoi elle sert
+	
 	echo "</td></tr>";	
 echo "</table>\n";
 				echo "</div>";
@@ -320,14 +319,11 @@ function helpHeader($title,$url,$name) {
 	echo "else version=\"n2\"; function historyback() { history.back(); } function historyforward() { history.forward(); }";
 	echo "</script>";
 	
-	// Include CSS
-	//echo "<style type=\"text/css\">\n";
-	//			include ("_relpos.php");
+	// Appel CSS
+	
         echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
 
-	//	include ($phproot . "/glpi/config/styles.css");
-	//echo "</style>\n";
-
+	
 	// End of Head
 	echo "</head>\n";
 	
@@ -342,7 +338,7 @@ function helpHeader($title,$url,$name) {
 	
 	// Logo with link to command center
 	echo "<td align='center' width='25%'>\n";
-	//echo "<a href=\"".$cfg_install["root"]."/central.php\" accesskey=\"0\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" ></a>";
+	
 	echo "<img src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" >";
 
         echo "</td>";
@@ -413,14 +409,11 @@ function nullHeader($title,$url) {
 	echo "else version=\"n2\"; function historyback() { history.back(); } function historyforward() { history.forward(); }";
 	echo "</script>";
 	
-	// Include CSS
-	//echo "<style type=\"text/css\">\n";
-	//			include ("_relpos.php");
+	// Appel CSS
+	
         echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
 
-	//	include ($phproot . "/glpi/config/styles.css");
-	//echo "</style>\n";
-
+	
 	// End of Head
 	echo "</head>\n";
 	
