@@ -289,10 +289,11 @@ function showperipheralForm ($target,$ID) {
 	echo "<tr><td>".$lang["peripherals"][8].":	</td>";
 	echo "<td><input type='text' name='contact' size='20' value=\"".$mon->fields["contact"]."\"></td>";
 	echo "</tr>";
-	echo "<tr><td>".$lang["reservation"][24].":</td><td><b>";
-	if (!empty($ID))
-	showReservationForm(5,$ID);
-	echo "</b></td></tr>";
+	if (!empty($ID)){
+		echo "<tr><td>".$lang["reservation"][24].":</td><td><b>";
+		showReservationForm(5,$ID);
+		echo "</b></td></tr>";
+	}
 
 	echo "</table>";
 
@@ -318,31 +319,6 @@ function showperipheralForm ($target,$ID) {
 	echo "<td><input type='text' size='20' name='otherserial' value=\"".$mon->fields["otherserial"]."\"></td>";
 	echo "</tr>";
 	
-
-
-
-		echo "<tr><td>".$lang["computers"][41].":	</td>";
-		echo "<td><input type='text' name='achat_date' readonly size='10' value='".$mon->fields["achat_date"]."'>";
-		echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&elem=achat_date&value=".$mon->fields["achat_date"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].achat_date.value='0000-00-00'\" value='reset'>";
-    echo "</td></tr>";
-		
-		echo "<tr><td>".$lang["computers"][42].":	</td>";
-		echo "<td><input type='text' name='date_fin_garantie' readonly size=10 value='".$mon->fields["date_fin_garantie"]."'>";
-		echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&elem=date_fin_garantie&value=".$mon->fields["date_fin_garantie"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date_fin_garantie.value='0000-00-00'\" value='reset'>";
-    echo "</td></tr>";
-		
-		echo "<tr><td>".$lang["computers"][43].":	</td>";
-		echo "<td>";
-		if ($mon->fields["maintenance"] == 1) {
-			echo " OUI <input type='radio' name='maintenance' value='1' checked>";
-			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value='0'>";
-		} else {
-			echo " OUI <input type='radio' name='maintenance' value=1>";
-			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value='0' checked >";
-		}
-		echo "</td></tr>";
 
 echo "</td></tr>";
 

@@ -383,28 +383,8 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		echo "<td><input type='text' size='20' name='otherserial' value=\"".$comp->fields["otherserial"]."\">";
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$lang["computers"][41].":	</td>";
-		echo "<td><input type='text' name='achat_date' readonly size='10' value=\"".$comp->fields["achat_date"]."\">";
-		echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=achat_date&amp;value=".$comp->fields["achat_date"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].achat_date.value='0000-00-00'\" value='reset'>";
-    echo "</td>";
-		
-		echo "<td>".$lang["computers"][42].":	</td>";
-		echo "<td><input type='text' name='date_fin_garantie' readonly size='10' value=\"".$comp->fields["date_fin_garantie"]."\">";
-		echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date_fin_garantie&amp;value=".$comp->fields["date_fin_garantie"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date_fin_garantie.value='0000-00-00'\" value='reset'>";
-    echo "</td></tr>";
-		
-		echo "<tr class='tab_bg_1'><td>".$lang["computers"][43].":	</td>";
-		echo "<td>";
-		// Maintenance ?
-		if ($comp->fields["maintenance"] == 1) {
-			echo " OUI <input type='radio' name='maintenance' value='1' checked>";
-			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value='0'>";
-		} else {
-			echo " OUI <input type='radio' name='maintenance' value='1'>";
-			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value='0' checked >";
-		}
+		echo "<tr class='tab_bg_1'><td>&nbsp;</td>";
+		echo "<td>&nbsp;";
 		echo "</td>";
 		
 		echo "<td>".$lang["computers"][27].": </td>";
@@ -428,10 +408,13 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		}
 		echo " ".$lang["computers"][28]."</td></tr>";
 		
-		echo "<tr class='tab_bg_1'><td>".$lang["reservation"][24].":</td><td><b>";
-		if (!$template)
+		echo "<tr class='tab_bg_1'>";
+		if (!$template){
+		echo "<td>".$lang["reservation"][24].":</td><td><b>";
 		showReservationForm(1,$ID);
-		echo "</b></td><td>".$lang["computers"][9]."</td><td>";
+		echo "</b></td>";
+		} else echo "<td>&nbsp;</td><td>&nbsp;</td>";
+		echo "<td>".$lang["computers"][9]."</td><td>";
 		dropdownValue("glpi_dropdown_os", "os", $comp->fields["os"]);
 		echo "</td></tr>";
 		

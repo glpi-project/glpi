@@ -1355,11 +1355,26 @@ function date_diff($from, $to) {
 	return (12*$years+$months);
 }
 
+function updateMaintenanceInfos($table,$type,$ID){
+	$db=new DB;
+	$elements=array();
+	$query="SELECT ID from $table WHERE maintenance='1'";
+	$result=$db->query($query);
+	while ($data=$db->fetch_array($result)){
+	$query_insert="INSERT INTO glpi_contract_device (FK_contract,FK_device,device_type) VALUES ('$ID','".$data["ID"]."','$type')";	
+	$result_insert=$db->query($query_insert) or die("0.5 insert for update maintenance ".$lang["update"][90].$db->error());
+	}
+// TOADD BEFORE RELEASE
+	$query_drop =  "ALTER TABLE `$table` DROP `maintenance`";
+	$result_drop=$db->query($query_drop) or die("0.5 drop for update maintenance ".$lang["update"][90].$db->error());
+
+}
+
 function updateWarrantyInfos($table,$type){
 	$db=new DB;
 	$elements=array();
 	$query="SELECT ID,achat_date,date_fin_garantie from $table ORDER BY achat_date,date_fin_garantie";
-	$result=$db->query($query);
+	$result=$db->query($query) or die("0.5 select for update warranty ".$lang["update"][90].$db->error());
 	while ($data=$db->fetch_array($result)){
 		if ($data['achat_date']!="0000-00-00"||$data['date_fin_garantie']!="0000-00-00"){
 			$IDitem=$data['ID'];
@@ -1369,21 +1384,41 @@ function updateWarrantyInfos($table,$type){
 			if ($data['date_fin_garantie']!="0000-00-00")
 				$duration=round(date_diff($achat_date,$data['date_fin_garantie']),2);
 			$query_insert="INSERT INTO glpi_infocoms (device_type,FK_device,buy_date,warranty_duration) VALUES ('$type','$IDitem','".$achat_date."','$duration')";
-			$result_insert=$db->query($query_insert);
+			$result_insert=$db->query($query_insert) or die("0.5 insert for update warranty ".$lang["update"][90].$db->error());
 		}
 	}
 // TOADD BEFORE RELEASE
-//	$query_drop =  "ALTER TABLE `$table` DROP `achat_date`";
-//	$result_drop=$db->query($query_drop);
-//	$query_drop =  "ALTER TABLE `$table` DROP `date_fin_garantie`";
-//	$result_drop=$db->query($query_drop);
+	$query_drop =  "ALTER TABLE `$table` DROP `achat_date`";
+	$result_drop=$db->query($query_drop) or die("0.5 drop1 for update warranty ".$lang["update"][90].$db->error());
+	$query_drop =  "ALTER TABLE `$table` DROP `date_fin_garantie`";
+	$result_drop=$db->query($query_drop) or die("0.5 drop2 for update warranty ".$lang["update"][90].$db->error());
 
+}
+function isMaintenanceUsed(){
+	$db = new DB;
+	$tables=array("glpi_computers","glpi_printers","glpi_monitors","glpi_peripherals","glpi_networking");
+	foreach ($tables as $key => $table){
+		$query="SELECT ID from $table WHERE maintenance='1';";
+		$result=$db->query($query) or die("0.5 find for update maintenance ".$lang["update"][90].$db->error());
+		if ($db->numrows($result)>0) return true;
+	}
+	return false;
+
+}
+
+function dropMaintenanceField(){
+	$db = new DB;
+	$tables=array("glpi_computers","glpi_printers","glpi_monitors","glpi_peripherals","glpi_networking");
+	foreach ($tables as $key => $table){
+		$query="ALTER TABLE `$table` DROP `maintenance`";
+		$result=$db->query($query) or die("0.5 alter for update maintenance ".$lang["update"][90].$db->error());
+	}
 }
 
 // Add a tmp_key in order to make the update easily
 
 $query ="ALTER TABLE `glpi_infocoms` ADD UNIQUE `tmp_key` ( `buy_date` , `warranty_duration` ); ";
-$result=$db->query($query);
+$result=$db->query($query) or die("0.5 alter1 for update warranty ".$lang["update"][90].$db->error());
 
 // Update Warranty Infos
 updateWarrantyInfos("glpi_computers",COMPUTER_TYPE);
@@ -1394,8 +1429,28 @@ updateWarrantyInfos("glpi_peripherals",PERIPHERAL_TYPE);
 
 // Delete the tmp_key
 $query="ALTER TABLE `glpi_infocoms` DROP INDEX `tmp_key`";
-$result=$db->query($query);
+$result=$db->query($query) or die("0.5 alter2 for update warranty ".$lang["update"][90].$db->error());
 
+// Update Maintenance Infos
+if (isMaintenanceUsed()){
+
+	$query="INSERT INTO `glpi_contracts` VALUES (1, 'Maintenance', '0', 5, '2005-01-01', 120, 0, 0, 0, 0, '', '', 'N', '00:00:00', '00:00:00', '00:00:00', '00:00:00', 'N', '00:00:00', '00:00:00', 'N');";
+	$result=$db->query($query) or die("0.5 insert_init for update maintenace ".$lang["update"][90].$db->error());
+
+	if ($result){
+		$query="SELECT ID FROM glpi_contracts;";
+		$result=$db->query($query) or die("0.5 select_init for update maintenace ".$lang["update"][90].$db->error());
+		if ($result){
+			$data=$db->fetch_array($result);
+			$IDcontract=$data["ID"];
+			updateMaintenanceInfos("glpi_computers",COMPUTER_TYPE,$IDcontract);
+			updateMaintenanceInfos("glpi_printers",PRINTER_TYPE,$IDcontract);
+			updateMaintenanceInfos("glpi_networking",NETWORKING_TYPE,$IDcontract);
+			updateMaintenanceInfos("glpi_monitors",MONITOR_TYPE,$IDcontract);
+			updateMaintenanceInfos("glpi_peripherals",PERIPHERAL_TYPE,$IDcontract);
+		}
+	}
+} else dropMaintenanceField();
 
 }
 
