@@ -253,7 +253,8 @@ function step1($update)
 	
 	//Test for option session use trans_id loaded or not.
 	echo "<tr><td><h4>".$lang["install"][74]."</h4></td>";
-	if(ini_get('session.use_trans_sid')) {
+	//if(ini_get('session.use_trans_sid')) {
+	if (isset($_POST[session_name()])||isset($_GET[session_name()])) {
 		echo "<td class='red'>".$lang["install"][75]."</td></tr>";
 		$error = 2;
 	}

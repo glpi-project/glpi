@@ -36,6 +36,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_setup.php");
+include ($phproot . "/glpi/includes_devices.php");
 require ("functions.php");
 
 
@@ -62,10 +63,10 @@ echo "<select name=\"dropdown\">";
 echo "<option value=\"glpi_type_computers\" ".($_POST["dropdown"]=="glpi_type_computers"?"selected":"").">".$lang["computers"][8]."</option>";
 echo "<option value=\"glpi_dropdown_os\" ".($_POST["dropdown"]=="glpi_dropdown_os"?"selected":"").">".$lang["computers"][9]."</option>";
 echo "<option value=\"glpi_dropdown_locations\" ".($_POST["dropdown"]=="glpi_dropdown_locations"?"selected":"").">".$lang["stats"][21]."</option>";
-echo "<option value=\"glpi_device_moboard\" ".($_POST["dropdown"]=="glpi_device_moboard"?"selected":"").">".$lang["computers"][35]."</option>";
-echo "<option value=\"glpi_device_processor\" ".($_POST["dropdown"]=="glpi_device_processor"?"selected":"").">".$lang["setup"][7]."</option>";
-echo "<option value=\"glpi_device_gfxcard\" ".($_POST["dropdown"]=="glpi_device_gfxcard"?"selected":"").">".$lang["computers"][34]."</option>";
-echo "<option value=\"glpi_device_hdd\" ".($_POST["dropdown"]=="glpi_device_hdd"?"selected":"").">".$lang["computers"][36]."</option>";
+echo "<option value=\"".MOBOARD_DEVICE."\" ".($_POST["dropdown"]=="glpi_device_moboard"?"selected":"").">".$lang["computers"][35]."</option>";
+echo "<option value=\"".PROCESSOR_DEVICE."\" ".($_POST["dropdown"]=="glpi_device_processor"?"selected":"").">".$lang["setup"][7]."</option>";
+echo "<option value=\"".GFX_DEVICE."\" ".($_POST["dropdown"]=="glpi_device_gfxcard"?"selected":"").">".$lang["computers"][34]."</option>";
+echo "<option value=\"".HDD_DEVICE."\" ".($_POST["dropdown"]=="glpi_device_hdd"?"selected":"").">".$lang["computers"][36]."</option>";
 echo "</select></td>";
 
 echo "<td align='right'>";
@@ -132,10 +133,12 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 //---------------------- DEVICE ------------------------------------------------------
 	echo "<table class='tab_cadre2' cellpadding='5' >";
 	echo "<tr><th>&nbsp;</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
+	$device_table = getDeviceTable($_POST["dropdown"]);
+	
 	//print_r($_POST["dropdown"]);
-	$device_type = constant(strtoupper($_POST["dropdown"]));
+	$device_type = $_POST["dropdown"];
 	//select devices IDs (table row)
-	$query = "select ID, designation from ".$_POST["dropdown"]." order by designation";
+	$query = "select ID, designation from ".$device_table." order by designation";
 	$result = $db->query($query);
 	while($line = $db->fetch_array($result)) {
 		
