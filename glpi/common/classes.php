@@ -280,6 +280,7 @@ class Identification
 		$type = $this->user->fields['type'];
 		$language = $this->user->prefs['language'];
 		$tracking_order = $this->user->prefs['tracking_order'];
+		//echo $tracking_order;
 		session_start();
 		$_SESSION["glpipass"] = $password;
 		$_SESSION["glpiname"] = $name;
