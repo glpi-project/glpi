@@ -309,7 +309,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 function showComputerForm ($template,$target,$ID) {
 
-	GLOBAL $cfg_install, $cfg_layout, $lang;
+	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel;
 
 	$comp = new Computer;
 
@@ -436,13 +436,13 @@ function showComputerForm ($template,$target,$ID) {
 		
 		echo "<tr><td>".$lang["computers"][41].":	</td>";
 		echo "<td><input type='text' name='achat_date' readonly size='10' value=\"".$comp->fields["achat_date"]."\">";
-		echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('mycalendar.php?form=form&amp;elem=achat_date','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+		echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=achat_date&amp;value=".$comp->fields["achat_date"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].achat_date.value='0000-00-00'\" value='reset'>";
     echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][42].":	</td>";
 		echo "<td><input type='text' name='date_fin_garantie' readonly size='10' value=\"".$comp->fields["date_fin_garantie"]."\">";
-		echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('mycalendar.php?form=form&amp;elem=date_fin_garantie','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+		echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date_fin_garantie&amp;value=".$comp->fields["date_fin_garantie"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date_fin_garantie.value='0000-00-00'\" value='reset'>";
     echo "</td></tr>";
 		
