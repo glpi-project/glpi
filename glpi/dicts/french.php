@@ -811,7 +811,7 @@ $lang["install"][62]	= "Vous pouvez supprimer ou modifier ces comptes ainsi que 
 $lang["install"][63]	= "Attention tout de même NE SUPPRIMEZ PAS l'utilisateur HELPDESK."; 
 $lang["install"][64]	= "Utiliser GLPI"; 
 $lang["install"][65]	= "Test sur l'extension magic_quotes_sybase";
-$lang["install"][66]	= "GLPI ne peux pas fonctionner avec l'option magic_quotes_sybase; Veuillez desactiver cette option et re-essayer";
+$lang["install"][66]	= "GLPI ne peux pas fonctionner avec l'option magic_quotes_sybase ; Veuillez désactiver cette option et réessayer";
 $lang["install"][67]	= "L'option magic_quotes_sybase n'est pas utilisée par votre serveur - Parfait !";
 $lang["install"][70]	= "Impossible de cr&eacute;er le fichier de connection  &#224; la base de donn&eacute;es, v&eacute;rifiez les droits sur les fichiers"; 
 
@@ -832,8 +832,8 @@ $lang["update"][103]	= "Le Login ou le mot de passe sont vides, ou vous avez sai
 $lang["update"][104]	= "Utilisateur bien enregistré vous pouvez vous connecter à l'application";
 $lang["update"][105]	= "Impossible d'accéder à la mise à jour de cette façon !!";
 $lang["update"][106]	= "Retourner à GLPI";
-$lang["update"]["107"]	= "Voulez vous proceder à une mise à jour du contenu de la base de donnée, pour le rendre compatible avec les fonction d'echappement des caractères spéciaux ?";
-$lang["update"]["108"]	= "La mise à jour du contenu ne semble pas nécessaire.";
-$lang["update"]["109"]	= "Voulez vous tout de même la faire ?";
-$lang["update"]["110"]	= "la mise à jour semble nécessaire.";
+$lang["update"][107]	= "Voulez vous proceder à une mise à jour du contenu de la base de donnée, pour le rendre compatible avec les fonction d'&eacute;chappement des caractères spéciaux ?";
+$lang["update"][108]	= "La mise à jour du contenu ne semble pas nécessaire.";
+$lang["update"][109]	= "Voulez vous tout de même la faire ?";
+$lang["update"][110]	= "La mise à jour semble nécessaire.";
 ?>

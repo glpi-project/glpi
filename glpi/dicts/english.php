@@ -127,6 +127,10 @@ $lang["connect"][15] 	= "To a monitor which";
 $lang["connect"][16] 	= "No item found"; 
 $lang["connect"][17]	= "Automatic update of the unknown netpoint";
 $lang["connect"][18]	= "Attention !! The netpoints of the two items are differents.";
+$lang["connect"][19]	= "Automatic update of the unknown IP address";
+$lang["connect"][20]	= "Attention !! The IP addresses of the two items are differents.";
+$lang["connect"][21]	= "Automatic update of the unknown MAC address";
+$lang["connect"][22]	= "Attention !! The MAC addresses of the two items are differents.";
 
 //header menu
 $lang["Menu"][0]	="Computers";
@@ -804,6 +808,9 @@ $lang["install"][61]	= "post-only/post-only for the postonly account";
 $lang["install"][62]	= "You can delete or modify these accounts as well as the first entries in the database."; 
 $lang["install"][63]	= "Attention DO NOT DELETE the HELPDESK user."; 
 $lang["install"][64] 	= "Use GLPI"; 
+$lang["install"][65]	= "magic_quotes_sybase extension test";
+$lang["install"][66]	= "GLPI does not work with the magic_quotes_sybase option ; Please set it off an retry";
+$lang["install"][67]	= "The magic_quotes_sybase option is not active on your server - Perfect !";
 $lang["install"][70] 	= "Impossible to create the database connection file, please verify the rights on the files"; 
 
 $lang["update"][90] 	= "Error during the database update"; 
@@ -823,5 +830,9 @@ $lang["update"][103]	= "The login or the password is empty, or you entered 2 dif
 $lang["update"][104]	= "Well recorded user you can connect to the application ";
 $lang["update"][105]	= "Impossible to reach the update in this way!! ";
 $lang["update"][106]	= "Go back to GLPI";
+$lang["update"][107]	= "Do you want to proceed the update of the content of the database in order to be compatible with the new compatibility system for the special characters ?";
+$lang["update"][108]	= "The update of the contents does not seem necessary. ";
+$lang["update"][109]	= "Do you want to do it ?";
+$lang["update"][110]	= "The update seems necessary. ";
 
 ?>
