@@ -196,12 +196,11 @@ function device_selecter($target,$cID,$withtemplate='') {
 	if(!empty($withtemplate) && $withtemplate == 2) {
 	//do nothing
 	} else {
-		echo "<table class='tab_cadre'>";
-		echo "<tr><th>";
-		echo $lang["devices"][0];
-		echo "</th></tr>";
-		echo "<tr>";
-		echo "<td align ='center'>"; 
+		
+		echo "<tr  class='tab_bg_1'><td colspan='2'>";
+		echo $lang["devices"][0].":";
+		echo "</td>";
+		echo "<td align ='center' colspan='63'>"; 
 		echo "<form action=\"$target\" method=\"post\">";
 		echo "<select name=\"new_device_type\">";
 		echo "<option value=\"".HDD_DEVICE."\">".$lang["devices"][1]."</option>";
@@ -212,6 +211,7 @@ function device_selecter($target,$cID,$withtemplate='') {
 		echo "<option value=\"".RAM_DEVICE."\">".$lang["devices"][6]."</option>";
 		echo "<option value=\"".SND_DEVICE."\">".$lang["devices"][7]."</option>";
 		echo "</select>";
+		//echo "<td colspan='2' align='center'>";
 		echo "<input type=\"hidden\" name=\"withtemplate\" value=\"".$withtemplate."\" >";
 		echo "<input type=\"hidden\" name=\"connect_device\" value=\"".true."\" >";
 		echo "<input type=\"hidden\" name=\"cID\" value=\"".$cID."\" >";
@@ -219,8 +219,7 @@ function device_selecter($target,$cID,$withtemplate='') {
 		echo "</form>";
 		echo "</td>";
 		echo "</tr>";
-		echo "</table>";
-	}
+		}
 }
 
 //Print the form/tab to add a new device on a computer

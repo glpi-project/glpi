@@ -465,13 +465,9 @@ function showComputerForm($target,$ID,$withtemplate='') {
 			
 			echo "</div>";
 		}
-		echo "</table>";
-		echo "<br />";
-		
 		//ADD a new device form.
-		echo "<div align=\"center\">";
 		device_selecter($_SERVER["PHP_SELF"],$comp->fields["ID"],$withtemplate);
-		echo "</div>";
+		echo "</table>";
 		return true;
 	}
 	else {
