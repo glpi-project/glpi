@@ -545,7 +545,9 @@ function showSoftwareInstalled($instID) {
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 	$i = 0;
-	
+		
+        echo "<form method='post' action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
+
 	echo "<br><br><center><table border='0' width='90%'>";
 	echo "<tr><th colspan='2'>".$lang["software"][17].":</th></tr>";
 	
@@ -573,15 +575,14 @@ function showSoftwareInstalled($instID) {
 		$i++;		
 	}
 	echo "<tr class='tab_bg_1'><td align='center'>";
-	echo "<form method='post' action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
 	echo "<input type='hidden' name=cID value=$instID>";
 		dropdownSoftware();
 	echo "</td><td align='center' class='tab_bg_2'>";
 	echo "<input type='submit' name=select value=\"".$lang["buttons"][4]."\">";
 	echo "</td></tr>";
+        echo "</table></center>";
 	echo "</form>";
 
-	echo "</table></center>";
 }
 
 function countInstallations($sID) {

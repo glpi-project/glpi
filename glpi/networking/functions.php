@@ -48,7 +48,7 @@ function listNetdevices() {
 
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)>0) {
-			echo "<center><table border='0'><tr>";
+			echo "<div align='center'><table border='0'><tr>";
 			echo "<th>".$lang["networking"][0]."</th><th>".$lang["networking"][1]."</th>";
 			echo "<th>".$lang["networking"][2]."</th><th>".$lang["networking"][3]."</th>";
 			echo "<th>".$lang["networking"][9]."</th></tr>";
@@ -65,9 +65,9 @@ function listNetdevices() {
 				echo "<td>".$netdev->fields["date_mod"]."</td>";
 				echo "</tr>";
 			}	
-			echo "</table></center>";
+			echo "</table></div>";
 		} else {
-			echo "<b><center>".$lang["networking"][38]."</center></b>";
+			echo "<b><div align='center'>".$lang["networking"][38]."</div></b>";
 		}
 	}
 }
@@ -79,7 +79,7 @@ function showNetworkingForm ($target,$ID) {
 
 	$netdev = new Netdevice;
 
-	echo "<center><form name=form method='post' action=\"$target\">";
+	echo "<div align='center'><form name=form method='post' action=\"$target\">";
 	echo "<table border='0' cellpadding='2'>";
 	echo "<tr><th colspan='2'><b>";
 	if (empty($ID)) {
@@ -182,27 +182,27 @@ function showNetworkingForm ($target,$ID) {
 
 		echo "<tr>";
 		echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-		echo "<center><input type='submit' name=add value=\"".$lang["buttons"][8]."\"></center>";
+		echo "<div align='center'><input type='submit' name=add value=\"".$lang["buttons"][8]."\"></div>";
 		echo "</td>";
 		echo "</form></tr>";
 
-		echo "</table></center>";
+		echo "</table></div>";
 
 	} else {
 
 		echo "<tr>";
 		echo "<td class='tab_bg_2' valign='top'>";
 		echo "<input type='hidden' name=ID value=\"$ID\">\n";
-		echo "<center><input type='submit' name=update value=\"".$lang["buttons"][7]."\"></center>";
+		echo "<div align='center'><input type='submit' name=update value=\"".$lang["buttons"][7]."\"></div>";
 		echo "</td></form>\n\n";
 		echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
 		echo "<input type='hidden' name=ID value=\"$ID\">\n";
-		echo "<center><input type='submit' name=delete value=\"".$lang["buttons"][6]."\"></center>";
+		echo "<div align='center'><input type='submit' name=delete value=\"".$lang["buttons"][6]."\"></div>";
 		echo "</td>";
 		echo "</form></tr>";
 
-		echo "</table></center>";
+		echo "</table></div>";
 
 		showPorts($ID,2);
 
@@ -290,7 +290,7 @@ function showPorts ($device,$device_type) {
 	$query = "SELECT ID FROM networking_ports WHERE (on_device = $device AND device_type = $device_type) ORDER BY logical_number";
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 
-			echo "<br><center><table cellpadding='2' width='90%'>";
+			echo "<br><div align='center'><table cellpadding='2' width='90%'>";
 			echo "<tr><th colspan=6>";
 			echo $db->numrows($result)." ";
 			if ($db->numrows($result)<2) {
@@ -321,7 +321,7 @@ function showPorts ($device,$device_type) {
 				echo "</td>";
 				echo "</tr>";
 			}	
-			echo "</table></center>\n\n";
+			echo "</table></div>\n\n";
 		}
 	}
 }
@@ -343,7 +343,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype) {
 		$netport->getFromNull();
 	}
 
-	echo "<center><table><tr>";
+	echo "<div align='center'><table><tr>";
 	echo "<th colspan='2'>".$lang["networking"][20].":</th>";
 	echo "</tr>";
 	echo "<form method='post' action=\"$target\">";
@@ -458,12 +458,12 @@ function showPortsAdd($ID,$devtype) {
 	
 	GLOBAL $cfg_layout, $cfg_install, $lang;
 	
-	echo "<center><table border='0' width='90%' cellpadding='2'>";
+	echo "<div align='center'><table border='0' width='90%' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><b>";
 	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ondevice=$ID&devtype=$devtype\">";
 	echo $lang["networking"][19];
 	echo "</a></b></td></tr>";
-	echo "</table></center><br><br>";
+	echo "</table></div><br><br>";
 }
 
 function showConnection ($ID) {
@@ -479,7 +479,7 @@ function showConnection ($ID) {
 		echo "<td><b>";
 		echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ID=".$netport->fields["ID"]."\">";
 		echo $netport->fields["name"];
-		echo "</b></a>";
+		echo "</a></b>";
 		echo " ".$lang["networking"][25]." <b>";
 		if ($netport->fields["device_type"]==1) {
 			echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$netport->device_ID."\">";
@@ -514,7 +514,7 @@ function showConnectorSearch($target,$ID) {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
-	echo "<center><table border='0'>";
+	echo "<div align='center'><table border='0'>";
 	echo "<tr><th colspan='2'>".$lang["networking"][27]." $ID ".$lang["networking"][28].":</th></tr>";
 
 	echo "<tr class='tab_bg_1'>";
@@ -565,7 +565,7 @@ function listConnectorComputers($target,$input) {
 
 	$pID1 = $input["pID1"];
 
-	echo "<center><table border='0'>";
+	echo "<div align='center'><table border='0'>";
 	echo "<tr><th colspan='2'>".$lang["networking"][27]." $pID1 ".$lang["networking"][32].". ".$lang["networking"][33].":</th></tr>";
 	echo "<form method='post' action=\"$target\"><tr><td>";
 
@@ -613,14 +613,14 @@ function listConnectorPorts($target,$input) {
 	$number = $db->numrows($result);
 
 	if ($number < 1) {
-		echo "<center><b>".$lang["networking"][34]."</b></center>";
+		echo "<div align='center'><b>".$lang["networking"][34]."</b></div>";
 	} else {
 
-		echo "<center><table border='0' cellspacing=2 width='90%'>";
+		echo "<div align='center'><table border='0' cellspacing=2 width='90%'>";
 		echo "<tr><th>".$lang["networking"][27]." $pID1 ".$lang["networking"][35].". ".$lang["networking"][36]." ".$input["dID"].":</th></tr>";
-		echo "</table></center>";
+		echo "</table></div>";
 
-		echo "\n\n<br><center><table border='0' cellpadding='2' width='90%'>";
+		echo "\n\n<br><div align='center'><table border='0' cellpadding='2' width='90%'>";
 		echo "<tr><th>#</th><th>".$lang["networking"][0]."</th>";
 		echo "<th>".$lang["networking"][14]."</th><th>".$lang["networking"][15]."</th>";
 		echo "<th>".$lang["networking"][16]."</th><th>".$lang["networking"][17].":</th></tr>\n";
@@ -684,7 +684,7 @@ function makeConnector($sport,$dport) {
 	$db = new DB;
 	$query = "INSERT INTO networking_wire VALUES (NULL,$sport,$dport)";
 	if ($result = $db->query($query)) {
-		echo "<center><b>".$lang["networking"][44]." ".$sport." ".$lang["networking"][45]." ".$dport."</b></center>";
+		echo "<div align='center'><b>".$lang["networking"][44]." ".$sport." ".$lang["networking"][45]." ".$dport."</b></div>";
 		return true;
 	} else {
 		return false;
