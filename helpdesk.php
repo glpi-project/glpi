@@ -51,7 +51,7 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["show"],"","",0);
 	}
 	else {
-		 showJobDetails($_GET["ID"],0);
+		 showJobDetails($_GET["ID"]);
 	}
 }
 else {
