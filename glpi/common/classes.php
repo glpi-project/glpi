@@ -45,11 +45,12 @@ class DBmysql {
 	var $dbpassword	= "";
 	var $dbdefault	= "";
 	var $dbh;
+	var $error = 0;
 
 	function DB()
 	{  // Constructor
-		$this->dbh = mysql_connect($this->dbhost, $this->dbuser, $this->dbpassword);
-		mysql_select_db($this->dbdefault);
+		$this->dbh = mysql_connect($this->dbhost, $this->dbuser, $this->dbpassword) or $this->error = 1;
+		mysql_select_db($this->dbdefault) or $this->error = 1;
 	}
 	function query($query) {
 		return mysql_query($query);
