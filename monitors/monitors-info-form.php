@@ -57,9 +57,22 @@ if (isset($_POST["add"]))
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
-	Disconnect($tab["ID"],MONITOR_TYPE);
 	deleteMonitor($_POST);
 	logEvent($_POST["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
+	header("Location: ".$cfg_install["root"]."/monitors/");
+}
+else if (isset($_POST["restore"]))
+{
+	checkAuthentication("admin");
+	restoreMonitor($_POST);
+	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." restored item.");
+	header("Location: ".$cfg_install["root"]."/monitors/");
+}
+else if (isset($_POST["purge"]))
+{
+	checkAuthentication("admin");
+	deleteMonitor($_POST,1);
+	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." purge item.");
 	header("Location: ".$cfg_install["root"]."/monitors/");
 }
 else if (isset($_POST["update"]))

@@ -388,7 +388,7 @@ echo "</td></tr>";
 
 		echo "</table></center>";
 
-		showConnect($target,$ID,5);
+		showConnect($target,$ID,PERIPHERAL_TYPE);
 	}
 }
 
@@ -458,7 +458,7 @@ function deletePeripheral($input,$force=0) {
 }
 
 function restorePeripheral($input) {
-	// Restore CartridgeType
+	// Restore Peripheral
 	
 	$ct = new Peripheral;
 	$ct->restoreInDB($input["ID"]);
