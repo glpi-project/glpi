@@ -370,7 +370,11 @@ function helpHeader($title,$url,$name) {
 	echo "<td>";
 		showPasswordForm($cfg_install["root"]."/preferences/index.php",$name);
 	echo "</td>";
-	
+	// We tracking or post a new one
+	echo "<td><b>";
+        echo "<a href=\"".$cfg_install["root"]."/helpdesk.php\">".$lang["job"][13]."</a><br><br>";
+        echo "<a href=\"".$cfg_install["root"]."/helpdesk.php?show=user\">".$lang["tracking"][0]."</a>";
+	echo "</b></td>";
 	// On the right side of the navigation bar, we have a clock with
 	// date and a logout-link.
 	echo "<td align=right width=100><b><div align=right>";
