@@ -318,7 +318,12 @@ function checkAuthentication($authtype) {
 	// If $authtype is "normal" or "admin", it checks if the user
 	// has the privileges to do something. Should be used in every 
 	// control-page to set a minium security level.
-	if(!isset($_SESSION)) session_start();
+	
+	
+	
+	//if(!isset($_SESSION)) session_start();
+	if(!session_id()){@session_start();}
+	
 	
 	GLOBAL $cfg_install, $lang, $HTMLRel;
 
