@@ -770,6 +770,7 @@ class CommonItem{
 		switch ($this->device_type){
 			case GENERAL_TYPE :
 				return $lang["help"][30];
+				break;
 			case COMPUTER_TYPE :
 				return $lang["computers"][44];
 				break;

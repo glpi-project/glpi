@@ -64,7 +64,7 @@ $cfg_install["languages"]=array("english"=>array("English","english.php","englis
 				"italian"=>array("Italiano","italian.php","italian.html","hd-italian.html"));
 
 // ITEMS TYPE
-define("GENERAL_TYPE","1");
+define("GENERAL_TYPE","0");
 define("COMPUTER_TYPE","1");
 define("NETWORKING_TYPE","2");
 define("PRINTER_TYPE","3");

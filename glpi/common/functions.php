@@ -873,7 +873,11 @@ function dropdownValue($table,$myname,$value) {
 		echo "</select>";
 	}	else {
 
-	$query = "SELECT * FROM $table ORDER BY name";
+	$where="";
+	if ($table=="glpi_enterprises"||$table=="glpi_cartridge_type")
+		$where = "WHERE deleted='N' ";
+
+	$query = "SELECT * FROM $table $where ORDER BY name";
 	$result = $db->query($query);
 	
 	echo "<select name=\"$myname\" size='1'>";
@@ -1072,6 +1076,60 @@ function dropdownUsersTracking($value, $myname,$champ) {
    		}
 	}
 	echo "</select>";
+}
+
+function dropdownAllItems($name,$value='') {
+	$db=new DB;
+	
+	$items=array(
+	COMPUTER_TYPE=>"glpi_computers",
+	NETWORKING_TYPE=>"glpi_networking",
+	PRINTER_TYPE=>"glpi_printers",
+	MONITOR_TYPE=>"glpi_monitors",
+	PERIPHERAL_TYPE=>"glpi_peripherals",
+	SOFTWARE_TYPE=>"glpi_software",
+	);
+
+	echo "<select name=\"$name\" size='1'>";
+
+	foreach ($items as $type => $table){
+
+	$where="";
+//	if ($table=="glpi_enterprises"||$table=="glpi_cartridge_type")
+//		$where = "WHERE deleted='N' ";
+
+	$query = "SELECT ID FROM $table $where ORDER BY name";
+	$result = $db->query($query);
+	
+	$i = 0;
+	$number = $db->numrows($result);
+	
+	if ($number > 0) {
+		while ($i < $number) {
+			$ID=$db->result($result, $i, "ID");
+			$ci=new CommonItem;
+			$ci->getFromDB($type,$ID);
+			$output=$ci->getType()." - ".$ci->getName();
+			if (createAllItemsSelectValue($type,$ID) === $value) {
+				echo "<option value=\"".$type."_".$ID."\" selected>$output</option>";
+			} else {
+				echo "<option value=\"".$type."_".$ID."\">$output</option>";
+			}
+			$i++;
+		}
+	}
+	}
+	echo "</select>";
+	
+}
+
+function createAllItemsSelectValue($type,$ID){
+	return $type."_".$ID;
+}
+
+function explodeAllItemsSelectResult($val){
+	$splitter=split("_",$val);
+	return array($splitter[0],$splitter[1]);
 }
 
 

@@ -32,11 +32,21 @@ This file is part of GLPI.
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/contacts/classes.php");
-include ($phproot . "/glpi/contacts/functions.php");
-include ($phproot . "/glpi/enterprises/classes.php");
-include ($phproot . "/glpi/enterprises/functions.php");
-include ($phproot . "/glpi/infocoms/classes.php");
-include ($phproot . "/glpi/infocoms/functions.php");
+include ($phproot . "/glpi/includes.php");
+include ($phproot . "/glpi/includes_financial.php");
 
+checkAuthentication("normal");
+
+commonHeader($lang["title"][21],$_SERVER["PHP_SELF"]);
+if(empty($_GET["start"])) $_GET["start"] = 0;
+if(empty($_GET["order"])) $_GET["order"] = "DESC";
+if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
+else $_GET["deleted"] = "Y";
+
+titleInfocom();
+
+searchFormInfocom($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["deleted"]);
+showInfocomList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"]);
+
+commonFooter();
 ?>

@@ -384,8 +384,8 @@ function dropdownContactType($name,$value=0){
 	global $lang;
 	
 	echo "<select name='$name'>";
-	echo "<option value='2' ".($value==2?" selected ":"").">".$lang["financial"][42]."";
-	echo "<option value='1' ".($value==1?" selected ":"").">".$lang["financial"][43]."";
+	echo "<option value='2' ".($value==2?" selected ":"").">".$lang["financial"][42]."</option>";
+	echo "<option value='1' ".($value==1?" selected ":"").">".$lang["financial"][43]."</option>";
 	echo "</select>";	
 }
 function getContactTypeName($value){

@@ -1095,7 +1095,7 @@ $lang["financial"][10] = "Préavis";
 $lang["financial"][11] = "Type de Facturation";
 $lang["financial"][12] = "Commentaires";
 $lang["financial"][13] = "Numéro comptable";
-$lang["financial"][14] = "Date achat";
+$lang["financial"][14] = "Date d'achat";
 $lang["financial"][15] = "Date fin garantie";
 $lang["financial"][16] = "Informations garantie";
 $lang["financial"][17] = "Tiers";
@@ -1128,9 +1128,9 @@ $lang["financial"][43] = "Technicien";
 $lang["financial"][44] = "Adresse";
 $lang["financial"][45] = "Site Web";
 $lang["financial"][46] = "Contacts associés";
-$lang["financial"][47] = "";
-$lang["financial"][48] = "";
-$lang["financial"][49] = "";
+$lang["financial"][47] = "Linéaire";
+$lang["financial"][48] = "Dégressif";
+$lang["financial"][49] = "Eléments associés";
 $lang["financial"][50] = "";
 
 ?>

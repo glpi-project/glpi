@@ -181,7 +181,7 @@ function showEnterpriseList($target,$username,$field,$phrasetype,$contains,$sort
 			if ($sort=="glpi_enterprises.website") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.website&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.website&order=ASC&start=$start\">";
 			echo $lang["financial"][45]."</a></th>";
 
 			// PhoneNumber		
@@ -189,7 +189,7 @@ function showEnterpriseList($target,$username,$field,$phrasetype,$contains,$sort
 			if ($sort=="glpi_enterprises.phonenumber") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.phonenumber&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.phonenumber&order=ASC&start=$start\">";
 			echo $lang["financial"][29]."</a></th>";
 
 			echo "</tr>";
@@ -219,7 +219,7 @@ function showEnterpriseList($target,$username,$field,$phrasetype,$contains,$sort
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<div align='center'><b>".$lang["cartridges"][7]."</b></div>";
+			echo "<div align='center'><b>".$lang["financial"][39]."</b></div>";
 			
 		}
 	}
@@ -295,6 +295,7 @@ function showEnterpriseForm ($target,$ID) {
 		
 		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'></div>";
 		}
+		echo "</form>";
 		echo "</td>";
 		echo "</tr>";
 
@@ -381,7 +382,7 @@ function showAssociatedContact($instID) {
 	echo "<tr><th colspan='7'>".$lang["financial"][46].":</th></tr>";
 	echo "<tr><th>".$lang['financial'][27]."</th><th>".$lang["financial"][29]."</th>";
 	echo "<th>".$lang['financial'][29]." 2</th><th>".$lang["financial"][30]."</th>";
-	echo "<th>".$lang['financial'][31]." 2</th><th>".$lang["financial"][37]."</th>";
+	echo "<th>".$lang['financial'][31]."</th><th>".$lang["financial"][37]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
 	while ($i < $number) {
