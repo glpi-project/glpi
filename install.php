@@ -454,7 +454,8 @@ function step5()
 	echo "Configuration de GLPI : ";
 	echo "<p>Les valeurs présélectionnées sont les valeurs par defaut, il est recommandé de laisser ces valeurs</p>";
 	echo "<form action=\"install.php\" method=\"post\">";
-	echo "<p><label>Document root : <input type=\"text\" name=\"root_doc\" value=\"". $db->result($result,0,"root_doc") ."\"></label></p>";
+	$root_doc = ereg_replace("/install.php","",$_SERVER['REQUEST_URI']);
+	echo "<p><label>Document root : <input type=\"text\" name=\"root_doc\" value=\"". $root_doc ."\"></label></p>";
 	echo "<p><label>Niveau de log : <select name=\"event_loglevel\"><label></p>";
 	echo "<option value=\"1\">1- Critique (erreur de login seulement) </option>";
 	echo "<option value=\"2\">2- Sévère (Non utilisée) </option>";
