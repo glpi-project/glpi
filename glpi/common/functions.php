@@ -301,7 +301,7 @@ echo "</table>\n";
 function helpHeader($title,$url,$name) {
 	// Print a nice HTML-head for help page
 
-	GLOBAL $cfg_layout,$cfg_install,$lang;
+	GLOBAL $cfg_layout,$cfg_install,$lang,$cfg_features;
 
 	// Send extra expires header if configured
 	if ($cfg_features["sendexpire"]) {
@@ -314,7 +314,7 @@ function helpHeader($title,$url,$name) {
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1 \" >";
 
 	// Send extra expires header if configured
-	if ($cft_features["sendexpire"]) {
+	if ($cfg_features["sendexpire"]) {
 		echo "<META HTTP-EQUIV=\"Expires\" CONTENT=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
 		echo "<META HTTP-EQUIV=\"Pragma\" CONTENT=\"no-cache\">\n";
 		echo "<META HTTP-EQUIV=\"Cache-Control\" CONTENT=\"no-cache\">\n";
