@@ -224,7 +224,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	
 	// Logo with link to command center
 	echo "<td align='center' width='25%' >\n";
-	echo "<a href=\"".$cfg_install["root"]."/central.php\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\" border='0' alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>";
+	echo "<a href=\"".$cfg_install["root"]."/central.php\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>";
 	echo "</td>";
 
 	echo "<td valign='middle'>";
@@ -429,7 +429,7 @@ function nullHeader($title,$url) {
 	
 	// Logo with link to command center
 	echo "<td align='center' width='25%'>\n";
-	echo "<a href=\"".$cfg_install["root"]."/central.php\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\" border='0' alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" vspace=10></a>\n";
+	echo "<a href=\"".$cfg_install["root"]."/central.php\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\" alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" ></a>\n";
 	echo "</td>";
 
 	echo "<td valign='middle'>";
@@ -845,7 +845,7 @@ function printHelpDesk ($name) {
 	}
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td>".$lang["help"][12]." <a href=\"#\" onClick=\"window.open('".$cfg_install["root"]."/find_num.php','Help','scrollbars=1,resizable=1,width=400,height=400')\"><img src=\"".$cfg_install["root"]."/pics/aide.png\" border='0' alt=\"help\"></a></td>";
+	echo "<td>".$lang["help"][12]." <a href=\"#\" onClick=\"window.open('".$cfg_install["root"]."/find_num.php','Help','scrollbars=1,resizable=1,width=400,height=400')\"><img src=\"".$cfg_install["root"]."/pics/aide.png\"  alt=\"help\"></a></td>";
 	echo "<td><input name='computer' size='10'>";
 	echo "</td>";
 	echo "</tr>";
