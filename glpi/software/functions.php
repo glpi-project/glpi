@@ -662,6 +662,9 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 					echo "<tr class='tab_bg_1'>";
 					echo "<td><b>$i</b></td>";
 					echo "<td width='100%' align='center'><b>".$lic->serial."</b></td>";
+					echo "<td width='50%' align='center' class='tab_bg_1'><b>";
+					echo $lang["software"][26];
+					echo "</b></td>";
 					echo "<td align='center'><b>";
 					echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?back=$back&install=install&cID=$cID&lID=$ID\">";
 					echo $lang["buttons"][4];
