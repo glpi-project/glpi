@@ -66,7 +66,7 @@ class User {
 		$query = "SELECT * FROM glpi_users WHERE (name = '".unhtmlentities($name)."')";
 		if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=1) return false;
-		$data = $db->fetch_array($result);
+		$data = $db->fetch_assoc($result);
 			if (empty($data)) {
 				return false;
 			}
@@ -191,7 +191,7 @@ class User {
 	function getFromLDAP_active_directory($host,$basedn,$adm,$pass,$fields,$name)
 	{
 		// we prevent some delay..
-		if (empty($host)) {
+		if (empty($host)) {unset($user->fields["password"]);
 			return false;
 		}
 	
@@ -342,6 +342,7 @@ class User {
 			$query .= " WHERE name='";
 			$query .= $this->fields["name"];	
 			$query .= "'";
+			
 			$result=$db->query($query);
 		}
 		
