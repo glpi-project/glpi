@@ -363,6 +363,8 @@ function replaceDropDropDown($input) {
 		$db->query($query);
 		$query = "update glpi_peripherals set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$db->query($query);
+		$query = "update glpi_dropdown_netpoint set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		$db->query($query);
 
 		break;
 	case "monitors" :
@@ -506,6 +508,9 @@ function dropdownUsed($table, $ID) {
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		$query = "Select count(*) as cpt FROM glpi_peripherals where ". $name ." = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		$query = "Select count(*) as cpt FROM glpi_dropdown_netpoint where ". $name ." = ".$ID."";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 
