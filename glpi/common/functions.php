@@ -1014,7 +1014,7 @@ function getDropdownName($table,$id) {
 	$db = new DB;
 	$name = "";
 	$query = "select * from ". $table ." where ID = '". $id ."'";
-	$result = $db->query($query);
+	if ($result = $db->query($query))
 	if($db->numrows($result) != 0) {
 		if ($table=="glpi_dropdown_locations"||$table=="glpi_dropdown_kbcategories"){
 		$name=getTreeValueName($table,$id);
