@@ -318,21 +318,21 @@ function getEmpty () {
 		}
 
 	function displayError($type,$ID,$target){
-		global $HTMLRel;
+		global $HTMLRel,$lang;
 		
 		echo "<br><center>";
 		switch ($type){
 			case "date":
-			 echo "Erreur dans l'entrée de vos date. La date de début est surement supérieure à la date de fin";
+			 echo $lang["reservation"][19];
 			break;
 			case "is_res":
-			 echo "Le matériel demandé est déjà réservé pour cette plage.";
+			 echo $lang["reservation"][18];
 			break;
 			default :
 				echo "Erreur Inconnue";
 			break;
 		}
-		echo "<br><a href='".$target."?show=resa&ID=$ID'>Retour au calendrier</a>";
+		echo "<br><a href='".$target."?show=resa&ID=$ID'>".$lang["reservation"][20]."</a>";
 		echo "</center>";
 		}
 

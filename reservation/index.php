@@ -76,18 +76,21 @@ if (isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"re
 	}
 }
 else {
-
-
+	checkAuthentication("normal");
+	if ($_SESSION["glpitype"]=="normal"){
+		commonHeader("Reservation",$_SERVER["PHP_SELF"]);
+		printReservationItems($_SERVER["PHP_SELF"]);
+	}
+	// On est pas normal -> admin ou super-admin
+	else {
 	if (isset($_GET["add"]))
 	{
-		checkAuthentication("admin");
 		addReservationItem($_GET);
 		logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." added reservation item ".$_GET["device_type"]."-".$_GET["id_device"].".");
 		header("Location: $_SERVER[HTTP_REFERER]");
 	} 
 	else if (isset($_GET["delete"]))
 	{
-		checkAuthentication("admin");
 		deleteReservationItem($_GET);
 		logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." deleted reservation item.");
 		header("Location: $_SERVER[HTTP_REFERER]");
@@ -111,7 +114,7 @@ else {
 
 	searchFormReservationItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
 	showReservationItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
-
+}
 }
 commonFooter();
 

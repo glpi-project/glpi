@@ -532,7 +532,7 @@ function deleteReservation($ID){
 	
 	
 	if ($resa->getfromDB($ID))
-	if (isset($resa->fields["id_user"])&&$resa->fields["id_user"]==$_SESSION["glpiID"])
+	if (isset($resa->fields["id_user"])&&($resa->fields["id_user"]==$_SESSION["glpiID"]||isAdmin($_SESSION["glpitype"])))
 	return $resa->deleteFromDB($ID);
 	
 	return false;
