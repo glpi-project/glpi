@@ -59,50 +59,57 @@ function showKbItemForm($target,$ID){
 
 	$ki= new kbitem;	
 	
-	echo "Here is where you can add an article to the knowledge base.";
-	echo "<hr noshade><BR>";
+	
+	echo "<div id='contenukb'>";
 
 	echo "<form method='post' name='form' action=\"$target\">";
 	
 	if (empty($ID)) {
 		
 		$ki->getEmpty();
-		echo "on vide";
+		
 	
 	} else {
 		$ki->getfromDB($ID);
-		echo "on récup";
+		
 	echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 	}		
 
 	
-	echo "Select the category in which this article should be placed: ";
-	
-	
-	
+	echo "<p>".$lang["knowbase"][6];
 	kbcategoryList($ki->fields["categoryID"]);
+	echo "</p>";
+		
+	echo "<fieldset>";
+	echo "<legend>".$lang["knowbase"][3]."</legend>";
+	echo "<span><textarea cols='80' rows='10' wrap='soft' name='question' value=\"".$ki->fields["question"]."\">".$ki->fields["question"]."</textarea></span>"; 
+	echo "</fieldset>";
 	
-	echo "<br><br> Enter the question here.  Please be as detailed as possible with the question, but don't repeat information that can be inferred by the category.<br>";
 	
-	echo "<textarea cols='80' rows='10' wrap='soft' name='question' value=\"".$ki->fields["question"]."\">".$ki->fields["question"]."</textarea><br>"; 
+	echo "<fieldset>";
+	echo "<legend>".$lang["knowbase"][4]."</legend>";
+	echo "<span><textarea cols='80' rows='10' wrap='soft' name='answer' value=\"".$ki->fields["answer"]."\">".$ki->fields["answer"]."</textarea></span>"; 
+	echo "</fieldset>";
 	
-	echo "<textarea cols='80' rows='10' wrap='soft' name='answer' value=\"".$ki->fields["answer"]."\">".$ki->fields["answer"]."</textarea>"; 
+	
 	echo "<br>\n";
-
+	echo "</div>";
 	//echo "<input type='checkbox' name='faq' value=\"yes\"> Place this Knowledge Base Article into the publicly viewable FAQ as well. <BR>\n";
-	
+	echo "<div align='center'>";
 	if ($ki->fields["faq"] == "yes") {
-			echo "<input type='checkbox' name='faq' value='yes' checked>";
+			echo "<input class='submit' type='checkbox' name='faq' value='yes' checked>";
 		} else {
-			echo "<input type='checkbox' name='faq' value='yes''>";
+			echo "<input class='submit' type='checkbox' name='faq' value='yes'>";
 		}
-	echo "Place this Knowledge Base Article into the publicly viewable FAQ as well. <BR>\n";
+	echo $lang["knowbase"][5]."<br><br>\n";
 	
 	if (empty($ID)) {
-	echo "<input type='submit' name='add' value=\"Valider\"> <input type='reset' value=\"Reset\"></form>";
+	echo "<input type='submit' class='submit' name='add' value=\"".$lang["buttons"][2]."\"> <input type='reset' class='submit' value=\"".$lang["buttons"][16]."\"></form>";
 	} else {
-	echo "<input type='submit' name='update' value=\"Actualiser\"> <input type='reset' value=\"Reset\"></form>";
+	echo "<input type='submit' class='submit' name='update' value=\"".$lang["buttons"][7]."\"> <input type='reset' class='submit' value=\"".$lang["buttons"][16]."\"></form>";
 	}
+	
+	echo "</div>";
 } 
 
 
@@ -115,35 +122,35 @@ function kbItemMenu($ID)
 	
 	$ki->getfromDB($ID);
 
-	echo "<br><hr>";
 	
 	$isFAQ = $ki->fields["faq"];
 	
+	echo "<div align='center'><table class='tab_cadre' cellpadding='10' width='500px'><tr><th colspan='3'>";
+	
 	if($isFAQ == "yes")
 	{
-		echo "This Knowledge Base entry is part of the FAQ.";
+		echo $lang["knowbase"][10]."</th></tr>";
 	}
 	else
 	{
-		echo "This Knowledge Base entry is not part of the FAQ.";
+		echo $lang["knowbase"][11]."</th></tr>";
 	}
 
-	echo "<br><br>\n";
-	echo "<table border=0 width=100%>\n";
+	
 	echo "<tr>\n";
 	if($isFAQ == "yes")
 	{
-		echo "<td align=left width=\"33%\"><h4><a href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=$ID&removefromfaq=yes\">Remove Article from the FAQ</a></h4></td>\n";
+		echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=$ID&removefromfaq=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqremove.png\" alt='".$lang["knowbase"][7]."' title='".$lang["knowbase"][7]."'></a></td>\n";
 	}
 	else
 	{
-		echo "<td align=left width=\"33%\"><h4><a href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=$ID&addtofaq=yes\">Add Article to the FAQ</a></h4></td>\n";
+		echo "<td align='center' width=\"33%\"><a  class='icon_nav_move' href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=$ID&addtofaq=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqadd.png\" alt='".$lang["knowbase"][5]."' title='".$lang["knowbase"][5]."'></a></td>\n";
 	}
-	echo "<td align=left width=\"34%\"><h4><a href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=$ID&modify=yes\">Modify Article</a></h4></td>\n";
-	echo "<td align=left width=\"33%\"><h4><a href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=$ID&delete=yes\">Delete Article</A>";
-	echo "		</h4></td></tr>\n";
-	echo "</table>\n";
-	echo "<br>";
+	echo "<td align='center' width=\"34%\"><a class='icon_nav_move' href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=$ID&modify=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqedit.png\" alt='".$lang["knowbase"][8]."' title='".$lang["knowbase"][8]."'></a></td>\n";
+	echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=$ID&delete=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqdelete.png\" alt='".$lang["knowbase"][9]."' title='".$lang["knowbase"][9]."'></a>";
+	echo "		</td></tr>\n";
+	echo "</table></div>\n";
+	
 
 	
 
@@ -191,9 +198,18 @@ function updateKbItem($input) {
 
 	
 
-	// Pop off the last two attributes, no longer needed
+	// Pop off the last  attribute, no longer needed
 	$null=array_pop($input);
+	print_r($input);
 	
+	// Get faq and fill with no if unchecked in form
+	foreach ($ki->fields as $key => $val) {
+		if (eregi("\.*faq\.*",$key)) {
+			if (!isset($input[$key])) {
+				$input[$key]="no";
+			}
+		}
+	}
 		
 	// Fill the update-array with changes
 	$x=0;
@@ -222,22 +238,28 @@ function showKbCategories($parentID=0)
 	$query = "select * from glpi_kbcategories where (parentID = $parentID) order by name asc";
 
 	$db=new DB;
-		
+	
+	
+	
 	if ($result=$db->query($query)){
-			if ($db->numrows($result)>0){
+	
+		if ($db->numrows($result)>0){
 			echo "<ul>";	
 			while ($row=$db->fetch_array($result)){
 	
 	
 			$name = $row["name"];
-			echo "<li><B>$name</B>\n";
+			echo "<li><b>$name</b>\n";
 			$ID = $row["ID"];
 	  		showKbItemAll($ID);
 			showKbCategories($ID);
-		}
+			}
 		echo "</ul>\n";
-	}
+		}
+	
+	
 	} 
+	
 }
 
 function showKbItemAll($parentID)
@@ -248,6 +270,7 @@ function showKbItemAll($parentID)
 	$query = "select * from glpi_kbitems where (categoryID = $parentID) order by question asc";
 
 	$db=new DB;
+	
 	if ($result=$db->query($query)){
 		if ($db->numrows($result)>0){
 		echo "<ul>\n";
@@ -291,23 +314,26 @@ function ShowKbItemFull($ID)
 	// ok
 	global $lang;
 	
-	$query = "select * from glpi_kbitems where (ID=$ID)";
-
-	$db=new DB;
+	$ki= new kbitem;	
 	
-	if ($result=$db->query($query)){
-	$data = $db->fetch_array($result);
-	
-	$question = $data["question"];
-	$categoryID = $data["categoryID"];
+	$ki->getfromDB($ID);
+		
+	$question = $ki->fields["question"];
+	$categoryID = $ki->fields["categoryID"];
 	$fullcategoryname = kbcategoryname($categoryID);
-	echo "Catégorie : ".$fullcategoryname;
-	echo "<H2>Question :</H2>$question\n";
-	echo "<HR>\n";
-	echo "<H2>Answer:</H2>\n";
-	$answer = nl2br($data["answer"]);
-	echo "$answer";
-	}
+	
+	echo "<div align='center'><table class='tab_cadre' cellpadding='10' width='500px'><tr><th>";
+	
+	echo "Catégorie : ".$fullcategoryname."</th></tr>";
+	echo "<tr class='tab_bg_2'><td><H2>Question :</h2>";
+	echo clicurl($question);
+	echo "</td></tr>\n";
+	echo "<tr  class='tab_bg_2'><td><H2>Answer:</h2>\n";
+	$answer = autop($ki->fields["answer"]);
+	//$answer = $ki->fields["answer"];
+	echo clicurl($answer);
+	echo "</td></tr></table></div><br>";
+	
 	
 }
 

@@ -97,7 +97,7 @@ if (empty($tab["ID"])) {
 	updateKbItem($_POST);
 	
 		
-	header("Location: ".$cfg_install["root"]."/knowbase/");
+	header("Location: ".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=".$tab["ID"]);
 	
 	}
 	
@@ -108,7 +108,6 @@ if (empty($tab["ID"])) {
 	checkAuthentication("admin");
 	
 	deleteKbItem($tab["ID"]);
-	
 	header("Location: ".$cfg_install["root"]."/knowbase/");
 
 	}
@@ -121,8 +120,10 @@ if (empty($tab["ID"])) {
 	
 	KbItemaddtofaq($tab["ID"]);
 	
-	header("Location: ".$cfg_install["root"]."/knowbase/");
-
+	
+		
+	header("Location: ".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=".$tab["ID"]);
+	
 	}
 	
 	else if (isset($tab["ID"]) && $tab["removefromfaq"]=="yes"){
@@ -133,7 +134,10 @@ if (empty($tab["ID"])) {
 	
 	KbItemremovefromfaq($tab["ID"]);
 	
-	header("Location: ".$cfg_install["root"]."/knowbase/");
+	
+	
+		
+	header("Location: ".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=".$tab["ID"]);
 
 	}
 	

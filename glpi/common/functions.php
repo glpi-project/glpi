@@ -1631,4 +1631,45 @@ $result=$db->query($query);
 $ligne = $db->fetch_array($result);
 return $ligne['cpt'];
 }
+
+function nl2br_pre($string, $wrap = 40) {
+  
+  $string = nl2br($string);
+
+  preg_match_all("/<pre[^>]*?>(.|\n)*?<\/pre>/", $string, $pre1);
+
+  for ($x = 0; $x < count($pre1[0]); $x++) {
+   $pre2[$x] = preg_replace("/\s*<br[^>]*?>\s*/", "", $pre1[0][$x]);
+   $pre2[$x] = preg_replace("/([^\n]{".$wrap."})(?!<\/pre>)(?!\n)/", "$1\n", $pre2[$x]);
+   $pre1[0][$x] = "/".preg_quote($pre1[0][$x], "/")."/";
+  }
+
+  return preg_replace($pre1[0], $pre2, $string);
+
+}
+
+
+
+function autop($pee, $br=1) {
+
+// Thanks  to Matthew Mullenweg
+
+$pee = preg_replace("/(\r\n|\n|\r)/", "\n", $pee); // cross-platform newlines
+$pee = preg_replace("/\n\n+/", "\n\n", $pee); // take care of duplicates
+$pee = preg_replace('/\n?(.+?)(\n\n|\z)/s', "<p>$1</p>\n", $pee); // make paragraphs, including one at the end
+if ($br) $pee = preg_replace('|(?<!</p>)\s*\n|', "<br>\n", $pee); // optionally make line breaks
+return $pee;
+}
+
+
+
+function clicurl($string){
+
+// Rend une url cliquable htp/https/ftp meme avec une variable Get
+
+$text=preg_replace("`((?:https?|ftp)://\S+)(\s|\z)`", '<a href="$1">$1</a>$2', $string); 
+
+return $text;
+}
+
 ?>

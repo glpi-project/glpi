@@ -44,15 +44,14 @@ checkAuthentication("normal");
 
 	titleknowbase();
 	
-echo "This is the GLPI Knowledge Base system. It allows you to view all of the 
-knowledge base articles that have been entered.";
-echo "<br><BR><table border=0 width=100%><tr>";
-
-echo  "<td align=center><h4><a href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=new\">Add an Article</a>";
-
-echo "</h4></td></tr></TABLE>";
+echo "<div align='center'>";	
+	echo "<div align='center'><table border='0' class='tab_cadre' >";
+	echo "<tr><th align='center' width='700px'>Bases de connnaisances";	
+	echo "</th></tr><tr><td>";	
 
 showKbCategories();
+
+echo "</td></tr></table></div>";
 commonFooter();
 
 

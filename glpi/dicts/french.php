@@ -891,5 +891,14 @@ $lang["reservation"][24]	= "Pr&ecirc;t";
 $lang["knowbase"][0] ="Base de connaissances";
 $lang["knowbase"][1] ="FAQ";
 $lang["knowbase"][2] ="Ajouter un item &agrave; la base de connaissances";
+$lang["knowbase"][3] ="Question";
+$lang["knowbase"][4] ="R&eacute;ponse";
+$lang["knowbase"][5] ="Placer cet item dans la FAQ publique";
+$lang["knowbase"][6] ="S&eacute;lectionner une cat&eacute;gorie pour cet item : ";
+$lang["knowbase"][7] ="Retirer cet item de la FAQ publique";
+$lang["knowbase"][8] ="Modifier cet item ";
+$lang["knowbase"][9] ="Supprimer cet item ";
+$lang["knowbase"][10] ="Cet item fait partie de la FAQ publique ";
+$lang["knowbase"][11] ="Cet item ne fait pas partie de la FAQ publique  ";
 
 ?>
