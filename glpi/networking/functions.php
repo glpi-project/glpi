@@ -109,17 +109,6 @@ function showNetworkingForm ($target,$ID) {
 	echo "<tr><td>".$lang["networking"][3].":	</td>";
 	echo "<td><input type=text name=contact size=12 value=\"".$netdev->fields["contact"]."\"></td>";
 	echo "</tr>";
-
-
-- Configuration -
-Configuration
-Préferences
-Données
-19:01
-15. Feb 2004
-Déconnexion
-
-Notice: Un
 	echo "</table>";
 
 	echo "</td>\n";	
