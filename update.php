@@ -113,7 +113,7 @@ function compDpd2Device($devtype,$devname,$dpdname,$compDpdName,$specif='') {
 	$db = new DB;
 	$result = $db->query($query);
 	while($lndropd = $db->fetch_array($result)) {
-		$query2 = "insert into glpi_device_".$devname." (designation) values (\"".unhtmlentities($lndropd["name"])."\")";
+		$query2 = "insert into glpi_device_".$devname." (designation) values ('".addslashes(unhtmlentities($lndropd["name"]))."')";
 		$db->query($query2) or die("unable to transfer ".$dpdname." to ".$devname."  ".$lang["update"][90].$db->error());
 		$devid = mysql_insert_id();
 		$query3 = "select * from glpi_computers where ".$compDpdName." = '".$lndropd["ID"]."'";
