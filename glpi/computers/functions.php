@@ -449,10 +449,7 @@ function showComputerForm($target,$ID) {
 		echo "</table></div>";
 	}
 
-
-
-	
-	
+return true;	
 }
 /*
 function showComputerForm ($template,$target,$ID) {

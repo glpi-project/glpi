@@ -66,7 +66,7 @@ if (isset($tab["add"])) {
 	checkAuthentication("admin");
 	updateComputer($tab);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]."updated item.");
-	commonHeader("Computers",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
 	showComputerForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	showPorts($tab["ID"], 1);
 	showPortsAdd($tab["ID"],1);
@@ -88,14 +88,14 @@ else if(isset($tab["connect"])&&isset($tab["device_type"]))
 	if($tab["connect"]==1)
 	{
 		checkAuthentication("admin");
-		commonHeader("Computers",$_SERVER["PHP_SELF"]);
+		commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
 		showConnectSearch($_SERVER["PHP_SELF"],$tab["ID"],$tab["device_type"]);
 		commonFooter();
 	}	 
 	else if($tab["connect"]==2)
 	{
 		checkAuthentication("admin");
-		commonHeader("Computers",$_SERVER["PHP_SELF"]);
+		commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
 		listConnectElement($_SERVER["PHP_SELF"],$tab);
 		commonFooter();
 	} 
@@ -113,7 +113,7 @@ else if(isset($tab["connect"])&&isset($tab["device_type"]))
 	header("Location: $_SERVER[HTTP_REFERER]");
 }elseif(isset($_POST["new_device_type"])){
 	checkAuthentication("admin");
-	commonHeader("Computers",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
 	compdevice_form_add($_SERVER["HTTP_REFERER"],$_POST["new_device_type"],$_POST["cID"]);
 	commonFooter();
 }elseif(isset($_POST["new_device_id"])){
@@ -123,7 +123,7 @@ else if(isset($tab["connect"])&&isset($tab["device_type"]))
 }else {
 
 	checkAuthentication("normal");
-	commonHeader("Computers",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
 	if (isset($tab["withtemplate"]))
 	{
 		showComputerForm($_SERVER["PHP_SELF"],$tab["ID"]);
