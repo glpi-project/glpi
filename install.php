@@ -588,6 +588,10 @@ function step6($root_doc, $event_loglevel, $num_of_events, $expire_events,$jobs_
 function step7() {
 
 	global $lang;
+	include ("_relpos.php");
+	require_once ($phproot . "/glpi/common/classes.php");
+	require_once ($phproot . "/glpi/config/config_db.php");
+	$db = new DB;
 	$root_doc = ereg_replace("/install.php","",$_SERVER['REQUEST_URI']);
 	$query = "update glpi_config set root_doc = '".$root_doc."'";
 	$db->query($query);
