@@ -303,6 +303,7 @@ $lang["computers"][44]  = "Ordinateurs";
 $lang["computers"][45]  = "Choisissez un mod&egrave;le";
 $lang["computers"][46]	= "Périphériques";
 $lang["computers"][47] 	= "Pas de p&eacute;riph&eacute;rique connect&eacute;"; 
+$lang["computers"][48] 	= "Modification de lieu. Les éléments connectés ont été déplacés dans le même lieu."; 
 
 // Networking
 

@@ -70,7 +70,7 @@ class Computer {
 	}
 
 	function updateInDB($updates)  {
-
+		global $lang;
 		$db = new DB;
 
 		for ($i=0; $i < count($updates); $i++) {
@@ -84,6 +84,7 @@ class Computer {
 			$result=$db->query($query);
 		// Mise a jour du lieu des éléments rattachés
 		if ($updates[$i]=="location"){
+			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][48];
 			$updates2[0]="location";
 			//printers
 			$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='3'";
