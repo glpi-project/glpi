@@ -77,13 +77,6 @@ class baseFunctions {
 
 	var $maintain	= true;
 
-// set $admin to "false" to disable the LDAP-Browser
-// Laisser $admin = false si vous n'utilisez pas le navigateur LDAP
-// Le navigateur LDAP n'as pas été touché par les developpeurs de GLPI,
-// il s'agit donc de la version basée sur IRMA.
-// Il est conseillé de laisser false.
-	var $admin	= false;
-
 	var $settings	= true;
 
 				
@@ -124,13 +117,17 @@ $cfg_login['imap']['host'] = "sic.sp2mi.xxxx.fr";
 // 5 - Junk (i.e., setup dropdown fields, update users or templates) | log tout (ou presque)
 $cfg_features["event_loglevel"]	= 5;
 
-// Utilisation des fonctions mailing ou non
+// Utilisation des fonctions mailing ou non, mettez 1 si vous voulez utiliser les 
+//notifications par mail.
+//Necessite que votre fonction mail() fonctionne.
 $cfg_features["mailing"]	= 0;	
 // Addresse de l'administrateur (obligatoire si mailing activé)
 $cfg_mailing["admin_email"]	= "admsys@sic.sp2mi.xxxxx.fr";
 // Signature for automatic generated E-Mails
 $cfg_mailing["signature"]	= "SIGNATURE";
 
+
+// A utiliser  uniquement si $cfg_features["mailing"] = 1;
 // Définition des envois des mails d'informations
 // admin : vers le mail $cfg_features["admin_email"]
 // all_admin : tous les utilisateurs en mode admin
