@@ -576,38 +576,38 @@ $lang["setup"][72] 	= "Select a dropdown";
 $lang["setup"][73] 	= "Network point"; 
 
 
-// to be translated-------------
 $lang["setup"][100] 	= "General setup"; 
-$lang["setup"][101]="Chemin d'installation";
+$lang["setup"][101]="Installation path";
 $lang["setup"][102] 	= "Log Level"; 
-$lang["setup"][103]="1- Critique (erreur de login seulement)";
-$lang["setup"][104]="2- Sévère (Non utilisée) ";
-$lang["setup"][105]="3- Important (logins réussis) ";
-$lang["setup"][106]="4- Notices (Ajout, suppression, tracking)";
-$lang["setup"][107]="5- Complet (Tout) ";
-$lang["setup"][108]="Nombre d'évenements de log à afficher";
-$lang["setup"][109]="Temps en jours de conservation des logs (0 pour infini)";
-$lang["setup"][110]=" Montrer les interventions au login";
-$lang["setup"][111]="Nombre d'élements à afficher par page";
-$lang["setup"][112]="Nombre de caractères maximum pour chaque éléments de la liste";
-$lang["setup"][150]="Sources d'authentification externes";
-$lang["setup"][151]=" Si vous ne souhaitez pas utiliser LDAP comme source(s) de connection laissez les champs vides";
+$lang["setup"][103]="1- Critical (login error only)";
+$lang["setup"][104]="2- Severe (Not used) ";
+$lang["setup"][105]="3- Important (succed logins) ";
+$lang["setup"][106]="4- Notices (Add, delete, tracking)";
+$lang["setup"][107]="5- Complete (All) ";
+$lang["setup"][108]="Number of log events to be printed";
+$lang["setup"][109]="How long logs are keep in database (in days, 0 for infinite)";
+$lang["setup"][110]="Show the interventions at the login ";
+$lang["setup"][111]="Number of elements to be printed by page";
+$lang["setup"][112]="Maximum number of characters for each elements of the list ";
+
+$lang["setup"][150]="External sources of authentification";
+$lang["setup"][151]="If you do not wish to use LDAP as source of connection leave the empty fields";
 $lang["setup"][152]="LDAP configuration";
 $lang["setup"][153]="LDAP Host";
 $lang["setup"][154]="Basedn";
 $lang["setup"][155]="rootdn (for non anonymous binds)";
 $lang["setup"][156]="Pass (for non-anonymous binds)";
-$lang["setup"][157]="L'extension LDAP de votre parser PHP n'est pas installé";
-$lang["setup"][158]="Impossible d'utiliser LDAP comme source de connection externe";
+$lang["setup"][157]="The LDAP extension of your parser PHP is not installed";
+$lang["setup"][158]="Impossible to use LDAP as external source of connection";
 $lang["setup"][159] 	= "Connection filter"; 
 
-$lang["setup"][160]=" Si vous ne souhaitez pas utiliser IMAP/POP comme source(s) de connection laissez les champs vides";
-$lang["setup"][161]="Plus d'informations pour la syntaxe du Auth Server sur <a target=\"_blank\" href=\"http://www.php.net/manual/fr/function.imap-open.php\">php.net</a>. Le paramètre qui vous intéresse est le premier (mailbox).";
+$lang["setup"][160]="If you do not wish to use IMAP/POP as source of connection leave the empty fields";
+$lang["setup"][161]="More information for syntax of Auth Server on <a target=\"_blank\" href=\"http://www.php.net/manual/en/function.imap-open.php\">php.net</a>. The parameter which interests you is the first (mailbox).";
 $lang["setup"][162]="IMAP/POP configuration";
 $lang["setup"][163]="IMAP/POP Auth Server";
 $lang["setup"][164]="IMAP/POP Host Name (users email will be login@thishost)";
-$lang["setup"][165]="Votre parser PHP a été compilé sans les fonctions de connection IMAP";
-$lang["setup"][166]=" Impossible d'utiliser IMAP/POP comme source de connection externe";
+$lang["setup"][165]="Your parser PHP was compiled without the IMAP functions";
+$lang["setup"][166]="Impossible to use IMAP/POP as external source of connection";
 
 
 
