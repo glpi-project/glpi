@@ -157,9 +157,6 @@ while(!feof($fileHandle))
     if (substr($buffer,strlen($buffer),1)==0)
         $buffer=substr($buffer,0,strlen($buffer)-1);
     
-    $buffer=preg_replace("/#.*$/","",$buffer);
-//    echo $buffer."<br>";
-    
     if(substr($buffer, 0, 1) != "#")
     {
         $formattedQuery .= $buffer;
@@ -239,7 +236,7 @@ for (;$offsettable<$numtab;$offsettable++){
 if ($offsetrow==-1){
 echo "dump ".$tables[$offsettable]."<br>";
 
-	$todump=get_def("glpi",$tables[$offsettable]);
+	$todump=get_def($database,$tables[$offsettable]);
 //	echo $todump."<br>";
 	fwrite ($fileHandle,$todump);
 	$offsetrow++;
@@ -254,7 +251,7 @@ echo "dump ".$tables[$offsettable]."<br>";
     tf();
     if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
         return TRUE;
-	$todump=get_content("glpi",$tables[$offsettable],$offsetrow,$rowlimit);
+	$todump=get_content($database,$tables[$offsettable],$offsetrow,$rowlimit);
 	$rowtodump=substr_count($todump, "INSERT INTO");
 	if ($rowtodump>0){
 	fwrite ($fileHandle,$todump);
@@ -325,7 +322,7 @@ td(); //initialise le temps
 if (!isset($offset)) $offset=0; //début de fichier
 if (!isset($duree)) $duree=1; //timeout de 5 secondes par défaut, -1 pour utiliser sans timeout
 
-if (!isset($fichier)) $fichier="./backups/dump/smalldump.sql"; //si le nom du fichier n'est pas en paramètre le mettre ici
+if (!isset($fichier)) $fichier="./dump/temp.sql"; //si le nom du fichier n'est pas en paramètre le mettre ici
 
 echo "Restauration de $fichier.<br>Traitement en cours... ";
 if ($duree>0) echo "timeout de $duree s.<br>";
@@ -339,8 +336,8 @@ if (restoreMySqlDump($fichier , "glpi" , "dombre" , "coucoucmoi", "localhost",$d
     {
     echo "<br>Nombre de requêtes traitées à ce stade : $cpt<br>";
     echo "<br>mais il faut continuer à l'octet ".number_format($offset,0,""," ");
-    echo "<br>Redirection automatique sinon cliquez <a href=\"test.php?duree=$duree&offset=$offset&cpt=$cpt\">ici</a>";
-    echo "<script>window.location=\"test.php?duree=$duree&offset=$offset&cpt=$cpt\";</script>";
+    echo "<br>Redirection automatique sinon cliquez <a href=\"test.php?duree=$duree&offset=$offset&cpt=$cpt&fichier=$fichier\">ici</a>";
+    echo "<script>window.location=\"test.php?duree=$duree&offset=$offset&cpt=$cpt&fichier=$fichier\";</script>";
     }
     else
      echo "<br>Terminé. Nombre de requêtes totales traitées : $cpt<br>";
@@ -350,13 +347,14 @@ if (restoreMySqlDump($fichier , "glpi" , "dombre" , "coucoucmoi", "localhost",$d
 
 //// BACKUP DE LA BDD
 
+
 td(); //initialise le temps
 if (!isset($offsettable)) $offsettable=0; //début de fichier
 if (!isset($offsetrow)) $offsetrow=-1; //début de fichier
 if (!isset($duree)) $duree=1; //timeout de 5 secondes par défaut, -1 pour utiliser sans timeout
 if (!isset($rowlimit)) $rowlimit=4; //Limite de lignes à dumper à chaque fois
 
-if (!isset($fichier)) $fichier="./backups/dump/temp.sql"; //si le nom du fichier n'est pas en paramètre le mettre ici
+if (!isset($fichier)) $fichier="./dump/temp.sql"; //si le nom du fichier n'est pas en paramètre le mettre ici
 
 echo "Sauvegarde de la BDD dans le $fichier.<br>Traitement en cours... ";
 if ($duree>0) echo "Durée limite de $duree s.<br>";
@@ -371,8 +369,8 @@ echo "ENDDDDDDDDDDDDDDDDD".$offsettable;
     {
     echo "<br>Nombre de requêtes traitées à ce stade : $cpt<br>";
     echo "<br>mais il faut continuer à la table $offsettable ligne ".number_format($offsetrow,0,""," ");
-    echo "<br>Redirection automatique sinon cliquez <a href=\"test.php?duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\">ici</a>";
-    echo "<script>window.location=\"test.php?duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\";</script>";
+    echo "<br>Redirection automatique sinon cliquez <a href=\"test.php?duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">ici</a>";
+    echo "<script>window.location=\"test.php?duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\";</script>";
     }
     else
      echo "<br>Terminé. Nombre de requêtes totales traitées : $cpt<br>";
