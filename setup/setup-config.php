@@ -74,7 +74,7 @@ elseif(!empty($_POST["update_ext"])) {
 
 	if(empty($_POST["LDAP_Test"]) ) {
 //todo test remote connection
-		updateLDAP($_POST["ldap_host"],$_POST["ldap_basedn"],$_POST["ldap_rootdn"],$_POST["ldap_pass"]);
+		updateLDAP($_POST["ldap_host"],$_POST["ldap_basedn"],$_POST["ldap_rootdn"],$_POST["ldap_pass"],$_POST["ldap_condition"]);
 	}
 	if(empty($_POST["IMAP_Test"])) {
 		updateIMAP($_POST["imap_auth_server"],$_POST["imap_host"]);
