@@ -48,6 +48,7 @@ class Job {
 	var $assign		= "";
 	var $computer		= 0;
 	var $computername	= "";
+	var $computerfound	= 0;
 	var $contents		= "";
 	var $priority		= 0;
 	var $isgroup		= "";
@@ -55,6 +56,7 @@ class Job {
 	var $emailupdates	= "";
 	var $num_of_followups	= 0;
 	var $realtime	= 0;
+	
 	
 	function getfromDB ($ID,$purecontent) {
 
@@ -91,8 +93,10 @@ class Job {
 			$scndresult = $db->query($scndquery);
 			if ($db->numrows($scndresult)) {
 				$this->computername = $db->result($scndresult, 0, "name");
+				$this->computerfound=1;
 			} else {
-				$this->computername = "n/a";
+				$this->computername = "N/A";
+				$this->computerfound=0;				
 			}		
 			// Set number of followups
 			$thrdquery = "SELECT * FROM glpi_followups WHERE (tracking = $this->ID)";
