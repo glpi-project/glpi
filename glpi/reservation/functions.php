@@ -696,7 +696,7 @@ function printReservationItem($target,$ID,$date){
 						}
 
 		
-		echo $modif.$delete."</td><td title='".$row['comment']."' alt='".$row['comment']."' align='center' class='tab_bg_2' style='border:1px dashed #cccccc'><span style='font-size:10px'>".$display."<br><b>".$user->fields["name"]."</b></span>";
+		echo $modif.$delete."</td><td title='".$row['comment']."' alt='".$row['comment']."' align='center' class='tab_bg_2' style='border:1px dashed #cccccc'><span style='font-size:8px'>".$display."<br><b>".$user->fields["name"]."</b></span>";
 
 			echo "</td></tr>";
 				
