@@ -159,7 +159,7 @@ class Netport {
 		$query = "SELECT * FROM glpi_networking_ports WHERE (ID = '$ID')";
 		if ($result = $db->query($query))
 		{
-			$data = mysql_fetch_array($result);
+			$data = $db->fetch_array($result);
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}
@@ -204,7 +204,7 @@ class Netport {
 		$query = "SELECT * FROM $table WHERE (ID = '$ID')";
 		if ($result=$db->query($query))
 		{
-			$data = mysql_fetch_array($result);
+			$data = $db->fetch_array($result);
 			$this->device_name = $data["name"];
 			$this->device_ID = $ID;
 			return true;
@@ -322,7 +322,7 @@ class Netwire {
 		$query = "SELECT * FROM glpi_networking_wire WHERE (end1 = '$ID' OR end2 = '$ID')";
 		if ($result=$db->query($query))
 		{
-			$data = mysql_fetch_array($result);
+			$data = $db->fetch_array($result);
 			$this->end1 = $data["end1"];
 			$this->end2 = $data["end2"];
 
