@@ -321,6 +321,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	// date and a logout-link.
 
 	echo "<td  align='right' width='100'>";
+	echo "<b><a target=_blank href=\"".$HTMLRel."help/".$_SESSION["dict"].".html\">HELP</a></b><br><br>";
 	echo date("H").":".date("i")."<p><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i></p>";
 	echo "<a  class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img  src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></td>";
