@@ -492,7 +492,7 @@ class Mailing
 				// get subject OK
 				$subject=$this->get_mail_subject();
 				// get sender :  OK
-				$sender= $cfg_mailing[admin_email];
+				$sender= $cfg_mailing["admin_email"];
 				// get reply-to address : user->email ou job_email if not set OK
 				$replyto=$this->get_reply_to_address ();
 				// Send all mails
