@@ -41,17 +41,16 @@ commonHeader("Sylk Reports",$_SERVER["PHP_SELF"]);
 
 //Affichage du tableau de présentation
 echo "<div align='center'><table class='tab_cadre2' cellpadding='5'>";
-echo "<tr><th>".$lang["reports"][10].":</th></tr>";
+echo "<tr><th colspan='3'>".$lang["reports"][10].":</th></tr>";
 
 
-	echo  "<tr class='tab_bg_1'><td align='center'><a href='rapport-sylk.php?table=computers' target='_blank'><b>".$lang["reports"][6]."</b></a></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><a href='rapport-sylk.php?table=printers' target='_blank'><b>".$lang["reports"][7]."</b></a></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><a href='rapport-sylk.php?table=networking' target='_blank'><b>".$lang["reports"][8]."</b></a></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><a href='rapport-sylk.php?table=monitors' target='_blank'><b>".$lang["reports"][9]."</b></a></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><a href='rapport-sylk.php?table=peripherals' target='_blank'><b>".$lang["reports"][29]."</b></a></td></tr>";
-
-
+	echo  "<tr class='tab_bg_1'><td align='center'><b>".$lang["reports"][6]."</b></td><td><a href='rapport-sylk.php?table=computers&limited=no' target='_blank'><b>".$lang["reports"][31]."</b></a></td><td><a href='rapport-sylk.php?table=computers&limited=yes' target='_blank'><b>".$lang["reports"][32]."</b></a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><b>".$lang["reports"][7]."</b></td><td><a href='rapport-sylk.php?table=printers&limited=no' target='_blank'><b>".$lang["reports"][31]."</b></a></td><td><a href='rapport-sylk.php?table=printers&limited=yes' target='_blank'><b>".$lang["reports"][32]."</b></a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><b>".$lang["reports"][8]."</b></td><td><a href='rapport-sylk.php?table=networking&limited=no' target='_blank'><b>".$lang["reports"][31]."</b></a></td><td><a href='rapport-sylk.php?table=networking&limited=yes' target='_blank'><b>".$lang["reports"][32]."</b></a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><b>".$lang["reports"][9]."</b></td><td><a href='rapport-sylk.php?table=monitors&limited=no' target='_blank'><b>".$lang["reports"][31]."</b></a></td><td><a href='rapport-sylk.php?table=monitors&limited=yes' target='_blank'><b>".$lang["reports"][32]."</b></a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><b>".$lang["reports"][29]."</b></td><td><a href='rapport-sylk.php?table=peripherals&limited=no' target='_blank'><b>".$lang["reports"][31]."</b></a></td><td><a href='rapport-sylk.php?table=peripherals&limited=yes' target='_blank'><b>".$lang["reports"][32]."</b></a></td></tr>";
+	
 echo "</table></div>";
-
+echo "<br><center><b>".$lang["reports"][33]."</b></center>";
 commonFooter();
 ?>
