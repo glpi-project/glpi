@@ -358,7 +358,7 @@ function showJobShort($ID, $followup	) {
 			echo "<td align='center'><b>".$lang["joblist"][10]."</b></td>";
 			echo "<td width='30%'><small>".$lang["joblist"][11].":<br>&nbsp;$job->date<br>";
 			echo "<i>".$lang["joblist"][12].":<br>&nbsp;$job->closedate</i><br>";
-			echo $lang["job"][20].": <br>".floor($job->realtime)." ".$lang["job"][21]." ".(($job->realtime-floor($job->realtime))*60)." ".$lang["job"][22]."</small></td>";
+			echo $lang["job"][20].": <br>".$job->getRealtime()."</small></td>";
 		}
 
 		echo "<td align='center'><b>$job->priority</b></td>";
