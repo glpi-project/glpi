@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-03-03 18:22
+#GLPI Dump database on 2005-03-04 10:45
 ### Dump table glpi_cartridges
 
 DROP TABLE IF EXISTS glpi_cartridges;
@@ -728,8 +728,7 @@ CREATE TABLE glpi_event_log (
    KEY date (date)
 );
 
-INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-03-03 18:22:18','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-03-03 18:22:05','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-03-04 10:43:40','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -849,14 +848,16 @@ CREATE TABLE glpi_monitors (
     type int(11),
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
+    is_template enum('0','1') DEFAULT '0' NOT NULL,
+    tplname varchar(255),
    PRIMARY KEY (ID),
    KEY ID (ID),
    KEY type (type),
    KEY location (location)
 );
 
-INSERT INTO glpi_monitors VALUES ('3','nokia 20\'','2003-09-18 00:14:14','','','Ecran infographiste','','','20','1','1','1','0','1','1','0','N');
-INSERT INTO glpi_monitors VALUES ('2','Sony 19\'','2003-09-18 00:14:50','','','ecran documentation','','','19','0','0','1','1','1','3','0','N');
+INSERT INTO glpi_monitors VALUES ('3','nokia 20\'','2003-09-18 00:14:14','','','Ecran infographiste','','','20','1','1','1','0','1','1','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('2','Sony 19\'','2003-09-18 00:14:50','','','ecran documentation','','','19','0','0','1','1','1','3','0','N','0',NULL);
 ### Dump table glpi_networking
 
 DROP TABLE IF EXISTS glpi_networking;
@@ -875,13 +876,15 @@ CREATE TABLE glpi_networking (
     firmware int(11),
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
+    is_template enum('0','1') DEFAULT '0' NOT NULL,
+    tplname varchar(255),
    PRIMARY KEY (ID),
    KEY location (location),
    KEY type (type),
    KEY firmware (firmware)
 );
 
-INSERT INTO glpi_networking VALUES ('9','Dlink 450','','4586-puis-kioe','','','','0000-00-00 00:00:00','','1','1',NULL,'0','N');
+INSERT INTO glpi_networking VALUES ('9','Dlink 450','','4586-puis-kioe','','','','0000-00-00 00:00:00','','1','1',NULL,'0','N','0',NULL);
 ### Dump table glpi_networking_ports
 
 DROP TABLE IF EXISTS glpi_networking_ports;
@@ -941,6 +944,8 @@ CREATE TABLE glpi_peripherals (
     brand varchar(255) NOT NULL,
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
+    is_template enum('0','1') DEFAULT '0' NOT NULL,
+    tplname varchar(255),
    PRIMARY KEY (ID),
    KEY type (type),
    KEY location (location)
@@ -983,14 +988,16 @@ CREATE TABLE glpi_printers (
     type int(11),
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
+    is_template enum('0','1') DEFAULT '0' NOT NULL,
+    tplname varchar(255),
    PRIMARY KEY (ID),
    KEY id (ID),
    KEY location (location),
    KEY type (type)
 );
 
-INSERT INTO glpi_printers VALUES ('1','HP laser','2003-09-18 00:12:43','','','hp-jsgsj-658','','0','1','0','Imprimante bureau du directeur','','1','1','0','N');
-INSERT INTO glpi_printers VALUES ('2','HP deskjet','2003-09-18 00:13:11','','','45dskjs-ds','','0','1','0','Imprimante documentation','','2','3','0','N');
+INSERT INTO glpi_printers VALUES ('1','HP laser','2003-09-18 00:12:43','','','hp-jsgsj-658','','0','1','0','Imprimante bureau du directeur','','1','1','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('2','HP deskjet','2003-09-18 00:13:11','','','45dskjs-ds','','0','1','0','Imprimante documentation','','2','3','0','N','0',NULL);
 ### Dump table glpi_reservation_item
 
 DROP TABLE IF EXISTS glpi_reservation_item;
@@ -1035,14 +1042,16 @@ CREATE TABLE glpi_software (
     update_software int(11) DEFAULT '-1' NOT NULL,
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
+    is_template enum('0','1') DEFAULT '0' NOT NULL,
+    tplname varchar(255),
    PRIMARY KEY (ID),
    KEY platform (platform),
    KEY location (location)
 );
 
-INSERT INTO glpi_software VALUES ('3','Acrobat PDF Viewer','4',NULL,NULL,'5','N','-1','0','N');
-INSERT INTO glpi_software VALUES ('4','MS Windows NT','4.0',NULL,NULL,'5','N','-1','0','N');
-INSERT INTO glpi_software VALUES ('5','Latex','6.2','Latex','1','2','N','-1','0','N');
+INSERT INTO glpi_software VALUES ('3','Acrobat PDF Viewer','4',NULL,NULL,'5','N','-1','0','N','0',NULL);
+INSERT INTO glpi_software VALUES ('4','MS Windows NT','4.0',NULL,NULL,'5','N','-1','0','N','0',NULL);
+INSERT INTO glpi_software VALUES ('5','Latex','6.2','Latex','1','2','N','-1','0','N','0',NULL);
 ### Dump table glpi_templates
 
 DROP TABLE IF EXISTS glpi_templates;

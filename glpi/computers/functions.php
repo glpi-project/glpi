@@ -203,7 +203,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 	$query .= "LEFT JOIN glpi_networking_ports on (comp.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='1')";
 	$query .= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = comp.FK_glpi_enterprise ) ";
-	$query .= " where $where AND comp.deleted='$deleted' ORDER BY $sort $order";
+	$query .= " where $where AND comp.deleted='$deleted' AND comp.is_template = '0'  ORDER BY $sort $order";
 	//$query = "SELECT * FROM glpi_computers WHERE $where ORDER BY $sort $order";
 //echo $query;
 	// Get it from database	

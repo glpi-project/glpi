@@ -52,27 +52,27 @@ echo "<big><b>GLPI ".$lang["Menu"][6]."</b></big><br><br>";
 
 # 1. Get some number data
 
-$query = "SELECT count(ID) FROM glpi_computers";
+$query = "SELECT count(ID) FROM glpi_computers where deleted ='N' AND is_template = '0' ";
 $result = $db->query($query);
 $number_of_computers = $db->result($result,0,0);
 
-$query = "SELECT count(ID) FROM glpi_software";
+$query = "SELECT count(ID) FROM glpi_software where deleted ='N' ";
 $result = $db->query($query);
 $number_of_software = $db->result($result,0,0);
 
-$query = "SELECT count(ID) FROM glpi_printers";
+$query = "SELECT count(ID) FROM glpi_printers where deleted ='N' ";
 $result = $db->query($query);
 $number_of_printers = $db->result($result,0,0);
 
-$query = "SELECT count(ID) FROM glpi_networking";
+$query = "SELECT count(ID) FROM glpi_networking where deleted ='N' ";
 $result = $db->query($query);
 $number_of_networking = $db->result($result,0,0);
 
-$query = "SELECT count(ID) FROM glpi_monitors";
+$query = "SELECT count(ID) FROM glpi_monitors where deleted ='N' ";
 $result = $db->query($query);
 $number_of_monitors = $db->result($result,0,0);
 
-$query = "SELECT count(ID) FROM glpi_peripherals";
+$query = "SELECT count(ID) FROM glpi_peripherals where deleted ='N' ";
 $result = $db->query($query);
 $number_of_peripherals = $db->result($result,0,0);
 
