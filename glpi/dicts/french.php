@@ -1089,7 +1089,7 @@ $lang["title"][26] = "Principal";
 $lang["title"][27] = "Connexions";
 $lang["title"][28] = "Interventions";
 $lang["title"][29] = "Tous";
-
+$lang["title"][30] = "P&eacute;riph&eacute;riques internes";
 
 $lang["device_hdd"][0] = "Rpm";
 $lang["device_hdd"][1] = "Cache";
