@@ -46,10 +46,10 @@ if (isset($_POST["changepw"])) {
 	
 	if ($_SESSION["extauth"]!=1)
 	
-	foreach($_POST as $key=>$val) {
+/*	foreach($_POST as $key=>$val) {
  echo $key.'=>'.$val.'<p>'; 
  }
-	
+*/	
 		updateUser($_POST);
 	header("Location: $_SERVER[HTTP_REFERER]");
 } else if (isset($_POST["updatesort"])) {
