@@ -696,12 +696,15 @@ function updateNetport($input) {
 }
 
 function deleteNetport($input) {
-	// Delete Netport
 	
+	// Delete Netport
 	$netport = new Netport;
 	$netport->deleteFromDB($input["ID"]);
+
 	// Delete Netwire
 	removeConnector($input["ID"]);	
+
+
 } 
 
 function showPortsAdd($ID,$devtype) {
@@ -1049,7 +1052,8 @@ function removeConnector($ID) {
 	
 	// Update to blank networking item
 	$nw=new Netwire;
-	$ID2=$nw->getOppositeContact($ID);
+	if ($ID2=$nw->getOppositeContact($ID)){
+	
 	$np1=new Netport;
 	$np2=new Netport;
 	$np1->getFromDB($ID);
@@ -1073,6 +1077,7 @@ function removeConnector($ID) {
 	} else {
 		return false;
 	}
+	} else return false;
 }
 
 
