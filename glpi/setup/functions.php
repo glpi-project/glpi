@@ -441,7 +441,7 @@ function showUserform($target,$name) {
 				if ($user->fields["type"]=="admin") { echo " selected"; }
 			echo ">Admin";
 			echo "<option value=normal";
-				if ($user->fields["type"]=="normal") { echo " selected"; }
+				if (empty($name)||$user->fields["type"]=="normal") { echo " selected"; }
 			echo ">Normal";
 			echo "<option value=\"post-only\"";
 				if ($user->fields["type"]=="post-only") { echo " selected"; }
@@ -462,7 +462,7 @@ function showUserform($target,$name) {
 			echo "<td align='center' >".$lang["setup"][58]."</td>
 			
 			<td align='center' ><p><strong>".$lang["setup"][60]."</strong><input type='radio' value='no' name='can_assign_job' ";
-			if ($user->fields["can_assign_job"] == 'no') echo "checked ";
+			if (empty($name)||$user->fields["can_assign_job"] == 'no') echo "checked ";
       echo "></p>";
       echo "<p><strong>".$lang["setup"][61]."</strong><input type='radio' value='yes' name='can_assign_job' ";
 			if ($user->fields["can_assign_job"] == 'yes') echo "checked";
@@ -720,12 +720,17 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 
 function addUser($input) {
 	// Add User, nasty hack until we get PHP4-array-functions
-
 	$user = new User($input["name"]);
 	if(empty($input["password"]))  $input["password"] = "";
-	
-	// dump status
+ 	// dump status
 	$null = array_pop($input);
+
+
+	// change email_form to email (not to have a problem with preselected email)
+	if (isset($input["email_form"])){
+	$input["email"]=$input["email_form"];
+	unset($input["email_form"]);
+	}
 	
 	// fill array for update
 	foreach ($input as $key => $val) {
