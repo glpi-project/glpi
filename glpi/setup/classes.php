@@ -194,7 +194,8 @@ class User {
 				$query .= " PASSWORD('".$values[$i]."')";
 			}
 			elseif($i === $indice2) {
-				$query .= " MD5('".$values[$i]."')";
+				$mdpchiff = md5($values[$i]);
+				$query .= " '".$mdpchiff."'";
 			}
 			else {
 				$query .= "'".$values[$i]."'";
@@ -222,7 +223,8 @@ class User {
 				$query .= "PASSWORD('".$this->fields[$updates[$i]]."')";
 			}
 			elseif (($updates[$i]=="password_md5") && ($this->fields[$updates[$i]] != "") ) {
-				$query .= "MD5('".$this->fields[$updates[$i]]."')";
+				$mdpchiff = md5($this->fields[$updates[$i]);
+				$query .= "'".$mdpchiff."'";
 			} else {
 				$query .= "'".$this->fields[$updates[$i]]."'";
 			}
