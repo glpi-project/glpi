@@ -71,8 +71,8 @@ class Job {
 			$this->date = $db->result($result,0,"date");
 			$this->closedate = $db->result($result, 0, "closedate");
 			$this->status = $db->result($result, 0, "status");
-			$this->author = $db->result($result, 0, "author");
-			$this->assign = $db->result($result, 0, "assign");
+			$this->author = unhtmlentities($db->result($result, 0, "author"));
+			$this->assign = unhtmlentities($db->result($result, 0, "assign"));
 			$this->computer = $db->result($result, 0, "computer");
 			if (!$purecontent) {
 				$this->contents = nl2br($db->result($result, 0, "contents"));

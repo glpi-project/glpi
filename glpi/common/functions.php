@@ -906,7 +906,7 @@ function dropdownUsers($value, $myname) {
 	echo "<option value=\"\">[ Nobody ]</option>";
 	if ($number > 0) {
 		while ($i < $number) {
-			$output = $db->result($result, $i, "name");
+			$output = unhtmlentities($db->result($result, $i, "name"));
 			if ($output == $value) {
 				echo "<option value=\"$output\" selected>".$output;
 			} else {
