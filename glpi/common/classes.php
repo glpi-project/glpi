@@ -315,18 +315,18 @@ class Identification
 		}
 		
 		$db = new DB;
-		$query = "SELECT ID from glpi_users where (name = '".$name."')";
+		$query = "SELECT password from glpi_users where (name = '".$name."')";
 		$result = $db->query($query);
-		$query2 = "SELECT ID from glpi_users where (password = PASSWORD('".$password."'))";
+		$query2 = "SELECT PASSWORD('".$password."') as password";
 		$result2 = $db->query($query2);
 		
 		if($result&&$result2)
 		{
 			if($db->numrows($result) == 1&&$db->numrows($result2) == 1)
 			{
-				$id1=$db->result($result,0,"ID");
-				$id2=$db->result($result2,0,"ID");
-				if ($id1==$id2)
+				$pass1=$db->result($result,0,"password");
+				$pass2=$db->result($result2,0,"password");
+				if ($pass1==$pass2)
 				return true;
 				else {
 				$this->err = "Bad username or password";
