@@ -167,6 +167,7 @@ class License {
 	var $ID		= 0;
 	var $sID	= 0;
 	var $serial	= "";
+	var $expire	= "";
 	
 	function getfromDB ($ID) {
 
@@ -177,6 +178,7 @@ class License {
 			$this->ID = $ID;
 			$this->sID = $db->result($result,0,"sID");
 			$this->serial = $db->result($result,0,"serial");
+			$this->expire = $db->result($result,0,"expire");
 			return true;
 
 		} else {
@@ -189,8 +191,9 @@ class License {
 		$db = new DB;
 
 		// Build query
-		$query = "INSERT INTO glpi_licenses VALUES (NULL,$this->sID,'$this->serial')";
-
+		if ($this->expire!=""&&$this->expire!="0000-00-00")		
+		$query = "INSERT INTO glpi_licenses VALUES (NULL,$this->sID,'$this->serial','$this->expire')";
+		else $query = "INSERT INTO glpi_licenses VALUES (NULL,$this->sID,'$this->serial',NULL)";
 		if ($result=$db->query($query)) {
 			return true;
 		} else {
