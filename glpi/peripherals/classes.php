@@ -50,7 +50,7 @@ class peripheral {
 		$query = "SELECT * FROM glpi_peripherals WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			if ($db->numrows($result)==1){
-			$data = $db->fetch_array($result);
+			$data = $db->fetch_assoc($result);
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}
@@ -70,6 +70,7 @@ function getEmpty () {
 		$name = mysql_field_name($fields, $i);
 		$this->fields[$name] = "";
 	}
+	return true;
 }
 
 	function updateInDB($updates)  {
@@ -87,6 +88,33 @@ function getEmpty () {
 			$result=$db->query($query);
 		}
 		
+	}
+	function getInsertElementID(){
+		$db = new DB;
+
+		// Build query
+		$query = "SELECT ID FROM glpi_peripherals WHERE ";
+		$i=0;
+		foreach ($this->fields as $key => $val) {
+			if(!(strcmp($key,'ID') === 0)) { 
+				$fields[$i] = $key;
+				$values[$i] = $val;
+				$i++;
+			}
+		}		
+		for ($i=0; $i < count($fields); $i++) {
+			
+			$query .= $fields[$i];
+			$query .= " = '".$values[$i]."' ";
+			if ($i!=count($fields)-1) $query.=" AND ";
+		}
+
+		$result=$db->query($query);
+		
+		if ($db->numrows($result)==1)
+		return $db->result($result,0,"ID");
+		else return 0;
+	
 	}
 	
 	function addToDB() {

@@ -60,7 +60,7 @@ else if (isset($tab["delete"]))
 		deleteNetdevice($tab,1);
 	else deleteNetdevice($tab);
 
-	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"] ."deleted item.");
+	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"] ."deleted item.");
 	if(!empty($tab["withtemplate"])) 
 		header("Location: ".$cfg_install["root"]."/setup/setup-templates.php");
 	 else 

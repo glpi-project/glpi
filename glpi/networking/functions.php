@@ -329,9 +329,9 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 
 		echo "<tr><th align='center' >";
 		if(!$template) {
-			echo $lang["networking"][11].": ".$netdev->fields["ID"];
+			echo $lang["networking"][54].": ".$netdev->fields["ID"];
 		}elseif (strcmp($template,"newcomp") === 0) {
-			echo $lang["networking"][12].": ".$netdev->fields["tplname"];
+			echo $lang["networking"][53].": ".$netdev->fields["tplname"];
 		}elseif (strcmp($template,"newtemplate") === 0) {
 			echo $lang["common"][6]."&nbsp;: <input type='text' name='tplname' value=\"".$netdev->fields["tplname"]."\" size='20'>";
 		}
