@@ -55,8 +55,21 @@ else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
 	deletePeripheral($_POST);
-	Disconnect($tab["ID"],PERIPHERAL_TYPE);
 	logEvent($_POST["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
+	header("Location: ".$cfg_install["root"]."/peripherals/");
+}
+else if (isset($_POST["restore"]))
+{
+	checkAuthentication("admin");
+	restorePeripheral($_POST);
+	logEvent($tab["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." restored item.");
+	header("Location: ".$cfg_install["root"]."/peripherals/");
+}
+else if (isset($_POST["purge"]))
+{
+	checkAuthentication("admin");
+	deletePeripheral($_POST,1);
+	logEvent($tab["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." purge item.");
 	header("Location: ".$cfg_install["root"]."/peripherals/");
 }
 else if (isset($_POST["update"]))
