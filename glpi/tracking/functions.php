@@ -862,7 +862,7 @@ function categoryJob ($ID,$category,$admin) {
 	// Add a Followup for a category change
 	if ($newcat!=$oldcat){
 	$content=date("Y-m-d H:i:s").": ".$lang["mailing"][14].": ".getDropdownName("glpi_dropdown_tracking_category",$job->category)." (".$_SESSION["glpiname"].")";
-	postFollowups ($ID,$_SESSION["glpiname"],addslashes($content));
+	postFollowups ($ID,$_SESSION["glpiname"],addslashes(unhtmlentities($content)));
 	}
 	
 }
@@ -880,7 +880,7 @@ function priorityJob ($ID,$priority,$admin) {
 	// Add a Followup for a priority change
 	if ($newprio!=$oldprio){
 	$content=date("Y-m-d H:i:s").": ".$lang["mailing"][14].": ".getPriorityName($job->priority)." (".$_SESSION["glpiname"].")";
-	postFollowups ($ID,$_SESSION["glpiname"],addslashes($content));
+	postFollowups ($ID,$_SESSION["glpiname"],addslashes(unhtmlentities($content)));
 	}
 	
 }
