@@ -112,7 +112,7 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 	// If $item is given, only jobs for a particular machine
 	// are listed.
 
-	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang;
+	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
 		
 	$prefs = getTrackingPrefs($username);
 
@@ -187,7 +187,7 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 		if ($item)
 		{
 			echo "<tr class='tab_bg_2'>";
-			echo "<td align='center' colspan=8 class='tab_bg_1'><b>";
+			echo "<td align='center' colspan='8' class='tab_bg_1'><b>";
 			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item\">";
 			echo $lang["joblist"][7];
 			echo "</a>";
@@ -199,12 +199,14 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 		$parameters="show=".$show."&contains=".$contains."&sort=".$sort."&ID=".$username;
 		// Delete selected item
 		if ($show == "old"){
-			echo "<div align='left'><a href='".$_SERVER["PHP_SELF"]."?$parameters&select=all'>".$lang["buttons"][18]."</a>";
-			echo "&nbsp;/&nbsp;";
-			echo "<a href='".$_SERVER["PHP_SELF"]."?$parameters&select=none'>".$lang["buttons"][19]."</a>";
-			echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-			echo "<input type='submit' value=\"".$lang["buttons"][17]."\" name='delete' class='submit'>";
-			echo "</div>";
+			echo "<br><div align='center'>";
+			echo "<table cellpadding='5' width='90%'>";
+			echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" ></td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&select=all'>".$lang["buttons"][18]."</a></td>";
+			
+			echo "<td>/</td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&select=none'>".$lang["buttons"][19]."</a>";
+			echo "</td><td>";
+			echo "<input type='submit' value=\"".$lang["buttons"][17]."\" name='delete' class='submit'></td>";
+			echo "<td width='75%'>&nbsp;</td></table></div>";
 		}
 		
 		printPager($start,$numrows,$target,$parameters);
