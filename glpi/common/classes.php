@@ -294,7 +294,7 @@ class Mailing
 		$this->type=$type;
 		$this->job=$job;
 		$this->user=$user;
-		$this->test_type();
+//		$this->test_type();
 	}
 	function is_valid_email($email="")
 	{
@@ -459,11 +459,10 @@ class Mailing
 	// Send email 
 	function send()
 	{
-		GLOBAL $cfg_features,$cfg_mailing;;
+		GLOBAL $cfg_features,$cfg_mailing;
 		if ($cfg_features["mailing"]&&$this->is_valid_email($cfg_mailing["admin_email"]))
 		{
-			$this->test_type();
-			if (!is_null($this->job)&&!is_null($this->user)&&(strcmp($type,"new")||strcmp($type,"attrib")||strcmp($type,"followup")||strcmp($type,"finish")))
+			if (!is_null($this->job)&&!is_null($this->user)&&(strcmp($this->type,"new")||strcmp($this->type,"attrib")||strcmp($this->type,"followup")||strcmp($this->type,"finish")))
 			{
 				// get users to send mail
 				$users=$this->get_users_to_send_mail();
