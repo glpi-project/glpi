@@ -1,9 +1,10 @@
 <?php
 /*
 
- ----------------------------------------------------------------------
+  ----------------------------------------------------------------------
 GLPI - Gestionnaire libre de parc informatique
  Copyright (C) 2002 by the INDEPNET Development Team.
+ Bazile Lebeau, baaz@indepnet.net - Jean-Mathieu Doléans, jmd@indepnet.net
  http://indepnet.net/   http://glpi.indepnet.org
  ----------------------------------------------------------------------
  Based on:
@@ -50,7 +51,7 @@ This file is part of GLPI.
 class DB extends DBmysql {
 
 	var $dbhost	= "localhost";
-	var $dbuser 	= "glpiuser"; 
+	var $dbuser 	= "root"; 
 	var $dbpassword	= "";
 	var $dbdefault	= "glpidb";
 }
@@ -58,7 +59,7 @@ class DB extends DBmysql {
 
 //root document
 //document root
-$cfg_install["root"]		= "/glpi";
+$cfg_install["root"]		= "/glpi-gna";
 
 
 // *************************** Eléments optionnels  **********************
