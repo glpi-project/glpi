@@ -1,0 +1,142 @@
+/* TransRapi 0.3
+  
+  Interface web pour fichiers de langue au format PHP
+
+  Copyright (C) 2004 Olivier Fraysse.
+
+  This file is part of TransRapi.
+  
+  TransRapi is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+ 
+  TransRapi is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+ 
+  You should have received a copy of the GNU General Public License
+  along with TransRapi; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+ (http://www.gnu.org/licenses/gpl.txt)
+ 
+ http://tr.fooye.net
+ http://tr.fooye.net/source/
+ Contact : tr@fooye.net 
+*/
+body{
+	font-family: sans-serif
+}
+#menu {
+	font-size:12px;
+	float:left;
+	width:130px;
+	background-color:#ff8040;
+	border:1px solid black;
+	padding-left:4px;
+	border-top:2px solid #ff8040;
+	border-right:none;
+}
+#menu li{
+	list-style-type: none;
+	background-color:#fff0f0;
+	padding-top:2px;
+}
+#menu a{
+	text-decoration:none;
+	padding-left:5px;
+	display:block;
+	width:125px;
+	color:black;
+}
+
+#menu li:hover{
+	background-color:#ff8040;
+	border:1px solid black;
+	border-left:none;
+	border-right:none;
+	padding-top:0px;
+	padding-left:2px;
+}
+ul.rub {
+	background-color:#fff0f0;
+	border:2px solid #ff8040;
+	border-right:none;
+	border-left:none;
+	padding-left:4px;
+	margin-left:0;
+	font-size:12px;
+	width:25%;
+	float:left;
+	list-style-type: none;
+}
+a{
+	text-decoration:none;
+	color:black;
+}
+
+li.li0{
+	background-color:#ffc0a0;
+	height:60px;
+	border:2px solid transparent;
+	padding:3px;
+}
+li.li1{
+	background-color:#ffefcf;
+	height:60px;
+	border:2px solid transparent;
+	padding:3px;
+}
+li.titre{
+	padding:5px;
+	
+	border:3px solid #ff8040;
+	border-top:none;
+	font-weight:bold;
+}
+.li1 input
+{
+	background-color:#ffc0a0;
+	width:90%;
+	padding:0px;
+	font-size:12px;
+	border:none;
+}
+.li0 input
+{
+	background-color:#ffefcf;
+	width:90%;
+	padding:0px;
+	font-size:12px;
+	border:none;
+}
+button
+{
+	background-color:transparent;
+	width:45%;
+	font-size:12px;
+ 	border:1px outset;
+}
+.hidden{
+	display:none;
+}
+.langon{
+	background-color:#ffefcf;
+	font-weight:bold;
+}
+.langoff{
+	background-color:#ffefff;
+
+}
+.mainlink{
+	font-weight:bold;
+/* 	border-bottom:2px solid #ffefcf; */
+}
+.lino{
+	background-color:#f0f040;
+	height:60px;
+	border:2px solid yellow;
+	padding:3px;
+}
