@@ -330,6 +330,7 @@ $lang["networking"][48] = "A";
 $lang["networking"][49] = "Firmware";
 $lang["networking"][50] = "ID";
 $lang["networking"][51] = "Prise reseau";
+$lang["networking"][52] = "N° Prise";
 
 // Printers
 $lang["printers"][0]	= "Ajouter imprimante...";
