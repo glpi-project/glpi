@@ -35,7 +35,7 @@ Christian Bauer, turin@incubus.de
 include ("_relpos.php");
 // FUNCTIONS Setup
 
-function showFormDropdown ($target,$name,$human) {
+function showFormDropDown ($target,$name,$human) {
 
 	GLOBAL $cfg_layout, $lang, $HTMLRel;
 
@@ -51,7 +51,9 @@ function showFormDropdown ($target,$name,$human) {
         // on ajoute un input text pour entrer la valeur modifier
         echo "<img src=\"".$HTMLRel."pics/puce.gif\" alt='' title=''>";
 	if($name = "netpoint") {
+		echo $lang["networking"][1].": ";		
 		dropdown("glpi_dropdown_locations", "value2");
+		echo $lang["networking"][52].": ";
 		echo "<input type='text' maxlength='100' size='10' name='value'>";
 	}
 	else {
@@ -70,7 +72,9 @@ function showFormDropdown ($target,$name,$human) {
 	echo "<input type='hidden' name='which' value='$name'>";
 	echo "<tr><td align='center'  class='tab_bg_1'>";
 	if($name = "netpoint") {
+		echo $lang["networking"][1].": ";		
 		dropdown("glpi_dropdown_locations", "value2");
+		echo $lang["networking"][52].": ";
 		echo "<input type='text' maxlength='100' size='10' name='value'>";
 	}
 	else {
