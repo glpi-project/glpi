@@ -821,7 +821,7 @@ function showConnectorSearch($target,$ID) {
 	echo "<form method='post' action=\"$target\">";
 	echo "<td>".$lang["networking"][31].":";
 	$db = new DB;
-	$query = "SELECT glpi_networking.ID AS ID, glpi_networking.name AS name, glpi_dropdown_locations.name as location from glpi_networking LEFT JOIN glpi_dropdown_locations ON glpi_networking.location = glpi_dropdown_locations.id";
+	$query = "SELECT glpi_networking.ID AS ID, glpi_networking.name AS name, glpi_dropdown_locations.ID as location from glpi_networking LEFT JOIN glpi_dropdown_locations ON glpi_networking.location = glpi_dropdown_locations.id";
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 	echo "<select name='dID'>";
@@ -831,7 +831,7 @@ function showConnectorSearch($target,$ID) {
 		$dID = $db->result($result, $i, "ID");
 		$name = $db->result($result, $i, "name");
 		$location = $db->result($result, $i, "location");
-		echo "<option value=$dID>$name ($location)</option>";
+		echo "<option value=$dID>$name (".getDropdownLocationName($location).")</option>";
 		$i++;
 	}
 	echo "</select>";
@@ -860,9 +860,9 @@ function listConnectorComputers($target,$input) {
 
 	$db = new DB;
 	if ($input["type"] == "name") {
-		$query = "SELECT glpi_computers.ID as ID, glpi_computers.name as name, glpi_dropdown_locations.name as location from glpi_computers, glpi_dropdown_locations WHERE  glpi_computers.location = glpi_dropdown_locations.id AND glpi_computers.name LIKE '%".$input["comp"]."%'";
+		$query = "SELECT glpi_computers.ID as ID, glpi_computers.name as name, glpi_dropdown_locations.ID as location from glpi_computers, glpi_dropdown_locations WHERE  glpi_computers.location = glpi_dropdown_locations.id AND glpi_computers.name LIKE '%".$input["comp"]."%'";
 	} else {
-		$query = "SELECT glpi_computers.ID as ID, glpi_computers.name as name, glpi_dropdown_locations.name as location from glpi_computers, glpi_dropdown_locations WHERE glpi_computers.location = glpi_dropdown_locations.id AND glpi_computers.ID LIKE '%".$input["comp"]."%'";
+		$query = "SELECT glpi_computers.ID as ID, glpi_computers.name as name, glpi_dropdown_locations.ID as location from glpi_computers, glpi_dropdown_locations WHERE glpi_computers.location = glpi_dropdown_locations.id AND glpi_computers.ID LIKE '%".$input["comp"]."%'";
 	} 
 //echo $query;
 	$query.= " ORDER BY glpi_computers.name";
@@ -875,7 +875,7 @@ function listConnectorComputers($target,$input) {
 		$dID = $db->result($result, $i, "ID");
 		$name = $db->result($result, $i, "name");
 		$location = $db->result($result, $i, "location");
-		echo "<option value=$dID>$dID - $name ($location)</option>";
+		echo "<option value=$dID>$dID - $name (".getDropdownLocationName($location).")</option>";
 		$i++;
 	}
 	echo  "</select>";
