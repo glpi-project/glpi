@@ -304,4 +304,322 @@ function compdevice_add($cID,$device_type,$dID,$specificity='') {
 	$device->computer_link($cID,$device_type,$specificity);
 }
 
+/* --------------- not in use -------------------- but get it for later if needed.
+// Print Search Form
+function searchFormDevices($device_type,$field="",$phrasetype= "",$contains="",$sort= "") {
+
+	
+	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel;
+
+	$option[$device_type.".designation"]			= $lang["devices"][14];
+	$option[$device_type.".ID"]				= $lang["devices"][13];
+	$option[$device_type.".comment"]			= $lang["devices"][15];
+	$option["glpi_enterprises.name"]			= $lang["common"][5];
+
+
+	echo "<form method='get' action=\"".$cfg_install["root"]."/devices/index.php\">";
+	echo "<div align='center'><table  width='750' class='tab_cadre'>";
+	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<tr class='tab_bg_1'>";
+	echo "<td align='center'>";
+	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
+	echo "&nbsp;";
+	echo $lang["search"][10]."&nbsp;";
+	
+	echo "<select name=\"field\" size='1'>";
+        echo "<option value='all' ";
+	if($field == "all") echo "selected";
+	echo ">".$lang["search"][7]."</option>";
+        reset($option);
+	foreach ($option as $key => $val) {
+		echo "<option value=\"".$key."\""; 
+		if($key == $field) echo "selected";
+		echo ">". $val ."</option>\n";
+	}
+	echo "</select>&nbsp;";
+	echo $lang["search"][4];
+	echo "&nbsp;<select name='sort' size='1'>";
+	reset($option);
+	foreach ($option as $key => $val) {
+		echo "<option value=\"".$key."\"";
+		if($key == $sort) echo "selected";
+		echo ">".$val."</option>\n";
+	}
+	echo "</select> ";
+	echo "<input type=\"hidden\" name=\"device_type\" value=\"".$device_type."\" />";
+	echo "</td><td width='80' align='center' class='tab_bg_2'>";
+	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
+	echo "</td></tr></table></div></form>";
+}
+*/
+
+function showDevicesList($device_type,$target) {
+
+	// Lists Device from a device_type
+
+	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
+
+	$db = new DB;
+	// Build query
+		$fields = $db->list_fields(getDeviceTable($device_type));
+		$columns = $db->num_fields($fields);
+		
+	$query = "select DISTINCT device.ID from ".getDeviceTable($device_type)." as device ";
+	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = device.FK_glpi_enterprise ) ";
+	$query .= " ORDER by device.designation ASC";
+	//echo $query;
+// Get it from database	
+	if ($result = $db->query($query)) {
+		$numrows = $db->numrows($result);
+		$numrows_limit = $numrows;
+		$result_limit = $result;
+		if ($numrows_limit>0) {
+			// Produce headline
+			echo "<center><table class='tab_cadre'><tr>";
+
+			// designation
+			echo "<th>";
+			echo "<a href=\"$target?device_type=$device_type\">";
+			echo $lang["printers"][5]."</a></th>";
+
+			// Manufacturer		
+			echo "<th>";
+			echo "<a href=\"$target?device_type=$device_type\">";
+			echo $lang["common"][5]."</a></th>";
+			
+			echo "</tr>";
+
+			for ($i=0; $i < $numrows_limit; $i++) {
+				$ID = $db->result($result_limit, $i, "ID");
+				$device = new Device(str_replace("glpi_device_", "", $device_type));
+				$device->getFromDB($ID);
+				echo "<tr class='tab_bg_2'>";
+				echo "<td><b>";
+				echo "<a href=\"".$cfg_install["root"]."/devices/devices-info-form.php?ID=$ID&device_type=$device_type\">";
+				echo $device->fields["designation"]." (".$device->fields["ID"].")";
+				echo "</a></b></td>";
+				echo "<td>". getDropdownName("glpi_enterprises",$device->fields["FK_glpi_enterprise"]) ."</td>";
+				echo "</tr>";
+			}
+
+			// Close Table
+			echo "</table></center>";
+		} else {
+			echo "<center><b>".$lang["devices"][18]."</b></center>";
+			echo "<hr noshade>";
+		}
+	}
+}
+
+
+function titleDevices($device_type){
+	GLOBAL  $lang,$HTMLRel;           
+	echo "<div align='center'><table border='0'><tr><td>";
+	//TODO : CHANGER LE PICS et le alt.!!!!!!!!!!!
+	echo "<img src=\"".$HTMLRel."pics/printer.png\" alt='".$lang["printers"][0]."' title='".$lang["printers"][0]."'></td><td><a  class='icon_consol' href=\"devices-info-form.php?device_type=$device_type\"><b>".$lang["devices"][12]."</b></a>";
+	echo "</td>";
+	echo "</tr></table></div>";
+}
+
+function showDevicesForm ($target,$ID,$device_type) {
+
+	GLOBAL $cfg_install,$cfg_layout,$lang,$HTMLRel;
+
+	$device = new Device($device_type);
+
+	$device_spotted = false;
+
+	if(empty($ID)) {
+		if($device->getEmpty()) $device_spotted = false;
+	} else {
+		if($device->getfromDB($ID)) $device_spotted = true;
+	}
+
+	echo "<div align='center'><form method='post' name='form' action=\"$target\">";
+	echo "<table class='tab_cadre' width='700' cellpadding='2'>";
+	echo "<tr><th align='center' colspan='2'>";
+	echo getDeviceTable($device_type).": ".$ID;
+	echo "<tr><td class='tab_bg_1' colspan='1'>";
+	// table commune
+	echo "<table cellpadding='1px' cellspacing='0' border='0'>\n";
+	echo "<tr><td>".$lang["printers"][5].":	</td>";
+	echo "<td><input type='text' name='designation' value=\"".$device->fields["designation"]."\" size='20'></td>";
+	echo "</tr>";
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>";
+	dropdownValue("glpi_enterprises","FK_glpi_enterprise",$device->fields["FK_glpi_enterprise"]);
+	echo "</td></tr>";
+	echo "</table>";
+	// fin table Commune
+	echo "</td>\n";	
+	echo "<td class='tab_bg_1' valign='top'>";
+
+	// table particuliere
+	echo "<table cellpadding='1px' cellspacing='0' border='0'>";
+		
+	switch(getDeviceTable($device_type)) {
+		case "glpi_device_moboard" : 
+			echo "<tr><td>".$lang["device_moboard"][0].":</td>";
+			echo "<td><input type='text' size='12' name='chipset' value=\"".$device->fields["chipset"]."\"></td>";
+			echo "</tr>";
+		break;
+		case "glpi_device_processor" :
+			echo "<tr><td>".$lang["device_processor"][0].":</td>";
+			echo "<td><input type='text' size='12' name='frequence' value=\"".$device->fields["frequence"]."\"></td>";
+			echo "</tr>";
+		break;
+		case "glpi_device_ram" :
+			echo "<tr><td>".$lang["device_ram"][0].":</td>";
+			echo "<td><input type='text' size='12' name='type' value=\"".$device->fields["type"]."\"></td>";
+			echo "</tr>";
+			echo "<tr><td>".$lang["device_ram"][1].":</td>";
+			echo "<td><input type='text' size='12' name='frequence' value=\"".$device->fields["frequence"]."\"></td>";
+			echo "</tr>";
+		break;
+		case "glpi_device_hdd" :
+			echo "<tr><td>".$lang["device_hdd"][0].":</td>";
+			echo "<td><input type='text' size='12' name='rpm' value=\"".$device->fields["rpm"]."\"></td>";
+			echo "</tr>";
+			echo "<tr><td>".$lang["device_hdd"][1].":</td>";
+			echo "<td><input type='text' size='12' name='cache' value=\"".$device->fields["cache"]."\"></td>";
+			echo "</tr>";
+			echo "<tr><td>".$lang["device_hdd"][2].":</td>";
+			echo "<td><input type='text' size='12' name='interface' value=\"".$device->fields["interface"]."\"></td>";
+			echo "</tr>";
+		break;
+		case "glpi_device_iface" :
+			echo "<tr><td>".$lang["device_iface"][0].":</td>";
+			echo "<td><input type='text' size='12' name='bandwidth' value=\"".$device->fields["bandwidth"]."\"></td>";
+			echo "</tr>";
+		break;
+		case "glpi_device_drive" :
+		break;
+		case  "glpi_device_control" :
+		break;
+		case "glpi_device_gfxcard" :
+			echo "<tr><td>".$lang["device_gfxcard"][0].":</td>";
+			echo "<td><input type='text' size='12' name='ram' value=\"".$device->fields["ram"]."\"></td>";
+			echo "</tr>";
+			echo "<tr><td>".$lang["device_gfxcard"][2].":</td>";
+			echo "<td><input type='text' size='12' name='interface' value=\"".$device->fields["interface"]."\"></td>";
+			echo "</tr>";
+		break;
+		case "glpi_device_sndcard" :
+			echo "<tr><td>".$lang["device_sndcard"][0].":</td>";
+			echo "<td><input type='text' size='12' name='type' value=\"".$device->fields["type"]."\"></td>";
+			echo "</tr>";
+		break;
+		case "glpi_device_pci" :
+
+		break;
+		case "glpi_device_case" :
+
+		break;
+		case "glpi_device_power" :
+
+		break;	
+
+	}
+	echo "</td></tr>";
+	echo "</table>";
+	echo "</td>\n";	
+	echo "</tr>";
+	
+	echo "<tr>";
+	echo "<td class='tab_bg_1' valign='top' colspan='2'>";
+
+	// table commentaires
+	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
+	echo $lang["devices"][15].":	</td>";
+	echo "<td align='center'><textarea cols='35' rows='4' name='comment' >".$device->fields["comment"]."</textarea>";
+	echo "</td></tr></table>";
+
+	echo "</td>";
+	echo "</tr>";
+	echo "<tr>";
+	if($device_spotted) {
+		echo "<td class='tab_bg_2' valign='top' align='center'>";
+		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+		echo "<input type='hidden' name='device_type' value=\"$device_type\">\n";
+		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+		echo "</td></form>\n\n";
+		echo "<form action=\"$target\" method='post'>\n";
+		echo "<td class='tab_bg_2' valign='top' align='center'>\n";
+		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+		echo "<input type='hidden' name='device_type' value=\"$device_type\">\n";
+		echo "<div align='center'>";
+		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+		echo "</div>";
+		echo "</td>";
+		echo "</form></tr>";
+	}
+	else {
+		echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";
+		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+		echo "<input type='hidden' name='device_type' value=\"$device_type\">\n";
+		echo "<input type='submit' name='add' value=\"".$lang["buttons"][7]."\" class='submit'>";
+		echo "</td></form>\n\n";	
+	}
+	echo "</table></div>";
+}
+
+function updateDevice($input) {
+	// Update a device in the database
+
+	$device = new Device($input["device_type"]);
+	$device->getFromDB($input["ID"]);
+	
+	// Pop off the last Three attributes, no longer needed
+	$null=array_pop($input);
+	$null=array_pop($input);
+	$null=array_pop($input);
+	
+	// Fill the update-array with changes
+	$x=0;
+	$updates = array();
+	foreach ($input as $key => $val) {
+		if ($device->fields[$key] != $input[$key]) {
+			$device->fields[$key] = $input[$key];
+			$updates[$x] = $key;
+			$x++;
+		}
+	}
+	$device->updateInDB($updates);
+
+}
+
+function addDevice($input) {
+	// Add device
+	$db=new DB;
+	$device = new Device($input["device_type"]);
+
+	
+	// dump status
+	$oldID=$input["ID"];
+
+	// Pop off the last Three attributes, no longer needed
+	$null = array_pop($input);
+	$null = array_pop($input);
+	$null = array_pop($input);
+
+ 	
+	// fill array for update
+	foreach ($input as $key => $val) {
+		if (empty($device->fields[$key]) || $device->fields[$key] != $input[$key]) {
+			$device->fields[$key] = $input[$key];
+		}
+	}
+	$new_id = $device->addToDB();
+
+
+
+
+}
+
+function deleteDevice($input) {
+	// Delete Device
+	$device = new Device($input["device_type"]);
+	$device->deleteFromDB($input["ID"]);
+	
+} 	
+
 ?>

@@ -44,19 +44,30 @@ class Device {
 	function getFromDB($ID) {
 		$db = new DB;
 		$query = "SELECT * FROM ".$this->table." WHERE (ID = '$ID') limit 0,1";
+		//echo $query;
 		if ($result = $db->query($query)) {
 			if ($db->numrows($result)==1) {
 				$data = $db->fetch_array($result);
 				foreach ($data as $key => $val) {
 					$this->fields[$key] = $val;
 				}
-				//print_r($this->fields);
-				//print_r($data);
 				return true;
 			} else return false;
 		} else {
 			return false;
 		}
+	}
+	
+	function getEmpty () {
+		//make an empty database object
+		$db = new DB;
+		$fields = $db->list_fields($this->table);
+		$columns = mysql_num_fields($fields);
+		for ($i = 0; $i < $columns; $i++) {
+			$name = mysql_field_name($fields, $i);
+			$this->fields[$name] = "";
+		}
+		return true;
 	}
 	
 	function updateInDB($updates)  {
@@ -102,9 +113,8 @@ class Device {
 			}
 		}
 		$query .= ")";
-
 		if ($result=$db->query($query)) {
-			return true;
+			return $db->insert_id();
 		} else {
 			return false;
 		}
@@ -113,7 +123,6 @@ class Device {
 	function deleteFromDB($ID) {
 
 		$db = new DB;
-
 		$query = "DELETE from ".$this->table." WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			$query2 = "DELETE FROM glpi_computer_device WHERE (FK_periph = '$ID')";
