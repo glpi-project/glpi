@@ -314,6 +314,7 @@ $lang["networking"][46] = "Ajouter  plusieurs ports...";
 $lang["networking"][47] = "De"; 
 $lang["networking"][48] = "A";
 $lang["networking"][49] = "Firmware";
+$lang["networking"][50] = "ID";
 
 // Printers
 $lang["printers"][0]	= "Ajouter imprimante...";

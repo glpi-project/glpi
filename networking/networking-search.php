@@ -41,7 +41,7 @@ include ($phproot . "/glpi/includes_networking.php");
 
 checkAuthentication("normal");
 
-commonHeader("Printers",$_SERVER["PHP_SELF"]);
+commonHeader("Networking",$_SERVER["PHP_SELF"]);
 if(empty($_GET["start"])) $_GET["start"] = 0;
 if(empty($_GET["order"])) $_GET["order"] = "ASC";
 
