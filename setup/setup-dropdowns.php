@@ -57,7 +57,7 @@ else $ID="";
 
 if (isset($_POST["move"])) {
 	checkAuthentication("admin");
-	moveLocationUnder($_POST["value_to_move"],$_POST["value_where"]);
+	moveTreeUnder($_POST["tablename"],$_POST["value_to_move"],$_POST["value_where"]);
 	logEvent(0, "dropdowns", 5, "setup", $_SESSION["glpiname"]." moved a location.");
 	header("Location: ".$_SERVER['PHP_SELF']."?which=$which");
 }else if (isset($_POST["add"])) {
@@ -93,6 +93,7 @@ if (isset($_POST["move"])) {
 	commonHeader("Setup",$_SERVER["PHP_SELF"]);
 
 	$dp=array();
+	$dp["kbcategories"]=$lang["setup"][78];	
 	$dp["locations"]=$lang["setup"][3];	
 	$dp["computers"]=$lang["setup"][4];	
 	$dp["networking"]=$lang["setup"][42];		
@@ -127,8 +128,11 @@ echo "<option value='$key' $sel>".$val."</option>";
 	echo "</table></form></div>";
 
 	switch ($which){
+		case "kbcategories" :
+		showFormTreeDown($_SERVER["PHP_SELF"],"kbcategories",$lang["setup"][78],$ID);
+		break;
 		case "locations" :
-		showFormDropDown($_SERVER["PHP_SELF"],"locations",$lang["setup"][3],$ID);
+		showFormTreeDown($_SERVER["PHP_SELF"],"locations",$lang["setup"][3],$ID);
 		break;
 		case "computers" :
 		showFormTypeDown($_SERVER["PHP_SELF"],"computers",$lang["setup"][4],$ID);

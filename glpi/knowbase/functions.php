@@ -153,9 +153,6 @@ function kbItemMenu($ID)
 	echo "		</td></tr>\n";
 	echo "</table></div>\n";
 	
-
-	
-
 }
 
 
@@ -255,7 +252,7 @@ function showKbCategories($parentID=0)
 	
 	global $lang;
 	
-	$query = "select * from glpi_kbcategories where (parentID = $parentID) order by name asc";
+	$query = "select * from glpi_dropdown_kbcategories where (parentID = $parentID) order by name asc";
 
 	$db=new DB;
 	
@@ -340,7 +337,7 @@ function ShowKbItemFull($ID)
 		
 	
 	$categoryID = $ki->fields["categoryID"];
-	$fullcategoryname = kbcategoryname($categoryID);
+	$fullcategoryname = getTreeValueName("glpi_kb_categories",$categoryID);
 	
 	echo "<div align='center'><table class='tab_cadre' cellpadding='10' width='700px'><tr><th>";
 	
@@ -374,75 +371,13 @@ function kbcategoryList($current=0,$nullroot="yes")
 	if ($nullroot=="yes"){
 	echo "<option value='0'>".$lang["knowbase"][12]."</option>\n";
 	}
+	showTreeListSelect("glpi_dropdown_kbcategories",$current, $parentID=0, $categoryname="");
 	
-	kbcategoryListSelect($current, 0, "\\");
+//	kbcategoryListSelect($current, 0, "\\");
 	echo "</select>\n";
 }
 
 
-function kbcategoryListSelect($current, $parentID=0, $categoryname="")
-{
-	//
-	//ok
-	$query = "select * from glpi_kbcategories where (parentID = $parentID) order by name desc";
-
-	$db=new DB;
-	
-	if ($result=$db->query($query)){
-		if ($db->numrows($result)>0){
-	
-			
-		while ($row=$db->fetch_array($result)){
-		
-			$ID = $row["ID"];
-			$name = $categoryname . $row["name"];
-			echo "<option value='$ID'";
-			if($current == $ID)
-			{
-				echo " selected";
-			}
-			echo ">$name</option>\n";
-			$name = $name . "\\";
-			kbcategoryListSelect($current, $ID, $name);
-		}
-	}	}
-
-
-}
-
-function kbcategoryname($ID, $wholename="")
-{
-	// show name catégory
-	// ok ??
-	
-	global $lang;
-	
-	$query = "select * from glpi_kbcategories where (ID = $ID)";
-	$db=new DB;
-	
-	if ($result=$db->query($query)){
-		if ($db->numrows($result)>0){
-		
-		$row=$db->fetch_array($result);
-		
-		$parentID = $row["parentID"];
-		if($wholename == "")
-		{
-			$name = $row["name"];
-		} else
-		{
-			$name = $row["name"] . "\\";
-		}
-		$name = kbcategoryname($parentID, $name) . $name;
-		if($parentID == 0)
-		{
-			$name = "\\" . $name;
-		}
-	}
-	
-	}
-return (@$name);
-}
 
 
 //*******************
@@ -502,7 +437,7 @@ function getFAQParentCategories($ID, &$catNumbers)
 {
 	
 		
-	$query = "select * from glpi_kbcategories where (ID = '$ID')";
+	$query = "select * from glpi_dropdown_kbcategories where (ID = '$ID')";
 
 	$db=new DB;
 	if ($result=$db->query($query)){
@@ -546,7 +481,7 @@ function faqShowCategories($parentID=0)
 	
 		
 	$catNumbers = getFAQCategories();
-	$query = "select * from glpi_kbcategories where (parentID = $parentID) order by name asc";
+	$query = "select * from glpi_dropdown_kbcategories where (parentID = $parentID) order by name asc";
 
 	$db=new DB;
 	if ($result=$db->query($query)){

@@ -13,11 +13,11 @@
 -- --------------------------------------------------------
 
 -- 
--- Structure de la table `glpi_kbcategories`
+-- Structure de la table `glpi_dropdown_kbcategories`
 -- 
 
-DROP TABLE IF EXISTS `glpi_kbcategories`;
-CREATE TABLE `glpi_kbcategories` (
+DROP TABLE IF EXISTS `glpi_dropdown_kbcategories`;
+CREATE TABLE `glpi_dropdown_kbcategories` (
   `ID` int(11) NOT NULL auto_increment,
   `parentID` int(11) NOT NULL default '0',
   `name` text NOT NULL,
@@ -25,13 +25,13 @@ CREATE TABLE `glpi_kbcategories` (
 ) TYPE=MyISAM AUTO_INCREMENT=5 ;
 
 -- 
--- Contenu de la table `glpi_kbcategories`
+-- Contenu de la table `glpi_dropdown_kbcategories`
 -- 
 
-INSERT INTO `glpi_kbcategories` VALUES (1, 0, 'Ordinateur');
-INSERT INTO `glpi_kbcategories` VALUES (2, 0, 'Imprimante');
-INSERT INTO `glpi_kbcategories` VALUES (3, 2, 'Papier');
-INSERT INTO `glpi_kbcategories` VALUES (4, 2, 'Toner');
+INSERT INTO `glpi_dropdown_kbcategories` VALUES (1, 0, 'Ordinateur');
+INSERT INTO `glpi_dropdown_kbcategories` VALUES (2, 0, 'Imprimante');
+INSERT INTO `glpi_dropdown_kbcategories` VALUES (3, 2, 'Papier');
+INSERT INTO `glpi_dropdown_kbcategories` VALUES (4, 2, 'Toner');
 
 -- --------------------------------------------------------
 
