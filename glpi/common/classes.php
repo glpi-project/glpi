@@ -765,6 +765,8 @@ class CommonItem{
 		global $lang;
 		
 		switch ($this->device_type){
+			case 0 :
+				return $lang["help"][30];
 			case 1 :
 				return $lang["computers"][44];
 				break;
@@ -784,13 +786,18 @@ class CommonItem{
 	
 	}
 	function getName(){
+		global $lang;
+		if ($this->device_type==0)
+		return "";
 		if ($this->obj!=NULL&&isset($this->obj->fields["name"])&&$this->obj->fields["name"]!="")
 			return $this->obj->fields["name"];
 		else 
 			return "N/A";
 	}
 	function getNameID(){
-		return $this->getName()." (".$this->id_device.")";
+		if ($this->device_type==0)
+		return $this->getName();
+		else return $this->getName()." (".$this->id_device.")";
 	}
 	
 	function getLink(){
@@ -798,6 +805,9 @@ class CommonItem{
 		global $cfg_install;
 	
 		switch ($this->device_type){
+			case 0 :
+				return getName();
+				break;
 			case 1 :
 				return "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
 				break;
