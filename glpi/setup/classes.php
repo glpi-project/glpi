@@ -44,6 +44,7 @@ class User {
   function User($name = '') {
   	$this->fields['name'] = $name;
   	$this->fields['password'] = '';
+	$this->fields['password_md5'] = '';
   	$this->fields['email'] = '';
   	$this->fields['location'] = 'NULL';
   	$this->fields['phone'] = '';
@@ -177,6 +178,7 @@ class User {
 		foreach ($this->fields as $key => $val) {
 			$fields[$i] = $key;
 			if($key == "password") $indice = $i;
+			if($key == "password_md5") $indice2 = $i;
 			$values[$i] = $val;
 			$i++;
 		}		
@@ -190,6 +192,9 @@ class User {
 		for ($i=0; $i < count($values); $i++) {
 			if($i === $indice) {
 				$query .= " PASSWORD('".$values[$i]."')";
+			}
+			elseif($i === $indice2) {
+				$query .= " MD5('".$values[$i]."')";
 			}
 			else {
 				$query .= "'".$values[$i]."'";
@@ -209,13 +214,15 @@ class User {
 	function updateInDB($updates)  {
 
 		$db = new DB;
-
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_users SET ";
 			$query .= $updates[$i];
 			$query .= "=";
 			if ( ($updates[$i]=="password") && ($this->fields[$updates[$i]] != "") ) {
 				$query .= "PASSWORD('".$this->fields[$updates[$i]]."')";
+			}
+			elseif (($updates[$i]=="password_md5") && ($this->fields[$updates[$i]] != "") ) {
+				$query .= "MD5('".$this->fields[$updates[$i]]."')";
 			} else {
 				$query .= "'".$this->fields[$updates[$i]]."'";
 			}
