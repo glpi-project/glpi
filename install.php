@@ -87,18 +87,16 @@ function header_html($etape)
   {  
     font-size: 12px;
     font-weight: bold;
-   /* background-color: #FFC65D;*/
-    background-color: #fccc6f;
+ color: #fccc6f;
 	vertical-align:bottom;
 }
 
 .tab_cadre{
- -moz-border-radius: 4px;
-  border: 1px solid #cccccc;
+ 
 }
 
 .tab_bg_1 {
-background-color: #ccccc7;
+
 
 }
 
@@ -172,14 +170,14 @@ function footer_html()
 function choose_language()
 {
 echo "<form action=\"install.php\" method=\"post\">";
-echo "<p align='center'><label>Choose your language <select name=\"language\"><label></p>";
+echo "<p style='text-align:center;'><label>Choose your language </label><select name=\"language\">";
 	echo "<option value=\"french\">Fran&ccedil;ais</option>";
 	echo "<option value=\"english\">English</option>";
 	echo "<option value=\"deutch\">Deutch</option>";
 	echo "<option value=\"italian\">Italiano</option>";
-	echo "</select>"; 
-	echo "<input type=\"hidden\" name=\"install\" value=\"lang_select\" />";
-	echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"OK\" /></p>";
+	echo "</select></p>"; 
+	echo "";
+	echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"lang_select\" /><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"OK\" /></p>";
 	echo "</form>";
 }
 
@@ -229,10 +227,10 @@ function step1($update)
 // PHP Version  - exclude PHP3
 	if (substr(phpversion(),0,1) == "3") {
 		$error = 2;
-		echo "<td>".$lang["install"][9]."</a>.\n</td>";
+		echo "<td  class='red'>".$lang["install"][9]."</a>.\n</td>";
 	}
 	elseif (substr(phpversion(),0,3) == "4.0" and ereg("0|1",substr(phpversion(),4,1))) {
-		echo "<td><span class='wrong'>&nbsp;<td>".$lang["install"][10]."<td>";
+		echo "<td><span class='red'>&nbsp;<td>".$lang["install"][10]."<td>";
 		if($error != 2) $error = 1;
 	}
 	else {
@@ -243,7 +241,7 @@ function step1($update)
 // Check for mysql extension ni php
 	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][71]."</b></td>";
 	if(!function_exists("mysql_connect")) {
-		echo "<td>".$lang["install"][72]."</td></tr>";
+		echo "<td  class='red'>".$lang["install"][72]."</td></tr>";
 		$error = 2;
 	} else {
 		echo "<td>".$lang["install"][73]."</td></tr>";
@@ -260,14 +258,14 @@ function step1($update)
   // check whether session are enabled at all!!
 	if (!extension_loaded('session')) {
 		$error = 2;
-		echo "<td><b>".$lang["install"][13]."</b></td></tr>";
+		echo "<td  class='red'><b>".$lang["install"][13]."</b></td></tr>";
 	} 
 	if ($_SESSION["Test_session_GLPI"] == 1) {
 		echo "<td><i>".$lang["install"][14]."</i></td></tr>";
 	}
 	else {
 		if($error != 2) $error = 1;
-		echo "<td>".$lang["install"][15]."</td></tr>";
+		echo "<td  class='red'>".$lang["install"][15]."</td></tr>";
 	}
 	
 	//Test for option session use trans_id loaded or not.
@@ -314,7 +312,7 @@ function step1($update)
 		fclose($fp);
 		$delete = unlink("backups/dump/test_glpi.txt");
 		if (!$delete) {
-			echo "<td>".$lang["install"][19]."</td></tr>";
+			echo "<td  class='red'>".$lang["install"][19]."</td></tr>";
 			if($error != 2) $error = 1;
 		}
 		else {
@@ -335,7 +333,7 @@ function step1($update)
 		fclose($fp);
 		$delete = unlink("docs/test_glpi.txt");
 		if (!$delete) {
-			echo "<td>".$lang["install"][19]."</td></tr>";
+			echo "<td  class='red'>".$lang["install"][19]."</td></tr>";
 			if($error != 2) $error = 1;
 		}
 		else {
