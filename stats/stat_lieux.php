@@ -80,14 +80,20 @@ if (is_array($type))
    {
  //affichage du tableau
  echo "<table class='tab_cadre2' cellpadding='5' >";
- echo "<tr><th>".$lang["stats"][21]."</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th></tr>";
+ $champ=str_replace("locations","location",str_replace("glpi_","",str_replace("dropdown_","",str_replace("_computers","",$_POST["dropdown"]))));
+ echo "<tr><th>&nbsp;</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th></tr>";
 
  //Pour chaque lieu on affiche
  //for each location displays
       foreach($type as $key)
       {
+      	$query="SELECT count(*) FROM glpi_computers WHERE $champ='".$key["ID"]."'";
+      	$db=new DB;
+      	if ($result=$db->query($query))
+      	 	$count=$db->result($result,0,0);
+      	 else $count=0; 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td>".getDropdownName($_POST["dropdown"],$key["ID"]) ."</td>";
+	echo "<td>".getDropdownName($_POST["dropdown"],$key["ID"]) ."($count)</td>";
 	//le nombre d'intervention
 	//the number of intervention
 	if(!empty($_POST["date1"]) && !empty($_POST["date2"])) {
