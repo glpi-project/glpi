@@ -450,8 +450,13 @@ function showJobShort($ID, $followups	) {
 			echo "</b></td>";
 		}    
 		
-		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
-		echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$job->computer\"><b>$job->computername ($job->computer)</b></a></td>";
+		if (strcmp($_SESSION["glpitype"],"post-only")!=0){
+			echo "<td align='center'>";
+			if ($job->computerfound)	echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$job->computer\">";
+			echo "<b>$job->computername ($job->computer)</b>";
+			if ($job->computerfound) echo "</a>";
+			echo "</td>";
+		}
 		else
 		echo "<td  align='center'><b>$job->computername($job->computer)</b></td>";
 		
