@@ -107,18 +107,18 @@ function showKbItemForm($target,$ID){
 		
 	echo "<fieldset>";
 	echo "<legend>".$lang["knowbase"][3]."</legend>";
-	echo "<span><textarea cols='80' rows='2'  name='question' >".$ki->fields["question"]."</textarea></span>"; 
+	echo "<div align='center'><textarea cols='80' rows='2'  name='question' >".$ki->fields["question"]."</textarea></div>"; 
 	echo "</fieldset>";
 	
 	
 	echo "<fieldset>";
-	echo "<legend>".$lang["knowbase"][4]."</legend>";
+	echo "<legend>".$lang["knowbase"][4]."</legend><div align='center'>";
 	echo "
 		<script type='text/javascript' language='javascript'>
 		drawToolbar('form_kb.answer');
 		</script>
 		";	
-	echo "<span><textarea cols='80' rows='15'  name='answer' >".$ki->fields["answer"]."</textarea></span>"; 
+	echo "<textarea cols='80' rows='15'  name='answer' >".$ki->fields["answer"]."</textarea></div>"; 
 	echo "</fieldset>";
 	
 	
@@ -355,7 +355,7 @@ function showKbItem($ID)
 	if ($result=$db->query($query)){
 	$data = $db->fetch_array($result);
 	$question = $data["question"];
-	echo "<li><a href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=$ID\">$question</a>\n";
+	echo "<li><a href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=$ID\">&nbsp;".$question."&nbsp;</a>\n";
 	}
 }
 

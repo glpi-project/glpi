@@ -228,10 +228,16 @@ width: 600px;
 margin-left: -150px;
 }
 
+#contenukb legend {
+
+font-weight: bold;
+
+}
 
 #contenukb fieldset {
 background-color: #eeeeee;
 border: 2px solid #FFC65D;
+-moz-border-radius: 8px;
 padding-bottom:10px;
 width: 600px;
 
@@ -487,3 +493,11 @@ p.toolbar a:hover
 	background-color: #ffffff;
 	text-decoration: none;
 }
+
+
+/* style Toolbar-> code knowbase */
+
+.souligne {text-decoration : underline;}
+
+.barre { text-decoration : line-through; }
+

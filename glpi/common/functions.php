@@ -1864,15 +1864,20 @@ function rembo($string){
 	$pattern = array('#\[b\](.*?)\[/b\]#s',
 					 '#\[i\](.*?)\[/i\]#s',
 					 '#\[u\](.*?)\[/u\]#s',
+					  '#\[s\](.*?)\[/s\]#s',
+					  '#\[c\](.*?)\[/c\]#s',
 					 //'#\[url\](.*?)\[/url\]#e',
 					 //'#\[url=(.*?)\](.*?)\[/url\]#e',
 					 '#\[email\](.*?)\[/email\]#',
 					 '#\[email=(.*?)\](.*?)\[/email\]#',
 					 '#\[color=([a-zA-Z]*|\#?[0-9a-fA-F]{6})](.*?)\[/color\]#s');
 
+					 
 	$replace = array('<strong>$1</strong>',
 					 '<em>$1</em>',
-					 '<u>$1</u>',
+					 '<span class="souligne">$1</span>',
+					'<span class="barre">$1</span>',
+					'<div align="center">$1</div>',
 					// 'truncate_url(\'$1\')',
 					 //'truncate_url(\'$1\', \'$2\')',
 					 '<a href="mailto:$1">$1</a>',

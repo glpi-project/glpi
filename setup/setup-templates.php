@@ -41,10 +41,15 @@ include ($phproot . "/glpi/includes_setup.php");
 checkAuthentication("normal");
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 listTemplates(COMPUTER_TYPE,$HTMLRel ."computers/computers-info-form.php");
+echo "<br>";
 listTemplates(NETWORKING_TYPE,$HTMLRel ."networking/networking-info-form.php");
+echo "<br>";
 listTemplates(PRINTER_TYPE,$HTMLRel ."printers/printers-info-form.php");
+echo "<br>";
 listTemplates(MONITOR_TYPE,$HTMLRel ."monitors/monitors-info-form.php");
+echo "<br>";
 listTemplates(SOFTWARE_TYPE,$HTMLRel ."software/software-info-form.php");
+echo "<br>";
 listTemplates(PERIPHERAL_TYPE,$HTMLRel ."peripherals/peripherals-info-form.php");
 
 commonFooter();
