@@ -110,11 +110,14 @@ function showJobList($username,$show,$contains,$item) {
 	$prefs = getTrackingPrefs($username);
 
 	// Build where-clause
-	if ($contains) {
+	if ($contains)
+	{
 		$where = "(contents LIKE \"%$contains%\")";
-	} else if ($show == "old") {
+	} else if ($show == "old")
+	{
 		$where = "(status = 'old')";
-	} else {
+	} else
+	{
 		$where = "(status = 'new')";
 	}
 

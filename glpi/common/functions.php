@@ -509,7 +509,7 @@ function logEvent ($item, $itemtype, $level, $service, $event) {
 }
 
 
-function showEvents($target,$result,$sort) {
+function showEvents($target,$order,$sort) {
 	// Show events from $result in table form
 
 	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang;
