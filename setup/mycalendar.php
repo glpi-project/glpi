@@ -113,7 +113,8 @@ echo $elem;?>&mois=" + document.forms["MyCalendar"].elements['month'].options[do
 <?php
 
  
-
+$form = $_GET["form"];
+$elem = $_GET["elem"];
 
 if (!isset($jour))
        $jour = date("j") ;
@@ -241,7 +242,7 @@ echo "<body bgcolor='#$bgcolor' onUnLoad=''>\n" ;
    echo "</tr>\n" ;
   }
 
-  echo "\n<tr><td colspan='10' align='center'><input type='button' onclick='window.opener.document.forms[\"$form\"].elements[\"$elem\"].value=\"$annee-$mois-$jour\";window.close()' value='Valider'>&nbsp;&nbsp;<input onclick='window.close()' type='button' value='Annuler'></td></tr></table>\n" ;
+  echo "\n<tr><td colspan='10' align='center'><input type='button' onclick='window.opener.document.forms[\"".$form."\"].elements[\"".$elem."\"]\"].value=\"".$annee."-".$mois."-".$jour."\";window.close()' value='Valider'>&nbsp;&nbsp;<input onclick='window.close()' type='button' value='Annuler'></td></tr></table>\n" ;
 
   echo "\n</tr></table>\n" ;
 
