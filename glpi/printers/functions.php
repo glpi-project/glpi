@@ -118,12 +118,40 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
 
+	$db = new DB;
 	// Build query
-	if ($phrasetype == "contains") {
-		$where = "($field LIKE '%".$contains."%')";
-	} else {
-		$where = "($field LIKE '".$contains."')";
+	if($field=="all") {
+		$where = " (";
+		$fields = $db->list_fields("glpi_printers");
+		$columns = $db->num_fields($fields);
+		
+		for ($i = 0; $i < $columns; $i++) {
+			if($i != 0) {
+				$where .= " OR ";
+			}
+			$coco = mysql_field_name($fields, $i);
+
+			if($coco == "location") {
+				$where .= " glpi_dropdown_locations.name LIKE '%".$contains."%'";
+			}
+			elseif($coco == "type") {
+				$where .= " glpi_type_printers.name LIKE '%".$contains."%'";
+			}
+			else {
+   				$where .= "printer.".$coco . " LIKE '%".$contains."%'";
+			}
+		}
+		$where .= ")";
 	}
+	else {
+		if ($phrasetype == "contains") {
+			$where = "($field LIKE '%".$contains."%')";
+		}
+		else {
+			$where = "($field LIKE '".$contains."')";
+		}
+	}
+
 	if (!$start) {
 		$start = 0;
 	}
@@ -133,8 +161,9 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 	$query = "select printer.ID from glpi_printers as printer LEFT JOIN glpi_dropdown_locations on printer.location=glpi_dropdown_locations.ID ";
 	$query .= "LEFT JOIN glpi_type_printers on printer.type = glpi_type_printers.ID ";
 	$query .= "where $where ORDER BY $sort $order";
+	
+//	echo $query;
 	// Get it from database	
-	$db = new DB;
 	if ($result = $db->query($query)) {
 		$numrows = $db->numrows($result);
 
@@ -198,7 +227,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo $printer->fields["name"]." (".$printer->fields["ID"].")";
 				echo "</a></b></td>";
 				echo "<td>". getDropdownName("glpi_dropdown_locations",$printer->fields["location"]) ."</td>";
-				echo "<td>". getDropdownName("glpi_type_monitors",$printer->fields["type"]) ."</td>";
+				echo "<td>". getDropdownName("glpi_type_printers",$printer->fields["type"]) ."</td>";
 				echo "<td>".$printer->fields["date_mod"]."</td>";
 				echo "</tr>";
 			}
