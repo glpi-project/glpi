@@ -605,11 +605,13 @@ function countInstallations($sID) {
 	
 			// Get installed
 			$i=0;
-			while ($i < $db->numrows($result)) {
+			$installed = 0;
+			while ($i < $db->numrows($result))
+			{
 				$lID = $db->result($result,$i,"ID");
 				$query2 = "SELECT license FROM inst_software WHERE (license = '$lID')";
 				$result2 = $db->query($query2);
-				$installed += $db->numrows($result2);	
+				$installed += $db->numrows($result2);
 				$i++;
 			}
 		
