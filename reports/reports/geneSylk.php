@@ -44,11 +44,11 @@ echo "<center><table class='tab_cadre2' cellpadding=5>";
 echo "<tr><th>".$lang["reports"][10].":</th></tr>";
 
 
-	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='convexcel/rapport-sylk.php?table=computers' target=blanc_>".$lang["reports"][6]."</a></b></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='convexcel/rapport-sylk.php?table=printers' target=blanc_>".$lang["reports"][7]."</a></b></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='convexcel/rapport-sylk.php?table=networking' target=blanc_>".$lang["reports"][8]."</a></b></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='convexcel/rapport-sylk.php?table=monitors' target=blanc_>".$lang["reports"][9]."</a></b></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='convexcel/rapport-sylk.php?table=peripherals' target=blanc_>".$lang["reports"][29]."</a></b></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='rapport-sylk.php?table=computers' target=blanc_>".$lang["reports"][6]."</a></b></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='rapport-sylk.php?table=printers' target=blanc_>".$lang["reports"][7]."</a></b></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='rapport-sylk.php?table=networking' target=blanc_>".$lang["reports"][8]."</a></b></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='rapport-sylk.php?table=monitors' target=blanc_>".$lang["reports"][9]."</a></b></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='rapport-sylk.php?table=peripherals' target=blanc_>".$lang["reports"][29]."</a></b></td></tr>";
 
 
 echo "</table></center>";
