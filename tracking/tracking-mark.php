@@ -43,7 +43,7 @@ include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_setup.php");
 
 checkAuthentication("admin");
-if (isset($_GET["status"])) $status=$_GET["status"];
+if (isset($_POST["status"])) $status=$_POST["status"];
 
 if (empty($status))
 {
@@ -51,12 +51,13 @@ if (empty($status))
 }
 
 $opt='';
-if ($status=="old"&&isset($_GET["hour"])&&isset($_GET["minute"]))
-	$opt=$_GET["hour"]+$_GET["minute"]/60;
+if ($status=="old"&&isset($_POST["hour"])&&isset($_POST["minute"]))
+	$opt=$_POST["hour"]+$_POST["minute"]/60;
 
-markJob ($_GET["ID"],$status,$opt);
+markJob ($_POST["ID"],$status,$opt);
 
-
-header("Location: $_SERVER[HTTP_REFERER]");
+$referer=$_SERVER[HTTP_REFERER];
+$referer=preg_replace("/\?ID=[0-9]*/","",$referer);
+header("Location: $referer?ID=".$_POST["ID"]);
 
 ?>
