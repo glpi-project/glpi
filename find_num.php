@@ -29,6 +29,11 @@ This file is part of GLPI.
  Purpose of file:
  ----------------------------------------------------------------------
 */
+	include ("_relpos.php");
+	include ($phproot . "/glpi/includes.php");
+	if(!isset($_SESSION)) session_start();	
+	loadLanguage();
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -51,15 +56,14 @@ window.close();}
 </script>
 
 <div align="center">
-  <p><strong>Rechercher votre numéro de machine </strong></p>
+  <p><strong><?echo $lang["help"][22];?></strong></p>
   <form name="form1" method="post" action="find_num.php">
     <table cellspacing="1" width="100%" class='tab_cadre'>
       <tr> 
-        <th align='center'  width="100%" height="29">Saisissez votre nom ou les
-          premières lettres de votre nom </th>
+        <th align='center'  width="100%" height="29"><?echo $lang["help"][23];?></th>
         </tr><tr><td class='tab_bg_1' align='center' width="100%"> 
 		<input name="NomContact" type="text" id="NomContact" >
-           <input type="submit" name="Submit" value="Rechercher">
+           <input type="submit" name="Submit" value="<?echo $lang["buttons"][0];?>">
  </td>
       </tr>
     </table>
@@ -70,17 +74,15 @@ window.close();}
 
 if(isset($_POST["Submit"]))
 {
-	include ("_relpos.php");
-	include ($phproot . "/glpi/includes.php");
 	echo "<table width='100%' class='tab_cadre'>";
 	echo " <tr class='tab_bg3'>";
-	echo " <td align='center' width='70%'><b>Nom du contact </b></td>";
-	echo " <td align='center' width='30%'><b>N° machine </b></td>";
+	echo " <td align='center' width='70%'><b>".$lang["reports"][19]."</b></td>";
+	echo " <td align='center' width='30%'><b>".$lang["computers"][13]."</b></td>";
 	echo " </tr>";
 	
 
 	$db = new DB;
-	$query = "select ID,contact from glpi_computers where contact like '%".$_POST["NomContact"]."%'";
+	$query = "select ID,contact from glpi_computers where contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%'";
 	$result = $db->query($query);
 	while($ligne = $db->fetch_array($result))
 	{
