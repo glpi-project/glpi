@@ -44,7 +44,7 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/dicts/french.php");
 
 $db = new DB;
-$query = "select * from monitors";
+$query = "select * from glpi_monitors";
 $result = $db->query($query);
 $num_field = $db->num_fields($result);
 

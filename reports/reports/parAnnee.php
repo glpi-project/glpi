@@ -58,10 +58,10 @@ echo "<tr><th align='center' colspan='4' ><big><b>Rapport par date d'achat ou de
 echo "<form name='form' method='post' action='parAnnee-list.php'>";
 echo "<b>Type de materiel : </b>&nbsp;&nbsp; ";
 echo "<select name='item_type' >";
-echo "<option value='computers'>Ordinateurs</option>";
-echo "<option value='printers'>Imprimantes</option>";
-echo "<option value='networking'>Materiel reseau</option>";
-echo "<option value='monitors'>Moniteurs</option>";
+echo "<option value='glpi_computers'>Ordinateurs</option>";
+echo "<option value='glpi_printers'>Imprimantes</option>";
+echo "<option value='glpi_networking'>Materiel reseau</option>";
+echo "<option value='glpi_monitors'>Moniteurs</option>";
 echo "<option value='tous' selected>Tous</option>";
 echo "</select> &nbsp;&nbsp;<br><br> ";
 

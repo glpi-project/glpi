@@ -132,7 +132,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 	if (!$order) {
 		$order = "ASC";
 	}
-	$query = "SELECT * FROM monitors WHERE $where ORDER BY $sort $order";
+	$query = "SELECT * FROM glpi_monitors WHERE $where ORDER BY $sort $order";
 
 	// Get it from database	
 	$db = new DB;
@@ -141,7 +141,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 
 		// Limit the result, if no limit applies, use prior result
 		if ($numrows>$cfg_features["list_limit"]) {
-			$query_limit = "SELECT * FROM monitors WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
+			$query_limit = "SELECT * FROM glpi_monitors WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
 			$result_limit = $db->query($query_limit);
 			$numrows_limit = $db->numrows($result_limit);
 		} else {
@@ -255,7 +255,7 @@ function showMonitorsForm ($target,$ID) {
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["monitors"][6].": 	</td><td>";
-		dropdownValue("dropdown_locations", "location", $mon->fields["location"]);
+		dropdownValue("glpi_dropdown_locations", "location", $mon->fields["location"]);
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["monitors"][7].":	</td>";
@@ -274,7 +274,7 @@ function showMonitorsForm ($target,$ID) {
 	echo "<table cellpadding='0' cellspacing='0' border='0'";
 
 	echo "<tr><td>".$lang["monitors"][9].": 	</td><td>";
-		dropdownValue("type_monitors", "type", $mon->fields["type"]);
+		dropdownValue("glpi_type_monitors", "type", $mon->fields["type"]);
 	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["monitors"][10].":	</td>";

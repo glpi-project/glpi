@@ -129,7 +129,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 		$order = "ASC";
 	}
 	
-	$query = "SELECT * FROM software WHERE $where ORDER BY $sort";
+	$query = "SELECT * FROM glpi_software WHERE $where ORDER BY $sort";
 
 	// Get it from database	
 	$db = new DB;
@@ -138,7 +138,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 		// Limit the result, if no limit applies, use prior result
 		if ($numrows>$cfg_features["list_limit"]) {
-			$query_limit = "SELECT * FROM software WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
+			$query_limit = "SELECT * FROM glpi_software WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
 			$result_limit = $db->query($query_limit);
 			$numrows_limit = $db->numrows($result_limit);
 		} else {
@@ -239,12 +239,12 @@ function showSoftwareForm ($target,$ID) {
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][4].": 	</td><td>";
-		dropdownValue("dropdown_locations", "location", $sw->fields["location"]);
+		dropdownValue("glpi_dropdown_locations", "location", $sw->fields["location"]);
 	echo "</td></tr>";
 
 	
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][3].": 	</td><td>";
-		dropdownValue("dropdown_os", "platform", $sw->fields["platform"]);
+		dropdownValue("glpi_dropdown_os", "platform", $sw->fields["platform"]);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][5].":		</td>";
@@ -346,7 +346,7 @@ function deleteSoftware($input) {
 
 function dropdownSoftware() {
 	$db = new DB;
-	$query = "SELECT * FROM software";
+	$query = "SELECT * FROM glpi_software";
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 
@@ -381,7 +381,7 @@ function showLicenses ($sID) {
 	
 	$db = new DB;
 
-	$query = "SELECT ID FROM licenses WHERE (sID = $sID)";
+	$query = "SELECT ID FROM glpi_licenses WHERE (sID = $sID)";
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 
 			echo "<br><center><table cellpadding='2' border='0' width=50%>";
@@ -469,7 +469,7 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 
 	$back = urlencode($back);
 	
-	$query = "SELECT ID FROM licenses WHERE (sID = $sID)";
+	$query = "SELECT ID FROM glpi_licenses WHERE (sID = $sID)";
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 
 			echo "<br><center><table cellpadding='2' border='0' width=50%>";
@@ -484,7 +484,7 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 				$lic->getfromDB($ID);
 				if ($lic->serial!="free") {
 				
-					$query2 = "SELECT license FROM inst_software WHERE (license = '$ID')";
+					$query2 = "SELECT license FROM glpi_inst_software WHERE (license = '$ID')";
 					$result2 = $db->query($query2);
 					if ($db->numrows($result2)==0) {				
 						$lic = new License;
@@ -530,7 +530,7 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 function installSoftware($cID,$lID) {
 
 	$db = new DB;
-	$query = "INSERT INTO inst_software VALUES (NULL,$cID,$lID)";
+	$query = "INSERT INTO glpi_inst_software VALUES (NULL,$cID,$lID)";
 	if ($result = $db->query($query)) {
 		return true;
 	} else {
@@ -541,7 +541,7 @@ function installSoftware($cID,$lID) {
 function uninstallSoftware($lID) {
 
 	$db = new DB;
-	$query = "DELETE FROM inst_software WHERE(license = '$lID')";
+	$query = "DELETE FROM glpi_inst_software WHERE(license = '$lID')";
 	if ($result = $db->query($query)) {
 		return true;
 	} else {
@@ -554,7 +554,7 @@ function showSoftwareInstalled($instID) {
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
         $db = new DB;
-	$query = "SELECT * FROM inst_software WHERE (cID = $instID)";
+	$query = "SELECT * FROM glpi_inst_software WHERE (cID = $instID)";
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 	$i = 0;
@@ -566,7 +566,7 @@ function showSoftwareInstalled($instID) {
 	
 	while ($i < $number) {
 		$lID = $db->result($result, $i, "license");
-		$query2 = "SELECT sID,serial FROM licenses WHERE (ID = '$lID')";
+		$query2 = "SELECT sID,serial FROM glpi_licenses WHERE (ID = '$lID')";
 		$result2 = $db->query($query2);
 		$sID = $db->result($result2,0,"sID");
 		$serial = $db->result($result2,0,"serial");
@@ -604,7 +604,7 @@ function countInstallations($sID) {
 	
 	$db = new DB;
 	
-	$query = "SELECT ID,serial FROM licenses WHERE (sID = '$sID')";
+	$query = "SELECT ID,serial FROM glpi_licenses WHERE (sID = '$sID')";
 	$result = $db->query($query);
 
 	if ($db->numrows($result)!=0) {
@@ -620,7 +620,7 @@ function countInstallations($sID) {
 			while ($i < $db->numrows($result))
 			{
 				$lID = $db->result($result,$i,"ID");
-				$query2 = "SELECT license FROM inst_software WHERE (license = '$lID')";
+				$query2 = "SELECT license FROM glpi_inst_software WHERE (license = '$lID')";
 				$result2 = $db->query($query2);
 				$installed += $db->numrows($result2);
 				$i++;

@@ -54,7 +54,7 @@ class User {
 	
 	function getFromDB($name) {
 		$db = new DB;
-		$query = "SELECT * FROM users WHERE (name = '$name')";
+		$query = "SELECT * FROM glpi_users WHERE (name = '$name')";
 		if ($result = $db->query($query)) {
 			$data = $db->fetch_array($result);
 			if (empty($data)) {
@@ -140,7 +140,7 @@ class User {
 
 		
 		// Build query
-		$query = "INSERT INTO users (";
+		$query = "INSERT INTO glpi_users (";
 		$i=0;
 		foreach ($this->fields as $key => $val) {
 			$fields[$i] = $key;
@@ -175,7 +175,7 @@ class User {
 		$db = new DB;
 
 		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE users SET ";
+			$query  = "UPDATE glpi_users SET ";
 			$query .= $updates[$i];
 			$query .= "=";
 			if ( ($updates[$i]=="password") && ($this->fields[$updates[$i]] != "") ) {
@@ -195,15 +195,15 @@ class User {
 
 		$db = new DB;
 
-		$query = "DELETE from users WHERE name = '$name'";
+		$query = "DELETE from glpi_users WHERE name = '$name'";
 		if ($result = $db->query($query)) {
-			$query2 = "DELETE from prefs WHERE user = '$name'";
+			$query2 = "DELETE from glpi_prefs WHERE user = '$name'";
 			if ($result2 = $db->query($query2)) {
 				// Tracking items left?
-				$query_track = "SELECT assign FROM tracking WHERE (assign = '$name')";
+				$query_track = "SELECT assign FROM glpi_tracking WHERE (assign = '$name')";
 				$result_track = $db->query($query_track);
 				if ($db->numrows($result_track)>0) { 
-					$query3 = "UPDATE tracking SET assign = '' WHERE (assign = '$name')";
+					$query3 = "UPDATE glpi_tracking SET assign = '' WHERE (assign = '$name')";
 					if ($result3 = $db->query($query3)) {
 						return true;
 					}
@@ -226,7 +226,7 @@ class Template {
 
 		// Make new database object and fill variables
 		$db = new DB;
-		$query = "SELECT * FROM templates WHERE (ID = '$ID')";
+		$query = "SELECT * FROM glpi_templates WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			$data = $db->fetch_array($result);
 			foreach ($data as $key => $val) {
@@ -242,7 +242,7 @@ class Template {
 	// Make new database empty object
 	function getEmpty () {
 		$db = new DB;
-		$query = "SELECT * FROM templates limit 0,1";
+		$query = "SELECT * FROM glpi_templates limit 0,1";
 		if ($result = $db->query($query)) {
 			$data = $db->fetch_array($result);
 			foreach ($data as $key => $val) {
@@ -260,7 +260,7 @@ class Template {
 		$db = new DB;
 
 		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE templates SET ";
+			$query  = "UPDATE glpi_templates SET ";
 			$query .= $updates[$i];
 			$query .= "='";
 			$query .= $this->fields[$updates[$i]];
@@ -279,7 +279,7 @@ class Template {
 		$this->fields["comments"] = addslashes($this->fields["comments"]);
 		
 		// Build query
-		$query = "INSERT INTO templates (";
+		$query = "INSERT INTO glpi_templates (";
 		$i=0;
 		foreach ($this->fields as $key => $val) {
 			$fields[$i] = $key;
@@ -311,7 +311,7 @@ class Template {
 
 		$db = new DB;
 
-		$query = "DELETE from templates WHERE ID = '$ID'";
+		$query = "DELETE from glpi_templates WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
 			return true;
 		} else {

@@ -45,7 +45,7 @@ function listNetdevices() {
 	GLOBAL $cfg_install,$cfg_layout, $lang;
 	$db = new DB;
 
-	$query = "SELECT ID FROM networking";
+	$query = "SELECT ID FROM glpi_networking";
 
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)>0) {
@@ -101,7 +101,7 @@ function showNetworkingForm ($target,$ID) {
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["networking"][1].": 	</td><td>";
-		dropdownValue("dropdown_locations", "location", $netdev->fields["location"]);
+		dropdownValue("glpi_dropdown_locations", "location", $netdev->fields["location"]);
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["networking"][4].":	</td>";
@@ -119,7 +119,7 @@ function showNetworkingForm ($target,$ID) {
 	echo "<table cellpadding='0' cellspacing='0' border='0'";
 
 	echo "<tr><td>".$lang["networking"][2].": 	</td><td>";
-		dropdownValue("type_networking", "type", $netdev->fields["type"]);
+		dropdownValue("glpi_type_networking", "type", $netdev->fields["type"]);
 	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["networking"][5].":	</td>";
@@ -288,7 +288,7 @@ function showPorts ($device,$device_type) {
 	
 	$db = new DB;
 
-	$query = "SELECT ID FROM networking_ports WHERE (on_device = $device AND device_type = $device_type) ORDER BY logical_number";
+	$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = $device AND device_type = $device_type) ORDER BY logical_number";
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 
 			echo "<br><div align='center'><table cellpadding='2' width='90%'>";
@@ -358,7 +358,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype) {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["networking"][16]."</td><td>";
-		dropdownValue("dropdown_iface","iface", $netport->fields["iface"]);
+		dropdownValue("glpi_dropdown_iface","iface", $netport->fields["iface"]);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["networking"][22]."</td>";
@@ -536,7 +536,7 @@ function showConnectorSearch($target,$ID) {
 	echo "<form method='post' action=\"$target\">";
 	echo "<td>".$lang["networking"][31].":";
 	$db = new DB;
-	$query = "SELECT ID,name,location from networking";
+	$query = "SELECT ID,name,location from glpi_networking";
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 	echo "<select name=dID>";
@@ -575,9 +575,9 @@ function listConnectorComputers($target,$input) {
 
 	$db = new DB;
 	if ($input["type"] == "name") {
-		$query = "SELECT ID,name,location from computers WHERE (name LIKE '%".$input["comp"]."%')";
+		$query = "SELECT ID,name,location from glpi_computers WHERE (name LIKE '%".$input["comp"]."%')";
 	} else {
-		$query = "SELECT ID,name,location from computers WHERE ID = ".$input["comp"];
+		$query = "SELECT ID,name,location from glpi_computers WHERE ID = ".$input["comp"];
 	} 
 	$result = $db->query($query);
 	$number = $db->numrows($result);
@@ -609,7 +609,7 @@ function listConnectorPorts($target,$input) {
 	$pID1 = $input["pID1"];
 
 	$db = new DB;
-	$query = "SELECT * FROM networking_ports WHERE (on_device = ".$input["dID"]." AND device_type = ".$input["device_type"].") ORDER BY logical_number";
+	$query = "SELECT * FROM glpi_networking_ports WHERE (on_device = ".$input["dID"]." AND device_type = ".$input["device_type"].") ORDER BY logical_number";
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 
@@ -683,7 +683,7 @@ function makeConnector($sport,$dport) {
 	GLOBAL $cfg_layout, $cfg_install, $lang;
 	
 	$db = new DB;
-	$query = "INSERT INTO networking_wire VALUES (NULL,$sport,$dport)";
+	$query = "INSERT INTO glpi_networking_wire VALUES (NULL,$sport,$dport)";
 	if ($result = $db->query($query)) {
 		echo "<div align='center'><b>".$lang["networking"][44]." ".$sport." ".$lang["networking"][45]." ".$dport."</b></div>";
 		return true;
@@ -698,7 +698,7 @@ function removeConnector($ID) {
 	GLOBAL $cfg_layout, $cfg_install;
 	
 	$db = new DB;
-	$query = "DELETE FROM networking_wire WHERE (end1 = '$ID' OR end2 = '$ID')";
+	$query = "DELETE FROM glpi_networking_wire WHERE (end1 = '$ID' OR end2 = '$ID')";
 	if ($result=$db->query($query)) {
 		return true;
 	} else {

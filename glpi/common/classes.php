@@ -109,7 +109,7 @@ class Connection {
 
 	function getComputerContact ($ID) {
 		$db = new DB;
-		$query = "SELECT * FROM connect_wire WHERE (end1 = '$ID' AND type = '$this->type')";
+		$query = "SELECT * FROM glpi_connect_wire WHERE (end1 = '$ID' AND type = '$this->type')";
 		if ($result=$db->query($query)) {
 			$data = $db->fetch_array($result);
 			$this->end2 = $data["end2"];
@@ -121,7 +121,7 @@ class Connection {
 
 	function getComputerData($ID) {
 		$db = new DB;
-		$query = "SELECT * FROM computers WHERE (ID = '$ID')";
+		$query = "SELECT * FROM glpi_computers WHERE (ID = '$ID')";
 		if ($result=$db->query($query)) {
 			$data = $db->fetch_array($result);
 			$this->device_name = $data["name"];
@@ -136,7 +136,7 @@ class Connection {
 
 		$db = new DB;
 
-		$query = "DELETE from connect_wire WHERE (end1 = '$ID' AND type = '$this->type')";
+		$query = "DELETE from glpi_connect_wire WHERE (end1 = '$ID' AND type = '$this->type')";
 		if ($result = $db->query($query)) {
 			return true;
 		} else {
@@ -148,7 +148,7 @@ class Connection {
 		$db = new DB;
 
 		// Build query
-		$query = "INSERT INTO connect_wire (end1,end2,type) VALUES ('$this->end1','$this->end2','$this->type')";
+		$query = "INSERT INTO glpi_connect_wire (end1,end2,type) VALUES ('$this->end1','$this->end2','$this->type')";
 		if ($result=$db->query($query)) {
 			return true;
 		} else {
@@ -248,7 +248,7 @@ class Identification
 		}
 		
 		$db = new DB;
-		$query = "SELECT * from users where (name = '".$name."' && password = PASSWORD('".$password."'))";
+		$query = "SELECT * from glpi_users where (name = '".$name."' && password = PASSWORD('".$password."'))";
 		$result = $db->query($query);
 		//echo $query;
 		if($result)
@@ -355,7 +355,7 @@ class Mailing
 
 		if ($cfg_mailing[$this->type]["all_admin"])
 		{
-			$query = "SELECT email FROM users WHERE (type = 'admin')";
+			$query = "SELECT email FROM glpi_users WHERE (type = 'admin')";
 			if ($result = $db->query($query)) 
 			{
 				while ($row = $db->fetch_row($result))
@@ -372,7 +372,7 @@ class Mailing
 
 		if ($cfg_mailing[$this->type]["all_normal"])
 		{
-			$query = "SELECT email FROM users WHERE (type = 'normal')";
+			$query = "SELECT email FROM glpi_users WHERE (type = 'normal')";
 			if ($result = $db->query($query)) 
 			{
 				while ($row = $db->fetch_row($result))
@@ -389,7 +389,7 @@ class Mailing
 
 		if ($cfg_mailing[$this->type]["attrib"]&&$this->job->assign)
 		{
-			$query2 = "SELECT email FROM users WHERE (name = '".$this->job->assign."')";
+			$query2 = "SELECT email FROM glpi_users WHERE (name = '".$this->job->assign."')";
 			if ($result2 = $db->query($query2)) 
 			{
 				if ($db->numrows($result2)==1)

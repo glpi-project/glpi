@@ -49,7 +49,7 @@ class Netdevice {
 
 		// Make new database object and fill variables
 		$db = new DB;
-		$query = "SELECT * FROM networking WHERE (ID = '$ID')";
+		$query = "SELECT * FROM glpi_networking WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			$data = $db->fetch_array($result);
 			foreach ($data as $key => $val) {
@@ -64,7 +64,7 @@ class Netdevice {
 	function getEmpty() {
 		//make an empty database object
 		$db = new DB;
-		$query = "SELECT * FROM networking limit 0,1";
+		$query = "SELECT * FROM glpi_networking limit 0,1";
 		if ($result = $db->query($query)) {
 			$data = $db->fetch_array($result);
 			foreach ($data as $key => $val) {
@@ -81,7 +81,7 @@ class Netdevice {
 		$db = new DB;
 
 		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE networking SET ";
+			$query  = "UPDATE glpi_networking SET ";
 			$query .= $updates[$i];
 			$query .= "='";
 			$query .= $this->fields[$updates[$i]];
@@ -100,7 +100,7 @@ class Netdevice {
 		$this->fields["comments"] = addslashes($this->fields["comments"]);
 		
 		// Build query
-		$query = "INSERT INTO networking (";
+		$query = "INSERT INTO glpi_networking (";
 		$i=0;
 		foreach ($this->fields as $key => $val) {
 			$fields[$i] = $key;
@@ -134,7 +134,7 @@ class Netdevice {
 
 		$db = new DB;
 
-		$query = "DELETE from networking WHERE ID = '$ID'";
+		$query = "DELETE from glpi_networking WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
 			return true;
 		} else {
@@ -159,7 +159,7 @@ class Netport {
 
 		// Make new database object and fill variables
 		$db = new DB;
-		$query = "SELECT * FROM networking_ports WHERE (ID = '$ID')";
+		$query = "SELECT * FROM glpi_networking_ports WHERE (ID = '$ID')";
 		if ($result = $db->query($query))
 		{
 			$data = mysql_fetch_array($result);
@@ -177,7 +177,7 @@ class Netport {
 	function getFromNull()
 	{
 		$db = new DB;
-		$query = "select * from networking_ports";
+		$query = "select * from glpi_networking_ports";
 		$result = $db->query($query);
 		$num_flds = $db->num_fields($result);
 		for($i=0; $i < $num_flds; $i++)
@@ -193,15 +193,15 @@ class Netport {
 
 		if ($type==2)
 		{
-			$table = "networking";
+			$table = "glpi_networking";
 		}
 		else if ($type==1)
 		{
-			$table = "computers";
+			$table = "glpi_computers";
 		} 
 		else if ($type==3)
 		{
-			$table = "printers";
+			$table = "glpi_printers";
 		}
 
 		$query = "SELECT * FROM $table WHERE (ID = '$ID')";
@@ -240,7 +240,7 @@ class Netport {
 
 		for ($i=0; $i < count($updates); $i++)
 		{
-			$query  = "UPDATE networking_ports SET ";
+			$query  = "UPDATE glpi_networking_ports SET ";
 			$query .= $updates[$i];
 			$query .= "='";
 			$query .= $this->fields[$updates[$i]];
@@ -257,7 +257,7 @@ class Netport {
 		$db = new DB;
 		
 		// Build query
-		$query = "INSERT INTO networking_ports (";
+		$query = "INSERT INTO glpi_networking_ports (";
 		$i=0;
 		foreach ($this->fields as $key => $val) {
 			$fields[$i] = $key;
@@ -299,7 +299,7 @@ class Netport {
 
 		$db = new DB;
 
-		$query = "DELETE from networking_ports WHERE ID = '$ID'";
+		$query = "DELETE from glpi_networking_ports WHERE ID = '$ID'";
 		if ($result = $db->query($query))
 		{
 			return true;
@@ -322,7 +322,7 @@ class Netwire {
 	function getOppositeContact ($ID)
 	{
 		$db = new DB;
-		$query = "SELECT * FROM networking_wire WHERE (end1 = '$ID' OR end2 = '$ID')";
+		$query = "SELECT * FROM glpi_networking_wire WHERE (end1 = '$ID' OR end2 = '$ID')";
 		if ($result=$db->query($query))
 		{
 			$data = mysql_fetch_array($result);

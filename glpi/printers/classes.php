@@ -49,7 +49,7 @@ class Printer {
 
 		// Make new database object and fill variables
 		$db = new DB;
-		$query = "SELECT * FROM printers WHERE (ID = '$ID')";
+		$query = "SELECT * FROM glpi_printers WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			$data = mysql_fetch_array($result);
 			foreach ($data as $key => $val) {
@@ -66,7 +66,7 @@ class Printer {
 
 		// Make new empty database object
 		$db = new DB;
-		$query = "SELECT * FROM printers limit 0,1";
+		$query = "SELECT * FROM glpi_printers limit 0,1";
 		if ($result = $db->query($query)) {
 			$data = mysql_fetch_array($result);
 			foreach ($data as $key => $val) {
@@ -83,7 +83,7 @@ class Printer {
 		$db = new DB;
 
 		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE printers SET ";
+			$query  = "UPDATE glpi_printers SET ";
 			$query .= $updates[$i];
 			$query .= "='";
 			$query .= $this->fields[$updates[$i]];
@@ -102,7 +102,7 @@ class Printer {
 		$this->fields["comments"] = addslashes($this->fields["comments"]);
 		
 		// Build query
-		$query = "INSERT INTO printers (";
+		$query = "INSERT INTO glpi_printers (";
 		$i=0;
 		foreach ($this->fields as $key => $val) {
 			$fields[$i] = $key;
@@ -135,11 +135,11 @@ class Printer {
 
 		$db = new DB;
 
-		$query = "DELETE from printers WHERE ID = '$ID'";
+		$query = "DELETE from glpi_printers WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
-			$query2 = "DELETE FROM networking_ports WHERE (device_on = $ID AND device_type = 3)";
+			$query2 = "DELETE FROM glpi_networking_ports WHERE (device_on = $ID AND device_type = 3)";
 			$result2 = $db->query($query2);
-			$query3 = "DELETE FROM connect_wires WHERE (end1 = $ID AND type = 3)";
+			$query3 = "DELETE FROM glpi_connect_wires WHERE (end1 = $ID AND type = 3)";
 			$result3 = $db->query($query3);
 			return true;
 		} else {

@@ -42,10 +42,10 @@ include ($phproot . "/glpi/includes.php");
 checkAuthentication("normal");
 commonHeader("Reports",$_SERVER["PHP_SELF"]);
 
-$item_db_name[0] = "computers";
-$item_db_name[1] = "printers";
-$item_db_name[2] = "monitors";
-$item_db_name[3] = "networking";
+$item_db_name[0] = "glpi_computers";
+$item_db_name[1] = "glpi_printers";
+$item_db_name[2] = "glpi_monitors";
+$item_db_name[3] = "glpi_networking";
 
 $db = new DB;
 

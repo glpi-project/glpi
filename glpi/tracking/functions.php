@@ -88,7 +88,7 @@ function getTrackingPrefs ($username) {
 	// Currently only supports sort order
 
 	$db = new DB;
-	$query = "SELECT tracking_order FROM prefs WHERE (user = '$username')";
+	$query = "SELECT tracking_order FROM glpi_prefs WHERE (user = '$username')";
 	$result = $db->query($query);
 	$tracking_order = $db->result($result, 0, "tracking_order");
 
@@ -134,24 +134,24 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 
 	if ($show == "individual")
 	{
-		$query = "SELECT ID FROM tracking WHERE ".$where." and (assign = '".$username."') ORDER BY date ".$prefs["order"]."";
+		$query = "SELECT ID FROM glpi_tracking WHERE ".$where." and (assign = '".$username."') ORDER BY date ".$prefs["order"]."";
 	}
 	else if ($show == "user")
 	{
-		$query = "SELECT ID FROM tracking WHERE ".$where." and (author = '".$username."') ORDER BY date ".$prefs["order"]."";
+		$query = "SELECT ID FROM glpi_tracking WHERE ".$where." and (author = '".$username."') ORDER BY date ".$prefs["order"]."";
 	}
 	else if ($show == "unassigned")
 	{
-		$query = "SELECT ID FROM tracking WHERE ".$where." and (assign is null) ORDER BY date ".$prefs["order"]."";
+		$query = "SELECT ID FROM glpi_tracking WHERE ".$where." and (assign is null) ORDER BY date ".$prefs["order"]."";
 	}
 	else
 	{
-		$query = "SELECT ID FROM tracking WHERE ".$where." ORDER BY date ".$prefs["order"]."";
+		$query = "SELECT ID FROM glpi_tracking WHERE ".$where." ORDER BY date ".$prefs["order"]."";
 	}
 
 	if ($item)
 	{
-		$query = "SELECT ID FROM tracking WHERE ".$where." and (computer = '".$item."') ORDER BY date ".$prefs["order"]."";
+		$query = "SELECT ID FROM glpi_tracking WHERE ".$where." and (computer = '".$item."') ORDER BY date ".$prefs["order"]."";
 	}	
 	$lim_query = " LIMIT ".$start.",".$cfg_features["list_limit"]."";	
 	$db = new DB;
@@ -217,7 +217,7 @@ function showOldJobListForItem($username,$item) {
 	$prefs = getTrackingPrefs($username);
 	
 $where = "(status = 'old')";	
-$query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY date ".$prefs["order"]."";
+$query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item') ORDER BY date ".$prefs["order"]."";
 	
 
 	$db = new DB;
@@ -274,7 +274,7 @@ function showJobListForItem($username,$item) {
 	$prefs = getTrackingPrefs($username);
 	
 $where = "(status = 'new')";	
-$query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY date ".$prefs["order"]."";
+$query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item') ORDER BY date ".$prefs["order"]."";
 	
 
 	$db = new DB;
@@ -706,7 +706,7 @@ function addFormTracking ($ID,$author,$target,$error) {
 	echo "<tr class='tab_bg_2'><td>".$lang["joblist"][5].":</td>";
 	echo "<td align='center'>";
 	$db=new DB;
-	$query = "SELECT name FROM computers WHERE (ID = $ID)";
+	$query = "SELECT name FROM glpi_computers WHERE (ID = $ID)";
 	$result = $db->query($query);
 	$computername = $db->result($result, 0, "name");
 	echo "$computername ($ID)"; 

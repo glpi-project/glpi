@@ -102,11 +102,11 @@ if (!$user_present) {
 $identificat->setcookies();
 
 // If no prefs for user, set default
-$query = "SELECT * FROM prefs WHERE (user = '".$_POST['name']."')";
+$query = "SELECT * FROM glpi_prefs WHERE (user = '".$_POST['name']."')";
 $result = $db->query($query);
 if ($db->numrows($result) == 0)
 {
-	$query = "INSERT INTO prefs VALUES ('".$_POST['name']."', 'yes','french')";
+	$query = "INSERT INTO glpi_prefs VALUES ('".$_POST['name']."', 'yes','french')";
 	$result = $db->query($query);
 }
 
@@ -116,7 +116,7 @@ logEvent("-1", "system", 3, "login", $_POST['name']." logged in.");
 // Expire Event Log
 $secs =  $cfg_features["expire_events"]*86400;
 $db_exp = new DB;
-$query_exp = "DELETE FROM event_log WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
+$query_exp = "DELETE FROM glpi_event_log WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
 $result_exp = $db_exp->query($query_exp);
 
 // Redirect to Command Central if not post-only

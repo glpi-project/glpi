@@ -37,7 +37,7 @@ This file is part of GLPI.
 function can_assign_job($name)
 {
   $db = new DB;
-  $query = "SELECT * FROM users WHERE (name = '".$name."')";
+  $query = "SELECT * FROM glpi_users WHERE (name = '".$name."')";
 	$result = $db->query($query);
 	$type = $db->result($result, 0, "can_assign_job");
 	if ($type == 'yes')
@@ -74,7 +74,7 @@ function checkAuthentication($authtype) {
 	
         loadLanguage('Helpdesk');
 	// Get user from database
-	$query = "SELECT * FROM users WHERE (name = '".$_SESSION["glpiname"]."')";
+	$query = "SELECT * FROM glpi_users WHERE (name = '".$_SESSION["glpiname"]."')";
 	
 	$result = $db->query($query);
 	$password = $db->result($result, 0, "password");
@@ -488,7 +488,7 @@ function logEvent ($item, $itemtype, $level, $service, $event) {
 	GLOBAL $cfg_features;
 	if ($level <= $cfg_features["event_loglevel"]) { 
 		$db = new DB;	
-		$query = "INSERT INTO event_log VALUES (NULL, $item, '$itemtype', NOW(), '$service', $level, '$event')";
+		$query = "INSERT INTO glpi_event_log VALUES (NULL, $item, '$itemtype', NOW(), '$service', $level, '$event')";
 		$result = $db->query($query);    
 	}
 }
@@ -510,7 +510,7 @@ function showEvents($target,$order,$sort) {
 	}
 	
 	// Query Database
-	$query = "SELECT * FROM event_log ORDER BY $sort $order LIMIT 0,".$cfg_features["num_of_events"];
+	$query = "SELECT * FROM glpi_event_log ORDER BY $sort $order LIMIT 0,".$cfg_features["num_of_events"];
 
 	// Get results
 	$result = $db->query($query);
@@ -640,7 +640,7 @@ function dropdownUsers($value, $myname) {
 	// Make a select box with all glpi users
 
 	$db = new DB;
-	$query = "SELECT * FROM users WHERE (type = 'admin' || type = 'normal') ORDER BY name";
+	$query = "SELECT * FROM glpi_users WHERE (type = 'admin' || type = 'normal') ORDER BY name";
 	$result = $db->query($query);
 
 	echo "<select name=\"$myname\">";
@@ -665,7 +665,7 @@ function loadLanguage($user) {
 
 	GLOBAL $lang;	
 	$db = new DB;
-	$query = "SELECT language FROM prefs WHERE (user = '$user')";
+	$query = "SELECT language FROM glpi_prefs WHERE (user = '$user')";
 	$result=$db->query($query);
 	$language = $db->result($result,0,"language");
 	$file = "/glpi/dicts/".$language.".php";
@@ -769,9 +769,9 @@ function listConnectComputers($target,$input) {
 
 	$db = new DB;
 	if ($input["type"] == "name") {
-		$query = "SELECT ID,name,location from computers WHERE name LIKE '%".$input["comp"]."%' order by name ASC";
+		$query = "SELECT ID,name,location from glpi_computers WHERE name LIKE '%".$input["comp"]."%' order by name ASC";
 	} else {
-		$query = "SELECT ID,name,location from computers WHERE ID LIKE '%".$input["comp"]."%' order by name ASC";
+		$query = "SELECT ID,name,location from glpi_computers WHERE ID LIKE '%".$input["comp"]."%' order by name ASC";
 	} 
 	$result = $db->query($query);
 	$number = $db->numrows($result);
@@ -800,7 +800,7 @@ function printHelpDesk ($name) {
 
 	$db = new DB;
 
-	$query = "SELECT email,realname FROM users WHERE (name = '$name')";
+	$query = "SELECT email,realname FROM glpi_users WHERE (name = '$name')";
 	$result=$db->query($query);
 	$email = $db->result($result,0,"email");
 	$realname = $db->result($result,0,"realname");

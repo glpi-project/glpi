@@ -50,11 +50,11 @@ echo "<big><b>GLPI Default Report</b></big><br><br>";
 
 # 1. Get some number data
 
-$query = "SELECT ID FROM computers";
+$query = "SELECT ID FROM glpi_computers";
 $result = $db->query($query);
 $number_of_computers = $db->numrows($result);
 
-$query = "SELECT ID FROM software";
+$query = "SELECT ID FROM glpi_software";
 $result = $db->query($query);
 $number_of_software = $db->numrows($result);
 
@@ -70,13 +70,13 @@ echo  "<tr><td colspan='2'><b>Operating Systems:</b></td></tr>";
 
 # 3. Get some more number data (operating systems per computer)
 
-$query = "SELECT * FROM dropdown_os ORDER BY name";
+$query = "SELECT * FROM glpi_dropdown_os ORDER BY name";
 $result = $db->query($query);
 $i = 0;
 $number = $db->numrows($result);
 while ($i < $number) {
 	$os = $db->result($result, $i, "name");
-	$query = "SELECT ID,os FROM computers WHERE (os = '$os')";
+	$query = "SELECT ID,os FROM glpi_computers WHERE (os = '$os')";
 	$result2 = $db->query($query);
 	$counter = $db->numrows($result2);
 	echo "<tr><td>$os</td><td>$counter</td></tr>";

@@ -54,19 +54,19 @@ echo "<table border='0' >";
 
 # 1. Recupere le nombre d'ordinateurs, d'imprimantes/scanners, de materiel reseau, et d'ecrans.
 
-$query = "SELECT ID FROM computers where maintenance=1";
+$query = "SELECT ID FROM glpi_computers where maintenance=1";
 $result = $db->query($query);
 $number_of_computers = $db->numrows($result);
 
-$query = "SELECT ID FROM printers where maintenance=1";
+$query = "SELECT ID FROM glpi_printers where maintenance=1";
 $result = $db->query($query);
 $number_of_printers = $db->numrows($result);
 
-$query = "SELECT ID FROM monitors where maintenance=1";
+$query = "SELECT ID FROM glpi_monitors where maintenance=1";
 $result = $db->query($query);
 $number_of_monitors = $db->numrows($result);
 
-$query = "SELECT ID FROM networking where maintenance=1";
+$query = "SELECT ID FROM glpi_networking where maintenance=1";
 $result = $db->query($query);
 $number_of_networking = $db->numrows($result);
 
@@ -89,10 +89,10 @@ echo "<tr><td class='tab_bg_2' colspan='2' align='center'>Nombre de materiel res
 echo "<form name='form' method='post' action='maintenance-list.php'>";
 echo "<b>Type de materiel : </b>&nbsp;&nbsp; ";
 echo "<select name='item_type' >";
-echo "<option value='computers'>Ordinateurs</option>";
-echo "<option value='printers'>Imprimantes</option>";
-echo "<option value='networking'>Materiel reseau</option>";
-echo "<option value='monitors'>Moniteurs</option>";
+echo "<option value='glpi_computers'>Ordinateurs</option>";
+echo "<option value='glpi_printers'>Imprimantes</option>";
+echo "<option value='glpi_networking'>Materiel reseau</option>";
+echo "<option value='glpi_monitors'>Moniteurs</option>";
 echo "<option value='tous' selected>Tous</option>";
 echo "</select> &nbsp;&nbsp; ";
 		   

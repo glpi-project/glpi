@@ -45,7 +45,7 @@ function showFormDropdown ($target,$name,$human) {
 
 	echo "<tr><td align='center' class='tab_bg_1'>";
 
-	dropdown("dropdown_".$name, "value");
+	dropdown("glpi_dropdown_".$name, "value");
 
 	echo "</td><td align='center' class='tab_bg_2'>";
 	echo "<input type='hidden' name='tablename' value=dropdown_".$name.">";
@@ -55,7 +55,7 @@ function showFormDropdown ($target,$name,$human) {
 	echo "<tr><td align='center' class='tab_bg_1'>";
 	echo "<input type='text' maxlength='100' size='20' name='value'>";
 	echo "</td><td align='center' class='tab_bg_2'>";
-	echo "<input type='hidden' name=tablename value=dropdown_".$name.">";
+	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
 	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit' class='submit'>";
 	echo "</td></form></tr>";
 	echo "</table></center>";
@@ -71,7 +71,7 @@ function showFormTypeDown ($target,$name,$human) {
 
 	echo "<tr><td align='center' class='tab_bg_1'>";
 
-	dropdown("type_".$name, "value");
+	dropdown("glpi_type_".$name, "value");
 
 	echo "</td><td align='center' class='tab_bg_2'>";
 	echo "<input type='hidden' name='tablename' value=type_".$name.">";
@@ -81,7 +81,7 @@ function showFormTypeDown ($target,$name,$human) {
 	echo "<tr><td align='center' class='tab_bg_1'>";
 	echo "<input type='text' maxlength='100' size='20' name='value'>";
 	echo "</td><td align='center' class='tab_bg_2'>";
-	echo "<input type='hidden' name='tablename' value=type_".$name.">";
+	echo "<input type='hidden' name='tablename' value='glpi_type_".$name."'>";
 	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</td></form></tr>";
 	echo "</table></center>";
@@ -171,7 +171,7 @@ function listUsersForm($target) {
 	
 	$db = new DB;
 	
-	$query = "SELECT name FROM users where name <> 'Helpdesk' ORDER BY type DESC";
+	$query = "SELECT name FROM glpi_users where name <> 'Helpdesk' ORDER BY type DESC";
 	
 	if ($result = $db->query($query)) {
                 echo "<div align='center'>";
@@ -214,7 +214,7 @@ function listUsersForm($target) {
 			echo "<td><input name='email' size='6' value=\"".$user->fields["email"]."\"></td>";
 			echo "<td><input name='phone' size='6' value=\"".$user->fields["phone"]."\"></td>";
 			echo "<td>";
-				dropdownValue("dropdown_locations", "location", $user->fields["location"]);
+				dropdownValue("glpi_dropdown_locations", "location", $user->fields["location"]);
 			echo "</td>";
 			echo "<td class='tab_bg_2'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></td>";
 			echo "<td class='tab_bg_2'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></td>";
@@ -243,7 +243,7 @@ function listUsersForm($target) {
 		echo "<td><input name='email' size='15' value=\"\"></td>";
 		echo "<td><input name='phone' size='10' value=\"\"></td>";
 		echo "<td>";
-			dropdownValue("dropdown_locations", "location", "");
+			dropdownValue("glpi_dropdown_locations", "location", "");
 		echo "</td>";
 					
 		echo "</tr>";
@@ -276,7 +276,7 @@ function addUser($input) {
 
 	if ($user->addToDB()) {
 		// Give him some default prefs...
-		$query = "INSERT INTO prefs VALUES ('".$input["name"]."','','english')";
+		$query = "INSERT INTO glpi_prefs VALUES ('".$input["name"]."','','english')";
 		$db = new DB;
 		$result=$db->query($query);
 		return true;
@@ -329,7 +329,7 @@ function showFormAssign($target)
 	
 	$db = new DB;
 
-	$query = "SELECT name FROM users where name <> 'Helpdesk' and name <> '".$_SESSION["glpiname"]."' ORDER BY type DESC";
+	$query = "SELECT name FROM glpi_users where name <> 'Helpdesk' and name <> '".$_SESSION["glpiname"]."' ORDER BY type DESC";
 	
 	if ($result = $db->query($query)) {
 
@@ -369,7 +369,7 @@ function listTemplates($target) {
 	GLOBAL $cfg_layout, $lang;
 
 	$db = new DB;
-	$query = "SELECT * FROM templates";
+	$query = "SELECT * FROM glpi_templates";
 	if ($result = $db->query($query)) {
 		
 		echo "<center><table border='0' width='50%'>";
@@ -436,7 +436,7 @@ function showTemplateForm($target,$ID) {
 
 	echo "<tr><td>".$lang["setup"][25].": 	</td>";
 	echo "<td>";
-		dropdownValue("dropdown_locations", "location", $templ->fields["location"]);
+		dropdownValue("glpi_dropdown_locations", "location", $templ->fields["location"]);
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["setup"][26].":		</td>";
@@ -468,12 +468,12 @@ function showTemplateForm($target,$ID) {
 
 	echo "<tr><td>".$lang["setup"][31].": 	</td>";
 	echo "<td>";
-		dropdownValue("type_computers", "type", $templ->fields["type"]);
+		dropdownValue("glpi_type_computers", "type", $templ->fields["type"]);
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["setup"][32].": 	</td>";
 	echo "<td>";	
-		dropdownValue("dropdown_os", "os", $templ->fields["os"]);
+		dropdownValue("glpi_dropdown_os", "os", $templ->fields["os"]);
 	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["setup"][33].":</td>";
@@ -482,7 +482,7 @@ function showTemplateForm($target,$ID) {
 		
 	echo "<tr><td>".$lang["setup"][34].":	</td>";
 	echo "<td>";
-		dropdownValue("dropdown_processor", "processor", $templ->fields["processor"]);
+		dropdownValue("glpi_dropdown_processor", "processor", $templ->fields["processor"]);
 	echo "</td></tr>";
 	
 	echo "<tr><td>".$lang["setup"][35].":	</td>";
@@ -491,22 +491,22 @@ function showTemplateForm($target,$ID) {
 	
 	echo "<tr><td>".$lang["setup"][49].":	</td>";
 	echo "<td>";
-		dropdownValue("dropdown_moboard", "moboard", $templ->fields["moboard"]);
+		dropdownValue("glpi_dropdown_moboard", "moboard", $templ->fields["moboard"]);
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["setup"][51].":	</td>";
 	echo "<td>";
-		dropdownValue("dropdown_sndcard", "sndcard", $templ->fields["sndcard"]);
+		dropdownValue("glpi_dropdown_sndcard", "sndcard", $templ->fields["sndcard"]);
 	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["setup"][50].":	</td>";
 	echo "<td>";
-		dropdownValue("dropdown_gfxcard", "gfxcard", $templ->fields["gfxcard"]);
+		dropdownValue("glpi_dropdown_gfxcard", "gfxcard", $templ->fields["gfxcard"]);
 	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["setup"][36].":	</td>";
 	echo "<td>";
-		dropdownValue("dropdown_ram", "ramtype", $templ->fields["ramtype"]);
+		dropdownValue("glpi_dropdown_ram", "ramtype", $templ->fields["ramtype"]);
 	echo "</td></tr>";
 	
 	echo "<tr><td>".$lang["setup"][37].":	</td>";
@@ -515,7 +515,7 @@ function showTemplateForm($target,$ID) {
 
 	echo "<tr><td>".$lang["setup"][52].":	</td>";
 	echo "<td>";
-		dropdownValue("dropdown_hdtype", "hdtype", $templ->fields["hdtype"]);
+		dropdownValue("glpi_dropdown_hdtype", "hdtype", $templ->fields["hdtype"]);
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["setup"][38].":	</td>";
@@ -524,7 +524,7 @@ function showTemplateForm($target,$ID) {
 
 	echo "<tr><td>".$lang["setup"][39].":	</td>";
 	echo "<td>";
-		dropdownValue("dropdown_network", "network", $templ->fields["network"]);
+		dropdownValue("glpi_dropdown_network", "network", $templ->fields["network"]);
 	echo "</td></tr>";
 
 //
@@ -632,7 +632,7 @@ function showSortForm($target,$ID) {
 	GLOBAL $cfg_layout, $lang;
 	
 	$db = new DB;
-	$query = "SELECT tracking_order FROM prefs WHERE (user = '$ID')";
+	$query = "SELECT tracking_order FROM glpi_prefs WHERE (user = '$ID')";
 	$result=$db->query($query);
 
 	echo "<center><table border='0' cellpadding='5' width='30%'>";
@@ -659,7 +659,7 @@ function showSortForm($target,$ID) {
 function updateSort($input) {
 
 	$db = new DB;
-	$query = "UPDATE prefs SET tracking_order = '".$input["tracking_order"]."' WHERE (user = '".$input["user"]."')";
+	$query = "UPDATE glpi_prefs SET tracking_order = '".$input["tracking_order"]."' WHERE (user = '".$input["user"]."')";
 	if ($result=$db->query($query)) {
 		return true;
 	} else {
@@ -672,7 +672,7 @@ function showLangSelect($target,$ID) {
 	GLOBAL $cfg_layout, $cfg_install, $lang;
 	
 	$db = new DB;
-	$query = "SELECT language FROM prefs WHERE (user = '$ID')";
+	$query = "SELECT language FROM glpi_prefs WHERE (user = '$ID')";
 	$result=$db->query($query);
 
 	echo "<form method='post' action=\"$target\">";
@@ -702,7 +702,7 @@ function showLangSelect($target,$ID) {
 function updateLanguage($input) {
 
 	$db = new DB;
-	$query = "UPDATE prefs SET language = '".$input["language"]."' WHERE (user = '".$input["user"]."')";
+	$query = "UPDATE glpi_prefs SET language = '".$input["language"]."' WHERE (user = '".$input["user"]."')";
 	if ($result=$db->query($query)) {
 		return true;
 	} else {

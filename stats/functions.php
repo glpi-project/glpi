@@ -40,7 +40,7 @@ This file is part of GLPI.
 function getNbIntervTech()
 {
 	$db = new DB;
-	$query = "SELECT distinct(tracking.assign) as assign FROM tracking where tracking.assign != ''";
+	$query = "SELECT distinct(glpi_tracking.assign) as assign FROM glpi_tracking where glpi_tracking.assign != ''";
 	$result = $db->query($query);
 	if($db->numrows($result) >=1) {
 		$i = 0;
@@ -59,7 +59,7 @@ function getNbIntervTech()
 function getNbIntervLieux()
 {
 	$db = new DB;
-	$query = "SELECT distinct(computers.location) as location FROM tracking, computers where tracking.computer = computers.ID";
+	$query = "SELECT distinct(glpi_computers.location) as location FROM glpi_tracking, glpi_computers where glpi_tracking.computer = glpi_computers.ID";
 	$result = $db->query($query);
 	if($db->numrows($result) >=1) {
 		$i = 0;
@@ -78,7 +78,7 @@ function getNbIntervLieux()
 function getNbIntervAuthor()
 {	
 	$db = new DB;
-	$query = "SELECT distinct(tracking.author) as author FROM tracking";
+	$query = "SELECT distinct(glpi_tracking.author) as author FROM glpi_tracking";
 	$result = $db->query($query);
 	if($db->numrows($result) >=1) {
 		$i = 0;
@@ -104,10 +104,10 @@ function getNbInter($quoi, $chps, $value)
 {
 	$db = new DB;
 	if($quoi == 1) {
-				$query = "select count(tracking.ID) as total from tracking";
+				$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
 		if(!empty($chps) && !empty($value)) {
-			if($chps == "computers.location") {
-				$query .= ", computers where tracking.computer = computers.ID and $chps = '$value' ";
+			if($chps == "glpi_computers.location") {
+				$query .= ", glpi_computers where glpi_tracking.computer = glpi_computers.ID and $chps = '$value' ";
 			}
 			else {
 				$query .= " where $chps = '$value'";
@@ -116,10 +116,10 @@ function getNbInter($quoi, $chps, $value)
 		
 	}
 	elseif($quoi == 2) {
-		$query = "select count(ID) as total from tracking where YEAR(tracking.date) = YEAR(NOW())";
+		$query = "select count(ID) as total from glpi_tracking where YEAR(glpi_tracking.date) = YEAR(NOW())";
 	}
 	elseif($quoi == 3) {
-		$query = "select count(ID) as total from tracking where YEAR(tracking.date) = YEAR(NOW()) and MONTH(tracking.date) = MONTH(NOW())";
+		$query = "select count(ID) as total from glpitracking where YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
 	}
 	$result = $db->query($query);
 	return $db->result($result,0,"total");
@@ -137,24 +137,24 @@ function getNbResol($quoi, $chps, $value)
 {
 	$db = new DB;
 	if($quoi == 1) {
-		$query = "select count(tracking.ID) as total from tracking";
+		$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
 		if(!empty($chps) && !empty($value)) {
-			if($chps == "computers.location") {
-				$query .= ", computers where tracking.computer = computers.ID and $chps = '$value'";
+			if($chps == "glpi_computers.location") {
+				$query .= ", glpi_computers where glpi_tracking.computer = glpi_computers.ID and $chps = '$value'";
 			}
 			else {
-				$query .= " where $chps = '$value' and tracking.status = 'old'";
+				$query .= " where $chps = '$value' and glpi_tracking.status = 'old'";
 			}
 		}
 		else {
-			$query.= " where tracking.status = 'old'";
+			$query.= " where glpi_tracking.status = 'old'";
 		}	
 	}
 	elseif($quoi == 2) {
-		$query = "select count(ID) as total from tracking where tracking.status = 'old' and YEAR(tracking.date) = YEAR(NOW())";
+		$query = "select count(ID) as total from glpi_tracking where glpi_tracking.status = 'old' and YEAR(glpi_tracking.date) = YEAR(NOW())";
 	}
 	elseif($quoi == 3) {
-		$query = "select count(ID) as total from tracking where tracking.status = 'old' and YEAR(tracking.date) = YEAR(NOW()) and MONTH(tracking.date) = MONTH(NOW())";
+		$query = "select count(ID) as total from glpi_tracking where glpi_tracking.status = 'old' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
 	}
 	$result = $db->query($query);
 	return $db->result($result,0,"total");
@@ -175,25 +175,25 @@ function getResolAvg($quoi, $chps, $value)
 	if($quoi == 1) {
 			
 		if(!empty($chps) && !empty($value)) {
-			if($chps == "computers.location") {
-				$query = "select SUM(UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date))/count(computers.location)";
-				$query .= " as total from tracking, computers where tracking.computer = computers.ID and tracking.status = 'old' and tracking.closedate != '0000-00-00'  and $chps = '$value'";
+			if($chps == "glpi_computers.location") {
+				$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))/count(glpi_computers.location)";
+				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
 			}
 			else {
-				$query = "select SUM(UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date))/count(tracking.ID)";
-				$query .= " as total from tracking where $chps = '$value' and tracking.status = 'old' and tracking.closedate != '0000-00-00'";
+				$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))/count(glpi_tracking.ID)";
+				$query .= " as total from glpi_tracking where $chps = '$value' and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
 			}
 		}
 		else {
-			$query = "select SUM(UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date))/count(tracking.id) as total from tracking";
-			$query .= " where tracking.status = 'old' and tracking.closedate != '0000-00-00'";
+			$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))/count(glpi_tracking.id) as total from glpi_tracking";
+			$query .= " where glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
 		}
 	}
 	elseif($quoi == 2) {
-		$query = "select SUM(UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date))/count(tracking.ID) as total from tracking where tracking.status ='old'  and closedate != '0000-00-00' and YEAR(tracking.date) = YEAR(NOW())";
+		$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))/count(glpi_tracking.ID) as total from glpi_tracking where glpi_tracking.status ='old'  and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW())";
 	}
 	elseif($quoi == 3) {
-		$query = "select SUM(UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date))/count(tracking.ID) as total from tracking where tracking.status = 'old' and closedate != '0000-00-00' and YEAR(tracking.date) = YEAR(NOW()) and MONTH(tracking.date) = MONTH(NOW())";
+		$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))/count(glpi_tracking.ID) as total from glpi_tracking where glpi_tracking.status = 'old' and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
 	}
 	$result = $db->query($query);
 	if($db->numrows($result) == 1)
@@ -241,13 +241,13 @@ function getResolMax($quoi)
 {
 	$db = new DB;
 	if($quoi == 1) {
-		$query = "select MAX(UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date)) as total from tracking where tracking.status = 'old'";	
+		$query = "select MAX(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking where glpi_tracking.status = 'old'";	
 	}
 	elseif($quoi == 2) {
-		$query = "select MAX(UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date)) as total from tracking where tracking.status ='old' and YEAR(tracking.date) = YEAR(NOW())";
+		$query = "select MAX(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking where glpi_tracking.status ='old' and YEAR(glpi_tracking.date) = YEAR(NOW())";
 	}
 	elseif($quoi == 3) {
-		$query = "select MAX(UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date)) as total from tracking where tracking.status = 'old' and YEAR(tracking.date) = YEAR(NOW()) and MONTH(tracking.date) = MONTH(NOW())";
+		$query = "select MAX(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking where glpi_tracking.status = 'old' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
 	}
 	$result = $db->query($query);
 	$sec = $db->result($result,0,"total");
