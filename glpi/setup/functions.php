@@ -229,7 +229,8 @@ function showDeleteConfirmForm($target,$table, $ID) {
 function getDropdownNameFromTable($table) {
 
 	if(ereg("glpi_type_",$table)){
-		$name = ereg_replace("glpi_type_","",$table);
+		//$name = ereg_replace("glpi_type_","",$table);
+		$name = "type";
 	}
 	else {
 		if($table == "glpi_dropdown_locations") $name = "location";
