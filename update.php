@@ -52,7 +52,7 @@ function superAdminExists() {
 	$result = $db->query($query);
 	$var1 = false;
 	while($line = $db->fetch_array($result)) {
-		if($line["type"] == "super-admin" && !empty($line["password"]) $var1 = true;
+		if($line["type"] == "super-admin" && !empty($line["password"])) $var1 = true;
 	}
 	return $var1;
 }
