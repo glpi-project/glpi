@@ -25,7 +25,7 @@
     along with GLPI; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  ----------------------------------------------------------------------
- Original Author of file: Julien Dombre
+ Original Author of file: 
  Purpose of file:
  ----------------------------------------------------------------------
 */
@@ -34,6 +34,7 @@
 include ("_relpos.php");
 
 // FUNCTIONS knowledgebase
+
 
 
 function titleknowbase(){
@@ -76,26 +77,26 @@ function showKbItemForm($target,$ID){
 	}		
 
 	
-	echo "<p>".$lang["knowbase"][6];
+	echo "<p >".$lang["knowbase"][6];
 	kbcategoryList($ki->fields["categoryID"]);
 	echo "</p>";
 		
 	echo "<fieldset>";
 	echo "<legend>".$lang["knowbase"][3]."</legend>";
-	echo "<span><textarea cols='80' rows='10' wrap='soft' name='question' value=\"".$ki->fields["question"]."\">".$ki->fields["question"]."</textarea></span>"; 
+	echo "<span><textarea cols='80' rows='10'  name='question' >".$ki->fields["question"]."</textarea></span>"; 
 	echo "</fieldset>";
 	
 	
 	echo "<fieldset>";
 	echo "<legend>".$lang["knowbase"][4]."</legend>";
-	echo "<span><textarea cols='80' rows='10' wrap='soft' name='answer' value=\"".$ki->fields["answer"]."\">".$ki->fields["answer"]."</textarea></span>"; 
+	echo "<span><textarea cols='80' rows='10'  name='answer' >".$ki->fields["answer"]."</textarea></span>"; 
 	echo "</fieldset>";
 	
 	
 	echo "<br>\n";
-	echo "</div>";
+	
 	//echo "<input type='checkbox' name='faq' value=\"yes\"> Place this Knowledge Base Article into the publicly viewable FAQ as well. <BR>\n";
-	echo "<div align='center'>";
+	echo "<p align='center'>";
 	if ($ki->fields["faq"] == "yes") {
 			echo "<input class='submit' type='checkbox' name='faq' value='yes' checked>";
 		} else {
@@ -104,12 +105,13 @@ function showKbItemForm($target,$ID){
 	echo $lang["knowbase"][5]."<br><br>\n";
 	
 	if (empty($ID)) {
-	echo "<input type='submit' class='submit' name='add' value=\"".$lang["buttons"][2]."\"> <input type='reset' class='submit' value=\"".$lang["buttons"][16]."\"></form>";
+	echo "<input type='submit' class='submit' name='add' value=\"".$lang["buttons"][2]."\"> <input type='reset' class='submit' value=\"".$lang["buttons"][16]."\">";
 	} else {
-	echo "<input type='submit' class='submit' name='update' value=\"".$lang["buttons"][7]."\"> <input type='reset' class='submit' value=\"".$lang["buttons"][16]."\"></form>";
+	echo "<input type='submit' class='submit' name='update' value=\"".$lang["buttons"][7]."\"> <input type='reset' class='submit' value=\"".$lang["buttons"][16]."\">";
 	}
 	
-	echo "</div>";
+	echo "</p>";
+	echo "</form></div>";
 } 
 
 
@@ -336,20 +338,24 @@ function ShowKbItemFull($ID)
 	
 	$ki->getfromDB($ID);
 		
-	$question = $ki->fields["question"];
+	
 	$categoryID = $ki->fields["categoryID"];
 	$fullcategoryname = kbcategoryname($categoryID);
 	
-	echo "<div align='center'><table class='tab_cadre' cellpadding='10' width='500px'><tr><th>";
+	echo "<div align='center'><table class='tab_cadre' cellpadding='10' width='700px'><tr><th>";
 	
 	echo "Catégorie : ".$fullcategoryname."</th></tr>";
 	echo "<tr class='tab_bg_2'><td><h2>".$lang["knowbase"][3]."</h2>";
-	echo clicurl($question);
+	//$question = autop($ki->fields["question"]);
+	$question = rembo($ki->fields["question"]);
+	//echo clicurl($question);
+	echo $question;
 	echo "</td></tr>\n";
 	echo "<tr  class='tab_bg_2'><td><h2>".$lang["knowbase"][4]."</h2>\n";
-	$answer = autop($ki->fields["answer"]);
-	//$answer = $ki->fields["answer"];
-	echo clicurl($answer);
+	//$answer = autop($ki->fields["answer"]);
+	$answer = rembo($ki->fields["answer"]);
+	//echo clicurl(bbcode($answer));
+	echo $answer;
 	echo "</td></tr></table></div><br>";
 	
 	

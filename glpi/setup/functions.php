@@ -1582,4 +1582,132 @@ function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_ad
 }
 
 
+
+// functions setup knowbase
+
+
+
+function titleKnowbaseconf(){
+// Un titre pour la gestion de la base de connaissances
+		
+		GLOBAL  $lang,$HTMLRel;
+                echo "<div align='center'><table border='0'><tr><td>";
+                echo "<img src=\"".$HTMLRel."pics/knowbase.png\" alt='' title=''></td><td><span class='icon_nav'>".$lang["knowbase"][0]."</span>";
+		 echo "</b></td></tr></table></div>";
+}
+
+
+function addKbCategories($categoryID,$categoryname) {
+
+
+
+$db=new DB;
+
+$query = "INSERT INTO glpi_kbcategories VALUES (null, $categoryID, \"".$categoryname."\")";
+
+
+
+if ($result=$db->query($query)){
+
+echo "Added $categoryname  <a href=\"$USERPREFIX/setup-knowledgebase.php\">Go Back</a>";
+}
+
+
+
+}
+
+
+function delKbCategories($id,$categoryname) {
+
+$db=new DB;
+
+echo $query;
+
+$query = "DELETE FROM glpi_glpi_kbcategories WHERE (ID = $id)";
+
+echo $query;
+
+
+if ($result=$db->query($query)){
+// A modifier on doit empecher la supression d'une catégorie si un article est présent dans cette catégorie !!
+
+//$query = "DELETE FROM glpi_kbitems WHERE (categoryID = \"input["id"]\")";
+//$db->query($query);
+
+  echo "Category ($id)". $input["categoryname"]."Deleted!  Note: All articles under this  category has been deleted. <a href=\"$USERPREFIX/setup-knowledgebase.php\">Go Back</a>";
+}
+  
+}
+
+
+function showSetupKbCategories($target) {
+
+$query = "SELECT * FROM glpi_kbcategories";
+$db=new DB;
+ if ($result=$db->query($query)){
+
+	
+		if ($db->numrows($result)>0){
+while ($row=$db->fetch_array($result))
+{
+  	$id = $row["ID"];
+  	$categoryname = $row["name"];
+  	$parentID = $row["parentID"];
+	$fullcategoryname  = kbcategoryname($id);
+  	
+	echo "<form action=\"$target\"  method=\"post\">";
+	echo "
+			<table width=100% border=1 noshade bordercolor=#000000>
+			<tr bgcolor=#CCCCCC><td colspan=2><strong>$fullcategoryname
+			</strong></td></tr>";
+  	echo "<tr bgcolor=#DDDDDD>";
+  	echo "<td><font face=\"arial, helvetica\">Category Name:
+			<br><input type=text size=\"65%\" 
+			name=categoryname value=\"$categoryname\">";
+  	echo "</font></td>";
+	echo "<td><font face=\"arial, helvetica\">As a subcategory of: ";
+	kbcategoryList($parentID);
+	echo "</font></td>\n";
+	echo "\n</tr>\n";
+  	echo "<tr bgcolor=#CCCCCC><td valign=center><input type=hidden 
+			name=id value=\"$id\"><input type=submit 
+			name=Update value=update></td><td valign=center><input type=hidden 
+			name=id value=\"$id\"><input type=hidden name=categoryname 
+			value=\"$categoryname\"><input type=submit 
+			name=Delete value=delete ></form></td></tr></table>";
+  	echo "<br>";
+}
+}
+	}
+		
+		echo "<hr noshade><h4>Add a Category</h4>";
+echo "<form action=\"$target\" name='2'  method=\"post\"><table width=100% 
+		border=1 noshade bordercolor=#000000><tr bgcolor=#CCCCCC>
+		<td colspan=2><strong>New Category</strong></td></tr>";
+echo "<tr bgcolor=#DDDDDD> <td><font face=\"arial, helvetica\">Name:<br> 
+		<input type=text size=\"65%\" name=categoryname></td>";
+		echo "<td><font face=\"arial, helvetica\">As a subcategory of: ";
+		kbcategoryList(0);
+		echo "</td>";
+echo "</tr>";
+echo "<tr bgcolor=#CCCCCC><td colspan=2><input type=submit name=Add value=add>
+		</td></tr></table></form>";
+	
+}
+
+
+function updateKbCategories($id,$categorylist,$categoryname) {
+
+$query = "UPDATE glpi_kbcategories SET parentID='$categorylist', name='$categoryname' WHERE ID = $id";
+$db=new DB;
+if ($result=$db->query($query)){
+
+echo "Updated ($id) $categoryname <a href=\"$USERPREFIX/setup-knowledgebase.php\">Go back</a>";
+}
+
+}
+
+
+
+
 ?>
