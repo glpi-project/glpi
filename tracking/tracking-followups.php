@@ -42,11 +42,11 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-checkAuthentication("admin");
+checkAuthentication("normal");
 
 commonHeader("Tracking",$_SERVER["PHP_SELF"]);
 
-if (isset($_GET["contents"]))
+if (isset($_GET["contents"])&&isAdmin($_SESSION["glpitype"]))
 {
 	postFollowups ($_GET["ID"],$_SESSION["glpiname"],$_GET["contents"]);
 }
