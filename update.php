@@ -38,6 +38,19 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 
 
+function test_connect() {
+$db = new DB;
+$query = "select MAX(ID) from computers";
+if($db->query($query)) {
+	return true;
+}
+else return false;
+}
+
+
+//update the database.
+function update_db()
+{
 $db = new DB;
 
 
@@ -168,8 +181,10 @@ $db->query($query) or die("erreur lors de la migration".$db->error());
 $query = "ALTER TABLE users MODIFY location varchar(100) NOT NULL default ''";
 $db->query($query) or die("erreur lors de la migration".$db->error());
 $query = "ALTER TABLE users MODIFY phone varchar(100) NOT NULL default ''";
+}
 
 
+//Debut du script
 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
 echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">";
 echo "<head><title>GLPI Update</title>\n";
@@ -187,23 +202,31 @@ echo "</head>";
 echo "<body>";
 
 // step 1    avec bouton de confirmation
-
-echo "Attention ! Vous allez mettre à jour votre base de données GLPI";
-echo "Be carreful ! Your are going to update GLPI" ;
-
-echo "Etes vous certain de vouloir continuer ?"  ;
-echo "Continue ? " ;
-
+if(empty($_POST["continuer"])) {
+	echo "Attention ! Vous allez mettre à jour votre base de données GLPI<br/>";
+	echo "Be carreful ! Your are going to update your GLPI database<br/>";
+	echo "<form action=\"update.php\" method=\"POST\">";
+	echo "<input type=\"submit\" name=\"continuer\" value=\"mettre à jour \">";
+	echo "</form>";
+}
 // Step 2  avec message d'erreur en cas d'echec de connexion
-
-echo "Connexion à la base de données réussie";
-
-echo "La connexion à la base de données a échouée, verifiez les paramètres de connexion figurant dans le fichier config.php";
-
+else {
+	if(test_connect()) {
+		ob_start();
+		echo "Connexion à la base de données réussie";
+		ob_end_flush();
+		update_db();
+		echo "<br/>La mise à jour à réussie, votre base de données est actualisée \n<br /> vous pouvez supprimer le fichier update.php de votre repertoire";
+	}
+	else {
+		echo "<br /> <br />";
+		echo "La connexion à la base de données a échouée, verifiez les paramètres de connexion figurant dans le fichier config.php";
+	}
+}
 
 // Step 3 Si tout va bien
 
-echo "La mise à jour à réussie, votre base de données est actualisée \n vous pouvez supprimer le fichier update.php de votre repertoire";
+
 
 
 
