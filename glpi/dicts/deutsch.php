@@ -383,6 +383,12 @@ $lang["reports"][2]     = "Computerbildschirme mit Erhaltungsvertrag";
 $lang["reports"][3]     = "Netzsmateriel mit Erhaltungsvertrag";
 $lang["reports"][4]     = "Materiellist mit Erhaltungsvertrag";
 $lang["reports"][5]     = "Computer mit Erhaltungsvertrag";
+//to be translated
+$lang["reports"][6]	="Computers";
+$lang["reports"][7]	="Printers";
+$lang["reports"][8]	="Net devices";
+$lang["reports"][9]	="Monitors";
+$lang["reports"][10]	="S&eacute;lect type to be displayed";
 
 
 // LDAP

@@ -384,6 +384,11 @@ $lang["reports"][2]     = "Moniteurs sous contrat de maintenance";
 $lang["reports"][3]     = "Materiel r&eacute;seau sous contrat de maintenance";
 $lang["reports"][4]     = "Liste du materiel sous contrat de maintenance";
 $lang["reports"][5]     = "Ordinateurs sous contrat de maintenance";
+$lang["reports"][6]	= "Ordinateurs";
+$lang["reports"][7]	="Imprimantes";
+$lang["reports"][8]	="Materiel reseau";
+$lang["reports"][9]	="Moniteurs";
+$lang["reports"][10]	="S&eacute;lectionnez un type de mat&eacute;riel";
 
 // LDAP
 $lang["ldap"][0]	= "recherche";

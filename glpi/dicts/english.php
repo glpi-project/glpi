@@ -386,6 +386,11 @@ $lang["reports"][2]     = "Monitors under maintenance contract";
 $lang["reports"][3]     = "Network devices under maintenance contract";
 $lang["reports"][4]     = "List of the hardware under maintenance contract";
 $lang["reports"][5]     = "Computers under maintenance contract";
+$lang["reports"][6]	="Computers";
+$lang["reports"][7]	="Printers";
+$lang["reports"][8]	="Net devices";
+$lang["reports"][9]	="Monitors";
+$lang["reports"][10]	="S&eacute;lect type to be displayed";
 
 // LDAP
 $lang["ldap"][0]	= "Search";
