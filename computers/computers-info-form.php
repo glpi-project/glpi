@@ -43,6 +43,8 @@ include ($phproot . "/glpi/includes_monitors.php");
 include ($phproot . "/glpi/includes_printers.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_software.php");
+if(empty($_POST["show"])) $_POST["show"] = "";
+if(empty($_POST["contains"])) $_POST["contains"] = "";
 
 if (isset($_POST["add"])) {
 	checkAuthentication("admin");

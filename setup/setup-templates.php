@@ -46,6 +46,7 @@ if(!isset($tab["ID"])) $tab["ID"] = "";
 
 if(isset($tab["add"]))
 {
+	unset($tab["add"]);
 	checkAuthentication("admin");
 	addTemplate($tab);
 	logEvent(0,"Templates", 5, "setup", $_SESSION["glpiname"]." added template ".$tab["templname"].".");
