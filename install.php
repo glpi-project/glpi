@@ -589,7 +589,6 @@ function step7() {
 	global $lang;
 	
 	echo "<h2>".$lang["install"][55]."</h2>";
-	echo "<p>".$lang["install"][56]."</p>";
 	echo "<p>".$lang["install"][57]."</p>";
 	echo "<p><ul><li> ".$lang["install"][58]."</li>";
 	echo "<li>".$lang["install"][59]."</li>";
@@ -618,10 +617,10 @@ function create_conn_file($host,$user,$password,$dbname)
 function update1($host,$user,$password,$dbname) {
 	
 	global $lang;	
-	
+	include ("_relpos.php");
 	if(create_conn_file($host,$user,$password,$dbname) && !empty($dbname)) {
 		
-		include("update.php");
+		include($phproot ."/glpi/update.php");
 	}
 	else {
 		echo $lang["install"][70];
