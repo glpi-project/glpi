@@ -48,11 +48,7 @@ class Computer {
 	
 	function getfromDB ($ID) {
 
-		/*if ($template) {
-			$table = "glpi_templates";
-		} else {*/
 		$table = "glpi_computers";
-		//}
 		
 		// Make new database object and fill variables
 		$db = new DB;

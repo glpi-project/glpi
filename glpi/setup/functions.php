@@ -330,13 +330,9 @@ function replaceDropDropDown($input) {
 	case  "hdtype" : case "sndcard" : case "moboard" : case "gfxcard" : case "network" : case "ramtype" : case "processor" :
 		$query = "update glpi_computers set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$db->query($query);
-		$query = "update glpi_templates set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
-		$db->query($query);
 		break;
 	case "os" :
 		$query = "update glpi_computers set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
-		$db->query($query);
-		$query = "update glpi_templates set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$db->query($query);
 		$query = "update glpi_software set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$db->query($query);
@@ -347,8 +343,6 @@ function replaceDropDropDown($input) {
 		break;
 	case "location" :
 		$query = "update glpi_computers set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
-		$result = $db->query($query);
-		$query = "update glpi_templates set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		$query = "update glpi_monitors set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$result = $db->query($query);
@@ -379,10 +373,6 @@ function replaceDropDropDown($input) {
 		break;
 	case "networking" :
 		$query = "update glpi_networking set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
-		$result = $db->query($query);
-		break;
-	case "templates" :  
-		$query = "update glpi_templates set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
 	case "netpoint" : 
@@ -467,17 +457,11 @@ function dropdownUsed($table, $ID) {
 		$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = ".$ID."";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
-		$query = "Select count(*) as cpt FROM glpi_templates where ". $name ." = ".$ID."";
-		$result = $db->query($query);
-		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
 	case "os" :
 		$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = ".$ID."";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
-		$query = "Select count(*) as cpt FROM glpi_templates where ". $name ." = ".$ID."";
-		$result = $db->query($query);
-		if($db->result($result,0,"cpt") > 0)  $var1 = false;	
 		$query = "Select count(*) as cpt FROM glpi_software where platform = ".$ID."";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;	
@@ -544,12 +528,7 @@ function dropdownUsed($table, $ID) {
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "templates" :
-		$query = "Select count(*) as cpt FROM glpi_templates where type = '".$ID."'";
-		$result = $db->query($query);
-		if($db->result($result,0,"cpt") > 0)  $var1 = false;
-		break;
-	
+
 	case "netpoint" : 
 		$query = "Select count(*) as cpt FROM glpi_networking_ports where netpoint = '".$ID."'";
 		$result = $db->query($query);
@@ -1188,230 +1167,6 @@ function listTemplates($type,$target) {
 	
 
 }
-/* EX templates 
-function showTemplateForm($target,$ID) {
-
-	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel;
-
-	$templ = new Template;
-	
-	if ($ID) {
-		$templ->getfromDB($ID);
-	}
-	else {
-		$templ->getEmpty();
-	}
-	
-	echo "<div align='center'><table class='tab_cadre'>";
-	echo "<form name='form' method='post' action=$target>";
-	echo "<tr><th colspan='2'>";
-//	if ($ID) {
-//		echo $lang["setup"][23].": '".$templ->fields["templname"]."'";
-//	} else {
-		echo $lang["setup"][23].": <input type='text' name='templname' value=\"".$templ->fields["templname"]."\" size='10'>";
-//	}
-	echo "</th></tr>";
-	
-	echo "<tr><td class='tab_bg_1' valign='top'>";
-	echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
-
-	echo "<tr><td>".$lang["setup"][24].":		</td>";
-	echo "<td><input type='text' name='name' value=\"".$templ->fields["name"]."\" size='12'></td>";
-	echo "</tr>";
-
-	echo "<tr><td>".$lang["setup"][25].": 	</td>";
-	echo "<td>";
-		dropdownValue("glpi_dropdown_locations", "location", $templ->fields["location"]);
-	echo "</td></tr>";
-
-	echo "<tr><td>".$lang["setup"][26].":		</td>";
-	echo "<td><input type='text' name='contact_num' value=\"".$templ->fields["contact_num"]."\" size='12'>";
-	echo "</td></tr>";
-	
-	echo "<tr><td>".$lang["setup"][27].":	</td>";
-	echo "<td><input type='text' name='contact' size='12' value=\"".$templ->fields["contact"]."\">";
-	echo "</td></tr>";
-
-	echo "<tr><td>".$lang["setup"][28].":	</td>";
-	echo "<td><input type='text' name='serial' size='12' value=\"".$templ->fields["serial"]."\">";
-	echo "</td></tr>";
-
-	echo "<tr><td>".$lang["setup"][29].":	</td>";
-	echo "<td><input type='text' size='12' name='otherserial' value=\"".$templ->fields["otherserial"]."\">";
-	echo "</td></tr>";
-
-	echo "<tr><td valign='top'>".$lang["setup"][30].":</td>";
-	echo "<td><textarea 0 rows='8' name='comments' >".$templ->fields["comments"]."</textarea>";
-	echo "</td></tr>";
-
-	echo "</table>";
-
-	echo "</td>\n";	
-	echo "<td class='tab_bg_1' valign='top'>\n";
-	echo "<table cellpadding='0' cellspacing='0' border='0'";
-
-
-	echo "<tr><td>".$lang["setup"][31].": 	</td>";
-	echo "<td>";
-		dropdownValue("glpi_type_computers", "type", $templ->fields["type"]);
-	echo "</td></tr>";
-
-	echo "<tr><td>".$lang["setup"][32].": 	</td>";
-	echo "<td>";	
-		dropdownValue("glpi_dropdown_os", "os", $templ->fields["os"]);
-	echo "</td></tr>";
-		
-	echo "<tr><td>".$lang["setup"][33].":</td>";
-	echo "<td><input type='text' size='8' name=osver value=\"".$templ->fields["osver"]."\">";
-	echo "</td></tr>";
-		
-	echo "<tr><td>".$lang["setup"][34].":	</td>";
-	echo "<td>";
-		dropdownValue("glpi_dropdown_processor", "processor", $templ->fields["processor"]);
-	echo "</td></tr>";
-	
-	echo "<tr><td>".$lang["setup"][35].":	</td>";
-	echo "<td><input type='text' name='processor_speed' size='4' value=\"".$templ->fields["processor_speed"]."\">";
-	echo "</td></tr>";
-	
-	echo "<tr><td>".$lang["setup"][49].":	</td>";
-	echo "<td>";
-		dropdownValue("glpi_dropdown_moboard", "moboard", $templ->fields["moboard"]);
-	echo "</td></tr>";
-
-	echo "<tr><td>".$lang["setup"][51].":	</td>";
-	echo "<td>";
-		dropdownValue("glpi_dropdown_sndcard", "sndcard", $templ->fields["sndcard"]);
-	echo "</td></tr>";
-		
-	echo "<tr><td>".$lang["setup"][50].":	</td>";
-	echo "<td>";
-		dropdownValue("glpi_dropdown_gfxcard", "gfxcard", $templ->fields["gfxcard"]);
-	echo "</td></tr>";
-		
-	echo "<tr><td>".$lang["setup"][36].":	</td>";
-	echo "<td>";
-		dropdownValue("glpi_dropdown_ram", "ramtype", $templ->fields["ramtype"]);
-	echo "</td></tr>";
-	
-	echo "<tr><td>".$lang["setup"][37].":	</td>";
-	echo "<td><input type='text' name='ram' value=\"".$templ->fields["ram"]."\" size=3>";
-	echo "</td></tr>";
-
-	echo "<tr><td>".$lang["setup"][52].":	</td>";
-	echo "<td>";
-		dropdownValue("glpi_dropdown_hdtype", "hdtype", $templ->fields["hdtype"]);
-	echo "</td></tr>";
-
-	echo "<tr><td>".$lang["setup"][38].":	</td>";
-	echo "<td><input type='text' name='hdspace' size='3' value=\"".$templ->fields["hdspace"]."\">";
-	echo "</td></tr>";
-
-	echo "<tr><td>".$lang["setup"][39].":	</td>";
-	echo "<td>";
-		dropdownValue("glpi_dropdown_network", "network", $templ->fields["network"]);
-	echo "</td></tr>";
-
-//
-	
-	echo "<tr><td>".$lang["setup"][53].":	</td>";
-	echo "<td><input type='text' name='achat_date' readonly size='10' value=\"". $templ->fields["achat_date"] ."\">";
-	echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&elem=achat_date&value=". $templ->fields["achat_date"] ."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].achat_date.value='0000-00-00'\" value='reset'>";
-  echo "</td></tr>";
-	
-	echo "<tr><td>".$lang["setup"][54].":	</td>";
-	echo "<td><input type='text' name='date_fin_garantie' readonly size='10' value=\"". $templ->fields["date_fin_garantie"] ."\">";
-	echo "&nbsp; <input name='button' type='button' class='button' readonly onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&elem=date_fin_garantie&value=". $templ->fields["date_fin_garantie"] ."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date_fin_garantie.value='0000-00-00'\" value='reset'>";
-  echo "</td></tr>";
-	
-echo "<tr><td>".$lang["setup"][55].":	</td>";
-		echo "<td>";
-		if ($templ->fields["maintenance"] == 1) {
-			echo " OUI <input type='radio' name='maintenance' value='1' checked>";
-			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value='0'>";
-		} else {
-			echo " OUI <input type='radio' name='maintenance' value='1'>";
-			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value='0' checked >";
-		}
-		echo "</td></tr>";
-
-
-	echo "</table>";
-
-	echo "</td>\n";	
-	echo "</tr><tr>";
-
-	if (!empty($ID)) {
-		echo "<td class='tab_bg_2' align='center' valign='top' colspan='2'>\n";
-		echo "<input type='hidden' name=\"ID\" value=\"".$ID."\">";
-		echo "<input type='submit' name=\"update\" value=\"".$lang["buttons"][7]."\" class='submit'>";
-		echo "</td></form>\n";	
-	} else {
-		echo "<td class='tab_bg_2' align=\"center\" valign=\"top\" colspan=\"2\">\n";
-		echo "<input type='submit' name=\"add\" value=\"".$lang["buttons"][8]."\" class='submit'>";
-		echo "</td></form>\n";	
-	}
-	
-	echo "</tr>\n";
-	echo "</table>\n";
-
-	echo "</center>\n";
-
-	echo "</table></div>";
-}
-
-
-function updateTemplate($input) {
-	// Update a template in the database
-
-	$templ = new Template;
-	$templ->getFromDB($input["ID"],0);
-
-	// dump status
-	$null = array_pop($input);
-	$updates = array();
-	// fill array for update
-	$x=0;
-	foreach ($input as $key => $val) {
-		if ($templ->fields[$key] != $input[$key]) {
-			$templ->fields[$key] = $input[$key];
-			$updates[$x] = $key;
-			$x++;
-		}
-	}
-
-	$templ->updateInDB($updates);
-
-}
-
-function addTemplate($input) {
-	// Add template, nasty hack until we get PHP4-array-functions
-
-	$templ = new Template;
-
-	// dump status
-	$null = array_pop($input);
-	
-	// fill array for update 
-	foreach ($input as $key => $val) {
-		if (empty($templ->fields[$key]) || $templ->fields[$key] != $input[$key]) {
-			$templ->fields[$key] = $input[$key];
-		}
-	}
-	$templ->addToDB();
-
-}
-
-function deleteTemplate($input) {
-	// Delete Template
-	
-	$templ = new Template;
-	$templ->deleteFromDB($input["ID"]);
-	
-} 	
-*/
 
 function showSortForm($target) {
 
