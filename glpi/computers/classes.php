@@ -58,7 +58,7 @@ class Computer {
 		$query = "SELECT * FROM $table WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			if ($db->numrows($result)) {
-				$data = mysql_fetch_array($result);
+				$data = $db->fetch_array($result);
 				foreach ($data as $key => $val) {
 					$this->fields[$key] = $val;
 				}

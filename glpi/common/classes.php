@@ -56,19 +56,20 @@ class DBmysql {
 		return mysql_query($query);
 	}
 	function result($result, $i, $field) {
-		return stripslashes_deep(mysql_result($result, $i, $field));
+		// Double stripslashes pour les systèmes ou les \' sont stockés dans la DB
+		return stripslashes_deep(stripslashes_deep(mysql_result($result, $i, $field)));
 	}
 	function numrows($result) {
 		return mysql_num_rows($result);
 	}
 	function fetch_array($result) {
-		return stripslashes_deep(mysql_fetch_array($result));
+		return stripslashes_deep(stripslashes_deep(mysql_fetch_array($result)));
 	}
 	function fetch_row($result) {
-		return stripslashes_deep(mysql_fetch_row($result));
+		return stripslashes_deep(stripslashes_deep(mysql_fetch_row($result)));
 	}
 	function fetch_assoc($result) {
-		return stripslashes_deep(mysql_fetch_assoc($result));
+		return stripslashes_deep(stripslashes_deep(mysql_fetch_assoc($result)));
 	}
 	function num_fields($result) {
 		return mysql_num_fields($result);

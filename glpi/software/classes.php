@@ -50,7 +50,7 @@ class Software {
 		$db = new DB;
 		$query = "SELECT * FROM glpi_software WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
-			$data = mysql_fetch_array($result);
+			$data = $db->fetch_array($result);
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}

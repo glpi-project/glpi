@@ -220,16 +220,19 @@ function get_content($db, $table,$from,$limit)
      $result = $db->query("SELECT * FROM $table LIMIT $from,$limit");
      if($result)
      while($row = $db->fetch_row($result)) {
+     	addslashes_deep($row);
          $insert = "INSERT INTO $table VALUES (";
          for($j=0; $j<$db->num_fields($result);$j++) {
             if(!isset($row[$j])) $insert .= "NULL,";
-            else if($row[$j] != "") $insert .= "'".addslashes($row[$j])."',";
+            else if($row[$j] != "") $insert .= "'".$row[$j]."',";
             else $insert .= "'',";
          }
          $insert = ereg_replace(",$","",$insert);
          $insert .= ");\n";
          $content .= $insert;
      }
+     echo $content;
+     exit;
      return $content;
 }
 
@@ -262,7 +265,7 @@ function get_def($db, $table) {
      }
 
      $def .= "\n);\n\n";
-     return (stripslashes($def));
+     return $def;
 }
 
 
