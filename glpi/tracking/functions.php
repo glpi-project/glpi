@@ -541,11 +541,12 @@ function showJobDetails($ID) {
 		echo "<b>$job->author</b>";
 		echo "</td></tr>";
 
-		echo "<tr><td>".$lang["joblist"][5].":</td><td>";
+		$m= new CommonItem;
+		$m->getfromDB($job->device_type,$job->computer);
+
+		echo "<tr><td>".$m->getType().":</td><td>";
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		{
-			$m= new CommonItem;
-			$m->getfromDB($job->device_type,$job->computer);
 			echo "<b>";
 			if ($job->computerfound) echo $m->getLink();
 			else echo $m->getNameID();
@@ -681,6 +682,9 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	$job->status = $status;
 	$job->author = $author;
 	$job->device_type = $device_type;
+	if ($device_type==0)
+	$job->computer=0;
+	else 
 	$job->computer = $ID;
 	$job->contents = $contents;
 	$job->priority = $priority;

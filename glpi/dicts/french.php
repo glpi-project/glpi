@@ -678,6 +678,7 @@ $lang["help"][26] 	= "Mat&eacute;riel r&eacute;seau";
 $lang["help"][27] 	= "Imprimante";
 $lang["help"][28] 	= "Moniteur";
 $lang["help"][29] 	= "P&eacute;riph&eacute;rique";
+$lang["help"][30] 	= "G&eacute;n&eacute;ral";
 
   // Mois
   $lang["calendarM"][0] = "Janvier" ;

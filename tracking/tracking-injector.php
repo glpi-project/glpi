@@ -92,7 +92,7 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] == "yes" && isse
 	nullFooter();
 	exit;
 }
-elseif (empty($ID))
+elseif (empty($ID)&&$_POST["device_type"]!=0)
 {
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 		nullHeader("Tracking",$_SERVER["PHP_SELF"]);

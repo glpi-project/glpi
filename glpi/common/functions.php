@@ -1271,6 +1271,8 @@ function printHelpDesk ($name,$from_helpdesk) {
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$lang["help"][24].": </td>";
 	echo "<td><select name=device_type>";
+    if (isAdmin($_SESSION["glpitype"]))
+       echo "<option value='0' >".$lang["help"][30]."";
 	echo "<option value='1' selected>".$lang["help"][25]."";
 	echo "<option value='2'>".$lang["help"][26]."";
 	echo "<option value='3'>".$lang["help"][27]."";
