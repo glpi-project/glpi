@@ -51,7 +51,18 @@ function titleComputers(){
 
 }
 
+function showComputerOnglets($target){
+	global $lang;
+	echo "<div align='center'><table><tr>";
+	echo "<th><a href='$target&onglet=1'>".$lang["title"][26]."</a></th>";
+	echo "<th><a href='$target&onglet=2'>".$lang["title"][12]."</a></th>";
+	echo "<th><a href='$target&onglet=3'>".$lang["title"][27]."</a></th>";
+	echo "<th><a href='$target&onglet=4'>".$lang["Menu"][26]."</a></th>";
+	echo "<th><a href='$target&onglet=5'>".$lang["title"][28]."</a></th>";
 
+	echo "</tr></table></div>";
+	
+}
 
 function searchFormComputers($field="",$contains="",$sort= "",$deleted= "") {
 	// Print Search Form
@@ -495,7 +506,25 @@ function showComputerForm($target,$ID,$withtemplate='') {
 
 		echo "</form>";
 		
-		
+		return true;
+	}
+	else {
+         echo "<div align='center'><b>".$lang["computers"][32]."</b></div>";
+         echo "<hr noshade>";
+         searchFormComputers();
+         return false;
+        }
+}
+
+function showDeviceComputerForm($target,$ID,$withtemplate='') {
+	global $lang;
+	$comp = new Computer;
+	if(empty($ID) && $withtemplate == 1) {
+		$comp->getEmpty();
+	} else {
+		$comp->getfromDB($ID);
+	}
+
 	if (!empty($ID)){
 			//print devices.
 		echo "<div align='center'>";
@@ -516,14 +545,8 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		device_selecter($_SERVER["PHP_SELF"],$comp->fields["ID"],$withtemplate);
 		echo "</table></div>";
 	}	
-		return true;
-	}
-	else {
-         echo "<div align='center'><b>".$lang["computers"][32]."</b></div>";
-         echo "<hr noshade>";
-         searchFormComputers();
-         return false;
-        }
+
+
 }
 
 function updateComputer($input) {

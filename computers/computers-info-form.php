@@ -157,6 +157,14 @@ elseif(isset($_POST["unlink_device"])) {
 else {
 
 	checkAuthentication("normal");
+
+
+if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
+if (isset($_GET['onglet'])) {
+	$_SESSION['glpi_onglet']=$_GET['onglet'];
+		header("Location: ".$_SERVER['HTTP_REFERER']);
+}
+
 	commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
 	//show computer form to add
 	if (!empty($tab["withtemplate"])) {
@@ -181,17 +189,30 @@ else {
 			if ($val==1) $j->deleteInDB($key);
 			}
 		}
-
+		showComputerOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"]);
 		if (showComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])) {
-			showDocumentAssociated(COMPUTER_TYPE,$tab["ID"]);
-			showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",COMPUTER_TYPE,$tab["ID"]);
-			showConnections($tab["ID"]);
-			showPorts($tab["ID"], COMPUTER_TYPE);
-			showPortsAdd($tab["ID"],COMPUTER_TYPE);
-			showSoftwareInstalled($tab["ID"]);
-			showContractAssociated(COMPUTER_TYPE,$tab["ID"]);
-			showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
-			showOldJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
+			switch($_SESSION['glpi_onglet']){
+			case 2 :
+				showSoftwareInstalled($tab["ID"]);
+				break;
+			case 3 :
+				showConnections($tab["ID"]);
+				showPorts($tab["ID"], COMPUTER_TYPE);
+				showPortsAdd($tab["ID"],COMPUTER_TYPE);
+				break;
+			case 4 :
+				showDocumentAssociated(COMPUTER_TYPE,$tab["ID"]);
+				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",COMPUTER_TYPE,$tab["ID"]);
+				showContractAssociated(COMPUTER_TYPE,$tab["ID"]);
+				break;
+			case 5 :
+				showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
+				showOldJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
+				break;
+			default :
+				showDeviceComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);			
+				break;
+			}
 			
 		}
 	}
