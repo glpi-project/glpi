@@ -44,7 +44,7 @@ function titleCartridge(){
 }
 
 
-function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "") {
+function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "",$deleted="") {
 	// Print Search Form
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
@@ -91,12 +91,13 @@ function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "") {
 		echo ">".$val."</option>\n";
 	}
 	echo "</select> ";
+	echo "<input type=checkbox name='deleted' ".($deleted=='Y'?" checked ":"").">".$lang["common"][3];
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
 
-function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start) {
+function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted) {
 
 	// Lists Software
 
@@ -138,7 +139,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 	
 	$query = "SELECT glpi_cartridges_type.ID as ID FROM glpi_cartridges_type ";
 	
-	$query.= " WHERE $where ORDER BY $sort";
+	$query.= " WHERE $where AND deleted='$deleted'  ORDER BY $sort";
 //	echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
@@ -294,7 +295,9 @@ function showCartridgeTypeForm ($target,$ID) {
 		echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+		if ($ct->fields["deleted"]=='N')
 		echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
+		else echo "<div align='center'><input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'></div>";
 		echo "</td>";
 		echo "</tr>";
 
@@ -355,11 +358,17 @@ function addCartridgeType($input) {
 
 
 function deleteCartridgeType($input) {
-	// Delete Software
+	// Delete CartridgeType
 	
 	$ct = new CartridgeType;
-	$ct->getFromDB($input["ID"]);
 	$ct->deleteFromDB($input["ID"]);
+} 
+
+function restoreCartridgeType($input) {
+	// Restore CartridgeType
+	
+	$ct = new CartridgeType;
+	$ct->restoreInDB($input["ID"]);
 } 
 
 function showCartridgesAdd($ID) {

@@ -40,11 +40,13 @@ checkAuthentication("normal");
 commonHeader($lang["title"][19],$_SERVER["PHP_SELF"]);
 if(empty($_GET["start"])) $_GET["start"] = 0;
 if(empty($_GET["order"])) $_GET["order"] = "ASC";
+if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
+else $_GET["deleted"] = "Y";
 
 titleCartridge();
 
-searchFormCartridge($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
-showCartridgeList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
+searchFormCartridge($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["deleted"]);
+showCartridgeList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"]);
 
 commonFooter();
 ?>
