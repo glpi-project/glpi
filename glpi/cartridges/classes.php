@@ -81,8 +81,7 @@ class CartridgeType {
 	}
 	function restoreInDB($ID) {
 		$db = new DB;
-		$this->getFromDB($ID);
-		$query = "UPDATE glpi_cartridges_type SET deleted='N' WHERE (ID = '".$this->fields["ID"]."')";
+		$query = "UPDATE glpi_cartridges_type SET deleted='N' WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			return true;
 		} else {
