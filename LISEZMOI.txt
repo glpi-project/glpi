@@ -61,11 +61,23 @@ avec l'une des ressources techniques à laquelle ils ont accès.
 --- Dépendances (uniquement testé avec ces configurations)
 
 
-1) Apache 1.3.>6 with PHP 4.03Pl1 
-2) MySQL 3.22.32
+1) Apache 1.3.>6 with PHP 4 
+2) MySQL 3.22 et supperieures
 
 
+--- MISES A JOUR DEPUIS UNE VERSION ANTERIEURE
 
+1) Sauvegardez les parametres presents dans glpi/glpi/config/config.php
+2) Supprimez tous les fichiers de glpi.
+3) Decompressez l'archive de la nouvelle version a la place.
+4) editez le fichier glpi/config/config.php et re-faites la configuration.
+5) Faites pointer votre navigateur favoris su http://xxxx/glpi/update.php 
+  pour mettre la base de donnée a jour.
+6) Supprimez le fichier glpi/update.php
+7) (re)Donnez a php les droits d'ecriture dans les repertoires suivants : 
+
+- glpi/backups/dump
+- glpi/reports/reports/convexcel/tmp
 
 --- Installation
 
@@ -112,6 +124,11 @@ Indiquez vos paramètres :
 2) Editez le fichier helpdesk.html dans /glpi/, vous pouvez déplacer ce fichier dans votre intranet
 ou ailleurs. Vous pouvez le modifier comme bon vous semble à condition que les paramètres du formulaire
 restent intacts. L'injecteur nécessite, pour fonctionner, l'utilisateur Helpdesk créé par défaut.
+
+3) Donnez a php les droits d'ecriture dans les repertoires suivants : 
+
+- glpi/backups/dump
+- glpi/reports/reports/convexcel/tmp
 
 
 --- Test

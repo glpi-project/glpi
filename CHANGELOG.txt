@@ -13,9 +13,7 @@ Suppression de toutes les erreurs affichées lorsque le php.ini contient error_re
 GLPI est compatible nativement avec la confoguration de easyphp 1.7 a partir de cette version.
 Le schema de la base de donnée change, plusieurs champs etant marqués comme potentiellement NULL
 dans le SGBD deviennent not null.
-Le nouveau dump est annoté 0.23.sql un script sql permettant de passer depuis la 0.21 à la 0.23 suivra
-il sera noté 0.21-to-0.23.sql et comportera la partie deja faite dans le 0.21-to-0.22
-
+Le nouveau dump est annoté 0.3-defaults.sql
 
 
 20/03/2004
