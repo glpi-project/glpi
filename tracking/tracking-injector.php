@@ -41,6 +41,8 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_setup.php");
 
+checkAuthentication("post-only");
+
 $glpiname = $_SESSION["glpiname"];
 
 if (!$glpiname || $glpiname == "bogus")
@@ -52,9 +54,10 @@ if (!$glpiname || $glpiname == "bogus")
 loadLanguage($glpiname);
 
 $status = "new";
-$ID = $_GET["computer"];
 
-if ($_GET["priority"] && !$_GET["contents"])
+$ID=$_POST["computer"];
+
+if ($_POST["priority"] && !$_POST["contents"])
 {
 	nullHeader("Tracking",$_SERVER["PHP_SELF"]);
 	echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
@@ -64,7 +67,7 @@ if ($_GET["priority"] && !$_GET["contents"])
 	nullFooter();
 	exit;
 }
-elseif ($_GET["emailupdates"] == "yes" && $_GET["uemail"]=="")
+elseif ($_POST["emailupdates"] == "yes" && $_POST["uemail"]=="")
 {
 	nullHeader("Tracking",$_SERVER["PHP_SELF"]);
 		echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
@@ -88,7 +91,7 @@ elseif (empty($ID))
 } 
 else
 {
-	if (postJob($ID,$glpiname,$status,$_GET["priority"],$_GET["computer"],$_GET["isgroup"],$_GET["uemail"],$_GET["emailupdates"],$_GET["contents"]))
+	if (postJob($ID,$glpiname,$status,$_POST["priority"],$_POST["computer"],$_POST["isgroup"],$_POST["uemail"],$_POST["emailupdates"],$_POST["contents"]))
 	{
 		nullHeader("Tracking",$_SERVER["PHP_SELF"]);
 		echo "<center><img src=\"".$cfg_install["root"]."/pics/ok.png\" alt=\"OK\"><br><br><b>";
