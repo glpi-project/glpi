@@ -1965,11 +1965,6 @@ $query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `category` ) ";
 $db->query($query) or die("0.5 alter field date ".$lang["update"][90].$db->error());
 }
 
-if(!isIndex("glpi_reservation_item", "device_type_2")) {
-$query = "ALTER TABLE `glpi_reservation_item` ADD INDEX `device_type_2` ( `device_type`,`id_device` ) ";
-$db->query($query) or die("50 ".$lang["update"][90].$db->error());
-}
-
 if(!FieldExists("glpi_config","date_fiscale")) {
 	$query = "ALTER TABLE `glpi_config` ADD `date_fiscale` date NOT NULL default '2005-12-31'";
 	$db->query($query) or die("48 ".$lang["update"][90].$db->error());
