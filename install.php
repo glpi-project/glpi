@@ -504,7 +504,7 @@ function step6($root_doc, $event_loglevel, $num_of_events, $expire_events, $list
 		
 		
 		echo "<table><tr>Les utilisateurs ayant un accés Normal doivent recevoir une notification :<td></td><td></td><td></td></tr>";
-		echo "<tr><td>A chaque nouvelle intervention</td><td>Oui : <input type=\"radio\" name=\"mailing_new_all_admin\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_new_all_normal\" value=\"0\"></td></tr>";
+		echo "<tr><td>A chaque nouvelle intervention</td><td>Oui : <input type=\"radio\" name=\"mailing_new_all_normal\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_new_all_normal\" value=\"0\"></td></tr>";
 		echo "<tr><td>A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_all_normal\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_all_normal\" value=\"0\"></td></tr>";
 		echo "<tr><td>Pour chaque nouveau suivi</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_all_normal\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_followup_all_normal\" value=\"0\"></td></tr>";
 		echo "<tr><td>A chaque fois qu'une intervention est marquée comme terminée</td><td>Oui : <input type=\"radio\" name=\"mailing_finish_all_normal\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_finish_all_normal\" value=\"0\"></td></tr>";
