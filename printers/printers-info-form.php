@@ -44,6 +44,7 @@ include ($phproot . "/glpi/includes_reservation.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_cartridges.php");
 include ($phproot . "/glpi/includes_financial.php");
+include ($phproot . "/glpi/includes_documents.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -137,6 +138,7 @@ else
 		showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);
 		
 		if (!empty($tab["ID"])){
+		showDocumentAssociated(PRINTER_TYPE,$tab["ID"],$tab["withtemplate"]);
 		showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",PRINTER_TYPE,$tab["ID"],1,$tab["withtemplate"]);
 		showPorts($tab["ID"], PRINTER_TYPE,$tab["withtemplate"]);
 		if ($tab["withtemplate"]!=2)
@@ -157,6 +159,7 @@ else
 
 		if (showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
 			showConnect($_SERVER["PHP_SELF"],$tab["ID"],PRINTER_TYPE);
+			showDocumentAssociated(PRINTER_TYPE,$tab["ID"]);
 			showPorts($tab["ID"], PRINTER_TYPE,$tab["withtemplate"]);
 			showPortsAdd($tab["ID"],PRINTER_TYPE);			
 			showCartridgeInstalled($tab["ID"]);

@@ -297,6 +297,7 @@ function commonHeader($title,$url)
 $utils = array($lang["Menu"][17]=>array("/reservation/index.php","1"),
 		$lang["Menu"][19]=>array("/knowbase/index.php"," "),
         $lang["Menu"][6]=>array("/reports/index.php"," "),
+	$lang["Menu"][27]=>array("/documents/index.php"," "),
 		);	
 	
 $inventory = 	array($lang["Menu"][0]=>array("/computers/index.php","1"),

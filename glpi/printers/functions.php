@@ -582,6 +582,16 @@ function addPrinter($input) {
 		while ($data=$db->fetch_array($result))
 			addDeviceContract($data["FK_contract"],PRINTER_TYPE,$newID);
 	}
+	
+	// ADD Documents			
+	$query="SELECT FK_doc from glpi_doc_device WHERE FK_device='$oldID' AND device_type='".PRINTER_TYPE."';";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		
+		while ($data=$db->fetch_array($result))
+			addDeviceDocument($data["FK_doc"],PRINTER_TYPE,$newID);
+	}
+
 
 
 }

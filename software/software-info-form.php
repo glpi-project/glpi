@@ -41,6 +41,7 @@ include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_computers.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_financial.php");
+include ($phproot . "/glpi/includes_documents.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -107,6 +108,7 @@ else
 		showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"],$tab['search_software'], $tab["withtemplate"]);
 		
 		if (!empty($tab["ID"])){
+		showDocumentAssociated(SOFTWARE_TYPE,$tab["ID"],$tab["withtemplate"]);
 		showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"],1,$tab["withtemplate"]);
 		
 		showContractAssociated(SOFTWARE_TYPE,$tab["ID"],$tab["withtemplate"]);
@@ -125,7 +127,7 @@ else
 		if (showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"],$tab['search_software'])){
 			showLicenses($tab["ID"]);
 			showLicensesAdd($tab["ID"]);
-
+			showDocumentAssociated(SOFTWARE_TYPE,$tab["ID"]);
 			showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"]);
 			showContractAssociated(SOFTWARE_TYPE,$tab["ID"]);
 			showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);

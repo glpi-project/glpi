@@ -34,14 +34,14 @@
 
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_financial.php");
+include ($phproot . "/glpi/includes_documents.php");
 include ($phproot . "/glpi/includes_computers.php");
 include ($phproot . "/glpi/includes_printers.php");
 include ($phproot . "/glpi/includes_monitors.php");
 include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_software.php");
-include ($phproot . "/glpi/includes_documents.php");
+include ($phproot . "/glpi/includes_financial.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -52,30 +52,30 @@ if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
 
-	addContract($_POST);
-	logEvent(0, "contract", 4, "financial", $_SESSION["glpiname"]." added item ".$_POST["num"].".");
+	addDocument($_POST);
+	logEvent(0, "contract", 4, "document", $_SESSION["glpiname"]." added item ".$_POST["name"].".");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
-	deleteContract($_POST);
-	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." deleted item.");
-	header("Location: ".$cfg_install["root"]."/contracts/");
+	deleteDocument($_POST);
+	logEvent($tab["ID"], "contract", 4, "document", $_SESSION["glpiname"]." deleted item.");
+	header("Location: ".$cfg_install["root"]."/documents/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
-	restoreContract($_POST);
-	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." restored item.");
-	header("Location: ".$cfg_install["root"]."/contracts/");
+	restoreDocument($_POST);
+	logEvent($tab["ID"], "contract", 4, "document", $_SESSION["glpiname"]." restored item.");
+	header("Location: ".$cfg_install["root"]."/documents/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
-	deleteContract($_POST,1);
-	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." purge item.");
-	header("Location: ".$cfg_install["root"]."/contracts/");
+	deleteDocument($_POST,1);
+	logEvent($tab["ID"], "contract", 4, "document", $_SESSION["glpiname"]." purge item.");
+	header("Location: ".$cfg_install["root"]."/documents/");
 }
 else if (isset($_POST["additem"])){
 	checkAuthentication("admin");
@@ -83,34 +83,34 @@ else if (isset($_POST["additem"])){
 	list($type,$ID)=explodeAllItemsSelectResult($_POST["item"]);
 	else {$type=$_POST["type"];$ID=$_POST["ID"];}
 	
-	addDeviceContract($_POST["conID"],$type,$ID);
-	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." associate device.");
+	addDeviceDocument($_POST["conID"],$type,$ID);
+	logEvent($tab["ID"], "contract", 4, "document", $_SESSION["glpiname"]." associate device.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deleteitem"])){
 	checkAuthentication("admin");
-	deleteDeviceContract($_GET["ID"]);
-	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." delete device.");
+	deleteDeviceDocument($_GET["ID"]);
+	logEvent($tab["ID"], "contract", 4, "document", $_SESSION["glpiname"]." delete device.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["addenterprise"])){
 	checkAuthentication("admin");
 
-	addEnterpriseContract($_POST["conID"],$_POST["entID"]);
-	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." associate device.");
-	header("Location: ".$cfg_install["root"]."/contracts/contracts-info-form.php?ID=".$_POST["conID"]);
+	addEnterpriseDocument($_POST["conID"],$_POST["entID"]);
+	logEvent($tab["ID"], "contract", 4, "document", $_SESSION["glpiname"]." associate device.");
+	header("Location: ".$cfg_install["root"]."/documents/documents-info-form.php?ID=".$_POST["conID"]);
 }
 else if (isset($_GET["deleteenterprise"])){
 	checkAuthentication("admin");
-	deleteEnterpriseContract($_GET["ID"]);
-	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." delete device.");
-	header("Location: ".$cfg_install["root"]."/contracts/contracts-info-form.php?ID=".$_POST["conID"]);
+	deleteEnterpriseDocument($_GET["ID"]);
+	logEvent($tab["ID"], "contract", 4, "document", $_SESSION["glpiname"]." delete device.");
+	header("Location: ".$cfg_install["root"]."/documents/documents-info-form.php?ID=".$_POST["conID"]);
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
-	updateContract($_POST);
-	logEvent($_POST["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." updated item.");
+	updateDocument($_POST);
+	logEvent($_POST["ID"], "contract", 4, "document", $_SESSION["glpiname"]." updated item.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
 
 } 
@@ -121,13 +121,8 @@ else
 	else checkAuthentication("normal");
 
 	commonHeader($lang["title"][20],$_SERVER["PHP_SELF"]);
-	
-	showContractForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["search"]);
-	showDocumentAssociated(CONTRACT_TYPE,$tab["ID"],$tab["search"]);
-	showEnterpriseContract($tab["ID"]);
-	showDeviceContract($tab["ID"],$tab["search"]);
-	
-	
+	showDocumentForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["search"]);
+
 	commonFooter();
 }
 

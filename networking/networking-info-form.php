@@ -41,6 +41,7 @@ include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_reservation.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_financial.php");
+include ($phproot . "/glpi/includes_documents.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -102,10 +103,13 @@ else
 		showNetworkingForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);
 		
 		if (!empty($tab["ID"])){
-		showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",NETWORKING_TYPE,$tab["ID"],1,$tab["withtemplate"]);
 		showPorts($tab["ID"], NETWORKING_TYPE,$tab["withtemplate"]);
 		if ($tab["withtemplate"]!=2)
 		showPortsAdd($tab["ID"],NETWORKING_TYPE);
+		
+		showDocumentAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
+		showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",NETWORKING_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+		
 		
 		showContractAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
 		}
@@ -125,6 +129,8 @@ else
 
 		showPortsAdd($tab["ID"],NETWORKING_TYPE);
 
+		showDocumentAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
+		
 		showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",NETWORKING_TYPE,$tab["ID"]);
 		showContractAssociated(NETWORKING_TYPE,$tab["ID"]);
 		showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
