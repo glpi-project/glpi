@@ -62,6 +62,7 @@ $lang["buttons"][12]	= "Pr&eacute;c&eacute;dent";
 $lang["buttons"][13]	= "Retour";
 $lang["buttons"][14]	= "Modifier";
 $lang["buttons"][15]    = "Calendrier";
+$lang["buttons"][16] ="Raz";
 
 $lang["choice"][0]	= "Oui";
 $lang["choice"][1]	= "Non";
@@ -658,7 +659,7 @@ $lang["mailing"][13]="Erreur dans la génération de l'email automatique";
 $lang["stats"][0] = "S&eacute;lectionnez les statistiques &agrave; visualiser";
 $lang["stats"][1] = "Globales";
 $lang["stats"][2] = "Par technicien";
-$lang["stats"][3] = "Par dropdown";
+$lang["stats"][3] = "Par Intitulés";
 $lang["stats"][4] = "Par utilisateur";
 $lang["stats"][5] = "Nombre total d'interventions";
 $lang["stats"][6] = "D&eacute;lai moyen de r&eacute;solution de panne";

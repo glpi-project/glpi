@@ -6,12 +6,7 @@ GLPI - Gestionnaire libre de parc informatique
  Copyright (C) 2002 by the INDEPNET Development Team.
  Bazile Lebeau, baaz@indepnet.net - Jean-Mathieu Doléans, jmd@indepnet.net
  http://indepnet.net/   http://glpi.indepnet.org
- ----------------------------------------------------------------------
- Based on:
-IRMA, Information Resource-Management and Administration
-Christian Bauer, turin@incubus.de 
-
- ----------------------------------------------------------------------
+  ----------------------------------------------------------------------
  LICENSE
 
 This file is part of GLPI.
@@ -44,7 +39,7 @@ checkAuthentication("normal");
 commonHeader("Stats",$_SERVER["PHP_SELF"]);
 
 
-echo "<div align ='center'><b>".$lang["stats"][12]."</b></div><hr noshade>";
+echo "<div align ='center'><p><b>".$lang["stats"][12]."</b></p></div>";
 //affichage du tableau
 //table displaying
 echo "<div align ='center'><table class='tab_cadre2' cellpadding='5'>";
