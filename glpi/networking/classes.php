@@ -245,20 +245,16 @@ class Netport {
 			$query .= "' WHERE ID='";
 			$query .= $this->fields["ID"];	
 			$query .= "'";
-			$result=$db->query($query);
-		// Mise a jour opposite if exist
-		if ($updates[$i]=="netpoint"){
+		// Update opposite if exist
+		if ($updates[$i]=="netpoint"||$updates[$i]=="ifaddr"||$updates[$i]=="ifmac"){
 			$n=new Netwire;
 			if ($opp=$n->getOppositeContact($this->fields["ID"])){
-			$newupdates["ID"]=$opp;
-			$newupdates["netpoint"]=$this->fields["netpoint"];
-			$newupdates["virer"]="virer";
-			updateNetport($newupdates);
+				$query.=" OR ID='$opp' ";
+			}
+		}
+			$result=$db->query($query);
 			}	
-		}
 			
-		}
-		
 	}
 	
 	function addToDB()
