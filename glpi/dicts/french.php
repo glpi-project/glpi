@@ -111,6 +111,12 @@ $lang["connect"][6]	= "Nom";
 $lang["connect"][7]	= "ID";
 $lang["connect"][8] 	= "contient"; 
 $lang["connect"][9] 	= "Choisissez un ordinateur dans la liste"; 
+$lang["connect"][10] 	= "Choisissez une imprimante dans la liste"; 
+$lang["connect"][11] 	= "Choisissez un périphérique dans la liste"; 
+$lang["connect"][12] 	= "Choisissez un écran dans la liste"; 
+$lang["connect"][13]	= "Sur une imprimante qui";
+$lang["connect"][14]	= "Sur un périphérique qui";
+$lang["connect"][15]	= "Sur un écran qui";
 
 //header menu
 

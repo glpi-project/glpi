@@ -617,6 +617,10 @@ function showConnections($ID) {
 		} else {
 			echo $lang["computers"][38];
 		}
+		echo "<br><b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=printer\">";
+		echo $lang["buttons"][9];
+		echo "</b></a>";
+
 	}
 	echo "</td>";
 
@@ -637,6 +641,10 @@ function showConnections($ID) {
 		} else {
 			echo $lang["computers"][37];
 		}
+		echo "<br><b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=monitor\">";
+		echo $lang["buttons"][9];
+		echo "</b></a>";
+
 	}
 	echo "</td>";
 	
@@ -657,6 +665,10 @@ function showConnections($ID) {
 		} else {
 			echo $lang["computers"][47];
 		}
+		echo "<br><b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=peripheral\">";
+		echo $lang["buttons"][9];
+		echo "</b></a>";
+
 	}
 
 	echo "</tr>";
