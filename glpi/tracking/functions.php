@@ -39,7 +39,7 @@ include ("_relpos.php");
 // FUNCTIONS Tracking System
 
 
-function searchFormTracking ($show,$contains) {
+function searchFormTracking ($show,$contains,$device) {
 	// Tracking Search Block
 	
 	GLOBAL $cfg_layout, $cfg_install,$lang;

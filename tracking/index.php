@@ -75,13 +75,13 @@ if (isset($tab["show"]))
 {
 	if(isset($tab["contains"]))
 	{
-		searchFormTracking($tab["show"],$tab["contains"]);
+		searchFormTracking($tab["show"],$tab["contains"],$tab["device"]);
 		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$tab["show"],$tab["contains"],"","",$tab["start"],$tab["device"]);
 		
 	}
 	else
 	{
-		searchFormTracking($tab["show"],"");
+		searchFormTracking($tab["show"],"",$tab["device"]);
 		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$tab["show"],"","","",$tab["start"],$tab["device"]);
 		
 	}
@@ -90,13 +90,13 @@ else
 {
 	if(isset($tab["contains"]))
 	{
-		searchFormTracking("",$tab["contains"]);
+		searchFormTracking("",$tab["contains"],$tab["device"]);
 		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"",$tab["contains"],"","",$tab["start"],$tab["device"]);
 		
 	}
 	else
 	{
-		searchFormTracking("","");
+		searchFormTracking("","","");
 		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"","","","",$tab["start"],$tab["device"]);
 	}
 }
