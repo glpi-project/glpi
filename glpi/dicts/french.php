@@ -797,6 +797,7 @@ $lang["stats"][31] = "Jour(s)";
 $lang["stats"][32] = "Heure(s)";
 $lang["stats"][33] = "Min(s)";
 $lang["stats"][34] = "Sec(s)";
+$lang["stats"][35] = "Intervention(s)";
 // install update
 
 $lang["install"][0]	= "Installation ou mise à jour de GLPI";
