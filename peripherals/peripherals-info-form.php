@@ -66,7 +66,7 @@ else if (isset($_POST["update"]))
 else if (isset($tab["disconnect"]))
 {
 	checkAuthentication("admin");
-	Disconnect($tab["ID"],4);
+	Disconnect($tab["ID"],5);
 	logEvent($tab["ID"], "Peripherals", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
 	commonHeader("Peripherals",$_SERVER["PHP_SELF"]);
 	showPeripheralForm($_SERVER["PHP_SELF"],$tab["ID"]);
@@ -93,7 +93,7 @@ else if(isset($tab["connect"]))
 		checkAuthentication("admin");
 		commonHeader("Peripherals",$_SERVER["PHP_SELF"]);
 		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],5);
-		logEvent($tab["sID"], "Peripherals", 5, "inventory", $_SESSION["glpiname"]." connected item.");
+		logEvent($tab["sID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." connected item.");
 		showPeripheralForm($_SERVER["PHP_SELF"],$tab["sID"]);
 		commonFooter();
 	}
