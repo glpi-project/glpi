@@ -67,6 +67,17 @@ class User {
 		}
 		return false;
 	}
+	
+	function getEmpty () {
+	//make an empty database object
+	$db = new DB;
+	$fields = $db->list_fields("glpi_users");
+	$columns = mysql_num_fields($fields);
+	for ($i = 0; $i < $columns; $i++) {
+		$name = mysql_field_name($fields, $i);
+		$this->fields[$name] = "";
+	}
+}
 
 	// Function that try to load from LDAP the user information...
 	//
@@ -144,31 +155,35 @@ class User {
 		$i=0;
 		foreach ($this->fields as $key => $val) {
 			$fields[$i] = $key;
+			if($key == "password") $indice = $i;
 			$values[$i] = $val;
 			$i++;
 		}		
 		for ($i=0; $i < count($fields); $i++) {
-			$query .= $fields[$i];
+			$query .= "glpi_users.".$fields[$i];
 			if ($i!=count($fields)-1) {
 				$query .= ",";
 			}
 		}
 		$query .= ") VALUES (";
 		for ($i=0; $i < count($values); $i++) {
-			$query .= "'".$values[$i]."'";
+			if($i === $indice) {
+				$query .= " PASSWORD('".$values[$i]."')";
+			}
+			else {
+				$query .= "'".$values[$i]."'";
+			}
 			if ($i!=count($values)-1) {
 				$query .= ",";
 			}
 		}
 		$query .= ")";
-
 		if ($result=$db->query($query)) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-
 
 	function updateInDB($updates)  {
 

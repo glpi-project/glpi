@@ -43,8 +43,7 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
 
-
-
+if(empty($_GET["name"])) $_GET["name"] = "";
 if (isset($_POST["add"])) {
 	checkAuthentication("admin");
 	
