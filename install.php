@@ -173,7 +173,7 @@ function choose_language()
 {
 echo "<form action=\"install.php\" method=\"post\">";
 echo "<p align='center'><label>Choose your language <select name=\"language\"><label></p>";
-	echo "<option value=\"french\">Français</option>";
+	echo "<option value=\"french\">Fran&ccedil;ais</option>";
 	echo "<option value=\"english\">English</option>";
 	echo "<option value=\"deutch\">Deutch</option>";
 	echo "<option value=\"italian\">Italiano</option>";
