@@ -45,10 +45,33 @@
 </UL>
     
 <h2><A NAME="invent"></A>1 - Partie Inventaire</h2>
-<h3><A NAME="inventa">a) Considération générales</h3>
-<h3><A NAME="inventb">b) Gestion des connections directes</h3>
-<h3><A NAME="inventc">c) Gestion des ports réseaux</h3>
-<h3><A NAME="inventd">d) Gestion des logiciels</h3>
+
+<h3><A NAME="inventa"></A>a) Considération générales</h3>
+<p>Dans la partie inventaire vous pouvez lister et consulter l'inventaire matériel et logiciel du parc.</p>
+<p>Vous avez la possibilité d'effectuer des recherches paramétrées et triées, sur un des types de l'inventaire (ordinateurs, matériel reseau, imprimantes, ecrans, périphériques externes, et logiciels).</p>
+<p>A partir de là vous pouvez afficher la fiche contenant les informations précises de chaque élément répertorié, ou ajouter un élément.</p>
+<p>Vous avez ensuite la possibilité de modifier ou de supprimer chaque élément.</p>
+
+<h3><A NAME="inventb"></A>b) Gestion des connections directes</h3>
+<p>Les connections directes permettent de modéliser la relation entre l'unité centrale d'un ordinateur et des composants exterieurs.</p>
+<p>Une connection directe se fait entre un ordinateur et une imprimante, un moniteur ou un periphérique externe. </p>
+<p>Les connections ou déconnections se font depuis la fiche d'un ordinateur ou depuis celle du matériel lié.</p>
+
+<h3><A NAME="inventc"></A>c) Gestion des ports réseaux</h3>
+<p>Un port réseau permet de modéliser la sortie d'une interface reseau sur un matériel donné.</p>
+<p>Chaque port dispose d'une adresse IP, d'une adresse mac et d'une prise reseau à laquelle il est relié.</p>
+<p>Les connections reseau se font en reliant deux ports entres eux, pour relier deux matériels ensemble ils faut donc qu'il y ait un port libre sur chacun de ces matériels.</p>
+<p>Dans la plupart des configurations les connections se feront entre un port présent sur un ordinateur, un ecran ou une imprimante et un port présent sur un matériel reseau (hub, switch)</p>
+<p>Lors de la connection entre deux matériels, les informations adresse IP et prise reseau sont mise à jour pour chacun des deux ports concernés</p>
+<p>Pour chaque matériel, il est possible à tout moment d'ajouter un ou plusieur ports</p>
+
+<h3><A NAME="inventd"></A>d) Gestion des logiciels</h3>
+<p>Un logiciel, comporte un certain nombre de licence ayant chacune un numero de serie associé et une date d'expiration</p>
+<p>A chaque fois qu'un logiciel est installé, le nombre de licence disponibles pour ce logiciel baisse.</p>
+<p>Il est impossible d'installer un logiciel, lorsqu'aucune licence n'est disponible.</p>
+<p>Il est néanmoins possible d'indiquer le mot clé "free" à la place du numéro de serie lors de l'ajout d'une licence à un logiciel, pour que ce dernier soit installable sans se soucier des licences</p>
+<p>Il est possible d'ajouter plusieurs licence en une seule fois, le numero et de serie et la date d'expiration sera la même pour chacune d'entre elles</p>
+<p>L'installation d'un logiciel se fait depuis la fiche d'un ordinateur.</p>
 
 <h2><A NAME="maint"></A>2 - Partie Maintenance</h2>
 <h3><A NAME="mainta"></A>a) Suivi</h3>
