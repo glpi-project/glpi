@@ -497,7 +497,8 @@ $lang["setup"][63]     = "Attention vous êtes sur le point de supprimer un intit
 $lang["setup"][64]     = "Si vous confirmez la suppression les items utilisant cet intitulé se verront atribbuer un champs NULL";
 $lang["setup"][65]     = "Vous pouvez aussi remplacer toutes les occurences de cet intitulé par un autre :";
 $lang["setup"][66]	= "Pas d'utilisateur trouvé";
-
+$lang["setup"][67]	= "Authentifications externes";
+$lang["setup"][68]	= "Suivis par emails";
 
 
 // Helpdesk
