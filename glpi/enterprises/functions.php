@@ -419,7 +419,7 @@ function showAssociatedContact($instID) {
 	while ($i < $number) {
 		$ID=$db->result($result, $i, "ID_ent");
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'><a href='".$HTMLRel."contacts/contacts-info-form.php?ID=$ID'>".$db->result($result, $i, "glpi_contacts.name")."</a></td>";
+	echo "<td align='center'><a href='".$HTMLRel."contacts/contacts-info-form.php?ID=".$db->result($result, $i, "ID")."'>".$db->result($result, $i, "glpi_contacts.name")."</a></td>";
 	echo "<td align='center'>".$db->result($result, $i, "glpi_contacts.phone")."</td>";
 	echo "<td align='center'>".$db->result($result, $i, "glpi_contacts.phone2")."</td>";
 	echo "<td align='center'>".$db->result($result, $i, "glpi_contacts.fax")."</td>";
