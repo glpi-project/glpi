@@ -66,6 +66,8 @@ function searchFormNetworking($field="",$phrasetype= "",$contains="",$sort= "") 
 	$option["glpi_networking.contact"]			= $lang["networking"][3];
 	$option["glpi_networking.contact_num"]		= $lang["networking"][4];
 	$option["glpi_networking.date_mod"]			= $lang["networking"][9];
+	$option["glpi_networking_ports.ifaddr"] = $lang["networking"][14];
+	$option["glpi_networking_ports.ifmac"] = $lang["networking"][15];
 	
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/networking/networking-search.php\">";
@@ -159,9 +161,10 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 	if (!$order) {
 		$order = "ASC";
 	}
-	$query = "select glpi_networking.ID from glpi_networking LEFT JOIN glpi_dropdown_locations on glpi_networking.location=glpi_dropdown_locations.ID ";
+	$query = "select DISTINCT glpi_networking.ID from glpi_networking LEFT JOIN glpi_dropdown_locations on glpi_networking.location=glpi_dropdown_locations.ID ";
 	$query .= "LEFT JOIN glpi_type_networking on glpi_networking.type = glpi_type_networking.ID ";
 	$query .= "LEFT JOIN glpi_dropdown_firmware on glpi_networking.firmware = glpi_dropdown_firmware.ID ";
+	$query .= "LEFT JOIN glpi_networking_ports on (glpi_networking.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='2')";	
 	$query .= "where $where ORDER BY $sort $order";
 
 	// Get it from database	
