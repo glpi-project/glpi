@@ -326,7 +326,7 @@ class Identification
 			{
 				$pass1=$db->result($result,0,"password");
 				$pass2=$db->result($result2,0,"password");
-				if ($pass1===$pass2)
+				if (strcmp($pass1,$pass2)==0)
 				return true;
 				else {
 				$this->err = "Bad username or password";
