@@ -75,7 +75,7 @@ class Job {
 			if (!$purecontent) {
 				$this->contents = nl2br($db->result($result, 0, "contents"));
 			}
-			$this->contents = StripSlashes($this->contents);
+			$this->contents = $this->contents;
 			$this->priority = $db->result($result, 0, "priority");
 			$this->is_group = $db->result($result,0, "is_group");
 			$this->uemail = $db->result($result, 0, "uemail");
@@ -114,7 +114,6 @@ class Job {
 		if ($this->status=="old") {
 			$this->closedate = date("Y-m-d H:i:s");
 		}
-		$this->contents = addslashes($this->contents);
 		
 		// dump into database
 		$db = new DB;
@@ -245,10 +244,10 @@ class Followup {
 		$query = "SELECT * FROM glpi_followups WHERE (tracking = $ID) ORDER BY date ASC";
 	
 		if ($result = $db->query($query)) {
-			$this->date = $db->result($result,$iteration,"date");
-			$this->author = $db->result($result, $iteration, "author");
+			$this->date = stripslashes($db->result($result,$iteration,"date"));
+			$this->author = stripslashes($db->result($result, $iteration, "author"));
 			$this->contents = nl2br($db->result($result, $iteration, "contents"));
-			$this->contents = StripSlashes($this->contents);
+			$this->contents = stripslashes($this->contents);
 
 			return true;
 
@@ -261,7 +260,7 @@ class Followup {
 		// prepare variables
 
 		$this->date = date("Y-m-d H:i:s");
-		$this->contents = addslashes($this->contents);
+		$this->contents = $this->contents;
 	
 		// dump into database
 		$db = new DB;

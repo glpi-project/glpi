@@ -115,7 +115,35 @@ function searchUserbyType($authtype) {
 		}
 }
 
+   function stripslashes_deep($value)
+   {
+       $value = is_array($value) ?
+                   array_map('stripslashes_deep', $value) :
+                   stripslashes($value);
+
+       return $value;
+   }
+   function addslashes_deep($value)
+   {
+       $value = is_array($value) ?
+                   array_map('addslashes_deep', $value) :
+                   addslashes($value);
+
+       return $value;
+   }
+    
 function checkAuthentication($authtype) {
+	// Universal method to have a magic-quote-gpc system
+	global $_POST, $_GET,$_COOKIE;
+	// Clean array
+	$_POST = array_map('stripslashes_deep', $_POST);
+    $_GET = array_map('stripslashes_deep', $_GET);
+    $_COOKIE = array_map('stripslashes_deep', $_COOKIE);
+	// Addslashes
+	$_POST = array_map('addslashes_deep', $_POST);
+    $_GET = array_map('addslashes_deep', $_GET);
+    $_COOKIE = array_map('addslashes_deep', $_COOKIE);
+
 	// Checks a GLOBAL user and password against the database
 	// If $authtype is "normal" or "admin", it checks if the user
 	// has the privileges to do something. Should be used in every 

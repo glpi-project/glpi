@@ -376,8 +376,6 @@ function getEmpty () {
 		
 		$db = new DB;
 
-		$this->fields["comments"] = addslashes($this->fields["comments"]);
-		
 		// Build query
 		$query = "INSERT INTO glpi_templates (";
 		$i=0;
