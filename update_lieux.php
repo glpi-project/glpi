@@ -182,7 +182,7 @@ if (!isset($_POST['root'])) $_POST['root']='';
 if (!isset($_POST['car_sep'])) $_POST['car_sep']='';
 
 if(!TableExists("glpi_dropdown_locations_new")) {
-	$query = " CREATE TABLE `glpi_dropdown_locations_new` (`ID` INT NOT NULL ,`name` VARCHAR( 255 ) NOT NULL ,`parentID` INT NOT NULL ,PRIMARY KEY ( `ID` ),UNIQUE (`name`,`parentID`) );";
+	$query = " CREATE TABLE `glpi_dropdown_locations_new` (`ID` INT NOT NULL ,`name` VARCHAR( 255 ) NOT NULL ,`parentID` INT NOT NULL ,PRIMARY KEY ( `ID` ),UNIQUE KEY (`name`,`parentID`), KEY(`parentID`), );";
 	$db->query($query) or die("LOCATION ".$db->error());
 }
 
