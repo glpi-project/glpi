@@ -305,6 +305,7 @@ switch($table){
             {
             	$enr[$champs[$cpt][0]]=preg_replace('/\x0A/',' ',$enr[$champs[$cpt][0]]);
             	$enr[$champs[$cpt][0]]=preg_replace('/\x0D/','',$enr[$champs[$cpt][0]]);
+            	$enr[$champs[$cpt][0]]=ereg_replace("\"","''",$enr[$champs[$cpt][0]]);
                 // format
                 echo "F;P".$num_format[$champs[$cpt][0]].";".$format[$champs[$cpt][0]];
                 echo ($cpt == 0 ? ";Y".$ligne : "").";X".($cpt+1)."\n";
