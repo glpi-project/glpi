@@ -566,11 +566,14 @@ function showInfocomAssociated($device_type,$ID){
 		$con=new Infocom;
 		$con->getFromDB($icID);
 		$ent=new Enterprise;
-		$ent->getFromDB($con->fields["FK_enterprise"]);
+		$ent_name="";
+		if ($ent->getFromDB($con->fields["FK_enterprise"]))
+			$ent_name=$ent->fields["name"];
+
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>".$con->fields["buy_date"]."</td>";
 	echo "<td align='center'>".$con->fields["warranty_duration"]." ".$lang["financial"][9]."</td>";
-	echo "<td align='center'>".$ent->fields["name"]."</td>";	
+	echo "<td align='center'>".$ent_name."</td>";	
 	echo "<td align='center'>".$con->fields["num_commande"]."</td>";
 	echo "<td align='center'>".$con->fields["value"]."</td>";
 

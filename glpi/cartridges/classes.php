@@ -69,13 +69,13 @@ class CartridgeType {
 		$query = "SELECT * FROM glpi_cartridges_type WHERE (ID = '$ID')";
 		
 		if ($result = $db->query($query)) {
+		if ($db->numrows($result)==1){
 			$data = $db->fetch_array($result);
-			if (!empty($data))	
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}
 			return true;
-
+		} else return false;
 		} else {
 			return false;
 		}
@@ -209,12 +209,13 @@ class Cartridge {
 		$db = new DB;
 		$query = "SELECT * FROM glpi_cartridges WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
+		if ($db->numrows($result)==1){
 			$data = $db->fetch_array($result);
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}
 			return true;
-
+		} else return false;
 		} else {
 			return false;
 		}
