@@ -137,7 +137,11 @@ $template_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_
 //document root
 $cfg_install["root"] = $db->result($result,0,"root_doc");
 
+// Path for icon of document type
 $cfg_install["typedoc_icon_dir"] = "/pics";
+
+// Path for docuemnts storage
+$cfg_install["doc_dir"] = "/docs";
 
 // Default language
 $cfg_install["default_language"] = $db->result($result,0,"default_language");

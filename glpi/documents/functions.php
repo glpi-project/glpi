@@ -252,7 +252,7 @@ function showDocumentForm ($target,$ID,$search) {
 
 	$con = new Document;
 
-	echo "<form name='form' method='post' action=\"$target\"><div align='center'>";
+	echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\"><div align='center'>";
 	echo "<table class='tab_cadre'>";
 	echo "<tr><th colspan='3'><b>";
 	if (!$ID) {
@@ -267,9 +267,14 @@ function showDocumentForm ($target,$ID,$search) {
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][1].":		</td>";
 	echo "<td colspan='2'><input type='text' name='name' value=\"".$con->fields["name"]."\" size='25'></td>";
 	echo "</tr>";
+	
+	echo "<tr class='tab_bg_1'><td>".$lang["document"][22].":		</td>";
+	echo "<td colspan='2'>".$con->fields["filename"]."</td>";
+	echo "</tr>";
 
+	
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][2].":		</td>";
-	echo "<td colspan='2'><input type='text' name='filename' value=\"".$con->fields["filename"]."\" size='25'></td>";
+	echo "<td colspan='2'><input type='file' name='filename' value=\"".$con->fields["filename"]."\" size='25'></td>";
 	echo "</tr>";
 
 	
@@ -278,8 +283,10 @@ function showDocumentForm ($target,$ID,$search) {
 		dropdownValue("glpi_dropdown_rubdocs","rubrique",$con->fields["rubrique"]);
 	echo "</td></tr>";
 	
+
+		
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][4].":		</td>";
-	echo "<td colspan='2'><input type='text' name='mime' value=\"".$con->fields["mime"]."\" size='10'></td>";
+	echo "<td colspan='2'><input type='text' name='mime' size='20'></td>";
 	echo "</tr>";
 	
 	echo "<tr>";
@@ -287,7 +294,7 @@ function showDocumentForm ($target,$ID,$search) {
 
 	// table commentaires
 	echo $lang["document"][6].":	</td>";
-	echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comment' >".$con->fields["comment"]."</textarea>";
+	echo "<td align='center' colspan='2'  class='tab_bg_1'><textarea cols='35' rows='4' name='comment' >".$con->fields["comment"]."</textarea>";
 
 	echo "</td>";
 	echo "</tr>";
@@ -356,11 +363,52 @@ function updateDocument($input) {
 }
 
 function addDocument($input) {
-	
+	global $cfg_install,$phproot;
 	$con = new Document;
 
 	// dump status
 	$null = array_pop($input);
+	
+	
+	if (isset($_FILES['filename']['type'])&&!empty($_FILES['filename']['type']))
+		$input['mime']=$_FILES['filename']['type'];
+		
+	$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
+	// Is a file uploaded ?
+	if (count($_FILES)>0){
+		// Clean is name
+		$filename=strtolower(ereg_replace("[^[:alnum:].-_]","",$_FILES['filename']['name']));
+		// Is it a valid file ?
+		$dir=isvalidDoc($filename);
+		if (!empty($dir)){
+			// Test existance repertoire DOCS
+			if (is_dir($phproot.$cfg_install["doc_dir"])){
+			// Test existance sous-repertoire type dans DOCS -> sinon création
+			if (!is_dir($phproot.$cfg_install["doc_dir"]."/".$dir)){
+			$_SESSION["MESSAGE_AFTER_REDIRECT"].= "Création du répertoire ".$phproot.$cfg_install["doc_dir"]."/".$dir."<br>";
+			@mkdir($phproot.$cfg_install["doc_dir"]."/".$dir);
+			}
+			// Copy du fichier uploadé si répertoire existe
+			if (is_dir($phproot.$cfg_install["doc_dir"]."/".$dir)){
+				if (!is_file($phproot.$cfg_install["doc_dir"]."/".$dir."/".$filename)){
+					if (move_uploaded_file($_FILES['filename']['tmp_name'],$phproot.$cfg_install["doc_dir"]."/".$dir."/".$filename )) {
+   						$_SESSION["MESSAGE_AFTER_REDIRECT"].="Le fichier est valide, et a été téléchargé avec succès.<br>";
+						$input['filename']=$dir."/".$filename;
+					} else {
+	   					$_SESSION["MESSAGE_AFTER_REDIRECT"].="Attaque par upload potentielle. <br>";
+					}
+				} else $_SESSION["MESSAGE_AFTER_REDIRECT"].="Attention fichier existant. Upload non réalisé<br>";
+			
+			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].="Echec de la création du répertoire ".$phproot.$cfg_install["doc_dir"]."/".$dir." Vérifiez que vous avez les droits<br>";
+			
+			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= "Répertoire de stockage des documents inexistant : ".$phproot.$cfg_install["doc_dir"]."<br>";
+		
+		} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= "Type de données ne pouvant pas être uploadé<br>";
+		
+	
+	
+	}
+	
 
 	// fill array for update
 	foreach ($input as $key => $val) {

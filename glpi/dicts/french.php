@@ -1250,4 +1250,5 @@ $lang["document"][18]	= "Document";
 $lang["document"][19]	= "Eléments associés";
 $lang["document"][20]	= "Type";
 $lang["document"][21]	= "Documents Associés";
+$lang["document"][22]	= "Fichier courant";
 ?>

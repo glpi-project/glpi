@@ -385,5 +385,17 @@ function deleteTypedoc($input,$force=0) {
 	
 }
 
+function isValidDoc($filename){
+	$splitter=split("\.",$filename);
+	$ext=end($splitter);
+	$db=new DB();
+	$query="SELECT * from glpi_type_docs where ext LIKE '$ext' AND upload='Y'";
+	if ($result = $db->query($query))
+	if ($db->numrows($result)>0)
+	return $ext;
+	
+return "";
+}
+
  	
 ?>
