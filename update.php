@@ -1292,7 +1292,7 @@ $query= "CREATE TABLE `glpi_contract_enterprise` (
 $query= "CREATE TABLE `glpi_infocoms` (
   `ID` int(11) NOT NULL auto_increment,
   `buy_date` date NOT NULL default '0000-00-00',
-  `warranty_end_date` date NOT NULL default '0000-00-00',
+  `warranty_duration` float NOT NULL default '0',
   `warranty_info` varchar(255) NOT NULL default '',
   `FK_enterprise` int(11) default NULL,
   `num_commande` varchar(50) NOT NULL default '',
