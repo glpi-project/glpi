@@ -873,9 +873,10 @@ if(!FieldExists("glpi_config","default_language")) {
 
 
 
-// Mise a jour du numéro de version ---- A LAISSER 0 LA FIN
-	$query = "UPDATE `glpi_config` SET `version` = ' 0.42';";
+// Mise a jour du numéro de version et de la langue par defaut---- A LAISSER 0 LA FIN
+	$query = "UPDATE `glpi_config` SET `version` = ' 0.42', default_language='".$_SESSION["dict"]."' ;";
 	$db->query($query) or die("4203 ".$lang["update"][90].$db->error());
+	
 return $ret;
 }
 
