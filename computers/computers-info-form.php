@@ -46,6 +46,8 @@ include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_reservation.php");
+include ($phproot . "/glpi/devices/classes.php");
+include ($phproot . "/glpi/devices/functions.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -68,7 +70,7 @@ if (isset($tab["add"])) {
 	updateComputer($tab);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]."updated item.");
 	commonHeader("Computers",$_SERVER["PHP_SELF"]);
-	showComputerForm(0,$_SERVER["PHP_SELF"],$tab["ID"]);
+	showComputerForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	showPorts($tab["ID"], 1);
 	showPortsAdd($tab["ID"],1);
 	showConnections($tab["ID"]);
@@ -107,13 +109,27 @@ else if(isset($tab["connect"])&&isset($tab["device_type"]))
 		logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
 		header("Location: ".$_SERVER["PHP_SELF"]."?ID=".$tab["cID"]);
 	}
-} else {
+}elseif(isset($_POST["update_device"])) {
+	checkAuthentication("admin");
+	update_device_specif($_POST["device_value"],$_POST["compDevID"]);
+	logEvent($_POST["compDevID"],"computers",4,"inventory",$_SESSION["glpiname"] ." modified a computer device spécificity.");
+	header("Location: $_SERVER[HTTP_REFERER]");
+}elseif(isset($_POST["new_device_type"])){
+	checkAuthentication("admin");
+	commonHeader("Computers",$_SERVER["PHP_SELF"]);
+	compdevice_form_add($_SERVER["HTTP_REFERER"],$_POST["new_device_type"],$_POST["cID"]);
+	commonFooter();
+}elseif(isset($_POST["new_device_id"])){
+	checkAuthentication("admin");
+	compdevice_add($_POST["cID"],$_POST["device_type"],$_POST["new_device_id"]);
+	header("Location: ".$_SERVER["PHP_SELF"]."?ID=".$_POST["cID"]);
+}else {
 
 	checkAuthentication("normal");
 	commonHeader("Computers",$_SERVER["PHP_SELF"]);
 	if (isset($tab["withtemplate"]))
 	{
-		showComputerForm($tab["withtemplate"],$_SERVER["PHP_SELF"],$tab["ID"]);
+		showComputerForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	}
 	else
 	{
@@ -124,7 +140,7 @@ else if(isset($tab["connect"])&&isset($tab["device_type"]))
 			}
 		}
 
-		if (showComputerForm(0,$_SERVER["PHP_SELF"],$tab["ID"])) {
+		if (showComputerForm($_SERVER["PHP_SELF"],$tab["ID"])) {
 			showPorts($tab["ID"], 1);
 			showPortsAdd($tab["ID"],1);
 			showConnections($tab["ID"]);
