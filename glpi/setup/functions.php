@@ -1149,7 +1149,7 @@ function showFormExtsources($target) {
 	echo "<form action=\"$target\" method=\"post\">";
 	if(extension_loaded('ldap'))
 	{
-		echo "<div align='center'><p > Si vous ne souhaitez pas utiliser LDAP ou/et IMAP comme source(s) de connection laissez les champs vides</p>";
+		echo "<div align='center'><p > Si vous ne souhaitez pas utiliser LDAP comme source(s) de connection laissez les champs vides</p>";
 
 		echo "<table class='tab_cadre'>";
 		echo "<tr><th colspan='2'>LDAP configuration</th></tr>";
@@ -1166,17 +1166,20 @@ function showFormExtsources($target) {
 		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>L'extension LDAP de votre parser PHP n'est pas installé</p><p> Impossible d'utiliser LDAP comme source de connection externe</p></td></th></table></div>";
 	}
 	if(function_exists('imap_open')) {
-		echo "<div align='center'>&nbsp;<table class='tab_cadre'>";
-		echo "<tr><th colspan='2'>IMAP configuration</th></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>IMAP Auth Server</td><td><input type=\"text\" name=\"imap_auth_server\" value=\"". $db->result($result,0,"imap_auth_server") ."\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>IMAP Host Name (users email will be login@thishost)</td><td><input type=\"text\" name=\"imap_host\" value=\"". $db->result($result,0,"imap_host") ."\" ></td></tr>";
+		echo "<div align='center'>";
+		echo "<p > Si vous ne souhaitez pas utiliser IMAP/POP comme source(s) de connection laissez les champs vides<br>";
+		echo "Plus d'informations pour la syntaxe du Auth Server sur <a target=\"_blank\" href=\"http://www.php.net/manual/en/function.imap-open.php\">php.net</a>. Le paramètre qui vous intéresse est le premier (mailbox).</p>";
+		echo "<table class='tab_cadre'>";
+		echo "<tr><th colspan='2'>IMAP/POP configuration</th></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>IMAP/POP Auth Server</td><td><input type=\"text\" name=\"imap_auth_server\" value=\"". $db->result($result,0,"imap_auth_server") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>IMAP/POP Host Name (users email will be login@thishost)</td><td><input type=\"text\" name=\"imap_host\" value=\"". $db->result($result,0,"imap_host") ."\" ></td></tr>";
 		echo "</table></div>";
 	}
 	else {
 		echo "<input type=\"hidden\" name=\"IMAP_Test\" value=\"1\" >";
 		
 		echo "<div align='center'>&nbsp;<table class='tab_cadre' width='400'>";
-		echo "<tr><th colspan='2'>IMAP configuration</th></tr>";
+		echo "<tr><th colspan='2'>IMAP/POP configuration</th></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>Votre parser PHP a été compilé sans les fonctions de connection IMAP</p><p> Impossible d'utiliser IMAP/POP comme source de connection externe</p></td></tr></table></div>";
 	}
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_ext\" class=\"submit\" value=\"Valider\" ></p>";
