@@ -1,0 +1,145 @@
+----
+GLPI ADDON'S
+
+- modifier le script calendar pour qu'il n'apparaisse qu'une fois dans les
+fichiers ...
+-Trouver une version GPL si possible.
+
+
+// ça va etre dur...
+//pour l'instant on garde cette version, du calendrier...
+// contacter l'auteur
+........................................................................ 
+
+
+-proposition : copier le contenu de mycalendar.php et l'ajouter dans common/fonctions.php
+en tant que fonction ensuite se demerder pour que ça marche lors de l'appel.
+
+//Impossible avec ce script
+
+- modifier l'intitulé du bouton "cliquez ici" par "calendrier" et calendar,
+rajouter par conséquent les occurences dans les dicos
+
+//fait
+
+- faire un fichier d'installation comme pour spip : l'utilisateur saisi le
+nom de sa base, pass etc, le script vérifit que la connexion fonctionne,
+passe à l'étape suivante, saisi du nom admin et de son pass, génération des
+tables et de la structure.
+
+// pour la prochaine version
+
+-Gestion des sessions et utilisateurs...
+Refaire entierement le systeme de login, ya pas mal de choses a integrer (partant de ce principe).
+En particulier faire gaffe a la variable globale $IRMName qu'on retrouve partout et qui risque de
+nous poser quelques soucis si l'on veux sessioner tout ça.
+
+// pour la prochaine version
+
+
+
+
+-Données :
+
+Ajouter une entrée donnée (dans le dico aussi) sous le menu configuration
+qui pointe vers une page sur laquelle :
+	- Soit on va vers des backups dumps SQL et tout le smilililibililbilikkkk
+	- Soit on va vers la génération de la base ou de certaines tables au format XML 
+
+//fait
+
+
+
+GLPI patch's:
+
+-Interface graphique :
+
+
+1) partie intitulés à modifier
+
+   Si possible rendre le formulaire plus joli.
+
+// pour la prochaine version
+
+
+2) partie utilisateurs à modifier
+   Si possible rendre le formulaire plus joli.
+
+// pour la prochaine version
+
+
+   Ajouter une entrée dans le formulaire permettant de changer la langue du helpdesk
+
+.................................................................................
+
+
+3) Ajouter un bouton de reset de la date (a chaque utilisation de mycalendar).
+
+// fait
+
+
+4) showjobfirst <--- suxxage le form est a l'envers...
+
+// fait
+
+
+- données :
+
+1) changer toutes les occurences contenant le mot imprimantes en
+   periphériques externes (trouver un nom plus approprié eventuellement)
+
+
+
+//commentaire 
+//jmd :
+//Bah un écran est un périphériques externes ? donc ça va préter à confusion
+//si on change l'apellation
+//baaz :
+// ET si on desire recenser des scanners, des lecteurs zip, des appareils foto numériques
+// ou autres ?
+// je pense que l'ecran c'est un cas particulier de periphérique externe
+// les autres peuvent rentrer nickel dans la categorie pour l'instant appelée printers
+
+//finalement on fait quoi ?
+..................................................................................
+
+
+2) Mettre a jour les dictionnaires : certaines occurences n'apparaisent que
+dans le
+french
+
+//ok c'est fait
+
+-Rapports
+
+1) Changer le type de rapport de XLS a CSV... refaire le module en
+conséquence (graphisme..)
+
+// on garde la lib xls pour l'instant 
+// on changera a la prochaine version 
+
+
+2) Faire afficher les rapports HTML dans une fenetre _Self
+  - afficher reportst/defaut.php, reports/maintenance-list et
+    reports/parAnnee-list.php dans une fenetre _self
+...................................................................................
+
+- afficher reports/maintenance.php et reports/parAnnee.php  selon la charte
+   graphique  
+
+// c presque fait editer /glpi/glpi/common/function.php et visualiser la derniere fonction (report_perso) pour modifs.
+...................................................................................
+
+
+- Helpdesk
+
+1) Faire en sorte que :
+  L'utilisateur puisse fermer la fenetre de recherche du numero de machine...
+   Appliquer aussi une taille spécifique a cette fenetre >>
+
+>> c fait mais il subsite un bug con sur la version en demo, il trouve pas
+>> le fichier dans le popup et je sais pas pkoi ?????
+
+// c fait
+
+
