@@ -1098,24 +1098,24 @@ $lang["device_hdd"][3] = "";
 $lang["device_hdd"][4] = "Capacit&eacute;";
 
 
-$lang["device_iface"][0] = "Debit";
+$lang["device_iface"][0] = "D&eacute;bit";
 $lang["device_iface"][1] = "";
 $lang["device_iface"][2] = "Adresse Mac";
 
 
-$lang["device_gfxcard"][0] = "memoire";
+$lang["device_gfxcard"][0] = "M&eacute;moire";
 $lang["device_gfxcard"][1] = "";
-$lang["device_gfxcard"][2] = "interface";
+$lang["device_gfxcard"][2] = "Interface";
 
 
 $lang["device_moboard"][0] = "Chipset";
 
 
-$lang["device_processor"][0] = "Frequence";
+$lang["device_processor"][0] = "Fr&eacute;quence";
 
 
 $lang["device_ram"][0] = "Type";
-$lang["device_ram"][1] = "Frequence";
+$lang["device_ram"][1] = "Fr&eacute;quence";
 
 
 $lang["device_sndcard"][0] = "Type";
@@ -1123,10 +1123,10 @@ $lang["device_sndcard"][0] = "Type";
 $lang["device_power"][0] = "Puissance";
 $lang["device_power"][1] = "ATX";
 
-$lang["device_case"][0] = "format";
-$lang["device_case"][1] = "grand";
-$lang["device_case"][2] = "moyen";
-$lang["device_case"][3] = "micro";
+$lang["device_case"][0] = "Format";
+$lang["device_case"][1] = "Grand";
+$lang["device_case"][2] = "Moyen";
+$lang["device_case"][3] = "Micro";
 
 $lang["device_drive"][0] = "Ecriture";
 $lang["device_drive"][1] = "Vitesse";
@@ -1157,7 +1157,7 @@ $lang["devices"][12] = "Ajouter P&eacute;riph&eacute;rique ...";
 $lang["devices"][13] = "ID";
 $lang["devices"][14] = "D&eacute;signation";
 $lang["devices"][15] = "Commentaire";
-$lang["devices"][16] = "unknown";
+$lang["devices"][16] = "Unknown";
 $lang["devices"][17] = "Selectionnez un type de p&eacute;riph&eacute;rique interne";
 $lang["devices"][18] = "Pas de p&eacute;riph&eacute;rique trouv&eacute;";
 $lang["devices"][19] = "Lecteurs";
