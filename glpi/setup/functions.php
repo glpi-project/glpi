@@ -378,7 +378,7 @@ function showUserinfo($target,$name) {
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td>".$user->fields["email"]."</td></tr>";
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td>".$user->fields["phone"]."</td></tr>";
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
-				dropdownValue("glpi_dropdown_locations", "location", $user->fields["location"]);
+				echo getDropdownName("glpi_dropdown_locations",$user->fields["location"]);
 			echo "</td></tr>";
 	echo "</table></div>";
 
