@@ -90,8 +90,6 @@ class Computer {
 		
 		$db = new DB;
 
-		$this->field["comments"] = addslashes($this->fields["comments"]);
-		
 		// Build query
 		$query = "INSERT INTO glpi_computers (";
 		$i=0;
