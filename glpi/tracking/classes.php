@@ -232,21 +232,18 @@ class Job {
 	function textDescription(){
 		GLOBAL $lang;
 		
-		if ($this->computername==""){
-			$db=new DB;
-			$scndquery = "SELECT name FROM glpi_computers WHERE (ID = $this->computer)";
-			$scndresult = $db->query($scndquery);
-			if ($db->numrows($scndresult)) {
-				$this->computername = $db->result($scndresult, 0, "name");
-			} else {
-				$this->computername = "n/a";
-			}		
+		$db=new DB;
+		$m= new CommonItem;
+		$name=="N/A";
+		if ($m->getfromDB($this->device_type,$this->computer)){
+			$name=$m->getType()." - ".$m->getName();
 		}
+		
 		
 		$message = $lang["mailing"][1]."\n*".$lang["mailing"][5]."*\n".$lang["mailing"][1]."\n";
 		$message.= $lang["mailing"][2].$this->author."\n";
 		$message.= $lang["mailing"][6].$this->date."\n";
-		$message.= $lang["mailing"][7].$this->computername."\n";
+		$message.= $lang["mailing"][7].$name."\n";
 		$message.= $lang["mailing"][8].$this->assign."\n";
 		$message.= $lang["mailing"][3]."\n".$this->contents."\n";	
 		$message.="\n\n";
