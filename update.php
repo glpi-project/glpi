@@ -522,12 +522,12 @@ if(!isIndex("glpi_tracking", "status")) {
 	$db->query($query) or die("erreur lors de la migration".$db->error());
 }
 
-if(!TableExists("glpi_dropdown_firmware") {
+if(!TableExists("glpi_dropdown_firmware")) {
 	$query = " CREATE TABLE `glpi_dropdown_firmware` (`ID` INT NOT NULL AUTO_INCREMENT ,`name` VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( `ID` ))";
 	$db->query($query) or die("erreur lors de la migration".$db->error());
 }
 
-if(!FieldExists("glpi_networking","firmware") {
+if(!FieldExists("glpi_networking","firmware")) {
 	$query = "ALTER TABLE `glpi_networking` ADD `firmware` INT(11);";
 	$db->query($query) or die("erreur lors de la migration".$db->error());
 }
