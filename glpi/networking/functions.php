@@ -958,9 +958,12 @@ function showConnectorSearch($target,$ID) {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
-	
+	$np=New NetPort();
+	$np->getFromDB($ID);
+	$ci=new CommonItem;
+	$ci->getFromDB($np->fields['device_type'],$np->fields['on_device']);
 	echo "<div align='center'><form method='post' action=\"$target\"><table border='0' class='tab_cadre'>";
-	echo "<tr><th colspan='2'>".$lang["networking"][27]." $ID ".$lang["networking"][28].":</th></tr>";
+	echo "<tr><th colspan='2'>".$lang["networking"][27]." ".$ci->getName()." - ".$np->fields["logical_number"]." ".$lang["networking"][28].":</th></tr>";
 
 	echo "<tr class='tab_bg_1'>";
 	
@@ -980,7 +983,7 @@ function showConnectorSearch($target,$ID) {
 	echo "<form method='post' action=\"$target\">";
 	echo "<td>".$lang["networking"][31].":";
 	$db = new DB;
-	$query = "SELECT glpi_networking.ID AS ID, glpi_networking.name AS name, glpi_dropdown_locations.ID as location from glpi_networking LEFT JOIN glpi_dropdown_locations ON glpi_networking.location = glpi_dropdown_locations.id ORDER BY name";
+	$query = "SELECT glpi_networking.ID AS ID, glpi_networking.name AS name, glpi_dropdown_locations.ID as location from glpi_networking LEFT JOIN glpi_dropdown_locations ON glpi_networking.location = glpi_dropdown_locations.id WHERE glpi_networking.is_template='0' AND glpi_networking.deleted='N' ORDER BY name";
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 	echo "<select name='dID'>";
@@ -1023,6 +1026,8 @@ function listConnectorComputers($target,$input) {
 	} else {
 		$query = "SELECT glpi_computers.ID as ID, glpi_computers.name as name, glpi_dropdown_locations.ID as location from glpi_computers, glpi_dropdown_locations WHERE glpi_computers.location = glpi_dropdown_locations.id AND glpi_computers.ID LIKE '%".$input["comp"]."%'";
 	} 
+	
+	$query.=" AND glpi_computers.is_template='0' and glpi_computers.deleted='N' ";
 //echo $query;
 	$query.= " ORDER BY glpi_computers.name";
 	$result = $db->query($query);
@@ -1139,19 +1144,20 @@ function makeConnector($sport,$dport) {
 	$nps="";
 	$ips="";
 	$macs="";
-	if (isset($ps->fields["netpoint"]))
+	if (isset($ps->fields["netpoint"])&&$ps->fields["netpoint"]!=0)
 		$nps=$ps->fields["netpoint"];
 	if (isset($ps->fields["ifaddr"]))
 		$ips=$ps->fields["ifaddr"];
 	if (isset($ps->fields["ifmac"]))
 		$macs=$ps->fields["ifmac"];
-
+		
+		
 	$pd=new Netport;
 	$pd->getFromDB($dport);
 	$npd="";
 	$ipd="";
 	$macd="";
-	if (isset($pd->fields["netpoint"]))
+	if (isset($pd->fields["netpoint"])&&$pd->fields["netpoint"]!=0)
 		$npd=$pd->fields["netpoint"];
 	if (isset($pd->fields["ifaddr"]))
 		$ipd=$pd->fields["ifaddr"];
@@ -1206,8 +1212,11 @@ function makeConnector($sport,$dport) {
 	
 	$query = "INSERT INTO glpi_networking_wire VALUES (NULL,$sport,$dport)";
 	if ($result = $db->query($query)) {
-		
-		echo "<br><div align='center'><b>".$lang["networking"][44]." ".$ps->fields['logical_number']."  (".$ps->fields['ifaddr']." - ".$ps->fields['ifmac'].") ".$lang["networking"][45]." ".$ps->fields['logical_number']." (".$pd->fields['ifaddr']." - ".$pd->fields['ifmac'].") </b></div>";
+		$source=new CommonItem;
+		$source->getFromDB($ps->fields['device_type'],$ps->fields['on_device']);
+		$dest=new CommonItem;
+		$dest->getFromDB($pd->fields['device_type'],$pd->fields['on_device']);
+		echo "<br><div align='center'><b>".$lang["networking"][44]." ".$source->getName()." - ".$ps->fields['logical_number']."  (".$ps->fields['ifaddr']." - ".$ps->fields['ifmac'].") ".$lang["networking"][45]." ".$dest->getName()." - ".$pd->fields['logical_number']." (".$pd->fields['ifaddr']." - ".$pd->fields['ifmac'].") </b></div>";
 		return true;
 	} else {
 		return false;
