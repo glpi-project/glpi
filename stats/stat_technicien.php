@@ -44,7 +44,18 @@ checkAuthentication("normal");
 
 commonHeader("Stats",$_SERVER["PHP_SELF"]);
 
-echo "<div align ='center'><b>".$lang["stats"][17]."</b></div><hr noshade>";
+echo "<div align ='center'><b>".$lang["stats"][17]."</b></div>";
+if(empty($_POST["date1"])) $_POST["date1"] = "";
+if(empty($_POST["date2"])) $_POST["date2"] = "";
+
+echo "<div align='center'><form method=\"post\" name=\"form\" action=\"stat_technicien.php\">";
+echo "Date de debut : <input type=\"texte\" name=\"date1\" value=\"". $_POST["date1"] ."\" />";
+echo "<input name='button' type='button' class='button'  onClick=\"window.open('mycalendar.php?form=form&amp;elem=date1','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+echo "<br />Date de fin : <input type=\"texte\" name=\"date2\" value=\"". $_POST["date2"] ."\" />";
+echo "<input name='button' type='button' class='button'  onClick=\"window.open('mycalendar.php?form=form&amp;elem=date2','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+echo "<br /><input type=\"submit\" class='button' name\"submit\" Value=\"". $lang["buttons"][7] ."\" />";
+echo "</form></div>";
+echo "<hr noshade>";
 
 //recuperation des different utilisateurs ayant eu des interventions attribuées
 //get distinct user who has intervention assigned to
@@ -65,15 +76,28 @@ echo "<tr><th>".$lang["stats"][16]."</th><th>".$lang["stats"][13]."</th><th>".$l
   {
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$key["assign"]."</td>";
+	if(!empty($_POST["date1"]) && !empty($_POST["date2"])) {
 	//le nombre d'intervention
 	//the number of intervention
-	echo "<td>".getNbinter(1,'assign',$key["assign"])."</td>";
+		echo "<td>".getNbinter(4,'assign',$key["assign"],$_POST["date1"],$_POST["date2"])."</td>";
 	//le nombre d'intervention resolues
 	//the number of resolved intervention
-	echo "<td>".getNbresol(1,'assign',$key["assign"])."</td>";
+		echo "<td>".getNbresol(4,'assign',$key["assign"],$_POST["date1"],$_POST["date2"])."</td>";
 	//Le temps moyen de resolution
 	//The average time to resolv
-	echo "<td>".getResolAvg(1, 'assign',$key["assign"])."</td>";
+		echo "<td>".getResolAvg(4, 'assign',$key["assign"],$_POST["date1"],$_POST["date2"])."</td>";
+	}
+	else {
+		//le nombre d'intervention
+	//the number of intervention
+		echo "<td>".getNbinter(1,'assign',$key["assign"])."</td>";
+	//le nombre d'intervention resolues
+	//the number of resolved intervention
+		echo "<td>".getNbresol(1,'assign',$key["assign"])."</td>";
+	//Le temps moyen de resolution
+	//The average time to resolv
+		echo "<td>".getResolAvg(1, 'assign',$key["assign"])."</td>";
+	}
 	echo "</tr>";
   }
 echo "</table>";

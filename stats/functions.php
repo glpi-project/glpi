@@ -100,7 +100,7 @@ function getNbIntervAuthor()
 //$chps contains the table where we apply the where clause
 //$value contains the value to parse in the table
 //common usage in query  "where $chps = '$value'";
-function getNbInter($quoi, $chps, $value)
+function getNbInter($quoi, $chps, $value, $date1 = '', $date2 = '')
 {
 	$db = new DB;
 	if($quoi == 1) {
@@ -121,6 +121,21 @@ function getNbInter($quoi, $chps, $value)
 	elseif($quoi == 3) {
 		$query = "select count(ID) as total from glpi_tracking where YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
 	}
+	elseif($quoi == 4) {
+		$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
+		
+		if(!empty($chps) && !empty($value)) {
+			if($chps == "glpi_computers.location") {
+				$query .= ", glpi_computers where glpi_tracking.computer = glpi_computers.ID and $chps = '$value' ";
+			}
+			else {
+				$query .= " where $chps = '$value'";
+			}
+			$query .= " and date BETWEEN '". $date1 ."' and '". $date2 ."'";
+		} else {
+			$query .= " where date BETWEEN '". $date1 ."' and '". $date2 ."'";
+		}
+	}
 	$result = $db->query($query);
 	return $db->result($result,0,"total");
 }
@@ -133,7 +148,7 @@ function getNbInter($quoi, $chps, $value)
 //$chps contains the table where we apply the where clause
 //$value contains the value to parse in the table
 //common usage in query  "where $chps = '$value'";
-function getNbResol($quoi, $chps, $value)
+function getNbResol($quoi, $chps, $value, $date1 = '', $date2= '')
 {
 	$db = new DB;
 	if($quoi == 1) {
@@ -156,6 +171,22 @@ function getNbResol($quoi, $chps, $value)
 	elseif($quoi == 3) {
 		$query = "select count(ID) as total from glpi_tracking where glpi_tracking.status = 'old' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
 	}
+	elseif($quoi == 4) {
+		$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
+		if(!empty($chps) && !empty($value)) {
+			if($chps == "glpi_computers.location") {
+				$query .= ", glpi_computers where glpi_tracking.computer = glpi_computers.ID and $chps = '$value'";
+			}
+			else {
+				$query .= " where $chps = '$value' and glpi_tracking.status = 'old'";
+			}
+			$query .= " and closedate BETWEEN '". $date1 ."' and '". $date2 ."'";
+		}
+		else {
+			$query.= " where glpi_tracking.status = 'old' and closedate BETWEEN '". $date1 ."' and '". $date2 ."'";
+		}
+	}
+	
 	$result = $db->query($query);
 	return $db->result($result,0,"total");
 	
@@ -169,7 +200,7 @@ function getNbResol($quoi, $chps, $value)
 //$chps contains the table where we apply the where clause
 //$value contains the value to parse in the table
 //common usage in query  "where $chps = '$value'";
-function getResolAvg($quoi, $chps, $value)
+function getResolAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 {
 	$db = new DB;
 	if($quoi == 1) {
@@ -195,6 +226,26 @@ function getResolAvg($quoi, $chps, $value)
 	elseif($quoi == 3) {
 		$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))/count(glpi_tracking.ID) as total from glpi_tracking where glpi_tracking.status = 'old' and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
 	}
+	elseif($quoi == 4) {
+		if(!empty($chps) && !empty($value)) {
+			if($chps == "glpi_computers.location") {
+				$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))/count(glpi_computers.location)";
+				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
+				
+			}
+			else {
+				$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))/count(glpi_tracking.ID)";
+				$query .= " as total from glpi_tracking where $chps = '$value' and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
+			}
+			$query .= "  and closedate BETWEEN '". $date1 ."' and '". $date2 ."'";
+		}
+		else {
+			$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))/count(glpi_tracking.id) as total from glpi_tracking";
+			$query .= " where glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
+			$query .= "  and closedate BETWEEN '". $date1 ."' and '". $date2 ."'";
+		}
+	}
+		
 	$result = $db->query($query);
 	if($db->numrows($result) == 1)
 	{
