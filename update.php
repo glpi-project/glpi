@@ -182,6 +182,63 @@ $db->query($query) or die("erreur lors de la migration".$db->error());
 $query = "ALTER TABLE users MODIFY location varchar(100) NOT NULL default ''";
 $db->query($query) or die("erreur lors de la migration".$db->error());
 $query = "ALTER TABLE users MODIFY phone varchar(100) NOT NULL default ''";
+
+
+
+//Version Superieur a 0.31 ajout de la table glpi_config
+
+$query = "create tableCREATE TABLE `glpi_config` (
+  `config_id` int(11) NOT NULL auto_increment,
+  `num_of_events` varchar(200) NOT NULL default '',
+  `jobs_at_login` varchar(200) NOT NULL default '',
+  `sendexpire` varchar(200) NOT NULL default '',
+  `cut` varchar(200) NOT NULL default '',
+  `expire_events` varchar(200) NOT NULL default '',
+  `list_limit` varchar(200) NOT NULL default '',
+  `version` varchar(200) NOT NULL default '',
+  `logotxt` varchar(200) NOT NULL default '',
+  `root_doc` varchar(200) NOT NULL default '',
+  `event_loglevel` varchar(200) NOT NULL default '',
+  `mailing` varchar(200) NOT NULL default '',
+  `imap_auth_server` varchar(200) NOT NULL default '',
+  `imap_host` varchar(200) NOT NULL default '',
+  `ldap_host` varchar(200) NOT NULL default '',
+  `ldap_basedn` varchar(200) NOT NULL default '',
+  `ldap_rootdn` varchar(200) NOT NULL default '',
+  `ldap_pass` varchar(200) NOT NULL default '',
+  `admin_email` varchar(200) NOT NULL default '',
+  `mailing_signature` varchar(200) NOT NULL default '',
+  `mailing_new_admin` varchar(200) NOT NULL default '',
+  `mailing_attrib_admin` varchar(200) NOT NULL default '',
+  `mailing_followup_admin` varchar(200) NOT NULL default '',
+  `mailing_finish_admin` varchar(200) NOT NULL default '',
+  `mailing_new_all_admin` varchar(200) NOT NULL default '',
+  `mailing_attrib_all_admin` varchar(200) NOT NULL default '',
+  `mailing_followup_all_admin` varchar(200) NOT NULL default '',
+  `mailing_finish_all_admin` varchar(200) NOT NULL default '',
+  `mailing_new_all_normal` varchar(200) NOT NULL default '',
+  `mailing_attrib_all_normal` varchar(200) NOT NULL default '',
+  `mailing_followup_all_normal` varchar(200) NOT NULL default '',
+  `mailing_finish_all_normal` varchar(200) NOT NULL default '',
+  `mailing_attrib_attrib` varchar(200) NOT NULL default '',
+  `mailing_followup_attrib` varchar(200) NOT NULL default '',
+  `mailing_finish_attrib` varchar(200) NOT NULL default '',
+  `mailing_new_user` varchar(200) NOT NULL default '',
+  `mailing_attrib_user` varchar(200) NOT NULL default '',
+  `mailing_followup_user` varchar(200) NOT NULL default '',
+  `mailing_finish_user` varchar(200) NOT NULL default '',
+  `ldap_field_name` varchar(200) NOT NULL default '',
+  `ldap_field_email` varchar(200) NOT NULL default '',
+  `ldap_field_location` varchar(200) NOT NULL default '',
+  `ldap_field_realname` varchar(200) NOT NULL default '',
+  `ldap_field_phone` varchar(200) NOT NULL default '',
+  PRIMARY KEY  (`config_id`)
+) TYPE=MyISAM AUTO_INCREMENT=2 ";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+
+$query = "INSERT INTO `glpi_config` VALUES (1, '10', '10', '1', '80', '30', '15', ' 0.3', 'GLPI powered by indepnet', '/glpi', '5', '0', '', '', 'ldap://localhost/', 'dc=melnibone', '', '', 'admsys@sic.sp2mi.xxxxx.fr', 'SIGNATURE', '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '1', '1', '1', '1', '1', 'uid', 'mail', 'physicaldeliveryofficename', 'cn', 'telephonenumber')";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+
 }
 
 
@@ -213,10 +270,8 @@ if(empty($_POST["continuer"])) {
 // Step 2  avec message d'erreur en cas d'echec de connexion
 else {
 	if(test_connect()) {
-		ob_start();
 		echo "Connexion &agrave; la base de données réussie <br />";
 		echo "Connection to the database  sucessful";
-                ob_end_flush();
 		update_db();
 		echo "<br/>La mise &agrave; jour &agrave; réussie, votre base de données est actualisée \n<br /> vous pouvez supprimer le fichier update.php de votre repertoire";
 	        echo "<br/>The update with successful, your data base is update \n<br /> you can remove the file update.php from your directory";
