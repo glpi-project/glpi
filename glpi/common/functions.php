@@ -364,12 +364,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	// Logo with link to command center
 	echo "<td align='center' width='25%' >\n";
 	echo "<a href=\"".$cfg_install["root"]."/central.php\" accesskey=\"0\"><img src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>";
-	if ($navigation->inventory) {
-	echo "<br>";
-		foreach ($reservation as $key => $val) {
-			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
-		}
-	}
+	
 	echo "</td>";
 
 	echo "<td valign='middle'>";
@@ -397,6 +392,19 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 		}
 		echo "</td>";
 	}
+	
+	
+	if ($navigation->inventory) {
+	echo "<td align='center' valign='top'>";
+	echo "<img class='icon_nav' src=\"".$HTMLRel."pics/outils.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>";
+
+		echo "<small>-&nbsp;".$lang["Menu"][18]."&nbsp;-</small><br>";
+		foreach ($reservation as $key => $val) {
+			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
+		}
+	}
+	
+	
 	if ($navigation->settings) {
 		echo "<td align='center' valign='top'>";
 				echo "<img class='icon_nav' src=\"".$HTMLRel."pics/config.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>";
@@ -407,6 +415,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 		}	
 		echo "</td>";
 	}
+	
 	
 	
 	
