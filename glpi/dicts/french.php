@@ -719,7 +719,7 @@ $lang["setup"][157]="L'extension LDAP de votre parser PHP n'est pas install&eacu
 $lang["setup"][158]="Impossible d'utiliser LDAP comme source de connexion externe";
 $lang["setup"][159]="Filtre de connexion";
 
-$lang["setup"][160]=" Si vous ne souhaitez pas utiliser IMAP/POP comme source(s) de connexion laissez les champs vides. Plus d'informations sur <a target=\"_blank\" href=\"http://www.php.net/manual/fr/function.imap-open.php\">php.net</a>.";
+$lang["setup"][160]=" Si vous ne souhaitez pas utiliser IMAP/POP comme source(s) de connexion laissez les champs vides. Plus d'informations sur <a target='_blank' href='http://www.php.net/manual/fr/function.imap-open.php'>php.net</a>.";
 $lang["setup"][161]="";
 $lang["setup"][162]="IMAP/POP configuration";
 $lang["setup"][163]="Serveur IMAP/POP";
