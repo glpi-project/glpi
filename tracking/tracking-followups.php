@@ -45,7 +45,7 @@ checkAuthentication("normal");
 
 commonHeader("Tracking",$_SERVER["PHP_SELF"]);
 
-if ($_GET["contents"])
+if (isset($_GET["contents"]))
 {
 	postFollowups ($_GET["ID"],$_SESSION["glpiname"],$_GET["contents"]);
 }
