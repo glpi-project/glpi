@@ -792,12 +792,22 @@ function graphByMonth($entrees,$titre="",$unit="",$showtotal=1){
 					}
 				}
 			}
+			
 			echo "<img alt=\"$value\" title=\"$value\"  src='".$HTMLRel."pics/rien.gif' width=$largeur height=1 style='background-color:black;'>";
 			echo "</td>\n";
 			
 		}
 		echo "<td bgcolor='black'><img src='".$HTMLRel."pics/rien.gif' width=1 height=1></td>";
-		echo "</tr></table>";
+		echo "</tr>";
+		if ($largeur>10){
+			echo "<tr><td></td>";
+			foreach ($entrees as $key => $val){
+				$splitter=split("-",$key);
+				echo "<td align='center'>".substr($lang["calendarM"][$splitter[1]-1],0,1)."</td>";
+			}
+		echo "</tr>";
+		}
+		echo "</table>";
 		echo "</td>";
 		echo "<td background='".$HTMLRel."pics/fond-stats.gif' valign='bottom'><img src='".$HTMLRel."pics/rien.gif' style='background-color:black;' width=3 height=1></td>";
 		echo "<td><img src='".$HTMLRel."pics/rien.gif' width=5 height=1></td>";
