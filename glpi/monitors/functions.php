@@ -79,6 +79,7 @@ function searchFormMonitors($field="",$phrasetype= "",$contains="",$sort= "",$de
 	$option["mon.contact_num"]		= $lang["monitors"][7];
 	$option["mon.date_mod"]			= $lang["monitors"][16];
 	$option["glpi_enterprises.name"]			= $lang["common"][5];
+	$option["resptech.name"]			=$lang["common"][10];
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/monitors/monitors-search.php\">";
 	echo "<div align='center'><table  width='750' class='tab_cadre'>";
@@ -166,6 +167,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 		}
 		
 		$where.=" OR glpi_enterprises.name LIKE '%".$contains."%'";
+		$where .= " OR resptech.name LIKE '%".$contains."%'";
 		
 		$where .= ")";
 	}
@@ -189,8 +191,9 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 	$query = "select mon.ID from glpi_monitors as mon LEFT JOIN glpi_dropdown_locations on mon.location=glpi_dropdown_locations.ID ";
 	$query .= "LEFT JOIN glpi_type_monitors on mon.type = glpi_type_monitors.ID ";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = mon.FK_glpi_enterprise ) ";
+	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = mon.tech_num ) ";
 	$query .= " where $where AND mon.deleted='$deleted' AND mon.is_template = '0' ORDER BY $sort $order";
-//	echo $query;
+	//echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);

@@ -79,6 +79,7 @@ function searchFormSoftware($field="",$phrasetype= "",$contains="",$sort= "",$de
 	$option["glpi_software.version"]			= $lang["software"][5];
 	$option["glpi_software.comments"]			= $lang["software"][6];
 	$option["glpi_enterprises.name"]			= $lang["common"][5];
+	$option["resptech.name"]			=$lang["common"][10];
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/software/software-search.php\">";
 	echo "<center><table class='tab_cadre' width='750'>";
@@ -163,6 +164,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 			}
 		}
 		$where.=" OR glpi_enterprises.name LIKE '%".$contains."%'";
+		$where .= " OR resptech.name LIKE '%".$contains."%'";
 		$where .= ")";
 	}
 	else {
@@ -186,6 +188,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 	$query .= "LEFT JOIN glpi_dropdown_os on glpi_software.platform=glpi_dropdown_os.ID ";
 	$query.= " LEFT JOIN glpi_dropdown_locations on glpi_software.location=glpi_dropdown_locations.ID ";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = glpi_software.FK_glpi_enterprise ) ";
+	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = glpi_software.tech_num ) ";
 	$query.= " WHERE $where AND glpi_software.deleted='$deleted'  AND glpi_software.is_template = '0' ORDER BY $sort $order";
 //	echo $query;
 	// Get it from database	

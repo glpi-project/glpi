@@ -86,6 +86,7 @@ function searchFormPrinters($field="",$phrasetype= "",$contains="",$sort= "",$de
 	$option["glpi_networking_ports.ifmac"] = $lang["networking"][15];
 	$option["glpi_dropdown_netpoint.name"]			= $lang["networking"][51];
 	$option["glpi_enterprises.name"]			= $lang["common"][5];
+	$option["resptech.name"]			=$lang["common"][10];
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/printers/printers-search.php\">";
 	echo "<div align='center'><table  width='750' class='tab_cadre'>";
@@ -170,6 +171,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 		$where .= " OR glpi_networking_ports.ifmac LIKE '%".$contains."%'";
 		$where .= " OR glpi_dropdown_netpoint.name LIKE '%".$contains."%'";
 		$where.=" OR glpi_enterprises.name LIKE '%".$contains."%'";
+		$where .= " OR resptech.name LIKE '%".$contains."%'";
 		$where .= ")";
 	}
 	else {
@@ -192,6 +194,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 	$query .= "LEFT JOIN glpi_networking_ports on (printer.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='3')";	
 	$query .= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";	
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = printer.FK_glpi_enterprise ) ";
+	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = printer.tech_num ) ";
 	$query .= "where $where AND printer.deleted='$deleted' AND printer.is_template = '0' ORDER BY $sort $order";
 	
 //	echo $query;
