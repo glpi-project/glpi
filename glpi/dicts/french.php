@@ -945,7 +945,7 @@ $lang["install"][72]	 = "Vous devez compiler votre php avec l'extension Mysql.";
 $lang["install"][73]	= "Ok - la fonction mysql_connect() existe - Parfait !";
 $lang["install"][74]	 = "Test de l'utilisation de Session_use_trans_id";
 $lang["install"][75]	 = "Vous devez desactiver l'option Session_use_trans_id dans votre PHP.ini";
-$lang["install"][76]	= "Ok - Le sessions fonctionnent (pas de probl&eagrave;mes de trans_id) - Parfait !";
+$lang["install"][76]	= "Ok - Le sessions fonctionnent (pas de probl&egrave;mes de trans_id) - Parfait !";
 
 
 

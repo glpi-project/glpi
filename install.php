@@ -83,6 +83,25 @@ function header_html($etape)
        margin-right: auto;
        width: 90%;}
 
+  th
+  {  
+    font-size: 12px;
+    font-weight: bold;
+   /* background-color: #FFC65D;*/
+    background-color: #fccc6f;
+	vertical-align:bottom;
+}
+
+.tab_cadre{
+ -moz-border-radius: 4px;
+  border: 1px solid #cccccc;
+}
+
+.tab_bg_1 {
+background-color: #ccccc7;
+
+}
+
        .red { color:red;}
        .green {color:green;}
        
@@ -203,10 +222,10 @@ function step1($update)
 	global $lang;
 	$error = 0;
 	echo "<h3>".$lang["install"][5]."</h3>";
-	echo "<table>";
+	echo "<table class='tab_cadre'>";
 	echo "<tr><th>".$lang["install"][6]."</th><th >".$lang["install"][7]."</th></tr>";
 // Parser test
-	echo "<tr><td><h4>".$lang["install"][8]."</h4></td>";
+	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][8]."</b></td>";
 // PHP Version  - exclude PHP3
 	if (substr(phpversion(),0,1) == "3") {
 		$error = 2;
@@ -222,7 +241,7 @@ function step1($update)
 // end parser test
 
 // Check for mysql extension ni php
-	echo "<tr><td><h4>".$lang["install"][71]."</h4></td>";
+	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][71]."</b></td>";
 	if(!function_exists("mysql_connect")) {
 		echo "<td>".$lang["install"][72]."</td></tr>";
 		$error = 2;
@@ -234,14 +253,14 @@ function step1($update)
 // ***********
 
 // session test
-	echo "<tr><td><h4>".$lang["install"][12]."</h4></td>";
+	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][12]."</b></td>";
 
 
 
   // check whether session are enabled at all!!
 	if (!extension_loaded('session')) {
 		$error = 2;
-		echo "<td><h2>".$lang["install"][13]."</h2></td></tr>";
+		echo "<td><b>".$lang["install"][13]."</b></td></tr>";
 	} 
 	if ($_SESSION["Test_session_GLPI"] == 1) {
 		echo "<td><i>".$lang["install"][14]."</i></td></tr>";
@@ -252,7 +271,7 @@ function step1($update)
 	}
 	
 	//Test for option session use trans_id loaded or not.
-	echo "<tr><td><h4>".$lang["install"][74]."</h4></td>";
+	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][74]."</b></td>";
 	//if(ini_get('session.use_trans_sid')) {
 	if (isset($_POST[session_name()])||isset($_GET[session_name()])) {
 		echo "<td class='red'>".$lang["install"][75]."</td></tr>";
@@ -266,7 +285,7 @@ function step1($update)
 	
 	
 	//Test for sybase extension loaded or not.
-	echo "<tr><td><h4>".$lang["install"][65]."</h4></td>";
+	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][65]."</b></td>";
 	if(ini_get('magic_quotes_sybase')) {
 		echo "<td class='red'>".$lang["install"][66]."</td></tr>";
 		$error = 2;
@@ -283,7 +302,7 @@ function step1($update)
 
 // il faut un test dans /dump  et /docs et /glpi/config/
 
-	echo "<tr><td><h4>".$lang["install"][16]."</h4></td>";
+	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][16]."</b></td>";
 	
 	$fp = fopen("backups/dump/test_glpi.txt",'w');
 	if (empty($fp)) {
@@ -305,7 +324,7 @@ function step1($update)
 	}
 	
 		
-	echo "<tr><td><h4>".$lang["install"][21]."</h4></td>";	
+	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][21]."</b></td>";	
 		$fp = fopen("docs/test_glpi.txt",'w');
 	if (empty($fp)) {
 		echo "<td><p class='red'>".$lang["install"][17]."</p> ".$lang["install"][22]."</td></tr>";
@@ -331,7 +350,7 @@ function step1($update)
 	
 	
 	
-	echo "<tr><td><h4>".$lang["install"][23]."</h4></td>";
+	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][23]."</b></td>";
 	$fp = fopen("glpi/config/test_glpi.txt",'w');
 	if (empty($fp)) {
 		echo "<td><p class='red'>".$lang["install"][17]."</p>". $lang["install"][24]."</td></tr>";
