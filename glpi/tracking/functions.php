@@ -753,7 +753,7 @@ function showFollowups($ID) {
 
 	// Show input field only if job is still open
 	if(strcmp($_SESSION["glpitype"],"post-only")!=0)
-	if ($job->closedate=="0000-00-00 00:00:00") {
+	if ($job->status=="new") {
 		echo "<div align='center'>&nbsp;<table class='tab_cadre' width='90%'>\n\n";
 		echo "<form method=get action=\"".$cfg_install["root"]."/tracking/tracking-followups.php\">";
 		echo "<input type='hidden' name=ID value=$ID>";
