@@ -818,7 +818,11 @@ function assignFormTracking ($ID,$admin,$target) {
 }
 function getRealtime($realtime){
 		global $lang;	
-		return floor($realtime)." ".$lang["job"][21]." ".round((($realtime-floor($realtime))*60))." ".$lang["job"][22];
+		$output="";
+		$hour=floor($realtime);
+		if ($hour>0) $output.=$hour." ".$lang["job"][21]." ";
+		$output.=round((($realtime-floor($realtime))*60))." ".$lang["job"][22];
+		return $output;
 		}
 
 ?>

@@ -635,6 +635,7 @@ $lang["stats"][20] = "Nom d'utilisateur";
 $lang["stats"][21] = "Lieu";
 $lang["stats"][22] = "Nombre d'interventions demand&eacute;es";
 $lang["stats"][23] = "Pas de statistiques disponibles";
+$lang["stats"][25] = "Dur&eacute;e r&eacute;elle rmoyenne de l'intervention";
 
 
 ?>

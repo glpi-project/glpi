@@ -37,6 +37,7 @@ This file is part of GLPI.
  
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
+include ($phproot . "/glpi/includes_tracking.php");
 require ("functions.php");
 
 
@@ -69,7 +70,7 @@ if (is_array($nomLieux))
    {
  //affichage du tableau
  echo "<table class='tab_cadre2' cellpadding='5' >";
- echo "<tr><th>".$lang["stats"][21]."</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th></tr>";
+ echo "<tr><th>".$lang["stats"][21]."</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th></tr>";
 
  //Pour chaque lieu on affiche
  //for each location displays
@@ -102,6 +103,15 @@ if (is_array($nomLieux))
 	else {
 		echo "<td>".getResolAvg(1,'glpi_computers.location',$key["ID"])."</td>";
 	}
+	//Le temps moyen de l'intervention réelle
+	//The average realtime to resolv
+	if(!empty($_POST["date1"]) && !empty($_POST["date2"])) {
+		echo "<td>".getRealAvg(4,'glpi_computers.location',$key["ID"],$_POST["date1"],$_POST["date2"])."</td>";
+	}
+	else {
+		echo "<td>".getRealAvg(1,'glpi_computers.location',$key["ID"])."</td>";
+	}
+
 	echo "</tr>";
   }
 echo "</table>";

@@ -155,7 +155,7 @@ function getNbResol($quoi, $chps, $value, $date1 = '', $date2= '')
 		$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
 		if(!empty($chps) && !empty($value)) {
 			if($chps == "glpi_computers.location") {
-				$query .= ", glpi_computers where glpi_tracking.computer = glpi_computers.ID and $chps = '$value'";
+				$query .= ", glpi_computers where glpi_tracking.status = 'old' and glpi_tracking.computer = glpi_computers.ID and $chps = '$value'";
 			}
 			else {
 				$query .= " where $chps = '$value' and glpi_tracking.status = 'old'";
@@ -175,7 +175,7 @@ function getNbResol($quoi, $chps, $value, $date1 = '', $date2= '')
 		$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
 		if(!empty($chps) && !empty($value)) {
 			if($chps == "glpi_computers.location") {
-				$query .= ", glpi_computers where glpi_tracking.computer = glpi_computers.ID and $chps = '$value'";
+				$query .= ", glpi_computers where glpi_tracking.status = 'old' and glpi_tracking.computer = glpi_computers.ID and $chps = '$value'";
 			}
 			else {
 				$query .= " where $chps = '$value' and glpi_tracking.status = 'old'";
@@ -186,7 +186,7 @@ function getNbResol($quoi, $chps, $value, $date1 = '', $date2= '')
 			$query.= " where glpi_tracking.status = 'old' and closedate BETWEEN '". $date1 ."' and adddate( '". $date2 ."' , INTERVAL 1 DAY )";
 		}
 	}
-	
+
 	$result = $db->query($query);
 	return $db->result($result,0,"total");
 	
@@ -207,40 +207,40 @@ function getResolAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 			
 		if(!empty($chps) && !empty($value)) {
 			if($chps == "glpi_computers.location") {
-				$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))/count(glpi_computers.location)";
+				$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))";
 				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
 			}
 			else {
-				$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))/count(glpi_tracking.ID)";
+				$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))";
 				$query .= " as total from glpi_tracking where $chps = '$value' and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
 			}
 		}
 		else {
-			$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))/count(glpi_tracking.id) as total from glpi_tracking";
+			$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking";
 			$query .= " where glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
 		}
 	}
 	elseif($quoi == 2) {
-		$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))/count(glpi_tracking.ID) as total from glpi_tracking where glpi_tracking.status ='old'  and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW())";
+		$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking where glpi_tracking.status ='old'  and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW())";
 	}
 	elseif($quoi == 3) {
-		$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))/count(glpi_tracking.ID) as total from glpi_tracking where glpi_tracking.status = 'old' and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
+		$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking where glpi_tracking.status = 'old' and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
 	}
 	elseif($quoi == 4) {
 		if(!empty($chps) && !empty($value)) {
 			if($chps == "glpi_computers.location") {
-				$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))/count(glpi_computers.location)";
+				$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))";
 				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
 				
 			}
 			else {
-				$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))/count(glpi_tracking.ID)";
+				$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))";
 				$query .= " as total from glpi_tracking where $chps = '$value' and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
 			}
 			$query .= "  and closedate BETWEEN '". $date1 ."' and adddate( '". $date2 ."' , INTERVAL 1 DAY )";
 		}
 		else {
-			$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))/count(glpi_tracking.id) as total from glpi_tracking";
+			$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking";
 			$query .= " where glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
 			$query .= "  and closedate BETWEEN '". $date1 ."' and adddate( '". $date2 ."' , INTERVAL 1 DAY )";
 		}
@@ -256,6 +256,72 @@ function getResolAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 	return $temps;
 	
 }
+
+//Return the real time to reslove an intervention
+//$quoi == 1 it return the number at all
+//$quoi == 2 it return the number for current year
+//$quoi == 3 it return the number for current mounth
+//build the query with the params $chps and $value (only for the "at all" result)
+//$chps contains the table where we apply the where clause
+//$value contains the value to parse in the table
+//common usage in query  "where $chps = '$value'";
+function getRealAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
+{
+	$db = new DB;
+	if($quoi == 1) {
+			
+		if(!empty($chps) && !empty($value)) {
+			if($chps == "glpi_computers.location") {
+				$query = "select AVG(glpi_tracking.realtime)";
+				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value' and glpi_tracking.realtime > 0";
+			}
+			else {
+				$query = "select AVG(glpi_tracking.realtime)";
+				$query .= " as total from glpi_tracking where $chps = '$value' and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
+			}
+		}
+		else {
+			$query = "select AVG(glpi_tracking.realtime) as total from glpi_tracking";
+			$query .= " where glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
+		}
+	}
+	elseif($quoi == 2) {
+		$query = "select AVG(glpi_tracking.realtime) as total from glpi_tracking where glpi_tracking.status ='old'  and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and glpi_tracking.realtime > 0";
+	}
+	elseif($quoi == 3) {
+		$query = "select AVG(glpi_tracking.realtime) as total from glpi_tracking where glpi_tracking.status = 'old' and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW()) and glpi_tracking.realtime > 0";
+	}
+	elseif($quoi == 4) {
+		if(!empty($chps) && !empty($value)) {
+			if($chps == "glpi_computers.location") {
+				$query = "select AVG(glpi_tracking.realtime)";
+				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value' and glpi_tracking.realtime > 0";
+				
+			}
+			else {
+				$query = "select AVG(glpi_tracking.realtime)";
+				$query .= " as total from glpi_tracking where $chps = '$value' and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
+			}
+			$query .= "  and closedate BETWEEN '". $date1 ."' and adddate( '". $date2 ."' , INTERVAL 1 DAY )";
+		}
+		else {
+			$query = "select AVG(glpi_tracking.realtime) as total from glpi_tracking";
+			$query .= " where glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
+			$query .= "  and closedate BETWEEN '". $date1 ."' and adddate( '". $date2 ."' , INTERVAL 1 DAY ) and glpi_tracking.realtime > 0";
+		}
+	}
+		
+	$result = $db->query($query);
+	if($db->numrows($result) == 1)
+	{
+		$realtime = $db->result($result,0,"total");
+	}
+	if(empty($realtime)) $realtime = 0;
+	$temps = getRealtime($realtime);
+	return $temps;
+	
+}
+
 
 //Make a good string from the unix timestamp $sec
 //
