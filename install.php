@@ -522,7 +522,7 @@ function step6($root_doc, $event_loglevel, $num_of_events, $expire_events, $list
 	}
 	
 	include ("_relpos.php");
-	include ($phproot . "/glpi/includes.php");
+	require_once ($phproot . "/glpi/includes.php");
 	$db = new DB;
 	$query = "update glpi_config set root_doc = '". $root_doc ."', event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', list_limit = '". $list_limit ."', cut = '". $cut ."'"; 
 	$db->query($query);
@@ -560,7 +560,7 @@ function step6($root_doc, $event_loglevel, $num_of_events, $expire_events, $list
 function step7()
 {	
 	include ("_relpos.php");
-	include ($phproot . "/glpi/includes.php");
+	require_once ($phproot . "/glpi/includes.php");
 	$db = new DB;
 	$query = "select * from glpi_config where config_id = 1";
 	$result = $db->query($query);
@@ -629,7 +629,7 @@ function step8($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$imap_auth_server
 function mailing_config_to_db($admin_email, $mailing_signature,$mailing_new_admin,$mailing_attrib_admin,$mailing_followup_admin,$mailing_finish_admin,$mailing_new_all_admin,$mailing_attrib_all_admin,$mailing_followup_all_admin,$mailing_finish_all_admin,$mailing_new_all_normal,$mailing_attrib_all_normal,$mailing_followup_all_normal,$mailing_finish_all_normal,$mailing_attrib_attrib,$mailing_followup_attrib,$mailing_finish_attrib,$mailing_new_user,$mailing_attrib_user,$mailing_followup_user,$mailing_finish_user)
 {
 	include ("_relpos.php");
-	include ($phproot . "/glpi/includes.php");
+	require_once ($phproot . "/glpi/includes.php");
 	$db = new DB;
 	$query = "update glpi_config set admin_email = $admin_email, ";
 	$query .= "mailing_signature = '". $mailing_signature ."', ";

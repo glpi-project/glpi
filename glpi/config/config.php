@@ -38,10 +38,10 @@ This file is part of GLPI.
 */
 
  
-
+include ("_relpos.php");
 // Basic MYSQL configuration change as you need/want.
 // Configuration standard changez selon vos besoins.
-require_once ('config_db.php');
+require_once ("config_db.php");
 
 //Statics config options
 // options d'installation statiques
