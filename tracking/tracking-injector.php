@@ -109,7 +109,7 @@ else
 	if(empty($_POST["isgroup"])) $_POST["isgroup"] = "";
 	if(empty($_POST["uemail"])) $_POST["uemail"] = "";
 	if(empty($_POST["emailupdates"])) $_POST["emailupdates"] = "";
-	if (postJob($ID,$glpiname,$status,$_POST["priority"],$_POST["computer"],$_POST["isgroup"],$_POST["uemail"],$_POST["emailupdates"],$_POST["contents"]))
+	if (postJob($ID,$glpiname,$status,$_POST["priority"],$_POST["isgroup"],$_POST["uemail"],$_POST["emailupdates"],$_POST["contents"]))
 	{
 		if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 			nullHeader("Tracking",$_SERVER["PHP_SELF"]);

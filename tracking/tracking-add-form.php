@@ -46,16 +46,16 @@ checkAuthentication("normal");
 
 commonHeader("Tracking",$_SERVER["PHP_SELF"]);
 $error = "";
-if (isset($_GET["priority"]) && !(isset($_GET["contents"])))
+if (isset($_GET["priority"]) && empty($_GET["contents"])))
 {
 	$error="No Description, please try again.";
 }
-elseif (isset($_GET["priority"]) && isset($_GET["contents"]))
+elseif (isset($_GET["priority"]) && !empty($_GET["contents"]))
 {
-	if (postJob($_GET["ID"],$_SESSION["glpiname"],$_GET["status"],$_GET["priority"],$_GET["computer"],$_GET["isgroup"],$_GET["uemail"],$_GET["emailupdates"],$_GET["contents"]))
+	if (postJob($_GET["ID"],$_SESSION["glpiname"],$_GET["status"],$_GET["priority"],$_GET["isgroup"],$_GET["uemail"],$_GET["emailupdates"],$_GET["contents"]))
 	{
 		$error="Job posted, next one:";
-		addFormTracking($ID,$_SESSION["glpiname"],$_SERVER["PHP_SELF"],$error);
+		addFormTracking($_GET["ID"],$_SESSION["glpiname"],$_SERVER["PHP_SELF"],$error);
 	}
 	else
 	{

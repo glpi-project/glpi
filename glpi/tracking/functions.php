@@ -522,7 +522,7 @@ function showJobDetails($ID) {
 	}
 }
 
-function postJob($ID,$author,$status,$priority,$computer,$isgroup,$uemail,$emailupdates,$contents) {
+function postJob($ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$contents) {
 	// Put Job in database
 
 	GLOBAL $cfg_install, $cfg_features, $cfg_layout;
