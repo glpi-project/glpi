@@ -768,9 +768,15 @@ function loadLanguage($user) {
 	GLOBAL $lang;	
 	$db = new DB;
 	$query = "SELECT language FROM glpi_prefs WHERE (user = '$user')";
-	$result=$db->query($query);
+	if ($result=$db->query($query))
+	if ($db->numrows($result)>0){
 	$language = $db->result($result,0,"language");
 	$file = "/glpi/dicts/".$language.".php";
+	} else {$file= "/glpi/dicts/english.php";
+	// Insert new pref for the user :
+	$query= "INSERT INTO glpi_prefs (user,language) VALUES ('$user','english')";
+	$result=$db->query($query);
+	}
 	include ("_relpos.php");
 	include ($phproot . $file);
 }
