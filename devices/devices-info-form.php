@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
 	checkAuthentication("admin");
 	addDevice($_POST);
 	logEvent(0, "Devices", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["designation"].".");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
+	header("Location: ".$cfg_install["root"]."/devices/index.php?device_type=".$_POST["device_type"]);
 }
 else if (isset($tab["delete"])) {
 	checkAuthentication("admin");
@@ -77,7 +77,7 @@ else if (isset($_POST["update"])) {
 }
 else {
 	checkAuthentication("normal");
-	commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][30],$_SERVER["PHP_SELF"]);
 	showDevicesForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["device_type"]);
 	commonFooter();
 }

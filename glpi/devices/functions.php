@@ -315,11 +315,12 @@ function device_selecter($target,$cID,$withtemplate='') {
 		echo "<select name=\"new_device_type\">";
 		
 		
+		echo "<option value=\"".MOBOARD_DEVICE."\">".getDictDeviceLabel(MOBOARD_DEVICE)."</option>";
 		echo "<option value=\"".HDD_DEVICE."\">".getDictDeviceLabel(HDD_DEVICE)."</option>";
 		echo "<option value=\"".GFX_DEVICE."\">".getDictDeviceLabel(GFX_DEVICE)."</option>";
 		echo "<option value=\"".NETWORK_DEVICE."\">".getDictDeviceLabel(NETWORK_DEVICE)."</option>";
 		echo "<option value=\"".PROCESSOR_DEVICE."\">".getDictDeviceLabel(PROCESSOR_DEVICE)."</option>";
-		echo "<option value=\"".MOBOARD_DEVICE."\">".getDictDeviceLabel(MOBOARD_DEVICE)."</option>";
+		echo "<option value=\"".SND_DEVICE."\">".getDictDeviceLabel(SND_DEVICE)."</option>";
 		echo "<option value=\"".RAM_DEVICE."\">".getDictDeviceLabel(RAM_DEVICE)."</option>";
 		echo "<option value=\"".DRIVE_DEVICE."\">".getDictDeviceLabel(DRIVE_DEVICE)."</option>";
 		echo "<option value=\"".CONTROL_DEVICE."\">".getDictDeviceLabel(CONTROL_DEVICE)."</option>";
@@ -745,7 +746,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 		echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<input type='hidden' name='device_type' value=\"$device_type\">\n";
-		echo "<input type='submit' name='add' value=\"".$lang["buttons"][7]."\" class='submit'>";
+		echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 		echo "</td></form>\n\n";	
 	}
 	echo "</table></div>";
