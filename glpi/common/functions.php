@@ -169,7 +169,7 @@ $inventory = 	array($lang["Menu"][0]=>"/computers/index.php",
 				
 $maintain =	array($lang["Menu"][5]=>"/tracking/index.php",
 	              $lang["Menu"][6]=>"/reports/index.php");
-				
+			
 				
 
 $LDAP =	        array($lang["Menu"][7]=>"/ldap/index.php?type=posixGroup",
@@ -394,7 +394,7 @@ function nullHeader($title,$url) {
 	GLOBAL $cfg_layout,$cfg_install,$lang;
 
 	// Send extra expires header if configured
-	if ($cfg_features["sendexpire"]) {
+	if (!empty($cfg_features["sendexpire"])) {
 		header("Expires: Fri, Jun 12 1981 08:20:00 GMT\nPragma: no-cache");
 	}
 
@@ -404,7 +404,7 @@ function nullHeader($title,$url) {
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1 \" />";
 
 	// Send extra expires header if configured
-	if ($cft_features["sendexpire"]) {
+	if (!empty($cft_features["sendexpire"])) {
 		echo "<META HTTP-EQUIV=\"Expires\" CONTENT=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
 		echo "<META HTTP-EQUIV=\"Pragma\" CONTENT=\"no-cache\">\n";
 		echo "<META HTTP-EQUIV=\"Cache-Control\" CONTENT=\"no-cache\">\n";
@@ -984,7 +984,7 @@ switch($item_type)
 						$processor_speed = $ligne['processor_speed'];
 						$lieu = $ligne['location'];
 						$serial = $ligne['serial'];
-						$ramType = $ligne['ramType'];
+						$ramType = $ligne['ramtype'];
 						$ramSize = $ligne['ram'];
 						$contact = $ligne['contact'];
 						$achat_date = $ligne['achat_date'];
@@ -997,8 +997,8 @@ switch($item_type)
 						if($contact) echo "<td><div align='center'> $contact </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 						if($os) echo "<td><div align='center'> $os </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 						if($processor) echo "<td><div align='center'> $processor </div></td>"; else echo "<td><div align='center'> N/A </div></td>";	
-						if ($processor_speed) echo "<td><div align='center'> $processor_speed </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if ($lieu) echo "<td><div align='center'> $lieu </div></td>"; else echo "<td><div align='center'> N/A </div></td>";	
+						if($processor_speed) echo "<td><div align='center'> $processor_speed </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+						if($lieu) echo "<td><div align='center'> $lieu </div></td>"; else echo "<td><div align='center'> N/A </div></td>";	
 						if($serial) echo "<td><div align='center'> $serial </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 						if($ramType) echo "<td><div align='center'> $ramType </div></td>"; else echo "<td><div align='center'> N/A </div></td>";	
 						if($ramSize) echo "<td><div align='center'> $ramSize </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
@@ -1029,7 +1029,7 @@ switch($item_type)
 					$type = $ligne['type']; 
 					$name = $ligne['name'];
 					$lieu = $ligne['location'];
-					$name = $ligne['serial'];
+					$serial = $ligne['serial'];
 					$contact = $ligne['contact'];
 					$achat_date = $ligne['achat_date'];
 					$fin_garantie = $ligne['date_fin_garantie'];

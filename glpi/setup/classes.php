@@ -57,7 +57,6 @@ class User {
 		
 		$db = new DB;
 
-		$this->comments = addslashes($this->comments);
 		
 		// Build query
 		$query = "INSERT INTO users (";

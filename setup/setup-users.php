@@ -41,21 +41,21 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-if ($_POST["add"]) {
+if (isset($_POST["add"])) {
 	checkAuthentication("admin");
 	addUser($_POST);
 	logEvent(0, "users", 4, "setup", $_SESSION["glpiname"]." added user ".$_POST["name"].".");
-	header("Location: $_SERVER[$HTTP_REFERER]?done");
-} else if ($_POST["delete"]) {
+	header("Location: $_SERVER[HTTP_REFERER]?done");
+} else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
 	deleteUser($_POST);
 	logEvent(0,"users", 4, "setup", $_SESSION["glpiname"]." deleted user ".$_POST["name"].".");
-	header("Location: $_SERVER[$HTTP_REFERER]?done");
-} else if ($_POST["update"]) {
+	header("Location: $_SERVER[HTTP_REFERER]?done");
+} else if (isset($_POST["update"])) {
 	checkAuthentication("admin");
 	updateUser($_POST);
 	logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]." updated user ".$_POST["name"].".");
-	header("Location: $_SERVER[$HTTP_REFERER]?done");
+	header("Location: $_SERVER[HTTP_REFERER]?done");
 } else {
 	checkAuthentication("normal");
 	commonHeader("Setup",$_SERVER["PHP_SELF"]);

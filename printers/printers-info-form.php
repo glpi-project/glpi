@@ -42,7 +42,7 @@ include ($phproot . "/glpi/includes_networking.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
-
+if(!isset($tab["ID"])) $tab["ID"] = "";
 
 if (isset($_POST["add"]))
 {

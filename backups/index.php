@@ -82,10 +82,10 @@ function xmlnow(what4){
 // mySQL - variables
 
 $db = new DB;
-$dbhost="$db->dbhost";
-$dbuser="$db->dbuser";
-$dbpass="$db->dbpassword";
-$dbname="$db->dbdefault";
+$dbhost=$db->dbhost;
+$dbuser=$db->dbuser;
+$dbpass=$db->dbpassword;
+$dbname=$db->dbdefault;
 
 
 
@@ -164,7 +164,7 @@ $A->FilePath = $chemin;
 
 // Type of layout : 1,2,3,4
 // For details about Type see file genxml.php
-if ($Type=="")
+if (empty($Type))
 {
 	$A->Type=4;
 }
@@ -191,24 +191,25 @@ if ($A->IsError==1)
 
 function get_def($dbname, $table) {
     global $conn;
+    $db = new DB;
     $def = "";
     $def .= "DROP TABLE IF EXISTS $table;#%%\n";
     $def .= "CREATE TABLE $table (\n";
-    $result = mysql_db_query($dbname, "SHOW FIELDS FROM $table",$conn);
-    while($row = mysql_fetch_array($result)) {
-        $def .= "    $row[Field] $row[Type]";
-        if ($row["Default"] != "") $def .= " DEFAULT '$row[Default]'";
-        if ($row["Null"] != "YES") $def .= " NOT NULL";
-       	if ($row[Extra] != "") $def .= " $row[Extra]";
+    $result = $db->query("SHOW FIELDS FROM $table",$conn);
+    while($line = $db->fetch_array($result)) {
+        $def .= "    $line[Field] $line[Type]";
+        if (isset($line["Default"]) && $line["Default"] != "") $def .= " DEFAULT '$line[Default]'";
+        if (isset($line["Null"]) && $line["Null"] != "YES") $def .= " NOT NULL";
+       	if (isset($line["Extra"]) && $line["Extra"] != "") $def .= " $line[Extra]";
         	$def .= ",\n";
      }
      $def = ereg_replace(",\n$","", $def);
-     $result = mysql_db_query($dbname, "SHOW KEYS FROM $table",$conn);
-     while($row = mysql_fetch_array($result)) {
-          $kname=$row[Key_name];
-          if(($kname != "PRIMARY") && ($row[Non_unique] == 0)) $kname="UNIQUE|$kname";
+     $result = $db->query("SHOW KEYS FROM $table",$conn);
+     while($line = $db->fetch_array($result)) {
+          $kname=$line["Key_name"];
+          if(($kname != "PRIMARY") && ($line["Non_unique"] == 0)) $kname="UNIQUE|$kname";
           if(!isset($index[$kname])) $index[$kname] = array();
-          $index[$kname][] = $row[Column_name];
+          $index[$kname][] = $line["Column_name"];
      }
      while(list($x, $columns) = @each($index)) {
           $def .= ",\n";
@@ -223,12 +224,13 @@ function get_def($dbname, $table) {
 
 function get_content($dbname, $table)
 {
+     $db = new DB;
      global $conn;
      $content="";
-     $result = mysql_db_query($dbname, "SELECT * FROM $table",$conn);
-     while($row = mysql_fetch_row($result)) {
+     $result = $db->query("SELECT * FROM $table",$conn);
+     while($row = $db->fetch_row($result)) {
          $insert = "INSERT INTO $table VALUES (";
-         for($j=0; $j<mysql_num_fields($result);$j++) {
+         for($j=0; $j<$db->num_fields($result);$j++) {
             if(!isset($row[$j])) $insert .= "NULL,";
             else if($row[$j] != "") $insert .= "'".addslashes($row[$j])."',";
             else $insert .= "'',";
@@ -245,13 +247,13 @@ else $filetype = "sql";
 
 // #################" DUMP sql#################################
 
-if ($_GET["dump"]!=""){
+if (isset($_GET["dump"]) && $_GET["dump"] != ""){
 
 
  	$time_file=date("Y-m-d-h-i");
 	$cur_time=date("Y-m-d H:i");
 	$newfile="#GLPI Dump database on $cur_time\r\n";
-	$tables = mysql_list_tables($dbname,$conn);
+	$tables = $db->list_tables($dbname,$conn);
 	$num_tables = @mysql_num_rows($tables);
 	$i = 0;
 	while($i < $num_tables) {
@@ -283,7 +285,7 @@ if ($_GET["dump"]!=""){
 
 // ################################## dump XML #############################
 
-if ($_GET["xmlnow"]!=""){
+if (isset($_GET["xmlnow"]) && $_GET["xmlnow"] !=""){
 
 xmlbackup($dbname, $dbhost, $dbuser, $dbpass);
 
@@ -293,7 +295,7 @@ xmlbackup($dbname, $dbhost, $dbuser, $dbpass);
 
 
 
-if ($_GET["file"]!="") {
+if (isset($_GET["file"]) && $_GET["file"] != "") {
 	$file = $_GET["file"];
 	$filename = $file;
 	set_time_limit(180);
@@ -307,7 +309,7 @@ if ($_GET["file"]!="") {
 	echo "<center>".$filename." ".$lang["backup"][8]."</center>";
 }
 
-if ($_GET["delfile"]!=""){
+if (isset($_GET["delfile"]) && $_GET["delfile"] != ""){
 
    $filename=$_GET["delfile"];
 

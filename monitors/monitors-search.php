@@ -44,11 +44,11 @@ checkAuthentication("normal");
 commonHeader("Monitors",$_SERVER["PHP_SELF"]);
 if(isset($_GET["order"]))
 {
-	showMonitorList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_POST["field"],$_POST["phrasetype"],$_POST["contains"],$_POST["sort"],$_POST["order"],$_POST["start"]);
+	showMonitorList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
 }
 else
 {
-	showMonitorList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_POST["field"],$_POST["phrasetype"],$_POST["contains"],$_POST["sort"],"","");
+	showMonitorList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],"","");
 }
 
 commonFooter();

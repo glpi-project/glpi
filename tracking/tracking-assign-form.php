@@ -43,7 +43,7 @@ include ($phproot . "/glpi/includes_setup.php");
 
 checkAuthentication("admin");
 
-if ($_GET["update"])
+if (isset($_GET["update"]))
 {
 	assignJob ($_GET["ID"],$_GET["user"],$_SESSION["glpiname"]);	
 	header("Location: $_SERVER[HTTP_REFERER]");

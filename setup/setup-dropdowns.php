@@ -41,12 +41,12 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-if ($_POST["add"]) {
+if (isset($_POST["add"])) {
 	checkAuthentication("admin");
 	addDropdown($_POST);
 	logEvent(0, "dropdowns", 5, "setup", $_SESSION["glpiname"]." added a value to a dropdown.");
 	header("Location: $_SERVER[HTTP_REFERER]?done");
-} else if ($_POST["delete"]) {
+} else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
 	deleteDropdown($_POST);
 	logEvent($_POST["ID"], "templates", 4, "inventory", $_SESSION["glpiname"]." deleted a dropdown value.");

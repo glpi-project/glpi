@@ -82,8 +82,9 @@ function showNetworkingForm ($target,$ID) {
 	echo "<center><form name=form method=post action=\"$target\">";
 	echo "<table border=0 cellpadding=2>";
 	echo "<tr><th colspan=2><b>";
-	if (!$ID) {
+	if (empty($ID)) {
 		echo $lang["networking"][11].":";
+		$netdev->getEmpty();
 	} else {
 		$netdev->getfromDB($ID);
 		echo $lang["networking"][12]." ID $ID:";
@@ -407,7 +408,7 @@ function addNetport($input) {
 	
 	// fill array for update 
 	foreach ($input as $key => $val) {
-		if ($netport->fields[$key] != $input[$key]) {
+		if (!isset($netport->fields[$key]) || $netport->fields[$key] != $input[$key]) {
 			$netport->fields[$key] = $input[$key];
 		}
 	}
@@ -655,7 +656,7 @@ function listConnectorPorts($target,$input) {
 				echo "</a>";
 				echo "</td>";
 				echo "<td align=right><b>";
-				echo "<a href=\"".$cfg_install["root"]."/networking/networking-port-disconnect.php?ID=$ID\">".$lang["buttons"][9]."</a>";
+				echo "<a href=\"".$cfg_install["root"]."/networking/networking-port-disconnect.php?ID=".$netport->fields["ID"]."\">".$lang["buttons"][10]."</a>";
 				echo "</b></td>";
 				echo "</tr></table>";
 		

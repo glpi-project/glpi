@@ -220,8 +220,9 @@ function showPrintersForm ($target,$ID) {
 	echo "<center><form method=post name=form action=\"$target\">";
 	echo "<table border=0 cellpadding=2>";
 	echo "<tr><th colspan=2><b>";
-	if ($ID=="") {
+	if (empty($ID)) {
 		echo $lang["printers"][3].":";
+		$printer->getEmpty();
 	} else {
 		$printer->getfromDB($ID);
 		echo $lang["printers"][4]." ID $ID:";

@@ -265,7 +265,7 @@ function addUser($input) {
 	
 	// fill array for update
 	foreach ($input as $key => $val) {
-		if ($user->fields[$key] != $input[$key]) {
+		if (!isset($user->fields[$key]) || $user->fields[$key] != $input[$key]) {
 			$user->fields[$key] = $input[$key];
 		}
 	}
@@ -459,7 +459,7 @@ function showTemplateForm($target,$ID) {
 
 	echo "<tr><td>".$lang["setup"][31].": 	</td>";
 	echo "<td>";
-		dropdownValue("type_computers", "type", $comp->fields["type"]);
+		dropdownValue("type_computers", "type", $templ->fields["type"]);
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["setup"][32].": 	</td>";
@@ -534,7 +534,7 @@ function showTemplateForm($target,$ID) {
 	
 echo "<tr><td>".$lang["setup"][55].":	</td>";
 		echo "<td>";
-		if ($temp1->fields["maintenance"] == 1) {
+		if ($templ->fields["maintenance"] == 1) {
 			echo " OUI <input type=radio name='maintenance' value=1 checked>";
 			echo "&nbsp; &nbsp; NON <input type=radio name='maintenance' value=0>";
 		} else {

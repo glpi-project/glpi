@@ -61,6 +61,22 @@ class Printer {
 		}
 	}
 
+		function getEmpty () {
+
+		// Make new empty database object
+		$db = new DB;
+		$query = "SELECT * FROM printers limit 0,1";
+		if ($result = $db->query($query)) {
+			$data = mysql_fetch_array($result);
+			foreach ($data as $key => $val) {
+				$this->fields[$key] = "";
+			}
+			return true;
+
+		} else {
+			return false;
+		}
+	}
 	function updateInDB($updates)  {
 
 		$db = new DB;

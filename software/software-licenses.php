@@ -57,7 +57,7 @@ else if (isset($_POST["add"]))
 	logEvent($tab["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." added a license.");
 	header("Location: $_SERVER[HTTP_REFERER]");
 }
-else if (isset($_POST["delete"]))
+else if (isset($tab["delete"]))
 {
 	checkAuthentication("admin");
 	deleteLicense($tab["ID"]);

@@ -38,6 +38,7 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_networking.php");
+if(!isset($_GET["ID"])) $_GET["ID"] = "";
 
 if (isset($_POST["add"]))
 {
