@@ -46,6 +46,53 @@ if(!function_exists('loadLang')) {
 	}
 }
 
+//transert de dropdown vers device
+/*function dropdown2Device($devname, $dpdname) {
+	global $lang;
+	$query = "select * from glpi_dropdown_".$dpdname."";
+	$db = new DB;
+	$result = $db->query($query);
+	while($line = $db->fetch_array($result)) {
+		$query2 = "insert into glpi_device_".$devname." (designation) values ('".$line["name"]."')";
+		#$db->query($query2) or die("unable to transfer ".$dpdname." to ".$devname."  ".$lang["update"][90].$db->error());
+	}
+}
+*/
+
+//computers-dropdowns to devices
+//devname (eg: hdd)
+//dpdname (eg: hdtype)
+//compDpName (eg: hdtype)
+//compcapacityname (eg: hdspace)
+
+function compDpd2Device($devname,$dpdname,$compDpdName,$specif='') {
+	global $lang;
+	$query = "select * from glpi_dropdown_".$dpdname."";
+	$db = new DB;
+	$result = $db->query($query);
+	while($lndropd = $db->fetch_array($result)) {
+		$query2 = "insert into glpi_device_".$devname." (designation) values ('".$lndropd["name"]."')";
+		$db->query($query2) or die("unable to transfer ".$dpdname." to ".$devname."  ".$lang["update"][90].$db->error());
+		$devid = mysql_insert_id();
+		$query3 = "select * from glpi_computers where ".$compDpdName." = '".$lndropd["ID"]."'";
+		$result3 = $db->query($query3);
+		while($lncomp = $db->fetch_array($result3)) {
+			if(!empty($specif)) {
+				$query4 = "insert into glpi_computer_device (specificity, device_type, FK_device, FK_computers) values ('".$specif."','glpi_device_".$devname."','".$devid."','".$lncomp["ID"]."')";
+			} else {
+				$query4 = "insert into glpi_computer_device (device_type, FK_device, FK_computers) values ('glpi_device_".$devname."','".$devid."','".$lncomp["ID"]."')";
+			}
+			$db->query($query4) or die("unable to migrate from ".$dpdname." to ".$devname." for item computer:".$lncomp["ID"]."  ".$lang["update"][90].$db->error());
+		}
+	}
+	$query = "ALTER TABLE glpi_computers drop `".$compDpdName."`";
+	$db->query($query2) or die("Error : ".$query." ".mysql_error());
+	$query = "DROP TABLE `glpi_dropdown_".$dpdname."`";
+	$db->query($query2) or die("Error : ".$query." ".mysql_error());
+}
+
+
+
 //Verifie si il existe bien un utilisateur ayant les droits super-admin
 function superAdminExists() {
 	$db = new DB;
@@ -883,9 +930,170 @@ if(!FieldExists("glpi_config","default_language")) {
 // Mise a jour du numéro de version et de la langue par defaut---- A LAISSER 0 LA FIN
 	$query = "UPDATE `glpi_config` SET `version` = ' 0.42', default_language='".$_SESSION["dict"]."' ;";
 	$db->query($query) or die("4203 ".$lang["update"][90].$db->error());
+
+/*******************************GLPI 0.5***********************************************/
+//pass all templates to computers
+if(!FieldExists("glpi_computers","is_template")) {
+	$query = "ALTER TABLE `glpi_computers` ADD `is_template` ENUM('0','1') DEFAULT '0' NOT NULL ";
+	$db->query($query) or die("0.5 alter computers add is_template ".$lang["update"][90].$db->error());
+	$query = "ALTER TABLE `glpi_computers` ADD `tplname` VARCHAR(200) DEFAULT NULL ";
+	$db->query($query) or die("0.5 alter computers add tplname ".$lang["update"][90].$db->error());
 	
+	$query = "Select * from glpi_templates";
+	$result = $db->query($query);
+	
+	
+	while($line = $db->fetch_array($result)) {
+		$query2 = "INSERT INTO glpi_computers (`ID`,`name`, `osver`, `processor_speed`, `serial`, `otherserial`, `ram`, `hdspace`, `contact`, `contact_num`, `comments`, `achat_date`, `date_fin_garantie`, `maintenance`, `os`, `hdtype`, `sndcard`, `moboard`, `gfxcard`, `network`, `ramtype`, `location`, `processor`, `type`, `is_template`, `tplname`)";
+		
+		$query2 .= " VALUES ('','".$line["name"]."', '".$line["osver"]."', '".$line["processor_speed"]."', '".$line["serial"]."', '".$line["otherserial"]."', '".$line["ram"]."', '".$line ["hdspace"]."', '".$line["contact"]."', '".$line["contact_num"]."', '".$line["comments"]."', '".$line["achat_date"]."', '".$line["date_fin_garantie"]."', '".$line["maintenance"]."', '".$line["os"]."', '".$line["hdtype"]."', '".$line["sndcard"]."', '".$line["moboard"]."', '".$line["gfxcard"]."', '".$line["network"]."', '".$line["ramtype"]."', '".$line["location"]."', '".$line["processor"]."', '".$line["type"]."','1','".$line["templname"]."')";	
+		#echo $query2;
+		$db->query($query2) or die("0.5-convert template 2 computers ".$db->error());
+	}
+	#TODO !!!!!!!!!!!!!!!!!!!!
+	#$query = "Drop table glpi_templates";
+	#$db->query($query) or die("0.5 drop table templates ".$db->error());
+}
+
+
+
+
+//New internal peripherals config
+
+if(!TableExists("glpi_computer_device")) {
+	$query = "CREATE TABLE `glpi_computer_device` (
+  `ID` int(11) NOT NULL auto_increment,
+  `specificity` varchar(250) NOT NULL default '',
+  `device_type` varchar(50) NOT NULL default '',
+  `FK_device` int(11) NOT NULL default '0',
+  `FK_computers` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`ID`)
+) TYPE=MyISAM;";
+	$db->query($query) or die("0.5 CREATE TABLE `glpi_computer_device` ".$lang["update"][90].$db->error());
+}
+
+if(!TableExists("glpi_device_gfxcard")) {
+	$query = "CREATE TABLE `glpi_device_gfxcard` (
+  `ID` int(11) NOT NULL auto_increment,
+  `designation` varchar(120) NOT NULL default '',
+  `ram` varchar(10) NOT NULL default '',
+  `interface` enum('AGP','PCI','PCI-X','Other') NOT NULL default 'AGP',
+  `comment` text NOT NULL,
+  `FK_glpi_manufacturer` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`ID`)
+) TYPE=MyISAM;";
+	$db->query($query) or die("0.5 create table `glpi_device_gfxcard` ".$lang["update"][90].$db->error());
+	#dropdown2Device("gfxcard","gfxcard");
+	compDpd2Device("gfxcard","gfxcard","gfxcard");
+}
+if(!TableExists("glpi_device_hdd")) {
+	$query = "CREATE TABLE `glpi_device_hdd` (
+  `ID` int(11) NOT NULL auto_increment,
+  `designation` varchar(100) NOT NULL default '',
+  `rpm` varchar(20) NOT NULL default '',
+  `interface` enum('IDE','SATA','SCSI') NOT NULL default 'IDE',
+  `cache` varchar(20) NOT NULL default '',
+  `comment` text NOT NULL,
+  `FK_glpi_manufacturer` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`ID`)
+) TYPE=MyISAM;";
+	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_hdtype` ".$lang["update"][90].$db->error());
+// 	dropdown2Device("hdd","hdtype");
+	compDpd2Device("hdd","hdtype","hdtype","hdspace");
+}
+if(!TableExists("glpi_device_iface")) {
+	$query = "CREATE TABLE `glpi_device_iface` (
+  `ID` int(11) NOT NULL auto_increment,
+  `designation` varchar(120) NOT NULL default '',
+  `bandwidth` varchar(20) NOT NULL default '',
+  `comment` text NOT NULL,
+  `FK_glpi_manufacturer` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`ID`)
+) TYPE=MyISAM";
+	$db->query($query) or die("0.5- CREATE TABLE `glpi_device_iface` ".$lang["update"][90].$db->error());
+// 	dropdown2Device("iface","network");
+	compDpd2Device("iface","iface","network");
+}
+if(!TableExists("glpi_device_moboard")) {
+	$query = "CREATE TABLE `glpi_device_moboard` (
+  `ID` int(11) NOT NULL auto_increment,
+  `designation` varchar(100) NOT NULL default '',
+  `chipset` varchar(120) NOT NULL default '',
+  `comment` text NOT NULL,
+  `FK_glpi_manufacturer` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`ID`)
+) TYPE=MyISAM;";
+	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_moboard` ".$lang["update"][90].$db->error());
+// 	dropdown2Device("moboard","moboard");
+	compDpd2Device("moboard","moboard","moboard");
+}
+if(!TableExists("glpi_device_processor")) {
+	$query = "CREATE TABLE `glpi_device_processor` (
+  `ID` int(11) NOT NULL auto_increment,
+  `designation` varchar(120) NOT NULL default '',
+  `frequence` int(11) NOT NULL default '0',
+  `comment` text NOT NULL,
+  `FK_glpi_manufacturer` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`ID`)
+) TYPE=MyISAM;";
+	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_processor` ".$lang["update"][90].$db->error());
+
+// 	dropdown2Device("processor","processor");
+	compDpd2Device("processor","processor","processor","processor_speed");
+}
+if(!TableExists("glpi_device_ram")) {
+	$query = "CREATE TABLE `glpi_device_ram` (
+  `ID` int(11) NOT NULL auto_increment,
+  `designation` varchar(100) NOT NULL default '',
+  `type` enum('EDO','DDR','SDRAM','SDRAM-2') NOT NULL default 'EDO',
+  `frequence` varchar(8) NOT NULL default '',
+  `comment` text NOT NULL,
+  `FK_glpi_manufacturer` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`ID`)
+) TYPE=MyISAM;";
+	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_ram` ".$lang["update"][90].$db->error());
+// 	dropdown2Device("ram","ram");
+	compDpd2Device("ram","ram","ramtype","ram");
+}
+if(!TableExists("glpi_device_sndcard")) {
+	$query = "CREATE TABLE `glpi_device_sndcard` (
+  `ID` int(11) NOT NULL auto_increment,
+  `designation` varchar(120) NOT NULL default '',
+  `type` varchar(100) NOT NULL default '',
+  `comment` text NOT NULL,
+  `FK_glpi_manufacturer` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`ID`)
+) TYPE=MyISAM;";
+	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_sndcard ".$lang["update"][90].$db->error());
+// 	dropdown2Device("sndcard","sndcard");
+	compDpd2Device("sndcard","sndcard","sndcard");
+}
+if(!TableExists("glpi_manufacturer")) {
+	$query = "CREATE TABLE `glpi_manufacturer` (
+  `ID` int(11) NOT NULL auto_increment,
+  `name` varchar(50) NOT NULL default '',
+  `address` varchar(200) NOT NULL default '',
+  `website` varchar(100) NOT NULL default '',
+  `phonenumber` varchar(20) NOT NULL default '',
+  `comment` text NOT NULL,
+  PRIMARY KEY  (`ID`)
+) TYPE=MyISAM;
+";
+	$db->query($query) or die("0.5 CREATE TABLE `glpi_manufacturer ".$lang["update"][90].$db->error());
+}
+
+
+
+
+
+
+//Et enfin on supprime toutes les tables glpi_dropdown concernées ainsi que les champs inutiles de la table computer
+//Et on decommente la suppréssion de la table "templates".
+
 return $ret;
 }
+
+
 
 function showFormSu() {
 	include ("_relpos.php");
