@@ -1750,6 +1750,81 @@ if(!FieldExists("glpi_cartridges_type","tech_num")) {
 	$db->query($query) or die("Error : ".$query." ".mysql_error());
 }
 
+if(!TableExists("glpi_type_docs")) {
+	
+$query = "CREATE TABLE glpi_type_docs (
+		  ID int(11) NOT NULL auto_increment,
+		  title varchar(255) NOT NULL default '',
+		  ext varchar(10) NOT NULL default '',
+		  icon varchar(255) NOT NULL default '',
+		  mime varchar(100) NOT NULL default '',
+		  upload enum('Y','N') NOT NULL default 'Y',
+		  date_mod datetime default NULL,
+		  PRIMARY KEY  (ID),
+		  UNIQUE KEY extension (ext)
+		) TYPE=MyISAM;
+		";
+$db->query($query) or die("Error creating table typedoc ".$query." ".mysql_error());
+
+$query = "INSERT INTO glpi_type_docs (ID, title, ext, icon, mime, upload, date_mod) VALUES (1, 'JPEG', 'jpg', '', '', 'Y', '2004-12-13 19:47:21'),
+(2, 'PNG', 'png', '', '', 'Y', '2004-12-13 19:47:21'),
+(3, 'GIF', 'gif', '', '', 'Y', '2004-12-13 19:47:21'),
+(4, 'BMP', 'bmp', '', '', 'Y', '2004-12-13 19:47:21'),
+(5, 'Photoshop', 'psd', '', '', 'Y', '2004-12-13 19:47:21'),
+(6, 'TIFF', 'tif', '', '', 'Y', '2004-12-13 19:47:21'),
+(7, 'AIFF', 'aiff', '', '', 'Y', '2004-12-13 19:47:21'),
+(8, 'Windows Media', 'asf', '', '', 'Y', '2004-12-13 19:47:21'),
+(9, 'Windows Media', 'avi', '', '', 'Y', '2004-12-13 19:47:21'),
+(44, 'C source', 'c', '', '', 'Y', '2004-12-13 19:47:22'),
+(27, 'RealAudio', 'rm', '', '', 'Y', '2004-12-13 19:47:21'),
+(16, 'Midi', 'mid', '', '', 'Y', '2004-12-13 19:47:21'),
+(17, 'QuickTime', 'mov', '', '', 'Y', '2004-12-13 19:47:21'),
+(18, 'MP3', 'mp3', '', '', 'Y', '2004-12-13 19:47:21'),
+(19, 'MPEG', 'mpg', '', '', 'Y', '2004-12-13 19:47:21'),
+(20, 'Ogg Vorbis', 'ogg', '', '', 'Y', '2004-12-13 19:47:21'),
+(24, 'QuickTime', 'qt', '', '', 'Y', '2004-12-13 19:47:21'),
+(10, 'BZip', 'bz2', '', '', 'Y', '2004-12-13 19:47:21'),
+(25, 'RealAudio', 'ra', '', '', 'Y', '2004-12-13 19:47:21'),
+(26, 'RealAudio', 'ram', '', '', 'Y', '2004-12-13 19:47:21'),
+(11, 'Word', 'doc', '', '', 'Y', '2004-12-13 19:47:21'),
+(12, 'DjVu', 'djvu', '', '', 'Y', '2004-12-13 19:47:21'),
+(42, 'MNG', 'mng', '', '', 'Y', '2004-12-13 19:47:22'),
+(13, 'PostScript', 'eps', '', '', 'Y', '2004-12-13 19:47:21'),
+(14, 'GZ', 'gz', '', '', 'Y', '2004-12-13 19:47:21'),
+(37, 'WAV', 'wav', '', '', 'Y', '2004-12-13 19:47:22'),
+(15, 'HTML', 'html', '', '', 'Y', '2004-12-13 19:47:21'),
+(34, 'Flash', 'swf', '', '', 'Y', '2004-12-13 19:47:22'),
+(21, 'PDF', 'pdf', '', '', 'Y', '2004-12-13 19:47:21'),
+(22, 'PowerPoint', 'ppt', '', '', 'Y', '2004-12-13 19:47:21'),
+(23, 'PostScript', 'ps', '', '', 'Y', '2004-12-13 19:47:21'),
+(40, 'Windows Media', 'wmv', '', '', 'Y', '2004-12-13 19:47:22'),
+(28, 'RTF', 'rtf', '', '', 'Y', '2004-12-13 19:47:21'),
+(29, 'StarOffice', 'sdd', '', '', 'Y', '2004-12-13 19:47:22'),
+(30, 'StarOffice', 'sdw', '', '', 'Y', '2004-12-13 19:47:22'),
+(31, 'Stuffit', 'sit', '', '', 'Y', '2004-12-13 19:47:22'),
+(43, 'Adobe Illustrator', 'ai', '', '', 'Y', '2004-12-13 19:47:22'),
+(32, 'OpenOffice Impress', 'sxi', '', '', 'Y', '2004-12-13 19:47:22'),
+(33, 'OpenOffice', 'sxw', '', '', 'Y', '2004-12-13 19:47:22'),
+(46, 'LaTeX DVI', 'dvi', '', '', 'Y', '2004-12-13 19:47:22'),
+(35, 'TGZ', 'tgz', '', '', 'Y', '2004-12-13 19:47:22'),
+(36, 'texte', 'txt', '', '', 'Y', '2004-12-13 19:47:22'),
+(49, 'RedHat/Mandrake/SuSE', 'rpm', '', '', 'Y', '2004-12-13 19:47:22'),
+(38, 'Excel', 'xls', '', '', 'Y', '2004-12-13 19:47:22'),
+(39, 'XML', 'xml', '', '', 'Y', '2004-12-13 19:47:22'),
+(41, 'Zip', 'zip', '', '', 'Y', '2004-12-13 19:47:22'),
+(45, 'Debian', 'deb', '', '', 'Y', '2004-12-13 19:47:22'),
+(47, 'C header', 'h', '', '', 'Y', '2004-12-13 19:47:22'),
+(48, 'Pascal', 'pas', '', '', 'Y', '2004-12-13 19:47:22'),
+(50, 'OpenOffice Calc', 'sxc', '', '', 'Y', '2004-12-13 19:47:22'),
+(51, 'LaTeX', 'tex', '', '', 'Y', '2004-12-13 19:47:22'),
+(52, 'GIMP multi-layer', 'xcf', '', '', 'Y', '2004-12-13 19:47:22'),
+(53, 'JPEG', 'jpeg', '', '', 'Y', '2005-03-07 22:23:17');";
+
+$db->query($query) or die("Error inserting elements in table typedoc ".$query." ".mysql_error());
+	
+}
+
+
 // Update version number
 $query="UPDATE glpi_config set version='0.5' WHERE ID='1'";
 	$db->query($query) or die("0.5 update config version ".$lang["update"][90].$db->error());
