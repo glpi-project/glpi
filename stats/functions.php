@@ -450,4 +450,28 @@ function getResolMax($quoi)
 	$temps = toTimeStr($sec);
 	return $temps;
 }
+//Return the maximal time to reslove an intervention
+//$quoi == 1 it return the number at all
+//$quoi == 2 it return the number for current year
+//$quoi == 3 it return the number for current mounth
+function getRealResolMax($quoi)
+{
+	$db = new DB;
+	if($quoi == 1) {
+		$query = "select MAX(glpi_tracking.realtime) as total from glpi_tracking where glpi_tracking.status = 'old'";	
+	}
+	elseif($quoi == 2) {
+		$query = "select MAX(glpi_tracking.realtime) as total from glpi_tracking where glpi_tracking.status ='old' and YEAR(glpi_tracking.date) = YEAR(NOW())";
+	}
+	elseif($quoi == 3) {
+		$query = "select MAX(glpi_tracking.realtime) as total from glpi_tracking where glpi_tracking.status = 'old' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
+	}
+//	echo $query;
+	$result = $db->query($query);
+	$sec = $db->result($result,0,"total");
+	if (empty($sec)) $sec=0;
+	$temps = getRealtime($sec);
+	return $temps;
+}
+
 ?>

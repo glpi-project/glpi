@@ -702,6 +702,7 @@ $lang["stats"][23] = "Pas de statistiques disponibles";
 $lang["stats"][25] = "Dur&eacute;e r&eacute;elle moyenne de l'intervention";
 $lang["stats"][26] = "Types";
 $lang["stats"][27] = "Dur&eacute;e r&eacute;elle totale des interventions";
+$lang["stats"][28] = "Dyr&eacute;é maximale de r&eacute;solution réelle de panne";
 
 // install update
 
