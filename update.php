@@ -711,6 +711,11 @@ $query = "ALTER TABLE `glpi_networking_ports` ADD INDEX ( `netpoint` ) ";
 $db->query($query) or die("47 ".$lang["update"][90].$db->error());
 }
 
+if(!FieldExists("glpi_config","ldap_condition")) {
+	$query = "ALTER TABLE `glpi_config` ADD `ldap_condition` varchar(255) NOT NULL default ''";
+	$db->query($query) or die("27 ".$lang["update"][90].$db->error());
+}
+
 }
 
 //Debut du script
