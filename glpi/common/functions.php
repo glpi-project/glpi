@@ -325,7 +325,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	//  Appel  CSS
 	
          echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
-	echo "<link rel='stylesheet' type='text/css' media='print' href='".$HTMLRel."print.css' />";
+	echo "<link rel='stylesheet' type='text/css' media='print' href='".$HTMLRel."print.css' >";
 	
 
 	// Some Javascript-Functions which we may need later
@@ -394,20 +394,14 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 		echo "</td>";
 	}
 	
-	/* HELP
 	
-	echo "<td align='center' valign='top'>";
-				echo "<a class='icon_nav_move'  target=_blank href=\"".$HTMLRel."help/".$_SESSION["glpilanguage"].".html\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a><br>";
-
-	echo "</td>";
-	
-	*/
 	
 	// On the right side of the navigation bar, we have a clock with
 	// date, help and a logout-link.
 
 	echo "<td  align='right' valign='top' width='100'>";
-	echo "<a class='icon_nav_move'  target=_blank href=\"".$HTMLRel."help/".$_SESSION["glpilanguage"].".html\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a><br><br>";
+	//help
+	echo "<a class='icon_nav_move'  href='#' onClick=\"window.open('".$HTMLRel."help/".$_SESSION["glpilanguage"].".html','helpdesk','width=400,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a><br><br>";
 	echo date("H").":".date("i")."<p><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i></p>";
 	echo "<a  class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img  src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></td>";
@@ -459,7 +453,7 @@ function helpHeader($title,$url,$name) {
 	// Appel CSS
 	
         echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
-	echo "<link rel='stylesheet' type='text/css' media='print' href='".$HTMLRel."print.css' />";
+	echo "<link rel='stylesheet' type='text/css' media='print' href='".$HTMLRel."print.css' >";
 	
 	// End of Head
 	echo "</head>\n";
@@ -501,7 +495,9 @@ function helpHeader($title,$url,$name) {
 	// On the right side of the navigation bar, we have a clock with
 	// date, help and a logout-link.
 	echo "<td align='right' width='100'><div align='right'>";
-	echo "<a class='icon_nav_move'  target=_blank href=\"".$HTMLRel."help/hd-".$_SESSION["glpilanguage"].".html\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a><br><br>";
+	// HELP	
+	echo "<a class='icon_nav_move'  href='#' onClick=\"window.open('".$HTMLRel."help/hd-".$_SESSION["glpilanguage"].".html','helpdesk','width=400,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a><br><br>";
+				
 	echo date("H").":".date("i")."<p><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i></p><a class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img class='icon_nav' src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
 
