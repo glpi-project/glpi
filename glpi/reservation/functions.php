@@ -289,18 +289,8 @@ function deleteReservationItem($input){
 	$ri->deleteFromDB($input["ID"]);
 }
 
-function printCalendrier($target,$ID){
+function printCalendrier($target,$ID=""){
 global $lang, $HTMLRel;
-
-$m=new ReservationItem;
-$m->getfromDB($ID);
-
-
- echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_nav'>".$m->getType()." - ".$m->getName()."</span>";
-		 echo "</b></td></tr></table></div>";
-
-
 
 
 if (!isset($_GET["mois_courant"]))
@@ -326,6 +316,27 @@ if ($mois_suivant==13){
 
 $str_suivant="?show=resa&ID=$ID&mois_courant=$mois_suivant&annee_courante=$annee_suivante";
 $str_precedent="?show=resa&ID=$ID&mois_courant=$mois_precedent&annee_courante=$annee_precedente";
+
+
+if (!empty($ID)){
+$m=new ReservationItem;
+$m->getfromDB($ID);
+$type=$m->getType();
+$name=$m->getName();
+$all="<a href='$target?show=resa&ID=&mois_courant=$mois_courant&annee_courante=$annee_courante'>".$lang["reservation"][26]."</a>";
+} else {
+$type="";
+$name=$lang["reservation"][25];
+$all="&nbsp;";
+}
+
+
+
+ echo "<div align='center'><table border='0'><tr><td>";
+                echo "<img src=\"".$HTMLRel."pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_nav'>".$type." - ".$name."</span>";
+		 echo "</b></td><td>$all</td></tr></table></div>";
+
+
 	
 // on vérifie pour les années bisextiles, on ne sait jamais.
 if (($annee_courante%4)==0) $fev=29; else $fev=28;
@@ -341,7 +352,6 @@ echo "<div align='center'>";
 
 echo "<table cellpadding='20' ><tr><td><a href=\"".$target.$str_precedent."\"><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></td><td><b>".
 	$lang["calendarM"][$mois_courant-1]."&nbsp;".$annee_courante."</b></td><td><a href=\"".$target.$str_suivant."\"><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></td></tr></table>";
-
 // test
 echo "<table><tr><td valign='top'>";
 
@@ -419,8 +429,9 @@ for ($i=1;$i<$nb_jour[$mois_courant-1]+1;$i++){
 	
 	echo "<table align='center' ><tr><td align='center' ><span style='font-family: arial,helvetica,sans-serif; font-size: 14px; color: black'>".$i."</span></td></tr>";
 	
+	if (!empty($ID)){
 	echo "<tr><td align='center'><a href=\"".$target."?show=resa&add=$ID&date=".$annee_courante."-".$mois_courant."-".$ii."\"><img style='color: blue; font-family: Arial, Sans, sans-serif; font-size: 10px;' src=\"".$HTMLRel."pics/addresa.png\" alt='".$lang["reservation"][8]."' title='".$lang["reservation"][8]."'></a></td></tr>";
-	
+	}
 	//if (($i-1+$jour_debut_mois)%7!=6&&($i-1+$jour_debut_mois)%7!=0){
 	echo "<tr><td>";
 	printReservation($target,$ID,$annee_courante."-".$mois_courant."-".$ii);
@@ -530,6 +541,40 @@ function showAddReservationForm($target,$ID,$date){
 }
 
 function printReservation($target,$ID,$date){
+if (!empty($ID))
+	printReservationItem($target,$ID,$date);
+else  {
+$db=new DB();
+$query="SELECT ID FROM glpi_reservation_item";
+$result=$db->query($query);
+if ($db->numrows($result)>0)
+while ($data=$db->fetch_array($result)){
+	$m=new ReservationItem;
+	$m->getfromDB($data['ID']);
+	$debut=$date." 00:00:00";
+	$fin=$date." 23:59:59";
+	$query2 = "SELECT * FROM glpi_reservation_resa".
+	" WHERE (('".$debut."' < begin AND '".$fin."' > begin) OR ('".$debut."' < end AND '".$fin."' > end) OR (begin < '".$debut."' AND end > '".$debut."') OR (begin < '".$fin."' AND end > '".$fin."')) AND id_item=".$data['ID']." ORDER BY begin";
+	$result2=$db->query($query2);
+	if ($db->numrows($result2)>0){
+		list($annee,$mois,$jour)=split("-",$date);
+		echo "<tr class='tab_bg_1'><td><a href='$target?show=resa&ID=".$data['ID']."&mois_courant=$mois&annee_courante=$annee'>".$m->getType()." - ".$m->getName()."</a></td></tr>";
+		echo "<tr><td>";
+		printReservationItem($target,$data['ID'],$date);
+		echo "</td></tr>";
+	}
+
+
+}
+
+
+}
+
+
+}
+
+
+function printReservationItem($target,$ID,$date){
 		global $lang, $HTMLRel;
 
 		$id_user=$_SESSION["glpiID"];

@@ -906,6 +906,8 @@ $lang["reservation"][21]	= "Voir les r&eacute;servations";
 $lang["reservation"][22]	= "Modifier le commentaire";
 $lang["reservation"][23]	= "Commentaire";
 $lang["reservation"][24]	= "Pr&ecirc;t";
+$lang["reservation"][25]	= "Tous les mat&eacute;riels en pr&ecirc;t";
+$lang["reservation"][26]	= "Voir tous";
 
 $lang["knowbase"][0] ="Base de connaissances";
 $lang["knowbase"][1] ="FAQ";
