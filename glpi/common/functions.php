@@ -794,9 +794,9 @@ function listConnectComputers($target,$input) {
 
 	$db = new DB;
 	if ($input["type"] == "name") {
-		$query = "SELECT ID,name,location from computers WHERE name LIKE '%".$input["comp"]."%'";
+		$query = "SELECT ID,name,location from computers WHERE name LIKE '%".$input["comp"]."%' order by name ASC";
 	} else {
-		$query = "SELECT ID,name,location from computers WHERE ID LIKE '%".$input["comp"]."%'";
+		$query = "SELECT ID,name,location from computers WHERE ID LIKE '%".$input["comp"]."%' order by name ASC";
 	} 
 	$result = $db->query($query);
 	$number = $db->numrows($result);
