@@ -47,11 +47,17 @@ if(!isset($_GET["start"])) $_GET["start"] = 0;
 if (!isset($_GET["order"])) $_GET["order"] = "ASC";
 
 
-if(!isset($_GET["glo_search"])) {
+
+if($_GET["field"]!="glo_search") {
+
 	showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
 }
 else {
-	showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"all","contains",$_GET["keywords"],"ID",$_GET["order"],$_GET["start"]);
+
+
+       	showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"all","contains",$_GET["contains"],"ID",$_GET["order"],$_GET["start"]);
+
+
 }
 
 

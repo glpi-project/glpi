@@ -65,69 +65,40 @@ function searchFormComputers() {
 	$option["hdtype"]			= $lang["computers"][36];
 	$option["comments"]			= $lang["computers"][19];
 	$option["contact"]			= $lang["computers"][16];
-	$option["contact_num"]		= $lang["computers"][15];
+	$option["contact_num"]		        = $lang["computers"][15];
 	$option["date_mod"]			= $lang["computers"][11];
-	
-	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
-	echo "<div align='center'><table border='0' width='90%'>";
-	echo "<tr><th colspan='2'><b>".$lang["search"][5].":</b></th></tr>";
-	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>";
-		dropdown( "dropdown_locations",  "contains");
-	echo "<input type='hidden' name=field value=location>&nbsp;";
-	echo $lang["search"][6];
-	echo "&nbsp;<select name='sort' size='1'>";
-	reset($option);
-	foreach ($option as $key => $val) {
-		echo "<option value=$key>$val\n";
-	}
-	echo "</select>";
-	echo "<input type='hidden' name=phrasetype value=exact>";
-	echo "</td><td width=80 align='center' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'>";
-	echo "</td></tr></table></div></form>";
-	
+
 	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
 	echo "<div align='center'><table border='0' width='90%'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
-	echo "<select name=\"field\" size=1>";
-	reset($option);
+	echo "<select name=\"field\" size='1'>";
+        echo "<option value='glo_search'>".$lang["search"][7]."</option>";
+        reset($option);
 	foreach ($option as $key => $val) {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select>&nbsp;";
 	echo $lang["search"][1];
 	echo "&nbsp;<select name=phrasetype>";
-	echo "<option value=contains>".$lang["search"][2]."</option>";
-	echo "<option value=exact>".$lang["search"][3]."</option>";
+	echo "<option value='contains'>".$lang["search"][2]."</option>";
+	echo "<option value='exact'>".$lang["search"][3]."</option>";
 	echo "</select>";
-	echo "<input type='text' size=5 name=\"contains\">"; 
+	echo "<input type='text' size='15' name=\"contains\">";
 	echo "&nbsp;";
 	echo $lang["search"][4];
-	echo "&nbsp;<select name=sort size=1>";
+	echo "&nbsp;<select name='sort' size='1'>";
 	reset($option);
 	foreach ($option as $key => $val) {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select> ";
-	echo "</td><td width=80 align='center' class='tab_bg_2'>";
+	echo "</td><td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
-	
-	echo "<div align='center'><table border='0' width='90%'>";
-	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
-	echo "<tr><th colspan='2'><b>".$lang["search"][7].":</b></th></tr>";
-	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>";
-	echo "<input type=\"hidden\" name=\"glo_search\" value=\"1\" />";
-	echo "<input type=\"text\" name=\"keywords\" />";
-	echo "</td>";
-	echo "</td><td width=80 align='center' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
-	echo "</td></tr>";
-	echo "</form></table></div>";
+
+
 }
 
 
