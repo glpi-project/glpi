@@ -68,8 +68,8 @@ function showPeripheralOnglets($target,$withtemplate,$actif){
 	$next=getNextItem("glpi_peripherals",$ID);
 	$prev=getPreviousItem("glpi_peripherals",$ID);
 	$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
-	if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'>".$lang["buttons"][12]."</a></li>";
-	if ($next>0) echo "<li><a href='$cleantarget?ID=$next'>".$lang["buttons"][11]."</a></li>";
+	if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><</a></li>";
+	if ($next>0) echo "<li><a href='$cleantarget?ID=$next'>></a></li>";
 	}
 	echo "</ul></div>";
 	
