@@ -493,8 +493,7 @@ function addSoftware($input) {
 		}
 	}
 
-	$sw->addToDB();
-	$newID=$sw->getInsertElementID();
+	$newID=$sw->addToDB();
 	
 	// ADD Infocoms
 	$ic= new Infocom();
@@ -543,7 +542,7 @@ function deleteSoftware($input,$force=0) {
 
 function dropdownSoftware($withtemplate='') {
 	$db = new DB;
-	$query = "SELECT * FROM glpi_software WHERE deleted='N' order by name";
+	$query = "SELECT * FROM glpi_software WHERE deleted='N' and is_template='0' order by name";
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 
@@ -1056,7 +1055,8 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
         $db = new DB;
-	$query = "SELECT glpi_inst_software.license as license, glpi_inst_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_licenses WHERE glpi_inst_software.license = glpi_licenses.ID AND glpi_licenses.sID = glpi_software.ID AND (glpi_inst_software.cID = '$instID') order by glpi_software.name";
+	$query = "SELECT glpi_inst_software.license as license, glpi_inst_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_licenses ";
+	$query.= "WHERE glpi_inst_software.license = glpi_licenses.ID AND glpi_licenses.sID = glpi_software.ID AND (glpi_inst_software.cID = '$instID') order by glpi_software.name";
 	
 	$result = $db->query($query);
 	$number = $db->numrows($result);

@@ -531,10 +531,8 @@ function addPeripheral($input) {
 		}
 	}
 
-	$mon->addToDB();
+	$newID=$mon->addToDB();
 
-	$newID=$mon->getInsertElementID();
-	
 	// ADD Infocoms
 	$ic= new Infocom();
 	if ($ic->getFromDB(PERIPHERAL_TYPE,$oldID)){

@@ -648,9 +648,7 @@ function addComputer($input) {
 			$comp->fields[$key] = $input[$key];
 		}		
 	}
-	$comp->addToDB();
-	
-	$newID=$comp->getInsertElementID();
+	$newID=$comp->addToDB();
 	
 	// ADD Devices
 	$comp->getFromDB($oldID);
