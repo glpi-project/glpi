@@ -947,6 +947,7 @@ $lang["reservation"][28]	= "Par semaine";
 $lang["reservation"][29]	= "Par jour";
 $lang["reservation"][30]	= "fois";
 $lang["reservation"][31]	= "Par";
+$lang["reservation"][32]	= "Editer r&eacute;servation";
 
 $lang["knowbase"][0] ="Base de connaissances";
 $lang["knowbase"][1] ="FAQ";

@@ -477,12 +477,32 @@ echo "</td></tr></table></div>";
 	
 }
 
-function showAddReservationForm($target,$ID,$date){
+function showAddReservationForm($target,$ID,$date,$resaID=-1){
 	global $lang,$HTMLRel;
 	
+	$resa= new ReservationResa;
+	if ($resaID!=-1)
+		$resa->getFromDB($resaID);
+	else {
+		$resa->getEmpty();
+		$resa->fields["begin"]=$date." 12:00:00";
+		$resa->fields["end"]=$date." 13:00:00";
+	}
+	$begin=strtotime($resa->fields["begin"]);
+	$end=strtotime($resa->fields["end"]);
+	
+	$begin_date=date("Y-m-d",$begin);
+	$end_date=date("Y-m-d",$end);
+	$begin_hour=date("H",$begin);
+	$end_hour=date("H",$end);
+	$begin_min=date("i",$begin);
+	$end_min=date("i",$end);
+
 	echo "<div align='center'><form method='post' name=form action=\"$target\">";
 	
-	
+	if ($resaID!=-1)
+	echo "<input type='hidden' name='ID' value='$resaID'>";
+
 	echo "<input type='hidden' name='id_item' value='$ID'>";
 
 	echo "<table class='tab_cadre' cellpadding='2'>";
@@ -501,16 +521,18 @@ function showAddReservationForm($target,$ID,$date){
 	else {
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][31].":	</td>";
 	echo "<td>";
+	if ($resaID!=-1)
 	dropdownValue("glpi_users","id_user",$_SESSION["glpiID"]);
+	else dropdownValue("glpi_users","id_user",$resa->fields["id_user"]);
     echo "</td></tr>";
 	
 	}
 
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][10].":	</td>";
-	echo "<td><input type='text' name='begin_date' readonly size='10' value='$date'>";
-	echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('".$HTMLRel."mycalendar.php?form=form&elem=begin_date&value=$date','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].begin_date.value='$date'\" value='reset'>";
+	echo "<td><input type='text' name='begin_date' readonly size='10' value='$begin_date'>";
+	echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('".$HTMLRel."mycalendar.php?form=form&elem=begin_date&value=$begin_date','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].begin_date.value='$begin_date'\" value='reset'>";
     echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][12].":	</td>";
@@ -518,7 +540,7 @@ function showAddReservationForm($target,$ID,$date){
 	echo "<select name='begin_hour'>";
 	for ($i=0;$i<24;$i++){
 	echo "<option value='$i'";
-	if ($i==12) echo " selected ";
+	if ($i==$begin_hour) echo " selected ";
 	echo ">$i</option>";
 	}
 	echo "</select>";
@@ -526,15 +548,16 @@ function showAddReservationForm($target,$ID,$date){
 	echo "<select name='begin_min'>";
 	for ($i=0;$i<60;$i+=5){
 	echo "<option value='$i'";
+	if ($i==$begin_min) echo " selected ";
 	echo ">$i</option>";
 	}
 	echo "</select>";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][11].":	</td>";
-	echo "<td><input type='text' name='end_date' readonly size='10' value='$date'>";
-	echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('".$HTMLRel."mycalendar.php?form=form&elem=end_date&value=$date','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].end_date.value='$date'\" value='reset'>";
+	echo "<td><input type='text' name='end_date' readonly size='10' value='$end_date'>";
+	echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('".$HTMLRel."mycalendar.php?form=form&elem=end_date&value=$end_date','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].end_date.value='$end_date'\" value='reset'>";
     echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][13].":	</td>";
@@ -542,7 +565,7 @@ function showAddReservationForm($target,$ID,$date){
 	echo "<select name='end_hour'>";
 	for ($i=0;$i<24;$i++){
 	echo "<option value='$i'";
-	if ($i==12) echo " selected ";
+	if ($i==$end_hour) echo " selected ";
 	echo ">$i</option>";
 	}
 	echo "</select>";
@@ -550,35 +573,45 @@ function showAddReservationForm($target,$ID,$date){
 	echo "<select name='end_min'>";
 	for ($i=0;$i<60;$i+=5){
 	echo "<option value='$i'";
+	if ($i==$end_min) echo " selected ";
 	echo ">$i</option>";
 	}
 	echo "</select>";
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][27].":	</td>";
-	echo "<td>";
-	echo "<select name='periodicity'>";
-	echo "<option value='day'>".$lang["reservation"][29]."</option>";	
-	echo "<option value='week'>".$lang["reservation"][28]."</option>";		
-	echo "</select>";	
-	echo "<select name='periodicity_times'>";
-	for ($i=1;$i<60;$i+=1){
-	echo "<option value='$i'";
-	echo ">$i</option>";
-	}
-	echo "</select>";
+	if ($resaID==-1){
+		echo "<tr class='tab_bg_2'><td>".$lang["reservation"][27].":	</td>";
+		echo "<td>";
+		echo "<select name='periodicity'>";
+		echo "<option value='day'>".$lang["reservation"][29]."</option>";	
+		echo "<option value='week'>".$lang["reservation"][28]."</option>";		
+		echo "</select>";	
+		echo "<select name='periodicity_times'>";
+		for ($i=1;$i<60;$i+=1){
+		echo "<option value='$i'";
+		echo ">$i</option>";
+		}
+		echo "</select>";
 
-	echo $lang["reservation"][30];
-	echo "</td></tr>";
+		echo $lang["reservation"][30];
+		echo "</td></tr>";
+	}
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][23].":	</td>";
-	echo "<td><input type='text' name='comment' size='30' value=''>";
+	echo "<td><input type='text' name='comment' size='30' value='".$resa->fields["comment"]."'>";
     echo "</td></tr>";
 
+	if ($resaID==-1){
 	echo "<tr class='tab_bg_2'>";
 	echo "<td colspan='2'  valign='top' align='center'>";
 	echo "<input type='submit' name='add_resa' value=\"".$lang["buttons"][8]."\" class='submit' class='submit'>";
 	echo "</td></tr>\n";
+	} else {
+	echo "<tr class='tab_bg_2'>";
+	echo "<td colspan='2'  valign='top' align='center'>";
+	echo "<input type='submit' name='edit_resa' value=\"".$lang["buttons"][14]."\" class='submit' class='submit'>";
+	echo "</td></tr>\n";
+	}
 	
 	echo "</table></div>";
 	echo "</form>";
@@ -640,7 +673,7 @@ function printReservationItem($target,$ID,$date){
 			while ($row=$db->fetch_array($result)){
 				echo "<tr><td align='center' valign='middle' >";
 				$user->getfromDBbyID($row["id_user"]);
-$display="";					
+				$display="";					
 				if ($debut>$row['begin']) $heure_debut="00:00";
 				else $heure_debut=get_hour_from_sql($row['begin']);
 
@@ -656,12 +689,14 @@ $display="";
 					else $display=$heure_debut."-".$heure_fin;
 
 					$delete="";
-
-					if ($_SESSION["glpiID"]==$user->fields["ID"]||isAdmin($_SESSION["glpitype"]))
+					$modif="";
+					if ($_SESSION["glpiID"]==$user->fields["ID"]||isAdmin($_SESSION["glpitype"])){
 						$delete="<a  href=\"".$target."?show=resa&ID=$ID&clear=".$row['ID']."&mois_courant=$month&annee_courante=$year\" alt='".$lang["reservation"][14]."' title='".$lang["reservation"][14]."'><img  src=\"".$HTMLRel."pics/clear.png\"></a>";
+						$modif="<a  href=\"".$target."?show=resa&edit=".$row['ID']."&item=$ID&mois_courant=$month&annee_courante=$year\" alt='".$lang["reservation"][14]."' title='".$lang["reservation"][32]."'><img  src=\"".$HTMLRel."pics/faqedit.png\"></a>";
+						}
 
 		
-		echo $delete."</td><td title='".$row['comment']."' alt='".$row['comment']."' align='center' class='tab_bg_2' style='border:1px dashed #cccccc'><span style='font-size:10px'>".$display."<br><b>".$user->fields["name"]."</b></span>";
+		echo $modif.$delete."</td><td title='".$row['comment']."' alt='".$row['comment']."' align='center' class='tab_bg_2' style='border:1px dashed #cccccc'><span style='font-size:10px'>".$display."<br><b>".$user->fields["name"]."</b></span>";
 
 			echo "</td></tr>";
 				
@@ -782,11 +817,43 @@ function updateReservationComment($input){
 
 	// Update a printer in the database
 
-	$ri = new ReservationItem;
+	$ri = new ReservationResa;
 	$ri->getFromDB($input["ID"]);
-
+	
+	print_r($input);
 	// Pop off the last two attributes, no longer needed
 	$null=array_pop($input);
+	print_r($input);
+	exit();
+	// Get all flags and fill with 0 if unchecked in form
+	foreach ($ri->fields as $key => $val) {
+		if (eregi("\.*flag\.*",$key)) {
+			if (!isset($input[$key])) {
+				$input[$key]=0;
+			}
+		}
+	}	
+
+	// Fill the update-array with changes
+	$x=0;
+	foreach ($input as $key => $val) {
+		if ($ri->fields[$key] != $input[$key]) {
+			$ri->fields[$key] = $input[$key];
+			$updates[$x] = $key;
+			$x++;
+		}
+	}
+	if (isset($updates))
+		$ri->updateInDB($updates);
+
+}
+
+function updateReservationResa($input){
+
+	// Update a printer in the database
+
+	$ri = new ReservationResa;
+	$ri->getFromDB($input["ID"]);
 
 	// Get all flags and fill with 0 if unchecked in form
 	foreach ($ri->fields as $key => $val) {

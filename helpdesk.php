@@ -42,10 +42,7 @@ include ($phproot . "/glpi/includes_reservation.php");
 include ($phproot . "/glpi/includes_knowbase.php");
 
 
-
 checkAuthentication("post-only");
-
-helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 
 //*******************
 // Affichage Module réservation 
@@ -59,6 +56,8 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 	include ($phproot . "/glpi/includes_monitors.php");
 	include ($phproot . "/glpi/includes_networking.php");
 
+	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+
 	if (!isset($_GET["ID"])) {
 		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["show"],"","","",0);
 	}
@@ -66,13 +65,27 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 		 showJobDetails($_GET["ID"]);
 	}
 }
-elseif (isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"resa") == 0)){
+elseif (isset($_POST["edit_resa"])||isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"resa") == 0)){
 	include ($phproot . "/glpi/includes_computers.php");
 	include ($phproot . "/glpi/includes_printers.php");
 	include ($phproot . "/glpi/includes_peripherals.php");
 	include ($phproot . "/glpi/includes_monitors.php");
 	include ($phproot . "/glpi/includes_networking.php");
+	if (isset($_POST["edit_resa"])){
+		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
+		list($end_year,$end_month,$end_day)=split("-",$_POST["end_date"]);
+		$_POST["begin"]=date("Y-m-d H:i:00",mktime($_POST["begin_hour"],$_POST["begin_min"],0,$begin_month,$begin_day,$begin_year));
+		$_POST["end"]=date("Y-m-d H:i:00",mktime($_POST["end_hour"],$_POST["end_min"],0,$end_month,$end_day,$end_year));
+		unset($_POST["begin_date"]);unset($_POST["begin_hour"]);unset($_POST["begin_min"]);
+		unset($_POST["end_date"]);unset($_POST["end_hour"]);unset($_POST["end_min"]);
+		$item=$_POST["id_item"];
+		unset($_POST["edit_resa"]);unset($_POST["id_item"]);
+		updateReservationResa($_POST);
+		header("Location: ".$cfg_install["root"]."/helpdesk.php?show=resa&ID=$item&mois_courant=$begin_month&annee_courante=$begin_year");
+	}
 
+	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	
 	if (isset($_GET["clear"])){
 		if (deleteReservation($_GET["clear"])){
 			logEvent($_GET["clear"], "reservation", 4, "inventory", $_SESSION["glpiname"]."delete a reservation.");
@@ -84,6 +97,9 @@ elseif (isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"]
 	}
 	else if (isset($_GET["add"])){
 		showAddReservationForm($_SERVER["PHP_SELF"],$_GET["add"],$_GET["date"]);
+	}
+	else if (isset($_GET["edit"])){
+		showAddReservationForm($_SERVER["PHP_SELF"],$_GET["item"],"",$_GET["edit"]);
 	}
 	else if (isset($_POST["add_resa"])){
 		if (addReservation($_POST,$_SERVER["PHP_SELF"])){
@@ -107,7 +123,8 @@ elseif (isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"]
 
 
 else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
-
+	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	
 	if (isset($_GET["ID"])){
 
 	ShowKbItemFull($_GET["ID"]);
