@@ -279,9 +279,6 @@ class MIMEMail extends MIMEMailCommon {
 	$Mail['Body']="";
         $isMime = sizeof($this->Messages) > 1 || sizeof($this->Attachments);
         $multiMessage = sizeof($this->Messages) > 1;
-        if($isMime) {
-            $Mail['Headers'] .= "MIME-Version: 1.0".$this->LB;
-        }
 
         $Mail['Headers'] .= $this->printHeader('From');
 
@@ -304,6 +301,12 @@ class MIMEMail extends MIMEMailCommon {
             }
         }
 
+        // Modif GLPI
+	//if($isMime) {
+            $Mail['Headers'] .= "MIME-Version: 1.0".$this->LB;
+        //}
+	
+	
         if($isMime) {
             $MailBoundary = "<<<:" . md5(uniqid(mt_rand(), 1));
             $Mail['Headers'] .= "Content-Type: multipart/mixed;".$this->LB."\tboundary=\"".$MailBoundary."\"".$this->LB;
@@ -393,12 +396,12 @@ class MIMEMailContent extends MIMEMailCommon
         $this->setCharsetFromContentType();
         switch($this->getHeader('Content-Type')) {
             case 'text/plain':
-                $encoding = '7bit';
+                $encoding = '8bit';
                 break;
             case 'text/html':
             default:
-	    // Force 7bit encoding
-	    $encoding = '7bit';
+	    // Force 7bit encoding for GLPI
+	    $encoding = '8bit';
                 //$encoding = 'base64';
                 break;
         }
@@ -415,6 +418,8 @@ class MIMEMailContent extends MIMEMailCommon
     }
     
     function getContentType($content = FALSE) {
+	   // Force Content Type to text/plain for GLPI
+	    return "text/plain";
         $tmpfile = $this->toTempfile($content);
         if(file_exists($tmpfile)) {
             $ct = mime_content_type($tmpfile);
