@@ -873,15 +873,18 @@ function printHelpDesk ($name) {
 
 	$db = new DB;
 
-	$query = "SELECT email,realname FROM glpi_users WHERE (name = '$name')";
+	$query = "SELECT email,realname,name FROM glpi_users WHERE (name = '$name')";
 	$result=$db->query($query);
 	$email = $db->result($result,0,"email");
 	$realname = $db->result($result,0,"realname");
+	$name = $db->result($result,0,"name");
 
 	echo "<form method='post' name=\"helpdeskform\" action=\"".$cfg_install["root"]."/tracking/tracking-injector.php\">";
 	echo "<center><table  class='tab_cadre'>";
 
-	echo "<tr><th colspan='2'>".$lang["help"][0]." $realname, ".$lang["help"][1].":</th></tr>";
+	if ($realname!='') $name=$realname;
+
+	echo "<tr><th colspan='2'>".$lang["help"][0]." $name, ".$lang["help"][1].":</th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$lang["help"][2].": </td>";
 	echo "<td><select name=priority>";
