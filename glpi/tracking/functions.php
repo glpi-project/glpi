@@ -1235,20 +1235,16 @@ function searchFormTrackingReport() {
  foreach ($elts as $key => $val){
  $selected="";
  if ($_GET["field2"]==$key) $selected="selected";
- echo "<option value='$key' $selected>$val</option>";
+ echo "<option value=\"$key\" $selected>$val</option>";
  
  }
  echo "</select>";
- echo " </td><td align='center'><select name='phrasetype2' size='1' >";
-
-
-	$selected="";
-	if ($_GET["phrasetype2"]=="contains") $selected="selected";
-	echo "<option value='contains' $selected>".$lang["search"][2]."</option>";
-	$selected="";
-	if ($_GET["phrasetype2"]=="exact") $selected="selected";
-	echo "<option value='exact' $selected>".$lang["search"][3]."</option>";
-	echo "</select></td><td align='center'>";
+ echo " </td><td align='center'>";
+ 
+ 
+ 
+	 echo $lang["search"][2];
+	echo "</td><td align='center'>";
 	echo "<input type='text' size='15' name=\"contains2\" value=\"".$_GET["contains2"]."\">";
 	echo "</td><td  colspan='2' align='center'>".$lang["job"][5]."&nbsp;:&nbsp;";
 	dropdownUsersTracking($_GET["attrib"],"attrib","assign");
@@ -1373,18 +1369,12 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = comp.tech_num ) ";
 	}
 
-	if ($contains2!=""&&$field2!="content") {
-		if ($phrasetype2 == "contains") {
-			$query.= " LEFT JOIN glpi_followups ON ( glpi_followups.tracking = glpi_tracking.ID AND (glpi_tracking.contents LIKE '%".$contains2."%'))";
-		}
-		else {
-			$query.= " LEFT JOIN glpi_followups ON ( glpi_followups.tracking = glpi_tracking.ID AND (glpi_tracking.contents LIKE '".$contains2."'))";
-		}
+	if ($contains2!=""&&$field2!="contents") {
+		$query.= " LEFT JOIN glpi_followups ON ( glpi_followups.tracking = glpi_tracking.ID)";
 	}
 
-
 	$query.=" WHERE '1' = '1'";
-	
+
 	if ($computers_search)
 	$query.=" AND glpi_tracking.device_type= '1'";
 	if ($category > 0)
@@ -1394,20 +1384,26 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 	if ($date1!="") $query.=" AND glpi_tracking.date >= '$date1'";
 	if ($date2!="") $query.=" AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 	
-	if ($contains2!=""&&$field2!="followup") {
-		if ($phrasetype2 == "contains") {
+	if ($contains2!=""){
+		switch ($field2){
+			case "both" :
+			$query.= " AND (glpi_followups.contents LIKE '%".$contains2."%' OR glpi_tracking.contents LIKE '%".$contains2."%')";
+			break;
+			case "followup" :
+			$query.= " AND (glpi_followups.contents LIKE '%".$contains2."%')";
+			break;
+			case "contents" :
 			$query.= " AND (glpi_tracking.contents LIKE '%".$contains2."%')";
-		}
-		else {
-			$query.= " AND (glpi_tracking.contents LIKE '".$contains2."')";
+			break;
 		}
 	}
-
+	
+	
 	if ($assign!="all") $query.=" AND glpi_tracking.assign = '$assign'";
 	if ($author!="all") $query.=" AND glpi_tracking.author = '$author'";
 	
    $query.=" ORDER BY ID";
-//	echo $query;
+
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);
@@ -1421,6 +1417,7 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 			$numrows_limit = $numrows;
 			$result_limit = $result;
 		}
+//	echo $query;
 		
 		if ($numrows_limit>0) {
 			// Produce headline
