@@ -49,6 +49,7 @@ if(isset($_POST["add"]))
 {	
 	checkAuthentication("admin");
 	commonHeader("Networking",$_SERVER["PHP_SELF"]);
+	unset($_POST["referer"]);
 	if (!isset($tab["several"])){
 	addNetport($_POST);
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added networking port.");
