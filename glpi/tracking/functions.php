@@ -38,7 +38,7 @@ include ("_relpos.php");
 // FUNCTIONS Tracking System
 
 
-function searchFormTracking ($show,$contains,$device) {
+function searchFormTracking ($show,$contains,$device,$category) {
 	// Tracking Search Block
 	
 	GLOBAL $cfg_layout, $cfg_install,$lang;
@@ -102,6 +102,13 @@ function searchFormTracking ($show,$contains,$device) {
 	echo "<td align='center'><input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'></td>";
 	echo "</tr>";
 
+	echo "<tr class='tab_bg_1'>";
+	echo "<td colspan='2' align='center'>";
+	dropdownValue("glpi_dropdown_tracking_category","category",$category);
+	echo "</td>";
+	echo "<td align='center'><input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'></td>";
+	echo "</tr>";
+
 //	echo "</form>";
 	//echo "<form method=\"get\" action=\"".$cfg_install["root"]."/tracking/index.php\">";
 	echo "<tr class='tab_bg_1'>";
@@ -139,7 +146,7 @@ function getTrackingPrefs ($username) {
 	return $prefs;
 }
 
-function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$device='-1') {
+function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$device='-1',$category=NULL) {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -164,6 +171,10 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 	}
 	if($device != -1) {
 		$where .= " AND (device_type = '".$device."')";
+	} 
+
+	if($category!='NULL') {
+		$where .= " AND (category = '".$category."')";
 	} 
 
 	// Build query, two completely different things here, need to be fixed
