@@ -69,7 +69,7 @@ function checkAuthentication($authtype) {
 
 	
 	// New database object
-	
+//	print_r($_SESSION);
         loadLanguage();
 	$type = $_SESSION["glpitype"];	
 
@@ -1156,12 +1156,12 @@ switch($item_type)
 						echo "<tr>";
 						if($name) echo "<td><div align='center'> $name </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 						if($contact) echo "<td><div align='center'> $contact </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($os) echo "<td><div align='center'> $os </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($processor) echo "<td><div align='center'> $processor </div></td>"; else echo "<td><div align='center'> N/A </div></td>";	
+						if($os) echo "<td><div align='center'> ".getDropdownName("glpi_dropdown_os",$os)." </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+						if($processor) echo "<td><div align='center'> ".getDropdownName("glpi_dropdown_processor",$processor)." </div></td>"; else echo "<td><div align='center'> N/A </div></td>";	
 						if($processor_speed) echo "<td><div align='center'> $processor_speed </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($lieu) echo "<td><div align='center'> $lieu </div></td>"; else echo "<td><div align='center'> N/A </div></td>";	
+						if($lieu) echo "<td><div align='center'> ".getDropdownName("glpi_dropdown_locations",$lieu)." </div></td>"; else echo "<td><div align='center'> N/A </div></td>";	
 						if($serial) echo "<td><div align='center'> $serial </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($ramType) echo "<td><div align='center'> $ramType </div></td>"; else echo "<td><div align='center'> N/A </div></td>";	
+						if($ramType) echo "<td><div align='center'> ".getDropdownName("glpi_dropdown_ram",$ramType)." </div></td>"; else echo "<td><div align='center'> N/A </div></td>";	
 						if($ramSize) echo "<td><div align='center'> $ramSize </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 						if($achat_date) echo "<td><div align='center'> $achat_date </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 						if($fin_garantie) echo "<td><div align='center'> $fin_garantie </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
@@ -1176,8 +1176,8 @@ switch($item_type)
 		echo "<table width='100%' height='60' border='0'>";
 		echo "<tr> ";
 		echo "<th><div align='center'><b>".$lang["printers"][5]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["printers"][9]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["printers"][8]."</b></div></th>";	
+		echo "<th><div align='center'><b>".$lang["printers"][9]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["printers"][6]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["printers"][10]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["printers"][23]."</b></div></th>";	
@@ -1200,8 +1200,8 @@ switch($item_type)
 					echo "<tr>";	
 					if($name) echo "<td><div align='center'>$name</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($contact) echo "<td><div align='center'>$contact</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($type) echo "<td><div align='center'>$type</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($lieu) echo "<td><div align='center'>$lieu</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($type) echo "<td><div align='center'>".getDropdownName("glpi_type_printers",$type)."</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($lieu) echo "<td><div align='center'>".getDropdownName("glpi_dropdown_locations",$lieu)."</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($serial) echo "<td><div align='center'>$serial</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($ramSize) echo "<td><div align='center'>$ramSize</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($achat_date) echo "<td><div align='center'>$achat_date</div></td>"; else echo "<td><div align='center'> N/A</div> </td>";
@@ -1240,10 +1240,10 @@ switch($item_type)
 					
 					echo "<tr>";	
 					if($name) echo "<td><div align='center'>$name</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($type) echo "<td><div align='center'>$type</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($type) echo "<td><div align='center'>".getDropdownName("glpi_type_monitors",$type)."</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($size) echo "<td><div align='center'>$size</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($contact) echo "<td><div align='center'>$contact</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($lieu) echo "<td><div align='center'>$lieu</div></td>"; else echo "<td><div align='center'>N/A </div></td>";
+					if($lieu) echo "<td><div align='center'>".getDropdownName("glpi_type_monitors",$lieu)."</div></td>"; else echo "<td><div align='center'>N/A </div></td>";
 					if($serial) echo "<td><div align='center'>$serial</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($achat_date) echo "<td><div align='center'>$achat_date</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($fin_garantie) echo "<td><div align='center'> $fin_garantie </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
@@ -1279,9 +1279,9 @@ switch($item_type)
 				
 					echo "<tr> ";	
 					if($name) echo "<td><div align='center'>$name</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($type) echo "<td><div align='center'></div>$type</td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($type) echo "<td><div align='center'></div>".getDropdownName("glpi_type_networking",$type)."</td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($contact) echo "<td><div align='center'>$contact</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($lieu) echo "<td><div align='center'>$lieu</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($lieu) echo "<td><div align='center'>".getDropdownName("glpi_dropdown_locations",$lieu)."</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($serial) echo "<td><div align='center'>$serial</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($achat_date) echo "<td><div align='center'>$achat_date</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($fin_garantie) echo "<td><div align='center'> $fin_garantie </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
