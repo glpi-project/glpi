@@ -48,7 +48,7 @@ commonHeader("Setup",$_SERVER["PHP_SELF"]);
 ?>
 
 <center>
-<?php echo "<center><b>Configuration GLPI</b</center>"; ?>
+<?php echo "<center><b>Configuration GLPI</b></center>"; ?>
 
 <hr noshade>
 
