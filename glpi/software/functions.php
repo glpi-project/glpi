@@ -639,11 +639,9 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 
 						echo "</b></td>";
 						echo "<td align='center'><b>";
-						if (!$expirer){
 							echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?back=$back&install=install&cID=$cID&lID=$ID\">";
 							echo $lang["buttons"][4];
 							echo "</a>";
-						}
 						echo "</b></td>";
 						echo "</tr>";
 					} /*else {
