@@ -158,7 +158,7 @@ function isSuperAdmin($authtype) {
 * under the glpi_users table, witch return users that have the right $authtype.
 * 
 *
-*@params : $authtype auth type
+*@param : $authtype auth type
 *@returns : string (in order to construct a SQL where clause)
 **/
 function searchUserbyType($authtype) {
@@ -397,7 +397,7 @@ function checkAuthentication($authtype) {
 * Print a nice HTML head for every page
 *
 *
-* @param $tittle tittle of the page
+* @param $title title of the page
 * @param $url not used anymore.
 *
 **/
@@ -411,7 +411,6 @@ function commonHeader($title,$url)
 $utils = array($lang["Menu"][17]=>array("/reservation/index.php","1"),
 		$lang["Menu"][19]=>array("/knowbase/index.php"," "),
 		$lang["Menu"][6]=>array("/reports/index.php"," "),
-		$lang["Menu"][27]=>array("/documents/index.php"," "),
 		);
 	
 $inventory = array($lang["Menu"][0]=>array("/computers/index.php","1"),
@@ -427,6 +426,7 @@ $inventory = array($lang["Menu"][0]=>array("/computers/index.php","1"),
 $financial = array($lang["Menu"][22]=>array("/contacts/index.php","1"),
 		$lang["Menu"][23]=>array("/enterprises/index.php"," "),
 		$lang["Menu"][25]=>array("/contracts/index.php"," "),
+		$lang["Menu"][27]=>array("/documents/index.php"," "),
 		);
 
 $maintain =	array($lang["Menu"][5]=>array("/tracking/index.php","6"),
@@ -578,7 +578,7 @@ $config = array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 * Print a nice HTML head for help page
 *
 *
-* @param $tittle tittle of the page
+* @param $title title of the page
 * @param $url not used anymore.
 * @param $name 
 **/
@@ -687,7 +687,7 @@ function helpHeader($title,$url,$name) {
 * Print a nice HTML head with no controls
 *
 *
-* @param $tittle tittle of the page
+* @param $title title of the page
 * @param $url not used anymore.
 * @param $name 
 **/
@@ -1080,6 +1080,17 @@ function dropdownValue($table,$myname,$value) {
 	}
 }
 
+
+
+/**
+* To be commented
+*
+*
+*
+*
+*
+* 
+*/
 function dropdownNoValue($table,$myname,$value) {
 	// Make a select box without parameters value
 
@@ -2348,11 +2359,18 @@ return $ligne['cpt'];
 // De jolies fonctions pour améliorer l'affichage du texte de la FAQ/knowledgbase
 //***************
 
-
+/**
+*Met en "ordre" une chaine avant affichage
+* Remplace trés AVANTAGEUSEMENT nl2br 
+* 
+* @param $pee
+* 
+* 
+* @return $string
+*/
 function autop($pee, $br=1) {
 
-// Remplace trés AVANTAGEUSEMENT nl2br
-// Met en "ordre" une chaine avant affichage
+// 
 
 // Thanks  to Matthew Mullenweg
 
@@ -2364,20 +2382,33 @@ return $pee;
 }
 
 
-
+/**
+* Rend une url cliquable htp/https/ftp meme avec une variable Get
+*
+* @param $chaine
+* 
+* 
+* 
+* @return $string
+*/
 function clicurl($chaine){
 
-// Rend une url cliquable htp/https/ftp meme avec une variable Get
+// 
 
 $text=preg_replace("`((?:https?|ftp)://\S+)(\s|\z)`", '<a href="$1">$1</a>$2', $chaine); 
 
 return $text;
 }
 
-
-//
-// Split the message into tokens ($inside contains all text inside $start and $end, and $outside contains all text outside)
-//
+/**
+* Split the message into tokens ($inside contains all text inside $start and $end, and $outside contains all text outside)
+*
+* @param $text
+* @param $start
+* @param $end
+* 
+* @return array 
+*/
 function split_text($text, $start, $end)
 {
 	
@@ -2402,9 +2433,15 @@ function split_text($text, $start, $end)
 }
 
 
-
-
-
+/**
+* Replace bbcode in text by html tag
+*
+* @param $string
+* 
+* 
+* 
+* @return $string 
+*/
 function rembo($string){
 
 // Adapté de PunBB 
