@@ -202,6 +202,7 @@ $lang["tracking"][15] = "Seulement les imprimantes";
 $lang["tracking"][16] = "Seulement les moniteurs";
 $lang["tracking"][17] = "Seulement les périphériques";
 $lang["tracking"][18] = "Seulement les logiciels";
+$lang["tracking"][19] = "Seulement Générales";
 
 // 1 computers
 // 2 networking

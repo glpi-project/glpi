@@ -62,7 +62,7 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 
 if(empty($tab["start"])) $tab["start"] = 0;
-if(empty($tab["device"])) $tab["device"] = 0;
+if(!isset($tab["device"])) $tab["device"] = -1;
 
 if (isAdmin($_SESSION["glpitype"])&&isset($tab["delete"])&&!empty($tab["todel"])){
 	$j=new Job;
