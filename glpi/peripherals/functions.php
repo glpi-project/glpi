@@ -524,6 +524,16 @@ function addPeripheral($input) {
 		while ($data=$db->fetch_array($result))
 			addDeviceContract($data["FK_contract"],PERIPHERAL_TYPE,$newID);
 	}
+	
+	// ADD Documents			
+	$query="SELECT FK_doc from glpi_doc_device WHERE FK_device='$oldID' AND device_type='".PERIPHERAL_TYPE."';";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		
+		while ($data=$db->fetch_array($result))
+			addDeviceDocument($data["FK_doc"],PERIPHERAL_TYPE,$newID);
+	}
+
 
 }
 

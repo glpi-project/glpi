@@ -404,8 +404,6 @@ function showContractForm ($target,$ID,$search) {
 
 		echo "</table></div>";
 		
-		showEnterpriseContract($ID);
-		showDeviceContract($ID,$search);
 	}
 
 }
@@ -489,10 +487,11 @@ function showDeviceContract($instID,$search='') {
 	echo "<th>&nbsp;</th></tr>";
 
 	while ($i < $number) {
-		$ID=$db->result($result, $i, "FK_device");
+		$device_ID=$db->result($result, $i, "FK_device");
+		$ID=$db->result($result, $i, "ID");
 		$type=$db->result($result, $i, "device_type");
 		$con=new CommonItem;
-		$con->getFromDB($type,$ID);
+		$con->getFromDB($type,$device_ID);
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>".$con->getType()."</td>";
 	echo "<td align='center' ".(isset($con->obj->fields['deleted'])&&$con->obj->fields['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$con->getLink()."</td>";

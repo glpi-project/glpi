@@ -26,16 +26,25 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  ------------------------------------------------------------------------
 */
- 
+
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
-include ($phproot . "/glpi/typedocs/classes.php");
-include ($phproot . "/glpi/typedocs/functions.php");
-include ($phproot . "/glpi/documents/classes.php");
-include ($phproot . "/glpi/documents/functions.php");
+$Dir = str_replace('\\', '/', getcwd());
+$Dir = explode('/', $Dir);
+$NDir = count($Dir);
+for($i=count($Dir); $i>0;$i--)
+{
+if(file_exists(implode('/', $Dir) . '/siteroot.php'))
+{
+$phproot = implode('/', $Dir);
+$HTMLRel = str_repeat("../", $NDir - count($Dir));
+$i = 0;
+}
+unset($Dir[$i]);
+}
+
 
 ?>

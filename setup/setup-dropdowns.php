@@ -112,6 +112,7 @@ if (isset($_POST["move"])) {
 	$dp["firmware"]=$lang["setup"][71];
 	$dp["netpoint"]=$lang["setup"][73];		
 	$dp["enttype"]=$lang["setup"][80];
+	$dp["rubdocs"]=$lang["setup"][81];
 	
 //	asort($dp);
 	
@@ -169,6 +170,9 @@ echo "<option value='$key' $sel>".$val."</option>";
 		break;
 		case "netpoint" : 
 		showFormDropDown($_SERVER["PHP_SELF"],"netpoint",$lang["setup"][73],$ID,$value2);
+		break;
+		case "rubdocs" : 
+		showFormDropDown($_SERVER["PHP_SELF"],"rubdocs",$lang["setup"][81],$ID,$value2);
 		break;
 	default : break;
 	}

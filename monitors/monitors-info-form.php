@@ -42,6 +42,7 @@ include ($phproot . "/glpi/includes_computers.php");
 include ($phproot . "/glpi/includes_reservation.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_financial.php");
+include ($phproot . "/glpi/includes_documents.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -135,6 +136,7 @@ else
 		showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);
 		
 		if (!empty($tab["ID"])){
+		showDocumentAssociated(MONITOR_TYPE,$tab["ID"],$tab["withtemplate"]);
 		showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",MONITOR_TYPE,$tab["ID"],1,$tab["withtemplate"]);
 		showContractAssociated(MONITOR_TYPE,$tab["ID"],$tab["withtemplate"]);
 		}
@@ -150,6 +152,7 @@ else
 
 		if (showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"])){
 			showConnect($_SERVER["PHP_SELF"],$tab['ID'],MONITOR_TYPE);
+			showDocumentAssociated(COMPUTER_TYPE,$tab["ID"]);
 			showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",MONITOR_TYPE,$tab["ID"]);
 			showContractAssociated(MONITOR_TYPE,$tab["ID"]);		
 			showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);

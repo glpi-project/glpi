@@ -178,6 +178,7 @@ $lang["Menu"][23]	="Entreprises";
 $lang["Menu"][24]	="Infos commerciales";
 $lang["Menu"][25]	="Contrats";
 $lang["Menu"][26]	="Gestion";
+$lang["Menu"][27]	="Documents";
 
 //Donn&eacute;es
 
@@ -683,6 +684,7 @@ $lang["setup"][77] = "Comme p&egrave;re de";
 $lang["setup"][78] = "Base de connaissances";
 $lang["setup"][79] = "Cat&eacute;gorie des suivis";
 $lang["setup"][80] = "Type de Tiers";
+$lang["setup"][81] = "Rubriques des documents";
 
 $lang["setup"][100]="Configuration g&eacute;n&eacute;rale";
 $lang["setup"][101]="Chemin d'installation";
@@ -1244,7 +1246,8 @@ $lang["document"][14]	= "ID";
 $lang["document"][15]	= "Upload";
 $lang["document"][16]	= "Ajouter un Document";
 $lang["document"][17]	= "Ajouter un Type de Document";
-$lang["document"][18]	= "";
-$lang["document"][19]	= "";
-$lang["document"][20]	= "";
+$lang["document"][18]	= "Document";
+$lang["document"][19]	= "Eléments associés";
+$lang["document"][20]	= "Type";
+$lang["document"][21]	= "Documents Associés";
 ?>
