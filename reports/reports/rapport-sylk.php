@@ -187,26 +187,54 @@ switch($table){
     );
  	break;
     // ------------------------------------------------------------------------
+	case "licenses" :
+		$query_nb = "select distinct glpi_licenses.ID from glpi_licenses";
+		
+		$query = "select glpi_software.name as soft, glpi_software.version as vers, ";
+		$query.= " glpi_software.comments as comments, glpi_dropdown_os.name as platform, ";
+		$query.= " glpi_software.is_update as is_update, update_soft.name as update_soft, update_soft.version as update_vers, ";
+		$query.= " glpi_licenses.serial as serial, glpi_licenses.expire as expire, ";
+		$query.= " glpi_licenses.buy as buy, glpi_licenses.ID as ID,";
+		$query.= " glpi_computers.name as install_on, ";
+		$query.= " oem_comp.name as oem_comp, glpi_licenses.oem as oem";
+		$query.= " from glpi_licenses ";
+		$query.= " LEFT JOIN glpi_software ON glpi_software.ID = glpi_licenses.sID ";
+		$query.= " LEFT JOIN glpi_software as update_soft ON glpi_software.update_software = update_soft.ID ";
+		$query.= " LEFT JOIN glpi_dropdown_os ON glpi_software.platform = glpi_dropdown_os.ID ";
+		$query.= " LEFT JOIN glpi_inst_software ON glpi_inst_software.license = glpi_licenses.ID ";
+		$query.= " LEFT JOIN glpi_computers ON glpi_inst_software.cID = glpi_computers.ID ";
+		$query.= " LEFT JOIN glpi_computers AS oem_comp ON glpi_licenses.oem_computer = oem_comp.ID ";
+
+		$query.= " ORDER BY glpi_software.name, glpi_licenses.serial";
+
+// ADD OEM
+
+//		echo $query;
+//		exit;	
+	    $champs = Array(
+      //     champ       en-tête     format         align  width multiple_zone
+      Array( 'ID', unhtmlentities($lang["software"][1]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'soft', unhtmlentities($lang["software"][10]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'vers',    unhtmlentities($lang["software"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),      
+      Array( 'platform',    unhtmlentities($lang["software"][3]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'serial',   unhtmlentities($lang["software"][31]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'buy',    unhtmlentities($lang["software"][35]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'install_on',    unhtmlentities($lang["software"][19]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'expire',    unhtmlentities($lang["software"][32]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'oem',    unhtmlentities($lang["software"][28]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'oem_comp',    unhtmlentities($lang["software"][28]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'is_update',    unhtmlentities($lang["software"][29]), FORMAT_TEXTE, 'L',    20 ,'0'),      
+      Array( 'update_soft',    unhtmlentities($lang["software"][30]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'update_vers',   unhtmlentities($lang["software"][30]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'comments',    unhtmlentities($lang["software"][6]), FORMAT_TEXTE, 'L',    20 ,'0'),      
+    );
+ 	break;
+
+    // ------------------------------------------------------------------------
 	case "computers" :
 		$query_nb = "select distinct glpi_computers.ID from glpi_computers";
 		$query="";
 		
-/*		$query = "(select glpi_computers.*, CONCAT(glpi_software.name, glpi_software.version) AS soft, glpi_licenses.serial as softserial, ";
-		$query.= " glpi_monitors.name as monname, glpi_monitors.type as montype, glpi_monitors.serial as monserial, ";
-		$query.= " glpi_printers.name as printname, glpi_printers.type as printtype, glpi_printers.serial as printserial, ";
-		$query.= " glpi_peripherals.name as periphname, glpi_peripherals.type as periphtype, glpi_peripherals.serial as periphserial, ";
-		$query.= " glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac, glpi_networking_ports.netpoint ";
-		$query.= " from glpi_computers LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type = 1 AND glpi_networking_ports.on_device = glpi_computers.ID)";
-		$query.= " LEFT JOIN glpi_inst_software ON (glpi_inst_software.cID = glpi_computers.ID) ";
-		$query.= " LEFT JOIN glpi_licenses ON (glpi_inst_software.license = glpi_licenses.ID) ";
-		$query.= " LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID) ";
-		$query.= " LEFT JOIN glpi_connect_wire ON (glpi_connect_wire.end1 = glpi_computers.ID) ";
-		$query.= " LEFT JOIN glpi_monitors ON (glpi_connect_wire.end2 = glpi_monitors.ID AND glpi_connect_wire.type = '4') ";
-		$query.= " LEFT JOIN glpi_peripherals ON (glpi_connect_wire.end2 = glpi_peripherals.ID AND glpi_connect_wire.type = '5') ";
-		$query.= " LEFT JOIN glpi_printers ON (glpi_connect_wire.end2 = glpi_printers.ID AND glpi_connect_wire.type = '3') ";
-		$query.=")";
-		$query.= " ORDER by glpi_computers.ID";
-*/		
 		$query = "select glpi_computers.*, CONCAT(glpi_software.name, glpi_software.version) AS soft, glpi_licenses.serial as softserial, ";
 		$query.= " glpi_monitors.name as monname, glpi_monitors.type as montype, glpi_monitors.serial as monserial, ";
 		$query.= " glpi_printers.name as printname, glpi_printers.type as printtype, glpi_printers.serial as printserial, ";

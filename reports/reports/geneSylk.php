@@ -49,6 +49,7 @@ echo "<tr><th colspan='3'>".$lang["reports"][10].":</th></tr>";
 	echo  "<tr class='tab_bg_1'><td align='center'><b>".$lang["reports"][8]."</b></td><td><a href='rapport-sylk.php?table=networking&limited=no' target='_blank'><b>".$lang["reports"][31]."</b></a></td><td><a href='rapport-sylk.php?table=networking&limited=yes' target='_blank'><b>".$lang["reports"][32]."</b></a></td></tr>";
 	echo  "<tr class='tab_bg_1'><td align='center'><b>".$lang["reports"][9]."</b></td><td><a href='rapport-sylk.php?table=monitors&limited=no' target='_blank'><b>".$lang["reports"][31]."</b></a></td><td><a href='rapport-sylk.php?table=monitors&limited=yes' target='_blank'><b>".$lang["reports"][32]."</b></a></td></tr>";
 	echo  "<tr class='tab_bg_1'><td align='center'><b>".$lang["reports"][29]."</b></td><td><a href='rapport-sylk.php?table=peripherals&limited=no' target='_blank'><b>".$lang["reports"][31]."</b></a></td><td><a href='rapport-sylk.php?table=peripherals&limited=yes' target='_blank'><b>".$lang["reports"][32]."</b></a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><b>".$lang["software"][11]."</b></td><td><a href='rapport-sylk.php?table=licenses&limited=no' target='_blank'><b>".$lang["reports"][31]."</b></a></td><td><a href='rapport-sylk.php?table=licenses&limited=yes' target='_blank'><b>".$lang["reports"][32]."</b></a></td></tr>";
 	
 echo "</table></div>";
 
