@@ -30,17 +30,11 @@ This file is part of GLPI.
  ----------------------------------------------------------------------
  */
 
-// Ce script génère ses propres messages d'erreur 
-// Pas besoin des warnings de PHP
-//error_reporting(0);
+//Ce script génère ses propres messages d'erreur 
+//Pas besoin des warnings de PHP
+error_reporting(0);
 
 
-// en test !!
-// début d'internationalisation
-// il reste à faire choisir la langue c'est pas implémenté encore 
-//include("glpi/dicts/french.php");
-// pour l'instant je bosse avec le french
-//
 
 
 
