@@ -1832,6 +1832,51 @@ $db->query($query) or die("Error inserting elements in table typedoc ".$query." 
 	
 }
 
+if(!TableExists("glpi_docs")) {
+	
+$query = "CREATE TABLE glpi_docs (
+  ID int(11) NOT NULL auto_increment,
+  name varchar(255) NOT NULL default '',
+  filename varchar(255) NOT NULL default '',
+  rubrique int(11) NOT NULL default '0',
+  mime varchar(30) NOT NULL default '',
+  date_mod datetime NOT NULL default '0000-00-00 00:00:00',
+  comment text NOT NULL,
+  deleted enum('Y','N') NOT NULL default 'N',
+  PRIMARY KEY  (ID),
+  KEY rubrique (rubrique),
+  KEY date_mod (date_mod)
+) TYPE=MyISAM;";
+
+$db->query($query) or die("Error creating table docs ".$query." ".mysql_error());
+}
+
+if(!TableExists("glpi_doc_device")) {
+	
+$query = "CREATE TABLE glpi_doc_device (
+  ID int(11) NOT NULL auto_increment,
+  FK_doc int(11) NOT NULL default '0',
+  FK_device int(11) NOT NULL default '0',
+  device_type tinyint(4) NOT NULL default '0',
+  PRIMARY KEY  (ID),
+  UNIQUE KEY FK_doc (FK_doc,FK_device,device_type),
+  KEY FK_doc_2 (FK_doc),
+  KEY FK_device (FK_device,device_type)
+) TYPE=MyISAM;";
+
+$db->query($query) or die("Error creating table docs ".$query." ".mysql_error());
+}
+
+if(!TableExists("glpi_dropdown_rubdocs")) {
+	
+$query = "CREATE TABLE glpi_dropdown_rubdocs (
+  ID int(11) NOT NULL auto_increment,
+  name varchar(255) default NULL,
+  PRIMARY KEY  (ID)
+) TYPE=MyISAM;";
+$db->query($query) or die("Error creating table docs ".$query." ".mysql_error());
+}
+
 
 // Update version number
 $query="UPDATE glpi_config set version='0.5' WHERE ID='1'";
