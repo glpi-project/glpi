@@ -551,8 +551,8 @@ function getFirstActionAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 			$query = "select glpi_tracking.ID AS ID, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID)";
 			$query .= " where glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
 		}
-		if ($date1!="") $query.= " and date >= '". $date1 ."' ";
-		if ($date2!="") $query.= " and date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+		if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
+		if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 		
 	}
 		$query.=" GROUP BY glpi_tracking.ID";
