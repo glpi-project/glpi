@@ -143,9 +143,9 @@ class Device {
 		}
 	}
 	
-	function computer_link($compID,$device_type) {
+	function computer_link($compID,$device_type,$specificity='') {
 		$db = new DB;
-		$query = "INSERT INTO glpi_computer_device (device_type,FK_device,FK_computers) values ('".$device_type."','".$this->fields["ID"]."','".$compID."')";
+		$query = "INSERT INTO glpi_computer_device (device_type,FK_device,FK_computers,specificity) values ('".$device_type."','".$this->fields["ID"]."','".$compID."','".$specificity."')";
 		if($db->query($query)) {
 			return true;
 		} else { 

@@ -261,10 +261,10 @@ function compdevice_form_add($target,$device_type,$cID,$withtemplate='') {
 	}
 }
 //Link the device to the computer
-function compdevice_add($cID,$device_type,$dID) {
+function compdevice_add($cID,$device_type,$dID,$specificity='') {
 	$device = new Device($device_type);
 	$device->getfromDB($dID);
-	$device->computer_link($cID,$device_type);
+	$device->computer_link($cID,$device_type,$specificity);
 }
 
 ?>

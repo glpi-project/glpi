@@ -152,8 +152,14 @@ else {
 	//show computer form to add
 	if (!empty($tab["withtemplate"])) {
 		showComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);
-		showConnections($tab["ID"],$tab["withtemplate"]);
+		//showConnections($tab["ID"],$tab["withtemplate"]);
+		showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",COMPUTER_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+		showPorts($tab["ID"], COMPUTER_TYPE,$tab["withtemplate"]);
+		if ($tab["withtemplate"]!=2)
+		showPortsAdd($tab["ID"],COMPUTER_TYPE);
+		
 		showSoftwareInstalled($tab["ID"],$tab["withtemplate"]);
+		
 		
 	} else {
 	if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
