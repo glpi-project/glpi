@@ -55,7 +55,7 @@ if (isset($_POST["add"])) {
 } else {
 	checkAuthentication("normal");
 	commonHeader("Setup",$_SERVER["PHP_SELF"]);
-	echo "<center><table cellpadding=4><tr><th>".$lang["setup"][0].":</th></tr></table></center>";
+	echo "<center><table cellpadding='4'><tr><th>".$lang["setup"][0].":</th></tr></table></center>";
 	showFormDropDown($_SERVER["PHP_SELF"],"locations",$lang["setup"][3]);
 	showFormTypeDown($_SERVER["PHP_SELF"],"computers",$lang["setup"][4]);
 	showFormTypeDown($_SERVER["PHP_SELF"],"networking",$lang["setup"][42]);

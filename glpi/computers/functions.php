@@ -296,7 +296,7 @@ function showComputerForm ($template,$target,$ID) {
 		echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
 
 		echo "<tr><td>".$lang["computers"][7].":		</td>";
-		echo "<td><input type='text' name='name' value=\"".$comp->fields["name"]."\" size=10></td>";
+		echo "<td><input type='text' name='name' value=\"".$comp->fields["name"]."\" size='12'></td>";
 		echo "</tr>";
 
 		echo "<tr><td>".$lang["computers"][10].": 	</td>";
@@ -305,7 +305,7 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][15].":		</td>";
-		echo "<td><input type='text' name='contact_num' value=\"".$comp->fields["contact_num"]."\" size=5>";
+		echo "<td><input type='text' name='contact_num' value=\"".$comp->fields["contact_num"]."\" size='12'>";
 		echo "</td></tr>";
 	
 		echo "<tr><td>".$lang["computers"][16].":	</td>";
