@@ -340,52 +340,46 @@ function showComputerForm($target,$ID,$withtemplate='') {
 			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
 		}
 		echo "<div align='center'>";
-		echo "<table width='700px' border='0' class='tab_cadre' >";
+		echo "<table width='700px' class='tab_cadre' >";
 		echo "<tr><th colspan ='2'align='center' >";
 		if(!$template) {
 			echo $lang["computers"][13].": ".$comp->fields["ID"];
 		}elseif (strcmp($template,"newcomp") === 0) {
 			echo $lang["computers"][12].": ".$comp->fields["tplname"];
 		}elseif (strcmp($template,"newtemplate") === 0) {
-			echo $lang["computers"][49].": <input type='text' name='tplname' value=\"".$comp->fields["tplname"]."\" size='20'>";
+			echo $lang["computers"][49]."&nbsp;: <input type='text' name='tplname' value=\"".$comp->fields["tplname"]."\" size='20'>";
 		}
 		
 		echo "</th><th  colspan ='2' align='center'>".$datestring.$date;
 		echo "</th></tr>";
 		
-		echo "<tr class='tab_bg_1'><td>".$lang["computers"][7].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$lang["computers"][7]."&nbsp;:		</td>";
 		echo "<td><input type='text' name='name' value=\"".$comp->fields["name"]."\" size='20'></td>";
-		
-		echo "<td valign='center' rowspan='6'>".$lang["computers"][19].":</td>";
-		echo "<td valign='center' rowspan='6'><textarea  cols='30' rows='8' name='comments' >".$comp->fields["comments"]."</textarea></td>";
-		
-		
+						
+		echo "<td>".$lang["computers"][16]."&nbsp;:	</td><td><input type='text' name='contact' size='20' value=\"".$comp->fields["contact"]."\">";
 		echo "</tr>";
-
-		echo "<tr class='tab_bg_1'><td>".$lang["computers"][10].": 	</td>";
-		echo "<td>";
+		
+		echo "<tr class='tab_bg_1'>";
+		
+		echo "<td >".$lang["computers"][10]."&nbsp;: 	</td>";
+		echo "<td >";
 			dropdownValue("glpi_dropdown_locations", "location", $comp->fields["location"]);
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_1'><td>".$lang["computers"][15].":		</td>";
-		echo "<td><input type='text' name='contact_num' value=\"".$comp->fields["contact_num"]."\" size='20'>";
-		echo "</td></tr>";
-	
-		echo "<tr class='tab_bg_1'><td>".$lang["computers"][16].":	</td>";
-		echo "<td><input type='text' name='contact' size='20' value=\"".$comp->fields["contact"]."\">";
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_1'><td>".$lang["computers"][17].":	</td>";
+		
+		echo "</td>";
+		
+		echo "<td>".$lang["computers"][15]."&nbsp;:		</td><td><input type='text' name='contact_num' value=\"".$comp->fields["contact_num"]."\" size='20'></td></tr>";
+		
+		echo "<tr class='tab_bg_1'><td>".$lang["computers"][17]."&nbsp;:	</td>";
 		echo "<td><input type='text' name='serial' size='20' value=\"".$comp->fields["serial"]."\">";
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_1'><td>".$lang["computers"][18].":	</td>";
+		echo "</td>";
+		echo "<td valign='center' rowspan='3'>".$lang["computers"][19]."&nbsp;:</td><td valign='center' rowspan='3'><textarea  cols='35' rows='6' name='comments' >".$comp->fields["comments"]."</textarea></td></tr>";
+		echo "<tr class='tab_bg_1'><td>".$lang["computers"][18]."&nbsp;:	</td>";
 		echo "<td><input type='text' size='20' name='otherserial' value=\"".$comp->fields["otherserial"]."\">";
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td>&nbsp;</td>";
-		echo "<td>&nbsp;";
-		echo "</td>";
+		echo "<tr class='tab_bg_1'>";
+		
+		
 		
 		echo "<td>".$lang["computers"][27].": </td>";
 		
@@ -406,17 +400,26 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		{
 			echo "<input type='checkbox' name='flags_server' value='1'>";
 		}
-		echo " ".$lang["computers"][28]."</td></tr>";
+		echo " &nbsp;".$lang["computers"][28]."</td>";
+		
+		echo "</tr>";
+		
+		
 		
 		echo "<tr class='tab_bg_1'>";
+		
+		echo "<td>".$lang["computers"][9]."&nbsp;</td><td>";
+		dropdownValue("glpi_dropdown_os", "os", $comp->fields["os"]);
+		echo "</td>";
+		
 		if (!$template){
-		echo "<td>".$lang["reservation"][24].":</td><td><b>";
+		echo "<td>".$lang["reservation"][24]."&nbsp;:</td><td><b>";
 		showReservationForm(1,$ID);
 		echo "</b></td>";
 		} else echo "<td>&nbsp;</td><td>&nbsp;</td>";
-		echo "<td>".$lang["computers"][9]."</td><td>";
-		dropdownValue("glpi_dropdown_os", "os", $comp->fields["os"]);
-		echo "</td></tr>";
+		
+		
+		
 		
 		
 		echo "</tr><tr>";
