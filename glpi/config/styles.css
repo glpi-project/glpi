@@ -4,7 +4,11 @@
   {  
     padding :0;
 	margin :0;
-	font-family: verdana;
+	font-family : Verdana,Arial,Helvetica,sans-serif;
+	font-size : 12px;
+ 	background-color : #FFFFFF;
+	color : #000000;
+	
   }
    
   small 
@@ -44,11 +48,13 @@
   {
     font-wheight: bold;
     text-decoration: none;
+  	color : #009966;
   }
 
   A:visited
   {
 	text-decoration: none;
+  	color: #009966;
   }
 
   A:hover

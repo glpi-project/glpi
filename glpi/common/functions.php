@@ -216,7 +216,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	echo "</head>\n";
 	
 	// Body with configured stuff
-	echo "<body bgcolor=".$cfg_layout["body_bg"]." text=".$cfg_layout["body_text"]." link=".$cfg_layout["body_link"]." vlink=".$cfg_layout["body_vlink"]." alink=".$cfg_layout["body_alink"].">\n";
+	echo "<body>";
 
 	// Main Headline
 			echo "<div id=navigation>";
@@ -340,7 +340,7 @@ function helpHeader($title,$url,$name) {
 	echo "</head>\n";
 	
 	// Body with configured stuff
-	echo "<body bgcolor=".$cfg_layout["body_bg"]." text=".$cfg_layout["body_text"]." link=".$cfg_layout["body_link"]." vlink=".$cfg_layout["body_vlink"]." alink=".$cfg_layout["body_alink"].">\n";
+	echo "<body>";
 
 	// Main Headline
 				echo "<div id=navigation>";
@@ -430,7 +430,7 @@ function nullHeader($title,$url) {
 	echo "</head>\n";
 	
 	// Body with configured stuff
-	echo "<body bgcolor=".$cfg_layout["body_bg"]." text=".$cfg_layout["body_text"]." link=".$cfg_layout["body_link"]." vlink=".$cfg_layout["body_vlink"]." alink=".$cfg_layout["body_alink"].">\n";
+	echo "<body>";
 
 	// Main Headline
 				echo "<div id=navigation>";
