@@ -37,6 +37,8 @@ $lang["common"][0] = "Sans nom";
 $lang["common"][1] = "Mat&eacute;riel";
 $lang["common"][2] = "ID";
 $lang["common"][3] = "Supprimés";
+$lang["common"][4] = "Web";
+
 
 //Login
 
