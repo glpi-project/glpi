@@ -288,7 +288,7 @@ function showDocumentForm ($target,$ID,$search) {
 
 		
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][4].":		</td>";
-	echo "<td colspan='2'><input type='text' name='mime' size='20'></td>";
+	echo "<td colspan='2'><input type='text' name='mime' value='".$con->fields["mime"]."' size='25'></td>";
 	echo "</tr>";
 	
 	echo "<tr>";
@@ -401,7 +401,6 @@ function uploadDocument($FILEDESC,$old_file=''){
 				if ($force||!is_file($phproot.$cfg_install["doc_dir"]."/".$dir."/".$filename)){
 					// Delete old file
 					if(!empty($old_file)&& is_file($phproot.$cfg_install["doc_dir"]."/".$old_file)&& !is_dir($phproot.$cfg_install["doc_dir"]."/".$old_file)) {
-						echo $old_file."---";
 						if (unlink($phproot.$cfg_install["doc_dir"]."/".$old_file))
 						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][24].$phproot.$cfg_install["doc_dir"]."/".$old_file."<br>";
 						else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][25].$phproot.$cfg_install["doc_dir"]."/".$old_file."<br>";
