@@ -150,7 +150,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=name&order=ASC&start=$start\">";
-			echo $lang["monitors"][5]."</th>";
+			echo $lang["monitors"][5]."</a></th>";
 
 			// Location			
 			echo "<th>";
@@ -158,7 +158,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=location&order=ASC&start=$start\">";
-			echo $lang["monitors"][6]."</th>";
+			echo $lang["monitors"][6]."</a></th>";
 
 			// Type
 			echo "<th>";
@@ -166,7 +166,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=type&order=ASC&start=$start\">";
-			echo $lang["monitors"][9]."</th>";
+			echo $lang["monitors"][9]."</a></th>";
 
 			// Last modified		
 			echo "<th>";
@@ -174,7 +174,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=date_mod&order=DESC&start=$start\">";
-			echo $lang["monitors"][16]."</th>";
+			echo $lang["monitors"][16]."</a></th>";
 
 			// Contact person
 			echo "<th>";
@@ -182,7 +182,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=contact&order=ASC&start=$start\">";
-			echo $lang["monitors"][8]."</th>";
+			echo $lang["monitors"][8]."</a></th>";
 
 			echo "</tr>";
 
@@ -194,7 +194,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				echo "<td><b>";
 				echo "<a href=\"".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=$ID\">";
 				echo $mon->fields["name"]." (".$mon->fields["ID"].")";
-				echo "</b></a></td>";
+				echo "</a></b></td>";
 				echo "<td>".$mon->fields["location"]."</td>";
 				echo "<td>".$mon->fields["type"]."</td>";
 				echo "<td>".$mon->fields["date_mod"]."</td>";

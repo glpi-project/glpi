@@ -152,7 +152,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=name&order=ASC&start=$start\">";
-			echo $lang["printers"][5]."</th>";
+			echo $lang["printers"][5]."</a></th>";
 
 			// Location			
 			echo "<th>";
@@ -160,7 +160,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=location&order=ASC&start=$start\">";
-			echo $lang["printers"][6]."</th>";
+			echo $lang["printers"][6]."</a></th>";
 
 			// Type
 			echo "<th>";
@@ -168,7 +168,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=type&order=ASC&start=$start\">";
-			echo $lang["printers"][9]."</th>";
+			echo $lang["printers"][9]."</a></th>";
 
 			// Last modified		
 			echo "<th>";
@@ -176,7 +176,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=date_mod&order=DESC&start=$start\">";
-			echo $lang["printers"][16]."</th>";
+			echo $lang["printers"][16]."</a></th>";
 	
 			echo "</tr>";
 
@@ -188,7 +188,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "<td><b>";
 				echo "<a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=$ID\">";
 				echo $printer->fields["name"]." (".$printer->fields["ID"].")";
-				echo "</b></a></td>";
+				echo "</a></b></td>";
 				echo "<td>".$printer->fields["location"]."</td>";
 				echo "<td>".$printer->fields["type"]."</td>";
 				echo "<td>".$printer->fields["date_mod"]."</td>";
