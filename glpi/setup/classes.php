@@ -46,7 +46,7 @@ class User {
   	$this->fields['password'] = '';
   	$this->fields['email'] = $name;
   	$this->fields['location'] = 'NULL';
-  	$this->fields['phone'] = 'NULL';
+  	$this->fields['phone'] = '';
   	$this->fields['type'] = 'post-only';
   	$this->fields['realname'] = $name;
   	$this->fields['can_assign_job'] = 'no';

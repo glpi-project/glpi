@@ -58,8 +58,8 @@ $login_ok=0;
 //echo "test";
 $identificat = new Identification($_POST['login_name']);
 $auth_succeded = $identificat->connection_imap($cfg_login['imap']['auth_server'],$_POST['login_name'],$_POST['login_password']);
+
 // we check all the auth sources in turn...
-$auth_succeded = $identificat->connection_db($_POST['login_name'],$_POST['login_password']);
 if (!$auth_succeded) {
 	$auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$_POST['login_name'],$_POST['login_password']);
 }
