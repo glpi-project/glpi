@@ -444,7 +444,7 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		echo "</tr><tr>";
 		
 		if ($template) {
-			if (empty($ID)){
+			if (empty($ID)||$withtemplate==2){
 			echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
 			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 			echo "</td>\n";
