@@ -675,6 +675,7 @@ function printReservationItem($target,$ID,$date){
 
 					$delete="";
 					$modif="";
+					$modif_end="";
 					if ($_SESSION["glpiID"]==$user->fields["ID"]||isAdmin($_SESSION["glpitype"])){
 						$modif="<a  href=\"".$target."?show=resa&edit=".$row['ID']."&item=$ID&mois_courant=$month&annee_courante=$year\"  title='".$row['comment']."'>";
 						$modif_end="</a>";
