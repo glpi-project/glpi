@@ -593,7 +593,7 @@ function dropdown($table,$myname) {
 				$output = $db->result($result, $i, "netpname");
 				$loc = $db->result($result, $i, "locname");
 				$ID = $db->result($result, $i, "ID");
-				echo "<option value=\"$ID\">$loc - $output</option>";
+				echo "<option value=\"$ID\">$output ($loc)</option>";
 				$i++;
 			}
 		}
@@ -704,7 +704,7 @@ function NetpointLocationSearch($search,$myname,$location,$value='') {
 		while($line = $db->fetch_array($result)) {
 			echo "<option value=\"". $line["ID"] ."\" ";
 			if ($value==$line["ID"]) echo " selected ";
-			echo ">". $line["locname"] ." - ". $line["netpointname"] ."</option>";
+			echo ">". $line["netpointname"]." (".$line["locname"] .")</option>";
 		}
 	}
 	echo "</select>";
@@ -1352,5 +1352,11 @@ switch($item_type)
 	}	
 }
 
-
+function countElementsInTable($table){
+$db=new DB;
+$query="SELECT count(*) as cpt from $table";
+$result=$db->query($query);
+$ligne = $db->fetch_array($result);
+return $ligne['cpt'];
+}
 ?>

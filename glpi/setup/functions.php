@@ -44,6 +44,7 @@ function showFormDropDown ($target,$name,$human) {
 	echo "<tr><th colspan='3'>$human:</th></tr>";
 	echo "<form method='post' action=\"$target\">";
 	echo "<input type='hidden' name='which' value='$name'>";
+	if (countElementsInTable("glpi_dropdown_".$name)>0){
 	echo "<tr><td align='center' class='tab_bg_1'>";
 
 	dropdown("glpi_dropdown_".$name, "ID");
@@ -67,6 +68,7 @@ function showFormDropDown ($target,$name,$human) {
         //
         echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 	echo "</td></form></tr>";
+	}
 	echo "<form action=\"$target\" method='post'>";
 	echo "<input type='hidden' name='which' value='$name'>";
 	echo "<tr><td align='center'  class='tab_bg_1'>";
@@ -200,6 +202,9 @@ function replaceDropDropDown($input) {
 		$result = $db->query($query);
 		$query = "update glpi_networking set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$db->query($query);
+		$query = "update glpi_peripherals set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		$db->query($query);
+
 		break;
 	case "monitors" :
 		$query = "update glpi_monitors set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
@@ -319,6 +324,10 @@ function dropdownUsed($table, $ID) {
 		$query = "Select count(*) as cpt FROM glpi_networking where ". $name ." = ".$ID."";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		$query = "Select count(*) as cpt FROM glpi_peripherals where ". $name ." = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+
 		break;
 	case "monitors" :
 		$query = "Select count(*) as cpt FROM glpi_monitors where type = '".$ID."'";

@@ -43,7 +43,7 @@ include ($phproot . "/glpi/includes_networking.php");
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(empty($tab["search"])) $tab["search"] = "";
-//if(empty($tab["location"])) $tab["location"] = "";
+
 
 if (isset($_SERVER["HTTP_REFERER"]))
 $REFERER=$_SERVER["HTTP_REFERER"];
@@ -113,8 +113,10 @@ else
 	if(empty($tab["ondevice"])) $tab["ondevice"] ="";
 	if(empty($tab["devtype"])) $tab["devtype"] ="";
 	if(empty($tab["several"])) $tab["several"] ="";
+	if(empty($tab["location"])) $tab["location"] = "";
 	checkAuthentication("normal");
 	commonHeader("Networking",$_SERVER["PHP_SELF"]);
+	
 	if(isset($tab["ID"]))
 	{
 		showNetportForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["ondevice"],$tab["devtype"],$tab["several"],$tab["search"],$tab["location"]);
