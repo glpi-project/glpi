@@ -505,3 +505,60 @@ p.toolbar a:hover
 
 .barre { text-decoration : line-through; }
 
+
+/* #################################### */
+/* style onglet */
+/* #################################### */
+
+#barre_onglets {
+
+width:700px;
+margin-left: auto;
+  margin-right: auto;
+ 
+
+
+}
+
+
+ul#onglet {
+    font: bold 11px verdana, arial, sans-serif;
+    list-style-type: none;
+    padding-bottom: 24px;
+   border-bottom: 1px solid #ffffff;
+    margin: 0;
+}
+
+ul#onglet li {
+    float: left;
+    height: 21px;
+    background-color: #eeeeee;
+    margin: 2px 2px 0 2px;
+    border: 1px solid #009966;
+   border-bottom: 1px solid #fff;
+ -moz-border-radius: 4px;	
+}
+
+ul#onglet li.actif {
+    border-bottom: 1px outset #009966;
+    background-color: #fff;
+}
+
+ul#onglet li.actif a {
+    color: #000;
+}
+
+#onglet a {
+    float: left;
+    display: block;
+    color: #666;
+    text-decoration: none;
+    padding: 4px;
+}
+
+#onglet a:hover {
+    background: #fff;
+}
+
+
+
