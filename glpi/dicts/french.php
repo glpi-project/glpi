@@ -835,6 +835,7 @@ $lang["mailing"][12]="Attribution de l'intervention";
 $lang["mailing"][13]="Erreur dans la génération de l'email automatique";
 $lang["mailing"][14]="Changement de catégorie de l'intervention";
 $lang["mailing"][15]="Changement de priorité de l'intervention";
+$lang["mailing"][16]="Priorit&eacute;";
 
 
 //Les stats

@@ -236,7 +236,7 @@ class Job {
 		$m= new CommonItem;
 		$name=="N/A";
 		if ($m->getfromDB($this->device_type,$this->computer)){
-			$name=$m->getType()." - ".$m->getName();
+			$name=$m->getType()." ".$m->getName();
 		}
 		
 		
@@ -245,6 +245,7 @@ class Job {
 		$message.= $lang["mailing"][6].$this->date."\n";
 		$message.= $lang["mailing"][7].$name."\n";
 		$message.= $lang["mailing"][8].$this->assign."\n";
+		$message.= $lang["mailing"][16].getPriorityName($this->priority)."\n";
 		$message.= $lang["mailing"][3]."\n".$this->contents."\n";	
 		$message.="\n\n";
 		return $message;
