@@ -114,7 +114,7 @@ echo $_GET["elem"];?>&mois=" + document.forms["MyCalendar"].elements['month'].op
 if (isset($_GET["value"])&&$_GET["value"]!=""&&$_GET["value"]!="0000-00-00"&&!isset($_GET["jour"])&&!isset($_GET["mois"])&&!isset($_GET["annee"])) {
 list($annee,$mois,$jour)=split("-",$_GET["value"]);
 }
-
+else {
 if (!isset($_GET["jour"]))
        $jour = date("j") ;
 else $jour=$_GET["jour"];       
@@ -126,7 +126,7 @@ else $mois=$_GET["mois"] ;
 if (!isset($_GET["annee"]))
        $annee = date("Y") ;
 else $annee=$_GET["annee"];
-
+}
     // nombre de jours par mois
   $nbjmonth[0] = 31 ;
   $nbjmonth[1] = ($annee%4==0?($annee%100==0?($annee%400?29:28):29):28) ;
