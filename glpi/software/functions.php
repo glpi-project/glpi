@@ -415,7 +415,6 @@ function showLicenses ($sID) {
 					echo "<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&ID=".$data2["ID"]."\">";
 					echo $lang["buttons"][5];
 					echo "</a></b>";
-//					http://localhost/dombre/glpi-test/software/software-licenses.php?uninstall=uninstall&lID=8
 					echo "</td></tr>";
 					}
 					echo "</table>";
@@ -674,7 +673,18 @@ function countInstallations($sID) {
 			echo "<td>".$lang["software"][21].": <b>".$total."</b></td>";
 			echo "</tr></table>";
 		} else {
-			echo "<center><i>free software</i></center>";
+			// Get installed
+			$i=0;
+			$installed = 0;
+			while ($i < $db->numrows($result))
+			{
+				$lID = $db->result($result,$i,"ID");
+				$query2 = "SELECT license FROM glpi_inst_software WHERE (license = '$lID')";
+				$result2 = $db->query($query2);
+				$installed += $db->numrows($result2);
+				$i++;
+			}
+			echo "<center><i>free software</i>&nbsp;&nbsp;".$lang["software"][19].": <b>$installed</b></center>";
 		}
 	} else {
 			echo "<center><i>no licenses</i></center>";
