@@ -63,8 +63,8 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
 	showNetworkingForm ($_SERVER["PHP_SELF"],$_POST["ID"]);
-	showJobListForItem($_SESSION["glpiname"],2,$_POST["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],2,$_POST["ID"]);
+	showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_POST["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_POST["ID"]);
 
 	commonFooter();
 
@@ -78,8 +78,8 @@ else
 	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
 	showNetworkingForm ($_SERVER["PHP_SELF"],$_GET["ID"]);
 	if (!empty($_GET["ID"])){
-	showJobListForItem($_SESSION["glpiname"],2,$_GET["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],2,$_GET["ID"]);
+	showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_GET["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_GET["ID"]);
 	}
 	commonFooter();
 }

@@ -57,7 +57,7 @@ else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
 	deletePrinter($_POST);
-	Disconnect($tab["ID"],3);	
+	Disconnect($tab["ID"],PRINTER_TYPE);	
 	logEvent($_POST["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/printers/");
 }
@@ -69,8 +69,8 @@ else if (isset($_POST["update"]))
 	commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
 	showPrintersForm($_SERVER["PHP_SELF"],$_POST["ID"]);
 	showCartridgeInstalled($_POST["ID"]);
-	showJobListForItem($_SESSION["glpiname"],3,$_POST["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],3,$_POST["ID"]);
+	showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$_POST["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$_POST["ID"]);
 
 	commonFooter();
 
@@ -78,13 +78,13 @@ else if (isset($_POST["update"]))
 else if (isset($tab["disconnect"]))
 {
 	checkAuthentication("admin");
-	Disconnect($tab["ID"],3);
+	Disconnect($tab["ID"],PRINTER_TYPE);
 	logEvent($tab["ID"], "printers", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
 	commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
 	showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	showCartridgeInstalled($tab["ID"]);
-	showJobListForItem($_SESSION["glpiname"],3,$tab["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],3,$tab["ID"]);
+	showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
 
 	commonFooter();
 }
@@ -108,12 +108,12 @@ else if(isset($tab["connect"]))
 	{
 		checkAuthentication("admin");
 		commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
-		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],3);
+		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],PRINTER_TYPE);
 		logEvent($tab["sID"], "printers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
 		showPrintersForm($_SERVER["PHP_SELF"],$tab["sID"]);
 		showCartridgeInstalled($tab["ID"]);
-		showJobListForItem($_SESSION["glpiname"],3,$tab["ID"]);
-		showOldJobListForItem($_SESSION["glpiname"],3,$tab["ID"]);
+		showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
+		showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
 
 		commonFooter();
 
@@ -128,8 +128,8 @@ else
 	showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	if (!empty($_GET["ID"])){
 	showCartridgeInstalled($tab["ID"]);
-	showJobListForItem($_SESSION["glpiname"],3,$tab["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],3,$tab["ID"]);
+	showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
 	}
 	commonFooter();
 }

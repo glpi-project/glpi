@@ -409,9 +409,9 @@ function showNetworkingForm ($target,$ID) {
 
 		echo "</table></div>";
 
-		showPorts($ID,2);
+		showPorts($ID,NETWORKING_TYPE);
 
-		showPortsAdd($ID,2);
+		showPortsAdd($ID,NETWORKING_TYPE);
 	}
 }
 

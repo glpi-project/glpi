@@ -55,7 +55,7 @@ if (isset($_POST["add"]))
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
-	Disconnect($tab["ID"],4);
+	Disconnect($tab["ID"],MONITOR_TYPE);
 	deleteMonitor($_POST);
 	logEvent($_POST["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/monitors/");
@@ -67,8 +67,8 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
 	showMonitorsForm($_SERVER["PHP_SELF"],$_POST["ID"]);
-	showJobListForItem($_SESSION["glpiname"],4,$_POST["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],4,$_POST["ID"]);
+	showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_POST["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_POST["ID"]);
 	commonFooter();
 
 }
@@ -79,8 +79,8 @@ else if (isset($tab["disconnect"]))
 	logEvent($tab["ID"], "monitors", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
 	commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
 	showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"]);
-	showJobListForItem($_SESSION["glpiname"],4,$tab["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],4,$tab["ID"]);
+	showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
 	commonFooter();
 }
 else if(isset($tab["connect"]))
@@ -103,11 +103,11 @@ else if(isset($tab["connect"]))
 	{
 		checkAuthentication("admin");
 		commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
-		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],4);
+		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],MONITOR_TYPE);
 		logEvent($tab["sID"], "monitors", 5, "inventory", $_SESSION["glpiname"]." connected item.");
 		showMonitorsForm($_SERVER["PHP_SELF"],$tab["sID"]);
-		showJobListForItem($_SESSION["glpiname"],4,$tab["ID"]);
-		showOldJobListForItem($_SESSION["glpiname"],4,$tab["ID"]);
+		showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
+		showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
 
 		commonFooter();
 	}
@@ -121,8 +121,8 @@ else
 	commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
 	showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	if (!empty($_GET["ID"])){
-	showJobListForItem($_SESSION["glpiname"],4,$tab["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],4,$tab["ID"]);
+	showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
 	}
 	commonFooter();
 }

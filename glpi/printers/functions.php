@@ -432,9 +432,9 @@ function showPrintersForm ($target,$ID) {
 
 		showConnect($target,$ID,3);
 
-		showPorts($ID,3);
+		showPorts($ID,PRINTER_TYPE);
 
-		showPortsAdd($ID,3);
+		showPortsAdd($ID,PRINTER_TYPE);
 	}
 }
 
