@@ -977,6 +977,19 @@ $lang["knowbase"][20] ="Base de connaissances vide";
 $lang["knowbase"][21] ="Tout d&eacute;plier";
 $lang["knowbase"][22] ="Tout replier";
 
+$lang["toolbar"][0]="";
+$lang["toolbar"][1]="Gras";
+$lang["toolbar"][2]="Italique";
+$lang["toolbar"][3]="Soulign&eacute;";
+$lang["toolbar"][4]="Barr&eacute;";
+$lang["toolbar"][5]="Centr&eacute;";
+$lang["toolbar"][6]="Code";
+$lang["toolbar"][7]="Titre";
+$lang["toolbar"][8]="Rouge";
+$lang["toolbar"][9]="Bleu";
+$lang["toolbar"][10]="Jaune";
+
+
 $lang["title"][0] = "Centre de contrôle";
 $lang["title"][1] = "Acc&egrave;s au Helpdesk seulement";
 $lang["title"][2] = "Configuration";
