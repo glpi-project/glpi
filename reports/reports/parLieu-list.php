@@ -58,15 +58,20 @@ if ($db->numrows($result)==1){
         $name=getDropdownName("glpi_dropdown_locations",$_POST["location"]);
 	echo "<div align='center'><h2>".$lang["reports"][54]." $name </h2></div><br><br>";
         	
-        $query="SELECT glpi_dropdown_netpoint.name AS prise,a.name as port,a.ifaddr as ip,a.ifmac as mac,glpi_networking.name as switch,b.name as portordi,b.ifaddr as ip2,b.ifmac as mac2,glpi_computers.name as ordi
-	FROM glpi_dropdown_locations
-	LEFT JOIN glpi_networking ON glpi_networking.location= glpi_dropdown_locations.ID
-	LEFT JOIN glpi_networking_ports a ON a.on_device=glpi_networking.ID AND a.device_type=2	
-	LEFT JOIN glpi_dropdown_netpoint ON glpi_dropdown_netpoint.ID = a.netpoint
-	LEFT JOIN glpi_networking_wire ON glpi_networking_wire.end2=a.ID
-	LEFT JOIN glpi_networking_ports b ON b.ID=glpi_networking_wire.end1 AND b.device_type=1
-	LEFT JOIN glpi_computers ON glpi_computers.ID=b.on_device
-	WHERE glpi_dropdown_locations.ID=".$_POST["location"]."";
+        $query="SELECT glpi_dropdown_netpoint.name AS prise, a.name AS port, a.ifaddr            
+AS ip, a.ifmac AS mac, glpi_networking.name AS switch, b.name AS portordi, 
+b.ifaddr AS ip2, b.ifmac AS mac2, glpi_computers.name AS ordi
+ FROM glpi_dropdown_locations
+ LEFT JOIN glpi_dropdown_netpoint ON glpi_dropdown_netpoint.location = 
+glpi_dropdown_locations.ID
+ LEFT JOIN glpi_networking_ports a ON a.netpoint = glpi_dropdown_netpoint.ID
+ AND a.device_type =2
+ LEFT JOIN glpi_networking_wire ON glpi_networking_wire.END2 = a.ID
+ LEFT JOIN glpi_networking ON glpi_networking.ID = a.on_device
+ LEFT JOIN glpi_networking_ports b ON b.ID = glpi_networking_wire.END1
+ AND b.device_type =1
+ LEFT JOIN glpi_computers ON glpi_computers.ID = b.on_device
+ WHERE glpi_dropdown_locations.ID =".$_POST["location"]."";
         	
 	/*!
  	on envoie la requête de selection qui varie selon le choix fait dans la dropdown à la fonction report perso qui
