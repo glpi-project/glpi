@@ -902,6 +902,11 @@ echo "</td></tr>";
 	echo "<option value='exact' $selected>".$lang["search"][3]."</option>";
 	echo "</select>";
 	echo "<input type='text' size='15' name=\"contains2\" value=\"".$_GET["contains2"]."\">";
+	echo "&nbsp;&nbsp;&nbsp;".$lang["job"][5].":";
+	dropdownUsersTracking($_GET["attrib"],"attrib","assign");
+	echo "&nbsp;&nbsp;&nbsp;".$lang["joblist"][3].":";
+	dropdownUsersTracking($_GET["author"],"author","author");
+
 	echo "</td></tr>";
 
 
@@ -942,7 +947,7 @@ echo "</td></tr>";
 }
 
 
-function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$start,$date1,$date2,$computers_search,$field2,$phrasetype2,$contains2) {
+function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$start,$date1,$date2,$computers_search,$field2,$phrasetype2,$contains2,$author,$assign) {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -1030,6 +1035,8 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 		}
 	}
 
+	if ($assign!="all") $query.=" AND glpi_tracking.assign = '$assign'";
+	if ($author!="all") $query.=" AND glpi_tracking.author = '$author'";
 	
    $query.=" ORDER BY ID";
 

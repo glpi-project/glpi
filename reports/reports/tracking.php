@@ -51,6 +51,8 @@ if (!isset($_GET["order"])) $_GET["order"] = "ASC";
 if (!isset($_GET["contains"])) $_GET["contains"] = "";
 if (!isset($_GET["contains2"])) $_GET["contains2"] = "";
 if (!isset($_GET["contains3"])) $_GET["contains3"] = "";
+if(!isset($_GET["attrib"])) $_GET["attrib"] = "";
+if(!isset($_GET["author"])) $_GET["author"] = "";
 if(!isset($_GET["date1"])) $_GET["date1"] = "";
 if(!isset($_GET["date2"])) $_GET["date2"] = "";
 if ($_GET["date1"]!=""&&$_GET["date2"]!=""&&strcmp($_GET["date2"],$_GET["date1"])<0){
@@ -64,7 +66,7 @@ if(!isset($_GET["only_computers"])) $_GET["only_computers"] = "";
 searchFormTrackingReport();
 //print_r($_GET);
 if (isset($_GET["field"]))
-showTrackingListReport($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["start"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["field2"],$_GET["phrasetype2"],$_GET["contains2"]);
+showTrackingListReport($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["start"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["field2"],$_GET["phrasetype2"],$_GET["contains2"],$_GET["author"],$_GET["attrib"]);
 
 
 commonFooter();
