@@ -63,7 +63,7 @@ $cfg_install["languages"]=array("english"=>array("English","english.php","englis
 				"deutsch"=>array("Deutsch","deutsch.php","deutsch.html","hd-deutsch.html"),
 				"french"=>array("Français","french.php","french.html","hd-french.html"),
 				"italian"=>array("Italiano","italian.php","italian.html","hd-italian.html"),
-				"castellano"=>array("Castellano","castellano.php","castellano.html","hd-castellano.html"),);
+				"castellano"=>array("Español (castellano)","castellano.php","castellano.html","hd-castellano.html"),);
 
 // ITEMS TYPE
 define("GENERAL_TYPE","0");
