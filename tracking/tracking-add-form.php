@@ -45,6 +45,9 @@ include ($phproot . "/glpi/includes_tracking.php");
 checkAuthentication("normal");
 
 commonHeader("Tracking",$_SERVER["PHP_SELF"]);
+if(empty($_POST["isgroup"])) $_POST["isgroup"] = "";
+if(empty($_POST["uemail"])) $_POST["uemail"] = "";
+if(empty($_POST["emailupdates"])) $_POST["emailupdates"] = "";
 $error = "";
 if (isset($_GET["priority"]) && empty($_GET["contents"]))
 {
