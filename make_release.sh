@@ -51,8 +51,8 @@ echo "Delete template Headers"
 echo "Delete bigdumps and older sql files";
 \rm mysql/*bigdump*;
 \rm mysql/updatedb.back;
-\rm mysql/glpi-0.3-*;
-\rm mysql/glpi-0.4-*;
+\rm mysql/glpi-0.3*-*;
+\rm mysql/glpi-0.4*-*;
 
 echo "Delete LDAP directories";
 \rm -rf ldap;
@@ -79,6 +79,6 @@ echo "Logout root user";
 
 
 echo "Deleting temp directory";
-\rm -rf /tmp/glpi-$RELEASE;
+\rm -rf /tmp/glpi;
 
 echo "The Tarball is in the /tmp directory";
