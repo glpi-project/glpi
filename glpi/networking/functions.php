@@ -366,7 +366,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 
 	if ($several!="yes"){
 	echo "<tr class='tab_bg_1'><td>".$lang["networking"][21].":</td>";
-	echo "<td><input type='text' size=5 name=logical_number value=\"".$netport->fields["logical_number"]."\">";
+	echo "<td><input type='text' size=5 name='logical_number' value=\"".$netport->fields["logical_number"]."\">";
 	echo "</td></tr>";
 	}
 	else {
@@ -374,7 +374,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 	echo "<input type='hidden' name='several' value='yes'>";
 	echo "<input type='hidden' name='logical_number' value=''>";
 	echo "<td>";
-	echo $lang["networking"][47].":<select name=from_logical_number>";
+	echo $lang["networking"][47].":<select name='from_logical_number'>";
 	for ($i=0;$i<100;$i++)
 		echo "<option value='$i'>$i</option>";
 	echo "</select>";
