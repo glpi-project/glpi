@@ -1134,6 +1134,35 @@ function dropdownUsersTracking($value, $myname,$champ) {
 	echo "</select>";
 }
 
+
+function dropdownIcons($myname,$value,$store_path){
+global $HTMLRel;
+if (is_dir($store_path)){
+if ($dh = opendir($store_path)) {
+	echo "<select name=\"$myname\">";
+       while (($file = readdir($dh)) !== false) {
+           if (eregi(".png$",$file)){
+	   if ($file == $value) {
+				echo "<option value=\"$file\" selected>".$file;
+			} else {
+				echo "<option value=\"$file\">".$file;
+			}
+	echo "</option>";
+	   }
+	   
+       
+       }
+       closedir($dh);
+       echo "</select>";
+   } else echo "Error reading directory $path";
+
+
+} else echo "Error $path is not a directory";
+
+
+}
+
+
 function dropdownAllItems($name,$search='',$value='') {
 	$db=new DB;
 	
@@ -1185,6 +1214,15 @@ function dropdownAllItems($name,$search='',$value='') {
 	echo "</select>";
 	
 }
+
+function	dropdownYesNo($name,$value){
+	global $lang;
+	echo "<select name='$name'>";
+	echo "<option value='N' ".($value=='N'?" selected ":"").">".$lang["choice"][1]."</option>";
+	echo "<option value='Y' ".($value=='Y'?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "</select>";	
+}	
+
 
 function createAllItemsSelectValue($type,$ID){
 	return $type."_".$ID;
@@ -2191,5 +2229,7 @@ function sendFile($file,$filename){
 	
 	}
 }
+
+
 
 ?>

@@ -1747,7 +1747,7 @@ if(!TableExists("glpi_type_docs")) {
 	
 $query = "CREATE TABLE glpi_type_docs (
 		  ID int(11) NOT NULL auto_increment,
-		  title varchar(255) NOT NULL default '',
+		  name varchar(255) NOT NULL default '',
 		  ext varchar(10) NOT NULL default '',
 		  icon varchar(255) NOT NULL default '',
 		  mime varchar(100) NOT NULL default '',

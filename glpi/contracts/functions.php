@@ -708,14 +708,6 @@ function	dropdownHours($name,$value){
 	echo "</select>";	
 }	
 
-function	dropdownYesNo($name,$value){
-	global $lang;
-	echo "<select name='$name'>";
-	echo "<option value='N' ".($value=='N'?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "<option value='Y' ".($value=='Y'?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "</select>";	
-}	
-
 function getContractEnterprises($ID){
 	global $HTMLRel;
     $db = new DB;
