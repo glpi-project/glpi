@@ -285,7 +285,7 @@ function _initialize() {
 
         $this->_store_selection($this->_selection);
         $this->_store_eof();
-        if ($this->_filehandle)
+	if ($this->_filehandle)
         unlink($this->_tmpfile);
     }
 

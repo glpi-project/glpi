@@ -105,6 +105,27 @@ $auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$cfg_l
 		}
 }
 
+// Fifth try Active directory LDAP in depth search
+// we check all the auth sources in turn...
+// First, we get the dn and then, we try to log in
+if (!$auth_succeded) {
+   //echo "AD";
+   $found_dn=false;
+   $auth_succeded=0;
+   $found_dn=$identificat->ldap_get_dn_active_directory($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$_POST['login_name'],$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass']);
+   //echo $found_dn."---";
+   if ($found_dn!=false&&!empty($_POST['login_password'])){ 
+	    $auth_succeded = $identificat->connection_ldap_active_directory($cfg_login['ldap']['host'],$found_dn,$_POST['login_name'],$_POST['login_password'],$cfg_login['ldap']['condition']);
+		if ($auth_succeded) {
+			$user_present = $identificat->user->getFromDB($_POST['login_name']);
+			$update_list = array();
+			if ($identificat->user->getFromLDAP_active_directory($cfg_login['ldap']['host'],$found_dn,$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass'],$cfg_login['ldap']['fields'],$_POST['login_name'],$cfg_login['ldap']['condition'])) {
+				$update_list = array_keys($cfg_login['ldap']['fields']);
+			}
+		}
+   }
+}
+
 // we have done at least a good login? No, we exit.
 if ( ! $auth_succeded ) {
 	nullHeader("Login",$_SERVER["PHP_SELF"]);

@@ -1329,25 +1329,7 @@ function showFormExtsources($target) {
 	$result = $db->query($query);
 	
 	echo "<form action=\"$target\" method=\"post\">";
-	if(extension_loaded('ldap'))
-	{
-		echo "<div align='center'><p > ".$lang["setup"][151]."</p>";
-
-		echo "<table class='tab_cadre'>";
-		echo "<tr><th colspan='2'>".$lang["setup"][152]."</th></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][153]."</td><td><input type=\"text\" name=\"ldap_host\" value=\"". $db->result($result,0,"ldap_host") ."\"></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][154]."</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"". $db->result($result,0,"ldap_basedn") ."\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][155]."</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"". $db->result($result,0,"ldap_rootdn") ."\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][156]."</td><td><input type=\"password\" name=\"ldap_pass\" value=\"". $db->result($result,0,"ldap_pass") ."\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][159]."</td><td><input type=\"text\" name=\"ldap_condition\" value=\"". $db->result($result,0,"ldap_condition") ."\" ></td></tr>";
-		echo "</table>&nbsp;</div>";
-	}
-	else {
-		echo "<input type=\"hidden\" name=\"LDAP_Test\" value=\"1\" >";
-		echo "<div align='center'><table class='tab_cadre' width='400'>";
-		echo "<tr><th colspan='2'>".$lang["setup"][152]."</th></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>".$lang["setup"][157]."</p><p>".$lang["setup"][158]."</p></td></th></table></div>";
-	}
+	
 	if(function_exists('imap_open')) {
 		echo "<div align='center'>";
 		echo "<p >".$lang["setup"][160]."</p>";
@@ -1365,6 +1347,33 @@ function showFormExtsources($target) {
 		echo "<tr><th colspan='2'>".$lang["setup"][162]."</th></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>".$lang["setup"][165]."</p><p>".$lang["setup"][166]."</p></td></tr></table></div>";
 	}
+	if(extension_loaded('ldap'))
+	{
+		echo "<div align='center'><p > ".$lang["setup"][151]."</p>";
+
+		echo "<table class='tab_cadre'>";
+		echo "<tr><th colspan='2'>".$lang["setup"][152]."</th></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][153]."</td><td><input type=\"text\" name=\"ldap_host\" value=\"". $db->result($result,0,"ldap_host") ."\"></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][154]."</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"". $db->result($result,0,"ldap_basedn") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][155]."</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"". $db->result($result,0,"ldap_rootdn") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][156]."</td><td><input type=\"password\" name=\"ldap_pass\" value=\"". $db->result($result,0,"ldap_pass") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][159]."</td><td><input type=\"text\" name=\"ldap_condition\" value=\"". $db->result($result,0,"ldap_condition") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][167]."</td><td>&nbsp;</td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>name</td><td><input type=\"text\" name=\"ldap_field_name\" value=\"". $db->result($result,0,"ldap_field_name") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>email</td><td><input type=\"text\" name=\"ldap_field_email\" value=\"". $db->result($result,0,"ldap_field_email") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>location</td><td><input type=\"text\" name=\"ldap_field_location\" value=\"". $db->result($result,0,"ldap_field_location") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>phone</td><td><input type=\"text\" name=\"ldap_field_phone\" value=\"". $db->result($result,0,"ldap_field_phone") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>realname</td><td><input type=\"text\" name=\"ldap_field_realname\" value=\"". $db->result($result,0,"ldap_field_realname") ."\" ></td></tr>";
+		
+		echo "</table>&nbsp;</div>";
+	}
+	else {
+		echo "<input type=\"hidden\" name=\"LDAP_Test\" value=\"1\" >";
+		echo "<div align='center'><table class='tab_cadre' width='400'>";
+		echo "<tr><th colspan='2'>".$lang["setup"][152]."</th></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>".$lang["setup"][157]."</p><p>".$lang["setup"][158]."</p></td></th></table></div>";
+	}
+	
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_ext\" class=\"submit\" value=\"Valider\" ></p>";
 	echo "</form>";
 }
@@ -1475,14 +1484,18 @@ function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events
 }
 
 
-function updateLDAP($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$ldap_condition) {
+function updateLDAP($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$ldap_condition,$field_name,$field_email,$field_location,$field_phone,$field_realname) {
 	
 	$db = new DB;
 	//TODO : test the remote LDAP connection
 	if(!empty($ldap_host)) {
 		$query = "update glpi_config set ldap_host = '". $ldap_host ."', ";
 		$query.= "ldap_basedn = '". $ldap_basedn ."', ldap_rootdn = '". $ldap_rootdn ."', ";
-		$query .= "ldap_pass = '". $ldap_pass ."', ldap_condition = '". $ldap_condition ."' where ID = '1' ";
+		$query .= "ldap_pass = '". $ldap_pass ."', ldap_condition = '". $ldap_condition ."', ";
+		$query .= "ldap_field_name = '". $field_name ."', ldap_field_email = '". $field_email ."', ";
+		$query .= "ldap_field_location = '". $field_location ."', ldap_field_phone = '". $field_phone ."', ";
+		$query .= "ldap_field_realname = '". $field_realname ."' ";
+		$query.= " where ID = '1' ";
 		$db->query($query);
 	}
 }
