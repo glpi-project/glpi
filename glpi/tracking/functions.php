@@ -358,7 +358,7 @@ function showJobShort($ID, $followup	) {
 			echo "<td align='center'><b>".$lang["joblist"][10]."</b></td>";
 			echo "<td width='30%'><small>".$lang["joblist"][11].":<br>&nbsp;$job->date<br>";
 			echo "<i>".$lang["joblist"][12].":<br>&nbsp;$job->closedate</i><br>";
-			echo $lang["job"][20].": <br>".$job->getRealtime()."</small></td>";
+			echo $lang["job"][20].": <br>".getRealtime($job->realtime)."</small></td>";
 		}
 
 		echo "<td align='center'><b>$job->priority</b></td>";
@@ -816,3 +816,9 @@ function assignFormTracking ($ID,$admin,$target) {
 	 echo $lang["tracking"][6];
 	}
 }
+function getRealtime($realtime){
+		global $lang;	
+		return floor($realtime)." ".$lang["job"][21]." ".round((($realtime-floor($realtime))*60))." ".$lang["job"][22];
+		}
+
+?>
