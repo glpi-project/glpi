@@ -242,7 +242,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 
 		} else {
 			echo "<center><b>".$lang["peripherals"][17]."</b></center>";
-			echo "<hr noshade>";
+			//echo "<hr noshade>";
 			//searchFormperipheral();
 		}
 	}
