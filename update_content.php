@@ -75,17 +75,17 @@ function test_content_ok(){
 	
 	$result1=$db->query($query1);
 	if ($db->numrows($result1)>0)
-		return true;
+		return false;
 	$result4=$db->query($query4);
 	if ($db->numrows($result4)>0)
-		return true;	
+		return false;	
 	$result3=$db->query($query3);
 	if ($db->numrows($result3)>0)
-		return true;
+		return false;
 	$result2=$db->query($query2);
 	if ($db->numrows($result2)>0)
-		return true;
-	return false;		
+		return false;
+	return true;		
 	}
 
 
@@ -184,16 +184,28 @@ fclose($fileHandle);
 return TRUE;
 }
 
+if (!isset($_POST["oui"])&&!isset($_POST["non"])&&!isset($_GET["dump"]))
 if (test_content_ok()) {
-	echo "la mise à jour du contenu ne semble pas nécessaire";
+	echo "La mise à jour du contenu ne semble pas nécessaire. ";
+	echo "Voulez vous tout de même la faire ?";
+	echo "<form action=\"update_content.php\" method=\"post\">";
+	echo "<input type=\"submit\" class='submit' name=\"oui\" value=\"Oui\" />";
+	echo "<input type=\"submit\" class='submit' name=\"non\" value=\"Non\" />";
+	echo "</div></form>";
 	}
 else {
-	echo "la mise à jour semble nécessaire";
+	echo "la mise à jour semble nécessaire. ";
+	echo "Voulez vous la faire ?";
+	echo "<form action=\"update_content.php\" method=\"post\">";
+	echo "<input type=\"submit\" class='submit' name=\"oui\" value=\"Oui\" />";
+	echo "<input type=\"submit\" class='submit' name=\"non\" value=\"Non\" />";
+	echo "</div></form>";
+
 }
 
 // #################" UPDATE CONTENT #################################
 
-//if (isset($_GET["dump"]) && $_GET["dump"] != "")
+if (isset($_POST["oui"])||isset($_GET["dump"])){
 
     $time_file=date("Y-m-d-h-i");
 	$cur_time=date("Y-m-d H:i");
@@ -243,6 +255,9 @@ else  {
 //echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt</p></div>";
 }
 
+}
 	
-
+if (isset($_POST["non"])){
+	// Redirection à faire
+	}
 ?>
