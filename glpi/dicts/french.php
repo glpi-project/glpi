@@ -156,6 +156,10 @@ $lang["tracking"][4]	= "Seulement les interventions termin&eacute;es";
 $lang["tracking"][5]	= "Quand la description contient";
 $lang["tracking"][6]    = "Vous n'etes pas autoris&eacute; &agrave; (re-)attribuer cette intervention";
 $lang["tracking"][7]    = "Afficher...";
+$lang["tracking"][8]    = "Pas de description, veuillez recommencer";
+$lang["tracking"][9]    = "Nouvelle intervention post&eacute;e, suivante...";
+$lang["tracking"][10]    = "Ajout de l'intervention impossible, verifiez la base de donn&eacute;es";
+
 
 
 $lang["joblist"][0]	= "Statut";

@@ -61,19 +61,19 @@ addFormTracking($_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error,$search);
 }
 elseif (isset($_GET["priority"]) && empty($_GET["contents"]))
 {
-	$error="No Description, please try again.";
+	$error=$lang["tracking"][8] ;
 	addFormTracking($_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error);
 }
 elseif (isset($_GET["priority"]) && !empty($_GET["contents"]))
 {
 	if (postJob($_GET["ID"],$_GET["user"],$_GET["status"],$_GET["priority"],$_GET["isgroup"],$_GET["uemail"],$_GET["emailupdates"],$_GET["contents"],$_GET["assign"]))
 	{
-		$error="Job posted, next one:";
+		$error=$lang["tracking"][9];
 		addFormTracking($_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error);
 	}
 	else
 	{
-		$error="Couldn't post job, check the database.";
+		$error=$lang["tracking"][10];
 		addFormTracking($_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error);
 	}
 } 
