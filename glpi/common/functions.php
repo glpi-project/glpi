@@ -2796,14 +2796,37 @@ function sendFile($file,$filename){
 	if (ereg("\.\.",$file)){
 	session_start();
 	echo "Security attack !!!";
-	logEvent($file, "senFile", 1, "security", $_SESSION["glpiname"]." try to get a non standard file.");
+	logEvent($file, "sendFile", 1, "security", $_SESSION["glpiname"]." try to get a non standard file.");
 	return;
 	}
 	if (!file_exists($file)){
 	echo "Error file $file does not exist";
 	} else {
+		$db = new DB;
+		$splitter=split("/",$file);
+		$filedb=$splitter[count($splitter)-2]."/".$splitter[count($splitter)-1];
+		$query="SELECT mime from glpi_docs WHERE filename LIKE '$filedb'";
+		$result=$db->query($query);
+		$mime="application/octetstream";
+		if ($result&&$db->numrows($result)==1){
+			$mime=$db->result($result,0,0);
+			
+		} else {
+			// Cas particulier
+			switch ($splitter[count($splitter)-2]) {
+				case "SQL" : 
+					$mime="text/x-sql";
+					break;
+				case "XML" :
+					$mime="text/xml";
+					break;
+			}
+			
+		}
+		
 		header("Content-disposition: filename=$filename");
-        	header('Content-type: application/octetstream');
+		
+        	header("Content-type: ".$mime);
         	header('Pragma: no-cache');
         	header('Expires: 0');
 		$f=fopen($file,"r");
