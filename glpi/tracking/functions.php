@@ -1267,14 +1267,14 @@ function searchFormTrackingReport() {
 	echo "&nbsp;";
 	echo $lang["search"][10]."&nbsp;";
 	
-	echo "<select name=\"field\" size='1'>";
+	echo "<select name='field' size='1'>";
         echo "<option value='all' ";
-	if($_GET['field'] == "all") echo "selected";
+	if($_GET["field"] == "all") echo "selected";
 	echo ">".$lang["search"][7]."</option>";
         reset($option);
 	foreach ($option as $key => $val) {
 		echo "<option value=\"".$key."\""; 
-		if($key == $_GET['field']) echo "selected";
+		if($key == $_GET["field"]) echo "selected";
 		echo ">". $val ."</option>\n";
 	}
 	echo "</select>&nbsp;";
