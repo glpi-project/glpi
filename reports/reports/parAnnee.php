@@ -90,7 +90,7 @@ echo "<option value='name'>Type de materiel</option>";
 echo "</select> &nbsp;&nbsp; ";
 echo "</td>";
 
-echo "<td align='center'><input type='submit' value='afficher rapport'></td>";
+echo "<td align='center'><input type='submit' value='afficher rapport' class='submit'></td>";
 
 echo "</form>";
 

@@ -755,7 +755,7 @@ function showConnectSearch($target,$ID) {
 	echo "<input type='hidden' name=pID1 value=$ID>";
 	echo "<input type='hidden' name=connect value=2>";
 	echo "</td><td class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][11]."\">";
+	echo "<input type='submit' value=\"".$lang["buttons"][11]."\" class='submit'>";
 	echo "</td></tr>";	
 
 	echo "</form>";
@@ -799,7 +799,7 @@ function listConnectComputers($target,$input) {
 	echo "<td class='tab_bg_2' align='center'>";
 	echo "<input type='hidden' name='sID' value=\"".$input["pID1"]."\">";
 	echo "<input type='hidden' name='connect' value='3'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][9]."\">";
+	echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
 	echo "</td></form></tr></table>";	
 
 }
@@ -858,7 +858,7 @@ function printHelpDesk ($name) {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td colspan='2' align='center'> <input type='submit' value=\"".$lang["help"][14]."\">";
+	echo "<td colspan='2' align='center'> <input type='submit' value=\"".$lang["help"][14]."\" class='submit'>";
 		echo "<input type='hidden' name='IRMName' value=\"$name\">";
 	echo "</td></tr>";
 

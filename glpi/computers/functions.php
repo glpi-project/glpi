@@ -84,7 +84,7 @@ function searchFormComputers() {
 	echo "</select>";
 	echo "<input type='hidden' name=phrasetype value=exact>";
 	echo "</td><td width=80 align='center' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][1]."\">";
+	echo "<input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 	
 	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
@@ -113,7 +113,7 @@ function searchFormComputers() {
 	}
 	echo "</select> ";
 	echo "</td><td width=80 align='center' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][0]."\">";
+	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
 
@@ -369,14 +369,14 @@ function showComputerForm ($template,$target,$ID) {
 		
 		echo "<tr><td>".$lang["computers"][41].":	</td>";
 		echo "<td><input type='text' name='achat_date' readonly size=10 value=\"".$comp->fields["achat_date"]."\">";
-		echo "&nbsp; <input name='button' type='button'  onClick=\"window.open('mycalendar.php?form=form&amp;elem=achat_date','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-		echo "&nbsp; <input name='button_reset' type='button' onClick=\"document.forms['form'].achat_date.value='0000-00-00'\" value='reset'>";
+		echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('mycalendar.php?form=form&amp;elem=achat_date','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].achat_date.value='0000-00-00'\" value='reset'>";
     echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][42].":	</td>";
 		echo "<td><input type='text' name='date_fin_garantie' readonly size='10' value=\"".$comp->fields["date_fin_garantie"]."\">";
-		echo "&nbsp; <input name='button' type='button' onClick=\"window.open('mycalendar.php?form=form&amp;elem=date_fin_garantie','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-		echo "&nbsp; <input name='button_reset' type='button' onClick=\"document.forms['form'].date_fin_garantie.value='0000-00-00'\" value='reset'>";
+		echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('mycalendar.php?form=form&amp;elem=date_fin_garantie','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date_fin_garantie.value='0000-00-00'\" value='reset'>";
     echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][43].":	</td>";
@@ -424,19 +424,19 @@ function showComputerForm ($template,$target,$ID) {
 
 		if ($template) {
 			echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
-			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\">";
+			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 			//echo "</td></form>\n";
                         	echo "</td>\n";
 		} else {
 			echo "<td class='tab_bg_2' align='center' valign='top'>\n";
 			echo "<input type='hidden' name='ID' value=$ID>";
-			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\">";
+			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
 		//	echo "</td></form>\n";
 				echo "</td>\n";
                         echo "<td class='tab_bg_2' align='center'>\n";
 		//	echo "<form method='post' action=\"$target\">";
 			echo "<input type='hidden' name='ID' value=$ID>";
-			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\">";
+			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 			echo "";
 			echo "</td>";
 		}
