@@ -201,7 +201,7 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 		if ($show == "old"){
 			echo "<br><div align='center'>";
 			echo "<table cellpadding='5' width='90%'>";
-			echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" ></td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&select=all'>".$lang["buttons"][18]."</a></td>";
+			echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" ></td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&select=all&start=$start'>".$lang["buttons"][18]."</a></td>";
 			
 			echo "<td>/</td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&select=none'>".$lang["buttons"][19]."</a>";
 			echo "</td><td>";
