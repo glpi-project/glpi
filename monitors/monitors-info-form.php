@@ -111,7 +111,7 @@ else
 	showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	
 	if (!empty($_GET["ID"])){
-	showInfocomAssociated(MONITOR_TYPE,$tab["ID"]);
+	showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",MONITOR_TYPE,$tab["ID"]);
 	showContractAssociated(MONITOR_TYPE,$tab["ID"]);		
 	showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);

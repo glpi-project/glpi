@@ -74,7 +74,7 @@ else if (isset($tab["Modif_Interne"])){
 	checkAuthentication("admin");
 	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 	showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"],$tab['search_software']);
-	showInfocomAssociated(SOFTWARE_TYPE,$tab["ID"]);
+	showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"]);	
 	showContractAssociated(SOFTWARE_TYPE,$tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
@@ -91,7 +91,7 @@ else
 	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 	showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	if (!empty($_GET["ID"])){
-	showInfocomAssociated(SOFTWARE_TYPE,$tab["ID"]);
+	showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"]);
 	showContractAssociated(SOFTWARE_TYPE,$tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);

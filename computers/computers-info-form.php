@@ -148,12 +148,12 @@ else {
 		}
 
 		if (showComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])) {
+			showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",COMPUTER_TYPE,$tab["ID"]);
 			showPorts($tab["ID"], COMPUTER_TYPE);
 			showPortsAdd($tab["ID"],COMPUTER_TYPE);
 			showConnections($tab["ID"]);
-			showInfocomAssociated(COMPUTER_TYPE,$tab["ID"]);
-			showContractAssociated(COMPUTER_TYPE,$tab["ID"]);
 			showSoftwareInstalled($tab["ID"]);
+			showContractAssociated(COMPUTER_TYPE,$tab["ID"]);
 			showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
 			showOldJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
 			

@@ -1304,6 +1304,8 @@ $query= "CREATE TABLE `glpi_contract_enterprise` (
 
 $query= "CREATE TABLE `glpi_infocoms` (
   `ID` int(11) NOT NULL auto_increment,
+  `FK_device` int(11) NOT NULL default '0',
+  `device_type` tinyint(4) NOT NULL default '0',
   `buy_date` date NOT NULL default '0000-00-00',
   `warranty_duration` decimal(3,2) NOT NULL default '0.00',
   `warranty_info` varchar(255) NOT NULL default '',
@@ -1315,28 +1317,13 @@ $query= "CREATE TABLE `glpi_infocoms` (
   `amort_time` decimal(3,2) NOT NULL default '0.00',
   `amort_type` varchar(20) NOT NULL default '',
   `comments` text NOT NULL,
-  `deleted` enum('Y','N') NOT NULL default 'N',
   PRIMARY KEY  (`ID`),
+  UNIQUE KEY `FK_device` (`FK_device`,`device_type`),
   KEY `FK_enterprise` (`FK_enterprise`),
   KEY `buy_date` (`buy_date`)
 ) TYPE=MyISAM;
 ";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_infocom ".$lang["update"][90].$db->error());
-
-$query= "CREATE TABLE `glpi_infocom_device` (
-  `ID` int(11) NOT NULL auto_increment,
-  `FK_infocom` int(11) NOT NULL default '0',
-  `FK_device` int(11) NOT NULL default '0',
-  `device_type` tinyint(4) NOT NULL default '0',
-  PRIMARY KEY  (`ID`),
-  UNIQUE KEY `FK_infocom` (`FK_infocom`,`FK_device`,`device_type` ),
-  KEY (`FK_infocom`),
-  KEY (`FK_device`,`device_type`)
-) TYPE=MyISAM;
-";
-	$db->query($query) or die("0.5 CREATE TABLE glpi_infocom_device ".$lang["update"][90].$db->error());
-
-
 
 ///// Move warranty infos from item to infocoms.
 

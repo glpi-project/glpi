@@ -112,7 +112,7 @@ else
 	showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	if (!empty($_GET["ID"])){
 	showCartridgeInstalled($tab["ID"]);
-	showInfocomAssociated(PRINTER_TYPE,$tab["ID"]);
+	showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",PRINTER_TYPE,$tab["ID"]);
 	showContractAssociated(PRINTER_TYPE,$tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
