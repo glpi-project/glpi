@@ -121,7 +121,24 @@ else
 	$db=new DB;
 	$ci=new CommonItem;
 	
-	if (($_POST["device_type"]==0||$ci->getFromDB($_POST["device_type"],$ID))&&postJob($_POST["device_type"],$ID,$glpiname,$status,$_POST["priority"],$_POST["isgroup"],$_POST["uemail"],$_POST["emailupdates"],$_POST["contents"]))
+	
+	if ($_POST["device_type"]!=0&&!$ci->getFromDB($_POST["device_type"],$ID)){
+		if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
+			nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
+		}
+		else if ($_POST["from_helpdesk"]){
+			helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+		}
+		else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+
+		echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
+		echo $lang["help"][32]."<br>";
+		echo $lang["help"][33];
+		echo "</b><br><br>";
+		echo "<a href=\"javascript:history.back()\">".$lang["buttons"][13]."</a>";
+		echo "</center>";
+		
+	} else if (postJob($_POST["device_type"],$ID,$glpiname,$status,$_POST["priority"],$_POST["isgroup"],$_POST["uemail"],$_POST["emailupdates"],$_POST["contents"]))
 	{
 		if(isset($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 			nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
