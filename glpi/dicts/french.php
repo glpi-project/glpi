@@ -1116,6 +1116,7 @@ $lang["device_processor"][0] = "Fr&eacute;quence";
 
 $lang["device_ram"][0] = "Type";
 $lang["device_ram"][1] = "Fr&eacute;quence";
+$lang["device_ram"][2] = "Taille";
 
 
 $lang["device_sndcard"][0] = "Type";
