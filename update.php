@@ -1090,7 +1090,7 @@ $query="CREATE TABLE `glpi_kbitems` (
 }
 
 // Comment reservation
-if(!FieldExists("glpi_reservation","comment")) {
+if(!FieldExists("glpi_reservation_resa","comment")) {
 	$query = "ALTER TABLE `glpi_reservation_resa` ADD `comment` VARCHAR( 255 ) NOT NULL ;";
 	$db->query($query) or die("0.5 alter reservation add comment ".$lang["update"][90].$db->error());
 }	
