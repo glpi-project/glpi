@@ -88,12 +88,12 @@ function checkAuthentication($authtype) {
 		echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">".$lang["login"][1]."</a></b></center>";
 		nullFooter();
 		exit();
-	} else if ($_SESSION["glpipass"] != md5($password)) {
+/*	} else if ($_SESSION["glpipass"] != md5($password)) {
 		nullHeader($lang["login"][4],$_SERVER["PHP_SELF"]);
 		echo "<center><b>".$lang["login"][2]."</b><br><br>";
 		echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">".$lang["login"][1]."</a></b></center>";
 		nullFooter();
-		exit();
+		exit(); */
 	} else {
 		header("Vary: User-Agent");
 

@@ -40,12 +40,9 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-// Set Cookies bogus
 
-//SetCookie("IRMName", "bogus", 0, "/");
-//SetCookie("IRMPass", "bogus", 0, "/");
 session_start();
-$id = new Identification;
+$id = new Identification('bogus');
 $id->eraseCookies();
 
 // Redirect to the login-page

@@ -116,7 +116,7 @@ function showPasswordForm($target,$ID) {
 
 	GLOBAL $cfg_layout, $lang;
 	
-	$user = new User;
+	$user = new User($ID);
 	$user->getFromDB($ID);
 		
 	echo "<form method='post' action=\"$target\">";
@@ -137,7 +137,7 @@ function showUser($back,$ID) {
 
 	GLOBAL $cfg_layout, $lang;
 	
-	$user = new User;
+	$user = new User($ID);
 	$user->getFromDB($ID);
 
 	echo "<center><table border='0' cellpadding=5>";
@@ -184,7 +184,7 @@ function listUsersForm($target) {
 		$i = 0;
 		while ($i < $db->numrows($result)) {
 			$name = $db->result($result,$i,"name");
-			$user = new User;
+			$user = new User($name);
 			$user->getFromDB($name);
 			
 			echo "<tr class='tab_bg_1'>";	
@@ -259,7 +259,7 @@ function listUsersForm($target) {
 function addUser($input) {
 	// Add User, nasty hack until we get PHP4-array-functions
 
-	$user = new User;
+	$user = new User($input["name"]);
 
 	// dump status
 	$null = array_pop($input);
@@ -286,7 +286,7 @@ function addUser($input) {
 function updateUser($input) {
 	// Update User in the database
 
-	$user = new User;
+	$user = new User($input["name"]);
 	$user->getFromDB($input["name"]); 
 
  	// dump status
@@ -314,7 +314,7 @@ function updateUser($input) {
 function deleteUser($input) {
 	// Delete User
 	
-	$user = new User;
+	$user = new User($input["name"]);
 	$user->deleteFromDB($input["name"]);
 } 
 
@@ -337,7 +337,7 @@ function showFormAssign($target)
 		  $i = 0;
 		  while ($i < $db->numrows($result)) {
 			$name = $db->result($result,$i,"name");
-			$user = new User;
+			$user = new User($name);
 			$user->getFromDB($name);
 			
 			echo "<tr class='tab_bg_1'>";	
