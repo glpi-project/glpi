@@ -40,6 +40,9 @@ include ($phproot . "/glpi/includes.php");
 checkauthentication("normal");
 
 // Section de configuration
+for ($i=0;$i<10;$i++) {$val[$i]="0".$i;$val["0".$i]="0".$i;}
+for ($i=10;$i<40;$i++) {$val[$i]=$i;$val["0".$i]=$i;}
+
 
   $bgcolor="d6d6f5" ;        // Couleur de fond
   $daybgcolor="6F6FDB" ;     // Couleur des jours de la semaine
@@ -68,7 +71,7 @@ checkauthentication("normal");
   $day[4] = $lang["calendarD"][4] ;
   $day[5] = $lang["calendarD"][5] ;
   $day[6] = $lang["calendarD"][6];
-$error01 = "Erreur : date invalide"
+$error01 = "Erreur : date invalide";
 
 ?>
 <html>
@@ -237,7 +240,7 @@ echo "<body bgcolor='#$bgcolor' onUnLoad=''>\n" ;
    echo "</tr>\n" ;
   }
 
-  echo "\n<tr><td colspan='10' align='center'><input type='button' class='button' onclick='window.opener.document.forms[\"$form\"].elements[\"$elem\"].value=\"$annee-$mois-$jour\";window.close()' value='Valider'>&nbsp;&nbsp;<input onclick='window.close()' type='button' class='button' value='Annuler'></td></tr></table>\n" ;
+  echo "\n<tr><td colspan='10' align='center'><input type='button' class='button' onclick='window.opener.document.forms[\"$form\"].elements[\"$elem\"].value=\"$annee-".$val[$mois]."-".$val[$jour]."\";window.close()' value='Valider'>&nbsp;&nbsp;<input onclick='window.close()' type='button' class='button' value='Annuler'></td></tr></table>\n" ;
 
   echo "\n</tr></table>\n" ;
 
