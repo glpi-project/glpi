@@ -468,7 +468,7 @@ class Mailing
 				else $replyto=$cfg_mailing["admin_email"];
 				break;
 			case "followup":
-				if ($this->is_valid_email($user->user->fields["email"])) $replyto=$this->user->fields["email"];
+				if ($this->is_valid_email($this->user->fields["email"])) $replyto=$this->user->fields["email"];
 				else $replyto=$cfg_mailing["admin_email"];
 				break;
 			default :
