@@ -2670,7 +2670,74 @@ function getTreeValueName($table,$ID, $wholename="")
 return (@$name);
 }
 
+/**
+* Get the equivalent serach query using ID that the search of the string argument
+*
+* @param $table
+* @param $search the search strin value
+* @return string the query
+*/
+function getRealSearchForTreeItem($table,$search){
 
+if (empty($search)) return " ( $table.name LIKE '%$search%') ";
+
+$db=new DB();
+
+// IDs to be present in the final query
+$id_found=array();
+// current ID found to be added
+$found=array();
+
+// First request init the  varriables
+$query="SELECT ID from $table WHERE name LIKE '%$search%'";
+if ( ($result=$db->query($query)) && ($db->numrows($result)>0) ){
+	while ($row=$db->fetch_array($result)){
+		array_push($id_found,$row['ID']);
+		array_push($found,$row['ID']);
+	}
+}else return " ( $table.name LIKE '%$search%') ";
+
+// Get the leafs of previous founded item
+while (count($found)>0){
+	// Get next elements
+	$query="SELECT ID from $table WHERE '0'='1' ";
+	foreach ($found as $key => $val)
+		$query.= " OR parentID = '$val' ";
+		
+	// CLear the found array
+	unset($found);
+	$found=array();
+	
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		while ($row=$db->fetch_array($result)){
+			if (!in_array($row['ID'],$id_found)){
+				array_push($id_found,$row['ID']);
+				array_push($found,$row['ID']);
+			}
+		}		
+	}
+}
+
+// Construct the final request
+if (count($id_found)>0){
+	$ret=" ( '0' = '1' ";
+	foreach ($id_found as $key => $val)
+		$ret.=" OR $table.ID = '$val' ";
+	$ret.=") ";
+	
+	return $ret;
+}else return " ( $table.name LIKE '%$search%') ";
+}
+
+
+/**
+* Get the level for an item in a tree structure
+*
+* @param $table
+* @param $ID
+* @return int level
+*/
 function getTreeItemLevel($table,$ID){
 
 $level=0;
@@ -2693,6 +2760,8 @@ while (1)
 return -1;
 
 }
+
+
 
 /**
 * To be commented
