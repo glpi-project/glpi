@@ -222,7 +222,7 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "<a href=\"".$cfg_install["root"]."/documents/documents-info-form.php?ID=$ID\">";
 				echo $ct->fields["name"]." (".$ct->fields["ID"].")";
 				echo "</a></b></td>";
-				echo "<td>".getDocumentLink($ct->fields["filename"])."</td>";
+				echo "<td align='left'>".getDocumentLink($ct->fields["filename"])."</td>";
 				echo "<td>".getDropdownName("glpi_dropdown_rubdocs",$ct->fields["rubrique"])."</td>";
 				echo "<td>".$ct->fields["mime"]."</td>";
 				echo "<td>".$ct->fields["comment"]."</td>";				
@@ -609,17 +609,21 @@ global $HTMLRel,$cfg_install;
 	if (count($splitter)==2)
 	$fileout=$splitter[1];
 	else $fileout=$filename;
-	$out="<b><a href='".$HTMLRel."documents/send-document.php?file=$filename' target='_blank'>$fileout</a></b>";	
+	
 	if (count($splitter)==2){
 		$db=new DB;
 		$query="SELECT * from glpi_type_docs WHERE ext LIKE '".$splitter[0]."' AND icon <> ''";
 		$result=$db->query($query);
 		if ($db->numrows($result)>0){
 			$icon=$db->result($result,0,'icon');
-			$out.="<a href='".$HTMLRel."documents/send-document.php?file=$filename' target='_blank'>&nbsp;<img style='vertical-align:middle;' alt='".$fileout."' title='".$fileout."' src='".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/$icon'</a>";				
+			$out="<a href='".$HTMLRel."documents/send-document.php?file=$filename' target='_blank'>&nbsp;<img style='vertical-align:middle; margin-left:3px; margin-right:6px;' alt='".$fileout."' title='".$fileout."' src='".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/$icon'</a>";				
 			}
 	
 	}
+	
+	$out.="<b><a href='".$HTMLRel."documents/send-document.php?file=$filename' target='_blank'>$fileout</a></b>";	
+	
+	
 	return $out;
 }
 
