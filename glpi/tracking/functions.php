@@ -849,7 +849,7 @@ function assignJob ($ID,$user,$admin) {
 
 	// Add a Followup for a assignment change
 	if (strcmp($newuser,$olduser)!=0){
-	$content=date("Y-m-d H:i:s").": ".$lang["mailing"][12].": ".$olduser." -> ".$newuser." (".$_SESSION["glpiname"].")";
+	$content=$lang["mailing"][12].": ".$olduser." -> ".$newuser." (".$_SESSION["glpiname"].")";
 	postFollowups ($ID,$_SESSION["glpiname"],addslashes($content));
 	}
 }
@@ -866,7 +866,7 @@ function categoryJob ($ID,$category,$admin) {
 	$newcat=$job->category;
 	// Add a Followup for a category change
 	if ($newcat!=$oldcat){
-	$content=date("Y-m-d H:i:s").": ".$lang["mailing"][14].": ".getDropdownName("glpi_dropdown_tracking_category",$job->category)." (".$_SESSION["glpiname"].")";
+	$content=$lang["mailing"][14].": ".getDropdownName("glpi_dropdown_tracking_category",$job->category)." (".$_SESSION["glpiname"].")";
 	postFollowups ($ID,$_SESSION["glpiname"],addslashes(unhtmlentities($content)));
 	}
 	
@@ -884,7 +884,7 @@ function priorityJob ($ID,$priority,$admin) {
 	$newprio=$job->priority;
 	// Add a Followup for a priority change
 	if ($newprio!=$oldprio){
-	$content=date("Y-m-d H:i:s").": ".$lang["mailing"][14].": ".getPriorityName($job->priority)." (".$_SESSION["glpiname"].")";
+	$content=$lang["mailing"][14].": ".getPriorityName($job->priority)." (".$_SESSION["glpiname"].")";
 	postFollowups ($ID,$_SESSION["glpiname"],addslashes(unhtmlentities($content)));
 	}
 	

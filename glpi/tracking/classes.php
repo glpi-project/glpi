@@ -234,7 +234,7 @@ class Job {
 		
 		$db=new DB;
 		$m= new CommonItem;
-		$name=="N/A";
+		$name="N/A";
 		if ($m->getfromDB($this->device_type,$this->computer)){
 			$name=$m->getType()." ".$m->getName();
 		}
