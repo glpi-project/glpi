@@ -63,6 +63,13 @@ else if (isset($_POST["restore"]))
 	logEvent($tab["ID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." restored item.");
 	header("Location: ".$cfg_install["root"]."/cartridges/");
 }
+else if (isset($_POST["purge"]))
+{
+	checkAuthentication("admin");
+	deleteCartridgeType($_POST,1);
+	logEvent($tab["ID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." purge item.");
+	header("Location: ".$cfg_install["root"]."/cartridges/");
+}
 else if (isset($_POST["addtype"])){
 	checkAuthentication("admin");
 	addCompatibleType($_POST["tID"],$_POST["type"]);
