@@ -39,10 +39,8 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-
 //if(isset($_SERVER['HTTP_REFERER']))
 //$httpreferer=preg_replace("/\?which=\w*/","",$_SERVER['HTTP_REFERER']);
-
 if (isset($_POST["which"]))$which=$_POST["which"];
 elseif (isset($_GET["which"]))$which=$_GET["which"];
 else $which="";
@@ -56,6 +54,9 @@ else $tomove="";
 if (isset($_GET["value2"]))$value2=$_GET["value2"];
 else if (isset($_POST["value2"]))$value2=$_POST["value2"];
 else $value2="";
+if (isset($_GET["type"]))$type=$_GET["type"];
+else if (isset($_POST["type"]))$type=$_POST["type"];
+else $type="";
 // Selected Item
 if (isset($_POST["ID"])) $ID=$_POST["ID"];
 elseif (isset($_GET["ID"])) $ID=$_GET["ID"];
@@ -65,12 +66,12 @@ if (isset($_POST["move"])) {
 	checkAuthentication("admin");
 	moveTreeUnder($_POST["tablename"],$_POST["value_to_move"],$_POST["value_where"]);
 	logEvent(0, "dropdowns", 5, "setup", $_SESSION["glpiname"]." moved a location.");
-	header("Location: ".$_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where");
+	header("Location: ".$_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type");
 }else if (isset($_POST["add"])) {
 	checkAuthentication("admin");
 	addDropdown($_POST);
 	logEvent(0, "dropdowns", 5, "setup", $_SESSION["glpiname"]." added a value to a dropdown.");
-	header("Location: ".$_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where");
+	header("Location: ".$_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type");
 } else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
 	if(!dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
@@ -135,10 +136,10 @@ echo "<option value='$key' $sel>".$val."</option>";
 		break;
 				
 		case "kbcategories" :
-		showFormTreeDown($_SERVER["PHP_SELF"],"kbcategories",$lang["setup"][78],$ID,$value2,$where,$tomove);
+		showFormTreeDown($_SERVER["PHP_SELF"],"kbcategories",$lang["setup"][78],$ID,$value2,$where,$tomove,$type);
 		break;
 		case "locations" :
-		showFormTreeDown($_SERVER["PHP_SELF"],"locations",$lang["setup"][3],$ID,$value2,$where,$tomove);
+		showFormTreeDown($_SERVER["PHP_SELF"],"locations",$lang["setup"][3],$ID,$value2,$where,$tomove,$type);
 		break;
 		case "computers" :
 		showFormTypeDown($_SERVER["PHP_SELF"],"computers",$lang["setup"][4],$ID);
