@@ -459,11 +459,11 @@ function showComputerForm($target,$ID) {
 		
 			//print devices.
 		foreach($comp->devices as $key => $val) {
-			$devTable = $val["devTable"];
+			$devType = $val["devType"];
 			$devID = $val["devID"];
 			$specif = $val["specificity"];
 			$compDevID = $val["compDevID"];
-			$device = new Device($devTable);
+			$device = new Device($devType);
 			$device->getFromDB($devID);
 			echo "<div align='center'>";
 			echo "<table width='700px' class='tab_cadre' >";

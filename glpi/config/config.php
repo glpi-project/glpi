@@ -78,19 +78,18 @@ define("CONTRACT_TYPE","10");
 define("CARTRIDGE_TYPE","11");
 
 // DEVICE TYPE
-define("HDD_DEVICE","1");
-define("GFX_DEVICE","2");
-define("IFACE_DEVICE","3");
-define("MOBOARD_DEVICE","4");
-define("PROCESSOR_DEVICE","5");
-define("RAM_DEVICE","6");
-define("SND_DEVICE","7");
-define("POWER_DEVICE","8");
-define("PCI_DEVICE","9");
-define("DRIVE_DEVICE","10"); // DRIVE et/ou BURNER ???
-define("BURNER_DEVICE","11");
-define("CONTROL_DEVICE","12"); // Un seul type pour les controleurs ou plusieurs ??
-define("TOWER_DEVICE","13");
+define("MOBOARD_DEVICE","1");
+define("PROCESSOR_DEVICE","2");
+define("RAM_DEVICE","3");
+define("HDD_DEVICE","4");
+define("NETWORK_DEVICE","5");
+define("DRIVE_DEVICE","6"); 
+define("CONTROL_DEVICE","7");
+define("GFX_DEVICE","8");
+define("SND_DEVICE","9");
+define("PCI_DEVICE","10");
+define("CASE_DEVICE","11");
+define("POWER_DEVICE","12");
 
 
 

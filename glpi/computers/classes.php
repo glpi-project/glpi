@@ -68,7 +68,7 @@ class Computer {
 					if ($db->numrows($result)>0) {
 						$i = 0;
 						while($data = $db->fetch_array($result)) {
-							$this->devices[$i] = array("compDevID"=>$data["ID"],"devTable"=>$data["device_type"],"devID"=>$data["FK_device"],"specificity"=>$data["specificity"]);
+							$this->devices[$i] = array("compDevID"=>$data["ID"],"devType"=>$data["device_type"],"devID"=>$data["FK_device"],"specificity"=>$data["specificity"]);
 							$i++;
 						}
 						return true;

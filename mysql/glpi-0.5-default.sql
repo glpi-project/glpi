@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-02-15 13:50
+#GLPI Dump database on 2005-02-17 21:41
 ### Dump table glpi_cartridges
 
 DROP TABLE IF EXISTS glpi_cartridges;
@@ -18,7 +18,6 @@ CREATE TABLE glpi_cartridges (
    KEY date_out (date_out)
 );
 
-INSERT INTO glpi_cartridges VALUES ('1','1',NULL,'2005-02-15',NULL,NULL,NULL);
 ### Dump table glpi_cartridges_assoc
 
 DROP TABLE IF EXISTS glpi_cartridges_assoc;
@@ -32,7 +31,6 @@ CREATE TABLE glpi_cartridges_assoc (
    KEY FK_glpi_type_printer_2 (FK_glpi_type_printer)
 );
 
-INSERT INTO glpi_cartridges_assoc VALUES ('1','1','1');
 ### Dump table glpi_cartridges_type
 
 DROP TABLE IF EXISTS glpi_cartridges_type;
@@ -48,14 +46,13 @@ CREATE TABLE glpi_cartridges_type (
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
 );
 
-INSERT INTO glpi_cartridges_type VALUES ('1','HP','2830X','2','0','N','');
 ### Dump table glpi_computer_device
 
 DROP TABLE IF EXISTS glpi_computer_device;
 CREATE TABLE glpi_computer_device (
     ID int(11) NOT NULL auto_increment,
     specificity varchar(250) NOT NULL,
-    device_type varchar(50) NOT NULL,
+    device_type tinyint(4) DEFAULT '0' NOT NULL,
     FK_device int(11) DEFAULT '0' NOT NULL,
     FK_computers int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
@@ -64,55 +61,56 @@ CREATE TABLE glpi_computer_device (
    KEY FK_computers (FK_computers)
 );
 
-INSERT INTO glpi_computer_device VALUES ('1','','glpi_device_gfxcard','1','19');
-INSERT INTO glpi_computer_device VALUES ('2','','glpi_device_gfxcard','1','21');
-INSERT INTO glpi_computer_device VALUES ('3','','glpi_device_gfxcard','4','8');
-INSERT INTO glpi_computer_device VALUES ('4','','glpi_device_gfxcard','4','10');
-INSERT INTO glpi_computer_device VALUES ('5','','glpi_device_gfxcard','4','15');
-INSERT INTO glpi_computer_device VALUES ('6','','glpi_device_gfxcard','4','18');
-INSERT INTO glpi_computer_device VALUES ('7','','glpi_device_gfxcard','4','20');
-INSERT INTO glpi_computer_device VALUES ('8','20','glpi_device_hdd','1','10');
-INSERT INTO glpi_computer_device VALUES ('9','20','glpi_device_hdd','1','15');
-INSERT INTO glpi_computer_device VALUES ('10','20','glpi_device_hdd','1','18');
-INSERT INTO glpi_computer_device VALUES ('11','6','glpi_device_hdd','1','20');
-INSERT INTO glpi_computer_device VALUES ('12','10','glpi_device_hdd','2','8');
-INSERT INTO glpi_computer_device VALUES ('13','','glpi_device_hdd','2','19');
-INSERT INTO glpi_computer_device VALUES ('14','','glpi_device_hdd','2','21');
-INSERT INTO glpi_computer_device VALUES ('15','','glpi_device_iface','1','8');
-INSERT INTO glpi_computer_device VALUES ('16','','glpi_device_iface','1','10');
-INSERT INTO glpi_computer_device VALUES ('17','','glpi_device_iface','1','18');
-INSERT INTO glpi_computer_device VALUES ('18','','glpi_device_iface','1','19');
-INSERT INTO glpi_computer_device VALUES ('19','','glpi_device_iface','1','21');
-INSERT INTO glpi_computer_device VALUES ('20','','glpi_device_iface','5','15');
-INSERT INTO glpi_computer_device VALUES ('21','','glpi_device_iface','5','20');
-INSERT INTO glpi_computer_device VALUES ('22','','glpi_device_moboard','2','19');
-INSERT INTO glpi_computer_device VALUES ('23','','glpi_device_moboard','2','21');
-INSERT INTO glpi_computer_device VALUES ('24','','glpi_device_moboard','3','8');
-INSERT INTO glpi_computer_device VALUES ('25','','glpi_device_moboard','3','10');
-INSERT INTO glpi_computer_device VALUES ('26','','glpi_device_moboard','3','15');
-INSERT INTO glpi_computer_device VALUES ('27','','glpi_device_moboard','3','18');
-INSERT INTO glpi_computer_device VALUES ('28','','glpi_device_moboard','3','20');
-INSERT INTO glpi_computer_device VALUES ('29','333','glpi_device_processor','6','20');
-INSERT INTO glpi_computer_device VALUES ('30','750','glpi_device_processor','7','8');
-INSERT INTO glpi_computer_device VALUES ('31','750','glpi_device_processor','7','10');
-INSERT INTO glpi_computer_device VALUES ('32','750','glpi_device_processor','7','15');
-INSERT INTO glpi_computer_device VALUES ('33','750','glpi_device_processor','7','18');
-INSERT INTO glpi_computer_device VALUES ('34','','glpi_device_processor','11','19');
-INSERT INTO glpi_computer_device VALUES ('35','','glpi_device_processor','11','21');
-INSERT INTO glpi_computer_device VALUES ('36','','glpi_device_ram','1','19');
-INSERT INTO glpi_computer_device VALUES ('37','','glpi_device_ram','1','21');
-INSERT INTO glpi_computer_device VALUES ('38','512','glpi_device_ram','6','8');
-INSERT INTO glpi_computer_device VALUES ('39','128','glpi_device_ram','6','10');
-INSERT INTO glpi_computer_device VALUES ('40','512','glpi_device_ram','6','15');
-INSERT INTO glpi_computer_device VALUES ('41','128','glpi_device_ram','6','18');
-INSERT INTO glpi_computer_device VALUES ('42','128','glpi_device_ram','9','20');
-INSERT INTO glpi_computer_device VALUES ('43','','glpi_device_sndcard','1','19');
-INSERT INTO glpi_computer_device VALUES ('44','','glpi_device_sndcard','3','8');
-INSERT INTO glpi_computer_device VALUES ('45','','glpi_device_sndcard','3','10');
-INSERT INTO glpi_computer_device VALUES ('46','','glpi_device_sndcard','3','15');
-INSERT INTO glpi_computer_device VALUES ('47','','glpi_device_sndcard','3','18');
-INSERT INTO glpi_computer_device VALUES ('48','','glpi_device_sndcard','3','20');
-INSERT INTO glpi_computer_device VALUES ('49','','glpi_device_sndcard','3','21');
+INSERT INTO glpi_computer_device VALUES ('1','','8','1','19');
+INSERT INTO glpi_computer_device VALUES ('2','','8','1','21');
+INSERT INTO glpi_computer_device VALUES ('3','','8','4','8');
+INSERT INTO glpi_computer_device VALUES ('4','','8','4','10');
+INSERT INTO glpi_computer_device VALUES ('5','','8','4','15');
+INSERT INTO glpi_computer_device VALUES ('6','','8','4','18');
+INSERT INTO glpi_computer_device VALUES ('7','','8','4','20');
+INSERT INTO glpi_computer_device VALUES ('8','20','4','1','10');
+INSERT INTO glpi_computer_device VALUES ('9','200','4','1','15');
+INSERT INTO glpi_computer_device VALUES ('10','20','4','1','18');
+INSERT INTO glpi_computer_device VALUES ('11','6','4','1','20');
+INSERT INTO glpi_computer_device VALUES ('12','10','4','2','8');
+INSERT INTO glpi_computer_device VALUES ('13','','4','2','19');
+INSERT INTO glpi_computer_device VALUES ('14','','4','2','21');
+INSERT INTO glpi_computer_device VALUES ('15','','5','1','8');
+INSERT INTO glpi_computer_device VALUES ('16','','5','1','10');
+INSERT INTO glpi_computer_device VALUES ('17','','5','1','18');
+INSERT INTO glpi_computer_device VALUES ('18','','5','1','19');
+INSERT INTO glpi_computer_device VALUES ('19','','5','1','21');
+INSERT INTO glpi_computer_device VALUES ('20','','5','5','15');
+INSERT INTO glpi_computer_device VALUES ('21','','5','5','20');
+INSERT INTO glpi_computer_device VALUES ('22','','1','2','19');
+INSERT INTO glpi_computer_device VALUES ('23','','1','2','21');
+INSERT INTO glpi_computer_device VALUES ('24','','1','3','8');
+INSERT INTO glpi_computer_device VALUES ('25','','1','3','10');
+INSERT INTO glpi_computer_device VALUES ('26','','1','3','15');
+INSERT INTO glpi_computer_device VALUES ('27','','1','3','18');
+INSERT INTO glpi_computer_device VALUES ('28','','1','3','20');
+INSERT INTO glpi_computer_device VALUES ('29','333','2','6','20');
+INSERT INTO glpi_computer_device VALUES ('30','750','2','7','8');
+INSERT INTO glpi_computer_device VALUES ('31','750','2','7','10');
+INSERT INTO glpi_computer_device VALUES ('32','750','2','7','15');
+INSERT INTO glpi_computer_device VALUES ('33','750','2','7','18');
+INSERT INTO glpi_computer_device VALUES ('34','','2','11','19');
+INSERT INTO glpi_computer_device VALUES ('35','','2','11','21');
+INSERT INTO glpi_computer_device VALUES ('36','','3','1','19');
+INSERT INTO glpi_computer_device VALUES ('37','','3','1','21');
+INSERT INTO glpi_computer_device VALUES ('38','512','3','6','8');
+INSERT INTO glpi_computer_device VALUES ('39','128','3','6','10');
+INSERT INTO glpi_computer_device VALUES ('40','512','3','6','15');
+INSERT INTO glpi_computer_device VALUES ('41','128','3','6','18');
+INSERT INTO glpi_computer_device VALUES ('42','128','3','9','20');
+INSERT INTO glpi_computer_device VALUES ('43','','9','1','19');
+INSERT INTO glpi_computer_device VALUES ('44','','9','3','8');
+INSERT INTO glpi_computer_device VALUES ('45','','9','3','10');
+INSERT INTO glpi_computer_device VALUES ('46','','9','3','15');
+INSERT INTO glpi_computer_device VALUES ('47','','9','3','18');
+INSERT INTO glpi_computer_device VALUES ('48','','9','3','20');
+INSERT INTO glpi_computer_device VALUES ('49','','9','3','21');
+INSERT INTO glpi_computer_device VALUES ('50','','4','2','15');
 ### Dump table glpi_computers
 
 DROP TABLE IF EXISTS glpi_computers;
@@ -222,7 +220,7 @@ CREATE TABLE glpi_config (
    PRIMARY KEY (ID)
 );
 
-INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15','0.5','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad');
+INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15','0.5','GLPI powered by indepnet','/dombre/glpi-test','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad');
 ### Dump table glpi_connect_wire
 
 DROP TABLE IF EXISTS glpi_connect_wire;
@@ -714,12 +712,9 @@ CREATE TABLE glpi_event_log (
    KEY date (date)
 );
 
-INSERT INTO glpi_event_log VALUES ('369','1','cartridge','2005-02-15 01:07:59','inventory','4','glpi associate type.');
-INSERT INTO glpi_event_log VALUES ('368','1','cartridge','2005-02-15 01:07:54','inventory','4','glpi added a license.');
-INSERT INTO glpi_event_log VALUES ('367','0','cartridge','2005-02-15 01:07:49','inventory','4','glpi added item HP.');
-INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-02-15 01:04:50','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('370','-1','system','2005-02-15 13:49:18','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('371','-1','system','2005-02-15 13:50:45','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('368','9','computers','2005-02-17 21:35:45','inventory','4','glpi modified a computer device spécificity.');
+INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-02-17 21:13:48','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-02-17 21:13:11','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -803,25 +798,18 @@ CREATE TABLE glpi_kbitems (
    KEY categoryID (categoryID)
 );
 
-INSERT INTO glpi_kbitems VALUES ('1','3','Quel type de papier pour l\'Epson Stylus Color 460 ?','
-Du papier 90g,100g et 110 g.','no');
+INSERT INTO glpi_kbitems VALUES ('1','3','Quel type de papier pour l\'Epson Stylus Color 460 ?','Du papier 90g,100g et 110 g.','no');
 INSERT INTO glpi_kbitems VALUES ('2','2','Peut-on  utiliser l\' imprimante EPSON Stylus si la cartouche couleur est vide ?','Non. Les imprimantes EPSON Stylus nécessitent que les deux cartouches (noire et couleur) soient installées.','yes');
-INSERT INTO glpi_kbitems VALUES ('3','1','Peut on utiliser des codes pour mettre en forme le texte ?','Oui : voir dans  l\'aide en ligne 
-
+INSERT INTO glpi_kbitems VALUES ('3','1','Peut on utiliser des codes pour mettre en forme le texte ?','Oui : voir dans  l\'aide en ligne
 Quelques exemples :
-
-[b]Texte gras[/b] 
-[u]Texte souligné[/u] 
-[i]Texte italique[/i] 
-[color=#FF0000]Texte rouge[/color] 
-
-
+[b]Texte gras[/b]
+[u]Texte souligné[/u]
+[i]Texte italique[/i]
+[color=#FF0000]Texte rouge[/color]
 http://glpi.indepnet.org
-
-[email]myname@mydomain.com[/email] 
-
-[email=myname@mydomain.com]Mon adresse e-mail[/email] 
-
+[email]myname@mydomain.com[/email]
+[email=myname@mydomain.com]Mon
+adresse e-mail[/email]
 [code]Voici un bout de code.[/code]','no');
 ### Dump table glpi_licenses
 
@@ -980,9 +968,9 @@ CREATE TABLE glpi_prefs (
 
 INSERT INTO glpi_prefs VALUES ('glpi','yes','french','1');
 INSERT INTO glpi_prefs VALUES ('Helpdesk','no','french','2');
-INSERT INTO glpi_prefs VALUES ('normal','','french','3');
+INSERT INTO glpi_prefs VALUES ('normal','','english','3');
 INSERT INTO glpi_prefs VALUES ('tech','yes','french','4');
-INSERT INTO glpi_prefs VALUES ('post-only','','french','5');
+INSERT INTO glpi_prefs VALUES ('post-only','','english','5');
 ### Dump table glpi_printers
 
 DROP TABLE IF EXISTS glpi_printers;
