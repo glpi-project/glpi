@@ -52,8 +52,106 @@
 
 <h2><A NAME="maint"></A>2 - Partie Maintenance</h2>
 <h3><A NAME="mainta"></A>a) Suivi</h3>
+
+<p>Le module de suivi permet d'afficher la liste des interventions en fonction de certains critères.</p>
+<p>Vous pouvez afficher :</p>
+<ul>
+<li>Toutes les interventions actives</li>
+<p>Toutes les interventions qui n'ont pas été cloturées.</p>
+<li>Seulement les interventions qui vous sont attribu&eacute;es</li>
+<p>Les interventions qui vous ont été affectées.</p>
+<li>Seulement les interventions non attribu&eacute;es</li>
+<p>Les interventions à affecter à un technicien.</p>
+<li>Seulement les interventions termin&eacute;es</li>
+<p>Les informations cloturées</p>
+</ul>
+
+<p>Vous pouvez également réaliser une recherche sur les interventions à partir d'une description</p>
+
+<p>Si des interventions son trouvées, GLPI affiche un tableau présentant les interventions. Avec pour chaque interventions : son statut (nouveau ou ancien), la date d'ouverture et de cloture, le niveau de priorité	l'auteur de la demande d'intervention, la personne à qui a été attribué l'intervention	l'ordinateur concerné	la description de la demande d'intervention et les informations disponibles sur le suivi de l'intervention.</p>
+
+<p>Un clic sur un de ces éléments vous permettra d'accéder à des informations complémentaires.</p>
+
+<p>Pour ajouter des éléments de suivi à une intervention, la cloturer ou la réattribuer, il suffit de cliquer sur "infos". Vous obtiendrez alors l'historique complet de l'intervention. Vous pourrez donc ajouter un élément de suivi ou cloturer l'intervention en indiquant éventuellement le temps réel d'intervention.</p>
+
+
+<H4>Cas particulier des interventions terminées</H4>
+<p>La restauration d'une intervention terminée est possible. Il suffit pour cela de cliquer sur "info" puis "restaurer".</p>
+
+<p>Il est possible de supprimer des interventions terminées si vous ne souhaitez pas les conserver dans la base. Pour cela il suffit de cocher la case statut et de cliquer sur "Supprimer" dans la liste des interventions.</p>
+
 <h3><A NAME="maintb"></A>b) Rapports</h3>
+
+<p>GLPI autorise la génération d'un certain nombre de rapports :</p>
+
+<ul>
+<li>Le rapport par défaut</li>
+<p>Ce rapport liste le nombre de matériel et logiciels présents dans le parc. </p>
+<li>Materiel sous contrat de maintenance</li>
+<p>Ce rapport indique le nombre de matériel sous contrat de maintenance auprés d'un tiers. Il est possible d'obtenir un état détaillé par type de matériel et par date d'achat. La sélection multiple est autorisée.</p>
+<li>Rapport par date d'achat ou de fin de garantie</li>
+<p>Ce rapport liste le matériel par date d'achat ou de fin de garantie sur une ou plusieurs années. La sélection multiple est autorisée.</p>
+<li>Rapport interventions</li>
+<p>Ce rapport permet d'obtenir la liste des interventions ainsi que leur historique  selon de nombreux critères. La recherche peut être réalisée sur une période donnée, pour un type de materiel précis ou une partie de ce matériel et en fonction de son auteur et/ou de son attribution.</p>
+<li>Excel, OpenOffice (Sylk)</li>
+<p>GLPI peut générer des rapports par type de materiel exploitables par un tableur. Pour cela GLPI génère des fichiers de type SYLK. Ce format est exploitable par de nombreux tableurs. </p>
+
+</ul>
+
+
+
+
 <h3><A NAME="maintc"></A>c) Statistiques</h3>
+
+<h4>Statistiques globales</h4>
+
+<P>Ces statistiques regroupent les principales données sur les interventions sur le mois, l'année et au total :</P>
+<ul>
+<li>Nombre total d'interventions</li>	
+<li>Nombre d'interventions résolues</li>
+<li>Délai moyen de résolution de panne	</li>
+<li>Délai maximal de résolution de panne	</li>
+<li>Durée réelle moyenne de l'intervention	</li>
+<li>Durée maximale de résolution réelle de panne	</li>
+<li>Délai minimum de prise en compte de l'intervention	</li>
+<li>Délai moyen de prise en compte de l'intervention</li>
+</ul>
+<h4>Par technicien</h4>
+<p>Ces statistiques fournissent un état de l'activité des techniciens pour une période donnée :</p>
+<ul>
+<li>Nombre d'interventions attribuées</li>
+<li>Nombre d'interventions résolues	</li>
+<li>durée moyenne d'ouverture	</li>
+<li>Durée réelle moyenne de l'intervention	</li>
+<li>Durée réelle totale des interventions	</li>
+<li>Délai moyen de prise en compte de l'intervention</li>
+
+</ul>
+
+
+<h4>Par Intitulés</h4>
+<p>Statistiques des interventions par Lieu, Type d'ordinateur, OS, CPU, HD-Type, Carte graphique, Carte mère  sur une période donnée :</p>
+<ul>
+<li>Nombre d'interventions demandées</li>	
+<li>Nombre d'interventions résolues	</li>
+<li>durée moyenne d'ouverture	</li>
+<li>Durée réelle moyenne de l'intervention	</li>
+<li>Durée réelle totale des interventions	</li>
+<li>Délai moyen de prise en compte de l'intervention</li>
+</ul>
+
+
+<h4>Par utilisateur</h4>
+<p>Statistiques des interventions par utilisateurs sur une période donnée :</p>
+<ul>
+<li>Nombre d'interventions demandées</li>	
+<li>Nombre d'interventions résolues	</li>
+<li>durée moyenne d'ouverture	</li>
+<li>Durée réelle moyenne de l'intervention	</li>
+<li>Durée réelle totale des interventions	</li>
+<li>Délai moyen de prise en compte de l'intervention</li>
+</ul>
+
 
 <h2><A NAME="admin"></A>3 - Partie Administration</h2>
 <h3><A NAME="admina"></A>a) Gestion des utilisateurs</h3>
