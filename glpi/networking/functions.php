@@ -822,11 +822,7 @@ function addNetport($input) {
 		}
 	}
 	
-	if ($netport->addToDB()) {
-		return true;
-	} else {
-		return false;
-	}
+	return $netport->addToDB();
 }
 
 function updateNetport($input) {

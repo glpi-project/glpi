@@ -379,11 +379,7 @@ function addEnterprise($input) {
 		}
 	}
 
-	if ($ent->addToDB()) {
-		return true;
-	} else {
-		return false;
-	}
+	return $ent->addToDB();
 }
 
 

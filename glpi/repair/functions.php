@@ -226,13 +226,7 @@ function addRepairItem($input){
 		}
 	}
 
-	if ($ri->addToDB()) {
-		return true;
-	} else {
-		return false;
-	}
-
-
+	return $ri->addToDB();
 }
 
 function deleteRepairItem($input){

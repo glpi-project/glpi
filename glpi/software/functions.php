@@ -879,11 +879,7 @@ function addLicense($input) {
 			$lic->fields[$key] = $input[$key];
 		}
 	}
-	if ($lic->addToDB()) {
-		return true;
-	} else {
-		return false;
-	}
+	return $lic->addToDB();
 }
 
 function updateLicense($input) {

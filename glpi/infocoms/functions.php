@@ -211,11 +211,7 @@ function addInfocom($input) {
 		}
 	}
 
-	if ($ic->addToDB()) {
-		return true;
-	} else {
-		return false;
-	}
+	return $ic->addToDB();
 }
 
 

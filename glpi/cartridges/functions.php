@@ -388,11 +388,7 @@ function addCartridgeType($input) {
 		}
 	}
 
-	if ($sw->addToDB()) {
-		return true;
-	} else {
-		return false;
-	}
+	return $sw->addToDB();
 }
 
 
@@ -524,11 +520,7 @@ function addCartridge($tID) {
 			$c->fields[$key] = $input[$key];
 		}
 	}
-	if ($c->addToDB()) {
-		return true;
-	} else {
-		return false;
-	}
+	return $c->addToDB();
 }
 
 function deleteCartridge($ID) {

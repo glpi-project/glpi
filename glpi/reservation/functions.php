@@ -278,13 +278,7 @@ function addReservationItem($input){
 		}
 	}
 
-	if ($ri->addToDB()) {
-		return true;
-	} else {
-		return false;
-	}
-
-
+	return $ri->addToDB();
 }
 
 function deleteReservationItem($input){

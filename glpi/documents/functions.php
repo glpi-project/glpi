@@ -444,11 +444,7 @@ function addDocument($input) {
 		}
 	}
 
-	if ($con->addToDB()) {
-		return true;
-	} else {
-		return false;
-	}
+	return $con->addToDB();
 }
 
 
