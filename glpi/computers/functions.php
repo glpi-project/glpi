@@ -196,7 +196,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 
 	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang,$HTMLRel, $cfg_devices_tables;
 
-
+	
 	// Build query
 	if($field == "all") {
 		$where = " (";
@@ -219,6 +219,8 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 			$i++;
 		}
 		foreach($cfg_devices_tables as $key => $val) {
+			//Hack pour ne pas avoir un "case" dans la requete (mot clé).
+			if(strcmp($val,"case") == 0) $val = "Tcase";
 			$where .= " OR ".$val.".designation LIKE '%".$contains."%'";
 		}
 		$where .= " OR glpi_networking_ports.ifaddr LIKE '%".$contains."%'";
@@ -250,6 +252,11 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 	$query.= "LEFT JOIN glpi_device_iface as iface ON (iface.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".NETWORK_DEVICE."') ";
 	$query.= "LEFT JOIN glpi_device_ram as ram ON (ram.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".RAM_DEVICE."') ";
 	$query.= "LEFT JOIN glpi_device_sndcard as sndcard ON (sndcard.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".SND_DEVICE."') ";
+	$query.= "LEFT JOIN glpi_device_drive as drive ON (drive.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".DRIVE_DEVICE."') ";
+	$query.= "LEFT JOIN glpi_device_control as control ON (control.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".CONTROL_DEVICE."') ";
+	$query.= "LEFT JOIN glpi_device_pci as pci ON (pci.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".PCI_DEVICE."') ";
+	$query.= "LEFT JOIN glpi_device_case as Tcase ON (Tcase.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".CASE_DEVICE."') ";
+	$query.= "LEFT JOIN glpi_device_power as power ON (power.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".POWER_DEVICE."') ";
 	$query.= "LEFT JOIN glpi_networking_ports on (comp.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='1')";
 	$query.= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";
 	$query.= "LEFT JOIN glpi_dropdown_os on (glpi_dropdown_os.ID = comp.os)";

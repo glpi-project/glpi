@@ -141,6 +141,38 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			$specificity_label = "";
 			$specificity_size = 10;
 		break;
+		case DRIVE_DEVICE : 
+			$type=$lang["devices"][19];
+			$name=$device->fields["designation"];
+			if (!empty($device->fields["is_writer"])) $entry[$lang["device_drive"][0]]=$device->fields["is_writer"];
+			if (!empty($device->fields["speed"])) $entry[$lang["device_drive"][1]]=$device->fields["speed"];
+			if (!empty($device->fields["frequence"])) $entry[$lang["device_drive"][2]]=$device->fields["frequence"];
+		break;
+		case CONTROL_DEVICE :
+			$type=$lang["devices"][20];
+			$name=$device->fields["designation"];
+			if (!empty($device->fields["raid"])) $entry[$lang["device_control"][0]]=$device->fields["raid"];
+			if (!empty($device->fields["interface"])) $entry[$lang["device_control"][1]]=$device->fields["interface"];
+		
+		break;
+		case PCI_DEVICE :
+			$type=$lang["devices"][21];
+			$name=$device->fields["designation"];
+		
+		break;
+		case POWER_DEVICE :
+			$type=$lang["devices"][23];
+			$name=$device->fields["designation"];
+			if (!empty($device->fields["power"])) $entry[$lang["device_power"][0]]=$device->fields["power"];
+			if (!empty($device->fields["atx"])) $entry[$lang["device_power"][1]]=$device->fields["atx"];
+		
+		break;
+		case CASE_DEVICE :
+			$type=$lang["devices"][22];
+			$name=$device->fields["designation"];
+			if (!empty($device->fields["format"])) $entry[$lang["device_sndcard"][0]]=$device->fields["format"];
+		
+		break;
 	}
 	
 	echo "<tr class='tab_bg_2'>";
@@ -161,12 +193,17 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 	
 	if(!empty($specificity_label)) {
 		
+	
+		if(empty($specif) && !empty($device->fields["specif_default"])) {
+			$specif = $device->fields["specif_default"];
+		}
 		//Mise a jour des spécificitées
 		if(!empty($withtemplate) && $withtemplate == 2) {
 			if(empty($specif)) $specif = "&nbsp;";
 			echo "<td colspan='$colspan'>".$specificity_label.":&nbsp;$specif</td><td>&nbsp;</td>";
 		}
 		else {
+
 			echo "<form name='form_update_device_$compDevID' action=\"\" method=\"post\" >";
 			echo "<td align='right' colspan='$colspan'>".$specificity_label.":&nbsp;<input type='text' name='device_value' value=\"".$specif."\" size='$specificity_size' ></td>";
 			echo "<td align='center'>";
@@ -238,13 +275,19 @@ function device_selecter($target,$cID,$withtemplate='') {
 		echo "<td colspan='63'>"; 
 		echo "<form action=\"$target\" method=\"post\">";
 		echo "<select name=\"new_device_type\">";
-		echo "<option value=\"".HDD_DEVICE."\">".$lang["devices"][1]."</option>";
-		echo "<option value=\"".GFX_DEVICE."\">".$lang["devices"][2]."</option>";
-		echo "<option value=\"".NETWORK_DEVICE."\">".$lang["devices"][3]."</option>";
-		echo "<option value=\"".PROCESSOR_DEVICE."\">".$lang["devices"][4]."</option>";
-		echo "<option value=\"".MOBOARD_DEVICE."\">".$lang["devices"][5]."</option>";
-		echo "<option value=\"".RAM_DEVICE."\">".$lang["devices"][6]."</option>";
-		echo "<option value=\"".SND_DEVICE."\">".$lang["devices"][7]."</option>";
+		
+		
+		echo "<option value=\"".HDD_DEVICE."\">".getDictDeviceLabel(HDD_DEVICE)."</option>";
+		echo "<option value=\"".GFX_DEVICE."\">".getDictDeviceLabel(GFX_DEVICE)."</option>";
+		echo "<option value=\"".NETWORK_DEVICE."\">".getDictDeviceLabel(NETWORK_DEVICE)."</option>";
+		echo "<option value=\"".PROCESSOR_DEVICE."\">".getDictDeviceLabel(PROCESSOR_DEVICE)."</option>";
+		echo "<option value=\"".MOBOARD_DEVICE."\">".getDictDeviceLabel(MOBOARD_DEVICE)."</option>";
+		echo "<option value=\"".RAM_DEVICE."\">".getDictDeviceLabel(RAM_DEVICE)."</option>";
+		echo "<option value=\"".DRIVE_DEVICE."\">".getDictDeviceLabel(DRIVE_DEVICE)."</option>";
+		echo "<option value=\"".CONTROL_DEVICE."\">".getDictDeviceLabel(CONTROL_DEVICE)."</option>";
+		echo "<option value=\"".PCI_DEVICE."\">".getDictDeviceLabel(PCI_DEVICE)."</option>";
+		echo "<option value=\"".CASE_DEVICE."\">".getDictDeviceLabel(CASE_DEVICE)."</option>";
+		echo "<option value=\"".POWER_DEVICE."\">".getDictDeviceLabel(POWER_DEVICE)."</option>";
 		echo "</select>";
 		//echo "<td colspan='2' align='center'>";
 		echo "<input type=\"hidden\" name=\"withtemplate\" value=\"".$withtemplate."\" >";
@@ -421,6 +464,25 @@ function titleDevices($device_type){
 	echo "</tr></table></div>";
 }
 
+function getDictDeviceLabel($device_num) {
+	
+	global $lang;
+	$dp=array();
+	$dp[MOBOARD_DEVICE]=$lang["devices"][5];	
+	$dp[PROCESSOR_DEVICE]=$lang["devices"][4];
+	$dp[NETWORK_DEVICE]=$lang["devices"][3];
+	$dp[RAM_DEVICE]=$lang["devices"][6];	
+	$dp[HDD_DEVICE]=$lang["devices"][1];	
+	$dp[DRIVE_DEVICE]=$lang["devices"][19];		
+	$dp[CONTROL_DEVICE]=$lang["devices"][20];		
+	$dp[GFX_DEVICE]=$lang["devices"][2];		
+	$dp[SND_DEVICE]=$lang["devices"][7];		
+	$dp[PCI_DEVICE]=$lang["devices"][21];		
+	$dp[CASE_DEVICE]=$lang["devices"][22];		
+	$dp[POWER_DEVICE]=$lang["devices"][23];
+	return $dp[$device_num];
+}
+
 function showDevicesForm ($target,$ID,$device_type) {
 
 	GLOBAL $cfg_install,$cfg_layout,$lang,$HTMLRel;
@@ -437,8 +499,8 @@ function showDevicesForm ($target,$ID,$device_type) {
 
 	echo "<div align='center'><form method='post' name='form' action=\"$target\">";
 	echo "<table class='tab_cadre' width='700' cellpadding='2'>";
-	echo "<tr><th align='center' colspan='2'>";
-	echo getDeviceTable($device_type).": ".$ID;
+	echo "<tr><th align='center' colspan='1'>";
+	echo getDictDeviceLabel($device_type)."</th><th align='center' colspan='1'> ID : ".$ID;
 	echo "<tr><td class='tab_bg_1' colspan='1'>";
 	// table commune
 	echo "<table cellpadding='1px' cellspacing='0' border='0'>\n";
@@ -448,6 +510,9 @@ function showDevicesForm ($target,$ID,$device_type) {
 	echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>";
 	dropdownValue("glpi_enterprises","FK_glpi_enterprise",$device->fields["FK_glpi_enterprise"]);
 	echo "</td></tr>";
+	echo "<tr><td>".$lang["devices"][24]."</td>";
+	echo "<td><input type='text' name='specif_default' value=\"".$device->fields["specif_default"]."\" size='20'></td>";
+	echo "</tr>";
 	echo "</table>";
 	// fin table Commune
 	echo "</td>\n";	
@@ -492,8 +557,63 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</tr>";
 		break;
 		case "glpi_device_drive" :
+			echo "</tr>";
+			echo "<tr><td>".$lang["device_drive"][0].":</td>";
+			echo "<td>".$lang["choice"][0]."<input type='radio' name='is_writer' value=\"Y\" ";
+			if(strcmp($device->fields["is_writer"],"Y") == 0) echo "checked='checked'";
+			echo "></td>";
+			echo "<td>".$lang["choice"][1]."<input type='radio' name='is_writer' value=\"N\" ";
+			if(strcmp($device->fields["is_writer"],"N") == 0) echo "checked='checked'";
+			echo "></td>";
+			echo "</tr>";
+			echo "<tr><td>".$lang["device_drive"][2].":</td>";
+			echo "<td><select name='interface'>";
+			echo "<option value=\"IDE\"";
+			if(strcmp($device->fields["interface"],"IDE") == 0) echo "selected='selected'";
+			echo ">".$lang["device_control"][2]."</option>";
+			echo "<option value=\"SATA\" ";
+			if(strcmp($device->fields["interface"],"SATA") == 0) echo "selected='selected'";
+			echo ">".$lang["device_control"][3]."</option>";
+			echo "<option value=\"SCSI\"";
+			if(strcmp($device->fields["interface"],"SCSI") == 0) echo "selected='selected'";
+			echo ">".$lang["device_control"][4]."</option>";
+			echo "</select>";
+			echo "</td>";
+			echo "</tr>";
+			echo "<tr><td>".$lang["device_drive"][1].":</td>";
+			echo "<td><input type='text' size='12' name='speed' value=\"".$device->fields["speed"]."\"></td>";
+			echo "</tr>";
+			
+			
 		break;
 		case  "glpi_device_control" :
+			echo "</tr>";
+			echo "<tr><td>".$lang["device_control"][0].":</td>";
+			echo "<td>".$lang["choice"][0]."<input type='radio' name='raid' value=\"Y\" ";
+			if(strcmp($device->fields["raid"],"Y") == 0) echo "checked='checked'";
+			echo "></td>";
+			echo "<td>".$lang["choice"][1]."<input type='radio' name='raid' value=\"N\" ";
+			if(strcmp($device->fields["raid"],"N") == 0) echo "checked='checked'";
+			echo "></td>";
+			echo "</tr>";
+			echo "<tr><td>".$lang["device_control"][1].":</td>";
+			echo "<td><select name='interface'>";
+			echo "<option value=\"IDE\"";
+			if(strcmp($device->fields["interface"],"IDE") == 0) echo "selected='selected'";
+			echo ">".$lang["device_control"][2]."</option>";
+			echo "<option value=\"SATA\" ";
+			if(strcmp($device->fields["interface"],"SATA") == 0) echo "selected='selected'";
+			echo ">".$lang["device_control"][3]."</option>";
+			echo "<option value=\"SCSI\"";
+			if(strcmp($device->fields["interface"],"SCSI") == 0) echo "selected='selected'";
+			echo ">".$lang["device_control"][4]."</option>";
+			echo "<option value=\"USB\"";
+			if(strcmp($device->fields["interface"],"USB") == 0) echo "selected='selected'";
+			echo ">".$lang["device_control"][5]."</option>";
+			echo "</select>";
+			echo "</td>";
+			echo "</tr>";
+		
 		break;
 		case "glpi_device_gfxcard" :
 			echo "<tr><td>".$lang["device_gfxcard"][0].":</td>";
@@ -509,12 +629,36 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</tr>";
 		break;
 		case "glpi_device_pci" :
-
 		break;
 		case "glpi_device_case" :
+			echo "<tr><td>".$lang["device_case"][0].":</td>";
+			echo "<td><select name='format'>";
+			echo "<option value=\"grand\"";
+			if(strcmp($device->fields["format"],"Grand") == 0) echo "selected='selected'";
+			echo ">".$lang["device_case"][1]."</option>";
+			echo "<option value=\"moyen\" ";
+			if(strcmp($device->fields["format"],"Moyen") == 0) echo "selected='selected'";
+			echo ">".$lang["device_case"][2]."</option>";
+			echo "<option value=\"micro\"";
+			if(strcmp($device->fields["format"],"Micro") == 0) echo "selected='selected'";
+			echo ">".$lang["device_case"][3]."</option>";
+			echo "</select>";
+			echo "</td>";
+			echo "</tr>";
 
 		break;
 		case "glpi_device_power" :
+			echo "<tr><td>".$lang["device_power"][0].":</td>";
+			echo "<td><input type='text' size='12' name='power' value=\"".$device->fields["power"]."\"></td>";
+			echo "</tr>";
+			echo "<tr><td>".$lang["device_power"][1].":</td>";
+			echo "<td>".$lang["choice"][0]."<input type='radio' name='atx' value=\"Y\" ";
+			if(strcmp($device->fields["atx"],"Y") == 0) echo "checked='checked'";
+			echo "></td>";
+			echo "<td>".$lang["choice"][1]."<input type='radio' name='atx' value=\"N\" ";
+			if(strcmp($device->fields["atx"],"N") == 0) echo "checked='checked'";
+			echo "></td>";
+			echo "</tr>";
 
 		break;	
 

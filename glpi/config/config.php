@@ -96,8 +96,8 @@ define("POWER_DEVICE","12");
 
 
 //DEVICE ARRAY.
-//$devices_tables = array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power"));
-$cfg_devices_tables = array("moboard","processor","ram","hdd","iface","gfxcard","sndcard");
+$cfg_devices_tables =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
+//$cfg_devices_tables = array("moboard","processor","ram","hdd","iface","gfxcard","sndcard");
 
 // *************************** Eléments optionnels  **********************
 // ***********************************************************************
