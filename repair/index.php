@@ -46,21 +46,16 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 
-	checkAuthentication("normal");
-	if ($_SESSION["glpitype"]=="normal"){
-		commonHeader($lang["title"][9],$_SERVER["PHP_SELF"]);
-		printRepairItems($_SERVER["PHP_SELF"]);
-	}
-	// On est pas normal -> admin ou super-admin
-	else {
 	if (isset($_GET["add"]))
 	{
+		checkAuthentication("admin");
 		addRepairItem($_GET);
 		logEvent(0, "repair", 4, "inventory", $_SESSION["glpiname"]." added repair item ".$_GET["device_type"]."-".$_GET["id_device"].".");
 		header("Location: ".$_SERVER['HTTP_REFERER']);
 	} 
 	else if (isset($_GET["delete"]))
 	{
+		checkAuthentication("admin");
 		deleteRepairItem($_GET);
 		logEvent(0, "repair", 4, "inventory", $_SESSION["glpiname"]." deleted repair item.");
 		header("Location: ".$_SERVER['HTTP_REFERER']);
@@ -75,25 +70,14 @@ if(!isset($tab["ID"])) $tab["ID"] = "";
 	if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_repair_item.ID";
 
 
-	checkAuthentication("admin");
+	checkAuthentication("normal");
 
 	commonHeader($lang["title"][9],$_SERVER["PHP_SELF"]);
-	if (isset($_GET["comment"])){
-		if (showRepairCommentForm($_SERVER["PHP_SELF"],$_GET["comment"])){
-			}
-		else {
-			titleRepair();
-			searchFormRepairItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
-			showRepairItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
-		}
-		
-	}else {
 	
 	titleRepair();
 	searchFormRepairItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
 	showRepairItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
-	}
-}
+
 
 commonFooter();
 
