@@ -60,10 +60,7 @@ else if (isset($_POST["update"]))
 	checkAuthentication("admin");
 	updateContact($_POST);
 	logEvent($_POST["ID"], "Contacts", 4, "financial", $_SESSION["glpiname"]." updated item.");
-	commonHeader($lang["title"][22],$_SERVER["PHP_SELF"]);
-	showContactForm($_SERVER["PHP_SELF"],$_POST["ID"]);
-	commonFooter();
-
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 else
 {
