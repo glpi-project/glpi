@@ -242,6 +242,7 @@ function get_def($db, $table) {
     $def .= "CREATE TABLE $table (\n";
     $result = $db->query("SHOW FIELDS FROM $table");
     while($line = $db->fetch_array($result)) {
+    	$line=unhtmlentities_deep($line);
     	$line=stripslashes_deep($line);
         $def .= "    $line[Field] $line[Type]";
         if (isset($line["Default"]) && $line["Default"] != "") $def .= " DEFAULT '$line[Default]'";
@@ -252,6 +253,8 @@ function get_def($db, $table) {
      $def = ereg_replace(",\n$","", $def);
      $result = $db->query("SHOW KEYS FROM $table");
      while($line = $db->fetch_array($result)) {
+     	 $line=unhtmlentities_deep($line);
+     	 $line=stripslashes_deep($line);
           $kname=$line["Key_name"];
           if(($kname != "PRIMARY") && ($line["Non_unique"] == 0)) $kname="UNIQUE|$kname";
           if(!isset($index[$kname])) $index[$kname] = array();
