@@ -43,9 +43,9 @@ include ($phproot . "/glpi/includes_software.php");
 
 checkAuthentication("normal");
 
-commonHeader("Software",$_SERVER[PHP_SELF]);
+commonHeader("Software",$_SERVER["PHP_SELF"]);
 
-showSoftwareList($_SERVER[PHP_SELF],$_SESSION["glpiname"],$_POST["field"],$_POST["phrasetype"],$_POST["contains"],$_POST["sort"],$_POST["order"],$_POST["start"]);
+showSoftwareList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_POST["field"],$_POST["phrasetype"],$_POST["contains"],$_POST["sort"],$_POST["order"],$_POST["start"]);
 
 commonFooter();
 ?>

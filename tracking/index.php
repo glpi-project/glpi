@@ -42,7 +42,7 @@ include ($phproot . "/glpi/includes_tracking.php");
 
 checkAuthentication("normal");
 
-commonHeader("Tracking",$_SERVER[PHP_SELF]);
+commonHeader("Tracking",$_SERVER["PHP_SELF"]);
 
 
 searchFormTracking($_GET["show"],$_GET["contains"]);

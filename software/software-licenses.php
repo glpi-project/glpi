@@ -43,8 +43,8 @@ if($_POST) $tab = $_POST;
 elseif($_GET) $tab = $_GET;
 if ($tab["addform"]) {
 	checkAuthentication("admin");
-	commonHeader("Software",$_SERVER[PHP_SELF]);
-	showLicenseForm($_SERVER[PHP_SELF],$tab["ID"]);
+	commonHeader("Software",$_SERVER["PHP_SELF"]);
+	showLicenseForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	commonFooter();
 } else if ($tab["add"]) {
 	checkAuthentication("admin");
@@ -58,8 +58,8 @@ if ($tab["addform"]) {
 	header("Location: $_SERVER[HTTP_REFERER]");
 } else if ($tab["select"]) {
 	checkAuthentication("admin");
-	commonHeader("Software",$_SERVER[PHP_SELF]);
-	showLicenseSelect($_SERVER[HTTP_REFERER],$_SERVER[PHP_SELF],$tab["cID"],$tab["sID"]);
+	commonHeader("Software",$_SERVER["PHP_SELF"]);
+	showLicenseSelect($_SERVER[HTTP_REFERER],$_SERVER["PHP_SELF"],$tab["cID"],$tab["sID"]);
 	commonFooter();
 } else if ($tab["install"]) {
 	checkAuthentication("admin");

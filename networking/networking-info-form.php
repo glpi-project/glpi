@@ -53,14 +53,14 @@ if ($_POST["add"]) {
 	checkAuthentication("admin");
 	updateNetdevice($_POST);
 	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." updated item.");
-	commonHeader("Networking",$_SERVER[PHP_SELF]);
-	showNetworkingForm ($_SERVER[PHP_SELF],$_POST["ID"]);
+	commonHeader("Networking",$_SERVER["PHP_SELF"]);
+	showNetworkingForm ($_SERVER["PHP_SELF"],$_POST["ID"]);
 	commonFooter();
 
 } else {
 	checkAuthentication("normal");
-	commonHeader("Networking",$_SERVER[PHP_SELF]);
-	showNetworkingForm ($_SERVER[PHP_SELF],$_GET["ID"]);
+	commonHeader("Networking",$_SERVER["PHP_SELF"]);
+	showNetworkingForm ($_SERVER["PHP_SELF"],$_GET["ID"]);
 	commonFooter();
 }
 

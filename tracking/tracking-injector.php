@@ -55,7 +55,7 @@ $ID = $_GET["computer"];
 
 if ($_GET["priority"] && !$_GET["contents"])
 {
-	nullHeader("Tracking",$_SERVER[PHP_SELF]);
+	nullHeader("Tracking",$_SERVER["PHP_SELF"]);
 	echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 	echo $lang["help"][15]."<br><br>";
 	echo "<a href=\"javascript:history.back()\">...back</a>";
@@ -64,7 +64,7 @@ if ($_GET["priority"] && !$_GET["contents"])
 	exit;
 } elseif ($_GET["emailupdates"] == "yes" && $_GET["uemail"]=="")
 {
-	nullHeader("Tracking",$_SERVER[PHP_SELF]);
+	nullHeader("Tracking",$_SERVER["PHP_SELF"]);
 		echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
 	echo $lang["help"][16]."<br><br>";
@@ -75,7 +75,7 @@ if ($_GET["priority"] && !$_GET["contents"])
 }
 elseif (!$ID)
 {
-	nullHeader("Tracking",$_SERVER[PHP_SELF]);
+	nullHeader("Tracking",$_SERVER["PHP_SELF"]);
 		echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
 	echo $lang["help"][17]."<br><br>";
@@ -88,7 +88,7 @@ else
 {
 	if (postJob($ID,$glpiname,$status,$_GET["priority"],$_GET["computer"],$_GET["isgroup"],$_GET["uemail"],$_GET["emailupdates"],$_GET["contents"]))
 	{
-		nullHeader("Tracking",$_SERVER[PHP_SELF]);
+		nullHeader("Tracking",$_SERVER["PHP_SELF"]);
 		echo "<center><img src=\"".$cfg_install["root"]."/pics/ok.png\" alt=\"OK\"><br><br><b>";
 		echo $lang["help"][18]."<br>";
 		echo $lang["help"][19];
@@ -98,7 +98,7 @@ else
 	}
 	else
 	{
-		nullHeader("Tracking",$_SERVER[PHP_SELF]);
+		nullHeader("Tracking",$_SERVER["PHP_SELF"]);
 			echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
 		echo $lang["help"][20]."<br>";

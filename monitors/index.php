@@ -41,7 +41,7 @@ include ($phproot . "/glpi/includes_monitors.php");
 
 checkAuthentication("normal");
 
-commonHeader("Monitors",$_SERVER[PHP_SELF]);
+commonHeader("Monitors",$_SERVER["PHP_SELF"]);
 
 
 ?>

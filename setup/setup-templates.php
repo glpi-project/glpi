@@ -58,13 +58,13 @@ if ($_POST["add"]) {
 	header("Location: $_SERVER[$HTTP_REFERER]?done");
 } else if ($_POST["showform"]) {
 	checkAuthentication("admin");
-	commonHeader("glpi Setup",$_SERVER[PHP_SELF]);
-	showTemplateForm($_SERVER[PHP_SELF],$_POST["ID"]);
+	commonHeader("glpi Setup",$_SERVER["PHP_SELF"]);
+	showTemplateForm($_SERVER["PHP_SELF"],$_POST["ID"]);
 	commonFooter();
 } else {
 	checkAuthentication("normal");
-	commonHeader("glpi Setup",$_SERVER[PHP_SELF]);
-	listTemplates($_SERVER[PHP_SELF]);
+	commonHeader("glpi Setup",$_SERVER["PHP_SELF"]);
+	listTemplates($_SERVER["PHP_SELF"]);
 	commonFooter();
 }
 

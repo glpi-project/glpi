@@ -42,7 +42,7 @@ include ($phproot . "/glpi/includes_tracking.php");
 
 checkAuthentication("post-only");
 
-helpHeader("Helpdesk Access Only",$HTTP_SERVER_VARS[PHP_SELF],$IRMName);
+helpHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$IRMName);
 
 printHelpDesk($IRMName);
 

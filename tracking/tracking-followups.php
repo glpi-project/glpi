@@ -43,7 +43,7 @@ include ($phproot . "/glpi/includes_setup.php");
 
 checkAuthentication("normal");
 
-commonHeader("Tracking",$_SERVER[PHP_SELF]);
+commonHeader("Tracking",$_SERVER["PHP_SELF"]);
 
 if ($_GET["contents"])
 {

@@ -38,7 +38,7 @@ include($phproot . "/glpi/includes.php");
 
 checkAuthentication("normal");
 
-commonHeader("Reports",$_SERVER[PHP_SELF]);
+commonHeader("Reports",$_SERVER["PHP_SELF"]);
 
 
 $db = new DB;

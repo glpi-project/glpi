@@ -41,7 +41,7 @@ include ($phproot . "/glpi/includes_computers.php");
 
 checkAuthentication("normal");
 
-commonHeader("Computers",$_SERVER[PHP_SELF]);
+commonHeader("Computers",$_SERVER["PHP_SELF"]);
 
 echo "<center><table border=0><tr><td><b>";
 echo "<a href=\"computers-add-select.php\">".$lang["computers"][0]."</a>";

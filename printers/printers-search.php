@@ -40,9 +40,9 @@ include ($phproot . "/glpi/includes_printers.php");
 
 checkAuthentication("normal");
 
-commonHeader("Printers",$_SERVER[PHP_SELF]);
+commonHeader("Printers",$_SERVER["PHP_SELF"]);
 
-showPrintersList($_SERVER[PHP_SELF],$_SESSION["glpiname"],$_POST["field"],$_POST["phrasetype"],$_POST["contains"],$_POST["sort"],$_POST["order"],$_POST["start"]);
+showPrintersList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_POST["field"],$_POST["phrasetype"],$_POST["contains"],$_POST["sort"],$_POST["order"],$_POST["start"]);
 
 commonFooter();
 ?>

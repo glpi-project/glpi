@@ -56,40 +56,40 @@ if ($tab["add"]) {
 	checkAuthentication("admin");
 	updatePrinter($tab);
 	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." updated item.");
-	commonHeader("Printers",$_SERVER[PHP_SELF]);
-	showPrintersForm($_SERVER[PHP_SELF],$tab["ID"]);
+	commonHeader("Printers",$_SERVER["PHP_SELF"]);
+	showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	commonFooter();
 
 } else if ($tab["disconnect"]) {
 	checkAuthentication("admin");
 	Disconnect($tab["ID"],3);
 	logEvent($tab["ID"], "printers", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
-	commonHeader("Printers",$_SERVER[PHP_SELF]);
-	showPrintersForm($_SERVER[PHP_SELF],$tab["ID"]);
+	commonHeader("Printers",$_SERVER["PHP_SELF"]);
+	showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	commonFooter();
 } else if ($tab["connect"]==1) {
 	checkAuthentication("admin");
-	commonHeader("Printers",$_SERVER[PHP_SELF]);
-	showConnectSearch($_SERVER[PHP_SELF],$tab["ID"]);
+	commonHeader("Printers",$_SERVER["PHP_SELF"]);
+	showConnectSearch($_SERVER["PHP_SELF"],$tab["ID"]);
 	commonFooter();
 } else if ($tab["connect"]==2) {
 	checkAuthentication("admin");
-	commonHeader("Printers",$_SERVER[PHP_SELF]);
-	listConnectComputers($_SERVER[PHP_SELF],$tab);
+	commonHeader("Printers",$_SERVER["PHP_SELF"]);
+	listConnectComputers($_SERVER["PHP_SELF"],$tab);
 	commonFooter();
 } else if ($tab["connect"]==3) {
 	checkAuthentication("admin");
-	commonHeader("Printers",$_SERVER[PHP_SELF]);
-	Connect($_SERVER[PHP_SELF],$tab["sID"],$tab["cID"],3);
+	commonHeader("Printers",$_SERVER["PHP_SELF"]);
+	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],3);
 	logEvent($sID, "printers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
-	showPrintersForm($_SERVER[PHP_SELF],$tab["sID"]);
+	showPrintersForm($_SERVER["PHP_SELF"],$tab["sID"]);
 	commonFooter();
 
 } else {
 
 	checkAuthentication("normal");
-	commonHeader("Printers",$_SERVER[PHP_SELF]);
-	showPrintersForm($_SERVER[PHP_SELF],$tab["ID"]);
+	commonHeader("Printers",$_SERVER["PHP_SELF"]);
+	showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	commonFooter();
 }
 
