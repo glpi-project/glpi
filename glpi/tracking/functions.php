@@ -437,33 +437,33 @@ function showJobShort($ID, $followups	) {
 
 	if ($job->getfromDB($ID,0))
 	{
-
+		$bgcolor=$cfg_layout["priority_".$job->priority];
 		if ($job->status == "new")
 		{
 			echo "<tr class='tab_bg_1'>";
-			echo "<td align='center'><font color=\"green\"><b>".$lang["joblist"][9]."</b></font></td>";
-			echo "<td width='100'><small>".$lang["joblist"][11].":<br>&nbsp;$job->date</small></td>";
+			echo "<td align='center'  bgcolor='$bgcolor'><font color=\"green\"><b>".$lang["joblist"][9]."</b></font></td>";
+			echo "<td width='100'  bgcolor='$bgcolor'><small>".$lang["joblist"][11].":<br>&nbsp;$job->date</small></td>";
 
 		}
 		else
 		{
  			echo "<tr class='tab_bg_1'>";
-			echo "<td align='center'><b>".$lang["joblist"][10]."</b>";
+			echo "<td align='center'  bgcolor='$bgcolor'><b>".$lang["joblist"][10]."</b>";
 			if (isAdmin($_SESSION["glpitype"])){
 				$sel="";
 				if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
 			echo "<br><input type='checkbox' name='todel[".$job->ID."]' value='1' $sel>";
 			}
 			echo "</td>";
-			echo "<td width='130'><small>".$lang["joblist"][11].":<br>&nbsp;$job->date<br>";
+			echo "<td width='130' bgcolor='$bgcolor'><small>".$lang["joblist"][11].":<br>&nbsp;$job->date<br>";
 			echo "<i>".$lang["joblist"][12].":<br>&nbsp;$job->closedate</i>";
 			if ($job->realtime>0) echo "<br>".$lang["job"][20].": <br>".getRealtime($job->realtime);
 			echo "</small></td>";
 		}
 
-		echo "<td align='center'><b>$job->priority</b></td>";
+		echo "<td align='center' bgcolor='$bgcolor'><b>$job->priority</b></td>";
 		
-		echo "<td align='center'>";
+		echo "<td align='center'  bgcolor='$bgcolor'>";
 
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		echo "<a href=\"".$cfg_install["root"]."/setup/users-info.php?ID=$job->author\"><b>$job->author</b></a>";
@@ -474,11 +474,11 @@ function showJobShort($ID, $followups	) {
 
 		if ($job->assign == "")
 		{
-			echo "<td align='center'>[Nobody]</td>"; 
+			echo "<td align='center' bgcolor='$bgcolor'>[Nobody]</td>"; 
 	    	}
 		else
 		{
-			echo "<td align='center'>";
+			echo "<td align='center' bgcolor='$bgcolor'>";
 			if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 			echo "<a href=\"".$cfg_install["root"]."/setup/users-info.php?ID=$job->assign\"><b>$job->assign</b></a>";
 			else
@@ -490,7 +490,7 @@ function showJobShort($ID, $followups	) {
 		}    
 		
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0){
-			echo "<td align='center'>";
+			echo "<td align='center' bgcolor='$bgcolor'>";
 			$m= new CommonItem;
 			$m->getfromDB($job->device_type,$job->computer);
 			echo $m->getType()."<br>";
@@ -505,14 +505,14 @@ function showJobShort($ID, $followups	) {
 			echo "</td>";
 		}
 		else
-		echo "<td  align='center'><b>$job->computername ($job->computer)</b></td>";
+		echo "<td  align='center' bgcolor='$bgcolor'><b>$job->computername ($job->computer)</b></td>";
 
 
-		echo "<td  align='center'><b>".getDropdownName("glpi_dropdown_tracking_category",$job->category)."</b></td>";
+		echo "<td  align='center' bgcolor='$bgcolor'><b>".getDropdownName("glpi_dropdown_tracking_category",$job->category)."</b></td>";
 		
 		$stripped_content=$job->contents;
 		if (!$followups) $stripped_content =substr(unhtmlentities_deep($job->contents),0,$cfg_features["cut"]);
-		echo "<td><b>$stripped_content</b>";
+		echo "<td bgcolor='$bgcolor'><b>$stripped_content</b>";
 		if ($followups)
 		{
 			showFollowupsShort($job->ID);
@@ -521,7 +521,7 @@ function showJobShort($ID, $followups	) {
 		echo "</td>";
 
 		// Job Controls
-		echo "<td width='40' class='tab_bg_2' align='center'>";
+		echo "<td width='40' align='center' bgcolor='$bgcolor'>";
 		
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-followups.php?ID=$job->ID\"><b>".$lang["joblist"][13]."</b></a>&nbsp;($job->num_of_followups)&nbsp;<br>";
@@ -539,7 +539,7 @@ function showJobShort($ID, $followups	) {
 	}
 	else
 	{
-    echo "<tr class='tab_bg_2'><td colspan=6><i>".$lang["joblist"][16]."</i></td></tr>";
+    echo "<tr class='tab_bg_2'><td colspan=6 bgcolor='$bgcolor'><i>".$lang["joblist"][16]."</i></td></tr>";
 	}
 }
 
@@ -563,7 +563,7 @@ function showJobDetails($ID) {
 		echo "<tr class='tab_bg_2'>";
 		echo "<td width='33%' rowspan='1'>";
 
-		echo "<table cellpadding='2' cellspacing='0' border='0'>";
+		echo "<table cellpadding='2' cellspacing='0' border='0' >";
 
 		echo "<tr><td>".$lang["joblist"][0].":</td><td>";
 		if ($job->status == "new") { 
