@@ -91,7 +91,9 @@ define("PCI_DEVICE","10");
 define("CASE_DEVICE","11");
 define("POWER_DEVICE","12");
 
-
+//DEVICE ARRAY.
+//$devices_tables = array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power"));
+$cfg_devices_tables = array("moboard","processor","ram","hdd","iface","gfxcard","sndcard");
 
 // *************************** Eléments optionnels  **********************
 // ***********************************************************************
