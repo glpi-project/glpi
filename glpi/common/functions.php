@@ -485,8 +485,7 @@ function helpHeader($title,$url,$name) {
 	echo "<td align='center' width='25%'>\n";
 	
 	echo "<img src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" >";
-	echo "<br>";
-	echo "<span class='menu'><a  href=\"".$cfg_install["root"]."/helpdesk.php?show=resa\"\">".$lang["Menu"][17]."</a></span><br>";
+	
 
 
         echo "</td>";
@@ -511,6 +510,11 @@ function helpHeader($title,$url,$name) {
         echo "<a class='icon_nav_move' href=\"".$cfg_install["root"]."/helpdesk.php\"><img  src=\"".$HTMLRel."pics/ajoutinterv.png\" alt=\"".$lang["job"][13]."\" title=\"".$lang["job"][13]."\"></a><br><br>";
         echo "<a class='icon_nav_move' href=\"".$cfg_install["root"]."/helpdesk.php?show=user\"><img  src=\"".$HTMLRel."pics/suivi.png\" alt=\"".$lang["tracking"][0]."\" title=\"".$lang["tracking"][0]."\"></a>";
 	echo "</td>";
+	//reservation
+	
+	echo "<td>";
+        echo "<a  class='icon_nav_move' href=\"".$cfg_install["root"]."/helpdesk.php?show=resa\"><img  src=\"".$HTMLRel."pics/reservation-2.png\" alt=\"".$lang["Menu"][17]."\" title=\"".$lang["Menu"][17]."\"></a><br><br>";
+        echo "</td>";
 	// On the right side of the navigation bar, we have a clock with
 	// date, help and a logout-link.
 	echo "<td align='right' width='100'><div align='right'>";
