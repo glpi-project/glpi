@@ -74,7 +74,7 @@ class User {
 	
 	function getPrefsFromDB() {
 		$db = new DB;
-		$query = "select * from prefs where (user = '". $this->fields["name"] ."')";
+		$query = "select * from glpi_prefs where (user = '". $this->fields["name"] ."')";
 		if($result = $db->query($query)) {
 			if($db->numrows($result) >= 1) {
 				$this->prefs["tracking_order"] = $db->result($result,0,"tracking_order");

@@ -1169,6 +1169,7 @@ function updateLanguage($input) {
 	$db = new DB;
 	$query = "UPDATE glpi_prefs SET language = '".$input["language"]."' WHERE (user = '".$input["user"]."')";
 	if ($result=$db->query($query)) {
+		$_SESSION["glpilanguage"] = $input["language"];
 		return true;
 	} else {
 		return false;
