@@ -533,7 +533,7 @@ function showEvents($target,$order,$sort) {
 	// Output events
 	$i = 0;
 
-	echo "<p><center><table border='0' width='90%'>";
+	echo "<p><center><table width='90%' class='tab_cadre'>";
 	echo "<tr><th colspan='6'>".$lang["central"][2]." ".$cfg_features["num_of_events"]." ".$lang["central"][3].":</th></tr>";
 	echo "<tr>";
 
@@ -750,7 +750,7 @@ function showConnect($target,$ID,$type) {
 		$connect->type=$type;
 		$computer = $connect->getComputerContact($ID);
 
-		echo "<br><center><table width='50%'><tr><th colspan='2'>";
+		echo "<br><center><table width='50%' class='tab_cadre'><tr><th colspan='2'>";
 		echo $lang["connect"][0].":";
 		echo "</th></tr>";
 
@@ -799,7 +799,7 @@ function showConnectSearch($target,$ID) {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
-	echo "<center><table border='0'>";
+	echo "<center><table class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$lang["connect"][4].":</th></tr>";
 
 	echo "<tr class='tab_bg_1'>";
@@ -827,7 +827,7 @@ function listConnectComputers($target,$input) {
 
 	$pID1 = $input["pID1"];
 
-	echo "<center><table border='0'>";
+	echo "<center><table  class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$lang["connect"][9].":</th></tr>";
 	echo "<form method='post' action=\"$target\"><tr><td>";
 
@@ -873,7 +873,7 @@ function printHelpDesk ($name) {
 	$realname = $db->result($result,0,"realname");
 
 	echo "<form method='post' name=\"helpdeskform\" action=\"".$cfg_install["root"]."/tracking/tracking-injector.php\">";
-	echo "<center><table border='0'>";
+	echo "<center><table  class='tab_cadre'>";
 
 	echo "<tr><th colspan='2'>".$lang["help"][0]." $realname, ".$lang["help"][1].":</th></tr>";
 	echo "<tr class='tab_bg_1'>";

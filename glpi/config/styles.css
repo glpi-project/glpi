@@ -80,8 +80,7 @@ input.submit:hover {
  /* ###### table ###### */
 
  table {
-
-  }
+   }
 
   th
   {  
@@ -95,9 +94,9 @@ input.submit:hover {
   }
 
 .tab_cadre{
-
+ 
  -moz-border-radius: 4px;
-  border: 1px thin #cccccc;
+   border: 1px solid #cccccc;
 
 }
 
