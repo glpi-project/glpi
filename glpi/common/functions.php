@@ -132,6 +132,15 @@ function searchUserbyType($authtype) {
                    addslashes($value);
        return $value;
    }
+
+   function htmlspecialchars_deep($value)
+   {
+//echo "add";
+       $value = is_array($value) ?
+                   array_map('htmlspecialchars_deep', $value) :
+                   htmlspecialchars($value);
+       return $value;
+   }
     
 function checkAuthentication($authtype) {
 	// Universal method to have a magic-quote-gpc system
