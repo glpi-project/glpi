@@ -847,7 +847,7 @@ function listConnectorComputers($target,$input) {
 	} else {
 		$query = "SELECT glpi_computers.ID as ID, glpi_computers.name as name, glpi_dropdown_locations.name as location from glpi_computers, glpi_dropdown_locations WHERE glpi_computers.location = glpi_dropdown_locations.id AND glpi_computers.ID = ".$input["comp"];
 	} 
-
+	$query.= " ORDER BY glpi_computers.name";
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 	echo "<select name='dID'>";
