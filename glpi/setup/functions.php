@@ -1093,17 +1093,20 @@ function showSortForm($target,$ID) {
 	$db = new DB;
 	$query = "SELECT tracking_order FROM glpi_prefs WHERE (user = '$ID')";
 	$result=$db->query($query);
-
+	if ($db->numrows($result)>0)
+	$order=$db->result($result,0,"tracking_order");
+	else $order="yes";
+	
 	echo "<div align='center'>&nbsp;<table class='tab_cadre' cellpadding='5' width='30%'>";
 	echo "<form method='post' action=\"$target\">";
 	echo "<tr><th colspan='2'>".$lang["setup"][40]."</th></tr>";
 	echo "<tr><td width='100%' align='center' class='tab_bg_1'>";
 	echo "<select name='tracking_order'>";
 	echo "<option value=\"yes\"";
-	if ($db->result($result,0,"tracking_order")=="yes") { echo " selected"; }	
+	if ($order=="yes") { echo " selected"; }	
 	echo ">".$lang["choice"][1];
 	echo "<option value=\"no\"";
-	if ($db->result($result,0,"tracking_order")=="no") { echo " selected"; }	
+	if ($order=="no") { echo " selected"; }	
 	echo ">".$lang["choice"][0];
 	echo "</select>";
 	echo "</td>";
@@ -1133,7 +1136,10 @@ function showLangSelect($target,$ID) {
 	$db = new DB;
 	$query = "SELECT language FROM glpi_prefs WHERE (user = '$ID')";
 	$result=$db->query($query);
-
+	if ($db->numrows($result)>0)
+	$l=$db->result($result,0,"language");
+	else $l="english";
+	
 	echo "<form method='post' action=\"$target\">";
 	echo "<div align='center'>&nbsp;<table class='tab_cadre' cellpadding='5' width='30%'>";
 	echo "<tr><th colspan='2'>".$lang["setup"][41].":</th></tr>";
@@ -1142,7 +1148,7 @@ function showLangSelect($target,$ID) {
 	$i=0;
 	while ($i < count($cfg_install["languages"])) {
 		echo "<option value=\"".$cfg_install["languages"][$i]."\"";
-		if ($db->result($result,0,"language")==$cfg_install["languages"][$i]) { 
+		if ($l==$cfg_install["languages"][$i]) { 
 			echo " selected"; 
 		}
 		echo ">".$cfg_install["languages"][$i];
