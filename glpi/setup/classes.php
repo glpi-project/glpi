@@ -58,7 +58,8 @@ class User {
 		$db = new DB;
 		$query = "SELECT * FROM glpi_users WHERE (name = '$name')";
 		if ($result = $db->query($query)) {
-			$data = $db->fetch_array($result);
+		if ($db->numrows($result)!=1) return false;
+		$data = $db->fetch_array($result);
 			if (empty($data)) {
 				return false;
 			}
