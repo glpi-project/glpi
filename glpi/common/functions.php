@@ -2670,7 +2670,41 @@ function sendFile($file,$filename){
 	
 	}
 }
+/**
+* Get the ID of the next Item
+*
+* @param $table table to search next item
+* @param $ID current ID
+* @return the next ID, -1 if not exist
+*/
+function getNextItem($table,$ID){
 
+$query = "select ID from $table where ID > $ID AND deleted='N' AND is_template='0' order by ID";
+$db=new DB;
+$result=$db->query($query);
+if ($db->numrows($result)>0)
+	return $db->result($result,0,"ID");
+else return -1;
+
+}
+
+/**
+* Get the ID of the previous Item
+*
+* @param $table table to search next item
+* @param $ID current ID
+* @return the previous ID, -1 if not exist
+*/
+function getPreviousItem($table,$ID){
+
+$query = "select ID from $table where ID < $ID AND deleted='N' AND is_template='0' order by ID DESC";
+$db=new DB;
+$result=$db->query($query);
+if ($db->numrows($result)>0)
+	return $db->result($result,0,"ID");
+else return -1;
+
+}
 
 
 ?>

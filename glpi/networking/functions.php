@@ -61,6 +61,14 @@ function showNetworkingOnglets($target,$withtemplate,$actif){
 	if(empty($withtemplate)){
 	echo "<li "; if ($actif=="6") {echo "class='actif'";} echo "><a href='$target&onglet=6'>".$lang["title"][28]."</a></li>";
 	}
+	if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
+	$ID=$ereg[1];
+	$next=getNextItem("glpi_networking",$ID);
+	$prev=getPreviousItem("glpi_networking",$ID);
+	$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
+	if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'>".$lang["buttons"][12]."</a></li>";
+	if ($next>0) echo "<li><a href='$cleantarget?ID=$next'>".$lang["buttons"][11]."</a></li>";
+	}
 
 	echo "</ul></div>";
 	
