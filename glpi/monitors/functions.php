@@ -288,6 +288,9 @@ function showMonitorsForm ($target,$ID) {
 	echo "<tr><td>".$lang["monitors"][8].":	</td>";
 	echo "<td><input type='text' name='contact' size='12' value=\"".$mon->fields["contact"]."\"></td>";
 	echo "</tr>";
+	echo "<tr><td></td><td><b>";
+	showReservationForm(4,$ID);
+	echo "</b></td></tr>";
 
 	echo "</table>";
 

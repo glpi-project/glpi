@@ -806,14 +806,12 @@ function addUser($input) {
 			}
 
 			if ($user->addToDB()) {
-				
 				// Give him some default prefs...
 				$query = "INSERT INTO glpi_prefs (user,tracking_order,language) VALUES ('".$input["name"]."','no','english')";
+
 				$db = new DB;
 				$result=$db->query($query);
-				
 				return true;
-				
 			} else {
 				return false;
 			}
@@ -847,17 +845,17 @@ function updateUser($input) {
 	unset($input["email_form"]);
 	}
 	//Only super-admin's can set admin or super-admin access.
-	//set to "post-only" by default
+	//set to "normal" by default
 	//if user type is allready admin or super-admin do not touch it
 	if(!isSuperAdmin($_SESSION["glpitype"])) {
 		if(!empty($input["type"]) && $input["type"] != "normal" && $input["type"] != "post-only") {
-			$input["type"] = "post-only";
+			$input["type"] = "normal";
 		}
-		if($user->fields["type"] == "super-admin") {
+		if($user->fields["type"] == "") {
 			$input["type"] = "super-admin";
 		}
 		if($user->fields["type"] == "admin") {
-			$input["type"] = "admin";
+			$input["type"] = "";
 		}
 		
 	}
@@ -1258,7 +1256,6 @@ function showLangSelect($target) {
 function updateLanguage($input) {
 
 	$db = new DB;
-	
 	$query = "UPDATE glpi_prefs SET language = '".$input["language"]."' WHERE (user = '".$_SESSION["glpiname"]."')";
 	if ($result=$db->query($query)) {
 		$_SESSION["glpilanguage"] = $input["language"];

@@ -116,6 +116,12 @@ function searchUserbyType($authtype) {
 		}
 }
 
+function getDictEntryfromDB($s){
+GLOBAL $lang;
+$a=split("_",$s);
+return $lang[$a[0]][$a[1]];
+}
+
    function stripslashes_deep($value)
    {
 //echo "strip";
@@ -287,7 +293,7 @@ function commonHeader($title,$url)
 	GLOBAL $cfg_install,$lang, $cfg_layout,$cfg_features,$HTMLRel,$phproot ;
 	
 	
-	
+$reservation = array($lang["Menu"][17]=>array("/reservation/index.php","1"));	
 	
 $inventory = 	array($lang["Menu"][0]=>array("/computers/index.php","1"),
 	              $lang["Menu"][1]=>array("/networking/index.php","2"),
@@ -347,20 +353,27 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	echo "<div id='navigation'>";
 	echo "<table  cellspacing='0' border='0' width='98%'>";
 	echo "<tr>";
-	
-	// Logo with link to command center
-	echo "<td align='center' width='25%' >\n";
-	echo "<a href=\"".$cfg_install["root"]."/central.php\" accesskey=\"0\"><img src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>";
-	echo "</td>";
 
-	echo "<td valign='middle'>";
-	
 	// New object from the configured base functions, we check some
 	// object-variables in this object: inventory, maintain, admin
 	// and settings. We build the navigation bar here.
 
 	$navigation = new baseFunctions;
 
+	
+	// Logo with link to command center
+	echo "<td align='center' width='25%' >\n";
+	echo "<a href=\"".$cfg_install["root"]."/central.php\" accesskey=\"0\"><img src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>";
+	if ($navigation->inventory) {
+	echo "<br>";
+		foreach ($reservation as $key => $val) {
+			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
+		}
+	}
+	echo "</td>";
+
+	echo "<td valign='middle'>";
+	
 	// Get object-variables and build the navigation-elements
 	echo "<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr>";
 	if ($navigation->inventory) {

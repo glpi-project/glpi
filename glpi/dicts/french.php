@@ -150,8 +150,8 @@ $lang["Menu"][12]	="Donn&eacute;es";
 $lang["Menu"][13]	="Statistiques";
 $lang["Menu"][14]	="Utilisateurs";
 $lang["Menu"][15]	="Administration";
-$lang["Menu"][16]	="Périphériques";
-
+$lang["Menu"][16]	="P&eacute;riphériques";
+$lang["Menu"][17]	="R&eacute;servations";
 
 
 //Donn&eacute;es
@@ -839,4 +839,14 @@ $lang["update"][107]	= "Vous devez maintenant proc&eacute;der &#224; la mise &#2
 $lang["update"][108]	= "La mise à jour du contenu ne semble pas nécessaire.";
 $lang["update"][109]	= "Voulez vous tout de même la faire ?";
 $lang["update"][110]	= "La mise &#224; jour semble nécessaire.";
+
+
+$lang["reservation"][0]	= "R&eacute;servations";
+$lang["reservation"][1]	= "Mat&eacute;riel r&eacute;servable";
+$lang["reservation"][2]	= "ID";
+$lang["reservation"][3]	= "Type mat&eacute;riel";
+$lang["reservation"][4]	= "Matériel en prêt";
+$lang["reservation"][5]	= "En prêt";
+$lang["reservation"][6]	= "Supprimer du parc de prêt";
+$lang["reservation"][7]	= "Ajouter au parc de prêt";
 ?>

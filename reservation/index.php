@@ -7,11 +7,6 @@ GLPI - Gestionnaire Libre de Parc Informatique
  
  http://indepnet.net/   http://glpi.indepnet.org
  ----------------------------------------------------------------------
- Based on:
-IRMA, Information Resource-Management and Administration
-Christian Bauer 
-
- ----------------------------------------------------------------------
  LICENSE
 
 This file is part of GLPI.
@@ -33,51 +28,58 @@ This file is part of GLPI.
  Original Author of file:
  Purpose of file:
  ----------------------------------------------------------------------
+
+
 */
  
 
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
+include ($phproot . "/glpi/includes_computers.php");
+include ($phproot . "/glpi/includes_printers.php");
+include ($phproot . "/glpi/includes_monitors.php");
+include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_reservation.php");
 
-if(!isset($_GET["ID"])) $_GET["ID"] = "";
+if(isset($_GET)) $tab = $_GET;
+if(empty($tab) && isset($_POST)) $tab = $_POST;
+if(!isset($tab["ID"])) $tab["ID"] = "";
 
-if (isset($_POST["add"]))
+if (isset($_GET["add"]))
 {
 	checkAuthentication("admin");
-	addNetdevice($_POST);
-	logEvent(0, "networking", 4, "inventory", $_SESSION["glpiname"]." added item name ".$_POST["name"].".");
+	addReservationItem($_GET);
+	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." added reservation item ".$_GET["device_type"]."-".$_GET["id_device"].".");
+	header("Location: $_SERVER[HTTP_REFERER]");
+} 
+else if (isset($_GET["delete"]))
+{
+	checkAuthentication("admin");
+	deleteReservationItem($_GET);
+	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." deleted reservation item.");
 	header("Location: $_SERVER[HTTP_REFERER]");
 }
-else if (isset($_POST["delete"]))
-{
-	checkAuthentication("admin");
-	deleteNetdevice($_POST);
-	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"] ."deleted item.");
-	header("Location: ".$cfg_install["root"]."/networking/");
-}
-else if (isset($_POST["update"]))
-{
-	checkAuthentication("admin");
-	updateNetdevice($_POST);
-	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." updated item.");
-	commonHeader("Networking",$_SERVER["PHP_SELF"]);
-	showNetworkingForm ($_SERVER["PHP_SELF"],$_POST["ID"]);
-	commonFooter();
 
-}
-else
-{
-	if (empty($_GET["ID"]))
+
+if(!isset($_GET["start"])) $_GET["start"] = 0;
+if (!isset($_GET["order"])) $_GET["order"] = "ASC";
+if (!isset($_GET["field"])) $_GET["field"] = "glpi_reservation_item.ID";
+if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
+if (!isset($_GET["contains"])) $_GET["contains"] = "";
+if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_reservation_item.ID";
+
+
+	if (empty($tab["ID"]))
 	checkAuthentication("admin");
 	else checkAuthentication("normal");
 
-	commonHeader("Networking",$_SERVER["PHP_SELF"]);
-	showNetworkingForm ($_SERVER["PHP_SELF"],$_GET["ID"]);
-	commonFooter();
-}
+	commonHeader("Reservation",$_SERVER["PHP_SELF"]);
+	titleReservation();
 
+	searchFormReservationItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
+	showReservationItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
+	commonFooter();
 
 
 ?>

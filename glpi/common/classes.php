@@ -480,6 +480,7 @@ class Identification
 	// Set Cookie for this user
 	function setCookies()
 	{
+		$ID = $this->user->fields['ID'];
 		$name = $this->user->fields['name'];
 		$password = md5($this->user->fields['password']);
 		$type = $this->user->fields['type'];
@@ -487,6 +488,7 @@ class Identification
 		$tracking_order = $this->user->prefs['tracking_order'];
 		//echo $tracking_order;
 		session_start();
+		$_SESSION["glpiID"] = $ID;
 		$_SESSION["glpipass"] = $password;
 		$_SESSION["glpiname"] = $name;
 		$_SESSION["glpitype"] = $type;
