@@ -611,14 +611,25 @@ $lang["setup"][163]="Serveur IMAP/POP d'authentification";
 $lang["setup"][164]="Nom d'hote IMAP/POP  (email de type login@hote)";
 $lang["setup"][165]="Votre parser PHP a été compilé sans les fonctions de connection IMAP";
 $lang["setup"][166]="Impossible d'utiliser IMAP/POP comme source de connection externe";
-
 $lang["setup"][167]="Liaisons GLPI/LDAP";
 
-// à faire !!
 $lang["setup"][200]="Suivis par emails";
-
-
-
+$lang["setup"][201]="Configuration de la fonction";
+$lang["setup"][202]="Utiliser le suivi par mail";
+$lang["setup"][203]="Mail de l'administrateur";
+$lang["setup"][204]="Signature des messages";
+$lang["setup"][205]="Options de configuration";
+$lang["setup"][206]="Envois à l'administrateur";
+$lang["setup"][207]="Envois à tous les utilisateurs de type 'admin'";
+$lang["setup"][208]="Envois à tous les utilisateurs de type 'normal'";
+$lang["setup"][209]="Envois au responsable de la t&acirc;che";
+$lang["setup"][210]="Envois au demandeur";
+$lang["setup"][211]="A chaque nouvelle intervention";
+$lang["setup"][212]="Pour chaque nouveau suivi";
+$lang["setup"][213]="A la fermeture d'une intervention";
+$lang["setup"][214]="A la création de ces demandes d'interventions";
+$lang["setup"][215]="Pour chaque nouveau suivi le concernant";
+$lang["setup"][216]="A la fermeture d'une intervention le concernant";
 
 // Helpdesk
 
