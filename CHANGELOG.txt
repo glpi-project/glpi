@@ -1,4 +1,4 @@
-**** GLPI 0.3.1 ***
+**** GLPI 0.31 ***
 
 09/07/2004
 Mise en place d'accesskeys dans la console centrale.
