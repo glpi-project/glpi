@@ -607,6 +607,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
 function getDocumentLink($filename){
 global $HTMLRel,$cfg_install;	
+	$out="";
 	$splitter=split("/",$filename);
 	if (count($splitter)==2)
 	$fileout=$splitter[1];
