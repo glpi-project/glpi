@@ -72,7 +72,7 @@ function showFormDropDown ($target,$name,$human,$ID) {
 		dropdownValue("glpi_dropdown_locations", "value2",$loc);
 		echo $lang["networking"][52].": ";
 		echo "<input type='text' maxlength='100' size='10' name='value' value='$value'>";
-	}
+	} 
 	else {
         	echo "<input type='text' maxlength='100' size='20' name='value' value='$value'>";
         }
@@ -94,6 +94,16 @@ function showFormDropDown ($target,$name,$human,$ID) {
 		dropdown("glpi_dropdown_locations", "value2");
 		echo $lang["networking"][52].": ";
 		echo "<input type='text' maxlength='100' size='10' name='value'>";
+	}
+	else if ($name=="locations"){
+		echo "<input type='text' maxlength='100' size='10' name='value'>";
+		echo "<select name='type'>";
+		echo "<option value='under'>".$lang["setup"][75]."</option>";
+		echo "<option value='same'>".$lang["setup"][76]."</option>";
+		echo "</select>";
+
+		dropdown("glpi_dropdown_locations", "value2");
+	 		
 	}
 	else {
 		echo "<input type='text' maxlength='100' size='20' name='value'>";
@@ -170,6 +180,18 @@ function addDropdown($input) {
 	$db = new DB;
 	if($input["tablename"] == "glpi_dropdown_netpoint") {
 		$query = "INSERT INTO ".$input["tablename"]." (name,location) VALUES ('".$input["value"]."', '".$input["value2"]."')";
+	}
+	if ($input["tablename"] == "glpi_dropdown_locations"){
+		$query="SELECT * from ".$input["tablename"]." where ID='".$input["value2"]."'";
+		$result=$db->query($query);
+		$data=$db->fetch_array($result);
+		$level=$data["level"];
+		$level_up=$data["level_up"];
+		if ($input["type"]=="under") {
+			$level++;
+			$level_up=$data["ID"];
+		} 
+		$query = "INSERT INTO ".$input["tablename"]." (name,level,level_up) VALUES ('".$input["value"]."', '$level', '$level_up')";		
 	}
 	else {
 		$query = "INSERT INTO ".$input["tablename"]." (name) VALUES ('".$input["value"]."')";
@@ -263,6 +285,16 @@ function replaceDropDropDown($input) {
 function showDeleteConfirmForm($target,$table, $ID) {
 	global $lang;
 	
+	if ($table=="glpi_dropdown_locations"){
+		$db=new DB();
+		$query = "Select count(*) as cpt FROM glpi_dropdown_locations where level_up = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  {
+		echo "<center><p style='color:red'>".$lang["setup"][74]."</p></center>";
+		return;
+		}
+	}	
+		
 	echo "<div align='center'>";
 	echo "<p style='color:red'>".$lang["setup"][63]."</p>";
 	echo "<p>".$lang["setup"][64]."</p>";
@@ -339,6 +371,10 @@ function dropdownUsed($table, $ID) {
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
 	case "location" :
+		$query = "Select count(*) as cpt FROM glpi_dropdown_locations where level_up = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+	
 		$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = ".$ID."";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
