@@ -274,7 +274,7 @@ function showPrintersForm ($target,$ID) {
 	
 	echo "<tr><td class='tab_bg_1' valign='top'>";
 
-	echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
+	echo "<table cellpadding='1px' cellspacing='0' border='0'>\n";
 
 	echo "<tr><td>".$lang["printers"][5].":	</td>";
 	echo "<td><input type='text' name='name' value=\"".$printer->fields["name"]."\" size='20'></td>";
@@ -302,7 +302,7 @@ function showPrintersForm ($target,$ID) {
 	echo "</td>\n";	
 	echo "<td class='tab_bg_1' valign='top'>";
 
-	echo "<table cellpadding='0' cellspacing='0' border='0'";
+	echo "<table cellpadding='1px' cellspacing='0' border='0'";
 
 	echo "<tr><td>".$lang["printers"][9].": 	</td><td>";
 		dropdownValue("glpi_type_printers", "type", $printer->fields["type"]);

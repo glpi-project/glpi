@@ -290,7 +290,7 @@ function showNetworkingForm ($target,$ID) {
 	
 	echo "<tr><td class='tab_bg_1' valign='top'>";
 
-	echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
+	echo "<table cellpadding='1px' cellspacing='0' border='0'>\n";
 
 	echo "<tr><td>".$lang["networking"][0].":	</td>";
 	echo "<td><input type='text' name='name' value=\"".$netdev->fields["name"]."\" size='20'></td>";
@@ -317,7 +317,7 @@ function showNetworkingForm ($target,$ID) {
 	echo "</td>\n";	
 	echo "<td class='tab_bg_1' valign='top'>";
 
-	echo "<table cellpadding='0' cellspacing='0' border='0'";
+	echo "<table cellpadding='1px' cellspacing='0' border='0'";
 
 	echo "<tr><td>".$lang["networking"][2].": 	</td><td>";
 		dropdownValue("glpi_type_networking", "type", $netdev->fields["type"]);
