@@ -60,7 +60,7 @@ $number = $db->numrows($result);
 while ($i < $number) {
 	$ID = $db->result($result,$i, "ID");
   	$name = $db->result($result, $i, "tplname");
-	echo "<tr class='tab_bg_1'><td align='center'><a href=\"computers-info-form.php?withtemplate=1&ID=$ID\">$name</a></td></tr>";
+	echo "<tr class='tab_bg_1'><td align='center'><a href=\"computers-info-form.php?withtemplate=2&ID=$ID\">$name</a></td></tr>";
 	$i++;
 }
 

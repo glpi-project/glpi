@@ -320,7 +320,7 @@ $lang["computers"][45]  = "Choisissez un mod&egrave;le";
 $lang["computers"][46]	= "P&eacute;riph&eacute;riques";
 $lang["computers"][47] 	= "Pas de p&eacute;riph&eacute;rique connect&eacute;"; 
 $lang["computers"][48] 	= "Modification de lieu. Les &eacute;l&eacute;ments connect&eacute;s ont &eacute;t&eacute; d&eacute;plac&eacute;s dans le même lieu."; 
-
+$lang["computers"][49]	= "Nom du modele";
 // Networking
 
 $lang["networking"][0]	= "Nom"; 
