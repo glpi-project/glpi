@@ -1,2 +1,2 @@
  
-alter table printers add ramSize varchar(6) default NULL;
+alter table printers add ramSize varchar(6) default NOT NULL;
