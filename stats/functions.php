@@ -717,7 +717,7 @@ function graphByMonth($entrees,$titre="",$unit="",$showtotal=1){
 		
 			$max = max($entrees);
 			$maxgraph = substr(ceil(substr($max,0,2) / 10)."000000000000", 0, strlen($max));
-			
+
 			if ($maxgraph < 10) $maxgraph = 10;
 			if (1.1 * $maxgraph < $max) $maxgraph.="0";	
 			if (0.8*$maxgraph > $max) $maxgraph = 0.8 * $maxgraph;
@@ -807,6 +807,10 @@ function graphByMonth($entrees,$titre="",$unit="",$showtotal=1){
 			}
 		echo "</tr>";
 		}
+		
+		if ($maxgraph<=10) $r=2;
+		else if ($maxgraph<=100) $r=1;
+		else $r=0;
 		echo "</table>";
 		echo "</td>";
 		echo "<td background='".$HTMLRel."pics/fond-stats.gif' valign='bottom'><img src='".$HTMLRel."pics/rien.gif' style='background-color:black;' width=3 height=1></td>";
@@ -814,28 +818,28 @@ function graphByMonth($entrees,$titre="",$unit="",$showtotal=1){
 		echo "<td valign='top'><font face='Verdana,Arial,Sans,sans-serif' size=2>";
 		echo "<table cellpadding=0 cellspacing=0 border=0>";
 		echo "<tr><td height=15 valign='top'>";		
-		echo "<font face='arial,helvetica,sans-serif' size=1><b>".round($maxgraph)."</b></font>";
+		echo "<font face='arial,helvetica,sans-serif' size=1><b>".round($maxgraph,$r)."</b></font>";
 		echo "</td></tr>";
 		echo "<tr><td height=25 valign='middle'>";		
-		echo "<font face='arial,helvetica,sans-serif' size=1 color='#999999'>".round(7*($maxgraph/8))."</font>";
+		echo "<font face='arial,helvetica,sans-serif' size=1 color='#999999'>".round(7*($maxgraph/8),$r)."</font>";
 		echo "</td></tr>";
 		echo "<tr><td height=25 valign='middle'>";		
-		echo "<font face='arial,helvetica,sans-serif' size=1>".round(3*($maxgraph/4))."</font>";
+		echo "<font face='arial,helvetica,sans-serif' size=1>".round(3*($maxgraph/4),$r)."</font>";
 		echo "</td></tr>";
 		echo "<tr><td height=25 valign='middle'>";		
-		echo "<font face='arial,helvetica,sans-serif' size=1 color='#999999'>".round(5*($maxgraph/8))."</font>";
+		echo "<font face='arial,helvetica,sans-serif' size=1 color='#999999'>".round(5*($maxgraph/8),$r)."</font>";
 		echo "</td></tr>";
 		echo "<tr><td height=25 valign='middle'>";		
-		echo "<font face='arial,helvetica,sans-serif' size=1><b>".round($maxgraph/2)."</b></font>";
+		echo "<font face='arial,helvetica,sans-serif' size=1><b>".round($maxgraph/2,$r)."</b></font>";
 		echo "</td></tr>";
 		echo "<tr><td height=25 valign='middle'>";		
-		echo "<font face='arial,helvetica,sans-serif' size=1 color='#999999'>".round(3*($maxgraph/8))."</font>";
+		echo "<font face='arial,helvetica,sans-serif' size=1 color='#999999'>".round(3*($maxgraph/8),$r)."</font>";
 		echo "</td></tr>";
 		echo "<tr><td height=25 valign='middle'>";		
-		echo "<font face='arial,helvetica,sans-serif' size=1>".round($maxgraph/4)."</font>";
+		echo "<font face='arial,helvetica,sans-serif' size=1>".round($maxgraph/4,$r)."</font>";
 		echo "</td></tr>";
 		echo "<tr><td height=25 valign='middle'>";		
-		echo "<font face='arial,helvetica,sans-serif' size=1 color='#999999'>".round(1*($maxgraph/8))."</font>";
+		echo "<font face='arial,helvetica,sans-serif' size=1 color='#999999'>".round(1*($maxgraph/8),$r)."</font>";
 		echo "</td></tr>";
 		echo "<tr><td height=10 valign='bottom'>";		
 		echo "<font face='arial,helvetica,sans-serif' size=1><b>0</b></font>";
