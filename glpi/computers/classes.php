@@ -73,13 +73,26 @@ class Computer {
 						}
 						return true;
 					}
-					else return false;
+					
 				} 
-				else return false;
+				
 			}
 			else return false;
 		}
 		else return false;
+		return true;
+	}
+	
+	function getEmpty() {
+	//make an empty database object
+		$db = new DB;
+		$fields = $db->list_fields("glpi_computers");
+		$columns = mysql_num_fields($fields);
+		for ($i = 0; $i < $columns; $i++) {
+			$name = mysql_field_name($fields, $i);
+			$this->fields[$name] = "";
+		}
+		return true;
 	}
 
 	function updateInDB($updates)  {
@@ -155,9 +168,11 @@ class Computer {
 		$query = "INSERT INTO glpi_computers (";
 		$i=0;
 		foreach ($this->fields as $key => $val) {
-			$fields[$i] = $key;
-			$values[$i] = $val;
-			$i++;
+			if(!(strcmp($key,'withtemplate') === 0 || strcmp($key,'add') === 0)) { 
+				$fields[$i] = $key;
+				$values[$i] = $val;
+				$i++;
+			}
 		}		
 		for ($i=0; $i < count($fields); $i++) {
 			$query .= $fields[$i];
