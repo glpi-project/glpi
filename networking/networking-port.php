@@ -74,7 +74,14 @@ else
 {
 	checkAuthentication("normal");
 	commonHeader("Networking",$_SERVER["PHP_SELF"]);
-	showNetportForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["ondevice"],$tab["devtype"]);
+	if(isset($tab["ID"]))
+	{
+		showNetportForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["ondevice"],$tab["devtype"]);
+	}
+	else
+	{
+		showNetportForm($_SERVER["PHP_SELF"],"",$tab["ondevice"],$tab["devtype"]);
+	}
 	commonFooter();
 }
 
