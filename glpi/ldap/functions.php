@@ -95,7 +95,7 @@ function LDAPshowEntries ($filter,$combine,$attribute,$display,$type) {
 			echo "<td valign='center' align='right'><b>";
 			echo $attribute;
 			if (count($values)<2) {
-				echo "<input type=hidden name=\"attributes[]\" value=\"".$attribute."\">";
+				echo "<input type='hidden' name=\"attributes[]\" value=\"".$attribute."\">";
 			}
 			
 			// Delete Attribute
@@ -106,10 +106,10 @@ function LDAPshowEntries ($filter,$combine,$attribute,$display,$type) {
 
 			// Break
 			echo "</td>";
-			echo "<td colspan=2>";
+			echo "<td colspan='2'>";
 			
 			// Show Values for attribute
-			echo "<table cellpadding=2 cellspacing=3 border='0' width='100%'>";
+			echo "<table cellpadding='2' cellspacing=3 border='0' width='100%'>";
 
 			// Special attribute Type "multiline
 			if ($object[$i]->attribute_types[$attribute]=="multiline") {
@@ -119,11 +119,11 @@ function LDAPshowEntries ($filter,$combine,$attribute,$display,$type) {
 						echo $values[$y];
 				}
 				echo "</textarea>\n\n";
-				echo "<input type=hidden name=\"bin[]\" value=\"$attribute\">\n\n";
+				echo "<input type='hidden' name=\"bin[]\" value=\"$attribute\">\n\n";
 				echo "</td></tr>";
 			// or default "cis"
 			} else if (eregi("\.*sword\.*",$attribute)) {
-				echo "<tr><td valign=top>";
+				echo "<tr><td valign='top'>";
 				echo "<input type=password name=\"values[]\" value=\"\" size=25>";
 				echo "</tr></td>";
 			} else {
@@ -158,16 +158,16 @@ function LDAPshowEntries ($filter,$combine,$attribute,$display,$type) {
 		echo "<tr class='tab_bg_2'>\n";
 
 		// Update Entry	
-		echo "<td colspan=2 align='center'>";
-		echo "<input type=hidden name= dn value=\"".$dn."\">\n";
-		echo "<input type=submit value=\"".$lang["buttons"][7]."\"></td>\n";
+		echo "<td colspan='2' align='center'>";
+		echo "<input type='hidden' name= dn value=\"".$dn."\">\n";
+		echo "<input type='submit' value=\"".$lang["buttons"][7]."\"></td>\n";
 		echo "</form>";
 				
 		// Delete Entry
 		echo "\n<form action=\"ldap-del-entry.php?type=$type\" method='post'>";
 		echo "<td align='center'>";
-		echo "<input type=hidden name=dn value=\"".$dn."\">\n";
-		echo "<input type=submit value=\"".$lang["buttons"][6]."\"></td>\n";
+		echo "<input type='hidden' name=dn value=\"".$dn."\">\n";
+		echo "<input type='submit' value=\"".$lang["buttons"][6]."\"></td>\n";
 		echo "</tr>\n";
 		echo "</form>\n";
 
@@ -184,8 +184,8 @@ function LDAPshowEntries ($filter,$combine,$attribute,$display,$type) {
 		echo "</select>\n";
 		echo "<td><input name=\"values[]\" size=25></td>\n";
 		echo "<td class='tab_bg_2' align='center'>\n";
-		echo "<input type=hidden name=dn value=\"".$dn."\">\n";
-		echo "<input type=submit value=\"".$lang["buttons"][8]."\"></td>\n";
+		echo "<input type='hidden' name=dn value=\"".$dn."\">\n";
+		echo "<input type='submit' value=\"".$lang["buttons"][8]."\"></td>\n";
 		echo "</form>\n";
 		echo "</tr>\n";
 		
@@ -213,7 +213,7 @@ function LDAPsearchForm($type,$target) {
 	echo "<table border='0'><tr>";
 	echo "<th align='center'>".$lang["ldap"][1]." $type ".$lang["ldap"][2]."</th>";
 	echo "<th align='center'>".$lang["ldap"][3]."</th></tr>\n";
-	echo "<tr><td valign=top class='tab_bg_1' align='center'>\n";
+	echo "<tr><td valign='top' class='tab_bg_1' align='center'>\n";
 
 	echo "<select name=\"display[]\" size=7 multiple>";
 	echo "<option value=\"all\" selected>[all Attributes]";
@@ -232,7 +232,7 @@ function LDAPsearchForm($type,$target) {
 	}
 	echo "</select>\n";
 
-	echo "</td><td valign=top class='tab_bg_1'>\n";
+	echo "</td><td valign='top' class='tab_bg_1'>\n";
 	
 	echo "<select name=attribute[0]>";
 	for ($i=0; $i<count($object->attributes_req); $i++) {
@@ -274,12 +274,12 @@ function LDAPsearchForm($type,$target) {
 
 	echo "<br>";
 	echo "<div align='right'>";
-	echo "<input name=refresh type=submit value=\"Search\">&nbsp;\n";
+	echo "<input name=refresh type='submit' value=\"Search\">&nbsp;\n";
 	echo "</div>";
 
 
 	echo "</td></tr></table>\n";
-	echo "<input type=hidden name=type value=\"$type\">";
+	echo "<input type='hidden' name=type value=\"$type\">";
 	echo "</form></center>\n";
 }
 
@@ -303,7 +303,7 @@ function LDAPprintForm ($objecttype,$error,$input) {
 	// Print Form
 	echo "\n<center><form action=\"ldap-add-entry.php?type=$objecttype\" method='post'>\n";
 	echo "<table class='tab_bg_1'>\n";
-	echo "<tr><th colspan=2 align='center'>".$lang["ldap"][4]." ($objecttype):</th></tr>\n";
+	echo "<tr><th colspan='2' align='center'>".$lang["ldap"][4]." ($objecttype):</th></tr>\n";
 
 	// Print Objectclasses
 	echo "<tr><td><b>objectclass:</b></td><td>\n";
@@ -312,7 +312,7 @@ function LDAPprintForm ($objecttype,$error,$input) {
 	}
 	echo "</td></tr>\n";
 
-	echo "\n<tr><th colspan=2 align='center'><b>".$lang["ldap"][5].":</b></th></tr>\n";
+	echo "\n<tr><th colspan='2' align='center'><b>".$lang["ldap"][5].":</b></th></tr>\n";
 	
 	// Make input-fields for all required attributes
 	for ($i=0; $i<count($object->attributes_req); $i++) {
@@ -320,7 +320,7 @@ function LDAPprintForm ($objecttype,$error,$input) {
 		echo "<td><input name=\"".$object->attributes_req[$i]."\" size=25 value=\"".$input[$object->attributes_req[$i]]."\"></b></td></tr>\n";	
 	}
 
-	echo "\n<tr><th colspan=2 align='center'><b>".$lang["ldap"][6].":</b></th></tr>\n";
+	echo "\n<tr><th colspan='2' align='center'><b>".$lang["ldap"][6].":</b></th></tr>\n";
 
 	// Make input-fields for all allowed attributes
 	for ($i=0; $i<count($object->attributes_allow); $i++) {
@@ -328,9 +328,9 @@ function LDAPprintForm ($objecttype,$error,$input) {
 		echo "<td><input name=\"".$object->attributes_allow[$i]."\" size=25 value=\"".$input[$object->attributes_allow[$i]]."\"></b></td></tr>\n";	
 	}
 
-	echo "\n<input type=hidden name=\"objecttype\" value=\"$objecttype\">\n";
-	echo "<tr><td class='tab_bg_2' colspan=2 align='center'>\n";
-	echo "<input type=submit value=\"".$lang["buttons"][8]."\"></td></tr>\n";
+	echo "\n<input type='hidden' name=\"objecttype\" value=\"$objecttype\">\n";
+	echo "<tr><td class='tab_bg_2' colspan='2' align='center'>\n";
+	echo "<input type='submit' value=\"".$lang["buttons"][8]."\"></td></tr>\n";
 	echo "</table></form></center>\n\n";
 }
 

@@ -242,7 +242,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	// Get object-variables and build the navigation-elements
 	echo "<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr>";
 	if ($navigation->inventory) {
-		echo "<td align='center' valign=top>";
+		echo "<td align='center' valign='top'>";
 		echo "<img src=\"".$cfg_install["root"]."/pics/inventaire.png\" alt=\"\"><br>";
 		echo "<small>-&nbsp;".$lang["setup"][10]."&nbsp;-</small><br>";
 		foreach ($inventory as $key => $val) {
@@ -251,7 +251,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 		echo "</td>";
 	}
 	 if ($navigation->maintain) {
-		echo "<td align='center' valign=top>";
+		echo "<td align='center' valign='top'>";
 				echo "<img src=\"".$cfg_install["root"]."/pics/maintenance.png\" alt=\"\"><br>";
 
 		echo "<small>-&nbsp;".$lang["setup"][55]."&nbsp;-</small><br>";
@@ -261,7 +261,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 		echo "</td>";
 	}
 	 if ($navigation->admin) {
-		echo "<td align='center' valign=top>";
+		echo "<td align='center' valign='top'>";
 		echo "<img src=\"".$cfg_install["root"]."/pics/ldap.png\" alt=\"\"><br>";
 
 		echo "<small>-&nbsp;".$lang["ldap"][7]."-</small><br>";
@@ -272,7 +272,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 		echo "</td>";
 	}	
 	if ($navigation->settings) {
-		echo "<td align='center' valign=top>";
+		echo "<td align='center' valign='top'>";
 				echo "<img src=\"".$cfg_install["root"]."/pics/config.png\" alt=\"\"><br>";
 
 		echo "<small>-&nbsp;".$lang["setup"][56]."&nbsp;-</small><br>";
@@ -557,7 +557,7 @@ function showEvents($target,$order,$sort) {
 	echo "<tr><th colspan=6>".$lang["central"][2]." ".$cfg_features["num_of_events"]." ".$lang["central"][3].":</th></tr>";
 	echo "<tr>";
 
-	echo "<th colspan=2>";
+	echo "<th colspan='2'>";
 	if ($sort=="item") {
 		echo "&middot;&nbsp;";
 	}
@@ -708,7 +708,7 @@ function showConnect($target,$ID,$type) {
 		$connect->type=$type;
 		$computer = $connect->getComputerContact($ID);
 
-		echo "<br><center><table width=50%><tr><th colspan=2>";
+		echo "<br><center><table width=50%><tr><th colspan='2'>";
 		echo $lang["connect"][0].":";
 		echo "</th></tr>";
 
@@ -758,7 +758,7 @@ function showConnectSearch($target,$ID) {
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
 	echo "<center><table border='0'>";
-	echo "<tr><th colspan=2>".$lang["connect"][4].":</th></tr>";
+	echo "<tr><th colspan='2'>".$lang["connect"][4].":</th></tr>";
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<form method='post' action=\"$target\">";
@@ -766,11 +766,11 @@ function showConnectSearch($target,$ID) {
 	echo "<option value=name>".$lang["connect"][6]."</option>";
 	echo "<option value=id>".$lang["connect"][7]."</option>";
 	echo "</select> ";
-	echo $lang["connect"][8]." <input type=text size=10 name=comp>";
-	echo "<input type=hidden name=pID1 value=$ID>";
-	echo "<input type=hidden name=connect value=2>";
+	echo $lang["connect"][8]." <input type='text' size=10 name=comp>";
+	echo "<input type='hidden' name=pID1 value=$ID>";
+	echo "<input type='hidden' name=connect value=2>";
 	echo "</td><td class='tab_bg_2'>";
-	echo "<input type=submit value=\"".$lang["buttons"][11]."\">";
+	echo "<input type='submit' value=\"".$lang["buttons"][11]."\">";
 	echo "</td></tr>";	
 
 	echo "</form>";
@@ -786,7 +786,7 @@ function listConnectComputers($target,$input) {
 	$pID1 = $input["pID1"];
 
 	echo "<center><table border='0'>";
-	echo "<tr><th colspan=2>".$lang["connect"][9].":</th></tr>";
+	echo "<tr><th colspan='2'>".$lang["connect"][9].":</th></tr>";
 	echo "<form method='post' action=\"$target\"><tr><td>";
 
 	echo "<tr class='tab_bg_1'>";
@@ -873,7 +873,7 @@ function printHelpDesk ($name) {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td colspan=2 align='center'> <input type=submit value=\"".$lang["help"][14]."\">";
+	echo "<td colspan='2' align='center'> <input type='submit' value=\"".$lang["help"][14]."\">";
 		echo "<input type='hidden' name='IRMName' value=\"$name\">";
 	echo "</td></tr>";
 

@@ -68,12 +68,12 @@ function searchFormComputers() {
 	$option["date_mod"]			= $lang["computers"][11];
 	
 	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
-	echo "<center><table border='0' width='90%'>";
-	echo "<tr><th colspan=2><b>".$lang["search"][5].":</b></th></tr>";
+	echo "<div align='center'><table border='0' width='90%'>";
+	echo "<tr><th colspan='2'><b>".$lang["search"][5].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 		dropdown( "dropdown_locations",  "contains");
-	echo "<input type=hidden name=field value=location>&nbsp;";
+	echo "<input type='hidden' name=field value=location>&nbsp;";
 	echo $lang["search"][6];
 	echo "&nbsp;<select name='sort' size='1'>";
 	reset($option);
@@ -81,14 +81,14 @@ function searchFormComputers() {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select>";
-	echo "<input type=hidden name=phrasetype value=exact>";
+	echo "<input type='hidden' name=phrasetype value=exact>";
 	echo "</td><td width=80 align='center' class='tab_bg_2'>";
-	echo "<input type=submit value=\"".$lang["buttons"][1]."\">";
-	echo "</td></tr></table></form></center>";
+	echo "<input type='submit' value=\"".$lang["buttons"][1]."\">";
+	echo "</td></tr></table></div></form>";
 	
 	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
-	echo "<center><table border='0' width='90%'>";
-	echo "<tr><th colspan=2><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<div align='center'><table border='0' width='90%'>";
+	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 	echo "<select name=\"field\" size=1>";
@@ -102,7 +102,7 @@ function searchFormComputers() {
 	echo "<option value=contains>".$lang["search"][2]."</option>";
 	echo "<option value=exact>".$lang["search"][3]."</option>";
 	echo "</select>";
-	echo "<input type=text size=5 name=\"contains\">"; 
+	echo "<input type='text' size=5 name=\"contains\">"; 
 	echo "&nbsp;";
 	echo $lang["search"][4];
 	echo "&nbsp;<select name=sort size=1>";
@@ -112,8 +112,8 @@ function searchFormComputers() {
 	}
 	echo "</select> ";
 	echo "</td><td width=80 align='center' class='tab_bg_2'>";
-	echo "<input type=submit value=\"".$lang["buttons"][0]."\">";
-	echo "</td></tr></table></center></form>";
+	echo "<input type='submit' value=\"".$lang["buttons"][0]."\">";
+	echo "</td></tr></table></div></form>";
 }
 
 
@@ -154,7 +154,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 		
 		if ($numrows_limit>0) {
 			// Produce headline
-			echo "<center><table border='0'><tr>";
+			echo "<div align='center'><table border='0'><tr>";
 
 			// Name
 			echo "<th>";
@@ -224,14 +224,14 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			}
 
 			// Close Table
-			echo "</table></center>";
+			echo "</table></div>";
 
 			// Pager
 			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<center><b>".$lang["computers"][32]."</b></center>";
+			echo "<div align='center'><b>".$lang["computers"][32]."</b></div>";
 			echo "<hr noshade>";
 			searchFormComputers();
 		}
@@ -255,8 +255,8 @@ function showComputerForm ($template,$target,$ID) {
 			$datestring = $lang["computers"][11].": ";
 			$date = $comp->fields["date_mod"];
 		}
-		echo "<center><table border='0'>";
-		echo "<form name=form method='post' action=$target>";
+		echo "<form name='form' method='post' action=\"$target\">";
+                echo "<div align='center'><table border='0'>";
 		echo "<tr><th align='center'>";
 		if ($template) {
 			echo $lang["computers"][12].": ".$comp->fields["templname"];
@@ -266,11 +266,11 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</th><th align='right'>".$datestring.$date;
 		echo "</th></tr>";
 		
-		echo "<tr><td bgcolor=#CCCCCC valign=top>";
+		echo "<tr><td class='tab_bg_1' valign='top'>";
 		echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
 
 		echo "<tr><td>".$lang["computers"][7].":		</td>";
-		echo "<td><input type=text name=name value=\"".$comp->fields["name"]."\" size=10></td>";
+		echo "<td><input type='text' name='name' value=\"".$comp->fields["name"]."\" size=10></td>";
 		echo "</tr>";
 
 		echo "<tr><td>".$lang["computers"][10].": 	</td>";
@@ -279,29 +279,29 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][15].":		</td>";
-		echo "<td><input type=text name=contact_num value=\"".$comp->fields["contact_num"]."\" size=5>";
+		echo "<td><input type='text' name='contact_num' value=\"".$comp->fields["contact_num"]."\" size=5>";
 		echo "</td></tr>";
 	
 		echo "<tr><td>".$lang["computers"][16].":	</td>";
-		echo "<td><input type=text name=contact size=12 value=\"".$comp->fields["contact"]."\">";
+		echo "<td><input type='text' name='contact' size='12' value=\"".$comp->fields["contact"]."\">";
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][17].":	</td>";
-		echo "<td><input type=text name=serial size=12 value=\"".$comp->fields["serial"]."\">";
+		echo "<td><input type='text' name='serial' size='12' value=\"".$comp->fields["serial"]."\">";
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][18].":	</td>";
-		echo "<td><input type=text size=12 name=otherserial value=\"".$comp->fields["otherserial"]."\">";
+		echo "<td><input type='text' size='12' name='otherserial' value=\"".$comp->fields["otherserial"]."\">";
 		echo "</td></tr>";
 
-		echo "<tr><td valign=top>".$lang["computers"][19].":</td>";
-		echo "<td><textarea cols=20 rows=8 name=comments >".$comp->fields["comments"]."</textarea>";
+		echo "<tr><td valign='top'>".$lang["computers"][19].":</td>";
+		echo "<td><textarea  cols='20' rows='8' name='comments' >".$comp->fields["comments"]."</textarea>";
 		echo "</td></tr>";
 
 		echo "</table>";
 
 		echo "</td>\n";	
-		echo "<td bgcolor=#CCCCCC valign=top>\n";
+		echo "<td class='tab_bg_1' valign='top'>\n";
 		echo "<table cellpadding='0' cellspacing='0' border='0'>";
 
 
@@ -316,7 +316,7 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][20].":</td>";
-		echo "<td><input type=text size=8 name=osver value=\"".$comp->fields["osver"]."\">";
+		echo "<td><input type='text' size=8 name=osver value=\"".$comp->fields["osver"]."\">";
 		echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][21].":	</td>";
@@ -325,7 +325,7 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</td></tr>";
 	
 		echo "<tr><td>".$lang["computers"][22].":	</td>";
-		echo "<td><input type=text name=processor_speed size=4 value=\"".$comp->fields["processor_speed"]."\">";
+		echo "<td><input type='text' name=processor_speed size=4 value=\"".$comp->fields["processor_speed"]."\">";
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][35].":	</td>";
@@ -349,7 +349,7 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][24].":	</td>";
-		echo "<td><input type=text name=ram value=\"".$comp->fields["ram"]."\" size=3>";
+		echo "<td><input type='text' name=ram value=\"".$comp->fields["ram"]."\" size=3>";
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][36].":	</td>";
@@ -358,7 +358,7 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][25].":	</td>";
-		echo "<td><input type=text name=hdspace size=3 value=\"".$comp->fields["hdspace"]."\">";
+		echo "<td><input type='text' name=hdspace size=3 value=\"".$comp->fields["hdspace"]."\">";
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][26].":	</td>";
@@ -367,13 +367,13 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][41].":	</td>";
-		echo "<td><input type=text name='achat_date' readonly size=10 value=\"".$comp->fields["achat_date"]."\">";
+		echo "<td><input type='text' name='achat_date' readonly size=10 value=\"".$comp->fields["achat_date"]."\">";
 		echo "&nbsp; <input name='button' type='button'  onClick=\"window.open('mycalendar.php?form=form&elem=achat_date','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 		echo "&nbsp; <input name='button_reset' type='button' onClick=\"document.forms['form'].achat_date.value='0000-00-00'\" value='reset'>";
     echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][42].":	</td>";
-		echo "<td><input type=text name='date_fin_garantie' readonly size=10 value=\"".$comp->fields["date_fin_garantie"]."\">";
+		echo "<td><input type='text' name='date_fin_garantie' readonly size=10 value=\"".$comp->fields["date_fin_garantie"]."\">";
 		echo "&nbsp; <input name='button' type='button' onClick=\"window.open('mycalendar.php?form=form&elem=date_fin_garantie','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 		echo "&nbsp; <input name='button_reset' type='button' onClick=\"document.forms['form'].date_fin_garantie.value='0000-00-00'\" value='reset'>";
     echo "</td></tr>";
@@ -382,33 +382,33 @@ function showComputerForm ($template,$target,$ID) {
 		echo "<td>";
 		// Maintenance ?
 		if ($comp->fields["maintenance"] == 1) {
-			echo " OUI <input type=radio name='maintenance' value=1 checked>";
-			echo "&nbsp; &nbsp; NON <input type=radio name='maintenance' value=0>";
+			echo " OUI <input type='radio' name='maintenance' value='1' checked>";
+			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value=0>";
 		} else {
-			echo " OUI <input type=radio name='maintenance' value=1>";
-			echo "&nbsp; &nbsp; NON <input type=radio name='maintenance' value=0 checked >";
+			echo " OUI <input type='radio' name='maintenance' value='1'>";
+			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value='0' checked >";
 		}
 		echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][27].": </td><td>";
 		
 		// Is Server?
-		echo "<table border='0' cellpadding=2 cellspacing='0'><tr>";
+		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
 		echo "<td>";
 		if (isset($comp->fields["flags_server"]))
 		{
 			if($comp->fields["flags_server"]  == 1)
 			{
-				echo "<input type=checkbox name=flags_server value=1 checked>";
+				echo "<input type='checkbox' name='flags_server' value='1' checked>";
 			}
 			else
 			{
-			echo "<input type=checkbox name=flags_server value=1>";
+			echo "<input type='checkbox' name='flags_server' value='1'>";
 			}
 		}
 		else
 		{
-			echo "<input type=checkbox name=flags_server value=1>";
+			echo "<input type='checkbox' name='flags_server' value=1>";
 		}
 		echo "</td><td>".$lang["computers"][28]."</td>";
 		echo "</tr></table>";
@@ -422,32 +422,32 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</tr><tr>";
 
 		if ($template) {
-			echo "<td class='tab_bg_2' align='center' colspan=2>\n";
-			echo "<input type=submit name=add value=\"".$lang["buttons"][8]."\">";
+			echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
+			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\">";
 			echo "</td></form>\n";	
 		} else {
-			echo "<td class='tab_bg_2' align='center' valign=top>\n";
-			echo "<input type=hidden name=ID value=$ID>";
-			echo "<input type=submit name=update value=\"".$lang["buttons"][7]."\">";
+			echo "<td class='tab_bg_2' align='center' valign='top'>\n";
+			echo "<input type='hidden' name='ID' value=$ID>";
+			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\">";
 			echo "</td></form>\n";	
 			echo "<td class='tab_bg_2' align='center'>\n";
 			echo "<form method='post' action=\"$target\">";
-			echo "<input type=hidden name=ID value=$ID>";
-			echo "<input type=submit name=delete value=\"".$lang["buttons"][6]."\">";
+			echo "<input type='hidden' name='ID' value=$ID>";
+			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\">";
 			echo "";
-			echo "</td></form>";
+			echo "</td>";
 		}
 
 		echo "</tr>\n";
 		echo "</table>\n";
 
-		echo "</center>\n";
+		echo "</div>\n";
 
-		echo "</table></center>";
+		echo "</table></div></form>";
 
 		return true;
 	} else {
-		echo "<center><b>".$lang["computers"][32]."</b></center>";
+		echo "<div align='center'><b>".$lang["computers"][32]."</b></div>";
 		echo "<hr noshade>";
 		searchFormComputers();
 		return false;
@@ -524,8 +524,8 @@ function showConnections($ID) {
 
 	$db = new DB;
 
-	echo "<center><table border='0' width='90%' cols=2>";
-	echo "<tr><th colspan=2>".$lang["connect"][0].":</th></tr>";
+	echo "<div align='center'><table border='0' width='90%' >";
+	echo "<tr><th colspan='2'>".$lang["connect"][0].":</th></tr>";
 	echo "<tr><th>".$lang["computers"][39].":</th><th>".$lang["computers"][40].":</th></tr>";
 
 	echo "<tr class='tab_bg_1'>";
@@ -571,7 +571,7 @@ function showConnections($ID) {
 	echo "</td>";
 
 	echo "</tr>";
-	echo "</table></center><br>";
+	echo "</table></div><br>";
 	
 }
 

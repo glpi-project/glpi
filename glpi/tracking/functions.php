@@ -49,7 +49,7 @@ function searchFormTracking ($show,$contains) {
 
 	echo "<form method=\"get\" action=\"".$cfg_install["root"]."/tracking/index.php\">";
 	echo "<tr class='tab_bg_1'>";
-	echo "<td colspan=2 align='center'>";
+	echo "<td colspan='2' align='center'>";
 	echo "<select name=\"show\" size=1>";
 
 	echo "<option "; if ($show == "all") { echo "selected"; }
@@ -66,15 +66,15 @@ function searchFormTracking ($show,$contains) {
 
 	echo "</select>";
 	echo "</td>";
-	echo "<td align='center'><input type=submit value=\"".$lang["buttons"][1]."\"></td>";
+	echo "<td align='center'><input type='submit' value=\"".$lang["buttons"][1]."\"></td>";
 	echo "</tr>";
 	echo "</form>";
 	echo "<form method=\"get\" action=\"".$cfg_install["root"]."/tracking/index.php\">";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td class='tab_bg_2'>";
-	echo "<b>".$lang["tracking"][5].":</b> </td><td><input type=text name=contains value=\"$contains\"size=15>";
+	echo "<b>".$lang["tracking"][5].":</b> </td><td><input type='text' name=contains value=\"$contains\"size=15>";
 	echo "</td><td>";
-	echo "<input type=submit value=\"".$lang["buttons"][0]."\">";
+	echo "<input type='submit' value=\"".$lang["buttons"][0]."\">";
 	echo "</td></tr>";
 	echo "</form>";
 	echo "</table>\n";
@@ -167,7 +167,7 @@ function showJobList($username,$show,$contains,$item) {
 		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
 		echo "<th width=5>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
 		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["joblist"][5]."</th>";
-		echo "<th colspan=2>".$lang["joblist"][6]."</th></tr>";
+		echo "<th colspan='2'>".$lang["joblist"][6]."</th></tr>";
 		while ($i < $number) {
 			$ID = $db->result($result, $i, "ID");
 			showJobShort($ID, 0);
@@ -231,7 +231,7 @@ $query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY
 		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
 		echo "<th width=5>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
 		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["joblist"][5]."</th>";
-		echo "<th colspan=2>".$lang["joblist"][6]."</th></tr>";
+		echo "<th colspan='2'>".$lang["joblist"][6]."</th></tr>";
 		while ($i < $number)
 		{
 			$ID = $db->result($result, $i, "ID");
@@ -364,11 +364,11 @@ function showJobDetails($ID) {
 		   { echo "Warning !! ";return;}
 
 		echo "<center><table border='0' width='90%' cellpadding=5>\n";
-		echo "<tr><th colspan=2>".$lang["job"][0]." $job->ID:</th></tr>";
+		echo "<tr><th colspan='2'>".$lang["job"][0]." $job->ID:</th></tr>";
 		echo "<tr class='tab_bg_2'>";
 		echo "<td width=50% rowspan=2>";
 
-		echo "<table cellpadding=2 cellspacing='0' border='0'>";
+		echo "<table cellpadding='2' cellspacing='0' border='0'>";
 
 		echo "<tr><td>".$lang["joblist"][0].":</td><td>";
 		if ($job->status == "new") { 
@@ -399,7 +399,7 @@ function showJobDetails($ID) {
 		echo "</td>";
 
 		echo "<td>";
-		echo "<table cellpadding=2 cellspacing='0' border='0'>";
+		echo "<table cellpadding='2' cellspacing='0' border='0'>";
 		echo "<tr><td>".$lang["joblist"][11].":</td>";
 		echo "<td><b>".$job->date."</b></td></tr>";
 		echo "<tr><td>".$lang["joblist"][12].":</td>";
@@ -414,7 +414,7 @@ function showJobDetails($ID) {
 			$result = $db->query($query);
 			$opentime = $db->result($result, 0, 0);
 			echo "<td><b>$job->closedate</b></tr>";
-			echo "<tr><td colspan=2>".$lang["job"][2].": $opentime</td></tr>";
+			echo "<tr><td colspan='2'>".$lang["job"][2].": $opentime</td></tr>";
 		}
 		echo "</table>";
 		echo "</td>";
@@ -428,7 +428,7 @@ function showJobDetails($ID) {
 		
 		echo "</tr><tr class='tab_bg_2'>";
 		
-		echo "<td colspan=2>";
+		echo "<td colspan='2'>";
 		echo $lang["joblist"][6].":<br><br>";
 		echo "<b>$job->contents</b>";
 		echo "<br><br></td>";
@@ -438,7 +438,7 @@ function showJobDetails($ID) {
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		if ($job->status == "new") {
 			echo "<tr class='tab_bg_1'>";
-			echo "<td colspan=2 align='center'>";
+			echo "<td colspan='2' align='center'>";
 			echo "<b><a href=\"".$cfg_install["root"]."/tracking/tracking-mark.php?ID=$job->ID\">".$lang["job"][3]."</a></b>";
 			echo "</td></tr>";
 		}
@@ -540,7 +540,7 @@ function showFollowups($ID) {
 	$job->getFromDB($ID,0);
 
 	if ($job->num_of_followups) {
-		echo "<center><table border='0' width='90%' cellpadding=2>\n";
+		echo "<center><table border='0' width='90%' cellpadding='2'>\n";
 		echo "<tr><th>".$lang["joblist"][1]."</th><th>".$lang["joblist"][3]."</th><th>".$lang["joblist"][6]."</th></tr>\n";
 
 		for ($i=0; $i < $job->num_of_followups; $i++) {
@@ -564,11 +564,11 @@ function showFollowups($ID) {
 	if ($job->closedate=="0000-00-00 00:00:00") {
 		echo "<center><table border='0' width='90%'>\n\n";
 		echo "<form method=get action=\"".$cfg_install["root"]."/tracking/tracking-followups.php\">";
-		echo "<input type=hidden name=ID value=$ID>";
+		echo "<input type='hidden' name=ID value=$ID>";
 		echo "<tr><th>".$lang["job"][9].":</th></tr>";
 		echo "<tr class='tab_bg_1'><td width='100%' align='center'><textarea cols=60 rows=5 name=contents ></textarea></td></tr>";
 		echo "<tr><td align='center' class='tab_bg_1'>";
-		echo "<input type=submit value=\"".$lang["buttons"][2]."\"></td>";
+		echo "<input type='submit' value=\"".$lang["buttons"][2]."\"></td>";
 		echo "</tr></form></table></center>";
 	}
 
@@ -612,7 +612,7 @@ function addFormTracking ($ID,$author,$target,$error) {
 	}
 	echo "<form method=get action=$target>";
 	echo "<center><table border='0'>";
-	echo "<tr><th colspan=2>".$lang["job"][13].":</th></tr>";
+	echo "<tr><th colspan='2'>".$lang["job"][13].":</th></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$lang["joblist"][1].":</td>";
 	echo "<td align='center'>".date("Y-m-d H:i:s")."</td></tr>";
@@ -642,16 +642,16 @@ function addFormTracking ($ID,$author,$target,$error) {
 	$result = $db->query($query);
 	$computername = $db->result($result, 0, "name");
 	echo "$computername ($ID)"; 
-	echo "<input type=hidden name=ID value=\"$ID\">";
+	echo "<input type='hidden' name=ID value=\"$ID\">";
 	echo "</td></tr>";
 
-	echo "<tr><td colspan=2 height=5></td></tr>";
-	echo "<tr><th colspan=2>".$lang["job"][11].":</th></tr>";
+	echo "<tr><td colspan='2' height=5></td></tr>";
+	echo "<tr><th colspan='2'>".$lang["job"][11].":</th></tr>";
 
-	echo "<tr><td colspan=2><textarea cols=50 rows=14  name=contents></textarea></td></tr>";
+	echo "<tr><td colspan='2'><textarea cols=50 rows=14  name=contents></textarea></td></tr>";
 
-	echo "<tr class='tab_bg_1'><td colspan=2 align='center'>";
-	echo "<input type=submit value=\"".$lang["buttons"][2]."\">";
+	echo "<tr class='tab_bg_1'><td colspan='2' align='center'>";
+	echo "<input type='submit' value=\"".$lang["buttons"][2]."\">";
 	echo "</td></tr>";
 	
 	echo "</table></center>";
@@ -679,9 +679,9 @@ function assignFormTracking ($ID,$admin,$target) {
 	echo "<tr>";
 	echo "<td>".$lang["job"][5].":</td><td>";
 		dropdownUsers($job->assign, "user");
-	echo "<input type=hidden name=update value=\"1\">";
-	echo "<input type=hidden name=ID value=$job->ID>";
-	echo "</td><td><input type=submit value=\"".$lang["job"][6]."\"></td>";
+	echo "<input type='hidden' name=update value=\"1\">";
+	echo "<input type='hidden' name=ID value=$job->ID>";
+	echo "</td><td><input type='submit' value=\"".$lang["job"][6]."\"></td>";
 	echo "</tr></table>";
 
 	echo "</td>";

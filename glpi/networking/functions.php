@@ -80,8 +80,8 @@ function showNetworkingForm ($target,$ID) {
 	$netdev = new Netdevice;
 
 	echo "<center><form name=form method='post' action=\"$target\">";
-	echo "<table border='0' cellpadding=2>";
-	echo "<tr><th colspan=2><b>";
+	echo "<table border='0' cellpadding='2'>";
+	echo "<tr><th colspan='2'><b>";
 	if (empty($ID)) {
 		echo $lang["networking"][11].":";
 		$netdev->getEmpty();
@@ -91,12 +91,12 @@ function showNetworkingForm ($target,$ID) {
 	}		
 	echo "</b></th></tr>";
 	
-	echo "<tr><td class='tab_bg_1' valign=top>";
+	echo "<tr><td class='tab_bg_1' valign='top'>";
 
 	echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
 
 	echo "<tr><td>".$lang["networking"][0].":	</td>";
-	echo "<td><input type=text name=name value=\"".$netdev->fields["name"]."\" size=10></td>";
+	echo "<td><input type='text' name=name value=\"".$netdev->fields["name"]."\" size=10></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["networking"][1].": 	</td><td>";
@@ -104,16 +104,16 @@ function showNetworkingForm ($target,$ID) {
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["networking"][4].":	</td>";
-	echo "<td><input type=text name=contact_num value=\"".$netdev->fields["contact_num"]."\" size=5></td>";
+	echo "<td><input type='text' name=contact_num value=\"".$netdev->fields["contact_num"]."\" size=5></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["networking"][3].":	</td>";
-	echo "<td><input type=text name=contact size=12 value=\"".$netdev->fields["contact"]."\"></td>";
+	echo "<td><input type='text' name=contact size=12 value=\"".$netdev->fields["contact"]."\"></td>";
 	echo "</tr>";
 	echo "</table>";
 
 	echo "</td>\n";	
-	echo "<td class='tab_bg_1' valign=top>";
+	echo "<td class='tab_bg_1' valign='top'>";
 
 	echo "<table cellpadding='0' cellspacing='0' border='0'";
 
@@ -122,32 +122,32 @@ function showNetworkingForm ($target,$ID) {
 	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["networking"][5].":	</td>";
-	echo "<td><input type=text name=ram value=\"".$netdev->fields["ram"]."\" size=3></td>";
+	echo "<td><input type='text' name=ram value=\"".$netdev->fields["ram"]."\" size=3></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["networking"][6].":	</td>";
-	echo "<td><input type=text name=serial size=12 value=\"".$netdev->fields["serial"]."\"></td>";
+	echo "<td><input type='text' name=serial size=12 value=\"".$netdev->fields["serial"]."\"></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["networking"][7].":</td>";
-	echo "<td><input type=text size=12 name=otherserial value=\"".$netdev->fields["otherserial"]."\"></td>";
+	echo "<td><input type='text' size=12 name=otherserial value=\"".$netdev->fields["otherserial"]."\"></td>";
 	echo "</tr>";
 	echo "</table>";
 	
 	echo "</td>\n";	
 	echo "</tr>";
 	echo "<tr>";
-	echo "<td class='tab_bg_1' valign=top colspan=2>";
+	echo "<td class='tab_bg_1' valign='top' colspan='2'>";
 	
-	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign=top>";
+	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
 	echo "<tr><td>".$lang["networking"][39].":	</td>";
-	echo "<td><input type=text name='achat_date' readonly size=10 value='".$netdev->fields["achat_date"]."'>";
+	echo "<td><input type='text' name='achat_date' readonly size=10 value='".$netdev->fields["achat_date"]."'>";
 	echo "&nbsp; <input name='button' type='button' onClick=\"window.open('mycalendar.php?form=form&elem=achat_date','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 	echo "&nbsp; <input name='button_reset' type='button' onClick=\"document.forms['form'].achat_date.value='0000-00-00'\" value='reset'>";
   echo "</td></tr>";
 	
 	echo "<tr><td>".$lang["networking"][40].":	</td>";
-	echo "<td><input type=text name='date_fin_garantie' readonly size=10 value='".$netdev->fields["date_fin_garantie"]."'>";
+	echo "<td><input type='text' name='date_fin_garantie' readonly size=10 value='".$netdev->fields["date_fin_garantie"]."'>";
 	echo "&nbsp; <input name='button' type='button' readonly onClick=\"window.open('mycalendar.php?form=form&elem=date_fin_garantie','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 	echo "&nbsp; <input name='button_reset' type='button' onClick=\"document.forms['form'].date_fin_garantie.value='0000-00-00'\" value='reset'>";
   echo "</td></tr>";
@@ -155,11 +155,11 @@ function showNetworkingForm ($target,$ID) {
 	echo "<tr><td>".$lang["networking"][41].":	</td>";
 	echo "<td>";
 	if ($netdev->fields["maintenance"] == 1) {
-				echo " OUI <input type=radio name='maintenance' value=1 checked>";
-				echo "&nbsp; &nbsp; NON <input type=radio name='maintenance' value=0>";
+				echo " OUI <input type='radio' name='maintenance' value=1 checked>";
+				echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value=0>";
 		} else {
-				echo " OUI <input type=radio name='maintenance' value=1>";
-				echo "&nbsp; &nbsp; NON <input type=radio name='maintenance' value=0 checked >";
+				echo " OUI <input type='radio' name='maintenance' value=1>";
+				echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value=0 checked >";
 			   }
 	echo "</td></tr></table>";
 		
@@ -168,9 +168,9 @@ function showNetworkingForm ($target,$ID) {
 	echo "</td>\n";	
 	echo "</tr>";
 	echo "<tr>";
-	echo "<td class='tab_bg_1' valign=top colspan=2>";
+	echo "<td class='tab_bg_1' valign='top' colspan='2'>";
 
-	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign=top>";
+	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
 	echo $lang["networking"][8].":	</td>";
 	echo "<td align='center'><textarea cols=35 rows=4 name=comments >".$netdev->fields["comments"]."</textarea>";
 	echo "</td></tr></table>";
@@ -181,8 +181,8 @@ function showNetworkingForm ($target,$ID) {
 	if (!$ID) {
 
 		echo "<tr>";
-		echo "<td class='tab_bg_2' valign=top colspan=2>";
-		echo "<center><input type=submit name=add value=\"".$lang["buttons"][8]."\"></center>";
+		echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+		echo "<center><input type='submit' name=add value=\"".$lang["buttons"][8]."\"></center>";
 		echo "</td>";
 		echo "</form></tr>";
 
@@ -191,14 +191,14 @@ function showNetworkingForm ($target,$ID) {
 	} else {
 
 		echo "<tr>";
-		echo "<td class='tab_bg_2' valign=top>";
-		echo "<input type=hidden name=ID value=\"$ID\">\n";
-		echo "<center><input type=submit name=update value=\"".$lang["buttons"][7]."\"></center>";
+		echo "<td class='tab_bg_2' valign='top'>";
+		echo "<input type='hidden' name=ID value=\"$ID\">\n";
+		echo "<center><input type='submit' name=update value=\"".$lang["buttons"][7]."\"></center>";
 		echo "</td></form>\n\n";
 		echo "<form action=\"$target\" method='post'>\n";
-		echo "<td class='tab_bg_2' valign=top>\n";
-		echo "<input type=hidden name=ID value=\"$ID\">\n";
-		echo "<center><input type=submit name=delete value=\"".$lang["buttons"][6]."\"></center>";
+		echo "<td class='tab_bg_2' valign='top'>\n";
+		echo "<input type='hidden' name=ID value=\"$ID\">\n";
+		echo "<center><input type='submit' name=delete value=\"".$lang["buttons"][6]."\"></center>";
 		echo "</td>";
 		echo "</form></tr>";
 
@@ -290,7 +290,7 @@ function showPorts ($device,$device_type) {
 	$query = "SELECT ID FROM networking_ports WHERE (on_device = $device AND device_type = $device_type) ORDER BY logical_number";
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 
-			echo "<br><center><table cellpadding=2 width='90%'>";
+			echo "<br><center><table cellpadding='2' width='90%'>";
 			echo "<tr><th colspan=6>";
 			echo $db->numrows($result)." ";
 			if ($db->numrows($result)<2) {
@@ -343,16 +343,16 @@ function showNetportForm($target,$ID,$ondevice,$devtype) {
 	}
 
 	echo "<center><table><tr>";
-	echo "<th colspan=2>".$lang["networking"][20].":</th>";
+	echo "<th colspan='2'>".$lang["networking"][20].":</th>";
 	echo "</tr>";
 	echo "<form method='post' action=\"$target\">";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["networking"][21].":</td>";
-	echo "<td><input type=text size=5 name=logical_number value=\"".$netport->fields["logical_number"]."\">";
+	echo "<td><input type='text' size=5 name=logical_number value=\"".$netport->fields["logical_number"]."\">";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["networking"][0]."</td>";
-	echo "<td><input type=text size=20 name=name value=\"".$netport->fields["name"]."\">";
+	echo "<td><input type='text' size=20 name=name value=\"".$netport->fields["name"]."\">";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["networking"][16]."</td><td>";
@@ -360,11 +360,11 @@ function showNetportForm($target,$ID,$ondevice,$devtype) {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["networking"][22]."</td>";
-	echo "<td><input type=text size=20 name=ifaddr value=\"".$netport->fields["ifaddr"]."\">";
+	echo "<td><input type='text' size=20 name=ifaddr value=\"".$netport->fields["ifaddr"]."\">";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["networking"][23]."</td>";
-	echo "<td><input type=text size=25 name=ifmac value=\"".$netport->fields["ifmac"]."\">";
+	echo "<td><input type='text' size=25 name=ifmac value=\"".$netport->fields["ifmac"]."\">";
 	echo "</td></tr>";
 
 	if ($ID) {
@@ -375,23 +375,23 @@ function showNetportForm($target,$ID,$ondevice,$devtype) {
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td align='center'>";
-		echo "<input type=hidden name=ID value=".$netport->fields["ID"].">";
-		echo "<input type=submit name=update value=\"".$lang["buttons"][7]."\">";
+		echo "<input type='hidden' name=ID value=".$netport->fields["ID"].">";
+		echo "<input type='submit' name=update value=\"".$lang["buttons"][7]."\">";
 		echo "</td></form>";
 
 		echo "<form method='post' action=$target>";
-		echo "<input type=hidden name=ID value=$ID>";
+		echo "<input type='hidden' name=ID value=$ID>";
 		echo "<td align='center'>";
-		echo "<input type=submit name=delete value=\"".$lang["buttons"][6]."\">";
+		echo "<input type='submit' name=delete value=\"".$lang["buttons"][6]."\">";
 		echo "</td></tr></form>";
 	} else 
 	{
 
 		echo "<tr class='tab_bg_2'>";
-		echo "<td align='center' colspan=2>";
-		echo "<input type=hidden name=on_device value=".$ondevice.">";
-		echo "<input type=hidden name=device_type value=".$devtype.">";
-		echo "<input type=submit name=add value=\"".$lang["buttons"][8]."\">";
+		echo "<td align='center' colspan='2'>";
+		echo "<input type='hidden' name=on_device value=".$ondevice.">";
+		echo "<input type='hidden' name=device_type value=".$devtype.">";
+		echo "<input type='submit' name=add value=\"".$lang["buttons"][8]."\">";
 		echo "</td></form>";
 	}
 
@@ -457,7 +457,7 @@ function showPortsAdd($ID,$devtype) {
 	
 	GLOBAL $cfg_layout, $cfg_install, $lang;
 	
-	echo "<center><table border='0' width='90%' cellpadding=2>";
+	echo "<center><table border='0' width='90%' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><b>";
 	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ondevice=$ID&devtype=$devtype\">";
 	echo $lang["networking"][19];
@@ -514,7 +514,7 @@ function showConnectorSearch($target,$ID) {
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
 	echo "<center><table border='0'>";
-	echo "<tr><th colspan=2>".$lang["networking"][27]." $ID ".$lang["networking"][28].":</th></tr>";
+	echo "<tr><th colspan='2'>".$lang["networking"][27]." $ID ".$lang["networking"][28].":</th></tr>";
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<form method='post' action=\"$target\">";
@@ -522,11 +522,11 @@ function showConnectorSearch($target,$ID) {
 	echo "<option value=name>".$lang["networking"][0]."</option>";
 	echo "<option value=id>ID</option>";
 	echo "</select>";
-	echo $lang["networking"][30]." <input type=text size=10 name=comp>";
-	echo "<input type=hidden name=pID1 value=$ID>";
-	echo "<input type=hidden name=next value=\"compsearch\">";
+	echo $lang["networking"][30]." <input type='text' size=10 name=comp>";
+	echo "<input type='hidden' name=pID1 value=$ID>";
+	echo "<input type='hidden' name=next value=\"compsearch\">";
 	echo "</td><td class='tab_bg_2'>";
-	echo "<input type=submit value=\"".$lang["buttons"][11]."\">";
+	echo "<input type='submit' value=\"".$lang["buttons"][11]."\">";
 	echo "</td></tr>";	
 	echo "</form>";
 	
@@ -547,11 +547,11 @@ function showConnectorSearch($target,$ID) {
 		$i++;
 	}
 	echo "</select>";
-	echo "<input type=hidden name=pID1 value=$ID>";
-	echo "<input type=hidden name=next value=\"showports\">";
-	echo "<input type=hidden name=device_type value=2>";
+	echo "<input type='hidden' name=pID1 value=$ID>";
+	echo "<input type='hidden' name=next value=\"showports\">";
+	echo "<input type='hidden' name=device_type value=2>";
 	echo "</td><td class='tab_bg_2'>";
-	echo "<input type=submit value=\"".$lang["buttons"][11]."\">";
+	echo "<input type='submit' value=\"".$lang["buttons"][11]."\">";
 	echo "</td></tr>";
 	echo "</form>";
 		
@@ -565,7 +565,7 @@ function listConnectorComputers($target,$input) {
 	$pID1 = $input["pID1"];
 
 	echo "<center><table border='0'>";
-	echo "<tr><th colspan=2>".$lang["networking"][27]." $pID1 ".$lang["networking"][32].". ".$lang["networking"][33].":</th></tr>";
+	echo "<tr><th colspan='2'>".$lang["networking"][27]." $pID1 ".$lang["networking"][32].". ".$lang["networking"][33].":</th></tr>";
 	echo "<form method='post' action=\"$target\"><tr><td>";
 
 	echo "<tr class='tab_bg_1'>";
@@ -592,10 +592,10 @@ function listConnectorComputers($target,$input) {
 
 	echo "</td>";
 	echo "<td class='tab_bg_2' align='center'>";
-	echo "<input type=hidden name=device_type value=1>";
-	echo "<input type=hidden name=pID1 value=\"".$pID1."\">";
-	echo "<input type=hidden name=next value=\"showports\">";
-	echo "<input type=submit value=\"".$lang["buttons"][11]."\">";
+	echo "<input type='hidden' name=device_type value=1>";
+	echo "<input type='hidden' name=pID1 value=\"".$pID1."\">";
+	echo "<input type='hidden' name=next value=\"showports\">";
+	echo "<input type='submit' value=\"".$lang["buttons"][11]."\">";
 	echo "</td></form></tr></table>";	
 
 }
@@ -619,7 +619,7 @@ function listConnectorPorts($target,$input) {
 		echo "<tr><th>".$lang["networking"][27]." $pID1 ".$lang["networking"][35].". ".$lang["networking"][36]." ".$input["dID"].":</th></tr>";
 		echo "</table></center>";
 
-		echo "\n\n<br><center><table border='0' cellpadding=2 width='90%'>";
+		echo "\n\n<br><center><table border='0' cellpadding='2' width='90%'>";
 		echo "<tr><th>#</th><th>".$lang["networking"][0]."</th>";
 		echo "<th>".$lang["networking"][14]."</th><th>".$lang["networking"][15]."</th>";
 		echo "<th>".$lang["networking"][16]."</th><th>".$lang["networking"][17].":</th></tr>\n";

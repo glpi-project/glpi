@@ -50,7 +50,7 @@ echo "<table border='0' cellpading='1'>";
 echo "<tr><th align='center' colspan='4' ><big><b>Rapport par date d'achat ou de fin de garantie</b></big></th></tr>";
 
 # 3. Selection d'affichage pour generer la liste
-	echo "<tr bgcolor='".$cfg_layout["tab_bg_1"]."'>";
+	echo "<tr class='tab_bg_1'>";
 		echo "<td  align='center'>";
 
 
@@ -89,7 +89,7 @@ echo "<option value='name'>Type de materiel</option>";
 echo "</select> &nbsp;&nbsp; ";
 echo "</td>";
 
-echo "<td align='center'><input type=submit value='afficher rapport'></td>";
+echo "<td align='center'><input type='submit' value='afficher rapport'></td>";
 
 echo "</form>";
 
