@@ -62,6 +62,17 @@ function FieldExists($table, $field) {
 	}
 	return $var1;
 }
+// return true if the field $field of the table $table is a mysql index
+// else return false
+function isIndex($table, $field) {
+	$db = new DB;
+	$result = $db->query("select ". $field ." from ". $table ."");
+	$flags = mysql_field_flags($result,$field);
+	if(eregi("multiple_key",$flags) || eregi("primary_key",$flags)) {
+		return true;
+	}
+	else return false;
+}
 
 //test la connection a la base de donnée.
 function test_connect() {
@@ -455,10 +466,74 @@ if(!FieldExists("glpi_config", "ID")) {
 	$query = "ALTER TABLE `glpi_config` CHANGE `config_id` `ID` INT( 11 ) NOT NULL AUTO_INCREMENT ";
 	$db->query($query) or die("erreur lors de la migration".$db->error());
 }
+
+if(!isIndex("glpi_computers", "location")) {
+	$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `location` ) ";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+	echo "bla10";
 }
 
+if(!isIndex("glpi_followups", "tracking")) {
+	$query = "ALTER TABLE `glpi_followups` ADD INDEX ( `tracking` ) ";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+		echo "bla9";
+}
 
+if(!isIndex("glpi_networking", "location")) {
+	$query = "ALTER TABLE `glpi_networking` ADD INDEX ( `location` ) ";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+		echo "bla8";
+}
 
+if(!isIndex("glpi_networking_ports", "on_device")) {
+	$query = "ALTER TABLE `glpi_networking_ports` ADD INDEX ( `on_device` , `device_type` )";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+		echo "bla7";
+}
+
+if(!isIndex("glpi_peripherals", "type")) {
+	$query = "ALTER TABLE `glpi_peripherals` ADD INDEX ( `type` ) ";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+		echo "bla6";
+}
+
+if(!isIndex("glpi_peripherals", "location")) {
+	$query = "ALTER TABLE `glpi_peripherals` ADD INDEX ( `location` ) ";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+		echo "bla5";
+}
+
+if(!isIndex("glpi_printers", "location")) {
+	$query = "ALTER TABLE `glpi_printers` ADD INDEX ( `location` ) ";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+		echo "bla4";
+}
+
+if(!isIndex("glpi_tracking", "computer")) {
+	$query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `computer` ) ";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+		echo "bla4";
+}
+
+if(!isIndex("glpi_tracking", "author")) {
+	$query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `author` ) ";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+		echo "bla3";
+}
+
+if(!isIndex("glpi_tracking", "assign")) {
+	$query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `assign` ) ";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+		echo "bla2";
+}
+
+if(!isIndex("glpi_tracking", "status")) {
+	$query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `status` ) ";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+		echo "bla1";
+}
+
+}
 
 //Debut du script
 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
