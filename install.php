@@ -381,7 +381,7 @@ function step3($host,$user,$password,$update)
                 
 	}
 	else {
-		echo $lang["install"][38]."<br />";
+		echo $lang["update"][93]."<br />";
 		if($update == "no") {
 			echo $lang["install"][38];
 			echo "<form action=\"install.php\" method=\"post\">";
