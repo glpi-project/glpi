@@ -55,17 +55,17 @@ function searchFormNetworking($field="",$phrasetype= "",$contains="",$sort= "") 
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
 
-	$option["networking.name"]				= $lang["networking"][0];
-	$option["networking.ID"]				= $lang["networking"][50];
+	$option["glpi_networking.name"]				= $lang["networking"][0];
+	$option["glpi_networking.ID"]				= $lang["networking"][50];
 	$option["glpi_dropdown_locations.name"]			= $lang["networking"][1];
 	$option["glpi_type_networking.name"]				= $lang["networking"][2];
-	$option["networking.serial"]			= $lang["networking"][6];
-	$option["networking.otherserial"]		= $lang["networking"][7]	;
-	$option["networking.firmware"]		= $lang["networking"][49]	;
-	$option["networking.comments"]			= $lang["networking"][8];
-	$option["networking.contact"]			= $lang["networking"][3];
-	$option["networking.contact_num"]		= $lang["networking"][4];
-	$option["networking.date_mod"]			= $lang["networking"][9];
+	$option["glpi_networking.serial"]			= $lang["networking"][6];
+	$option["glpi_networking.otherserial"]		= $lang["networking"][7]	;
+	$option["glpi_dropdown_firmware.name"]		= $lang["networking"][49]	;
+	$option["glpi_networking.comments"]			= $lang["networking"][8];
+	$option["glpi_networking.contact"]			= $lang["networking"][3];
+	$option["glpi_networking.contact_num"]		= $lang["networking"][4];
+	$option["glpi_networking.date_mod"]			= $lang["networking"][9];
 	
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/networking/networking-search.php\">";
@@ -115,25 +115,56 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 
 	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
 
+	$db = new DB;
+
 	// Build query
-	if ($phrasetype == "contains") {
-		$where = "($field LIKE '%".$contains."%')";
-	} else {
-		$where = "($field LIKE '".$contains."')";
+	if($field=="all") {
+		$where = " (";
+		$fields = $db->list_fields("glpi_networking");
+		$columns = $db->num_fields($fields);
+		
+		for ($i = 0; $i < $columns; $i++) {
+			if($i != 0) {
+				$where .= " OR ";
+			}
+			$coco = mysql_field_name($fields, $i);
+			echo $coco."---";
+			if($coco == "firmware") {
+				$where .= " glpi_dropdown_firmware.name LIKE '%".$contains."%'";
+			}
+			elseif($coco == "location") {
+				$where .= " glpi_dropdown_locations.name LIKE '%".$contains."%'";
+			}
+			elseif($coco == "type") {
+				$where .= " glpi_type_networking.name LIKE '%".$contains."%'";
+			}
+			else {
+   				$where .= "networking.".$coco . " LIKE '%".$contains."%'";
+			}
+		}
+		$where .= ")";
 	}
+	else {
+		if ($phrasetype == "contains") {
+			$where = "($field LIKE '%".$contains."%')";
+		}
+		else {
+			$where = "($field LIKE '".$contains."')";
+		}
+	}
+
 	if (!$start) {
 		$start = 0;
 	}
 	if (!$order) {
 		$order = "ASC";
 	}
-	$query = "select networking.ID from glpi_networking as networking LEFT JOIN glpi_dropdown_locations on networking.location=glpi_dropdown_locations.ID ";
-	$query .= "LEFT JOIN glpi_type_networking on networking.type = glpi_type_networking.ID ";
-	$query .= "LEFT JOIN glpi_dropdown_firmware on networking.firmware = glpi_dropdown_firmware.ID ";
+	$query = "select glpi_networking.ID from glpi_networking LEFT JOIN glpi_dropdown_locations on glpi_networking.location=glpi_dropdown_locations.ID ";
+	$query .= "LEFT JOIN glpi_type_networking on glpi_networking.type = glpi_type_networking.ID ";
+	$query .= "LEFT JOIN glpi_dropdown_firmware on glpi_networking.firmware = glpi_dropdown_firmware.ID ";
 	$query .= "where $where ORDER BY $sort $order";
-	
+//	echo $query;	
 	// Get it from database	
-	$db = new DB;
 	if ($result = $db->query($query)) {
 		$numrows = $db->numrows($result);
 
