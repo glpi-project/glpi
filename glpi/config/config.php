@@ -203,6 +203,10 @@ $cfg_features["expire_events"]	= $db->result($result,0,"expire_events");
 
 $cfg_features["list_limit"]		= $db->result($result,0,"list_limit");	
 
+//use helpdesk.html or not
+//utilisation du helpdesk.html ou pas
+$cfg_features["permit_helpdesk"] = $db->result($result,0,"permit_helpdesk");
+
 // version number
 // numero de version
 

@@ -551,10 +551,12 @@ function step5()
 	echo "</select>";
 	echo "<p><label>".$lang["setup"][108]." : <input type=\"text\" name=\"num_of_events\" value=\"". $db->result($result,0,"num_of_events") ."\"><label></p>";
 	echo "<p><label>".$lang["setup"][109]." : <input type=\"text\" name=\"expire_events\" value=\"". $db->result($result,0,"expire_events") ."\"><label></p>";
-	echo "<p> ".$lang["setup"][110]." :  <input type=\"radio\" name=\"jobs_at_login\" value=\"1\" checked /><label>".$lang["choice"][0]."</label>";
+	echo "<p> ".$lang["setup"][110]." :  <input type=\"radio\" name=\"jobs_at_login\" value=\"1\" checked=\"checked\" /><label>".$lang["choice"][0]."</label>";
 	echo " <input type=\"radio\" name=\"jobs_at_login\" value=\"0\" /><label>".$lang["choice"][1] ."</label></p>";
 	echo "<p><label>".$lang["setup"][111]."  : <input type=\"text\" name=\"list_limit\" value=\"". $db->result($result,0,"list_limit") ."\"><label></p>";
 	echo "<p><label>".$lang["setup"][112]." : <input type=\"text\" name=\"cut\" value=\"". $db->result($result,0,"cut") ."\"><label></p>";
+	echo "<p> ".$lang["setup"][219]." :  <input type=\"radio\" name=\"permit_helpdesk\" value=\"1\" /><label>".$lang["choice"][0]."</label>";
+	echo "<input type=\"radio\" name=\"permit_helpdesk\" value=\"0\" checked=\"checked\" /><label>".$lang["choice"][1] ."</label></p>";
 	echo "<input type=\"hidden\" name=\"install\" value=\"Etape_5\" />";
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][26]."\" /></p>";
 	echo "</form>";
@@ -562,7 +564,7 @@ function step5()
 
 // STEP 6 Get the config and fill database
 
-function step6($root_doc, $event_loglevel, $num_of_events, $expire_events,$jobs_at_login, $list_limit, $cut)
+function step6($root_doc, $event_loglevel, $num_of_events, $expire_events,$jobs_at_login, $list_limit, $cut, $permit_helpdesk)
 {
 	global $lang;
 	
@@ -570,7 +572,7 @@ function step6($root_doc, $event_loglevel, $num_of_events, $expire_events,$jobs_
 	require_once ($phproot . "/glpi/common/classes.php");
 	require_once ($phproot . "/glpi/config/config_db.php");
 	$db = new DB;
-	$query = "update glpi_config set root_doc = '". $root_doc ."', expire_events = '". $expire_events ."', event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', jobs_at_login = '". $jobs_at_login ."', list_limit = '". $list_limit ."', cut = '". $cut ."'"; 
+	$query = "update glpi_config set root_doc = '". $root_doc ."', expire_events = '". $expire_events ."', event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', jobs_at_login = '". $jobs_at_login ."', list_limit = '". $list_limit ."', cut = '". $cut ."', permit_helpdesk = '".$permit_helpdesk."'"; 
 	$db->query($query);
 	echo "<p>".$lang["install"][53]. "</p>";
 	echo "<p>".$lang["install"][54]. "</p>";
@@ -686,7 +688,7 @@ loadLang($_SESSION["dict"]);
 				break;
 			case "Etape_5" :
 				header_html("Etape 5");
-				step6($_POST["root_doc"], $_POST["event_loglevel"], $_POST["num_of_events"], $_POST["expire_events"], $_POST["jobs_at_login"],$_POST["list_limit"], $_POST["cut"]);
+				step6($_POST["root_doc"], $_POST["event_loglevel"], $_POST["num_of_events"], $_POST["expire_events"], $_POST["jobs_at_login"],$_POST["list_limit"], $_POST["cut"],$_POST["permit_helpdesk"]);
 				break;
 			case "Etape_6" :
 				header_html("Etape 6");

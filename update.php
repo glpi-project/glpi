@@ -804,6 +804,11 @@ if(!FieldExists("glpi_users","password_md5")) {
 	$db->query($query) or die("glpi_users.Password_md5".$lang["update"][90].$db->error());
 }
 
+if(!FieldExists("glpi_config","permit_helpdesk")) {
+	$query = "ALTER TABLE `glpi_config` ADD `permit_helpdesk` varchar(200) NOT NULL";
+	$db->query($query) or die("glpi_config_permit_helpdesk ".$lang["update"][90].$db->error());
+}
+
 return $ret;
 }
 
