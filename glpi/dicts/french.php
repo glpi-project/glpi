@@ -75,8 +75,8 @@ $lang["search"][4]	= "tri&eacute; par";
 $lang["search"][5]	= "Voir par lieu";
 $lang["search"][6]	= "tri&eacute; par";
 $lang["search"][7]	= "Tous";
-$lang["search"][8]	= "Date de début";
-$lang["search"][9]	= "Date de fin";
+$lang["search"][8]	= "Date début";
+$lang["search"][9]	= "Date  fin";
 
 
 // Central
@@ -462,7 +462,7 @@ $lang["reports"][21]    ="Date fin garantie";
 $lang["reports"][22]    ="Type de date";
 $lang["reports"][23]    ="Date(s)";
 $lang["reports"][24]    ="Restreindre aux ordinateurs";
-
+$lang["reports"][25]    ="Rapport interventions";
 
 
 // LDAP

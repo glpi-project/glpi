@@ -433,7 +433,17 @@ $lang["reports"][7]	="Printers";
 $lang["reports"][8]	="Net devices";
 $lang["reports"][9]	="Monitors";
 $lang["reports"][10]	="S&eacute;lect type to be displayed";
-
+$lang["reports"][13] 	= "Buy date(s)"; 
+$lang["reports"][14] 	= "Sort option"; 
+$lang["reports"][15] 	= "Show report"; 
+$lang["reports"][16] 	= "All"; 
+$lang["reports"][17] 	= "Buy date"; 
+$lang["reports"][18] 	= "Serial number"; 
+$lang["reports"][19] 	= "Contact name"; 
+$lang["reports"][20] 	= "Location"; 
+$lang["reports"][23] 	= "Date(s)"; 
+$lang["reports"][24] 	= "Restrict to computers"; 
+$lang=["reports"][25]    ="Tracking report";
 
 // LDAP
 $lang["ldap"][0]	= "Suche";
