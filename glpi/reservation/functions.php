@@ -501,7 +501,7 @@ $display="";
 					$delete="";
 
 					if ($_SESSION["glpiID"]==$user->fields["ID"]||isAdmin($_SESSION["glpitype"]))
-						$delete="<a  href=\"".$target."?show=resa&clear=".$row['ID']."\" title='Delete'><img  src=\"".$HTMLRel."pics/clear.png\"></a>";
+						$delete="<a  href=\"".$target."?show=resa&ID=$ID&clear=".$row['ID']."\" title='Delete'><img  src=\"".$HTMLRel."pics/clear.png\"></a>";
 
 		echo $delete."</td><td align='center' class='tab_bg_2' style='border:1px dashed #cccccc'>".$display."<br><b>".$user->fields["name"]."</b>";
 
