@@ -306,6 +306,7 @@ function showPorts ($device,$device_type) {
 			while ($devid=$db->fetch_row($result)) {
 				$netport = new Netport;
 				$netport->getfromDB(current($devid));
+				echo "<tr class='tab_bg_1'>";
 				echo "<td align='center'><b>";
 				echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ID=".$netport->fields["ID"]."\">";
 				echo $netport->fields["logical_number"];
