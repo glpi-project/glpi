@@ -83,10 +83,10 @@ else if (isset($_POST["restore"]))
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." restored item.");
 	header("Location: ".$cfg_install["root"]."/computers/");
 }
-else if (isset($_POST["purge"]))
+else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
-	deleteComputer($_POST,1);
+	deleteComputer($tab,1);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." purge item.");
 	header("Location: ".$cfg_install["root"]."/computers/");
 }

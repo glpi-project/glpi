@@ -76,10 +76,10 @@ else if (isset($_POST["restore"]))
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." restored item.");
 	header("Location: ".$cfg_install["root"]."/networking/");
 }
-else if (isset($_POST["purge"]))
+else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
-	deleteNetdevice($_POST,1);
+	deleteNetdevice($tab,1);
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." purge item.");
 	header("Location: ".$cfg_install["root"]."/networking/");
 }
