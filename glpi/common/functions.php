@@ -901,9 +901,10 @@ function dropdownUsers($value, $myname) {
 
 	echo "<select name=\"$myname\">";
 	$i = 0;
+	
 	$number = $db->numrows($result);
+	echo "<option value=\"\">[ Nobody ]</option>";
 	if ($number > 0) {
-		echo "<option value=\"\">[ Nobody ]\n";
 		while ($i < $number) {
 			$output = $db->result($result, $i, "name");
 			if ($output == $value) {
