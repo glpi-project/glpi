@@ -399,9 +399,19 @@ function showComputerForm ($template,$target,$ID) {
 		// Is Server?
 		echo "<table border=0 cellpadding=2 cellspacing=0><tr>";
 		echo "<td>";
-		if ($comp->fields["flags_server"] == 1) {
-			echo "<input type=checkbox name=flags_server value=1 checked>";
-		} else {
+		if (isset($comp->fields["flags_server"]))
+		{
+			if($comp->fields["flags_server"]  == 1)
+			{
+				echo "<input type=checkbox name=flags_server value=1 checked>";
+			}
+			else
+			{
+			echo "<input type=checkbox name=flags_server value=1>";
+			}
+		}
+		else
+		{
 			echo "<input type=checkbox name=flags_server value=1>";
 		}
 		echo "</td><td>".$lang["computers"][28]."</td>";
