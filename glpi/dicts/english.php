@@ -37,6 +37,8 @@ Christian Bauer
 // English Dictionary
 
 $lang["common"][0] = "Without name";
+$lang["common"][1] = "Item";
+$lang["common"][2] = "ID";
 
 //Login
 
@@ -150,6 +152,8 @@ $lang["Menu"][13]	="Stats";
 $lang["Menu"][14]	="Users";
 $lang["Menu"][15]	="Administration";
 $lang["Menu"][16]	="Peripherals";
+$lang["Menu"][17]	="Reservations";
+$lang["Menu"][18]	="Utils";
 
 //Data
 
@@ -173,6 +177,7 @@ $lang["backup"][17]     ="Are you sure you want to delete this file";
 $lang["backup"][18]     ="Are you sure you want to save the database";
 $lang["backup"][19] 	= "Now"; 
 $lang["backup"][20]     ="Del";
+
 // Tracking
 $lang["tracking"][0]	= "Follow up of interventions";
 $lang["tracking"][1]	= "Show all active interventions";
@@ -211,6 +216,7 @@ $lang["joblist"][20]	= "Low";
 $lang["joblist"][21]	= "Very Low";
 $lang["joblist"][22] 	= "No old intervention found"; 
 $lang["joblist"][23] 	= "Add an old intervention to the history"; 
+
 $lang["job"][0]		= "Intervention Number";
 $lang["job"][1]		= "Intervention still open...";
 $lang["job"][2]		= "This job was open for";
@@ -661,7 +667,7 @@ $lang["help"][8]	= "Inform me about the taken pursuant actions ";
 $lang["help"][9]	= "No";
 $lang["help"][10]	= "Yes";
 $lang["help"][11]	= "My E-Mail";
-$lang["help"][12]	= "My Machine-ID:";
+$lang["help"][12]	= "My Item-ID:";
 $lang["help"][13]	= "The Problem";
 $lang["help"][14]	= "Submit Message";
 $lang["help"][15]	= "No Description, please try again.";
@@ -672,7 +678,14 @@ $lang["help"][19]	= "Thank you for using our automatic Helpdesk-System.";
 $lang["help"][20]	= "The description of your problem could not be added to our database.";
 $lang["help"][21]	= "Please contact your local system administrator.";
 $lang["help"][22] 	= "Search the ID of your computer"; 
-$lang["help"][23] 	= "Enter the first letters (user name, computer or serial)"; 
+$lang["help"][23] 	= "Enter the first letters (user name, item or serial)"; 
+$lang["help"][24] 	= "Hardware Type";
+$lang["help"][25] 	= "Computer";
+$lang["help"][26] 	= "Networking device";
+$lang["help"][27] 	= "Printer";
+$lang["help"][28] 	= "Monitor";
+$lang["help"][29] 	= "Peripheral";
+$lang["help"][30] 	= "General";
 
   // Mois
   $lang["calendarM"][0] = "January" ;
@@ -838,5 +851,32 @@ $lang["update"][107]	= "You must now proceed the update of the content of your d
 $lang["update"][108]	= "The update of the contents does not seem necessary. ";
 $lang["update"][109]	= "Do you want to do it ?";
 $lang["update"][110]	= "The update seems necessary. ";
+
+$lang["reservation"][0]	= "Reservations";
+$lang["reservation"][1]	= "Reservable Items";
+$lang["reservation"][2]	= "ID";
+$lang["reservation"][3]	= "Hardware Type";
+$lang["reservation"][4]	= "Items in loan";
+$lang["reservation"][5]	= "In loan";
+$lang["reservation"][6]	= "Not to authorize the loan ";
+$lang["reservation"][7]	= "Authorize the loan";
+$lang["reservation"][8]	= "Book";
+$lang["reservation"][9]	= "Book an item";
+$lang["reservation"][10]	= "Begin Date";
+$lang["reservation"][11]	= "End Date";
+$lang["reservation"][12]	= "Begin Hour";
+$lang["reservation"][13]	= "End Hour";
+$lang["reservation"][14]	= "Delete reservation";
+$lang["reservation"][15]	= "Day";
+$lang["reservation"][16]	= "To";
+$lang["reservation"][17]	= "From";
+$lang["reservation"][18]	= "The required item is already reserved for the required times";
+$lang["reservation"][19]	= "Error in the entry of your dates. The begin date must be higher than the end date";
+$lang["reservation"][20]	= "Back to calendar";
+$lang["reservation"][21]	= "See reservations";
+$lang["reservation"][22]	= "Modify the comment";
+$lang["reservation"][23]	= "Comment";
+$lang["reservation"][24]	= "Loan";
+
 
 ?>

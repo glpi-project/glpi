@@ -36,6 +36,8 @@ Christian Bauer
 // Italian Dictionary
 
 $lang["common"][0] = "Without name";
+$lang["common"][1] = "Item";
+$lang["common"][2] = "ID";
 
 //Login
 
@@ -154,6 +156,8 @@ $lang["Menu"][13]	="Stats";
 $lang["Menu"][14]	="Users";
 $lang["Menu"][15]	="Administration";
 $lang["Menu"][16]	="Peripherals";
+$lang["Menu"][17]	="Reservations";
+$lang["Menu"][18]	="Utils";
 
 
 
@@ -527,7 +531,6 @@ $lang["reports"][29] 	= "Peripherals";
 $lang["reports"][30] 	= "Peripherals under maintenance contract"; 
 $lang["reports"][31]    ="complete";
 $lang["reports"][32]    ="limited";
-$lang["reports"][33]    ="If you used a software which does not know anything with the standards (Excel for example), use the limited version in order not to have a problem with the size of the fields. The long fields will be truncated.";
 
 
 
@@ -632,6 +635,7 @@ $lang["setup"][109]="How long logs are keep in database (in days, 0 for infinite
 $lang["setup"][110]="Show the interventions at the login ";
 $lang["setup"][111]="Number of elements to be printed by page";
 $lang["setup"][112]="Maximum number of characters for each elements of the list ";
+$lang["setup"][113]="Default language";
 
 $lang["setup"][150]="External sources of authentification";
 $lang["setup"][151]="If you do not wish to use LDAP as source of connection leave the empty fields";
@@ -689,18 +693,25 @@ $lang["help"][8]	= "Tienimi informato su tutte le azioni compute ";
 $lang["help"][9]	= "No";
 $lang["help"][10]	= "S&iacute;";
 $lang["help"][11]	= "La tua E-Mail";
-$lang["help"][12]	= "L'ID del tuo computer:";
+$lang["help"][12]	= "My Item-ID:";
 $lang["help"][13]	= "La descrizione del problema";
 $lang["help"][14]	= "Invia la chiamata";
 $lang["help"][15]	= "Nessuna descrizione del problema, per piacere inseriscila.";
 $lang["help"][16]	= "Se vuoi essere informato su tutte le azioni compiute, devi inserire la tua email!";
-$lang["help"][17]	= "&Egrave; necessario inserire l'ID del computer!";
+$lang["help"][17]	= "Please enter your Item-ID!";
 $lang["help"][18]	= "La chiamata è stata correttamente inserita.";
 $lang["help"][19]	= "Grazie di aver usato questo sistema automatizzato di HelpDesk.";
 $lang["help"][20]	= "Mi dispiace, ma la descrizione del problema non può essere aggiunta all'archivio";
 $lang["help"][21]	= "Per piacere, contatta il tuo amministratore di sistema.";
 $lang["help"][22] 	= "Search the ID of your computer"; 
-$lang["help"][23] 	= "Enter the first letters (user name, computer or serial)"; 
+$lang["help"][23] 	= "Enter the first letters (user name, item or serial)"; 
+$lang["help"][24] 	= "Item Type";
+$lang["help"][25] 	= "Computer";
+$lang["help"][26] 	= "Networking device";
+$lang["help"][27] 	= "Printer";
+$lang["help"][28] 	= "Monitor";
+$lang["help"][29] 	= "Peripheral";
+$lang["help"][30] 	= "General";
 
   // Mois
   $lang["calendarM"][0] = "Gennaio" ;
@@ -871,5 +882,30 @@ $lang["update"][108]	= "The update of the contents does not seem necessary. ";
 $lang["update"][109]	= "Do you want to do it ?";
 $lang["update"][110]	= "The update seems necessary. ";
 
+$lang["reservation"][0]	= "Reservations";
+$lang["reservation"][1]	= "Reservable Items";
+$lang["reservation"][2]	= "ID";
+$lang["reservation"][3]	= "Hardware Type";
+$lang["reservation"][4]	= "Items in loan";
+$lang["reservation"][5]	= "In loan";
+$lang["reservation"][6]	= "Not to authorize the loan ";
+$lang["reservation"][7]	= "Authorize the loan";
+$lang["reservation"][8]	= "Book";
+$lang["reservation"][9]	= "Book an item";
+$lang["reservation"][10]	= "Begin Date";
+$lang["reservation"][11]	= "End Date";
+$lang["reservation"][12]	= "Begin Hour";
+$lang["reservation"][13]	= "End Hour";
+$lang["reservation"][14]	= "Delete reservation";
+$lang["reservation"][15]	= "Day";
+$lang["reservation"][16]	= "To";
+$lang["reservation"][17]	= "From";
+$lang["reservation"][18]	= "The required item is already reserved for the required times";
+$lang["reservation"][19]	= "Error in the entry of your dates. The begin date must be higher than the end date";
+$lang["reservation"][20]	= "Back to calendar";
+$lang["reservation"][21]	= "See reservations";
+$lang["reservation"][22]	= "Modify the comment";
+$lang["reservation"][23]	= "Comment";
+$lang["reservation"][24]	= "Loan";
 
 ?>
