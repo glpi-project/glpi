@@ -264,6 +264,8 @@ function step1($update)
 
 		}
 	}
+	/* A supprimer Obsolète 
+	
 	echo "<tr><td><h4>".$lang["install"][21]."</h4></td>";
 		$fp = fopen("reports/reports/convexcel/tmp/test_glpi.txt",'w');
 	if (empty($fp)) {
@@ -282,6 +284,8 @@ function step1($update)
 			echo "<td>".$lang["install"][20]."</td></tr>";
 		}
 	}
+	*/
+	
 	echo "<tr><td><h4>".$lang["install"][23]."</h4></td>";
 	$fp = fopen("glpi/config/test_glpi.txt",'w');
 	if (empty($fp)) {
