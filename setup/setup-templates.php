@@ -40,18 +40,27 @@ include ($phproot . "/glpi/includes_setup.php");
 
 checkAuthentication("normal");
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
-listTemplates(COMPUTER_TYPE,$HTMLRel ."computers/computers-info-form.php");
-echo "<br>";
-listTemplates(NETWORKING_TYPE,$HTMLRel ."networking/networking-info-form.php");
-echo "<br>";
-listTemplates(PRINTER_TYPE,$HTMLRel ."printers/printers-info-form.php");
-echo "<br>";
-listTemplates(MONITOR_TYPE,$HTMLRel ."monitors/monitors-info-form.php");
-echo "<br>";
-listTemplates(SOFTWARE_TYPE,$HTMLRel ."software/software-info-form.php");
-echo "<br>";
-listTemplates(PERIPHERAL_TYPE,$HTMLRel ."peripherals/peripherals-info-form.php");
 
+switch($_GET["type"]){
+case COMPUTER_TYPE :
+listTemplates(COMPUTER_TYPE,$HTMLRel ."computers/computers-info-form.php");
+break;
+case NETWORKING_TYPE :
+listTemplates(NETWORKING_TYPE,$HTMLRel ."networking/networking-info-form.php");
+break;
+case PRINTER_TYPE :
+listTemplates(PRINTER_TYPE,$HTMLRel ."printers/printers-info-form.php");
+break;
+case MONITOR_TYPE :
+listTemplates(MONITOR_TYPE,$HTMLRel ."monitors/monitors-info-form.php");
+break;
+case SOFTWARE_TYPE :
+listTemplates(SOFTWARE_TYPE,$HTMLRel ."software/software-info-form.php");
+break;
+case PERIPHERAL_TYPE :
+listTemplates(PERIPHERAL_TYPE,$HTMLRel ."peripherals/peripherals-info-form.php");
+break;
+}
 commonFooter();
 
 

@@ -107,13 +107,6 @@ if (isset($_POST["move"])) {
 	$dp["monitors"]=$lang["setup"][44];		
 	$dp["peripherals"]=$lang["setup"][69];		
 	$dp["os"]=$lang["setup"][5];		
-	$dp["ram"]=$lang["setup"][6];	
-	$dp["processor"]=$lang["setup"][7];			
-	$dp["moboard"]=$lang["setup"][45];		
-	$dp["gfxcard"]=$lang["setup"][46];		
-	$dp["sndcard"]=$lang["setup"][47];		
-	$dp["hdtype"]=$lang["setup"][48];		
-	$dp["network"]=$lang["setup"][8];		
 	$dp["iface"]=$lang["setup"][9];		
 	$dp["firmware"]=$lang["setup"][71];
 	$dp["netpoint"]=$lang["setup"][73];		
@@ -167,27 +160,6 @@ echo "<option value='$key' $sel>".$val."</option>";
 		showFormDropDown($_SERVER["PHP_SELF"],"enttype",$lang["setup"][80],$ID);
 		break;
 
-		case "ram" :
-		showFormDropDown($_SERVER["PHP_SELF"],"ram",$lang["setup"][6],$ID);
-		break;
-		case "processor" :
-		showFormDropDown($_SERVER["PHP_SELF"],"processor",$lang["setup"][7],$ID);
-		break;
-		case "moboard" :
-		showFormDropDown($_SERVER["PHP_SELF"],"moboard",$lang["setup"][45],$ID);
-		break;
-		case "gfxcard" :
-		showFormDropDown($_SERVER["PHP_SELF"],"gfxcard",$lang["setup"][46],$ID);
-		break;
-		case "sndcard" :
-		showFormDropDown($_SERVER["PHP_SELF"],"sndcard",$lang["setup"][47],$ID);
-		break;
-		case "hdtype" :
-		showFormDropDown($_SERVER["PHP_SELF"],"hdtype",$lang["setup"][48],$ID);
-		break;
-		case "network" :
-		showFormDropDown($_SERVER["PHP_SELF"],"network",$lang["setup"][8],$ID);
-		break;
 		case "iface" :
 		showFormDropDown($_SERVER["PHP_SELF"],"iface",$lang["setup"][9],$ID);
 		break;

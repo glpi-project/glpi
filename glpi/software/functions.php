@@ -43,7 +43,10 @@ function titleSoftware(){
          
          echo "<div align='center'><table border='0'><tr><td>";
          echo "<img src=\"".$HTMLRel."pics/logiciels.png\" alt='".$lang["software"][0]."' title='".$lang["software"][0]."'></td><td><a  class='icon_consol' href=\"software-add-select.php\"><strong>".$lang["software"][0]."</strong></a>";
-         echo "</td></tr></table></div>";
+                echo "</td>";
+                echo "<td><a href='".$HTMLRel."setup/setup-templates.php?type=".SOFTWARE_TYPE."'>".$lang["common"][8]."</a></td>";
+                echo "</tr></table></div>";
+
 }
 
 
