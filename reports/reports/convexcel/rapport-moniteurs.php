@@ -127,7 +127,7 @@ while($ligne = $db->fetch_array($result))
 
 $workbook->close();
 
-header("Content-Type: application/x-msexcel");
+header("Content-Type: application/vnd.ms-excel");
 $fh=fopen($fname, "rb");
 fpassthru($fh);
 unlink($fname);
