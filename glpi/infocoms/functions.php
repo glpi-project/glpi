@@ -172,7 +172,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		echo "</table></div>";
 		
 	}
-
+echo "<br>";
 }
 
 function updateInfocom($input) {
