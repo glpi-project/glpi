@@ -200,7 +200,9 @@ function _initialize() {
 
     # Open tmp file for storing Worksheet data.
     $this->_tmpfile=tempnam($this->_tempdir, "php_writeexcel");
-    $fh=fopen($this->_tmpfile, "w+b");
+    //$fh=fopen($this->_tmpfile, "w+b");
+
+    $fh=0;
 
     if ($fh) {
         # Store filehandle
@@ -286,8 +288,8 @@ function _initialize() {
         $this->_store_selection($this->_selection);
         $this->_store_eof();
 	if ($this->_filehandle){
-        fclose($this->_filehandle);
-        unlink($this->_tmpfile);
+        //fclose($this->_filehandle);
+       unlink($this->_tmpfile);
         }
     }
 
