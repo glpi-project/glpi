@@ -43,12 +43,19 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 include ($phproot . "/glpi/includes_tracking.php");
 
+// on ajoute les includes pour le suivi des interventions de tous les items
+include ($phproot . "/glpi/includes_computers.php");
+include ($phproot . "/glpi/includes_printers.php");
+include ($phproot . "/glpi/includes_networking.php");
+include ($phproot . "/glpi/includes_peripherals.php");
+include ($phproot . "/glpi/includes_monitors.php");
+
 checkAuthentication("normal");
 commonHeader("Userinfo",$_SERVER["PHP_SELF"]);
 showUserInfo($_SERVER["PHP_SELF"],$_GET["ID"]);
 if (isset($_GET["start"])) $start=$_GET["start"];
 else $start=0;
-showJobList($_SERVER["PHP_SELF"],$_GET["ID"],"user","","",$start);
+showJobList($_SERVER["PHP_SELF"],$_GET["ID"],"user","","","",$start);
 
 commonFooter();
 
