@@ -296,7 +296,7 @@ function showSoftwareForm ($target,$ID) {
 
 	echo "<tr class='tab_bg_1'><td valign='top'>";
 	echo $lang["software"][6].":	</td>";
-	echo "<td align='center' colspan='2'><textarea cols=35 rows=4 name=comments >".$sw->fields["comments"]."</textarea>";
+	echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$sw->fields["comments"]."</textarea>";
 	echo "</td></tr>";
 	
 	if (!$ID) {
@@ -542,8 +542,10 @@ function showLicenseForm($target,$ID) {
 	echo $lang["buttons"][13]."</b>";
 	echo "</a><br>";
 	
-	echo "<table class='tab_cadre'><tr><th colspan='3'>".$lang["software"][15]." ($ID):</th></tr>";
 	echo "<form name='form' method='post' action=\"$target\">";
+	
+	echo "<table class='tab_cadre'><tr><th colspan='3'>".$lang["software"][15]." ($ID):</th></tr>";
+	
 
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][16].":</td>";
 	echo "<td><input type='text' size='20' name='serial' value=\"\">";
@@ -554,7 +556,7 @@ function showLicenseForm($target,$ID) {
 		echo "<option value='$i'>$i</option>";
 	echo "</select>";
 	echo "&nbsp;".$lang["software"][24].":<input type='text' name='expire' readonly size='10' >";
-	echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=expire')\",'Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+	echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=expire','Calendrier','width=200, height=220')\" value='".$lang["buttons"][15]."...'>";
 	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].expire.value='0000-00-00'\" value='reset'>";
 	echo "</td>";
 
@@ -564,9 +566,9 @@ function showLicenseForm($target,$ID) {
 	echo "<td align='center' colspan='3'>";
 	echo "<input type='hidden' name='sID' value=".$ID.">";
 	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
-	echo "</td></form>";
+	echo "</td>";
 
-	echo "</table></div>";
+	echo "</table></form></div>";
 }
 
 
