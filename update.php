@@ -1584,13 +1584,51 @@ if(!FieldExists("glpi_printers","deleted")) {
 
 }
 // Ajout deleted computer
-if(!FieldExists("glpi_computerls","deleted")) {
+if(!FieldExists("glpi_computers","deleted")) {
 
 	$query = "ALTER TABLE `glpi_computers` ADD `deleted` ENUM( 'Y', 'N' ) DEFAULT 'N' NOT NULL ;";
 	$db->query($query) or die("0.5 add field deleted ".$lang["update"][90].$db->error());
 
 }
 
+// Ajout template peripheral
+if(!FieldExists("glpi_peripherals","is_template")) {
+
+	$query = "ALTER TABLE `glpi_peripherals` ADD `is_template` ENUM( '0', '1' ) DEFAULT '0' NOT NULL , ADD `tplname` VARCHAR( 255 ) ;";
+	$db->query($query) or die("0.5 add field deleted ".$lang["update"][90].$db->error());
+
+}
+
+// Ajout template software
+if(!FieldExists("glpi_software","is_template")) {
+
+	$query = "ALTER TABLE `glpi_software` ADD `is_template` ENUM( '0', '1' ) DEFAULT '0' NOT NULL , ADD `tplname` VARCHAR( 255 ) ;";
+	$db->query($query) or die("0.5 add field deleted ".$lang["update"][90].$db->error());
+
+}
+
+// Ajout template monitor
+if(!FieldExists("glpi_monitors","is_template")) {
+
+	$query = "ALTER TABLE `glpi_monitors` ADD `is_template` ENUM( '0', '1' ) DEFAULT '0' NOT NULL , ADD `tplname` VARCHAR( 255 ) ;";
+	$db->query($query) or die("0.5 add field deleted ".$lang["update"][90].$db->error());
+
+}
+
+// Ajout template networking
+if(!FieldExists("glpi_networking","is_template")) {
+
+	$query = "ALTER TABLE `glpi_networking` ADD `is_template` ENUM( '0', '1' ) DEFAULT '0' NOT NULL , ADD `tplname` VARCHAR( 255 ) ;";
+	$db->query($query) or die("0.5 add field deleted ".$lang["update"][90].$db->error());
+
+}
+// Ajout template printer
+if(!FieldExists("glpi_printers","is_template")) {
+
+	$query = "ALTER TABLE `glpi_printers` ADD `is_template` ENUM( '0', '1' ) DEFAULT '0' NOT NULL , ADD `tplname` VARCHAR( 255 ) ;";
+	$db->query($query) or die("0.5 add field deleted ".$lang["update"][90].$db->error());
+
+}
 
 // Update version number
 $query="UPDATE glpi_config set version='0.5' WHERE ID='1'";
