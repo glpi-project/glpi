@@ -108,14 +108,15 @@ class Job {
 		// prepare variables
 
 		$this->date = date("Y-m-d H:i:s");
-		if (!$this->status) {
+
+		if ($this->status=="old") {
 			$this->closedate = date("Y-m-d H:i:s");
 		}
 		$this->contents = addslashes($this->contents);
 		
 		// dump into database
 		$db = new DB;
-		$query = "INSERT INTO glpi_tracking VALUES (NULL, '$this->date', '', '$this->status','$this->author', '$this->assign', $this->computer, '$this->contents', '$this->priority', '$this->isgroup','$this->uemail', '$this->emailupdates')";
+		$query = "INSERT INTO glpi_tracking VALUES (NULL, '$this->date', '$this->closedate', '$this->status','$this->author', '$this->assign', $this->computer, '$this->contents', '$this->priority', '$this->isgroup','$this->uemail', '$this->emailupdates')";
 
 		if ($result = $db->query($query)) {
 			return true;
