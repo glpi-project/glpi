@@ -67,7 +67,10 @@ else if (isset($_POST["update"]))
 }
 else
 {
-	checkAuthentication("normal");
+	if (empty($_GET["ID"]))
+	checkAuthentication("admin");
+	else checkAuthentication("normal");
+
 	commonHeader("Networking",$_SERVER["PHP_SELF"]);
 	showNetworkingForm ($_SERVER["PHP_SELF"],$_GET["ID"]);
 	commonFooter();

@@ -107,8 +107,9 @@ else if(isset($tab["connect"]))
 }
 else
 {
-
-	checkAuthentication("normal");
+	if (empty($tab["ID"]))
+	checkAuthentication("admin");
+	else checkAuthentication("normal");
 	commonHeader("Printers",$_SERVER["PHP_SELF"]);
 	showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	commonFooter();
