@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-02-15 01:08
+#GLPI Dump database on 2005-02-15 13:50
 ### Dump table glpi_cartridges
 
 DROP TABLE IF EXISTS glpi_cartridges;
@@ -538,12 +538,15 @@ INSERT INTO glpi_dropdown_kbcategories VALUES ('4','2','Toner');
 DROP TABLE IF EXISTS glpi_dropdown_locations;
 CREATE TABLE glpi_dropdown_locations (
     ID int(11) NOT NULL auto_increment,
-    name varchar(255),
-   PRIMARY KEY (ID)
+    name varchar(255) NOT NULL,
+    parentID int(11) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (ID),
+   UNIQUE name (name, parentID),
+   KEY parentID (parentID)
 );
 
-INSERT INTO glpi_dropdown_locations VALUES ('1','1 ier etage');
-INSERT INTO glpi_dropdown_locations VALUES ('2','2nd etage');
+INSERT INTO glpi_dropdown_locations VALUES ('1','1 ier etage','0');
+INSERT INTO glpi_dropdown_locations VALUES ('2','2nd etage','0');
 ### Dump table glpi_dropdown_moboard
 
 DROP TABLE IF EXISTS glpi_dropdown_moboard;
@@ -715,6 +718,8 @@ INSERT INTO glpi_event_log VALUES ('369','1','cartridge','2005-02-15 01:07:59','
 INSERT INTO glpi_event_log VALUES ('368','1','cartridge','2005-02-15 01:07:54','inventory','4','glpi added a license.');
 INSERT INTO glpi_event_log VALUES ('367','0','cartridge','2005-02-15 01:07:49','inventory','4','glpi added item HP.');
 INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-02-15 01:04:50','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('370','-1','system','2005-02-15 13:49:18','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('371','-1','system','2005-02-15 13:50:45','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -798,25 +803,25 @@ CREATE TABLE glpi_kbitems (
    KEY categoryID (categoryID)
 );
 
-INSERT INTO glpi_kbitems VALUES ('1','3','Quel type de papier pour l\'Epson Stylus Color 460 ?','\n
+INSERT INTO glpi_kbitems VALUES ('1','3','Quel type de papier pour l\'Epson Stylus Color 460 ?','
 Du papier 90g,100g et 110 g.','no');
 INSERT INTO glpi_kbitems VALUES ('2','2','Peut-on  utiliser l\' imprimante EPSON Stylus si la cartouche couleur est vide ?','Non. Les imprimantes EPSON Stylus nécessitent que les deux cartouches (noire et couleur) soient installées.','yes');
-INSERT INTO glpi_kbitems VALUES ('3','1','Peut on utiliser des codes pour mettre en forme le texte ?','Oui : voir dans  l\'aide en ligne \n
-\n
-Quelques exemples :\n
-\n
-[b]Texte gras[/b] \n
-[u]Texte souligné[/u] \n
-[i]Texte italique[/i] \n
-[color=#FF0000]Texte rouge[/color] \n
-\n
-\n
-http://glpi.indepnet.org\n
-\n
-[email]myname@mydomain.com[/email] \n
-\n
-[email=myname@mydomain.com]Mon adresse e-mail[/email] \n
-\n
+INSERT INTO glpi_kbitems VALUES ('3','1','Peut on utiliser des codes pour mettre en forme le texte ?','Oui : voir dans  l\'aide en ligne 
+
+Quelques exemples :
+
+[b]Texte gras[/b] 
+[u]Texte souligné[/u] 
+[i]Texte italique[/i] 
+[color=#FF0000]Texte rouge[/color] 
+
+
+http://glpi.indepnet.org
+
+[email]myname@mydomain.com[/email] 
+
+[email=myname@mydomain.com]Mon adresse e-mail[/email] 
+
 [code]Voici un bout de code.[/code]','no');
 ### Dump table glpi_licenses
 
@@ -975,9 +980,9 @@ CREATE TABLE glpi_prefs (
 
 INSERT INTO glpi_prefs VALUES ('glpi','yes','french','1');
 INSERT INTO glpi_prefs VALUES ('Helpdesk','no','french','2');
-INSERT INTO glpi_prefs VALUES ('normal','','english','3');
+INSERT INTO glpi_prefs VALUES ('normal','','french','3');
 INSERT INTO glpi_prefs VALUES ('tech','yes','french','4');
-INSERT INTO glpi_prefs VALUES ('post-only','','english','5');
+INSERT INTO glpi_prefs VALUES ('post-only','','french','5');
 ### Dump table glpi_printers
 
 DROP TABLE IF EXISTS glpi_printers;
