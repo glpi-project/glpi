@@ -44,12 +44,12 @@ include ($phproot . "/glpi/includes_tracking.php");
 checkAuthentication("normal");
 
 commonHeader("Tracking",$_SERVER["PHP_SELF"]);
-
-if ($_GET["priority"] && !$_GET["contents"])
+$error = "";
+if (isset($_GET["priority"]) && !(isset($_GET["contents"])))
 {
 	$error="No Description, please try again.";
 }
-elseif ($_GET["priority"] && $_GET["contents"])
+elseif (isset($_GET["priority"]) && isset($_GET["contents"]))
 {
 	if (postJob($_GET["ID"],$_SESSION["glpiname"],$_GET["status"],$_GET["priority"],$_GET["computer"],$_GET["isgroup"],$_GET["uemail"],$_GET["emailupdates"],$_GET["contents"]))
 	{
