@@ -58,7 +58,7 @@ echo "</head>";
 
 echo "<body>";
 
-
+/*
 // Logo
 echo "<div align='center'>";
 echo "<div id='navigation'>";
@@ -88,13 +88,55 @@ echo "<td colspan='2' align='center'><input type='submit' value='Login' class='s
 echo "</table>";
 echo "</form>";
 echo "</div>";
+
+*/
+
+// contenu
+
+echo "<div id='contenulogin'>";
+
+echo "<div id='logo-login'>";
+echo "<img src=\"./pics/logo-glpi-login.png\"  alt=\"Logo GLPI Powered By Indepnet\" title=\"Powered By Indepnet\" /><br />";
+echo "<a href=\"http://GLPI.indepnet.org/\" class='sous_logo'>";
+	echo "GLPI version ".$cfg_install["version"]."";
+	echo "</a>";
+echo "</div>";
+
+echo "<div id='boxlogin'>";
+
+echo "<form action='login.php' method='post'>";
+
+echo "<fieldset>";
+echo "<legend>Identification</legend>";
+
+
+echo "<p><span><label>Login............. :  </label></span><span> <input type='text' name='name' id='name' maxlength='16' /></span></p>";
+
+
+echo "<p><span><label>Password....... : </label></span><span><input type='password' name='password' id='password' maxlength='16' /> </span></p>";
+
+echo "</fieldset>";
+
+echo "<p><span> <input type='submit' name='submit' value='Login' class='submit' /></span></p>";
+echo "</form>";
+
+ 
+echo "<p> <img src='./pics/key.png' alt='keys' /> </p>";
+
+
+echo "</div>";
+echo "</div>";
+
+// fin contenu
+
+
+
 // End
-echo "<div id='footer'>";
-	echo "<div align='right'><small><b><a href=\"http://GLPI.indepnet.org/\">";
-	echo "GLPI ".$cfg_install["version"]."";
-	echo "</a></b></small></div>";
-	echo "</div>";
-echo "<br>";
+
+	
+	
+
 echo "</body></html>";
+
 
 ?>
