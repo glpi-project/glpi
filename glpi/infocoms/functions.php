@@ -450,7 +450,9 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 			// amortissement en linéaire pour les dernières années 	 
 		
 			
-			$txlineaire = (100/$dureelineaire); // calcul du taux linéaire
+			if ($dureelineaire!=0)
+				$txlineaire = (100/$dureelineaire); // calcul du taux linéaire
+			else $txlineaire = 100;
 			$annuite = ($tab['vcnetfin'][$dureedegressif]*$txlineaire)/100; // calcul de l'annuité 
 			$mrt=$tab['vcnetfin'][$dureedegressif];
 				
