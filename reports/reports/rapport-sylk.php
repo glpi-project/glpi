@@ -448,12 +448,12 @@ switch($table){
 					$value=getDropdownName("glpi_dropdown_network",$enr[$champs[$i][0]]);
 				}
 				elseif($name == "processor") {
-					$$value=getDropdownName("glpi_dropdown_processor",$enr[$champs[$i][0]]);
+					$value=getDropdownName("glpi_dropdown_processor",$enr[$champs[$i][0]]);
 				}
 				else {
 				$value=$enr[$champs[$i][0]];
 				 }
- 				if ($champs[$i][5]&&$enr[$champs[$i][0]]!=""&&!is_null($enr[$champs[$i][0]])) $ligne_content[$champs[$i][0]]=" - ".$value;
+ 				if ($champs[$i][5]&&!empty($value)&&!is_null($value)) $ligne_content[$champs[$i][0]]=" - ".$value;
 				else $ligne_content[$champs[$i][0]]=$value;
  				}
            
