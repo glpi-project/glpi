@@ -501,7 +501,7 @@ $lang["software"][38]   = "Licence site";
 $lang["software"][39]   = "Logiciel libre";
 $lang["software"][40]   = "Aucune licence";
 $lang["software"][41]	= "Logiciel ID";
-$lang["software"][42]	= "Nouveau logicel &agrave; partir d'un mod&egrave;le";
+$lang["software"][42]	= "Nouveau logiciel &agrave; partir d'un mod&egrave;le";
 
 
 // Peripherals
