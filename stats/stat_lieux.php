@@ -173,6 +173,7 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 			if(!empty($_POST["date1"]) && $date1!="") $query5.= " and glpi_tracking.date >= '". $date1 ."' ";
 			if(!empty($_POST["date2"]) && $date2!="") $query5.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 			$result5 = $db->query($query5);
+			$resolvavg=0;
 			while($line5 = $db->fetch_array($result5)) {
 				$resolvavg += $line5["total"];
 			}
@@ -181,6 +182,7 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 			if(!empty($_POST["date1"]) && $date1!="") $query6.= " and glpi_tracking.date >= '". $date1 ."' ";
 			if(!empty($_POST["date2"]) && $date2!="") $query6.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 			$result6 = $db->query($query6);
+			$realavg=0;
 			while($line6 = $db->fetch_array($result6)) {
 				$realavg += $line6["total"];
 			}
@@ -189,6 +191,7 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 			if(!empty($_POST["date1"]) && $date1!="") $query7.= " and glpi_tracking.date >= '". $date1 ."' ";
 			if(!empty($_POST["date2"]) && $date2!="") $query7.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 			$result7 = $db->query($query7);
+			$realtotal=0;
 			while($line7 = $db->fetch_array($result7)) {
 				$realtotal += $line7["total"];
 			}
@@ -198,6 +201,7 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 			if(!empty($_POST["date2"]) && $date2!="") $query8.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 			$query8 .= "group by glpi_tracking.id";
 			$result8 = $db->query($query8);
+			$realfirst=0;
 			while($line8 = $db->fetch_array($result8)) {
 				$realfirst += $line8["first"];
 			}
