@@ -217,9 +217,9 @@ if(isset($_POST["Submit"]))
 	{
 		$Comp_num = $ligne['ID'];
 		$Computer = $ligne['name'];
-		echo " <tr class='tab_bg_1' onClick=\"fillidfield(5,".$Comp_num.")\">";
+		echo " <tr class='tab_bg_1' onClick=\"fillidfield(6,".$Comp_num.")\">";
 		echo "<td width='25%' align='center'>&nbsp;</td>";
-		echo "<td width='25%' align='center'>&nbsp;</td>";
+		echo "<td width='25%' align='center'><b>".$lang["help"][31]."</b></td>";
 		echo "<td width='25%' align='center'><b> $Computer </b></td>";
 		echo "<td  width='25%' align='center'>";
 		echo "<b> $Comp_num </b></td>";
