@@ -1,7 +1,7 @@
   ----------------------------------------------------------------------
 GLPI - Gestionnaire libre de parc informatique
  Copyright (C) 2002 by the INDEPNET Development Team.
- Bazile Lebeau, baaz@indepnet.net - Jean-Mathieu Dol�ans, jmd@indepnet.net
+ Bazile Lebeau, baaz@indepnet.net - Jean-Mathieu Doléans, jmd@indepnet.net
  http://indepnet.net/   http://glpi.indepnet.org
  ----------------------------------------------------------------------
  Based on:
@@ -30,154 +30,319 @@ Christian Bauer, turin@incubus.de
 Contenu :
 
 - Qu'est ce que c'est ?
-- D�pendances
+- Dépendances
+- Mise à jour
 - Installation
 - Configuration
 - Test
 
+
+*************************************************************************************************************
 --- Qu'est-ce que c'est ?
+*************************************************************************************************************
+
 
 GLPI est un gestionnaire de parc informatique.
-Il permet de recenser et de g�rer l'int�gralit� des composantes mat�rielles
+Il permet de recenser et de gérer l'intégralité des composantes matérielles
 ou logicielles d'un parc informatique, et ainsi d'optimiser le travail des
-techniciens gr�ce � une maintenance plus coh�rente.
-Les fonctionnalit�s principales de l'application s'articulent autour de deux
+techniciens grâce à une maintenance plus cohérente.
+Les fonctionnalités principales de l'application s'articulent autour de deux
 axes :
 
-1) L'inventaire pr�cis de toutes les ressources techniques, mat�rielles et
-logicielles, existantes dont les caract�ristiques seront stock�es dans
-une base de donn�es.
+1) L'inventaire précis de toutes les ressources techniques, matérielles et
+logicielles, existantes dont les caractéristiques seront stockées dans
+une base de données.
 
 
-2) La gestion et l'historisation, des diverses op�rations de maintenance et
-des proc�dures li�es, r�alis�es sur ces ressources techniques.
+2) La gestion et l'historisation, des diverses opérations de maintenance et
+des procédures liées, réalisées sur ces ressources techniques.
 
-Enfin, cette application a pour but d'�tre dynamique et directement reli�e
-aux utilisateurs. Une interface autorise donc ces derniers � �ventuellement
-pr�venir le service de maintenance et � r�pertorier un probl�me rencontr�
-avec l'une des ressources techniques � laquelle ils ont acc�s.
+Enfin, cette application a pour but d'être dynamique et directement reliée
+aux utilisateurs. Une interface autorise donc ces derniers à éventuellement
+prévenir le service de maintenance et à répertorier un problème rencontré
+avec l'une des ressources techniques à laquelle ils ont accès.
 
 
-
---- D�pendances (uniquement test� avec ces configurations)
-
+*************************************************************************************************************
+--- Dépendances (uniquement testé avec ces configurations)
+*************************************************************************************************************
 
 1) Apache 1.3.>6 with PHP 4 
 2) MySQL 3.22 et supperieures
 
 
-****
+*************************************************************************************************************
 --- MISES A JOUR DEPUIS LA VERSION 0.3
-
-1) Sauvegardez votre base de donn�es GLPI (par s�curit�).
-
-2) Sauvegardez ou notez les param�tres pr�sents dans glpi/glpi/config/config.php
-
-3) Supprimez tous les fichiers de GLPI.
-
-4) D�compressez l'archive de la nouvelle version � la place.
-
-5) Editez le fichier glpi/config/config.php et re-faites la configuration � l'aide du fichier de configuration que vous avez sauvegard�.
-
-6) (re)Donnez � PHP les droits d'�criture dans les r�pertoires suivants : 
-
-- glpi/backups/dump
-- glpi/reports/reports/convexcel/tmp
-
-7) 7) Renomez le fichier glpi/update.php en update.bak (Vous n'avez pas � l'utiliser si vous avez d�j� la 
-version 0.3).
+*************************************************************************************************************
 
 
-*****
---- MISES A JOUR DEPUIS UNE VERSION ANTERIEURE (Version 0.2.* et 0.1.*) 
+I) Sauvegarde de votre ancienne configuration :
 
-1) Sauvegardez votre base de donn�es GLPI (par s�curit�).
+Avant de faire quoi que ce soit il convient de faire deux choses :
 
-Important :  
-Les anciennes sauvegardes de la base de donn�es, que vous avez r�alis�es au  d�but de la migration ne sont pas re-installables telles quelles.
-Si vous devez faire une restauration de base de donn�es � partir de telles sauvegardes, il faudra re-lancer le script de mise � jour.
+Sauvegardez votre base de donnée via l'interface de sauvegarde de glpi et récupérez le fichier dump contenant les données dans le répertoire backups/dump/ et faites en une sauvegarde.
 
+Récuperez le fichier config.php dans le répertoire glpi/config/ et copiez le ailleurs sur votre disque et faites en une sauvegarde.
 
-2) Sauvegardez ou notez les param�tres pr�sents dans glpi/glpi/config/config.php
+A partir de là, si la mise à jour se déroule mal ou que les nouvelles implémentations de la version 0.4 ne vous conviennent pas, il sera facile de revenir à votre version précédente.
 
-3) Supprimez tous les fichiers de GLPI.
+Si néanmoins cette procédure se déroulait mal, merci de nous faire parvenir au plus vite sur les mailing listes, ou sur le forum du site du projet, ou sur le bugtrack la procédure utilisée et le message d'erreur que vous obtenez.
 
-4) D�compressez l'archive de la nouvelle version � la place.
-
-5) Editez le fichier glpi/config/config.php et re-faites la configuration � l'aide du fichier de configuration que vous avez sauvegard�.
-
-6) Faites pointer votre navigateur favoris su http://xxxx/glpi/update.php 
-  pour mettre la base de donn�e � jour.
-
-7) Renomez le fichier glpi/update.php en update.bak
-
-8) (re)Donnez � PHP les droits d'�criture dans les r�pertoires suivants : 
-
-- glpi/backups/dump
-- glpi/reports/reports/convexcel/tmp
+II) Récupération et installation des fichiers.
 
 
+1)Supprimez le répertoire contenant GLPI ainsi que tout son contenu, de votre racine http.
+
+2)Téléchargez le tarball de la version 0.4 disponible dans la rubrique téléchargement du site du projet glpi (http://glpi.indepnet.org).
 
 
-**
+3)Décompressez la nouvelle archive de GLPI, à la place de l’ancienne.
+
+4)Changez les droits sur les dossiers suivants :
+
+-[votre_racine_http/]glpi/backups/dump
+-[votre_racine_http/]glpi/glpi/config/
+-[votre_racine_http/]glpi/reports/reports/convexcel/temp
+
+de manière à ce que PHP y ait les droits d’écriture.
+
+
+III)Lancement de la mise à jour :
+
+1) Faites pointer votre navigateur web sur http://votreserveur/glpi/
+
+2) Sélectionnez la langue dans laquelle vous souhaitez effectuer la mise a jour et cliquez sur « ok ».
+
+3) Cliquez sur « mise à jour ».
+
+4) Vérifiez que les tests d'environnement on bien tous été réalisé avec succés, sinon suivez les instructions et re-essayez.
+
+Si tout c'est bien passé, cliquez sur « continuer ».
+
+5)Configurez l'accès au serveur Mysql, aidez vous du fichier config.php que vous avez sauvegardé, pour remplir :
+Mysql serveur : le nom d'hote mysql
+Mysql user : le nom d'utilisateur mysql
+Mysql pass : le mot de passe associé au nom d'utilisateur mysql
+
+Une fois tout ceci fait cliquez sur « continuer »
+
+6) Sélectionnez la base de données que vous souhaitez mettre à jour.
+Si vous ne connaissez pas son nom, référez vous au fichier config.php que vous avez sauvegardé, il s'agit du nom se trouvant dans la variable $dbdefault.
+Cliquez sur « continuer »
+
+7) Un écran vous demande si vous êtes sûr de vouloir mettre à jour votre base de données, cliquez sur « continuer » si c'est la cas.
+
+8) La mise à jour commence, cela peut prendre un certain temps en fonction de la taille de votre base de données.
+
+IMPORTANT : La mise à jour depuis une version inférieure vers GLPI 0.4 ne vous permet pas de préserver automatiquement vos configurations précises (configurations générales, sources externes, mailing etc etc) qui étaient conservées dans le fichier config.php.
+
+Il vous faudra utiliser les formulaires de configuration post-installation dans le menu « configuration » de l'application.
+
+Ces menus ne sont accessibles qu'a un nouveau type d'utilisateur ajouté dans glpi : le « super-admin », la mise a jour effectue donc automatiquement la conversion « admin »->« super-admin » ou vous permet de créer un utilisateur « super-admin »
+
+
+A partir de ce moment, plusieurs cas sont possibles en fonction de la version depuis laquelle vous mettez votre base de donnée à jour et de vos anciennes configurations.
+
+
+CAS 1: Vous aviez des utilisateurs de type « admin », ou qu'au moins un des utilisateurs de type « admin » ne se connectaient pas à l'application depuis des sources externes (ldap,imap) (puisque dans ce cas le mot de passe n'est pas stocké dans la base de données).
+
+Tous vos utilisateurs ayant auparavant les droits « admin » et un mot de passe non vide se retrouvent avec les droits « super-admin », un message vous en informe.
+
+Votre base de données est a jour, vous pouvez désormais configurer GLPI en cliquant sur « utiliser GLPI » et en vous connectant avec l'un des utilisateurs anciennement admin.
+
+
+
+CAS 2: Vous n'aviez pas d'utilisateurs de type « admin » ou que tous les « admin » ont un mot de passe vide (puisqu'ils se connectent depuis des sources externes).
+
+Le script vous demande de bien vouloir saisir un nom d'utilisateur et de un mot de passe associé (n'entrez pas le nom d'un utilisateur déjà existant).
+
+Si cette procédure réussi, votre base de données maintenant à jour vous pouvez configurer GLPI en cliquant sur « utilisez GLPI » et en vous connectant avec l'utilisateur que vous venez de créer.
+
+Une fois la configuration terminée, vous pourrez supprimer cet utilisateur. Attention assurez vous qu'il reste toujours un utilisateur « super-admin » ayant la possibilité de se connecter à l'application depuis MySQL, ne serait qu'en cas de problèmes avec les sources de données externes.
+
+
+
+
+*************************************************************************************************************
 --- Installation
+*************************************************************************************************************
 
-1) Apr�s avoir d�compact� le paquet, copier l'int�gralit� des fichiers sur votre serveur web
-dans DOCUMENT_ROOT.
+Installer GLPI version >0.4
 
+L’installation de GLPI est assez simple. Depuis la version 0.4 il n’y a plus, en particulier, de fichier à modifier « à la main ».
 
-2) Cr�er une nouvelle base de donn�es nom�e "glpidb" ainsi que l'utilisateur correspondant  et importer le fichier
-mysql/glpi-[version]-defaults.sql  dans cette base.
+La procédure est la suivante :
 
-Cela g�n�rera la structure de la base pour GLPI et configurera cinq utilisateurs par d�faut :
+1. Récupérez l’archive de GLPI sur notre serveur, et la décompacter sur votre ordinateur personnel. Vous obtenez un dossier « GLPI... » contenant l’ensemble des fichiers du logiciel GLPI.
 
-- Heldesk : Password "help", Helpdesk-Injector qui n'apparait pas dans la liste des utilisateurs
- de l'application. Ne pas le supprimer de la base de donn�es.
- 
-- glpi : Password "glpi", se loguer en premier avec cet utilisateur afin de compl�ter le setup.
-Ne pas supprimer cet utilisateur avant d'avoir cr�e un autre utilisateur ayant les droits Admin.
+2. Installez le contenu de ce dossier sur le serveur destiné à accueillir GLPI.
 
-- post-only : Password "postonly", il est conseill� de supprimer ou modifier cet utilisateur
- avant la mise en production.
-
-- normal : Password "normal", il est conseill� de supprimer ou modifier cet utilisateur
- avant la mise en production.
-
-- tech : Password "tech", il est conseill� de supprimer ou modifier cet utilisateur
- avant la mise en production.
+3. Connectez-vous avec votre navigateur sur GLPI, dans un dossier intitulé « config », où GLPI vous proposera une interface graphique vous permettant de configurer le logiciel. Une fois ces quelques informations de configuration fournies, GLPI sera totalement installé et vous pourrez commencer à travailler.
 
 
-Certaines entr�es sont �galement g�n�r�es (� titre d'exemple) dans chaque table de la base de donn�es
-,vous pouvez effacer ce que vous d�sirez sauf "Helpdesk" et l'utilisateur qui a les droits
-d'administrateur (par d�faut GLPI).
+
+-- Procédure détaillée
+
+I) Configuration nécessaire
+
+Vous devez au minimum disposer d’un espace sur un serveur Web avec :
+- un accès FTP pour l’installation des fichiers ;
+- le support de PHP4 ou supérieure compilée avec le support des sessions ;
+- un accès à une base de données MySQL?.
+
+Avant l’installation, vous devez avoir une base MySQL? disponible. Si vous n’êtes pas l’administrateur du serveur, il faut demander l’activation d’une base MySQL? à l’administrateur.
+
+Vous devez connaître les données de votre connexion MySQL? (fournies par l’administrateur) :
+- l’adresse du serveur MySQL? ;
+- votre login MySQL? ;
+- votre password MySQL?,
+- le nom de la base de données
+
+II) Récupérer GLPI
+
+GLPI est disponible en téléchargement par le Web à l’adresse :
+- http://glpi.indepnet.org rubrique téléchargement.
+
+Choisissez la version qui vous intéresse, décompactez l’archive sur votre ordinateur dans un répertoire de votre choix, puis transférez le contenu de ce répertoire sur le serveur Web via FTP (par exemple).
+
+Si vous êtes l'administrateur du serveur décompresser l’archive dans le répertoire /var/www qu’Apache a crée pour vous.
+
+Installer les fichiers
+
+Installez l’ensemble des fichiers de GLPI dans l’espace Web, à l’endroit où vous voulez que GLPI soit accessible au public.
+
+Maintenant, il est nécessaire d’accorder des permissions à certains répertoires, de manière à ce que PHP ait les droits en écriture sur :
+/backups/dump
+/glpi/config
+/reports/reports/convexcel/tmp/
 
 
---- Configuration
 
-1) Editez le fichier config.php  dans  glpi/glpi/config/.
+III) Début de l'installation
 
-Indiquez vos param�tres :
+Désormais tout se déroule en ligne. Pour débuter l'installation il vous suffit de faire pointer votre navigateur web sur le dossier racine de GLPI : http://votreserveur/glpi/ (par défaut).
 
-- Pour la base de donn�es.
-- Pour le chemin d'acc�s � glpi (si vous l'avez install� dans un r�pertoire particulier).
+Lors de la première connexion à cette adresse, une procédure d’installation pas-à-pas démarre. L’interface est intuitive, il suffit d’entrer les informations demandées.
 
 
-2) Editez le fichier helpdesk.html dans /glpi/, vous pouvez d�placer ce fichier dans votre intranet
-ou ailleurs. Vous pouvez le modifier comme bon vous semble � condition que les param�tres du formulaire
-restent intacts. L'injecteur n�cessite, pour fonctionner, l'utilisateur Helpdesk cr�� par d�faut.
+Étapes préliminaires :
 
-3) Donnez � php les droits d'ecriture dans les r�pertoires suivants : 
+A- Choix de la langue.
 
-- glpi/backups/dump
-- glpi/reports/reports/convexcel/tmp
+Vous arrivez alors sur la première étape préliminaire, qui consiste à choisir la langue dans laquelle se déroulera l'installation.
 
+Si vous voulez que la langue soit le Français sélectionnez « french » et cliquez sur « OK ».
+
+B- Installation ou mise à jour.
+
+Vous souhaitez faire une installation, donc cliquez sur « Installation ».
+
+C- Vérification de la compatibilité de votre environnement avec l'exécution de GLPI
+
+Cette étape va vérifier que vous avez correctement réalisé les pré-requis à l'installation.
+Si ce n'est pas le cas, il vous sera impossible d'accéder aux étapes suivantes.
+Un message d'erreur assez explicite vous indiquera les actions à réaliser avant de re-essayer.
+
+Si toutes les vérifications ont été réalisées avec succés, cliquez sur « continuer ».
+
+==Étapes de l'installation==
+
+Étape 1 : Configuration des informations de connection au serveur de base de données.
+
+Vous arrivez alors sur un formulaire vous permettant d'entrer les informations nécessaire à la connection au serveur MySQL???.
+
+Dans le champs « Mysql server » entrez le chemin reseau d'accès au serveur, par exemple : localhost, ou mysql.domaine.tld
+
+Dans le champs « Mysql user » entrez le nom d'utilisateur vous permettant de vous connecter au serveur Mysql.
+
+Dans le champs « Mysql pass » entrez le mot de passe associé à l'utilisateur que vous venez d'entrer dans le champs « Mysql user »
+Ce champs peut être laissé vide si l'utilisateur n'as pas de mot de passe (Il ne sera pas fait de commentaires sur la sécurité d'un tel usage de Mysql car ce n'est pas l'objet de cet article).
+
+Une fois que ces trois champs sont correctement remplis cliquez sur « continuer ».
+
+Là deux possibilités :
+
+-soit vos paramètres sont valides, auquel cas vous passez à l'étape suivante.
+-Soit vos paramètres sont invalides, auquel cas un message d'erreur est affiché, cliquez sur retour pour modifier vos paramètres de connection et essayer de nouveau.
+
+
+Étape 2 : Création ou choix de la base de données et initialisation.
+
+Maintenant que vous êtes correctement connecté au serveur MySQL???, vous devez créer ou choisir la base de données destinée à accueillir l'application GLPI.
+
+Deux possibilités :
+
+-Une base déjà existante destinée à accueillir GLPI est déjà en place :
+
+Sélectionnez cette base dans la liste des bases affichées.
+Cliquez sur continuer pour initialiser la base de données.
+
+
+
+-Vous souhaitez créer une nouvelle base de données pour accueillir GLPI :
+
+Attention cette étape nécessite que l'utilisateur ai les droits nécessaires à la création d'une nouvelle base.
+
+Sélectionnez « créer une nouvelle base de données ».
+Entrez le nom que vous souhaitez donner à la base dans le champs texte prévu à cet effet.
+Cliquez sur continuer pour initialiser la base de données..
+
+
+Étape 3 : Transition et explications :
+
+Cette étape vous informe que la base de données est initialisée avec les valeurs par défaut.
+Et vous donne un certain nombre d'indications sur ces valeurs.
+Lisez attentivement ces informations et cliquez sur « continuer ».
+
+
+Étape 4 : Configuration de l'application
+
+Cette Étape va vous permettre d'effectuer une première configuration de GLPI.
+Si vous ne savez pas comment remplir le formulaire laissez les valeurs par défaut, il vous sera possible de re-configurer l'application plus tard durant la vie de l'application.
+
+Ce formulaire comporte sept champs :
+
+« Chemin d'installation » : Ce champs défini le lieu d'installation de glpi par rapport à votre racine web. La valeur par défaut de ce champs est détectée automatiquement, il est recommandé de laisser cette valeur.
+
+« Niveau de log » : Ce champs vous permet de configurer le niveau de log.
+Il y a cinq niveaux de logs differents, à vous de choisir lequel vous voulez utiliser.
+
+« Nombre d'évènements de log à afficher : » : Ce champs vous permet de configurer le nombre d'évènements de log à afficher sur la commande centrale. La valeur 10 par défaut permet d'avoir un affichage correct pour la plupart des résolutions
+
+« Temps en jours de conservation des logs » : Attention, si vous mettez une trop grande valeur ou 0 (pour temps infini) cela influera beaucoup sur la taille de votre base de données.
+
+« Montrer les interventions au login : » : ce champs vous permet d'afficher ou non les nouvelles interventions au moment du login.
+
+« Nombre d'élements à afficher par page » : Ce champs vous permet de configurer l'affichage général des tableaux et listes de l'application, la valeur 15 permet un affichage correct pour la plupart des resolutions.
+
+« Nombre de caractères maximum pour chaque éléments de la liste » : Ce champs est aussi lié à l'affichage général, et vous permet de définir le nombre de caractères maximums de chaque éléments de liste ou tableaux.
+La valeur 80 permet un affichage correct sans surcharger outre mesure les tableaux.
+
+Une fois que vous avez choisi votre configuration, cliquez sur « continuer ».
+
+
+
+Étape 5 et 6 : Transition et fin de l'installation.
+
+L'étape 5 est une Étape de transition, lisez les informations fournies et cliquez sur « continuer » pour terminer l'installation.
+
+L'étape 6 : vous indique que l'installation de GLPI est maintenant terminée, et vous récapitule un certain nombre d'informations.
+Lisez attentivement ces informations et cliquez sur « utiliser GLPI » pour effectuer votre première connection à l'application.
+
+
+Fin de l'installation
+
+En cas de grosse erreur (du genre : vous avez oublié votre propre accès à GLPI...), pour « relancer » cette procédure d’installation, il faut utiliser votre logiciel FTP et effacer le fichier suivant :
+- glpi/config/config_db.php
+
+Pointer votre navigateur web sur le dossier racine de GLPI : http://votreserveur/glpi/ (par défaut) relancera alors la procédure de configuration (en réalité, c’est l’absence de fichier « config_db.php » qui provoque le lancement de cette procédure).
 
 --- Test
 
 
 Vous pouvez tester l'installation en pointant votre navigateur sur le serveur contenant GLPI.
-Apr�s vous �tre logu� sous "glpi", il est conseill� de se familiariser avec les fonctionnalit�s
-puis d'aller dans le menu "configuration" afin de compl�ter les mod�les de saisie.
+Aprés vous être logué sous "glpi", il est conseillé de se familiariser avec les fonctionnalités
+puis d'aller dans le menu "configuration" afin de compléter les modèles de saisie.
 
 
 
