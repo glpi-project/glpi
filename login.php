@@ -164,7 +164,7 @@ if($login_ok)
 			$result_exp = $db_exp->query($query_exp);
 
 			// Redirect to Command Central if not post-only
-			if ($identificat->user->field['type'] == "post-only")
+			if ($identificat->user->fields['type'] == "post-only")
 			{
 				header("Location: helpdesk.php");
 			}
