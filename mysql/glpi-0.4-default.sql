@@ -1,4 +1,4 @@
-#GLPI Dump database on 2004-08-29 23:30
+#GLPI Dump database on 2004-09-11 23:16
 ### Dump table glpi_computers
 
 DROP TABLE IF EXISTS glpi_computers;
@@ -37,7 +37,11 @@ CREATE TABLE glpi_computers (
    KEY hdtype (hdtype),
    KEY moboard (moboard),
    KEY gfxcard (gfxcard),
-   KEY processor (processor)
+   KEY processor (processor),
+   KEY ramtype (ramtype),
+   KEY network (network),
+   KEY sndcard (sndcard),
+   KEY maintenance (maintenance)
 );
 
 INSERT INTO glpi_computers VALUES ('8','Dell Inspiron 450','0','','750','4586-sd6-fds','','512','10','Roger Rabbit','5462','','2003-09-18 00:15:44','0000-00-00','0000-00-00','0','5','2','3','3','4','1','6','1','7','1');
@@ -88,10 +92,11 @@ CREATE TABLE glpi_config (
     ldap_field_location varchar(200) NOT NULL,
     ldap_field_realname varchar(200) NOT NULL,
     ldap_field_phone varchar(200) NOT NULL,
+    ldap_condition varchar(255) NOT NULL,
    PRIMARY KEY (ID)
 );
 
-INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15',' 0.4-alpha','GLPI powered by indepnet','/glpi','5','0','','','','','','','admin@xxxxx.fr','SIGNATURE','1','1','1','0','0','0','0','0','0','1','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber');
+INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15',' 0.4-alpha','GLPI powered by indepnet','/glpi','5','0','','','','','','','admin@xxxxx.fr','SIGNATURE','1','1','1','0','0','0','0','0','0','1','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','');
 ### Dump table glpi_connect_wire
 
 DROP TABLE IF EXISTS glpi_connect_wire;
@@ -100,7 +105,11 @@ CREATE TABLE glpi_connect_wire (
     end1 int(11) DEFAULT '0' NOT NULL,
     end2 int(11) DEFAULT '0' NOT NULL,
     type tinyint(4) DEFAULT '0' NOT NULL,
-   PRIMARY KEY (ID)
+   PRIMARY KEY (ID),
+   UNIQUE end1_2 (end1, end2, type),
+   KEY end1 (end1),
+   KEY end2 (end2),
+   KEY type (type)
 );
 
 INSERT INTO glpi_connect_wire VALUES ('1','2','8','5');
@@ -177,6 +186,17 @@ CREATE TABLE glpi_dropdown_moboard (
 INSERT INTO glpi_dropdown_moboard VALUES ('1','Asus T2P4S');
 INSERT INTO glpi_dropdown_moboard VALUES ('2','Asus P2BX');
 INSERT INTO glpi_dropdown_moboard VALUES ('3','unknown');
+### Dump table glpi_dropdown_netpoint
+
+DROP TABLE IF EXISTS glpi_dropdown_netpoint;
+CREATE TABLE glpi_dropdown_netpoint (
+    ID int(11) NOT NULL auto_increment,
+    location int(11) DEFAULT '0' NOT NULL,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID),
+   KEY location (location)
+);
+
 ### Dump table glpi_dropdown_network
 
 DROP TABLE IF EXISTS glpi_dropdown_network;
@@ -300,6 +320,7 @@ CREATE TABLE glpi_event_log (
 );
 
 INSERT INTO glpi_event_log VALUES ('381','-1','system','2004-08-29 23:30:38','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('382','-1','system','2004-09-11 23:16:27','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -310,7 +331,8 @@ CREATE TABLE glpi_followups (
     author varchar(200),
     contents text,
    PRIMARY KEY (ID),
-   KEY tracking (tracking)
+   KEY tracking (tracking),
+   KEY author (author)
 );
 
 INSERT INTO glpi_followups VALUES ('1','1','2003-09-18 00:53:35','tech','J\\\'ai été voir, je pense que la carte mere a grillé.');
@@ -342,7 +364,8 @@ CREATE TABLE glpi_licenses (
     sID int(15) DEFAULT '0' NOT NULL,
     serial varchar(255) NOT NULL,
     expire date,
-   PRIMARY KEY (ID)
+   PRIMARY KEY (ID),
+   KEY sID (sID)
 );
 
 INSERT INTO glpi_licenses VALUES ('7','4','12-aa-asd-12-aa',NULL);
@@ -374,7 +397,10 @@ CREATE TABLE glpi_monitors (
     location int(11),
     type int(11),
    PRIMARY KEY (ID),
-   KEY ID (ID)
+   KEY ID (ID),
+   KEY type (type),
+   KEY location (location),
+   KEY maintenance (maintenance)
 );
 
 INSERT INTO glpi_monitors VALUES ('3','nokia 20\'','2003-09-18 00:14:14','','','Ecran infographiste','','','20','1','1','1','0','0000-00-00','0000-00-00','0','1','1');
@@ -399,7 +425,9 @@ CREATE TABLE glpi_networking (
     type int(11),
     firmware int(11),
    PRIMARY KEY (ID),
-   KEY location (location)
+   KEY location (location),
+   KEY type (type),
+   KEY firmware (firmware)
 );
 
 INSERT INTO glpi_networking VALUES ('9','Dlink 450','','4586-puis-kioe','','','','0000-00-00 00:00:00','','0000-00-00','0000-00-00','0','1','1',NULL);
@@ -415,18 +443,20 @@ CREATE TABLE glpi_networking_ports (
     ifaddr char(30) NOT NULL,
     ifmac char(30) NOT NULL,
     iface int(11),
+    netpoint int(11),
    PRIMARY KEY (ID),
-   KEY on_device (on_device, device_type)
+   KEY on_device (on_device, device_type),
+   KEY netpoint (netpoint)
 );
 
-INSERT INTO glpi_networking_ports VALUES ('1','8','1','1','3Com','10.10.0.26','','2');
-INSERT INTO glpi_networking_ports VALUES ('2','10','1','1','3com','10.10.0.27','','2');
-INSERT INTO glpi_networking_ports VALUES ('3','15','1','1','Generic','10.10.0.28','','2');
-INSERT INTO glpi_networking_ports VALUES ('4','18','1','1','3Com','10.10.0.29','','2');
-INSERT INTO glpi_networking_ports VALUES ('5','9','2','1','Dlink port','10.10.0.1','','2');
-INSERT INTO glpi_networking_ports VALUES ('6','9','2','2','Dlink port','10.10.0.1','','2');
-INSERT INTO glpi_networking_ports VALUES ('7','9','2','3','Dlink port','10.10.0.1','','2');
-INSERT INTO glpi_networking_ports VALUES ('8','10','2','0','','','','5');
+INSERT INTO glpi_networking_ports VALUES ('1','8','1','1','3Com','10.10.0.26','','2',NULL);
+INSERT INTO glpi_networking_ports VALUES ('2','10','1','1','3com','10.10.0.27','','2',NULL);
+INSERT INTO glpi_networking_ports VALUES ('3','15','1','1','Generic','10.10.0.28','','2',NULL);
+INSERT INTO glpi_networking_ports VALUES ('4','18','1','1','3Com','10.10.0.29','','2',NULL);
+INSERT INTO glpi_networking_ports VALUES ('5','9','2','1','Dlink port','10.10.0.1','','2',NULL);
+INSERT INTO glpi_networking_ports VALUES ('6','9','2','2','Dlink port','10.10.0.1','','2',NULL);
+INSERT INTO glpi_networking_ports VALUES ('7','9','2','3','Dlink port','10.10.0.1','','2',NULL);
+INSERT INTO glpi_networking_ports VALUES ('8','10','2','0','','','','5',NULL);
 ### Dump table glpi_networking_wire
 
 DROP TABLE IF EXISTS glpi_networking_wire;
@@ -434,7 +464,10 @@ CREATE TABLE glpi_networking_wire (
     ID int(11) NOT NULL auto_increment,
     end1 int(11) DEFAULT '0' NOT NULL,
     end2 int(11) DEFAULT '0' NOT NULL,
-   PRIMARY KEY (ID)
+   PRIMARY KEY (ID),
+   UNIQUE end1_2 (end1, end2),
+   KEY end1 (end1),
+   KEY end2 (end2)
 );
 
 INSERT INTO glpi_networking_wire VALUES ('1','5','1');
@@ -495,6 +528,7 @@ CREATE TABLE glpi_printers (
     otherserial varchar(255) NOT NULL,
     flags_serial tinyint(4) DEFAULT '0' NOT NULL,
     flags_par tinyint(4) DEFAULT '0' NOT NULL,
+    flags_usb tinyint(4) DEFAULT '0' NOT NULL,
     comments text NOT NULL,
     achat_date date DEFAULT '0000-00-00' NOT NULL,
     date_fin_garantie date,
@@ -504,11 +538,13 @@ CREATE TABLE glpi_printers (
     type int(11),
    PRIMARY KEY (ID),
    KEY id (ID),
-   KEY location (location)
+   KEY location (location),
+   KEY type (type),
+   KEY maintenance (maintenance)
 );
 
-INSERT INTO glpi_printers VALUES ('1','HP laser','2003-09-18 00:12:43','','','hp-jsgsj-658','','0','1','Imprimante bureau du directeur','0000-00-00','0000-00-00','0','','1','1');
-INSERT INTO glpi_printers VALUES ('2','HP deskjet','2003-09-18 00:13:11','','','45dskjs-ds','','0','1','Imprimante documentation','0000-00-00','0000-00-00','0','','2','3');
+INSERT INTO glpi_printers VALUES ('1','HP laser','2003-09-18 00:12:43','','','hp-jsgsj-658','','0','1','0','Imprimante bureau du directeur','0000-00-00','0000-00-00','0','','1','1');
+INSERT INTO glpi_printers VALUES ('2','HP deskjet','2003-09-18 00:13:11','','','45dskjs-ds','','0','1','0','Imprimante documentation','0000-00-00','0000-00-00','0','','2','3');
 ### Dump table glpi_software
 
 DROP TABLE IF EXISTS glpi_software;
@@ -519,7 +555,9 @@ CREATE TABLE glpi_software (
     comments text,
     location int(11),
     platform int(11),
-   PRIMARY KEY (ID)
+   PRIMARY KEY (ID),
+   KEY platform (platform),
+   KEY location (location)
 );
 
 INSERT INTO glpi_software VALUES ('3','Acrobat PDF Viewer','4',NULL,NULL,'5');
@@ -657,7 +695,7 @@ CREATE TABLE glpi_users (
     password varchar(80) NOT NULL,
     email varchar(80) NOT NULL,
     phone varchar(100),
-    type enum('normal','admin','post-only') DEFAULT 'normal' NOT NULL,
+    type enum('normal','admin','post-only','super-admin') DEFAULT 'normal' NOT NULL,
     realname varchar(255) NOT NULL,
     can_assign_job enum('yes','no') DEFAULT 'no' NOT NULL,
     location int(11),
@@ -668,7 +706,7 @@ CREATE TABLE glpi_users (
 );
 
 INSERT INTO glpi_users VALUES ('1','Helpdesk','14e43c2d31dcbdd1','',NULL,'post-only','Helpdesk Injector','no',NULL);
-INSERT INTO glpi_users VALUES ('2','glpi','5b9b1ee2216a5ffe','','','admin','glpi','yes','2');
+INSERT INTO glpi_users VALUES ('2','glpi','5b9b1ee2216a5ffe','','','super-admin','glpi','yes','2');
 INSERT INTO glpi_users VALUES ('3','post-only','3eb831c67be6aeda','',NULL,'post-only','post-only','no','1');
-INSERT INTO glpi_users VALUES ('4','tech','37bd7c4221e8a247','',NULL,'admin','technicien','yes','2');
+INSERT INTO glpi_users VALUES ('4','tech','37bd7c4221e8a247','',NULL,'super-admin','technicien','yes','2');
 INSERT INTO glpi_users VALUES ('5','normal','109e7883561b4202','',NULL,'normal','utilisateur normal','no','1');
