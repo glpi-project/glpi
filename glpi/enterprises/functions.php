@@ -399,7 +399,7 @@ function restoreEnterprise($input) {
 
 
 function showAssociatedContact($instID) {
-	GLOBAL $cfg_layout,$cfg_install, $lang;
+	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
 
     $db = new DB;
 	$query = "SELECT glpi_contacts.*, glpi_contact_enterprise.ID as ID_ent FROM glpi_contact_enterprise, glpi_contacts WHERE glpi_contact_enterprise.FK_contact=glpi_contacts.ID AND glpi_contact_enterprise.FK_enterprise = '$instID' order by glpi_contacts.name";
@@ -419,7 +419,7 @@ function showAssociatedContact($instID) {
 	while ($i < $number) {
 		$ID=$db->result($result, $i, "ID_ent");
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>".$db->result($result, $i, "glpi_contacts.name")."</td>";
+	echo "<td align='center'><a href='".$HTMLRel."contacts/contacts-info-form.php?ID=$ID'>".$db->result($result, $i, "glpi_contacts.name")."</a></td>";
 	echo "<td align='center'>".$db->result($result, $i, "glpi_contacts.phone")."</td>";
 	echo "<td align='center'>".$db->result($result, $i, "glpi_contacts.phone2")."</td>";
 	echo "<td align='center'>".$db->result($result, $i, "glpi_contacts.fax")."</td>";
