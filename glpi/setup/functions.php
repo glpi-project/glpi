@@ -39,7 +39,7 @@ function showFormDropdown ($target,$name,$human) {
 	GLOBAL $cfg_layout, $lang;
 	
 	echo "<center><table border='0' width=50%>";
-	echo "<tr><th colspan=2>$human:</th></tr>";
+	echo "<tr><th colspan='2'>$human:</th></tr>";
 	echo "<form method='post' action=\"$target\">";
 
 	echo "<tr><td align='center' class='tab_bg_1'>";
@@ -47,15 +47,15 @@ function showFormDropdown ($target,$name,$human) {
 	dropdown("dropdown_".$name, "value");
 
 	echo "</td><td align='center' class='tab_bg_2'>";
-	echo "<input type=hidden name=tablename value=dropdown_".$name.">";
-	echo "<input type=submit name=delete value=\"".$lang["buttons"][6]."\">";
+	echo "<input type='hidden' name=tablename value=dropdown_".$name.">";
+	echo "<input type='submit' name=delete value=\"".$lang["buttons"][6]."\">";
 	echo "</td></form></tr>";
 	echo "<form action=\"$target\" method='post'>";
 	echo "<tr><td align='center' class='tab_bg_1'>";
-	echo "<input type=text maxlength=100 size=20 name=value>";
+	echo "<input type='text' maxlength=100 size=20 name=value>";
 	echo "</td><td align='center' class='tab_bg_2'>";
-	echo "<input type=hidden name=tablename value=dropdown_".$name.">";
-	echo "<input type=submit name= add value=\"".$lang["buttons"][8]."\">";
+	echo "<input type='hidden' name=tablename value=dropdown_".$name.">";
+	echo "<input type='submit' name= add value=\"".$lang["buttons"][8]."\">";
 	echo "</td></form></tr>";
 	echo "</table></center>";
 }
@@ -65,7 +65,7 @@ function showFormTypeDown ($target,$name,$human) {
 	GLOBAL $cfg_layout, $lang;
 	
 	echo "<center><table border='0' width=50%>";
-	echo "<tr><th colspan=2>$human:</th></tr>";
+	echo "<tr><th colspan='2'>$human:</th></tr>";
 	echo "<form method='post' action=\"$target\">";
 
 	echo "<tr><td align='center' class='tab_bg_1'>";
@@ -73,15 +73,15 @@ function showFormTypeDown ($target,$name,$human) {
 	dropdown("type_".$name, "value");
 
 	echo "</td><td align='center' class='tab_bg_2'>";
-	echo "<input type=hidden name=tablename value=type_".$name.">";
-	echo "<input type=submit name=delete value=\"".$lang["buttons"][6]."\">";
+	echo "<input type='hidden' name=tablename value=type_".$name.">";
+	echo "<input type='submit' name=delete value=\"".$lang["buttons"][6]."\">";
 	echo "</td></form></tr>";
 	echo "<form action=\"$target\" method='post'>";
 	echo "<tr><td align='center' class='tab_bg_1'>";
-	echo "<input type=text maxlength=100 size=20 name=value>";
+	echo "<input type='text' maxlength=100 size=20 name=value>";
 	echo "</td><td align='center' class='tab_bg_2'>";
-	echo "<input type=hidden name=tablename value=type_".$name.">";
-	echo "<input type=submit name= add value=\"".$lang["buttons"][8]."\">";
+	echo "<input type='hidden' name=tablename value=type_".$name.">";
+	echo "<input type='submit' name= add value=\"".$lang["buttons"][8]."\">";
 	echo "</td></form></tr>";
 	echo "</table></center>";
 }
@@ -120,12 +120,12 @@ function showPasswordForm($target,$ID) {
 		
 	echo "<form method='post' action=\"$target\">";
 	echo "<center><table border='0' cellpadding=5 width='30%'>";
-	echo "<tr><th colspan=2>".$lang["setup"][11]." '".$user->fields["name"]."':</th></tr>";
+	echo "<tr><th colspan='2'>".$lang["setup"][11]." '".$user->fields["name"]."':</th></tr>";
 	echo "<tr><td width='100%' align='center' class='tab_bg_1'>";
 	echo "<input type=password name=password size=10>";
 	echo "</td><td align='center' class='tab_bg_2'>";
-	echo "<input type=hidden name=name value=\"".$user->fields["name"]."\">";
-	echo "<input type=submit name=changepw value=\"".$lang["buttons"][14]."\">";
+	echo "<input type='hidden' name=name value=\"".$user->fields["name"]."\">";
+	echo "<input type='submit' name=changepw value=\"".$lang["buttons"][14]."\">";
 	echo "</td></tr>";
 	echo "</table></center>";
 	echo "</form>";
@@ -140,7 +140,7 @@ function showUser($back,$ID) {
 	$user->getFromDB($ID);
 
 	echo "<center><table border='0' cellpadding=5>";
-	echo "<tr><th colspan=2>".$lang["setup"][12].": ".$user->fields["name"]."</th></tr>";
+	echo "<tr><th colspan='2'>".$lang["setup"][12].": ".$user->fields["name"]."</th></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["setup"][13].": </td>";
 	echo "<td><b>".$user->fields["realname"]."</b></td></tr>";	
@@ -157,9 +157,9 @@ function showUser($back,$ID) {
 	echo "<tr class='tab_bg_1'><td>".$lang["setup"][17].": </td>";
 	echo "<td><b>".$user->fields["type"]."</b></td></tr>";	
 
-	echo "<tr><td colspan=2 height=10></td></tr>";
+	echo "<tr><td colspan='2' height=10></td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td colspan=2 align='center'><b><a href=\"$back\">".$lang["buttons"][13]."</a></b></td></tr>";
+	echo "<td colspan='2' align='center'><b><a href=\"$back\">".$lang["buttons"][13]."</a></b></td></tr>";
 	echo "</table></center>";
 
 }
@@ -178,7 +178,7 @@ function listUsersForm($target) {
 		echo "<tr><th>".$lang["setup"][18]."</th><th>".$lang["setup"][19]."</th>";
 		echo "<th>".$lang["setup"][13]."</th><th>".$lang["setup"][20]."</th>";
 		echo "<th>".$lang["setup"][14]."</th><th>".$lang["setup"][15]."</th>";
-		echo "<th>".$lang["setup"][16]."</th><th colspan=2></th></tr>";
+		echo "<th>".$lang["setup"][16]."</th><th colspan='2'></th></tr>";
 		
 		$i = 0;
 		while ($i < $db->numrows($result)) {
@@ -189,7 +189,7 @@ function listUsersForm($target) {
 			echo "<tr class='tab_bg_1'>";	
 			echo "<form method='post' action=\"$target\">";
 			echo "<td align='center'><b>".$user->fields["name"]."</b>";
-			echo "<input type=hidden name=name value=\"".$user->fields["name"]."\">";
+			echo "<input type='hidden' name=name value=\"".$user->fields["name"]."\">";
 			echo "</td>";
 			echo "<td><input type=password name=password size=6></td>";
 			
@@ -213,8 +213,8 @@ function listUsersForm($target) {
 			echo "<td>";
 				dropdownValue("dropdown_locations", "location", $user->fields["location"]);
 			echo "</td>";
-			echo "<td class='tab_bg_2'><input type=submit name=update value=\"".$lang["buttons"][7]."\"></td>";
-			echo "<td class='tab_bg_2'><input type=submit name=delete value=\"".$lang["buttons"][6]."\"></td>";
+			echo "<td class='tab_bg_2'><input type='submit' name=update value=\"".$lang["buttons"][7]."\"></td>";
+			echo "<td class='tab_bg_2'><input type='submit' name=delete value=\"".$lang["buttons"][6]."\"></td>";
 			echo "</tr></form>";
 			$i++;
 		}	
@@ -246,7 +246,7 @@ function listUsersForm($target) {
 		echo "<tr class='tab_bg_2'>";
 		echo "<td colspan=5 align='center'><i>".$lang["setup"][21]."</i></td>";
 		echo "<td align='center'>";
-		echo "<input type=submit name=add value=\"".$lang["buttons"][8]."\">";
+		echo "<input type='submit' name=add value=\"".$lang["buttons"][8]."\">";
 		echo "</td>";
 		echo "</tr></form>";
 
@@ -369,7 +369,7 @@ function listTemplates($target) {
 	if ($result = $db->query($query)) {
 		
 		echo "<center><table border='0' width=50%>";
-		echo "<tr><th colspan=2>".$lang["setup"][1].":</th></tr>";
+		echo "<tr><th colspan='2'>".$lang["setup"][1].":</th></tr>";
 		$i=0;
 		while ($i < $db->numrows($result)) {
 			$ID = $db->result($result,$i,"ID");
@@ -386,7 +386,7 @@ function listTemplates($target) {
 		}
 
 		echo "<tr>";
-		echo "<td colspan=2 align='center' class='tab_bg_2'>";
+		echo "<td colspan='2' align='center' class='tab_bg_2'>";
 		echo "<b><a href=\"$target?showform=showform\">".$lang["setup"][22]."</a></b>";
 		echo "</td>";
 		echo "</tr>";
@@ -414,20 +414,20 @@ function showTemplateForm($target,$ID) {
 
 	echo "<center><table border='0'>";
 	echo "<form name='form' method='post' action=$target>";
-	echo "<tr><th colspan=2>";
+	echo "<tr><th colspan='2'>";
 	if ($ID) {
 		echo $lang["setup"][23].": '".$templ->fields["templname"]."'";
 	
 	} else {
-		echo $lang["setup"][23].": <input type=text name=templname size=10>";	
+		echo $lang["setup"][23].": <input type='text' name=templname size=10>";	
 	}
 	echo "</th></tr>";
 	
-	echo "<tr><td bgcolor=#CCCCCC valign=top>";
+	echo "<tr><td class='tab_bg_1' valign='top'>";
 	echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
 
 	echo "<tr><td>".$lang["setup"][24].":		</td>";
-	echo "<td><input type=text name=name value=\"".$templ->fields["name"]."\" size=10></td>";
+	echo "<td><input type='text' name=name value=\"".$templ->fields["name"]."\" size=10></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["setup"][25].": 	</td>";
@@ -436,29 +436,29 @@ function showTemplateForm($target,$ID) {
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["setup"][26].":		</td>";
-	echo "<td><input type=text name=contact_num value=\"".$templ->fields["contact_num"]."\" size=5>";
+	echo "<td><input type='text' name=contact_num value=\"".$templ->fields["contact_num"]."\" size=5>";
 	echo "</td></tr>";
 	
 	echo "<tr><td>".$lang["setup"][27].":	</td>";
-	echo "<td><input type=text name=contact size=12 value=\"".$templ->fields["contact"]."\">";
+	echo "<td><input type='text' name=contact size=12 value=\"".$templ->fields["contact"]."\">";
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["setup"][28].":	</td>";
-	echo "<td><input type=text name=serial size=12 value=\"".$templ->fields["serial"]."\">";
+	echo "<td><input type='text' name=serial size=12 value=\"".$templ->fields["serial"]."\">";
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["setup"][29].":	</td>";
-	echo "<td><input type=text size=12 name=otherserial value=\"".$templ->fields["otherserial"]."\">";
+	echo "<td><input type='text' size=12 name=otherserial value=\"".$templ->fields["otherserial"]."\">";
 	echo "</td></tr>";
 
-	echo "<tr><td valign=top>".$lang["setup"][30].":</td>";
-	echo "<td><textarea cols=20 rows=8 name=comments >".$templ->fields["comments"]."</textarea>";
+	echo "<tr><td valign='top'>".$lang["setup"][30].":</td>";
+	echo "<td><textarea 0 rows=8 name=comments >".$templ->fields["comments"]."</textarea>";
 	echo "</td></tr>";
 
 	echo "</table>";
 
 	echo "</td>\n";	
-	echo "<td bgcolor=#CCCCCC valign=top>\n";
+	echo "<td class='tab_bg_1' valign='top'>\n";
 	echo "<table cellpadding='0' cellspacing='0' border='0'";
 
 
@@ -473,7 +473,7 @@ function showTemplateForm($target,$ID) {
 	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["setup"][33].":</td>";
-	echo "<td><input type=text size=8 name=osver value=\"".$templ->fields["osver"]."\">";
+	echo "<td><input type='text' size=8 name=osver value=\"".$templ->fields["osver"]."\">";
 	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["setup"][34].":	</td>";
@@ -482,7 +482,7 @@ function showTemplateForm($target,$ID) {
 	echo "</td></tr>";
 	
 	echo "<tr><td>".$lang["setup"][35].":	</td>";
-	echo "<td><input type=text name=processor_speed size=4 value=\"".$templ->fields["processor_speed"]."\">";
+	echo "<td><input type='text' name=processor_speed size=4 value=\"".$templ->fields["processor_speed"]."\">";
 	echo "</td></tr>";
 	
 	echo "<tr><td>".$lang["setup"][49].":	</td>";
@@ -506,7 +506,7 @@ function showTemplateForm($target,$ID) {
 	echo "</td></tr>";
 	
 	echo "<tr><td>".$lang["setup"][37].":	</td>";
-	echo "<td><input type=text name=ram value=\"".$templ->fields["ram"]."\" size=3>";
+	echo "<td><input type='text' name=ram value=\"".$templ->fields["ram"]."\" size=3>";
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["setup"][52].":	</td>";
@@ -515,7 +515,7 @@ function showTemplateForm($target,$ID) {
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["setup"][38].":	</td>";
-	echo "<td><input type=text name=hdspace size=3 value=\"".$templ->fields["hdspace"]."\">";
+	echo "<td><input type='text' name=hdspace size=3 value=\"".$templ->fields["hdspace"]."\">";
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["setup"][39].":	</td>";
@@ -526,13 +526,13 @@ function showTemplateForm($target,$ID) {
 //
 	
 	echo "<tr><td>".$lang["setup"][53].":	</td>";
-	echo "<td><input type=text name='achat_date' readonly size=10 value=\"0000-00-00\">";
+	echo "<td><input type='text' name='achat_date' readonly size=10 value=\"0000-00-00\">";
 	echo "&nbsp; <input name='button' type='button' onClick=\"window.open('mycalendar.php?form=form&elem=achat_date','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 	echo "&nbsp; <input name='button_reset' type='button' onClick=\"document.forms['form'].achat_date.value='0000-00-00'\" value='reset'>";
   echo "</td></tr>";
 	
 	echo "<tr><td>".$lang["setup"][54].":	</td>";
-	echo "<td><input type=text name='date_fin_garantie' readonly size=10 value=\"0000-00-00\">";
+	echo "<td><input type='text' name='date_fin_garantie' readonly size=10 value=\"0000-00-00\">";
 	echo "&nbsp; <input name='button' type='button' readonly onClick=\"window.open('mycalendar.php?form=form&elem=date_fin_garantie','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 	echo "&nbsp; <input name='button_reset' type='button' onClick=\"document.forms['form'].date_fin_garantie.value='0000-00-00'\" value='reset'>";
   echo "</td></tr>";
@@ -540,11 +540,11 @@ function showTemplateForm($target,$ID) {
 echo "<tr><td>".$lang["setup"][55].":	</td>";
 		echo "<td>";
 		if ($templ->fields["maintenance"] == 1) {
-			echo " OUI <input type=radio name='maintenance' value=1 checked>";
-			echo "&nbsp; &nbsp; NON <input type=radio name='maintenance' value=0>";
+			echo " OUI <input type='radio' name='maintenance' value=1 checked>";
+			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value=0>";
 		} else {
-			echo " OUI <input type=radio name='maintenance' value=1>";
-			echo "&nbsp; &nbsp; NON <input type=radio name='maintenance' value=0 checked >";
+			echo " OUI <input type='radio' name='maintenance' value=1>";
+			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value=0 checked >";
 		}
 		echo "</td></tr>";
 
@@ -555,13 +555,13 @@ echo "<tr><td>".$lang["setup"][55].":	</td>";
 	echo "</tr><tr>";
 
 	if (!empty($ID)) {
-		echo "<td class='tab_bg_2' align='center' valign=top colspan=2>\n";
-		echo "<input type=hidden name=\"ID\" value=\"".$ID."\">";
-		echo "<input type=submit name=\"update\" value=\"".$lang["buttons"][7]."\">";
+		echo "<td class='tab_bg_2' align='center' valign='top' colspan='2'>\n";
+		echo "<input type='hidden' name=\"ID\" value=\"".$ID."\">";
+		echo "<input type='submit' name=\"update\" value=\"".$lang["buttons"][7]."\">";
 		echo "</td></form>\n";	
 	} else {
 		echo "<td class='tab_bg_2' align=\"center\" valign=\"top\" colspan=\"2\">\n";
-		echo "<input type=submit name=\"add\" value=\"".$lang["buttons"][8]."\">";
+		echo "<input type='submit' name=\"add\" value=\"".$lang["buttons"][8]."\">";
 		echo "</td></form>\n";	
 	}
 	
@@ -633,7 +633,7 @@ function showSortForm($target,$ID) {
 
 	echo "<center><table border='0' cellpadding=5 width='30%'>";
 	echo "<form method='post' action=\"$target\">";
-	echo "<tr><th colspan=2>".$lang["setup"][40]."</th></tr>";
+	echo "<tr><th colspan='2'>".$lang["setup"][40]."</th></tr>";
 	echo "<tr><td width='100%' align='center' class='tab_bg_1'>";
 	echo "<select name=tracking_order>";
 	echo "<option value=\"yes\"";
@@ -645,8 +645,8 @@ function showSortForm($target,$ID) {
 	echo "</select>";
 	echo "</td>";
 	echo "<td align='center' class='tab_bg_2'>";
-	echo "<input type=hidden name=user value=\"$ID\">";
-	echo "<input type=submit name=updatesort value=\"".$lang["buttons"][14]."\">";
+	echo "<input type='hidden' name=user value=\"$ID\">";
+	echo "<input type='submit' name=updatesort value=\"".$lang["buttons"][14]."\">";
 	echo "</td></tr>";
 	echo "</form>";
 	echo "</table></center>";

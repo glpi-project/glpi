@@ -63,8 +63,8 @@ $number_of_software = $db->numrows($result);
 echo "<table border='0' width='100%'>";
 echo "<tr><td>Number of Computers:</td><td>$number_of_computers</td></tr>";	
 echo "<tr><td>Amount of Software:</td><td>$number_of_software</td></tr>";
-echo "<tr><td colspan=2 height=10></td></tr>";
-echo  "<tr><td colspan=2><b>Operating Systems:</b></td></tr>";
+echo "<tr><td colspan='2' height=10></td></tr>";
+echo  "<tr><td colspan='2'><b>Operating Systems:</b></td></tr>";
 
 
 # 3. Get some more number data (operating systems per computer)

@@ -56,11 +56,11 @@ function searchFormMonitors() {
 	
 	echo "<form method='get' action=\"".$cfg_install["root"]."/monitors/monitors-search.php\">";
 	echo "<center><table border='0' width='90%'>";
-	echo "<tr><th colspan=2><b>".$lang["search"][5].":</b></th></tr>";
+	echo "<tr><th colspan='2'><b>".$lang["search"][5].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 		dropdown( "dropdown_locations",  "contains");
-	echo "<input type=hidden name=field value=location>&nbsp;";
+	echo "<input type='hidden' name=field value=location>&nbsp;";
 	echo $lang["search"][6];
 	echo "&nbsp;<select name=sort size=1>";
 	reset($option);
@@ -68,14 +68,14 @@ function searchFormMonitors() {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select>";
-	echo "<input type=hidden name=phrasetype value=exact>";
+	echo "<input type='hidden' name=phrasetype value=exact>";
 	echo "</td><td width=80 align='center' class='tab_bg_2'>";
-	echo "<input type=submit value=\"".$lang["buttons"][1]."\">";
+	echo "<input type='submit' value=\"".$lang["buttons"][1]."\">";
 	echo "</td></tr></table></form></center>";
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/monitors/monitors-search.php\">";
 	echo "<center><table border='0' width='90%'>";
-	echo "<tr><th colspan=2><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 	echo "<select name=\"field\" size=1>";
@@ -89,7 +89,7 @@ function searchFormMonitors() {
 	echo "<option value=contains>".$lang["search"][2]."</option>";
 	echo "<option value=exact>".$lang["search"][3]."</option>";
 	echo "</select>";
-	echo "<input type=text size=5 name=\"contains\">"; 
+	echo "<input type='text' size=5 name=\"contains\">"; 
 	echo "&nbsp;";
 	echo $lang["search"][4];
 	echo "&nbsp;<select name=sort size=1>";
@@ -99,7 +99,7 @@ function searchFormMonitors() {
 	}
 	echo "</select> ";
 	echo "</td><td width=80 align='center' class='tab_bg_2'>";
-	echo "<input type=submit value=\"".$lang["buttons"][0]."\">";
+	echo "<input type='submit' value=\"".$lang["buttons"][0]."\">";
 	echo "</td></tr></table></center></form>";
 }
 
@@ -225,8 +225,8 @@ function showMonitorsForm ($target,$ID) {
 	$mon = new Monitor;
 
 	echo "<center><form method='post' name=form action=\"$target\">";
-	echo "<table border='0' cellpadding=2>";
-	echo "<tr><th colspan=2><b>";
+	echo "<table border='0' cellpadding='2'>";
+	echo "<tr><th colspan='2'><b>";
 	if (empty($ID)) {
 		echo $lang["monitors"][3].":";
 		$mon->getEmpty();
@@ -236,12 +236,12 @@ function showMonitorsForm ($target,$ID) {
 	}		
 	echo "</b></th></tr>";
 	
-	echo "<tr><td class='tab_bg_1' valign=top>";
+	echo "<tr><td class='tab_bg_1' valign='top'>";
 
 	echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
 
 	echo "<tr><td>".$lang["monitors"][5].":	</td>";
-	echo "<td><input type=text name=name value=\"".$mon->fields["name"]."\" size=10></td>";
+	echo "<td><input type='text' name=name value=\"".$mon->fields["name"]."\" size=10></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["monitors"][6].": 	</td><td>";
@@ -249,17 +249,17 @@ function showMonitorsForm ($target,$ID) {
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["monitors"][7].":	</td>";
-	echo "<td><input type=text name=contact_num value=\"".$mon->fields["contact_num"]."\" size=5></td>";
+	echo "<td><input type='text' name=contact_num value=\"".$mon->fields["contact_num"]."\" size=5></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["monitors"][8].":	</td>";
-	echo "<td><input type=text name=contact size=12 value=\"".$mon->fields["contact"]."\"></td>";
+	echo "<td><input type='text' name=contact size=12 value=\"".$mon->fields["contact"]."\"></td>";
 	echo "</tr>";
 
 	echo "</table>";
 
 	echo "</td>\n";	
-	echo "<td class='tab_bg_1' valign=top>";
+	echo "<td class='tab_bg_1' valign='top'>";
 
 	echo "<table cellpadding='0' cellspacing='0' border='0'";
 
@@ -268,72 +268,72 @@ function showMonitorsForm ($target,$ID) {
 	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["monitors"][10].":	</td>";
-	echo "<td><input type=text name=serial size=12 value=\"".$mon->fields["serial"]."\"></td>";
+	echo "<td><input type='text' name=serial size=12 value=\"".$mon->fields["serial"]."\"></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["monitors"][11].":</td>";
-	echo "<td><input type=text size=12 name=otherserial value=\"".$mon->fields["otherserial"]."\"></td>";
+	echo "<td><input type='text' size=12 name=otherserial value=\"".$mon->fields["otherserial"]."\"></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["monitors"][21].":</td>";
-	echo "<td><input type=text size=2 name=size value=\"".$mon->fields["size"]."\">\"</td>";
+	echo "<td><input type='text' size=2 name=size value=\"".$mon->fields["size"]."\">\"</td>";
 	echo "</tr>";
 
 		echo "<tr><td>".$lang["monitors"][18].": </td><td>";
 
 		// micro?
-		echo "<table border='0' cellpadding=2 cellspacing='0'><tr>";
+		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
 		echo "<td>";
 		if ($mon->fields["flags_micro"] == 1) {
-			echo "<input type=checkbox name=flags_micro value=1 checked>";
+			echo "<input type='checkbox' name=flags_micro value=1 checked>";
 		} else {
-			echo "<input type=checkbox name=flags_micro value=1>";
+			echo "<input type='checkbox' name=flags_micro value=1>";
 		}
 		echo "</td><td>".$lang["monitors"][14]."</td>";
 		echo "</tr></table>";
 
 		// speakers?
-		echo "<table border='0' cellpadding=2 cellspacing='0'><tr>";
+		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
 		echo "<td>";
 		if ($mon->fields["flags_speaker"] == 1) {
-			echo "<input type=checkbox name=flags_speaker value=1 checked>";
+			echo "<input type='checkbox' name=flags_speaker value=1 checked>";
 		} else {
-			echo "<input type=checkbox name=flags_speaker value=1>";
+			echo "<input type='checkbox' name=flags_speaker value=1>";
 		}
 		echo "</td><td>".$lang["monitors"][15]."</td>";
 		echo "</tr></table>";
 
 		// sub-d?
-		echo "<table border='0' cellpadding=2 cellspacing='0'><tr>";
+		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
 		echo "<td>";
 		if ($mon->fields["flags_subd"] == 1) {
-			echo "<input type=checkbox name=flags_subd value=1 checked>";
+			echo "<input type='checkbox' name=flags_subd value=1 checked>";
 		} else {
-			echo "<input type=checkbox name=flags_subd value=1>";
+			echo "<input type='checkbox' name=flags_subd value=1>";
 		}
 		echo "</td><td>".$lang["monitors"][19]."</td>";
 		echo "</tr></table>";
 
 		// bnc?
-		echo "<table border='0' cellpadding=2 cellspacing='0'><tr>";
+		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
 		echo "<td>";
 		if ($mon->fields["flags_bnc"] == 1) {
-			echo "<input type=checkbox name=flags_bnc value=1 checked>";
+			echo "<input type='checkbox' name=flags_bnc value=1 checked>";
 		} else {
-			echo "<input type=checkbox name=flags_bnc value=1>";
+			echo "<input type='checkbox' name=flags_bnc value=1>";
 		}
 		echo "</td><td>".$lang["monitors"][20]."</td>";
 		echo "</tr></table>";
 
 
 		echo "<tr><td>".$lang["computers"][41].":	</td>";
-		echo "<td><input type=text name='achat_date' readonly size=10 value='".$mon->fields["achat_date"]."'>";
+		echo "<td><input type='text' name='achat_date' readonly size=10 value='".$mon->fields["achat_date"]."'>";
 		echo "&nbsp; <input name='button' type='button'  onClick=\"window.open('mycalendar.php?form=form&elem=achat_date','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 		echo "&nbsp; <input name='button_reset' type='button' onClick=\"document.forms['form'].achat_date.value='0000-00-00'\" value='reset'>";
     echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][42].":	</td>";
-		echo "<td><input type=text name='date_fin_garantie' readonly size=10 value='".$mon->fields["date_fin_garantie"]."'>";
+		echo "<td><input type='text' name='date_fin_garantie' readonly size=10 value='".$mon->fields["date_fin_garantie"]."'>";
 		echo "&nbsp; <input name='button' type='button' onClick=\"window.open('mycalendar.php?form=form&elem=date_fin_garantie','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 		echo "&nbsp; <input name='button_reset' type='button' onClick=\"document.forms['form'].date_fin_garantie.value='0000-00-00'\" value='reset'>";
     echo "</td></tr>";
@@ -341,11 +341,11 @@ function showMonitorsForm ($target,$ID) {
 		echo "<tr><td>".$lang["computers"][43].":	</td>";
 		echo "<td>";
 		if ($mon->fields["maintenance"] == 1) {
-			echo " OUI <input type=radio name='maintenance' value=1 checked>";
-			echo "&nbsp; &nbsp; NON <input type=radio name='maintenance' value=0>";
+			echo " OUI <input type='radio' name='maintenance' value=1 checked>";
+			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value=0>";
 		} else {
-			echo " OUI <input type=radio name='maintenance' value=1>";
-			echo "&nbsp; &nbsp; NON <input type=radio name='maintenance' value=0 checked >";
+			echo " OUI <input type='radio' name='maintenance' value=1>";
+			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value=0 checked >";
 		}
 		echo "</td></tr>";
 
@@ -355,9 +355,9 @@ echo "</td></tr>";
 	echo "</td>\n";	
 	echo "</tr>";
 	echo "<tr>";
-	echo "<td class='tab_bg_1' valign=top colspan=2>";
+	echo "<td class='tab_bg_1' valign='top' colspan='2'>";
 
-	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign=top>";
+	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
 	echo $lang["monitors"][12].":	</td>";
 	echo "<td align='center'><textarea cols=35 rows=4 name=comments >".$mon->fields["comments"]."</textarea>";
 	echo "</td></tr></table>";
@@ -368,8 +368,8 @@ echo "</td></tr>";
 	if ($ID=="") {
 
 		echo "<tr>";
-		echo "<td class='tab_bg_2' valign=top colspan=2>";
-		echo "<center><input type=submit name=add value=\"".$lang["buttons"][8]."\"></center>";
+		echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+		echo "<center><input type='submit' name=add value=\"".$lang["buttons"][8]."\"></center>";
 		echo "</td>";
 		echo "</form></tr>";
 
@@ -378,14 +378,14 @@ echo "</td></tr>";
 	} else {
 
 		echo "<tr>";
-		echo "<td class='tab_bg_2' valign=top>";
-		echo "<input type=hidden name=ID value=\"$ID\">\n";
-		echo "<center><input type=submit name=update value=\"".$lang["buttons"][7]."\"></center>";
+		echo "<td class='tab_bg_2' valign='top'>";
+		echo "<input type='hidden' name=ID value=\"$ID\">\n";
+		echo "<center><input type='submit' name=update value=\"".$lang["buttons"][7]."\"></center>";
 		echo "</td></form>\n\n";
 		echo "<form action=\"$target\" method='post'>\n";
-		echo "<td class='tab_bg_2' valign=top>\n";
-		echo "<input type=hidden name=ID value=\"$ID\">\n";
-		echo "<center><input type=submit name=delete value=\"".$lang["buttons"][6]."\"></center>";
+		echo "<td class='tab_bg_2' valign='top'>\n";
+		echo "<input type='hidden' name=ID value=\"$ID\">\n";
+		echo "<center><input type='submit' name=delete value=\"".$lang["buttons"][6]."\"></center>";
 		echo "</td>";
 		echo "</form></tr>";
 

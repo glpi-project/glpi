@@ -43,9 +43,9 @@ checkAuthentication("normal");
 
 commonHeader("Computers",$_SERVER["PHP_SELF"]);
 
-echo "<center><table border='0'><tr><td><b>";
+echo "<div align='center'><table border='0'><tr><td><b>";
 echo "<a href=\"computers-add-select.php\">".$lang["computers"][0]."</a>";
-echo "</b></td></tr></table></center>";
+echo "</b></td></tr></table></div>";
 echo "<hr noshade>";
 
 searchFormComputers();
