@@ -132,23 +132,23 @@ class Computer {
 
 		$query = "DELETE from $table WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
-			$query = "SELECT * FROM glpi_tracking WHERE (computer = \"$ID\")";
+			$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID')";
 			$result = $db->query($query);
 			$number = $db->numrows($result);
 			$i=0;
 			while ($i < $number) {
 		  		$job = $db->result($result,$i,"ID");
-		    		$query = "DELETE FROM glpi_followups WHERE (tracking = \"$job\")";
+		    		$query = "DELETE FROM glpi_followups WHERE (tracking = '$job')";
 		      		$db->query($query);
 				$i++;
 			}
-			$query = "DELETE FROM glpi_tracking WHERE (computer = \"$ID\")";
+			$query = "DELETE FROM glpi_tracking WHERE (computer = '$ID')";
 			$result = $db->query($query);
-			$query = "DELETE FROM glpi_inst_software WHERE (cID = \"$ID\")";
+			$query = "DELETE FROM glpi_inst_software WHERE (cID = '$ID')";
 			$result = $db->query($query);
-			$query = "DELETE FROM glpi_networking_ports WHERE (device_on = $ID AND device_type = 1)";
+			$query = "DELETE FROM glpi_networking_ports WHERE (device_on = '$ID' AND device_type = '1')";
 			$result = $db->query($query);
-			$query = "DELETE FROM glpi_connect_wire WHERE (end2 = $ID)";
+			$query = "DELETE FROM glpi_connect_wire WHERE (end2 = '$ID')";
 			$result = $db->query($query);
 
 			return true;

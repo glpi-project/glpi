@@ -1028,9 +1028,6 @@ function Connect($target,$sID,$cID,$type) {
 	$connect->type=$type;
 	$connect->addtoDB();
 }
-function removeConnectComputer($cID){
-	$connect->deleteAllForComputer($cID);
-}
 
 function showConnectSearch($target,$ID,$type="computer") {
 
