@@ -1099,10 +1099,10 @@ function showSortForm($target) {
 	echo "<select name='tracking_order'>";
 	echo "<option value=\"yes\"";
 	if ($order=="yes") { echo " selected"; }	
-	echo ">".$lang["choice"][0];
+	echo ">".$lang["choice"][1];
 	echo "<option value=\"no\"";
 	if ($order=="no") { echo " selected"; }
-	echo ">".$lang["choice"][1];
+	echo ">".$lang["choice"][0];
 	echo "</select>";
 	echo "</td>";
 	echo "<td align='center' class='tab_bg_2'>";
