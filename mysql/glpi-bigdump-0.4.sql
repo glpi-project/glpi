@@ -1,4 +1,4 @@
-#GLPI Dump database on 2004-07-22 01:47
+#GLPI Dump database on 2004-07-22 11:54
 ### Dump table glpi_computers
 
 DROP TABLE IF EXISTS glpi_computers;
@@ -774,7 +774,7 @@ INSERT INTO glpi_computers VALUES ('800','computer 800','0','','2800','serial 80
 
 DROP TABLE IF EXISTS glpi_config;
 CREATE TABLE glpi_config (
-    config_id int(11) NOT NULL auto_increment,
+    ID int(11) NOT NULL auto_increment,
     num_of_events varchar(200) NOT NULL,
     jobs_at_login varchar(200) NOT NULL,
     sendexpire varchar(200) NOT NULL,
@@ -819,7 +819,7 @@ CREATE TABLE glpi_config (
     ldap_field_location varchar(200) NOT NULL,
     ldap_field_realname varchar(200) NOT NULL,
     ldap_field_phone varchar(200) NOT NULL,
-   PRIMARY KEY (config_id)
+   PRIMARY KEY (ID)
 );
 
 INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15',' 0.3','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber');
@@ -2063,6 +2063,8 @@ INSERT INTO glpi_event_log VALUES ('13727','-1','system','2004-07-21 15:49:47','
 INSERT INTO glpi_event_log VALUES ('13728','-1','system','2004-07-21 15:51:16','login','1','failed login: irma');
 INSERT INTO glpi_event_log VALUES ('13729','-1','system','2004-07-21 15:51:19','login','1','failed login: irma');
 INSERT INTO glpi_event_log VALUES ('13730','-1','system','2004-07-21 15:56:57','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('13734','-1','system','2004-07-22 09:37:00','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('13735','0','users','2004-07-22 11:43:27','setup','4','glpi added user user1.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -5224,25 +5226,26 @@ CREATE TABLE glpi_prefs (
     user varchar(80) NOT NULL,
     tracking_order enum('no','yes') DEFAULT 'no' NOT NULL,
     language varchar(255) NOT NULL,
-   PRIMARY KEY (user)
+    ID int(11) NOT NULL auto_increment,
+   PRIMARY KEY (ID),
+   UNIQUE user (user)
 );
 
-INSERT INTO glpi_prefs VALUES ('irma','no','french');
-INSERT INTO glpi_prefs VALUES ('Helpdesk','no','french');
-INSERT INTO glpi_prefs VALUES ('guemar','no','french');
-INSERT INTO glpi_prefs VALUES ('loubier','','french');
-INSERT INTO glpi_prefs VALUES ('Brice','','french');
-INSERT INTO glpi_prefs VALUES ('Cayzac','','french');
-INSERT INTO glpi_prefs VALUES ('cara','','french');
-INSERT INTO glpi_prefs VALUES ('Gomez','no','french');
-INSERT INTO glpi_prefs VALUES ('spennato','','french');
-INSERT INTO glpi_prefs VALUES ('Champion','no','french');
-INSERT INTO glpi_prefs VALUES ('Couve','','french');
-INSERT INTO glpi_prefs VALUES ('Carpy','','french');
-INSERT INTO glpi_prefs VALUES ('Chauvin','no','french');
-INSERT INTO glpi_prefs VALUES ('molina','','french');
-INSERT INTO glpi_prefs VALUES ('Coster','no','french');
-INSERT INTO glpi_prefs VALUES ('glpi','yes','french');
+INSERT INTO glpi_prefs VALUES ('Helpdesk','no','french','2');
+INSERT INTO glpi_prefs VALUES ('user1','no','french','3');
+INSERT INTO glpi_prefs VALUES ('user2','no','french','4');
+INSERT INTO glpi_prefs VALUES ('user3','no','french','5');
+INSERT INTO glpi_prefs VALUES ('user4','no','french','6');
+INSERT INTO glpi_prefs VALUES ('user5','no','french','7');
+INSERT INTO glpi_prefs VALUES ('user6','no','french','8');
+INSERT INTO glpi_prefs VALUES ('user7','no','french','9');
+INSERT INTO glpi_prefs VALUES ('user8','no','french','10');
+INSERT INTO glpi_prefs VALUES ('user9','no','french','11');
+INSERT INTO glpi_prefs VALUES ('user10','no','french','12');
+INSERT INTO glpi_prefs VALUES ('user11','no','french','13');
+INSERT INTO glpi_prefs VALUES ('user12','no','french','14');
+INSERT INTO glpi_prefs VALUES ('user13','no','french','15');
+INSERT INTO glpi_prefs VALUES ('glpi','yes','french','16');
 ### Dump table glpi_printers
 
 DROP TABLE IF EXISTS glpi_printers;
@@ -6373,7 +6376,7 @@ INSERT INTO glpi_tracking VALUES ('693','2003-11-24 14:33:19','2003-12-09 14:35:
 INSERT INTO glpi_tracking VALUES ('694','2003-11-25 09:20:42','2003-11-25 09:56:14','old','Helpdesk','user10','114','oulala ca crame de partout 694','3','no','','');
 INSERT INTO glpi_tracking VALUES ('695','2003-11-25 09:28:01','2003-11-25 09:55:58','old','user7','user10','59','oulala ca crame de partout 695','3','no','','');
 INSERT INTO glpi_tracking VALUES ('696','2003-11-25 10:53:06','2004-02-13 14:02:57','old','Helpdesk','user4','495','oulala ca crame de partout 696','1','no','','');
-INSERT INTO glpi_tracking VALUES ('697','2003-11-25 11:21:07','0000-00-00 00:00:00','new','Helpdesk','user1','309','oulala ca crame de partout 697','1','no','','');
+INSERT INTO glpi_tracking VALUES ('697','2003-11-25 11:21:07','0000-00-00 00:00:00','new','Helpdesk','','309','oulala ca crame de partout 697','1','no','','');
 INSERT INTO glpi_tracking VALUES ('698','2003-11-25 14:10:14','2003-11-28 13:28:45','old','Helpdesk','user1','210','oulala ca crame de partout 698','3','no','','');
 INSERT INTO glpi_tracking VALUES ('699','2003-11-25 15:09:22','2003-11-25 17:01:42','old','Helpdesk',NULL,'337','oulala ca crame de partout 699','3','no','','');
 INSERT INTO glpi_tracking VALUES ('700','2003-11-25 16:23:53','2003-11-25 17:01:44','old','Helpdesk',NULL,'119','oulala ca crame de partout 700','3','no','','');
@@ -7685,7 +7688,7 @@ INSERT INTO glpi_tracking VALUES ('2013','2004-05-24 10:24:07','2004-05-26 17:49
 INSERT INTO glpi_tracking VALUES ('2014','2004-05-24 16:43:38','2004-05-24 17:39:36','old','Helpdesk','user10','232','oulala ca crame de partout 2014','5','no','','');
 INSERT INTO glpi_tracking VALUES ('2015','2004-05-24 17:11:30','0000-00-00 00:00:00','new','Helpdesk','user10','119','oulala ca crame de partout 2015','3','no','','');
 INSERT INTO glpi_tracking VALUES ('2016','2004-05-24 17:16:26','2004-05-26 17:58:47','old','Helpdesk','user10','118','oulala ca crame de partout 2016','4','no','','');
-INSERT INTO glpi_tracking VALUES ('2017','2004-05-25 10:50:29','0000-00-00 00:00:00','new','Helpdesk','user10','107','oulala ca crame de partout 2017','4','no','','');
+INSERT INTO glpi_tracking VALUES ('2017','2004-05-25 10:50:29','0000-00-00 00:00:00','new','Helpdesk','','107','oulala ca crame de partout 2017','4','no','','');
 INSERT INTO glpi_tracking VALUES ('2018','2004-05-25 14:41:36','0000-00-00 00:00:00','new','Helpdesk','user1','107','oulala ca crame de partout 2018','3','no','','');
 INSERT INTO glpi_tracking VALUES ('2019','2004-05-25 15:01:58','0000-00-00 00:00:00','new','Helpdesk','user10','119','oulala ca crame de partout 2019','3','no','','');
 INSERT INTO glpi_tracking VALUES ('2020','2004-05-25 16:34:07','2004-05-26 17:51:57','old','Helpdesk','user10','635','oulala ca crame de partout 2020','3','no','','');
@@ -8007,7 +8010,8 @@ CREATE TABLE glpi_users (
     location int(11),
    PRIMARY KEY (ID),
    UNIQUE name (name),
-   KEY type (type)
+   KEY type (type),
+   KEY name_2 (name)
 );
 
 INSERT INTO glpi_users VALUES ('1','Helpdesk','14e43c2d31dcbdd1','',NULL,'post-only','user1','no',NULL);
@@ -8026,3 +8030,4 @@ INSERT INTO glpi_users VALUES ('13','user13','5b9b1ee2216a5ffe','','6196','admin
 INSERT INTO glpi_users VALUES ('14','user14','5b9b1ee2216a5ffe','','6111','admin','user14','yes','2');
 INSERT INTO glpi_users VALUES ('15','user15','5b9b1ee2216a5ffe','','6008','admin','user15','yes','2');
 INSERT INTO glpi_users VALUES ('400','glpi','5b9b1ee2216a5ffe','','','admin','user400','yes','2');
+INSERT INTO glpi_users VALUES ('401','user1','5b9b1ee2216a5ffe','','','admin','','yes','12');
