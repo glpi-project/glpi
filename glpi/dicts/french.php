@@ -586,7 +586,9 @@ $lang["reports"][48]	="Erreur dans l'appel du rapport à afficher";
 $lang["reports"][49]	="Rapport r&eacute;seau par switch";
 $lang["reports"][50]	="Rapport r&eacute;seau par lieu";
 $lang["reports"][51]	="Rapport r&eacute;seau par prise";
-
+$lang["reports"][52]	="switch";
+$lang["reports"][53] 	="Adresse Mac";
+$lang["reports"][54]	="Rapport r&eacute;seau pour le lieu";
 
 // LDAP
 $lang["ldap"][0]	= "recherche";
