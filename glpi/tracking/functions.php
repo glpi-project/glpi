@@ -526,18 +526,26 @@ function showJobDetails($ID) {
 	
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		if ($job->status == "new") {
+			$hour=floor($job->realtime);
+			$minute=round(($job->realtime-$hour)*60,0);
 			echo "<form method=get action=\"".$cfg_install["root"]."/tracking/tracking-mark.php\">";
 			echo "<tr class='tab_bg_1'>";
 			echo "<td colspan='3' align='center'>";
 			echo "<input type='hidden' name='ID' value=$job->ID>";			
 			echo $lang["job"][20].":&nbsp;";
 			echo "<select name='hour'>";
-			for ($i=0;$i<100;$i++)
-			echo "<option value='$i'>$i</option>";
+			for ($i=0;$i<100;$i++){
+			echo "<option value='$i' ";
+			if ($hour==$i) echo "selected";
+			echo " >$i</option>";
+			}
 			echo "</select>".$lang["job"][21]."&nbsp;&nbsp;";
 			echo "<select name='minute'>";
-			for ($i=0;$i<60;$i++)
-			echo "<option value='$i'>$i</option>";
+			for ($i=0;$i<60;$i++){
+			echo "<option value='$i' ";
+			if ($minute==$i) echo "selected";
+			echo " >$i</option>";
+			}
 			echo "</select>".$lang["job"][22]."&nbsp;&nbsp;";
 
 			echo "<input type='submit' value=\"".$lang["job"][3]."\" class='submit'>";
@@ -545,6 +553,19 @@ function showJobDetails($ID) {
 			echo "</form>";
 
 		}
+		if ($job->status == "old") {
+			echo "<form method=get action=\"".$cfg_install["root"]."/tracking/tracking-mark.php\">";
+			echo "<tr class='tab_bg_1'>";
+			echo "<td colspan='3' align='center'>";
+
+			echo "<input type='hidden' name='ID' value=$job->ID>";			
+			echo "<input type='hidden' name='status' value='new'>";			
+			echo "<input type='submit' value=\"".$lang["job"][23]."\" class='submit'>";
+			echo "</td></tr>";
+
+			echo "</form>";
+
+			}
 		echo "</table>";
 		echo "<br><br><table width='90%' class='tab_cadre'><tr><th>".$lang["job"][7].":</th></tr>";
 		echo "</table></div>";

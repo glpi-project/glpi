@@ -218,7 +218,7 @@ $lang["job"][19]        = "Suivi par Email";
 $lang["job"][20]        = "Durée réelle de l'intervention";
 $lang["job"][21]        = "Heure(s)";
 $lang["job"][22] 	= "Minute(s)"; 
-
+$lang["job"][23]		= "Restaurer cette intervention";
 // Computers
 
 $lang["computers"][0]	= "Ajouter ordinateur...";
