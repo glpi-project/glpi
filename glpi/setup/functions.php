@@ -395,7 +395,7 @@ function listUsersForm($target) {
 			
                         echo "<input type='hidden' name='name' value=\"".$user->fields["name"]."\">";
 			echo "</td>";
-			echo "<td><input type='password' name='password' size='6'></td>";
+			echo "<td><input type='password' name='password' value=\"".$user->fields["password"]."\" size='6'></td>";
 			
 			echo "<td><input name='realname' size='10' value=\"".$user->fields["realname"]."\"></td>";
 
