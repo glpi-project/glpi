@@ -220,6 +220,8 @@ function get_content($db, $table,$from,$limit)
      $result = $db->query("SELECT * FROM $table LIMIT $from,$limit");
      if($result)
      while($row = $db->fetch_row($result)) {
+     	$row=unhtmlentities_deep($row);
+     	if (get_magic_quotes_runtime()) $row=addslashes_deep($row);
          $insert = "INSERT INTO $table VALUES (";
          for($j=0; $j<$db->num_fields($result);$j++) {
             if(!isset($row[$j])) $insert .= "NULL,";

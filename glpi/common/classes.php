@@ -56,23 +56,23 @@ class DBmysql {
 		return mysql_query($query);
 	}
 	function result($result, $i, $field) {
-		$value=get_magic_quotes_gpc()?stripslashes_deep(mysql_result($result, $i, $field)):mysql_result($result, $i, $field);
-		return htmlspecialchars_deep($value);
+		$value=get_magic_quotes_runtime()?stripslashes_deep(mysql_result($result, $i, $field)):mysql_result($result, $i, $field);
+		return htmlentities_deep($value);
 	}
 	function numrows($result) {
 		return mysql_num_rows($result);
 	}
 	function fetch_array($result) {
-		$value=get_magic_quotes_gpc()?stripslashes_deep(mysql_fetch_array($result)):mysql_fetch_array($result);
-		return htmlspecialchars_deep($value);
+		$value=get_magic_quotes_runtime()?stripslashes_deep(mysql_fetch_array($result)):mysql_fetch_array($result);
+		return htmlentities_deep($value);
 	}
 	function fetch_row($result) {
-		$value=get_magic_quotes_gpc()?stripslashes_deep(mysql_fetch_row($result)):mysql_fetch_row($result);
-		return htmlspecialchars_deep($value);	
+		$value=get_magic_quotes_runtime()?stripslashes_deep(mysql_fetch_row($result)):mysql_fetch_row($result);
+		return htmlentities_deep($value);	
 	}
 	function fetch_assoc($result) {
-		$value=get_magic_quotes_gpc()?stripslashes_deep(mysql_fetch_assoc($result)):mysql_fetch_assoc($result);
-		return htmlspecialchars_deep($value);
+		$value=get_magic_quotes_runtime()?stripslashes_deep(mysql_fetch_assoc($result)):mysql_fetch_assoc($result);
+		return htmlentities_deep($value);
 	}
 	function num_fields($result) {
 		return mysql_num_fields($result);

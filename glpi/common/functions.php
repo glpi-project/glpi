@@ -133,12 +133,26 @@ function searchUserbyType($authtype) {
        return $value;
    }
 
-   function htmlspecialchars_deep($value)
+   function htmlentities_deep($value)
    {
 //echo "add";
        $value = is_array($value) ?
-                   array_map('htmlspecialchars_deep', $value) :
-                   htmlspecialchars($value);
+                   array_map('htmlentities_deep', $value) :
+                   htmlentities($value,ENT_QUOTES);
+       return $value;
+   }
+	// Nécessaire pour PHP < 4.3
+	function unhtmlentities ($string)
+	{
+	   $trans_tbl = get_html_translation_table (HTML_ENTITIES,ENT_QUOTES);
+	   $trans_tbl = array_flip ($trans_tbl);
+	   return strtr ($string, $trans_tbl);
+	}
+   function unhtmlentities_deep($value)
+   {
+       $value = is_array($value) ?
+                   array_map('unhtmlentities_deep', $value) :
+                   unhtmlentities($value,ENT_QUOTES);
        return $value;
    }
     
