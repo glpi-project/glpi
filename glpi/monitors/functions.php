@@ -126,10 +126,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			}
 			$coco = mysql_field_name($fields, $i);
 
-			if($coco == "firmware") {
-				$where .= " glpi_dropdown_firmware.name LIKE '%".$contains."%'";
-			}
-			elseif($coco == "location") {
+			if($coco == "location") {
 				$where .= " glpi_dropdown_locations.name LIKE '%".$contains."%'";
 			}
 			elseif($coco == "type") {
