@@ -79,6 +79,9 @@ class DBmysql {
 	function list_tables() {
 		return mysql_list_tables($this->dbdefault);
 	}
+	function list_fields($table) {
+		return mysql_list_fields($this->dbdefault,$table);
+	}
 	function errno()
 	{
 		return mysql_errno();
