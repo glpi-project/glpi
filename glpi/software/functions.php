@@ -425,7 +425,7 @@ function showLicensesAdd($ID) {
 	
 	GLOBAL $cfg_layout,$cfg_install,$lang;
 	
-	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='50%' cellpadding='2'>";
+	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='90%' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><b>";
 	echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=add&sID=$ID\">";
 	echo $lang["software"][12];
@@ -451,7 +451,7 @@ function showLicenses ($sID) {
 			// As t'on utilisé trop de licences en prenant en compte les mises a jours (double install original + mise à jour)
 			// Rien si free software
 			$pb="";
-			if (($nb_licences-$nb_updates-$installed)<0&&!isFreeSoftware($sID)) $pb="class='tab_bg_1_2'";
+			if (($nb_licences-$nb_updates-$installed)<0&&!isFreeSoftware($sID)&&!isGlobalSoftware($sID)) $pb="class='tab_bg_1_2'";
 			
 			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre' width='90%'>";
 			echo "<tr><th colspan='5' $pb >";
@@ -512,7 +512,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			}
 
 		echo "</b></td>";
-		if ($serial!="free"){
+		if ($serial!="free"&&$serial!="global"){
 			// OEM
 			if ($data["OEM"]=='Y') {
 			$comp=new Computer();
@@ -544,12 +544,12 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 
 		echo "<tr><td align='center'>";
 
-		if ($serial!="free") echo $lang["software"][20].": ".($num_tot-$num_inst);
-		if ($num_tot!=$num_inst||$serial=="free") {
+		if ($serial!="free"&&$serial!="global") echo $lang["software"][20].": ".($num_tot-$num_inst);
+		if ($num_tot!=$num_inst||$serial=="free"||$serial=="global") {
 			// Get first non installed license ID
 			$query_first="SELECT glpi_licenses.ID as ID, glpi_inst_software.license as iID FROM glpi_licenses LEFT JOIN glpi_inst_software ON glpi_inst_software.license = glpi_licenses.ID WHERE $SEARCH_LICENCE";
 			if ($result_first = $db->query($query_first)) {			
-				if ($serial=="free")
+				if ($serial=="free"||$serial=="global")
 				$ID=$db->result($result_first,0,"ID");
 				else{
 				$fin=0;
@@ -577,7 +577,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			}
 		}
 		// Dupliquer une licence
-		if ($serial!="free"){
+		if ($serial!="free"&&$serial!="global"){
 		$query_new="SELECT glpi_licenses.ID as ID FROM glpi_licenses WHERE $SEARCH_LICENCE";		
 		if ($result_new = $db->query($query_new)) {			
 		$IDdup=$db->result($result_new,0,0);
@@ -679,7 +679,7 @@ function showLicenseForm($target,$action,$sID,$lID="",$search_computer="") {
 	echo "<table class='tab_cadre'><tr><th colspan='3'>$title</th></tr>";
 	
 
-	echo "<tr class='tab_bg_1'><td>".$lang["software"][16].":</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["software"][16]."</td>";
 	echo "<td><input type='text' size='20' name='serial' value='".$values['serial']."'>";
 	echo "</td></tr>";
 	
@@ -792,14 +792,14 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 
 	$back = urlencode($back);
 
-	$query = "SELECT DISTINCT glpi_licenses.ID as ID FROM glpi_licenses LEFT JOIN glpi_inst_software ON glpi_licenses.ID = glpi_inst_software.license WHERE (glpi_licenses.sID = $sID AND glpi_inst_software.ID IS NULL) OR (glpi_licenses.sID = $sID AND glpi_licenses.serial='free') ORDER BY glpi_licenses.serial";
+	$query = "SELECT DISTINCT glpi_licenses.ID as ID FROM glpi_licenses LEFT JOIN glpi_inst_software ON glpi_licenses.ID = glpi_inst_software.license WHERE (glpi_licenses.sID = $sID AND glpi_inst_software.ID IS NULL) OR (glpi_licenses.sID = $sID AND glpi_licenses.serial='free') OR (glpi_licenses.sID = $sID AND glpi_licenses.serial='global') ORDER BY glpi_licenses.serial";
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 
 			echo "<br><center><table cellpadding='2' class='tab_cadre' width='50%'>";
 			echo "<tr><th colspan='7'>";
 			echo $db->numrows($result);
 			echo " ".$lang["software"][13].":</th></tr>";
-			echo "<tr><th>".$lang['software'][31]."</th><th>".$lang['software'][2]."</th><th>".$lang['software'][32]."</th><th>".$lang['software'][33]."</th><th>".$lang['software'][29]."</th><th>".$lang['software'][35]."</th><th>&nbsp;</th></tr>";
+			echo "<tr><th>".$lang['software'][31]."</th><th>".$lang['software'][2]."</th><th>".$lang['software'][32]."</th><th>".$lang['software'][33]."</th><th>".$lang['software'][35]."</th><th>&nbsp;</th></tr>";
 
 			$i=0;
 			while ($data=$db->fetch_row($result)) {
@@ -807,7 +807,7 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 				
 				$lic = new License;
 				$lic->getfromDB($ID);
-				if ($lic->fields['serial']!="free") {
+				if ($lic->fields['serial']!="free"&&$lic->fields['serial']!="global") {
 				
 					$query2 = "SELECT license FROM glpi_inst_software WHERE (license = '$ID')";
 					$result2 = $db->query($query2);
@@ -845,22 +845,6 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 		else echo "N/A";
 		echo "<b>";
 		} 
-		echo "</td>";
-			// UPDATE
-		if ($lic->fields["is_update"]=='Y') {
-		$sw=new Software();
-		$sw->getFromDB($lic->fields["update_software"]);
-		}
-
-		echo "<td align='center' class='tab_bg_1".($lic->fields["is_update"]=='Y'&&!isset($sw->fields['ID'])?"_2":"")."'>".($lic->fields["is_update"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
-		if ($lic->fields["is_update"]=='Y') {
-		echo "<br><b>";
-		if (isset($sw->fields['ID']))
-		echo "<a href='".$cfg_install["root"]."/software/software-info-form.php?ID=".$sw->fields['ID']."'>".$sw->fields['name']."&nbsp;".$sw->fields['version']."</a>";
-		else echo "N/A";
-		echo "<b>";
-		} 
-		
 		echo "</td>";
 		
 		// BUY
@@ -947,7 +931,7 @@ function showSoftwareInstalled($instID) {
         echo "<form method='post' action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
 
 	echo "<br><br><center><table class='tab_cadre' width='90%'>";
-	echo "<tr><th colspan='6'>".$lang["software"][17].":</th></tr>";
+	echo "<tr><th colspan='5'>".$lang["software"][17].":</th></tr>";
 			echo "<tr><th>".$lang['software'][2]."</th><th>".$lang['software'][32]."</th><th>".$lang['software'][33]."</th><th>".$lang['software'][35]."</th><th>&nbsp;</th></tr>";
 	
 	while ($i < $number) {
@@ -979,7 +963,7 @@ function showSoftwareInstalled($instID) {
 		}
 
 						echo "</b></td>";
-		if ($data['serial']!="free"){
+		if ($data['serial']!="free"&&$data['serial']!="global"){
 			// OEM
 			if ($data["oem"]=='Y') {
 			$comp=new Computer();
@@ -999,7 +983,7 @@ function showSoftwareInstalled($instID) {
 			echo "<td align='center'>".($data["buy"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
 			echo "</td>";								
 		}
-		else echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";					
+		else echo "<td>&nbsp;</td><td>&nbsp;</td>";					
 		echo "<td align='center' class='tab_bg_2'>";
 		echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&ID=$ID&cID=$instID\">";
 		echo "<b>".$lang["buttons"][5]."</b></a>";
@@ -1012,7 +996,7 @@ function showSoftwareInstalled($instID) {
 		dropdownSoftware();
 	echo "</div></td><td align='center' class='tab_bg_2'>";
 	echo "<input type='submit' name='select' value=\"".$lang["buttons"][4]."\" class='submit'>";
-	echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+	echo "</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
         echo "</table></center>";
 	echo "</form>";
 
@@ -1029,7 +1013,16 @@ function countInstallations($sID) {
 
 	if ($total!=0) {
 
-		if (!isFreeSoftware($sID)) {
+		if (isFreeSoftware($sID)) {
+			// Get installed
+			$installed = getInstalledLicence($sID);
+			echo "<center><i>".$lang["software"][39]."</i>&nbsp;&nbsp;".$lang["software"][19].": <b>$installed</b></center>";
+		} else if (isGlobalSoftware($sID)){
+			$installed = getInstalledLicence($sID);
+			echo "<center><i>".$lang["software"][38]."</i>&nbsp;&nbsp;".$lang["software"][19].": <b>$installed</b></center>";
+			
+		}
+		else {
 	
 			// Get installed
 			$i=0;
@@ -1060,12 +1053,7 @@ function countInstallations($sID) {
 			echo "<td width='25%'>&nbsp;</td>";
 			}
 			echo "</tr></table>";
-		} else {
-			// Get installed
-			$i=0;
-			$installed = getInstalledLicence($sID);
-			echo "<center><i>free software</i>&nbsp;&nbsp;".$lang["software"][19].": <b>$installed</b></center>";
-		}
+		} 
 	} else {
 			echo "<center><i>no licenses</i></center>";
 	}
@@ -1102,11 +1090,18 @@ function getLicenceNumber($sID){
 	return $db->numrows($result);
 }
 
+function isGlobalSoftware($sID){
+	$db=new DB;
+	$query = "SELECT ID,serial FROM glpi_licenses WHERE (sID = '$sID' and serial='global')";
+	$result = $db->query($query);
+	
+	return ($db->numrows($result)>0);
+}
 
 function isFreeSoftware($sID){
 	$db=new DB;
-	$query = "SELECT ID,serial FROM glpi_licenses WHERE (sID = '$sID')";
+	$query = "SELECT ID,serial FROM glpi_licenses WHERE (sID = '$sID'  and serial='free')";
 	$result = $db->query($query);
-	return (strcmp($db->result($result,0,"serial"),"free")==0);
+	return ($db->numrows($result)>0);
 }
 ?>
