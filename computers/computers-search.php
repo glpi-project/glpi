@@ -20,8 +20,7 @@ This file is part of GLPI.
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
 
-    GLPI is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    GLPI is distributed in the hope that it will be useful,    but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
@@ -43,7 +42,13 @@ checkAuthentication("normal");
 
 commonHeader("Computers",$_SERVER["PHP_SELF"]);
 
+if (isset($_GET["order"]))
+{
 showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
-
+}
+else 
+{
+showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],"","");
+}
 commonFooter();
 ?>
