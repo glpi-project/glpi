@@ -488,7 +488,11 @@ class Mailing
 				// get users to send mail
 				$users=$this->get_users_to_send_mail();
 				// get body + signature OK
-				$body=ereg_replace("<br>","",$this->get_mail_body()."\n".$cfg_mailing["signature"]);
+				$body=$this->get_mail_body()."\n".$cfg_mailing["signature"];
+				$body=ereg_replace("<br />","",$body);
+				$body=ereg_replace("<br>","",$body);
+				$body=stripslashes($body);
+
 				// get subject OK
 				$subject=$this->get_mail_subject();
 				// get sender :  OK
