@@ -36,7 +36,8 @@ This file is part of GLPI.
  
 
 include ("_relpos.php");
-// FUNCTIONS Printers
+// FUNCTIONS Printers 
+//fonction imprimantes
 
 function searchFormPrinters() {
 	// Print Search Form
@@ -54,7 +55,7 @@ function searchFormPrinters() {
 	$option["contact_num"]		= $lang["printers"][7];
 	$option["date_mod"]			= $lang["printers"][16];
 
-	echo "<form method=post action=\"".$cfg_install["root"]."/printers/printers-search.php\">";
+	echo "<form method='get' action=\"".$cfg_install["root"]."/printers/printers-search.php\">";
 	echo "<center><table border=0 width=90%>";
 	echo "<tr><th colspan=2><b>".$lang["search"][5].":</b></th></tr>";
 	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
@@ -74,7 +75,7 @@ function searchFormPrinters() {
 	echo "<input type=submit value=\"".$lang["buttons"][1]."\">";
 	echo "</td></tr></table></form></center>";
 
-	echo "<form method=post action=\"".$cfg_install["root"]."/printers/printers-search.php\">";
+	echo "<form method='get' action=\"".$cfg_install["root"]."/printers/printers-search.php\">";
 	echo "<center><table border=0 width=90%>";
 	echo "<tr><th colspan=2><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
