@@ -39,6 +39,15 @@ This file is part of GLPI.
 include ("_relpos.php");
 // FUNCTIONS Monitors
 
+
+function titleMonitors(){
+                GLOBAL  $lang,$HTMLRel;
+                echo "<div align='center'><table border='0'><tr><td><b>";
+                echo "<img src=\"".$HTMLRel."pics/ecran.png\" ></td><td><a  class='icon_consol' href=\"monitors-info-form.php?new=1\">".$lang["monitors"][0]."</a>";
+                echo "</b></td></tr></table></div>";
+}
+
+
 function searchFormMonitors() {
 	// Print Search Form
 	
