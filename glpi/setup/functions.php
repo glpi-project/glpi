@@ -198,6 +198,8 @@ function replaceDropDropDown($input) {
 }
 
 function showDeleteConfirmForm($target,$table, $ID) {
+	global $lang;
+	
 	echo $lang["setup"][63];
 	echo $lang["setup"][64];
 	echo "<form action=\"". $target ."\" method=\"post\">";
