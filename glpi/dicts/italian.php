@@ -35,6 +35,8 @@ Christian Bauer, turin@incubus.de
 
 // Italian Dictionary
 
+$lang["common"][0] = "Without name";
+
 //Login
 
 $lang["login"][0] = "Impossibile effettuare il login, verifica che il tuo browser sia configurato per accettare i cookie";
@@ -125,6 +127,8 @@ $lang["connect"][13] 	= "To a printer which";
 $lang["connect"][14] 	= "To a peripheral which"; 
 $lang["connect"][15] 	= "To a monitor which"; 
 $lang["connect"][16] 	= "No item found"; 
+$lang["connect"][17]	= "Automatic update of the unknown netpoint";
+$lang["connect"][18]	= "Attention !! The netpoints of the two items are differents.";
 
 //header menu
 $lang["Menu"][0]	="Computer";

@@ -34,6 +34,7 @@ Christian Bauer, turin@incubus.de
 
 
 // German Dictionary 
+$lang["common"][0] = "Without name";
 
 $lang["login"][0] = "Unmöglisches Login, &uuml;berpr&uuml;fen Sie, dass das Internet-Browser die Cookies annimmt";
 $lang["login"][1] = "Sich wieder identifizieren";
@@ -117,6 +118,8 @@ $lang["connect"][13] 	= "To a printer which";
 $lang["connect"][14] 	= "To a peripheral which"; 
 $lang["connect"][15] 	= "To a monitor which"; 
 $lang["connect"][16] 	= "No item found"; 
+$lang["connect"][17]	= "Automatic update of the unknown netpoint";
+$lang["connect"][18]	= "Attention !! The netpoints of the two items are differents.";
 
 //header menu
 
