@@ -279,15 +279,15 @@ function showJobShort($ID, $followup) {
 		{
 			echo "<tr class='tab_bg_1'>";
 			echo "<td align='center'><font color=\"green\"><b>".$lang["joblist"][9]."</b></font></td>";
-			echo "<td width=30%><nobr><small>".$lang["joblist"][11].":<br>&nbsp;$job->date</nobr></small></td>";
+			echo "<td width='30%'><small>".$lang["joblist"][11].":<br>&nbsp;$job->date</small></td>";
 
 		}
 		else
 		{
  			echo "<tr class='tab_bg_1'>";
 			echo "<td align='center'><b>".$lang["joblist"][10]."</b></td>";
-			echo "<td width=30%><nobr><small>".$lang["joblist"][11].":<br>&nbsp;$job->date<br>";
-			echo "<i>".$lang["joblist"][12].":<br>&nbsp;$job->closedate</i></nobr></small></td>";
+			echo "<td width='30%'><small>".$lang["joblist"][11].":<br>&nbsp;$job->date<br>";
+			echo "<i>".$lang["joblist"][12].":<br>&nbsp;$job->closedate</i></small></td>";
 		}
 
 		echo "<td align='center'><b>$job->priority</b></td>";
@@ -566,7 +566,7 @@ function showFollowups($ID) {
 		echo "<form method=get action=\"".$cfg_install["root"]."/tracking/tracking-followups.php\">";
 		echo "<input type=hidden name=ID value=$ID>";
 		echo "<tr><th>".$lang["job"][9].":</th></tr>";
-		echo "<tr class='tab_bg_1'><td width='100%' align='center'><textarea cols=60 rows=5 name=contents wrap=soft></textarea></td></tr>";
+		echo "<tr class='tab_bg_1'><td width='100%' align='center'><textarea cols=60 rows=5 name=contents ></textarea></td></tr>";
 		echo "<tr><td align='center' class='tab_bg_1'>";
 		echo "<input type=submit value=\"".$lang["buttons"][2]."\"></td>";
 		echo "</tr></form></table></center>";
@@ -648,7 +648,7 @@ function addFormTracking ($ID,$author,$target,$error) {
 	echo "<tr><td colspan=2 height=5></td></tr>";
 	echo "<tr><th colspan=2>".$lang["job"][11].":</th></tr>";
 
-	echo "<tr><td colspan=2><textarea cols=50 rows=14 wrap=soft name=contents></textarea></td></tr>";
+	echo "<tr><td colspan=2><textarea cols=50 rows=14  name=contents></textarea></td></tr>";
 
 	echo "<tr class='tab_bg_1'><td colspan=2 align='center'>";
 	echo "<input type=submit value=\"".$lang["buttons"][2]."\">";

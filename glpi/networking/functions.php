@@ -79,7 +79,7 @@ function showNetworkingForm ($target,$ID) {
 
 	$netdev = new Netdevice;
 
-	echo "<center><form name=form method=post action=\"$target\">";
+	echo "<center><form name=form method='post' action=\"$target\">";
 	echo "<table border='0' cellpadding=2>";
 	echo "<tr><th colspan=2><b>";
 	if (empty($ID)) {
@@ -172,7 +172,7 @@ function showNetworkingForm ($target,$ID) {
 
 	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign=top>";
 	echo $lang["networking"][8].":	</td>";
-	echo "<td align='center'><textarea cols=35 rows=4 name=comments wrap=soft>".$netdev->fields["comments"]."</textarea>";
+	echo "<td align='center'><textarea cols=35 rows=4 name=comments >".$netdev->fields["comments"]."</textarea>";
 	echo "</td></tr></table>";
 
 	echo "</td>";
@@ -195,7 +195,7 @@ function showNetworkingForm ($target,$ID) {
 		echo "<input type=hidden name=ID value=\"$ID\">\n";
 		echo "<center><input type=submit name=update value=\"".$lang["buttons"][7]."\"></center>";
 		echo "</td></form>\n\n";
-		echo "<form action=\"$target\" method=post>\n";
+		echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign=top>\n";
 		echo "<input type=hidden name=ID value=\"$ID\">\n";
 		echo "<center><input type=submit name=delete value=\"".$lang["buttons"][6]."\"></center>";
@@ -345,7 +345,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype) {
 	echo "<center><table><tr>";
 	echo "<th colspan=2>".$lang["networking"][20].":</th>";
 	echo "</tr>";
-	echo "<form method=post action=\"$target\">";
+	echo "<form method='post' action=\"$target\">";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["networking"][21].":</td>";
 	echo "<td><input type=text size=5 name=logical_number value=\"".$netport->fields["logical_number"]."\">";
@@ -379,7 +379,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype) {
 		echo "<input type=submit name=update value=\"".$lang["buttons"][7]."\">";
 		echo "</td></form>";
 
-		echo "<form method=post action=$target>";
+		echo "<form method='post' action=$target>";
 		echo "<input type=hidden name=ID value=$ID>";
 		echo "<td align='center'>";
 		echo "<input type=submit name=delete value=\"".$lang["buttons"][6]."\">";
@@ -517,7 +517,7 @@ function showConnectorSearch($target,$ID) {
 	echo "<tr><th colspan=2>".$lang["networking"][27]." $ID ".$lang["networking"][28].":</th></tr>";
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<form method=post action=\"$target\">";
+	echo "<form method='post' action=\"$target\">";
 	echo "<td>".$lang["networking"][29]." <select name=type>";
 	echo "<option value=name>".$lang["networking"][0]."</option>";
 	echo "<option value=id>ID</option>";
@@ -531,7 +531,7 @@ function showConnectorSearch($target,$ID) {
 	echo "</form>";
 	
 	echo "<tr class='tab_bg_1'>";
-	echo "<form method=post action=\"$target\">";
+	echo "<form method='post' action=\"$target\">";
 	echo "<td>".$lang["networking"][31].":";
 	$db = new DB;
 	$query = "SELECT ID,name,location from networking";
@@ -566,7 +566,7 @@ function listConnectorComputers($target,$input) {
 
 	echo "<center><table border='0'>";
 	echo "<tr><th colspan=2>".$lang["networking"][27]." $pID1 ".$lang["networking"][32].". ".$lang["networking"][33].":</th></tr>";
-	echo "<form method=post action=\"$target\"><tr><td>";
+	echo "<form method='post' action=\"$target\"><tr><td>";
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
