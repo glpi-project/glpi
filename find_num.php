@@ -62,31 +62,30 @@ window.close();}
 
 if(isset($_POST["Submit"]))
 {
-include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-echo "<table width='100%' border='0'>";
-echo " <tr bgcolor=#D2F2D5>";
-echo " <td align=center width='70%'><b>Nom du contact </b></td>";
-echo " <td align=center width='30%'><b>N° machine </b></td>";
-echo " </tr>";
-echo "</table>";
+	include ("_relpos.php");
+	include ($phproot . "/glpi/includes.php");
+	echo "<table width='100%' border='0'>";
+	echo " <tr bgcolor=#D2F2D5>";
+	echo " <td align=center width='70%'><b>Nom du contact </b></td>";
+	echo " <td align=center width='30%'><b>N° machine </b></td>";
+	echo " </tr>";
+	echo "</table>";
 
-$db = new DB;
-$query = "select ID,contact from computers where contact like '%".$_POST["NomContact"]."%'";
-$result = $db->query($query);
-while($ligne = $db->fetch_array($result))
-
-{
-$Comp_num = $ligne['ID'];
-$Contact = $ligne['contact'];
-echo "<table width='100%' border='0'>";
-echo " <tr bgcolor=#cccccc onClick=\"fillidfield(".$Comp_num.")\">";
-echo "<td width='70%'><b> $Contact </b></td>";
-echo "<td align=center width='30%'";
-echo "<b> $Comp_num </b></td>";
-echo " </tr>";
-echo "</table>";
-}
+	$db = new DB;
+	$query = "select ID,contact from computers where contact like '%".$_POST["NomContact"]."%'";
+	$result = $db->query($query);
+	while($ligne = $db->fetch_array($result))
+	{
+		$Comp_num = $ligne['ID'];
+		$Contact = $ligne['contact'];
+		echo "<table width='100%' border='0'>";
+		echo " <tr bgcolor=#cccccc onClick=\"fillidfield(".$Comp_num.")\">";
+		echo "<td width='70%'><b> $Contact </b></td>";
+		echo "<td align=center width='30%'";
+		echo "<b> $Comp_num </b></td>";
+		echo " </tr>";
+		echo "</table>";
+	}
 
 }
 ?>
