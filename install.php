@@ -524,6 +524,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	
 }
 
+/*
 // Step 5 Start the glpi configuration
 //
 function step5()
@@ -561,9 +562,9 @@ function step5()
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][26]."\" /></p>";
 	echo "</form>";
 }
-
+*/
 // STEP 6 Get the config and fill database
-
+/*
 function step6($root_doc, $event_loglevel, $num_of_events, $expire_events,$jobs_at_login, $list_limit, $cut, $permit_helpdesk)
 {
 	global $lang;
@@ -581,7 +582,7 @@ function step6($root_doc, $event_loglevel, $num_of_events, $expire_events,$jobs_
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][26]."\" /></p>";
 	echo "</form>";
 }
-
+*/
 
 
 function step7() {
@@ -684,8 +685,9 @@ loadLang($_SESSION["dict"]);
 				break;
 			case "Etape_4" :
 				header_html("Etape 4");
-				step5();
+				step7();
 				break;
+			/*	
 			case "Etape_5" :
 				header_html("Etape 5");
 				step6($_POST["root_doc"], $_POST["event_loglevel"], $_POST["num_of_events"], $_POST["expire_events"], $_POST["jobs_at_login"],$_POST["list_limit"], $_POST["cut"],$_POST["permit_helpdesk"]);
@@ -694,6 +696,7 @@ loadLang($_SESSION["dict"]);
 				header_html("Etape 6");
 				step7();
 				break;
+			*/
 			case "update_1" : 
 				if(empty($_POST["databasename"])) $_POST["databasename"] ="";
 				update1($_POST["db_host"],$_POST["db_user"],$_POST["db_pass"],$_POST["databasename"]);
