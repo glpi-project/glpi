@@ -473,7 +473,7 @@ function getEnterpriseLinks($value){
 			if (!ereg("https*://",$ent->fields['website']))	$website="http://".$ent->fields['website'];
 			else $website=$ent->fields['website'];
 			$ret.= "&nbsp;&nbsp;";
-			$ret.= "<a href='$website'><img src='".$HTMLRel."pics/web.png' style='vertical-align:middle;' alt='".$lang["common"][4]."' title='".$lang["common"][4]."' ></a>";
+			$ret.= "<a href='$website' target='_blank'><img src='".$HTMLRel."pics/web.png' style='vertical-align:middle;' alt='".$lang["common"][4]."' title='".$lang["common"][4]."' ></a>";
 		}
 		$ret.= "&nbsp;&nbsp;&nbsp;&nbsp;";
 		$ret.= "<a href='".$HTMLRel."enterprises/enterprises-info-form.php?ID=".$ent->fields['ID']."'><img src='".$HTMLRel."pics/edit.png' style='vertical-align:middle;' alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'></a>";
