@@ -56,7 +56,7 @@ function searchFormperipheral($field="",$phrasetype= "",$contains="",$sort= "") 
 	$option["periph.name"]				= $lang["peripherals"][5];
 	$option["periph.ID"]				= $lang["peripherals"][23];
 	$option["glpi_dropdown_locations.name"]			= $lang["peripherals"][6];
-	$option["glpi_type_peripherals"]				= $lang["peripherals"][9];
+	$option["glpi_type_peripherals.name"]				= $lang["peripherals"][9];
 	$option["periph.serial"]			= $lang["peripherals"][10];
 	$option["periph.otherserial"]		= $lang["peripherals"][11]	;
 	$option["periph.comments"]			= $lang["peripherals"][12];
@@ -112,12 +112,41 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 
 	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
 
+	$db = new DB;
+
 	// Build query
-	if ($phrasetype == "contains") {
-		$where = "($field LIKE '%".$contains."%')";
-	} else {
-		$where = "($field LIKE '".$contains."')";
+	if($field=="all") {
+		$where = " (";
+		$fields = $db->list_fields("glpi_peripherals");
+		$columns = $db->num_fields($fields);
+		
+		for ($i = 0; $i < $columns; $i++) {
+			if($i != 0) {
+				$where .= " OR ";
+			}
+			$coco = mysql_field_name($fields, $i);
+
+			if($coco == "location") {
+				$where .= " glpi_dropdown_locations.name LIKE '%".$contains."%'";
+			}
+			elseif($coco == "type") {
+				$where .= " glpi_type_peripherals.name LIKE '%".$contains."%'";
+			}
+			else {
+   				$where .= "periph.".$coco . " LIKE '%".$contains."%'";
+			}
+		}
+		$where .= ")";
 	}
+	else {
+		if ($phrasetype == "contains") {
+			$where = "($field LIKE '%".$contains."%')";
+		}
+		else {
+			$where = "($field LIKE '".$contains."')";
+		}
+	}
+
 	if (!$start) {
 		$start = 0;
 	}
@@ -129,7 +158,6 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 	$query .= "where $where ORDER BY $sort $order";
 
 	// Get it from database	
-	$db = new DB;
 	if ($result = $db->query($query)) {
 		$numrows =  $db->numrows($result);
 
