@@ -41,10 +41,17 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_reservation.php");
+include ($phproot . "/glpi/includes_knowbase.php");
+
+
 
 checkAuthentication("post-only");
 
 helpHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+
+//*******************
+// Affichage Module réservation 
+//******************
 
 if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 {
@@ -90,6 +97,34 @@ elseif (isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"]
 		printReservationItems($_SERVER["PHP_SELF"]);
 	}
 }
+//*******************
+// fin  Affichage Module réservation 
+//*******************
+
+
+//*******************
+// Affichage Module FAQ
+//******************
+
+
+
+else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
+
+
+	if (isset($_GET["ID"])){
+
+	ShowKbItemFull($_GET["ID"]);
+	
+	} else {
+	
+	faqShowCategories();
+	}
+}
+//*******************
+//  fin Affichage Module FAQ
+//******************
+
+
 else {
 printHelpDesk($_SESSION["glpiname"],1);
 }
