@@ -81,7 +81,7 @@ elseif(!empty($_POST["update_ext"])) {
 			updateExt($_POST["ldap_host"],$_POST["ldap_basedn"],$_POST["ldap_rootdn"],$_POST["ldap_pass"],$_POST["imap_auth_server"],$_POST["imap_host"]);
 		}
 	}
-	if(!empty($_POST["imap_host"]) {
+	if(!empty($_POST["imap_host"])) {
 		if(function_exists('imap_open')) {
 			updateExt($_POST["ldap_host"],$_POST["ldap_basedn"],$_POST["ldap_rootdn"],$_POST["ldap_pass"],$_POST["imap_auth_server"],$_POST["imap_host"]);
 		}
