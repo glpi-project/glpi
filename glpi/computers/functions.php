@@ -80,7 +80,9 @@ function searchFormComputers($field="",$phrasetype= "",$contains="",$sort= "") {
 	$option["comp.contact"]			= $lang["computers"][16];
 	$option["comp.contact_num"]		        = $lang["computers"][15];
 	$option["comp.date_mod"]			= $lang["computers"][11];
-
+	$option["glpi_networking_ports.ifaddr"] = $lang["networking"][14];
+	$option["glpi_networking_ports.ifmac"] = $lang["networking"][15];
+	
 	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
 	echo "<div align='center'><table border='0' width='750' class='tab_cadre'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
@@ -186,15 +188,16 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 	if (!$order) {
 		$order = "ASC";
 	}
-	$query = "select comp.ID from glpi_computers as comp LEFT JOIN glpi_dropdown_locations on comp.location=glpi_dropdown_locations.ID ";
+	$query = "select DISTINCT comp.ID from glpi_computers as comp LEFT JOIN glpi_dropdown_locations on comp.location=glpi_dropdown_locations.ID ";
 	$query .= "LEFT JOIN glpi_dropdown_os on comp.os=glpi_dropdown_os.ID LEFT JOIN glpi_type_computers on comp.type = glpi_type_computers.ID ";
 	$query .= "LEFT JOIN glpi_dropdown_hdtype on comp.hdtype = glpi_dropdown_hdtype.ID LEFT JOIN glpi_dropdown_processor on comp.processor = glpi_dropdown_processor.ID ";
 	$query .= "LEFT JOIN glpi_dropdown_ram on comp.ramtype = glpi_dropdown_ram.ID LEFT JOIN glpi_dropdown_network on comp.network = glpi_dropdown_network.ID ";
 	$query .= "LEFT JOIN glpi_dropdown_gfxcard on comp.gfxcard = glpi_dropdown_gfxcard.ID LEFT JOIN glpi_dropdown_moboard on comp.moboard = glpi_dropdown_moboard.ID ";
 	$query .= "LEFT JOIN glpi_dropdown_sndcard on comp.sndcard = glpi_dropdown_sndcard.ID ";
+	$query .= "LEFT JOIN glpi_networking_ports on (comp.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='1')";
 	$query .= "where $where ORDER BY $sort $order";
 	//$query = "SELECT * FROM glpi_computers WHERE $where ORDER BY $sort $order";
-
+//	echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);

@@ -68,6 +68,8 @@ function searchFormPrinters($field="",$phrasetype= "",$contains="",$sort= "") {
 	$option["printer.contact"]			= $lang["printers"][8];
 	$option["printer.contact_num"]		= $lang["printers"][7];
 	$option["printer.date_mod"]			= $lang["printers"][16];
+	$option["glpi_networking_ports.ifaddr"] = $lang["networking"][14];
+	$option["glpi_networking_ports.ifmac"] = $lang["networking"][15];
 	
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/printers/printers-search.php\">";
@@ -158,8 +160,9 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 	if (!$order) {
 		$order = "ASC";
 	}
-	$query = "select printer.ID from glpi_printers as printer LEFT JOIN glpi_dropdown_locations on printer.location=glpi_dropdown_locations.ID ";
+	$query = "select DISTINCT printer.ID from glpi_printers as printer LEFT JOIN glpi_dropdown_locations on printer.location=glpi_dropdown_locations.ID ";
 	$query .= "LEFT JOIN glpi_type_printers on printer.type = glpi_type_printers.ID ";
+	$query .= "LEFT JOIN glpi_networking_ports on (printer.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='3')";		
 	$query .= "where $where ORDER BY $sort $order";
 	
 //	echo $query;
