@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-03-07 18:42
+#GLPI Dump database on 2005-03-08 00:23
 ### Dump table glpi_cartridges
 
 DROP TABLE IF EXISTS glpi_cartridges;
@@ -458,6 +458,37 @@ CREATE TABLE glpi_device_sndcard (
 INSERT INTO glpi_device_sndcard VALUES ('1','Soundblaster 128 PCI','','','0');
 INSERT INTO glpi_device_sndcard VALUES ('2','Soundblaster 16 PnP','','','0');
 INSERT INTO glpi_device_sndcard VALUES ('3','integrated','','','0');
+### Dump table glpi_doc_device
+
+DROP TABLE IF EXISTS glpi_doc_device;
+CREATE TABLE glpi_doc_device (
+    ID int(11) NOT NULL auto_increment,
+    FK_doc int(11) DEFAULT '0' NOT NULL,
+    FK_device int(11) DEFAULT '0' NOT NULL,
+    device_type tinyint(4) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (ID),
+   UNIQUE FK_doc (FK_doc, FK_device, device_type),
+   KEY FK_doc_2 (FK_doc),
+   KEY FK_device (FK_device, device_type)
+);
+
+### Dump table glpi_docs
+
+DROP TABLE IF EXISTS glpi_docs;
+CREATE TABLE glpi_docs (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+    filename varchar(255) NOT NULL,
+    rubrique int(11) DEFAULT '0' NOT NULL,
+    mime varchar(30) NOT NULL,
+    date_mod datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+    comment text NOT NULL,
+    deleted enum('Y','N') DEFAULT 'N' NOT NULL,
+   PRIMARY KEY (ID),
+   KEY rubrique (rubrique),
+   KEY date_mod (date_mod)
+);
+
 ### Dump table glpi_dropdown_enttype
 
 DROP TABLE IF EXISTS glpi_dropdown_enttype;
@@ -553,6 +584,15 @@ INSERT INTO glpi_dropdown_os VALUES ('10','Windows 95 OSR2');
 INSERT INTO glpi_dropdown_os VALUES ('11','Windows 98 SR2');
 INSERT INTO glpi_dropdown_os VALUES ('12','Debian woody 3.0');
 INSERT INTO glpi_dropdown_os VALUES ('13','Windows NT 4.0 - SP3');
+### Dump table glpi_dropdown_rubdocs
+
+DROP TABLE IF EXISTS glpi_dropdown_rubdocs;
+CREATE TABLE glpi_dropdown_rubdocs (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255),
+   PRIMARY KEY (ID)
+);
+
 ### Dump table glpi_dropdown_tracking_category
 
 DROP TABLE IF EXISTS glpi_dropdown_tracking_category;
@@ -593,10 +633,7 @@ CREATE TABLE glpi_event_log (
    KEY date (date)
 );
 
-INSERT INTO glpi_event_log VALUES ('369','-1','system','2005-03-07 18:42:48','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('368','-1','system','2005-03-07 18:42:44','login','1','failed login: glpi');
-INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-03-07 18:42:41','login','1','failed login: glpi');
-INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-03-07 18:42:20','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-03-08 00:23:30','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -1011,6 +1048,74 @@ INSERT INTO glpi_type_computers VALUES ('1','Generic x86 PC');
 INSERT INTO glpi_type_computers VALUES ('2','PowerMac G4');
 INSERT INTO glpi_type_computers VALUES ('3','iMac 2nd Generation');
 INSERT INTO glpi_type_computers VALUES ('4','PowerMac G3');
+### Dump table glpi_type_docs
+
+DROP TABLE IF EXISTS glpi_type_docs;
+CREATE TABLE glpi_type_docs (
+    ID int(11) NOT NULL auto_increment,
+    title varchar(255) NOT NULL,
+    ext varchar(10) NOT NULL,
+    icon varchar(255) NOT NULL,
+    mime varchar(100) NOT NULL,
+    upload enum('Y','N') DEFAULT 'Y' NOT NULL,
+    date_mod datetime,
+   PRIMARY KEY (ID),
+   UNIQUE extension (ext)
+);
+
+INSERT INTO glpi_type_docs VALUES ('1','JPEG','jpg','jpg-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('2','PNG','png','png-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('3','GIF','gif','gif-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('4','BMP','bmp','bmp-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('5','Photoshop','psd','psd-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('6','TIFF','tif','tif-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('7','AIFF','aiff','aiff-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('8','Windows Media','asf','asf-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('9','Windows Media','avi','avi-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('44','C source','c','','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('27','RealAudio','rm','rm-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('16','Midi','mid','mid-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('17','QuickTime','mov','mov-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('18','MP3','mp3','mp3-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('19','MPEG','mpg','mpg-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('20','Ogg Vorbis','ogg','ogg-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('24','QuickTime','qt','qt-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('10','BZip','bz2','bz2-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('25','RealAudio','ra','ra-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('26','RealAudio','ram','ram-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('11','Word','doc','doc-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('12','DjVu','djvu','','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('42','MNG','mng','','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('13','PostScript','eps','ps-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('14','GZ','gz','gz-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('37','WAV','wav','wav-dist.png','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('15','HTML','html','html-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('34','Flash','swf','','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('21','PDF','pdf','pdf-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('22','PowerPoint','ppt','ppt-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('23','PostScript','ps','ps-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('40','Windows Media','wmv','','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('28','RTF','rtf','rtf-dist.png','','Y','2004-12-13 19:47:21');
+INSERT INTO glpi_type_docs VALUES ('29','StarOffice','sdd','sdd-dist.png','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('30','StarOffice','sdw','sdw-dist.png','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('31','Stuffit','sit','sit-dist.png','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('43','Adobe Illustrator','ai','ai-dist.png','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('32','OpenOffice Impress','sxi','sxi-dist.png','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('33','OpenOffice','sxw','sxw-dist.png','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('46','DVI','dvi','dvi-dist.png','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('35','TGZ','tgz','tgz-dist.png','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('36','texte','txt','txt-dist.png','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('49','RedHat/Mandrake/SuSE','rpm','rpm-dist.png','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('38','Excel','xls','xls-dist.png','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('39','XML','xml','xml-dist.png','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('41','Zip','zip','zip-dist.png','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('45','Debian','deb','deb-dist.png','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('47','C header','h','','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('48','Pascal','pas','','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('50','OpenOffice Calc','sxc','sxc-dist.png','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('51','LaTeX','tex','tex-dist.png','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('52','GIMP multi-layer','xcf','xcf-dist.png','','Y','2004-12-13 19:47:22');
+INSERT INTO glpi_type_docs VALUES ('53','JPEG','jpeg','jpg-dist.png','','Y','2005-03-07 22:23:17');
 ### Dump table glpi_type_monitors
 
 DROP TABLE IF EXISTS glpi_type_monitors;
