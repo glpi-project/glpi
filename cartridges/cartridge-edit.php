@@ -70,7 +70,7 @@ else if (isset($tab["install"]))
 	installCartridge($tab["pID"],$tab["tID"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed cartridge.");
 	//echo $tab["back"];
-	header("Location: ".$_SERVER['HTTP_REFERER']);
+	header("Location: ".$cfg_install["root"]."/printers/printers-info-form.php?ID=".$tab["pID"]);
 }
 else if (isset($tab["uninstall"]))
 {
