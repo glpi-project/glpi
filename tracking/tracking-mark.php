@@ -43,6 +43,7 @@ include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_setup.php");
 
 checkAuthentication("admin");
+if (isset($_GET["status"])) $status=$_GET["status"];
 
 if (empty($status))
 {
