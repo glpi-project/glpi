@@ -807,14 +807,12 @@ function updateReservationComment($input){
 
 	// Update  in the database
 
-	$ri = new ReservationResa;
+	$ri = new ReservationItem;
 	$ri->getFromDB($input["ID"]);
 	
-	print_r($input);
 	// Pop off the last two attributes, no longer needed
 	$null=array_pop($input);
-	print_r($input);
-	exit();
+	
 	// Get all flags and fill with 0 if unchecked in form
 	foreach ($ri->fields as $key => $val) {
 		if (eregi("\.*flag\.*",$key)) {
