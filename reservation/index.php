@@ -54,12 +54,16 @@ if (isset($_POST["add_resa"])||isset($_POST["edit_resa"])||(isset($_GET["show"])
 		list($end_year,$end_month,$end_day)=split("-",$_POST["end_date"]);
 		$_POST["begin"]=date("Y-m-d H:i:00",mktime($_POST["begin_hour"],$_POST["begin_min"],0,$begin_month,$begin_day,$begin_year));
 		$_POST["end"]=date("Y-m-d H:i:00",mktime($_POST["end_hour"],$_POST["end_min"],0,$end_month,$end_day,$end_year));
+		$r=new ReservationResa;
+		
 		unset($_POST["begin_date"]);unset($_POST["begin_hour"]);unset($_POST["begin_min"]);
 		unset($_POST["end_date"]);unset($_POST["end_hour"]);unset($_POST["end_min"]);
 		$item=$_POST["id_item"];
 		unset($_POST["edit_resa"]);unset($_POST["id_item"]);
-		updateReservationResa($_POST);
-		header("Location: ".$cfg_install["root"]."/reservation/index.php?show=resa&ID=$item&mois_courant=$begin_month&annee_courante=$begin_year");
+		if (isAdmin($_SESSION["glpitype"])||$_SESSION["glpiID"]==$_POST["id_user"]) 
+		if (updateReservationResa($_POST,$_SERVER["PHP_SELF"],$item))
+			header("Location: ".$cfg_install["root"]."/reservation/index.php?show=resa&ID=$item&mois_courant=$begin_month&annee_courante=$begin_year");
+		else exit();
 	}
 
 

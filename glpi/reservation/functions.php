@@ -848,8 +848,8 @@ function updateReservationComment($input){
 
 }
 
-function updateReservationResa($input){
-
+function updateReservationResa($input,$target,$item){
+global $lang;
 	// Update a printer in the database
 
 	$ri = new ReservationResa;
@@ -873,9 +873,22 @@ function updateReservationResa($input){
 			$x++;
 		}
 	}
+	$ri->fields["begin"]=$_POST["begin"];
+	$ri->fields["end"]=$_POST["end"];
+	if (!$ri->test_valid_date()){
+		$ri->displayError("date",$item,$target);
+		return false;
+	}
+	
+	if ($ri->is_reserved()){
+		$ri->displayError("is_res",$item,$target);
+		return false;
+	}
+	
+	
 	if (isset($updates))
 		$ri->updateInDB($updates);
-
+	return true;
 }
 
 ?>
