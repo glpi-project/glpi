@@ -785,7 +785,7 @@ function listTemplates($target) {
 	GLOBAL $cfg_layout, $lang;
 
 	$db = new DB;
-	$query = "SELECT * FROM glpi_templates";
+	$query = "SELECT * FROM glpi_templates ORDER by templname";
 	if ($result = $db->query($query)) {
 		
 		echo "<div align='center'><table class='tab_cadre' width='50%'>";
