@@ -40,25 +40,25 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_monitors.php");
 if($_GET) $tab = $_GET;
 elseif($_POST) $tab = $_POST;
-if ($tab["add"]) {
+if (isset($_POST["add"])) {
 	checkAuthentication("admin");
-	addMonitor($tab);
-	logEvent(0, "monitors", 4, "inventory", $_SESSION["glpiname"]." added ".$tab["name"].".");
+	addMonitor($_POST);
+	logEvent(0, "monitors", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	header("Location: $_SERVER[HTTP_REFERER]");
-} else if ($tab["delete"]) {
+} else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
-	deleteMonitor($tab);
-	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
+	deleteMonitor($_POST);
+	logEvent($_POST["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/monitors/");
-} else if ($tab["update"]) {
+} else if (isset($_POST["update"])) {
 	checkAuthentication("admin");
-	updateMonitor($tab);
-	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." updated item.");
+	updateMonitor($_POST);
+	logEvent($_POST["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	commonHeader("Monitors",$_SERVER["PHP_SELF"]);
-	showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	showMonitorsForm($_SERVER["PHP_SELF"],$_POST["ID"]);
 	commonFooter();
 
-} else if ($tab["disconnect"]) {
+} else if (isset($tab["disconnect"])) {
 	checkAuthentication("admin");
 	Disconnect($tab["ID"],4);
 	logEvent($tab["ID"], "monitors", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");

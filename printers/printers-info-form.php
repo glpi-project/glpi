@@ -60,7 +60,7 @@ if (isset($_POST["add"])) {
 	showPrintersForm($_SERVER["PHP_SELF"],$_POST["ID"]);
 	commonFooter();
 
-} else if ($tab["disconnect"]) {
+} else if (isset($tab["disconnect"])) {
 	checkAuthentication("admin");
 	Disconnect($tab["ID"],3);
 	logEvent($tab["ID"], "printers", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
