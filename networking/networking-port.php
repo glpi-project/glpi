@@ -38,34 +38,40 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_networking.php");
-If($_GET)
+If(isset($_GET))
 {
 	  $tab = $_GET;
 }
-elseif($_POST) 
+elseif(isset($_POST)) 
 {
 	$tab = $_POST;
-	
 }
 
-if ($tab["add"]) {
+if(isset($_POST["add"]))
+{
 	checkAuthentication("admin");
-	addNetport($tab);
+	addNetport($_POST);
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added networking port.");
-//	header("Location: ".$cfg_install["root"]."/networking/");
+//???	header("Location: ".$cfg_install["root"]."/networking/");
 	header("Location: $_SERVER[HTTP_REFERER]");
-} else if ($tab["delete"]) {
+}
+else if(isset($_POST["delete"]))
+{
 	checkAuthentication("admin");
-	deleteNetport($tab);
+	deleteNetport($_POST);
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." deleted networking port.");
 	header("Location: ".$cfg_install["root"]."/networking/");
-} else if ($tab["update"]) {
+}
+else if(isset($_POST["update"]))
+{
 	checkAuthentication("admin");
-	updateNetport($tab);
+	updateNetport($_POST);
 	commonHeader("Networking",$_SERVER["PHP_SELF"]);
-	showNetportForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["ondevice"],$tab["devtype"]);
+	showNetportForm($_SERVER["PHP_SELF"],$_POST["ID"],$_POST["ondevice"],$_POST["devtype"]);
 	commonFooter();
-} else {
+}
+else 
+{
 	checkAuthentication("normal");
 	commonHeader("Networking",$_SERVER["PHP_SELF"]);
 	showNetportForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["ondevice"],$tab["devtype"]);
