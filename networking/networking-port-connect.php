@@ -41,7 +41,7 @@ include ($phproot . "/glpi/includes_networking.php");
 checkAuthentication("admin");
 
 
-commonHeader("Networking",$_SERVER[PHP_SELF]);
+commonHeader("Networking",$_SERVER["PHP_SELF"]);
 If($_GET)
 {
 	  $tab = $_GET;
@@ -53,15 +53,15 @@ elseif($_POST)
 }
 switch ($tab["next"]) {
 	case "";
-		showConnectorSearch($_SERVER[PHP_SELF],$tab["ID"]);
+		showConnectorSearch($_SERVER["PHP_SELF"],$tab["ID"]);
 	break;
 
 	case "compsearch";
-		listConnectorComputers($_SERVER[PHP_SELF],$tab);
+		listConnectorComputers($_SERVER["PHP_SELF"],$tab);
 	break;
 
 	case "showports";
-		listConnectorPorts($_SERVER[PHP_SELF],$tab);
+		listConnectorPorts($_SERVER["PHP_SELF"],$tab);
 	break;		
 
 	case "connect";

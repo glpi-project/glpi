@@ -43,7 +43,7 @@ include ($phproot . "/glpi/includes_software.php");
 
 checkAuthentication("normal");
 
-commonHeader("Software",$HTTP_SERVER_VARS[PHP_SELF]);
+commonHeader("Software",$_SERVER["PHP_SELF"]);
 
 echo "<center><table border=0><tr><td><b>";
 echo "<a href=\"software-info-form.php\">".$lang["software"][0]."</a>";
@@ -51,7 +51,7 @@ echo "</b></td></tr></table></center>";
 
 echo "<hr noshade>";
 
-searchFormSoftware($HTTP_SERVER_VARS[PHP_SELF]);
+searchFormSoftware($_SERVER["PHP_SELF"]);
 
 commonFooter();
 

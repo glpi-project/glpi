@@ -53,10 +53,10 @@ if ($_POST["changepw"]) {
 	header("Location: $_SERVER[HTTP_REFERER]?done");
 } else {
 	checkAuthentication("normal");
-	commonHeader("Preferences",$_SERVER[PHP_SELF]);
-	showPasswordForm($SERVER[PHP_SELF],$_SESSION["glpiname"]);
-	showSortForm($_SERVER[PHP_SELF],$_SESSION["glpiname"]);
-	showLangSelect($_SERVER[PHP_SELF],$_SESSION["glpiname"]);
+	commonHeader("Preferences",$_SERVER["PHP_SELF"]);
+	showPasswordForm($_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	showSortForm($_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	showLangSelect($_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	commonFooter();
 }
 

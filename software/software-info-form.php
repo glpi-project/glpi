@@ -58,14 +58,14 @@ if ($tab["add"]) {
 	checkAuthentication("admin");
 	updateSoftware($tab);
 	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." updated item.");
-	commonHeader("Software",$_SERVER[PHP_SELF]);
-	showSoftwareForm($_SERVER[PHP_SELF],$tab["ID"]);
+	commonHeader("Software",$_SERVER["PHP_SELF"]);
+	showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	commonFooter();
 
 } else {
 	checkAuthentication("normal");
-	commonHeader("Software",$_SERVER[PHP_SELF]);
-	showSoftwareForm($_SERVER[PHP_SELF],$tab["ID"]);
+	commonHeader("Software",$_SERVER["PHP_SELF"]);
+	showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	commonFooter();
 }
 

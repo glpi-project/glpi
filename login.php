@@ -101,7 +101,7 @@ switch ($conn)
 		if(!($ext_ident))
 		{
 
-			nullHeader("Login",$HTTP_SERVER_VARS[PHP_SELF]);
+			nullHeader("Login",$_SERVER["PHP_SELF"]);
 			echo "<center><b>".$identificat->getErr().".</b><br><br>";
 			echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">Relogin</a></b></center>";
 			nullFooter();
@@ -129,7 +129,7 @@ switch ($conn)
 	{
 
 		//login failed No response from DB
-		nullHeader("Login",$HTTP_SERVER_VARS[PHP_SELF]);
+		nullHeader("Login",$_SERVER["PHP_SELF"]);
 		echo "<center><b>".$identificat->getErr().".</b><br><br>";
 		echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">Relogin</a></b></center>";
 		nullFooter();

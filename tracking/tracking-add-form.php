@@ -43,7 +43,7 @@ include ($phproot . "/glpi/includes_tracking.php");
 
 checkAuthentication("normal");
 
-commonHeader("Tracking",$_SERVER[PHP_SELF]);
+commonHeader("Tracking",$_SERVER["PHP_SELF"]);
 
 if ($_GET["priority"] && !$_GET["contents"])
 {
@@ -54,17 +54,17 @@ elseif ($_GET["priority"] && $_GET["contents"])
 	if (postJob($_GET["ID"],$_SESSION["glpiname"],$_GET["status"],$_GET["priority"],$_GET["computer"],$_GET["isgroup"],$_GET["uemail"],$_GET["emailupdates"],$_GET["contents"]))
 	{
 		$error="Job posted, next one:";
-		addFormTracking($ID,$_SESSION["glpiname"],$_SERVER[PHP_SELF],$error);
+		addFormTracking($ID,$_SESSION["glpiname"],$_SERVER["PHP_SELF"],$error);
 	}
 	else
 	{
 		$error="Couldn't post job, check the database.";
-		addFormTracking($_GET["ID"],$_SESSION["glpiname"],$_SERVER[PHP_SELF],$error);
+		addFormTracking($_GET["ID"],$_SESSION["glpiname"],$_SERVER["PHP_SELF"],$error);
 	}
 } 
 else
 {
-	addFormTracking($_GET["ID"],$_SESSION["glpiname"],$_SERVER[PHP_SELF],$error);
+	addFormTracking($_GET["ID"],$_SESSION["glpiname"],$_SERVER["PHP_SELF"],$error);
 }
 
 

@@ -62,13 +62,13 @@ if ($tab["add"]) {
 } else if ($tab["update"]) {
 	checkAuthentication("admin");
 	updateNetport($tab);
-	commonHeader("Networking",$_SERVER[PHP_SELF]);
-	showNetportForm($_SERVER[PHP_SELF],$tab["ID"],$tab["ondevice"],$tab["devtype"]);
+	commonHeader("Networking",$_SERVER["PHP_SELF"]);
+	showNetportForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["ondevice"],$tab["devtype"]);
 	commonFooter();
 } else {
 	checkAuthentication("normal");
-	commonHeader("Networking",$_SERVER[PHP_SELF]);
-	showNetportForm($_SERVER[PHP_SELF],$tab["ID"],$tab["ondevice"],$tab["devtype"]);
+	commonHeader("Networking",$_SERVER["PHP_SELF"]);
+	showNetportForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["ondevice"],$tab["devtype"]);
 	commonFooter();
 }
 

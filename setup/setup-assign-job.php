@@ -53,8 +53,8 @@ if (can_assign_job($_SESSION["glpiname"]))
     	}
 	else
     	{
-    		commonHeader("Setup",$_SERVER[PHP_SELF]);
-		showFormAssign($_SERVER[PHP_SELF]);
+    		commonHeader("Setup",$_SERVER["PHP_SELF"]);
+		showFormAssign($_SERVER["PHP_SELF"]);
 		commonFooter();
 	}
 }	

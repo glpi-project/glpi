@@ -58,8 +58,8 @@ if ($_POST["add"]) {
 	checkAuthentication("admin");
 	updateComputer($_POST);
 	logEvent($_POST["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]."updated item.");
-	commonHeader("Computers",$_SERVER[PHP_SELF]);
-	showComputerForm(0,$_SERVER[PHP_SELF],$_POST["ID"]);
+	commonHeader("Computers",$_SERVER["PHP_SELF"]);
+	showComputerForm(0,$_SERVER["PHP_SELF"],$_POST["ID"]);
 	showPorts($_POST["ID"], 1);
 	showPortsAdd($_POST["ID"],1);
 	showJobList($_SESSION["glpiname"],$_POST["show"],$_POST["contains"],$_POST["ID"]);
@@ -69,14 +69,14 @@ if ($_POST["add"]) {
 
 	checkAuthentication("normal");
 	//print_r($_GET);
-	commonHeader("Computers",$_SERVER[PHP_SELF]);
+	commonHeader("Computers",$_SERVER["PHP_SELF"]);
 	if ($_GET["withtemplate"] == 1)
 	{
-		showComputerForm($_GET["withtemplate"],$_SERVER[PHP_SELF],$_GET["ID"]);
+		showComputerForm($_GET["withtemplate"],$_SERVER["PHP_SELF"],$_GET["ID"]);
 	}
 	else
 	{
-		if (showComputerForm(0,$_SERVER[PHP_SELF],$_GET["ID"])) {
+		if (showComputerForm(0,$_SERVER["PHP_SELF"],$_GET["ID"])) {
 	
 			showPorts($_GET["ID"], 1);
 			

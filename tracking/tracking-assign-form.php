@@ -48,9 +48,9 @@ if ($_GET["update"]) {
 	header("Location: $_SERVER[HTTP_REFERER]");
 
 } else {
-	commonHeader("Tracking",$_SERVER[PHP_SELF]);
+	commonHeader("Tracking",$_SERVER["PHP_SELF"]);
 	echo "<center>";
-	assignFormTracking($_GET["ID"],$_SESSION["glpiname"],$_SERVER[PHP_SELF]);
+	assignFormTracking($_GET["ID"],$_SESSION["glpiname"],$_SERVER["PHP_SELF"]);
 	echo "</center>";
 	commonFooter();
 }

@@ -42,7 +42,7 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
 checkAuthentication("normal");
-commonHeader("Userinfo",$_SERVER[PHP_SELF]);
+commonHeader("Userinfo",$_SERVER["PHP_SELF"]);
 showUser($_SERVER[HTTP_REFERER],$_POST["ID"]);
 commonFooter();
 

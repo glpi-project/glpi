@@ -54,39 +54,39 @@ if ($tab["add"]) {
 	checkAuthentication("admin");
 	updateMonitor($tab);
 	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." updated item.");
-	commonHeader("Monitors",$_SERVER[PHP_SELF]);
-	showMonitorsForm($_SERVER[PHP_SELF],$tab["ID"]);
+	commonHeader("Monitors",$_SERVER["PHP_SELF"]);
+	showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	commonFooter();
 
 } else if ($tab["disconnect"]) {
 	checkAuthentication("admin");
 	Disconnect($tab["ID"],4);
 	logEvent($tab["ID"], "monitors", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
-	commonHeader("Monitors",$_SERVER[PHP_SELF]);
-	showMonitorsForm($_SERVER[PHP_SELF],$tab["ID"]);
+	commonHeader("Monitors",$_SERVER["PHP_SELF"]);
+	showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	commonFooter();
 } else if ($tab["connect"]==1) {
 	checkAuthentication("admin");
-	commonHeader("Monitors",$_SERVER[PHP_SELF]);
-	showConnectSearch($_SERVER[PHP_SELF],$tab["ID"]);
+	commonHeader("Monitors",$_SERVER["PHP_SELF"]);
+	showConnectSearch($_SERVER["PHP_SELF"],$tab["ID"]);
 	commonFooter();
 } else if ($tab["connect"]==2) {
 	checkAuthentication("admin");
-	commonHeader("Monitors",$_SERVER[PHP_SELF]);
-	listConnectComputers($_SERVER[PHP_SELF],$tab);
+	commonHeader("Monitors",$_SERVER["PHP_SELF"]);
+	listConnectComputers($_SERVER["PHP_SELF"],$tab);
 	commonFooter();
 } else if ($tab["connect"]==3) {
 	checkAuthentication("admin");
-	commonHeader("Monitors",$_SERVER[PHP_SELF]);
-	Connect($_SERVER[PHP_SELF],$tab["sID"],$tab["cID"],4);
+	commonHeader("Monitors",$_SERVER["PHP_SELF"]);
+	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],4);
 	logEvent($tab["sID"], "monitors", 5, "inventory", $_SESSION["glpiname"]." connected item.");
-	showMonitorsForm($_SERVER[PHP_SELF],$tab["sID"]);
+	showMonitorsForm($_SERVER["PHP_SELF"],$tab["sID"]);
 	commonFooter();
 
 } else {
 	checkAuthentication("normal");
-	commonHeader("Monitors",$_SERVER[PHP_SELF]);
-	showMonitorsForm($_SERVER[PHP_SELF],$tab["ID"]);
+	commonHeader("Monitors",$_SERVER["PHP_SELF"]);
+	showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	commonFooter();
 }
 

@@ -41,7 +41,7 @@ include ($phproot . "/glpi/includes_printers.php");
 
 checkAuthentication("normal");
 
-commonHeader("Printers",$_SERVER[PHP_SELF]);
+commonHeader("Printers",$_SERVER["PHP_SELF"]);
 
 
 ?>

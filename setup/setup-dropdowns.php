@@ -53,22 +53,22 @@ if ($_POST["add"]) {
 	header("Location: $_SERVER[HTTP_REFERER]?done");
 } else {
 	checkAuthentication("normal");
-	commonHeader("Setup",$_SERVER[PHP_SELF]);
+	commonHeader("Setup",$_SERVER["PHP_SELF"]);
 	echo "<center><table cellpadding=4><tr><th>".$lang["setup"][0].":</th></tr></table></center>";
-	showFormDropDown($_SERVER[PHP_SELF],"locations",$lang["setup"][3]);
-	showFormTypeDown($_SERVER[PHP_SELF],"computers",$lang["setup"][4]);
-	showFormTypeDown($_SERVER[PHP_SELF],"networking",$lang["setup"][42]);
-	showFormTypeDown($_SERVER[PHP_SELF],"printers",$lang["setup"][43]);
-	showFormTypeDown($_SERVER[PHP_SELF],"monitors",$lang["setup"][44]);
-	showFormDropDown($_SERVER[PHP_SELF],"os",$lang["setup"][5]);
-	showFormDropDown($_SERVER[PHP_SELF],"ram",$lang["setup"][6]);
-	showFormDropDown($_SERVER[PHP_SELF],"processor",$lang["setup"][7]);
-	showFormDropDown($_SERVER[PHP_SELF],"moboard",$lang["setup"][45]);
-	showFormDropDown($_SERVER[PHP_SELF],"gfxcard",$lang["setup"][46]);
-	showFormDropDown($_SERVER[PHP_SELF],"sndcard",$lang["setup"][47]);
-	showFormDropDown($_SERVER[PHP_SELF],"hdtype",$lang["setup"][48]);
-	showFormDropDown($_SERVER[PHP_SELF],"network",$lang["setup"][8]);
-	showFormDropDown($_SERVER[PHP_SELF],"iface",$lang["setup"][9]);
+	showFormDropDown($_SERVER["PHP_SELF"],"locations",$lang["setup"][3]);
+	showFormTypeDown($_SERVER["PHP_SELF"],"computers",$lang["setup"][4]);
+	showFormTypeDown($_SERVER["PHP_SELF"],"networking",$lang["setup"][42]);
+	showFormTypeDown($_SERVER["PHP_SELF"],"printers",$lang["setup"][43]);
+	showFormTypeDown($_SERVER["PHP_SELF"],"monitors",$lang["setup"][44]);
+	showFormDropDown($_SERVER["PHP_SELF"],"os",$lang["setup"][5]);
+	showFormDropDown($_SERVER["PHP_SELF"],"ram",$lang["setup"][6]);
+	showFormDropDown($_SERVER["PHP_SELF"],"processor",$lang["setup"][7]);
+	showFormDropDown($_SERVER["PHP_SELF"],"moboard",$lang["setup"][45]);
+	showFormDropDown($_SERVER["PHP_SELF"],"gfxcard",$lang["setup"][46]);
+	showFormDropDown($_SERVER["PHP_SELF"],"sndcard",$lang["setup"][47]);
+	showFormDropDown($_SERVER["PHP_SELF"],"hdtype",$lang["setup"][48]);
+	showFormDropDown($_SERVER["PHP_SELF"],"network",$lang["setup"][8]);
+	showFormDropDown($_SERVER["PHP_SELF"],"iface",$lang["setup"][9]);
 	commonFooter();
 }
 
