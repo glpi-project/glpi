@@ -634,7 +634,7 @@ function getFAQCategories()
 * 
 * @return $catNumbers
 **/
-function getFAQParentCategories($ID, &$catNumbers)
+function getFAQParentCategories($ID, $catNumbers)
 {
 	
 		

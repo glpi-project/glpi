@@ -559,7 +559,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 			$compDevID = $val["compDevID"];
 			$device = new Device($devType);
 			$device->getFromDB($devID);
-			printDeviceComputer(&$device,$specif,$comp->fields["ID"],$compDevID,$withtemplate);
+			printDeviceComputer($device,$specif,$comp->fields["ID"],$compDevID,$withtemplate);
 			
 			echo "</div>";
 		}
