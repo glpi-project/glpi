@@ -44,15 +44,18 @@ checkAuthentication("normal");
 
 commonHeader("Computers",$_SERVER["PHP_SELF"]);
 
-echo "<div align='center'><table border='0'><tr><td><b>";
-
-
-echo "<img src=\"".$HTMLRel."pics/computer.png\" ></td><td><a  class='icon_consol' href=\"computers-add-select.php\">".$lang["computers"][0]."</a>";
-
-
-echo "</b></td></tr></table></div>";
+titleComputers();
 
 searchFormComputers();
+
+if(!isset($_GET["start"])) $_GET["start"] = 0;
+if (!isset($_GET["order"])) $_GET["order"] = "ASC";
+if (!isset($_GET["field"])) $_GET["field"] = "all";
+if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "";
+if (!isset($_GET["contains"])) $_GET["contains"] = " ";
+if (!isset($_GET["sort"])) $_GET["sort"] = "name";
+
+showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
 
 commonFooter();
 ?>

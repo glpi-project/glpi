@@ -46,19 +46,7 @@ commonHeader("Printers",$_SERVER["PHP_SELF"]);
 
 
 
-echo "<div align='center'><table border='0'><tr><td><b>";
-
-
-echo "<img src=\"".$HTMLRel."pics/printer.png\" ></td><td><a  class='icon_consol' href=\"printers-info-form.php?new=1\">".$lang["printers"][0]."</a>";
-
-
-echo "</b></td></tr></table></div>";
-
-
-
-
-
-
+titlePrinters();
 
 
 searchFormPrinters();

@@ -40,6 +40,19 @@ include ("_relpos.php");
 // FUNCTIONS Printers 
 //fonction imprimantes
 
+function titlePrinters(){
+           GLOBAL  $lang,$HTMLRel;
+           
+           echo "<div align='center'><table border='0'><tr><td><b>";
+
+           echo "<img src=\"".$HTMLRel."pics/printer.png\" ></td><td><a  class='icon_consol' href=\"printers-info-form.php?new=1\">".$lang["printers"][0]."</a>";
+
+
+           echo "</b></td></tr></table></div>";
+}
+
+
+
 function searchFormPrinters() {
 	// Print Search Form
 	
@@ -55,43 +68,26 @@ function searchFormPrinters() {
 	$option["contact"]			= $lang["printers"][8];
 	$option["contact_num"]		= $lang["printers"][7];
 	$option["date_mod"]			= $lang["printers"][16];
+	
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/printers/printers-search.php\">";
-	echo "<center><table border='0' width='90%'>";
-	echo "<tr><th colspan='2'><b>".$lang["search"][5].":</b></th></tr>";
-	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>";
-		dropdown( "dropdown_locations",  "contains");
-	echo "<input type='hidden' name='field' value='location'>&nbsp;";
-	echo $lang["search"][6];
-	echo "&nbsp;<select name='sort' size='1'>";
-	reset($option);
-	foreach ($option as $key => $val) {
-		echo "<option value=$key>$val\n";
-	}
-	echo "</select>";
-	echo "<input type='hidden' name='phrasetype' value='exact'>";
-	echo "</td><td width='80' align='center' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'>";
-	echo "</td></tr></table></form></center>";
-
-	echo "<form method='get' action=\"".$cfg_install["root"]."/printers/printers-search.php\">";
-	echo "<center><table border='0' width='90%'>";
+	echo "<center><table border='0' width='750'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
-	echo "<select name=\"field\" size=1>";
-	reset($option);
+	echo "<select name=\"field\" size='1'>";
+
+        reset($option);
 	foreach ($option as $key => $val) {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select>&nbsp;";
 	echo $lang["search"][1];
-	echo "&nbsp;<select name=phrasetype>";
+	echo "&nbsp;<select name='phrasetype' size='1'>";
 	echo "<option value='contains'>".$lang["search"][2]."</option>";
 	echo "<option value='exact'>".$lang["search"][3]."</option>";
 	echo "</select>";
-	echo "<input type='text' size='5' name=\"contains\">"; 
+	echo "<input type='text' size='10' name=\"contains\">";
 	echo "&nbsp;";
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
@@ -206,7 +202,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 		} else {
 			echo "<center><b>".$lang["printers"][17]."</b></center>";
 			echo "<hr noshade>";
-			searchFormPrinters();
+		//	searchFormPrinters();
 		}
 	}
 }
