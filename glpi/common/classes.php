@@ -317,8 +317,16 @@ class Identification
 		$db = new DB;
 		$query = "SELECT password from glpi_users where (name = '".$name."')";
 		$result = $db->query($query);
+		if (!$result){
+		$this->err = "Unknown username";
+		return false;	
+		}
 		$query2 = "SELECT PASSWORD('".$password."') as password";
 		$result2 = $db->query($query2);
+		if (!$result2){
+		$this->err = "Bad username or password";
+		return false;	
+		}
 		
 		if($result&&$result2)
 		{
