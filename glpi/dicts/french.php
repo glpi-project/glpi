@@ -1048,6 +1048,7 @@ $lang["devices"][6] = "Memoire vive";
 $lang["devices"][7] = "Carte son";
 $lang["devices"][8] = "D&eacute;signation";
 $lang["devices"][9] = "Ajout d'un nouveau periph&eacute;rique interne pour l'ordinateur: ";
+$lang["devices"][10] = "P&eacute;riph&eacute;riques Internes ";
 
 $lang["cartridges"][0] = "Cartouche";
 $lang["cartridges"][1] = "Nom";

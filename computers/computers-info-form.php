@@ -47,7 +47,6 @@ include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_reservation.php");
 include ($phproot . "/glpi/includes_financial.php");
 
-
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
@@ -111,8 +110,8 @@ else if(isset($tab["connect"])&&isset($tab["device_type"])) {
 //Update a device specification
 elseif(isset($_POST["update_device"])) {
 	checkAuthentication("admin");
-	update_device_specif($_POST["device_value"],$_POST["compDevID"]);
-	logEvent($_POST["compDevID"],"computers",4,"inventory",$_SESSION["glpiname"] ." modified a computer device spécificity.");
+	update_device_specif($_POST["device_value"],$_POST["update_device"]);
+	logEvent($_POST["update_device"],"computers",4,"inventory",$_SESSION["glpiname"] ." modified a computer device spécificity.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 //add a new device

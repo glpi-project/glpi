@@ -77,119 +77,85 @@ function getDeviceTable($dev_type){
 
 //print form/tab for a device linked to a computer
 function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate='') {
-	global $lang;
+	global $lang,$HTMLRel;
 	
 	//print the good form switch the wanted device type.
-	echo "<table width='700px' class='tab_cadre' >";
+	$entry=array();
+	$type="";
+	$name="";
 	switch($device->type) {
 		case HDD_DEVICE :
+			$type=$lang["devices"][1];
+			$name=$device->fields["designation"];
+			if (!empty($device->fields["rpm"]))	$entry[$lang["device_hdd"][0]]=$device->fields["rpm"];
+			if (!empty($device->fields["interface"]))	$entry[$lang["device_hdd"][2]]=$device->fields["interface"];
+			if (!empty($device->fields["cache"])) $entry[$lang["device_hdd"][1]]=$device->fields["cache"];
 			
-			echo "<tr><th width='300px' >".$lang["devices"][1]."</th>";
-			
-			echo "<th >".$lang["devices"][8]." : ".$device->fields["designation"]."</th>";
-			echo "</tr>";
-			
-			echo "<tr class='tab_bg_2'><td>".$lang["device_hdd"][0]." : ".$device->fields["rpm"]."</td>";
-			//echo "<td></td>";
-			//echo "<td>&nbsp;</td>";
-			
-			echo "<td>".$lang["device_hdd"][2]." : ".$device->fields["interface"]."</td>";
-			//echo "<td></td>";
-			//echo "<td>&nbsp;</td>";
-			echo "</tr><tr class='tab_bg_2'>";
-			
-			echo "<td>".$lang["device_hdd"][1]." : ".$device->fields["cache"]."</td>";
-			//echo "<td></td>";
-			echo "<td>&nbsp;</td>";
-			echo "</tr>";
 			$specificity_label = $lang["device_hdd"][4];
 		
 		break;
 		case GFX_DEVICE :
+			$type=$lang["devices"][2];
+			$name=$device->fields["designation"];
+			if (!empty($device->fields["ram"])) $entry[$lang["device_gfxcard"][0]]=$device->fields["ram"];
+			if (!empty($device->fields["interface"])) $entry[$lang["device_gfxcard"][2]]=$device->fields["interface"];
 			
-			echo "<tr><th width='300px' >".$lang["devices"][2]."</th>";
-			
-			echo "<th >".$lang["devices"][8]." : ".$device->fields["designation"]."</th>";
-			echo "</tr>";
-			
-			echo "<tr class='tab_bg_2'><td>".$lang["device_gfxcard"][0]." : ".$device->fields["ram"]."</td>";
-			
-			
-			echo "<td>".$lang["device_gfxcard"][2]." : ".$device->fields["interface"]."</td>";
-			
-			echo "</tr>";
 			$specificity_label = "";
 		break;
 		case NETWORK_DEVICE :
+			$type=$lang["devices"][3];
+			$name=$device->fields["designation"];
+			if (!empty($device->fields["bandwidth"])) $entry[$lang["device_iface"][0]]=$device->fields["bandwidth"];
 			
-			echo "<tr><th width='300px' >".$lang["devices"][3]."</th>";
-			
-			echo "<th >".$lang["devices"][8]." : ".$device->fields["designation"]."</th>";
-			echo "</tr>";
-			
-			echo "<tr class='tab_bg_2'><td>".$lang["device_iface"][0]." : ".$device->fields["bandwidth"]."</td>";
-			
-			echo "<td>&nbsp;</td>";
-			echo "</tr>";
 			$specificity_label = $lang["device_iface"][2];
 		break;
 		case MOBOARD_DEVICE :
+			$type=$lang["devices"][5];
+			$name=$device->fields["designation"];
+			if (!empty($device->fields["chipset"])) $entry[$lang["device_moboard"][0]]=$device->fields["chipset"];
 			
-			echo "<tr><th width='300px' >".$lang["devices"][5]."</th>";
-			
-			echo "<th >".$lang["devices"][8]." : ".$device->fields["designation"]."</th>";
-			echo "</tr>";
-			
-			echo "<tr class='tab_bg_2'><td>".$lang["device_moboard"][0].":".$device->fields["chipset"]."</td>";
-			
-			echo "<td>&nbsp;</td>";
-			echo "</tr>";
 			$specificity_label = "";
 		break;
 		case PROCESSOR_DEVICE :
+			$type=$lang["devices"][4];
+			$name=$device->fields["designation"];
+			if (!empty($device->fields["frequence"])) $entry[$lang["device_processor"][0]]=$device->fields["frequence"];
 			
-			echo "<tr><th width='300px' >".$lang["devices"][4]."</th>";
-			
-			echo "<th colspan='2'>".$lang["devices"][8]." : ".$device->fields["designation"]."</th>";
-			echo "</tr>";
-			
-			
-			echo "<tr class='tab_bg_2'><td>".$lang["device_processor"][0]." : ".$device->fields["frequence"]."</td>";
-			
-			echo "<td>&nbsp;</td>";
-			echo "</tr>";
 			$specificity_label = $lang["device_processor"][0];
 		break;
 		case RAM_DEVICE :
+			$type=$lang["devices"][6];
+			$name=$device->fields["designation"];
+			if (!empty($device->fields["type"])) $entry[$lang["device_ram"][0]]=$device->fields["type"];
+			if (!empty($device->fields["frequence"])) $entry[$lang["device_ram"][1]]=$device->fields["frequence"];
 			
-			echo "<tr><th width='300px' >".$lang["devices"][6]."</th>";
-			
-			echo "<th >".$lang["devices"][8]." : ".$device->fields["designation"]."</th>";
-			echo "</tr>";
-			
-			echo "<tr class='tab_bg_2'><td>".$lang["device_ram"][0]." : ".$device->fields["type"]."</td>";
-			
-			echo "<td>".$lang["device_ram"][1]." : ".$device->fields["frequence"]."</td>";
-			
-			echo "</tr>";
 			$specificity_label = $lang["device_ram"][0];
 		break;
 		case SND_DEVICE :
 			
-			echo "<tr><th width='300px' >".$lang["devices"][7]."</th>";
+			$type=$lang["devices"][5];
+			$name=$device->fields["designation"];
+			if (!empty($device->fields["type"])) $entry[$lang["device_sndcard"][0]]=$device->fields["type"];
 			
-			echo "<th >".$lang["devices"][8]." : ".$device->fields["designation"]."</th>";
-			echo "</tr>";
-			
-			echo "<tr class='tab_bg_2'><td>".$lang["device_sndcard"][0]." : ".$device->fields["type"]."</td>";
-			
-			echo "<td>&nbsp;</td>";
-			echo "</tr>";
 			$specificity_label = "";
 		break;
 	}
+	
+	echo "<tr class='tab_bg_2'>";
+	echo "<td align='center'>$type</td><td align='center'>$name</td>";
+	
+	if (count($entry)>0){
+		$colspan=60/count($entry);
+		foreach ($entry as $key => $val){
+		echo "<td colspan='$colspan'>$key:&nbsp;$val</td>";
+	
+		}
+	
+	} else echo "<td colspan='60'>&nbsp;</td>";
+	
+	
 	if(!empty($specificity_label)) {
-		echo "<tr class='tab_bg_2'>";
+		
 		//Mise a jour des spécificitées
 		if(!empty($withtemplate) && $withtemplate == 2) {
 			if(empty($specif)) $specif = "&nbsp;";
@@ -198,15 +164,21 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			
 		}
 		else {
-			echo "<form action=\"\" method=\"post\" >";
-			echo "<td>".$specificity_label." : <input type='text' name='device_value' value=\"".$specif."\" size='20' /></td>";
-			echo "<td align='center'><input type='submit' class='submit' name='update_device' value=\"".$lang["buttons"][7]."\" size='20' /></td>";
-			echo "<input type=\"hidden\" name=\"compDevID\" value=\"".$compDevID."\" />";
+			echo "<form name='form_update_device_$compDevID' action=\"\" method=\"post\" >";
+			echo "<td align='right'>".$specificity_label." : <input type='text' name='device_value' value=\"".$specif."\" size='10' /></td>";
+			echo "<td align='center'>";
+			echo "<img src='".$HTMLRel."pics/edit.png' class='calendrier' alt='".$lang["buttons"][7]."' title='".$lang["buttons"][7]."'
+			onclick='form_update_device_$compDevID.submit()'>";
+			//<input type='submit' class='submit' name='update_device' value=\"".$lang["buttons"][7]."\" size='20' />
+			echo "</td>";
+			//echo "<input type=\"hidden\" name=\"compDevID\" value=\"".$compDevID."\" />";
+			echo "<input type=\"hidden\" name=\"update_device\" value=\"".$compDevID."\" />";
 			echo "</form>";
 		}
-		echo "</tr>";
-	}
-	echo "</table>";
+		
+	} else echo "<td>&nbsp;</td><td>&nbsp;</td>";
+	echo "</tr>";
+	
 }
 
 //Update an internal device specificity
