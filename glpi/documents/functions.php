@@ -400,9 +400,11 @@ function uploadDocument($FILEDESC,$old_file=''){
 				if ($force||!is_file($phproot.$cfg_install["doc_dir"]."/".$dir."/".$filename)){
 					// Delete old file
 					if(!empty($old_file)&& is_file($phproot.$cfg_install["doc_dir"]."/".$old_file)&& !is_dir($phproot.$cfg_install["doc_dir"]."/".$old_file)) {
+						echo $old_file."---";
 						if (unlink($phproot.$cfg_install["doc_dir"]."/".$old_file))
 						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][24].$phproot.$cfg_install["doc_dir"]."/".$old_file."<br>";
-						} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][25].$phproot.$cfg_install["doc_dir"]."/".$old_file."<br>";
+						else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][25].$phproot.$cfg_install["doc_dir"]."/".$old_file."<br>";
+						}
 					
 					if (move_uploaded_file($FILEDESC['tmp_name'],$phproot.$cfg_install["doc_dir"]."/".$dir."/".$filename )) {
    						$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][26]."<br>";
