@@ -779,6 +779,8 @@ $query = "ALTER TABLE `glpi_connect_wire` ADD INDEX ( `type` ) ";
 $db->query($query) or die("40 ".$lang["update"][90].$db->error());
 }
 
+
+
 if(!FieldExists("glpi_config","ldap_condition")) {
 	$query = "ALTER TABLE `glpi_config` ADD `ldap_condition` varchar(255) NOT NULL default ''";
 	$db->query($query) or die("48 ".$lang["update"][90].$db->error());
@@ -797,7 +799,10 @@ if(!superAdminExists()) {
 	}
 }
 
-
+if(!FieldExists("glpi_users","password_md5")) {
+	$query = "ALTER TABLE `glpi_users` ADD `password_md5` VARCHAR(32) NOT NULL AFTER `password` ";
+	$db->query($query) or die("glpi_users.Password_md5".$lang["update"][90].$db->error());
+}
 
 return $ret;
 }
