@@ -235,7 +235,7 @@ $db = new DB;
 if(!TableExists("glpi_config"))
 {
 $query = "CREATE TABLE `glpi_config` (
-  `config_id` int(11) NOT NULL auto_increment,
+  `ID` int(11) NOT NULL auto_increment,
   `num_of_events` varchar(200) NOT NULL default '',
   `jobs_at_login` varchar(200) NOT NULL default '',
   `sendexpire` varchar(200) NOT NULL default '',
@@ -280,7 +280,7 @@ $query = "CREATE TABLE `glpi_config` (
   `ldap_field_location` varchar(200) NOT NULL default '',
   `ldap_field_realname` varchar(200) NOT NULL default '',
   `ldap_field_phone` varchar(200) NOT NULL default '',
-  PRIMARY KEY  (`config_id`)
+  PRIMARY KEY  (`ID`)
 ) TYPE=MyISAM AUTO_INCREMENT=2 ";
 $db->query($query) or die("erreur lors de la migration".$db->error());
 
@@ -439,9 +439,21 @@ if(!TableExists("glpi_peripherals")) {
 	  PRIMARY KEY  (`ID`)
 	) TYPE=MyISAM;";
 
-$db->query($query) or die("erreur lors de la migration".$db->error());;
+$db->query($query) or die("erreur lors de la migration".$db->error());
 }
 
+if(!FieldExists("glpi_prefs", "ID")) {
+	$query = "Alter table glpi_prefs drop primary key";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$query = "ALTER TABLE `glpi_prefs` ADD UNIQUE (`user`)";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$query = "Alter table glpi_prefs add ID INT(11) not null primary key";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+}
+if(!FieldExists("glpi_config", "ID")) {
+
+$query = "ALTER TABLE `glpi_config` CHANGE `config_id` `ID` INT( 11 ) NOT NULL AUTO_INCREMENT ";
+$db->query($query) or die("erreur lors de la migration".$db->error());
 }
 
 
