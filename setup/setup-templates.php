@@ -49,21 +49,21 @@ if(isset($tab["add"]))
 	checkAuthentication("admin");
 	addTemplate($tab);
 	logEvent(0,"Templates", 5, "setup", $_SESSION["glpiname"]." added template ".$tab["templname"].".");
-	header("Location: $_SERVER[$HTTP_REFERER]?done");
+	header("Location: $_SERVER[HTTP_REFERER]?done");
 }
 else if(isset($tab["delete"]))
 {
 	checkAuthentication("admin");
 	deleteTemplate($tab);
 	logEvent(0,"Templates", 5, "setup", $_SESSION["glpiname"]." deleted template ".$tab["ID"].".");
-	header("Location: $_SERVER[$HTTP_REFERER]?done");
+	header("Location: $_SERVER[HTTP_REFERER]?done");
 }
 else if(isset($tab["update"]))
 {
 	checkAuthentication("admin");
 	updateTemplate($tab);
 	logEvent(0,"Templates", 5, "setup", $_SESSION["glpiname"]." updated template ".$tab["ID"].".");
-	header("Location: $_SERVER[$HTTP_REFERER]?done");
+	header("Location: $_SERVER[HTTP_REFERER]?done");
 }
 else if(isset($tab["showform"]))
 {
