@@ -547,7 +547,7 @@ function updateComputer($input) {
 	// Pop off the last two attributes, no longer needed
 	$null=array_pop($input);
 	$null=array_pop($input);
-	
+	$null=array_pop($input);
 	// Get all flags and fill with 0 if unchecked in form
 	foreach  ($comp->fields as $key => $val) {
 		if (eregi("\.*flag\.*",$key)) {
