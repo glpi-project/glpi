@@ -1,3 +1,21 @@
+# phpMyAdmin SQL Dump
+# version 2.5.7-pl1
+# http://www.phpmyadmin.net
+#
+# Serveur: localhost
+# Généré le : Mardi 13 Juillet 2004 à 00:25
+# Version du serveur: 4.0.20
+# Version de PHP: 4.3.4
+# 
+# Base de données: `riliz`
+# 
+
+# --------------------------------------------------------
+
+#
+# Structure de la table `computers`
+#
+
 DROP TABLE IF EXISTS `computers`;
 CREATE TABLE `computers` (
   `ID` int(11) NOT NULL auto_increment,
@@ -29,11 +47,23 @@ CREATE TABLE `computers` (
   PRIMARY KEY  (`ID`),
   KEY `location` (`location`),
   KEY `flags` (`flags_server`)
-) TYPE=MyISAM AUTO_INCREMENT=23 ;
+) TYPE=MyISAM;
 
+#
+# Contenu de la table `computers`
+#
 
-INSERT INTO `computers` VALUES (21, 'bgfdbfdbdfgb', 'Generic x86 PC', 0, 'Debian woody 3.0', '', '486 DX', '', '1 ier etage', '', '', '36pin SIMMS', '', '3Com (100Mbps)', '', '', '', '', '2004-06-15 20:41:09', 'ATI Rage Pro 3D AGP', 'Asus P2BX', 'integrated', 'IBM DCAS 34330', '0000-00-00', '0000-00-00', 0);
+INSERT DELAYED INTO `computers` (`ID`, `name`, `type`, `flags_server`, `os`, `osver`, `processor`, `processor_speed`, `location`, `serial`, `otherserial`, `ramtype`, `ram`, `network`, `hdspace`, `contact`, `contact_num`, `comments`, `date_mod`, `gfxcard`, `moboard`, `sndcard`, `hdtype`, `achat_date`, `date_fin_garantie`, `maintenance`) VALUES (23, '', 'Generic x86 PC', 0, 'Debian woody 3.0', '', '486 DX', '', '1 ier etage', '', '', '36pin SIMMS', '', '3Com (100Mbps)', '', '', '', '', '2004-07-12 17:52:31', 'ATI Rage Pro 3D AGP', 'Asus P2BX', 'integrated', 'IBM DCAS 34330', '2004-07-22', '2004-07-28', 0),
+(19, '', 'Generic x86 PC', 0, 'Linux (Redhat 6.2)', '', '486 DX', '', '1 ier etage', '', '', '36pin SIMMS', '', '3Com (100Mbps)', '', '', '', 'Empty Template', '2004-07-11 16:20:12', 'ATI Rage Pro 3D AGP', 'Asus P2BX', 'Soundblaster 128 PCI', 'IBM DCAS 34330', '0000-00-00', '0000-00-00', 0),
+(20, '', 'Generic x86 PC', 0, 'Linux (Redhat 6.2)', '', '486 DX', '', '1 ier etage', '', '', '36pin SIMMS', '', '3Com (100Mbps)', '', '', '', 'Empty Template', '2004-07-11 16:20:14', 'ATI Rage Pro 3D AGP', 'Asus P2BX', 'Soundblaster 128 PCI', 'IBM DCAS 34330', '0000-00-00', '0000-00-00', 0),
+(21, '', 'Generic x86 PC', 0, 'Linux (Redhat 6.2)', '', '486 DX', '', '1 ier etage', '', '', '36pin SIMMS', '', '3Com (100Mbps)', '', '', '', 'Empty Template', '2004-07-11 16:20:16', 'ATI Rage Pro 3D AGP', 'Asus P2BX', 'Soundblaster 128 PCI', 'IBM DCAS 34330', '0000-00-00', '0000-00-00', 0),
+(22, '', 'Generic x86 PC', 0, 'Linux (Redhat 6.2)', '', '486 DX', '', '1 ier etage', '', '', '36pin SIMMS', '', '3Com (100Mbps)', '', '', '', 'Empty Template', '2004-07-11 16:20:17', 'ATI Rage Pro 3D AGP', 'Asus P2BX', 'Soundblaster 128 PCI', 'IBM DCAS 34330', '0000-00-00', '0000-00-00', 0);
 
+# --------------------------------------------------------
+
+#
+# Structure de la table `connect_wire`
+#
 
 DROP TABLE IF EXISTS `connect_wire`;
 CREATE TABLE `connect_wire` (
@@ -42,66 +72,118 @@ CREATE TABLE `connect_wire` (
   `end2` int(11) NOT NULL default '0',
   `type` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM;
 
+#
+# Contenu de la table `connect_wire`
+#
+
+
+# --------------------------------------------------------
+
+#
+# Structure de la table `dropdown_gfxcard`
+#
 
 DROP TABLE IF EXISTS `dropdown_gfxcard`;
 CREATE TABLE `dropdown_gfxcard` (
   `name` varchar(255) NOT NULL default ''
 ) TYPE=MyISAM;
 
+#
+# Contenu de la table `dropdown_gfxcard`
+#
 
-INSERT INTO `dropdown_gfxcard` VALUES ('ATI Rage Pro 3D AGP');
-INSERT INTO `dropdown_gfxcard` VALUES ('Matrox Millenium G400DH');
-INSERT INTO `dropdown_gfxcard` VALUES ('S3 Trio 64V+');
-INSERT INTO `dropdown_gfxcard` VALUES ('integrated');
+INSERT DELAYED INTO `dropdown_gfxcard` (`name`) VALUES ('ATI Rage Pro 3D AGP'),
+('Matrox Millenium G400DH'),
+('S3 Trio 64V+'),
+('integrated');
 
+# --------------------------------------------------------
+
+#
+# Structure de la table `dropdown_hdtype`
+#
 
 DROP TABLE IF EXISTS `dropdown_hdtype`;
 CREATE TABLE `dropdown_hdtype` (
   `name` varchar(255) NOT NULL default ''
 ) TYPE=MyISAM;
 
+#
+# Contenu de la table `dropdown_hdtype`
+#
 
-INSERT INTO `dropdown_hdtype` VALUES ('IBM DTTA 35101');
-INSERT INTO `dropdown_hdtype` VALUES ('IBM DCAS 34330');
+INSERT DELAYED INTO `dropdown_hdtype` (`name`) VALUES ('IBM DTTA 35101'),
+('IBM DCAS 34330');
 
+# --------------------------------------------------------
+
+#
+# Structure de la table `dropdown_iface`
+#
 
 DROP TABLE IF EXISTS `dropdown_iface`;
 CREATE TABLE `dropdown_iface` (
   `name` varchar(255) default NULL
 ) TYPE=MyISAM;
 
+#
+# Contenu de la table `dropdown_iface`
+#
 
-INSERT INTO `dropdown_iface` VALUES ('10Mbps Ethernet (UTP)');
-INSERT INTO `dropdown_iface` VALUES ('100Mbps Ethernet (UTP)');
-INSERT INTO `dropdown_iface` VALUES ('100Base FL');
-INSERT INTO `dropdown_iface` VALUES ('100Mbps FDDI');
-INSERT INTO `dropdown_iface` VALUES ('Frame Relay');
-INSERT INTO `dropdown_iface` VALUES ('ISDN');
-INSERT INTO `dropdown_iface` VALUES ('T1/E1 +');
-INSERT INTO `dropdown_iface` VALUES ('Serial Link');
+INSERT DELAYED INTO `dropdown_iface` (`name`) VALUES ('10Mbps Ethernet (UTP)'),
+('100Mbps Ethernet (UTP)'),
+('100Base FL'),
+('100Mbps FDDI'),
+('Frame Relay'),
+('ISDN'),
+('T1/E1 +'),
+('Serial Link');
 
+# --------------------------------------------------------
+
+#
+# Structure de la table `dropdown_locations`
+#
 
 DROP TABLE IF EXISTS `dropdown_locations`;
 CREATE TABLE `dropdown_locations` (
   `name` varchar(255) default NULL
 ) TYPE=MyISAM;
 
+#
+# Contenu de la table `dropdown_locations`
+#
 
-INSERT INTO `dropdown_locations` VALUES ('1 ier etage');
-INSERT INTO `dropdown_locations` VALUES ('2nd etage');
+INSERT DELAYED INTO `dropdown_locations` (`name`) VALUES ('1 ier etage'),
+('2nd etage'),
+('1er etage');
 
+# --------------------------------------------------------
+
+#
+# Structure de la table `dropdown_moboard`
+#
 
 DROP TABLE IF EXISTS `dropdown_moboard`;
 CREATE TABLE `dropdown_moboard` (
   `name` varchar(255) NOT NULL default ''
 ) TYPE=MyISAM;
 
+#
+# Contenu de la table `dropdown_moboard`
+#
 
-INSERT INTO `dropdown_moboard` VALUES ('Asus T2P4S');
-INSERT INTO `dropdown_moboard` VALUES ('Asus P2BX');
-INSERT INTO `dropdown_moboard` VALUES ('unknown');
+INSERT DELAYED INTO `dropdown_moboard` (`name`) VALUES ('Asus T2P4S'),
+('Asus P2BX'),
+('unknown');
+
+# --------------------------------------------------------
+
+#
+# Structure de la table `dropdown_network`
+#
 
 DROP TABLE IF EXISTS `dropdown_network`;
 CREATE TABLE `dropdown_network` (
@@ -109,25 +191,25 @@ CREATE TABLE `dropdown_network` (
 ) TYPE=MyISAM;
 
 #
-# Dumping data for table `dropdown_network`
+# Contenu de la table `dropdown_network`
 #
 
-INSERT INTO `dropdown_network` VALUES ('3Com (100Mbps)');
-INSERT INTO `dropdown_network` VALUES ('3Com (10Mbps)');
-INSERT INTO `dropdown_network` VALUES ('Intel (100Mbps)');
-INSERT INTO `dropdown_network` VALUES ('Intel (10Mbps)');
-INSERT INTO `dropdown_network` VALUES ('Generic 100Mbps Card');
-INSERT INTO `dropdown_network` VALUES ('Generic 10Mbps Card');
-INSERT INTO `dropdown_network` VALUES ('None');
-INSERT INTO `dropdown_network` VALUES ('AMD 10Mbps');
-INSERT INTO `dropdown_network` VALUES ('Realtek 10Mbps');
-INSERT INTO `dropdown_network` VALUES ('Realtek 100Mbps');
-INSERT INTO `dropdown_network` VALUES ('integrated');
+INSERT DELAYED INTO `dropdown_network` (`name`) VALUES ('3Com (100Mbps)'),
+('3Com (10Mbps)'),
+('Intel (100Mbps)'),
+('Intel (10Mbps)'),
+('Generic 100Mbps Card'),
+('Generic 10Mbps Card'),
+('None'),
+('AMD 10Mbps'),
+('Realtek 10Mbps'),
+('Realtek 100Mbps'),
+('integrated');
 
 # --------------------------------------------------------
 
 #
-# Table structure for table `dropdown_os`
+# Structure de la table `dropdown_os`
 #
 
 DROP TABLE IF EXISTS `dropdown_os`;
@@ -136,89 +218,113 @@ CREATE TABLE `dropdown_os` (
 ) TYPE=MyISAM;
 
 #
-# Dumping data for table `dropdown_os`
+# Contenu de la table `dropdown_os`
 #
 
-INSERT INTO `dropdown_os` VALUES ('Windows 2000');
-INSERT INTO `dropdown_os` VALUES ('Linux (Redhat 6.2)');
-INSERT INTO `dropdown_os` VALUES ('Linux (Slackware 7)');
-INSERT INTO `dropdown_os` VALUES ('Solaris');
-INSERT INTO `dropdown_os` VALUES ('Windows NT 4.0');
-INSERT INTO `dropdown_os` VALUES ('Windows 95a');
-INSERT INTO `dropdown_os` VALUES ('Other');
-INSERT INTO `dropdown_os` VALUES ('Windows 98');
-INSERT INTO `dropdown_os` VALUES ('MacOS');
-INSERT INTO `dropdown_os` VALUES ('Windows 95 OSR2');
-INSERT INTO `dropdown_os` VALUES ('Windows 98 SR2');
-INSERT INTO `dropdown_os` VALUES ('Debian woody 3.0');
+INSERT DELAYED INTO `dropdown_os` (`name`) VALUES ('Windows 2000'),
+('Linux (Redhat 6.2)'),
+('Linux (Slackware 7)'),
+('Solaris'),
+('Windows NT 4.0'),
+('Windows 95a'),
+('Other'),
+('Windows 98'),
+('MacOS'),
+('Windows 95 OSR2'),
+('Windows 98 SR2'),
+('Debian woody 3.0');
+
+# --------------------------------------------------------
+
+#
+# Structure de la table `dropdown_processor`
+#
 
 DROP TABLE IF EXISTS `dropdown_processor`;
 CREATE TABLE `dropdown_processor` (
   `name` varchar(255) default NULL
 ) TYPE=MyISAM;
 
+#
+# Contenu de la table `dropdown_processor`
+#
 
+INSERT DELAYED INTO `dropdown_processor` (`name`) VALUES ('Intel Pentium'),
+('Intel Pentium II'),
+('AMD K6-1'),
+('AMD K6-2'),
+('AMD K6-3'),
+('PowerPC G3'),
+('Intel Pentium III'),
+('AMD Athlon'),
+('68k (Motorola)'),
+('486 SX'),
+('486 DX'),
+('486 DX2/4'),
+('Intel Itanium'),
+('PowerPC G4'),
+('RS3000'),
+('RS10k'),
+('Alpha EV6.7'),
+('PowerPC 603ev'),
+('PowerPC 603'),
+('PowerPC 601'),
+('68040'),
+('68040'),
+('ULTRASparc II'),
+('Intel Pentium IV'),
+('AMD Athlon'),
+('AMD Duron');
 
-INSERT INTO `dropdown_processor` VALUES ('Intel Pentium');
-INSERT INTO `dropdown_processor` VALUES ('Intel Pentium II');
-INSERT INTO `dropdown_processor` VALUES ('AMD K6-1');
-INSERT INTO `dropdown_processor` VALUES ('AMD K6-2');
-INSERT INTO `dropdown_processor` VALUES ('AMD K6-3');
-INSERT INTO `dropdown_processor` VALUES ('PowerPC G3');
-INSERT INTO `dropdown_processor` VALUES ('Intel Pentium III');
-INSERT INTO `dropdown_processor` VALUES ('AMD Athlon');
-INSERT INTO `dropdown_processor` VALUES ('68k (Motorola)');
-INSERT INTO `dropdown_processor` VALUES ('486 SX');
-INSERT INTO `dropdown_processor` VALUES ('486 DX');
-INSERT INTO `dropdown_processor` VALUES ('486 DX2/4');
-INSERT INTO `dropdown_processor` VALUES ('Intel Itanium');
-INSERT INTO `dropdown_processor` VALUES ('PowerPC G4');
-INSERT INTO `dropdown_processor` VALUES ('RS3000');
-INSERT INTO `dropdown_processor` VALUES ('RS10k');
-INSERT INTO `dropdown_processor` VALUES ('Alpha EV6.7');
-INSERT INTO `dropdown_processor` VALUES ('PowerPC 603ev');
-INSERT INTO `dropdown_processor` VALUES ('PowerPC 603');
-INSERT INTO `dropdown_processor` VALUES ('PowerPC 601');
-INSERT INTO `dropdown_processor` VALUES ('68040');
-INSERT INTO `dropdown_processor` VALUES ('68040');
-INSERT INTO `dropdown_processor` VALUES ('ULTRASparc II');
-INSERT INTO `dropdown_processor` VALUES ('Intel Pentium IV');
-INSERT INTO `dropdown_processor` VALUES ('AMD Athlon');
-INSERT INTO `dropdown_processor` VALUES ('AMD Duron');
+# --------------------------------------------------------
 
-
+#
+# Structure de la table `dropdown_ram`
+#
 
 DROP TABLE IF EXISTS `dropdown_ram`;
 CREATE TABLE `dropdown_ram` (
   `name` varchar(255) default NULL
 ) TYPE=MyISAM;
 
+#
+# Contenu de la table `dropdown_ram`
+#
 
+INSERT DELAYED INTO `dropdown_ram` (`name`) VALUES ('36pin SIMMS'),
+('72pin SIMMS (Fast Page)'),
+('72pin SIMMS (EDO)'),
+('Unbuffered DIMMs'),
+('DIMMs w/EEPROM'),
+('SDRAM DIMMs (<10ns)'),
+('ECC DIMMs'),
+('Other'),
+('iMac DIMMS');
 
-INSERT INTO `dropdown_ram` VALUES ('36pin SIMMS');
-INSERT INTO `dropdown_ram` VALUES ('72pin SIMMS (Fast Page)');
-INSERT INTO `dropdown_ram` VALUES ('72pin SIMMS (EDO)');
-INSERT INTO `dropdown_ram` VALUES ('Unbuffered DIMMs');
-INSERT INTO `dropdown_ram` VALUES ('DIMMs w/EEPROM');
-INSERT INTO `dropdown_ram` VALUES ('SDRAM DIMMs (<10ns)');
-INSERT INTO `dropdown_ram` VALUES ('ECC DIMMs');
-INSERT INTO `dropdown_ram` VALUES ('Other');
-INSERT INTO `dropdown_ram` VALUES ('iMac DIMMS');
+# --------------------------------------------------------
 
-
+#
+# Structure de la table `dropdown_sndcard`
+#
 
 DROP TABLE IF EXISTS `dropdown_sndcard`;
 CREATE TABLE `dropdown_sndcard` (
   `name` varchar(255) NOT NULL default ''
 ) TYPE=MyISAM;
 
+#
+# Contenu de la table `dropdown_sndcard`
+#
 
+INSERT DELAYED INTO `dropdown_sndcard` (`name`) VALUES ('Soundblaster 128 PCI'),
+('Soundblaster 16 PnP'),
+('integrated');
 
-INSERT INTO `dropdown_sndcard` VALUES ('Soundblaster 128 PCI');
-INSERT INTO `dropdown_sndcard` VALUES ('Soundblaster 16 PnP');
-INSERT INTO `dropdown_sndcard` VALUES ('integrated');
+# --------------------------------------------------------
 
-
+#
+# Structure de la table `event_log`
+#
 
 DROP TABLE IF EXISTS `event_log`;
 CREATE TABLE `event_log` (
@@ -232,100 +338,49 @@ CREATE TABLE `event_log` (
   PRIMARY KEY  (`ID`),
   KEY `comp` (`item`),
   KEY `date` (`date`)
-) TYPE=MyISAM AUTO_INCREMENT=451 ;
+) TYPE=MyISAM;
 
+#
+# Contenu de la table `event_log`
+#
 
+INSERT DELAYED INTO `event_log` (`ID`, `item`, `itemtype`, `date`, `service`, `level`, `message`) VALUES (363, -1, 'system', '2004-07-11 16:08:11', 'login', 3, 'glpi logged in.'),
+(364, 8, 'computers', '2004-07-11 16:08:19', 'inventory', 4, 'glpiupdated item.'),
+(365, 8, 'computers', '2004-07-11 16:08:21', 'inventory', 4, 'glpi deleted item.'),
+(366, 8, 'computers', '2004-07-11 16:12:17', 'inventory', 4, 'glpiupdated item.'),
+(367, 18, 'computers', '2004-07-11 16:12:25', 'inventory', 4, 'glpi deleted item.'),
+(368, -1, 'system', '2004-07-11 16:15:36', 'login', 3, 'glpi logged in.'),
+(369, 15, 'computers', '2004-07-11 16:15:47', 'inventory', 4, 'glpi deleted item.'),
+(370, -1, 'system', '2004-07-11 16:19:55', 'login', 3, 'glpi logged in.'),
+(371, 10, 'computers', '2004-07-11 16:20:02', 'inventory', 4, 'glpi deleted item.'),
+(372, 0, 'computers', '2004-07-11 16:20:12', 'inventory', 4, 'glpi added .'),
+(373, 0, 'computers', '2004-07-11 16:20:14', 'inventory', 4, 'glpi added .'),
+(374, 0, 'computers', '2004-07-11 16:20:16', 'inventory', 4, 'glpi added .'),
+(375, 0, 'computers', '2004-07-11 16:20:17', 'inventory', 4, 'glpi added .'),
+(376, 19, 'computers', '2004-07-11 16:20:29', 'tracking', 4, 'glpi added new job.'),
+(377, 19, 'computers', '2004-07-11 16:20:35', 'tracking', 4, 'glpi added new job.'),
+(378, -1, 'system', '2004-07-11 16:21:41', 'login', 3, 'glpi logged in.'),
+(379, -1, 'system', '2004-07-12 14:41:42', 'login', 3, 'glpi logged in.'),
+(380, 19, 'computers', '2004-07-12 14:43:10', 'tracking', 4, 'glpi added followup to job 4.'),
+(381, 19, 'computers', '2004-07-12 14:43:21', 'tracking', 4, 'glpi added followup to job 4.'),
+(382, 19, 'computers', '2004-07-12 14:44:09', 'inventory', 5, 'glpi installed software.'),
+(383, 0, 'dropdowns', '2004-07-12 14:45:31', 'setup', 5, 'glpi added a value to a dropdown.'),
+(384, -1, 'system', '2004-07-12 14:48:56', 'login', 3, 'glpi logged in.'),
+(385, 0, 'networking', '2004-07-12 14:49:06', 'inventory', 5, 'glpi added networking port.'),
+(386, 0, 'networking', '2004-07-12 14:49:11', 'inventory', 5, 'glpi added networking port.'),
+(387, -1, 'system', '2004-07-12 15:24:42', 'login', 3, 'glpi logged in.'),
+(388, -1, 'system', '2004-07-12 15:50:04', 'login', 3, 'glpi logged in.'),
+(389, -1, 'system', '2004-07-12 17:50:28', 'login', 3, 'glpi logged in.'),
+(390, 0, 'Templates', '2004-07-12 17:52:24', 'setup', 5, 'glpi added template bazou.'),
+(391, 0, 'computers', '2004-07-12 17:52:31', 'inventory', 4, 'glpi added .'),
+(392, 0, 'Templates', '2004-07-12 17:53:15', 'setup', 5, 'glpi updated template 8.'),
+(393, 0, 'Templates', '2004-07-12 17:53:25', 'setup', 5, 'glpi updated template 8.');
 
-INSERT INTO `event_log` VALUES (363, -1, 'system', '2004-06-03 14:12:01', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (364, 8, 'computers', '2004-06-03 14:16:17', 'tracking', 4, 'glpi added new job.');
-INSERT INTO `event_log` VALUES (365, -1, 'system', '2004-06-03 14:16:21', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (366, -1, 'system', '2004-06-03 14:16:32', 'login', 1, 'failed login: post-only');
-INSERT INTO `event_log` VALUES (367, -1, 'system', '2004-06-03 14:16:42', 'login', 3, 'post-only logged in.');
-INSERT INTO `event_log` VALUES (368, 15, 'computers', '2004-06-03 14:39:41', 'tracking', 4, 'post-only added new job.');
-INSERT INTO `event_log` VALUES (369, -1, 'system', '2004-06-03 14:40:06', 'login', 3, 'post-only logged in.');
-INSERT INTO `event_log` VALUES (370, -1, 'system', '2004-06-03 15:07:42', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (371, 15, 'computers', '2004-06-03 15:07:53', 'tracking', 4, 'glpi added followup to job 5.');
-INSERT INTO `event_log` VALUES (372, -1, 'system', '2004-06-03 15:08:02', 'login', 3, 'post-only logged in.');
-INSERT INTO `event_log` VALUES (373, -1, 'system', '2004-06-03 15:10:33', 'login', 3, 'post-only logged in.');
-INSERT INTO `event_log` VALUES (374, -1, 'system', '2004-06-03 15:11:29', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (375, -1, 'system', '2004-06-03 15:11:40', 'login', 3, 'post-only logged in.');
-INSERT INTO `event_log` VALUES (376, -1, 'system', '2004-06-03 15:11:57', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (377, -1, 'system', '2004-06-03 15:17:11', 'login', 3, 'tech logged in.');
-INSERT INTO `event_log` VALUES (378, -1, 'system', '2004-06-03 15:45:08', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (379, -1, 'system', '2004-06-11 16:50:02', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (380, -1, 'system', '2004-06-11 17:17:22', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (381, -1, 'system', '2004-06-11 20:04:42', 'login', 1, 'failed login: ');
-INSERT INTO `event_log` VALUES (382, -1, 'system', '2004-06-14 14:59:50', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (383, -1, 'system', '2004-06-14 17:05:48', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (384, -1, 'system', '2004-06-14 17:06:03', 'login', 1, 'failed login: glpi_ldap');
-INSERT INTO `event_log` VALUES (385, -1, 'system', '2004-06-14 17:07:01', 'login', 1, 'failed login: glpi_ldap');
-INSERT INTO `event_log` VALUES (386, -1, 'system', '2004-06-14 17:08:18', 'login', 1, 'failed login: glpi_ldap');
-INSERT INTO `event_log` VALUES (387, -1, 'system', '2004-06-14 17:12:10', 'login', 1, 'failed login: glpi_ldap');
-INSERT INTO `event_log` VALUES (388, -1, 'system', '2004-06-14 17:12:24', 'login', 1, 'failed login: glpi_ldap');
-INSERT INTO `event_log` VALUES (389, -1, 'system', '2004-06-14 17:12:52', 'login', 1, 'failed login: glpi_ldap');
-INSERT INTO `event_log` VALUES (390, -1, 'system', '2004-06-14 17:19:13', 'login', 1, 'failed login: admin');
-INSERT INTO `event_log` VALUES (391, -1, 'system', '2004-06-14 17:19:20', 'login', 1, 'failed login: admin');
-INSERT INTO `event_log` VALUES (392, -1, 'system', '2004-06-14 17:23:33', 'login', 1, 'failed login: admin');
-INSERT INTO `event_log` VALUES (393, -1, 'system', '2004-06-14 17:24:05', 'login', 1, 'failed login: admin');
-INSERT INTO `event_log` VALUES (394, -1, 'system', '2004-06-14 17:24:19', 'login', 1, 'failed login: admin');
-INSERT INTO `event_log` VALUES (395, -1, 'system', '2004-06-14 17:26:15', 'login', 3, 'admin logged in.');
-INSERT INTO `event_log` VALUES (396, -1, 'system', '2004-06-14 17:42:41', 'login', 3, 'louison logged in.');
-INSERT INTO `event_log` VALUES (397, -1, 'system', '2004-06-14 17:46:04', 'login', 3, 'louison logged in.');
-INSERT INTO `event_log` VALUES (398, -1, 'system', '2004-06-14 17:46:58', 'login', 3, 'louison logged in.');
-INSERT INTO `event_log` VALUES (399, -1, 'system', '2004-06-14 17:47:30', 'login', 3, 'louison logged in.');
-INSERT INTO `event_log` VALUES (400, -1, 'system', '2004-06-14 18:19:58', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (401, -1, 'system', '2004-06-14 18:20:41', 'login', 1, 'failed login: bazou');
-INSERT INTO `event_log` VALUES (402, -1, 'system', '2004-06-14 18:20:51', 'login', 3, 'louison logged in.');
-INSERT INTO `event_log` VALUES (403, -1, 'system', '2004-06-14 19:20:40', 'login', 1, 'failed login: louison');
-INSERT INTO `event_log` VALUES (404, -1, 'system', '2004-06-14 19:20:58', 'login', 3, 'louison logged in.');
-INSERT INTO `event_log` VALUES (405, -1, 'system', '2004-06-14 20:23:25', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (406, -1, 'system', '2004-06-14 20:23:33', 'login', 3, 'louison logged in.');
-INSERT INTO `event_log` VALUES (407, -1, 'system', '2004-06-15 11:02:18', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (408, -1, 'system', '2004-06-15 11:11:04', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (409, -1, 'system', '2004-06-15 11:11:17', 'login', 3, 'louison logged in.');
-INSERT INTO `event_log` VALUES (410, -1, 'system', '2004-06-15 11:13:14', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (411, -1, 'system', '2004-06-15 11:13:27', 'login', 3, 'louison logged in.');
-INSERT INTO `event_log` VALUES (412, -1, 'system', '2004-06-15 11:13:36', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (413, 0, 'users', '2004-06-15 11:13:44', 'setup', 4, 'glpi deleted user glpi.');
-INSERT INTO `event_log` VALUES (414, -1, 'system', '2004-06-15 11:13:58', 'login', 1, 'failed login: glpi');
-INSERT INTO `event_log` VALUES (415, -1, 'system', '2004-06-15 11:14:07', 'login', 3, 'louison logged in.');
-INSERT INTO `event_log` VALUES (416, -1, 'system', '2004-06-15 11:15:32', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (417, 0, 'users', '2004-06-15 11:15:39', 'setup', 4, 'glpi deleted user normal.');
-INSERT INTO `event_log` VALUES (418, -1, 'system', '2004-06-15 16:40:37', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (419, -1, 'system', '2004-06-15 16:41:29', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (420, -1, 'system', '2004-06-15 16:44:40', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (421, 15, 'computers', '2004-06-15 16:59:50', 'inventory', 4, 'glpiupdated item.');
-INSERT INTO `event_log` VALUES (422, 15, 'computers', '2004-06-15 16:59:53', 'inventory', 4, 'glpi deleted item.');
-INSERT INTO `event_log` VALUES (423, 15, 'computers', '2004-06-15 17:02:26', 'inventory', 4, 'glpiupdated item.');
-INSERT INTO `event_log` VALUES (424, 10, 'computers', '2004-06-15 17:02:34', 'inventory', 4, 'glpi deleted item.');
-INSERT INTO `event_log` VALUES (425, 1, 'printers', '2004-06-15 17:28:26', 'inventory', 4, 'glpi deleted item.');
-INSERT INTO `event_log` VALUES (426, 2, 'printers', '2004-06-15 17:28:36', 'inventory', 4, 'glpi updated item.');
-INSERT INTO `event_log` VALUES (427, 2, 'printers', '2004-06-15 17:28:42', 'inventory', 4, 'glpi updated item.');
-INSERT INTO `event_log` VALUES (428, 9, 'networking', '2004-06-15 17:28:50', 'inventory', 4, 'glpi updated item.');
-INSERT INTO `event_log` VALUES (429, -1, 'system', '2004-06-15 17:49:46', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (430, -1, 'system', '2004-06-15 17:50:17', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (431, 18, 'computers', '2004-06-15 17:50:27', 'inventory', 4, 'glpi deleted item.');
-INSERT INTO `event_log` VALUES (432, 0, 'computers', '2004-06-15 19:11:55', 'inventory', 4, 'glpi added gkjghjvbjkbkj.');
-INSERT INTO `event_log` VALUES (433, 19, 'computers', '2004-06-15 19:12:03', 'inventory', 4, 'glpi deleted item.');
-INSERT INTO `event_log` VALUES (434, -1, 'system', '2004-06-15 19:50:01', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (435, -1, 'system', '2004-06-15 19:50:04', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (436, 8, 'computers', '2004-06-15 19:50:12', 'inventory', 4, 'glpi deleted item.');
-INSERT INTO `event_log` VALUES (437, -1, 'system', '2004-06-15 20:40:05', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (438, 0, 'computers', '2004-06-15 20:40:15', 'inventory', 4, 'glpi added fsvdsgvfdsgvfdg.');
-INSERT INTO `event_log` VALUES (439, 20, 'computers', '2004-06-15 20:40:21', 'inventory', 4, 'glpi deleted item.');
-INSERT INTO `event_log` VALUES (440, -1, 'system', '2004-06-15 20:40:57', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (441, 0, 'computers', '2004-06-15 20:41:09', 'inventory', 4, 'glpi added bgfdbfdbdfgb.');
-INSERT INTO `event_log` VALUES (442, 0, 'computers', '2004-06-15 20:47:02', 'inventory', 4, 'glpi added fvdsvdvsfd.');
-INSERT INTO `event_log` VALUES (443, 22, 'computers', '2004-06-15 20:47:11', 'inventory', 4, 'glpiupdated item.');
-INSERT INTO `event_log` VALUES (444, 22, 'computers', '2004-06-15 20:47:13', 'inventory', 4, 'glpi deleted item.');
-INSERT INTO `event_log` VALUES (445, 22, 'computers', '2004-06-15 20:47:16', 'inventory', 4, 'glpiupdated item.');
-INSERT INTO `event_log` VALUES (446, -1, 'system', '2004-06-16 18:15:28', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (447, -1, 'system', '2004-06-16 18:15:29', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (448, -1, 'system', '2004-06-16 20:27:49', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (449, -1, 'system', '2004-06-17 17:50:24', 'login', 3, 'glpi logged in.');
-INSERT INTO `event_log` VALUES (450, -1, 'system', '2004-06-17 17:55:11', 'login', 3, 'glpi logged in.');
+# --------------------------------------------------------
 
-
+#
+# Structure de la table `followups`
+#
 
 DROP TABLE IF EXISTS `followups`;
 CREATE TABLE `followups` (
@@ -335,9 +390,20 @@ CREATE TABLE `followups` (
   `author` varchar(200) default NULL,
   `contents` text,
   PRIMARY KEY  (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=7 ;
+) TYPE=MyISAM;
 
+#
+# Contenu de la table `followups`
+#
 
+INSERT DELAYED INTO `followups` (`ID`, `tracking`, `date`, `author`, `contents`) VALUES (6, 4, '2004-07-12 14:43:10', 'glpi', 'salut ad'),
+(7, 4, '2004-07-12 14:43:21', 'glpi', 'salut ad');
+
+# --------------------------------------------------------
+
+#
+# Structure de la table `glpi_config`
+#
 
 DROP TABLE IF EXISTS `glpi_config`;
 CREATE TABLE `glpi_config` (
@@ -386,12 +452,19 @@ CREATE TABLE `glpi_config` (
   `ldap_field_realname` varchar(200) NOT NULL default '',
   `ldap_field_phone` varchar(200) NOT NULL default '',
   PRIMARY KEY  (`config_id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) TYPE=MyISAM;
 
+#
+# Contenu de la table `glpi_config`
+#
 
+INSERT DELAYED INTO `glpi_config` (`config_id`, `num_of_events`, `jobs_at_login`, `sendexpire`, `cut`, `expire_events`, `list_limit`, `version`, `logotxt`, `root_doc`, `event_loglevel`, `mailing`, `imap_auth_server`, `imap_host`, `ldap_host`, `ldap_basedn`, `ldap_rootdn`, `ldap_pass`, `admin_email`, `mailing_signature`, `mailing_new_admin`, `mailing_attrib_admin`, `mailing_followup_admin`, `mailing_finish_admin`, `mailing_new_all_admin`, `mailing_attrib_all_admin`, `mailing_followup_all_admin`, `mailing_finish_all_admin`, `mailing_new_all_normal`, `mailing_attrib_all_normal`, `mailing_followup_all_normal`, `mailing_finish_all_normal`, `mailing_attrib_attrib`, `mailing_followup_attrib`, `mailing_finish_attrib`, `mailing_new_user`, `mailing_attrib_user`, `mailing_followup_user`, `mailing_finish_user`, `ldap_field_name`, `ldap_field_email`, `ldap_field_location`, `ldap_field_realname`, `ldap_field_phone`) VALUES (1, '10', '10', '1', '80', '30', '15', ' 0.3', 'GLPI powered by indepnet', '/glpi', '5', '0', '', '', 'ldap://localhost/', 'dc=melnibone', '', '', 'admsys@sic.sp2mi.xxxxx.fr', 'SIGNATURE', '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '1', '1', '1', '1', '1', 'uid', 'mail', 'physicaldeliveryofficename', 'cn', 'telephonenumber');
 
-INSERT INTO `glpi_config` VALUES (1, '10', '10', '1', '80', '30', '15', ' 0.3', 'GLPI powered by indepnet', '/glpi', '5', '0', '', '', 'ldap://localhost/', 'dc=melnibone', '', '', 'admsys@sic.sp2mi.xxxxx.fr', 'SIGNATURE', '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '1', '1', '1', '1', '1', 'uid', 'mail', 'physicaldeliveryofficename', 'cn', 'telephonenumber');
+# --------------------------------------------------------
 
+#
+# Structure de la table `inst_software`
+#
 
 DROP TABLE IF EXISTS `inst_software`;
 CREATE TABLE `inst_software` (
@@ -401,9 +474,19 @@ CREATE TABLE `inst_software` (
   PRIMARY KEY  (`ID`),
   KEY `cID` (`cID`),
   KEY `sID` (`license`)
-) TYPE=MyISAM AUTO_INCREMENT=5 ;
+) TYPE=MyISAM;
 
+#
+# Contenu de la table `inst_software`
+#
 
+INSERT DELAYED INTO `inst_software` (`ID`, `cID`, `license`) VALUES (5, 19, 8);
+
+# --------------------------------------------------------
+
+#
+# Structure de la table `licenses`
+#
 
 DROP TABLE IF EXISTS `licenses`;
 CREATE TABLE `licenses` (
@@ -411,17 +494,24 @@ CREATE TABLE `licenses` (
   `sID` int(15) NOT NULL default '0',
   `serial` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=10 ;
+) TYPE=MyISAM;
 
+#
+# Contenu de la table `licenses`
+#
 
-INSERT INTO `licenses` VALUES (7, 4, '12-aa-asd-12-aa');
-INSERT INTO `licenses` VALUES (6, 4, 'asd-asdf-asdf-12');
-INSERT INTO `licenses` VALUES (4, 4, 'au-23-as-23-cd');
-INSERT INTO `licenses` VALUES (5, 4, 'qw-as-23-0k-23-dg');
-INSERT INTO `licenses` VALUES (8, 3, 'free');
-INSERT INTO `licenses` VALUES (9, 5, 'free');
+INSERT DELAYED INTO `licenses` (`ID`, `sID`, `serial`) VALUES (7, 4, '12-aa-asd-12-aa'),
+(6, 4, 'asd-asdf-asdf-12'),
+(4, 4, 'au-23-as-23-cd'),
+(5, 4, 'qw-as-23-0k-23-dg'),
+(8, 3, 'free'),
+(9, 5, 'free');
 
+# --------------------------------------------------------
 
+#
+# Structure de la table `monitors`
+#
 
 DROP TABLE IF EXISTS `monitors`;
 CREATE TABLE `monitors` (
@@ -445,14 +535,20 @@ CREATE TABLE `monitors` (
   `maintenance` int(2) default '0',
   PRIMARY KEY  (`ID`),
   KEY `ID` (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=4 ;
+) TYPE=MyISAM;
 
+#
+# Contenu de la table `monitors`
+#
 
+INSERT DELAYED INTO `monitors` (`ID`, `name`, `date_mod`, `type`, `location`, `contact`, `contact_num`, `comments`, `serial`, `otherserial`, `size`, `flags_micro`, `flags_speaker`, `flags_subd`, `flags_bnc`, `achat_date`, `date_fin_garantie`, `maintenance`) VALUES (3, 'nokia 20\'', '2003-09-18 00:14:14', 'Nokia 445Xav', '1 ier etage', '', '', 'Ecran infographiste', '', '', 20, 1, 1, 1, 0, '0000-00-00', '0000-00-00', 0),
+(2, 'Sony 19\'', '2003-09-18 00:14:50', 'Sony 200sf', '1 ier etage', '', '', 'ecran documentation', '', '', 19, 0, 0, 1, 1, '0000-00-00', '0000-00-00', 0);
 
-INSERT INTO `monitors` VALUES (3, 'nokia 20\'', '2003-09-18 00:14:14', 'Nokia 445Xav', '1 ier etage', '', '', 'Ecran infographiste', '', '', 20, 1, 1, 1, 0, '0000-00-00', '0000-00-00', 0);
-INSERT INTO `monitors` VALUES (2, 'Sony 19\'', '2003-09-18 00:14:50', 'Sony 200sf', '1 ier etage', '', '', 'ecran documentation', '', '', 19, 0, 0, 1, 1, '0000-00-00', '0000-00-00', 0);
+# --------------------------------------------------------
 
-
+#
+# Structure de la table `networking`
+#
 
 DROP TABLE IF EXISTS `networking`;
 CREATE TABLE `networking` (
@@ -471,13 +567,19 @@ CREATE TABLE `networking` (
   `date_fin_garantie` date default NULL,
   `maintenance` int(2) default '0',
   PRIMARY KEY  (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=10 ;
+) TYPE=MyISAM;
 
+#
+# Contenu de la table `networking`
+#
 
+INSERT DELAYED INTO `networking` (`ID`, `name`, `type`, `ram`, `location`, `serial`, `otherserial`, `contact`, `contact_num`, `date_mod`, `comments`, `achat_date`, `date_fin_garantie`, `maintenance`) VALUES (9, 'Dlink 450', 'Dlink Switch', '', '1 ier etage', '4586-puis-kioe', '', '', '', '0000-00-00 00:00:00', '', '0000-00-00', '0000-00-00', 0);
 
-INSERT INTO `networking` VALUES (9, 'Dlink 450', 'Dlink Switch', '', '1 ier etage', '4586-puis-kioe', '', '', '', '2004-06-15 17:28:50', 'p', '0000-00-00', '0000-00-00', 0);
+# --------------------------------------------------------
 
-
+#
+# Structure de la table `networking_ports`
+#
 
 DROP TABLE IF EXISTS `networking_ports`;
 CREATE TABLE `networking_ports` (
@@ -490,20 +592,28 @@ CREATE TABLE `networking_ports` (
   `ifaddr` char(30) NOT NULL default '',
   `ifmac` char(30) NOT NULL default '',
   PRIMARY KEY  (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=9 ;
+) TYPE=MyISAM;
 
+#
+# Contenu de la table `networking_ports`
+#
 
+INSERT DELAYED INTO `networking_ports` (`ID`, `on_device`, `device_type`, `iface`, `logical_number`, `name`, `ifaddr`, `ifmac`) VALUES (1, 8, 1, '100Mbps Ethernet (UTP)', 1, '3Com', '10.10.0.26', ''),
+(2, 10, 1, '100Mbps Ethernet (UTP)', 1, '3com', '10.10.0.27', ''),
+(3, 15, 1, '100Mbps Ethernet (UTP)', 1, 'Generic', '10.10.0.28', ''),
+(4, 18, 1, '100Mbps Ethernet (UTP)', 1, '3Com', '10.10.0.29', ''),
+(5, 9, 2, '100Mbps Ethernet (UTP)', 1, 'Dlink port', '10.10.0.1', ''),
+(6, 9, 2, '100Mbps Ethernet (UTP)', 2, 'Dlink port', '10.10.0.1', ''),
+(7, 9, 2, '100Mbps Ethernet (UTP)', 3, 'Dlink port', '10.10.0.1', ''),
+(8, 10, 2, 'Frame Relay', 0, '', '', ''),
+(9, 9, 2, '100Base FL', 0, '', '', ''),
+(10, 9, 2, '100Mbps FDDI', 0, '', '', '');
 
-INSERT INTO `networking_ports` VALUES (1, 8, 1, '100Mbps Ethernet (UTP)', 1, '3Com', '10.10.0.26', '');
-INSERT INTO `networking_ports` VALUES (2, 10, 1, '100Mbps Ethernet (UTP)', 1, '3com', '10.10.0.27', '');
-INSERT INTO `networking_ports` VALUES (3, 15, 1, '100Mbps Ethernet (UTP)', 1, 'Generic', '10.10.0.28', '');
-INSERT INTO `networking_ports` VALUES (4, 18, 1, '100Mbps Ethernet (UTP)', 1, '3Com', '10.10.0.29', '');
-INSERT INTO `networking_ports` VALUES (5, 9, 2, '100Mbps Ethernet (UTP)', 1, 'Dlink port', '10.10.0.1', '');
-INSERT INTO `networking_ports` VALUES (6, 9, 2, '100Mbps Ethernet (UTP)', 2, 'Dlink port', '10.10.0.1', '');
-INSERT INTO `networking_ports` VALUES (7, 9, 2, '100Mbps Ethernet (UTP)', 3, 'Dlink port', '10.10.0.1', '');
-INSERT INTO `networking_ports` VALUES (8, 10, 2, 'Frame Relay', 0, '', '', '');
+# --------------------------------------------------------
 
-
+#
+# Structure de la table `networking_wire`
+#
 
 DROP TABLE IF EXISTS `networking_wire`;
 CREATE TABLE `networking_wire` (
@@ -511,15 +621,21 @@ CREATE TABLE `networking_wire` (
   `end1` int(11) NOT NULL default '0',
   `end2` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=4 ;
+) TYPE=MyISAM;
 
+#
+# Contenu de la table `networking_wire`
+#
 
+INSERT DELAYED INTO `networking_wire` (`ID`, `end1`, `end2`) VALUES (1, 5, 1),
+(2, 6, 2),
+(3, 7, 3);
 
-INSERT INTO `networking_wire` VALUES (1, 5, 1);
-INSERT INTO `networking_wire` VALUES (2, 6, 2);
-INSERT INTO `networking_wire` VALUES (3, 7, 3);
+# --------------------------------------------------------
 
-
+#
+# Structure de la table `prefs`
+#
 
 DROP TABLE IF EXISTS `prefs`;
 CREATE TABLE `prefs` (
@@ -529,19 +645,20 @@ CREATE TABLE `prefs` (
   PRIMARY KEY  (`user`)
 ) TYPE=MyISAM;
 
+#
+# Contenu de la table `prefs`
+#
 
-
-INSERT INTO `prefs` VALUES ('glpi', 'yes', 'french');
-INSERT INTO `prefs` VALUES ('Helpdesk', 'no', 'french');
-INSERT INTO `prefs` VALUES ('tech', 'yes', 'french');
-INSERT INTO `prefs` VALUES ('post-only', '', 'french');
-INSERT INTO `prefs` VALUES ('admin', 'yes', 'french');
-INSERT INTO `prefs` VALUES ('louison', 'yes', 'french');
+INSERT DELAYED INTO `prefs` (`user`, `tracking_order`, `language`) VALUES ('glpi', 'yes', 'french'),
+('Helpdesk', 'no', 'french'),
+('normal', '', 'english'),
+('tech', 'yes', 'french'),
+('post-only', '', 'english');
 
 # --------------------------------------------------------
 
 #
-# Table structure for table `printers`
+# Structure de la table `printers`
 #
 
 DROP TABLE IF EXISTS `printers`;
@@ -564,13 +681,20 @@ CREATE TABLE `printers` (
   `ramSize` varchar(6) NOT NULL default '',
   PRIMARY KEY  (`ID`),
   KEY `id` (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=3 ;
+) TYPE=MyISAM;
 
+#
+# Contenu de la table `printers`
+#
 
+INSERT DELAYED INTO `printers` (`ID`, `name`, `date_mod`, `type`, `location`, `contact`, `contact_num`, `serial`, `otherserial`, `flags_serial`, `flags_par`, `comments`, `achat_date`, `date_fin_garantie`, `maintenance`, `ramSize`) VALUES (1, 'HP laser', '2003-09-18 00:12:43', 'HP Laserjet 4050N', '1 ier etage', '', '', 'hp-jsgsj-658', '', 0, 1, 'Imprimante bureau du directeur', '0000-00-00', '0000-00-00', 0, ''),
+(2, 'HP deskjet', '2003-09-18 00:13:11', 'HP Deskjet 850c', '2nd etage', '', '', '45dskjs-ds', '', 0, 1, 'Imprimante documentation', '0000-00-00', '0000-00-00', 0, '');
 
-INSERT INTO `printers` VALUES (2, 'HP deskjet', '2004-06-15 17:28:42', 'HP Deskjet 850c', '2nd etage', '', '', '45dskjs-ds', '', 0, 1, 'Imprimante documentation', '0000-00-00', '0000-00-00', 0, '');
+# --------------------------------------------------------
 
-
+#
+# Structure de la table `software`
+#
 
 DROP TABLE IF EXISTS `software`;
 CREATE TABLE `software` (
@@ -581,15 +705,21 @@ CREATE TABLE `software` (
   `location` varchar(200) NOT NULL default '',
   `comments` text,
   PRIMARY KEY  (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=6 ;
+) TYPE=MyISAM;
 
+#
+# Contenu de la table `software`
+#
 
+INSERT DELAYED INTO `software` (`ID`, `name`, `platform`, `version`, `location`, `comments`) VALUES (3, 'Acrobat PDF Viewer', 'Windows NT 4.0', '4', 'Admin', NULL),
+(4, 'MS Windows NT', 'Windows NT 4.0', '4.0', 'Admin', NULL),
+(5, 'Latex', 'Linux (Redhat 6.2)', '6.2', '1 ier etage', 'Latex');
 
-INSERT INTO `software` VALUES (3, 'Acrobat PDF Viewer', 'Windows NT 4.0', '4', 'Admin', NULL);
-INSERT INTO `software` VALUES (4, 'MS Windows NT', 'Windows NT 4.0', '4.0', 'Admin', NULL);
-INSERT INTO `software` VALUES (5, 'Latex', 'Linux (Redhat 6.2)', '6.2', '1 ier etage', 'Latex');
+# --------------------------------------------------------
 
-
+#
+# Structure de la table `templates`
+#
 
 DROP TABLE IF EXISTS `templates`;
 CREATE TABLE `templates` (
@@ -619,15 +749,20 @@ CREATE TABLE `templates` (
   `date_fin_garantie` date default NULL,
   `maintenance` int(2) default '0',
   PRIMARY KEY  (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=8 ;
+) TYPE=MyISAM;
 
+#
+# Contenu de la table `templates`
+#
 
+INSERT DELAYED INTO `templates` (`ID`, `templname`, `name`, `type`, `os`, `osver`, `processor`, `processor_speed`, `location`, `serial`, `otherserial`, `ramtype`, `ram`, `network`, `hdspace`, `contact`, `contact_num`, `comments`, `moboard`, `sndcard`, `gfxcard`, `hdtype`, `achat_date`, `date_fin_garantie`, `maintenance`) VALUES (1, 'Blank Template', '', 'Generic x86 PC', 'Linux (Redhat 6.2)', '', '486 DX', '', 'Admin', '', '', '36pin SIMMS', '', '3Com (100Mbps)', '', '', '', 'Empty Template', 'Asus P2BX', 'Soundblaster 128 PCI', 'ATI Rage Pro 3D AGP', 'IBM DCAS 34330', '0000-00-00', '0000-00-00', 0),
+(3, 'iMac', '', 'iMac 2nd Generation', 'MacOS', '9', 'PowerPC G3', '333', 'Admin', '', '', 'iMac DIMMS', '128', 'Generic 100Mbps Card', '6', '', '', 'Standard iMac', 'unknown', 'integrated', 'integrated', 'IBM DTTA 35101', '0000-00-00', '0000-00-00', 0);
 
-INSERT INTO `templates` VALUES (1, 'Blank Template', '', 'Generic x86 PC', 'Linux (Redhat 6.2)', '', '486 DX', '', 'Admin', '', '', '36pin SIMMS', '', '3Com (100Mbps)', '', '', '', 'Empty Template', 'Asus P2BX', 'Soundblaster 128 PCI', 'ATI Rage Pro 3D AGP', 'IBM DCAS 34330', '0000-00-00', '0000-00-00', 0);
-INSERT INTO `templates` VALUES (3, 'iMac', '', 'iMac 2nd Generation', 'MacOS', '9', 'PowerPC G3', '333', 'Admin', '', '', 'iMac DIMMS', '128', 'Generic 100Mbps Card', '6', '', '', 'Standard iMac', 'unknown', 'integrated', 'integrated', 'IBM DTTA 35101', '0000-00-00', '0000-00-00', 0);
-INSERT INTO `templates` VALUES (7, 'test', '', 'Generic x86 PC', 'Debian woody 3.0', '', '486 DX', '', '1 ier etage', '', '', '36pin SIMMS', '', '3Com (100Mbps)', '', '', '', '', 'Asus P2BX', 'integrated', 'ATI Rage Pro 3D AGP', 'IBM DCAS 34330', '0000-00-00', '0000-00-00', 0);
+# --------------------------------------------------------
 
-
+#
+# Structure de la table `tracking`
+#
 
 DROP TABLE IF EXISTS `tracking`;
 CREATE TABLE `tracking` (
@@ -644,62 +779,93 @@ CREATE TABLE `tracking` (
   `uemail` varchar(100) default NULL,
   `emailupdates` varchar(4) default NULL,
   PRIMARY KEY  (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=6 ;
+) TYPE=MyISAM;
 
+#
+# Contenu de la table `tracking`
+#
 
+# --------------------------------------------------------
 
-
+#
+# Structure de la table `type_computers`
+#
 
 DROP TABLE IF EXISTS `type_computers`;
 CREATE TABLE `type_computers` (
   `name` varchar(255) default NULL
 ) TYPE=MyISAM;
 
+#
+# Contenu de la table `type_computers`
+#
 
+INSERT DELAYED INTO `type_computers` (`name`) VALUES ('Generic x86 PC'),
+('PowerMac G4'),
+('iMac 2nd Generation'),
+('PowerMac G3');
 
-INSERT INTO `type_computers` VALUES ('Generic x86 PC');
-INSERT INTO `type_computers` VALUES ('PowerMac G4');
-INSERT INTO `type_computers` VALUES ('iMac 2nd Generation');
-INSERT INTO `type_computers` VALUES ('PowerMac G3');
+# --------------------------------------------------------
 
-
+#
+# Structure de la table `type_monitors`
+#
 
 DROP TABLE IF EXISTS `type_monitors`;
 CREATE TABLE `type_monitors` (
   `name` varchar(255) default NULL
 ) TYPE=MyISAM;
 
+#
+# Contenu de la table `type_monitors`
+#
 
+INSERT DELAYED INTO `type_monitors` (`name`) VALUES ('Nokia 445Xav'),
+('Sony 200GDM'),
+('Sony 200sf'),
+('integrated');
 
-INSERT INTO `type_monitors` VALUES ('Nokia 445Xav');
-INSERT INTO `type_monitors` VALUES ('Sony 200GDM');
-INSERT INTO `type_monitors` VALUES ('Sony 200sf');
-INSERT INTO `type_monitors` VALUES ('integrated');
+# --------------------------------------------------------
 
-
+#
+# Structure de la table `type_networking`
+#
 
 DROP TABLE IF EXISTS `type_networking`;
 CREATE TABLE `type_networking` (
   `name` varchar(255) default NULL
 ) TYPE=MyISAM;
 
+#
+# Contenu de la table `type_networking`
+#
 
+INSERT DELAYED INTO `type_networking` (`name`) VALUES ('Dlink Switch');
 
-INSERT INTO `type_networking` VALUES ('Dlink Switch');
+# --------------------------------------------------------
 
-
+#
+# Structure de la table `type_printers`
+#
 
 DROP TABLE IF EXISTS `type_printers`;
 CREATE TABLE `type_printers` (
   `name` varchar(255) default NULL
 ) TYPE=MyISAM;
 
+#
+# Contenu de la table `type_printers`
+#
 
-INSERT INTO `type_printers` VALUES ('HP Laserjet 4050N');
-INSERT INTO `type_printers` VALUES ('HP Laserjet 4+');
-INSERT INTO `type_printers` VALUES ('HP Deskjet 850c');
+INSERT DELAYED INTO `type_printers` (`name`) VALUES ('HP Laserjet 4050N'),
+('HP Laserjet 4+'),
+('HP Deskjet 850c');
 
+# --------------------------------------------------------
 
+#
+# Structure de la table `users`
+#
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
@@ -708,17 +874,20 @@ CREATE TABLE `users` (
   `email` varchar(80) NOT NULL default '',
   `location` varchar(100) NOT NULL default '',
   `phone` varchar(100) default NULL,
-  `type` enum('normal','admin','post-only') NOT NULL default 'post-only',
+  `type` enum('normal','admin','post-only') NOT NULL default 'normal',
   `realname` varchar(255) NOT NULL default '',
   `can_assign_job` enum('yes','no') NOT NULL default 'no',
   PRIMARY KEY  (`name`),
   KEY `type` (`type`)
 ) TYPE=MyISAM;
 
+#
+# Contenu de la table `users`
+#
 
-
-INSERT INTO `users` VALUES ('Helpdesk', '14e43c2d31dcbdd1', '', 'Admin', NULL, 'post-only', 'Helpdesk Injector', 'no');
-INSERT INTO `users` VALUES ('post-only', '3eb831c67be6aeda', '', '1 ier etage', NULL, 'post-only', 'post-only', 'no');
-INSERT INTO `users` VALUES ('tech', '37bd7c4221e8a247', '', '2nd etage', NULL, 'admin', 'technicien', 'yes');
-INSERT INTO `users` VALUES ('glpi', '5b9b1ee2216a5ffe', '', '', NULL, 'admin', '', 'yes');
-INSERT INTO `users` VALUES ('louison', '', '', '', '', 'post-only', 'louison', 'no');
+INSERT DELAYED INTO `users` (`name`, `password`, `email`, `location`, `phone`, `type`, `realname`, `can_assign_job`) VALUES ('Helpdesk', '14e43c2d31dcbdd1', '', 'Admin', NULL, 'post-only', 'Helpdesk Injector', 'no'),
+('glpi', '5b9b1ee2216a5ffe', '', '2nd etage', '', 'admin', 'glpi', 'yes'),
+('post-only', '3eb831c67be6aeda', '', '1 ier etage', NULL, 'post-only', 'post-only', 'no'),
+('tech', '37bd7c4221e8a247', '', '2nd etage', NULL, 'admin', 'technicien', 'yes'),
+('normal', '109e7883561b4202', '', '1 ier etage', NULL, 'normal', 'utilisateur normal', 'no');
+    
