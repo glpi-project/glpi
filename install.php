@@ -32,7 +32,7 @@ This file is part of GLPI.
 
 // Ce script génère ses propres messages d'erreur 
 // Pas besoin des warnings de PHP
-error_reporting(0);
+//error_reporting(0);
 
 
 // en test !!
@@ -169,7 +169,7 @@ echo "<p align='center'><label>Choose your language <select name=\"language\"><l
 
 // load language
 
-function loadLanguage($language) {
+function loadLang($language) {
 		
 		unset($lang);
 		global $lang;
@@ -213,7 +213,7 @@ function step1($update)
 // PHP Version  - exclude PHP3
 	if (substr(phpversion(),0,1) == "3") {
 		$error = 2;
-		echo "<td>".$lang["install"][9]." <a href='http://www.php.net'>www.php.net</a>.\n</td>";
+		echo "<td>".$lang["install"][9]."</a>.\n</td>";
 	}
 	elseif (substr(phpversion(),0,3) == "4.0" and ereg("0|1",substr(phpversion(),4,1))) {
 		echo "<td><span class='wrong'>&nbsp;<td>".$lang["install"][10]."<td>";
@@ -381,7 +381,7 @@ function step3($host,$user,$password,$update)
                 
 	}
 	else {
-		echo $lang["update"][93]."<br />";
+		echo $lang["install"][38]."<br />";
 		if($update == "no") {
 			echo $lang["install"][38];
 			echo "<form action=\"install.php\" method=\"post\">";
@@ -427,6 +427,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	//display the form to return to the previous step.
 	
 	function prev_form() {
+		global $lang;
 		echo "<br /><form action=\"install.php\" method=\"post\">";
 		echo $lang["install"][30] .": <input type=\"hidden\" name=\"db_host\" value=\"". $host ."\"/><br />";
 		echo $lang["install"][31] ." : <input type=\"hidden\" name=\"db_user\" value=\"". $user ."\"/>";
@@ -640,7 +641,7 @@ session_start();
 include ("_relpos.php");
 if(empty($_SESSION["dict"])) $_SESSION["dict"] = "french";
 if(isset($_POST["language"])) $_SESSION["dict"] = $_POST["language"];
-loadLanguage($_SESSION["dict"]);
+loadLang($_SESSION["dict"]);
 	if(!isset($_POST["install"])) {
 		$_SESSION = array();
 		if(file_exists($phproot ."/glpi/config/config_db.php")) {
