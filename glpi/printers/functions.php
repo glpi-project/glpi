@@ -199,7 +199,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 			echo "</table></center>";
 
 			// Pager
-			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort";
+			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
