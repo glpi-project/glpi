@@ -259,7 +259,6 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 }
 
 
-
 function showContractForm ($target,$ID,$search='') {
 	// Show Contract or blank form
 	
@@ -301,7 +300,7 @@ function showContractForm ($target,$ID,$search='') {
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][8].":		</td><td colspan='2'>";
 	dropdownContractTime("duration",$con->fields["duration"]);
-	echo " ".$lang["financial"][9];
+	echo " ".$lang["financial"][57];
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][10].":		</td><td colspan='2'>";
@@ -309,9 +308,15 @@ function showContractForm ($target,$ID,$search='') {
 	echo " ".$lang["financial"][57];
 	echo "</td></tr>";
 
+	echo "<tr class='tab_bg_1'><td>".$lang["financial"][69].":		</td><td colspan='2'>";
+	dropdownContractPeriodicity("periodicity",$con->fields["periodicity"]);
+	echo "</td></tr>";
+
+
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][11].":		</td>";
-	echo "<td colspan='2'>&nbsp;</td>";
-	echo "</tr>";
+	echo "<td colspan='2'>";
+		dropdownContractPeriodicity("facturation",$con->fields["facturation"]);
+	echo "</td></tr>";
 
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][13].":		</td>";
@@ -577,9 +582,52 @@ function dropdownContractTime($name,$value=0){
 	global $lang;
 	
 	echo "<select name='$name'>";
-	for ($i=0;$i<=10;$i+=1)
+	for ($i=0;$i<=120;$i+=1)
 	echo "<option value='$i' ".($value==$i?" selected ":"").">$i</option>";	
 	echo "</select>";	
+}
+
+
+function dropdownContractPeriodicity($name,$value=0){
+	global $lang;
+	
+	echo "<select name='$name'>";
+	echo "<option value='0' ".($value==0?" selected ":"").">-------------</option>";
+	echo "<option value='1' ".($value==1?" selected ":"").">".$lang["financial"][70]."</option>";
+	echo "<option value='2' ".($value==2?" selected ":"").">".$lang["financial"][71]."</option>";
+	echo "<option value='3' ".($value==3?" selected ":"").">".$lang["financial"][72]."</option>";
+	echo "<option value='4' ".($value==4?" selected ":"").">".$lang["financial"][73]."</option>";
+	echo "<option value='5' ".($value==5?" selected ":"").">".$lang["financial"][74]."</option>";
+	echo "<option value='6' ".($value==6?" selected ":"").">".$lang["financial"][75]."</option>";
+	echo "</select>";	
+}
+function getContractPeriodicity($value){
+	global $lang;
+	
+	switch ($value){
+	case 1 :
+		return $lang["financial"][70];
+		break;
+	case 2 :
+		return $lang["financial"][71];
+		break;
+	case 3 :
+		return $lang["financial"][72];
+		break;
+	case 4 :
+		return $lang["financial"][73];
+		break;
+	case 5 :
+		return $lang["financial"][74];
+		break;
+	case 6 :
+		return $lang["financial"][75];
+		break;
+	case 0 :
+		return "";
+		break;
+	
+	}	
 }
 
 function dropdownContractType($name,$value=0){
