@@ -48,11 +48,11 @@ if(!function_exists('loadLang')) {
 //Verifie si il existe bien un utilisateur ayant les droits super-admin
 function superAdminExists() {
 	$db = new DB;
-	$query = "select type from glpi_users";
+	$query = "select type, password from glpi_users";
 	$result = $db->query($query);
 	$var1 = false;
 	while($line = $db->fetch_array($result)) {
-		if($line["type"] == "super-admin") $var1 = true;
+		if($line["type"] == "super-admin" && !empty($line["password"]) $var1 = true;
 	}
 	return $var1;
 }
@@ -763,6 +763,7 @@ function showFormSu() {
 }
 
 //Debut du script
+	
 	session_start();
 	if(empty($_SESSION["dict"])) $_SESSION["dict"] = "french";
 	global $lang;
@@ -865,12 +866,20 @@ function showFormSu() {
 // step 1    avec bouton de confirmation
 if(empty($_POST["continuer"]) && empty($_POST["ajout_su"])) {
 	$db = new DB;
-	echo "<div align='center'>";
-	echo "<h3><span class='red'>".$lang["update"][91]."</span>".$lang["update"][92]. $db->dbdefault ."</h3>";
+	if(empty($from_install)) {
+		echo "<div align='center'>";
+		echo "<h3><span class='red'>".$lang["update"][105]."</span>";
+		echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["update"][106]."</span></a></p>";
+		echo "</div>";
+	}
+	else {
+		echo "<div align='center'>";
+		echo "<h3><span class='red'>".$lang["update"][91]."</span>".$lang["update"][92]. $db->dbdefault ."</h3>";
 	
-	echo "<form action=\"".$_SERVER["PHP_SELF"]."\" method=\"post\">";
-	echo "<input type=\"submit\" class='submit' name=\"continuer\" value=\"".$lang["install"][25] ."\" />";
-	echo "</div></form>";
+		echo "<form action=\"update.php\" method=\"post\">";
+		echo "<input type=\"submit\" class='submit' name=\"continuer\" value=\"".$lang["install"][25] ."\" />";
+		echo "</div></form>";
+	}
 }
 // Step 2  
 elseif(empty($_POST["ajout_su"])) {
@@ -890,7 +899,6 @@ elseif(empty($_POST["ajout_su"])) {
 		else {
 			echo "<div align='center'>";
 			echo "<h3>".$lang["update"][94]."</h3>";
-			echo "<p>".$lang["install"][56]."</p>";
 			echo "<p>".$lang["install"][63]."</p></div>";
 			if(!empty($tab) && $tab["adminchange"]) {
 				echo "<div align='center'> <h2>". $lang["update"][96] ."<h2></div>";
@@ -916,7 +924,6 @@ elseif(!empty($_POST["ajout_su"])) {
 		echo "</div>";
 		echo "<div align='center'>";
 		echo "<h3>".$lang["update"][94]."</h3>";
-		echo "<p>".$lang["install"][56]."</p>";
 		echo "<p>".$lang["install"][63]."</p></div>";
 		echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
 	}
