@@ -39,8 +39,15 @@ This file is part of GLPI.
 
  
 include ("_relpos.php");
-// Basic MYSQL configuration change as you need/want.
-// Configuration standard changez selon vos besoins.
+
+
+if(!file_exists($phproot ."/glpi/config/config_db.php")) {
+	echo "<p>Error : GLPI seems to not be installed properly.</p><p> Config_db.php file is missing.</p><p>Please restart the install process.</p>";
+	die();
+}
+else
+{
+
 require_once ("config_db.php");
 
 //Statics config options
@@ -212,6 +219,8 @@ $cfg_features["permit_helpdesk"] = $db->result($result,0,"permit_helpdesk");
 
 $cfg_install["version"]		= $db->result($result,0,"version");
 $cfg_layout["logotxt"]		= $db->result($result,0,"logotxt");
+
+}
 
 }
 ?>
