@@ -671,7 +671,7 @@ function showUserform($target,$name) {
 	}
 	//do some rights verification
 	if(isSuperAdmin($_SESSION["glpitype"])) {
-		if (!empty($user->fields["password"]))
+		if (!empty($user->fields["password"])||$name=="")
 		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value=\"".$user->fields["password"]."\" size='20' /></td></tr>";
 		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td><input name='realname' size='20' value=\"".$user->fields["realname"]."\"></td></tr>";
 		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][20]."</td><td>";
@@ -690,7 +690,7 @@ function showUserform($target,$name) {
 		echo ">Post Only";
 		echo "</select>";
 	} else {
-		if ($user->fields["type"]!="super-admin"&&!empty($user->fields["password"]))
+		if (($user->fields["type"]!="super-admin"&&!empty($user->fields["password"]))||$name=="")
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value=\"".$user->fields["password"]."\" size='20' /></td></tr>";
 		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td><input name='realname' size='20' value=\"".$user->fields["realname"]."\"></td></tr>";
 		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][20]."</td>";
@@ -1030,8 +1030,8 @@ function updateUser($input) {
 
 	// dump status
 	$null = array_pop($input);
-	// password updated?
-	if(empty($input["password"]) || !isAdmin($_SESSION["glpitype"])) {
+	// password updated by admin user or own password for user
+	if(empty($input["password"]) || (!isAdmin($_SESSION["glpitype"])&&$_SESSION["glpiname"]!=$input['name'])) {
 		unset($user->fields["password"]);
 		unset($user->fields["password_md5"]);
 		unset($input["password"]);
