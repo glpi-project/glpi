@@ -328,7 +328,7 @@ function showComputerForm ($template,$target,$ID) {
 		echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
 
 		echo "<tr><td>".$lang["computers"][7].":		</td>";
-		echo "<td><input type='text' name='name' value=\"".$comp->fields["name"]."\" size='12'></td>";
+		echo "<td><input type='text' name='name' value=\"".$comp->fields["name"]."\" size='20'></td>";
 		echo "</tr>";
 
 		echo "<tr><td>".$lang["computers"][10].": 	</td>";
@@ -337,19 +337,19 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][15].":		</td>";
-		echo "<td><input type='text' name='contact_num' value=\"".$comp->fields["contact_num"]."\" size='12'>";
+		echo "<td><input type='text' name='contact_num' value=\"".$comp->fields["contact_num"]."\" size='20'>";
 		echo "</td></tr>";
 	
 		echo "<tr><td>".$lang["computers"][16].":	</td>";
-		echo "<td><input type='text' name='contact' size='12' value=\"".$comp->fields["contact"]."\">";
+		echo "<td><input type='text' name='contact' size='20' value=\"".$comp->fields["contact"]."\">";
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][17].":	</td>";
-		echo "<td><input type='text' name='serial' size='12' value=\"".$comp->fields["serial"]."\">";
+		echo "<td><input type='text' name='serial' size='20' value=\"".$comp->fields["serial"]."\">";
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][18].":	</td>";
-		echo "<td><input type='text' size='12' name='otherserial' value=\"".$comp->fields["otherserial"]."\">";
+		echo "<td><input type='text' size='20' name='otherserial' value=\"".$comp->fields["otherserial"]."\">";
 		echo "</td></tr>";
 
 		echo "<tr><td valign='top'>".$lang["computers"][19].":</td>";
@@ -374,7 +374,7 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][20].":</td>";
-		echo "<td><input type='text' size='8' name='osver' value=\"".$comp->fields["osver"]."\">";
+		echo "<td><input type='text' size='20' name='osver' value=\"".$comp->fields["osver"]."\">";
 		echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][21].":	</td>";
@@ -383,7 +383,7 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</td></tr>";
 	
 		echo "<tr><td>".$lang["computers"][22].":	</td>";
-		echo "<td><input type='text' name='processor_speed' size='4' value=\"".$comp->fields["processor_speed"]."\">";
+		echo "<td><input type='text' name='processor_speed' size='6' value=\"".$comp->fields["processor_speed"]."\">";
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][35].":	</td>";
@@ -416,7 +416,7 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][25].":	</td>";
-		echo "<td><input type='text' name='hdspace' size='3' value=\"".$comp->fields["hdspace"]."\">";
+		echo "<td><input type='text' name='hdspace' size='6' value=\"".$comp->fields["hdspace"]."\">";
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][26].":	</td>";
@@ -425,7 +425,7 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][41].":	</td>";
-		echo "<td><input type='text' name='achat_date' readonly size=10 value=\"".$comp->fields["achat_date"]."\">";
+		echo "<td><input type='text' name='achat_date' readonly size='10' value=\"".$comp->fields["achat_date"]."\">";
 		echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('mycalendar.php?form=form&amp;elem=achat_date','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].achat_date.value='0000-00-00'\" value='reset'>";
     echo "</td></tr>";
@@ -441,7 +441,7 @@ function showComputerForm ($template,$target,$ID) {
 		// Maintenance ?
 		if ($comp->fields["maintenance"] == 1) {
 			echo " OUI <input type='radio' name='maintenance' value='1' checked>";
-			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value=0>";
+			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value='0'>";
 		} else {
 			echo " OUI <input type='radio' name='maintenance' value='1'>";
 			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value='0' checked >";
@@ -466,7 +466,7 @@ function showComputerForm ($template,$target,$ID) {
 		}
 		else
 		{
-			echo "<input type='checkbox' name='flags_server' value=1>";
+			echo "<input type='checkbox' name='flags_server' value='1'>";
 		}
 		echo "</td><td>".$lang["computers"][28]."</td>";
 		echo "</tr></table>";
