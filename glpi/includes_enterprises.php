@@ -32,12 +32,7 @@ This file is part of GLPI.
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/contacts/classes.php");
-include ($phproot . "/glpi/contacts/functions.php");
-include ($phproot . "/glpi/includes_enterprises.php");
-include ($phproot . "/glpi/infocoms/classes.php");
-include ($phproot . "/glpi/infocoms/functions.php");
-include ($phproot . "/glpi/contracts/classes.php");
-include ($phproot . "/glpi/contracts/functions.php");
+include ($phproot . "/glpi/enterprises/classes.php");
+include ($phproot . "/glpi/enterprises/functions.php");
 
 ?>

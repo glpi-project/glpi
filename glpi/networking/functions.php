@@ -68,6 +68,7 @@ function searchFormNetworking($field="",$phrasetype= "",$contains="",$sort= "") 
 	$option["glpi_networking_ports.ifaddr"] = $lang["networking"][14];
 	$option["glpi_networking_ports.ifmac"] = $lang["networking"][15];
 	$option["glpi_dropdown_netpoint.name"]			= $lang["networking"][51];
+	$option["glpi_enterprises.name"]			= $lang["common"][5];
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/networking/networking-search.php\">";
 	echo "<div align='center'><table  width='750' class='tab_cadre'>";
@@ -151,6 +152,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 		$where .= " OR glpi_networking_ports.ifaddr LIKE '%".$contains."%'";
 		$where .= " OR glpi_networking_ports.ifmac LIKE '%".$contains."%'";
 		$where .= " OR glpi_dropdown_netpoint.name LIKE '%".$contains."%'";
+		$where.=" OR glpi_enterprises.name LIKE '%".$contains."%'";
 		$where .= ")";
 	}
 	else {
@@ -173,6 +175,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 	$query .= "LEFT JOIN glpi_dropdown_firmware on glpi_networking.firmware = glpi_dropdown_firmware.ID ";
 	$query .= "LEFT JOIN glpi_networking_ports on (glpi_networking.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='2')";	
 	$query .= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";
+	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = glpi_networking.FK_glpi_enterprise ) ";
 	$query .= "where $where ORDER BY $sort $order";
 
 	// Get it from database	
@@ -203,6 +206,14 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_networking.name&order=ASC&start=$start\">";
 			echo $lang["networking"][0]."</a></th>";
 
+			// Manufacturer		
+			echo "<th>";
+			if ($sort=="glpi_enterprises.name") {
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.name&order=ASC&start=$start\">";
+			echo $lang["common"][5]."</a></th>";
+			
 			// Location			
 			echo "<th>";
 			if ($sort=="glpi_dropdown_locations.name") {
@@ -249,6 +260,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 				echo "<a href=\"".$cfg_install["root"]."/networking/networking-info-form.php?ID=$ID\">";
 				echo $networking->fields["name"]." (".$networking->fields["ID"].")";
 				echo "</a></b></td>";
+				echo "<td>". getDropdownName("glpi_enterprises",$networking->fields["FK_glpi_enterprise"]) ."</td>";
 				echo "<td>". getDropdownName("glpi_dropdown_locations",$networking->fields["location"]) ."</td>";
 				echo "<td>". getDropdownName("glpi_type_networking",$networking->fields["type"]) ."</td>";
 				echo "<td>". getDropdownName("glpi_dropdown_firmware",$networking->fields["firmware"]) ."</td>";
@@ -303,7 +315,11 @@ function showNetworkingForm ($target,$ID) {
 	echo "<tr><td>".$lang["networking"][1].": 	</td><td>";
 		dropdownValue("glpi_dropdown_locations", "location", $netdev->fields["location"]);
 	echo "</td></tr>";
-
+	
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>";
+		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$netdev->fields["FK_glpi_enterprise"]);
+	echo "</td></tr>";
+	
 	echo "<tr><td>".$lang["networking"][4].":	</td>";
 	echo "<td><input type='text' name='contact_num' value=\"".$netdev->fields["contact_num"]."\" size='20'></td>";
 	echo "</tr>";

@@ -37,6 +37,7 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_printers.php");
+include ($phproot . "/glpi/includes_enterprises.php");
 
 checkAuthentication("normal");
 

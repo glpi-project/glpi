@@ -81,6 +81,7 @@ function searchFormComputers($field="",$phrasetype= "",$contains="",$sort= "") {
 	$option["glpi_networking_ports.ifaddr"] = $lang["networking"][14];
 	$option["glpi_networking_ports.ifmac"] = $lang["networking"][15];
 	$option["glpi_dropdown_netpoint.name"]			= $lang["networking"][51];
+	$option["glpi_enterprises.name"]			= $lang["common"][5];
 	
 	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
 	echo "<div align='center'><table border='0' width='750' class='tab_cadre'>";
@@ -174,6 +175,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 		$where .= " OR glpi_networking_ports.ifaddr LIKE '%".$contains."%'";
 		$where .= " OR glpi_networking_ports.ifmac LIKE '%".$contains."%'";
 		$where .= " OR glpi_dropdown_netpoint.name LIKE '%".$contains."%'";
+		$where.=" OR glpi_enterprises.name LIKE '%".$contains."%'";
 		$where .= ")";
 	}
 	else {
@@ -198,7 +200,8 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 	$query .= "LEFT JOIN glpi_dropdown_sndcard on comp.sndcard = glpi_dropdown_sndcard.ID ";
 	$query .= "LEFT JOIN glpi_networking_ports on (comp.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='1')";
 	$query .= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";
-	$query .= "where $where ORDER BY $sort $order";
+	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = comp.FK_glpi_enterprise ) ";
+	$query .= " where $where ORDER BY $sort $order";
 	//$query = "SELECT * FROM glpi_computers WHERE $where ORDER BY $sort $order";
 //echo $query;
 	// Get it from database	
@@ -227,6 +230,14 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=comp.name&order=ASC&start=$start\">";
 			echo $lang["computers"][7]."</a></th>";
 		
+			// Manufacturer		
+			echo "<th>";
+			if ($sort=="glpi_enterprises.name") {
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.name&order=ASC&start=$start\">";
+			echo $lang["common"][5]."</a></th>";
+			
 		        // Serial
 			echo "<th>";
 			if ($sort=="comp.serial") {
@@ -287,6 +298,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID\">";
 				echo $comp->fields["name"]." (".$comp->fields["ID"].")";
 				echo "</a></b></td>";
+				echo "<td>". getDropdownName("glpi_enterprises",$comp->fields["FK_glpi_enterprise"]) ."</td>";
 				echo "<td>".$comp->fields["serial"]."</td>";
                                 echo "<td>". getDropdownName("glpi_type_computers",$comp->fields["type"]) ."</td>";
 				echo "<td>". getDropdownName("glpi_dropdown_os",$comp->fields["os"]) ."</td>";
@@ -369,14 +381,21 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		
 		echo "<td>".$lang["computers"][15]."&nbsp;:		</td><td><input type='text' name='contact_num' value=\"".$comp->fields["contact_num"]."\" size='20'></td></tr>";
 		
-		echo "<tr class='tab_bg_1'><td>".$lang["computers"][17]."&nbsp;:	</td>";
-		echo "<td><input type='text' name='serial' size='20' value=\"".$comp->fields["serial"]."\">";
+	
+		echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td>";
+		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$comp->fields["FK_glpi_enterprise"]);
 		echo "</td>";
-		echo "<td valign='center' rowspan='3'>".$lang["computers"][19]."&nbsp;:</td><td valign='center' rowspan='3'><textarea  cols='35' rows='6' name='comments' >".$comp->fields["comments"]."</textarea></td></tr>";
+
+		echo "<td valign='center' rowspan='4'>".$lang["computers"][19]."&nbsp;:</td><td valign='center' rowspan='4'><textarea  cols='35' rows='6' name='comments' >".$comp->fields["comments"]."</textarea></td></tr>";
 		echo "<tr class='tab_bg_1'><td>".$lang["computers"][18]."&nbsp;:	</td>";
 		echo "<td><input type='text' size='20' name='otherserial' value=\"".$comp->fields["otherserial"]."\">";
 		echo "</td></tr>";
 
+		echo "<tr class='tab_bg_1'><td>".$lang["computers"][17]."&nbsp;:	</td>";
+		echo "<td><input type='text' name='serial' size='20' value=\"".$comp->fields["serial"]."\">";
+		echo "</td></tr>";
+
+		
 		echo "<tr class='tab_bg_1'>";
 		
 		

@@ -1497,7 +1497,53 @@ if(FieldExists("glpi_computers","osver")) {
 	$db->query($query_alter) or die("0.5 alter for update OS ".$lang["update"][90].$db->error());
 }
 
+// Ajout Fabriquant computer
+if(!FieldExists("glpi_computers","FK_glpi_enterprise")) {
 
+	$query = "ALTER TABLE `glpi_computers` ADD `FK_glpi_enterprise` INT( 11 ) DEFAULT '0' NOT NULL ;";
+	$db->query($query) or die("0.5 add field manufacturer ".$lang["update"][90].$db->error());
+
+}
+
+// Ajout Fabriquant printer
+if(!FieldExists("glpi_printers","FK_glpi_enterprise")) {
+
+	$query = "ALTER TABLE `glpi_printers` ADD `FK_glpi_enterprise` INT( 11 ) DEFAULT '0' NOT NULL ;";
+	$db->query($query) or die("0.5 add field manufacturer ".$lang["update"][90].$db->error());
+
+}
+
+// Ajout Fabriquant networking
+if(!FieldExists("glpi_networking","FK_glpi_enterprise")) {
+
+	$query = "ALTER TABLE `glpi_networking` ADD `FK_glpi_enterprise` INT( 11 ) DEFAULT '0' NOT NULL ;";
+	$db->query($query) or die("0.5 add field manufacturer ".$lang["update"][90].$db->error());
+
+}
+
+// Ajout Fabriquant monitor
+if(!FieldExists("glpi_monitors","FK_glpi_enterprise")) {
+
+	$query = "ALTER TABLE `glpi_monitors` ADD `FK_glpi_enterprise` INT( 11 ) DEFAULT '0' NOT NULL ;";
+	$db->query($query) or die("0.5 add field manufacturer ".$lang["update"][90].$db->error());
+
+}
+
+// Ajout Fabriquant peripheral
+if(!FieldExists("glpi_software","FK_glpi_enterprise")) {
+
+	$query = "ALTER TABLE `glpi_software` ADD `FK_glpi_enterprise` INT( 11 ) DEFAULT '0' NOT NULL ;";
+	$db->query($query) or die("0.5 add field manufacturer ".$lang["update"][90].$db->error());
+
+}
+
+// Ajout Fabriquant peripheral
+if(!FieldExists("glpi_peripherals","FK_glpi_enterprise")) {
+
+	$query = "ALTER TABLE `glpi_peripherals` ADD `FK_glpi_enterprise` INT( 11 ) DEFAULT '0' NOT NULL ;";
+	$db->query($query) or die("0.5 add field manufacturer ".$lang["update"][90].$db->error());
+
+}
 
 // Update version number
 $query="UPDATE glpi_config set version='0.5' WHERE ID='1'";

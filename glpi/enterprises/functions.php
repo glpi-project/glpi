@@ -463,22 +463,23 @@ $query="DELETE FROM glpi_contact_enterprise WHERE ID= '$ID';";
 $result = $db->query($query);
 }
 
-function showEnterpriseLinks($value){
+function getEnterpriseLinks($value){
 		global $HTMLRel,$lang;
-
+		$ret="";
+		
 		$ent=new Enterprise();
 		if ($ent->getFromDB($value)){
 		if (!empty($ent->fields['website'])){
 			if (!ereg("https*://",$ent->fields['website']))	$website="http://".$ent->fields['website'];
 			else $website=$ent->fields['website'];
-			echo "&nbsp;&nbsp;";
-			echo "<a href='$website'><img src='".$HTMLRel."pics/web.png' style='vertical-align:middle;' alt='".$lang["common"][4]."' title='".$lang["common"][4]."' ></a>";
+			$ret.= "&nbsp;&nbsp;";
+			$ret.= "<a href='$website'><img src='".$HTMLRel."pics/web.png' style='vertical-align:middle;' alt='".$lang["common"][4]."' title='".$lang["common"][4]."' ></a>";
 		}
-		echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-		echo "<a href='".$HTMLRel."enterprises/enterprises-info-form.php?ID=".$ent->fields['ID']."'><img src='".$HTMLRel."pics/edit.png' style='vertical-align:middle;' alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'></a>";
+		$ret.= "&nbsp;&nbsp;&nbsp;&nbsp;";
+		$ret.= "<a href='".$HTMLRel."enterprises/enterprises-info-form.php?ID=".$ent->fields['ID']."'><img src='".$HTMLRel."pics/edit.png' style='vertical-align:middle;' alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'></a>";
 		}
 
-
+return $ret;
 
 }
 
