@@ -475,12 +475,12 @@ function step5()
 
 // STEP 6 Get the config and fill database
 // Config the mailing features if enabled by user
-function step6($root_doc, $event_loglevel, $num_of_events, $expire_events, $list_limit, $cut, $mailing)
+function step6($root_doc, $event_loglevel, $num_of_events, $expire_events,$jobs_at_login, $list_limit, $cut, $mailing)
 {
 	include ("_relpos.php");
 	require_once ($phproot . "/glpi/includes.php");
 	$db = new DB;
-	$query = "update glpi_config set root_doc = '". $root_doc ."', event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', list_limit = '". $list_limit ."', cut = '". $cut ."'"; 
+	$query = "update glpi_config set root_doc = '". $root_doc ."', event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', jobs_at_login = '". $jobs_at_login ."', list_limit = '". $list_limit ."', cut = '". $cut ."'"; 
 	$db->query($query);
 	echo "Votre configuration a bien été enregistrée";
 	echo "<p>Voulez vous utiliser les fonctionnalitées de mailing ? (Notifications par mail) ";
@@ -736,7 +736,7 @@ include ("_relpos.php");
 				break;
 			case "Etape_5" :
 				header_html("Etape 5");
-				step6($_POST["root_doc"], $_POST["event_loglevel"], $_POST["num_of_events"], $_POST["expire_events"], $_POST["list_limit"], $_POST["cut"]);
+				step6($_POST["root_doc"], $_POST["event_loglevel"], $_POST["num_of_events"], $_POST["expire_events"], $_POST["jobs_at_login"],$_POST["list_limit"], $_POST["cut"]);
 				break;
 			case "Etape_51" :
 				header_html("Etape 5.1");
