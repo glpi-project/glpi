@@ -42,7 +42,9 @@ checkAuthentication("normal");
 commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
 
 if(empty($_POST["date1"])&&empty($_POST["date2"])) {
-$_POST["date1"]="0000-00-00";
+$year=date("Y")-2;
+$_POST["date1"]=date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
+
 $_POST["date2"]=date("Y-m-d");
 }
 
