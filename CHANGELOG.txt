@@ -1,7 +1,23 @@
 **** GLPI 0.4 ***
 
+26/09/2004
+Mise à jour des IP, MAC et prises réseau au moment de la connection de ports
+
+19/09/2004
+Ajout script d'update du contenu des données pour être compatible avec le nouveau système de sécurité
+
+17/09/2004
+Changement complet des rapports type Excel.
+Passage au format SYLK qui est lisible sur de nombreux tableurs (Excel, OpenOffice, Multiplan,,Gnumeric...)
+
+15/09/2004
+Gestion de l'active directory comme source d'authentification externe
+
+14/09/2004
+Changement du système de stockage des mots de passe : tout en md5 maintenant
+
 12/09/2004
-Ajout de liens vers les fichiers d'aide (pas encore rédigés à ce jour)
+Ajout de liens vers les fichiers d'aide
 directement depuis l'appli (console et helpdesk).
 
 12/09/2004
