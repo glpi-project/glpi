@@ -48,7 +48,7 @@ function searchFormTracking ($show,$contains) {
 	echo "<tr><th align=center colspan=3>".$lang["tracking"][0].":</th></tr>";
 
 	echo "<form method=\"get\" action=\"".$cfg_install["root"]."/tracking/index.php\">";
-	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
+	echo "<tr class='tab_bg_1'>";
 	echo "<td colspan=2 align=center>";
 	echo "<select name=\"show\" size=1>";
 
@@ -70,8 +70,8 @@ function searchFormTracking ($show,$contains) {
 	echo "</tr>";
 	echo "</form>";
 	echo "<form method=\"get\" action=\"".$cfg_install["root"]."/tracking/index.php\">";
-	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
-	echo "<td bgcolor=".$cfg_layout["tab_bg_2"].">";
+	echo "<tr class='tab_bg_1'>";
+	echo "<td class='tab_bg_2'>";
 	echo "<b>".$lang["tracking"][5].":</b> </td><td><input type=text name=contains value=\"$contains\"size=15>";
 	echo "</td><td>";
 	echo "<input type=submit value=\"".$lang["buttons"][0]."\">";
@@ -175,8 +175,8 @@ function showJobList($username,$show,$contains,$item) {
 		}
 		if ($item)
 		{
-			echo "<tr bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
-			echo "<td align=center colspan=8 bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><b>";
+			echo "<tr class='tab_bg_2'>";
+			echo "<td align=center colspan=8 class='tab_bg_1'><b>";
 			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item\">";
 			echo $lang["joblist"][7];
 			echo "</a>";
@@ -192,7 +192,7 @@ function showJobList($username,$show,$contains,$item) {
 
 		if ($item) 
 		{
-			echo "<tr><td align=center bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><b>";
+			echo "<tr><td align=center class='tab_bg_1'><b>";
 			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item\">";
 			echo $lang["joblist"][7];
 			echo "</a>";
@@ -240,8 +240,8 @@ $query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY
 		}
 		if ($item)
 		{
-			echo "<tr bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
-			echo "<td align=center colspan=8 bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><b>";
+			echo "<tr class='tab_bg_2'>";
+			echo "<td align=center colspan=8 class='tab_bg_1'><b>";
 		}
 		echo "</table></center>";
 	} 
@@ -253,7 +253,7 @@ $query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY
 
 		if ($item)
 		{
-			echo "<tr><td align=center bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><b>";
+			echo "<tr><td align=center class='tab_bg_1'><b>";
 		}
 		echo "</table>";
 		echo "</center><br>";
@@ -277,14 +277,14 @@ function showJobShort($ID, $followup) {
 
 		if ($job->status == "new")
 		{
-			echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
+			echo "<tr class='tab_bg_1'>";
 			echo "<td align=center><font color=\"green\"><b>".$lang["joblist"][9]."</b></font></td>";
 			echo "<td width=30%><nobr><small>".$lang["joblist"][11].":<br>&nbsp;$job->date</nobr></small></td>";
 
 		}
 		else
 		{
- 			echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
+ 			echo "<tr class='tab_bg_1'>";
 			echo "<td align=center><b>".$lang["joblist"][10]."</b></td>";
 			echo "<td width=30%><nobr><small>".$lang["joblist"][11].":<br>&nbsp;$job->date<br>";
 			echo "<i>".$lang["joblist"][12].":<br>&nbsp;$job->closedate</i></nobr></small></td>";
@@ -319,7 +319,7 @@ function showJobShort($ID, $followup) {
 		echo "<td><b>$stripped_content</b></td>";
 
 		// Job Controls
-		echo "<td width=10% bgcolor=\"".$cfg_layout["tab_bg_2"]."\" align=center>";
+		echo "<td width=10% class='tab_bg_2' align=center>";
 		
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		echo "<b><a href=\"".$cfg_install["root"]."/tracking/tracking-followups.php?ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;($job->num_of_followups)&nbsp;<br>";
@@ -345,7 +345,7 @@ function showJobShort($ID, $followup) {
 	}
 	else
 	{
-    		echo "<tr bgcolor=".$cfg_layout["tab_bg_2"]."><td colspan=6><i>".$lang["joblist"][16]."</i></td></tr>";
+    		echo "<tr class='tab_bg_2'><td colspan=6><i>".$lang["joblist"][16]."</i></td></tr>";
 	}
 }
 
@@ -365,7 +365,7 @@ function showJobDetails($ID) {
 
 		echo "<center><table border=0 width=90% cellpadding=5>\n";
 		echo "<tr><th colspan=2>".$lang["job"][0]." $job->ID:</th></tr>";
-		echo "<tr bgcolor=".$cfg_layout["tab_bg_2"].">";
+		echo "<tr class='tab_bg_2'>";
 		echo "<td width=50% rowspan=2>";
 
 		echo "<table cellpadding=2 cellspacing=0 border=0>";
@@ -419,14 +419,14 @@ function showJobDetails($ID) {
 		echo "</table>";
 		echo "</td>";
 	
-		echo "</tr><tr bgcolor=".$cfg_layout["tab_bg_2"].">";
+		echo "</tr><tr class='tab_bg_2'>";
 		echo "<td align=center>";	
 
 			assignFormTracking($ID,$_SESSION["glpiname"],$cfg_install["root"]."/tracking/tracking-assign-form.php");
 		
 		echo "</td>";
 		
-		echo "</tr><tr bgcolor=".$cfg_layout["tab_bg_2"].">";
+		echo "</tr><tr class='tab_bg_2'>";
 		
 		echo "<td colspan=2>";
 		echo $lang["joblist"][6].":<br><br>";
@@ -437,7 +437,7 @@ function showJobDetails($ID) {
 	
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		if ($job->status == "new") {
-			echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
+			echo "<tr class='tab_bg_1'>";
 			echo "<td colspan=2 align=center>";
 			echo "<b><a href=\"".$cfg_install["root"]."/tracking/tracking-mark.php?ID=$job->ID\">".$lang["job"][3]."</a></b>";
 			echo "</td></tr>";
@@ -450,7 +450,7 @@ function showJobDetails($ID) {
 	} 
 	else
 	{
-    		echo "<tr bgcolor=".$cfg_layout["tab_bg_2"]."><td colspan=6><i>".$lang["joblist"][16]."</i></td></tr>";
+    		echo "<tr class='tab_bg_2'><td colspan=6><i>".$lang["joblist"][16]."</i></td></tr>";
 	}
 }
 
@@ -546,7 +546,7 @@ function showFollowups($ID) {
 		for ($i=0; $i < $job->num_of_followups; $i++) {
 			$fup = new Followup;
 			$fup->getFromDB($ID,$i);
-			echo "<tr bgcolor=".$cfg_layout["tab_bg_2"].">";
+			echo "<tr class='tab_bg_2'>";
 			echo "<td align=center>$fup->date</td>";
 			echo "<td align=center>$fup->author</td>";
 			echo "<td width=70%><b>$fup->contents</b></td>";
@@ -566,8 +566,8 @@ function showFollowups($ID) {
 		echo "<form method=get action=\"".$cfg_install["root"]."/tracking/tracking-followups.php\">";
 		echo "<input type=hidden name=ID value=$ID>";
 		echo "<tr><th>".$lang["job"][9].":</th></tr>";
-		echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td width=100% align=center><textarea cols=60 rows=5 name=contents wrap=soft></textarea></td></tr>";
-		echo "<tr><td align=center bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+		echo "<tr class='tab_bg_1'><td width=100% align=center><textarea cols=60 rows=5 name=contents wrap=soft></textarea></td></tr>";
+		echo "<tr><td align=center class='tab_bg_1'>";
 		echo "<input type=submit value=\"".$lang["buttons"][2]."\"></td>";
 		echo "</tr></form></table></center>";
 	}
@@ -614,17 +614,17 @@ function addFormTracking ($ID,$author,$target,$error) {
 	echo "<center><table border=0>";
 	echo "<tr><th colspan=2>".$lang["job"][13].":</th></tr>";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_2"]."\"><td>".$lang["joblist"][1].":</td>";
+	echo "<tr class='tab_bg_2'><td>".$lang["joblist"][1].":</td>";
 	echo "<td align=center>".date("Y-m-d H:i:s")."</td></tr>";
 
-	echo "<tr><td bgcolor=\"".$cfg_layout["tab_bg_2"]."\">".$lang["joblist"][0].":</td>";
-	echo "<td align=center bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><select name=status>";
+	echo "<tr><td class='tab_bg_2'>".$lang["joblist"][0].":</td>";
+	echo "<td align=center class='tab_bg_1'><select name=status>";
 	echo "<option value=new selected>".$lang["job"][14]."</option>";
 	echo "<option value=old>".$lang["job"][15]."</option>";
 	echo "</select></td></tr>";
 
-	echo "<tr><td bgcolor=\"".$cfg_layout["tab_bg_2"]."\">".$lang["joblist"][2].":</td>";
-	echo "<td align=center bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><select name=priority>";
+	echo "<tr><td class='tab_bg_2'>".$lang["joblist"][2].":</td>";
+	echo "<td align=center class='tab_bg_1'><select name=priority>";
 	echo "<option value=5>".$lang["joblist"][17]."</option>";
 	echo "<option value=4>".$lang["joblist"][18]."</option>";
 	echo "<option value=3 selected>".$lang["joblist"][19]."</option>";
@@ -632,10 +632,10 @@ function addFormTracking ($ID,$author,$target,$error) {
 	echo "<option value=1>".$lang["joblist"][21]."</option>";
 	echo "</select></td></tr>";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_2"]."\"><td>".$lang["joblist"][3].":</td>";
+	echo "<tr class='tab_bg_2'><td>".$lang["joblist"][3].":</td>";
 	echo "<td align=center>$author</td></tr>";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_2"]."\"><td>".$lang["joblist"][5].":</td>";
+	echo "<tr class='tab_bg_2'><td>".$lang["joblist"][5].":</td>";
 	echo "<td align=center>";
 	$db=new DB;
 	$query = "SELECT name FROM computers WHERE (ID = $ID)";
@@ -650,7 +650,7 @@ function addFormTracking ($ID,$author,$target,$error) {
 
 	echo "<tr><td colspan=2><textarea cols=50 rows=14 wrap=soft name=contents></textarea></td></tr>";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td colspan=2 align=center>";
+	echo "<tr class='tab_bg_1'><td colspan=2 align=center>";
 	echo "<input type=submit value=\"".$lang["buttons"][2]."\">";
 	echo "</td></tr>";
 	
@@ -673,7 +673,7 @@ function assignFormTracking ($ID,$admin,$target) {
 	echo "<table border=0>";
 	echo "<tr><th>".$lang["job"][4]." $ID:</th></tr>";
 	echo "<form method=get action=\"".$target."\">";
-	echo "<td align=center bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+	echo "<td align=center class='tab_bg_1'>";
 
 	echo "<table border=0>";
 	echo "<tr>";

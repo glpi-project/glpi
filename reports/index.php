@@ -51,7 +51,7 @@ while($data = each($report_list)) {
 	$val = $data[0];
 	$name = $report_list["$val"]["name"];
 	$file = $report_list["$val"]["file"];
-	echo  "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td align=center><b><a href=\"$file\">$name</a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align=center><b><a href=\"$file\">$name</a></td></tr>";
 	$i++;
 }
 

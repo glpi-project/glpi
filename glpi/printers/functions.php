@@ -58,7 +58,7 @@ function searchFormPrinters() {
 	echo "<form method='get' action=\"".$cfg_install["root"]."/printers/printers-search.php\">";
 	echo "<center><table border=0 width=90%>";
 	echo "<tr><th colspan=2><b>".$lang["search"][5].":</b></th></tr>";
-	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
+	echo "<tr class='tab_bg_1'>";
 	echo "<td align=center>";
 		dropdown( "dropdown_locations",  "contains");
 	echo "<input type=hidden name=field value=location>&nbsp;";
@@ -70,14 +70,14 @@ function searchFormPrinters() {
 	}
 	echo "</select>";
 	echo "<input type=hidden name=phrasetype value=exact>";
-	echo "</td><td width=80 align=center bgcolor=".$cfg_layout["tab_bg_2"].">";
+	echo "</td><td width=80 align=center class='tab_bg_2'>";
 	echo "<input type=submit value=\"".$lang["buttons"][1]."\">";
 	echo "</td></tr></table></form></center>";
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/printers/printers-search.php\">";
 	echo "<center><table border=0 width=90%>";
 	echo "<tr><th colspan=2><b>".$lang["search"][0].":</b></th></tr>";
-	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
+	echo "<tr class='tab_bg_1'>";
 	echo "<td align=center>";
 	echo "<select name=\"field\" size=1>";
 	reset($option);
@@ -99,7 +99,7 @@ function searchFormPrinters() {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select> ";
-	echo "</td><td width=80 align=center bgcolor=".$cfg_layout["tab_bg_2"].">";
+	echo "</td><td width=80 align=center class='tab_bg_2'>";
 	echo "<input type=submit value=\"".$lang["buttons"][0]."\">";
 	echo "</td></tr></table></center></form>";
 }
@@ -184,7 +184,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 				$ID = $db->result($result_limit, $i, "ID");
 				$printer = new Printer;
 				$printer->getfromDB($ID);
-				echo "<tr bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
+				echo "<tr class='tab_bg_2'>";
 				echo "<td><b>";
 				echo "<a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=$ID\">";
 				echo $printer->fields["name"]." (".$printer->fields["ID"].")";
@@ -229,7 +229,7 @@ function showPrintersForm ($target,$ID) {
 	}		
 	echo "</b></th></tr>";
 	
-	echo "<tr><td bgcolor=".$cfg_layout["tab_bg_1"]." valign=top>";
+	echo "<tr><td class='tab_bg_1' valign=top>";
 
 	echo "<table cellpadding=0 cellspacing=0 border=0>\n";
 
@@ -252,7 +252,7 @@ function showPrintersForm ($target,$ID) {
 	echo "</table>";
 
 	echo "</td>\n";	
-	echo "<td bgcolor=".$cfg_layout["tab_bg_1"]." valign=top>";
+	echo "<td class='tab_bg_1' valign=top>";
 
 	echo "<table cellpadding=0 cellspacing=0 border=0";
 
@@ -302,7 +302,7 @@ function showPrintersForm ($target,$ID) {
 	echo "</td>\n";	
 	echo "</tr>";
 	echo "<tr>";
-	echo "<td bgcolor=".$cfg_layout["tab_bg_1"]." valign=top colspan=2>";
+	echo "<td class='tab_bg_1' valign=top colspan=2>";
 	
 	
 	
@@ -334,7 +334,7 @@ function showPrintersForm ($target,$ID) {
 	echo "</td>\n";	
 	echo "</tr>";
 	echo "<tr>";
-	echo "<td bgcolor=".$cfg_layout["tab_bg_1"]." valign=top colspan=2>";
+	echo "<td class='tab_bg_1' valign=top colspan=2>";
 
 	echo "<table width=100% cellpadding=0 cellspacing=0 border=0><tr><td valign=top>";
 	echo $lang["printers"][12].":	</td>";
@@ -347,7 +347,7 @@ function showPrintersForm ($target,$ID) {
 	if ($ID=="") {
 
 		echo "<tr>";
-		echo "<td bgcolor=".$cfg_layout["tab_bg_2"]." valign=top colspan=2>";
+		echo "<td class='tab_bg_2' valign=top colspan=2>";
 		echo "<center><input type=submit name=add value=\"".$lang["buttons"][8]."\"></center>";
 		echo "</td>";
 		echo "</form></tr>";
@@ -357,12 +357,12 @@ function showPrintersForm ($target,$ID) {
 	} else {
 
 		echo "<tr>";
-		echo "<td bgcolor=".$cfg_layout["tab_bg_2"]." valign=top>";
+		echo "<td class='tab_bg_2' valign=top>";
 		echo "<input type=hidden name=ID value=\"$ID\">\n";
 		echo "<center><input type=submit name=update value=\"".$lang["buttons"][7]."\"></center>";
 		echo "</td></form>\n\n";
 		echo "<form action=\"$target\" method=post>\n";
-		echo "<td bgcolor=".$cfg_layout["tab_bg_2"]." valign=top>\n";
+		echo "<td class='tab_bg_2' valign=top>\n";
 		echo "<input type=hidden name=ID value=\"$ID\">\n";
 		echo "<center><input type=submit name=delete value=\"".$lang["buttons"][6]."\"></center>";
 		echo "</td>";

@@ -86,7 +86,7 @@ function LDAPshowEntries ($filter,$combine,$attribute,$display,$type) {
 
 		// Show Attributes
 		for ($x=0; $x < $object[$i]->num_of_attributes; $x++) {
-			echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\">\n";
+			echo "<tr class='tab_bg_1'>\n";
 
 			// Get Attribute and Values			
 			$attribute = $object[$i]->getAttribute($x);	
@@ -155,7 +155,7 @@ function LDAPshowEntries ($filter,$combine,$attribute,$display,$type) {
 		}
 		
 		// Start Controls at bottom of entry
-		echo "<tr bgcolor=\"".$cfg_layout["tab_bg_2"]."\">\n";
+		echo "<tr class='tab_bg_2'>\n";
 
 		// Update Entry	
 		echo "<td colspan=2 align=center>";
@@ -173,7 +173,7 @@ function LDAPshowEntries ($filter,$combine,$attribute,$display,$type) {
 
 		// Add Attributes or Values
 		echo "\n<form action=\"ldap-mod-attributes.php?action=add&type=$type\" method=post>\n";
-		echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td>\n";
+		echo "<tr class='tab_bg_1'><td>\n";
 		echo "<select name=attributes[]>\n";
 		for ($x=0; $x < count($object[$i]->attributes_req); $x++) {
 			echo "<option value=\"".$object[$i]->attributes_req[$x]."\">".$object[$i]->attributes_req[$x]."\n";
@@ -183,7 +183,7 @@ function LDAPshowEntries ($filter,$combine,$attribute,$display,$type) {
 		}
 		echo "</select>\n";
 		echo "<td><input name=\"values[]\" size=25></td>\n";
-		echo "<td bgcolor=\"".$cfg_layout["tab_bg_2"]."\" align=center>\n";
+		echo "<td class='tab_bg_2' align=center>\n";
 		echo "<input type=hidden name=dn value=\"".$dn."\">\n";
 		echo "<input type=submit value=\"".$lang["buttons"][8]."\"></td>\n";
 		echo "</form>\n";
@@ -213,7 +213,7 @@ function LDAPsearchForm($type,$target) {
 	echo "<table border=0><tr>";
 	echo "<th align=center>".$lang["ldap"][1]." $type ".$lang["ldap"][2]."</th>";
 	echo "<th align=center>".$lang["ldap"][3]."</th></tr>\n";
-	echo "<tr><td valign=top bgcolor=".$cfg_layout["tab_bg_1"]." align=center>\n";
+	echo "<tr><td valign=top class='tab_bg_1' align=center>\n";
 
 	echo "<select name=\"display[]\" size=7 multiple>";
 	echo "<option value=\"all\" selected>[all Attributes]";
@@ -232,7 +232,7 @@ function LDAPsearchForm($type,$target) {
 	}
 	echo "</select>\n";
 
-	echo "</td><td valign=top bgcolor=".$cfg_layout["tab_bg_1"].">\n";
+	echo "</td><td valign=top class='tab_bg_1'>\n";
 	
 	echo "<select name=attribute[0]>";
 	for ($i=0; $i<count($object->attributes_req); $i++) {
@@ -302,7 +302,7 @@ function LDAPprintForm ($objecttype,$error,$input) {
 	
 	// Print Form
 	echo "\n<center><form action=\"ldap-add-entry.php?type=$objecttype\" method=post>\n";
-	echo "<table bgcolor=".$cfg_layout["tab_bg_1"].">\n";
+	echo "<table class='tab_bg_1'>\n";
 	echo "<tr><th colspan=2 align=center>".$lang["ldap"][4]." ($objecttype):</th></tr>\n";
 
 	// Print Objectclasses
@@ -329,7 +329,7 @@ function LDAPprintForm ($objecttype,$error,$input) {
 	}
 
 	echo "\n<input type=hidden name=\"objecttype\" value=\"$objecttype\">\n";
-	echo "<tr><td bgcolor=".$cfg_layout["tab_bg_2"]." colspan=2 align=center>\n";
+	echo "<tr><td class='tab_bg_2' colspan=2 align=center>\n";
 	echo "<input type=submit value=\"".$lang["buttons"][8]."\"></td></tr>\n";
 	echo "</table></form></center>\n\n";
 }

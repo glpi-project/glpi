@@ -51,7 +51,7 @@ function searchFormSoftware() {
 	echo "<form method=get action=\"".$cfg_install["root"]."/software/software-search.php\">";
 	echo "<center><table border=0 width=90%>";
 	echo "<tr><th colspan=2><b>".$lang["search"][5].":</b></th></tr>";
-	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
+	echo "<tr class='tab_bg_1'>";
 	echo "<td align=center>";
 		dropdown( "dropdown_locations",  "contains");
 	echo "<input type=hidden name=field value=location>&nbsp;";
@@ -63,14 +63,14 @@ function searchFormSoftware() {
 	}
 	echo "</select>";
 	echo "<input type=hidden name=phrasetype value=exact>";
-	echo "</td><td width=80 align=center bgcolor=".$cfg_layout["tab_bg_2"].">";
+	echo "</td><td width=80 align=center class='tab_bg_2'>";
 	echo "<input type=submit value=\"".$lang["buttons"][1]."\">";
 	echo "</td></tr></table></form></center>";
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/software/software-search.php\">";
 	echo "<center><table border=0 width=90%>";
 	echo "<tr><th colspan=2><b>".$lang["search"][0].":</b></th></tr>";
-	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
+	echo "<tr class='tab_bg_1'>";
 	echo "<td align=center>";
 	echo "<select name=\"field\" size=1>";
 	reset($option);
@@ -92,7 +92,7 @@ function searchFormSoftware() {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select> ";
-	echo "</td><td width=80 align=center bgcolor=".$cfg_layout["tab_bg_2"].">";
+	echo "</td><td width=80 align=center class='tab_bg_2'>";
 	echo "<input type=submit value=\"".$lang["buttons"][0]."\">";
 	echo "</td></tr></table></center></form>";
 }
@@ -172,7 +172,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 				$sw = new Software;
 				$sw->getfromDB($ID);
 
-				echo "<tr bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
+				echo "<tr class='tab_bg_2'>";
 				echo "<td><b>";
 				echo "<a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=$ID\">";
 				echo $sw->fields["name"]." (".$sw->fields["ID"].")";
@@ -221,24 +221,24 @@ function showSoftwareForm ($target,$ID) {
 	}		
 	echo "</b></th></tr>";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td>".$lang["software"][2].":		</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["software"][2].":		</td>";
 	echo "<td><input type=text name=name value=\"".$sw->fields["name"]."\" size=25></td>";
 	echo "</tr>";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td>".$lang["software"][4].": 	</td><td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["software"][4].": 	</td><td>";
 		dropdownValue("dropdown_locations", "location", $sw->fields["location"]);
 	echo "</td></tr>";
 
 	
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td>".$lang["software"][3].": 	</td><td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["software"][3].": 	</td><td>";
 		dropdownValue("dropdown_os", "platform", $sw->fields["platform"]);
 	echo "</td></tr>";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td>".$lang["software"][5].":		</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["software"][5].":		</td>";
 	echo "<td><input type=text name=version value=\"".$sw->fields["version"]."\" size=5></td>";
 	echo "</tr>";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td valign=top>";
+	echo "<tr class='tab_bg_1'><td valign=top>";
 	echo $lang["software"][6].":	</td>";
 	echo "<td align=center><textarea cols=35 rows=4 name=comments wrap=soft>".$sw->fields["comments"]."</textarea>";
 	echo "</td></tr>";
@@ -246,7 +246,7 @@ function showSoftwareForm ($target,$ID) {
 	if (!$ID) {
 
 		echo "<tr>";
-		echo "<td bgcolor=".$cfg_layout["tab_bg_2"]." valign=top colspan=2>";
+		echo "<td class='tab_bg_2' valign=top colspan=2>";
 		echo "<center><input type=submit name=add value=\"".$lang["buttons"][8]."\"></center>";
 		echo "</td>";
 		echo "</form></tr>";
@@ -256,12 +256,12 @@ function showSoftwareForm ($target,$ID) {
 	} else {
 
 		echo "<tr>";
-		echo "<td bgcolor=".$cfg_layout["tab_bg_2"]." valign=top>";
+		echo "<td class='tab_bg_2' valign=top>";
 		echo "<input type=hidden name=ID value=\"$ID\">\n";
 		echo "<center><input type=submit name=update value=\"".$lang["buttons"][7]."\"></center>";
 		echo "</td></form>\n\n";
 		echo "<form action=\"$target\" method=post>\n";
-		echo "<td bgcolor=".$cfg_layout["tab_bg_2"]." valign=top>\n";
+		echo "<td class='tab_bg_2' valign=top>\n";
 		echo "<input type=hidden name=ID value=\"$ID\">\n";
 		echo "<center><input type=submit name=delete value=\"".$lang["buttons"][6]."\"></center>";
 		echo "</td>";
@@ -355,7 +355,7 @@ function showLicensesAdd($ID) {
 	GLOBAL $cfg_layout,$cfg_install,$lang;
 	
 	echo "<center><table border=0 width=50% cellpadding=2>";
-	echo "<tr><td align=center bgcolor=\"".$cfg_layout["tab_bg_2"]."\"><b>";
+	echo "<tr><td align=center class='tab_bg_2'><b>";
 	echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?addform=addform&ID=$ID\">";
 	echo $lang["software"][12];
 	echo "</a></b></td></tr>";
@@ -380,7 +380,7 @@ function showLicenses ($sID) {
 				$ID = current($data);
 				$lic = new License;
 				$lic->getfromDB($ID);
-				echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+				echo "<tr class='tab_bg_1'>";
 				echo "<td width=100% align=center><b>".$lic->serial."</b></td>";
 				echo "<td align=center><b>";
 				echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?delete=delete&ID=$ID\">";
@@ -411,11 +411,11 @@ function showLicenseForm($target,$ID) {
 	echo "<center><table><tr><th colspan=2>".$lang["software"][15]." ($ID):</th></tr>";
 	echo "<form method=post action=\"$target\">";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td>".$lang["software"][16].":</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["software"][16].":</td>";
 	echo "<td><input type=text size=20 name=serial value=\"\">";
 	echo "</td></tr>";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
+	echo "<tr class='tab_bg_2'>";
 	echo "<td align=center colspan=2>";
 	echo "<input type=hidden name=sID value=".$ID.">";
 	echo "<input type=submit name=add value=\"".$lang["buttons"][8]."\">";
@@ -476,7 +476,7 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 					if ($db->numrows($result2)==0) {				
 						$lic = new License;
 						$lic->getfromDB($ID);
-						echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+						echo "<tr class='tab_bg_1'>";
 						echo "<td><b>$i</b></td>";
 						echo "<td width=100% align=center><b>".$lic->serial."</b></td>";
 						echo "<td align=center><b>";
@@ -485,7 +485,7 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 						echo "</a></b></td>";
 						echo "</tr>";
 					} else {
-						echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+						echo "<tr class='tab_bg_1'>";
 						echo "<td><b>$i</b></td>";
 						echo "<td colspan=2 align=center>";
 						echo "<b>".$lang["software"][18]."</b>";
@@ -494,7 +494,7 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 					}
 					$i++;
 				} else {
-					echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+					echo "<tr class='tab_bg_1'>";
 					echo "<td><b>$i</b></td>";
 					echo "<td width=100% align=center><b>".$lic->serial."</b></td>";
 					echo "<td align=center><b>";
@@ -558,25 +558,25 @@ function showSoftwareInstalled($instID) {
 		$sw = new Software;
 		$sw->getFromDB($sID);
 
-		echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
+		echo "<tr class='tab_bg_1'>";
 	
 		echo "<td align=center><b><a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=$sID\">";
 		echo $sw->fields["name"]." (v. ".$sw->fields["version"].")</a>";
 		echo "</b>";
 		echo " - ".$serial."</td>";
 		
-		echo "<td align=center bgcolor=".$cfg_layout["tab_bg_2"].">";
+		echo "<td align=center class='tab_bg_2'>";
 		echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&lID=$lID\">";
 		echo "<b>".$lang["buttons"][5]."</b></a>";
 		echo "</td></tr>";
 
 		$i++;		
 	}
-	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"]."><td align=center>";
+	echo "<tr class='tab_bg_1'><td align=center>";
 	echo "<form method=post action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
 	echo "<input type=hidden name=cID value=$instID>";
 		dropdownSoftware();
-	echo "</td><td align=center bgcolor=".$cfg_layout["tab_bg_2"].">";
+	echo "</td><td align=center class='tab_bg_2'>";
 	echo "<input type=submit name=select value=\"".$lang["buttons"][4]."\">";
 	echo "</td></tr>";
 	echo "</form>";

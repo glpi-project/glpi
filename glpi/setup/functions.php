@@ -42,18 +42,18 @@ function showFormDropdown ($target,$name,$human) {
 	echo "<tr><th colspan=2>$human:</th></tr>";
 	echo "<form method=post action=\"$target\">";
 
-	echo "<tr><td align=center bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+	echo "<tr><td align=center class='tab_bg_1'>";
 
 	dropdown("dropdown_".$name, "value");
 
-	echo "</td><td align=center bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
+	echo "</td><td align=center class='tab_bg_2'>";
 	echo "<input type=hidden name=tablename value=dropdown_".$name.">";
 	echo "<input type=submit name=delete value=\"".$lang["buttons"][6]."\">";
 	echo "</td></form></tr>";
 	echo "<form action=\"$target\" method=post>";
-	echo "<tr><td align=center bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+	echo "<tr><td align=center class='tab_bg_1'>";
 	echo "<input type=text maxlength=100 size=20 name=value>";
-	echo "</td><td align=center bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
+	echo "</td><td align=center class='tab_bg_2'>";
 	echo "<input type=hidden name=tablename value=dropdown_".$name.">";
 	echo "<input type=submit name= add value=\"".$lang["buttons"][8]."\">";
 	echo "</td></form></tr>";
@@ -68,18 +68,18 @@ function showFormTypeDown ($target,$name,$human) {
 	echo "<tr><th colspan=2>$human:</th></tr>";
 	echo "<form method=post action=\"$target\">";
 
-	echo "<tr><td align=center bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+	echo "<tr><td align=center class='tab_bg_1'>";
 
 	dropdown("type_".$name, "value");
 
-	echo "</td><td align=center bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
+	echo "</td><td align=center class='tab_bg_2'>";
 	echo "<input type=hidden name=tablename value=type_".$name.">";
 	echo "<input type=submit name=delete value=\"".$lang["buttons"][6]."\">";
 	echo "</td></form></tr>";
 	echo "<form action=\"$target\" method=post>";
-	echo "<tr><td align=center bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+	echo "<tr><td align=center class='tab_bg_1'>";
 	echo "<input type=text maxlength=100 size=20 name=value>";
-	echo "</td><td align=center bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
+	echo "</td><td align=center class='tab_bg_2'>";
 	echo "<input type=hidden name=tablename value=type_".$name.">";
 	echo "<input type=submit name= add value=\"".$lang["buttons"][8]."\">";
 	echo "</td></form></tr>";
@@ -121,9 +121,9 @@ function showPasswordForm($target,$ID) {
 	echo "<center><table border=0 cellpadding=5 width=30%>";
 	echo "<form method=post action=\"$target\">";
 	echo "<tr><th colspan=2>".$lang["setup"][11]." '".$user->fields["name"]."':</th></tr>";
-	echo "<tr><td width=100% align=center bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+	echo "<tr><td width=100% align=center class='tab_bg_1'>";
 	echo "<input type=password name=password size=10>";
-	echo "</td><td align=center bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
+	echo "</td><td align=center class='tab_bg_2'>";
 	echo "<input type=hidden name=name value=\"".$user->fields["name"]."\">";
 	echo "<input type=submit name=changepw value=\"".$lang["buttons"][14]."\">";
 	echo "</td></tr>";
@@ -142,23 +142,23 @@ function showUser($back,$ID) {
 	echo "<center><table border=0 cellpadding=5>";
 	echo "<tr><th colspan=2>".$lang["setup"][12].": ".$user->fields["name"]."</th></tr>";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td>".$lang["setup"][13].": </td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["setup"][13].": </td>";
 	echo "<td><b>".$user->fields["realname"]."</b></td></tr>";	
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td>".$lang["setup"][14].":</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["setup"][14].":</td>";
 	echo "<td><b><a href=\"mailto:".$user->fields["email"]."\">".$user->fields["email"]."</b></td></tr>";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td>".$lang["setup"][15].": </td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["setup"][15].": </td>";
 	echo "<td><b>".$user->fields["phone"]."</b></td></tr>";	
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td>".$lang["setup"][16].": </td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["setup"][16].": </td>";
 	echo "<td><b>".$user->fields["location"]."</b></td></tr>";	
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td>".$lang["setup"][17].": </td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["setup"][17].": </td>";
 	echo "<td><b>".$user->fields["type"]."</b></td></tr>";	
 
 	echo "<tr><td colspan=2 height=10></td></tr>";
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
+	echo "<tr class='tab_bg_2'>";
 	echo "<td colspan=2 align=center><b><a href=\"$back\">".$lang["buttons"][13]."</a></b></td></tr>";
 	echo "</table></center>";
 
@@ -186,7 +186,7 @@ function listUsersForm($target) {
 			$user = new User;
 			$user->getFromDB($name);
 			
-			echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";	
+			echo "<tr class='tab_bg_1'>";	
 			echo "<form method=post action=\"$target\">";
 			echo "<td align=center><b>".$user->fields["name"]."</b>";
 			echo "<input type=hidden name=name value=\"".$user->fields["name"]."\">";
@@ -213,8 +213,8 @@ function listUsersForm($target) {
 			echo "<td>";
 				dropdownValue("dropdown_locations", "location", $user->fields["location"]);
 			echo "</td>";
-			echo "<td bgcolor=\"".$cfg_layout["tab_bg_2"]."\"><input type=submit name=update value=\"".$lang["buttons"][7]."\"></td>";
-			echo "<td bgcolor=\"".$cfg_layout["tab_bg_2"]."\"><input type=submit name=delete value=\"".$lang["buttons"][6]."\"></td>";
+			echo "<td class='tab_bg_2'><input type=submit name=update value=\"".$lang["buttons"][7]."\"></td>";
+			echo "<td class='tab_bg_2'><input type=submit name=delete value=\"".$lang["buttons"][6]."\"></td>";
 			echo "</tr></form>";
 			$i++;
 		}	
@@ -225,7 +225,7 @@ function listUsersForm($target) {
 		echo "<tr><th>Login</th><th>".$lang["setup"][13]."</th><th>".$lang["setup"][20]."</th>";
 		echo "<th>".$lang["setup"][14]."</th><th>".$lang["setup"][15]."</th>";
 		echo "<th>".$lang["setup"][16]."</th></tr>";
-		echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";	
+		echo "<tr class='tab_bg_1'>";	
 		echo "<form method=post action=\"$target\">";
 		echo "<td><input name=name size=7 value=\"\"></td>";
 		echo "<td><input name=realname size=15 value=\"\"></td>";
@@ -243,7 +243,7 @@ function listUsersForm($target) {
 		echo "</td";
 					
 		echo "</tr>";
-		echo "<tr bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
+		echo "<tr class='tab_bg_2'>";
 		echo "<td colspan=5 align=center><i>".$lang["setup"][21]."</i></td>";
 		echo "<td align=center>";
 		echo "<input type=submit name=add value=\"".$lang["buttons"][8]."\">";
@@ -338,7 +338,7 @@ function showFormAssign($target)
 			$user = new User;
 			$user->getFromDB($name);
 			
-			echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";	
+			echo "<tr class='tab_bg_1'>";	
 			echo "<form method='post' action=\"$target\">";
 			echo "<td align='center'><b>".$user->fields["name"]."</b>";
 			echo "<input type='hidden' name='name' value=\"".$user->fields["name"]."\">";
@@ -350,7 +350,7 @@ function showFormAssign($target)
 			if ($user->fields["can_assign_job"] == 'yes') echo "checked";
       echo ">";
 			echo "</td>";
-			echo "<td bgcolor=\"".$cfg_layout["tab_bg_2"]."\"><input type='submit' name='update' value=\"".$lang["buttons"][7]."\"></td>";
+			echo "<td class='tab_bg_2'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\"></td>";
 						
                         echo "</form>";
 	
@@ -375,9 +375,9 @@ function listTemplates($target) {
 			$templname = $db->result($result,$i,"templname");
 			
 			echo "<tr>";
-			echo "<td align=center bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+			echo "<td align=center class='tab_bg_1'>";
 			echo "<a href=\"$target?ID=$ID&showform=showform\">$templname</a></td>";
-			echo "<td align=center bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
+			echo "<td align=center class='tab_bg_2'>";
 			echo "<b><a href=\"$target?ID=$ID&delete=delete\">".$lang["buttons"][6]."</a></b></td>";
 			echo "</tr>";		
 
@@ -385,7 +385,7 @@ function listTemplates($target) {
 		}
 
 		echo "<tr>";
-		echo "<td colspan=2 align=center bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
+		echo "<td colspan=2 align=center class='tab_bg_2'>";
 		echo "<b><a href=\"$target?showform=showform\">".$lang["setup"][22]."</a></b>";
 		echo "</td>";
 		echo "</tr>";
@@ -554,12 +554,12 @@ echo "<tr><td>".$lang["setup"][55].":	</td>";
 	echo "</tr><tr>";
 
 	if (!empty($ID)) {
-		echo "<td bgcolor=\"".$cfg_layout["tab_bg_2"]."\" align=center valign=top colspan=2>\n";
+		echo "<td class='tab_bg_2' align=center valign=top colspan=2>\n";
 		echo "<input type=hidden name=\"ID\" value=\"".$ID."\">";
 		echo "<input type=submit name=\"update\" value=\"".$lang["buttons"][7]."\">";
 		echo "</td></form>\n";	
 	} else {
-		echo "<td bgcolor=\"".$cfg_layout["tab_bg_2"]."\" align=\"center\" valign=\"top\" colspan=\"2\">\n";
+		echo "<td class='tab_bg_2' align=\"center\" valign=\"top\" colspan=\"2\">\n";
 		echo "<input type=submit name=\"add\" value=\"".$lang["buttons"][8]."\">";
 		echo "</td></form>\n";	
 	}
@@ -633,7 +633,7 @@ function showSortForm($target,$ID) {
 	echo "<center><table border=0 cellpadding=5 width=30%>";
 	echo "<form method=post action=\"$target\">";
 	echo "<tr><th colspan=2>".$lang["setup"][40]."</th></tr>";
-	echo "<tr><td width=100% align=center bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+	echo "<tr><td width=100% align=center class='tab_bg_1'>";
 	echo "<select name=tracking_order>";
 	echo "<option value=\"yes\"";
 	if ($db->result($result,0,"tracking_order")=="yes") { echo " selected"; }	
@@ -643,7 +643,7 @@ function showSortForm($target,$ID) {
 	echo ">".$lang["choice"][0];
 	echo "</select>";
 	echo "</td>";
-	echo "<td align=center bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
+	echo "<td align=center class='tab_bg_2'>";
 	echo "<input type=hidden name=user value=\"$ID\">";
 	echo "<input type=submit name=updatesort value=\"".$lang["buttons"][14]."\">";
 	echo "</td></tr>";
@@ -673,7 +673,7 @@ function showLangSelect($target,$ID) {
 	echo "<center><table border=0 cellpadding=5 width=30%>";
 	echo "<form method=post action=\"$target\">";
 	echo "<tr><th colspan=2>".$lang["setup"][41].":</th></tr>";
-	echo "<tr><td width=100% align=center bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+	echo "<tr><td width=100% align=center class='tab_bg_1'>";
 	echo "<select name=language>";
 	$i=0;
 	while ($i < count($cfg_install["languages"])) {
@@ -686,7 +686,7 @@ function showLangSelect($target,$ID) {
 	}
 	echo "</select>";
 	echo "</td>";
-	echo "<td align=center bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
+	echo "<td align=center class='tab_bg_2'>";
 	echo "<input type=hidden name=user value=\"$ID\">";
 	echo "<input type=submit name=changelang value=\"".$lang["buttons"][14]."\">";
 	echo "</td></tr>";
