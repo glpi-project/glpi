@@ -483,171 +483,16 @@ function step6($root_doc, $event_loglevel, $num_of_events, $expire_events,$jobs_
 	$query = "update glpi_config set root_doc = '". $root_doc ."', event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', jobs_at_login = '". $jobs_at_login ."', list_limit = '". $list_limit ."', cut = '". $cut ."'"; 
 	$db->query($query);
 	echo "Votre configuration a bien été enregistrée";
-	echo "<p>Voulez vous utiliser les fonctionnalitées de mailing ? (Notifications par mail) ";
+	echo "<br />Cliquer sur continuer pour terminer l'installation";
 	echo "<br /><form action=\"install.php\" method=\"post\">";
-	echo "<input type=\"radio\" name=\"mailing\" value=\"1\" /><label>Oui</label>";
-	echo "<input type=\"radio\" name=\"mailing\" value=\"0\" checked /><label>Non<label></p>";
-	echo "<input type=\"hidden\" name=\"install\" value=\"Etape_51\" />";
-	echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
-	echo "</form>";
-}
-
-function step61($mailing) {
-
-
-	include ("_relpos.php");
-	require_once ($phproot . "/glpi/includes.php");
-	$db = new DB;
-	//Display a great mailing config form
-	function mailing_form() {
-		echo "<br /><form action=\"install.php\" method=\"post\">";
-		echo "<input type=\"hidden\" name=\"mailing\" value=\"1\">";
-		echo "<br />Mail de l'administrateur systeme : <input type=\"text\" name=\"admin_email\" />";
-		echo "<br />Signature automatique  : <input type=\"text\" name=\"mailing_signature\" />";
-		echo "<br /> Options de configuration : <br />";
-		
-		echo "<table><tr>L'administrateur Système doit recevoir une notification:<td>&nbsp;</td>&nbsp;<td></td>&nbsp;<td></td></tr>";
-		echo "<tr><td>A chaque nouvelle intervention</td><td>Oui : <input type=\"radio\" name=\"mailing_new_admin\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_new_admin\" value=\"0\"></td></tr>";
-		echo "<tr><td>A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_admin\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_admin\" value=\"0\"></td></tr>";
-		echo "<tr><td>Pour chaque nouveau suivi</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_admin\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_followup_admin\" value=\"0\"></td></tr>";
-		echo "<tr><td>A chaque fois qu'une intervention est marquée comme terminée</td><td>Oui : <input type=\"radio\" name=\"mailing_finish_admin\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_finish_admin\" value=\"0\"></td></tr>";
-		
-		echo "<table><tr>Les utilisateurs ayant un accés Admin doivent recevoir une notification :<td></td><td></td><td></td></tr>";
-		echo "<tr><td>A chaque nouvelle intervention</td><td>Oui : <input type=\"radio\" name=\"mailing_new_all_admin\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_new_all_admin\" value=\"0\"></td></tr>";
-		echo "<tr><td>A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_all_admin\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_all_admin\" value=\"0\"></td></tr>";
-		echo "<tr><td>Pour chaque nouveau suivi</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_all_admin\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_followup_all_admin\" value=\"0\"></td></tr>";
-		echo "<tr><td>A chaque fois qu'une intervention est marquée comme terminée</td><td>Oui : <input type=\"radio\" name=\"mailing_finish_all_admin\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_finish_all_admin\" value=\"0\"></td></tr>";
-		
-		
-		echo "<table><tr>Les utilisateurs ayant un accés Normal doivent recevoir une notification :<td></td><td></td><td></td></tr>";
-		echo "<tr><td>A chaque nouvelle intervention</td><td>Oui : <input type=\"radio\" name=\"mailing_new_all_normal\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_new_all_normal\" value=\"0\"></td></tr>";
-		echo "<tr><td>A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_all_normal\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_all_normal\" value=\"0\"></td></tr>";
-		echo "<tr><td>Pour chaque nouveau suivi</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_all_normal\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_followup_all_normal\" value=\"0\"></td></tr>";
-		echo "<tr><td>A chaque fois qu'une intervention est marquée comme terminée</td><td>Oui : <input type=\"radio\" name=\"mailing_finish_all_normal\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_finish_all_normal\" value=\"0\"></td></tr>";
-		
-		
-		echo "<table><tr>La personne responsable de la tache doit recevoir un notification :<td></td><td></td><td></td></tr>";
-		echo "<tr><td>A chaque nouvelle intervention</td><td>Oui : <input type=\"radio\" name=\"mailing_new_attrib\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_new_attrib\" value=\"0\"></td></tr>";
-		echo "<tr><td>A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"0\"></td></tr>";
-		echo "<tr><td>Pour chaque nouveau suivi</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_attrib\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_followup_attrib\" value=\"0\"></td></tr>";
-		echo "<tr><td>A chaque fois qu'une intervention est marquée comme terminée</td><td>Oui : <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"0\"><td></td></tr>";
-		
-		echo "<table><tr>L'utilisateur demandeur doit recevoir une notification:<td></td><td></td><td></td></tr>";
-		echo "<tr><td>A chaque nouvelle intervention le concernant</td><td>Oui : <input type=\"radio\" name=\"mailing_new_user\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_new_user\" value=\"0\"></td></tr>";
-		echo "<tr><td>A chaque changement de responsable d'une intervention le concernant</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_user\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_user\" value=\"0\"></td></tr>";
-		echo "<tr><td>Pour chaque nouveau suivi sur une intervention le concernant</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_user\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_followup_user\" value=\"0\"></td></tr>";
-		echo "<tr><td>A chaque fois qu'une intervention le concernant est marquée comme terminée</td><td>Oui : <input type=\"radio\" name=\"mailing_finish_user\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_finish_user\" value=\"0\"></td></tr>";
-		echo "</table>";
-		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_61\" />";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
-		echo "</form>";
-	}
-	
-	if($mailing == 1) {
-		if (function_exists('mail')) {
-			echo "<br />La fonction mail() existe bien sur votre système : Veuillez configurer les envois de mails.";
-			$query = "update glpi_config set mailing = '1'";
-			$db->query($query);
-			mailing_form();
-		}
-		else {
-			echo " La fonction mail n'existe pas sur ce système : impossible d'utiliser les notifications par mail";
-			echo "<br /><form action=\"install.php\" method=\"post\">";
-			echo "<input type=\"hidden\" name=\"install\" value=\"Etape_4\" />";
-			echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Retour\" />";
-			echo "</form>";
-		}
-	}
-	else {
-		echo "<br />Vous avez choisi de ne pas utiliser les notification par mail, vous pouvez passer à l'étape suivante";
-		step62();
-	} 
-	
-
-	
-}
-
-function step62() {
-	echo "<p>Voulez vous configurer des sources d'authetification externes (LDAP, IMAP) pour les usagers ? ";
-	echo "<br /><form action=\"install.php\" method=\"post\">";
-	echo "<input type=\"radio\" name=\"extsources\" value=\"1\" /><label>Oui</label>";
-	echo "<input type=\"radio\" name=\"extsources\" value=\"0\" checked /><label>Non<label></p>";
 	echo "<input type=\"hidden\" name=\"install\" value=\"Etape_6\" />";
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
 	echo "</form>";
 }
 
-// STEP 7 Display a great form for LDAP and IMAP options
-function step7($extsources)
-{	
-	include ("_relpos.php");
-	require_once ($phproot . "/glpi/includes.php");
-	if($extsources == 1) {
-		$db = new DB;
-		$query = "select * from glpi_config where ID = 1";
-		$result = $db->query($query);
-		echo "Configuration des paramètres de connection externe";
-		echo "<br /> Si vous ne souhaitez pas utiliser LDAP ou/et IMAP comme source(s) de connection laissez les champs vides";
-		echo "<br /><form action=\"install.php\" method=\"post\">";
-		echo "<table>";
-		echo "<tr><td>LDAP configuration</td><td></td></tr>";
-		echo "<tr><td>LDAP Host</td><td><input type=\"text\" name=\"ldap_host\" value=\"". $db->result($result,0,"ldap_host") ."\"/></td></tr>";
-		echo "<tr><td>Basedn</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"". $db->result($result,0,"ldap_basedn") ."\" /></td></tr>";
-		echo "<tr><td>rootdn (for non anonymous binds)</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"". $db->result($result,0,"ldap_rootdn") ."\" /></td></tr>";
-		echo "<tr><td>Pass (for non-anonymous binds)</td><td><input type=\"text\" name=\"ldap_pass\" value=\"". $db->result($result,0,"ldap_pass") ."\" /></td></tr>";
-		echo "<tr><td>IMAP configuration</td><td></td></tr>";
-		echo "<tr><td>IMAP Auth Server</td><td><input type=\"text\" name=\"imap_auth_server\" value=\"". $db->result($result,0,"imap_auth_server") ."\" /></td></tr>";
-		echo "<tr><td>IMAP Host Name (users email will be login@thishost)</td><td><input type=\"text\" name=\"imap_host\" value=\"". $db->result($result,0,"imap_host") ."\" /></td></tr>";
-		echo "</table>";
-		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_7\" />";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
-		echo "</form>";
-	}
-	else {
-		echo "<br />Vous avez choisi de ne pas utiliser des sources externes pour l'identification de vos usagers. Vous pouvez passer à l'etape suivante qui terminera l'installation";
-		echo "<br /><form action=\"install.php\" method=\"post\">";
-		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_71\" />";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
-		echo "</form>";
-	}
-}
-
-//Step 8 : Get and test LDAP and IMAP settings and fill the database And finish the install
-function step8($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$imap_auth_server,$imap_host)
-{
-	include ("_relpos.php");
-	require_once ($phproot . "/glpi/includes.php");
-	$db = new DB;
-	if(!empty($ldap_host)) {
-		if (extension_loaded('ldap')) {
-			//TODO : test the remote LDAP connection
-			$query = "update glpi_config set ldap_host = '". $ldap_host ."', ";
-			$query.= "ldap_basedn = '". $ldap_basedn ."', ldap_rootdn = '". $ldap_rootdn ."', ";
-			$query .= "ldap_pass = '". $ldap_pass ."' where ID = '1' ";
-			$db->query($query);
-			echo "Vos paramètres de connection LDAP ont bien été enregistrés";
-		}
-		else {
-			echo " La librairie LDAP pour PHP ne semble pas être installée sur votre système, impossible d'utiliser les identifications LDAP pour l'instant";
-		}
-	}
-	if(!empty($imap_host)) {
-		if(function_exists('imap_open')) {
-			//TODO : test the remote IMAP connection
-			$query = "update glpi_config set imap_auth_server = '". $imap_auth_server ."', ";
-			$query.= "imap_host = '". $imap_host ."' where ID = '1'";
-			$db->query($query);
-			echo "Vos paramètres de connection IMAP ont bien été enregistrés";
-		}
-		else {
-			echo " La librairie IMAP pour PHP ne semble pas installée sur votre système, impossible d'utiliser les identification IMAP pour l'instant";
-		}
-	}
-	step81();
-}
 
 
-function step81() {
+function step7() {
 
 	echo "<h2>L'installation s'est bien terminée </h2>";
 	echo "<p>Il est recommandé maintenant d'appliquer un chmod+0 sur le fichier install.php</p>";
@@ -661,37 +506,6 @@ function step81() {
 	echo "<p>Attention tout de même NE SUPPRIMEZ PAS l'utilisateur HELPDESK.</p>";
 }
 
-//fill database with mailing configuration
-function mailing_config_to_db($admin_email, $mailing_signature,$mailing_new_admin,$mailing_attrib_admin,$mailing_followup_admin,$mailing_finish_admin,$mailing_new_all_admin,$mailing_attrib_all_admin,$mailing_followup_all_admin,$mailing_finish_all_admin,$mailing_new_all_normal,$mailing_attrib_all_normal,$mailing_followup_all_normal,$mailing_finish_all_normal,$mailing_attrib_attrib,$mailing_followup_attrib,$mailing_finish_attrib,$mailing_new_user,$mailing_attrib_user,$mailing_followup_user,$mailing_finish_user,$mailing_new_attrib)
-{
-	include ("_relpos.php");
-	require_once ($phproot . "/glpi/includes.php");
-	$db = new DB;
-	$query = "update glpi_config set admin_email = '$admin_email', ";
-	$query .= "mailing_signature = '". $mailing_signature ."', ";
-	$query .= "mailing_new_admin = '". $mailing_new_admin ."', ";
-	$query .= "mailing_attrib_admin = '". $mailing_attrib_admin ."', ";
-	$query .= "mailing_followup_admin = '". $mailing_followup_admin ."', ";
-	$query .= "mailing_finish_admin = '". $mailing_finish_admin ."', ";
-	$query .= "mailing_new_all_admin = '". $mailing_new_all_admin ."', ";
-	$query .= "mailing_attrib_all_admin = '". $mailing_attrib_all_admin ."', ";
-	$query .= "mailing_followup_all_admin = '". $mailing_followup_all_admin ."', ";
-	$query .= "mailing_finish_all_admin = '". $mailing_finish_all_admin ."', ";
-	$query .= "mailing_new_all_normal = '". $mailing_new_all_normal ."', ";
-	$query .= "mailing_attrib_all_normal = '". $mailing_attrib_all_normal ."', ";
-	$query .= "mailing_followup_all_normal = '". $mailing_followup_all_normal ."', ";
-	$query .= "mailing_finish_all_normal = '". $mailing_finish_all_normal ."', ";
-	$query .= "mailing_attrib_attrib = '". $mailing_attrib_attrib ."', ";
-	$query .= "mailing_followup_attrib = '". $mailing_followup_attrib ."', ";
-	$query .= "mailing_finish_attrib = '". $mailing_finish_attrib ."', ";
-	$query .= "mailing_new_user = '". $mailing_new_user ."', ";
-	$query .= "mailing_attrib_user = '". $mailing_attrib_user ."', ";
-	$query .= "mailing_followup_user = '". $mailing_followup_user ."', ";
-	$query .= "mailing_finish_user = '". $mailing_finish_user ."', ";
-	$query .= "mailing_new_attrib = '". $mailing_new_attrib ."' ";
-	$query .= "where ID = 1";
-	$db->query($query);
-}
 
 
 
@@ -738,28 +552,9 @@ include ("_relpos.php");
 				header_html("Etape 5");
 				step6($_POST["root_doc"], $_POST["event_loglevel"], $_POST["num_of_events"], $_POST["expire_events"], $_POST["jobs_at_login"],$_POST["list_limit"], $_POST["cut"]);
 				break;
-			case "Etape_51" :
-				header_html("Etape 5.1");
-				step61($_POST["mailing"]);
-				break;
-			case "Etape_61" :
-				header_html("Etape 6");
-				if(!empty($_POST["mailing"])) {
-					mailing_config_to_db($_POST["admin_email"],$_POST["mailing_signature"],$_POST["mailing_new_admin"],$_POST["mailing_attrib_admin"],$_POST["mailing_followup_admin"],$_POST["mailing_finish_admin"],$_POST["mailing_new_all_admin"],$_POST["mailing_attrib_all_admin"],$_POST["mailing_followup_all_admin"],$_POST["mailing_finish_all_admin"],$_POST["mailing_new_all_normal"],$_POST["mailing_attrib_all_normal"],$_POST["mailing_followup_all_normal"],$_POST["mailing_finish_all_normal"],$_POST["mailing_attrib_attrib"],$_POST["mailing_followup_attrib"],$_POST["mailing_finish_attrib"],$_POST["mailing_new_user"],$_POST["mailing_attrib_user"],$_POST["mailing_followup_user"],$_POST["mailing_finish_user"],$_POST["mailing_new_attrib"]);
-				}
-				step62();
-				break;
 			case "Etape_6" :
 				header_html("Etape 6");
-				step7($_POST["extsources"]);
-				break;
-			case "Etape_7" :
-				header_html("Etape 7");
-				step8($_POST["ldap_host"],$_POST["ldap_basedn"],$_POST["ldap_rootdn"],$_POST["ldap_pass"],$_POST["imap_auth_server"],$_POST["imap_host"]);
-				break;
-			case "Etape_71" :
-				header_html("Etape 7");
-				step81();
+				step7();
 				break;
 		}
 	}
