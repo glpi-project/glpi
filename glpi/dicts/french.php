@@ -631,7 +631,7 @@ $lang["help"][19]	= "Merci d'avoir utilis&eacute; notre systeme d'aide automatiq
 $lang["help"][20]	= "Votre probl&egrave;me ne peut pas être ajout&eacute; dans notre base de donn&eacute;es.";
 $lang["help"][21]	= "Veuillez prendre contact avec un  technicien. SVP";
 $lang["help"][22]	= "Rechercher votre numéro de machine";
-$lang["help"][23]	= "Saisissez votre nom ou celui de votre ordinateur ou juste les premières lettres";
+$lang["help"][23]	= "Saisissez votre nom ou celui de votre ordinateur ou encore son num&eacute;ro de s&eacute;rie (ou juste les premières lettres)";
 
   // Mois
   $lang["calendarM"][0] = "Janvier" ;
