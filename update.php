@@ -729,6 +729,9 @@ if(!FieldExists("glpi_config","ldap_condition")) {
 	$db->query($query) or die("48 ".$lang["update"][90].$db->error());
 }
 
+$query = "ALTER TABLE `glpi_users` CHANGE `type` `type` ENUM( 'normal', 'admin', 'post-only', 'super-admin' ) DEFAULT 'normal' NOT NULL";
+$db->query($query) or die("49 ".$lang["update"][90].$db->error());
+
 $ret["adminchange"] = false;
 //All "admin" users have to be set as "super-admin"
 if(!superAdminExists()) {
