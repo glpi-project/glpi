@@ -52,7 +52,7 @@ $status = "new";
 $ID = $computer;
 
 if ($priority && !$contents) {
-	nullHeader("Tracking",$PHP_SELF);
+	nullHeader("Tracking",$HTTP_SERVER_VARS[PHP_SELF]);
 	echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 	echo $lang["help"][15]."<br><br>";
 	echo "<a href=\"javascript:history.back()\">...back</a>";
@@ -60,7 +60,7 @@ if ($priority && !$contents) {
 	nullFooter();
 	exit;
 } elseif ($emailupdates == "yes" && $uemail=="") {
-	nullHeader("Tracking",$PHP_SELF);
+	nullHeader("Tracking",$HTTP_SERVER_VARS[PHP_SELF]);
 		echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
 	echo $lang["help"][16]."<br><br>";
@@ -69,7 +69,7 @@ if ($priority && !$contents) {
 	nullFooter();
 	exit;
 } elseif (!$ID) {
-	nullHeader("Tracking",$PHP_SELF);
+	nullHeader("Tracking",$HTTP_SERVER_VARS[PHP_SELF]);
 		echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
 	echo $lang["help"][17]."<br><br>";
@@ -79,7 +79,7 @@ if ($priority && !$contents) {
 	exit;
 } else {
 	if (postJob($ID,$IRMName,$status,$priority,$computer,$isgroup,$uemail,$emailupdates,$contents)) {
-		nullHeader("Tracking",$PHP_SELF);
+		nullHeader("Tracking",$HTTP_SERVER_VARS[PHP_SELF]);
 		echo "<center><img src=\"".$cfg_install["root"]."/pics/ok.png\" alt=\"OK\"><br><br><b>";
 		echo $lang["help"][18]."<br>";
 		echo $lang["help"][19];
@@ -87,7 +87,7 @@ if ($priority && !$contents) {
 		nullFooter();
 	
 	} else {
-		nullHeader("Tracking",$PHP_SELF);
+		nullHeader("Tracking",$HTTP_SERVER_VARS[PHP_SELF]);
 			echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
 		echo $lang["help"][20]."<br>";

@@ -42,7 +42,7 @@ include ($phproot . "/glpi/includes_networking.php");
 
 checkAuthentication("normal");
 
-commonHeader("Networking",$PHP_SELF);
+commonHeader("Networking",$HTTP_SERVER_VARS[PHP_SELF]);
 
 echo "<center><table border=0><tr><td><b>";
 echo "<a href=\"networking-info-form.php\">".$lang["networking"][11]."</a>";

@@ -58,9 +58,9 @@ if ($add) {
 	header("Location: $HTTP_REFERER?done");
 } else {
 	checkAuthentication("normal");
-	commonHeader("Setup",$PHP_SELF);
+	commonHeader("Setup",$HTTP_SERVER_VARS[PHP_SELF]);
 	echo "<center><table cellpadding=4><tr><th>".$lang["setup"][2].":</th></tr></table></center>";
-	listUsersForm($PHP_SELF);
+	listUsersForm($HTTP_SERVER_VARS[PHP_SELF]);
 	if (can_assign_job($IRMName)) {
 	 echo "<center><strong><a href='setup-assign-job.php'>".$lang["setup"][59]."</a></strong></center>";
 	}

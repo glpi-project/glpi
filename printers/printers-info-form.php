@@ -54,40 +54,40 @@ if ($add) {
 	checkAuthentication("admin");
 	updatePrinter($HTTP_POST_VARS);
 	logEvent($HTTP_POST_VARS["ID"], "printers", 4, "inventory", "$IRMName updated item.");
-	commonHeader("Printers",$PHP_SELF);
-	showPrintersForm($PHP_SELF,$ID);
+	commonHeader("Printers",$HTTP_SERVER_VARS[PHP_SELF]);
+	showPrintersForm($HTTP_SERVER_VARS[PHP_SELF],$ID);
 	commonFooter();
 
 } else if ($disconnect) {
 	checkAuthentication("admin");
 	Disconnect($ID,3);
 	logEvent($ID, "printers", 5, "inventory", "$IRMName disconnected item.");
-	commonHeader("Printers",$PHP_SELF);
-	showPrintersForm($PHP_SELF,$ID);
+	commonHeader("Printers",$HTTP_SERVER_VARS[PHP_SELF]);
+	showPrintersForm($HTTP_SERVER_VARS[PHP_SELF],$ID);
 	commonFooter();
 } else if ($connect==1) {
 	checkAuthentication("admin");
-	commonHeader("Printers",$PHP_SELF);
-	showConnectSearch($PHP_SELF,$ID);
+	commonHeader("Printers",$HTTP_SERVER_VARS[PHP_SELF]);
+	showConnectSearch($HTTP_SERVER_VARS[PHP_SELF],$ID);
 	commonFooter();
 } else if ($connect==2) {
 	checkAuthentication("admin");
-	commonHeader("Printers",$PHP_SELF);
-	listConnectComputers($PHP_SELF,$HTTP_POST_VARS);
+	commonHeader("Printers",$HTTP_SERVER_VARS[PHP_SELF]);
+	listConnectComputers($HTTP_SERVER_VARS[PHP_SELF],$HTTP_POST_VARS);
 	commonFooter();
 } else if ($connect==3) {
 	checkAuthentication("admin");
-	commonHeader("Printers",$PHP_SELF);
-	Connect($PHP_SELF,$sID,$cID,3);
+	commonHeader("Printers",$HTTP_SERVER_VARS[PHP_SELF]);
+	Connect($HTTP_SERVER_VARS[PHP_SELF],$sID,$cID,3);
 	logEvent($sID, "printers", 5, "inventory", "$IRMName connected item.");
-	showPrintersForm($PHP_SELF,$sID);
+	showPrintersForm($HTTP_SERVER_VARS[PHP_SELF],$sID);
 	commonFooter();
 
 } else {
 
 	checkAuthentication("normal");
-	commonHeader("Printers",$PHP_SELF);
-	showPrintersForm($PHP_SELF,$ID);
+	commonHeader("Printers",$HTTP_SERVER_VARS[PHP_SELF]);
+	showPrintersForm($HTTP_SERVER_VARS[PHP_SELF],$ID);
 	commonFooter();
 }
 

@@ -52,8 +52,8 @@ if (can_assign_job($IRMName)) {
     }
     else
     {
-    commonHeader("Setup",$PHP_SELF);
-	  showFormAssign($PHP_SELF);
+    commonHeader("Setup",$HTTP_SERVER_VARS[PHP_SELF]);
+	  showFormAssign($HTTP_SERVER_VARS[PHP_SELF]);
 	  commonFooter();
 	  }
 }	

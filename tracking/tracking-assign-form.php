@@ -47,9 +47,9 @@ if ($update) {
 	header("Location: $HTTP_REFERER");
 
 } else {
-	commonHeader("Tracking",$PHP_SELF);
+	commonHeader("Tracking",$HTTP_SERVER_VARS[PHP_SELF]);
 	echo "<center>";
-	assignFormTracking($ID,$IRMName,$PHP_SELF);
+	assignFormTracking($ID,$IRMName,$HTTP_SERVER_VARS[PHP_SELF]);
 	echo "</center>";
 	commonFooter();
 }

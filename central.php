@@ -42,7 +42,7 @@ include ($phproot . "/glpi/includes_tracking.php");
 
 checkAuthentication("post-only");
 
-commonHeader("Command Center",$PHP_SELF);
+commonHeader("Command Center",$HTTP_SERVER_VARS[PHP_SELF]);
 
 // Greet the user
 
@@ -53,7 +53,7 @@ echo "<hr noshade>";
 $db= new DB;
 
 // Show last events
-showEvents($PHP_SELF,$result,$sort);
+showEvents($HTTP_SERVER_VARS[PHP_SELF],$result,$sort);
 
 
 if ($cfg_features["jobs_at_login"]==1) {

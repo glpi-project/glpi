@@ -53,22 +53,22 @@ if ($add) {
 	header("Location: $HTTP_REFERER?done");
 } else {
 	checkAuthentication("normal");
-	commonHeader("Setup",$PHP_SELF);
+	commonHeader("Setup",$HTTP_SERVER_VARS[PHP_SELF]);
 	echo "<center><table cellpadding=4><tr><th>".$lang["setup"][0].":</th></tr></table></center>";
-	showFormDropDown($PHP_SELF,"locations",$lang["setup"][3]);
-	showFormTypeDown($PHP_SELF,"computers",$lang["setup"][4]);
-	showFormTypeDown($PHP_SELF,"networking",$lang["setup"][42]);
-	showFormTypeDown($PHP_SELF,"printers",$lang["setup"][43]);
-	showFormTypeDown($PHP_SELF,"monitors",$lang["setup"][44]);
-	showFormDropDown($PHP_SELF,"os",$lang["setup"][5]);
-	showFormDropDown($PHP_SELF,"ram",$lang["setup"][6]);
-	showFormDropDown($PHP_SELF,"processor",$lang["setup"][7]);
-	showFormDropDown($PHP_SELF,"moboard",$lang["setup"][45]);
-	showFormDropDown($PHP_SELF,"gfxcard",$lang["setup"][46]);
-	showFormDropDown($PHP_SELF,"sndcard",$lang["setup"][47]);
-	showFormDropDown($PHP_SELF,"hdtype",$lang["setup"][48]);
-	showFormDropDown($PHP_SELF,"network",$lang["setup"][8]);
-	showFormDropDown($PHP_SELF,"iface",$lang["setup"][9]);
+	showFormDropDown($HTTP_SERVER_VARS[PHP_SELF],"locations",$lang["setup"][3]);
+	showFormTypeDown($HTTP_SERVER_VARS[PHP_SELF],"computers",$lang["setup"][4]);
+	showFormTypeDown($HTTP_SERVER_VARS[PHP_SELF],"networking",$lang["setup"][42]);
+	showFormTypeDown($HTTP_SERVER_VARS[PHP_SELF],"printers",$lang["setup"][43]);
+	showFormTypeDown($HTTP_SERVER_VARS[PHP_SELF],"monitors",$lang["setup"][44]);
+	showFormDropDown($HTTP_SERVER_VARS[PHP_SELF],"os",$lang["setup"][5]);
+	showFormDropDown($HTTP_SERVER_VARS[PHP_SELF],"ram",$lang["setup"][6]);
+	showFormDropDown($HTTP_SERVER_VARS[PHP_SELF],"processor",$lang["setup"][7]);
+	showFormDropDown($HTTP_SERVER_VARS[PHP_SELF],"moboard",$lang["setup"][45]);
+	showFormDropDown($HTTP_SERVER_VARS[PHP_SELF],"gfxcard",$lang["setup"][46]);
+	showFormDropDown($HTTP_SERVER_VARS[PHP_SELF],"sndcard",$lang["setup"][47]);
+	showFormDropDown($HTTP_SERVER_VARS[PHP_SELF],"hdtype",$lang["setup"][48]);
+	showFormDropDown($HTTP_SERVER_VARS[PHP_SELF],"network",$lang["setup"][8]);
+	showFormDropDown($HTTP_SERVER_VARS[PHP_SELF],"iface",$lang["setup"][9]);
 	commonFooter();
 }
 

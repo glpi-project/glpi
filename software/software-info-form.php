@@ -55,14 +55,14 @@ if ($add) {
 	checkAuthentication("admin");
 	updateSoftware($HTTP_POST_VARS);
 	logEvent($HTTP_POST_VARS["ID"], "software", 4, "inventory", "$IRMName updated item.");
-	commonHeader("Software",$PHP_SELF);
-	showSoftwareForm($PHP_SELF,$ID);
+	commonHeader("Software",$HTTP_SERVER_VARS[PHP_SELF]);
+	showSoftwareForm($HTTP_SERVER_VARS[PHP_SELF],$ID);
 	commonFooter();
 
 } else {
 	checkAuthentication("normal");
-	commonHeader("Software",$PHP_SELF);
-	showSoftwareForm($PHP_SELF,$ID);
+	commonHeader("Software",$HTTP_SERVER_VARS[PHP_SELF]);
+	showSoftwareForm($HTTP_SERVER_VARS[PHP_SELF],$ID);
 	commonFooter();
 }
 

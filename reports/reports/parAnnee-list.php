@@ -35,7 +35,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 
 checkAuthentication("normal");
-commonHeader("Reports",$PHP_SELF);
+commonHeader("Reports",$HTTP_SERVER_VARS[PHP_SELF]);
 
 
 $item_db_name[0] = "computers";

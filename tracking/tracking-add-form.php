@@ -43,20 +43,20 @@ include ($phproot . "/glpi/includes_tracking.php");
 
 checkAuthentication("normal");
 
-commonHeader("Tracking",$PHP_SELF);
+commonHeader("Tracking",$HTTP_SERVER_VARS[PHP_SELF]);
 
 if ($priority && !$contents) {
 	$error="No Description, please try again.";
 } elseif ($priority && $contents) {
 	if (postJob($ID,$IRMName,$status,$priority,$computer,$isgroup,$uemail,$emailupdates,$contents)) {
 		$error="Job posted, next one:";
-		addFormTracking($ID,$IRMName,$PHP_SELF,$error);
+		addFormTracking($ID,$IRMName,$HTTP_SERVER_VARS[PHP_SELF],$error);
 	} else {
 		$error="Couldn't post job, check the database.";
-		addFormTracking($ID,$IRMName,$PHP_SELF,$error);
+		addFormTracking($ID,$IRMName,$HTTP_SERVER_VARS[PHP_SELF],$error);
 	}
 } else {
-	addFormTracking($ID,$IRMName,$PHP_SELF,$error);
+	addFormTracking($ID,$IRMName,$HTTP_SERVER_VARS[PHP_SELF],$error);
 }
 
 
