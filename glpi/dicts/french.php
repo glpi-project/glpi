@@ -211,7 +211,7 @@ $lang["tracking"][2]	= "Seulement les interventions qui vous sont attribu&eacute
 $lang["tracking"][3]	= "Seulement les interventions non attribu&eacute;es";
 $lang["tracking"][4]	= "Seulement les interventions termin&eacute;es";
 $lang["tracking"][5]	= "Quand la description contient ou l'ID vaut";
-$lang["tracking"][6]    = "Vous n'etes pas autoris&eacute; &agrave; (re-)attribuer cette intervention";
+$lang["tracking"][6]    = "Vous n'&ecirc;tes pas autoris&eacute; &agrave; (re-)attribuer cette intervention";
 $lang["tracking"][7]    = "Afficher...";
 $lang["tracking"][8]    = "Pas de description, veuillez recommencer";
 $lang["tracking"][9] 	= "Nouvelle intervention post&eacute;e, suivante..."; 
@@ -226,8 +226,8 @@ $lang["tracking"][17] = "Seulement les p&eacute;riph&eacute;riques";
 $lang["tracking"][18] = "Seulement les logiciels";
 $lang["tracking"][19] = "Seulement G&eacute;n&eacute;rales";
 $lang["tracking"][20] = "Cat&eacute;gorie";
-$lang["tracking"][21]    = "Vous n'etes pas autoris&eacute; &agrave; modifier la cat&eacute;gorie de cette intervention";
-$lang["tracking"][22]    = "Vous n'etes pas autoris&eacute; &agrave; modifier la priorit&eacute; de cette intervention";
+$lang["tracking"][21]    = "Vous n'&ecirc;tes pas autoris&eacute; &agrave; modifier la cat&eacute;gorie de cette intervention";
+$lang["tracking"][22]    = "Vous n'&ecirc;tes pas autoris&eacute; &agrave; modifier la priorit&eacute; de cette intervention";
 
 // 1 computers
 // 2 networking
