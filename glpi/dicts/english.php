@@ -124,7 +124,7 @@ $lang["Menu"][10]	="Setup";
 $lang["Menu"][11]	="Preferences";
 $lang["Menu"][12]	="Data";
 $lang["Menu"][13]	="Stats";
-
+$lang["Menu"][15]	="Peripherals";
 
 //Data
 

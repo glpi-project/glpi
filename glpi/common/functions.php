@@ -166,7 +166,8 @@ $inventory = 	array($lang["Menu"][0]=>array("/computers/index.php","1"),
 	              $lang["Menu"][1]=>array("/networking/index.php","2"),
 	              $lang["Menu"][2]=>array("/printers/index.php","3"),
 	              $lang["Menu"][3]=>array("/monitors/index.php","4"),
-	              $lang["Menu"][4]=>array("/software/index.php","5"));
+	              $lang["Menu"][4]=>array("/software/index.php","5"),
+		      $lang["Menu"][16]=>array("/peripherals/index.php","6"));
 
 $maintain =	array($lang["Menu"][5]=>array("/tracking/index.php","6"),
 	              $lang["Menu"][6]=>array("/reports/index.php"," "),
@@ -805,7 +806,7 @@ function showConnectSearch($target,$ID) {
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
 	echo "<center><table class='tab_cadre'>";
-	echo "<tr><th colspan='2'>".$lang["connect"][4].":</th></tr>";
+	echo "<tr><th colspan='2'>".$lang["connect"][4]." :</th></tr>";
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<form method='post' action=\"$target\">";
