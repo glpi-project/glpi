@@ -460,7 +460,9 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		$sql_query = fread($dbf_handle, filesize($db_file));
 		fclose($dbf_handle);
 		foreach ( explode(";\n", "$sql_query") as $sql_line) {
+			if (get_magic_quotes_runtime()) $sql_line=stripslashes_deep($sql_line);
 			$db->query($sql_line);
+			echo $sql_line;
 		}
 	
 	}
