@@ -45,7 +45,7 @@ include ($phproot . "/glpi/includes_knowbase.php");
 
 checkAuthentication("post-only");
 
-helpHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 
 //*******************
 // Affichage Module réservation 

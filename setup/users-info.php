@@ -48,7 +48,7 @@ include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_monitors.php");
 
 checkAuthentication("normal");
-commonHeader("Userinfo",$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
 showUserInfo($_SERVER["PHP_SELF"],$_GET["ID"]);
 if (isset($_GET["start"])) $start=$_GET["start"];
 else $start=0;

@@ -47,7 +47,7 @@ include ($phproot . "/glpi/includes_networking.php");
 
 checkAuthentication("normal");
 
-commonHeader("Command Center",$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][0],$_SERVER["PHP_SELF"]);
 
 // Greet the user
 

@@ -36,7 +36,7 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
 	checkAuthentication("normal");
-	commonHeader("Setup",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 
 titleUsers();
 	

@@ -48,7 +48,7 @@ include ($phproot . "/glpi/includes_networking.php");
 
 checkAuthentication("admin");
 
-commonHeader("Tracking",$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 if(empty($_GET["isgroup"])) $_GET["isgroup"] = "";
 if(empty($_GET["status"])) $_GET["status"] = "new";
 

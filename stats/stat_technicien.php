@@ -39,7 +39,7 @@ require ("functions.php");
 
 checkAuthentication("normal");
 
-commonHeader("Stats",$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
 
 echo "<div align ='center'><p><b>".$lang["stats"][17]."</b></p></div>";
 if(empty($_POST["date1"])) $_POST["date1"] = "";

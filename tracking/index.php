@@ -47,7 +47,7 @@ include ($phproot . "/glpi/includes_software.php");
 
 checkAuthentication("normal");
 
-commonHeader("Tracking",$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 
  // titre
         echo "<div align='center'><table border='0'><tr><td><b>";

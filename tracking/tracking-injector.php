@@ -58,12 +58,12 @@ $ID=$_POST["computer"];
 if (!empty($_POST["priority"]) && empty($_POST["contents"]))
 {
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-		nullHeader("Tracking",$_SERVER["PHP_SELF"]);
+		nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 	}
 	else if ($_POST["from_helpdesk"]){
-		helpHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+		helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	}
-	else commonHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 	echo $lang["help"][15]."<br><br>";
 	echo "<a href=\"javascript:history.back()\">...back</a>";
@@ -74,12 +74,12 @@ if (!empty($_POST["priority"]) && empty($_POST["contents"]))
 elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] == "yes" && isset($_POST["uemail"]) && $_POST["uemail"] =="")
 {
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-		nullHeader("Tracking",$_SERVER["PHP_SELF"]);
+		nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 	}
 	else if ($_POST["from_helpdesk"]){
-		helpHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+		helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	}
-	else commonHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	
 	echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
@@ -92,12 +92,12 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] == "yes" && isse
 elseif (empty($ID)&&$_POST["device_type"]!=0)
 {
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-		nullHeader("Tracking",$_SERVER["PHP_SELF"]);
+		nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 	}
 	else if ($_POST["from_helpdesk"]){
-		helpHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+		helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	}
-	else commonHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
 	echo $lang["help"][17]."<br><br>";
@@ -113,13 +113,13 @@ else
 	if(empty($_POST["emailupdates"])) $_POST["emailupdates"] = "";
 	if (postJob($_POST["device_type"],$ID,$glpiname,$status,$_POST["priority"],$_POST["isgroup"],$_POST["uemail"],$_POST["emailupdates"],$_POST["contents"]))
 	{
-		if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-			nullHeader("Tracking",$_SERVER["PHP_SELF"]);
+		if(isset($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
+			nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 		}
 		else if ($_POST["from_helpdesk"]){
-			helpHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+			helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 		}
-		else commonHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+		else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 
 		echo "<center><img src=\"".$cfg_install["root"]."/pics/ok.png\" alt=\"OK\"><br><br><b>";
 		echo $lang["help"][18]."<br>";
@@ -131,12 +131,12 @@ else
 	else
 	{
 		if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-			nullHeader("Tracking",$_SERVER["PHP_SELF"]);
+			nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 		}
 		else if ($_POST["from_helpdesk"]){
-			helpHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+			helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 		}
-		else commonHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+		else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 
 		echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 		echo $lang["help"][20]."<br>";
