@@ -33,13 +33,35 @@ This file is part of GLPI.
 
 include ("_relpos.php");
 
-// CLASSES CartridgeType
 
+//!  CartridgeType Class
+/**
+  This class is used to manage the various types of cartridges.
+	\see Cartridge
+	\author Julien Dombre
+*/
 class CartridgeType {
 
+	//! Fields of CartridgeType
+	/**
+	Fields are :
+	- ID 
+  	- name : its name
+  	- ref : its reference
+  	- type : 1= Toner, 2=InkJet 
+  	- FK_glpi_enterprise : FK to the manufacturer
+  	- deleted : enum('Y','N') NOT NULL default 'N',
+  	- comments : some comments
+	*/
 	var $fields	= array();
+	//! Fields tu update
 	var $updates	= array();
 	
+   //! Get the item from table glpi_cartridge_type from the database
+    /*!
+      \param ID ID of the CartridgeType.
+      \return Is the item correctly loaded
+    */
 	function getfromDB ($ID) {
 
 		// Make new database object and fill variables
@@ -168,6 +190,12 @@ class CartridgeType {
 	}
 	
 }
+//!  Cartridge Class
+/**
+  This class is used to manage the cartridges.
+  \see CartridgeType
+  \author Julien Dombre
+*/
 
 class Cartridge {
 
