@@ -490,9 +490,9 @@ function showUserform($target,$name) {
 		echo "</select>";
 	} else {
 		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td><input name='realname' size='20' value=\"".$user->fields["realname"]."\"></td></tr>";
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][20]."</td><td>";
+		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][20]."</td>";
 		if($user->fields["type"] != "super-admin" && $user->fields["type"] != "admin") {
-			echo "<select name='type' >";
+			echo "<td><select name='type' >";
 			echo "<option value='normal'";
 			if (empty($name)||$user->fields["type"]=="normal") { echo " selected"; }
 			echo ">Normal";
@@ -818,18 +818,28 @@ function updateUser($input) {
 	if(!isAdmin($_SESSION["glpitype"])) {
 		return false;
 	}
-	//Only super-admin's can set admin or super-admin access.
-	//set to "normal" by default.
-	if(!isSuperAdmin($_SESSION["glpitype"])) {
-		if($input["type"] != "normal" && $input["type"] != "post-only") {
-			$input["type"] = "normal";
-		}
-	}
+
 	// Update User in the database
 	$user = new User($input["name"]);
 	$user->getFromDB($input["name"]); 
 
- 	// dump status
+	//Only super-admin's can set admin or super-admin access.
+	//set to "normal" by default
+	//if user type is allready admin or super-admin do not touch it
+	if(!isSuperAdmin($_SESSION["glpitype"])) {
+		if(!empty($input["type"]) && $input["type"] != "normal" && $input["type"] != "post-only") {
+			$input["type"] = "normal";
+		}
+		if($user->fields["type"] == "super-admin") {
+			$input["type"] = "super-admin"
+		}
+		if($user->fields["type"] == "admin") {
+			$input["type"] = "admin"
+		}
+
+		
+	}
+	// dump status
 	$null = array_pop($input);
 	// password updated?
 	if(empty($input["password"]) || !isSuperAdmin($_SESSION["glpitype"])) {
