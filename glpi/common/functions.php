@@ -168,14 +168,14 @@ $inventory = 	array($lang["Menu"][0]=>array("/computers/index.php","1"),
 	              $lang["Menu"][3]=>array("/monitors/index.php","4"),
 	              $lang["Menu"][4]=>array("/software/index.php","5"));
 
-$maintain =	array($lang["Menu"][5]=>"/tracking/index.php",
-	              $lang["Menu"][6]=>"/reports/index.php",
-		      $lang["Menu"][13]=>"/stats/index.php");
+$maintain =	array($lang["Menu"][5]=>array("/tracking/index.php","6"),
+	              $lang["Menu"][6]=>array("/reports/index.php"," "),
+		      $lang["Menu"][13]=>array("/stats/index.php"," "));
 
 				
-$config =	array($lang["Menu"][10]=>"/setup/index.php",
-	              $lang["Menu"][11]=>"/preferences/index.php",
-	              $lang["Menu"][12]=>"/backups/index.php");			
+$config =	array($lang["Menu"][10]=>array("/setup/index.php"," "),
+	              $lang["Menu"][11]=>array("/preferences/index.php"," "),
+	              $lang["Menu"][12]=>array("/backups/index.php"," "));
 
 	// Send extra expires header if configured
 	if ($cfg_features["sendexpire"]) {
@@ -222,7 +222,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	
 	// Logo with link to command center
 	echo "<td align='center' width='25%' >\n";
-	echo "<a href=\"".$cfg_install["root"]."/central.php\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>";
+	echo "<a href=\"".$cfg_install["root"]."/central.php\" accesskey=\"0\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>";
 	echo "</td>";
 
 	echo "<td valign='middle'>";
@@ -239,16 +239,9 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 		echo "<td align='center' valign='top'>";
 		echo "<img class='icon_nav' src=\"".$cfg_install["root"]."/pics/inventaire.png\" alt=\"\" title=\"".$lang["setup"][10]."\"><br>";
 		echo "<small>-&nbsp;".$lang["setup"][10]."&nbsp;-</small><br>";
-		//foreach ($inventory as $key => $val) {
-		//	foreach ($val as $acceskey=>$lien){
 
-		//		echo "<span class='menu'><a acceskey=\"".$acceskey."\" href=\"".$cfg_install["root"].$lien."\">".$key."</a></span><br>";
-		//}
-		//}
-		//print_r($inventory);
-		
 		 foreach ($inventory as $key => $val) {
-                  echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
+                         echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
                    }
 
 		echo "</td>";
@@ -259,7 +252,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 
 		echo "<small>-&nbsp;".$lang["setup"][55]."&nbsp;-</small><br>";
 		foreach ($maintain as $key => $val) {
-			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val."\">".$key."</a></span><br>";
+			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
 		}
 		echo "</td>";
 	}
@@ -269,7 +262,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 
 		echo "<small>-&nbsp;".$lang["setup"][56]."&nbsp;-</small><br>";
 		foreach ($config as $key => $val) {
-			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val."\">".$key."</a></span><br>";
+			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
 		}	
 		echo "</td>";
 	}
@@ -347,7 +340,7 @@ function helpHeader($title,$url,$name) {
 	
 	// Logo with link to command center
 	echo "<td align='center' width='25%'>\n";
-	echo "<a href=\"".$cfg_install["root"]."/central.php\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" ></a>";
+	echo "<a href=\"".$cfg_install["root"]."/central.php\" accesskey=\"0\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" ></a>";
 	echo "</td>";
 
 	echo "<td valign='middle'>";
