@@ -1126,43 +1126,77 @@ function updateLanguage($input) {
 }
 
 //TODO : add entries to french dict
+function titleExtSources(){
+// Un titre pour la gestion du suivi par mail
+		
+		GLOBAL  $lang,$HTMLRel;
+                echo "<div align='center'><table border='0'><tr><td>";
+                echo "<img src=\"".$HTMLRel."pics/authentification.png\" alt='' title=''></td><td><b><span class='icon_nav'>Sources d'authentification externe</span>";
+		 echo "</b></td></tr></table></div>";
+
+}
+
+
+
+
+//TODO : add entries to french dict
 function showFormExtsources($target) {
 
 	$db = new DB;
 	$query = "select * from glpi_config where config_id = 1";
 	$result = $db->query($query);
-	echo "Configuration des paramètres de connection externe";
+	
 	echo "<form action=\"$target\" method=\"post\">";
 	if(extension_loaded('ldap'))
 	{
-		echo "<br /> Si vous ne souhaitez pas utiliser LDAP ou/et IMAP comme source(s) de connection laissez les champs vides";
+		echo "<div align='center'><p > Si vous ne souhaitez pas utiliser LDAP ou/et IMAP comme source(s) de connection laissez les champs vides</p>";
 
-		echo "<br /><table>";
-		echo "<tr><td>LDAP configuration</td><td></td></tr>";
-		echo "<tr><td>LDAP Host</td><td><input type=\"text\" name=\"ldap_host\" value=\"". $db->result($result,0,"ldap_host") ."\"/></td></tr>";
-		echo "<tr><td>Basedn</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"". $db->result($result,0,"ldap_basedn") ."\" /></td></tr>";
-		echo "<tr><td>rootdn (for non anonymous binds)</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"". $db->result($result,0,"ldap_rootdn") ."\" /></td></tr>";
-		echo "<tr><td>Pass (for non-anonymous binds)</td><td><input type=\"text\" name=\"ldap_pass\" value=\"". $db->result($result,0,"ldap_pass") ."\" /></td></tr>";
-		echo "</table>";
+		echo "<table class='tab_cadre'>";
+		echo "<tr><th colspan='2'>LDAP configuration</th></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>LDAP Host</td><td><input type=\"text\" name=\"ldap_host\" value=\"". $db->result($result,0,"ldap_host") ."\"></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>Basedn</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"". $db->result($result,0,"ldap_basedn") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>rootdn (for non anonymous binds)</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"". $db->result($result,0,"ldap_rootdn") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>Pass (for non-anonymous binds)</td><td><input type=\"text\" name=\"ldap_pass\" value=\"". $db->result($result,0,"ldap_pass") ."\" ></td></tr>";
+		echo "</table>&nbsp;</div>";
 	}
 	else {
-		echo "<input type=\"hidden\" name=\"LDAP_Test\" value=\"1\" />";
-		echo "L'extension LDAP de votre parser PHP n'est pas installé; Impossible d'utiliser LDAP comme source de connection externe";
+		echo "<input type=\"hidden\" name=\"LDAP_Test\" value=\"1\" >";
+		echo "<div align='center'><table class='tab_cadre' width='400'>";
+		echo "<tr><th colspan='2'>LDAP configuration</th></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>L'extension LDAP de votre parser PHP n'est pas installé</p><p> Impossible d'utiliser LDAP comme source de connection externe</p></td></th></table></div>";
 	}
 	if(function_exists('imap_open')) {
-		echo "<table>";
-		echo "<tr><td>IMAP configuration</td><td></td></tr>";
-		echo "<tr><td>IMAP Auth Server</td><td><input type=\"text\" name=\"imap_auth_server\" value=\"". $db->result($result,0,"imap_auth_server") ."\" /></td></tr>";
-		echo "<tr><td>IMAP Host Name (users email will be login@thishost)</td><td><input type=\"text\" name=\"imap_host\" value=\"". $db->result($result,0,"imap_host") ."\" /></td></tr>";
-		echo "</table>";
+		echo "<div align='center'>&nbsp;<table class='tab_cadre'>";
+		echo "<tr><th colspan='2'>IMAP configuration</th></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>IMAP Auth Server</td><td><input type=\"text\" name=\"imap_auth_server\" value=\"". $db->result($result,0,"imap_auth_server") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>IMAP Host Name (users email will be login@thishost)</td><td><input type=\"text\" name=\"imap_host\" value=\"". $db->result($result,0,"imap_host") ."\" ></td></tr>";
+		echo "</table></div>";
 	}
 	else {
-		echo "<input type=\"hidden\" name=\"IMAP_Test\" value=\"1\" />";
-		echo "Votre parser PHP à été compilé sans les fonctions de connection IMAP; Impossible d'utiliser IMAP/POP comme source de connection externe";
+		echo "<input type=\"hidden\" name=\"IMAP_Test\" value=\"1\" >";
+		
+		echo "<div align='center'>&nbsp;<table class='tab_cadre' width='400'>";
+		echo "<tr><th colspan='2'>IMAP configuration</th></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>Votre parser PHP a été compilé sans les fonctions de connection IMAP</p><p> Impossible d'utiliser IMAP/POP comme source de connection externe</p></td></tr></table></div>";
 	}
-	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_ext\" class=\"submit\" value=\"Continuer\" /></p>";
+	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_ext\" class=\"submit\" value=\"Valider\" ></p>";
 	echo "</form>";
 }
+
+
+//TODO : add entries to french dict
+function titleMailing(){
+// Un titre pour la gestion du suivi par mail
+		
+		GLOBAL  $lang,$HTMLRel;
+                echo "<div align='center'><table border='0'><tr><td>";
+                echo "<img src=\"".$HTMLRel."pics/mail.png\" alt='' title=''></td><td><span class='icon_nav'>Suivi des interventions par mail</span>";
+		 echo "</b></td></tr></table></div>";
+
+
+
+}
+
 
 //TODO : add entries to french dict
 function showFormMailing($target) {
@@ -1170,47 +1204,77 @@ function showFormMailing($target) {
 		$db = new DB;
 		$query = "select * from glpi_config where config_id = 1";
 		$result = $db->query($query);
-		echo "<br /><form action=\"$target\" method=\"post\">";
-		echo "<br />Utiliser les Mailing : Oui  <input type=\"radio\" name=\"mailing\" value=\"1\" "; if($db->result($result,0,"mailing") == 1) echo "checked"; echo " /> Non  <input type=\"radio\" name=\"mailing\" value=\"0\" "; if($db->result($result,0,"mailing") == 0) echo "checked"; echo " />";
-		echo "<br />Mail de l'administrateur systeme : <input type=\"text\" name=\"admin_email\" value=\"".$db->result($result,0,"admin_email")."\"/>";
-		echo "<br />Signature automatique  : <input type=\"text\" name=\"mailing_signature\" value=\"".$db->result($result,0,"mailing_signature")."\" />";
-		echo "<br /> Options de configuration : <br />";
-		
-		echo "<table><tr>L'administrateur Système doit recevoir une notification:<td>&nbsp;</td>&nbsp;<td></td>&nbsp;<td></td></tr>";
-		echo "<tr><td>A chaque nouvelle intervention</td><td>Oui : <input type=\"radio\" name=\"mailing_new_admin\" value=\"1\" "; if($db->result($result,0,"mailing_new_admin") == 1) echo "checked"; echo " /></td><td>Non : <input type=\"radio\" name=\"mailing_new_admin\" value=\"0\" "; if($db->result($result,0,"mailing_new_admin") == 0) echo "checked"; echo " /></td></tr>";
-		echo "<tr><td>A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_admin\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_admin") == 1) echo "checked"; echo " /></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_admin\" value=\"0\" "; if($db->result($result,0,"mailing_attrib_admin") == 0) echo "checked"; echo " /></td></tr>";
-		echo "<tr><td>Pour chaque nouveau suivi</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_admin\" value=\"1\" "; if($db->result($result,0,"mailing_followup_admin") == 1) echo "checked"; echo "/></td><td>Non : <input type=\"radio\" name=\"mailing_followup_admin\" value=\"0\" "; if($db->result($result,0,"mailing_followup_admin") == 0) echo "checked"; echo " /></td></tr>";
-		echo "<tr><td>A chaque fois qu'une intervention est marquée comme terminée</td><td>Oui : <input type=\"radio\" name=\"mailing_finish_admin\" value=\"1\" "; if($db->result($result,0,"mailing_finish_admin") == 1) echo "checked"; echo " /></td><td>Non : <input type=\"radio\" name=\"mailing_finish_admin\" value=\"0\" "; if($db->result($result,0,"mailing_finish_admin") == 0) echo "checked"; echo " /></td></tr>";
-		
-		echo "<table><tr>Les utilisateurs ayant un accés Admin doivent recevoir une notification :<td></td><td></td><td></td></tr>";
-		echo "<tr><td>A chaque nouvelle intervention</td><td>Oui : <input type=\"radio\" name=\"mailing_new_all_admin\" value=\"1\" "; if($db->result($result,0,"mailing_new_all_admin") == 1) echo "checked"; echo  " /></td><td>Non : <input type=\"radio\" name=\"mailing_new_all_admin\" value=\"0\" "; if($db->result($result,0,"mailing_new_all_admin") == 0) echo "checked"; echo  " /></td></tr>";
-		echo "<tr><td>A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_all_admin\" value=\"1\"  "; if($db->result($result,0,"mailing_attrib_all_admin") == 1) echo "checked"; echo  " /></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_all_admin\" value=\"0\"  "; if($db->result($result,0,"mailing_attrib_all_admin") == 0) echo "checked"; echo  " /></td></tr>";
-		echo "<tr><td>Pour chaque nouveau suivi</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_all_admin\" value=\"1\"  "; if($db->result($result,0,"mailing_followup_all_admin") == 1) echo "checked"; echo  " /></td><td>Non : <input type=\"radio\" name=\"mailing_followup_all_admin\" value=\"0\"  "; if($db->result($result,0,"mailing_followup_all_admin") == 0) echo "checked"; echo  " /></td></tr>";
-		echo "<tr><td>A chaque fois qu'une intervention est marquée comme terminée</td><td>Oui : <input type=\"radio\" name=\"mailing_finish_all_admin\" value=\"1\"  "; if($db->result($result,0,"mailing_finish_all_admin") == 1) echo "checked"; echo  " /></td><td>Non : <input type=\"radio\" name=\"mailing_finish_all_admin\" value=\"0\"  "; if($db->result($result,0,"mailing_finish_all_admin") == 0) echo "checked"; echo  " /></td></tr>";
+		echo "<form action=\"$target\" method=\"post\">";
 		
 		
-		echo "<table><tr>Les utilisateurs ayant un accés Normal doivent recevoir une notification :<td></td><td></td><td></td></tr>";
-		echo "<tr><td>A chaque nouvelle intervention</td><td>Oui : <input type=\"radio\" name=\"mailing_new_all_normal\" value=\"1\"  "; if($db->result($result,0,"mailing_new_all_normal") == 1) echo "checked"; echo  " /></td><td>Non : <input type=\"radio\" name=\"mailing_new_all_normal\" value=\"0\"  "; if($db->result($result,0,"mailing_new_all_normal") == 0) echo "checked"; echo  " /></td></tr>";
-		echo "<tr><td>A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_all_normal\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_all_normal") == 1) echo "checked"; echo  " / ></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_all_normal\" value=\"0\"  "; if($db->result($result,0,"mailing_attrib_all_normal") == 0) echo "checked"; echo  " /></td></tr>";
-		echo "<tr><td>Pour chaque nouveau suivi</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_all_normal\" value=\"1\" "; if($db->result($result,0,"mailing_followup_all_normal") == 1) echo "checked"; echo  " /></td><td>Non : <input type=\"radio\" name=\"mailing_followup_all_normal\" value=\"0\" "; if($db->result($result,0,"mailing_followup_all_normal") == 0) echo "checked"; echo  " /></td></tr>";
-		echo "<tr><td>A chaque fois qu'une intervention est marquée comme terminée</td><td>Oui : <input type=\"radio\" name=\"mailing_finish_all_normal\" value=\"1\" "; if($db->result($result,0,"mailing_finish_all_normal") == 1) echo "checked"; echo  " /></td><td>Non : <input type=\"radio\" name=\"mailing_finish_all_normal\" value=\"0\" "; if($db->result($result,0,"mailing_finish_all_normal") == 0) echo "checked"; echo  " /></td></tr>";
+		echo "<div align='center'><table class='tab_cadre' width='600''><tr><th colspan='3'>Configuration de la fonction suivi par mail</th></tr>";
+		
+			if (function_exists('mail')) {
+		
+		echo "<tr class='tab_bg_2'><td >Utiliser les Mailing :</td><td align='center'>&nbsp; Oui  &nbsp;<input type=\"radio\" name=\"mailing\" value=\"1\" "; if($db->result($result,0,"mailing") == 1) echo "checked"; echo " > &nbsp;Non  &nbsp;<input type=\"radio\" name=\"mailing\" value=\"0\" "; if($db->result($result,0,"mailing") == 0) echo "checked"; echo " ></td></tr>";
+		echo "<tr class='tab_bg_2'><td >Mail de l'administrateur systeme :</td><td> <input type=\"text\" name=\"admin_email\" size='40' value=\"".$db->result($result,0,"admin_email")."\"> </td></tr>";
+		echo "<tr class='tab_bg_2'><td >Signature automatique  : </td><td><input type=\"text\" name=\"mailing_signature\" size='40' value=\"".$db->result($result,0,"mailing_signature")."\" ></td></tr></table>";
+		
+		echo "<p><b> Options de configuration </b></p>";
+		
+		echo "<table class='tab_cadre' width='600''><tr><th colspan='3'>L'administrateur Système doit recevoir une notification:<th></tr>";
+		echo "<tr class='tab_bg_2'><td>A chaque nouvelle intervention</td><td>Oui : <input type=\"radio\" name=\"mailing_new_admin\" value=\"1\" "; if($db->result($result,0,"mailing_new_admin") == 1) echo "checked"; echo " ></td><td>Non : <input type=\"radio\" name=\"mailing_new_admin\" value=\"0\" "; if($db->result($result,0,"mailing_new_admin") == 0) echo "checked"; echo " ></td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td >A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_admin\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_admin") == 1) echo "checked"; echo " ></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_admin\" value=\"0\" "; if($db->result($result,0,"mailing_attrib_admin") == 0) echo "checked"; echo " ></td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td >Pour chaque nouveau suivi</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_admin\" value=\"1\" "; if($db->result($result,0,"mailing_followup_admin") == 1) echo "checked"; echo "></td><td>Non : <input type=\"radio\" name=\"mailing_followup_admin\" value=\"0\" "; if($db->result($result,0,"mailing_followup_admin") == 0) echo "checked"; echo " ></td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td>A chaque fois qu'une intervention est marquée comme terminée</td><td>Oui : <input type=\"radio\" name=\"mailing_finish_admin\" value=\"1\" "; if($db->result($result,0,"mailing_finish_admin") == 1) echo "checked"; echo " ></td><td>Non : <input type=\"radio\" name=\"mailing_finish_admin\" value=\"0\" "; if($db->result($result,0,"mailing_finish_admin") == 0) echo "checked"; echo " ></td></tr>";
+		
+		echo "<tr class='tab_bg_2'><th colspan='3'>Les utilisateurs ayant un accés Admin doivent recevoir une notification :</th></tr>";
+		
+		echo "<tr class='tab_bg_2'><td>A chaque nouvelle intervention</td><td>Oui : <input type=\"radio\" name=\"mailing_new_all_admin\" value=\"1\" "; if($db->result($result,0,"mailing_new_all_admin") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_new_all_admin\" value=\"0\" "; if($db->result($result,0,"mailing_new_all_admin") == 0) echo "checked"; echo  " ></td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td>A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_all_admin\" value=\"1\"  "; if($db->result($result,0,"mailing_attrib_all_admin") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_all_admin\" value=\"0\"  "; if($db->result($result,0,"mailing_attrib_all_admin") == 0) echo "checked"; echo  " ></td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td>Pour chaque nouveau suivi</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_all_admin\" value=\"1\"  "; if($db->result($result,0,"mailing_followup_all_admin") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_followup_all_admin\" value=\"0\"  "; if($db->result($result,0,"mailing_followup_all_admin") == 0) echo "checked"; echo  " ></td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td>A chaque fois qu'une intervention est marquée comme terminée</td><td>Oui : <input type=\"radio\" name=\"mailing_finish_all_admin\" value=\"1\"  "; if($db->result($result,0,"mailing_finish_all_admin") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_finish_all_admin\" value=\"0\"  "; if($db->result($result,0,"mailing_finish_all_admin") == 0) echo "checked"; echo  " ></td></tr>";
 		
 		
-		echo "<table><tr>La personne responsable de la tache doit recevoir un notification :<td></td><td></td><td></td></tr>";
-		echo "<tr><td>A chaque nouvelle intervention</td><td>Oui : <input type=\"radio\" name=\"mailing_new_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_new_attrib") == 1) echo "checked"; echo  " /></td><td>Non : <input type=\"radio\" name=\"mailing_new_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_new_attrib") == 0) echo "checked"; echo  " /></td></tr>";
-		echo "<tr><td>A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_attrib") == 1) echo "checked"; echo  " /></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"0\"  "; if($db->result($result,0,"mailing_attrib_attrib") == 0) echo "checked"; echo  " /></td></tr>";
-		echo "<tr><td>Pour chaque nouveau suivi</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_followup_attrib") == 1) echo "checked"; echo  " /></td><td>Non : <input type=\"radio\" name=\"mailing_followup_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_followup_attrib") == 0) echo "checked"; echo  " /></td></tr>";
-		echo "<tr><td>A chaque fois qu'une intervention est marquée comme terminée</td><td>Oui : <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_finish_attrib") == 1) echo "checked"; echo  " /></td><td>Non : <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_finish_attrib") == 0) echo "checked"; echo  " /><td></td></tr>";
+		echo "<tr'><th colspan='3'>Les utilisateurs ayant un accés Normal doivent recevoir une notification :</th></tr>";
+		echo "<tr class='tab_bg_2'><td>A chaque nouvelle intervention</td><td>Oui : <input type=\"radio\" name=\"mailing_new_all_normal\" value=\"1\"  "; if($db->result($result,0,"mailing_new_all_normal") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_new_all_normal\" value=\"0\"  "; if($db->result($result,0,"mailing_new_all_normal") == 0) echo "checked"; echo  " ></td></tr>";
+		echo "<tr class='tab_bg_2'><td>A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_all_normal\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_all_normal") == 1) echo "checked"; echo  "  ></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_all_normal\" value=\"0\"  "; if($db->result($result,0,"mailing_attrib_all_normal") == 0) echo "checked"; echo  " ></td></tr>";
 		
-		echo "<table><tr>L'utilisateur demandeur doit recevoir une notification:<td></td><td></td><td></td></tr>";
-		echo "<tr><td>A chaque nouvelle intervention le concernant</td><td>Oui : <input type=\"radio\" name=\"mailing_new_user\" value=\"1\" "; if($db->result($result,0,"mailing_new_user") == 1) echo "checked"; echo  " /></td><td>Non : <input type=\"radio\" name=\"mailing_new_user\" value=\"0\" "; if($db->result($result,0,"mailing_new_user") == 0) echo "checked"; echo  " /></td></tr>";
-		echo "<tr><td>A chaque changement de responsable d'une intervention le concernant</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_user\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_user") == 1) echo "checked"; echo  " /></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_user\" value=\"0\" "; if($db->result($result,0,"mailing_attrib_user") == 0) echo "checked"; echo  " /></td></tr>";
-		echo "<tr><td>Pour chaque nouveau suivi sur une intervention le concernant</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_user\" value=\"1\" "; if($db->result($result,0,"mailing_followup_user") == 1) echo "checked"; echo  " /></td><td>Non : <input type=\"radio\" name=\"mailing_followup_user\" value=\"0\" "; if($db->result($result,0,"mailing_followup_user") == 0) echo "checked"; echo  " /></td></tr>";
-		echo "<tr><td>A chaque fois qu'une intervention le concernant est marquée comme terminée</td><td>Oui : <input type=\"radio\" name=\"mailing_finish_user\" value=\"1\"  "; if($db->result($result,0,"mailing_finish_user") == 1) echo "checked"; echo  " /></td><td>Non : <input type=\"radio\" name=\"mailing_finish_user\" value=\"0\" "; if($db->result($result,0,"mailing_finish_user") == 0) echo "checked"; echo  " /></td></tr>";
+		echo "<tr class='tab_bg_2'><td>Pour chaque nouveau suivi</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_all_normal\" value=\"1\" "; if($db->result($result,0,"mailing_followup_all_normal") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_followup_all_normal\" value=\"0\" "; if($db->result($result,0,"mailing_followup_all_normal") == 0) echo "checked"; echo  " ></td></tr>";
 		
-		echo "</table>";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"update_mailing\" class=\"submit\" value=\"Continuer\" /></p>";
+		echo "<tr class='tab_bg_2'><td>A chaque fois qu'une intervention est marquée comme terminée</td><td>Oui : <input type=\"radio\" name=\"mailing_finish_all_normal\" value=\"1\" "; if($db->result($result,0,"mailing_finish_all_normal") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_finish_all_normal\" value=\"0\" "; if($db->result($result,0,"mailing_finish_all_normal") == 0) echo "checked"; echo  " ></td></tr>";
+		
+		
+		echo "<tr><th colspan='3'>La personne responsable de la tache doit recevoir un notification :</th></tr>";
+		echo "<tr class='tab_bg_2'><td>A chaque nouvelle intervention</td><td>Oui : <input type=\"radio\" name=\"mailing_new_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_new_attrib") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_new_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_new_attrib") == 0) echo "checked"; echo  " ></td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td>A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_attrib") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"0\"  "; if($db->result($result,0,"mailing_attrib_attrib") == 0) echo "checked"; echo  " ></td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td>Pour chaque nouveau suivi</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_followup_attrib") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_followup_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_followup_attrib") == 0) echo "checked"; echo  " ></td></tr>";
+		echo "<tr class='tab_bg_2'><td>A chaque fois qu'une intervention est marquée comme terminée</td><td>Oui : <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_finish_attrib") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_finish_attrib") == 0) echo "checked"; echo  " ><td></td></tr>";
+		
+		echo "<tr><th colspan='3'>L'utilisateur demandeur doit recevoir une notification:</th></tr>";
+		
+		echo "<tr class='tab_bg_2'><td>A chaque nouvelle intervention le concernant</td><td>Oui : <input type=\"radio\" name=\"mailing_new_user\" value=\"1\" "; if($db->result($result,0,"mailing_new_user") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_new_user\" value=\"0\" "; if($db->result($result,0,"mailing_new_user") == 0) echo "checked"; echo  " ></td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td>A chaque changement de responsable d'une intervention le concernant</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_user\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_user") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_user\" value=\"0\" "; if($db->result($result,0,"mailing_attrib_user") == 0) echo "checked"; echo  " ></td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td>Pour chaque nouveau suivi sur une intervention le concernant</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_user\" value=\"1\" "; if($db->result($result,0,"mailing_followup_user") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_followup_user\" value=\"0\" "; if($db->result($result,0,"mailing_followup_user") == 0) echo "checked"; echo  " ></td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td>A chaque fois qu'une intervention le concernant est marquée comme terminée</td><td>Oui : <input type=\"radio\" name=\"mailing_finish_user\" value=\"1\"  "; if($db->result($result,0,"mailing_finish_user") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_finish_user\" value=\"0\" "; if($db->result($result,0,"mailing_finish_user") == 0) echo "checked"; echo  " ></td></tr>";
+		echo "</table></div>";
+		}
+		else {
+		
+			
+		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>La fonction mail n'existe pas ou est désactivée sur votre système</p><p> Impossible de configurer les envois de suivis par mails</p></td></tr></table></div>";
+		
+		}
+		
+		echo "<p class=\"submit\"><input type=\"submit\" name=\"update_mailing\" class=\"submit\" value=\"Valider\" ></p>";
 		echo "</form>";
+
 }
 
 function updateLDAP($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass) {
