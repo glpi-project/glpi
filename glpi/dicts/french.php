@@ -490,6 +490,7 @@ $lang["reports"][26]    ="Rapport par défaut";
 $lang["reports"][27]    ="Maintenance";
 $lang["reports"][28]    ="Par année";
 $lang["reports"][29]	="P&eacute;riph&eacute;riques";
+$lang["reports"][30]     = "P&eacute;riph&eacute;riques sous contrat de maintenance";
 
 // LDAP
 $lang["ldap"][0]	= "recherche";

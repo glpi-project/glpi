@@ -1424,6 +1424,44 @@ switch($item_type)
 					}	
 		echo "</table><br><hr><br>";
 		break;
+		case 'glpi_peripherals' :
+		
+		echo " <b><strong>".$lang["reports"][30]."</strong></b>";
+		echo "<table width='100%' height='60' border='0'>";
+		echo "<tr> ";
+		echo "<th><div align='center'><b>".$lang["peripherals"][5]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["peripherals"][9]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["peripherals"][21]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["peripherals"][8]."</b></div></th>";	
+		echo "<th><div align='center'><b>".$lang["peripherals"][6]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["peripherals"][10]."</b></div></th>";	
+		echo "<th><div align='center'><b>".$lang["peripherals"][24]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["peripherals"][25]."</b></div></th>";
+		echo "</tr>";
+		
+		while( $ligne = $db->fetch_array($result))
+					{
+					$name = $ligne['name'];
+					$lieu = $ligne['location'];
+					$type = $ligne['type'];
+					$contact = $ligne['contact'];
+					$serial = $ligne['serial'];
+					$achat_date = $ligne['achat_date'];
+					$fin_garantie = $ligne['date_fin_garantie'];
+					//inserer ces valeures dans un tableau
+					
+					echo "<tr>";	
+					if($name) echo "<td><div align='center'>$name</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($type) echo "<td><div align='center'>".getDropdownName("glpi_type_monitors",$type)."</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($contact) echo "<td><div align='center'>$contact</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($lieu) echo "<td><div align='center'>".getDropdownName("glpi_type_monitors",$lieu)."</div></td>"; else echo "<td><div align='center'>N/A </div></td>";
+					if($serial) echo "<td><div align='center'>$serial</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($achat_date) echo "<td><div align='center'>$achat_date</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($fin_garantie) echo "<td><div align='center'> $fin_garantie </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					echo "</tr>";
+					}	
+		echo "</table><br><hr><br>";
+		break;
 		
 	}	
 }
