@@ -449,7 +449,7 @@ function showUserform($target,$name) {
 	}		
 	
 	echo "<div align='center'>";
-		echo "<form method='post' action=\"$target\"><table class='tab_cadre'>";
+		echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre'>";
 		echo   "<tr><th colspan='2'>".$lang["setup"][57]." : " .$user->fields["name"]."</th></tr>";
 		echo "<tr class='tab_bg_1'>";	
 		
@@ -464,13 +464,15 @@ function showUserform($target,$name) {
 			 echo "<input type='hidden' name='name' value=\"".$user->fields["name"]."\">";
 			echo "</td></tr>";
 			}
-			
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value=\"".$user->fields["password"]."\" size='20'></td></tr>";
 			
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td><input name='realname' size='20' value=\"".$user->fields["realname"]."\"></td></tr>";
 
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][20]."</td><td>";
 			echo "<select name='type' >";
+			echo "<option value='super-admin'";
+				if ($user->fields["type"]=="super-admin") { echo " selected"; }
+			echo ">Super-Admin";
 			echo "<option value='admin'";
 				if ($user->fields["type"]=="admin") { echo " selected"; }
 			echo ">Admin";
@@ -793,9 +795,8 @@ function updateUser($input) {
 
  	// dump status
 	$null = array_pop($input);
-
 	// password updated?
-	if (empty($input["password"])) {
+	if(empty($input["password"])) {
 		$user->fields["password"]="";
 	}
 	// change email_form to email (not to have a problem with preselected email)

@@ -88,8 +88,8 @@ function checkAuthentication($authtype) {
 
 		switch ($authtype) {
 
-			case "admin";
-				if ($type!="admin") 
+			case "super-admin";
+				if ($type!="super-admin") 
 				{
 					commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
 						echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
@@ -99,22 +99,21 @@ function checkAuthentication($authtype) {
 					exit();
 				}
 			break;
-			
-			case "half-admin";
-				if ($type!="normal" && $type!="admin" && $type!="half-admin")
+				
+			case "admin";
+				if ($type!="admin" && $type != "super-admin") 
 				{
 					commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
-											echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
+						echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
 
 					echo "<b>".$lang["login"][5]."</b></center>";
 					commonFooter();
 					exit();
 				}
 			break;
-					
-					
+				
 			case "normal";
-				if ($type!="normal" && $type!="admin")
+				if ($type!="normal" && $type!="admin" && $type != "super-admin")
 				{
 					commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
 				      echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
@@ -126,7 +125,7 @@ function checkAuthentication($authtype) {
 			break;
 		
 			case "post-only";
-				if ($type!="post-only" && $type!="normal" && $type!="admin")
+				if ($type!="post-only" && $type!="normal" && $type!="admin" && $type != "super-admin")
 				{
 					commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
 											echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
