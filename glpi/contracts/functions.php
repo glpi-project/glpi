@@ -289,7 +289,7 @@ function showContractForm ($target,$ID,$search='') {
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][7].":	</td>";
-	echo "<td><input type='text' name='begin_date' readonly size='10' value=\"".$con->fields["begin_date"]."\">";
+	echo "<td colspan='2'><input type='text' name='begin_date' readonly size='10' value=\"".$con->fields["begin_date"]."\">";
 	echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=begin_date&amp;value=".$con->fields["begin_date"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].begin_date.value='0000-00-00'\" value='reset'>";
     echo "</td>";
