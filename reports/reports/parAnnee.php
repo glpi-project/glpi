@@ -62,7 +62,7 @@ echo "<option value='glpi_computers'>".$lang["reports"][6]."</option>";
 echo "<option value='glpi_printers'>".$lang["reports"][7]."</option>";
 echo "<option value='glpi_networking'>".$lang["reports"][8]."</option>";
 echo "<option value='glpi_monitors'>".$lang["reports"][9]."</option>";
-echo "<option value='glpi_monitors'>".$lang["reports"][29]."</option>";
+echo "<option value='glpi_peripherals'>".$lang["reports"][29]."</option>";
 echo "</select> </p></td> ";
 
 echo "<td align='center' width='200'><p><b>".$lang["reports"][22]."</b></p> ";
