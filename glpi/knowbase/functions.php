@@ -62,7 +62,10 @@ function titleknowbase(){
 	GLOBAL  $lang,$HTMLRel;
 
          echo "<div align='center'><table border='0'><tr><td>";
-         echo "<img src=\"".$HTMLRel."pics/knowbase.png\" alt='".$lang["knowbase"][2]."' title='".$lang["knowbase"][2]."'></td><td><a  class='icon_consol' href=\"knowbase-info-form.php?ID=new\"><b>".$lang["knowbase"][2]."</b></a>";
+         echo "<img src=\"".$HTMLRel."pics/knowbase.png\" alt='".$lang["knowbase"][2]."' title='".$lang["knowbase"][2]."'></td><td>";
+         if (countElementsInTable("glpi_dropdown_kbcategories"))
+         echo "<a  class='icon_consol' href=\"knowbase-info-form.php?ID=new\"><b>".$lang["knowbase"][2]."</b></a>";
+         else echo "<span class='icon_consol'>".$lang["knowbase"][2]."</span>";
          echo "</td></tr>";
 		echo "</table></div>";
 	
