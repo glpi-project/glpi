@@ -48,7 +48,7 @@ commonHeader("Computers",$_SERVER["PHP_SELF"]);
       GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
 
 
-echo "<div align='center'><table border='0' cellpadding=5>";
+echo "<div align='center'><table border='0' cellpadding=5 class='tab_cadre'>";
 echo "<tr><th>";
 echo $lang["computers"][45];
 echo "</th></tr>";
