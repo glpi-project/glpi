@@ -133,7 +133,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 		break;
 		case SND_DEVICE :
 			
-			$type=$lang["devices"][5];
+			$type=$lang["devices"][7];
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["type"])) $entry[$lang["device_sndcard"][0]]=$device->fields["type"];
 			
