@@ -61,7 +61,7 @@ function searchFormComputers($field="",$phrasetype= "",$contains="",$sort= "",$d
 	$option["glpi_dropdown_locations.name"]			= $lang["computers"][10];
 	$option["glpi_type_computers.name"]				= $lang["computers"][8];
 	$option["glpi_dropdown_os.name"]				= $lang["computers"][9];
-	$option["comp.osver"]			= $lang["computers"][20];
+	//$option["comp.osver"]			= $lang["computers"][20];
 	$option["processor.designation"]			= $lang["computers"][21];
 	//$option["processorspeed"]		= $lang["computers"][22];
 	$option["comp.serial"]			= $lang["computers"][17];
