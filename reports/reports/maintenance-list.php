@@ -68,7 +68,7 @@ if($_POST["item_type"] != 'tous')
 }
 else
 {
-
+	$query=array();
 		for($i=0;$i<4;$i++)
 		{
 			$query[$i] = "select * from ".$item_db_name[$i]." where maintenance = 1";
