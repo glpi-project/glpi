@@ -41,9 +41,9 @@ include ($phproot . "/glpi/includes_computers.php");
 
 checkAuthentication("normal");
 
-commonHeader("Computers",$HTTP_SERVER_VARS[PHP_SELF]);
+commonHeader("Computers",$_SERVER[PHP_SELF]);
 
-showComputerList($HTTP_SERVER_VARS[PHP_SELF],$IRMName,$field,$phrasetype,$contains,$sort,$order,$start);
+showComputerList($_SERVER[PHP_SELF],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
 
 commonFooter();
 ?>

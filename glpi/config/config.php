@@ -93,7 +93,7 @@ class baseFunctions {
 //mettez cette option a 1 si vous vous voulez utiliser des sources
 //d'informations externes/alternatives pour le login
 //par defaut laissez cette valeur a 0;
-$cfg_login['use_extern'] = 1;
+$cfg_login['use_extern'] = 0;
 
 // Gestion de source d'information alternatives pour le login
 // telles que des serveurs de mail en imap pop...
@@ -124,7 +124,7 @@ $cfg_login['imap']['host'] = "sic.sp2mi.univ-poitiers.fr";
 $cfg_features["event_loglevel"]	= 5;
 
 // Utilisation des fonctions mailing ou non
-$cfg_features["mailing"]	= 1;	
+$cfg_features["mailing"]	= 0;	
 // Addresse de l'administrateur (obligatoire si mailing activé)
 $cfg_mailing["admin_email"]	= "admsys@sic.sp2mi.univ-poitiers.fr";	
 // Signature for automatic generated E-Mails
@@ -162,6 +162,8 @@ $cfg_mailing["new"]["user"]=1;
 $cfg_mailing["attrib"]["user"]=1;
 $cfg_mailing["followup"]["user"]=1;
 $cfg_mailing["finish"]["user"]=1;
+
+
 
 // Show jobs at login.
 // Montrer les interventions au loging (1 = oui | 0 = non)

@@ -41,23 +41,31 @@ include ($phproot . "/glpi/includes_networking.php");
 checkAuthentication("admin");
 
 
-commonHeader("Networking",$HTTP_SERVER_VARS[PHP_SELF]);
-
-switch ($next) {
+commonHeader("Networking",$_SERVER[PHP_SELF]);
+If($_GET)
+{
+	  $tab = $_GET;
+}
+elseif($_POST) 
+{
+	$tab = $_POST;
+	
+}
+switch ($tab["next"]) {
 	case "";
-		showConnectorSearch($HTTP_SERVER_VARS[PHP_SELF],$ID);
+		showConnectorSearch($_SERVER[PHP_SELF],$tab["ID"]);
 	break;
 
 	case "compsearch";
-		listConnectorComputers($HTTP_SERVER_VARS[PHP_SELF],$HTTP_POST_VARS);
+		listConnectorComputers($_SERVER[PHP_SELF],$tab);
 	break;
 
 	case "showports";
-		listConnectorPorts($HTTP_SERVER_VARS[PHP_SELF],$HTTP_POST_VARS);
+		listConnectorPorts($_SERVER[PHP_SELF],$tab);
 	break;		
 
 	case "connect";
-		makeConnector($sport,$dport);
+		makeConnector($tab["sport"],$tab["dport"]);
 	break;		
 }
 

@@ -38,54 +38,55 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_monitors.php");
-
-if ($add) {
+if($_GET) $tab = $_GET;
+elseif($_POST) $tab = $_POST;
+if ($tab["add"]) {
 	checkAuthentication("admin");
-	addMonitor($HTTP_POST_VARS);
-	logEvent(0, "monitors", 4, "inventory", "$IRMName added ".$HTTP_POST_VARS["name"].".");
-	header("Location: $HTTP_REFERER");
-} else if ($delete) {
+	addMonitor($tab);
+	logEvent(0, "monitors", 4, "inventory", $_SESSION["glpiname"]." added ".$tab["name"].".");
+	header("Location: $_SERVER[HTTP_REFERER]");
+} else if ($tab["delete"]) {
 	checkAuthentication("admin");
-	deleteMonitor($HTTP_POST_VARS);
-	logEvent($HTTP_POST_VARS["ID"], "monitors", 4, "inventory", "$IRMName deleted item.");
+	deleteMonitor($tab);
+	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/monitors/");
-} else if ($update) {
+} else if ($tab["update"]) {
 	checkAuthentication("admin");
-	updateMonitor($HTTP_POST_VARS);
-	logEvent($HTTP_POST_VARS["ID"], "monitors", 4, "inventory", "$IRMName updated item.");
-	commonHeader("Monitors",$HTTP_SERVER_VARS[PHP_SELF]);
-	showMonitorsForm($HTTP_SERVER_VARS[PHP_SELF],$ID);
+	updateMonitor($tab);
+	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." updated item.");
+	commonHeader("Monitors",$_SERVER[PHP_SELF]);
+	showMonitorsForm($_SERVER[PHP_SELF],$tab["ID"]);
 	commonFooter();
 
-} else if ($disconnect) {
+} else if ($tab["disconnect"]) {
 	checkAuthentication("admin");
-	Disconnect($ID,4);
-	logEvent($ID, "monitors", 5, "inventory", "$IRMName disconnected item.");
-	commonHeader("Monitors",$HTTP_SERVER_VARS[PHP_SELF]);
-	showMonitorsForm($HTTP_SERVER_VARS[PHP_SELF],$ID);
+	Disconnect($tab["ID"],4);
+	logEvent($tab["ID"], "monitors", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
+	commonHeader("Monitors",$_SERVER[PHP_SELF]);
+	showMonitorsForm($_SERVER[PHP_SELF],$tab["ID"]);
 	commonFooter();
-} else if ($connect==1) {
+} else if ($tab["connect"]==1) {
 	checkAuthentication("admin");
-	commonHeader("Monitors",$HTTP_SERVER_VARS[PHP_SELF]);
-	showConnectSearch($HTTP_SERVER_VARS[PHP_SELF],$ID);
+	commonHeader("Monitors",$_SERVER[PHP_SELF]);
+	showConnectSearch($_SERVER[PHP_SELF],$tab["ID"]);
 	commonFooter();
-} else if ($connect==2) {
+} else if ($tab["connect"]==2) {
 	checkAuthentication("admin");
-	commonHeader("Monitors",$HTTP_SERVER_VARS[PHP_SELF]);
-	listConnectComputers($HTTP_SERVER_VARS[PHP_SELF],$HTTP_POST_VARS);
+	commonHeader("Monitors",$_SERVER[PHP_SELF]);
+	listConnectComputers($_SERVER[PHP_SELF],$tab);
 	commonFooter();
-} else if ($connect==3) {
+} else if ($tab["connect"]==3) {
 	checkAuthentication("admin");
-	commonHeader("Monitors",$HTTP_SERVER_VARS[PHP_SELF]);
-	Connect($HTTP_SERVER_VARS[PHP_SELF],$sID,$cID,4);
-	logEvent($sID, "monitors", 5, "inventory", "$IRMName connected item.");
-	showMonitorsForm($HTTP_SERVER_VARS[PHP_SELF],$sID);
+	commonHeader("Monitors",$_SERVER[PHP_SELF]);
+	Connect($_SERVER[PHP_SELF],$tab["sID"],$tab["cID"],4);
+	logEvent($tab["sID"], "monitors", 5, "inventory", $_SESSION["glpiname"]." connected item.");
+	showMonitorsForm($_SERVER[PHP_SELF],$tab["sID"]);
 	commonFooter();
 
 } else {
 	checkAuthentication("normal");
-	commonHeader("Monitors",$HTTP_SERVER_VARS[PHP_SELF]);
-	showMonitorsForm($HTTP_SERVER_VARS[PHP_SELF],$ID);
+	commonHeader("Monitors",$_SERVER[PHP_SELF]);
+	showMonitorsForm($_SERVER[PHP_SELF],$tab["ID"]);
 	commonFooter();
 }
 

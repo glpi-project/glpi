@@ -43,14 +43,14 @@ include ($phproot . "/glpi/includes_setup.php");
 
 checkAuthentication("admin");
 
-if ($update) {
-	assignJob ($ID,$user,$IRMName);	
-	header("Location: $HTTP_REFERER");
+if ($_GET["update"]) {
+	assignJob ($_GET["ID"],$_GET["user"],$_SESSION["glpiname"]);	
+	header("Location: $_SERVER[HTTP_REFERER]");
 
 } else {
-	commonHeader("Tracking",$HTTP_SERVER_VARS[PHP_SELF]);
+	commonHeader("Tracking",$_SERVER[PHP_SELF]);
 	echo "<center>";
-	assignFormTracking($ID,$IRMName,$HTTP_SERVER_VARS[PHP_SELF]);
+	assignFormTracking($_GET["ID"],$_SESSION["glpiname"],$_SERVER[PHP_SELF]);
 	echo "</center>";
 	commonFooter();
 }

@@ -40,9 +40,9 @@ include ($phproot . "/glpi/includes_networking.php");
 
 checkAuthentication("admin");
 
-removeConnector($ID);
+removeConnector($_GET["ID"]);
 
-header("Location: $HTTP_REFERER");
+header("Location: $_SERVER[HTTP_REFERER]");
 
 ?>
 

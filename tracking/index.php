@@ -42,13 +42,13 @@ include ($phproot . "/glpi/includes_tracking.php");
 
 checkAuthentication("normal");
 
-commonHeader("Tracking",$HTTP_SERVER_VARS[PHP_SELF]);
+commonHeader("Tracking",$_SERVER[PHP_SELF]);
 
 
-searchFormTracking($show,$contains);
+searchFormTracking($_GET["show"],$_GET["contains"]);
 
-if ($show || $contains) {
-	showJobList($IRMName,$show,$contains,$machine);
+if ($_GET["show"] || $_GET["contains"]) {
+	showJobList($_SESSION["glpiname"],$_GET["show"],$_GET["contains"],$_GET["machine"]);
 }
 
 commonFooter();

@@ -41,30 +41,30 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-if ($add) {
+if ($_POST["add"]) {
 	checkAuthentication("admin");
-	addTemplate($HTTP_POST_VARS);
-	logEvent(0,"Templates", 5, "setup", "$IRMName added template ".$HTTP_POST_VARS["templname"].".");
-	header("Location: $HTTP_REFERER?done");
-} else if ($delete) {
+	addTemplate($_POST);
+	logEvent(0,"Templates", 5, "setup", $_SESSION["glpiname"]." added template ".$_POST["templname"].".");
+	header("Location: $_SERVER[$HTTP_REFERER]?done");
+} else if ($_POST["delete"]) {
 	checkAuthentication("admin");
 	deleteTemplate($HTTP_GET_VARS);
-	logEvent(0,"Templates", 5, "setup", "$IRMName deleted template ".$HTTP_POST_VARS["ID"].".");
-	header("Location: $HTTP_REFERER?done");
-} else if ($update) {
+	logEvent(0,"Templates", 5, "setup", $_SESSION["glpiname"]." deleted template ".$_POST["ID"].".");
+	header("Location: $_SERVER[$HTTP_REFERER]?done");
+} else if ($_POST["update"]) {
 	checkAuthentication("admin");
-	updateTemplate($HTTP_POST_VARS);
-	logEvent(0,"Templates", 5, "setup", "$IRMName updated template ".$HTTP_POST_VARS["ID"].".");
-	header("Location: $HTTP_REFERER?done");
-} else if ($showform) {
+	updateTemplate($_POST);
+	logEvent(0,"Templates", 5, "setup", $_SESSION["glpiname"]." updated template ".$_POST["ID"].".");
+	header("Location: $_SERVER[$HTTP_REFERER]?done");
+} else if ($_POST["showform"]) {
 	checkAuthentication("admin");
-	commonHeader("glpi Setup",$HTTP_SERVER_VARS[PHP_SELF]);
-	showTemplateForm($HTTP_SERVER_VARS[PHP_SELF],$ID);
+	commonHeader("glpi Setup",$_SERVER[PHP_SELF]);
+	showTemplateForm($_SERVER[PHP_SELF],$_POST["ID"]);
 	commonFooter();
 } else {
 	checkAuthentication("normal");
-	commonHeader("glpi Setup",$HTTP_SERVER_VARS[PHP_SELF]);
-	listTemplates($HTTP_SERVER_VARS[PHP_SELF]);
+	commonHeader("glpi Setup",$_SERVER[PHP_SELF]);
+	listTemplates($_SERVER[PHP_SELF]);
 	commonFooter();
 }
 

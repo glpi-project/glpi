@@ -39,55 +39,57 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_printers.php");
 include ($phproot . "/glpi/includes_networking.php");
+if($_GET) $tab = $_GET;
+elseif($_POST) $tab = $_POST;
 
-if ($add) {
+if ($tab["add"]) {
 	checkAuthentication("admin");
-	addPrinter($HTTP_POST_VARS);
-	logEvent(0, "Printers", 4, "inventory", "$IRMName added ".$HTTP_POST_VARS["name"].".");
-	header("Location: $HTTP_REFERER");
-} else if ($delete) {
+	addPrinter($tab);
+	logEvent(0, "Printers", 4, "inventory", $_SESSION["glpiname"]." added ".$tab["name"].".");
+	header("Location: $_SERVER[HTTP_REFERER]");
+} else if ($tab["delete"]) {
 	checkAuthentication("admin");
-	deletePrinter($HTTP_POST_VARS);
-	logEvent($HTTP_POST_VARS["ID"], "printers", 4, "inventory", "$IRMName deleted item.");
+	deletePrinter($tab);
+	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/printers/");
-} else if ($update) {
+} else if ($tab["update"]) {
 	checkAuthentication("admin");
-	updatePrinter($HTTP_POST_VARS);
-	logEvent($HTTP_POST_VARS["ID"], "printers", 4, "inventory", "$IRMName updated item.");
-	commonHeader("Printers",$HTTP_SERVER_VARS[PHP_SELF]);
-	showPrintersForm($HTTP_SERVER_VARS[PHP_SELF],$ID);
+	updatePrinter($tab);
+	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." updated item.");
+	commonHeader("Printers",$_SERVER[PHP_SELF]);
+	showPrintersForm($_SERVER[PHP_SELF],$tab["ID"]);
 	commonFooter();
 
-} else if ($disconnect) {
+} else if ($tab["disconnect"]) {
 	checkAuthentication("admin");
-	Disconnect($ID,3);
-	logEvent($ID, "printers", 5, "inventory", "$IRMName disconnected item.");
-	commonHeader("Printers",$HTTP_SERVER_VARS[PHP_SELF]);
-	showPrintersForm($HTTP_SERVER_VARS[PHP_SELF],$ID);
+	Disconnect($tab["ID"],3);
+	logEvent($tab["ID"], "printers", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
+	commonHeader("Printers",$_SERVER[PHP_SELF]);
+	showPrintersForm($_SERVER[PHP_SELF],$tab["ID"]);
 	commonFooter();
-} else if ($connect==1) {
+} else if ($tab["connect"]==1) {
 	checkAuthentication("admin");
-	commonHeader("Printers",$HTTP_SERVER_VARS[PHP_SELF]);
-	showConnectSearch($HTTP_SERVER_VARS[PHP_SELF],$ID);
+	commonHeader("Printers",$_SERVER[PHP_SELF]);
+	showConnectSearch($_SERVER[PHP_SELF],$tab["ID"]);
 	commonFooter();
-} else if ($connect==2) {
+} else if ($tab["connect"]==2) {
 	checkAuthentication("admin");
-	commonHeader("Printers",$HTTP_SERVER_VARS[PHP_SELF]);
-	listConnectComputers($HTTP_SERVER_VARS[PHP_SELF],$HTTP_POST_VARS);
+	commonHeader("Printers",$_SERVER[PHP_SELF]);
+	listConnectComputers($_SERVER[PHP_SELF],$tab);
 	commonFooter();
-} else if ($connect==3) {
+} else if ($tab["connect"]==3) {
 	checkAuthentication("admin");
-	commonHeader("Printers",$HTTP_SERVER_VARS[PHP_SELF]);
-	Connect($HTTP_SERVER_VARS[PHP_SELF],$sID,$cID,3);
-	logEvent($sID, "printers", 5, "inventory", "$IRMName connected item.");
-	showPrintersForm($HTTP_SERVER_VARS[PHP_SELF],$sID);
+	commonHeader("Printers",$_SERVER[PHP_SELF]);
+	Connect($_SERVER[PHP_SELF],$tab["sID"],$tab["cID"],3);
+	logEvent($sID, "printers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
+	showPrintersForm($_SERVER[PHP_SELF],$tab["sID"]);
 	commonFooter();
 
 } else {
 
 	checkAuthentication("normal");
-	commonHeader("Printers",$HTTP_SERVER_VARS[PHP_SELF]);
-	showPrintersForm($HTTP_SERVER_VARS[PHP_SELF],$ID);
+	commonHeader("Printers",$_SERVER[PHP_SELF]);
+	showPrintersForm($_SERVER[PHP_SELF],$tab["ID"]);
 	commonFooter();
 }
 

@@ -41,34 +41,34 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-if ($add) {
+if ($_POST["add"]) {
 	checkAuthentication("admin");
-	addDropdown($HTTP_POST_VARS);
-	logEvent(0, "dropdowns", 5, "setup", "$IRMName added a value to a dropdown.");
-	header("Location: $HTTP_REFERER?done");
-} else if ($delete) {
+	addDropdown($_POST);
+	logEvent(0, "dropdowns", 5, "setup", $_SESSION["glpiname"]." added a value to a dropdown.");
+	header("Location: $_SERVER[HTTP_REFERER]?done");
+} else if ($_POST["delete"]) {
 	checkAuthentication("admin");
-	deleteDropdown($HTTP_POST_VARS);
-	logEvent($HTTP_POST_VARS["ID"], "templates", 4, "inventory", "$IRMName deleted a dropdown value.");
-	header("Location: $HTTP_REFERER?done");
+	deleteDropdown($_POST);
+	logEvent($_POST["ID"], "templates", 4, "inventory", $_SESSION["glpiname"]." deleted a dropdown value.");
+	header("Location: $_SERVER[HTTP_REFERER]?done");
 } else {
 	checkAuthentication("normal");
-	commonHeader("Setup",$HTTP_SERVER_VARS[PHP_SELF]);
+	commonHeader("Setup",$_SERVER[PHP_SELF]);
 	echo "<center><table cellpadding=4><tr><th>".$lang["setup"][0].":</th></tr></table></center>";
-	showFormDropDown($HTTP_SERVER_VARS[PHP_SELF],"locations",$lang["setup"][3]);
-	showFormTypeDown($HTTP_SERVER_VARS[PHP_SELF],"computers",$lang["setup"][4]);
-	showFormTypeDown($HTTP_SERVER_VARS[PHP_SELF],"networking",$lang["setup"][42]);
-	showFormTypeDown($HTTP_SERVER_VARS[PHP_SELF],"printers",$lang["setup"][43]);
-	showFormTypeDown($HTTP_SERVER_VARS[PHP_SELF],"monitors",$lang["setup"][44]);
-	showFormDropDown($HTTP_SERVER_VARS[PHP_SELF],"os",$lang["setup"][5]);
-	showFormDropDown($HTTP_SERVER_VARS[PHP_SELF],"ram",$lang["setup"][6]);
-	showFormDropDown($HTTP_SERVER_VARS[PHP_SELF],"processor",$lang["setup"][7]);
-	showFormDropDown($HTTP_SERVER_VARS[PHP_SELF],"moboard",$lang["setup"][45]);
-	showFormDropDown($HTTP_SERVER_VARS[PHP_SELF],"gfxcard",$lang["setup"][46]);
-	showFormDropDown($HTTP_SERVER_VARS[PHP_SELF],"sndcard",$lang["setup"][47]);
-	showFormDropDown($HTTP_SERVER_VARS[PHP_SELF],"hdtype",$lang["setup"][48]);
-	showFormDropDown($HTTP_SERVER_VARS[PHP_SELF],"network",$lang["setup"][8]);
-	showFormDropDown($HTTP_SERVER_VARS[PHP_SELF],"iface",$lang["setup"][9]);
+	showFormDropDown($_SERVER[PHP_SELF],"locations",$lang["setup"][3]);
+	showFormTypeDown($_SERVER[PHP_SELF],"computers",$lang["setup"][4]);
+	showFormTypeDown($_SERVER[PHP_SELF],"networking",$lang["setup"][42]);
+	showFormTypeDown($_SERVER[PHP_SELF],"printers",$lang["setup"][43]);
+	showFormTypeDown($_SERVER[PHP_SELF],"monitors",$lang["setup"][44]);
+	showFormDropDown($_SERVER[PHP_SELF],"os",$lang["setup"][5]);
+	showFormDropDown($_SERVER[PHP_SELF],"ram",$lang["setup"][6]);
+	showFormDropDown($_SERVER[PHP_SELF],"processor",$lang["setup"][7]);
+	showFormDropDown($_SERVER[PHP_SELF],"moboard",$lang["setup"][45]);
+	showFormDropDown($_SERVER[PHP_SELF],"gfxcard",$lang["setup"][46]);
+	showFormDropDown($_SERVER[PHP_SELF],"sndcard",$lang["setup"][47]);
+	showFormDropDown($_SERVER[PHP_SELF],"hdtype",$lang["setup"][48]);
+	showFormDropDown($_SERVER[PHP_SELF],"network",$lang["setup"][8]);
+	showFormDropDown($_SERVER[PHP_SELF],"iface",$lang["setup"][9]);
 	commonFooter();
 }
 

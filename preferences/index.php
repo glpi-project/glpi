@@ -39,24 +39,24 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-if ($changepw) {
+if ($_POST["changepw"]) {
 	checkAuthentication("post-only");
-	updateUser($HTTP_POST_VARS);
-	header("Location: $HTTP_REFERER?done");
-} else if ($updatesort) {
+	updateUser($_POST);
+	header("Location: $_SERVER[HTTP_REFERER]?done");
+} else if ($_POST["updatesort"]) {
 	checkAuthentication("normal");
-	updateSort($HTTP_POST_VARS);
-	header("Location: $HTTP_REFERER?done");
-} else if ($changelang) {
+	updateSort($_POST);
+	header("Location: $_SERVER[HTTP_REFERER]?done");
+} else if ($_POST["changelang"]) {
 	checkAuthentication("post-only");
-	updateLanguage($HTTP_POST_VARS);
-	header("Location: $HTTP_REFERER?done");
+	updateLanguage($_POST);
+	header("Location: $_SERVER[HTTP_REFERER]?done");
 } else {
 	checkAuthentication("normal");
-	commonHeader("Preferences",$HTTP_SERVER_VARS[PHP_SELF]);
-	showPasswordForm($HTTP_SERVER_VARS[PHP_SELF],$IRMName);
-	showSortForm($HTTP_SERVER_VARS[PHP_SELF],$IRMName);
-	showLangSelect($HTTP_SERVER_VARS[PHP_SELF],$IRMName);
+	commonHeader("Preferences",$_SERVER[PHP_SELF]);
+	showPasswordForm($SERVER[PHP_SELF],$_SESSION["glpiname"]);
+	showSortForm($_SERVER[PHP_SELF],$_SESSION["glpiname"]);
+	showLangSelect($_SERVER[PHP_SELF],$_SESSION["glpiname"]);
 	commonFooter();
 }
 

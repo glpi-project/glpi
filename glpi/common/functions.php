@@ -33,10 +33,10 @@ This file is part of GLPI.
  Purpose of file:
  ----------------------------------------------------------------------
 */
-function can_assign_job($IRMName)
+function can_assign_job($name)
 {
   $db = new DB;
-  $query = "SELECT * FROM users WHERE (name = '$IRMName')";
+  $query = "SELECT * FROM users WHERE (name = '".$name."')";
 	$result = $db->query($query);
 	$type = $db->result($result, 0, "can_assign_job");
 	if ($type == 'yes')
@@ -54,28 +54,38 @@ function checkAuthentication($authtype) {
 	// If $authtype is "normal" or "admin", it checks if the user
 	// has the privileges to do something. Should be used in every 
 	// control-page to set a minium security level.
+	session_start();
+	
+	if(!($_SESSION["authorisation"]))
+	{
+		nullHeader("Login",$HTTP_SERVER_VARS[PHP_SELF]);
+		echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">Relogin</a></b></center>";
+		nullFooter();
+		die();	
+	}
 
-	GLOBAL $IRMName, $IRMPass, $cfg_install, $lang;
-
+	
 	// New database object
 	$db = new DB;
-
-  loadLanguage('Helpdesk');
+	
+	
+        loadLanguage('Helpdesk');
 	// Get user from database
-	$query = "SELECT * FROM users WHERE (name = '$IRMName')";
+	$query = "SELECT * FROM users WHERE (name = '".$_SESSION["glpiname"]."')";
+	
 	$result = $db->query($query);
 	$password = $db->result($result, 0, "password");
 	$type = $db->result($result, 0, "type");	
 
 	// Check username and password
-	if (!IsSet($IRMName)) {
+	if (!IsSet($_SESSION["glpiname"])) {
 		header("Vary: User-Agent");
 		nullHeader($lang["login"][3], $HTTP_SERVER_VARS[PHP_SELF]);
 		echo "<center><b>".$lang["login"][0]."</b><br><br>";
 		echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">".$lang["login"][1]."</a></b></center>";
 		nullFooter();
 		exit();
-	} else if ($IRMPass != md5($password)) {
+	} else if ($_SESSION["glpipass"] != md5($password)) {
 		nullHeader($lang["login"][4],$HTTP_SERVER_VARS[PHP_SELF]);
 		echo "<center><b>".$lang["login"][2]."</b><br><br>";
 		echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">".$lang["login"][1]."</a></b></center>";
@@ -84,12 +94,13 @@ function checkAuthentication($authtype) {
 	} else {
 		header("Vary: User-Agent");
 
-		loadLanguage($IRMName);
+		loadLanguage($_SESSION["glpiname"]);
 
 		switch ($authtype) {
 
 			case "admin";
-				if ($type!="admin") {
+				if ($type!="admin") 
+				{
 					commonHeader($lang["login"][5],$HTTP_SERVER_VARS[PHP_SELF]);
 						echo "<center><br><br><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br>";
 
@@ -100,7 +111,8 @@ function checkAuthentication($authtype) {
 			break;
 			
 			case "half-admin";
-				if ($type!="normal" && $type!="admin" && $type!="half-admin") {
+				if ($type!="normal" && $type!="admin" && $type!="half-admin")
+				{
 					commonHeader($lang["login"][5],$HTTP_SERVER_VARS[PHP_SELF]);
 											echo "<center><br><br><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br>";
 
@@ -112,7 +124,8 @@ function checkAuthentication($authtype) {
 					
 					
 			case "normal";
-				if ($type!="normal" && $type!="admin") {
+				if ($type!="normal" && $type!="admin")
+				{
 					commonHeader($lang["login"][5],$HTTP_SERVER_VARS[PHP_SELF]);
 											echo "<center><br><br><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br>";
 
@@ -123,23 +136,27 @@ function checkAuthentication($authtype) {
 			break;
 		
 			case "post-only";
-				if ($type!="post-only" && $type!="normal" && $type!="admin") {
+				if ($type!="post-only" && $type!="normal" && $type!="admin")
+				{
 					commonHeader($lang["login"][5],$HTTP_SERVER_VARS[PHP_SELF]);
 											echo "<center><br><br><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br>";
 
 					echo "<b>".$lang["login"][5]."</b></center>";
 					commonFooter();
 					exit();
-				}				
+				}	
 			break;
 		}
 	}
 }
 
-function commonHeader($title,$url) {
+function commonHeader($title,$url)
+{
 	// Print a nice HTML-head for every page
 
-	GLOBAL $cfg_layout,$cfg_install,$lang;
+	GLOBAL $cfg_install,$lang, $cfg_layout;
+	
+	
 	
 	
 $inventory = 	array($lang["Menu"][0]=>"/computers/index.php",
@@ -193,7 +210,6 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	echo "if ((browserName==\"Netscape\" && browserVer>=3) || (browserName==\"Microsoft Internet Explorer\" && browserVer>=4)) version=\"n3\";";
 	echo "else version=\"n2\"; function historyback() { history.back(); } function historyforward() { history.forward(); }";
 	echo "</script>";
-
 	// End of Head
 	echo "</head>\n";
 	
@@ -202,8 +218,8 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 
 	// Main Headline
 			echo "<div id=navigation>";
-echo "<table  cellspacing=0 border=0 width=98%>";
-echo "<tr>";
+	echo "<table  cellspacing=0 border=0 width=98%>";
+	echo "<tr>";
 	
 	// Logo with link to command center
 	echo "<td align=center width=25% >\n";
@@ -284,7 +300,7 @@ echo "</table>\n";
 }
 
 
-function helpHeader($title,$url,$IRMName) {
+function helpHeader($title,$url,$name) {
 	// Print a nice HTML-head for help page
 
 	GLOBAL $cfg_layout,$cfg_install,$lang;
@@ -343,12 +359,12 @@ function helpHeader($title,$url,$IRMName) {
 
 	// Just give him a language selector
 	echo "<td>";
-		showLangSelect($cfg_install["root"]."/preferences/index.php",$IRMName);
+		showLangSelect($cfg_install["root"]."/preferences/index.php",$name);
 	echo "</td>";
 
 	// And he can change his password, thats it
 	echo "<td>";
-		showPasswordForm($cfg_install["root"]."/preferences/index.php",$IRMName);
+		showPasswordForm($cfg_install["root"]."/preferences/index.php",$name);
 	echo "</td>";
 	
 	// On the right side of the navigation bar, we have a clock with
@@ -514,6 +530,7 @@ function showEvents($target,$result,$sort) {
 	// Get results
 	$result = $db->query($query);
 	
+	
 	// Number of results
 	$number = $db->numrows($result);
 
@@ -616,7 +633,7 @@ function dropdownValue($table,$myname,$value) {
 
 	$query = "SELECT * FROM $table ORDER BY name";
 	$result = $db->query($query);
-
+	
 	echo "<SELECT NAME=\"$myname\" SIZE=1>";
 	$i = 0;
 	$number = $db->numrows($result);
@@ -661,15 +678,13 @@ function dropdownUsers($value, $myname) {
 
 function loadLanguage($user) {
 
-	GLOBAL $lang;
-	
+	GLOBAL $lang;	
 	$db = new DB;
 	$query = "SELECT language FROM prefs WHERE (user = '$user')";
 	$result=$db->query($query);
-	
 	$language = $db->result($result,0,"language");
 	$file = "/glpi/dicts/".$language.".php";
-include ("_relpos.php");
+	include ("_relpos.php");
 	include ($phproot . $file);
 }
 
@@ -769,9 +784,9 @@ function listConnectComputers($target,$input) {
 
 	$db = new DB;
 	if ($input["type"] == "name") {
-		$query = "SELECT ID,name,location from computers WHERE (name LIKE '%".$input["comp"]."%')";
+		$query = "SELECT ID,name,location from computers WHERE name LIKE '%".$input["comp"]."%'";
 	} else {
-		$query = "SELECT ID,name,location from computers WHERE ID = ".$input["comp"];
+		$query = "SELECT ID,name,location from computers WHERE ID LIKE '%".$input["comp"]."%'";
 	} 
 	$result = $db->query($query);
 	$number = $db->numrows($result);

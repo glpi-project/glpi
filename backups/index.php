@@ -43,7 +43,7 @@ include ($phproot . "/glpi/includes_setup.php");
 checkauthentication("admin");
 
 
-commonHeader("Setup",$HTTP_SERVER_VARS[PHP_SELF]);
+commonHeader("Setup",$_SERVER[PHP_SELF]);
 
 // traduction du javascript a faire ...
 ?>
@@ -221,7 +221,8 @@ function get_def($dbname, $table) {
      return (stripslashes($def));
 }
 
-function get_content($dbname, $table) {
+function get_content($dbname, $table)
+{
      global $conn;
      $content="";
      $result = mysql_db_query($dbname, "SELECT * FROM $table",$conn);
@@ -244,10 +245,10 @@ else $filetype = "sql";
 
 // #################" DUMP sql#################################
 
-if ($dump!=""){
+if ($_GET["dump"]!=""){
 
 
- $time_file=date("Y-m-d-h-i");
+ 	$time_file=date("Y-m-d-h-i");
 	$cur_time=date("Y-m-d H:i");
 	$newfile="#GLPI Dump database on $cur_time\r\n";
 	$tables = mysql_list_tables($dbname,$conn);
@@ -282,7 +283,7 @@ if ($dump!=""){
 
 // ################################## dump XML #############################
 
-if ($xmlnow!=""){
+if ($_GET["xmlnow"]!=""){
 
 xmlbackup($dbname, $dbhost, $dbuser, $dbpass);
 
@@ -292,23 +293,25 @@ xmlbackup($dbname, $dbhost, $dbuser, $dbpass);
 
 
 
-if ($file!="") {
+if ($_GET["file"]!="") {
+	$file = $_GET["file"];
 	$filename = $file;
 	set_time_limit(180);
 	if ($compression ==1) $file=gzread(gzopen($path.$file, "r"), 10485760);
 	else $file=fread(fopen($path.$file, "r"), 10485760);
 	$query=explode(";#%%\n",$file);
-	for ($i=0;$i < count($query)-1;$i++) {
+	for ($i=0;$i < count($query)-1;$i++)
+	{
 		mysql_db_query($dbname,$query[$i],$conn) or die(mysql_error());
 	}
 	echo "<center>".$filename." ".$lang["backup"][8]."</center>";
 }
 
-if ($delfile!=""){
+if ($_GET["delfile"]!=""){
 
-   $filename=$delfile;
+   $filename=$_GET["delfile"];
 
-   unlink($path.$delfile);
+   unlink($path.$_GET["delfile"]);
 
 
 

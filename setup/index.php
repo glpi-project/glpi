@@ -43,7 +43,7 @@ include ($phproot . "/glpi/includes_setup.php");
 checkauthentication("admin");
 
 
-commonHeader("Setup",$HTTP_SERVER_VARS[PHP_SELF]);
+commonHeader("Setup",$_SERVER[PHP_SELF]);
 
 ?>
 
