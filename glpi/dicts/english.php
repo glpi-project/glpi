@@ -632,6 +632,8 @@ $lang["setup"][213]="At the closing of an intervention";
 $lang["setup"][214]="When he posts a new intervention";
 $lang["setup"][215]="For each followup of his interventions";
 $lang["setup"][216]="At the closing of his interventions";
+$lang["setup"][217]="The mail function is unknown or is not activated on your system";
+$lang["setup"][218]="Impossible to configure the email followups";
 
 
 // Helpdesk
