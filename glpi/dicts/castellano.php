@@ -719,7 +719,7 @@ $lang["setup"][157]="La extensi&oacute;n LDAP de su parser PHP no est&aacute; in
 $lang["setup"][158]="Imposible utilizar LDAP como fuente de conexi&oacute;n externa";
 $lang["setup"][159]="Filtro de conexi&oacute;n";
 
-$lang["setup"][160]=" Si no desea utilizar IMAP/POP como fuente(s) de conexi&oacute;n deje los campos vac&iacute;os. M&aacute;s informaci&oacute;n en <a target=\"_blank\" href=\"http://www.php.net/manual/fr/function.imap-open.php\">php.net</a>.";
+$lang["setup"][160]=" Si no desea utilizar IMAP/POP como fuente(s) de conexi&oacute;n deje los campos vac&iacute;os. M&aacute;s informaci&oacute;n en <a target=&quot;_blank&quot; href=&quot;http://www.php.net/manual/fr/function.imap-open.php&quot;>php.net</a>.";
 $lang["setup"][161]="";
 $lang["setup"][162]="Configuraci&oacute;n IMAP/POP";
 $lang["setup"][163]="Servidor IMAP/POP";
@@ -874,8 +874,8 @@ $lang["stats"][35] = "Servicio(s)";
 // install update
 
 $lang["install"][0]	= "Instalaci&oacute;n o actualizaci&oacute;n de GLPI";
-$lang["install"][1]	= " Elija \"Instalaci&oacute;n\" para una nueva instalaci&oacute;n completa de GLPI ( los datos importados por GLPI ser&aacute;n los datos por defecto)";
-$lang["install"][2]	= "Elija \" Actualizaci&oacute;n\"  para actualizar GLPI a partir de una versi&oacute;n anterior";
+$lang["install"][1]	= " Elija &quot;Instalaci&oacute;n&quot; para una nueva instalaci&oacute;n completa de GLPI ( los datos importados por GLPI ser&aacute;n los datos por defecto)";
+$lang["install"][2]	= "Elija &quot; Actualizaci&oacute;n&quot;  para actualizar GLPI a partir de una versi&oacute;n anterior";
 $lang["install"][3]	= "Instalaci&oacute;n";
 $lang["install"][4]	= "Actualizaci&oacute;n";
 $lang["install"][5]	= "Verificaci&oacute;n de la compatibilidad de su ambiente con la ejecuci&oacute;n de GLPI";
@@ -919,7 +919,7 @@ $lang["install"][42]	= "";
 $lang["install"][43]	= "OK - La base ha sido inicializada";
 $lang["install"][44]	= "Se han ingresado valores por defecto, no dude en suprimirlos";
 $lang["install"][45]	= "No suprima el usuario 'helpdesk' "; 
-$lang["install"][46]	= "Durante la primera conexi&oacute;n puede utilizar el nombre de login \"glpi\" y la clave \"glpi\" para acceder a la aplicaci&oacute;n con derechos de administrador"; 
+$lang["install"][46]	= "Durante la primera conexi&oacute;n puede utilizar el nombre de login &quot;glpi&quot; y la clave &quot;glpi&quot; para acceder a la aplicaci&oacute;n con derechos de administrador"; 
 $lang["install"][47]	= "Imposible escribir el archivo de configuraci&oacute;n de su base de datos";
 $lang["install"][48]	= "Error en la creaci&oacute;n de la base!"; 
 $lang["install"][49]	= "No ha seleccionado base de datos!";
@@ -957,8 +957,8 @@ $lang["update"][92]  ="Usted va a actualizar su base de datos GLPI que tiene por
 $lang["update"][93]  ="La conexi&oacute;n a la base de datos ha sido exitosa";
 $lang["update"][94]  ="La actualizaci&oacute;n ha sido exitosa, su base de datos est&aacute; actualizada";
 $lang["update"][95]  ="La conexi&oacute;n a la base de datos ha fallado, verifique los par&aacute;metros de conexi&oacute;n que figuran en el archivo config_db.php";
-$lang["update"][96]	= "Todos sus usuarios que tuvieran anteriormente los derechos \"admin\" van a recibir los derechos \"super-admin\" con el agregado de este nuevo tipo de usuario";
-$lang["update"][97]	= "La base de datos que usted acaba de actualizar no contiene ning&uacute;n usuario \"super-admin\"";
+$lang["update"][96]	= "Todos sus usuarios que tuvieran anteriormente los derechos &quot;admin&quot; van a recibir los derechos &quot;super-admin&quot; con el agregado de este nuevo tipo de usuario";
+$lang["update"][97]	= "La base de datos que usted acaba de actualizar no contiene ning&uacute;n usuario &quot;super-admin&quot;";
 $lang["update"][98]	= "Debe crear uno necesariamente a fin de poder reconfigurar la aplicaci&oacute;n (especialmente los accesos a los or&iacute;genes de datos externos)";
 $lang["update"][99]	= "Podr&aacute; suprimir este usuario una vez que haya configurado la aplicaci&oacute;n";
 $lang["update"][100]	= "Ingrese nombre de login";
