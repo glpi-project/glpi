@@ -157,6 +157,7 @@ $lang["Menu"][16]	="P&eacute;riphériques";
 $lang["Menu"][17]	="R&eacute;servations";
 $lang["Menu"][18]	="Outils";
 $lang["Menu"][19]	="Base connaissances";
+$lang["Menu"][20]	="Fichiers configuration";
 
 //Donn&eacute;es
 
