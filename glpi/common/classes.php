@@ -755,6 +755,9 @@ class CommonItem{
 			case 5 : 
 				$this->obj= new Peripheral;	
 				break;				
+			case 6 : 
+				$this->obj= new Software;	
+				break;				
 			}
 
 			if ($this->obj!=NULL){
@@ -783,6 +786,9 @@ class CommonItem{
 				break;
 			case 5 : 
 				return $lang["peripherals"][4];
+				break;				
+			case 6 : 
+				return $lang["software"][10];
 				break;				
 			}
 	
@@ -824,6 +830,9 @@ class CommonItem{
 				break;
 			case 5 : 
 				return "<a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
+				break;				
+			case 6 : 
+				return "<a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
 				break;				
 			}
 
