@@ -211,6 +211,20 @@ class Job {
 		$message.="\n\n";
 		return $message;
 	}
+	
+	function deleteInDB ($ID) {
+		if ($ID!=""){
+			$db=new DB;
+			$query1="delete from glpi_followups where tracking = '$ID'";
+			$query2="delete from glpi_tracking where ID = '$ID'";
+			if (!$db->query($query1))
+			 return false;
+			if(!$db->query($query2));
+			 return false;
+			 return true;
+			}
+			 return false;		
+	}
 }
 
 

@@ -130,7 +130,6 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 		$where = "(status = 'new')";
 	}
 
-
 	// Build query, two completely different things here, need to be fixed
 	// and made into a more featured query-parser
 
@@ -159,6 +158,16 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 	$db = new DB;
 	$result = $db->query($query);
 	$numrows = $db->numrows($result);
+
+	// Form to delete old item
+	if ($show=="old"&&$_SESSION["glpitype"]=="admin"){
+		echo "<form method='post' action=\"$target\">";
+		echo "<input type='hidden' name='show' value='$show'>";
+		echo "<input type='hidden' name='contains' value='$contains'>";
+		echo "<input type='hidden' name='item' value='$item'>";
+		echo "<input type='hidden' name='start' value='$start'>";
+		}
+
 	
 	$query .= $lim_query;
 	$result = $db->query($query);
@@ -188,6 +197,16 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 		// Pager
 		if(empty($sort)) $sort = "";
 		$parameters="show=".$show."&contains=".$contains."&sort=".$sort."&ID=".$username;
+		// Delete selected item
+		if ($show == "old"){
+			echo "<div align='left'><a href='".$_SERVER["PHP_SELF"]."?$parameters&select=all'>".$lang["buttons"][18]."</a>";
+			echo "&nbsp;/&nbsp;";
+			echo "<a href='".$_SERVER["PHP_SELF"]."?$parameters&select=none'>".$lang["buttons"][19]."</a>";
+			echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<input type='submit' value=\"".$lang["buttons"][17]."\" name='delete' class='submit'>";
+			echo "</div>";
+		}
+		
 		printPager($start,$numrows,$target,$parameters);
 	}
 	else
@@ -207,6 +226,9 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 		echo "</table>";
 		echo "</div><br>";
 	}
+	// End form for delete item
+	if ($show=="old"&&$_SESSION["glpitype"]=="admin")
+	echo "</form>";
 }
 
 function showOldJobListForItem($username,$item) {
@@ -356,7 +378,13 @@ function showJobShort($ID, $followups	) {
 		else
 		{
  			echo "<tr class='tab_bg_1'>";
-			echo "<td align='center'><b>".$lang["joblist"][10]."</b></td>";
+			echo "<td align='center'><b>".$lang["joblist"][10]."</b>";
+			if ($_SESSION["glpitype"]=="admin"){
+				$sel="";
+				if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
+			echo "<br><input type='checkbox' name='todel[".$job->ID."]' value='1' $sel>";
+			}
+			echo "</td>";
 			echo "<td width='130'><small>".$lang["joblist"][11].":<br>&nbsp;$job->date<br>";
 			echo "<i>".$lang["joblist"][12].":<br>&nbsp;$job->closedate</i>";
 			if ($job->realtime>0) echo "<br>".$lang["job"][20].": <br>".getRealtime($job->realtime);

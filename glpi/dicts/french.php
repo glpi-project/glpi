@@ -63,6 +63,9 @@ $lang["buttons"][13]	= "Retour";
 $lang["buttons"][14]	= "Modifier";
 $lang["buttons"][15]    = "Calendrier";
 $lang["buttons"][16] ="Raz";
+$lang["buttons"][17] ="Supprimer";
+$lang["buttons"][18] ="Sélectionner tout";
+$lang["buttons"][19] ="Désélectionner tout";
 
 $lang["choice"][0]	= "Oui";
 $lang["choice"][1]	= "Non";

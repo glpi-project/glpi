@@ -51,38 +51,46 @@ commonHeader("Tracking",$_SERVER["PHP_SELF"]);
         echo "</b></td></tr></table></div>";
 
 
+if(isset($_GET)) $tab = $_GET;
+if(empty($tab) && isset($_POST)) $tab = $_POST;
+
+if(empty($tab["start"])) $tab["start"] = 0;
+
+if (isset($tab["delete"])&&!empty($tab["todel"])){
+	$j=new Job;
+	foreach ($tab["todel"] as $key => $val){
+		if ($val==1) $j->deleteInDB($key);
+		}
+	}
 
 
-if(empty($_GET["start"])) $_GET["start"] = 0;
-
-
-if (isset($_GET["show"]))
+if (isset($tab["show"]))
 {
-	if(isset($_GET["contains"]))
+	if(isset($tab["contains"]))
 	{
-		searchFormTracking($_GET["show"],$_GET["contains"]);
-		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["show"],$_GET["contains"],"",$_GET["start"]);
+		searchFormTracking($tab["show"],$tab["contains"]);
+		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$tab["show"],$tab["contains"],"",$tab["start"]);
 		
 	}
 	else
 	{
-		searchFormTracking($_GET["show"],"");
-		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["show"],"","",$_GET["start"]);
+		searchFormTracking($tab["show"],"");
+		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$tab["show"],"","",$tab["start"]);
 		
 	}
 }
 else
 {
-	if(isset($_GET["contains"]))
+	if(isset($tab["contains"]))
 	{
-		searchFormTracking("",$_GET["contains"]);
-		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"",$_GET["contains"],"",$_GET["start"]);
+		searchFormTracking("",$tab["contains"]);
+		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"",$tab["contains"],"",$tab["start"]);
 		
 	}
 	else
 	{
 		searchFormTracking("","");
-		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"","","",$_GET["start"]);
+		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"","","",$tab["start"]);
 		
 	}
 }
