@@ -4,44 +4,42 @@
   {  
     padding :0;
 	margin :0;
-	font-family : Verdana,Arial,Helvetica,sans-serif;
-	font-size : 12px;
+	font-size : 13px;
  	background-color : #FFFFFF;
 	color : #000000;
-	
+	font-family: verdana;
+  }
+  
+  img {
+  border: 0;
+ 
   }
    
   small 
   {  
     font-family: verdana;
-    font-size: 10pt;
+	font-size: 10px;
 	text-decoration: underline;
   }
 
   th   
   {  
-    font-family: verdana;
-    font-size: 11pt; 
+    font-size: 13px;
     font-weight: bold;
     background-color: #D2F2D5;
   }
 
   td
   {
-    font-family: verdana;
-    font-size: 10pt;
   }
 
   b
   {
-    font-family: verdana;
     font-wheight: bold;
   }
  
   form
   {
-    font-family: verdana;
-    font-size: 9pt;
   }
 
   A:link
@@ -74,14 +72,16 @@
 	
 	}
 #navigation a{
-	font-family: "Trebuchet MS", Georgia, "Times New Roman", Times, serif;
+		font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
+
 	color : #000000;
 	background-color: transparent;
 	text-decoration: none;
 }
 
 #navigation a:hover{
-	font-family: "Trebuchet MS", Georgia, "Times New Roman", Times, serif;
+		font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
+
 	color : #FFFFFF;
 	text-decoration: none;
 	border: none;

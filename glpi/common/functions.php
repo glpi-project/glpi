@@ -225,7 +225,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	
 	// Logo with link to command center
 	echo "<td align='center' width=25% >\n";
-	echo "<a href=\"".$cfg_install["root"]."/central.php\"><IMG src=\"".$cfg_layout["logogfx"]."\" border='0' alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>\n";
+	echo "<a href=\"".$cfg_install["root"]."/central.php\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\" border='0' alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>\n";
 	echo "</td>";
 
 	echo "<td valign=middle>";
@@ -239,29 +239,29 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	// Get object-variables and build the navigation-elements
 	echo "<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr>";
 	if ($navigation->inventory) {
-		echo "<td align='center' valign=top><small>";
+		echo "<td align='center' valign=top>";
 		echo "<img src=\"".$cfg_install["root"]."/pics/inventaire.png\" alt=\"\"><br>";
-		echo "-&nbsp;".$lang["setup"][10]."&nbsp;-</small><br>";
+		echo "<small>-&nbsp;".$lang["setup"][10]."&nbsp;-</small><br>";
 		foreach ($inventory as $key => $val) {
 			echo "<a href=\"".$cfg_install["root"].$val."\">".$key."</a><br>";
 		}	
 		echo "</td>";
 	}
 	 if ($navigation->maintain) {
-		echo "<td align='center' valign=top><small>";
+		echo "<td align='center' valign=top>";
 				echo "<img src=\"".$cfg_install["root"]."/pics/maintenance.png\" alt=\"\"><br>";
 
-		echo "-&nbsp;".$lang["setup"][55]."&nbsp;-</small><br>";
+		echo "<small>-&nbsp;".$lang["setup"][55]."&nbsp;-</small><br>";
 		foreach ($maintain as $key => $val) {
 			echo "<a href=\"".$cfg_install["root"].$val."\">".$key."</a><br>";
 		}
 		echo "</td>";
 	}
 	 if ($navigation->admin) {
-		echo "<td align='center' valign=top><small>";
+		echo "<td align='center' valign=top>";
 		echo "<img src=\"".$cfg_install["root"]."/pics/ldap.png\" alt=\"\"><br>";
 
-		echo "-&nbsp;".$lang["ldap"][7]."-</small><br>";
+		echo "<small>-&nbsp;".$lang["ldap"][7]."-</small><br>";
 
 		foreach ($LDAP as $key => $val) {
 			echo "<a href=\"".$cfg_install["root"].$val."\">".$key."</a><br>";
@@ -269,10 +269,10 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 		echo "</td>";
 	}	
 	if ($navigation->settings) {
-		echo "<td align='center' valign=top><small>";
+		echo "<td align='center' valign=top>";
 				echo "<img src=\"".$cfg_install["root"]."/pics/config.png\" alt=\"\"><br>";
 
-		echo "-&nbsp;".$lang["setup"][56]."&nbsp;-</small><br>";
+		echo "<small>-&nbsp;".$lang["setup"][56]."&nbsp;-</small><br>";
 		foreach ($config as $key => $val) {
 			echo "<a href=\"".$cfg_install["root"].$val."\">".$key."</a><br>";
 		}	
@@ -350,7 +350,7 @@ function helpHeader($title,$url,$name) {
 	
 	// Logo with link to command center
 	echo "<td align='center' width=25%>\n";
-	echo "<a href=\"".$cfg_install["root"]."/central.php\"><IMG src=\"".$cfg_layout["logogfx"]."\" border='0' alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" vspace=10></a>\n";
+	echo "<a href=\"".$cfg_install["root"]."/central.php\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" ></a>";
 	echo "</td>";
 
 	echo "<td valign=middle>";
@@ -367,10 +367,10 @@ function helpHeader($title,$url,$name) {
 		showPasswordForm($cfg_install["root"]."/preferences/index.php",$name);
 	echo "</td>";
 	// We tracking or post a new one
-	echo "<td><b>";
-        echo "<a href=\"".$cfg_install["root"]."/helpdesk.php\">".$lang["job"][13]."</a><br><br>";
-        echo "<a href=\"".$cfg_install["root"]."/helpdesk.php?show=user\">".$lang["tracking"][0]."</a>";
-	echo "</b></td>";
+	echo "<td>";
+        echo "<a href=\"".$cfg_install["root"]."/helpdesk.php\"><img src=\"".$cfg_install["root"]."/pics/ajoutinterv.png\" alt=\"".$lang["job"][13]."\" title=\"".$lang["job"][13]."\"></a><br><br>";
+        echo "<a href=\"".$cfg_install["root"]."/helpdesk.php?show=user\"><img src=\"".$cfg_install["root"]."/pics/suivi.png\" alt=\"".$lang["tracking"][0]."\" title=\"".$lang["tracking"][0]."\"></a>";
+	echo "</td>";
 	// On the right side of the navigation bar, we have a clock with
 	// date and a logout-link.
 	echo "<td align='right' width=100><b><div align='right'>";
@@ -440,7 +440,7 @@ function nullHeader($title,$url) {
 	
 	// Logo with link to command center
 	echo "<td align='center' width=25%>\n";
-	echo "<a href=\"".$cfg_install["root"]."/central.php\"><IMG src=\"".$cfg_layout["logogfx"]."\" border='0' alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" vspace=10></a>\n";
+	echo "<a href=\"".$cfg_install["root"]."/central.php\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\" border='0' alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" vspace=10></a>\n";
 	echo "</td>";
 
 	echo "<td valign=middle>";
@@ -856,7 +856,7 @@ function printHelpDesk ($name) {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td>".$lang["help"][12]." <a href=\"#\" onClick=\"window.open('".$cfg_install["root"]."/find_num.php','Help','scrollbars=1,resizable=1,width=400,height=400')\"><img src=\"".$cfg_install["root"]."/pics/aide.png\" border='0' alt=\"help\"></a></td>";
+	echo "<td>".$lang["help"][12]." <a href=\"\" onClick=\"window.open('".$cfg_install["root"]."/find_num.php','Help','scrollbars=1,resizable=1,width=400,height=400')\"><img src=\"".$cfg_install["root"]."/pics/aide.png\" border='0' alt=\"help\"></a></td>";
 	echo "<td><input name=computer size=10>";
 	echo "</td>";
 	echo "</tr>";
@@ -961,7 +961,7 @@ switch($item_type)
 		
 		
 		echo " <b></strong>".$lang["reports"][5]."</strong></b>";
-		echo "<table width='100%' height='60' border='0'bordercolor='black'>";
+		echo "<table width='100%' height='60' border='0' bordercolor='black'>";
 		echo "<tr>";
 		echo "<th><div align='center'><b>".$lang["computers"][7]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["computers"][16]."</b></div></th>";

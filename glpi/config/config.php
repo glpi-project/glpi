@@ -223,7 +223,7 @@ $cfg_install["version"]		=" 0.3 Alpha ";
 $cfg_install["languages"]	= array("english","deutsch","french");
 
 //logo
-$cfg_layout["logogfx"]		= "glpi/pics/logo-glpi.png";
+//$cfg_layout["logogfx"]		= "glpi/pics/logo-glpi.png";
 //txt du logo
 $cfg_layout["logotxt"]		= "GLPI powered by indepnet";
 

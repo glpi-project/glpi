@@ -34,6 +34,16 @@ This file is part of GLPI.
 <html>
 <head>
  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+<?php
+// Include CSS
+	echo "<style type=\"text/css\">\n";
+				include ("_relpos.php");
+
+		include ($phproot . "/glpi/config/styles.css");
+	echo "</style>\n";
+?>
+
 </head>
 
 <body>
@@ -44,14 +54,14 @@ window.close();}
 </script>
 
 <div align="center">
-  <p><font size="+1"><strong>Rechercher votre numéro de machine </strong></font></p>
+  <p><strong>Rechercher votre numéro de machine </strong></p>
   <form name="form1" method="post" action="find_num.php">
-    <table cellspacing=1 width="100%" border="0">
+    <table cellspacing="1" width="100%" border="0">
       <tr> 
-        <td align='center' bgcolor="#CCCCCC" width="100%" height="29">Saisissez votre nom ou les 
-          premières lettres de votre nom </td>
-        </tr><tr><td bgcolor="#CCCCCC" align='center' width="100%"> 
-		<input name="NomContact" type="text" id="NomContact" value="<?php echo $NomContact ; ?>"> 
+        <th align='center'  width="100%" height="29">Saisissez votre nom ou les
+          premières lettres de votre nom </th>
+        </tr><tr><td class='tab_bg_1' align='center' width="100%"> 
+		<input name="NomContact" type="text" id="NomContact" >
            <input type="submit" name="Submit" value="Rechercher">
  </td>
       </tr>
@@ -66,7 +76,7 @@ if(isset($_POST["Submit"]))
 	include ("_relpos.php");
 	include ($phproot . "/glpi/includes.php");
 	echo "<table width='100%' border='0'>";
-	echo " <tr bgcolor=#D2F2D5>";
+	echo " <tr class='tab_bg3'>";
 	echo " <td align='center' width='70%'><b>Nom du contact </b></td>";
 	echo " <td align='center' width='30%'><b>N° machine </b></td>";
 	echo " </tr>";
@@ -80,7 +90,7 @@ if(isset($_POST["Submit"]))
 		$Comp_num = $ligne['ID'];
 		$Contact = $ligne['contact'];
 		echo "<table width='100%' border='0'>";
-		echo " <tr bgcolor=#cccccc onClick=\"fillidfield(".$Comp_num.")\">";
+		echo " <tr class='tab_bg_1' onClick=\"fillidfield(".$Comp_num.")\">";
 		echo "<td width='70%'><b> $Contact </b></td>";
 		echo "<td align='center' width='30%'";
 		echo "<b> $Comp_num </b></td>";
