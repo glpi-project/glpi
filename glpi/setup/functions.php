@@ -46,10 +46,16 @@ function showFormDropdown ($target,$name,$human) {
 	echo "<tr><td align='center' class='tab_bg_1'>";
 
 	dropdown("glpi_dropdown_".$name, "value");
-
+        // on ajoute un input text pour entrer la valeur modifier
+        echo"::>>";
+        echo "<input type='text' maxlength='100' size='20' name='newvalue'>";
+        //
 	echo "</td><td align='center' class='tab_bg_2'>";
 	echo "<input type='hidden' name='tablename' value=dropdown_".$name.">";
-	echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+	//  on ajoute un bouton modifier
+        echo "<input type='submit' name='modifier' value='modifier' class='submit'>";
+        //
+        echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 	echo "</td></form></tr>";
 	echo "<form action=\"$target\" method='post'>";
 	echo "<tr><td align='center' class='tab_bg_1'>";

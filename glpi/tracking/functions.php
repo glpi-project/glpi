@@ -679,61 +679,64 @@ function addFormTracking ($ID,$author,$assign,$target,$error,$searchauthor='') {
 	if (!empty($error)) {
 		echo "<div align='center'><b>$error</b></div>";
 	}
-	echo "<form method=get action=$target>";
+	echo "<form method='get' action='$target'>";
 	echo "<div align='center'><table border='0'>";
-	echo "<tr><th colspan='2'>".$lang["job"][13].":</th></tr>";
+	echo "<tr><th colspan='4'>".$lang["job"][13].":</th></tr>";
 
-	echo "<tr class='tab_bg_2'><td>".$lang["joblist"][1].":</td>";
-	echo "<td align='center'>".date("Y-m-d H:i:s")."</td></tr>";
+	echo "<tr class='tab_bg_1' align='center'><td>".$lang["joblist"][1].":</td>";
+	echo "<td align='center' colspan='3'>".date("Y-m-d H:i:s")."</td></tr>";
 
-	echo "<tr><td class='tab_bg_2'>".$lang["joblist"][0].":</td>";
-	echo "<td align='center' class='tab_bg_1'><select name=status>";
-	echo "<option value=new selected>".$lang["job"][14]."</option>";
-	echo "<option value=old>".$lang["job"][15]."</option>";
+	echo "<tr><td class='tab_bg_2' align='center'>".$lang["joblist"][0].":</td>";
+	echo "<td align='center' class='tab_bg_2' colspan='3'><select name='status'>";
+	echo "<option value='new selected'>".$lang["job"][14]."</option>";
+	echo "<option value='old'>".$lang["job"][15]."</option>";
 	echo "</select></td></tr>";
 
-	echo "<tr><td class='tab_bg_2'>".$lang["joblist"][2].":</td>";
-	echo "<td align='center' class='tab_bg_1'><select name=priority>";
-	echo "<option value=5>".$lang["joblist"][17]."</option>";
-	echo "<option value=4>".$lang["joblist"][18]."</option>";
-	echo "<option value=3 selected>".$lang["joblist"][19]."</option>";
-	echo "<option value=2>".$lang["joblist"][20]."</option>";
-	echo "<option value=1>".$lang["joblist"][21]."</option>";
+	echo "<tr><td class='tab_bg_2' align='center'>".$lang["joblist"][2].":</td>";
+	echo "<td align='center' class='tab_bg_2' colspan='3'><select name='priority'>";
+	echo "<option value='5'>".$lang["joblist"][17]."</option>";
+	echo "<option value='4'>".$lang["joblist"][18]."</option>";
+	echo "<option value='3' selected>".$lang["joblist"][19]."</option>";
+	echo "<option value='2'>".$lang["joblist"][20]."</option>";
+	echo "<option value='1'>".$lang["joblist"][21]."</option>";
 	echo "</select></td></tr>";
 
-	echo "<tr class='tab_bg_2'><td>".$lang["joblist"][3].":</td>";
+	echo "<tr class='tab_bg_2' align='center'><td>".$lang["joblist"][3].":</td>";
 	
 	echo "<td align='center'>";
 	dropdownValueSearch("glpi_users","user",$author,$searchauthor);
-	echo "<input type=text size=10  name='search'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";	
+	echo "</td>";
+        echo "<td><input type='text' size='10'  name='search'></td>";
+	echo "<td><input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
 	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td>".$lang["joblist"][15].":</td>";
 	
-	echo "<td align='center'>";
+
+	echo "<tr class='tab_bg_2' align='center'><td>".$lang["joblist"][15].":</td>";
+	
+	echo "<td align='center' colspan='3'>";
 	dropdownUsers($assign,"assign");
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td>".$lang["joblist"][5].":</td>";
-	echo "<td align='center'>";
+	echo "<tr class='tab_bg_1' align='center'><td>".$lang["joblist"][5].":</td>";
+	echo "<td align='center' colspan='3'>";
 	$db=new DB;
 	$query = "SELECT name FROM glpi_computers WHERE (ID = $ID)";
 	$result = $db->query($query);
 	$computername = $db->result($result, 0, "name");
 	echo "$computername ($ID)"; 
-	echo "<input type='hidden' name=ID value=\"$ID\">";
+	echo "<input type='hidden' name='ID' value=\"$ID\">";
 	echo "</td></tr>";
 
-	echo "<tr><td colspan='2' height=5></td></tr>";
-	echo "<tr><th colspan='2'>".$lang["job"][11].":</th></tr>";
+	echo "<tr><td colspan='4' height='5'></td></tr>";
+	echo "<tr><th colspan='4' align='center'>".$lang["job"][11].":</th></tr>";
 
-	echo "<tr><td colspan='2'><textarea cols='50' rows='14'  name='contents'></textarea></td></tr>";
+	echo "<tr><td colspan='4'><textarea cols='50' rows='14'  name='contents'></textarea></td></tr>";
 
-	echo "<tr class='tab_bg_1'><td colspan='2' align='center'>";
+	echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][2]."\" class='submit'>";
 	echo "</td></tr>";
 	
-	echo "</table></div>";
+	echo "</table></div></form>";
 
 }
 
