@@ -48,8 +48,14 @@ helpHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 
 if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 {
+	include ($phproot . "/glpi/includes_computers.php");
+	include ($phproot . "/glpi/includes_printers.php");
+	include ($phproot . "/glpi/includes_peripherals.php");
+	include ($phproot . "/glpi/includes_monitors.php");
+	include ($phproot . "/glpi/includes_networking.php");
+
 	if (!isset($_GET["ID"])) {
-		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["show"],"","",0);
+		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["show"],"","","",0);
 	}
 	else {
 		 showJobDetails($_GET["ID"]);
