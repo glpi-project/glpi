@@ -162,7 +162,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=name&order=ASC&start=$start\">";
-			echo $lang["computers"][7]."</th>";
+			echo $lang["computers"][7]."</a></th>";
 		
 			// Type
 			echo "<th>";
@@ -178,7 +178,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=os&order=ASC&start=$start\">";
-			echo $lang["computers"][9]."</th>";
+			echo $lang["computers"][9]."</a></th>";
 
 			// Location			
 			echo "<th>";
@@ -186,7 +186,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=location&order=ASC&start=$start\">";
-			echo $lang["computers"][10]."</th>";
+			echo $lang["computers"][10]."</a></th>";
 
 			// Last modified		
 			echo "<th>";
@@ -194,7 +194,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=date_mod&order=DESC&start=$start\">";
-			echo $lang["computers"][11]."</th>";
+			echo $lang["computers"][11]."</a></th>";
 
 			// Contact person
 			echo "<th>";
@@ -202,7 +202,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=contact&order=ASC&start=$start\">";
-			echo $lang["computers"][16]."</th>";
+			echo $lang["computers"][16]."</a></th>";
 
 			echo "</tr>";
 
@@ -214,7 +214,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "<td><b>";
 				echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID\">";
 				echo $comp->fields["name"]." (".$comp->fields["ID"].")";
-				echo "</b></a></td>";
+				echo "</a></b></td>";
 				echo "<td>".$comp->fields["type"]."</td>";
 				echo "<td>".$comp->fields["os"]."</td>";
 				echo "<td>".$comp->fields["location"]."</td>";
