@@ -224,7 +224,7 @@ function get_content($db, $table,$from,$limit)
      	if (get_magic_quotes_runtime()) $row=addslashes_deep($row);
          $insert = "INSERT INTO $table VALUES (";
          for($j=0; $j<$db->num_fields($result);$j++) {
-            if(!isset($row[$j])) $insert .= "NULL,";
+            if(is_null($row[$j])) $insert .= "NULL,";
             else if($row[$j] != "") $insert .= "'".addslashes($row[$j])."',";
             else $insert .= "'',";
          }

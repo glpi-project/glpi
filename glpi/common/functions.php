@@ -120,7 +120,7 @@ function searchUserbyType($authtype) {
 //echo "strip";
        $value = is_array($value) ?
                    array_map('stripslashes_deep', $value) :
-                   stripslashes($value);
+                   (is_null($value) ? NULL : stripslashes($value));
                    
        return $value;
    }
@@ -129,7 +129,7 @@ function searchUserbyType($authtype) {
 //echo "add";
        $value = is_array($value) ?
                    array_map('addslashes_deep', $value) :
-                   addslashes($value);
+                   (is_null($value) ? NULL : addslashes($value));
        return $value;
    }
 
@@ -138,7 +138,7 @@ function searchUserbyType($authtype) {
 //echo "add";
        $value = is_array($value) ?
                    array_map('htmlentities_deep', $value) :
-                   htmlentities($value,ENT_QUOTES);
+                   (is_null($value) ? NULL : htmlentities($value,ENT_QUOTES));
        return $value;
    }
 	// Nécessaire pour PHP < 4.3
@@ -152,7 +152,7 @@ function searchUserbyType($authtype) {
    {
        $value = is_array($value) ?
                    array_map('unhtmlentities_deep', $value) :
-                   unhtmlentities($value,ENT_QUOTES);
+                   (is_null($value) ? NULL : unhtmlentities($value,ENT_QUOTES));
        return $value;
    }
     

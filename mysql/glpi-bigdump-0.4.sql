@@ -1,4 +1,4 @@
-#GLPI Dump database on 2004-09-14 19:50
+#GLPI Dump database on 2004-09-20 20:29
 ### Dump table glpi_computers
 
 DROP TABLE IF EXISTS glpi_computers;
@@ -2095,6 +2095,7 @@ INSERT INTO glpi_event_log VALUES ('13756','-1','system','2004-09-14 19:49:56','
 INSERT INTO glpi_event_log VALUES ('13757','-1','system','2004-09-14 19:50:05','login','1','failed login: helpdesk');
 INSERT INTO glpi_event_log VALUES ('13758','-1','system','2004-09-14 19:50:11','login','1','failed login: ');
 INSERT INTO glpi_event_log VALUES ('13759','-1','system','2004-09-14 19:50:27','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('13760','-1','system','2004-09-20 20:29:03','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
