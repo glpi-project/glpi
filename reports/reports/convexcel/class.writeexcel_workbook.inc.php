@@ -66,7 +66,7 @@ function writeexcel_workbook($filename) {
 
     $this->_filename          = $filename;
     $this->_parser            = $parser;
-//?    $this->_tempdir           = undef;
+    $this->_tempdir           = "tmp/";
     $this->_1904              = 0;
     $this->_activesheet       = 0;
     $this->_firstsheet        = 0;
@@ -480,7 +480,7 @@ function _store_workbook() {
 #
 function _store_OLE_file() {
 ## ABR
-    if ($this->_tmpfilename != '') {
+    if (!empty($this->_tmpfilename)) {
         $OLE  = new writeexcel_olewriter('/tmp/'.$this->_tmpfilename);
         $OLE->_OLEtmpfilename = '/tmp/'.$this->_tmpfilename;
     } else {
@@ -640,7 +640,7 @@ function _store_all_xfs() {
     # The default font index is 0
     #
     $format = $this->_tmp_format;
-    $xf;
+    //$xf;
 
     for ($c=0;$c<15;$c++) {
         $xf = $format->get_xf('style'); # Style XF
@@ -1094,6 +1094,7 @@ function _store_palette() {
     //$data;                                      # The RGB data
 
     # Pack the RGB data
+    $data = "";
     foreach($aref as $dat) {
         $data .= call_user_func_array('pack', array_merge(array("CCCC"), $dat));
     }

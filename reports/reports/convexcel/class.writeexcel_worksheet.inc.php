@@ -312,7 +312,7 @@ function get_data() {
             fseek($fh, 0, SEEK_SET);
         }
 
-        if ($this->_debug) {
+        if (!empty($this->_debug)) {
             print "*** worksheet::get_data() called (1):";
             for ($c=0;$c<strlen($tmp);$c++) {
                 if ($c%16==0) {
@@ -330,7 +330,7 @@ function get_data() {
     if ($this->_using_tmpfile) {
         if ($tmp=fread($this->_filehandle, $buffer)) {
 
-            if ($this->_debug) {
+            if (!empty($this->_debug)) {
                 print "*** worksheet::get_data() called (2):";
                 for ($c=0;$c<strlen($tmp);$c++) {
                     if ($c%16==0) {
@@ -414,8 +414,17 @@ function set_column() {
         return;
     }
 
-    $width  = $_[4] ? 0 : $_[2]; # Set width to zero if column is hidden
-    $format = $_[3];
+    if(empty($_[4])) {
+    	$width = 0;
+    }
+    else {
+    	$width = $_[2];
+    }
+    //$width  = $_[4] ? 0 : $_[2]; # Set width to zero if column is hidden
+    $format = "";
+    if(!empty($_[3])) {
+	$format = $_[3];	
+    }
 
     list($firstcol, $lastcol) = $_;
 
@@ -767,37 +776,45 @@ function write() {
 
     # Match an array ref.
     if (is_array($token)) {
-        return call_user_method_array('write_row', $this, $_);
+        //return call_user_method_array('write_row', $this, $_);
+	return call_user_func_array(array(&$this,'write_row'),$_);
     }
 
     # Match number
     if (preg_match('/^([+-]?)(?=\d|\.\d)\d*(\.\d*)?([Ee]([+-]?\d+))?$/', $token)) {
-        return call_user_method_array('write_number', $this, $_);
+        //return call_user_method_array('write_number', $this, $_);
+	return call_user_func_array(array(&$this,'write_number'),$_);
     }
     # Match http, https or ftp URL
     elseif (preg_match('|^[fh]tt?ps?://|', $token)) {
-        return call_user_method_array('write_url', $this, $_);
+        //return call_user_method_array('write_url', $this, $_);
+	return call_user_func_array(array(&$this,'write_url'),$_);
     }
     # Match mailto:
     elseif (preg_match('/^mailto:/', $token)) {
-        return call_user_method_array('write_url', $this, $_);
+        //return call_user_method_array('write_url', $this, $_);
+	return call_user_func_array(array(&$this,'write_url'),$_);
     }
     # Match internal or external sheet link
     elseif (preg_match('[^(?:in|ex)ternal:]', $token)) {
-        return call_user_method_array('write_url', $this, $_);
+        //return call_user_method_array('write_url', $this, $_);
+	return call_user_func_array(array(&$this,'write_url'),$_);
     }
     # Match formula
     elseif (preg_match('/^=/', $token)) {
-        return call_user_method_array('write_formula', $this, $_);
+        //return call_user_method_array('write_formula', $this, $_);
+	return call_user_func_array(array(&$this,'write_formula'),$_);
     }
     # Match blank
     elseif ($token == '') {
         array_splice($_, 2, 1); # remove the empty string from the parameter list
-        return call_user_method_array('write_blank', $this, $_);
+        //return call_user_method_array('write_blank', $this, $_);
+	return call_user_func_array(array(&$this,'write_blank'),$_);
     }
     # Default: match string
     else {
-        return call_user_method_array('write_string', $this, $_);
+        //return call_user_method_array('write_string', $this, $_);
+	return call_user_func_array(array(&$this,'write_string'),$_);
     }
 }
 
@@ -932,9 +949,9 @@ function _append($data) {
                       "called with more than one argument", E_USER_ERROR);
     }
 
-    if ($this->_using_tmpfile) {
+    if (!empty($this->_using_tmpfile)) {
 
-        if ($this->_debug) {
+        if (!empty($this->_debug)) {
             print "worksheet::_append() called:";
             for ($c=0;$c<strlen($data);$c++) {
                 if ($c%16==0) {
@@ -1130,6 +1147,8 @@ function write_number() {
     $col     = $_[1];                         # Zero indexed column
     $num     = $_[2];
 //!!!
+    if(empty($_[3])) $_[3] = "";
+    
     $xf      = $this->_XF($row, $col, $_[3]); # The cell format
 
     # Check that row and col are valid and store max and min values
@@ -1179,7 +1198,6 @@ function write_string() {
     if (sizeof($_) < 3) {
         return -1;
     }
-
     $record  = 0x0204;                        # Record identifier
     $length  = 0x0008 + strlen($_[2]);        # Bytes to follow
 
@@ -1187,6 +1205,7 @@ function write_string() {
     $col     = $_[1];                         # Zero indexed column
     $strlen  = strlen($_[2]);
     $str     = $_[2];
+    if (empty($_[3])) $_[3] = "";
     $xf      = $this->_XF($row, $col, $_[3]); # The cell format
 
     $str_error = 0;
@@ -1953,12 +1972,14 @@ function _store_colinfo($_) {
     $coldx       *= 256;            # Convert to units of 1/256 of a char
 
     //$ixfe;                       # XF index
-    $grbit    = $_[4] || 0;      # Option flags
+    if(empty($_[4])) $grbit = 0;
+    else $grbit    = $_[4];      # Option flags
     $reserved = 0x00;            # Reserved
+    if(empty($_[3])) $_[3]= "";
     $format   = $_[3];           # Format object
 
     # Check for a format object
-    if (isset($_[3])) {
+    if (!empty($_[3])) {
         $ixfe = $format->get_xf_index();
     } else {
         $ixfe = 0x0F;
@@ -1989,8 +2010,12 @@ function _store_selection($_) {
 
     $rwFirst  = $_[0];                   # First row in reference
     $colFirst = $_[1];                   # First col in reference
-    $rwLast   = $_[2] ? $_[2] : $rwFirst;       # Last  row in reference
-    $colLast  = $_[3] ? $_[3] : $colFirst;      # Last  col in reference
+    if(!empty($_[2])) $rwLast = $_[2];
+    else $rwLast = $rwFirst;
+    if(!empty($_[3])) $colFirst = $_[3];
+    else $colLast = $colFirst;
+    ///$rwLast   = $_[2] ? $_[2] : $rwFirst;       # Last  row in reference
+    ///$colLast  = $_[3] ? $_[3] : $colFirst;      # Last  col in reference
 
     # Swap last row/col for first row/col as necessary
     if ($rwFirst > $rwLast) {

@@ -99,21 +99,22 @@ $border2->set_merge(); # This is the key feature
 */
 
 # Only one cell should contain text, the others should be blank.
-$worksheet->write(0, 0, $lang["monitors"][42], $border1);
-$worksheet->write(0, 1, $lang["monitors"][0], $border1);
-$worksheet->write(0, 2, $lang["monitors"][2],   $border1);
-$worksheet->write(0, 3, $lang["monitors"][5],  $border1);
-$worksheet->write(0, 4, $lang["monitors"][1],  $border1);
-$worksheet->write(0, 5, $lang["monitors"][6], $border1);
+$worksheet->write(0, 0, $lang["monitors"][27], $border1);
+$worksheet->write(0, 1, $lang["monitors"][5], $border1);
+$worksheet->write(0, 2, $lang["monitors"][16],   $border1);
+$worksheet->write(0, 3, $lang["monitors"][9],  $border1);
+$worksheet->write(0, 4, $lang["monitors"][13],  $border1);
+$worksheet->write(0, 5, $lang["monitors"][8], $border1);
 $worksheet->write(0, 6, $lang["monitors"][7], $border1);
-$worksheet->write(0, 7, $lang["monitors"][3], $border1);
-$worksheet->write(0, 8, $lang["monitors"][4], $border1);
-$worksheet->write(0, 9, $lang["monitors"][9], $border1);
-$worksheet->write(0, 10, $lang["monitors"][8], $border1);
-$worksheet->write(0, 11, $lang["monitors"][39], $border1);
-$worksheet->write(0, 12, $lang["monitors"][40], $border1);
-$worksheet->write(0, 13, $lang["monitors"][41], $border1);
-
+$worksheet->write(0, 7, $lang["monitors"][12], $border1);
+$worksheet->write(0, 8, $lang["monitors"][10], $border1);
+$worksheet->write(0, 9, $lang["monitors"][11], $border1);
+$worksheet->write(0, 10, $lang["monitors"][15], $border1);
+$worksheet->write(0, 11, $lang["monitors"][19], $border1);
+$worksheet->write(0, 12, $lang["monitors"][20], $border1);
+$worksheet->write(0, 13, $lang["monitors"][24], $border1);
+$worksheet->write(0, 14, $lang["monitors"][25], $border1);
+$worksheet->write(0, 15, $lang["monitors"][26], $border1);
 $y=1;
 while($ligne = $db->fetch_array($result))
 {

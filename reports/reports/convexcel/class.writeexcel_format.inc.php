@@ -110,7 +110,8 @@ class writeexcel_format {
 
         // Set properties passed to writeexcel_workbook::addformat()
         if (sizeof($_)>0) {
-            call_user_method_array('set_properties', $this, $_);
+            //call_user_method_array('set_properties', $this, $_);
+	    call_user_func_array(array(&$this,'set_properties'),$_);
         }
     }
 

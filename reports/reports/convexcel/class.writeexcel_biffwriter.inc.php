@@ -81,7 +81,7 @@ class writeexcel_biffwriter {
                           "called with more than one argument", E_USER_ERROR);
         }
 
-        if ($this->_debug) {
+        if (!empty($this->_debug)) {
             print "*** writeexcel_biffwriter::_prepend() called:";
             for ($c=0;$c<strlen($data);$c++) {
                 if ($c%16==0) {
@@ -110,7 +110,7 @@ class writeexcel_biffwriter {
                           "called with more than one argument", E_USER_ERROR);
         }
 
-        if ($this->_debug) {
+        if (!empty($this->_debug)) {
             print "*** writeexcel_biffwriter::_append() called:";
             for ($c=0;$c<strlen($data);$c++) {
                 if ($c%16==0) {
