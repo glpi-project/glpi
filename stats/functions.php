@@ -119,7 +119,7 @@ function getNbInter($quoi, $chps, $value)
 		$query = "select count(ID) as total from glpi_tracking where YEAR(glpi_tracking.date) = YEAR(NOW())";
 	}
 	elseif($quoi == 3) {
-		$query = "select count(ID) as total from glpitracking where YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
+		$query = "select count(ID) as total from glpi_tracking where YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
 	}
 	$result = $db->query($query);
 	return $db->result($result,0,"total");
