@@ -846,8 +846,12 @@ function write_row() {
         trigger_error("Not an array ref in call to write_row()!", E_USER_ERROR);
     }
 
+
+
     list($row, $col, $tokens)=array_splice($_, 0, 3);
-    $options = $_[0];
+    // Correction pour GLPI ca merdouille sinon mais je ne sais pas pourquoi
+    $options = "";//$_[0];
+
     $error   = 0;
 
     foreach ($tokens as $token) {
