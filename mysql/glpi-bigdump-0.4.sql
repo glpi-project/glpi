@@ -1,4 +1,4 @@
-#GLPI Dump database on 2004-07-22 11:54
+#GLPI Dump database on 2004-07-23 12:36
 ### Dump table glpi_computers
 
 DROP TABLE IF EXISTS glpi_computers;
@@ -2063,8 +2063,14 @@ INSERT INTO glpi_event_log VALUES ('13727','-1','system','2004-07-21 15:49:47','
 INSERT INTO glpi_event_log VALUES ('13728','-1','system','2004-07-21 15:51:16','login','1','failed login: irma');
 INSERT INTO glpi_event_log VALUES ('13729','-1','system','2004-07-21 15:51:19','login','1','failed login: irma');
 INSERT INTO glpi_event_log VALUES ('13730','-1','system','2004-07-21 15:56:57','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('13734','-1','system','2004-07-22 09:37:00','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('13735','0','users','2004-07-22 11:43:27','setup','4','glpi added user user1.');
+INSERT INTO glpi_event_log VALUES ('13734','-1','system','2004-07-22 11:54:41','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('13735','-1','system','2004-07-22 14:41:45','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('13736','-1','system','2004-07-22 16:53:58','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('13737','10','software','2004-07-22 16:54:14','inventory','4','glpi added a license.');
+INSERT INTO glpi_event_log VALUES ('13738','0','software','2004-07-22 16:54:26','inventory','4','glpi added item test.');
+INSERT INTO glpi_event_log VALUES ('13739','16','software','2004-07-22 16:54:47','inventory','4','glpi added a license.');
+INSERT INTO glpi_event_log VALUES ('13740','100','computers','2004-07-22 16:55:37','inventory','5','glpi installed software.');
+INSERT INTO glpi_event_log VALUES ('13741','-1','system','2004-07-23 12:36:30','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -4306,6 +4312,7 @@ INSERT INTO glpi_inst_software VALUES ('9','29','16');
 INSERT INTO glpi_inst_software VALUES ('8','32','17');
 INSERT INTO glpi_inst_software VALUES ('10','608','16');
 INSERT INTO glpi_inst_software VALUES ('11','51','16');
+INSERT INTO glpi_inst_software VALUES ('12','100','22');
 ### Dump table glpi_licenses
 
 DROP TABLE IF EXISTS glpi_licenses;
@@ -4323,6 +4330,107 @@ INSERT INTO glpi_licenses VALUES ('17','12','1');
 INSERT INTO glpi_licenses VALUES ('18','14','free');
 INSERT INTO glpi_licenses VALUES ('19','13','free');
 INSERT INTO glpi_licenses VALUES ('20','15','1');
+INSERT INTO glpi_licenses VALUES ('21','10','1542');
+INSERT INTO glpi_licenses VALUES ('22','16','154897615');
+INSERT INTO glpi_licenses VALUES ('23','16','154897615');
+INSERT INTO glpi_licenses VALUES ('24','16','154897615');
+INSERT INTO glpi_licenses VALUES ('25','16','154897615');
+INSERT INTO glpi_licenses VALUES ('26','16','154897615');
+INSERT INTO glpi_licenses VALUES ('27','16','154897615');
+INSERT INTO glpi_licenses VALUES ('28','16','154897615');
+INSERT INTO glpi_licenses VALUES ('29','16','154897615');
+INSERT INTO glpi_licenses VALUES ('30','16','154897615');
+INSERT INTO glpi_licenses VALUES ('31','16','154897615');
+INSERT INTO glpi_licenses VALUES ('32','16','154897615');
+INSERT INTO glpi_licenses VALUES ('33','16','154897615');
+INSERT INTO glpi_licenses VALUES ('34','16','154897615');
+INSERT INTO glpi_licenses VALUES ('35','16','154897615');
+INSERT INTO glpi_licenses VALUES ('36','16','154897615');
+INSERT INTO glpi_licenses VALUES ('37','16','154897615');
+INSERT INTO glpi_licenses VALUES ('38','16','154897615');
+INSERT INTO glpi_licenses VALUES ('39','16','154897615');
+INSERT INTO glpi_licenses VALUES ('40','16','154897615');
+INSERT INTO glpi_licenses VALUES ('41','16','154897615');
+INSERT INTO glpi_licenses VALUES ('42','16','154897615');
+INSERT INTO glpi_licenses VALUES ('43','16','154897615');
+INSERT INTO glpi_licenses VALUES ('44','16','154897615');
+INSERT INTO glpi_licenses VALUES ('45','16','154897615');
+INSERT INTO glpi_licenses VALUES ('46','16','154897615');
+INSERT INTO glpi_licenses VALUES ('47','16','154897615');
+INSERT INTO glpi_licenses VALUES ('48','16','154897615');
+INSERT INTO glpi_licenses VALUES ('49','16','154897615');
+INSERT INTO glpi_licenses VALUES ('50','16','154897615');
+INSERT INTO glpi_licenses VALUES ('51','16','154897615');
+INSERT INTO glpi_licenses VALUES ('52','16','154897615');
+INSERT INTO glpi_licenses VALUES ('53','16','154897615');
+INSERT INTO glpi_licenses VALUES ('54','16','154897615');
+INSERT INTO glpi_licenses VALUES ('55','16','154897615');
+INSERT INTO glpi_licenses VALUES ('56','16','154897615');
+INSERT INTO glpi_licenses VALUES ('57','16','154897615');
+INSERT INTO glpi_licenses VALUES ('58','16','154897615');
+INSERT INTO glpi_licenses VALUES ('59','16','154897615');
+INSERT INTO glpi_licenses VALUES ('60','16','154897615');
+INSERT INTO glpi_licenses VALUES ('61','16','154897615');
+INSERT INTO glpi_licenses VALUES ('62','16','154897615');
+INSERT INTO glpi_licenses VALUES ('63','16','154897615');
+INSERT INTO glpi_licenses VALUES ('64','16','154897615');
+INSERT INTO glpi_licenses VALUES ('65','16','154897615');
+INSERT INTO glpi_licenses VALUES ('66','16','154897615');
+INSERT INTO glpi_licenses VALUES ('67','16','154897615');
+INSERT INTO glpi_licenses VALUES ('68','16','154897615');
+INSERT INTO glpi_licenses VALUES ('69','16','154897615');
+INSERT INTO glpi_licenses VALUES ('70','16','154897615');
+INSERT INTO glpi_licenses VALUES ('71','16','154897615');
+INSERT INTO glpi_licenses VALUES ('72','16','154897615');
+INSERT INTO glpi_licenses VALUES ('73','16','154897615');
+INSERT INTO glpi_licenses VALUES ('74','16','154897615');
+INSERT INTO glpi_licenses VALUES ('75','16','154897615');
+INSERT INTO glpi_licenses VALUES ('76','16','154897615');
+INSERT INTO glpi_licenses VALUES ('77','16','154897615');
+INSERT INTO glpi_licenses VALUES ('78','16','154897615');
+INSERT INTO glpi_licenses VALUES ('79','16','154897615');
+INSERT INTO glpi_licenses VALUES ('80','16','154897615');
+INSERT INTO glpi_licenses VALUES ('81','16','154897615');
+INSERT INTO glpi_licenses VALUES ('82','16','154897615');
+INSERT INTO glpi_licenses VALUES ('83','16','154897615');
+INSERT INTO glpi_licenses VALUES ('84','16','154897615');
+INSERT INTO glpi_licenses VALUES ('85','16','154897615');
+INSERT INTO glpi_licenses VALUES ('86','16','154897615');
+INSERT INTO glpi_licenses VALUES ('87','16','154897615');
+INSERT INTO glpi_licenses VALUES ('88','16','154897615');
+INSERT INTO glpi_licenses VALUES ('89','16','154897615');
+INSERT INTO glpi_licenses VALUES ('90','16','154897615');
+INSERT INTO glpi_licenses VALUES ('91','16','154897615');
+INSERT INTO glpi_licenses VALUES ('92','16','154897615');
+INSERT INTO glpi_licenses VALUES ('93','16','154897615');
+INSERT INTO glpi_licenses VALUES ('94','16','154897615');
+INSERT INTO glpi_licenses VALUES ('95','16','154897615');
+INSERT INTO glpi_licenses VALUES ('96','16','154897615');
+INSERT INTO glpi_licenses VALUES ('97','16','154897615');
+INSERT INTO glpi_licenses VALUES ('98','16','154897615');
+INSERT INTO glpi_licenses VALUES ('99','16','154897615');
+INSERT INTO glpi_licenses VALUES ('100','16','154897615');
+INSERT INTO glpi_licenses VALUES ('101','16','154897615');
+INSERT INTO glpi_licenses VALUES ('102','16','154897615');
+INSERT INTO glpi_licenses VALUES ('103','16','154897615');
+INSERT INTO glpi_licenses VALUES ('104','16','154897615');
+INSERT INTO glpi_licenses VALUES ('105','16','154897615');
+INSERT INTO glpi_licenses VALUES ('106','16','154897615');
+INSERT INTO glpi_licenses VALUES ('107','16','154897615');
+INSERT INTO glpi_licenses VALUES ('108','16','154897615');
+INSERT INTO glpi_licenses VALUES ('109','16','154897615');
+INSERT INTO glpi_licenses VALUES ('110','16','154897615');
+INSERT INTO glpi_licenses VALUES ('111','16','154897615');
+INSERT INTO glpi_licenses VALUES ('112','16','154897615');
+INSERT INTO glpi_licenses VALUES ('113','16','154897615');
+INSERT INTO glpi_licenses VALUES ('114','16','154897615');
+INSERT INTO glpi_licenses VALUES ('115','16','154897615');
+INSERT INTO glpi_licenses VALUES ('116','16','154897615');
+INSERT INTO glpi_licenses VALUES ('117','16','154897615');
+INSERT INTO glpi_licenses VALUES ('118','16','154897615');
+INSERT INTO glpi_licenses VALUES ('119','16','154897615');
+INSERT INTO glpi_licenses VALUES ('120','16','154897615');
+INSERT INTO glpi_licenses VALUES ('121','16','154897615');
 ### Dump table glpi_monitors
 
 DROP TABLE IF EXISTS glpi_monitors;
@@ -5231,21 +5339,22 @@ CREATE TABLE glpi_prefs (
    UNIQUE user (user)
 );
 
+INSERT INTO glpi_prefs VALUES ('irma','no','french','1');
 INSERT INTO glpi_prefs VALUES ('Helpdesk','no','french','2');
-INSERT INTO glpi_prefs VALUES ('user1','no','french','3');
-INSERT INTO glpi_prefs VALUES ('user2','no','french','4');
-INSERT INTO glpi_prefs VALUES ('user3','no','french','5');
-INSERT INTO glpi_prefs VALUES ('user4','no','french','6');
-INSERT INTO glpi_prefs VALUES ('user5','no','french','7');
-INSERT INTO glpi_prefs VALUES ('user6','no','french','8');
-INSERT INTO glpi_prefs VALUES ('user7','no','french','9');
-INSERT INTO glpi_prefs VALUES ('user8','no','french','10');
-INSERT INTO glpi_prefs VALUES ('user9','no','french','11');
-INSERT INTO glpi_prefs VALUES ('user10','no','french','12');
-INSERT INTO glpi_prefs VALUES ('user11','no','french','13');
-INSERT INTO glpi_prefs VALUES ('user12','no','french','14');
-INSERT INTO glpi_prefs VALUES ('user13','no','french','15');
-INSERT INTO glpi_prefs VALUES ('glpi','yes','french','16');
+INSERT INTO glpi_prefs VALUES ('guemar','no','french','3');
+INSERT INTO glpi_prefs VALUES ('loubier','','french','4');
+INSERT INTO glpi_prefs VALUES ('Brice','','french','5');
+INSERT INTO glpi_prefs VALUES ('Cayzac','','french','6');
+INSERT INTO glpi_prefs VALUES ('cara','','french','7');
+INSERT INTO glpi_prefs VALUES ('Gomez','no','french','8');
+INSERT INTO glpi_prefs VALUES ('spennato','','french','9');
+INSERT INTO glpi_prefs VALUES ('Champion','no','french','10');
+INSERT INTO glpi_prefs VALUES ('Couve','','french','11');
+INSERT INTO glpi_prefs VALUES ('Carpy','','french','12');
+INSERT INTO glpi_prefs VALUES ('Chauvin','no','french','13');
+INSERT INTO glpi_prefs VALUES ('molina','','french','14');
+INSERT INTO glpi_prefs VALUES ('Coster','no','french','15');
+INSERT INTO glpi_prefs VALUES ('glpi','no','french','16');
 ### Dump table glpi_printers
 
 DROP TABLE IF EXISTS glpi_printers;
@@ -5604,6 +5713,7 @@ INSERT INTO glpi_software VALUES ('12','software 12','',NULL,'12','4');
 INSERT INTO glpi_software VALUES ('13','software 13','',NULL,'12','4');
 INSERT INTO glpi_software VALUES ('14','software 14','',NULL,'12','1');
 INSERT INTO glpi_software VALUES ('15','software 15','10.2','','7','8');
+INSERT INTO glpi_software VALUES ('16','test','','','12','1');
 ### Dump table glpi_templates
 
 DROP TABLE IF EXISTS glpi_templates;
@@ -6376,7 +6486,7 @@ INSERT INTO glpi_tracking VALUES ('693','2003-11-24 14:33:19','2003-12-09 14:35:
 INSERT INTO glpi_tracking VALUES ('694','2003-11-25 09:20:42','2003-11-25 09:56:14','old','Helpdesk','user10','114','oulala ca crame de partout 694','3','no','','');
 INSERT INTO glpi_tracking VALUES ('695','2003-11-25 09:28:01','2003-11-25 09:55:58','old','user7','user10','59','oulala ca crame de partout 695','3','no','','');
 INSERT INTO glpi_tracking VALUES ('696','2003-11-25 10:53:06','2004-02-13 14:02:57','old','Helpdesk','user4','495','oulala ca crame de partout 696','1','no','','');
-INSERT INTO glpi_tracking VALUES ('697','2003-11-25 11:21:07','0000-00-00 00:00:00','new','Helpdesk','','309','oulala ca crame de partout 697','1','no','','');
+INSERT INTO glpi_tracking VALUES ('697','2003-11-25 11:21:07','0000-00-00 00:00:00','new','Helpdesk','user1','309','oulala ca crame de partout 697','1','no','','');
 INSERT INTO glpi_tracking VALUES ('698','2003-11-25 14:10:14','2003-11-28 13:28:45','old','Helpdesk','user1','210','oulala ca crame de partout 698','3','no','','');
 INSERT INTO glpi_tracking VALUES ('699','2003-11-25 15:09:22','2003-11-25 17:01:42','old','Helpdesk',NULL,'337','oulala ca crame de partout 699','3','no','','');
 INSERT INTO glpi_tracking VALUES ('700','2003-11-25 16:23:53','2003-11-25 17:01:44','old','Helpdesk',NULL,'119','oulala ca crame de partout 700','3','no','','');
@@ -7688,7 +7798,7 @@ INSERT INTO glpi_tracking VALUES ('2013','2004-05-24 10:24:07','2004-05-26 17:49
 INSERT INTO glpi_tracking VALUES ('2014','2004-05-24 16:43:38','2004-05-24 17:39:36','old','Helpdesk','user10','232','oulala ca crame de partout 2014','5','no','','');
 INSERT INTO glpi_tracking VALUES ('2015','2004-05-24 17:11:30','0000-00-00 00:00:00','new','Helpdesk','user10','119','oulala ca crame de partout 2015','3','no','','');
 INSERT INTO glpi_tracking VALUES ('2016','2004-05-24 17:16:26','2004-05-26 17:58:47','old','Helpdesk','user10','118','oulala ca crame de partout 2016','4','no','','');
-INSERT INTO glpi_tracking VALUES ('2017','2004-05-25 10:50:29','0000-00-00 00:00:00','new','Helpdesk','','107','oulala ca crame de partout 2017','4','no','','');
+INSERT INTO glpi_tracking VALUES ('2017','2004-05-25 10:50:29','0000-00-00 00:00:00','new','Helpdesk','user10','107','oulala ca crame de partout 2017','4','no','','');
 INSERT INTO glpi_tracking VALUES ('2018','2004-05-25 14:41:36','0000-00-00 00:00:00','new','Helpdesk','user1','107','oulala ca crame de partout 2018','3','no','','');
 INSERT INTO glpi_tracking VALUES ('2019','2004-05-25 15:01:58','0000-00-00 00:00:00','new','Helpdesk','user10','119','oulala ca crame de partout 2019','3','no','','');
 INSERT INTO glpi_tracking VALUES ('2020','2004-05-25 16:34:07','2004-05-26 17:51:57','old','Helpdesk','user10','635','oulala ca crame de partout 2020','3','no','','');
@@ -8010,8 +8120,7 @@ CREATE TABLE glpi_users (
     location int(11),
    PRIMARY KEY (ID),
    UNIQUE name (name),
-   KEY type (type),
-   KEY name_2 (name)
+   KEY type (type)
 );
 
 INSERT INTO glpi_users VALUES ('1','Helpdesk','14e43c2d31dcbdd1','',NULL,'post-only','user1','no',NULL);
@@ -8030,4 +8139,3 @@ INSERT INTO glpi_users VALUES ('13','user13','5b9b1ee2216a5ffe','','6196','admin
 INSERT INTO glpi_users VALUES ('14','user14','5b9b1ee2216a5ffe','','6111','admin','user14','yes','2');
 INSERT INTO glpi_users VALUES ('15','user15','5b9b1ee2216a5ffe','','6008','admin','user15','yes','2');
 INSERT INTO glpi_users VALUES ('400','glpi','5b9b1ee2216a5ffe','','','admin','user400','yes','2');
-INSERT INTO glpi_users VALUES ('401','user1','5b9b1ee2216a5ffe','','','admin','','yes','12');

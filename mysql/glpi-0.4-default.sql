@@ -1,4 +1,4 @@
-#GLPI Dump database on 2004-07-22 01:50
+#GLPI Dump database on 2004-07-23 12:38
 ### Dump table glpi_computers
 
 DROP TABLE IF EXISTS glpi_computers;
@@ -42,7 +42,7 @@ INSERT INTO glpi_computers VALUES ('18','IBM 945gx','0','','750','9854-5f-4s4f',
 
 DROP TABLE IF EXISTS glpi_config;
 CREATE TABLE glpi_config (
-    config_id int(11) NOT NULL auto_increment,
+    ID int(11) NOT NULL auto_increment,
     num_of_events varchar(200) NOT NULL,
     jobs_at_login varchar(200) NOT NULL,
     sendexpire varchar(200) NOT NULL,
@@ -87,7 +87,7 @@ CREATE TABLE glpi_config (
     ldap_field_location varchar(200) NOT NULL,
     ldap_field_realname varchar(200) NOT NULL,
     ldap_field_phone varchar(200) NOT NULL,
-   PRIMARY KEY (config_id)
+   PRIMARY KEY (ID)
 );
 
 INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15',' 0.4-alpha','GLPI powered by indepnet','/glpi','5','0','','','','','','','admin@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber');
@@ -301,6 +301,7 @@ INSERT INTO glpi_event_log VALUES ('371','0','Peripheral','2004-07-21 02:30:35',
 INSERT INTO glpi_event_log VALUES ('372','0','Peripheral','2004-07-21 02:31:19','inventory','4','glpi added Ax704.');
 INSERT INTO glpi_event_log VALUES ('373','2','Peripheral','2004-07-21 02:31:56','inventory','4','glpi updated item.');
 INSERT INTO glpi_event_log VALUES ('374','2','Peripheral','2004-07-21 02:32:17','inventory','5','glpi connected item.');
+INSERT INTO glpi_event_log VALUES ('375','-1','system','2004-07-23 12:38:33','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -472,14 +473,16 @@ CREATE TABLE glpi_prefs (
     user varchar(80) NOT NULL,
     tracking_order enum('no','yes') DEFAULT 'no' NOT NULL,
     language varchar(255) NOT NULL,
-   PRIMARY KEY (user)
+    ID int(11) NOT NULL auto_increment,
+   PRIMARY KEY (ID),
+   UNIQUE user (user)
 );
 
-INSERT INTO glpi_prefs VALUES ('glpi','yes','french');
-INSERT INTO glpi_prefs VALUES ('Helpdesk','no','french');
-INSERT INTO glpi_prefs VALUES ('normal','','english');
-INSERT INTO glpi_prefs VALUES ('tech','yes','french');
-INSERT INTO glpi_prefs VALUES ('post-only','','english');
+INSERT INTO glpi_prefs VALUES ('glpi','yes','french','1');
+INSERT INTO glpi_prefs VALUES ('Helpdesk','no','french','2');
+INSERT INTO glpi_prefs VALUES ('normal','','english','3');
+INSERT INTO glpi_prefs VALUES ('tech','yes','french','4');
+INSERT INTO glpi_prefs VALUES ('post-only','','english','5');
 ### Dump table glpi_printers
 
 DROP TABLE IF EXISTS glpi_printers;
