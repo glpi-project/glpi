@@ -647,6 +647,7 @@ $entrees=array();
 if (empty($query)) return array();
 
 	$result=$db->query($query);
+	if ($result&&$db->numrows($result)>0)
 	while ($row = $db->fetch_array($result)) {
 			$date = $row['date_unix'];
 			if ($type=="inter_avgtakeaccount"){
