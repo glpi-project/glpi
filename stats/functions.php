@@ -59,7 +59,7 @@ function getNbIntervTech()
 function getNbIntervLieux()
 {
 	$db = new DB;
-	$query = "SELECT distinct(glpi_computers.location) as location FROM glpi_tracking, glpi_computers where glpi_tracking.computer = glpi_computers.ID";
+	$query = "SELECT ID from glpi_dropdown_locations";
 	$result = $db->query($query);
 	if($db->numrows($result) >=1) {
 		$i = 0;

@@ -63,16 +63,16 @@ if (is_array($nomLieux))
       foreach($nomLieux as $key)
       {
 	echo "<tr class='tab_bg_1'>";
-	echo "<td>".$key["location"]."</td>";
+	echo "<td>".getDropdownName("glpi_dropdown_locations",$key["ID"]) ."</td>";
 	//le nombre d'intervention
 	//the number of intervention
-	echo "<td>".getNbinter(1,'computers.location',$key["location"])."</td>";
+	echo "<td>".getNbinter(1,'glpi_computers.location',$key["ID"])."</td>";
 	//le nombre d'intervention resolues
 	//the number of resolved intervention
-	echo "<td>".getNbresol(1,'computers.location',$key["location"])."</td>";
+	echo "<td>".getNbresol(1,'glpi_computers.location',$key["ID"])."</td>";
 	//Le temps moyen de resolution
 	//The average time to resolv
-	echo "<td>".getResolAvg(1,'computers.location',$key["location"])."</td>";
+	echo "<td>".getResolAvg(1,'glpi_computers.location',$key["ID"])."</td>";
 	
 	echo "</tr>";
   }
