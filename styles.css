@@ -70,12 +70,22 @@ input.submit:hover {
         background-color:#eeeeee;
         }
 
-        .button:hover{
+.button:hover{
         border:1px solid #009966;
        background-color:#ffffff;
         }
 
 
+.calendrier{
+       border:1px solid #009966;
+        background-color:#eeeeee;
+	vertical-align:middle;
+        }
+	
+.calendrier:hover{
+        border:1px solid #009966;
+       background-color:#ffffff;
+        }
 
 
 

@@ -417,7 +417,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 
 	 if ($navigation->financial) {
 		echo "<td align='center' valign='top' width='20%'>";
-				echo "<img class='icon_nav' src=\"".$HTMLRel."pics/maintenance.png\" alt=\"\" title=\"".$lang["setup"][55]."\"><br>";
+				echo "<img class='icon_nav' src=\"".$HTMLRel."pics/gestion.png\" alt=\"\" title=\"".$lang["setup"][55]."\"><br>";
 
 		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][26]."&nbsp;-</span><br>";
 		foreach ($financial as $key => $val) {
