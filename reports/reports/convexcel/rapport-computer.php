@@ -41,12 +41,12 @@ This file is part of GLPI.
 include ("_relpos.php");
 
 include ($phproot . "/glpi/includes.php");
+include ($phproot . "/glpi/includes_computers.php");
 include ($phproot . "/glpi/dicts/french.php");
 
 $db = new DB;
 $query = "select glpi_computers.*, glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac ";
 $query.= "from glpi_computers LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type = 1 AND glpi_networking_ports.on_device = glpi_computers.ID) ORDER by glpi_computers.ID";
-//echo $query;
 $result = $db->query($query);
 $num_field = $db->num_fields($result);
 //set_time_limit(10);
@@ -99,31 +99,31 @@ $border2->set_merge(); # This is the key feature
 
 # Only one cell should contain text, the others should be blank.
 $worksheet->write(0, 0, $lang["computers"][1], $border1);
-$worksheet->write(0, 1, $lang["computers"][7], $border1);
-$worksheet->write(0, 2, $lang["computers"][8],   $border1);
-$worksheet->write(0, 3, $lang["computers"][28],  $border1);
-$worksheet->write(0, 4, $lang["computers"][9],  $border1);
-$worksheet->write(0, 5, $lang["computers"][20], $border1);
-$worksheet->write(0, 6, $lang["computers"][21], $border1);
-$worksheet->write(0, 7, $lang["computers"][22], $border1);
-$worksheet->write(0, 8, $lang["computers"][10], $border1);
-$worksheet->write(0, 9, $lang["computers"][17], $border1);
-$worksheet->write(0, 10, $lang["computers"][18], $border1);
-$worksheet->write(0, 11, $lang["computers"][23], $border1);
-$worksheet->write(0, 12, $lang["computers"][24], $border1);
-$worksheet->write(0, 13, $lang["computers"][26], $border1);
-$worksheet->write(0, 14, $lang["computers"][25], $border1);
-$worksheet->write(0, 15, $lang["computers"][16], $border1);
-$worksheet->write(0, 16, $lang["computers"][15], $border1);
-$worksheet->write(0, 17, $lang["computers"][19], $border1);
-$worksheet->write(0, 18, $lang["computers"][11], $border1);
-$worksheet->write(0, 19, $lang["computers"][34], $border1);
-$worksheet->write(0, 20, $lang["computers"][35], $border1);
-$worksheet->write(0, 21, $lang["computers"][33], $border1);
-$worksheet->write(0, 22, $lang["computers"][36], $border1);
-$worksheet->write(0, 23, $lang["computers"][41], $border1);
-$worksheet->write(0, 24, $lang["computers"][42], $border1);
-$worksheet->write(0, 25, $lang["computers"][43], $border1);
+$worksheet->write(0, 1, $lang["computers"][7],   $border1);
+$worksheet->write(0, 2, $lang["computers"][28], $border1);
+$worksheet->write(0, 3, $lang["computers"][20],  $border1);
+$worksheet->write(0, 4, $lang["computers"][22],  $border1);
+$worksheet->write(0, 5, $lang["computers"][17], $border1);
+$worksheet->write(0, 6, $lang["computers"][18], $border1);
+$worksheet->write(0, 7, $lang["computers"][23], $border1);
+$worksheet->write(0, 8, $lang["computers"][25], $border1);
+$worksheet->write(0, 9, $lang["computers"][16], $border1);
+$worksheet->write(0, 10, $lang["computers"][15], $border1);
+$worksheet->write(0, 11, $lang["computers"][19], $border1);
+$worksheet->write(0, 12, $lang["computers"][11], $border1);
+$worksheet->write(0, 13, $lang["computers"][41], $border1);
+$worksheet->write(0, 14, $lang["computers"][42], $border1);
+$worksheet->write(0, 15, $lang["computers"][43], $border1);
+$worksheet->write(0, 16, $lang["computers"][9], $border1);
+$worksheet->write(0, 17, $lang["computers"][36], $border1);
+$worksheet->write(0, 18, $lang["computers"][33], $border1);
+$worksheet->write(0, 19, $lang["computers"][35], $border1);
+$worksheet->write(0, 20, $lang["computers"][34], $border1);
+$worksheet->write(0, 21, $lang["computers"][26], $border1);
+$worksheet->write(0, 22, $lang["computers"][23], $border1);
+$worksheet->write(0, 23, $lang["computers"][10], $border1);
+$worksheet->write(0, 24, $lang["computers"][21], $border1);
+$worksheet->write(0, 25, $lang["computers"][8], $border1);
 $worksheet->write(0, 26, $lang["networking"][14], $border1);
 $worksheet->write(0, 27, $lang["networking"][15], $border1);
 
@@ -136,7 +136,20 @@ while($ligne = $db->fetch_array($result))
 	// New computer
 	if ($old_ID!=$ligne[0]){
 		// reinit data
-		for($i=0;$i<$num_field;$i++) $table[$i]=$ligne[$i];
+		for($i=0;$i<$num_field;$i++) {
+			$name=$db->field_name($result,$i);
+		if (IsDropdown($name)) $table[$i]=getDropdownName("glpi_dropdown_".$name,$ligne[$i]);
+		elseif($name == "ramtype") {
+				$table[$i]=getDropdownName("glpi_dropdown_ram",$ligne[$i]);
+			}
+		elseif($name == "location") {
+				$table[$i]=getDropdownName("glpi_dropdown_locations",$ligne[$i]);
+			}
+		elseif($name == "type") {
+				$table[$i]=getDropdownName("glpi_type_computers",$ligne[$i]);
+			}
+		else $table[$i]=$ligne[$i];
+		}
 		$old_ID=$ligne[0];
 	} 
 	else { // Same computer
