@@ -379,7 +379,15 @@ function showJobShort($ID, $followups	) {
 	    	}
 		else
 		{
-			echo "<td align='center'><b>$job->assign</b></td>";
+			echo "<td align='center'><b>";
+			if (strcmp($_SESSION["glpitype"],"post-only")!=0)
+			echo "<a href=\"".$cfg_install["root"]."/setup/users-info.php?ID=$job->assign\">$job->assign</a>";
+			else
+			echo "$job->assign";
+
+//			$job->assign
+			
+			echo "</b></td>";
 		}    
 		
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
@@ -493,9 +501,11 @@ function showJobDetails($ID) {
 		echo "</td>";
 	
 		//echo "</tr><tr class='tab_bg_2'>";
+		
 		echo "<td align='center'>";	
-
+		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 			assignFormTracking($ID,$_SESSION["glpiname"],$cfg_install["root"]."/tracking/tracking-assign-form.php");
+		else echo $lang["job"][5]." <b>".$job->assign."</b>";
 		
 		echo "</td>";
 		
