@@ -118,7 +118,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 	// Lists Printers
 
-	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
+	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
 
 	$db = new DB;
 	// Build query
@@ -192,7 +192,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Name
 			echo "<th>";
 			if ($sort=="printer.name") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=printer.name&order=ASC&start=$start\">";
 			echo $lang["printers"][5]."</a></th>";
@@ -200,7 +200,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Location			
 			echo "<th>";
 			if ($sort=="glpi_dropdown_locations.name") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=ASC&start=$start\">";
 			echo $lang["printers"][6]."</a></th>";
@@ -208,7 +208,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Type
 			echo "<th>";
 			if ($sort=="glpi_type_printers.name") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_printers.name&order=ASC&start=$start\">";
 			echo $lang["printers"][9]."</a></th>";
@@ -216,7 +216,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Last modified		
 			echo "<th>";
 			if ($sort=="printer.date_mod") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=printer.date_mod&order=DESC&start=$start\">";
 			echo $lang["printers"][16]."</a></th>";

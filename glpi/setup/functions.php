@@ -612,7 +612,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 
 	// Lists Users
 
-	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
+	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
 
 	$db = new DB;
 
@@ -676,7 +676,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_users.name") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.name&order=ASC&start=$start\">";
 			echo $lang["setup"][12]."</a></th>";
@@ -684,7 +684,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 			// realname		
 			echo "<th>";
 			if ($sort=="glpi_users.realname") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.realname&order=ASC&start=$start\">";
 			echo $lang["setup"][13]."</a></th>";
@@ -692,7 +692,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 			// type
 			echo "<th>";
 			if ($sort=="glpi_users.type") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.type&order=ASC&start=$start\">";
 			echo $lang["setup"][17]."</a></th>";			
@@ -700,7 +700,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 			// email
 			echo "<th>";
 			if ($sort=="glpi_users.email") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.email&order=ASC&start=$start\">";
 			echo $lang["setup"][14]."</a></th>";
@@ -709,7 +709,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 			// Phone
 			echo "<th>";
 			if ($sort=="glpi_users.phone") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.phone&order=ASC&start=$start\">";
 			echo $lang["setup"][15]."</a></th>";
@@ -719,7 +719,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 			// Location			
 			echo "<th>";
 			if ($sort=="glpi_dropdown_locations.name") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=ASC&start=$start\">";
 			echo $lang["setup"][16]."</a></th></tr>";

@@ -115,7 +115,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 
 	// Lists networking
 
-	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
+	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;;
 
 	$db = new DB;
 
@@ -193,7 +193,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_networking.name") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_networking.name&order=ASC&start=$start\">";
 			echo $lang["networking"][0]."</a></th>";
@@ -201,7 +201,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			// Location			
 			echo "<th>";
 			if ($sort=="glpi_dropdown_locations.name") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=ASC&start=$start\">";
 			echo $lang["networking"][1]."</a></th>";
@@ -209,7 +209,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			// Type
 			echo "<th>";
 			if ($sort=="glpi_type_networking.name") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_networking.name&order=ASC&start=$start\">";
 			echo $lang["networking"][2]."</a></th>";
@@ -218,7 +218,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			// Firmware
 			echo "<th>";
 			if ($sort=="glpi_dropdown_firmware.name") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_firmware.name&order=ASC&start=$start\">";
 			echo $lang["networking"][49]."</a></th>";
@@ -228,7 +228,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			// Last modified		
 			echo "<th>";
 			if ($sort=="networking.date_mod") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_networking.date_mod&order=DESC&start=$start\">";
 			echo $lang["networking"][9]."</a></th>";

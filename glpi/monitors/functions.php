@@ -110,7 +110,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 
 	// Lists Monitors
 
-	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
+	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
 
 	$db = new DB;
 
@@ -181,7 +181,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			// Name
 			echo "<th>";
 			if ($sort=="mon.name") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=mon.name&order=ASC&start=$start\">";
 			echo $lang["monitors"][5]."</a></th>";
@@ -189,7 +189,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			// Location			
 			echo "<th>";
 			if ($sort=="glpi_dropdown_locations.name") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=ASC&start=$start\">";
 			echo $lang["monitors"][6]."</a></th>";
@@ -197,7 +197,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			// Type
 			echo "<th>";
 			if ($sort=="glpi_type_monitors.name") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_monitors.name&order=ASC&start=$start\">";
 			echo $lang["monitors"][9]."</a></th>";
@@ -205,7 +205,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			// Last modified		
 			echo "<th>";
 			if ($sort=="mon.date_mod") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=mon.date_mod&order=DESC&start=$start\">";
 			echo $lang["monitors"][16]."</a></th>";
@@ -213,7 +213,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			// Contact person
 			echo "<th>";
 			if ($sort=="mon.contact") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=mon.contact&order=ASC&start=$start\">";
 			echo $lang["monitors"][8]."</a></th>";
