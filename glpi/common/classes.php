@@ -719,8 +719,11 @@ class Mailing
 				mail($users[$i],$subject,$body,
 				"From: $sender\r\n" .
 			    "Reply-To: $replyto\r\n" .
-     		   	"X-Powered: by GLPI\r\n" .
-		   "X-Mailer: PHP/" . phpversion()) ;
+     	   	"X-Powered: by GLPI\r\n" .
+   			 "MIME-Version: 1.0\n" .
+				"Content-Type: text/plain; charset=ISO-8859-1\n" .
+			    "Content-Transfer-Encoding: 8bit\n" .
+		   	 "X-Mailer: PHP/" . phpversion()) ;
 				}
 			} else {
 				echo "Type d'envoi invalide";
