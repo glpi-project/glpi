@@ -168,12 +168,10 @@ $inventory = 	array($lang["Menu"][0]=>"/computers/index.php",
 	              $lang["Menu"][3]=>"/monitors/index.php",
 	              $lang["Menu"][4]=>"/software/index.php");
 				
-				
-				
 $maintain =	array($lang["Menu"][5]=>"/tracking/index.php",
 	              $lang["Menu"][6]=>"/reports/index.php",
 		      $lang["Menu"][13]=>"/stats/index.php");
-			
+
 				
 $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	              $lang["Menu"][11]=>"/preferences/index.php",
@@ -239,30 +237,30 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	echo "<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr>";
 	if ($navigation->inventory) {
 		echo "<td align='center' valign='top'>";
-		echo "<img src=\"".$cfg_install["root"]."/pics/inventaire.png\" alt=\"\"><br>";
+		echo "<img class='icon_nav' src=\"".$cfg_install["root"]."/pics/inventaire.png\" alt=\"\" title=\"".$lang["setup"][10]."\"><br>";
 		echo "<small>-&nbsp;".$lang["setup"][10]."&nbsp;-</small><br>";
 		foreach ($inventory as $key => $val) {
-			echo "<a href=\"".$cfg_install["root"].$val."\">".$key."</a><br>";
+			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val."\">".$key."</a></span><br>";
 		}	
 		echo "</td>";
 	}
 	 if ($navigation->maintain) {
 		echo "<td align='center' valign='top'>";
-				echo "<img src=\"".$cfg_install["root"]."/pics/maintenance.png\" alt=\"\"><br>";
+				echo "<img class='icon_nav' src=\"".$cfg_install["root"]."/pics/maintenance.png\" alt=\"\" title=\"".$lang["setup"][55]."\"><br>";
 
 		echo "<small>-&nbsp;".$lang["setup"][55]."&nbsp;-</small><br>";
 		foreach ($maintain as $key => $val) {
-			echo "<a href=\"".$cfg_install["root"].$val."\">".$key."</a><br>";
+			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val."\">".$key."</a></span><br>";
 		}
 		echo "</td>";
 	}
 	if ($navigation->settings) {
 		echo "<td align='center' valign='top'>";
-				echo "<img src=\"".$cfg_install["root"]."/pics/config.png\" alt=\"\"><br>";
+				echo "<img class='icon_nav' src=\"".$cfg_install["root"]."/pics/config.png\" alt=\"\" title=\"".$lang["setup"][56]."\"><br>";
 
 		echo "<small>-&nbsp;".$lang["setup"][56]."&nbsp;-</small><br>";
 		foreach ($config as $key => $val) {
-			echo "<a href=\"".$cfg_install["root"].$val."\">".$key."</a><br>";
+			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val."\">".$key."</a></span><br>";
 		}	
 		echo "</td>";
 	}
@@ -270,9 +268,10 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	// On the right side of the navigation bar, we have a clock with
 	// date and a logout-link.
 
-	echo "<td align='right' width='100'><div align='right'>";
-	echo date("H").":".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
-	echo "</i><br><a href=\"".$cfg_install["root"]."/logout.php\"><img src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
+	echo "<td  align='right' width='100'>";
+	echo date("H").":".date("i")."<p><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
+	echo "</i></p>";
+	echo "<a  class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img  src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></td>";
 
 	// End navigation bar
 
@@ -357,14 +356,14 @@ function helpHeader($title,$url,$name) {
 	echo "</td>";
 	// We tracking or post a new one
 	echo "<td>";
-        echo "<a href=\"".$cfg_install["root"]."/helpdesk.php\"><img src=\"".$cfg_install["root"]."/pics/ajoutinterv.png\" alt=\"".$lang["job"][13]."\" title=\"".$lang["job"][13]."\"></a><br><br>";
-        echo "<a href=\"".$cfg_install["root"]."/helpdesk.php?show=user\"><img src=\"".$cfg_install["root"]."/pics/suivi.png\" alt=\"".$lang["tracking"][0]."\" title=\"".$lang["tracking"][0]."\"></a>";
+        echo "<a class='icon_nav_move' href=\"".$cfg_install["root"]."/helpdesk.php\"><img  src=\"".$cfg_install["root"]."/pics/ajoutinterv.png\" alt=\"".$lang["job"][13]."\" title=\"".$lang["job"][13]."\"></a><br><br>";
+        echo "<a class='icon_nav_move' href=\"".$cfg_install["root"]."/helpdesk.php?show=user\"><img  src=\"".$cfg_install["root"]."/pics/suivi.png\" alt=\"".$lang["tracking"][0]."\" title=\"".$lang["tracking"][0]."\"></a>";
 	echo "</td>";
 	// On the right side of the navigation bar, we have a clock with
 	// date and a logout-link.
 	echo "<td align='right' width='100'><div align='right'>";
-	echo date("H").":".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
-	echo "</i><br><a href=\"".$cfg_install["root"]."/logout.php\"><img src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
+	echo date("H").":".date("i")."<p><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
+	echo "</i></p><a class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img class='icon_nav' src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
 
 	// End navigation bar
 	
@@ -441,8 +440,8 @@ function nullHeader($title,$url) {
 	// On the right side of the navigation bar, we have a clock with
 	// date and a logout-link.
 	echo "<td align='right' width='100'><div align='right'>";
-	echo date("H").":".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
-	echo "</i><br><a href=\"".$cfg_install["root"]."/logout.php\"><img src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
+	echo date("H").":".date("i")."<p><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
+	echo "</i></p><a class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
 
 	// End navigation bar
 	
