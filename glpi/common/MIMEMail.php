@@ -397,7 +397,9 @@ class MIMEMailContent extends MIMEMailCommon
                 break;
             case 'text/html':
             default:
-                $encoding = 'base64';
+	    // Force 7bit encoding
+	    $encoding = '7bit';
+                //$encoding = 'base64';
                 break;
         }
         $this->setContentTransferEncoding($encoding);
