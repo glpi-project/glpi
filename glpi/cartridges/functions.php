@@ -749,6 +749,7 @@ function dropdownCartridgeType($name,$value=0){
 	global $lang;
 	
 	echo "<select name='$name'>";
+	echo "<option value='3' ".($value==3?" selected ":"").">".$lang["cartridges"][37]."</option>";
 	echo "<option value='2' ".($value==2?" selected ":"").">".$lang["cartridges"][10]."</option>";
 	echo "<option value='1' ".($value==1?" selected ":"").">".$lang["cartridges"][11]."</option>";
 	echo "</select>";	
@@ -758,6 +759,9 @@ function getCartridgeTypeName($value){
 	global $lang;
 	
 	switch ($value){
+	case 3 :
+		return $lang["cartridges"][37];
+		break;
 	case 2 :
 		return $lang["cartridges"][10];
 		break;
