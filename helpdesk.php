@@ -44,7 +44,14 @@ checkAuthentication("post-only");
 
 helpHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 
+if (isset($_GET["show"])&&strcmp($_GET["show"],"user")==0)
+  if (!isset($ID))
+ showJobList($_SESSION["glpiname"],$_GET["show"],"","");
+ else 
+ showJobDetails($ID,0);
+else {
 printHelpDesk($_SESSION["glpiname"]);
+}
 
 helpFooter();
 
