@@ -697,12 +697,13 @@ function updateNetport($input) {
 
 function deleteNetport($input) {
 	
+	// Delete Netwire
+	removeConnector($input["ID"]);	
+
 	// Delete Netport
 	$netport = new Netport;
 	$netport->deleteFromDB($input["ID"]);
 
-	// Delete Netwire
-	removeConnector($input["ID"]);	
 
 
 } 
