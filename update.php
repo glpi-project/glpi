@@ -442,7 +442,7 @@ $query = "CREATE TABLE `glpi_type_peripherals` (
 	`name` varchar(255),
 	 PRIMARY KEY  (`ID`)
 	) TYPE=MyISAM;";
-$db->query($query)or die("a".$lang["update"][90].$db->error());
+$db->query($query)or die("0A ".$lang["update"][90].$db->error());
 }
 
 if(!TableExists("glpi_peripherals")) {
@@ -465,139 +465,250 @@ if(!TableExists("glpi_peripherals")) {
 	  PRIMARY KEY  (`ID`)
 	) TYPE=MyISAM;";
 
-$db->query($query) or die("0".$lang["update"][90].$db->error());
+$db->query($query) or die("0 ".$lang["update"][90].$db->error());
 }
 
 if(!FieldExists("glpi_prefs", "ID")) {
 	$query = "Alter table glpi_prefs drop primary key";
-	$db->query($query) or die("1".$lang["update"][90].$db->error());
+	$db->query($query) or die("1 ".$lang["update"][90].$db->error());
 	$query = "ALTER TABLE `glpi_prefs` ADD UNIQUE (`user`)";
-	$db->query($query) or die("2".$lang["update"][90].$db->error());
+	$db->query($query) or die("2 ".$lang["update"][90].$db->error());
 	$query = "Alter table glpi_prefs add ID INT(11) not null auto_increment primary key";
-	$db->query($query) or die("3".$lang["update"][90].$db->error());
+	$db->query($query) or die("3 ".$lang["update"][90].$db->error());
 }
 if(!FieldExists("glpi_config", "ID")) {
 
 	$query = "ALTER TABLE `glpi_config` CHANGE `config_id` `ID` INT( 11 ) NOT NULL AUTO_INCREMENT ";
-	$db->query($query) or die("4".$lang["update"][90].$db->error());
+	$db->query($query) or die("4 ".$lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_computers", "location")) {
 	$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `location` ) ";
-	$db->query($query) or die("5".$lang["update"][90].$db->error());
+	$db->query($query) or die("5 ".$lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_computers", "os")) {
 	$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `os` ) ";
-	$db->query($query) or die("6".$lang["update"][90].$db->error());
+	$db->query($query) or die("6 ".$lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_computers", "type")) {
 	$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `type` ) ";
-	$db->query($query) or die("7".$lang["update"][90].$db->error());
+	$db->query($query) or die("7 ".$lang["update"][90].$db->error());
 }
 if(!isIndex("glpi_computers", "hdtype")) {
 	$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `hdtype` ) ";
-	$db->query($query) or die("8".$lang["update"][90].$db->error());
+	$db->query($query) or die("8 ".$lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_computers", "moboard")) {
 	$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `moboard` ) ";
-	$db->query($query) or die("9".$lang["update"][90].$db->error());
+	$db->query($query) or die("9 ".$lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_computers", "gfxcard")) {
 	$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `gfxcard` ) ";
-	$db->query($query) or die("10".$lang["update"][90].$db->error());
+	$db->query($query) or die("10 ".$lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_computers", "processor")) {
 	$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `processor` ) ";
-	$db->query($query) or die("11".$lang["update"][90].$db->error());
+	$db->query($query) or die("11 ".$lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_followups", "tracking")) {
 	$query = "ALTER TABLE `glpi_followups` ADD INDEX ( `tracking` ) ";
-	$db->query($query) or die("12".$lang["update"][90].$db->error());
+	$db->query($query) or die("12 ".$lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_networking", "location")) {
 	$query = "ALTER TABLE `glpi_networking` ADD INDEX ( `location` ) ";
-	$db->query($query) or die("13".$lang["update"][90].$db->error());
+	$db->query($query) or die("13 ".$lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_networking_ports", "on_device")) {
 	$query = "ALTER TABLE `glpi_networking_ports` ADD INDEX ( `on_device` , `device_type` )";
-	$db->query($query) or die("14".$lang["update"][90].$db->error());
+	$db->query($query) or die("14 ".$lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_peripherals", "type")) {
 	$query = "ALTER TABLE `glpi_peripherals` ADD INDEX ( `type` ) ";
-	$db->query($query) or die("14".$lang["update"][90].$db->error());
+	$db->query($query) or die("14 ".$lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_peripherals", "location")) {
 	$query = "ALTER TABLE `glpi_peripherals` ADD INDEX ( `location` ) ";
-	$db->query($query) or die("15".$lang["update"][90].$db->error());
+	$db->query($query) or die("15 ".$lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_printers", "location")) {
 	$query = "ALTER TABLE `glpi_printers` ADD INDEX ( `location` ) ";
-	$db->query($query) or die("16".$lang["update"][90].$db->error());
+	$db->query($query) or die("16 ".$lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_tracking", "computer")) {
 	$query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `computer` ) ";
-	$db->query($query) or die("17".$lang["update"][90].$db->error());
+	$db->query($query) or die("17 ".$lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_tracking", "author")) {
 	$query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `author` ) ";
-	$db->query($query) or die("18".$lang["update"][90].$db->error());
+	$db->query($query) or die("18 ".$lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_tracking", "assign")) {
 	$query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `assign` ) ";
-	$db->query($query) or die("19".$lang["update"][90].$db->error());
+	$db->query($query) or die("19 ".$lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_tracking", "date")) {
 	$query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `date` ) ";
-	$db->query($query) or die("20".$lang["update"][90].$db->error());
+	$db->query($query) or die("20 ".$lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_tracking", "closedate")) {
 	$query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `closedate` ) ";
-	$db->query($query) or die("21".$lang["update"][90].$db->error());
+	$db->query($query) or die("21 ".$lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_tracking", "status")) {
 	$query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `status` ) ";
-	$db->query($query) or die("22".$lang["update"][90].$db->error());
+	$db->query($query) or die("22 ".$lang["update"][90].$db->error());
 }
+
 
 if(!TableExists("glpi_dropdown_firmware")) {
 	$query = " CREATE TABLE `glpi_dropdown_firmware` (`ID` INT NOT NULL AUTO_INCREMENT ,`name` VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( `ID` ))";
-	$db->query($query) or die("23".$lang["update"][90].$db->error());
+	$db->query($query) or die("23 ".$lang["update"][90].$db->error());
 }
 
 if(!FieldExists("glpi_networking","firmware")) {
 	$query = "ALTER TABLE `glpi_networking` ADD `firmware` INT(11);";
-	$db->query($query) or die("24".$lang["update"][90].$db->error());
+	$db->query($query) or die("24 ".$lang["update"][90].$db->error());
 }
 
 if(!FieldExists("glpi_tracking","realtime")) {
 	$query = "ALTER TABLE `glpi_tracking` ADD `realtime` FLOAT NOT NULL;";
-	$db->query($query) or die("25".$lang["update"][90].$db->error());
+	$db->query($query) or die("25 ".$lang["update"][90].$db->error());
 }
-if(!FieldExists("glpi_tracking","flags_usb")) {
+
+if(!FieldExists("glpi_printers","flags_usb")) {
 	$query = "ALTER TABLE `glpi_printers` ADD `flags_usb` TINYINT DEFAULT '0' NOT NULL AFTER `flags_par`";
-	$db->query($query) or die("26".$lang["update"][90].$db->error());
+	$db->query($query) or die("26 ".$lang["update"][90].$db->error());
 }
 
 if(!FieldExists("glpi_licenses","expire")) {
 	$query = "ALTER TABLE `glpi_licenses` ADD `expire` date default NULL";
-	$db->query($query) or die("27".$lang["update"][90].$db->error());
+	$db->query($query) or die("27 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_computers", "ramtype")) {
+$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `ramtype` ) ";
+$db->query($query) or die("28 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_computers", "network")) {
+$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `network` ) ";
+$db->query($query) or die("29 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_computers", "sndcard")) {
+$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `sndcard` ) ";
+$db->query($query) or die("30 ".$lang["update"][90].$db->error());
+}
+if(!isIndex("glpi_computers", "maintenance")) {
+$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `maintenance` ) ";
+$db->query($query) or die("31 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_licenses", "sID")) {
+$query = "ALTER TABLE `glpi_licenses` ADD INDEX ( `sID` ) ";
+$db->query($query) or die("32 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_followups", "author")) {
+$query = "ALTER TABLE `glpi_followups` ADD INDEX ( `author` ) ";
+$db->query($query) or die("33 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_monitors", "type")) {
+$query = "ALTER TABLE `glpi_monitors` ADD INDEX ( `type` ) ";
+$db->query($query) or die("34 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_monitors", "location")) {
+$query = "ALTER TABLE `glpi_monitors` ADD INDEX ( `location` ) ";
+$db->query($query) or die("35 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_monitors", "maintenance")) {
+$query = "ALTER TABLE `glpi_monitors` ADD INDEX ( `maintenance` ) ";
+$db->query($query) or die("36 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_monitors", "type")) {
+$query = "ALTER TABLE `glpi_monitors` ADD INDEX ( `type` ) ";
+$db->query($query) or die("37 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_networking", "type")) {
+$query = "ALTER TABLE `glpi_networking` ADD INDEX ( `type` ) ";
+$db->query($query) or die("38 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_networking", "firmware")) {
+$query = "ALTER TABLE `glpi_networking` ADD INDEX ( `firmware` ) ";
+$db->query($query) or die("39 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_networking_wire", "end1")) {
+$query = "ALTER TABLE `glpi_networking_wire` ADD INDEX ( `end1` ) ";
+$db->query($query) or die("40 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_networking_wire", "end2")) {
+$query = "ALTER TABLE `glpi_networking_wire` ADD INDEX ( `end2` ) ";
+$db->query($query) or die("41 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_printers", "type")) {
+$query = "ALTER TABLE `glpi_printers` ADD INDEX ( `type` ) ";
+$db->query($query) or die("42 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_printers", "maintenance")) {
+$query = "ALTER TABLE `glpi_printers` ADD INDEX ( `maintenance` ) ";
+$db->query($query) or die("43 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_software", "platform")) {
+$query = "ALTER TABLE `glpi_software` ADD INDEX ( `platform` ) ";
+$db->query($query) or die("44 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_software", "location")) {
+$query = "ALTER TABLE `glpi_software` ADD INDEX ( `location` ) ";
+$db->query($query) or die("45 ".$lang["update"][90].$db->error());
+}
+
+if(!TableExists("glpi_dropdown_netpoint")) {
+	$query = " CREATE TABLE `glpi_dropdown_netpoint` (`ID` INT NOT NULL AUTO_INCREMENT ,`location` INT NOT NULL ,`name` VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( `ID` ))";
+	$db->query($query) or die("46 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_dropdown_netpoint", "location")) {
+$query = "ALTER TABLE `glpi_dropdown_netpoint` ADD INDEX ( `location` ) ";
+$db->query($query) or die("47 ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_networking_ports","netpoint")) {
+	$query = "ALTER TABLE `glpi_networking_ports` ADD `netpoint` INT default NULL";
+	$db->query($query) or die("27 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_networking_ports", "netpoint")) {
+$query = "ALTER TABLE `glpi_networking_ports` ADD INDEX ( `netpoint` ) ";
+$db->query($query) or die("47 ".$lang["update"][90].$db->error());
 }
 
 }
