@@ -763,8 +763,7 @@ function showFormSu() {
 }
 
 //Debut du script
-	
-	session_start();
+	if(!isset($_SESSION)) session_start();
 	if(empty($_SESSION["dict"])) $_SESSION["dict"] = "french";
 	global $lang;
 	loadLang($_SESSION["dict"]);
