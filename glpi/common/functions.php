@@ -746,7 +746,11 @@ function showEvents($target,$order,$sort) {
 		if ($item=="-1" || $item=="0") {
 			echo $item;
 		} else {
-			echo "<a href=\"".$cfg_install["root"]."/$itemtype/".$itemtype."-info-form.php?ID=";
+				if ($itemtype=="reservation"){
+				echo "<a href=\"".$cfg_install["root"]."/$itemtype/index.php?show=resa&ID=";
+				} else {
+				echo "<a href=\"".$cfg_install["root"]."/$itemtype/".$itemtype."-info-form.php?ID=";
+				}
 			echo $item;
 			echo "\">$item</a>";
 		}			

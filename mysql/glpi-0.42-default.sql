@@ -310,7 +310,7 @@ DROP TABLE IF EXISTS glpi_event_log;
 CREATE TABLE glpi_event_log (
     ID int(11) NOT NULL auto_increment,
     item int(11) DEFAULT '0' NOT NULL,
-    itemtype varchar(10) NOT NULL,
+    itemtype varchar(20) NOT NULL,
     date datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
     service varchar(20),
     level tinyint(4) DEFAULT '0' NOT NULL,

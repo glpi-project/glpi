@@ -871,7 +871,13 @@ if(!FieldExists("glpi_config","default_language")) {
 
 }
 
+// Augmentation taille itemtype
+	$query = "ALTER TABLE `glpi_event_log` CHANGE `itemtype` `itemtype` VARCHAR(20) NOT NULL ;";
+	$db->query($query) or die("4204 ".$lang["update"][90].$db->error());
 
+	// Correction des itemtype tronqués
+	$query = "UPDATE `glpi_event_log` SET `itemtype` = 'reservation' WHERE `itemtype` = 'reservatio' ;";
+	$db->query($query) or die("4204 ".$lang["update"][90].$db->error());
 
 
 // Mise a jour du numéro de version et de la langue par defaut---- A LAISSER 0 LA FIN
