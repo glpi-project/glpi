@@ -41,6 +41,12 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_setup.php");
+include ($phproot . "/glpi/includes_computers.php");
+include ($phproot . "/glpi/includes_printers.php");
+include ($phproot . "/glpi/includes_monitors.php");
+include ($phproot . "/glpi/includes_peripherals.php");
+include ($phproot . "/glpi/includes_networking.php");
+
 
 checkAuthentication("admin");
 if (isset($_POST["status"])) $status=$_POST["status"];
@@ -58,6 +64,7 @@ markJob ($_POST["ID"],$status,$opt);
 
 $referer=$_SERVER["HTTP_REFERER"];
 $referer=preg_replace("/\?ID=[0-9]*/","",$referer);
+
 header("Location: $referer?ID=".$_POST["ID"]);
 
 ?>

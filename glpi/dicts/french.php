@@ -35,6 +35,7 @@ Christian Bauer
 
 // French test Dictionary 
 $lang["common"][0] = "Sans nom";
+$lang["common"][1] = "Matériel";
 
 //Login
 

@@ -73,6 +73,7 @@ class Job {
 			$this->status = $db->result($result, 0, "status");
 			$this->author = unhtmlentities($db->result($result, 0, "author"));
 			$this->assign = unhtmlentities($db->result($result, 0, "assign"));
+			$this->device_type = $db->result($result, 0, "device_type");
 			$this->computer = $db->result($result, 0, "computer");
 			if (!$purecontent) {
 				$this->contents = nl2br($db->result($result, 0, "contents"));
@@ -85,7 +86,7 @@ class Job {
 			$this->realtime = $db->result($result, 0, "realtime");
 		
 			// Set computername
-			if ($this->is_group == "yes") {
+/*			if ($this->is_group == "yes") {
 				$scndquery = "SELECT name FROM glpi_groups WHERE (ID = $this->computer)";
 			} else {
 				$scndquery = "SELECT name FROM glpi_computers WHERE (ID = $this->computer)";
@@ -98,6 +99,16 @@ class Job {
 				$this->computername = "N/A";
 				$this->computerfound=0;				
 			}		
+*/
+			$m= new CommonItem;
+			if ($m->getfromDB($this->device_type,$this->computer))
+				$this->computername=$m->getName();
+
+			if ($this->computername==""){
+				$this->computername = "N/A";
+				$this->computerfound=0;				
+			} else 	$this->computerfound=1;	
+
 			// Set number of followups
 			$thrdquery = "SELECT * FROM glpi_followups WHERE (tracking = $this->ID)";
 			$thrdresult = $db->query($thrdquery);
@@ -121,7 +132,7 @@ class Job {
 		
 		// dump into database
 		$db = new DB;
-		$query = "INSERT INTO glpi_tracking VALUES (NULL, '$this->date', '$this->closedate', '$this->status','$this->author', '$this->assign', $this->computer, '$this->contents', '$this->priority', '$this->isgroup','$this->uemail', '$this->emailupdates','$this->realtime')";
+		$query = "INSERT INTO glpi_tracking VALUES (NULL, '$this->date', '$this->closedate', '$this->status','$this->author', '$this->assign', $this->device_type, $this->computer, '$this->contents', '$this->priority', '$this->isgroup','$this->uemail', '$this->emailupdates','$this->realtime')";
 
 		if ($result = $db->query($query)) {
 			return true;

@@ -40,6 +40,12 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_tracking.php");
+include ($phproot . "/glpi/includes_computers.php");
+include ($phproot . "/glpi/includes_printers.php");
+include ($phproot . "/glpi/includes_monitors.php");
+include ($phproot . "/glpi/includes_peripherals.php");
+include ($phproot . "/glpi/includes_networking.php");
+
 
 checkAuthentication("normal");
 
@@ -69,13 +75,13 @@ if (isset($tab["show"]))
 	if(isset($tab["contains"]))
 	{
 		searchFormTracking($tab["show"],$tab["contains"]);
-		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$tab["show"],$tab["contains"],"",$tab["start"]);
+		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$tab["show"],$tab["contains"],"","",$tab["start"]);
 		
 	}
 	else
 	{
 		searchFormTracking($tab["show"],"");
-		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$tab["show"],"","",$tab["start"]);
+		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$tab["show"],"","","",$tab["start"]);
 		
 	}
 }
@@ -84,14 +90,13 @@ else
 	if(isset($tab["contains"]))
 	{
 		searchFormTracking("",$tab["contains"]);
-		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"",$tab["contains"],"",$tab["start"]);
+		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"",$tab["contains"],"","",$tab["start"]);
 		
 	}
 	else
 	{
 		searchFormTracking("","");
-		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"","","",$tab["start"]);
-		
+		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"","","","",$tab["start"]);
 	}
 }
 commonFooter();
