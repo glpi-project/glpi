@@ -206,7 +206,7 @@ switch($table){
 		$query.=")";
 		$query.= " ORDER by glpi_computers.ID";
 */		
-		$query = "(select glpi_computers.*, CONCAT(glpi_software.name, glpi_software.version) AS soft, glpi_licenses.serial as softserial, ";
+		$query = "select glpi_computers.*, CONCAT(glpi_software.name, glpi_software.version) AS soft, glpi_licenses.serial as softserial, ";
 		$query.= " glpi_monitors.name as monname, glpi_monitors.type as montype, glpi_monitors.serial as monserial, ";
 		$query.= " glpi_printers.name as printname, glpi_printers.type as printtype, glpi_printers.serial as printserial, ";
 		$query.= " glpi_peripherals.name as periphname, glpi_peripherals.type as periphtype, glpi_peripherals.serial as periphserial, ";
@@ -219,7 +219,6 @@ switch($table){
 		$query.= " LEFT JOIN glpi_monitors ON (glpi_connect_wire.end2 = glpi_monitors.ID AND glpi_connect_wire.type = '4') ";
 		$query.= " LEFT JOIN glpi_peripherals ON (glpi_connect_wire.end2 = glpi_peripherals.ID AND glpi_connect_wire.type = '5') ";
 		$query.= " LEFT JOIN glpi_printers ON (glpi_connect_wire.end2 = glpi_printers.ID AND glpi_connect_wire.type = '3') ";
-		$query.=")";
 		$query.= " ORDER by glpi_computers.ID";
 		
 		//echo $query;
