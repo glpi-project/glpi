@@ -1264,7 +1264,7 @@ $query= "CREATE TABLE `glpi_contract_device` (
   `device_type` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
   KEY `FK_contract` (`FK_contract`),
-  KEY `FK_device` (`FK_device`,`device_type`),
+  KEY `FK_device` (`FK_device`,`device_type`)
 ) TYPE=MyISAM;
 ";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_contract_device ".$lang["update"][90].$db->error());
