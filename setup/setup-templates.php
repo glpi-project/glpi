@@ -65,7 +65,7 @@ elseif(isset($tab["update"]))
 	checkAuthentication("admin");
 	updateTemplate($tab);
 	logEvent(0,"Templates", 5, "setup", $_SESSION["glpiname"]." updated template ".$tab["ID"].".");
-	header("Location: $_SERVER[HTTP_REFERER]?done");
+	header("Location: ".$_SERVER["PHP_SELF"]);
 }
 elseif(isset($tab["showform"]))
 {
