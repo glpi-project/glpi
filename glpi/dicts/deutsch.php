@@ -201,6 +201,7 @@ $lang["job"][18]        = "old";
 
 $lang["computers"][0]	= "Computer beif&uuml;gen...";
 $lang["computers"][1]	= "Anwenders Name";
+$lang["computers"][6]	= "Seriennummer";
 $lang["computers"][7]	= "Name";
 $lang["computers"][8]	= "Typ";
 $lang["computers"][9]	= "Betriebssystem";

@@ -204,6 +204,7 @@ $lang["job"][18]        = "ancienne";
 
 $lang["computers"][0]	= "Ajouter ordinateur";
 $lang["computers"][1]   = "Identifiant";
+$lang["computers"][6]	= "N° s&eacute;rie";
 $lang["computers"][7]	= "Nom";
 $lang["computers"][8]	= "Type";
 $lang["computers"][9]	= "OS";
