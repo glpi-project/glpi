@@ -34,6 +34,8 @@ Christian Bauer, turin@incubus.de
 
 
 // French test Dictionary 
+$lang["common"][0] = "Sans nom";
+
 //Login
 
 $lang["login"][0] = "Login impossible, v&eacute;rifiez que votre navigateur accepte les cookies.";
@@ -121,6 +123,8 @@ $lang["connect"][13]	= "Sur une imprimante qui";
 $lang["connect"][14]	= "Sur un périphérique qui";
 $lang["connect"][15]	= "Sur un écran qui";
 $lang["connect"][16]	= "Aucun élément trouvé";
+$lang["connect"][17]	= "Mise à jour automatique de la prise réseau qui n'&eacute;tait pas renseignée";
+$lang["connect"][18]	= "Attention !! Les prises réseaux des deux mat&eacute;riels ne correspondent pas.";
 
 //header menu
 
@@ -303,7 +307,7 @@ $lang["networking"][21]	= "Logical Number";
 $lang["networking"][22]	= "Interface Address"; 
 $lang["networking"][23]	= "Interface MAC"; 
 $lang["networking"][24]	= "Connection"; 
-$lang["networking"][25]	= "on"; 
+$lang["networking"][25]	= "sur"; 
 $lang["networking"][26]	= "Non connect&eacute;."; 
 $lang["networking"][27]	= "Port de connection"; 
 $lang["networking"][28]	= "(Etape 1)"; 

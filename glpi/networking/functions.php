@@ -743,7 +743,9 @@ function showConnection ($ID) {
 		echo "\n\n<table border='0' cellspacing='0' width='100%'><tr>";
 		echo "<td><b>";
 		echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ID=".$netport->fields["ID"]."\">";
-		echo $netport->fields["name"];
+		if (rtrim($netport->fields["name"])!="")
+			echo $netport->fields["name"];
+		else echo $lang["common"][0];
 		echo "</a></b>";
 		echo " ".$lang["networking"][25]." <b>";
 		if ($netport->fields["device_type"]==1) {
@@ -887,7 +889,7 @@ function listConnectorPorts($target,$input) {
 		echo "</table></div>";
 
 		echo "\n\n<br><div align='center'><table border='0' cellpadding='2' width='90%'>";
-		echo "<tr><th>#</th><th>".$lang["networking"][0]."</th>";
+		echo "<tr><th>#</th><th>".$lang["networking"][0]."</th><th>".$lang["networking"][51]."</th>";
 		echo "<th>".$lang["networking"][14]."</th><th>".$lang["networking"][15]."</th>";
 		echo "<th>".$lang["networking"][16]."</th><th>".$lang["networking"][17].":</th></tr>\n";
 
@@ -903,9 +905,10 @@ function listConnectorPorts($target,$input) {
 			echo $data["name"];
 			echo "</a>";
 			echo "</td>";
+			echo "<td>".getDropdownName("glpi_dropdown_netpoint",$data["netpoint"])."</td>";			
 			echo "<td>".$data["ifaddr"]."</td>";
 			echo "<td>".$data["ifmac"]."</td>";
-			echo "<td>".$data["iface"]."</td>";
+			echo "<td>".getDropdownName("glpi_dropdown_iface",$data["iface"])."</td>";
 			echo "<td>";
 
 			if ($contact->getContact($pID2)) {
@@ -916,9 +919,9 @@ function listConnectorPorts($target,$input) {
 				echo "<td>";
 				echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ID=".$netport->fields["ID"]."\">";
 				echo $netport->fields["name"];
-				echo "</a>";
-				echo " on ";
-				echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$netport->device_ID."\">";
+				echo "</a> ";
+				echo $lang["networking"][25];
+				echo " <a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$netport->device_ID."\">";
 				echo $netport->device_name." (".$netport->device_ID.")";
 				echo "</a>";
 				echo "</td>";
@@ -948,9 +951,32 @@ function makeConnector($sport,$dport) {
 	GLOBAL $cfg_layout, $cfg_install, $lang;
 	
 	$db = new DB;
+	// Get netpoint for $sport and $dport
+	$ps=new Netport;
+	$ps->getFromDB($sport);
+	$nps=$ps->fields["netpoint"];
+	$pd=new Netport;
+	$pd->getFromDB($dport);
+	$npd=$pd->fields["netpoint"];
+	// Update unknown netpoint
+	$updates[0]="netpoint";
+	if (empty($nps)&&!empty($npd)){
+		$ps->fields["netpoint"]=$npd;
+		$ps->updateInDB($updates);
+		echo "<div align='center'><b>".$lang["connect"][17]."</b></div>";
+		}
+	else if (!empty($nps)&&empty($npd)){
+		$pd->fields["netpoint"]=$nps;		
+		$pd->updateInDB($updates);
+		echo "<div align='center'><b>".$lang["connect"][17]."</b></div>";
+		}
+	else if ($nps!=$npd){
+		echo "<div align='center'><b>".$lang["connect"][18]."</b></div>";
+		}
+	
 	$query = "INSERT INTO glpi_networking_wire VALUES (NULL,$sport,$dport)";
 	if ($result = $db->query($query)) {
-		echo "<div align='center'><b>".$lang["networking"][44]." ".$sport." ".$lang["networking"][45]." ".$dport."</b></div>";
+		echo "<br><div align='center'><b>".$lang["networking"][44]." ".$sport." ".$lang["networking"][45]." ".$dport."</b></div>";
 		return true;
 	} else {
 		return false;
