@@ -567,8 +567,8 @@ function step7()
 	echo "<tr><td>LDAP configuration</td><td></td></tr>";
 	echo "<tr><td>LDAP Host</td><td><input type=\"text\" name=\"ldap_host\" value=\"". $db->result($result,0,"ldap_host") ."\"/></td></tr>";
 	echo "<tr><td>Basedn</td><td><input type=\"text\" name=\"basedn\" value=\"". $db->result($result,0,"ldap_basedn") ."\" /></td></tr>";
-	echo "<tr><td>rootdn (for non anonymous binds)</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"". $db->result($result,0,"rootdn") ."\" /></td></tr>";
-	echo "<tr><td>Pass (for non-anonymous binds)</td><td><input type=\"text\" name=\"ldap_pass\" value=\"". $db->result($result,0,"pass") ."\" /></td></tr>";
+	echo "<tr><td>rootdn (for non anonymous binds)</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"". $db->result($result,0,"ldap_rootdn") ."\" /></td></tr>";
+	echo "<tr><td>Pass (for non-anonymous binds)</td><td><input type=\"text\" name=\"ldap_pass\" value=\"". $db->result($result,0,"ldap_pass") ."\" /></td></tr>";
 	echo "<tr><td>IMAP configuration</td><td></td></tr>";
 	echo "<tr><td>IMAP Auth Server</td><td><input type=\"text\" name=\"imap_auth_server\" value=\"". $db->result($result,0,"imap_auth_server") ."\" /></td></tr>";
 	echo "<tr><td>IMAP Host Name (users email will be login@thishost)</td><td><input type=\"text\" name=\"imap_host\" value=\"". $db->result($result,0,"imap_host") ."\" /></td></tr>";
