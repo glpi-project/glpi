@@ -51,7 +51,7 @@ function titleComputers(){
 
 }
 
-function showComputerOnglets($target){
+function showComputerOnglets($target,$withtemplate){
 	global $lang;
 	echo "<div align='center'><table class='tab_cadre'><tr>";
 	echo "<th><a href='$target&onglet=1'>".$lang["title"][26]."</a></th>";
@@ -59,6 +59,7 @@ function showComputerOnglets($target){
 	echo "<th><a href='$target&onglet=3'>".$lang["title"][27]."</a></th>";
 	echo "<th><a href='$target&onglet=4'>".$lang["Menu"][26]."</a></th>";
 	echo "<th><a href='$target&onglet=5'>".$lang["title"][25]."</a></th>";
+	if(empty($withtemplate))
 	echo "<th><a href='$target&onglet=6'>".$lang["title"][28]."</a></th>";
 
 	echo "</tr></table></div><br>";

@@ -168,20 +168,31 @@ if (isset($_GET['onglet'])) {
 	commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
 	//show computer form to add
 	if (!empty($tab["withtemplate"])) {
+		showComputerOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"]);
 		if (showComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
-		
 			if (!empty($tab["ID"])){
-			showDocumentAssociated(COMPUTER_TYPE,$tab["ID"],$tab["withtemplate"]);
-			showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",COMPUTER_TYPE,$tab["ID"],1,$tab["withtemplate"]);
-			showPorts($tab["ID"], COMPUTER_TYPE,$tab["withtemplate"]);
-			if ($tab["withtemplate"]!=2)
-				showPortsAdd($tab["ID"],COMPUTER_TYPE);
-		
-			showSoftwareInstalled($tab["ID"],$tab["withtemplate"]);
-			showContractAssociated(COMPUTER_TYPE,$tab["ID"],$tab["withtemplate"]);
+			switch($_SESSION['glpi_onglet']){
+			case 2 :			
+				showSoftwareInstalled($tab["ID"],$tab["withtemplate"]);
+				break;
+			case 3 :
+				showPorts($tab["ID"], COMPUTER_TYPE,$tab["withtemplate"]);
+				if ($tab["withtemplate"]!=2)
+					showPortsAdd($tab["ID"],COMPUTER_TYPE);
+				break;					
+			case 4 :
+				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",COMPUTER_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+				showContractAssociated(COMPUTER_TYPE,$tab["ID"],$tab["withtemplate"]);
+				break;
+			case 5 :
+				showDocumentAssociated(COMPUTER_TYPE,$tab["ID"],$tab["withtemplate"]);
+				break;
+			default :
+				showDeviceComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);			
+				break;
 			}
 		}
-		
+	}
 	} else {
 	if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
 		$j=new Job;
@@ -189,7 +200,7 @@ if (isset($_GET['onglet'])) {
 			if ($val==1) $j->deleteInDB($key);
 			}
 		}
-		showComputerOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"]);
+		showComputerOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"]);
 		if (showComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])) {
 			switch($_SESSION['glpi_onglet']){
 			case 2 :
@@ -220,6 +231,4 @@ if (isset($_GET['onglet'])) {
 	}
 	commonFooter();
 }
-
-
 ?>
