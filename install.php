@@ -462,7 +462,6 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		foreach ( explode(";\n", "$sql_query") as $sql_line) {
 			if (get_magic_quotes_runtime()) $sql_line=stripslashes_deep($sql_line);
 			$db->query($sql_line);
-			echo $sql_line;
 		}
 	
 	}
