@@ -298,7 +298,9 @@ $lang["networking"][42] = "identifiant";
 $lang["networking"][43] = "R&eacute;seau";
 $lang["networking"][44] = "Le port";
 $lang["networking"][45] = "est maintenant connect&eacute; sur le port";
-
+$lang["networking"][46] = "Ajouter  plusieurs ports..."; 
+$lang["networking"][47] = "De"; 
+$lang["networking"][48] = "A";
 
 // Printers
 $lang["printers"][0]	= "Ajouter imprimante...";
