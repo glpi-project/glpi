@@ -266,7 +266,7 @@ function showKbCategories($parentID=0)
 	// show kb catégories
 	// ok
 	
-	global $lang;
+	global $lang,$HTMLRel;
 	
 	$query = "select * from glpi_dropdown_kbcategories where (parentID = $parentID) order by name asc";
 
@@ -284,7 +284,13 @@ function showKbCategories($parentID=0)
 			$name = $row["name"];
 			$ID = $row["ID"];
 
-			echo "<li><b><a href=\"".$_SERVER["PHP_SELF"]."?toshow=$ID\">SHOW</a> <a href=\"".$_SERVER["PHP_SELF"]."?tohide=$ID\">HIDE</a> $name</b>\n";
+			echo "<li><b>";
+			if ($_SESSION["kb_show"][$ID]=='Y')
+			echo "<a href=\"".$_SERVER["PHP_SELF"]."?tohide=$ID\"><img src='".$HTMLRel."pics/puce-down.gif'></a>";
+			else 
+			echo "<a href=\"".$_SERVER["PHP_SELF"]."?toshow=$ID\"><img src='".$HTMLRel."pics/puce.gif'></a>";
+			
+			echo " $name</b>\n";
 			if ($_SESSION["kb_show"][$ID]=='Y'){
 	  	  showKbItemAll($ID);
 			showKbCategories($ID);
@@ -497,7 +503,7 @@ function faqShowCategoriesall($target,$contains)
 
 function faqShowCategories($parentID=0)
 {
-	
+	global $HTMLRel;
 		
 	$catNumbers = getFAQCategories();
 	$query = "select * from glpi_dropdown_kbcategories where (parentID = $parentID) order by name asc";
@@ -521,7 +527,13 @@ function faqShowCategories($parentID=0)
 				if(in_array($ID, $catNumbers))
 				{
 				
-				echo "<li><b><a href=\"".$_SERVER["PHP_SELF"]."?show=faq&toshow=$ID\">SHOW</a> <a href=\"".$_SERVER["PHP_SELF"]."?show=faq&tohide=$ID\">HIDE</a> $name</b>\n";
+				echo "<li><b>";
+				if ($_SESSION["kb_show"][$ID]=='Y')
+					echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&tohide=$ID\"><img src='".$HTMLRel."pics/puce-down.gif'></a>";
+				else 
+					echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&toshow=$ID\"><img src='".$HTMLRel."pics/puce.gif'></a>";
+
+				echo "</a> $name</b>\n";
 				if ($_SESSION["kb_show"][$ID]=='Y'){
 	  				faqShowItems($ID);
 					faqShowCategories($ID);
