@@ -37,7 +37,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-checkauthentication("admin");
+checkauthentication("super-admin");
 
 commonHeader("Setup",$_SERVER["PHP_SELF"]);
 
