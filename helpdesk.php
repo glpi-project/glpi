@@ -91,7 +91,7 @@ elseif (isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"]
 	}
 }
 else {
-printHelpDesk($_SESSION["glpiname"]);
+printHelpDesk($_SESSION["glpiname"],1);
 }
 
 helpFooter();
