@@ -53,16 +53,16 @@ function searchFormperipheral() {
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
 
-	$option["name"]				= $lang["peripherals"][5];
-	$option["ID"]				= $lang["peripherals"][23];
-	$option["location"]			= $lang["peripherals"][6];
-	$option["type"]				= $lang["peripherals"][9];
-	$option["serial"]			= $lang["peripherals"][10];
-	$option["otherserial"]		= $lang["peripherals"][11]	;
-	$option["comments"]			= $lang["peripherals"][12];
-	$option["contact"]			= $lang["peripherals"][8];
-	$option["contact_num"]		= $lang["peripherals"][7];
-	$option["date_mod"]			= $lang["peripherals"][16];
+	$option["periph.name"]				= $lang["peripherals"][5];
+	$option["periph.ID"]				= $lang["peripherals"][23];
+	$option["glpi_dropdown_locations.name"]			= $lang["peripherals"][6];
+	$option["glpi_type_peripherals"]				= $lang["peripherals"][9];
+	$option["periph.serial"]			= $lang["peripherals"][10];
+	$option["periph.otherserial"]		= $lang["peripherals"][11]	;
+	$option["periph.comments"]			= $lang["peripherals"][12];
+	$option["periph.contact"]			= $lang["peripherals"][8];
+	$option["periph.contact_num"]		= $lang["peripherals"][7];
+	$option["periph.date_mod"]			= $lang["peripherals"][16];
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/peripherals/peripherals-search.php\">";
 	echo "<div align='center'><table  width='750' class='tab_cadre'>";
@@ -113,7 +113,9 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 	if (!$order) {
 		$order = "ASC";
 	}
-	$query = "SELECT * FROM glpi_peripherals WHERE $where ORDER BY $sort $order";
+	$query = "select periph.ID from glpi_peripherals as periph LEFT JOIN glpi_dropdown_locations on periph.location=glpi_dropdown_locations.ID ";
+	$query .= "LEFT JOIN glpi_type_peripherals on periph.type = glpi_type_peripherals.ID ";
+	$query .= "where $where ORDER BY $sort $order";
 
 	// Get it from database	
 	$db = new DB;
@@ -122,7 +124,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 
 		// Limit the result, if no limit applies, use prior result
 		if ($numrows > $cfg_features["list_limit"]) {
-			$query_limit = "SELECT * FROM glpi_peripheral WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
+			$query_limit = $query ." LIMIT $start,".$cfg_features["list_limit"]." ";
 			$result_limit = $db->query($query_limit);
 			$numrows_limit = $db->numrows($result_limit);
 		} else {
@@ -139,7 +141,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			if ($sort=="name") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.name&order=ASC&start=$start\">";
 			echo $lang["peripherals"][5]."</a></th>";
 
 			// Location			
@@ -147,7 +149,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			if ($sort=="location") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=location&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.location&order=ASC&start=$start\">";
 			echo $lang["peripherals"][6]."</a></th>";
 
 			// Type
@@ -155,7 +157,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			if ($sort=="type") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=type&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.type&order=ASC&start=$start\">";
 			echo $lang["peripherals"][9]."</a></th>";
 
 			// Last modified		
@@ -163,7 +165,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			if ($sort=="date_mod") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=date_mod&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.date_mod&order=DESC&start=$start\">";
 			echo $lang["peripherals"][16]."</a></th>";
 
 			// Contact person
@@ -171,7 +173,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			if ($sort=="contact") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=contact&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.contact&order=ASC&start=$start\">";
 			echo $lang["peripherals"][8]."</a></th>";
 
 			echo "</tr>";

@@ -58,16 +58,16 @@ function searchFormPrinters() {
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
 
-	$option["name"]				= $lang["printers"][5];
-	$option["ID"]				= $lang["printers"][19];
-	$option["location"]			= $lang["printers"][6];
-	$option["type"]				= $lang["printers"][9];
-	$option["serial"]			= $lang["printers"][10];
-	$option["otherserial"]		= $lang["printers"][11]	;
-	$option["comments"]			= $lang["printers"][12];
-	$option["contact"]			= $lang["printers"][8];
-	$option["contact_num"]		= $lang["printers"][7];
-	$option["date_mod"]			= $lang["printers"][16];
+	$option["printer.name"]				= $lang["printers"][5];
+	$option["printer.ID"]				= $lang["printers"][19];
+	$option["glpi_dropdown_locations.name"]			= $lang["printers"][6];
+	$option["glpi_type_printers.name"]				= $lang["printers"][9];
+	$option["printer.serial"]			= $lang["printers"][10];
+	$option["printer.otherserial"]		= $lang["printers"][11]	;
+	$option["printer.comments"]			= $lang["printers"][12];
+	$option["printer.contact"]			= $lang["printers"][8];
+	$option["printer.contact_num"]		= $lang["printers"][7];
+	$option["printer.date_mod"]			= $lang["printers"][16];
 	
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/printers/printers-search.php\">";
@@ -120,8 +120,9 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 	if (!$order) {
 		$order = "ASC";
 	}
-	$query = "SELECT * FROM glpi_printers WHERE $where ORDER BY $sort";
-	
+	$query = "select printer.ID from glpi_printers as printer LEFT JOIN glpi_dropdown_locations on printer.location=glpi_dropdown_locations.ID ";
+	$query .= "LEFT JOIN glpi_type_printers on printer.type = glpi_type_printers.ID ";
+	$query .= "where $where ORDER BY $sort $order";
 	// Get it from database	
 	$db = new DB;
 	if ($result = $db->query($query)) {
@@ -129,7 +130,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 		// Limit the result, if no limit applies, use prior result
 		if ($numrows>$cfg_features["list_limit"]) {
-			$query_limit = "SELECT * FROM glpi_printers WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
+			$query_limit = $query ." LIMIT $start,".$cfg_features["list_limit"]." ";
 			$result_limit = $db->query($query_limit);
 			$numrows_limit = $db->numrows($result_limit);
 
@@ -148,7 +149,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="name") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=printer.name&order=ASC&start=$start\">";
 			echo $lang["printers"][5]."</a></th>";
 
 			// Location			
@@ -156,7 +157,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="location") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=location&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=printer.location&order=ASC&start=$start\">";
 			echo $lang["printers"][6]."</a></th>";
 
 			// Type
@@ -164,7 +165,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="type") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=type&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=printer.type&order=ASC&start=$start\">";
 			echo $lang["printers"][9]."</a></th>";
 
 			// Last modified		
@@ -172,7 +173,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="date_mod") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=date_mod&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=printer.date_mod&order=DESC&start=$start\">";
 			echo $lang["printers"][16]."</a></th>";
 	
 			echo "</tr>";
@@ -202,7 +203,6 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 		} else {
 			echo "<center><b>".$lang["printers"][17]."</b></center>";
 			echo "<hr noshade>";
-		//	searchFormPrinters();
 		}
 	}
 }
