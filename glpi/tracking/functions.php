@@ -1278,13 +1278,13 @@ function searchFormTrackingReport() {
 	echo "<input type='text' size='15' name=\"contains\" value=\"".$_GET["contains"]."\">";
 	echo "</td></tr>";
 	
-	echo "<tr class='tab_bg_1'><td align='center' colspan='2'>".$lang["search"][8].":&nbsp;<input type=\"texte\" readonly size='10' name=\"date1\" value=\"". $_GET["date1"] ."\" />";
-echo "&nbsp;&nbsp;<input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date1&amp;value=".$_GET["date1"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."'>";
-echo "&nbsp;&nbsp;<input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date1.value=''\" value='".$lang["buttons"][16]."'></td><td align='center' colspan='4'>";
-echo $lang["search"][9].":&nbsp;<input type=\"texte\" readonly  size='10' name=\"date2\" value=\"". $_GET["date2"] ."\" />";
-echo "&nbsp;&nbsp;<input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date2&amp;value=".$_GET["date2"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."'>&nbsp;&nbsp;";
-echo "<input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date2.value=''\" value='".$lang["buttons"][16]."'>";
-echo "</td><td align='center'><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'></td></tr></table></div></form>";
+	echo "<tr class='tab_bg_1'><td align='center' colspan='2'>".$lang["search"][8].":&nbsp;";
+showCalendarForm("form","date1",$_GET["date1"]);
+echo "</td><td align='center' colspan='4'>";
+echo $lang["search"][9].":&nbsp;";
+showCalendarForm("form","date2",$_GET["date2"]);
+echo "</td><td align='center'><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'></td></tr>";
+echo "</table></div></form>";
 
 
 }

@@ -45,8 +45,7 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 
-
-if (isset($_POST["add_resa"])||isset($_POST["edit_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"resa") == 0)){
+if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"resa") == 0)){
 	checkAuthentication("normal");
 
 	if (isset($_POST["edit_resa"])){
@@ -69,10 +68,14 @@ if (isset($_POST["add_resa"])||isset($_POST["edit_resa"])||(isset($_GET["show"])
 
 	commonHeader($lang["title"][9],$_SERVER["PHP_SELF"]);
 
-	if (isset($_GET["clear"])){
-		if (deleteReservation($_GET["clear"])){
-			logEvent($_GET["clear"], "reservation", 4, "inventory", $_SESSION["glpiname"]." delete a reservation.");
+	if (isset($_POST["clear_resa"])){
+		if (deleteReservation($_POST["ID"])){
+			logEvent($_POST["ID"], "reservation", 4, "inventory", $_SESSION["glpiname"]." delete a reservation.");
 		}
+		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
+		$_GET["mois_courant"]=$begin_month;
+		$_GET["annee_courant"]=$begin_year;
+		printCalendrier($_SERVER["PHP_SELF"],$_POST["id_item"]);
 	}
 
 
@@ -96,6 +99,7 @@ if (isset($_POST["add_resa"])||isset($_POST["edit_resa"])||(isset($_GET["show"])
 		for ($i=1;$i<=$times&&$ok;$i++){
 			$_POST["begin_date"]=date("Y-m-d",mktime(0,0,0,$begin_month,$begin_day+($i-1)*$to_add,$begin_year));
 			$_POST["end_date"]=date("Y-m-d",mktime(0,0,0,$end_month,$end_day+($i-1)*$to_add,$end_year));
+			if (isAdmin($_SESSION["glpitype"])||$_SESSION["glpiID"]==$_POST["id_user"]) 
 			$ok=addReservation($_POST,$_SERVER["PHP_SELF"],$ok);
 
 		}

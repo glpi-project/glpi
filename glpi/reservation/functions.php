@@ -521,7 +521,7 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 	else {
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][31].":	</td>";
 	echo "<td>";
-	if ($resaID!=-1)
+	if ($resaID==-1)
 	dropdownValue("glpi_users","id_user",$_SESSION["glpiID"]);
 	else dropdownValue("glpi_users","id_user",$resa->fields["id_user"]);
     echo "</td></tr>";
@@ -529,10 +529,8 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 	}
 
 
-	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][10].":	</td>";
-	echo "<td><input type='text' name='begin_date' readonly size='10' value='$begin_date'>";
-	echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('".$HTMLRel."mycalendar.php?form=form&elem=begin_date&value=$begin_date','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].begin_date.value='$begin_date'\" value='reset'>";
+	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][10].":	</td><td>";
+	showCalendarForm("form","begin_date",$begin_date);
     echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][12].":	</td>";
@@ -554,10 +552,8 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 	echo "</select>";
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][11].":	</td>";
-	echo "<td><input type='text' name='end_date' readonly size='10' value='$end_date'>";
-	echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('".$HTMLRel."mycalendar.php?form=form&elem=end_date&value=$end_date','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].end_date.value='$end_date'\" value='reset'>";
+	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][11].":	</td><td>";
+	showCalendarForm("form","end_date",$end_date);
     echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][13].":	</td>";
@@ -608,7 +604,9 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 	echo "</td></tr>\n";
 	} else {
 	echo "<tr class='tab_bg_2'>";
-	echo "<td colspan='2'  valign='top' align='center'>";
+	echo "<td valign='top' align='center'>";
+	echo "<input type='submit' name='clear_resa' value=\"".$lang["buttons"][6]."\" class='submit' class='submit'>";
+	echo "</td><td valign='top' align='center'>";
 	echo "<input type='submit' name='edit_resa' value=\"".$lang["buttons"][14]."\" class='submit' class='submit'>";
 	echo "</td></tr>\n";
 	}
@@ -691,12 +689,11 @@ function printReservationItem($target,$ID,$date){
 					$delete="";
 					$modif="";
 					if ($_SESSION["glpiID"]==$user->fields["ID"]||isAdmin($_SESSION["glpitype"])){
-						$delete="<a  href=\"".$target."?show=resa&ID=$ID&clear=".$row['ID']."&mois_courant=$month&annee_courante=$year\" alt='".$lang["reservation"][14]."' title='".$lang["reservation"][14]."'><img  src=\"".$HTMLRel."pics/clear.png\"></a>";
 						$modif="<a  href=\"".$target."?show=resa&edit=".$row['ID']."&item=$ID&mois_courant=$month&annee_courante=$year\" alt='".$lang["reservation"][14]."' title='".$lang["reservation"][32]."'><img  src=\"".$HTMLRel."pics/faqedit.png\"></a>";
 						}
 
 		
-		echo $modif.$delete."</td><td title='".$row['comment']."' alt='".$row['comment']."' align='center' class='tab_bg_2' style='border:1px dashed #cccccc'><span style='font-size:8px'>".$display."<br><b>".$user->fields["name"]."</b></span>";
+		echo $modif."</td><td title='".$row['comment']."' alt='".$row['comment']."' align='center' class='tab_bg_2' style='border:1px dashed #cccccc'><span style='font-size:8px'>".$display."<br><b>".$user->fields["name"]."</b></span>";
 
 			echo "</td></tr>";
 				
@@ -743,7 +740,9 @@ function addReservation($input,$target,$ok=true){
 		$resa->displayError("is_res",$input["id_item"],$target);
 		return false;
 	}
-	return $resa->addToDB();
+	if ($input["id_user"]>0)
+		return $resa->addToDB();
+	else return true;
 }
 }
 function get_hour_from_sql($time){

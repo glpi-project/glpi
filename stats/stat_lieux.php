@@ -68,13 +68,11 @@ echo "<option value=\"glpi_dropdown_hdtype\" ".($_POST["dropdown"]=="glpi_dropdo
 echo "</select></td>";
 
 echo "<td align='right'>";
-echo $lang["search"][8].":</td><td> <input type=\"texte\" readonly name=\"date1\"  size ='10' value=\"". $_POST["date1"] ."\" /></td>";
-echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date1&amp;value=".$_POST["date1"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."'>";
-echo "</td><td><input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date1.value=''\" value='".$lang["buttons"][16]."'>";
+echo $lang["search"][8]." :</td><td>";
+showCalendarForm("form","date1",$_POST["date1"]);
 echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name\"submit\" Value=\"". $lang["buttons"][7] ."\" /></td></tr>";
-echo "<tr class='tab_bg_2'><td align='right'>".$lang["search"][9].":</td><td><input type=\"texte\" readonly name=\"date2\"  size ='10' value=\"". $_POST["date2"] ."\" /></td>";
-echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date2&amp;value=".$_POST["date2"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."'>";
-echo "</td><td><input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date2.value=''\" value='".$lang["buttons"][16]."'>";
+echo "<tr class='tab_bg_2'><td align='right'>".$lang["search"][9]." :</td><td>";
+showCalendarForm("form","date2",$_POST["date2"]);
 echo "</td></tr>";
 echo "</table></form></div>";
 
