@@ -50,7 +50,8 @@ text-align:center;
 
  .submit { text-align:center;}
   
-  
+select { font-size: 11px;
+}
 
 
 input.submit {

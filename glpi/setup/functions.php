@@ -39,8 +39,8 @@ function showFormDropdown ($target,$name,$human) {
 
 	GLOBAL $cfg_layout, $lang;
 	
-	echo "<center><table border='0' width=50%>";
-	echo "<tr><th colspan='2'>$human:</th></tr>";
+	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='50%'>";
+	echo "<tr><th colspan='3'>$human:</th></tr>";
 	echo "<form method='post' action=\"$target\">";
 
 	echo "<tr><td align='center' class='tab_bg_1'>";
@@ -54,25 +54,26 @@ function showFormDropdown ($target,$name,$human) {
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."'>";
 	//  on ajoute un bouton modifier
         echo "<input type='submit' name='update' value='".$lang["buttons"][14]."' class='submit'>";
+        echo "</td><td align='center' class='tab_bg_2'>";
         //
         echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 	echo "</td></form></tr>";
 	echo "<form action=\"$target\" method='post'>";
-	echo "<tr><td align='center' class='tab_bg_1'>";
+	echo "<tr><td align='center'  class='tab_bg_1'>";
 	echo "<input type='text' maxlength='100' size='20' name='value'>";
-	echo "</td><td align='center' class='tab_bg_2'>";
+	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
 	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit' class='submit'>";
 	echo "</td></form></tr>";
-	echo "</table></center>";
+	echo "</table></div>";
 }
 
 function showFormTypeDown ($target,$name,$human) {
 
 	GLOBAL $cfg_layout, $lang;
 	
-	echo "<center><table border='0' width=50%>";
-	echo "<tr><th colspan='2'>$human:</th></tr>";
+	echo "<div align='center'>&nbsp;<table class='tab_cadre' width=50%>";
+	echo "<tr><th colspan='3'>$human:</th></tr>";
 	echo "<form method='post' action=\"$target\">";
 
 	echo "<tr><td align='center' class='tab_bg_1'>";
@@ -86,16 +87,17 @@ function showFormTypeDown ($target,$name,$human) {
 	echo "<input type='hidden' name='tablename' value=\"glpi_type_".$name."\" />";
 	//  on ajoute un bouton modifier
         echo "<input type='submit' name='update' value='".$lang["buttons"][14]."' class='submit'>";
-	echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+	echo "</td><td align='center' class='tab_bg_2'>";
+        echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 	echo "</td></form></tr>";
 	echo "<form action=\"$target\" method='post'>";
 	echo "<tr><td align='center' class='tab_bg_1'>";
 	echo "<input type='text' maxlength='100' size='20' name='value'>";
-	echo "</td><td align='center' class='tab_bg_2'>";
+	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
 	echo "<input type='hidden' name='tablename' value='glpi_type_".$name."'>";
 	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</td></form></tr>";
-	echo "</table></center>";
+	echo "</table></div>";
 }
 
 function updateDropdown($input) {
@@ -319,7 +321,7 @@ function showPasswordForm($target,$ID) {
 	$user->getFromDB($ID);
 		
 	echo "<form method='post' action=\"$target\">";
-	echo "<center><table border='0' cellpadding=5 width='30%'>";
+	echo "<div align='center'>&nbsp;<table class='tab_cadre' cellpadding='5' width='30%'>";
 	echo "<tr><th colspan='2'>".$lang["setup"][11]." '".$user->fields["name"]."':</th></tr>";
 	echo "<tr><td width='100%' align='center' class='tab_bg_1'>";
 	echo "<input type='password' name='password' size='10'>";
@@ -327,7 +329,7 @@ function showPasswordForm($target,$ID) {
 	echo "<input type='hidden' name='name' value=\"".$user->fields["name"]."\">";
 	echo "<input type='submit' name='changepw' value=\"".$lang["buttons"][14]."\" class='submit'>";
 	echo "</td></tr>";
-	echo "</table></center>";
+	echo "</table></div>";
 	echo "</form>";
 
 }
@@ -339,7 +341,7 @@ function showUser($back,$ID) {
 	$user = new User($ID);
 	$user->getFromDB($ID);
 
-	echo "<center><table border='0' cellpadding=5>";
+	echo "<center><table border='0' cellpadding='5'>";
 	echo "<tr><th colspan='2'>".$lang["setup"][12].": ".$user->fields["name"]."</th></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["setup"][13].": </td>";
@@ -357,7 +359,7 @@ function showUser($back,$ID) {
 	echo "<tr class='tab_bg_1'><td>".$lang["setup"][17].": </td>";
 	echo "<td><b>".$user->fields["type"]."</b></td></tr>";	
 
-	echo "<tr><td colspan='2' height=10></td></tr>";
+	echo "<tr><td colspan='2' height='10'></td></tr>";
 	echo "<tr class='tab_bg_2'>";
 	echo "<td colspan='2' align='center'><b><a href=\"$back\">".$lang["buttons"][13]."</a></b></td></tr>";
 	echo "</table></center>";
@@ -374,7 +376,7 @@ function listUsersForm($target) {
 	
 	if ($result = $db->query($query)) {
                 echo "<div align='center'>";
-		echo "<table border='0'>";
+		echo "<table class='tab_cadre'>";
 		echo "<tr><th>".$lang["setup"][18]."</th><th>".$lang["setup"][19]."</th>";
 		echo "<th>".$lang["setup"][13]."</th><th>".$lang["setup"][20]."</th>";
 		echo "<th>".$lang["setup"][14]."</th><th>".$lang["setup"][15]."</th>";
@@ -532,7 +534,7 @@ function showFormAssign($target)
 	
 	if ($result = $db->query($query)) {
 
-		echo "<center><table border='0'>";
+		echo "<div align='center'><table class='tab_cadre'>";
 		echo "<tr><th>".$lang["setup"][57]."</th><th colspan='2'>".$lang["setup"][58]."</th>";
 		echo "</tr>";
 		
@@ -560,7 +562,7 @@ function showFormAssign($target)
 	
       $i++;
 			}
-echo "</table></center>";}
+echo "</table></div>";}
 }
 
 function listTemplates($target) {
@@ -571,7 +573,7 @@ function listTemplates($target) {
 	$query = "SELECT * FROM glpi_templates";
 	if ($result = $db->query($query)) {
 		
-		echo "<center><table border='0' width='50%'>";
+		echo "<div align='center'><table class='tab_cadre' width='50%'>";
 		echo "<tr><th colspan='2'>".$lang["setup"][1].":</th></tr>";
 		$i=0;
 		while ($i < $db->numrows($result)) {
@@ -595,7 +597,7 @@ function listTemplates($target) {
 		echo "</tr>";
 		echo "</form>";
 				
-		echo "</table></center>";
+		echo "</table></div>";
 	}
 	
 
@@ -615,7 +617,7 @@ function showTemplateForm($target,$ID) {
 	}
 	
 
-	echo "<center><table border='0'>";
+	echo "<div align='center'><table class='tab_cadre'>";
 	echo "<form name='form' method='post' action=$target>";
 	echo "<tr><th colspan='2'>";
 	if ($ID) {
@@ -773,7 +775,7 @@ echo "<tr><td>".$lang["setup"][55].":	</td>";
 
 	echo "</center>\n";
 
-	echo "</table></center>";
+	echo "</table></div>";
 }
 
 
@@ -834,11 +836,11 @@ function showSortForm($target,$ID) {
 	$query = "SELECT tracking_order FROM glpi_prefs WHERE (user = '$ID')";
 	$result=$db->query($query);
 
-	echo "<center><table border='0' cellpadding='5' width='30%'>";
+	echo "<div align='center'>&nbsp;<table class='tab_cadre' cellpadding='5' width='30%'>";
 	echo "<form method='post' action=\"$target\">";
 	echo "<tr><th colspan='2'>".$lang["setup"][40]."</th></tr>";
 	echo "<tr><td width='100%' align='center' class='tab_bg_1'>";
-	echo "<select name=tracking_order>";
+	echo "<select name='tracking_order'>";
 	echo "<option value=\"yes\"";
 	if ($db->result($result,0,"tracking_order")=="yes") { echo " selected"; }	
 	echo ">".$lang["choice"][1];
@@ -852,7 +854,7 @@ function showSortForm($target,$ID) {
 	echo "<input type='submit' name='updatesort' value=\"".$lang["buttons"][14]."\" class='submit'>";
 	echo "</td></tr>";
 	echo "</form>";
-	echo "</table></center>";
+	echo "</table></div>";
 }
 
 function updateSort($input) {
@@ -875,7 +877,7 @@ function showLangSelect($target,$ID) {
 	$result=$db->query($query);
 
 	echo "<form method='post' action=\"$target\">";
-	echo "<center><table border='0' cellpadding='5' width='30%'>";
+	echo "<div align='center'>&nbsp;<table class='tab_cadre' cellpadding='5' width='30%'>";
 	echo "<tr><th colspan='2'>".$lang["setup"][41].":</th></tr>";
 	echo "<tr><td width='100%' align='center' class='tab_bg_1'>";
 	echo "<select name='language'>";
@@ -894,7 +896,7 @@ function showLangSelect($target,$ID) {
 	echo "<input type='hidden' name='user' value=\"$ID\">";
 	echo "<input type='submit' name='changelang' value=\"".$lang["buttons"][14]."\" class='submit'>";
 	echo "</td></tr>";
-	echo "</table></center>";
+	echo "</table></div>";
 	echo "</form>";
 }
 

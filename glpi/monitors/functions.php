@@ -84,7 +84,7 @@ function searchFormMonitors() {
 	echo "</td></tr></table></form></center>";
  */
 	echo "<form method='get' action=\"".$cfg_install["root"]."/monitors/monitors-search.php\">";
-	echo "<center><table  width='750' class='tab_cadre'>";
+	echo "<div align='center'><table  width='750' class='tab_cadre'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
@@ -110,7 +110,7 @@ function searchFormMonitors() {
 	echo "</select> ";
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
-	echo "</td></tr></table></center></form>";
+	echo "</td></tr></table></div></form>";
 }
 
 

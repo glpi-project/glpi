@@ -71,7 +71,7 @@ function searchFormPrinters() {
 	
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/printers/printers-search.php\">";
-	echo "<center><table border='0' width='750'>";
+	echo "<div align='center'><table  width='750' class='tab_cadre'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
@@ -98,7 +98,7 @@ function searchFormPrinters() {
 	echo "</select> ";
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
-	echo "</td></tr></table></center></form>";
+	echo "</td></tr></table></div></form>";
 }
 
 
@@ -141,7 +141,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 		if ($numrows_limit>0) {
 			// Produce headline
-			echo "<center><table border='0'><tr>";
+			echo "<center><table class='tab_cadre'><tr>";
 
 			// Name
 			echo "<th>";
@@ -214,8 +214,8 @@ function showPrintersForm ($target,$ID) {
 
 	$printer = new Printer;
 
-	echo "<center><form method='post' name=form action=\"$target\">";
-	echo "<table border='0' cellpadding='2'>";
+	echo "<center><form method='post' name='form' action=\"$target\">";
+	echo "<table class='tab_cadre' cellpadding='2'>";
 	echo "<tr><th colspan='2'><b>";
 	if (empty($ID)) {
 		echo $lang["printers"][3].":";
@@ -335,7 +335,7 @@ function showPrintersForm ($target,$ID) {
 
 	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
 	echo $lang["printers"][12].":	</td>";
-	echo "<td align='center'><textarea cols=35 rows=4 name=comments >".$printer->fields["comments"]."</textarea>";
+	echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$printer->fields["comments"]."</textarea>";
 	echo "</td></tr></table>";
 
 	echo "</td>";
@@ -345,7 +345,7 @@ function showPrintersForm ($target,$ID) {
 
 		echo "<tr>";
 		echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-		echo "<center><input type='submit' name=add value=\"".$lang["buttons"][8]."\" class='submit'></center>";
+		echo "<center><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></center>";
 		echo "</td>";
 		echo "</form></tr>";
 
@@ -355,13 +355,13 @@ function showPrintersForm ($target,$ID) {
 
 		echo "<tr>";
 		echo "<td class='tab_bg_2' valign='top'>";
-		echo "<input type='hidden' name=ID value=\"$ID\">\n";
-		echo "<center><input type='submit' name=update value=\"".$lang["buttons"][7]."\" class='submit'></center>";
+		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+		echo "<center><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></center>";
 		echo "</td></form>\n\n";
 		echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<center><input type='submit' name=delete value=\"".$lang["buttons"][6]."\" class='submit'></center>";
+		echo "<center><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></center>";
 		echo "</td>";
 		echo "</form></tr>";
 
