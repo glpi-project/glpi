@@ -713,8 +713,11 @@ $db->query($query) or die("47 ".$lang["update"][90].$db->error());
 
 if(!FieldExists("glpi_config","ldap_condition")) {
 	$query = "ALTER TABLE `glpi_config` ADD `ldap_condition` varchar(255) NOT NULL default ''";
-	$db->query($query) or die("27 ".$lang["update"][90].$db->error());
+	$db->query($query) or die("48 ".$lang["update"][90].$db->error());
 }
+
+$query = "ALTER TABLE `glpi_users` CHANGE `type` `type` ENUM( 'normal', 'admin', 'post-only', 'super-admin' ) DEFAULT 'normal' NOT NULL";
+$db->query($query) or die("49 ".$lang["update"][90].$db->error());
 
 }
 
