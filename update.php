@@ -527,6 +527,11 @@ if(!FieldExists("glpi_networking","firmware")) {
 	$db->query($query) or die("erreur lors de la migration".$db->error());
 }
 
+if(!FieldExists("tracking","realtime")) {
+	$query = "ALTER TABLE `glpi_networking` ADD `firmware` FLOAT NOT NULL;";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+}
+
 }
 
 //Debut du script
