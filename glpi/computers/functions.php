@@ -62,18 +62,18 @@ function searchFormComputers($field="",$phrasetype= "",$contains="",$sort= "",$d
 	$option["glpi_type_computers.name"]				= $lang["computers"][8];
 	$option["glpi_dropdown_os.name"]				= $lang["computers"][9];
 	$option["comp.osver"]			= $lang["computers"][20];
-	$option["comp.processor"]			= $lang["computers"][21];
-	$option["comp.processor_speed"]		= $lang["computers"][22];
+	$option["processor.designation"]			= $lang["computers"][21];
+	//$option["processorspeed"]		= $lang["computers"][22];
 	$option["comp.serial"]			= $lang["computers"][17];
 	$option["comp.otherserial"]			= $lang["computers"][18];
-	$option["glpi_dropdown.ram.name"]			= $lang["computers"][23];
-	$option["comp.ram"]				= $lang["computers"][24];
-	$option["glpi_dropdown_network.name"]			= $lang["computers"][26];
-	$option["comp.hdspace"]			= $lang["computers"][25];
-	$option["glpi_dropdown_sndcard.name"]			= $lang["computers"][33];
-	$option["glpi_dropdown_gfxcard.name"]			= $lang["computers"][34];
-	$option["glpi_dropdown_moboard.name"]			= $lang["computers"][35];
-	$option["glpi_dropdown_hdtype.name"]			= $lang["computers"][36];
+	$option["ram.designation"]			= $lang["computers"][23];
+	//$option["comp.ram"]				= $lang["computers"][24];
+	$option["iface.designation"]			= $lang["computers"][26];
+	//$option["comp.hdspace"]			= $lang["computers"][25];
+	$option["sndcard.designation"]			= $lang["computers"][33];
+	$option["gfxcard.designation"]			= $lang["computers"][34];
+	$option["moboard.designation"]			= $lang["computers"][35];
+	$option["hdd.designation"]			= $lang["computers"][36];
 	$option["comp.comments"]			= $lang["computers"][19];
 	$option["comp.contact"]			= $lang["computers"][16];
 	$option["comp.contact_num"]		        = $lang["computers"][15];
@@ -129,7 +129,7 @@ function searchFormComputers($field="",$phrasetype= "",$contains="",$sort= "",$d
 }
 
 function IsDropdown($field) {
-	$dropdown = array("hdtype","sndcard","moboard","gfxcard","network","processor","os");
+	$dropdown = array("netpoint","os");
 	if(in_array($field,$dropdown)) {
 		return true;
 	}
@@ -138,8 +138,18 @@ function IsDropdown($field) {
 	}
 }
 
-function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted) {
+function IsDevice($field) {
+	//$devices = array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
+	$devices = array("moboard","processor","ram","hdd","iface","gfxcard","sndcard");
+	if(in_array($field,$devices)) {
+		return true;
+	}
+	else  {
+		return false;
+	}
+}
 
+function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted) {
 
 	$db = new DB;
 	// Lists Computers
@@ -150,42 +160,41 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 	// Build query
 	if($field == "all") {
 		$where = " (";
-		$fields = $db->list_fields("glpi_computers");
-		$columns = $db->num_fields($fields);
-		
-		for ($i = 0; $i < $columns; $i++) {
+		$query = "SHOW COLUMNS FROM glpi_computers";
+		$result = $db->query($query);
+		$i = 0;
+		while($line = $db->fetch_array($result)) {
 			if($i != 0) {
 				$where .= " OR ";
 			}
-			$coco = mysql_field_name($fields, $i);
-			if(IsDropdown($coco)) {
-				$where .= " glpi_dropdown_". $coco .".name LIKE '%".$contains."%'";
+			if(IsDropdown($line["Field"])) {
+				$where .= " glpi_dropdown_". $line["Field"] .".name LIKE '%".$contains."%'";
 			}
-			elseif($coco == "ramtype") {
-				$where .= " glpi_dropdown_ram.name LIKE '%".$contains."%'";
-			}
-			elseif($coco == "location") {
+			elseif($line["Field"] == "location") {
 				$where .= " glpi_dropdown_locations.name LIKE '%".$contains."%'";
 			}
-			elseif($coco == "type") {
-				$where .= " glpi_type_computers.name LIKE '%".$contains."%'";
-			}
 			else {
-   				$where .= "comp.".$coco . " LIKE '%".$contains."%'";
+   				$where .= "comp.".$line["Field"] . " LIKE '%".$contains."%'";
 			}
+			$i++;
+		}
+		//$devices = array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
+		$devices = array("moboard","processor","ram","hdd","iface","gfxcard","sndcard");
+		foreach($devices as $key => $val) {
+			$where .= " OR ".$val.".designation LIKE '%".$contains."%'";
 		}
 		$where .= " OR glpi_networking_ports.ifaddr LIKE '%".$contains."%'";
 		$where .= " OR glpi_networking_ports.ifmac LIKE '%".$contains."%'";
 		$where .= " OR glpi_dropdown_netpoint.name LIKE '%".$contains."%'";
-		$where.=" OR glpi_enterprises.name LIKE '%".$contains."%'";
+		$where .= " OR glpi_enterprises.name LIKE '%".$contains."%'";
 		$where .= ")";
 	}
 	else {
-		if ($phrasetype == "contains") {
-			$where = "($field LIKE '%".$contains."%')";
+		if(IsDevice($field)) {
+			$where = "(glpi_device_".$field." LIKE '%".$contains."')";
 		}
 		else {
-			$where = "($field LIKE '".$contains."')";
+			$where = "($field LIKE '%".$contains."%')";
 		}
 	}
 	if (!$start) {
@@ -194,18 +203,20 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 	if (!$order) {
 		$order = "ASC";
 	}
-	$query = "select DISTINCT comp.ID from glpi_computers as comp LEFT JOIN glpi_dropdown_locations on comp.location=glpi_dropdown_locations.ID ";
-	$query .= "LEFT JOIN glpi_dropdown_os on comp.os=glpi_dropdown_os.ID LEFT JOIN glpi_type_computers on comp.type = glpi_type_computers.ID ";
-	$query .= "LEFT JOIN glpi_dropdown_hdtype on comp.hdtype = glpi_dropdown_hdtype.ID LEFT JOIN glpi_dropdown_processor on comp.processor = glpi_dropdown_processor.ID ";
-	$query .= "LEFT JOIN glpi_dropdown_ram on comp.ramtype = glpi_dropdown_ram.ID LEFT JOIN glpi_dropdown_network on comp.network = glpi_dropdown_network.ID ";
-	$query .= "LEFT JOIN glpi_dropdown_gfxcard on comp.gfxcard = glpi_dropdown_gfxcard.ID LEFT JOIN glpi_dropdown_moboard on comp.moboard = glpi_dropdown_moboard.ID ";
-	$query .= "LEFT JOIN glpi_dropdown_sndcard on comp.sndcard = glpi_dropdown_sndcard.ID ";
-	$query .= "LEFT JOIN glpi_networking_ports on (comp.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='1')";
-	$query .= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";
+	$query = "select DISTINCT comp.ID from glpi_computers as comp LEFT JOIN glpi_computer_device as gcdev ON (comp.ID = gcdev.FK_computers) ";
+	$query.= "LEFT JOIN glpi_device_moboard as moboard ON (moboard.ID = gcdev.FK_device AND gcdev.device_type = '".MOBOARD_DEVICE."') ";
+	$query.= "LEFT JOIN glpi_device_processor as processor ON (processor.ID = gcdev.FK_device AND gcdev.device_type = '".PROCESSOR_DEVICE."') ";
+	$query.= "LEFT JOIN glpi_device_gfxcard as gfxcard ON (gfxcard.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".GFX_DEVICE."') ";
+	$query.= "LEFT JOIN glpi_device_hdd as hdd ON (hdd.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".HDD_DEVICE."') ";
+	$query.= "LEFT JOIN glpi_device_iface as iface ON (iface.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".NETWORK_DEVICE."') ";
+	$query.= "LEFT JOIN glpi_device_ram as ram ON (ram.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".RAM_DEVICE."') ";
+	$query.= "LEFT JOIN glpi_device_sndcard as sndcard ON (sndcard.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".SND_DEVICE."') ";
+	$query.= "LEFT JOIN glpi_networking_ports on (comp.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='1')";
+	$query.= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";
+	$query.= "LEFT JOIN glpi_dropdown_os on (glpi_dropdown_os.ID = comp.os)";
+	$query.= "LEFT JOIN glpi_dropdown_locations on (glpi_dropdown_locations.ID = comp.location)";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = comp.FK_glpi_enterprise ) ";
 	$query .= " where $where AND comp.deleted='$deleted' AND comp.is_template = '0'  ORDER BY $sort $order";
-	//$query = "SELECT * FROM glpi_computers WHERE $where ORDER BY $sort $order";
-//echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);
