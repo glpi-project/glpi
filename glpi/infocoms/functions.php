@@ -42,16 +42,18 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1) {
 	
 	$ic = new Infocom;
 
+	echo "&nbsp;<div align='center'>";
+	
 	if (!$ic->getfromDB($device_type,$dev_ID)){
-		echo "<center><b><a href='$target?device_type=$device_type&FK_device=$dev_ID&add=add'>Activer les informations commerciales</a></b></center>";
+		echo "<b><a href='$target?device_type=$device_type&FK_device=$dev_ID&add=add'>Activer les informations commerciales</a></b>";
 	} else {
 
 		echo "<form name='form_ic' method='post' action=\"$target\"><div align='center'>";
-		echo "<table class='tab_cadre'>";
-		echo "<tr><th colspan='3'><b>".$lang["financial"][3]."</b></th></tr>";
+		echo "<table class='tab_cadre' width='700'>";
+		echo "<tr><th colspan='4'><b>".$lang["financial"][3]."</b></th></tr>";
 	
-		echo "<tr class='tab_bg_1'><td>".$lang["financial"][26].":		</td>";
-		echo "<td colspan='2'>";
+		echo "<tr class='tab_bg_1'><td colspan='2'>".$lang["financial"][26].":		</td>";
+		echo "<td colspan='2' align='center'>";
 		dropdownValue("glpi_enterprises","FK_enterprise",$ic->fields["FK_enterprise"]);
 		$ent=new Enterprise();
 		if ($ent->getFromDB($ic->fields["FK_enterprise"])){
@@ -63,94 +65,96 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1) {
 		echo "&nbsp;&nbsp;";
 		echo "<a href='".$HTMLRel."enterprises/enterprises-info-form.php?ID=".$ent->fields['ID']."'>MODIF</a>";
 		}
+		echo "</td>";
 		
-		echo "</td></tr>";
-
-
-		echo "<tr class='tab_bg_1'><td>".$lang["financial"][18].":		</td>";
-		echo "<td colspan='2'><input type='text' name='num_commande' value=\"".$ic->fields["num_commande"]."\" size='25'></td>";
 		echo "</tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$lang["financial"][19].":		</td>";
-		echo "<td colspan='2'><input type='text' name='bon_livraison' value=\"".$ic->fields["bon_livraison"]."\" size='25'></td>";
+		echo "<tr class='tab_bg_1'><td>".$lang["financial"][18].":		</td>";
+		echo "<td ><input type='text' name='num_commande' value=\"".$ic->fields["num_commande"]."\" size='25'></td>";
+		
+		echo "<td>".$lang["financial"][19].":		</td>";
+		echo "<td ><input type='text' name='bon_livraison' value=\"".$ic->fields["bon_livraison"]."\" size='25'></td>";
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][14].":	</td>";
-		echo "<td colspan='2'><input type='text' name='buy_date' readonly size='10' value=\"".$ic->fields["buy_date"]."\">";
+		echo "<td ><input type='text' name='buy_date' readonly size='10' value=\"".$ic->fields["buy_date"]."\">";
 		echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form_ic&amp;elem=buy_date&amp;value=".$ic->fields["buy_date"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form_ic'].buy_date.value='0000-00-00'\" value='reset'>";
 	    echo "</td>";
-		echo "</tr>";
+		
 
-		echo "<tr class='tab_bg_1'><td>".$lang["financial"][76].":	</td>";
+		echo "<td>".$lang["financial"][76].":	</td>";
 		echo "<td colspan='2'><input type='text' name='use_date' readonly size='10' value=\"".$ic->fields["use_date"]."\">";
 		echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form_ic&amp;elem=use_date&amp;value=".$ic->fields["use_date"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form_ic'].use_date.value='0000-00-00'\" value='reset'>";
 	    echo "</td>";
 		echo "</tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$lang["financial"][15].":	</td><td colspan='2'>";
+		echo "<tr class='tab_bg_1'><td>".$lang["financial"][15].":	</td><td>";
 		dropdownContractTime("warranty_duration",$ic->fields["warranty_duration"]);
 		echo " ".$lang["financial"][57];
-		echo "</td></tr>";
+		echo "</td>";
 	
-
-		echo "<tr class='tab_bg_1'><td>".$lang["financial"][16].":		</td>";
-		echo "<td colspan='2'><input type='text' name='warranty_info' value=\"".$ic->fields["warranty_info"]."\" size='25'></td>";
-		echo "</tr>";
-
-		if ($show_immo==1){
-		echo "<tr class='tab_bg_1'><td>".$lang["financial"][20].":		</td>";
-		echo "<td colspan='2'><input type='text' name='num_immo' value=\"".$ic->fields["num_immo"]."\" size='25'></td>";
-		echo "</tr>";
-		}
-
-		echo "<tr class='tab_bg_1'><td>".$lang["financial"][21].":		</td>";
-		echo "<td ".($show_immo==1?"":" colspan='2'")."><input type='text' name='value' value=\"".$ic->fields["value"]."\" size='10'></td>";
+		echo "<td>fin garantie :	</td><td >";
 		
+		
+		showWarrantyExpir($ic->fields["buy_date"],$ic->fields["warranty_duration"]);
+				
+		echo "</td></tr>";
+		
+		
+		echo "<tr class='tab_bg_1'><td>".$lang["financial"][78].":		</td>";
+		echo "<td ><input type='text' name='warranty_value' value=\"".$ic->fields["warranty_value"]."\" size='10'></td>";
+		
+
+		echo "<td>".$lang["financial"][16].":		</td>";
+		echo "<td ><input type='text' name='warranty_info' value=\"".$ic->fields["warranty_info"]."\" size='25'></td>";
+		echo "</tr>";
+		
+		
+		echo "<tr class='tab_bg_1'><td>".$lang["financial"][21].":		</td><td  ".($show_immo==1?"":" colspan='3'")."><input type='text' name='value' value=\"".$ic->fields["value"]."\" size='10'></td>";
 		if ($show_immo==1){
-		echo "<td>Valeur nette comptable :";
+		echo "<td>Valeur nette comptable :</td><td>";
 		echo  TableauAmort($ic->fields["amort_type"],$ic->fields["value"],$ic->fields["amort_time"],$ic->fields["amort_coeff"],$ic->fields["buy_date"],$ic->fields["use_date"],$date_fiscale,$view="n");
 		
 		echo "</td>";
-		}	
-		echo "</tr>";
-
-		echo "<tr class='tab_bg_1'><td>".$lang["financial"][78].":		</td>";
-		echo "<td colspan='2'><input type='text' name='warranty_value' value=\"".$ic->fields["warranty_value"]."\" size='10'></td>";
+		}
 		echo "</tr>";
 		
 		if ($show_immo==1){
-		echo "<tr class='tab_bg_1'><td>".$lang["financial"][22].":		</td><td colspan='2'>";
+		echo "<tr class='tab_bg_1'><td>".$lang["financial"][20].":		</td>";
+		echo "<td ><input type='text' name='num_immo' value=\"".$ic->fields["num_immo"]."\" size='25'></td>";
+		
+					
+		
+
+		echo "<td>".$lang["financial"][22].":		</td><td >";
 		dropdownAmortType("amort_type",$ic->fields["amort_type"]);
 		echo "</td></tr>";
-		}
 		
-		if ($show_immo==1){
-		echo "<tr class='tab_bg_1'><td>".$lang["financial"][23].":		</td><td colspan='2'>";
+		echo "<tr class='tab_bg_1'><td>".$lang["financial"][23].":		</td><td>";
 		dropdownDuration("amort_time",$ic->fields["amort_time"]);
 		echo " ".$lang["financial"][9];
-		echo "</td></tr>";
-		}
-		if ($show_immo==1){
-		echo "<tr class='tab_bg_1'><td>".$lang["financial"][77].":		</td>";
-		echo "<td colspan='2'><input type='text' name='amort_coeff' value=\"".$ic->fields["amort_coeff"]."\" size='10'></td>";
+		echo "</td>";
+		
+		echo "<td>".$lang["financial"][77].":		</td>";
+		echo "<td ><input type='text' name='amort_coeff' value=\"".$ic->fields["amort_coeff"]."\" size='10'></td>";
 		echo "</tr>";
 		}
 
 		echo "<tr class='tab_bg_1'><td valign='top'>";
 		echo $lang["financial"][12].":	</td>";
-		echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$ic->fields["comments"]."</textarea>";
+		echo "<td align='center' colspan='3'><textarea cols='60' rows='2' name='comments' >".$ic->fields["comments"]."</textarea>";
 		echo "</td></tr>";
 	
 		echo "<tr>";
-                echo "<td class='tab_bg_2'></td>";
-                echo "<td class='tab_bg_2' valign='top'>";
+                
+                echo "<td class='tab_bg_2' colspan='2' align='center'>";
 		echo "<input type='hidden' name='ID' value=\"".$ic->fields['ID']."\">\n";
-		echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
+		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
 		echo "</td>\n\n";
-		echo "<td class='tab_bg_2' valign='top'>\n";
-		echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
+		echo "<td class='tab_bg_2' colspan='2' align='center'>\n";
+		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 		echo "</form>";
 		echo "</td>";
 		echo "</tr>";
@@ -269,6 +273,14 @@ function dropdownInfocoms($name){
 }
 
 
+function showWarrantyExpir($from,$addwarranty){
+
+echo date("Y-m-d", strtotime("$from + $addwarranty month "));
+
+}
+
+
+
 function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_fiscale,$view="n") {
 	// By Jean-Mathieu Doléans qui s'est un peu pris le chou :p
 	
@@ -283,11 +295,7 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 	
 	// Attention date mise en service/dateachat ->amort linéaire  et $prorata en jour !!
 	// amort degressif au prorata du nombre de mois. Son point de départ est le 1er jour du mois d'acquisition et non date de mise en service
-	
-	
-	
-	if($va>0 &&$duree>0 &&$coef>1.01 &&$date_achat!="0000-00-00") {
-		
+			
 		if ($type_amort=="2"){
 		
 			if ($date_use!="0000-00-00") $date_achat=$date_use;
@@ -308,77 +316,87 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 		&$date_H2, &$date_i2, &$date_s2); 
 		$date_Y2=date("Y");
 		
-		if ($type_amort=="2") { 
+		//if ($type_amort=="2") { 
+		
+		switch ($type_amort) {
+		
+		case "2" :
 		
 		########################### Calcul amortissement linéaire ###########################
-		
-		## calcul du prorata temporis en jour ##	
-	
 			
-		$ecartfinmoiscourant=(30-$date_d); // calcul ecart entre jour  date acquis ou mise en service et fin du mois courant
-	
-		// en linéaire on calcule en jour
-	
-		if ($date_d2<30) {$ecartmoisexercice=(30-$date_d2); }	
-		
-	
-		if ($date_m>$date_m2) {$date_m2=$date_m2+12;} // si l'année fiscale débute au delà de l'année courante
-	
-	
-		$ecartmois=(($date_m2-$date_m)*30); // calcul ecart etre mois d'acquisition et debut année fiscale
-	
-	
-		$prorata=$ecartfinmoiscourant+$ecartmois-$ecartmoisexercice;
-		
-	
-		## calcul tableau d'amortissement ##
-		
-		$txlineaire = (100/$duree); // calcul du taux linéaire
-	
-		$annuite = ($va*$txlineaire)/100; // calcul de l'annuité 
-	
-		$mrt=$va; //
-	
-	
-		// si prorata temporis la dernière annnuité cours sur la durée n+1
-		if ($prorata>0){$duree=$duree+1;}
-	
-		for($i=1;$i<=$duree;$i++) {
-	
-		
-			$tab['annee'][$i]=$date_Y+$i-1;
-	
-			$tab['annuite'][$i]=$annuite;
-		
-			$tab['vcnetdeb'][$i]=$mrt; // Pour chaque année on calcul la valeur comptable nette  de debut d'exercice
-		
-			$tab['vcnetfin'][$i]=abs(($mrt - $annuite)); // Pour chaque année on calcul la valeur comptable nette  de fin d'exercice
-	
-	
-			// calcul de la première annuité si prorata temporis
-			if ($prorata>0){
-				$tab['annuite'][1]=$annuite*($prorata/360);
-	
-				$tab['vcnetfin'][1]=abs($va - $tab['annuite'][1]);
-					}
-	
-			$mrt=$tab['vcnetfin'][$i];
-	
-		} // end for
-		
-		// calcul de la dernière annuité si prorata temporis
-		if ($prorata>0){
-			$tab['annuite'][$duree]=$tab['vcnetdeb'][$duree];
-		
-			$tab['vcnetfin'][$duree]=$tab['vcnetfin'][$duree-1]- $tab['annuite'][$duree];
-				}
+			if($va>0 &&$duree>0  &&$date_achat!="0000-00-00") {
+				
+				## calcul du prorata temporis en jour ##	
 			
-		
+					
+				$ecartfinmoiscourant=(30-$date_d); // calcul ecart entre jour  date acquis ou mise en service et fin du mois courant
 			
-		}else{	
+				// en linéaire on calcule en jour
+			
+				if ($date_d2<30) {$ecartmoisexercice=(30-$date_d2); }	
+				
+			
+				if ($date_m>$date_m2) {$date_m2=$date_m2+12;} // si l'année fiscale débute au delà de l'année courante
+			
+			
+				$ecartmois=(($date_m2-$date_m)*30); // calcul ecart etre mois d'acquisition et debut année fiscale
+			
+			
+				$prorata=$ecartfinmoiscourant+$ecartmois-$ecartmoisexercice;
+				
+			
+				## calcul tableau d'amortissement ##
+				
+				$txlineaire = (100/$duree); // calcul du taux linéaire
+			
+				$annuite = ($va*$txlineaire)/100; // calcul de l'annuité 
+			
+				$mrt=$va; //
+			
+			
+				// si prorata temporis la dernière annnuité cours sur la durée n+1
+				if ($prorata>0){$duree=$duree+1;}
+			
+				for($i=1;$i<=$duree;$i++) {
+			
+				
+					$tab['annee'][$i]=$date_Y+$i-1;
+			
+					$tab['annuite'][$i]=$annuite;
+				
+					$tab['vcnetdeb'][$i]=$mrt; // Pour chaque année on calcul la valeur comptable nette  de debut d'exercice
+				
+					$tab['vcnetfin'][$i]=abs(($mrt - $annuite)); // Pour chaque année on calcul la valeur comptable nette  de fin d'exercice
+			
+			
+					// calcul de la première annuité si prorata temporis
+					if ($prorata>0){
+						$tab['annuite'][1]=$annuite*($prorata/360);
+			
+						$tab['vcnetfin'][1]=abs($va - $tab['annuite'][1]);
+							}
+			
+					$mrt=$tab['vcnetfin'][$i];
+			
+				} // end for
+				
+				// calcul de la dernière annuité si prorata temporis
+				if ($prorata>0){
+					$tab['annuite'][$duree]=$tab['vcnetdeb'][$duree];
+				
+					$tab['vcnetfin'][$duree]=$tab['vcnetfin'][$duree-1]- $tab['annuite'][$duree];
+						}
+			
+			}else{ return "-"; break; }	
 		
+			break;	
+			
+		//}else{	
+		case "1" :
 			########################### Calcul amortissement dégressif ###########################
 		
+			if($va>0 &&$duree>0  &&$coef>1 &&$date_achat!="0000-00-00") {
+			
 			## calcul du prorata temporis en mois ##
 			
 			// si l'année fiscale débute au delà de l'année courante
@@ -458,8 +476,21 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 			$tab['vcnetfin'][$duree]=$tab['vcnetfin'][$duree-1]- $tab['annuite'][$duree];
 			
 			}
+		
+			}else{ return "-"; break; }	
 			
+			break;
+		
+				
+		case "" :
+			return "-"; break;
+			
+					
 		}
+		
+		
+		
+		// le return
 		
 	
 		if ($view=="all") {
@@ -486,13 +517,7 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 				// on se situe avant la fin d'exercice
 				// on prend la valeur résiduelle de l'année n-1
 			
-				/*
-				$nmoinsun=array_search(date("Y"),$tab["annee"])-1;
-					
-				if ($nmoinsun<=0) { $nmoinsun=array_search(date("Y"),$tab["annee"]);}
-					
-				$vnc=$tab["vcnetfin"][$nmoinsun];
-				*/
+				
 				
 				$vnc=$tab["vcnetdeb"][array_search(date("Y"),$tab["annee"])];
 				
@@ -505,11 +530,7 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 		
 		}
 
-	}else{
 	
-	return "-";
-	
-	}
 
 
 
