@@ -555,7 +555,7 @@ function showLicenseForm($target,$ID) {
 	echo "</td><td>";
 	echo $lang["printers"][26].":<select name=number>";
 	echo "<option value='1' selected>1</option>";
-	for ($i=2;$i<=100;$i++)
+	for ($i=2;$i<=1000;$i++)
 		echo "<option value='$i'>$i</option>";
 	echo "</select>";
 	echo "&nbsp;".$lang["software"][24].":<input type='text' name='expire' readonly size='10' >";
