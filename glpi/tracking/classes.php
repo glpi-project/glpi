@@ -56,6 +56,7 @@ class Job {
 	var $emailupdates	= "";
 	var $num_of_followups	= 0;
 	var $realtime	= 0;
+	var $category	= 0;
 	
 	
 	function getfromDB ($ID,$purecontent) {
@@ -84,7 +85,7 @@ class Job {
 			$this->uemail = $db->result($result, 0, "uemail");
 			$this->emailupdates = $db->result($result, 0, "emailupdates");
 			$this->realtime = $db->result($result, 0, "realtime");
-		
+			$this->category = $db->result($result, 0, "category");
 			// Set computername
 /*			if ($this->is_group == "yes") {
 				$scndquery = "SELECT name FROM glpi_groups WHERE (ID = $this->computer)";
@@ -132,7 +133,7 @@ class Job {
 		
 		// dump into database
 		$db = new DB;
-		$query = "INSERT INTO glpi_tracking VALUES (NULL, '$this->date', '$this->closedate', '$this->status','$this->author', '$this->assign', $this->device_type, $this->computer, '$this->contents', '$this->priority', '$this->isgroup','$this->uemail', '$this->emailupdates','$this->realtime')";
+		$query = "INSERT INTO glpi_tracking VALUES (NULL, '$this->date', '$this->closedate', '$this->status','$this->author', '$this->assign', $this->device_type, $this->computer, '$this->contents', '$this->priority', '$this->isgroup','$this->uemail', '$this->emailupdates','$this->realtime','$this->category')";
 
 		if ($result = $db->query($query)) {
 			return true;
@@ -179,6 +180,19 @@ class Job {
 		$db = new DB;
 		$this->assign=$user;
 		$query = "UPDATE glpi_tracking SET assign = '$user' WHERE ID = '$this->ID'";
+		if ($result = $db->query($query)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	function categoryTo($category) {
+		// assign Job to user
+		
+		$db = new DB;
+		$this->category=$category;
+		$query = "UPDATE glpi_tracking SET category = '$category' WHERE ID = '$this->ID'";
 		if ($result = $db->query($query)) {
 			return true;
 		} else {
