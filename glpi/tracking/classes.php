@@ -77,7 +77,7 @@ class Job {
 			if (!$purecontent) {
 				$this->contents = nl2br($db->result($result, 0, "contents"));
 			}
-			$this->contents = $this->contents;
+			else	$this->contents = $db->result($result, 0, "contents");
 			$this->priority = $db->result($result, 0, "priority");
 			$this->is_group = $db->result($result,0, "is_group");
 			$this->uemail = $db->result($result, 0, "uemail");
