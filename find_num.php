@@ -87,11 +87,11 @@ if(isset($_POST["Submit"]))
 {
 	echo "<table width='100%' class='tab_cadre'>";
 	echo " <tr class='tab_bg3'>";
-	echo " <td align='center' width='70%'><b>".$lang["reports"][19]."</b></td>";
-	echo " <td align='center' width='70%'><b>".$lang["help"][24]."</b></td>";
-	echo " <td align='center' width='70%'><b>".$lang["common"][1]."</b></td>";
-	echo " <td align='center' width='30%'><b>".$lang["common"][2]."</b></td>";
-	echo " <td align='center' width='30%'><b>".$lang["computers"][17]."&nbsp;/&nbsp;".$lang["computers"][18]."</b></td>";
+	echo " <td align='center' width='30%'><b>".$lang["reports"][19]."</b></td>";
+	echo " <td align='center' width='20%'><b>".$lang["help"][24]."</b></td>";
+	echo " <td align='center' width='30%'><b>".$lang["common"][1]."</b></td>";
+	echo " <td align='center' width='5%'><b>".$lang["common"][2]."</b></td>";
+	echo " <td align='center' width='20%'><b>".$lang["computers"][17]."&nbsp;/&nbsp;".$lang["computers"][18]."</b></td>";
 	echo " </tr>";
 	
 
