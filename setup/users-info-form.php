@@ -58,7 +58,7 @@ if (isset($_POST["add"])) {
 	showUserform($_SERVER["PHP_SELF"],$_POST["name"]);
 } else {
 
-checkAuthentication("normal");
+checkAuthentication("admin");
 commonHeader("Userinfo",$_SERVER["PHP_SELF"]);
 showUserform($_SERVER["PHP_SELF"],$_GET["name"]);
 }

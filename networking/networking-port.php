@@ -114,7 +114,7 @@ else
 	if(empty($tab["devtype"])) $tab["devtype"] ="";
 	if(empty($tab["several"])) $tab["several"] ="";
 	if(empty($tab["location"])) $tab["location"] = "";
-	checkAuthentication("normal");
+	checkAuthentication("admin");
 	commonHeader("Networking",$_SERVER["PHP_SELF"]);
 	
 	if(isset($tab["ID"]))
