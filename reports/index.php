@@ -64,8 +64,8 @@ $report_list["default"]["file"] = "reports/default.php";
 
 
 // Rapport ajoutés par GLPI V0.2
-$report_list["Maintenance"]["name"] = $lang["reports"][27];
-$report_list["Maintenance"]["file"] = "reports/maintenance.php";
+$report_list["Contrats"]["name"] = $lang["reports"][27];
+$report_list["Contrats"]["file"] = "reports/contrats.php";
 $report_list["Par_annee"]["name"] = $lang["reports"][28];
 $report_list["Par_annee"]["file"] = "reports/parAnnee.php";
 $report_list["Intervention"]["name"] = $lang["reports"][25];
