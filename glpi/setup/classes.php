@@ -296,6 +296,14 @@ class User {
 		}
 		
 	}
+	
+	function blankPassword () {
+		if (!empty($this->fields["name"])){
+		$db = new DB;
+		$query  = "UPDATE glpi_users SET password='' , password_md5='' WHERE name='".$this->fields["name"]."'";	
+		$db->query($query);
+		}
+		}
 
 	function deleteFromDB($name) {
 

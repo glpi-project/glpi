@@ -49,10 +49,6 @@ include ($phproot . "/glpi/includes_setup.php");
 $db = new DB;
 
 
-$ext_ident=0;
-$login_ok=0;
-
-
 //Do login and checks
 //echo "test";
 $update_list = array();
@@ -67,6 +63,7 @@ if ($auth_succeded) $user_present = $identificat->user->getFromDB($_POST['login_
 if (!$auth_succeded) {
 	$auth_succeded = $identificat->connection_imap($cfg_login['imap']['auth_server'],$_POST['login_name'],$_POST['login_password']);
 	if ($auth_succeded) {
+		$identificat->extauth=1;
 		$user_present = $identificat->user->getFromDB($_POST['login_name']);
 		if ($identificat->user->getFromIMAP($cfg_login['imap']['host'],$_POST['login_name'])) {
 			$update_list = array('email');
@@ -84,6 +81,7 @@ if (!$auth_succeded) {
    if ($found_dn!=false&&!empty($_POST['login_password'])){ 
 	    $auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$found_dn,$_POST['login_name'],$_POST['login_password'],$cfg_login['ldap']['condition']);
 		if ($auth_succeded) {
+			$identificat->extauth=1;
 			$user_present = $identificat->user->getFromDB($_POST['login_name']);
 			$update_list = array();
 			if ($identificat->user->getFromLDAP($cfg_login['ldap']['host'],$found_dn,$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass'],$cfg_login['ldap']['fields'],$_POST['login_name'])) {
@@ -97,6 +95,7 @@ if (!$auth_succeded) {
 if (!$auth_succeded) {
 $auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$_POST['login_name'],$_POST['login_password'],$cfg_login['ldap']['condition']);
 		if ($auth_succeded) {
+			$identificat->extauth=1;
 			$user_present = $identificat->user->getFromDB($_POST['login_name']);
 			$update_list = array();
 			if ($identificat->user->getFromLDAP($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass'],$cfg_login['ldap']['fields'],$_POST['login_name'])) {
@@ -117,6 +116,7 @@ if (!$auth_succeded) {
    if ($found_dn!=false&&!empty($_POST['login_password'])){ 
 	    $auth_succeded = $identificat->connection_ldap_active_directory($cfg_login['ldap']['host'],$found_dn,$_POST['login_name'],$_POST['login_password'],$cfg_login['ldap']['condition']);
 		if ($auth_succeded) {
+			$identificat->extauth=1;
 			$user_present = $identificat->user->getFromDB($_POST['login_name']);
 			$update_list = array();
 			if ($identificat->user->getFromLDAP_active_directory($cfg_login['ldap']['host'],$found_dn,$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass'],$cfg_login['ldap']['fields'],$_POST['login_name'],$cfg_login['ldap']['condition'])) {
@@ -144,6 +144,9 @@ if (!$user_present) {
 	$identificat->user->addToDB();
 } else if (!empty($update_list)) {
 	$identificat->user->updateInDB($update_list);
+	// Blank PWD to clean old database for the external auth
+	if ($identificat->extauth)
+	$identificat->user->blankPassword();
 }
 
 // now we can continue with the process...

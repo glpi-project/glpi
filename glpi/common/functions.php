@@ -486,7 +486,9 @@ function helpHeader($title,$url,$name) {
 
 	// And he can change his password, thats it
 	echo "<td>";
+	if ($_SESSION["extauth"]!=1)
 		showPasswordForm($cfg_install["root"]."/preferences/index.php",$name);
+		else echo "&nbsp;";
 	echo "</td>";
 	// We tracking or post a new one
 	echo "<td>";

@@ -42,7 +42,8 @@ include ($phproot . "/glpi/includes_setup.php");
 
 if (isset($_POST["changepw"])) {
 	checkAuthentication("post-only");
-	updateUser($_POST);
+	if ($_SESSION["extauth"]!=1)
+		updateUser($_POST);
 	header("Location: $_SERVER[HTTP_REFERER]");
 } else if (isset($_POST["updatesort"])) {
 	checkAuthentication("normal");
@@ -59,8 +60,8 @@ if (isset($_POST["changepw"])) {
         echo "<div align='center'><table border='0'><tr><td>";
         echo "<img src=\"".$HTMLRel."pics/preferences.png\" alt='".$lang["Menu"][11]."' title='".$lang["Menu"][11]."'></td><td><span class='icon_nav'><b>".$lang["Menu"][11]."</b></span>";
         echo "</td></tr></table></div>";
-
-	showPasswordForm($_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	if ($_SESSION["extauth"]!=1)
+		showPasswordForm($_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	showSortForm($_SERVER["PHP_SELF"]);
 	showLangSelect($_SERVER["PHP_SELF"]);
 	commonFooter();
