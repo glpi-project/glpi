@@ -1454,7 +1454,7 @@ switch($item_type)
 					if($type) echo "<td><div align='center'>".getDropdownName("glpi_type_monitors",$type)."</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($size) echo "<td><div align='center'>$size</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($contact) echo "<td><div align='center'>$contact</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($lieu) echo "<td><div align='center'>".getDropdownName("glpi_type_monitors",$lieu)."</div></td>"; else echo "<td><div align='center'>N/A </div></td>";
+					if($lieu) echo "<td><div align='center'>".getDropdownName("glpi_dropdown_locations",$lieu)."</div></td>"; else echo "<td><div align='center'>N/A </div></td>";
 					if($serial) echo "<td><div align='center'>$serial</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($achat_date) echo "<td><div align='center'>$achat_date</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($fin_garantie) echo "<td><div align='center'> $fin_garantie </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
@@ -1507,7 +1507,6 @@ switch($item_type)
 		echo "<tr> ";
 		echo "<th><div align='center'><b>".$lang["peripherals"][5]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["peripherals"][9]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["peripherals"][21]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["peripherals"][8]."</b></div></th>";	
 		echo "<th><div align='center'><b>".$lang["peripherals"][6]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["peripherals"][10]."</b></div></th>";	
@@ -1528,9 +1527,9 @@ switch($item_type)
 					
 					echo "<tr>";	
 					if($name) echo "<td><div align='center'>$name</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($type) echo "<td><div align='center'>".getDropdownName("glpi_type_monitors",$type)."</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($type) echo "<td><div align='center'>".getDropdownName("glpi_type_peripherals",$type)."</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($contact) echo "<td><div align='center'>$contact</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($lieu) echo "<td><div align='center'>".getDropdownName("glpi_type_monitors",$lieu)."</div></td>"; else echo "<td><div align='center'>N/A </div></td>";
+					if($lieu) echo "<td><div align='center'>".getDropdownName("glpi_dropdown_locations",$lieu)."</div></td>"; else echo "<td><div align='center'>N/A </div></td>";
 					if($serial) echo "<td><div align='center'>$serial</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($achat_date) echo "<td><div align='center'>$achat_date</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($fin_garantie) echo "<td><div align='center'> $fin_garantie </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
