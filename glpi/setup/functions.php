@@ -460,6 +460,7 @@ function dropdownUsed($table, $ID) {
 
 	$db = new DB;
 	$name = getDropdownNameFromTable($table);
+
 	$var1 = true;
 	switch($name) {
 	case  "hdtype" : case "sndcard" : case "moboard" : case "gfxcard" : case "network" : case "ramtype" : case "processor" :
@@ -501,9 +502,6 @@ function dropdownUsed($table, $ID) {
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 	
 		$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = ".$ID."";
-		$result = $db->query($query);
-		if($db->result($result,0,"cpt") > 0)  $var1 = false;
-		$query = "Select count(*) as cpt FROM glpi_templates where ". $name ." = ".$ID."";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		$query = "Select count(*) as cpt FROM glpi_monitors where ". $name ." = ".$ID."";
