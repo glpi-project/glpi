@@ -601,6 +601,7 @@ $lang["setup"][109]="Temps en jours de conservation des logs (0 pour infini)";
 $lang["setup"][110]=" Montrer les interventions au login";
 $lang["setup"][111]="Nombre d'éléments à afficher par page";
 $lang["setup"][112]="Nombre de caractères maximum pour chaque éléments de la liste";
+$lang["setup"][113]="Langue par défaut";
 
 $lang["setup"][150]="Sources d'authentification externes";
 $lang["setup"][151]=" Si vous ne souhaitez pas utiliser LDAP comme source(s) de connection laissez les champs vides";

@@ -90,6 +90,10 @@ if($result)
 //document root
 $cfg_install["root"] = $db->result($result,0,"root_doc");
 
+// Default language
+$cfg_install["default_language"] = $db->result($result,0,"default_language");
+
+
 // Gestion de source d'information alternatives pour le login
 // telles que des serveurs de mail en imap pop...
 // ports standards : pop 110 , imap 993
