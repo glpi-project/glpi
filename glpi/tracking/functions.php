@@ -724,9 +724,29 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	$job->assign = $assign;
 	$job->realtime = $realtime;
 
+	// ajout suite  à tracking sur tous les items 
+			
+	switch ($device_type) {
+	case 1 :
+	$item = "computers";
+	break;
+	case 2 :
+	$item = "networking";
+	break;
+	case 3 :
+	$item = "printers";
+	break;
+	case 4 :
+	$item = "monitors";
+	break;
+	case 5 :
+	$item = "peripherals";
+	}
+	
+	
 	if ($job->putinDB()) {
 		// Log this event
-		logEvent($ID,"computers",4,"tracking","$author added new job.");
+		logEvent($ID,$item,4,"tracking","$author added new job.");
 		
 		// Processing Email
 		if ($cfg_features["mailing"])

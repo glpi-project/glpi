@@ -295,7 +295,7 @@ function showPrintersForm ($target,$ID) {
 	if (!empty($ID))
 	showReservationForm(3,$ID);
 	echo "</b></td></tr>";
-	echo "</table>";
+	echo "</table>"; // fin table indentification
 
 	echo "</td>\n";	
 	echo "<td class='tab_bg_1' valign='top'>";

@@ -55,7 +55,7 @@ if (isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"re
 
 	if (isset($_GET["clear"])){
 		if (deleteReservation($_GET["clear"])){
-			logEvent($_GET["clear"], "reservation", 4, "inventory", $_SESSION["glpiname"]."delete a reservation.");
+			logEvent($_GET["clear"], "reservation", 4, "inventory", $_SESSION["glpiname"]." delete a reservation.");
 		}
 	}
 
@@ -67,7 +67,7 @@ if (isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"re
 	}
 	else if (isset($_POST["add_resa"])){
 		if (addReservation($_POST,$_SERVER["PHP_SELF"])){
-			logEvent($_POST["id_item"], "reservation", 4, "inventory", $_SESSION["glpiname"]."add a reservation.");
+			logEvent($_POST["id_item"], "reservation", 4, "inventory", $_SESSION["glpiname"]." add a reservation.");
 			printCalendrier($_SERVER["PHP_SELF"],$_POST["id_item"]);
 		}
 	}
