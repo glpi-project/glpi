@@ -112,12 +112,46 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 
 	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
 
+	$db = new DB;
+
 	// Build query
-	if ($phrasetype == "contains") {
-		$where = "($field LIKE '%".$contains."%')";
-	} else {
-		$where = "($field LIKE '".$contains."')";
+	if($field=="all") {
+		$where = " (";
+		$fields = $db->list_fields("glpi_monitors");
+		$columns = $db->num_fields($fields);
+		
+		for ($i = 0; $i < $columns; $i++) {
+			if($i != 0) {
+				$where .= " OR ";
+			}
+			$coco = mysql_field_name($fields, $i);
+
+			if($coco == "firmware") {
+				$where .= " glpi_dropdown_firmware.name LIKE '%".$contains."%'";
+			}
+			elseif($coco == "location") {
+				$where .= " glpi_dropdown_locations.name LIKE '%".$contains."%'";
+			}
+			elseif($coco == "type") {
+				$where .= " glpi_type_monitors.name LIKE '%".$contains."%'";
+			}
+			else {
+   				$where .= "mon.".$coco . " LIKE '%".$contains."%'";
+			}
+		}
+		$where .= ")";
 	}
+	else {
+		if ($phrasetype == "contains") {
+			$where = "($field LIKE '%".$contains."%')";
+		}
+		else {
+			$where = "($field LIKE '".$contains."')";
+		}
+	}
+
+
+
 	if (!$start) {
 		$start = 0;
 	}
@@ -127,8 +161,8 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 	$query = "select mon.ID from glpi_monitors as mon LEFT JOIN glpi_dropdown_locations on mon.location=glpi_dropdown_locations.ID ";
 	$query .= "LEFT JOIN glpi_type_monitors on mon.type = glpi_type_monitors.ID ";
 	$query .= "where $where ORDER BY $sort $order";
+	echo $query;
 	// Get it from database	
-	$db = new DB;
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);
 
