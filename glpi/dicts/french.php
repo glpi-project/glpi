@@ -554,7 +554,7 @@ $lang["stats"][19] = "Statistiques lieux";
 $lang["stats"][20] = "Nom d'utilisateur";
 $lang["stats"][21] = "Lieu";
 $lang["stats"][22] = "Nombre d'interventions demand&eacute;es";
-
+$lang["stats"][23] = "Pas de statistiques disponibles";
 
 
 ?>
