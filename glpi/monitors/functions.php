@@ -161,7 +161,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 	$query = "select mon.ID from glpi_monitors as mon LEFT JOIN glpi_dropdown_locations on mon.location=glpi_dropdown_locations.ID ";
 	$query .= "LEFT JOIN glpi_type_monitors on mon.type = glpi_type_monitors.ID ";
 	$query .= "where $where ORDER BY $sort $order";
-	echo $query;
+//	echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);
