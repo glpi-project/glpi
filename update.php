@@ -38,6 +38,19 @@ include ($phproot . "/glpi/common/classes.php");
 include ($phproot . "/glpi/common/functions.php");
 include ($phproot . "/glpi/config/config_db.php");
 
+// ITEMS TYPE
+define("GENERAL_TYPE","0");
+define("COMPUTER_TYPE","1");
+define("NETWORKING_TYPE","2");
+define("PRINTER_TYPE","3");
+define("MONITOR_TYPE","4");
+define("PERIPHERAL_TYPE","5");
+define("SOFTWARE_TYPE","6");
+define("CONTACT_TYPE","7");
+define("ENTERPRISE_TYPE","8");
+define("INFOCOM_TYPE","9");
+define("CONTRACT_TYPE","10");
+define("CARTRIDGE_TYPE","11");
 
 // DEVICE TYPE
 define("MOBOARD_DEVICE","1");
@@ -1243,8 +1256,8 @@ $query= "CREATE TABLE `glpi_contracts` (
   `cost` float NOT NULL default '0',
   `contract_type` int(11) NOT NULL default '0',
   `begin_date` date default NULL,
-  `duration` float NOT NULL default '0',
-  `notice` float NOT NULL default '0',
+  `duration` decimal(3,2) NOT NULL default '0.00',
+  `notice` decimal(3,2) NOT NULL default '0.00',
   `bill_type` int(11) NOT NULL default '0',
   `comments` text NOT NULL,
   `compta_num` varchar(255) NOT NULL default '',
@@ -1292,14 +1305,14 @@ $query= "CREATE TABLE `glpi_contract_enterprise` (
 $query= "CREATE TABLE `glpi_infocoms` (
   `ID` int(11) NOT NULL auto_increment,
   `buy_date` date NOT NULL default '0000-00-00',
-  `warranty_duration` float NOT NULL default '0',
+  `warranty_duration` decimal(3,2) NOT NULL default '0.00',
   `warranty_info` varchar(255) NOT NULL default '',
   `FK_enterprise` int(11) default NULL,
   `num_commande` varchar(50) NOT NULL default '',
   `bon_livraison` varchar(50) NOT NULL default '',
   `num_immo` varchar(50) NOT NULL default '',
   `value` float default NULL,
-  `amort_time` float default NULL,
+  `amort_time` decimal(3,2) NOT NULL default '0.00',
   `amort_type` varchar(20) NOT NULL default '',
   `comments` text NOT NULL,
   `deleted` enum('Y','N') NOT NULL default 'N',
@@ -1322,6 +1335,81 @@ $query= "CREATE TABLE `glpi_infocom_device` (
 ) TYPE=MyISAM;
 ";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_infocom_device ".$lang["update"][90].$db->error());
+
+
+
+///// Move warranty infos from item to infocoms.
+
+function date_diff($from, $to) {
+	$from=strtotime($from);
+	$to=strtotime($to);
+	if ($from > $to) {
+		$t = $to;
+		$to = $from;
+		$from = $t;
+	}
+
+	$year1 = date("Y", $from);
+	$year2 = date("Y", $to);
+	$month1 = date("n", $from);
+	$month2 = date("n", $to);
+
+	if ($month2 < $month1) {
+		$month2 += 12;
+		$year2 --;
+	}
+	$months = $month2 - $month1;
+	$years = $year2 - $year1;
+	return ($years+$months/12);
+}
+
+function updateWarrantyInfos($table,$type){
+	$db=new DB;
+	$elements=array();
+	$query="SELECT ID,achat_date,date_fin_garantie from $table ORDER BY achat_date,date_fin_garantie";
+	$result=$db->query($query);
+	while ($data=$db->fetch_array($result)){
+		if ($data['achat_date']!="0000-00-00"||$data['date_fin_garantie']!="0000-00-00"){
+			$IDitem=$data['ID'];
+			if ($data['achat_date']=="0000-00-00") $achat_date=date("Y-m-d");
+			else $achat_date=$data['achat_date'];
+			$duration=0;
+			if ($data['date_fin_garantie']!="0000-00-00")
+				$duration=round(date_diff($achat_date,$data['date_fin_garantie']),2);
+			$query_insert="INSERT INTO glpi_infocoms (buy_date,warranty_duration) VALUES ('".$achat_date."','$duration')";
+			$result_insert=$db->query($query_insert);
+			$query_select="SELECT ID FROM glpi_infocoms WHERE buy_date = '$achat_date' AND warranty_duration = '$duration'";
+			if ($result_select=$db->query($query_select)){
+				$IDinfocom=$db->result($result_select,0,"ID");	
+				$query_insert2="INSERT INTO glpi_infocom_device (FK_infocom,FK_device,device_type) VALUES ('$IDinfocom','$IDitem','$type')";
+				$result_insert2=$db->query($query_insert2);	
+			}
+		}
+	}
+// TOADD BEFORE RELEASE
+//	$query_drop =  "ALTER TABLE `$table` DROP `achat_date`";
+//	$result_drop=$db->query($query_drop);
+//	$query_drop =  "ALTER TABLE `$table` DROP `date_fin_garantie`";
+//	$result_drop=$db->query($query_drop);
+
+}
+
+// Add a tmp_key in order to make the update easily
+
+$query ="ALTER TABLE `glpi_infocoms` ADD UNIQUE `tmp_key` ( `buy_date` , `warranty_duration` ); ";
+$result=$db->query($query);
+
+// Update Warranty Infos
+updateWarrantyInfos("glpi_computers",COMPUTER_TYPE);
+updateWarrantyInfos("glpi_printers",PRINTER_TYPE);
+updateWarrantyInfos("glpi_networking",NETWORKING_TYPE);
+updateWarrantyInfos("glpi_monitors",MONITOR_TYPE);
+updateWarrantyInfos("glpi_peripherals",PERIPHERAL_TYPE);
+
+// Delete the tmp_key
+$query="ALTER TABLE `glpi_infocoms` DROP INDEX `tmp_key`";
+$result=$db->query($query);
+
 
 }
 
