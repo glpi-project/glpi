@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-02-14 19:01
+#GLPI Dump database on 2005-02-15 00:12
 ### Dump table glpi_cartridges
 
 DROP TABLE IF EXISTS glpi_cartridges;
@@ -18,6 +18,7 @@ CREATE TABLE glpi_cartridges (
    KEY date_out (date_out)
 );
 
+INSERT INTO glpi_cartridges VALUES ('1','1',NULL,'2005-02-15',NULL,NULL,NULL);
 ### Dump table glpi_cartridges_assoc
 
 DROP TABLE IF EXISTS glpi_cartridges_assoc;
@@ -31,6 +32,7 @@ CREATE TABLE glpi_cartridges_assoc (
    KEY FK_glpi_type_printer_2 (FK_glpi_type_printer)
 );
 
+INSERT INTO glpi_cartridges_assoc VALUES ('3','1','1');
 ### Dump table glpi_cartridges_type
 
 DROP TABLE IF EXISTS glpi_cartridges_type;
@@ -46,6 +48,7 @@ CREATE TABLE glpi_cartridges_type (
    KEY FK_glpi_manufacturer (FK_glpi_manufacturer)
 );
 
+INSERT INTO glpi_cartridges_type VALUES ('1','HP','45378','2','0','N','');
 ### Dump table glpi_computer_device
 
 DROP TABLE IF EXISTS glpi_computer_device;
@@ -233,6 +236,52 @@ CREATE TABLE glpi_connect_wire (
    KEY end1 (end1),
    KEY end2 (end2),
    KEY type (type)
+);
+
+### Dump table glpi_contract
+
+DROP TABLE IF EXISTS glpi_contract;
+CREATE TABLE glpi_contract (
+    ID int(11) NOT NULL auto_increment,
+    num varchar(255) NOT NULL,
+    cost float DEFAULT '0' NOT NULL,
+    contract_type int(11) DEFAULT '0' NOT NULL,
+    begin_date date,
+    duration float DEFAULT '0' NOT NULL,
+    notice float DEFAULT '0' NOT NULL,
+    bill_type int(11) DEFAULT '0' NOT NULL,
+    comments text NOT NULL,
+    compta_num varchar(255) NOT NULL,
+    deleted enum('Y','N') DEFAULT 'N' NOT NULL,
+   PRIMARY KEY (ID),
+   KEY contract_type (contract_type),
+   KEY begin_date (begin_date)
+);
+
+### Dump table glpi_contract_device
+
+DROP TABLE IF EXISTS glpi_contract_device;
+CREATE TABLE glpi_contract_device (
+    ID int(11) NOT NULL auto_increment,
+    FK_contract int(11) DEFAULT '0' NOT NULL,
+    FK_device int(11) DEFAULT '0' NOT NULL,
+    device_type tinyint(4) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (ID),
+   KEY FK_contract (FK_contract),
+   KEY FK_device (FK_device, device_type),
+   KEY FK_device_2 (FK_device, device_type)
+);
+
+### Dump table glpi_contract_tiers
+
+DROP TABLE IF EXISTS glpi_contract_tiers;
+CREATE TABLE glpi_contract_tiers (
+    ID int(11) NOT NULL auto_increment,
+    FK_tiers int(11) DEFAULT '0' NOT NULL,
+    FK_contract int(11) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (ID),
+   KEY FK_tiers (FK_tiers),
+   KEY FK_contract (FK_contract)
 );
 
 ### Dump table glpi_device_gfxcard
@@ -450,6 +499,10 @@ CREATE TABLE glpi_dropdown_kbcategories (
    KEY parentID (parentID)
 );
 
+INSERT INTO glpi_dropdown_kbcategories VALUES ('1','0','Ordinateur');
+INSERT INTO glpi_dropdown_kbcategories VALUES ('2','0','Imprimante');
+INSERT INTO glpi_dropdown_kbcategories VALUES ('3','2','Papier');
+INSERT INTO glpi_dropdown_kbcategories VALUES ('4','2','Toner');
 ### Dump table glpi_dropdown_locations
 
 DROP TABLE IF EXISTS glpi_dropdown_locations;
@@ -618,7 +671,6 @@ CREATE TABLE glpi_event_log (
    KEY date (date)
 );
 
-INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-02-14 19:01:44','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -639,6 +691,52 @@ INSERT INTO glpi_followups VALUES ('3','1','2003-09-18 00:54:40','tech','Problem
 Le reste fonctionne tres bien.');
 INSERT INTO glpi_followups VALUES ('4','3','2003-09-18 00:55:08','tech','Je pense que l\'on peux changer la souris.');
 INSERT INTO glpi_followups VALUES ('5','2','2003-09-18 00:55:52','tech','Je suis passé, il faudra faire une restauration de windows NT4.');
+### Dump table glpi_infocom
+
+DROP TABLE IF EXISTS glpi_infocom;
+CREATE TABLE glpi_infocom (
+    ID int(11) NOT NULL auto_increment,
+    buy_date date DEFAULT '0000-00-00' NOT NULL,
+    warranty_end_date date DEFAULT '0000-00-00' NOT NULL,
+    warranty_info varchar(255) NOT NULL,
+    id_tiers int(11),
+    num_commande varchar(50) NOT NULL,
+    bon_livraison varchar(50) NOT NULL,
+    num_immo varchar(50) NOT NULL,
+    value float,
+    amort_time float,
+    amort_type varchar(20) NOT NULL,
+    comments text NOT NULL,
+    deleted enum('Y','N') DEFAULT 'N' NOT NULL,
+   PRIMARY KEY (ID),
+   KEY id_tiers (id_tiers),
+   KEY buy_date (buy_date)
+);
+
+### Dump table glpi_infocom_device
+
+DROP TABLE IF EXISTS glpi_infocom_device;
+CREATE TABLE glpi_infocom_device (
+    ID int(11) NOT NULL auto_increment,
+    FK_infocom int(11) DEFAULT '0' NOT NULL,
+    FK_device int(11) DEFAULT '0' NOT NULL,
+    device_type tinyint(4) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (ID),
+   KEY FK_infocom (FK_infocom)
+);
+
+### Dump table glpi_infocom_tiers
+
+DROP TABLE IF EXISTS glpi_infocom_tiers;
+CREATE TABLE glpi_infocom_tiers (
+    ID int(11) NOT NULL auto_increment,
+    FK_tiers int(11) DEFAULT '0' NOT NULL,
+    FK_infocom int(11) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (ID),
+   KEY FK_tiers (FK_tiers),
+   KEY FK_infocom (FK_infocom)
+);
+
 ### Dump table glpi_inst_software
 
 DROP TABLE IF EXISTS glpi_inst_software;
@@ -668,6 +766,26 @@ CREATE TABLE glpi_kbitems (
    KEY categoryID (categoryID)
 );
 
+INSERT INTO glpi_kbitems VALUES ('1','3','Quel type de papier pour l\'Epson Stylus Color 460 ?','
+Du papier 90g,100g et 110 g.','no');
+INSERT INTO glpi_kbitems VALUES ('2','2','Peut-on  utiliser l\' imprimante EPSON Stylus si la cartouche couleur est vide ?','Non. Les imprimantes EPSON Stylus nécessitent que les deux cartouches (noire et couleur) soient installées.','yes');
+INSERT INTO glpi_kbitems VALUES ('3','1','Peut on utiliser des codes pour mettre en forme le texte ?','Oui : voir dans  l\'aide en ligne 
+
+Quelques exemples :
+
+[b]Texte gras[/b] 
+[u]Texte souligné[/u] 
+[i]Texte italique[/i] 
+[color=#FF0000]Texte rouge[/color] 
+
+
+http://glpi.indepnet.org
+
+[email]myname@mydomain.com[/email] 
+
+[email=myname@mydomain.com]Mon adresse e-mail[/email] 
+
+[code]Voici un bout de code.[/code]','no');
 ### Dump table glpi_licenses
 
 DROP TABLE IF EXISTS glpi_licenses;
