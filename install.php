@@ -656,15 +656,15 @@ function mailing_config_to_db($admin_email, $mailing_signature,$mailing_new_admi
 
 //------------Start of install script---------------------------
 include ("_relpos.php");
-if(file_exists($phproot ."/glpi/config/config_db.php")) {
-	include($phproot ."/index.php");
-	die();
-}
-else
-{
 	if(!isset($_POST["install"])) {
-		header_html("Début de l'installation");
-       	 step0();
+		if(file_exists($phproot ."/glpi/config/config_db.php")) {
+			include($phproot ."/index.php");
+			die();
+		}
+		else {
+			header_html("Début de l'installation");
+			step0();
+		}
 	}
 	else {
 		switch ($_POST["install"]) {
@@ -709,6 +709,5 @@ else
 		}
 	}
 	footer_html();
-}
 //FIn du script
 ?>
