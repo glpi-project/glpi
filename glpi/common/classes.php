@@ -172,6 +172,7 @@ class Identification
 {
 	var $err;
 	var $user;
+	var $extauth=0;
 
 	//constructor for class Identification
 	function Identification($name)
@@ -492,6 +493,7 @@ class Identification
 		$_SESSION["glpilanguage"] = $language;
 		$_SESSION["tracking_order"] = $tracking_order;
 		$_SESSION["authorisation"] = true;
+		$_SESSION["extauth"] = $this->extauth;
 	}
 
 	function eraseCookies()
