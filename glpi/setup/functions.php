@@ -1132,7 +1132,7 @@ function titleExtSources(){
 		GLOBAL  $lang,$HTMLRel;
                 echo "<div align='center'><table border='0'><tr><td>";
                 echo "<img src=\"".$HTMLRel."pics/authentification.png\" alt='' title=''></td><td><b><span class='icon_nav'>Sources d'authentification externe</span>";
-		 echo "</b></td></tr></table></div>";
+		 echo "</b></td></tr></table>&nbsp;</div>";
 
 }
 
