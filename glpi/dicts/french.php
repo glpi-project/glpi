@@ -615,7 +615,7 @@ $lang["mailing"][13]="Erreur dans la génération de l'email automatique";
 $lang["stats"][0] = "S&eacute;lectionnez les statistiques &agrave; visualiser";
 $lang["stats"][1] = "Globales";
 $lang["stats"][2] = "Par technicien";
-$lang["stats"][3] = "Par lieu";
+$lang["stats"][3] = "Par dropdown";
 $lang["stats"][4] = "Par utilisateur";
 $lang["stats"][5] = "Nombre total d'interventions";
 $lang["stats"][6] = "D&eacute;lai moyen de r&eacute;solution de panne";
@@ -637,6 +637,7 @@ $lang["stats"][21] = "Lieu";
 $lang["stats"][22] = "Nombre d'interventions demand&eacute;es";
 $lang["stats"][23] = "Pas de statistiques disponibles";
 $lang["stats"][25] = "Dur&eacute;e r&eacute;elle moyenne de l'intervention";
+$lang["stats"][26] = "Types";
 
 
 ?>
