@@ -340,9 +340,59 @@ $jour_fin_mois=strftime("%w",mktime(0,0,0,$mois_courant,$nb_jour[$mois_courant-1
 echo "<div align='center'>";
 
 echo "<table cellpadding='20' ><tr><td><a href=\"".$target.$str_precedent."\"><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></td><td><b>".
-	$lang["calendarM"][$mois_courant-1]."</b></td><td><a href=\"".$target.$str_suivant."\"><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></td></tr></table>";
+	$lang["calendarM"][$mois_courant-1]."&nbsp;".$annee_courante."</b></td><td><a href=\"".$target.$str_suivant."\"><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></td></tr></table>";
 
-echo "<table class='tab_cadre' width='730'>";
+// test
+echo "<table><tr><td valign='top'>";
+
+echo "<table><tr><td width='100' valign='top'>";
+
+		// date du jour
+		$today=getdate(time());
+		$mois=$today["mon"];
+		$annee=$today["year"];
+		
+		
+		$annee_avant = $annee_courante - 1;
+		$annee_apres = $annee_courante + 1;
+		
+		
+		echo "<div class='verdana1'>";
+			echo "<div><b>$annee_avant</b></div>";
+			for ($i=$mois_courant; $i < 13; $i++) {
+				echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #cccccc; background-color: #eeeeee;'><a href=\"".$target."?show=resa&ID=$ID&mois_courant=$i&annee_courante=$annee_avant\">".
+	$lang["calendarM"][$i-1]."</a></div>";
+			}
+		
+		echo "<div><b>$annee_courante</b></div>";
+		for ($i=1; $i < 13; $i++) {
+			if ($i == $mois_courant) {
+				echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #666666; background-color: white;'><b>".
+	$lang["calendarM"][$i-1]."</b></div>";
+			}
+			else {
+				echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #cccccc; background-color: #eeeeee;'><a href=\"".$target."?show=resa&ID=$ID&mois_courant=$i&annee_courante=$annee_courante\">".
+	$lang["calendarM"][$i-1]."</a></div>";
+			}
+		}
+
+			echo "<div><b>$annee_apres</b></div>";
+			for ($i=1; $i < $mois_courant+1; $i++) {
+				echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #cccccc; background-color: #eeeeee;'><a href=\"".$target."?show=resa&ID=$ID&mois_courant=$i&annee_courante=$annee_apres\">".
+	$lang["calendarM"][$i-1]."</a></div>";
+		}
+		echo "</div>";
+	
+	echo "</td></tr></table>";
+
+echo "</td><td valign='top'>";
+
+
+
+// test 
+	
+	
+echo "<table class='tab_cadre' width='700'>";
 echo "<th width='14%'>".$lang["calendarD"][1]."</th>";
 echo "<th width='14%'>".$lang["calendarD"][2]."</th>";
 echo "<th width='14%'>".$lang["calendarD"][3]."</th>";
@@ -351,7 +401,7 @@ echo "<th width='14%'>".$lang["calendarD"][5]."</th>";
 echo "<th width='14%'>".$lang["calendarD"][6]."</th>";
 echo "<th width='14%'>".$lang["calendarD"][0]."</th>";
 
-echo "<tr class='tab_bg_3'>";
+echo "<tr class='tab_bg_3' >";
 
 // Il faut insérer des cases vides pour mettre le premier jour du mois
 // en face du jour de la semaine qui lui correspond.
@@ -365,9 +415,9 @@ for ($i=1;$i<$nb_jour[$mois_courant-1]+1;$i++){
 	if ($i<10) $ii="0".$i;
 	else $ii=$i;
 	
-	echo "<td  valign='top'>";
+	echo "<td  valign='top' height='100'>";
 	
-	echo "<table align='center'><tr><td align='center' ><span style='font-family: arial,helvetica,sans-serif; font-size: 14px; color: black'>".$i."</span></td></tr>";
+	echo "<table align='center' ><tr><td align='center' ><span style='font-family: arial,helvetica,sans-serif; font-size: 14px; color: black'>".$i."</span></td></tr>";
 	
 	echo "<tr><td align='center'><a href=\"".$target."?show=resa&add=$ID&date=".$annee_courante."-".$mois_courant."-".$ii."\"><img style='color: blue; font-family: Arial, Sans, sans-serif; font-size: 10px;' src=\"".$HTMLRel."pics/addresa.png\" alt='".$lang["reservation"][8]."' title='".$lang["reservation"][8]."'></a></td></tr>";
 	
@@ -397,7 +447,9 @@ for ($i=1;$i<$nb_jour[$mois_courant-1]+1;$i++){
 if ($jour_fin_mois!=0)
 for ($i=0;$i<7-$jour_fin_mois;$i++) 	echo "<td style='background-color:#ffffff'>&nbsp;</td>";
 
-echo "</tr></table></div>";
+echo "</tr></table>";
+
+echo "</td></tr></table></div>";
 	
 }
 
