@@ -46,11 +46,11 @@ function showFormDropDown ($target,$name,$human) {
 	echo "<input type='hidden' name='which' value='$name'>";
 	echo "<tr><td align='center' class='tab_bg_1'>";
 
-	
+	echo $name;
 	dropdown("glpi_dropdown_".$name, "ID");
         // on ajoute un input text pour entrer la valeur modifier
         echo "<img src=\"".$HTMLRel."pics/puce.gif\" alt='' title=''>";
-	if($name = "netpoint") {
+	if($name == "netpoint") {
 		echo $lang["networking"][1].": ";		
 		dropdown("glpi_dropdown_locations", "value2");
 		echo $lang["networking"][52].": ";
@@ -71,7 +71,7 @@ function showFormDropDown ($target,$name,$human) {
 	echo "<form action=\"$target\" method='post'>";
 	echo "<input type='hidden' name='which' value='$name'>";
 	echo "<tr><td align='center'  class='tab_bg_1'>";
-	if($name = "netpoint") {
+	if($name == "netpoint") {
 		echo $lang["networking"][1].": ";		
 		dropdown("glpi_dropdown_locations", "value2");
 		echo $lang["networking"][52].": ";
