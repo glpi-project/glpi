@@ -47,7 +47,7 @@ function titlePrinters(){
            echo "<img src=\"".$HTMLRel."pics/printer.png\" alt='".$lang["printers"][0]."' title='".$lang["printers"][0]."'></td><td><a  class='icon_consol' href=\"printers-add-select.php\"><b>".$lang["printers"][0]."</b></a>";
 
                 echo "</td>";
-                echo "<td><a class='icon_consol'  href='".$HTMLRel."setup/setup-templates.php?type=".PRINTER_TYPE."'>".$lang["common"][9]."</a></td>";
+                echo "<td><a class='icon_consol'  href='".$HTMLRel."setup/setup-templates.php?type=".PRINTER_TYPE."'>".$lang["common"][8]."</a></td>";
                 echo "</tr></table></div>";
 }
 

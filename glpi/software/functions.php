@@ -45,7 +45,7 @@ function titleSoftware(){
          echo "<div align='center'><table border='0'><tr><td>";
          echo "<img src=\"".$HTMLRel."pics/logiciels.png\" alt='".$lang["software"][0]."' title='".$lang["software"][0]."'></td><td><a  class='icon_consol' href=\"software-add-select.php\"><strong>".$lang["software"][0]."</strong></a>";
                 echo "</td>";
-                echo "<td><a class='icon_consol'  href='".$HTMLRel."setup/setup-templates.php?type=".SOFTWARE_TYPE."'>".$lang["common"][9]."</a></td>";
+                echo "<td><a class='icon_consol'  href='".$HTMLRel."setup/setup-templates.php?type=".SOFTWARE_TYPE."'>".$lang["common"][8]."</a></td>";
                 echo "</tr></table></div>";
 
 }
@@ -1025,9 +1025,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	$number = $db->numrows($result);
 	$i = 0;
 		
-        
-
-	echo "<br><br><center><table class='tab_cadre' width='90%'>";
+        echo "<br><br><center><table class='tab_cadre' width='90%'>";
 	echo "<tr><th colspan='5'>".$lang["software"][17].":</th></tr>";
 			echo "<tr><th>".$lang['software'][2]."</th><th>".$lang['software'][32]."</th><th>".$lang['software'][33]."</th><th>".$lang['software'][35]."</th><th>&nbsp;</th></tr>";
 	
@@ -1095,8 +1093,11 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 
 		$i++;		
 	}
-
-	if(!empty($withtemplate) && $withtemplate == 2) {
+	$q="SELECT * FROM glpi_software WHERE deleted='N' AND is_template='0'";
+	$result = $db->query($q);
+	$nb = $db->numrows($result);
+	
+	if((!empty($withtemplate) && $withtemplate == 2) || $nb==0) {
 	//Do nothing
 	} else {
 		echo "<form method='post' action=\"".$cfg_install["root"]."/software/software-licenses.php\">";

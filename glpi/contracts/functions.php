@@ -788,7 +788,11 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	if ($withtemplate!=2)echo "<td align='center' class='tab_bg_2'><a href='".$HTMLRel."contracts/contracts-info-form.php?deleteitem=deleteitem&ID=$assocID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
 	}
-	if ($withtemplate!=2){
+	$q="SELECT * FROM glpi_contracts WHERE deleted='N'";
+	$result = $db->query($q);
+	$nb = $db->numrows($result);
+	
+	if ($withtemplate!=2&&$nb>0){
 		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 		echo "<div class='software-instal'><input type='hidden' name='ID' value='$ID'><input type='hidden' name='type' value='$device_type'>";
 		dropdownContracts("conID");
