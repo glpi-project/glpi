@@ -37,6 +37,7 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_computers.php");
+include ($phproot . "/glpi/includes_devices.php");
 include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_monitors.php");
 include ($phproot . "/glpi/includes_printers.php");
@@ -44,8 +45,6 @@ include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_reservation.php");
-include ($phproot . "/glpi/devices/classes.php");
-include ($phproot . "/glpi/devices/functions.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
