@@ -676,7 +676,7 @@ function postFollowups ($ID,$author,$contents) {
 function addFormTracking ($ID,$author,$assign,$target,$error,$searchauthor='') {
 	// Prints a nice form to add jobs
 
-	GLOBAL $cfg_layout, $lang;
+	GLOBAL $cfg_layout, $lang,$cfg_features;
 
 	if (!empty($error)) {
 		echo "<div align='center'><b>$error</b></div>";
@@ -706,6 +706,7 @@ function addFormTracking ($ID,$author,$assign,$target,$error,$searchauthor='') {
 	echo "<tr class='tab_bg_2' align='center'><td>".$lang["joblist"][3].":</td>";
 	
 	echo "<td align='center'>";
+
 	dropdownValueSearch("glpi_users","user",$author,$searchauthor);
 	echo "</td>";
         echo "<td><input type='text' size='10'  name='search'></td>";
@@ -718,6 +719,18 @@ function addFormTracking ($ID,$author,$assign,$target,$error,$searchauthor='') {
 	echo "<td align='center' colspan='3'>";
 	dropdownUsers($assign,"assign");
 	echo "</td></tr>";
+
+	if($cfg_features["mailing"] == 1)
+	{
+		echo "<tr class='tab_bg_1'>";
+		echo "<td>".$lang["help"][8].":</td>";
+		echo "<td align='center' colspan='3'>	<select name='emailupdates'>";
+		echo "<option value='no selected'>".$lang["help"][9]."";
+		echo "<option value='yes'>".$lang["help"][10]."";
+		echo "</select>";
+		echo "</td></tr>";
+	}
+
 
 	echo "<tr class='tab_bg_1' align='center'><td>".$lang["joblist"][5].":</td>";
 	echo "<td align='center' colspan='3'>";
