@@ -40,7 +40,7 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["tID"])) $tab["tID"] = "";
 if(!isset($tab["cID"])) $tab["cID"] = "";
 
-
+//print_r($_POST);
 if (isset($tab["Modif_Interne"])){
 	checkAuthentication("admin");
 	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
@@ -64,20 +64,13 @@ else if (isset($tab["delete"]))
 	logEvent(0, "cartridge", 4, "inventory", $_SESSION["glpiname"]." deleted a license.");
 	header("Location: ".$_SERVER['HTTP_REFERER']." ");
 }
-else if (isset($tab["select"]))
-{
-	checkAuthentication("admin");
-	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
-	showCartridgeSelect($_SERVER['HTTP_REFERER'],$_SERVER["PHP_SELF"],$tab["cID"],$tab["sID"]);
-	commonFooter();
-}
 else if (isset($tab["install"]))
 {
 	checkAuthentication("admin");
-	installCartridge($tab["pID"],$tab["cID"]);
+	installCartridge($tab["pID"],$tab["tID"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed cartridge.");
 	//echo $tab["back"];
-	header("Location: ".$tab['back']." ");
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["uninstall"]))
 {
