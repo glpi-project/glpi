@@ -1,14 +1,14 @@
 **** GLPI 0.5 ***
 
 18/03/05
-Noms des prioirtés plus neutres
+Noms des priorités plus neutres
 Blocage demande intervention pour matériel inconnu
-Ajout de boutons suivant/précédent
+Ajout de boutons suivant/précédent dans les fiches inventaires
 Ajout ID dans la liste des suivis
 
 17/03/05
-Ajout des ports sur les périphérques externes (gestion téléphones...)
-
+Ajout des ports sur les périphériques externes (gestion téléphones...)
+Refonte complete du formulaire helpdesk.html :  XHTML+css  -> plus facile à personnaliser
 
 16/03/05
 Amélioration gestion des mots de passe
@@ -17,10 +17,10 @@ Amélioration gestion des mots de passe
 Amélioration système envoi de mails
 
 10/03/05
-Ajout d'onglets dans l'inventaire
+Ajout d'onglets de navigation rapide  dans l'inventaire
 
 08/03/05
-Gestion des documents liés
+Gestion des documents liés aux éléments d'inventaires, contrats ....
 
 07/03/05
 Sécurité accrue pour la récupération des fichiers stockés
@@ -31,8 +31,8 @@ Ajout responsable technique des matériels de l'inventaire
 Barre d'édition pour la base de connaissance
 
 04/03/05
-Templates pour tous les éléments de l'inventaire
-Compatibiliét avec des décompacteurs pas très futés
+Templates pour tous les éléments de l'inventaire (computers, écrans, logiciels etc ....)
+Compatibilité avec des décompacteurs pas très futés (Sous Windows)
 
 03/03/05
 Ajout champs fabriquant pour tous les élèments de l'inventaire
@@ -46,7 +46,7 @@ Refonte du système de recherche des éléments
 
 19/02/05
 Un nouveau logo pour GLPI
-Gestion des contrats et informations commerciales avec prise en compte des contacts et entreprises associés
+Gestion des contrats, informations commerciales et financières avec prise en compte des contacts et entreprises associés
 
 18/02/05
 Mise en place architecture pour documentation développeur
@@ -58,10 +58,10 @@ Gestion des consommables imprimantes
 12/02/05
 Ajout de la catégorisation des interventions
 Colorisation des priorités pour les suivis
-Nouvelle gestion des périphériques internes (possibilité de n éléments par type)
+Nouvelle gestion des périphériques internes (possibilité de n éléments par type). Les configurations sont donc totalement modulables.
 
 10/02/05
-Ajout comentaire pour les réservations
+Ajout possible de  commentaire pour les réservations
 Réservation possible pour d'autres personnes par l'admin
 
 05/02/05
@@ -73,7 +73,7 @@ Ajout recherche dans la base de connaissances
 31/01/05
 Pas d'élèments de dropdown vide
 Gestion de la périodicité pour les réservations
-Base de connaissance replable et depliable a volonté
+Base de connaissance repliable et dépliable à  volonté
 
 29/01/05
 Gestion des licences site
@@ -105,6 +105,9 @@ Langues proposées dans leur langues respectives
 
 28/12/04
 Ajout d'une base de connaissances
+
+12/12/04
+Les users standards peuvent poster des demandes de type "general"
 
 22/11/04 
 Ajout d'un support de navigation par mois pour la réservation
