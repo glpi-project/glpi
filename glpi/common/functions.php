@@ -817,7 +817,7 @@ function loadLanguage() {
 
 	if(empty($_SESSION["glpilanguage"]))
 	{	
-		$file= "/glpi/dicts/english.php";
+		$file= "/glpi/dicts/french.php";
 	}
 	else {
 		$file = "/glpi/dicts/".$_SESSION["glpilanguage"].".php";
