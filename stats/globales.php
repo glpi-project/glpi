@@ -42,7 +42,7 @@ checkAuthentication("normal");
 
 commonHeader("Stats",$_SERVER["PHP_SELF"]);
 
-echo "<div align='center'><table border='0' cellpadding='5'>";
+echo "<div align='center'><table class='tab_cadre2' cellpadding='5'>";
 echo "<tr><th colspan=\"1\"></th><th>".$lang["stats"][8].":</th><th>".$lang["stats"][9].":</th><th>".$lang["stats"][10].":</th></tr>";
 echo"</div>
 commonFooter();

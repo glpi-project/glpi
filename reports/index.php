@@ -44,13 +44,13 @@ checkAuthentication("normal");
 commonHeader("Reports",$_SERVER["PHP_SELF"]);
 
  // titre
-        echo "<div align='center'><table border='0'><tr><td>";
+        echo "<div align='center'><table ><tr><td>";
         echo "<img src=\"".$HTMLRel."pics/rapports.png\" alt='".$lang["Menu"][6]."' title='".$lang["Menu"][6]."'></td><td><span class='icon_nav'><b>".$lang["Menu"][6]."</b></span>";
         echo "</td></tr></table></div>";
 
 
 
-echo "<div align='center'><table border='0' cellpadding='5'>";
+echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 echo "<tr><th>".$lang["reports"][0].":</th></tr>";
 
 $i = 0;

@@ -95,12 +95,15 @@ input.submit:hover {
   }
 
 .tab_cadre{
- 
  -moz-border-radius: 4px;
-   border: 1px solid #cccccc;
-
+  border: 1px solid #cccccc;
 }
 
+.tab_cadre2{
+text-align:center;
+ -moz-border-radius: 4px;
+  border: 1px solid #cccccc;
+}
 
 .tab_bg_1 {
 background-color: #cccccc;

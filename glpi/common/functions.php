@@ -952,7 +952,7 @@ function printPager($start,$numrows,$target,$parameters) {
 	}
 
 	// Print it
-	echo "<br><center><table border='0' width='90%'>";
+	echo "<br><center><table class='tab_cadre2' width='750'>";
 	echo "<tr>";
 	
 	// Back and fast backward button
@@ -968,7 +968,7 @@ function printPager($start,$numrows,$target,$parameters) {
 	}
 
 	// Print the "where am I?" 
-	echo "<td width='100%' align='center' class='tab_bg_1'><b>";
+	echo "<td width='750' align='center' class='tab_bg_2'><b>";
 	echo $current_start."&nbsp;".$lang["pager"][1]."&nbsp;".$current_end."&nbsp;".$lang["pager"][2]."&nbsp;".$numrows."&nbsp;";
 	echo "</b></td>";
 
