@@ -163,7 +163,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 	$query .= "LEFT JOIN glpi_type_networking on glpi_networking.type = glpi_type_networking.ID ";
 	$query .= "LEFT JOIN glpi_dropdown_firmware on glpi_networking.firmware = glpi_dropdown_firmware.ID ";
 	$query .= "where $where ORDER BY $sort $order";
-//	echo $query;	
+
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows = $db->numrows($result);
@@ -189,7 +189,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			if ($sort=="networking.name") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=networking.name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_networking.name&order=ASC&start=$start\">";
 			echo $lang["networking"][0]."</a></th>";
 
 			// Location			
@@ -197,7 +197,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			if ($sort=="networking.location") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=networking.location&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=ASC&start=$start\">";
 			echo $lang["networking"][1]."</a></th>";
 
 			// Type
@@ -205,7 +205,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			if ($sort=="networking.type") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=networking.type&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_networking.name&order=ASC&start=$start\">";
 			echo $lang["networking"][2]."</a></th>";
 
 			
@@ -214,7 +214,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			if ($sort=="networking.firmware") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=networking.firmware&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_firmware.name&order=ASC&start=$start\">";
 			echo $lang["networking"][49]."</a></th>";
 
 			
@@ -224,7 +224,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			if ($sort=="networking.date_mod") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=networking.date_mod&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_networking.date_mod&order=DESC&start=$start\">";
 			echo $lang["networking"][9]."</a></th>";
 	
 			echo "</tr>";
