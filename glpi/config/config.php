@@ -1,6 +1,6 @@
 <?php
 /*
- 
+
  ----------------------------------------------------------------------
 GLPI - Gestionnaire libre de parc informatique
  Copyright (C) 2002 by the INDEPNET Development Team.
@@ -8,7 +8,7 @@ GLPI - Gestionnaire libre de parc informatique
  ----------------------------------------------------------------------
  Based on:
 IRMA, Information Resource-Management and Administration
-Christian Bauer, turin@incubus.de 
+Christian Bauer, turin@incubus.de
 
  ----------------------------------------------------------------------
  LICENSE
@@ -33,6 +33,7 @@ This file is part of GLPI.
  Purpose of file:
  ----------------------------------------------------------------------
 */
+ //And Julien Dombre for externals identifications
  
 
 //Toutes les options notifiées "non supportées par glpi v0.2 sont liées
@@ -50,7 +51,7 @@ class DB extends DBmysql {
 
 	var $dbhost	= "localhost";
 	var $dbuser 	= "root"; 
-	var $dbpassword	= "";
+	var $dbpassword	= "bazounet";
 	var $dbdefault	= "glpidb";
 }
 
@@ -86,6 +87,29 @@ class baseFunctions {
 
 				
 }
+
+//put $cfg_login['use_extern'] = 1 if you want to use external sources for login
+//default set to 0
+//mettez cette option a 1 si vous vous voulez utiliser des sources
+//d'informations externes/alternatives pour le login
+//par defaut laissez cette valeur a 0;
+$cfg_login['use_extern'] = 0;
+
+// Gestion de source d'information alternatives pour le login
+// telles que des serveurs de mail en imap pop...
+// ports standards : pop 110 , imap 993
+// Dans tous les cas le dernier type de login testé est la base de données
+// Dans le cas où le login est incorrect dans la base mais est correct
+// sur la source alternative, l'utilisateur est ajouté ou son mot de passe
+// est modifié
+// Si plusieurs sources alternatives sont définies, seule la première
+// fournissant un login correct est utilisé
+
+$cfg_login['imap']['auth_server'] = "{hector.indepnet.org:143/imap}";
+$cfg_login['imap']['host'] = "";
+
+//other sources
+//$cfg_login['other_source']...
 
 // Features configuration
 

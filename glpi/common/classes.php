@@ -1,10 +1,11 @@
 <?php
 /*
- 
+
  ----------------------------------------------------------------------
 GLPI - Gestionnaire libre de parc informatique
  Copyright (C) 2002 by the INDEPNET Development Team.
  http://indepnet.net/   http://glpi.indepnet.org
+
  ----------------------------------------------------------------------
  Based on:
 IRMA, Information Resource-Management and Administration
@@ -33,6 +34,7 @@ This file is part of GLPI.
  Purpose of file:
  ----------------------------------------------------------------------
 */
+// And Julien Dombre for externals identifications
 
 
 class DBmysql {
@@ -41,9 +43,10 @@ class DBmysql {
 	var $dbuser = ""; 
 	var $dbpassword	= "";
 	var $dbdefault	= "";
-	var $dbh ;
+	var $dbh;
 
-	function DB() {  // Constructor
+	function DB()
+	{  // Constructor
 		$this->dbh = mysql_connect($this->dbhost, $this->dbuser, $this->dbpassword);
 		mysql_select_db($this->dbdefault);
 	}
@@ -68,9 +71,18 @@ class DBmysql {
 	function list_tables() {
 	return mysql_list_tables($this->dbdefault);
 	}
-	
-	function error() {
+	function errno()
+	{
+		return mysql_errno();
+	}
+
+	function error()
+	{
 		return mysql_error();
+	}
+	function close()
+	{
+		return mysql_close($this->dbh);
 	}
 	
 }
@@ -135,5 +147,130 @@ class Connection {
 
 }
 
+class Identification
+{
+	var $err;
+	var $user;
 
+	//constructor for class Identification
+	function Identification()
+	{
+		//echo "il est passé par ici";
+		$this->err = "";
+		$this->user = new User;
+
+	}
+
+
+	//return 1 if the (IMAP/pop) connection to host $host, using login $login and pass $pass
+	// is successfull
+	//else return 0
+	function connection_imap($host,$login,$pass)
+	{
+		error_reporting(16);
+		if($mbox = imap_open($host,$login,$pass))
+		//if($mbox)$mbox =
+		{
+			imap_close($mbox);
+			return 1;
+		}
+		else
+		{
+			$this->err = imap_last_error();
+			imap_close($mbox);
+			return 0;
+		}
+	}
+
+
+	// void;
+	//try to connect to DB
+	//update the instance variable user with the user who has the name $name
+	//and the password is $password in the DB.
+	//If not found or can't connect to DB updates the instance variable err
+	//with an eventual error message
+	function connection_db_mysql($name,$password)
+	{
+		$db = new DB;
+		$query = "SELECT * from users where (name = '".$name."' && password = PASSWORD('".$password."'))";
+		$result = $db->query($query);
+		//echo $query;
+		if($result)
+		{
+			if($db->numrows($result))
+			{
+				$this->user->getFromDB($name);
+				return 2;
+			}
+			else
+			{
+				$this->err = "Bad username or password";
+				return 1;
+			}
+		}
+		else
+		{
+			$err = "Erreur numero : ".$db->errno().": ";
+			$err += $db->error();
+			return 0;
+		}
+
+	}
+
+	// Set Cookie for this user
+	function setCookies()
+	{
+		$name = $this->user->fields['name'];
+		$password = md5($this->user->fields['password']);
+		$type = $this->user->fields['type'];
+	 	SetCookie("IRMName", $name, 0, "/");
+		SetCookie("IRMPass", $password, 0, "/");
+	}
+
+	//Add an user to DB or update his password if user allready exist.
+	//The default type of the added user will be 'post-only'
+	function add_an_user($name, $password, $host)
+	{
+
+		// Update user password if already known
+		if ($this->connection_db_mysql($name,$password) == 2)
+		{
+			$update[0]="password";
+			$this->user->fields["password"]=$password;
+			$this->user->updateInDB($update);
+
+		}// Add user if not known
+		else
+		{
+			// dump status
+
+			$this->user->fields["name"]=$name;
+			if(empty($host))
+			{
+			$this->user->fields["email"]=$name;
+			}
+			else
+			{
+			$this->user->fields["email"]=$name."@".$host;
+			}
+			$this->user->fields["type"]="post-only";
+			$this->user->fields["realname"]=$name;
+			$this->user->fields["can_assign_job"]="no";
+			$this->user->addToDB();
+			$update[0]="password";
+			$this->user->fields["password"]=$password;
+    		$this->user->updateInDB($update);
+		}
+
+	}
+
+	function getErr()
+	{
+		return $this->err;
+	}
+	function getUser()
+	{
+		return $this->user;
+	}
+}
 ?>
