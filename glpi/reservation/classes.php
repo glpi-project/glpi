@@ -306,7 +306,7 @@ function getEmpty () {
 		return true;
 		
 		$query = "SELECT * FROM glpi_reservation_resa".
-		" WHERE (id_item = '".$this->fields["id_item"]."') AND ( ('".$this->fields["begin"]."' >= begin AND '".$this->fields["begin"]."' <= end) OR ('".$this->fields["end"]."' >= begin AND '".$this->fields["end"]."' <= end))";
+		" WHERE (id_item = '".$this->fields["id_item"]."') AND ( ('".$this->fields["begin"]."' <= begin AND '".$this->fields["end"]."' >= begin) OR ('".$this->fields["begin"]."' <= end AND '".$this->fields["end"]."' >= end) OR ('".$this->fields["begin"]."' >= begin AND '".$this->fields["end"]."' <= end))";
 //		echo $query."<br>";
 		if ($result=$db->query($query)){
 			return ($db->numrows($result)>0);
