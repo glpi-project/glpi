@@ -1,3 +1,13 @@
+03/02/2004
+Implémentation de la possibilité de se logguer a GLPI
+via d'autres sources d'information (comme des login imap/pop,
+a terme des logins kerberos, ldap ou autres seront implémentés.
+Niveau des fichiers :
+Le fichier glpi/login.php a complétement changé suite a cette implementation.
+La classe Identification apparait dans /glpi/glpi/common/classes.php.
+Le fichier config.php se voit ajouté quelques lignes permettant d'une part
+de dire si l'on souhaite utiliser des sources externes/alternative,
+d'autre part de spécifier quelles sont ces sources.
 
 
 
