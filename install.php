@@ -615,8 +615,8 @@ function create_conn_file($host,$user,$password,$dbname)
 function update1($host,$user,$password,$dbname) {
 	
 	global $lang;	
-
-	if(create_conn_file($host,$user,$password,$dbname)) {
+	
+	if(create_conn_file($host,$user,$password,$dbname) && !empty($dbname)) {
 		
 		include("update.php");
 	}
@@ -692,6 +692,7 @@ loadLang($_SESSION["dict"]);
 				step7();
 				break;
 			case "update_1" : 
+				if(empty($_POST["databasename"])) $_POST["databasename"] ="";
 				update1($_POST["db_host"],$_POST["db_user"],$_POST["db_pass"],$_POST["databasename"]);
 				break;
 		}
