@@ -399,7 +399,7 @@ function updatePrinter($input) {
 	for ($i=0; $i < count($printer->fields); $i++) {
 		list($key,$val) = each($printer->fields);
 		if (eregi("\.*flag\.*",$key)) {
-			if (!$input[$key]) {
+			if (!isset($input[$key])) {
 				$input[$key]=0;
 			}
 		}
