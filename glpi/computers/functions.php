@@ -105,6 +105,7 @@ function searchFormComputers($field="",$contains="",$sort= "",$deleted= "") {
 	$option["glpi_networking_ports.ifmac"] = $lang["networking"][15];
 	$option["glpi_dropdown_netpoint.name"]			= $lang["networking"][51];
 	$option["glpi_enterprises.name"]			= $lang["common"][5];
+	$option["resptech.name"]			=$lang["common"][10];
 	
 	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
 	echo "<div align='center'><table border='0' width='750' class='tab_cadre'>";
@@ -199,6 +200,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 		$where .= " OR glpi_networking_ports.ifmac LIKE '%".$contains."%'";
 		$where .= " OR glpi_dropdown_netpoint.name LIKE '%".$contains."%'";
 		$where .= " OR glpi_enterprises.name LIKE '%".$contains."%'";
+		$where .= " OR resptech.name LIKE '%".$contains."%'";
 		$where .= ")";
 	}
 	else {
@@ -228,6 +230,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 	$query.= "LEFT JOIN glpi_dropdown_os on (glpi_dropdown_os.ID = comp.os)";
 	$query.= "LEFT JOIN glpi_dropdown_locations on (glpi_dropdown_locations.ID = comp.location)";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = comp.FK_glpi_enterprise ) ";
+	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = comp.tech_num ) ";
 	$query .= " where $where AND comp.deleted='$deleted' AND comp.is_template = '0'  ORDER BY $sort $order";
 	// Get it from database	
 	if ($result = $db->query($query)) {

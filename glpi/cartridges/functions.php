@@ -56,7 +56,8 @@ function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "",$d
 	$option["glpi_cartridges_type.type"]			= $lang["cartridges"][3];
 	$option["glpi_enterprises.name"]			= $lang["cartridges"][8];
 	$option["glpi_dropdown_locations.name"]			= $lang["cartridges"][36];	
-
+	$option["resptech.name"]			=$lang["common"][10];
+	
 	echo "<form method=get action=\"".$cfg_install["root"]."/cartridges/cartridge-search.php\">";
 	echo "<div align='center'><table class='tab_cadre' width='750'>";
 	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
@@ -131,6 +132,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 		}
 		$where.=" OR glpi_enterprises.name LIKE '%".$contains."%'";
 		$where.=" OR glpi_dropdown_locations.name LIKE '%".$contains."%'";
+		$where .= " OR resptech.name LIKE '%".$contains."%'";
 		$where .= ")";
 	}
 	else {
@@ -153,6 +155,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 	$query = "SELECT glpi_cartridges_type.*, glpi_enterprises.name FROM glpi_cartridges_type ";
 	$query.= " LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_cartridges_type.FK_glpi_enterprise ";
 	$query.= " LEFT JOIN glpi_dropdown_locations ON glpi_dropdown_locations.ID = glpi_cartridges_type.location ";
+	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = glpi_cartridges_type.tech_num ) ";
 	$query.= " WHERE $where AND glpi_cartridges_type.deleted='$deleted'  ORDER BY $sort $order";
 //	echo $query;
 	// Get it from database	
