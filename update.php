@@ -1529,7 +1529,7 @@ if(!FieldExists("glpi_monitors","FK_glpi_enterprise")) {
 
 }
 
-// Ajout Fabriquant peripheral
+// Ajout Fabriquant software
 if(!FieldExists("glpi_software","FK_glpi_enterprise")) {
 
 	$query = "ALTER TABLE `glpi_software` ADD `FK_glpi_enterprise` INT( 11 ) DEFAULT '0' NOT NULL ;";
@@ -1544,6 +1544,53 @@ if(!FieldExists("glpi_peripherals","FK_glpi_enterprise")) {
 	$db->query($query) or die("0.5 add field manufacturer ".$lang["update"][90].$db->error());
 
 }
+
+// Ajout deleted peripheral
+if(!FieldExists("glpi_peripherals","deleted")) {
+
+	$query = "ALTER TABLE `glpi_peripherals` ADD `deleted` ENUM( 'Y', 'N' ) DEFAULT 'N' NOT NULL ;";
+	$db->query($query) or die("0.5 add field deleted ".$lang["update"][90].$db->error());
+
+}
+
+// Ajout deleted software
+if(!FieldExists("glpi_software","deleted")) {
+
+	$query = "ALTER TABLE `glpi_software` ADD `deleted` ENUM( 'Y', 'N' ) DEFAULT 'N' NOT NULL ;";
+	$db->query($query) or die("0.5 add field deleted ".$lang["update"][90].$db->error());
+
+}
+
+// Ajout deleted monitor
+if(!FieldExists("glpi_monitors","deleted")) {
+
+	$query = "ALTER TABLE `glpi_monitors` ADD `deleted` ENUM( 'Y', 'N' ) DEFAULT 'N' NOT NULL ;";
+	$db->query($query) or die("0.5 add field deleted ".$lang["update"][90].$db->error());
+
+}
+
+// Ajout deleted networking
+if(!FieldExists("glpi_networking","deleted")) {
+
+	$query = "ALTER TABLE `glpi_networking` ADD `deleted` ENUM( 'Y', 'N' ) DEFAULT 'N' NOT NULL ;";
+	$db->query($query) or die("0.5 add field deleted ".$lang["update"][90].$db->error());
+
+}
+// Ajout deleted printer
+if(!FieldExists("glpi_printers","deleted")) {
+
+	$query = "ALTER TABLE `glpi_printers` ADD `deleted` ENUM( 'Y', 'N' ) DEFAULT 'N' NOT NULL ;";
+	$db->query($query) or die("0.5 add field deleted ".$lang["update"][90].$db->error());
+
+}
+// Ajout deleted computer
+if(!FieldExists("glpi_computerls","deleted")) {
+
+	$query = "ALTER TABLE `glpi_computers` ADD `deleted` ENUM( 'Y', 'N' ) DEFAULT 'N' NOT NULL ;";
+	$db->query($query) or die("0.5 add field deleted ".$lang["update"][90].$db->error());
+
+}
+
 
 // Update version number
 $query="UPDATE glpi_config set version='0.5' WHERE ID='1'";
