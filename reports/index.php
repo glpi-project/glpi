@@ -53,6 +53,28 @@ commonHeader("Reports",$_SERVER["PHP_SELF"]);
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 echo "<tr><th>".$lang["reports"][0].":</th></tr>";
 
+// Report generation
+// Default Report included
+$report_list["default"]["name"] = $lang["reports"][26];
+$report_list["default"]["file"] = "reports/default.php";
+
+// Vous pouvez faire vos propres rapports :
+// My Own Report:
+// $report_list["my_own"]["name"] = "My Own Report";
+// $report_list["my_own"]["file"] = "reports/my_own.php";
+
+
+// Rapport ajoutés par GLPI V0.2
+$report_list["Maintenance"]["name"] = $lang["reports"][27];
+$report_list["Maintenance"]["file"] = "reports/maintenance.php";
+$report_list["Par_annee"]["name"] = $lang["reports"][28];
+$report_list["Par_annee"]["file"] = "reports/parAnnee.php";
+$report_list["Intervention"]["name"] = $lang["reports"][25];
+$report_list["Intervention"]["file"] = "reports/tracking.php";
+$report_list["excel"]["name"] = "Excel";
+$report_list["excel"]["file"] = "reports/geneExcel.php";
+
+
 $i = 0;
 $count = count($report_list);
 while($data = each($report_list)) {

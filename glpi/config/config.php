@@ -50,27 +50,6 @@ require_once ("config_db.php");
 $cfg_install["languages"] = array("english","deutsch","french","italian");
 
 
-// Report generation
-// Default Report included
-$report_list["default"]["name"] = "Rapport par défaut";
-$report_list["default"]["file"] = "reports/default.php";
-
-// Vous pouvez faire vos propres rapports :
-// My Own Report:
-// $report_list["my_own"]["name"] = "My Own Report";
-// $report_list["my_own"]["file"] = "reports/my_own.php";
-
-
-// Rapport ajoutés par GLPI V0.2
-$report_list["Maintenance"]["name"] = "Maintenance";
-$report_list["Maintenance"]["file"] = "reports/maintenance.php";
-$report_list["Par_annee"]["name"] = "Par date";
-$report_list["Par_annee"]["file"] = "reports/parAnnee.php";
-$report_list["Intervention"]["name"] = "Interventions";
-$report_list["Intervention"]["file"] = "reports/tracking.php";
-$report_list["excel"]["name"] = "Excel";
-$report_list["excel"]["file"] = "reports/geneExcel.php";
-
 // *************************** Eléments optionnels  **********************
 // ***********************************************************************
 // ***********************************************************************
