@@ -56,6 +56,7 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 	include ($phproot . "/glpi/includes_peripherals.php");
 	include ($phproot . "/glpi/includes_monitors.php");
 	include ($phproot . "/glpi/includes_networking.php");
+	include ($phproot . "/glpi/includes_software.php");
 
 	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 
