@@ -248,8 +248,8 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 		//print_r($inventory);
 		
 		 foreach ($inventory as $key => $val) {
- echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
- }
+                  echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
+                   }
 
 		echo "</td>";
 	}
@@ -435,22 +435,11 @@ function nullHeader($title,$url) {
 	echo "<table cellspacing='0' border='0' width='98%'>";
 	echo "<tr>";
 	
-	// Logo with link to command center
-	echo "<td align='center' width='25%'>\n";
-	echo "<a href=\"".$cfg_install["root"]."/central.php\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\" alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" ></a>\n";
+	// Logo with link to index
+	echo "<td align='center' width='100%'>\n";
+	echo "<a href=\"".$cfg_install["root"]."/index.php\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\" alt=\"".$cfg_layout["logotxt"]."\" title=\"\" ></a>\n";
 	echo "</td>";
 
-	echo "<td valign='middle'>";
-
-	echo "<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr>";
-
-	// Just give him nothing
-
-	// On the right side of the navigation bar, we have a clock with
-	// date and a logout-link.
-	echo "<td align='right' width='100'><div align='right'>";
-	echo date("H").":".date("i")."<p><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
-	echo "</i></p><a class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
 
 	// End navigation bar
 	
