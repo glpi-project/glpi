@@ -2275,7 +2275,10 @@ switch($item_type)
 					$port=$ligne['port'];
 					$switch=$ligne['switch'];
 					$portordi=$ligne['portordi'];
-					$ordi=$ligne['ordi'];
+					$np=new Netport();
+					$np->getFromDB($ligne['end1']);
+					$np->getDeviceData($np->fields["on_device"],$np->fields["device_type"]);
+					$ordi=$np->device_name;
 					$ip=$ligne['ip'];
 					$mac=$ligne['mac'];
 					$ip2=$ligne['ip2'];
