@@ -274,4 +274,284 @@ function deleteReservationItem($input){
 	$ri = new ReservationItem;
 	$ri->deleteFromDB($input["ID"]);
 }
+
+function printCalendrier($target,$ID){
+global $lang;
+
+if (!isset($_GET["mois_courant"]))
+	$mois_courant=strftime("%m");
+else $mois_courant=$_GET["mois_courant"];
+if (!isset($_GET["annee_courante"]))
+	$annee_courante=strftime("%Y");
+else $annee_courante=$_GET["annee_courante"];
+
+$mois_suivant=$mois_courant+1;
+$mois_precedent=$mois_courant-1;
+$annee_suivante=$annee_courante;
+$annee_precedente=$annee_courante;
+if ($mois_precedent==0){
+	$mois_precedent=12;
+	$annee_precedente--;
+}
+
+if ($mois_suivant==13){
+	$mois_suivant=1;
+	$annee_suivante++;
+}
+
+$str_suivant="?show=resa&ID=$ID&mois_courant=$mois_suivant&annee_courante=$annee_suivante";
+$str_precedent="?show=resa&ID=$ID&mois_courant=$mois_precedent&annee_courante=$annee_precedente";
+	
+// on vérifie pour les années bisextiles, on ne sait jamais.
+if (($annee_courante%4)==0) $fev=29; else $fev=28;
+$nb_jour= array(31,$fev,31,30,31,30,31,31,30,31,30,31);
+
+// Ces variables vont nous servir pour mettre les jours dans les bonnes colonnes    
+$jour_debut_mois=strftime("%w",mktime(0,0,0,$mois_courant,1,$annee_courante));
+if ($jour_debut_mois==0) $jour_debut_mois=7;
+$jour_fin_mois=strftime("%w",mktime(0,0,0,$mois_courant,$nb_jour[$mois_courant-1],$annee_courante));
+// on n'oublie pas de mettre le mois en français et on n'a plus qu'à mettre les en-têtes
+echo "<h2><center><a href=\"".$target.$str_precedent."\">".$lang["buttons"][12]."</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".
+	$lang["calendarM"][$mois_courant-1]."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"".$target.$str_suivant."\">".$lang["buttons"][11]."</a></center></h2>";
+echo "<table border=1 width='100%' align='center'>";
+echo "<th width='19%'>".$lang["calendarD"][1]."</th>";
+echo "<th width='19%'>".$lang["calendarD"][2]."</th>";
+echo "<th width='19%'>".$lang["calendarD"][3]."</th>";
+echo "<th width='19%'>".$lang["calendarD"][4]."</th>";
+echo "<th width='19%'>".$lang["calendarD"][5]."</th>";
+echo "<th width='2%'>".$lang["calendarD"][6]."</th>";
+echo "<th width='2%'>".$lang["calendarD"][0]."</th>";
+
+echo "<tr>";
+
+// Il faut insérer des cases vides pour mettre le premier jour du mois
+// en face du jour de la semaine qui lui correspond.
+for ($i=1;$i<$jour_debut_mois;$i++)
+	echo "<td>&nbsp;</td>";
+
+// voici le remplissage proprement dit
+if ($mois_courant<10&&strlen($mois_courant)==1) $mois_courant="0".$mois_courant;
+for ($i=1;$i<$nb_jour[$mois_courant-1]+1;$i++){
+	if ($i<10) $ii="0".$i;
+	else $ii=$i;
+	
+	echo "<td>";
+	echo "<center>".$i."<center><br>";
+	if (($i-1+$jour_debut_mois)%7!=6&&($i-1+$jour_debut_mois)%7!=0)
+	printReservation($target,$ID,$annee_courante."-".$mois_courant."-".$ii);
+//	echo $annee_courante."-".$mois_courant."-".$ii;
+	if (($i-1+$jour_debut_mois)%7!=6&&($i-1+$jour_debut_mois)%7!=0)
+	echo "<br><a href=\"".$target."?show=resa&add=$ID&date=".$annee_courante."-".$mois_courant."-".$ii."\">".$lang["reservation"][8]."</a>";
+	echo "</td>";
+
+// il ne faut pas oublié d'aller à la ligne suivante enfin de semaine
+    if (($i+$jour_debut_mois)%7==1)
+        {echo "</tr>";
+       if ($i!=$nb_jour[$mois_courant-1])echo "<tr>";
+       }
+}
+
+// on recommence pour finir le tableau proprement pour les mêmes raisons
+
+if ($jour_fin_mois!=0)
+for ($i=0;$i<7-$jour_fin_mois;$i++) 	echo "<td>&nbsp;</td>";
+
+echo "</tr></table>";
+	
+}
+
+function showAddReservationForm($target,$ID,$date){
+	global $lang,$HTMLRel;
+	if ($HTMLRel=="")$HTMLRel=".";
+	echo "<center><form method='post' name=form action=\"$target\">";
+	echo "<input type='hidden' name='id_user' value='".$_SESSION["glpiID"]."'>";
+	echo "<input type='hidden' name='id_item' value='$ID'>";
+
+	echo "<table class='tab_cadre' cellpadding='2'>";
+	echo "<tr><th colspan='2'><b>";
+	echo $lang["reservation"][9];
+	echo "</b></th></tr>";
+	// Ajouter le nom du matériel
+	$r=new ReservationItem;
+	$r->getfromDB($ID);
+	echo "<tr><td>".$lang["reservation"][4].":	</td>";
+	echo "<td>";
+	echo "<b>".$r->getType()." - ".$r->getName()."</b>";
+    echo "</td></tr>";
+
+
+	echo "<tr><td>".$lang["reservation"][10].":	</td>";
+	echo "<td><input type='text' name='begin_date' readonly size='10' value='$date'>";
+	echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&elem=begin_date&value=$date','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].begin_date.value='$date'\" value='reset'>";
+    echo "</td></tr>";
+
+	echo "<tr><td>".$lang["reservation"][12].":	</td>";
+	echo "<td>";
+	echo "<select name='begin_hour'>";
+	for ($i=0;$i<24;$i++){
+	echo "<option value='$i'";
+	if ($i==12) echo " selected ";
+	echo ">$i</option>";
+	}
+	echo "</select>";
+	echo ":";
+	echo "<select name='begin_min'>";
+	for ($i=0;$i<60;$i+=5){
+	echo "<option value='$i'";
+	echo ">$i</option>";
+	}
+	echo "</select>";
+	echo "</td></tr>";
+
+	echo "<tr><td>".$lang["reservation"][11].":	</td>";
+	echo "<td><input type='text' name='end_date' readonly size='10' value='$date'>";
+	echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&elem=end_date&value=$date','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].end_date.value='$date'\" value='reset'>";
+    echo "</td></tr>";
+
+	echo "<tr><td>".$lang["reservation"][13].":	</td>";
+	echo "<td>";
+	echo "<select name='end_hour'>";
+	for ($i=0;$i<24;$i++){
+	echo "<option value='$i'";
+	if ($i==12) echo " selected ";
+	echo ">$i</option>";
+	}
+	echo "</select>";
+	echo ":";
+	echo "<select name='end_min'>";
+	for ($i=0;$i<60;$i+=5){
+	echo "<option value='$i'";
+	echo ">$i</option>";
+	}
+	echo "</select>";
+	echo "</td></tr>";
+	echo "<tr>";
+	echo "<td colspan='2' class='tab_bg_2' valign='top'>";
+	echo "<center><input type='submit' name='add_resa' value=\"".$lang["buttons"][8]."\" class='submit' class='submit'></center>";
+	echo "</td></tr>\n";
+	
+	echo "</table></center>";
+	echo "</form>";
+}
+
+function printReservation($target,$ID,$date){
+		global $HTMLRel;
+
+		if ($HTMLRel=="") $HTMLRel=".";
+
+		$id_user=$_SESSION["glpiID"];
+
+		$db = new DB;
+
+		$m=new ReservationItem;
+		$m->getfromDB($ID);
+		$user=new User;
+
+		$debut=$date." 00:00:00";
+		$fin=$date." 23:59:59";
+		$query = "SELECT * FROM glpi_reservation_resa".
+		" WHERE (('".$debut."' < begin AND '".$fin."' > begin) OR ('".$debut."' < end AND '".$fin."' > end) OR (begin < '".$debut."' AND end > '".$debut."') OR (begin < '".$fin."' AND end > '".$fin."')) AND id_item=$ID ORDER BY begin";
+//		echo $query."<br>";
+		if ($result=$db->query($query)){
+			if ($db->numrows($result)>0){
+				echo "<table width='100%'>";
+			while ($row=$db->fetch_array($result)){
+				echo "<tr><td>";
+				$user->getfromDBbyID($row["id_user"]);
+$display="";					
+				if ($debut>$row['begin']) $heure_debut="00:00";
+				else $heure_debut=get_hour_from_sql($row['begin']);
+
+					if ($fin<$row['end']) $heure_fin="24:00";
+					else $heure_fin=get_hour_from_sql($row['end']);
+					
+					if (strcmp($heure_debut,"00:00")==0&&strcmp($heure_fin,"24:00")==0)
+						$display="Journée";
+					else if (strcmp($heure_debut,"00:00")==0) 
+						$display="Jusqu'à ".$heure_fin;
+					else if (strcmp($heure_fin,"24:00")==0) 
+						$display="Dès ".$heure_debut;
+					else $display=$heure_debut."-".$heure_fin;
+
+					$delete="";
+
+					if ($_SESSION["glpiID"]==$user->fields["ID"])
+						$delete="<a border=0 href=\"".$target."?show=resa&clear=".$row['ID']."\"><img border=0 height=16 width=16 src=\"".$HTMLRel."/pics/clear.png\"></a>";
+
+		echo $delete.$display.": ".$user->fields["name"];
+
+			echo "</td></tr>";
+				
+			}
+
+		echo "</table>";
+		}
+	}
+
+}
+
+function deleteReservation($ID){
+	// Delete a Reservation
+
+	$resa = new ReservationResa;
+	
+	
+	if ($resa->getfromDB($ID))
+	if (isset($resa->fields["id_user"])&&$resa->fields["id_user"]==$_SESSION["glpiID"])
+	return $resa->deleteFromDB($ID);
+	
+	return false;
+}
+
+
+function addReservation($input){
+	// Add a Reservation
+
+	$resa = new ReservationResa;
+	
+  // set new date.
+   $resa->fields["id_item"] = $input["id_item"];
+   $resa->fields["id_user"] = $input["id_user"];
+   $resa->fields["begin"] = $input["begin_date"]." ".$input["begin_hour"].":".$input["begin_min"].":00";
+   $resa->fields["end"] = $input["end_date"]." ".$input["end_hour"].":".$input["end_min"].":00";
+
+	if (!$resa->test_valid_date()){
+		$resa->displayError("date");
+		return false;
+	}
+	
+	if ($resa->is_reserved()){
+		$resa->displayError("is_res");
+		return false;
+	}
+	return $resa->addToDB();
+
+}
+function get_hour_from_sql($time){
+$t=explode(" ",$time);
+$p=explode(":",$t[1]);
+return $p[0].":".$p[1];
+}
+
+function printReservationItems(){
+global $lang,$HTMLRel;
+
+if ($HTMLRel=="")$HTMLRel=".";
+
+$ri=new ReservationItem;
+
+$db=new DB;
+
+$query="select ID from glpi_reservation_item ORDER BY device_type";
+
+	if ($result = $db->query($query)) {
+		while ($row=$db->fetch_array($result)){
+			$ri->getfromDB($row['ID']);
+			echo "<a href='$HTMLRel/helpdesk.php?show=resa&ID=".$row['ID']."'>".$ri->getType()." - ".$ri->getName()."</a><br>";
+		}
+	}
+}
+
 ?>

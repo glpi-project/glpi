@@ -74,6 +74,25 @@ class User {
 		}
 		return false;
 	}
+
+	function getFromDBbyID($ID) {
+		$db = new DB;
+		$query = "SELECT * FROM glpi_users WHERE (ID = '$ID')";
+		if ($result = $db->query($query)) {
+		if ($db->numrows($result)!=1) return false;
+		$data = $db->fetch_array($result);
+			if (empty($data)) {
+				return false;
+			}
+			foreach ($data as $key => $val) {
+				$this->fields[$key] = $val;
+				if ($key=="name") $this->fields[$key] = unhtmlentities($val);
+			}
+			$this->getPrefsFromDB();
+			return true;
+		}
+		return false;
+	}
 	
 	function getPrefsFromDB() {
 		$db = new DB;
