@@ -369,7 +369,7 @@ function ShowKbItemFull($ID)
 		
 	
 	$categoryID = $ki->fields["categoryID"];
-	$fullcategoryname = getTreeValueName("glpi_kb_categories",$categoryID);
+	$fullcategoryname = getTreeValueName("glpi_dropdown_kbcategories",$categoryID);
 	
 	echo "<div align='center'><table class='tab_cadre' cellpadding='10' width='700px'><tr><th>";
 	

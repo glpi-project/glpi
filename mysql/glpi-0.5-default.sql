@@ -798,25 +798,25 @@ CREATE TABLE glpi_kbitems (
    KEY categoryID (categoryID)
 );
 
-INSERT INTO glpi_kbitems VALUES ('1','3','Quel type de papier pour l\'Epson Stylus Color 460 ?','
+INSERT INTO glpi_kbitems VALUES ('1','3','Quel type de papier pour l\'Epson Stylus Color 460 ?','\n
 Du papier 90g,100g et 110 g.','no');
 INSERT INTO glpi_kbitems VALUES ('2','2','Peut-on  utiliser l\' imprimante EPSON Stylus si la cartouche couleur est vide ?','Non. Les imprimantes EPSON Stylus nécessitent que les deux cartouches (noire et couleur) soient installées.','yes');
-INSERT INTO glpi_kbitems VALUES ('3','1','Peut on utiliser des codes pour mettre en forme le texte ?','Oui : voir dans  l\'aide en ligne 
-
-Quelques exemples :
-
-[b]Texte gras[/b] 
-[u]Texte souligné[/u] 
-[i]Texte italique[/i] 
-[color=#FF0000]Texte rouge[/color] 
-
-
-http://glpi.indepnet.org
-
-[email]myname@mydomain.com[/email] 
-
-[email=myname@mydomain.com]Mon adresse e-mail[/email] 
-
+INSERT INTO glpi_kbitems VALUES ('3','1','Peut on utiliser des codes pour mettre en forme le texte ?','Oui : voir dans  l\'aide en ligne \n
+\n
+Quelques exemples :\n
+\n
+[b]Texte gras[/b] \n
+[u]Texte souligné[/u] \n
+[i]Texte italique[/i] \n
+[color=#FF0000]Texte rouge[/color] \n
+\n
+\n
+http://glpi.indepnet.org\n
+\n
+[email]myname@mydomain.com[/email] \n
+\n
+[email=myname@mydomain.com]Mon adresse e-mail[/email] \n
+\n
 [code]Voici un bout de code.[/code]','no');
 ### Dump table glpi_licenses
 
