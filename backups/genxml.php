@@ -160,6 +160,7 @@ function DoXML()
 		$meta = mysql_fetch_field ($result);
 		if ($meta)
 		{
+			
 			fputs($fp, "		<field>".$meta->name."</field>\n");
 			$FieldsVector[]=$meta->name;
 			$i=$i+1;
@@ -190,7 +191,7 @@ function DoXML()
 					$FieldName="data";
 					$Attributes=" fieldname=\"".$FieldsVector[$j]."\"";
 			}
-			fputs($fp, "			<".$FieldName.$Attributes.">".htmlspecialchars($row[$j])."</".$FieldName.">\n");
+			fputs($fp, "			<".$FieldName.$Attributes.">".utf8_encode(htmlspecialchars($row[$j]))."</".$FieldName.">\n");
 		}
 		fputs($fp, "		</row>\n");
 	}
