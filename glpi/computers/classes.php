@@ -239,7 +239,7 @@ class Computer {
 					}
 
 
-			$query = "DELETE FROM glpi_networking_ports WHERE (device_on = '$ID' AND device_type = '".COMPUTER_TYPE."')";
+			$query = "DELETE FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '".COMPUTER_TYPE."')";
 			$result = $db->query($query);
 			$query = "DELETE FROM glpi_connect_wire WHERE (end2 = '$ID')";
 			$result = $db->query($query);
