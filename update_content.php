@@ -342,20 +342,18 @@ $percent=min(100,round(100*$offsettable/$tot,0));
 else $percent=100;
 }
 else $percent=0;
-
 if ($percent >= 0) {
  
  $percentwitdh=$percent*4;
 
 	echo "<div align='center'><table class='tab_cadre' width='400'><tr><td width='400' align='center'> Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>";
 
-
 }
-
+flush();
 if ($offsettable>=0){
 	if (UpdateContent($db,$duree,$rowlimit))
 	{
-    echo "<br>Redirection automatique sinon cliquez <a href=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">ici</a>";
+    echo "<br>Redirection automatique sinon cliquez <a href=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\">ici</a>";
     echo "<script>window.location=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\";</script>";
 	flush();    
 	exit;
