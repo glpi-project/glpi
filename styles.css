@@ -236,8 +236,12 @@ padding-bottom:10px;
 width: 600px;
 
 }	
-	
-	
+
+.code {	
+width: 95%;
+ border: dotted 2px #ccc;
+
+	}
 
   /* ###### liens ###### */
 
@@ -449,3 +453,37 @@ padding-bottom: 10px;
 
 
 
+/* Toolbar */
+
+p.toolbar
+{
+	
+
+	padding: 4px;
+	margin-bottom: 0px;
+}
+
+p.toolbar a
+{
+	font-size: 12px;
+	font-family: Verdana, Arial, sans-serif;
+	padding: 3px;
+	color: #000;
+
+
+}
+
+p.toolbar a, p.toolbar a:link, p.toolbar a:visited
+{
+	border: 1px solid #999;
+	-moz-border-radius: 5px;
+	text-decoration: none;
+}
+
+p.toolbar a:hover
+{
+	border: 1px solid #666;
+	-moz-border-radius: 5px;
+	background-color: #ffffff;
+	text-decoration: none;
+}

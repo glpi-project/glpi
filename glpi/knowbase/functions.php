@@ -83,8 +83,8 @@ function showKbItemForm($target,$ID){
 	
 	
 	echo "<div id='contenukb'>";
-
-	echo "<form method='post' name='form' action=\"$target\">";
+	echo "<script type='text/javascript' language='javascript' src='".$HTMLRel."toolbar.js'></script>";
+	echo "<form method='post' name='form_kb' action=\"$target\">";
 	
 	if (empty($ID)) {
 		
@@ -93,6 +93,7 @@ function showKbItemForm($target,$ID){
 	
 	} else {
 		$ki->getfromDB($ID);
+	
 		
 	echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 	}		
@@ -106,13 +107,18 @@ function showKbItemForm($target,$ID){
 		
 	echo "<fieldset>";
 	echo "<legend>".$lang["knowbase"][3]."</legend>";
-	echo "<span><textarea cols='80' rows='10'  name='question' >".$ki->fields["question"]."</textarea></span>"; 
+	echo "<span><textarea cols='80' rows='2'  name='question' >".$ki->fields["question"]."</textarea></span>"; 
 	echo "</fieldset>";
 	
 	
 	echo "<fieldset>";
 	echo "<legend>".$lang["knowbase"][4]."</legend>";
-	echo "<span><textarea cols='80' rows='10'  name='answer' >".$ki->fields["answer"]."</textarea></span>"; 
+	echo "
+		<script type='text/javascript' language='javascript'>
+		drawToolbar('form_kb.answer');
+		</script>
+		";	
+	echo "<span><textarea cols='80' rows='15'  name='answer' >".$ki->fields["answer"]."</textarea></span>"; 
 	echo "</fieldset>";
 	
 	
@@ -374,13 +380,13 @@ function ShowKbItemFull($ID)
 	echo "<div align='center'><table class='tab_cadre' cellpadding='10' width='700px'><tr><th>";
 	
 	echo "Catégorie : ".$fullcategoryname."</th></tr>";
-	echo "<tr class='tab_bg_2'><td><h2>".$lang["knowbase"][3]."</h2>";
+	echo "<tr class='tab_bg_3'><td><h2>".$lang["knowbase"][3]."</h2>";
 	//$question = autop($ki->fields["question"]);
 	$question = rembo($ki->fields["question"]);
 	//echo clicurl($question);
 	echo $question;
 	echo "</td></tr>\n";
-	echo "<tr  class='tab_bg_2'><td><h2>".$lang["knowbase"][4]."</h2>\n";
+	echo "<tr  class='tab_bg_3'><td><h2>".$lang["knowbase"][4]."</h2>\n";
 	//$answer = autop($ki->fields["answer"]);
 	$answer = rembo($ki->fields["answer"]);
 	//echo clicurl(bbcode($answer));
