@@ -697,7 +697,7 @@ function showSoftwareInstalled($instID) {
 		echo " - ".$serial."</td>";
 		
 		echo "<td align='center' class='tab_bg_2'>";
-		echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&ID=$ID\">";
+		echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&ID=$ID&cID=$instID\">";
 		echo "<b>".$lang["buttons"][5]."</b></a>";
 		echo "</td></tr>";
 
