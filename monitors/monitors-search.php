@@ -41,9 +41,9 @@ include ($phproot . "/glpi/includes_monitors.php");
 
 checkAuthentication("normal");
 
-commonHeader("Monitors",$PHP_SELF);
+commonHeader("Monitors",$HTTP_SERVER_VARS[PHP_SELF]);
 
-showMonitorList($PHP_SELF,$IRMName,$field,$phrasetype,$contains,$sort,$order,$start);
+showMonitorList($HTTP_SERVER_VARS[PHP_SELF],$IRMName,$field,$phrasetype,$contains,$sort,$order,$start);
 
 commonFooter();
 ?>

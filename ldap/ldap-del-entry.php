@@ -40,7 +40,7 @@ include ($phproot . "/glpi/includes.php");
 checkAuthentication("admin");
 
 if ($error = LDAPdeleteEntry($HTTP_POST_VARS["dn"])) {
-	commonHeader("LDAP Administration - $type",$PHP_SELF);
+	commonHeader("LDAP Administration - $type",$HTTP_SERVER_VARS[PHP_SELF]);
 		echo "<center>$error</center>";
 	commonFooter();
 } else { 

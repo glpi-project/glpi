@@ -42,7 +42,7 @@ include ($phproot . "/glpi/includes_tracking.php");
 
 checkAuthentication("normal");
 
-commonHeader("Tracking",$PHP_SELF);
+commonHeader("Tracking",$HTTP_SERVER_VARS[PHP_SELF]);
 
 if ($contents) {
 	postFollowups ($ID,$IRMName,$contents);

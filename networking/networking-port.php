@@ -53,13 +53,13 @@ if ($add) {
 } else if ($update) {
 	checkAuthentication("admin");
 	updateNetport($HTTP_POST_VARS);
-	commonHeader("Networking",$PHP_SELF);
-	showNetportForm($PHP_SELF,$ID,$ondevice,$devtype);
+	commonHeader("Networking",$HTTP_SERVER_VARS[PHP_SELF]);
+	showNetportForm($HTTP_SERVER_VARS[PHP_SELF],$ID,$ondevice,$devtype);
 	commonFooter();
 } else {
 	checkAuthentication("normal");
-	commonHeader("Networking",$PHP_SELF);
-	showNetportForm($PHP_SELF,$ID,$ondevice,$devtype);
+	commonHeader("Networking",$HTTP_SERVER_VARS[PHP_SELF]);
+	showNetportForm($HTTP_SERVER_VARS[PHP_SELF],$ID,$ondevice,$devtype);
 	commonFooter();
 }
 

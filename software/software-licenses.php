@@ -42,8 +42,8 @@ include ($phproot . "/glpi/includes_software.php");
 
 if ($addform) {
 	checkAuthentication("admin");
-	commonHeader("Software",$PHP_SELF);
-	showLicenseForm($PHP_SELF,$ID);
+	commonHeader("Software",$HTTP_SERVER_VARS[PHP_SELF]);
+	showLicenseForm($HTTP_SERVER_VARS[PHP_SELF],$ID);
 	commonFooter();
 } else if ($add) {
 	checkAuthentication("admin");
@@ -57,8 +57,8 @@ if ($addform) {
 	header("Location: $HTTP_REFERER");
 } else if ($select) {
 	checkAuthentication("admin");
-	commonHeader("Software",$PHP_SELF);
-	showLicenseSelect($HTTP_REFERER,$PHP_SELF,$cID,$sID);
+	commonHeader("Software",$HTTP_SERVER_VARS[PHP_SELF]);
+	showLicenseSelect($HTTP_REFERER,$HTTP_SERVER_VARS[PHP_SELF],$cID,$sID);
 	commonFooter();
 } else if ($install) {
 	checkAuthentication("admin");

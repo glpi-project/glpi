@@ -58,8 +58,8 @@ if ($add) {
 	checkAuthentication("admin");
 	updateComputer($HTTP_POST_VARS);
 	logEvent($HTTP_POST_VARS["ID"], "computers", 4, "inventory", "$IRMName updated item.");
-	commonHeader("Computers",$PHP_SELF);
-	showComputerForm(0,$PHP_SELF,$ID);
+	commonHeader("Computers",$HTTP_SERVER_VARS[PHP_SELF]);
+	showComputerForm(0,$HTTP_SERVER_VARS[PHP_SELF],$ID);
 	showPorts($ID, 1);
 	showPortsAdd($ID,1);
 	showJobList($IRMName,$show,$contains,$ID);
@@ -68,11 +68,11 @@ if ($add) {
 } else {
 
 	checkAuthentication("normal");
-	commonHeader("Computers",$PHP_SELF);
+	commonHeader("Computers",$HTTP_SERVER_VARS[PHP_SELF]);
 	if ($withtemplate == 1) {
-		showComputerForm($withtemplate,$PHP_SELF,$ID);
+		showComputerForm($withtemplate,$HTTP_SERVER_VARS[PHP_SELF],$ID);
 	} else {
-		if (showComputerForm(0,$PHP_SELF,$ID)) {
+		if (showComputerForm(0,$HTTP_SERVER_VARS[PHP_SELF],$ID)) {
 	
 			showPorts($ID, 1);
 			

@@ -39,7 +39,7 @@ include ($phproot . "/glpi/includes.php");
 
 checkAuthentication("admin");
 
-commonHeader("LDAP Administration - $type",$PHP_SELF);
+commonHeader("LDAP Administration - $type",$HTTP_SERVER_VARS[PHP_SELF]);
 
 
 echo "<center><table border=0><tr><td><b>";
@@ -48,9 +48,9 @@ echo "</b></td></tr></table></center>";
 echo "<hr noshade>";
 
 if (!$refresh) {
-	LDAPSearchForm($type,$PHP_SELF);
+	LDAPSearchForm($type,$HTTP_SERVER_VARS[PHP_SELF]);
 } else {
-	LDAPSearchForm($type,$PHP_SELF);
+	LDAPSearchForm($type,$HTTP_SERVER_VARS[PHP_SELF]);
 	LDAPshowEntries($filter,$combine,$attribute,$display,$type);
 }
 

@@ -53,39 +53,39 @@ if ($add) {
 	checkAuthentication("admin");
 	updateMonitor($HTTP_POST_VARS);
 	logEvent($HTTP_POST_VARS["ID"], "monitors", 4, "inventory", "$IRMName updated item.");
-	commonHeader("Monitors",$PHP_SELF);
-	showMonitorsForm($PHP_SELF,$ID);
+	commonHeader("Monitors",$HTTP_SERVER_VARS[PHP_SELF]);
+	showMonitorsForm($HTTP_SERVER_VARS[PHP_SELF],$ID);
 	commonFooter();
 
 } else if ($disconnect) {
 	checkAuthentication("admin");
 	Disconnect($ID,4);
 	logEvent($ID, "monitors", 5, "inventory", "$IRMName disconnected item.");
-	commonHeader("Monitors",$PHP_SELF);
-	showMonitorsForm($PHP_SELF,$ID);
+	commonHeader("Monitors",$HTTP_SERVER_VARS[PHP_SELF]);
+	showMonitorsForm($HTTP_SERVER_VARS[PHP_SELF],$ID);
 	commonFooter();
 } else if ($connect==1) {
 	checkAuthentication("admin");
-	commonHeader("Monitors",$PHP_SELF);
-	showConnectSearch($PHP_SELF,$ID);
+	commonHeader("Monitors",$HTTP_SERVER_VARS[PHP_SELF]);
+	showConnectSearch($HTTP_SERVER_VARS[PHP_SELF],$ID);
 	commonFooter();
 } else if ($connect==2) {
 	checkAuthentication("admin");
-	commonHeader("Monitors",$PHP_SELF);
-	listConnectComputers($PHP_SELF,$HTTP_POST_VARS);
+	commonHeader("Monitors",$HTTP_SERVER_VARS[PHP_SELF]);
+	listConnectComputers($HTTP_SERVER_VARS[PHP_SELF],$HTTP_POST_VARS);
 	commonFooter();
 } else if ($connect==3) {
 	checkAuthentication("admin");
-	commonHeader("Monitors",$PHP_SELF);
-	Connect($PHP_SELF,$sID,$cID,4);
+	commonHeader("Monitors",$HTTP_SERVER_VARS[PHP_SELF]);
+	Connect($HTTP_SERVER_VARS[PHP_SELF],$sID,$cID,4);
 	logEvent($sID, "monitors", 5, "inventory", "$IRMName connected item.");
-	showMonitorsForm($PHP_SELF,$sID);
+	showMonitorsForm($HTTP_SERVER_VARS[PHP_SELF],$sID);
 	commonFooter();
 
 } else {
 	checkAuthentication("normal");
-	commonHeader("Monitors",$PHP_SELF);
-	showMonitorsForm($PHP_SELF,$ID);
+	commonHeader("Monitors",$HTTP_SERVER_VARS[PHP_SELF]);
+	showMonitorsForm($HTTP_SERVER_VARS[PHP_SELF],$ID);
 	commonFooter();
 }
 

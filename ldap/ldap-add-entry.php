@@ -40,7 +40,7 @@ include ($phproot . "/glpi/includes.php");
 
 checkAuthentication("admin");
 
-commonHeader("LDAP Administration - $type",$PHP_SELF);
+commonHeader("LDAP Administration - $type",$HTTP_SERVER_VARS[PHP_SELF]);
 
 if (!$HTTP_POST_VARS) {
 	LDAPprintForm($type,$error,$HTTP_POST_VARS);

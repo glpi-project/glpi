@@ -58,13 +58,13 @@ if ($add) {
 	header("Location: $HTTP_REFERER?done");
 } else if ($showform) {
 	checkAuthentication("admin");
-	commonHeader("glpi Setup",$PHP_SELF);
-	showTemplateForm($PHP_SELF,$ID);
+	commonHeader("glpi Setup",$HTTP_SERVER_VARS[PHP_SELF]);
+	showTemplateForm($HTTP_SERVER_VARS[PHP_SELF],$ID);
 	commonFooter();
 } else {
 	checkAuthentication("normal");
-	commonHeader("glpi Setup",$PHP_SELF);
-	listTemplates($PHP_SELF);
+	commonHeader("glpi Setup",$HTTP_SERVER_VARS[PHP_SELF]);
+	listTemplates($HTTP_SERVER_VARS[PHP_SELF]);
 	commonFooter();
 }
 

@@ -70,13 +70,13 @@ function checkAuthentication($authtype) {
 	// Check username and password
 	if (!IsSet($IRMName)) {
 		header("Vary: User-Agent");
-		nullHeader($lang["login"][3], $PHP_SELF);
+		nullHeader($lang["login"][3], $HTTP_SERVER_VARS[PHP_SELF]);
 		echo "<center><b>".$lang["login"][0]."</b><br><br>";
 		echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">".$lang["login"][1]."</a></b></center>";
 		nullFooter();
 		exit();
 	} else if ($IRMPass != md5($password)) {
-		nullHeader($lang["login"][4],$PHP_SELF);
+		nullHeader($lang["login"][4],$HTTP_SERVER_VARS[PHP_SELF]);
 		echo "<center><b>".$lang["login"][2]."</b><br><br>";
 		echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">".$lang["login"][1]."</a></b></center>";
 		nullFooter();
@@ -90,7 +90,7 @@ function checkAuthentication($authtype) {
 
 			case "admin";
 				if ($type!="admin") {
-					commonHeader($lang["login"][5],$PHP_SELF);
+					commonHeader($lang["login"][5],$HTTP_SERVER_VARS[PHP_SELF]);
 						echo "<center><br><br><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br>";
 
 					echo "<b>".$lang["login"][5]."</b></center>";
@@ -101,7 +101,7 @@ function checkAuthentication($authtype) {
 			
 			case "half-admin";
 				if ($type!="normal" && $type!="admin" && $type!="half-admin") {
-					commonHeader($lang["login"][5],$PHP_SELF);
+					commonHeader($lang["login"][5],$HTTP_SERVER_VARS[PHP_SELF]);
 											echo "<center><br><br><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br>";
 
 					echo "<b>".$lang["login"][5]."</b></center>";
@@ -113,7 +113,7 @@ function checkAuthentication($authtype) {
 					
 			case "normal";
 				if ($type!="normal" && $type!="admin") {
-					commonHeader($lang["login"][5],$PHP_SELF);
+					commonHeader($lang["login"][5],$HTTP_SERVER_VARS[PHP_SELF]);
 											echo "<center><br><br><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br>";
 
 					echo "<b>".$lang["login"][5]."</b></center>";
@@ -124,7 +124,7 @@ function checkAuthentication($authtype) {
 		
 			case "post-only";
 				if ($type!="post-only" && $type!="normal" && $type!="admin") {
-					commonHeader($lang["login"][5],$PHP_SELF);
+					commonHeader($lang["login"][5],$HTTP_SERVER_VARS[PHP_SELF]);
 											echo "<center><br><br><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br>";
 
 					echo "<b>".$lang["login"][5]."</b></center>";

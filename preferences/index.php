@@ -53,10 +53,10 @@ if ($changepw) {
 	header("Location: $HTTP_REFERER?done");
 } else {
 	checkAuthentication("normal");
-	commonHeader("Preferences",$PHP_SELF);
-	showPasswordForm($PHP_SELF,$IRMName);
-	showSortForm($PHP_SELF,$IRMName);
-	showLangSelect($PHP_SELF,$IRMName);
+	commonHeader("Preferences",$HTTP_SERVER_VARS[PHP_SELF]);
+	showPasswordForm($HTTP_SERVER_VARS[PHP_SELF],$IRMName);
+	showSortForm($HTTP_SERVER_VARS[PHP_SELF],$IRMName);
+	showLangSelect($HTTP_SERVER_VARS[PHP_SELF],$IRMName);
 	commonFooter();
 }
 

@@ -43,9 +43,9 @@ include ($phproot . "/glpi/includes_software.php");
 
 checkAuthentication("normal");
 
-commonHeader("Software",$PHP_SELF);
+commonHeader("Software",$HTTP_SERVER_VARS[PHP_SELF]);
 
-showSoftwareList($PHP_SELF,$IRMName,$field,$phrasetype,$contains,$sort,$order,$start);
+showSoftwareList($HTTP_SERVER_VARS[PHP_SELF],$IRMName,$field,$phrasetype,$contains,$sort,$order,$start);
 
 commonFooter();
 ?>

@@ -53,14 +53,14 @@ if ($add) {
 	checkAuthentication("admin");
 	updateNetdevice($HTTP_POST_VARS);
 	logEvent($HTTP_POST_VARS["ID"], "networking", 4, "inventory", "$IRMName updated item.");
-	commonHeader("Networking",$PHP_SELF);
-	showNetworkingForm ($PHP_SELF,$ID);
+	commonHeader("Networking",$HTTP_SERVER_VARS[PHP_SELF]);
+	showNetworkingForm ($HTTP_SERVER_VARS[PHP_SELF],$ID);
 	commonFooter();
 
 } else {
 	checkAuthentication("normal");
-	commonHeader("Networking",$PHP_SELF);
-	showNetworkingForm ($PHP_SELF,$ID);
+	commonHeader("Networking",$HTTP_SERVER_VARS[PHP_SELF]);
+	showNetworkingForm ($HTTP_SERVER_VARS[PHP_SELF],$ID);
 	commonFooter();
 }
 
