@@ -315,6 +315,13 @@ function dropdownUsed($table, $ID) {
 
 }
 
+function titleUsers(){
+                GLOBAL  $lang,$HTMLRel;
+                echo "<div align='center'><table border='0'><tr><td><a  class='icon_consol' href=\"users-info-form.php?new=1\"><b>Ajouter</b></a>";
+                echo "</td></tr></table></div>";
+}
+
+
 function showPasswordForm($target,$ID) {
 
 	GLOBAL $cfg_layout, $lang;
@@ -336,62 +343,31 @@ function showPasswordForm($target,$ID) {
 
 }
 
-function showUser($back,$ID) {
+function showUserform($target,$name) {
 
 	GLOBAL $cfg_layout, $lang;
 	
-	$user = new User($ID);
-	$user->getFromDB($ID);
-
-	echo "<center><table border='0' cellpadding='5'>";
-	echo "<tr><th colspan='2'>".$lang["setup"][12].": ".$user->fields["name"]."</th></tr>";
-
-	echo "<tr class='tab_bg_1'><td>".$lang["setup"][13].": </td>";
-	echo "<td><b>".$user->fields["realname"]."</b></td></tr>";	
-
-	echo "<tr class='tab_bg_1'><td>".$lang["setup"][14].":</td>";
-	echo "<td><b><a href=\"mailto:".$user->fields["email"]."\">".$user->fields["email"]."</b></td></tr>";
-
-	echo "<tr class='tab_bg_1'><td>".$lang["setup"][15].": </td>";
-	echo "<td><b>".$user->fields["phone"]."</b></td></tr>";	
-
-	echo "<tr class='tab_bg_1'><td>".$lang["setup"][16].": </td>";
-	echo "<td><b>".$user->fields["location"]."</b></td></tr>";	
-
-	echo "<tr class='tab_bg_1'><td>".$lang["setup"][17].": </td>";
-	echo "<td><b>".$user->fields["type"]."</b></td></tr>";	
-
-	echo "<tr><td colspan='2' height='10'></td></tr>";
-	echo "<tr class='tab_bg_2'>";
-	echo "<td colspan='2' align='center'><b><a href=\"$back\">".$lang["buttons"][13]."</a></b></td></tr>";
-	echo "</table></center>";
-
-}
-
-function listUsersForm($target) {
+	$user = new User($name);
 	
-	GLOBAL $cfg_layout,$cfg_install, $lang;
+	if (empty($name)) {
+		echo "Ajouter :";
 	
-	$db = new DB;
+	// il manque un getEmpty pour les users	
 	
-	$query = "SELECT name FROM glpi_users where name <> 'Helpdesk' ORDER BY type DESC";
 	
-	if ($result = $db->query($query)) {
-                echo "<div align='center'>";
+	} else {
+		$user->getfromDB($name);
+		echo   "<div align='center'>".$lang["setup"][57]." : " .$user->fields["name"]."</div>";
+	}		
+	
+	echo "<div align='center'>";
 		echo "<table class='tab_cadre'>";
 		echo "<tr><th>".$lang["setup"][18]."</th><th>".$lang["setup"][19]."</th>";
 		echo "<th>".$lang["setup"][13]."</th><th>".$lang["setup"][20]."</th>";
 		echo "<th>".$lang["setup"][14]."</th><th>".$lang["setup"][15]."</th>";
-		echo "<th>".$lang["setup"][16]."</th><th colspan='2'></th></tr>";
+		echo "<th>".$lang["setup"][16]."</th></tr>";
 		
-		$i = 0;
-		while ($i < $db->numrows($result)) {
-			$name = $db->result($result,$i,"name");
-			$user = new User($name);
-			$user->getFromDB($name);
-			
-                        
-			echo "<tr class='tab_bg_1'><form method='post' action=\"$target\">";	
+		echo "<tr class='tab_bg_1'><form method='post' action=\"$target\">";	
 		
 			echo "<td align='center'><b>".$user->fields["name"]."</b>";
 			
@@ -414,52 +390,233 @@ function listUsersForm($target) {
 			echo ">Post Only";
 			echo "</select>";
 			echo "</td>";	
-			echo "<td><input name='email' size='6' value=\"".$user->fields["email"]."\"></td>";
-			echo "<td><input name='phone' size='6' value=\"".$user->fields["phone"]."\"></td>";
+			echo "<td><input name='email' size='12' value=\"".$user->fields["email"]."\"></td>";
+			echo "<td><input name='phone' size='12' value=\"".$user->fields["phone"]."\"></td>";
 			echo "<td>";
 				dropdownValue("glpi_dropdown_locations", "location", $user->fields["location"]);
-			echo "</td>";
-			echo "<td class='tab_bg_2'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></td>";
-			echo "<td class='tab_bg_2'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></td>";
-			echo "</form></tr>";
-			$i++;
+			echo "</td></tr>";
+			echo "<tr><th colspan='7'>".$lang["setup"][58]."</th>";
+		echo "</tr>";
+			
+			if (can_assign_job($_SESSION["glpiname"]))
+	{
+			echo "<tr>";
+			echo "<td align='center' colspan='3'><strong>".$lang["setup"][60]."</strong><input type='radio' value='no' name='can_assign_job' ";
+			if ($user->fields["can_assign_job"] == 'no') echo "checked ";
+      echo ">";
+      echo "<td align='center' colspan='4'><strong>".$lang["setup"][61]."</strong><input type='radio' value='yes' name='can_assign_job' ";
+			if ($user->fields["can_assign_job"] == 'yes') echo "checked";
+      echo ">";
+			echo "</td></tr>";
+		}	
+			if ($name=="") {
+
+		echo "<tr>";
+		echo "<td class='tab_bg_2' valign='top' colspan='7'>";
+		echo "<center><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></center>";
+		echo "</td>";
+		echo "</form></tr>";
+
+		echo "</table></center>";
+
+	} else {
+
+		echo "<tr>";
+		echo "<td class='tab_bg_2' valign='top' colspan='4'>";
+		
+		echo "<center><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' class='submit'></center>";
+		echo "</td></form>\n\n";
+		echo "<form action=\"$target\" method='post'>\n";
+		echo "<td class='tab_bg_2' valign='top' colspan='3'>\n";
+		
+		echo "<center><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' class='submit'></center>";
+		echo "</td>";
+		echo "</form></tr>";
+
+		echo "</table></center>";
+			
+			}
+}
+
+
+
+function searchFormUsers() {
+	// Users Search Form
+	
+	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
+
+	$option["name"]				= "nom";
+	$option["realname"]			= "realname";
+	$option["type"]			= "type";
+	$option["email"]			= "email";
+	$option["phone"]		= "tel";
+	$option["location"]			= "lieu";
+	
+
+	echo "<form method='get' action=\"".$cfg_install["root"]."/setup/users-search.php\">";
+	echo "<div align='center'><table  width='750' class='tab_cadre'>";
+	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<tr class='tab_bg_1'>";
+	echo "<td align='center'>";
+	echo "<select name=\"field\" size='1'>";
+	reset($option);
+	foreach ($option as $key => $val) {
+		echo "<option value=$key>$val\n";
+	}
+	echo "</select>&nbsp;";
+	echo $lang["search"][1];
+	echo "&nbsp;<select name='phrasetype' size='1'>";
+	echo "<option value='contains'>".$lang["search"][2]."</option>";
+	echo "<option value='exact'>".$lang["search"][3]."</option>";
+	echo "</select>";
+	echo "<input type='text' size='12' name=\"contains\">";
+	echo "&nbsp;";
+	echo $lang["search"][4];
+	echo "&nbsp;<select name='sort' size='1'>";
+	reset($option);
+	foreach ($option as $key => $val) {
+		echo "<option value=$key>$val\n";
+	}
+	echo "</select> ";
+	echo "</td><td width='80' align='center' class='tab_bg_2'>";
+	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
+	echo "</td></tr></table></div></form>";
+}
+
+function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start) {
+
+	// Lists Users
+
+	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
+
+	// Build query
+	if ($phrasetype == "contains") {
+		$where = "($field LIKE '%".$contains."%')";
+	} else {
+		$where = "($field LIKE '".$contains."')";
+	}
+	if (!$start) {
+		$start = 0;
+	}
+	if (!$order) {
+		$order = "ASC";
+	}
+	$query = "SELECT * FROM glpi_users WHERE $where ORDER BY $sort $order";
+
+		
+	// Get it from database	
+	$db = new DB;
+	if ($result = $db->query($query)) {
+		$numrows= $db->numrows($result);
+
+		// Limit the result, if no limit applies, use prior result
+		if ($numrows>$cfg_features["list_limit"]) {
+			$query_limit = "SELECT * FROM glpi_users WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
+			$result_limit = $db->query($query_limit);
+			$numrows_limit = $db->numrows($result_limit);
+		} else {
+			$numrows_limit = $numrows;
+			$result_limit = $result;
 		}
-
-		echo "</table>";
 		
-                echo "<form method='post' action=\"$target\">";
-		echo "<table border='0'>";
-		echo "<tr><th>Login</th><th>".$lang["setup"][13]."</th><th>".$lang["setup"][20]."</th>";
-		echo "<th>".$lang["setup"][14]."</th><th>".$lang["setup"][15]."</th>";
-		echo "<th>".$lang["setup"][16]."</th></tr>";
-		echo "<tr class='tab_bg_1'>";	
-		
-		echo "<td><input name='name' size='7' value=\"\"></td>";
-		echo "<td><input name='realname' size='15' value=\"\"></td>";
-		echo "<td>";
-		echo "<select name='type'>";
-		echo "<option value='admin'>Admin";
-		echo "<option value='normal'>Normal";
-		echo "<option value=\"post-only\">Post Only";
-		echo "</select>";
-		echo "</td>";	
-		echo "<td><input name='email' size='15' value=\"\"></td>";
-		echo "<td><input name='phone' size='10' value=\"\"></td>";
-		echo "<td>";
-			dropdownValue("glpi_dropdown_locations", "location", "");
-		echo "</td>";
-					
-		echo "</tr>";
-		echo "<tr class='tab_bg_2'>";
-		echo "<td colspan='5' align='center'><i>".$lang["setup"][21]."</i></td>";
-		echo "<td align='center'>";
-		echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
-		echo "</td>";
-		echo "</tr>";
 
-		echo "</table></form></div>";
+		if ($numrows_limit>0) {
+			// Produce headline
+			echo "<center><table  class='tab_cadre'><tr>";
+
+			// Name
+			echo "<th>";
+			if ($sort=="name") {
+				echo "&middot;&nbsp;";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=name&order=ASC&start=$start\">";
+			echo "name</a></th>";
+			
+			// realname		
+			echo "<th>";
+			if ($sort=="realname") {
+				echo "&middot;&nbsp;";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=realname&order=ASC&start=$start\">";
+			echo"realname</a></th>";
+
+			// type
+			echo "<th>";
+			if ($sort=="type") {
+				echo "&middot;&nbsp;";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=type&order=ASC&start=$start\">";
+			echo "type</a></th>";			
+			
+			// email
+			echo "<th>";
+			if ($sort=="email") {
+				echo "&middot;&nbsp;";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=email&order=ASC&start=$start\">";
+			echo "email</a></th>";
+
+						
+			// Phone
+			echo "<th>";
+			if ($sort=="phone") {
+				echo "&middot;&nbsp;";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=phone&order=ASC&start=$start\">";
+			echo "phone</a></th>";
+
+			
+						
+			// Location			
+			echo "<th>";
+			if ($sort=="location") {
+				echo "&middot;&nbsp;";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=location&order=ASC&start=$start\">";
+			echo "location</a></th></tr>";
+
+
+
+			
+
+			for ($i=0; $i < $numrows_limit; $i++) {
+			$name= $db->result($result_limit, $i, "name");
+				
+				$user = new User($name);
+				$user->getFromDB($name);
+							
+				echo "<tr class='tab_bg_2'>";
+				echo "<td><b>";
+				echo "<a href=\"".$cfg_install["root"]."/setup/users-info-form.php?name=".$user->fields["name"] ."\">";
+				echo $user->fields["name"]." (".$user->fields["ID"].")";
+				echo "</a></b></td>";
+				echo "<td>".$user->fields["realname"] ."</td>";
+				echo "<td>". $user->fields["type"] ."</td>";
+				echo "<td>".$user->fields["email"]."</td>";
+				echo "<td>".$user->fields["phone"]."</td>";
+				echo "<td>". getDropdownName("glpi_dropdown_locations",$user->fields["location"]) ."</td>";
+				echo "</tr>";
+			}
+
+			// Close Table
+			echo "</table></center>";
+
+			// Pager
+			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
+			printPager($start,$numrows,$target,$parameters);
+
+		} else {
+			echo "<center><b>pas de users</b></center>";
+			echo "<hr noshade>";
+			
+		}
 	}
 }
+
+
+
+
+
 
 
 function addUser($input) {

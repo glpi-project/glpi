@@ -43,32 +43,34 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
 
-	checkAuthentication("normal");
-	commonHeader("Setup",$_SERVER["PHP_SELF"]);
-	echo "<center><table cellpadding=4><tr><th>".$lang["setup"][2].":</th></tr></table></center>";
-
- titleUsers();
-		
-searchFormUsers();
-
-if(!isset($_GET["start"])) $_GET["start"] = 0;
-if (!isset($_GET["order"])) $_GET["order"] = "ASC";
-if (!isset($_GET["field"])) $_GET["field"] = "name";
-if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
-if (!isset($_GET["contains"])) $_GET["contains"] = "";
-if (!isset($_GET["sort"])) $_GET["sort"] = "name";
-
-showUsersList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
 
 
-
+if (isset($_POST["add"])) {
+	checkAuthentication("admin");
 	
+	addUser($_POST);
+	logEvent(0, "users", 4, "setup", $_SESSION["glpiname"]." added user ".$_POST["name"].".");
+	header("Location: $_SERVER[HTTP_REFERER]");
+} else if (isset($_POST["delete"])) {
+	checkAuthentication("admin");
+	deleteUser($_POST);
+	logEvent(0,"users", 4, "setup", $_SESSION["glpiname"]." deleted user ".$_POST["name"].".");
+	header("Location: ".$cfg_install["root"]."/setup/setup-users.php");
+} else if (isset($_POST["update"])) {
+	checkAuthentication("admin");
+	commonHeader("Userinfo",$_SERVER["PHP_SELF"]);
+	updateUser($_POST);
+	logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]." updated user ".$_POST["name"].".");
+	showUserform($_SERVER["PHP_SELF"],$_POST["name"]);
+} else {
+
+checkAuthentication("normal");
+commonHeader("Userinfo",$_SERVER["PHP_SELF"]);
+showUserform($_SERVER["PHP_SELF"],$_GET["name"]);
+}
 	
-	
-	
-	commonFooter();
 
 
-
+commonFooter();
 
 ?>
