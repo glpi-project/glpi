@@ -462,7 +462,6 @@ function step5()
 		echo " <input type=\"radio\" name=\"jobs_at_login\" value=\"0\" /><label> Non </label></p>";
 		echo "<p><label>Nombre d'élements a afficher par page de listes : <input type=\"text\" name=\"list_limit\" value=\"". $db->result($result,0,"list_limit") ."\"><label></p>";
 		echo "<p><label>Nombre de caractères //maximum pour chaque éléments de la liste : <input type=\"text\" name=\"cut\" value=\"". $db->result($result,0,"cut") ."\"><label></p>";
-		echo "<p><label>Lien symbolique vers le logo : <input type=\"text\" name=\"logotxt\" value=\"". $db->result($result,0,"logotxt") ."\"><label></p>";
 		echo "<p>Voulez vous utiliser les fonctionnalitées de mailing ? (Notifications par mail) ";
 		echo " <input type=\"radio\" name=\"mailing\" value=\"1\" /><label>Oui</label>";
 		echo "<input type=\"radio\" name=\"mailing\" value=\"0\" checked /><label>Non<label></p>";
@@ -473,7 +472,7 @@ function step5()
 
 // STEP 6 Get the config and fill database
 // Config the mailing features if enabled by user
-function step6($root_doc, $event_loglevel, $num_of_events, $expire_events, $list_limit, $cut, $logotxt, $mailing)
+function step6($root_doc, $event_loglevel, $num_of_events, $expire_events, $list_limit, $cut, $mailing)
 {
 	
 	//Display a great mailing config form
@@ -525,7 +524,7 @@ function step6($root_doc, $event_loglevel, $num_of_events, $expire_events, $list
 	include ("_relpos.php");
 	include ($phproot . "/glpi/includes.php");
 	$db = new DB;
-	$query = "update glpi_config set root_doc = '". $root_doc ."', event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', list_limit = '". $list_limit ."', cut = '". $cut ."', logotxt = '". $logotxt ."'"; 
+	$query = "update glpi_config set root_doc = '". $root_doc ."', event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', list_limit = '". $list_limit ."', cut = '". $cut ."'"; 
 	$db->query($query);
 	echo "Votre configuration a bien été enregistrée";
 	if($mailing == 1) {
@@ -698,7 +697,7 @@ include ("_relpos.php");
 				break;
 			case "Etape_5" :
 				header_html("Etape 5");
-				step6($_POST["root_doc"], $_POST["event_loglevel"], $_POST["num_of_events"], $_POST["expire_events"], $_POST["list_limit"], $_POST["cut"], $_POST["logotxt"], $_POST["mailing"]);
+				step6($_POST["root_doc"], $_POST["event_loglevel"], $_POST["num_of_events"], $_POST["expire_events"], $_POST["list_limit"], $_POST["cut"], $_POST["mailing"]);
 				break;
 			case "Etape_6" :
 				header_html("Etape 6");
