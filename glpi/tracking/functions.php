@@ -503,7 +503,7 @@ function showJobDetails($ID) {
 		//echo "</tr><tr class='tab_bg_2'>";
 		
 		echo "<td align='center'>";	
-		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
+		if (can_assign_job($_SESSION["glpiname"]))
 			assignFormTracking($ID,$_SESSION["glpiname"],$cfg_install["root"]."/tracking/tracking-assign-form.php");
 		else echo $lang["job"][5]." <b>".($job->assign==""?"[Nobody]":$job->assign)."</b>";
 		
@@ -629,7 +629,7 @@ function assignJob ($ID,$user,$admin) {
 
 	// Add a Followup for a assignment change
 	if (strcmp($newuser,$olduser)!=0){
-	$content=date("Y-m-d H:i:s").": ".$lang["mailing"][12].": ".$olduser." -> ".$newuser;
+	$content=date("Y-m-d H:i:s").": ".$lang["mailing"][12].": ".$olduser." -> ".$newuser." (".$_SESSION["glpiname"].")";
 	postFollowups ($ID,$_SESSION["glpiname"],$content);
 	}
 }
