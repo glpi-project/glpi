@@ -620,6 +620,7 @@ function update1($host,$user,$password,$dbname) {
 	include ("_relpos.php");
 	if(create_conn_file($host,$user,$password,$dbname) && !empty($dbname)) {
 		
+		$from_install = true;
 		include($phproot ."/update.php");
 	}
 	else {

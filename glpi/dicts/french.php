@@ -797,5 +797,6 @@ $lang["update"][101]	= "Entrez le mot de passe";
 $lang["update"][102]	= "Re-entrez le mot de passe";
 $lang["update"][103]	= "Le Login ou le mot de passe sont vides, ou vous avez saisi deux mots de passes différents";
 $lang["update"][104]	= "Utilisateur bien enregistré vous pouvez vous connecter à l'application";
-
+$lang["update"][105]	= "Impossible d'accéder à la mise à jour de cette façon !!";
+$lang["update"][106]	= "Retourner à GLPI";
 ?>
