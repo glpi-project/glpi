@@ -48,13 +48,18 @@ commonHeader("Stats",$_SERVER["PHP_SELF"]);
 echo "<div align ='center'><b>".$lang["stats"][18]."</b></div>";
 if(empty($_POST["date1"])) $_POST["date1"] = "";
 if(empty($_POST["date2"])) $_POST["date2"] = "";
+if ($_POST["date1"]!=""&&$_POST["date2"]!=""&&strcmp($_POST["date2"],$_POST["date1"])<0){
+$tmp=$_POST["date1"];
+$_POST["date1"]=$_POST["date2"];
+$_POST["date2"]=$tmp;
+}
 
 echo "<div align='center'><form method=\"post\" name=\"form\" action=\"stat_user.php\">";
 echo "<table><tr><td align='right'>";
 echo "Date de debut :</td><td><input type=\"texte\" name=\"date1\" readonly value=\"". $_POST["date1"] ."\" /></td>";
-echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('mycalendar.php?form=form&amp;elem=date1','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'></td></tr>";
+echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date1','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'></td></tr>";
 echo "<tr><td align='right'>Date de fin :</td><td><input type=\"texte\" name=\"date2\" readonly  value=\"". $_POST["date2"] ."\" /></td>";
-echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('mycalendar.php?form=form&amp;elem=date2','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'></td></tr>";
+echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date2','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'></td></tr>";
 echo "<tr><td></td><td align='center'><input type=\"submit\" class='button' name\"submit\" Value=\"". $lang["buttons"][7] ."\" /></td><td></td>";
 echo "</tr></table>";
 echo "</form></div>";
@@ -79,18 +84,10 @@ echo "<tr><th>".$lang["stats"][20]."</th><th>".$lang["stats"][22]."</th><th>".$l
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$key["author"]."</td>";
 
-	if(!empty($_POST["date1"]) && !empty($_POST["date2"])) {
 		echo "<td>".getNbinter(4,'author',$key["author"], $_POST["date1"], $_POST["date2"])."</td>";
 		echo "<td>".getNbresol(4,'author',$key["author"], $_POST["date1"], $_POST["date2"])."</td>";
 		echo "<td>".getResolAvg(4, 'author',$key["author"], $_POST["date1"], $_POST["date2"])."</td>";
 		echo "<td>".getRealAvg(4, 'author',$key["author"], $_POST["date1"], $_POST["date2"])."</td>";
-	}
-	else {
-		echo "<td>".getNbinter(1,'author',$key["author"])."</td>";
-		echo "<td>".getNbresol(1,'author',$key["author"])."</td>";
-		echo "<td>".getResolAvg(1, 'author',$key["author"])."</td>";
-		echo "<td>".getRealAvg(1, 'author',$key["author"])."</td>";
-	}
 	echo "</tr>";
   }
 echo "</table>";
