@@ -283,19 +283,21 @@ class Netport {
 	{
 		$db = new DB;
 
-		if ($type==2)
-		{
-			$table = "glpi_networking";
+		switch ($type){
+			case NETWORKING_TYPE :
+				$table = "glpi_networking";
+				break;
+			case COMPUTER_TYPE :
+				$table = "glpi_computers";
+				break;
+			case PRINTER_TYPE :
+				$table = "glpi_printers";
+				break;
+			case PERIPHERAL_TYPE :
+				$table = "glpi_peripherals";
+				break;
 		}
-		else if ($type==1)
-		{
-			$table = "glpi_computers";
-		} 
-		else if ($type==3)
-		{
-			$table = "glpi_printers";
-		}
-
+		
 		$query = "SELECT * FROM $table WHERE (ID = '$ID')";
 		if ($result=$db->query($query))
 		{
