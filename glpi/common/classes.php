@@ -812,7 +812,7 @@ class CommonItem{
 	
 		switch ($this->device_type){
 			case GENERAL_TYPE :
-				return getName();
+				return $this->getName();
 				break;
 			case COMPUTER_TYPE :
 				return "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
