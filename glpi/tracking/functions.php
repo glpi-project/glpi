@@ -103,13 +103,13 @@ function getTrackingPrefs ($username) {
 	return $prefs;
 }
 
-function showJobList($username,$show,$contains,$item) {
+function showJobList($target,$username,$show,$contains,$item,$start) {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
 	// are listed.
 
-	GLOBAL $cfg_layout, $cfg_install, $lang;
+	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang;
 		
 	$prefs = getTrackingPrefs($username);
 
@@ -133,38 +133,36 @@ function showJobList($username,$show,$contains,$item) {
 
 	if ($show == "individual")
 	{
-		$query = "SELECT ID FROM tracking WHERE $where and (assign = '$username') ORDER BY date ".$prefs["order"]."";
+		$query = "SELECT ID FROM tracking WHERE ".$where." and (assign = '".$username."') ORDER BY date ".$prefs["order"]."";
 	}
 	else if ($show == "user")
 	{
-		$query = "SELECT ID FROM tracking WHERE $where and (author = '$username') ORDER BY date ".$prefs["order"]."";
+		$query = "SELECT ID FROM tracking WHERE ".$where." and (author = '".$username."') ORDER BY date ".$prefs["order"]."";
 	}
 	else if ($show == "unassigned")
 	{
-		$query = "SELECT ID FROM tracking WHERE $where and (assign is null) ORDER BY date ".$prefs["order"]."";
+		$query = "SELECT ID FROM tracking WHERE ".$where." and (assign is null) ORDER BY date ".$prefs["order"]."";
 	}
 	else
 	{
-		$query = "SELECT ID FROM tracking WHERE $where ORDER BY date ".$prefs["order"]."";
+		$query = "SELECT ID FROM tracking WHERE ".$where." ORDER BY date ".$prefs["order"]."";
 	}
 
 	if ($item)
 	{
-		$query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY date ".$prefs["order"]."";
+		$query = "SELECT ID FROM tracking WHERE ".$where." and (computer = '".$item."') ORDER BY date ".$prefs["order"]."";
 	}	
-		
-
+	$lim_query = " LIMIT ".$start.",".$cfg_features["list_limit"]."";	
 	$db = new DB;
 	$result = $db->query($query);
-
+	$numrows = $db->numrows($result);
+	
+	$query .= $lim_query;
+	$result = $db->query($query);
 	$i = 0;
 	$number = $db->numrows($result);
-
 	if ($number > 0) {
 		echo "<div align='center'><table border='0' width='90%'>";
-		echo "<tr><th colspan=8>$number Job";
-		if ($number > 1) { echo "s"; }
-		echo " ".$lang["job"][16].":</th></tr>";
 		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
 		echo "<th width=5>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
 		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["joblist"][5]."</th>";
@@ -184,6 +182,9 @@ function showJobList($username,$show,$contains,$item) {
 			echo "</b></td></tr>";
 		}
 		echo "</table></div>";
+		// Pager
+		$parameters="show=$show&contains=$contains&sort=$sort";
+		printPager($start,$numrows,$target,$parameters);
 	}
 	else
 	{
