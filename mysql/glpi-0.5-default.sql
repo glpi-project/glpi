@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-02-27 00:17
+#GLPI Dump database on 2005-02-28 23:54
 ### Dump table glpi_cartridges
 
 DROP TABLE IF EXISTS glpi_cartridges;
@@ -300,8 +300,8 @@ CREATE TABLE glpi_contracts (
     cost float DEFAULT '0' NOT NULL,
     contract_type int(11) DEFAULT '0' NOT NULL,
     begin_date date,
-    duration decimal(3,2) DEFAULT '0.00' NOT NULL,
-    notice decimal(3,2) DEFAULT '0.00' NOT NULL,
+    duration tinyint(4) DEFAULT '0' NOT NULL,
+    notice tinyint(4) DEFAULT '0' NOT NULL,
     periodicity tinyint(4) DEFAULT '0' NOT NULL,
     facturation tinyint(4) DEFAULT '0' NOT NULL,
     bill_type int(11) DEFAULT '0' NOT NULL,
@@ -718,7 +718,12 @@ CREATE TABLE glpi_event_log (
    KEY date (date)
 );
 
-INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-02-27 00:17:24','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('369','1','infocom','2005-02-28 23:53:46','financial','4','glpi updated item.');
+INSERT INTO glpi_event_log VALUES ('368','1','infocom','2005-02-28 23:53:37','financial','4','glpi updated item.');
+INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-02-28 23:53:18','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-02-28 23:52:43','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('370','1','infocom','2005-02-28 23:53:52','financial','4','glpi updated item.');
+INSERT INTO glpi_event_log VALUES ('371','1','infocom','2005-02-28 23:54:01','financial','4','glpi updated item.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -748,7 +753,7 @@ CREATE TABLE glpi_infocoms (
     device_type tinyint(4) DEFAULT '0' NOT NULL,
     buy_date date DEFAULT '0000-00-00' NOT NULL,
     use_date date DEFAULT '0000-00-00' NOT NULL,
-    warranty_duration decimal(3,2) DEFAULT '0.00' NOT NULL,
+    warranty_duration tinyint(4) DEFAULT '0' NOT NULL,
     warranty_info varchar(255) NOT NULL,
     FK_enterprise int(11),
     num_commande varchar(50) NOT NULL,
@@ -756,7 +761,7 @@ CREATE TABLE glpi_infocoms (
     num_immo varchar(50) NOT NULL,
     value float DEFAULT '0' NOT NULL,
     warranty_value float,
-    amort_time decimal(3,2) DEFAULT '0.00' NOT NULL,
+    amort_time tinyint(4) DEFAULT '0' NOT NULL,
     amort_type varchar(20) NOT NULL,
     amort_coeff float DEFAULT '0' NOT NULL,
     comments text NOT NULL,
@@ -766,7 +771,7 @@ CREATE TABLE glpi_infocoms (
    KEY buy_date (buy_date)
 );
 
-INSERT INTO glpi_infocoms VALUES ('1','18','1','2001-09-24','0000-00-00','12.00','',NULL,'','','','0',NULL,'0.00','','0','');
+INSERT INTO glpi_infocoms VALUES ('1','18','1','2001-09-24','0000-00-00','12','','0','','','','1000','0','4','2','3','');
 ### Dump table glpi_inst_software
 
 DROP TABLE IF EXISTS glpi_inst_software;
