@@ -44,7 +44,7 @@ include ($phproot . "/glpi/includes_enterprises.php");
 
 checkAuthentication("normal");
 
-commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][30],$_SERVER["PHP_SELF"]);
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST; 

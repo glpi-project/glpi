@@ -497,7 +497,7 @@ function titleDevices($device_type){
 	GLOBAL  $lang,$HTMLRel;           
 	echo "<div align='center'><table border='0'><tr><td>";
 	//TODO : CHANGER LE PICS et le alt.!!!!!!!!!!!
-	echo "<img src=\"".$HTMLRel."pics/printer.png\" alt='".$lang["printers"][0]."' title='".$lang["printers"][0]."'></td><td><a  class='icon_consol' href=\"devices-info-form.php?device_type=$device_type\"><b>".$lang["devices"][12]."</b></a>";
+	echo "<img src=\"".$HTMLRel."pics/periph.png\" alt='".$lang["devices"][12]."' title='".$lang["devices"][12]."'></td><td><a  class='icon_consol' href=\"devices-info-form.php?device_type=$device_type\"><b>".$lang["devices"][12]."</b></a>";
 	echo "</td>";
 	echo "</tr></table></div>";
 }
