@@ -218,8 +218,7 @@ function addNetdevice($input) {
 	$null = array_pop($input);
 	
 	// fill array for update
-	for ($i=0; $i < count($input); $i++) {
-		list($key,$val) = each($input);
+	foreach ($input as $key => $val) {
 		if ($netdev->fields[$key] != $input[$key]) {
 			$netdev->fields[$key] = $input[$key];
 		}
@@ -247,8 +246,7 @@ function updateNetdevice($input) {
 	$null=array_pop($input);
 
 	// Get all flags and fill with 0 if unchecked in form
-	for ($i=0; $i < count($netdev->fields); $i++) {
-		list($key,$val) = each($netdev->fields);
+	foreach ($netdev->fields as $key => $val) {
 		if (eregi("\.*flag\.*",$key)) {
 			if (!$input[$key]) {
 				$input[$key]=0;
@@ -258,8 +256,7 @@ function updateNetdevice($input) {
 		
 	// Fill the update-array with changes
 	$x=1;
-	for ($i=0; $i < count($input); $i++) {
-		list($key,$val) = each($input);
+	foreach ($input as $key => $val) {
 		if ($netdev->fields[$key] != $input[$key]) {
 			$netdev->fields[$key] = $input[$key];
 			$updates[$x] = $key;
@@ -409,14 +406,12 @@ function addNetport($input) {
 	$null = array_pop($input);
 	
 	// fill array for update 
-	for ($i=0; $i < count($input); $i++) {
-		list($key,$val) = each($input);
+	foreach ($input as $key => $val) {
 		if ($netport->fields[$key] != $input[$key]) {
 			$netport->fields[$key] = $input[$key];
 		}
 	}
 	
-
 	if ($netport->addToDB()) {
 		return true;
 	} else {
@@ -436,8 +431,7 @@ function updateNetport($input) {
 	
 	// Fill the update-array with changes
 	$x=0;
-	for ($i=0; $i < count($input); $i++) {
-		list($key,$val) = each($input);
+	foreach ($input as $key => $val) {
 		if ($netport->fields[$key] != $input[$key]) {
 			$netport->fields[$key] = $input[$key];
 			$updates[$x] = $key;

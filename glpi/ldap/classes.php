@@ -206,8 +206,7 @@ class LDAPEntry {
 		// Fill in the Attributes with Values as we need it for all php_ldap()-functions
 		// Only Attributes _with_ Values go into the array
 		reset ($input);
-		for ($i=0;$i<count($input)-1; $i++) {
-			list($key,$val)=each($input);
+		foreach ($input as $key => $val) {
 			if (count($val)>1) {
 				for ($x=0; $x<count($val); $x++ ) {
 					$this->attributes[$key][$x]=$val[$x];

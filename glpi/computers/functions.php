@@ -77,8 +77,7 @@ function searchFormComputers() {
 	echo $lang["search"][6];
 	echo "&nbsp;<select name='sort' size='1'>";
 	reset($option);
-	for ($i=0; $i < count($option); $i++) {
-		list($key,$val) = each ($option);
+	foreach ($option as $key => $val) {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select>";
@@ -94,8 +93,7 @@ function searchFormComputers() {
 	echo "<td align=center>";
 	echo "<select name=\"field\" size=1>";
 	reset($option);
-	for ($i=0; $i < count($option); $i++) {
-		list($key,$val) = each ($option);
+	foreach ($option as $key => $val) {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select>&nbsp;";
@@ -109,8 +107,7 @@ function searchFormComputers() {
 	echo $lang["search"][4];
 	echo "&nbsp;<select name=sort size=1>";
 	reset($option);
-	for ($i=0; $i < count($option); $i++) {
-		list($key,$val) = each ($option);
+	foreach ($option as $key => $val) {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select> ";
@@ -132,7 +129,6 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 	} else {
 		$where = "($field LIKE '".$contains."')";
 	}
-
 	if (!$start) {
 		$start = 0;
 	}
@@ -475,8 +471,7 @@ function updateComputer($input) {
 	$null=array_pop($input);
 	
 	// Get all flags and fill with 0 if unchecked in form
-	for ($i=0; $i < count($comp->fields); $i++) {
-		list($key,$val) = each($comp->fields);
+	foreach  ($comp->fields as $key => $val) {
 		if (eregi("\.*flag\.*",$key)) {
 			if (!$input[$key]) {
 				$input[$key]=0;
@@ -486,8 +481,7 @@ function updateComputer($input) {
 
 	// Fill the update-array with changes
 	$x=1;
-	for ($i=0; $i < count($input); $i++) {
-		list($key,$val) = each($input);
+	foreach ($input as $key => $val) {
 		if ($comp->fields[$key] != $input[$key]) {
 			$comp->fields[$key] = $input[$key];
 			$updates[$x] = $key;
@@ -509,13 +503,11 @@ function addComputer($input) {
 	$null=array_pop($input);
 	
 	// fill array for update
-	for ($i=0; $i < count($input); $i++) {
-		list($key,$val) = each($input);
-		if ($comp->fields[$key] != $input[$key]) {
+	foreach ($input as $key => $val){
+	if ($comp->fields[$key] != $input[$key]) {
 			$comp->fields[$key] = $input[$key];
-		}
+		}		
 	}
-
 	$comp->addToDB();
 }
 

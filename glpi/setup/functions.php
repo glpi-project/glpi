@@ -264,8 +264,7 @@ function addUser($input) {
 	$null = array_pop($input);
 	
 	// fill array for update
-	for ($i=0; $i < count($input); $i++) {
-		list($key,$val) = each($input);
+	foreach ($input as $key => $val) {
 		if ($user->fields[$key] != $input[$key]) {
 			$user->fields[$key] = $input[$key];
 		}
@@ -299,8 +298,7 @@ function updateUser($input) {
 
 	// fill array for update
 	$x=0;
-	for ($i=0; $i < count($input); $i++) {
-		list($key,$val) = each($input);
+	foreach ($input as $key => $val) {
 		if ($input[$key]!=$user->fields[$key]) {
 			$user->fields[$key] = $input[$key];
 			$updates[$x] = $key;
@@ -582,8 +580,7 @@ function updateTemplate($input) {
 	
 	// fill array for update
 	$x=0;
-	for ($i=0; $i < count($input)-1; $i++) {
-		list($key,$val) = each($input);
+	foreach ($input as $key => $val) {
 		if ($templ->fields[$key] != $input[$key]) {
 			$templ->fields[$key] = $input[$key];
 			$updates[$x] = $key;
@@ -604,8 +601,7 @@ function addTemplate($input) {
 	$null = array_pop($input);
 	
 	// fill array for update 
-	for ($i=0; $i < count($input); $i++) {
-		list($key,$val) = each($input);
+	foreach ($input as $key => $val) {
 		if ($templ->fields[$key] != $input[$key]) {
 			$templ->fields[$key] = $input[$key];
 		}

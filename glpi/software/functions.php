@@ -58,8 +58,7 @@ function searchFormSoftware() {
 	echo $lang["search"][6];
 	echo "&nbsp;<select name=sort size=1>";
 	reset($option);
-	for ($i=0; $i < count($option); $i++) {
-		list($key,$val) = each ($option);
+	foreach ($option as $key => $val) {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select>";
@@ -75,8 +74,7 @@ function searchFormSoftware() {
 	echo "<td align=center>";
 	echo "<select name=\"field\" size=1>";
 	reset($option);
-	for ($i=0; $i < count($option); $i++) {
-		list($key,$val) = each ($option);
+	foreach ($option as $key => $val) {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select>&nbsp;";
@@ -90,8 +88,7 @@ function searchFormSoftware() {
 	echo $lang["search"][4];
 	echo "&nbsp;<select name=sort size=1>";
 	reset($option);
-	for ($i=0; $i < count($option); $i++) {
-		list($key,$val) = each ($option);
+	foreach ($option as $key => $val) {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select> ";
@@ -289,8 +286,7 @@ function updateSoftware($input) {
 	
 	// Fill the update-array with changes
 	$x=0;
-	for ($i=0; $i < count($input); $i++) {
-		list($key,$val) = each($input);
+	foreach ($input as $key => $val) {
 		if ($sw->fields[$key] != $input[$key]) {
 			$sw->fields[$key] = $input[$key];
 			$updates[$x] = $key;
@@ -311,8 +307,7 @@ function addSoftware($input) {
 	$null = array_pop($input);
 	
 	// fill array for update
-	for ($i=0; $i < count($input); $i++) {
-		list($key,$val) = each($input);
+	foreach ($input as $key => $val) {
 		if ($sw->fields[$key] != $input[$key]) {
 			$sw->fields[$key] = $input[$key];
 		}
