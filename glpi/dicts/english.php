@@ -456,7 +456,7 @@ $lang["reports"][19] 	= "Contact name";
 $lang["reports"][20] 	= "Location"; 
 $lang["reports"][23] 	= "Date(s)"; 
 $lang["reports"][24] 	= "Restrict to computers"; 
-$lang=["reports"][25]    ="Tracking report";
+$lang["reports"][25]    ="Tracking report";
 
 // LDAP
 $lang["ldap"][0]	= "Search";
