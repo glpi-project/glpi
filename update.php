@@ -113,6 +113,12 @@ function superAdminExists() {
 }
 
 function updaterootdoc() {
+	
+	// hack pour IIS qui ne connait pas $_SERVER['REQUEST_URI']  grrrr
+	if ( !isset($_SERVER['REQUEST_URI']) ) {
+	    $_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
+	}
+	
 	$root_doc = ereg_replace("/update.php","",$_SERVER['REQUEST_URI']);
 	$db = new DB;
 	$query = "update glpi_config set root_doc = '".$root_doc."' where ID = '1'";
