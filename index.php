@@ -58,22 +58,6 @@ echo "</head>";
 
 echo "<body>";
 
-/*
-// Logo
-echo "<div align='center'>";
-echo "<div id='navigation'>";
-
-echo "<img src=\"./pics/logo-glpi.png\" border='0' alt=\"Logo GLPI Powered By Indepnet\" title=\"Powered By Indepnet\"vspace='10' />\n";
-
-// Headline
-echo "<br>";
-echo "<b>Gestionnaire Libre de Parc Informatique</b>";
-echo "<br>";
-
-echo "<br>";
-echo "</div>";
-
-
 
 	
 // Login Form
