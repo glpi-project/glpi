@@ -92,6 +92,7 @@ $lang["central"][3] 	= "Events";
 $lang["central"][4] 	= "No Event.";
 $lang["central"][5]	= "Home";
 $lang["central"][6]	= "Logout";
+$lang["central"][7] 	= "Help"; 
 //repports
 
 

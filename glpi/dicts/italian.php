@@ -93,6 +93,7 @@ $lang["central"][3] 	= "Evento/i";
 $lang["central"][4] 	= "Nessun Evento.";
 $lang["central"][5]	= "Home";
 $lang["central"][6]	= "Uscita";
+$lang["central"][7] 	= "Help"; 
 //repports
 
 
