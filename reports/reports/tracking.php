@@ -64,7 +64,7 @@ if(!isset($_GET["only_computers"])) $_GET["only_computers"] = "";
 searchFormTrackingReport();
 //print_r($_GET);
 if (isset($_GET["field"]))
-showTrackingListReport($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["start"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],"",$_GET["phrasetype2"],$_GET["contains2"]);
+showTrackingListReport($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["start"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["field2"],$_GET["phrasetype2"],$_GET["contains2"]);
 
 
 commonFooter();

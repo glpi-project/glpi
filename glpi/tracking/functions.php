@@ -398,7 +398,7 @@ function showJobShort($ID, $followups	) {
 		echo "</td>";
 
 		// Job Controls
-		echo "<td width='10%' class='tab_bg_2' align='center'>";
+		echo "<td width='40' class='tab_bg_2' align='center'>";
 		
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		echo "<b><a href=\"".$cfg_install["root"]."/tracking/tracking-followups.php?ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;($job->num_of_followups)&nbsp;<br>";
@@ -840,7 +840,7 @@ function getRealtime($realtime){
 function searchFormTrackingReport() {
 	// Print Search Form
 	
-	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
+	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel;
 
 	
 	$option["comp.ID"]				= $lang["computers"][31];
@@ -875,18 +875,25 @@ function searchFormTrackingReport() {
 	
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 echo "<tr class='tab_bg_1'><td align='center'>".$lang["search"][8].":&nbsp;<input type=\"texte\" readonly name=\"date1\" value=\"". $_GET["date1"] ."\" />";
-echo "<input name='button' type='button' class='button'  onClick=\"window.open('../../mycalendar.php?form=form&amp;elem=date1&amp;value=".$_GET["date1"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+echo "<input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date1&amp;value=".$_GET["date1"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 echo "<input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date1.value=''\" value='reset'>";
 echo $lang["search"][9].":&nbsp;<input type=\"texte\" readonly name=\"date2\" value=\"". $_GET["date2"] ."\" />";
-echo "<input name='button' type='button' class='button'  onClick=\"window.open('../../mycalendar.php?form=form&amp;elem=date2&amp;value=".$_GET["date2"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+echo "<input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date2&amp;value=".$_GET["date2"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 echo "<input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date2.value=''\" value='reset'>";
 echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
-//	echo $lang["search"][1];
- echo "Description:";
-	echo " &nbsp;<select name='phrasetype2' size='1' >";
+ $elts=array("both"=>$lang["joblist"][6]." / ".$lang["job"][7],"contents"=>$lang["joblist"][6],"followup" => $lang["job"][7]);
+ echo "<select name='field2'>";
+ foreach ($elts as $key => $val){
+ $selected="";
+ if ($_GET["field2"]==$key) $selected="selected";
+ echo "<option value='$key' $selected>$val</option>";
+ 
+ }
+ echo "</select>";
+ echo " &nbsp;<select name='phrasetype2' size='1' >";
 	$selected="";
 	if ($_GET["phrasetype2"]=="contains") $selected="selected";
 	echo "<option value='contains' $selected>".$lang["search"][2]."</option>";
@@ -988,7 +995,7 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 		$start = 0;
 	}
 //	$query = "select comp.ID from glpi_computers as comp";
-	$query = "select glpi_tracking.ID as ID from glpi_tracking";
+	$query = "select DISTINCT glpi_tracking.ID as ID from glpi_tracking";
 	if ($computers_search){
 	$query.= " LEFT JOIN glpi_computers as comp on comp.ID=glpi_tracking.computer ";
 	$query.= " LEFT JOIN glpi_dropdown_locations on comp.location=glpi_dropdown_locations.ID ";
@@ -998,12 +1005,23 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 	$query .= "LEFT JOIN glpi_dropdown_gfxcard on comp.gfxcard = glpi_dropdown_gfxcard.ID LEFT JOIN glpi_dropdown_moboard on comp.moboard = glpi_dropdown_moboard.ID ";
 	$query .= "LEFT JOIN glpi_dropdown_sndcard on comp.sndcard = glpi_dropdown_sndcard.ID ";
 	}
+
+	if ($contains2!=""&&$field2!="content") {
+		if ($phrasetype2 == "contains") {
+			$query.= " LEFT JOIN glpi_followups ON ( glpi_followups.tracking = glpi_tracking.ID AND (glpi_tracking.contents LIKE '%".$contains2."%'))";
+		}
+		else {
+			$query.= " LEFT JOIN glpi_followups ON ( glpi_followups.tracking = glpi_tracking.ID AND (glpi_tracking.contents LIKE '".$contains2."'))";
+		}
+	}
+
+
 	$query.=" WHERE '1' = '1'";
 	if ($computers_search) $query .= "AND $wherecomp";
 	if ($date1!="") $query.=" AND glpi_tracking.date >= '$date1'";
 	if ($date2!="") $query.=" AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 	
-	if ($contains2!="") {
+	if ($contains2!=""&&$field2!="followup") {
 		if ($phrasetype2 == "contains") {
 			$query.= " AND (glpi_tracking.contents LIKE '%".$contains2."%')";
 		}
@@ -1011,9 +1029,10 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 			$query.= " AND (glpi_tracking.contents LIKE '".$contains2."')";
 		}
 	}
+
 	
    $query.=" ORDER BY ID";
-//	echo $query;
+
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);
@@ -1048,7 +1067,7 @@ echo "<th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
 			echo "</table></div>";
 
 			// Pager
-			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&date1=$date1&date2=$date2&only_computers=$computers_search";
+			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&date1=$date1&date2=$date2&only_computers=$computers_search&field2=$field2&phrasetype2=$phrasetype2&contains2=$contains2";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
