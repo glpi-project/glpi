@@ -461,7 +461,7 @@ function showJobDetails($ID) {
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["joblist"][5]."</td><td>";
-		if (strcmp($_SESSION["glpitype"],"post-only")!=0&&is_integer($job->computer))
+		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		echo "<b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$job->computer\">$job->computername ($job->computer)</a></b>";
 		else
 		echo "<b>$job->computername ($job->computer)</b>";
