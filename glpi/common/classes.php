@@ -153,17 +153,6 @@ class Connection {
 			return false;
 		}
 	}
-	function deleteAllForComputer($ID) {
-
-		$db = new DB;
-
-		$query = "DELETE from glpi_connect_wire WHERE (end2 = '$ID')";
-		if ($result = $db->query($query)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
 	function addToDB() {
 		$db = new DB;
