@@ -55,17 +55,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1) {
 		echo "<tr class='tab_bg_1'><td colspan='2'>".$lang["financial"][26].":		</td>";
 		echo "<td colspan='2' align='center'>";
 		dropdownValue("glpi_enterprises","FK_enterprise",$ic->fields["FK_enterprise"]);
-		$ent=new Enterprise();
-		if ($ent->getFromDB($ic->fields["FK_enterprise"])){
-			if (!empty($ent->fields['website'])){
-				if (!ereg("https*://",$ent->fields['website']))	$website="http://".$ent->fields['website'];
-				else $website=$ent->fields['website'];
-				echo "&nbsp;&nbsp;";
-				echo "<a href='$website'><img src='".$HTMLRel."pics/web.png' style='vertical-align:middle;' alt='".$lang["common"][4]."' title='".$lang["common"][4]."' ></a>";
-			}
-		echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-		echo "<a href='".$HTMLRel."enterprises/enterprises-info-form.php?ID=".$ent->fields['ID']."'><img src='".$HTMLRel."pics/edit.png' style='vertical-align:middle;' alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'></a>";
-		}
+		
 		echo "</td>";
 		
 		echo "</tr>";
