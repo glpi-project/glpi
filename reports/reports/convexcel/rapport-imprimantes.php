@@ -41,7 +41,10 @@ This file is part of GLPI.
 include ("_relpos.php");
 
 include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/dicts/french.php");
+include ($phproot . "/glpi/includes_printers.php");
+
+checkAuthentication("normal");
+
 
 $db = new DB;
 //$query = "select * from glpi_printers";
@@ -100,19 +103,19 @@ $border2->set_merge(); # This is the key feature
 $worksheet->write(0, 0, $lang["printers"][24], $border1);
 $worksheet->write(0, 1, $lang["printers"][5], $border1);
 $worksheet->write(0, 2, $lang["printers"][16],   $border1);
-$worksheet->write(0, 3, $lang["printers"][9],  $border1);
-$worksheet->write(0, 4, $lang["printers"][13],  $border1);
-$worksheet->write(0, 5, $lang["printers"][8], $border1);
-$worksheet->write(0, 6, $lang["printers"][7], $border1);
-$worksheet->write(0, 7, $lang["printers"][10], $border1);
-$worksheet->write(0, 8, $lang["printers"][11], $border1);
-$worksheet->write(0, 9, $lang["printers"][14], $border1);
-$worksheet->write(0, 10, $lang["printers"][15], $border1);
-$worksheet->write(0, 11, $lang["printers"][12], $border1);
-$worksheet->write(0, 12, $lang["printers"][20], $border1);
-$worksheet->write(0, 13, $lang["printers"][21], $border1);
-$worksheet->write(0, 14, $lang["printers"][22], $border1);
-$worksheet->write(0, 15, $lang["printers"][23], $border1);
+$worksheet->write(0, 3, $lang["printers"][8], $border1);
+$worksheet->write(0, 4, $lang["printers"][7], $border1);
+$worksheet->write(0, 5, $lang["printers"][10], $border1);
+$worksheet->write(0, 6, $lang["printers"][11], $border1);
+$worksheet->write(0, 7, $lang["printers"][14], $border1);
+$worksheet->write(0, 8, $lang["printers"][15], $border1);
+$worksheet->write(0, 9, $lang["printers"][12], $border1);
+$worksheet->write(0, 10, $lang["printers"][20], $border1);
+$worksheet->write(0, 11, $lang["printers"][21], $border1);
+$worksheet->write(0, 12, $lang["printers"][22], $border1);
+$worksheet->write(0, 13, $lang["printers"][23], $border1);
+$worksheet->write(0, 14, $lang["printers"][13],  $border1);
+$worksheet->write(0, 15, $lang["printers"][9],  $border1);
 $worksheet->write(0, 16, $lang["networking"][14], $border1);
 $worksheet->write(0, 17, $lang["networking"][15], $border1);
 
@@ -128,7 +131,16 @@ while($ligne = $db->fetch_array($result))
 	// New computer
 	if ($old_ID!=$ligne[0]){
 		// reinit data
-		for($i=0;$i<$num_field;$i++) $table[$i]=$ligne[$i];
+		for($i=0;$i<$num_field;$i++) {
+			$name=$db->field_name($result,$i);
+		if($name == "location") {
+				$table[$i]=getDropdownName("glpi_dropdown_locations",$ligne[$i]);
+			}
+		elseif($name == "type") {
+				$table[$i]=getDropdownName("glpi_type_printers",$ligne[$i]);
+			}
+		else $table[$i]=$ligne[$i];
+			}
 		$old_ID=$ligne[0];
 	} 
 	else { // Same computer
