@@ -582,10 +582,10 @@ $lang["setup"][104]="2- Sévère (Non utilisée) ";
 $lang["setup"][105]="3- Important (logins réussis) ";
 $lang["setup"][106]="4- Notices (Ajout, suppression, tracking)";
 $lang["setup"][107]="5- Complet (Tout) ";
-$lang["setup"][108]="Nombre d'évenements de log à afficher";
+$lang["setup"][108]="Nombre d'événements de log à afficher";
 $lang["setup"][109]="Temps en jours de conservation des logs (0 pour infini)";
 $lang["setup"][110]=" Montrer les interventions au login";
-$lang["setup"][111]="Nombre d'élements à afficher par page";
+$lang["setup"][111]="Nombre d'éléments à afficher par page";
 $lang["setup"][112]="Nombre de caractères maximum pour chaque éléments de la liste";
 
 $lang["setup"][150]="Sources d'authentification externes";
