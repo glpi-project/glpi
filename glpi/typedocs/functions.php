@@ -42,7 +42,7 @@ include ("_relpos.php");
 function titleTypedocs(){
                 GLOBAL  $lang,$HTMLRel;
                 echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/periphs.png\" alt='".$lang["document"][12]."' title='".$lang["document"][12]."'></td><td><a  class='icon_consol' href=\"typedocs-info-form.php\"><b>".$lang["document"][12]."</b></a>";
+                echo "<img src=\"".$HTMLRel."pics/docs.png\" alt='".$lang["document"][12]."' title='".$lang["document"][12]."'></td><td><a  class='icon_consol' href=\"typedocs-info-form.php\"><b>".$lang["document"][12]."</b></a>";
                 echo "</td>";
                 echo "</tr></table></div>";
 }
@@ -206,7 +206,7 @@ function showTypedocList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				echo "</a></b></td>";
 				echo "<td>". $mon->fields["ext"] ."</td>";
 				echo "<td>&nbsp;";
-				if (!empty($mon->fields["icon"])) echo "<img width='25' src='".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/".$mon->fields["icon"]."'>";
+				if (!empty($mon->fields["icon"])) echo "<img style='vertical-align:middle;' alt='' src='".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/".$mon->fields["icon"]."'>";
 				echo "</td>";
 				echo "<td>". $mon->fields["mime"] ."</td>";
 				echo "<td>". $mon->fields["upload"] ."</td>";
@@ -270,7 +270,7 @@ function showTypedocForm ($target,$ID) {
 
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][10].":	</td><td>";
 	dropdownIcons("icon",$mon->fields["icon"],$phproot.$cfg_install["typedoc_icon_dir"]);
-	if (!empty($mon->fields["icon"])) echo "<img src='".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/".$mon->fields["icon"]."'>";
+	if (!empty($mon->fields["icon"])) echo "&nbsp;<img style='vertical-align:middle;' alt='' src='".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/".$mon->fields["icon"]."'>";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][4].":	</td>";

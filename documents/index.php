@@ -38,7 +38,7 @@ include ($phproot . "/glpi/includes_documents.php");
 
 checkAuthentication("normal");
 
-commonHeader($lang["title"][20],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][25],$_SERVER["PHP_SELF"]);
 
 titleDocument();
 

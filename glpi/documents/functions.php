@@ -40,7 +40,7 @@ function titleDocument(){
          GLOBAL  $lang,$HTMLRel;
          
          echo "<div align='center'><table border='0'><tr><td>";
-         echo "<img src=\"".$HTMLRel."pics/periphs.png\" alt='".$lang["document"][13]."' title='".$lang["document"][13]."'></td><td><a  class='icon_consol' href=\"documents-info-form.php\"><b>".$lang["document"][13]."</b></a>";
+         echo "<img src=\"".$HTMLRel."pics/docs.png\" alt='".$lang["document"][13]."' title='".$lang["document"][13]."'></td><td><a  class='icon_consol' href=\"documents-info-form.php\"><b>".$lang["document"][13]."</b></a>";
          echo "</td></tr></table></div>";
 }
 
@@ -273,7 +273,7 @@ function showDocumentForm ($target,$ID,$search) {
 	echo "<td colspan='2'>".getDocumentLink($con->fields["filename"])."</td>";
 	echo "<input type='hidden' name='current_filename' value='".$con->fields["filename"]."'>";
 	echo "</tr>";
-}
+	}
 	
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][2].":		</td>";
 	echo "<td colspan='2'><input type='file' name='filename' value=\"".$con->fields["filename"]."\" size='25'></td>";
@@ -609,14 +609,14 @@ global $HTMLRel,$cfg_install;
 	if (count($splitter)==2)
 	$fileout=$splitter[1];
 	else $fileout=$filename;
-	$out="<b><a href='".$HTMLRel."documents/send-document.php?file=$filename' target='_blank'>$fileout</a></b>";	
+	//$out="<b><a href='".$HTMLRel."documents/send-document.php?file=$filename' target='_blank'>$fileout</a></b>";	
 	if (count($splitter)==2){
 		$db=new DB;
 		$query="SELECT * from glpi_type_docs WHERE ext LIKE '".$splitter[0]."' AND icon <> ''";
 		$result=$db->query($query);
 		if ($db->numrows($result)>0){
 			$icon=$db->result($result,0,'icon');
-			$out.="<a href='".$HTMLRel."documents/send-document.php?file=$filename' target='_blank'><img width='20' src='".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/$icon'</a>";				
+			$out="<a href='".$HTMLRel."documents/send-document.php?file=$filename' target='_blank'>&nbsp;<img style='vertical-align:middle;' alt='".$fileout."' title='".$fileout."' src='".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/$icon'</a>";				
 			}
 	
 	}
