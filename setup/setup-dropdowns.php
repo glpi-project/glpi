@@ -73,7 +73,7 @@ if (isset($_POST["move"])) {
 } else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
 	if(!dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
-		commonHeader("Setup",$_SERVER["PHP_SELF"]);
+		commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 		showDeleteConfirmForm($_SERVER["PHP_SELF"],$_POST["tablename"], $_POST["ID"]);
 		commonFooter();
 	} else {
@@ -95,7 +95,7 @@ if (isset($_POST["move"])) {
 }
  else {
 	checkAuthentication("normal");
-	commonHeader("Setup",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 
 	$dp=array();
 	$dp["locations"]=$lang["setup"][3];	

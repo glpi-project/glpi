@@ -48,7 +48,7 @@ if(!isset($tab["search_computer"])) $tab["search_computer"] = "";
 
 if (isset($tab["Modif_Interne"])){
 	checkAuthentication("admin");
-	commonHeader("Software",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 	showLicenseForm($_SERVER["PHP_SELF"],$tab['form'],$tab["sID"],$tab["lID"],$tab['search_computer']);
 	commonFooter();
 
@@ -99,7 +99,7 @@ else if (isset($tab["update"]))
 else if (isset($tab["form"]))
 {
 	checkAuthentication("admin");
-	commonHeader("Software",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 	showLicenseForm($_SERVER["PHP_SELF"],$tab['form'],$tab["sID"],$tab["lID"],$tab['search_computer']);
 	commonFooter();
 }
@@ -113,7 +113,7 @@ else if (isset($tab["delete"]))
 else if (isset($tab["select"]))
 {
 	checkAuthentication("admin");
-	commonHeader("Software",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 	showLicenseSelect($_SERVER['HTTP_REFERER'],$_SERVER["PHP_SELF"],$tab["cID"],$tab["sID"]);
 	commonFooter();
 }

@@ -41,13 +41,13 @@ if(!empty($_GET["next"])) {
 
 	if($_GET["next"] == "extsources") {
 	
-		commonHeader("External sources infos",$_SERVER["PHP_SELF"]);
+		commonHeader($lang["title"][14],$_SERVER["PHP_SELF"]);
 		titleExtSources();
 		showFormExtSources($_SERVER["PHP_SELF"]);
 	}
 	elseif($_GET["next"] == "mailing") {
 	
-		commonHeader("Mailing infos",$_SERVER["PHP_SELF"]);
+		commonHeader($lang["title"][15],$_SERVER["PHP_SELF"]);
 		titleMailing();
 		showFormMailing($_SERVER["PHP_SELF"]);
 	}
@@ -55,7 +55,7 @@ if(!empty($_GET["next"])) {
 	
 	
 	
-		commonHeader("Configuration",$_SERVER["PHP_SELF"]);
+		commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 		titleConfigGen();
 		showFormConfigGen($_SERVER["PHP_SELF"]);
 		

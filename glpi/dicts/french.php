@@ -954,4 +954,22 @@ $lang["knowbase"][19] ="Echec de la suppression : Cette cat&eacute;gorie contien
 $lang["knowbase"][20] ="Base de connaissances vide";
 $lang["knowbase"][21] ="Voir Tous";
 $lang["knowbase"][22] ="Masquer Tous";
+
+$lang["title"][0] = "Centre de contrôle";
+$lang["title"][1] = "Accès au Helpdesk seulement";
+$lang["title"][2] = "Configuration";
+$lang["title"][3] = "Ordinateurs";
+$lang["title"][4] = "Helpdesk";
+$lang["title"][5] = "Base de connaissances";
+$lang["title"][6] = "Matériel Réseau";
+$lang["title"][7] = "Périphériques";
+$lang["title"][8] = "Imprimantes";
+$lang["title"][9] = "Réservation";
+$lang["title"][10] = "Suivi d'intervention";
+$lang["title"][11] = "Statistiques";
+$lang["title"][12] = "Logiciels";
+$lang["title"][13] = "Informations Utilisateur";
+$lang["title"][14] = "Sources d'aithentification externes";
+$lang["title"][15] = "Mailing";
+
 ?>

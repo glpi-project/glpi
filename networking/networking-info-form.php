@@ -61,7 +61,7 @@ else if (isset($_POST["update"]))
 	checkAuthentication("admin");
 	updateNetdevice($_POST);
 	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." updated item.");
-	commonHeader("Networking",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
 	showNetworkingForm ($_SERVER["PHP_SELF"],$_POST["ID"]);
 	showJobListForItem($_SESSION["glpiname"],2,$_POST["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],2,$_POST["ID"]);
@@ -75,7 +75,7 @@ else
 	checkAuthentication("admin");
 	else checkAuthentication("normal");
 
-	commonHeader("Networking",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
 	showNetworkingForm ($_SERVER["PHP_SELF"],$_GET["ID"]);
 	if (!empty($_GET["ID"])){
 	showJobListForItem($_SESSION["glpiname"],2,$_GET["ID"]);

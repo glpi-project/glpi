@@ -66,14 +66,14 @@ elseif(isset($tab["update"]))
 elseif(isset($tab["showform"]))
 {
 	checkAuthentication("admin");
-	commonHeader("glpi Setup",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 	showTemplateForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	commonFooter();
 }
 else
 {
 	checkAuthentication("normal");
-	commonHeader("glpi Setup",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 	listTemplates($_SERVER["PHP_SELF"]);
 	commonFooter();
 }

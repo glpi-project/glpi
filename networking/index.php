@@ -41,7 +41,7 @@ include ($phproot . "/glpi/includes_networking.php");
 
 checkAuthentication("normal");
 
-commonHeader("Networking",$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
 
 titleNetdevices();
 

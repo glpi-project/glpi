@@ -50,7 +50,7 @@ if (isset($tab["referer"])) $REFERER=$tab["referer"];
 if(isset($_POST["add"]))
 {	
 	checkAuthentication("admin");
-	commonHeader("Networking",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
 	unset($_POST["referer"]);
 	unset($tab["referer"]);
 	if (!isset($tab["several"])){
@@ -99,7 +99,7 @@ else if(isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateNetport($_POST);
-	commonHeader("Networking",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
 	if (!isset($_POST["ondevice"])) $_POST["ondevice"]="";
 	if (!isset($_POST["devtype"])) $_POST["devtype"]="";
 	if (!isset($_POST["several"])) $_POST["several"]="";
@@ -113,7 +113,7 @@ else
 	if(empty($tab["several"])) $tab["several"] ="";
 	if(empty($tab["location"])) $tab["location"] = "";
 	checkAuthentication("admin");
-	commonHeader("Networking",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
 	
 	if(isset($tab["ID"]))
 	{

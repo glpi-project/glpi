@@ -322,7 +322,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 
 	// Start the page
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
-	echo "<html><head><title>glpi: ".$title."</title>";
+	echo "<html><head><title>GLPI - ".$title."</title>";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1 \" >";
        
 	// Send extra expires header if configured
@@ -475,7 +475,7 @@ function helpHeader($title,$url,$name) {
 
 	// Start the page
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
-        echo "<html><head><title>GLPI Internal Helpdesk : ".$title."</title>";
+        echo "<html><head><title>GLPI Helpdesk - ".$title."</title>";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1 \" >";
 
 	// Send extra expires header if configured
@@ -576,7 +576,7 @@ function nullHeader($title,$url) {
 
 	// Start the page
        	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
-        echo "<html><head><title>glpi: ".$title."</title>";
+        echo "<html><head><title>GLPI - ".$title."</title>";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1 \" >";
 
 	// Send extra expires header if configured

@@ -40,7 +40,7 @@ require ("functions.php");
 
 checkAuthentication("normal");
 
-commonHeader("Stats",$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
 
 echo "<div align='center'><p><b>".$lang["stats"][19]."</p></b>";
 

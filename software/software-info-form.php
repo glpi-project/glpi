@@ -67,7 +67,7 @@ else if (isset($_POST["update"]))
 	unset($_POST["search_software"]);
 	updateSoftware($_POST);
 	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." updated item.");
-	commonHeader("Software",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 	showSoftwareForm($_SERVER["PHP_SELF"],$_POST["ID"]);
 	showJobListForItem($_SESSION["glpiname"],6,$_POST["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],6,$_POST["ID"]);
@@ -77,7 +77,7 @@ else if (isset($_POST["update"]))
 } 
 else if (isset($tab["Modif_Interne"])){
 	checkAuthentication("admin");
-	commonHeader("Software",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 	showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"],$tab['search_software']);
 	showJobListForItem($_SESSION["glpiname"],6,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],6,$tab["ID"]);
@@ -91,7 +91,7 @@ else
 	checkAuthentication("admin");
 	else checkAuthentication("normal");
 
-	commonHeader("Software",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 	showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	if (!empty($_GET["ID"])){
 	showJobListForItem($_SESSION["glpiname"],6,$tab["ID"]);

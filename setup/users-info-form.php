@@ -52,14 +52,14 @@ if (isset($_POST["add"])) {
 	header("Location: ".$cfg_install["root"]."/setup/setup-users.php");
 } else if (isset($_POST["update"])) {
 	checkAuthentication("admin");
-	commonHeader("Userinfo",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
 	updateUser($_POST);
 	logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]." updated user ".$_POST["name"].".");
 	showUserform($_SERVER["PHP_SELF"],$_POST["name"]);
 } else {
 
 checkAuthentication("admin");
-commonHeader("Userinfo",$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
 showUserform($_SERVER["PHP_SELF"],$_GET["name"]);
 }
 	

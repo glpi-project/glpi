@@ -46,7 +46,7 @@ if (isset($_GET["update"]))
 }
 else
 {
-	commonHeader("Tracking",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 	echo "<center>";
 	categoryFormTracking($_GET["ID"],$_SERVER["PHP_SELF"]);
 	echo "</center>";

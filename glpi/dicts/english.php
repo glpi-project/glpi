@@ -936,5 +936,21 @@ $lang["knowbase"][18] ="Deletion of the category ";
 $lang["knowbase"][19] ="Deletion failure: This categorie has items, you have to delete all the items of this category before deletion ";
 $lang["knowbase"][20] ="Empty knowledge database";
 
+$lang["title"][0] = "Command Center";
+$lang["title"][1] = "Helpdesk Access Only";
+$lang["title"][2] = "Setup";
+$lang["title"][3] = "Computers";
+$lang["title"][4] = "Helpdesk";
+$lang["title"][5] = "Knownledge database";
+$lang["title"][6] = "Networking";
+$lang["title"][7] = "Devices";
+$lang["title"][8] = "Printers";
+$lang["title"][9] = "Reservation";
+$lang["title"][10] = "Tracking";
+$lang["title"][11] = "Statistics";
+$lang["title"][12] = "Software";
+$lang["title"][13] = "User Informations";
+$lang["title"][14] = "External authentifications sources";
+$lang["title"][15] = "Email support";
 
 ?>
