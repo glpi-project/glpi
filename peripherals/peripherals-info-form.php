@@ -34,6 +34,7 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_peripherals.php");
+include ($phproot . "/glpi/includes_computers.php");
 include ($phproot . "/glpi/includes_reservation.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_financial.php");
@@ -63,13 +64,7 @@ else if (isset($_POST["update"]))
 	checkAuthentication("admin");
 	updatePeripheral($_POST);
 	logEvent($_POST["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." updated item.");
-	commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
-	showPeripheralForm($_SERVER["PHP_SELF"],$_POST["ID"]);
-	showInfocomAssociated(PERIPHERAL_TYPE,$tab["ID"]);
-	showContractAssociated(PERIPHERAL_TYPE,$tab["ID"]);
-	showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$_POST["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$_POST["ID"]);
-	commonFooter();
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 
 }
 else if (isset($tab["disconnect"]))
@@ -77,14 +72,7 @@ else if (isset($tab["disconnect"]))
 	checkAuthentication("admin");
 	Disconnect($tab["ID"],PERIPHERAL_TYPE);
 	logEvent($tab["ID"], "Peripherals", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
-	commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
-	showPeripheralForm($_SERVER["PHP_SELF"],$tab["ID"]);
-	showInfocomAssociated(PERIPHERAL_TYPE,$tab["ID"]);
-	showContractAssociated(PERIPHERAL_TYPE,$tab["ID"]);
-	showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
-
-	commonFooter();
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 else if(isset($tab["connect"]))
 {
@@ -105,15 +93,9 @@ else if(isset($tab["connect"]))
 	else if ($tab["connect"]==3)
 	{
 		checkAuthentication("admin");
-		commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
 		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],PERIPHERAL_TYPE);
 		logEvent($tab["sID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." connected item.");
-		showPeripheralForm($_SERVER["PHP_SELF"],$tab["sID"]);
-		showInfocomAssociated(PERIPHERAL_TYPE,$tab["ID"]);
-		showContractAssociated(PERIPHERAL_TYPE,$tab["ID"]);
-		showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
-		showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
-		commonFooter();
+		header("Location: ".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=".$tab["sID"]);
 	}
 }
 else

@@ -37,6 +37,7 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_monitors.php");
+include ($phproot . "/glpi/includes_computers.php");
 include ($phproot . "/glpi/includes_reservation.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_financial.php");
@@ -66,13 +67,7 @@ else if (isset($_POST["update"]))
 	checkAuthentication("admin");
 	updateMonitor($_POST);
 	logEvent($_POST["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." updated item.");
-	commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
-	showMonitorsForm($_SERVER["PHP_SELF"],$_POST["ID"]);
-	showInfocomAssociated(MONITOR_TYPE,$tab["ID"]);
-	showContractAssociated(MONITOR_TYPE,$tab["ID"]);
-	showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_POST["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_POST["ID"]);
-	commonFooter();
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 
 }
 else if (isset($tab["disconnect"]))
@@ -80,13 +75,7 @@ else if (isset($tab["disconnect"]))
 	checkAuthentication("admin");
 	Disconnect($tab["ID"],4);
 	logEvent($tab["ID"], "monitors", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
-	commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
-	showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"]);
-	showInfocomAssociated(MONITOR_TYPE,$tab["ID"]);
-	showContractAssociated(MONITOR_TYPE,$tab["ID"]);
-	showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
-	commonFooter();
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 else if(isset($tab["connect"]))
 {
@@ -107,16 +96,9 @@ else if(isset($tab["connect"]))
 	else if ($tab["connect"]==3)
 	{
 		checkAuthentication("admin");
-		commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
 		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],MONITOR_TYPE);
 		logEvent($tab["sID"], "monitors", 5, "inventory", $_SESSION["glpiname"]." connected item.");
-		showMonitorsForm($_SERVER["PHP_SELF"],$tab["sID"]);
-		showInfocomAssociated(MONITOR_TYPE,$tab["ID"]);
-		showContractAssociated(MONITOR_TYPE,$tab["ID"]);
-		showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
-		showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
-
-		commonFooter();
+		header("Location: ".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=".$tab["sID"]);
 	}
 }
 else

@@ -62,15 +62,7 @@ else if (isset($_POST["update"]))
 	checkAuthentication("admin");
 	updateNetdevice($_POST);
 	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." updated item.");
-	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
-	showNetworkingForm ($_SERVER["PHP_SELF"],$_POST["ID"]);
-	showInfocomAssociated(NETWORKING_TYPE,$tab["ID"]);
-	showContractAssociated(NETWORKING_TYPE,$tab["ID"]);
-	showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_POST["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_POST["ID"]);
-
-	commonFooter();
-
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 else
 {

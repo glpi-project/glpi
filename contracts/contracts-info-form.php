@@ -83,21 +83,13 @@ else if (isset($_POST["additem"])){
 	
 	addDeviceContract($_POST["conID"],$type,$ID);
 	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." associate device.");
-	$end="";
-	if (!ereg("ID=",$_SERVER['HTTP_REFERER']))
-		if(!ereg("contracts",$_SERVER['HTTP_REFERER'])) $end="?ID=$ID";
-	else $end="?ID=".$_POST["conID"];
-	header("Location: ".$_SERVER['HTTP_REFERER'].$end);
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deleteitem"])){
 	checkAuthentication("admin");
 	deleteDeviceContract($_GET["ID"]);
 	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." delete device.");
-	$end="";
-	if (!ereg("ID=",$_SERVER['HTTP_REFERER']))
-		if(!ereg("contracts",$_SERVER['HTTP_REFERER'])) $end="?ID=$ID";
-	else $end="?ID=".$_POST["conID"];
-	header("Location: ".$_SERVER['HTTP_REFERER'].$end);
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["addenterprise"])){
 	checkAuthentication("admin");
@@ -117,10 +109,7 @@ else if (isset($_POST["update"]))
 	checkAuthentication("admin");
 	updateContract($_POST);
 	logEvent($_POST["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." updated item.");
-	commonHeader($lang["title"][20],$_SERVER["PHP_SELF"]);
-	showContractForm($_SERVER["PHP_SELF"],$_POST["ID"]);
-
-	commonFooter();
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 
 } 
 else

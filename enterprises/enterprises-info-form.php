@@ -72,23 +72,20 @@ else if (isset($_POST["addcontact"])){
 	checkAuthentication("admin");
 	addContactEnterprise($_POST["eID"],$_POST["cID"]);
 	logEvent($tab["ID"], "enterprise", 4, "financial", $_SESSION["glpiname"]." associate type.");
-	header("Location: ".$cfg_install["root"]."/enterprises/enterprises-info-form.php?ID=".$_POST["eID"]);
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deletecontact"])){
 	checkAuthentication("admin");
 	deleteContactEnterprise($_GET["ID"]);
 	logEvent($tab["ID"], "enterprise", 4, "financial", $_SESSION["glpiname"]." delete type.");
-	header("Location: ".$cfg_install["root"]."/enterprises/enterprises-info-form.php?ID=".$_GET["eID"]);
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateEnterprise($_POST);
 	logEvent($_POST["ID"], "enterprise", 4, "financial", $_SESSION["glpiname"]." updated item.");
-	commonHeader($lang["title"][23],$_SERVER["PHP_SELF"]);
-	showEnterpriseForm($_SERVER["PHP_SELF"],$_POST["ID"]);
-
-	commonFooter();
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 
 } 
 else
