@@ -103,7 +103,7 @@ $cfg_login['ldap']['rootdn'] = $db->result($result,0,"ldap_rootdn");
 $cfg_login['ldap']['pass'] = $db->result($result,0,"ldap_pass");
 
 // Log in filter A AJOUTER DANS LA DB
-$cfg_login['ldap']['condition'] ="";
+$cfg_login['ldap']['condition'] = $db->result($result,0,"ldap_condition");
 
 // some lDAP server (eg, M$ Active Directory) does not like anonymous
 // bind
