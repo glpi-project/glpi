@@ -35,6 +35,15 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+//return if the $postfromselect if a dropdown or not
+function is_dropdown_stat($postfromselect) {
+	$dropdowns = array ("locations", "type", "os");
+	if(in_array(str_replace("glpi_dropdown_","",$postfromselect),$dropdowns)) return true;
+	elseif(strcmp("glpi_type_computers",$postfromselect) == 0) return true;
+	else return false; 
+}
+
+
 //return an array from tracking
 //it contains the distinct users witch have any intervention assigned to.
 function getNbIntervTech()
@@ -102,7 +111,7 @@ function getNbIntervAuthor()
 //common usage in query  "where $chps = '$value'";
 function getNbInter($quoi, $chps, $value, $date1 = '', $date2 = '')
 {
-	$dropdowns = array ("location", "hdtype", "type", "moboard", "gfxcard", "processor", "os");
+	$dropdowns = array ("location", "type", "os");
 	$db = new DB;
 	if($quoi == 1) {
 		$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
@@ -155,7 +164,7 @@ function getNbInter($quoi, $chps, $value, $date1 = '', $date2 = '')
 function getNbResol($quoi, $chps, $value, $date1 = '', $date2= '')
 {
 	$db = new DB;
-	$dropdowns = array ("location", "hdtype", "type", "moboard", "gfxcard", "processor", "os");
+	$dropdowns = array ("location", "type", "os");
 	if($quoi == 1) {
 		$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
 		if(!empty($chps) && !empty($value)) {
@@ -209,7 +218,7 @@ function getNbResol($quoi, $chps, $value, $date1 = '', $date2= '')
 //common usage in query  "where $chps = '$value'";
 function getResolAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 {
-	$dropdowns = array ("location", "hdtype", "type", "moboard", "gfxcard", "processor", "os");
+	$dropdowns = array ("location", "type", "os");
 	$db = new DB;
 	if($quoi == 1) {
 	if(!empty($chps) && !empty($value)) {
@@ -276,7 +285,7 @@ function getResolAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 function getRealAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 {
 	$db = new DB;
-	$dropdowns = array ("location", "hdtype", "type", "moboard", "gfxcard", "processor", "os");
+	$dropdowns = array ("location", "type", "os");
 	if($quoi == 1) {
 			
 		if(!empty($chps) && !empty($value)) {
@@ -343,7 +352,7 @@ function getRealAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 function getRealTotal($quoi, $chps, $value, $date1 = '', $date2 = '')
 {
 	$db = new DB;
-	$dropdowns = array ("location", "hdtype", "type", "moboard", "gfxcard", "processor", "os");
+	$dropdowns = array ("location", "type", "os");
 	if($quoi == 1) {
 			
 		if(!empty($chps) && !empty($value)) {
@@ -511,7 +520,7 @@ function getFirstActionMin($quoi)
 function getFirstActionAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 {
 	$db = new DB;
-	$dropdowns = array ("location", "hdtype", "type", "moboard", "gfxcard", "processor", "os");
+	$dropdowns = array ("location", "type", "os");
 	if($quoi == 1) {
 			
 		if(!empty($chps) && !empty($value)) {

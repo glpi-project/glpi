@@ -94,6 +94,20 @@ define("PCI_DEVICE","10");
 define("CASE_DEVICE","11");
 define("POWER_DEVICE","12");
 
+//DEVICE TABLE -> TYPE linked with upper
+define("GLPI_DEVICE_MOBOARD","1");
+define("GLPI_DEVICE_PROCESSOR","2");
+define("GLPI_DEVICE_RAM","3");
+define("GLPI_DEVICE_HDD","4");
+define("GLPI_DEVICE_IFACE","5");
+define("GLPI_DEVICE_DRIVE","6"); 
+define("GLPI_DEVICE_CONTROL","7");
+define("GLPI_DEVICE_GFXCARD","8");
+define("GLPI_DEVICE_SNDCARD","9");
+define("GLPI_DEVICE_PCI","10");
+define("GLPI_DEVICE_CASE","11");
+define("GLPI_DEVICE_POWER","12");
+
 //DEVICE ARRAY.
 //$devices_tables = array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power"));
 $cfg_devices_tables = array("moboard","processor","ram","hdd","iface","gfxcard","sndcard");
