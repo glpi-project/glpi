@@ -348,9 +348,9 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 	echo "<tr><td>".$lang["monitors"][8].":	</td>";
 	echo "<td><input type='text' name='contact' size='20' value=\"".$mon->fields["contact"]."\"></td>";
 	echo "</tr>";
-	if (!empty($ID)){
+	if (!$template){
 		echo "<tr><td>".$lang["reservation"][24].":</td><td><b>";
-		showReservationForm(4,$ID);
+		showReservationForm(MONITOR_TYPE,$ID);
 		echo "</b></td></tr>";
 	}
 
