@@ -67,7 +67,13 @@ elseif (isset($_GET["priority"]) && empty($_GET["contents"]))
 }
 elseif (isset($_GET["priority"]) && !empty($_GET["contents"]))
 {
-	if (postJob($_GET["ID"],$_GET["user"],$_GET["status"],$_GET["priority"],$_GET["isgroup"],$_GET["uemail"],$_GET["emailupdates"],$_GET["contents"],$_GET["assign"]))
+	$uemail="";
+	if (isset($_GET["emailupdates"])&&$_GET["emailupdates"]=='yes'){
+		$u=new User;		
+		$u->getfromDB($_GET["user"]);
+		$uemail=$u->fields['email'];
+		}
+	if (postJob($_GET["ID"],$_GET["user"],$_GET["status"],$_GET["priority"],$_GET["isgroup"],$uemail,$_GET["emailupdates"],$_GET["contents"],$_GET["assign"]))
 	{
 		$error=$lang["tracking"][9];
 		addFormTracking($_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error);
