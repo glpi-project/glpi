@@ -1,5 +1,41 @@
 **** GLPI 0.4 ***
 
+23/07/2004
+Durée réelle d'un intervention en plus de la date d'ouverture et de fermeture.
+
+23/07/2004
+Gestion des firmware pour le matériel reseau.
+
+22/07/2004
+Nouvelle gestion des licences, possibilité d'en ajouter plusieurs à la fois, gestion de la date d'expiration.
+
+22/07/2004
+Nouvelles statistiques plus fines et dynamiques
+
+22/07/2004
+Mise à jour de tous les index
+
+19/07/2004
+Module de gestion des périphériques externes (clé usb, scanners etc)
+
+16/07/2004
+Mise a jour des scripts de sauvegarde et restauration de la base de données, permettant d'eviter les timeout.
+
+14/07/2004
+Mise en place d'identifiant sur toutes les tables dropdown.
+Plus aucune jointure (à l'exeption de celles concernant la table glpi_user) ne se fait sur un champ texte.
+
+14/07/2004
+Préfixage des tables dans la base de donnée
+
+13/07/2004
+Nouveaux formulaires de recherche pour tous les items
+
+13/07/2004
+Script d'installation et de mise a jour, plus besoin de toucher le fichier config tout se fait via des fomulaires web.
+
+11/07/2004
+Refonte de l'interface graphique, nouvelles icones, navigation plus aisée
 
 **** GLPI 0.31 ***
 
