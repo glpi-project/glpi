@@ -382,60 +382,96 @@ function showLicenses ($sID) {
 	
 	$db = new DB;
 
-	$query = "SELECT ID FROM glpi_licenses WHERE (sID = $sID)";
+	$query = "SELECT  count(ID) AS COUNT  FROM glpi_licenses WHERE (sID = $sID)";
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 
 			echo "<br><center><table cellpadding='2' class='tab_cadre' width='50%'>";
 			echo "<tr><th colspan='2'>";
-			echo $db->numrows($result);
+			echo $db->result($result, 0, "COUNT");
 			echo " ".$lang["software"][13]." :</th>";
 			echo "<th colspan='1'>";
 			echo " ".$lang["software"][19]." :</th></tr>";
 			$i=0;
-			while ($data=$db->fetch_row($result)) {
-				$ID = current($data);
-				$lic = new License;
-				$lic->getfromDB($ID);
-				echo "<tr class='tab_bg_1'>";
-				echo "<td align='center'><b>".$lic->serial."</b></td>";
-				echo "<td align='center'><b>";
-				echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?delete=delete&ID=$ID\">";
-				echo $lang["buttons"][6];
-				echo "</a></b></td>";
-				echo "<td align='center'>";
-				$query2="SELECT glpi_inst_software.ID AS ID, glpi_computers.ID AS cID, glpi_computers.name AS cname FROM glpi_inst_software, glpi_computers";
-				$query2.= " WHERE glpi_inst_software.cID= glpi_computers.ID AND glpi_inst_software.license=$ID";
-				if ($result2 = $db->query($query2)) {
-				if ($db->numrows($result2)!=0) { 
-				echo "<table width='100%'>";
-				while ($data2=$db->fetch_array($result2)) {
-					
-					echo "<tr><td align=center>";
-					echo "<b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$data2["cID"]."\">";
-					echo $data2["cname"];
-					echo "</a></b></td><td align=center>";
-					echo "<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&ID=".$data2["ID"]."\">";
-					echo $lang["buttons"][5];
-					echo "</a></b>";
-					echo "</td></tr>";
-					}
-					echo "</table>";
-				} else { echo "&nbsp;";}
-				}
-				
-				
-				echo "</td>";
-				
-				echo "</tr>";
-			}	
-			echo "</table></center>\n\n";
-		} else {
+				} else {
 
 			echo "<br><center><table border='0' width=50% cellpadding='2'>";
 			echo "<tr><th>".$lang["software"][14]."</th></tr>";
 			echo "</table></center>";
 		}
 	}
+
+$query = "SELECT count(ID) AS COUNT , serial as SERIAL  FROM glpi_licenses WHERE (sID = $sID) GROUP BY serial ORDER BY serial";
+	if ($result = $db->query($query)) {			
+	while ($data=$db->fetch_array($result)) {
+		$serial=$data["SERIAL"];
+		$num_tot=$data["COUNT"];
+		// Get installed licences
+		$query_inst = "SELECT glpi_inst_software.ID AS ID, glpi_computers.ID AS cID, glpi_computers.name AS cname FROM glpi_licenses, glpi_inst_software LEFT JOIN glpi_computers ON (glpi_inst_software.cID= glpi_computers.ID) WHERE glpi_licenses.sID = $sID  AND glpi_licenses.serial = '$serial' AND glpi_inst_software.license = glpi_licenses.ID";	
+
+//		echo $query_inst;
+		$result_inst = $db->query($query_inst);
+		$num_inst=$db->numrows($result_inst);
+
+		echo "<tr class='tab_bg_1'>";
+		echo "<td align='center'><b>".$serial."</b></td>";
+		echo "<td align='center'><b>".$lang["software"][21].":&nbsp;";
+		echo $num_tot;
+		echo "</b></td>";
+
+		echo "<td align='center'>";
+		/// Logiciels installés :
+		echo "<table width='100%'>";
+	
+		// Restant	
+		echo "<tr><td align='center'>";
+		if ($serial!="free") echo $lang["software"][20].": ".($num_tot-$num_inst);
+		if ($num_tot!=$num_inst||$serial=="free") {
+			// Get first non installed license ID
+			$query_first="SELECT glpi_licenses.ID as ID, glpi_inst_software.license as iID FROM glpi_licenses LEFT JOIN glpi_inst_software ON glpi_inst_software.license = glpi_licenses.ID WHERE (glpi_licenses.sID = $sID  AND glpi_licenses.serial = '$serial')";
+			if ($result_first = $db->query($query_first)) {			
+				if ($serial=="free")
+				$ID=$db->result($result_first,0,"ID");
+				else{
+				$fin=0;
+				while (!$fin&&$temp=$db->fetch_array($result_first))
+					if ($temp["iID"]==NULL){
+						$fin=1;
+						$ID=$temp["ID"];
+					}
+				}
+				if ($ID!=""){
+				echo "</td><td align='center'>";
+				echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?delete=delete&ID=$ID\">";
+				echo $lang["buttons"][6];
+				echo "</a></b>";
+				}
+			}
+		}
+		echo "</td></tr>";
+		
+		
+		// Logiciels installés
+		while ($data_inst=$db->fetch_array($result_inst)){
+			echo "<tr><td align=center>";
+			echo "<b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$data_inst["cID"]."\">";
+			echo $data_inst["cname"];
+			echo "</a></b></td><td align=center>";
+			echo "<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&ID=".$data_inst["ID"]."&cID=".$data_inst["cID"]."\">";
+			echo $lang["buttons"][5];
+			echo "</a></b>";
+			echo "</td></tr>";
+		}
+			
+		
+		
+		echo "</table></td>";
+		
+		echo "</tr>";
+				
+	}
+	}	
+echo "</table></center>\n\n";
+	
 }
 
 
@@ -448,15 +484,23 @@ function showLicenseForm($target,$ID) {
 	echo $lang["buttons"][13]."</b>";
 	echo "</a><br>";
 	
-	echo "<table class='tab_cadre'><tr><th colspan='2'>".$lang["software"][15]." ($ID):</th></tr>";
+	echo "<table class='tab_cadre'><tr><th colspan='3'>".$lang["software"][15]." ($ID):</th></tr>";
 	echo "<form method='post' action=\"$target\">";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][16].":</td>";
 	echo "<td><input type='text' size='20' name='serial' value=\"\">";
-	echo "</td></tr>";
+	echo "</td><td>";
+	echo $lang["printers"][26].":<select name=number>";
+	echo "<option value='1' selected>1</option>";
+	for ($i=2;$i<=100;$i++)
+		echo "<option value='$i'>$i</option>";
+	echo "</select>";
+	echo "</td>";
+
+	echo "</tr>";
 
 	echo "<tr class='tab_bg_2'>";
-	echo "<td align='center' colspan='2'>";
+	echo "<td align='center' colspan='3'>";
 	echo "<input type='hidden' name='sID' value=".$ID.">";
 	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</td></form>";
@@ -524,14 +568,14 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 						echo $lang["buttons"][4];
 						echo "</a></b></td>";
 						echo "</tr>";
-					} else {
+					} /*else {
 						echo "<tr class='tab_bg_1'>";
 						echo "<td><b>$i</b></td>";
 						echo "<td colspan='2' align='center'>";
 						echo "<b>".$lang["software"][18]."</b>";
 						echo "</td>";
 						echo "</tr>";
-					}
+					}*/
 					$i++;
 				} else {
 					echo "<tr class='tab_bg_1'>";

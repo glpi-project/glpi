@@ -54,7 +54,13 @@ if (isset($tab["addform"]))
 else if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
+	if ($_POST["serial"]=="free")$number=1;
+	else $number=$_POST["number"];
+	unset($tab["number"]);
+	
+	for ($i=1;$i<=$number;$i++){
 	addLicense($tab);
+	}
 	logEvent($tab["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." added a license.");
 	header("Location: ".$_SERVER['HTTP_REFERER']." ");
 }
