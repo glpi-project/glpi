@@ -45,15 +45,15 @@ function showFormDropdown ($target,$name,$human) {
 
 	echo "<tr><td align='center' class='tab_bg_1'>";
 
-	dropdown("glpi_dropdown_".$name, "value");
+	dropdown("glpi_dropdown_".$name, "ID");
         // on ajoute un input text pour entrer la valeur modifier
         echo"::>>";
-        echo "<input type='text' maxlength='100' size='20' name='newvalue'>";
+        echo "<input type='text' maxlength='100' size='20' name='value'>";
         //
 	echo "</td><td align='center' class='tab_bg_2'>";
-	echo "<input type='hidden' name='tablename' value=dropdown_".$name.">";
+	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."'>";
 	//  on ajoute un bouton modifier
-        echo "<input type='submit' name='modifier' value='modifier' class='submit'>";
+        echo "<input type='submit' name='update' value='".$lang["buttons"][14]."' class='submit'>";
         //
         echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 	echo "</td></form></tr>";
@@ -93,12 +93,23 @@ function showFormTypeDown ($target,$name,$human) {
 	echo "</table></center>";
 }
 
+function updateDropdown($input) {
+	$db = new DB;
+	
+	$query = "update ".$input["tablename"]." SET name = '".$input["value"]."' where ID = '".$input["ID"]."'";
+	if ($result=$db->query($query)) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 
 function addDropdown($input) {
 
 	$db = new DB;
 	
-	$query = "INSERT INTO ".$input["tablename"]." VALUES ('".$input["value"]."')";
+	$query = "INSERT INTO ".$input["tablename"]." (NAME) VALUES ('".$input["value"]."')";
 	if ($result=$db->query($query)) {
 		return true;
 	} else {
@@ -109,13 +120,139 @@ function addDropdown($input) {
 function deleteDropdown($input) {
 
 	$db = new DB;
-	
-	$query = "DELETE FROM ".$input["tablename"]." WHERE (name = '".$input["value"]."')";
-	if ($result=$db->query($query)) {
-		return true;
-	} else {
-		return false;
+	$send = array();
+	$send["tablename"] = $input["tablename"];
+	$send["oldID"] = $input["ID"];
+	$send["newID"] = "NULL";
+	replaceDropDropDown($send);
+}
+
+//replace all entries for a dropdown in each items
+function replaceDropDropDown($input) {
+	$db = new DB;
+	$name = getDropdownNameFromTable($input["tablename"]);
+	switch($name) {
+	case  "hdtype" : case "sndcard" : case "moboard" : case "gfxcard" : case "network" : case "ramtype" : case "processor" :
+		$query = "update glpi_computers set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		$db->query($query);
+		$query = "update glpi_templates set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		$db->query($query);
+		break;
+	case "os" :
+		$query = "update glpi_computers set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		$db->query($query);
+		$query = "update glpi_templates set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		$db->query($query);
+		$query = "update glpi_software set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		$db->query($query);
+		break;
+	case "iface" :
+		$query = "update glpi_networking_ports set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		$db->query($query);
+		break;
+	case "location" :
+		$query = "update glpi_computers set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		$result = $db->query($query);
+		$query = "update glpi_templates set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		$result = $db->query($query);
+		$query = "update glpi_monitors set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		$result = $db->query($query);
+		$query = "update glpi_printers set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		$result = $db->query($query);
+		$query = "update glpi_software set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		$result = $db->query($query);
+		$query = "update glpi_networking set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		$db->query($query);
+		break;
 	}
+	$query = "delete from ". $input["tablename"] ." where ID = '". $input["oldID"] ."'";
+	$db->query($query);
+}
+
+function showDeleteConfirmForm($target,$table, $ID) {
+	echo "Attention vous êtes sur le point de supprimer un intitulé utilisé pour un ou plusieurs items";
+	echo "Si vous confirmez la suppression les items utilisant cet intitulé se verront atribbuer un champs NULL";
+	echo "<form action=\"". $target ."\" method=\"post\">";
+	echo "<input type=\"hidden\" name=\"tablename\" value=\"". $table ."\"  />";
+	echo "<input type=\"hidden\" name=\"ID\" value=\"". $ID ."\"  />";
+	echo "<input type=\"hidden\" name=\"forcedelete\" value=\"1\" />";
+	echo "<input type=\"submit\" name=\"delete\" value=\"Confirmer\" />";
+	echo "<form action=\" ". $target ."\" method=\"post\">";
+	echo "<input type=\"submit\" name=\"annuler\" value=\"Annuler\" />";
+	echo "</form>";
+	echo "<br /> Vous pouvez aussi remplacer toutes les occurences de cet intitulé par un autre :";
+	echo "<form action=\" ". $target ."\" method=\"post\">";
+	dropdownNoValue($table,"newID",$ID);
+	echo "<input type=\"hidden\" name=\"tablename\" value=\"". $table ."\"  />";
+	echo "<input type=\"hidden\" name=\"oldID\" value=\"". $ID ."\"  />";
+	echo "<input type=\"submit\" name=\"replace\" value=\"Remplacer\" />";
+	echo "</form>";
+}
+
+
+function getDropdownNameFromTable($table) {
+
+	if($table == "glpi_dropdown_locations") $name = "location";
+	else {
+		$name = ereg_replace("glpi_dropdown_","",$table);
+	}
+	return $name;
+}
+
+//check if the dropdown $ID is used into item tables
+function dropdownUsed($table, $ID) {
+
+	$db = new DB;
+	$name = getDropdownNameFromTable($table);
+	$var1 = true;
+	switch($name) {
+	case  "hdtype" : case "sndcard" : case "moboard" : case "gfxcard" : case "network" : case "ramtype" : case "processor" :
+		$query = "Select count(*) FROM glpi_computers where ". $name ." = ".$ID."";
+		$result = $db->query($query);
+		if($db->numrows($result) >= 1)  $var1 = false;
+		$query = "Select count(*) FROM glpi_templates where ". $name ." = ".$ID."";
+		$result = $db->query($query);
+		if($db->numrows($result) >= 1)  $var1 = false;
+		break;
+	case "os" :
+		$query = "Select count(*) FROM glpi_computers where ". $name ." = ".$ID."";
+		$result = $db->query($query);
+		if($db->numrows($result) == 1)  $var1 = false;
+		$query = "Select count(*) FROM glpi_templates where ". $name ." = ".$ID."";
+		$result = $db->query($query);
+		if($db->numrows($result) == 1)  $var1 = false;	
+		$query = "Select count(*) FROM glpi_software where platform = ".$ID."";
+		$result = $db->query($query);
+		if($db->numrows($result) == 1)  $var1 = false;	
+		break;
+	case "iface" : 
+		$query = "Select count(*) FROM glpi_networking_ports where ". $name ." = ".$ID."";
+		$result = $db->query($query);
+		if($db->numrows($result) == 1)  $var1 = false;
+		break;
+	case "location" :
+		$query = "Select count(*) FROM glpi_computers where ". $name ." = ".$ID."";
+		$result = $db->query($query);
+		if($db->numrows($result) == 1)  $var1 = false;
+		$query = "Select count(*) FROM glpi_templates where ". $name ." = ".$ID."";
+		$result = $db->query($query);
+		if($db->numrows($result) == 1)  $var1 = false;
+		$query = "Select count(*) FROM glpi_monitors where ". $name ." = ".$ID."";
+		$result = $db->query($query);
+		if($db->numrows($result) == 1)  $var1 = false;
+		$query = "Select count(*) FROM glpi_printers where ". $name ." = ".$ID."";
+		$result = $db->query($query);
+		if($db->numrows($result) == 1)  $var1 = false;
+		$query = "Select count(*) FROM glpi_software where ". $name ." = ".$ID."";
+		$result = $db->query($query);
+		if($db->numrows($result) == 1)  $var1 = false;
+		$query = "Select count(*) FROM glpi_networking where ". $name ." = ".$ID."";
+		$result = $db->query($query);
+		if($db->numrows($result) == 1)  $var1 = false;
+		break;
+	}
+	return $var1;
+
 }
 
 function showPasswordForm($target,$ID) {

@@ -595,7 +595,6 @@ function dropdown($table,$myname) {
 	// Make a select box
 	$db = new DB;
 	$query = "SELECT * FROM $table ORDER BY name";
-
 	$result = $db->query($query);
 
 	echo "<select name=\"$myname\" size='1'>";
@@ -604,7 +603,8 @@ function dropdown($table,$myname) {
 	if ($number > 0) {
 		while ($i < $number) {
 			$output = $db->result($result, $i, "name");
-			echo "<option value=\"$output\">$output</option>";
+			$ID = $db->result($result, $i, "ID");
+			echo "<option value=\"$ID\">$output</option>";
 			$i++;
 		}
 	}
@@ -619,18 +619,18 @@ function dropdownValue($table,$myname,$value) {
 
 	$query = "SELECT * FROM $table ORDER BY name";
 	$result = $db->query($query);
-
+	
 	echo "<select name=\"$myname\" size='1'>";
 	$i = 0;
 	$number = $db->numrows($result);
 	if ($number > 0) {
 		while ($i < $number) {
 			$output = $db->result($result, $i, "name");
-
-			if ($output == $value) {
-				echo "<option value=\"$output\" selected>$output</option>";
+			$ID = $db->result($result, $i, "ID");
+			if ($ID === $value) {
+				echo "<option value=\"$ID\" selected>$output</option>";
 			} else {
-				echo "<option value=\"$output\">$output</option>";
+				echo "<option value=\"$ID\">$output</option>";
 			}
 			$i++;
 		}
@@ -638,40 +638,30 @@ function dropdownValue($table,$myname,$value) {
 	echo "</select>";
 }
 
-function dropdownValueSearch($table,$myname,$value,$search) {
-	// Make a select box with preselected values
+function dropdownNoValue($table,$myname,$value) {
+	// Make a select box without parameters value
 
 	$db = new DB;
 
-	$query = "SELECT * FROM $table WHERE name LIKE '%$search%' ORDER BY name";
+	$query = "SELECT * FROM $table ORDER BY name";
 	$result = $db->query($query);
-
 	
-	$number = $db->numrows($result);
-	if ($number == 0) {
-		$query = "SELECT * FROM $table ORDER BY name";		
-		$result = $db->query($query);
-		$number = $db->numrows($result);
-		}
-
 	echo "<select name=\"$myname\" size='1'>";
-
+	$i = 0;
+	$number = $db->numrows($result);
 	if ($number > 0) {
-		$i = 0;		
 		while ($i < $number) {
 			$output = $db->result($result, $i, "name");
-
-			if ($output == $value) {
-				echo "<option value=\"$output\" selected>$output</option>";
+			$ID = $db->result($result, $i, "ID");
+			if ($ID === $value) {
 			} else {
-				echo "<option value=\"$output\">$output</option>";
+				echo "<option value=\"$ID\">$output</option>";
 			}
 			$i++;
 		}
 	}
 	echo "</select>";
 }
-
 
 function dropdownUsers($value, $myname) {
 	// Make a select box with all glpi users
