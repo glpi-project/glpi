@@ -36,7 +36,7 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-// FUNCTIONS peripheral
+// FUNCTIONS type documents
 
 
 function titleTypedocs(){
