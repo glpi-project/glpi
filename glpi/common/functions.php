@@ -191,9 +191,9 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
        
 	// Send extra expires header if configured
 	if ($cfg_features["sendexpire"]) {
-		echo "<META HTTP-EQUIV=\"Expires\" CONTENT=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
-		echo "<META HTTP-EQUIV=\"Pragma\" CONTENT=\"no-cache\">\n";
-		echo "<META HTTP-EQUIV=\"Cache-Control\" CONTENT=\"no-cache\">\n";
+		echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
+		echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
+		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
 	}
 
 	// Include CSS
@@ -304,9 +304,9 @@ function helpHeader($title,$url,$name) {
 
 	// Send extra expires header if configured
 	if ($cfg_features["sendexpire"]) {
-		echo "<META HTTP-EQUIV=\"Expires\" CONTENT=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
-		echo "<META HTTP-EQUIV=\"Pragma\" CONTENT=\"no-cache\">\n";
-		echo "<META HTTP-EQUIV=\"Cache-Control\" CONTENT=\"no-cache\">\n";
+	        echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
+		echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
+		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
 	}
 
 	// Some Javascript-Functions which we may need later
@@ -394,9 +394,9 @@ function nullHeader($title,$url) {
 
 	// Send extra expires header if configured
 	if (!empty($cft_features["sendexpire"])) {
-		echo "<META HTTP-EQUIV=\"Expires\" CONTENT=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
-		echo "<META HTTP-EQUIV=\"Pragma\" CONTENT=\"no-cache\">\n";
-		echo "<META HTTP-EQUIV=\"Cache-Control\" CONTENT=\"no-cache\">\n";
+		echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
+		echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
+		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
 	}
 
 	// Some Javascript-Functions which we may need later
@@ -607,17 +607,17 @@ function dropdown($table,$myname) {
 	$query = "SELECT * FROM $table ORDER BY name";
 	$result = $db->query($query);
 
-	echo "<SELECT NAME=\"$myname\" SIZE=1>";
+	echo "<select name=\"$myname\" size='1'>";
 	$i = 0;
 	$number = $db->numrows($result);
 	if ($number > 0) {
 		while ($i < $number) {
 			$output = $db->result($result, $i, "name");
-			echo "<OPTION VALUE=\"$output\">$output</OPTION>";
+			echo "<option value=\"$output\">$output</option>";
 			$i++;
 		}
 	}
-	echo "</SELECT>";
+	echo "</select>";
 }
 
 
@@ -629,16 +629,16 @@ function dropdownValue($table,$myname,$value) {
 	$query = "SELECT * FROM $table ORDER BY name";
 	$result = $db->query($query);
 	
-	echo "<SELECT NAME=\"$myname\" SIZE=1>";
+	echo "<select name=\"$myname\" size='1'>";
 	$i = 0;
 	$number = $db->numrows($result);
 	if ($number > 0) {
 		while ($i < $number) {
 			$output = $db->result($result, $i, "name");
 			if ($output == $value) {
-				echo "<OPTION VALUE=\"$output\" selected>$output</OPTION>";
+				echo "<option value=\"$output\" selected>$output</option>";
 			} else {
-				echo "<OPTION VALUE=\"$output\">$output</OPTION>";
+				echo "<option value=\"$output\">$output</option>";
 			}
 			$i++;
 		}
