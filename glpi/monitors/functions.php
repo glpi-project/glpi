@@ -589,8 +589,7 @@ function addMonitor($input) {
 		}
 	}
 
-	$mon->addToDB();
-	$newID=$mon->getInsertElementID();
+	$newID=$mon->addToDB();
 	
 	// ADD Infocoms
 	$ic= new Infocom();

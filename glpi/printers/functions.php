@@ -575,8 +575,7 @@ function addPrinter($input) {
 		}
 	}
 
-	$printer->addToDB();
-	$newID=$printer->getInsertElementID();
+	$newID=$printer->addToDB();
 	
 	// ADD Infocoms
 	$ic= new Infocom();

@@ -527,8 +527,7 @@ function addNetdevice($input) {
 		}
 	}
 
-	$netdev->addToDB();
-	$newID=$netdev->getInsertElementID();
+	$newID=$netdev->addToDB();
 	
 	// ADD Infocoms
 	$ic= new Infocom();

@@ -73,6 +73,9 @@ class DBmysql {
 		$value=get_magic_quotes_runtime()?stripslashes_deep(mysql_fetch_assoc($result)):mysql_fetch_assoc($result);
 		return htmlentities_deep($value);
 	}
+	function insert_id() {
+ 		return mysql_insert_id();
+ 	}
 	function num_fields($result) {
 		return mysql_num_fields($result);
 	}
@@ -159,11 +162,8 @@ class Connection {
 
 		// Build query
 		$query = "INSERT INTO glpi_connect_wire (end1,end2,type) VALUES ('$this->end1','$this->end2','$this->type')";
-		if ($result=$db->query($query)) {
-			return true;
-		} else {
-			return false;
-		}
+		$result=$db->query($query);
+		return $db->insert_id();
 	}
 
 }
