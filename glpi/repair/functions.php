@@ -54,11 +54,11 @@ function searchFormRepairItem($field="",$phrasetype= "",$contains="",$sort= ""){
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
 
-	$option["glpi_repair_item.ID"]				= $lang["reservation"][2];
+	$option["glpi_repair_item.ID"]				= $lang["repair"][4];
 //	$option["glpi_reservation_item.device_type"]			= $lang["reservation"][3];
 //	$option["glpi_dropdown_locations.name"]			= $lang["software"][4];
 //	$option["glpi_software.version"]			= $lang["software"][5];
-	$option["glpi_repair.comments"]			= $lang["reservation"][23];
+//      $option["glpi_repair.comments"]			= $lang["repair"][5];
 	
 	echo "<form method=get action=\"".$cfg_install["root"]."/repair/index.php\">";
 	echo "<center><table class='tab_cadre' width='750'>";
@@ -154,27 +154,27 @@ function showRepairItemList($target,$username,$field,$phrasetype,$contains,$sort
 			echo "<div align='center'><table  class='tab_cadre'><tr>";
 			// Name
 			echo "<th>";
-			if ($sort=="glpi_reservation_item.ID") {
+			if ($sort=="glpi_repair_item.ID") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.ID&order=ASC&start=$start\">";
-			echo $lang["reservation"][2]."</a></th>";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_repair_item.ID&order=ASC&start=$start\">";
+			echo $lang["repair"][4]."</a></th>";
 
 			// Location			
 			echo "<th>";
-			if ($sort=="glpi_reservation_item.device_type") {
+			if ($sort=="glpi_repair_item.device_type") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.device_type&order=ASC&start=$start\">";
-			echo $lang["reservation"][3]."</a></th>";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_repair_item.device_type&order=ASC&start=$start\">";
+			echo $lang["repair"][6]."</a></th>";
 
 			// Type
 			echo "<th>";
-			if ($sort=="glpi_reservation_item.id_device") {
+			if ($sort=="glpi_repair_item.id_device") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.id_device&order=ASC&start=$start\">";
-			echo $lang["reservation"][4]."</a></th>";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_repair_item.id_device&order=ASC&start=$start\">";
+			echo $lang["repair"][1]."</a></th>";
 			echo "<th>&nbsp;</th>";
 			echo "</tr>";
 
@@ -204,7 +204,7 @@ function showRepairItemList($target,$username,$field,$phrasetype,$contains,$sort
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<div align='center'><b>".$lang["reservation"][33]."</b></div>";
+			echo "<div align='center'><b>".$lang["repair"][7]."</b></div>";
 		}
 	}
 	
