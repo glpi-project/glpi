@@ -62,7 +62,7 @@ function searchFormContact($field="",$phrasetype= "",$contains="",$sort= "") {
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
-	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" />";
+	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
 	echo "&nbsp;";
 	echo $lang["search"][10]."&nbsp;<select name=\"field\" size='1'>";
         echo "<option value='all' ";
@@ -72,7 +72,7 @@ function searchFormContact($field="",$phrasetype= "",$contains="",$sort= "") {
 	foreach ($option as $key => $val) {
 		echo "<option value=\"".$key."\""; 
 		if($key == $field) echo "selected";
-		echo ">". substr($val, 0, 12) ."</option>\n";
+		echo ">". substr($val, 0, 18) ."</option>\n";
 	}
 	echo "</select>&nbsp;";
 	
@@ -252,7 +252,7 @@ function showContactForm ($target,$ID) {
 
 	$con = new Contact;
 
-	echo "<center><form method='post' name=form action=\"$target\">";
+	echo "<form method='post' name=form action=\"$target\"><div align='center'>";
 	echo "<table class='tab_cadre' cellpadding='2'>";
 	echo "<tr><th colspan='2'><b>";
 	if (empty($ID)) {
@@ -274,7 +274,7 @@ function showContactForm ($target,$ID) {
 
 	echo "<tr><td>".$lang["financial"][29].": 	</td>";
 	echo "<td><input type='text' name='phone' value=\"".$con->fields["phone"]."\" size='20'></td>";
-	echo "</td></tr>";
+	echo "</tr>";
 
 	echo "<tr><td>".$lang["financial"][29]." 2:	</td>";
 	echo "<td><input type='text' name='phone2' value=\"".$con->fields["phone2"]."\" size='20'></td>";
@@ -295,11 +295,12 @@ function showContactForm ($target,$ID) {
 	echo "</table>";
 
 	echo "</td>\n";	
+	
 	echo "<td class='tab_bg_1' valign='top'>";
 
-	echo "<table cellpadding='1px' cellspacing='0' border='0'>";
-	echo $lang["financial"][12].":	</td>";
-	echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$con->fields["comments"]."</textarea>";
+	echo "<table cellpadding='1px' cellspacing='0' border='0'><tr><td>";
+	echo $lang["financial"][12].":	</td></tr>";
+	echo "<tr><td align='center'><textarea cols='35' rows='4' name='comments' >".$con->fields["comments"]."</textarea>";
 	echo "</td></tr></table>";
 
 	echo "</td>";
@@ -309,27 +310,26 @@ function showContactForm ($target,$ID) {
 
 		echo "<tr>";
 		echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-		echo "<center><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></center>";
+		echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
 		echo "</td>";
-		echo "</form></tr>";
+		echo "</tr>";
 
-		echo "</table></center>";
+		echo "</table></div></form>";
 
 	} else {
 
 		echo "<tr>";
 		echo "<td class='tab_bg_2' valign='top'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<center><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' class='submit'></center>";
-		echo "</td></form>\n\n";
-		echo "<form action=\"$target\" method='post'>\n";
+		echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' ></div>";
+		echo "</td>\n\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<center><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' class='submit'></center>";
+		echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' ></div>";
 		echo "</td>";
-		echo "</form></tr>";
+		echo "</tr>";
 
-		echo "</table></center>";
+		echo "</table></div></form>";
 
 	}
 }

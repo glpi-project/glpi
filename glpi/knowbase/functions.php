@@ -122,7 +122,7 @@ function showKbItemForm($target,$ID){
 	*/
 	
 	echo "<p class='toolbar'>";
-	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[b]', '[/b]')\"><img src=\"".$HTMLRel."pics/gras.png\" alt='".$lang["toolbar"][1]."' title='".$lang["toolbar"][1]."' style='vertical-align:middle;'</img></a>";
+	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[b]', '[/b]')\"><img src=\"".$HTMLRel."pics/gras.png\" alt='".$lang["toolbar"][1]."' title='".$lang["toolbar"][1]."' style=\"vertical-align:middle;\"</img></a>";
 	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[i]', '[/i]')\"><img src=\"".$HTMLRel."pics/italique.png\" alt='".$lang["toolbar"][2]."' title='".$lang["toolbar"][2]."' style='vertical-align:middle;'</img></a>";
 	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[u]', '[/u]')\"><img src=\"".$HTMLRel."pics/souligne.png\" alt='".$lang["toolbar"][3]."' title='".$lang["toolbar"][3]."' style='vertical-align:middle;'</img></a>";
 	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[s]', '[/s]')\"><img src=\"".$HTMLRel."pics/barre.png\" alt='".$lang["toolbar"][4]."' title='".$lang["toolbar"][4]."' style='vertical-align:middle;'</img></a>";		
