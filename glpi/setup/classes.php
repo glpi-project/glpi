@@ -42,7 +42,7 @@ class User {
 		$db = new DB;
 		$query = "SELECT * FROM users WHERE (name = '$name')";
 		if ($result = $db->query($query)) {
-			$data = mysql_fetch_array($result);
+			$data = $db->fetch_array($result);
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}
@@ -52,7 +52,7 @@ class User {
 			return false;
 		}
 	}
-
+	
 	function addToDB() {
 		
 		$db = new DB;
@@ -147,9 +147,25 @@ class Template {
 		$db = new DB;
 		$query = "SELECT * FROM templates WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
-			$data = mysql_fetch_array($result);
+			$data = $db->fetch_array($result);
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
+			}
+			return true;
+
+		} else {
+			return false;
+		}
+	}
+	
+	// Make new database empty object
+	function getEmpty () {
+		$db = new DB;
+		$query = "SELECT * FROM templates limit 0,1";
+		if ($result = $db->query($query)) {
+			$data = $db->fetch_array($result);
+			foreach ($data as $key => $val) {
+				$this->fields[$key] = "";
 			}
 			return true;
 
@@ -179,7 +195,7 @@ class Template {
 		
 		$db = new DB;
 
-		$this->comments = addslashes($this->comments);
+		$this->fields["comments"] = addslashes($this->fields["comments"]);
 		
 		// Build query
 		$query = "INSERT INTO templates (";

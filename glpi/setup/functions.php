@@ -406,6 +406,10 @@ function showTemplateForm($target,$ID) {
 	if ($ID) {
 		$templ->getfromDB($ID);
 	}
+	else {
+		$templ->getEmpty();
+	}
+	
 
 	echo "<center><table border=0>";
 	echo "<form name='form' method=post action=$target>";
@@ -414,7 +418,7 @@ function showTemplateForm($target,$ID) {
 		echo $lang["setup"][23].": '".$templ->fields["templname"]."'";
 	
 	} else {
-		echo $lang["setup"][23].": <input name=templname size=10>";	
+		echo $lang["setup"][23].": <input type=text name=templname size=10>";	
 	}
 	echo "</th></tr>";
 	
@@ -602,7 +606,7 @@ function addTemplate($input) {
 	
 	// fill array for update 
 	foreach ($input as $key => $val) {
-		if ($templ->fields[$key] != $input[$key]) {
+		if (!isset($templ->fields[$key]) || $templ->fields[$key] != $input[$key]) {
 			$templ->fields[$key] = $input[$key];
 		}
 	}
