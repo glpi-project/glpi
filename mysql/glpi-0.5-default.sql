@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-03-22 14:01
+#GLPI Dump database on 2005-03-23 17:41
 
 ### Dump table glpi_cartridges
 
@@ -330,6 +330,54 @@ CREATE TABLE glpi_contracts (
 );
 
 
+### Dump table glpi_device_case
+
+DROP TABLE IF EXISTS glpi_device_case;
+CREATE TABLE glpi_device_case (
+    ID int(11) NOT NULL auto_increment,
+    designation varchar(255) NOT NULL,
+    format enum('Grand','Moyen','Micro') DEFAULT 'Moyen' NOT NULL,
+    comment text NOT NULL,
+    FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
+    specif_default varchar(250) NOT NULL,
+   PRIMARY KEY (ID),
+   KEY FK_glpi_enterprise (FK_glpi_enterprise)
+);
+
+
+### Dump table glpi_device_control
+
+DROP TABLE IF EXISTS glpi_device_control;
+CREATE TABLE glpi_device_control (
+    ID int(11) NOT NULL auto_increment,
+    designation varchar(255) NOT NULL,
+    interface enum('IDE','SATA','SCSI','USB') DEFAULT 'IDE' NOT NULL,
+    raid enum('Y','N') DEFAULT 'Y' NOT NULL,
+    comment text NOT NULL,
+    FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
+    specif_default varchar(250) NOT NULL,
+   PRIMARY KEY (ID),
+   KEY FK_glpi_enterprise (FK_glpi_enterprise)
+);
+
+
+### Dump table glpi_device_drive
+
+DROP TABLE IF EXISTS glpi_device_drive;
+CREATE TABLE glpi_device_drive (
+    ID int(11) NOT NULL auto_increment,
+    designation varchar(255) NOT NULL,
+    is_writer enum('Y','N') DEFAULT 'Y' NOT NULL,
+    speed varchar(30) NOT NULL,
+    interface enum('IDE','SATA','SCSI') DEFAULT 'IDE' NOT NULL,
+    comment text NOT NULL,
+    FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
+    specif_default varchar(250) NOT NULL,
+   PRIMARY KEY (ID),
+   KEY FK_glpi_enterprise (FK_glpi_enterprise)
+);
+
+
 ### Dump table glpi_device_gfxcard
 
 DROP TABLE IF EXISTS glpi_device_gfxcard;
@@ -340,14 +388,15 @@ CREATE TABLE glpi_device_gfxcard (
     interface enum('AGP','PCI','PCI-X','Other') DEFAULT 'AGP' NOT NULL,
     comment text NOT NULL,
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
+    specif_default varchar(250) NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
 );
 
-INSERT INTO glpi_device_gfxcard VALUES ('1','ATI Rage Pro 3D AGP','','AGP','','0');
-INSERT INTO glpi_device_gfxcard VALUES ('2','Matrox Millenium G400DH','','AGP','','0');
-INSERT INTO glpi_device_gfxcard VALUES ('3','S3 Trio 64V+','','AGP','','0');
-INSERT INTO glpi_device_gfxcard VALUES ('4','integrated','','AGP','','0');
+INSERT INTO glpi_device_gfxcard VALUES ('1','ATI Rage Pro 3D AGP','','AGP','','0','');
+INSERT INTO glpi_device_gfxcard VALUES ('2','Matrox Millenium G400DH','','AGP','','0','');
+INSERT INTO glpi_device_gfxcard VALUES ('3','S3 Trio 64V+','','AGP','','0','');
+INSERT INTO glpi_device_gfxcard VALUES ('4','integrated','','AGP','','0','');
 
 ### Dump table glpi_device_hdd
 
@@ -360,12 +409,13 @@ CREATE TABLE glpi_device_hdd (
     cache varchar(20) NOT NULL,
     comment text NOT NULL,
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
+    specif_default varchar(250) NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
 );
 
-INSERT INTO glpi_device_hdd VALUES ('1','IBM DTTA 35101','','IDE','','','0');
-INSERT INTO glpi_device_hdd VALUES ('2','IBM DCAS 34330','','IDE','','','0');
+INSERT INTO glpi_device_hdd VALUES ('1','IBM DTTA 35101','','IDE','','','0','');
+INSERT INTO glpi_device_hdd VALUES ('2','IBM DCAS 34330','','IDE','','','0','80');
 
 ### Dump table glpi_device_iface
 
@@ -376,21 +426,22 @@ CREATE TABLE glpi_device_iface (
     bandwidth varchar(20) NOT NULL,
     comment text NOT NULL,
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
+    specif_default varchar(250) NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
 );
 
-INSERT INTO glpi_device_iface VALUES ('1','3Com (100Mbps)','','','0');
-INSERT INTO glpi_device_iface VALUES ('2','3Com (10Mbps)','','','0');
-INSERT INTO glpi_device_iface VALUES ('3','Intel (100Mbps)','','','0');
-INSERT INTO glpi_device_iface VALUES ('4','Intel (10Mbps)','','','0');
-INSERT INTO glpi_device_iface VALUES ('5','Generic 100Mbps Card','','','0');
-INSERT INTO glpi_device_iface VALUES ('6','Generic 10Mbps Card','','','0');
-INSERT INTO glpi_device_iface VALUES ('7','None','','','0');
-INSERT INTO glpi_device_iface VALUES ('8','AMD 10Mbps','','','0');
-INSERT INTO glpi_device_iface VALUES ('9','Realtek 10Mbps','','','0');
-INSERT INTO glpi_device_iface VALUES ('10','Realtek 100Mbps','','','0');
-INSERT INTO glpi_device_iface VALUES ('11','integrated','','','0');
+INSERT INTO glpi_device_iface VALUES ('1','3Com (100Mbps)','','','0','');
+INSERT INTO glpi_device_iface VALUES ('2','3Com (10Mbps)','','','0','');
+INSERT INTO glpi_device_iface VALUES ('3','Intel (100Mbps)','','','0','');
+INSERT INTO glpi_device_iface VALUES ('4','Intel (10Mbps)','','','0','');
+INSERT INTO glpi_device_iface VALUES ('5','Generic 100Mbps Card','','','0','');
+INSERT INTO glpi_device_iface VALUES ('6','Generic 10Mbps Card','','','0','');
+INSERT INTO glpi_device_iface VALUES ('7','None','','','0','');
+INSERT INTO glpi_device_iface VALUES ('8','AMD 10Mbps','','','0','');
+INSERT INTO glpi_device_iface VALUES ('9','Realtek 10Mbps','','','0','');
+INSERT INTO glpi_device_iface VALUES ('10','Realtek 100Mbps','','','0','');
+INSERT INTO glpi_device_iface VALUES ('11','integrated','','','0','');
 
 ### Dump table glpi_device_moboard
 
@@ -401,13 +452,44 @@ CREATE TABLE glpi_device_moboard (
     chipset varchar(120) NOT NULL,
     comment text NOT NULL,
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
+    specif_default varchar(250) NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
 );
 
-INSERT INTO glpi_device_moboard VALUES ('1','Asus T2P4S','','','0');
-INSERT INTO glpi_device_moboard VALUES ('2','Asus P2BX','','','0');
-INSERT INTO glpi_device_moboard VALUES ('3','unknown','','','0');
+INSERT INTO glpi_device_moboard VALUES ('1','Asus T2P4S','','','0','');
+INSERT INTO glpi_device_moboard VALUES ('2','Asus P2BX','','','0','');
+INSERT INTO glpi_device_moboard VALUES ('3','unknown','','','0','');
+
+### Dump table glpi_device_pci
+
+DROP TABLE IF EXISTS glpi_device_pci;
+CREATE TABLE glpi_device_pci (
+    ID int(11) NOT NULL auto_increment,
+    designation varchar(255) NOT NULL,
+    comment text NOT NULL,
+    FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
+    specif_default varchar(250) NOT NULL,
+   PRIMARY KEY (ID),
+   KEY FK_glpi_enterprise (FK_glpi_enterprise)
+);
+
+
+### Dump table glpi_device_power
+
+DROP TABLE IF EXISTS glpi_device_power;
+CREATE TABLE glpi_device_power (
+    ID int(11) NOT NULL auto_increment,
+    designation varchar(255) NOT NULL,
+    power varchar(20) NOT NULL,
+    atx enum('Y','N') DEFAULT 'Y' NOT NULL,
+    comment text NOT NULL,
+    FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
+    specif_default varchar(250) NOT NULL,
+   PRIMARY KEY (ID),
+   KEY FK_glpi_enterprise (FK_glpi_enterprise)
+);
+
 
 ### Dump table glpi_device_processor
 
@@ -418,36 +500,37 @@ CREATE TABLE glpi_device_processor (
     frequence int(11) DEFAULT '0' NOT NULL,
     comment text NOT NULL,
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
+    specif_default varchar(250) NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
 );
 
-INSERT INTO glpi_device_processor VALUES ('1','Intel Pentium','0','','0');
-INSERT INTO glpi_device_processor VALUES ('2','Intel Pentium II','0','','0');
-INSERT INTO glpi_device_processor VALUES ('3','AMD K6-1','0','','0');
-INSERT INTO glpi_device_processor VALUES ('4','AMD K6-2','0','','0');
-INSERT INTO glpi_device_processor VALUES ('5','AMD K6-3','0','','0');
-INSERT INTO glpi_device_processor VALUES ('6','PowerPC G3','0','','0');
-INSERT INTO glpi_device_processor VALUES ('7','Intel Pentium III','0','','0');
-INSERT INTO glpi_device_processor VALUES ('8','AMD Athlon','0','','0');
-INSERT INTO glpi_device_processor VALUES ('9','68k (Motorola)','0','','0');
-INSERT INTO glpi_device_processor VALUES ('10','486 SX','0','','0');
-INSERT INTO glpi_device_processor VALUES ('11','486 DX','0','','0');
-INSERT INTO glpi_device_processor VALUES ('12','486 DX2/4','0','','0');
-INSERT INTO glpi_device_processor VALUES ('13','Intel Itanium','0','','0');
-INSERT INTO glpi_device_processor VALUES ('14','PowerPC G4','0','','0');
-INSERT INTO glpi_device_processor VALUES ('15','RS3000','0','','0');
-INSERT INTO glpi_device_processor VALUES ('16','RS10k','0','','0');
-INSERT INTO glpi_device_processor VALUES ('17','Alpha EV6.7','0','','0');
-INSERT INTO glpi_device_processor VALUES ('18','PowerPC 603ev','0','','0');
-INSERT INTO glpi_device_processor VALUES ('19','PowerPC 603','0','','0');
-INSERT INTO glpi_device_processor VALUES ('20','PowerPC 601','0','','0');
-INSERT INTO glpi_device_processor VALUES ('21','68040','0','','0');
-INSERT INTO glpi_device_processor VALUES ('22','68040','0','','0');
-INSERT INTO glpi_device_processor VALUES ('23','ULTRASparc II','0','','0');
-INSERT INTO glpi_device_processor VALUES ('24','Intel Pentium IV','0','','0');
-INSERT INTO glpi_device_processor VALUES ('25','AMD Athlon','0','','0');
-INSERT INTO glpi_device_processor VALUES ('26','AMD Duron','0','','0');
+INSERT INTO glpi_device_processor VALUES ('1','Intel Pentium','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('2','Intel Pentium II','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('3','AMD K6-1','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('4','AMD K6-2','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('5','AMD K6-3','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('6','PowerPC G3','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('7','Intel Pentium III','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('8','AMD Athlon','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('9','68k (Motorola)','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('10','486 SX','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('11','486 DX','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('12','486 DX2/4','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('13','Intel Itanium','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('14','PowerPC G4','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('15','RS3000','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('16','RS10k','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('17','Alpha EV6.7','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('18','PowerPC 603ev','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('19','PowerPC 603','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('20','PowerPC 601','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('21','68040','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('22','68040','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('23','ULTRASparc II','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('24','Intel Pentium IV','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('25','AMD Athlon','0','','0','');
+INSERT INTO glpi_device_processor VALUES ('26','AMD Duron','0','','0','');
 
 ### Dump table glpi_device_ram
 
@@ -459,19 +542,20 @@ CREATE TABLE glpi_device_ram (
     frequence varchar(8) NOT NULL,
     comment text NOT NULL,
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
+    specif_default varchar(250) NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
 );
 
-INSERT INTO glpi_device_ram VALUES ('1','36pin SIMMS','EDO','','','0');
-INSERT INTO glpi_device_ram VALUES ('2','72pin SIMMS (Fast Page)','EDO','','','0');
-INSERT INTO glpi_device_ram VALUES ('3','72pin SIMMS (EDO)','EDO','','','0');
-INSERT INTO glpi_device_ram VALUES ('4','Unbuffered DIMMs','EDO','','','0');
-INSERT INTO glpi_device_ram VALUES ('5','DIMMs w/EEPROM','EDO','','','0');
-INSERT INTO glpi_device_ram VALUES ('6','SDRAM DIMMs (&lt;10ns)','EDO','','','0');
-INSERT INTO glpi_device_ram VALUES ('7','ECC DIMMs','EDO','','','0');
-INSERT INTO glpi_device_ram VALUES ('8','Other','EDO','','','0');
-INSERT INTO glpi_device_ram VALUES ('9','iMac DIMMS','EDO','','','0');
+INSERT INTO glpi_device_ram VALUES ('1','36pin SIMMS','EDO','','','0','');
+INSERT INTO glpi_device_ram VALUES ('2','72pin SIMMS (Fast Page)','EDO','','','0','');
+INSERT INTO glpi_device_ram VALUES ('3','72pin SIMMS (EDO)','EDO','','','0','');
+INSERT INTO glpi_device_ram VALUES ('4','Unbuffered DIMMs','EDO','','','0','');
+INSERT INTO glpi_device_ram VALUES ('5','DIMMs w/EEPROM','EDO','','','0','');
+INSERT INTO glpi_device_ram VALUES ('6','SDRAM DIMMs (&lt;10ns)','EDO','','','0','');
+INSERT INTO glpi_device_ram VALUES ('7','ECC DIMMs','EDO','','','0','');
+INSERT INTO glpi_device_ram VALUES ('8','Other','EDO','','','0','');
+INSERT INTO glpi_device_ram VALUES ('9','iMac DIMMS','EDO','','','0','');
 
 ### Dump table glpi_device_sndcard
 
@@ -482,13 +566,14 @@ CREATE TABLE glpi_device_sndcard (
     type varchar(100) NOT NULL,
     comment text NOT NULL,
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
+    specif_default varchar(250) NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
 );
 
-INSERT INTO glpi_device_sndcard VALUES ('1','Soundblaster 128 PCI','','','0');
-INSERT INTO glpi_device_sndcard VALUES ('2','Soundblaster 16 PnP','','','0');
-INSERT INTO glpi_device_sndcard VALUES ('3','integrated','','','0');
+INSERT INTO glpi_device_sndcard VALUES ('1','Soundblaster 128 PCI','','','0','');
+INSERT INTO glpi_device_sndcard VALUES ('2','Soundblaster 16 PnP','','','0','');
+INSERT INTO glpi_device_sndcard VALUES ('3','integrated','','','0','');
 
 ### Dump table glpi_doc_device
 
@@ -680,8 +765,10 @@ CREATE TABLE glpi_event_log (
    KEY itemtype (itemtype)
 );
 
-INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-03-22 13:59:10','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-03-22 14:01:34','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('368','51','computers','2005-03-23 17:38:23','inventory','4','glpi Unlinked a device from computer 15.');
+INSERT INTO glpi_event_log VALUES ('367','2','Devices','2005-03-23 17:38:03','inventory','4','glpi updated item.');
+INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-03-23 17:27:34','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('369','50','computers','2005-03-23 17:38:25','inventory','4','glpi Unlinked a device from computer 15.');
 
 ### Dump table glpi_followups
 
@@ -700,7 +787,8 @@ CREATE TABLE glpi_followups (
 
 INSERT INTO glpi_followups VALUES ('1','1','2003-09-18 00:53:35','tech','J\'ai été voir, je pense que la carte mere a grillé.');
 INSERT INTO glpi_followups VALUES ('2','1','2003-09-18 00:54:06','tech','L\'alimentation est foutue, je vais tester la carte mere pour voir si elle est recuperable');
-INSERT INTO glpi_followups VALUES ('3','1','2003-09-18 00:54:40','tech','Probleme reglé j\'ai seulement changé l\'alimentation.Le reste fonctionne tres bien.');
+INSERT INTO glpi_followups VALUES ('3','1','2003-09-18 00:54:40','tech','Probleme reglé j\'ai seulement changé l\'alimentation.
+Le reste fonctionne tres bien.');
 INSERT INTO glpi_followups VALUES ('4','3','2003-09-18 00:55:08','tech','Je pense que l\'on peux changer la souris.');
 INSERT INTO glpi_followups VALUES ('5','2','2003-09-18 00:55:52','tech','Je suis passé, il faudra faire une restauration de windows NT4.');
 
@@ -1098,7 +1186,8 @@ CREATE TABLE glpi_tracking (
 );
 
 INSERT INTO glpi_tracking VALUES ('1','2003-09-18 00:46:40','2003-09-18 00:54:43','old','Helpdesk','tech','1','8','Mon ordinateur ne s\'allume plus, et il ya des bruits byzarres','3','no','','','0',NULL);
-INSERT INTO glpi_tracking VALUES ('2','2003-09-18 00:48:19','0000-00-00 00:00:00','new','Helpdesk','tech','1','10','Un message en anglais s\'affiche, je n\'y comprend rien, je n\'ose plus toucher à rien de peur de tout casser.Venez vite !!!!','4','no','','','0',NULL);
+INSERT INTO glpi_tracking VALUES ('2','2003-09-18 00:48:19','0000-00-00 00:00:00','new','Helpdesk','tech','1','10','Un message en anglais s\'affiche, je n\'y comprend rien, je n\'ose plus toucher à rien de peur de tout casser.
+Venez vite !!!!','4','no','','','0',NULL);
 INSERT INTO glpi_tracking VALUES ('3','2003-09-18 00:49:29','0000-00-00 00:00:00','new','Helpdesk','tech','1','18','Ma souris se bloque sans arret, elle defile mal sur l\'ecran et elle glisse tres mal sur le tapis de souris.','3','no','','','0',NULL);
 
 ### Dump table glpi_type_computers

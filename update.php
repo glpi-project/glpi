@@ -1332,13 +1332,13 @@ if(!TableExists("glpi_device_drive")) {
 	$query = "CREATE TABLE `glpi_device_drive` (
 	`ID` INT NOT NULL AUTO_INCREMENT ,
 	`designation` VARCHAR( 255 ) NOT NULL ,
-	`write` ENUM( 'Y', 'N' ) DEFAULT 'Y' NOT NULL ,
+	`is_writer` ENUM( 'Y', 'N' ) DEFAULT 'Y' NOT NULL ,
 	`speed` VARCHAR( 30 ) NOT NULL ,
 	`interface` ENUM( 'IDE', 'SATA', 'SCSI' ) NOT NULL ,
 	`comment` TEXT NOT NULL ,
 	`FK_glpi_enterprise` INT NOT NULL ,
 	`specif_default` VARCHAR( 250 ) NOT NULL,
-	KEY FK_glpi_enterprise( FK_glpi_enterprise )
+	KEY FK_glpi_enterprise( FK_glpi_enterprise ),
 	PRIMARY KEY ( `ID` )
 	)TYPE=MyISAM;";
 	$db->query($query) or die("Error : ".$query." ".mysql_error());

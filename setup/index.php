@@ -55,6 +55,8 @@ echo "<tr><th>".$lang["setup"][62]."</th></tr>";
 
 echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-dropdowns.php\"><b>".$lang["setup"][0]."</b></a></td></tr>";
 
+echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."devices/\"><b>".$lang["setup"][222]."</b></a></td> </tr>";
+
 //echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-templates.php\"><b>".$lang["setup"][1]."</b></a></td></tr>";
 
 echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-config.php?next=extsources\"><b>".$lang["setup"][67]."</b></a></td></tr>";
@@ -65,7 +67,6 @@ echo "<tr class='tab_bg_1'><td align='center'><a href=\"setup-config.php?next=co
 
 echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."typedocs/\"><b>".$lang["document"][7]."</b></a></td> </tr>";
 
-echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."devices/\"><b>".$lang["setup"][222]."</b></a></td> </tr>";
 
 echo "</table></div>";
 

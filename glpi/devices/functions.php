@@ -70,7 +70,50 @@ function getDeviceTable($dev_type){
 	
 }
 
+function getDeviceSpecifityLabel($dev_type){
+global $lang;
+		switch ($dev_type){
+			case MOBOARD_DEVICE :
+				return "";
+				break;
+			case PROCESSOR_DEVICE :
+				return $lang["device_processor"][0];
+				break;
+			case RAM_DEVICE :
+				return $lang["device_ram"][0];
+				break;
+			case HDD_DEVICE :
+				return $lang["device_hdd"][4];
+				break;
+			case NETWORK_DEVICE :
+				return $lang["device_iface"][2];
+				break;
+			case DRIVE_DEVICE :
+				return "";
+				break;
+			case CONTROL_DEVICE :
+				return "";
+				break;
+			case GFX_DEVICE :
+				return "";
+				break;
+			case SND_DEVICE :
+				return "";
+				break;
+			case PCI_DEVICE :
+				return "";
+				break;
+			case CASE_DEVICE :
+				return "";
+				break;
+			case POWER_DEVICE :
+				return "";
+				break;
+				
+		}
 
+
+}
 //print form/tab for a device linked to a computer
 function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate='') {
 	global $lang,$HTMLRel;
@@ -79,6 +122,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 	$entry=array();
 	$type="";
 	$name="";
+	$specificity_label = getDeviceSpecifityLabel($device->type);
 	switch($device->type) {
 		case HDD_DEVICE :
 			$type=$lang["devices"][1];
@@ -87,7 +131,6 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			if (!empty($device->fields["interface"]))	$entry[$lang["device_hdd"][2]]=$device->fields["interface"];
 			if (!empty($device->fields["cache"])) $entry[$lang["device_hdd"][1]]=$device->fields["cache"];
 			
-			$specificity_label = $lang["device_hdd"][4];
 			$specificity_size = 10;
 		break;
 		case GFX_DEVICE :
@@ -96,7 +139,6 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			if (!empty($device->fields["ram"])) $entry[$lang["device_gfxcard"][0]]=$device->fields["ram"];
 			if (!empty($device->fields["interface"])) $entry[$lang["device_gfxcard"][2]]=$device->fields["interface"];
 			
-			$specificity_label = "";
 			$specificity_size = 10;
 		break;
 		case NETWORK_DEVICE :
@@ -104,7 +146,6 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["bandwidth"])) $entry[$lang["device_iface"][0]]=$device->fields["bandwidth"];
 			
-			$specificity_label = $lang["device_iface"][2];
 			$specificity_size = 18;
 		break;
 		case MOBOARD_DEVICE :
@@ -112,7 +153,6 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["chipset"])) $entry[$lang["device_moboard"][0]]=$device->fields["chipset"];
 			
-			$specificity_label = "";
 			$specificity_size = 10;
 		break;
 		case PROCESSOR_DEVICE :
@@ -120,7 +160,6 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["frequence"])) $entry[$lang["device_processor"][0]]=$device->fields["frequence"];
 			
-			$specificity_label = $lang["device_processor"][0];
 			$specificity_size = 10;
 		break;
 		case RAM_DEVICE :
@@ -129,7 +168,6 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			if (!empty($device->fields["type"])) $entry[$lang["device_ram"][0]]=$device->fields["type"];
 			if (!empty($device->fields["frequence"])) $entry[$lang["device_ram"][1]]=$device->fields["frequence"];
 			
-			$specificity_label = $lang["device_ram"][0];
 			$specificity_size = 10;
 		break;
 		case SND_DEVICE :
@@ -138,7 +176,6 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["type"])) $entry[$lang["device_sndcard"][0]]=$device->fields["type"];
 			
-			$specificity_label = "";
 			$specificity_size = 10;
 		break;
 		case DRIVE_DEVICE : 
@@ -510,9 +547,11 @@ function showDevicesForm ($target,$ID,$device_type) {
 	echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>";
 	dropdownValue("glpi_enterprises","FK_glpi_enterprise",$device->fields["FK_glpi_enterprise"]);
 	echo "</td></tr>";
-	echo "<tr><td>".$lang["devices"][24]."</td>";
-	echo "<td><input type='text' name='specif_default' value=\"".$device->fields["specif_default"]."\" size='20'></td>";
-	echo "</tr>";
+	if (getDeviceSpecifityLabel($device_type)!=""){
+		echo "<tr><td>".getDeviceSpecifityLabel($device_type)." ".$lang["devices"][24]."</td>";
+		echo "<td><input type='text' name='specif_default' value=\"".$device->fields["specif_default"]."\" size='20'></td>";
+		echo "</tr>";
+	}
 	echo "</table>";
 	// fin table Commune
 	echo "</td>\n";	
