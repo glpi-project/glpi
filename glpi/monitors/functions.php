@@ -274,7 +274,7 @@ function showMonitorsForm ($target,$ID) {
 	echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
 
 	echo "<tr><td>".$lang["monitors"][5].":	</td>";
-	echo "<td><input type='text' name='name' value=\"".$mon->fields["name"]."\" size='12'></td>";
+	echo "<td><input type='text' name='name' value=\"".$mon->fields["name"]."\" size='20'></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["monitors"][6].": 	</td><td>";
@@ -282,11 +282,11 @@ function showMonitorsForm ($target,$ID) {
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["monitors"][7].":	</td>";
-	echo "<td><input type='text' name='contact_num' value=\"".$mon->fields["contact_num"]."\" size='12'></td>";
+	echo "<td><input type='text' name='contact_num' value=\"".$mon->fields["contact_num"]."\" size='20'></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["monitors"][8].":	</td>";
-	echo "<td><input type='text' name='contact' size='12' value=\"".$mon->fields["contact"]."\"></td>";
+	echo "<td><input type='text' name='contact' size='20' value=\"".$mon->fields["contact"]."\"></td>";
 	echo "</tr>";
 	echo "<tr><td>".$lang["reservation"][24].":</td><td><b>";
 	if (!empty($ID))
@@ -305,11 +305,11 @@ function showMonitorsForm ($target,$ID) {
 	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["monitors"][10].":	</td>";
-	echo "<td><input type='text' name='serial' size='12' value=\"".$mon->fields["serial"]."\"></td>";
+	echo "<td><input type='text' name='serial' size='20' value=\"".$mon->fields["serial"]."\"></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["monitors"][11].":</td>";
-	echo "<td><input type='text' size='12' name='otherserial' value=\"".$mon->fields["otherserial"]."\"></td>";
+	echo "<td><input type='text' size='20' name='otherserial' value=\"".$mon->fields["otherserial"]."\"></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["monitors"][21].":</td>";

@@ -277,7 +277,7 @@ function showPrintersForm ($target,$ID) {
 	echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
 
 	echo "<tr><td>".$lang["printers"][5].":	</td>";
-	echo "<td><input type='text' name='name' value=\"".$printer->fields["name"]."\" size=10></td>";
+	echo "<td><input type='text' name='name' value=\"".$printer->fields["name"]."\" size='20'></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["printers"][6].": 	</td><td>";
@@ -285,11 +285,11 @@ function showPrintersForm ($target,$ID) {
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["printers"][7].":	</td>";
-	echo "<td><input type='text' name='contact_num' value=\"".$printer->fields["contact_num"]."\" size='5'></td>";
+	echo "<td><input type='text' name='contact_num' value=\"".$printer->fields["contact_num"]."\" size='20'></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["printers"][8].":	</td>";
-	echo "<td><input type='text' name='contact' size='12' value=\"".$printer->fields["contact"]."\"></td>";
+	echo "<td><input type='text' name='contact' size='20' value=\"".$printer->fields["contact"]."\"></td>";
 	echo "</tr>";
 	
 	echo "<tr><td>".$lang["reservation"][24].":</td><td><b>";
@@ -309,11 +309,11 @@ function showPrintersForm ($target,$ID) {
 	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["printers"][10].":	</td>";
-	echo "<td><input type='text' name='serial' size='12' value=\"".$printer->fields["serial"]."\"></td>";
+	echo "<td><input type='text' name='serial' size='20' value=\"".$printer->fields["serial"]."\"></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["printers"][11].":</td>";
-	echo "<td><input type='text' size='12' name='otherserial' value=\"".$printer->fields["otherserial"]."\"></td>";
+	echo "<td><input type='text' size='20' name='otherserial' value=\"".$printer->fields["otherserial"]."\"></td>";
 	echo "</tr>";
 
 		echo "<tr><td>".$lang["printers"][18].": </td><td>";

@@ -293,7 +293,7 @@ function showNetworkingForm ($target,$ID) {
 	echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
 
 	echo "<tr><td>".$lang["networking"][0].":	</td>";
-	echo "<td><input type='text' name='name' value=\"".$netdev->fields["name"]."\" size='12'></td>";
+	echo "<td><input type='text' name='name' value=\"".$netdev->fields["name"]."\" size='20'></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["networking"][1].": 	</td><td>";
@@ -301,11 +301,11 @@ function showNetworkingForm ($target,$ID) {
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["networking"][4].":	</td>";
-	echo "<td><input type='text' name='contact_num' value=\"".$netdev->fields["contact_num"]."\" size='12'></td>";
+	echo "<td><input type='text' name='contact_num' value=\"".$netdev->fields["contact_num"]."\" size='20'></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["networking"][3].":	</td>";
-	echo "<td><input type='text' name='contact' size='12' value=\"".$netdev->fields["contact"]."\"></td>";
+	echo "<td><input type='text' name='contact' size='20' value=\"".$netdev->fields["contact"]."\"></td>";
 	echo "</tr>";
 	
 	echo "<tr><td>".$lang["reservation"][24].":</td><td><b>";
@@ -328,15 +328,15 @@ function showNetworkingForm ($target,$ID) {
 	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["networking"][5].":	</td>";
-	echo "<td><input type='text' name='ram' value=\"".$netdev->fields["ram"]."\" size='3'></td>";
+	echo "<td><input type='text' name='ram' value=\"".$netdev->fields["ram"]."\" size='10'></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["networking"][6].":	</td>";
-	echo "<td><input type='text' name='serial' size='12' value=\"".$netdev->fields["serial"]."\"></td>";
+	echo "<td><input type='text' name='serial' size='20' value=\"".$netdev->fields["serial"]."\"></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["networking"][7].":</td>";
-	echo "<td><input type='text' size='12' name='otherserial' value=\"".$netdev->fields["otherserial"]."\"></td>";
+	echo "<td><input type='text' size='20' name='otherserial' value=\"".$netdev->fields["otherserial"]."\"></td>";
 	echo "</tr>";
 	echo "</table>";
 	
