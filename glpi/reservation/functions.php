@@ -180,6 +180,7 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 			echo $lang["reservation"][4]."</a></th>";
 
 			echo "<th>&nbsp;</th>";
+			echo "<th>&nbsp;</th>";
 			echo "</tr>";
 
 			for ($i=0; $i < $numrows_limit; $i++) {
@@ -195,6 +196,9 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 				echo "<td><b>". $ri->getLink() ."</b></td>";
 				echo "<td>";
 				showReservationForm($ri->fields["device_type"],$ri->fields["id_device"]);
+				echo "</td>";
+				echo "<td>";
+				echo "<a href='".$HTMLRel."helpdesk.php?show=resa&ID=$ID'>Voir les réservations</a>";
 				echo "</td>";
 				echo "</tr>";
 			}
@@ -278,6 +282,12 @@ function deleteReservationItem($input){
 function printCalendrier($target,$ID){
 global $lang;
 
+$m=new ReservationItem;
+$m->getfromDB($ID);
+
+echo "<center><h2>".$m->getType()." - ".$m->getName()."</h2></center>";
+
+
 if (!isset($_GET["mois_courant"]))
 	$mois_courant=strftime("%m");
 else $mois_courant=$_GET["mois_courant"];
@@ -311,8 +321,8 @@ $jour_debut_mois=strftime("%w",mktime(0,0,0,$mois_courant,1,$annee_courante));
 if ($jour_debut_mois==0) $jour_debut_mois=7;
 $jour_fin_mois=strftime("%w",mktime(0,0,0,$mois_courant,$nb_jour[$mois_courant-1],$annee_courante));
 // on n'oublie pas de mettre le mois en français et on n'a plus qu'à mettre les en-têtes
-echo "<h2><center><a href=\"".$target.$str_precedent."\">".$lang["buttons"][12]."</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".
-	$lang["calendarM"][$mois_courant-1]."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"".$target.$str_suivant."\">".$lang["buttons"][11]."</a></center></h2>";
+echo "<h3><center><a href=\"".$target.$str_precedent."\">".$lang["buttons"][12]."</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".
+	$lang["calendarM"][$mois_courant-1]."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"".$target.$str_suivant."\">".$lang["buttons"][11]."</a></center></h3>";
 echo "<table border=1 width='100%' align='center'>";
 echo "<th width='19%'>".$lang["calendarD"][1]."</th>";
 echo "<th width='19%'>".$lang["calendarD"][2]."</th>";
