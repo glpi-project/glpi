@@ -41,7 +41,10 @@ This file is part of GLPI.
 include ("_relpos.php");
 
 include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/dicts/french.php");
+include ($phproot . "/glpi/includes_monitors.php");
+
+checkAuthentication("normal");
+
 
 $db = new DB;
 $query = "select * from glpi_monitors";
@@ -101,26 +104,51 @@ $border2->set_merge(); # This is the key feature
 $worksheet->write(0, 0, $lang["monitors"][27], $border1);
 $worksheet->write(0, 1, $lang["monitors"][5], $border1);
 $worksheet->write(0, 2, $lang["monitors"][16],   $border1);
-$worksheet->write(0, 3, $lang["monitors"][9],  $border1);
-$worksheet->write(0, 4, $lang["monitors"][13],  $border1);
-$worksheet->write(0, 5, $lang["monitors"][8], $border1);
-$worksheet->write(0, 6, $lang["monitors"][7], $border1);
-$worksheet->write(0, 7, $lang["monitors"][12], $border1);
-$worksheet->write(0, 8, $lang["monitors"][10], $border1);
-$worksheet->write(0, 9, $lang["monitors"][11], $border1);
+$worksheet->write(0, 3, $lang["monitors"][8], $border1);
+$worksheet->write(0, 4, $lang["monitors"][7], $border1);
+$worksheet->write(0, 5, $lang["monitors"][12], $border1);
+$worksheet->write(0, 6, $lang["monitors"][10], $border1);
+$worksheet->write(0, 7, $lang["monitors"][11], $border1);
+$worksheet->write(0, 8, $lang["monitors"][21], $border1);
+$worksheet->write(0, 9, $lang["monitors"][14], $border1);
 $worksheet->write(0, 10, $lang["monitors"][15], $border1);
 $worksheet->write(0, 11, $lang["monitors"][19], $border1);
 $worksheet->write(0, 12, $lang["monitors"][20], $border1);
 $worksheet->write(0, 13, $lang["monitors"][24], $border1);
 $worksheet->write(0, 14, $lang["monitors"][25], $border1);
 $worksheet->write(0, 15, $lang["monitors"][26], $border1);
+$worksheet->write(0, 16, $lang["monitors"][13],  $border1);
+$worksheet->write(0, 17, $lang["monitors"][9],  $border1);
+
 $y=1;
+$old_ID=-1;
+$nb_skip=0; // Skip multiple interface computers
+$table=array();
 while($ligne = $db->fetch_array($result))
 {
-	for($i=0;$i<$num_field;$i++)
-	{
-		$worksheet->write($y, $i, $ligne[$i]);
+	// New computer
+	if ($old_ID!=$ligne[0]){
+		// reinit data
+		for($i=0;$i<$num_field;$i++) {
+			$name=$db->field_name($result,$i);
+		if($name == "location") {
+				$table[$i]=getDropdownName("glpi_dropdown_locations",$ligne[$i]);
+			}
+		elseif($name == "type") {
+				$table[$i]=getDropdownName("glpi_type_printers",$ligne[$i]);
+			}
+		else $table[$i]=$ligne[$i];
+			}
+		$old_ID=$ligne[0];
+	} 
+	else { // Same computer
+		$nb_skip++;
+		// Add the new interface :
+		for($i=$num_field-2;$i<$num_field;$i++)
+		if ($ligne[$i]!="") $table[$i].="\n".$ligne[$i];
 	}
+	$worksheet->write_row($y-$nb_skip, 0, $table);
+	
 	$y++;
 }
 
