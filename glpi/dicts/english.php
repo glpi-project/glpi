@@ -47,7 +47,7 @@ $lang["login"][5] = "Access Denied";
 
 
 // Global
-$lang["buttons"][0]	= "Search";
+$lang["buttons"][0] 	= "Search"; 
 $lang["buttons"][1]	= "List";
 $lang["buttons"][2]	= "Post";
 $lang["buttons"][3]	= "Assign";
@@ -63,6 +63,10 @@ $lang["buttons"][12]	= "Previous";
 $lang["buttons"][13]	= "Back";
 $lang["buttons"][14]	= "Change";
 $lang["buttons"][15]    = "Schedule";
+$lang["buttons"][16] 	= "Blank"; 
+$lang["buttons"][17] 	= "Delete"; 
+$lang["buttons"][18] 	= "Check All"; 
+$lang["buttons"][19] 	= "UnCheck All"; 
 
 $lang["choice"][0]	= "No";
 $lang["choice"][1]	= "Yes";
@@ -106,11 +110,18 @@ $lang["connect"][1]	= "not connected...";
 $lang["connect"][2]	= "Connect";
 $lang["connect"][3]	= "Disconnect";
 $lang["connect"][4]	= "Make a direct connection";
-$lang["connect"][5]	= "to a computer which";
+$lang["connect"][5] 	= "To a computer which"; 
 $lang["connect"][6]	= "Name";
 $lang["connect"][7]	= "ID";
 $lang["connect"][8]	= "contains";
 $lang["connect"][9]	= "Please choose a computer from the resultlist";
+$lang["connect"][10] 	= "Please choose a printer from the resultlist"; 
+$lang["connect"][11] 	= "Please choose a peripheral from the resultlist"; 
+$lang["connect"][12] 	= "Please choose a monitor from the resultlist"; 
+$lang["connect"][13] 	= "To a printer which"; 
+$lang["connect"][14] 	= "To a peripheral which"; 
+$lang["connect"][15] 	= "To a monitor which"; 
+$lang["connect"][16] 	= "No item found"; 
 
 //header menu
 $lang["Menu"][0]	="Computers";
@@ -133,8 +144,8 @@ $lang["Menu"][16]	="Peripherals";
 
 //Data
 
-$lang["backup"][0]	    ="Dump SQL";
-$lang["backup"][1]      ="Dump XML";
+$lang["backup"][0] 	= "Dump SQL"; 
+$lang["backup"][1] 	= "Dump XMLa"; 
 $lang["backup"][2]      ="Do a backup of the database";
 $lang["backup"][3]      ="The file has been generated";
 $lang["backup"][5]      ="Open the file";
@@ -169,7 +180,7 @@ $lang["tracking"][11] 	= "Intervention(s) required by this user";
 
 $lang["joblist"][0]	= "Status";
 $lang["joblist"][1]	= "Date";
-$lang["joblist"][2]	= "Priority";
+$lang["joblist"][2] 	= "Priority"; 
 $lang["joblist"][3]	= "Author";
 $lang["joblist"][4]	= "Assigned";
 $lang["joblist"][5]	= "Computer";
@@ -214,6 +225,7 @@ $lang["job"][19] 	= "Email Followups";
 $lang["job"][20] 	= "Real time of the intervention"; 
 $lang["job"][21] 	= "Hour(s)"; 
 $lang["job"][22] 	= "Minute(s)"; 
+$lang["job"][23] 	= "Restore this intervention"; 
 
 // Computers
 
@@ -310,6 +322,11 @@ $lang["networking"][42] = "Identifier";
 $lang["networking"][43] = "Networking";
 $lang["networking"][44] = "The port";
 $lang["networking"][45] = "is now connected on port";
+$lang["networking"][46] 	= "Add several ports..."; 
+$lang["networking"][47] 	= "From"; 
+$lang["networking"][48] 	= "To"; 
+$lang["networking"][49] 	= "Firmware"; 
+$lang["networking"][50] 	= "ID"; 
 
 
 
@@ -343,6 +360,7 @@ $lang["printers"][23]   = "RAM";
 $lang["printers"][24]   = "Identifier";
 $lang["printers"][25]   = "Printers";
 $lang["printers"][26] 	= "Number"; 
+$lang["printers"][27] 	= "USB Port"; 
 
 
 // Monitors
@@ -446,6 +464,8 @@ $lang["reports"][7]	="Printers";
 $lang["reports"][8]	="Net devices";
 $lang["reports"][9]	="Monitors";
 $lang["reports"][10]	="S&eacute;lect type to be displayed";
+$lang["reports"][11] 	= "Hardwares under maintenance contract"; 
+$lang["reports"][12] 	= "Hardware Type"; 
 $lang["reports"][13] 	= "Buy date(s)"; 
 $lang["reports"][14] 	= "Sort option"; 
 $lang["reports"][15] 	= "Show report"; 
@@ -454,12 +474,15 @@ $lang["reports"][17] 	= "Buy date";
 $lang["reports"][18] 	= "Serial number"; 
 $lang["reports"][19] 	= "Contact name"; 
 $lang["reports"][20] 	= "Location"; 
+$lang["reports"][21] 	= "Warranty expiration date"; 
+$lang["reports"][22] 	= "Date Type"; 
 $lang["reports"][23] 	= "Date(s)"; 
 $lang["reports"][24] 	= "Restrict to computers"; 
 $lang["reports"][25]    ="Tracking report";
 $lang["reports"][26]    ="Default report";
 $lang["reports"][27]    ="Maintenance";
 $lang["reports"][28]    ="Par année";
+$lang["reports"][29] 	= "Peripherals"; 
 
 // LDAP
 $lang["ldap"][0]	= "Search";
@@ -666,5 +689,9 @@ $lang["stats"][20] = "Username";
 $lang["stats"][21] = "Location";
 $lang["stats"][22] = "Numbre of asked interventions";
 $lang["stats"][23] = "No stats are available";
+$lang["stats"][25] 	= "Average real time of intervention"; 
+$lang["stats"][26] 	= "Types"; 
+$lang["stats"][27] 	= "Total real time of intervention"; 
+
 
 ?>

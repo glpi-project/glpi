@@ -36,10 +36,10 @@ page d'accueil ?
 stylesheet pour impression (sans menu)
 */
 
-
+$select="";
 $filenames = array ("english" => "english.php", "francais" => "french.php", "allemand" => "deutsch.php");
 
-if($_GET['correct'])
+if(isset($_GET['correct'])&&$_GET['correct'])
 {
 	list($choice,$rub,$id) = explode('_',$_GET['correct']);
 	if (!$nojs || !$reset)
@@ -125,8 +125,11 @@ if($_GET['correct'])
 if (isset($_GET["rub"])) $rub=$_GET["rub"];
 else $rub="";
 $filenames = array ("english" => "english.php", "francais" => "french.php", "allemand" => "deutsch.php");
-if($langsub)
+$lang_select=array();
+if(isset($_GET["langsub"]))
 	$lang_select[$langsub]=!$lang_select[$langsub];
+$rubs=array();
+
 while ( $to_require = current($filenames))
 {
 	$key=key($filenames);
@@ -136,6 +139,7 @@ while ( $to_require = current($filenames))
 	}
 	require($to_require);
 	$trans_lang[$key]=$lang;
+	
 	$rubs = array_merge($rubs,array_keys($lang));
 	unset($lang);
 	next($filenames);
@@ -152,12 +156,12 @@ foreach ($rubs as $value)
 	.ucfirst($value)."</a></li>\n";
 }
 echo "</ul>\n";
-
+$max=0;
 if($rub)
 {
-	
 	while ( $to_view = key($filenames))
 	{
+		if (isset($trans_lang[$to_view][$rub]))
 		$max=max($max,max(array_keys($trans_lang[$to_view][$rub])));
 		next($filenames);
 	}
@@ -168,7 +172,9 @@ if($rub)
 		for($i=0;$i<=($max+1);$i++)
 		{
 			$key=$i;
+			if (isset($trans_lang[$to_view][$rub][$i]))
 			$value=$trans_lang[$to_view][$rub][$i];
+			else $value="";
 			echo "<li class='li".($value ? $key%2 : 'no')."' id='{$to_view}_{$rub}_{$key}' onclick='getCorrectForm(\"{$to_view}_{$rub}_{$key}\",\"$value\")'>";
 			if($select=="{$to_view}_{$rub}_{$key}")
 			{
