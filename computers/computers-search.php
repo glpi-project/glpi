@@ -48,7 +48,7 @@ showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET
 }
 else 
 {
-showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],"","");
+showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],"",$_GET["start"]);
 }
 commonFooter();
 ?>
