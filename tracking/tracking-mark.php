@@ -56,7 +56,7 @@ if ($status=="old"&&isset($_POST["hour"])&&isset($_POST["minute"]))
 
 markJob ($_POST["ID"],$status,$opt);
 
-$referer=$_SERVER[HTTP_REFERER];
+$referer=$_SERVER["HTTP_REFERER"];
 $referer=preg_replace("/\?ID=[0-9]*/","",$referer);
 header("Location: $referer?ID=".$_POST["ID"]);
 

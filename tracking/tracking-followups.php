@@ -51,7 +51,7 @@ if (isset($_POST["contents"])&&isAdmin($_SESSION["glpitype"]))
 	postFollowups ($_POST["ID"],$_SESSION["glpiname"],$_POST["contents"]);
 }
 
-if (isset($_POST[ID]))
+if (isset($_POST["ID"]))
 showJobDetails($_POST["ID"]);
 else 
 showJobDetails($_GET["ID"]);
