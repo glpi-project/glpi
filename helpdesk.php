@@ -110,12 +110,23 @@ elseif (isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"]
 
 else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
 
-
 	if (isset($_GET["ID"])){
 
 	ShowKbItemFull($_GET["ID"]);
 	
 	} else {
+	initExpandSessionVar();
+
+	if (isset($_GET["toshow"])) {
+		if ($_GET["toshow"]=="all")
+			ExpandSessionVarShowAll();
+		else ExpandSessionVarShow($_GET["toshow"]);
+	}
+	if (isset($_GET["tohide"])) {
+		if ($_GET["tohide"]=="all")
+			ExpandSessionVarHideAll();
+		else ExpandSessionVarHide($_GET["tohide"]);
+	}
 	
 	faqShowCategoriesall();
 	}

@@ -38,9 +38,24 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_knowbase.php");
 
 
+
+
 checkAuthentication("normal");
 
 	commonHeader("Base de connaissances",$_SERVER["PHP_SELF"]);
+
+	initExpandSessionVar();
+
+	if (isset($_GET["toshow"])) {
+		if ($_GET["toshow"]=="all")
+			ExpandSessionVarShowAll();
+		else ExpandSessionVarShow($_GET["toshow"]);
+	}
+	if (isset($_GET["tohide"])) {
+		if ($_GET["tohide"]=="all")
+			ExpandSessionVarHideAll();
+		else ExpandSessionVarHide($_GET["tohide"]);
+	}
 
 	titleknowbase();
 	

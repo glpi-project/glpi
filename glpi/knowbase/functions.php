@@ -44,8 +44,9 @@ function titleknowbase(){
 
          echo "<div align='center'><table border='0'><tr><td>";
          echo "<img src=\"".$HTMLRel."pics/knowbase.png\" alt='".$lang["knowbase"][2]."' title='".$lang["knowbase"][2]."'></td><td><a  class='icon_consol' href=\"knowbase-info-form.php?ID=new\"><b>".$lang["knowbase"][2]."</b></a>";
-         echo "</td></tr></table></div>";
-	
+         echo "</td></tr>";
+         echo "<tr><td><a href=\"".$_SERVER["PHP_SELF"]."?toshow=all\">Voir Tous</a> </td><td align='right'><a href=\"".$_SERVER["PHP_SELF"]."?tohide=all\">Masquer Tous</a> </td></tr>";
+		echo "</table></div>";
 	
 	
 		   
@@ -232,7 +233,6 @@ function showKbCategoriesall()
 	global $lang;	
 
 	echo "<div align='center'>";
-	
 	echo "<div align='center'><table border='0' class='tab_cadre' >";
 	echo "<tr><th align='center' width='700px'>".$lang["knowbase"][0]."</th></tr><tr><td>";	
 	
@@ -266,10 +266,13 @@ function showKbCategories($parentID=0)
 	
 	
 			$name = $row["name"];
-			echo "<li><b>$name</b>\n";
 			$ID = $row["ID"];
-	  		showKbItemAll($ID);
+
+			echo "<li><b><a href=\"".$_SERVER["PHP_SELF"]."?toshow=$ID\">SHOW</a> <a href=\"".$_SERVER["PHP_SELF"]."?tohide=$ID\">HIDE</a> $name</b>\n";
+			if ($_SESSION["kb_show"][$ID]=='Y'){
+	  	  showKbItemAll($ID);
 			showKbCategories($ID);
+			}
 			}
 		echo "</ul>\n";
 		}
@@ -466,6 +469,7 @@ function faqShowCategoriesall()
 	global $lang;	
 
 	echo "<div align='center'>";
+    echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&toshow=all\">Voir Tous</a> </td><td align='right'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&tohide=all\">Masquer Tous</a>";	
 	
 	echo "<div align='center'><table border='0' class='tab_cadre' >";
 	echo "<tr><th align='center' width='700px'>".$lang["knowbase"][1]."</th></tr><tr><td>";	
@@ -502,9 +506,11 @@ function faqShowCategories($parentID=0)
 				if(in_array($ID, $catNumbers))
 				{
 				
-				echo "<li><b>$name</b>\n";
+				echo "<li><b><a href=\"".$_SERVER["PHP_SELF"]."?show=faq&toshow=$ID\">SHOW</a> <a href=\"".$_SERVER["PHP_SELF"]."?show=faq&tohide=$ID\">HIDE</a> $name</b>\n";
+				if ($_SESSION["kb_show"][$ID]=='Y'){
 	  				faqShowItems($ID);
 					faqShowCategories($ID);
+				}
 				}
 			}
 			echo "</ul>\n";
@@ -548,5 +554,42 @@ function faqShowItem($ID)
 
 }
 
+function initExpandSessionVar(){
+	if (!isset($_SESSION["kb_show"])){
+	$query = "select ID from glpi_dropdown_kbcategories";
 
+	$db=new DB;
+	if ($result=$db->query($query)){
+		while ($data=$db->fetch_array($result))
+		$_SESSION["kb_show"][$data["ID"]]='Y';
+	}
+	}	
+}
+function ExpandSessionVarHide($ID){
+	$_SESSION["kb_show"][$ID]='N';
+}
+function ExpandSessionVarShow($ID){
+	$_SESSION["kb_show"][$ID]='Y';
+}
+
+
+function ExpandSessionVarHideAll(){
+	$query = "select ID from glpi_dropdown_kbcategories";
+
+	$db=new DB;
+	if ($result=$db->query($query)){
+		while ($data=$db->fetch_array($result))
+		$_SESSION["kb_show"][$data["ID"]]='N';
+	}
+}
+
+function ExpandSessionVarShowAll(){
+	$query = "select ID from glpi_dropdown_kbcategories";
+
+	$db=new DB;
+	if ($result=$db->query($query)){
+		while ($data=$db->fetch_array($result))
+		$_SESSION["kb_show"][$data["ID"]]='Y';
+	}
+}
 ?>
