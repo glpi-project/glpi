@@ -453,7 +453,8 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		global $lang;
 		
 		include ("_relpos.php");
-		include ($phproot . "/glpi/includes.php");
+		include ($phproot . "/glpi/common/classes.php");
+		include ($phproot . "/glpi/config/config_db.php");
 		$db = new DB;
 		$db_file = $phproot ."/mysql/glpi-0.4-default.sql";
 		$dbf_handle = fopen($db_file, "rt");
@@ -532,7 +533,8 @@ function step5()
 	global $lang;
 	
 	include ("_relpos.php");
-	include ($phproot . "/glpi/includes.php");
+	include ($phproot . "/glpi/common/classes.php");
+	include ($phproot . "/glpi/config/config_db.php");
 	$db = new DB;
 	$query = "select * from glpi_config where ID = 1";
 	$result = $db->query($query);
@@ -567,7 +569,8 @@ function step6($root_doc, $event_loglevel, $num_of_events, $expire_events,$jobs_
 	global $lang;
 	
 	include ("_relpos.php");
-	require_once ($phproot . "/glpi/includes.php");
+	require_once ($phproot . "/glpi/common/classes.php");
+	require_once ($phproot . "/glpi/config/config_db.php");
 	$db = new DB;
 	$query = "update glpi_config set root_doc = '". $root_doc ."', expire_events = '". $expire_events ."', event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', jobs_at_login = '". $jobs_at_login ."', list_limit = '". $list_limit ."', cut = '". $cut ."'"; 
 	$db->query($query);
