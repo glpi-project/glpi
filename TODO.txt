@@ -137,8 +137,7 @@ conséquence (graphisme..)
   L'utilisateur puisse fermer la fenetre de recherche du numero de machine...
    Appliquer aussi une taille spécifique a cette fenetre >>
 
->> c fait mais il subsite un bug con sur la version en demo, il trouve pas
->> le fichier dans le popup et je sais pas pkoi ?????
+>> c fait 
 
 // c fait
 
