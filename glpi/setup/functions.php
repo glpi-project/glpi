@@ -823,22 +823,7 @@ function updateUser($input) {
 	$user = new User($input["name"]);
 	$user->getFromDB($input["name"]); 
 
-	//Only super-admin's can set admin or super-admin access.
-	//set to "normal" by default
-	//if user type is allready admin or super-admin do not touch it
-	if(!isSuperAdmin($_SESSION["glpitype"])) {
-		if(!empty($input["type"]) && $input["type"] != "normal" && $input["type"] != "post-only") {
-			$input["type"] = "normal";
-		}
-		if($user->fields["type"] == "super-admin") {
-			$input["type"] = "super-admin"
-		}
-		if($user->fields["type"] == "admin") {
-			$input["type"] = "admin"
-		}
 
-		
-	}
 	// dump status
 	$null = array_pop($input);
 	// password updated?
@@ -849,6 +834,21 @@ function updateUser($input) {
 	if (isset($input["email_form"])){
 	$input["email"]=$input["email_form"];
 	unset($input["email_form"]);
+	}
+	//Only super-admin's can set admin or super-admin access.
+	//set to "normal" by default
+	//if user type is allready admin or super-admin do not touch it
+	if(!isSuperAdmin($_SESSION["glpitype"])) {
+		if(!empty($input["type"]) && $input["type"] != "normal" && $input["type"] != "post-only") {
+			$input["type"] = "normal";
+		}
+		if($user->fields["type"] == "") {
+			$input["type"] = "super-admin";
+		}
+		if($user->fields["type"] == "admin") {
+			$input["type"] = "";
+		}
+		
 	}
 	// fill array for update
 	$x=0;
