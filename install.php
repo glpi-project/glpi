@@ -611,7 +611,14 @@ function step7() {
 	require_once ($phproot . "/glpi/common/functions.php");
 	require_once ($phproot . "/glpi/config/config_db.php");
 	$db = new DB;
+	
+	// hack pour IIS qui ne connait pas $_SERVER['REQUEST_URI']  grrrr
+	if ( !isset($_SERVER['REQUEST_URI']) ) {
+	    $_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
+	}
+	
 	$root_doc = ereg_replace("/install.php","",$_SERVER['REQUEST_URI']);
+	
 	$query = "update glpi_config set root_doc = '".$root_doc."'";
 	$db->query($query);
 	echo "<h2>".$lang["install"][55]."</h2>";
