@@ -39,7 +39,7 @@ $lang["common"][2] = "ID";
 $lang["common"][3] = "Supprimés";
 $lang["common"][4] = "Web";
 $lang["common"][5] = "Fabriquant";
-
+$lang["common"][6]	= "Nom du modèle";
 
 //Login
 
@@ -324,7 +324,7 @@ $lang["computers"][45]  = "Choisissez un mod&egrave;le";
 $lang["computers"][46]	= "P&eacute;riph&eacute;riques";
 $lang["computers"][47] 	= "Pas de p&eacute;riph&eacute;rique connect&eacute;"; 
 $lang["computers"][48] 	= "Modification de lieu. Les &eacute;l&eacute;ments connect&eacute;s ont &eacute;t&eacute; d&eacute;plac&eacute;s dans le même lieu que l'ordinateur."; 
-$lang["computers"][49]	= "Nom du modele";
+
 // Networking
 
 $lang["networking"][0]	= "Nom"; 
@@ -410,6 +410,8 @@ $lang["printers"][24]   = "Identifiant";
 $lang["printers"][25]   = "Imprimantes";
 $lang["printers"][26]   = "Nombre";
 $lang["printers"][27]   = "Port USB";
+$lang["printers"][28]	= "Nouvel imprimante &agrave; partir d'un mod&egrave;le";
+$lang["printers"][29]   = "Imprimante ID";
 
 // Monitors
 $lang["monitors"][0]	= "Ajouter moniteur...";

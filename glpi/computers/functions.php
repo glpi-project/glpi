@@ -355,13 +355,13 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		}
 		echo "<div align='center'>";
 		echo "<table width='700px' class='tab_cadre' >";
-		echo "<tr><th colspan ='2'align='center' >";
+		echo "<tr><th colspan ='2' align='center' >";
 		if(!$template) {
 			echo $lang["computers"][13].": ".$comp->fields["ID"];
 		}elseif (strcmp($template,"newcomp") === 0) {
 			echo $lang["computers"][12].": ".$comp->fields["tplname"];
 		}elseif (strcmp($template,"newtemplate") === 0) {
-			echo $lang["computers"][49]."&nbsp;: <input type='text' name='tplname' value=\"".$comp->fields["tplname"]."\" size='20'>";
+			echo $lang["common"][6]."&nbsp;: <input type='text' name='tplname' value=\"".$comp->fields["tplname"]."\" size='20'>";
 		}
 		
 		echo "</th><th  colspan ='2' align='center'>".$datestring.$date;
@@ -508,10 +508,10 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		return true;
 	}
 	else {
-                echo "<div align='center'><b>".$lang["computers"][32]."</b></div>";
-                echo "<hr noshade>";
-                searchFormComputers();
-                return false;
+         echo "<div align='center'><b>".$lang["computers"][32]."</b></div>";
+         echo "<hr noshade>";
+         searchFormComputers();
+         return false;
         }
 }
 
@@ -573,9 +573,9 @@ function addComputer($input) {
 	}
 	$comp->addToDB();
 	
+	$newID=$comp->getInsertElementID();
 	
 	// ADD Devices
-	$newID=$comp->getInsertElementID();
 	$comp->getFromDB($oldID);
 	foreach($comp->devices as $key => $val) {
 			compdevice_add($newID,$val["devType"],$val["devID"],$val["specificity"]);

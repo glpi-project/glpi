@@ -63,15 +63,15 @@ if (isset($tab["add"])) {
 else if (isset($tab["delete"])) {
 	checkAuthentication("admin");
 
-	if (isset($tab["withtemplate"])&&!empty($tab["withtemplate"]))
+	if (!empty($tab["withtemplate"]))
 	deleteComputer($tab,1);
 	else deleteComputer($tab);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
-	if(!empty($tab["withtemplate"])) {
+	if(!empty($tab["withtemplate"])) 
 		header("Location: ".$cfg_install["root"]."/setup/setup-templates.php");
-	} else {
+	 else 
 		header("Location: ".$cfg_install["root"]."/computers/");
-	}
+	
 }
 else if (isset($_POST["restore"]))
 {
@@ -151,16 +151,17 @@ else {
 	commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
 	//show computer form to add
 	if (!empty($tab["withtemplate"])) {
-		showComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);
+		if (showComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
 		
-		if (!empty($tab["ID"])){
-		showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",COMPUTER_TYPE,$tab["ID"],1,$tab["withtemplate"]);
-		showPorts($tab["ID"], COMPUTER_TYPE,$tab["withtemplate"]);
-		if ($tab["withtemplate"]!=2)
-		showPortsAdd($tab["ID"],COMPUTER_TYPE);
+			if (!empty($tab["ID"])){
+			showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",COMPUTER_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+			showPorts($tab["ID"], COMPUTER_TYPE,$tab["withtemplate"]);
+			if ($tab["withtemplate"]!=2)
+				showPortsAdd($tab["ID"],COMPUTER_TYPE);
 		
-		showSoftwareInstalled($tab["ID"],$tab["withtemplate"]);
-		showContractAssociated(COMPUTER_TYPE,$tab["ID"],$tab["withtemplate"]);
+			showSoftwareInstalled($tab["ID"],$tab["withtemplate"]);
+			showContractAssociated(COMPUTER_TYPE,$tab["ID"],$tab["withtemplate"]);
+			}
 		}
 		
 	} else {
