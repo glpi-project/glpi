@@ -315,7 +315,7 @@ class Identification
 		}
 		
 		$db = new DB;
-		$query = "SELECT password from glpi_users where (name = '".$name."')";
+		$query = "SELECT password, password_md5 from glpi_users where (name = '".$name."')";
 		$result = $db->query($query);
 		if (!$result){
 		$this->err = "Unknown username";
@@ -327,15 +327,26 @@ class Identification
 		$this->err = "Bad username or password";
 		return false;	
 		}
-		
 		if($result&&$result2)
 		{
 			if($db->numrows($result) == 1&&$db->numrows($result2) == 1)
 			{
 				$pass1=$db->result($result,0,"password");
 				$pass2=$db->result($result2,0,"password");
-				if (strcmp($pass1,$pass2)==0)
-				return true;
+				$password_md5_db=$db->result($result,0,"password_md5");
+				$password_md5_post = md5($password);
+				if (strcmp($pass1,$pass2)==0) 
+				{
+					if(empty($password_md5_db)) {
+						$password_md5_db = md5($password);
+						$query3 = "update glpi_users set password_md5 = '".$password_md5_db."' where (name = '".$name."')";
+						$db->query($query3);
+					}
+					return true;
+				}
+				elseif(strcmp($password_md5_db,$password_md5_post)==0) {
+					return true;
+				}
 				else {
 				$this->err = "Bad username or password";
 				return false;
