@@ -338,6 +338,7 @@ $lang["printers"][22]	= "Maintenance";
 $lang["printers"][23]   = "M&eacute;moire vive";
 $lang["printers"][24]   = "Identifiant";
 $lang["printers"][25]   = "Imprimantes";
+$lang["printers"][26]   = "Nombre";
 
 // Monitors
 $lang["monitors"][0]	= "Ajouter moniteur...";
