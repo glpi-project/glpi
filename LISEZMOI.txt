@@ -66,10 +66,17 @@ avec l'une des ressources techniques à laquelle ils ont accès.
 
 
 
-**
+*****
 --- MISES A JOUR DEPUIS UNE VERSION ANTERIEURE
 
 1) Sauvegardez votre base de données GLPI (par sécurité).
+
+Important :  
+Si vous avez un problème et qu’il faut restaurer la sauvegarde effectuée ci-dessus : 
+Réinstallez d’abord la version de GLPI avec laquelle vous avez effectuée la sauvegarde.
+Ne cherchez surtout pas à restaurer sous la version 0.3 une sauvegarde que vous aurez effectuée avec la version 0.2. 
+Une fois la bonne version de GLPI réinstallée, vous pourrez restaurer la sauvegarde que vous aviez faite précédemment.
+
 
 2) Sauvegardez ou notez les paramètres présents dans glpi/glpi/config/config.php
 
