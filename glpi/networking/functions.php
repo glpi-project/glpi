@@ -50,7 +50,6 @@ function titleNetdevices() {
  
 }
 
-
 function listNetdevices() {
 	// List all netdevices
 
@@ -341,7 +340,7 @@ function showPorts ($device,$device_type) {
 
 
 
-function showNetportForm($target,$ID,$ondevice,$devtype) {
+function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 
 	GLOBAL $cfg_install, $cfg_layout, $lang;
 
@@ -361,10 +360,28 @@ function showNetportForm($target,$ID,$ondevice,$devtype) {
 	echo "</tr>";
 	echo "<form method='post' action=\"$target\">";
 
+	if ($several!="yes"){
 	echo "<tr class='tab_bg_1'><td>".$lang["networking"][21].":</td>";
 	echo "<td><input type='text' size=5 name=logical_number value=\"".$netport->fields["logical_number"]."\">";
 	echo "</td></tr>";
+	}
+	else {
+	echo "<tr class='tab_bg_1'><td>".$lang["networking"][21].":</td>";
+	echo "<input type='hidden' name='several' value='yes'>";
+	echo "<input type='hidden' name='logical_number' value=''>";
+	echo "<td>";
+	echo $lang["networking"][47].":<select name=from_logical_number>";
+	for ($i=0;$i<100;$i++)
+		echo "<option value='$i'>$i</option>";
+	echo "</select>";
+	echo $lang["networking"][48].":<select name=to_logical_number>";
+	for ($i=0;$i<100;$i++)
+		echo "<option value='$i'>$i</option>";
+	echo "</select>";
 
+	echo "</td></tr>";
+	}
+	
 	echo "<tr class='tab_bg_1'><td>".$lang["networking"][0]."</td>";
 	echo "<td><input type='text' size=20 name=name value=\"".$netport->fields["name"]."\">";
 	echo "</td></tr>";
@@ -472,10 +489,17 @@ function showPortsAdd($ID,$devtype) {
 	GLOBAL $cfg_layout, $cfg_install, $lang;
 	
 	echo "<div align='center'><table border='0' width='90%' cellpadding='2'>";
-	echo "<tr><td align='center' class='tab_bg_2'><b>";
+	echo "<tr>";
+	echo "<td align='center' class='tab_bg_2'><b>";
 	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ondevice=$ID&devtype=$devtype\">";
 	echo $lang["networking"][19];
-	echo "</a></b></td></tr>";
+	echo "</a></b></td>";
+	echo "<td align='center' class='tab_bg_2'><b>";
+	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ondevice=$ID&devtype=$devtype&several=yes\">";
+	echo $lang["networking"][46];
+	echo "</a></b></td>";
+
+	echo "</tr>";
 	echo "</table></div><br><br>";
 }
 

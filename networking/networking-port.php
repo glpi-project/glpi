@@ -43,12 +43,28 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 
 if(isset($_POST["add"]))
-{
+{	
 	checkAuthentication("admin");
+	if (!isset($tab["several"])){
 	addNetport($_POST);
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added networking port.");
 //???	header("Location: ".$cfg_install["root"]."/networking/");
 	header("Location: $_SERVER[HTTP_REFERER]");
+	}
+	else {
+
+		unset($tab['several']);
+		unset($tab['from_logical_number']);
+		unset($tab['to_logical_number']);		
+		for ($i=$_POST["from_logical_number"];$i<=$_POST["to_logical_number"];$i++){
+			$tab["logical_number"]=$i;
+			$tab["name"]=$_POST["name"].$i;
+		    addNetport($tab);	
+			}
+		    logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added ".($tab["to_logical_number"]-$tab["from_logical_number"]+1)." networking ports.");
+		    header("Location: $_SERVER[HTTP_REFERER]");
+			
+		}
 }
 else if(isset($_POST["delete"]))
 {
@@ -69,17 +85,19 @@ else
 {
 	if(empty($tab["ondevice"])) $tab["ondevice"] ="";
 	if(empty($tab["devtype"])) $tab["devtype"] ="";
+	if(empty($tab["several"])) $tab["several"] ="";
 	checkAuthentication("normal");
 	commonHeader("Networking",$_SERVER["PHP_SELF"]);
 	if(isset($tab["ID"]))
 	{
-		showNetportForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["ondevice"],$tab["devtype"]);
+		showNetportForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["ondevice"],$tab["devtype"],$tab["several"]);
 	}
 	else
 	{
-		showNetportForm($_SERVER["PHP_SELF"],"",$tab["ondevice"],$tab["devtype"]);
+		showNetportForm($_SERVER["PHP_SELF"],"",$tab["ondevice"],$tab["devtype"],$tab["several"]);
 	}
 	commonFooter();
 }
 
 ?>
+
