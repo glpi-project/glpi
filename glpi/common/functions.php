@@ -327,7 +327,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	*/
 	
 	// On the right side of the navigation bar, we have a clock with
-	// date and a logout-link.
+	// date, help and a logout-link.
 
 	echo "<td  align='right' valign='top' width='100'>";
 	echo "<a class='icon_nav_move'  target=_blank href=\"".$HTMLRel."help/".$_SESSION["glpilanguage"].".html\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a><br><br>";
@@ -422,8 +422,9 @@ function helpHeader($title,$url,$name) {
         echo "<a class='icon_nav_move' href=\"".$cfg_install["root"]."/helpdesk.php?show=user\"><img  src=\"".$HTMLRel."pics/suivi.png\" alt=\"".$lang["tracking"][0]."\" title=\"".$lang["tracking"][0]."\"></a>";
 	echo "</td>";
 	// On the right side of the navigation bar, we have a clock with
-	// date and a logout-link.
+	// date, help and a logout-link.
 	echo "<td align='right' width='100'><div align='right'>";
+	echo "<a class='icon_nav_move'  target=_blank href=\"".$HTMLRel."help/".$_SESSION["glpilanguage"].".html\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a><br><br>";
 	echo date("H").":".date("i")."<p><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i></p><a class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img class='icon_nav' src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
 
