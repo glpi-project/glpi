@@ -44,7 +44,7 @@ function showInfocomForm ($target,$device_type,$dev_ID) {
 		echo "<center><b><a href='$target?device_type=$device_type&FK_device=$dev_ID&add=add'>Activer les informations commerciales</a></b></center>";
 	} else {
 
-		echo "<form name='form' method='post' action=\"$target\"><div align='center'>";
+		echo "<form name='form_ic' method='post' action=\"$target\"><div align='center'>";
 		echo "<table class='tab_cadre'>";
 		echo "<tr><th colspan='3'><b>".$lang["financial"][3]."</b></th></tr>";
 	
@@ -75,13 +75,21 @@ function showInfocomForm ($target,$device_type,$dev_ID) {
 
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][14].":	</td>";
 		echo "<td colspan='2'><input type='text' name='buy_date' readonly size='10' value=\"".$ic->fields["buy_date"]."\">";
-		echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=buy_date&amp;value=".$ic->fields["buy_date"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].buy_date.value='0000-00-00'\" value='reset'>";
+		echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form_ic&amp;elem=buy_date&amp;value=".$ic->fields["buy_date"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form_ic'].buy_date.value='0000-00-00'\" value='reset'>";
+	    echo "</td>";
+		echo "</tr>";
+
+		echo "<tr class='tab_bg_1'><td>".$lang["financial"][76].":	</td>";
+		echo "<td colspan='2'><input type='text' name='use_date' readonly size='10' value=\"".$ic->fields["use_date"]."\">";
+		echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form_ic&amp;elem=use_date&amp;value=".$ic->fields["use_date"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form_ic'].use_date.value='0000-00-00'\" value='reset'>";
 	    echo "</td>";
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][15].":	</td><td colspan='2'>";
-		dropdownDuration("warranty_duration",$ic->fields["warranty_duration"]);
+		dropdownContractTime("warranty_duration",$ic->fields["warranty_duration"]);
+		echo " ".$lang["financial"][57];
 		echo "</td></tr>";
 	
 
@@ -95,7 +103,11 @@ function showInfocomForm ($target,$device_type,$dev_ID) {
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][21].":		</td>";
-		echo "<td colspan='2'><input type='text' name='value' value=\"".$ic->fields["value"]."\" size='25'></td>";
+		echo "<td colspan='2'><input type='text' name='value' value=\"".$ic->fields["value"]."\" size='10'></td>";
+		echo "</tr>";
+
+		echo "<tr class='tab_bg_1'><td>".$lang["financial"][78].":		</td>";
+		echo "<td colspan='2'><input type='text' name='warranty_value' value=\"".$ic->fields["warranty_value"]."\" size='10'></td>";
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][22].":		</td><td colspan='2'>";
@@ -104,8 +116,12 @@ function showInfocomForm ($target,$device_type,$dev_ID) {
 
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][23].":		</td><td colspan='2'>";
 		dropdownDuration("amort_time",$ic->fields["amort_time"]);
-		echo $lang["financial"][9];
+		echo " ".$lang["financial"][9];
 		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_1'><td>".$lang["financial"][77].":		</td>";
+		echo "<td colspan='2'><input type='text' name='amort_coeff' value=\"".$ic->fields["amort_coeff"]."\" size='10'></td>";
+		echo "</tr>";
 
 		echo "<tr class='tab_bg_1'><td valign='top'>";
 		echo $lang["financial"][12].":	</td>";

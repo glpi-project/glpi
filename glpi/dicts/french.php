@@ -86,8 +86,9 @@ $lang["search"][5]	= "Voir par lieu";
 $lang["search"][6]	= "tri&eacute; par";
 $lang["search"][7]	= "Tous";
 $lang["search"][8]	= "Date d&eacute;but";
-$lang["search"][9]	= "Date  fin";
+$lang["search"][9]	= "Date fin";
 $lang["search"][10]	= "dans";
+
 
 // Central
 $lang["central"][0] 	= "Bienvenue ";
@@ -1151,5 +1152,15 @@ $lang["financial"][65] = "Entreprises associées";
 $lang["financial"][66] = "Contrats associées";
 $lang["financial"][67] = "Informations Commerciales associées";
 $lang["financial"][68] = "Activer les informations commerciales";
+$lang["financial"][69] = "Périodicté";
+$lang["financial"][70] = "Mensuel";
+$lang["financial"][71] = "Bimensuel";
+$lang["financial"][72] = "Trimestriel";
+$lang["financial"][73] = "Semestriel";
+$lang["financial"][74] = "Annuel";
+$lang["financial"][75] = "Bi-annuel";
+$lang["financial"][76] = "Date de mise en service";
+$lang["financial"][77] = "Coefficient d'amortissement";
+$lang["financial"][78] = "Valeur extension garantie";
 
 ?>

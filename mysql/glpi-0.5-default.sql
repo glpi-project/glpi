@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-02-26 21:33
+#GLPI Dump database on 2005-02-27 00:17
 ### Dump table glpi_cartridges
 
 DROP TABLE IF EXISTS glpi_cartridges;
@@ -302,6 +302,8 @@ CREATE TABLE glpi_contracts (
     begin_date date,
     duration decimal(3,2) DEFAULT '0.00' NOT NULL,
     notice decimal(3,2) DEFAULT '0.00' NOT NULL,
+    periodicity tinyint(4) DEFAULT '0' NOT NULL,
+    facturation tinyint(4) DEFAULT '0' NOT NULL,
     bill_type int(11) DEFAULT '0' NOT NULL,
     comments text NOT NULL,
     compta_num varchar(255) NOT NULL,
@@ -716,8 +718,7 @@ CREATE TABLE glpi_event_log (
    KEY date (date)
 );
 
-INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-02-26 21:33:02','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-02-26 21:31:59','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-02-27 00:17:24','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -746,15 +747,18 @@ CREATE TABLE glpi_infocoms (
     FK_device int(11) DEFAULT '0' NOT NULL,
     device_type tinyint(4) DEFAULT '0' NOT NULL,
     buy_date date DEFAULT '0000-00-00' NOT NULL,
+    use_date date DEFAULT '0000-00-00' NOT NULL,
     warranty_duration decimal(3,2) DEFAULT '0.00' NOT NULL,
     warranty_info varchar(255) NOT NULL,
     FK_enterprise int(11),
     num_commande varchar(50) NOT NULL,
     bon_livraison varchar(50) NOT NULL,
     num_immo varchar(50) NOT NULL,
-    value float,
+    value float DEFAULT '0' NOT NULL,
+    warranty_value float,
     amort_time decimal(3,2) DEFAULT '0.00' NOT NULL,
     amort_type varchar(20) NOT NULL,
+    amort_coeff float DEFAULT '0' NOT NULL,
     comments text NOT NULL,
    PRIMARY KEY (ID),
    UNIQUE FK_device (FK_device, device_type),
@@ -762,7 +766,7 @@ CREATE TABLE glpi_infocoms (
    KEY buy_date (buy_date)
 );
 
-INSERT INTO glpi_infocoms VALUES ('1','18','1','2001-09-24','1.00','',NULL,'','','',NULL,'0.00','','');
+INSERT INTO glpi_infocoms VALUES ('1','18','1','2001-09-24','0000-00-00','12.00','',NULL,'','','','0',NULL,'0.00','','0','');
 ### Dump table glpi_inst_software
 
 DROP TABLE IF EXISTS glpi_inst_software;

@@ -1258,6 +1258,8 @@ $query= "CREATE TABLE `glpi_contracts` (
   `begin_date` date default NULL,
   `duration` decimal(3,2) NOT NULL default '0.00',
   `notice` decimal(3,2) NOT NULL default '0.00',
+  `periodicity` tinyint(4) NOT NULL default '0',
+  `facturation` tinyint(4) NOT NULL default '0',
   `bill_type` int(11) NOT NULL default '0',
   `comments` text NOT NULL,
   `compta_num` varchar(255) NOT NULL default '',
@@ -1307,15 +1309,18 @@ $query= "CREATE TABLE `glpi_infocoms` (
   `FK_device` int(11) NOT NULL default '0',
   `device_type` tinyint(4) NOT NULL default '0',
   `buy_date` date NOT NULL default '0000-00-00',
+  `use_date` date NOT NULL default '0000-00-00',
   `warranty_duration` decimal(3,2) NOT NULL default '0.00',
   `warranty_info` varchar(255) NOT NULL default '',
   `FK_enterprise` int(11) default NULL,
   `num_commande` varchar(50) NOT NULL default '',
   `bon_livraison` varchar(50) NOT NULL default '',
   `num_immo` varchar(50) NOT NULL default '',
-  `value` float default NULL,
+  `value` float NOT NULL default '0',
+  `warranty_value` float default NULL,
   `amort_time` decimal(3,2) NOT NULL default '0.00',
   `amort_type` varchar(20) NOT NULL default '',
+  `amort_coeff` float NOT NULL default '0',
   `comments` text NOT NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `FK_device` (`FK_device`,`device_type`),
@@ -1347,7 +1352,7 @@ function date_diff($from, $to) {
 	}
 	$months = $month2 - $month1;
 	$years = $year2 - $year1;
-	return ($years+$months/12);
+	return (12*$years+$months);
 }
 
 function updateWarrantyInfos($table,$type){
