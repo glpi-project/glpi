@@ -808,7 +808,7 @@ $lang["install"][63]	= "Attention tout de même NE SUPPRIMEZ PAS l'utilisateur HE
 $lang["install"][64]	= "Utiliser GLPI"; 
 $lang["install"][65]	= "Test sur l'extension magic_quotes_sybase";
 $lang["install"][66]	= "GLPI ne peux pas fonctionner avec l'option magic_quotes_sybase; Veuillez desactiver cette option et re-essayer";
-$lang["install"][67]	= "L'otion magic_quotes_sybase n'est pas utilisée par votre serveur - Parfait !";
+$lang["install"][67]	= "L'option magic_quotes_sybase n'est pas utilisée par votre serveur - Parfait !";
 $lang["install"][70]	= "Impossible de cr&eacute;er le fichier de connection  &#224; la base de donn&eacute;es, v&eacute;rifiez les droits sur les fichiers"; 
 
 $lang["update"][90]  ="Erreur durant la mise  &#224; jour de la base de donn&eacute;es";
