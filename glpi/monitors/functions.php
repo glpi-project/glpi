@@ -191,7 +191,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			if ($sort=="location") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=mon.location&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=ASC&start=$start\">";
 			echo $lang["monitors"][6]."</a></th>";
 
 			// Type
@@ -199,7 +199,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			if ($sort=="type") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=mon.type&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_monitors.name&order=ASC&start=$start\">";
 			echo $lang["monitors"][9]."</a></th>";
 
 			// Last modified		
