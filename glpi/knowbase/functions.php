@@ -375,7 +375,7 @@ function kbcategoryList($current=0,$nullroot="yes")
 	echo "<option value='0'>".$lang["knowbase"][12]."</option>\n";
 	}
 	
-	kbcategoryListSelect($current, 0, "".$lang["knowbase"][12]."\\");
+	kbcategoryListSelect($current, 0, "\\");
 	echo "</select>\n";
 }
 
@@ -436,7 +436,7 @@ function kbcategoryname($ID, $wholename="")
 		$name = kbcategoryname($parentID, $name) . $name;
 		if($parentID == 0)
 		{
-			$name = $lang["knowbase"][12]."\\" . $name;
+			$name = "\\" . $name;
 		}
 	}
 	
