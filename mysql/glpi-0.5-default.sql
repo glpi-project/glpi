@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-03-04 10:45
+#GLPI Dump database on 2005-03-06 18:52
 ### Dump table glpi_cartridges
 
 DROP TABLE IF EXISTS glpi_cartridges;
@@ -118,24 +118,14 @@ CREATE TABLE glpi_computers (
     ID int(11) NOT NULL auto_increment,
     name varchar(200) NOT NULL,
     flags_server tinyint(4) DEFAULT '0' NOT NULL,
-    processor_speed varchar(30) NOT NULL,
     serial varchar(200) NOT NULL,
     otherserial varchar(200) NOT NULL,
-    ram varchar(6) NOT NULL,
-    hdspace varchar(6) NOT NULL,
     contact varchar(90) NOT NULL,
     contact_num varchar(90) NOT NULL,
     comments text NOT NULL,
     date_mod datetime,
     os int(11),
-    hdtype int(11),
-    sndcard int(11),
-    moboard int(11),
-    gfxcard int(11),
-    network int(11),
-    ramtype int(11),
     location int(11),
-    processor int(11),
     type int(11),
     is_template enum('0','1') DEFAULT '0' NOT NULL,
     tplname varchar(200),
@@ -145,23 +135,16 @@ CREATE TABLE glpi_computers (
    KEY flags (flags_server),
    KEY location (location),
    KEY os (os),
-   KEY type (type),
-   KEY hdtype (hdtype),
-   KEY moboard (moboard),
-   KEY gfxcard (gfxcard),
-   KEY processor (processor),
-   KEY ramtype (ramtype),
-   KEY network (network),
-   KEY sndcard (sndcard)
+   KEY type (type)
 );
 
-INSERT INTO glpi_computers VALUES ('8','Dell Inspiron 450','0','750','4586-sd6-fds','','512','10','Roger Rabbit','5462','','2003-09-18 00:15:44','5','2','3','3','4','1','6','1','7','1','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('10','Dell Inspiron 450','0','750','4598-jhd-545','','128','20','Peter Pan','8565','','2003-09-18 00:07:58','13','1','3','3','4','1','6','1','7','1','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('15','Dell Inspiron 450','0','750','4561-hsub-dfsnj','','512','20','Poppins Marry','6545','','2003-09-18 00:09:47','1','1','3','3','4','5','6','1','7','1','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('18','IBM 945gx','0','750','9854-5f-4s4f','','128','20','Jeannot Lapin','5465','','2003-09-18 00:05:07','2','1','3','3','4','1','6','1','7','1','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('19','','0','','','','','','','','Empty Template',NULL,'2','2','1','2','1','1','1','0','11','1','1','Blank Template','0','N');
-INSERT INTO glpi_computers VALUES ('20','','0','333','','','128','6','','','Standard iMac',NULL,'9','1','3','3','4','5','9','0','6','3','1','iMac','0','N');
-INSERT INTO glpi_computers VALUES ('21','','0','','','','','','','','',NULL,'12','2','3','2','1','1','1','1','11','1','1','test','0','N');
+INSERT INTO glpi_computers VALUES ('8','Dell Inspiron 450','0','4586-sd6-fds','','Roger Rabbit','5462','','2003-09-18 00:15:44','5','1','1','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('10','Dell Inspiron 450','0','4598-jhd-545','','Peter Pan','8565','','2003-09-18 00:07:58','13','1','1','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('15','Dell Inspiron 450','0','4561-hsub-dfsnj','','Poppins Marry','6545','','2003-09-18 00:09:47','1','1','1','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('18','IBM 945gx','0','9854-5f-4s4f','','Jeannot Lapin','5465','','2003-09-18 00:05:07','2','1','1','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('19','','0','','','','','Empty Template',NULL,'2','0','1','1','Blank Template','0','N');
+INSERT INTO glpi_computers VALUES ('20','','0','','','','','Standard iMac',NULL,'9','0','3','1','iMac','0','N');
+INSERT INTO glpi_computers VALUES ('21','','0','','','','','',NULL,'12','1','1','1','test','0','N');
 ### Dump table glpi_config
 
 DROP TABLE IF EXISTS glpi_config;
@@ -491,30 +474,6 @@ CREATE TABLE glpi_dropdown_firmware (
    PRIMARY KEY (ID)
 );
 
-### Dump table glpi_dropdown_gfxcard
-
-DROP TABLE IF EXISTS glpi_dropdown_gfxcard;
-CREATE TABLE glpi_dropdown_gfxcard (
-    ID int(11) NOT NULL auto_increment,
-    name varchar(255) NOT NULL,
-   PRIMARY KEY (ID)
-);
-
-INSERT INTO glpi_dropdown_gfxcard VALUES ('1','ATI Rage Pro 3D AGP');
-INSERT INTO glpi_dropdown_gfxcard VALUES ('2','Matrox Millenium G400DH');
-INSERT INTO glpi_dropdown_gfxcard VALUES ('3','S3 Trio 64V+');
-INSERT INTO glpi_dropdown_gfxcard VALUES ('4','integrated');
-### Dump table glpi_dropdown_hdtype
-
-DROP TABLE IF EXISTS glpi_dropdown_hdtype;
-CREATE TABLE glpi_dropdown_hdtype (
-    ID int(11) NOT NULL auto_increment,
-    name varchar(255) NOT NULL,
-   PRIMARY KEY (ID)
-);
-
-INSERT INTO glpi_dropdown_hdtype VALUES ('1','IBM DTTA 35101');
-INSERT INTO glpi_dropdown_hdtype VALUES ('2','IBM DCAS 34330');
 ### Dump table glpi_dropdown_iface
 
 DROP TABLE IF EXISTS glpi_dropdown_iface;
@@ -558,18 +517,6 @@ CREATE TABLE glpi_dropdown_locations (
 
 INSERT INTO glpi_dropdown_locations VALUES ('1','1 ier etage','0');
 INSERT INTO glpi_dropdown_locations VALUES ('2','2nd etage','0');
-### Dump table glpi_dropdown_moboard
-
-DROP TABLE IF EXISTS glpi_dropdown_moboard;
-CREATE TABLE glpi_dropdown_moboard (
-    ID int(11) NOT NULL auto_increment,
-    name varchar(255) NOT NULL,
-   PRIMARY KEY (ID)
-);
-
-INSERT INTO glpi_dropdown_moboard VALUES ('1','Asus T2P4S');
-INSERT INTO glpi_dropdown_moboard VALUES ('2','Asus P2BX');
-INSERT INTO glpi_dropdown_moboard VALUES ('3','unknown');
 ### Dump table glpi_dropdown_netpoint
 
 DROP TABLE IF EXISTS glpi_dropdown_netpoint;
@@ -581,26 +528,6 @@ CREATE TABLE glpi_dropdown_netpoint (
    KEY location (location)
 );
 
-### Dump table glpi_dropdown_network
-
-DROP TABLE IF EXISTS glpi_dropdown_network;
-CREATE TABLE glpi_dropdown_network (
-    ID int(11) NOT NULL auto_increment,
-    name varchar(255),
-   PRIMARY KEY (ID)
-);
-
-INSERT INTO glpi_dropdown_network VALUES ('1','3Com (100Mbps)');
-INSERT INTO glpi_dropdown_network VALUES ('2','3Com (10Mbps)');
-INSERT INTO glpi_dropdown_network VALUES ('3','Intel (100Mbps)');
-INSERT INTO glpi_dropdown_network VALUES ('4','Intel (10Mbps)');
-INSERT INTO glpi_dropdown_network VALUES ('5','Generic 100Mbps Card');
-INSERT INTO glpi_dropdown_network VALUES ('6','Generic 10Mbps Card');
-INSERT INTO glpi_dropdown_network VALUES ('7','None');
-INSERT INTO glpi_dropdown_network VALUES ('8','AMD 10Mbps');
-INSERT INTO glpi_dropdown_network VALUES ('9','Realtek 10Mbps');
-INSERT INTO glpi_dropdown_network VALUES ('10','Realtek 100Mbps');
-INSERT INTO glpi_dropdown_network VALUES ('11','integrated');
 ### Dump table glpi_dropdown_os
 
 DROP TABLE IF EXISTS glpi_dropdown_os;
@@ -623,71 +550,6 @@ INSERT INTO glpi_dropdown_os VALUES ('10','Windows 95 OSR2');
 INSERT INTO glpi_dropdown_os VALUES ('11','Windows 98 SR2');
 INSERT INTO glpi_dropdown_os VALUES ('12','Debian woody 3.0');
 INSERT INTO glpi_dropdown_os VALUES ('13','Windows NT 4.0 - SP3');
-### Dump table glpi_dropdown_processor
-
-DROP TABLE IF EXISTS glpi_dropdown_processor;
-CREATE TABLE glpi_dropdown_processor (
-    ID int(11) NOT NULL auto_increment,
-    name varchar(255),
-   PRIMARY KEY (ID)
-);
-
-INSERT INTO glpi_dropdown_processor VALUES ('1','Intel Pentium');
-INSERT INTO glpi_dropdown_processor VALUES ('2','Intel Pentium II');
-INSERT INTO glpi_dropdown_processor VALUES ('3','AMD K6-1');
-INSERT INTO glpi_dropdown_processor VALUES ('4','AMD K6-2');
-INSERT INTO glpi_dropdown_processor VALUES ('5','AMD K6-3');
-INSERT INTO glpi_dropdown_processor VALUES ('6','PowerPC G3');
-INSERT INTO glpi_dropdown_processor VALUES ('7','Intel Pentium III');
-INSERT INTO glpi_dropdown_processor VALUES ('8','AMD Athlon');
-INSERT INTO glpi_dropdown_processor VALUES ('9','68k (Motorola)');
-INSERT INTO glpi_dropdown_processor VALUES ('10','486 SX');
-INSERT INTO glpi_dropdown_processor VALUES ('11','486 DX');
-INSERT INTO glpi_dropdown_processor VALUES ('12','486 DX2/4');
-INSERT INTO glpi_dropdown_processor VALUES ('13','Intel Itanium');
-INSERT INTO glpi_dropdown_processor VALUES ('14','PowerPC G4');
-INSERT INTO glpi_dropdown_processor VALUES ('15','RS3000');
-INSERT INTO glpi_dropdown_processor VALUES ('16','RS10k');
-INSERT INTO glpi_dropdown_processor VALUES ('17','Alpha EV6.7');
-INSERT INTO glpi_dropdown_processor VALUES ('18','PowerPC 603ev');
-INSERT INTO glpi_dropdown_processor VALUES ('19','PowerPC 603');
-INSERT INTO glpi_dropdown_processor VALUES ('20','PowerPC 601');
-INSERT INTO glpi_dropdown_processor VALUES ('21','68040');
-INSERT INTO glpi_dropdown_processor VALUES ('22','68040');
-INSERT INTO glpi_dropdown_processor VALUES ('23','ULTRASparc II');
-INSERT INTO glpi_dropdown_processor VALUES ('24','Intel Pentium IV');
-INSERT INTO glpi_dropdown_processor VALUES ('25','AMD Athlon');
-INSERT INTO glpi_dropdown_processor VALUES ('26','AMD Duron');
-### Dump table glpi_dropdown_ram
-
-DROP TABLE IF EXISTS glpi_dropdown_ram;
-CREATE TABLE glpi_dropdown_ram (
-    ID int(11) NOT NULL auto_increment,
-    name varchar(255),
-   PRIMARY KEY (ID)
-);
-
-INSERT INTO glpi_dropdown_ram VALUES ('1','36pin SIMMS');
-INSERT INTO glpi_dropdown_ram VALUES ('2','72pin SIMMS (Fast Page)');
-INSERT INTO glpi_dropdown_ram VALUES ('3','72pin SIMMS (EDO)');
-INSERT INTO glpi_dropdown_ram VALUES ('4','Unbuffered DIMMs');
-INSERT INTO glpi_dropdown_ram VALUES ('5','DIMMs w/EEPROM');
-INSERT INTO glpi_dropdown_ram VALUES ('6','SDRAM DIMMs (<10ns)');
-INSERT INTO glpi_dropdown_ram VALUES ('7','ECC DIMMs');
-INSERT INTO glpi_dropdown_ram VALUES ('8','Other');
-INSERT INTO glpi_dropdown_ram VALUES ('9','iMac DIMMS');
-### Dump table glpi_dropdown_sndcard
-
-DROP TABLE IF EXISTS glpi_dropdown_sndcard;
-CREATE TABLE glpi_dropdown_sndcard (
-    ID int(11) NOT NULL auto_increment,
-    name varchar(255) NOT NULL,
-   PRIMARY KEY (ID)
-);
-
-INSERT INTO glpi_dropdown_sndcard VALUES ('1','Soundblaster 128 PCI');
-INSERT INTO glpi_dropdown_sndcard VALUES ('2','Soundblaster 16 PnP');
-INSERT INTO glpi_dropdown_sndcard VALUES ('3','integrated');
 ### Dump table glpi_dropdown_tracking_category
 
 DROP TABLE IF EXISTS glpi_dropdown_tracking_category;
@@ -728,7 +590,8 @@ CREATE TABLE glpi_event_log (
    KEY date (date)
 );
 
-INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-03-04 10:43:40','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-03-06 18:52:07','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-03-06 18:47:45','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -1044,14 +907,15 @@ CREATE TABLE glpi_software (
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
     is_template enum('0','1') DEFAULT '0' NOT NULL,
     tplname varchar(255),
+    date_mod datetime,
    PRIMARY KEY (ID),
    KEY platform (platform),
    KEY location (location)
 );
 
-INSERT INTO glpi_software VALUES ('3','Acrobat PDF Viewer','4',NULL,NULL,'5','N','-1','0','N','0',NULL);
-INSERT INTO glpi_software VALUES ('4','MS Windows NT','4.0',NULL,NULL,'5','N','-1','0','N','0',NULL);
-INSERT INTO glpi_software VALUES ('5','Latex','6.2','Latex','1','2','N','-1','0','N','0',NULL);
+INSERT INTO glpi_software VALUES ('3','Acrobat PDF Viewer','4',NULL,NULL,'5','N','-1','0','N','0',NULL,NULL);
+INSERT INTO glpi_software VALUES ('4','MS Windows NT','4.0',NULL,NULL,'5','N','-1','0','N','0',NULL,NULL);
+INSERT INTO glpi_software VALUES ('5','Latex','6.2','Latex','1','2','N','-1','0','N','0',NULL,NULL);
 ### Dump table glpi_templates
 
 DROP TABLE IF EXISTS glpi_templates;
