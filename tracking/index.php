@@ -45,6 +45,14 @@ checkAuthentication("normal");
 
 commonHeader("Tracking",$_SERVER["PHP_SELF"]);
 
+ // titre
+        echo "<div align='center'><table border='0'><tr><td><b>";
+        echo "<img src=\"".$HTMLRel."pics/suivi-intervention.png\" ></td><td><span class='icon_nav'>".$lang["tracking"][0]."</span>";
+        echo "</b></td></tr></table></div>";
+
+
+
+
 if(empty($_GET["start"])) $_GET["start"] = 0;
 
 

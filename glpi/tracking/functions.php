@@ -47,7 +47,7 @@ function searchFormTracking ($show,$contains) {
 	echo "\n<div align='center'>";
 	echo "<form method=\"get\" action=\"".$cfg_install["root"]."/tracking/index.php\">";
 	echo "<table border='0'>";
-	echo "<tr><th align='center' colspan='3'>".$lang["tracking"][0].":</th></tr>";
+	echo "<tr><th align='center' colspan='3'>".$lang["tracking"][7]."</th></tr>";
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td colspan='2' align='center'>";

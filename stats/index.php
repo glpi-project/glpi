@@ -42,8 +42,14 @@ checkAuthentication("normal");
 
 commonHeader("Stats",$_SERVER["PHP_SELF"]);
 
+// titre
+        echo "<div align='center'><table border='0'><tr><td><b>";
+        echo "<img src=\"".$HTMLRel."pics/statistiques.png\" ></td><td><span class='icon_nav'>".$lang["Menu"][13]."</span>";
+        echo "</b></td></tr></table></div>";
+
+
 //Affichage du tableau de présentation des stats
-echo "<center><table border='0' cellpadding=5>";
+echo "<div align='center'><table border='0' cellpadding='5'>";
 echo "<tr><th>".$lang["stats"][0].":</th></tr>";
 
 
@@ -53,7 +59,7 @@ echo "<tr><th>".$lang["stats"][0].":</th></tr>";
 	echo  "<tr class='tab_bg_1'><td align='center'><b><a href=\"stat_user.php\">".$lang["stats"][4]."</a></b></td></tr>";
 
 
-echo "</table></center>";
+echo "</table></div>";
 
 commonFooter();
 ?>

@@ -44,28 +44,20 @@ checkAuthentication("normal");
 
 commonHeader("Monitors",$_SERVER["PHP_SELF"]);
 
+echo "<div align='center'><table border='0'><tr><td><b>";
 
-?>
 
-<center>
-<table border='0'>
-<tr>
-	<td><b>
-<?php
+echo "<img src=\"".$HTMLRel."pics/ecran.png\" ></td><td><a  class='icon_consol' href=\"monitors-info-form.php?new=1\">".$lang["monitors"][0]."</a>";
 
-include ("_relpos.php");
-echo "<a href=\"monitors-info-form.php?new=1\">".$lang["monitors"][0]."</a>";
-?>
-	</b></td>
-</tr>
-</table>
-</center>
 
-<hr noshade>
-<?php
+echo "</b></td></tr></table></div>";
+
+
+
+
  
 
-include ("_relpos.php");
+
 searchFormMonitors();
 
 commonFooter();

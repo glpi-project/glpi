@@ -149,13 +149,13 @@ $lang["backup"][20]     ="Supp";
 
 // Tracking
 $lang["tracking"][0]	= "Suivi des interventions";
-$lang["tracking"][1]	= "Montrer toutes les interventions actives";
-$lang["tracking"][2]	= "Montrer seulement les interventions qui vous sont attribu&eacute;es";
-$lang["tracking"][3]	= "Montrer seulement les interventions non attribu&eacute;es";
-$lang["tracking"][4]	= "Montrer seulement les interventions termin&eacute;es";
+$lang["tracking"][1]	= "Toutes les interventions actives";
+$lang["tracking"][2]	= "Seulement les interventions qui vous sont attribu&eacute;es";
+$lang["tracking"][3]	= "Seulement les interventions non attribu&eacute;es";
+$lang["tracking"][4]	= "Seulement les interventions termin&eacute;es";
 $lang["tracking"][5]	= "Quand la description contient";
 $lang["tracking"][6]    = "Vous n'etes pas autoris&eacute; &agrave; (re-)attribuer cette intervention";
-
+$lang["tracking"][7]    = "Afficher...";
 
 
 $lang["joblist"][0]	= "Statut";
@@ -203,7 +203,7 @@ $lang["job"][17]        = "intervention";
 $lang["job"][18]        = "ancienne";
 // Computers
 
-$lang["computers"][0]	= "Ajouter ordinateur";
+$lang["computers"][0]	= "Ajouter ordinateur...";
 $lang["computers"][1]   = "Identifiant";
 $lang["computers"][6]	= "N° s&eacute;rie";
 $lang["computers"][7]	= "Nom";
@@ -467,6 +467,8 @@ $lang["setup"][58]      = "Droit d'attribution d'intervention";
 $lang["setup"][59]      = "Configurer les droits d'attribution d'intervention";
 $lang["setup"][60]      = "Non";
 $lang["setup"][61]  = "Oui";
+$lang["setup"][62]       = "Selectionnez la cat&eacute;gorie &agrave; configurer";
+
 
 // Helpdesk
 
