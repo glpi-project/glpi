@@ -88,7 +88,7 @@ if (is_array($type))
  //affichage du tableau
  echo "<table class='tab_cadre2' cellpadding='5' >";
  $champ=str_replace("locations","location",str_replace("glpi_","",str_replace("dropdown_","",str_replace("_computers","",$_POST["dropdown"]))));
- echo "<tr><th>&nbsp;</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th></tr>";
+ echo "<tr><th>&nbsp;</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th></tr>";
 
  //Pour chaque lieu on affiche
  //for each location displays
@@ -113,6 +113,9 @@ if (is_array($type))
 	//Le temps moyen de l'intervention réelle
 	//The average realtime to resolv
 		echo "<td>".getRealAvg(1,"glpi_computers.".getDropdownNameFromTable($_POST["dropdown"]),$key["ID"])."</td>";
+	//Le temps total de l'intervention réelle
+	//The total realtime to resolv
+		echo "<td>".getRealTotal(1,"glpi_computers.".getDropdownNameFromTable($_POST["dropdown"]),$key["ID"])."</td>";
 
 	echo "</tr>";
   }

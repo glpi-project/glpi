@@ -73,7 +73,7 @@ if (is_array($nomTech))
 //affichage du tableu
 //table display
 echo "<table class='tab_cadre2' cellpadding='5' >";
-echo "<tr><th>".$lang["stats"][16]."</th><th>".$lang["stats"][13]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th></tr>";
+echo "<tr><th>".$lang["stats"][16]."</th><th>".$lang["stats"][13]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th></tr>";
 //Pour chacun de ces utilisateurs on affiche
 //foreach these users display
 
@@ -93,6 +93,10 @@ echo "<tr><th>".$lang["stats"][16]."</th><th>".$lang["stats"][13]."</th><th>".$l
 	//Le temps moyen de l'intervention réelle
 	//The average realtime to resolv
 		echo "<td>".getRealAvg(4, 'assign',$key["assign"],$_POST["date1"],$_POST["date2"])."</td>";
+	//Le temps total de l'intervention réelle
+	//The total realtime to resolv
+		echo "<td>".getRealTotal(4, 'assign',$key["assign"],$_POST["date1"],$_POST["date2"])."</td>";
+
 	echo "</tr>";
   }
 echo "</table>";
