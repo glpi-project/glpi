@@ -32,6 +32,7 @@ This file is part of GLPI.
  
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
+include ($phproot . "/glpi/includes_tracking.php");
 require ("functions.php");
 
 checkAuthentication("normal");
@@ -76,6 +77,24 @@ echo "<td>".getResolMax(3)."</td>";
 echo "<td>".getResolMax(2)."</td>";
 echo "<td>".getResolMax(1)."</td>";
 echo "</tr>";
+//Temps moyen d'intervention réel
+//Max real time to resolv intervention
+echo "<tr class='tab_bg_1'>";
+echo "<td>".$lang["stats"][25]."</td>";
+echo "<td>".getRealAvg(3,"","")."</td>";
+echo "<td>".getRealAvg(2,"","")."</td>";
+echo "<td>".getRealAvg(1,"","")."</td>";
+echo "</tr>";
+
+//Temps max d'intervention réel
+//Max real time to resolv intervention
+echo "<tr class='tab_bg_1'>";
+echo "<td>".$lang["stats"][28]."</td>";
+echo "<td>".getRealResolMax(3)."</td>";
+echo "<td>".getRealResolMax(2)."</td>";
+echo "<td>".getRealResolMax(1)."</td>";
+echo "</tr>";
+
 echo "</table>";
 echo "</div>";
 
