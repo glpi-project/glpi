@@ -57,7 +57,7 @@ else $assign=$_GET["assign"];
 
 
 if (isset($_GET["Modif_Interne"])){
-addFormTracking($_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error,$search);
+addFormTracking($_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error,$_GET["search"]);
 }
 elseif (isset($_GET["priority"]) && empty($_GET["contents"]))
 {
