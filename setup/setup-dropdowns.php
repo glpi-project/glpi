@@ -79,6 +79,7 @@ if (isset($_POST["add"])) {
 	showFormTypeDown($_SERVER["PHP_SELF"],"networking",$lang["setup"][42]);
 	showFormTypeDown($_SERVER["PHP_SELF"],"printers",$lang["setup"][43]);
 	showFormTypeDown($_SERVER["PHP_SELF"],"monitors",$lang["setup"][44]);
+	showFormTypeDown($_SERVER["PHP_SELF"],"peripherals",$lang["setup"][69]);
 	showFormDropDown($_SERVER["PHP_SELF"],"os",$lang["setup"][5]);
 	showFormDropDown($_SERVER["PHP_SELF"],"ram",$lang["setup"][6]);
 	showFormDropDown($_SERVER["PHP_SELF"],"processor",$lang["setup"][7]);
