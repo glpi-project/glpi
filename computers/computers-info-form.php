@@ -50,29 +50,28 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 
-
-if (isset($_POST["add"])) {
+if (isset($tab["add"])) {
 	checkAuthentication("admin");
-	addComputer($_POST);
-	logEvent(0, "computers", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["name"].".");
+	addComputer($tab);
+	logEvent(0, "computers", 4, "inventory", $_SESSION["glpiname"]." added ".$tab["name"].".");
 	header("Location: $_SERVER[HTTP_REFERER]");
-} else if (isset($_POST["delete"])) {
+} else if (isset($tab["delete"])) {
 	checkAuthentication("admin");
-	deleteComputer($_POST);
-	logEvent($_POST["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
+	deleteComputer($tab);
+	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/computers/");
-} else if (isset($_POST["update"])) {
-	if(empty($_POST["show"])) $_POST["show"] = "";
-	if(empty($_POST["contains"])) $_POST["contains"] = "";
+} else if (isset($tab["update"])) {
+	if(empty($tab["show"])) $tab["show"] = "";
+	if(empty($tab["contains"])) $tab["contains"] = "";
 	checkAuthentication("admin");
-	updateComputer($_POST);
-	logEvent($_POST["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]."updated item.");
+	updateComputer($tab);
+	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]."updated item.");
 	commonHeader("Computers",$_SERVER["PHP_SELF"]);
-	showComputerForm(0,$_SERVER["PHP_SELF"],$_POST["ID"]);
-	showPorts($_POST["ID"], 1);
-	showPortsAdd($_POST["ID"],1);
-	showSoftwareInstalled($_POST["ID"]);
-	showJobListForItem($_SESSION["glpiname"],$_POST["ID"]);
+	showComputerForm(0,$_SERVER["PHP_SELF"],$tab["ID"]);
+	showPorts($tab["ID"], 1);
+	showPortsAdd($tab["ID"],1);
+	showSoftwareInstalled($tab["ID"]);
+	showJobListForItem($_SESSION["glpiname"],$tab["ID"]);
 	commonFooter();
 } 
 else if (isset($tab["disconnect"]))
@@ -109,19 +108,26 @@ else if(isset($tab["connect"])&&isset($tab["device_type"]))
 
 	checkAuthentication("normal");
 	commonHeader("Computers",$_SERVER["PHP_SELF"]);
-	if (isset($_GET["withtemplate"]))
+	if (isset($tab["withtemplate"]))
 	{
-		showComputerForm($_GET["withtemplate"],$_SERVER["PHP_SELF"],$_GET["ID"]);
+		showComputerForm($tab["withtemplate"],$_SERVER["PHP_SELF"],$tab["ID"]);
 	}
 	else
 	{
-		if (showComputerForm(0,$_SERVER["PHP_SELF"],$_GET["ID"])) {
-			showPorts($_GET["ID"], 1);
-			showPortsAdd($_GET["ID"],1);
-			showConnections($_GET["ID"]);
-			showSoftwareInstalled($_GET["ID"]);
-			showJobListForItem($_SESSION["glpiname"],$_GET["ID"]);
-			showOldJobListForItem($_SESSION["glpiname"],$_GET["ID"]);
+	if ($_SESSION["glpitype"]=="admin"&&isset($tab["delete_inter"])&&!empty($tab["todel"])){
+		$j=new Job;
+		foreach ($tab["todel"] as $key => $val){
+			if ($val==1) $j->deleteInDB($key);
+			}
+		}
+
+		if (showComputerForm(0,$_SERVER["PHP_SELF"],$tab["ID"])) {
+			showPorts($tab["ID"], 1);
+			showPortsAdd($tab["ID"],1);
+			showConnections($tab["ID"]);
+			showSoftwareInstalled($tab["ID"]);
+			showJobListForItem($_SESSION["glpiname"],$tab["ID"]);
+			showOldJobListForItem($_SESSION["glpiname"],$tab["ID"]);
 			
 		}
 	}
