@@ -183,7 +183,19 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.id_device&order=ASC&start=$start\">";
 			echo $lang["reservation"][4]."</a></th>";
 
-			echo "<th>".$lang["reservation"][23]."</th>";
+			// Comments
+			echo "<th>";
+			if ($sort=="glpi_reservation_item.comments") {
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.comments&order=ASC&start=$start\">";
+			echo $lang["reservation"][23]."</a></th>";
+			
+			
+			
+			
+			
+			
 			echo "<th>&nbsp;</th>";
 			echo "<th>&nbsp;</th>";
 			echo "<th>&nbsp;</th>";
@@ -193,14 +205,14 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 				$ID = $db->result($result_limit, $i, "ID");
 				$ri = new ReservationItem;
 				$ri->getfromDB($ID);
-				echo "<tr class='tab_bg_2'>";
+				echo "<tr class='tab_bg_2' align='center'>";
 				echo "<td>";
 				echo $ri->fields["ID"];
 				echo "</td>";
 				
 				echo "<td>". $ri->getType()."</td>";
 				echo "<td><b>". $ri->getLink() ."</b></td>";
-				echo "<td><b>". substr(unhtmlentities_deep($ri->fields["comments"]),0,$cfg_features["cut"])."</b></td>";
+				echo "<td>". substr(unhtmlentities_deep($ri->fields["comments"]),0,$cfg_features["cut"])."</td>";
 				echo "<td>";
 				echo "<a href='".$target."?comment=$ID'>".$lang["reservation"][22]."</a>";
 				echo "</td>";
