@@ -122,7 +122,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 	$query .= "LEFT JOIN glpi_type_networking on networking.type = glpi_type_networking.ID ";
 	$query .= "LEFT JOIN glpi_dropdown_firmware on networking.firmware = glpi_dropdown_firmware.ID ";
 	$query .= "where $where ORDER BY $sort $order";
-	echo $query;
+	
 	// Get it from database	
 	$db = new DB;
 	if ($result = $db->query($query)) {
@@ -169,7 +169,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			echo $lang["networking"][2]."</a></th>";
 
 			
-			// Firmqare
+			// Firmware
 			echo "<th>";
 			if ($sort=="networking.firmware") {
 				echo "&middot;&nbsp;";
