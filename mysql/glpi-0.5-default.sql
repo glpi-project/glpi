@@ -159,7 +159,6 @@ INSERT INTO glpi_computers VALUES ('18','IBM 945gx','0','9854-5f-4s4f','','Jeann
 INSERT INTO glpi_computers VALUES ('19','','0','','','','','0','Empty Template',NULL,'2','0','1','1','Blank Template','0','N');
 INSERT INTO glpi_computers VALUES ('20','','0','','','','','0','Standard iMac',NULL,'9','0','3','1','iMac','0','N');
 INSERT INTO glpi_computers VALUES ('21','','0','','','','','0','',NULL,'12','1','1','1','test','0','N');
-INSERT INTO glpi_computers VALUES ('22','','0','','','','','0','',NULL,NULL,NULL,NULL,'1','Blank Template','0','N');
 
 ### Dump table glpi_config
 
