@@ -18,11 +18,89 @@
           <meta name="DC.Rights" content="Cet article est sous licence GPL."/>
           <meta name="DC.Subject" content="HELPDESK"/>
 
+	  
+<style type="text/css">
+
+#right{
+
+width: 500px;
+height: 500px;
+background: #eee;
+}
+
+#left{
+ float: right;
+
+width: 200px;
+height: 500px;
+background: #eee;
+}
+
+
+#right a, a:hover, a:visited, a:active, a:link {
+
+text-decoration: none;
+
+}
+
+
+.menu
+{
+ overflow: auto;
+width: 198px;
+height: 490px;
+
+font-family: Trebuchet MS, Arial, Sans, sans-serif;
+font-size: 10px;
+
+font-weight: bold;
+color: black;
+
+
+}
+
+
+.menu ul
+{
+padding-left: 5px;
+margin-left: 0;
+
+}
+
+.menu li
+{
+list-style: none;
+margin: 0;
+padding: 0.25em;
+border-top: 1px solid gray;
+}
+
+
+
+.content
+ {
+  overflow: auto;
+width: 490px;
+height: 490px;
+ 
+ 
+ font-family: Arial, Sans, sans-serif;
+font-size: 11px;
+
+ 
+ }
+</style>	  
+	  
+	  
+	  
         </head>
 
  <body>
 	    
 <h1>Aide CENTRAL</h1>
+
+<div id="left">
+<div class='menu'>
 <h2>Sommaire</h2>
 <UL><a href="#invent">1 - Partie Inventaire</a>
 <li><a href="#inventa">a) Considération générales</a></li>
@@ -51,7 +129,13 @@
 <li><a href="#adminc">c) Préférences</a></li>
 <li><a href="#admind">d) Données (Sauvegarde/Restauration)</a></li>
 </UL>
-    
+ 
+</div>
+</div>
+
+<div id='right'>
+<div class='content'>
+   
 <h2><A NAME="invent"></A>1 - Partie Inventaire</h2>
 
 <h3><A NAME="inventa"></A>a) Considération générales</h3>
@@ -289,5 +373,8 @@ des interventions et de définir la langue avec laquelle l'interface est affichée
 <p>Cette zone vous permet de créer des sauvegardes de la base de données ("Sauvegarde SQL").</p>
 <p>Vous pouvez également supprimer les fichiers de sauvegarde, les restaurer ou télécharger les fichiers SQL.</p>
 <p>Vous pouvez aussi générer une sauvegarde au format XML de la base de données. ("Sauvegarde XML").</p>
+
+</div>
+</div>
 
 </body> 

@@ -74,7 +74,7 @@ $lang["buttons"][20] ="Déplacer";
 $lang["choice"][0]	= "Oui";
 $lang["choice"][1]	= "Non";
 
-$lang["search"][0]	= "Rechercher par";
+$lang["search"][0]	= "Rechercher par ";
 $lang["search"][1]	= "O&ugrave; ce champ";
 $lang["search"][2]	= "contient";
 $lang["search"][3]	= "phrase exacte";
@@ -960,8 +960,8 @@ $lang["knowbase"][17] ="Modification de la cat&eacute;gorie ";
 $lang["knowbase"][18] ="Supression de la cat&eacute;gorie ";
 $lang["knowbase"][19] ="Echec de la suppression : Cette cat&eacute;gorie contient des items, vous devez effacer tous les items de cette cat&eacute;gorie avant de la supprimer ";
 $lang["knowbase"][20] ="Base de connaissances vide";
-$lang["knowbase"][21] ="Voir Tous";
-$lang["knowbase"][22] ="Masquer Tous";
+$lang["knowbase"][21] ="Tout déplier";
+$lang["knowbase"][22] ="Tout replier";
 
 $lang["title"][0] = "Centre de contrôle";
 $lang["title"][1] = "Accès au Helpdesk seulement";

@@ -41,16 +41,17 @@ global $lang;
 	echo "<form method=post action=\"$target\">";
 	echo "<div align='center'><table border='0' width='500px' class='tab_cadre'>";
 
-    echo "<tr><td><input type='text' size='30' name=\"contains\" value=\"". $contains ."\" /><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit' /></td>";
+	echo "<tr ><th colspan='4'><b>".$lang["search"][0].":</b></th></tr>";
+    echo "<tr class='tab_bg_2' align='center'><td><input type='text' size='30' name=\"contains\" value=\"". $contains ."\" ></td><td><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit' ></td>";
 	// From helpdesk or central
     if (ereg("\?",$target)) $separator="&";
     else $separator="?";
     
     echo "<td><a href=\"".$target.$separator."toshow=all\">".$lang["knowbase"][21]."</a> </td>";
-    echo "<td align='right'><a href=\"".$target.$separator."tohide=all\">".$lang["knowbase"][22]."</a>";
+    echo "<td ><a href=\"".$target.$separator."tohide=all\">".$lang["knowbase"][22]."</a>";
     echo "</td></tr>";
 	
-	echo "</form>";
+	echo "</table></div></form>";
 	
 	
 }
@@ -96,10 +97,12 @@ function showKbItemForm($target,$ID){
 	echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 	}		
 
-	
-	echo "<p >".$lang["knowbase"][6];
+	echo "<fieldset>";
+	echo "<legend>".$lang["knowbase"][13]."</legend>";
+	echo "<p style='text-align:center'>".$lang["knowbase"][6];
 	kbcategoryList($ki->fields["categoryID"],"no");
 	echo "</p>";
+	echo "</fieldset>";
 		
 	echo "<fieldset>";
 	echo "<legend>".$lang["knowbase"][3]."</legend>";
@@ -115,7 +118,7 @@ function showKbItemForm($target,$ID){
 	
 	echo "<br>\n";
 	
-	//echo "<input type='checkbox' name='faq' value=\"yes\"> Place this Knowledge Base Article into the publicly viewable FAQ as well. <BR>\n";
+	
 	echo "<p align='center'>";
 	if ($ki->fields["faq"] == "yes") {
 			echo "<input class='submit' type='checkbox' name='faq' value='yes' checked>";
@@ -251,7 +254,7 @@ function showKbCategoriesall()
 
 	global $lang;	
 
-	echo "<div align='center'>";
+	
 	echo "<div align='center'><table border='0' class='tab_cadre' >";
 	echo "<tr><th align='center' width='700px'>".$lang["knowbase"][0]."</th></tr><tr><td>";	
 	
@@ -290,9 +293,9 @@ function showKbCategories($parentID=0)
 			echo "<li><b>";
 			if (!isset($_SESSION["kb_show"][$ID])) $_SESSION["kb_show"][$ID]='Y';
 			if ($_SESSION["kb_show"][$ID]=='Y')
-			echo "<a href=\"".$_SERVER["PHP_SELF"]."?tohide=$ID\"><img src='".$HTMLRel."pics/puce-down.gif'></a>";
+			echo "<a href=\"".$_SERVER["PHP_SELF"]."?tohide=$ID\"><img src='".$HTMLRel."pics/puce-down.gif' alt='down'></a>";
 			else 
-			echo "<a href=\"".$_SERVER["PHP_SELF"]."?toshow=$ID\"><img src='".$HTMLRel."pics/puce.gif'></a>";
+			echo "<a href=\"".$_SERVER["PHP_SELF"]."?toshow=$ID\"><img src='".$HTMLRel."pics/puce.gif' alt='up'></a>";
 			
 			echo " $name</b>\n";
 			if ($_SESSION["kb_show"][$ID]=='Y'){
