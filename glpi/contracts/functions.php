@@ -472,7 +472,7 @@ function showDeviceContract($instID,$search='') {
 		$con->getFromDB($type,$ID);
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>".$con->getType()."</td>";
-	echo "<td align='center'>".$con->getName()."</td>";
+	echo "<td align='center'>".$con->getLink()."</td>";
 	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
 	}
@@ -509,7 +509,7 @@ $result = $db->query($query);
 }
 
 function showEnterpriseContract($instID) {
-	GLOBAL $cfg_layout,$cfg_install, $lang;
+	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
 
     $db = new DB;
 	$query = "SELECT glpi_contract_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.phonenumber as phone ";
@@ -528,10 +528,16 @@ function showEnterpriseContract($instID) {
 
 	while ($i < $number) {
 		$ID=$db->result($result, $i, "ID");
+		$website=$db->result($result, $i, "glpi_enterprises.website");
+		if (!empty($website)){
+			$website=$db->result($result, $i, "website");
+			if (!ereg("https*://",$website)) $website="http://".$website;
+			$website="<a target=_blank href='$website'>".$db->result($result, $i, "website")."</a>";
+		}
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>".$db->result($result, $i, "name")."</td>";
-	echo "<td align='center'>".$db->result($result, $i, "website")."</td>";
+	echo "<td align='center'><a href='".$HTMLRel."enterprises/enterprises-info-form.php?ID=$ID'>".$db->result($result, $i, "name")."</a></td>";
 	echo "<td align='center'>".$db->result($result, $i, "phone")."</td>";
+	echo "<td align='center'>".$website."</td>";
 	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteenterprise=deleteenterprise&ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
 	}
@@ -643,13 +649,13 @@ function	dropdownYesNo($name,$value){
 }	
 
 function getContractEnterprises($ID){
-	
+	global $HTMLRel;
     $db = new DB;
 	$query = "SELECT glpi_enterprises.* FROM glpi_contract_enterprise, glpi_enterprises WHERE glpi_contract_enterprise.FK_enterprise = glpi_enterprises.ID AND glpi_contract_enterprise.FK_contract = '$ID'";
 	$result = $db->query($query);
 	$out="";
 	while ($data=$db->fetch_array($result)){
-		$out.=$data["name"]."<br>";
+		$out.="<a href='".$HTMLRel."enterprises/enterprises-info-form.php?ID=".$data["ID"]."'>".$data["name"]."</a><br>";
 		
 	}
 	return $out;
@@ -702,7 +708,7 @@ function showContractAssociated($device_type,$ID){
 		$con=new Contract;
 		$con->getFromDB($cID);
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>".$con->fields["num"]."</td>";
+	echo "<td align='center'><a href='".$HTMLRel."contracts/contracts-info-form.php?ID=$cID'>".$con->fields["num"]."</a></td>";
 	echo "<td align='center'>".getContractTypeName($con->fields["contract_type"])."</td>";
 	echo "<td align='center'>".getContractEnterprises($cID)."</td>";	
 	echo "<td align='center'>".$con->fields["begin_date"]."</td>";

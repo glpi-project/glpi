@@ -220,7 +220,7 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				echo "<td>".$con->fields["phone"]."</td>";
 				echo "<td>".$con->fields["phone2"]."</td>";
 				echo "<td>".$con->fields["fax"]."</td>";
-				echo "<td>".$con->fields["email"]."</td>";
+				echo "<td><a href='mailto:".$con->fields["email"]."'>".$con->fields["email"]."</a></td>";
 				echo "<td>".getContactTypeName($con->fields["type"])."</td>";
 				echo "</tr>";
 			}
