@@ -223,11 +223,11 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 		if ($item)
 		{
 			echo "<tr class='tab_bg_2'>";
-			echo "<td align='center' colspan='8' class='tab_bg_1'><b>";
-			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&device_type=$item_type\">";
+			echo "<td align='center' colspan='8' class='tab_bg_1'>";
+			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&device_type=$item_type\"><b>";
 			echo $lang["joblist"][7];
-			echo "</a>";
-			echo "</b></td></tr>";
+			echo "</b></a>";
+			echo "</td></tr>";
 		}
 		echo "</table></div>";
 		// Pager
@@ -237,7 +237,7 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 		if (isAdmin($_SESSION["glpitype"])&&$show == "old"){
 			echo "<br><div align='center'>";
 			echo "<table cellpadding='5' width='90%'>";
-			echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" ></td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&select=all&start=$start'>".$lang["buttons"][18]."</a></td>";
+			echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&select=all&start=$start'>".$lang["buttons"][18]."</a></td>";
 			
 			echo "<td>/</td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&select=none&start=$start'>".$lang["buttons"][19]."</a>";
 			echo "</td><td>";
@@ -255,11 +255,11 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 
 		if ($item) 
 		{
-			echo "<tr><td align='center' class='tab_bg_1'><b>";
-			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&device_type=$item_type\">";
+			echo "<tr><td align='center' class='tab_bg_1'>";
+			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&device_type=$item_type\"><b>";
 			echo $lang["joblist"][7];
-			echo "</a>";
-			echo "</b></td></tr>";
+			echo "</b></a>";
+			echo "</td></tr>";
 		}
 		echo "</table>";
 		echo "</div><br>";
@@ -325,7 +325,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (device_type = '$item_ty
 		echo "<br><div align='center'>";
 		
 		echo "<table class ='delete-old-job' cellpadding='5' width='90%'>";
-		echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" ></td><td><a href='".$_SERVER["PHP_SELF"]."?select=all&ID=$item'>".$lang["buttons"][18]."</a></td>";
+		echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt='' ></td><td><a href='".$_SERVER["PHP_SELF"]."?select=all&ID=$item'>".$lang["buttons"][18]."</a></td>";
 			
 		echo "<td>/</td><td><a href='".$_SERVER["PHP_SELF"]."?select=none&ID=$item'>".$lang["buttons"][19]."</a>";
 		echo "</td><td>";
@@ -388,11 +388,11 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and 
 		}
 		if ($item)
 		{
-			echo "<tr><td align='center' class='tab_bg_2' colspan='8'><b>";
-			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&device_type=$item_type\">";
+			echo "<tr><td align='center' class='tab_bg_2' colspan='8'>";
+			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&device_type=$item_type\"><b>";
 			echo $lang["joblist"][7];
-			echo "</a>";
-			echo "</b></td></tr>";
+			echo "</b></a>";
+			echo "</td></tr>";
 		}
 		echo "</table></div>";
 	} 
@@ -405,11 +405,11 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and 
 		if ($item)
 		{
 			 
-			  echo "<tr><td align='center' class='tab_bg_2' colspan='8'><b>";
-			  echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&device_type=$item_type\">";
+			  echo "<tr><td align='center' class='tab_bg_2' colspan='8'>";
+			  echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&device_type=$item_type\"><b>";
 			  echo $lang["joblist"][7];
-			  echo "</a>";
-			  echo "</b></td></tr>";
+			  echo "</b></a>";
+			  echo "</td></tr>";
 		}
 		echo "</table>";
 		echo "</div><br>";
@@ -455,14 +455,14 @@ function showJobShort($ID, $followups	) {
 
 		echo "<td align='center'><b>$job->priority</b></td>";
 		
-		echo "<td align='center'><b>";
+		echo "<td align='center'>";
 
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
-		echo "<a href=\"".$cfg_install["root"]."/setup/users-info.php?ID=$job->author\">$job->author</a>";
+		echo "<a href=\"".$cfg_install["root"]."/setup/users-info.php?ID=$job->author\"><b>$job->author</b></a>";
 		else
-		echo "$job->author";
+		echo "<b>$job->author</b>";
 
-		echo "</b></td>";
+		echo "</td>";
 
 		if ($job->assign == "")
 		{
@@ -470,15 +470,15 @@ function showJobShort($ID, $followups	) {
 	    	}
 		else
 		{
-			echo "<td align='center'><b>";
+			echo "<td align='center'>";
 			if (strcmp($_SESSION["glpitype"],"post-only")!=0)
-			echo "<a href=\"".$cfg_install["root"]."/setup/users-info.php?ID=$job->assign\">$job->assign</a>";
+			echo "<a href=\"".$cfg_install["root"]."/setup/users-info.php?ID=$job->assign\"><b>$job->assign</b></a>";
 			else
-			echo "$job->assign";
+			echo "<b>$job->assign</b>";
 
 //			$job->assign
 			
-			echo "</b></td>";
+			echo "</td>";
 		}    
 		
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0){
@@ -513,9 +513,9 @@ function showJobShort($ID, $followups	) {
 		echo "<td width='40' class='tab_bg_2' align='center'>";
 		
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
-		echo "<b><a href=\"".$cfg_install["root"]."/tracking/tracking-followups.php?ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;($job->num_of_followups)&nbsp;<br>";
+		echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-followups.php?ID=$job->ID\"><b>".$lang["joblist"][13]."</b></a>&nbsp;($job->num_of_followups)&nbsp;<br>";
 		else
-		echo "<b><a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;($job->num_of_followups)&nbsp;<br>";
+		echo "<a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;($job->num_of_followups)&nbsp;<br>";
 //		if ($job->status == "new"&&strcmp($_SESSION["glpitype"],"post-only")!=0)
 //		{
 //			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-mark.php?ID=$job->ID\">".$lang["joblist"][14]."</a><br>";
