@@ -525,7 +525,7 @@ function getDictDeviceLabel($device_num=-1) {
 
 function showDevicesForm ($target,$ID,$device_type) {
 
-	GLOBAL $cfg_install,$cfg_layout,$lang,$HTMLRel;
+	GLOBAL $cfg_install,$cfg_layout,$lang,$HTMLRel,$REFERER;
 
 	$device = new Device($device_type);
 
@@ -537,7 +537,10 @@ function showDevicesForm ($target,$ID,$device_type) {
 		if($device->getfromDB($ID)) $device_spotted = true;
 	}
 
-	echo "<div align='center'><form method='post' name='form' action=\"$target\">";
+	echo "<div align='center'>";
+	echo "<a href='$REFERER'>".$lang["buttons"][13]."</a>";
+	echo "<form method='post' name='form' action=\"$target\">";
+	echo "<input type='hidden' name='referer' value='$REFERER'>";
 	echo "<table class='tab_cadre' width='700' cellpadding='2'>";
 	echo "<tr><th align='center' colspan='1'>";
 	echo getDictDeviceLabel($device_type)."</th><th align='center' colspan='1'> ID : ".$ID;

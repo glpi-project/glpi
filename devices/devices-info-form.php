@@ -50,6 +50,13 @@ if(empty($tab["device_type"])) {
 	 exit();
 }
 
+if (isset($_SERVER["HTTP_REFERER"])) $REFERER=$_SERVER["HTTP_REFERER"];
+if (isset($tab["referer"])) $REFERER=$tab["referer"];
+if (isset($_POST["referer"])) $REFERER=$_POST["referer"];
+
+unset($_POST["referer"]);
+unset($tab["referer"]);
+
 if (isset($_POST["add"])) {
 	checkAuthentication("admin");
 	addDevice($_POST);
@@ -66,7 +73,7 @@ else if (isset($_POST["update"])) {
 	checkAuthentication("admin");
 	updateDevice($_POST);
 	logEvent($_POST["ID"], "Devices", 4, "inventory", $_SESSION["glpiname"]." updated item.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
+	header("Location: ".$_SERVER['HTTP_REFERER']."&referer=$REFERER");
 }
 else {
 	checkAuthentication("normal");
