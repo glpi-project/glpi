@@ -70,7 +70,7 @@ function searchFormPrinters($field="",$phrasetype= "",$contains="",$sort= "") {
 	$option["printer.date_mod"]			= $lang["printers"][16];
 	$option["glpi_networking_ports.ifaddr"] = $lang["networking"][14];
 	$option["glpi_networking_ports.ifmac"] = $lang["networking"][15];
-	
+	$option["glpi_dropdown_netpoint.name"]			= $lang["networking"][51];
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/printers/printers-search.php\">";
 	echo "<div align='center'><table  width='750' class='tab_cadre'>";
@@ -145,7 +145,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 		}
 		$where .= " OR glpi_networking_ports.ifaddr LIKE '%".$contains."%'";
 		$where .= " OR glpi_networking_ports.ifmac LIKE '%".$contains."%'";
-		
+		$where .= " OR glpi_dropdown_netpoint.name LIKE '%".$contains."%'";
 		$where .= ")";
 	}
 	else {
@@ -165,7 +165,8 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 	}
 	$query = "select DISTINCT printer.ID from glpi_printers as printer LEFT JOIN glpi_dropdown_locations on printer.location=glpi_dropdown_locations.ID ";
 	$query .= "LEFT JOIN glpi_type_printers on printer.type = glpi_type_printers.ID ";
-	$query .= "LEFT JOIN glpi_networking_ports on (printer.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='3')";		
+	$query .= "LEFT JOIN glpi_networking_ports on (printer.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='3')";	
+	$query .= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";	
 	$query .= "where $where ORDER BY $sort $order";
 	
 //	echo $query;
