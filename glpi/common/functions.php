@@ -294,7 +294,8 @@ function commonHeader($title,$url)
 	
 	
 $utils = array($lang["Menu"][17]=>array("/reservation/index.php","1"),
-			   "Helpdesk"=>array("/helpdesk/index.php","1"));	
+		$lang["Menu"][19]=>array("/knowbase/index.php"," "),
+		"Helpdesk"=>array("/helpdesk/index.php"," "));	
 	
 $inventory = 	array($lang["Menu"][0]=>array("/computers/index.php","1"),
 	              $lang["Menu"][1]=>array("/networking/index.php","2"),
@@ -534,7 +535,9 @@ function helpHeader($title,$url,$name) {
 	
 	echo "<td>";
         echo "<a  class='icon_nav_move' href=\"".$cfg_install["root"]."/helpdesk.php?show=resa\"><img  src=\"".$HTMLRel."pics/reservation-2.png\" alt=\"".$lang["Menu"][17]."\" title=\"".$lang["Menu"][17]."\"></a><br><br>";
-        echo "</td>";
+        echo "<a class='icon_nav_move' href=\"".$cfg_install["root"]."/helpdesk.php?show=faq\"><img  src=\"".$HTMLRel."pics/faq-24.png\" alt=\"".$lang["knowbase"][1]."\" title=\"".$lang["knowbase"][1]."\"></a>";
+	
+	echo "</td>";
 	// On the right side of the navigation bar, we have a clock with
 	// date, help and a logout-link.
 	echo "<td align='right' width='100'><div align='right'>";

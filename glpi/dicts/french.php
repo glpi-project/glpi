@@ -155,6 +155,7 @@ $lang["Menu"][15]	="Administration";
 $lang["Menu"][16]	="P&eacute;riphériques";
 $lang["Menu"][17]	="R&eacute;servations";
 $lang["Menu"][18]	="Outils";
+$lang["Menu"][19]	="Base connaissances";
 
 //Donn&eacute;es
 
@@ -886,5 +887,9 @@ $lang["reservation"][21]	= "Voir les r&eacute;servations";
 $lang["reservation"][22]	= "Modifier le commentaire";
 $lang["reservation"][23]	= "Commentaire";
 $lang["reservation"][24]	= "Pr&ecirc;t";
+
+$lang["knowbase"][0] ="Base de connaissances";
+$lang["knowbase"][1] ="FAQ";
+$lang["knowbase"][2] ="Ajouter un item &agrave; la base de connaissances";
 
 ?>

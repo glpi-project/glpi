@@ -7,11 +7,6 @@ GLPI - Gestionnaire Libre de Parc Informatique
  
  http://indepnet.net/   http://glpi.indepnet.org
  ----------------------------------------------------------------------
- Based on:
-IRMA, Information Resource-Management and Administration
-Christian Bauer 
-
- ----------------------------------------------------------------------
  LICENSE
 
 This file is part of GLPI.
@@ -34,25 +29,23 @@ This file is part of GLPI.
  Purpose of file:
  ----------------------------------------------------------------------
 */
- 
-
-include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_software.php");
-
-checkAuthentication("normal");
-commonHeader("Reports",$_SERVER["PHP_SELF"]);
 
 
-# Title
-echo "<div align='center'><table ><tr><td>";
-echo "<img src=\"".$HTMLRel."pics/rapports.png\" alt='".$lang["Menu"][6]."' title='".$lang["Menu"][6]."'></td><td><span class='icon_nav'><b>".$lang["Menu"][6]."</b></span>";
-echo "</td></tr></table></div>";
 
-echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-echo "<tr><th>".$lang["reports"][0].":</th></tr>";
-echo "<tr class='tab_bg_1'><td align='center'><a href=\"default_txt.php\"><b>Normal</b>&nbsp;&nbsp;</a><a href=\"default_pdf.php\"><b>En PDF</b></a></td></tr>";
-echo "</table></div>";
-commonFooter();
+
+$Dir = str_replace('\\', '/', getcwd());
+$Dir = explode('/', $Dir);
+$NDir = count($Dir);
+for($i=count($Dir); $i>0;$i--)
+{
+if(file_exists(implode('/', $Dir) . '/siteroot.php'))
+{
+$phproot = implode('/', $Dir);
+$HTMLRel = str_repeat("../", $NDir - count($Dir));
+$i = 0;
+}
+unset($Dir[$i]);
+}
+
 
 ?>

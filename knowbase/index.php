@@ -7,11 +7,6 @@ GLPI - Gestionnaire Libre de Parc Informatique
  
  http://indepnet.net/   http://glpi.indepnet.org
  ----------------------------------------------------------------------
- Based on:
-IRMA, Information Resource-Management and Administration
-Christian Bauer 
-
- ----------------------------------------------------------------------
  LICENSE
 
 This file is part of GLPI.
@@ -33,26 +28,33 @@ This file is part of GLPI.
  Original Author of file:
  Purpose of file:
  ----------------------------------------------------------------------
+
+
 */
  
 
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_software.php");
+include ($phproot . "/glpi/includes_knowbase.php");
+
 
 checkAuthentication("normal");
-commonHeader("Reports",$_SERVER["PHP_SELF"]);
 
+	commonHeader("Base de connaissances",$_SERVER["PHP_SELF"]);
 
-# Title
-echo "<div align='center'><table ><tr><td>";
-echo "<img src=\"".$HTMLRel."pics/rapports.png\" alt='".$lang["Menu"][6]."' title='".$lang["Menu"][6]."'></td><td><span class='icon_nav'><b>".$lang["Menu"][6]."</b></span>";
-echo "</td></tr></table></div>";
+	titleknowbase();
+	
+echo "This is the GLPI Knowledge Base system. It allows you to view all of the 
+knowledge base articles that have been entered.";
+echo "<br><BR><table border=0 width=100%><tr>";
 
-echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-echo "<tr><th>".$lang["reports"][0].":</th></tr>";
-echo "<tr class='tab_bg_1'><td align='center'><a href=\"default_txt.php\"><b>Normal</b>&nbsp;&nbsp;</a><a href=\"default_pdf.php\"><b>En PDF</b></a></td></tr>";
-echo "</table></div>";
+echo  "<td align=center><h4><a href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=new\">Add an Article</a>";
+
+echo "</h4></td></tr></TABLE>";
+
+showKbCategories();
 commonFooter();
+
+
 
 ?>
