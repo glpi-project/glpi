@@ -552,6 +552,7 @@ $lang["setup"][68]	= "Suivis par emails";
 $lang["setup"][69]	= "Types de périphériques";
 $lang["setup"][70]	= "Configuration générale";
 $lang["setup"][71]	= "Firmware";
+$lang["setup"][72] 	= "Selectionnez un intitulé"; 
 
 $lang["setup"][100]="Configuration générale";
 $lang["setup"][101]="Chemin d'installation";

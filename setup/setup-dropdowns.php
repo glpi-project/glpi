@@ -42,16 +42,18 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-$httpreferer=str_replace("?done","",$_SERVER['HTTP_REFERER']);
+$httpreferer=preg_replace("/\?which=\w*/","",$_SERVER['HTTP_REFERER']);
 
-$where="";
-if (isset($_POST["where"])) $where="#".$_POST["where"];
+if (isset($_POST["which"]))$which=$_POST["which"];
+elseif (isset($_GET["which"]))$which=$_GET["which"];
+else $which="";
+//echo $which."---";
 
 if (isset($_POST["add"])) {
 	checkAuthentication("admin");
 	addDropdown($_POST);
 	logEvent(0, "dropdowns", 5, "setup", $_SESSION["glpiname"]." added a value to a dropdown.");
-	header("Location: $httpreferer?done$where");
+	header("Location: $httpreferer?which=$which");
 } else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
 	if(!dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
@@ -61,40 +63,105 @@ if (isset($_POST["add"])) {
 	} else {
 		deleteDropdown($_POST);
 		logEvent(0, "templates", 4, "inventory", $_SESSION["glpiname"]." deleted a dropdown value.");
-		header("Location: $httpreferer?done$where");
+		header("Location: $httpreferer?which=$which");
 	}
 
 } else if (isset($_POST["update"])) {
 	checkAuthentication("admin");
 	updateDropdown($_POST);
 	logEvent(0, "templates", 4, "inventory", $_SESSION["glpiname"]." updated a dropdown value.");
-	header("Location: $httpreferer?done$where");
+	header("Location: $httpreferer?which=$which");
 } else if (isset($_POST["replace"])) {
 	checkAuthentication("admin");
 	replaceDropDropDown($_POST);
 	logEvent(0, "templates", 4, "inventory", $_SESSION["glpiname"]." replaced a dropdown value in each items.");
-	header("Location: $httpreferer?done$where");
+	header("Location: $httpreferer?which=$which");
 }
- else {
+ if (!isset($_POST["delete"])){
 	checkAuthentication("normal");
 	commonHeader("Setup",$_SERVER["PHP_SELF"]);
-	echo "<center><table cellpadding='4'><tr><th>".$lang["setup"][0].":</th></tr></table></center>";
-	showFormDropDown($_SERVER["PHP_SELF"],"locations",$lang["setup"][3]);
-	showFormTypeDown($_SERVER["PHP_SELF"],"computers",$lang["setup"][4]);
-	showFormTypeDown($_SERVER["PHP_SELF"],"networking",$lang["setup"][42]);
-	showFormTypeDown($_SERVER["PHP_SELF"],"printers",$lang["setup"][43]);
-	showFormTypeDown($_SERVER["PHP_SELF"],"monitors",$lang["setup"][44]);
-	showFormTypeDown($_SERVER["PHP_SELF"],"peripherals",$lang["setup"][69]);
-	showFormDropDown($_SERVER["PHP_SELF"],"os",$lang["setup"][5]);
-	showFormDropDown($_SERVER["PHP_SELF"],"ram",$lang["setup"][6]);
-	showFormDropDown($_SERVER["PHP_SELF"],"processor",$lang["setup"][7]);
-	showFormDropDown($_SERVER["PHP_SELF"],"moboard",$lang["setup"][45]);
-	showFormDropDown($_SERVER["PHP_SELF"],"gfxcard",$lang["setup"][46]);
-	showFormDropDown($_SERVER["PHP_SELF"],"sndcard",$lang["setup"][47]);
-	showFormDropDown($_SERVER["PHP_SELF"],"hdtype",$lang["setup"][48]);
-	showFormDropDown($_SERVER["PHP_SELF"],"network",$lang["setup"][8]);
-	showFormDropDown($_SERVER["PHP_SELF"],"iface",$lang["setup"][9]);
-	showFormDropDown($_SERVER["PHP_SELF"],"firmware",$lang["setup"][71]);
+	$dp=array();
+	$dp["locations"]=$lang["setup"][3];	
+	$dp["computers"]=$lang["setup"][4];	
+	$dp["networking"]=$lang["setup"][42];		
+	$dp["printers"]=$lang["setup"][43];		
+	$dp["monitors"]=$lang["setup"][44];		
+	$dp["peripherals"]=$lang["setup"][69];		
+	$dp["os"]=$lang["setup"][5];		
+	$dp["ram"]=$lang["setup"][6];	
+	$dp["processor"]=$lang["setup"][7];			
+	$dp["moboard"]=$lang["setup"][45];		
+	$dp["gfxcard"]=$lang["setup"][46];		
+	$dp["sndcard"]=$lang["setup"][47];		
+	$dp["hdtype"]=$lang["setup"][48];		
+	$dp["network"]=$lang["setup"][8];		
+	$dp["iface"]=$lang["setup"][9];		
+	$dp["firmware"]=$lang["setup"][71];		
+	
+//	asort($dp);
+	
+	echo "<center><form method=post action=\"".$cfg_install["root"]."/setup/setup-dropdowns.php\">";
+	echo $lang["setup"][72].":&nbsp;<select name='which'>";
+
+foreach ($dp as $key => $val){
+$sel="";
+if ($which==$key) $sel="selected";
+echo "<option value='$key' $sel>".$val."</option>";
+}
+	echo "</select>";
+	echo "<input type='submit' value=\"".$lang["buttons"][2]."\" class='submit' />";
+	echo "</form></center>";
+	switch ($which){
+		case "locations" :
+		showFormDropDown($_SERVER["PHP_SELF"],"locations",$lang["setup"][3]);
+		break;
+		case "computers" :
+		showFormTypeDown($_SERVER["PHP_SELF"],"computers",$lang["setup"][4]);
+		break;
+		case "networking" :
+		showFormTypeDown($_SERVER["PHP_SELF"],"networking",$lang["setup"][42]);
+		break;
+		case "printers" :
+		showFormTypeDown($_SERVER["PHP_SELF"],"printers",$lang["setup"][43]);
+		break;
+		case "monitors" :
+		showFormTypeDown($_SERVER["PHP_SELF"],"monitors",$lang["setup"][44]);
+		break;
+		case "peripherals" :
+		showFormTypeDown($_SERVER["PHP_SELF"],"peripherals",$lang["setup"][69]);
+		break;
+		case "os" :
+		showFormDropDown($_SERVER["PHP_SELF"],"os",$lang["setup"][5]);
+		break;
+		case "ram" :
+		showFormDropDown($_SERVER["PHP_SELF"],"ram",$lang["setup"][6]);
+		break;
+		case "processor" :
+		showFormDropDown($_SERVER["PHP_SELF"],"processor",$lang["setup"][7]);
+		break;
+		case "moboard" :
+		showFormDropDown($_SERVER["PHP_SELF"],"moboard",$lang["setup"][45]);
+		break;
+		case "gfxcard" :
+		showFormDropDown($_SERVER["PHP_SELF"],"gfxcard",$lang["setup"][46]);
+		break;
+		case "sndcard" :
+		showFormDropDown($_SERVER["PHP_SELF"],"sndcard",$lang["setup"][47]);
+		break;
+		case "hdtype" :
+		showFormDropDown($_SERVER["PHP_SELF"],"hdtype",$lang["setup"][48]);
+		break;
+		case "network" :
+		showFormDropDown($_SERVER["PHP_SELF"],"network",$lang["setup"][8]);
+		break;
+		case "iface" :
+		showFormDropDown($_SERVER["PHP_SELF"],"iface",$lang["setup"][9]);
+		break;
+		case "firmware" :
+		showFormDropDown($_SERVER["PHP_SELF"],"firmware",$lang["setup"][71]);
+		break;	
+	default : break;
+	}
 	commonFooter();
 }
 
