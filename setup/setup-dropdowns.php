@@ -49,10 +49,28 @@ if (isset($_POST["add"])) {
 	header("Location: $_SERVER[HTTP_REFERER]?done");
 } else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
-	deleteDropdown($_POST);
-	logEvent($_POST["ID"], "templates", 4, "inventory", $_SESSION["glpiname"]." deleted a dropdown value.");
+	if(!dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
+		commonHeader("Setup",$_SERVER["PHP_SELF"]);
+		showDeleteConfirmForm($_SERVER["PHP_SELF"],$_POST["tablename"], $_POST["ID"]);
+		commonFooter();
+	} else {
+		deleteDropdown($_POST);
+		logEvent(0, "templates", 4, "inventory", $_SESSION["glpiname"]." deleted a dropdown value.");
+		header("Location: $_SERVER[HTTP_REFERER]?done");
+	}
+
+} else if (isset($_POST["update"])) {
+	checkAuthentication("admin");
+	updateDropdown($_POST);
+	logEvent(0, "templates", 4, "inventory", $_SESSION["glpiname"]." updated a dropdown value.");
 	header("Location: $_SERVER[HTTP_REFERER]?done");
-} else {
+} else if (isset($_POST["replace"])) {
+	checkAuthentication("admin");
+	replaceDropDropDown($_POST);
+	logEvent(0, "templates", 4, "inventory", $_SESSION["glpiname"]." replaced a dropdown value in each items.");
+	header("Location: $_SERVER[HTTP_REFERER]?done");
+}
+ else {
 	checkAuthentication("normal");
 	commonHeader("Setup",$_SERVER["PHP_SELF"]);
 	echo "<center><table cellpadding='4'><tr><th>".$lang["setup"][0].":</th></tr></table></center>";

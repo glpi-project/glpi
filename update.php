@@ -53,6 +53,21 @@ function TableExists($tablename) {
    return false;
 }
 
+//Verifie que le champs $field existe bien dans la table $table
+function FieldExists($table, $field) {
+	$db = new DB;
+	$result = $db->query("SELECT * FROM ". $table ."");
+	$fields = mysql_num_fields($result);
+	$var1 = false;
+	for ($i=0; $i < $fields; $i++) {
+		$name  = mysql_field_name($result, $i);
+		if($name == $field) {
+			$var1 = true;
+		}
+	}
+	return $var1;
+}
+
 //test la connection a la base de donnée.
 function test_connect() {
 $db = new DB;
@@ -60,6 +75,30 @@ if($db->error == 0) return true;
 else return false;
 }
 
+//Change table2 from varchar to ID+varchar and update table1.chps with depends
+function changeVarcharToID($table1, $table2, $chps)
+{
+$db = new DB;
+
+if(!FieldExists($table2, "ID")) {
+	$query = " ALTER TABLE `". $table2 ."` ADD `ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+}
+$query = "ALTER TABLE $table1 ADD `temp` INT";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+
+$query = "select ". $table1 .".ID as row1, ". $table2 .".ID as row2 from ". $table1 .",". $table2 ." where ". $table2 .".name = ". $table1 .".". $chps." ";
+$result = $db->query($query) or die("erreur lors de la migration".$db->error());
+while($line = $db->fetch_array($result)) {
+	$query = "update ". $table1 ." set temp = ". $line["row2"] ." where ID = '". $line["row1"] ."'";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+}
+
+$query = "Alter table ". $table1 ." drop ". $chps."";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE ". $table1 ." CHANGE `temp` `". $chps ."` INT";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+}
 
 //update the database to the 0.31 version
 function updateDbTo031()
@@ -67,7 +106,7 @@ function updateDbTo031()
 $db = new DB;
 
 
-// Version 0.2 et inferieures Changement du champs can_assign_job
+//amSize ramSize
  $query = "Alter table users drop can_assign_job";
  $db->query($query) or die("erreur lors de la migration".$db->error());
  $query = "Alter table users add can_assign_job enum('yes','no') NOT NULL default 'no'";
@@ -75,28 +114,17 @@ $db = new DB;
  $query = "Update users set can_assign_job = 'yes' where type = 'admin'";
  $db->query($query) or die("erreur lors de la migration".$db->error());
  
- echo "<br>Version 0.2 et inferieures Changement du champs can_assign_job<br>";
+ echo "<br>Version 0.2 et inferieures Changement du champs can_assign_job <br />";
 
 //Version 0.21 ajout du champ ramSize a la table printers si non existant.
-$db = new DB;
-$result = $db->query("SELECT * FROM printers");
-$fields = mysql_num_fields($result);
-$var1 = true;
-for ($i=0; $i < $fields; $i++) {
-	//$type  = mysql_field_type($result, $i);
-	$name  = mysql_field_name($result, $i);
-	//$len  = mysql_field_len($result, $i);
-	$flags = mysql_field_flags($result, $i);
-	if($name == "ramSize") {
-		$var1 = false;
-	}
-}
-if($var1 == true) {
+
+
+if(!FieldExists("printers", "ramSize")) {
 	$query = "alter table printers add ramSize varchar(6) NOT NULL default ''";
 	$db->query($query) or die("erreur lors de la migration".$db->error());
 }
 
- echo "Version 0.21 ajout du champ ramSize a la table printers si non existant.<br>";
+ echo "Version 0.21 ajout du champ ramSize a la table printers si non existant. <br/>";
 
 //Version 0.3
 //Ajout de NOT NULL et des valeurs par defaut.
@@ -198,7 +226,7 @@ $query = "ALTER TABLE users MODIFY location varchar(100) NOT NULL default ''";
 $db->query($query) or die("erreur lors de la migration".$db->error());
 $query = "ALTER TABLE users MODIFY phone varchar(100) NOT NULL default ''";
 
- echo "Version 0.3 Ajout de NOT NULL et des valeurs par defaut.<br>";
+ echo "Version 0.3 Ajout de NOT NULL et des valeurs par defaut. <br />";
 
  
 }
@@ -263,7 +291,7 @@ $db->query($query) or die("erreur lors de la migration".$db->error());
 $query = "INSERT INTO `glpi_config` VALUES (1, '10', '10', '1', '80', '30', '15', ' 0.3', 'GLPI powered by indepnet', '/glpi', '5', '0', '', '', '', '', '', '', 'admsys@sic.sp2mi.xxxxx.fr', 'SIGNATURE', '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '1', '1', '1', '1', '1', 'uid', 'mail', 'physicaldeliveryofficename', 'cn', 'telephonenumber')";
 $db->query($query) or die("erreur lors de la migration".$db->error());
 
-  echo "Version Superieur à 0.31 ajout de la table glpi_config<br>";
+  echo "Version Superieur à 0.31 ajout de la table glpi_config <br />";
 }
 
 
@@ -333,8 +361,58 @@ if(!TableExists("glpi_computers")) {
 	$query = "ALTER TABLE users RENAME glpi_users";
 	$db->query($query) or die("erreur lors de la migration".$db->error()); 
 
-	echo "Version 0.4 Prefixage des tables  <br>";
+	echo "Version 0.4 Prefixage des tables  <br/>";
+}	
+
+//Ajout d'un champs ID dans la table users
+if(!FieldExists("glpi_users", "ID")) {
+	$query = "ALTER TABLE `glpi_users` DROP PRIMARY KEY";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$query = "ALTER TABLE `glpi_users` ADD UNIQUE (`name`)";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$query = "ALTER TABLE `glpi_users` ADD INDEX (`name`)";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$query = " ALTER TABLE `glpi_users` ADD `ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+
 }
+//Mise a jour des ID pour les tables dropdown et type.
+if(!FieldExists("glpi_dropdown_os", "ID")) {
+	changeVarcharToID("glpi_computers", "glpi_dropdown_os", "os");
+	changeVarcharToID("glpi_computers", "glpi_dropdown_hdtype", "hdtype");
+	changeVarcharToID("glpi_computers", "glpi_dropdown_sndcard", "sndcard");
+	changeVarcharToID("glpi_computers", "glpi_dropdown_moboard", "moboard");
+	changeVarcharToID("glpi_computers", "glpi_dropdown_gfxcard", "gfxcard");
+	changeVarcharToID("glpi_computers", "glpi_dropdown_network", "network");
+	changeVarcharToID("glpi_computers", "glpi_dropdown_ram", "ramtype");
+	changeVarcharToID("glpi_computers", "glpi_dropdown_locations", "location");
+	changeVarcharToID("glpi_computers", "glpi_dropdown_processor", "processor");
+	changeVarcharToID("glpi_monitors", "glpi_dropdown_locations", "location");
+	changeVarcharToID("glpi_networking", "glpi_dropdown_locations", "location");
+	changeVarcharToID("glpi_networking_ports", "glpi_dropdown_iface", "iface");
+	changeVarcharToID("glpi_printers", "glpi_dropdown_locations", "location");
+	changeVarcharToID("glpi_software", "glpi_dropdown_locations", "location");
+	changeVarcharToID("glpi_software", "glpi_dropdown_os", "platform");
+	changeVarcharToID("glpi_templates", "glpi_dropdown_os", "os");
+	changeVarcharToID("glpi_templates", "glpi_dropdown_hdtype", "hdtype");
+	changeVarcharToID("glpi_templates", "glpi_dropdown_sndcard", "sndcard");
+	changeVarcharToID("glpi_templates", "glpi_dropdown_moboard", "moboard");
+	changeVarcharToID("glpi_templates", "glpi_dropdown_gfxcard", "gfxcard");
+	changeVarcharToID("glpi_templates", "glpi_dropdown_network", "network");
+	changeVarcharToID("glpi_templates", "glpi_dropdown_ram", "ramtype");
+	changeVarcharToID("glpi_templates", "glpi_dropdown_locations", "location");
+	changeVarcharToID("glpi_templates", "glpi_dropdown_processor", "processor");
+	changeVarcharToID("glpi_users", "glpi_dropdown_locations", "location");
+	
+	changeVarcharToID("glpi_monitors", "glpi_type_monitors", "type");
+	changeVarcharToID("glpi_printers", "glpi_type_printers", "type");
+	changeVarcharToID("glpi_networking", "glpi_type_networking", "type");
+	changeVarcharToID("glpi_computers", "glpi_type_computers", "type");
+	changeVarcharToID("glpi_templates", "glpi_type_computers", "type");
+	
+echo "Version 0.4 Ajout de clés primaires sur les tables dropdown et type, et mise a jour des champs liés.<br />";
+}
+
 
 }
 
