@@ -44,17 +44,17 @@ include ($phproot . "/glpi/includes_printers.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_software.php");
 
-if ($_POST["add"]) {
+if (isset($_POST["add"])) {
 	checkAuthentication("admin");
 	addComputer($_POST);
 	logEvent(0, "computers", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	header("Location: $_SERVER[HTTP_REFERER]");
-} else if ($_POST["delete"]) {
+} else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
 	deleteComputer($_POST);
 	logEvent($_POST["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/computers/");
-} else if ($_POST["update"]) {
+} else if (isset($_POST["update"])) {
 	checkAuthentication("admin");
 	updateComputer($_POST);
 	logEvent($_POST["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]."updated item.");

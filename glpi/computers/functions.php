@@ -384,6 +384,7 @@ function showComputerForm ($template,$target,$ID) {
 		
 		echo "<tr><td>".$lang["computers"][43].":	</td>";
 		echo "<td>";
+		// Maintenance ?
 		if ($comp->fields["maintenance"] == 1) {
 			echo " OUI <input type=radio name='maintenance' value=1 checked>";
 			echo "&nbsp; &nbsp; NON <input type=radio name='maintenance' value=0>";
