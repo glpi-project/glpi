@@ -80,8 +80,10 @@ elseif (isset($_POST["edit_resa"])||isset($_POST["add_resa"])||(isset($_GET["sho
 		unset($_POST["end_date"]);unset($_POST["end_hour"]);unset($_POST["end_min"]);
 		$item=$_POST["id_item"];
 		unset($_POST["edit_resa"]);unset($_POST["id_item"]);
-		updateReservationResa($_POST);
-		header("Location: ".$cfg_install["root"]."/helpdesk.php?show=resa&ID=$item&mois_courant=$begin_month&annee_courante=$begin_year");
+		if ($_SESSION["glpiID"]==$_POST["id_user"]) // test Sécurité
+		if (updateReservationResa($_POST,$_SERVER["PHP_SELF"],$item))
+			header("Location: ".$cfg_install["root"]."/helpdesk.php?show=resa&ID=$item&mois_courant=$begin_month&annee_courante=$begin_year");
+		else exit();			
 	}
 
 	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
@@ -102,6 +104,7 @@ elseif (isset($_POST["edit_resa"])||isset($_POST["add_resa"])||(isset($_GET["sho
 		showAddReservationForm($_SERVER["PHP_SELF"],$_GET["item"],"",$_GET["edit"]);
 	}
 	else if (isset($_POST["add_resa"])){
+		if ($_SESSION["glpiID"]==$_POST["id_user"]) // test Sécurité	
 		if (addReservation($_POST,$_SERVER["PHP_SELF"])){
 			logEvent($_POST["id_item"], "reservation", 4, "inventory", $_SESSION["glpiname"]."add a reservation.");
 			printCalendrier($_SERVER["PHP_SELF"],$_POST["id_item"]);
@@ -157,6 +160,7 @@ else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
 
 
 else {
+helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 printHelpDesk($_SESSION["glpiname"],1);
 }
 
