@@ -601,9 +601,10 @@ function assignJob ($ID,$user,$admin) {
 	$job->assignTo($user);
 
 	// Add a Followup for a assignment change
-
+	if (strcmp($newuser,$olduser)!=0){
 	$content=date("Y-m-d H:i:s").": ".$lang["mailing"][12].": ".$olduser." -> ".$newuser;
 	postFollowups ($ID,$_SESSION["glpiname"],$content);
+	}
 }
 
 function showFollowups($ID) {
