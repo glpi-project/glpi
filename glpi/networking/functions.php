@@ -128,7 +128,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 				$where .= " OR ";
 			}
 			$coco = mysql_field_name($fields, $i);
-			echo $coco."---";
+
 			if($coco == "firmware") {
 				$where .= " glpi_dropdown_firmware.name LIKE '%".$contains."%'";
 			}
@@ -139,7 +139,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 				$where .= " glpi_type_networking.name LIKE '%".$contains."%'";
 			}
 			else {
-   				$where .= "networking.".$coco . " LIKE '%".$contains."%'";
+   				$where .= "glpi_networking.".$coco . " LIKE '%".$contains."%'";
 			}
 		}
 		$where .= ")";
