@@ -27,6 +27,7 @@ Christian Bauer, turin@incubus.de
  ----------------------------------------------------------------------
  Original Author of file:
  Purpose of file:
+ Translator: Simon DEPIETS 2df@tuxfamily.org
  ----------------------------------------------------------------------
 */
 
@@ -508,16 +509,16 @@ $lang["help"][21]	= "Please contact your local system administrator.";
 
 $lang["mailing"][0]="-----------------------";
 $lang["mailing"][1]="--------------------------------------";
-$lang["mailing"][2]="Auteur : ";
-$lang["mailing"][3]="Contenu : ";
-$lang["mailing"][4]="Intervention(s) déjà effectuée(s)";
-$lang["mailing"][5]="Description de l'intervention";
-$lang["mailing"][6]="Date de début : ";
-$lang["mailing"][7]="Ordinateur concerné : ";
-$lang["mailing"][8]="Attribué à : ";
-$lang["mailing"][9]="Nouvelle demande d'intervention";
-$lang["mailing"][10]="Nouveau suivi d'intervention";
-$lang["mailing"][11]="Intervention terminée le ";
-$lang["mailing"][12]="Attribution de l'intervention";
-$lang["mailing"][13]="Erreur dans la génération de l'email automatique";
+$lang["mailing"][2]="Author : ";
+$lang["mailing"][3]="Contents : ";
+$lang["mailing"][4]="Intervention(s) already done";
+$lang["mailing"][5]="Description of the intervention";
+$lang["mailing"][6]="Beginning's date : ";
+$lang["mailing"][7]="Computer concerned : ";
+$lang["mailing"][8]="Attributed to : ";
+$lang["mailing"][9]="New intervention's demand";
+$lang["mailing"][10]="New intervention's follow up";
+$lang["mailing"][11]="Intervention finished the ";
+$lang["mailing"][12]="Attribution of the intervention";
+$lang["mailing"][13]="Error in the automatic e-mail generation";
 ?>
