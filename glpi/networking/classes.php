@@ -146,9 +146,12 @@ class Netport {
 		// Make new database object and fill variables
 		$db = new DB;
 		$query = "SELECT * FROM networking_ports WHERE (ID = '$ID')";
-		if ($result = $db->query($query)) {
+		echo $query;
+		if ($result = $db->query($query))
+		{
 			$data = mysql_fetch_array($result);
-			for($i=0; $i < count($data); $i++) {
+			for($i=0; $i < count($data); $i++)
+			{
 				list($key,$val) = each($data);
 				$this->fields[$key] = $val;
 			}
@@ -159,6 +162,7 @@ class Netport {
 			return false;
 		}
 	}
+	
 	function getFromNull()
 	{
 		$db = new DB;
