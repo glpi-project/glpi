@@ -494,6 +494,7 @@ $lang["reports"][26]    ="Default report";
 $lang["reports"][27]    ="Maintenance";
 $lang["reports"][28] 	= "By year"; 
 $lang["reports"][29] 	= "Peripherals"; 
+$lang["reports"][30] 	= "Peripherals under maintenance contract"; 
 
 // LDAP
 $lang["ldap"][0]	= "Search";
@@ -614,6 +615,7 @@ $lang["setup"][163]="IMAP/POP Auth Server";
 $lang["setup"][164]="IMAP/POP Host Name (users email will be login@thishost)";
 $lang["setup"][165]="Your parser PHP was compiled without the IMAP functions";
 $lang["setup"][166]="Impossible to use IMAP/POP as external source of connection";
+$lang["setup"][167]="GLPI/LDAP Links";
 
 $lang["setup"][200]="Email Followups";
 $lang["setup"][201]="Fonction Configuration";
@@ -634,7 +636,7 @@ $lang["setup"][215]="For each followup of his interventions";
 $lang["setup"][216]="At the closing of his interventions";
 $lang["setup"][217]="The mail function is unknown or is not activated on your system";
 $lang["setup"][218]="Impossible to configure the email followups";
-
+$lang["setup"][219]="Allow anonymous tracking post (helpdesk.html)";
 
 // Helpdesk
 
