@@ -283,7 +283,7 @@ function restoreMySqlDump($db,$dumpFile , $duree)
 
 // Desactivation pour empecher les addslashes au niveau de la creation des tables
 // En plus, au niveau du dump on considère qu'on est bon
-set_magic_quotes_runtime(0);
+//set_magic_quotes_runtime(0);
 
 global $TPSCOUR,$offset,$cpt;
 $db=new DB;
@@ -333,6 +333,7 @@ while(!feof($fileHandle))
     if(substr($buffer, 0, 1) != "#")
     {
         $formattedQuery .= $buffer;
+	if (get_magic_quotes_runtime()) $formattedQuery=stripslashes($formattedQuery);
         if (substr($formattedQuery,-1)==";")
         // Do not use the $db->query 
         if (mysql_query($formattedQuery)) //réussie sinon continue à conca&téner
