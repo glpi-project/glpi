@@ -192,8 +192,17 @@ $lang["tracking"][8]    = "Pas de description, veuillez recommencer";
 $lang["tracking"][9] 	= "Nouvelle intervention post&eacute;e, suivante..."; 
 $lang["tracking"][10]    = "Ajout de l'intervention impossible, verifiez la base de donn&eacute;es";
 $lang["tracking"][11]   =  "Intervention(s) requise(s) par cet utilisateur";
-
-
+$lang["tracking"][12] = "Tous les types de matériels";
+$lang["tracking"][13] = "Seulement les ordinateurs";
+$lang["tracking"][14] = "Seulement le matériel reseau";
+$lang["tracking"][15] = "Seulement les imprimantes";
+$lang["tracking"][16] = "Seulement les moniteurs";
+$lang["tracking"][17] = "Seulement les périphériques";
+// 1 computers
+// 2 networking
+// 3 printers
+// 4 monitors
+// 5 peripherals
 
 $lang["joblist"][0]	= "Statut";
 $lang["joblist"][1]	= "Date";

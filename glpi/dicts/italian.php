@@ -197,6 +197,12 @@ $lang["tracking"][8] 	= "No description, please retry";
 $lang["tracking"][9] 	= "New intervention post, next..."; 
 $lang["tracking"][10] 	= "Impossible to add the intervention, check the data base"; 
 $lang["tracking"][11] 	= "Intervention(s) required by this user"; 
+$lang["tracking"][12] = "All the devices";
+$lang["tracking"][13] = "Computers only";
+$lang["tracking"][14] = "Netdevices only";
+$lang["tracking"][15] = "Printers only";
+$lang["tracking"][16] = "Monitors only";
+$lang["tracking"][17] = "Peripherals only";
 
 
 

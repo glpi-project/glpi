@@ -69,6 +69,34 @@ function searchFormTracking ($show,$contains) {
 	echo "</td>";
 	echo "<td align='center'><input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'></td>";
 	echo "</tr>";
+	
+	echo "<tr class='tab_bg_1'>";
+	echo "<td colspan='2' align='center'>";
+	echo "<select name=\"device\" size='1'>";
+
+	echo "<option "; if ($device == "0") { echo "selected"; }
+	echo " value=\"0\">".$lang["tracking"][12]."</option>";
+
+	echo "<option "; if ($device == "1") { echo "selected"; }
+	echo " value=\"1\">".$lang["tracking"][13]."</option>";
+
+	echo "<option "; if ($device == "2") { echo "selected"; }
+	echo " value=\"2\">".$lang["tracking"][14]."</option>";
+
+	echo "<option "; if ($device == "3") { echo "selected"; }
+	echo " value=\"3\">".$lang["tracking"][15]."</option>";
+	
+	echo "<option "; if ($device == "4") { echo "selected"; }
+	echo " value=\"4\">".$lang["tracking"][16]."</option>";
+	
+	echo "<option "; if ($device == "5") { echo "selected"; }
+	echo " value=\"5\">".$lang["tracking"][17]."</option>";
+
+	echo "</select>";
+	echo "</td>";
+	echo "<td align='center'><input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'></td>";
+	echo "</tr>";
+
 //	echo "</form>";
 	//echo "<form method=\"get\" action=\"".$cfg_install["root"]."/tracking/index.php\">";
 	echo "<tr class='tab_bg_1'>";
@@ -79,8 +107,8 @@ function searchFormTracking ($show,$contains) {
 	echo "</td></tr>";
 
 	echo "</table>\n";
-		echo "</form>";
-                echo "</div><br>\n";
+	echo "</form>";
+	echo "</div><br>\n";
 }       
 
 function getTrackingPrefs ($username) {
@@ -106,7 +134,7 @@ function getTrackingPrefs ($username) {
 	return $prefs;
 }
 
-function showJobList($target,$username,$show,$contains,$item_type,$item,$start) {
+function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$device='0') {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -129,7 +157,10 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start) 
 	{
 		$where = "(status = 'new')";
 	}
-
+	if($device != 0) {
+		$where .= " AND (device_type = '".$device."')";
+	} 
+	
 	// Build query, two completely different things here, need to be fixed
 	// and made into a more featured query-parser
 
