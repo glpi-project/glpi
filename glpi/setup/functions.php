@@ -85,6 +85,28 @@ function showFormDropDown ($target,$name,$human,$ID) {
         //
         echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 	echo "</td></form></tr>";
+	
+	if ($name=="locations"){
+	echo "<form method='post' action=\"$target\">";
+	echo "<input type='hidden' name='which' value='$name'>";
+	echo "<tr><td align='center'  class='tab_bg_1'>";
+
+		dropdown("glpi_dropdown_locations", "value_to_move");
+//		echo "<select name='type'>";
+//		echo "<option value='under'>".$lang["setup"][75]."</option>";
+		echo $lang["setup"][75].":";
+//		echo "<option value='over'>".$lang["setup"][77]."</option>";
+//		echo "<option value='same'>".$lang["setup"][76]."</option>";
+//		echo "</select>";
+
+		dropdown("glpi_dropdown_locations", "value_where");
+	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
+	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
+	echo "<input type='submit' name='move' value=\"".$lang["buttons"][20]."\" class='submit' class='submit'>";
+	
+	echo "</td></form></tr>";	
+	}
+	
 	}
 	echo "<form action=\"$target\" method='post'>";
 	echo "<input type='hidden' name='which' value='$name'>";
@@ -97,12 +119,16 @@ function showFormDropDown ($target,$name,$human,$ID) {
 	}
 	else if ($name=="locations"){
 		echo "<input type='text' maxlength='100' size='10' name='value'>";
+
+	if (countElementsInTable("glpi_dropdown_".$name)>0){
 		echo "<select name='type'>";
 		echo "<option value='under'>".$lang["setup"][75]."</option>";
 		echo "<option value='same'>".$lang["setup"][76]."</option>";
 		echo "</select>";
 
 		dropdown("glpi_dropdown_locations", "value2");
+		}		
+	else echo "<input type='hidden' name='type' value='first'>";
 	 		
 	}
 	else {
@@ -111,7 +137,10 @@ function showFormDropDown ($target,$name,$human,$ID) {
 	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
 	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit' class='submit'>";
-	echo "</td></form></tr>";
+	echo "</td></tr>";
+	
+	
+	echo "</form>";
 	echo "</table></div>";
 }
 
@@ -156,6 +185,65 @@ function showFormTypeDown ($target,$name,$human,$ID) {
 	echo "</td></form></tr>";
 	echo "</table></div>";
 }
+function moveLocationUnder($to_move,$where){
+	$db=new DB();
+	if ($where!=$to_move){
+		$query = "SELECT level FROM glpi_dropdown_locations WHERE ID='$to_move'";
+		$result = $db->query($query);
+		$TO_MOVE_LEVEL= $db->result($result,0,"level");
+	
+		$query = "SELECT level FROM glpi_dropdown_locations WHERE ID='$where'";
+		$result = $db->query($query);
+		$WHERE_LEVEL= $db->result($result,0,"level");
+	
+		$diff_level=$WHERE_LEVEL-$TO_MOVE_LEVEL+1;
+	
+		// Move Location
+		$query = "UPDATE glpi_dropdown_locations SET level_up='$where' where ID='$to_move'";
+		$result = $db->query($query);
+
+		if ($diff_level!=0)
+		moveLevelofSubTreeLocation($to_move,$diff_level);
+	
+	
+	}	
+}
+
+function moveLevelofSubTreeLocation($where,$level){
+	$db=new DB();
+	$query = "SELECT level FROM glpi_dropdown_locations WHERE ID='$where'";
+	$result = $db->query($query);
+	$WHERE_LEVEL= $db->result($result,0,"level");
+
+	$query = "SELECT MAX(level) AS MAX FROM glpi_dropdown_locations";
+	$result = $db->query($query);
+	$MAX_LEVEL= $db->result($result,0,"MAX");
+
+	$SELECT_ALL="";
+	$FROM_ALL="";
+	$WHERE_ALL="";
+
+	for ($i=$WHERE_LEVEL+1;$i<=$MAX_LEVEL;$i++){
+	$SELECT_ALL.=" , location$i.level AS LEVEL$i, location$i.ID AS ID$i  ";
+	$FROM_ALL.=" LEFT JOIN glpi_dropdown_locations AS location$i ON location".($i-1).".ID = location$i.level_up ";
+	//$WHERE_ALL.=" AND location$i.level='$i' ";
+
+	}
+
+	$query="select location".$WHERE_LEVEL.".level AS LEVEL".$WHERE_LEVEL.",location".$WHERE_LEVEL.".ID AS ID".$WHERE_LEVEL." $SELECT_ALL FROM glpi_dropdown_locations AS location".$WHERE_LEVEL." $FROM_ALL  WHERE location".$WHERE_LEVEL.".ID='$where' $WHERE_ALL";
+	$result = $db->query($query);
+	while ($data =  $db->fetch_array($result)){
+	for ($i=$WHERE_LEVEL;$i<=$MAX_LEVEL;$i++){		
+	$query_update="update glpi_dropdown_locations SET level='".($data["LEVEL$i"]+$level)."' WHERE ID='".$data["ID$i"]."'";
+//	echo "---".$query_update."<br>";
+	$db->query($query_update);
+	}		
+	}
+
+
+	
+}
+
 
 function updateDropdown($input) {
 	$db = new DB;
@@ -183,16 +271,20 @@ function addDropdown($input) {
 		$query = "INSERT INTO ".$input["tablename"]." (name,location) VALUES ('".$input["value"]."', '".$input["value2"]."')";
 	}
 	else if ($input["tablename"] == "glpi_dropdown_locations"){
-		$query="SELECT * from ".$input["tablename"]." where ID='".$input["value2"]."'";
-		$result=$db->query($query);
-		$data=$db->fetch_array($result);
-		$level=$data["level"];
-		$level_up=$data["level_up"];
-		if ($input["type"]=="under") {
-			$level++;
-			$level_up=$data["ID"];
-		} 
-		$query = "INSERT INTO ".$input["tablename"]." (name,level,level_up) VALUES ('".$input["value"]."', '$level', '$level_up')";		
+		if ($input['type']=="first"){
+		    $query = "INSERT INTO ".$input["tablename"]." (name,level,level_up) VALUES ('".$input["value"]."', '0', '-1')";		
+		} else {
+			$query="SELECT * from ".$input["tablename"]." where ID='".$input["value2"]."'";
+			$result=$db->query($query);
+			$data=$db->fetch_array($result);
+			$level=$data["level"];
+			$level_up=$data["level_up"];
+			if ($input["type"]=="under") {
+				$level++;
+				$level_up=$data["ID"];
+			} 
+			$query = "INSERT INTO ".$input["tablename"]." (name,level,level_up) VALUES ('".$input["value"]."', '$level', '$level_up')";		
+		}
 	}
 	else {
 		$query = "INSERT INTO ".$input["tablename"]." (name) VALUES ('".$input["value"]."')";

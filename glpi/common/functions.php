@@ -799,7 +799,7 @@ function dropdown($table,$myname) {
 		echo "</select>";
 	}
 	else if ($table == "glpi_dropdown_locations") {
-		$query = "SELECT MAX(level) AS MAX FROM $table ORDER BY name";
+		$query = "SELECT MAX(level) AS MAX FROM $table";
 		$result = $db->query($query);
 		$MAX_LEVEL= $db->result($result,0,"MAX");
 		$VALUES=array();
@@ -886,7 +886,7 @@ function dropdownValue($table,$myname,$value) {
 		}
 		echo "</select>";
 	} else if ($table == "glpi_dropdown_locations") {
-		$query = "SELECT MAX(level) AS MAX FROM $table ORDER BY name";
+		$query = "SELECT MAX(level) AS MAX FROM $table";
 		$result = $db->query($query);
 		$MAX_LEVEL= $db->result($result,0,"MAX");
 		$VALUES=array();
@@ -960,7 +960,7 @@ function dropdownNoValue($table,$myname,$value) {
 
 if ($table == "glpi_dropdown_locations") {
 	$db=new DB();
-		$query = "SELECT MAX(level) AS MAX FROM $table ORDER BY name";
+		$query = "SELECT MAX(level) AS MAX FROM $table";
 		$result = $db->query($query);
 		$MAX_LEVEL= $db->result($result,0,"MAX");
 		$VALUES=array();
