@@ -33,10 +33,20 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 
+//Load language
+function loadLang($language) {
+		
+		unset($lang);
+		global $lang;
+		include ("_relpos.php");
+		$file = $phproot ."/glpi/dicts/".$language.".php";
+		include($file);
+}
+
 //Verifie si la table $tablename existe
 function TableExists($tablename) {
   
-	$db = new DB;
+   $db = new DB;
    // Get a list of tables contained within the database.
    $result = $db->list_tables($db);
    $rcount = $db->numrows($result);
@@ -591,6 +601,10 @@ if(!FieldExists("glpi_licenses","expire")) {
 }
 
 //Debut du script
+	session_start();
+	if(empty($_SESSION["dict"])) $_SESSION["dict"] = "french";
+	global $lang;
+	loadLang($_SESSION["dict"]);
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">";
         echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">";
         echo "<head>";
