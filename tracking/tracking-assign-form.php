@@ -42,8 +42,8 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-checkAuthentication("admin");
-
+checkAuthentication("post-only");
+if (can_assign_job($_SESSION["glpiname"]))
 if (isset($_GET["update"]))
 {
 	assignJob ($_GET["ID"],$_GET["user"],$_SESSION["glpiname"]);	
