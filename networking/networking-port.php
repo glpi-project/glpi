@@ -67,6 +67,8 @@ else if(isset($_POST["update"]))
 }
 else 
 {
+	if(empty($tab["ondevice"])) $tab["ondevice"] ="";
+	if(empty($tab["devtype"])) $tab["devtype"] ="";
 	checkAuthentication("normal");
 	commonHeader("Networking",$_SERVER["PHP_SELF"]);
 	if(isset($tab["ID"]))
