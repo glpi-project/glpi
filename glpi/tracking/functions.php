@@ -261,7 +261,7 @@ function showJobShort($ID, $followup) {
 	// Prints a job in short form
 	// Should be called in a <table>-segment
 
-	GLOBAL $IRMName, $cfg_layout, $cfg_install, $cfg_features, $lang;
+	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang;
 
 	// Make new job object and fill it from database, if success, print it
 
@@ -336,7 +336,7 @@ function showJobShort($ID, $followup) {
 function showJobDetails($ID) {
 	// Prints a job in long form with all followups and stuff
 
-	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang, $IRMName;
+	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
 
 	// Make new job object and fill it from database, if success, print it
 
@@ -447,7 +447,6 @@ function postJob($ID,$author,$status,$priority,$computer,$isgroup,$uemail,$email
 	$job->uemail = $uemail;
 	$job->emailupdates = $emailupdates;
 	
-	
 	if ($job->putinDB()) {
 		// Log this event
 		logEvent($ID,"computers",4,"tracking","$author added new job.");
@@ -469,8 +468,7 @@ function postJob($ID,$author,$status,$priority,$computer,$isgroup,$uemail,$email
 
 function markJob ($ID,$status) {
 	// Mark Job with status
-	GLOBAL $IRMName,$cfg_features;
-	
+	GLOBAL $cfg_features;
 	$job = new Job;
 	$job->getFromDB($ID,1);
 	$job->updateStatus($status);
@@ -478,7 +476,7 @@ function markJob ($ID,$status) {
 	if ($status=="old"&&$cfg_features["mailing"])
 		{
 			$user=new User;
-			$user->getfromDB($IRMName);
+			$user->getfromDB($_SESSION["glpiname"]);
 			$mail = new Mailing("finish",$job,$user);
 			$mail->send();
 		}
@@ -488,8 +486,7 @@ function markJob ($ID,$status) {
 function assignJob ($ID,$user,$admin) {
 	// Assign a job to someone
 
-	GLOBAL $cfg_features, $cfg_layout,$IRMName;
-	
+	GLOBAL $cfg_features, $cfg_layout;	
 	$job = new Job;
 	$job->getFromDB($ID,0);
 
@@ -499,7 +496,7 @@ function assignJob ($ID,$user,$admin) {
 	if ($cfg_features["mailing"])
 		{
 			$user=new User;
-			$user->getfromDB($IRMName);
+			$user->getfromDB($_SESSION["glpiname"]);
 			$mail = new Mailing("attrib",$job,$user);
 			$mail->send();
 		}
@@ -508,7 +505,7 @@ function assignJob ($ID,$user,$admin) {
 function showFollowups($ID) {
 	// Print Followups for a job
 
-	GLOBAL $IRMName, $cfg_install, $cfg_layout, $lang;
+	GLOBAL $cfg_install, $cfg_layout, $lang;
 
 	// Get Number of Followups
 
