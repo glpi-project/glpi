@@ -55,11 +55,11 @@ $db= new DB;
 // Show last events
 if(isset($_GET["order"]))
 {
-showEvents($_SERVER["PHP_SELF"],$_GET["order"],$_GET["sort"]);
+	showEvents($_SERVER["PHP_SELF"],$_GET["order"],$_GET["sort"]);
 }
 else
 {
-showEvents($_SERVER["PHP_SELF"],"","");
+	showEvents($_SERVER["PHP_SELF"],"","");
 }
 if ($cfg_features["jobs_at_login"]==1)
 {

@@ -68,12 +68,12 @@ if($cfg_login['use_extern'])
 		$host = $cfg_login[imap]['host'];
 
 	}
-}
+
 
 
 //to add another ext ident sources...
 //put it on the glpi/glpi/config/config.php
-//if(!ext_ident)
+//if(!(ext_ident))
 //{   connection test
 //		if success $ect_ident = 1; $host ="String host"} .... etc
 //example :
@@ -88,6 +88,11 @@ if($cfg_login['use_extern'])
 //
 //}
 //}
+
+
+
+}
+
 $conn = $identificat->connection_db_mysql($_POST['name'],$_POST['password']);
 
 
@@ -110,7 +115,8 @@ switch ($conn)
 
 		}
 		else
-		{//if an external ident has been successfull: add the user to the DB or update
+		{
+		//if an external ident has been successfull: add the user to the DB or update
 		//his password if allready exist
 			$identificat->add_an_user($_POST['name'], $_POST['password'], $host);
 			$conn = $identificat->connection_db_mysql($_POST['name'],$_POST['password']);
