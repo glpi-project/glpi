@@ -674,7 +674,7 @@ function showPortsAdd($ID,$devtype) {
 	
 	GLOBAL $cfg_layout, $cfg_install, $lang;
 	
-	echo "<div align='center'><table class='tab_cadre' width='750' cellpadding='2'>";
+	echo "<div align='center'><table class='tab_cadre' width='90%' cellpadding='2'>";
 	echo "<tr>";
 	echo "<td align='center' class='tab_bg_2'  >";
 	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ondevice=$ID&devtype=$devtype\"><b>";
