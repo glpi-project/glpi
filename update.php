@@ -84,155 +84,161 @@ else return false;
 //Change table2 from varchar to ID+varchar and update table1.chps with depends
 function changeVarcharToID($table1, $table2, $chps)
 {
+
+global $lang;
+
 $db = new DB;
 
 if(!FieldExists($table2, "ID")) {
 	$query = " ALTER TABLE `". $table2 ."` ADD `ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 $query = "ALTER TABLE $table1 ADD `temp` INT";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 
 $query = "select ". $table1 .".ID as row1, ". $table2 .".ID as row2 from ". $table1 .",". $table2 ." where ". $table2 .".name = ". $table1 .".". $chps." ";
-$result = $db->query($query) or die("erreur lors de la migration".$db->error());
+$result = $db->query($query) or die($lang["update"][90].$db->error());
 while($line = $db->fetch_array($result)) {
 	$query = "update ". $table1 ." set temp = ". $line["row2"] ." where ID = '". $line["row1"] ."'";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 $query = "Alter table ". $table1 ." drop ". $chps."";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE ". $table1 ." CHANGE `temp` `". $chps ."` INT";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 //update the database to the 0.31 version
 function updateDbTo031()
 {
+
+global $lang;
+
 $db = new DB;
 
 
 //amSize ramSize
  $query = "Alter table users drop can_assign_job";
- $db->query($query) or die("erreur lors de la migration".$db->error());
+ $db->query($query) or die($lang["update"][90].$db->error());
  $query = "Alter table users add can_assign_job enum('yes','no') NOT NULL default 'no'";
- $db->query($query) or die("erreur lors de la migration".$db->error());
+ $db->query($query) or die($lang["update"][90].$db->error());
  $query = "Update users set can_assign_job = 'yes' where type = 'admin'";
- $db->query($query) or die("erreur lors de la migration".$db->error());
+ $db->query($query) or die($lang["update"][90].$db->error());
  
- echo "<br>Version 0.2 et inferieures Changement du champs can_assign_job <br />";
+ echo "<br>Version 0.2 & < <br />";
 
 //Version 0.21 ajout du champ ramSize a la table printers si non existant.
 
 
 if(!FieldExists("printers", "ramSize")) {
 	$query = "alter table printers add ramSize varchar(6) NOT NULL default ''";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
- echo "Version 0.21 ajout du champ ramSize a la table printers si non existant. <br/>";
+ echo "Version 0.21  <br/>";
 
 //Version 0.3
 //Ajout de NOT NULL et des valeurs par defaut.
 
 $query = "ALTER TABLE computers MODIFY name VARCHAR(200) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE computers MODIFY type VARCHAR(100) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE computers MODIFY os VARCHAR(100) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE computers MODIFY osver VARCHAR(20) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE computers MODIFY processor VARCHAR(30) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE computers MODIFY processor_speed VARCHAR(30) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE computers MODIFY hdspace VARCHAR(6) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE computers MODIFY contact VARCHAR(90) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE computers MODIFY contact_num VARCHAR(90) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE computers MODIFY achat_date date NOT NULL default '0000-00-00'";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE computers MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
 
 
 $query = "ALTER TABLE monitors MODIFY achat_date date NOT NULL default '0000-00-00'";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE monitors MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
 
 $query = "ALTER TABLE networking MODIFY ram varchar(10) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE networking MODIFY serial varchar(50) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE networking MODIFY otherserial varchar(50) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE networking MODIFY achat_date date NOT NULL default '0000-00-00'";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE networking MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
 
 
 $query = "ALTER TABLE printers MODIFY achat_date date NOT NULL default '0000-00-00'";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE printers MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
 
 $query = "ALTER TABLE software MODIFY name varchar(200) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE software MODIFY platform varchar(200) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE software MODIFY version varchar(20) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE software MODIFY location varchar(200) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE software MODIFY comments text NOT NULL";
 
 
 $query = "ALTER TABLE templates MODIFY templname varchar(200) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE templates MODIFY name varchar(200) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE templates MODIFY os varchar(200) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE templates MODIFY osver varchar(20) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE templates MODIFY processor varchar(200) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE templates MODIFY processor_speed varchar(100) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE templates MODIFY location varchar(200) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE templates MODIFY serial varchar(200) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE templates MODIFY otherserial varchar(200) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE templates MODIFY ramtype varchar(200) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE templates MODIFY ram varchar(20) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE templates MODIFY network varchar(200) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE templates MODIFY hdspace varchar(10) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE templates MODIFY contact varchar(200) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE templates MODIFY contact_num varchar(200) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE templates MODIFY comments text NOT NULL";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE templates MODIFY achat_date date NOT NULL default '0000-00-00'";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE templates MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
 
 $query = "ALTER TABLE users MODIFY password varchar(80) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE users MODIFY email varchar(80) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE users MODIFY location varchar(100) NOT NULL default ''";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE users MODIFY phone varchar(100) NOT NULL default ''";
 
- echo "Version 0.3 Ajout de NOT NULL et des valeurs par defaut. <br />";
+ echo "Version 0.3  <br />";
 
  
 }
@@ -241,6 +247,8 @@ $query = "ALTER TABLE users MODIFY phone varchar(100) NOT NULL default ''";
 //update database up to 0.31
 function updatedbUpTo031()
 {
+
+global $lang;
 
 $db = new DB;
 if(!TableExists("glpi_config"))
@@ -288,12 +296,12 @@ $query = "CREATE TABLE `glpi_config` (
   `ldap_field_phone` varchar(200) NOT NULL default '',
   PRIMARY KEY  (`ID`)
 ) TYPE=MyISAM AUTO_INCREMENT=2 ";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 
 $query = "INSERT INTO `glpi_config` VALUES (1, '10', '1', '1', '80', '30', '15', ' 0.3', 'GLPI powered by indepnet', '/glpi', '5', '0', '', '', '', '', '', '', 'admsys@xxxxx.fr', 'SIGNATURE', '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0','1', '1', '1', '1', '1', '1', '1', '1', 'uid', 'mail', 'physicaldeliveryofficename', 'cn', 'telephonenumber')";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 
-  echo "Version Superieur à 0.31 ajout de la table glpi_config <br />";
+  echo "Version > 0.31  <br />";
 }
 
 
@@ -303,82 +311,82 @@ $db->query($query) or die("erreur lors de la migration".$db->error());
 if(!TableExists("glpi_computers")) {
 
 	$query = "ALTER TABLE computers RENAME glpi_computers";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE connect_wire RENAME glpi_connect_wire";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE dropdown_gfxcard RENAME glpi_dropdown_gfxcard";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE dropdown_hdtype RENAME glpi_dropdown_hdtype";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE dropdown_iface RENAME glpi_dropdown_iface";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE dropdown_locations RENAME glpi_dropdown_locations";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE dropdown_moboard RENAME glpi_dropdown_moboard";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE dropdown_network RENAME glpi_dropdown_network";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE dropdown_os RENAME glpi_dropdown_os";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE dropdown_processor RENAME glpi_dropdown_processor";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE dropdown_ram RENAME glpi_dropdown_ram";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE dropdown_sndcard RENAME glpi_dropdown_sndcard";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE event_log RENAME glpi_event_log";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE followups RENAME glpi_followups";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE inst_software RENAME glpi_inst_software";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE licenses RENAME glpi_licenses";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE monitors RENAME glpi_monitors";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE networking RENAME glpi_networking";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE networking_ports RENAME glpi_networking_ports";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE networking_wire RENAME glpi_networking_wire";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE prefs RENAME glpi_prefs";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE printers RENAME glpi_printers";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE software RENAME glpi_software";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE templates RENAME glpi_templates";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE tracking RENAME glpi_tracking";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE type_computers RENAME glpi_type_computers";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE type_monitors RENAME glpi_type_monitors";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE type_networking RENAME glpi_type_networking";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE type_printers RENAME glpi_type_printers";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE users RENAME glpi_users";
-	$db->query($query) or die("erreur lors de la migration".$db->error()); 
+	$db->query($query) or die($lang["update"][90].$db->error()); 
 
-	echo "Version 0.4 Prefixage des tables  <br/>";
+	echo "Version 0.4  <br/>";
 }	
 
 //Ajout d'un champs ID dans la table users
 if(!FieldExists("glpi_users", "ID")) {
 	$query = "ALTER TABLE `glpi_users` DROP PRIMARY KEY";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE `glpi_users` ADD UNIQUE (`name`)";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE `glpi_users` ADD INDEX (`name`)";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = " ALTER TABLE `glpi_users` ADD `ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 
 }
-//Mise a jour des ID pour les tables dropdown et type.
+//Mise a jour des ID pour les tables dropdown et type. clés primaires sur les tables dropdown et type, et mise a jour des champs liés
 if(!FieldExists("glpi_dropdown_os", "ID")) {
 	changeVarcharToID("glpi_computers", "glpi_dropdown_os", "os");
 	changeVarcharToID("glpi_computers", "glpi_dropdown_hdtype", "hdtype");
@@ -412,7 +420,7 @@ if(!FieldExists("glpi_dropdown_os", "ID")) {
 	changeVarcharToID("glpi_computers", "glpi_type_computers", "type");
 	changeVarcharToID("glpi_templates", "glpi_type_computers", "type");
 	
-echo "Version 0.4 Ajout de clés primaires sur les tables dropdown et type, et mise a jour des champs liés.<br />";
+echo "Version 0.4 <br />";
 }
 
 if(!TableExists("glpi_type_peripherals")) {
@@ -422,7 +430,7 @@ $query = "CREATE TABLE `glpi_type_peripherals` (
 	`name` varchar(255),
 	 PRIMARY KEY  (`ID`)
 	) TYPE=MyISAM;";
-$db->query($query)or die("erreur lors de la migration".$db->error());
+$db->query($query)or die($lang["update"][90].$db->error());
 }
 
 if(!TableExists("glpi_peripherals")) {
@@ -445,139 +453,139 @@ if(!TableExists("glpi_peripherals")) {
 	  PRIMARY KEY  (`ID`)
 	) TYPE=MyISAM;";
 
-$db->query($query) or die("erreur lors de la migration".$db->error());
+$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!FieldExists("glpi_prefs", "ID")) {
 	$query = "Alter table glpi_prefs drop primary key";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE `glpi_prefs` ADD UNIQUE (`user`)";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "Alter table glpi_prefs add ID INT(11) not null auto_increment primary key";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 if(!FieldExists("glpi_config", "ID")) {
 
 	$query = "ALTER TABLE `glpi_config` CHANGE `config_id` `ID` INT( 11 ) NOT NULL AUTO_INCREMENT ";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_computers", "location")) {
 	$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `location` ) ";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_computers", "os")) {
 	$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `os` ) ";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_computers", "type")) {
 	$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `type` ) ";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 if(!isIndex("glpi_computers", "hdtype")) {
 	$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `hdtype` ) ";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_computers", "moboard")) {
 	$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `moboard` ) ";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_computers", "gfxcard")) {
 	$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `gfxcard` ) ";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_computers", "processor")) {
 	$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `processor` ) ";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_followups", "tracking")) {
 	$query = "ALTER TABLE `glpi_followups` ADD INDEX ( `tracking` ) ";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_networking", "location")) {
 	$query = "ALTER TABLE `glpi_networking` ADD INDEX ( `location` ) ";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_networking_ports", "on_device")) {
 	$query = "ALTER TABLE `glpi_networking_ports` ADD INDEX ( `on_device` , `device_type` )";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_peripherals", "type")) {
 	$query = "ALTER TABLE `glpi_peripherals` ADD INDEX ( `type` ) ";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_peripherals", "location")) {
 	$query = "ALTER TABLE `glpi_peripherals` ADD INDEX ( `location` ) ";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_printers", "location")) {
 	$query = "ALTER TABLE `glpi_printers` ADD INDEX ( `location` ) ";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_tracking", "computer")) {
 	$query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `computer` ) ";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_tracking", "author")) {
 	$query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `author` ) ";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_tracking", "assign")) {
 	$query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `assign` ) ";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_tracking", "date")) {
 	$query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `date` ) ";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_tracking", "closedate")) {
 	$query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `closedate` ) ";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_tracking", "status")) {
 	$query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `status` ) ";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!TableExists("glpi_dropdown_firmware")) {
 	$query = " CREATE TABLE `glpi_dropdown_firmware` (`ID` INT NOT NULL AUTO_INCREMENT ,`name` VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( `ID` ))";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!FieldExists("glpi_networking","firmware")) {
 	$query = "ALTER TABLE `glpi_networking` ADD `firmware` INT(11);";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!FieldExists("glpi_tracking","realtime")) {
 	$query = "ALTER TABLE `glpi_tracking` ADD `realtime` FLOAT NOT NULL;";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 if(!FieldExists("glpi_tracking","realtime")) {
 	$query = "ALTER TABLE `glpi_printers` ADD `flags_usb` TINYINT DEFAULT '0' NOT NULL AFTER `flags_par`";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 if(!FieldExists("glpi_licenses","expire")) {
 	$query = "ALTER TABLE `glpi_licenses` ADD `expire` date default NULL";
-	$db->query($query) or die("erreur lors de la migration".$db->error());
+	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
 }
@@ -651,6 +659,24 @@ if(!FieldExists("glpi_licenses","expire")) {
        background-color:#ffffff;
         }
 
+	.button {
+        font-weight:200;
+	color:#000000;
+	padding:5px;
+	text-decoration:none;
+	border:1px solid #009966;
+        background-color:#eeeeee;
+        }
+
+        .button:hover{
+          font-weight:200;
+	  color:#000000;
+	 padding:5px;
+	text-decoration:none;
+	border:1px solid #009966;
+       background-color:#ffffff;
+        }
+	
         -->  ";
         echo "</style>";
          echo "</head>";
@@ -663,16 +689,16 @@ if(!FieldExists("glpi_licenses","expire")) {
 if(empty($_POST["continuer"])) {
 	$db = new DB;
 	echo "<div align='center'>";
-	echo "<h3><span class='red'>Attention ! </span>Vous allez mettre à jour votre base de données GLPI ayant pour nom : ". $db->dbdefault ."</h3>";
+	echo "<h3><span class='red'>".$lang["update"][91]."</span>".$lang["update"][92]. $db->dbdefault ."</h3>";
 	
 	echo "<form action=\"update.php\" method=\"post\">";
-	echo "<input type=\"submit\" class='submit' name=\"continuer\" value=\"Mettre à jour / Continue \" />";
+	echo "<input type=\"submit\" class='submit' name=\"continuer\" value=\"".$lang["install"][25] ."\" />";
 	echo "</div></form>";
 }
 // Step 2  
 else {
 	if(test_connect()) {
-		echo "<h3>Connexion &agrave; la base de données réussie </h3>";
+		echo "<h3>".$lang["update"][93]."</h3>";
 		
 		if(!TableExists("glpi_config")) {
 			updateDbTo031();
@@ -683,14 +709,15 @@ else {
 			updateDbUpTo031();
 		}
 		echo "<div align='center'>";
-		echo "<h3>La mise &agrave; jour est réussie, votre base de données est actualisée</h3>";
-		echo "<p>Il est recommandé maintenant d'appliquer un chmod+0 sur les fichiers install.php et update.php</p>";
-		echo "<p>Vous pouvez utiliser l'application en cliquant <a href=\"index.php\">sur ce lien </a>.</p>";
-		echo "<p>Attention tout de même NE SUPPRIMEZ PAS l'utilisateur HELPDESK.</p></div>";
+		echo "<h3>".$lang["update"][94]."</h3>";
+		echo "<p>".$lang["install"][56]."</p>";
+		echo "<p>".$lang["install"][63]."</p></div>";
+		echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
+	
 	}
 	else {
 		echo "<h3> ";
-		echo "La connexion à la base de données a échouée, verifiez les paramètres de connexion figurant dans le fichier config_db.php </h3>";
+		echo $lang["update"][95] ."</h3>";
 	
       
         }
