@@ -44,7 +44,10 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/dicts/french.php");
 
 $db = new DB;
-$query = "select * from glpi_printers";
+//$query = "select * from glpi_printers";
+$query = "select glpi_printers.*, glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac ";
+$query.= "from glpi_printers LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type = 3 AND glpi_networking_ports.on_device = glpi_printers.ID) ORDER by glpi_printers.ID";
+
 $result = $db->query($query);
 $num_field = $db->num_fields($result);
 //set_time_limit(10);
@@ -110,15 +113,32 @@ $worksheet->write(0, 12, $lang["printers"][20], $border1);
 $worksheet->write(0, 13, $lang["printers"][21], $border1);
 $worksheet->write(0, 14, $lang["printers"][22], $border1);
 $worksheet->write(0, 15, $lang["printers"][23], $border1);
+$worksheet->write(0, 16, $lang["networking"][14], $border1);
+$worksheet->write(0, 17, $lang["networking"][15], $border1);
 
 
 $y=1;
+
+
+$old_ID=-1;
+$nb_skip=0; // Skip multiple interface computers
+$table=array();
 while($ligne = $db->fetch_array($result))
 {
-	for($i=0;$i<$num_field;$i++)
-	{
-		$worksheet->write($y, $i, $ligne[$i]);
+	// New computer
+	if ($old_ID!=$ligne[0]){
+		// reinit data
+		for($i=0;$i<$num_field;$i++) $table[$i]=$ligne[$i];
+		$old_ID=$ligne[0];
+	} 
+	else { // Same computer
+		$nb_skip++;
+		// Add the new interface :
+		for($i=$num_field-2;$i<$num_field;$i++)
+		if ($ligne[$i]!="") $table[$i].="\n".$ligne[$i];
 	}
+	$worksheet->write_row($y-$nb_skip, 0, $table);
+	
 	$y++;
 }
 
