@@ -157,6 +157,7 @@ $lang["Menu"][17]	="R&eacute;servations";
 $lang["Menu"][18]	="Outils";
 $lang["Menu"][19]	="Base connaissances";
 $lang["Menu"][20]	="Fichiers configuration";
+$lang["Menu"][21]	="Cartouches";
 
 //Donn&eacute;es
 
@@ -468,6 +469,7 @@ $lang["software"][36]   = "mise(s) à jour trouvée(s)";
 $lang["software"][37]   = "A acheter";
 $lang["software"][38]   = "Licence site";
 $lang["software"][39]   = "Logiciel libre";
+$lang["software"][40]   = "Aucune licence";
 
 
 // Peripherals
@@ -980,6 +982,7 @@ $lang["title"][15] = "Mailing";
 $lang["title"][16] = "Rapports";
 $lang["title"][17] = "Préférences";
 $lang["title"][18] = "Ecrans";
+$lang["title"][19] = "Cartouches";
 
 $lang["device_hdd"][0] = "Rpm";
 $lang["device_hdd"][1] = "Cache";
@@ -1028,5 +1031,34 @@ $lang["devices"][6] = "Memoire vive";
 $lang["devices"][7] = "Carte son";
 $lang["devices"][8] = "Désignation";
 $lang["devices"][9] = "Ajout d'un nouveau periphérique interne pour l'ordinateur: ";
+
+$lang["cartridges"][0] = "Cartouche";
+$lang["cartridges"][1] = "Nom";
+$lang["cartridges"][2] = "Référence";
+$lang["cartridges"][3] = "Type";
+$lang["cartridges"][4] = "ID";
+$lang["cartridges"][5] = "Commentaire";
+$lang["cartridges"][6] = "Ajouter Type de Cartouche";
+$lang["cartridges"][7] = "Pas de cartouche trouvée";
+$lang["cartridges"][8] = "Fabriquant";
+$lang["cartridges"][9] = "Aucune cartouche";
+$lang["cartridges"][10] = "Toner";
+$lang["cartridges"][11] = "Jet-Encre";
+$lang["cartridges"][12] = "Type de Cartouche";
+$lang["cartridges"][13] = "Neuve(s)";
+$lang["cartridges"][14] = "Utilisée(s)";
+$lang["cartridges"][15] = "Vieille(s)";
+$lang["cartridges"][16] = "Cartouche(s)";
+$lang["cartridges"][17] = "Ajouter cartouche...";
+$lang["cartridges"][18] = "Ajouter Cartouche";
+$lang["cartridges"][19] = "Modifier Cartouche";
+$lang["cartridges"][20] = "Neuve";
+$lang["cartridges"][21] = "Utilisée";
+$lang["cartridges"][22] = "Vieille";
+$lang["cartridges"][23] = "Etat";
+$lang["cartridges"][24] = "Date ajout";
+$lang["cartridges"][25] = "Date utilisation";
+$lang["cartridges"][26] = "Date Fin";
+$lang["cartridges"][27] = "Sur";
 
 ?>
