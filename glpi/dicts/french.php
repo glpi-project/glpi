@@ -1067,5 +1067,6 @@ $lang["cartridges"][31] = "Supprimer";
 $lang["cartridges"][32] = "Type d'imprimantes compatibles";
 $lang["cartridges"][33] = "Cartouches utilisées";
 $lang["cartridges"][34] = "Pas de cartouche libre";
+$lang["cartridges"][35] = "Vieilles Cartouches";
 
 ?>
