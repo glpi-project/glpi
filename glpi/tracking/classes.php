@@ -53,7 +53,7 @@ class Job {
 	var $uemail		= "";
 	var $emailupdates	= "";
 	var $num_of_followups	= 0;
-	
+
 	function getfromDB ($ID,$purecontent) {
 
 		$this->ID = $ID;
@@ -95,7 +95,7 @@ class Job {
 			$thrdquery = "SELECT * FROM followups WHERE (tracking = $this->ID)";
 			$thrdresult = $db->query($thrdquery);
 			$this->num_of_followups = $db->numrows($thrdresult);
-
+			
 			return true;
 
 		} else {
@@ -154,19 +154,33 @@ class Job {
 		}
 	}
 
-
-	function textFollowups(&$emailmessage) {
+	function textFollowups() {
 		// get the last followup for this job and give its contents as
+		GLOBAL $lang;
 	
-		$message .= "\nFollowups:\n\n";
+		$message = $lang["mailing"][1]."\n".$lang["mailing"][4]." (".$this->num_of_followups.")"."\n".$lang["mailing"][1]."\n";
 		
 		for ($i=0; $i < $this->num_of_followups; $i++) {
 			$fup = new Followup;
 			$fup->getFromDB($this->ID,$i);
-			$emailmessage .= "[ ".$fup->date." ]\n";
-			$emailmessage .= "Author: ".$fup->author."\n";
-			$emailmessage .= $fup->contents."\n\n";
+			$message .= "[ ".$fup->date." ]\n";
+			$message .= $lang["mailing"][2].$fup->author."\n";
+			$message .= $lang["mailing"][3]."\n".$fup->contents."\n".$lang["mailing"][0]."\n";
 		}
+		return $message;
+	}
+	
+	function textDescription(){
+		GLOBAL $lang;
+
+		$message = $lang["mailing"][1]."\n".$lang["mailing"][5]."\n".$lang["mailing"][1]."\n";
+		$message.= $lang["mailing"][2].$this->author."\n";
+		$message.= $lang["mailing"][6].$this->date."\n";
+		$message.= $lang["mailing"][7].$this->computername."\n";
+		$message.= $lang["mailing"][8].$this->assign."\n";
+		$message.= $lang["mailing"][3]."\n".$this->contents."\n";	
+		$message.="\n\n";
+		return $message;
 	}
 }
 

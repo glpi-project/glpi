@@ -37,6 +37,7 @@ This file is part of GLPI.
 include ("_relpos.php");
 // FUNCTIONS Tracking System
 
+
 function searchFormTracking ($show,$contains) {
 	// Tracking Search Block
 	
@@ -410,13 +411,15 @@ function postJob($ID,$author,$status,$priority,$computer,$isgroup,$uemail,$email
 	if ($job->putinDB()) {
 		// Log this event
 		logEvent($ID,"computers",4,"tracking","$author added new job.");
-
-		// Notify about new followup
-		if ($cfg_features["job_email"]) {
-			$signature = $cfg_layout["signature"];
-			mail($cfg_features["job_email"], "glpi: New Job added by $job->author", "Tracking Job for computer $ID has been added:\n\n$contents\n\nAuthor: $author\n\n-- \n".$signature."", "From: glpi <glpi>\nReply-To: ".$cfg_features["job_email"]."");			
-		}
 		
+		// Processing Email
+		if ($cfg_features["mailing"])
+		{
+			$user=new User;
+			$user->getfromDB($author);
+			$mail = new Mailing("new",$job,$user);
+			$mail->send();
+		}
 		return true;	
 	} else {
 		echo "Couldn't post followup.";
@@ -426,65 +429,40 @@ function postJob($ID,$author,$status,$priority,$computer,$isgroup,$uemail,$email
 
 function markJob ($ID,$status) {
 	// Mark Job with status
+	GLOBAL $IRMName,$cfg_features;
 	
 	$job = new Job;
 	$job->getFromDB($ID,1);
-	
-	if ($job->updateStatus($status)) {
-
-		// Notify about status change
-		if ($cfg_features["job_email"]) {
-			$emailmessage = "Job Number: $job->ID\n";
-			$emailmessage .= "Status: $job->status\n";
-			$emailmessage .= "Author: $job->author ($job->uemail)\n";
-			$emailmessage .= "Computer: $job->computername\n";
-			$emailmessage .= "Assigned to: $job->assign\n";
-			$emailmessage .= "Problem Description:\n$job->contents\n";
-			$emailmessage .= "Number of Followups: \n$job->num_of_followups\n";
-			textFollowups($emailmessage);
-			$signature = $cfg_layout["signature"];
-			mail($cfg_features["job_email"], "glpi: Status changed of Job $job->ID.", $emailmessage."\n\n-- \n".$signature."", "From: glpi\n\n");			
+	$job->updateStatus($status);
+	// Processing Email
+	if ($status=="old"&&$cfg_features["mailing"])
+		{
+			$user=new User;
+			$user->getfromDB($IRMName);
+			$mail = new Mailing("finish",$job,$user);
+			$mail->send();
 		}
-	
-	}
+
 }
 
 function assignJob ($ID,$user,$admin) {
 	// Assign a job to someone
 
-	GLOBAL $cfg_features, $cfg_layout;
+	GLOBAL $cfg_features, $cfg_layout,$IRMName;
 	
 	$job = new Job;
 	$job->getFromDB($ID,0);
 
-	if ($job->assignTo($user)) {
+	$job->assignTo($user);
 	
-		// Notify about assignment change
-
-		// First, notify all that the job has been assigned, if configured to do so
-		if ($cfg_features["notify_ass_all"]) {
-			// Check if we have a "all"-address
-			if ($cfg_features["job_email"]) {
-				$signature = $cfg_layout["signature"];
-				mail($cfg_features["job_email"], "glpi: Job $job->ID has been assigned to $user", "The Job with ID $job->ID has been assigned to $user by $admin.\n\n-- \n".$signature."", "From: glpi <glpi>\nReply-To: ".$cfg_features["job_email"]."");			
-			}
-		}				
-
-		// Next, notify the user who got the assignment if configured
-		if ($cfg_features["notify_assign"]) {
-			// Get his address
-			$db = new DB;
-			$query = "SELECT * FROM users WHERE (name = '$user')";
-			if ($result = $db->query($query)) {
-				$query2 = "SELECT email FROM users WHERE (name = '$job->author')";
-				$result2 = $db->query($query2);
-				$replyto = $db->result($result2, 0, "email");
-				$email = $db->result($result, 0, "email");
-				$signature = $cfg_layout["signature"];
-				mail($email, "glpi: Job $job->ID has been assigned to you", "Tracking Job for computer $job->computer has been assigned to you by $admin:\n\n$job->contents\n\nAuthor: $job->author\n\n-- \n".$signature."", "From: glpi <glpi>\nReply-To: $replyto");			
-			}
+	// Processing Email
+	if ($cfg_features["mailing"])
+		{
+			$user=new User;
+			$user->getfromDB($IRMName);
+			$mail = new Mailing("attrib",$job,$user);
+			$mail->send();
 		}
-	}
 }
 
 function showFollowups($ID) {
@@ -544,45 +522,16 @@ function postFollowups ($ID,$author,$contents) {
 	if ($fup->putInDB()) {
 		// Log this event
 		$fup->logFupUpdate();
-	
-		// Notify about new followup
-		if ($cfg_features["newfup_email"]) {
-			$signature = $cfg_layout["signature"];
-			mail($cfg_features["newfup_email"], "glpi: New followup to Job $ID.", "Tracking Job $ID had this followup added:\n\n$contents\n\nAuthor: $author\n\n-- \n".$signature."", "From: glpi <glpi>\nReply-To: ".$cfg_features["newfup_email"]."");			
+		// Processing Email
+		if ($cfg_features["mailing"])
+		{
+			$job= new Job;
+			$job->getfromDB($ID,0);
+			$user=new User;
+			$user->getfromDB($author);
+			$mail = new Mailing("followup",$job,$user);
+			$mail->send();
 		}
-
-		// Notify the Job owner, that his job has been updated
-		if ($cfg_features["notify_fups"]) {
-			
-			$db = new DB;
-			$query = "SELECT * FROM tracking WHERE (ID = $ID)";
-			$result = $db->query("$query");
-			$owner = $db->result($result, 0, "assign");				
-
-			if ($author!=$owner && $owner!="") {
-				$signature = $cfg_layout["signature"];
-				$query = "SELECT * FROM users WHERE (name = '$owner')";
-				$result = $db->query("$query");
-				$email = $db->result($result, 0, "email");
-				mail("$email", "glpi: New followup to Job $ID.", "Tracking Job $ID had this followup added:\n\n$contents\n\nAuthor: $author\n\n-- \n".$signature."", "From: glpi <glpi>\nReply-To: ".$cfg_features["newfup_email"]."");
-			}
-		}
-		
-		// Notify the user who posted the Job, that it has been updated
-		if($cfg_features["notify_users"]) {
-			$signature = $cfg_layout["signature"];
-			$query = "SELECT * FROM tracking WHERE (ID = $ID)";
-			$result = $db->query("$query");
-			$emailupdates = $db->result($result, 0, "emailupdates");
-			$uemail = $db->result($result, 0, "uemail");
-			$query2 = "SELECT email FROM users WHERE (name = '$author')";
-			$result2 = $db->query($query2);
-			$replyto = $db->result($result2, 0, "email");
-			if($emailupdates && $uemail) {
-				mail("$uemail", "glpi: Your problem $ID has been updated", "Tracking Job $ID had this followup added:\n\n$contents\n\nAuthor: $author\n\n-- \n".$signature."", "From: glpi <glpi>\nReply-To: $replyto");
-  			}
-		}
-									
 	} else {
 		echo "Couldn't post followup.";
 	}
