@@ -425,7 +425,7 @@ class Mailing
 
 		if ($cfg_mailing[$this->type]["all_admin"])
 		{
-			$query = "SELECT email FROM glpi_users WHERE (type = 'admin')";
+			$query = "SELECT email FROM glpi_users WHERE (".searchUserbyType("admin").")";
 			if ($result = $db->query($query)) 
 			{
 				while ($row = $db->fetch_row($result))
@@ -442,7 +442,7 @@ class Mailing
 
 		if ($cfg_mailing[$this->type]["all_normal"])
 		{
-			$query = "SELECT email FROM glpi_users WHERE (type = 'normal')";
+			$query = "SELECT email FROM glpi_users WHERE (".searchUserbyType("normal").")";
 			if ($result = $db->query($query)) 
 			{
 				while ($row = $db->fetch_row($result))
