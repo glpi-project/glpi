@@ -42,39 +42,46 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 	
 	$ic = new Infocom;
 
+	$option="";
+	if ($withtemplate==2)
+		$option=" readonly ";
+
 	echo "&nbsp;<div align='center'>";
 	
 	if (!$ic->getfromDB($device_type,$dev_ID)){
 		if ($withtemplate!=2)
 		echo "<b><a href='$target?device_type=$device_type&FK_device=$dev_ID&add=add'>Activer les informations commerciales</a></b><br>";
 	} else {
-
-		echo "<form name='form_ic' method='post' action=\"$target\"><div align='center'>";
+		if ($withtemplate!=2)
+		echo "<form name='form_ic' method='post' action=\"$target\">";
+		echo "<div align='center'>";
 		echo "<table class='tab_cadre' width='700'>";
 		echo "<tr><th colspan='4'><b>".$lang["financial"][3]."</b></th></tr>";
 	
 		echo "<tr class='tab_bg_1'><td colspan='2'>".$lang["financial"][26].":		</td>";
 		echo "<td colspan='2' align='center'>";
-		dropdownValue("glpi_enterprises","FK_enterprise",$ic->fields["FK_enterprise"]);
+		if ($withtemplate==2)
+		getdropdownName("glpi_enterprises","FK_enterprise",$ic->fields["FK_enterprise"]);
+		else dropdownValue("glpi_enterprises","FK_enterprise",$ic->fields["FK_enterprise"]);
 		
 		echo "</td>";
 		
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][18].":		</td>";
-		echo "<td ><input type='text' name='num_commande' value=\"".$ic->fields["num_commande"]."\" size='25'></td>";
+		echo "<td ><input type='text' $option name='num_commande' value=\"".$ic->fields["num_commande"]."\" size='25'></td>";
 		
 		echo "<td>".$lang["financial"][19].":		</td>";
-		echo "<td ><input type='text' name='bon_livraison' value=\"".$ic->fields["bon_livraison"]."\" size='25'></td>";
+		echo "<td ><input type='text' $option name='bon_livraison' value=\"".$ic->fields["bon_livraison"]."\" size='25'></td>";
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][14].":	</td><td>";
-		showCalendarForm("form_ic","buy_date",$ic->fields["buy_date"]);	
+		showCalendarForm("form_ic","buy_date",$ic->fields["buy_date"],$withtemplate);	
 	    echo "</td>";
 		
 
 		echo "<td>".$lang["financial"][76].":	</td><td>";
-		showCalendarForm("form_ic","use_date",$ic->fields["use_date"]);	
+		showCalendarForm("form_ic","use_date",$ic->fields["use_date"],$withtemplate);	
 	    echo "</td>";
 	    echo "</td>";
 		echo "</tr>";
@@ -82,28 +89,29 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		if ($show_immo==1){
 		
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][15].":	</td><td>";
-		dropdownContractTime("warranty_duration",$ic->fields["warranty_duration"]);
+		if ($withtemplate==2)
+		echo $ic->fields["warranty_duration"];
+		else dropdownContractTime("warranty_duration",$ic->fields["warranty_duration"]);
 		echo " ".$lang["financial"][57];
 		echo "</td>";
 	
 		echo "<td>".$lang["financial"][80]."  :	</td><td >";
-		
-		
+	
 		showWarrantyExpir($ic->fields["buy_date"],$ic->fields["warranty_duration"]);
 				
 		echo "</td></tr>";
 		
 		
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][78].":		</td>";
-		echo "<td ><input type='text' name='warranty_value' value=\"".$ic->fields["warranty_value"]."\" size='10'></td>";
+		echo "<td ><input type='text' $option name='warranty_value' value=\"".$ic->fields["warranty_value"]."\" size='10'></td>";
 		
 
 		echo "<td>".$lang["financial"][16].":		</td>";
-		echo "<td ><input type='text' name='warranty_info' value=\"".$ic->fields["warranty_info"]."\" size='25'></td>";
+		echo "<td ><input type='text' $option name='warranty_info' value=\"".$ic->fields["warranty_info"]."\" size='25'></td>";
 		echo "</tr>";
 		}
 		
-		echo "<tr class='tab_bg_1'><td>".$lang["financial"][21].":		</td><td  ".($show_immo==1?"":" colspan='3'")."><input type='text' name='value' value=\"".$ic->fields["value"]."\" size='10'></td>";
+		echo "<tr class='tab_bg_1'><td>".$lang["financial"][21].":		</td><td  ".($show_immo==1?"":" colspan='3'")."><input type='text' name='value' $option value=\"".$ic->fields["value"]."\" size='10'></td>";
 		if ($show_immo==1){
 		echo "<td>".$lang["financial"][81]." :</td><td>";
 				
@@ -115,44 +123,50 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		
 		if ($show_immo==1){
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][20].":		</td>";
-		echo "<td ><input type='text' name='num_immo' value=\"".$ic->fields["num_immo"]."\" size='25'></td>";
+		echo "<td ><input type='text' $option name='num_immo' value=\"".$ic->fields["num_immo"]."\" size='25'></td>";
 		
 					
 		
 
 		echo "<td>".$lang["financial"][22].":		</td><td >";
-		dropdownAmortType("amort_type",$ic->fields["amort_type"]);
+		if ($withtemplate==2)
+		echo getAmortTypeName($ic->fields["amort_type"]);
+		else dropdownAmortType("amort_type",$ic->fields["amort_type"]);
+		
 		echo "</td></tr>";
 		
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][23].":		</td><td>";
-		dropdownDuration("amort_time",$ic->fields["amort_time"]);
+		if ($withtemplate==2)
+		echo $ic->fields["amort_time"];
+		else dropdownDuration("amort_time",$ic->fields["amort_time"]);
 		echo " ".$lang["financial"][9];
 		echo "</td>";
 		
 		echo "<td>".$lang["financial"][77].":		</td>";
-		echo "<td ><input type='text' name='amort_coeff' value=\"".$ic->fields["amort_coeff"]."\" size='10'></td>";
+		echo "<td ><input type='text' $option name='amort_coeff' value=\"".$ic->fields["amort_coeff"]."\" size='10'></td>";
 		echo "</tr>";
 		}
 
 		echo "<tr class='tab_bg_1'><td valign='top'>";
 		echo $lang["financial"][12].":	</td>";
-		echo "<td align='center' colspan='3'><textarea cols='60' rows='2' name='comments' >".$ic->fields["comments"]."</textarea>";
+		echo "<td align='center' colspan='3'><textarea cols='60' $option rows='2' name='comments' >".$ic->fields["comments"]."</textarea>";
 		echo "</td></tr>";
-	
-		echo "<tr>";
+		if ($withtemplate!=2){
+			echo "<tr>";
                 
-                echo "<td class='tab_bg_2' colspan='2' align='center'>";
-		echo "<input type='hidden' name='ID' value=\"".$ic->fields['ID']."\">\n";
-		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
-		echo "</td>\n\n";
-		echo "</form>";
-		echo "<form method='post' action=\"".$HTMLRel."infocoms/infocoms-info-form.php\"><div align='center'>";
-		echo "<input type='hidden' name='ID' value=\"".$ic->fields['ID']."\">\n";
-		echo "<td class='tab_bg_2' colspan='2' align='center'>\n";
-		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-		echo "</form>";
-		echo "</td>";
-		echo "</tr>";
+            echo "<td class='tab_bg_2' colspan='2' align='center'>";
+			echo "<input type='hidden' name='ID' value=\"".$ic->fields['ID']."\">\n";
+			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+			echo "</td>\n\n";
+			echo "</form>";
+			echo "<form method='post' action=\"".$HTMLRel."infocoms/infocoms-info-form.php\"><div align='center'>";
+			echo "<input type='hidden' name='ID' value=\"".$ic->fields['ID']."\">\n";
+			echo "<td class='tab_bg_2' colspan='2' align='center'>\n";
+			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+			echo "</form>";
+			echo "</td>";
+			echo "</tr>";
+		}
 
 		echo "</table></div>";
 		
