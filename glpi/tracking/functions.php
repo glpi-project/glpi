@@ -290,7 +290,7 @@ function showJobShort($ID, $followup) {
 		// Finish Line
 		echo "</tr>";
 
-		if ($followups) {
+		if (isset($followups)) {
 			echo "<tr><th>&nbsp;</th><td colspan=7>";
 			showFollowups($job->ID);
 			echo "</td></tr>"; 
