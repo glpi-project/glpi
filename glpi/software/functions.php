@@ -265,7 +265,7 @@ function showSoftwareForm ($target,$ID) {
 
 	$sw = new Software;
 
-	echo "<center><form method='post' action=\"$target\">";
+	echo "<div align='center'><form method='post' action=\"$target\">";
 	echo "<table class='tab_cadre'>";
 	echo "<tr><th colspan='3'><b>";
 	if (!$ID) {
@@ -303,11 +303,11 @@ function showSoftwareForm ($target,$ID) {
 
 		echo "<tr>";
 		echo "<td class='tab_bg_2' valign='top' colspan='3'>";
-		echo "<center><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></center>";
+		echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
 		echo "</td>";
-		echo "</form></tr>";
+		echo "</tr>";
 
-		echo "</table></center>";
+		echo "</table></form></div>";
 
 	} else {
 
@@ -315,16 +315,16 @@ function showSoftwareForm ($target,$ID) {
                 echo "<td class='tab_bg_2'></td>";
                 echo "<td class='tab_bg_2' valign='top'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<center><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></center>";
+		echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
 		echo "</td></form>\n\n";
 		echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<center><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></center>";
+		echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
 		echo "</td>";
-		echo "</form></tr>";
+		echo "</tr>";
 
-		echo "</table></center>";
+		echo "</table></form></div>";
 		
 		showLicenses($ID);
 		showLicensesAdd($ID);
@@ -411,12 +411,12 @@ function showLicensesAdd($ID) {
 	
 	GLOBAL $cfg_layout,$cfg_install,$lang;
 	
-	echo "<center><table class='tab_cadre' width='50%' cellpadding='2'>";
+	echo "<div align='center'><table class='tab_cadre' width='50%' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><b>";
 	echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?addform=addform&ID=$ID\">";
 	echo $lang["software"][12];
 	echo "</a></b></td></tr>";
-	echo "</table></center><br>";
+	echo "</table></div><br>";
 }
 
 function showLicenses ($sID) {
@@ -428,7 +428,7 @@ function showLicenses ($sID) {
 	$query = "SELECT  count(ID) AS COUNT  FROM glpi_licenses WHERE (sID = $sID)";
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 
-			echo "<br><center><table cellpadding='2' class='tab_cadre' width='50%'>";
+			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre' width='50%'>";
 			echo "<tr><th colspan='3'>";
 			echo $db->result($result, 0, "COUNT");
 			echo " ".$lang["software"][13]." :</th>";
@@ -437,9 +437,9 @@ function showLicenses ($sID) {
 			$i=0;
 				} else {
 
-			echo "<br><center><table border='0' width=50% cellpadding='2'>";
+			echo "<br><div align='center'><table border='0' width='50%' cellpadding='2'>";
 			echo "<tr><th>".$lang["software"][14]."</th></tr>";
-			echo "</table></center>";
+			echo "</table></div>";
 		}
 	}
 
@@ -497,11 +497,11 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE  FROM g
 						$ID=$temp["ID"];
 					}
 				}
-				if ($ID!=""){
+				if (!empty($ID)){
 				echo "</td><td align='center'>";
-				echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?delete=delete&ID=$ID\">";
+				echo "<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?delete=delete&ID=$ID\">";
 				echo $lang["buttons"][6];
-				echo "</a></b>";
+				echo "</b></a>";
 				}
 			}
 		}
@@ -513,10 +513,10 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE  FROM g
 			echo "<tr><td align=center>";
 			echo "<b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$data_inst["cID"]."\">";
 			echo $data_inst["cname"];
-			echo "</a></b></td><td align=center>";
+			echo "</b></a></td><td align=center>";
 			echo "<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&ID=".$data_inst["ID"]."&cID=".$data_inst["cID"]."\">";
 			echo $lang["buttons"][5];
-			echo "</a></b>";
+			echo "</b></a>";
 			echo "</td></tr>";
 		}
 			
@@ -528,7 +528,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE  FROM g
 				
 	}
 	}	
-echo "</table></center>\n\n";
+echo "</table></div>\n\n";
 	
 }
 
