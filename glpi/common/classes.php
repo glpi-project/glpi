@@ -322,8 +322,9 @@ class Identification
 //  			$rv = true;
 
   		if (ldap_bind($conn, $dn, $pass) ) {
-			$findcn=explode(",",$dn);
+			$findcn=explode(",O",$dn);
  			$findcn=explode("=",$findcn[0]);
+ 			$findcn[1]=str_replace('\,', ',', $findcn[1]);
  			$filter="(CN=".$findcn[1].")";
                      if ($condition!="") $filter="(& $filter $condition)";
                      $sr=ldap_search($conn, $basedn, $filter);

@@ -155,7 +155,6 @@ class User {
 	  		$f = array_values($fields);
 	  		$sr = ldap_search($conn, $basedn, "uid=".$name, $f);
 	  		$v = ldap_get_entries($conn, $sr);
-//	  		print_r($v);
 	  		if ( (empty($v)) || empty($v[0][$fields['name']][0]) ) {
 	  			return false;
 	  		}
@@ -164,6 +163,18 @@ class User {
 					$this->fields[$k] = $v[0][$e][0];
 				}
 				
+				if (!empty($this->fields['location'])){
+					$db=new DB;
+					$query="SELECT ID FROM glpi_dropdown_locations WHERE name='".$this->fields['location']."'";
+					$result=$db->query($query);
+					if ($db->numrows($result)==0){
+						$db->query("INSERT INTO glpi_dropdown_locations (name) VALUES ('".$this->fields['location']."')");
+						}
+						$result=$db->query($query);
+						$data = $db->fetch_row($result);
+						$this->fields['location']=$data[0];
+					}				
+					
 				return true;
   		}
   	}
@@ -190,13 +201,14 @@ class User {
 			ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3) ;
 	  	if ( $adm != "" )
 	  	{
-		$dn = $basedn;
- 		$findcn=explode(",",$dn);
+				 $dn = $basedn;
+ 				$findcn=explode(",O",$dn);
                  $findcn=explode("=",$findcn[0]);
+                 $findcn[1]=str_replace('\,', ',', $findcn[1]);
                  $filter="(CN=".$findcn[1].")";
 
                  if ($condition!="") $filter="(& $filter $condition)";
-	  		$bv = ldap_bind($conn, $dn, $pass);
+	  		$bv = ldap_bind($conn, $adm, $pass);
 	  	}
 	  	else
 	  	{
@@ -205,18 +217,30 @@ class User {
 
 	  	if ( $bv )
 	  	{
-	  		$f = array_values($fields);
+	  		$f = array_values(array_filter($fields));
 	  		$sr = ldap_search($conn, $basedn, $filter, $f);
 	  		$v = ldap_get_entries($conn, $sr);
 //	  		print_r($v);
-	  		if ( (empty($v)) || empty($v[0][$fields['name']][0]) ) {
+	  		if (count($v)==0){
 	  			return false;
 	  		}
+	  		$fields=array_filter($fields);
 				foreach ($fields as $k => $e)
 				{
 					$this->fields[$k] = $v[0][$e][0];
 				}
-				
+
+				if (!empty($this->fields['location'])){
+					$db=new DB;
+					$query="SELECT ID FROM glpi_dropdown_locations WHERE name='".$this->fields['location']."'";
+					$result=$db->query($query);
+					if ($db->numrows($result)==0){
+						$db->query("INSERT INTO glpi_dropdown_locations (name) VALUES ('".$this->fields['location']."')");
+						}
+						$result=$db->query($query);
+						$data = $db->fetch_row($result);
+						$this->fields['location']=$data[0];
+					}
 				return true;
   		}
   	}
