@@ -1295,6 +1295,40 @@ function listConnectElement($target,$input) {
 
 }
 
+function dropdownPriority($name,$value=0){
+	global $lang;
+	
+	echo "<select name='$name'>";
+	echo "<option value='5' ".($value==5?" selected ":"").">".$lang["help"][3]."";
+	echo "<option value='4' ".($value==4?" selected ":"").">".$lang["help"][4]."";
+	echo "<option value='3' ".($value==3?" selected ":"").">".$lang["help"][5]."";
+	echo "<option value='2' ".($value==2?" selected ":"").">".$lang["help"][6]."";
+	echo "<option value='1' ".($value==1?" selected ":"").">".$lang["help"][7]."";
+	echo "</select>";	
+}
+
+function getPriorityName($value){
+	global $lang;
+	
+	switch ($value){
+	case 5 :
+		return $lang["help"][3];
+		break;
+	case 4 :
+		return $lang["help"][4];
+		break;
+	case 3 :
+		return $lang["help"][5];
+		break;
+	case 2 :
+		return $lang["help"][6];
+		break;
+	case 1 :
+		return $lang["help"][7];
+		break;
+	}	
+}
+
 function printHelpDesk ($name,$from_helpdesk) {
 
 	GLOBAL $cfg_layout,$cfg_install,$lang,$cfg_features;
@@ -1317,13 +1351,8 @@ function printHelpDesk ($name,$from_helpdesk) {
 	echo "<tr><th colspan='2'>".$lang["help"][0]." $name, ".$lang["help"][1].":</th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$lang["help"][2].": </td>";
-	echo "<td><select name=priority>";
-	echo "<option value='5'>".$lang["help"][3]."";
-	echo "<option value='4'>".$lang["help"][4]."";
-	echo "<option value='3' selected>".$lang["help"][5]."";
-	echo "<option value='2'>".$lang["help"][6]."";
-	echo "<option value='1'>".$lang["help"][7]."";
-	echo "</select>";
+	echo "<td>";
+	dropdownPriority("priority",3);
 	echo "</td></tr>";
 	if($cfg_features["mailing"] != 0)
 	{

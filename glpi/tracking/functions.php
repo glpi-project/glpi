@@ -472,7 +472,7 @@ function showJobShort($ID, $followups	) {
 			echo "</small></td>";
 		}
 
-		echo "<td align='center' bgcolor='$bgcolor'><b>$job->priority</b></td>";
+		echo "<td align='center' bgcolor='$bgcolor'><b>".getPriorityName($job->priority)."</b></td>";
 		
 		echo "<td align='center'  bgcolor='$bgcolor'>";
 
@@ -584,8 +584,6 @@ function showJobDetails($ID) {
 		}
 		echo "</td></tr>";
 
-		echo "<tr><td>".$lang["joblist"][2].":</td><td><b>";
-		echo "<b>".$job->priority."</b></td></tr>";	
 
 		echo "<tr><td>".$lang["joblist"][3].":</td><td>";
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
@@ -604,15 +602,17 @@ function showJobDetails($ID) {
 			if ($job->computerfound) echo $m->getLink();
 			else echo $m->getNameID();
 			echo "</b>";
-
-/*			if ($job->computerfound)	echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$job->computer\">";
-			echo "<b>$job->computername ($job->computer)</b>";
-			if ($job->computerfound) echo "</a>";
-*/			
 		}
 		else
-		echo "<b>$job->computername ($job->computer)</b>";
+		echo "<b>".$m->getNameID()."</b>";
 		echo "</td></tr>";
+
+		echo "<tr><td>".$lang["joblist"][2].":</td><td><b>";
+		if (isAdmin($_SESSION["glpitype"]))
+		  priorityFormTracking($job->ID,$cfg_install["root"]."/tracking/tracking-priority-form.php");	
+		else echo "<b>".getPriorityName($job->priority)."</b>";	
+		echo "</td></tr>";
+
 		echo "</table>";
 
 		echo "</td>";
@@ -754,6 +754,9 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	// ajout suite  à tracking sur tous les items 
 			
 	switch ($device_type) {
+	case 0 :
+	$item = "general";
+	break;
 	case 1 :
 	$item = "computers";
 	break;
@@ -840,17 +843,35 @@ function categoryJob ($ID,$category,$admin) {
 	GLOBAL $cfg_features, $cfg_layout,$lang;	
 	$job = new Job;
 	$job->getFromDB($ID,0);
-
+	$oldcat=$job->category;
+	if ($oldcat==0) $oldcat="NULL";
 	$job->categoryTo($category);
-
-	// Add a Followup for a assignment change
-/*	if (strcmp($newuser,$olduser)!=0){
-	$content=date("Y-m-d H:i:s").": ".$lang["mailing"][12].": ".$olduser." -> ".$newuser." (".$_SESSION["glpiname"].")";
+	$newcat=$job->category;
+	// Add a Followup for a category change
+	if ($newcat!=$oldcat){
+	$content=date("Y-m-d H:i:s").": ".$lang["mailing"][14].": ".getDropdownName("glpi_dropdown_tracking_category",$job->category)." (".$_SESSION["glpiname"].")";
 	postFollowups ($ID,$_SESSION["glpiname"],addslashes($content));
 	}
-*/	
+	
 }
 
+
+function priorityJob ($ID,$priority,$admin) {
+	// Assign a category to a job
+
+	GLOBAL $cfg_features, $cfg_layout,$lang;	
+	$job = new Job;
+	$job->getFromDB($ID,0);
+	$oldprio=$job->priority;
+	$job->priorityTo($priority);
+	$newprio=$job->priority;
+	// Add a Followup for a priority change
+	if ($newprio!=$oldprio){
+	$content=date("Y-m-d H:i:s").": ".$lang["mailing"][14].": ".getPriorityName($job->priority)." (".$_SESSION["glpiname"].")";
+	postFollowups ($ID,$_SESSION["glpiname"],addslashes($content));
+	}
+	
+}
 
 function showFollowups($ID) {
 	// Print Followups for a job
@@ -1064,7 +1085,7 @@ function assignFormTracking ($ID,$admin,$target) {
 	echo "<td>".$lang["job"][5].":</td><td>";
 		dropdownUsers($job->assign, "user");
 	echo "<input type='hidden' name='update' value=\"1\">";
-	echo "<input type='hidden' name='ID' value=$job->ID>";
+	echo "<input type='hidden' name='ID' value='$job->ID'>";
 	echo "</td><td><input type='submit' value=\"".$lang["job"][6]."\" class='submit'></td>";
 	echo "</tr></table>";
 
@@ -1098,13 +1119,36 @@ function categoryFormTracking ($ID,$target) {
 	echo "<td>".$lang["tracking"][20].":</td><td>";
 		dropdownValue("glpi_dropdown_tracking_category","category",$job->category);
 	echo "<input type='hidden' name='update' value=\"1\">";
-	echo "<input type='hidden' name='ID' value=$job->ID>";
+	echo "<input type='hidden' name='ID' value='$job->ID'>";
 	echo "</td><td><input type='submit' value=\"".$lang["buttons"][14]."\" class='submit'></td>";
 	echo "</tr></table>";
 
 	echo "</td>";
 	echo "</form>";
 	echo "</tr></table>";
+	}
+	else
+	{
+	 echo $lang["tracking"][21];
+	}
+}
+function priorityFormTracking ($ID,$target) {
+	// Print a nice form to assign jobs if user is allowed
+
+	GLOBAL $cfg_layout, $lang;
+
+  if (isAdmin($_SESSION["glpitype"]))
+  {
+
+	$job = new Job;
+	$job->getFromDB($ID,0);
+
+	echo "<form method=get action=\"".$target."\">";
+	dropdownPriority("priority",$job->priority);
+	echo "<input type='hidden' name='update' value=\"1\">";
+	echo "<input type='hidden' name='ID' value='$job->ID'>";
+	echo "<input type='submit' value=\"".$lang["buttons"][14]."\" class='submit'>";
+	echo "</form>";
 	}
 	else
 	{
