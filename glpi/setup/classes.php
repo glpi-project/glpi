@@ -40,7 +40,7 @@ class User {
 
 	var $fields = array();
 
-  function User($name) {
+  function User($name = '') {
   
   	$this->fields['name'] = $name;
   	$this->fields['password'] = '';
