@@ -69,9 +69,12 @@ switch($table){
 	case "printers" :
 		$query_nb = "select distinct glpi_printers.ID from glpi_printers";
 		
-		$query = "select glpi_printers.*, glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac, glpi_networking_ports.netpoint ";
-		$query.= "from glpi_printers LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type = 3 AND glpi_networking_ports.on_device = glpi_printers.ID) ";
-		$query.=" ORDER by glpi_printers.ID";
+		$query = "select glpi_printers.*, glpi_users.name as techname, glpi_enterprises.name as entname, glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac, glpi_networking_ports.netpoint ";
+		$query.= "from glpi_printers LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type = ".PRINTER_TYPE." AND glpi_networking_ports.on_device = glpi_printers.ID) ";
+		$query.= "LEFT JOIN glpi_users ON glpi_users.ID = glpi_printers.tech_num ";
+		$query.= "LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_printers.FK_glpi_enterprise ";
+		$query.= " WHERE glpi_printers.is_template='0' ";
+		$query.=" ORDER by glpi_printers.deleted DESC, glpi_printers.ID ASC";
 //		echo $query;
 //	exit;
 	    $champs = Array(
@@ -79,6 +82,8 @@ switch($table){
       Array( 'ID',     unhtmlentities($lang["printers"][19]),FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'name', unhtmlentities($lang["printers"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'type',    unhtmlentities($lang["printers"][9]), FORMAT_TEXTE, 'L',    20 ,'0'),      
+	  Array( 'entname',    unhtmlentities($lang["common"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),            
+	  Array( 'techname',    unhtmlentities($lang["common"][10]), FORMAT_TEXTE, 'L',    20 ,'0'),            
       Array( 'location',    unhtmlentities($lang["printers"][6]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'ramSize',    unhtmlentities($lang["printers"][23]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'contact',    unhtmlentities($lang["printers"][8]), FORMAT_TEXTE, 'L',    20 ,'0'),
@@ -91,20 +96,22 @@ switch($table){
       Array( 'ifaddr', unhtmlentities($lang["networking"][14]), FORMAT_TEXTE, 'L',    20 ,'1'),
       Array( 'ifmac',    unhtmlentities($lang["networking"][15]), FORMAT_TEXTE, 'L',    20 ,'1'),
 	  Array( 'netpoint',    unhtmlentities($lang["networking"][51]), FORMAT_TEXTE, 'L',    20 ,'1'),
-      Array( 'maintenance',    unhtmlentities($lang["printers"][22]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'achat_date',    unhtmlentities($lang["printers"][20]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'date_fin_garantie',   unhtmlentities($lang["printers"][21]), FORMAT_TEXTE, 'L',    20 ,'0'),
+	  Array( 'deleted',    unhtmlentities($lang["common"][3]), FORMAT_TEXTE, 'L',    20 ,'0'),      
       Array( 'comments',    unhtmlentities($lang["printers"][12]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'date_mod',    unhtmlentities($lang["printers"][16]), FORMAT_TEXTE, 'L',    20 ,'0'),
+
     );
  	break;
     // ------------------------------------------------------------------------
 	case "networking" :
 		$query_nb = "select distinct glpi_networking.ID from glpi_networking";
 		
-		$query = "select glpi_networking.*, glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac, glpi_networking_ports.netpoint ";
+		$query = "select glpi_networking.*, glpi_users.name as techname, glpi_enterprises.name as entname, glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac, glpi_networking_ports.netpoint ";
 		$query.= "from glpi_networking LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type = 2 AND glpi_networking_ports.on_device = glpi_networking.ID)";
-		$query.=" ORDER by glpi_networking.ID";
+		$query.= "LEFT JOIN glpi_users ON glpi_users.ID = glpi_networking.tech_num ";
+		$query.= "LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_networking.FK_glpi_enterprise ";
+		$query.= " WHERE glpi_networking.is_template='0' ";
+		$query.=" ORDER by glpi_networking.deleted DESC, glpi_networking.ID ASC";
 
 //		echo $query;
 //		exit;	
@@ -113,6 +120,8 @@ switch($table){
       Array( 'ID',     unhtmlentities($lang["networking"][50]),FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'name', unhtmlentities($lang["networking"][0]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'type',    unhtmlentities($lang["networking"][2]), FORMAT_TEXTE, 'L',    20 ,'0'),      
+	  Array( 'entname',    unhtmlentities($lang["common"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),            
+	  Array( 'techname',    unhtmlentities($lang["common"][10]), FORMAT_TEXTE, 'L',    20 ,'0'),            
       Array( 'location',    unhtmlentities($lang["networking"][1]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'firmware',     unhtmlentities($lang["networking"][49]),FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'ram',    unhtmlentities($lang["networking"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),
@@ -123,9 +132,7 @@ switch($table){
       Array( 'ifaddr', unhtmlentities($lang["networking"][14]), FORMAT_TEXTE, 'L',    20 ,'1'),
       Array( 'ifmac',    unhtmlentities($lang["networking"][15]), FORMAT_TEXTE, 'L',    20 ,'1'),
 	  Array( 'netpoint',    unhtmlentities($lang["networking"][51]), FORMAT_TEXTE, 'L',    20 ,'1'),
-      Array( 'achat_date',    unhtmlentities($lang["networking"][39]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'date_fin_garantie',   unhtmlentities($lang["networking"][40]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'maintenance',    unhtmlentities($lang["networking"][41]), FORMAT_TEXTE, 'L',    20 ,'0'),
+	  Array( 'deleted',    unhtmlentities($lang["common"][3]), FORMAT_TEXTE, 'L',    20 ,'0'),      
       Array( 'comments', unhtmlentities($lang["networking"][8]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'date_mod',     unhtmlentities($lang["networking"][9]),FORMAT_TEXTE, 'L',    20 ,'0'),
     );
@@ -134,7 +141,13 @@ switch($table){
 	case "monitors" :
 		$query_nb = "select distinct glpi_monitors.ID from glpi_monitors";
 		
-		$query = "select * from glpi_monitors ORDER BY glpi_monitors.ID";
+		$query = "select glpi_monitors.*, glpi_users.name as techname, glpi_enterprises.name as entname ";
+		$query.= "from glpi_monitors ";
+		$query.= "LEFT JOIN glpi_users ON glpi_users.ID = glpi_monitors.tech_num ";
+		$query.= "LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_monitors.FK_glpi_enterprise ";
+		$query.= " WHERE glpi_monitors.is_template='0' ";
+		$query.=" ORDER by glpi_monitors.deleted DESC, glpi_monitors.ID ASC";
+
 
 //		echo $query;
 //		exit;	
@@ -143,6 +156,8 @@ switch($table){
       Array( 'ID',     unhtmlentities($lang["monitors"][23]),FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'name', unhtmlentities($lang["monitors"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'type',    unhtmlentities($lang["monitors"][9]), FORMAT_TEXTE, 'L',    20 ,'0'),      
+	  Array( 'entname',    unhtmlentities($lang["common"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),            
+	  Array( 'techname',    unhtmlentities($lang["common"][10]), FORMAT_TEXTE, 'L',    20 ,'0'),            
       Array( 'size',    unhtmlentities($lang["monitors"][21]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'location',    unhtmlentities($lang["monitors"][6]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'serial',   unhtmlentities($lang["monitors"][10]), FORMAT_TEXTE, 'L',    20 ,'0'),
@@ -153,9 +168,7 @@ switch($table){
       Array( 'flags_speaker',    unhtmlentities($lang["monitors"][15]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'flags_subd',    unhtmlentities($lang["monitors"][19]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'flags_bnc',    unhtmlentities($lang["monitors"][20]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'achat_date',    unhtmlentities($lang["monitors"][24]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'date_fin_garantie',   unhtmlentities($lang["monitors"][25]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'maintenance',    unhtmlentities($lang["monitors"][26]), FORMAT_TEXTE, 'L',    20 ,'0'),
+	  Array( 'deleted',    unhtmlentities($lang["common"][3]), FORMAT_TEXTE, 'L',    20 ,'0'),      
       Array( 'comments', unhtmlentities($lang["monitors"][12]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'date_mod',     unhtmlentities($lang["monitors"][16]),FORMAT_TEXTE, 'L',    20 ,'0'),
     );
@@ -164,7 +177,12 @@ switch($table){
 	case "peripherals" :
 		$query_nb = "select distinct glpi_peripherals.ID from glpi_peripherals";
 		
-		$query = "select * from glpi_peripherals ORDER BY glpi_peripherals.ID";
+		$query = "select glpi_peripherals.*, glpi_users.name as techname, glpi_enterprises.name as entname ";
+		$query.= " from glpi_peripherals LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type = ".PERIPHERAL_TYPE." AND glpi_networking_ports.on_device = glpi_peripherals.ID) ";
+		$query.= "LEFT JOIN glpi_users ON glpi_users.ID = glpi_peripherals.tech_num ";
+		$query.= "LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_peripherals.FK_glpi_enterprise ";
+		$query.= " WHERE glpi_peripherals.is_template='0' ";
+		$query.=" ORDER by glpi_peripherals.deleted DESC, glpi_peripherals.ID ASC";
 
 //		echo $query;
 //		exit;	
@@ -173,15 +191,18 @@ switch($table){
       Array( 'ID',     unhtmlentities($lang["peripherals"][23]),FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'name', unhtmlentities($lang["peripherals"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'type',    unhtmlentities($lang["peripherals"][9]), FORMAT_TEXTE, 'L',    20 ,'0'),      
+	  Array( 'entname',    unhtmlentities($lang["common"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),            
+	  Array( 'techname',    unhtmlentities($lang["common"][10]), FORMAT_TEXTE, 'L',    20 ,'0'),            
       Array( 'brand',    unhtmlentities($lang["peripherals"][18]), FORMAT_TEXTE, 'L',    20 ,'0'),      
       Array( 'location',    unhtmlentities($lang["peripherals"][6]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'serial',   unhtmlentities($lang["peripherals"][10]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'otherserial',    unhtmlentities($lang["peripherals"][11]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'contact',    unhtmlentities($lang["peripherals"][8]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'contact_num',    unhtmlentities($lang["peripherals"][7]), FORMAT_TEXTE, 'L',    20 ,'0'),      
-      Array( 'achat_date',    unhtmlentities($lang["peripherals"][24]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'date_fin_garantie',   unhtmlentities($lang["peripherals"][25]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'maintenance',    unhtmlentities($lang["peripherals"][26]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'ifaddr', unhtmlentities($lang["networking"][14]), FORMAT_TEXTE, 'L',    20 ,'1'),
+      Array( 'ifmac',    unhtmlentities($lang["networking"][15]), FORMAT_TEXTE, 'L',    20 ,'1'),
+	  Array( 'netpoint',    unhtmlentities($lang["networking"][51]), FORMAT_TEXTE, 'L',    20 ,'1'),
+	  Array( 'deleted',    unhtmlentities($lang["common"][3]), FORMAT_TEXTE, 'L',    20 ,'0'),      
       Array( 'comments', unhtmlentities($lang["peripherals"][12]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'date_mod',     unhtmlentities($lang["peripherals"][16]),FORMAT_TEXTE, 'L',    20 ,'0'),
     );
@@ -190,13 +211,14 @@ switch($table){
 	case "licenses" :
 		$query_nb = "select distinct glpi_licenses.ID from glpi_licenses";
 		
-		$query = "select glpi_software.name as soft, glpi_software.version as vers, ";
+		$query = "select glpi_software.name as soft, glpi_software.version as vers, glpi_software.deleted as deleted,";
 		$query.= " glpi_software.comments as comments, glpi_dropdown_os.name as platform, ";
 		$query.= " glpi_software.is_update as is_update, update_soft.name as update_soft, update_soft.version as update_vers, ";
 		$query.= " glpi_licenses.serial as serial, glpi_licenses.expire as expire, ";
 		$query.= " glpi_licenses.buy as buy, glpi_licenses.ID as ID,";
 		$query.= " glpi_computers.name as install_on, ";
-		$query.= " oem_comp.name as oem_comp, glpi_licenses.oem as oem";
+		$query.= " oem_comp.name as oem_comp, glpi_licenses.oem as oem,";
+		$query.= " glpi_users.name as techname, glpi_enterprises.name as entname ";
 		$query.= " from glpi_licenses ";
 		$query.= " LEFT JOIN glpi_software ON glpi_software.ID = glpi_licenses.sID ";
 		$query.= " LEFT JOIN glpi_software as update_soft ON glpi_software.update_software = update_soft.ID ";
@@ -204,18 +226,22 @@ switch($table){
 		$query.= " LEFT JOIN glpi_inst_software ON glpi_inst_software.license = glpi_licenses.ID ";
 		$query.= " LEFT JOIN glpi_computers ON glpi_inst_software.cID = glpi_computers.ID ";
 		$query.= " LEFT JOIN glpi_computers AS oem_comp ON glpi_licenses.oem_computer = oem_comp.ID ";
-
-		$query.= " ORDER BY glpi_software.name, glpi_licenses.serial";
+		$query.= "LEFT JOIN glpi_users ON glpi_users.ID = glpi_software.tech_num ";
+		$query.= "LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_software.FK_glpi_enterprise ";
+		$query.= " WHERE glpi_software.is_template='0' ";
+		$query.=" ORDER by glpi_software.deleted DESC, glpi_software.name ASC";
 
 // ADD OEM
 
-//		echo $query;
+		echo $query;
 //		exit;	
 	    $champs = Array(
       //     champ       en-tête     format         align  width multiple_zone
       Array( 'ID', unhtmlentities($lang["software"][1]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'soft', unhtmlentities($lang["software"][10]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'vers',    unhtmlentities($lang["software"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),      
+	  Array( 'entname',    unhtmlentities($lang["common"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),            
+	  Array( 'techname',    unhtmlentities($lang["common"][10]), FORMAT_TEXTE, 'L',    20 ,'0'),            
       Array( 'platform',    unhtmlentities($lang["software"][3]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'serial',   unhtmlentities($lang["software"][31]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'buy',    unhtmlentities($lang["software"][35]), FORMAT_TEXTE, 'L',    20 ,'0'),
@@ -226,6 +252,7 @@ switch($table){
       Array( 'is_update',    unhtmlentities($lang["software"][29]), FORMAT_TEXTE, 'L',    20 ,'0'),      
       Array( 'update_soft',    unhtmlentities($lang["software"][30]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'update_vers',   unhtmlentities($lang["software"][30]), FORMAT_TEXTE, 'L',    20 ,'0'),
+	  Array( 'deleted',    unhtmlentities($lang["common"][3]), FORMAT_TEXTE, 'L',    20 ,'0'),      
       Array( 'comments',    unhtmlentities($lang["software"][6]), FORMAT_TEXTE, 'L',    20 ,'0'),      
     );
  	break;
@@ -239,7 +266,8 @@ switch($table){
 		$query.= " glpi_monitors.name as monname, glpi_monitors.type as montype, glpi_monitors.serial as monserial, ";
 		$query.= " glpi_printers.name as printname, glpi_printers.type as printtype, glpi_printers.serial as printserial, ";
 		$query.= " glpi_peripherals.name as periphname, glpi_peripherals.type as periphtype, glpi_peripherals.serial as periphserial, ";
-		$query.= " glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac, glpi_networking_ports.netpoint ";
+		$query.= " glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac, glpi_networking_ports.netpoint, ";
+		$query.= " glpi_users.name as techname, glpi_enterprises.name as entname ";
 		$query.= " from glpi_computers LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type = 1 AND glpi_networking_ports.on_device = glpi_computers.ID)";
 		$query.= " LEFT JOIN glpi_inst_software ON (glpi_inst_software.cID = glpi_computers.ID) ";
 		$query.= " LEFT JOIN glpi_licenses ON (glpi_inst_software.license = glpi_licenses.ID) ";
@@ -248,7 +276,10 @@ switch($table){
 		$query.= " LEFT JOIN glpi_monitors ON (glpi_connect_wire.end1 = glpi_monitors.ID AND glpi_connect_wire.type = '4') ";
 		$query.= " LEFT JOIN glpi_peripherals ON (glpi_connect_wire.end1 = glpi_peripherals.ID AND glpi_connect_wire.type = '5') ";
 		$query.= " LEFT JOIN glpi_printers ON (glpi_connect_wire.end1 = glpi_printers.ID AND glpi_connect_wire.type = '3') ";
-		$query.= " ORDER by glpi_computers.ID";
+		$query.= "LEFT JOIN glpi_users ON glpi_users.ID = glpi_computers.tech_num ";
+		$query.= "LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_computers.FK_glpi_enterprise ";
+		$query.= " WHERE glpi_computers.is_template='0' ";
+		$query.=" ORDER by glpi_computers.deleted DESC, glpi_computers.ID ASC";
 		
 //		echo $query;
 		//exit;
@@ -258,27 +289,27 @@ switch($table){
       Array( 'ID',     unhtmlentities($lang["computers"][31]),FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'name', unhtmlentities($lang["computers"][7]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'type',    unhtmlentities($lang["computers"][8]), FORMAT_TEXTE, 'L',    20 ,'0'),
+	  Array( 'entname',    unhtmlentities($lang["common"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),            
+	  Array( 'techname',    unhtmlentities($lang["common"][10]), FORMAT_TEXTE, 'L',    20 ,'0'),            
       Array( 'flags_server', unhtmlentities($lang["computers"][28]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'ramtype',    unhtmlentities($lang["computers"][23]), FORMAT_TEXTE, 'L',    20 ,'0'),      
-      Array( 'ram',   unhtmlentities($lang["computers"][24]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'processor',    unhtmlentities($lang["computers"][21]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'processor_speed', unhtmlentities($lang["computers"][22]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'os',    unhtmlentities($lang["computers"][9]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'osver', unhtmlentities($lang["computers"][20]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'hdtype',    unhtmlentities($lang["computers"][36]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'hdspace',    unhtmlentities($lang["computers"][25]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'sndcard',    unhtmlentities($lang["computers"][33]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'moboard',    unhtmlentities($lang["computers"][35]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'gfxcard',    unhtmlentities($lang["computers"][34]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'network',    unhtmlentities($lang["computers"][26]), FORMAT_TEXTE, 'L',    20 ,'0'),
+//      Array( 'ramtype',    unhtmlentities($lang["computers"][23]), FORMAT_TEXTE, 'L',    20 ,'0'),      
+//      Array( 'ram',   unhtmlentities($lang["computers"][24]), FORMAT_TEXTE, 'L',    20 ,'0'),
+//      Array( 'processor',    unhtmlentities($lang["computers"][21]), FORMAT_TEXTE, 'L',    20 ,'0'),
+//      Array( 'processor_speed', unhtmlentities($lang["computers"][22]), FORMAT_TEXTE, 'L',    20 ,'0'),
+//      Array( 'os',    unhtmlentities($lang["computers"][9]), FORMAT_TEXTE, 'L',    20 ,'0'),
+//      Array( 'osver', unhtmlentities($lang["computers"][20]), FORMAT_TEXTE, 'L',    20 ,'0'),
+//      Array( 'hdtype',    unhtmlentities($lang["computers"][36]), FORMAT_TEXTE, 'L',    20 ,'0'),
+//      Array( 'hdspace',    unhtmlentities($lang["computers"][25]), FORMAT_TEXTE, 'L',    20 ,'0'),
+//      Array( 'sndcard',    unhtmlentities($lang["computers"][33]), FORMAT_TEXTE, 'L',    20 ,'0'),
+//      Array( 'moboard',    unhtmlentities($lang["computers"][35]), FORMAT_TEXTE, 'L',    20 ,'0'),
+//      Array( 'gfxcard',    unhtmlentities($lang["computers"][34]), FORMAT_TEXTE, 'L',    20 ,'0'),
+//      Array( 'network',    unhtmlentities($lang["computers"][26]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'location',    unhtmlentities($lang["computers"][10]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'serial',   unhtmlentities($lang["computers"][17]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'otherserial',    unhtmlentities($lang["computers"][18]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'contact',    unhtmlentities($lang["computers"][16]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'contact_num',    unhtmlentities($lang["computers"][15]), FORMAT_TEXTE, 'L',    20 ,'0'),      
-      Array( 'achat_date',    unhtmlentities($lang["computers"][41]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'date_fin_garantie',   unhtmlentities($lang["computers"][42]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'maintenance',    unhtmlentities($lang["computers"][43]), FORMAT_TEXTE, 'L',    20 ,'0'),
+	  Array( 'deleted',    unhtmlentities($lang["common"][3]), FORMAT_TEXTE, 'L',    20 ,'0'),      
       Array( 'comments', unhtmlentities($lang["computers"][19]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'date_mod',     unhtmlentities($lang["computers"][11]),FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'ifaddr',    unhtmlentities($lang["networking"][14]), FORMAT_TEXTE, 'L',    20 ,'0'),
@@ -338,7 +369,7 @@ switch($table){
         echo "\n";
         // nb lignes * nb colonnes
         echo "B;Y".$nbrows;
-        echo ";X".($nbcol = $db->num_fields($resultat))."\n"; // B;Yligmax;Xcolmax
+        echo ";X".($nbcol = count($champs))."\n"; // B;Yligmax;Xcolmax
         echo "\n";
 
         // récupération des infos de formatage
