@@ -193,23 +193,51 @@ margin-top: 100px;
 	padding: 5px;
 	
 	}
-#navigation a{
+	
+.menu a {
 		font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
 	font-size : 13px;
 	color : #000000;
-	background-color: transparent;
+	background-color: #C5DAC8;
 	text-decoration: none;
 }
 
-#navigation a:hover{
-		font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
+.menu a:hover {
+font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
 	font-size : 13px;
 	color : #FFFFFF;
 	text-decoration: none;
 	border: none;
 	font-weight: normal;
-	background-color: #339966;
+background-color: #339966;
 }
+
+.icon_nav {
+	padding: 4px;
+	margin: 1px;
+	border: 1px solid #aaaaaa;
+	background-color: #e4e4e4;
+	-moz-border-radius: 5px;
+}
+
+
+a.icon_nav_move img {
+	padding: 4px;
+	margin: 1px;
+	border: 1px solid #aaaaaa;
+	background-color: #e4e4e4;
+	-moz-border-radius: 5px;
+}
+
+a.icon_nav_move:hover img {
+	padding: 4px;
+	margin: 1px;
+	border: 1px solid #999999;
+	background-color: white;
+	-moz-border-radius: 5px;
+}
+
+
 
 #footer{
 	background-color: #C5DAC8;

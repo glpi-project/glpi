@@ -60,20 +60,9 @@ echo "<body>";
 
 
 	
-// Login Form
-echo "<br><br><br><br>";
-echo "<form method='post' action='login.php'>";
-echo "<table border='0'>";
-echo "<tr><th colspan='2'>login:</th></tr>";
-echo "<tr><td>Username:</td><td><input type='text' name='name' /></td></tr>";
-echo "<tr><td>Password:</td><td><input type='password' name='password' /></td></tr>";
-echo "<tr class='tab_bg_1'>";
-echo "<td colspan='2' align='center'><input type='submit' value='Login' class='submit'/></td></tr>";
-echo "</table>";
-echo "</form>";
-echo "</div>";
 
-*/
+
+
 
 // contenu
 
