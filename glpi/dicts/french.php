@@ -825,4 +825,8 @@ $lang["update"][103]	= "Le Login ou le mot de passe sont vides, ou vous avez sai
 $lang["update"][104]	= "Utilisateur bien enregistré vous pouvez vous connecter à l'application";
 $lang["update"][105]	= "Impossible d'accéder à la mise à jour de cette façon !!";
 $lang["update"][106]	= "Retourner à GLPI";
+$lang["update"]["107"]	= "Voulez vous proceder à une mise à jour du contenu de la base de donnée, pour le rendre compatible avec les fonction d'echappement des caractères spéciaux ?";
+$lang["update"]["108"]	= "La mise à jour du contenu ne semble pas nécessaire.";
+$lang["update"]["109"]	= "Voulez vous tout de même la faire ?";
+$lang["update"]["110"]	= "la mise à jour semble nécessaire.";
 ?>

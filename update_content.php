@@ -30,10 +30,23 @@ This file is part of GLPI.
  Purpose of file:
  ----------------------------------------------------------------------
 */
+
+//#################### INCLUDE & SESSIONS ############################
 include ("_relpos.php");
 include ($phproot . "/glpi/common/classes.php");
 include ($phproot . "/glpi/common/functions.php");
 include ($phproot . "/glpi/config/config_db.php");
+
+session_start();
+
+//################################ Functions ################################
+function loadLang() {
+			unset($lang);
+			global $lang;
+			include ("_relpos.php");
+			$file = $phproot ."/glpi/dicts/".$_SESSION["dict"].".php";
+			include($file);
+}
 
 $max_time=min(get_cfg_var("max_execution_time"),get_cfg_var("max_input_time"));
 if ($max_time>5) {$defaulttimeout=$max_time-2;$defaultrowlimit=1;}
@@ -184,22 +197,120 @@ fclose($fileHandle);
 return TRUE;
 }
 
+//########################### Script start ################################
+
+loadLang();
+//style and co
+        echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">";
+        echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">";
+        echo "<head>";
+        echo " <meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\" />";
+        echo "<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\" /> ";
+        echo "<meta http-equiv=\"Content-Style-Type\" content=\"text/css\" /> ";
+        echo "<meta http-equiv=\"Content-Language\" content=\"fr\" /> ";
+        echo "<meta name=\"generator\" content=\"\" />";
+        echo "<meta name=\"DC.Language\" content=\"fr\" scheme=\"RFC1766\" />";
+        echo "<title>Setup GLPI</title>";
+       
+        echo "<style type=\"text/css\">";
+        echo "<!--
+
+        /*  ... Definition des styles ... */
+
+        body {
+        background-color:#C5DAC8;
+        color:#000000; }
+        
+       .principal {
+        background-color: #ffffff;
+        font-family: Verdana;font-size:12px;
+        text-align: justify ; 
+        -moz-border-radius: 4px;
+	border: 1px solid #FFC65D;
+         margin: 40px; 
+         padding: 40px 40px 10px 40px;
+       }
+
+       table {
+       text-align:center;
+       border: 0;
+       margin: 20px;
+       margin-left: auto;
+       margin-right: auto;
+       width: 90%;}
+
+       .red { color:red;}
+       .green {color:green;}
+       
+       h2 {
+        color:#FFC65D;
+        text-align:center;}
+
+       h3 {
+        text-align:center;}
+
+        input {border: 1px solid #ccc;}
+
+        fieldset {
+        padding: 20px;
+          border: 1px dotted #ccc;
+        font-size: 12px;
+        font-weight:200;}
+
+        .submit { text-align:center;}
+       
+        input.submit {
+        border:1px solid #000000;
+        background-color:#eeeeee;
+        }
+        
+        input.submit:hover {
+        border:1px solid #cccccc;
+       background-color:#ffffff;
+        }
+
+	.button {
+        font-weight:200;
+	color:#000000;
+	padding:5px;
+	text-decoration:none;
+	border:1px solid #009966;
+        background-color:#eeeeee;
+        }
+
+        .button:hover{
+          font-weight:200;
+	  color:#000000;
+	 padding:5px;
+	text-decoration:none;
+	border:1px solid #009966;
+       background-color:#ffffff;
+        }
+	
+        -->  ";
+        echo "</style>";
+         echo "</head>";
+        echo "<body>";
+	echo "<div class=\"principal\">";
+//end style and co
 if (!isset($_POST["oui"])&&!isset($_POST["non"])&&!isset($_GET["dump"]))
 if (test_content_ok()) {
-	echo "La mise à jour du contenu ne semble pas nécessaire. ";
-	echo "Voulez vous tout de même la faire ?";
+	echo "<div align=\"center\">";
+	echo $lang["update"]["108"];
+	echo $lang["update"]["109"];
 	echo "<form action=\"update_content.php\" method=\"post\">";
-	echo "<input type=\"submit\" class='submit' name=\"oui\" value=\"Oui\" />";
+	echo "<input type=\"submit\" class='submit' name=\"oui\" value=\"Oui\" />&nbsp;&nbsp;";
 	echo "<input type=\"submit\" class='submit' name=\"non\" value=\"Non\" />";
-	echo "</div></form>";
-	}
+	echo "</form></div>";
+}
 else {
-	echo "la mise à jour semble nécessaire. ";
-	echo "Voulez vous la faire ?";
+	echo "<div align=\"center\">";
+	echo $lang["update"]["110"];
+	echo $lang["update"]["109"];
 	echo "<form action=\"update_content.php\" method=\"post\">";
-	echo "<input type=\"submit\" class='submit' name=\"oui\" value=\"Oui\" />";
+	echo "<input type=\"submit\" class='submit' name=\"oui\" value=\"Oui\" />&nbsp;&nbsp;";
 	echo "<input type=\"submit\" class='submit' name=\"non\" value=\"Non\" />";
-	echo "</div></form>";
+	echo "</form></div>";
 
 }
 
@@ -253,11 +364,14 @@ if ($offsettable>=0){
 }
 else  { 
 //echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt</p></div>";
+	echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
 }
 
 }
 	
 if (isset($_POST["non"])){
 	// Redirection à faire
-	}
+	
+	echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
+}
 ?>
