@@ -31,7 +31,7 @@ function TableExists($tablename) {
    return false;
 }
 
-if (!FieldExists("glpi_dropdown_locations", "level")){
+if (!FieldExists("glpi_dropdown_locations", "parentID")){
 
 
 function validate_new_location(){
@@ -45,36 +45,33 @@ $result=$db->query($query);
 
 }
 
-
 function display_new_locations(){
 echo "<center>Nouvelle hierarchie : </center>";
 
 $db=new DB;
 
-$query="SELECT MAX(level) AS MAX from glpi_dropdown_locations_new;";
-$result=$db->query($query);
-$MAX_LEVEL=$db->result($result,0,"MAX");
+$MAX_LEVEL=10;
+
 $SELECT_ALL="";
 $FROM_ALL="";
-$WHERE_ALL="";
 $ORDER_ALL="";
-
+$WHERE_ALL="";
 for ($i=1;$i<=$MAX_LEVEL;$i++){
 $SELECT_ALL.=" , location$i.name AS NAME$i ";
-$FROM_ALL.=" LEFT JOIN glpi_dropdown_locations_new AS location$i ON location".($i-1).".ID = location$i.level_up ";
+$FROM_ALL.=" LEFT JOIN glpi_dropdown_locations_new AS location$i ON location".($i-1).".ID = location$i.parentID ";
 //$WHERE_ALL.=" AND location$i.level='$i' ";
 $ORDER_ALL.=" , NAME$i";
 
 }
 
-$query="select location0.name AS NAME0 $SELECT_ALL FROM glpi_dropdown_locations_new AS location0 $FROM_ALL  WHERE location0.level='0' $WHERE_ALL  ORDER BY NAME0 $ORDER_ALL";
+$query="select location0.name AS NAME0 $SELECT_ALL FROM glpi_dropdown_locations_new AS location0 $FROM_ALL  WHERE location0.parentID='0' $WHERE_ALL  ORDER BY NAME0 $ORDER_ALL";
 //echo $query;
 //echo "<hr>";
 $result=$db->query($query);
 $data_old=array();
 echo "<table><tr>";
 for ($i=0;$i<=$MAX_LEVEL;$i++){
-	echo "<th>Niveau $i</th><th>&nbsp;</th>";
+	echo "<th>$i</th><th>&nbsp;</th>";
 	}
 echo "</tr>";
 
@@ -136,14 +133,12 @@ $result_clear_new=$db->query($query_clear_new);
 if (!empty($add_first)){
 $root_ID=$new_ID;
 $new_ID++;
-$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$root_ID','$add_first',0,-1)";
+$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$root_ID','$add_first',0)";
 //echo $query_insert."<br>";
 $result_insert=$db->query($query_insert);
-$default_level=1;
 }
 else {
-$default_level=0;	
-$root_ID=-1;
+$root_ID=0;
 }
 
 while ($data =  $db->fetch_array($result)){
@@ -153,13 +148,13 @@ while ($data =  $db->fetch_array($result)){
 	$up_ID=$root_ID;
 	for ($i=0;$i<count($splitter)-1;$i++){
 	// Entrée existe deja ??
-	$query_search="select ID from glpi_dropdown_locations_new WHERE name='".$splitter[$i]."' AND level='".($default_level+$i)."' AND level_up='".$up_ID."'";
+	$query_search="select ID from glpi_dropdown_locations_new WHERE name='".$splitter[$i]."'  AND parentID='".$up_ID."'";
 //	echo $query_search."<br>";
 	$result_search=$db->query($query_search);
 	if ($db->numrows($result_search)==1){	// Found
 	$up_ID=$db->result($result_search,0,"ID");
 	} else { // Not FOUND -> INSERT
-	$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$new_ID','".$splitter[$i]."','".($default_level+$i)."','$up_ID')";
+	$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$new_ID','".$splitter[$i]."','$up_ID')";
 	$up_ID=$new_ID++;
 //	echo $query_insert."<br>";
 	$result_insert=$db->query($query_insert);
@@ -170,7 +165,7 @@ while ($data =  $db->fetch_array($result)){
 	}
 
 	// Ajout du dernier
-	$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('".$data["ID"]."','".$splitter[count($splitter)-1]."','".($default_level+count($splitter)-1)."','$up_ID')";
+	$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('".$data["ID"]."','".$splitter[count($splitter)-1]."','$up_ID')";
 //	echo $query_insert."<br>";
 
 	$result_insert=$db->query($query_insert);
@@ -187,7 +182,7 @@ if (!isset($_POST['root'])) $_POST['root']='';
 if (!isset($_POST['car_sep'])) $_POST['car_sep']='';
 
 if(!TableExists("glpi_dropdown_locations_new")) {
-	$query = " CREATE TABLE `glpi_dropdown_locations_new` (`ID` INT NOT NULL ,`name` VARCHAR( 255 ) NOT NULL ,`level` TINYINT NOT NULL ,`level_up` INT NOT NULL ,PRIMARY KEY ( `ID` ),UNIQUE (`name`,`level`,`level_up`) );";
+	$query = " CREATE TABLE `glpi_dropdown_locations_new` (`ID` INT NOT NULL ,`name` VARCHAR( 255 ) NOT NULL ,`parentID` INT NOT NULL ,PRIMARY KEY ( `ID` ),UNIQUE (`name`,`parentID`) );";
 	$db->query($query) or die("LOCATION ".$db->error());
 }
 
