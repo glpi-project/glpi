@@ -38,11 +38,6 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/common/classes.php");
 include ($phproot . "/glpi/common/functions.php");
-
-include ($phproot . "/glpi/ldap/classes.php");
-include ($phproot . "/glpi/ldap/functions.php");
-
 include ($phproot . "/glpi/config/config.php");
-include ($phproot . "/glpi/config/config-ldap.php");
 
 ?>
