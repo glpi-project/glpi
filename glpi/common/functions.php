@@ -825,7 +825,6 @@ function dropdown($table,$myname) {
 	$data_old=array();
 
 	while ($data =  $db->fetch_array($result)){
-	print_r($data);
 	for ($i=0;$i<=$MAX_LEVEL;$i++)
 	if (!empty($data["ID$i"]))
 	if (!isset($data_old["ID$i"])||$data_old["ID$i"]!=$data["ID$i"]){

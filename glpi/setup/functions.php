@@ -178,10 +178,11 @@ function updateDropdown($input) {
 function addDropdown($input) {
 
 	$db = new DB;
+
 	if($input["tablename"] == "glpi_dropdown_netpoint") {
 		$query = "INSERT INTO ".$input["tablename"]." (name,location) VALUES ('".$input["value"]."', '".$input["value2"]."')";
 	}
-	if ($input["tablename"] == "glpi_dropdown_locations"){
+	else if ($input["tablename"] == "glpi_dropdown_locations"){
 		$query="SELECT * from ".$input["tablename"]." where ID='".$input["value2"]."'";
 		$result=$db->query($query);
 		$data=$db->fetch_array($result);
@@ -196,6 +197,7 @@ function addDropdown($input) {
 	else {
 		$query = "INSERT INTO ".$input["tablename"]." (name) VALUES ('".$input["value"]."')";
 	}
+
 	if ($result=$db->query($query)) {
 		return true;
 	} else {
