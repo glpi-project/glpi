@@ -93,6 +93,11 @@ else if (isset($tab["uninstall"]))
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." uninstalled software.");
 	header("Location: ".$_SERVER['HTTP_REFERER']." ");
 }
+else if (isset($tab["back"]))
+{
+	
+	header("Location: ".$tab["back"]." ");
+}
 
 
 ?>
