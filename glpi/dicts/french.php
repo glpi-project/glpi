@@ -381,7 +381,7 @@ $lang["networking"][49] = "Firmware";
 $lang["networking"][50] = "ID";
 $lang["networking"][51] = "Prise reseau";
 $lang["networking"][52] = "N° Prise";
-$lang["networking"][53]	= "Nouvel mat&eacute;riel &agrave; partir d'un mod&egrave;le";
+$lang["networking"][53]	= "Nouveau mat&eacute;riel &agrave; partir d'un mod&egrave;le";
 $lang["networking"][54]   = "Mat&eacute;riel ID";
 
 // Printers
@@ -413,7 +413,7 @@ $lang["printers"][24]   = "Identifiant";
 $lang["printers"][25]   = "Imprimantes";
 $lang["printers"][26]   = "Nombre";
 $lang["printers"][27]   = "Port USB";
-$lang["printers"][28]	= "Nouvel imprimante &agrave; partir d'un mod&egrave;le";
+$lang["printers"][28]	= "Nouvelle imprimante &agrave; partir d'un mod&egrave;le";
 $lang["printers"][29]   = "Imprimante ID";
 
 // Monitors
@@ -490,6 +490,8 @@ $lang["software"][37]   = "A acheter";
 $lang["software"][38]   = "Licence site";
 $lang["software"][39]   = "Logiciel libre";
 $lang["software"][40]   = "Aucune licence";
+$lang["software"][41]	= "Logiciel ID";
+$lang["software"][42]	= "Nouveau logicel &agrave; partir d'un mod&egrave;le";
 
 
 // Peripherals
@@ -521,7 +523,7 @@ $lang["peripherals"][26]	= "Maintenance";
 $lang["peripherals"][27]   = "identifiant";
 $lang["peripherals"][28]	= "P&eacute;riph&eacute;riques";
 $lang["peripherals"][29]	= "P&eacute;riph&eacute;rique ID";
-$lang["peripherals"][30]	= "Nouvel p&eacute;riph&eacute;rique &agrave; partir d'un mod&egrave;le";
+$lang["peripherals"][30]	= "Nouveau p&eacute;riph&eacute;rique &agrave; partir d'un mod&egrave;le";
 
 
 // Reports

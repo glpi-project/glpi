@@ -1631,6 +1631,8 @@ if(!FieldExists("glpi_peripherals","is_template")) {
 	$query = "ALTER TABLE `glpi_peripherals` ADD `is_template` ENUM( '0', '1' ) DEFAULT '0' NOT NULL , ADD `tplname` VARCHAR( 255 ) ;";
 	$db->query($query) or die("0.5 add field deleted ".$lang["update"][90].$db->error());
 
+	$query="INSERT INTO glpi_peripherals (is_template,tplname) VALUES ('1','Blank Template')";
+	$db->query($query) or die("0.5 add blank template ".$lang["update"][90].$db->error());	
 }
 
 // Ajout template software
@@ -1638,6 +1640,9 @@ if(!FieldExists("glpi_software","is_template")) {
 
 	$query = "ALTER TABLE `glpi_software` ADD `is_template` ENUM( '0', '1' ) DEFAULT '0' NOT NULL , ADD `tplname` VARCHAR( 255 ) ;";
 	$db->query($query) or die("0.5 add field deleted ".$lang["update"][90].$db->error());
+
+	$query="INSERT INTO glpi_software (is_template,tplname) VALUES ('1','Blank Template')";
+	$db->query($query) or die("0.5 add blank template ".$lang["update"][90].$db->error());	
 
 }
 
@@ -1647,6 +1652,9 @@ if(!FieldExists("glpi_monitors","is_template")) {
 	$query = "ALTER TABLE `glpi_monitors` ADD `is_template` ENUM( '0', '1' ) DEFAULT '0' NOT NULL , ADD `tplname` VARCHAR( 255 ) ;";
 	$db->query($query) or die("0.5 add field deleted ".$lang["update"][90].$db->error());
 
+	$query="INSERT INTO glpi_monitors (is_template,tplname) VALUES ('1','Blank Template')";
+	$db->query($query) or die("0.5 add blank template ".$lang["update"][90].$db->error());	
+
 }
 
 // Ajout template networking
@@ -1655,12 +1663,19 @@ if(!FieldExists("glpi_networking","is_template")) {
 	$query = "ALTER TABLE `glpi_networking` ADD `is_template` ENUM( '0', '1' ) DEFAULT '0' NOT NULL , ADD `tplname` VARCHAR( 255 ) ;";
 	$db->query($query) or die("0.5 add field deleted ".$lang["update"][90].$db->error());
 
+	$query="INSERT INTO glpi_networking (is_template,tplname) VALUES ('1','Blank Template')";
+	$db->query($query) or die("0.5 add blank template ".$lang["update"][90].$db->error());	
+
 }
 // Ajout template printer
 if(!FieldExists("glpi_printers","is_template")) {
 
 	$query = "ALTER TABLE `glpi_printers` ADD `is_template` ENUM( '0', '1' ) DEFAULT '0' NOT NULL , ADD `tplname` VARCHAR( 255 ) ;";
 	$db->query($query) or die("0.5 add field deleted ".$lang["update"][90].$db->error());
+	
+		$query="INSERT INTO glpi_printers (is_template,tplname) VALUES ('1','Blank Template')";
+	$db->query($query) or die("0.5 add blank template ".$lang["update"][90].$db->error());	
+
 
 }
 // Ajout date_mod
