@@ -197,7 +197,7 @@ class ReservationItem{
 
 		$query = "DELETE from glpi_reservation_item WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
-			$query2 = "DELETE FROM glpi_reservation_resa WHERE (id_item = $ID)";
+			$query2 = "DELETE FROM glpi_reservation_resa WHERE (id_item = '$ID')";
 			$result2 = $db->query($query2);
 			return true;
 		} else {
