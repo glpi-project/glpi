@@ -37,11 +37,15 @@ This file is part of GLPI.
 
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
+include ($phproot . "/glpi/includes_setup.php");
 
 // Set Cookies bogus
 
-SetCookie("IRMName", "bogus", 0, "/");
-SetCookie("IRMPass", "bogus", 0, "/");
+//SetCookie("IRMName", "bogus", 0, "/");
+//SetCookie("IRMPass", "bogus", 0, "/");
+session_start();
+$id = new Identification;
+$id->eraseCookies();
 
 // Redirect to the login-page
 
