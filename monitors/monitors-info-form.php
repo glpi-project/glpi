@@ -165,6 +165,15 @@ else
 
 		if (showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"])){
 		switch($_SESSION['glpi_onglet']){
+			case -1:
+				showConnect($_SERVER["PHP_SELF"],$tab['ID'],MONITOR_TYPE);
+				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",MONITOR_TYPE,$tab["ID"]);
+				showContractAssociated(MONITOR_TYPE,$tab["ID"]);			
+				showDocumentAssociated(COMPUTER_TYPE,$tab["ID"]);	
+				showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
+				showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);	
+			
+				break;
 			case 4 :			
 				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",MONITOR_TYPE,$tab["ID"]);
 				showContractAssociated(MONITOR_TYPE,$tab["ID"]);			

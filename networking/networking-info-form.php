@@ -137,6 +137,16 @@ else
 	
 		if (showNetworkingForm ($_SERVER["PHP_SELF"],$tab["ID"])){
 		switch($_SESSION['glpi_onglet']){
+			case -1:
+				showPorts($tab["ID"],NETWORKING_TYPE);
+				showPortsAdd($tab["ID"],NETWORKING_TYPE);
+				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",NETWORKING_TYPE,$tab["ID"]);
+				showContractAssociated(NETWORKING_TYPE,$tab["ID"]);
+				showDocumentAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
+				showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
+				showOldJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
+			
+				break;
 			case 4 :
 				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",NETWORKING_TYPE,$tab["ID"]);
 				showContractAssociated(NETWORKING_TYPE,$tab["ID"]);
