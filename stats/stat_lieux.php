@@ -68,9 +68,9 @@ echo "<option value=\"glpi_dropdown_hdtype\" ".($_POST["dropdown"]=="glpi_dropdo
 echo "</select>";
 echo "<table><tr><td align='right'>";
 echo $lang["search"][8]." :</td><td><input type=\"texte\" readonly name=\"date1\" value=\"". $_POST["date1"] ."\" /></td>";
-echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date1','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'></td></tr>";
+echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date1&amp;value=".$_POST["date1"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'></td></tr>";
 echo "<tr><td align='right'>".  $lang["search"][9] ." :</td><td><input type=\"texte\" readonly name=\"date2\" value=\"". $_POST["date2"] ."\" /></td>";
-echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date2','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'></td></tr>";
+echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date2&amp;value=".$_POST["date2"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'></td></tr>";
 echo "<tr><td></td><td align='center'><input type=\"submit\" class='button' name\"submit\" Value=\"". $lang["buttons"][7] ."\" /></td><td></td>";
 echo "</tr></table>";
 echo "</form></div>";

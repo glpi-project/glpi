@@ -110,17 +110,17 @@ echo $elem;?>&mois=" + document.forms["MyCalendar"].elements['month'].options[do
 
  }
 <?php
-
- 
-
+if (isset($value)&&$value!=""&&!isset($jour)&&!isset($mois)&&!isset($annee)) {
+list($annee,$mois,$jour)=split("-",$value);
+}
 
 if (!isset($jour))
        $jour = date("j") ;
 
-  if (!isset($mois))
+if (!isset($mois))
        $mois = date("m") ;
 
-  if (!isset($annee))
+if (!isset($annee))
        $annee = date("Y") ;
 
     // nombre de jours par mois
