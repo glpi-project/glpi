@@ -42,7 +42,9 @@ include ("_relpos.php");
 
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_computers.php");
-include ($phproot . "/glpi/dicts/french.php");
+//include ($phproot . "/glpi/dicts/french.php");
+
+checkAuthentication("normal");
 
 $db = new DB;
 $query = "select glpi_computers.*, glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac ";
