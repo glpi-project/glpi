@@ -609,14 +609,14 @@ global $HTMLRel,$cfg_install;
 	if (count($splitter)==2)
 	$fileout=$splitter[1];
 	else $fileout=$filename;
-	//$out="<b><a href='".$HTMLRel."documents/send-document.php?file=$filename' target='_blank'>$fileout</a></b>";	
+	$out="<b><a href='".$HTMLRel."documents/send-document.php?file=$filename' target='_blank'>$fileout</a></b>";	
 	if (count($splitter)==2){
 		$db=new DB;
 		$query="SELECT * from glpi_type_docs WHERE ext LIKE '".$splitter[0]."' AND icon <> ''";
 		$result=$db->query($query);
 		if ($db->numrows($result)>0){
 			$icon=$db->result($result,0,'icon');
-			$out="<a href='".$HTMLRel."documents/send-document.php?file=$filename' target='_blank'>&nbsp;<img style='vertical-align:middle;' alt='".$fileout."' title='".$fileout."' src='".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/$icon'</a>";				
+			$out.="<a href='".$HTMLRel."documents/send-document.php?file=$filename' target='_blank'>&nbsp;<img style='vertical-align:middle;' alt='".$fileout."' title='".$fileout."' src='".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/$icon'</a>";				
 			}
 	
 	}
