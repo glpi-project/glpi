@@ -197,6 +197,195 @@ function showContentUpdateForm() {
 }
 
 
+///// FONCTION POUR UPDATE LOCATION
+
+function validate_new_location(){
+	$db=new DB;
+	$query=" DROP TABLE `glpi_dropdown_locations`";	
+	//echo $query;
+	$result=$db->query($query);
+	$query=" ALTER TABLE `glpi_dropdown_locations_new` RENAME `glpi_dropdown_locations`";	
+	//echo $query;
+	$result=$db->query($query);
+}
+
+function display_new_locations(){
+	
+	$db=new DB;
+
+	$MAX_LEVEL=10;
+
+	$SELECT_ALL="";
+	$FROM_ALL="";
+	$ORDER_ALL="";
+	$WHERE_ALL="";
+	for ($i=1;$i<=$MAX_LEVEL;$i++){
+		$SELECT_ALL.=" , location$i.name AS NAME$i ";
+		$FROM_ALL.=" LEFT JOIN glpi_dropdown_locations_new AS location$i ON location".($i-1).".ID = location$i.parentID ";
+		//$WHERE_ALL.=" AND location$i.level='$i' ";
+		$ORDER_ALL.=" , NAME$i";
+
+	}
+
+	$query="select location0.name AS NAME0 $SELECT_ALL FROM glpi_dropdown_locations_new AS location0 $FROM_ALL  WHERE location0.parentID='0' $WHERE_ALL  ORDER BY NAME0 $ORDER_ALL";
+	//echo $query;
+	//echo "<hr>";
+	$result=$db->query($query);
+	$data_old=array();
+	echo "<table class='tab_cadre'><tr>";
+	for ($i=0;$i<=$MAX_LEVEL;$i++){
+		echo "<th>$i</th><th>&nbsp;</th>";
+	}
+	echo "</tr>";
+
+	while ($data =  $db->fetch_array($result)){
+	
+		echo "<tr class=tab_bg_1>";
+		for ($i=0;$i<=$MAX_LEVEL;$i++){
+			if (!isset($data_old["NAME$i"])||$data_old["NAME$i"]!=$data["NAME$i"]){
+				$name=$data["NAME$i"];
+				if (isset($data["NAME".($i+1)])&&!empty($data["NAME".($i+1)]))
+				$arrow="--->";
+			else $arrow="";
+			} else {
+				$name="";
+				$arrow="";
+			}
+	
+			echo "<td>".$name."</td>";
+			echo "<td>$arrow</td>";
+		}
+	
+		echo "</tr>";
+	$data_old=$data;
+	}
+	
+	echo "</table>";
+}
+
+function display_old_locations(){
+	$db=new DB;
+	$query="SELECT * from glpi_dropdown_locations;";
+	$result=$db->query($query);
+
+	while ($data =  $db->fetch_array($result))
+	echo "<b>".$data['name']."</b> - ";
+}
+
+function location_create_new($split_char,$add_first){
+
+	$db=new DB;
+	$query="SELECT MAX(ID) AS MAX from glpi_dropdown_locations;";
+	//echo $query."<br>";
+	$result=$db->query($query);
+	$new_ID=$db->result($result,0,"MAX");
+	$new_ID++;
+
+	$query="SELECT * from glpi_dropdown_locations;";
+	$result=$db->query($query);
+
+	$query_clear_new="TRUNCATE TABLE `glpi_dropdown_locations_new`";
+	//echo $query_clear_new."<br>";
+	$result_clear_new=$db->query($query_clear_new); 
+
+	if (!empty($add_first)){
+		$root_ID=$new_ID;
+		$new_ID++;
+		$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$root_ID','$add_first',0)";
+		//echo $query_insert."<br>";
+		$result_insert=$db->query($query_insert);
+	} else {
+		$root_ID=0;
+	}
+
+	while ($data =  $db->fetch_array($result)){
+		if (!empty($split_char))
+			$splitter=split($split_char,$data['name']);
+		else $splitter=array($data['name']);
+	
+		$up_ID=$root_ID;
+	
+		for ($i=0;$i<count($splitter)-1;$i++){
+			// Entrée existe deja ??
+			$query_search="select ID from glpi_dropdown_locations_new WHERE name='".$splitter[$i]."'  AND parentID='".$up_ID."'";
+			//	echo $query_search."<br>";
+			$result_search=$db->query($query_search);
+			if ($db->numrows($result_search)==1){	// Found
+				$up_ID=$db->result($result_search,0,"ID");
+			} else { // Not FOUND -> INSERT
+				$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$new_ID','".$splitter[$i]."','$up_ID')";
+				$up_ID=$new_ID++;
+				//	echo $query_insert."<br>";
+				$result_insert=$db->query($query_insert);
+			}
+		}
+
+		// Ajout du dernier
+		$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('".$data["ID"]."','".$splitter[count($splitter)-1]."','$up_ID')";
+		//	echo $query_insert."<br>";
+
+		$result_insert=$db->query($query_insert);
+
+	}
+
+	$query_auto_inc= "ALTER TABLE `glpi_dropdown_locations_new` CHANGE `ID` `ID` INT( 11 ) DEFAULT '0' NOT NULL AUTO_INCREMENT";
+	$result_auto_inc=$db->query($query_auto_inc);
+
+}
+
+///// FIN FONCTIONS POUR UPDATE LOCATION
+
+function showLocationUpdateForm(){
+	global $lang;
+	$db=new DB;
+	
+	if (FieldExists("glpi_dropdown_locations", "parentID")) return true;
+
+	if (!isset($_POST['root'])) $_POST['root']='';
+	if (!isset($_POST['car_sep'])) $_POST['car_sep']='';
+
+	if(!TableExists("glpi_dropdown_locations_new")) {
+		$query = " CREATE TABLE `glpi_dropdown_locations_new` (`ID` INT NOT NULL ,`name` VARCHAR( 255 ) NOT NULL ,`parentID` INT NOT NULL ,PRIMARY KEY ( `ID` ),UNIQUE KEY (`name`,`parentID`), KEY(`parentID`));";
+		$db->query($query) or die("LOCATION ".$db->error());
+	}
+
+
+	if (!isset($_POST["validate_location"])){
+		echo "<div align='center'>";
+		echo "<h4>".$lang["update"][130]."</h4>";
+		echo "<p>".$lang["update"][131]."</p>";
+		echo "<p>".$lang["update"][132]."<br>".$lang["update"][133]."</p>";
+		echo "<form action=\"".$_SERVER["PHP_SELF"]."\" method=\"post\">";
+		echo "<p>".$lang["update"][134].": <input type=\"text\" name=\"car_sep\" value=\"".$_POST['car_sep']."\"/></p>";
+		echo "<p>".$lang["update"][135].": <input type=\"text\" name=\"root\" value=\"".$_POST['root']."\"/></p>";
+		echo "<input type=\"submit\" class='submit' name=\"new_location\" value=\"".$lang["buttons"][2]."\" />";
+		echo "<input type=\"hidden\" name=\"from_update\" value=\"from_update\" />";
+		echo "</form>";
+		echo "</div>";
+	}
+
+
+
+	if (isset($_POST["new_location"])){
+		location_create_new($_POST['car_sep'],$_POST['root']);	
+		echo "<h4>".$lang["update"][138].": </h4>";
+		display_old_locations();	
+		echo "<h4>".$lang["update"][137].": </h4>";
+		display_new_locations();	
+		echo "<p>".$lang["update"][136]."</p>";
+		echo "<form action=\"".$_SERVER["PHP_SELF"]."\" method=\"post\">";
+		echo "<input type=\"submit\" class='submit' name=\"validate_location\" value=\"".$lang["buttons"][2]."\" />";
+		echo "<input type=\"hidden\" name=\"from_update\" value=\"from_update\" />";
+		echo "</form>";
+	}
+	else if (isset($_POST["validate_location"])){
+		validate_new_location();
+		return true;
+	} else {
+	display_old_locations();	
+	}
+}
+
 //Verifie si la table $tablename existe
 function TableExists($tablename) {
   
@@ -2065,6 +2254,25 @@ function showFormSu() {
 
        .red { color:red;}
        .green {color:green;}
+
+  th
+  {  
+    font-size: 12px;
+    font-weight: bold;
+   /* background-color: #FFC65D;*/
+    background-color: #fccc6f;
+	vertical-align:bottom;
+}
+
+.tab_cadre{
+ -moz-border-radius: 4px;
+  border: 1px solid #cccccc;
+}
+
+.tab_bg_1 {
+background-color: #ccccc7;
+
+}
        
        h2 {
         color:#FFC65D;
@@ -2072,6 +2280,12 @@ function showFormSu() {
 
        h3 {
         text-align:center;}
+
+       h4 {
+        text-align:center;
+        text-decoration: underline;
+        font-size: 16px;
+        }
 
         input {border: 1px solid #ccc;}
 
@@ -2120,9 +2334,10 @@ function showFormSu() {
 	echo "<br/><h3>Update</h3>";
 
 // step 1    avec bouton de confirmation
-if(empty($_POST["continuer"]) && empty($_POST["ajout_su"])) {
+
+if(empty($_POST["continuer"]) && empty($_POST["ajout_su"]) && empty($_POST["from_update"])) {
 	$db = new DB;
-	if(empty($from_install)) {
+	if(empty($from_install)&&!isset($_POST["from_update"])) {
 		echo "<div align='center'>";
 		echo "<h3><span class='red'>".$lang["update"][105]."</span>";
 		echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["update"][106]."</span></a></p>";
@@ -2141,15 +2356,16 @@ if(empty($_POST["continuer"]) && empty($_POST["ajout_su"])) {
 elseif(empty($_POST["ajout_su"])) {
 	if(test_connect()) {
 		echo "<h3>".$lang["update"][93]."</h3>";
-		if(!TableExists("glpi_config")) {
-			updateDbTo031();
-			$tab = updateDbUpTo031();
-			updaterootdoc();
-		}
-		else {
-			$tab = updateDbUpTo031();
-			updaterootdoc();
-		}
+		if (!isset($_POST["update_location"]))
+			if(!TableExists("glpi_config")) {
+				updateDbTo031();
+				$tab = updateDbUpTo031();
+				updaterootdoc();
+			} else {
+				$tab = updateDbUpTo031();
+				updaterootdoc();
+			}
+		
 		if(!superAdminExists()) {
 			showFormSu();
 		}
@@ -2158,7 +2374,8 @@ elseif(empty($_POST["ajout_su"])) {
 			if(!empty($tab) && $tab["adminchange"]) {
 				echo "<div align='center'> <h2>". $lang["update"][96] ."<h2></div>";
 			}
-			showContentUpdateForm();
+			if (showLocationUpdateForm())
+				showContentUpdateForm();
 		}
 	}
 	else {
@@ -2175,8 +2392,8 @@ elseif(!empty($_POST["ajout_su"])) {
 		echo "<div align='center'>";
 		echo "<h3>".$lang["update"][104]."</h3>";
 		echo "</div>";
-		
-		showContentUpdateForm();
+		if (showLocationUpdateForm())
+			showContentUpdateForm();
 		echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
 	}
 	else {

@@ -972,6 +972,16 @@ $lang["update"][108]	= "La mise à jour du contenu ne semble pas n&eacute;cessair
 $lang["update"][109]	= "Voulez vous tout de même la faire ?";
 $lang["update"][110]	= "La mise &#224; jour semble n&eacute;cessaire.";
 
+$lang["update"][130]	= "Mise à jour des lieux";
+$lang["update"][131]	= "La nouvelle structure est hiérarchique";
+$lang["update"][132]	= "Si vous utilisiez un caractère de séparation vous pouvez l'indiquer pour automatiser la génération de la hiérarchie.";
+$lang["update"][133]	= "Vous pouvez aussi spécifier un lieu de base qui incluera tous les lieux générés.";
+$lang["update"][134]	= "Caractère de séparation";
+$lang["update"][135]	= "Lieu racine";
+$lang["update"][136]	= "Voici la nouvelle hiérarchie générée. Si elle vous convient vous pouvez la valider.";
+$lang["update"][137]	= "Nouvelle hierarchie";
+$lang["update"][138]	= "Lieux actuels";
+
 
 $lang["reservation"][0]	= "R&eacute;servations";
 $lang["reservation"][1]	= "Mat&eacute;riel r&eacute;servable";
