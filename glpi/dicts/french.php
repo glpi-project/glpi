@@ -36,6 +36,7 @@ Christian Bauer
 // French test Dictionary 
 $lang["common"][0] = "Sans nom";
 $lang["common"][1] = "Matériel";
+$lang["common"][2] = "ID";
 
 //Login
 
@@ -670,6 +671,12 @@ $lang["help"][20]	= "Votre probl&egrave;me ne peut pas être ajout&eacute; dans n
 $lang["help"][21]	= "Veuillez prendre contact avec un  technicien. SVP";
 $lang["help"][22]	= "Rechercher votre numéro de machine";
 $lang["help"][23] 	= "Saisissez les premi&egrave;res lettres  (nom, ordinateur ou n&deg;  de s&eacute;rie)"; 
+$lang["help"][24] 	= "Type Mat&eacute;riel";
+$lang["help"][25] 	= "Ordinateur";
+$lang["help"][26] 	= "Mat&eacute;riel r&eacute;seau";
+$lang["help"][27] 	= "Imprimante";
+$lang["help"][28] 	= "Moniteur";
+$lang["help"][29] 	= "P&eacute;riph&eacute;rique";
 
   // Mois
   $lang["calendarM"][0] = "Janvier" ;

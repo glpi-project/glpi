@@ -40,6 +40,12 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ("glpi/includes.php");
 include ($phproot . "/glpi/includes_tracking.php");
+include ($phproot . "/glpi/includes_computers.php");
+include ($phproot . "/glpi/includes_printers.php");
+include ($phproot . "/glpi/includes_monitors.php");
+include ($phproot . "/glpi/includes_peripherals.php");
+include ($phproot . "/glpi/includes_networking.php");
+
 
 checkAuthentication("normal");
 
@@ -65,7 +71,7 @@ else
 if ($cfg_features["jobs_at_login"] == "1")
 {
 	if(empty($_GET["start"])) $_GET["start"] = 0;
-	showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"individual","","",$_GET["start"]);
+	showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"individual","","","",$_GET["start"]);
 }
 
 commonFooter();

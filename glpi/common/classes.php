@@ -784,6 +784,7 @@ class CommonItem{
 	
 	}
 	function getName(){
+	return "jjj";
 		if ($this->obj!=NULL&&isset($this->obj->fields["name"])&&$this->obj->fields["name"]!="")
 			return $this->obj->fields["name"];
 		else 
