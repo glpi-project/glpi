@@ -585,8 +585,8 @@ function showConnections($ID) {
 	$db = new DB;
 
 	echo "<div align='center'><table border='0' width='90%' class='tab_cadre'>";
-	echo "<tr><th colspan='2'>".$lang["connect"][0].":</th></tr>";
-	echo "<tr><th>".$lang["computers"][39].":</th><th>".$lang["computers"][40].":</th></tr>";
+	echo "<tr><th colspan='3'>".$lang["connect"][0].":</th></tr>";
+	echo "<tr><th>".$lang["computers"][39].":</th><th>".$lang["computers"][40].":</th><th>".$lang["computers"][46].":</th></tr>";
 
 	echo "<tr class='tab_bg_1'>";
 
@@ -629,6 +629,25 @@ function showConnections($ID) {
 		}
 	}
 	echo "</td>";
+	
+	//Peripherals
+	echo "<td align='center'>";
+	$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='5'";
+	if ($result=$db->query($query)) {
+		$resultnum = $db->numrows($result);
+		if ($resultnum>0) {
+			for ($i=0; $i < $resultnum; $i++) {
+				$tID = $db->result($result, $i, "end1");
+				$periph = new Peripheral;
+				$periph->getfromDB($tID);
+				echo "<li><b><a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=$tID\">";
+				echo $periph->fields["name"]." (".$periph->fields["ID"].")";
+				echo "</b></a><br>";
+			}			
+		} else {
+			echo $lang["computers"][47];
+		}
+	}
 
 	echo "</tr>";
 	echo "</table></div><br>";

@@ -414,8 +414,42 @@ if(!FieldExists("glpi_dropdown_os", "ID")) {
 echo "Version 0.4 Ajout de clés primaires sur les tables dropdown et type, et mise a jour des champs liés.<br />";
 }
 
+if(!TableExists("glpi_type_peripherals")) {
+
+$query = "CREATE TABLE `glpi_type_peripherals` (
+	`ID` int(11) NOT NULL auto_increment,
+	`name` varchar(255) NOT NULL default '',
+	 PRIMARY KEY  (`ID`)
+	) TYPE=MyISAM;";
+$db->query($query)or die("erreur lors de la migration".$db->error());
+}
+
+if(!TableExists("glpi_peripherals")) {
+
+	$query = "CREATE TABLE `glpi_peripherals` (
+	`ID` int(11) NOT NULL auto_increment,
+	`name` varchar(255) NOT NULL default '',
+	`date_mod` datetime NOT NULL default '0000-00-00 00:00:00',
+	 `contact` varchar(255) NOT NULL default '',
+	 `contact_num` varchar(255) NOT NULL default '',
+	`comments` text NOT NULL,
+	`serial` varchar(255) NOT NULL default '',
+	 `otherserial` varchar(255) NOT NULL default '',
+	 `date_fin_garantie` date default NULL,
+	  `achat_date` date NOT NULL default '0000-00-00',
+	 `maintenance` int(2) default '0',
+	  `location` int(11) NOT NULL default '0',
+	 `type` int(11) NOT NULL default '0',
+	 `brand` varchar(255) NOT NULL default '',
+	  PRIMARY KEY  (`ID`)
+	) TYPE=MyISAM;";
+
+$db->query($query) or die("erreur lors de la migration".$db->error());;
+}
 
 }
+
+
 
 
 //Debut du script

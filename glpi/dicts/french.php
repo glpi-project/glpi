@@ -125,6 +125,7 @@ $lang["Menu"][12]	="Donn&eacute;es";
 $lang["Menu"][13]	="Statistiques";
 $lang["Menu"][14]	="Utilisateurs";
 $lang["Menu"][15]	="Administration";
+$lang["Menu"][16]	="Périphériques";
 
 //Donn&eacute;es
 
@@ -253,6 +254,8 @@ $lang["computers"][42]	= "Expiration garantie";
 $lang["computers"][43]	= "Maintenance";
 $lang["computers"][44]  = "Ordinateurs";
 $lang["computers"][45]  = "Choisissez un mod&egrave;le";
+$lang["computers"][46]	= "Périphériques";
+$lang["computers"][47]	= "Pas de périphériques connectés";
 
 // Networking
 
@@ -390,6 +393,37 @@ $lang["software"][22]	= "Pas de logiciel trouv&eacute;.";
 $lang["software"][23]   = "Logiciels";
 
 
+
+// Peripherals
+$lang["peripherals"][0]	= "Ajouter peripherique...";
+$lang["peripherals"][3]	= "Ajouter peripherique";
+$lang["peripherals"][4]	= "Peripherique";
+$lang["peripherals"][5]	= "Nom";
+$lang["peripherals"][6]	= "Lieu";
+$lang["peripherals"][7]	= "Contact num&eacute;ro";
+$lang["peripherals"][8]	= "Contact";
+$lang["peripherals"][9]	= "Type";
+$lang["peripherals"][10]	= "Num&eacute;ro de s&eacute;rie";
+$lang["peripherals"][11]	= "Num&eacute;ro de s&eacute;rie 2";
+$lang["peripherals"][12]	= "Commentaire";
+$lang["peripherals"][13]	= "Lieu";
+$lang["peripherals"][14]	= "";
+$lang["peripherals"][15]	= "";
+$lang["peripherals"][16]	= "Derni&egrave;re modification";
+$lang["peripherals"][17]	= "Pas de peripherique trouv&eacute;.";
+$lang["peripherals"][18]	= "Marque";
+$lang["peripherals"][19]	= "";
+$lang["peripherals"][20]	= "";
+$lang["peripherals"][21]	= "Taille";
+$lang["peripherals"][22]	= "Connect&eacute; a";
+$lang["peripherals"][23]	= "ID";
+$lang["peripherals"][24]   = "Date d'achat ";
+$lang["peripherals"][25]	= "Expiration garantie";
+$lang["peripherals"][26]	= "Maintenance";
+$lang["peripherals"][27]   = "identifiant";
+$lang["peripherals"][28]	= "Périphériques";
+
+
 // Reports
 $lang["reports"][0]	= "S&eacute;lectionner un rapport &agrave; g&eacute;n&eacute;rer"; 
 $lang["reports"][1]     = "Imprimantes sous contrat de maintenance";
@@ -499,6 +533,7 @@ $lang["setup"][65]     = "Vous pouvez aussi remplacer toutes les occurences de c
 $lang["setup"][66]	= "Pas d'utilisateur trouvé";
 $lang["setup"][67]	= "Authentifications externes";
 $lang["setup"][68]	= "Suivis par emails";
+$lang["setup"][69]	= "Types de périphériques";
 
 
 // Helpdesk
