@@ -43,7 +43,7 @@ checkAuthentication("normal");
 commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
 if(empty($_GET["start"])) $_GET["start"] = 0;
 if(empty($_GET["order"])) $_GET["order"] = "ASC";
-
+if(empty($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
 
 
 titleNetdevices();

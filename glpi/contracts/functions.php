@@ -39,7 +39,7 @@ function titleContract(){
          GLOBAL  $lang,$HTMLRel;
          
          echo "<div align='center'><table border='0'><tr><td>";
-         echo "<img src=\"".$HTMLRel."pics/cartouches.png\" alt='".$lang["financial"][0]."' title='".$lang["financial"][0]."'></td><td><a  class='icon_consol' href=\"contracts-info-form.php\"><b>".$lang["financial"][0]."</b></a>";
+         echo "<img src=\"".$HTMLRel."pics/contracts.png\" alt='".$lang["financial"][0]."' title='".$lang["financial"][0]."'></td><td><a  class='icon_consol' href=\"contracts-info-form.php\"><b>".$lang["financial"][0]."</b></a>";
          echo "</td></tr></table></div>";
 }
 
@@ -59,11 +59,12 @@ function searchFormContract($field="",$phrasetype= "",$contains="",$sort= "",$de
 	$option["glpi_contracts.compta_num"]			= $lang["financial"][13];
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/contracts/contracts-search.php\">";
-	echo "<div align='center'><table class='tab_cadre' width='750px'>";
+	echo "<div align='center'><table class='tab_cadre' width='750'>";
 	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
-	echo "<select name=\"field\" size='1'>";
+	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
+	echo "&nbsp;";echo $lang["search"][10]."&nbsp;<select name=\"field\" size='1'>";
         echo "<option value='all' ";
 	if($field == "all") echo "selected";
 	echo ">".$lang["search"][7]."</option>";
@@ -74,6 +75,8 @@ function searchFormContract($field="",$phrasetype= "",$contains="",$sort= "",$de
 		echo ">". $val ."</option>\n";
 	}
 	echo "</select>&nbsp;";
+	
+	/*
 	echo $lang["search"][1];
 	echo "&nbsp;<select name='phrasetype' size='1' >";
 	echo "<option value='contains'";
@@ -83,8 +86,7 @@ function searchFormContract($field="",$phrasetype= "",$contains="",$sort= "",$de
 	if($phrasetype == "exact") echo "selected";
 	echo ">".$lang["search"][3]."</option>";
 	echo "</select>";
-	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
-	echo "&nbsp;";
+	*/
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
 	reset($option);
@@ -161,7 +163,7 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 		if ($numrows_limit>0) {
 			// Produce headline
-			echo "<div align='center'><table class='tab_cadre' width='800'><tr>";
+			echo "<div align='center'><table class='tab_cadre' width='750'><tr>";
 
 			// Type
 			echo "<th>";

@@ -42,6 +42,7 @@ if(empty($_GET["start"])) $_GET["start"] = 0;
 if(empty($_GET["order"])) $_GET["order"] = "DESC";
 if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
 else $_GET["deleted"] = "Y";
+if(empty($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
 
 titleContract();
 

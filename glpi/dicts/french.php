@@ -87,7 +87,7 @@ $lang["search"][6]	= "tri&eacute; par";
 $lang["search"][7]	= "Tous";
 $lang["search"][8]	= "Date d&eacute;but";
 $lang["search"][9]	= "Date  fin";
-
+$lang["search"][10]	= "dans";
 
 // Central
 $lang["central"][0] 	= "Bienvenue ";
