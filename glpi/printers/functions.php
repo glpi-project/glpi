@@ -545,10 +545,11 @@ function addPrinter($input) {
 	
 	// ADD Infocoms
 	$ic= new Infocom();
-	$ic->getFromDB(PRINTER_TYPE,$oldID);
-	$ic->fields["FK_device"]=$newID;
-	unset ($ic->fields["ID"]);
-	$ic->addToDB();
+	if ($ic->getFromDB(PRINTER_TYPE,$oldID)){
+		$ic->fields["FK_device"]=$newID;
+		unset ($ic->fields["ID"]);
+		$ic->addToDB();
+	}
 	
 		// ADD Ports
 	$query="SELECT ID from glpi_networking_ports WHERE on_device='$oldID' AND device_type='".PRINTER_TYPE."';";

@@ -583,10 +583,11 @@ function addComputer($input) {
 	
 	// ADD Infocoms
 	$ic= new Infocom();
-	$ic->getFromDB(COMPUTER_TYPE,$oldID);
-	$ic->fields["FK_device"]=$newID;
-	unset ($ic->fields["ID"]);
-	$ic->addToDB();
+	if ($ic->getFromDB(COMPUTER_TYPE,$oldID)){
+		$ic->fields["FK_device"]=$newID;
+		unset ($ic->fields["ID"]);
+		$ic->addToDB();
+	}
 	
 	// ADD software
 	$query="SELECT license from glpi_inst_software WHERE cID='$oldID'";
