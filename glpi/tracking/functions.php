@@ -207,7 +207,7 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 			echo "<table cellpadding='5' width='90%'>";
 			echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" ></td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&select=all&start=$start'>".$lang["buttons"][18]."</a></td>";
 			
-			echo "<td>/</td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&select=none'>".$lang["buttons"][19]."</a>";
+			echo "<td>/</td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&select=none&start=$start'>".$lang["buttons"][19]."</a>";
 			echo "</td><td>";
 			echo "<input type='submit' value=\"".$lang["buttons"][17]."\" name='delete' class='submit'></td>";
 			echo "<td width='75%'>&nbsp;</td></table></div>";
@@ -242,8 +242,16 @@ function showOldJobListForItem($username,$item) {
 	// affiche toutes les vielles intervention pour un $item donné. 
 
 
-	GLOBAL $cfg_layout, $cfg_install, $lang;
+	GLOBAL $cfg_layout, $cfg_install, $lang,$HTMLRel;
 		
+	// Form to delete old item
+	if ($_SESSION["glpitype"]=="admin"){
+		echo "<form method='post' action=\"computers-info-form.php\">";
+		echo "<input type='hidden' name='ID' value='$item'>";
+		}
+
+
+
 	$prefs = getTrackingPrefs($username);
 	
 $where = "(status = 'old')";	
@@ -280,6 +288,15 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item') ORD
 		}
 		*/
 		echo "</table></div>";
+
+		echo "<br><div align='center'>";
+		echo "<table cellpadding='5' width='90%'>";
+		echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" ></td><td><a href='".$_SERVER["PHP_SELF"]."?select=all&ID=$item'>".$lang["buttons"][18]."</a></td>";
+			
+		echo "<td>/</td><td><a href='".$_SERVER["PHP_SELF"]."?select=none&ID=$item'>".$lang["buttons"][19]."</a>";
+		echo "</td><td>";
+		echo "<input type='submit' value=\"".$lang["buttons"][17]."\" name='delete_inter' class='submit'></td>";
+		echo "<td width='75%'>&nbsp;</td></table></div>";
 	} 
 	else
 	{
@@ -294,6 +311,11 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item') ORD
 		echo "</table>";
 		echo "</div><br>";
 	}
+
+	// End form for delete item
+	if ($_SESSION["glpitype"]=="admin")
+	echo "</form>";
+
 }
 
 function showJobListForItem($username,$item) {
