@@ -1903,10 +1903,6 @@ function getTreeValueName($table,$ID, $wholename="")
 			$name = $row["name"] . "\\";
 		}
 		$name = getTreeValueName($table,$parentID, $name) . $name;
-		if($parentID == 0)
-		{
-			$name = "\\" . $name;
-		}
 	}
 	
 	}
