@@ -559,14 +559,19 @@ function step6($root_doc, $event_loglevel, $num_of_events, $expire_events, $list
 
 // STEP 7 Display a great form for LDAP and IMAP options
 function step7()
-{
+{	
+	include ("_relpos.php");
+	include ($phproot . "/glpi/includes.php");
+	$db = new DB;
+	$query = "select * from glpi_config where config_id = 1";
+	$result = $db->query($query);
 	echo "Configuration des parametres de connection externe";
 	echo "<br /> Si vous ne souhaitez pas utiliser LDAP ou/et IMAP comme sources de connections laissez les champs vides";
 	echo "<br /><form action=\"install.php\" method=\"post\">";
 	echo "<table>";
 	echo "<tr><td>LDAP configuration</td><td></td></tr>";
 	echo "<tr><td>LDAP Host</td><td><input type=\"text\" name=\"ldap_host\" value=\"". $db->result($result,0,"ldap_host") ."\"/></td></tr>";
-	echo "<tr><td>Basedn</td><td><input type=\"text\" name=\"basedn\" value=\"". $db->result($result,0,"ldap_basedn") ."\" /></td></tr>";
+	echo "<tr><td>Basedn</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"". $db->result($result,0,"ldap_basedn") ."\" /></td></tr>";
 	echo "<tr><td>rootdn (for non anonymous binds)</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"". $db->result($result,0,"ldap_rootdn") ."\" /></td></tr>";
 	echo "<tr><td>Pass (for non-anonymous binds)</td><td><input type=\"text\" name=\"ldap_pass\" value=\"". $db->result($result,0,"ldap_pass") ."\" /></td></tr>";
 	echo "<tr><td>IMAP configuration</td><td></td></tr>";
@@ -579,7 +584,7 @@ function step7()
 }
 
 //Step 8 : Get and test LDAP and IMAP settings and fill the database And finish the install
-function step8($ldap_host,$basedn,$rootdn,$pass,$imap_auth_server,$imap_host)
+function step8($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$imap_auth_server,$imap_host)
 {
 	include ("_relpos.php");
 	require_once ($phproot . "/glpi/includes.php");
@@ -588,8 +593,8 @@ function step8($ldap_host,$basedn,$rootdn,$pass,$imap_auth_server,$imap_host)
 		if (extension_loaded('ldap')) {
 			//TODO : test the remote LDAP connection
 			$query = "update glpi_config set ldap_host = '". $ldap_host ."', ";
-			$query.= "ldap_basedn = '". $basedn ."', ldap_rootdn = '". $rootdn ."', ";
-			$query .= "ldap_pass = '". $pass ."' where config_id = '1' ";
+			$query.= "ldap_basedn = '". $ldap_basedn ."', ldap_rootdn = '". $ldap_rootdn ."', ";
+			$query .= "ldap_pass = '". $ldap_pass ."' where config_id = '1' ";
 			$db->query($query);
 			echo "Vos paramètres de connection LDAP ont bien été enregistrés";
 		}
@@ -704,7 +709,7 @@ include ("_relpos.php");
 				break;
 			case "Etape_7" :
 				header_html("Etape 7");
-				step8($_POST["ldap_host"],$_POST["basedn"],$_POST["rootdn"],$_POST["pass"],$_POST["imap_auth_server"],$_POST["imap_host"]);
+				step8($_POST["ldap_host"],$_POST["ldap_basedn"],$_POST["ldap_rootdn"],$_POST["ldap_pass"],$_POST["imap_auth_server"],$_POST["imap_host"]);
 				break;
 		}
 	}
