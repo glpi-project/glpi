@@ -2650,7 +2650,13 @@ function showCalendarForm($form,$element,$value='',$withtemplate=''){
 * @return nothing
 */
 function sendFile($file,$filename){
-        
+        // Test sécurité
+	if (ereg("\.\.",$file)){
+	session_start();
+	echo "Security attack !!!";
+	logEvent($file, "senFile", 1, "security", $_SESSION["glpiname"]." try to get a non standard file.");
+	return;
+	}
 	if (!file_exists($file)){
 	echo "Error file $file does not exist";
 	} else {
