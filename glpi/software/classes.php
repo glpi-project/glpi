@@ -140,6 +140,16 @@ function getEmpty () {
 
 		$query = "DELETE from glpi_software WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
+
+			$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".SOFTWARE_TYPE."')";
+			$result = $db->query($query);
+
+			$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".SOFTWARE_TYPE."')";
+			$result = $db->query($query);
+
+			$query = "DELETE FROM glpi_tracking WHERE (computer = '$ID' AND device_type='".SOFTWARE_TYPE."')";
+			$result = $db->query($query);
+
 			// Delete all Licenses
 			$query2 = "SELECT ID FROM glpi_licenses WHERE (sID = \"$ID\")";
 	

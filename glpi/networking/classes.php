@@ -134,13 +134,8 @@ function getEmpty() {
 		$query = "DELETE from glpi_networking WHERE ID = '$ID'";
 			
 		if ($result = $db->query($query)) {
-			$query="select * from glpi_reservation_item where (device_type='2' and id_device='$ID')";
-			if ($result = $db->query($query)) {
-				if ($db->numrows($result)>0)
-				deleteReservationItem(array("ID"=>$db->result($result,0,"ID")));
-			}
 			
-			$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '2')";
+			$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '".NETWORKING_TYPE."')";
 //			echo $query;
 			$result = $db->query($query);
 			while ($data = $db->fetch_array($result)){
@@ -148,9 +143,26 @@ function getEmpty() {
 //					echo $q;
 					$result2 = $db->query($q);					
 					}
-			
-			$query = "DELETE FROM glpi_networking_ports WHERE (device_on = '$ID' AND device_type = '2')";
+
+			$query = "DELETE FROM glpi_tracking WHERE (computer = '$ID' AND device_type='".NETWORKING_TYPE."')";
 			$result = $db->query($query);
+			
+			$query = "DELETE FROM glpi_networking_ports WHERE (device_on = '$ID' AND device_type = '".NETWORKING_TYPE."')";
+			$result = $db->query($query);
+			
+			$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".NETWORKING_TYPE."')";
+			$result = $db->query($query);
+
+			$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".NETWORKING_TYPE."')";
+			$result = $db->query($query);
+
+			$query="select * from glpi_reservation_item where (device_type='".NETWORKING_TYPE."' and id_device='$ID')";
+			if ($result = $db->query($query)) {
+				if ($db->numrows($result)>0) {
+					deleteReservationItem(array("ID"=>$db->result($result,0,"ID")));
+				}
+			}
+
 			
 			return true;
 		} else {
