@@ -123,7 +123,7 @@ function searchFormComputers($field="",$contains="",$sort= "",$deleted= "") {
 	}
 	echo "</select>&nbsp;";
 	echo "&nbsp;";
-	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" />";
+	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
 	echo "&nbsp;";
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
@@ -137,7 +137,7 @@ function searchFormComputers($field="",$contains="",$sort= "",$deleted= "") {
 	echo "</td><td><input type='checkbox' name='deleted' ".($deleted=='Y'?" checked ":"").">";
 	echo "<img src=\"".$HTMLRel."pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit' />";
+	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit' >";
 	echo "</td></tr></table></div></form>";
 
 

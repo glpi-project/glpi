@@ -168,16 +168,16 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 		}
 		else {
 			echo "<form name='form_update_device_$compDevID' action=\"\" method=\"post\" >";
-			echo "<td align='right' colspan='$colspan'>".$specificity_label.":&nbsp;<input type='text' name='device_value' value=\"".$specif."\" size='$specificity_size' /></td>";
+			echo "<td align='right' colspan='$colspan'>".$specificity_label.":&nbsp;<input type='text' name='device_value' value=\"".$specif."\" size='$specificity_size' ></td>";
 			echo "<td align='center'>";
 			echo "<img src='".$HTMLRel."pics/actualiser.png' class='calendrier' alt='".$lang["buttons"][7]."' title='".$lang["buttons"][7]."'
 			onclick='form_update_device_$compDevID.submit()'>";
 			echo "</td>";
-			echo "<input type=\"hidden\" name=\"update_device\" value=\"".$compDevID."\" />";
+			echo "<input type=\"hidden\" name=\"update_device\" value=\"".$compDevID."\" >";
 			echo "</form>";
 			echo "<form name='form_unlink_device_$compDevID' action=\"\" method=\"post\" >";
-			echo "<td><img class='calendrier' src='".$HTMLRel."pics/delete2.png'  onclick='form_unlink_device_$compDevID.submit()' title ='".$lang["devices"][11]."' alt='".$lang["devices"][11]."'</img></td>";
-			echo "<input type=\"hidden\" name=\"unlink_device\" value=\"".$compDevID."\" />";
+			echo "<td><img class='calendrier' src='".$HTMLRel."pics/delete2.png'  onclick='form_unlink_device_$compDevID.submit()' title ='".$lang["devices"][11]."' alt='".$lang["devices"][11]."'</td>";
+			echo "<input type=\"hidden\" name=\"unlink_device\" value=\"".$compDevID."\" >";
 			echo "</form>";
 		}
 		
@@ -187,8 +187,8 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
   		  echo "<td>&nbsp;</td>";
   		 } else {
   		 echo "<form name='form_unlink_device_$compDevID' action=\"\" method=\"post\" >";
-  		echo "<td><img class='calendrier' src='".$HTMLRel."pics/delete2.png'  onclick='form_unlink_device_$compDevID.submit()' title ='".$lang["devices"][11]."' alt='".$lang["devices"][11]."'</img></td>";
-  		 echo "<input type=\"hidden\" name=\"unlink_device\" value=\"".$compDevID."\" />";
+  		echo "<td><img class='calendrier' src='".$HTMLRel."pics/delete2.png'  onclick='form_unlink_device_$compDevID.submit()' title ='".$lang["devices"][11]."' alt='".$lang["devices"][11]."'</td>";
+  		 echo "<input type=\"hidden\" name=\"unlink_device\" value=\"".$compDevID."\" >";
   		 echo "</form>";
   		 }
   	}
@@ -250,7 +250,7 @@ function device_selecter($target,$cID,$withtemplate='') {
 		echo "<input type=\"hidden\" name=\"withtemplate\" value=\"".$withtemplate."\" >";
 		echo "<input type=\"hidden\" name=\"connect_device\" value=\"".true."\" >";
 		echo "<input type=\"hidden\" name=\"cID\" value=\"".$cID."\" >";
-		echo "<input type=\"submit\" class ='submit' value=\"".$lang["buttons"][2]."\" />";
+		echo "<input type=\"submit\" class ='submit' value=\"".$lang["buttons"][2]."\" >";
 		echo "</form>";
 		echo "</td>";
 		echo "</tr>";
@@ -284,7 +284,7 @@ function compdevice_form_add($target,$device_type,$cID,$withtemplate='') {
 		echo "<input type=\"hidden\" name=\"connect_device\" value=\"".true."\" >";
 		echo "<input type=\"hidden\" name=\"device_type\" value=\"".$device_type."\" >";
 		echo "<input type=\"hidden\" name=\"cID\" value=\"".$cID."\" >";
-		echo "<input type=\"submit\" value=\"".$lang["buttons"][2]."\" />";
+		echo "<input type=\"submit\" value=\"".$lang["buttons"][2]."\" >";
 		echo "</form>";
 		echo "</td></tr>";
 		echo "</table>";
