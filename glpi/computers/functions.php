@@ -240,9 +240,9 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo $comp->fields["name"]." (".$comp->fields["ID"].")";
 				echo "</a></b></td>";
 				echo "<td>".$comp->fields["serial"]."</td>";
-                                echo "<td>".$comp->fields["type"]."</td>";
-				echo "<td>".$comp->fields["os"]."</td>";
-				echo "<td>".$comp->fields["location"]."</td>";
+                                echo "<td>". getDropdownName("glpi_type_computers",$comp->fields["type"]) ."</td>";
+				echo "<td>". getDropdownName("glpi_dropdown_os",$comp->fields["os"]) ."</td>";
+				echo "<td>". getDropdownName("glpi_dropdown_locations", $comp->fields["location"]) ."</td>";
 				echo "<td>".$comp->fields["date_mod"]."</td>";
 				echo "<td>".$comp->fields["contact"]."</td>";
                                 

@@ -728,6 +728,18 @@ function dropdownUsers($value, $myname) {
 	echo "</select>";
 }
 
+function getDropdownName($table,$id) {
+	
+	$db = new DB;
+	$name = "";
+	$query = "select name from ". $table ." where ID = '". $id ."'";
+	$result = $db->query($query);
+	if($db->numrows($result) != 0) {
+		$name = $db->result($result,0,"name");
+	}
+	return $name;
+}
+
 function loadLanguage($user) {
 
 	GLOBAL $lang;	

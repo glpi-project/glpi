@@ -186,8 +186,8 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "<a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=$ID\">";
 				echo $printer->fields["name"]." (".$printer->fields["ID"].")";
 				echo "</a></b></td>";
-				echo "<td>".$printer->fields["location"]."</td>";
-				echo "<td>".$printer->fields["type"]."</td>";
+				echo "<td>". getDropdownName("glpi_dropdown_locations",$printer->fields["location"]) ."</td>";
+				echo "<td>". getDropdownName("glpi_type_monitors",$printer->fields["type"]) ."</td>";
 				echo "<td>".$printer->fields["date_mod"]."</td>";
 				echo "</tr>";
 			}

@@ -205,8 +205,8 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				echo "<a href=\"".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=$ID\">";
 				echo $mon->fields["name"]." (".$mon->fields["ID"].")";
 				echo "</a></b></td>";
-				echo "<td>".$mon->fields["location"]."</td>";
-				echo "<td>".$mon->fields["type"]."</td>";
+				echo "<td>". getDropdownName("glpi_dropdown_locations",$mon->fields["location"]) ."</td>";
+				echo "<td>". getDropdownName("glpi_type_monitors",$mon->fields["type"]) ."</td>";
 				echo "<td>".$mon->fields["date_mod"]."</td>";
 				echo "<td>".$mon->fields["contact"]."</td>";
 				echo "</tr>";
