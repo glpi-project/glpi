@@ -273,4 +273,215 @@ class Identification
 		return $this->user;
 	}
 }
+
+class Mailing
+{
+	var $type=NULL;
+	var $job=NULL;
+	// User who change the status of the job
+	var $user=NULL;
+ 
+	function Mailing ($type="",$job=NULL,$user=NULL)
+	{
+		$this->type=$type;
+		$this->job=$job;
+		$this->user=$user;
+		$this->test_type();
+	}
+	function is_valid_email($email="")
+	{
+		if( !eregi( "^" .
+			"[a-z0-9]+([_\\.-][a-z0-9]+)*" .    //user
+            "@" .
+            "([a-z0-9]+([\.-][a-z0-9]+)*)+" .   //domain
+            "\\.[a-z]{2,}" .                    //sld, tld 
+            "$", $email)
+                        )
+        {
+        //echo "Erreur: '$email' n'est pas une adresse mail valide!<br>";
+        return false;
+        }
+		else return true;
+	}
+	function test_type()
+	{
+		if (!is_a($this->job,"Job"))
+			$this->job=NULL;
+		if (!is_a($this->user,"User"))
+			$this->user=NULL;	
+	}
+	// Return array of emails of people to send mail
+	function get_users_to_send_mail()
+	{
+		GLOBAL $cfg_mailing;
+		
+		$emails=array();
+		$nb=0;
+		$db = new DB;
+		
+		if ($cfg_mailing[$this->type]["admin"]&&$this->is_valid_email($cfg_mailing["admin_email"])&&!in_array($cfg_mailing["admin_email"],$emails))
+		{
+			$emails[$nb]=$cfg_mailing["admin_email"];
+			$nb++;
+		}
+
+		if ($cfg_mailing[$this->type]["all_admin"])
+		{
+			$query = "SELECT email FROM users WHERE (type = 'admin')";
+			if ($result = $db->query($query)) 
+			{
+				while ($row = $db->fetch_row($result))
+				{
+					// Test du format du mail et de sa non existance dans la table
+					if ($this->is_valid_email($row[0])&&!in_array($row[0],$emails))
+					{
+						$emails[$nb]=$row[0];
+						$nb++;
+					}
+				}
+			}
+		}	
+
+		if ($cfg_mailing[$this->type]["all_normal"])
+		{
+			$query = "SELECT email FROM users WHERE (type = 'normal')";
+			if ($result = $db->query($query)) 
+			{
+				while ($row = $db->fetch_row($result))
+				{
+					// Test du format du mail et de sa non existance dans la table
+					if ($this->is_valid_email($row[0])&&!in_array($row[0],$emails))
+					{
+						$emails[$nb]=$row[0];
+						$nb++;
+					}
+				}
+			}
+		}	
+
+		if ($cfg_mailing[$this->type]["attrib"]&&$this->job->assign)
+		{
+			$query2 = "SELECT email FROM users WHERE (name = '".$this->job->assign."')";
+			if ($result2 = $db->query($query2)) 
+			{
+				if ($db->numrows($result2)==1)
+				{
+					$row2 = $db->fetch_row($result2);
+					if ($this->is_valid_email($row2[0])&&!in_array($row2[0],$emails))
+						{
+							$emails[$nb]=$row2[0];
+							$nb++;
+						}
+				}
+			}
+		}
+
+		if ($cfg_mailing[$this->type]["user"]&&$this->job->emailupdates=="yes")
+		{
+			if ($this->is_valid_email($this->job->uemail)&&!in_array($this->job->uemail,$emails))
+			{
+				$emails[$nb]=$this->job->uemail;
+				$nb++;
+			}
+		}
+		return $emails;
+	}
+
+	// Format the mail body to send
+	function get_mail_body()
+	{
+		// Create message body from Job and type
+		$body="";
+		
+		$body.=$this->job->textDescription();
+		if ($this->type!="new") $body.=$this->job->textFollowups();
+		
+		return $body;
+	}
+	// Format the mail subject to send
+	function get_mail_subject()
+	{
+		GLOBAL $lang;
+		
+		// Create the message subject 
+		$subject="";
+		switch ($this->type){
+			case "new":
+			$subject.=$lang["mailing"][9];
+				break;
+			case "attrib":
+			$subject.=$lang["mailing"][12];
+				break;
+			case "followup":
+			$subject.=$lang["mailing"][10];
+				break;
+			case "finish":
+			$subject.=$lang["mailing"][11].$this->job->closedate;			
+				break;
+			default :
+			$subject.=$lang["mailing"][13];
+				break;
+		}
+		
+		if ($this->type!="new") $subject .= " (ref ".$this->job->ID.")";		
+		
+		return $subject;
+	}
+	
+	function get_reply_to_address ()
+	{
+		GLOBAL $cfg_mailing;
+	$replyto="";
+
+	switch ($this->type){
+			case "new":
+				if ($this->is_valid_email($this->job->uemail)) $replyto=$this->job->uemail;
+				else $replyto=$cfg_mailing["admin_email"];
+				break;
+			case "followup":
+				if ($this->is_valid_email($user->user->fields["email"])) $replyto=$this->user->fields["email"];
+				else $replyto=$cfg_mailing["admin_email"];
+				break;
+			default :
+				$replyto=$cfg_mailing["admin_email"];
+				break;
+		}
+	return $replyto;		
+	}
+	// Send email 
+	function send()
+	{
+		GLOBAL $cfg_features,$cfg_mailing;;
+		if ($cfg_features["mailing"]&&$this->is_valid_email($cfg_mailing["admin_email"]))
+		{
+			$this->test_type();
+			if (!is_null($this->job)&&!is_null($this->user)&&(strcmp($type,"new")||strcmp($type,"attrib")||strcmp($type,"followup")||strcmp($type,"finish")))
+			{
+				// get users to send mail
+				$users=$this->get_users_to_send_mail();
+				// get body + signature OK
+				$body=ereg_replace("<br />","",$this->get_mail_body()."\n".$cfg_mailing["signature"]);
+				// get subject OK
+				$subject=$this->get_mail_subject();
+				// get sender :  OK
+				$sender= $cfg_mailing[admin_email];
+				// get reply-to address : user->email ou job_email if not set OK
+				$replyto=$this->get_reply_to_address ();
+				// Send all mails
+				for ($i=0;$i<count($users);$i++)
+				{
+				mail($users[$i],$subject,$body,
+				"From: $sender\r\n" .
+			    "Reply-To: $replyto\r\n" .
+     		   "X-Mailer: PHP/" . phpversion()) ;
+				}
+			} else {
+				echo "Type d'envoi invalide";
+			}
+		}
+	}
+
+
+
+}
 ?>
