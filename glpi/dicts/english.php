@@ -542,6 +542,7 @@ $lang["setup"][65] 	= "You can also replace all the events of this heading by an
 $lang["setup"][66] 	= "No user found"; 
 $lang["setup"][68] 	= "Email Followup"; 
 $lang["setup"][71] 	= "Firmware"; 
+$lang["setup"][72] 	= "Select a dropdown"; 
 
 // to be translated--------------
 $lang["setup"][100]="Configuration générale";
