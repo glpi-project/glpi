@@ -56,23 +56,23 @@ $query = "SELECT count(ID) FROM glpi_computers where deleted ='N' AND is_templat
 $result = $db->query($query);
 $number_of_computers = $db->result($result,0,0);
 
-$query = "SELECT count(ID) FROM glpi_software where deleted ='N' ";
+$query = "SELECT count(ID) FROM glpi_software where deleted ='N'  AND is_template = '0' ";
 $result = $db->query($query);
 $number_of_software = $db->result($result,0,0);
 
-$query = "SELECT count(ID) FROM glpi_printers where deleted ='N' ";
+$query = "SELECT count(ID) FROM glpi_printers where deleted ='N'  AND is_template = '0' ";
 $result = $db->query($query);
 $number_of_printers = $db->result($result,0,0);
 
-$query = "SELECT count(ID) FROM glpi_networking where deleted ='N' ";
+$query = "SELECT count(ID) FROM glpi_networking where deleted ='N'  AND is_template = '0' ";
 $result = $db->query($query);
 $number_of_networking = $db->result($result,0,0);
 
-$query = "SELECT count(ID) FROM glpi_monitors where deleted ='N' ";
+$query = "SELECT count(ID) FROM glpi_monitors where deleted ='N'  AND is_template = '0' ";
 $result = $db->query($query);
 $number_of_monitors = $db->result($result,0,0);
 
-$query = "SELECT count(ID) FROM glpi_peripherals where deleted ='N' ";
+$query = "SELECT count(ID) FROM glpi_peripherals where deleted ='N'  AND is_template = '0' ";
 $result = $db->query($query);
 $number_of_peripherals = $db->result($result,0,0);
 
