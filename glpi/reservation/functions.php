@@ -347,7 +347,7 @@ $all="&nbsp;";
 
  echo "<div align='center'><table border='0'><tr><td>";
                 echo "<img src=\"".$HTMLRel."pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_nav'>".$type." - ".$name."</span>";
-		 echo "</b></td><td>$all</td></tr></table></div>";
+		 echo "</b></td></tr><tr><td colspan='2' align ='center'>$all</td></tr></table></div>";
 
 
 	
