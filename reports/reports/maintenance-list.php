@@ -53,18 +53,21 @@ $db = new DB;
 # Titre
 echo "<big><b><strong>".$lang["reports"][4]."</strong></b></big><br><br>";
 
+
 # Construction  la requete, et appel de la fonction affichant les valeurs.
-if($_POST["item_type"] != 'tous')
+if(isset($_POST["item_type"][0])&&$_POST["item_type"][0] != 'tous')
 {
 
-		$query = "select * from ".$_POST["item_type"]."  where maintenance = 1 ";
+	foreach($_POST["item_type"] as $key => $val){
+		$query = "select * from ".$val."  where maintenance = 1 ";
 		
 		if($_POST["annee_achat"] != 'toutes')
 		{
 			$query.= "  and YEAR(achat_date) = '".$_POST["annee_achat"]."' ";
 		}
 		$query.= " order by ".$_POST["tri_par"]." asc";
-		report_perso($_POST["item_type"],$query);
+		report_perso($val,$query);
+		}
 }
 else
 {

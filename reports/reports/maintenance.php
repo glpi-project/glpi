@@ -88,12 +88,12 @@ echo "<tr><td class='tab_bg_2' colspan='2' align='center'>Nombre de materiel res
 
 echo "<form name='form' method='post' action='maintenance-list.php'>";
 echo "<b>Type de materiel : </b>&nbsp;&nbsp; ";
-echo "<select name='item_type' >";
+echo "<select name='item_type[]' multiple>";
+echo "<option value='tous' selected>Tous</option>";
 echo "<option value='glpi_computers'>Ordinateurs</option>";
 echo "<option value='glpi_printers'>Imprimantes</option>";
 echo "<option value='glpi_networking'>Materiel reseau</option>";
 echo "<option value='glpi_monitors'>Moniteurs</option>";
-echo "<option value='tous' selected>Tous</option>";
 echo "</select> &nbsp;&nbsp; ";
 		   
 echo "<br><br><b>Date d'achat :</b>&nbsp;&nbsp; ";
