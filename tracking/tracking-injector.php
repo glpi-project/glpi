@@ -121,7 +121,7 @@ else
 	$db=new DB;
 	$ci=new CommonItem;
 	
-	if ($ci->getFromDB($_POST["device_type"],$ID)&&postJob($_POST["device_type"],$ID,$glpiname,$status,$_POST["priority"],$_POST["isgroup"],$_POST["uemail"],$_POST["emailupdates"],$_POST["contents"]))
+	if (($_POST["device_type"]==0||$ci->getFromDB($_POST["device_type"],$ID))&&postJob($_POST["device_type"],$ID,$glpiname,$status,$_POST["priority"],$_POST["isgroup"],$_POST["uemail"],$_POST["emailupdates"],$_POST["contents"]))
 	{
 		if(isset($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 			nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
