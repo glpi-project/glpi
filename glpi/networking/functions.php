@@ -488,19 +488,19 @@ function showPortsAdd($ID,$devtype) {
 	
 	GLOBAL $cfg_layout, $cfg_install, $lang;
 	
-	echo "<div align='center'><table border='0' width='90%' cellpadding='2'>";
+	echo "<div align='center'><table class='tab_cadre' width='750' cellpadding='2'>";
 	echo "<tr>";
-	echo "<td align='center' class='tab_bg_2'><b>";
-	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ondevice=$ID&devtype=$devtype\">";
+	echo "<td align='center' class='tab_bg_2'  >";
+	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ondevice=$ID&devtype=$devtype\"><b>";
 	echo $lang["networking"][19];
-	echo "</a></b></td>";
-	echo "<td align='center' class='tab_bg_2'><b>";
-	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ondevice=$ID&devtype=$devtype&several=yes\">";
+	echo "</b></a></td>";
+	echo "<td align='center' class='tab_bg_2' width='50%'>";
+	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ondevice=$ID&devtype=$devtype&several=yes\"><b>";
 	echo $lang["networking"][46];
-	echo "</a></b></td>";
+	echo "</b></a></td>";
 
 	echo "</tr>";
-	echo "</table></div><br><br>";
+	echo "</table></div><br>";
 }
 
 function showConnection ($ID) {

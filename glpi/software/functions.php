@@ -224,7 +224,7 @@ function showSoftwareForm ($target,$ID) {
 
 	echo "<center><form method='post' action=\"$target\">";
 	echo "<table class='tab_cadre'>";
-	echo "<tr><th colspan='2'><b>";
+	echo "<tr><th colspan='3'><b>";
 	if (!$ID) {
 		echo $lang["software"][0].":";
 		$sw->getEmpty();
@@ -235,31 +235,31 @@ function showSoftwareForm ($target,$ID) {
 	echo "</b></th></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][2].":		</td>";
-	echo "<td><input type='text' name='name' value=\"".$sw->fields["name"]."\" size='25'></td>";
+	echo "<td colspan='2'><input type='text' name='name' value=\"".$sw->fields["name"]."\" size='25'></td>";
 	echo "</tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["software"][4].": 	</td><td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["software"][4].": 	</td><td colspan='2'>";
 		dropdownValue("glpi_dropdown_locations", "location", $sw->fields["location"]);
 	echo "</td></tr>";
 
 	
-	echo "<tr class='tab_bg_1'><td>".$lang["software"][3].": 	</td><td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["software"][3].": 	</td><td colspan='2'>";
 		dropdownValue("glpi_dropdown_os", "platform", $sw->fields["platform"]);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][5].":		</td>";
-	echo "<td><input type='text' name='version' value=\"".$sw->fields["version"]."\" size='5'></td>";
+	echo "<td colspan='2'><input type='text' name='version' value=\"".$sw->fields["version"]."\" size='5'></td>";
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'><td valign='top'>";
 	echo $lang["software"][6].":	</td>";
-	echo "<td align='center'><textarea cols=35 rows=4 name=comments >".$sw->fields["comments"]."</textarea>";
+	echo "<td align='center' colspan='2'><textarea cols=35 rows=4 name=comments >".$sw->fields["comments"]."</textarea>";
 	echo "</td></tr>";
 	
 	if (!$ID) {
 
 		echo "<tr>";
-		echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+		echo "<td class='tab_bg_2' valign='top' colspan='3'>";
 		echo "<center><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></center>";
 		echo "</td>";
 		echo "</form></tr>";
@@ -269,7 +269,8 @@ function showSoftwareForm ($target,$ID) {
 	} else {
 
 		echo "<tr>";
-		echo "<td class='tab_bg_2' valign='top'>";
+                echo "<td class='tab_bg_2'></td>";
+                echo "<td class='tab_bg_2' valign='top'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<center><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></center>";
 		echo "</td></form>\n\n";

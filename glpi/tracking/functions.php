@@ -228,7 +228,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item') ORD
 
 	if ($number > 0)
 	{
-		echo "<div align='center'><table class='tab_cadre' width='90%'>";
+		echo "<div align='center'>&nbsp;<table class='tab_cadre' width='90%'>";
 		echo "<tr><th colspan=8>".$number." ".$lang["job"][18]."  ".$lang["job"][17]."";
 		if ($number > 1) { echo "s"; }
 		echo " ".$lang["job"][16].":</th></tr>";
@@ -284,7 +284,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item') ORD
 	$number = $db->numrows($result);
 	if ($number > 0)
 	{
-		echo "<div align='center'><table class='tab_cadre' width='90%'>";
+		echo "<div align='center'>&nbsp;<table class='tab_cadre' width='90%'>";
 		echo "<tr><th colspan=8>".$number." ".$lang["job"][17]."";
 		if ($number > 1) { echo "s"; }
 		echo " ".$lang["job"][16].":</th></tr>";
