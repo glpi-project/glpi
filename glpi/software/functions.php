@@ -42,7 +42,7 @@ function titleSoftware(){
          GLOBAL  $lang,$HTMLRel;
          
          echo "<div align='center'><table border='0'><tr><td>";
-         echo "<img src=\"".$HTMLRel."pics/logiciels.png\" alt='".$lang["software"][0]."' title='".$lang["software"][0]."'></td><td><a  class='icon_consol' href=\"software-info-form.php\"><b>".$lang["software"][0]."</b></a>";
+         echo "<img src=\"".$HTMLRel."pics/logiciels.png\" alt='".$lang["software"][0]."' title='".$lang["software"][0]."'></td><td><a  class='icon_consol' href=\"software-info-form.php\"><strong>".$lang["software"][0]."</strong></a>";
          echo "</td></tr></table></div>";
 }
 
@@ -61,7 +61,7 @@ function searchFormSoftware($field="",$phrasetype= "",$contains="",$sort= "") {
 /*
 	echo "<form method=get action=\"".$cfg_install["root"]."/software/software-search.php\">";
 	echo "<center><table border='0' width='90%'>";
-	echo "<tr><th colspan='2'><b>".$lang["search"][5].":</b></th></tr>";
+	echo "<tr><th colspan='2'><strong>".$lang["search"][5].":</strong></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 		dropdown( "dropdown_locations",  "contains");
@@ -80,7 +80,7 @@ function searchFormSoftware($field="",$phrasetype= "",$contains="",$sort= "") {
  */
 	echo "<form method=get action=\"".$cfg_install["root"]."/software/software-search.php\">";
 	echo "<center><table class='tab_cadre' width='750'>";
-	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<tr><th colspan='2'><strong>".$lang["search"][0].":</strong></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 	echo "<select name=\"field\" size='1'>";
@@ -189,7 +189,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 		if ($numrows_limit>0) {
 			// Produce headline
-			echo "<center><table class='tab_cadre' width='750'><tr>";
+			echo "<div align='center'><table class='tab_cadre' width='750'><tr>";
 
 			// Name
 			echo "<th>";
@@ -227,12 +227,12 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 				$sw->getfromDB($ID);
 
 				echo "<tr class='tab_bg_2'>";
-				echo "<td><b>";
+				echo "<td align='center'><strong>";
 				echo "<a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=$ID\">";
 				echo $sw->fields["name"]." (".$sw->fields["ID"].")";
-				echo "</a></b></td>";
-				echo "<td>".$sw->fields["version"]."</td>";
-				echo "<td>". getDropdownName("glpi_dropdown_os",$sw->fields["platform"]) ."</td>";
+				echo "</a></strong></td>";
+				echo "<td width='5%' align='center'>".$sw->fields["version"]."</td>";
+				echo "<td align='center'>". getDropdownName("glpi_dropdown_os",$sw->fields["platform"]) ."</td>";
 				echo "<td>";
 					countInstallations($sw->fields["ID"]);
 				echo "</td>";
@@ -240,15 +240,15 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 			}
 
 			// Close Table
-			echo "</table></center>";
+			echo "</table></div>";
 
 			// Pager
 			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<center><b>".$lang["software"][22]."</b></center>";
-			echo "<hr noshade>";
+			echo "<div align='center'><strong>".$lang["software"][22]."</strong></div>";
+			//echo "<hr noshade>";
 			//searchFormSoftware();
 		}
 	}
@@ -265,7 +265,7 @@ function showSoftwareForm ($target,$ID,$search_software="") {
 
 	echo "<div align='center'><form method='post' action=\"$target\">";
 	echo "<table class='tab_cadre'>";
-	echo "<tr><th colspan='3'><b>";
+	echo "<tr><th colspan='3'><strong>";
 	if (!$ID) {
 		echo $lang["software"][0].":";
 		$sw->getEmpty();
@@ -273,7 +273,7 @@ function showSoftwareForm ($target,$ID,$search_software="") {
 		$sw->getfromDB($ID);
 		echo $lang["software"][10]." ID $ID:";
 	}		
-	echo "</b></th></tr>";
+	echo "</strong></th></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][2].":		</td>";
 	echo "<td colspan='2'><input type='text' name='name' value=\"".$sw->fields["name"]."\" size='25'></td>";
@@ -424,10 +424,10 @@ function showLicensesAdd($ID) {
 	GLOBAL $cfg_layout,$cfg_install,$lang;
 	
 	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='90%' cellpadding='2'>";
-	echo "<tr><td align='center' class='tab_bg_2'><b>";
+	echo "<tr><td align='center' class='tab_bg_2'><strong>";
 	echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=add&sID=$ID\">";
 	echo $lang["software"][12];
-	echo "</a></b></td></tr>";
+	echo "</a></strong></td></tr>";
 	echo "</table></div><br>";
 }
 
@@ -496,12 +496,12 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		$num_inst=$db->numrows($result_inst);
 
 		echo "<tr class='tab_bg_1'>";
-		echo "<td align='center'><b>".$serial."</b></td>";
-		echo "<td align='center'><b>";
+		echo "<td align='center'><strong>".$serial."</strong></td>";
+		echo "<td align='center'><strong>";
 		echo $num_tot;
-		echo "</b></td>";
+		echo "</strong></td>";
 		
-		echo "<td align='center' class='tab_bg_1$expirecss'><b>";
+		echo "<td align='center' class='tab_bg_1$expirecss'><strong>";
 		if ($expire==NULL)
 			echo $lang["software"][26];
 		else {
@@ -509,7 +509,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			else echo $lang["software"][25]."&nbsp;".$expire;
 			}
 
-		echo "</b></td>";
+		echo "</strong></td>";
 		if ($serial!="free"&&$serial!="global"){
 			// OEM
 			if ($data["OEM"]=='Y') {
@@ -518,11 +518,11 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			}
 			echo "<td align='center' class='tab_bg_1".($data["OEM"]=='Y'&&!isset($comp->fields['ID'])?"_2":"")."'>".($data["OEM"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
 			if ($data["OEM"]=='Y') {
-			echo "<br><b>";
+			echo "<br><strong>";
 			if (isset($comp->fields['ID']))
 			echo "<a href='".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
 			else echo "N/A";
-			echo "<b>";
+			echo "<strong>";
 			} 
 			echo "</td>";
 		
@@ -559,17 +559,17 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 				}
 				if (!empty($ID)){
 				echo "</td><td align='center'>";
-				echo "<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?delete=delete&ID=$ID\">";
+				echo "<strong><a href=\"".$cfg_install["root"]."/software/software-licenses.php?delete=delete&ID=$ID\">";
 				
 				echo "<img src=\"".$HTMLRel."pics/delete.png\" alt='".$lang["buttons"][6]."' title='".$lang["buttons"][6]."'>";
 				
 				
-				echo "</a></b>";
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=update&lID=$ID&sID=$sID\">";
+				echo "</a></strong>";
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=update&lID=$ID&sID=$sID\">";
 				
 				echo "<img src=\"".$HTMLRel."pics/edit.png\" alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'>";
 				
-				echo "</a></b>";
+				echo "</a></strong>";
 				}
 				
 			}
@@ -581,11 +581,11 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		$IDdup=$db->result($result_new,0,0);
 		echo "</td><td align='center' >";
 		
-		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?duplicate=duplicate&lID=$IDdup\">";
+		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_install["root"]."/software/software-licenses.php?duplicate=duplicate&lID=$IDdup\">";
 		
 		echo "<img src=\"".$HTMLRel."pics/add.png\" alt='".$lang["buttons"][8]."' title='".$lang["buttons"][8]."'>";
 		
-		echo "</a></b>";
+		echo "</a></strong>";
 		
 		}
 		}
@@ -596,18 +596,18 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		// Logiciels installés
 		while ($data_inst=$db->fetch_array($result_inst)){
 			echo "<tr class='tab_bg_1".($data["OEM"]=='Y'&&$data["OEM_COMPUTER"]!=$data_inst["cID"]?"_2":"")."'><td align='center'>";
-			echo "<b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$data_inst["cID"]."\">";
+			echo "<strong><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$data_inst["cID"]."\">";
 			echo $data_inst["cname"];
-			echo "</b></a></td><td align='center'>";
-			echo "<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&ID=".$data_inst["ID"]."&cID=".$data_inst["cID"]."\">";
+			echo "</strong></a></td><td align='center'>";
+			echo "<strong><a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&ID=".$data_inst["ID"]."&cID=".$data_inst["cID"]."\">";
 			
 			echo "<img src=\"".$HTMLRel."pics/remove.png\" alt='".$lang["buttons"][5]."' title='".$lang["buttons"][5]."'>";
 			
-			echo "</b></a>";
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=update&lID=".$data_inst["lID"]."&sID=$sID\">";
+			echo "</strong></a>";
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=update&lID=".$data_inst["lID"]."&sID=$sID\">";
 				echo "<img src=\"".$HTMLRel."pics/edit.png\" alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'>";
 				
-				echo "</a></b>";
+				echo "</a></strong>";
 			
 			echo "</td></tr>";
 		}
@@ -667,9 +667,9 @@ function showLicenseForm($target,$action,$sID,$lID="",$search_computer="") {
 	
 	
 	
-	echo "<div align='center'><b>";
+	echo "<div align='center'><strong>";
 	echo "<a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=$sID\">";
-	echo $lang["buttons"][13]."</b>";
+	echo $lang["buttons"][13]."</strong>";
 	echo "</a><br>";
 	
 	echo "<form name='form' method='post' action=\"$target\">";
@@ -818,10 +818,10 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 						if ($lic->fields['expire']!=NULL&&$today>$lic->fields['expire']) {$expirer=1; $expirecss="_2";}
 
 						echo "<tr class='tab_bg_1'>";
-						echo "<td><b>$ID</b></td>";
-						echo "<td width='50%' align='center'><b>".$lic->fields['serial']."</b></td>";
+						echo "<td><strong>$ID</strong></td>";
+						echo "<td width='50%' align='center'><strong>".$lic->fields['serial']."</strong></td>";
 						
-						echo "<td width='50%' align='center' class='tab_bg_1$expirecss'><b>";
+						echo "<td width='50%' align='center' class='tab_bg_1$expirecss'><strong>";
 						if ($lic->fields['expire']==NULL)
 							echo $lang["software"][26];
 						else {
@@ -829,7 +829,7 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 							else echo $lang["software"][25]."&nbsp;".$lic->expire;
 						}
 
-						echo "</b></td>";
+						echo "</strong></td>";
 		// OEM
 		if ($lic->fields["oem"]=='Y') {
 		$comp=new Computer();
@@ -837,45 +837,45 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 		}
 		echo "<td align='center' class='tab_bg_1".($lic->fields["oem"]=='Y'&&!isset($comp->fields['ID'])?"_2":"")."'>".($lic->fields["oem"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
 		if ($lic->fields["oem"]=='Y') {
-		echo "<br><b>";
+		echo "<br><strong>";
 		if (isset($comp->fields['ID']))
 		echo "<a href='".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
 		else echo "N/A";
-		echo "<b>";
+		echo "<strong>";
 		} 
 		echo "</td>";
 		
 		// BUY
 		echo "<td align='center'>".($lic->fields["buy"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
 		echo "</td>";				
-						echo "<td align='center'><b>";
+						echo "<td align='center'><strong>";
 							echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?back=$back&install=install&cID=$cID&lID=$ID\">";
 							echo $lang["buttons"][4];
 							echo "</a>";
-						echo "</b></td>";
+						echo "</strong></td>";
 						echo "</tr>";
 					} /*else {
 						echo "<tr class='tab_bg_1'>";
-						echo "<td><b>$i</b></td>";
+						echo "<td><strong>$i</strong></td>";
 						echo "<td colspan='2' align='center'>";
-						echo "<b>".$lang["software"][18]."</b>";
+						echo "<strong>".$lang["software"][18]."</strong>";
 						echo "</td>";
 						echo "</tr>";
 					}*/
 					$i++;
 				} else {
 					echo "<tr class='tab_bg_1'>";
-					echo "<td><b>$i</b></td>";
-					echo "<td width='100%' align='center'><b>".$lic->fields['serial']."</b></td>";
-					echo "<td width='50%' align='center' class='tab_bg_1'><b>";
+					echo "<td><strong>$i</strong></td>";
+					echo "<td width='100%' align='center'><strong>".$lic->fields['serial']."</strong></td>";
+					echo "<td width='50%' align='center' class='tab_bg_1'><strong>";
 					echo $lang["software"][26];
-					echo "</b></td>";
+					echo "</strong></td>";
 					echo "<td>&nbsp;</td>";
 					echo "<td>&nbsp;</td>";
-					echo "<td align='center'><b>";
+					echo "<td align='center'><strong>";
 					echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?back=$back&install=install&cID=$cID&lID=$ID\">";
 					echo $lang["buttons"][4];
-					echo "</a></b></td>";
+					echo "</a></strong></td>";
 					echo "</tr>";	
 				}
 			}	
@@ -884,9 +884,9 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 
 			echo "<br><center><table border='0' width='50%' cellpadding='2' class='tab_cadre'>";
 			echo "<tr><th>".$lang["software"][14]."</th></tr>";
-			echo "<tr><td align='center'><b>";
+			echo "<tr><td align='center'><strong>";
 			echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?back=$back\">";
-			echo $lang["buttons"][13]."</a></b></td></tr>";
+			echo $lang["buttons"][13]."</a></strong></td></tr>";
 			echo "</table></center><br>";
 		}
 	}
@@ -948,11 +948,11 @@ function showSoftwareInstalled($instID) {
 
 		echo "<tr class='tab_bg_1$expirecss'>";
 	
-		echo "<td align='center'><b><a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=".$data['sID']."\">";
+		echo "<td align='center'><strong><a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=".$data['sID']."\">";
 		echo $sw->fields["name"]." (v. ".$sw->fields["version"].")</a>";
-		echo "</b>";
+		echo "</strong>";
 		echo " - ".$data['serial']."</td>";
-		echo "<td align='center'><b>";
+		echo "<td align='center'><strong>";
 		if ($data['expire']==NULL)
 		echo $lang["software"][26];
 		else {
@@ -960,7 +960,7 @@ function showSoftwareInstalled($instID) {
 			else echo $lang["software"][25]."&nbsp;".$data['expire'];
 		}
 
-						echo "</b></td>";
+						echo "</strong></td>";
 		if ($data['serial']!="free"&&$data['serial']!="global"){
 			// OEM
 			if ($data["oem"]=='Y') {
@@ -969,11 +969,11 @@ function showSoftwareInstalled($instID) {
 			}
 			echo "<td align='center' class='tab_bg_1".($data["oem"]=='Y'&&$comp->fields['ID']!=$instID?"_2":"")."'>".($data["oem"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
 			if ($data["oem"]=='Y') {
-			echo "<br><b>";
+			echo "<br><strong>";
 			if (isset($comp->fields['ID']))
 			echo "<a href='".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
 			else echo "N/A";
-			echo "<b>";
+			echo "<strong>";
 			} 
 			echo "</td>";
 		
@@ -984,7 +984,7 @@ function showSoftwareInstalled($instID) {
 		else echo "<td>&nbsp;</td><td>&nbsp;</td>";					
 		echo "<td align='center' class='tab_bg_2'>";
 		echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&ID=$ID&cID=$instID\">";
-		echo "<b>".$lang["buttons"][5]."</b></a>";
+		echo "<strong>".$lang["buttons"][5]."</strong></a>";
 		echo "</td></tr>";
 
 		$i++;		
@@ -1014,10 +1014,10 @@ function countInstallations($sID) {
 		if (isFreeSoftware($sID)) {
 			// Get installed
 			$installed = getInstalledLicence($sID);
-			echo "<center><i>".$lang["software"][39]."</i>&nbsp;&nbsp;".$lang["software"][19].": <b>$installed</b></center>";
+			echo "<center><i>".$lang["software"][39]."</i>&nbsp;&nbsp;".$lang["software"][19].": <strong>$installed</strong></center>";
 		} else if (isGlobalSoftware($sID)){
 			$installed = getInstalledLicence($sID);
-			echo "<center><i>".$lang["software"][38]."</i>&nbsp;&nbsp;".$lang["software"][19].": <b>$installed</b></center>";
+			echo "<center><i>".$lang["software"][38]."</i>&nbsp;&nbsp;".$lang["software"][19].": <strong>$installed</strong></center>";
 			
 		}
 		else {
@@ -1031,7 +1031,7 @@ function countInstallations($sID) {
 
 			// Output
 			echo "<table width='100%' cellpadding='2' cellspacing='0'><tr>";
-			echo "<td width='35%'>".$lang["software"][19].": <b>$installed</b></td>";
+			echo "<td width='35%'>".$lang["software"][19].": <strong>$installed</strong></td>";
 			if ($remaining < 0) {
 				$remaining = "<span class='red'>$remaining";
 				$remaining .= "</span>";
@@ -1042,13 +1042,13 @@ function countInstallations($sID) {
 				$remaining = "<span class='blue'>$remaining";
 				$remaining .= "</span>";
 			}			
-			echo "<td width='20%'>".$lang["software"][20].": <b>$remaining</b></td>";
-			echo "<td width='20%'>".$lang["software"][21].": <b>".$total."</b></td>";
+			echo "<td width='20%'>".$lang["software"][20].": <strong>$remaining</strong></td>";
+			echo "<td width='20%'>".$lang["software"][21].": <strong>".$total."</strong></td>";
 			$tobuy=getLicenceToBuy($sID);
 			if ($tobuy>0){
-			echo "<td width='25%'>".$lang["software"][37].": <b><span class='red'>".$tobuy."</span></b></td>";
+			echo "<td width='25%'>".$lang["software"][37].": <strong><span class='red'>".$tobuy."</span></strong></td>";
 			} else {
-			echo "<td width='25%'>&nbsp;</td>";
+			echo "<td width='20%'>&nbsp;</td>";
 			}
 			echo "</tr></table>";
 		} 
