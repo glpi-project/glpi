@@ -1411,10 +1411,10 @@ if ($dh = opendir($store_path)) {
        }
        closedir($dh);
        echo "</select>";
-   } else echo "Error reading directory $path";
+   } else echo "Error reading directory $store_path";
 
 
-} else echo "Error $path is not a directory";
+} else echo "Error $store_path is not a directory";
 
 
 }
