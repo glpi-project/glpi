@@ -1,128 +1,155 @@
-<!-- Sample Helpdesk Frontend -->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 
-<html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1 " />
+
     <title>Helpdesk</title>
-    <meta http-equiv="Content-Type"
-          content="text/html; charset=iso-8859-1">
-   
+    <meta http-equiv="Content-Type"    content="text/html; charset=iso-8859-1" />
+ <!-- Sample Helpdesk Frontend -->  
+<style type="text/css">
+<!--
+/*  ... ici sont d&eacute;finis les formats ... */
+	
+body {
+
+font-size : 12px;
+ background-color : #FFFFFF;
+color : #000000;
+font-family: Verdana,Arial,Helvetica,sans-serif;
+}
+
+  
+#contenuform {
+
+height: 100%;
+position: relative; 
+left: 35%;
+width: 600px;
+margin-left: -150px;
+}
+
+#contenuform legend {
+
+font-weight: bold;
+
+}
+
+#contenuform fieldset {
+background-color: #eeeeee;
+border: 2px solid #FFC65D;
+-moz-border-radius: 8px;
+padding-bottom:10px;
+width: 600px;
+
+}	
+
+#contenuform textarea {
+
+width:550px;
+
+}
+
+-->	  
+ </style> 
+	  
 </head>
 
 <body>
     <!-- Edit the next line to fit your installation -->
 
-    <form method="post"
-          name="helpdeskform"
-          action="tracking/tracking-injector.php">
-	  <input type="hidden" name="type" value="Helpdesk" />
-        <div align="center">
-            <br>
+    
+    
+<div id="contenuform">
 
-            <table border='0'
-                   cellspacing="1">
-                <tr>
-                    <th bgcolor="#D2F2D5"
-                        colspan="2">Formulaire de signalement au
-                        support technique</th>
-                </tr>
+<form method="post"  name="helpdeskform"      action="tracking/tracking-injector.php">
+	
+	<input type="hidden" name="type" value="Helpdesk" />
 
-                <tr>
-                    <td bgcolor="#CCCCCC"
-                        width="215">Le problème doit être résolu
-                        :</td>
+		<h2 align='center'>Formulaire de signalement au
+			support technique</h2>
+	
+	<fieldset>
+		<legend> Le problème doit être résolu</legend>
+		
+	Sélectionnez un niveau de priorité :
+		<select name="priority">
+			<option value="5">
+			Hier
+			</option>
 
-                    <td bgcolor="#CCCCCC"
-                        width="183"><select name="priority">
-                        <option value="5">
-                            Hier
-                        </option>
+			<option value="4">
+			Tres vite
+			</option>
 
-                        <option value="4">
-                            Tres vite
-                        </option>
+			<option value="3"
+				selected='selected'>
+			Dans la journée
+			</option>
 
-                        <option value="3"
-                                selected>
-                            Dans la journée
-                        </option>
+			<option value="2">
+			La semaine prochaine
+			</option>
 
-                        <option value="2">
-                            La semaine prochaine
-                        </option>
+			<option value="1">
+			Si vous avez le temps
+			</option>
+		</select>
+	</fieldset>
 
-                        <option value="1">
-                            Si vous avez le temps
-                        </option>
-                    </select></td>
-                </tr>
+	<fieldset>
+	<legend>Mon numéro de machine&nbsp;</legend>
 
-                <tr>
-                    <td bgcolor="#CCCCCC">Mon numéro de
-                    machine:&nbsp;<a href="#"
-                       onclick=
-                       "window.open('find_num.php?name=Helpdesk','help','width=400,height=400,scrollbars=1,resizable=1')">
-                    <img src="./pics/aide.png"
-                         border='0'
-                         alt="help"></a></td>
+		Saisissez le numéro de votre machine ou cliquez sur &nbsp; <a href="#"
+		onclick=
+		"window.open('find_num.php?name=Helpdesk','help','width=400,height=400,scrollbars=1,resizable=1')">
+		<img src="./pics/aide.png"     border='0'   alt="help" title='help' /></a>&nbsp;&nbsp;
+		<input name="computer"   size="10" />
+	
+	</fieldset>
+	
+	<fieldset>	
+	<legend>Type matériel :</legend>
+			
 
-                    <td bgcolor="#CCCCCC"><input name="computer"
-                           size="10"></td>
-                </tr>
-                <tr>
-                    <td bgcolor="#CCCCCC"
-                        width="215">Type matériel
-                        :</td>
+	Sélectionnez le type de matériel concerné :
+		
+		<select name="device_type">
+			<option value="1" selected='selected'>
+			Ordinateur
+			</option>
 
-                    <td bgcolor="#CCCCCC"
-                        width="183"><select name="device_type">
-                        <option value="1" selected>
-                            Ordinateur
-                        </option>
+			<option value="2">
+			Matériel Réseau
+			</option>
 
-                        <option value="2">
-                            Matériel Réseau
-                        </option>
+			<option value="3">
+			Imprimante
+			</option>
 
-                        <option value="3">
-                            Imprimante
-                        </option>
+			<option value="4">
+			Moniteur
+			</option>
 
-                        <option value="4">
-                            Moniteur
-                        </option>
+			<option value="5">
+			Périphérique
+			</option>
+		</select>
+	</fieldset>
+		
+		
+	<fieldset><legend>Décrivez votre 	problème</legend>
+	
+	
+		<textarea name="contents"
+			cols="60"
+			rows="20">
+			</textarea>
 
-                        <option value="5">
-                            Périphérique
-                        </option>
-                    </select></td>
-                </tr>
+	</fieldset>
+		
+		<p align='center'><input type="submit"	value="Envoyer" /></p>
 
-                <tr>
-                    <td bgcolor="#CCCCCC"
-                        colspan="2"
-                        align='center'>Décrivez votre
-                        problème:</td>
-                </tr>
-
-                <tr>
-                    <td colspan="2"
-                        bgcolor="#CCCCCC">
-                    <textarea name="contents"
-                              cols="60"
-                              rows="20">
-</textarea></td>
-                </tr>
-
-                <tr>
-                    <td bgcolor="#CCCCCC"
-                        colspan="2"
-                        align='center'><input type="submit"
-                           value="Envoyer"></td>
-                </tr>
-            </table>
-        </div>
-    </form>
+</form> </div>
 </body>
 </html>
