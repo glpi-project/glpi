@@ -750,7 +750,7 @@ function showSoftwareInstalled($instID) {
 
 		$i++;		
 	}
-	echo "<tr class='tab_bg_1'><td align='center'>";
+	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 	echo "<input type='hidden' name='cID' value='$instID'>";
 		dropdownSoftware();
 	echo "</td><td align='center' class='tab_bg_2'>";
