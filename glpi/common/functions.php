@@ -303,7 +303,10 @@ $inventory = 	array($lang["Menu"][0]=>array("/computers/index.php","1"),
 	              $lang["Menu"][2]=>array("/printers/index.php","3"),
 	              $lang["Menu"][3]=>array("/monitors/index.php","4"),
 	              $lang["Menu"][4]=>array("/software/index.php","5"),
-		      $lang["Menu"][16]=>array("/peripherals/index.php","6"));
+		      $lang["Menu"][16]=>array("/peripherals/index.php","6"),
+		      $lang["Menu"][21]=>array("/cartridges/index.php","7"),
+		      "&nbsp;"=>array("/central.php","8"),
+		      );
 
 $maintain =	array($lang["Menu"][5]=>array("/tracking/index.php","6"),
 	              $lang["Menu"][6]=>array("/reports/index.php"," "),
@@ -1293,40 +1296,6 @@ function listConnectElement($target,$input) {
 	
 	echo "</td></form></tr></table>";	
 
-}
-
-function dropdownPriority($name,$value=0){
-	global $lang;
-	
-	echo "<select name='$name'>";
-	echo "<option value='5' ".($value==5?" selected ":"").">".$lang["help"][3]."";
-	echo "<option value='4' ".($value==4?" selected ":"").">".$lang["help"][4]."";
-	echo "<option value='3' ".($value==3?" selected ":"").">".$lang["help"][5]."";
-	echo "<option value='2' ".($value==2?" selected ":"").">".$lang["help"][6]."";
-	echo "<option value='1' ".($value==1?" selected ":"").">".$lang["help"][7]."";
-	echo "</select>";	
-}
-
-function getPriorityName($value){
-	global $lang;
-	
-	switch ($value){
-	case 5 :
-		return $lang["help"][3];
-		break;
-	case 4 :
-		return $lang["help"][4];
-		break;
-	case 3 :
-		return $lang["help"][5];
-		break;
-	case 2 :
-		return $lang["help"][6];
-		break;
-	case 1 :
-		return $lang["help"][7];
-		break;
-	}	
 }
 
 function printHelpDesk ($name,$from_helpdesk) {

@@ -437,11 +437,11 @@ function showLicenses ($sID) {
 	
 	$db = new DB;
 
-	$query = "SELECT count(ID) AS COUNT  FROM glpi_licenses WHERE (sID = $sID)";
-	$query_update = "SELECT count(glpi_licenses.ID) AS COUNT  FROM glpi_licenses, glpi_software WHERE (glpi_software.ID = glpi_licenses.sID AND glpi_software.update_software = $sID and glpi_software.is_update='Y')";
+	$query = "SELECT count(ID) AS COUNT  FROM glpi_licenses WHERE (sID = '$sID')";
+	$query_update = "SELECT count(glpi_licenses.ID) AS COUNT  FROM glpi_licenses, glpi_software WHERE (glpi_software.ID = glpi_licenses.sID AND glpi_software.update_software = '$sID' and glpi_software.is_update='Y')";
 	
 	if ($result = $db->query($query)) {
-		if ($db->numrows($result)!=0) { 
+		if ($db->result($result,0,0)!=0) { 
 			$nb_licences=$db->result($result, 0, "COUNT");
 			$result_update = $db->query($query_update);
 			$nb_updates=$db->result($result_update, 0, "COUNT");;
@@ -467,7 +467,7 @@ function showLicenses ($sID) {
 		}
 	}
 
-$query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as OEM, oem_computer as OEM_COMPUTER, buy as BUY  FROM glpi_licenses WHERE (sID = $sID) GROUP BY serial, expire, oem, oem_computer, buy ORDER BY serial,oem, oem_computer";
+$query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as OEM, oem_computer as OEM_COMPUTER, buy as BUY  FROM glpi_licenses WHERE (sID = '$sID') GROUP BY serial, expire, oem, oem_computer, buy ORDER BY serial,oem, oem_computer";
 //echo $query;
 	if ($result = $db->query($query)) {			
 	while ($data=$db->fetch_array($result)) {
@@ -1053,7 +1053,7 @@ function countInstallations($sID) {
 			echo "</tr></table>";
 		} 
 	} else {
-			echo "<center><i>no licenses</i></center>";
+			echo "<center><i>".$lang["software"][40]."</i></center>";
 	}
 }	
 
