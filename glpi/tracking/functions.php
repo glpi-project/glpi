@@ -461,7 +461,7 @@ function showJobShort($ID, $followups	) {
 		echo "<td  align='center'><b>$job->computername($job->computer)</b></td>";
 		
 		$stripped_content=$job->contents;
-		if (!$followups) $stripped_content = substr($job->contents,0,$cfg_features["cut"]);
+		if (!$followups) $stripped_content = htmlentities_deep(substr(unhtmlentities_deep($job->contents),0,$cfg_features["cut"]));
 		echo "<td><b>$stripped_content</b>";
 		if ($followups)
 		{
