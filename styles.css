@@ -78,7 +78,10 @@ text-align:center;
  
  form  {font-size: 12px;
   margin:0;
-  padding:0;  }
+margin-bottom:10px;
+  padding:0; 
+   
+   }
 
  option {border:1px solid #ccc;
         background-color:#ffffff;}
