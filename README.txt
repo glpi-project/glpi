@@ -167,7 +167,138 @@ in order to connect to GLPI when the external authentification sources are down.
 --- FRESH INSTALLATION
 *************************************************************************************************************
 
+The installation of GLPI is quite easy. Since the v0.4, there is no more file you should edit by hand.
+
+The procedure is as follows:
+
+1. Get the tarball of GLPI on our server. Unpack it on your computer. 
+You obtain a directory called glpi containing the whole files of GLPI.
+
+2. Copy this directory onto your server.
+
+3. Using your browser, get the root of GLPI. You can now configure GLPI using an graphic interface.
+After this step, you can use GLPI and begin to work.
 
 
+------ Detailled procedure
+
+--- Requirements
+
+You should have a space on a web server with :
+-  an access to the web server in order to install the files (FTP, SSH, etc) ;
+-  PHP4 or later with the support of the sessions ;
+-  an access to a MySQL database.
 
 
+Before the installation, you must have a MySQL database available. If you are not the administrator 
+of the server, it is necessary to ask for the activation of a MySQL base to the administrator. 
+
+You must know the data of your MySQL connection (provided by the administrator): 
+-  the host address of the MySQL server ;
+-  your MySQL login ;
+-  your MySQL password ;
+-  the name of the database
+
+--- Getting GLPI
+
+GLPI is available in the website :
+-  http://glpi.indepnet.org in the "téléchargement" section.
+
+Choose the version you want to install. Unpack the tarball in your personnal computer.
+Upload the obtained directory into your web server.
+
+If your are the administrator of the server unpack the tarball in the root apache directory 
+(/var/www or /var/www/html).
+
+--- Install the files
+
+Install the whole files of GLPI in your web space, where you want that GLPI is accessible to the public.
+
+Now, it is necessary to modify permissions to some directories in order that PHP can write in:
+/backups/dump and /glpi/config
+
+--- Begin of the installation
+
+
+From now, all is held online. To begin the installation you must to use your browser to get the root of GLPI:
+default is  http://yourserver/glpi/
+
+
+During the first connection, a step by step installation starts. 
+The interface is user friendly, you must just enter the required informations. 
+
+--- Preliminary steps:
+
+A- Choose your favorite language.
+
+Just choose your favorite langage and click to « OK »
+
+B- Install or Update.
+
+You want to do a fresh install, so click on  « Install ».
+
+C- Compatibility checks to use GLPI
+
+This step verifies that all requirements are ojk for the installtion of GLPI.
+If something is wrong, you cannot continur the installtion. An error message will appear that explain you 
+what to do to correct the problem.
+
+If all is ok, you can click on « continue ».
+
+--- Installation steps
+
+Step 1 : Configuration of the access to the database server.
+
+You must enter in a form all the informations needed to connect to MySQL.
+
+« Mysql server » is the hostname where is your database server. For example: localhost or mysql.domain.tld
+
+« Mysql user » is the username you use to connect to the server.
+
+« Mysql pass » is the password of the username
+This field can be empty if your user have no password (No comment will be done here on the security 
+of such a user).
+
+Then, you must to click on « continue ».
+
+Two cases now:
+
+-  Your parameters are rights. So, you access to the next step.
+-  Your parameters are wrongs. So, an error message is displayed, you must to click on back to modify
+your parameters and retry.
+
+Step 2 : Choose or create the database.
+
+The access to the database is ok. You mustr to create or choose the database that GLPI will use.
+
+Two possibilities:
+
+-  You want to use an existing database to store the GLPI tables:
+
+Select this database and click on continue to initialize this database.
+
+-  You want to create a new database to store the GLPI tables:
+
+For this case, you must to have the rights to create a new database on the server.
+
+Select « create a new database ». Enter the name of the database that you want to create in the text field.
+Click on continue in order to initialize the database.
+
+Step 3 : Temporary step and explanations :
+
+This stage informs you that the database is initialized with the default values. 
+Some informations are given to you on these values. Read this information attentively and click on « continue ». 
+
+Step 4 : This stage indicates that the installation of GLPI is now finished, a summary is displayed.
+Read these informations attentively and click on "use GLPI" to carry out your first connection 
+with the application. 
+
+--- End of the installation
+
+In case of error (of the kind: you forgot your own access to GLPI...), to start again this procedure of 
+installation, it is necessary to use your software ftp (for example) and to erase the following file: 
+-  glpi/config/config_db.php
+
+Use your browser to get the root of GLPI: http://yourserver/glpi/ (by default) to start again 
+the procedure of configuration then (actually, it is the absence of file "config_db.php" which causes 
+the launching of this procedure). 
