@@ -56,10 +56,12 @@ function checkAuthentication($authtype) {
 	// control-page to set a minium security level.
 	session_start();
 	
+	GLOBAL $cfg_install;
+
 	if(!($_SESSION["authorisation"]))
 	{
 		nullHeader("Login",$_SERVER["PHP_SELF"]);
-		echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">Relogin</a></b></center>";
+		echo "<div align='center'><b><a href=\"".$cfg_install["root"]."/logout.php\">Relogin</a></b></div>";
 		nullFooter();
 		die();	
 	}
