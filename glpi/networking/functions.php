@@ -572,7 +572,7 @@ function showConnectorSearch($target,$ID) {
 	echo "<form method='post' action=\"$target\">";
 	echo "<td>".$lang["networking"][31].":";
 	$db = new DB;
-	$query = "SELECT ID,name,location from glpi_networking";
+	$query = "SELECT glpi_networking.ID AS ID, glpi_networking.name AS name, glpi_dropdown_locations.name as location from glpi_networking,glpi_dropdown_locations WHERE glpi_networking.location = glpi_dropdown_locations.id";
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 	echo "<select name=dID>";
