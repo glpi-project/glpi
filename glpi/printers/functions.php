@@ -249,7 +249,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 function showPrintersForm ($target,$ID) {
 
-	GLOBAL $cfg_install, $cfg_layout, $lang;
+	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel;
 
 	$printer = new Printer;
 
@@ -345,13 +345,13 @@ function showPrintersForm ($target,$ID) {
 		echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
 	    echo "<tr><td>".$lang["printers"][20].":	</td>";
 		echo "<td><input type='text' name='achat_date' readonly size='10' value='".$printer->fields["achat_date"]."'>";
-		echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('mycalendar.php?form=form&elem=achat_date','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+		echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&elem=achat_date&value=".$printer->fields["achat_date"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].achat_date.value='0000-00-00'\" value='reset'>";
     echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["printers"][21].":	</td>";
 		echo "<td><input type='text' name='date_fin_garantie' readonly size='10' value='".$printer->fields["date_fin_garantie"]."'>";
-		echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('mycalendar.php?form=form&elem=date_fin_garantie','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+		echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&elem=date_fin_garantie&value=".$printer->fields["date_fin_garantie"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date_fin_garantie.value='0000-00-00'\" value='reset'>";
     echo "</td></tr>";
 		
