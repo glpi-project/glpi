@@ -303,7 +303,7 @@ function showCartridgeTypeForm ($target,$ID) {
 		showCompatiblePrinters($ID);
 		showCartridges($ID);
 		showCartridgesAdd($ID);
-		
+		showCartridges($ID,1);
 	}
 
 }
@@ -374,7 +374,7 @@ function showCartridgesAdd($ID) {
 	echo "</table></div><br>";
 }
 
-function showCartridges ($tID) {
+function showCartridges ($tID,$show_old=0) {
 
 	GLOBAL $cfg_layout, $cfg_install,$lang,$HTMLRel;
 	
@@ -390,11 +390,21 @@ function showCartridges ($tID) {
 			$old=getOldCartridgesNumber($tID);
 
 			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre' width='90%'>";
+			if ($show_old==0){
 			echo "<tr><th colspan='6'>";
 			echo $total;
 			echo "&nbsp;".$lang["cartridges"][16]."&nbsp;-&nbsp;$unused&nbsp;".$lang["cartridges"][13]."&nbsp;-&nbsp;$used&nbsp;".$lang["cartridges"][14]."&nbsp;-&nbsp;$old&nbsp;".$lang["cartridges"][15]."</th>";
 			echo "<th colspan='1'>";
 			echo "&nbsp;</th></tr>";
+			}
+			else { // Old
+			echo "<tr><th colspan='6'>";
+			echo $lang["cartridges"][35];
+			echo "</th>";
+			echo "<th colspan='1'>";
+			echo "&nbsp;</th></tr>";
+				
+			}
 			$i=0;
 			echo "<tr><th>".$lang["cartridges"][4]."</th><th>".$lang["cartridges"][23]."</th><th>".$lang["cartridges"][24]."</th><th>".$lang["cartridges"][25]."</th><th>".$lang["cartridges"][27]."</th><th>".$lang["cartridges"][26]."</th><th>&nbsp;</th></tr>";
 				} else {
@@ -405,7 +415,13 @@ function showCartridges ($tID) {
 		}
 	}
 
-$query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID') ORDER BY date_out ASC, date_use DESC, date_in";
+if ($show_old==0){ // NEW
+$where= " AND date_out IS NULL";
+} else { //OLD
+$where= " AND date_out IS NOT NULL";
+}
+
+$query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID') $where ORDER BY date_out ASC, date_use DESC, date_in";
 //echo $query;
 	if ($result = $db->query($query)) {			
 	while ($data=$db->fetch_array($result)) {
