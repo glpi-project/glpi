@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-02-17 21:41
+#GLPI Dump database on 2005-02-19 14:26
 ### Dump table glpi_cartridges
 
 DROP TABLE IF EXISTS glpi_cartridges;
@@ -69,7 +69,7 @@ INSERT INTO glpi_computer_device VALUES ('5','','8','4','15');
 INSERT INTO glpi_computer_device VALUES ('6','','8','4','18');
 INSERT INTO glpi_computer_device VALUES ('7','','8','4','20');
 INSERT INTO glpi_computer_device VALUES ('8','20','4','1','10');
-INSERT INTO glpi_computer_device VALUES ('9','200','4','1','15');
+INSERT INTO glpi_computer_device VALUES ('9','20','4','1','15');
 INSERT INTO glpi_computer_device VALUES ('10','20','4','1','18');
 INSERT INTO glpi_computer_device VALUES ('11','6','4','1','20');
 INSERT INTO glpi_computer_device VALUES ('12','10','4','2','8');
@@ -110,7 +110,6 @@ INSERT INTO glpi_computer_device VALUES ('46','','9','3','15');
 INSERT INTO glpi_computer_device VALUES ('47','','9','3','18');
 INSERT INTO glpi_computer_device VALUES ('48','','9','3','20');
 INSERT INTO glpi_computer_device VALUES ('49','','9','3','21');
-INSERT INTO glpi_computer_device VALUES ('50','','4','2','15');
 ### Dump table glpi_computers
 
 DROP TABLE IF EXISTS glpi_computers;
@@ -236,7 +235,21 @@ CREATE TABLE glpi_connect_wire (
    KEY type (type)
 );
 
-### Dump table glpi_contact
+### Dump table glpi_contact_enterprise
+
+DROP TABLE IF EXISTS glpi_contact_enterprise;
+CREATE TABLE glpi_contact_enterprise (
+    ID int(11) NOT NULL auto_increment,
+    FK_enterprise int(11) DEFAULT '0' NOT NULL,
+    FK_contact int(11) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (ID),
+   UNIQUE FK_enterprise (FK_enterprise, FK_contact),
+   KEY FK_enterprise_2 (FK_enterprise),
+   KEY FK_contact (FK_contact)
+);
+
+INSERT INTO glpi_contact_enterprise VALUES ('1','1','1');
+### Dump table glpi_contacts
 
 DROP TABLE IF EXISTS glpi_contacts;
 CREATE TABLE glpi_contacts (
@@ -248,20 +261,39 @@ CREATE TABLE glpi_contacts (
     email varchar(255) NOT NULL,
     type tinyint(4) DEFAULT '1' NOT NULL,
     comments text NOT NULL,
+    deleted enum('Y','N') DEFAULT 'N' NOT NULL,
    PRIMARY KEY (ID)
 );
 
-### Dump table glpi_contact_enterprise
+INSERT INTO glpi_contacts VALUES ('1','TEST','','','','','2','','N');
+### Dump table glpi_contract_device
 
-DROP TABLE IF EXISTS glpi_contact_enterprise;
-CREATE TABLE glpi_contact_enterprise (
+DROP TABLE IF EXISTS glpi_contract_device;
+CREATE TABLE glpi_contract_device (
+    ID int(11) NOT NULL auto_increment,
+    FK_contract int(11) DEFAULT '0' NOT NULL,
+    FK_device int(11) DEFAULT '0' NOT NULL,
+    device_type tinyint(4) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (ID),
+   UNIQUE FK_contract (FK_contract, FK_device, device_type),
+   KEY FK_contract_2 (FK_contract),
+   KEY FK_device (FK_device, device_type)
+);
+
+### Dump table glpi_contract_enterprise
+
+DROP TABLE IF EXISTS glpi_contract_enterprise;
+CREATE TABLE glpi_contract_enterprise (
     ID int(11) NOT NULL auto_increment,
     FK_enterprise int(11) DEFAULT '0' NOT NULL,
-    FK_contact int(11) DEFAULT '0' NOT NULL,
-   PRIMARY KEY (ID)
+    FK_contract int(11) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (ID),
+   UNIQUE FK_enterprise (FK_enterprise, FK_contract),
+   KEY FK_enterprise_2 (FK_enterprise),
+   KEY FK_contract (FK_contract)
 );
 
-### Dump table glpi_contract
+### Dump table glpi_contracts
 
 DROP TABLE IF EXISTS glpi_contracts;
 CREATE TABLE glpi_contracts (
@@ -278,38 +310,13 @@ CREATE TABLE glpi_contracts (
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
     week_begin_hour time DEFAULT '00:00:00' NOT NULL,
     week_end_hour time DEFAULT '00:00:00' NOT NULL,
-    satruday_begin_hour time DEFAULT '00:00:00' NOT NULL,
-    satruday_end_hour time DEFAULT '00:00:00' NOT NULL,
+    saturday_begin_hour time DEFAULT '00:00:00' NOT NULL,
+    saturday_end_hour time DEFAULT '00:00:00' NOT NULL,
     monday_begin_hour time DEFAULT '00:00:00' NOT NULL,
     monday_end_hour time DEFAULT '00:00:00' NOT NULL,
    PRIMARY KEY (ID),
    KEY contract_type (contract_type),
    KEY begin_date (begin_date)
-);
-
-### Dump table glpi_contract_device
-
-DROP TABLE IF EXISTS glpi_contract_device;
-CREATE TABLE glpi_contract_device (
-    ID int(11) NOT NULL auto_increment,
-    FK_contract int(11) DEFAULT '0' NOT NULL,
-    FK_device int(11) DEFAULT '0' NOT NULL,
-    device_type tinyint(4) DEFAULT '0' NOT NULL,
-   PRIMARY KEY (ID),
-   KEY FK_contract (FK_contract),
-   KEY FK_device (FK_device, device_type)
-);
-
-### Dump table glpi_contract_enterprise
-
-DROP TABLE IF EXISTS glpi_contract_enterprise;
-CREATE TABLE glpi_contract_enterprise (
-    ID int(11) NOT NULL auto_increment,
-    FK_enterprise int(11) DEFAULT '0' NOT NULL,
-    FK_contract int(11) DEFAULT '0' NOT NULL,
-   PRIMARY KEY (ID),
-   KEY FK_enterprise (FK_enterprise),
-   KEY FK_contract (FK_contract)
 );
 
 ### Dump table glpi_device_gfxcard
@@ -527,10 +534,6 @@ CREATE TABLE glpi_dropdown_kbcategories (
    KEY parentID (parentID)
 );
 
-INSERT INTO glpi_dropdown_kbcategories VALUES ('1','0','Ordinateur');
-INSERT INTO glpi_dropdown_kbcategories VALUES ('2','0','Imprimante');
-INSERT INTO glpi_dropdown_kbcategories VALUES ('3','2','Papier');
-INSERT INTO glpi_dropdown_kbcategories VALUES ('4','2','Toner');
 ### Dump table glpi_dropdown_locations
 
 DROP TABLE IF EXISTS glpi_dropdown_locations;
@@ -683,19 +686,21 @@ CREATE TABLE glpi_dropdown_tracking_category (
    PRIMARY KEY (ID)
 );
 
-### Dump table glpi_enterprise
+### Dump table glpi_enterprises
 
 DROP TABLE IF EXISTS glpi_enterprises;
 CREATE TABLE glpi_enterprises (
     ID int(11) NOT NULL auto_increment,
     name varchar(50) NOT NULL,
-    address varchar(200) NOT NULL,
+    address text NOT NULL,
     website varchar(100) NOT NULL,
     phonenumber varchar(20) NOT NULL,
     comments text NOT NULL,
+    deleted enum('Y','N') DEFAULT 'N' NOT NULL,
    PRIMARY KEY (ID)
 );
 
+INSERT INTO glpi_enterprises VALUES ('1','TEST','ci','','','','N');
 ### Dump table glpi_event_log
 
 DROP TABLE IF EXISTS glpi_event_log;
@@ -712,9 +717,12 @@ CREATE TABLE glpi_event_log (
    KEY date (date)
 );
 
-INSERT INTO glpi_event_log VALUES ('368','9','computers','2005-02-17 21:35:45','inventory','4','glpi modified a computer device spécificity.');
-INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-02-17 21:13:48','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-02-17 21:13:11','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('369','0','enterprise','2005-02-19 14:24:29','financial','4','glpi added item TEST.');
+INSERT INTO glpi_event_log VALUES ('368','0','Contacts','2005-02-19 14:24:20','financial','4','glpi added TEST.');
+INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-02-19 14:24:13','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-02-19 14:23:58','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('370','1','enterprise','2005-02-19 14:24:37','financial','4','glpi associate type.');
+INSERT INTO glpi_event_log VALUES ('371','1','enterprise','2005-02-19 14:25:30','financial','4','glpi associate type.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -735,7 +743,21 @@ INSERT INTO glpi_followups VALUES ('3','1','2003-09-18 00:54:40','tech','Problem
 Le reste fonctionne tres bien.');
 INSERT INTO glpi_followups VALUES ('4','3','2003-09-18 00:55:08','tech','Je pense que l\'on peux changer la souris.');
 INSERT INTO glpi_followups VALUES ('5','2','2003-09-18 00:55:52','tech','Je suis passé, il faudra faire une restauration de windows NT4.');
-### Dump table glpi_infocom
+### Dump table glpi_infocom_device
+
+DROP TABLE IF EXISTS glpi_infocom_device;
+CREATE TABLE glpi_infocom_device (
+    ID int(11) NOT NULL auto_increment,
+    FK_infocom int(11) DEFAULT '0' NOT NULL,
+    FK_device int(11) DEFAULT '0' NOT NULL,
+    device_type tinyint(4) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (ID),
+   UNIQUE FK_infocom (FK_infocom, FK_device, device_type),
+   KEY FK_infocom_2 (FK_infocom),
+   KEY FK_device (FK_device, device_type)
+);
+
+### Dump table glpi_infocoms
 
 DROP TABLE IF EXISTS glpi_infocoms;
 CREATE TABLE glpi_infocoms (
@@ -755,18 +777,6 @@ CREATE TABLE glpi_infocoms (
    PRIMARY KEY (ID),
    KEY FK_enterprise (FK_enterprise),
    KEY buy_date (buy_date)
-);
-
-### Dump table glpi_infocom_device
-
-DROP TABLE IF EXISTS glpi_infocom_device;
-CREATE TABLE glpi_infocom_device (
-    ID int(11) NOT NULL auto_increment,
-    FK_infocom int(11) DEFAULT '0' NOT NULL,
-    FK_device int(11) DEFAULT '0' NOT NULL,
-    device_type tinyint(4) DEFAULT '0' NOT NULL,
-   PRIMARY KEY (ID),
-   KEY FK_infocom (FK_infocom)
 );
 
 ### Dump table glpi_inst_software
@@ -798,19 +808,6 @@ CREATE TABLE glpi_kbitems (
    KEY categoryID (categoryID)
 );
 
-INSERT INTO glpi_kbitems VALUES ('1','3','Quel type de papier pour l\'Epson Stylus Color 460 ?','Du papier 90g,100g et 110 g.','no');
-INSERT INTO glpi_kbitems VALUES ('2','2','Peut-on  utiliser l\' imprimante EPSON Stylus si la cartouche couleur est vide ?','Non. Les imprimantes EPSON Stylus nécessitent que les deux cartouches (noire et couleur) soient installées.','yes');
-INSERT INTO glpi_kbitems VALUES ('3','1','Peut on utiliser des codes pour mettre en forme le texte ?','Oui : voir dans  l\'aide en ligne
-Quelques exemples :
-[b]Texte gras[/b]
-[u]Texte souligné[/u]
-[i]Texte italique[/i]
-[color=#FF0000]Texte rouge[/color]
-http://glpi.indepnet.org
-[email]myname@mydomain.com[/email]
-[email=myname@mydomain.com]Mon
-adresse e-mail[/email]
-[code]Voici un bout de code.[/code]','no');
 ### Dump table glpi_licenses
 
 DROP TABLE IF EXISTS glpi_licenses;

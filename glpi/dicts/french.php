@@ -993,7 +993,6 @@ $lang["title"][18] = "Ecrans";
 $lang["title"][19] = "Cartouches";
 $lang["title"][20] = "Contrats";
 $lang["title"][21] = "Infos Commerciales";
-$lang["title"][21] = "Infos Commerciales";
 $lang["title"][22] = "Contacts";
 $lang["title"][23] = "Entreprises";
 
@@ -1107,7 +1106,7 @@ $lang["financial"][21] = "Valeur";
 $lang["financial"][22] = "Type d'amortissement";
 $lang["financial"][23] = "Durée d'amortissement";
 $lang["financial"][24] = "Ajouter Contact...";
-$lang["financial"][25] = "Ajouter Entrepise...";
+$lang["financial"][25] = "Ajouter Entreprise...";
 $lang["financial"][26] = "Entreprise";
 $lang["financial"][27] = "Nom";
 $lang["financial"][28] = "ID";
@@ -1126,7 +1125,12 @@ $lang["financial"][40] = "Pas de contrat trouvé";
 $lang["financial"][41] = "Pas d'Information Commerciale trouvée";
 $lang["financial"][42] = "Commercial";
 $lang["financial"][43] = "Technicien";
-$lang["financial"][44] = "";
-$lang["financial"][45] = "";
+$lang["financial"][44] = "Adresse";
+$lang["financial"][45] = "Site Web";
+$lang["financial"][46] = "Contacts associés";
+$lang["financial"][47] = "";
+$lang["financial"][48] = "";
+$lang["financial"][49] = "";
+$lang["financial"][50] = "";
 
 ?>

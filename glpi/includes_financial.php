@@ -34,5 +34,7 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/contacts/classes.php");
 include ($phproot . "/glpi/contacts/functions.php");
+include ($phproot . "/glpi/enterprises/classes.php");
+include ($phproot . "/glpi/enterprises/functions.php");
 
 ?>
