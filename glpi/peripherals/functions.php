@@ -43,7 +43,7 @@ include ("_relpos.php");
 function titleperipherals(){
                 GLOBAL  $lang,$HTMLRel;
                 echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/ecran.png\" alt='".$lang["peripherals"][0]."' title='".$lang["peripherals"][0]."'></td><td><a  class='icon_consol' href=\"peripherals-info-form.php?new=1\"><b>".$lang["peripherals"][0]."</b></a>";
+                echo "<img src=\"".$HTMLRel."pics/periphs.png\" alt='".$lang["peripherals"][0]."' title='".$lang["peripherals"][0]."'></td><td><a  class='icon_consol' href=\"peripherals-info-form.php?new=1\"><b>".$lang["peripherals"][0]."</b></a>";
                 echo "</td></tr></table></div>";
 }
 
