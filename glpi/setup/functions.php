@@ -445,7 +445,12 @@ function showUserform($target,$name) {
 	GLOBAL $cfg_layout, $lang;
 	
 	$user = new User();
-	
+	if($name == 'Helpdesk') {
+		echo "<div align='center'>";
+		echo "Les modifications sur l'utilisateur Helpdesk sont impossibles";
+		echo "</div>";
+		return 0;
+	}
 	if(empty($name)) {
 	// Partie ajout d'un user
 	// il manque un getEmpty pour les users	
