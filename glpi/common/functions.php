@@ -2679,7 +2679,7 @@ return (@$name);
 */
 function getRealSearchForTreeItem($table,$search){
 
-if (empty($search)) return " ( $table.name LIKE '%$search%') ";
+if (empty($search)) return " ( $table.name LIKE '%$search%' ) ";
 
 $db=new DB();
 

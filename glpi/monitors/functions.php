@@ -167,23 +167,30 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			$coco = mysql_field_name($fields, $i);
 
 			if($coco == "location") {
-				$where .= " glpi_dropdown_locations.name LIKE '%".$contains."%'";
+				$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains);
 			}
 			elseif($coco == "type") {
 				$where .= " glpi_type_monitors.name LIKE '%".$contains."%'";
 			}
+			elseif($coco == "FK_glpi_enterprise") {
+				$where .= "glpi_enterprises.name LIKE '%".$contains."%'";
+			}
+			else if ($coco=="tech_num"){
+				$where .= " resptech.name LIKE '%".$contains."%'";
+			} 
 			else {
    				$where .= "mon.".$coco . " LIKE '%".$contains."%'";
 			}
 		}
 		
-		$where.=" OR glpi_enterprises.name LIKE '%".$contains."%'";
-		$where .= " OR resptech.name LIKE '%".$contains."%'";
-		
 		$where .= ")";
 	}
 	else {
-		if ($phrasetype == "contains") {
+
+		if ($field=="glpi_dropdown_locations.name"){
+			$where = getRealSearchForTreeItem("glpi_dropdown_locations",$contains);
+		}		
+		else if ($phrasetype == "contains") {
 			$where = "($field LIKE '%".$contains."%')";
 		}
 		else {
