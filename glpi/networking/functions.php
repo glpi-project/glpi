@@ -227,7 +227,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			
 			// Last modified		
 			echo "<th>";
-			if ($sort=="networking.date_mod") {
+			if ($sort=="glpi_networking.date_mod") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_networking.date_mod&order=DESC&start=$start\">";
