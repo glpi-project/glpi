@@ -38,6 +38,8 @@ This file is part of GLPI.
 // Web:    http://www.phpinfo.net/                                           //
 // ------------------------------------------------------------------------- //
 
+*/
+
 include ("_relpos.php");
 
 include ($phproot . "/glpi/includes.php");
