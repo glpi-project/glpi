@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
 	listUsersForm($_SERVER["PHP_SELF"]);
 	if (can_assign_job($_SESSION["glpiname"]))
 	{
-		 echo "<center><strong><a href='setup-assign-job.php'>".$lang["setup"][59]."</a></strong></center>";
+		 echo "<div align='center'><strong><a href='setup-assign-job.php'>".$lang["setup"][59]."</a></strong></div>";
 	}
 	commonFooter();
 }
