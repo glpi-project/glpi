@@ -48,6 +48,20 @@ function titleperipherals(){
                 echo "</tr></table></div>";
 }
 
+function showPeripheralOnglets($target,$withtemplate,$actif){
+	global $lang;
+	
+	echo "<div id='barre_onglets'><ul id='onglet'>";
+	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&onglet=1'>".$lang["title"][26]."</a></li>";
+	echo "<li "; if ($actif=="4") {echo "class='actif'";} echo "><a href='$target&onglet=4'>".$lang["Menu"][26]."</a></li>";
+	echo "<li "; if ($actif=="5") {echo "class='actif'";} echo "><a href='$target&onglet=5'>".$lang["title"][25]."</a></li>";
+	if(empty($withtemplate)){
+	echo "<li "; if ($actif=="6") {echo "class='actif'";} echo "><a href='$target&onglet=6'>".$lang["title"][28]."</a></li>";
+	}
+
+	echo "</ul></div>";
+	
+}
 
 function searchFormperipheral($field="",$phrasetype= "",$contains="",$sort= "",$deleted="") {
 	// Print Search Form
