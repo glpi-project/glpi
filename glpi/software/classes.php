@@ -61,22 +61,15 @@ class Software {
 		}
 	}
 	
-	function getEmpty () {
-
-		// Make new empty object
-		$db = new DB;
-		$query = "SELECT * FROM glpi_software limit 0,1";
-		if ($result = $db->query($query)) {
-			$data = mysql_fetch_array($result);
-			foreach ($data as $key => $val) {
-				$this->fields[$key] = "";
-			}
-			return true;
-
-		} else {
-			return false;
-		}
+function getEmpty () {
+	$db = new DB;
+	$fields = $db->list_fields("glpi_printers");
+	$columns = mysql_num_fields($fields);
+	for ($i = 0; $i < $columns; $i++) {
+		$name = mysql_field_name($fields, $i);
+		$this->fields[$name] = "";
 	}
+}
 
 	function countInstallations() {
 		$db = new DB;
