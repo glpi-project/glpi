@@ -46,6 +46,11 @@ include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_peripherals.php");
 
+if(isset($_GET)) $tab = $_GET;
+if(empty($tab) && isset($_POST)) $tab = $_POST;
+if(!isset($tab["ID"])) $tab["ID"] = "";
+
+
 if (isset($_POST["add"])) {
 	checkAuthentication("admin");
 	addComputer($_POST);
@@ -69,6 +74,53 @@ if (isset($_POST["add"])) {
 	showSoftwareInstalled($_POST["ID"]);
 	showJobListForItem($_SESSION["glpiname"],$_POST["ID"]);
 	commonFooter();
+} 
+else if(isset($tab["connect"])&&isset($tab["device_type"]))
+{
+	if($tab["connect"]==1)
+	{
+		checkAuthentication("admin");
+		commonHeader("Computers",$_SERVER["PHP_SELF"]);
+		showConnectSearch($_SERVER["PHP_SELF"],$tab["ID"],$tab["device_type"]);
+		commonFooter();
+	}	 
+	else if($tab["connect"]==2)
+	{
+		checkAuthentication("admin");
+		commonHeader("Computers",$_SERVER["PHP_SELF"]);
+		switch($tab["device_type"]){
+		case "printer":
+			listConnectPrinters($_SERVER["PHP_SELF"],$tab);
+			break;
+		case "monitor":
+			listConnectMonitors($_SERVER["PHP_SELF"],$tab);
+			break;
+		case "peripheral":
+			listConnectPeripherals($_SERVER["PHP_SELF"],$tab);
+			break;
+			
+		}
+		commonFooter();
+	} 
+	else if($tab["connect"]==3)
+	{
+		checkAuthentication("admin");
+//		commonHeader("Computers",$_SERVER["PHP_SELF"]);
+		switch($tab["device_type"]){
+		case "printer" :
+		Connect($_SERVER["PHP_SELF"],$tab["ID"],$tab["cID"],3);
+		break;
+		case "monitor" :
+		Connect($_SERVER["PHP_SELF"],$tab["ID"],$tab["cID"],4);
+		break;
+		case "peripheral" :
+		Connect($_SERVER["PHP_SELF"],$tab["ID"],$tab["cID"],5);
+		break;
+
+		}
+		logEvent($tab["sID"], "printers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
+		header("Location: ".$_SERVER["PHP_SELF"]."?ID=".$tab["cID"]);
+	}
 } else {
 
 	checkAuthentication("normal");
