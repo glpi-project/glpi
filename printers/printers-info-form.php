@@ -59,8 +59,21 @@ else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
 	deletePrinter($_POST);
-	Disconnect($tab["ID"],PRINTER_TYPE);	
 	logEvent($_POST["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
+	header("Location: ".$cfg_install["root"]."/printers/");
+}
+else if (isset($_POST["restore"]))
+{
+	checkAuthentication("admin");
+	restorePrinter($_POST);
+	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." restored item.");
+	header("Location: ".$cfg_install["root"]."/printers/");
+}
+else if (isset($_POST["purge"]))
+{
+	checkAuthentication("admin");
+	deletePrinter($_POST,1);
+	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." purge item.");
 	header("Location: ".$cfg_install["root"]."/printers/");
 }
 else if (isset($_POST["update"]))

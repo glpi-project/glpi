@@ -49,6 +49,7 @@ if (!isset($_GET["field"])) $_GET["field"] = "printer.name";
 if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
 if (!isset($_GET["contains"])) $_GET["contains"] = "";
 if (!isset($_GET["sort"])) $_GET["sort"] = "printer.name";
+if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
 
 
 titlePrinters();
@@ -56,7 +57,7 @@ titlePrinters();
 
 searchFormPrinters();
 
-showPrintersList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
+showPrintersList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"]);
 
 
 commonFooter();

@@ -143,12 +143,20 @@ function getEmpty () {
 		}
 
 	}
+	function isUsed($ID){
+	$db = new DB;		
+	
+	$query="SELECT * from glpi_tracking where computer = '$ID' AND device_type='".SOFTWARE_TYPE."'";
+	$result = $db->query($query);
+	return ($db->numrows($result)>0);
+	
+	}
 
 	function deleteFromDB($ID,$force=0) {
 
 		$db = new DB;
 		
-		if ($force==1||getInstalledLicence($ID)==0){
+		if (($force==1||getInstalledLicence($ID)==0)&&!$this->isUsed()){
 			$query = "DELETE from glpi_software WHERE ID = '$ID'";
 			if ($result = $db->query($query)) {
 
