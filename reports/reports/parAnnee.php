@@ -81,7 +81,7 @@ echo " <option value='toutes' selected>".$lang["reports"][16]."</option>";
 echo "</select></p></td>";
 echo "<td align='center'><p><b>".$lang["reports"][14]." :</b></p> ";
 echo "<p><select name='tri_par' size='5' >";
-echo "<option value='achat_date'>".$lang["reports"][17]."</option>";
+echo "<option value='achat_date' selected>".$lang["reports"][17]."</option>";
 echo "<option value='serial'>".$lang["reports"][18]."</option>";
 echo "<option value='contact'>".$lang["reports"][19]."</option>";
 echo "<option value='location'>".$lang["reports"][20]."</option>";
