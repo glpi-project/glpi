@@ -35,7 +35,7 @@
 
 //Ce script génère ses propres messages d'erreur 
 //Pas besoin des warnings de PHP
-#error_reporting(0);
+error_reporting(0);   // Baaz si tu touches à cette ligne  pour tes tests merci de la remettre en état quand tu commits.
 
 
 
@@ -280,7 +280,7 @@ function step1($update)
 
 // file test
 
-// il faut un test dans /dump et un dans /tmp pour phpexcel et /glpi/config/
+// il faut un test dans /dump  et /docs et /glpi/config/
 
 	echo "<tr><td><h4>".$lang["install"][16]."</h4></td>";
 	
@@ -302,6 +302,32 @@ function step1($update)
 
 		}
 	}
+	
+		
+	echo "<tr><td><h4>".$lang["install"][21]."</h4></td>";	
+		$fp = fopen("docs/test_glpi.txt",'w');
+	if (empty($fp)) {
+		echo "<td><p class='red'>".$lang["install"][17]."</p> ".$lang["install"][22]."</td></tr>";
+		$error = 2;
+	}
+	else {
+		$fw = fwrite($fp,"This file was created for testing reasons. ");
+		fclose($fp);
+		$delete = unlink("docs/test_glpi.txt");
+		if (!$delete) {
+			echo "<td>".$lang["install"][19]."</td></tr>";
+			if($error != 2) $error = 1;
+		}
+		else {
+			echo "<td>".$lang["install"][20]."</td></tr>";
+
+		}
+	}
+	
+	
+	
+	
+	
 	
 	
 	echo "<tr><td><h4>".$lang["install"][23]."</h4></td>";
