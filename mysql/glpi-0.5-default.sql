@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-03-06 18:52
+#GLPI Dump database on 2005-03-07 18:42
 ### Dump table glpi_cartridges
 
 DROP TABLE IF EXISTS glpi_cartridges;
@@ -43,6 +43,7 @@ CREATE TABLE glpi_cartridges_type (
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
     comments text NOT NULL,
+    tech_num int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
 );
@@ -122,6 +123,7 @@ CREATE TABLE glpi_computers (
     otherserial varchar(200) NOT NULL,
     contact varchar(90) NOT NULL,
     contact_num varchar(90) NOT NULL,
+    tech_num int(11) DEFAULT '0' NOT NULL,
     comments text NOT NULL,
     date_mod datetime,
     os int(11),
@@ -138,13 +140,13 @@ CREATE TABLE glpi_computers (
    KEY type (type)
 );
 
-INSERT INTO glpi_computers VALUES ('8','Dell Inspiron 450','0','4586-sd6-fds','','Roger Rabbit','5462','','2003-09-18 00:15:44','5','1','1','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('10','Dell Inspiron 450','0','4598-jhd-545','','Peter Pan','8565','','2003-09-18 00:07:58','13','1','1','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('15','Dell Inspiron 450','0','4561-hsub-dfsnj','','Poppins Marry','6545','','2003-09-18 00:09:47','1','1','1','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('18','IBM 945gx','0','9854-5f-4s4f','','Jeannot Lapin','5465','','2003-09-18 00:05:07','2','1','1','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('19','','0','','','','','Empty Template',NULL,'2','0','1','1','Blank Template','0','N');
-INSERT INTO glpi_computers VALUES ('20','','0','','','','','Standard iMac',NULL,'9','0','3','1','iMac','0','N');
-INSERT INTO glpi_computers VALUES ('21','','0','','','','','',NULL,'12','1','1','1','test','0','N');
+INSERT INTO glpi_computers VALUES ('8','Dell Inspiron 450','0','4586-sd6-fds','','Roger Rabbit','5462','0','','2003-09-18 00:15:44','5','1','1','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('10','Dell Inspiron 450','0','4598-jhd-545','','Peter Pan','8565','0','','2003-09-18 00:07:58','13','1','1','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('15','Dell Inspiron 450','0','4561-hsub-dfsnj','','Poppins Marry','6545','0','','2003-09-18 00:09:47','1','1','1','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('18','IBM 945gx','0','9854-5f-4s4f','','Jeannot Lapin','5465','0','','2003-09-18 00:05:07','2','1','1','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('19','','0','','','','','0','Empty Template',NULL,'2','0','1','1','Blank Template','0','N');
+INSERT INTO glpi_computers VALUES ('20','','0','','','','','0','Standard iMac',NULL,'9','0','3','1','iMac','0','N');
+INSERT INTO glpi_computers VALUES ('21','','0','','','','','0','',NULL,'12','1','1','1','test','0','N');
 ### Dump table glpi_config
 
 DROP TABLE IF EXISTS glpi_config;
@@ -515,8 +517,9 @@ CREATE TABLE glpi_dropdown_locations (
    KEY parentID (parentID)
 );
 
-INSERT INTO glpi_dropdown_locations VALUES ('1','1 ier etage','0');
-INSERT INTO glpi_dropdown_locations VALUES ('2','2nd etage','0');
+INSERT INTO glpi_dropdown_locations VALUES ('3','ROOT','0');
+INSERT INTO glpi_dropdown_locations VALUES ('1','1 ier etage','3');
+INSERT INTO glpi_dropdown_locations VALUES ('2','2nd etage','3');
 ### Dump table glpi_dropdown_netpoint
 
 DROP TABLE IF EXISTS glpi_dropdown_netpoint;
@@ -590,8 +593,10 @@ CREATE TABLE glpi_event_log (
    KEY date (date)
 );
 
-INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-03-06 18:52:07','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-03-06 18:47:45','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('369','-1','system','2005-03-07 18:42:48','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('368','-1','system','2005-03-07 18:42:44','login','1','failed login: glpi');
+INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-03-07 18:42:41','login','1','failed login: glpi');
+INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-03-07 18:42:20','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -699,6 +704,7 @@ CREATE TABLE glpi_monitors (
     date_mod datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
     contact varchar(255) NOT NULL,
     contact_num varchar(255) NOT NULL,
+    tech_num int(11) DEFAULT '0' NOT NULL,
     comments text NOT NULL,
     serial varchar(255) NOT NULL,
     otherserial varchar(255) NOT NULL,
@@ -719,8 +725,9 @@ CREATE TABLE glpi_monitors (
    KEY location (location)
 );
 
-INSERT INTO glpi_monitors VALUES ('3','nokia 20\'','2003-09-18 00:14:14','','','Ecran infographiste','','','20','1','1','1','0','1','1','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('2','Sony 19\'','2003-09-18 00:14:50','','','ecran documentation','','','19','0','0','1','1','1','3','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('3','nokia 20\'','2003-09-18 00:14:14','','','0','Ecran infographiste','','','20','1','1','1','0','1','1','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('2','Sony 19\'','2003-09-18 00:14:50','','','0','ecran documentation','','','19','0','0','1','1','1','3','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('4','','0000-00-00 00:00:00','','','0','','','','0','0','0','0','0',NULL,NULL,'0','N','1','Blank Template');
 ### Dump table glpi_networking
 
 DROP TABLE IF EXISTS glpi_networking;
@@ -732,6 +739,7 @@ CREATE TABLE glpi_networking (
     otherserial varchar(50) NOT NULL,
     contact varchar(30) NOT NULL,
     contact_num varchar(30) NOT NULL,
+    tech_num int(11) DEFAULT '0' NOT NULL,
     date_mod datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
     comments text NOT NULL,
     location int(11),
@@ -747,7 +755,8 @@ CREATE TABLE glpi_networking (
    KEY firmware (firmware)
 );
 
-INSERT INTO glpi_networking VALUES ('9','Dlink 450','','4586-puis-kioe','','','','0000-00-00 00:00:00','','1','1',NULL,'0','N','0',NULL);
+INSERT INTO glpi_networking VALUES ('9','Dlink 450','','4586-puis-kioe','','','','0','0000-00-00 00:00:00','','1','1',NULL,'0','N','0',NULL);
+INSERT INTO glpi_networking VALUES ('10','','','','','','','0','0000-00-00 00:00:00','',NULL,NULL,NULL,'0','N','1','Blank Template');
 ### Dump table glpi_networking_ports
 
 DROP TABLE IF EXISTS glpi_networking_ports;
@@ -799,6 +808,7 @@ CREATE TABLE glpi_peripherals (
     date_mod datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
     contact varchar(255) NOT NULL,
     contact_num varchar(255) NOT NULL,
+    tech_num int(11) DEFAULT '0' NOT NULL,
     comments text NOT NULL,
     serial varchar(255) NOT NULL,
     otherserial varchar(255) NOT NULL,
@@ -814,6 +824,7 @@ CREATE TABLE glpi_peripherals (
    KEY location (location)
 );
 
+INSERT INTO glpi_peripherals VALUES ('1','','0000-00-00 00:00:00','','','0','','','','0','0','','0','N','1','Blank Template');
 ### Dump table glpi_prefs
 
 DROP TABLE IF EXISTS glpi_prefs;
@@ -840,6 +851,7 @@ CREATE TABLE glpi_printers (
     date_mod datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
     contact varchar(255) NOT NULL,
     contact_num varchar(255) NOT NULL,
+    tech_num int(11) DEFAULT '0' NOT NULL,
     serial varchar(255) NOT NULL,
     otherserial varchar(255) NOT NULL,
     flags_serial tinyint(4) DEFAULT '0' NOT NULL,
@@ -859,8 +871,9 @@ CREATE TABLE glpi_printers (
    KEY type (type)
 );
 
-INSERT INTO glpi_printers VALUES ('1','HP laser','2003-09-18 00:12:43','','','hp-jsgsj-658','','0','1','0','Imprimante bureau du directeur','','1','1','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('2','HP deskjet','2003-09-18 00:13:11','','','45dskjs-ds','','0','1','0','Imprimante documentation','','2','3','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('1','HP laser','2003-09-18 00:12:43','','','0','hp-jsgsj-658','','0','1','0','Imprimante bureau du directeur','','1','1','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('2','HP deskjet','2003-09-18 00:13:11','','','0','45dskjs-ds','','0','1','0','Imprimante documentation','','2','3','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('3','','0000-00-00 00:00:00','','','0','','','0','0','0','','',NULL,NULL,'0','N','1','Blank Template');
 ### Dump table glpi_reservation_item
 
 DROP TABLE IF EXISTS glpi_reservation_item;
@@ -900,6 +913,7 @@ CREATE TABLE glpi_software (
     version varchar(20) NOT NULL,
     comments text,
     location int(11),
+    tech_num int(11) DEFAULT '0' NOT NULL,
     platform int(11),
     is_update enum('N','Y') DEFAULT 'N' NOT NULL,
     update_software int(11) DEFAULT '-1' NOT NULL,
@@ -913,9 +927,10 @@ CREATE TABLE glpi_software (
    KEY location (location)
 );
 
-INSERT INTO glpi_software VALUES ('3','Acrobat PDF Viewer','4',NULL,NULL,'5','N','-1','0','N','0',NULL,NULL);
-INSERT INTO glpi_software VALUES ('4','MS Windows NT','4.0',NULL,NULL,'5','N','-1','0','N','0',NULL,NULL);
-INSERT INTO glpi_software VALUES ('5','Latex','6.2','Latex','1','2','N','-1','0','N','0',NULL,NULL);
+INSERT INTO glpi_software VALUES ('3','Acrobat PDF Viewer','4',NULL,NULL,'0','5','N','-1','0','N','0',NULL,NULL);
+INSERT INTO glpi_software VALUES ('4','MS Windows NT','4.0',NULL,NULL,'0','5','N','-1','0','N','0',NULL,NULL);
+INSERT INTO glpi_software VALUES ('5','Latex','6.2','Latex','1','0','2','N','-1','0','N','0',NULL,NULL);
+INSERT INTO glpi_software VALUES ('6','','',NULL,NULL,'0',NULL,'N','-1','0','N','1','Blank Template',NULL);
 ### Dump table glpi_templates
 
 DROP TABLE IF EXISTS glpi_templates;
