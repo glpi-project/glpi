@@ -738,22 +738,22 @@ class CommonItem{
 		// Make new database object and fill variables
 
 			switch ($device_type){
-			case 1 :
+			case COMPUTER_DEVICE :
 				$this->obj=new Computer;
 				break;
-			case 2 :
+			case NETWORKING_DEVICE :
 				$this->obj=new Netdevice;
 				break;
-			case 3 :
+			case PRINTER_TYPE :
 				$this->obj=new Printer;
 				break;
-			case 4 : 
+			case MONITOR_TYPE : 
 				$this->obj= new Monitor;	
 				break;
-			case 5 : 
+			case PERIPHERAL_TYPE : 
 				$this->obj= new Peripheral;	
 				break;				
-			case 6 : 
+			case SOFTWARE_TYPE : 
 				$this->obj= new Software;	
 				break;				
 			}
@@ -768,24 +768,24 @@ class CommonItem{
 		global $lang;
 		
 		switch ($this->device_type){
-			case 0 :
+			case GENERAL_TYPE :
 				return $lang["help"][30];
-			case 1 :
+			case COMPUTER_TYPE :
 				return $lang["computers"][44];
 				break;
-			case 2 :
+			case NETWORKING_TYPE :
 				return $lang["networking"][12];
 				break;
-			case 3 :
+			case PRINTER_TYPE :
 				return $lang["printers"][4];
 				break;
-			case 4 : 
+			case MONITOR_TYPE : 
 				return $lang["monitors"][4];
 				break;
-			case 5 : 
+			case PERIPHERAL_TYPE : 
 				return $lang["peripherals"][4];
 				break;				
-			case 6 : 
+			case SOFTWARE_TYPE : 
 				return $lang["software"][10];
 				break;				
 			}
@@ -811,25 +811,25 @@ class CommonItem{
 		global $cfg_install;
 	
 		switch ($this->device_type){
-			case 0 :
+			case GENERAL_TYPE :
 				return getName();
 				break;
-			case 1 :
+			case COMPUTER_TYPE :
 				return "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
 				break;
-			case 2 :
+			case NETWORKING_TYPE :
 				return "<a href=\"".$cfg_install["root"]."/networking/networking-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
 				break;
-			case 3 :
+			case PRINTER_TYPE :
 				return "<a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
 				break;
-			case 4 : 
+			case MONITOR_TYPE : 
 				return "<a href=\"".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
 				break;
-			case 5 : 
+			case PERIPHERAL_TYPE : 
 				return "<a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
 				break;				
-			case 6 : 
+			case SOFTWARE_TYPE : 
 				return "<a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
 				break;				
 			}
