@@ -42,7 +42,7 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk"))
+if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk") && ($cfg_features["permit_helpdesk"] == "1"))
 {
 	$id = new Identification("Helpdesk");
 	$id->setCookies();

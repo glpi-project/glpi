@@ -632,6 +632,8 @@ $lang["setup"][215]="Pour chaque nouveau suivi le concernant";
 $lang["setup"][216]="A la fermeture d'une intervention le concernant";
 $lang["setup"][217]="La fonction mail n'existe pas ou est désactivée sur votre système";
 $lang["setup"][218]="Impossible de configurer les envois de suivis par mails";
+$lang["setup"][219]="Voulez vous permettre les soumissions d'intervention anonymes (helpdesk.html)";
+
 
 // Helpdesk
 
