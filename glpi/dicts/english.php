@@ -118,13 +118,13 @@ $lang["Menu"][1]	="Networks";
 $lang["Menu"][2]	="Printers";
 $lang["Menu"][3]	="Monitors";
 $lang["Menu"][4]	="Software";
-$lang["Menu"][5]	="Display";
+$lang["Menu"][5]	="Tracking";
 $lang["Menu"][6]	="Reports";
 $lang["Menu"][7]	="Groups";
 $lang["Menu"][8]	="Accounts";
 $lang["Menu"][9]	="Mail accounts";
 $lang["Menu"][10]	="Setup";
-$lang["Menu"][11]	="Preferences";
+$lang["Menu"][11]	="Setting";
 $lang["Menu"][12]	="Data";
 $lang["Menu"][13]	="Stats";
 $lang["Menu"][14]	="Users";
@@ -371,7 +371,7 @@ $lang["monitors"][23]	= "ID";
 $lang["monitors"][24]   = "Date of purchase ";
 $lang["monitors"][25]	= "Warranty expiration date";
 $lang["monitors"][26]	= "Maintenance";
-$lang["monitors"][27]   = "Identifier";
+$lang["monitors"][27]   = "Identify";
 $lang["monitors"][28]	= "Monitors";
 
 
@@ -400,6 +400,38 @@ $lang["software"][20]	= "Remaining";
 $lang["software"][21]	= "Total";
 $lang["software"][22]	= "No Software found.";
 $lang["software"][23]   = "Software";
+
+
+
+// Peripherals
+$lang["peripherals"][0]	= "Add peripheral...";
+$lang["peripherals"][3]	= "Add peripheral...";
+$lang["peripherals"][4]	= "Peripheral";
+$lang["peripherals"][5]	= "Name";
+$lang["peripherals"][6]	= "Location";
+$lang["peripherals"][7]	= "Contact #";
+$lang["peripherals"][8]	= "Contact person";
+$lang["peripherals"][9]	= "Type";
+$lang["peripherals"][10]	= "Serial# 1";
+$lang["peripherals"][11]	= "Serial#  2";
+$lang["peripherals"][12]	= "Comment";
+$lang["peripherals"][13]	= "Location";
+$lang["peripherals"][14]	= "";
+$lang["peripherals"][15]	= "";
+$lang["peripherals"][16]	= "Last modification";
+$lang["peripherals"][17]	= "No peripheral found";
+$lang["peripherals"][18]	= "Brand";
+$lang["peripherals"][19]	= "";
+$lang["peripherals"][20]	= "";
+$lang["peripherals"][21]	= "Size";
+$lang["peripherals"][22]	= "Connected to";
+$lang["peripherals"][23]	= "ID";
+$lang["peripherals"][24]   = "Date of purchase ";
+$lang["peripherals"][25]	= "Warranty expiration date";
+$lang["peripherals"][26]	= "Maintenance";
+$lang["peripherals"][27]   = "identifiant";
+$lang["peripherals"][28]	= "Peripherals";
+
 
 
 // Reports
@@ -506,6 +538,25 @@ $lang["setup"][65] 	= "You can also replace all the events of this heading by an
 $lang["setup"][66] 	= "No user found"; 
 $lang["setup"][68] 	= "Email Followup"; 
 $lang["setup"][71] 	= "Firmware"; 
+
+// to be translated
+$lang["setup"][100]="Configuration générale";
+$lang["setup"][101]="Chemin d'installation";
+$lang["setup"][102]="Niveau de log";
+$lang["setup"][103]="1- Critique (erreur de login seulement)";
+$lang["setup"][104]="2- Sévère (Non utilisée) ";
+$lang["setup"][105]="3- Important (logins réussis) ";
+$lang["setup"][106]="4- Notices (Ajout, suppression, tracking)";
+$lang["setup"][107]="5- Complet (Tout) ";
+$lang["setup"][108]="Nombre d'évenements de log à afficher";
+$lang["setup"][109]="Temps en jours de conservation des logs (0 pour infini)";
+$lang["setup"][110]=" Montrer les interventions au login";
+$lang["setup"][111]="Nombre d'élements à afficher par page";
+$lang["setup"][112]="Nombre de caractères maximum pour chaque éléments de la liste";
+
+
+
+
 
 // Helpdesk
 

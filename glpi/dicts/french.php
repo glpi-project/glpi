@@ -178,7 +178,7 @@ $lang["joblist"][4] 	= "Attribu&eacute;";
 $lang["joblist"][5]	= "Ordinateur";
 $lang["joblist"][6]	= "Description";
 $lang["joblist"][7]	= "Nouvelle intervention pour cet item...";
-$lang["joblist"][8]	= "Pas d'intervention active pour cette item.";
+$lang["joblist"][8]	= "Pas d'intervention active.";
 $lang["joblist"][9]	= "Nouveau";
 $lang["joblist"][10]	= "Ancien";
 $lang["joblist"][11]	= "Ouvert le";
@@ -406,9 +406,9 @@ $lang["software"][23]   = "Logiciels";
 
 
 // Peripherals
-$lang["peripherals"][0]	= "Ajouter peripherique...";
-$lang["peripherals"][3]	= "Ajouter peripherique";
-$lang["peripherals"][4]	= "Peripherique";
+$lang["peripherals"][0]	= "Ajouter p&eacute;riph&eacute;rique...";
+$lang["peripherals"][3]	= "Ajouter p&eacute;riph&eacute;rique";
+$lang["peripherals"][4]	= "P&eacute;riph&eacute;rique";
 $lang["peripherals"][5]	= "Nom";
 $lang["peripherals"][6]	= "Lieu";
 $lang["peripherals"][7]	= "Contact num&eacute;ro";
@@ -432,7 +432,7 @@ $lang["peripherals"][24]   = "Date d'achat ";
 $lang["peripherals"][25]	= "Expiration garantie";
 $lang["peripherals"][26]	= "Maintenance";
 $lang["peripherals"][27]   = "identifiant";
-$lang["peripherals"][28]	= "Périphériques";
+$lang["peripherals"][28]	= "P&eacute;riphériques";
 
 
 // Reports
@@ -548,6 +548,26 @@ $lang["setup"][68]	= "Suivis par emails";
 $lang["setup"][69]	= "Types de périphériques";
 $lang["setup"][70]	= "Configuration générale";
 $lang["setup"][71]	= "Firmware";
+
+$lang["setup"][100]="Configuration générale";
+$lang["setup"][101]="Chemin d'installation";
+$lang["setup"][102]="Niveau de log";
+$lang["setup"][103]="1- Critique (erreur de login seulement)";
+$lang["setup"][104]="2- Sévère (Non utilisée) ";
+$lang["setup"][105]="3- Important (logins réussis) ";
+$lang["setup"][106]="4- Notices (Ajout, suppression, tracking)";
+$lang["setup"][107]="5- Complet (Tout) ";
+$lang["setup"][108]="Nombre d'évenements de log à afficher";
+$lang["setup"][109]="Temps en jours de conservation des logs (0 pour infini)";
+$lang["setup"][110]=" Montrer les interventions au login";
+$lang["setup"][111]="Nombre d'élements à afficher par page";
+$lang["setup"][112]="Nombre de caractères maximum pour chaque éléments de la liste";
+
+
+$lang["setup"][200]="Suivis par emails";
+
+
+
 
 // Helpdesk
 
