@@ -267,7 +267,8 @@ margin-top: 100px;
 	background-color: #efefe7;
 	-moz-border-radius: 8px;
         /*border: 2px outset #009966;*/
-
+	
+	
 	border: 2px outset #FFC65D;
 	
 	margin-bottom: 10px;
@@ -313,7 +314,7 @@ background-color: #339966;
 a.icon_logo img{
 	padding: 7px;
 	margin: 1px;
-	border: 1px solid #aaaaaa;
+	border: 1px inset #aaaaaa;
 	background-color: #ffffff;
 	-moz-border-radius: 5px;
        	font-size : 12px;
@@ -335,7 +336,7 @@ a.icon_logo:hover img {
 .icon_nav {
 	padding: 4px;
 	margin: 1px;
-	border: 1px solid #aaaaaa;
+	border: 1px inset #aaaaaa;
 	background-color: #C5DAC8;
 	-moz-border-radius: 5px;
        	font-size : 12px;
@@ -346,7 +347,7 @@ a.icon_logo:hover img {
 a.icon_nav_move img {
 	padding: 4px;
 	margin: 1px;
-	border: 1px solid #aaaaaa;
+	border: 1px inset #aaaaaa;
 	background-color: #C5DAC8;
 	-moz-border-radius: 5px;
 }

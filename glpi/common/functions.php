@@ -471,8 +471,8 @@ $config = array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	// Body with configured stuff
 	echo "<body>";
 	// Main Headline
-	echo "<div id='navigation'>";
-	echo "<table  cellspacing='0' border='0' width='100%'>";
+	echo "<div id='navigation' style='background : url(\"".$HTMLRel."pics/fond.png\") repeat-x top right ;'>";
+	echo "<table  cellspacing='0' border='0' width='100%' >";
 	echo "<tr>";
 	// New object from the configured base functions, we check some
 	// object-variables in this object: inventory, maintain, admin
@@ -625,7 +625,7 @@ function helpHeader($title,$url,$name) {
 	echo "<body>";
 
 	// Main Headline
-				echo "<div id='navigation'>";
+				echo "<div id='navigation' style='background : url(\"".$HTMLRel."pics/fond.png\") repeat-x top right ;'>";
 
 	echo "<table cellspacing='0' border='0' width='98%'>";
 	echo "<tr>";
@@ -672,9 +672,9 @@ function helpHeader($title,$url,$name) {
 	// date, help and a logout-link.
 	echo "<td align='right' width='100'><div align='right'>";
 	// HELP	
-	echo "<a class='icon_nav_move'  href='#' onClick=\"window.open('".$HTMLRel."help/".$cfg_install["languages"][$_SESSION["glpilanguage"]][1]."','helpdesk','width=400,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a><br><br>";
+	echo "<a class='icon_nav_move'  href='#' onClick=\"window.open('".$HTMLRel."help/".$cfg_install["languages"][$_SESSION["glpilanguage"]][1]."','helpdesk','width=400,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a>";
 				
-	echo date("H").":".date("i")."<p><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
+	echo "<p>".date("H").":".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i></p><a class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img class='icon_nav' src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
 
 	// End navigation bar
@@ -734,7 +734,7 @@ function nullHeader($title,$url) {
 	echo "<body>";
 
 	// Main Headline
-	echo "<div id='navigation'>";
+	echo "<div id='navigation' style='background : url(\"".$HTMLRel."pics/fond.png\") repeat-x top right ;'>";
 
 	echo "<table cellspacing='0' border='0' width='98%'>";
 	echo "<tr>";
@@ -765,7 +765,7 @@ function commonFooter() {
 	// Print foot for every page
 
 GLOBAL $cfg_install;
-echo "<div id='footer'><div align='right'>";
+echo "<div id='footer' ><div align='right'>";
 	echo "<a href=\"http://GLPI.indepnet.org/\">";
 	echo "<span class='copyright'>GLPI ".$cfg_install["version"]." Copyright (C) 2003-2005 by the INDEPNET Development Team.</span>";
 	echo "</a></div>";
