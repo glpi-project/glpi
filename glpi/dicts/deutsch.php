@@ -224,8 +224,11 @@ $lang["job"][16]	= "gefunden";
 $lang["job"][17]        = "eingreifen";
 //to be translated
 $lang["job"][18]        = "old";
+$lang["job"][19] 	= "Email Followups"; 
+$lang["job"][20] 	= "Real time of the intervention"; 
 $lang["job"][21] 	= "Stunde(n)"; 
 $lang["job"][22] 	= "Minute(n)"; 
+$lang["job"][23] 	= "Restore this intervention"; 
 
 // Computers
 
@@ -785,8 +788,8 @@ $lang["update"][92] 	= "You will update the GLPI database named :";
 $lang["update"][93] 	= "Database connection succed"; 
 $lang["update"][94] 	= "Update succed, your databse is up to date"; 
 $lang["update"][95] 	= "Connection to databse failed, verify the connection parameters included in config_db.php file"; 
-$lang["update"][96] 	= "Now, all administrators have \&quot;super-admin\&quot; rights. This new user type was also added."; 
-$lang["update"][97]	= "The updated database do not contains any \"super-admin\" user";
+$lang["update"][96] 	= "Now, all administrators have &quot;super-admin&quot; rights. This new user type was also added."; 
+$lang["update"][97]	= "The updated database do not contains any &quot;super-admin&quot; user";
 $lang["update"][98]	= "You must to create one in order to be able to configure the application (in particular accesses to the external data sources )";
 $lang["update"][99]	= "You will be able to remove this user once that you will have configured the application ";
 $lang["update"][100] 	= "Enter the login"; 
