@@ -683,7 +683,7 @@ $lang["stats"][22] = "Nombre d'interventions demand&eacute;es";
 $lang["stats"][23] = "Pas de statistiques disponibles";
 $lang["stats"][25] = "Dur&eacute;e r&eacute;elle moyenne de l'intervention";
 $lang["stats"][26] = "Types";
-
+$lang["stats"][27] = "Dur&eacute;e r&eacute;elle totale des interventions";
 
 // install update
 
