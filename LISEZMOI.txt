@@ -199,45 +199,44 @@ modifier « à la main ».
 La procédure est la suivante :
 
 1. Récupérez l'archive de GLPI sur notre serveur, et la décompacter sur votre ordinateur personnel. 
-Vous obtenez un dossier « GLPI... » contenant l'ensemble des fichiers du logiciel GLPI.
+Vous obtenez un dossier glpi contenant l'ensemble des fichiers du logiciel GLPI.
 
-2. Installez le contenu de ce dossier sur le serveur destiné à accueillir GLPI.
+2. Copier ce dossier sur le serveur destiné à accueillir GLPI.
 
-3. Connectez-vous avec votre navigateur sur GLPI, dans un dossier intitulé « config », 
-où GLPI vous proposera une interface graphique vous permettant de configurer le logiciel. 
-Une fois ces quelques informations de configuration fournies, GLPI sera totalement installé 
-et vous pourrez commencer à travailler.
+3. Connectez-vous avec votre navigateur sur GLPI. GLPI vous proposera une interface graphique vous permettant 
+de configurer le logiciel. Une fois ces quelques informations de configuration fournies, 
+GLPI sera totalement installé et vous pourrez commencer à travailler.
 
-Procédure détaillée
+------ Procédure détaillée
 
-Configuration nécessaire
+--- Configuration nécessaire
 
 Vous devez au minimum disposer d'un espace sur un serveur Web avec :
--  un accès FTP pour l'installation des fichiers ;
+-  un accès au serveur pour l'installation des fichiers (FTP, SSH, etc);
 -  le support de PHP4 ou supérieure compilée avec le support des sessions ;
 -  un accès à une base de données MySQL.
 
 Avant l'installation, vous devez avoir une base MySQL disponible. Si vous n'êtes pas l'administrateur 
-du serveur, il faut demander l'activation dune base MySQL à l'administrateur.
+du serveur, il faut demander l'activation d'une base MySQL à l'administrateur.
 
 Vous devez connaître les données de votre connexion MySQL (fournies par l'administrateur) :
 -  l'adresse du serveur MySQL ;
 -  votre login MySQL ;
--  votre password MySQL,
+-  votre password MySQL ;
 -  le nom de la base de données
 
-Récupérer GLPI
+--- Récupérer GLPI
 
 GLPI est disponible en téléchargement par le Web à l'adresse :
 -  http://glpi.indepnet.org rubrique téléchargement.
 
 Choisissez la version qui vous intéresse, décompactez l'archive sur votre ordinateur dans un répertoire 
-de votre choix, puis transférez le contenu de ce répertoire sur le serveur Web via FTP (par exemple).
+de votre choix, puis transférez le contenu de ce répertoire sur le serveur Web.
 
-Si vous êtes l'administrateur du serveur décompresser l'archive dans le répertoire /var/www qu'Apache a créé 
-pour vous.
+Si vous êtes l'administrateur du serveur décompresser l'archive dans le répertoire racine d'Apache 
+(/var/www  ou /var/www/html).
 
-Installer les fichiers
+--- Installer les fichiers
 
 Installez l'ensemble des fichiers de GLPI dans l'espace Web, à l'endroit où vous voulez que GLPI soit 
 accessible au public.
@@ -245,7 +244,7 @@ accessible au public.
 Maintenant, il est nécessaire d'accorder des permissions à certains répertoires, de manière à ce que PHP 
 ait les droits en écriture sur : /backups/dump /glpi/config
 
-Début de l'installation
+--- Début de l'installation
 
 Désormais tout se déroule en ligne. Pour débuter l'installation il vous suffit de faire pointer votre 
 navigateur web sur le dossier racine de GLPI : http://votreserveur/glpi/ (par défaut).
@@ -253,7 +252,7 @@ navigateur web sur le dossier racine de GLPI : http://votreserveur/glpi/ (par dé
 Lors de la première connexion à cette adresse, une procédure d'installation pas-à-pas démarre. 
 L'interface est intuitive, il suffit d'entrer les informations demandées.
 
-Étapes préliminaires :
+--- Étapes préliminaires :
 
 A- Choix de la langue.
 
@@ -274,7 +273,7 @@ vous indiquera les actions à réaliser avant de réessayer.
 
 Si toutes les vérifications ont été réalisées avec succès, cliquez sur « continuer ».
 
-Étapes de l'installation
+--- Étapes de l'installation
 
 Étape 1 : Configuration des informations de connection au serveur de base de données.
 
@@ -315,7 +314,7 @@ la base de données.
 Attention cette étape nécessite que l'utilisateur ai les droits nécessaires à la création dune nouvelle base.
 
 Sélectionnez « créer une nouvelle base de données ». Entrez le nom que vous souhaitez donner à la base 
-dans le champ texte prévu à cet effet. Cliquez sur continuer pour initialiser la base de données..
+dans le champ texte prévu à cet effet. Cliquez sur continuer pour initialiser la base de données.
 
 Étape 3 : Transition et explications :
 
@@ -327,7 +326,7 @@ L'étape 4 : vous indique que l'installation de GLPI est maintenant terminée, et 
 certain nombre d'informations. Lisez attentivement ces informations et cliquez sur « utiliser GLPI » 
 pour effectuer votre première connection à l'application.
 
-Fin de l'installation
+--- Fin de l'installation
 
 En cas de grosse erreur (du genre : vous avez oublié votre propre accès à GLPI...), pour « relancer » cette 
 procédure d'installation, il faut utiliser votre logiciel FTP (par exemple) et effacer le fichier suivant :
