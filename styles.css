@@ -514,8 +514,8 @@ p.toolbar a:hover
 
 width:700px;
 margin-left: auto;
-  margin-right: auto;
- 
+margin-right: auto;
+
 
 
 }
@@ -527,9 +527,12 @@ ul#onglet {
     padding-bottom: 24px;
    border-bottom: 1px solid #ffffff;
     margin: 0;
+padding-left:0;
+
 }
 
 ul#onglet li {
+    
     float: left;
     height: 21px;
     background-color: #eeeeee;
@@ -540,7 +543,7 @@ ul#onglet li {
 }
 
 ul#onglet li.actif {
-    border-bottom: 1px outset #009966;
+    border-bottom: 1px ridge #009966;
     background-color: #fff;
 }
 
@@ -557,7 +560,8 @@ ul#onglet li.actif a {
 }
 
 #onglet a:hover {
-    background: #fff;
+   color : #009966;
+  
 }
 
 
