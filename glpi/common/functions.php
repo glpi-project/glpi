@@ -57,7 +57,7 @@ function checkAuthentication($authtype) {
 	// control-page to set a minium security level.
 	if(!isset($_SESSION)) session_start();
 	
-	GLOBAL $cfg_install, $lang;
+	GLOBAL $cfg_install, $lang, $HTMLRel;
 
 	if(empty($_SESSION["authorisation"]))
 	{
@@ -105,7 +105,7 @@ function checkAuthentication($authtype) {
 				if ($type!="admin") 
 				{
 					commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
-						echo "<center><br><br><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br>";
+						echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
 
 					echo "<b>".$lang["login"][5]."</b></center>";
 					commonFooter();
@@ -117,7 +117,7 @@ function checkAuthentication($authtype) {
 				if ($type!="normal" && $type!="admin" && $type!="half-admin")
 				{
 					commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
-											echo "<center><br><br><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br>";
+											echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
 
 					echo "<b>".$lang["login"][5]."</b></center>";
 					commonFooter();
@@ -130,7 +130,7 @@ function checkAuthentication($authtype) {
 				if ($type!="normal" && $type!="admin")
 				{
 					commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
-				      echo "<center><br><br><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br>";
+				      echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
 
 					echo "<b>".$lang["login"][5]."</b></center>";
 					commonFooter();
@@ -142,7 +142,7 @@ function checkAuthentication($authtype) {
 				if ($type!="post-only" && $type!="normal" && $type!="admin")
 				{
 					commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
-											echo "<center><br><br><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br>";
+											echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
 
 					echo "<b>".$lang["login"][5]."</b></center>";
 					commonFooter();
