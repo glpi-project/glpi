@@ -56,7 +56,7 @@ function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "") {
 	$option["glpi_cartridges_type.FK_glpi_manufacturer"]			= $lang["cartridges"][8];	
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/cartridges/cartridge-search.php\">";
-	echo "<center><table class='tab_cadre' width='750'>";
+	echo "<div align='center'><table class='tab_cadre' width='750'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
@@ -93,7 +93,7 @@ function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "") {
 	echo "</select> ";
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
-	echo "</td></tr></table></center></form>";
+	echo "</td></tr></table></div></form>";
 }
 
 function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start) {
@@ -156,7 +156,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 
 		if ($numrows_limit>0) {
 			// Produce headline
-			echo "<center><table class='tab_cadre' width='750'><tr>";
+			echo "<div align='center'><table class='tab_cadre' width='750'><tr>";
 
 			// Name
 			echo "<th>";
@@ -201,7 +201,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 				$ct = new CartridgeType;
 				$ct->getfromDB($ID);
 
-				echo "<tr class='tab_bg_2'>";
+				echo "<tr class='tab_bg_2' align='center'>";
 				echo "<td><b>";
 				echo "<a href=\"".$cfg_install["root"]."/cartridges/cartridge-info-form.php?ID=$ID\">";
 				echo $ct->fields["name"]." (".$ct->fields["ID"].")";
@@ -216,15 +216,15 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 			}
 
 			// Close Table
-			echo "</table></center>";
+			echo "</table></div>";
 
 			// Pager
 			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<center><b>".$lang["cartridges"][7]."</b></center>";
-			echo "<hr noshade>";
+			echo "<div align='center'><b>".$lang["cartridges"][7]."</b></div>";
+			
 			//searchFormSoftware();
 		}
 	}
