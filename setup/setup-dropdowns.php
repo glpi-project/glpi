@@ -42,11 +42,16 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
+$httpreferer=str_replace("?done","",$_SERVER['HTTP_REFERER']);
+
+$where="";
+if (isset($_POST["where"])) $where="#".$_POST["where"];
+
 if (isset($_POST["add"])) {
 	checkAuthentication("admin");
 	addDropdown($_POST);
 	logEvent(0, "dropdowns", 5, "setup", $_SESSION["glpiname"]." added a value to a dropdown.");
-	header("Location: $_SERVER[HTTP_REFERER]?done");
+	header("Location: $httpreferer?done$where");
 } else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
 	if(!dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
@@ -56,19 +61,19 @@ if (isset($_POST["add"])) {
 	} else {
 		deleteDropdown($_POST);
 		logEvent(0, "templates", 4, "inventory", $_SESSION["glpiname"]." deleted a dropdown value.");
-		header("Location: $_SERVER[HTTP_REFERER]?done");
+		header("Location: $httpreferer?done$where");
 	}
 
 } else if (isset($_POST["update"])) {
 	checkAuthentication("admin");
 	updateDropdown($_POST);
 	logEvent(0, "templates", 4, "inventory", $_SESSION["glpiname"]." updated a dropdown value.");
-	header("Location: $_SERVER[HTTP_REFERER]?done");
+	header("Location: $httpreferer?done$where");
 } else if (isset($_POST["replace"])) {
 	checkAuthentication("admin");
 	replaceDropDropDown($_POST);
 	logEvent(0, "templates", 4, "inventory", $_SESSION["glpiname"]." replaced a dropdown value in each items.");
-	header("Location: $_SERVER[HTTP_REFERER]?done");
+	header("Location: $httpreferer?done$where");
 }
  else {
 	checkAuthentication("normal");
