@@ -269,7 +269,7 @@ class Identification
   $ds = ldap_connect ($ldap_server);
   if (!$ds)
     {
-     return $false;
+     return false;
     }
   ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
   if ($rdn=="") $r = ldap_bind ( $ds);
@@ -369,7 +369,7 @@ class Identification
   $ds = ldap_connect ($ldap_server);
   if (!$ds)
     {
-     return $false;
+     return false;
     }
     //echo "CONNECT";
   ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
