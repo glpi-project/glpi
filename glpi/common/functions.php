@@ -424,7 +424,7 @@ function helpHeader($title,$url,$name) {
 	// On the right side of the navigation bar, we have a clock with
 	// date, help and a logout-link.
 	echo "<td align='right' width='100'><div align='right'>";
-	echo "<a class='icon_nav_move'  target=_blank href=\"".$HTMLRel."help/".$_SESSION["glpilanguage"].".html\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a><br><br>";
+	echo "<a class='icon_nav_move'  target=_blank href=\"".$HTMLRel."help/hd-".$_SESSION["glpilanguage"].".html\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a><br><br>";
 	echo date("H").":".date("i")."<p><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i></p><a class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img class='icon_nav' src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
 
