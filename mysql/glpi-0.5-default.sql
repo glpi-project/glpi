@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-02-28 23:54
+#GLPI Dump database on 2005-03-01 11:29
 ### Dump table glpi_cartridges
 
 DROP TABLE IF EXISTS glpi_cartridges;
@@ -117,7 +117,6 @@ CREATE TABLE glpi_computers (
     ID int(11) NOT NULL auto_increment,
     name varchar(200) NOT NULL,
     flags_server tinyint(4) DEFAULT '0' NOT NULL,
-    osver varchar(20) NOT NULL,
     processor_speed varchar(30) NOT NULL,
     serial varchar(200) NOT NULL,
     otherserial varchar(200) NOT NULL,
@@ -157,13 +156,13 @@ CREATE TABLE glpi_computers (
    KEY maintenance (maintenance)
 );
 
-INSERT INTO glpi_computers VALUES ('8','Dell Inspiron 450','0','','750','4586-sd6-fds','','512','10','Roger Rabbit','5462','','2003-09-18 00:15:44','0000-00-00','0000-00-00','0','5','2','3','3','4','1','6','1','7','1','0',NULL);
-INSERT INTO glpi_computers VALUES ('10','Dell Inspiron 450','0','SP3','750','4598-jhd-545','','128','20','Peter Pan','8565','','2003-09-18 00:07:58','0000-00-00','0000-00-00','0','5','1','3','3','4','1','6','1','7','1','0',NULL);
-INSERT INTO glpi_computers VALUES ('15','Dell Inspiron 450','0','SP2','750','4561-hsub-dfsnj','','512','20','Poppins Marry','6545','','2003-09-18 00:09:47','0000-00-00','0000-00-00','0','1','1','3','3','4','5','6','1','7','1','0',NULL);
-INSERT INTO glpi_computers VALUES ('18','IBM 945gx','0','','750','9854-5f-4s4f','','128','20','Jeannot Lapin','5465','','2003-09-18 00:05:07','2001-09-24','2002-09-27','0','2','1','3','3','4','1','6','1','7','1','0',NULL);
-INSERT INTO glpi_computers VALUES ('19','','0','','','','','','','','','Empty Template',NULL,'0000-00-00','0000-00-00','0','2','2','1','2','1','1','1','0','11','1','1','Blank Template');
-INSERT INTO glpi_computers VALUES ('20','','0','9','333','','','128','6','','','Standard iMac',NULL,'0000-00-00','0000-00-00','0','9','1','3','3','4','5','9','0','6','3','1','iMac');
-INSERT INTO glpi_computers VALUES ('21','','0','','','','','','','','','',NULL,'0000-00-00','0000-00-00','0','12','2','3','2','1','1','1','1','11','1','1','test');
+INSERT INTO glpi_computers VALUES ('8','Dell Inspiron 450','0','750','4586-sd6-fds','','512','10','Roger Rabbit','5462','','2003-09-18 00:15:44','0000-00-00','0000-00-00','0','5','2','3','3','4','1','6','1','7','1','0',NULL);
+INSERT INTO glpi_computers VALUES ('10','Dell Inspiron 450','0','750','4598-jhd-545','','128','20','Peter Pan','8565','','2003-09-18 00:07:58','0000-00-00','0000-00-00','0','13','1','3','3','4','1','6','1','7','1','0',NULL);
+INSERT INTO glpi_computers VALUES ('15','Dell Inspiron 450','0','750','4561-hsub-dfsnj','','512','20','Poppins Marry','6545','','2003-09-18 00:09:47','0000-00-00','0000-00-00','0','1','1','3','3','4','5','6','1','7','1','0',NULL);
+INSERT INTO glpi_computers VALUES ('18','IBM 945gx','0','750','9854-5f-4s4f','','128','20','Jeannot Lapin','5465','','2003-09-18 00:05:07','2001-09-24','2002-09-27','0','2','1','3','3','4','1','6','1','7','1','0',NULL);
+INSERT INTO glpi_computers VALUES ('19','','0','','','','','','','','Empty Template',NULL,'0000-00-00','0000-00-00','0','2','2','1','2','1','1','1','0','11','1','1','Blank Template');
+INSERT INTO glpi_computers VALUES ('20','','0','333','','','128','6','','','Standard iMac',NULL,'0000-00-00','0000-00-00','0','9','1','3','3','4','5','9','0','6','3','1','iMac');
+INSERT INTO glpi_computers VALUES ('21','','0','','','','','','','','',NULL,'0000-00-00','0000-00-00','0','12','2','3','2','1','1','1','1','11','1','1','test');
 ### Dump table glpi_config
 
 DROP TABLE IF EXISTS glpi_config;
@@ -219,7 +218,7 @@ CREATE TABLE glpi_config (
    PRIMARY KEY (ID)
 );
 
-INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15','0.5','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad');
+INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15','0.5','GLPI powered by indepnet','/dombre/glpi-test','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad');
 ### Dump table glpi_connect_wire
 
 DROP TABLE IF EXISTS glpi_connect_wire;
@@ -602,7 +601,7 @@ CREATE TABLE glpi_dropdown_os (
    PRIMARY KEY (ID)
 );
 
-INSERT INTO glpi_dropdown_os VALUES ('1','Windows 2000');
+INSERT INTO glpi_dropdown_os VALUES ('1','Windows 2000 - SP2');
 INSERT INTO glpi_dropdown_os VALUES ('2','Linux (Redhat 6.2)');
 INSERT INTO glpi_dropdown_os VALUES ('3','Linux (Slackware 7)');
 INSERT INTO glpi_dropdown_os VALUES ('4','Solaris');
@@ -610,10 +609,11 @@ INSERT INTO glpi_dropdown_os VALUES ('5','Windows NT 4.0');
 INSERT INTO glpi_dropdown_os VALUES ('6','Windows 95a');
 INSERT INTO glpi_dropdown_os VALUES ('7','Other');
 INSERT INTO glpi_dropdown_os VALUES ('8','Windows 98');
-INSERT INTO glpi_dropdown_os VALUES ('9','MacOS');
+INSERT INTO glpi_dropdown_os VALUES ('9','MacOS - 9');
 INSERT INTO glpi_dropdown_os VALUES ('10','Windows 95 OSR2');
 INSERT INTO glpi_dropdown_os VALUES ('11','Windows 98 SR2');
 INSERT INTO glpi_dropdown_os VALUES ('12','Debian woody 3.0');
+INSERT INTO glpi_dropdown_os VALUES ('13','Windows 2000 - SP3');
 ### Dump table glpi_dropdown_processor
 
 DROP TABLE IF EXISTS glpi_dropdown_processor;
@@ -718,12 +718,8 @@ CREATE TABLE glpi_event_log (
    KEY date (date)
 );
 
-INSERT INTO glpi_event_log VALUES ('369','1','infocom','2005-02-28 23:53:46','financial','4','glpi updated item.');
-INSERT INTO glpi_event_log VALUES ('368','1','infocom','2005-02-28 23:53:37','financial','4','glpi updated item.');
-INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-02-28 23:53:18','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-02-28 23:52:43','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('370','1','infocom','2005-02-28 23:53:52','financial','4','glpi updated item.');
-INSERT INTO glpi_event_log VALUES ('371','1','infocom','2005-02-28 23:54:01','financial','4','glpi updated item.');
+INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-03-01 11:29:20','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-03-01 11:24:45','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -771,7 +767,7 @@ CREATE TABLE glpi_infocoms (
    KEY buy_date (buy_date)
 );
 
-INSERT INTO glpi_infocoms VALUES ('1','18','1','2001-09-24','0000-00-00','12','','0','','','','1000','0','4','2','3','');
+INSERT INTO glpi_infocoms VALUES ('1','18','1','2001-09-24','0000-00-00','12','',NULL,'','','','0',NULL,'0','','0','');
 ### Dump table glpi_inst_software
 
 DROP TABLE IF EXISTS glpi_inst_software;
