@@ -49,7 +49,7 @@ commonHeader("Stats",$_SERVER["PHP_SELF"]);
 
 
 //Affichage du tableau de présentation des stats
-echo "<div align='center'><table border='0' cellpadding='5'>";
+echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 echo "<tr><th>".$lang["stats"][0].":</th></tr>";
 
 

@@ -48,12 +48,12 @@ $db = new DB;
 echo "<form name='form' method='post' action='parAnnee-list.php'>";
 
 echo "<div align='center'>";
-echo "<table border='0' >";
+echo "<table class='tab_cadre' >";
 echo "<tr><th align='center' colspan='2' ><big><b>Rapport par date d'achat ou de fin de garantie</b></big></th></tr>";
 
 # 3. Selection d'affichage pour generer la liste
 
-echo "<tr class='tab_bg_1'>";
+echo "<tr class='tab_bg_2'>";
 echo "<td  align='center' width='200'>";
 echo "<p><b>".$lang["reports"][12]."</b></p> ";
 echo "<p><select name='item_type[]' size='5'  multiple>";
@@ -70,7 +70,7 @@ echo "<option value='achat_date'>".$lang["reports"][17]."</option>";
 echo "<option value='date_fin_garantie'>".$lang["reports"][21]."</option>";
 echo "</select> </td></tr>";
 
-echo "<tr class='tab_bg_1'><td align='center'><p><b>".$lang["reports"][23]."</b></p> ";
+echo "<tr class='tab_bg_2'><td align='center'><p><b>".$lang["reports"][23]."</b></p> ";
 echo "<p> <select name='annee[]'  size='5' multiple>";
 echo " <option value='toutes' selected>".$lang["reports"][16]."</option>";
   $y = date("Y");
@@ -89,7 +89,7 @@ echo "<option value='name'>".$lang["reports"][12]."</option>";
 echo "</select> <p> ";
 echo "</td></tr>";
 
-echo "<tr class='tab_bg_1'><td colspan='2'  align='center'><p><input type='submit' value='".$lang["reports"][15]."' class='submit'></p></td></tr>";
+echo "<tr class='tab_bg_2'><td colspan='2'  align='center'><p><input type='submit' value='".$lang["reports"][15]."' class='submit'></p></td></tr>";
 
 
 echo "</table>";

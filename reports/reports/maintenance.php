@@ -72,7 +72,7 @@ $number_of_networking = $db->numrows($result);
 echo "<form name='form' method='post' action='maintenance-list.php'>";
 
 echo "<div align='center'>";
-echo "<table border='0' >";
+echo "<table class='tab_cadre' >";
 echo "<tr><th align='center' colspan='2' ><big><b>".$lang["reports"][11]." </b></big></th></tr>";
 
 echo "<tr><td class='tab_bg_2'  align='center'>".$lang["reports"][6]." :&nbsp;&nbsp;</td><td class='tab_bg_2' align='center'>$number_of_computers</td></tr>";

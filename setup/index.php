@@ -52,7 +52,7 @@ commonHeader("Setup",$_SERVER["PHP_SELF"]);
         echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='".$lang["Menu"][10]."' title='".$lang["Menu"][10]."' ></td><td><span class='icon_nav'><b>".$lang["Menu"][10]."</b></span>";
         echo "</td></tr></table></div>";
 
-echo "<div align='center'><table border='0' cellpadding='5'>";
+echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 echo "<tr><th>".$lang["setup"][62]."</th></tr>";
 
 echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-dropdowns.php\"><b>".$lang["setup"][0]."</b></a></td></tr>";

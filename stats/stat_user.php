@@ -56,7 +56,7 @@ if (is_array($nomUsr))
 {
 //affichage du tableau
 //table display
-echo "<table border='0' cellpadding='5' class='center'>";
+echo "<table class='tab_cadre2' cellpadding='5' >";
 echo "<tr><th>".$lang["stats"][20]."</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th></tr>";
 //Pour chacun de ces auteurs on affiche
 //foreach these authors display
