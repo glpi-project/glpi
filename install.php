@@ -426,7 +426,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	global $lang;
 	//display the form to return to the previous step.
 	
-	function prev_form() {
+	function prev_form($host,$user,$password) {
 		global $lang;
 		echo "<br /><form action=\"install.php\" method=\"post\">";
 		echo $lang["install"][30] .": <input type=\"hidden\" name=\"db_host\" value=\"". $host ."\"/><br />";
@@ -471,7 +471,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 			echo $lang["install"][41];
 			echo "<br />";
 			echo $lang["install"][42]. mysql_error();
-			prev_form();
+			prev_form($host,$user,$password);
 		}
 		else {
 			if (create_conn_file($host,$user,$password,$databasename)) {
