@@ -65,13 +65,12 @@ if (isset($_POST["add"])) {
 	showComputerForm(0,$_SERVER["PHP_SELF"],$_POST["ID"]);
 	showPorts($_POST["ID"], 1);
 	showPortsAdd($_POST["ID"],1);
-	showJobListForItem($_SESSION["glpiname"],$_POST["show"],$_POST["contains"],$_POST["ID"]);
+	showJobListForItem($_SESSION["glpiname"],$_POST["ID"]);
 	showSoftwareInstalled($_POST["ID"]);
 	commonFooter();
 } else {
 
 	checkAuthentication("normal");
-	//print_r($_GET);
 	commonHeader("Computers",$_SERVER["PHP_SELF"]);
 	if (isset($_GET["withtemplate"]))
 	{
@@ -80,17 +79,11 @@ if (isset($_POST["add"])) {
 	else
 	{
 		if (showComputerForm(0,$_SERVER["PHP_SELF"],$_GET["ID"])) {
-	
 			showPorts($_GET["ID"], 1);
-			
 			showPortsAdd($_GET["ID"],1);
-		
 			showConnections($_GET["ID"]);
-		
-			showJobListForItem($_SESSION["glpiname"],"","",$_GET["ID"]);
-	
-			showOldJobListForItem($_SESSION["glpiname"],"",$_GET["ID"]);
-	
+			showJobListForItem($_SESSION["glpiname"],$_GET["ID"]);
+			showOldJobListForItem($_SESSION["glpiname"],$_GET["ID"]);
 			showSoftwareInstalled($_GET["ID"]);
 		}
 	}

@@ -207,7 +207,7 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 	}
 }
 
-function showOldJobListForItem($username,$contains,$item) {
+function showOldJobListForItem($username,$item) {
 	// $item is required
 	//affiche toutes les vielles intervention pour un $item donné. 
 
@@ -265,10 +265,9 @@ $query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY
 	}
 }
 
-function showJobListForItem($username,$contains,$item) {
+function showJobListForItem($username,$item) {
 	// $item is required
 	//affiche toutes les vielles intervention pour un $item donné. 
-
 
 	GLOBAL $cfg_layout, $cfg_install, $lang;
 		
@@ -283,7 +282,6 @@ $query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY
 
 	$i = 0;
 	$number = $db->numrows($result);
-
 	if ($number > 0)
 	{
 		echo "<div align='center'><table border='0' width='90%'>";
@@ -302,9 +300,11 @@ $query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY
 		}
 		if ($item)
 		{
-			echo "<tr class='tab_bg_2'>";
-		        echo "<td align='center' colspan=8 class='tab_bg_1'>";
-
+			echo "<tr><td align='center' class='tab_bg_1'><b>";
+			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item\">";
+			echo $lang["joblist"][7];
+			echo "</a>";
+			echo "</b></td></tr>";
 		}
 		echo "</table></div>";
 	} 
@@ -316,7 +316,12 @@ $query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY
 
 		if ($item)
 		{
-		          echo "<tr><td align='center' class='tab_bg_1'>";
+			 
+			  echo "<tr><td align='center' class='tab_bg_1'><b>";
+			  echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item\">";
+			  echo $lang["joblist"][7];
+			  echo "</a>";
+			  echo "</b></td></tr>";
 		}
 		echo "</table>";
 		echo "</div><br>";
