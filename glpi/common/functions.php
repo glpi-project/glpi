@@ -517,7 +517,7 @@ $config = array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	}
 	if ($navigation->financial) {
 		echo "<td align='center' valign='top' width='20%'>";
-		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/gestion.png\" alt=\"\" title=\"".$lang["setup"][55]."\"><br>";
+		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/gestion.png\" alt=\"\" title=\"".$lang["Menu"][26]."\"><br>";
 
 		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][26]."&nbsp;-</span><br>";
 		foreach ($financial as $key => $val) {
@@ -529,7 +529,7 @@ $config = array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	
 	if ($navigation->utils) {
 		echo "<td align='center' valign='top' width='20%'>";
-		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/outils.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>";
+		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/outils.png\" alt=\"\" title=\"".$lang["Menu"][18]."\"><br>";
 		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][18]."&nbsp;-</span><br>";
 		foreach ($utils as $key => $val) {
 			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
