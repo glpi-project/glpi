@@ -237,12 +237,13 @@ function moveTreeUnder($table,$to_move,$where){
 		
 		$current_ID=$where;
 		while ($current_ID!=0&&$impossible_move==false){
+
 		$query="select * from $table WHERE ID='$current_ID'";
 		$result = $db->query($query);
 		$current_ID=$db->result($result,0,"parentID");
-		if ($current_ID==$to_move) $imposible_move=true;
+		if ($current_ID==$to_move) $impossible_move=true;
+
 		}
-		
 		if (!$impossible_move){
 	
 			// Move Location
