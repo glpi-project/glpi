@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-02-15 00:12
+#GLPI Dump database on 2005-02-15 00:35
 ### Dump table glpi_cartridges
 
 DROP TABLE IF EXISTS glpi_cartridges;
@@ -253,6 +253,12 @@ CREATE TABLE glpi_contract (
     comments text NOT NULL,
     compta_num varchar(255) NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
+    week_begin_hour time DEFAULT '00:00:00' NOT NULL,
+    week_end_hour time DEFAULT '00:00:00' NOT NULL,
+    satruday_begin_hour time DEFAULT '00:00:00' NOT NULL,
+    satruday_end_hour time DEFAULT '00:00:00' NOT NULL,
+    monday_begin_hour time DEFAULT '00:00:00' NOT NULL,
+    monday_end_hour time DEFAULT '00:00:00' NOT NULL,
    PRIMARY KEY (ID),
    KEY contract_type (contract_type),
    KEY begin_date (begin_date)
@@ -671,6 +677,16 @@ CREATE TABLE glpi_event_log (
    KEY date (date)
 );
 
+INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-02-14 19:01:44','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-02-15 00:09:57','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('368','0','cartridge','2005-02-15 00:10:04','inventory','4','glpi added item qsqs.');
+INSERT INTO glpi_event_log VALUES ('369','1','cartridge','2005-02-15 00:10:09','inventory','4','glpi associate type.');
+INSERT INTO glpi_event_log VALUES ('370','1','cartridge','2005-02-15 00:10:12','inventory','4','glpi added a license.');
+INSERT INTO glpi_event_log VALUES ('371','1','cartridge','2005-02-15 00:10:52','inventory','4','glpi updated item.');
+INSERT INTO glpi_event_log VALUES ('372','1','cartridge','2005-02-15 00:10:54','inventory','4','glpi delete type.');
+INSERT INTO glpi_event_log VALUES ('373','1','cartridge','2005-02-15 00:11:05','inventory','4','glpi associate type.');
+INSERT INTO glpi_event_log VALUES ('374','2','cartridge','2005-02-15 00:11:07','inventory','4','glpi delete type.');
+INSERT INTO glpi_event_log VALUES ('375','1','cartridge','2005-02-15 00:11:13','inventory','4','glpi associate type.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
