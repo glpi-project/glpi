@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-02-19 14:26
+#GLPI Dump database on 2005-02-22 00:09
 ### Dump table glpi_cartridges
 
 DROP TABLE IF EXISTS glpi_cartridges;
@@ -248,7 +248,6 @@ CREATE TABLE glpi_contact_enterprise (
    KEY FK_contact (FK_contact)
 );
 
-INSERT INTO glpi_contact_enterprise VALUES ('1','1','1');
 ### Dump table glpi_contacts
 
 DROP TABLE IF EXISTS glpi_contacts;
@@ -265,7 +264,6 @@ CREATE TABLE glpi_contacts (
    PRIMARY KEY (ID)
 );
 
-INSERT INTO glpi_contacts VALUES ('1','TEST','','','','','2','','N');
 ### Dump table glpi_contract_device
 
 DROP TABLE IF EXISTS glpi_contract_device;
@@ -302,8 +300,8 @@ CREATE TABLE glpi_contracts (
     cost float DEFAULT '0' NOT NULL,
     contract_type int(11) DEFAULT '0' NOT NULL,
     begin_date date,
-    duration float DEFAULT '0' NOT NULL,
-    notice float DEFAULT '0' NOT NULL,
+    duration decimal(3,2) DEFAULT '0.00' NOT NULL,
+    notice decimal(3,2) DEFAULT '0.00' NOT NULL,
     bill_type int(11) DEFAULT '0' NOT NULL,
     comments text NOT NULL,
     compta_num varchar(255) NOT NULL,
@@ -312,13 +310,16 @@ CREATE TABLE glpi_contracts (
     week_end_hour time DEFAULT '00:00:00' NOT NULL,
     saturday_begin_hour time DEFAULT '00:00:00' NOT NULL,
     saturday_end_hour time DEFAULT '00:00:00' NOT NULL,
+    saturday enum('Y','N') DEFAULT 'N' NOT NULL,
     monday_begin_hour time DEFAULT '00:00:00' NOT NULL,
     monday_end_hour time DEFAULT '00:00:00' NOT NULL,
+    monday enum('Y','N') DEFAULT 'N' NOT NULL,
    PRIMARY KEY (ID),
    KEY contract_type (contract_type),
    KEY begin_date (begin_date)
 );
 
+INSERT INTO glpi_contracts VALUES ('1','qssq','0','0','0000-00-00','0.00','0.00','0','','','N','00:00:00','00:00:00','00:00:00','00:00:00','N','00:00:00','00:00:00','N');
 ### Dump table glpi_device_gfxcard
 
 DROP TABLE IF EXISTS glpi_device_gfxcard;
@@ -700,7 +701,6 @@ CREATE TABLE glpi_enterprises (
    PRIMARY KEY (ID)
 );
 
-INSERT INTO glpi_enterprises VALUES ('1','TEST','ci','','','','N');
 ### Dump table glpi_event_log
 
 DROP TABLE IF EXISTS glpi_event_log;
@@ -717,12 +717,8 @@ CREATE TABLE glpi_event_log (
    KEY date (date)
 );
 
-INSERT INTO glpi_event_log VALUES ('369','0','enterprise','2005-02-19 14:24:29','financial','4','glpi added item TEST.');
-INSERT INTO glpi_event_log VALUES ('368','0','Contacts','2005-02-19 14:24:20','financial','4','glpi added TEST.');
-INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-02-19 14:24:13','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-02-19 14:23:58','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('370','1','enterprise','2005-02-19 14:24:37','financial','4','glpi associate type.');
-INSERT INTO glpi_event_log VALUES ('371','1','enterprise','2005-02-19 14:25:30','financial','4','glpi associate type.');
+INSERT INTO glpi_event_log VALUES ('367','0','contract','2005-02-22 00:06:23','financial','4','glpi added item qssq.');
+INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-02-22 00:06:18','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -757,20 +753,21 @@ CREATE TABLE glpi_infocom_device (
    KEY FK_device (FK_device, device_type)
 );
 
+INSERT INTO glpi_infocom_device VALUES ('1','1','18','1');
 ### Dump table glpi_infocoms
 
 DROP TABLE IF EXISTS glpi_infocoms;
 CREATE TABLE glpi_infocoms (
     ID int(11) NOT NULL auto_increment,
     buy_date date DEFAULT '0000-00-00' NOT NULL,
-    warranty_end_date date DEFAULT '0000-00-00' NOT NULL,
+    warranty_duration decimal(3,2) DEFAULT '0.00' NOT NULL,
     warranty_info varchar(255) NOT NULL,
     FK_enterprise int(11),
     num_commande varchar(50) NOT NULL,
     bon_livraison varchar(50) NOT NULL,
     num_immo varchar(50) NOT NULL,
     value float,
-    amort_time float,
+    amort_time decimal(3,2) DEFAULT '0.00' NOT NULL,
     amort_type varchar(20) NOT NULL,
     comments text NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
@@ -779,6 +776,7 @@ CREATE TABLE glpi_infocoms (
    KEY buy_date (buy_date)
 );
 
+INSERT INTO glpi_infocoms VALUES ('1','2001-09-24','1.00','',NULL,'','','',NULL,'0.00','','','N');
 ### Dump table glpi_inst_software
 
 DROP TABLE IF EXISTS glpi_inst_software;
