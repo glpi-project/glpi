@@ -213,7 +213,8 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 	}
 	
 	echo "<tr class='tab_bg_2'>";
-	echo "<td align='center'>$type</td><td align='center'>$name</td>";
+	echo "<td align='center'><a href='".$HTMLRel."devices/index.php?device_type=".$device->type."'>$type</a></td>";
+	echo "<td align='center'><a href='".$HTMLRel."devices/devices-info-form.php?ID=".$device->fields['ID']."&device_type=".$device->type."'>&nbsp;$name&nbsp;</a></td>";
 	
 	if (count($entry)>0){
 		$more=0;
@@ -501,7 +502,7 @@ function titleDevices($device_type){
 	echo "</tr></table></div>";
 }
 
-function getDictDeviceLabel($device_num) {
+function getDictDeviceLabel($device_num=-1) {
 	
 	global $lang;
 	$dp=array();
@@ -517,7 +518,9 @@ function getDictDeviceLabel($device_num) {
 	$dp[PCI_DEVICE]=$lang["devices"][21];		
 	$dp[CASE_DEVICE]=$lang["devices"][22];		
 	$dp[POWER_DEVICE]=$lang["devices"][23];
-	return $dp[$device_num];
+	if ($device_num==-1)
+	return $dp;
+	else return $dp[$device_num];
 }
 
 function showDevicesForm ($target,$ID,$device_type) {

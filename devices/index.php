@@ -62,18 +62,8 @@ if(!empty($tab["device_type"])) {
 echo "<div align='center'><form method='post' action=\"".$cfg_install["root"]."/devices/index.php\">";
 echo "<table class='tab_cadre' cellpadding='3'><tr><th colspan='2'>";
 echo $lang["devices"][17].": </th></tr><tr class='tab_bg_1'><td><select name='device_type'>";
-$dp=array();
-$dp[MOBOARD_DEVICE]=$lang["devices"][5];	
-$dp[PROCESSOR_DEVICE]=$lang["devices"][4];	
-$dp[RAM_DEVICE]=$lang["devices"][6];	
-$dp[HDD_DEVICE]=$lang["devices"][1];	
-$dp[DRIVE_DEVICE]=$lang["devices"][19];		
-$dp[CONTROL_DEVICE]=$lang["devices"][20];		
-$dp[GFX_DEVICE]=$lang["devices"][2];		
-$dp[SND_DEVICE]=$lang["devices"][7];		
-$dp[PCI_DEVICE]=$lang["devices"][21];		
-$dp[CASE_DEVICE]=$lang["devices"][22];		
-$dp[POWER_DEVICE]=$lang["devices"][23];
+
+$dp=getDictDeviceLabel();
 
 foreach ($dp as $key=>$val) {
 	$sel="";
