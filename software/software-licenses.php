@@ -50,27 +50,27 @@ if (isset($tab["addform"])) {
 	checkAuthentication("admin");
 	addLicense($tab);
 	logEvent($tab["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." added a license.");
-	header("Location: $_SERVER['HTTP_REFERER']");
+	header("Location: $_SERVER[HTTP_REFERER]");
 } else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
 	deleteLicense($tab["ID"]);
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." deleted a license.");
-	header("Location: $_SERVER['HTTP_REFERER']");
+	header("Location: $_SERVER[HTTP_REFERER]");
 } else if (isset($tab["select"])) {
 	checkAuthentication("admin");
 	commonHeader("Software",$_SERVER["PHP_SELF"]);
-	showLicenseSelect($_SERVER['HTTP_REFERER'],$_SERVER["PHP_SELF"],$tab["cID"],$tab["sID"]);
+	showLicenseSelect($_SERVER[HTTP_REFERER],$_SERVER["PHP_SELF"],$tab["cID"],$tab["sID"]);
 	commonFooter();
 } else if (isset($tab["install"])) {
 	checkAuthentication("admin");
 	installSoftware($tab["cID"],$tab["lID"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed software.");
-	header("Location: $_SERVER['HTTP_REFERER']");
+	header("Location: $_SERVER[HTTP_REFERER]");
 } else if (isset($tab["uninstall"])) {
 	checkAuthentication("admin");
 	uninstallSoftware($tab["lID"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." uninstalled software.");
-	header("Location: $_SERVER['HTTP_REFERER']");
+	header("Location: $_SERVER[HTTP_REFERER]");
 }
 
 
