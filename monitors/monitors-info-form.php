@@ -122,9 +122,10 @@ else
 
 	commonHeader("Monitors",$_SERVER["PHP_SELF"]);
 	showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	if (!empty($_GET["ID"])){
 	showJobListForItem($_SESSION["glpiname"],4,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],4,$tab["ID"]);
-
+	}
 	commonFooter();
 }
 

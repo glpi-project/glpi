@@ -79,9 +79,10 @@ else
 
 	commonHeader("Networking",$_SERVER["PHP_SELF"]);
 	showNetworkingForm ($_SERVER["PHP_SELF"],$_GET["ID"]);
+	if (!empty($_GET["ID"])){
 	showJobListForItem($_SESSION["glpiname"],2,$_GET["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],2,$_GET["ID"]);
-
+	}
 	commonFooter();
 }
 

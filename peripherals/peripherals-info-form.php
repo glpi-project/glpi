@@ -117,9 +117,10 @@ else
 
 	commonHeader("Peripherals",$_SERVER["PHP_SELF"]);
 	showPeripheralForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	if (!empty($_GET["ID"])){
 	showJobListForItem($_SESSION["glpiname"],5,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],5,$tab["ID"]);
-
+	}
 	commonFooter();
 }
 
