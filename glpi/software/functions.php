@@ -209,7 +209,7 @@ function showSoftwareForm ($target,$ID) {
 
 	$sw = new Software;
 
-	echo "<center><form method=post action=\"$target\">";
+	echo "<center><form method='post' action=\"$target\">";
 	echo "<table border='0'>";
 	echo "<tr><th colspan=2><b>";
 	if (!$ID) {
@@ -240,7 +240,7 @@ function showSoftwareForm ($target,$ID) {
 
 	echo "<tr class='tab_bg_1'><td valign=top>";
 	echo $lang["software"][6].":	</td>";
-	echo "<td align='center'><textarea cols=35 rows=4 name=comments wrap=soft>".$sw->fields["comments"]."</textarea>";
+	echo "<td align='center'><textarea cols=35 rows=4 name=comments >".$sw->fields["comments"]."</textarea>";
 	echo "</td></tr>";
 	
 	if (!$ID) {
@@ -260,7 +260,7 @@ function showSoftwareForm ($target,$ID) {
 		echo "<input type=hidden name=ID value=\"$ID\">\n";
 		echo "<center><input type=submit name=update value=\"".$lang["buttons"][7]."\"></center>";
 		echo "</td></form>\n\n";
-		echo "<form action=\"$target\" method=post>\n";
+		echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign=top>\n";
 		echo "<input type=hidden name=ID value=\"$ID\">\n";
 		echo "<center><input type=submit name=delete value=\"".$lang["buttons"][6]."\"></center>";
@@ -409,7 +409,7 @@ function showLicenseForm($target,$ID) {
 	echo "</a></center><br>";
 	
 	echo "<center><table><tr><th colspan=2>".$lang["software"][15]." ($ID):</th></tr>";
-	echo "<form method=post action=\"$target\">";
+	echo "<form method='post' action=\"$target\">";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][16].":</td>";
 	echo "<td><input type=text size=20 name=serial value=\"\">";
@@ -573,7 +573,7 @@ function showSoftwareInstalled($instID) {
 		$i++;		
 	}
 	echo "<tr class='tab_bg_1'><td align='center'>";
-	echo "<form method=post action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
+	echo "<form method='post' action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
 	echo "<input type=hidden name=cID value=$instID>";
 		dropdownSoftware();
 	echo "</td><td align='center' class='tab_bg_2'>";

@@ -217,7 +217,7 @@ function showPrintersForm ($target,$ID) {
 
 	$printer = new Printer;
 
-	echo "<center><form method=post name=form action=\"$target\">";
+	echo "<center><form method='post' name=form action=\"$target\">";
 	echo "<table border='0' cellpadding=2>";
 	echo "<tr><th colspan=2><b>";
 	if (empty($ID)) {
@@ -338,7 +338,7 @@ function showPrintersForm ($target,$ID) {
 
 	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign=top>";
 	echo $lang["printers"][12].":	</td>";
-	echo "<td align='center'><textarea cols=35 rows=4 name=comments wrap=soft>".$printer->fields["comments"]."</textarea>";
+	echo "<td align='center'><textarea cols=35 rows=4 name=comments >".$printer->fields["comments"]."</textarea>";
 	echo "</td></tr></table>";
 
 	echo "</td>";
@@ -361,7 +361,7 @@ function showPrintersForm ($target,$ID) {
 		echo "<input type=hidden name=ID value=\"$ID\">\n";
 		echo "<center><input type=submit name=update value=\"".$lang["buttons"][7]."\"></center>";
 		echo "</td></form>\n\n";
-		echo "<form action=\"$target\" method=post>\n";
+		echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign=top>\n";
 		echo "<input type=hidden name=ID value=\"$ID\">\n";
 		echo "<center><input type=submit name=delete value=\"".$lang["buttons"][6]."\"></center>";

@@ -40,7 +40,7 @@ function showFormDropdown ($target,$name,$human) {
 	
 	echo "<center><table border='0' width=50%>";
 	echo "<tr><th colspan=2>$human:</th></tr>";
-	echo "<form method=post action=\"$target\">";
+	echo "<form method='post' action=\"$target\">";
 
 	echo "<tr><td align='center' class='tab_bg_1'>";
 
@@ -50,7 +50,7 @@ function showFormDropdown ($target,$name,$human) {
 	echo "<input type=hidden name=tablename value=dropdown_".$name.">";
 	echo "<input type=submit name=delete value=\"".$lang["buttons"][6]."\">";
 	echo "</td></form></tr>";
-	echo "<form action=\"$target\" method=post>";
+	echo "<form action=\"$target\" method='post'>";
 	echo "<tr><td align='center' class='tab_bg_1'>";
 	echo "<input type=text maxlength=100 size=20 name=value>";
 	echo "</td><td align='center' class='tab_bg_2'>";
@@ -66,7 +66,7 @@ function showFormTypeDown ($target,$name,$human) {
 	
 	echo "<center><table border='0' width=50%>";
 	echo "<tr><th colspan=2>$human:</th></tr>";
-	echo "<form method=post action=\"$target\">";
+	echo "<form method='post' action=\"$target\">";
 
 	echo "<tr><td align='center' class='tab_bg_1'>";
 
@@ -76,7 +76,7 @@ function showFormTypeDown ($target,$name,$human) {
 	echo "<input type=hidden name=tablename value=type_".$name.">";
 	echo "<input type=submit name=delete value=\"".$lang["buttons"][6]."\">";
 	echo "</td></form></tr>";
-	echo "<form action=\"$target\" method=post>";
+	echo "<form action=\"$target\" method='post'>";
 	echo "<tr><td align='center' class='tab_bg_1'>";
 	echo "<input type=text maxlength=100 size=20 name=value>";
 	echo "</td><td align='center' class='tab_bg_2'>";
@@ -117,9 +117,9 @@ function showPasswordForm($target,$ID) {
 	
 	$user = new User;
 	$user->getFromDB($ID);
-	
-	echo "<center><table border='0' cellpadding=5 width=30%>";
-	echo "<form method=post action=\"$target\">";
+		
+	echo "<form method='post' action=\"$target\">";
+	echo "<center><table border='0' cellpadding=5 width='30%'>";
 	echo "<tr><th colspan=2>".$lang["setup"][11]." '".$user->fields["name"]."':</th></tr>";
 	echo "<tr><td width='100%' align='center' class='tab_bg_1'>";
 	echo "<input type=password name=password size=10>";
@@ -127,8 +127,8 @@ function showPasswordForm($target,$ID) {
 	echo "<input type=hidden name=name value=\"".$user->fields["name"]."\">";
 	echo "<input type=submit name=changepw value=\"".$lang["buttons"][14]."\">";
 	echo "</td></tr>";
-	echo "</form>";
 	echo "</table></center>";
+	echo "</form>";
 
 }
 
@@ -187,7 +187,7 @@ function listUsersForm($target) {
 			$user->getFromDB($name);
 			
 			echo "<tr class='tab_bg_1'>";	
-			echo "<form method=post action=\"$target\">";
+			echo "<form method='post' action=\"$target\">";
 			echo "<td align='center'><b>".$user->fields["name"]."</b>";
 			echo "<input type=hidden name=name value=\"".$user->fields["name"]."\">";
 			echo "</td>";
@@ -226,7 +226,7 @@ function listUsersForm($target) {
 		echo "<th>".$lang["setup"][14]."</th><th>".$lang["setup"][15]."</th>";
 		echo "<th>".$lang["setup"][16]."</th></tr>";
 		echo "<tr class='tab_bg_1'>";	
-		echo "<form method=post action=\"$target\">";
+		echo "<form method='post' action=\"$target\">";
 		echo "<td><input name=name size=7 value=\"\"></td>";
 		echo "<td><input name=realname size=15 value=\"\"></td>";
 		echo "<td>";
@@ -412,7 +412,7 @@ function showTemplateForm($target,$ID) {
 	
 
 	echo "<center><table border='0'>";
-	echo "<form name='form' method=post action=$target>";
+	echo "<form name='form' method='post' action=$target>";
 	echo "<tr><th colspan=2>";
 	if ($ID) {
 		echo $lang["setup"][23].": '".$templ->fields["templname"]."'";
@@ -451,7 +451,7 @@ function showTemplateForm($target,$ID) {
 	echo "</td></tr>";
 
 	echo "<tr><td valign=top>".$lang["setup"][30].":</td>";
-	echo "<td><textarea cols=20 rows=8 name=comments wrap=soft>".$templ->fields["comments"]."</textarea>";
+	echo "<td><textarea cols=20 rows=8 name=comments >".$templ->fields["comments"]."</textarea>";
 	echo "</td></tr>";
 
 	echo "</table>";
@@ -630,8 +630,8 @@ function showSortForm($target,$ID) {
 	$query = "SELECT tracking_order FROM prefs WHERE (user = '$ID')";
 	$result=$db->query($query);
 
-	echo "<center><table border='0' cellpadding=5 width=30%>";
-	echo "<form method=post action=\"$target\">";
+	echo "<center><table border='0' cellpadding=5 width='30%'>";
+	echo "<form method='post' action=\"$target\">";
 	echo "<tr><th colspan=2>".$lang["setup"][40]."</th></tr>";
 	echo "<tr><td width='100%' align='center' class='tab_bg_1'>";
 	echo "<select name=tracking_order>";
@@ -670,11 +670,11 @@ function showLangSelect($target,$ID) {
 	$query = "SELECT language FROM prefs WHERE (user = '$ID')";
 	$result=$db->query($query);
 
-	echo "<center><table border='0' cellpadding=5 width=30%>";
-	echo "<form method=post action=\"$target\">";
-	echo "<tr><th colspan=2>".$lang["setup"][41].":</th></tr>";
+	echo "<form method='post' action=\"$target\">";
+	echo "<center><table border='0' cellpadding='5' width='30%'>";
+	echo "<tr><th colspan='2'>".$lang["setup"][41].":</th></tr>";
 	echo "<tr><td width='100%' align='center' class='tab_bg_1'>";
-	echo "<select name=language>";
+	echo "<select name='language'>";
 	$i=0;
 	while ($i < count($cfg_install["languages"])) {
 		echo "<option value=\"".$cfg_install["languages"][$i]."\"";
@@ -687,11 +687,11 @@ function showLangSelect($target,$ID) {
 	echo "</select>";
 	echo "</td>";
 	echo "<td align='center' class='tab_bg_2'>";
-	echo "<input type=hidden name=user value=\"$ID\">";
-	echo "<input type=submit name=changelang value=\"".$lang["buttons"][14]."\">";
+	echo "<input type='hidden' name='user' value=\"$ID\">";
+	echo "<input type='submit' name='changelang' value=\"".$lang["buttons"][14]."\">";
 	echo "</td></tr>";
-	echo "</form>";
 	echo "</table></center>";
+	echo "</form>";
 }
 
 function updateLanguage($input) {

@@ -82,7 +82,7 @@ function LDAPshowEntries ($filter,$combine,$attribute,$display,$type) {
 		echo "</th></tr>\n";
 
 		// Create form for the Update-Button
-		echo "<form method=post action=\"ldap-mod-attributes.php?action=replace&type=$type\">";
+		echo "<form method='post' action=\"ldap-mod-attributes.php?action=replace&type=$type\">";
 
 		// Show Attributes
 		for ($x=0; $x < $object[$i]->num_of_attributes; $x++) {
@@ -164,7 +164,7 @@ function LDAPshowEntries ($filter,$combine,$attribute,$display,$type) {
 		echo "</form>";
 				
 		// Delete Entry
-		echo "\n<form action=\"ldap-del-entry.php?type=$type\" method=post>";
+		echo "\n<form action=\"ldap-del-entry.php?type=$type\" method='post'>";
 		echo "<td align='center'>";
 		echo "<input type=hidden name=dn value=\"".$dn."\">\n";
 		echo "<input type=submit value=\"".$lang["buttons"][6]."\"></td>\n";
@@ -172,7 +172,7 @@ function LDAPshowEntries ($filter,$combine,$attribute,$display,$type) {
 		echo "</form>\n";
 
 		// Add Attributes or Values
-		echo "\n<form action=\"ldap-mod-attributes.php?action=add&type=$type\" method=post>\n";
+		echo "\n<form action=\"ldap-mod-attributes.php?action=add&type=$type\" method='post'>\n";
 		echo "<tr class='tab_bg_1'><td>\n";
 		echo "<select name=attributes[]>\n";
 		for ($x=0; $x < count($object[$i]->attributes_req); $x++) {
@@ -209,7 +209,7 @@ function LDAPsearchForm($type,$target) {
 	$constructobject = "LDAP".$type;
 	$object = new $constructobject;
 	
-	echo "<center><form action=\"".$target."\" method=post>\n";
+	echo "<center><form action=\"".$target."\" method='post'>\n";
 	echo "<table border='0'><tr>";
 	echo "<th align='center'>".$lang["ldap"][1]." $type ".$lang["ldap"][2]."</th>";
 	echo "<th align='center'>".$lang["ldap"][3]."</th></tr>\n";
@@ -301,7 +301,7 @@ function LDAPprintForm ($objecttype,$error,$input) {
 	$object = new $createobject;
 	
 	// Print Form
-	echo "\n<center><form action=\"ldap-add-entry.php?type=$objecttype\" method=post>\n";
+	echo "\n<center><form action=\"ldap-add-entry.php?type=$objecttype\" method='post'>\n";
 	echo "<table class='tab_bg_1'>\n";
 	echo "<tr><th colspan=2 align='center'>".$lang["ldap"][4]." ($objecttype):</th></tr>\n";
 

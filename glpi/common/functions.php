@@ -220,11 +220,11 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 
 	// Main Headline
 			echo "<div id='navigation'>";
-	echo "<table  cellspacing='0' border='0' width=98%>";
+	echo "<table  cellspacing='0' border='0' width='98%'>";
 	echo "<tr>";
 	
 	// Logo with link to command center
-	echo "<td align='center' width=25% >\n";
+	echo "<td align='center' width='25%' >\n";
 	echo "<a href=\"".$cfg_install["root"]."/central.php\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\" border='0' alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>";
 	echo "</td>";
 
@@ -283,7 +283,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	// date and a logout-link.
 
 	echo "<td align='right' width=100><div align='right'>";
-	echo date("H")."<blink>:</blink>".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
+	echo date("H").":".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i><br><a href=\"".$cfg_install["root"]."/logout.php\"><img src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
 
 	// End navigation bar
@@ -292,7 +292,8 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 
 	// End headline
 
-	echo "</td></tr></form>";	
+	//echo "</td></tr></form>"; -> j'ai supprimé cette fermeture de balise form je vois pas à quoi elle sert
+	echo "</td></tr>";	
 echo "</table>\n";
 				echo "</div>";
 }
@@ -345,11 +346,11 @@ function helpHeader($title,$url,$name) {
 	// Main Headline
 				echo "<div id='navigation'>";
 
-	echo "<table cellspacing='0' border='0' width=98%>";
+	echo "<table cellspacing='0' border='0' width='98%'>";
 	echo "<tr>";
 	
 	// Logo with link to command center
-	echo "<td align='center' width=25%>\n";
+	echo "<td align='center' width='25%'>\n";
 	echo "<a href=\"".$cfg_install["root"]."/central.php\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" ></a>";
 	echo "</td>";
 
@@ -374,7 +375,7 @@ function helpHeader($title,$url,$name) {
 	// On the right side of the navigation bar, we have a clock with
 	// date and a logout-link.
 	echo "<td align='right' width=100><div align='right'>";
-	echo date("H")."<blink>:</blink>".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
+	echo date("H").":".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i><br><a href=\"".$cfg_install["root"]."/logout.php\"><img src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
 
 	// End navigation bar
@@ -383,7 +384,7 @@ function helpHeader($title,$url,$name) {
 	
 	// End headline
 
-	echo "</td></tr></form>";	
+	echo "</td></tr>";	
 	echo "</table>\n";
 				echo "</div>";
 }
@@ -435,11 +436,11 @@ function nullHeader($title,$url) {
 	// Main Headline
 				echo "<div id='navigation'>";
 
-	echo "<table cellspacing='0' border='0' width=98%>";
+	echo "<table cellspacing='0' border='0' width='98%'>";
 	echo "<tr>";
 	
 	// Logo with link to command center
-	echo "<td align='center' width=25%>\n";
+	echo "<td align='center' width='25%'>\n";
 	echo "<a href=\"".$cfg_install["root"]."/central.php\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\" border='0' alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" vspace=10></a>\n";
 	echo "</td>";
 
@@ -452,7 +453,7 @@ function nullHeader($title,$url) {
 	// On the right side of the navigation bar, we have a clock with
 	// date and a logout-link.
 	echo "<td align='right' width=100><div align='right'>";
-	echo date("H")."<blink>:</blink>".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
+	echo date("H").":".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i><br><a href=\"".$cfg_install["root"]."/logout.php\"><img src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
 
 	// End navigation bar
@@ -571,13 +572,13 @@ function showEvents($target,$order,$sort) {
 	}
 	echo "<a href=\"$target?sort=service&order=ASC\">".$lang["event"][2]."</a></th>";
 
-	echo "<th width=5%>";
+	echo "<th width='5%'>";
 	if ($sort=="level") {
 		echo "&middot;&nbsp;";	
 	}
 	echo "<a href=\"$target?sort=level&order=DESC\">".$lang["event"][3]."</a></th>";
 
-	echo "<th width=70%>";
+	echo "<th width='70%'>";
 	if ($sort=="message") {
 		echo "&middot;&nbsp;";	
 	}
@@ -593,7 +594,7 @@ function showEvents($target,$order,$sort) {
 		$message = $db->result($result, $i, "message");
 		
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>$itemtype:</td><td align='center'><b><nobr>";
+		echo "<td>$itemtype:</td><td align='center'><b>";
 		if ($item=="-1" || $item=="0") {
 			echo $item;
 		} else {
@@ -601,7 +602,7 @@ function showEvents($target,$order,$sort) {
 			echo $item;
 			echo "\">$item</a>";
 		}			
-		echo "</nobr></b></td><td><nobr>$date</nobr></td><td align='center'>$service</td><td align='center'>$level</td><td>$message</td>";
+		echo "</b></td><td>$date</td><td align='center'>$service</td><td align='center'>$level</td><td>$message</td>";
 		echo "</tr>";
 
 		$i++; 
@@ -757,7 +758,7 @@ function showConnectSearch($target,$ID) {
 	echo "<tr><th colspan=2>".$lang["connect"][4].":</th></tr>";
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<form method=post action=\"$target\">";
+	echo "<form method='post' action=\"$target\">";
 	echo "<td>".$lang["connect"][5]." <select name=type>";
 	echo "<option value=name>".$lang["connect"][6]."</option>";
 	echo "<option value=id>".$lang["connect"][7]."</option>";
@@ -783,7 +784,7 @@ function listConnectComputers($target,$input) {
 
 	echo "<center><table border='0'>";
 	echo "<tr><th colspan=2>".$lang["connect"][9].":</th></tr>";
-	echo "<form method=post action=\"$target\"><tr><td>";
+	echo "<form method='post' action=\"$target\"><tr><td>";
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
@@ -796,21 +797,21 @@ function listConnectComputers($target,$input) {
 	} 
 	$result = $db->query($query);
 	$number = $db->numrows($result);
-	echo "<select name=cID>";
+	echo "<select name=\"cID\">";
 	while ($i < $number) {
 		$dID = $db->result($result, $i, "ID");
 		$name = $db->result($result, $i, "name");
 		$location = $db->result($result, $i, "location");
-		echo "<option value=$dID>$name ($location)</option>";
+		echo "<option value=\"$dID>$name ($location)\"</option>";
 		$i++;
 	}
 	echo  "</select>";
 
 	echo "</td>";
 	echo "<td class='tab_bg_2' align='center'>";
-	echo "<input type=hidden name=sID value=\"".$input["pID1"]."\">";
-	echo "<input type=hidden name=connect value=3>";
-	echo "<input type=submit value=\"".$lang["buttons"][9]."\">";
+	echo "<input type='hidden' name='sID' value=\"".$input["pID1"]."\">";
+	echo "<input type='hidden' name='connect' value='3'>";
+	echo "<input type='submit' value=\"".$lang["buttons"][9]."\">";
 	echo "</td></form></tr></table>";	
 
 }
@@ -826,53 +827,53 @@ function printHelpDesk ($name) {
 	$email = $db->result($result,0,"email");
 	$realname = $db->result($result,0,"realname");
 
-	echo "<form method=post name=\"helpdeskform\" action=\"".$cfg_install["root"]."/tracking/tracking-injector.php\">";
+	echo "<form method='post' name=\"helpdeskform\" action=\"".$cfg_install["root"]."/tracking/tracking-injector.php\">";
 	echo "<center><table border='0'>";
 
-	echo "<tr><th colspan=2>".$lang["help"][0]." $realname, ".$lang["help"][1].":</th></tr>";
+	echo "<tr><th colspan='2'>".$lang["help"][0]." $realname, ".$lang["help"][1].":</th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$lang["help"][2].": </td>";
 	echo "<td><select name=priority>";
-	echo "<option value=5>".$lang["help"][3]."";
-	echo "<option value=4>".$lang["help"][4]."";
-	echo "<option value=3 selected>".$lang["help"][5]."";
-	echo"<option value=2>".$lang["help"][6]."";
-	echo "<option value=1>".$lang["help"][7]."";
+	echo "<option value='5'>".$lang["help"][3]."";
+	echo "<option value='4'>".$lang["help"][4]."";
+	echo "<option value='3 selected'>".$lang["help"][5]."";
+	echo"<option value='2'>".$lang["help"][6]."";
+	echo "<option value='1'>".$lang["help"][7]."";
 	echo "</select>";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$lang["help"][8].":</td>";
 	echo "<td>	<select name=emailupdates>";
-	echo "<option value=no selected>".$lang["help"][9]."";
-	echo "<option value=yes>".$lang["help"][10]."";
+	echo "<option value='no selected'>".$lang["help"][9]."";
+	echo "<option value='yes'>".$lang["help"][10]."";
 	echo "</select>";
 	echo "</td></tr>";
 
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$lang["help"][11].":</td>";
-	echo "<td>	<input name=uemail value=\"$email\" size=20>";
+	echo "<td>	<input name='uemail' value=\"$email\" size='20'>";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$lang["help"][12]." <a href=\"\" onClick=\"window.open('".$cfg_install["root"]."/find_num.php','Help','scrollbars=1,resizable=1,width=400,height=400')\"><img src=\"".$cfg_install["root"]."/pics/aide.png\" border='0' alt=\"help\"></a></td>";
-	echo "<td><input name=computer size=10>";
+	echo "<td><input name='computer' size='10'>";
 	echo "</td>";
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td colspan=2 align='center'>".$lang["help"][13].":</td>";
+	echo "<td colspan='2' align='center'>".$lang["help"][13].":</td>";
 	echo "</tr>";
 	echo "<tr class='tab_bg_1'>";
-	echo "<td colspan=2 align='center'><textarea name=contents cols=40 rows=20 wrap=soft></textarea>";
+	echo "<td colspan='2' align='center'><textarea name='contents' cols='40' rows='20' ></textarea>";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td colspan=2 align='center'> <input type=submit value=\"".$lang["help"][14]."\">";
+		echo "<input type='hidden' name='IRMName' value=\"$name\">";
 	echo "</td></tr>";
 
-	echo "<input type=hidden name=IRMName value=\"$name\">";
 	echo "</table>";
 	echo "</center>";
 	echo "</form>";

@@ -224,7 +224,7 @@ function showMonitorsForm ($target,$ID) {
 
 	$mon = new Monitor;
 
-	echo "<center><form method=post name=form action=\"$target\">";
+	echo "<center><form method='post' name=form action=\"$target\">";
 	echo "<table border='0' cellpadding=2>";
 	echo "<tr><th colspan=2><b>";
 	if (empty($ID)) {
@@ -359,7 +359,7 @@ echo "</td></tr>";
 
 	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign=top>";
 	echo $lang["monitors"][12].":	</td>";
-	echo "<td align='center'><textarea cols=35 rows=4 name=comments wrap=soft>".$mon->fields["comments"]."</textarea>";
+	echo "<td align='center'><textarea cols=35 rows=4 name=comments >".$mon->fields["comments"]."</textarea>";
 	echo "</td></tr></table>";
 
 	echo "</td>";
@@ -382,7 +382,7 @@ echo "</td></tr>";
 		echo "<input type=hidden name=ID value=\"$ID\">\n";
 		echo "<center><input type=submit name=update value=\"".$lang["buttons"][7]."\"></center>";
 		echo "</td></form>\n\n";
-		echo "<form action=\"$target\" method=post>\n";
+		echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign=top>\n";
 		echo "<input type=hidden name=ID value=\"$ID\">\n";
 		echo "<center><input type=submit name=delete value=\"".$lang["buttons"][6]."\"></center>";

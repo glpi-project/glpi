@@ -256,7 +256,7 @@ function showComputerForm ($template,$target,$ID) {
 			$date = $comp->fields["date_mod"];
 		}
 		echo "<center><table border='0'>";
-		echo "<form name=form method=post action=$target>";
+		echo "<form name=form method='post' action=$target>";
 		echo "<tr><th align='center'>";
 		if ($template) {
 			echo $lang["computers"][12].": ".$comp->fields["templname"];
@@ -295,7 +295,7 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</td></tr>";
 
 		echo "<tr><td valign=top>".$lang["computers"][19].":</td>";
-		echo "<td><textarea cols=20 rows=8 name=comments wrap=soft>".$comp->fields["comments"]."</textarea>";
+		echo "<td><textarea cols=20 rows=8 name=comments >".$comp->fields["comments"]."</textarea>";
 		echo "</td></tr>";
 
 		echo "</table>";
@@ -431,7 +431,7 @@ function showComputerForm ($template,$target,$ID) {
 			echo "<input type=submit name=update value=\"".$lang["buttons"][7]."\">";
 			echo "</td></form>\n";	
 			echo "<td class='tab_bg_2' align='center'>\n";
-			echo "<form method=post action=\"$target\">";
+			echo "<form method='post' action=\"$target\">";
 			echo "<input type=hidden name=ID value=$ID>";
 			echo "<input type=submit name=delete value=\"".$lang["buttons"][6]."\">";
 			echo "";
