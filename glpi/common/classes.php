@@ -249,6 +249,12 @@ class Identification
 // Gets the dn using anonymous Ldap login
  function ldap_get_dn($host,$ldap_base_dn,$login,$rdn,$rpass)
  {
+
+  // we prevent some delay...
+  if (empty($host)) {
+	return false;
+  }
+
   $ldap_server=$host;
   $ldap_login_attr = "uid";                          
   $ldap_dn ="";
