@@ -155,7 +155,7 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start) 
 		$query = "SELECT ID FROM glpi_tracking WHERE ".$where." and (device_type = '".$item_type."' and computer = '".$item."') ORDER BY date ".$prefs["order"]."";
 	}	
 	$lim_query = " LIMIT ".$start.",".$cfg_features["list_limit"]."";	
-
+	
 	$db = new DB;
 	$result = $db->query($query);
 	$numrows = $db->numrows($result);
@@ -177,6 +177,7 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start) 
 	$result = $db->query($query);
 	$i = 0;
 	$number = $db->numrows($result);
+
 	if ($number > 0) {
 		echo "<div align='center'><table class='tab_cadre' width='90%'>";
 		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
@@ -393,7 +394,6 @@ function showJobShort($ID, $followups	) {
 	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang;
 
 	// Make new job object and fill it from database, if success, print it
-
 	$job = new Job;
 
 	if ($job->getfromDB($ID,0))
@@ -920,16 +920,10 @@ function addFormTracking ($device_type,$ID,$author,$assign,$target,$error,$searc
 	}
 
 
-	echo "<tr class='tab_bg_1' align='center'><td>".$lang["joblist"][5].":</td>";
+	echo "<tr class='tab_bg_1' align='center'><td></td>";
 	echo "<td align='center' colspan='3'>";
-	$db=new DB;
-	$query = "SELECT name FROM glpi_computers WHERE (ID = $ID)";
-	$result = $db->query($query);
-	$computername = $db->result($result, 0, "name");
-	echo "$computername ($ID)"; 
 	echo "<input type='hidden' name='ID' value=\"$ID\">";
 	echo "<input type='hidden' name='device_type' value=\"$device_type\">";
-
 	echo "</td></tr>";
 
 	echo "<tr><td colspan='4' height='5'></td></tr>";
