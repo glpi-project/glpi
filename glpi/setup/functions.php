@@ -527,21 +527,30 @@ function searchFormUsers() {
 
 	reset($option);
 	foreach ($option as $key => $val) {
-		echo "<option value=$key>$val\n";
+		$selected="";
+		if ($_GET["field"]==$key) $selected="selected";
+		echo "<option value='$key' $selected>$val\n";
 	}
 	echo "</select>&nbsp;";
 	echo $lang["search"][1];
 	echo "&nbsp;<select name='phrasetype' size='1'>";
-	echo "<option value='contains'>".$lang["search"][2]."</option>";
-	echo "<option value='exact'>".$lang["search"][3]."</option>";
+	echo "<option value='contains' ";
+	if($_GET["phrasetype"] == "contains") echo "selected";
+	echo ">".$lang["search"][2]."</option>";
+	echo "<option value='exact' ";
+	if($_GET["phrasetype"] == "exact") echo "selected";
+	echo ">".$lang["search"][3]."</option>";
 	echo "</select>";
-	echo "<input type='text' size='12' name=\"contains\">";
+	echo "<input type='text' size='12' name=\"contains\" value=\"".$_GET["contains"]."\">";
 	echo "&nbsp;";
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
 	reset($option);
 	foreach ($option as $key => $val) {
-		echo "<option value=$key>$val\n";
+		$selected="";
+		if ($_GET["sort"]==$key) $selected="selected";
+
+		echo "<option value=$key $selected>$val\n";
 	}
 	echo "</select> ";
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
@@ -595,7 +604,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 	$query = "SELECT * FROM glpi_users  LEFT JOIN glpi_dropdown_locations on glpi_users.location=glpi_dropdown_locations.ID ";
 	$query.=" WHERE $where ORDER BY $sort $order";
 
-	// Get it from database	
+		// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);
 
