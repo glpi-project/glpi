@@ -710,7 +710,7 @@ $lang["install"][5]	= "V&eacute;rification de la compatibilit&eacute; de votre e
 $lang["install"][6]	= "Test effectu&eacute;";
 $lang["install"][7]	= "R&eacute;sultats";
 $lang["install"][8]	= "Test du Parser PHP";
-$lang["install"][9]	= "Vous devez installer  PHP4 Vous pouvez le t&eacute;l&eacute;charger ici : <a href='http://www.php.net'>www.php.net";
+$lang["install"][9]	= "Vous devez installer  PHP4 Vous pouvez le t&eacute;l&eacute;charger ici :";
 $lang["install"][10]	= "Vous utilisez une des versions 4.0.0 ou 4.0.1 de PHP - Nous vous conseillons de mettre  &#224; jour votre PHP"; 
 $lang["install"][11]	= "La version de PHP est 4.x - Parfait !"; 
 $lang["install"][12]	= "Test des Sessions"; 

@@ -222,7 +222,7 @@ global $lang;
 // PHP Version  - exclude PHP3
 	if (substr(phpversion(),0,1) == "3") {
 		$error = 2;
-		echo "<td>".$lang["install"][9]."</a>.\n</td>";
+		echo "<td>".$lang["install"][9]." <a href='http://www.php.net'>www.php.net</a>.\n</td>";
 	}
 	elseif (substr(phpversion(),0,3) == "4.0" and ereg("0|1",substr(phpversion(),4,1))) {
 		echo "<td><span class='wrong'>&nbsp;<td>".$lang["install"][10]."<td>";
@@ -390,7 +390,7 @@ function step3($host,$user,$password,$update)
                 
 	}
 	else {
-		echo $lang["install"][38]."<br />";
+		echo $lang["update"][93]."<br />";
 		if($update == "no") {
 			echo $lang["install"][38];
 			echo "<form action=\"install.php\" method=\"post\">";
