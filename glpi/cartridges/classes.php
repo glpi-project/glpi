@@ -79,6 +79,16 @@ class CartridgeType {
 			return false;
 		}
 	}
+	function restoreInDB($ID) {
+		$db = new DB;
+		$this->getFromDB($ID);
+		$query = "UPDATE glpi_cartridges_type SET deleted='N' WHERE (ID = '".$this->fields["ID"]."')";
+		if ($result = $db->query($query)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 	function updateInDB($updates)  {
 
@@ -135,7 +145,7 @@ class CartridgeType {
 	function deleteFromDB($ID) {
 
 		$db = new DB;
-		
+		$this->getFromDB($ID);		
 		if ($this->countCartridges()==0){
 			$query = "DELETE from glpi_cartridges_type WHERE ID = '$ID'";
 			if ($result = $db->query($query)) {
@@ -145,9 +155,8 @@ class CartridgeType {
 				if ($result2 = $db->query($query2)) {
 					$i=0;
 					while ($i < $db->numrows($result2)) {
-						$tID = $db->result($result2,$i,"ID");
-						$assoc = new CartrigdeTypeAssoc;
-						$assoc->deleteFromDB($tID);
+						$aID = $db->result($result2,$i,"ID");
+						deleteCompatibleType($aID);
 						$i++;
 					}			
 					return true;
@@ -155,6 +164,9 @@ class CartridgeType {
 			} else {
 				return false;
 			}
+		} else {
+		$query = "UPDATE glpi_cartridges_type SET deleted='Y' WHERE ID = '$ID'";		
+		return ($result = $db->query($query));
 		}
 	}
 	
