@@ -32,7 +32,7 @@ This file is part of GLPI.
 
 //Ce script génère ses propres messages d'erreur 
 //Pas besoin des warnings de PHP
-error_reporting(0);
+#error_reporting(0);
 
 
 
@@ -248,6 +248,20 @@ function step1($update)
 		
 	}
 // *********
+
+
+// Check for mysql extension ni php
+	echo "<tr><td><h4>".$lang["install"][71]."</h4></td>";
+	if(!function_exists("mysql_connect")) {
+		echo "<td>".$lang["install"][72]."</td></tr>";
+		$error = 2;
+	} else {
+		echo "<td>".$lang["install"][73]."</td></tr>";
+	}
+	
+
+// ***********
+
 // file test
 
 // il faut un test dans /dump et un dans /tmp pour phpexcel et /glpi/config/
@@ -369,7 +383,6 @@ function step3($host,$user,$password,$update)
 {
 
 	global $lang;
-	
 	error_reporting(16);
 	echo "<h3>".$lang["install"][34]."</h3>";
 	$link = mysql_connect($host,$user,$password);
