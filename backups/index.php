@@ -44,7 +44,10 @@ checkauthentication("admin");
 
 commonHeader("Setup",$_SERVER["PHP_SELF"]);
 
-// traduction du javascript a faire ...
+// Title backup
+echo " <div align='center'> <table border='0'><tr><td><b><img src=\"". $HTMLRel."pics/sauvegardes.png\"></td> <td><a href=\"javascript:dump('".$lang["backup"][19]."')\"  class='icon_consol'><b>". $lang["backup"][0]."</b></a></td><td><a href=\"javascript:xmlnow('".$lang["backup"][19]."')\" class='icon_consol'><b>". $lang["backup"][1]."</b></a></td></tr></table>";
+
+
 ?>
 <script language="JavaScript">
 <!--
@@ -485,7 +488,9 @@ if (backupMySql($db,$fichier,$duree,$rowlimit))
 
 }
 }
-else  echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt</p></div>";
+else  { //echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt</p></div>";
+
+}
 
 }	
 }
@@ -541,7 +546,8 @@ if (restoreMySqlDump($db,$path.$_GET["file"],$duree))
     echo "<script>window.location=\"index.php?file=".$_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt\";</script>";
 
 }
-} else    echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt<p></div>";
+} else   { //echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt<p></div>";
+}
 
 
 }
@@ -565,10 +571,7 @@ if (isset($_GET["delfile"]) && $_GET["delfile"] != ""){
 
 
  
-  <div align="center">
- <table border='0'><tr><td><b><img src="<?php echo $HTMLRel; ?>pics/sauvegardes.png" ></td>
- <td><a href="javascript:dump('<?php echo $lang["backup"][19];?>')" class='icon_consol'><b><?php echo $lang["backup"][0]; ?></b></a></td><td><a href="javascript:xmlnow('<?php echo $lang["backup"][19]; ?>')" class='icon_consol'><b><?php echo $lang["backup"][1]; ?></b></a></td></tr>
-</table>
+ 
 
 <br>
   <table border="0" cellpadding="5">
