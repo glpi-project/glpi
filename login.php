@@ -68,6 +68,10 @@ if (!$auth_succeded) {
      $auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$found_dn,$_POST['login_name'],$_POST['login_password'],$cfg_login['ldap']['condition']);
    }
 }
+// LDAP : Try now with the first base_dn
+if (!$auth_succeded) {
+$auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$_POST['login_name'],$_POST['login_password'],$cfg_login['ldap']['condition']);
+}
 
 if (!$auth_succeded) {
 	$auth_succeded = $identificat->connection_db($_POST['login_name'],$_POST['login_password']);
