@@ -45,7 +45,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1) {
 	echo "&nbsp;<div align='center'>";
 	
 	if (!$ic->getfromDB($device_type,$dev_ID)){
-		echo "<b><a href='$target?device_type=$device_type&FK_device=$dev_ID&add=add'>Activer les informations commerciales</a></b>";
+		echo "<b><a href='$target?device_type=$device_type&FK_device=$dev_ID&add=add'>Activer les informations commerciales</a></b><br>";
 	} else {
 
 		echo "<form name='form_ic' method='post' action=\"$target\"><div align='center'>";
