@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-03-08 23:18
+#GLPI Dump database on 2005-03-20 12:42
 ### Dump table glpi_cartridges
 
 DROP TABLE IF EXISTS glpi_cartridges;
@@ -41,11 +41,13 @@ CREATE TABLE glpi_cartridges_type (
     location int(11) DEFAULT '0' NOT NULL,
     type tinyint(4) DEFAULT '0' NOT NULL,
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
+    tech_num int(11) DEFAULT '0',
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
     comments text NOT NULL,
-    tech_num int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
-   KEY FK_glpi_enterprise (FK_glpi_enterprise)
+   KEY FK_glpi_enterprise (FK_glpi_enterprise),
+   KEY tech_num (tech_num),
+   KEY deleted (deleted)
 );
 
 ### Dump table glpi_computer_device
@@ -5562,77 +5564,82 @@ CREATE TABLE glpi_computers (
    KEY flags (flags_server),
    KEY location (location),
    KEY os (os),
-   KEY type (type)
+   KEY type (type),
+   KEY FK_glpi_enterprise (FK_glpi_enterprise),
+   KEY deleted (deleted),
+   KEY is_template (is_template),
+   KEY date_mod (date_mod),
+   KEY tech_num (tech_num)
 );
 
 INSERT INTO glpi_computers VALUES ('43','computer 43','0','serial 43','','contact 43','num 43','0','comment 43','2004-05-17 16:49:59','4','2','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('42','computer 42','0','serial 42','','contact 42','num 42','0','comment 42','2004-05-17 16:50:08','4','2','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('41','computer 41','0','serial 41','','contact 41','num 41','0','comment 41','2004-05-18 17:51:18','14','2','28','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('38','computer 38','0','serial 38','','contact 38','num 38','0','comment 38','2004-05-17 16:37:34','4','2','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('40','computer 40','0','serial 40','','contact 40','num 40','0','comment 40','2003-11-19 12:35:32','4','2','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('40','computer 40','0','serial 40','','contact 40','num 40','0','comment 40','2004-11-19 12:35:32','4','2','34','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('37','computer 37','0','serial 37','','contact 37','num 37','0','comment 37','2004-05-17 16:50:13','4','2','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('29','computer 29','0','serial 29','','contact 29','num 29','0','comment 29','2004-05-17 16:50:29','4','2','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('32','computer 32','0','serial 32','','contact 32','num 32','0','comment 32','2004-02-27 12:06:10','4','2','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('33','computer 33','0','serial 33','','contact 33','num 33','0','comment 33','2004-05-18 17:51:24','14','2','28','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('34','computer 34','0','serial 34','','contact 34','num 34','0','comment 34','2003-11-18 14:12:07','4','2','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('34','computer 34','0','serial 34','','contact 34','num 34','0','comment 34','2004-11-18 14:12:07','4','2','34','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('35','computer 35','0','serial 35','','contact 35','num 35','0','comment 35','2004-05-17 16:50:44','4','2','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('36','computer 36','0','serial 36','','contact 36','num 36','0','comment 36','2004-05-17 16:50:51','4','2','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('44','computer 44','0','serial 44','','contact 44','num 44','0','comment 44','2004-05-17 16:51:02','4','2','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('45','computer 45','0','serial 45','','contact 45','num 45','0','comment 45','2004-05-17 14:24:50','14','2','20','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('46','computer 46','0','serial 46','','contact 46','num 46','0','comment 46','2004-05-18 17:51:29','14','2','28','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('47','computer 47','0','serial 47','','contact 47','num 47','0','comment 47','2003-09-10 17:13:56','4','2','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('47','computer 47','0','serial 47','','contact 47','num 47','0','comment 47','2004-09-10 17:13:56','4','2','34','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('48','computer 48','0','serial 48','','contact 48','num 48','0','comment 48','2004-05-17 16:48:21','14','2','77','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('49','computer 49','0','serial 49','','contact 49','num 49','0','comment 49','2004-02-05 15:44:10','14','2','77','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('50','computer 50','0','serial 50','','contact 50','num 50','0','comment 50','2004-05-17 16:48:44','14','2','77','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('51','computer 51','0','serial 51','','contact 51','num 51','0','comment 51','2004-05-17 16:49:03','14','2','77','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('52','computer 52','0','serial 52','','contact 52','num 52','0','comment 52','2004-05-18 17:51:36','14','2','28','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('53','computer 53','0','serial 53','','contact 53','num 53','0','comment 53','2003-04-23 11:09:54','4','2','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('53','computer 53','0','serial 53','','contact 53','num 53','0','comment 53','2004-04-23 11:09:54','4','2','34','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('54','computer 54','0','serial 54','','contact 54','num 54','0','comment 54','2004-05-18 17:50:06','14','2','29','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('55','computer 55','0','serial 55','','contact 55','num 55','0','comment 55','2004-05-18 17:50:11','14','2','29','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('56','computer 56','0','serial 56','','contact 56','num 56','0','comment 56','2004-05-18 17:50:18','14','2','29','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('57','computer 57','0','serial 57','','contact 57','num 57','0','comment 57','2004-05-17 16:51:09','4','2','32','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('58','computer 58','0','serial 58','','contact 58','num 58','0','comment 58','2003-12-30 16:48:57','4','2','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('58','computer 58','0','serial 58','','contact 58','num 58','0','comment 58','2004-12-30 16:48:57','4','2','34','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('59','computer 59','0','serial 59','','contact 59','num 59','0','comment 59','2004-05-18 17:51:46','14','2','28','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('60','computer 60','0','serial 60','','contact 60','num 60','0','comment 60','2003-12-19 12:30:22','4','2','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('61','computer 61','0','serial 61','','contact 61','num 61','0','comment 61','2003-04-23 12:08:56','4','2','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('62','computer 62','0','serial 62','','contact 62','num 62','0','comment 62','2003-11-25 09:25:11','4','2','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('60','computer 60','0','serial 60','','contact 60','num 60','0','comment 60','2004-12-19 12:30:22','4','2','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('61','computer 61','0','serial 61','','contact 61','num 61','0','comment 61','2004-04-23 12:08:56','4','2','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('62','computer 62','0','serial 62','','contact 62','num 62','0','comment 62','2004-11-25 09:25:11','4','2','34','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('756','computer 756','0','serial 756','','contact 756','num 756','0','comment 756','2004-05-06 09:27:28','4','15','30','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('64','computer 64','0','serial 64','','contact 64','num 64','0','comment 64','2004-01-28 11:59:40','4','2','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('65','computer 65','0','serial 65','','contact 65','num 65','0','comment 65','2003-10-16 15:45:38','4','2','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('66','computer 66','0','serial 66','','contact 66','num 66','0','comment 66','2003-04-23 12:11:42','4','2','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('67','computer 67','0','serial 67','','contact 67','num 67','0','comment 67','2003-04-23 12:08:01','4','2','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('68','computer 68','0','serial 68','','contact 68','num 68','0','comment 68','2003-04-23 12:07:40','4','2','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('65','computer 65','0','serial 65','','contact 65','num 65','0','comment 65','2004-10-16 15:45:38','4','2','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('66','computer 66','0','serial 66','','contact 66','num 66','0','comment 66','2004-04-23 12:11:42','4','2','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('67','computer 67','0','serial 67','','contact 67','num 67','0','comment 67','2004-04-23 12:08:01','4','2','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('68','computer 68','0','serial 68','','contact 68','num 68','0','comment 68','2004-04-23 12:07:40','4','2','34','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('69','computer 69','0','serial 69','','contact 69','num 69','0','comment 69','2004-05-17 17:34:57','4','2','32','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('71','computer 71','0','serial 71','','contact 71','num 71','0','comment 71','2003-10-22 10:44:07','11','2','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('71','computer 71','0','serial 71','','contact 71','num 71','0','comment 71','2004-10-22 10:44:07','11','2','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('72','computer 72','0','serial 72','','contact 72','num 72','0','comment 72','2004-05-18 17:51:52','14','2','28','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('73','computer 73','0','serial 73','','contact 73','num 73','0','comment 73','2003-12-18 16:33:54','11','4','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('74','computer 74','0','serial 74','','contact 74','num 74','0','comment 74','2003-05-13 10:56:48','4','13','30','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('75','computer 75','0','serial 75','','contact 75','num 75','0','comment 75','2003-10-27 17:05:53','4','13','30','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('76','computer 76','0','serial 76','','contact 76','num 76','0','comment 76','2003-12-19 17:19:26','4','13','30','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('77','computer 77','0','serial 77','','contact 77','num 77','0','comment 77','2003-10-16 16:55:12','4','13','30','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('78','computer 78','0','serial 78','','contact 78','num 78','0','comment 78','2003-10-16 16:54:58','4','13','30','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('79','computer 79','0','serial 79','','contact 79','num 79','0','comment 79','2003-04-23 11:10:32','4','2','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('80','computer 80','0','serial 80','','contact 80','num 80','0','comment 80','2003-04-23 11:07:32','4','2','33','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('81','computer 81','0','serial 81','','contact 81','num 81','0','comment 81','2003-06-17 12:04:01','4','2','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('73','computer 73','0','serial 73','','contact 73','num 73','0','comment 73','2004-12-18 16:33:54','11','4','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('74','computer 74','0','serial 74','','contact 74','num 74','0','comment 74','2004-05-13 10:56:48','4','13','30','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('75','computer 75','0','serial 75','','contact 75','num 75','0','comment 75','2004-10-27 17:05:53','4','13','30','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('76','computer 76','0','serial 76','','contact 76','num 76','0','comment 76','2004-12-19 17:19:26','4','13','30','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('77','computer 77','0','serial 77','','contact 77','num 77','0','comment 77','2004-10-16 16:55:12','4','13','30','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('78','computer 78','0','serial 78','','contact 78','num 78','0','comment 78','2004-10-16 16:54:58','4','13','30','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('79','computer 79','0','serial 79','','contact 79','num 79','0','comment 79','2004-04-23 11:10:32','4','2','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('80','computer 80','0','serial 80','','contact 80','num 80','0','comment 80','2004-04-23 11:07:32','4','2','33','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('81','computer 81','0','serial 81','','contact 81','num 81','0','comment 81','2004-06-17 12:04:01','4','2','34','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('82','computer 82','0','serial 82','','contact 82','num 82','0','comment 82','2004-05-18 12:38:00','14','2','20','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('84','computer 84','0','serial 84','','contact 84','num 84','0','comment 84','2004-05-18 17:58:11','14','3','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('85','computer 85','0','serial 85','','contact 85','num 85','0','comment 85','2003-11-26 15:55:26','4','3','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('86','computer 86','0','serial 86','','contact 86','num 86','0','comment 86','2003-04-23 11:08:10','4','3','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('87','computer 87','0','serial 87','','contact 87','num 87','0','comment 87','2003-04-23 11:08:30','4','3','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('88','computer 88','0','serial 88','','contact 88','num 88','0','comment 88','2003-10-16 15:41:16','4','2','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('89','computer 89','0','serial 89','','contact 89','num 89','0','comment 89','2003-04-23 11:11:09','4','3','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('90','computer 90','0','serial 90','','contact 90','num 90','0','comment 90','2003-04-23 11:33:46','4','3','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('91','computer 91','0','serial 91','','contact 91','num 91','0','comment 91','2003-04-23 11:11:27','4','3','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('92','computer 92','0','serial 92','','contact 92','num 92','0','comment 92','2003-07-09 10:55:29','4','3','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('93','computer 93','0','serial 93','','contact 93','num 93','0','comment 93','2003-04-23 11:20:57','4','3','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('85','computer 85','0','serial 85','','contact 85','num 85','0','comment 85','2004-11-26 15:55:26','4','3','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('86','computer 86','0','serial 86','','contact 86','num 86','0','comment 86','2004-04-23 11:08:10','4','3','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('87','computer 87','0','serial 87','','contact 87','num 87','0','comment 87','2004-04-23 11:08:30','4','3','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('88','computer 88','0','serial 88','','contact 88','num 88','0','comment 88','2004-10-16 15:41:16','4','2','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('89','computer 89','0','serial 89','','contact 89','num 89','0','comment 89','2004-04-23 11:11:09','4','3','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('90','computer 90','0','serial 90','','contact 90','num 90','0','comment 90','2004-04-23 11:33:46','4','3','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('91','computer 91','0','serial 91','','contact 91','num 91','0','comment 91','2004-04-23 11:11:27','4','3','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('92','computer 92','0','serial 92','','contact 92','num 92','0','comment 92','2004-07-09 10:55:29','4','3','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('93','computer 93','0','serial 93','','contact 93','num 93','0','comment 93','2004-04-23 11:20:57','4','3','34','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('94','computer 94','0','serial 94','','contact 94','num 94','0','comment 94','2004-05-17 17:35:14','4','3','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('95','computer 95','0','serial 95','','contact 95','num 95','0','comment 95','2004-05-17 17:35:04','4','3','32','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('96','computer 96','0','serial 96','','contact 96','num 96','0','comment 96','2003-04-23 11:09:20','4','5','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('97','computer 97','0','serial 97','','contact 97','num 97','0','comment 97','2003-04-23 11:22:32','4','5','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('96','computer 96','0','serial 96','','contact 96','num 96','0','comment 96','2004-04-23 11:09:20','4','5','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('97','computer 97','0','serial 97','','contact 97','num 97','0','comment 97','2004-04-23 11:22:32','4','5','34','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('98','computer 98','0','serial 98','','contact 98','num 98','0','comment 98','2004-05-03 17:59:16','4','5','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('99','computer 99','0','serial 99','','contact 99','num 99','0','comment 99','2003-04-23 11:34:05','4','5','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('100','computer 100','0','serial 100','','contact 100','num 100','0','comment 100','2003-04-23 11:22:54','4','5','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('101','computer 101','0','serial 101','','contact 101','num 101','0','comment 101','2003-12-19 14:37:53','11','5','31','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('99','computer 99','0','serial 99','','contact 99','num 99','0','comment 99','2004-04-23 11:34:05','4','5','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('100','computer 100','0','serial 100','','contact 100','num 100','0','comment 100','2004-04-23 11:22:54','4','5','34','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('101','computer 101','0','serial 101','','contact 101','num 101','0','comment 101','2004-12-19 14:37:53','11','5','31','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('102','computer 102','0','serial 102','','contact 102','num 102','0','comment 102','2004-05-17 17:35:20','4','5','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('103','computer 103','0','serial 103','','contact 103','num 103','0','comment 103','2004-05-17 17:35:27','4','5','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('104','computer 104','0','serial 104','','contact 104','num 104','0','comment 104','2004-05-17 17:35:40','4','5','32','0',NULL,'0','N');
@@ -5642,15 +5649,15 @@ INSERT INTO glpi_computers VALUES ('107','computer 107','0','serial 107','','con
 INSERT INTO glpi_computers VALUES ('108','computer 108','0','serial 108','','contact 108','num 108','0','comment 108','2004-05-17 17:36:12','4','5','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('109','computer 109','0','serial 109','','contact 109','num 109','0','comment 109','2004-05-17 17:36:18','4','5','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('110','computer 110','0','serial 110','','contact 110','num 110','0','comment 110','2004-05-19 11:49:47','14','5','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('111','computer 111','0','serial 111','','contact 111','num 111','0','comment 111','2003-04-22 17:53:14','11','5','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('112','computer 112','0','serial 112','','contact 112','num 112','0','comment 112','2003-04-22 17:53:32','11','5','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('111','computer 111','0','serial 111','','contact 111','num 111','0','comment 111','2004-04-22 17:53:14','11','5','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('112','computer 112','0','serial 112','','contact 112','num 112','0','comment 112','2004-04-22 17:53:32','11','5','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('113','computer 113','0','serial 113','','contact 113','num 113','0','comment 113','2004-05-19 11:31:25','14','5','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('114','computer 114','0','serial 114','','contact 114','num 114','0','comment 114','2003-04-22 17:53:58','11','5','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('115','computer 115','0','serial 115','','contact 115','num 115','0','comment 115','2003-04-22 17:54:40','11','5','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('116','computer 116','0','serial 116','','contact 116','num 116','0','comment 116','2003-12-08 15:04:15','11','5','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('114','computer 114','0','serial 114','','contact 114','num 114','0','comment 114','2004-04-22 17:53:58','11','5','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('115','computer 115','0','serial 115','','contact 115','num 115','0','comment 115','2004-04-22 17:54:40','11','5','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('116','computer 116','0','serial 116','','contact 116','num 116','0','comment 116','2004-12-08 15:04:15','11','5','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('117','computer 117','0','serial 117','','contact 117','num 117','0','comment 117','2004-05-18 17:51:57','14','5','28','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('118','computer 118','0','serial 118','','contact 118','num 118','0','comment 118','2004-05-18 17:52:12','14','5','28','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('147','computer 147','0','serial 147','','contact 147','num 147','0','comment 147','2003-06-20 16:34:54','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('147','computer 147','0','serial 147','','contact 147','num 147','0','comment 147','2004-06-20 16:34:54','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('211','computer 211','0','serial 211','','contact 211','num 211','0','comment 211','2004-05-19 11:33:22','14','7','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('119','computer 119','0','serial 119','','contact 119','num 119','0','comment 119','2004-05-17 17:36:25','4','8','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('120','computer 120','0','serial 120','','contact 120','num 120','0','comment 120','2004-01-02 10:43:50','4','8','34','0',NULL,'0','N');
@@ -5658,12 +5665,12 @@ INSERT INTO glpi_computers VALUES ('121','computer 121','0','serial 121','','con
 INSERT INTO glpi_computers VALUES ('193','computer 193','0','serial 193','','contact 193','num 193','0','comment 193','2004-05-18 17:52:18','14','2','28','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('755','computer 755','0','serial 755','','contact 755','num 755','0','comment 755','2004-03-01 16:03:33','4','15','69','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('754','computer 754','0','serial 754','','contact 754','num 754','0','comment 754','2004-05-19 11:56:33','4','35','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('124','computer 124','0','serial 124','','contact 124','num 124','0','comment 124','2003-08-12 17:17:02','4','8','27','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('124','computer 124','0','serial 124','','contact 124','num 124','0','comment 124','2004-08-12 17:17:02','4','8','27','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('159','computer 159','0','serial 159','','contact 159','num 159','0','comment 159','2004-05-18 17:52:23','14','2','28','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('126','computer 126','0','serial 126','','contact 126','num 126','0','comment 126','2004-05-17 15:58:33','14','8','20','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('127','computer 127','0','serial 127','','contact 127','num 127','0','comment 127','2004-05-17 17:36:31','4','8','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('128','computer 128','0','serial 128','','contact 128','num 128','0','comment 128','2004-05-18 17:58:18','14','10','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('129','computer 129','0','serial 129','','contact 129','num 129','0','comment 129','2003-11-25 11:28:46','4','14','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('129','computer 129','0','serial 129','','contact 129','num 129','0','comment 129','2004-11-25 11:28:46','4','14','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('130','computer 130','0','serial 130','','contact 130','num 130','0','comment 130','2004-05-18 17:52:34','14','10','28','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('131','computer 131','0','serial 131','','contact 131','num 131','0','comment 131','2004-05-17 17:42:31','4','10','50','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('132','computer 132','0','serial 132','','contact 132','num 132','0','comment 132','2004-05-17 17:36:48','4','31','32','0',NULL,'0','N');
@@ -5681,15 +5688,15 @@ INSERT INTO glpi_computers VALUES ('143','computer 143','0','serial 143','','con
 INSERT INTO glpi_computers VALUES ('144','computer 144','0','serial 144','','contact 144','num 144','0','comment 144','2004-05-18 17:58:24','14','16','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('145','computer 145','0','serial 145','','contact 145','num 145','0','comment 145','2004-05-18 17:58:30','14','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('146','computer 146','0','serial 146','','contact 146','num 146','0','comment 146','2004-05-18 18:02:42','14','16','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('148','computer 148','0','serial 148','','contact 148','num 148','0','comment 148','2003-06-20 16:59:24','4','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('149','computer 149','0','serial 149','','contact 149','num 149','0','comment 149','2003-06-20 16:59:05','4','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('150','computer 150','0','serial 150','','contact 150','num 150','0','comment 150','2003-06-20 16:58:49','4','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('151','computer 151','0','serial 151','','contact 151','num 151','0','comment 151','2003-06-20 16:58:30','4','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('152','computer 152','0','serial 152','','contact 152','num 152','0','comment 152','2003-06-20 16:58:12','4','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('153','computer 153','0','serial 153','','contact 153','num 153','0','comment 153','2003-06-20 16:57:01','4','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('154','computer 154','0','serial 154','','contact 154','num 154','0','comment 154','2003-06-20 16:56:42','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('148','computer 148','0','serial 148','','contact 148','num 148','0','comment 148','2004-06-20 16:59:24','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('149','computer 149','0','serial 149','','contact 149','num 149','0','comment 149','2004-06-20 16:59:05','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('150','computer 150','0','serial 150','','contact 150','num 150','0','comment 150','2004-06-20 16:58:49','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('151','computer 151','0','serial 151','','contact 151','num 151','0','comment 151','2004-06-20 16:58:30','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('152','computer 152','0','serial 152','','contact 152','num 152','0','comment 152','2004-06-20 16:58:12','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('153','computer 153','0','serial 153','','contact 153','num 153','0','comment 153','2004-06-20 16:57:01','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('154','computer 154','0','serial 154','','contact 154','num 154','0','comment 154','2004-06-20 16:56:42','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('155','computer 155','0','serial 155','','contact 155','num 155','0','comment 155','2004-05-19 11:56:40','4','1','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('156','computer 156','0','serial 156','','contact 156','num 156','0','comment 156','2003-08-19 11:51:45','11','7','57','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('156','computer 156','0','serial 156','','contact 156','num 156','0','comment 156','2004-08-19 11:51:45','11','7','57','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('157','computer 157','0','serial 157','','contact 157','num 157','0','comment 157','2004-05-18 17:50:27','14','2','29','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('158','computer 158','0','serial 158','','contact 158','num 158','0','comment 158','2004-05-18 17:52:41','14','2','28','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('285','computer 285','0','serial 285','','contact 285','num 285','0','comment 285','2004-05-17 17:37:02','4','6','32','0',NULL,'0','N');
@@ -5704,15 +5711,15 @@ INSERT INTO glpi_computers VALUES ('169','computer 169','0','serial 169','','con
 INSERT INTO glpi_computers VALUES ('170','computer 170','0','serial 170','','contact 170','num 170','0','comment 170',NULL,'4','14','51','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('171','computer 171','0','serial 171','','contact 171','num 171','0','comment 171','2004-04-07 12:17:50','4','14','34','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('172','computer 172','0','serial 172','','contact 172','num 172','0','comment 172',NULL,'11','2','24','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('173','computer 173','0','serial 173','','contact 173','num 173','0','comment 173','2003-06-20 16:54:12','4','17','30','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('174','computer 174','0','serial 174','','contact 174','num 174','0','comment 174','2003-11-26 15:34:18','4','17','30','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('175','computer 175','0','serial 175','','contact 175','num 175','0','comment 175','2003-12-19 17:18:00','11','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('176','computer 176','0','serial 176','','contact 176','num 176','0','comment 176','2003-06-20 16:55:30','11','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('177','computer 177','0','serial 177','','contact 177','num 177','0','comment 177','2003-08-12 14:38:37','11','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('173','computer 173','0','serial 173','','contact 173','num 173','0','comment 173','2004-06-20 16:54:12','4','17','30','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('174','computer 174','0','serial 174','','contact 174','num 174','0','comment 174','2004-11-26 15:34:18','4','17','30','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('175','computer 175','0','serial 175','','contact 175','num 175','0','comment 175','2004-12-19 17:18:00','11','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('176','computer 176','0','serial 176','','contact 176','num 176','0','comment 176','2004-06-20 16:55:30','11','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('177','computer 177','0','serial 177','','contact 177','num 177','0','comment 177','2004-08-12 14:38:37','11','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('178','computer 178','0','serial 178','','contact 178','num 178','0','comment 178','2004-05-17 16:11:54','4','17','53','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('179','computer 179','0','serial 179','','contact 179','num 179','0','comment 179','2004-05-17 16:12:04','4','17','53','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('180','computer 180','0','serial 180','','contact 180','num 180','0','comment 180','2004-05-25 15:26:26','4','17','30','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('181','computer 181','0','serial 181','','contact 181','num 181','0','comment 181','2003-06-20 16:52:57','11','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('181','computer 181','0','serial 181','','contact 181','num 181','0','comment 181','2004-06-20 16:52:57','11','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('182','computer 182','0','serial 182','','contact 182','num 182','0','comment 182','2004-05-17 16:12:20','4','17','53','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('183','computer 183','0','serial 183','','contact 183','num 183','0','comment 183','2004-05-18 17:52:57','14','7','28','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('184','computer 184','0','serial 184','','contact 184','num 184','0','comment 184',NULL,'7','7','54','0',NULL,'0','N');
@@ -5746,10 +5753,10 @@ INSERT INTO glpi_computers VALUES ('214','computer 214','0','serial 214','','con
 INSERT INTO glpi_computers VALUES ('215','computer 215','0','serial 215','','contact 215','num 215','0','comment 215','2004-05-17 17:37:14','4','7','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('216','computer 216','0','serial 216','','contact 216','num 216','0','comment 216','2004-05-17 17:37:20','4','7','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('217','computer 217','0','serial 217','','contact 217','num 217','0','comment 217','2004-05-17 17:37:28','4','7','32','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('218','computer 218','0','serial 218','','contact 218','num 218','0','comment 218','2003-09-10 16:18:09','11','7','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('218','computer 218','0','serial 218','','contact 218','num 218','0','comment 218','2004-09-10 16:18:09','11','7','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('219','computer 219','0','serial 219','','contact 219','num 219','0','comment 219','2004-02-28 09:46:17','4','17','52','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('220','computer 220','0','serial 220','','contact 220','num 220','0','comment 220','2004-05-13 10:46:22','4','17','52','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('221','computer 221','0','serial 221','','contact 221','num 221','0','comment 221','2003-11-26 11:57:54','4','18','30','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('221','computer 221','0','serial 221','','contact 221','num 221','0','comment 221','2004-11-26 11:57:54','4','18','30','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('222','computer 222','0','serial 222','','contact 222','num 222','0','comment 222','2004-04-07 16:32:34','4','18','30','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('223','computer 223','0','serial 223','','contact 223','num 223','0','comment 223','2004-04-07 16:33:34','4','18','59','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('224','computer 224','0','serial 224','','contact 224','num 224','0','comment 224','2004-04-07 16:33:58','4','18','59','0',NULL,'0','N');
@@ -5770,8 +5777,8 @@ INSERT INTO glpi_computers VALUES ('238','computer 238','0','serial 238','','con
 INSERT INTO glpi_computers VALUES ('239','computer 239','0','serial 239','','contact 239','num 239','0','comment 239','2004-05-18 17:54:41','14','19','28','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('240','computer 240','0','serial 240','','contact 240','num 240','0','comment 240',NULL,'4','19','30','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('241','computer 241','0','serial 241','','contact 241','num 241','0','comment 241',NULL,'11','19','16','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('242','computer 242','1','serial 242','','contact 242','num 242','0','comment 242','2003-12-15 09:37:56','11','19','23','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('243','computer 243','0','serial 243','','contact 243','num 243','0','comment 243','2003-06-17 16:35:29','11','20','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('242','computer 242','1','serial 242','','contact 242','num 242','0','comment 242','2004-12-15 09:37:56','11','19','23','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('243','computer 243','0','serial 243','','contact 243','num 243','0','comment 243','2004-06-17 16:35:29','11','20','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('244','computer 244','0','serial 244','','contact 244','num 244','0','comment 244','2004-05-19 11:57:57','4','20','34','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('245','computer 245','0','serial 245','','contact 245','num 245','0','comment 245',NULL,'4','19','30','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('246','computer 246','0','serial 246','','contact 246','num 246','0','comment 246',NULL,'4','19','30','0',NULL,'0','N');
@@ -5800,7 +5807,7 @@ INSERT INTO glpi_computers VALUES ('268','computer 268','0','serial 268','','con
 INSERT INTO glpi_computers VALUES ('269','computer 269','0','serial 269','','contact 269','num 269','0','comment 269','2004-05-17 17:38:32','4','6','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('270','computer 270','0','serial 270','','contact 270','num 270','0','comment 270','2004-05-17 17:38:37','4','6','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('271','computer 271','0','serial 271','','contact 271','num 271','0','comment 271','2004-05-17 17:38:44','4','6','32','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('272','computer 272','0','serial 272','','contact 272','num 272','0','comment 272','2003-06-16 14:31:11','11','6','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('272','computer 272','0','serial 272','','contact 272','num 272','0','comment 272','2004-06-16 14:31:11','11','6','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('273','computer 273','0','serial 273','','contact 273','num 273','0','comment 273','2004-05-18 17:50:51','14','6','29','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('274','computer 274','0','serial 274','','contact 274','num 274','0','comment 274','2004-05-17 17:38:49','4','6','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('275','computer 275','0','serial 275','','contact 275','num 275','0','comment 275','2004-02-09 15:32:30','4','6','34','0',NULL,'0','N');
@@ -5839,26 +5846,26 @@ INSERT INTO glpi_computers VALUES ('309','computer 309','0','serial 309','','con
 INSERT INTO glpi_computers VALUES ('439','computer 439','0','serial 439','','contact 439','num 439','0','comment 439',NULL,'7','3','54','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('311','computer 311','0','serial 311','','contact 311','num 311','0','comment 311','2004-05-18 17:55:16','14','5','28','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('431','computer 431','0','serial 431','','contact 431','num 431','0','comment 431',NULL,'4','16','30','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('314','computer 314','0','serial 314','','contact 314','num 314','0','comment 314','2003-10-16 15:42:47','4','3','67','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('314','computer 314','0','serial 314','','contact 314','num 314','0','comment 314','2004-10-16 15:42:47','4','3','67','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('315','computer 315','0','serial 315','','contact 315','num 315','0','comment 315','2004-05-06 09:29:11','4','16','30','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('316','computer 316','0','serial 316','','contact 316','num 316','0','comment 316','2003-10-16 16:44:20','4','17','52','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('316','computer 316','0','serial 316','','contact 316','num 316','0','comment 316','2004-10-16 16:44:20','4','17','52','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('317','computer 317','0','serial 317','','contact 317','num 317','0','comment 317','2004-05-25 15:22:48','11','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('318','computer 318','0','serial 318','','contact 318','num 318','0','comment 318','2003-07-28 17:43:55','4','17','52','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('319','computer 319','0','serial 319','','contact 319','num 319','0','comment 319','2003-10-16 16:45:21','4','17','30','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('318','computer 318','0','serial 318','','contact 318','num 318','0','comment 318','2004-07-28 17:43:55','4','17','52','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('319','computer 319','0','serial 319','','contact 319','num 319','0','comment 319','2004-10-16 16:45:21','4','17','30','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('320','computer 320','0','serial 320','','contact 320','num 320','0','comment 320','2004-05-05 16:52:00','4','16','30','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('321','computer 321','0','serial 321','','contact 321','num 321','0','comment 321',NULL,'4','16','30','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('322','computer 322','0','serial 322','','contact 322','num 322','0','comment 322','2004-05-06 09:28:12','4','16','30','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('325','computer 325','0','serial 325','','contact 325','num 325','0','comment 325','2004-02-02 10:21:28','4','34','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('324','computer 324','0','serial 324','','contact 324','num 324','0','comment 324','2004-02-02 10:34:45','4','34','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('326','computer 326','0','serial 326','','contact 326','num 326','0','comment 326','2003-12-31 10:56:40','4','7','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('327','computer 327','0','serial 327','','contact 327','num 327','0','comment 327','2003-11-26 16:24:35','4','11','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('328','computer 328','0','serial 328','','contact 328','num 328','0','comment 328','2003-08-08 17:28:52','4','11','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('326','computer 326','0','serial 326','','contact 326','num 326','0','comment 326','2004-12-31 10:56:40','4','7','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('327','computer 327','0','serial 327','','contact 327','num 327','0','comment 327','2004-11-26 16:24:35','4','11','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('328','computer 328','0','serial 328','','contact 328','num 328','0','comment 328','2004-08-08 17:28:52','4','11','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('329','computer 329','0','serial 329','','contact 329','num 329','0','comment 329','2004-05-18 17:55:28','14','11','28','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('330','computer 330','0','serial 330','','contact 330','num 330','0','comment 330','2004-05-19 12:11:04','4','11','34','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('331','computer 331','0','serial 331','','contact 331','num 331','0','comment 331','2004-03-03 17:35:48','13','11','83','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('332','computer 332','0','serial 332','','contact 332','num 332','0','comment 332','2003-08-08 17:30:49','11','11','61','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('332','computer 332','0','serial 332','','contact 332','num 332','0','comment 332','2004-08-08 17:30:49','11','11','61','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('761','computer 761','0','serial 761','','contact 761','num 761','0','comment 761','2004-05-19 12:11:17','4','2','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('334','computer 334','0','serial 334','','contact 334','num 334','0','comment 334','2003-08-01 16:06:39','4','22','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('334','computer 334','0','serial 334','','contact 334','num 334','0','comment 334','2004-08-01 16:06:39','4','22','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('335','computer 335','0','serial 335','','contact 335','num 335','0','comment 335','2004-05-17 18:38:33','4','22','50','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('336','computer 336','0','serial 336','','contact 336','num 336','0','comment 336','2004-05-17 18:38:41','4','22','50','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('337','computer 337','0','serial 337','','contact 337','num 337','0','comment 337','2004-05-17 18:38:48','4','22','50','0',NULL,'0','N');
@@ -5874,15 +5881,15 @@ INSERT INTO glpi_computers VALUES ('346','computer 346','0','serial 346','','con
 INSERT INTO glpi_computers VALUES ('347','computer 347','0','serial 347','','contact 347','num 347','0','comment 347',NULL,'4','23','30','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('348','computer 348','0','serial 348','','contact 348','num 348','0','comment 348','2004-02-10 10:31:52','4','23','30','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('349','computer 349','0','serial 349','','contact 349','num 349','0','comment 349',NULL,'4','23','30','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('350','computer 350','0','serial 350','','contact 350','num 350','0','comment 350','2003-10-16 09:16:55','4','23','30','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('350','computer 350','0','serial 350','','contact 350','num 350','0','comment 350','2004-10-16 09:16:55','4','23','30','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('351','computer 351','0','serial 351','','contact 351','num 351','0','comment 351',NULL,'4','23','30','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('352','computer 352','0','serial 352','','contact 352','num 352','0','comment 352','2003-09-18 11:34:51','4','21','30','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('352','computer 352','0','serial 352','','contact 352','num 352','0','comment 352','2004-09-18 11:34:51','4','21','30','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('353','computer 353','0','serial 353','','contact 353','num 353','0','comment 353','2004-05-17 17:39:42','4','22','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('354','computer 354','0','serial 354','','contact 354','num 354','0','comment 354','2004-04-23 14:01:39','4','22','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('355','computer 355','0','serial 355','','contact 355','num 355','0','comment 355','2004-03-10 18:54:45','4','22','50','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('356','computer 356','0','serial 356','','contact 356','num 356','0','comment 356','2003-09-18 11:34:36','4','21','30','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('357','computer 357','0','serial 357','','contact 357','num 357','0','comment 357','2003-09-18 11:35:01','4','21','30','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('358','computer 358','0','serial 358','','contact 358','num 358','0','comment 358','2003-09-18 11:35:10','4','21','30','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('356','computer 356','0','serial 356','','contact 356','num 356','0','comment 356','2004-09-18 11:34:36','4','21','30','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('357','computer 357','0','serial 357','','contact 357','num 357','0','comment 357','2004-09-18 11:35:01','4','21','30','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('358','computer 358','0','serial 358','','contact 358','num 358','0','comment 358','2004-09-18 11:35:10','4','21','30','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('359','computer 359','0','serial 359','','contact 359','num 359','0','comment 359',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('360','computer 360','0','serial 360','','contact 360','num 360','0','comment 360',NULL,'4','23','30','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('361','computer 361','0','serial 361','','contact 361','num 361','0','comment 361','2004-02-10 10:32:17','4','23','30','0',NULL,'0','N');
@@ -5897,13 +5904,13 @@ INSERT INTO glpi_computers VALUES ('369','computer 369','0','serial 369','','con
 INSERT INTO glpi_computers VALUES ('370','computer 370','0','serial 370','','contact 370','num 370','0','comment 370',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('371','computer 371','0','serial 371','','contact 371','num 371','0','comment 371',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('372','computer 372','0','serial 372','','contact 372','num 372','0','comment 372',NULL,'4','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('373','computer 373','0','serial 373','','contact 373','num 373','0','comment 373','2003-11-26 16:04:15','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('373','computer 373','0','serial 373','','contact 373','num 373','0','comment 373','2004-11-26 16:04:15','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('374','computer 374','0','serial 374','','contact 374','num 374','0','comment 374',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('375','computer 375','0','serial 375','','contact 375','num 375','0','comment 375',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('376','computer 376','0','serial 376','','contact 376','num 376','0','comment 376',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('377','computer 377','0','serial 377','','contact 377','num 377','0','comment 377','2004-05-25 15:26:17','4','17','30','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('378','computer 378','0','serial 378','','contact 378','num 378','0','comment 378','2004-05-13 10:46:02','4','17','53','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('379','computer 379','0','serial 379','','contact 379','num 379','0','comment 379','2003-11-26 16:19:45','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('379','computer 379','0','serial 379','','contact 379','num 379','0','comment 379','2004-11-26 16:19:45','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('380','computer 380','0','serial 380','','contact 380','num 380','0','comment 380','2004-05-25 15:24:56','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('381','computer 381','0','serial 381','','contact 381','num 381','0','comment 381','2004-02-10 10:50:52','4','16','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('383','computer 383','0','serial 383','','contact 383','num 383','0','comment 383',NULL,'4','17','4','0',NULL,'0','N');
@@ -5918,20 +5925,20 @@ INSERT INTO glpi_computers VALUES ('391','computer 391','0','serial 391','','con
 INSERT INTO glpi_computers VALUES ('392','computer 392','0','serial 392','','contact 392','num 392','0','comment 392','2004-02-10 10:51:10','4','16','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('393','computer 393','0','serial 393','','contact 393','num 393','0','comment 393',NULL,'4','16','50','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('394','computer 394','0','serial 394','','contact 394','num 394','0','comment 394',NULL,'4','16','50','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('395','computer 395','0','serial 395','','contact 395','num 395','0','comment 395','2003-08-07 16:42:57','4','16','50','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('395','computer 395','0','serial 395','','contact 395','num 395','0','comment 395','2004-08-07 16:42:57','4','16','50','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('396','computer 396','0','serial 396','','contact 396','num 396','0','comment 396',NULL,'4','16','50','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('397','computer 397','0','serial 397','','contact 397','num 397','0','comment 397',NULL,'4','16','50','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('398','computer 398','0','serial 398','','contact 398','num 398','0','comment 398',NULL,'4','16','50','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('399','computer 399','0','serial 399','','contact 399','num 399','0','comment 399',NULL,'4','16','50','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('400','computer 400','0','serial 400','','contact 400','num 400','0','comment 400',NULL,'4','16','50','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('401','computer 401','0','serial 401','','contact 401','num 401','0','comment 401',NULL,'4','16','50','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('402','computer 402','0','serial 402','','contact 402','num 402','0','comment 402','2003-08-08 11:56:21','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('402','computer 402','0','serial 402','','contact 402','num 402','0','comment 402','2004-08-08 11:56:21','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('403','computer 403','0','serial 403','','contact 403','num 403','0','comment 403',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('404','computer 404','0','serial 404','','contact 404','num 404','0','comment 404',NULL,'4','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('405','computer 405','0','serial 405','','contact 405','num 405','0','comment 405','2003-11-26 16:22:54','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('405','computer 405','0','serial 405','','contact 405','num 405','0','comment 405','2004-11-26 16:22:54','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('406','computer 406','0','serial 406','','contact 406','num 406','0','comment 406','2004-02-16 16:41:04','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('407','computer 407','0','serial 407','','contact 407','num 407','0','comment 407','2004-05-13 10:45:38','4','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('408','computer 408','0','serial 408','','contact 408','num 408','0','comment 408','2003-09-18 14:27:30','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('408','computer 408','0','serial 408','','contact 408','num 408','0','comment 408','2004-09-18 14:27:30','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('409','computer 409','0','serial 409','','contact 409','num 409','0','comment 409','2004-05-05 16:52:11','4','16','30','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('410','computer 410','0','serial 410','','contact 410','num 410','0','comment 410','2004-05-06 09:27:57','4','16','30','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('411','computer 411','0','serial 411','','contact 411','num 411','0','comment 411','2004-02-10 10:50:35','4','16','30','0',NULL,'0','N');
@@ -5954,7 +5961,7 @@ INSERT INTO glpi_computers VALUES ('428','computer 428','0','serial 428','','con
 INSERT INTO glpi_computers VALUES ('429','computer 429','0','serial 429','','contact 429','num 429','0','comment 429',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('430','computer 430','0','serial 430','','contact 430','num 430','0','comment 430',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('432','computer 432','0','serial 432','','contact 432','num 432','0','comment 432',NULL,'4','16','30','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('433','computer 433','0','serial 433','','contact 433','num 433','0','comment 433','2003-12-10 17:54:42','4','2','19','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('433','computer 433','0','serial 433','','contact 433','num 433','0','comment 433','2004-12-10 17:54:42','4','2','19','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('434','computer 434','0','serial 434','','contact 434','num 434','0','comment 434','2004-05-17 15:55:50','14','8','20','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('435','computer 435','0','serial 435','','contact 435','num 435','0','comment 435','2004-05-17 17:39:30','4','8','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('436','computer 436','0','serial 436','','contact 436','num 436','0','comment 436','2004-05-17 17:39:58','4','8','32','0',NULL,'0','N');
@@ -5971,7 +5978,7 @@ INSERT INTO glpi_computers VALUES ('447','computer 447','0','serial 447','','con
 INSERT INTO glpi_computers VALUES ('448','computer 448','0','serial 448','','contact 448','num 448','0','comment 448',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('449','computer 449','0','serial 449','','contact 449','num 449','0','comment 449',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('450','computer 450','0','serial 450','','contact 450','num 450','0','comment 450',NULL,'4','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('451','computer 451','0','serial 451','','contact 451','num 451','0','comment 451','2003-10-21 16:28:11','11','12','24','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('451','computer 451','0','serial 451','','contact 451','num 451','0','comment 451','2004-10-21 16:28:11','11','12','24','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('453','computer 453','0','serial 453','','contact 453','num 453','0','comment 453',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('454','computer 454','0','serial 454','','contact 454','num 454','0','comment 454',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('455','computer 455','0','serial 455','','contact 455','num 455','0','comment 455',NULL,'4','17','4','0',NULL,'0','N');
@@ -5986,14 +5993,14 @@ INSERT INTO glpi_computers VALUES ('463','computer 463','0','serial 463','','con
 INSERT INTO glpi_computers VALUES ('464','computer 464','0','serial 464','','contact 464','num 464','0','comment 464',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('465','computer 465','0','serial 465','','contact 465','num 465','0','comment 465',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('466','computer 466','0','serial 466','','contact 466','num 466','0','comment 466',NULL,'4','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('467','computer 467','0','serial 467','','contact 467','num 467','0','comment 467','2003-12-19 17:18:30','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('467','computer 467','0','serial 467','','contact 467','num 467','0','comment 467','2004-12-19 17:18:30','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('468','computer 468','0','serial 468','','contact 468','num 468','0','comment 468',NULL,'4','17','50','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('469','computer 469','0','serial 469','','contact 469','num 469','0','comment 469',NULL,'4','17','50','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('470','computer 470','0','serial 470','','contact 470','num 470','0','comment 470','2003-09-26 15:20:48','4','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('471','computer 471','0','serial 471','','contact 471','num 471','0','comment 471','2003-09-26 15:21:04','4','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('472','computer 472','0','serial 472','','contact 472','num 472','0','comment 472','2003-09-26 15:19:34','4','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('473','computer 473','0','serial 473','','contact 473','num 473','0','comment 473','2003-11-26 16:07:57','4','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('474','computer 474','0','serial 474','','contact 474','num 474','0','comment 474','2003-11-26 16:07:05','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('470','computer 470','0','serial 470','','contact 470','num 470','0','comment 470','2004-09-26 15:20:48','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('471','computer 471','0','serial 471','','contact 471','num 471','0','comment 471','2004-09-26 15:21:04','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('472','computer 472','0','serial 472','','contact 472','num 472','0','comment 472','2004-09-26 15:19:34','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('473','computer 473','0','serial 473','','contact 473','num 473','0','comment 473','2004-11-26 16:07:57','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('474','computer 474','0','serial 474','','contact 474','num 474','0','comment 474','2004-11-26 16:07:05','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('475','computer 475','0','serial 475','','contact 475','num 475','0','comment 475',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('476','computer 476','0','serial 476','','contact 476','num 476','0','comment 476',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('477','computer 477','0','serial 477','','contact 477','num 477','0','comment 477',NULL,'4','17','4','0',NULL,'0','N');
@@ -6004,25 +6011,25 @@ INSERT INTO glpi_computers VALUES ('481','computer 481','0','serial 481','','con
 INSERT INTO glpi_computers VALUES ('482','computer 482','0','serial 482','','contact 482','num 482','0','comment 482',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('483','computer 483','0','serial 483','','contact 483','num 483','0','comment 483','2004-02-16 16:55:40','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('484','computer 484','0','serial 484','','contact 484','num 484','0','comment 484','2004-03-24 11:05:49','4','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('485','computer 485','0','serial 485','','contact 485','num 485','0','comment 485','2003-11-26 16:16:43','4','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('486','computer 486','0','serial 486','','contact 486','num 486','0','comment 486','2003-11-26 16:02:43','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('485','computer 485','0','serial 485','','contact 485','num 485','0','comment 485','2004-11-26 16:16:43','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('486','computer 486','0','serial 486','','contact 486','num 486','0','comment 486','2004-11-26 16:02:43','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('487','computer 487','0','serial 487','','contact 487','num 487','0','comment 487','2004-02-12 17:30:25','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('488','computer 488','0','serial 488','','contact 488','num 488','0','comment 488',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('489','computer 489','0','serial 489','','contact 489','num 489','0','comment 489','2004-02-19 16:41:25','4','23','30','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('490','computer 490','0','serial 490','','contact 490','num 490','0','comment 490','2004-03-24 11:23:49','4','17','30','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('491','computer 491','0','serial 491','','contact 491','num 491','0','comment 491','2003-10-16 16:44:43','4','17','30','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('491','computer 491','0','serial 491','','contact 491','num 491','0','comment 491','2004-10-16 16:44:43','4','17','30','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('492','computer 492','0','serial 492','','contact 492','num 492','0','comment 492',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('493','computer 493','0','serial 493','','contact 493','num 493','0','comment 493','2004-05-06 09:25:24','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('494','computer 494','0','serial 494','','contact 494','num 494','0','comment 494','2004-05-17 16:29:28','14','2','77','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('495','computer 495','0','serial 495','','contact 495','num 495','0','comment 495','2003-10-23 16:10:36','11','12','24','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('495','computer 495','0','serial 495','','contact 495','num 495','0','comment 495','2004-10-23 16:10:36','11','12','24','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('496','computer 496','0','serial 496','','contact 496','num 496','0','comment 496','2004-05-06 09:25:08','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('497','computer 497','0','serial 497','','contact 497','num 497','0','comment 497','2004-05-06 09:24:50','4','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('498','computer 498','0','serial 498','','contact 498','num 498','0','comment 498','2003-11-26 16:18:26','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('498','computer 498','0','serial 498','','contact 498','num 498','0','comment 498','2004-11-26 16:18:26','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('499','computer 499','0','serial 499','','contact 499','num 499','0','comment 499','2004-05-18 18:02:48','14','14','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('500','computer 500','0','serial 500','','contact 500','num 500','0','comment 500','2004-03-16 17:16:41','14','14','77','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('501','computer 501','0','serial 501','','contact 501','num 501','0','comment 501',NULL,'4','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('502','computer 502','0','serial 502','','contact 502','num 502','0','comment 502','2003-11-26 16:16:14','4','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('503','computer 503','0','serial 503','','contact 503','num 503','0','comment 503','2003-11-26 16:15:29','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('502','computer 502','0','serial 502','','contact 502','num 502','0','comment 502','2004-11-26 16:16:14','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('503','computer 503','0','serial 503','','contact 503','num 503','0','comment 503','2004-11-26 16:15:29','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('504','computer 504','0','serial 504','','contact 504','num 504','0','comment 504',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('505','computer 505','0','serial 505','','contact 505','num 505','0','comment 505','2004-02-26 15:59:45','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('506','computer 506','0','serial 506','','contact 506','num 506','0','comment 506','2004-01-21 16:12:25','4','27','4','0',NULL,'0','N');
@@ -6030,7 +6037,7 @@ INSERT INTO glpi_computers VALUES ('507','computer 507','0','serial 507','','con
 INSERT INTO glpi_computers VALUES ('508','computer 508','0','serial 508','','contact 508','num 508','0','comment 508','2004-01-21 16:52:48','4','27','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('509','computer 509','0','serial 509','','contact 509','num 509','0','comment 509','2004-01-21 17:14:41','4','27','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('510','computer 510','0','serial 510','','contact 510','num 510','0','comment 510','2004-01-21 16:54:07','4','27','50','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('511','computer 511','0','serial 511','','contact 511','num 511','0','comment 511','2003-11-25 09:59:51','4','27','69','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('511','computer 511','0','serial 511','','contact 511','num 511','0','comment 511','2004-11-25 09:59:51','4','27','69','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('512','computer 512','0','serial 512','','contact 512','num 512','0','comment 512','2004-01-21 17:12:33','4','27','15','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('513','computer 513','0','serial 513','','contact 513','num 513','0','comment 513',NULL,'4','27','52','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('514','computer 514','0','serial 514','','contact 514','num 514','0','comment 514','2004-02-04 11:33:26','14','27','77','0',NULL,'0','N');
@@ -6051,7 +6058,7 @@ INSERT INTO glpi_computers VALUES ('529','computer 529','0','serial 529','','con
 INSERT INTO glpi_computers VALUES ('530','computer 530','0','serial 530','','contact 530','num 530','0','comment 530','2004-02-16 16:26:29','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('531','computer 531','0','serial 531','','contact 531','num 531','0','comment 531',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('532','computer 532','0','serial 532','','contact 532','num 532','0','comment 532',NULL,'4','17','4','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('533','computer 533','0','serial 533','','contact 533','num 533','0','comment 533','2003-10-23 16:03:21','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('533','computer 533','0','serial 533','','contact 533','num 533','0','comment 533','2004-10-23 16:03:21','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('534','computer 534','0','serial 534','','contact 534','num 534','0','comment 534','2004-04-13 12:24:02','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('535','computer 535','0','serial 535','','contact 535','num 535','0','comment 535',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('536','computer 536','0','serial 536','','contact 536','num 536','0','comment 536',NULL,'4','17','4','0',NULL,'0','N');
@@ -6061,7 +6068,7 @@ INSERT INTO glpi_computers VALUES ('539','computer 539','0','serial 539','','con
 INSERT INTO glpi_computers VALUES ('540','computer 540','0','serial 540','','contact 540','num 540','0','comment 540',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('541','computer 541','0','serial 541','','contact 541','num 541','0','comment 541','2004-02-10 10:21:06','4','17','52','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('542','computer 542','0','serial 542','','contact 542','num 542','0','comment 542','2004-05-05 16:32:55','4','17','52','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('543','computer 543','0','serial 543','','contact 543','num 543','0','comment 543','2003-10-24 16:22:09','4','17','4','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('543','computer 543','0','serial 543','','contact 543','num 543','0','comment 543','2004-10-24 16:22:09','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('544','computer 544','0','serial 544','','contact 544','num 544','0','comment 544','2004-02-26 15:59:26','4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('766','computer 766','0','serial 766','','contact 766','num 766','0','comment 766','2004-03-18 09:16:53','14','3','77','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('545','computer 545','0','serial 545','','contact 545','num 545','0','comment 545','2004-02-02 10:35:46','4','34','4','0',NULL,'0','N');
@@ -6088,21 +6095,21 @@ INSERT INTO glpi_computers VALUES ('566','computer 566','0','serial 566','','con
 INSERT INTO glpi_computers VALUES ('567','computer 567','0','serial 567','','contact 567','num 567','0','comment 567',NULL,'7','28','11','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('568','computer 568','0','serial 568','','contact 568','num 568','0','comment 568',NULL,'7','28','54','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('569','computer 569','0','serial 569','','contact 569','num 569','0','comment 569','2004-05-17 17:40:10','4','28','32','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('570','computer 570','0','serial 570','','contact 570','num 570','0','comment 570','2003-11-19 09:13:05','7','28','54','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('570','computer 570','0','serial 570','','contact 570','num 570','0','comment 570','2004-11-19 09:13:05','7','28','54','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('571','computer 571','0','serial 571','','contact 571','num 571','0','comment 571',NULL,'7','28','54','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('572','computer 572','0','serial 572','','contact 572','num 572','0','comment 572','2004-05-17 17:40:19','4','28','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('573','computer 573','0','serial 573','','contact 573','num 573','0','comment 573',NULL,'11','28','74','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('574','computer 574','0','serial 574','','contact 574','num 574','0','comment 574','2004-05-17 17:40:31','4','20','32','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('575','computer 575','0','serial 575','','contact 575','num 575','0','comment 575','2003-11-26 16:28:23','4','29','32','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('576','computer 576','0','serial 576','','contact 576','num 576','0','comment 576','2003-11-26 16:28:36','4','29','32','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('577','computer 577','0','serial 577','','contact 577','num 577','0','comment 577','2003-11-26 16:28:44','4','29','32','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('578','computer 578','0','serial 578','','contact 578','num 578','0','comment 578','2003-11-26 16:28:51','4','29','32','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('575','computer 575','0','serial 575','','contact 575','num 575','0','comment 575','2004-11-26 16:28:23','4','29','32','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('576','computer 576','0','serial 576','','contact 576','num 576','0','comment 576','2004-11-26 16:28:36','4','29','32','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('577','computer 577','0','serial 577','','contact 577','num 577','0','comment 577','2004-11-26 16:28:44','4','29','32','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('578','computer 578','0','serial 578','','contact 578','num 578','0','comment 578','2004-11-26 16:28:51','4','29','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('579','computer 579','0','serial 579','','contact 579','num 579','0','comment 579','2004-01-21 16:39:46','4','29','32','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('580','computer 580','0','serial 580','','contact 580','num 580','0','comment 580','2003-11-26 14:45:57','7','29','70','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('581','computer 581','0','serial 581','','contact 581','num 581','0','comment 581','2003-11-21 10:43:21','7','29','70','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('580','computer 580','0','serial 580','','contact 580','num 580','0','comment 580','2004-11-26 14:45:57','7','29','70','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('581','computer 581','0','serial 581','','contact 581','num 581','0','comment 581','2004-11-21 10:43:21','7','29','70','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('582','computer 582','0','serial 582','','contact 582','num 582','0','comment 582','2004-01-21 17:04:58','7','29','70','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('583','computer 583','0','serial 583','','contact 583','num 583','0','comment 583','2004-01-21 17:00:21','4','29','34','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('584','computer 584','0','serial 584','','contact 584','num 584','0','comment 584','2003-11-14 18:14:53','7','29','5','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('584','computer 584','0','serial 584','','contact 584','num 584','0','comment 584','2004-11-14 18:14:53','7','29','5','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('585','computer 585','0','serial 585','','contact 585','num 585','0','comment 585','2004-01-21 17:08:34','4','27','52','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('586','computer 586','0','serial 586','','contact 586','num 586','0','comment 586','2004-05-17 18:43:46','14','4','20','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('587','computer 587','0','serial 587','','contact 587','num 587','0','comment 587','2004-05-17 18:43:59','14','4','20','0',NULL,'0','N');
@@ -6113,10 +6120,10 @@ INSERT INTO glpi_computers VALUES ('592','computer 592','0','serial 592','','con
 INSERT INTO glpi_computers VALUES ('593','computer 593','0','serial 593','','contact 593','num 593','0','comment 593',NULL,'13','30','75','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('594','computer 594','0','serial 594','','contact 594','num 594','0','comment 594',NULL,'13','30','75','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('595','computer 595','0','serial 595','','contact 595','num 595','0','comment 595',NULL,'13','30','75','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('596','computer 596','0','serial 596','','contact 596','num 596','0','comment 596','2003-11-19 16:17:57','13','30','75','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('596','computer 596','0','serial 596','','contact 596','num 596','0','comment 596','2004-11-19 16:17:57','13','30','75','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('597','computer 597','0','serial 597','','contact 597','num 597','0','comment 597',NULL,'13','30','75','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('598','computer 598','0','serial 598','','contact 598','num 598','0','comment 598','2003-11-21 10:23:24','12','29','70','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('599','computer 599','0','serial 599','','contact 599','num 599','0','comment 599','2003-11-21 10:30:58','12','29','76','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('598','computer 598','0','serial 598','','contact 598','num 598','0','comment 598','2004-11-21 10:23:24','12','29','70','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('599','computer 599','0','serial 599','','contact 599','num 599','0','comment 599','2004-11-21 10:30:58','12','29','76','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('600','computer 600','0','serial 600','','contact 600','num 600','0','comment 600','2004-02-04 11:46:32','14','2','77','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('601','computer 601','0','serial 601','','contact 601','num 601','0','comment 601','2004-02-04 11:31:05','14','2','77','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('602','computer 602','1','serial 602','','contact 602','num 602','0','comment 602','2004-05-19 12:12:47','4','2','34','0',NULL,'0','N');
@@ -6130,12 +6137,12 @@ INSERT INTO glpi_computers VALUES ('608','computer 608','0','serial 608','','con
 INSERT INTO glpi_computers VALUES ('609','computer 609','0','serial 609','','contact 609','num 609','0','comment 609','2004-02-04 11:33:48','14','14','77','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('610','computer 610','0','serial 610','','contact 610','num 610','0','comment 610','2004-02-04 11:38:15','14','5','77','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('611','computer 611','0','serial 611','','contact 611','num 611','0','comment 611','2004-02-04 11:44:08','14','14','77','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('612','computer 612','0','serial 612','','contact 612','num 612','0','comment 612','2003-12-31 10:56:18','8','7','78','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('612','computer 612','0','serial 612','','contact 612','num 612','0','comment 612','2004-12-31 10:56:18','8','7','78','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('616','computer 616','0','serial 616','','contact 616','num 616','0','comment 616','2004-02-04 11:44:35','14','17','77','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('617','computer 617','1','serial 617','','contact 617','num 617','0','comment 617','2004-03-10 14:48:19','2','2','28','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('618','computer 618','0','serial 618','','contact 618','num 618','0','comment 618','2004-05-17 18:44:25','14','14','20','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('619','computer 619','0','serial 619','','contact 619','num 619','0','comment 619','2004-05-17 18:44:32','14','14','20','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('620','computer 620','0','serial 620','','contact 620','num 620','0','comment 620','2003-12-17 10:14:37','4','17','52','0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('620','computer 620','0','serial 620','','contact 620','num 620','0','comment 620','2004-12-17 10:14:37','4','17','52','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('621','computer 621','0','serial 621','','contact 621','num 621','0','comment 621',NULL,'4','17','4','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('622','computer 622','0','serial 622','','contact 622','num 622','0','comment 622','2004-02-02 13:55:42','4','1','32','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('623','computer 623','0','serial 623','','contact 623','num 623','0','comment 623',NULL,'4','1','32','0',NULL,'0','N');
@@ -7403,7 +7410,6 @@ INSERT INTO glpi_connect_wire VALUES ('1056','316','299','3');
 INSERT INTO glpi_connect_wire VALUES ('1057','718','796','4');
 INSERT INTO glpi_connect_wire VALUES ('1061','319','105','3');
 INSERT INTO glpi_connect_wire VALUES ('1065','320','197','3');
-INSERT INTO glpi_connect_wire VALUES ('1066','100','0','0');
 ### Dump table glpi_contact_enterprise
 
 DROP TABLE IF EXISTS glpi_contact_enterprise;
@@ -7430,7 +7436,9 @@ CREATE TABLE glpi_contacts (
     type tinyint(4) DEFAULT '1' NOT NULL,
     comments text NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
-   PRIMARY KEY (ID)
+   PRIMARY KEY (ID),
+   KEY deleted (deleted),
+   KEY type (type)
 );
 
 ### Dump table glpi_contract_device
@@ -7583,7 +7591,8 @@ CREATE TABLE glpi_contracts (
     monday enum('Y','N') DEFAULT 'N' NOT NULL,
    PRIMARY KEY (ID),
    KEY contract_type (contract_type),
-   KEY begin_date (begin_date)
+   KEY begin_date (begin_date),
+   KEY bill_type (bill_type)
 );
 
 INSERT INTO glpi_contracts VALUES ('1','Maintenance','','0','5','2005-01-01','120','0','0','0','0','','','N','00:00:00','00:00:00','00:00:00','00:00:00','N','00:00:00','00:00:00','N');
@@ -7777,6 +7786,7 @@ CREATE TABLE glpi_docs (
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
    PRIMARY KEY (ID),
    KEY rubrique (rubrique),
+   KEY deleted (deleted),
    KEY date_mod (date_mod)
 );
 
@@ -7843,7 +7853,7 @@ CREATE TABLE glpi_dropdown_locations (
    KEY parentID (parentID)
 );
 
-INSERT INTO glpi_dropdown_locations VALUES ('37','ROOT','0');
+INSERT INTO glpi_dropdown_locations VALUES ('37','RACINE','0');
 INSERT INTO glpi_dropdown_locations VALUES ('1','CNR','37');
 INSERT INTO glpi_dropdown_locations VALUES ('2','3 ieme','37');
 INSERT INTO glpi_dropdown_locations VALUES ('3','2nd','37');
@@ -9891,6 +9901,7 @@ INSERT INTO glpi_dropdown_netpoint VALUES ('1997','21','netpoint 1996');
 INSERT INTO glpi_dropdown_netpoint VALUES ('1998','3','netpoint 1997');
 INSERT INTO glpi_dropdown_netpoint VALUES ('1999','15','netpoint 1998');
 INSERT INTO glpi_dropdown_netpoint VALUES ('2000','5','netpoint 1999');
+
 ### Dump table glpi_dropdown_os
 
 DROP TABLE IF EXISTS glpi_dropdown_os;
@@ -9957,7 +9968,9 @@ CREATE TABLE glpi_enterprises (
     phonenumber varchar(20) NOT NULL,
     comments text NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
-   PRIMARY KEY (ID)
+   PRIMARY KEY (ID),
+   KEY deleted (deleted),
+   KEY type (type)
 );
 
 ### Dump table glpi_event_log
@@ -9973,14 +9986,11 @@ CREATE TABLE glpi_event_log (
     message text NOT NULL,
    PRIMARY KEY (ID),
    KEY comp (item),
-   KEY date (date)
+   KEY date (date),
+   KEY itemtype (itemtype)
 );
 
-INSERT INTO glpi_event_log VALUES ('13765','-1','system','2005-03-08 23:14:16','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('13764','0','networking','2005-03-08 22:56:43','inventory','5','glpi deleted networking port.');
-INSERT INTO glpi_event_log VALUES ('13763','0','networking','2005-03-08 22:55:47','inventory','5','glpi added networking port.');
-INSERT INTO glpi_event_log VALUES ('13762','-1','system','2005-03-08 22:51:55','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('13761','-1','system','2005-03-08 22:46:32','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('13761','-1','system','2005-03-20 12:41:47','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -9992,7 +10002,8 @@ CREATE TABLE glpi_followups (
     contents text,
    PRIMARY KEY (ID),
    KEY tracking (tracking),
-   KEY author (author)
+   KEY author (author),
+   KEY date (date)
 );
 
 INSERT INTO glpi_followups VALUES ('1','4','2003-02-12 15:20:18','glpi','j\'ai fait ca et ca doit marcher  mais je suis pas sur en fait bref 1');
@@ -12234,7 +12245,7 @@ CREATE TABLE glpi_infocoms (
    KEY buy_date (buy_date)
 );
 
-INSERT INTO glpi_infocoms VALUES ('1','778','1','2005-03-08','0000-00-00','2','',NULL,'','','','0',NULL,'0','','0','');
+INSERT INTO glpi_infocoms VALUES ('1','778','1','2005-03-20','0000-00-00','2','',NULL,'','','','0',NULL,'0','','0','');
 INSERT INTO glpi_infocoms VALUES ('2','79','1','1997-10-22','0000-00-00','36','',NULL,'','','','0',NULL,'0','','0','');
 INSERT INTO glpi_infocoms VALUES ('3','80','1','1998-11-19','0000-00-00','36','',NULL,'','','','0',NULL,'0','','0','');
 INSERT INTO glpi_infocoms VALUES ('4','176','1','1999-05-01','0000-00-00','0','',NULL,'','','','0',NULL,'0','','0','');
@@ -12320,19 +12331,19 @@ INSERT INTO glpi_infocoms VALUES ('83','107','1','2002-09-16','0000-00-00','36',
 INSERT INTO glpi_infocoms VALUES ('84','133','1','2002-09-16','0000-00-00','36','',NULL,'','','','0',NULL,'0','','0','');
 INSERT INTO glpi_infocoms VALUES ('85','119','1','2002-11-14','0000-00-00','36','',NULL,'','','','0',NULL,'0','','0','');
 INSERT INTO glpi_infocoms VALUES ('86','127','1','2002-11-14','0000-00-00','36','',NULL,'','','','0',NULL,'0','','0','');
-INSERT INTO glpi_infocoms VALUES ('87','33','1','2003-02-17','0000-00-00','24','',NULL,'','','','0',NULL,'0','','0','');
-INSERT INTO glpi_infocoms VALUES ('88','59','1','2003-02-17','0000-00-00','36','',NULL,'','','','0',NULL,'0','','0','');
-INSERT INTO glpi_infocoms VALUES ('89','72','1','2003-02-17','0000-00-00','36','',NULL,'','','','0',NULL,'0','','0','');
-INSERT INTO glpi_infocoms VALUES ('90','117','1','2003-02-17','0000-00-00','36','',NULL,'','','','0',NULL,'0','','0','');
-INSERT INTO glpi_infocoms VALUES ('91','118','1','2003-02-17','0000-00-00','36','',NULL,'','','','0',NULL,'0','','0','');
-INSERT INTO glpi_infocoms VALUES ('92','130','1','2003-02-17','0000-00-00','36','',NULL,'','','','0',NULL,'0','','0','');
-INSERT INTO glpi_infocoms VALUES ('93','238','1','2003-04-10','0000-00-00','0','',NULL,'','','','0',NULL,'0','','0','');
-INSERT INTO glpi_infocoms VALUES ('94','241','1','2003-04-10','0000-00-00','0','',NULL,'','','','0',NULL,'0','','0','');
-INSERT INTO glpi_infocoms VALUES ('95','740','1','2003-04-10','0000-00-00','0','',NULL,'','','','0',NULL,'0','','0','');
-INSERT INTO glpi_infocoms VALUES ('96','804','1','2003-04-10','0000-00-00','0','',NULL,'','','','0',NULL,'0','','0','');
+INSERT INTO glpi_infocoms VALUES ('87','33','1','2004-02-17','0000-00-00','24','',NULL,'','','','0',NULL,'0','','0','');
+INSERT INTO glpi_infocoms VALUES ('88','59','1','2004-02-17','0000-00-00','36','',NULL,'','','','0',NULL,'0','','0','');
+INSERT INTO glpi_infocoms VALUES ('89','72','1','2004-02-17','0000-00-00','36','',NULL,'','','','0',NULL,'0','','0','');
+INSERT INTO glpi_infocoms VALUES ('90','117','1','2004-02-17','0000-00-00','36','',NULL,'','','','0',NULL,'0','','0','');
+INSERT INTO glpi_infocoms VALUES ('91','118','1','2004-02-17','0000-00-00','36','',NULL,'','','','0',NULL,'0','','0','');
+INSERT INTO glpi_infocoms VALUES ('92','130','1','2004-02-17','0000-00-00','36','',NULL,'','','','0',NULL,'0','','0','');
+INSERT INTO glpi_infocoms VALUES ('93','238','1','2004-04-10','0000-00-00','0','',NULL,'','','','0',NULL,'0','','0','');
+INSERT INTO glpi_infocoms VALUES ('94','241','1','2004-04-10','0000-00-00','0','',NULL,'','','','0',NULL,'0','','0','');
+INSERT INTO glpi_infocoms VALUES ('95','740','1','2004-04-10','0000-00-00','0','',NULL,'','','','0',NULL,'0','','0','');
+INSERT INTO glpi_infocoms VALUES ('96','804','1','2004-04-10','0000-00-00','0','',NULL,'','','','0',NULL,'0','','0','');
 INSERT INTO glpi_infocoms VALUES ('97','686','1','2004-01-13','0000-00-00','12','',NULL,'','','','0',NULL,'0','','0','');
 INSERT INTO glpi_infocoms VALUES ('98','634','1','2004-03-18','0000-00-00','0','',NULL,'','','','0',NULL,'0','','0','');
-INSERT INTO glpi_infocoms VALUES ('99','28','4','2003-06-16','0000-00-00','0','',NULL,'','','','0',NULL,'0','','0','');
+INSERT INTO glpi_infocoms VALUES ('99','28','4','2004-06-16','0000-00-00','0','',NULL,'','','','0',NULL,'0','','0','');
 ### Dump table glpi_inst_software
 
 DROP TABLE IF EXISTS glpi_inst_software;
@@ -12513,59 +12524,63 @@ CREATE TABLE glpi_monitors (
    PRIMARY KEY (ID),
    KEY ID (ID),
    KEY type (type),
-   KEY location (location)
+   KEY location (location),
+   KEY FK_glpi_enterprise (FK_glpi_enterprise),
+   KEY deleted (deleted),
+   KEY is_template (is_template),
+   KEY tech_num (tech_num)
 );
 
 INSERT INTO glpi_monitors VALUES ('63','monitor 63','2004-05-03 17:59:51','contact 63','contact 63','0','','serial 63','','17','0','1','0','0','5','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('3','monitor 3','2003-04-29 13:20:47','contact 3','contact 3','0','','serial 3','','17','0','0','0','0','3','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('4','monitor 4','2003-04-29 13:20:39','contact 4','contact 4','0','','serial 4','','17','0','0','0','0','3','8','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('3','monitor 3','2004-04-29 13:20:47','contact 3','contact 3','0','','serial 3','','17','0','0','0','0','3','7','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('4','monitor 4','2004-04-29 13:20:39','contact 4','contact 4','0','','serial 4','','17','0','0','0','0','3','8','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('5','monitor 5','2004-01-05 12:32:03','contact 5','contact 5','0','','serial 5','','17','0','1','0','0','2','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('6','monitor 6','0000-00-00 00:00:00','contact 6','contact 6','0','','serial 6','','17','0','1','0','0','2','10','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('7','monitor 7','2004-02-20 11:03:45','contact 7','contact 7','0','','serial 7','','17','0','1','0','0','2','11','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('8','monitor 8','2003-06-17 16:44:09','contact 8','contact 8','0','','serial 8','','17','0','1','0','0','4','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('9','monitor 9','2003-12-19 12:18:16','contact 9','contact 9','0','','serial 9','','17','0','0','0','0','14','54','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('8','monitor 8','2004-06-17 16:44:09','contact 8','contact 8','0','','serial 8','','17','0','1','0','0','4','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('9','monitor 9','2004-12-19 12:18:16','contact 9','contact 9','0','','serial 9','','17','0','0','0','0','14','54','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('10','monitor 10','2004-02-02 10:22:43','contact 10','contact 10','0','','serial 10','','17','0','0','0','0','34','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('11','monitor 11','2003-10-27 11:14:07','contact 11','contact 11','0','','serial 11','','17','0','0','0','0','17','14','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('12','monitor 12','2003-06-17 16:45:35','contact 12','contact 12','0','','serial 12','','17','0','0','0','0','16','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('13','monitor 13','2003-06-17 16:45:58','contact 13','contact 13','0','','serial 13','','17','0','0','0','0','16','14','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('11','monitor 11','2004-10-27 11:14:07','contact 11','contact 11','0','','serial 11','','17','0','0','0','0','17','14','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('12','monitor 12','2004-06-17 16:45:35','contact 12','contact 12','0','','serial 12','','17','0','0','0','0','16','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('13','monitor 13','2004-06-17 16:45:58','contact 13','contact 13','0','','serial 13','','17','0','0','0','0','16','14','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('14','monitor 14','2004-04-23 12:14:01','contact 14','contact 14','0','','serial 14','','17','0','0','0','0','14','54','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('15','monitor 15','2003-06-17 16:46:24','contact 15','contact 15','0','','serial 15','','17','0','0','0','0','17','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('16','monitor 16','2003-06-17 16:47:54','contact 16','contact 16','0','','serial 16','','17','0','0','0','0','17','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('17','monitor 17','2003-06-17 16:47:43','contact 17','contact 17','0','','serial 17','','17','0','0','0','0','17','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('18','monitor 18','2003-06-17 16:47:23','contact 18','contact 18','0','','serial 18','','17','0','0','0','0','17','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('19','monitor 19','2003-06-17 16:47:06','contact 19','contact 19','0','','serial 19','','17','0','0','0','0','17','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('20','monitor 20','2003-06-17 16:46:52','contact 20','contact 20','0','','serial 20','','17','0','0','0','0','17','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('21','monitor 21','2003-06-17 16:46:39','contact 21','contact 21','0','','serial 21','','17','0','0','0','0','17','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('15','monitor 15','2004-06-17 16:46:24','contact 15','contact 15','0','','serial 15','','17','0','0','0','0','17','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('16','monitor 16','2004-06-17 16:47:54','contact 16','contact 16','0','','serial 16','','17','0','0','0','0','17','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('17','monitor 17','2004-06-17 16:47:43','contact 17','contact 17','0','','serial 17','','17','0','0','0','0','17','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('18','monitor 18','2004-06-17 16:47:23','contact 18','contact 18','0','','serial 18','','17','0','0','0','0','17','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('19','monitor 19','2004-06-17 16:47:06','contact 19','contact 19','0','','serial 19','','17','0','0','0','0','17','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('20','monitor 20','2004-06-17 16:46:52','contact 20','contact 20','0','','serial 20','','17','0','0','0','0','17','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('21','monitor 21','2004-06-17 16:46:39','contact 21','contact 21','0','','serial 21','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('22','monitor 22','2004-03-01 12:04:50','contact 22','contact 22','0','','serial 22','','17','0','0','0','0','1','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('23','monitor 23','2003-11-25 09:25:42','contact 23','contact 23','0','','serial 23','','17','0','0','0','0','2','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('24','monitor 24','2003-12-19 15:28:00','contact 24','contact 24','0','','serial 24','','17','0','1','0','0','2','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('25','monitor 25','2003-12-19 15:28:08','contact 25','contact 25','0','','serial 25','','17','0','1','0','0','2','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('26','monitor 26','2003-11-19 12:36:49','contact 26','contact 26','0','','serial 26','','17','0','1','0','0','2','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('27','monitor 27','2003-12-30 16:49:40','contact 27','contact 27','0','','serial 27','','17','0','1','0','0','2','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('28','monitor 28','2003-06-16 15:21:30','contact 28','contact 28','0','','serial 28','','17','0','1','0','0','2','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('23','monitor 23','2004-11-25 09:25:42','contact 23','contact 23','0','','serial 23','','17','0','0','0','0','2','7','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('24','monitor 24','2004-12-19 15:28:00','contact 24','contact 24','0','','serial 24','','17','0','1','0','0','2','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('25','monitor 25','2004-12-19 15:28:08','contact 25','contact 25','0','','serial 25','','17','0','1','0','0','2','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('26','monitor 26','2004-11-19 12:36:49','contact 26','contact 26','0','','serial 26','','17','0','1','0','0','2','7','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('27','monitor 27','2004-12-30 16:49:40','contact 27','contact 27','0','','serial 27','','17','0','1','0','0','2','7','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('28','monitor 28','2004-06-16 15:21:30','contact 28','contact 28','0','','serial 28','','17','0','1','0','0','2','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('29','monitor 29','2004-01-21 16:16:56','contact 29','contact 29','0','','serial 29','','17','0','1','0','0','2','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('30','monitor 30','2003-12-19 15:28:18','contact 30','contact 30','0','','serial 30','','17','0','0','0','0','2','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('30','monitor 30','2004-12-19 15:28:18','contact 30','contact 30','0','','serial 30','','17','0','0','0','0','2','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('31','monitor 31','0000-00-00 00:00:00','contact 31','contact 31','0','','serial 31','','17','0','1','0','0','2','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('32','monitor 32','2003-11-25 09:26:28','contact 32','contact 32','0','','serial 32','','17','0','0','0','0','2','11','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('32','monitor 32','2004-11-25 09:26:28','contact 32','contact 32','0','','serial 32','','17','0','0','0','0','2','11','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('534','monitor 534','2004-02-26 15:31:19','contact 534','contact 534','0','','serial 534','','17','0','1','0','0','17','36','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('34','monitor 34','2003-05-15 18:25:21','contact 34','contact 34','0','','serial 34','','17','0','1','0','0','2','11','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('34','monitor 34','2004-05-15 18:25:21','contact 34','contact 34','0','','serial 34','','17','0','1','0','0','2','11','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('35','monitor 35','0000-00-00 00:00:00','contact 35','contact 35','0','','serial 35','','17','0','1','0','0','2','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('36','monitor 36','2003-10-27 15:45:40','contact 36','contact 36','0','','serial 36','','17','0','1','0','0','2','16','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('37','monitor 37','2003-12-19 15:28:30','contact 37','contact 37','0','','serial 37','','17','0','1','0','0','2','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('38','monitor 38','2003-12-15 15:55:35','contact 38','contact 38','0','','serial 38','','17','0','1','0','0','2','16','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('39','monitor 39','2003-12-19 15:28:39','contact 39','contact 39','0','','serial 39','','17','0','0','0','0','2','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('36','monitor 36','2004-10-27 15:45:40','contact 36','contact 36','0','','serial 36','','17','0','1','0','0','2','16','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('37','monitor 37','2004-12-19 15:28:30','contact 37','contact 37','0','','serial 37','','17','0','1','0','0','2','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('38','monitor 38','2004-12-15 15:55:35','contact 38','contact 38','0','','serial 38','','17','0','1','0','0','2','16','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('39','monitor 39','2004-12-19 15:28:39','contact 39','contact 39','0','','serial 39','','17','0','0','0','0','2','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('40','monitor 40','2004-02-05 17:00:21','contact 40','contact 40','0','','serial 40','','17','0','1','0','0','2','54','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('41','monitor 41','0000-00-00 00:00:00','contact 41','contact 41','0','','serial 41','','17','0','1','0','0','2','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('42','monitor 42','0000-00-00 00:00:00','contact 42','contact 42','0','','serial 42','','17','0','1','0','0','2','13','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('43','monitor 43','2003-12-19 15:28:51','contact 43','contact 43','0','','serial 43','','17','0','1','0','0','2','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('43','monitor 43','2004-12-19 15:28:51','contact 43','contact 43','0','','serial 43','','17','0','1','0','0','2','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('44','monitor 44','2004-05-17 16:47:51','contact 44','contact 44','0','','serial 44','','17','0','1','0','0','2','54','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('45','monitor 45','2004-05-17 16:46:39','contact 45','contact 45','0','','serial 45','','17','0','1','0','0','2','54','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('46','monitor 46','2004-03-17 16:33:17','contact 46','contact 46','0','','serial 46','','17','0','1','0','0','2','54','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('47','monitor 47','2003-10-16 15:50:35','contact 47','contact 47','0','','serial 47','','17','0','0','0','0','2','13','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('47','monitor 47','2004-10-16 15:50:35','contact 47','contact 47','0','','serial 47','','17','0','0','0','0','2','13','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('48','monitor 48','0000-00-00 00:00:00','contact 48','contact 48','0','','serial 48','','17','0','0','0','0','2','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('50','monitor 50','2004-05-17 14:22:38','contact 50','contact 50','0','','serial 50','','17','0','0','0','0','2','66','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('51','monitor 51','2004-05-19 16:28:05','contact 51','contact 51','0','','serial 51','','17','0','1','0','0','2','66','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('52','monitor 52','2003-06-17 12:04:37','contact 52','contact 52','0','','serial 52','','17','0','1','0','0','2','7','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('52','monitor 52','2004-06-17 12:04:37','contact 52','contact 52','0','','serial 52','','17','0','1','0','0','2','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('53','monitor 53','0000-00-00 00:00:00','contact 53','contact 53','0','','serial 53','','14','0','1','0','0','2','15','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('54','monitor 54','0000-00-00 00:00:00','contact 54','contact 54','0','','serial 54','','14','0','1','0','0','2','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('55','monitor 55','0000-00-00 00:00:00','contact 55','contact 55','0','','serial 55','','17','0','1','0','0','2','7','0','N','0',NULL);
@@ -12573,27 +12588,27 @@ INSERT INTO glpi_monitors VALUES ('56','monitor 56','0000-00-00 00:00:00','conta
 INSERT INTO glpi_monitors VALUES ('57','monitor 57','0000-00-00 00:00:00','contact 57','contact 57','0','','serial 57','','17','0','1','0','0','2','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('58','monitor 58','0000-00-00 00:00:00','contact 58','contact 58','0','','serial 58','','17','0','1','0','0','2','8','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('59','monitor 59','0000-00-00 00:00:00','contact 59','contact 59','0','','serial 59','','17','0','1','0','0','2','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('60','monitor 60','2003-12-19 12:17:31','contact 60','contact 60','0','','serial 60','','17','0','1','0','0','2','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('61','monitor 61','2003-12-19 15:29:56','contact 61','contact 61','0','','serial 61','','17','0','1','0','0','5','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('60','monitor 60','2004-12-19 12:17:31','contact 60','contact 60','0','','serial 60','','17','0','1','0','0','2','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('61','monitor 61','2004-12-19 15:29:56','contact 61','contact 61','0','','serial 61','','17','0','1','0','0','5','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('62','monitor 62','0000-00-00 00:00:00','contact 62','contact 62','0','','serial 62','','17','0','1','0','0','5','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('64','monitor 64','2003-12-08 15:03:43','contact 64','contact 64','0','','serial 64','','17','0','1','0','0','5','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('64','monitor 64','2004-12-08 15:03:43','contact 64','contact 64','0','','serial 64','','17','0','1','0','0','5','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('65','monitor 65','0000-00-00 00:00:00','contact 65','contact 65','0','','serial 65','','17','0','0','0','0','5','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('66','monitor 66','0000-00-00 00:00:00','contact 66','contact 66','0','','serial 66','','17','0','1','0','0','5','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('67','monitor 67','0000-00-00 00:00:00','contact 67','contact 67','0','','serial 67','','17','0','1','0','0','5','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('68','monitor 68','0000-00-00 00:00:00','contact 68','contact 68','0','','serial 68','','17','0','1','0','0','5','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('69','monitor 69','0000-00-00 00:00:00','contact 69','contact 69','0','','serial 69','','17','0','1','0','0','5','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('70','monitor 70','2003-12-19 15:26:56','contact 70','contact 70','0','','serial 70','','15','0','1','0','0','5','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('71','monitor 71','2003-12-19 15:30:06','contact 71','contact 71','0','','serial 71','','17','0','1','0','0','5','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('70','monitor 70','2004-12-19 15:26:56','contact 70','contact 70','0','','serial 70','','15','0','1','0','0','5','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('71','monitor 71','2004-12-19 15:30:06','contact 71','contact 71','0','','serial 71','','17','0','1','0','0','5','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('72','monitor 72','0000-00-00 00:00:00','contact 72','contact 72','0','','serial 72','','17','0','1','0','0','5','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('73','monitor 73','2003-12-19 15:30:26','contact 73','contact 73','0','','serial 73','','17','0','1','0','0','5','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('74','monitor 74','2003-12-19 15:26:24','contact 74','contact 74','0','','serial 74','','17','0','1','0','0','5','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('73','monitor 73','2004-12-19 15:30:26','contact 73','contact 73','0','','serial 73','','17','0','1','0','0','5','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('74','monitor 74','2004-12-19 15:26:24','contact 74','contact 74','0','','serial 74','','17','0','1','0','0','5','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('75','monitor 75','0000-00-00 00:00:00','contact 75','contact 75','0','','serial 75','','17','0','0','0','0','5','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('76','monitor 76','0000-00-00 00:00:00','contact 76','contact 76','0','','serial 76','','17','0','0','0','0','5','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('77','monitor 77','0000-00-00 00:00:00','contact 77','contact 77','0','','serial 77','','17','0','1','0','0','2','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('78','monitor 78','2004-03-02 17:47:27','contact 78','contact 78','0','','serial 78','','17','0','0','0','0','31','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('79','monitor 79','2004-05-06 14:43:10','contact 79','contact 79','0','','serial 79','','17','0','1','0','0','3','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('81','monitor 81','0000-00-00 00:00:00','contact 81','contact 81','0','','serial 81','','17','0','0','0','0','14','13','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('82','monitor 82','2003-10-16 16:05:30','contact 82','contact 82','0','','serial 82','','17','0','1','0','0','4','11','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('82','monitor 82','2004-10-16 16:05:30','contact 82','contact 82','0','','serial 82','','17','0','1','0','0','4','11','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('83','monitor 83','0000-00-00 00:00:00','contact 83','contact 83','0','','serial 83','','17','0','1','0','0','14','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('84','monitor 84','0000-00-00 00:00:00','contact 84','contact 84','0','','serial 84','','17','0','0','0','0','14','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('85','monitor 85','0000-00-00 00:00:00','contact 85','contact 85','0','','serial 85','','17','0','1','0','0','14','16','0','N','0',NULL);
@@ -12603,45 +12618,45 @@ INSERT INTO glpi_monitors VALUES ('89','monitor 89','0000-00-00 00:00:00','conta
 INSERT INTO glpi_monitors VALUES ('90','monitor 90','0000-00-00 00:00:00','contact 90','contact 90','0','','serial 90','','15','0','0','0','0','14','18','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('91','monitor 91','2004-04-07 12:17:25','contact 91','contact 91','0','','serial 91','','17','0','0','0','0','14','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('92','monitor 92','0000-00-00 00:00:00','contact 92','contact 92','0','','serial 92','','17','0','0','0','0','7','16','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('93','monitor 93','2003-05-23 15:48:11','contact 93','contact 93','0','','serial 93','','17','0','0','0','0','7','19','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('93','monitor 93','2004-05-23 15:48:11','contact 93','contact 93','0','','serial 93','','17','0','0','0','0','7','19','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('94','monitor 94','0000-00-00 00:00:00','contact 94','contact 94','0','','serial 94','','17','0','0','0','0','7','19','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('95','monitor 95','0000-00-00 00:00:00','contact 95','contact 95','0','','serial 95','','17','0','1','0','0','7','11','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('96','monitor 96','2003-12-19 15:05:07','contact 96','contact 96','0','','serial 96','','17','0','0','0','0','2','16','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('96','monitor 96','2004-12-19 15:05:07','contact 96','contact 96','0','','serial 96','','17','0','0','0','0','2','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('97','monitor 97','0000-00-00 00:00:00','contact 97','contact 97','0','','serial 97','','17','0','0','0','0','7','16','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('98','monitor 98','2003-06-02 18:39:58','contact 98','contact 98','0','','serial 98','','17','0','0','0','0','7','20','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('98','monitor 98','2004-06-02 18:39:58','contact 98','contact 98','0','','serial 98','','17','0','0','0','0','7','20','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('99','monitor 99','0000-00-00 00:00:00','contact 99','contact 99','0','','serial 99','','17','0','0','0','0','7','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('100','monitor 100','0000-00-00 00:00:00','contact 100','contact 100','0','','serial 100','','17','0','1','0','0','7','1','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('101','monitor 101','0000-00-00 00:00:00','contact 101','contact 101','0','','serial 101','','17','0','1','0','0','7','11','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('102','monitor 102','0000-00-00 00:00:00','contact 102','contact 102','0','','serial 102','','17','0','0','0','0','7','21','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('103','monitor 103','2003-06-17 15:35:59','contact 103','contact 103','0','','serial 103','','17','0','1','0','0','7','22','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('103','monitor 103','2004-06-17 15:35:59','contact 103','contact 103','0','','serial 103','','17','0','1','0','0','7','22','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('104','monitor 104','2004-02-03 14:30:08','contact 104','contact 104','0','','serial 104','','17','0','1','0','0','7','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('105','monitor 105','2003-06-03 12:43:41','contact 105','contact 105','0','','serial 105','','17','0','0','0','0','7','23','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('105','monitor 105','2004-06-03 12:43:41','contact 105','contact 105','0','','serial 105','','17','0','0','0','0','7','23','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('106','monitor 106','0000-00-00 00:00:00','contact 106','contact 106','0','','serial 106','','17','0','0','0','0','7','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('107','monitor 107','2004-03-09 17:55:23','contact 107','contact 107','0','','serial 107','','15','0','1','0','0','7','24','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('108','monitor 108','0000-00-00 00:00:00','contact 108','contact 108','0','','serial 108','','17','0','1','0','0','7','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('109','monitor 109','0000-00-00 00:00:00','contact 109','contact 109','0','','serial 109','','17','0','0','0','0','7','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('110','monitor 110','2004-01-14 10:16:45','contact 110','contact 110','0','','serial 110','','17','0','0','0','0','7','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('111','monitor 111','0000-00-00 00:00:00','contact 111','contact 111','0','','serial 111','','17','0','0','0','0','7','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('112','monitor 112','2003-12-17 11:00:11','contact 112','contact 112','0','','serial 112','','17','0','0','0','0','7','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('113','monitor 113','2003-12-19 15:30:46','contact 113','contact 113','0','','serial 113','','17','0','1','0','0','7','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('112','monitor 112','2004-12-17 11:00:11','contact 112','contact 112','0','','serial 112','','17','0','0','0','0','7','7','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('113','monitor 113','2004-12-19 15:30:46','contact 113','contact 113','0','','serial 113','','17','0','1','0','0','7','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('114','monitor 114','2004-03-15 15:34:02','contact 114','contact 114','0','','serial 114','','17','0','0','0','0','7','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('115','monitor 115','2003-12-19 15:30:57','contact 115','contact 115','0','','serial 115','','17','0','0','0','0','7','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('116','monitor 116','2003-12-19 15:32:15','contact 116','contact 116','0','','serial 116','','17','0','0','0','0','7','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('117','monitor 117','2003-10-16 16:01:16','contact 117','contact 117','0','','serial 117','','17','0','0','0','0','7','8','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('115','monitor 115','2004-12-19 15:30:57','contact 115','contact 115','0','','serial 115','','17','0','0','0','0','7','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('116','monitor 116','2004-12-19 15:32:15','contact 116','contact 116','0','','serial 116','','17','0','0','0','0','7','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('117','monitor 117','2004-10-16 16:01:16','contact 117','contact 117','0','','serial 117','','17','0','0','0','0','7','8','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('118','monitor 118','2004-03-18 09:17:56','contact 118','contact 118','0','','serial 118','','17','0','0','0','0','18','13','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('119','monitor 119','2004-04-07 16:32:45','contact 119','contact 119','0','','serial 119','','17','0','0','0','0','18','13','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('121','monitor 121','2003-12-19 15:32:25','contact 121','contact 121','0','','serial 121','','17','0','0','0','0','3','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('121','monitor 121','2004-12-19 15:32:25','contact 121','contact 121','0','','serial 121','','17','0','0','0','0','3','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('122','monitor 122','2004-05-11 14:58:43','contact 122','contact 122','0','','serial 122','','17','0','0','0','0','3','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('123','monitor 123','2003-06-11 12:14:51','contact 123','contact 123','0','','serial 123','','17','0','0','0','0','3','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('124','monitor 124','2003-10-16 15:40:44','contact 124','contact 124','0','','serial 124','','17','0','0','0','0','2','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('125','monitor 125','2003-06-11 12:18:31','contact 125','contact 125','0','','serial 125','','17','0','0','0','0','3','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('126','monitor 126','2003-06-11 12:21:34','contact 126','contact 126','0','','serial 126','','17','0','0','0','0','3','7','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('123','monitor 123','2004-06-11 12:14:51','contact 123','contact 123','0','','serial 123','','17','0','0','0','0','3','7','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('124','monitor 124','2004-10-16 15:40:44','contact 124','contact 124','0','','serial 124','','17','0','0','0','0','2','7','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('125','monitor 125','2004-06-11 12:18:31','contact 125','contact 125','0','','serial 125','','17','0','0','0','0','3','7','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('126','monitor 126','2004-06-11 12:21:34','contact 126','contact 126','0','','serial 126','','17','0','0','0','0','3','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('127','monitor 127','0000-00-00 00:00:00','contact 127','contact 127','0','','serial 127','','17','0','0','0','0','3','8','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('128','monitor 128','2003-06-11 12:22:18','contact 128','contact 128','0','','serial 128','','17','0','0','0','0','3','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('129','monitor 129','2003-06-11 12:22:35','contact 129','contact 129','0','','serial 129','','17','0','0','0','0','3','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('130','monitor 130','2003-06-11 12:22:54','contact 130','contact 130','0','','serial 130','','17','0','0','0','0','2','7','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('128','monitor 128','2004-06-11 12:22:18','contact 128','contact 128','0','','serial 128','','17','0','0','0','0','3','7','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('129','monitor 129','2004-06-11 12:22:35','contact 129','contact 129','0','','serial 129','','17','0','0','0','0','3','7','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('130','monitor 130','2004-06-11 12:22:54','contact 130','contact 130','0','','serial 130','','17','0','0','0','0','2','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('131','monitor 131','0000-00-00 00:00:00','contact 131','contact 131','0','','serial 131','','17','0','0','0','0','2','11','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('132','monitor 132','2003-12-19 15:32:34','contact 132','contact 132','0','','serial 132','','17','0','0','0','0','2','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('132','monitor 132','2004-12-19 15:32:34','contact 132','contact 132','0','','serial 132','','17','0','0','0','0','2','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('133','monitor 133','0000-00-00 00:00:00','contact 133','contact 133','0','','serial 133','','17','0','0','0','0','2','19','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('134','monitor 134','0000-00-00 00:00:00','contact 134','contact 134','0','','serial 134','','17','0','0','0','0','2','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('135','monitor 135','2004-05-11 16:08:13','contact 135','contact 135','0','','serial 135','','17','0','0','0','0','35','7','0','N','0',NULL);
@@ -12649,16 +12664,16 @@ INSERT INTO glpi_monitors VALUES ('136','monitor 136','0000-00-00 00:00:00','con
 INSERT INTO glpi_monitors VALUES ('137','monitor 137','0000-00-00 00:00:00','contact 137','contact 137','0','','serial 137','','17','0','1','0','0','2','11','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('138','monitor 138','0000-00-00 00:00:00','contact 138','contact 138','0','','serial 138','','17','0','1','0','0','2','11','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('139','monitor 139','2004-05-17 14:19:12','contact 139','contact 139','0','','serial 139','','17','0','0','0','0','3','16','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('140','monitor 140','2003-12-19 15:32:46','contact 140','contact 140','0','','serial 140','','17','0','0','0','0','4','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('141','monitor 141','2003-06-11 12:11:06','contact 141','contact 141','0','','serial 141','','17','0','1','0','0','3','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('142','monitor 142','2003-06-11 12:20:32','contact 142','contact 142','0','','serial 142','','17','0','1','0','0','3','7','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('140','monitor 140','2004-12-19 15:32:46','contact 140','contact 140','0','','serial 140','','17','0','0','0','0','4','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('141','monitor 141','2004-06-11 12:11:06','contact 141','contact 141','0','','serial 141','','17','0','1','0','0','3','7','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('142','monitor 142','2004-06-11 12:20:32','contact 142','contact 142','0','','serial 142','','17','0','1','0','0','3','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('143','monitor 143','0000-00-00 00:00:00','contact 143','contact 143','0','','serial 143','','17','0','0','0','0','3','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('144','monitor 144','2003-06-11 12:22:00','contact 144','contact 144','0','','serial 144','','17','0','1','0','0','3','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('145','monitor 145','2003-12-19 15:32:57','contact 145','contact 145','0','','serial 145','','17','0','1','0','0','2','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('146','monitor 146','2003-12-19 15:33:08','contact 146','contact 146','0','','serial 146','','17','0','0','0','0','3','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('144','monitor 144','2004-06-11 12:22:00','contact 144','contact 144','0','','serial 144','','17','0','1','0','0','3','7','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('145','monitor 145','2004-12-19 15:32:57','contact 145','contact 145','0','','serial 145','','17','0','1','0','0','2','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('146','monitor 146','2004-12-19 15:33:08','contact 146','contact 146','0','','serial 146','','17','0','0','0','0','3','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('147','monitor 147','0000-00-00 00:00:00','contact 147','contact 147','0','','serial 147','','14','0','1','0','0','3','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('148','monitor 148','2003-06-11 14:32:04','contact 148','contact 148','0','','serial 148','','17','0','1','0','0','19','25','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('149','monitor 149','2003-06-11 14:31:43','contact 149','contact 149','0','','serial 149','','17','0','1','0','0','19','25','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('148','monitor 148','2004-06-11 14:32:04','contact 148','contact 148','0','','serial 148','','17','0','1','0','0','19','25','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('149','monitor 149','2004-06-11 14:31:43','contact 149','contact 149','0','','serial 149','','17','0','1','0','0','19','25','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('150','monitor 150','0000-00-00 00:00:00','contact 150','contact 150','0','','serial 150','','17','0','1','0','0','19','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('151','monitor 151','0000-00-00 00:00:00','contact 151','contact 151','0','','serial 151','','17','0','1','0','0','19','25','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('152','monitor 152','0000-00-00 00:00:00','contact 152','contact 152','0','','serial 152','','17','0','0','0','0','19','25','0','N','0',NULL);
@@ -12667,61 +12682,61 @@ INSERT INTO glpi_monitors VALUES ('154','monitor 154','0000-00-00 00:00:00','con
 INSERT INTO glpi_monitors VALUES ('155','monitor 155','0000-00-00 00:00:00','contact 155','contact 155','0','','serial 155','','15','0','0','0','0','20','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('156','monitor 156','2004-03-31 15:27:20','contact 156','contact 156','0','','serial 156','','21','0','0','0','0','5','26','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('157','monitor 157','0000-00-00 00:00:00','contact 157','contact 157','0','','serial 157','','17','0','1','0','0','5','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('158','monitor 158','2003-12-19 15:33:19','contact 158','contact 158','0','','serial 158','','17','0','0','0','0','5','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('158','monitor 158','2004-12-19 15:33:19','contact 158','contact 158','0','','serial 158','','17','0','0','0','0','5','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('159','monitor 159','0000-00-00 00:00:00','contact 159','contact 159','0','','serial 159','','17','0','0','0','0','5','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('160','monitor 160','2003-12-19 15:33:27','contact 160','contact 160','0','','serial 160','','17','0','0','0','0','5','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('160','monitor 160','2004-12-19 15:33:27','contact 160','contact 160','0','','serial 160','','17','0','0','0','0','5','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('161','monitor 161','2004-03-31 15:28:02','contact 161','contact 161','0','','serial 161','','17','0','1','0','0','5','16','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('162','monitor 162','2003-12-19 15:33:35','contact 162','contact 162','0','','serial 162','','17','0','0','0','0','5','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('163','monitor 163','2003-10-16 17:16:49','contact 163','contact 163','0','','serial 163','','17','0','0','0','0','5','27','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('162','monitor 162','2004-12-19 15:33:35','contact 162','contact 162','0','','serial 162','','17','0','0','0','0','5','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('163','monitor 163','2004-10-16 17:16:49','contact 163','contact 163','0','','serial 163','','17','0','0','0','0','5','27','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('164','monitor 164','0000-00-00 00:00:00','contact 164','contact 164','0','','serial 164','','17','0','1','0','0','6','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('165','monitor 165','0000-00-00 00:00:00','contact 165','contact 165','0','','serial 165','','17','0','1','0','0','6','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('166','monitor 166','0000-00-00 00:00:00','contact 166','contact 166','0','','serial 166','','17','0','1','0','0','5','16','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('167','monitor 167','2003-12-19 15:26:36','contact 167','contact 167','0','','serial 167','','17','0','0','0','0','6','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('168','monitor 168','2003-12-19 15:26:46','contact 168','contact 168','0','','serial 168','','17','0','1','0','0','6','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('169','monitor 169','2003-12-19 15:33:47','contact 169','contact 169','0','','serial 169','','17','0','1','0','0','6','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('167','monitor 167','2004-12-19 15:26:36','contact 167','contact 167','0','','serial 167','','17','0','0','0','0','6','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('168','monitor 168','2004-12-19 15:26:46','contact 168','contact 168','0','','serial 168','','17','0','1','0','0','6','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('169','monitor 169','2004-12-19 15:33:47','contact 169','contact 169','0','','serial 169','','17','0','1','0','0','6','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('170','monitor 170','0000-00-00 00:00:00','contact 170','contact 170','0','','serial 170','','21','0','1','0','0','6','28','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('171','monitor 171','0000-00-00 00:00:00','contact 171','contact 171','0','','serial 171','','17','0','1','0','0','6','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('172','monitor 172','0000-00-00 00:00:00','contact 172','contact 172','0','','serial 172','','17','0','1','0','0','6','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('173','monitor 173','0000-00-00 00:00:00','contact 173','contact 173','0','','serial 173','','17','0','1','0','0','6','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('174','monitor 174','0000-00-00 00:00:00','contact 174','contact 174','0','','serial 174','','17','0','0','0','0','6','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('175','monitor 175','0000-00-00 00:00:00','contact 175','contact 175','0','','serial 175','','17','0','1','0','0','6','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('177','monitor 177','2003-12-19 15:34:31','contact 177','contact 177','0','','serial 177','','17','0','1','0','0','6','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('178','monitor 178','2003-12-19 15:35:22','contact 178','contact 178','0','','serial 178','','17','0','1','0','0','6','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('179','monitor 179','2003-12-19 15:35:31','contact 179','contact 179','0','','serial 179','','17','0','1','0','0','6','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('177','monitor 177','2004-12-19 15:34:31','contact 177','contact 177','0','','serial 177','','17','0','1','0','0','6','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('178','monitor 178','2004-12-19 15:35:22','contact 178','contact 178','0','','serial 178','','17','0','1','0','0','6','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('179','monitor 179','2004-12-19 15:35:31','contact 179','contact 179','0','','serial 179','','17','0','1','0','0','6','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('180','monitor 180','0000-00-00 00:00:00','contact 180','contact 180','0','','serial 180','','17','0','1','0','0','6','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('181','monitor 181','0000-00-00 00:00:00','contact 181','contact 181','0','','serial 181','','17','0','1','0','0','6','11','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('182','monitor 182','2003-12-19 15:35:38','contact 182','contact 182','0','','serial 182','','17','0','1','0','0','6','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('182','monitor 182','2004-12-19 15:35:38','contact 182','contact 182','0','','serial 182','','17','0','1','0','0','6','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('183','monitor 183','0000-00-00 00:00:00','contact 183','contact 183','0','','serial 183','','17','0','1','0','0','6','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('184','monitor 184','0000-00-00 00:00:00','contact 184','contact 184','0','','serial 184','','17','0','1','0','0','6','11','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('185','monitor 185','0000-00-00 00:00:00','contact 185','contact 185','0','','serial 185','','17','0','1','0','0','6','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('186','monitor 186','0000-00-00 00:00:00','contact 186','contact 186','0','','serial 186','','17','0','0','0','0','6','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('187','monitor 187','2004-05-19 12:07:29','contact 187','contact 187','0','','serial 187','','17','0','1','0','0','6','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('188','monitor 188','2003-12-19 15:35:47','contact 188','contact 188','0','','serial 188','','17','0','0','0','0','6','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('188','monitor 188','2004-12-19 15:35:47','contact 188','contact 188','0','','serial 188','','17','0','0','0','0','6','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('189','monitor 189','0000-00-00 00:00:00','contact 189','contact 189','0','','serial 189','','17','0','0','0','0','6','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('190','monitor 190','0000-00-00 00:00:00','contact 190','contact 190','0','','serial 190','','17','0','1','0','0','6','8','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('191','monitor 191','2003-12-19 15:35:57','contact 191','contact 191','0','','serial 191','','17','0','1','0','0','6','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('191','monitor 191','2004-12-19 15:35:57','contact 191','contact 191','0','','serial 191','','17','0','1','0','0','6','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('192','monitor 192','2004-02-27 15:28:03','contact 192','contact 192','0','','serial 192','','17','0','0','0','0','5','16','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('193','monitor 193','2003-12-19 15:39:36','contact 193','contact 193','0','','serial 193','','17','0','1','0','0','6','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('193','monitor 193','2004-12-19 15:39:36','contact 193','contact 193','0','','serial 193','','17','0','1','0','0','6','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('194','monitor 194','2004-02-27 14:52:34','contact 194','contact 194','0','','serial 194','','17','0','0','0','0','6','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('195','monitor 195','2004-05-11 14:58:02','contact 195','contact 195','0','','serial 195','','17','0','0','0','0','6','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('197','monitor 197','0000-00-00 00:00:00','contact 197','contact 197','0','','serial 197','','17','0','1','0','0','7','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('198','monitor 198','2004-02-03 14:24:25','contact 198','contact 198','0','','serial 198','','17','0','1','0','0','7','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('199','monitor 199','2004-02-03 14:26:35','contact 199','contact 199','0','','serial 199','','17','0','1','0','0','7','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('200','monitor 200','2004-02-03 14:29:38','contact 200','contact 200','0','','serial 200','','17','0','0','0','0','7','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('201','monitor 201','2003-06-17 12:01:47','contact 201','contact 201','0','','serial 201','','17','0','1','0','0','7','7','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('201','monitor 201','2004-06-17 12:01:47','contact 201','contact 201','0','','serial 201','','17','0','1','0','0','7','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('202','monitor 202','0000-00-00 00:00:00','contact 202','contact 202','0','','serial 202','','17','0','0','0','0','7','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('203','monitor 203','0000-00-00 00:00:00','contact 203','contact 203','0','','serial 203','','17','0','1','0','0','7','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('205','monitor 205','2004-01-09 09:32:02','contact 205','contact 205','0','','serial 205','','17','0','0','0','0','7','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('206','monitor 206','2004-02-27 15:29:28','contact 206','contact 206','0','','serial 206','','17','0','0','0','0','7','16','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('207','monitor 207','2003-11-26 12:16:01','contact 207','contact 207','0','','serial 207','','17','0','0','0','0','19','25','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('208','monitor 208','2003-11-26 12:16:27','contact 208','contact 208','0','','serial 208','','17','0','0','0','0','19','25','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('209','monitor 209','2003-11-26 12:16:35','contact 209','contact 209','0','','serial 209','','17','0','0','0','0','19','25','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('210','monitor 210','2003-11-26 12:20:07','contact 210','contact 210','0','','serial 210','','17','0','0','0','0','19','25','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('211','monitor 211','2003-11-26 12:20:16','contact 211','contact 211','0','','serial 211','','17','0','0','0','0','19','25','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('212','monitor 212','2003-11-26 12:20:27','contact 212','contact 212','0','','serial 212','','17','0','0','0','0','19','25','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('213','monitor 213','2003-11-26 12:20:35','contact 213','contact 213','0','','serial 213','','17','0','0','0','0','19','25','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('214','monitor 214','2003-11-26 12:16:12','contact 214','contact 214','0','','serial 214','','17','0','0','0','0','19','25','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('215','monitor 215','2003-11-26 12:16:18','contact 215','contact 215','0','','serial 215','','17','0','0','0','0','19','25','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('207','monitor 207','2004-11-26 12:16:01','contact 207','contact 207','0','','serial 207','','17','0','0','0','0','19','25','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('208','monitor 208','2004-11-26 12:16:27','contact 208','contact 208','0','','serial 208','','17','0','0','0','0','19','25','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('209','monitor 209','2004-11-26 12:16:35','contact 209','contact 209','0','','serial 209','','17','0','0','0','0','19','25','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('210','monitor 210','2004-11-26 12:20:07','contact 210','contact 210','0','','serial 210','','17','0','0','0','0','19','25','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('211','monitor 211','2004-11-26 12:20:16','contact 211','contact 211','0','','serial 211','','17','0','0','0','0','19','25','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('212','monitor 212','2004-11-26 12:20:27','contact 212','contact 212','0','','serial 212','','17','0','0','0','0','19','25','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('213','monitor 213','2004-11-26 12:20:35','contact 213','contact 213','0','','serial 213','','17','0','0','0','0','19','25','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('214','monitor 214','2004-11-26 12:16:12','contact 214','contact 214','0','','serial 214','','17','0','0','0','0','19','25','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('215','monitor 215','2004-11-26 12:16:18','contact 215','contact 215','0','','serial 215','','17','0','0','0','0','19','25','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('216','monitor 216','2004-05-06 12:27:50','contact 216','contact 216','0','','serial 216','','17','0','0','0','0','14','54','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('217','monitor 217','2004-02-02 10:37:14','contact 217','contact 217','0','','serial 217','','17','0','0','0','0','34','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('218','monitor 218','2004-02-02 10:26:58','contact 218','contact 218','0','','serial 218','','15','0','0','0','0','34','35','0','N','0',NULL);
@@ -12732,34 +12747,34 @@ INSERT INTO glpi_monitors VALUES ('222','monitor 222','2004-02-02 10:38:01','con
 INSERT INTO glpi_monitors VALUES ('223','monitor 223','2004-02-02 10:20:17','contact 223','contact 223','0','','serial 223','','17','0','0','0','0','34','35','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('224','monitor 224','2004-02-02 10:19:01','contact 224','contact 224','0','','serial 224','','17','0','0','0','0','34','13','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('225','monitor 225','0000-00-00 00:00:00','contact 225','contact 225','0','','serial 225','','17','0','0','0','0','2','16','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('226','monitor 226','2003-12-31 10:55:32','contact 226','contact 226','0','','serial 226','','17','0','0','0','0','6','16','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('227','monitor 227','2003-10-16 17:18:13','contact 227','contact 227','0','','serial 227','','17','0','1','0','0','5','16','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('228','monitor 228','2003-10-16 17:19:28','contact 228','contact 228','0','','serial 228','','17','0','0','0','0','6','16','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('226','monitor 226','2004-12-31 10:55:32','contact 226','contact 226','0','','serial 226','','17','0','0','0','0','6','16','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('227','monitor 227','2004-10-16 17:18:13','contact 227','contact 227','0','','serial 227','','17','0','1','0','0','5','16','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('228','monitor 228','2004-10-16 17:19:28','contact 228','contact 228','0','','serial 228','','17','0','0','0','0','6','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('343','monitor 343','0000-00-00 00:00:00','contact 343','contact 343','0','','serial 343','','17','0','0','0','0','16','13','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('230','monitor 230','0000-00-00 00:00:00','contact 230','contact 230','0','','serial 230','','0','0','0','0','0','16','25','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('231','monitor 231','2003-07-28 17:14:22','contact 231','contact 231','0','','serial 231','','17','0','0','0','0','17','30','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('231','monitor 231','2004-07-28 17:14:22','contact 231','contact 231','0','','serial 231','','17','0','0','0','0','17','30','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('232','monitor 232','0000-00-00 00:00:00','contact 232','contact 232','0','','serial 232','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('233','monitor 233','2004-02-28 09:47:05','contact 233','contact 233','0','','serial 233','','17','0','0','0','0','17','11','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('234','monitor 234','2003-08-08 11:31:14','contact 234','contact 234','0','','serial 234','','17','0','0','0','0','17','25','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('235','monitor 235','2003-10-16 16:51:51','contact 235','contact 235','0','','serial 235','','17','0','0','0','0','16','13','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('234','monitor 234','2004-08-08 11:31:14','contact 234','contact 234','0','','serial 234','','17','0','0','0','0','17','25','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('235','monitor 235','2004-10-16 16:51:51','contact 235','contact 235','0','','serial 235','','17','0','0','0','0','16','13','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('236','monitor 236','0000-00-00 00:00:00','contact 236','contact 236','0','','serial 236','','17','0','0','0','0','16','25','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('237','monitor 237','2003-10-27 11:03:00','contact 237','contact 237','0','','serial 237','','17','0','0','0','0','16','13','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('237','monitor 237','2004-10-27 11:03:00','contact 237','contact 237','0','','serial 237','','17','0','0','0','0','16','13','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('238','monitor 238','2004-02-02 10:34:39','contact 238','contact 238','0','','serial 238','','17','0','0','0','0','34','31','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('239','monitor 239','2004-02-02 10:21:20','contact 239','contact 239','0','','serial 239','','17','0','0','0','0','34','32','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('240','monitor 240','0000-00-00 00:00:00','contact 240','contact 240','0','','serial 240','','17','0','1','0','0','7','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('241','monitor 241','2003-08-08 17:32:05','contact 241','contact 241','0','','serial 241','','17','0','0','0','0','11','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('242','monitor 242','2003-08-08 17:32:56','contact 242','contact 242','0','','serial 242','','17','0','0','0','0','11','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('241','monitor 241','2004-08-08 17:32:05','contact 241','contact 241','0','','serial 241','','17','0','0','0','0','11','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('242','monitor 242','2004-08-08 17:32:56','contact 242','contact 242','0','','serial 242','','17','0','0','0','0','11','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('243','monitor 243','2004-02-27 15:27:12','contact 243','contact 243','0','','serial 243','','17','0','0','0','0','11','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('244','monitor 244','2004-02-26 11:11:06','contact 244','contact 244','0','','serial 244','','17','0','0','0','0','11','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('695','monitor 695','2004-03-02 17:51:36','contact 695','contact 695','0','','serial 695','','15','0','0','0','0','2','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('246','monitor 246','2003-08-01 16:09:42','contact 246','contact 246','0','','serial 246','','17','0','0','0','0','22','19','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('246','monitor 246','2004-08-01 16:09:42','contact 246','contact 246','0','','serial 246','','17','0','0','0','0','22','19','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('247','monitor 247','0000-00-00 00:00:00','contact 247','contact 247','0','','serial 247','','17','0','0','0','0','22','11','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('248','monitor 248','2004-01-20 17:56:51','contact 248','contact 248','0','','serial 248','','17','0','0','0','0','22','11','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('249','monitor 249','2004-01-20 18:15:16','contact 249','contact 249','0','','serial 249','','17','0','0','0','0','22','19','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('250','monitor 250','2004-01-21 17:05:57','contact 250','contact 250','0','','serial 250','','17','0','0','0','0','22','11','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('251','monitor 251','2004-02-02 10:26:25','contact 251','contact 251','0','','serial 251','','17','0','0','0','0','34','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('252','monitor 252','2004-02-02 10:37:21','contact 252','contact 252','0','','serial 252','','17','0','0','0','0','34','47','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('253','monitor 253','2003-12-17 08:41:50','contact 253','contact 253','0','','serial 253','','17','0','0','0','0','17','47','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('253','monitor 253','2004-12-17 08:41:50','contact 253','contact 253','0','','serial 253','','17','0','0','0','0','17','47','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('254','monitor 254','2004-02-25 15:39:36','contact 254','contact 254','0','','serial 254','','17','0','0','0','0','23','60','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('255','monitor 255','0000-00-00 00:00:00','contact 255','contact 255','0','','serial 255','','17','0','0','0','0','23','13','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('256','monitor 256','0000-00-00 00:00:00','contact 256','contact 256','0','','serial 256','','17','0','0','0','0','23','25','0','N','0',NULL);
@@ -12771,14 +12786,14 @@ INSERT INTO glpi_monitors VALUES ('261','monitor 261','0000-00-00 00:00:00','con
 INSERT INTO glpi_monitors VALUES ('262','monitor 262','0000-00-00 00:00:00','contact 262','contact 262','0','','serial 262','','17','0','0','0','0','23','13','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('263','monitor 263','0000-00-00 00:00:00','contact 263','contact 263','0','','serial 263','','17','0','0','0','0','23','25','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('264','monitor 264','0000-00-00 00:00:00','contact 264','contact 264','0','','serial 264','','17','0','0','0','0','21','25','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('265','monitor 265','2003-12-19 16:25:55','contact 265','contact 265','0','','serial 265','','17','0','0','0','0','22','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('265','monitor 265','2004-12-19 16:25:55','contact 265','contact 265','0','','serial 265','','17','0','0','0','0','22','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('266','monitor 266','2004-04-23 14:02:08','contact 266','contact 266','0','','serial 266','','17','0','0','0','0','22','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('267','monitor 267','2004-03-10 18:54:56','contact 267','contact 267','0','','serial 267','','17','0','0','0','0','22','11','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('268','monitor 268','2003-10-23 15:10:13','contact 268','contact 268','0','','serial 268','','17','0','0','0','0','21','7','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('268','monitor 268','2004-10-23 15:10:13','contact 268','contact 268','0','','serial 268','','17','0','0','0','0','21','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('269','monitor 269','0000-00-00 00:00:00','contact 269','contact 269','0','','serial 269','','17','0','0','0','0','21','19','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('270','monitor 270','0000-00-00 00:00:00','contact 270','contact 270','0','','serial 270','','17','0','0','0','0','21','13','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('271','monitor 271','0000-00-00 00:00:00','contact 271','contact 271','0','','serial 271','','17','0','0','0','0','17','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('272','monitor 272','2003-10-16 14:54:18','contact 272','contact 272','0','','serial 272','','17','0','0','0','0','23','13','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('272','monitor 272','2004-10-16 14:54:18','contact 272','contact 272','0','','serial 272','','17','0','0','0','0','23','13','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('273','monitor 273','0000-00-00 00:00:00','contact 273','contact 273','0','','serial 273','','17','0','0','0','0','23','13','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('274','monitor 274','0000-00-00 00:00:00','contact 274','contact 274','0','','serial 274','','17','0','0','0','0','23','25','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('275','monitor 275','2004-02-19 16:37:51','contact 275','contact 275','0','','serial 275','','17','0','0','0','0','23','13','0','N','0',NULL);
@@ -12786,8 +12801,8 @@ INSERT INTO glpi_monitors VALUES ('276','monitor 276','0000-00-00 00:00:00','con
 INSERT INTO glpi_monitors VALUES ('277','monitor 277','2004-02-02 10:38:34','contact 277','contact 277','0','','serial 277','','17','0','0','0','0','34','13','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('278','monitor 278','2004-02-02 10:38:39','contact 278','contact 278','0','','serial 278','','17','0','0','0','0','34','13','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('279','monitor 279','2004-02-27 16:30:53','contact 279','contact 279','0','','serial 279','','17','0','0','0','0','17','34','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('280','monitor 280','2003-10-16 16:53:26','contact 280','contact 280','0','','serial 280','','17','0','0','0','0','16','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('281','monitor 281','2003-10-16 16:52:47','contact 281','contact 281','0','','serial 281','','17','0','0','0','0','16','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('280','monitor 280','2004-10-16 16:53:26','contact 280','contact 280','0','','serial 280','','17','0','0','0','0','16','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('281','monitor 281','2004-10-16 16:52:47','contact 281','contact 281','0','','serial 281','','17','0','0','0','0','16','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('282','monitor 282','0000-00-00 00:00:00','contact 282','contact 282','0','','serial 282','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('283','monitor 283','0000-00-00 00:00:00','contact 283','contact 283','0','','serial 283','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('284','monitor 284','0000-00-00 00:00:00','contact 284','contact 284','0','','serial 284','','17','0','0','0','0','17','12','0','N','0',NULL);
@@ -12795,7 +12810,7 @@ INSERT INTO glpi_monitors VALUES ('285','monitor 285','0000-00-00 00:00:00','con
 INSERT INTO glpi_monitors VALUES ('286','monitor 286','0000-00-00 00:00:00','contact 286','contact 286','0','','serial 286','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('287','monitor 287','0000-00-00 00:00:00','contact 287','contact 287','0','','serial 287','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('288','monitor 288','0000-00-00 00:00:00','contact 288','contact 288','0','','serial 288','','17','0','0','0','0','17','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('289','monitor 289','2003-12-17 08:37:23','contact 289','contact 289','0','','serial 289','','17','0','0','0','0','17','47','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('289','monitor 289','2004-12-17 08:37:23','contact 289','contact 289','0','','serial 289','','17','0','0','0','0','17','47','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('290','monitor 290','0000-00-00 00:00:00','contact 290','contact 290','0','','serial 290','','17','0','0','0','0','17','35','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('292','monitor 292','0000-00-00 00:00:00','contact 292','contact 292','0','','serial 292','','17','0','0','0','0','17','35','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('293','monitor 293','0000-00-00 00:00:00','contact 293','contact 293','0','','serial 293','','17','0','0','0','0','17','12','0','N','0',NULL);
@@ -12810,21 +12825,21 @@ INSERT INTO glpi_monitors VALUES ('302','monitor 302','2004-03-11 15:22:07','con
 INSERT INTO glpi_monitors VALUES ('303','monitor 303','0000-00-00 00:00:00','contact 303','contact 303','0','','serial 303','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('304','monitor 304','0000-00-00 00:00:00','contact 304','contact 304','0','','serial 304','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('305','monitor 305','0000-00-00 00:00:00','contact 305','contact 305','0','','serial 305','','17','0','0','0','0','16','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('306','monitor 306','2003-08-08 11:25:51','contact 306','contact 306','0','','serial 306','','17','0','0','0','0','16','29','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('307','monitor 307','2003-08-08 11:26:22','contact 307','contact 307','0','','serial 307','','17','0','0','0','0','16','29','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('308','monitor 308','2003-08-08 11:26:49','contact 308','contact 308','0','','serial 308','','17','0','0','0','0','16','29','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('309','monitor 309','2003-08-08 11:27:31','contact 309','contact 309','0','','serial 309','','17','0','0','0','0','16','29','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('310','monitor 310','2003-08-08 11:28:16','contact 310','contact 310','0','','serial 310','','17','0','0','0','0','16','29','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('311','monitor 311','2003-08-08 11:28:35','contact 311','contact 311','0','','serial 311','','17','0','0','0','0','16','29','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('312','monitor 312','2003-08-08 11:23:08','contact 312','contact 312','0','','serial 312','','17','0','0','0','0','16','29','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('306','monitor 306','2004-08-08 11:25:51','contact 306','contact 306','0','','serial 306','','17','0','0','0','0','16','29','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('307','monitor 307','2004-08-08 11:26:22','contact 307','contact 307','0','','serial 307','','17','0','0','0','0','16','29','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('308','monitor 308','2004-08-08 11:26:49','contact 308','contact 308','0','','serial 308','','17','0','0','0','0','16','29','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('309','monitor 309','2004-08-08 11:27:31','contact 309','contact 309','0','','serial 309','','17','0','0','0','0','16','29','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('310','monitor 310','2004-08-08 11:28:16','contact 310','contact 310','0','','serial 310','','17','0','0','0','0','16','29','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('311','monitor 311','2004-08-08 11:28:35','contact 311','contact 311','0','','serial 311','','17','0','0','0','0','16','29','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('312','monitor 312','2004-08-08 11:23:08','contact 312','contact 312','0','','serial 312','','17','0','0','0','0','16','29','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('313','monitor 313','0000-00-00 00:00:00','contact 313','contact 313','0','','serial 313','','17','0','0','0','0','16','29','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('314','monitor 314','0000-00-00 00:00:00','contact 314','contact 314','0','','serial 314','','17','0','0','0','0','16','13','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('315','monitor 315','0000-00-00 00:00:00','contact 315','contact 315','0','','serial 315','','17','0','0','0','0','17','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('316','monitor 316','2003-08-08 11:58:09','contact 316','contact 316','0','','serial 316','','17','0','0','0','0','17','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('316','monitor 316','2004-08-08 11:58:09','contact 316','contact 316','0','','serial 316','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('317','monitor 317','0000-00-00 00:00:00','contact 317','contact 317','0','','serial 317','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('318','monitor 318','0000-00-00 00:00:00','contact 318','contact 318','0','','serial 318','','17','0','0','0','0','17','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('320','monitor 320','2003-09-18 14:27:53','contact 320','contact 320','0','','serial 320','','17','0','0','0','0','17','36','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('321','monitor 321','2003-09-18 14:27:21','contact 321','contact 321','0','','serial 321','','17','0','0','0','0','17','36','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('320','monitor 320','2004-09-18 14:27:53','contact 320','contact 320','0','','serial 320','','17','0','0','0','0','17','36','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('321','monitor 321','2004-09-18 14:27:21','contact 321','contact 321','0','','serial 321','','17','0','0','0','0','17','36','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('322','monitor 322','0000-00-00 00:00:00','contact 322','contact 322','0','','serial 322','','17','0','0','0','0','16','13','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('323','monitor 323','2004-02-27 14:30:29','contact 323','contact 323','0','','serial 323','','17','0','0','0','0','16','13','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('324','monitor 324','0000-00-00 00:00:00','contact 324','contact 324','0','','serial 324','','17','0','0','0','0','16','13','0','N','0',NULL);
@@ -12836,8 +12851,8 @@ INSERT INTO glpi_monitors VALUES ('329','monitor 329','2004-02-24 15:16:44','con
 INSERT INTO glpi_monitors VALUES ('330','monitor 330','2004-02-24 15:18:02','contact 330','contact 330','0','','serial 330','','17','0','0','0','0','16','50','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('331','monitor 331','0000-00-00 00:00:00','contact 331','contact 331','0','','serial 331','','17','0','0','0','0','16','11','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('332','monitor 332','0000-00-00 00:00:00','contact 332','contact 332','0','','serial 332','','17','0','0','0','0','17',NULL,'0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('333','monitor 333','2003-08-11 17:04:32','contact 333','contact 333','0','','serial 333','','17','0','0','0','0','17',NULL,'0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('334','monitor 334','2003-08-11 17:08:08','contact 334','contact 334','0','','serial 334','','17','0','0','0','0','17',NULL,'0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('333','monitor 333','2004-08-11 17:04:32','contact 333','contact 333','0','','serial 333','','17','0','0','0','0','17',NULL,'0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('334','monitor 334','2004-08-11 17:08:08','contact 334','contact 334','0','','serial 334','','17','0','0','0','0','17',NULL,'0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('335','monitor 335','0000-00-00 00:00:00','contact 335','contact 335','0','','serial 335','','17','0','0','0','0','17',NULL,'0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('336','monitor 336','0000-00-00 00:00:00','contact 336','contact 336','0','','serial 336','','17','0','0','0','0','17',NULL,'0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('337','monitor 337','0000-00-00 00:00:00','contact 337','contact 337','0','','serial 337','','17','0','0','0','0','17',NULL,'0','N','0',NULL);
@@ -12848,31 +12863,31 @@ INSERT INTO glpi_monitors VALUES ('341','monitor 341','0000-00-00 00:00:00','con
 INSERT INTO glpi_monitors VALUES ('342','monitor 342','0000-00-00 00:00:00','contact 342','contact 342','0','','serial 342','','17','0','0','0','0','17',NULL,'0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('344','monitor 344','0000-00-00 00:00:00','contact 344','contact 344','0','','serial 344','','17','0','0','0','0','16','25','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('345','monitor 345','2004-05-17 16:00:08','contact 345','contact 345','0','','serial 345','','17','0','0','0','0','8','66','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('346','monitor 346','2003-12-19 15:41:32','contact 346','contact 346','0','','serial 346','','17','0','0','0','0','8','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('347','monitor 347','2003-10-24 16:18:59','contact 347','contact 347','0','','serial 347','','17','0','0','0','0','8','7','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('348','monitor 348','2003-08-12 16:58:44','contact 348','contact 348','0','','serial 348','','0','0','0','0','0','8','37','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('346','monitor 346','2004-12-19 15:41:32','contact 346','contact 346','0','','serial 346','','17','0','0','0','0','8','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('347','monitor 347','2004-10-24 16:18:59','contact 347','contact 347','0','','serial 347','','17','0','0','0','0','8','7','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('348','monitor 348','2004-08-12 16:58:44','contact 348','contact 348','0','','serial 348','','0','0','0','0','0','8','37','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('349','monitor 349','2004-05-17 15:56:42','contact 349','contact 349','0','','serial 349','','17','0','0','0','0','8','66','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('350','monitor 350','2004-01-02 10:43:41','contact 350','contact 350','0','','serial 350','','17','0','0','0','0','8','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('351','monitor 351','0000-00-00 00:00:00','contact 351','contact 351','0','','serial 351','','17','0','0','0','0','8','5','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('352','monitor 352','2003-12-19 15:41:41','contact 352','contact 352','0','','serial 352','','17','0','0','0','0','8','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('352','monitor 352','2004-12-19 15:41:41','contact 352','contact 352','0','','serial 352','','17','0','0','0','0','8','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('353','monitor 353','2004-05-17 11:57:41','contact 353','contact 353','0','','serial 353','','17','0','0','0','0','8','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('354','monitor 354','2004-05-17 12:01:44','contact 354','contact 354','0','','serial 354','','17','0','0','0','0','8','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('355','monitor 355','2004-05-17 11:59:46','contact 355','contact 355','0','','serial 355','','17','0','0','0','0','8','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('356','monitor 356','2003-12-19 15:44:15','contact 356','contact 356','0','','serial 356','','17','0','0','0','0','8','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('357','monitor 357','2003-08-13 12:34:30','contact 357','contact 357','0','','serial 357','','19','0','1','0','0','2','39','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('356','monitor 356','2004-12-19 15:44:15','contact 356','contact 356','0','','serial 356','','17','0','0','0','0','8','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('357','monitor 357','2004-08-13 12:34:30','contact 357','contact 357','0','','serial 357','','19','0','1','0','0','2','39','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('358','monitor 358','2004-02-03 14:23:18','contact 358','contact 358','0','','serial 358','','17','0','0','0','0','7','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('359','monitor 359','2004-03-02 09:39:46','contact 359','contact 359','0','','serial 359','','17','0','0','0','0','2','16','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('360','monitor 360','2003-12-19 15:48:12','contact 360','contact 360','0','','serial 360','','17','0','1','0','0','3','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('360','monitor 360','2004-12-19 15:48:12','contact 360','contact 360','0','','serial 360','','17','0','1','0','0','3','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('361','monitor 361','0000-00-00 00:00:00','contact 361','contact 361','0','','serial 361','','17','0','0','0','0','2','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('363','monitor 363','0000-00-00 00:00:00','contact 363','contact 363','0','','serial 363','','17','0','0','0','0','2','16','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('364','monitor 364','2003-08-13 13:55:21','contact 364','contact 364','0','','serial 364','','17','0','0','0','0','3','16','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('364','monitor 364','2004-08-13 13:55:21','contact 364','contact 364','0','','serial 364','','17','0','0','0','0','3','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('365','monitor 365','2004-01-21 16:37:53','contact 365','contact 365','0','','serial 365','','17','0','1','0','0','5','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('366','monitor 366','0000-00-00 00:00:00','contact 366','contact 366','0','','serial 366','','17','0','1','0','0','5','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('367','monitor 367','2004-02-27 15:28:35','contact 367','contact 367','0','','serial 367','','17','0','1','0','0','5','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('368','monitor 368','0000-00-00 00:00:00','contact 368','contact 368','0','','serial 368','','17','0','1','0','0','5','16','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('369','monitor 369','2003-09-11 18:48:56','contact 369','contact 369','0','','serial 369','','17','0','1','0','0','24','16','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('370','monitor 370','2003-12-15 16:03:36','contact 370','contact 370','0','','serial 370','','17','0','1','0','0','25','16','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('371','monitor 371','2003-10-16 17:38:15','contact 371','contact 371','0','','serial 371','','17','0','1','0','0','26','16','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('369','monitor 369','2004-09-11 18:48:56','contact 369','contact 369','0','','serial 369','','17','0','1','0','0','24','16','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('370','monitor 370','2004-12-15 16:03:36','contact 370','contact 370','0','','serial 370','','17','0','1','0','0','25','16','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('371','monitor 371','2004-10-16 17:38:15','contact 371','contact 371','0','','serial 371','','17','0','1','0','0','26','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('372','monitor 372','0000-00-00 00:00:00','contact 372','contact 372','0','','serial 372','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('373','monitor 373','0000-00-00 00:00:00','contact 373','contact 373','0','','serial 373','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('374','monitor 374','0000-00-00 00:00:00','contact 374','contact 374','0','','serial 374','','17','0','0','0','0','17','12','0','N','0',NULL);
@@ -12885,8 +12900,8 @@ INSERT INTO glpi_monitors VALUES ('380','monitor 380','0000-00-00 00:00:00','con
 INSERT INTO glpi_monitors VALUES ('381','monitor 381','0000-00-00 00:00:00','contact 381','contact 381','0','','serial 381','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('382','monitor 382','0000-00-00 00:00:00','contact 382','contact 382','0','','serial 382','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('383','monitor 383','0000-00-00 00:00:00','contact 383','contact 383','0','','serial 383','','17','0','0','0','0','17','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('384','monitor 384','2003-09-24 18:22:43','contact 384','contact 384','0','','serial 384','','17','0','0','0','0','17','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('385','monitor 385','2003-09-24 18:24:21','contact 385','contact 385','0','','serial 385','','17','0','0','0','0','17','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('384','monitor 384','2004-09-24 18:22:43','contact 384','contact 384','0','','serial 384','','17','0','0','0','0','17','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('385','monitor 385','2004-09-24 18:24:21','contact 385','contact 385','0','','serial 385','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('386','monitor 386','0000-00-00 00:00:00','contact 386','contact 386','0','','serial 386','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('387','monitor 387','0000-00-00 00:00:00','contact 387','contact 387','0','','serial 387','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('388','monitor 388','0000-00-00 00:00:00','contact 388','contact 388','0','','serial 388','','17','0','0','0','0','17','12','0','N','0',NULL);
@@ -12897,10 +12912,10 @@ INSERT INTO glpi_monitors VALUES ('392','monitor 392','0000-00-00 00:00:00','con
 INSERT INTO glpi_monitors VALUES ('393','monitor 393','0000-00-00 00:00:00','contact 393','contact 393','0','','serial 393','','17','0','0','0','0','17','30','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('394','monitor 394','0000-00-00 00:00:00','contact 394','contact 394','0','','serial 394','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('395','monitor 395','0000-00-00 00:00:00','contact 395','contact 395','0','','serial 395','','17','0','0','0','0','17','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('396','monitor 396','2003-09-26 15:13:57','contact 396','contact 396','0','','serial 396','','17','0','0','0','0','17','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('396','monitor 396','2004-09-26 15:13:57','contact 396','contact 396','0','','serial 396','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('397','monitor 397','0000-00-00 00:00:00','contact 397','contact 397','0','','serial 397','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('398','monitor 398','0000-00-00 00:00:00','contact 398','contact 398','0','','serial 398','','17','0','0','0','0','17','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('399','monitor 399','2003-09-26 15:40:20','contact 399','contact 399','0','','serial 399','','17','0','0','0','0','17','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('399','monitor 399','2004-09-26 15:40:20','contact 399','contact 399','0','','serial 399','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('400','monitor 400','0000-00-00 00:00:00','contact 400','contact 400','0','','serial 400','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('401','monitor 401','0000-00-00 00:00:00','contact 401','contact 401','0','','serial 401','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('402','monitor 402','0000-00-00 00:00:00','contact 402','contact 402','0','','serial 402','','17','0','0','0','0','17','12','0','N','0',NULL);
@@ -12910,20 +12925,20 @@ INSERT INTO glpi_monitors VALUES ('405','monitor 405','0000-00-00 00:00:00','con
 INSERT INTO glpi_monitors VALUES ('406','monitor 406','0000-00-00 00:00:00','contact 406','contact 406','0','','serial 406','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('408','monitor 408','2004-03-24 11:07:00','contact 408','contact 408','0','','serial 408','','17','0','0','0','0','17','48','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('409','monitor 409','0000-00-00 00:00:00','contact 409','contact 409','0','','serial 409','','17','0','0','0','0','17','36','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('410','monitor 410','2003-09-26 17:07:22','contact 410','contact 410','0','','serial 410','','17','0','0','0','0','17','41','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('411','monitor 411','2003-09-26 17:11:24','contact 411','contact 411','0','','serial 411','','17','0','0','0','0','17','36','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('410','monitor 410','2004-09-26 17:07:22','contact 410','contact 410','0','','serial 410','','17','0','0','0','0','17','41','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('411','monitor 411','2004-09-26 17:11:24','contact 411','contact 411','0','','serial 411','','17','0','0','0','0','17','36','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('412','monitor 412','0000-00-00 00:00:00','contact 412','contact 412','0','','serial 412','','17','0','0','0','0','17','36','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('413','monitor 413','2004-02-19 16:41:32','contact 413','contact 413','0','','serial 413','','17','0','0','0','0','23','13','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('414','monitor 414','2004-02-19 16:41:54','contact 414','contact 414','0','','serial 414','','17','0','0','0','0','17','13','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('415','monitor 415','0000-00-00 00:00:00','contact 415','contact 415','0','','serial 415','','17','0','0','0','0','17','30','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('416','monitor 416','0000-00-00 00:00:00','contact 416','contact 416','0','','serial 416','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('417','monitor 417','0000-00-00 00:00:00','contact 417','contact 417','0','','serial 417','','17','0','0','0','0','17','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('418','monitor 418','2003-10-15 16:39:29','contact 418','contact 418','0','','serial 418','','17','0','0','0','0','17','42','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('418','monitor 418','2004-10-15 16:39:29','contact 418','contact 418','0','','serial 418','','17','0','0','0','0','17','42','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('419','monitor 419','0000-00-00 00:00:00','contact 419','contact 419','0','','serial 419','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('420','monitor 420','0000-00-00 00:00:00','contact 420','contact 420','0','','serial 420','','15','0','0','0','0','17','36','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('421','monitor 421','2003-10-16 17:06:23','contact 421','contact 421','0','LECTEUR ZIP 250 INTERNE','serial 421','','17','0','0','0','0','14','43','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('421','monitor 421','2004-10-16 17:06:23','contact 421','contact 421','0','LECTEUR ZIP 250 INTERNE','serial 421','','17','0','0','0','0','14','43','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('422','monitor 422','2004-03-16 17:17:06','contact 422','contact 422','0','SCANNER A3 COULEURN/S : FPS0WGT10000+','serial 422','','17','0','1','0','0','14','54','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('423','monitor 423','2003-10-17 10:42:17','contact 423','contact 423','0','','serial 423','','17','0','0','0','0','17','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('423','monitor 423','2004-10-17 10:42:17','contact 423','contact 423','0','','serial 423','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('424','monitor 424','0000-00-00 00:00:00','contact 424','contact 424','0','','serial 424','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('425','monitor 425','0000-00-00 00:00:00','contact 425','contact 425','0','','serial 425','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('426','monitor 426','0000-00-00 00:00:00','contact 426','contact 426','0','','serial 426','','17','0','0','0','0','17','12','0','N','0',NULL);
@@ -12932,7 +12947,7 @@ INSERT INTO glpi_monitors VALUES ('429','monitor 429','2004-01-21 16:13:58','con
 INSERT INTO glpi_monitors VALUES ('430','monitor 430','2004-01-21 16:52:43','contact 430','contact 430','0','','serial 430','','17','0','0','0','0','27','44','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('431','monitor 431','2004-01-21 17:14:37','contact 431','contact 431','0','','serial 431','','17','0','0','0','0','27','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('432','monitor 432','2004-01-21 16:54:00','contact 432','contact 432','0','','serial 432','','0','0','0','0','0','27','11','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('433','monitor 433','2003-12-19 14:34:44','contact 433','contact 433','0','','serial 433','','17','0','0','0','0','27','25','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('433','monitor 433','2004-12-19 14:34:44','contact 433','contact 433','0','','serial 433','','17','0','0','0','0','27','25','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('434','monitor 434','2004-01-21 17:12:26','contact 434','contact 434','0','','serial 434','','17','0','0','0','0','27','45','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('435','monitor 435','2004-03-09 17:56:58','contact 435','contact 435','0','','serial 435','','15','0','0','0','0','27','24','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('436','monitor 436','2004-01-21 16:33:27','contact 436','contact 436','0','','serial 436','','17','0','0','0','0','27','54','0','N','0',NULL);
@@ -12947,29 +12962,29 @@ INSERT INTO glpi_monitors VALUES ('446','monitor 446','2004-01-09 10:52:37','con
 INSERT INTO glpi_monitors VALUES ('447','monitor 447','2004-01-09 10:53:35','contact 447','contact 447','0','','serial 447','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('448','monitor 448','2004-01-20 11:35:39','contact 448','contact 448','0','','serial 448','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('449','monitor 449','0000-00-00 00:00:00','contact 449','contact 449','0','','serial 449','','17','0','0','0','0','17','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('450','monitor 450','2003-10-23 09:58:36','contact 450','contact 450','0','','serial 450','','17','0','0','0','0','17','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('450','monitor 450','2004-10-23 09:58:36','contact 450','contact 450','0','','serial 450','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('451','monitor 451','0000-00-00 00:00:00','contact 451','contact 451','0','','serial 451','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('452','monitor 452','0000-00-00 00:00:00','contact 452','contact 452','0','','serial 452','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('453','monitor 453','2004-02-27 09:21:40','contact 453','contact 453','0','','serial 453','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('454','monitor 454','0000-00-00 00:00:00','contact 454','contact 454','0','','serial 454','','15','0','0','0','0','17','36','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('455','monitor 455','0000-00-00 00:00:00','contact 455','contact 455','0','','serial 455','','17','0','0','0','0','17','36','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('456','monitor 456','0000-00-00 00:00:00','contact 456','contact 456','0','','serial 456','','17','0','1','0','0','2','16','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('457','monitor 457','2003-10-23 14:28:02','contact 457','contact 457','0','','serial 457','','17','0','0','0','0','17','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('457','monitor 457','2004-10-23 14:28:02','contact 457','contact 457','0','','serial 457','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('458','monitor 458','0000-00-00 00:00:00','contact 458','contact 458','0','','serial 458','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('459','monitor 459','2004-02-16 17:07:25','contact 459','contact 459','0','','serial 459','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('460','monitor 460','0000-00-00 00:00:00','contact 460','contact 460','0','','serial 460','','15','0','0','0','0','17','36','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('461','monitor 461','0000-00-00 00:00:00','contact 461','contact 461','0','','serial 461','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('462','monitor 462','0000-00-00 00:00:00','contact 462','contact 462','0','','serial 462','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('463','monitor 463','0000-00-00 00:00:00','contact 463','contact 463','0','','serial 463','','17','0','0','0','0','17','12','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('464','monitor 464','2003-10-24 15:49:46','contact 464','contact 464','0','SCANNER FUJITSU N/S : 4976','serial 464','','21','0','0','0','0','17','14','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('464','monitor 464','2004-10-24 15:49:46','contact 464','contact 464','0','SCANNER FUJITSU N/S : 4976','serial 464','','21','0','0','0','0','17','14','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('465','monitor 465','0000-00-00 00:00:00','contact 465','contact 465','0','','serial 465','','15','0','0','0','0','17','35','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('466','monitor 466','2004-03-09 17:55:16','contact 466','contact 466','0','','serial 466','','15','0','0','0','0','17','24','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('467','monitor 467','2003-10-24 16:21:51','contact 467','contact 467','0','','serial 467','','15','0','1','0','0','17','36','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('467','monitor 467','2004-10-24 16:21:51','contact 467','contact 467','0','','serial 467','','15','0','1','0','0','17','36','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('468','monitor 468','2004-02-26 15:59:11','contact 468','contact 468','0','','serial 468','','15','0','1','0','0','17','36','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('469','monitor 469','2003-11-25 11:14:00','contact 469','contact 469','0','','serial 469','','17','0','0','0','0','13','29','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('469','monitor 469','2004-11-25 11:14:00','contact 469','contact 469','0','','serial 469','','17','0','0','0','0','13','29','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('470','monitor 470','0000-00-00 00:00:00','contact 470','contact 470','0','','serial 470','','17','0','0','0','0','13','13','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('471','monitor 471','2003-10-28 11:09:16','contact 471','contact 471','0','','serial 471','','17','0','0','0','0','13','13','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('472','monitor 472','2003-10-28 11:11:31','contact 472','contact 472','0','','serial 472','','17','0','0','0','0','17','13','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('471','monitor 471','2004-10-28 11:09:16','contact 471','contact 471','0','','serial 471','','17','0','0','0','0','13','13','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('472','monitor 472','2004-10-28 11:11:31','contact 472','contact 472','0','','serial 472','','17','0','0','0','0','17','13','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('473','monitor 473','2004-01-30 17:21:25','contact 473','contact 473','0','','serial 473','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('589','monitor 589','2004-02-02 10:38:17','contact 589','contact 589','0','','serial 589','','17','0','0','0','0','34','58','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('474','monitor 474','2004-02-02 10:37:36','contact 474','contact 474','0','','serial 474','','17','0','0','0','0','34','47','0','N','0',NULL);
@@ -12992,67 +13007,67 @@ INSERT INTO glpi_monitors VALUES ('491','monitor 491','2004-03-09 17:57:02','con
 INSERT INTO glpi_monitors VALUES ('492','monitor 492','2004-03-09 17:57:30','contact 492','contact 492','0','','serial 492','','15','0','0','0','0','28','24','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('493','monitor 493','2004-03-09 17:59:19','contact 493','contact 493','0','','serial 493','','17','0','0','0','0','28','65','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('494','monitor 494','2004-03-09 17:49:42','contact 494','contact 494','0','','serial 494','','17','0','0','0','0','28','49','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('495','monitor 495','2003-12-19 15:48:25','contact 495','contact 495','0','','serial 495','','17','0','0','0','0','28','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('495','monitor 495','2004-12-19 15:48:25','contact 495','contact 495','0','','serial 495','','17','0','0','0','0','28','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('496','monitor 496','2004-03-09 17:59:04','contact 496','contact 496','0','','serial 496','','17','0','0','0','0','28','65','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('497','monitor 497','2004-03-09 17:58:51','contact 497','contact 497','0','','serial 497','','17','0','0','0','0','28','65','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('498','monitor 498','2003-12-19 15:49:30','contact 498','contact 498','0','','serial 498','','17','0','0','0','0','28','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('498','monitor 498','2004-12-19 15:49:30','contact 498','contact 498','0','','serial 498','','17','0','0','0','0','28','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('499','monitor 499','2004-03-09 17:53:24','contact 499','contact 499','0','','serial 499','','17','0','0','0','0','28','49','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('500','monitor 500','2003-12-19 15:49:41','contact 500','contact 500','0','','serial 500','','17','0','1','0','0','20','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('501','monitor 501','2003-12-19 15:49:58','contact 501','contact 501','0','','serial 501','','17','0','0','0','0','29','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('502','monitor 502','2003-12-19 15:54:42','contact 502','contact 502','0','','serial 502','','17','0','0','0','0','29','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('503','monitor 503','2003-12-19 15:54:55','contact 503','contact 503','0','','serial 503','','17','0','0','0','0','29','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('504','monitor 504','2003-11-07 14:22:50','contact 504','contact 504','0','','serial 504','','17','0','0','0','0','29','48','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('500','monitor 500','2004-12-19 15:49:41','contact 500','contact 500','0','','serial 500','','17','0','1','0','0','20','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('501','monitor 501','2004-12-19 15:49:58','contact 501','contact 501','0','','serial 501','','17','0','0','0','0','29','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('502','monitor 502','2004-12-19 15:54:42','contact 502','contact 502','0','','serial 502','','17','0','0','0','0','29','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('503','monitor 503','2004-12-19 15:54:55','contact 503','contact 503','0','','serial 503','','17','0','0','0','0','29','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('504','monitor 504','2004-11-07 14:22:50','contact 504','contact 504','0','','serial 504','','17','0','0','0','0','29','48','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('505','monitor 505','2004-01-21 16:39:35','contact 505','contact 505','0','','serial 505','','17','0','0','0','0','29','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('506','monitor 506','2003-12-17 10:46:29','contact 506','contact 506','0','','serial 506','','17','0','0','0','0','29','49','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('507','monitor 507','2003-12-17 10:44:48','contact 507','contact 507','0','','serial 507','','17','0','0','0','0','29','49','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('506','monitor 506','2004-12-17 10:46:29','contact 506','contact 506','0','','serial 506','','17','0','0','0','0','29','49','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('507','monitor 507','2004-12-17 10:44:48','contact 507','contact 507','0','','serial 507','','17','0','0','0','0','29','49','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('508','monitor 508','2004-01-21 17:04:48','contact 508','contact 508','0','','serial 508','','17','0','0','0','0','29','50','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('509','monitor 509','2004-01-21 17:00:10','contact 509','contact 509','0','','serial 509','','17','0','0','0','0','29','51','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('510','monitor 510','2004-01-21 17:08:28','contact 510','contact 510','0','','serial 510','','17','0','0','0','0','27','34','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('511','monitor 511','2003-11-26 16:26:34','contact 511','contact 511','0','','serial 511','','17','0','0','0','0','4','16','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('512','monitor 512','2003-11-26 12:15:06','contact 512','contact 512','0','','serial 512','','17','0','0','0','0','4','16','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('511','monitor 511','2004-11-26 16:26:34','contact 511','contact 511','0','','serial 511','','17','0','0','0','0','4','16','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('512','monitor 512','2004-11-26 12:15:06','contact 512','contact 512','0','','serial 512','','17','0','0','0','0','4','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('513','monitor 513','0000-00-00 00:00:00','contact 513','contact 513','0','','serial 513','','14','0','0','0','0','29','15','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('514','monitor 514','2003-12-19 15:55:35','contact 514','contact 514','0','','serial 514','','17','0','0','0','0','28','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('515','monitor 515','2003-12-19 15:55:44','contact 515','contact 515','0','','serial 515','','17','0','0','0','0','28','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('516','monitor 516','2003-11-19 15:09:06','contact 516','contact 516','0','ECRAN PLAT','serial 516','','17','0','0','0','0','30','52','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('514','monitor 514','2004-12-19 15:55:35','contact 514','contact 514','0','','serial 514','','17','0','0','0','0','28','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('515','monitor 515','2004-12-19 15:55:44','contact 515','contact 515','0','','serial 515','','17','0','0','0','0','28','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('516','monitor 516','2004-11-19 15:09:06','contact 516','contact 516','0','ECRAN PLAT','serial 516','','17','0','0','0','0','30','52','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('517','monitor 517','0000-00-00 00:00:00','contact 517','contact 517','0','','serial 517','','17','0','0','0','0','30','52','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('518','monitor 518','0000-00-00 00:00:00','contact 518','contact 518','0','','serial 518','','17','0','0','0','0','30','52','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('519','monitor 519','0000-00-00 00:00:00','contact 519','contact 519','0','','serial 519','','17','0','0','0','0','30','52','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('520','monitor 520','0000-00-00 00:00:00','contact 520','contact 520','0','','serial 520','','17','0','0','0','0','30','52','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('521','monitor 521','0000-00-00 00:00:00','contact 521','contact 521','0','','serial 521','','17','0','0','0','0','30','52','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('522','monitor 522','0000-00-00 00:00:00','contact 522','contact 522','0','','serial 522','','17','0','0','0','0','30','52','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('523','monitor 523','2003-11-21 10:26:17','contact 523','contact 523','0','','serial 523','','17','0','0','0','0','29','53','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('523','monitor 523','2004-11-21 10:26:17','contact 523','contact 523','0','','serial 523','','17','0','0','0','0','29','53','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('524','monitor 524','0000-00-00 00:00:00','contact 524','contact 524','0','','serial 524','','14','0','0','0','0','29','15','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('617','monitor 617','2004-02-24 18:02:09','contact 617','contact 617','0','','serial 617','','17','0','0','0','0','7','51','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('525','monitor 525','2004-02-03 18:24:02','contact 525','contact 525','0','','serial 525','','17','0','1','0','0','2','54','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('526','monitor 526','2003-12-31 10:28:16','contact 526','contact 526','0','','serial 526','','17','0','1','0','0','2','54','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('527','monitor 527','2003-12-19 16:03:41','contact 527','contact 527','0','','serial 527','','17','0','0','0','0','2','54','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('528','monitor 528','2003-12-08 17:38:31','contact 528','contact 528','0','','serial 528','','17','0','1','0','0','14','54','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('526','monitor 526','2004-12-31 10:28:16','contact 526','contact 526','0','','serial 526','','17','0','1','0','0','2','54','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('527','monitor 527','2004-12-19 16:03:41','contact 527','contact 527','0','','serial 527','','17','0','0','0','0','2','54','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('528','monitor 528','2004-12-08 17:38:31','contact 528','contact 528','0','','serial 528','','17','0','1','0','0','14','54','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('713','monitor 713','2004-03-31 15:25:27','contact 713','contact 713','0','','serial 713','','17','0','0','0','0','3','54','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('530','monitor 530','2003-12-11 11:55:55','contact 530','contact 530','0','','serial 530','','17','0','1','0','0','2','54','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('530','monitor 530','2004-12-11 11:55:55','contact 530','contact 530','0','','serial 530','','17','0','1','0','0','2','54','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('531','monitor 531','0000-00-00 00:00:00','contact 531','contact 531','0','','serial 531','','19','0','1','0','0','7','55','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('532','monitor 532','0000-00-00 00:00:00','contact 532','contact 532','0','','serial 532','','17','0','0','0','0','5','54','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('533','monitor 533','0000-00-00 00:00:00','contact 533','contact 533','0','','serial 533','','17','0','0','0','0','14','54','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('535','monitor 535','2003-12-11 11:59:50','contact 535','contact 535','0','','serial 535','','17','0','1','0','0','31','54','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('535','monitor 535','2004-12-11 11:59:50','contact 535','contact 535','0','','serial 535','','17','0','1','0','0','31','54','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('537','monitor 537','2004-02-27 14:49:41','contact 537','contact 537','0','','serial 537','','17','0','0','0','0','17','11','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('538','monitor 538','2003-12-19 09:27:56','contact 538','contact 538','0','','serial 538','','17','0','0','0','0','17','54','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('538','monitor 538','2004-12-19 09:27:56','contact 538','contact 538','0','','serial 538','','17','0','0','0','0','17','54','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('539','monitor 539','2004-03-02 09:27:51','contact 539','contact 539','0','','serial 539','','17','0','0','0','0','2','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('540','monitor 540','0000-00-00 00:00:00','contact 540','contact 540','0','','serial 540','','17','0','0','0','0','14','16','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('541','monitor 541','2003-12-15 16:05:48','contact 541','contact 541','0','','serial 541','','17','0','1','0','0','14','16','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('541','monitor 541','2004-12-15 16:05:48','contact 541','contact 541','0','','serial 541','','17','0','1','0','0','14','16','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('542','monitor 542','0000-00-00 00:00:00','contact 542','contact 542','0','','serial 542','','0','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('543','monitor 543','0000-00-00 00:00:00','contact 543','contact 543','0','','serial 543','','17','0','0','0','0','17','35','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('544','monitor 544','2003-12-17 10:17:27','contact 544','contact 544','0','','serial 544','','17','0','0','0','0','17','12','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('544','monitor 544','2004-12-17 10:17:27','contact 544','contact 544','0','','serial 544','','17','0','0','0','0','17','12','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('545','monitor 545','0000-00-00 00:00:00','contact 545','contact 545','0','','serial 545','','17','0','0','0','0','17','25','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('546','monitor 546','0000-00-00 00:00:00','contact 546','contact 546','0','','serial 546','','17','0','0','0','0','14','7','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('547','monitor 547','2004-02-02 13:56:02','contact 547','contact 547','0','','serial 547','','17','0','0','0','0','1','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('548','monitor 548','2003-12-19 15:56:12','contact 548','contact 548','0','','serial 548','','17','0','0','0','0','1','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('549','monitor 549','2003-12-19 15:56:25','contact 549','contact 549','0','','serial 549','','17','0','0','0','0','1','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('550','monitor 550','2003-12-19 15:56:47','contact 550','contact 550','0','','serial 550','','17','0','0','0','0','1','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('551','monitor 551','2003-12-19 15:57:00','contact 551','contact 551','0','','serial 551','','17','0','0','0','0','1','56','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('552','monitor 552','2003-12-19 15:57:45','contact 552','contact 552','0','','serial 552','','17','0','0','0','0','1','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('548','monitor 548','2004-12-19 15:56:12','contact 548','contact 548','0','','serial 548','','17','0','0','0','0','1','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('549','monitor 549','2004-12-19 15:56:25','contact 549','contact 549','0','','serial 549','','17','0','0','0','0','1','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('550','monitor 550','2004-12-19 15:56:47','contact 550','contact 550','0','','serial 550','','17','0','0','0','0','1','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('551','monitor 551','2004-12-19 15:57:00','contact 551','contact 551','0','','serial 551','','17','0','0','0','0','1','56','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('552','monitor 552','2004-12-19 15:57:45','contact 552','contact 552','0','','serial 552','','17','0','0','0','0','1','56','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('553','monitor 553','2004-01-14 11:14:13','contact 553','contact 553','0','','serial 553','','17','0','0','0','0','1','54','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('554','monitor 554','2004-03-11 11:19:19','contact 554','contact 554','0','','serial 554','','17','0','0','0','0','5','54','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('555','monitor 555','2003-12-19 12:22:38','contact 555','contact 555','0','','serial 555','','17','0','0','0','0','5','54','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('556','monitor 556','2003-12-19 12:25:44','contact 556','contact 556','0','','serial 556','','17','0','0','0','0','6','54','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('555','monitor 555','2004-12-19 12:22:38','contact 555','contact 555','0','','serial 555','','17','0','0','0','0','5','54','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('556','monitor 556','2004-12-19 12:25:44','contact 556','contact 556','0','','serial 556','','17','0','0','0','0','6','54','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('557','monitor 557','2004-03-11 14:35:13','contact 557','contact 557','0','','serial 557','','0','0','0','0','0','1','5','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('558','monitor 558','0000-00-00 00:00:00','contact 558','contact 558','0','','serial 558','','17','0','0','0','0','17','54','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('559','monitor 559','0000-00-00 00:00:00','contact 559','contact 559','0','','serial 559','','17','0','0','0','0','17','54','0','N','0',NULL);
@@ -13235,7 +13250,11 @@ CREATE TABLE glpi_networking (
    PRIMARY KEY (ID),
    KEY location (location),
    KEY type (type),
-   KEY firmware (firmware)
+   KEY firmware (firmware),
+   KEY FK_glpi_enterprise (FK_glpi_enterprise),
+   KEY deleted (deleted),
+   KEY is_template (is_template),
+   KEY tech_num (tech_num)
 );
 
 INSERT INTO glpi_networking VALUES ('1','fdsgdf','','','','','','0','0000-00-00 00:00:00','','12','4',NULL,'0','N','0',NULL);
@@ -14776,52 +14795,6 @@ INSERT INTO glpi_networking_ports VALUES ('1515','1','2','0','Port on computer 7
 INSERT INTO glpi_networking_ports VALUES ('1516','1','2','0','Port on computer 798','10.0.0.798','','2','798');
 INSERT INTO glpi_networking_ports VALUES ('1517','1','2','0','Port on computer 799','10.0.0.799','','2','799');
 INSERT INTO glpi_networking_ports VALUES ('1518','1','2','0','Port on computer 800','10.0.0.800','','2','800');
-INSERT INTO glpi_networking_ports VALUES ('1519','1','2','0','Port on computer 801','10.0.0.801','','2','801');
-INSERT INTO glpi_networking_ports VALUES ('1520','1','2','0','Port on computer 802','10.0.0.802','','2','802');
-INSERT INTO glpi_networking_ports VALUES ('1521','1','2','0','Port on computer 803','10.0.0.803','','2','803');
-INSERT INTO glpi_networking_ports VALUES ('1522','1','2','0','Port on computer 804','10.0.0.804','','2','804');
-INSERT INTO glpi_networking_ports VALUES ('1523','1','2','0','Port on computer 805','10.0.0.805','','2','805');
-INSERT INTO glpi_networking_ports VALUES ('1524','1','2','0','Port on computer 806','10.0.0.806','','2','806');
-INSERT INTO glpi_networking_ports VALUES ('1525','1','2','0','Port on computer 807','10.0.0.807','','2','807');
-INSERT INTO glpi_networking_ports VALUES ('1526','1','2','0','Port on computer 808','10.0.0.808','','2','808');
-INSERT INTO glpi_networking_ports VALUES ('1527','1','2','0','Port on computer 809','10.0.0.809','','2','809');
-INSERT INTO glpi_networking_ports VALUES ('1528','1','2','0','Port on computer 810','10.0.0.810','','2','810');
-INSERT INTO glpi_networking_ports VALUES ('1529','1','2','0','Port on computer 811','10.0.0.811','','2','811');
-INSERT INTO glpi_networking_ports VALUES ('1530','1','2','0','Port on computer 812','10.0.0.812','','2','812');
-INSERT INTO glpi_networking_ports VALUES ('1531','1','2','0','Port on computer 813','10.0.0.813','','2','813');
-INSERT INTO glpi_networking_ports VALUES ('1532','1','2','0','Port on computer 814','10.0.0.814','','2','814');
-INSERT INTO glpi_networking_ports VALUES ('1533','1','2','0','Port on computer 815','10.0.0.815','','2','815');
-INSERT INTO glpi_networking_ports VALUES ('1534','1','2','0','Port on computer 816','10.0.0.816','','2','816');
-INSERT INTO glpi_networking_ports VALUES ('1535','1','2','0','Port on computer 817','10.0.0.817','','2','817');
-INSERT INTO glpi_networking_ports VALUES ('1536','1','2','0','Port on computer 818','10.0.0.818','','2','818');
-INSERT INTO glpi_networking_ports VALUES ('1537','1','2','0','Port on computer 819','10.0.0.819','','2','819');
-INSERT INTO glpi_networking_ports VALUES ('1538','1','2','0','Port on computer 820','10.0.0.820','','2','820');
-INSERT INTO glpi_networking_ports VALUES ('1539','1','2','0','Port on computer 821','10.0.0.821','','2','821');
-INSERT INTO glpi_networking_ports VALUES ('1540','1','2','0','Port on computer 822','10.0.0.822','','2','822');
-INSERT INTO glpi_networking_ports VALUES ('1541','1','2','0','Port on computer 823','10.0.0.823','','2','823');
-INSERT INTO glpi_networking_ports VALUES ('1542','1','2','0','Port on computer 824','10.0.0.824','','2','824');
-INSERT INTO glpi_networking_ports VALUES ('1543','1','2','0','Port on computer 825','10.0.0.825','','2','825');
-INSERT INTO glpi_networking_ports VALUES ('1544','1','2','0','Port on computer 826','10.0.0.826','','2','826');
-INSERT INTO glpi_networking_ports VALUES ('1545','1','2','0','Port on computer 827','10.0.0.827','','2','827');
-INSERT INTO glpi_networking_ports VALUES ('1546','1','2','0','Port on computer 828','10.0.0.828','','2','828');
-INSERT INTO glpi_networking_ports VALUES ('1547','1','2','0','Port on computer 829','10.0.0.829','','2','829');
-INSERT INTO glpi_networking_ports VALUES ('1548','1','2','0','Port on computer 830','10.0.0.830','','2','830');
-INSERT INTO glpi_networking_ports VALUES ('1549','1','2','0','Port on computer 831','10.0.0.831','','2','831');
-INSERT INTO glpi_networking_ports VALUES ('1550','1','2','0','Port on computer 832','10.0.0.832','','2','832');
-INSERT INTO glpi_networking_ports VALUES ('1551','1','2','0','Port on computer 833','10.0.0.833','','2','833');
-INSERT INTO glpi_networking_ports VALUES ('1552','1','2','0','Port on computer 834','10.0.0.834','','2','834');
-INSERT INTO glpi_networking_ports VALUES ('1553','1','2','0','Port on computer 835','10.0.0.835','','2','835');
-INSERT INTO glpi_networking_ports VALUES ('1554','1','2','0','Port on computer 836','10.0.0.836','','2','836');
-INSERT INTO glpi_networking_ports VALUES ('1555','1','2','0','Port on computer 837','10.0.0.837','','2','837');
-INSERT INTO glpi_networking_ports VALUES ('1556','1','2','0','Port on computer 838','10.0.0.838','','2','838');
-INSERT INTO glpi_networking_ports VALUES ('1557','1','2','0','Port on computer 839','10.0.0.839','','2','839');
-INSERT INTO glpi_networking_ports VALUES ('1558','1','2','0','Port on computer 840','10.0.0.840','','2','840');
-INSERT INTO glpi_networking_ports VALUES ('1559','1','2','0','Port on computer 841','10.0.0.841','','2','841');
-INSERT INTO glpi_networking_ports VALUES ('1560','1','2','0','Port on computer 842','10.0.0.842','','2','842');
-INSERT INTO glpi_networking_ports VALUES ('1561','1','2','0','Port on computer 843','10.0.0.843','','2','843');
-INSERT INTO glpi_networking_ports VALUES ('1562','1','2','0','Port on computer 844','10.0.0.844','','2','844');
-INSERT INTO glpi_networking_ports VALUES ('1563','1','2','0','Port on computer 845','10.0.0.845','','2','845');
-INSERT INTO glpi_networking_ports VALUES ('1564','1','2','0','Port on computer 846','10.0.0.846','','2','846');
 ### Dump table glpi_networking_wire
 
 DROP TABLE IF EXISTS glpi_networking_wire;
@@ -15570,53 +15543,8 @@ INSERT INTO glpi_networking_wire VALUES ('732','732','1514');
 INSERT INTO glpi_networking_wire VALUES ('733','733','1515');
 INSERT INTO glpi_networking_wire VALUES ('734','734','1516');
 INSERT INTO glpi_networking_wire VALUES ('735','735','1517');
-INSERT INTO glpi_networking_wire VALUES ('736','736','1518');
-INSERT INTO glpi_networking_wire VALUES ('737','737','1519');
-INSERT INTO glpi_networking_wire VALUES ('738','738','1520');
-INSERT INTO glpi_networking_wire VALUES ('739','739','1521');
-INSERT INTO glpi_networking_wire VALUES ('740','740','1522');
-INSERT INTO glpi_networking_wire VALUES ('741','741','1523');
-INSERT INTO glpi_networking_wire VALUES ('742','742','1524');
-INSERT INTO glpi_networking_wire VALUES ('743','743','1525');
-INSERT INTO glpi_networking_wire VALUES ('744','744','1526');
-INSERT INTO glpi_networking_wire VALUES ('745','745','1527');
-INSERT INTO glpi_networking_wire VALUES ('746','746','1528');
-INSERT INTO glpi_networking_wire VALUES ('747','747','1529');
-INSERT INTO glpi_networking_wire VALUES ('748','748','1530');
-INSERT INTO glpi_networking_wire VALUES ('749','749','1531');
-INSERT INTO glpi_networking_wire VALUES ('750','750','1532');
-INSERT INTO glpi_networking_wire VALUES ('751','751','1533');
-INSERT INTO glpi_networking_wire VALUES ('752','752','1534');
-INSERT INTO glpi_networking_wire VALUES ('753','753','1535');
-INSERT INTO glpi_networking_wire VALUES ('754','754','1536');
-INSERT INTO glpi_networking_wire VALUES ('755','755','1537');
-INSERT INTO glpi_networking_wire VALUES ('756','756','1538');
-INSERT INTO glpi_networking_wire VALUES ('757','757','1539');
-INSERT INTO glpi_networking_wire VALUES ('758','758','1540');
-INSERT INTO glpi_networking_wire VALUES ('759','759','1541');
-INSERT INTO glpi_networking_wire VALUES ('760','760','1542');
-INSERT INTO glpi_networking_wire VALUES ('761','761','1543');
-INSERT INTO glpi_networking_wire VALUES ('762','762','1544');
-INSERT INTO glpi_networking_wire VALUES ('763','763','1545');
-INSERT INTO glpi_networking_wire VALUES ('764','764','1546');
-INSERT INTO glpi_networking_wire VALUES ('765','765','1547');
-INSERT INTO glpi_networking_wire VALUES ('766','766','1548');
-INSERT INTO glpi_networking_wire VALUES ('767','767','1549');
-INSERT INTO glpi_networking_wire VALUES ('768','768','1550');
-INSERT INTO glpi_networking_wire VALUES ('769','769','1551');
-INSERT INTO glpi_networking_wire VALUES ('770','770','1552');
-INSERT INTO glpi_networking_wire VALUES ('771','771','1553');
-INSERT INTO glpi_networking_wire VALUES ('772','772','1554');
-INSERT INTO glpi_networking_wire VALUES ('773','773','1555');
-INSERT INTO glpi_networking_wire VALUES ('774','774','1556');
-INSERT INTO glpi_networking_wire VALUES ('775','775','1557');
-INSERT INTO glpi_networking_wire VALUES ('776','776','1558');
-INSERT INTO glpi_networking_wire VALUES ('777','777','1559');
-INSERT INTO glpi_networking_wire VALUES ('778','778','1560');
-INSERT INTO glpi_networking_wire VALUES ('779','779','1561');
-INSERT INTO glpi_networking_wire VALUES ('780','780','1562');
-INSERT INTO glpi_networking_wire VALUES ('781','781','1563');
-INSERT INTO glpi_networking_wire VALUES ('782','782','1564');
+
+
 ### Dump table glpi_peripherals
 
 DROP TABLE IF EXISTS glpi_peripherals;
@@ -15639,7 +15567,11 @@ CREATE TABLE glpi_peripherals (
     tplname varchar(255),
    PRIMARY KEY (ID),
    KEY type (type),
-   KEY location (location)
+   KEY location (location),
+   KEY FK_glpi_enterprise (FK_glpi_enterprise),
+   KEY deleted (deleted),
+   KEY is_template (is_template),
+   KEY tech_num (tech_num)
 );
 
 INSERT INTO glpi_peripherals VALUES ('1','aaaaaaaaa','0000-00-00 00:00:00','','','0','','','','0','0','','0','N','0',NULL);
@@ -15698,17 +15630,21 @@ CREATE TABLE glpi_printers (
    PRIMARY KEY (ID),
    KEY id (ID),
    KEY location (location),
-   KEY type (type)
+   KEY type (type),
+   KEY FK_glpi_enterprise (FK_glpi_enterprise),
+   KEY deleted (deleted),
+   KEY is_template (is_template),
+   KEY tech_num (tech_num)
 );
 
-INSERT INTO glpi_printers VALUES ('4','printer 4','2003-04-29 12:56:43','contact 4','num 4','0','serial 4','','0','0','0','',NULL,'2','43','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('5','printer 5','2003-04-29 12:57:32','contact 5','num 5','0','serial 5','','0','1','0','',NULL,'2','17','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('7','printer 7','2003-10-24 16:18:50','contact 7','num 7','0','serial 7','','0','0','0','',NULL,'8','44','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('4','printer 4','2004-04-29 12:56:43','contact 4','num 4','0','serial 4','','0','0','0','',NULL,'2','43','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('5','printer 5','2004-04-29 12:57:32','contact 5','num 5','0','serial 5','','0','1','0','',NULL,'2','17','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('7','printer 7','2004-10-24 16:18:50','contact 7','num 7','0','serial 7','','0','0','0','',NULL,'8','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('8','printer 8','0000-00-00 00:00:00','contact 8','num 8','0','serial 8','','0','0','0','',NULL,'8','7','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('10','printer 10','0000-00-00 00:00:00','contact 10','num 10','0','serial 10','','0','0','0','',NULL,'8','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('11','printer 11','0000-00-00 00:00:00','contact 11','num 11','0','serial 11','','0','0','0','',NULL,'2','5','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('12','printer 12','2003-09-29 18:15:23','contact 12','num 12','0','serial 12','','0','0','0','',NULL,'12','35','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('13','printer 13','2003-09-29 18:13:27','contact 13','num 13','0','serial 13','','0','0','0','',NULL,'2','35','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('12','printer 12','2004-09-29 18:15:23','contact 12','num 12','0','serial 12','','0','0','0','',NULL,'12','35','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('13','printer 13','2004-09-29 18:13:27','contact 13','num 13','0','serial 13','','0','0','0','',NULL,'2','35','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('14','printer 14','2004-03-16 17:17:36','contact 14','num 14','0','serial 14','','0','1','0','',NULL,'10','80','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('15','printer 15','0000-00-00 00:00:00','contact 15','num 15','0','serial 15','','0','0','0','',NULL,'10','53','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('16','printer 16','0000-00-00 00:00:00','contact 16','num 16','0','serial 16','','0','0','0','',NULL,'3','44','0','N','0',NULL);
@@ -15717,13 +15653,13 @@ INSERT INTO glpi_printers VALUES ('18','printer 18','2004-03-02 17:47:53','conta
 INSERT INTO glpi_printers VALUES ('19','printer 19','2004-03-02 17:47:05','contact 19','num 19','0','serial 19','','0','0','0','',NULL,'31','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('20','printer 20','2004-05-06 14:41:34','contact 20','num 20','0','serial 20','','0','0','0','',NULL,'3','35','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('21','printer 21','2004-02-20 11:02:54','contact 21','num 21','0','serial 21','','0','1','0','',NULL,'2','80','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('22','printer 22','2003-12-19 12:18:06','contact 22','num 22','0','serial 22','','0','0','0','',NULL,'14','54','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('22','printer 22','2004-12-19 12:18:06','contact 22','num 22','0','serial 22','','0','0','0','',NULL,'14','54','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('195','printer 195','0000-00-00 00:00:00','contact 195','num 195','0','serial 195','','0','0','0','',NULL,'5','65','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('24','printer 24','2003-06-03 11:37:05','contact 24','num 24','0','serial 24','','0','0','0','',NULL,'7','18','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('24','printer 24','2004-06-03 11:37:05','contact 24','num 24','0','serial 24','','0','0','0','',NULL,'7','18','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('25','printer 25','0000-00-00 00:00:00','contact 25','num 25','0','serial 25','','0','0','0','',NULL,'2','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('26','printer 26','0000-00-00 00:00:00','contact 26','num 26','0','serial 26','','0','0','0','',NULL,'2','35','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('27','printer 27','2003-11-19 12:36:05','contact 27','num 27','0','serial 27','','0','0','0','',NULL,'2','5','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('28','printer 28','2003-05-15 17:46:25','contact 28','num 28','0','serial 28','','0','0','0','',NULL,'2','34','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('27','printer 27','2004-11-19 12:36:05','contact 27','num 27','0','serial 27','','0','0','0','',NULL,'2','5','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('28','printer 28','2004-05-15 17:46:25','contact 28','num 28','0','serial 28','','0','0','0','',NULL,'2','34','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('29','printer 29','0000-00-00 00:00:00','contact 29','num 29','0','serial 29','','0','0','0','',NULL,'2','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('30','printer 30','0000-00-00 00:00:00','contact 30','num 30','0','serial 30','','0','0','0','',NULL,'2','5','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('31','printer 31','0000-00-00 00:00:00','contact 31','num 31','0','serial 31','','0','0','0','',NULL,'2','35','0','N','0',NULL);
@@ -15731,48 +15667,48 @@ INSERT INTO glpi_printers VALUES ('201','printer 201','0000-00-00 00:00:00','con
 INSERT INTO glpi_printers VALUES ('33','printer 33','0000-00-00 00:00:00','contact 33','num 33','0','serial 33','','0','0','0','',NULL,'2','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('34','printer 34','0000-00-00 00:00:00','contact 34','num 34','0','serial 34','','0','0','0','',NULL,'2','34','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('35','printer 35','0000-00-00 00:00:00','contact 35','num 35','0','serial 35','','0','0','0','',NULL,'2','44','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('36','printer 36','2003-10-16 17:15:33','contact 36','num 36','0','serial 36','','0','0','0','',NULL,'2','35','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('36','printer 36','2004-10-16 17:15:33','contact 36','num 36','0','serial 36','','0','0','0','',NULL,'2','35','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('37','printer 37','0000-00-00 00:00:00','contact 37','num 37','0','serial 37','','0','0','0','',NULL,'2','43','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('38','printer 38','0000-00-00 00:00:00','contact 38','num 38','0','serial 38','','0','0','0','',NULL,'2','34','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('39','printer 39','0000-00-00 00:00:00','contact 39','num 39','0','serial 39','','0','0','0','',NULL,'2','34','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('40','printer 40','2003-06-16 18:47:24','contact 40','num 40','0','serial 40','','0','0','0','',NULL,'6','43','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('41','printer 41','2003-10-16 16:02:38','contact 41','num 41','0','serial 41','','0','0','0','',NULL,'2','44','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('40','printer 40','2004-06-16 18:47:24','contact 40','num 40','0','serial 40','','0','0','0','',NULL,'6','43','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('41','printer 41','2004-10-16 16:02:38','contact 41','num 41','0','serial 41','','0','0','0','',NULL,'2','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('42','printer 42','2004-02-26 11:22:43','contact 42','num 42','0','serial 42','','0','0','0','',NULL,'2','80','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('43','printer 43','2003-06-17 12:04:27','contact 43','num 43','0','serial 43','','0','0','0','',NULL,'2','44','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('43','printer 43','2004-06-17 12:04:27','contact 43','num 43','0','serial 43','','0','0','0','',NULL,'2','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('44','printer 44','0000-00-00 00:00:00','contact 44','num 44','0','serial 44','','0','0','0','',NULL,'2','36','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('45','printer 45','0000-00-00 00:00:00','contact 45','num 45','0','serial 45','','0','0','0','',NULL,'2','35','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('46','printer 46','0000-00-00 00:00:00','contact 46','num 46','0','serial 46','','0','0','0','',NULL,'2','6','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('47','printer 47','0000-00-00 00:00:00','contact 47','num 47','0','serial 47','','0','0','0','',NULL,'2','43','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('48','printer 48','0000-00-00 00:00:00','contact 48','num 48','0','serial 48','','0','0','0','',NULL,'2','34','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('49','printer 49','2003-12-19 12:17:39','contact 49','num 49','0','serial 49','','0','0','0','',NULL,'2','65','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('49','printer 49','2004-12-19 12:17:39','contact 49','num 49','0','serial 49','','0','0','0','',NULL,'2','65','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('50','printer 50','0000-00-00 00:00:00','contact 50','num 50','0','serial 50','','0','0','0','',NULL,'5','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('51','printer 51','2004-05-05 12:30:48','contact 51','num 51','0','serial 51','','0','1','0','',NULL,'5','50','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('52','printer 52','2003-12-08 15:04:43','contact 52','num 52','0','serial 52','','0','0','0','',NULL,'5','49','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('52','printer 52','2004-12-08 15:04:43','contact 52','num 52','0','serial 52','','0','0','0','',NULL,'5','49','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('53','printer 53','0000-00-00 00:00:00','contact 53','num 53','0','serial 53','','0','0','0','',NULL,'5','35','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('54','printer 54','0000-00-00 00:00:00','contact 54','num 54','0','serial 54','','0','0','0','',NULL,'5','36','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('55','printer 55','2004-02-05 10:06:56','contact 55','num 55','0','serial 55','','0','0','0','',NULL,'2','36','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('56','printer 56','0000-00-00 00:00:00','contact 56','num 56','0','serial 56','','0','0','0','',NULL,'5','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('196','printer 196','0000-00-00 00:00:00','contact 196','num 196','0','serial 196','','0','0','0','',NULL,'5','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('58','printer 58','2004-05-05 18:55:47','contact 58','num 58','0','serial 58','','0','1','0','',NULL,'5','80','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('59','printer 59','2003-05-19 18:36:04','contact 59','num 59','0','serial 59','','0','0','0','',NULL,'5','36','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('59','printer 59','2004-05-19 18:36:04','contact 59','num 59','0','serial 59','','0','0','0','',NULL,'5','36','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('60','printer 60','2004-04-07 12:19:58','contact 60','num 60','0','serial 60','','0','0','0','',NULL,'14','14','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('61','printer 61','0000-00-00 00:00:00','contact 61','num 61','0','serial 61','','0','0','0','',NULL,'14','52','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('62','printer 62','2003-10-16 16:04:20','contact 62','num 62','0','serial 62','','0','0','0','',NULL,'4','52','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('62','printer 62','2004-10-16 16:04:20','contact 62','num 62','0','serial 62','','0','0','0','',NULL,'4','52','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('63','printer 63','2004-02-27 10:03:50','contact 63','num 63','0','serial 63','','0','1','0','',NULL,'14','80','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('64','printer 64','0000-00-00 00:00:00','contact 64','num 64','0','serial 64','','0','0','0','',NULL,'14','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('65','printer 65','0000-00-00 00:00:00','contact 65','num 65','0','serial 65','','0','0','0','',NULL,'14','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('66','printer 66','0000-00-00 00:00:00','contact 66','num 66','0','serial 66','','0','0','0','',NULL,'14','36','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('67','printer 67','2004-05-06 12:29:01','contact 67','num 67','0','serial 67','','0','0','0','',NULL,'14','43','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('68','printer 68','2003-05-21 10:57:48','contact 68','num 68','0','serial 68','','0','0','0','',NULL,'14','55','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('68','printer 68','2004-05-21 10:57:48','contact 68','num 68','0','serial 68','','0','0','0','',NULL,'14','55','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('69','printer 69','2004-04-07 12:17:40','contact 69','num 69','0','serial 69','','0','0','0','',NULL,'14','36','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('70','printer 70','0000-00-00 00:00:00','contact 70','num 70','0','serial 70','','0','0','0','',NULL,'2','6','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('320','printer 320','2004-05-19 17:09:35','contact 320','num 320','0','serial 320','','0','0','0','',NULL,'6','80','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('72','printer 72','0000-00-00 00:00:00','contact 72','num 72','0','serial 72','','0','0','0','',NULL,'2','5','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('73','printer 73','0000-00-00 00:00:00','contact 73','num 73','0','serial 73','','0','0','0','',NULL,'2','5','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('74','printer 74','2003-05-21 12:19:20','contact 74','num 74','0','serial 74','','0','0','0','',NULL,'2','5','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('75','printer 75','2003-06-16 15:58:35','contact 75','num 75','0','serial 75','','0','0','0','',NULL,'2','1','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('76','printer 76','2003-06-16 15:58:52','contact 76','num 76','0','serial 76','','0','0','0','',NULL,'2','1','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('77','printer 77','2003-05-22 12:41:09','contact 77','num 77','0','serial 77','','0','0','0','',NULL,'2','56','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('74','printer 74','2004-05-21 12:19:20','contact 74','num 74','0','serial 74','','0','0','0','',NULL,'2','5','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('75','printer 75','2004-06-16 15:58:35','contact 75','num 75','0','serial 75','','0','0','0','',NULL,'2','1','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('76','printer 76','2004-06-16 15:58:52','contact 76','num 76','0','serial 76','','0','0','0','',NULL,'2','1','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('77','printer 77','2004-05-22 12:41:09','contact 77','num 77','0','serial 77','','0','0','0','',NULL,'2','56','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('78','printer 78','0000-00-00 00:00:00','contact 78','num 78','0','serial 78','','0','0','0','',NULL,'7','25','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('79','printer 79','0000-00-00 00:00:00','contact 79','num 79','0','serial 79','','0','0','0','',NULL,'7','32','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('80','printer 80','0000-00-00 00:00:00','contact 80','num 80','0','serial 80','','0','0','0','',NULL,'7','25','0','N','0',NULL);
@@ -15789,11 +15725,11 @@ INSERT INTO glpi_printers VALUES ('90','printer 90','0000-00-00 00:00:00','conta
 INSERT INTO glpi_printers VALUES ('91','printer 91','0000-00-00 00:00:00','contact 91','num 91','0','serial 91','','0','0','0','',NULL,'7','5','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('92','printer 92','2004-01-14 10:16:56','contact 92','num 92','0','serial 92','','0','0','0','',NULL,'7','5','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('93','printer 93','0000-00-00 00:00:00','contact 93','num 93','0','serial 93','','0','0','0','',NULL,'7','44','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('94','printer 94','2003-09-23 15:44:54','contact 94','num 94','0','serial 94','','0','0','0','',NULL,'7','35','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('94','printer 94','2004-09-23 15:44:54','contact 94','num 94','0','serial 94','','0','0','0','',NULL,'7','35','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('95','printer 95','2004-03-15 15:34:16','contact 95','num 95','0','serial 95','','0','0','0','',NULL,'7','33','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('96','printer 96','0000-00-00 00:00:00','contact 96','num 96','0','serial 96','','0','0','0','',NULL,'7','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('97','printer 97','0000-00-00 00:00:00','contact 97','num 97','0','serial 97','','0','0','0','',NULL,'7','44','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('98','printer 98','2003-10-16 16:01:44','contact 98','num 98','0','serial 98','','0','0','0','',NULL,'7','35','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('98','printer 98','2004-10-16 16:01:44','contact 98','num 98','0','serial 98','','0','0','0','',NULL,'7','35','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('99','printer 99','2004-04-07 16:32:57','contact 99','num 99','0','serial 99','','0','0','0','',NULL,'18','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('100','printer 100','0000-00-00 00:00:00','contact 100','num 100','0','serial 100','','0','0','0','',NULL,'3','5','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('101','printer 101','0000-00-00 00:00:00','contact 101','num 101','0','serial 101','','0','0','0','',NULL,'3','44','0','N','0',NULL);
@@ -15802,7 +15738,7 @@ INSERT INTO glpi_printers VALUES ('103','printer 103','0000-00-00 00:00:00','con
 INSERT INTO glpi_printers VALUES ('104','printer 104','0000-00-00 00:00:00','contact 104','num 104','0','serial 104','','0','0','0','',NULL,'3','35','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('105','printer 105','0000-00-00 00:00:00','contact 105','num 105','0','serial 105','','0','0','0','',NULL,'3','38','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('194','printer 194','2004-01-21 16:37:38','contact 194','num 194','0','serial 194','','0','0','0','',NULL,'5','44','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('107','printer 107','2003-06-16 11:48:46','contact 107','num 107','0','serial 107','','0','0','0','',NULL,'2','15','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('107','printer 107','2004-06-16 11:48:46','contact 107','num 107','0','serial 107','','0','0','0','',NULL,'2','15','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('108','printer 108','0000-00-00 00:00:00','contact 108','num 108','0','serial 108','','0','0','0','',NULL,'2','35','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('109','printer 109','0000-00-00 00:00:00','contact 109','num 109','0','serial 109','','0','0','0','',NULL,'2','35','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('110','printer 110','0000-00-00 00:00:00','contact 110','num 110','0','serial 110','','0','0','0','',NULL,'2','52','0','N','0',NULL);
@@ -15810,7 +15746,7 @@ INSERT INTO glpi_printers VALUES ('111','printer 111','0000-00-00 00:00:00','con
 INSERT INTO glpi_printers VALUES ('112','printer 112','0000-00-00 00:00:00','contact 112','num 112','0','serial 112','','0','0','0','',NULL,'4','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('113','printer 113','0000-00-00 00:00:00','contact 113','num 113','0','serial 113','','0','0','0','',NULL,'3','34','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('114','printer 114','0000-00-00 00:00:00','contact 114','num 114','0','serial 114','','0','0','0','',NULL,'3','34','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('115','printer 115','2003-06-10 16:12:24','contact 115','num 115','0','serial 115','','0','0','0','',NULL,'3','57','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('115','printer 115','2004-06-10 16:12:24','contact 115','num 115','0','serial 115','','0','0','0','',NULL,'3','57','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('116','printer 116','0000-00-00 00:00:00','contact 116','num 116','0','serial 116','','0','0','0','',NULL,'3','33','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('117','printer 117','0000-00-00 00:00:00','contact 117','num 117','0','serial 117','','0','0','0','',NULL,'2','43','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('118','printer 118','0000-00-00 00:00:00','contact 118','num 118','0','serial 118','','0','0','0','',NULL,'3','44','0','N','0',NULL);
@@ -15825,7 +15761,7 @@ INSERT INTO glpi_printers VALUES ('126','printer 126','2004-03-10 12:39:51','con
 INSERT INTO glpi_printers VALUES ('127','printer 127','0000-00-00 00:00:00','contact 127','num 127','0','serial 127','','0','0','0','',NULL,'6','5','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('128','printer 128','0000-00-00 00:00:00','contact 128','num 128','0','serial 128','','0','0','0','',NULL,'6','5','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('129','printer 129','0000-00-00 00:00:00','contact 129','num 129','0','serial 129','','0','0','0','',NULL,'5','44','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('130','printer 130','2003-06-12 17:21:40','contact 130','num 130','0','serial 130','','0','0','0','',NULL,'6','14','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('130','printer 130','2004-06-12 17:21:40','contact 130','num 130','0','serial 130','','0','0','0','',NULL,'6','14','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('131','printer 131','0000-00-00 00:00:00','contact 131','num 131','0','serial 131','','0','0','0','',NULL,'6','36','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('132','printer 132','0000-00-00 00:00:00','contact 132','num 132','0','serial 132','','0','0','0','',NULL,'6','35','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('133','printer 133','0000-00-00 00:00:00','contact 133','num 133','0','serial 133','','0','0','0','',NULL,'6','5','0','N','0',NULL);
@@ -15835,10 +15771,10 @@ INSERT INTO glpi_printers VALUES ('137','printer 137','0000-00-00 00:00:00','con
 INSERT INTO glpi_printers VALUES ('138','printer 138','0000-00-00 00:00:00','contact 138','num 138','0','serial 138','','0','0','0','',NULL,'6','5','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('139','printer 139','0000-00-00 00:00:00','contact 139','num 139','0','serial 139','','0','0','0','',NULL,'6','5','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('140','printer 140','0000-00-00 00:00:00','contact 140','num 140','0','serial 140','','0','0','0','',NULL,'6','44','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('141','printer 141','2003-06-16 15:43:10','contact 141','num 141','0','serial 141','','0','0','0','',NULL,'6','52','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('142','printer 142','2003-12-10 12:01:51','contact 142','num 142','0','serial 142','','0','0','0','',NULL,'6','80','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('141','printer 141','2004-06-16 15:43:10','contact 141','num 141','0','serial 141','','0','0','0','',NULL,'6','52','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('142','printer 142','2004-12-10 12:01:51','contact 142','num 142','0','serial 142','','0','0','0','',NULL,'6','80','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('143','printer 143','0000-00-00 00:00:00','contact 143','num 143','0','serial 143','','0','0','0','',NULL,'6','36','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('144','printer 144','2003-10-28 09:43:47','contact 144','num 144','0','serial 144','','0','1','0','',NULL,'6','65','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('144','printer 144','2004-10-28 09:43:47','contact 144','num 144','0','serial 144','','0','1','0','',NULL,'6','65','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('145','printer 145','0000-00-00 00:00:00','contact 145','num 145','0','serial 145','','0','0','0','',NULL,'6','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('146','printer 146','0000-00-00 00:00:00','contact 146','num 146','0','serial 146','','0','0','0','',NULL,'6','34','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('147','printer 147','0000-00-00 00:00:00','contact 147','num 147','0','serial 147','','0','0','0','',NULL,'6','5','0','N','0',NULL);
@@ -15853,33 +15789,33 @@ INSERT INTO glpi_printers VALUES ('155','printer 155','2004-01-21 16:54:56','con
 INSERT INTO glpi_printers VALUES ('156','printer 156','0000-00-00 00:00:00','contact 156','num 156','0','serial 156','','0','0','0','',NULL,'7','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('157','printer 157','0000-00-00 00:00:00','contact 157','num 157','0','serial 157','','0','0','0','',NULL,'7','32','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('158','printer 158','2004-03-01 12:38:08','contact 158','num 158','0','serial 158','','0','0','0','',NULL,'7','25','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('159','printer 159','2003-06-17 15:48:13','contact 159','num 159','0','serial 159','','0','0','0','',NULL,'19','16','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('160','printer 160','2003-06-17 15:48:37','contact 160','num 160','0','serial 160','','0','0','0','',NULL,'19','16','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('159','printer 159','2004-06-17 15:48:13','contact 159','num 159','0','serial 159','','0','0','0','',NULL,'19','16','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('160','printer 160','2004-06-17 15:48:37','contact 160','num 160','0','serial 160','','0','0','0','',NULL,'19','16','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('161','printer 161','0000-00-00 00:00:00','contact 161','num 161','0','serial 161','','0','0','0','',NULL,'19','61','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('162','printer 162','2004-02-02 10:38:54','contact 162','num 162','0','serial 162','','0','0','0','',NULL,'34','62','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('163','printer 163','2004-02-02 10:20:10','contact 163','num 163','0','serial 163','','0','0','0','',NULL,'34','63','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('164','printer 164','2004-02-02 10:19:10','contact 164','num 164','0','serial 164','','0','0','0','',NULL,'34','64','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('165','printer 165','0000-00-00 00:00:00','contact 165','num 165','0','serial 165','','0','0','0','',NULL,'2','44','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('166','printer 166','2003-11-14 15:25:38','contact 166','num 166','0','serial 166','','0','1','0','',NULL,'17','75','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('166','printer 166','2004-11-14 15:25:38','contact 166','num 166','0','serial 166','','0','1','0','',NULL,'17','75','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('167','printer 167','0000-00-00 00:00:00','contact 167','num 167','0','serial 167','','0','0','0','',NULL,'17','56','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('168','printer 168','0000-00-00 00:00:00','contact 168','num 168','0','serial 168','','0','0','0','',NULL,'7','5','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('169','printer 169','2003-08-08 17:31:53','contact 169','num 169','0','serial 169','','0','0','0','',NULL,'11','35','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('170','printer 170','2003-08-08 17:32:49','contact 170','num 170','0','serial 170','','0','0','0','',NULL,'11','35','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('171','printer 171','2003-08-08 17:33:14','contact 171','num 171','0','serial 171','','0','0','0','',NULL,'11','65','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('169','printer 169','2004-08-08 17:31:53','contact 169','num 169','0','serial 169','','0','0','0','',NULL,'11','35','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('170','printer 170','2004-08-08 17:32:49','contact 170','num 170','0','serial 170','','0','0','0','',NULL,'11','35','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('171','printer 171','2004-08-08 17:33:14','contact 171','num 171','0','serial 171','','0','0','0','',NULL,'11','65','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('172','printer 172','2004-02-26 11:11:20','contact 172','num 172','0','serial 172','','0','0','0','',NULL,'11','36','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('173','printer 173','2003-08-08 17:34:30','contact 173','num 173','0','serial 173','','0','0','0','',NULL,'11','66','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('174','printer 174','2003-08-08 17:35:27','contact 174','num 174','0','serial 174','','0','0','0','',NULL,'11','31','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('173','printer 173','2004-08-08 17:34:30','contact 173','num 173','0','serial 173','','0','0','0','',NULL,'11','66','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('174','printer 174','2004-08-08 17:35:27','contact 174','num 174','0','serial 174','','0','0','0','',NULL,'11','31','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('175','printer 175','0000-00-00 00:00:00','contact 175','num 175','0','serial 175','','0','0','0','',NULL,'22','48','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('176','printer 176','2004-01-20 18:15:24','contact 176','num 176','0','serial 176','','0','0','0','',NULL,'22','67','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('177','printer 177','0000-00-00 00:00:00','contact 177','num 177','0','serial 177','','0','0','0','',NULL,'17','44','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('178','printer 178','2003-08-04 17:57:29','contact 178','num 178','0','serial 178','','0','0','0','',NULL,'23','68','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('178','printer 178','2004-08-04 17:57:29','contact 178','num 178','0','serial 178','','0','0','0','',NULL,'23','68','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('179','printer 179','0000-00-00 00:00:00','contact 179','num 179','0','serial 179','','0','0','0','',NULL,'22','44','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('180','printer 180','2003-08-06 16:21:18','contact 180','num 180','0','serial 180','','0','0','0','',NULL,'23','69','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('180','printer 180','2004-08-06 16:21:18','contact 180','num 180','0','serial 180','','0','0','0','',NULL,'23','69','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('181','printer 181','2004-02-02 10:39:00','contact 181','num 181','0','serial 181','','0','0','0','',NULL,'34','70','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('182','printer 182','0000-00-00 00:00:00','contact 182','num 182','0','serial 182','','0','0','0','',NULL,'16','68','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('183','printer 183','0000-00-00 00:00:00','contact 183','num 183','0','serial 183','','0','0','0','',NULL,'17','63','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('184','printer 184','0000-00-00 00:00:00','contact 184','num 184','0','serial 184','','0','0','0','',NULL,'16','70','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('185','printer 185','2003-08-12 16:59:00','contact 185','num 185','0','serial 185','','0','0','0','',NULL,'8','71','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('185','printer 185','2004-08-12 16:59:00','contact 185','num 185','0','serial 185','','0','0','0','',NULL,'8','71','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('187','printer 187','2004-03-22 15:00:50','contact 187','num 187','0','serial 187','','0','0','0','',NULL,'8','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('188','printer 188','2004-03-11 15:55:46','contact 188','num 188','0','serial 188','','0','0','0','',NULL,'8','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('189','printer 189','2004-03-11 16:24:20','contact 189','num 189','0','serial 189','','0','0','0','',NULL,'8','44','0','N','0',NULL);
@@ -15887,13 +15823,13 @@ INSERT INTO glpi_printers VALUES ('190','printer 190','0000-00-00 00:00:00','con
 INSERT INTO glpi_printers VALUES ('191','printer 191','0000-00-00 00:00:00','contact 191','num 191','0','serial 191','','0','0','0','',NULL,'2','50','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('192','printer 192','2004-02-03 14:23:30','contact 192','num 192','0','serial 192','','0','0','0','',NULL,'7','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('193','printer 193','0000-00-00 00:00:00','contact 193','num 193','0','serial 193','','0','0','0','',NULL,'3','35','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('197','printer 197','2003-08-21 16:30:10','contact 197','num 197','0','serial 197','','0','0','0','',NULL,'5','65','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('198','printer 198','2003-09-11 18:48:45','contact 198','num 198','0','serial 198','','0','0','0','',NULL,'24','44','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('197','printer 197','2004-08-21 16:30:10','contact 197','num 197','0','serial 197','','0','0','0','',NULL,'5','65','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('198','printer 198','2004-09-11 18:48:45','contact 198','num 198','0','serial 198','','0','0','0','',NULL,'24','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('199','printer 199','0000-00-00 00:00:00','contact 199','num 199','0','serial 199','','0','0','0','',NULL,'25','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('200','printer 200','0000-00-00 00:00:00','contact 200','num 200','0','serial 200','','0','0','0','',NULL,'26','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('202','printer 202','0000-00-00 00:00:00','contact 202','num 202','0','serial 202','','0','0','0','',NULL,'17','70','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('203','printer 203','2004-03-15 10:19:06','contact 203','num 203','0','serial 203','','0','0','0','Sur port USB',NULL,'10','65','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('204','printer 204','2003-10-16 17:06:41','contact 204','num 204','0','serial 204','','0','0','0','',NULL,'14','72','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('204','printer 204','2004-10-16 17:06:41','contact 204','num 204','0','serial 204','','0','0','0','',NULL,'14','72','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('205','printer 205','0000-00-00 00:00:00','contact 205','num 205','0','serial 205','','0','0','0','',NULL,'14','1','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('206','printer 206','2004-01-21 16:13:50','contact 206','num 206','0','serial 206','','0','0','0','C3941A',NULL,'27','80','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('207','printer 207','0000-00-00 00:00:00','contact 207','num 207','0','serial 207','','0','0','0','',NULL,'27','54','0','N','0',NULL);
@@ -15902,18 +15838,18 @@ INSERT INTO glpi_printers VALUES ('209','printer 209','2004-01-21 17:03:36','con
 INSERT INTO glpi_printers VALUES ('210','printer 210','2004-01-21 17:08:21','contact 210','num 210','0','serial 210','','0','0','0','',NULL,'27','63','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('211','printer 211','0000-00-00 00:00:00','contact 211','num 211','0','serial 211','','0','0','0','',NULL,'27','63','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('212','printer 212','0000-00-00 00:00:00','contact 212','num 212','0','serial 212','','0','0','0','',NULL,'17','56','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('213','printer 213','2003-10-24 16:22:02','contact 213','num 213','0','serial 213','','0','0','0','',NULL,'17','1','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('214','printer 214','2003-10-28 11:10:33','contact 214','num 214','0','serial 214','','0','0','0','',NULL,'13','70','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('213','printer 213','2004-10-24 16:22:02','contact 213','num 213','0','serial 213','','0','0','0','',NULL,'17','1','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('214','printer 214','2004-10-28 11:10:33','contact 214','num 214','0','serial 214','','0','0','0','',NULL,'13','70','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('215','printer 215','2004-03-10 16:23:52','contact 215','num 215','0','serial 215','','0','0','0','',NULL,'28','4','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('216','printer 216','0000-00-00 00:00:00','contact 216','num 216','0','serial 216','','0','0','0','',NULL,'28','21','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('217','printer 217','0000-00-00 00:00:00','contact 217','num 217','0','serial 217','','0','0','0','',NULL,'28','7','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('218','printer 218','0000-00-00 00:00:00','contact 218','num 218','0','serial 218','','0','0','0','',NULL,'28','21','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('219','printer 219','2004-03-10 16:24:49','contact 219','num 219','0','serial 219','','0','0','0','',NULL,'28','27','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('220','printer 220','0000-00-00 00:00:00','contact 220','num 220','0','serial 220','','0','0','0','',NULL,'28','7','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('221','printer 221','2003-10-29 15:50:54','contact 221','num 221','0','serial 221','','0','0','0','',NULL,'28','30','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('221','printer 221','2004-10-29 15:50:54','contact 221','num 221','0','serial 221','','0','0','0','',NULL,'28','30','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('222','printer 222','0000-00-00 00:00:00','contact 222','num 222','0','serial 222','','0','0','0','',NULL,'28','11','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('223','printer 223','0000-00-00 00:00:00','contact 223','num 223','0','serial 223','','0','0','0','',NULL,'28','7','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('224','printer 224','2003-10-29 16:07:18','contact 224','num 224','0','serial 224','','0','0','0','',NULL,'28','11','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('224','printer 224','2004-10-29 16:07:18','contact 224','num 224','0','serial 224','','0','0','0','',NULL,'28','11','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('225','printer 225','2004-02-23 10:44:59','contact 225','num 225','0','serial 225','','0','0','0','',NULL,'28','7','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('226','printer 226','0000-00-00 00:00:00','contact 226','num 226','0','serial 226','','0','0','0','',NULL,'28','27','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('227','printer 227','0000-00-00 00:00:00','contact 227','num 227','0','serial 227','','0','0','0','',NULL,'28','7','0','N','0',NULL);
@@ -15921,8 +15857,8 @@ INSERT INTO glpi_printers VALUES ('228','printer 228','0000-00-00 00:00:00','con
 INSERT INTO glpi_printers VALUES ('229','printer 229','0000-00-00 00:00:00','contact 229','num 229','0','serial 229','','0','0','0','',NULL,'28','27','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('230','printer 230','0000-00-00 00:00:00','contact 230','num 230','0','serial 230','','0','0','0','',NULL,'22','67','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('231','printer 231','0000-00-00 00:00:00','contact 231','num 231','0','serial 231','','0','0','0','',NULL,'7','25','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('232','printer 232','2003-11-26 12:15:20','contact 232','num 232','0','serial 232','','0','0','0','',NULL,'4','65','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('233','printer 233','2003-11-19 14:34:25','contact 233','num 233','0','serial 233','','0','0','0','',NULL,'28','77','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('232','printer 232','2004-11-26 12:15:20','contact 232','num 232','0','serial 232','','0','0','0','',NULL,'4','65','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('233','printer 233','2004-11-19 14:34:25','contact 233','num 233','0','serial 233','','0','0','0','',NULL,'28','77','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('234','printer 234','0000-00-00 00:00:00','contact 234','num 234','0','serial 234','','0','0','0','',NULL,'28','7','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('235','printer 235','0000-00-00 00:00:00','contact 235','num 235','0','serial 235','','0','0','0','',NULL,'28','77','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('236','printer 236','0000-00-00 00:00:00','contact 236','num 236','0','serial 236','','0','0','0','',NULL,'30','50','0','N','0',NULL);
@@ -15933,14 +15869,14 @@ INSERT INTO glpi_printers VALUES ('240','printer 240','0000-00-00 00:00:00','con
 INSERT INTO glpi_printers VALUES ('241','printer 241','2004-01-21 17:04:34','contact 241','num 241','0','serial 241','','0','0','0','',NULL,'29','24','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('242','printer 242','0000-00-00 00:00:00','contact 242','num 242','0','serial 242','','0','0','0','',NULL,'29','5','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('243','printer 243','0000-00-00 00:00:00','contact 243','num 243','0','serial 243','','0','0','0','',NULL,'29','33','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('244','printer 244','2003-11-21 11:01:50','contact 244','num 244','0','serial 244','','0','0','0','',NULL,'29','78','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('245','printer 245','2003-11-21 11:04:08','contact 245','num 245','0','serial 245','','0','0','0','',NULL,'29','79','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('244','printer 244','2004-11-21 11:01:50','contact 244','num 244','0','serial 244','','0','0','0','',NULL,'29','78','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('245','printer 245','2004-11-21 11:04:08','contact 245','num 245','0','serial 245','','0','0','0','',NULL,'29','79','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('247','printer 247','2004-03-05 10:33:20','contact 247','num 247','0','serial 247','','0','0','0','ancienne imprimante installée IBM infoprint 1312 s/n : 890078',NULL,'2','80','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('248','printer 248','0000-00-00 00:00:00','contact 248','num 248','0','serial 248','','0','0','0','',NULL,'5','65','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('249','printer 249','2003-12-10 10:25:32','contact 249','num 249','0','serial 249','','0','0','0','',NULL,'17','81','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('250','printer 250','2003-12-11 12:03:30','contact 250','num 250','0','serial 250','','0','0','0','',NULL,'31','76','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('249','printer 249','2004-12-10 10:25:32','contact 249','num 249','0','serial 249','','0','0','0','',NULL,'17','81','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('250','printer 250','2004-12-11 12:03:30','contact 250','num 250','0','serial 250','','0','0','0','',NULL,'31','76','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('251','printer 251','2004-02-26 16:27:53','contact 251','num 251','0','serial 251','','0','0','0','',NULL,'17','70','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('252','printer 252','2003-12-19 09:27:48','contact 252','num 252','0','serial 252','','0','0','0','',NULL,'17','44','0','N','0',NULL);
+INSERT INTO glpi_printers VALUES ('252','printer 252','2004-12-19 09:27:48','contact 252','num 252','0','serial 252','','0','0','0','',NULL,'17','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('253','printer 253','0000-00-00 00:00:00','contact 253','num 253','0','serial 253','','0','0','0','',NULL,'17','70','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('254','printer 254','2004-02-02 13:56:15','contact 254','num 254','0','serial 254','','0','0','0','',NULL,'1','44','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('255','printer 255','0000-00-00 00:00:00','contact 255','num 255','0','serial 255','','0','0','0','',NULL,'1','35','0','N','0',NULL);
@@ -16056,7 +15992,12 @@ CREATE TABLE glpi_software (
     date_mod datetime,
    PRIMARY KEY (ID),
    KEY platform (platform),
-   KEY location (location)
+   KEY location (location),
+   KEY FK_glpi_enterprise (FK_glpi_enterprise),
+   KEY deleted (deleted),
+   KEY is_template (is_template),
+   KEY date_mod (date_mod),
+   KEY tech_num (tech_num)
 );
 
 INSERT INTO glpi_software VALUES ('10','software 10','',NULL,'12','0','1','N','-1','0','N','0',NULL,NULL);
@@ -16068,84 +16009,6 @@ INSERT INTO glpi_software VALUES ('14','software 14','',NULL,'12','0','1','N','-
 INSERT INTO glpi_software VALUES ('15','software 15','10.2','','7','0','8','N','-1','0','N','0',NULL,NULL);
 INSERT INTO glpi_software VALUES ('16','test','','','12','0','1','N','-1','0','N','0',NULL,NULL);
 INSERT INTO glpi_software VALUES ('17','','',NULL,NULL,'0',NULL,'N','-1','0','N','1','Blank Template',NULL);
-### Dump table glpi_templates
-
-DROP TABLE IF EXISTS glpi_templates;
-CREATE TABLE glpi_templates (
-    ID int(11) NOT NULL auto_increment,
-    templname varchar(200) NOT NULL,
-    name varchar(200) NOT NULL,
-    osver varchar(20) NOT NULL,
-    processor_speed varchar(100) NOT NULL,
-    serial varchar(200) NOT NULL,
-    otherserial varchar(200) NOT NULL,
-    ram varchar(20) NOT NULL,
-    hdspace varchar(10) NOT NULL,
-    contact varchar(200) NOT NULL,
-    contact_num varchar(200) NOT NULL,
-    comments text NOT NULL,
-    achat_date date DEFAULT '0000-00-00' NOT NULL,
-    date_fin_garantie date,
-    maintenance int(2) DEFAULT '0',
-    os int(11),
-    hdtype int(11),
-    sndcard int(11),
-    moboard int(11),
-    gfxcard int(11),
-    network int(11),
-    ramtype int(11),
-    location int(11),
-    processor int(11),
-    type int(11),
-   PRIMARY KEY (ID)
-);
-
-INSERT INTO glpi_templates VALUES ('11','ZENITH Z-STATION VEGA2','','','333','','','','','','','','0000-00-00',NULL,'0','11','1','4','4','2','12','10','12','2','5');
-INSERT INTO glpi_templates VALUES ('86','DELL DIMENSION XPS M200S','','','','','','','','','','','0000-00-00',NULL,'0','11','1','4','4','2','12','10','12','23','66');
-INSERT INTO glpi_templates VALUES ('15','DELL DIMENSION XPS D233 MT','','','','','','','','','','','0000-00-00',NULL,'0','11','1','4','4','2','12','10','12','23','6');
-INSERT INTO glpi_templates VALUES ('17','DELL DIMENSION XPS T450','','','450','','','','','','','','2003-04-10','2003-04-10','0','11','1','4','4','2','12','10','12','7','16');
-INSERT INTO glpi_templates VALUES ('12','ZENITH Z-STATION POWERMATE VT','','','500','','','','','','','','0000-00-00',NULL,'0','11','1','4','4','2','12','10','12','7','34');
-INSERT INTO glpi_templates VALUES ('13','NEC Z-STATION POWERMATE VT','','','650','','','128','20','','','','0000-00-00','0000-00-00','0','4','1','4','4','2','12','10','12','7','4');
-INSERT INTO glpi_templates VALUES ('10','ZENITH Z-STATION 4100E','','','333','','','','','','','','0000-00-00',NULL,'0','11','1','4','4','2','12','10','12','7','33');
-INSERT INTO glpi_templates VALUES ('36','FUJITSU SIEMENS SENIC I 845D','','','1700','','','128','40','','','','0000-00-00','0000-00-00','0','4','1','4','4','2','12','6','12','10','32');
-INSERT INTO glpi_templates VALUES ('38','DELL POWEREDGE 2300','','','450','','','','','','','','0000-00-00',NULL,'0','11','1','4','4','2','12','10','12','7','23');
-INSERT INTO glpi_templates VALUES ('49','PORTABLE NEC VERSA NOTE','','','333','','','','','','','','0000-00-00',NULL,'0','11','1','4','4','2','12','10','12','2','38');
-INSERT INTO glpi_templates VALUES ('88','DELL OPTIPLEX GX270','','','2400','','','128','20','','','','0000-00-00',NULL,'0','1','1','4','4','2','12','10','12','23','20');
-INSERT INTO glpi_templates VALUES ('87','COMPAQ PROLIANT 800','','','100','','','120','4','','','','0000-00-00',NULL,'0','4','1','4','4','2','12','10','12','23','19');
-INSERT INTO glpi_templates VALUES ('84','NEC GX1','','','450','','','128','6,4','','34.87.84','','0000-00-00',NULL,'0','4','1','4','4','2','12','10','12','7','64');
-INSERT INTO glpi_templates VALUES ('83','DELL DIMENSION','','','','','','','','','','','0000-00-00',NULL,'0','11','1','4','4','2','12','10','12','23','63');
-INSERT INTO glpi_templates VALUES ('60','DELL PRESICION 530 XEON','','','1500','','','256','','','','','0000-00-00',NULL,'0','11','1','4','4','2','12','11','12','26','31');
-INSERT INTO glpi_templates VALUES ('61','DELL OPTIPLEX GX240 SMT','','','1500','','','128','','','','','0000-00-00',NULL,'0','11','1','4','4','2','12','6','12','10','29');
-INSERT INTO glpi_templates VALUES ('62','PORTABLE DELL LATITUDE C800','','','850','','','256','20','','','','0000-00-00',NULL,'0','11','1','4','4','2','12','6','12','7','48');
-INSERT INTO glpi_templates VALUES ('64','DELL OPTIPLEX GX260 SMT','','','2400','','','256','40','','','','0000-00-00',NULL,'0','1','1','4','4','2','11','6','12','10','28');
-INSERT INTO glpi_templates VALUES ('65','DELL OPTIPLEX GX1','','','450','','','128','6,4','','','','0000-00-00','0000-00-00','0','4','1','4','4','2','12','6','12','7','30');
-INSERT INTO glpi_templates VALUES ('67','DELL OPTIPLEX G5','','','','','','64','3','','','','0000-00-00',NULL,'0','4','1','4','4','2','12','6','12','1','51');
-INSERT INTO glpi_templates VALUES ('66','COMPAQ DESKPRO','','','','','','128','','','','','0000-00-00',NULL,'0','12','1','4','4','2','12','6','12','23','27');
-INSERT INTO glpi_templates VALUES ('82','PORTABLE DELL LATITUDE','','','','','','','','','','','0000-00-00',NULL,'0','11','1','4','4','2','12','10','12','23','62');
-INSERT INTO glpi_templates VALUES ('68','DELL OPTIPLEX GX150','','','1000','','','128','20','','','','0000-00-00',NULL,'0','4','1','4','4','2','12','6','12','7','50');
-INSERT INTO glpi_templates VALUES ('81','DELL DIMENSION 2100','','','','','','','','','','','0000-00-00',NULL,'0','11','1','4','4','2','12','10','12','23','57');
-INSERT INTO glpi_templates VALUES ('72','TOSHIBA EQUIUM 7100D','','','266','','','64','6','','','','0000-00-00',NULL,'0','4','1','4','4','2','12','10','12','2','52');
-INSERT INTO glpi_templates VALUES ('73','DELL OPTIPLEX GX100','','','','','','128','','','','','0000-00-00',NULL,'0','7','1','4','4','2','12','10','12','23','54');
-INSERT INTO glpi_templates VALUES ('74','DELL OPTOPLEX GX160','','','','','','','','','','','0000-00-00',NULL,'0','1','1','4','4','2','12','10','12','23','55');
-INSERT INTO glpi_templates VALUES ('75','DELL DIMENSION 4100','','','','','','128','','','','','0000-00-00',NULL,'0','11','1','4','4','2','12','10','12','23','56');
-INSERT INTO glpi_templates VALUES ('76','DELL DIMENSION M200A','','','','','','128','','','','','0000-00-00',NULL,'0','11','1','4','4','2','12','10','12','23','58');
-INSERT INTO glpi_templates VALUES ('77','PORTABLE COMPAQ','','','','','','','','','','','0000-00-00',NULL,'0','11','1','4','4','2','12','10','12','23','65');
-INSERT INTO glpi_templates VALUES ('78','PORTABLE DELL LATITUDE CPT','','','333','','','64','3,2','','','','0000-00-00',NULL,'0','4','1','4','4','2','12','10','12','24','59');
-INSERT INTO glpi_templates VALUES ('79','PORTABLE DELL INSPIRON 3800','','','','','','','','','','','0000-00-00',NULL,'0','11','1','4','4','2','12','10','12','23','60');
-INSERT INTO glpi_templates VALUES ('80','PORTABLE DELL INSPIRON 3000','','','','','','','','','','','0000-00-00',NULL,'0','11','1','4','4','2','12','10','12','23','61');
-INSERT INTO glpi_templates VALUES ('89','DELL OPTOPLEX GN','','','','','','32','2','','','','0000-00-00','0000-00-00','0','4','1','4','4','2','12','10','12','25','68');
-INSERT INTO glpi_templates VALUES ('90','DELL OPTIPLEX GX110','','','450','','','128','15','','','','0000-00-00','0000-00-00','0','4','1','4','4','2','12','10','12','7','69');
-INSERT INTO glpi_templates VALUES ('91','DELL OPTIPLEX 5100 GL','','','','','','64','2','','','','0000-00-00','0000-00-00','0','4','1','4','4','2','12','10','12','23','15');
-INSERT INTO glpi_templates VALUES ('92','DELL','','','','','','','','','','','0000-00-00','0000-00-00','0','11','1','4','4','2','12','10','12','23','70');
-INSERT INTO glpi_templates VALUES ('93','DELL OPTIPLEX GX1-MT 350','','','','','','','','','','','0000-00-00','0000-00-00','0','11','1','4','4','2','12','10','12','23','71');
-INSERT INTO glpi_templates VALUES ('94','DELL POWEREDGE 1400','','','','','','','','','','','0000-00-00','0000-00-00','0','11','1','4','4','2','12','10','12','7','72');
-INSERT INTO glpi_templates VALUES ('95','PORTABLE DELL','','','','','','','','','','','0000-00-00','0000-00-00','0','11','1','4','4','2','12','10','12','23','73');
-INSERT INTO glpi_templates VALUES ('96','DELL DIMENSION XPS350','','','','','','','','','','','0000-00-00','0000-00-00','0','11','1','4','4','2','12','10','12','23','74');
-INSERT INTO glpi_templates VALUES ('97','ASUS ATHLON AMD XP17000+','','','1470','','','260','40','','','','0000-00-00','0000-00-00','0','13','1','4','4','2','12','10','12','23','75');
-INSERT INTO glpi_templates VALUES ('98','FIJITSU SIEMENS P300','','','2400','','','256','40','','','','0000-00-00','0000-00-00','0','14','1','4','4','2','12','12','12','10','77');
-INSERT INTO glpi_templates VALUES ('99','IBM XSERVEUR 360','','','','','','','','','','','0000-00-00','0000-00-00','0','1','1','4','4','2','12','10','12','23','79');
-INSERT INTO glpi_templates VALUES ('100','DELL PowerEdge 2650','','','','','','','','','','','0000-00-00','0000-00-00','0',NULL,'1','4','4','2','12','10','12','23','80');
-INSERT INTO glpi_templates VALUES ('102','DELL GX270 PIV 2,8GHZ','','','2800','','','256','40','','','','0000-00-00','0000-00-00','0','14','1','4','4','2','12','6','12','10','20');
 ### Dump table glpi_tracking
 
 DROP TABLE IF EXISTS glpi_tracking;
@@ -16171,7 +16034,8 @@ CREATE TABLE glpi_tracking (
    KEY assign (assign),
    KEY status (status),
    KEY date (date),
-   KEY closedate (closedate)
+   KEY closedate (closedate),
+   KEY category (category)
 );
 
 INSERT INTO glpi_tracking VALUES ('28','2003-04-25 18:06:55','2003-04-28 13:01:52','old','Helpdesk',NULL,'1','35','oulala ca crame de partout 28','3','no','','','0',NULL);
@@ -18287,7 +18151,8 @@ CREATE TABLE glpi_type_docs (
     upload enum('Y','N') DEFAULT 'Y' NOT NULL,
     date_mod datetime,
    PRIMARY KEY (ID),
-   UNIQUE extension (ext)
+   UNIQUE extension (ext),
+   KEY upload (upload)
 );
 
 INSERT INTO glpi_type_docs VALUES ('1','JPEG','jpg','jpg-dist.png','','Y','2004-12-13 19:47:21');

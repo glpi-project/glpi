@@ -70,10 +70,10 @@ $report_list["Par_annee"]["name"] = $lang["reports"][28];
 $report_list["Par_annee"]["file"] = "reports/parAnnee.php";
 $report_list["Intervention"]["name"] = $lang["reports"][25];
 $report_list["Intervention"]["file"] = "reports/tracking.php";
-$report_list["excel"]["name"] = "Excel, OpenOffice, gnumeric, mulitplan (Sylk)";
-$report_list["excel"]["file"] = "reports/geneSylk.php";
 $report_list["Rapport prises reseau"]["name"]=$lang["reports"][33];
 $report_list["Rapport prises reseau"]["file"]="reports/reseau.php";
+$report_list["excel"]["name"] = "Excel, OpenOffice, gnumeric, mulitplan (Sylk)";
+$report_list["excel"]["file"] = "reports/geneSylk.php";
 
 $i = 0;
 $count = count($report_list);
