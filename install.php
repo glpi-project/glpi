@@ -127,15 +127,23 @@ function footer_html()
 //confirm install form
 function step0()
 {
-echo "<h3>Vous allez installer GLPI, voulez vous continuer ?</h3>";
+echo "<h3>Vous allez installer ou mettre à jour GLPI, voulez vous continuer ?</h3>";
+echo "<br /> Si vous cliquez sur Installation vous installerez une nouvelle version de GLPI à partir de rien, les seules données présentes dans la base seront les données par defaut.";
+echo "<br /> Si vous cliquez sur Mise à jour vous allez mettre à jour GLPI à partir d'une version antérieure";
 echo "<form action=\"install.php\" method=\"post\">";
+echo "<input type=\"hidden\" name=\"update\" value=\"no\" />";
 echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_0\" />";
-echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
+echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Installation\" /></p>";
+echo "</form>";
+echo "<form action=\"install.php\" method=\"post\">";
+echo "<input type=\"hidden\" name=\"update\" value=\"yes\" />";
+echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_0\" />";
+echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Mise à jour\" /></p>";
 echo "</form>";
 }
 
 //Step 1 checking some compatibilty issue and some write tests.
-function step1()
+function step1($update)
 {
 	$error = 0;
 	echo "Nous allons procéder à des tests afin de vérifier que votre environnement est bien compatible avec l'éxecution de GLPI<br /><br />";
@@ -244,6 +252,7 @@ function step1()
 		case 0 :       
         	echo "<h3>Continuer ?</h3>";
 		echo "<form action=\"install.php\" method=\"post\">";
+		echo "<input type=\"hidden\" name=\"update\" value=\"". $update."\" />";
 		echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_1\" />";
 		echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
 		echo "</form>";
@@ -252,9 +261,11 @@ function step1()
         	echo "<h3>Continuer ?</h3>";
 		echo "<form action=\"install.php\" method=\"post\">";
 		echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_1\" />";
+		echo "<input type=\"hidden\" name=\"update\" value=\"". $update."\" />";
 		echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
 		echo "</form> &nbsp;&nbsp;";
 		echo "<form action=\"install.php\" method=\"post\">";
+		echo "<input type=\"hidden\" name=\"update\" value=\"". $update."\" />";
 		echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_0\" />";
 		echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Re-essayer\" /></p>";
 		echo "</form>";
@@ -262,6 +273,7 @@ function step1()
 		case 2 :       
         	echo "<h3>Continuer ?</h3>";
 		echo "<form action=\"install.php\" method=\"post\">";
+		echo "<input type=\"hidden\" name=\"update\" value=\"".$update."\" />";
 		echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_0\" />";
 		echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Re-essayer\" /></p>";
 		echo "</form>";
@@ -272,11 +284,12 @@ function step1()
 }
 
 //step 2 import mysql settings.
-function step2()
+function step2($update)
 {
 
 		echo "<p>Nous allons maintenant configurer votre connection à la base de données</p>";
 		echo "<form action=\"install.php\" method=\"post\">";
+		echo "<input type=\"hidden\" name=\"update\" value=\"".$update."\" />";
 		echo "<fieldset><legend>Paramètres de connection à la base de données</legend>";
                 echo "<p><label>Mysql server : <input type=\"text\" name=\"db_host\" /></label></p>";
 		echo "<p ><label>Mysql user : <input type=\"text\" name=\"db_user\" /></label></p>";
@@ -287,7 +300,7 @@ function step2()
 }
 
 //step 3 test mysql settings and select database.
-function step3($host,$user,$password)
+function step3($host,$user,$password,$update)
 {
 	error_reporting(16);
 	echo "<h3>Test de la connection à la base de données</h3>";
@@ -299,6 +312,7 @@ function step3($host,$user,$password)
 			echo "Le champs serveur ou/et le champ user est vide";
 		}
 		echo "<form action=\"install.php\" method=\"post\">";
+		echo "<input type=\"hidden\" name=\"update\" value=\"".$update."\" />";
 		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_1\" />";
 		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\"  value=\"Retour\" /></p>";
 		echo "</form>";
@@ -308,23 +322,43 @@ function step3($host,$user,$password)
 	}
 	else {
 		echo "Connection réussie !! <br />";
-		echo " Veuillez selectionner une base de données : ";
-		echo "<form action=\"install.php\" method=\"post\">";
-		$db_list = mysql_list_dbs($link);
-		while ($row = mysql_fetch_object($db_list)) {
-			echo "<p><input type=\"radio\" name=\"databasename\" value=\"". $row->Database ."\" />$row->Database.</p>";
+		if($update == "no") {
+			echo " Veuillez selectionner une base de données : ";
+			echo "<form action=\"install.php\" method=\"post\">";
+			$db_list = mysql_list_dbs($link);
+			while ($row = mysql_fetch_object($db_list)) {
+				echo "<p><input type=\"radio\" name=\"databasename\" value=\"". $row->Database ."\" />$row->Database.</p>";
+			}
+			echo "<p><input type=\"radio\" name=\"databasename\" value=\"0\" />Créer une nouvelle base : ";
+			echo "<input type=\"text\" name=\"newdatabasename\"/></p>";
+			echo "<input type=\"hidden\" name=\"db_host\" value=\"". $host ."\" />";
+			echo "<input type=\"hidden\" name=\"db_user\" value=\"". $user ."\" />";
+			echo "<input type=\"hidden\" name=\"db_pass\" value=\"". $password ."\" />";
+			echo "<input type=\"hidden\" name=\"install\" value=\"Etape_3\" />";
+			echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
+			mysql_close($link);
+			echo "</form>";
 		}
-		echo "<p><input type=\"radio\" name=\"databasename\" value=\"0\" />Créer une nouvelle base : ";
-		echo "<input type=\"text\" name=\"newdatabasename\"/></p>";
-		echo "<input type=\"hidden\" name=\"db_host\" value=\"". $host ."\" />";
-		echo "<input type=\"hidden\" name=\"db_user\" value=\"". $user ."\" />";
-		echo "<input type=\"hidden\" name=\"db_pass\" value=\"". $password ."\" />";
-		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_3\" />";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
-		mysql_close($link);
-	        echo "</form>";
+		elseif($update == "yes") {
+			echo " Veuillez selectionner la base de données  à mettre à jour : ";
+			echo "<form action=\"install.php\" method=\"post\">";
+			$db_list = mysql_list_dbs($link);
+			while ($row = mysql_fetch_object($db_list)) {
+				echo "<p><input type=\"radio\" name=\"databasename\" value=\"". $row->Database ."\" />$row->Database.</p>";
+			}
+			echo "<input type=\"hidden\" name=\"db_host\" value=\"". $host ."\" />";
+			echo "<input type=\"hidden\" name=\"db_user\" value=\"". $user ."\" />";
+			echo "<input type=\"hidden\" name=\"db_pass\" value=\"". $password ."\" />";
+			echo "<input type=\"hidden\" name=\"install\" value=\"update_1\" />";
+			echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
+			mysql_close($link);
+			echo "</form>";
+			
+		}
         }
 }
+
+
 
 //Step 4 Create and fill database.
 function step4 ($host,$user,$password,$databasename,$newdatabasename)
@@ -364,24 +398,6 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		}
 	
 	}
-	
-	//Create the file glpi/config/config_db.php
-	// an fill it with user connections info.
-	function create_conn_file($host,$user,$password,$dbname)
-	{
-
-		$db_str = "<?php \n class DB extends DBmysql { \n var \$dbhost	= \"". $host ."\"; \n var \$dbuser 	= \"". $user ."\"; \n var \$dbpassword= \"". $password ."\"; \n var \$dbdefault	= \"". $dbname ."\"; \n } \n ?>";
-		$fp = fopen("glpi/config/config_db.php",'wt');
-		if($fp) {
-			$fw = fwrite($fp,$db_str);
-			fclose($fp);
-			return true;
-		}
-		else return false;
-	}
-	
-	
-	
 	$link = mysql_connect($host,$user,$password);
 	if(!empty($databasename)) {
 		$db_selected = mysql_select_db($databasename, $link);
@@ -496,7 +512,7 @@ function step6($root_doc, $event_loglevel, $num_of_events, $expire_events,$jobs_
 function step7() {
 
 	echo "<h2>L'installation s'est bien terminée </h2>";
-	echo "<p>Il est recommandé maintenant d'appliquer un chmod+0 sur le fichier install.php</p>";
+	echo "<p>Il est recommandé maintenant d'appliquer un chmod+0 sur les fichiers install.php et update.php</p>";
 	echo "<p>Vous pouvez utiliser l'application en cliquant <a href=\"index.php\">sur ce lien </a>.</p>";
 	echo "<p>Les logins mots de passes par defauts sont :</p>";
 	echo "<p>&nbsp;<li> glpi/glpi pour le compte administrateur</li>";
@@ -505,6 +521,41 @@ function step7() {
 	echo "&nbsp;<li>post-only/post-only pour le compte postonly</li></p>";
 	echo "<p>Vous pouvez supprimer ces comptes ainsi que les premières entrées dans la base de données.</p>";
 	echo "<p>Attention tout de même NE SUPPRIMEZ PAS l'utilisateur HELPDESK.</p>";
+}
+
+//Create the file glpi/config/config_db.php
+// an fill it with user connections info.
+function create_conn_file($host,$user,$password,$dbname)
+{
+	$db_str = "<?php \n class DB extends DBmysql { \n var \$dbhost	= \"". $host ."\"; \n var \$dbuser 	= \"". $user ."\"; \n var \$dbpassword= \"". $password ."\"; \n var \$dbdefault	= \"". $dbname ."\"; \n } \n ?>";
+	include ("_relpos.php");
+	$fp = fopen($phproot ."/glpi/config/config_db.php",'wt');
+	if($fp) {
+		$fw = fwrite($fp,$db_str);
+		fclose($fp);
+		return true;
+	}
+	else return false;
+}
+
+function update1($host,$user,$password,$dbname) {
+	
+	if(create_conn_file($host,$user,$password,$dbname)) {
+		//echo "bla";
+		include("update.php");
+		
+	}
+	else {
+		echo "Impossible de creer le fichier de connection à la base de données, reverifiez vos droits sur les fichiers";
+		echo "<h3>Continuer ?</h3>";
+		echo "<form action=\"install.php\" method=\"post\">";
+		echo "<input type=\"hidden\" name=\"update\" value=\"yes\" />";
+		echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_0\" />";
+		echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Re-essayer\" /></p>";
+		echo "</form>";
+	}
+	
+	
 }
 
 
@@ -529,15 +580,15 @@ include ("_relpos.php");
 				header_html("Etape 0");
 				$_SESSION["Test_session_GLPI"] = 1;
 				session_destroy();
-				step1();
+				step1($_POST["update"]);
 				break;
 			case "Etape_1" :
 				header_html("Etape 1");
-				step2();
+				step2($_POST["update"]);
 				break;
 			case "Etape_2" :
 				header_html("Etape 2");
-				step3($_POST["db_host"],$_POST["db_user"],$_POST["db_pass"]);
+				step3($_POST["db_host"],$_POST["db_user"],$_POST["db_pass"],$_POST["update"]);
 				break;
 			case "Etape_3" :
 				header_html("Etape 3");
@@ -556,6 +607,9 @@ include ("_relpos.php");
 			case "Etape_6" :
 				header_html("Etape 6");
 				step7();
+				break;
+			case "update_1" : 
+				update1($_POST["db_host"],$_POST["dbuser"],$_POST["db_pass"],$_POST["databasename"]);
 				break;
 		}
 	}

@@ -590,15 +590,17 @@ echo "</head>";
 
 echo "<body>";
 
+
 // step 1    avec bouton de confirmation
 if(empty($_POST["continuer"])) {
-	echo "Attention ! Vous allez mettre à jour votre base de données GLPI<br />";
-	echo "Be carreful ! Your are going to update your GLPI database<br/>";
+	$db = new DB;
+	echo "Attention ! Vous allez mettre à jour votre base de données GLPI ayant pour nom : ". $db->dbdefault ."<br />";
+	echo "Be carreful ! Your are going to update your GLPI database witch is named  ". $db->dbdefault ."<br/>";
 	echo "<form action=\"update.php\" method=\"post\">";
 	echo "<input type=\"submit\" name=\"continuer\" value=\"Mettre à jour / Continue \" />";
 	echo "</form>";
 }
-// Step 2  avec message d'erreur en cas d'echec de connexion
+// Step 2  
 else {
 	if(test_connect()) {
 		echo "Connexion &agrave; la base de données réussie <br />";
@@ -611,9 +613,11 @@ else {
 		{
 			updateDbUpTo031();
 		}
-		echo "<br/>La mise &agrave; jour &agrave; réussie, votre base de données est actualisée \n<br /> vous pouvez supprimer le fichier update.php de votre repertoire";
-	        echo "<br/>The update with successful, your data base is update \n<br /> you can remove the file update.php from your directory";
-        }
+		echo "<br/>La mise &agrave; jour &agrave; réussie, votre base de données est actualisée \n";
+		echo "<p>Il est recommandé maintenant d'appliquer un chmod+0 sur les fichiers install.php et update.php</p>";
+		echo "<p>Vous pouvez utiliser l'application en cliquant <a href=\"index.php\">sur ce lien </a>.</p>";
+		echo "<p>Attention tout de même NE SUPPRIMEZ PAS l'utilisateur HELPDESK.</p>";
+	}
 	else {
 		echo "<br /> <br />";
 		echo "La connexion à la base de données a échouée, verifiez les paramètres de connexion figurant dans le fichier config_db.php <br />";
@@ -623,4 +627,5 @@ else {
 }
 
 echo "</body></html>";
+
 ?>
