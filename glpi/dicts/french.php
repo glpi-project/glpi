@@ -48,7 +48,7 @@ $lang["login"][5] = "Acc&eacute;s refus&eacute;";
 // Global
 $lang["buttons"][0]	= "Rechercher";
 $lang["buttons"][1]	= "Liste";
-$lang["buttons"][2]	= "Post";
+$lang["buttons"][2]	= "Valider";
 $lang["buttons"][3]	= "Attribuer";
 $lang["buttons"][4]	= "Installer";
 $lang["buttons"][5]	= "D&eacute;sinstaller";

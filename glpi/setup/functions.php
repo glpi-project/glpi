@@ -37,7 +37,7 @@ include ("_relpos.php");
 
 function showFormDropdown ($target,$name,$human) {
 
-	GLOBAL $cfg_layout, $lang;
+	GLOBAL $cfg_layout, $lang, $HTMLRel;
 
 	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='70%'>";
 	echo "<a name=\"$name\"></a>";
@@ -48,7 +48,7 @@ function showFormDropdown ($target,$name,$human) {
 
 	dropdown("glpi_dropdown_".$name, "ID");
         // on ajoute un input text pour entrer la valeur modifier
-        echo"::>>";
+        echo "<img src=\"".$HTMLRel."pics/puce.gif\" alt='' title=''>";
         echo "<input type='text' maxlength='100' size='20' name='value'>";
         //
 	echo "</td><td align='center' class='tab_bg_2'>";
@@ -72,7 +72,7 @@ function showFormDropdown ($target,$name,$human) {
 
 function showFormTypeDown ($target,$name,$human) {
 
-	GLOBAL $cfg_layout, $lang;
+	GLOBAL $cfg_layout, $lang, $HTMLRel;
 	
 	echo "<div align='center'>&nbsp;<table class='tab_cadre' width=70%>";
 	echo "<a name=\"$name\"></a>";
@@ -83,7 +83,7 @@ function showFormTypeDown ($target,$name,$human) {
 
 	dropdown("glpi_type_".$name, "ID");
 	// on ajoute un input text pour entrer la valeur modifier
-        echo"::>>";
+         echo "<img src=\"".$HTMLRel."pics/puce.gif\" alt='' title=''>";
         echo "<input type='text' maxlength='100' size='20' name='value'>";
 
 	echo "</td><td align='center' class='tab_bg_2'>";

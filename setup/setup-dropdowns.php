@@ -100,17 +100,18 @@ if (isset($_POST["add"])) {
 	
 //	asort($dp);
 	
-	echo "<center><form method=post action=\"".$cfg_install["root"]."/setup/setup-dropdowns.php\">";
-	echo $lang["setup"][72].":&nbsp;<select name='which'>";
+	echo "<div align='center'><form method='post' action=\"".$cfg_install["root"]."/setup/setup-dropdowns.php\">";
+	echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
+	echo $lang["setup"][72].": </th></tr><tr class='tab_bg_1'><td><select name='which'>";
 
 foreach ($dp as $key => $val){
 $sel="";
 if ($which==$key) $sel="selected";
 echo "<option value='$key' $sel>".$val."</option>";
 }
-	echo "</select>";
-	echo "<input type='submit' value=\"".$lang["buttons"][2]."\" class='submit' />";
-	echo "</form></center>";
+	echo "</select></td>";
+	echo "<td><input type='submit' value=\"".$lang["buttons"][2]."\" class='submit' /></td></tr>";
+	echo "</table></form></div>";
 	switch ($which){
 		case "locations" :
 		showFormDropDown($_SERVER["PHP_SELF"],"locations",$lang["setup"][3]);
