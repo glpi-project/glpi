@@ -110,7 +110,8 @@ echo $_GET["elem"];?>&mois=" + document.forms["MyCalendar"].elements['month'].op
 
  }
 <?php
-if (isset($_GET["value"])&&$_GET["value"]!=""&&$_GET["value"]!="0000-00-00"&&!isset($jour)&&!isset($mois)&&!isset($annee)) {
+
+if (isset($_GET["value"])&&$_GET["value"]!=""&&$_GET["value"]!="0000-00-00"&&!isset($_GET["jour"])&&!isset($_GET["mois"])&&!isset($_GET["annee"])) {
 list($annee,$mois,$jour)=split("-",$_GET["value"]);
 }
 
@@ -136,7 +137,6 @@ if (!isset($annee))
   $nbjmonth[9] = 31 ;
   $nbjmonth[10] = 30 ;
   $nbjmonth[11] = 31 ;
-
   if(!checkdate($mois,$jour,$annee))
   {
    echo "alert('$error01')\n" ;
@@ -172,7 +172,6 @@ if (!isset($annee))
 <?php
 
 echo "<body bgcolor='#$bgcolor' onUnLoad=''>\n" ;
-
   echo "<center><form name='MyCalendar'>\n" ;
   echo "<table width='170' cellspacing='0' cellspading='0' border='0'><tr>\n" ;
 
