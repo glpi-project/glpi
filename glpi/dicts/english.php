@@ -615,6 +615,23 @@ $lang["setup"][164]="IMAP/POP Host Name (users email will be login@thishost)";
 $lang["setup"][165]="Your parser PHP was compiled without the IMAP functions";
 $lang["setup"][166]="Impossible to use IMAP/POP as external source of connection";
 
+$lang["setup"][200]="Email Followups";
+$lang["setup"][201]="Fonction Configuration";
+$lang["setup"][202]="Use Email Followups";
+$lang["setup"][203]="Administrator Email";
+$lang["setup"][204]="Email Signature";
+$lang["setup"][205]="Options";
+$lang["setup"][206]="Sending to the administrator";
+$lang["setup"][207]="Sending to all 'admin' users";
+$lang["setup"][208]="Sending to all 'normal' users";
+$lang["setup"][209]="Sending to the person in charge of the task";
+$lang["setup"][210]="Sending to caller";
+$lang["setup"][211]="For all new intervention";
+$lang["setup"][212]="For each followup";
+$lang["setup"][213]="At the closing of an intervention";
+$lang["setup"][214]="When he posts a new intervention";
+$lang["setup"][215]="For each followup of his interventions";
+$lang["setup"][216]="At the closing of his interventions";
 
 
 // Helpdesk
