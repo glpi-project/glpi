@@ -45,12 +45,12 @@ commonHeader("Computers",$_SERVER["PHP_SELF"]);
 
 titleComputers();
 
-searchFormComputers();
+
 
 if(!isset($_GET["start"])) $_GET["start"] = 0;
 if (!isset($_GET["order"])) $_GET["order"] = "ASC";
 
-
+searchFormComputers($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
 
 if($_GET["field"]!="glo_search") {
 
