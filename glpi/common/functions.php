@@ -308,6 +308,12 @@ $inventory = 	array($lang["Menu"][0]=>array("/computers/index.php","1"),
 		      "&nbsp;"=>array("/central.php","8"),
 		      );
 
+$financial = array($lang["Menu"][22]=>array("/contacts/index.php","1"),
+		$lang["Menu"][23]=>array("/enterprises/index.php"," "),
+		$lang["Menu"][24]=>array("/infocoms/index.php"," "),
+		$lang["Menu"][25]=>array("/contracts/index.php"," "),
+		);	
+
 $maintain =	array($lang["Menu"][5]=>array("/tracking/index.php","6"),
 	              $lang["Menu"][6]=>array("/reports/index.php"," "),
 		      $lang["Menu"][13]=>array("/stats/index.php"," "));
@@ -405,6 +411,17 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 
 		echo "<small>-&nbsp;".$lang["setup"][55]."&nbsp;-</small><br>";
 		foreach ($maintain as $key => $val) {
+			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
+		}
+		echo "</td>";
+	}
+
+	 if ($navigation->financial) {
+		echo "<td align='center' valign='top' width='20%'>";
+				echo "<img class='icon_nav' src=\"".$HTMLRel."pics/maintenance.png\" alt=\"\" title=\"".$lang["setup"][55]."\"><br>";
+
+		echo "<small>-&nbsp;".$lang["Menu"][26]."&nbsp;-</small><br>";
+		foreach ($financial as $key => $val) {
 			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
 		}
 		echo "</td>";
@@ -1145,7 +1162,7 @@ function Connect($target,$sID,$cID,$type) {
 
 }
 
-function showConnectSearch($target,$ID,$type="computer",$withtemplate) {
+function showConnectSearch($target,$ID,$type="computer") {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
@@ -1177,7 +1194,6 @@ function showConnectSearch($target,$ID,$type="computer",$withtemplate) {
 	echo "<option value=id>".$lang["connect"][7]."</option>";
 	echo "</select> ";
 	echo $lang["connect"][8]." <input type='text' size=10 name=search>";
-	echo "<input type=\"hidden\" name=\"withtemplate\" value=\"".$withtemplate."\" >";
 	echo "<input type='hidden' name='pID1' value=$ID>";
 	echo "<input type='hidden' name='device_type' value=$type>";
 	echo "<input type='hidden' name='connect' value='2'>";
@@ -1191,7 +1207,7 @@ function showConnectSearch($target,$ID,$type="computer",$withtemplate) {
 }
 
 
-function listConnectComputers($target,$input,$withtemplate) {
+function listConnectComputers($target,$input) {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
@@ -1224,7 +1240,6 @@ function listConnectComputers($target,$input,$withtemplate) {
 
 	echo "</td>";
 	echo "<td class='tab_bg_2' align='center'>";
-	echo "<input type=\"hidden\" name=\"withtemplate\" value=\"".$withtemplate."\" >";
 	echo "<input type='hidden' name='sID' value=\"".$input["pID1"]."\">";
 	echo "<input type='hidden' name='connect' value='3'>";
 	echo "<input type='hidden' name='device_type' value='computer'>";
@@ -1292,10 +1307,9 @@ function listConnectElement($target,$input) {
 	echo "<td class='tab_bg_2' align='center'>";
 	echo "<input type='hidden' name='cID' value=\"".$input["pID1"]."\">";
 	echo "<input type='hidden' name='connect' value='3'>";
-	echo "<input type=\"hidden\" name=\"withtemplate\" value=\"".$input["withtemplate"]."\" >";
 	echo "<input type='hidden' name='device_type' value='$device_id'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
-	} else echo $lang["connect"][16]."<br><b><a href=\"".$_SERVER["PHP_SELF"]."?ID=".$input["pID1"]."&withtemplate=".$input["withtemplate"]."\">".$lang["buttons"][13]."</a></b>";
+	} else echo $lang["connect"][16]."<br><b><a href=\"".$_SERVER["PHP_SELF"]."?ID=".$input["pID1"]."\">".$lang["buttons"][13]."</a></b>";
 	
 	echo "</td></form></tr></table>";	
 

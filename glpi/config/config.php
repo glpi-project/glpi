@@ -111,6 +111,8 @@ class baseFunctions {
 
 	var $utils	= true;
 
+	var $financial	= true;
+
 }
 
 //Options gérée dynamiquement, ne pas toucher cette partie.

@@ -294,7 +294,7 @@ function showperipheralForm ($target,$ID) {
 	echo "</td>\n";	
 	echo "<td class='tab_bg_1' valign='top'>";
 
-	echo "<table cellpadding='1px' cellspacing='0' border='0'";
+	echo "<table cellpadding='1px' cellspacing='0' border='0'>";
 
 	echo "<tr><td>".$lang["peripherals"][9].": 	</td><td>";
 		dropdownValue("glpi_type_peripherals", "type", $mon->fields["type"]);

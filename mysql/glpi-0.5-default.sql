@@ -238,8 +238,8 @@ CREATE TABLE glpi_connect_wire (
 
 ### Dump table glpi_contact
 
-DROP TABLE IF EXISTS glpi_contact;
-CREATE TABLE glpi_contact (
+DROP TABLE IF EXISTS glpi_contacts;
+CREATE TABLE glpi_contacts (
     ID int(11) NOT NULL auto_increment,
     name varchar(255) NOT NULL,
     phone varchar(30) NOT NULL,
@@ -263,8 +263,8 @@ CREATE TABLE glpi_contact_enterprise (
 
 ### Dump table glpi_contract
 
-DROP TABLE IF EXISTS glpi_contract;
-CREATE TABLE glpi_contract (
+DROP TABLE IF EXISTS glpi_contracts;
+CREATE TABLE glpi_contracts (
     ID int(11) NOT NULL auto_increment,
     num varchar(255) NOT NULL,
     cost float DEFAULT '0' NOT NULL,
@@ -685,8 +685,8 @@ CREATE TABLE glpi_dropdown_tracking_category (
 
 ### Dump table glpi_enterprise
 
-DROP TABLE IF EXISTS glpi_enterprise;
-CREATE TABLE glpi_enterprise (
+DROP TABLE IF EXISTS glpi_enterprises;
+CREATE TABLE glpi_enterprises (
     ID int(11) NOT NULL auto_increment,
     name varchar(50) NOT NULL,
     address varchar(200) NOT NULL,
@@ -737,8 +737,8 @@ INSERT INTO glpi_followups VALUES ('4','3','2003-09-18 00:55:08','tech','Je pens
 INSERT INTO glpi_followups VALUES ('5','2','2003-09-18 00:55:52','tech','Je suis passé, il faudra faire une restauration de windows NT4.');
 ### Dump table glpi_infocom
 
-DROP TABLE IF EXISTS glpi_infocom;
-CREATE TABLE glpi_infocom (
+DROP TABLE IF EXISTS glpi_infocoms;
+CREATE TABLE glpi_infocoms (
     ID int(11) NOT NULL auto_increment,
     buy_date date DEFAULT '0000-00-00' NOT NULL,
     warranty_end_date date DEFAULT '0000-00-00' NOT NULL,
