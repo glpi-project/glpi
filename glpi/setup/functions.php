@@ -431,7 +431,7 @@ function showTemplateForm($target,$ID) {
 	echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
 
 	echo "<tr><td>".$lang["setup"][24].":		</td>";
-	echo "<td><input type='text' name='name' value=\"".$templ->fields["name"]."\" size='10'></td>";
+	echo "<td><input type='text' name='name' value=\"".$templ->fields["name"]."\" size='12'></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["setup"][25].": 	</td>";
@@ -440,7 +440,7 @@ function showTemplateForm($target,$ID) {
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["setup"][26].":		</td>";
-	echo "<td><input type='text' name='contact_num' value=\"".$templ->fields["contact_num"]."\" size='5'>";
+	echo "<td><input type='text' name='contact_num' value=\"".$templ->fields["contact_num"]."\" size='12'>";
 	echo "</td></tr>";
 	
 	echo "<tr><td>".$lang["setup"][27].":	</td>";
@@ -530,13 +530,13 @@ function showTemplateForm($target,$ID) {
 //
 	
 	echo "<tr><td>".$lang["setup"][53].":	</td>";
-	echo "<td><input type='text' name='achat_date' readonly size=10 value=\"". $templ->fields["achat_date"] ."\">";
+	echo "<td><input type='text' name='achat_date' readonly size='10' value=\"". $templ->fields["achat_date"] ."\">";
 	echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('mycalendar.php?form=form&elem=achat_date','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].achat_date.value='0000-00-00'\" value='reset'>";
   echo "</td></tr>";
 	
 	echo "<tr><td>".$lang["setup"][54].":	</td>";
-	echo "<td><input type='text' name='date_fin_garantie' readonly size=10 value=\"". $templ->fields["date_fin_garantie"] ."\">";
+	echo "<td><input type='text' name='date_fin_garantie' readonly size='10' value=\"". $templ->fields["date_fin_garantie"] ."\">";
 	echo "&nbsp; <input name='button' type='button' class='button' readonly onClick=\"window.open('mycalendar.php?form=form&elem=date_fin_garantie','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date_fin_garantie.value='0000-00-00'\" value='reset'>";
   echo "</td></tr>";
