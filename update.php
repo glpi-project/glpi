@@ -202,10 +202,8 @@ function showContentUpdateForm() {
 function validate_new_location(){
 	$db=new DB;
 	$query=" DROP TABLE `glpi_dropdown_locations`";	
-	//echo $query;
 	$result=$db->query($query);
 	$query=" ALTER TABLE `glpi_dropdown_locations_new` RENAME `glpi_dropdown_locations`";	
-	//echo $query;
 	$result=$db->query($query);
 }
 
@@ -328,7 +326,7 @@ function location_create_new($split_char,$add_first){
 
 	}
 
-	$query_auto_inc= "ALTER TABLE `glpi_dropdown_locations_new` CHANGE `ID` `ID` INT( 11 ) DEFAULT '0' NOT NULL AUTO_INCREMENT";
+	$query_auto_inc= "ALTER TABLE `glpi_dropdown_locations_new` CHANGE `ID` `ID` INT( 11 ) NOT NULL AUTO_INCREMENT";
 	$result_auto_inc=$db->query($query_auto_inc);
 
 }
