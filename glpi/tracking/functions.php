@@ -675,7 +675,7 @@ function addFormTracking ($ID,$author,$target,$error) {
 
 	GLOBAL $cfg_layout, $lang;
 	
-	if ($error) {
+	if (!empty($error)) {
 		echo "<div align='center'><b>$error</b></div>";
 	}
 	echo "<form method=get action=$target>";
