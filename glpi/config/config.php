@@ -51,14 +51,14 @@ class DB extends DBmysql {
 
 	var $dbhost	= "localhost";
 	var $dbuser 	= "root"; 
-	var $dbpassword	= "bazounet";
+	var $dbpassword	= "";
 	var $dbdefault	= "glpidb";
 }
 
 
 //root document
 //document root
-$cfg_install["root"]		= "/glpi";
+$cfg_install["root"]		= "/glpi-gna";
 
 
 // *************************** Eléments optionnels  **********************
@@ -106,7 +106,7 @@ $cfg_login['use_extern'] = 0;
 // fournissant un login correct est utilisé
 
 $cfg_login['imap']['auth_server'] = "{localhost:993/imap/ssl/novalidate-cert}";
-$cfg_login['imap']['host'] = "sic.sp2mi.univ-poitiers.fr";
+$cfg_login['imap']['host'] = "sic.sp2mi.xxxx.fr";
 
 //other sources
 //$cfg_login['other_source']...
@@ -126,7 +126,7 @@ $cfg_features["event_loglevel"]	= 5;
 // Utilisation des fonctions mailing ou non
 $cfg_features["mailing"]	= 0;	
 // Addresse de l'administrateur (obligatoire si mailing activé)
-$cfg_mailing["admin_email"]	= "admsys@sic.sp2mi.univ-poitiers.fr";	
+$cfg_mailing["admin_email"]	= "admsys@sic.sp2mi.xxxxx.fr";	
 // Signature for automatic generated E-Mails
 $cfg_mailing["signature"]	= "SIGNATURE";
 
@@ -215,7 +215,7 @@ $report_list["excel"]["file"] = "reports/geneExcel.php";
 
 // version number
 // numero de version
-$cfg_install["version"]		=" 0.21 ";
+$cfg_install["version"]		=" 0.3 Alpha ";
   
 
 // dicts
