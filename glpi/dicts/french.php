@@ -310,6 +310,7 @@ $lang["networking"][45] = "est maintenant connect&eacute; sur le port";
 $lang["networking"][46] = "Ajouter  plusieurs ports..."; 
 $lang["networking"][47] = "De"; 
 $lang["networking"][48] = "A";
+$lang["networking"][49] = "Firmware";
 
 // Printers
 $lang["printers"][0]	= "Ajouter imprimante...";
@@ -538,7 +539,7 @@ $lang["setup"][67]	= "Authentifications externes";
 $lang["setup"][68]	= "Suivis par emails";
 $lang["setup"][69]	= "Types de périphériques";
 $lang["setup"][70]	= "Configuration générale";
-
+$lang["setup"][71]	= "Firmware";
 
 // Helpdesk
 

@@ -89,6 +89,7 @@ if (isset($_POST["add"])) {
 	showFormDropDown($_SERVER["PHP_SELF"],"hdtype",$lang["setup"][48]);
 	showFormDropDown($_SERVER["PHP_SELF"],"network",$lang["setup"][8]);
 	showFormDropDown($_SERVER["PHP_SELF"],"iface",$lang["setup"][9]);
+	showFormDropDown($_SERVER["PHP_SELF"],"firmware",$lang["setup"][71]);
 	commonFooter();
 }
 
