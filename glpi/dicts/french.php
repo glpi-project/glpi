@@ -77,7 +77,7 @@ $lang["buttons"][22] ="Purger";
 $lang["choice"][0]	= "Oui";
 $lang["choice"][1]	= "Non";
 
-$lang["search"][0]	= "Rechercher par ";
+$lang["search"][0]	= "Rechercher  ";
 $lang["search"][1]	= "O&ugrave; ce champ";
 $lang["search"][2]	= "contient";
 $lang["search"][3]	= "phrase exacte";
