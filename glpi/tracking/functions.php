@@ -766,25 +766,25 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	// ajout suite  à tracking sur tous les items 
 			
 	switch ($device_type) {
-	case 0 :
+	case GENERAL_TYPE :
 	$item = "general";
 	break;
-	case 1 :
+	case COMPUTER_TYPE :
 	$item = "computers";
 	break;
-	case 2 :
+	case NETWORKING_TYPE :
 	$item = "networking";
 	break;
-	case 3 :
+	case PRINTER_TYPE :
 	$item = "printers";
 	break;
-	case 4 :
+	case MONITOR_TYPE :
 	$item = "monitors";
 	break;
-	case 5 :
+	case PERIPHERAL_TYPE :
 	$item = "peripherals";
 	break;
-	case 6 :
+	case SOFTWARE_TYPE :
 	$item = "software";
 	}
 	

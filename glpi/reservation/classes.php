@@ -51,19 +51,19 @@ class ReservationItem{
 		if (!isset($this->fields["device_type"]))			
 		return false;
 			switch ($this->fields["device_type"]){
-			case 1 :
+			case COMPUTER_TYPE :
 				$this->obj=new Computer;
 				break;
-			case 2 :
+			case NETWORKING_TYPE :
 				$this->obj=new Netdevice;
 				break;
-			case 3 :
+			case PRINTER_TYPE :
 				$this->obj=new Printer;
 				break;
-			case 4 : 
+			case MONITOR_TYPE : 
 				$this->obj= new Monitor;	
 				break;
-			case 5 : 
+			case PERIPHERAL_TYPE : 
 				$this->obj= new Peripheral;	
 				break;				
 			}
@@ -79,19 +79,19 @@ class ReservationItem{
 		global $lang;
 		
 		switch ($this->fields["device_type"]){
-			case 1 :
+			case COMPUTER_TYPE :
 				return $lang["computers"][44];
 				break;
-			case 2 :
+			case NETWORKING_TYPE :
 				return $lang["networking"][12];
 				break;
-			case 3 :
+			case PRINTER_TYPE :
 				return $lang["printers"][4];
 				break;
-			case 4 : 
+			case MONITOR_TYPE : 
 				return $lang["monitors"][4];
 				break;
-			case 5 : 
+			case PERIPHERAL_TYPE : 
 				return $lang["peripherals"][4];
 				break;				
 			}
@@ -108,19 +108,19 @@ class ReservationItem{
 		global $cfg_install;
 	
 		switch ($this->fields["device_type"]){
-			case 1 :
+			case COMPUTER_TYPE :
 				return "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName()." (".$this->fields["id_device"].")</a>";
 				break;
-			case 2 :
+			case NETWORKING_TYPE :
 				return "<a href=\"".$cfg_install["root"]."/networking/networking-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName()." (".$this->fields["id_device"].")</a>";
 				break;
-			case 3 :
+			case PRINTER_TYPE :
 				return "<a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName()." (".$this->fields["id_device"].")</a>";
 				break;
-			case 4 : 
+			case MONITOR_TYPE : 
 				return "<a href=\"".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName()." (".$this->fields["id_device"].")</a>";
 				break;
-			case 5 : 
+			case PERIPHERAL_TYPE : 
 				return "<a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName()." (".$this->fields["id_device"].")</a>";
 				break;				
 			}
