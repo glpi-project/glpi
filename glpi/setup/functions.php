@@ -448,7 +448,7 @@ function showUserform($target,$name) {
 			echo ">Post Only";
 			echo "</select>";
 			echo "</td></tr>";	
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td><input name='email' size='20' value=\"".$user->fields["email"]."\"></td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td><input name='email_form' size='20' value=\"".$user->fields["email"]."\"></td></tr>";
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td><input name='phone' size='20' value=\"".$user->fields["phone"]."\"></td></tr>";
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
 				dropdownValue("glpi_dropdown_locations", "location", $user->fields["location"]);
@@ -759,7 +759,11 @@ function updateUser($input) {
 	if (empty($input["password"])) {
 		$user->fields["password"]="";
 	}
-
+	// change email_form to email (not to have a problem with preselected email)
+	if (isset($input["email_form"])){
+	$input["email"]=$input["email_form"];
+	unset($input["email_form"]);
+	}
 	// fill array for update
 	$x=0;
 	foreach ($input as $key => $val) {
