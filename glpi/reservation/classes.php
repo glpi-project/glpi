@@ -48,22 +48,21 @@ class ReservationItem{
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}
-			
 			switch ($this->fields["device_type"]){
 			case 1 :
-				$this->obj=new Computer ();
+				$this->obj=new Computer;
 				break;
 			case 2 :
-				$this->obj=new Netdevice ();
+				$this->obj=new Netdevice;
 				break;
 			case 3 :
-				$this->obj=new Printer ();
+				$this->obj=new Printer;
 				break;
 			case 4 : 
-				$this->obj= new Monitor ();	
+				$this->obj= new Monitor;	
 				break;
 			case 5 : 
-				$this->obj= new Peripheral ();	
+				$this->obj= new Peripheral;	
 				break;				
 			}
 			if ($this->obj!=NULL)
@@ -208,7 +207,7 @@ class ReservationResa{
 	var $fields	= array();
 	var $updates	= array();
 	
-	function getfromDB ($ID) {
+function getfromDB ($ID) {
 
 		// Make new database object and fill variables
 		$db = new DB;
@@ -299,7 +298,40 @@ function getEmpty () {
 		}
 	}
 	
+	function is_reserved(){
+		$db = new DB;
+		if (!isset($this->fields["id_item"])||empty($this->fields["id_item"]))
+		return true;
 		
+		$query = "SELECT * FROM glpi_reservation_resa".
+		" WHERE (id_item = '".$this->fields["id_item"]."') AND ( ('".$this->fields["begin"]."' >= begin AND '".$this->fields["begin"]."' <= end) OR ('".$this->fields["end"]."' >= begin AND '".$this->fields["end"]."' <= end))";
+//		echo $query."<br>";
+		if ($result=$db->query($query)){
+			return ($db->numrows($result)>0);
+		}
+		return true;
+		}
+	function test_valid_date(){
+		return (strtotime($this->fields["begin"])<strtotime($this->fields["end"]));
+		}
+
+	function displayError($type){
+		echo "<br><center>";
+		switch ($type){
+			case "date":
+			 echo "Erreur dans l'entrée de vos date. La date de début est surement supérieure à la date de fin";
+			break;
+			case "is_res":
+			 echo "Le matériel demandé est déjà réservé pour cette plage.";
+			break;
+			default :
+				echo "Erreur Inconnue";
+			break;
+		}
+		echo "<br><a href=\"".himself()."?substatus=visu\">Retour au calendrier</a>";
+		echo "</center>";
+		}
+
 }
 
 

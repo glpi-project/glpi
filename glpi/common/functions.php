@@ -485,6 +485,9 @@ function helpHeader($title,$url,$name) {
 	echo "<td align='center' width='25%'>\n";
 	
 	echo "<img src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" >";
+	echo "<br>";
+	echo "<span class='menu'><a  href=\"".$cfg_install["root"]."/helpdesk.php?show=resa\"\">".$lang["Menu"][17]."</a></span><br>";
+
 
         echo "</td>";
 

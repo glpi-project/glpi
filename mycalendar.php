@@ -37,7 +37,7 @@
 
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
-checkauthentication("normal");
+checkauthentication("post-only");
 
 // Section de configuration
 for ($i=0;$i<10;$i++) {$val[$i]="0".$i;$val["0".$i]="0".$i;}

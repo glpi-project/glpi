@@ -845,17 +845,17 @@ function updateUser($input) {
 	unset($input["email_form"]);
 	}
 	//Only super-admin's can set admin or super-admin access.
-	//set to "normal" by default
+	//set to "post-only" by default
 	//if user type is allready admin or super-admin do not touch it
 	if(!isSuperAdmin($_SESSION["glpitype"])) {
 		if(!empty($input["type"]) && $input["type"] != "normal" && $input["type"] != "post-only") {
-			$input["type"] = "normal";
+			$input["type"] = "post-only";
 		}
-		if($user->fields["type"] == "") {
+		if($user->fields["type"] == "super-admin") {
 			$input["type"] = "super-admin";
 		}
 		if($user->fields["type"] == "admin") {
-			$input["type"] = "";
+			$input["type"] = "admin";
 		}
 		
 	}

@@ -849,4 +849,11 @@ $lang["reservation"][4]	= "Matériel en prêt";
 $lang["reservation"][5]	= "En prêt";
 $lang["reservation"][6]	= "Supprimer du parc de prêt";
 $lang["reservation"][7]	= "Ajouter au parc de prêt";
+$lang["reservation"][8]	= "Réserver";
+$lang["reservation"][9]	= "Réserver un matériel";
+$lang["reservation"][10]	= "Date Début";
+$lang["reservation"][11]	= "Date Fin";
+$lang["reservation"][12]	= "Heure Début";
+$lang["reservation"][13]	= "Heure Fin";
+
 ?>
