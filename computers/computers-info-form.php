@@ -116,7 +116,7 @@ else if(isset($tab["connect"])&&isset($tab["device_type"]))
 	}
 	else
 	{
-	if ($_SESSION["glpitype"]=="admin"&&isset($tab["delete_inter"])&&!empty($tab["todel"])){
+	if (isAdmin($_SESSION["glpitype"])&&isset($tab["delete_inter"])&&!empty($tab["todel"])){
 		$j=new Job;
 		foreach ($tab["todel"] as $key => $val){
 			if ($val==1) $j->deleteInDB($key);

@@ -50,6 +50,17 @@ function can_assign_job($name)
 	 }
 }
 
+function isAdmin($authtype) {
+	switch ($authtype){
+		case "admin":
+		case "super-admin":
+			return true;
+			break;
+		default :
+			return false;
+		}
+}
+
 function checkAuthentication($authtype) {
 	// Checks a GLOBAL user and password against the database
 	// If $authtype is "normal" or "admin", it checks if the user
