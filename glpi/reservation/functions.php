@@ -332,8 +332,8 @@ $jour_fin_mois=strftime("%w",mktime(0,0,0,$mois_courant,$nb_jour[$mois_courant-1
 
 echo "<div align='center'>";
 
-echo "<table cellpadding='20' ><tr><td><a href=\"".$target.$str_precedent."\">".$lang["buttons"][12]."</a></td><td>".
-	$lang["calendarM"][$mois_courant-1]."</td><td><a href=\"".$target.$str_suivant."\">".$lang["buttons"][11]."</a></td></tr></table>";
+echo "<table cellpadding='20' ><tr><td><a href=\"".$target.$str_precedent."\"><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></td><td><b>".
+	$lang["calendarM"][$mois_courant-1]."</b></td><td><a href=\"".$target.$str_suivant."\"><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></td></tr></table>";
 echo "<table class='tab_cadre'>";
 echo "<th width='14%'>".$lang["calendarD"][1]."</th>";
 echo "<th width='14%'>".$lang["calendarD"][2]."</th>";
@@ -358,7 +358,11 @@ for ($i=1;$i<$nb_jour[$mois_courant-1]+1;$i++){
 	else $ii=$i;
 	
 	echo "<td  valign='top'>";
-	echo "<table align='center'><tr><td align='center'>".$i."</td></tr>";
+	
+	echo "<table align='center'><tr><td align='center' ><span style='font-family: arial,helvetica,sans-serif; font-size: 14px; color: black'>".$i."</span></td></tr>";
+	
+	echo "<tr><td align='center'><a href=\"".$target."?show=resa&add=$ID&date=".$annee_courante."-".$mois_courant."-".$ii."\"><img style='color: blue; font-family: Arial, Sans, sans-serif; font-size: 10px;' src=\"".$HTMLRel."pics/addresa.png\" alt='".$lang["reservation"][8]."' title='".$lang["reservation"][8]."'></a></td></tr>";
+	
 	//if (($i-1+$jour_debut_mois)%7!=6&&($i-1+$jour_debut_mois)%7!=0){
 	echo "<tr><td>";
 	printReservation($target,$ID,$annee_courante."-".$mois_courant."-".$ii);
@@ -366,7 +370,10 @@ for ($i=1;$i<$nb_jour[$mois_courant-1]+1;$i++){
 	//}
 //	echo $annee_courante."-".$mois_courant."-".$ii;
 	//if (($i-1+$jour_debut_mois)%7!=6&&($i-1+$jour_debut_mois)%7!=0)
-	echo "<tr><td align='center'><a href=\"".$target."?show=resa&add=$ID&date=".$annee_courante."-".$mois_courant."-".$ii."\">".$lang["reservation"][8]."</a></td></tr>";
+	
+	
+	
+	
 	echo "</table>";
 	echo "</td>";
 
@@ -504,7 +511,8 @@ $display="";
 					if ($_SESSION["glpiID"]==$user->fields["ID"]||isAdmin($_SESSION["glpitype"]))
 						$delete="<a  href=\"".$target."?show=resa&ID=$ID&clear=".$row['ID']."\" title='Delete'><img  src=\"".$HTMLRel."pics/clear.png\"></a>";
 
-		echo $delete."</td><td align='center' class='tab_bg_2' style='border:1px dashed #cccccc'>".$display."<br><b>".$user->fields["name"]."</b>";
+		
+		echo $delete."</td><td align='center' class='tab_bg_2' style='border:1px dashed #cccccc'><span style='font-size:10px'>".$display."<br><b>".$user->fields["name"]."</b></span>";
 
 			echo "</td></tr>";
 				
