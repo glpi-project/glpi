@@ -34,13 +34,15 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 
 //Load language
-function loadLang($language) {
+if(!function_exists(loadLang) {
+	function loadLang($language) {
 		
-		unset($lang);
-		global $lang;
-		include ("_relpos.php");
-		$file = $phproot ."/glpi/dicts/".$language.".php";
-		include($file);
+			unset($lang);
+			global $lang;
+			include ("_relpos.php");
+			$file = $phproot ."/glpi/dicts/".$language.".php";
+			include($file);
+	}
 }
 
 //Verifie si la table $tablename existe
