@@ -1399,6 +1399,42 @@ $result=$db->query($query);
 
 }
 
+// Merge de l'OS et de la version
+if(FieldExists("glpi_computers","osver")) {
+	// Récupération des couples existants
+	$query="SELECT DISTINCT glpi_computers.os AS ID , glpi_computers.osver AS VERS, glpi_dropdown_os.name as NAME FROM glpi_computers 
+		LEFT JOIN glpi_dropdown_os ON glpi_dropdown_os.ID=glpi_computers.os ORDER BY glpi_computers.os, glpi_computers.osver";
+	$result=$db->query($query) or die("0.5 select for update OS ".$lang["update"][90].$db->error());
+	$valeur=array();
+	$curros=-1;
+	$currvers="-------------------------";
+	while ($data=$db->fetch_array($result)){
+		// Nouvel OS -> update de l'element de dropdown
+		if ($data["ID"]!=$curros){
+			$curros=$data["ID"];
+			
+			if (!empty($data["VERS"])){
+				$query_update="UPDATE glpi_dropdown_os SET name='".$data["NAME"]." - ".$data["VERS"]."' WHERE ID='".$data["ID"]."'";
+				$db->query($query_update) or die("0.5 update for update OS ".$lang["update"][90].$db->error());
+			}
+		
+		} else { // OS deja mis a jour -> creation d'un nouvel OS et mise a jour des elements
+		$newname=$data["NAME"]." - ".$data["VERS"];
+		$query_insert="INSERT INTO glpi_dropdown_os (name) VALUES ('$newname');";
+		$db->query($query_insert) or die("0.5 insert for update OS ".$lang["update"][90].$db->error());
+		$query_select="SELECT ID from  glpi_dropdown_os WHERE name = '$newname';";
+		$res=$db->query($query_select) or die("0.5 select for update OS ".$lang["update"][90].$db->error());
+		if ($db->numrows($res)==1){
+			$query_update="UPDATE glpi_computers SET os='".$db->result($res,0,"ID")."' WHERE os='".$data["ID"]."' AND osver='".$data["VERS"]."'";
+			$db->query($query_update) or die("0.5 update2 for update OS ".$lang["update"][90].$db->error());
+		}
+		
+		}
+	}
+	$query_alter= "ALTER TABLE `glpi_computers` DROP `osver` ";
+	$db->query($query_alter) or die("0.5 alter for update OS ".$lang["update"][90].$db->error());
+}
+
 
 
 // Update version number

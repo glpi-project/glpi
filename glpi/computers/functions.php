@@ -431,7 +431,9 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		echo "<tr class='tab_bg_1'><td>".$lang["reservation"][24].":</td><td><b>";
 		if (!$template)
 		showReservationForm(1,$ID);
-		echo "</b></td><td></td><td></td></tr>";
+		echo "</b></td><td>".$lang["computers"][9]."</td><td>";
+		dropdownValue("glpi_dropdown_os", "os", $comp->fields["os"]);
+		echo "</td></tr>";
 		
 		
 		echo "</tr><tr>";
