@@ -203,25 +203,29 @@ echo "<body>";
 
 // step 1    avec bouton de confirmation
 if(empty($_POST["continuer"])) {
-	echo "Attention ! Vous allez mettre à jour votre base de données GLPI<br/>";
+	echo "Attention ! Vous allez mettre à jour votre base de données GLPI<br />";
 	echo "Be carreful ! Your are going to update your GLPI database<br/>";
-	echo "<form action=\"update.php\" method=\"POST\">";
-	echo "<input type=\"submit\" name=\"continuer\" value=\"mettre à jour \">";
+	echo "<form action=\"update.php\" method=\"post\">";
+	echo "<input type=\"submit\" name=\"continuer\" value=\"Mettre à jour / Continue \" />";
 	echo "</form>";
 }
 // Step 2  avec message d'erreur en cas d'echec de connexion
 else {
 	if(test_connect()) {
 		ob_start();
-		echo "Connexion à la base de données réussie";
-		ob_end_flush();
+		echo "Connexion &agrave; la base de données réussie <br />";
+		echo "Connection to the database  sucessful";
+                ob_end_flush();
 		update_db();
-		echo "<br/>La mise à jour à réussie, votre base de données est actualisée \n<br /> vous pouvez supprimer le fichier update.php de votre repertoire";
-	}
+		echo "<br/>La mise &agrave; jour &agrave; réussie, votre base de données est actualisée \n<br /> vous pouvez supprimer le fichier update.php de votre repertoire";
+	        echo "<br/>The update with successful, your data base is update \n<br /> you can remove the file update.php from your directory";
+        }
 	else {
 		echo "<br /> <br />";
-		echo "La connexion à la base de données a échouée, verifiez les paramètres de connexion figurant dans le fichier config.php";
-	}
+		echo "La connexion à la base de données a échouée, verifiez les paramètres de connexion figurant dans le fichier config.php <br />";
+	
+        echo "Connection to the database failed, you should verify the parameters of connection  in the file config.php";
+        }
 }
 
 // Step 3 Si tout va bien
