@@ -368,7 +368,7 @@ if(!$fileHandle)
     return FALSE;
 }
 
-if ($offsettable==1&&$offsetrow==0){
+if ($offsettable==0&&$offsetrow==-1){
  	$time_file=date("Y-m-d-h-i");
 	$cur_time=date("Y-m-d H:i");
 	$todump="#GLPI Dump database on $cur_time\n";
@@ -458,7 +458,7 @@ if (!isset($_GET["fichier"])) {
 	
 
 if(isset($offsettable))
-$percent=min(100,round(110*$offsettable/26,0));
+$percent=min(100,round(110*$offsettable/33,0));
 else $percent=0;
 echo "<center>".$percent."%</center>";
 
