@@ -53,7 +53,7 @@ function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "",$d
 	$option["glpi_cartridges_type.name"]				= $lang["cartridges"][1];
 	$option["glpi_cartridges_type.ref"]			= $lang["cartridges"][2];
 	$option["glpi_cartridges_type.type"]			= $lang["cartridges"][3];
-	$option["glpi_cartridges_type.FK_glpi_manufacturer"]			= $lang["cartridges"][8];	
+	$option["glpi_cartridges_type.FK_glpi_enterprise"]			= $lang["cartridges"][8];	
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/cartridges/cartridge-search.php\">";
 	echo "<div align='center'><table class='tab_cadre' width='750'>";
@@ -185,10 +185,10 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 
 			// Manufacturer		
 			echo "<th>";
-			if ($sort=="glpi_cartridges_type.FK_glpi_manufacturer") {
+			if ($sort=="glpi_cartridges_type.FK_glpi_enterprise") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_cartridges_type.FK_glpi_manufacturer&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_cartridges_type.FK_glpi_enterprise&order=DESC&start=$start\">";
 			echo $lang["cartridges"][8]."</a></th>";
 
 			// Cartouches
@@ -209,7 +209,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 				echo "</a></b></td>";
 				echo "<td>".$ct->fields["ref"]."</td>";
 				echo "<td>".getCartridgeTypeName($ct->fields["type"])."</td>";
-				echo "<td>". getDropdownName("glpi_manufacturer",$ct->fields["FK_glpi_manufacturer"]) ."</td>";
+				echo "<td>". getDropdownName("glpi_enterprise",$ct->fields["FK_glpi_enterprise"]) ."</td>";
 				echo "<td>";
 					countCartridges($ct->fields["ID"]);
 				echo "</td>";
@@ -265,7 +265,7 @@ function showCartridgeTypeForm ($target,$ID) {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][8].": 	</td><td colspan='2'>";
-		dropdownValue("glpi_manufacturer","FK_glpi_manufacturer",$ct->fields["FK_glpi_manufacturer"]);
+		dropdownValue("glpi_enterprise","FK_glpi_enterprise",$ct->fields["FK_glpi_enterprise"]);
 	echo "</td></tr>";
 
 
