@@ -56,7 +56,7 @@ function checkAuthentication($authtype) {
 	// control-page to set a minium security level.
 	session_start();
 	
-	GLOBAL $cfg_install;
+	GLOBAL $cfg_install, $lang;
 
 	if(empty($_SESSION["authorisation"]))
 	{
