@@ -131,9 +131,9 @@ function getNbInter($quoi, $chps, $value, $date1 = '', $date2 = '')
 			else {
 				$query .= " where $chps = '$value'";
 			}
-			$query .= " and date BETWEEN '". $date1 ."' and '". $date2 ."'";
+			$query .= " and date BETWEEN '". $date1 ."' and adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 		} else {
-			$query .= " where date BETWEEN '". $date1 ."' and '". $date2 ."'";
+			$query .= " where date BETWEEN '". $date1 ."' and adddate( '". $date2 ."' , INTERVAL 1 DAY )";
 		}
 	}
 	$result = $db->query($query);
@@ -180,10 +180,10 @@ function getNbResol($quoi, $chps, $value, $date1 = '', $date2= '')
 			else {
 				$query .= " where $chps = '$value' and glpi_tracking.status = 'old'";
 			}
-			$query .= " and closedate BETWEEN '". $date1 ."' and '". $date2 ."'";
+			$query .= " and closedate BETWEEN '". $date1 ."' and adddate( '". $date2 ."' , INTERVAL 1 DAY )";
 		}
 		else {
-			$query.= " where glpi_tracking.status = 'old' and closedate BETWEEN '". $date1 ."' and '". $date2 ."'";
+			$query.= " where glpi_tracking.status = 'old' and closedate BETWEEN '". $date1 ."' and adddate( '". $date2 ."' , INTERVAL 1 DAY )";
 		}
 	}
 	
@@ -237,12 +237,12 @@ function getResolAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 				$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))/count(glpi_tracking.ID)";
 				$query .= " as total from glpi_tracking where $chps = '$value' and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
 			}
-			$query .= "  and closedate BETWEEN '". $date1 ."' and '". $date2 ."'";
+			$query .= "  and closedate BETWEEN '". $date1 ."' and adddate( '". $date2 ."' , INTERVAL 1 DAY )";
 		}
 		else {
 			$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))/count(glpi_tracking.id) as total from glpi_tracking";
 			$query .= " where glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
-			$query .= "  and closedate BETWEEN '". $date1 ."' and '". $date2 ."'";
+			$query .= "  and closedate BETWEEN '". $date1 ."' and adddate( '". $date2 ."' , INTERVAL 1 DAY )";
 		}
 	}
 		
