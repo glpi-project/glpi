@@ -6,6 +6,8 @@ GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2004 by the INDEPNET Development Team.
  
  http://indepnet.net/   http://glpi.indepnet.org
+ Report bugs on glpi-dev @ gna.org
+
  ----------------------------------------------------------------------
  Based on:
 IRMA, Information Resource-Management and Administration
@@ -81,7 +83,7 @@ $lang["search"][1]	= "where this field";
 $lang["search"][2]	= "contains";
 $lang["search"][3]	= "is the exact sentence";
 $lang["search"][4]	= "sorted by";
-$lang["search"][5]	= "View by location";
+$lang["search"][5]	= "Display by location";
 $lang["search"][6]	= "sorted by";
 $lang["search"][7]	= "Global search";
 $lang["search"][8] 	= "Begin date"; 
@@ -122,10 +124,10 @@ $lang["connect"][7]	= "ID";
 $lang["connect"][8]	= "contains";
 $lang["connect"][9]	= "Please choose a computer from the resultlist";
 $lang["connect"][10] 	= "Please choose a printer from the resultlist"; 
-$lang["connect"][11] 	= "Please choose a peripheral from the resultlist"; 
+$lang["connect"][11] 	= "Please choose a device from the resultlist"; 
 $lang["connect"][12] 	= "Please choose a monitor from the resultlist"; 
 $lang["connect"][13] 	= "To a printer which"; 
-$lang["connect"][14] 	= "To a peripheral which"; 
+$lang["connect"][14] 	= "To a device which"; 
 $lang["connect"][15] 	= "To a monitor which"; 
 $lang["connect"][16] 	= "No item found"; 
 $lang["connect"][17]	= "Automatic update of the unknown netpoint";
@@ -152,7 +154,7 @@ $lang["Menu"][12]	="Data";
 $lang["Menu"][13]	="Stats";
 $lang["Menu"][14]	="Users";
 $lang["Menu"][15]	="Administration";
-$lang["Menu"][16]	="Peripherals";
+$lang["Menu"][16]	="Devices";
 $lang["Menu"][17]	="Reservations";
 $lang["Menu"][18]	="Utils";
 $lang["Menu"][19]	="Knowledge database";
@@ -191,21 +193,21 @@ $lang["tracking"][6]    = "You are not allowed to (re-)assign this intervention"
 $lang["tracking"][7] 	= "Show..."; 
 $lang["tracking"][8] 	= "No description, please retry"; 
 $lang["tracking"][9] 	= "New intervention post, next..."; 
-$lang["tracking"][10] 	= "Impossible to add the intervention, check the data base"; 
+$lang["tracking"][10] 	= "Unable to add the intervention, check the data base"; 
 $lang["tracking"][11] 	= "Intervention(s) required by this user"; 
 $lang["tracking"][12] = "All the devices";
 $lang["tracking"][13] = "Computers only";
 $lang["tracking"][14] = "Netdevices only";
 $lang["tracking"][15] = "Printers only";
 $lang["tracking"][16] = "Monitors only";
-$lang["tracking"][17] = "Peripherals only";
+$lang["tracking"][17] = "Devices only";
 $lang["tracking"][18] = "Software only";
 
 // 1 computers
 // 2 networking
 // 3 printers
 // 4 monitors
-// 5 peripherals
+// 5 devices
 // 6 software
 
 
@@ -303,8 +305,8 @@ $lang["computers"][42]	= "Warranty expiration date";
 $lang["computers"][43]	= "Maintenance";
 $lang["computers"][44]  = "Computers";
 $lang["computers"][45] = "Select a template";
-$lang["computers"][46] 	= "Peripherals"; 
-$lang["computers"][47] 	= "No connected peripheral";
+$lang["computers"][46] 	= "Devices"; 
+$lang["computers"][47] 	= "No connected device";
 $lang["computers"][48] 	= "Place modification. The items connected have been in the same place."; 
 
 // Networking
@@ -369,7 +371,7 @@ $lang["networking"][52] 	= "Netpoint ";
 
 // Printers
 $lang["printers"][0]	= "Add Printer...";
-$lang["printers"][1]	= "View by location";
+$lang["printers"][1]	= "Display by location";
 $lang["printers"][2]	= "sorted by";
 $lang["printers"][3]	= "Add printer";
 $lang["printers"][4]	= "Printer";
@@ -472,9 +474,9 @@ $lang["software"][37]   = "To buy";
 
 
 // Peripherals
-$lang["peripherals"][0]	= "Add peripheral...";
-$lang["peripherals"][3]	= "Add peripheral...";
-$lang["peripherals"][4]	= "Peripheral";
+$lang["peripherals"][0]	= "Add device...";
+$lang["peripherals"][3]	= "Add device...";
+$lang["peripherals"][4]	= "Device";
 $lang["peripherals"][5]	= "Name";
 $lang["peripherals"][6]	= "Location";
 $lang["peripherals"][7]	= "Contact #";
@@ -487,7 +489,7 @@ $lang["peripherals"][13]	= "Location";
 $lang["peripherals"][14]	= "";
 $lang["peripherals"][15]	= "";
 $lang["peripherals"][16]	= "Last modification";
-$lang["peripherals"][17]	= "No peripheral found";
+$lang["peripherals"][17]	= "No device found";
 $lang["peripherals"][18]	= "Brand";
 $lang["peripherals"][19]	= "";
 $lang["peripherals"][20]	= "";
@@ -498,7 +500,7 @@ $lang["peripherals"][24]   = "Date of purchase ";
 $lang["peripherals"][25]	= "Warranty expiration date";
 $lang["peripherals"][26]	= "Maintenance";
 $lang["peripherals"][27]   = "identifiant";
-$lang["peripherals"][28]	= "Peripherals";
+$lang["peripherals"][28]	= "Devices";
 
 
 
@@ -532,8 +534,8 @@ $lang["reports"][25]    ="Tracking report";
 $lang["reports"][26]    ="Default report";
 $lang["reports"][27]    ="Maintenance";
 $lang["reports"][28] 	= "By year"; 
-$lang["reports"][29] 	= "Peripherals"; 
-$lang["reports"][30] 	= "Peripherals under maintenance contract"; 
+$lang["reports"][29] 	= "Devices"; 
+$lang["reports"][30] 	= "Devices under maintenance contract"; 
 $lang["reports"][31]    ="complete";
 $lang["reports"][32]    ="limited";
 
@@ -619,7 +621,7 @@ $lang["setup"][65] 	= "You can also replace all the events of this heading by an
 $lang["setup"][66] 	= "No user found"; 
 $lang["setup"][67] 	= "External authentifications"; 
 $lang["setup"][68] 	= "Email Followup"; 
-$lang["setup"][69] 	= "Peripheral types"; 
+$lang["setup"][69] 	= "Devices types"; 
 $lang["setup"][70] 	= "General setup"; 
 $lang["setup"][71] 	= "Firmware"; 
 $lang["setup"][72] 	= "Select a dropdown"; 
@@ -718,7 +720,7 @@ $lang["help"][25] 	= "Computer";
 $lang["help"][26] 	= "Networking device";
 $lang["help"][27] 	= "Printer";
 $lang["help"][28] 	= "Monitor";
-$lang["help"][29] 	= "Peripheral";
+$lang["help"][29] 	= "Device";
 $lang["help"][30] 	= "General";
 $lang["help"][31] 	= "Software";
 
