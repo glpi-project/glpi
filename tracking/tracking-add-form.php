@@ -42,6 +42,12 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_setup.php");
+include ($phproot . "/glpi/includes_computers.php");
+include ($phproot . "/glpi/includes_printers.php");
+include ($phproot . "/glpi/includes_monitors.php");
+include ($phproot . "/glpi/includes_peripherals.php");
+include ($phproot . "/glpi/includes_networking.php");
+
 
 checkAuthentication("admin");
 
@@ -60,12 +66,12 @@ else $assign=$_GET["assign"];
 
 
 if (isset($_GET["Modif_Interne"])){
-addFormTracking($_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error,$_GET["search"]);
+addFormTracking($_GET["device_type"],$_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error,$_GET["search"]);
 }
 elseif (isset($_GET["priority"]) && empty($_GET["contents"]))
 {
 	$error=$lang["tracking"][8] ;
-	addFormTracking($_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error);
+	addFormTracking($_GET["device_type"],$_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error);
 }
 elseif (isset($_GET["priority"]) && !empty($_GET["contents"]))
 {
@@ -80,21 +86,20 @@ elseif (isset($_GET["priority"]) && !empty($_GET["contents"]))
 	$realtime=$_GET["hour"]+$_GET["minute"]/60;
 
 
-	if (postJob($_GET["ID"],$_GET["user"],$_GET["status"],$_GET["priority"],$_GET["isgroup"],$uemail,$_GET["emailupdates"],$_GET["contents"],$_GET["assign"],$realtime))
+	if (postJob($_GET["device_type"],$_GET["ID"],$_GET["user"],$_GET["status"],$_GET["priority"],$_GET["isgroup"],$uemail,$_GET["emailupdates"],$_GET["contents"],$_GET["assign"],$realtime))
 	{
-		
 		$error=$lang["tracking"][9];
-		addFormTracking($_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error);
+		addFormTracking($_GET["device_type"],$_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error);
 	}
 	else
 	{
 		$error=$lang["tracking"][10];
-		addFormTracking($_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error);
+		addFormTracking($_GET["device_type"],$_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error);
 	}
 } 
 else
 {
-	addFormTracking($_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error);
+	addFormTracking($_GET["device_type"],$_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error);
 }
 
 

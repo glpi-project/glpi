@@ -73,8 +73,8 @@ if (isset($tab["add"])) {
 	showPortsAdd($tab["ID"],1);
 	showConnections($tab["ID"]);
 	showSoftwareInstalled($tab["ID"]);
-	showJobListForItem($_SESSION["glpiname"],$tab["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],$tab["ID"]);
+	showJobListForItem($_SESSION["glpiname"],1,$tab["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],1,$tab["ID"]);
 	commonFooter();
 } 
 else if (isset($tab["disconnect"]))
@@ -129,8 +129,8 @@ else if(isset($tab["connect"])&&isset($tab["device_type"]))
 			showPortsAdd($tab["ID"],1);
 			showConnections($tab["ID"]);
 			showSoftwareInstalled($tab["ID"]);
-			showJobListForItem($_SESSION["glpiname"],$tab["ID"]);
-			showOldJobListForItem($_SESSION["glpiname"],$tab["ID"]);
+			showJobListForItem($_SESSION["glpiname"],1,$tab["ID"]);
+			showOldJobListForItem($_SESSION["glpiname"],1,$tab["ID"]);
 			
 		}
 	}

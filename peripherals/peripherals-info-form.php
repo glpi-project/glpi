@@ -35,6 +35,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_reservation.php");
+include ($phproot . "/glpi/includes_tracking.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -63,6 +64,8 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	commonHeader("Peripherals",$_SERVER["PHP_SELF"]);
 	showPeripheralForm($_SERVER["PHP_SELF"],$_POST["ID"]);
+	showJobListForItem($_SESSION["glpiname"],5,$_POST["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],5,$_POST["ID"]);
 	commonFooter();
 
 }
@@ -73,6 +76,9 @@ else if (isset($tab["disconnect"]))
 	logEvent($tab["ID"], "Peripherals", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
 	commonHeader("Peripherals",$_SERVER["PHP_SELF"]);
 	showPeripheralForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	showJobListForItem($_SESSION["glpiname"],5,$tab["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],5,$tab["ID"]);
+
 	commonFooter();
 }
 else if(isset($tab["connect"]))
@@ -98,6 +104,8 @@ else if(isset($tab["connect"]))
 		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],5);
 		logEvent($tab["sID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." connected item.");
 		showPeripheralForm($_SERVER["PHP_SELF"],$tab["sID"]);
+		showJobListForItem($_SESSION["glpiname"],5,$tab["ID"]);
+		showOldJobListForItem($_SESSION["glpiname"],5,$tab["ID"]);
 		commonFooter();
 	}
 }
@@ -109,6 +117,9 @@ else
 
 	commonHeader("Peripherals",$_SERVER["PHP_SELF"]);
 	showPeripheralForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	showJobListForItem($_SESSION["glpiname"],5,$tab["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],5,$tab["ID"]);
+
 	commonFooter();
 }
 

@@ -106,7 +106,7 @@ function getTrackingPrefs ($username) {
 	return $prefs;
 }
 
-function showJobList($target,$username,$show,$contains,$item,$start) {
+function showJobList($target,$username,$show,$contains,$item_type,$item,$start) {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -150,9 +150,9 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 		$query = "SELECT ID FROM glpi_tracking WHERE ".$where." ORDER BY date ".$prefs["order"]."";
 	}
 
-	if ($item)
+	if ($item&&$item_type)
 	{
-		$query = "SELECT ID FROM glpi_tracking WHERE ".$where." and (computer = '".$item."') ORDER BY date ".$prefs["order"]."";
+		$query = "SELECT ID FROM glpi_tracking WHERE ".$where." and (device_type = '".$item_type."' and computer = '".$item."') ORDER BY date ".$prefs["order"]."";
 	}	
 	$lim_query = " LIMIT ".$start.",".$cfg_features["list_limit"]."";	
 
@@ -181,7 +181,7 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 		echo "<div align='center'><table class='tab_cadre' width='90%'>";
 		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
 		echo "<th width=5>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
-		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["joblist"][5]."</th>";
+		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["common"][1]."</th>";
 		echo "<th colspan='2'>".$lang["joblist"][6]."</th></tr>";
 		while ($i < $number) {
 			$ID = $db->result($result, $i, "ID");
@@ -192,7 +192,7 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 		{
 			echo "<tr class='tab_bg_2'>";
 			echo "<td align='center' colspan='8' class='tab_bg_1'><b>";
-			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item\">";
+			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&device_type=$item_type\">";
 			echo $lang["joblist"][7];
 			echo "</a>";
 			echo "</b></td></tr>";
@@ -224,7 +224,7 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 		if ($item) 
 		{
 			echo "<tr><td align='center' class='tab_bg_1'><b>";
-			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item\">";
+			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&device_type=$item_type\">";
 			echo $lang["joblist"][7];
 			echo "</a>";
 			echo "</b></td></tr>";
@@ -237,7 +237,7 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 	echo "</form>";
 }
 
-function showOldJobListForItem($username,$item) {
+function showOldJobListForItem($username,$item_type,$item) {
 	// $item is required
 	// affiche toutes les vielles intervention pour un $item donné. 
 
@@ -255,7 +255,7 @@ function showOldJobListForItem($username,$item) {
 	$prefs = getTrackingPrefs($username);
 	
 $where = "(status = 'old')";	
-$query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item') ORDER BY date ".$prefs["order"]."";
+$query = "SELECT ID FROM glpi_tracking WHERE $where and (device_type = '$item_type' and computer = '$item') ORDER BY date ".$prefs["order"]."";
 	
 
 	$db = new DB;
@@ -272,7 +272,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item') ORD
 		echo " ".$lang["job"][16].":</th></tr>";
 		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
 		echo "<th width=5>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
-		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["joblist"][5]."</th>";
+		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["common"][1]."</th>";
 		echo "<th colspan='2'>".$lang["joblist"][6]."</th></tr>";
 		while ($i < $number)
 		{
@@ -304,7 +304,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item') ORD
 	else
 	{
 		echo "<br><div align='center'>";
-		echo "<table border='0' width='90%'>";
+		echo "<table border='0' width='90%' class='tab_cadre'>";
 		echo "<tr><th>".$lang["joblist"][22]."</th></tr>";
 
 		if ($item)
@@ -321,7 +321,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item') ORD
 
 }
 
-function showJobListForItem($username,$item) {
+function showJobListForItem($username,$item_type,$item) {
 	// $item is required
 	//affiche toutes les vielles intervention pour un $item donné. 
 
@@ -330,14 +330,14 @@ function showJobListForItem($username,$item) {
 	$prefs = getTrackingPrefs($username);
 	
 $where = "(status = 'new')";	
-$query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item') ORDER BY date ".$prefs["order"]."";
-	
+$query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and device_type= '$item_type') ORDER BY date ".$prefs["order"]."";
 
 	$db = new DB;
 	$result = $db->query($query);
 
 	$i = 0;
 	$number = $db->numrows($result);
+
 	if ($number > 0)
 	{
 		echo "<div align='center'>&nbsp;<table class='tab_cadre' width='90%'>";
@@ -346,7 +346,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item') ORD
 		echo " ".$lang["job"][16].":</th></tr>";
 		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
 		echo "<th width=5>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
-		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["joblist"][5]."</th>";
+		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["common"][1]."</th>";
 		echo "<th colspan='2'>".$lang["joblist"][6]."</th></tr>";
 		while ($i < $number)
 		{
@@ -357,7 +357,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item') ORD
 		if ($item)
 		{
 			echo "<tr><td align='center' class='tab_bg_2' colspan='8'><b>";
-			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item\">";
+			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&device_type=$item_type\">";
 			echo $lang["joblist"][7];
 			echo "</a>";
 			echo "</b></td></tr>";
@@ -367,14 +367,14 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item') ORD
 	else
 	{
 		echo "<br><div align='center'>";
-		echo "<table border='0' width='90%'>";
+		echo "<table border='0' width='90%' class='tab_cadre'>";
 		echo "<tr><th>".$lang["joblist"][8]."</th></tr>";
 
 		if ($item)
 		{
 			 
 			  echo "<tr><td align='center' class='tab_bg_2' colspan='8'><b>";
-			  echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item\">";
+			  echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&device_type=$item_type\">";
 			  echo $lang["joblist"][7];
 			  echo "</a>";
 			  echo "</b></td></tr>";
@@ -452,13 +452,21 @@ function showJobShort($ID, $followups	) {
 		
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0){
 			echo "<td align='center'>";
-			if ($job->computerfound)	echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$job->computer\">";
+			$m= new CommonItem;
+			$m->getfromDB($job->device_type,$job->computer);
+			echo $m->getType()."<br>";
+			echo "<b>";
+			if ($job->computerfound) echo $m->getLink();
+			else echo $m->getNameID();
+			echo "</b>";
+/*			if ($job->computerfound)	echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$job->computer\">";
 			echo "<b>$job->computername ($job->computer)</b>";
 			if ($job->computerfound) echo "</a>";
+*/			
 			echo "</td>";
 		}
 		else
-		echo "<td  align='center'><b>$job->computername($job->computer)</b></td>";
+		echo "<td  align='center'><b>$job->computername ($job->computer)</b></td>";
 		
 		$stripped_content=$job->contents;
 		if (!$followups) $stripped_content =substr(unhtmlentities_deep($job->contents),0,$cfg_features["cut"]);
@@ -503,6 +511,7 @@ function showJobDetails($ID) {
 	$job = new Job;
 	
 	if ($job->getfromDB($ID,0)) {
+
 		// test if the user if authorized to view this job
 		if (strcmp($_SESSION["glpitype"],"post-only")==0&&!strcmp($_SESSION["glpiname"],$job->author)==0)
 		   { echo "Warning !! ";return;}
@@ -535,9 +544,17 @@ function showJobDetails($ID) {
 		echo "<tr><td>".$lang["joblist"][5].":</td><td>";
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		{
-			if ($job->computerfound)	echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$job->computer\">";
+			$m= new CommonItem;
+			$m->getfromDB($job->device_type,$job->computer);
+			echo "<b>";
+			if ($job->computerfound) echo $m->getLink();
+			else echo $m->getNameID();
+			echo "</b>";
+
+/*			if ($job->computerfound)	echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$job->computer\">";
 			echo "<b>$job->computername ($job->computer)</b>";
 			if ($job->computerfound) echo "</a>";
+*/			
 		}
 		else
 		echo "<b>$job->computername ($job->computer)</b>";
@@ -649,7 +666,7 @@ function showJobDetails($ID) {
 	}
 }
 
-function postJob($ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$contents,$assign="",$realtime=0) {
+function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$contents,$assign="",$realtime=0) {
 	// Put Job in database
 
 	GLOBAL $cfg_install, $cfg_features, $cfg_layout;
@@ -663,6 +680,7 @@ function postJob($ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$c
 	}
 	$job->status = $status;
 	$job->author = $author;
+	$job->device_type = $device_type;
 	$job->computer = $ID;
 	$job->contents = $contents;
 	$job->priority = $priority;
@@ -670,7 +688,7 @@ function postJob($ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$c
 	$job->emailupdates = $emailupdates;
 	$job->assign = $assign;
 	$job->realtime = $realtime;
-	
+
 	if ($job->putinDB()) {
 		// Log this event
 		logEvent($ID,"computers",4,"tracking","$author added new job.");
@@ -693,10 +711,11 @@ function postJob($ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$c
 function markJob ($ID,$status,$opt='') {
 	// Mark Job with status
 	GLOBAL $cfg_features;
+
 	$job = new Job;
 	$job->getFromDB($ID,1);
 	$job->updateStatus($status);
-	
+
 	// Realtime intervention
 	if ($status=="old"&&$opt!='')
 		$job->updateRealtime($opt);	
@@ -803,7 +822,7 @@ function postFollowups ($ID,$author,$contents) {
 	}
 }
 
-function addFormTracking ($ID,$author,$assign,$target,$error,$searchauthor='') {
+function addFormTracking ($device_type,$ID,$author,$assign,$target,$error,$searchauthor='') {
 	// Prints a nice form to add jobs
 
 	GLOBAL $cfg_layout, $lang,$cfg_features;
@@ -813,7 +832,11 @@ function addFormTracking ($ID,$author,$assign,$target,$error,$searchauthor='') {
 	}
 	echo "<form method='get' action='$target'>";
 	echo "<div align='center'><table class='tab_cadre'>";
-	echo "<tr><th colspan='4'>".$lang["job"][13].":</th></tr>";
+	echo "<tr><th colspan='4'>".$lang["job"][13].": <br>";
+	$m=new CommonItem;
+	$m->getfromDB($device_type,$ID);
+	echo $m->getType()." - ".$m->getNameID();
+	echo "</th></tr>";
 
 	echo "<tr class='tab_bg_1' align='center'><td>".$lang["joblist"][1].":</td>";
 	echo "<td align='center' colspan='3'>".date("Y-m-d H:i:s")."</td></tr>";
@@ -905,6 +928,8 @@ function addFormTracking ($ID,$author,$assign,$target,$error,$searchauthor='') {
 	$computername = $db->result($result, 0, "name");
 	echo "$computername ($ID)"; 
 	echo "<input type='hidden' name='ID' value=\"$ID\">";
+	echo "<input type='hidden' name='device_type' value=\"$device_type\">";
+
 	echo "</td></tr>";
 
 	echo "<tr><td colspan='4' height='5'></td></tr>";

@@ -725,8 +725,100 @@ class Mailing
 			}
 		}
 	}
-
-
-
 }
+
+class CommonItem{
+	var $obj = NULL;	
+	var $device_type=0;
+	var $id_type=0;
+	
+	function getfromDB ($device_type,$id_device) {
+		$this->id_device=$id_device;
+		$this->device_type=$device_type;
+		// Make new database object and fill variables
+
+			switch ($device_type){
+			case 1 :
+				$this->obj=new Computer;
+				break;
+			case 2 :
+				$this->obj=new Netdevice;
+				break;
+			case 3 :
+				$this->obj=new Printer;
+				break;
+			case 4 : 
+				$this->obj= new Monitor;	
+				break;
+			case 5 : 
+				$this->obj= new Peripheral;	
+				break;				
+			}
+
+			if ($this->obj!=NULL){
+			return $this->obj->getfromDB($id_device);
+			}
+			else return false;
+			
+	}
+	function getType (){
+		global $lang;
+		
+		switch ($this->device_type){
+			case 1 :
+				return $lang["computers"][44];
+				break;
+			case 2 :
+				return $lang["networking"][12];
+				break;
+			case 3 :
+				return $lang["printers"][4];
+				break;
+			case 4 : 
+				return $lang["monitors"][4];
+				break;
+			case 5 : 
+				return $lang["peripherals"][4];
+				break;				
+			}
+	
+	}
+	function getName(){
+		if ($this->obj!=NULL&&isset($this->obj->fields["name"])&&$this->obj->fields["name"]!="")
+			return $this->obj->fields["name"];
+		else 
+			return "N/A";
+	}
+	function getNameID(){
+		return $this->getName()." (".$this->id_device.")";
+	}
+	
+	function getLink(){
+	
+		global $cfg_install;
+	
+		switch ($this->device_type){
+			case 1 :
+				return "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
+				break;
+			case 2 :
+				return "<a href=\"".$cfg_install["root"]."/networking/networking-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
+				break;
+			case 3 :
+				return "<a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
+				break;
+			case 4 : 
+				return "<a href=\"".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
+				break;
+			case 5 : 
+				return "<a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
+				break;				
+			}
+
+	
+	}
+	
+}
+
+
 ?>
