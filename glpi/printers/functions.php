@@ -196,7 +196,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="location") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=printer.location&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=ASC&start=$start\">";
 			echo $lang["printers"][6]."</a></th>";
 
 			// Type
@@ -204,7 +204,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="type") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=printer.type&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_printers.name&order=ASC&start=$start\">";
 			echo $lang["printers"][9]."</a></th>";
 
 			// Last modified		
