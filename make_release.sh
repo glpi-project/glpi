@@ -16,26 +16,26 @@ then
  exit ;
 fi
 
-if [ ! "$UID" -eq 0 ]
-then
- echo "You are not root user";
- exit;
-fi
+#if [ ! "$UID" -eq 0 ]
+#then
+# echo "You are not root user";
+# exit;
+#fi
 
 INIT_PWD=$PWD;
 
 
-if [ -e /tmp/glpi-$RELEASE ]
+if [ -e /tmp/glpi ]
 then
  echo "Delete existing temp directory";
-\rm -rf /tmp/glpi-$RELEASE;
+\rm -rf /tmp/glpi;
 fi
 echo "Copy to  /tmp directory";
 
-cp -rf $INIT_DIR /tmp/glpi-$RELEASE;
+cp -rf $INIT_DIR /tmp/glpi;
 
 echo "Move to this directory";
-cd /tmp/glpi-$RELEASE;
+cd /tmp/glpi;
 
 echo "Delete CVS directories";
 \rm -rf CVS;
@@ -64,9 +64,21 @@ echo "Delete various scripts and directories"
 \rm -rf reports/reports/phpexcel
 \rm -rf conffiles
 
+echo "Must be root to generate a clean tarball - Please login"
+su -c "cd /tmp; tar czvf /tmp/glpi-$RELEASE.tar.gz glpi;"
+
 echo "Creating tarball";
-cd ..;
-tar czvf "$INIT_PWD/glpi-$RELEASE.tar.gz" glpi-$RELEASE
+#cd ..;
+#tar czvf "$INIT_PWD/glpi-$RELEASE.tar.gz" glpi-$RELEASE
+
+echo "Logout root user";
+
+#exit
+
+#cd $INIT_PWD;
+
 
 echo "Deleting temp directory";
 \rm -rf /tmp/glpi-$RELEASE;
+
+echo "The Tarball is in the /tmp directory";
