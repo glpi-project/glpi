@@ -390,8 +390,10 @@ if ($offsettable==0&&$offsetrow==-1){
 $result=$db->list_tables();
 $numtab=0;
 while ($t=$db->fetch_array($result)){
+	if (ereg("glpi_",$t[0])){
 	$tables[$numtab]=$t[0];
 $numtab++;
+}
 }
 
 
