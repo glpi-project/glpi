@@ -43,11 +43,9 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
 
-	checkAuthentication("normal");
-	commonHeader("Setup",$_SERVER["PHP_SELF"]);
-	echo "<center><table cellpadding=4><tr><th>".$lang["setup"][2].":</th></tr></table></center>";
-
- titleUsers();
+checkAuthentication("normal");
+commonHeader("Setup",$_SERVER["PHP_SELF"]);	
+titleUsers();
 		
 searchFormUsers();
 

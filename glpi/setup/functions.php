@@ -315,9 +315,15 @@ function dropdownUsed($table, $ID) {
 
 }
 
+
+
 function titleUsers(){
-                GLOBAL  $lang,$HTMLRel;
-                echo "<div align='center'><table border='0'><tr><td><a  class='icon_consol' href=\"users-info-form.php?new=1\"><b>Ajouter</b></a>";
+                
+		// Un titre pour la gestion des users
+		
+		GLOBAL  $lang,$HTMLRel;
+                echo "<div align='center'><table border='0'><tr><td>";
+                echo "<img src=\"".$HTMLRel."pics/users.png\" alt='".$lang["setup"][2]."' title='".$lang["setup"][2]."'></td><td><a  class='icon_consol' href=\"users-info-form.php?new=1\"><b>".$lang["setup"][2]."</b></a>";
                 echo "</td></tr></table></div>";
 }
 
@@ -343,42 +349,49 @@ function showPasswordForm($target,$ID) {
 
 }
 
-function showUserform($target,$name) {
 
+function showUserform($target,$name) {
+	
+	// Affiche un formulaire User
+	
 	GLOBAL $cfg_layout, $lang;
 	
 	$user = new User($name);
 	
 	if (empty($name)) {
-		echo "Ajouter :";
-	
+	echo "Ajouter";
+	// Partie ajout d'un user
 	// il manque un getEmpty pour les users	
-	
+	//$user->getEmpty();
 	
 	} else {
 		$user->getfromDB($name);
-		echo   "<div align='center'>".$lang["setup"][57]." : " .$user->fields["name"]."</div>";
+		
 	}		
 	
 	echo "<div align='center'>";
-		echo "<table class='tab_cadre'>";
-		echo "<tr><th>".$lang["setup"][18]."</th><th>".$lang["setup"][19]."</th>";
-		echo "<th>".$lang["setup"][13]."</th><th>".$lang["setup"][20]."</th>";
-		echo "<th>".$lang["setup"][14]."</th><th>".$lang["setup"][15]."</th>";
-		echo "<th>".$lang["setup"][16]."</th></tr>";
+		echo "<form method='post' action=\"$target\"><table class='tab_cadre'>";
+		echo   "<tr><th colspan='2'>".$lang["setup"][57]." : " .$user->fields["name"]."</th></tr>";
+		echo "<tr class='tab_bg_1'>";	
 		
-		echo "<tr class='tab_bg_1'><form method='post' action=\"$target\">";	
-		
+			echo "<td align='center'>".$lang["setup"][18]."</td>";
+			// si on est dans le cas d'un ajout , cet input ne doit plus être hiden
+			if ($name=="") {
+			 echo "<td><input  name='name' value=\"".$user->fields["name"]."\">";
+			echo "</td></tr>";
+				
+			}else{
 			echo "<td align='center'><b>".$user->fields["name"]."</b>";
+			 echo "<input type='hidden' name='name' value=\"".$user->fields["name"]."\">";
+			echo "</td></tr>";
+			}
 			
-                        echo "<input type='hidden' name='name' value=\"".$user->fields["name"]."\">";
-			echo "</td>";
-			echo "<td><input type='password' name='password' value=\"".$user->fields["password"]."\" size='6'></td>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value=\"".$user->fields["password"]."\" size='20'></td></tr>";
 			
-			echo "<td><input name='realname' size='10' value=\"".$user->fields["realname"]."\"></td>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td><input name='realname' size='20' value=\"".$user->fields["realname"]."\"></td></tr>";
 
-			echo "<td>";
-			echo "<select name='type'>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][20]."</td><td>";
+			echo "<select name='type' >";
 			echo "<option value='admin'";
 				if ($user->fields["type"]=="admin") { echo " selected"; }
 			echo ">Admin";
@@ -389,53 +402,57 @@ function showUserform($target,$name) {
 				if ($user->fields["type"]=="post-only") { echo " selected"; }
 			echo ">Post Only";
 			echo "</select>";
-			echo "</td>";	
-			echo "<td><input name='email' size='12' value=\"".$user->fields["email"]."\"></td>";
-			echo "<td><input name='phone' size='12' value=\"".$user->fields["phone"]."\"></td>";
-			echo "<td>";
+			echo "</td></tr>";	
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td><input name='email' size='20' value=\"".$user->fields["email"]."\"></td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td><input name='phone' size='20' value=\"".$user->fields["phone"]."\"></td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
 				dropdownValue("glpi_dropdown_locations", "location", $user->fields["location"]);
 			echo "</td></tr>";
-			echo "<tr><th colspan='7'>".$lang["setup"][58]."</th>";
-		echo "</tr>";
+			
+		
 			
 			if (can_assign_job($_SESSION["glpiname"]))
 	{
-			echo "<tr>";
-			echo "<td align='center' colspan='3'><strong>".$lang["setup"][60]."</strong><input type='radio' value='no' name='can_assign_job' ";
+			echo "<tr class='tab_bg_1'>";
+			echo "<td align='center' >".$lang["setup"][58]."</td>
+			
+			<td align='center' ><p><strong>".$lang["setup"][60]."</strong><input type='radio' value='no' name='can_assign_job' ";
 			if ($user->fields["can_assign_job"] == 'no') echo "checked ";
-      echo ">";
-      echo "<td align='center' colspan='4'><strong>".$lang["setup"][61]."</strong><input type='radio' value='yes' name='can_assign_job' ";
+      echo "></p>";
+      echo "<p><strong>".$lang["setup"][61]."</strong><input type='radio' value='yes' name='can_assign_job' ";
 			if ($user->fields["can_assign_job"] == 'yes') echo "checked";
-      echo ">";
+      echo "></p>";
 			echo "</td></tr>";
 		}	
 			if ($name=="") {
 
-		echo "<tr>";
-		echo "<td class='tab_bg_2' valign='top' colspan='7'>";
+		echo "<tr >";
+		echo "<td class='tab_bg_2' valign='top' colspan='2'>";
 		echo "<center><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></center>";
 		echo "</td>";
-		echo "</form></tr>";
+		echo "</tr>";
 
-		echo "</table></center>";
+		
 
 	} else {
 
 		echo "<tr>";
-		echo "<td class='tab_bg_2' valign='top' colspan='4'>";
+		echo "<td class='tab_bg_2' valign='top' >";
 		
-		echo "<center><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' class='submit'></center>";
-		echo "</td></form>\n\n";
-		echo "<form action=\"$target\" method='post'>\n";
-		echo "<td class='tab_bg_2' valign='top' colspan='3'>\n";
-		
-		echo "<center><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' class='submit'></center>";
+		echo "<center><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' ></center>";
 		echo "</td>";
-		echo "</form></tr>";
+		echo "<td class='tab_bg_2' valign='top' >\n";
+		
+		echo "<center><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' ></center>";
+		echo "</td>";
+		echo "</tr>";
 
-		echo "</table></center>";
+		
 			
 			}
+
+echo "</table></form></div>";
+
 }
 
 
@@ -445,12 +462,12 @@ function searchFormUsers() {
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
 
-	$option["name"]				= "nom";
-	$option["realname"]			= "realname";
-	$option["type"]			= "type";
-	$option["email"]			= "email";
-	$option["phone"]		= "tel";
-	$option["location"]			= "lieu";
+	$option["name"]				= $lang["setup"][18];
+	$option["realname"]			= $lang["setup"][13];
+	$option["type"]			= $lang["setup"][20];
+	$option["email"]			= $lang["setup"][14];
+	$option["phone"]		= $lang["setup"][15];
+	$option["location"]			= $lang["setup"][3];
 	
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/setup/users-search.php\">";
@@ -530,7 +547,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=name&order=ASC&start=$start\">";
-			echo "name</a></th>";
+			echo $lang["setup"][12]."</a></th>";
 			
 			// realname		
 			echo "<th>";
@@ -538,7 +555,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=realname&order=ASC&start=$start\">";
-			echo"realname</a></th>";
+			echo $lang["setup"][13]."</a></th>";
 
 			// type
 			echo "<th>";
@@ -546,7 +563,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=type&order=ASC&start=$start\">";
-			echo "type</a></th>";			
+			echo $lang["setup"][17]."</a></th>";			
 			
 			// email
 			echo "<th>";
@@ -554,7 +571,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=email&order=ASC&start=$start\">";
-			echo "email</a></th>";
+			echo $lang["setup"][14]."</a></th>";
 
 						
 			// Phone
@@ -563,7 +580,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=phone&order=ASC&start=$start\">";
-			echo "phone</a></th>";
+			echo $lang["setup"][15]."</a></th>";
 
 			
 						
@@ -573,7 +590,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=location&order=ASC&start=$start\">";
-			echo "location</a></th></tr>";
+			echo $lang["setup"][16]."</a></th></tr>";
 
 
 
@@ -606,7 +623,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<center><b>pas de users</b></center>";
+			echo "<div align='center'><b>".$lang["setup"][66]."</b></div>";
 			echo "<hr noshade>";
 			
 		}
