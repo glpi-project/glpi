@@ -42,7 +42,7 @@ function titleSoftware(){
          GLOBAL  $lang,$HTMLRel;
          
          echo "<div align='center'><table border='0'><tr><td>";
-         echo "<img src=\"".$HTMLRel."pics/logiciels.png\" alt='".$lang["software"][0]."' title='".$lang["software"][0]."'></td><td><a  class='icon_consol' href=\"software-info-form.php\"><strong>".$lang["software"][0]."</strong></a>";
+         echo "<img src=\"".$HTMLRel."pics/logiciels.png\" alt='".$lang["software"][0]."' title='".$lang["software"][0]."'></td><td><a  class='icon_consol' href=\"software-add-select.php\"><strong>".$lang["software"][0]."</strong></a>";
          echo "</td></tr></table></div>";
 }
 
@@ -167,7 +167,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 	$query .= "LEFT JOIN glpi_dropdown_os on glpi_software.platform=glpi_dropdown_os.ID ";
 	$query.= " LEFT JOIN glpi_dropdown_locations on glpi_software.location=glpi_dropdown_locations.ID ";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = glpi_software.FK_glpi_enterprise ) ";
-	$query.= " WHERE $where AND glpi_software.deleted='$deleted' ORDER BY $sort $order";
+	$query.= " WHERE $where AND glpi_software.deleted='$deleted'  AND glpi_software.is_template = '0' ORDER BY $sort $order";
 //	echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
@@ -263,24 +263,56 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 
 
-function showSoftwareForm ($target,$ID,$search_software="") {
+function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 	// Show Software or blank form
 	
 	GLOBAL $cfg_layout,$cfg_install,$lang;
-
+	
+	
 	$sw = new Software;
 
-	echo "<div align='center'><form method='post' action=\"$target\">";
-	echo "<table class='tab_cadre'>";
-	echo "<tr><th colspan='3'><strong>";
-	if (!$ID) {
-		echo $lang["software"][0].":";
-		$sw->getEmpty();
+	$sw_spotted = false;
+
+	if(empty($ID) && $withtemplate == 1) {
+		if($sw->getEmpty()) $sw_spotted = true;
 	} else {
-		$sw->getfromDB($ID);
-		echo $lang["software"][10]." ID $ID:";
-	}		
-	echo "</strong></th></tr>";
+		if($sw->getfromDB($ID)) $sw_spotted = true;
+	}
+
+	if($sw_spotted) {
+		if(!empty($withtemplate) && $withtemplate == 2) {
+			$template = "newcomp";
+			$datestring = $lang["computers"][14].": ";
+			$date = date("Y-m-d H:i:s");
+		} elseif(!empty($withtemplate) && $withtemplate == 1) { 
+			$template = "newtemplate";
+			$datestring = $lang["computers"][14].": ";
+			$date = date("Y-m-d H:i:s");
+		} else {
+			$datestring = $lang["computers"][11]." : ";
+			$date = $sw->fields["date_mod"];
+			$template = false;
+		}
+
+
+	echo "<div align='center'><form method='post' action=\"$target\">";
+		if(strcmp($template,"newtemplate") === 0) {
+			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
+		}
+
+	echo "<table class='tab_cadre'>";
+
+		echo "<tr><th align='center' >";
+		if(!$template) {
+			echo $lang["software"][41].": ".$sw->fields["ID"];
+		}elseif (strcmp($template,"newcomp") === 0) {
+			echo $lang["software"][42].": ".$sw->fields["tplname"];
+		}elseif (strcmp($template,"newtemplate") === 0) {
+			echo $lang["common"][6]."&nbsp;: <input type='text' name='tplname' value=\"".$sw->fields["tplname"]."\" size='20'>";
+		}
+		
+		echo "</th><th  colspan='2' align='center'>".$datestring.$date;
+		echo "</th></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][2].":		</td>";
 	echo "<td colspan='2'><input type='text' name='name' value=\"".$sw->fields["name"]."\" size='25'></td>";
@@ -307,9 +339,11 @@ function showSoftwareForm ($target,$ID,$search_software="") {
 	echo "<select name='is_update'><option value='Y' ".($ID&&$sw->fields['is_update']=='Y'?"selected":"").">".$lang['choice'][0]."</option><option value='N' ".(!$ID||$sw->fields['is_update']=='N'?"selected":"").">".$lang['choice'][1]."</option></select>";
 	echo "&nbsp;".$lang["pager"][2]."&nbsp;";
 	dropdownValueSearch("glpi_software","update_software",$sw->fields["update_software"],$search_software);
+/*	if (empty($withtemplate)){
         echo "<input type='text' size='10'  name='search_software' value='$search_software'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
-
+		echo "<input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
+		}
+*/
 	echo "</td></tr>";
 
 
@@ -318,19 +352,26 @@ function showSoftwareForm ($target,$ID,$search_software="") {
 	echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$sw->fields["comments"]."</textarea>";
 	echo "</td></tr>";
 	
-	if (!$ID) {
+	echo "<tr>";
 
-		echo "<tr>";
-		echo "<td class='tab_bg_2' valign='top' colspan='3'>";
-		echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
-		echo "</td>";
-		echo "</tr>";
+	if ($template) {
 
-		echo "</table></form></div>";
+			if (empty($ID)||$withtemplate==2){
+			echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
+			echo "<input type='hidden' name='ID' value=$ID>";
+			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+			echo "</td>\n";
+			} else {
+			echo "<td class='tab_bg_2' align='center' colspan='3'>\n";
+			echo "<input type='hidden' name='ID' value=$ID>";
+			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+			echo "</td>\n";
+			}
+
 
 	} else {
 
-		echo "<tr>";
+
                 echo "<td class='tab_bg_2'></td>";
                 echo "<td class='tab_bg_2' valign='top'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
@@ -349,14 +390,20 @@ function showSoftwareForm ($target,$ID,$search_software="") {
 		}
 		echo "</div>";
 		echo "</td>";
+		
+	}
 		echo "</tr>";
 
 		echo "</table></form></div>";
-		
-		showLicenses($ID);
-		showLicensesAdd($ID);
-		
+
+		return true;	
 	}
+	else {
+                echo "<div align='center'><b>".$lang["printers"][17]."</b></div>";
+                echo "<hr noshade>";
+                searchFormSoftware();
+                return false;
+        }
 
 }
 
@@ -370,9 +417,13 @@ function updateSoftware($input) {
 	$null=array_pop($input);
 
 	if ($input['is_update']=='N') $input['update_software']=-1;
+
+	// set new date and make sure it gets updated
+	$updates[0]= "date_mod";
+	$sw->fields["date_mod"] = date("Y-m-d H:i:s");
 	
 	// Fill the update-array with changes
-	$x=0;
+	$x=1;
 	foreach ($input as $key => $val) {
 		if (empty($sw->fields[$key]) || $sw->fields[$key] != $input[$key]) {
 			$sw->fields[$key] = $input[$key];
@@ -387,13 +438,20 @@ function updateSoftware($input) {
 }
 
 function addSoftware($input) {
-	
+	$db=new DB;
+		
 	$sw = new Software;
+
+	$oldID=$input["ID"];
 
 	// dump status
 	$null = array_pop($input);
+	$null = array_pop($input);
 
 	if ($input['is_update']=='N') $input['update_software']=-1;
+
+ 	// set new date.
+ 	$sw->fields["date_mod"] = date("Y-m-d H:i:s");
 
 	// fill array for update
 	foreach ($input as $key => $val) {
@@ -402,11 +460,28 @@ function addSoftware($input) {
 		}
 	}
 
-	if ($sw->addToDB()) {
-		return true;
-	} else {
-		return false;
+	$sw->addToDB();
+	$newID=$sw->getInsertElementID();
+	
+	// ADD Infocoms
+	$ic= new Infocom();
+	if ($ic->getFromDB(SOFTWARE_TYPE,$oldID)){
+		$ic->fields["FK_device"]=$newID;
+		unset ($ic->fields["ID"]);
+		$ic->addToDB();
 	}
+	
+
+	// ADD Contract				
+	$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='$oldID' AND device_type='".SOFTWARE_TYPE."';";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		
+		while ($data=$db->fetch_array($result))
+			addDeviceContract($data["FK_contract"],SOFTWARE_TYPE,$newID);
+	}
+
+	
 }
 
 function restoreSoftware($input) {
@@ -418,7 +493,6 @@ function restoreSoftware($input) {
 
 function deleteSoftware($input,$force=0) {
 	// Delete Software
-	
 	$sw = new Software;
 	$sw->deleteFromDB($input["ID"],$force);
 	
