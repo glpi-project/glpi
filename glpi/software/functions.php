@@ -425,7 +425,7 @@ function showLicensesAdd($ID) {
 	
 	GLOBAL $cfg_layout,$cfg_install,$lang;
 	
-	echo "<div align='center'><table class='tab_cadre' width='70%' cellpadding='2'>";
+	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='50%' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><b>";
 	echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=add&sID=$ID\">";
 	echo $lang["software"][12];
@@ -435,7 +435,7 @@ function showLicensesAdd($ID) {
 
 function showLicenses ($sID) {
 
-	GLOBAL $cfg_layout,$cfg_install, $lang;
+	GLOBAL $cfg_layout,$cfg_install, $HTMLRel, $lang;
 	
 	$db = new DB;
 
@@ -453,7 +453,7 @@ function showLicenses ($sID) {
 			$pb="";
 			if (($nb_licences-$nb_updates-$installed)<0&&!isFreeSoftware($sID)) $pb="class='tab_bg_1_2'";
 			
-			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre' width='70%'>";
+			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre' width='90%'>";
 			echo "<tr><th colspan='5' $pb >";
 			echo $nb_licences;
 			echo "&nbsp;".$lang["software"][13]."&nbsp;-&nbsp;$nb_updates&nbsp;".$lang["software"][36]."&nbsp;-&nbsp;$installed&nbsp;".$lang["software"][19]."</th>";
@@ -535,7 +535,9 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		echo "<td>&nbsp;</td><td>&nbsp;</td>";
 		
 		echo "<td align='center'>";
-		/// Logiciels installés :
+		
+		
+		// Logiciels installés :
 		echo "<table width='100%'>";
 	
 		// Restant	
@@ -560,10 +562,15 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 				if (!empty($ID)){
 				echo "</td><td align='center'>";
 				echo "<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?delete=delete&ID=$ID\">";
-				echo $lang["buttons"][6];
+				
+				echo "<img src=\"".$HTMLRel."pics/delete.png\" alt='".$lang["buttons"][6]."' title='".$lang["buttons"][6]."'>";
+				
+				
 				echo "</a></b>";
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=update&lID=$ID&sID=$sID\">";
-				echo $lang["buttons"][14];
+				
+				echo "<img src=\"".$HTMLRel."pics/edit.png\" alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'>";
+				
 				echo "</a></b>";
 				}
 				
@@ -574,10 +581,12 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		$query_new="SELECT glpi_licenses.ID as ID FROM glpi_licenses WHERE $SEARCH_LICENCE";		
 		if ($result_new = $db->query($query_new)) {			
 		$IDdup=$db->result($result_new,0,0);
-		echo "</td><td align='center'>";
+		echo "</td><td align='center' >";
 		
 		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?duplicate=duplicate&lID=$IDdup\">";
-		echo $lang["buttons"][8];
+		
+		echo "<img src=\"".$HTMLRel."pics/add.png\" alt='".$lang["buttons"][8]."' title='".$lang["buttons"][8]."'>";
+		
 		echo "</a></b>";
 		
 		}
@@ -593,10 +602,13 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			echo $data_inst["cname"];
 			echo "</b></a></td><td align='center'>";
 			echo "<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&ID=".$data_inst["ID"]."&cID=".$data_inst["cID"]."\">";
-			echo $lang["buttons"][5];
+			
+			echo "<img src=\"".$HTMLRel."pics/remove.png\" alt='".$lang["buttons"][5]."' title='".$lang["buttons"][5]."'>";
+			
 			echo "</b></a>";
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=update&lID=".$data_inst["lID"]."&sID=$sID\">";
-				echo $lang["buttons"][14];
+				echo "<img src=\"".$HTMLRel."pics/edit.png\" alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'>";
+				
 				echo "</a></b>";
 			
 			echo "</td></tr>";
