@@ -39,8 +39,9 @@ $lang["common"][2] = "ID";
 $lang["common"][3] = "Supprimés";
 $lang["common"][4] = "Web";
 $lang["common"][5] = "Fabriquant";
-$lang["common"][6]	= "Nom du modèle";
+$lang["common"][6]	= "Nom du mod&egrave;le";
 $lang["common"][7]  = "Choisissez un mod&egrave;le";
+$lang["common"][8]  = "Mod&egrave;les";
 
 //Login
 
