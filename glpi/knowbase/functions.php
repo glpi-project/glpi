@@ -64,9 +64,9 @@ function titleknowbase(){
 
          echo "<div align='center'><table border='0'><tr><td>";
          echo "<img src=\"".$HTMLRel."pics/knowbase.png\" alt='".$lang["knowbase"][2]."' title='".$lang["knowbase"][2]."'></td><td>";
-         if (countElementsInTable("glpi_dropdown_kbcategories"))
+         //if (countElementsInTable("glpi_dropdown_kbcategories"))
          echo "<a  class='icon_consol' href=\"knowbase-info-form.php?ID=new\"><b>".$lang["knowbase"][2]."</b></a>";
-         else echo "<span class='icon_consol'>".$lang["knowbase"][2]."</span>";
+         //else echo "<span class='icon_consol'>".$lang["knowbase"][2]."</span>";
          echo "</td></tr>";
 		echo "</table></div>";
 	
@@ -100,7 +100,7 @@ function showKbItemForm($target,$ID){
 	echo "<fieldset>";
 	echo "<legend>".$lang["knowbase"][13]."</legend>";
 	echo "<p style='text-align:center'>".$lang["knowbase"][6];
-	kbcategoryList($ki->fields["categoryID"],"no");
+	kbcategoryList($ki->fields["categoryID"],"yes");
 	echo "</p>";
 	echo "</fieldset>";
 		
@@ -258,7 +258,6 @@ function showKbCategoriesall()
 	echo "<div align='center'><table border='0' class='tab_cadre' >";
 	echo "<tr><th align='center' width='700px'>".$lang["knowbase"][0]."</th></tr><tr><td>";	
 	
-	
 	showKbCategories();
 	
 	echo "</td></tr></table></div>";
@@ -278,8 +277,9 @@ function showKbCategories($parentID=0)
 
 	$db=new DB;
 	
+	if ($parentID==0) showKbItemAll($parentID);
 	
-	
+	/// Show category
 	if ($result=$db->query($query)){
 					
 		if ($db->numrows($result)>0){
@@ -449,15 +449,16 @@ function getFAQCategories()
 
 	$db=new DB;
 	
+	$catNumbers = array();
+
 	if ($result=$db->query($query)){
 			if ($db->numrows($result)>0){
 	
 	
-			$catNumbers = array();
 				while ($row=$db->fetch_array($result)){
 	
 				getFAQParentCategories($row["categoryID"], $catNumbers);
-				#	$catNumbers[] = $result["categoryID"];
+				//	$catNumbers[] = $result["categoryID"];
 				}
 			}
 
@@ -516,6 +517,9 @@ function faqShowCategories($parentID=0)
 	$query = "select * from glpi_dropdown_kbcategories where (parentID = $parentID) order by name asc";
 
 	$db=new DB;
+
+	if ($parentID==0) faqShowItems($parentID);
+
 	if ($result=$db->query($query)){
 			
 	
