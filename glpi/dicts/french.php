@@ -127,6 +127,10 @@ $lang["connect"][15]	= "Sur un écran qui";
 $lang["connect"][16]	= "Aucun élément trouvé";
 $lang["connect"][17]	= "Mise à jour automatique de la prise réseau qui n'&eacute;tait pas renseignée";
 $lang["connect"][18]	= "Attention !! Les prises réseaux des deux mat&eacute;riels ne correspondent pas.";
+$lang["connect"][19]	= "Mise à jour automatique de l'adresse IP qui n'&eacute;tait pas renseignée";
+$lang["connect"][20]	= "Attention !! Les adresses IP des deux mat&eacute;riels ne correspondent pas.";
+$lang["connect"][21]	= "Mise à jour automatique de l'adresse MAC qui n'&eacute;tait pas renseignée";
+$lang["connect"][22]	= "Attention !! Les adresses MAC des deux mat&eacute;riels ne correspondent pas.";
 
 //header menu
 
