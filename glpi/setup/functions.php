@@ -274,7 +274,7 @@ function updateDropdown($input) {
 
 
 function addDropdown($input) {
-
+	if (!empty($input["value"])){
 	$db = new DB;
 
 	if($input["tablename"] == "glpi_dropdown_netpoint") {
@@ -303,6 +303,7 @@ function addDropdown($input) {
 	} else {
 		return false;
 	}
+}
 }
 
 function deleteDropdown($input) {
