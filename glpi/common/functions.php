@@ -964,6 +964,9 @@ function dropdownValueSearch($table,$myname,$value,$search) {
 	if ($number > 0) {
 		$i = 0;		
 		while ($i < $number) {
+			if ($table=="glpi_software")
+			$output = $db->result($result, $i, "name")." ".$db->result($result, $i, "version");
+			else
 			$output = $db->result($result, $i, "name");
 			$ID = $db->result($result, $i, "ID");
 
