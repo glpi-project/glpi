@@ -39,6 +39,19 @@ This file is part of GLPI.
 include ("_relpos.php");
 // FUNCTIONS Computers
 
+function titleComputers(){
+              //titre
+              
+        GLOBAL  $lang,$HTMLRel;
+
+         echo "<div align='center'><table border='0'><tr><td><b>";
+         echo "<img src=\"".$HTMLRel."pics/computer.png\" ></td><td><a  class='icon_consol' href=\"computers-add-select.php\">".$lang["computers"][0]."</a>";
+         echo "</b></td></tr></table></div>";
+
+}
+
+
+
 function searchFormComputers() {
 	// Print Search Form
 	
@@ -69,7 +82,7 @@ function searchFormComputers() {
 	$option["date_mod"]			= $lang["computers"][11];
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
-	echo "<div align='center'><table border='0' width='90%'>";
+	echo "<div align='center'><table border='0' width='750'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
@@ -81,7 +94,7 @@ function searchFormComputers() {
 	}
 	echo "</select>&nbsp;";
 	echo $lang["search"][1];
-	echo "&nbsp;<select name=phrasetype>";
+	echo "&nbsp;<select name='phrasetype' size='1' >";
 	echo "<option value='contains'>".$lang["search"][2]."</option>";
 	echo "<option value='exact'>".$lang["search"][3]."</option>";
 	echo "</select>";
@@ -123,7 +136,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
    			$where .= mysql_field_name($fields, $i) . " LIKE '%".$contains."%'";
 		}
 		$where .= ")";
-	$field = "ID";
+	//$field = "ID";
 	}
 	else {
 		if ($phrasetype == "contains") {
@@ -246,7 +259,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 		} else {
 			echo "<div align='center'><b>".$lang["computers"][32]."</b></div>";
 			echo "<hr noshade>";
-			searchFormComputers();
+		//	searchFormComputers();
 		}
 	}
 }

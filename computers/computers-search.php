@@ -43,6 +43,10 @@ checkAuthentication("normal");
 
 commonHeader("Computers",$_SERVER["PHP_SELF"]);
 
+titleComputers();
+
+searchFormComputers();
+
 if(!isset($_GET["start"])) $_GET["start"] = 0;
 if (!isset($_GET["order"])) $_GET["order"] = "ASC";
 
@@ -55,7 +59,7 @@ if($_GET["field"]!="glo_search") {
 else {
 
 
-       	showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"all","contains",$_GET["contains"],"ID",$_GET["order"],$_GET["start"]);
+       	showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"all","contains",$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
 
 
 }

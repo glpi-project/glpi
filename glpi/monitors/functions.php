@@ -54,7 +54,7 @@ function searchFormMonitors() {
 	$option["contact"]			= $lang["monitors"][8];
 	$option["contact_num"]		= $lang["monitors"][7];
 	$option["date_mod"]			= $lang["monitors"][16];
-	
+/*
 	echo "<form method='get' action=\"".$cfg_install["root"]."/monitors/monitors-search.php\">";
 	echo "<center><table border='0' width='90%'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][5].":</b></th></tr>";
@@ -73,9 +73,9 @@ function searchFormMonitors() {
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'>";
 	echo "</td></tr></table></form></center>";
-
+ */
 	echo "<form method='get' action=\"".$cfg_install["root"]."/monitors/monitors-search.php\">";
-	echo "<center><table border='0' width='90%'>";
+	echo "<center><table border='0' width='750'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
@@ -86,11 +86,11 @@ function searchFormMonitors() {
 	}
 	echo "</select>&nbsp;";
 	echo $lang["search"][1];
-	echo "&nbsp;<select name='phrasetype'>";
+	echo "&nbsp;<select name='phrasetype' size='1'>";
 	echo "<option value='contains'>".$lang["search"][2]."</option>";
 	echo "<option value='exact'>".$lang["search"][3]."</option>";
 	echo "</select>";
-	echo "<input type='text' size='5' name=\"contains\">"; 
+	echo "<input type='text' size='12' name=\"contains\">";
 	echo "&nbsp;";
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";

@@ -48,7 +48,7 @@ function searchFormSoftware() {
 	$option["location"]			= $lang["software"][4];
 	$option["version"]			= $lang["software"][5];
 	$option["comments"]			= $lang["software"][6];
-
+/*
 	echo "<form method=get action=\"".$cfg_install["root"]."/software/software-search.php\">";
 	echo "<center><table border='0' width='90%'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][5].":</b></th></tr>";
@@ -67,9 +67,9 @@ function searchFormSoftware() {
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'>";
 	echo "</td></tr></table></form></center>";
-
+ */
 	echo "<form method=get action=\"".$cfg_install["root"]."/software/software-search.php\">";
-	echo "<center><table border='0' width='90%'>";
+	echo "<center><table border='0' width='750'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
@@ -80,20 +80,20 @@ function searchFormSoftware() {
 	}
 	echo "</select>&nbsp;";
 	echo $lang["search"][1];
-	echo "&nbsp;<select name=phrasetype>";
+	echo "&nbsp;<select name='phrasetype' size='1'>";
 	echo "<option value=contains>".$lang["search"][2]."</option>";
 	echo "<option value=exact>".$lang["search"][3]."</option>";
 	echo "</select>";
-	echo "<input type='text' size=5 name=\"contains\">"; 
+	echo "<input type='text' size='12' name=\"contains\">";
 	echo "&nbsp;";
 	echo $lang["search"][4];
-	echo "&nbsp;<select name=sort size=1>";
+	echo "&nbsp;<select name='sort' size='1'>";
 	reset($option);
 	foreach ($option as $key => $val) {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select> ";
-	echo "</td><td width=80 align='center' class='tab_bg_2'>";
+	echo "</td><td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></center></form>";
 }
