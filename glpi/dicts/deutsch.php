@@ -115,9 +115,10 @@ $lang["Menu"][9]	="E-mail Kontos";
 $lang["Menu"][10]	="Konfiguration";
 $lang["Menu"][11]	="Vorzüge";
 $lang["Menu"][12]	="Daten";
+//To be translated
+$lang["Menu"][13]	="Stats";
 
 //Données
-// a traduire ....
 $lang["backup"][0]	="Dump SQL";
 $lang["backup"][1]      ="Dump XML";
 $lang["backup"][2]      ="Die Datenbank abspeichern";
@@ -509,5 +510,31 @@ $lang["mailing"][10]="Nouveau suivi d'intervention";
 $lang["mailing"][11]="Intervention terminée le ";
 $lang["mailing"][12]="Attribution de l'intervention";
 $lang["mailing"][13]="Erreur dans la génération de l'email automatique";
+
+//Must be modified, here is the english version.
+//To be translated
+$lang["stats"][0] = "Select stats to be displayed";
+$lang["stats"][1] = "Global";
+$lang["stats"][2] = "Per technician";
+$lang["stats"][3] = "Per location";
+$lang["stats"][4] = "Per user";
+$lang["stats"][5] = "Number of interventions";
+$lang["stats"][6] = "Average resolution delay";
+$lang["stats"][7] = "Max resoltution delay";
+$lang["stats"][8] = "This Mounth";
+$lang["stats"][9] = "This year";
+$lang["stats"][10] = "Total";
+$lang["stats"][11] = "Number off resolved interventions";
+$lang["stats"][12] = "Global statistics";
+$lang["stats"][13] = "Number of attribued interventions";
+$lang["stats"][14] = "Number of resolver interventions";
+$lang["stats"][15] = "Average resolution delay";
+$lang["stats"][16] = "Technician name";
+$lang["stats"][17] = "Technician's stats";
+$lang["stats"][18] = "User's stats";
+$lang["stats"][19] = "Location stats";
+$lang["stats"][20] = "Username";
+$lang["stats"][21] = "Location";
+$lang["stats"][22] = "Numbre of asked interventions";
 
 ?>

@@ -65,6 +65,9 @@ class DBmysql {
 	function fetch_row($result) {
 		return mysql_fetch_row($result);
 	}
+	function fetch_assoc($result) {
+		return mysql_fetch_assoc($result);
+	}
 	function num_fields($result) {
 		return mysql_num_fields($result);
 	}

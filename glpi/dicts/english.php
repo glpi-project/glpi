@@ -121,6 +121,8 @@ $lang["Menu"][9]	="Mail accounts";
 $lang["Menu"][10]	="Setup";
 $lang["Menu"][11]	="Preferences";
 $lang["Menu"][12]	="Data";
+$lang["Menu"][13]	="Stats";
+
 
 //Data
 
@@ -521,4 +523,28 @@ $lang["mailing"][10]="New intervention's follow up";
 $lang["mailing"][11]="Intervention finished the ";
 $lang["mailing"][12]="Attribution of the intervention";
 $lang["mailing"][13]="Error in the automatic e-mail generation";
+
+$lang["stats"][0] = "Select stats to be displayed";
+$lang["stats"][1] = "Global";
+$lang["stats"][2] = "Per technician";
+$lang["stats"][3] = "Per location";
+$lang["stats"][4] = "Per user";
+$lang["stats"][5] = "Number of interventions";
+$lang["stats"][6] = "Average resolution delay";
+$lang["stats"][7] = "Max resoltution delay";
+$lang["stats"][8] = "This Mounth";
+$lang["stats"][9] = "This year";
+$lang["stats"][10] = "Total";
+$lang["stats"][11] = "Number off resolved interventions";
+$lang["stats"][12] = "Global statistics";
+$lang["stats"][13] = "Number of attribued interventions";
+$lang["stats"][14] = "Number of resolver interventions";
+$lang["stats"][15] = "Average resolution delay";
+$lang["stats"][16] = "Technician name";
+$lang["stats"][17] = "Technician's stats";
+$lang["stats"][18] = "User's stats";
+$lang["stats"][19] = "Location stats";
+$lang["stats"][20] = "Username";
+$lang["stats"][21] = "Location";
+$lang["stats"][22] = "Numbre of asked interventions";
 ?>
