@@ -150,15 +150,9 @@ class CartridgeType {
 			$query = "DELETE from glpi_cartridges_type WHERE ID = '$ID'";
 			if ($result = $db->query($query)) {
 				// Delete all cartridge assoc
-				$query2 = "SELECT ID FROM glpi_cartridges_assoc WHERE (FK_glpi_cartridges_type = \"$ID\")";
+				$query2 = "DELETE FROM glpi_cartridges_assoc WHERE (FK_glpi_cartridges_type = \"$ID\")";
 	
 				if ($result2 = $db->query($query2)) {
-					$i=0;
-					while ($i < $db->numrows($result2)) {
-						$aID = $db->result($result2,$i,"ID");
-						deleteCompatibleType($aID);
-						$i++;
-					}			
 					return true;
 				}
 			} else {
@@ -255,99 +249,6 @@ class Cartridge {
 		$db = new DB;
 
 		$query = "DELETE from glpi_cartridges WHERE ID = '$ID'";
-		if ($result = $db->query($query)) {
-				return true;
-		} else {
-			return false;
-		}
-	}
-
-}
-
-class CartridgeTypeAssoc {
-
-
-	var $fields	= array();
-	var $updates	= array();
-	
-	function getfromDB ($ID) {
-
-		// Make new database object and fill variables
-		$db = new DB;
-		$query = "SELECT * FROM glpi_cartridges_assoc WHERE (ID = '$ID')";
-		if ($result = $db->query($query)) {
-			$data = $db->fetch_array($result);
-			foreach ($data as $key => $val) {
-				$this->fields[$key] = $val;
-			}
-			return true;
-
-		} else {
-			return false;
-		}
-	}
-
-
-	function updateInDB($updates)  {
-
-		$db = new DB;
-
-		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE glpi_cartridges_assoc SET ";
-			$query .= $updates[$i];
-			$query .= "='";
-			$query .= $this->fields[$updates[$i]];
-			$query .= "' WHERE ID='";
-			$query .= $this->fields["ID"];	
-			$query .= "'";
-			
-			$result=$db->query($query);
-		}
-		
-	}
-	
-	function addToDB() {
-		
-		$db = new DB;
-
-		// Build query
-		$query = "INSERT INTO glpi_cartridges_assoc (";
-		$i=0;
-		foreach ($this->fields as $key => $val) 
-		if (!is_integer($key)){
-			$fields[$i] = $key;
-			$values[$i] = $val;
-			$i++;
-		}		
-		for ($i=0; $i < count($fields); $i++) {
-			$query .= $fields[$i];
-			if ($i!=count($fields)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ") VALUES (";
-		for ($i=0; $i < count($values); $i++) {
-			$query .= "'".$values[$i]."'";
-			if ($i!=count($values)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ")";
-
-		if ($result=$db->query($query)) {
-			return true;
-		} else {
-			return false;
-		}
-
-	}
-
-
-	function deleteFromDB($ID) {
-
-		$db = new DB;
-
-		$query = "DELETE from glpi_cartridges_assoc WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
 				return true;
 		} else {
