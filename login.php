@@ -55,26 +55,54 @@ $login_ok=0;
 
 //Do login and checks
 //echo "test";
+$update_list = array();
+$user_present=1;
 $identificat = new Identification($_POST['login_name']);
-$auth_succeded = $identificat->connection_imap($cfg_login['imap']['auth_server'],$_POST['login_name'],$_POST['login_password']);
+
+// First try to connect via le DATABASE
+$auth_succeded = $identificat->connection_db($_POST['login_name'],$_POST['login_password']);
+if ($auth_succeded) $user_present = $identificat->user->getFromDB($_POST['login_name']);
+
+// Second try IMAP/POP
+if (!$auth_succeded) {
+	$auth_succeded = $identificat->connection_imap($cfg_login['imap']['auth_server'],$_POST['login_name'],$_POST['login_password']);
+	if ($auth_succeded) {
+		$user_present = $identificat->user->getFromDB($_POST['login_name']);
+		if ($identificat->user->getFromIMAP($cfg_login['imap']['host'],$_POST['login_name'])) {
+			$update_list = array('email');
+		}
+	}
+}
+
+// Third try LDAP in depth search
 // we check all the auth sources in turn...
 // First, we get the dn and then, we try to log in
 if (!$auth_succeded) {
    $found_dn=false;
    $auth_succeded=0;
    $found_dn=$identificat->ldap_get_dn($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$_POST['login_name'],$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass']);
-   if ($found_dn!=false&&!empty($_POST['login_password']))
-   { 
-     $auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$found_dn,$_POST['login_name'],$_POST['login_password'],$cfg_login['ldap']['condition']);
+   if ($found_dn!=false&&!empty($_POST['login_password'])){ 
+	    $auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$found_dn,$_POST['login_name'],$_POST['login_password'],$cfg_login['ldap']['condition']);
+		if ($auth_succeded) {
+			$user_present = $identificat->user->getFromDB($_POST['login_name']);
+			$update_list = array();
+			if ($identificat->user->getFromLDAP($cfg_login['ldap']['host'],$found_dn,$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass'],$cfg_login['ldap']['fields'],$_POST['login_name'])) {
+				$update_list = array_keys($cfg_login['ldap']['fields']);
+			}
+		}
    }
 }
+// Fourth try for flat LDAP 
 // LDAP : Try now with the first base_dn
 if (!$auth_succeded) {
 $auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$_POST['login_name'],$_POST['login_password'],$cfg_login['ldap']['condition']);
-}
-
-if (!$auth_succeded) {
-	$auth_succeded = $identificat->connection_db($_POST['login_name'],$_POST['login_password']);
+		if ($auth_succeded) {
+			$user_present = $identificat->user->getFromDB($_POST['login_name']);
+			$update_list = array();
+			if ($identificat->user->getFromLDAP($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass'],$cfg_login['ldap']['fields'],$_POST['login_name'])) {
+				$update_list = array_keys($cfg_login['ldap']['fields']);
+			}
+		}
 }
 
 // we have done at least a good login? No, we exit.
@@ -87,21 +115,10 @@ if ( ! $auth_succeded ) {
 	exit;
 }
 
-// now we have to load data for that user, we try all the data source in turn.
-// The constructor for Identification() have just filed the data with correct
-// stub
-$user_present = $identificat->user->getFromDB($_POST['login_name']);
-$update_list = array();
-if ($identificat->user->getFromIMAP($cfg_login['imap']['host'],$_POST['login_name'])) {
-	$update_list = array('email');
-}
-if ($identificat->user->getFromLDAP($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass'],$cfg_login['ldap']['fields'],$_POST['login_name'])) {
-	$update_list = array_keys($cfg_login['ldap']['fields']);
-}
-
 // Ok, we have gathered sufficient data, if the first return false the user
 // are not present on the DB, so we add it.
 // if not, we update it.
+if ($auth_succeded)
 if (!$user_present) {
 	$identificat->user->addToDB();
 } else if (!empty($update_list)) {
