@@ -45,7 +45,7 @@ sub do_file{
 		} 
 
 		if ($status =~ m/END/||$status !~ m/BEGIN/){
-		print $_;
+		print TMP_FILE $_;
 		} 
 
 		if ($status !~ m/END/){
@@ -55,7 +55,7 @@ sub do_file{
 				open(HEADER_FILE,"HEADER");
 				@headers=<HEADER_FILE>;
 				foreach (@headers){
-					print $_;
+					print TMP_FILE $_;
 				}
 				close(HEADER_FILE) ;
 				
