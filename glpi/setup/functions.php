@@ -1267,6 +1267,7 @@ function showLangSelect($target) {
 	echo "<tr><th colspan='2'>".$lang["setup"][41].":</th></tr>";
 	echo "<tr><td width='100%' align='center' class='tab_bg_1'>";
 	echo "<select name='language'>";
+	/*
 	$i=0;
 	while ($i < count($cfg_install["languages"])) {
 		echo "<option value=\"".$cfg_install["languages"][$i]."\"";
@@ -1275,6 +1276,13 @@ function showLangSelect($target) {
 		}
 		echo ">".$cfg_install["languages"][$i];
 		$i++;
+	}
+	*/
+
+	while (list($cle)=each($cfg_install["languages"])){
+		echo "<option value=\"".$cle."\"";
+			if ($l==$cle) { echo " selected"; }
+		echo ">".$cfg_install["languages"][$cle][0];
 	}
 	echo "</select>";
 	echo "</td>";
@@ -1323,10 +1331,15 @@ function showFormConfigGen($target){
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][101]." </td><td> <input type=\"text\" name=\"root_doc\" value=\"". $db->result($result,0,"root_doc") ."\"></td></tr>";
 	$default_language=$db->result($result,0,"default_language");
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][113]." </td><td><select name=\"default_language\">";
-	foreach ($cfg_install["languages"] as $key => $val){
-	echo "<option value=\"$val\"";  if($default_language==$val){ echo " selected";} echo ">".$val." </option>";
-		
-	}
+	//foreach ($cfg_install["languages"] as $key => $val){
+	//echo "<option value=\"$val\"";  if($default_language==$val){ echo " selected";} echo ">".$val." </option>";
+	//}
+		while (list($val)=each($cfg_install["languages"])){
+		echo "<option value=\"".$val."\"";
+			if($default_language==$val){ echo " selected";}
+		echo ">".$cfg_install["languages"][$val][0];
+		}
+	
 	echo "</select></td></tr>";
 	
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][102]." </td><td><select name=\"event_loglevel\">";

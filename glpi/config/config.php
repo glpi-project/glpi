@@ -50,11 +50,23 @@ else
 
 require_once ($phproot ."/glpi/config/config_db.php");
 
-//Statics config options
-// options d'installation statiques
+
+// *************************** Statics config options **********************
+// ********************options d'installation statiques*********************
+// ***********************************************************************
+
 // dicts
 // dictionnaires
-$cfg_install["languages"] = array("english","deutsch","french","italian");
+
+
+$cfg_install["languages"]=array("english"=>array("English","english.php","english.html","hd-english.html"),
+				"deutsch"=>array("Deutsch","deutsch.php","deutsch.html","hd-deutsch.html"),
+				"french"=>array("Français","french.php","french.html","hd-french.html"),
+				"italian"=>array("Italiano","italian.php","italian.html","hd-italian.html"));
+
+
+
+
 
 
 // *************************** Eléments optionnels  **********************

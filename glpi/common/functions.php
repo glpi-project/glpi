@@ -437,7 +437,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 
 	echo "<td  align='center' valign='top' width='100px'>";
 	//help
-	echo "<a class='icon_nav_move'  href='#' onClick=\"window.open('".$HTMLRel."help/".$_SESSION["glpilanguage"].".html','helpdesk','width=700,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a>";
+	echo "<a class='icon_nav_move'  href='#' onClick=\"window.open('".$HTMLRel."help/".$cfg_install["languages"][$_SESSION["glpilanguage"]][2]."','helpdesk','width=700,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a>";
 	echo "<p>".date("H").":".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i></p>";
 	echo "<a  class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img  src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a>";
@@ -542,7 +542,7 @@ function helpHeader($title,$url,$name) {
 	// date, help and a logout-link.
 	echo "<td align='right' width='100'><div align='right'>";
 	// HELP	
-	echo "<a class='icon_nav_move'  href='#' onClick=\"window.open('".$HTMLRel."help/hd-".$_SESSION["glpilanguage"].".html','helpdesk','width=400,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a><br><br>";
+	echo "<a class='icon_nav_move'  href='#' onClick=\"window.open('".$HTMLRel."help/".$cfg_install["languages"][$_SESSION["glpilanguage"]][1]."','helpdesk','width=400,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a><br><br>";
 				
 	echo date("H").":".date("i")."<p><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i></p><a class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img class='icon_nav' src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
@@ -1036,10 +1036,13 @@ function loadLanguage() {
 
 	if(empty($_SESSION["glpilanguage"]))
 	{	
-		$file= "/glpi/dicts/".$cfg_install["default_language"].".php";
+		$file= "/glpi/dicts/".$cfg_install["languages"][$cfg_install["default_language"]][1];
 	}
 	else {
-		$file = "/glpi/dicts/".$_SESSION["glpilanguage"].".php";
+		//$file = "/glpi/dicts/".$_SESSION["glpilanguage"].".php";
+	
+		$file = "/glpi/dicts/".$cfg_install["languages"][$_SESSION["glpilanguage"]][1];
+	
 	}
 		include ("_relpos.php");
 		include ($phproot . $file);
