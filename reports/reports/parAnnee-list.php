@@ -58,13 +58,15 @@ if(isset($_POST["item_type"][0])&&$_POST["item_type"][0] != 'tous')
 		foreach($_POST["item_type"] as $key => $val){
 		$query = "select * from ".$val;
 		
-			if($_POST["annee"] != 'toutes')
-			{
-				$query.= " where YEAR(".$_POST["date_type"].") = '".$_POST["annee"]."'";
-			}
-			
+		if(isset($_POST["annee"][0])&&$_POST["annee"][0] != 'toutes')
+		{
+			$query.= " where ( '1'='0' ";
+				foreach ($_POST["annee"] as $key2 => $val2)
+				$query.= " OR YEAR(".$_POST["date_type"].") = '".$val2."'";
+				$query.=" ) ";
+		}
+
 		$query.= " order by ".$_POST["tri_par"]." asc";
-		
 		report_perso($val,$query);
 		}
 }
@@ -74,14 +76,17 @@ else
 		for($i=0;$i<4;$i++)
 		{
 			$query[$i] = "select * from ".$item_db_name[$i]." ";
-		
-			if($_POST["annee"] != 'toutes')
-			{
-				$query[$i].= " where YEAR(".$_POST["date_type"].") = '".$_POST["annee"]."'";
-			}
+
+
+		if(isset($_POST["annee"][0])&&$_POST["annee"][0] != 'toutes')
+		{
+			$query[$i].= " where ( '1'='0' ";
+				foreach ($_POST["annee"] as $key2 => $val2)
+				$query[$i].= " OR YEAR(".$_POST["date_type"].") = '".$val2."'";
+				$query[$i].=" ) ";
+		}
 		
 			$query[$i].=" order by ".$_POST["tri_par"]." asc";
-
 			report_perso($item_db_name[$i],$query[$i]);
 		 }		
 }

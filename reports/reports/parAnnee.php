@@ -72,7 +72,7 @@ echo "<option value='date_fin_garantie'>Date de fin de garantie</option>";
 echo "</select> &nbsp;&nbsp; <br><br>";
 		   
 echo "<b>Pour l'année :</b>&nbsp;&nbsp; ";
-echo " <select name='annee'>";
+echo " <select name='annee[]' multiple>";
 echo " <option value='toutes' selected>Toutes</option>";
   $y = date("Y");
   for ($i=$y-5;$i<$y+5;$i++)

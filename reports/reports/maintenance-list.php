@@ -61,9 +61,12 @@ if(isset($_POST["item_type"][0])&&$_POST["item_type"][0] != 'tous')
 	foreach($_POST["item_type"] as $key => $val){
 		$query = "select * from ".$val."  where maintenance = 1 ";
 		
-		if($_POST["annee_achat"] != 'toutes')
+		if(isset($_POST["annee_achat"][0])&&$_POST["annee_achat"][0] != 'toutes')
 		{
-			$query.= "  and YEAR(achat_date) = '".$_POST["annee_achat"]."' ";
+				$query.=" AND ( '1'='0' ";
+				foreach ($_POST["annee_achat"] as $key2 => $val2)
+				$query.= " OR YEAR(achat_date) = '".$val2."'";
+				$query.=" ) ";
 		}
 		$query.= " order by ".$_POST["tri_par"]." asc";
 		report_perso($val,$query);
@@ -76,13 +79,15 @@ else
 		{
 			$query[$i] = "select * from ".$item_db_name[$i]." where maintenance = 1";
 		
-			if($_POST["annee_achat"] != 'toutes')
+			if(isset($_POST["annee_achat"][0])&&$_POST["annee_achat"][0] != 'toutes')
 			{
-				$query[$i].= " and YEAR(achat_date) = '".$_POST["annee_achat"]."'";
+				$query[$i].=" AND ( '1'='0' ";
+				foreach ($_POST["annee_achat"] as $key2 => $val2)
+				$query[$i].= " OR YEAR(achat_date) = '".$val2."'";
+				$query[$i].=" ) ";
 			}
 			$query[$i].=" order by ".$_POST["tri_par"]." asc";
 		
-
 			report_perso($item_db_name[$i],$query[$i]);
 		 }		
 }
