@@ -45,7 +45,7 @@ commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
 
 echo "<div align='center'><table border='0' cellpadding=5 class='tab_cadre'>";
 echo "<tr><th>";
-echo $lang["computers"][45];
+echo $lang["common"][7];
 echo "</th></tr>";
 
 $db = new DB;
