@@ -39,6 +39,12 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_setup.php");
+include ($phproot . "/glpi/includes_computers.php");
+include ($phproot . "/glpi/includes_printers.php");
+include ($phproot . "/glpi/includes_monitors.php");
+include ($phproot . "/glpi/includes_peripherals.php");
+include ($phproot . "/glpi/includes_networking.php");
+include ($phproot . "/glpi/includes_software.php");
 
 if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk") && ($cfg_features["permit_helpdesk"] == "1"))
 {
@@ -112,7 +118,10 @@ else
 	if(empty($_POST["isgroup"])) $_POST["isgroup"] = "";
 	if(empty($_POST["uemail"])) $_POST["uemail"] = "";
 	if(empty($_POST["emailupdates"])) $_POST["emailupdates"] = "";
-	if (postJob($_POST["device_type"],$ID,$glpiname,$status,$_POST["priority"],$_POST["isgroup"],$_POST["uemail"],$_POST["emailupdates"],$_POST["contents"]))
+	$db=new DB;
+	$ci=new CommonItem;
+	
+	if ($ci->getFromDB($_POST["device_type"],$ID)&&postJob($_POST["device_type"],$ID,$glpiname,$status,$_POST["priority"],$_POST["isgroup"],$_POST["uemail"],$_POST["emailupdates"],$_POST["contents"]))
 	{
 		if(isset($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 			nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
