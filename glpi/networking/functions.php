@@ -44,7 +44,7 @@ function titleNetdevices() {
          GLOBAL  $lang,$HTMLRel;
 
           echo "<div align='center'><table border='0'><tr><td>";
-          echo "<img src=\"".$HTMLRel."pics/networking.png\" alt='".$lang["networking"][11]."' title='".$lang["networking"][11]."'></td><td><a  class='icon_consol' href=\"networking-info-form.php\"><b>".$lang["networking"][11]."</b></a>";
+          echo "<img src=\"".$HTMLRel."pics/networking.png\" alt='".$lang["networking"][11]."' title='".$lang["networking"][11]."'></td><td><a  class='icon_consol' href=\"networking-add-select.php\"><b>".$lang["networking"][11]."</b></a>";
           echo "</td></tr></table></div>";
  
 }
@@ -179,7 +179,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 	$query .= "LEFT JOIN glpi_networking_ports on (glpi_networking.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='2')";	
 	$query .= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = glpi_networking.FK_glpi_enterprise ) ";
-	$query .= "where $where AND glpi_networking.deleted='$deleted' ORDER BY $sort $order";
+	$query .= "where $where AND glpi_networking.deleted='$deleted' AND glpi_networking.is_template = '0' ORDER BY $sort $order";
 
 	// Get it from database	
 	if ($result = $db->query($query)) {
@@ -288,24 +288,56 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 
 
 
-function showNetworkingForm ($target,$ID) {
+function showNetworkingForm ($target,$ID,$withtemplate='') {
 	// Show device or blank form
 	
 	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
 
 	$netdev = new Netdevice;
 
-	echo "<div align='center'><form name='form' method='post' action=\"$target\">";
-	echo "<table class='tab_cadre' cellpadding='2'>";
-	echo "<tr><th colspan='2'><b>";
-	if (empty($ID)) {
-		echo $lang["networking"][11].":";
-		$netdev->getEmpty();
+	$netdev_spotted = false;
+
+	if(empty($ID) && $withtemplate == 1) {
+		if($netdev->getEmpty()) $netdev_spotted = true;
 	} else {
-		$netdev->getfromDB($ID);
-		echo $lang["networking"][12]." ID $ID:";
-	}		
-	echo "</b></th></tr>";
+		if($netdev->getfromDB($ID)) $netdev_spotted = true;
+	}
+
+	if($netdev_spotted) {
+		if(!empty($withtemplate) && $withtemplate == 2) {
+			$template = "newcomp";
+			$datestring = $lang["computers"][14].": ";
+			$date = date("Y-m-d H:i:s");
+		} elseif(!empty($withtemplate) && $withtemplate == 1) { 
+			$template = "newtemplate";
+			$datestring = $lang["computers"][14].": ";
+			$date = date("Y-m-d H:i:s");
+		} else {
+			$datestring = $lang["computers"][11]." : ";
+			$date = $netdev->fields["date_mod"];
+			$template = false;
+		}
+
+
+	echo "<div align='center'><form name='form' method='post' action=\"$target\">";
+
+		if(strcmp($template,"newtemplate") === 0) {
+			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
+		}
+
+	echo "<table class='tab_cadre' cellpadding='2'>";
+
+		echo "<tr><th align='center' >";
+		if(!$template) {
+			echo $lang["networking"][11].": ".$netdev->fields["ID"];
+		}elseif (strcmp($template,"newcomp") === 0) {
+			echo $lang["networking"][12].": ".$netdev->fields["tplname"];
+		}elseif (strcmp($template,"newtemplate") === 0) {
+			echo $lang["common"][6]."&nbsp;: <input type='text' name='tplname' value=\"".$netdev->fields["tplname"]."\" size='20'>";
+		}
+		echo "</th><th  align='center'>".$datestring.$date;
+		echo "</th></tr>";
+
 	
 	echo "<tr><td class='tab_bg_1' valign='top'>";
 
@@ -376,20 +408,25 @@ function showNetworkingForm ($target,$ID) {
 
 	echo "</td>";
 	echo "</tr>";
+
+	echo "<tr>";
 	
-	if (!$ID) {
+	if ($template) {
 
-		echo "<tr>";
-		echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-		echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
-		echo "</td>";
-		echo "</form></tr>";
-
-		echo "</table></div>";
+			if ($template=="newcomp"){
+			echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
+			echo "<input type='hidden' name='ID' value=$ID>";
+			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+			echo "</td>\n";
+			} else {
+			echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
+			echo "<input type='hidden' name='ID' value=$ID>";
+			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+			echo "</td>\n";
+			}
 
 	} else {
 
-		echo "<tr>";
 		echo "<td class='tab_bg_2' valign='top'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
@@ -407,23 +444,34 @@ function showNetworkingForm ($target,$ID) {
 		}
 		echo "</div>";
 		echo "</td>";
+	}
 		echo "</form></tr>";
 
 		echo "</table></div>";
 
-		showPorts($ID,NETWORKING_TYPE);
+	return true;
+		}
+	else {
+                echo "<div align='center'><b>".$lang["networking"][38]."</b></div>";
+                echo "<hr noshade>";
+                searchFormNetworking();
+                return false;
+        }
 
-		showPortsAdd($ID,NETWORKING_TYPE);
-	}
 }
 
 function addNetdevice($input) {
 	// Add Netdevice, nasty hack until we get PHP4-array-functions
-
+	$db=new DB;
 	$netdev = new Netdevice;
 
 	// dump the status
+	$oldID=$input["ID"];
+
 	$null = array_pop($input);
+	$null = array_pop($input);
+ 	// set new date.
+ 	$printer->fields["date_mod"] = date("Y-m-d H:i:s");
 	
 	// fill array for update
 	foreach ($input as $key => $val) {
@@ -432,11 +480,44 @@ function addNetdevice($input) {
 		}
 	}
 
-	if ($netdev->addToDB()) {
-		return true;
-	} else {
-		return false;
+	$netdev->addToDB();
+	$newID=$netdev->getInsertElementID();
+	
+	// ADD Infocoms
+	$ic= new Infocom();
+	if ($ic->getFromDB(NETWORKING_TYPE,$oldID)){
+		$ic->fields["FK_device"]=$newID;
+		unset ($ic->fields["ID"]);
+		$ic->addToDB();
 	}
+	
+		// ADD Ports
+	$query="SELECT ID from glpi_networking_ports WHERE on_device='$oldID' AND device_type='".NETWORKING_TYPE."';";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		
+		while ($data=$db->fetch_array($result)){
+			$np= new Netport();
+			$np->getFromDB($data["ID"]);
+			unset($np->fields["ID"]);
+			unset($np->fields["ifaddr"]);
+			unset($np->fields["ifmac"]);
+			unset($np->fields["netpoint"]);
+			$np->fields["on_device"]=$newID;
+			$np->addToDB();
+			}
+	}
+
+	// ADD Contract				
+	$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='$oldID' AND device_type='".NETWORKING_TYPE."';";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		
+		while ($data=$db->fetch_array($result))
+			addDeviceContract($data["FK_contract"],NETWORKING_TYPE,$newID);
+	}
+
+	
 }
 
 function updateNetdevice($input) {
