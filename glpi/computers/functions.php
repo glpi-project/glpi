@@ -120,7 +120,23 @@ function searchFormComputers($field="",$contains="",$sort= "",$deleted= "") {
 	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
+	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
+	echo "&nbsp;";
+	echo $lang["search"][10]."&nbsp;";
+	
 	echo "<select name=\"field\" size='1'>";
+        echo "<option value='all' ";
+	if($field == "all") echo "selected";
+	echo ">".$lang["search"][7]."</option>";
+        reset($option);
+	foreach ($option as $key => $val) {
+		echo "<option value=\"".$key."\""; 
+		if($key == $field) echo "selected";
+		echo ">". $val ."</option>\n";
+	}
+	echo "</select>&nbsp;";
+
+/*	echo "<select name=\"field\" size='1'>";
         echo "<option value='all' ";
 	if($field == "all") echo "selected";
 	echo ">".$lang["search"][7]."</option>";
@@ -134,6 +150,7 @@ function searchFormComputers($field="",$contains="",$sort= "",$deleted= "") {
 	echo "&nbsp;";
 	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
 	echo "&nbsp;";
+	*/
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
 	reset($option);
