@@ -185,7 +185,7 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 		$where .= " AND (device_type = '".$device."')";
 	} 
 
-	if($category!='NULL') {
+	if($category!=0) {
 		$where .= " AND (category = '".$category."')";
 	} 
 
@@ -234,6 +234,7 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 
 	
 	$query .= $lim_query;
+	
 	$result = $db->query($query);
 	$i = 0;
 	$number = $db->numrows($result);
@@ -465,14 +466,14 @@ function showJobShort($ID, $followups	) {
 		if ($job->status == "new")
 		{
 			echo "<tr class='tab_bg_2'>";
-			echo "<td align='center'  ><strong>".$lang["joblist"][9]."</strong></td>";
+			echo "<td align='center'  >ID: ".$job->ID."<br><strong>".$lang["joblist"][9]."</strong></td>";
 			echo "<td width='100'  ><small>".$lang["joblist"][11].":<br>&nbsp;$job->date</small></td>";
 
 		}
 		else
 		{
  			echo "<tr class='tab_bg_2'>";
-			echo "<td align='center'  ><strong>".$lang["joblist"][10]."</strong>";
+			echo "<td align='center'  >ID: ".$job->ID."<br><strong>".$lang["joblist"][10]."</strong>";
 			if (isAdmin($_SESSION["glpitype"])){
 				$sel="";
 				if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
