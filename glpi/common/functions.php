@@ -130,7 +130,7 @@ function checkAuthentication($authtype) {
 				if ($type!="normal" && $type!="admin")
 				{
 					commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
-											echo "<center><br><br><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br>";
+				      echo "<center><br><br><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br>";
 
 					echo "<b>".$lang["login"][5]."</b></center>";
 					commonFooter();
@@ -157,7 +157,7 @@ function commonHeader($title,$url)
 {
 	// Print a nice HTML-head for every page
 
-	GLOBAL $cfg_install,$lang, $cfg_layout,$cfg_features ;
+	GLOBAL $cfg_install,$lang, $cfg_layout,$cfg_features,$HTMLRel,$phproot ;
 	
 	
 	
@@ -196,7 +196,7 @@ $config =	array($lang["Menu"][10]=>array("/setup/index.php"," "),
 
 	// Include CSS
 	echo "<style type=\"text/css\">\n";
-		include ("_relpos.php");
+	//	include ("_relpos.php");
 
 		include ($phproot . "/glpi/config/styles.css");
 	echo "</style>\n";
@@ -222,7 +222,7 @@ $config =	array($lang["Menu"][10]=>array("/setup/index.php"," "),
 	
 	// Logo with link to command center
 	echo "<td align='center' width='25%' >\n";
-	echo "<a href=\"".$cfg_install["root"]."/central.php\" accesskey=\"0\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>";
+	echo "<a href=\"".$cfg_install["root"]."/central.php\" accesskey=\"0\"><img src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>";
 	echo "</td>";
 
 	echo "<td valign='middle'>";
@@ -237,7 +237,7 @@ $config =	array($lang["Menu"][10]=>array("/setup/index.php"," "),
 	echo "<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr>";
 	if ($navigation->inventory) {
 		echo "<td align='center' valign='top'>";
-		echo "<img class='icon_nav' src=\"".$cfg_install["root"]."/pics/inventaire.png\" alt=\"\" title=\"".$lang["setup"][10]."\"><br>";
+		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/inventaire.png\" alt=\"\" title=\"".$lang["setup"][10]."\"><br>";
 		echo "<small>-&nbsp;".$lang["setup"][10]."&nbsp;-</small><br>";
 
 		 foreach ($inventory as $key => $val) {
@@ -248,7 +248,7 @@ $config =	array($lang["Menu"][10]=>array("/setup/index.php"," "),
 	}
 	 if ($navigation->maintain) {
 		echo "<td align='center' valign='top'>";
-				echo "<img class='icon_nav' src=\"".$cfg_install["root"]."/pics/maintenance.png\" alt=\"\" title=\"".$lang["setup"][55]."\"><br>";
+				echo "<img class='icon_nav' src=\"".$HTMLRel."pics/maintenance.png\" alt=\"\" title=\"".$lang["setup"][55]."\"><br>";
 
 		echo "<small>-&nbsp;".$lang["setup"][55]."&nbsp;-</small><br>";
 		foreach ($maintain as $key => $val) {
@@ -258,7 +258,7 @@ $config =	array($lang["Menu"][10]=>array("/setup/index.php"," "),
 	}
 	if ($navigation->settings) {
 		echo "<td align='center' valign='top'>";
-				echo "<img class='icon_nav' src=\"".$cfg_install["root"]."/pics/config.png\" alt=\"\" title=\"".$lang["setup"][56]."\"><br>";
+				echo "<img class='icon_nav' src=\"".$HTMLRel."pics/config.png\" alt=\"\" title=\"".$lang["setup"][56]."\"><br>";
 
 		echo "<small>-&nbsp;".$lang["setup"][56]."&nbsp;-</small><br>";
 		foreach ($config as $key => $val) {
@@ -273,7 +273,7 @@ $config =	array($lang["Menu"][10]=>array("/setup/index.php"," "),
 	echo "<td  align='right' width='100'>";
 	echo date("H").":".date("i")."<p><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i></p>";
-	echo "<a  class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img  src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></td>";
+	echo "<a  class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img  src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></td>";
 
 	// End navigation bar
 
@@ -291,7 +291,7 @@ echo "</table>\n";
 function helpHeader($title,$url,$name) {
 	// Print a nice HTML-head for help page
 
-	GLOBAL $cfg_layout,$cfg_install,$lang,$cfg_features;
+	GLOBAL $cfg_layout,$cfg_install,$lang,$cfg_features,$HTMLRel,$phproot ;
 
 	// Send extra expires header if configured
 	if ($cfg_features["sendexpire"]) {
@@ -321,7 +321,7 @@ function helpHeader($title,$url,$name) {
 	
 	// Include CSS
 	echo "<style type=\"text/css\">\n";
-				include ("_relpos.php");
+	//			include ("_relpos.php");
 
 		include ($phproot . "/glpi/config/styles.css");
 	echo "</style>\n";
@@ -340,8 +340,10 @@ function helpHeader($title,$url,$name) {
 	
 	// Logo with link to command center
 	echo "<td align='center' width='25%'>\n";
-	echo "<a href=\"".$cfg_install["root"]."/central.php\" accesskey=\"0\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" ></a>";
-	echo "</td>";
+	//echo "<a href=\"".$cfg_install["root"]."/central.php\" accesskey=\"0\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" ></a>";
+	echo "<img src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" >";
+
+        echo "</td>";
 
 	echo "<td valign='middle'>";
 
@@ -358,14 +360,14 @@ function helpHeader($title,$url,$name) {
 	echo "</td>";
 	// We tracking or post a new one
 	echo "<td>";
-        echo "<a class='icon_nav_move' href=\"".$cfg_install["root"]."/helpdesk.php\"><img  src=\"".$cfg_install["root"]."/pics/ajoutinterv.png\" alt=\"".$lang["job"][13]."\" title=\"".$lang["job"][13]."\"></a><br><br>";
-        echo "<a class='icon_nav_move' href=\"".$cfg_install["root"]."/helpdesk.php?show=user\"><img  src=\"".$cfg_install["root"]."/pics/suivi.png\" alt=\"".$lang["tracking"][0]."\" title=\"".$lang["tracking"][0]."\"></a>";
+        echo "<a class='icon_nav_move' href=\"".$cfg_install["root"]."/helpdesk.php\"><img  src=\"".$HTMLRel."pics/ajoutinterv.png\" alt=\"".$lang["job"][13]."\" title=\"".$lang["job"][13]."\"></a><br><br>";
+        echo "<a class='icon_nav_move' href=\"".$cfg_install["root"]."/helpdesk.php?show=user\"><img  src=\"".$HTMLRel."pics/suivi.png\" alt=\"".$lang["tracking"][0]."\" title=\"".$lang["tracking"][0]."\"></a>";
 	echo "</td>";
 	// On the right side of the navigation bar, we have a clock with
 	// date and a logout-link.
 	echo "<td align='right' width='100'><div align='right'>";
 	echo date("H").":".date("i")."<p><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
-	echo "</i></p><a class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img class='icon_nav' src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
+	echo "</i></p><a class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img class='icon_nav' src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
 
 	// End navigation bar
 	
@@ -381,7 +383,7 @@ function helpHeader($title,$url,$name) {
 function nullHeader($title,$url) {
 	// Print a nice HTML-head with no controls
 
-	GLOBAL $cfg_layout,$cfg_install,$lang;
+	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel,$phproot ;
 
 	// Send extra expires header if configured
 	if (!empty($cfg_features["sendexpire"])) {
@@ -411,7 +413,7 @@ function nullHeader($title,$url) {
 	
 	// Include CSS
 	echo "<style type=\"text/css\">\n";
-				include ("_relpos.php");
+	//			include ("_relpos.php");
 
 		include ($phproot . "/glpi/config/styles.css");
 	echo "</style>\n";
@@ -430,7 +432,7 @@ function nullHeader($title,$url) {
 	
 	// Logo with link to index
 	echo "<td align='center' width='100%'>\n";
-	echo "<a href=\"".$cfg_install["root"]."/index.php\"><img src=\"".$cfg_install["root"]."/pics/logo-glpi.png\" alt=\"".$cfg_layout["logotxt"]."\" title=\"\" ></a>\n";
+	echo "<a href=\"".$cfg_install["root"]."/index.php\"><img src=\"".$HTMLRel."pics/logo-glpi.png\" alt=\"".$cfg_layout["logotxt"]."\" title=\"\" ></a>\n";
 	echo "</td>";
 
 
@@ -529,7 +531,7 @@ function showEvents($target,$order,$sort) {
 	$i = 0;
 
 	echo "<p><center><table border='0' width='90%'>";
-	echo "<tr><th colspan=6>".$lang["central"][2]." ".$cfg_features["num_of_events"]." ".$lang["central"][3].":</th></tr>";
+	echo "<tr><th colspan='6'>".$lang["central"][2]." ".$cfg_features["num_of_events"]." ".$lang["central"][3].":</th></tr>";
 	echo "<tr>";
 
 	echo "<th colspan='2'>";
