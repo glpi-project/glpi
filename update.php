@@ -575,6 +575,11 @@ if(!FieldExists("glpi_tracking","realtime")) {
 	$db->query($query) or die("erreur lors de la migration".$db->error());
 }
 
+if(!FieldExists("glpi_licenses","expire")) {
+	$query = "ALTER TABLE `glpi_licenses` ADD `expire` date default NULL";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+}
+
 }
 
 //Debut du script
