@@ -292,7 +292,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item') ORD
 		if (isAdmin($_SESSION["glpitype"])){
 		echo "<br><div align='center'>";
 		
-		echo "<table cellpadding='5' width='90%'>";
+		echo "<table class ='delete-old-job' cellpadding='5' width='90%'>";
 		echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" ></td><td><a href='".$_SERVER["PHP_SELF"]."?select=all&ID=$item'>".$lang["buttons"][18]."</a></td>";
 			
 		echo "<td>/</td><td><a href='".$_SERVER["PHP_SELF"]."?select=none&ID=$item'>".$lang["buttons"][19]."</a>";
