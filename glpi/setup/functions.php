@@ -1312,7 +1312,6 @@ function showFormConfigGen($target){
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][111]."</td><td> <input type=\"text\" name=\"list_limit\" value=\"". $db->result($result,0,"list_limit") ."\"></td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][112]."</td><td><input type=\"text\" name=\"cut\" value=\"". $db->result($result,0,"cut") ."\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][112]."</td><td><input type=\"text\" name=\"cut\" value=\"". $db->result($result,0,"cut") ."\"></td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][221]."</td><td>";
 	showCalendarForm("form","date_fiscale",$db->result($result,0,"date_fiscale"),0);	
