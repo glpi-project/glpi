@@ -142,13 +142,14 @@ function getEmpty() {
 			}
 			
 			$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '2')";
+//			echo $query;
 			$result = $db->query($query);
-			$data = $db->fetch_array($result);
-				foreach ($data as $key => $val) {
-					$q = "DELETE FROM glpi_networking_wire WHERE (end1 = '$val' OR end2 = '$val')";
-					$result = $db->query($q);					
+			while ($data = $db->fetch_array($result)){
+					$q = "DELETE FROM glpi_networking_wire WHERE (end1 = '".$data["ID"]."' OR end2 = '".$data["ID"]."')";
+//					echo $q;
+					$result2 = $db->query($q);					
 					}
-
+			
 			$query = "DELETE FROM glpi_networking_ports WHERE (device_on = '$ID' AND device_type = '2')";
 			$result = $db->query($query);
 			
