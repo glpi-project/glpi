@@ -377,7 +377,7 @@ function showComputerForm ($template,$target,$ID) {
 		echo "<td><textarea  cols='20' rows='8' name='comments' >".$comp->fields["comments"]."</textarea>";
 		echo "</td></tr>";
 
-		echo "<tr><td></td><td><b>";
+		echo "<tr><td>Prêt :</td><td><b>";
 		if (!$template)
 		showReservationForm(1,$ID);
 		echo "</b></td></tr>";
