@@ -40,7 +40,7 @@ checkAuthentication("normal");
 commonHeader("Stats",$_SERVER["PHP_SELF"]);
 
 //Affichage du tableau de présentation
-echo "<center><table border='0' cellpadding=5>";
+echo "<center><table class='tab_cadre2' cellpadding=5>";
 echo "<tr><th>".$lang["reports"][10].":</th></tr>";
 
 
