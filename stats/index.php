@@ -43,9 +43,9 @@ checkAuthentication("normal");
 commonHeader("Stats",$_SERVER["PHP_SELF"]);
 
 // titre
-        echo "<div align='center'><table border='0'><tr><td><b>";
-        echo "<img src=\"".$HTMLRel."pics/statistiques.png\" ></td><td><span class='icon_nav'>".$lang["Menu"][13]."</span>";
-        echo "</b></td></tr></table></div>";
+        echo "<div align='center'><table border='0'><tr><td>";
+        echo "<img src=\"".$HTMLRel."pics/statistiques.png\" alt='".$lang["Menu"][13]."' title='".$lang["Menu"][13]."'></td><td><span class='icon_nav'><b>".$lang["Menu"][13]."</b></span>";
+        echo "</td></tr></table></div>";
 
 
 //Affichage du tableau de présentation des stats
@@ -53,10 +53,10 @@ echo "<div align='center'><table border='0' cellpadding='5'>";
 echo "<tr><th>".$lang["stats"][0].":</th></tr>";
 
 
-	echo  "<tr class='tab_bg_1'><td align='center'><b><a href=\"stat_global.php\">".$lang["stats"][1]."</a></b></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><b><a href=\"stat_technicien.php\">".$lang["stats"][2]."</a></b></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><b><a href=\"stat_lieux.php\">".$lang["stats"][3]."</a></b></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><b><a href=\"stat_user.php\">".$lang["stats"][4]."</a></b></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat_global.php\"><b>".$lang["stats"][1]."</b></a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat_technicien.php\"><b>".$lang["stats"][2]."</b></a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat_lieux.php\"><b>".$lang["stats"][3]."</b></a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat_user.php\"><b>".$lang["stats"][4]."</b></a></td></tr>";
 
 
 echo "</table></div>";

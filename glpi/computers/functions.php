@@ -44,9 +44,9 @@ function titleComputers(){
               
         GLOBAL  $lang,$HTMLRel;
 
-         echo "<div align='center'><table border='0'><tr><td><b>";
-         echo "<img src=\"".$HTMLRel."pics/computer.png\" ></td><td><a  class='icon_consol' href=\"computers-add-select.php\">".$lang["computers"][0]."</a>";
-         echo "</b></td></tr></table></div>";
+         echo "<div align='center'><table border='0'><tr><td>";
+         echo "<img src=\"".$HTMLRel."pics/computer.png\" alt='".$lang["computers"][0]."' title='".$lang["computers"][0]."'></td><td><a  class='icon_consol' href=\"computers-add-select.php\"><b>".$lang["computers"][0]."</b></a>";
+         echo "</td></tr></table></div>";
 
 }
 

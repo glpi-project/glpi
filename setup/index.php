@@ -48,18 +48,18 @@ commonHeader("Setup",$_SERVER["PHP_SELF"]);
 
 
  // titre
-        echo "<div align='center'><table border='0'><tr><td><b>";
-        echo "<img src=\"".$HTMLRel."pics/configuration.png\" ></td><td><span class='icon_nav'>".$lang["Menu"][10]."</span>";
-        echo "</b></td></tr></table></div>";
+        echo "<div align='center'><table border='0'><tr><td>";
+        echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='".$lang["Menu"][10]."' title='".$lang["Menu"][10]."' ></td><td><span class='icon_nav'><b>".$lang["Menu"][10]."</b></span>";
+        echo "</td></tr></table></div>";
 
 echo "<div align='center'><table border='0' cellpadding='5'>";
 echo "<tr><th>".$lang["setup"][62]."</th></tr>";
 
-echo "<tr class='tab_bg_1'><td  align='center'><b><a href=\"setup-dropdowns.php\">".$lang["setup"][0]."</a></b></td></tr>";
+echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-dropdowns.php\"><b>".$lang["setup"][0]."</b></a></td></tr>";
 
-echo "<tr class='tab_bg_1'><td  align='center'><b><a href=\"setup-templates.php\">".$lang["setup"][1]."</a></b></td></tr>";
+echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-templates.php\"><b>".$lang["setup"][1]."</b></a></td></tr>";
 
-echo "<tr class='tab_bg_1'><td align='center'><b><a href=\"setup-users.php\">".$lang["setup"][2]."</a></b></td> </tr>";
+echo "<tr class='tab_bg_1'><td align='center'><a href=\"setup-users.php\"><b>".$lang["setup"][2]."</b></a></td> </tr>";
 
 
 echo "</table></div>";

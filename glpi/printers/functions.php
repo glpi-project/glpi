@@ -43,12 +43,12 @@ include ("_relpos.php");
 function titlePrinters(){
            GLOBAL  $lang,$HTMLRel;
            
-           echo "<div align='center'><table border='0'><tr><td><b>";
+           echo "<div align='center'><table border='0'><tr><td>";
 
-           echo "<img src=\"".$HTMLRel."pics/printer.png\" ></td><td><a  class='icon_consol' href=\"printers-info-form.php?new=1\">".$lang["printers"][0]."</a>";
+           echo "<img src=\"".$HTMLRel."pics/printer.png\" alt='".$lang["printers"][0]."' title='".$lang["printers"][0]."'></td><td><a  class='icon_consol' href=\"printers-info-form.php?new=1\"><b>".$lang["printers"][0]."</b></a>";
 
 
-           echo "</b></td></tr></table></div>";
+           echo "</td></tr></table></div>";
 }
 
 

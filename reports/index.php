@@ -44,13 +44,13 @@ checkAuthentication("normal");
 commonHeader("Reports",$_SERVER["PHP_SELF"]);
 
  // titre
-        echo "<div align='center'><table border='0'><tr><td><b>";
-        echo "<img src=\"".$HTMLRel."pics/rapports.png\" ></td><td><span class='icon_nav'>".$lang["Menu"][6]."</span>";
-        echo "</b></td></tr></table></div>";
+        echo "<div align='center'><table border='0'><tr><td>";
+        echo "<img src=\"".$HTMLRel."pics/rapports.png\" alt='".$lang["Menu"][6]."' title='".$lang["Menu"][6]."'></td><td><span class='icon_nav'><b>".$lang["Menu"][6]."</b></span>";
+        echo "</td></tr></table></div>";
 
 
 
-echo "<center><table border='0' cellpadding=5>";
+echo "<div align='center'><table border='0' cellpadding='5'>";
 echo "<tr><th>".$lang["reports"][0].":</th></tr>";
 
 $i = 0;
@@ -59,11 +59,11 @@ while($data = each($report_list)) {
 	$val = $data[0];
 	$name = $report_list["$val"]["name"];
 	$file = $report_list["$val"]["file"];
-	echo  "<tr class='tab_bg_1'><td align='center'><b><a href=\"$file\">$name</a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"$file\"><b>$name</b></a></td></tr>";
 	$i++;
 }
 
-echo "</table></center>";
+echo "</table></div>";
 
 commonFooter();
 ?>

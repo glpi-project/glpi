@@ -43,9 +43,9 @@ function titleSoftware(){
 
          GLOBAL  $lang,$HTMLRel;
          
-         echo "<div align='center'><table border='0'><tr><td><b>";
-         echo "<img src=\"".$HTMLRel."pics/logiciels.png\" ></td><td><a  class='icon_consol' href=\"software-info-form.php\">".$lang["software"][0]."</a>";
-         echo "</b></td></tr></table></div>";
+         echo "<div align='center'><table border='0'><tr><td>";
+         echo "<img src=\"".$HTMLRel."pics/logiciels.png\" alt='".$lang["software"][0]."' title='".$lang["software"][0]."'></td><td><a  class='icon_consol' href=\"software-info-form.php\"><b>".$lang["software"][0]."</b></a>";
+         echo "</td></tr></table></div>";
 }
 
 

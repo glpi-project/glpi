@@ -39,6 +39,18 @@ This file is part of GLPI.
 include ("_relpos.php");
 ///// Manage Netdevices /////
 
+function titleNetdevices() {
+         // titre
+         
+         GLOBAL  $lang,$HTMLRel;
+
+          echo "<div align='center'><table border='0'><tr><td>";
+          echo "<img src=\"".$HTMLRel."pics/networking.png\" alt='".$lang["networking"][11]."' title='".$lang["networking"][11]."'></td><td><a  class='icon_consol' href=\"networking-info-form.php\"><b>".$lang["networking"][11]."</b></a>";
+          echo "</td></tr></table></div>";
+ 
+}
+
+
 function listNetdevices() {
 	// List all netdevices
 
