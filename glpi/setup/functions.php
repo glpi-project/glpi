@@ -1268,7 +1268,7 @@ function showFormMailing($target) {
 		echo "<table class='tab_cadre' width='600''><tr><th colspan='3'>L'administrateur Système doit recevoir une notification:<th></tr>";
 		echo "<tr class='tab_bg_2'><td>A chaque nouvelle intervention</td><td>Oui : <input type=\"radio\" name=\"mailing_new_admin\" value=\"1\" "; if($db->result($result,0,"mailing_new_admin") == 1) echo "checked"; echo " ></td><td>Non : <input type=\"radio\" name=\"mailing_new_admin\" value=\"0\" "; if($db->result($result,0,"mailing_new_admin") == 0) echo "checked"; echo " ></td></tr>";
 		
-		echo "<tr class='tab_bg_2'><td >A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_admin\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_admin") == 1) echo "checked"; echo " ></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_admin\" value=\"0\" "; if($db->result($result,0,"mailing_attrib_admin") == 0) echo "checked"; echo " ></td></tr>";
+		//echo "<tr class='tab_bg_2'><td >A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_admin\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_admin") == 1) echo "checked"; echo " ></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_admin\" value=\"0\" "; if($db->result($result,0,"mailing_attrib_admin") == 0) echo "checked"; echo " ></td></tr>";
 		
 		echo "<tr class='tab_bg_2'><td >Pour chaque nouveau suivi</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_admin\" value=\"1\" "; if($db->result($result,0,"mailing_followup_admin") == 1) echo "checked"; echo "></td><td>Non : <input type=\"radio\" name=\"mailing_followup_admin\" value=\"0\" "; if($db->result($result,0,"mailing_followup_admin") == 0) echo "checked"; echo " ></td></tr>";
 		
@@ -1278,7 +1278,7 @@ function showFormMailing($target) {
 		
 		echo "<tr class='tab_bg_2'><td>A chaque nouvelle intervention</td><td>Oui : <input type=\"radio\" name=\"mailing_new_all_admin\" value=\"1\" "; if($db->result($result,0,"mailing_new_all_admin") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_new_all_admin\" value=\"0\" "; if($db->result($result,0,"mailing_new_all_admin") == 0) echo "checked"; echo  " ></td></tr>";
 		
-		echo "<tr class='tab_bg_2'><td>A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_all_admin\" value=\"1\"  "; if($db->result($result,0,"mailing_attrib_all_admin") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_all_admin\" value=\"0\"  "; if($db->result($result,0,"mailing_attrib_all_admin") == 0) echo "checked"; echo  " ></td></tr>";
+		//echo "<tr class='tab_bg_2'><td>A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_all_admin\" value=\"1\"  "; if($db->result($result,0,"mailing_attrib_all_admin") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_all_admin\" value=\"0\"  "; if($db->result($result,0,"mailing_attrib_all_admin") == 0) echo "checked"; echo  " ></td></tr>";
 		
 		echo "<tr class='tab_bg_2'><td>Pour chaque nouveau suivi</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_all_admin\" value=\"1\"  "; if($db->result($result,0,"mailing_followup_all_admin") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_followup_all_admin\" value=\"0\"  "; if($db->result($result,0,"mailing_followup_all_admin") == 0) echo "checked"; echo  " ></td></tr>";
 		
@@ -1287,7 +1287,7 @@ function showFormMailing($target) {
 		
 		echo "<tr'><th colspan='3'>Les utilisateurs ayant un accés Normal doivent recevoir une notification :</th></tr>";
 		echo "<tr class='tab_bg_2'><td>A chaque nouvelle intervention</td><td>Oui : <input type=\"radio\" name=\"mailing_new_all_normal\" value=\"1\"  "; if($db->result($result,0,"mailing_new_all_normal") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_new_all_normal\" value=\"0\"  "; if($db->result($result,0,"mailing_new_all_normal") == 0) echo "checked"; echo  " ></td></tr>";
-		echo "<tr class='tab_bg_2'><td>A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_all_normal\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_all_normal") == 1) echo "checked"; echo  "  ></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_all_normal\" value=\"0\"  "; if($db->result($result,0,"mailing_attrib_all_normal") == 0) echo "checked"; echo  " ></td></tr>";
+		//echo "<tr class='tab_bg_2'><td>A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_all_normal\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_all_normal") == 1) echo "checked"; echo  "  ></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_all_normal\" value=\"0\"  "; if($db->result($result,0,"mailing_attrib_all_normal") == 0) echo "checked"; echo  " ></td></tr>";
 		
 		echo "<tr class='tab_bg_2'><td>Pour chaque nouveau suivi</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_all_normal\" value=\"1\" "; if($db->result($result,0,"mailing_followup_all_normal") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_followup_all_normal\" value=\"0\" "; if($db->result($result,0,"mailing_followup_all_normal") == 0) echo "checked"; echo  " ></td></tr>";
 		
@@ -1297,7 +1297,7 @@ function showFormMailing($target) {
 		echo "<tr><th colspan='3'>La personne responsable de la tache doit recevoir un notification :</th></tr>";
 		echo "<tr class='tab_bg_2'><td>A chaque nouvelle intervention</td><td>Oui : <input type=\"radio\" name=\"mailing_new_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_new_attrib") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_new_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_new_attrib") == 0) echo "checked"; echo  " ></td></tr>";
 		
-		echo "<tr class='tab_bg_2'><td>A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_attrib") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"0\"  "; if($db->result($result,0,"mailing_attrib_attrib") == 0) echo "checked"; echo  " ></td></tr>";
+		//echo "<tr class='tab_bg_2'><td>A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_attrib") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"0\"  "; if($db->result($result,0,"mailing_attrib_attrib") == 0) echo "checked"; echo  " ></td></tr>";
 		
 		echo "<tr class='tab_bg_2'><td>Pour chaque nouveau suivi</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_followup_attrib") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_followup_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_followup_attrib") == 0) echo "checked"; echo  " ></td></tr>";
 		echo "<tr class='tab_bg_2'><td>A chaque fois qu'une intervention est marquée comme terminée</td><td>Oui : <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_finish_attrib") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_finish_attrib") == 0) echo "checked"; echo  " ><td></td></tr>";
@@ -1306,7 +1306,7 @@ function showFormMailing($target) {
 		
 		echo "<tr class='tab_bg_2'><td>A chaque nouvelle intervention le concernant</td><td>Oui : <input type=\"radio\" name=\"mailing_new_user\" value=\"1\" "; if($db->result($result,0,"mailing_new_user") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_new_user\" value=\"0\" "; if($db->result($result,0,"mailing_new_user") == 0) echo "checked"; echo  " ></td></tr>";
 		
-		echo "<tr class='tab_bg_2'><td>A chaque changement de responsable d'une intervention le concernant</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_user\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_user") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_user\" value=\"0\" "; if($db->result($result,0,"mailing_attrib_user") == 0) echo "checked"; echo  " ></td></tr>";
+		//echo "<tr class='tab_bg_2'><td>A chaque changement de responsable d'une intervention le concernant</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_user\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_user") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_user\" value=\"0\" "; if($db->result($result,0,"mailing_attrib_user") == 0) echo "checked"; echo  " ></td></tr>";
 		
 		echo "<tr class='tab_bg_2'><td>Pour chaque nouveau suivi sur une intervention le concernant</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_user\" value=\"1\" "; if($db->result($result,0,"mailing_followup_user") == 1) echo "checked"; echo  " ></td><td>Non : <input type=\"radio\" name=\"mailing_followup_user\" value=\"0\" "; if($db->result($result,0,"mailing_followup_user") == 0) echo "checked"; echo  " ></td></tr>";
 		
@@ -1358,29 +1358,24 @@ function updateIMAP($imap_auth_server,$imap_host) {
 	}
 }
 
-function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_admin,$mailing_attrib_admin,$mailing_followup_admin,$mailing_finish_admin,$mailing_new_all_admin,$mailing_attrib_all_admin,$mailing_followup_all_admin,$mailing_finish_all_admin,$mailing_new_all_normal,$mailing_attrib_all_normal,$mailing_followup_all_normal,$mailing_finish_all_normal,$mailing_attrib_attrib,$mailing_followup_attrib,$mailing_finish_attrib,$mailing_new_user,$mailing_attrib_user,$mailing_followup_user,$mailing_finish_user,$mailing_new_attrib) {
+function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_admin,$mailing_followup_admin,$mailing_finish_admin,$mailing_new_all_admin,$mailing_followup_all_admin,$mailing_finish_all_admin,$mailing_new_all_normal,$mailing_followup_all_normal,$mailing_finish_all_normal,$mailing_followup_attrib,$mailing_finish_attrib,$mailing_new_user,$mailing_followup_user,$mailing_finish_user,$mailing_new_attrib) {
 
 	$db = new DB;
 	$query = "update glpi_config set mailing = '". $mailing ."', ";
 	$query .= "admin_email = '". $admin_email ."', ";
 	$query .= "mailing_signature = '". $mailing_signature ."', ";
 	$query .= "mailing_new_admin = '". $mailing_new_admin ."', ";
-	$query .= "mailing_attrib_admin = '". $mailing_attrib_admin ."', ";
 	$query .= "mailing_followup_admin = '". $mailing_followup_admin ."', ";
 	$query .= "mailing_finish_admin = '". $mailing_finish_admin ."', ";
 	$query .= "mailing_new_all_admin = '". $mailing_new_all_admin ."', ";
-	$query .= "mailing_attrib_all_admin = '". $mailing_attrib_all_admin ."', ";
 	$query .= "mailing_followup_all_admin = '". $mailing_followup_all_admin ."', ";
 	$query .= "mailing_finish_all_admin = '". $mailing_finish_all_admin ."', ";
 	$query .= "mailing_new_all_normal = '". $mailing_new_all_normal ."', ";
-	$query .= "mailing_attrib_all_normal = '". $mailing_attrib_all_normal ."', ";
 	$query .= "mailing_followup_all_normal = '". $mailing_followup_all_normal ."', ";
 	$query .= "mailing_finish_all_normal = '". $mailing_finish_all_normal ."', ";
-	$query .= "mailing_attrib_attrib = '". $mailing_attrib_attrib ."', ";
 	$query .= "mailing_followup_attrib = '". $mailing_followup_attrib ."', ";
 	$query .= "mailing_finish_attrib = '". $mailing_finish_attrib ."', ";
 	$query .= "mailing_new_user = '". $mailing_new_user ."', ";
-	$query .= "mailing_attrib_user = '". $mailing_attrib_user ."', ";
 	$query .= "mailing_followup_user = '". $mailing_followup_user ."', ";
 	$query .= "mailing_finish_user = '". $mailing_finish_user ."', ";
 	$query .= "mailing_new_attrib = '". $mailing_new_attrib ."' ";
