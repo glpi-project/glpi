@@ -83,7 +83,7 @@ class User {
 				$this->prefs["language"] = $db->result($result,0,"language");
 			}
 			else {
-				$query = "insert into prefs value (".$this->fields["name"].",'no','french')"; 
+				$query = "insert into glpi_prefs value (".$this->fields["name"].",'no','french')"; 
 				$db->query($query);
 			}
 		}
@@ -267,6 +267,7 @@ class User {
 			}
 		}
 		$query .= ")";
+		
 		
 		if ($result=$db->query($query)) {
 			return true;

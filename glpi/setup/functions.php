@@ -806,11 +806,14 @@ function addUser($input) {
 			}
 
 			if ($user->addToDB()) {
+				
 				// Give him some default prefs...
-				$query = "INSERT INTO glpi_prefs VALUES ('".$input["name"]."','','english')";
+				$query = "INSERT INTO glpi_prefs (user,tracking_order,language) VALUES ('".$input["name"]."','no','english')";
 				$db = new DB;
 				$result=$db->query($query);
+				
 				return true;
+				
 			} else {
 				return false;
 			}
@@ -1255,6 +1258,7 @@ function showLangSelect($target) {
 function updateLanguage($input) {
 
 	$db = new DB;
+	
 	$query = "UPDATE glpi_prefs SET language = '".$input["language"]."' WHERE (user = '".$_SESSION["glpiname"]."')";
 	if ($result=$db->query($query)) {
 		$_SESSION["glpilanguage"] = $input["language"];
