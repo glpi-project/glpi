@@ -39,10 +39,9 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_software.php");
-if(isset($_POST)) $tab = $_POST;
-elseif(isset($_GET)) $tab = $_GET;
-
-if (isset($_POST["addform"])) {
+if($_POST){ $tab = $_POST;}
+else if($_GET){ $tab = $_GET;}
+if (isset($tab["addform"])) {
 	checkAuthentication("admin");
 	commonHeader("Software",$_SERVER["PHP_SELF"]);
 	showLicenseForm($_SERVER["PHP_SELF"],$tab["ID"]);

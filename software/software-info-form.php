@@ -43,23 +43,22 @@ include ($phproot . "/glpi/includes_software.php");
 
 if(isset($_GET)) $tab = $_GET;
 elseif(isset($_POST)) $tab = $_POST;
-
 if (isset($_POST["add"])) {
 	checkAuthentication("admin");
-	addSoftware($tab);
-	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." added item ".$tab["name"].".");
+	addSoftware($_POST);
+	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." added item ".$_POST["name"].".");
 	header("Location: ".$cfg_install["root"]."/software/");
 } else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
-	deleteSoftware($tab);
+	deleteSoftware($_POST);
 	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/software/");
 } else if (isset($_POST["update"])) {
 	checkAuthentication("admin");
-	updateSoftware($tab);
-	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." updated item.");
+	updateSoftware($_POST);
+	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	commonHeader("Software",$_SERVER["PHP_SELF"]);
-	showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	showSoftwareForm($_SERVER["PHP_SELF"],$_POST["ID"]);
 	commonFooter();
 
 } else {
