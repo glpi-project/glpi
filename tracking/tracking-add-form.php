@@ -45,10 +45,11 @@ include ($phproot . "/glpi/includes_tracking.php");
 checkAuthentication("normal");
 
 commonHeader("Tracking",$_SERVER["PHP_SELF"]);
-if(empty($_POST["isgroup"])) $_POST["isgroup"] = "";
-if(empty($_POST["uemail"])) $_POST["uemail"] = "";
-if(empty($_POST["emailupdates"])) $_POST["emailupdates"] = "";
+if(empty($_GET["isgroup"])) $_GET["isgroup"] = "";
+if(empty($_GET["uemail"])) $_GET["uemail"] = "";
+if(empty($_GET["emailupdates"])) $_GET["emailupdates"] = "";
 $error = "";
+
 if (isset($_GET["priority"]) && empty($_GET["contents"]))
 {
 	$error="No Description, please try again.";
