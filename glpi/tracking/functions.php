@@ -392,7 +392,7 @@ function showJobShort($ID, $followups	) {
 	// Make new job object and fill it from database, if success, print it
 
 	$job = new Job;
-	
+
 	if ($job->getfromDB($ID,0))
 	{
 
@@ -1179,11 +1179,9 @@ echo "<th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
 		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["joblist"][5]."</th>";
 		echo "<th colspan='2'>".$lang["joblist"][6]."</th>";
 			echo "</tr>";
-
 			for ($i=0; $i < $numrows_limit; $i++) {
 				$ID = $db->result($result_limit, $i, "ID");
 				showJobShort($ID, 1);
-				$i++;
 			}
 
 			// Close Table

@@ -45,6 +45,7 @@ echo "<div align ='center'><p><b>".$lang["stats"][12]."</b></p></div>";
 //table displaying
 echo "<div align ='center'><table class='tab_cadre2' cellpadding='5'>";
 echo "<tr><th colspan=\"1\"></th><th>".$lang["stats"][8]."</th><th>".$lang["stats"][9]."</th><th>".$lang["stats"][10]."</th></tr>";
+
 echo "<tr class='tab_bg_1'>";
 //Nombre d'interventions
 //number of interventions
@@ -95,8 +96,25 @@ echo "<td>".getRealResolMax(2)."</td>";
 echo "<td>".getRealResolMax(1)."</td>";
 echo "</tr>";
 
+//Temps max de prise en compte de l'intervention
+//Max real time to resolv intervention
+echo "<tr class='tab_bg_1'>";
+echo "<td>".$lang["stats"][29]."</td>";
+echo "<td>".getFirstActionMin(3)."</td>";
+echo "<td>".getFirstActionMin(2)."</td>";
+echo "<td>".getFirstActionMin(1)."</td>";
+echo "</tr>";
+
+//Temps max de prise en compte de l'intervention
+//Max real time to resolv intervention
+echo "<tr class='tab_bg_1'>";
+echo "<td>".$lang["stats"][30]."</td>";
+echo "<td>".getFirstActionAvg(3,"","")."</td>";
+echo "<td>".getFirstActionAvg(2,"","")."</td>";
+echo "<td>".getFirstActionAvg(1,"","")."</td>";
+echo "</tr>";
+
 echo "</table>";
 echo "</div>";
-
 commonFooter();
 ?>

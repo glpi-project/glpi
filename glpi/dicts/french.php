@@ -189,7 +189,7 @@ $lang["joblist"][4] 	= "Attribu&eacute;";
 $lang["joblist"][5]	= "Ordinateur";
 $lang["joblist"][6]	= "Description";
 $lang["joblist"][7]	= "Nouvelle intervention pour cet item...";
-$lang["joblist"][8]	= "Pas d'intervention active.";
+$lang["joblist"][8]	= "Pas d'intervention trouv&eacute;e.";
 $lang["joblist"][9]	= "Nouveau";
 $lang["joblist"][10]	= "Ancien";
 $lang["joblist"][11]	= "Ouvert le";
@@ -244,8 +244,8 @@ $lang["computers"][13]	= "Ordinateur ID";
 $lang["computers"][14]	= "Inser&eacute;";
 $lang["computers"][15]	= "Contact numero";
 $lang["computers"][16]	= "Contact";
-$lang["computers"][17]	= "Numero de s&eacute;rie";
-$lang["computers"][18]	= "Numero d'inventaire";
+$lang["computers"][17]	= "N° de s&eacute;rie";
+$lang["computers"][18]	= "N° d'inventaire";
 $lang["computers"][19]	= "Commentaires";
 $lang["computers"][20]	= "OS Version";
 $lang["computers"][21]	= "CPU";
@@ -631,7 +631,7 @@ $lang["help"][19]	= "Merci d'avoir utilis&eacute; notre systeme d'aide automatiq
 $lang["help"][20]	= "Votre probl&egrave;me ne peut pas être ajout&eacute; dans notre base de donn&eacute;es.";
 $lang["help"][21]	= "Veuillez prendre contact avec un  technicien. SVP";
 $lang["help"][22]	= "Rechercher votre numéro de machine";
-$lang["help"][23]	= "Saisissez votre nom ou celui de votre ordinateur ou encore son num&eacute;ro de s&eacute;rie (ou juste les premières lettres)";
+$lang["help"][23]	= "Saisissez les premières lettres  (nom, ordinateur ou n°  de s&eacute;rie ";
 
   // Mois
   $lang["calendarM"][0] = "Janvier" ;
@@ -702,8 +702,13 @@ $lang["stats"][23] = "Pas de statistiques disponibles";
 $lang["stats"][25] = "Dur&eacute;e r&eacute;elle moyenne de l'intervention";
 $lang["stats"][26] = "Types";
 $lang["stats"][27] = "Dur&eacute;e r&eacute;elle totale des interventions";
-$lang["stats"][28] = "Dyr&eacute;é maximale de r&eacute;solution réelle de panne";
-
+$lang["stats"][28] = "Dur&eacute;é maximale de r&eacute;solution réelle de panne";
+$lang["stats"][29] = "D&eacute;lai minimum de prise en compte de l'intervention";
+$lang["stats"][30] = "D&eacute;lai moyen de prise en compte de l'intervention";
+$lang["stats"][31] = "Jour(s)";
+$lang["stats"][32] = "Heure(s)";
+$lang["stats"][33] = "Min(s)";
+$lang["stats"][34] = "Sec(s)";
 // install update
 
 $lang["install"][0]	= "Installation ou mise à jour de GLPI";
