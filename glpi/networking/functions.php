@@ -484,7 +484,7 @@ function showPorts ($device,$device_type) {
 
 function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 
-	GLOBAL $cfg_install, $cfg_layout, $lang;
+	GLOBAL $cfg_install, $cfg_layout, $lang, $REFERER;
 
 	$netport = new Netport;
 	if($ID)
@@ -497,10 +497,14 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 		$netport->getFromNull();
 	}
 
-	echo "<div align='center'><table><tr>";
+	echo "<div align='center'>";
+	echo "<b><a href='$REFERER'>".$lang["buttons"][13]."</a></b>";
+	echo "<table><tr>";
+	
 	echo "<th colspan='2'>".$lang["networking"][20].":</th>";
 	echo "</tr>";
 	echo "<form method='post' action=\"$target\">";
+	echo "<input type='hidden' name='referer' value='$REFERER'>";
 
 	if ($several!="yes"){
 	echo "<tr class='tab_bg_1'><td>".$lang["networking"][21].":</td>";
