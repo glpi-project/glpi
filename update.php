@@ -34,7 +34,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 
 //Load language
-if(!function_exists(loadLang)) {
+if(!function_exists('loadLang')) {
 	function loadLang($language) {
 		
 			unset($lang);
