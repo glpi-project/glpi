@@ -889,6 +889,7 @@ function dropdownValue($table,$myname,$value) {
 			$ID = $db->result($result, $i, "ID");
 			if ($ID === $value) {
 				echo "<option value=\"$ID\" selected>$output</option>";
+				
 			} else {
 				echo "<option value=\"$ID\">$output</option>";
 			}
@@ -896,6 +897,11 @@ function dropdownValue($table,$myname,$value) {
 		}
 	}
 	echo "</select>";
+	
+	if ($table=="glpi_enterprises")	{
+	showEnterpriseLinks($value);
+	}
+
 	}
 }
 
