@@ -258,7 +258,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 
 
-function showSoftwareForm ($target,$ID) {
+function showSoftwareForm ($target,$ID,$search_software="") {
 	// Show Software or blank form
 	
 	GLOBAL $cfg_layout,$cfg_install,$lang;
@@ -293,6 +293,17 @@ function showSoftwareForm ($target,$ID) {
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][5].":		</td>";
 	echo "<td colspan='2'><input type='text' name='version' value=\"".$sw->fields["version"]."\" size='5'></td>";
 	echo "</tr>";
+
+	// UPDATE
+	echo "<tr class='tab_bg_1'><td>".$lang["software"][29]."</td><td colspan='2'>";
+	echo "<select name='is_update'><option value='Y' ".($ID&&$sw->fields['is_update']=='Y'?"selected":"").">".$lang['choice'][0]."</option><option value='N' ".(!$ID||$sw->fields['is_update']=='N'?"selected":"").">".$lang['choice'][1]."</option></select>";
+	echo "&nbsp;".$lang["pager"][2]."&nbsp;";
+	dropdownValueSearch("glpi_software","update_software",$sw->fields["update_software"],$search_software);
+        echo "<input type='text' size='10'  name='search_software' value='$search_software'>";
+	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
+
+	echo "</td></tr>";
+
 
 	echo "<tr class='tab_bg_1'><td valign='top'>";
 	echo $lang["software"][6].":	</td>";
@@ -341,6 +352,8 @@ function updateSoftware($input) {
  
  	// Pop off the last attribute, no longer needed
 	$null=array_pop($input);
+
+	if ($input['is_update']=='N') $input['update_software']=-1;
 	
 	// Fill the update-array with changes
 	$x=0;
@@ -363,7 +376,9 @@ function addSoftware($input) {
 
 	// dump status
 	$null = array_pop($input);
-	
+
+	if ($input['is_update']=='N') $input['update_software']=-1;
+
 	// fill array for update
 	foreach ($input as $key => $val) {
 		if (empty($sw->fields[$key]) || $sw->fields[$key] != $input[$key]) {
@@ -425,13 +440,13 @@ function showLicenses ($sID) {
 	$db = new DB;
 
 	$query = "SELECT count(ID) AS COUNT  FROM glpi_licenses WHERE (sID = $sID)";
-	$query_update = "SELECT count(ID) AS COUNT  FROM glpi_licenses WHERE (update_software = $sID and is_update='Y')";
+	$query_update = "SELECT count(glpi_licenses.ID) AS COUNT  FROM glpi_licenses, glpi_software WHERE (glpi_software.ID = glpi_licenses.sID AND glpi_software.update_software = $sID and glpi_software.is_update='Y')";
 	
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 
-			$result_update = $db->query($query_update);
 			$nb_licences=$db->result($result, 0, "COUNT");
-			$nb_updates=$db->result($result_update, 0, "COUNT");
+			$result_update = $db->query($query_update);
+			$nb_updates=$db->result($result_update, 0, "COUNT");;
 			$installed = getInstalledLicence($sID);
 			// As t'on utilisé trop de licences en prenant en compte les mises a jours (double install original + mise à jour)
 			// Rien si free software
@@ -439,13 +454,13 @@ function showLicenses ($sID) {
 			if (($nb_licences-$nb_updates-$installed)<0&&!isFreeSoftware($sID)) $pb="class='tab_bg_1_2'";
 			
 			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre' width='70%'>";
-			echo "<tr><th colspan='6' $pb >";
+			echo "<tr><th colspan='5' $pb >";
 			echo $nb_licences;
 			echo "&nbsp;".$lang["software"][13]."&nbsp;-&nbsp;$nb_updates&nbsp;".$lang["software"][36]."&nbsp;-&nbsp;$installed&nbsp;".$lang["software"][19]."</th>";
 			echo "<th colspan='1'>";
 			echo " ".$lang["software"][19]." :</th></tr>";
 			$i=0;
-			echo "<tr><th>".$lang['software'][31]."</th><th>".$lang['software'][21]."</th><th>".$lang['software'][32]."</th><th>".$lang['software'][33]."</th><th>".$lang['software'][29]."</th><th>".$lang['software'][35]."</th><th>&nbsp;</th></tr>";
+			echo "<tr><th>".$lang['software'][31]."</th><th>".$lang['software'][21]."</th><th>".$lang['software'][32]."</th><th>".$lang['software'][33]."</th><th>".$lang['software'][35]."</th><th>&nbsp;</th></tr>";
 				} else {
 
 			echo "<br><div align='center'><table border='0' width='50%' cellpadding='2'>";
@@ -454,7 +469,7 @@ function showLicenses ($sID) {
 		}
 	}
 
-$query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as OEM, oem_computer as OEM_COMPUTER, is_update as ISUPDATE, update_software as UPDATE_SOFTWARE, buy as BUY  FROM glpi_licenses WHERE (sID = $sID) GROUP BY serial, expire, oem, oem_computer, is_update, update_software, buy ORDER BY serial,oem, oem_computer, is_update,update_software";
+$query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as OEM, oem_computer as OEM_COMPUTER, buy as BUY  FROM glpi_licenses WHERE (sID = $sID) GROUP BY serial, expire, oem, oem_computer, buy ORDER BY serial,oem, oem_computer";
 //echo $query;
 	if ($result = $db->query($query)) {			
 	while ($data=$db->fetch_array($result)) {
@@ -463,11 +478,9 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		$expire=$data["EXPIRE"];
 		$oem=$data["OEM"];
 		$oem_computer=$data["OEM_COMPUTER"];
-		$is_update=$data["ISUPDATE"];
-		$update_software=$data["UPDATE_SOFTWARE"];
 		$buy=$data["BUY"];
 		
-		$SEARCH_LICENCE="(glpi_licenses.sID = $sID AND glpi_licenses.serial = '$serial'  AND glpi_licenses.oem = '$oem' AND glpi_licenses.oem_computer = '$oem_computer' AND glpi_licenses.is_update = '$is_update' AND glpi_licenses.update_software = '$update_software' AND glpi_licenses.buy = '$buy' ";
+		$SEARCH_LICENCE="(glpi_licenses.sID = $sID AND glpi_licenses.serial = '$serial'  AND glpi_licenses.oem = '$oem' AND glpi_licenses.oem_computer = '$oem_computer'  AND glpi_licenses.buy = '$buy' ";
 		if ($expire=="")
 		$SEARCH_LICENCE.=" AND glpi_licenses.expire IS NULL)";
 		else $SEARCH_LICENCE.=" AND glpi_licenses.expire = '$expire')";
@@ -515,28 +528,11 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			} 
 			echo "</td>";
 		
-			// UPDATE
-			if ($data["ISUPDATE"]=='Y') {
-			$sw=new Software();
-			$sw->getFromDB($data["UPDATE_SOFTWARE"]);
-			}
-
-			echo "<td align='center' class='tab_bg_1".($data["ISUPDATE"]=='Y'&&!isset($sw->fields['ID'])?"_2":"")."'>".($data["ISUPDATE"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
-			if ($data["ISUPDATE"]=='Y') {
-			echo "<br><b>";
-			if (isset($sw->fields['ID']))
-			echo "<a href='".$cfg_install["root"]."/software/software-info-form.php?ID=".$sw->fields['ID']."'>".$sw->fields['name']."&nbsp;".$sw->fields['version']."</a>";
-			else echo "N/A";
-			echo "<b>";
-			} 
-		
-			echo "</td>";
-		
 			// BUY
 			echo "<td align='center'>".($data["BUY"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
 			echo "</td>";
 		} else 
-		echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
+		echo "<td>&nbsp;</td><td>&nbsp;</td>";
 		
 		echo "<td align='center'>";
 		/// Logiciels installés :
@@ -619,7 +615,7 @@ echo "</table></div>\n\n";
 }
 
 
-function showLicenseForm($target,$action,$sID,$lID="",$search_computer="",$search_software="") {
+function showLicenseForm($target,$action,$sID,$lID="",$search_computer="") {
 
 	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel;
 
@@ -641,8 +637,8 @@ function showLicenseForm($target,$action,$sID,$lID="",$search_computer="",$searc
 	$values['expire']='';
 	$values['oem']='N';
 	$values["oem_computer"]='';
-	$values['is_update']='N';
-	$values["update_software"]='';
+//	$values['is_update']='N';
+//	$values["update_software"]='';
 	$values['buy']='Y';
 	
 	
@@ -697,15 +693,6 @@ function showLicenseForm($target,$action,$sID,$lID="",$search_computer="",$searc
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
 	
 	echo "</td></tr>";
-	// UPDATE
-	echo "<tr class='tab_bg_1'><td>".$lang["software"][29]."</td><td>";
-	echo "<select name='is_update'><option value='Y' ".($values['is_update']=='Y'?"selected":"").">".$lang['choice'][0]."</option><option value='N' ".($values['is_update']=='N'?"selected":"").">".$lang['choice'][1]."</option></select>";
-	echo "&nbsp;".$lang["pager"][2]."&nbsp;";
-	dropdownValueSearch("glpi_software","update_software",$values["update_software"],$search_software);
-        echo "<input type='text' size='10'  name='search_software' value='$search_software'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
-
-	echo "</td></tr>";
 	// BUY
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][35]."</td><td>";
 	echo "<select name='buy'><option value='Y' ".($values['buy']=='Y'?"selected":"").">".$lang['choice'][0]."</option><option value='N' ".($values['buy']=='N'?"selected":"").">".$lang['choice'][1]."</option></select>";
@@ -733,7 +720,7 @@ function addLicense($input) {
 	
 	if (empty($input['expire'])) unset($input['expire']);
 	if ($input['oem']=='N') $input['oem_computer']=-1;
-	if ($input['is_update']=='N') $input['update_software']=-1;
+
 	// fill array for update
 	foreach ($input as $key => $val) {
 		if (empty($lic->fields[$key]) || $sw->fields[$key] != $input[$key]) {
@@ -760,7 +747,6 @@ function updateLicense($input) {
 
 	if (empty($input['expire'])) unset($input['expire']);
 	if ($input['oem']=='N') $input['oem_computer']=-1;
-	if ($input['is_update']=='N') $input['update_software']=-1;
 	
 	
 	// Fill the update-array with changes
@@ -793,7 +779,7 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 	$db = new DB;
 
 	$back = urlencode($back);
-	
+
 	$query = "SELECT DISTINCT glpi_licenses.ID as ID FROM glpi_licenses LEFT JOIN glpi_inst_software ON glpi_licenses.ID = glpi_inst_software.license WHERE (glpi_licenses.sID = $sID AND glpi_inst_software.ID IS NULL) OR (glpi_licenses.sID = $sID AND glpi_licenses.serial='free') ORDER BY glpi_licenses.serial";
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 

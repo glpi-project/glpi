@@ -957,7 +957,7 @@ function dropdownValueSearch($table,$myname,$value,$search) {
 			$output = $db->result($result, $i, "name");
 			$ID = $db->result($result, $i, "ID");
 
-			if ($output == $value) {
+			if ($ID == $value) {
 				echo "<option value=\"$ID\" selected>$output</option>";
 			} else {
 				echo "<option value=\"$ID\">$output</option>";
