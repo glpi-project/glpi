@@ -339,8 +339,8 @@ if (restoreMySqlDump($fichier , "glpi" , "dombre" , "coucoucmoi", "localhost",$d
     {
     echo "<br>Nombre de requêtes traitées à ce stade : $cpt<br>";
     echo "<br>mais il faut continuer à l'octet ".number_format($offset,0,""," ");
-    echo "<br>Redirection automatique sinon cliquez <a href=\"script.php?duree=$duree&offset=$offset&cpt=$cpt\">ici</a>";
-    echo "<script>window.location=\"script.php?duree=$duree&offset=$offset&cpt=$cpt\";</script>";
+    echo "<br>Redirection automatique sinon cliquez <a href=\"test.php?duree=$duree&offset=$offset&cpt=$cpt\">ici</a>";
+    echo "<script>window.location=\"test.php?duree=$duree&offset=$offset&cpt=$cpt\";</script>";
     }
     else
      echo "<br>Terminé. Nombre de requêtes totales traitées : $cpt<br>";
@@ -371,8 +371,8 @@ echo "ENDDDDDDDDDDDDDDDDD".$offsettable;
     {
     echo "<br>Nombre de requêtes traitées à ce stade : $cpt<br>";
     echo "<br>mais il faut continuer à la table $offsettable ligne ".number_format($offsetrow,0,""," ");
-    echo "<br>Redirection automatique sinon cliquez <a href=\"script.php?duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\">ici</a>";
-    echo "<script>window.location=\"script.php?duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\";</script>";
+    echo "<br>Redirection automatique sinon cliquez <a href=\"test.php?duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\">ici</a>";
+    echo "<script>window.location=\"test.php?duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\";</script>";
     }
     else
      echo "<br>Terminé. Nombre de requêtes totales traitées : $cpt<br>";
