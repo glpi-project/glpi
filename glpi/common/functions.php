@@ -362,8 +362,16 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 
 	
 	// Logo with link to command center
-	echo "<td align='center' width='25%' >\n";
+	echo "<td width='25%'  valign='top'>\n";
+	
+	
+	echo "<table width='100%' ><tr><td align='center'>";
+	
 	echo "<a href=\"".$cfg_install["root"]."/central.php\" accesskey=\"0\"><img src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>";
+	echo "</td></tr>";
+	echo "<tr><td height='50px' align='center' >";
+	echo "<span style='color:#ccccc'>- Session :<b>".$_SESSION["glpiname"]."</b> - </span>";
+	echo "</tr></td></table>";
 	
 	echo "</td>";
 
