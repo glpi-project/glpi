@@ -38,7 +38,7 @@ include ("_relpos.php");
 function titleContacts(){
                 GLOBAL  $lang,$HTMLRel;
                 echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/periphs.png\" alt='".$lang["financial"][24]."' title='".$lang["financial"][24]."'></td><td><a  class='icon_consol' href=\"contacts-info-form.php?new=1\"><b>".$lang["financial"][24]."</b></a>";
+                echo "<img src=\"".$HTMLRel."pics/contacts.png\" alt='".$lang["financial"][24]."' title='".$lang["financial"][24]."'></td><td><a  class='icon_consol' href=\"contacts-info-form.php?new=1\"><b>".$lang["financial"][24]."</b></a>";
                 echo "</td></tr></table></div>";
 }
 
@@ -63,7 +63,7 @@ function searchFormContact($field="",$phrasetype= "",$contains="",$sort= "") {
 	echo "<td align='center'>";
 	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" />";
 	echo "&nbsp;";
-	echo "dans <select name=\"field\" size='1'>";
+	echo $lang["search"][10]."&nbsp;<select name=\"field\" size='1'>";
         echo "<option value='all' ";
 	if($field == "all") echo "selected";
 	echo ">".$lang["search"][7]."</option>";
@@ -71,7 +71,7 @@ function searchFormContact($field="",$phrasetype= "",$contains="",$sort= "") {
 	foreach ($option as $key => $val) {
 		echo "<option value=\"".$key."\""; 
 		if($key == $field) echo "selected";
-		echo ">". $val ."</option>\n";
+		echo ">". substr($val, 0, 12) ."</option>\n";
 	}
 	echo "</select>&nbsp;";
 	
@@ -161,7 +161,7 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 
 		if ($numrows_limit>0) {
 			// Produce headline
-			echo "<center><table  class='tab_cadre'><tr>";
+			echo "<div align='center'><table  class='tab_cadre' width='750'><tr>";
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_contact.name") {
@@ -230,14 +230,14 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			}
 
 			// Close Table
-			echo "</table></center>";
+			echo "</table></div>";
 
 			// Pager
 			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<center><b>".$lang["financial"][38]."</b></center>";
+			echo "<div align='center'><b>".$lang["financial"][38]."</b></div>";
 			//echo "<hr noshade>";
 			//searchFormperipheral();
 		}
