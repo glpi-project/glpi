@@ -365,9 +365,9 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 	echo "<td><input type='text' name='contact' size='20' value=\"".$netdev->fields["contact"]."\"></td>";
 	echo "</tr>";
 	
-	if (!empty($ID)){
+	if (!$template){
 	echo "<tr><td>".$lang["reservation"][24].":</td><td><b>";
-	showReservationForm(2,$ID);
+	showReservationForm(NETWORKING_TYPE,$ID);
 	echo "</b></td></tr>";
 	}
 	echo "</table>";

@@ -437,7 +437,7 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		
 		if (!$template){
 		echo "<td>".$lang["reservation"][24]."&nbsp;:</td><td><b>";
-		showReservationForm(1,$ID);
+		showReservationForm(COMPUTER_TYPE,$ID);
 		echo "</b></td>";
 		} else echo "<td>&nbsp;</td><td>&nbsp;</td>";
 		
