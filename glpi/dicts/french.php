@@ -123,6 +123,8 @@ $lang["Menu"][10]	="Configuration";
 $lang["Menu"][11]	="Pr&eacute;ferences";
 $lang["Menu"][12]	="Donn&eacute;es";
 $lang["Menu"][13]	="Statistiques";
+$lang["Menu"][14]	="Utilisateurs";
+$lang["Menu"][15]	="Administration";
 
 //Donn&eacute;es
 
