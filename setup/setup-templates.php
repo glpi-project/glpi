@@ -40,7 +40,13 @@ include ($phproot . "/glpi/includes_setup.php");
 
 checkAuthentication("normal");
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
-listTemplates($HTMLRel ."computers/computers-info-form.php");
+listTemplates(COMPUTER_TYPE,$HTMLRel ."computers/computers-info-form.php");
+listTemplates(NETWORKING_TYPE,$HTMLRel ."networking/networking-info-form.php");
+listTemplates(PRINTER_TYPE,$HTMLRel ."printers/printers-info-form.php");
+listTemplates(MONITOR_TYPE,$HTMLRel ."monitors/monitors-info-form.php");
+listTemplates(SOFTWARE_TYPE,$HTMLRel ."software/software-info-form.php");
+listTemplates(PERIPHERAL_TYPE,$HTMLRel ."peripherals/peripherals-info-form.php");
+
 commonFooter();
 
 

@@ -1113,16 +1113,43 @@ function showFormAssign($target)
 echo "</table></div>";}
 }
 
-function listTemplates($target) {
+function listTemplates($type,$target) {
 
 	GLOBAL $cfg_layout, $lang;
 
 	$db = new DB;
-	$query = "SELECT * FROM glpi_computers where is_template = '1' ORDER by tplname";
+	
+	switch ($type){
+	case COMPUTER_TYPE :
+		$title=$lang["Menu"][0];
+		$query = "SELECT * FROM glpi_computers where is_template = '1' ORDER by tplname";
+		break;
+	case NETWORKING_TYPE :
+		$title=$lang["Menu"][1];
+		$query = "SELECT * FROM glpi_networking where is_template = '1' ORDER by tplname";
+		break;
+	case MONITOR_TYPE :
+		$title=$lang["Menu"][3];
+		$query = "SELECT * FROM glpi_monitors where is_template = '1' ORDER by tplname";
+		break;	
+	case PRINTER_TYPE :
+		$title=$lang["Menu"][2];
+		$query = "SELECT * FROM glpi_printers where is_template = '1' ORDER by tplname";
+		break;	
+	case PERIPHERAL_TYPE :
+		$title=$lang["Menu"][16];
+		$query = "SELECT * FROM glpi_peripherals where is_template = '1' ORDER by tplname";
+		break;
+	case SOFTWARE_TYPE :
+		$title=$lang["Menu"][4];
+		$query = "SELECT * FROM glpi_software where is_template = '1' ORDER by tplname";
+		break;
+	
+	}
 	if ($result = $db->query($query)) {
 		
 		echo "<div align='center'><table class='tab_cadre' width='50%'>";
-		echo "<tr><th colspan='2'>".$lang["setup"][1].":</th></tr>";
+		echo "<tr><th colspan='2'>".$lang["setup"][1]." - $title:</th></tr>";
 		$i=0;
 		while ($i < $db->numrows($result)) {
 			$ID = $db->result($result,$i,"ID");
