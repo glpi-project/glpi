@@ -620,7 +620,7 @@ function update1($host,$user,$password,$dbname) {
 	include ("_relpos.php");
 	if(create_conn_file($host,$user,$password,$dbname) && !empty($dbname)) {
 		
-		include($phproot ."/glpi/update.php");
+		include($phproot ."/update.php");
 	}
 	else {
 		echo $lang["install"][70];
