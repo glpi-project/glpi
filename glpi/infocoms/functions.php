@@ -38,6 +38,8 @@ function showInfocomForm ($target,$device_type,$dev_ID) {
 	
 	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel;
 
+	$date_fiscale="2005-12-31";
+	
 	$ic = new Infocom;
 
 	if (!$ic->getfromDB($device_type,$dev_ID)){
@@ -103,7 +105,12 @@ function showInfocomForm ($target,$device_type,$dev_ID) {
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][21].":		</td>";
-		echo "<td colspan='2'><input type='text' name='value' value=\"".$ic->fields["value"]."\" size='10'></td>";
+		echo "<td ><input type='text' name='value' value=\"".$ic->fields["value"]."\" size='10'></td>";
+		
+		echo "<td>Valeur nette comptable :";
+		echo  TableauAmort($ic->fields["amort_type"],$ic->fields["value"],$ic->fields["amort_time"],$ic->fields["amort_coeff"],$ic->fields["buy_date"],$ic->fields["use_date"],$date_fiscale,$view="n");
+		
+		echo "</td>";		
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][78].":		</td>";
@@ -252,4 +259,256 @@ function dropdownInfocoms($name){
 	
 	
 }
+
+
+function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_fiscale,$view="n") {
+	// By Jean-Mathieu Doléans qui s'est un peu pris le chou :p
+	
+	// $type_amort = "lineaire=2" ou "degressif=1"
+	// $va = valeur d'acquisition
+	// $duree = duree d'amortissement
+	// $coef = coefficient d'amortissement
+	// $date_achat= Date d'achat
+	// $date_use = Date d'utilisation
+	// $date_fiscale= date du début de l'année fiscale
+	// $view = "n" pour l'année en cours ou "all" pour le tableau complet
+	
+	// Attention date mise en service/dateachat ->amort linéaire  et $prorata en jour !!
+	// amort degressif au prorata du nombre de mois. Son point de départ est le 1er jour du mois d'acquisition et non date de mise en service
+	
+	
+	
+	if($va>0 &&$duree>0 &&$coef>1.01 &&$date_achat!="0000-00-00") {
+		
+		if ($type_amort=="2"){
+		
+			if ($date_use!="0000-00-00") $date_achat=$date_use;
+		
+		}
+	
+		$prorata=0;
+		$ecartfinmoiscourant=0;
+		$ecartmoisexercice=0;
+		
+		sscanf($date_achat, "%4s-%2s-%2s %2s:%2s:%2s",
+		&$date_Y, &$date_m, &$date_d,
+		&$date_H, &$date_i, &$date_s); // un traitement sur la date mysql pour récupérer l'année
+	
+		// un traitement sur la date mysql pour les infos necessaires	
+		sscanf($date_fiscale, "%4s-%2s-%2s %2s:%2s:%2s",
+		&$date_Y2, &$date_m2, &$date_d2,
+		&$date_H2, &$date_i2, &$date_s2); 
+		$date_Y2=date("Y");
+		
+		if ($type_amort=="2") { 
+		
+		########################### Calcul amortissement linéaire ###########################
+		
+		## calcul du prorata temporis en jour ##	
+	
+			
+		$ecartfinmoiscourant=(30-$date_d); // calcul ecart entre jour  date acquis ou mise en service et fin du mois courant
+	
+		// en linéaire on calcule en jour
+	
+		if ($date_d2<30) {$ecartmoisexercice=(30-$date_d2); }	
+		
+	
+		if ($date_m>$date_m2) {$date_m2=$date_m2+12;} // si l'année fiscale débute au delà de l'année courante
+	
+	
+		$ecartmois=(($date_m2-$date_m)*30); // calcul ecart etre mois d'acquisition et debut année fiscale
+	
+	
+		$prorata=$ecartfinmoiscourant+$ecartmois-$ecartmoisexercice;
+		
+	
+		## calcul tableau d'amortissement ##
+		
+		$txlineaire = (100/$duree); // calcul du taux linéaire
+	
+		$annuite = ($va*$txlineaire)/100; // calcul de l'annuité 
+	
+		$mrt=$va; //
+	
+	
+		// si prorata temporis la dernière annnuité cours sur la durée n+1
+		if ($prorata>0){$duree=$duree+1;}
+	
+		for($i=1;$i<=$duree;$i++) {
+	
+		
+			$tab['annee'][$i]=$date_Y+$i-1;
+	
+			$tab['annuite'][$i]=$annuite;
+		
+			$tab['vcnetdeb'][$i]=$mrt; // Pour chaque année on calcul la valeur comptable nette  de debut d'exercice
+		
+			$tab['vcnetfin'][$i]=abs(($mrt - $annuite)); // Pour chaque année on calcul la valeur comptable nette  de fin d'exercice
+	
+	
+			// calcul de la première annuité si prorata temporis
+			if ($prorata>0){
+				$tab['annuite'][1]=$annuite*($prorata/360);
+	
+				$tab['vcnetfin'][1]=abs($va - $tab['annuite'][1]);
+					}
+	
+			$mrt=$tab['vcnetfin'][$i];
+	
+		} // end for
+		
+		// calcul de la dernière annuité si prorata temporis
+		if ($prorata>0){
+			$tab['annuite'][$duree]=$tab['vcnetdeb'][$duree];
+		
+			$tab['vcnetfin'][$duree]=$tab['vcnetfin'][$duree-1]- $tab['annuite'][$duree];
+				}
+			
+		
+			
+		}else{	
+		
+			########################### Calcul amortissement dégressif ###########################
+		
+			## calcul du prorata temporis en mois ##
+			
+			// si l'année fiscale débute au delà de l'année courante
+		
+			if ($date_m>$date_m2) {	$date_m2=$date_m2+12;	}
+		
+			$ecartmois=($date_m2-$date_m)+1; // calcul ecart etre mois d'acquisition et debut année fiscale
+		
+			$prorata=$ecartfinmoiscourant+$ecartmois-$ecartmoisexercice;
+			
+			
+			
+			## calcul tableau d'amortissement ##
+			
+			
+		
+			$txlineaire = (100/$duree); // calcul du taux linéaire virtuel
+			$txdegressif=$txlineaire*$coef; // calcul du taux degressif
+			$dureelineaire= (int) (100/$txdegressif); // calcul de la durée de l'amortissement en mode linéaire
+			$dureedegressif=$duree-$dureelineaire;// calcul de la durée de l'amortissement en mode degressif
+			$mrt=$va; //
+		
+			// amortissement degressif pour les premières années
+		
+			for($i=1;$i<=$dureedegressif;$i++) {
+			
+				$tab['annee'][$i]=$date_Y+$i-1;
+				
+				$tab['vcnetdeb'][$i]=$mrt; // Pour chaque année on calcul la valeur comptable nette  de debut d'exercice
+		
+				$tab['annuite'][$i]=$tab['vcnetdeb'][$i]*$txdegressif/100;
+		
+				$tab['vcnetfin'][$i]=$mrt - $tab['annuite'][$i]; // Pour chaque année on calcul la valeur comptable nette  de fin d'exercice
+		
+				// calcul de la première annuité si prorata temporis
+				if ($prorata>0){
+		
+					$tab['annuite'][1]=($va*$txdegressif/100)*($prorata/12);
+		
+					$tab['vcnetfin'][1]=$va - $tab['annuite'][1];
+			
+					}
+		
+				$mrt=$tab['vcnetfin'][$i];
+		
+			} // end for
+		
+				
+			
+			// amortissement en linéaire pour les dernières années 	 
+		
+			
+			$txlineaire = (100/$dureelineaire); // calcul du taux linéaire
+			$annuite = ($tab['vcnetfin'][$dureedegressif]*$txlineaire)/100; // calcul de l'annuité 
+			$mrt=$tab['vcnetfin'][$dureedegressif];
+				
+			
+			for($i=$dureedegressif+1;$i<=$dureedegressif+$dureelineaire;$i++) {
+		
+				$tab['annee'][$i]=$date_Y+$i-1;
+				
+				$tab['annuite'][$i]=$annuite;
+				
+				$tab['vcnetdeb'][$i]=$mrt; // Pour chaque année on calcul la valeur comptable nette  de debut d'exercice
+			
+				$tab['vcnetfin'][$i]=abs(($mrt - $annuite)); // Pour chaque année on calcul la valeur comptable nette  de fin d'exercice
+		
+				$mrt=$tab['vcnetfin'][$i];
+		
+			} // end for
+			
+			// calcul de la dernière annuité si prorata temporis
+			if ($prorata>0){
+			
+			$tab['annuite'][$duree]=$tab['vcnetdeb'][$duree];
+			
+			$tab['vcnetfin'][$duree]=$tab['vcnetfin'][$duree-1]- $tab['annuite'][$duree];
+			
+			}
+			
+		}
+		
+	
+		if ($view=="all") {
+		
+		// on retourne le tableau complet
+		
+		return $tab;
+		
+		}else{
+		
+		// on retourne juste la valeur résiduelle
+		
+		
+			if (mktime(0 , 0 , 0, $date_m2, $date_d2, date("Y"))  - mktime(0 , 0 , 0 , date("m") , date("d") , date("Y")) < 0 ){
+		
+				// on a dépassé la fin d'exercice de l'année en cours
+		
+				//on prend la valeur résiduelle de l'année en cours
+			
+				$vnc= $tab["vcnetfin"][array_search(date("Y"),$tab["annee"])];
+				
+			}else {
+		
+				// on se situe avant la fin d'exercice
+				// on prend la valeur résiduelle de l'année n-1
+			
+				/*
+				$nmoinsun=array_search(date("Y"),$tab["annee"])-1;
+					
+				if ($nmoinsun<=0) { $nmoinsun=array_search(date("Y"),$tab["annee"]);}
+					
+				$vnc=$tab["vcnetfin"][$nmoinsun];
+				*/
+				
+				$vnc=$tab["vcnetdeb"][array_search(date("Y"),$tab["annee"])];
+				
+				
+				
+						
+			}
+	
+		return number_format($vnc,2,"."," ");
+		
+		}
+
+	}else{
+	
+	return "-";
+	
+	}
+
+
+
+}
+
+
+
+
+
 ?>
