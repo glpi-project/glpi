@@ -75,8 +75,6 @@ $_GET["date2"]=$tmp;
 if(!isset($_GET["only_computers"])) $_GET["only_computers"] = "";
 
 searchFormTrackingReport();
-//print_r($_GET);
-echo "&nbsp";
 
 if (!empty($_GET["field"]))
 showTrackingListReport($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["start"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["field2"],$_GET["phrasetype2"],$_GET["contains2"],$_GET["author"],$_GET["attrib"],$_GET["category"]);
