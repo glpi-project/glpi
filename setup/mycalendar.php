@@ -32,12 +32,12 @@ This file is part of GLPI.
  Original Author of file:
  Purpose of file:
  ----------------------------------------------------------------------
-
-
 */
+
 // inspiré du script mycalendar de PASCAL, CLAUDE MANON
 //pascal.manon@caramail.com
 
+ 
 
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
@@ -70,9 +70,16 @@ checkauthentication("normal");
   $day[2] = $lang["calendarD"][2];
   $day[3] = $lang["calendarD"][3];
   $day[4] = $lang["calendarD"][4] ; 
-   $day[5] = $lang["calendarD"][5] ;
+  $day[5] = $lang["calendarD"][5] ;
   $day[6] = $lang["calendarD"][6];
-$error01 = "Erreur : date invalide"
+  $error01 = "Erreur : date invalide" ;
+  $form    = $_GET["form"];
+  $elem = $_GET["elem"];
+  if(!empty($_GET["mois"])) $mois = $_GET["mois"];
+  if(!empty($_GET["annee"])) $annee = $_GET["annee"];
+  if(!empty($_GET["jour"])) $jour = $_GET["jour"];
+  
+
 
 ?>
 <html>
@@ -98,33 +105,27 @@ $error01 = "Erreur : date invalide"
 
 </style>
 <script language='JavaScript'>
- window.resizeTo(200,270) ;
- function modifier (jour)
- {
-  window.location.href = "mycalendar.php?form=<?php
-
-echo $form;?>&elem=<?php
-
+ window.resizeTo(200,270);
  
-
-echo $elem;?>&mois=" + document.forms["MyCalendar"].elements['month'].options[document.forms["MyCalendar"].elements['month'].selectedIndex].value + "&jour=" + jour +"&annee=" + document.forms["MyCalendar"].elements['year'].options[document.forms["MyCalendar"].elements['year'].selectedIndex].value
-
+ function modifier(jour)
+ {
+  window.location.href = "mycalendar.php?form=<?php echo $form;?>&elem=<?php echo $elem;?>&mois=" + document.forms["MyCalendar"].elements['month'].options[document.forms["MyCalendar"].elements['month'].selectedIndex].value + "&jour=" + jour + "&annee=" + document.forms["MyCalendar"].elements['year'].options[document.forms["MyCalendar"].elements['year'].selectedIndex].value
  }
 <?php
 
  
-$form = $_GET["form"];
-$elem = $_GET["elem"];
 
-if (!isset($jour))
-       $jour = date("j") ;
 
-  if (!isset($mois))
+if (empty($jour))
+       $jour = date("j");
+       echo "bla";
+
+  if (empty($mois))
        $mois = date("m") ;
-
-  if (!isset($annee))
+	 echo "bla1";
+  if (empty($annee))
        $annee = date("Y") ;
-
+	 echo "bla2";
     // nombre de jours par mois
   $nbjmonth[0] = 31 ;
   $nbjmonth[1] = ($annee%4==0?($annee%100==0?($annee%400?29:28):29):28) ;
@@ -242,7 +243,7 @@ echo "<body bgcolor='#$bgcolor' onUnLoad=''>\n" ;
    echo "</tr>\n" ;
   }
 
-  echo "\n<tr><td colspan='10' align='center'><input type='button' onclick='window.opener.document.forms[\"".$form."\"].elements[\"".$elem."\"]\"].value=\"".$annee."-".$mois."-".$jour."\";window.close()' value='Valider'>&nbsp;&nbsp;<input onclick='window.close()' type='button' value='Annuler'></td></tr></table>\n" ;
+  echo "\n<tr><td colspan='10' align='center'><input type='button' onclick='window.opener.document.forms[\"$form\"].elements[\"$elem\"].value=\"$annee-$mois-$jour\";window.close()' value='Valider'>&nbsp;&nbsp;<input onclick='window.close()' type='button' value='Annuler'></td></tr></table>\n" ;
 
   echo "\n</tr></table>\n" ;
 

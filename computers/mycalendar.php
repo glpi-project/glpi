@@ -70,12 +70,15 @@ checkauthentication("normal");
   $day[2] = $lang["calendarD"][2];
   $day[3] = $lang["calendarD"][3];
   $day[4] = $lang["calendarD"][4] ; 
-   $day[5] = $lang["calendarD"][5] ;
+  $day[5] = $lang["calendarD"][5] ;
   $day[6] = $lang["calendarD"][6];
   $error01 = "Erreur : date invalide" ;
-
-   $form    = $_GET["form"];
-   $elem = $_GET["elem"];
+  $form    = $_GET["form"];
+  $elem = $_GET["elem"];
+  if(!empty($_GET["mois"])) $mois = $_GET["mois"];
+  if(!empty($_GET["annee"])) $annee = $_GET["annee"];
+  if(!empty($_GET["jour"])) $jour = $_GET["jour"];
+  
 
 
 ?>
@@ -102,32 +105,27 @@ checkauthentication("normal");
 
 </style>
 <script language='JavaScript'>
- window.resizeTo(200,270) ;
- function modifier (jour)
- {
-  window.location.href = "mycalendar.php?form=<?php
-
-echo $form;?>&elem=<?php
-
+ window.resizeTo(200,270);
  
-
-echo $elem;?>&mois=" + document.forms["MyCalendar"].elements['month'].options[document.forms["MyCalendar"].elements['month'].selectedIndex].value + "&jour=" + jour +"&annee=" + document.forms["MyCalendar"].elements['year'].options[document.forms["MyCalendar"].elements['year'].selectedIndex].value
-
+ function modifier(jour)
+ {
+  window.location.href = "mycalendar.php?form=<?php echo $form;?>&elem=<?php echo $elem;?>&mois=" + document.forms["MyCalendar"].elements['month'].options[document.forms["MyCalendar"].elements['month'].selectedIndex].value + "&jour=" + jour + "&annee=" + document.forms["MyCalendar"].elements['year'].options[document.forms["MyCalendar"].elements['year'].selectedIndex].value
  }
 <?php
 
  
 
 
-if (!isset($jour))
-       $jour = date("j") ;
+if (empty($jour))
+       $jour = date("j");
+       echo "bla";
 
-  if (!isset($mois))
+  if (empty($mois))
        $mois = date("m") ;
-
-  if (!isset($annee))
+	 echo "bla1";
+  if (empty($annee))
        $annee = date("Y") ;
-
+	 echo "bla2";
     // nombre de jours par mois
   $nbjmonth[0] = 31 ;
   $nbjmonth[1] = ($annee%4==0?($annee%100==0?($annee%400?29:28):29):28) ;
