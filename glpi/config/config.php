@@ -93,7 +93,7 @@ class baseFunctions {
 //mettez cette option a 1 si vous vous voulez utiliser des sources
 //d'informations externes/alternatives pour le login
 //par defaut laissez cette valeur a 0;
-$cfg_login['use_extern'] = 0;
+$cfg_login['use_extern'] = 1;
 
 // Gestion de source d'information alternatives pour le login
 // telles que des serveurs de mail en imap pop...
@@ -105,8 +105,8 @@ $cfg_login['use_extern'] = 0;
 // Si plusieurs sources alternatives sont définies, seule la première
 // fournissant un login correct est utilisé
 
-$cfg_login['imap']['auth_server'] = "{hector.indepnet.org:143/imap}";
-$cfg_login['imap']['host'] = "";
+$cfg_login['imap']['auth_server'] = "{localhost:993/imap/ssl/novalidate-cert}";
+$cfg_login['imap']['host'] = "sic.sp2mi.univ-poitiers.fr";
 
 //other sources
 //$cfg_login['other_source']...
@@ -123,34 +123,45 @@ $cfg_login['imap']['host'] = "";
 // 5 - Junk (i.e., setup dropdown fields, update users or templates) | log tout (ou presque)
 $cfg_features["event_loglevel"]	= 5;
 
-// Address to send new posted jobs, status changes and assignments,
-// e.g. an admin-mailinglist, leave empty to disable notification.
-// Laissez ce champ vide (Non supporté par GLPI)
-$cfg_features["job_email"]	= "";	
+// Utilisation des fonctions mailing ou non
+$cfg_features["mailing"]	= 1;	
+// Addresse de l'administrateur (obligatoire si mailing activé)
+$cfg_mailing["admin_email"]	= "admsys@sic.sp2mi.univ-poitiers.fr";	
+// Signature for automatic generated E-Mails
+$cfg_mailing["signature"]	= "SIGNATURE";
 
-// Address to send new followups to, e. g. an admin mailinglist,
-// leave empty to disable notification.
-// laisser ce champs vide
-$cfg_features["newfup_email"]	= "";
+// Définition des envois des mails d'informations
+// admin : vers le mail $cfg_features["admin_email"]
+// all_admin : tous les utilisateurs en mode admin
+// all_normal : toutes les utilisateurs en mode normal
+// attrib : personne responsable de la tache
+// user : utilisateur demandeur
+// 1 pour l'envoi et 0 dans el cas contraire 
 
-// Send mail if a new job gets assigned to someone, notify him that
-// he has work to do. :)
-// laisser ce champs à 0 (non supporté par GLPI v0.2)
-$cfg_features["notify_assign"]	= 0;
+$cfg_mailing["new"]["admin"]=1;
+$cfg_mailing["attrib"]["admin"]=1;
+$cfg_mailing["followup"]["admin"]=1;
+$cfg_mailing["finish"]["admin"]=1;
 
-// Also send mail to job_email, that the job has been assigned
-// to someone.
-// laisser ce champs a 0 (non supporté par GLPI v0.2)
-$cfg_features["notify_ass_all"] = 0;	
+$cfg_mailing["new"]["all_admin"]=0;
+$cfg_mailing["attrib"]["all_admin"]=0;
+$cfg_mailing["followup"]["all_admin"]=0;
+$cfg_mailing["finish"]["all_admin"]=0;
 
-// Send mail to whom the job belongs, notify him that it has been updated.
-// laisser ce champs a 0 (non supporté par GLPI v0.2)
-$cfg_features["notify_fups"]	= 0;	
 
-// Send mail to the user who send the job to the tracking system through
-// the help-desk.
-// laisser ce champs a 0 (non supporté par GLPI v0.2)
-$cfg_features["notify_users"]	= 0;	
+$cfg_mailing["new"]["all_normal"]=0;
+$cfg_mailing["attrib"]["all_normal"]=0;
+$cfg_mailing["followup"]["all_normal"]=0;
+$cfg_mailing["finish"]["all_normal"]=0;
+
+$cfg_mailing["attrib"]["attrib"]=1;
+$cfg_mailing["followup"]["attrib"]=1;
+$cfg_mailing["finish"]["attrib"]=1;
+
+$cfg_mailing["new"]["user"]=1;
+$cfg_mailing["attrib"]["user"]=1;
+$cfg_mailing["followup"]["user"]=1;
+$cfg_mailing["finish"]["user"]=1;
 
 // Show jobs at login.
 // Montrer les interventions au loging (1 = oui | 0 = non)
@@ -226,10 +237,6 @@ $cfg_layout["body_alink"]	= "#009966";
 $cfg_layout["tab_bg_1"] 	= "#cccccc";
 $cfg_layout["tab_bg_2"]		= "#dddddd";
 $cfg_layout["tab_bg_3"]		= "#eeeeee";
-
-// Signature for automatic generated E-Mails
-// laisser ce champs a "" (non supporté par GLPI v0.2)
-$cfg_layout["signature"]	= "";
 
 // END OF CONFIGURATION
 ?>
