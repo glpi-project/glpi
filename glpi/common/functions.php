@@ -508,9 +508,7 @@ function helpHeader($title,$url,$name) {
 	echo "<td align='center' width='25%'>\n";
 	
 	echo "<img src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" >";
-	
-
-
+	echo "<div style='width:80px; text-align:center;'><p class='nav_horl'><b>".$_SESSION["glpiname"]."</b></p></div>";
         echo "</td>";
 
 	echo "<td valign='middle'>";
