@@ -145,6 +145,20 @@ background-color: #cc5555;
 background-color: #e7e7e2;
 
 }  
+
+.tab_resa {
+border:1px dashed #cccccc;
+background-color: #d7d7d2;
+font-size:8px
+}
+
+.tab_resa:hover {
+
+background-color: #ffffff;
+border:1px dotted #000000;
+
+
+}
  
   /* ###### login ###### */
 
@@ -261,7 +275,7 @@ width: 600px;
 	-moz-border-radius: 8px;
         /*border: 2px outset #009966;*/
 
-	border: 1px solid #FFC65D;
+	border: 2px outset #FFC65D;
 	
 	margin-bottom: 10px;
 	padding: 5px;
@@ -406,8 +420,7 @@ padding-bottom: 10px;
 	-moz-border-radius: 8px;
         /*border: 2px outset #009966;*/
 
-	border: 1px solid #FFC65D;
-	
+	border: 2px outset #FFC65D;
 	padding: 5px;
 	margin-top: 200px;
 	 clear:both;

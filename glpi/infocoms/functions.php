@@ -85,7 +85,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1) {
 		echo " ".$lang["financial"][57];
 		echo "</td>";
 	
-		echo "<td>fin garantie :	</td><td >";
+		echo "<td>".$lang["financial"][80]."  :	</td><td >";
 		
 		
 		showWarrantyExpir($ic->fields["buy_date"],$ic->fields["warranty_duration"]);
@@ -104,7 +104,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1) {
 		
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][21].":		</td><td  ".($show_immo==1?"":" colspan='3'")."><input type='text' name='value' value=\"".$ic->fields["value"]."\" size='10'></td>";
 		if ($show_immo==1){
-		echo "<td>Valeur nette comptable :</td><td>";
+		echo "<td>".$lang["financial"][81]." :</td><td>";
 				
 		echo  TableauAmort($ic->fields["amort_type"],$ic->fields["value"],$ic->fields["amort_time"],$ic->fields["amort_coeff"],$ic->fields["buy_date"],$ic->fields["use_date"],$date_fiscale,$view="n");
 		

@@ -669,7 +669,7 @@ function printReservationItem($target,$ID,$date){
 			if ($db->numrows($result)>0){
 				echo "<table width='100%' >";
 			while ($row=$db->fetch_array($result)){
-				echo "<tr><td align='center' valign='middle' >";
+				echo "<tr>";
 				$user->getfromDBbyID($row["id_user"]);
 				$display="";					
 				if ($debut>$row['begin']) $heure_debut="00:00";
@@ -689,13 +689,15 @@ function printReservationItem($target,$ID,$date){
 					$delete="";
 					$modif="";
 					if ($_SESSION["glpiID"]==$user->fields["ID"]||isAdmin($_SESSION["glpitype"])){
-						$modif="<a  href=\"".$target."?show=resa&edit=".$row['ID']."&item=$ID&mois_courant=$month&annee_courante=$year\" alt='".$lang["reservation"][14]."' title='".$lang["reservation"][32]."'><img  src=\"".$HTMLRel."pics/faqedit.png\"></a>";
+						$modif="<a  href=\"".$target."?show=resa&edit=".$row['ID']."&item=$ID&mois_courant=$month&annee_courante=$year\"  title='".$row['comment']."'>";
+						$modif_end="</a>";
+						
 						}
 
 		
-		echo $modif."</td><td title='".$row['comment']."' alt='".$row['comment']."' align='center' class='tab_bg_2' style='border:1px dashed #cccccc'><span style='font-size:8px'>".$display."<br><b>".$user->fields["name"]."</b></span>";
+		echo "<td   align='center' class='tab_resa'>". $modif."<span>".$display."<br><b>".$user->fields["name"]."</b></span>";
 
-			echo "</td></tr>";
+			echo "</td>".$modif_end."</tr>";
 				
 			}
 
@@ -816,7 +818,7 @@ function showReservationCommentForm($target,$ID){
 
 function updateReservationComment($input){
 
-	// Update a printer in the database
+	// Update  in the database
 
 	$ri = new ReservationResa;
 	$ri->getFromDB($input["ID"]);
