@@ -53,7 +53,7 @@ function searchFormInfocom($field="",$phrasetype= "",$contains="",$sort= "",$del
 	$option["glpi_infocoms.buy_date"]			= $lang["financial"][14];
 	$option["glpi_infocoms.num_commande"]				= $lang["financial"][18];
 	$option["glpi_infocoms.bon_livraison"]			= $lang["financial"][19];	
-	$option["glpi_infocoms.warranty_end_date"]			= $lang["financial"][15];
+	$option["glpi_infocoms.warranty_duration"]			= $lang["financial"][15];
 	$option["glpi_infocoms.warranty_info"]			= $lang["financial"][16];
 	$option["glpi_infocoms.num_immo"]			= $lang["financial"][20];
 	$option["glpi_infocoms.comments"]			= $lang["financial"][12];
@@ -171,12 +171,12 @@ function showInfocomList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_infocoms.buy_date&order=DESC&start=$start\">";
 			echo $lang["financial"][14]."</a></th>";
 
-			// Warranty End Date
+			// Garantie
 			echo "<th>";
-			if ($sort=="glpi_infocoms.warranty_end_date") {
+			if ($sort=="glpi_infocoms.warranty_duration") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_infocoms.warranty_end_date&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_infocoms.warranty_duration&order=DESC&start=$start\">";
 			echo $lang["financial"][15]."</a></th>";
 
 			// Enterprise
@@ -224,7 +224,7 @@ function showInfocomList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				echo "<a href=\"".$cfg_install["root"]."/infocoms/infocoms-info-form.php?ID=$ID\">";
 				echo $ct->fields["buy_date"]." (".$ct->fields["ID"].")";
 				echo "</a></b></td>";
-				echo "<td>".$ct->fields["warranty_end_date"]."</td>";
+				echo "<td>".$ct->fields["warranty_duration"]." ".$lang["financial"][9]."</td>";
 				echo "<td>".getDropdownName("glpi_enterprises",$ct->fields["FK_enterprise"])."</td>";
 				echo "<td>".$ct->fields["num_commande"]."</td>";
 				echo "<td>".$ct->fields["bon_livraison"]."</td>";
@@ -288,12 +288,9 @@ function showInfocomForm ($target,$ID,$search='') {
     echo "</td>";
 	echo "</tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["financial"][15].":	</td>";
-	echo "<td><input type='text' name='warranty_end_date' readonly size='10' value=\"".$ic->fields["warranty_end_date"]."\">";
-	echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=warranty_end_date&amp;value=".$ic->fields["warranty_end_date"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].warranty_end_date.value='0000-00-00'\" value='reset'>";
-    echo "</td>";
-	echo "</tr>";
+	echo "<tr class='tab_bg_1'><td>".$lang["financial"][15].":	</td><td>";
+	dropdownDuration("warranty_duration",$ic->fields["warranty_duration"]);
+	echo "</td></tr>";
 	
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][16].":		</td>";
@@ -314,7 +311,7 @@ function showInfocomForm ($target,$ID,$search='') {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][23].":		</td><td colspan='2'>";
-	dropdownAmortTime("amort_time",$ic->fields["amort_time"]);
+	dropdownDuration("amort_time",$ic->fields["amort_time"]);
 	echo $lang["financial"][9];
 	echo "</td></tr>";
 
@@ -484,7 +481,7 @@ $result = $db->query($query);
 
 
 
-function dropdownAmortTime($name,$value=0){
+function dropdownDuration($name,$value=0){
 	global $lang;
 	
 	echo "<select name='$name'>";
@@ -572,7 +569,7 @@ function showInfocomAssociated($device_type,$ID){
 		$ent->getFromDB($con->fields["FK_enterprise"]);
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>".$con->fields["buy_date"]."</td>";
-	echo "<td align='center'>".$con->fields["warranty_end_date"]."</td>";
+	echo "<td align='center'>".$con->fields["warranty_duration"]." ".$lang["financial"][9]."</td>";
 	echo "<td align='center'>".$ent->fields["name"]."</td>";	
 	echo "<td align='center'>".$con->fields["num_commande"]."</td>";
 	echo "<td align='center'>".$con->fields["value"]."</td>";
