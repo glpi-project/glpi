@@ -62,6 +62,12 @@ elseif (isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"]
 	include ($phproot . "/glpi/includes_monitors.php");
 	include ($phproot . "/glpi/includes_networking.php");
 
+	if (isset($_GET["clear"])){
+		if (deleteReservation($_GET["clear"])){
+			logEvent($_GET["clear"], "reservation", 4, "inventory", $_SESSION["glpiname"]."delete a reservation.");
+		}
+	}
+
 	if (isset($_GET["ID"])){
 		printCalendrier($_SERVER["PHP_SELF"],$_GET["ID"]);
 	}
@@ -74,12 +80,6 @@ elseif (isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"]
 			printCalendrier($_SERVER["PHP_SELF"],$_POST["id_item"]);
 		}
 	}
-	else if (isset($_GET["clear"])){
-		if (deleteReservation($_GET["clear"])){
-			logEvent($_GET["clear"], "reservation", 4, "inventory", $_SESSION["glpiname"]."delete a reservation.");
-		}
-		printCalendrier($_SERVER["PHP_SELF"],$_GET["clear"]);
-		}
 	else {
 		printReservationItems();
 	}
