@@ -124,6 +124,8 @@ $result = $db->query($query);
 if($result)
 {
 
+$deleted_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_computers");
+
 //root document
 //document root
 $cfg_install["root"] = $db->result($result,0,"root_doc");

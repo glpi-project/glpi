@@ -91,7 +91,7 @@ class ReservationItem{
 			case MONITOR_TYPE : 
 				return $lang["monitors"][4];
 				break;
-			case PERIPHERALS_TYPE : 
+			case PERIPHERAL_TYPE : 
 				return $lang["peripherals"][4];
 				break;				
 			}

@@ -205,7 +205,7 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 				$ID = $db->result($result_limit, $i, "ID");
 				$ri = new ReservationItem;
 				$ri->getfromDB($ID);
-				echo "<tr class='tab_bg_2' align='center'>";
+				echo "<tr class='tab_bg_2".(isset($ri->obj->fields["deleted"])&&$ri->obj->fields["deleted"]=='Y'?"_2":"")."' align='center'>";
 				echo "<td>";
 				echo $ri->fields["ID"];
 				echo "</td>";
@@ -765,9 +765,11 @@ $query="select ID from glpi_reservation_item ORDER BY device_type";
 		echo "<tr><th colspan='2'>".$lang["reservation"][1]."</th></tr>";
 		while ($row=$db->fetch_array($result)){
 			$ri->getfromDB($row['ID']);
+			if (isset($ri->obj->fields["deleted"])&&$ri->obj->fields["deleted"]=='N'){
 			echo "<tr class='tab_bg_2'><td><a href='".$target."?show=resa&ID=".$row['ID']."'>".$ri->getType()." - ".$ri->getName()."</a></td>";
 			echo "<td>".nl2br($ri->fields["comments"])."</td>";
 			echo "</tr>";
+			}
 		}
 	echo "</table></div>";
 	

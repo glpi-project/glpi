@@ -426,7 +426,7 @@ function deleteSoftware($input,$force=0) {
 
 function dropdownSoftware() {
 	$db = new DB;
-	$query = "SELECT * FROM glpi_software order by name";
+	$query = "SELECT * FROM glpi_software WHERE deleted='N' order by name";
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 
@@ -512,7 +512,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		$expirecss="";
 		if ($expire!=NULL&&$today>$expire) {$expirer=1; $expirecss="_2";}
 		// Get installed licences
-		$query_inst = "SELECT glpi_inst_software.ID AS ID, glpi_inst_software.license AS lID, glpi_computers.ID AS cID, glpi_computers.name AS cname FROM glpi_licenses, glpi_inst_software LEFT JOIN glpi_computers ON (glpi_inst_software.cID= glpi_computers.ID) WHERE $SEARCH_LICENCE ";
+		$query_inst = "SELECT glpi_inst_software.ID AS ID, glpi_inst_software.license AS lID, glpi_computers.deleted as deleted, glpi_computers.ID AS cID, glpi_computers.name AS cname FROM glpi_licenses, glpi_inst_software LEFT JOIN glpi_computers ON (glpi_inst_software.cID= glpi_computers.ID) WHERE $SEARCH_LICENCE ";
 		
 		$query_inst.= " AND glpi_inst_software.license = glpi_licenses.ID";	
 
@@ -619,7 +619,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		
 		// Logiciels installés
 		while ($data_inst=$db->fetch_array($result_inst)){
-			echo "<tr class='tab_bg_1".($data["OEM"]=='Y'&&$data["OEM_COMPUTER"]!=$data_inst["cID"]?"_2":"")."'><td align='center'>";
+			echo "<tr class='tab_bg_1".(($data["OEM"]=='Y'&&$data["OEM_COMPUTER"]!=$data_inst["cID"])||$data_inst["deleted"]=='Y'?"_2":"")."'><td align='center'>";
 			echo "<strong><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$data_inst["cID"]."\">";
 			echo $data_inst["cname"];
 			echo "</strong></a></td><td align='center'>";
@@ -960,6 +960,8 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 
 		$sw = new Software;
 		$sw->getFromDB($data['sID']);
+		
+		if ($sw->fields['deleted']=="Y") {$expirer=1; $expirecss="_2";}
 
 		echo "<tr class='tab_bg_1$expirecss'>";
 	
@@ -982,7 +984,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 			$comp=new Computer();
 			$comp->getFromDB($data["oem_computer"]);
 			}
-			echo "<td align='center' class='tab_bg_1".($data["oem"]=='Y'&&$comp->fields['ID']!=$instID?"_2":"")."'>".($data["oem"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
+			echo "<td align='center' class='tab_bg_1".($expirer||($data["oem"]=='Y'&&$comp->fields['ID']!=$instID)?"_2":"")."'>".($data["oem"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
 			if ($data["oem"]=='Y') {
 			echo "<br><strong>";
 			if (isset($comp->fields['ID']))
