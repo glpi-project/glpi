@@ -49,32 +49,37 @@ $db = new DB;
 
 # 1. Recupere le nombre d'ordinateurs, d'imprimantes/scanners, de materiel reseau, et d'ecrans.
 
-$query = "SELECT ID FROM glpi_computers where maintenance=1";
+$query = "SELECT ID FROM glpi_contract_device where device_type=".COMPUTER_TYPE;
 $result = $db->query($query);
 $number_of_computers = $db->numrows($result);
 
-$query = "SELECT ID FROM glpi_printers where maintenance=1";
+$query = "SELECT ID FROM glpi_contract_device where device_type=".PRINTER_TYPE;
 $result = $db->query($query);
 $number_of_printers = $db->numrows($result);
 
-$query = "SELECT ID FROM glpi_monitors where maintenance=1";
+$query = "SELECT ID FROM glpi_contract_device where device_type=".MONITOR_TYPE;
 $result = $db->query($query);
 $number_of_monitors = $db->numrows($result);
 
-$query = "SELECT ID FROM glpi_networking where maintenance=1";
+$query = "SELECT ID FROM glpi_contract_device where device_type=".NETWORKING_TYPE;
 $result = $db->query($query);
 $number_of_networking = $db->numrows($result);
 
-$query = "SELECT ID FROM glpi_peripherals where maintenance=1";
+$query = "SELECT ID FROM glpi_contract_device where device_type=".PERIPHERAL_TYPE;
 $result = $db->query($query);
 $number_of_periph = $db->numrows($result);
+
+$query = "SELECT ID FROM glpi_contract_device where device_type=".SOFTWARE_TYPE;
+$result = $db->query($query);
+$number_of_soft = $db->numrows($result);
+
 
 # 2. afficher les données dans un tableau
 
 
 # Titre
 
-echo "<form name='form' method='post' action='maintenance-list.php'>";
+echo "<form name='form' method='post' action='contrats-list.php'>";
 
 echo "<div align='center'>";
 echo "<table class='tab_cadre' >";
@@ -85,37 +90,39 @@ echo "<tr><td class='tab_bg_2'  align='center'>".$lang["reports"][7]." :&nbsp;&n
 echo "<tr><td class='tab_bg_2'  align='center'>".$lang["reports"][9].":&nbsp; &nbsp;</td><td class='tab_bg_2' align='center'> $number_of_monitors</td></tr>";
 echo "<tr><td class='tab_bg_2'  align='center'>".$lang["reports"][8]." : &nbsp; &nbsp; </td><td class='tab_bg_2' align='center'>$number_of_networking</td></tr>";
 echo "<tr><td class='tab_bg_2'  align='center'>".$lang["reports"][29]." : &nbsp; &nbsp; </td><td class='tab_bg_2' align='center'>$number_of_periph</td></tr>";
+echo "<tr><td class='tab_bg_2'  align='center'>".$lang["reports"][55]." : &nbsp; &nbsp; </td><td class='tab_bg_2' align='center'>$number_of_soft</td></tr>";
 
 # 3. Selection d'affichage pour generer la liste
 echo "<tr class='tab_bg_1'>";
 echo "<td  align='center' width='200' >";
 
 echo "<p><b>".$lang["reports"][12]."</b></p> ";
-echo "<p><select name='item_type[]' size='6' multiple>";
-echo "<option value='tous' selected>".$lang["reports"][16]."</option>";
-echo "<option value='glpi_computers'>".$lang["reports"][6]."</option>";
-echo "<option value='glpi_printers'>".$lang["reports"][7]."</option>";
-echo "<option value='glpi_networking'>".$lang["reports"][8]."</option>";
-echo "<option value='glpi_monitors'>".$lang["reports"][9]."</option>";
-echo "<option value='glpi_peripherals'>".$lang["reports"][29]."</option>";
+echo "<p><select name='item_type[]' size='7' multiple>";
+echo "<option value='0' selected>".$lang["reports"][16]."</option>";
+echo "<option value='".COMPUTER_TYPE."'>".$lang["reports"][6]."</option>";
+echo "<option value='".PRINTER_TYPE."'>".$lang["reports"][7]."</option>";
+echo "<option value='".NETWORKING_TYPE."'>".$lang["reports"][8]."</option>";
+echo "<option value='".MONITOR_TYPE."'>".$lang["reports"][9]."</option>";
+echo "<option value='".PERIPHERAL_TYPE."'>".$lang["reports"][29]."</option>";
+echo "<option value='".SOFTWARE_TYPE."'>".$lang["reports"][55]."</option>";
 echo "</select></p> </td> ";
 
 echo "<td  align='center'  width='200'>";
 echo "<p><b>".$lang["reports"][13]."</b></p> ";
-echo " <p><select name='annee_achat[]' size='6' multiple>";
+echo " <p><select name='annee[]' size='7' multiple>";
 echo " <option value='toutes' selected>".$lang["reports"][16]."</option>";
   $y = date("Y");
-  for ($i=$y-5;$i<=$y;$i++)
+  for ($i=$y-10;$i<=$y;$i++)
   {
    echo " <option value='$i'>$i</option>";
   }
 echo "</select></p></td></tr>";
 
-echo "<tr  class='tab_bg_1'><td colspan='2' align='center'>";
+/*echo "<tr  class='tab_bg_1'><td colspan='2' align='center'>";
 
 echo "<p><b>".$lang["reports"][14]." :</b> ";
 echo "<select name='tri_par' >";
-echo "<option value='achat_date'>".$lang["reports"][17]."</option>";
+echo "<option value='date'>".$lang["reports"][17]."</option>";
 echo "<option value='serial'>".$lang["reports"][18]."</option>";
 echo "<option value='contact'>".$lang["reports"][19]."</option>";
 echo "<option value='location'>".$lang["reports"][20]."</option>";
@@ -123,6 +130,7 @@ echo "</select></p>  ";
 echo "</td>";
 
 echo "</tr>";
+*/
 echo "<tr><td class='tab_bg_1' colspan='2' align='center'><p><input type='submit' value='".$lang["reports"][15]."' class='submit'></p></td></tr>";
 
 

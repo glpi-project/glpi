@@ -98,7 +98,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 	
 		echo "<td>".$lang["financial"][80]."  :	</td><td >";
 	
-		showWarrantyExpir($ic->fields["buy_date"],$ic->fields["warranty_duration"]);
+		echo getWarrantyExpir($ic->fields["buy_date"],$ic->fields["warranty_duration"]);
 				
 		echo "</td></tr>";
 		
@@ -283,9 +283,10 @@ function dropdownInfocoms($name){
 }
 
 
-function showWarrantyExpir($from,$addwarranty){
-
-echo date("Y-m-d", strtotime("$from + $addwarranty month "));
+function getWarrantyExpir($from,$addwarranty){
+if ($from==NULL || $from=='0000-00-00')
+return "";
+else return date("Y-m-d", strtotime("$from + $addwarranty month "));
 
 }
 
