@@ -203,6 +203,8 @@ $lang["tracking"][16] = "Seulement les moniteurs";
 $lang["tracking"][17] = "Seulement les périphériques";
 $lang["tracking"][18] = "Seulement les logiciels";
 $lang["tracking"][19] = "Seulement Générales";
+$lang["tracking"][20] = "Catégorie";
+$lang["tracking"][21]    = "Vous n'etes pas autoris&eacute; &agrave; modifier la catégorie de cette intervention";
 
 // 1 computers
 // 2 networking
@@ -260,6 +262,8 @@ $lang["job"][20]        = "Durée réelle de l'intervention";
 $lang["job"][21]        = "Heure(s)";
 $lang["job"][22] 	= "Minute(s)"; 
 $lang["job"][23]		= "Restaurer cette intervention";
+$lang["job"][24]		= "Catégorie de l'intervention";
+
 // Computers
 
 $lang["computers"][0]	= "Ajouter ordinateur...";
@@ -623,6 +627,7 @@ $lang["setup"][75] = "Comme fils de";
 $lang["setup"][76] = "Au même niveau que";
 $lang["setup"][77] = "Comme père de";
 $lang["setup"][78] = "Base de connaissances";
+$lang["setup"][79] = "Catégorie des suivis";
 
 $lang["setup"][100]="Configuration générale";
 $lang["setup"][101]="Chemin d'installation";

@@ -220,6 +220,7 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
 		echo "<th width=5>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
 		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["common"][1]."</th>";
+		echo "<th>".$lang["tracking"][20]."</th>";
 		echo "<th colspan='2'>".$lang["joblist"][6]."</th></tr>";
 		while ($i < $number) {
 			$ID = $db->result($result, $i, "ID");
@@ -311,6 +312,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (device_type = '$item_ty
 		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
 		echo "<th width=5>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
 		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["common"][1]."</th>";
+		echo "<th>".$lang["tracking"][20]."</th>";
 		echo "<th colspan='2'>".$lang["joblist"][6]."</th></tr>";
 		while ($i < $number)
 		{
@@ -385,6 +387,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and 
 		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
 		echo "<th width=5>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
 		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["common"][1]."</th>";
+		echo "<th>".$lang["tracking"][20]."</th>";
 		echo "<th colspan='2'>".$lang["joblist"][6]."</th></tr>";
 		while ($i < $number)
 		{
@@ -504,6 +507,9 @@ function showJobShort($ID, $followups	) {
 		}
 		else
 		echo "<td  align='center'><b>$job->computername ($job->computer)</b></td>";
+
+
+		echo "<td  align='center'><b>".getDropdownName("glpi_dropdown_tracking_category",$job->category)."</b></td>";
 		
 		$stripped_content=$job->contents;
 		if (!$followups) $stripped_content =substr(unhtmlentities_deep($job->contents),0,$cfg_features["cut"]);
@@ -631,6 +637,11 @@ function showJobDetails($ID) {
 		if (can_assign_job($_SESSION["glpiname"]))
 			assignFormTracking($ID,$_SESSION["glpiname"],$cfg_install["root"]."/tracking/tracking-assign-form.php");
 		else echo $lang["job"][5]." <b>".($job->assign==""?"[Nobody]":$job->assign)."</b>";
+		
+		if (can_assign_job($_SESSION["glpiname"]))
+			categoryFormTracking($ID,$cfg_install["root"]."/tracking/tracking-category-form.php");
+		else echo $lang["job"][5]." <b>".($job->assign==""?"[Nobody]":$job->assign)."</b>";
+		
 		
 		echo "</td>";
 		
@@ -812,6 +823,24 @@ function assignJob ($ID,$user,$admin) {
 	postFollowups ($ID,$_SESSION["glpiname"],addslashes($content));
 	}
 }
+
+function categoryJob ($ID,$category,$admin) {
+	// Assign a category to a job
+
+	GLOBAL $cfg_features, $cfg_layout,$lang;	
+	$job = new Job;
+	$job->getFromDB($ID,0);
+
+	$job->categoryTo($category);
+
+	// Add a Followup for a assignment change
+/*	if (strcmp($newuser,$olduser)!=0){
+	$content=date("Y-m-d H:i:s").": ".$lang["mailing"][12].": ".$olduser." -> ".$newuser." (".$_SESSION["glpiname"].")";
+	postFollowups ($ID,$_SESSION["glpiname"],addslashes($content));
+	}
+*/	
+}
+
 
 function showFollowups($ID) {
 	// Print Followups for a job
@@ -1038,6 +1067,41 @@ function assignFormTracking ($ID,$admin,$target) {
 	 echo $lang["tracking"][6];
 	}
 }
+function categoryFormTracking ($ID,$target) {
+	// Print a nice form to assign jobs if user is allowed
+
+	GLOBAL $cfg_layout, $lang;
+
+  if (isAdmin($_SESSION["glpitype"]))
+  {
+
+	$job = new Job;
+	$job->getFromDB($ID,0);
+
+	echo "<table class='tab_cadre'>";
+	echo "<tr><th>".$lang["job"][24]." $ID:</th></tr>";
+	echo "<form method=get action=\"".$target."\">";
+	echo "<td align='center' class='tab_bg_1'>";
+
+	echo "<table border='0'>";
+	echo "<tr>";
+	echo "<td>".$lang["tracking"][20].":</td><td>";
+		dropdownValue("glpi_dropdown_tracking_category","category",$job->category);
+	echo "<input type='hidden' name='update' value=\"1\">";
+	echo "<input type='hidden' name='ID' value=$job->ID>";
+	echo "</td><td><input type='submit' value=\"".$lang["buttons"][14]."\" class='submit'></td>";
+	echo "</tr></table>";
+
+	echo "</td>";
+	echo "</form>";
+	echo "</tr></table>";
+	}
+	else
+	{
+	 echo $lang["tracking"][21];
+	}
+}
+
 function getRealtime($realtime){
 		global $lang;	
 		$output="";

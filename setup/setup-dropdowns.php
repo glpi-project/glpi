@@ -102,8 +102,9 @@ if (isset($_POST["move"])) {
 	commonHeader("Setup",$_SERVER["PHP_SELF"]);
 
 	$dp=array();
-	$dp["kbcategories"]=$lang["setup"][78];	
 	$dp["locations"]=$lang["setup"][3];	
+	$dp["kbcategories"]=$lang["setup"][78];	
+	$dp["tracking_category"]=$lang["setup"][79];	
 	$dp["computers"]=$lang["setup"][4];	
 	$dp["networking"]=$lang["setup"][42];		
 	$dp["printers"]=$lang["setup"][43];		
@@ -137,6 +138,10 @@ echo "<option value='$key' $sel>".$val."</option>";
 	echo "</table></form></div>";
 
 	switch ($which){
+		case "tracking_category" :
+		showFormDropDown($_SERVER["PHP_SELF"],"tracking_category",$lang["setup"][79],$ID);
+		break;
+				
 		case "kbcategories" :
 		showFormTreeDown($_SERVER["PHP_SELF"],"kbcategories",$lang["setup"][78],$ID,$value2,$where,$tomove);
 		break;
