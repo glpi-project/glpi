@@ -1195,11 +1195,11 @@ function showFormConfigGen($target){
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][101]." </td><td> <input type=\"text\" name=\"root_doc\" value=\"". $db->result($result,0,"root_doc") ."\"></td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][102]." </td><td><select name=\"event_loglevel\">";
 	$level=$db->result($result,0,"event_loglevel");
-	echo "<option value=\"1\"";  if($level==1){ echo "selected";} echo ">".$lang["setup"][103]." </option>";
-	echo "<option value=\"2\"";  if($level==2){ echo "selected";} echo ">".$lang["setup"][104]."</option>";
-	echo "<option value=\"3\"";  if($level==3){ echo "selected";} echo ">".$lang["setup"][105]."</option>";
-	echo "<option value=\"4\"";  if($level==4){ echo "selected";} echo ">".$lang["setup"][106]." </option>";
-	echo "<option value=\"5\">".$lang["setup"][107]."</option>";
+	echo "<option value=\"1\"";  if($level==1){ echo " selected";} echo ">".$lang["setup"][103]." </option>";
+	echo "<option value=\"2\"";  if($level==2){ echo " selected";} echo ">".$lang["setup"][104]."</option>";
+	echo "<option value=\"3\"";  if($level==3){ echo " selected";} echo ">".$lang["setup"][105]."</option>";
+	echo "<option value=\"4\"";  if($level==4){ echo " selected";} echo ">".$lang["setup"][106]." </option>";
+	echo "<option value=\"5\"";  if($level==5){ echo " selected";} echo ">".$lang["setup"][107]."</option>";
 	echo "</select></td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][108]."</td><td> <input type=\"text\" name=\"num_of_events\" value=\"". $db->result($result,0,"num_of_events") ."\"></td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][109]." </td><td><input type=\"text\" name=\"expire_events\" value=\"". $db->result($result,0,"expire_events") ."\"></td></tr>";
