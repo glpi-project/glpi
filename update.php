@@ -313,7 +313,7 @@ function location_create_new($split_char,$add_first){
 			if ($db->numrows($result_search)==1){	// Found
 				$up_ID=$db->result($result_search,0,"ID");
 			} else { // Not FOUND -> INSERT
-				$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$new_ID','".$splitter[$i]."','$up_ID')";
+				$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$new_ID','".unhtmlentities($splitter[$i])."','$up_ID')";
 				$up_ID=$new_ID++;
 				//	echo $query_insert."<br>";
 				$result_insert=$db->query($query_insert);
@@ -321,7 +321,7 @@ function location_create_new($split_char,$add_first){
 		}
 
 		// Ajout du dernier
-		$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('".$data["ID"]."','".$splitter[count($splitter)-1]."','$up_ID')";
+		$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('".$data["ID"]."','".unhtmlentities($splitter[count($splitter)-1])."','$up_ID')";
 		//	echo $query_insert."<br>";
 
 		$result_insert=$db->query($query_insert);
