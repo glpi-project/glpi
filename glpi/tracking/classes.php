@@ -115,7 +115,7 @@ class Job {
 		
 		// dump into database
 		$db = new DB;
-		$query = "INSERT INTO glpi_tracking VALUES (NULL, '$this->date', '', '$this->status','$this->author', NULL, $this->computer, '$this->contents', '$this->priority', '$this->isgroup','$this->uemail', '$this->emailupdates')";
+		$query = "INSERT INTO glpi_tracking VALUES (NULL, '$this->date', '', '$this->status','$this->author', '$this->assign', $this->computer, '$this->contents', '$this->priority', '$this->isgroup','$this->uemail', '$this->emailupdates')";
 
 		if ($result = $db->query($query)) {
 			return true;
