@@ -1205,7 +1205,7 @@ function printHelpDesk ($name) {
 	echo "<td><select name=priority>";
 	echo "<option value='5'>".$lang["help"][3]."";
 	echo "<option value='4'>".$lang["help"][4]."";
-	echo "<option value='3 selected'>".$lang["help"][5]."";
+	echo "<option value='3' selected>".$lang["help"][5]."";
 	echo"<option value='2'>".$lang["help"][6]."";
 	echo "<option value='1'>".$lang["help"][7]."";
 	echo "</select>";
