@@ -462,8 +462,8 @@ $lang["setup"][61]  = "Oui";
 // Helpdesk
 
 $lang["help"][0]	= "Bienvenue";
-$lang["help"][1]	= "Veuillez décrire votre problème";
-$lang["help"][2]	= "Le problème doit être résolu";
+$lang["help"][1]	= "Veuillez décrire votre probl&egrave;me";
+$lang["help"][2]	= "Le probl&egrave;me doit &ecirc;tre résolu";
 $lang["help"][3]	= "Hier";
 $lang["help"][4]	= "Tres vite";
 $lang["help"][5]	= "Dans la journée";
@@ -474,7 +474,7 @@ $lang["help"][9]	= "Non";
 $lang["help"][10]	= "oui";
 $lang["help"][11]	= "Mon adresse de messagerie";
 $lang["help"][12]	= "Le Numéro de ma machine :";
-$lang["help"][13]	= "Le problème";
+$lang["help"][13]	= "Le probl&egrave;me";
 $lang["help"][14]	= "Envoyer message";
 $lang["help"][15]	= "Pas de description, réessayez.";
 $lang["help"][16]	= "Vous voulez être informées des suites données mais vous  n'avez pas entré d'adresse de messagerie !";
