@@ -54,12 +54,12 @@ function searchFormSoftware($field="",$phrasetype= "",$contains="",$sort= "") {
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
 
-	$option["ID"]				= $lang["software"][1];
-	$option["name"]				= $lang["software"][2];
-	$option["platform"]			= $lang["software"][3];
-	$option["location"]			= $lang["software"][4];
-	$option["version"]			= $lang["software"][5];
-	$option["comments"]			= $lang["software"][6];
+	$option["glpi_software.ID"]				= $lang["software"][1];
+	$option["glpi_software.name"]				= $lang["software"][2];
+	$option["glpi_dropdown_os.name"]			= $lang["software"][3];
+	$option["glpi_dropdown_locations.name"]			= $lang["software"][4];
+	$option["glpi_software.version"]			= $lang["software"][5];
+	$option["glpi_software.comments"]			= $lang["software"][6];
 /*
 	echo "<form method=get action=\"".$cfg_install["root"]."/software/software-search.php\">";
 	echo "<center><table border='0' width='90%'>";
@@ -127,12 +127,41 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
 
+	$db = new DB;
+
 	// Build query
-	if ($phrasetype == "contains") {
-		$where = "($field LIKE '%".$contains."%')";
-	} else {
-		$where = "($field LIKE '".$contains."')";
+	if($field == "all") {
+		$where = " (";
+		$fields = $db->list_fields("glpi_software");
+		$columns = $db->num_fields($fields);
+		
+		for ($i = 0; $i < $columns; $i++) {
+			if($i != 0) {
+				$where .= " OR ";
+			}
+			$coco = mysql_field_name($fields, $i);
+			if($coco == "platform") {
+				$where .= " glpi_dropdown_os.name LIKE '%".$contains."%'";
+			}
+			elseif($coco == "location") {
+				$where .= " glpi_dropdown_locations.name LIKE '%".$contains."%'";
+			}
+			else {
+   				$where .= "glpi_software.".$coco . " LIKE '%".$contains."%'";
+			}
+		}
+		$where .= ")";
 	}
+	else {
+		if ($phrasetype == "contains") {
+			$where = "($field LIKE '%".$contains."%')";
+		}
+		else {
+			$where = "($field LIKE '".$contains."')";
+		}
+	}
+
+
 	if (!$start) {
 		$start = 0;
 	}
@@ -140,10 +169,13 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 		$order = "ASC";
 	}
 	
-	$query = "SELECT * FROM glpi_software WHERE $where ORDER BY $sort";
-
+	$query = "SELECT glpi_software.ID as ID FROM glpi_software ";
+	$query .= "LEFT JOIN glpi_dropdown_os on glpi_software.platform=glpi_dropdown_os.ID ";
+	$query.= " LEFT JOIN glpi_dropdown_locations on glpi_software.location=glpi_dropdown_locations.ID ";
+	
+	$query.= " WHERE $where ORDER BY $sort";
+//	echo $query;
 	// Get it from database	
-	$db = new DB;
 	if ($result = $db->query($query)) {
 		$numrows = $db->numrows($result);
 
