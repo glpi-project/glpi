@@ -61,6 +61,7 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 
 if(empty($tab["start"])) $tab["start"] = 0;
+if(empty($tab["device"])) $tab["device"] = 0;
 
 if (isAdmin($_SESSION["glpitype"])&&isset($tab["delete"])&&!empty($tab["todel"])){
 	$j=new Job;
@@ -75,13 +76,13 @@ if (isset($tab["show"]))
 	if(isset($tab["contains"]))
 	{
 		searchFormTracking($tab["show"],$tab["contains"]);
-		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$tab["show"],$tab["contains"],"","",$tab["start"]);
+		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$tab["show"],$tab["contains"],"","",$tab["start"],$tab["device"]);
 		
 	}
 	else
 	{
 		searchFormTracking($tab["show"],"");
-		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$tab["show"],"","","",$tab["start"]);
+		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$tab["show"],"","","",$tab["start"],$tab["device"]);
 		
 	}
 }
@@ -90,13 +91,13 @@ else
 	if(isset($tab["contains"]))
 	{
 		searchFormTracking("",$tab["contains"]);
-		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"",$tab["contains"],"","",$tab["start"]);
+		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"",$tab["contains"],"","",$tab["start"],$tab["device"]);
 		
 	}
 	else
 	{
 		searchFormTracking("","");
-		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"","","","",$tab["start"]);
+		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"","","","",$tab["start"],$tab["device"]);
 	}
 }
 commonFooter();
