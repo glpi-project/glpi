@@ -141,7 +141,20 @@ function getEmpty () {
 	
 	$query="SELECT * from glpi_tracking where computer = '$ID' AND device_type='".PRINTER_TYPE."'";
 	$result = $db->query($query);
-	return ($db->numrows($result)>0);
+	if ($db->numrows($result)>0) return true;
+	
+	$query="SELECT * from glpi_networking_ports where on_device = '$ID' AND device_type='".PRINTER_TYPE."'";
+	$result = $db->query($query);
+	if ($db->numrows($result)==0) return false;
+	else {
+		while ($data=$db->fetch_array($result)){
+			$query="SELECT * from glpi_networking_wire where end1 = '".$data['ID']."' OR end2='".$data['ID']."'";
+			$result = $db->query($query);
+			if ($db->numrows($result)>0) return true;
+		}
+		return false;
+	}
+	
 	}
 
 	function deleteFromDB($ID,$force=0) {
@@ -158,7 +171,7 @@ function getEmpty () {
 						$result2 = $db->query($q);					
 						}
 
-				$query2 = "DELETE FROM glpi_networking_ports WHERE (device_on = $ID AND device_type = '".PRINTER_TYPE."')";
+				$query2 = "DELETE FROM glpi_networking_ports WHERE (on_device = $ID AND device_type = '".PRINTER_TYPE."')";
 				$result2 = $db->query($query2);
 			
 				Disconnect($ID,PRINTER_TYPE);	

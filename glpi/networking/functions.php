@@ -49,10 +49,10 @@ function titleNetdevices() {
  
 }
 
-function searchFormNetworking($field="",$phrasetype= "",$contains="",$sort= "") {
+function searchFormNetworking($field="",$phrasetype= "",$contains="",$sort= "",$deleted= "") {
 	// Netwokirng Search Form
 	
-	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
+	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel;
 
 	$option["glpi_networking.name"]				= $lang["networking"][0];
 	$option["glpi_networking.ID"]				= $lang["networking"][50];
@@ -72,7 +72,7 @@ function searchFormNetworking($field="",$phrasetype= "",$contains="",$sort= "") 
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/networking/networking-search.php\">";
 	echo "<div align='center'><table  width='750' class='tab_cadre'>";
-	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	
 	echo "<td align='center'>";
@@ -110,13 +110,16 @@ function searchFormNetworking($field="",$phrasetype= "",$contains="",$sort= "") 
 		if($key == $sort) echo "selected";
 		echo ">".$val."</option>\n";
 	}
+	echo "</select>";
+	echo "</td><td><input type='checkbox' name='deleted' ".($deleted=='Y'?" checked ":"").">";
+	echo "<img src=\"".$HTMLRel."pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
 
 
-function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start) {
+function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted) {
 
 	// Lists networking
 
@@ -176,7 +179,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 	$query .= "LEFT JOIN glpi_networking_ports on (glpi_networking.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='2')";	
 	$query .= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = glpi_networking.FK_glpi_enterprise ) ";
-	$query .= "where $where ORDER BY $sort $order";
+	$query .= "where $where AND glpi_networking.deleted='$deleted' ORDER BY $sort $order";
 
 	// Get it from database	
 	if ($result = $db->query($query)) {
@@ -394,7 +397,15 @@ function showNetworkingForm ($target,$ID) {
 		echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
+		echo "<div align='center'>";
+		if ($netdev->fields["deleted"]=='N')
+		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+		else {
+		echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+		
+		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>";
+		}
+		echo "</div>";
 		echo "</td>";
 		echo "</form></tr>";
 
@@ -465,11 +476,18 @@ function updateNetdevice($input) {
 
 }
 
-function deleteNetdevice($input) {
+function deleteNetdevice($input,$force=0) {
 	// Delete Netdevice
 	
 	$netdev = new Netdevice;
-	$netdev->deleteFromDB($input["ID"]);
+	$netdev->deleteFromDB($input["ID"],$force);
+} 
+
+function restoreNetdevice($input) {
+	// Restore Netdevice
+	
+	$ct = new Netdevice;
+	$ct->restoreInDB($input["ID"]);
 } 
 
 
