@@ -72,7 +72,7 @@ echo " </tr>";
 echo "</table>";
 
 $db = new DB;
-$query = "select ID,contact from computers where contact like '%$_POST["NomContact"]%'";
+$query = "select ID,contact from computers where contact like '%".$_POST["NomContact"]."%'";
 $result = $db->query($query);
 while($ligne = $db->fetch_array($result))
 
