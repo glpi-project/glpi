@@ -41,10 +41,13 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
+include ($phproot . "/glpi/includes_tracking.php");
 
 checkAuthentication("normal");
 commonHeader("Userinfo",$_SERVER["PHP_SELF"]);
-showUserform($_SERVER['HTTP_REFERER'],$_GET["ID"]);
+showUserInfo($_SERVER["PHP_SELF"],$_GET["ID"]);
+showJobList($_SERVER["PHP_SELF"],$_GET["ID"],"user","","",0);
+
 commonFooter();
 
 ?>

@@ -350,6 +350,45 @@ function showPasswordForm($target,$ID) {
 }
 
 
+function showUserinfo($target,$name) {
+	
+	// Affiche les infos User
+	
+	GLOBAL $cfg_layout, $lang;
+	
+	$user = new User();
+	
+	
+	$user->getfromDB($name);
+		
+	
+	
+	echo "<div align='center'>";
+		echo "<table class='tab_cadre'>";
+		echo   "<tr><th colspan='2'>".$lang["setup"][57]." : " .$user->fields["name"]."</th></tr>";
+		echo "<tr class='tab_bg_1'>";	
+		
+			echo "<td align='center'>".$lang["setup"][18]."</td>";
+			
+			echo "<td align='center'><b>".$user->fields["name"]."</b></td></tr>";
+									
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>".$user->fields["realname"]."</td></tr>";
+
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][20]."</td><td>".$user->fields["type"]."</td></tr>";	
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td>".$user->fields["email"]."</td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td>".$user->fields["phone"]."</td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
+				dropdownValue("glpi_dropdown_locations", "location", $user->fields["location"]);
+			echo "</td></tr>";
+	echo "</table></div>";
+
+	echo "<div align='center' ><p><b>".$lang["tracking"][11]."</p></div>";
+	
+}
+
+
+
+
 function showUserform($target,$name) {
 	
 	// Affiche un formulaire User
