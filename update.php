@@ -578,37 +578,97 @@ if(!FieldExists("glpi_tracking","realtime")) {
 }
 
 //Debut du script
-echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
-echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">";
-echo "<head><title>GLPI Update</title>\n";
-echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1 \" />\n";
-echo "<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\" />\n";
-// Include CSS
-echo "<style type=\"text/css\">\n";
-include ($phproot . "/glpi/config/styles.css");
-echo "</style>\n";
+        echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">";
+        echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">";
+        echo "<head>";
+        echo " <meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\" />";
+        echo "<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\" /> ";
+        echo "<meta http-equiv=\"Content-Style-Type\" content=\"text/css\" /> ";
+        echo "<meta http-equiv=\"Content-Language\" content=\"fr\" /> ";
+        echo "<meta name=\"generator\" content=\"\" />";
+        echo "<meta name=\"DC.Language\" content=\"fr\" scheme=\"RFC1766\" />";
+        echo "<title>Setup GLPI</title>";
+       
+        echo "<style type=\"text/css\">";
+        echo "<!--
 
-echo "</head>";
+        /*  ... Definition des styles ... */
 
-// Body with configured stuff
+        body {
+        background-color:#C5DAC8;
+        color:#000000; }
+        
+       .principal {
+        background-color: #ffffff;
+        font-family: Verdana;font-size:12px;
+        text-align: justify ; 
+        -moz-border-radius: 4px;
+	border: 1px solid #FFC65D;
+         margin: 40px; 
+         padding: 40px 40px 10px 40px;
+       }
 
-echo "<body>";
+       table {
+       text-align:center;
+       border: 0;
+       margin: 20px;
+       margin-left: auto;
+       margin-right: auto;
+       width: 90%;}
 
+       .red { color:red;}
+       .green {color:green;}
+       
+       h2 {
+        color:#FFC65D;
+        text-align:center;}
+
+       h3 {
+        text-align:center;}
+
+        input {border: 1px solid #ccc;}
+
+        fieldset {
+        padding: 20px;
+          border: 1px dotted #ccc;
+        font-size: 12px;
+        font-weight:200;}
+
+        .submit { text-align:center;}
+       
+        input.submit {
+        border:1px solid #000000;
+        background-color:#eeeeee;
+        }
+        
+        input.submit:hover {
+        border:1px solid #cccccc;
+       background-color:#ffffff;
+        }
+
+        -->  ";
+        echo "</style>";
+         echo "</head>";
+        echo "<body>";
+	echo "<div class=\"principal\">";
+        echo "<h2>GLPI SETUP</h2>";
+	echo "<br/><h3>Update</h3>";
 
 // step 1    avec bouton de confirmation
 if(empty($_POST["continuer"])) {
 	$db = new DB;
-	echo "Attention ! Vous allez mettre à jour votre base de données GLPI ayant pour nom : ". $db->dbdefault ."<br />";
-	echo "Be carreful ! Your are going to update your GLPI database witch is named  ". $db->dbdefault ."<br/>";
+	echo "<div align='center'>";
+	echo "<h3><span class='red'>Attention ! </span>Vous allez mettre à jour votre base de données GLPI ayant pour nom : ". $db->dbdefault ."</h3>";
+	
 	echo "<form action=\"update.php\" method=\"post\">";
-	echo "<input type=\"submit\" name=\"continuer\" value=\"Mettre à jour / Continue \" />";
-	echo "</form>";
+	echo "<input type=\"submit\" class='submit' name=\"continuer\" value=\"Mettre à jour / Continue \" />";
+	echo "</div></form>";
 }
 // Step 2  
 else {
 	if(test_connect()) {
-		echo "Connexion &agrave; la base de données réussie <br />";
-		echo "Connection to the database  sucessful";
+		echo "<h3>Connexion &agrave; la base de données réussie </h3>";
+		
 		if(!TableExists("glpi_config")) {
 			updateDbTo031();
 			updateDbUpTo031();
@@ -617,19 +677,21 @@ else {
 		{
 			updateDbUpTo031();
 		}
-		echo "<br/>La mise &agrave; jour &agrave; réussie, votre base de données est actualisée \n";
+		echo "<div align='center'>";
+		echo "<h3>La mise &agrave; jour est réussie, votre base de données est actualisée</h3>";
 		echo "<p>Il est recommandé maintenant d'appliquer un chmod+0 sur les fichiers install.php et update.php</p>";
 		echo "<p>Vous pouvez utiliser l'application en cliquant <a href=\"index.php\">sur ce lien </a>.</p>";
-		echo "<p>Attention tout de même NE SUPPRIMEZ PAS l'utilisateur HELPDESK.</p>";
+		echo "<p>Attention tout de même NE SUPPRIMEZ PAS l'utilisateur HELPDESK.</p></div>";
 	}
 	else {
-		echo "<br /> <br />";
-		echo "La connexion à la base de données a échouée, verifiez les paramètres de connexion figurant dans le fichier config_db.php <br />";
+		echo "<h3> ";
+		echo "La connexion à la base de données a échouée, verifiez les paramètres de connexion figurant dans le fichier config_db.php </h3>";
 	
-        echo "Connection to the database failed, you should verify the parameters of connection  in the file config_db.php";
+      
         }
+	echo "</div></body></html>";
 }
 
-echo "</body></html>";
+
 
 ?>
