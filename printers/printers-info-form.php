@@ -40,6 +40,7 @@ include ($phproot . "/glpi/includes_printers.php");
 include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_reservation.php");
 include ($phproot . "/glpi/includes_tracking.php");
+include ($phproot . "/glpi/includes_cartridges.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -67,6 +68,7 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
 	showPrintersForm($_SERVER["PHP_SELF"],$_POST["ID"]);
+	showCartridgeInstalled($_POST["ID"]);
 	showJobListForItem($_SESSION["glpiname"],3,$_POST["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],3,$_POST["ID"]);
 
@@ -80,6 +82,7 @@ else if (isset($tab["disconnect"]))
 	logEvent($tab["ID"], "printers", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
 	commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
 	showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	showCartridgeInstalled($tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],3,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],3,$tab["ID"]);
 
@@ -108,6 +111,7 @@ else if(isset($tab["connect"]))
 		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],3);
 		logEvent($tab["sID"], "printers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
 		showPrintersForm($_SERVER["PHP_SELF"],$tab["sID"]);
+		showCartridgeInstalled($tab["ID"]);
 		showJobListForItem($_SESSION["glpiname"],3,$tab["ID"]);
 		showOldJobListForItem($_SESSION["glpiname"],3,$tab["ID"]);
 
@@ -123,6 +127,7 @@ else
 	commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
 	showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	if (!empty($_GET["ID"])){
+	showCartridgeInstalled($tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],3,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],3,$tab["ID"]);
 	}

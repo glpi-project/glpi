@@ -1060,5 +1060,12 @@ $lang["cartridges"][24] = "Date ajout";
 $lang["cartridges"][25] = "Date utilisation";
 $lang["cartridges"][26] = "Date Fin";
 $lang["cartridges"][27] = "Sur";
+$lang["cartridges"][28] = "Installer";
+$lang["cartridges"][29] = "Fin de vie";
+$lang["cartridges"][30] = "Total";
+$lang["cartridges"][31] = "Supprimer";
+$lang["cartridges"][32] = "Type d'imprimantes compatibles";
+$lang["cartridges"][33] = "Cartouches utilisées";
+$lang["cartridges"][34] = "Pas de cartouche libre";
 
 ?>

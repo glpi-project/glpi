@@ -71,7 +71,7 @@ class CartridgeType {
 
 	function countCartridges() {
 		$db = new DB;
-		$query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = ".$this->fields["ID"].")";
+		$query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '".$this->fields["ID"]."')";
 		if ($result = $db->query($query)) {
 			$number = $db->numrows($result);
 			return $number;
@@ -137,14 +137,7 @@ class CartridgeType {
 		$db = new DB;
 		
 		if ($this->countCartridges()==0){
-			$query = "UPDATE glpi_cartridges_type SET deleted='Y' WHERE ID = '$ID'";
-			if ($result = $db->query($query)) {
-					return true;
-			} else {
-			return false;
-			}
-		} else {
-			$query = "DELETE from glpi_cartridges WHERE ID = '$ID'";
+			$query = "DELETE from glpi_cartridges_type WHERE ID = '$ID'";
 			if ($result = $db->query($query)) {
 				// Delete all cartridge assoc
 				$query2 = "SELECT ID FROM glpi_cartridges_assoc WHERE (FK_glpi_cartridges_type = \"$ID\")";
