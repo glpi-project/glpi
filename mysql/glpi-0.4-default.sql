@@ -1,4 +1,4 @@
-#GLPI Dump database on 2004-09-11 23:16
+#GLPI Dump database on 2004-09-14 19:38
 ### Dump table glpi_computers
 
 DROP TABLE IF EXISTS glpi_computers;
@@ -96,7 +96,7 @@ CREATE TABLE glpi_config (
    PRIMARY KEY (ID)
 );
 
-INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15',' 0.4-alpha','GLPI powered by indepnet','/glpi','5','0','','','','','','','admin@xxxxx.fr','SIGNATURE','1','1','1','0','0','0','0','0','0','1','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','');
+INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15',' 0.4-alpha','GLPI powered by indepnet','/glpi','1','0','','','','','','','admin@xxxxx.fr','SIGNATURE','1','1','1','0','0','0','0','0','0','1','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','');
 ### Dump table glpi_connect_wire
 
 DROP TABLE IF EXISTS glpi_connect_wire;
@@ -321,6 +321,8 @@ CREATE TABLE glpi_event_log (
 
 INSERT INTO glpi_event_log VALUES ('381','-1','system','2004-08-29 23:30:38','login','3','glpi logged in.');
 INSERT INTO glpi_event_log VALUES ('382','-1','system','2004-09-11 23:16:27','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('383','-1','system','2004-09-14 19:35:00','login','1','failed login: glpi');
+INSERT INTO glpi_event_log VALUES ('384','-1','system','2004-09-14 19:35:06','login','1','failed login: glpi');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -693,6 +695,7 @@ CREATE TABLE glpi_users (
     ID int(11) NOT NULL auto_increment,
     name varchar(80) NOT NULL,
     password varchar(80) NOT NULL,
+    password_md5 varchar(32) NOT NULL,
     email varchar(80) NOT NULL,
     phone varchar(100),
     type enum('normal','admin','post-only','super-admin') DEFAULT 'normal' NOT NULL,
@@ -705,8 +708,8 @@ CREATE TABLE glpi_users (
    KEY name_2 (name)
 );
 
-INSERT INTO glpi_users VALUES ('1','Helpdesk','14e43c2d31dcbdd1','',NULL,'post-only','Helpdesk Injector','no',NULL);
-INSERT INTO glpi_users VALUES ('2','glpi','5b9b1ee2216a5ffe','','','super-admin','glpi','yes','2');
-INSERT INTO glpi_users VALUES ('3','post-only','3eb831c67be6aeda','',NULL,'post-only','post-only','no','1');
-INSERT INTO glpi_users VALUES ('4','tech','37bd7c4221e8a247','',NULL,'super-admin','technicien','yes','2');
-INSERT INTO glpi_users VALUES ('5','normal','109e7883561b4202','',NULL,'normal','utilisateur normal','no','1');
+INSERT INTO glpi_users VALUES ('1','Helpdesk','14e43c2d31dcbdd1','','',NULL,'post-only','Helpdesk Injector','no',NULL);
+INSERT INTO glpi_users VALUES ('2','glpi','5b9b1ee2216a5ffe','41ece51526515624ff89973668497d00','','','super-admin','glpi','yes','2');
+INSERT INTO glpi_users VALUES ('3','post-only','3eb831c67be6aeda','','',NULL,'post-only','post-only','no','1');
+INSERT INTO glpi_users VALUES ('4','tech','37bd7c4221e8a247','','',NULL,'super-admin','technicien','yes','2');
+INSERT INTO glpi_users VALUES ('5','normal','109e7883561b4202','','',NULL,'normal','utilisateur normal','no','1');

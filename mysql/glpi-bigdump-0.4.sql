@@ -1,4 +1,4 @@
-#GLPI Dump database on 2004-09-11 23:18
+#GLPI Dump database on 2004-09-14 19:50
 ### Dump table glpi_computers
 
 DROP TABLE IF EXISTS glpi_computers;
@@ -2089,6 +2089,11 @@ CREATE TABLE glpi_event_log (
 INSERT INTO glpi_event_log VALUES ('13753','10','software','2004-08-29 20:44:52','inventory','4','glpi added a license.');
 INSERT INTO glpi_event_log VALUES ('13752','-1','system','2004-08-29 20:44:37','login','3','glpi logged in.');
 INSERT INTO glpi_event_log VALUES ('13754','-1','system','2004-09-11 23:18:18','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('13755','-1','system','2004-09-14 19:49:07','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('13756','-1','system','2004-09-14 19:49:56','login','1','failed login: helpdesk');
+INSERT INTO glpi_event_log VALUES ('13757','-1','system','2004-09-14 19:50:05','login','1','failed login: helpdesk');
+INSERT INTO glpi_event_log VALUES ('13758','-1','system','2004-09-14 19:50:11','login','1','failed login: ');
+INSERT INTO glpi_event_log VALUES ('13759','-1','system','2004-09-14 19:50:27','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -8146,6 +8151,7 @@ CREATE TABLE glpi_users (
     ID int(11) NOT NULL auto_increment,
     name varchar(80) NOT NULL,
     password varchar(80) NOT NULL,
+    password_md5 varchar(32) NOT NULL,
     email varchar(80) NOT NULL,
     phone varchar(100),
     type enum('normal','admin','post-only','super-admin') DEFAULT 'normal' NOT NULL,
@@ -8157,19 +8163,19 @@ CREATE TABLE glpi_users (
    KEY type (type)
 );
 
-INSERT INTO glpi_users VALUES ('1','Helpdesk','14e43c2d31dcbdd1','',NULL,'post-only','user1','no',NULL);
-INSERT INTO glpi_users VALUES ('2','user2','5b9b1ee2216a5ffe','','','super-admin','user2','yes','2');
-INSERT INTO glpi_users VALUES ('3','user3','5b9b1ee2216a5ffe','','6401','super-admin','user3','yes','2');
-INSERT INTO glpi_users VALUES ('4','user4','5b9b1ee2216a5ffe','','6073','super-admin','user4','yes','2');
-INSERT INTO glpi_users VALUES ('5','user5','5b9b1ee2216a5ffe','','6041','super-admin','user5','yes','2');
-INSERT INTO glpi_users VALUES ('6','user6','5b9b1ee2216a5ffe','','6176','super-admin','user6','yes','2');
-INSERT INTO glpi_users VALUES ('7','user7','5b9b1ee2216a5ffe','','6055','super-admin','user7','yes','2');
-INSERT INTO glpi_users VALUES ('8','user8','5b9b1ee2216a5ffe','','6435','super-admin','user8','yes','2');
-INSERT INTO glpi_users VALUES ('9','user9','5b9b1ee2216a5ffe','','6074','super-admin','user9','yes','2');
-INSERT INTO glpi_users VALUES ('10','user10','5b9b1ee2216a5ffe','','6439','super-admin','user10','yes','2');
-INSERT INTO glpi_users VALUES ('11','user11','5b9b1ee2216a5ffe','','6436','super-admin','user11','yes','2');
-INSERT INTO glpi_users VALUES ('12','user12','5b9b1ee2216a5ffe','','6111','super-admin','user12','yes','2');
-INSERT INTO glpi_users VALUES ('13','user13','5b9b1ee2216a5ffe','','6196','super-admin','user13','yes','2');
-INSERT INTO glpi_users VALUES ('14','user14','5b9b1ee2216a5ffe','','6111','super-admin','user14','yes','2');
-INSERT INTO glpi_users VALUES ('15','user15','5b9b1ee2216a5ffe','','6008','super-admin','user15','yes','2');
-INSERT INTO glpi_users VALUES ('400','glpi','5b9b1ee2216a5ffe','','','super-admin','user400','yes','2');
+INSERT INTO glpi_users VALUES ('1','Helpdesk','14e43c2d31dcbdd1','','',NULL,'post-only','user1','no',NULL);
+INSERT INTO glpi_users VALUES ('2','user2','5b9b1ee2216a5ffe','','','','super-admin','user2','yes','2');
+INSERT INTO glpi_users VALUES ('3','user3','5b9b1ee2216a5ffe','','','6401','super-admin','user3','yes','2');
+INSERT INTO glpi_users VALUES ('4','user4','5b9b1ee2216a5ffe','','','6073','super-admin','user4','yes','2');
+INSERT INTO glpi_users VALUES ('5','user5','5b9b1ee2216a5ffe','','','6041','super-admin','user5','yes','2');
+INSERT INTO glpi_users VALUES ('6','user6','5b9b1ee2216a5ffe','','','6176','super-admin','user6','yes','2');
+INSERT INTO glpi_users VALUES ('7','user7','5b9b1ee2216a5ffe','','','6055','super-admin','user7','yes','2');
+INSERT INTO glpi_users VALUES ('8','user8','5b9b1ee2216a5ffe','','','6435','super-admin','user8','yes','2');
+INSERT INTO glpi_users VALUES ('9','user9','5b9b1ee2216a5ffe','','','6074','super-admin','user9','yes','2');
+INSERT INTO glpi_users VALUES ('10','user10','5b9b1ee2216a5ffe','','','6439','super-admin','user10','yes','2');
+INSERT INTO glpi_users VALUES ('11','user11','5b9b1ee2216a5ffe','','','6436','super-admin','user11','yes','2');
+INSERT INTO glpi_users VALUES ('12','user12','5b9b1ee2216a5ffe','','','6111','super-admin','user12','yes','2');
+INSERT INTO glpi_users VALUES ('13','user13','5b9b1ee2216a5ffe','','','6196','super-admin','user13','yes','2');
+INSERT INTO glpi_users VALUES ('14','user14','5b9b1ee2216a5ffe','','','6111','super-admin','user14','yes','2');
+INSERT INTO glpi_users VALUES ('15','user15','5b9b1ee2216a5ffe','','','6008','super-admin','user15','yes','2');
+INSERT INTO glpi_users VALUES ('400','glpi','5b9b1ee2216a5ffe','41ece51526515624ff89973668497d00','','','super-admin','user400','yes','2');
