@@ -51,16 +51,3 @@ function raccourciTypo(toolbarfield, begin, end)
 
 
 
-function drawToolbar(toolbarfield)
-{
-	document.write('<link rel="stylesheet" type="text/css" href="toolbar.css" />\
-	<p class="toolbar">\
-	<a href="javascript:raccourciTypo(document.' + toolbarfield + ', \'[b]\', \'[/b]\');"><b>Gras</b></a> \
-	<a href="javascript:raccourciTypo(document.' + toolbarfield + ', \'[i]\', \'[/i]\');"><i>Italique</i></a> \
-	<a href="javascript:raccourciTypo(document.' + toolbarfield + ', \'[u]\', \'[/u]\');">Souligné</a> \
-	<a href="javascript:raccourciTypo(document.' + toolbarfield + ', \'[s]\', \'[/s]\');">Barré</a> \
-	<a href="javascript:raccourciTypo(document.' + toolbarfield + ', \'[c]\', \'[/c]\');">Centré</a> \
-	<a href="javascript:raccourciTypo(document.' + toolbarfield + ', \'[code]\', \'[/code]\');">Code</a> \
-	<a href="javascript:raccourciTypo(document.' + toolbarfield + ', \'[email]\', \'[/email]\');">Email</a> \
-	</p>');
-}

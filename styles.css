@@ -471,9 +471,11 @@ p.toolbar
 
 p.toolbar a
 {
+	
 	font-size: 12px;
 	font-family: Verdana, Arial, sans-serif;
-	padding: 3px;
+	padding: 5px;
+	margin: 2px;
 	color: #000;
 
 
@@ -484,6 +486,8 @@ p.toolbar a, p.toolbar a:link, p.toolbar a:visited
 	border: 1px solid #999;
 	-moz-border-radius: 5px;
 	text-decoration: none;
+	
+
 }
 
 p.toolbar a:hover
