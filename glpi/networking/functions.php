@@ -504,15 +504,15 @@ function showPorts ($device,$device_type) {
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 
 			echo "<br><div align='center'><table class='tab_cadre' width='90%'>";
-			echo "<tr><th colspan='6'>";
+			echo "<tr><th colspan='7'>";
 			echo $db->numrows($result)." ";
 			if ($db->numrows($result)<2) {
 				echo $lang["networking"][37];
 			} else {
 				echo $lang["networking"][13];
 			}
-			echo ":</th></tr>";
-			echo "<tr><th>#</th><th>".$lang["networking"][0]."</th>";
+			echo ":</th></tr>";        
+			echo "<tr><th>#</th><th>".$lang["networking"][0]."</th><th>".$lang["networking"][51]."</th>";
 			echo "<th>".$lang["networking"][14]."</th><th>".$lang["networking"][15]."</th>";
 			echo "<th>".$lang["networking"][16]."</th><th>".$lang["networking"][17].":</th></tr>\n";
 			$i=0;
@@ -526,6 +526,7 @@ function showPorts ($device,$device_type) {
 				echo "</a>";
 				echo "</b></td>";
         echo "<td>".$netport->fields["name"]."</td>";
+		echo "<td>".getDropdownName("glpi_dropdown_netpoint",$netport->fields["netpoint"])."</td>";
 				echo "<td>".$netport->fields["ifaddr"]."</td>";
 				echo "<td>".$netport->fields["ifmac"]."</td>";
 				echo "<td>".getDropdownName("glpi_dropdown_iface",$netport->fields["iface"])."</td>";
