@@ -50,6 +50,163 @@ function titleNetdevices() {
  
 }
 
+function searchFormNetworking() {
+	// Netwokirng Search Form
+	
+	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
+
+	$option["networking.name"]				= $lang["printers"][5];
+	$option["networking.ID"]				= $lang["printers"][19];
+	$option["glpi_dropdown_locations.name"]			= $lang["printers"][6];
+	$option["glpi_type_networking.name"]				= $lang["printers"][9];
+	$option["networking.serial"]			= $lang["printers"][10];
+	$option["networking.otherserial"]		= $lang["printers"][11]	;
+	$option["networking.comments"]			= $lang["printers"][12];
+	$option["networking.contact"]			= $lang["printers"][8];
+	$option["networking.contact_num"]		= $lang["printers"][7];
+	$option["networking.date_mod"]			= $lang["printers"][16];
+	
+
+	echo "<form method='get' action=\"".$cfg_install["root"]."/networking/networking-search.php\">";
+	echo "<div align='center'><table  width='750' class='tab_cadre'>";
+	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<tr class='tab_bg_1'>";
+	echo "<td align='center'>";
+	echo "<select name=\"field\" size='1'>";
+
+        reset($option);
+	foreach ($option as $key => $val) {
+		echo "<option value=$key>$val\n";
+	}
+	echo "</select>&nbsp;";
+	echo $lang["search"][1];
+	echo "&nbsp;<select name='phrasetype' size='1'>";
+	echo "<option value='contains'>".$lang["search"][2]."</option>";
+	echo "<option value='exact'>".$lang["search"][3]."</option>";
+	echo "</select>";
+	echo "<input type='text' size='10' name=\"contains\">";
+	echo "&nbsp;";
+	echo $lang["search"][4];
+	echo "&nbsp;<select name='sort' size='1'>";
+	reset($option);
+	foreach ($option as $key => $val) {
+		echo "<option value=$key>$val\n";
+	}
+	echo "</select> ";
+	echo "</td><td width='80' align='center' class='tab_bg_2'>";
+	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
+	echo "</td></tr></table></div></form>";
+}
+
+
+function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start) {
+
+	// Lists networking
+
+	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
+
+	// Build query
+	if ($phrasetype == "contains") {
+		$where = "($field LIKE '%".$contains."%')";
+	} else {
+		$where = "($field LIKE '".$contains."')";
+	}
+	if (!$start) {
+		$start = 0;
+	}
+	if (!$order) {
+		$order = "ASC";
+	}
+	$query = "select networking.ID from glpi_networking as networking LEFT JOIN glpi_dropdown_locations on networking.location=glpi_dropdown_locations.ID ";
+	$query .= "LEFT JOIN glpi_type_networking on networking.type = glpi_type_networking.ID ";
+	$query .= "where $where ORDER BY $sort $order";
+	// Get it from database	
+	$db = new DB;
+	if ($result = $db->query($query)) {
+		$numrows = $db->numrows($result);
+
+		// Limit the result, if no limit applies, use prior result
+		if ($numrows>$cfg_features["list_limit"]) {
+			$query_limit = $query ." LIMIT $start,".$cfg_features["list_limit"]." ";
+			$result_limit = $db->query($query_limit);
+			$numrows_limit = $db->numrows($result_limit);
+
+		} else {
+			$numrows_limit = $numrows;
+			$result_limit = $result;
+		}
+
+
+		if ($numrows_limit>0) {
+			// Produce headline
+			echo "<center><table class='tab_cadre'><tr>";
+
+			// Name
+			echo "<th>";
+			if ($sort=="networking.name") {
+				echo "&middot;&nbsp;";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=networking.name&order=ASC&start=$start\">";
+			echo $lang["networking"][0]."</a></th>";
+
+			// Location			
+			echo "<th>";
+			if ($sort=="networking.location") {
+				echo "&middot;&nbsp;";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=networking.location&order=ASC&start=$start\">";
+			echo $lang["networking"][1]."</a></th>";
+
+			// Type
+			echo "<th>";
+			if ($sort=="networking.type") {
+				echo "&middot;&nbsp;";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=networking.type&order=ASC&start=$start\">";
+			echo $lang["networking"][2]."</a></th>";
+
+			// Last modified		
+			echo "<th>";
+			if ($sort=="networking.date_mod") {
+				echo "&middot;&nbsp;";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=networking.date_mod&order=DESC&start=$start\">";
+			echo $lang["networking"][9]."</a></th>";
+	
+			echo "</tr>";
+
+			for ($i=0; $i < $numrows_limit; $i++) {
+				$ID = $db->result($result_limit, $i, "ID");
+				$networking = new Netdevice;
+				$networking->getfromDB($ID);
+				echo "<tr class='tab_bg_2'>";
+				echo "<td><b>";
+				echo "<a href=\"".$cfg_install["root"]."/networkings/networkings-info-form.php?ID=$ID\">";
+				echo $networking->fields["name"]." (".$networking->fields["ID"].")";
+				echo "</a></b></td>";
+				echo "<td>". getDropdownName("glpi_dropdown_locations",$networking->fields["location"]) ."</td>";
+				echo "<td>". getDropdownName("glpi_type_monitors",$networking->fields["type"]) ."</td>";
+				echo "<td>".$networking->fields["date_mod"]."</td>";
+				echo "</tr>";
+			}
+
+			// Close Table
+			echo "</table></center>";
+
+			// Pager
+			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
+			printPager($start,$numrows,$target,$parameters);
+
+		} else {
+			echo "<center><b>".$lang["networking"][38]."</b></center>";
+			echo "<hr noshade>";
+		}
+	}
+}
+
+
+
+
 function listNetdevices() {
 	// List all netdevices
 
@@ -527,7 +684,7 @@ function showConnection ($ID) {
 		} else if ($netport->fields["device_type"]==2) {
 			echo "<a href=\"".$cfg_install["root"]."/networking/networking-info-form.php?ID=".$netport->device_ID."\">";
 		} else if ($netport->fields["device_type"]==3) {
-			echo "<a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=".$netport->device_ID."\">";
+			echo "<a href=\"".$cfg_install["root"]."/networkings/networkings-info-form.php?ID=".$netport->device_ID."\">";
 		}
 		echo $netport->device_name." (".$netport->device_ID.")";
 		echo "</a>";
