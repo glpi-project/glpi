@@ -201,11 +201,13 @@ if (isset($_GET['onglet'])) {
 				showPortsAdd($tab["ID"],COMPUTER_TYPE);
 				break;
 			case 4 :
-				showDocumentAssociated(COMPUTER_TYPE,$tab["ID"]);
 				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",COMPUTER_TYPE,$tab["ID"]);
 				showContractAssociated(COMPUTER_TYPE,$tab["ID"]);
 				break;
 			case 5 :
+				showDocumentAssociated(COMPUTER_TYPE,$tab["ID"]);
+				break;
+			case 6 :
 				showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
 				showOldJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
 				break;
