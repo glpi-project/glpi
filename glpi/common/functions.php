@@ -1277,6 +1277,7 @@ function Disconnect($ID,$type) {
 }
 
 function Connect($target,$sID,$cID,$type) {
+	global $lang;
 	// Makes a direct connection
 
 	$connect = new Connection;
@@ -1284,6 +1285,20 @@ function Connect($target,$sID,$cID,$type) {
 	$connect->end2=$cID;
 	$connect->type=$type;
 	$connect->addtoDB();
+	// Mise a jour lieu du periph si nécessaire
+	$dev=new CommonItem();
+	$dev->getFromDB($type,$sID);
+
+	$comp=new Computer();
+	$comp->getFromDB($cID);
+	if ($comp->fields['location']!=$dev->obj->fields['location']){
+	$updates[0]="location";
+	$dev->obj->fields['location']=$comp->fields['location'];
+	$dev->obj->updateInDB($updates);
+	$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][48];
+
+	}
+
 }
 
 function showConnectSearch($target,$ID,$type="computer") {
@@ -1409,9 +1424,9 @@ function listConnectElement($target,$input) {
 
 	$db = new DB;
 	if ($input["type"] == "name") {
-		$query = "SELECT $table.ID as ID,$table.name as name, glpi_dropdown_locations.name as location from $table left join glpi_dropdown_locations on $table.location = glpi_dropdown_locations.id left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = $device_id) WHERE $table.name LIKE '%".$input["search"]."%' AND glpi_connect_wire.ID IS NULL order by name ASC";
+		$query = "SELECT $table.ID as ID,$table.name as name, glpi_dropdown_locations.ID as location from $table left join glpi_dropdown_locations on $table.location = glpi_dropdown_locations.id left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = $device_id) WHERE $table.name LIKE '%".$input["search"]."%' AND glpi_connect_wire.ID IS NULL order by name ASC";
 	} else {
-		$query = "SELECT $table.ID as ID,$table.name as name, glpi_dropdown_locations.name as location from $table left join glpi_dropdown_locations on $table.location = glpi_dropdown_locations.id left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = $device_id) WHERE $table.ID LIKE '%".$input["search"]."%' AND glpi_connect_wire.ID IS NULL order by name ASC";
+		$query = "SELECT $table.ID as ID,$table.name as name, glpi_dropdown_locations.ID as location from $table left join glpi_dropdown_locations on $table.location = glpi_dropdown_locations.id left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = $device_id) WHERE $table.ID LIKE '%".$input["search"]."%' AND glpi_connect_wire.ID IS NULL order by name ASC";
 	} 
 //	echo $query;
 	$result = $db->query($query);
@@ -1422,7 +1437,7 @@ function listConnectElement($target,$input) {
 		$dID = $db->result($result, $i, "ID");
 		$name = $db->result($result, $i, "name");
 		$location = $db->result($result, $i, "location");
-		echo "<option value=\"$dID\">".$name." (".$location.")</option>";
+		echo "<option value=\"$dID\">".$name." (".getDropdownLocationName($location).")</option>";
 		$i++;
 	}
 	echo  "</select>";
