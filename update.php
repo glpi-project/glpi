@@ -974,7 +974,6 @@ if(!TableExists("glpi_device_gfxcard")) {
   PRIMARY KEY  (`ID`)
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 create table `glpi_device_gfxcard` ".$lang["update"][90].$db->error());
-	#dropdown2Device("gfxcard","gfxcard");
 	compDpd2Device("gfxcard","gfxcard","gfxcard");
 }
 if(!TableExists("glpi_device_hdd")) {
@@ -989,7 +988,6 @@ if(!TableExists("glpi_device_hdd")) {
   PRIMARY KEY  (`ID`)
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_hdtype` ".$lang["update"][90].$db->error());
-// 	dropdown2Device("hdd","hdtype");
 	compDpd2Device("hdd","hdtype","hdtype","hdspace");
 }
 if(!TableExists("glpi_device_iface")) {
@@ -1002,7 +1000,6 @@ if(!TableExists("glpi_device_iface")) {
   PRIMARY KEY  (`ID`)
 ) TYPE=MyISAM";
 	$db->query($query) or die("0.5- CREATE TABLE `glpi_device_iface` ".$lang["update"][90].$db->error());
-// 	dropdown2Device("iface","network");
 	compDpd2Device("iface","iface","network");
 }
 if(!TableExists("glpi_device_moboard")) {
@@ -1015,7 +1012,6 @@ if(!TableExists("glpi_device_moboard")) {
   PRIMARY KEY  (`ID`)
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_moboard` ".$lang["update"][90].$db->error());
-// 	dropdown2Device("moboard","moboard");
 	compDpd2Device("moboard","moboard","moboard");
 }
 if(!TableExists("glpi_device_processor")) {
@@ -1028,8 +1024,6 @@ if(!TableExists("glpi_device_processor")) {
   PRIMARY KEY  (`ID`)
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_processor` ".$lang["update"][90].$db->error());
-
-// 	dropdown2Device("processor","processor");
 	compDpd2Device("processor","processor","processor","processor_speed");
 }
 if(!TableExists("glpi_device_ram")) {
@@ -1043,7 +1037,6 @@ if(!TableExists("glpi_device_ram")) {
   PRIMARY KEY  (`ID`)
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_ram` ".$lang["update"][90].$db->error());
-// 	dropdown2Device("ram","ram");
 	compDpd2Device("ram","ram","ramtype","ram");
 }
 if(!TableExists("glpi_device_sndcard")) {
@@ -1056,7 +1049,6 @@ if(!TableExists("glpi_device_sndcard")) {
   PRIMARY KEY  (`ID`)
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_sndcard ".$lang["update"][90].$db->error());
-// 	dropdown2Device("sndcard","sndcard");
 	compDpd2Device("sndcard","sndcard","sndcard");
 }
 if(!TableExists("glpi_manufacturer")) {
@@ -1138,7 +1130,7 @@ $query= "ALTER TABLE `glpi_config` ADD `priority_1` VARCHAR( 200 ) DEFAULT '#fff
 $query="UPDATE glpi_config set version='0.5' WHERE ID='1'";
 	$db->query($query) or die("0.5 update config version ".$lang["update"][90].$db->error());
 
-//Et enfin on supprime toutes les tables glpi_dropdown concernées ainsi que les champs inutiles de la table computer
+// TODO : Et enfin on supprime toutes les tables glpi_dropdown concernées ainsi que les champs inutiles de la table computer
 //Et on decommente la suppréssion de la table "templates".
 
 return $ret;
