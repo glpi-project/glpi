@@ -115,6 +115,26 @@ function header_html($etape)
        background-color:#ffffff;
         }
 
+	.button {
+        font-weight:200;
+	color:#000000;
+	padding:5px;
+	text-decoration:none;
+	border:1px solid #009966;
+        background-color:#eeeeee;
+        }
+
+        .button:hover{
+          font-weight:200;
+	  color:#000000;
+	 padding:5px;
+	text-decoration:none;
+	border:1px solid #009966;
+       background-color:#ffffff;
+        }
+
+	
+	
         -->  ";
         echo "</style>";
          echo "</head>";
@@ -331,20 +351,18 @@ function step3($host,$user,$password,$update)
 		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_1\" />";
 		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\"  value=\"".$lang["install"][33]."\" /></p>";
 		echo "</form>";
-                //     BUG
-                // IL y a un pb ici la validation du bouton devrait nous faire revenir sur l'étape 2 hors on reste bloqué... pas trouvé pourquoi.
-                // END BUG
+                
 	}
 	else {
 		echo "Connection réussie !! <br />";
 		if($update == "no") {
-			echo " Veuillez selectionner une base de données : ";
+			echo $lang["install"][38];
 			echo "<form action=\"install.php\" method=\"post\">";
 			$db_list = mysql_list_dbs($link);
 			while ($row = mysql_fetch_object($db_list)) {
 				echo "<p><input type=\"radio\" name=\"databasename\" value=\"". $row->Database ."\" />$row->Database.</p>";
 			}
-			echo "<p><input type=\"radio\" name=\"databasename\" value=\"0\" />Créer une nouvelle base : ";
+			echo "<p><input type=\"radio\" name=\"databasename\" value=\"0\" />".$lang["install"][39];
 			echo "<input type=\"text\" name=\"newdatabasename\"/></p>";
 			echo "<input type=\"hidden\" name=\"db_host\" value=\"". $host ."\" />";
 			echo "<input type=\"hidden\" name=\"db_user\" value=\"". $user ."\" />";
@@ -355,7 +373,7 @@ function step3($host,$user,$password,$update)
 			echo "</form>";
 		}
 		elseif($update == "yes") {
-			echo " Veuillez selectionner la base de données  à mettre à jour : ";
+			echo $lang["install"][40];
 			echo "<form action=\"install.php\" method=\"post\">";
 			$db_list = mysql_list_dbs($link);
 			while ($row = mysql_fetch_object($db_list)) {
@@ -383,9 +401,9 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	
 	function prev_form() {
 		echo "<br /><form action=\"install.php\" method=\"post\">";
-		echo "Mysql server : <input type=\"hidden\" name=\"db_host\" value=\"". $host ."\"/><br />";
-		echo "Mysql user : <input type=\"hidden\" name=\"db_user\" value=\"". $user ."\"/>";
-		echo "Mysql pass : <input type=\"hidden\" name=\"db_pass\" value=\"". $password ."\" />";
+		echo $lang["install"][30] .": <input type=\"hidden\" name=\"db_host\" value=\"". $host ."\"/><br />";
+		echo $lang["install"][31] ." : <input type=\"hidden\" name=\"db_user\" value=\"". $user ."\"/>";
+		echo $lang["install"][32] .": <input type=\"hidden\" name=\"db_pass\" value=\"". $password ."\" />";
 		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_2\" />";
 		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][33]."\" /></p>";
 		echo "</form>";
@@ -422,21 +440,22 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	if(!empty($databasename)) {
 		$db_selected = mysql_select_db($databasename, $link);
 		if (!$db_selected) {
-			echo "Impossible d\'utiliser la base : ";
-			echo "<br />Le serveur à répondu " . mysql_error();
+			echo $lang["install"][41];
+			echo "<br />";
+			echo $lang["install"][42]. mysql_error();
 			prev_form();
 		}
 		else {
 			if (create_conn_file($host,$user,$password,$databasename)) {
 				fill_db();
-				echo "<p>OK - La base a bien été initialisée</p>";
-				echo "<p>Des valeurs par défaut ont été entrées, n'hésitez pas à supprimer ces dernières</p>";
-				echo "<p>Ne supprimez pas l'utilisateur \"helpdesk\"</p>";
-				echo "<p>A la première connection vous pouvez utiliser le login \"glpi\" et le mot de passe \"glpi\" pour accéder à l'application avec des droits administrateur</p>";
+				echo "<p>".$lang["install"][43]."</p>";
+				echo "<p>".$lang["install"][44]."</p>";
+				echo "<p>".$lang["install"][45]."</p>";
+				echo "<p>".$lang["install"][46]."</p>";
 				next_form();
 			}
 			else {
-				echo "<p>Impossible d'écrire le fichier de configuration de votre base de données</p>";
+				echo "<p>".$lang["install"][47]."</p>";
 				prev_form();
 			}
 		}
@@ -452,26 +471,26 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 			mysql_select_db($newdatabasename, $link);
 			if (create_conn_file($host,$user,$password,$newdatabasename)) {
 				fill_db();
-				echo "<p>OK - La base a bien été initialisée</p>";
-				echo "<p>Des valeurs par defaut on été entrées, n'hésitez pas à supprimer ces dernières</p>";
-				echo "<p>Ne supprimez pas l'utilisateur \"helpdesk\"</p>";
-				echo "<p>A la première connection vous pouvez utiliser le login \"glpi\" et le mot de passe \"glpi\" pour accéder à l'application avec des droits administrateur</p>";
+				echo "<p>".$lang["install"][43]."</p>";
+				echo "<p>".$lang["install"][44]."</p>";
+				echo "<p>".$lang["install"][45]."</p>";
+				echo "<p>".$lang["install"][46]."</p>";
 				next_form();
 			}
 			else {
-				echo "<p>Impossible d'écrire le fichiers de configuration de votre base de données</p>";
+					echo "<p>".$lang["install"][47]."</p>";
 				prev_form();
 			}
 		}
 		else {
-			echo "Erreur lors de la création de la base !";
-			echo "<br />Le serveur a répondu : " . mysql_error();
+			echo $lang["install"][48];
+			echo "<br />".$lang["install"][42] . mysql_error();
 			prev_form();
 		}
 		mysql_close($link);
 	}
 	else {
-		echo "<p>Vous n'avez pas séléctionné de base de données !</p>";
+		echo "<p>".$lang["install"][49]. "</p>";
 		prev_form();
 		mysql_close($link);
 	}
@@ -489,8 +508,8 @@ function step5()
 	$db = new DB;
 	$query = "select * from glpi_config where ID = 1";
 	$result = $db->query($query);
-	echo "Configuration de GLPI : ";
-	echo "<p>Les valeurs présélectionnées sont les valeurs par defaut, il est recommandé de laisser ces valeurs</p>";
+	echo "<p>".$lang["install"][51]. "</p>";
+	echo "<p>".$lang["install"][52]. "</p>";
 	echo "<form action=\"install.php\" method=\"post\">";
 	$root_doc = ereg_replace("/install.php","",$_SERVER['REQUEST_URI']);
 	echo "<p><label>".$lang["setup"][101]." : <input type=\"text\" name=\"root_doc\" value=\"". $root_doc ."\"></label></p>";
@@ -514,8 +533,8 @@ function step5()
 }
 
 // STEP 6 Get the config and fill database
-// Config the mailing features if enabled by user
-function step6($root_doc, $event_loglevel, $num_of_events, $expire_events,$jobs_at_login, $list_limit, $cut, $mailing)
+
+function step6($root_doc, $event_loglevel, $num_of_events, $expire_events,$jobs_at_login, $list_limit, $cut)
 {
 	global $lang;
 	
@@ -524,8 +543,8 @@ function step6($root_doc, $event_loglevel, $num_of_events, $expire_events,$jobs_
 	$db = new DB;
 	$query = "update glpi_config set root_doc = '". $root_doc ."', event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', jobs_at_login = '". $jobs_at_login ."', list_limit = '". $list_limit ."', cut = '". $cut ."'"; 
 	$db->query($query);
-	echo "Votre configuration a bien été enregistrée";
-	echo "<br />Cliquer sur 'Continuer' pour terminer l'installation";
+	echo "<p>".$lang["install"][53]. "</p>";
+	echo "<p>".$lang["install"][54]. "</p>";
 	echo "<br /><form action=\"install.php\" method=\"post\">";
 	echo "<input type=\"hidden\" name=\"install\" value=\"Etape_6\" />";
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][26]."\" /></p>";
@@ -538,17 +557,17 @@ function step7() {
 
 	global $lang;
 	
-	echo "<h2>L'installation s'est bien terminée </h2>";
-	echo "<p>Il est recommandé maintenant d'appliquer un chmod+0 sur les fichiers install.php et update.php</p>";
-	echo "<p>Vous pouvez utiliser l'application en cliquant <a href=\"index.php\">sur ce lien </a>.</p>";
-	echo "<p>Les logins mots de passes par defauts sont :</p>";
-	echo "<p>&nbsp;<li> glpi/glpi pour le compte administrateur</li>";
-	echo "&nbsp;<li>tech/tech pour le compte technicien</li>";
-	echo "&nbsp;<li>normal pour le compte normal</li>";
-	echo "&nbsp;<li>post-only/post-only pour le compte postonly</li></p>";
-	echo "<p>Vous pouvez supprimer ces comptes ainsi que les premières entrées dans la base de données.</p>";
-	echo "<p>Attention tout de même NE SUPPRIMEZ PAS l'utilisateur HELPDESK.</p>";
-}
+	echo "<h2>".$lang["install"][55]."</h2>";
+	echo "<p>".$lang["install"][56]."</p>";
+	echo "<p>".$lang["install"][57]."</p>";
+	echo "<p><ul><li> ".$lang["install"][58]."</li>";
+	echo "<li>".$lang["install"][59]."</li>";
+	echo "<li>".$lang["install"][60]."</li>";
+	echo "<li>".$lang["install"][61]."</li></ul></p>";
+	echo "<p>".$lang["install"][62]."</p>";
+	echo "<p>".$lang["install"][63]."</p>";
+	echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
+	}
 
 //Create the file glpi/config/config_db.php
 // an fill it with user connections info.
@@ -575,12 +594,12 @@ function update1($host,$user,$password,$dbname) {
 		
 	}
 	else {
-		echo "Impossible de creer le fichier de connection à la base de données, reverifiez vos droits sur les fichiers";
-		echo "<h3>Continuer ?</h3>";
+		echo $lang["install"][70];
+		echo "<h3>".$lang["install"][25]."</h3>";
 		echo "<form action=\"install.php\" method=\"post\">";
 		echo "<input type=\"hidden\" name=\"update\" value=\"yes\" />";
 		echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_0\" />";
-		echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Re-essayer\" /></p>";
+		echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][25]."\" /></p>";
 		echo "</form>";
 	}
 	

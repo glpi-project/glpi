@@ -64,8 +64,8 @@ $lang["buttons"][14]	= "Modifier";
 $lang["buttons"][15]    = "Calendrier";
 $lang["buttons"][16] ="Raz";
 $lang["buttons"][17] ="Supprimer";
-$lang["buttons"][18] ="Sélectionner tout";
-$lang["buttons"][19] ="Désélectionner tout";
+$lang["buttons"][18] ="Tout cocher";
+$lang["buttons"][19] ="Tout décocher";
 
 $lang["choice"][0]	= "Oui";
 $lang["choice"][1]	= "Non";
@@ -702,7 +702,7 @@ $lang["stats"][27] = "Dur&eacute;e r&eacute;elle totale des interventions";
 // install update
 
 $lang["install"][0]	= "Installation ou mise à jour de GLPI";
-$lang["install"][1]	= " Choissisez \"Installation\" pour  une nouvelle installation complète de GLPI ( les seules données présentes dans la base seront les données par defaut).";
+$lang["install"][1]	= " Choissisez \"Installation\" pour  une nouvelle installation complète de GLPI ( les données importées par GLPI seront les données par défaut).";
 $lang["install"][2]	= "Choisissez \" Mise à jour\"  pour mettre  à jour GLPI à partir d'une version antérieure";
 $lang["install"][3]	= "Installation";
 $lang["install"][4]	= "Mise à jour";
@@ -737,8 +737,47 @@ $lang["install"][32]	= "Mysql pass";
 $lang["install"][33]	= "Retour"; 
 $lang["install"][34]	= "Test de la connection à la base de données"; 
 $lang["install"][35]	= "Impossible de se connecter à la base de données"; 
-$lang["install"][36]	= " Le serveur à répondu"; 
+$lang["install"][36]	= " Le serveur a répondu"; 
 $lang["install"][37]	= "Le champs serveur ou/et le champ user est vide"; 
+$lang["install"][38]	= "Veuillez selectionner une base de données : "; 
+$lang["install"][39]	= "Créer une nouvelle base :"; 
+$lang["install"][40]	= "Veuillez selectionner la base de données  à mettre à jour : "; 
+$lang["install"][41]	= "Impossible d'utiliser la base : "; 
+$lang["install"][42]	= "Le serveur a répondu"; 
+$lang["install"][43]	= "OK - La base a bien été initialisée"; 
+$lang["install"][44]	= "Des valeurs par défaut ont été entrées, n'hésitez pas à supprimer ces dernières"; 
+$lang["install"][45]	= "Ne supprimez pas l'utilisateur 'helpdesk' "; 
+$lang["install"][46]	= "A la première connection vous pouvez utiliser le login \"glpi\" et le mot de passe \"glpi\" pour accéder à l'application avec des droits administrateur"; 
+$lang["install"][47]	= "Impossible d'écrire le fichier de configuration de votre base de données"; 
+$lang["install"][48]	= "Erreur lors de la création de la base !"; 
+$lang["install"][49]	= "Vous n'avez pas séléctionné de base de données !"; 
+$lang["install"][50]	= "Erreur lors de la création de la base !"; 
+$lang["install"][51]	= "Configuration de GLPI :"; 
+$lang["install"][52]	= "Les valeurs présélectionnées sont les valeurs par defaut, il est recommandé de laisser ces valeurs"; 
+$lang["install"][53]	= "Votre configuration a bien été enregistrée"; 
+$lang["install"][54]	= "Cliquer sur 'Continuer' pour terminer l'installation"; 
+$lang["install"][55]	= "L'installation est terminée"; 
+$lang["install"][56]	= "Il est recommandé maintenant d'appliquer un chmod+0 sur les fichiers install.php et update.php"; 
+$lang["install"][57]	= "Les logins mots de passes par defauts sont :"; 
+$lang["install"][58]	= "glpi/glpi pour le compte administrateur"; 
+$lang["install"][59]	= "tech/tech pour le compte technicien"; 
+$lang["install"][60]	= "normal pour le compte normal"; 
+$lang["install"][61]	= "post-only/post-only pour le compte postonly"; 
+$lang["install"][62]	= "Vous pouvez supprimer ou modifier ces comptes ainsi que les premières entrées dans la base de données."; 
+$lang["install"][63]	= "Attention tout de même NE SUPPRIMEZ PAS l'utilisateur HELPDESK."; 
+$lang["install"][64]	= "Utiliser GLPI"; 
+$lang["install"][70]	= "Impossible de créer le fichier de connection à la base de données, vérifiez les droits sur les fichiers"; 
+$lang["install"][71]	= "post-only/post-only pour le compte postonly"; 
+$lang["install"][72]	= "post-only/post-only pour le compte postonly"; 
+$lang["install"][73]	= "post-only/post-only pour le compte postonly"; 
+$lang["install"][74]	= "post-only/post-only pour le compte postonly"; 
+$lang["install"][75]	= "post-only/post-only pour le compte postonly"; 
+$lang["install"][76]	= "post-only/post-only pour le compte postonly"; 
+$lang["install"][77]	= "post-only/post-only pour le compte postonly"; 
+
+
+
+
 
 
 
