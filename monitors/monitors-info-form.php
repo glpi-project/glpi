@@ -65,25 +65,34 @@ if (isset($_POST["add"])) {
 	commonHeader("Monitors",$_SERVER["PHP_SELF"]);
 	showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	commonFooter();
-} else if ($tab["connect"]==1) {
-	checkAuthentication("admin");
-	commonHeader("Monitors",$_SERVER["PHP_SELF"]);
-	showConnectSearch($_SERVER["PHP_SELF"],$tab["ID"]);
-	commonFooter();
-} else if ($tab["connect"]==2) {
-	checkAuthentication("admin");
-	commonHeader("Monitors",$_SERVER["PHP_SELF"]);
-	listConnectComputers($_SERVER["PHP_SELF"],$tab);
-	commonFooter();
-} else if ($tab["connect"]==3) {
-	checkAuthentication("admin");
-	commonHeader("Monitors",$_SERVER["PHP_SELF"]);
-	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],4);
-	logEvent($tab["sID"], "monitors", 5, "inventory", $_SESSION["glpiname"]." connected item.");
-	showMonitorsForm($_SERVER["PHP_SELF"],$tab["sID"]);
-	commonFooter();
-
-} else {
+} else if(isset($tab["connect"]))
+{
+ 	if($tab["connect"]==1)
+	{
+		checkAuthentication("admin");
+		commonHeader("Monitors",$_SERVER["PHP_SELF"]);
+		showConnectSearch($_SERVER["PHP_SELF"],$tab["ID"]);
+		commonFooter();
+	}
+	else if ($tab["connect"]==2)
+	{
+		checkAuthentication("admin");
+		commonHeader("Monitors",$_SERVER["PHP_SELF"]);
+		listConnectComputers($_SERVER["PHP_SELF"],$tab);
+		commonFooter();
+	}
+	else if ($tab["connect"]==3)
+	{
+		checkAuthentication("admin");
+		commonHeader("Monitors",$_SERVER["PHP_SELF"]);
+		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],4);
+		logEvent($tab["sID"], "monitors", 5, "inventory", $_SESSION["glpiname"]." connected item.");
+		showMonitorsForm($_SERVER["PHP_SELF"],$tab["sID"]);
+		commonFooter();
+	}
+}
+else
+{
 	checkAuthentication("normal");
 	commonHeader("Monitors",$_SERVER["PHP_SELF"]);
 	showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"]);
