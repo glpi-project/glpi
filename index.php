@@ -2,15 +2,10 @@
 /*
  
  ----------------------------------------------------------------------
-GLPI - Gestionnaire libre de parc informatique
+ GLPI - Gestionnaire libre de parc informatique
  Copyright (C) 2002 by the INDEPNET Development Team.
  Bazile Lebeau, baaz@indepnet.net - Jean-Mathieu Doléans, jmd@indepnet.net
  http://indepnet.net/   http://glpi.indepnet.org
- ----------------------------------------------------------------------
- Based on:
-IRMA, Information Resource-Management and Administration
-Christian Bauer, turin@incubus.de 
-
  ----------------------------------------------------------------------
  LICENSE
 
@@ -37,6 +32,8 @@ This file is part of GLPI.
 */
  
 
+// Test si config_db n'existe pas on lance l'installation
+
 include ("_relpos.php");
 if(!file_exists($phproot ."/glpi/config/config_db.php")) {
 	include($phproot ."/install.php");
@@ -54,13 +51,12 @@ echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1 
 echo "<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\" />\n";
 
 
-// Include CSS
-//echo "<style type=\"text/css\">\n";
+// Appel CSS
+
 
 echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
 
-//include ($phproot . "/glpi/config/styles.css");
-//echo "</style>\n";
+
 
 echo "</head>";
 
@@ -99,7 +95,7 @@ echo "<p><span> <input type='submit' name='submit' value='Login' class='submit' 
 echo "</form>";
 
  
-echo "<p> <img src='./pics/key.png' alt='keys' /> </p>";
+echo "<p> <img src='".$HTMLRel."pics/key.png' alt='keys' /> </p>";
 
 
 echo "</div>";
