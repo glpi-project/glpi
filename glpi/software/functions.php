@@ -460,7 +460,6 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE  FROM g
 		else $query_inst.=" AND glpi_licenses.expire = '$expire'";
 		$query_inst.= " AND glpi_inst_software.license = glpi_licenses.ID";	
 
-		echo $query_inst;
 		$result_inst = $db->query($query_inst);
 		$num_inst=$db->numrows($result_inst);
 
