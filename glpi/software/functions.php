@@ -179,7 +179,11 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 		// Limit the result, if no limit applies, use prior result
 		if ($numrows>$cfg_features["list_limit"]) {
-			$query_limit = "SELECT * FROM glpi_software WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
+			$query_limit = "SELECT * FROM glpi_software ";
+			$query_limit.= "LEFT JOIN glpi_dropdown_os on glpi_software.platform=glpi_dropdown_os.ID ";
+			$query_limit.= "LEFT JOIN glpi_dropdown_locations on glpi_software.location=glpi_dropdown_locations.ID ";
+			$query_limit.= "WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
+
 			$result_limit = $db->query($query_limit);
 			$numrows_limit = $db->numrows($result_limit);
 		} else {
