@@ -26,10 +26,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  ------------------------------------------------------------------------
 */
-
-// Based on:
-// IRMA, Information Resource-Management and Administration
-// Christian Bauer 
+ 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
@@ -37,37 +34,20 @@
 
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_setup.php");
+include ($phproot . "/glpi/includes_documents.php");
 
-checkauthentication("admin");
-
+checkAuthentication("admin");
 
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
+if(empty($_GET["start"])) $_GET["start"] = 0;
+if(empty($_GET["order"])) $_GET["order"] = "ASC";
+if(empty($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
 
+titleTypedocs();
 
- // titre
-        echo "<div align='center'><table border='0'><tr><td>";
-        echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='".$lang["Menu"][10]."' title='".$lang["Menu"][10]."' ></td><td><span class='icon_nav'><b>".$lang["Menu"][10]."</b></span>";
-        echo "</td></tr></table></div>";
+searchFormTypedoc($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
 
-echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-echo "<tr><th>".$lang["setup"][62]."</th></tr>";
-
-echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-dropdowns.php\"><b>".$lang["setup"][0]."</b></a></td></tr>";
-
-//echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-templates.php\"><b>".$lang["setup"][1]."</b></a></td></tr>";
-
-echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-config.php?next=extsources\"><b>".$lang["setup"][67]."</b></a></td></tr>";
-
-echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-config.php?next=mailing\"><b>".$lang["setup"][68]."</b></a></td></tr>";
-
-echo "<tr class='tab_bg_1'><td align='center'><a href=\"setup-config.php?next=confgen\"><b>".$lang["setup"][70]."</b></a></td> </tr>";
-
-echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."typedocs\"><b>".$lang["document"][7]."</b></a></td> </tr>";
-
-
-echo "</table></div>";
-
+showTypedocList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
 
 
 

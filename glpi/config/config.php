@@ -77,6 +77,8 @@ define("ENTERPRISE_TYPE","8");
 define("INFOCOM_TYPE","9");
 define("CONTRACT_TYPE","10");
 define("CARTRIDGE_TYPE","11");
+define("TYPEDOC_TYPE","12");
+define("DOCUMENT_TYPE","13");
 
 // DEVICE TYPE
 define("MOBOARD_DEVICE","1");
@@ -134,6 +136,8 @@ $template_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_
 //root document
 //document root
 $cfg_install["root"] = $db->result($result,0,"root_doc");
+
+$cfg_install["typedoc_icon_dir"] = "/pics";
 
 // Default language
 $cfg_install["default_language"] = $db->result($result,0,"default_language");
