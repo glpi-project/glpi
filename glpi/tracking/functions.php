@@ -171,7 +171,7 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 	// Build where-clause
 	if ($contains)
 	{
-		$where = "(contents LIKE \"%$contains%\")";
+		$where = "(contents LIKE '%$contains%' OR ID = '$contains')";
 	}
 	else if ($show == "old")
 	{
