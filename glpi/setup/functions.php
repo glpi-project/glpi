@@ -882,12 +882,11 @@ function showTemplateForm($target,$ID) {
 	echo "<div align='center'><table class='tab_cadre'>";
 	echo "<form name='form' method='post' action=$target>";
 	echo "<tr><th colspan='2'>";
-	if ($ID) {
-		echo $lang["setup"][23].": '".$templ->fields["templname"]."'";
-	
-	} else {
-		echo $lang["setup"][23].": <input type='text' name='templname' size='10'>";
-	}
+//	if ($ID) {
+//		echo $lang["setup"][23].": '".$templ->fields["templname"]."'";
+//	} else {
+		echo $lang["setup"][23].": <input type='text' name='templname' value=\"".$templ->fields["templname"]."\" size='10'>";
+//	}
 	echo "</th></tr>";
 	
 	echo "<tr><td class='tab_bg_1' valign='top'>";
