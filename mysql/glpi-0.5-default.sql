@@ -5,8 +5,8 @@
 DROP TABLE IF EXISTS glpi_cartridges;
 CREATE TABLE glpi_cartridges (
     ID int(11) NOT NULL auto_increment,
-    FK_glpi_cartridges_type int(11),
-    FK_glpi_printers int(11),
+    FK_glpi_cartridges_type int(11) DEFAULT '0' NOT NULL,
+    FK_glpi_printers int(11) DEFAULT '0' NOT NULL,
     date_in date,
     date_use date,
     date_out date,
@@ -305,7 +305,7 @@ CREATE TABLE glpi_contracts (
     num varchar(255) NOT NULL,
     cost float DEFAULT '0' NOT NULL,
     contract_type int(11) DEFAULT '0' NOT NULL,
-    begin_date date,
+    begin_date date NOT NULL ,
     duration tinyint(4) DEFAULT '0' NOT NULL,
     notice tinyint(4) DEFAULT '0' NOT NULL,
     periodicity tinyint(4) DEFAULT '0' NOT NULL,
