@@ -101,7 +101,7 @@ else if (isset($tab["disconnect"])) {
 	checkAuthentication("admin");
 	Disconnect($tab["eID"],$tab["device_type"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
-	header("Location: ".$_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$withtemplate);
+	header("Location: ".$_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
 }
 //Connect a peripheral
 else if(isset($tab["connect"])&&isset($tab["device_type"])) {

@@ -766,7 +766,7 @@ function showConnection ($ID) {
 		$netport = new Netport;
 		$netport->getfromDB($contact->contact_id);
 		$netport->getDeviceData($netport->fields["on_device"],$netport->fields["device_type"]);
-		echo "\n\n<table border='0' cellspacing='0' width='100%'><tr>";
+		echo "\n\n<table border='0' cellspacing='0' width='100%'><tr ".($netport->deleted=='Y'?"class='tab_bg_2_2'":"").">";
 		echo "<td><b>";
 		echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ID=".$netport->fields["ID"]."\">";
 		if (rtrim($netport->fields["name"])!="")

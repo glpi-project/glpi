@@ -328,7 +328,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (device_type = '$item_ty
 	if ($number > 0)
 	{
 		echo "<div align='center'>&nbsp;<table class='tab_cadre' width='90%'>";
-		echo "<tr><th colspan=8>".$number." ".$lang["job"][18]."  ".$lang["job"][17]."";
+		echo "<tr><th colspan=9>".$number." ".$lang["job"][18]."  ".$lang["job"][17]."";
 		if ($number > 1) { echo "s"; }
 		echo " ".$lang["job"][16].":</th></tr>";
 		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
@@ -513,9 +513,12 @@ function showJobShort($ID, $followups	) {
 		}    
 		
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0){
-			echo "<td align='center'>";
+			echo "<td align='center' ";
 			$m= new CommonItem;
 			$m->getfromDB($job->device_type,$job->computer);
+			if (isset($m->obj->fields["deleted"])&&$m->obj->fields["deleted"]=='Y')
+			echo "class='tab_bg_1_2'";
+			echo ">";
 			echo $m->getType()."<br>";
 			echo "<strong>";
 			if ($job->computerfound) echo $m->getLink();

@@ -602,10 +602,10 @@ function showConnections($ID,$withtemplate='') {
 		if ($resultnum>0) {
 			echo "<table width='100%'>";
 			for ($i=0; $i < $resultnum; $i++) {
-				echo "<tr>";
 				$tID = $db->result($result, $i, "end1");
 				$printer = new Printer;
 				$printer->getfromDB($tID);
+				echo "<tr ".($printer->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
 				echo "<td align='center'><a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=$tID\"><b>";
 				echo $printer->fields["name"]." (".$printer->fields["ID"].")";
 				echo "</b></a></td>";
@@ -641,10 +641,10 @@ function showConnections($ID,$withtemplate='') {
 		if ($resultnum>0) {
 			echo "<table width='100%'>";
 			for ($i=0; $i < $resultnum; $i++) {
-				echo "<tr>";
 				$tID = $db->result($result, $i, "end1");
 				$monitor = new Monitor;
 				$monitor->getfromDB($tID);
+				echo "<tr ".($monitor->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
 				echo "<td align='center'><a href=\"".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=$tID\"><b>";
 				echo $monitor->fields["name"]." (".$monitor->fields["ID"].")";
 				echo "</b></a></td>";
@@ -680,10 +680,10 @@ function showConnections($ID,$withtemplate='') {
 		if ($resultnum>0) {
 			echo "<table width='100%'>";
 			for ($i=0; $i < $resultnum; $i++) {
-				echo "<tr>";
 				$tID = $db->result($result, $i, "end1");
 				$periph = new Peripheral;
 				$periph->getfromDB($tID);
+				echo "<tr ".($periph->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
 				echo "<td align='center'><a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=$tID\"><b>";
 				echo $periph->fields["name"]." (".$periph->fields["ID"].")";
 				echo "</b></a></td>";

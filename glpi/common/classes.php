@@ -133,6 +133,7 @@ class Connection {
 			if ($db->numrows($result)==0) return false;
 			$data = $db->fetch_array($result);
 			$this->device_name = $data["name"];
+			$this->deleted = $data["deleted"];
 			$this->device_ID = $ID;
 			return true;
 		} else {
