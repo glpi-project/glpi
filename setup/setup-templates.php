@@ -39,7 +39,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-checkAuthentication("normal");
+checkAuthentication("admin");
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 
 switch($_GET["type"]){

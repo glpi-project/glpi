@@ -96,22 +96,33 @@ else if (isset($_POST["update"]))
 } 
 else
 {
-	if (empty($tab["ID"]))
-	checkAuthentication("admin");
-	else checkAuthentication("normal");
+	checkAuthentication("normal");
 
+	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
+	if (isset($_GET['onglet'])) {
+		$_SESSION['glpi_onglet']=$_GET['onglet'];
+		header("Location: ".$_SERVER['HTTP_REFERER']);
+	}
+	
 	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 	
-
+	showSoftwareOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 	if (!empty($tab["withtemplate"])) {
 
-		showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"],$tab['search_software'], $tab["withtemplate"]);
+		if (showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"],$tab['search_software'], $tab["withtemplate"])){
 		
 		if (!empty($tab["ID"])){
-		showDocumentAssociated(SOFTWARE_TYPE,$tab["ID"],$tab["withtemplate"]);
-		showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+		switch($_SESSION['glpi_onglet']){
+				case 4 :
+					showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+					showContractAssociated(SOFTWARE_TYPE,$tab["ID"],$tab["withtemplate"]);
+					break;
+				case 5 :
+					showDocumentAssociated(SOFTWARE_TYPE,$tab["ID"],$tab["withtemplate"]);
+					break;
+			}
+		}
 		
-		showContractAssociated(SOFTWARE_TYPE,$tab["ID"],$tab["withtemplate"]);
 		}
 		
 	} else {
@@ -125,13 +136,23 @@ else
 			}
 
 		if (showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"],$tab['search_software'])){
-			showLicenses($tab["ID"]);
-			showLicensesAdd($tab["ID"]);
-			showDocumentAssociated(SOFTWARE_TYPE,$tab["ID"]);
-			showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"]);
-			showContractAssociated(SOFTWARE_TYPE,$tab["ID"]);
-			showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
-			showOldJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
+			switch($_SESSION['glpi_onglet']){
+				case 4 :
+					showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"]);
+					showContractAssociated(SOFTWARE_TYPE,$tab["ID"]);
+					break;
+				case 5 :
+					showDocumentAssociated(SOFTWARE_TYPE,$tab["ID"]);
+					break;
+				case 6 :
+					showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
+					showOldJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
+					break;
+				default :
+					showLicenses($tab["ID"]);
+					showLicensesAdd($tab["ID"]);
+					break;
+			}
 		}
 	}
 

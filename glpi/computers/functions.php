@@ -61,8 +61,9 @@ function showComputerOnglets($target,$withtemplate,$actif){
 	echo "<li "; if ($actif=="3") {echo "class='actif'";} echo "><a href='$target&onglet=3'>".$lang["title"][27]."</a></li>";
 	echo "<li "; if ($actif=="4") {echo "class='actif'";} echo "><a href='$target&onglet=4'>".$lang["Menu"][26]."</a></li>";
 	echo "<li "; if ($actif=="5") {echo "class='actif'";} echo "><a href='$target&onglet=5'>".$lang["title"][25]."</a></li>";
-	if(empty($withtemplate))
+	if(empty($withtemplate)){
 	echo "<li "; if ($actif=="6") {echo "class='actif'";} echo "><a href='$target&onglet=6'>".$lang["title"][28]."</a></li>";
+	}
 
 	echo "</ul></div>";
 	

@@ -91,27 +91,37 @@ else if (isset($_POST["update"]))
 }
 else
 {
-	if (empty($_GET["ID"]))
-	checkAuthentication("admin");
-	else checkAuthentication("normal");
+	checkAuthentication("normal");
 
+	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
+	if (isset($_GET['onglet'])) {
+		$_SESSION['glpi_onglet']=$_GET['onglet'];
+		header("Location: ".$_SERVER['HTTP_REFERER']);
+	}
 
 	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
-
+	showNetworkingOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 	if (!empty($tab["withtemplate"])) {
 
-		showNetworkingForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);
-		
+		if (showNetworkingForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
 		if (!empty($tab["ID"])){
-		showPorts($tab["ID"], NETWORKING_TYPE,$tab["withtemplate"]);
-		if ($tab["withtemplate"]!=2)
-		showPortsAdd($tab["ID"],NETWORKING_TYPE);
+			switch($_SESSION['glpi_onglet']){
+			case 4 :
+				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",NETWORKING_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+				showContractAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
+				break;
+			case 5 :
+				showDocumentAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);		
+				break;
+			default :
+				showPorts($tab["ID"], NETWORKING_TYPE,$tab["withtemplate"]);
+				if ($tab["withtemplate"]!=2) showPortsAdd($tab["ID"],NETWORKING_TYPE);
+				break;
+			}
+			
 		
-		showDocumentAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
-		showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",NETWORKING_TYPE,$tab["ID"],1,$tab["withtemplate"]);
 		
-		
-		showContractAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
+		}
 		}
 		
 	} else {
@@ -125,16 +135,25 @@ else
 
 	
 		if (showNetworkingForm ($_SERVER["PHP_SELF"],$tab["ID"])){
-		showPorts($tab["ID"],NETWORKING_TYPE);
+		switch($_SESSION['glpi_onglet']){
+			case 4 :
+				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",NETWORKING_TYPE,$tab["ID"]);
+				showContractAssociated(NETWORKING_TYPE,$tab["ID"]);
+				break;
+			case 5 :
+				showDocumentAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
+				break;
+			case 6 :
+				showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
+				showOldJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
+				break;
+			default :
+				showPorts($tab["ID"],NETWORKING_TYPE);
+				showPortsAdd($tab["ID"],NETWORKING_TYPE);
+				break;
+			}
 
-		showPortsAdd($tab["ID"],NETWORKING_TYPE);
-
-		showDocumentAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
 		
-		showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",NETWORKING_TYPE,$tab["ID"]);
-		showContractAssociated(NETWORKING_TYPE,$tab["ID"]);
-		showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
-		showOldJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
 		}
 	}
 	commonFooter();

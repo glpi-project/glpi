@@ -166,9 +166,10 @@ if (isset($_GET['onglet'])) {
 }
 
 	commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
+	showComputerOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 	//show computer form to add
 	if (!empty($tab["withtemplate"])) {
-		showComputerOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"]);
+		
 		if (showComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
 			if (!empty($tab["ID"])){
 			switch($_SESSION['glpi_onglet']){
@@ -200,7 +201,7 @@ if (isset($_GET['onglet'])) {
 			if ($val==1) $j->deleteInDB($key);
 			}
 		}
-		showComputerOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+		
 		if (showComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])) {
 			switch($_SESSION['glpi_onglet']){
 			case 2 :
