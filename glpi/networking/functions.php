@@ -334,7 +334,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype) {
 	GLOBAL $cfg_install, $cfg_layout, $lang;
 
 	$netport = new Netport;
-	if (isset($ID))
+	if($ID)
 	{
 		$netport->getFromDB($ID);
 		$netport->getDeviceData($netport->fields["on_device"],$netport->fields["device_type"]);
@@ -342,7 +342,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype) {
 	else
 	{
 		$netport->getFromNull();
-	}	
+	}
 
 	echo "<center><table><tr>";
 	echo "<th colspan=2>".$lang["networking"][20].":</th>";
@@ -369,7 +369,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype) {
 	echo "<td><input type=text size=25 name=ifmac value=\"".$netport->fields["ifmac"]."\">";
 	echo "</td></tr>";
 
-	if (isset($ID)) {
+	if ($ID) {
 		echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td>".$lang["networking"][24]."</td>";
 		echo "<td>";
 			showConnection($netport->fields["ID"]);
