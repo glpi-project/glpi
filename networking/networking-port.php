@@ -61,7 +61,7 @@ if(isset($_POST["add"]))
 			$tab["name"]=$_POST["name"].$i;
 		    addNetport($tab);	
 			}
-		    logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added ".($tab["to_logical_number"]-$tab["from_logical_number"]+1)." networking ports.");
+		    logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added ".($_POST["to_logical_number"]-$_POST["from_logical_number"]+1)." networking ports.");
 		    header("Location: $_SERVER[HTTP_REFERER]");
 			
 		}
