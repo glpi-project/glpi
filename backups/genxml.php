@@ -169,7 +169,7 @@ function DoXML()
 	fputs($fp, "	</fields>\n");
 	// And NOW the Data ...
 	fputs($fp, "	<rows>\n");
-	while ($row = mysql_fetch_array ($result))
+	while ($row = stripslashes_deep(mysql_fetch_array ($result)))
 	{
 		fputs($fp, "		<row>\n");
 		for ($j=0; $j<$i; $j++)
