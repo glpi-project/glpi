@@ -42,18 +42,19 @@ include ($phproot . "/glpi/includes_networking.php");
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 
+$REFERER=$_SERVER["HTTP_REFERER"];
+if (isset($tab["referer"])) $REFERER=$tab["referer"];
+
 if(isset($_POST["add"]))
 {	
 	checkAuthentication("admin");
+	commonHeader("Networking",$_SERVER["PHP_SELF"]);
 	if (!isset($tab["several"])){
-	echo "<a href='".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$tab["ondevice"]."'>";
 	addNetport($_POST);
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added networking port.");
-//???	header("Location: ".$cfg_install["root"]."/networking/");
-	header("Location: $_SERVER[HTTP_REFERER]");
+	showNetportForm($_SERVER["PHP_SELF"],"",$_POST["on_device"],$_POST["device_type"],"");
 	}
 	else {
-echo "<a href='".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$tab["ondevice"]."'>";
 		unset($tab['several']);
 		unset($tab['from_logical_number']);
 		unset($tab['to_logical_number']);		
@@ -62,10 +63,11 @@ echo "<a href='".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$
 			$tab["name"]=$_POST["name"].$i;
 		    addNetport($tab);	
 			}
-		    logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added ".($_POST["to_logical_number"]-$_POST["from_logical_number"]+1)." networking ports.");
-		    header("Location: $_SERVER[HTTP_REFERER]");
-			
+	    logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added ".($_POST["to_logical_number"]-$_POST["from_logical_number"]+1)." networking ports.");
+		showNetportForm($_SERVER["PHP_SELF"],"",$_POST["on_device"],$_POST["device_type"],"yes");
 		}
+	commonFooter();
+
 }
 else if(isset($_POST["delete"]))
 {
@@ -91,14 +93,10 @@ else
 	commonHeader("Networking",$_SERVER["PHP_SELF"]);
 	if(isset($tab["ID"]))
 	{
-		echo "<a href='".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$tab["ondevice"]."'>";
-		
 		showNetportForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["ondevice"],$tab["devtype"],$tab["several"]);
 	}
 	else
 	{
-		echo "<a href='".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$tab["ondevice"]."'>";
-	
 		showNetportForm($_SERVER["PHP_SELF"],"",$tab["ondevice"],$tab["devtype"],$tab["several"]);
 	}
 	commonFooter();
