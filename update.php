@@ -1073,7 +1073,7 @@ if(!TableExists("glpi_device_iface")) {
   `FK_glpi_enterprise` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
   KEY(`FK_glpi_enterprise`)
-) TYPE=MyISAM";
+) TYPE=MyISAM;";
 	$db->query($query) or die("0.5- CREATE TABLE `glpi_device_iface` ".$lang["update"][90].$db->error());
 	compDpd2Device(NETWORK_DEVICE,"iface","network","network");
 }
@@ -1144,8 +1144,7 @@ if(!TableExists("glpi_enterprises")) {
   `comments` text NOT NULL,
   `deleted` enum('Y','N') NOT NULL default 'N',
   PRIMARY KEY  (`ID`)
-) TYPE=MyISAM;
-";
+) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_enterprise ".$lang["update"][90].$db->error());
 }
 
@@ -1158,8 +1157,7 @@ $query="CREATE TABLE `glpi_dropdown_kbcategories` (
   PRIMARY KEY  (`ID`),
   KEY(`parentID`),
   UNIQUE KEY(`parentID`,`name`)
-)  TYPE=MyISAM;
-";
+)  TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_dropdown_kbcategories ".$lang["update"][90].$db->error());
 
 $query="CREATE TABLE `glpi_kbitems` (
@@ -1170,8 +1168,7 @@ $query="CREATE TABLE `glpi_kbitems` (
   `faq` enum('yes','no') NOT NULL default 'no',
   PRIMARY KEY  (`ID`),
   KEY(`categoryID`)
-) TYPE=MyISAM
-";
+) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_kbitems ".$lang["update"][90].$db->error());
 
 }
@@ -1189,8 +1186,7 @@ $query= "CREATE TABLE glpi_dropdown_tracking_category (
   ID int(11) NOT NULL auto_increment,
   name varchar(255) default NULL,
   PRIMARY KEY  (ID)
-);
-";
+);";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_dropdown_tracking_category ".$lang["update"][90].$db->error());
 
 	$query= "ALTER TABLE `glpi_tracking` ADD `category` INT( 11 ) ;";
@@ -1228,8 +1224,7 @@ $query= "CREATE TABLE `glpi_cartridges` (
   KEY(`date_in`),
   KEY(`date_use`),
   KEY(`date_out`)
-);
-";
+);";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_cartridges ".$lang["update"][90].$db->error());
 
 $query= "CREATE TABLE `glpi_cartridges_type` (
@@ -1243,8 +1238,7 @@ $query= "CREATE TABLE `glpi_cartridges_type` (
   `comments` text NOT NULL,
   PRIMARY KEY  (`ID`),
   KEY(`FK_glpi_enterprise`)
-);
-";
+);";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_cartridges_type ".$lang["update"][90].$db->error());
 	
 $query= "CREATE TABLE `glpi_cartridges_assoc` (
@@ -1255,8 +1249,7 @@ $query= "CREATE TABLE `glpi_cartridges_assoc` (
   UNIQUE KEY `FK_glpi_type_printer` (`FK_glpi_type_printer`,`FK_glpi_cartridges_type`),
  KEY(`FK_glpi_cartridges_type`),
  KEY(`FK_glpi_type_printer`) 
-);
-";
+);";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_cartridges_assoc ".$lang["update"][90].$db->error());
 }
 
@@ -1273,8 +1266,7 @@ $query= "CREATE TABLE `glpi_contacts` (
   `comments` text NOT NULL,
   `deleted` enum('Y','N') NOT NULL default 'N',
   PRIMARY KEY  (`ID`)
-) TYPE=MyISAM;
-";
+) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_contact ".$lang["update"][90].$db->error());
 
 $query = " CREATE TABLE `glpi_dropdown_enttype` (`ID` INT NOT NULL AUTO_INCREMENT ,`name` VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( `ID` ))";
@@ -1289,8 +1281,7 @@ $query= "CREATE TABLE `glpi_contact_enterprise` (
   UNIQUE KEY `FK_enterprise` (`FK_enterprise`,`FK_contact`),
   KEY(`FK_enterprise`),
   KEY(`FK_contact`) 
-) TYPE=MyISAM;
-";
+) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_contact_enterprise ".$lang["update"][90].$db->error());
 
 $query= "CREATE TABLE `glpi_contracts` (
@@ -1319,8 +1310,7 @@ $query= "CREATE TABLE `glpi_contracts` (
   PRIMARY KEY  (`ID`),
   KEY `contract_type` (`contract_type`),
   KEY `begin_date` (`begin_date`)
-) TYPE=MyISAM;
-";
+) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_contract ".$lang["update"][90].$db->error());
 
 $query= "CREATE TABLE `glpi_contract_device` (
@@ -1332,8 +1322,7 @@ $query= "CREATE TABLE `glpi_contract_device` (
   UNIQUE KEY `FK_contract` (`FK_contract`,`FK_device`,`device_type` ),
   KEY (`FK_contract`),
   KEY (`FK_device`,`device_type`)
-) TYPE=MyISAM;
-";
+) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_contract_device ".$lang["update"][90].$db->error());
 
 $query= "CREATE TABLE `glpi_contract_enterprise` (
@@ -1344,8 +1333,7 @@ $query= "CREATE TABLE `glpi_contract_enterprise` (
   UNIQUE KEY `FK_enterprise` (`FK_enterprise`,`FK_contract`),
   KEY  (`FK_enterprise`),
   KEY (`FK_contract`)
-) TYPE=MyISAM;
-";
+) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_contrat_enterprise ".$lang["update"][90].$db->error());
 
 $query= "CREATE TABLE `glpi_infocoms` (
@@ -1370,8 +1358,7 @@ $query= "CREATE TABLE `glpi_infocoms` (
   UNIQUE KEY `FK_device` (`FK_device`,`device_type`),
   KEY `FK_enterprise` (`FK_enterprise`),
   KEY `buy_date` (`buy_date`)
-) TYPE=MyISAM;
-";
+) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_infocom ".$lang["update"][90].$db->error());
 
 ///// Move warranty infos from item to infocoms.
@@ -1755,8 +1742,8 @@ $query = "CREATE TABLE glpi_type_docs (
 		  date_mod datetime default NULL,
 		  PRIMARY KEY  (ID),
 		  UNIQUE KEY extension (ext)
-		) TYPE=MyISAM;
-		";
+		) TYPE=MyISAM;";
+		
 $db->query($query) or die("Error creating table typedoc ".$query." ".mysql_error());
 
 
