@@ -51,22 +51,30 @@ elseif($_POST)
 	$tab = $_POST;
 	
 }
-switch ($tab["next"]) {
-	case "";
-		showConnectorSearch($_SERVER["PHP_SELF"],$tab["ID"]);
-	break;
+if(!(isset($tab["next"])))
+{
+	showConnectorSearch($_SERVER["PHP_SELF"],$tab["ID"]);
+}
+else
+{
+	switch ($tab["next"]) 
+	{
+		case "";
+			showConnectorSearch($_SERVER["PHP_SELF"],$tab["ID"]);
+		break;
 
-	case "compsearch";
-		listConnectorComputers($_SERVER["PHP_SELF"],$tab);
-	break;
+		case "compsearch";
+			listConnectorComputers($_SERVER["PHP_SELF"],$tab);
+		break;
 
-	case "showports";
-		listConnectorPorts($_SERVER["PHP_SELF"],$tab);
-	break;		
+		case "showports";
+			listConnectorPorts($_SERVER["PHP_SELF"],$tab);
+		break;		
 
-	case "connect";
-		makeConnector($tab["sport"],$tab["dport"]);
-	break;		
+		case "connect";
+			makeConnector($tab["sport"],$tab["dport"]);
+		break;		
+	}
 }
 
 commonFooter();

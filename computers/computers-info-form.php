@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
 	checkAuthentication("normal");
 	//print_r($_GET);
 	commonHeader("Computers",$_SERVER["PHP_SELF"]);
-	if ($_GET["withtemplate"] == 1)
+	if (isset($_GET["withtemplate"]))
 	{
 		showComputerForm($_GET["withtemplate"],$_SERVER["PHP_SELF"],$_GET["ID"]);
 	}
