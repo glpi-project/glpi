@@ -125,8 +125,11 @@ class Device {
 		$db = new DB;
 		$query = "DELETE from ".$this->table." WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
-			$query2 = "DELETE FROM glpi_computer_device WHERE (FK_periph = '$ID')";
+			$query2 = "DELETE FROM glpi_computer_device WHERE (FK_device = '$ID')";
 			if ($result2 = $db->query($query2)) {
+			
+			
+			
 				return true;
 			}
 			else return false;
