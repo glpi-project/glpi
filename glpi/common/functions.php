@@ -806,6 +806,29 @@ function dropdownValue($table,$myname,$value) {
 
 	$db = new DB;
 
+	if($table == "glpi_dropdown_netpoint") {
+		$query = "select t1.ID as ID, t1.name as netpname, t2.name as locname from glpi_dropdown_netpoint as t1";
+		$query .= " left join glpi_dropdown_locations as t2 on t1.location = t2.ID";
+		$query .= " order by t2.name, t1.name"; 
+		$result = $db->query($query);
+		echo "<select name=\"$myname\">";
+		$i = 0;
+		$number = $db->numrows($result);
+		if ($number > 0) {
+			while ($i < $number) {
+				$output = $db->result($result, $i, "netpname");
+				$loc = $db->result($result, $i, "locname");
+				$ID = $db->result($result, $i, "ID");
+				echo "<option value=\"$ID\"";
+				if ($ID==$value) echo " selected ";
+				echo ">$output ($loc)</option>";
+				$i++;
+			}
+		}
+		echo "</select>";
+	}
+	else {
+
 	$query = "SELECT * FROM $table ORDER BY name";
 	$result = $db->query($query);
 	
@@ -826,6 +849,7 @@ function dropdownValue($table,$myname,$value) {
 		}
 	}
 	echo "</select>";
+	}
 }
 
 function dropdownNoValue($table,$myname,$value) {

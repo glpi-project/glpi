@@ -49,6 +49,9 @@ if (isset($_POST["which"]))$which=$_POST["which"];
 elseif (isset($_GET["which"]))$which=$_GET["which"];
 else $which="";
 
+// Selected Item
+if (isset($_POST["ID"])) $ID=$_POST["ID"];
+else $ID="";
 //echo $which."---";
 
 if (isset($_POST["add"])) {
@@ -115,57 +118,58 @@ echo "<option value='$key' $sel>".$val."</option>";
 	echo "</select></td>";
 	echo "<td><input type='submit' value=\"".$lang["buttons"][2]."\" class='submit' /></td></tr>";
 	echo "</table></form></div>";
+
 	switch ($which){
 		case "locations" :
 		showFormDropDown($_SERVER["PHP_SELF"],"locations",$lang["setup"][3]);
 		break;
 		case "computers" :
-		showFormTypeDown($_SERVER["PHP_SELF"],"computers",$lang["setup"][4]);
+		showFormTypeDown($_SERVER["PHP_SELF"],"computers",$lang["setup"][4],$ID);
 		break;
 		case "networking" :
-		showFormTypeDown($_SERVER["PHP_SELF"],"networking",$lang["setup"][42]);
+		showFormTypeDown($_SERVER["PHP_SELF"],"networking",$lang["setup"][42],$ID);
 		break;
 		case "printers" :
-		showFormTypeDown($_SERVER["PHP_SELF"],"printers",$lang["setup"][43]);
+		showFormTypeDown($_SERVER["PHP_SELF"],"printers",$lang["setup"][43],$ID);
 		break;
 		case "monitors" :
-		showFormTypeDown($_SERVER["PHP_SELF"],"monitors",$lang["setup"][44]);
+		showFormTypeDown($_SERVER["PHP_SELF"],"monitors",$lang["setup"][44],$ID);
 		break;
 		case "peripherals" :
-		showFormTypeDown($_SERVER["PHP_SELF"],"peripherals",$lang["setup"][69]);
+		showFormTypeDown($_SERVER["PHP_SELF"],"peripherals",$lang["setup"][69],$ID);
 		break;
 		case "os" :
-		showFormDropDown($_SERVER["PHP_SELF"],"os",$lang["setup"][5]);
+		showFormDropDown($_SERVER["PHP_SELF"],"os",$lang["setup"][5],$ID);
 		break;
 		case "ram" :
-		showFormDropDown($_SERVER["PHP_SELF"],"ram",$lang["setup"][6]);
+		showFormDropDown($_SERVER["PHP_SELF"],"ram",$lang["setup"][6],$ID);
 		break;
 		case "processor" :
-		showFormDropDown($_SERVER["PHP_SELF"],"processor",$lang["setup"][7]);
+		showFormDropDown($_SERVER["PHP_SELF"],"processor",$lang["setup"][7],$ID);
 		break;
 		case "moboard" :
-		showFormDropDown($_SERVER["PHP_SELF"],"moboard",$lang["setup"][45]);
+		showFormDropDown($_SERVER["PHP_SELF"],"moboard",$lang["setup"][45],$ID);
 		break;
 		case "gfxcard" :
-		showFormDropDown($_SERVER["PHP_SELF"],"gfxcard",$lang["setup"][46]);
+		showFormDropDown($_SERVER["PHP_SELF"],"gfxcard",$lang["setup"][46],$ID);
 		break;
 		case "sndcard" :
-		showFormDropDown($_SERVER["PHP_SELF"],"sndcard",$lang["setup"][47]);
+		showFormDropDown($_SERVER["PHP_SELF"],"sndcard",$lang["setup"][47],$ID);
 		break;
 		case "hdtype" :
-		showFormDropDown($_SERVER["PHP_SELF"],"hdtype",$lang["setup"][48]);
+		showFormDropDown($_SERVER["PHP_SELF"],"hdtype",$lang["setup"][48],$ID);
 		break;
 		case "network" :
-		showFormDropDown($_SERVER["PHP_SELF"],"network",$lang["setup"][8]);
+		showFormDropDown($_SERVER["PHP_SELF"],"network",$lang["setup"][8],$ID);
 		break;
 		case "iface" :
-		showFormDropDown($_SERVER["PHP_SELF"],"iface",$lang["setup"][9]);
+		showFormDropDown($_SERVER["PHP_SELF"],"iface",$lang["setup"][9],$ID);
 		break;
 		case "firmware" :
-		showFormDropDown($_SERVER["PHP_SELF"],"firmware",$lang["setup"][71]);
+		showFormDropDown($_SERVER["PHP_SELF"],"firmware",$lang["setup"][71],$ID);
 		break;
 		case "netpoint" : 
-		showFormDropDown($_SERVER["PHP_SELF"],"netpoint",$lang["setup"][73]);
+		showFormDropDown($_SERVER["PHP_SELF"],"netpoint",$lang["setup"][73],$ID);
 		break;
 	default : break;
 	}
