@@ -37,7 +37,7 @@ stylesheet pour impression (sans menu)
 */
 
 $select="";
-$filenames = array ("english" => "english.php", "francais" => "french.php", "allemand" => "deutsch.php");
+$filenames = array ("english" => "english.php", "francais" => "french.php", "allemand" => "deutsch.php", "italian" =>"italian.php" );
 
 if(isset($_GET['correct'])&&$_GET['correct'])
 {
@@ -124,7 +124,6 @@ if(isset($_GET['correct'])&&$_GET['correct'])
 <?php
 if (isset($_GET["rub"])) $rub=$_GET["rub"];
 else $rub="";
-$filenames = array ("english" => "english.php", "francais" => "french.php", "allemand" => "deutsch.php");
 $lang_select=array();
 if(isset($_GET["langsub"]))
 	$lang_select[$langsub]=!$lang_select[$langsub];
@@ -132,8 +131,9 @@ $rubs=array();
 
 while ( $to_require = current($filenames))
 {
+
 	$key=key($filenames);
-	if($rub)
+if($rub)
 	{
 		echo "\n<input class='hidden' name='lang_select[$key]' ".(!$lang_select || $lang_select[$key] ?" checked='checked'":"")." type='checkbox' id='enable_$key' /><input type='submit' class='lang".(!$lang_select || $lang_select[$key] ?"on":"off")."' id='button_$key'  onclick='choice(\"$key\",document.getElementById(\"enable_$key\").checked)' name='langsub' value='$key' />";
 	}

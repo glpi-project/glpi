@@ -42,6 +42,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
+if(isset($_SERVER['HTTP_REFERER']))
 $httpreferer=preg_replace("/\?which=\w*/","",$_SERVER['HTTP_REFERER']);
 
 if (isset($_POST["which"]))$which=$_POST["which"];

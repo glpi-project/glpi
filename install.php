@@ -471,7 +471,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		if (!$db_selected) {
 			echo $lang["install"][41];
 			echo "<br />";
-			echo $lang["install"][42]. mysql_error();
+			echo $lang["install"][36]." ". mysql_error();
 			prev_form($host,$user,$password);
 		}
 		else {
