@@ -800,7 +800,7 @@ if(!superAdminExists()) {
 }
 
 if(!FieldExists("glpi_users","password_md5")) {
-	$query = "ALTER TABLE `glpi_users` ADD `password_md5` VARCHAR(32) NOT NULL AFTER `password` ";
+	$query = "ALTER TABLE `glpi_users` ADD `password_md5` VARCHAR(80) NOT NULL AFTER `password` ";
 	$db->query($query) or die("glpi_users.Password_md5".$lang["update"][90].$db->error());
 }
 
