@@ -78,6 +78,21 @@ if(!function_exists('loadLang')) {
 	}
 }
 
+function optimize_tables (){
+	
+$db = new DB;
+$result=$db->list_tables();
+	while ($line = $db->fetch_array($result))
+   	{
+   		if (ereg("glpi_",$line[0])){
+			$table = $line[0];
+   		$query = "OPTIMIZE TABLE ".$table.";";
+   		echo $query;
+   		$db->query($query);
+		}
+  	 }
+}
+
 /* ----------------------------------------------------------------- */
 /**
 * Get data from old dropdowns to new devices
@@ -1010,9 +1025,8 @@ if(!FieldExists("glpi_computers","is_template")) {
 		#echo $query2;
 		$db->query($query2) or die("0.5-convert template 2 computers ".$db->error());
 	}
-	#TODO !!!!!!!!!!!!!!!!!!!!
-	#$query = "Drop table glpi_templates";
-	#$db->query($query) or die("0.5 drop table templates ".$db->error());
+	$query = "DROP TABLE glpi_templates";
+	$db->query($query) or die("0.5 drop table templates ".$db->error());
 }
 
 
@@ -1143,7 +1157,9 @@ if(!TableExists("glpi_enterprises")) {
   `phonenumber` varchar(20) NOT NULL default '',
   `comments` text NOT NULL,
   `deleted` enum('Y','N') NOT NULL default 'N',
-  PRIMARY KEY  (`ID`)
+  PRIMARY KEY  (`ID`),
+  KEY `deleted` (`deleted`),
+  KEY `type` (`type`)
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_enterprise ".$lang["update"][90].$db->error());
 }
@@ -1208,6 +1224,7 @@ $query= "ALTER TABLE `glpi_config` ADD `priority_1` VARCHAR( 200 ) DEFAULT '#fff
 	$db->query($query) or die("0.5 alter config add priority_X ".$lang["update"][90].$db->error());
 
 }
+
 // Gestion des cartouches
 if(!TableExists("glpi_cartridges")) {
 $query= "CREATE TABLE `glpi_cartridges` (
@@ -1234,10 +1251,13 @@ $query= "CREATE TABLE `glpi_cartridges_type` (
   `location` int(11) NOT NULL default '0',
   `type` tinyint(4) NOT NULL default '0',
   `FK_glpi_enterprise` int(11) NOT NULL default '0',
+  `tech_num` int(11) default '0',
   `deleted` enum('Y','N') NOT NULL default 'N',
   `comments` text NOT NULL,
   PRIMARY KEY  (`ID`),
-  KEY(`FK_glpi_enterprise`)
+  KEY(`FK_glpi_enterprise`),
+  KEY(`tech_num`),
+  KEY(`deleted`)
 );";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_cartridges_type ".$lang["update"][90].$db->error());
 	
@@ -1309,7 +1329,8 @@ $query= "CREATE TABLE `glpi_contracts` (
   `monday` enum('Y','N') NOT NULL default 'N',
   PRIMARY KEY  (`ID`),
   KEY `contract_type` (`contract_type`),
-  KEY `begin_date` (`begin_date`)
+  KEY `begin_date` (`begin_date`),
+  KEY `bill_type` (`bill_type`)
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_contract ".$lang["update"][90].$db->error());
 
@@ -1837,14 +1858,6 @@ if(!FieldExists("glpi_software","tech_num")) {
 }
 
 // Ajout tech_num
-if(!FieldExists("glpi_cartridges_type","tech_num")) {
-	$query = "ALTER TABLE `glpi_cartridges_type` ADD `tech_num` int(11) NOT NULL default '0'";
-	$db->query($query) or die("Error : ".$query." ".mysql_error());
-	
-	$query="ALTER TABLE `glpi_cartridges_type` ADD INDEX ( `tech_num` )" ;
-	$db->query($query) or die("0.5 alter field tech_num ".$lang["update"][90].$db->error());
-}
-
 if(!TableExists("glpi_type_docs")) {
 	
 $query = "CREATE TABLE glpi_type_docs (
@@ -1856,7 +1869,8 @@ $query = "CREATE TABLE glpi_type_docs (
 		  upload enum('Y','N') NOT NULL default 'Y',
 		  date_mod datetime default NULL,
 		  PRIMARY KEY  (ID),
-		  UNIQUE KEY extension (ext)
+		  UNIQUE KEY extension (ext),
+		  KEY (upload)
 		) TYPE=MyISAM;";
 		
 $db->query($query) or die("Error creating table typedoc ".$query." ".mysql_error());
@@ -1939,6 +1953,7 @@ $query = "CREATE TABLE glpi_docs (
   deleted enum('Y','N') NOT NULL default 'N',
   PRIMARY KEY  (ID),
   KEY rubrique (rubrique),
+  KEY deleted (deleted),
   KEY date_mod (date_mod)
 ) TYPE=MyISAM;";
 
@@ -1971,13 +1986,47 @@ $query = "CREATE TABLE glpi_dropdown_rubdocs (
 $db->query($query) or die("Error creating table docs ".$query." ".mysql_error());
 }
 
+if(!isIndex("glpi_networking_wire", "type_2")) {
+$query = "ALTER TABLE `glpi_networking_wire` ADD INDEX `type_2` ( `type`,`end1` ) ";
+$db->query($query) or die("50 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_contacts", "deleted")) {
+$query = "ALTER TABLE `glpi_contacts` ADD INDEX `deleted` ( `deleted` ) ";
+$db->query($query) or die("0.5 alter field deleted".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_contacts", "type")) {
+$query = "ALTER TABLE `glpi_contacts` ADD INDEX `type` ( `type` ) ";
+$db->query($query) or die("0.5 alter field type ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_event_log", "itemtype")) {
+$query = "ALTER TABLE `glpi_event_log` ADD INDEX ( `itemtype` ) ";
+$db->query($query) or die("0.5 alter field itemtype ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_followups", "date")) {
+$query = "ALTER TABLE `glpi_followups` ADD INDEX ( `date` ) ";
+$db->query($query) or die("0.5 alter field date ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_tracking", "category")) {
+$query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `category` ) ";
+$db->query($query) or die("0.5 alter field date ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_reservation_item", "device")) {
+$query = "ALTER TABLE `glpi_reservation_item` ADD INDEX `device` ( `device_type`,`id_device` ) ";
+$db->query($query) or die("50 ".$lang["update"][90].$db->error());
+}
+
 
 // Update version number
 $query="UPDATE glpi_config set version='0.5' WHERE ID='1'";
 	$db->query($query) or die("0.5 update config version ".$lang["update"][90].$db->error());
 
-// TODO : Et enfin on supprime toutes les tables glpi_dropdown concernées ainsi que les champs inutiles de la table computer
-//Et on decommente la suppréssion de la table "templates".
+optimize_tables();
 
 return $ret;
 }
