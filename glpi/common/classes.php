@@ -33,8 +33,9 @@ This file is part of GLPI.
  Original Author of file:
  Purpose of file:
  ----------------------------------------------------------------------
-*/
 // And Julien Dombre for externals identifications
+// And Marco Gaiarin for ldap features
+*/
 
 
 class DBmysql {
@@ -160,11 +161,10 @@ class Identification
 	var $user;
 
 	//constructor for class Identification
-	function Identification()
+	function Identification($name)
 	{
-		//echo "il est passé par ici";
 		$this->err = "";
-		$this->user = new User;
+		$this->user = new User($name);
 	}
 
 
@@ -173,21 +173,59 @@ class Identification
 	//else return 0
 	function connection_imap($host,$login,$pass)
 	{
+		// we prevent some delay...
+		if (empty($host)) {
+			return false;
+		}
+
 		error_reporting(16);
 		if($mbox = imap_open($host,$login,$pass))
 		//if($mbox)$mbox =
 		{
 			imap_close($mbox);
-			return 1;
+			return true;
 		}
-		else
-		{
-			$this->err = imap_last_error();
-			imap_close($mbox);
-			return 0;
-		}
+
+		$this->err = imap_last_error();
+		imap_close($mbox);
+		return false;
 	}
 
+  // return 1 if the connection to the LDAP host, auth mode, was successful
+  //
+  function connection_ldap($host,$basedn,$login,$pass)
+  {
+		// we prevent some delay...
+		if (empty($host)) {
+			return false;
+		}
+
+  	error_reporting(16);
+  	$dn = "uid=" . $login . "," . $basedn;
+  	$rv = false;
+  	
+  	if ( $conn = ldap_connect($host) )
+  	{
+  		// switch to protocol version 3 to make ssl work
+  		ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+  		if ( ldap_bind($conn, $dn, $pass) ) {
+  			$rv = true;
+  		}
+  		else
+  		{
+  			$this->err = ldap_error();
+  		}
+  		ldap_close($conn);
+  	}
+  	else
+  	{
+  		$this->err = ldap_error();
+  	}
+  	
+  	return($rv);
+
+  } // connection_ldap()
+  		
 
 	// void;
 	//try to connect to DB
@@ -195,33 +233,40 @@ class Identification
 	//and the password is $password in the DB.
 	//If not found or can't connect to DB updates the instance variable err
 	//with an eventual error message
-	function connection_db_mysql($name,$password)
+	function connection_db($name,$password)
 	{
+
+		// sanity check... we prevent empty passwords...
+		//
+		if ( empty($password) )
+		{
+			$this->err = "Empty Password";
+			return false;
+		}
+		
 		$db = new DB;
 		$query = "SELECT * from users where (name = '".$name."' && password = PASSWORD('".$password."'))";
 		$result = $db->query($query);
 		//echo $query;
 		if($result)
 		{
-			if($db->numrows($result))
+			if($db->numrows($result) == 1)
 			{
-				$this->user->getFromDB($name);
-				return 2;
+				return true;
 			}
 			else
 			{
 				$this->err = "Bad username or password";
-				return 1;
+				return false;
 			}
 		}
-		else
-		{
-			$err = "Erreur numero : ".$db->errno().": ";
-			$err += $db->error();
-			return 0;
-		}
 
-	}
+		$this->err = "Erreur numero : ".$db->errno().": ";
+		$this->err += $db->error();
+		return false;
+
+	} // connection_db()
+
 
 	// Set Cookie for this user
 	function setCookies()
@@ -234,8 +279,7 @@ class Identification
 		$_SESSION["glpiname"] = $name;
 		$_SESSION["glpitype"] = $type;
 		$_SESSION["authorisation"] = true;
-	 	//SetCookie("IRMName", $name, 0, "/");
-		//SetCookie("IRMPass", $password, 0, "/");
+	 	SetCookie("glpiname", $name, 0, "/");
 	}
 
 	function eraseCookies()
@@ -244,43 +288,6 @@ class Identification
 	$_SESSION["glpiname"] = "bogus";
 	$_SESSION["glpitype"] = "";
 	$_SESSION["authorisation"] = false;
-	}
-
-	//Add an user to DB or update his password if user allready exist.
-	//The default type of the added user will be 'post-only'
-	function add_an_user($name, $password, $host)
-	{
-
-		// Update user password if already known
-		if ($this->connection_db_mysql($name,$password) == 2)
-		{
-			$update[0]="password";
-			$this->user->fields["password"]=$password;
-			$this->user->updateInDB($update);
-
-		}// Add user if not known
-		else
-		{
-			// dump status
-
-			$this->user->fields["name"]=$name;
-			if(empty($host))
-			{
-			$this->user->fields["email"]=$name;
-			}
-			else
-			{
-			$this->user->fields["email"]=$name."@".$host;
-			}
-			$this->user->fields["type"]="post-only";
-			$this->user->fields["realname"]=$name;
-			$this->user->fields["can_assign_job"]="no";
-			$this->user->addToDB();
-			$update[0]="password";
-			$this->user->fields["password"]=$password;
-    		$this->user->updateInDB($update);
-		}
-
 	}
 
 	function getErr()

@@ -33,8 +33,10 @@ This file is part of GLPI.
  Original Author of file:
  Purpose of file:
  ----------------------------------------------------------------------
-*/
  //And Julien Dombre for externals identifications
+// And Marco Gaiarin for ldap features
+*/
+
  
 
 //Toutes les options notifiées "non supportées par glpi v0.2 sont liées
@@ -82,13 +84,6 @@ class baseFunctions {
 				
 }
 
-//put $cfg_login['use_extern'] = 1 if you want to use external sources for login
-//default set to 0
-//mettez cette option a 1 si vous vous voulez utiliser des sources
-//d'informations externes/alternatives pour le login
-//par defaut laissez cette valeur a 0;
-$cfg_login['use_extern'] = 0;
-
 // Gestion de source d'information alternatives pour le login
 // telles que des serveurs de mail en imap pop...
 // ports standards : pop 110 , imap 993
@@ -99,8 +94,22 @@ $cfg_login['use_extern'] = 0;
 // Si plusieurs sources alternatives sont définies, seule la première
 // fournissant un login correct est utilisé
 
-$cfg_login['imap']['auth_server'] = "{localhost:993/imap/ssl/novalidate-cert}";
-$cfg_login['imap']['host'] = "sic.sp2mi.xxxx.fr";
+$cfg_login['imap']['auth_server'] = "";
+$cfg_login['imap']['host'] = "";
+
+// LDAP setup.
+// We can use LDAP both for authentication and for user information
+$cfg_login['ldap']['host'] = "ldap://localhost/";
+$cfg_login['ldap']['basedn'] = "dc=melnibone";
+$cfg_login['ldap']['rootdn'] ="";
+$cfg_login['ldap']['pass'] ="";
+// some lDAP server (eg, M$ Active Directory) does not like anonymous
+// bind
+//$cfg_login['ldap']['rootdn'] = "cn=admin,ou=People,dc=sv,dc=lnf,dc=it";
+//$cfg_login['ldap']['pass'] = "secret";
+// relation between the GLPI users table field and the LDAP field
+$cfg_login['ldap']['fields'] = array( "name" => "uid", "email" => "mail", "location" => "physicaldeliveryofficename", "phone" => "telephonenumber", "realname" => "cn");
+
 
 //other sources
 //$cfg_login['other_source']...
@@ -134,7 +143,7 @@ $cfg_mailing["signature"]	= "SIGNATURE";
 // all_normal : toutes les utilisateurs en mode normal
 // attrib : personne responsable de la tache
 // user : utilisateur demandeur
-// 1 pour l'envoi et 0 dans el cas contraire 
+// 1 pour l'envoi et 0 dans le cas contraire 
 
 $cfg_mailing["new"]["admin"]=1;
 $cfg_mailing["attrib"]["admin"]=1;
@@ -213,7 +222,7 @@ $report_list["excel"]["file"] = "reports/geneExcel.php";
 
  // dicts
 //dictionnaires
-$cfg_install["languages"]	= array("english","deutsch","french");
+$cfg_install["languages"]	= array("english","deutsch","french","italian");
 
 // END OF CONFIGURATION
 

@@ -29,6 +29,7 @@ Christian Bauer, turin@incubus.de
  Original Author of file:
  Purpose of file:
  ----------------------------------------------------------------------
+// And Marco Gaiarin for ldap features
 */
  
 
@@ -37,22 +38,101 @@ include ("_relpos.php");
 
 class User {
 
-	var $fields	= array();
+	var $fields = array();
+
+  function User($name) {
+  
+  	$this->fields['name'] = $name;
+  	$this->fields['password'] = '';
+  	$this->fields['email'] = $name;
+  	$this->fields['location'] = 'NULL';
+  	$this->fields['phone'] = 'NULL';
+  	$this->fields['type'] = 'post-only';
+  	$this->fields['realname'] = $name;
+  	$this->fields['can_assign_job'] = 'no';
+  }
 	
 	function getFromDB($name) {
 		$db = new DB;
 		$query = "SELECT * FROM users WHERE (name = '$name')";
 		if ($result = $db->query($query)) {
 			$data = $db->fetch_array($result);
+			if (empty($data)) {
+				return false;
+			}
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}
 			return true;
+		}
+		return false;
+	}
 
-		} else {
+	// Function that try to load from LDAP the user information...
+	//
+	function getFromLDAP($host,$basedn,$adm,$pass,$fields,$name)
+	{
+		// we prevent some delay..
+		if (empty($host)) {
 			return false;
 		}
-	}
+	
+		// some defaults...
+		$this->fields['password'] = "";
+
+	  if ( $conn = ldap_connect($host) )
+	  {
+			// switch to protocol version 3 to make ssl work
+			ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+	  	if ( $adm != "" )
+	  	{
+			 	$dn = "uid=" . $adm . "," . $basedn;
+	  		$bv = ldap_bind($conn, $dn, $pass);
+	  	}
+	  	else
+	  	{
+	  		$bv = ldap_bind($conn);
+	  	}
+
+	  	if ( $bv )
+	  	{
+	  		$f = array_values($fields);
+	  		$sr = ldap_search($conn, $basedn, "uid=".$name, $f);
+	  		$v = ldap_get_entries($conn, $sr);
+	  		if ( (empty($v)) || empty($v[0][$fields['name']][0]) ) {
+	  			return false;
+	  		}
+				foreach ($fields as $k => $e)
+				{
+					$this->fields[$k] = $v[0][$e][0];
+				}
+				
+				return true;
+  		}
+  	}
+  	
+  	return false;
+
+	} // getFromLDAP()
+
+
+  // Function that try to load from IMAP the user information... this is
+  // a fake one, as you can see...
+  function getFromIMAP($host, $name)
+  {
+		// we prevent some delay..
+		if (empty($host)) {
+			return false;
+		}
+
+  	// some defaults...
+  	$this->fields['password'] = "";
+  	$this->fields['email'] = $name . "@" . $host;
+
+		return true;
+
+	} // getFromIMAP()  	    
+
 	
 	function addToDB() {
 		
@@ -98,7 +178,7 @@ class User {
 			$query  = "UPDATE users SET ";
 			$query .= $updates[$i];
 			$query .= "=";
-			if ($updates[$i]=="password") {
+			if ( ($updates[$i]=="password") && ($this->fields[$updates[$i]] != "") ) {
 				$query .= "PASSWORD('".$this->fields[$updates[$i]]."')";
 			} else {
 				$query .= "'".$this->fields[$updates[$i]]."'";

@@ -33,8 +33,10 @@ This file is part of GLPI.
  Original Author of file:
  Purpose of file:
  ----------------------------------------------------------------------
-*/
 // And Julien Dombre for externals identifications
+// And Marco Gaiarin for ldap features
+*/
+
  
 
 include ("_relpos.php");
@@ -54,129 +56,77 @@ $login_ok=0;
 
 //Do login and checks
 //echo "test";
-$identificat = new Identification();
-
-// if use external sources for login
-if($cfg_login['use_extern'])
-{
-	//check for externals idents at remote imap/pop connection
-
-	$rem_host = $cfg_login['imap']['auth_server'];
-	if($identificat->connection_imap($rem_host,$_POST['name'],$_POST['password']))
-	{
-		$ext_ident = 1;
-		$host = $cfg_login[imap]['host'];
-
-	}
-
-
-
-//to add another ext ident sources...
-//put it on the glpi/glpi/config/config.php
-//if(!(ext_ident))
-//{   connection test
-//		if success $ect_ident = 1; $host ="String host"} .... etc
-//example :
-//to connect on another IMAP source named $cfg_login['imap2'] on config.php :
-//if(!($ext_ident))
-//{
-//$rem_host = $cfg_login['imap2']['auth_server'];
-//if($identificat->connection_imap($rem_host,$_POST['name'],$_POST['password']))
-//{
-//		$ext_ident = 1;
-//		$host = $cfg_login[imap]['host'];
-//
-//}
-//}
-
-
-
+$identificat = new Identification($_POST['name']);
+$auth_succeded = $identificat->connection_imap($cfg_login['imap']['auth_server'],$_POST['name'],$_POST['password']);
+// we check all the auth sources in turn...
+$auth_succeded = $identificat->connection_db($_POST['name'],$_POST['password']);
+if (!$auth_succeded) {
+	$auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$_POST['name'],$_POST['password']);
+}
+if (!$auth_succeded) {
+	$auth_succeded = $identificat->connection_db($_POST['name'],$_POST['password']);
 }
 
-$conn = $identificat->connection_db_mysql($_POST['name'],$_POST['password']);
-
-
-switch ($conn)
-{
-
-	case 1:
-	{//Login failed no such user/password in DB
-
-		//if no external ident or all external ident failled
-		if(!($ext_ident))
-		{
-
-			nullHeader("Login",$_SERVER["PHP_SELF"]);
-			echo "<center><b>".$identificat->getErr().".</b><br><br>";
-			echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">Relogin</a></b></center>";
-			nullFooter();
-			logevent(-1, "system", 1, "login", "failed login: ".$_POST['name']);
-			break;
-
-		}
-		else
-		{
-		//if an external ident has been successfull: add the user to the DB or update
-		//his password if allready exist
-			$identificat->add_an_user($_POST['name'], $_POST['password'], $host);
-			$conn = $identificat->connection_db_mysql($_POST['name'],$_POST['password']);
-			$login_ok = 1;
-			break;
-		}
-	}
-	case 2:
-	{//good login
-
-		$login_ok = 1;
-		break;
-
-	}
-	case 0:
-	{
-
-		//login failed No response from DB
-		nullHeader("Login",$_SERVER["PHP_SELF"]);
-		echo "<center><b>".$identificat->getErr().".</b><br><br>";
-		echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">Relogin</a></b></center>";
-		nullFooter();
-		logevent(-1, "system", 1, "login", "failed login: ".$_POST['name']);
-		break;
-	}
+// we have done at least a good login? No, we exit.
+if ( ! $auth_succeded ) {
+	nullHeader("Login",$_SERVER["PHP_SELF"]);
+	echo "<center><b>".$identificat->getErr().".</b><br><br>";
+	echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">Relogin</a></b></center>";
+	nullFooter();
+	logevent(-1, "system", 1, "login", "failed login: ".$_POST['name']);
+	exit;
 }
 
-if($login_ok)
-{
-//good login
-
-
-			$identificat->setcookies();
-
-			// If no prefs for user, set default
-			$query = "SELECT * FROM prefs WHERE (user = '".$_POST['name']."')";
-			$result = $db->query($query);
-			if ($db->numrows($result) == 0)
-			{
-				$query = "INSERT INTO prefs VALUES ('".$_POST['name']."', 'yes','french')";
-				$result = $db->query($query);
-			}
-
-			// Log Event
-			logEvent("-1", "system", 3, "login", $_POST['name']." logged in.");
-
-			// Expire Event Log
-			$secs =  $cfg_features["expire_events"]*86400;
-			$db_exp = new DB;
-			$query_exp = "DELETE FROM event_log WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
-			$result_exp = $db_exp->query($query_exp);
-
-			// Redirect to Command Central if not post-only
-			if ($identificat->user->fields['type'] == "post-only")
-			{
-				header("Location: helpdesk.php?".SID);
-			}
-			else
-			{
-				header("Location: central.php?".SID);
-			}
+// now we have to load data for that user, we try all the data source in turn.
+// The constructor for Identification() have just filed the data with correct
+// stub
+$user_present = $identificat->user->getFromDB($_POST['name']);
+$update_list = array();
+if ($identificat->user->getFromIMAP($cfg_login['imap']['host'],$_POST['name'])) {
+	$update_list = array('email');
 }
+if ($identificat->user->getFromLDAP($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass'],$cfg_login['ldap']['fields'],$_POST['name'])) {
+	$update_list = array_keys($cfg_login['ldap']['fields']);
+}
+
+// Ok, we have gathered sufficient data, if the first return false the user
+// are not present on the DB, so we add it.
+// if not, we update it.
+if (!$user_present) {
+	$identificat->user->addToDB();
+} else if (!empty($update_list)) {
+	$identificat->user->updateInDB($update_list);
+}
+
+// now we can continue with the process...
+$identificat->setcookies();
+
+// If no prefs for user, set default
+$query = "SELECT * FROM prefs WHERE (user = '".$_POST['name']."')";
+$result = $db->query($query);
+if ($db->numrows($result) == 0)
+{
+	$query = "INSERT INTO prefs VALUES ('".$_POST['name']."', 'yes','french')";
+	$result = $db->query($query);
+}
+
+// Log Event
+logEvent("-1", "system", 3, "login", $_POST['name']." logged in.");
+
+// Expire Event Log
+$secs =  $cfg_features["expire_events"]*86400;
+$db_exp = new DB;
+$query_exp = "DELETE FROM event_log WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
+$result_exp = $db_exp->query($query_exp);
+
+// Redirect to Command Central if not post-only
+if ($identificat->user->fields['type'] == "post-only")
+{
+	header("Location: helpdesk.php?".SID);
+}
+else
+{
+	header("Location: central.php?".SID);
+}
+
 ?>
