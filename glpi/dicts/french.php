@@ -414,8 +414,10 @@ $lang["software"][20]	= "Restant";
 $lang["software"][21]	= "Total"; 
 $lang["software"][22]	= "Pas de logiciel trouv&eacute;.";
 $lang["software"][23]   = "Logiciels";
-
-
+$lang["software"][24]   = "Date fin";
+$lang["software"][25]   = "Expire le";
+$lang["software"][26]   = "N'expire jamais";
+$lang["software"][27]   = "Licence expirée";
 
 // Peripherals
 $lang["peripherals"][0]	= "Ajouter p&eacute;riph&eacute;rique...";
