@@ -53,7 +53,7 @@ if (!isset($_GET["order"])) $_GET["order"] = "ASC";
 if (!isset($_GET["field"])) $_GET["field"] = "all";
 if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "";
 if (!isset($_GET["contains"])) $_GET["contains"] = " ";
-if (!isset($_GET["sort"])) $_GET["sort"] = "name";
+if (!isset($_GET["sort"])) $_GET["sort"] = "comp.name";
 
 showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
 
