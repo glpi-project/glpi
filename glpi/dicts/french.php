@@ -612,6 +612,7 @@ $lang["setup"][164]="Nom d'hote IMAP/POP  (email de type login@hote)";
 $lang["setup"][165]="Votre parser PHP a été compilé sans les fonctions de connection IMAP";
 $lang["setup"][166]="Impossible d'utiliser IMAP/POP comme source de connection externe";
 
+$lang["setup"][167]="Liaisons GLPI/LDAP";
 
 // à faire !!
 $lang["setup"][200]="Suivis par emails";
