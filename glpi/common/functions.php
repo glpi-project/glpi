@@ -936,7 +936,7 @@ include ("_relpos.php");
 
 switch($item_type)
 	{   
-		case 'computers' :
+		case 'glpi_computers' :
 		
 		
 		echo " <strong>".$lang["reports"][5]."</strong>";
@@ -988,7 +988,7 @@ switch($item_type)
 		echo "</table><br><hr><br> ";
 		break;
 		
-		case 'printers' :
+		case 'glpi_printers' :
 		
 		echo "<b><strong>".$lang["reports"][1]."</strong></b>";
 		echo "<table width='100%' height='60' border='0'>";
@@ -1029,7 +1029,7 @@ switch($item_type)
 		echo "</table><br><hr><br>";
 		break;
 		
-		case 'monitors' :
+		case 'glpi_monitors' :
 		
 		echo " <b><strong>".$lang["reports"][2]."</strong></b>";
 		echo "<table width='100%' height='60' border='0'>";
@@ -1070,7 +1070,7 @@ switch($item_type)
 		echo "</table><br><hr><br>";
 		break;
 		
-		case 'networking' :
+		case 'glpi_networking' :
 		
 		echo " <b><strong>".$lang["reports"][3]."</strong></b>";
 		echo "<table width='100%' height='60' border='0'>";
