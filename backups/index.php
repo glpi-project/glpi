@@ -50,7 +50,7 @@ else {$defaulttimeout=1;$defaultrowlimit=2;}
 
 
 ?>
-<script language="JavaScript">
+<script language="JavaScript" type="text/javascript">
 <!--
 function dump(what3){
    if (confirm("<?php echo $lang["backup"][15];?> " + what3 +  "?")) {
@@ -585,12 +585,12 @@ if (isset($_GET["delfile"]) && $_GET["delfile"] != ""){
 
 
 
-   echo "<center>".$filename." ".$lang["backup"][9]."</center>";
+   echo "<div align ='center'>".$filename." ".$lang["backup"][9]."</div>";
 
 }
 
 // Title backup
-echo " <div align='center'> <table border='0'><tr><td><b><img src=\"". $HTMLRel."pics/sauvegardes.png\"></td> <td><a href=\"javascript:dump('".$lang["backup"][19]."')\"  class='icon_consol'><b>". $lang["backup"][0]."</b></a></td><td><a href=\"javascript:xmlnow('".$lang["backup"][19]."')\" class='icon_consol'><b>". $lang["backup"][1]."</b></a></td></tr></table>";
+echo " <div align='center'> <table border='0'><tr><td><img src=\"". $HTMLRel."pics/sauvegardes.png\" alt='".$lang["backup"][9]."'></td> <td><a href=\"javascript:dump('".$lang["backup"][19]."')\"  class='icon_consol'><b>". $lang["backup"][0]."</b></a></td><td><a href=\"javascript:xmlnow('".$lang["backup"][19]."')\" class='icon_consol'><b>". $lang["backup"][1]."</b></a></td></tr></table>";
 
 
 ?>
@@ -618,7 +618,7 @@ echo " <div align='center'> <table border='0'><tr><td><b><img src=\"". $HTMLRel.
 	       		<td>&nbsp;<a href=\"javascript:erase('$file')\">".$lang["backup"][20]."</a>&nbsp;</td>
 
 			<td>&nbsp;<a href=\"javascript:restore('$file')\">".$lang["backup"][14]."</a>&nbsp;</td>
-	        	<td>&nbsp;<a href=\"dump/$file\">".$lang["backup"][13]."</a></td>&nbsp;</tr>";
+	        	<td>&nbsp;<a href=\"dump/$file\">".$lang["backup"][13]."</a></td></tr>";
 	    }
 	      }
 closedir($dir);
@@ -635,7 +635,7 @@ $dir=opendir($path);
 	       		<td>&nbsp;<a href=\"javascript:erase('$file')\">".$lang["backup"][20]."</a>&nbsp;</td>
                          	<td>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</td>
 
-	        	<td>&nbsp;<a href=\"dump/$file\">".$lang["backup"][13]."</a></td>&nbsp;</tr>";
+	        	<td>&nbsp;<a href=\"dump/$file\">".$lang["backup"][13]."</a></td></tr>";
 	    }
 	}
 	closedir($dir);
