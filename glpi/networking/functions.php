@@ -471,7 +471,7 @@ function addNetdevice($input) {
 	$null = array_pop($input);
 	$null = array_pop($input);
  	// set new date.
- 	$printer->fields["date_mod"] = date("Y-m-d H:i:s");
+ 	$netdev->fields["date_mod"] = date("Y-m-d H:i:s");
 	
 	// fill array for update
 	foreach ($input as $key => $val) {
