@@ -329,60 +329,65 @@ function showComputerForm($target,$ID) {
 		echo "<form name='form' method='post' action=\"$target\">";
 		echo "<div align='center'>";
 		echo "<table width='700px' border='0' class='tab_cadre' >";
-		echo "<tr><th align='center' >";
+		echo "<tr><th colspan ='2'align='center' >";
 		if ($template) {
 			echo $lang["computers"][12].": ".$comp->fields["tplname"];
 		} else {
 			echo $lang["computers"][13].": ".$comp->fields["ID"];
 		}
 		
-		echo "</th><th align='center'>".$datestring.$date;
+		echo "</th><th  colspan ='2' align='center'>".$datestring.$date;
 		echo "</th></tr>";
 		
-		echo "<tr><td class='tab_bg_1' valign='top'>";
+		//echo "<tr><td class='tab_bg_1' valign='top'>";
 		#echo "<table cellpadding='1px' cellspacing='0' border='0'>\n";
-		echo "<tr><td>".$lang["computers"][7].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$lang["computers"][7].":		</td>";
 		echo "<td><input type='text' name='name' value=\"".$comp->fields["name"]."\" size='20'></td>";
+		
+		echo "<td valign='center' rowspan='6'>".$lang["computers"][19].":</td>";
+		echo "<td valign='center' rowspan='6'><textarea  cols='30' rows='8' name='comments' >".$comp->fields["comments"]."</textarea></td>";
+		
+		
 		echo "</tr>";
 
-		echo "<tr><td>".$lang["computers"][10].": 	</td>";
+		echo "<tr class='tab_bg_1'><td>".$lang["computers"][10].": 	</td>";
 		echo "<td>";
 			dropdownValue("glpi_dropdown_locations", "location", $comp->fields["location"]);
 		echo "</td></tr>";
 
-		echo "<tr><td>".$lang["computers"][15].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$lang["computers"][15].":		</td>";
 		echo "<td><input type='text' name='contact_num' value=\"".$comp->fields["contact_num"]."\" size='20'>";
 		echo "</td></tr>";
 	
-		echo "<tr><td>".$lang["computers"][16].":	</td>";
+		echo "<tr class='tab_bg_1'><td>".$lang["computers"][16].":	</td>";
 		echo "<td><input type='text' name='contact' size='20' value=\"".$comp->fields["contact"]."\">";
 		echo "</td></tr>";
 
-		echo "<tr><td>".$lang["computers"][17].":	</td>";
+		echo "<tr class='tab_bg_1'><td>".$lang["computers"][17].":	</td>";
 		echo "<td><input type='text' name='serial' size='20' value=\"".$comp->fields["serial"]."\">";
 		echo "</td></tr>";
 
-		echo "<tr><td>".$lang["computers"][18].":	</td>";
+		echo "<tr class='tab_bg_1'><td>".$lang["computers"][18].":	</td>";
 		echo "<td><input type='text' size='20' name='otherserial' value=\"".$comp->fields["otherserial"]."\">";
 		echo "</td></tr>";
 
-		echo "<tr><td valign='top'>".$lang["computers"][19].":</td>";
-		echo "<td><textarea  cols='20' rows='8' name='comments' >".$comp->fields["comments"]."</textarea>";
-		echo "</td></tr>";
+		//echo "<tr><td valign='top'>".$lang["computers"][19].":</td>";
+		//echo "<td><textarea  cols='20' rows='8' name='comments' >".$comp->fields["comments"]."</textarea>";
+		//echo "</td></tr>";
 		
-		echo "<tr><td>".$lang["computers"][41].":	</td>";
+		echo "<tr class='tab_bg_1'><td>".$lang["computers"][41].":	</td>";
 		echo "<td><input type='text' name='achat_date' readonly size='10' value=\"".$comp->fields["achat_date"]."\">";
 		echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=achat_date&amp;value=".$comp->fields["achat_date"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].achat_date.value='0000-00-00'\" value='reset'>";
-    echo "</td></tr>";
+    echo "</td>";
 		
-		echo "<tr><td>".$lang["computers"][42].":	</td>";
+		echo "<td>".$lang["computers"][42].":	</td>";
 		echo "<td><input type='text' name='date_fin_garantie' readonly size='10' value=\"".$comp->fields["date_fin_garantie"]."\">";
 		echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date_fin_garantie&amp;value=".$comp->fields["date_fin_garantie"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 		echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date_fin_garantie.value='0000-00-00'\" value='reset'>";
     echo "</td></tr>";
 		
-		echo "<tr><td>".$lang["computers"][43].":	</td>";
+		echo "<tr class='tab_bg_1'><td>".$lang["computers"][43].":	</td>";
 		echo "<td>";
 		// Maintenance ?
 		if ($comp->fields["maintenance"] == 1) {
@@ -392,9 +397,9 @@ function showComputerForm($target,$ID) {
 			echo " OUI <input type='radio' name='maintenance' value='1'>";
 			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value='0' checked >";
 		}
-		echo "</td></tr>";
+		echo "</td>";
 		
-				echo "<tr><td>".$lang["computers"][27].": </td><td>";
+		echo "<td>".$lang["computers"][27].": </td>";
 		
 		// Is Server?
 		echo "<td>";
@@ -413,11 +418,45 @@ function showComputerForm($target,$ID) {
 		{
 			echo "<input type='checkbox' name='flags_server' value='1'>";
 		}
-		echo "</td><td>".$lang["computers"][28]."</td>";
+		echo " ".$lang["computers"][28]."</td></tr>";
+		
+		echo "<tr class='tab_bg_1'><td>".$lang["reservation"][24].":</td><td><b>";
+		if (!$template)
+		showReservationForm(1,$ID);
+		echo "</b></td><td></td><td></td></tr>";
+		
+		
+		echo "</tr><tr>";
+
+		if ($template) {
+			echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
+			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+			//echo "</td></form>\n";
+                        	echo "</td>\n";
+		} else {
+			echo "<td class='tab_bg_2' colspan='2' align='center' valign='top'>\n";
+			echo "<input type='hidden' name='ID' value=$ID>";
+			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+		//	echo "</td></form>\n";
+				echo "</td>\n";
+                        echo "<td class='tab_bg_2' colspan='2'  align='center'>\n";
+		//	echo "<form method='post' action=\"$target\">";
+			echo "<input type='hidden' name='ID' value=$ID>";
+			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+			echo "";
+			echo "</td>";
+		}
+
+		echo "</tr>\n";
+		
+		
 		
 		echo "</table>";
 		echo "</div>";
 
+		echo "</form>";
+		
+		
 			//print devices.
 		foreach($comp->devices as $key => $val) {
 			$devTable = $val["devTable"];
