@@ -1599,6 +1599,7 @@ function titleKnowbaseconf(){
 
 function addKbCategories($categoryID,$categoryname) {
 
+GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
 
 
 $db=new DB;
@@ -1609,7 +1610,9 @@ $query = "INSERT INTO glpi_kbcategories VALUES (null, $categoryID, \"".$category
 
 if ($result=$db->query($query)){
 
-echo "Added $categoryname  <a href=\"$USERPREFIX/setup-knowledgebase.php\">Go Back</a>";
+echo "<div align='center'>";
+echo $lang["knowbase"][16]." ". $categoryname."<br>  <a href=\"".$cfg_install["root"]."/setup/setup-knowbase.php\">".$lang["buttons"][13]."</a>";
+echo "</div>";
 }
 
 
@@ -1619,91 +1622,119 @@ echo "Added $categoryname  <a href=\"$USERPREFIX/setup-knowledgebase.php\">Go Ba
 
 function delKbCategories($id,$categoryname) {
 
+GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
+
+
 $db=new DB;
 
-echo $query;
+$query = "SELECT * FROM glpi_kbitems WHERE (categoryID = $id)";
+	
+	if ($result=$db->query($query)){
+	
+	// On  empeche la supression d'une catégorie si un item est présent dans cette catégorie !!
+	
+	echo "<div align='center'>";
+	echo  $categoryname." <br> <span class='red'> ".$lang["knowbase"][19]."</span><br><a href=\"".$cfg_install["root"]."/setup/setup-knowbase.php\">".$lang["buttons"][13]."</a>";
+	echo "</div>";
 
-$query = "DELETE FROM glpi_glpi_kbcategories WHERE (ID = $id)";
+	}else{
 
-echo $query;
-
-
-if ($result=$db->query($query)){
-// A modifier on doit empecher la supression d'une catégorie si un article est présent dans cette catégorie !!
-
-//$query = "DELETE FROM glpi_kbitems WHERE (categoryID = \"input["id"]\")";
-//$db->query($query);
-
-  echo "Category ($id)". $input["categoryname"]."Deleted!  Note: All articles under this  category has been deleted. <a href=\"$USERPREFIX/setup-knowledgebase.php\">Go Back</a>";
-}
+		$query = "DELETE FROM glpi_kbcategories WHERE (ID = $id)";
+		if ($result=$db->query($query)){
+		echo "<div align='center'>";
+		echo $lang["knowbase"][18]."(".$id.")". $categoryname."<a href=\"".$cfg_install["root"]."/setup/setup-knowbase.php\">".$lang["buttons"][13]."</a>";
+		echo "</div>";
+		}
   
+	}	
 }
 
 
 function showSetupKbCategories($target) {
 
-$query = "SELECT * FROM glpi_kbcategories";
-$db=new DB;
- if ($result=$db->query($query)){
+GLOBAL  $lang;
 
-	
-		if ($db->numrows($result)>0){
-while ($row=$db->fetch_array($result))
-{
-  	$id = $row["ID"];
-  	$categoryname = $row["name"];
-  	$parentID = $row["parentID"];
-	$fullcategoryname  = kbcategoryname($id);
-  	
-	echo "<form action=\"$target\"  method=\"post\">";
-	echo "
-			<table width=100% border=1 noshade bordercolor=#000000>
-			<tr bgcolor=#CCCCCC><td colspan=2><strong>$fullcategoryname
-			</strong></td></tr>";
-  	echo "<tr bgcolor=#DDDDDD>";
-  	echo "<td><font face=\"arial, helvetica\">Category Name:
-			<br><input type=text size=\"65%\" 
-			name=categoryname value=\"$categoryname\">";
-  	echo "</font></td>";
-	echo "<td><font face=\"arial, helvetica\">As a subcategory of: ";
-	kbcategoryList($parentID);
-	echo "</font></td>\n";
-	echo "\n</tr>\n";
-  	echo "<tr bgcolor=#CCCCCC><td valign=center><input type=hidden 
-			name=id value=\"$id\"><input type=submit 
-			name=Update value=update></td><td valign=center><input type=hidden 
-			name=id value=\"$id\"><input type=hidden name=categoryname 
-			value=\"$categoryname\"><input type=submit 
-			name=Delete value=delete ></form></td></tr></table>";
-  	echo "<br>";
-}
-}
-	}
-		
-		echo "<hr noshade><h4>Add a Category</h4>";
-echo "<form action=\"$target\" name='2'  method=\"post\"><table width=100% 
-		border=1 noshade bordercolor=#000000><tr bgcolor=#CCCCCC>
-		<td colspan=2><strong>New Category</strong></td></tr>";
-echo "<tr bgcolor=#DDDDDD> <td><font face=\"arial, helvetica\">Name:<br> 
-		<input type=text size=\"65%\" name=categoryname></td>";
-		echo "<td><font face=\"arial, helvetica\">As a subcategory of: ";
+
+// Ajout
+
+echo "<div align='center'>";
+
+echo "<form action=\"$target\" name='2'  method=\"post\"><table width='600px'
+		class='tab_cadre'><tr>
+		<th colspan=2><strong>".$lang["knowbase"][15]."</strong></th></tr>";
+echo "<tr class='tab_bg_1'> <td>".$lang["knowbase"][13].":<br> 
+		<input type='text' size=\"65%\" name='categoryname'></td>";
+		echo "<td>".$lang["knowbase"][14]." :  ";
 		kbcategoryList(0);
 		echo "</td>";
 echo "</tr>";
-echo "<tr bgcolor=#CCCCCC><td colspan=2><input type=submit name=Add value=add>
+echo "<tr bgcolor=#CCCCCC><td align='center' colspan='2'><input class='submit' type='submit' name='Add' value='".$lang["buttons"][2]."'>
 		</td></tr></table></form>";
+
+
+// modif /delete
+
+$query = "SELECT * FROM glpi_kbcategories";
+$db=new DB;
+ 	if ($result=$db->query($query)){
+
 	
+		if ($db->numrows($result)>0){
+			while ($row=$db->fetch_array($result))
+			{
+			$id = $row["ID"];
+			$categoryname = $row["name"];
+			$parentID = $row["parentID"];
+			$fullcategoryname  = kbcategoryname($id);
+		
+			
+			
+			echo "<form action=\"$target\"  method=\"post\">";
+			echo "
+					<table width='600px' class='tab_cadre'>
+					<tr><th colspan=2><strong>$fullcategoryname
+					</strong></th></tr>";
+			echo "<tr class='tab_bg_1'>";
+			echo "<td>".$lang["knowbase"][13]." :
+					<br><input type='text' size=\"65%\" 
+					name='categoryname' value=\"$categoryname\">";
+			echo "</td>";
+			echo "<td>".$lang["knowbase"][14].": ";
+			kbcategoryList($parentID);
+			echo "</td>\n";
+			echo "\n</tr>\n";
+			echo "<tr class='tab_bg_1'><td align='center'><input type='hidden' 
+					name='id' value=\"$id\"><input class='submit' type='submit' 
+					name='Update' value='".$lang["buttons"][7]."'></td><td align='center'><input type='hidden' 
+					name='id' value=\"$id\"><input type='hidden' name='categoryname'
+					value=\"$categoryname\"><input class='submit' type='submit' 
+					name='Delete' value='".$lang["buttons"][6]."' ></form></td></tr></table>";
+			echo "<br>";
+			}
+		}
+	}
+		
+
+
+echo "</div>";
+		
+			
 }
+
 
 
 function updateKbCategories($id,$categorylist,$categoryname) {
 
+GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
+
 $query = "UPDATE glpi_kbcategories SET parentID='$categorylist', name='$categoryname' WHERE ID = $id";
 $db=new DB;
-if ($result=$db->query($query)){
+	if ($result=$db->query($query)){
 
-echo "Updated ($id) $categoryname <a href=\"$USERPREFIX/setup-knowledgebase.php\">Go back</a>";
-}
+	echo "<div align='center'>";
+	echo $lang["knowbase"][17]." (".$id.") ". $categoryname."<br> <a href=\"".$cfg_install["root"]."/setup/setup-knowbase.php\">".$lang["buttons"][13]."</a>";
+	echo "</div>";
+	}
 
 }
 

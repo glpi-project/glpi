@@ -78,7 +78,7 @@ function showKbItemForm($target,$ID){
 
 	
 	echo "<p >".$lang["knowbase"][6];
-	kbcategoryList($ki->fields["categoryID"]);
+	kbcategoryList($ki->fields["categoryID"],"no");
 	echo "</p>";
 		
 	echo "<fieldset>";
@@ -253,7 +253,7 @@ function showKbCategories($parentID=0)
 	// show kb catégories
 	// ok
 	
-	
+	global $lang;
 	
 	$query = "select * from glpi_kbcategories where (parentID = $parentID) order by name asc";
 
@@ -262,7 +262,7 @@ function showKbCategories($parentID=0)
 	
 	
 	if ($result=$db->query($query)){
-	
+					
 		if ($db->numrows($result)>0){
 			echo "<ul>";	
 			while ($row=$db->fetch_array($result)){
@@ -361,7 +361,7 @@ function ShowKbItemFull($ID)
 	
 }
 
-function kbcategoryList($current=0)
+function kbcategoryList($current=0,$nullroot="yes")
 {
 	// show select category
 	// ok ?
@@ -370,7 +370,11 @@ function kbcategoryList($current=0)
 	
 	
 	echo "<select name='categoryID' size='1'>\n";
-	//echo "<option value='0'>Main</option>\n";
+	
+	if ($nullroot=="yes"){
+	echo "<option value='0'>".$lang["knowbase"][12]."</option>\n";
+	}
+	
 	kbcategoryListSelect($current, 0, "".$lang["knowbase"][12]."\\");
 	echo "</select>\n";
 }

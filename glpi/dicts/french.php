@@ -901,4 +901,12 @@ $lang["knowbase"][9] ="Supprimer cet item ";
 $lang["knowbase"][10] ="Cet item fait partie de la FAQ publique ";
 $lang["knowbase"][11] ="Cet item ne fait pas partie de la FAQ publique  ";
 $lang["knowbase"][12] ="Racine  ";
+$lang["knowbase"][13] ="Nom de la cat&eacute;gorie ";
+$lang["knowbase"][14] ="Sous cat&eacute;gorie de ... ";
+$lang["knowbase"][15] ="Ajouter une nouvelle cat&eacute;gorie ";
+$lang["knowbase"][16] ="Ajout de la nouvelle cat&eacute;gorie ";
+$lang["knowbase"][17] ="Modification de la cat&eacute;gorie ";
+$lang["knowbase"][18] ="Supression de la cat&eacute;gorie ";
+$lang["knowbase"][19] ="Echec de la suppression : Cette cat&eacute;gorie contient des items, vous devez effacer tous les items de cette cat&eacute;gorie avant de la supprimer ";
+$lang["knowbase"][20] ="Base de connaissances vide";
 ?>
