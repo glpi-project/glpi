@@ -1093,18 +1093,34 @@ function showFormExtsources($target) {
 	$query = "select * from glpi_config where config_id = 1";
 	$result = $db->query($query);
 	echo "Configuration des paramètres de connection externe";
-	echo "<br /> Si vous ne souhaitez pas utiliser LDAP ou/et IMAP comme source(s) de connection laissez les champs vides";
-	echo "<br /><form action=\"$target\" method=\"post\">";
-	echo "<table>";
-	echo "<tr><td>LDAP configuration</td><td></td></tr>";
-	echo "<tr><td>LDAP Host</td><td><input type=\"text\" name=\"ldap_host\" value=\"". $db->result($result,0,"ldap_host") ."\"/></td></tr>";
-	echo "<tr><td>Basedn</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"". $db->result($result,0,"ldap_basedn") ."\" /></td></tr>";
-	echo "<tr><td>rootdn (for non anonymous binds)</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"". $db->result($result,0,"ldap_rootdn") ."\" /></td></tr>";
-	echo "<tr><td>Pass (for non-anonymous binds)</td><td><input type=\"text\" name=\"ldap_pass\" value=\"". $db->result($result,0,"ldap_pass") ."\" /></td></tr>";
-	echo "<tr><td>IMAP configuration</td><td></td></tr>";
-	echo "<tr><td>IMAP Auth Server</td><td><input type=\"text\" name=\"imap_auth_server\" value=\"". $db->result($result,0,"imap_auth_server") ."\" /></td></tr>";
-	echo "<tr><td>IMAP Host Name (users email will be login@thishost)</td><td><input type=\"text\" name=\"imap_host\" value=\"". $db->result($result,0,"imap_host") ."\" /></td></tr>";
-	echo "</table>";
+	echo "<form action=\"$target\" method=\"post\">";
+	if(extension_loaded('ldap'))
+	{
+		echo "<br /> Si vous ne souhaitez pas utiliser LDAP ou/et IMAP comme source(s) de connection laissez les champs vides";
+
+		echo "<br /><table>";
+		echo "<tr><td>LDAP configuration</td><td></td></tr>";
+		echo "<tr><td>LDAP Host</td><td><input type=\"text\" name=\"ldap_host\" value=\"". $db->result($result,0,"ldap_host") ."\"/></td></tr>";
+		echo "<tr><td>Basedn</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"". $db->result($result,0,"ldap_basedn") ."\" /></td></tr>";
+		echo "<tr><td>rootdn (for non anonymous binds)</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"". $db->result($result,0,"ldap_rootdn") ."\" /></td></tr>";
+		echo "<tr><td>Pass (for non-anonymous binds)</td><td><input type=\"text\" name=\"ldap_pass\" value=\"". $db->result($result,0,"ldap_pass") ."\" /></td></tr>";
+		echo "</table>";
+	}
+	else {
+		echo "<input type=\"hidden\" name=\"LDAP_Test\" value=\"1\" />";
+		echo "L'extension LDAP de votre parser PHP n'est pas installé; Impossible d'utiliser LDAP comme source de connection externe";
+	}
+	if(function_exists('imap_open')) {
+		echo "<table>";
+		echo "<tr><td>IMAP configuration</td><td></td></tr>";
+		echo "<tr><td>IMAP Auth Server</td><td><input type=\"text\" name=\"imap_auth_server\" value=\"". $db->result($result,0,"imap_auth_server") ."\" /></td></tr>";
+		echo "<tr><td>IMAP Host Name (users email will be login@thishost)</td><td><input type=\"text\" name=\"imap_host\" value=\"". $db->result($result,0,"imap_host") ."\" /></td></tr>";
+		echo "</table>";
+	}
+	else {
+		echo "<input type=\"hidden\" name=\"IMAP_Test\" value=\"1\" />";
+		echo "Votre parser PHP à été compilé sans les fonctions de connection IMAP; Impossible d'utiliser IMAP/POP comme source de connection externe";
+	}
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_ext\" class=\"submit\" value=\"Continuer\" /></p>";
 	echo "</form>";
 }
@@ -1158,17 +1174,25 @@ function showFormMailing($target) {
 		echo "</form>";
 }
 
-function updateExt($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$imap_auth_server,$imap_host) {
+function updateLDAP($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass) {
 	
 	$db = new DB;
 	//TODO : test the remote LDAP connection
-	$query = "update glpi_config set ldap_host = '". $ldap_host ."', ";
-	$query.= "ldap_basedn = '". $ldap_basedn ."', ldap_rootdn = '". $ldap_rootdn ."', ";
-	$query .= "ldap_pass = '". $ldap_pass ."' where config_id = '1' ";
-	$db->query($query);
-	$query = "update glpi_config set imap_auth_server = '". $imap_auth_server ."', ";
-	$query.= "imap_host = '". $imap_host ."' where config_id = '1'";
-	$db->query($query);
+	if(!empty($ldap_host)) {
+		$query = "update glpi_config set ldap_host = '". $ldap_host ."', ";
+		$query.= "ldap_basedn = '". $ldap_basedn ."', ldap_rootdn = '". $ldap_rootdn ."', ";
+		$query .= "ldap_pass = '". $ldap_pass ."' where config_id = '1' ";
+		$db->query($query);
+	}
+}
+function updateIMAP($imap_auth_server,$imap_host) {
+	$db = new DB;
+	//TODO : test the remote IMAP connection
+	if(!empty($imap_auth_server)) {
+		$query = "update glpi_config set imap_auth_server = '". $imap_auth_server ."', ";
+		$query.= "imap_host = '". $imap_host ."' where config_id = '1'";
+		$db->query($query);
+	}
 }
 
 function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_admin,$mailing_attrib_admin,$mailing_followup_admin,$mailing_finish_admin,$mailing_new_all_admin,$mailing_attrib_all_admin,$mailing_followup_all_admin,$mailing_finish_all_admin,$mailing_new_all_normal,$mailing_attrib_all_normal,$mailing_followup_all_normal,$mailing_finish_all_normal,$mailing_attrib_attrib,$mailing_followup_attrib,$mailing_finish_attrib,$mailing_new_user,$mailing_attrib_user,$mailing_followup_user,$mailing_finish_user,$mailing_new_attrib) {

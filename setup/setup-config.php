@@ -70,8 +70,13 @@ elseif(!empty($_POST["update_mailing"])) {
 }
 elseif(!empty($_POST["update_ext"])) {
 
-	//todo test if imap_open exist test if the ldap extension is loaded test remote connection
-	updateExt($_POST["ldap_host"],$_POST["ldap_basedn"],$_POST["ldap_rootdn"],$_POST["ldap_pass"],$_POST["imap_auth_server"],$_POST["imap_host"]);
+	if(!empty($_POST["LDAP_test"]) ) {
+//todo test remote connection
+		updateLDAP($_POST["ldap_host"],$_POST["ldap_basedn"],$_POST["ldap_rootdn"],$_POST["ldap_pass"]);
+	}
+	if(!empty($_POST["IMAP_test"])) {
+		updateIMAP($_POST["imap_auth_server"],$_POST["imap_host"]);
+	}
 	header("Location: ".$cfg_install["root"]."/setup/index.php");
 }
 
