@@ -271,6 +271,16 @@ a.icon_nav_move:hover img {
 }
 
 
+.nav_horl {
+	padding: 4px;
+	margin: 1px;
+	border: 1px solid #aaaaaa;
+	
+	-moz-border-radius: 5px;
+       	font-size : 9px;
+        
+}
+
 /* ###### navig-console ###### */
 
 

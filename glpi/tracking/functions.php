@@ -703,7 +703,7 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 		}
 		return true;	
 	} else {
-		echo "Couldn't post followup.";
+		//echo "Couldn't post followup.";
 		return false;
 	}
 }

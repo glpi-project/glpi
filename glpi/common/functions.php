@@ -363,36 +363,39 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 
 	
 	// Logo with link to command center
-	echo "<td width='25%'  valign='top'>\n";
-	
-	
-	echo "<table width='100%' ><tr><td align='center'>";
-	
+	echo "<td width='120px'  valign='top' align='center'>\n";
 	echo "<a href=\"".$cfg_install["root"]."/central.php\" accesskey=\"0\"><img src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>";
-	echo "</td></tr>";
-	echo "<tr><td height='50px' align='center' >";
-	echo "<span style='color:#ccccc'>- Session :<b>".$_SESSION["glpiname"]."</b> - </span>";
-	echo "</tr></td></table>";
-	
+	echo "<div style='width:80px; text-align:center;'><p class='nav_horl'><b>".$_SESSION["glpiname"]."</b></p></div>";
 	echo "</td>";
 
 	echo "<td valign='middle'>";
 	
+	
 	// Get object-variables and build the navigation-elements
 	echo "<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr>";
+	
+	
 	if ($navigation->inventory) {
-		echo "<td align='center' valign='top'>";
+		echo "<td align='center' valign='top' width='25%'>";
 		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/inventaire.png\" alt=\"\" title=\"".$lang["setup"][10]."\"><br>";
 		echo "<small>-&nbsp;".$lang["setup"][10]."&nbsp;-</small><br>";
 
+		 echo "<table cellspacing='0' border='0' cellpadding='0'><tr><td>";
+		$i=0;
 		 foreach ($inventory as $key => $val) {
-                         echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
+		 			if ($i%2==1) echo "</td><td style='border-left:1px groove #000000; border-right:1px groove #000000'>&nbsp;</td><td style='padding-left:5px; padding-right:5px;' align='center'>";
+		 			else echo "</td></tr><tr><td style='padding-left:5px; padding-right:5px;' align='center'>";
+                         
+			 echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
+                         $i++;
                    }
-
+		echo "</td></tr></table>";
 		echo "</td>";
 	}
+	
+	
 	 if ($navigation->maintain) {
-		echo "<td align='center' valign='top'>";
+		echo "<td align='center' valign='top' width='25%'>";
 				echo "<img class='icon_nav' src=\"".$HTMLRel."pics/maintenance.png\" alt=\"\" title=\"".$lang["setup"][55]."\"><br>";
 
 		echo "<small>-&nbsp;".$lang["setup"][55]."&nbsp;-</small><br>";
@@ -404,7 +407,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	
 	
 	if ($navigation->utils) {
-	echo "<td align='center' valign='top'>";
+	echo "<td align='center' valign='top' width='25%'>";
 	echo "<img class='icon_nav' src=\"".$HTMLRel."pics/outils.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>";
 
 		echo "<small>-&nbsp;".$lang["Menu"][18]."&nbsp;-</small><br>";
@@ -415,7 +418,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	
 	
 	if ($navigation->settings) {
-		echo "<td align='center' valign='top'>";
+		echo "<td align='center' valign='top' width='25%'>";
 				echo "<img class='icon_nav' src=\"".$HTMLRel."pics/config.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>";
 
 		echo "<small>-&nbsp;".$lang["Menu"][15]."&nbsp;-</small><br>";
@@ -431,12 +434,14 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	// On the right side of the navigation bar, we have a clock with
 	// date, help and a logout-link.
 
-	echo "<td  align='right' valign='top' width='100'>";
+	echo "<td  align='center' valign='top' width='100px'>";
 	//help
-	echo "<a class='icon_nav_move'  href='#' onClick=\"window.open('".$HTMLRel."help/".$_SESSION["glpilanguage"].".html','helpdesk','width=700,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a><br><br>";
-	echo date("H").":".date("i")."<p><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
+	echo "<a class='icon_nav_move'  href='#' onClick=\"window.open('".$HTMLRel."help/".$_SESSION["glpilanguage"].".html','helpdesk','width=700,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a>";
+	echo "<p>".date("H").":".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i></p>";
-	echo "<a  class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img  src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></td>";
+	echo "<a  class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img  src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a>";
+	
+	echo "</td>";
 
 	// End navigation bar
 
