@@ -102,16 +102,16 @@ $error01 = "Erreur : date invalide";
  {
   window.location.href = "mycalendar.php?form=<?php
 
-echo $form;?>&elem=<?php
+echo $_GET["form"];?>&elem=<?php
 
  
 
-echo $elem;?>&mois=" + document.forms["MyCalendar"].elements['month'].options[document.forms["MyCalendar"].elements['month'].selectedIndex].value + "&jour=" + jour +"&annee=" + document.forms["MyCalendar"].elements['year'].options[document.forms["MyCalendar"].elements['year'].selectedIndex].value
+echo $_GET["elem"];?>&mois=" + document.forms["MyCalendar"].elements['month'].options[document.forms["MyCalendar"].elements['month'].selectedIndex].value + "&jour=" + jour +"&annee=" + document.forms["MyCalendar"].elements['year'].options[document.forms["MyCalendar"].elements['year'].selectedIndex].value
 
  }
 <?php
-if (isset($value)&&$value!=""&&!isset($jour)&&!isset($mois)&&!isset($annee)) {
-list($annee,$mois,$jour)=split("-",$value);
+if (isset($_GET["value"])&&$_GET["value"]!=""&&$_GET["value"]!="0000-00-00"&&!isset($jour)&&!isset($mois)&&!isset($annee)) {
+list($annee,$mois,$jour)=split("-",$_GET["value"]);
 }
 
 if (!isset($jour))
@@ -240,7 +240,7 @@ echo "<body bgcolor='#$bgcolor' onUnLoad=''>\n" ;
    echo "</tr>\n" ;
   }
 
-  echo "\n<tr><td colspan='10' align='center'><input type='button' class='button' onclick='window.opener.document.forms[\"$form\"].elements[\"$elem\"].value=\"$annee-".$val[$mois]."-".$val[$jour]."\";window.close()' value='Valider'>&nbsp;&nbsp;<input onclick='window.close()' type='button' class='button' value='Annuler'></td></tr></table>\n" ;
+  echo "\n<tr><td colspan='10' align='center'><input type='button' class='button' onclick='window.opener.document.forms[\"".$_GET["form"]."\"].elements[\"".$_GET["elem"]."\"].value=\"$annee-".$val[$mois]."-".$val[$jour]."\";window.close()' value='Valider'>&nbsp;&nbsp;<input onclick='window.close()' type='button' class='button' value='Annuler'></td></tr></table>\n" ;
 
   echo "\n</tr></table>\n" ;
 
