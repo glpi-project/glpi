@@ -317,13 +317,13 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 		$ecartmoisexercice=0;
 		
 		sscanf($date_achat, "%4s-%2s-%2s %2s:%2s:%2s",
-		&$date_Y, &$date_m, &$date_d,
-		&$date_H, &$date_i, &$date_s); // un traitement sur la date mysql pour récupérer l'année
+		$date_Y, $date_m, $date_d,
+		$date_H, $date_i, $date_s); // un traitement sur la date mysql pour récupérer l'année
 	
 		// un traitement sur la date mysql pour les infos necessaires	
 		sscanf($date_fiscale, "%4s-%2s-%2s %2s:%2s:%2s",
-		&$date_Y2, &$date_m2, &$date_d2,
-		&$date_H2, &$date_i2, &$date_s2); 
+		$date_Y2, $date_m2, $date_d2,
+		$date_H2, $date_i2, $date_s2); 
 		$date_Y2=date("Y");
 		
 		//if ($type_amort=="2") { 
