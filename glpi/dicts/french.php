@@ -464,7 +464,9 @@ $lang["reports"][22]    ="Type de date";
 $lang["reports"][23]    ="Date(s)";
 $lang["reports"][24]    ="Restreindre aux ordinateurs";
 $lang["reports"][25]    ="Rapport interventions";
-
+$lang["reports"][26]    ="Rapport par défaut";
+$lang["reports"][27]    ="Maintenance";
+$lang["reports"][28]    ="Par année";
 
 // LDAP
 $lang["ldap"][0]	= "recherche";
