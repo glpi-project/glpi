@@ -56,15 +56,15 @@ $login_ok=0;
 
 //Do login and checks
 //echo "test";
-$identificat = new Identification($_POST['name']);
-$auth_succeded = $identificat->connection_imap($cfg_login['imap']['auth_server'],$_POST['name'],$_POST['password']);
+$identificat = new Identification($_POST['login_name']);
+$auth_succeded = $identificat->connection_imap($cfg_login['imap']['auth_server'],$_POST['login_name'],$_POST['login_password']);
 // we check all the auth sources in turn...
-$auth_succeded = $identificat->connection_db($_POST['name'],$_POST['password']);
+$auth_succeded = $identificat->connection_db($_POST['login_name'],$_POST['login_password']);
 if (!$auth_succeded) {
-	$auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$_POST['name'],$_POST['password']);
+	$auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$_POST['login_name'],$_POST['login_password']);
 }
 if (!$auth_succeded) {
-	$auth_succeded = $identificat->connection_db($_POST['name'],$_POST['password']);
+	$auth_succeded = $identificat->connection_db($_POST['login_name'],$_POST['login_password']);
 }
 
 // we have done at least a good login? No, we exit.
@@ -73,19 +73,19 @@ if ( ! $auth_succeded ) {
 	echo "<center><b>".$identificat->getErr().".</b><br><br>";
 	echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">Relogin</a></b></center>";
 	nullFooter();
-	logevent(-1, "system", 1, "login", "failed login: ".$_POST['name']);
+	logevent(-1, "system", 1, "login", "failed login: ".$_POST['login_name']);
 	exit;
 }
 
 // now we have to load data for that user, we try all the data source in turn.
 // The constructor for Identification() have just filed the data with correct
 // stub
-$user_present = $identificat->user->getFromDB($_POST['name']);
+$user_present = $identificat->user->getFromDB($_POST['login_name']);
 $update_list = array();
-if ($identificat->user->getFromIMAP($cfg_login['imap']['host'],$_POST['name'])) {
+if ($identificat->user->getFromIMAP($cfg_login['imap']['host'],$_POST['login_name'])) {
 	$update_list = array('email');
 }
-if ($identificat->user->getFromLDAP($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass'],$cfg_login['ldap']['fields'],$_POST['name'])) {
+if ($identificat->user->getFromLDAP($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass'],$cfg_login['ldap']['fields'],$_POST['login_name'])) {
 	$update_list = array_keys($cfg_login['ldap']['fields']);
 }
 
@@ -102,16 +102,16 @@ if (!$user_present) {
 $identificat->setcookies();
 
 // If no prefs for user, set default
-$query = "SELECT * FROM glpi_prefs WHERE (user = '".$_POST['name']."')";
+$query = "SELECT * FROM glpi_prefs WHERE (user = '".$_POST['login_name']."')";
 $result = $db->query($query);
 if ($db->numrows($result) == 0)
 {
-	$query = "INSERT INTO glpi_prefs VALUES ('".$_POST['name']."', 'yes','french')";
+	$query = "INSERT INTO glpi_prefs VALUES ('".$_POST['login_name']."', 'yes','french')";
 	$result = $db->query($query);
 }
 
 // Log Event
-logEvent("-1", "system", 3, "login", $_POST['name']." logged in.");
+logEvent("-1", "system", 3, "login", $_POST['login_name']." logged in.");
 
 // Expire Event Log
 $secs =  $cfg_features["expire_events"]*86400;
