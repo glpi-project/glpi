@@ -124,7 +124,7 @@ class Computer {
 
 	function deleteFromDB($ID,$template) {
 
-		if ($template) {
+		if (!empty($template)) {
 			$table = "templates";
 		} else {
 			$table = "computers";
