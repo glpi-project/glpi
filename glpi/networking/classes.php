@@ -323,8 +323,8 @@ class Netwire {
 		if ($result=$db->query($query))
 		{
 			$data = $db->fetch_array($result);
-			$this->end1 = $data["end1"];
-			$this->end2 = $data["end2"];
+			if (isset($data["end1"])) $this->end1 = $data["end1"];
+			if (isset($data["end2"])) $this->end2 = $data["end2"];
 
 			if ($this->end1 == $ID)
 			{
