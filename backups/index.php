@@ -127,13 +127,20 @@ require('genxml.php');
 $db = new DB;
 $result = $db->list_tables();
 $i = 0;
-while ($line = $db->fetch_array($result))
-   {
+	while ($line = $db->fetch_array($result))
+   	{
 
-   $table = $line[0];
-   $query[$i] = "select * from ".$table.";";
-   $i++;
-   }
+   	
+	// on se  limite aux tables préfixées _glpi
+   		if (ereg("glpi_",$line[0])){
+		
+		$table = $line[0];
+		
+   		
+   		$query[$i] = "select * from ".$table.";";
+   		$i++;
+		}
+  	 }
 
 //le nom du fichier a generer...
 //Si fichier existe deja il sera remplacé par le nouveau
@@ -390,6 +397,8 @@ if ($offsettable==0&&$offsetrow==-1){
 $result=$db->list_tables();
 $numtab=0;
 while ($t=$db->fetch_array($result)){
+	
+	// on se  limite aux tables préfixées _glpi
 	if (ereg("glpi_",$t[0])){
 	$tables[$numtab]=$t[0];
 $numtab++;
