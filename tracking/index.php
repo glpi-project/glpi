@@ -47,9 +47,27 @@ commonHeader("Tracking",$_SERVER["PHP_SELF"]);
 
 searchFormTracking($_GET["show"],$_GET["contains"]);
 
-if ($_GET["show"] || $_GET["contains"]) {
-	showJobList($_SESSION["glpiname"],$_GET["show"],$_GET["contains"],$_GET["machine"]);
+if (isset($_GET["show"]))
+{
+	if(isset($_GET["contains"]))
+	{
+		showJobList($_SESSION["glpiname"],$_GET["show"],$_GET["contains"],$_GET["machine"]);
+	}
+	else
+	{
+		showJobList($_SESSION["glpiname"],"","",$_GET["machine"]);
+	}
 }
-
+else
+{
+	if(isset($_GET["contains"]))
+	{
+		showJobList($_SESSION["glpiname"],"",$_GET["contains"],$_GET["machine"]);
+	}
+	else
+	{
+		showJobList($_SESSION["glpiname"],"","",$_GET["machine"]);
+	}
+}
 commonFooter();
 ?>
