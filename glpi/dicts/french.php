@@ -626,7 +626,7 @@ $lang["stats"][11] = "Nombre d'interventions r&eacute;solues";
 $lang["stats"][12] = "Statistiques Globales";
 $lang["stats"][13] = "Nombre d'interventions attribu&eacute;es";
 $lang["stats"][14] = "Nombre d'interventions r&eacute;solues";
-$lang["stats"][15] = "Dur&eacute;e moyenne de r&eacute;solution";
+$lang["stats"][15] = "dur&eacute;e moyenne d'ouverture";
 $lang["stats"][16] = "Nom du technicien";
 $lang["stats"][17] = "Statistiques techniciens";
 $lang["stats"][18] = "Statistiques utilisateurs";
@@ -635,7 +635,7 @@ $lang["stats"][20] = "Nom d'utilisateur";
 $lang["stats"][21] = "Lieu";
 $lang["stats"][22] = "Nombre d'interventions demand&eacute;es";
 $lang["stats"][23] = "Pas de statistiques disponibles";
-$lang["stats"][25] = "Dur&eacute;e r&eacute;elle rmoyenne de l'intervention";
+$lang["stats"][25] = "Dur&eacute;e r&eacute;elle moyenne de l'intervention";
 
 
 ?>
