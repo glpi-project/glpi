@@ -117,6 +117,7 @@ function searchUserbyType($authtype) {
 
    function stripslashes_deep($value)
    {
+//   	echo "strip";
        $value = is_array($value) ?
                    array_map('stripslashes_deep', $value) :
                    stripslashes($value);
@@ -125,6 +126,7 @@ function searchUserbyType($authtype) {
    }
    function addslashes_deep($value)
    {
+//   	echo "add";
        $value = is_array($value) ?
                    array_map('addslashes_deep', $value) :
                    addslashes($value);
@@ -134,16 +136,25 @@ function searchUserbyType($authtype) {
     
 function checkAuthentication($authtype) {
 	// Universal method to have a magic-quote-gpc system
-	global $_POST, $_GET,$_COOKIE;
-	// Clean array
+	global $_POST, $_GET,$_COOKIE,$tab;
+	// Clean array and addslashes
+	if (isset($_POST)){
 	$_POST = array_map('stripslashes_deep', $_POST);
-    $_GET = array_map('stripslashes_deep', $_GET);
-    $_COOKIE = array_map('stripslashes_deep', $_COOKIE);
-	// Addslashes
 	$_POST = array_map('addslashes_deep', $_POST);
+	}
+	if (isset($_GET)){
+    $_GET = array_map('stripslashes_deep', $_GET);
     $_GET = array_map('addslashes_deep', $_GET);
+	}
+	if (isset($_COOKIE)){
+    $_COOKIE = array_map('stripslashes_deep', $_COOKIE);
     $_COOKIE = array_map('addslashes_deep', $_COOKIE);
-
+	}
+	if (isset($tab)){
+    $tab = array_map('stripslashes_deep', $tab);    
+    $tab = array_map('addslashes_deep', $tab);    
+    }
+    
 	// Checks a GLOBAL user and password against the database
 	// If $authtype is "normal" or "admin", it checks if the user
 	// has the privileges to do something. Should be used in every 
