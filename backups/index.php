@@ -456,11 +456,11 @@ if (!isset($_GET["fichier"])) {
 	$fichier=$filename;
 } else $fichier=$_GET["fichier"];
 	
-
+$tab=$db->list_tables();
+$tot=$db->numrows($tab);
 if(isset($offsettable))
-$percent=min(100,round(110*$offsettable/33,0));
+$percent=min(100,round(110*$offsettable/$tot,0));
 else $percent=0;
-//echo "<center>".$percent."%";
 
 if ($percent > 0) {
  
