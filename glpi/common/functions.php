@@ -510,14 +510,18 @@ function helpHeader($title,$url,$name) {
 
 	echo "<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr>";
 
+	if (ereg("tracking-injector",$_SERVER["PHP_SELF"]))
+	echo "<td width='100%'>&nbsp;</td>";
 	// Just give him a language selector
 	echo "<td>";
+		if (!ereg("tracking-injector",$_SERVER["PHP_SELF"]))
 		showLangSelect($cfg_install["root"]."/preferences/index.php",$name);
+		else echo "&nbsp;";
 	echo "</td>";
 
 	// And he can change his password, thats it
 	echo "<td>";
-	if ($_SESSION["extauth"]!=1)
+	if ($_SESSION["extauth"]!=1&&!ereg("tracking-injector",$_SERVER["PHP_SELF"]))
 		showPasswordForm($cfg_install["root"]."/preferences/index.php",$name);
 		else echo "&nbsp;";
 	echo "</td>";
