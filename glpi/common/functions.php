@@ -50,10 +50,46 @@ function can_assign_job($name)
 	 }
 }
 
+function isPostOnly($authtype) {
+	switch ($authtype){
+		case "post-only" :
+		case "normal" :
+		case "admin":
+		case "super-admin":
+			return true;
+			break;
+		default :
+			return false;
+		}
+}
+
+function isNormal($authtype) {
+	switch ($authtype){
+		case "normal" :
+		case "admin":
+		case "super-admin":
+			return true;
+			break;
+		default :
+			return false;
+		}
+}
+
+
 function isAdmin($authtype) {
 	switch ($authtype){
 		case "admin":
 		case "super-admin":
+			return true;
+			break;
+		default :
+			return false;
+		}
+}
+
+function isSuperAdmin($authtype) {
+	switch ($authtype){
+			case "super-admin":
 			return true;
 			break;
 		default :
@@ -98,13 +134,11 @@ function checkAuthentication($authtype) {
 		loadLanguage();
 
 		switch ($authtype) {
-
 			case "super-admin";
-				if ($type!="super-admin") 
+				if (!isSuperAdmin($type)) 
 				{
 					commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
-						echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
-
+					echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
 					echo "<b>".$lang["login"][5]."</b></center>";
 					commonFooter();
 					exit();
@@ -112,7 +146,7 @@ function checkAuthentication($authtype) {
 			break;
 				
 			case "admin";
-				if ($type!="admin" && $type != "super-admin") 
+				if (!isAdmin($type)) 
 				{
 					commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
 						echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
@@ -124,7 +158,7 @@ function checkAuthentication($authtype) {
 			break;
 				
 			case "normal";
-				if ($type!="normal" && $type!="admin" && $type != "super-admin")
+				if (!isNormal($type))
 				{
 					commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
 				      echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
@@ -136,7 +170,7 @@ function checkAuthentication($authtype) {
 			break;
 		
 			case "post-only";
-				if ($type!="post-only" && $type!="normal" && $type!="admin" && $type != "super-admin")
+				if (!isPostOnly($type))
 				{
 					commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
 											echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";

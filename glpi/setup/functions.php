@@ -442,12 +442,11 @@ function showUserinfo($target,$name) {
 function showUserform($target,$name) {
 	
 	// Affiche un formulaire User
-	
 	GLOBAL $cfg_layout, $lang;
 	
 	$user = new User();
 	
-	if (empty($name)) {
+	if(empty($name)) {
 	// Partie ajout d'un user
 	// il manque un getEmpty pour les users	
 	$user->getEmpty();
@@ -455,94 +454,81 @@ function showUserform($target,$name) {
 	} else {
 		$user->getfromDB($name);
 		
-	}		
-	
+	}
 	echo "<div align='center'>";
-		echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre'>";
-		echo   "<tr><th colspan='2'>".$lang["setup"][57]." : " .$user->fields["name"]."</th></tr>";
-		echo "<tr class='tab_bg_1'>";	
-		
-			echo "<td align='center'>".$lang["setup"][18]."</td>";
-			// si on est dans le cas d'un ajout , cet input ne doit plus être hiden
-			if ($name=="") {
-			 echo "<td><input  name='name' value=\"".$user->fields["name"]."\">";
-			echo "</td></tr>";
-				
-			}else{
-			echo "<td align='center'><b>".$user->fields["name"]."</b>";
-			 echo "<input type='hidden' name='name' value=\"".$user->fields["name"]."\">";
-			echo "</td></tr>";
-			}
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value=\"".$user->fields["password"]."\" size='20'></td></tr>";
-			
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td><input name='realname' size='20' value=\"".$user->fields["realname"]."\"></td></tr>";
-
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][20]."</td><td>";
-			echo "<select name='type' >";
-			echo "<option value='super-admin'";
-				if ($user->fields["type"]=="super-admin") { echo " selected"; }
-			echo ">Super-Admin";
-			echo "<option value='admin'";
-				if ($user->fields["type"]=="admin") { echo " selected"; }
-			echo ">Admin";
-			echo "<option value=normal";
-				if (empty($name)||$user->fields["type"]=="normal") { echo " selected"; }
-			echo ">Normal";
-			echo "<option value=\"post-only\"";
-				if ($user->fields["type"]=="post-only") { echo " selected"; }
-			echo ">Post Only";
-			echo "</select>";
-			echo "</td></tr>";	
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td><input name='email_form' size='20' value=\"".$user->fields["email"]."\"></td></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td><input name='phone' size='20' value=\"".$user->fields["phone"]."\"></td></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
-				dropdownValue("glpi_dropdown_locations", "location", $user->fields["location"]);
-			echo "</td></tr>";
-			
-		
-			
-			if (can_assign_job($_SESSION["glpiname"]))
-	{
-			echo "<tr class='tab_bg_1'>";
-			echo "<td align='center' >".$lang["setup"][58]."</td>
-			
-			<td align='center' ><p><strong>".$lang["setup"][60]."</strong><input type='radio' value='no' name='can_assign_job' ";
-			if (empty($name)||$user->fields["can_assign_job"] == 'no') echo "checked ";
-      echo "></p>";
-      echo "<p><strong>".$lang["setup"][61]."</strong><input type='radio' value='yes' name='can_assign_job' ";
-			if ($user->fields["can_assign_job"] == 'yes') echo "checked";
-      echo "></p>";
-			echo "</td></tr>";
-		}	
-			if ($name=="") {
-
+	echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre'>";
+	echo "<tr><th colspan='2'>".$lang["setup"][57]." : " .$user->fields["name"]."</th></tr>";
+	echo "<tr class='tab_bg_1'>";	
+	echo "<td align='center'>".$lang["setup"][18]."</td>";
+	// si on est dans le cas d'un ajout , cet input ne doit plus être hiden
+	if ($name=="") {
+		echo "<td><input  name='name' value=\"".$user->fields["name"]."\">";
+		echo "</td></tr>";
+	} else {
+		echo "<td align='center'><b>".$user->fields["name"]."</b>";
+		echo "<input type='hidden' name='name' value=\"".$user->fields["name"]."\">";
+		echo "</td></tr>";
+	}
+	//do some rights verification
+	if(isSuperAdmin($_SESSION["glpitype"])) {
+		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value=\"".$user->fields["password"]."\" size='20' /></td></tr>";
+		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td><input name='realname' size='20' value=\"".$user->fields["realname"]."\"></td></tr>";
+		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][20]."</td><td>";
+		echo "<select name='type' >";
+		echo "<option value='super-admin'";
+		if ($user->fields["type"]=="super-admin") { echo " selected"; }
+		echo ">Super-Admin";
+		echo "<option value='admin'";
+		if ($user->fields["type"]=="admin") { echo " selected"; }
+		echo ">Admin";
+		echo "<option value=normal";
+		if (empty($name)||$user->fields["type"]=="normal") { echo " selected"; }
+		echo ">Normal";
+		echo "<option value=\"post-only\"";
+		if ($user->fields["type"]=="post-only") { echo " selected"; }
+		echo ">Post Only";
+		echo "</select>";
+	}
+	else {
+		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td><input name='realname' size='20' value=\"".$user->fields["realname"]."\"></td></tr>";
+		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][20]."</td><td>";
+		echo $user->fields["type"];
+	}
+	echo "</td></tr>";	
+	echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td><input name='email_form' size='20' value=\"".$user->fields["email"]."\"></td></tr>";
+	echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td><input name='phone' size='20' value=\"".$user->fields["phone"]."\"></td></tr>";
+	echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
+	dropdownValue("glpi_dropdown_locations", "location", $user->fields["location"]);
+	echo "</td></tr>";
+	if (isSuperAdmin($_SESSION["glpitype"])) {
+		echo "<tr class='tab_bg_1'>";
+		echo "<td align='center' >".$lang["setup"][58]."</td>
+		<td align='center' ><p><strong>".$lang["setup"][60]."</strong><input type='radio' value='no' name='can_assign_job' ";
+		if (empty($name)||$user->fields["can_assign_job"] == 'no') echo "checked ";
+		echo "></p>";
+		echo "<p><strong>".$lang["setup"][61]."</strong><input type='radio' value='yes' name='can_assign_job' ";
+		if ($user->fields["can_assign_job"] == 'yes') echo "checked";
+		echo "></p>";
+		echo "</td></tr>";
+	}
+	if ($name=="") {
 		echo "<tr >";
 		echo "<td class='tab_bg_2' valign='top' colspan='2'>";
 		echo "<center><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></center>";
 		echo "</td>";
-		echo "</tr>";
-
-		
-
+		echo "</tr>";	
 	} else {
-
 		echo "<tr>";
-		echo "<td class='tab_bg_2' valign='top' >";
-		
+		echo "<td class='tab_bg_2' valign='top' >";	
 		echo "<center><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' ></center>";
 		echo "</td>";
 		echo "<td class='tab_bg_2' valign='top' >\n";
-		
 		echo "<center><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' ></center>";
 		echo "</td>";
 		echo "</tr>";
+	}
 
-		
-			
-			}
-
-echo "</table></form></div>";
-
+	echo "</table></form></div>";
 }
 
 
@@ -552,12 +538,12 @@ function searchFormUsers() {
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
 
-	$option["glpi_users.name"]				= $lang["setup"][18];
+	$option["glpi_users.name"]			= $lang["setup"][18];
 	$option["glpi_users.realname"]			= $lang["setup"][13];
 	$option["glpi_users.type"]			= $lang["setup"][20];
 	$option["glpi_users.email"]			= $lang["setup"][14];
-	$option["glpi_users.phone"]		= $lang["setup"][15];
-	$option["glpi_dropdown_locations.name"]			= $lang["setup"][3];
+	$option["glpi_users.phone"]			= $lang["setup"][15];
+	$option["glpi_dropdown_locations.name"]		= $lang["setup"][3];
 	
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/setup/users-search.php\">";
@@ -566,7 +552,7 @@ function searchFormUsers() {
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 	echo "<select name=\"field\" size='1'>";
-    echo "<option value='all' ";
+	echo "<option value='all' ";
 	if($_GET["field"] == "all") echo "selected";
 	echo ">".$lang["search"][7]."</option>";
 
