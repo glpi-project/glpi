@@ -873,7 +873,10 @@ $lang["install"][64]	= "Utiliser GLPI";
 $lang["install"][65]	= "Test sur l'extension magic_quotes_sybase";
 $lang["install"][66]	= "GLPI ne peux pas fonctionner avec l'option magic_quotes_sybase ; Veuillez désactiver cette option et réessayer";
 $lang["install"][67]	= "L'option magic_quotes_sybase n'est pas utilisée par votre serveur - Parfait !";
-$lang["install"][70]	= "Impossible de cr&eacute;er le fichier de connexion  &#224; la base de donn&eacute;es, v&eacute;rifiez les droits sur les fichiers"; 
+$lang["install"][70]	= "Impossible de cr&eacute;er le fichier de connexion  &#224; la base de donn&eacute;es, v&eacute;rifiez les droits sur les fichiers";
+$lang["install"][71]	 = "Test de l'extension mysql.";
+$lang["install"][72]	 = "Vous devez compiler votre php avec l'extension Mysql.";
+$lang["install"][73]	= "Ok - la fonction mysql_connect() existe - Parfait !";
 
 $lang["update"][90]  ="Erreur durant la mise  &#224; jour de la base de donn&eacute;es";
 $lang["update"][91]  ="Attention ! &nbsp;";
@@ -974,5 +977,53 @@ $lang["title"][15] = "Mailing";
 $lang["title"][16] = "Rapports";
 $lang["title"][17] = "Préférences";
 $lang["title"][18] = "Ecrans";
+
+$lang["device_hdd"][0] = "Rpm";
+$lang["device_hdd"][1] = "Cache";
+$lang["device_hdd"][2] = "Interface";
+$lang["device_hdd"][3] = "";
+$lang["device_hdd"][4] = "Capacité";
+$lang["device_hdd"][5] = "Commentaire";
+
+
+$lang["device_iface"][0] = "Debit";
+$lang["device_iface"][1] = "Commentaire";
+$lang["device_iface"][2] = "Adresse Mac";
+
+
+$lang["device_gfxcard"][0] = "memoire";
+$lang["device_gfxcard"][1] = "Commentaire";
+$lang["device_gfxcard"][2] = "interface";
+
+
+$lang["device_moboard"][0] = "Chipset";
+$lang["device_moboard"][1] = "Commentaire";
+
+
+$lang["device_processor"][0] = "Frequence";
+$lang["device_processor"][1] = "";
+$lang["device_processor"][2] = "";
+$lang["device_processor"][3] = "Commentaire";
+
+
+$lang["device_ram"][0] = "Type";
+$lang["device_ram"][1] = "Frequence";
+$lang["device_ram"][2] = "Commentaire";
+
+
+$lang["device_sndcard"][0] = "Type";
+$lang["device_sndcard"][1] = "Commentaire";
+$lang["device_sndcard"][2] = "";
+
+$lang["devices"][0] = "Ajouter un nouveau periphérique interne";
+$lang["devices"][1] = "Disque dur";
+$lang["devices"][2] = "Carte graphique";
+$lang["devices"][3] = "Interface reseau";
+$lang["devices"][4] = "Processeur";
+$lang["devices"][5] = "Carte mère";
+$lang["devices"][6] = "Memoire vive";
+$lang["devices"][7] = "Carte son";
+$lang["devices"][8] = "Désignation";
+$lang["devices"][9] = "Ajout d'un nouveau periphérique interne pour l'ordinateur: ";
 
 ?>
