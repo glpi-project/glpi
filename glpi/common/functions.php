@@ -162,12 +162,12 @@ function commonHeader($title,$url)
 	
 	
 	
-$inventory = 	array($lang["Menu"][0]=>"/computers/index.php",
-	              $lang["Menu"][1]=>"/networking/index.php",
-	              $lang["Menu"][2]=>"/printers/index.php",
-	              $lang["Menu"][3]=>"/monitors/index.php",
-	              $lang["Menu"][4]=>"/software/index.php");
-				
+$inventory = 	array($lang["Menu"][0]=>array("/computers/index.php","1"),
+	              $lang["Menu"][1]=>array("/networking/index.php","2"),
+	              $lang["Menu"][2]=>array("/printers/index.php","3"),
+	              $lang["Menu"][3]=>array("/monitors/index.php","4"),
+	              $lang["Menu"][4]=>array("/software/index.php","5"));
+
 $maintain =	array($lang["Menu"][5]=>"/tracking/index.php",
 	              $lang["Menu"][6]=>"/reports/index.php",
 		      $lang["Menu"][13]=>"/stats/index.php");
@@ -239,9 +239,18 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 		echo "<td align='center' valign='top'>";
 		echo "<img class='icon_nav' src=\"".$cfg_install["root"]."/pics/inventaire.png\" alt=\"\" title=\"".$lang["setup"][10]."\"><br>";
 		echo "<small>-&nbsp;".$lang["setup"][10]."&nbsp;-</small><br>";
-		foreach ($inventory as $key => $val) {
-			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val."\">".$key."</a></span><br>";
-		}	
+		//foreach ($inventory as $key => $val) {
+		//	foreach ($val as $acceskey=>$lien){
+
+		//		echo "<span class='menu'><a acceskey=\"".$acceskey."\" href=\"".$cfg_install["root"].$lien."\">".$key."</a></span><br>";
+		//}
+		//}
+		//print_r($inventory);
+		
+		 foreach ($inventory as $key => $val) {
+ echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
+ }
+
 		echo "</td>";
 	}
 	 if ($navigation->maintain) {

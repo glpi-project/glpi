@@ -46,7 +46,7 @@ function searchFormTracking ($show,$contains) {
 	
 	echo "\n<div align='center'>";
 	echo "<form method=\"get\" action=\"".$cfg_install["root"]."/tracking/index.php\">";
-	echo "<table border='0'>";
+	echo "table border='0'>";
 	echo "<tr><th align='center' colspan='3'>".$lang["tracking"][0].":</th></tr>";
 
 	echo "<tr class='tab_bg_1'>";
@@ -245,7 +245,7 @@ $query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY
 		if ($item)
 		{
 			echo "<tr class='tab_bg_2'>";
-		        echo "<td align='center' colspan=8 class='tab_bg_1'>";
+		        echo "<td align='center' colspan='8' class='tab_bg_1'>";
 
 		}
 		echo "</table></div>";
@@ -254,7 +254,7 @@ $query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY
 	{
 		echo "<br><div align='center'>";
 		echo "<table border='0' width='90%'>";
-		echo "<tr><th>".$lang["joblist"][8]."</th></tr>";
+		echo "<tr><th>".$lang["joblist"][22]."</th></tr>";
 
 		if ($item)
 		{
@@ -300,7 +300,7 @@ $query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY
 		}
 		if ($item)
 		{
-			echo "<tr><td align='center' class='tab_bg_1'><b>";
+			echo "<tr><td align='center' class='tab_bg_2' colspan='8'><b>";
 			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item\">";
 			echo $lang["joblist"][7];
 			echo "</a>";
@@ -317,7 +317,7 @@ $query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY
 		if ($item)
 		{
 			 
-			  echo "<tr><td align='center' class='tab_bg_1'><b>";
+			  echo "<tr><td align='center' class='tab_bg_2' colspan='8'><b>";
 			  echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item\">";
 			  echo $lang["joblist"][7];
 			  echo "</a>";
