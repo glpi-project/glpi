@@ -71,8 +71,8 @@ function listNetdevices() {
 				echo "<tr class='tab_bg_1'>";
 				echo "<td><a href=\"".$cfg_install["root"]."/networking/networking-info-form.php?ID=".$netdev->fields["ID"]."\">".$netdev->fields["name"];
 				echo " (".$netdev->fields["ID"].")</a></td>";
-				echo "<td>".$netdev->fields["location"]."</td>";
-				echo "<td>".$netdev->fields["type"]."</td>";
+				echo "<td>".getDropdownName("glpi_dropdown_locations",$netdev->fields["location"])."</td>";
+				echo "<td>".getDropdownName("glpi_type_networking",$netdev->fields["type"])."</td>";
 				echo "<td>".$netdev->fields["contact"]."</td>";
 				echo "<td>".$netdev->fields["date_mod"]."</td>";
 				echo "</tr>";
@@ -331,7 +331,7 @@ function showPorts ($device,$device_type) {
         echo "<td>".$netport->fields["name"]."</td>";
 				echo "<td>".$netport->fields["ifaddr"]."</td>";
 				echo "<td>".$netport->fields["ifmac"]."</td>";
-				echo "<td>".$netport->fields["iface"]."</td>";
+				echo "<td>".getDropdownName("glpi_dropdown_iface",$netport->fields["iface"])."</td>";
 				echo "<td>";
 					showConnection($netport->fields["ID"]);
 				echo "</td>";
