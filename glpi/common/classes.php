@@ -634,6 +634,8 @@ class Mailing
 		$body.=$this->job->textDescription();
 		if ($this->type!="new") $body.=$this->job->textFollowups();
 		
+		
+		
 		return $body;
 	}
 	// Format the mail subject to send
@@ -701,7 +703,7 @@ class Mailing
 				$body=ereg_replace("<br />","",$body);
 				$body=ereg_replace("<br>","",$body);
 				$body=stripslashes($body);
-
+				$body=unhtmlentities($body);
 				// get subject OK
 				$subject=$this->get_mail_subject();
 				// get sender :  OK
