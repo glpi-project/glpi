@@ -191,7 +191,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo $sw->fields["name"]." (".$sw->fields["ID"].")";
 				echo "</a></b></td>";
 				echo "<td>".$sw->fields["version"]."</td>";
-				echo "<td>".$sw->fields["platform"]."</td>";
+				echo "<td>". getDropdownName("glpi_dropdown_os",$sw->fields["platform"]) ."</td>";
 				echo "<td>";
 					countInstallations($sw->fields["ID"]);
 				echo "</td>";
