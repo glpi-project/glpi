@@ -123,7 +123,7 @@ if (!isset($_GET["mois"]))
        $mois = date("m") ;
 else $mois=$_GET["mois"] ;
 
-if (!isset($annee))
+if (!isset($_GET["annee"]))
        $annee = date("Y") ;
 else $annee=$_GET["annee"];
 
