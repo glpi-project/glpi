@@ -58,7 +58,7 @@ function searchFormEnterprise($field="",$phrasetype= "",$contains="",$sort= "",$
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/enterprises/enterprises-search.php\">";
 	echo "<div align='center'><table class='tab_cadre' width='750'>";
-	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 	echo "<select name=\"field\" size='1'>";
@@ -92,7 +92,7 @@ function searchFormEnterprise($field="",$phrasetype= "",$contains="",$sort= "",$
 		echo ">".$val."</option>\n";
 	}
 	echo "</select> ";
-	echo "&nbsp;<input type='checkbox' name='deleted' ".($deleted=='Y'?" checked ":"").">";
+	echo "</td><td><input type='checkbox' name='deleted' ".($deleted=='Y'?" checked ":"").">";
 	echo "<img src=\"".$HTMLRel."pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
@@ -386,8 +386,8 @@ function showAssociatedContact($instID) {
 	$number = $db->numrows($result);
 	$i = 0;
 	
-    echo "<form method='post' action=\"".$cfg_install["root"]."/enterprises/enterprises-info-form.php\">";
-	echo "<br><br><center><table class='tab_cadre' width='90%'>";
+   
+	echo "<br><div align='center'><table class='tab_cadre' width='750'>";
 	echo "<tr><th colspan='7'>".$lang["financial"][46].":</th></tr>";
 	echo "<tr><th>".$lang['financial'][27]."</th><th>".$lang["financial"][29]."</th>";
 	echo "<th>".$lang['financial'][29]." 2</th><th>".$lang["financial"][30]."</th>";
@@ -406,14 +406,20 @@ function showAssociatedContact($instID) {
 	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deletecontact=deletecontact&ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
 	}
-	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+	
+	echo "</table><br>"    ;
+	
+	 echo "<form method='post' action=\"".$cfg_install["root"]."/enterprises/enterprises-info-form.php\">";
+	echo "<table width='300' class='tab_cadre'>";
+	
+	echo "<tr class='tab_bg_1'><tr><th colspan='2'>".$lang["financial"][33]."</tr><td class='tab_bg_2' align='center'>";
 	echo "<div class='software-instal'><input type='hidden' name='eID' value='$instID'>";
 		dropdown("glpi_contacts","cID");
 	echo "</div></td><td align='center' class='tab_bg_2'>";
 	echo "<input type='submit' name='addcontact' value=\"".$lang["buttons"][8]."\" class='submit'>";
-	echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+	echo "</td></tr>";
 	
-	echo "</table></form>"    ;
+	echo "</table></form></div>"    ;
 	
 }
 
