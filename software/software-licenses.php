@@ -83,7 +83,7 @@ else if (isset($tab["install"]))
 else if (isset($tab["uninstall"]))
 {
 	checkAuthentication("admin");
-	uninstallSoftware($tab["lID"]);
+	uninstallSoftware($tab["ID"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." uninstalled software.");
 	header("Location: ".$_SERVER['HTTP_REFERER']." ");
 }
