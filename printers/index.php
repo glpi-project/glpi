@@ -45,30 +45,22 @@ checkAuthentication("normal");
 commonHeader("Printers",$_SERVER["PHP_SELF"]);
 
 
-?>
 
-<center>
-<table border='0'>
-<tr>
-	<td><b>
-<?php
+echo "<div align='center'><table border='0'><tr><td><b>";
 
- 
 
-include ("_relpos.php");
-echo "<a href=\"printers-info-form.php?new=1\">".$lang["printers"][0]."</a>";
-?>
-	</b></td>
-</tr>
-</table>
-</center>
+echo "<img src=\"".$HTMLRel."pics/printer.png\" ></td><td><a  class='icon_consol' href=\"printers-info-form.php?new=1\">".$lang["printers"][0]."</a>";
 
-<hr noshade>
-<?php
 
- 
+echo "</b></td></tr></table></div>";
 
-include ("_relpos.php");
+
+
+
+
+
+
+
 searchFormPrinters();
 
 commonFooter();

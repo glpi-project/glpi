@@ -46,11 +46,15 @@ checkAuthentication("normal");
 
 commonHeader("Software",$_SERVER["PHP_SELF"]);
 
-echo "<center><table border='0'><tr><td><b>";
-echo "<a href=\"software-info-form.php\">".$lang["software"][0]."</a>";
-echo "</b></td></tr></table></center>";
+echo "<div align='center'><table border='0'><tr><td><b>";
 
-echo "<hr noshade>";
+
+echo "<img src=\"".$HTMLRel."pics/logiciels.png\" ></td><td><a  class='icon_consol' href=\"software-info-form.php\">".$lang["software"][0]."</a>";
+
+
+echo "</b></td></tr></table></div>";
+
+
 
 searchFormSoftware($_SERVER["PHP_SELF"]);
 

@@ -46,40 +46,26 @@ checkauthentication("admin");
 
 commonHeader("Setup",$_SERVER["PHP_SELF"]);
 
-?>
 
-<center>
-<?php echo "<center><b>Configuration GLPI</b></center>"; ?>
+ // titre
+        echo "<div align='center'><table border='0'><tr><td><b>";
+        echo "<img src=\"".$HTMLRel."pics/configuration.png\" ></td><td><span class='icon_nav'>".$lang["Menu"][10]."</span>";
+        echo "</b></td></tr></table></div>";
 
-<hr noshade>
+echo "<div align='center'><table border='0' cellpadding='5'>";
+echo "<tr><th>".$lang["setup"][62]."</th></tr>";
 
-<table border='0'>
-<tr>
-	<td><b><a href="setup-dropdowns.php"><?php
+echo "<tr class='tab_bg_1'><td  align='center'><b><a href=\"setup-dropdowns.php\">".$lang["setup"][0]."</a></b></td></tr>";
 
+echo "<tr class='tab_bg_1'><td  align='center'><b><a href=\"setup-templates.php\">".$lang["setup"][1]."</a></b></td></tr>";
 
-echo $lang["setup"][0]; ?></a></b></td>
-	<td>&nbsp;|&nbsp;</td>
-	<td><b><a href="setup-templates.php"><?php
-
- 
+echo "<tr class='tab_bg_1'><td align='center'><b><a href=\"setup-users.php\">".$lang["setup"][2]."</a></b></td> </tr>";
 
 
-echo $lang["setup"][1]; ?></a></b></td>
-	<td>&nbsp;|&nbsp;</td>
-	<td><b><a href="setup-users.php"><?php
+echo "</table></div>";
 
 
 
-echo $lang["setup"][2]; ?></a></b></td>
-
-
-</tr>
-</table>
-</center>
-<br>
-
-<?php
 
 commonFooter();
 ?>

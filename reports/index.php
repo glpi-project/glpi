@@ -43,6 +43,13 @@ checkAuthentication("normal");
 
 commonHeader("Reports",$_SERVER["PHP_SELF"]);
 
+ // titre
+        echo "<div align='center'><table border='0'><tr><td><b>";
+        echo "<img src=\"".$HTMLRel."pics/rapports.png\" ></td><td><span class='icon_nav'>".$lang["Menu"][6]."</span>";
+        echo "</b></td></tr></table></div>";
+
+
+
 echo "<center><table border='0' cellpadding=5>";
 echo "<tr><th>".$lang["reports"][0].":</th></tr>";
 

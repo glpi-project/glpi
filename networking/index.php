@@ -45,10 +45,13 @@ checkAuthentication("normal");
 
 commonHeader("Networking",$_SERVER["PHP_SELF"]);
 
-echo "<center><table border='0'><tr><td><b>";
-echo "<a href=\"networking-info-form.php\">".$lang["networking"][11]."</a>";
-echo "</b></td></tr></table></center>";
-echo "<hr noshade>";
+echo "<div align='center'><table border='0'><tr><td><b>";
+
+
+echo "<img src=\"".$HTMLRel."pics/networking.png\" ></td><td><a  class='icon_consol' href=\"networking-info-form.php\">".$lang["networking"][11]."</a>";
+
+
+echo "</b></td></tr></table></div>";
 
 listNetdevices();
 

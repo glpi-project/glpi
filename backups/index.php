@@ -324,11 +324,15 @@ if (isset($_GET["delfile"]) && $_GET["delfile"] != ""){
 }
 
 
-?>
-<div align="center">
 
- <a href="javascript:dump('<?php echo $lang["backup"][19];?>')"><b><?php echo $lang["backup"][0]; ?></b></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:xmlnow('<?php echo $lang["backup"][19]; ?>')"><b><?php echo $lang["backup"][1]; ?></b></a>
-<br>
+?>
+
+
+ 
+  <div align="center">
+ <table border='0'><tr><td><b><img src="<?php echo $HTMLRel; ?>pics/sauvegardes.png" ></td>
+ <td><a href="javascript:dump('<?php echo $lang["backup"][19];?>')" class='icon_consol'><b><?php echo $lang["backup"][0]; ?></b></a></td><td><a href="javascript:xmlnow('<?php echo $lang["backup"][19]; ?>')" class='icon_consol'><b><?php echo $lang["backup"][1]; ?></b></a></td></tr>
+</table>
 <br>
   <table border="0" cellpadding="5">
     <tr align="center"> 

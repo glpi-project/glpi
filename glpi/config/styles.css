@@ -70,6 +70,10 @@ text-align:center;
        background-color:#ffffff;
         }
 
+
+
+
+
  /* ###### table ###### */
 
   th   
@@ -167,10 +171,10 @@ margin-top: 100px;
   	color : #009966;
   }
 
-  A:visited
-  {
-	text-decoration: none;
-  	color: #009966;
+ A:visited   {
+    font-wheight: bold;
+    text-decoration: none;
+     color : #009966;
   }
 
   A:hover
@@ -218,6 +222,8 @@ background-color: #339966;
 	border: 1px solid #aaaaaa;
 	background-color: #e4e4e4;
 	-moz-border-radius: 5px;
+       	font-size : 12px;
+        font-weight: bold;
 }
 
 
@@ -237,6 +243,36 @@ a.icon_nav_move:hover img {
 	-moz-border-radius: 5px;
 }
 
+
+/* ###### navig-console ###### */
+
+
+
+.icon_consol {
+	font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
+	font-size : 12px;
+        font-weight: bold;
+        padding: 4px;
+	padding-right: 8px;
+        margin: 1px;
+	border: 1px solid #aaaaaa;
+	background-color: #e4e4e4;
+	-moz-border-radius: 5px;
+
+}
+
+.icon_consol img{
+padding-bottom: 10px;
+}
+
+.icon_consol:hover {
+	padding: 4px;
+	padding-right: 8px;
+        margin: 1px;
+	border: 1px solid #999999;
+	background-color: white;
+	-moz-border-radius: 5px;
+}
 
 
 #footer{
