@@ -102,12 +102,16 @@ $cfg_login['ldap']['basedn'] = $db->result($result,0,"ldap_basedn");
 $cfg_login['ldap']['rootdn'] = $db->result($result,0,"ldap_rootdn");
 $cfg_login['ldap']['pass'] = $db->result($result,0,"ldap_pass");
 
+// Log in filter A AJOUTER DANS LA DB
+$cfg_login['ldap']['condition'] ="";
+
 // some lDAP server (eg, M$ Active Directory) does not like anonymous
 // bind
 //$cfg_login['ldap']['rootdn'] = "cn=admin,ou=People,dc=sv,dc=lnf,dc=it";
 //$cfg_login['ldap']['pass'] = "secret";
 // relation between the GLPI users table field and the LDAP field
 
+//// AJOUTER CA DANS LA CONFIG POST INSTALL
 $cfg_login['ldap']['fields'] = array( "name" => $db->result($result,0,"ldap_field_name"), "email" => $db->result($result,0,"ldap_field_email"), "location" => $db->result($result,0,"ldap_field_location"), "phone" => $db->result($result,0,"ldap_field_phone"), "realname" => $db->result($result,0,"ldap_field_realname"));
 
 
