@@ -442,20 +442,23 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		
 		
 		echo "</tr><tr>";
-
+		
 		if ($template) {
+			if (empty($ID)){
 			echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
 			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
-			//echo "</td></form>\n";
-                        	echo "</td>\n";
-		} else {
-			echo "<td class='tab_bg_2' colspan='2' align='center' valign='top'>\n";
+			echo "</td>\n";
+			} else {
+			echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
 			echo "<input type='hidden' name='ID' value=$ID>";
 			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
-		//	echo "</td></form>\n";
-				echo "</td>\n";
+			echo "</td>\n";
+			}
+		} else {
+			echo "<td class='tab_bg_2' colspan='2' align='center' valign='top'>\n";
+			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+			echo "</td>\n";
                         echo "<td class='tab_bg_2' colspan='2'  align='center'>\n";
-		//	echo "<form method='post' action=\"$target\">";
 			echo "<input type='hidden' name='ID' value=$ID>";
 			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 			echo "";
