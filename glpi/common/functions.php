@@ -805,7 +805,7 @@ function listConnectComputers($target,$input) {
 		$dID = $db->result($result, $i, "ID");
 		$name = $db->result($result, $i, "name");
 		$location = $db->result($result, $i, "location");
-		echo "<option value=\"$dID>$name ($location)\"</option>";
+		echo "<option value=\"$dID\">".$name." (".$location.")</option>";
 		$i++;
 	}
 	echo  "</select>";
