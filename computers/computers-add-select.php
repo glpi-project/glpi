@@ -54,7 +54,7 @@ echo $lang["computers"][45];
 echo "</th></tr>";
 
 $db = new DB;
-$query = "SELECT * FROM templates";
+$query = "SELECT * FROM glpi_templates";
 $result = $db->query($query);
 $i = 0;
 $number = $db->numrows($result);

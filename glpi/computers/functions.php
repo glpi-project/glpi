@@ -126,7 +126,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 	// Build query
 	if($field == "all") {
 		$where = "(";
-		$fields = $db->list_fields("computers");
+		$fields = $db->list_fields("glpi_computers");
 		$columns = $db->num_fields($fields);
 		
 		for ($i = 0; $i < $columns; $i++) {
@@ -152,14 +152,14 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 	if (!$order) {
 		$order = "ASC";
 	}
-	$query = "SELECT * FROM computers WHERE $where ORDER BY $sort $order";
+	$query = "SELECT * FROM glpi_computers WHERE $where ORDER BY $sort $order";
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);
 
 		// Limit the result, if no limit applies, use prior result
 		if ($numrows>$cfg_features["list_limit"]) {
-			$query_limit = "SELECT * FROM computers WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
+			$query_limit = "SELECT * FROM glpi_computers WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
 			$result_limit = $db->query($query_limit);
 			$numrows_limit = $db->numrows($result_limit);
 		} else {
@@ -301,7 +301,7 @@ function showComputerForm ($template,$target,$ID) {
 
 		echo "<tr><td>".$lang["computers"][10].": 	</td>";
 		echo "<td>";
-			dropdownValue("dropdown_locations", "location", $comp->fields["location"]);
+			dropdownValue("glpi_dropdown_locations", "location", $comp->fields["location"]);
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][15].":		</td>";
@@ -333,12 +333,12 @@ function showComputerForm ($template,$target,$ID) {
 
 		echo "<tr><td>".$lang["computers"][8].": 	</td>";
 		echo "<td>";
-			dropdownValue("type_computers", "type", $comp->fields["type"]);
+			dropdownValue("glpi_type_computers", "type", $comp->fields["type"]);
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][9].": 	</td>";
 		echo "<td>";	
-			dropdownValue("dropdown_os", "os", $comp->fields["os"]);
+			dropdownValue("glpi_dropdown_os", "os", $comp->fields["os"]);
 		echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][20].":</td>";
@@ -347,7 +347,7 @@ function showComputerForm ($template,$target,$ID) {
 		
 		echo "<tr><td>".$lang["computers"][21].":	</td>";
 		echo "<td>";
-			dropdownValue("dropdown_processor", "processor", $comp->fields["processor"]);
+			dropdownValue("glpi_dropdown_processor", "processor", $comp->fields["processor"]);
 		echo "</td></tr>";
 	
 		echo "<tr><td>".$lang["computers"][22].":	</td>";
@@ -356,22 +356,22 @@ function showComputerForm ($template,$target,$ID) {
 
 		echo "<tr><td>".$lang["computers"][35].":	</td>";
 		echo "<td>";
-			dropdownValue("dropdown_moboard", "moboard", $comp->fields["moboard"]);
+			dropdownValue("glpi_dropdown_moboard", "moboard", $comp->fields["moboard"]);
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][33].":	</td>";
 		echo "<td>";
-			dropdownValue("dropdown_sndcard", "sndcard", $comp->fields["sndcard"]);
+			dropdownValue("glpi_dropdown_sndcard", "sndcard", $comp->fields["sndcard"]);
 		echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][34].":	</td>";
 		echo "<td>";
-			dropdownValue("dropdown_gfxcard", "gfxcard", $comp->fields["gfxcard"]);
+			dropdownValue("glpi_dropdown_gfxcard", "gfxcard", $comp->fields["gfxcard"]);
 		echo "</td></tr>";
 				
 		echo "<tr><td>".$lang["computers"][23].":	</td>";
 		echo "<td>";
-			dropdownValue("dropdown_ram", "ramtype", $comp->fields["ramtype"]);
+			dropdownValue("glpi_dropdown_ram", "ramtype", $comp->fields["ramtype"]);
 		echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][24].":	</td>";
@@ -380,7 +380,7 @@ function showComputerForm ($template,$target,$ID) {
 
 		echo "<tr><td>".$lang["computers"][36].":	</td>";
 		echo "<td>";
-			dropdownValue("dropdown_hdtype", "hdtype", $comp->fields["hdtype"]);
+			dropdownValue("glpi_dropdown_hdtype", "hdtype", $comp->fields["hdtype"]);
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][25].":	</td>";
@@ -389,7 +389,7 @@ function showComputerForm ($template,$target,$ID) {
 
 		echo "<tr><td>".$lang["computers"][26].":	</td>";
 		echo "<td>";
-			dropdownValue("dropdown_network", "network", $comp->fields["network"]);
+			dropdownValue("glpi_dropdown_network", "network", $comp->fields["network"]);
 		echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][41].":	</td>";
@@ -560,7 +560,7 @@ function showConnections($ID) {
 
 	// Printers
 	echo "<td align='center'>";
-	$query = "SELECT * from connect_wire WHERE end2='$ID' AND type='3'";
+	$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='3'";
 	if ($result=$db->query($query)) {
 		$resultnum = $db->numrows($result);
 		if ($resultnum>0) {
@@ -580,7 +580,7 @@ function showConnections($ID) {
 
 	// Monitors
 	echo "<td align='center'>";
-	$query = "SELECT * from connect_wire WHERE end2='$ID' AND type='4'";
+	$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='4'";
 	if ($result=$db->query($query)) {
 		$resultnum = $db->numrows($result);
 		if ($resultnum>0) {

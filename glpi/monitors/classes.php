@@ -49,7 +49,7 @@ class Monitor {
 
 		// Make new database object and fill variables
 		$db = new DB;
-		$query = "SELECT * FROM monitors WHERE (ID = '$ID')";
+		$query = "SELECT * FROM glpi_monitors WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			$data = mysql_fetch_array($result);
 			foreach ($data as $key => $val) {
@@ -66,7 +66,7 @@ class Monitor {
 
 		// Make new empty database object 
 		$db = new DB;
-		$query = "SELECT * FROM monitors limit 0,1";
+		$query = "SELECT * FROM glpi_monitors limit 0,1";
 		if ($result = $db->query($query)) {
 			$data = mysql_fetch_array($result);
 			foreach ($data as $key => $val) {
@@ -84,7 +84,7 @@ class Monitor {
 		$db = new DB;
 
 		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE monitors SET ";
+			$query  = "UPDATE glpi_monitors SET ";
 			$query .= $updates[$i];
 			$query .= "='";
 			$query .= $this->fields[$updates[$i]];
@@ -103,7 +103,7 @@ class Monitor {
 		$this->fields["comments"] = addslashes($this->fields["comments"]);
 		
 		// Build query
-		$query = "INSERT INTO monitors (";
+		$query = "INSERT INTO glpi_monitors (";
 		$i=0;
 		foreach ($this->fields as $key => $val) {
 			$fields[$i] = $key;
@@ -136,9 +136,9 @@ class Monitor {
 
 		$db = new DB;
 
-		$query = "DELETE from monitors WHERE ID = '$ID'";
+		$query = "DELETE from glpi_monitors WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
-			$query2 = "DELETE FROM connect_wire where (end1='$ID' AND type='4')";
+			$query2 = "DELETE FROM glpi_connect_wire where (end1='$ID' AND type='4')";
 			if ($result2 = $db->query($query2)) {
 				return true;
 			}

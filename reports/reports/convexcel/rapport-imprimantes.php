@@ -44,7 +44,7 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/dicts/french.php");
 
 $db = new DB;
-$query = "select * from printers";
+$query = "select * from glpi_printers";
 $result = $db->query($query);
 $num_field = $db->num_fields($result);
 //set_time_limit(10);

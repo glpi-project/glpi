@@ -68,7 +68,7 @@ echo " </tr>";
 echo "</table>";
 
 $db = new DB;
-$query = "select ID,contact from computers where contact like '%$NomContact%'";
+$query = "select ID,contact from glpi_computers where contact like '%$NomContact%'";
 $result = $db->query($query);
 while($ligne = $db->fetch_array($result))
 

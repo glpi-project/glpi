@@ -48,7 +48,7 @@ class Software {
 
 		// Make new database object and fill variables
 		$db = new DB;
-		$query = "SELECT * FROM software WHERE (ID = '$ID')";
+		$query = "SELECT * FROM glpi_software WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			$data = mysql_fetch_array($result);
 			foreach ($data as $key => $val) {
@@ -65,7 +65,7 @@ class Software {
 
 		// Make new empty object
 		$db = new DB;
-		$query = "SELECT * FROM software limit 0,1";
+		$query = "SELECT * FROM glpi_software limit 0,1";
 		if ($result = $db->query($query)) {
 			$data = mysql_fetch_array($result);
 			foreach ($data as $key => $val) {
@@ -80,7 +80,7 @@ class Software {
 
 	function countInstallations() {
 		$db = new DB;
-		$query = "SELECT * FROM inst_software WHERE (sID = ".$this->fields["ID"].")";
+		$query = "SELECT * FROM glpi_inst_software WHERE (sID = ".$this->fields["ID"].")";
 		if ($result = $db->query($query)) {
 			$number = $db->numrows($result);
 			return $number;
@@ -94,7 +94,7 @@ class Software {
 		$db = new DB;
 
 		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE software SET ";
+			$query  = "UPDATE glpi_software SET ";
 			$query .= $updates[$i];
 			$query .= "='";
 			$query .= $this->fields[$updates[$i]];
@@ -113,7 +113,7 @@ class Software {
 		$this->fields["comments"] = addslashes($this->fields["comments"]);
 		
 		// Build query
-		$query = "INSERT INTO software (";
+		$query = "INSERT INTO glpi_software (";
 		$i=0;
 		foreach ($this->fields as $key => $val) {
 			$fields[$i] = $key;
@@ -147,10 +147,10 @@ class Software {
 
 		$db = new DB;
 
-		$query = "DELETE from software WHERE ID = '$ID'";
+		$query = "DELETE from glpi_software WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
 			// Delete all Licenses
-			$query2 = "SELECT ID FROM licenses WHERE (sID = \"$ID\")";
+			$query2 = "SELECT ID FROM glpi_licenses WHERE (sID = \"$ID\")";
 	
 			if ($result2 = $db->query($query2)) {
 				$i=0;
@@ -179,7 +179,7 @@ class License {
 
 		// Make new database object and fill variables
 		$db = new DB;
-		$query = "SELECT * FROM licenses WHERE (ID = '$ID')";
+		$query = "SELECT * FROM glpi_licenses WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			$this->ID = $ID;
 			$this->sID = $db->result($result,0,"sID");
@@ -196,7 +196,7 @@ class License {
 		$db = new DB;
 
 		// Build query
-		$query = "INSERT INTO licenses VALUES (NULL,$this->sID,'$this->serial')";
+		$query = "INSERT INTO glpi_licenses VALUES (NULL,$this->sID,'$this->serial')";
 
 		if ($result=$db->query($query)) {
 			return true;
@@ -210,10 +210,10 @@ class License {
 
 		$db = new DB;
 
-		$query = "DELETE from licenses WHERE ID = '$ID'";
+		$query = "DELETE from glpi_licenses WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
 			// Delete Installations
-			$query2 = "DELETE FROM inst_software WHERE (license = '$ID')";
+			$query2 = "DELETE FROM glpi_inst_software WHERE (license = '$ID')";
 			if ($result2 = $db->query($query2)) {
 				return true;
 			}

@@ -61,7 +61,7 @@ class Job {
 
 		// Make new database object and fill variables
 		$db = new DB;
-		$query = "SELECT * FROM tracking WHERE (ID = $ID)";
+		$query = "SELECT * FROM glpi_tracking WHERE (ID = $ID)";
 
 		if ($result = $db->query($query)) {
 			$resultnum = $db->numrows($result);
@@ -82,9 +82,9 @@ class Job {
 		
 			// Set computername
 			if ($this->is_group == "yes") {
-				$scndquery = "SELECT name FROM groups WHERE (ID = $this->computer)";
+				$scndquery = "SELECT name FROM glpi_groups WHERE (ID = $this->computer)";
 			} else {
-				$scndquery = "SELECT name FROM computers WHERE (ID = $this->computer)";
+				$scndquery = "SELECT name FROM glpi_computers WHERE (ID = $this->computer)";
 			}
 			$scndresult = $db->query($scndquery);
 			if ($db->numrows($scndresult)) {
@@ -93,7 +93,7 @@ class Job {
 				$this->computername = "n/a";
 			}		
 			// Set number of followups
-			$thrdquery = "SELECT * FROM followups WHERE (tracking = $this->ID)";
+			$thrdquery = "SELECT * FROM glpi_followups WHERE (tracking = $this->ID)";
 			$thrdresult = $db->query($thrdquery);
 			$this->num_of_followups = $db->numrows($thrdresult);
 			
@@ -115,7 +115,7 @@ class Job {
 		
 		// dump into database
 		$db = new DB;
-		$query = "INSERT INTO tracking VALUES (NULL, '$this->date', '', '$this->status','$this->author', NULL, $this->computer, '$this->contents', '$this->priority', '$this->isgroup','$this->uemail', '$this->emailupdates')";
+		$query = "INSERT INTO glpi_tracking VALUES (NULL, '$this->date', '', '$this->status','$this->author', NULL, $this->computer, '$this->contents', '$this->priority', '$this->isgroup','$this->uemail', '$this->emailupdates')";
 
 		if ($result = $db->query($query)) {
 			return true;
@@ -129,10 +129,10 @@ class Job {
 		// update Status of Job
 		
 		$db = new DB;
-		$query = "UPDATE tracking SET status = '$status' WHERE ID = $this->ID";
+		$query = "UPDATE glpi_tracking SET status = '$status' WHERE ID = $this->ID";
 		if ($result = $db->query($query)) {
 			$this->closedate=date("Y-m-d G:i:s");
-			$query = "UPDATE tracking SET closedate = NOW() WHERE ID = $this->ID";
+			$query = "UPDATE glpi_tracking SET closedate = NOW() WHERE ID = $this->ID";
 			if ($result = $db->query($query)) {
 				return true;
 			} else {
@@ -149,7 +149,7 @@ class Job {
 		
 		$db = new DB;
 		$this->assign=$user;
-		$query = "UPDATE tracking SET assign = '$user' WHERE ID = '$this->ID'";
+		$query = "UPDATE glpi_tracking SET assign = '$user' WHERE ID = '$this->ID'";
 		if ($result = $db->query($query)) {
 			return true;
 		} else {
@@ -178,7 +178,7 @@ class Job {
 		
 		if ($this->computername==""){
 			$db=new DB;
-			$scndquery = "SELECT name FROM computers WHERE (ID = $this->computer)";
+			$scndquery = "SELECT name FROM glpi_computers WHERE (ID = $this->computer)";
 			$scndresult = $db->query($scndquery);
 			if ($db->numrows($scndresult)) {
 				$this->computername = $db->result($scndresult, 0, "name");
@@ -213,7 +213,7 @@ class Followup {
 
 		// Make new database object and fill variables
 		$db = new DB;
-		$query = "SELECT * FROM followups WHERE (tracking = $ID) ORDER BY date ASC";
+		$query = "SELECT * FROM glpi_followups WHERE (tracking = $ID) ORDER BY date ASC";
 	
 		if ($result = $db->query($query)) {
 			$this->date = $db->result($result,$iteration,"date");
@@ -236,7 +236,7 @@ class Followup {
 	
 		// dump into database
 		$db = new DB;
-		$query = "INSERT INTO followups VALUES (NULL, $this->tracking, '$this->date','$this->author', '$this->contents')";
+		$query = "INSERT INTO glpi_followups VALUES (NULL, $this->tracking, '$this->date','$this->author', '$this->contents')";
 		if ($result = $db->query($query)) {
 			return true;
 		} else {
@@ -248,7 +248,7 @@ class Followup {
 		// log event
 		
 		$db = new DB;
-		$query = "SELECT * FROM tracking WHERE (ID = $this->tracking)";
+		$query = "SELECT * FROM glpi_tracking WHERE (ID = $this->tracking)";
 		
 		if ($result = $db->query($query)) {
 			$cID = $db->result($result, 0, "computer");

@@ -120,7 +120,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 	if (!$order) {
 		$order = "ASC";
 	}
-	$query = "SELECT * FROM printers WHERE $where ORDER BY $sort";
+	$query = "SELECT * FROM glpi_printers WHERE $where ORDER BY $sort";
 	
 	// Get it from database	
 	$db = new DB;
@@ -129,7 +129,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 		// Limit the result, if no limit applies, use prior result
 		if ($numrows>$cfg_features["list_limit"]) {
-			$query_limit = "SELECT * FROM printers WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
+			$query_limit = "SELECT * FROM glpi_printers WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
 			$result_limit = $db->query($query_limit);
 			$numrows_limit = $db->numrows($result_limit);
 
@@ -235,7 +235,7 @@ function showPrintersForm ($target,$ID) {
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["printers"][6].": 	</td><td>";
-		dropdownValue("dropdown_locations", "location", $printer->fields["location"]);
+		dropdownValue("glpi_dropdown_locations", "location", $printer->fields["location"]);
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["printers"][7].":	</td>";
@@ -254,7 +254,7 @@ function showPrintersForm ($target,$ID) {
 	echo "<table cellpadding='0' cellspacing='0' border='0'";
 
 	echo "<tr><td>".$lang["printers"][9].": 	</td><td>";
-		dropdownValue("type_printers", "type", $printer->fields["type"]);
+		dropdownValue("glpi_type_printers", "type", $printer->fields["type"]);
 	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["printers"][10].":	</td>";

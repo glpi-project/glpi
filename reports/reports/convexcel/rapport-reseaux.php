@@ -43,7 +43,7 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/dicts/french.php");
 
 $db = new DB;
-$query = "select * from networking";
+$query = "select * from glpi_networking";
 $result = $db->query($query);
 $num_field= $db->num_fields($result);
 //set_time_limit(10);
