@@ -68,10 +68,10 @@ function current_time()
 function test_content_ok(){
 	$db = new DB;
 	
-	$query1="SELECT ID FROM glpi_computers WHERE  comments LIKE '%\'%';";
-	$query2="SELECT ID FROM glpi_printers WHERE  comments LIKE '%\'%';";	
-	$query3="SELECT ID FROM glpi_tracking WHERE  contents LIKE '%\'%';";	
-	$query4="SELECT ID FROM glpi_followups WHERE  contents LIKE '%\'%';";	
+	$query1="SELECT ID FROM glpi_computers WHERE  comments LIKE '%\\\\\\%';";
+	$query2="SELECT ID FROM glpi_printers WHERE  comments LIKE '%\\\\\\%';";	
+	$query3="SELECT ID FROM glpi_tracking WHERE  contents LIKE '%\\\\\\%';";	
+	$query4="SELECT ID FROM glpi_followups WHERE  contents LIKE '%\\\\\\%';";	
 	
 	$result1=$db->query($query1);
 	if ($db->numrows($result1)>0)
