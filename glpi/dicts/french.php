@@ -211,6 +211,9 @@ $lang["job"][16]	= "trouv&eacute;e ";
 $lang["job"][17]        = "intervention";
 $lang["job"][18]        = "ancienne";
 $lang["job"][19]        = "Suivi par Email";
+$lang["job"][20]        = "Durée réelle de l'intervention";
+$lang["job"][21]        = "Heure(s)";
+$lang["job"][22]        = "Minutes(s)";
 
 // Computers
 

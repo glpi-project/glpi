@@ -49,7 +49,11 @@ if (empty($status))
 	$status = "old";
 }
 
-markJob ($_GET["ID"],$status);
+$opt='';
+if ($status=="old"&&isset($_GET["hour"])&&isset($_GET["minute"]))
+	$opt=$_GET["hour"]+$_GET["minute"]/60;
+
+markJob ($_GET["ID"],$status,$opt);
 
 
 header("Location: $_SERVER[HTTP_REFERER]");

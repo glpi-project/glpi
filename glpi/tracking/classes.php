@@ -54,7 +54,8 @@ class Job {
 	var $uemail		= "";
 	var $emailupdates	= "";
 	var $num_of_followups	= 0;
-
+	var $realtime	= 0;
+	
 	function getfromDB ($ID,$purecontent) {
 
 		$this->ID = $ID;
@@ -79,6 +80,7 @@ class Job {
 			$this->is_group = $db->result($result,0, "is_group");
 			$this->uemail = $db->result($result, 0, "uemail");
 			$this->emailupdates = $db->result($result, 0, "emailupdates");
+			$this->realtime = $db->result($result, 0, "realtime");
 		
 			// Set computername
 			if ($this->is_group == "yes") {
@@ -144,6 +146,17 @@ class Job {
 		}
 	}
 
+	function updateRealtime($realtime) {
+		// update Status of Job
+		
+		$db = new DB;
+		$query = "UPDATE glpi_tracking SET realtime = '$realtime' WHERE ID = $this->ID";
+		if ($result = $db->query($query)) {
+				return true;
+		} else {
+			return false;
+		}
+	}
 
 	function assignTo($user) {
 		// assign Job to user

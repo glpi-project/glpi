@@ -331,7 +331,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item') ORD
 }
 
 
-function showJobShort($ID, $followup) {
+function showJobShort($ID, $followup	) {
 	// Prints a job in short form
 	// Should be called in a <table>-segment
 	// Print links or not in case of user view
@@ -357,7 +357,8 @@ function showJobShort($ID, $followup) {
  			echo "<tr class='tab_bg_1'>";
 			echo "<td align='center'><b>".$lang["joblist"][10]."</b></td>";
 			echo "<td width='30%'><small>".$lang["joblist"][11].":<br>&nbsp;$job->date<br>";
-			echo "<i>".$lang["joblist"][12].":<br>&nbsp;$job->closedate</i></small></td>";
+			echo "<i>".$lang["joblist"][12].":<br>&nbsp;$job->closedate</i><br>";
+			echo $lang["job"][20].": <br>".floor($job->realtime)." ".$lang["job"][21]." ".(($job->realtime-floor($job->realtime))*60)." ".$lang["job"][22]."</small></td>";
 		}
 
 		echo "<td align='center'><b>$job->priority</b></td>";
@@ -395,12 +396,12 @@ function showJobShort($ID, $followup) {
 		echo "<b><a href=\"".$cfg_install["root"]."/tracking/tracking-followups.php?ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;($job->num_of_followups)&nbsp;<br>";
 		else
 		echo "<b><a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;($job->num_of_followups)&nbsp;<br>";
-		if ($job->status == "new"&&strcmp($_SESSION["glpitype"],"post-only")!=0)
-		{
-			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-mark.php?ID=$job->ID\">".$lang["joblist"][14]."</a><br>";
-		}
-		if(strcmp($_SESSION["glpitype"],"post-only")!=0)
-		echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-assign-form.php?ID=$job->ID\">".$lang["joblist"][15]."</a></b></td>";
+//		if ($job->status == "new"&&strcmp($_SESSION["glpitype"],"post-only")!=0)
+//		{
+//			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-mark.php?ID=$job->ID\">".$lang["joblist"][14]."</a><br>";
+//		}
+//		if(strcmp($_SESSION["glpitype"],"post-only")!=0)
+//		echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-assign-form.php?ID=$job->ID\">".$lang["joblist"][15]."</a></b></td>";
 
 		// Finish Line
 		echo "</tr>";
@@ -514,8 +515,22 @@ function showJobDetails($ID) {
 		if ($job->status == "new") {
 			echo "<tr class='tab_bg_1'>";
 			echo "<td colspan='3' align='center'>";
-			echo "<b><a href=\"".$cfg_install["root"]."/tracking/tracking-mark.php?ID=$job->ID\">".$lang["job"][3]."</a></b>";
+			echo "<form method=get action=\"".$cfg_install["root"]."/tracking/tracking-mark.php\">";
+			echo "<input type='hidden' name='ID' value=$job->ID>";			
+			echo $lang["job"][20].":&nbsp;";
+			echo "<select name='hour'>";
+			for ($i=0;$i<100;$i++)
+			echo "<option value='$i'>$i</option>";
+			echo "</select>".$lang["job"][21]."&nbsp;&nbsp;";
+			echo "<select name='minute'>";
+			for ($i=0;$i<60;$i++)
+			echo "<option value='$i'>$i</option>";
+			echo "</select>".$lang["job"][22]."&nbsp;&nbsp;";
+
+			echo "<input type='submit' value=\"".$lang["job"][3]."\" class='submit'>";
+			echo "</form>";
 			echo "</td></tr>";
+
 		}
 		echo "</table>";
 		echo "<br><br><table width='90%' class='tab_cadre'><tr><th>".$lang["job"][7].":</th></tr>";
@@ -571,12 +586,16 @@ function postJob($ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$c
 	}
 }
 
-function markJob ($ID,$status) {
+function markJob ($ID,$status,$opt='') {
 	// Mark Job with status
 	GLOBAL $cfg_features;
 	$job = new Job;
 	$job->getFromDB($ID,1);
 	$job->updateStatus($status);
+	
+	// Realtime intervention
+	if ($status=="old"&&$opt!='')
+		$job->updateRealtime($opt);	
 	// Processing Email
 	if ($status=="old"&&$cfg_features["mailing"])
 		{
