@@ -50,6 +50,15 @@ if (isset($_POST["which"]))$which=$_POST["which"];
 elseif (isset($_GET["which"]))$which=$_GET["which"];
 else $which="";
 
+if (isset($_GET["where"]))$where=$_GET["where"];
+else if (isset($_POST["value_where"]))$where=$_POST["value_where"];
+else $where="";
+if (isset($_GET["tomove"])) $tomove=$_GET["tomove"];
+else if (isset($_POST["value_to_move"])) $tomove=$_POST["value_to_move"];
+else $tomove="";
+if (isset($_GET["value2"]))$value2=$_GET["value2"];
+else if (isset($_POST["value2"]))$value2=$_POST["value2"];
+else $value2="";
 // Selected Item
 if (isset($_POST["ID"])) $ID=$_POST["ID"];
 elseif (isset($_GET["ID"])) $ID=$_GET["ID"];
@@ -59,12 +68,12 @@ if (isset($_POST["move"])) {
 	checkAuthentication("admin");
 	moveTreeUnder($_POST["tablename"],$_POST["value_to_move"],$_POST["value_where"]);
 	logEvent(0, "dropdowns", 5, "setup", $_SESSION["glpiname"]." moved a location.");
-	header("Location: ".$_SERVER['PHP_SELF']."?which=$which");
+	header("Location: ".$_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where");
 }else if (isset($_POST["add"])) {
 	checkAuthentication("admin");
 	addDropdown($_POST);
 	logEvent(0, "dropdowns", 5, "setup", $_SESSION["glpiname"]." added a value to a dropdown.");
-	header("Location: ".$_SERVER['PHP_SELF']."?which=$which");
+	header("Location: ".$_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where");
 } else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
 	if(!dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
@@ -129,10 +138,10 @@ echo "<option value='$key' $sel>".$val."</option>";
 
 	switch ($which){
 		case "kbcategories" :
-		showFormTreeDown($_SERVER["PHP_SELF"],"kbcategories",$lang["setup"][78],$ID);
+		showFormTreeDown($_SERVER["PHP_SELF"],"kbcategories",$lang["setup"][78],$ID,$value2,$where,$tomove);
 		break;
 		case "locations" :
-		showFormTreeDown($_SERVER["PHP_SELF"],"locations",$lang["setup"][3],$ID);
+		showFormTreeDown($_SERVER["PHP_SELF"],"locations",$lang["setup"][3],$ID,$value2,$where,$tomove);
 		break;
 		case "computers" :
 		showFormTypeDown($_SERVER["PHP_SELF"],"computers",$lang["setup"][4],$ID);
@@ -180,7 +189,7 @@ echo "<option value='$key' $sel>".$val."</option>";
 		showFormDropDown($_SERVER["PHP_SELF"],"firmware",$lang["setup"][71],$ID);
 		break;
 		case "netpoint" : 
-		showFormDropDown($_SERVER["PHP_SELF"],"netpoint",$lang["setup"][73],$ID);
+		showFormDropDown($_SERVER["PHP_SELF"],"netpoint",$lang["setup"][73],$ID,$value2);
 		break;
 	default : break;
 	}
