@@ -710,25 +710,39 @@ function showSoftwareInstalled($instID) {
         echo "<form method='post' action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
 
 	echo "<br><br><center><table class='tab_cadre' width='90%'>";
-	echo "<tr><th colspan='2'>".$lang["software"][17].":</th></tr>";
+	echo "<tr><th colspan='3'>".$lang["software"][17].":</th></tr>";
 	
 	while ($i < $number) {
 		$lID = $db->result($result, $i, "license");
 		$ID = $db->result($result, $i, "ID");
-		$query2 = "SELECT sID,serial FROM glpi_licenses WHERE (ID = '$lID')";
+		$query2 = "SELECT sID,serial,expire FROM glpi_licenses WHERE (ID = '$lID')";
 		$result2 = $db->query($query2);
 		$sID = $db->result($result2,0,"sID");
 		$serial = $db->result($result2,0,"serial");
+		$expire = $db->result($result2,0,"expire");
+		$today=date("Y-m-d"); 
+		$expirer=0;
+		$expirecss="";
+		if ($expire!=NULL&&$today>$expire) {$expirer=1; $expirecss="_2";}
+
 		$sw = new Software;
 		$sw->getFromDB($sID);
 
-		echo "<tr class='tab_bg_1'>";
+		echo "<tr class='tab_bg_1$expirecss'>";
 	
 		echo "<td align='center'><b><a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=$sID\">";
 		echo $sw->fields["name"]." (v. ".$sw->fields["version"].")</a>";
 		echo "</b>";
 		echo " - ".$serial."</td>";
-		
+		echo "<td align='center'><b>";
+		if ($expire==NULL)
+		echo $lang["software"][26];
+		else {
+			if ($expirer) echo $lang["software"][27];
+			else echo $lang["software"][25]."&nbsp;".$expire;
+		}
+
+						echo "</b></td>";
 		echo "<td align='center' class='tab_bg_2'>";
 		echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&ID=$ID&cID=$instID\">";
 		echo "<b>".$lang["buttons"][5]."</b></a>";
