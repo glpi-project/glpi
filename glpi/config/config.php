@@ -147,7 +147,6 @@ $cfg_mailing["admin_email"]	= $db->result($result,0,"admin_email");
 // Signature for automatic generated E-Mails
 $cfg_mailing["signature"]	= $db->result($result,0,"mailing_signature");
 
-
 // A utiliser  uniquement si $cfg_features["mailing"] = 1;
 // Définition des envois des mails d'informations
 // admin : vers le mail $cfg_features["admin_email"]
@@ -176,6 +175,7 @@ $cfg_mailing["finish"]["all_normal"]=$db->result($result,0,"mailing_finish_all_n
 $cfg_mailing["attrib"]["attrib"]=$db->result($result,0,"mailing_attrib_attrib");
 $cfg_mailing["followup"]["attrib"]=$db->result($result,0,"mailing_followup_attrib");
 $cfg_mailing["finish"]["attrib"]=$db->result($result,0,"mailing_finish_attrib");
+$cfg_mailing["new"]["attrib"] = $db->result($result,0,"mailing_new_attrib");
 
 $cfg_mailing["new"]["user"]=$db->result($result,0,"mailing_new_user");
 $cfg_mailing["attrib"]["user"]=$db->result($result,0,"mailing_attrib_user");

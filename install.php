@@ -500,6 +500,7 @@ function step6($root_doc, $event_loglevel, $num_of_events, $expire_events, $list
 		
 		
 		echo "<table><tr>La personne responsable de la tache doit recevoir un notification :<td></td><td></td><td></td></tr>";
+		echo "<tr><td>A chaque nouvelle intervention</td><td>Oui : <input type=\"radio\" name=\"mailing_new_attrib\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_new_attrib\" value=\"0\"></td></tr>";
 		echo "<tr><td>A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"0\"></td></tr>";
 		echo "<tr><td>Pour chaque nouveau suivi</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_attrib\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_followup_attrib\" value=\"0\"></td></tr>";
 		echo "<tr><td>A chaque fois qu'une intervention est marquée comme terminée</td><td>Oui : <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"0\"><td></td></tr>";
@@ -510,7 +511,7 @@ function step6($root_doc, $event_loglevel, $num_of_events, $expire_events, $list
 		echo "<tr><td>Pour chaque nouveau suivi sur une intervention le concernant</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_user\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_followup_user\" value=\"0\"></td></tr>";
 		echo "<tr><td>A chaque fois qu'une intervention le concernant est marquée comme terminée</td><td>Oui : <input type=\"radio\" name=\"mailing_finish_user\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_finish_user\" value=\"0\"></td></tr>";
 		
-		echo "</table>";
+				echo "</table>";
 		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_6\" />";
 		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Continuer\" /></p>";
 		echo "</form>";
@@ -621,7 +622,7 @@ function step8($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$imap_auth_server
 }
 
 //fill database with mailing configuration
-function mailing_config_to_db($admin_email, $mailing_signature,$mailing_new_admin,$mailing_attrib_admin,$mailing_followup_admin,$mailing_finish_admin,$mailing_new_all_admin,$mailing_attrib_all_admin,$mailing_followup_all_admin,$mailing_finish_all_admin,$mailing_new_all_normal,$mailing_attrib_all_normal,$mailing_followup_all_normal,$mailing_finish_all_normal,$mailing_attrib_attrib,$mailing_followup_attrib,$mailing_finish_attrib,$mailing_new_user,$mailing_attrib_user,$mailing_followup_user,$mailing_finish_user)
+function mailing_config_to_db($admin_email, $mailing_signature,$mailing_new_admin,$mailing_attrib_admin,$mailing_followup_admin,$mailing_finish_admin,$mailing_new_all_admin,$mailing_attrib_all_admin,$mailing_followup_all_admin,$mailing_finish_all_admin,$mailing_new_all_normal,$mailing_attrib_all_normal,$mailing_followup_all_normal,$mailing_finish_all_normal,$mailing_attrib_attrib,$mailing_followup_attrib,$mailing_finish_attrib,$mailing_new_user,$mailing_attrib_user,$mailing_followup_user,$mailing_finish_user,$mailing_new_attrib)
 {
 	include ("_relpos.php");
 	require_once ($phproot . "/glpi/includes.php");
@@ -647,6 +648,7 @@ function mailing_config_to_db($admin_email, $mailing_signature,$mailing_new_admi
 	$query .= "mailing_attrib_user = '". $mailing_attrib_user ."', ";
 	$query .= "mailing_followup_user = '". $mailing_followup_user ."', ";
 	$query .= "mailing_finish_user = '". $mailing_finish_user ."' ";
+	$query .= "mailing_new_attrib = '". $mailing_new_attrib ."' ";
 	$query .= "where config_id = 1";
 	$db->query($query);
 }
@@ -699,7 +701,7 @@ include ("_relpos.php");
 			case "Etape_6" :
 				header_html("Etape 6");
 				if(!empty($_POST["mailing"])) {
-				mailing_config_to_db($_POST["admin_email"],$_POST["mailing_signature"],$_POST["mailing_new_admin"],$_POST["mailing_attrib_admin"],$_POST["mailing_followup_admin"],$_POST["mailing_finish_admin"],$_POST["mailing_new_all_admin"],$_POST["mailing_attrib_all_admin"],$_POST["mailing_followup_all_admin"],$_POST["mailing_finish_all_admin"],$_POST["mailing_new_all_normal"],$_POST["mailing_attrib_all_normal"],$_POST["mailing_followup_all_normal"],$_POST["mailing_finish_all_normal"],$_POST["mailing_attrib_attrib"],$_POST["mailing_followup_attrib"],$_POST["mailing_finish_attrib"],$_POST["mailing_new_user"],$_POST["mailing_attrib_user"],$_POST["mailing_followup_user"],$_POST["mailing_finish_user"]);
+				mailing_config_to_db($_POST["admin_email"],$_POST["mailing_signature"],$_POST["mailing_new_admin"],$_POST["mailing_attrib_admin"],$_POST["mailing_followup_admin"],$_POST["mailing_finish_admin"],$_POST["mailing_new_all_admin"],$_POST["mailing_attrib_all_admin"],$_POST["mailing_followup_all_admin"],$_POST["mailing_finish_all_admin"],$_POST["mailing_new_all_normal"],$_POST["mailing_attrib_all_normal"],$_POST["mailing_followup_all_normal"],$_POST["mailing_finish_all_normal"],$_POST["mailing_attrib_attrib"],$_POST["mailing_followup_attrib"],$_POST["mailing_finish_attrib"],$_POST["mailing_new_user"],$_POST["mailing_attrib_user"],$_POST["mailing_followup_user"],$_POST["mailing_finish_user"],$_POST["mailing_new_attrib"]);
 				}
 				step7();
 				break;

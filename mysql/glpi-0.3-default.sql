@@ -33,6 +33,20 @@
 
 # --------------------------------------------------------
 
+# phpMyAdmin SQL Dump
+# version 2.5.7-pl1
+# http://www.phpmyadmin.net
+#
+# Serveur: localhost
+# Généré le : Samedi 17 Juillet 2004 à 18:12
+# Version du serveur: 4.0.20
+# Version de PHP: 4.3.8
+# 
+# Base de données: `glpidb`
+# 
+
+# --------------------------------------------------------
+
 #
 # Structure de la table `glpi_computers`
 #
@@ -68,7 +82,7 @@ CREATE TABLE `glpi_computers` (
   PRIMARY KEY  (`ID`),
   KEY `location` (`location`),
   KEY `flags` (`flags_server`)
-) TYPE=MyISAM AUTO_INCREMENT=24 ;
+) TYPE=MyISAM;
 
 #
 # Contenu de la table `glpi_computers`
@@ -120,6 +134,7 @@ CREATE TABLE `glpi_config` (
   `mailing_attrib_all_normal` varchar(200) NOT NULL default '',
   `mailing_followup_all_normal` varchar(200) NOT NULL default '',
   `mailing_finish_all_normal` varchar(200) NOT NULL default '',
+  `mailing_new_attrib` varchar(200) NOT NULL default '',
   `mailing_attrib_attrib` varchar(200) NOT NULL default '',
   `mailing_followup_attrib` varchar(200) NOT NULL default '',
   `mailing_finish_attrib` varchar(200) NOT NULL default '',
@@ -133,13 +148,13 @@ CREATE TABLE `glpi_config` (
   `ldap_field_realname` varchar(200) NOT NULL default '',
   `ldap_field_phone` varchar(200) NOT NULL default '',
   PRIMARY KEY  (`config_id`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) TYPE=MyISAM;
 
 #
 # Contenu de la table `glpi_config`
 #
 
-INSERT INTO `glpi_config` VALUES (1, '10', '10', '1', '80', '30', '15', ' 0.31', 'GLPI powered by indepnet', '/glpi', '5', '0', '', '', '', '', '', '', 'admin@xxxxxxxxx.fr', 'SIGNATURE', '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '1', '1', '1', '1', '1', 'uid', 'mail', 'physicaldeliveryofficename', 'cn', 'telephonenumber');
+INSERT INTO `glpi_config` VALUES (1, '10', '10', '1', '80', '30', '15', ' 0.31', 'GLPI powered by indepnet', '/glpi', '4', '0', '', '', '', '', '', '', 'admin@xxxxxxxxx.fr', 'SIGNATURE', '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '', '1', '1', '1', '1', '1', '1', '1', 'uid', 'mail', 'physicaldeliveryofficename', 'cn', 'telephonenumber');
 
 # --------------------------------------------------------
 
@@ -154,7 +169,7 @@ CREATE TABLE `glpi_connect_wire` (
   `end2` int(11) NOT NULL default '0',
   `type` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM;
 
 #
 # Contenu de la table `glpi_connect_wire`
@@ -420,7 +435,7 @@ CREATE TABLE `glpi_event_log` (
   PRIMARY KEY  (`ID`),
   KEY `comp` (`item`),
   KEY `date` (`date`)
-) TYPE=MyISAM AUTO_INCREMENT=395 ;
+) TYPE=MyISAM;
 
 #
 # Contenu de la table `glpi_event_log`
@@ -473,7 +488,7 @@ CREATE TABLE `glpi_followups` (
   `author` varchar(200) default NULL,
   `contents` text,
   PRIMARY KEY  (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=8 ;
+) TYPE=MyISAM;
 
 #
 # Contenu de la table `glpi_followups`
@@ -496,7 +511,7 @@ CREATE TABLE `glpi_inst_software` (
   PRIMARY KEY  (`ID`),
   KEY `cID` (`cID`),
   KEY `sID` (`license`)
-) TYPE=MyISAM AUTO_INCREMENT=6 ;
+) TYPE=MyISAM;
 
 #
 # Contenu de la table `glpi_inst_software`
@@ -516,7 +531,7 @@ CREATE TABLE `glpi_licenses` (
   `sID` int(15) NOT NULL default '0',
   `serial` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=10 ;
+) TYPE=MyISAM;
 
 #
 # Contenu de la table `glpi_licenses`
@@ -557,7 +572,7 @@ CREATE TABLE `glpi_monitors` (
   `maintenance` int(2) default '0',
   PRIMARY KEY  (`ID`),
   KEY `ID` (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=4 ;
+) TYPE=MyISAM;
 
 #
 # Contenu de la table `glpi_monitors`
@@ -589,7 +604,7 @@ CREATE TABLE `glpi_networking` (
   `date_fin_garantie` date default NULL,
   `maintenance` int(2) default '0',
   PRIMARY KEY  (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=10 ;
+) TYPE=MyISAM;
 
 #
 # Contenu de la table `glpi_networking`
@@ -614,7 +629,7 @@ CREATE TABLE `glpi_networking_ports` (
   `ifaddr` char(30) NOT NULL default '',
   `ifmac` char(30) NOT NULL default '',
   PRIMARY KEY  (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=11 ;
+) TYPE=MyISAM;
 
 #
 # Contenu de la table `glpi_networking_ports`
@@ -643,7 +658,7 @@ CREATE TABLE `glpi_networking_wire` (
   `end1` int(11) NOT NULL default '0',
   `end2` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=4 ;
+) TYPE=MyISAM;
 
 #
 # Contenu de la table `glpi_networking_wire`
@@ -703,7 +718,7 @@ CREATE TABLE `glpi_printers` (
   `ramSize` varchar(6) NOT NULL default '',
   PRIMARY KEY  (`ID`),
   KEY `id` (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=3 ;
+) TYPE=MyISAM;
 
 #
 # Contenu de la table `glpi_printers`
@@ -727,7 +742,7 @@ CREATE TABLE `glpi_software` (
   `location` varchar(200) NOT NULL default '',
   `comments` text,
   PRIMARY KEY  (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=6 ;
+) TYPE=MyISAM;
 
 #
 # Contenu de la table `glpi_software`
@@ -771,7 +786,7 @@ CREATE TABLE `glpi_templates` (
   `date_fin_garantie` date default NULL,
   `maintenance` int(2) default '0',
   PRIMARY KEY  (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=4 ;
+) TYPE=MyISAM;
 
 #
 # Contenu de la table `glpi_templates`
@@ -801,7 +816,7 @@ CREATE TABLE `glpi_tracking` (
   `uemail` varchar(100) default NULL,
   `emailupdates` varchar(4) default NULL,
   PRIMARY KEY  (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM;
 
 #
 # Contenu de la table `glpi_tracking`
@@ -913,3 +928,6 @@ INSERT INTO `glpi_users` VALUES ('glpi', '5b9b1ee2216a5ffe', '', '2nd etage', ''
 INSERT INTO `glpi_users` VALUES ('post-only', '3eb831c67be6aeda', '', '1 ier etage', NULL, 'post-only', 'post-only', 'no');
 INSERT INTO `glpi_users` VALUES ('tech', '37bd7c4221e8a247', '', '2nd etage', NULL, 'admin', 'technicien', 'yes');
 INSERT INTO `glpi_users` VALUES ('normal', '109e7883561b4202', '', '1 ier etage', NULL, 'normal', 'utilisateur normal', 'no');
+    
+
+
