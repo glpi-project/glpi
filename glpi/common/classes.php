@@ -349,7 +349,7 @@ class Identification
 		}
 
 		$this->err = "Erreur numero : ".$db->errno().": ";
-		$this->err += $db->error();
+		$this->err .= $db->error();
 		return false;
 
 	} // connection_db()
