@@ -39,17 +39,17 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_networking.php");
 
-if ($_POST["add"]) {
+if (isset($_POST["add"])) {
 	checkAuthentication("admin");
 	addNetdevice($_POST);
 	logEvent(0, "networking", 4, "inventory", $_SESSION["glpiname"]." added item name ".$_POST["name"].".");
 	header("Location: ".$cfg_install["root"]."/networking/");
-} else if ($_POST["delete"]) {
+} else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
 	deleteNetdevice($_POST);
 	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"] ."deleted item.");
 	header("Location: ".$cfg_install["root"]."/networking/");
-} else if ($_POST["update"]) {
+} else if (isset($_POST["update"])) {
 	checkAuthentication("admin");
 	updateNetdevice($_POST);
 	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." updated item.");
