@@ -61,6 +61,9 @@ function showNetworkingOnglets($target,$withtemplate,$actif){
 	if(empty($withtemplate)){
 	echo "<li "; if ($actif=="6") {echo "class='actif'";} echo "><a href='$target&onglet=6'>".$lang["title"][28]."</a></li>";
 	}
+	
+	echo "<li class='invisible'>&nbsp;</li>";
+	
 	if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
 	$ID=$ereg[1];
 	$next=getNextItem("glpi_networking",$ID);
