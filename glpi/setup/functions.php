@@ -195,16 +195,34 @@ function moveLocationUnder($to_move,$where){
 		$query = "SELECT level FROM glpi_dropdown_locations WHERE ID='$where'";
 		$result = $db->query($query);
 		$WHERE_LEVEL= $db->result($result,0,"level");
-	
-		$diff_level=$WHERE_LEVEL-$TO_MOVE_LEVEL+1;
-	
-		// Move Location
-		$query = "UPDATE glpi_dropdown_locations SET level_up='$where' where ID='$to_move'";
-		$result = $db->query($query);
 
-		if ($diff_level!=0)
-		moveLevelofSubTreeLocation($to_move,$diff_level);
+		// Is the $where location under the to move ???
+		$impossible_move=false;
+		
+		$SELECT_ALL="";
+		$FROM_ALL="";
+		$WHERE_ALL="";
+
+		for ($i=1;$i<=$WHERE_LEVEL;$i++){
+			$SELECT_ALL.=" , location$i.name AS NAME$i, location$i.ID AS ID$i  ";
+			$FROM_ALL.=" LEFT JOIN glpi_dropdown_locations AS location$i ON location".($i-1).".ID = location$i.level_up ";
+		}
+		$query="select location0.name AS NAME0,location0.ID AS ID0 $SELECT_ALL FROM glpi_dropdown_locations AS location0 $FROM_ALL  WHERE location0.level='0' $WHERE_ALL AND location".$WHERE_LEVEL.".ID='$where'";
+		$result = $db->query($query);
+		for ($i=0;$i<=$WHERE_LEVEL;$i++)
+			if ($db->result($result,0,"ID".$i)==$to_move)
+				$impossible_move=true;
+		
+		if (!$impossible_move){
+			$diff_level=$WHERE_LEVEL-$TO_MOVE_LEVEL+1;
 	
+			// Move Location
+			$query = "UPDATE glpi_dropdown_locations SET level_up='$where' where ID='$to_move'";
+			$result = $db->query($query);
+
+			if ($diff_level!=0)
+			moveLevelofSubTreeLocation($to_move,$diff_level);
+		}	
 	
 	}	
 }
