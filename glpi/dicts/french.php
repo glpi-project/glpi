@@ -205,6 +205,8 @@ $lang["job"][15]	= "Historique";
 $lang["job"][16]	= "trouv&eacute;e ";
 $lang["job"][17]        = "intervention";
 $lang["job"][18]        = "ancienne";
+$lang["job"][19]        = "Suivi par Email";
+
 // Computers
 
 $lang["computers"][0]	= "Ajouter ordinateur...";
