@@ -37,7 +37,7 @@
 
 //return if the $postfromselect if a dropdown or not
 function is_dropdown_stat($postfromselect) {
-	$dropdowns = array ("locations", "type", "os");
+	$dropdowns = array ("locations","os");
 	if(in_array(str_replace("glpi_dropdown_","",$postfromselect),$dropdowns)) return true;
 	elseif(strcmp("glpi_type_computers",$postfromselect) == 0) return true;
 	else return false; 
