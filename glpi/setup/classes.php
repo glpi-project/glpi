@@ -57,7 +57,7 @@ class User {
 	
 	function getFromDB($name) {
 		$db = new DB;
-		$query = "SELECT * FROM glpi_users WHERE (name = '$name')";
+		$query = "SELECT * FROM glpi_users WHERE (name = '".unhtmlentities($name)."')";
 		if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=1) return false;
 		$data = $db->fetch_array($result);
@@ -66,6 +66,7 @@ class User {
 			}
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
+				if ($key=="name") $this->fields[$key] = unhtmlentities($val);
 			}
 			$this->getPrefsFromDB();
 			return true;
