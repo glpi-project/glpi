@@ -58,28 +58,28 @@ function searchFormComputers() {
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
 
 	
-	$option["ID"]				= $lang["computers"][31];
-	$option["name"]				= $lang["computers"][7];
-	$option["location"]			= $lang["computers"][10];
-	$option["type"]				= $lang["computers"][8];
-	$option["os"]				= $lang["computers"][9];
-	$option["osver"]			= $lang["computers"][20];
-	$option["processor"]		= $lang["computers"][21];
-	$option["processor_speed"]	= $lang["computers"][22];
-	$option["serial"]			= $lang["computers"][17];
-	$option["otherserial"]		= $lang["computers"][18];
-	$option["ramtype"]			= $lang["computers"][23];
-	$option["ram"]				= $lang["computers"][24];
-	$option["network"]			= $lang["computers"][26];
-	$option["hdspace"]			= $lang["computers"][25];
-	$option["sndcard"]			= $lang["computers"][33];
-	$option["gfxcard"]			= $lang["computers"][34];
-	$option["moboard"]			= $lang["computers"][35];
-	$option["hdtype"]			= $lang["computers"][36];
-	$option["comments"]			= $lang["computers"][19];
-	$option["contact"]			= $lang["computers"][16];
-	$option["contact_num"]		        = $lang["computers"][15];
-	$option["date_mod"]			= $lang["computers"][11];
+	$option["comp.ID"]				= $lang["computers"][31];
+	$option["comp.name"]				= $lang["computers"][7];
+	$option["glpi_dropdown_locations.name"]			= $lang["computers"][10];
+	$option["glpi_type_computers.name"]				= $lang["computers"][8];
+	$option["glpi_dropdown_os.name"]				= $lang["computers"][9];
+	$option["comp.osver"]			= $lang["computers"][20];
+	$option["comp.processor"]			= $lang["computers"][21];
+	$option["comp.processor_speed"]		= $lang["computers"][22];
+	$option["comp.serial"]			= $lang["computers"][17];
+	$option["comp.otherserial"]			= $lang["computers"][18];
+	$option["glpi_dropdown.ram.name"]			= $lang["computers"][23];
+	$option["comp.ram"]				= $lang["computers"][24];
+	$option["glpi_dropdown_network.name"]			= $lang["computers"][26];
+	$option["comp.hdspace"]			= $lang["computers"][25];
+	$option["glpi_dropdown_sndcard.name"]			= $lang["computers"][33];
+	$option["glpi_dropdown_gfxcard.name"]			= $lang["computers"][34];
+	$option["glpi_dropdown_moboard.name"]			= $lang["computers"][35];
+	$option["glpi_dropdown_hdtype.name"]			= $lang["computers"][36];
+	$option["comp.comments"]			= $lang["computers"][19];
+	$option["comp.contact"]			= $lang["computers"][16];
+	$option["comp.contact_num"]		        = $lang["computers"][15];
+	$option["comp.date_mod"]			= $lang["computers"][11];
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
 	echo "<div align='center'><table border='0' width='750' class='tab_cadre'>";
@@ -87,7 +87,7 @@ function searchFormComputers() {
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 	echo "<select name=\"field\" size='1'>";
-        echo "<option value='glo_search'>".$lang["search"][7]."</option>";
+        echo "<option value='all'>".$lang["search"][7]."</option>";
         reset($option);
 	foreach ($option as $key => $val) {
 		echo "<option value=$key>$val\n";
@@ -114,6 +114,15 @@ function searchFormComputers() {
 
 }
 
+function IsDropdown($field) {
+	$dropdown = array("hdtype","sndcard","moboard","gfxcard","network","processor","os");
+	if(in_array($field,$dropdown)) {
+		return true;
+	}
+	else  {
+		return false;
+	}
+}
 
 function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start) {
 
@@ -125,7 +134,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 	// Build query
 	if($field == "all") {
-		$where = "(";
+		$where = " AND (";
 		$fields = $db->list_fields("glpi_computers");
 		$columns = $db->num_fields($fields);
 		
@@ -133,10 +142,24 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if($i != 0) {
 				$where .= " OR ";
 			}
-   			$where .= mysql_field_name($fields, $i) . " LIKE '%".$contains."%'";
+			$coco = mysql_field_name($fields, $i);
+			if(IsDropdown($coco)) {
+				$where .= " glpi_dropdown_". $coco .".name LIKE '%".$contains."%'";
+			}
+			elseif($coco == "ramtype") {
+				$where .= " glpi_dropdown_ram.name LIKE '%".$contains."%'";
+			}
+			elseif($coco == "location") {
+				$where .= " glpi_dropdown_locations.name LIKE '%".$contains."%'";
+			}
+			elseif($coco == "type") {
+				$where .= " glpi_type_computers.name LIKE '%".$contains."%'";
+			}
+			else {
+   				$where .= "comp.".$coco . " LIKE '%".$contains."%'";
+			}
 		}
 		$where .= ")";
-	//$field = "ID";
 	}
 	else {
 		if ($phrasetype == "contains") {
@@ -152,14 +175,21 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 	if (!$order) {
 		$order = "ASC";
 	}
-	$query = "SELECT * FROM glpi_computers WHERE $where ORDER BY $sort $order";
+	$query = "select comp.ID from glpi_computers as comp LEFT JOIN glpi_dropdown_locations on comp.location=glpi_dropdown_locations.ID ";
+	$query .= "LEFT JOIN glpi_dropdown_os on comp.os=glpi_dropdown_os.ID LEFT JOIN glpi_type_computers on comp.type = glpi_type_computers.ID ";
+	$query .= "LEFT JOIN glpi_dropdown_hdtype on comp.hdtype = glpi_dropdown_hdtype.ID LEFT JOIN glpi_dropdown_processor on comp.processor = glpi_dropdown_processor.ID ";
+	$query .= "LEFT JOIN glpi_dropdown_ram on comp.ramtype = glpi_dropdown_ram.ID LEFT JOIN glpi_dropdown_network on comp.network = glpi_dropdown_network.ID ";
+	$query .= "LEFT JOIN glpi_dropdown_gfxcard on comp.gfxcard = glpi_dropdown_gfxcard.ID LEFT JOIN glpi_dropdown_moboard on comp.moboard = glpi_dropdown_moboard.ID ";
+	$query .= "LEFT JOIN glpi_dropdown_sndcard on comp.sndcard = glpi_dropdown_sndcard.ID ";
+	$query .= "where $where ORDER BY $sort $order";
+	//$query = "SELECT * FROM glpi_computers WHERE $where ORDER BY $sort $order";
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);
 
 		// Limit the result, if no limit applies, use prior result
 		if ($numrows>$cfg_features["list_limit"]) {
-			$query_limit = "SELECT * FROM glpi_computers WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
+			$query_limit = $query. " LIMIT $start,".$cfg_features["list_limit"]." ";
 			$result_limit = $db->query($query_limit);
 			$numrows_limit = $db->numrows($result_limit);
 		} else {
@@ -176,7 +206,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="name") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=comp.name&order=ASC&start=$start\">";
 			echo $lang["computers"][7]."</a></th>";
 		
 		        // Serial
@@ -184,7 +214,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="serial") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=serial&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=comp.serial&order=ASC&start=$start\">";
 			echo $lang["computers"][6]."</a></th>";
 		
 
@@ -193,7 +223,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="type") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=type&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_computers.name&order=ASC&start=$start\">";
 			echo $lang["computers"][8]."</a></th>";
 
 			// OS
@@ -201,7 +231,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="os") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=os&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_os.name&order=ASC&start=$start\">";
 			echo $lang["computers"][9]."</a></th>";
 
 			// Location			
@@ -209,7 +239,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="location") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=location&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=ASC&start=$start\">";
 			echo $lang["computers"][10]."</a></th>";
 
 			// Last modified		
