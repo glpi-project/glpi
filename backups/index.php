@@ -276,6 +276,8 @@ function restoreMySqlDump($db,$dumpFile , $duree)
 // $mysqlPassword, mot de passe
 // $histMySql, nom de la machine serveur MySQl
 // $duree=timeout pour changement de page (-1 = aucun)
+
+// Desactivation pour empecher les addslashes au niveau de la creation des tables
 set_magic_quotes_runtime(0);
 
 global $TPSCOUR,$offset,$cpt;
