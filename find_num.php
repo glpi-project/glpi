@@ -36,12 +36,9 @@ This file is part of GLPI.
  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
 <?php
-// Include CSS
-	echo "<style type=\"text/css\">\n";
-				include ("_relpos.php");
-
-		include ($phproot . "/glpi/config/styles.css");
-	echo "</style>\n";
+include ("_relpos.php");
+// Appel CSS
+ echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
 ?>
 
 </head>
@@ -56,7 +53,7 @@ window.close();}
 <div align="center">
   <p><strong>Rechercher votre numéro de machine </strong></p>
   <form name="form1" method="post" action="find_num.php">
-    <table cellspacing="1" width="100%" border="0">
+    <table cellspacing="1" width="100%" class='tab_cadre'>
       <tr> 
         <th align='center'  width="100%" height="29">Saisissez votre nom ou les
           premières lettres de votre nom </th>
@@ -75,12 +72,12 @@ if(isset($_POST["Submit"]))
 {
 	include ("_relpos.php");
 	include ($phproot . "/glpi/includes.php");
-	echo "<table width='100%' border='0'>";
+	echo "<table width='100%' class='tab_cadre'>";
 	echo " <tr class='tab_bg3'>";
 	echo " <td align='center' width='70%'><b>Nom du contact </b></td>";
 	echo " <td align='center' width='30%'><b>N° machine </b></td>";
 	echo " </tr>";
-	echo "</table>";
+	
 
 	$db = new DB;
 	$query = "select ID,contact from glpi_computers where contact like '%".$_POST["NomContact"]."%'";
@@ -89,15 +86,14 @@ if(isset($_POST["Submit"]))
 	{
 		$Comp_num = $ligne['ID'];
 		$Contact = $ligne['contact'];
-		echo "<table width='100%' border='0'>";
-		echo " <tr class='tab_bg_1' onClick=\"fillidfield(".$Comp_num.")\">";
-		echo "<td width='70%'><b> $Contact </b></td>";
-		echo "<td align='center' width='30%'";
-		echo "<b> $Comp_num </b></td>";
-		echo " </tr>";
-		echo "</table>";
-	}
 
+		echo " <tr class='tab_bg_1' onClick=\"fillidfield(".$Comp_num.")\">";
+		echo "<td width='70%' align='center'><b> $Contact </b></td>";
+		echo "<td  width='30%'";
+		echo "<b> $Comp_num </b></td></tr>";
+
+	}
+     echo "</table>";
 }
 ?>
 </body></html>
