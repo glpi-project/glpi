@@ -72,13 +72,13 @@ else if (isset($_POST["addcontact"])){
 	checkAuthentication("admin");
 	addContactEnterprise($_POST["eID"],$_POST["cID"]);
 	logEvent($tab["ID"], "enterprise", 4, "financial", $_SESSION["glpiname"]." associate type.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
+	header("Location: ".$cfg_install["root"]."/enterprises/enterprises-info-form.php?ID=".$_POST["eID"]);
 }
 else if (isset($_GET["deletecontact"])){
 	checkAuthentication("admin");
 	deleteContactEnterprise($_GET["ID"]);
 	logEvent($tab["ID"], "enterprise", 4, "financial", $_SESSION["glpiname"]." delete type.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
+	header("Location: ".$cfg_install["root"]."/enterprises/enterprises-info-form.php?ID=".$_GET["eID"]);
 }
 else if (isset($_POST["update"]))
 {
