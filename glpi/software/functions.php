@@ -37,6 +37,18 @@ This file is part of GLPI.
  
 
 include ("_relpos.php");
+
+
+function titleSoftware(){
+
+         GLOBAL  $lang,$HTMLRel;
+         
+         echo "<div align='center'><table border='0'><tr><td><b>";
+         echo "<img src=\"".$HTMLRel."pics/logiciels.png\" ></td><td><a  class='icon_consol' href=\"software-info-form.php\">".$lang["software"][0]."</a>";
+         echo "</b></td></tr></table></div>";
+}
+
+
 function searchFormSoftware() {
 	// Print Search Form
 	
