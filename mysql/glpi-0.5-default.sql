@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-02-22 00:09
+#GLPI Dump database on 2005-02-26 21:33
 ### Dump table glpi_cartridges
 
 DROP TABLE IF EXISTS glpi_cartridges;
@@ -219,7 +219,7 @@ CREATE TABLE glpi_config (
    PRIMARY KEY (ID)
 );
 
-INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15','0.5','GLPI powered by indepnet','/dombre/glpi-test','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad');
+INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15','0.5','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad');
 ### Dump table glpi_connect_wire
 
 DROP TABLE IF EXISTS glpi_connect_wire;
@@ -319,7 +319,6 @@ CREATE TABLE glpi_contracts (
    KEY begin_date (begin_date)
 );
 
-INSERT INTO glpi_contracts VALUES ('1','qssq','0','0','0000-00-00','0.00','0.00','0','','','N','00:00:00','00:00:00','00:00:00','00:00:00','N','00:00:00','00:00:00','N');
 ### Dump table glpi_device_gfxcard
 
 DROP TABLE IF EXISTS glpi_device_gfxcard;
@@ -717,8 +716,8 @@ CREATE TABLE glpi_event_log (
    KEY date (date)
 );
 
-INSERT INTO glpi_event_log VALUES ('367','0','contract','2005-02-22 00:06:23','financial','4','glpi added item qssq.');
-INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-02-22 00:06:18','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-02-26 21:33:02','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-02-26 21:31:59','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -739,26 +738,13 @@ INSERT INTO glpi_followups VALUES ('3','1','2003-09-18 00:54:40','tech','Problem
 Le reste fonctionne tres bien.');
 INSERT INTO glpi_followups VALUES ('4','3','2003-09-18 00:55:08','tech','Je pense que l\'on peux changer la souris.');
 INSERT INTO glpi_followups VALUES ('5','2','2003-09-18 00:55:52','tech','Je suis passé, il faudra faire une restauration de windows NT4.');
-### Dump table glpi_infocom_device
-
-DROP TABLE IF EXISTS glpi_infocom_device;
-CREATE TABLE glpi_infocom_device (
-    ID int(11) NOT NULL auto_increment,
-    FK_infocom int(11) DEFAULT '0' NOT NULL,
-    FK_device int(11) DEFAULT '0' NOT NULL,
-    device_type tinyint(4) DEFAULT '0' NOT NULL,
-   PRIMARY KEY (ID),
-   UNIQUE FK_infocom (FK_infocom, FK_device, device_type),
-   KEY FK_infocom_2 (FK_infocom),
-   KEY FK_device (FK_device, device_type)
-);
-
-INSERT INTO glpi_infocom_device VALUES ('1','1','18','1');
 ### Dump table glpi_infocoms
 
 DROP TABLE IF EXISTS glpi_infocoms;
 CREATE TABLE glpi_infocoms (
     ID int(11) NOT NULL auto_increment,
+    FK_device int(11) DEFAULT '0' NOT NULL,
+    device_type tinyint(4) DEFAULT '0' NOT NULL,
     buy_date date DEFAULT '0000-00-00' NOT NULL,
     warranty_duration decimal(3,2) DEFAULT '0.00' NOT NULL,
     warranty_info varchar(255) NOT NULL,
@@ -770,13 +756,13 @@ CREATE TABLE glpi_infocoms (
     amort_time decimal(3,2) DEFAULT '0.00' NOT NULL,
     amort_type varchar(20) NOT NULL,
     comments text NOT NULL,
-    deleted enum('Y','N') DEFAULT 'N' NOT NULL,
    PRIMARY KEY (ID),
+   UNIQUE FK_device (FK_device, device_type),
    KEY FK_enterprise (FK_enterprise),
    KEY buy_date (buy_date)
 );
 
-INSERT INTO glpi_infocoms VALUES ('1','2001-09-24','1.00','',NULL,'','','',NULL,'0.00','','','N');
+INSERT INTO glpi_infocoms VALUES ('1','18','1','2001-09-24','1.00','',NULL,'','','',NULL,'0.00','','');
 ### Dump table glpi_inst_software
 
 DROP TABLE IF EXISTS glpi_inst_software;
