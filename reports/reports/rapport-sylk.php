@@ -351,6 +351,8 @@ switch($table){
 
             for ($cpt = 0; $cpt < $nbcol; $cpt++)
             {
+            	if (isset($_GET["limited"])&&$_GET["limited"]=="yes") $enr[$champs[$cpt][0]]=substr($enr[$champs[$cpt][0]],0,200);
+            	
             	$enr[$champs[$cpt][0]]=preg_replace('/\x0A/',' ',$enr[$champs[$cpt][0]]);
             	$enr[$champs[$cpt][0]]=preg_replace('/\x0D/',NULL,$enr[$champs[$cpt][0]]);
             	$enr[$champs[$cpt][0]]=ereg_replace("\"","''",$enr[$champs[$cpt][0]]);
