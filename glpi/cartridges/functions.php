@@ -57,7 +57,7 @@ function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "",$d
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/cartridges/cartridge-search.php\">";
 	echo "<div align='center'><table class='tab_cadre' width='750'>";
-	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center' >";
 	echo "<select name=\"field\" size='1'>";
@@ -91,7 +91,7 @@ function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "",$d
 		echo ">".$val."</option>\n";
 	}
 	echo "</select> ";
-	echo "&nbsp;<input type='checkbox' name='deleted' ".($deleted=='Y'?" checked ":"").">";
+	echo "</td><td><input type='checkbox' name='deleted' ".($deleted=='Y'?" checked ":"").">";
 	echo "<img src=\"".$HTMLRel."pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
