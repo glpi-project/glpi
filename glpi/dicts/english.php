@@ -603,6 +603,7 @@ $lang["setup"][109]="How long logs are keep in database (in days, 0 for infinite
 $lang["setup"][110]="Show the interventions at the login ";
 $lang["setup"][111]="Number of elements to be printed by page";
 $lang["setup"][112]="Maximum number of characters for each elements of the list ";
+$lang["setup"][113]="Default language";
 
 $lang["setup"][150]="External sources of authentification";
 $lang["setup"][151]="If you do not wish to use LDAP as source of connection leave the empty fields";

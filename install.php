@@ -471,7 +471,13 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 			if (get_magic_quotes_runtime()) $sql_line=stripslashes_deep($sql_line);
 			$db->query($sql_line);
 		}
-	
+		// Mise a jour de la langue par defaut
+		$query = "UPDATE `glpi_config` SET default_language='".$_SESSION["dict"]."' ;";
+		$db->query($query) or die("4203 ".$lang["update"][90].$db->error());
+
+		// Mise a jour des prefs par defaut
+		$query = "UPDATE `glpi_prefs` SET language='".$_SESSION["dict"]."' ;";
+		$db->query($query) or die("4203 ".$lang["update"][90].$db->error());
 	}
 	$link = mysql_connect($host,$user,$password);
 	if(!empty($databasename)) {
