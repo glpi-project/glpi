@@ -475,13 +475,13 @@ function showComputerForm($target,$ID) {
 		
 		//ADD a new device form.
 		echo "<div align=\"center\">";
-		echo "<table>";
+		echo "<table class='tab_cadre'>";
 		echo "<tr><th>";
 		echo $lang["devices"][0];
 		echo "</th></tr>";
-		echo "<tr></tr>";
+		
 		echo "<tr>";
-		echo "<td>"; 
+		echo "<td align ='center'>"; 
 		device_selecter($_SERVER["PHP_SELF"],$comp->fields["ID"]);
 		echo "</td>";
 		echo "</tr>";
