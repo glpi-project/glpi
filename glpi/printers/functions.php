@@ -328,6 +328,16 @@ function showPrintersForm ($target,$ID) {
 		echo "</td><td>".$lang["printers"][15]."</td>";
 		echo "</tr></table>";
 		
+		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
+		echo "<td>";
+		if ($printer->fields["flags_usb"] == 1) {
+			echo "<input type='checkbox' name='flags_usb' value='1' checked>";
+		} else {
+			echo "<input type='checkbox' name='flags_usb' value='1'>";
+		}
+		echo "</td><td>".$lang["printers"][27]."</td>";
+		echo "</tr></table>";
+		
 		echo "<tr><td>".$lang["printers"][23].":</td>";
 		echo "<td><input type='text' size='12' name='ramSize' value=\"".$printer->fields["ramSize"]."\"></td>";
 		echo "</tr>";
