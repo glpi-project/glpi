@@ -320,8 +320,7 @@ function showEnterpriseForm ($target,$ID) {
                 echo "<td class='tab_bg_2' valign='top'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
-		echo "</td></form>\n\n";
-		echo "<form action=\"$target\" method='post'>\n";
+		echo "</td>\n\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		if ($ent->fields["deleted"]=='N')
@@ -331,12 +330,12 @@ function showEnterpriseForm ($target,$ID) {
 		
 		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'></div>";
 		}
-		echo "</form>";
+		
 		echo "</td>";
 		echo "</tr>";
 
 		echo "</table></div>";
-		
+		echo "</form>";
 		showAssociatedContact($ID);
 	}
 
@@ -439,10 +438,10 @@ function showAssociatedContact($instID) {
 	 echo "<form method='post' action=\"".$cfg_install["root"]."/enterprises/enterprises-info-form.php\">";
 	echo "<table width='300' class='tab_cadre'>";
 	
-	echo "<tr class='tab_bg_1'><tr><th colspan='2'>".$lang["financial"][33]."</tr><td class='tab_bg_2' align='center'>";
-	echo "<div class='software-instal'><input type='hidden' name='eID' value='$instID'>";
+	echo "<tr class='tab_bg_1'><th colspan='2'>".$lang["financial"][33]."</tr><tr><td class='tab_bg_2' align='center'>";
+	echo "<span class='software-instal'><input type='hidden' name='eID' value='$instID'>";
 		dropdown("glpi_contacts","cID");
-	echo "</div></td><td align='center' class='tab_bg_2'>";
+	echo "</span></td><td align='center' class='tab_bg_2'>";
 	echo "<input type='submit' name='addcontact' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</td></tr>";
 	
