@@ -327,8 +327,8 @@ if (isset($_GET["delfile"]) && $_GET["delfile"] != ""){
 <div align="center">
 
  <a href="javascript:dump('<?php echo $lang["backup"][19];?>')"><b><?php echo $lang["backup"][0]; ?></b></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:xmlnow('<?php echo $lang["backup"][19]; ?>')"><b><?php echo $lang["backup"][1]; ?></b></a>
-<br />
-<br />
+<br>
+<br>
   <table border="0" cellpadding="5">
     <tr align="center"> 
       <th><u><i><?php echo $lang["backup"][10]; ?></i></u></th>

@@ -44,10 +44,10 @@ function searchFormTracking ($show,$contains) {
 	GLOBAL $cfg_layout, $cfg_install,$lang;
 	
 	echo "\n<center>";
-	echo "<table border='0'>";
+	echo "<form method=\"get\" action=\"".$cfg_install["root"]."/tracking/index.php\">";
+echo "<table border='0'>";
 	echo "<tr><th align='center' colspan=3>".$lang["tracking"][0].":</th></tr>";
 
-	echo "<form method=\"get\" action=\"".$cfg_install["root"]."/tracking/index.php\">";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td colspan='2' align='center'>";
 	echo "<select name=\"show\" size=1>";
@@ -68,18 +68,19 @@ function searchFormTracking ($show,$contains) {
 	echo "</td>";
 	echo "<td align='center'><input type='submit' value=\"".$lang["buttons"][1]."\"></td>";
 	echo "</tr>";
-	echo "</form>";
-	echo "<form method=\"get\" action=\"".$cfg_install["root"]."/tracking/index.php\">";
+//	echo "</form>";
+	//echo "<form method=\"get\" action=\"".$cfg_install["root"]."/tracking/index.php\">";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td class='tab_bg_2'>";
 	echo "<b>".$lang["tracking"][5].":</b> </td><td><input type='text' name=contains value=\"$contains\"size=15>";
 	echo "</td><td>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\">";
 	echo "</td></tr>";
-	echo "</form>";
+
 	echo "</table>\n";
-	echo "</center><br>\n";
-}
+		echo "</form>";
+                echo "</center><br>\n";
+}       
 
 function getTrackingPrefs ($username) {
 	// Returns users preference settings for job tracking
@@ -319,7 +320,7 @@ function showJobShort($ID, $followup) {
 		echo "<td><b>$stripped_content</b></td>";
 
 		// Job Controls
-		echo "<td width=10% class='tab_bg_2' align='center'>";
+		echo "<td width='10%' class='tab_bg_2' align='center'>";
 		
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		echo "<b><a href=\"".$cfg_install["root"]."/tracking/tracking-followups.php?ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;($job->num_of_followups)&nbsp;<br>";

@@ -76,7 +76,7 @@ echo $lang["setup"][2]; ?></a></b></td>
 </tr>
 </table>
 </center>
-<br />
+<br>
 
 <?php
 
