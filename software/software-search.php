@@ -45,11 +45,13 @@ commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 if(empty($_GET["start"])) $_GET["start"] = 0;
 if(empty($_GET["order"])) $_GET["order"] = "ASC";
 if(empty($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
+if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
+else $_GET["deleted"] = "Y";
 
 titleSoftware();
 
-searchFormSoftware($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
-showSoftwareList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
+searchFormSoftware($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["deleted"]);
+showSoftwareList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"]);
 
 commonFooter();
 ?>

@@ -47,7 +47,8 @@ function titleSoftware(){
 }
 
 
-function searchFormSoftware($field="",$phrasetype= "",$contains="",$sort= "") {
+function searchFormSoftware($field="",$phrasetype= "",$contains="",$sort= "",$deleted="") {
+	global $HTMLRel;
 	// Print Search Form
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
@@ -62,7 +63,7 @@ function searchFormSoftware($field="",$phrasetype= "",$contains="",$sort= "") {
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/software/software-search.php\">";
 	echo "<center><table class='tab_cadre' width='750'>";
-	echo "<tr><th colspan='2'><strong>".$lang["search"][0].":</strong></th></tr>";
+	echo "<tr><th colspan='3'><strong>".$lang["search"][0].":</strong></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 	
@@ -106,12 +107,14 @@ function searchFormSoftware($field="",$phrasetype= "",$contains="",$sort= "") {
 		echo ">".$val."</option>\n";
 	}
 	echo "</select> ";
+	echo "</td><td><input type='checkbox' name='deleted' ".($deleted=='Y'?" checked ":"").">";
+	echo "<img src=\"".$HTMLRel."pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></center></form>";
 }
 
-function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start) {
+function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted) {
 
 	// Lists Software
 
@@ -164,7 +167,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 	$query .= "LEFT JOIN glpi_dropdown_os on glpi_software.platform=glpi_dropdown_os.ID ";
 	$query.= " LEFT JOIN glpi_dropdown_locations on glpi_software.location=glpi_dropdown_locations.ID ";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = glpi_software.FK_glpi_enterprise ) ";
-	$query.= " WHERE $where ORDER BY $sort $order";
+	$query.= " WHERE $where AND glpi_software.deleted='$deleted' ORDER BY $sort $order";
 //	echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
@@ -336,7 +339,15 @@ function showSoftwareForm ($target,$ID,$search_software="") {
 		echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
+		echo "<div align='center'>";
+		if ($sw->fields["deleted"]=='N')
+		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+		else {
+		echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+		
+		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>";
+		}
+		echo "</div>";
 		echo "</td>";
 		echo "</tr>";
 
@@ -398,12 +409,18 @@ function addSoftware($input) {
 	}
 }
 
+function restoreSoftware($input) {
+	// Restore Software
+	
+	$ct = new Software;
+	$ct->restoreInDB($input["ID"]);
+} 
 
-function deleteSoftware($input) {
+function deleteSoftware($input,$force=0) {
 	// Delete Software
 	
 	$sw = new Software;
-	$sw->deleteFromDB($input["ID"]);
+	$sw->deleteFromDB($input["ID"],$force);
 	
 } 
 

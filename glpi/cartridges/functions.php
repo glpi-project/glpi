@@ -319,13 +319,15 @@ function showCartridgeTypeForm ($target,$ID) {
 		echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+		echo "<div align='center'>";
 		if ($ct->fields["deleted"]=='N')
-		echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
+		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 		else {
-		echo "<div align='center'><input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+		echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
 		
-		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'></div>";
+		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>";
 		}
+		echo "</div>";
 		echo "</form>";
 		echo "</td>";
 		echo "</tr>";
