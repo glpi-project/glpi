@@ -79,10 +79,10 @@ else if (isset($_POST["restore"]))
 	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." restored item.");
 	header("Location: ".$cfg_install["root"]."/printers/");
 }
-else if (isset($_POST["purge"]))
+else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
-	deletePrinter($_POST,1);
+	deletePrinter($tab,1);
 	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." purge item.");
 	header("Location: ".$cfg_install["root"]."/printers/");
 }

@@ -980,6 +980,10 @@ if(!FieldExists("glpi_computers","is_template")) {
 	}
 	$query = "DROP TABLE glpi_templates";
 	$db->query($query) or die("0.5 drop table templates ".$db->error());
+	
+	$query="INSERT INTO glpi_computers (is_template,tplname) VALUES ('1','Blank Template')";
+	$db->query($query) or die("0.5 add blank template ".$lang["update"][90].$db->error());	
+
 	 echo "<br>Version 0.5 <br />";
 }
 

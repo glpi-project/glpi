@@ -76,10 +76,10 @@ else if (isset($_POST["restore"]))
 	logEvent($tab["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." restored item.");
 	header("Location: ".$cfg_install["root"]."/peripherals/");
 }
-else if (isset($_POST["purge"]))
+else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
-	deletePeripheral($_POST,1);
+	deletePeripheral($tab,1);
 	logEvent($tab["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." purge item.");
 	header("Location: ".$cfg_install["root"]."/peripherals/");
 }

@@ -78,10 +78,10 @@ else if (isset($_POST["restore"]))
 	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." restored item.");
 	header("Location: ".$cfg_install["root"]."/monitors/");
 }
-else if (isset($_POST["purge"]))
+else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
-	deleteMonitor($_POST,1);
+	deleteMonitor($tab,1);
 	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." purge item.");
 	header("Location: ".$cfg_install["root"]."/monitors/");
 }
