@@ -161,7 +161,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			$coco = mysql_field_name($fields, $i);
 
 			if($coco == "location") {
-				$where .= " glpi_dropdown_locations.name LIKE '%".$contains."%'";
+				$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains);
 			}
 			elseif($coco == "type") {
 -				$where .= " glpi_type_peripherals.name LIKE '%".$contains."%'";
@@ -175,7 +175,10 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 		$where .= ")";
 	}
 	else {
-		if ($phrasetype == "contains") {
+		if ($field=="glpi_dropdown_locations.name"){
+			$where = getRealSearchForTreeItem("glpi_dropdown_locations",$contains);
+		}		
+		else if ($phrasetype == "contains") {
 			$where = "($field LIKE '%".$contains."%')";
 		}
 		else {

@@ -167,8 +167,15 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 				$where .= " glpi_dropdown_os.name LIKE '%".$contains."%'";
 			}
 			elseif($coco == "location") {
-				$where .= " glpi_dropdown_locations.name LIKE '%".$contains."%'";
+				$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains);
 			}
+			elseif($coco == "FK_glpi_enterprise") {
+				$where .= "glpi_enterprises.name LIKE '%".$contains."%'";
+			}
+			else if ($coco=="tech_num"){
+				$where .= " resptech.name LIKE '%".$contains."%'";
+			} 
+			
 			else {
    				$where .= "glpi_software.".$coco . " LIKE '%".$contains."%'";
 			}
@@ -178,7 +185,10 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 		$where .= ")";
 	}
 	else {
-		if ($phrasetype == "contains") {
+		if ($field=="glpi_dropdown_locations.name"){
+			$where = getRealSearchForTreeItem("glpi_dropdown_locations",$contains);
+		}		
+		else if ($phrasetype == "contains") {
 			$where = "($field LIKE '%".$contains."%')";
 		}
 		else {
@@ -200,7 +210,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = glpi_software.FK_glpi_enterprise ) ";
 	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = glpi_software.tech_num ) ";
 	$query.= " WHERE $where AND glpi_software.deleted='$deleted'  AND glpi_software.is_template = '0' ORDER BY $sort $order";
-//	echo $query;
+
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows = $db->numrows($result);

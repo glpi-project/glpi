@@ -172,8 +172,14 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 				$where .= " glpi_dropdown_firmware.name LIKE '%".$contains."%'";
 			}
 			elseif($coco == "location") {
-				$where .= " glpi_dropdown_locations.name LIKE '%".$contains."%'";
+				$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains);
 			}
+			elseif($coco == "FK_glpi_enterprise") {
+				$where .= "glpi_enterprises.name LIKE '%".$contains."%'";
+			}
+			elseif ($coco=="tech_num"){
+				$where .= " resptech.name LIKE '%".$contains."%'";
+			} 
 			elseif($coco == "type") {
 				$where .= " glpi_type_networking.name LIKE '%".$contains."%'";
 			}
@@ -184,12 +190,13 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 		$where .= " OR glpi_networking_ports.ifaddr LIKE '%".$contains."%'";
 		$where .= " OR glpi_networking_ports.ifmac LIKE '%".$contains."%'";
 		$where .= " OR glpi_dropdown_netpoint.name LIKE '%".$contains."%'";
-		$where.=" OR glpi_enterprises.name LIKE '%".$contains."%'";
-		$where .= " OR resptech.name LIKE '%".$contains."%'";
 		$where .= ")";
 	}
 	else {
-		if ($phrasetype == "contains") {
+		if ($field=="glpi_dropdown_locations.name"){
+			$where = getRealSearchForTreeItem("glpi_dropdown_locations",$contains);
+		}		
+		else if ($phrasetype == "contains") {
 			$where = "($field LIKE '%".$contains."%')";
 		}
 		else {

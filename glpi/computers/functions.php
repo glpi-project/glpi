@@ -214,6 +214,12 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 			elseif($line["Field"] == "location") {
 				$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains);
 			}
+			elseif($line["Field"] == "FK_glpi_enterprise") {
+				$where .= "glpi_enterprises.name LIKE '%".$contains."%'";
+			}
+			elseif ($line["Field"]=="tech_num"){
+				$where .= " resptech.name LIKE '%".$contains."%'";
+			} 
 			else {
    				$where .= "comp.".$line["Field"] . " LIKE '%".$contains."%'";
 			}
@@ -227,9 +233,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 		$where .= " OR glpi_networking_ports.ifaddr LIKE '%".$contains."%'";
 		$where .= " OR glpi_networking_ports.ifmac LIKE '%".$contains."%'";
 		$where .= " OR glpi_dropdown_netpoint.name LIKE '%".$contains."%'";
-		$where .= " OR glpi_enterprises.name LIKE '%".$contains."%'";
 		$where .= " OR glpi_type_computers.name LIKE '%".$contains."%'";
-		$where .= " OR resptech.name LIKE '%".$contains."%'";
 		$where .= ")";
 	}
 	else {

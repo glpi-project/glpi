@@ -128,22 +128,28 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 				$where .= " OR ";
 			}
 			$coco = mysql_field_name($fields, $i);
+			if ($coco=="location"){
+				$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains);		
+			} else if ($coco=="FK_glpi_enterprise"){
+				$where.="glpi_enterprises.name LIKE '%".$contains."%'";
+			} else if ($coco=="tech_num"){
+				$where .= " resptech.name LIKE '%".$contains."%'";
+			} else 
 			$where .= "glpi_cartridges_type.".$coco . " LIKE '%".$contains."%'";
 		}
-		$where.=" OR glpi_enterprises.name LIKE '%".$contains."%'";
-		$where.=" OR glpi_dropdown_locations.name LIKE '%".$contains."%'";
-		$where .= " OR resptech.name LIKE '%".$contains."%'";
 		$where .= ")";
 	}
 	else {
-		if ($phrasetype == "contains") {
+				if ($field=="glpi_dropdown_locations.name"){
+			$where = getRealSearchForTreeItem("glpi_dropdown_locations",$contains);
+		}		
+		else if ($phrasetype == "contains") {
 			$where = "($field LIKE '%".$contains."%')";
 		}
 		else {
 			$where = "($field LIKE '".$contains."')";
 		}
 	}
-
 
 	if (!$start) {
 		$start = 0;
