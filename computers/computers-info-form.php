@@ -75,6 +75,13 @@ if (isset($_POST["add"])) {
 	showJobListForItem($_SESSION["glpiname"],$_POST["ID"]);
 	commonFooter();
 } 
+else if (isset($tab["disconnect"]))
+{
+	checkAuthentication("admin");
+	Disconnect($tab["eID"],$tab["device_type"]);
+	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
+	header("Location: ".$_SERVER["PHP_SELF"]."?ID=".$tab["cID"]);
+}
 else if(isset($tab["connect"])&&isset($tab["device_type"]))
 {
 	if($tab["connect"]==1)
@@ -88,37 +95,14 @@ else if(isset($tab["connect"])&&isset($tab["device_type"]))
 	{
 		checkAuthentication("admin");
 		commonHeader("Computers",$_SERVER["PHP_SELF"]);
-		switch($tab["device_type"]){
-		case "printer":
-			listConnectPrinters($_SERVER["PHP_SELF"],$tab);
-			break;
-		case "monitor":
-			listConnectMonitors($_SERVER["PHP_SELF"],$tab);
-			break;
-		case "peripheral":
-			listConnectPeripherals($_SERVER["PHP_SELF"],$tab);
-			break;
-			
-		}
+		listConnectElement($_SERVER["PHP_SELF"],$tab);
 		commonFooter();
 	} 
 	else if($tab["connect"]==3)
 	{
 		checkAuthentication("admin");
-//		commonHeader("Computers",$_SERVER["PHP_SELF"]);
-		switch($tab["device_type"]){
-		case "printer" :
-		Connect($_SERVER["PHP_SELF"],$tab["ID"],$tab["cID"],3);
-		break;
-		case "monitor" :
-		Connect($_SERVER["PHP_SELF"],$tab["ID"],$tab["cID"],4);
-		break;
-		case "peripheral" :
-		Connect($_SERVER["PHP_SELF"],$tab["ID"],$tab["cID"],5);
-		break;
-
-		}
-		logEvent($tab["sID"], "printers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
+		Connect($_SERVER["PHP_SELF"],$tab["ID"],$tab["cID"],$tab["device_type"]);
+		logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
 		header("Location: ".$_SERVER["PHP_SELF"]."?ID=".$tab["cID"]);
 	}
 } else {

@@ -906,14 +906,36 @@ function listConnectComputers($target,$input) {
 
 }
 
-function listConnectPrinters($target,$input) {
+function listConnectElement($target,$input) {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
 	$pID1 = $input["pID1"];
-
+	$device_type=$input["device_type"];
+	$table="";
+	switch($device_type){
+	case "printer":
+	$table="glpi_printers";$device_id=3;break;
+	case "monitor":
+	$table="glpi_monitors";$device_id=4;break;
+	case "peripheral":
+	$table="glpi_peripherals";$device_id=5;break;
+	
+	}
+	
 	echo "<center><table  class='tab_cadre'>";
-	echo "<tr><th colspan='2'>".$lang["connect"][10].":</th></tr>";
+	echo "<tr><th colspan='2'>";
+	switch($device_type){
+	case "printer":
+	echo 	$lang["connect"][10];break;
+	case "monitor":
+	echo 	$lang["connect"][12];break;
+	case "peripheral":
+	echo 	$lang["connect"][11];break;
+	}
+
+	
+	echo ":</th></tr>";
 	echo "<form method='post' action=\"$target\"><tr><td>";
 
 	echo "<tr class='tab_bg_1'>";
@@ -921,12 +943,14 @@ function listConnectPrinters($target,$input) {
 
 	$db = new DB;
 	if ($input["type"] == "name") {
-		$query = "SELECT glpi_printers.ID as ID,glpi_printers.name as name, glpi_dropdown_locations.name as location  from glpi_printers left join glpi_dropdown_locations on glpi_printers.location = glpi_dropdown_locations.id WHERE glpi_printers.name LIKE '%".$input["search"]."%' order by name ASC";
+		$query = "SELECT $table.ID as ID,$table.name as name, glpi_dropdown_locations.name as location from $table left join glpi_dropdown_locations on $table.location = glpi_dropdown_locations.id left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = $device_id) WHERE $table.name LIKE '%".$input["search"]."%' AND glpi_connect_wire.ID IS NULL order by name ASC";
 	} else {
-		$query = "SELECT glpi_printers.ID as ID,glpi_printers.name as name, glpi_dropdown_locations.name as location from glpi_printers left join glpi_dropdown_locations on glpi_printers.location = glpi_dropdown_locations.id WHERE glpi_printers.ID LIKE '%".$input["search"]."%' order by name ASC";
+		$query = "SELECT $table.ID as ID,$table.name as name, glpi_dropdown_locations.name as location from $table left join glpi_dropdown_locations on $table.location = glpi_dropdown_locations.id left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = $device_id) WHERE $table.ID LIKE '%".$input["search"]."%' AND glpi_connect_wire.ID IS NULL order by name ASC";
 	} 
+//	echo $query;
 	$result = $db->query($query);
 	$number = $db->numrows($result);
+	if ($number>0) {
 	echo "<select name=\"ID\">";
 	while ($i < $number) {
 		$dID = $db->result($result, $i, "ID");
@@ -941,89 +965,10 @@ function listConnectPrinters($target,$input) {
 	echo "<td class='tab_bg_2' align='center'>";
 	echo "<input type='hidden' name='cID' value=\"".$input["pID1"]."\">";
 	echo "<input type='hidden' name='connect' value='3'>";
-	echo "<input type='hidden' name='device_type' value='printer'>";
+	echo "<input type='hidden' name='device_type' value='$device_id'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
-	echo "</td></form></tr></table>";	
-
-}
-function listConnectMonitors($target,$input) {
-
-	GLOBAL $cfg_layout,$cfg_install, $lang;
-
-	$pID1 = $input["pID1"];
-
-	echo "<center><table  class='tab_cadre'>";
-	echo "<tr><th colspan='2'>".$lang["connect"][12].":</th></tr>";
-	echo "<form method='post' action=\"$target\"><tr><td>";
-
-	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>";
-
-	$db = new DB;
-	if ($input["type"] == "name") {
-		$query = "SELECT glpi_monitors.ID as ID,glpi_monitors.name as name, glpi_dropdown_locations.name as location  from glpi_monitors left join glpi_dropdown_locations on glpi_monitors.location = glpi_dropdown_locations.id WHERE glpi_monitors.name LIKE '%".$input["search"]."%' order by name ASC";
-	} else {
-		$query = "SELECT glpi_monitors.ID as ID,glpi_monitors.name as name, glpi_dropdown_locations.name as location from glpi_monitors left join glpi_dropdown_locations on glpi_monitors.location = glpi_dropdown_locations.id WHERE glpi_monitors.ID LIKE '%".$input["search"]."%' order by name ASC";
-	} 
-	$result = $db->query($query);
-	$number = $db->numrows($result);
-	echo "<select name=\"ID\">";
-	while ($i < $number) {
-		$dID = $db->result($result, $i, "ID");
-		$name = $db->result($result, $i, "name");
-		$location = $db->result($result, $i, "location");
-		echo "<option value=\"$dID\">".$name." (".$location.")</option>";
-		$i++;
-	}
-	echo  "</select>";
-
-	echo "</td>";
-	echo "<td class='tab_bg_2' align='center'>";
-	echo "<input type='hidden' name='cID' value=\"".$input["pID1"]."\">";
-	echo "<input type='hidden' name='connect' value='3'>";
-	echo "<input type='hidden' name='device_type' value='monitor'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
-	echo "</td></form></tr></table>";	
-
-}
-
-function listConnectPeripherals($target,$input) {
-
-	GLOBAL $cfg_layout,$cfg_install, $lang;
-
-	$pID1 = $input["pID1"];
-
-	echo "<center><table  class='tab_cadre'>";
-	echo "<tr><th colspan='2'>".$lang["connect"][11].":</th></tr>";
-	echo "<form method='post' action=\"$target\"><tr><td>";
-
-	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>";
-
-	$db = new DB;
-	if ($input["type"] == "name") {
-		$query = "SELECT glpi_peripherals.ID as ID,glpi_peripherals.name as name, glpi_dropdown_locations.name as location  from glpi_peripherals left join glpi_dropdown_locations on glpi_peripherals.location = glpi_dropdown_locations.id WHERE glpi_peripherals.name LIKE '%".$input["search"]."%' order by name ASC";
-	} else {
-		$query = "SELECT glpi_peripherals.ID as ID,glpi_peripherals.name as name, glpi_dropdown_locations.name as location from glpi_peripherals left join glpi_dropdown_locations on glpi_peripherals.location = glpi_dropdown_locations.id WHERE glpi_peripherals.ID LIKE '%".$input["search"]."%' order by name ASC";
-	} 
-	$result = $db->query($query);
-	$number = $db->numrows($result);
-	echo "<select name=\"ID\">";
-	while ($i < $number) {
-		$dID = $db->result($result, $i, "ID");
-		$name = $db->result($result, $i, "name");
-		$location = $db->result($result, $i, "location");
-		echo "<option value=\"$dID\">".$name." (".$location.")</option>";
-		$i++;
-	}
-	echo  "</select>";
-
-	echo "</td>";
-	echo "<td class='tab_bg_2' align='center'>";
-	echo "<input type='hidden' name='cID' value=\"".$input["pID1"]."\">";
-	echo "<input type='hidden' name='connect' value='3'>";
-	echo "<input type='hidden' name='device_type' value='peripheral'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
+	} else echo $lang["connect"][16]."<br><b><a href=\"".$_SERVER["PHP_SELF"]."?ID=".$input["pID1"]."\">".$lang["buttons"][13]."</a></b>";
+	
 	echo "</td></form></tr></table>";	
 
 }
