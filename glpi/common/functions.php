@@ -774,10 +774,12 @@ function getDropdownName($table,$id) {
 	
 	$db = new DB;
 	$name = "";
-	$query = "select name from ". $table ." where ID = '". $id ."'";
+	$query = "select * from ". $table ." where ID = '". $id ."'";
 	$result = $db->query($query);
 	if($db->numrows($result) != 0) {
 		$name = $db->result($result,0,"name");
+		if ($table=="glpi_dropdown_netpoint")
+			$name .= " (".getDropdownName("glpi_dropdown_locations",$db->result($result,0,"location")).")";
 	}
 	return $name;
 }
