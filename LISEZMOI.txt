@@ -39,8 +39,7 @@ Contenu :
 - Qu'est ce que c'est ?
 - Dépendances
 - Installation et configuration
-- Mise à jour depuis 0.4 et >
-- Mise à jour depuis 0.3 et <
+- Mise à jour
 
 
 
@@ -75,7 +74,7 @@ avec l'une des ressources techniques à laquelle ils ont accès.
 --- Dépendances (uniquement testé avec ces configurations)
 *************************************************************************************************************
 
-1) Apache 1.3.>6 with PHP 4 
+1) Apache 1.3.>6 avec PHP 4 ou PHP 5
 2) MySQL 3.22 et supérieures
 
 
@@ -231,7 +230,7 @@ lancement de cette procédure).
 
 
 *************************************************************************************************************
---- MISES A JOUR DEPUIS LA VERSION 0.4 et >
+--- MISES A JOUR 
 *************************************************************************************************************
 
 
@@ -243,9 +242,6 @@ Sauvegardez votre base de donnée via l'interface de sauvegarde de glpi et
 récupérez le fichier dump contenant les données dans le répertoire backups/dump/ 
 et faites en une sauvegarde.
 
-Récupérez le fichier config.php dans le répertoire glpi/config/ et copiez le ailleurs 
-sur votre disque et faites en une sauvegarde.
-
 A partir de là, si la mise à jour se déroule mal ou que les nouvelles implantation de 
 la version 0.5 ne vous conviennent pas, il sera facile de revenir à votre version précédente.
 
@@ -254,6 +250,12 @@ les mailing listes, ou sur le forum du site du projet, ou sur le bugtrack la pro
 et le message d'erreur que vous obtenez.
 
 II) Récupération et installation des fichiers.
+
+#### VERSION < 0.4
+IMPORTANT : La mise à jour depuis une version inférieure vers GLPI 0.4 ne vous permet pas de préserver 
+automatiquement vos configurations précises (configurations générales, sources externes, mailing etc etc)
+ qui étaient conservées dans le fichier config.php.
+####
 
 
 1)Supprimez le répertoire contenant GLPI ainsi que tout son contenu, de votre racine http.
@@ -261,7 +263,6 @@ II) Récupération et installation des fichiers.
 2)Téléchargez le tarball de la version 0.5 disponible dans la rubrique téléchargement du site du 
 projet glpi (http://glpi.indepnet.org).
 
-
 3)Décompressez la nouvelle archive de GLPI, à la place de l'ancienne.
 
 4)Changez les droits sur les dossiers suivants :
@@ -306,101 +307,24 @@ cliquez sur « continuer » si c'est la cas.
 votre base de données.
 
 
-// TODO AJOUTER LES MODIFS DE LA O.5
+9) Il existe une différence majeure en les versions < à 0.5 et les versions > 0.5 : la gestion des lieux.
+En effet, celle-ci est maintenant hiérarchique. 
+Un système vous permet donc d'adpater vos anciens lieux a cette nouvelle architecture.
+Pour cela, deux paramètres vous sont présentés en bas de la page :
+1 - le caractère de séparation qui vous avez peut-etre utilisé pour définir votre hierarchie interne
+2 - la définition d'un lieu RACINE si vous le voulez
 
+Une fois ces options choisies un tableau vous présenta la nouvelle hierarchie générée.
+Si elle vous convient vous pouvez valider en dessous du tableau.
+Sinon, vous pouvez changer vos paramètres et regénérer une hierarchie en cliquant sur le premier << Valider >>
 
-
-
-
-
-
-
-*************************************************************************************************************
---- MISES A JOUR DEPUIS LA VERSION 0.3 et <
-*************************************************************************************************************
-
-
-I) Sauvegarde de votre ancienne configuration :
-
-Avant de faire quoi que ce soit il convient de faire deux choses :
-
-Sauvegardez votre base de donnée via l'interface de sauvegarde de glpi et 
-récupérez le fichier dump contenant les données dans le répertoire backups/dump/ 
-et faites en une sauvegarde.
-
-Récupérez le fichier config.php dans le répertoire glpi/config/ et copiez le ailleurs 
-sur votre disque et faites en une sauvegarde.
-
-A partir de là, si la mise à jour se déroule mal ou que les nouvelles implantation de 
-la version 0.5 ne vous conviennent pas, il sera facile de revenir à votre version précédente.
-
-Si néanmoins cette procédure se déroulait mal, merci de nous faire parvenir au plus vite sur 
-les mailing listes, ou sur le forum du site du projet, ou sur le bugtrack la procédure utilisée 
-et le message d'erreur que vous obtenez.
-
-II) Récupération et installation des fichiers.
-
-
-1)Supprimez le répertoire contenant GLPI ainsi que tout son contenu, de votre racine http.
-
-2)Téléchargez le tarball de la version 0.4 disponible dans la rubrique téléchargement du site du 
-projet glpi (http://glpi.indepnet.org).
-
-
-3)Décompressez la nouvelle archive de GLPI, à la place de l'ancienne.
-
-4)Changez les droits sur les dossiers suivants :
-
--[votre_racine_http/]glpi/backups/dump
--[votre_racine_http/]glpi/glpi/config/
--[votre_racine_http/]glpi/docs/
-
-de manière à ce que PHP y ait les droits d'écriture.
-
-
-III)Lancement de la mise à jour :
-
-1) Faites pointer votre navigateur web sur http://votreserveur/glpi/
-
-2) Sélectionnez la langue dans laquelle vous souhaitez effectuer la mise à jour et cliquez sur « ok ».
-
-3) Cliquez sur « mise à jour ».
-
-4) Vérifiez que les tests d'environnement on bien tous été réalisé avec succès, sinon suivez les 
-instructions et réessayez.
-
-Si tout c'est bien passé, cliquez sur « continuer ».
-
-5)Configurez l'accès au serveur Mysql, aidez vous du fichier config.php que vous avez sauvegardé, 
-pour remplir :
-Mysql serveur : le nom d'hôte mysql
-Mysql user : le nom d'utilisateur mysql
-Mysql pass : le mot de passe associé au nom d'utilisateur mysql
-
-Une fois tout ceci fait cliquez sur « continuer »
-
-6) Sélectionnez la base de données que vous souhaitez mettre à jour.
-Si vous ne connaissez pas son nom, référez vous au fichier config.php que vous avez sauvegardé, 
-il s'agit du nom se trouvant dans la variable $dbdefault.
-Cliquez sur « continuer »
-
-7) Un écran vous demande si vous êtes sûr de vouloir mettre à jour votre base de données, 
-cliquez sur « continuer » si c'est la cas.
-
-8) La mise à jour commence, cela peut prendre un certain temps en fonction de la taille de 
-votre base de données.
-
-IMPORTANT : La mise à jour depuis une version inférieure vers GLPI 0.4 ne vous permet pas de préserver 
-automatiquement vos configurations précises (configurations générales, sources externes, mailing etc etc)
- qui étaient conservées dans le fichier config.php.
-
-Il vous faudra utiliser les formulaires de configuration post-installation dans le menu « configuration »
+### PAS FORCEMENT VISIBLE SUIVANT VOS CONFIGURATIONS ###
+10 ) Il vous faudra utiliser les formulaires de configuration post-installation dans le menu « configuration »
  de l'application.
 
 Ces menus ne sont accessibles qu'a un nouveau type d'utilisateur ajouté dans glpi : le « super-admin », 
 la mise a jour effectue donc automatiquement la conversion « admin »->« super-admin » ou vous permet 
 de créer un utilisateur « super-admin »
-
 
 A partir de ce moment, plusieurs cas sont possibles en fonction de la version depuis laquelle vous 
 mettez votre base de donnée à jour et de vos anciennes configurations.
@@ -416,18 +340,22 @@ avec les droits « super-admin », un message vous en informe.
 Votre base de données est a jour, vous pouvez désormais configurer GLPI en cliquant sur « utiliser GLPI » 
 et en vous connectant avec l'un des utilisateurs anciennement admin.
 
-
-
 CAS 2: Vous n'aviez pas d'utilisateurs de type « admin » ou que tous les « admin » ont un mot de passe vide 
 (puisqu'ils se connectent depuis des sources externes).
 
 Le script vous demande de bien vouloir saisir un nom d'utilisateur et de un mot de passe associé (n'entrez 
 pas le nom d'un utilisateur déjà existant).
+######
+
+11) Mise à jour du contenu
+En fonction de votre version antérieure, le contenu des données présentes dans votre base de données 
+peuvent avoir été stocké de manière non conforme au moteur de GLPI actuel. 
+Pour remédier à cela et afin que l'affichage de vos données soit correcte, l'ensemble de votre base données
+est analysée et mise à jour. Cela peut prendre pas mal de temps en fonction du volume d'information
+contenu dans votre base de données.
 
 
-
-// TODO AJOUTER LES MODIFS DE LA O.5
-
+12) Fin de la Mise à jour
 
 Si cette procédure réussi, votre base de données maintenant à jour vous pouvez configurer GLPI en cliquant 
 sur « utilisez GLPI » et en vous connectant avec l'utilisateur que vous venez de créer.
