@@ -168,6 +168,17 @@ else
 
 		if (showPeripheralForm($_SERVER["PHP_SELF"],$tab["ID"])){
 			switch($_SESSION['glpi_onglet']){
+				case -1:
+					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PERIPHERAL_TYPE);
+					showPorts($tab["ID"], PERIPHERAL_TYPE,$tab["withtemplate"]);
+					showPortsAdd($tab["ID"],PERIPHERAL_TYPE);
+					showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",PERIPHERAL_TYPE,$tab["ID"]);
+					showContractAssociated(PERIPHERAL_TYPE,$tab["ID"]);
+					showDocumentAssociated(PERIPHERAL_TYPE,$tab["ID"]);
+					showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
+					showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
+				
+					break;
 				case 4 :
 					showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",PERIPHERAL_TYPE,$tab["ID"]);
 					showContractAssociated(PERIPHERAL_TYPE,$tab["ID"]);
@@ -182,7 +193,7 @@ else
 				default :
 					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PERIPHERAL_TYPE);
 					showPorts($tab["ID"], PERIPHERAL_TYPE,$tab["withtemplate"]);
-					if ($tab["withtemplate"]!=2)	showPortsAdd($tab["ID"],PERIPHERAL_TYPE);
+					showPortsAdd($tab["ID"],PERIPHERAL_TYPE);
 					break;
 			}
 			

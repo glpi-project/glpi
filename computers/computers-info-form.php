@@ -205,6 +205,18 @@ if (isset($_GET['onglet'])) {
 		
 		if (showComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])) {
 			switch($_SESSION['glpi_onglet']){
+			case -1 :
+				showDeviceComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);			
+				showSoftwareInstalled($tab["ID"]);
+				showConnections($tab["ID"]);
+				showPorts($tab["ID"], COMPUTER_TYPE);
+				showPortsAdd($tab["ID"],COMPUTER_TYPE);
+				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",COMPUTER_TYPE,$tab["ID"]);
+				showContractAssociated(COMPUTER_TYPE,$tab["ID"]);
+				showDocumentAssociated(COMPUTER_TYPE,$tab["ID"]);
+				showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
+				showOldJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
+				break;
 			case 2 :
 				showSoftwareInstalled($tab["ID"]);
 				break;

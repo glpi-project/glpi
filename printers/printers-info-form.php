@@ -184,6 +184,18 @@ if (isset($_GET['onglet'])) {
 		if (showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
 		
 			switch($_SESSION['glpi_onglet']){
+				case -1:
+					showCartridgeInstalled($tab["ID"]);		
+					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PRINTER_TYPE);
+					showPorts($tab["ID"], PRINTER_TYPE,$tab["withtemplate"]);
+					showPortsAdd($tab["ID"],PRINTER_TYPE);	
+					showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",PRINTER_TYPE,$tab["ID"]);
+					showContractAssociated(PRINTER_TYPE,$tab["ID"]);
+					showDocumentAssociated(PRINTER_TYPE,$tab["ID"]);
+					showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
+					showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);		
+			
+					break;
 				case 3 :			
 					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PRINTER_TYPE);
 					showPorts($tab["ID"], PRINTER_TYPE,$tab["withtemplate"]);

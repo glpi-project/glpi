@@ -1088,6 +1088,7 @@ $lang["title"][25] = "Documents";
 $lang["title"][26] = "Principal";
 $lang["title"][27] = "Connexions";
 $lang["title"][28] = "Interventions";
+$lang["title"][29] = "Tous";
 
 
 $lang["device_hdd"][0] = "Rpm";

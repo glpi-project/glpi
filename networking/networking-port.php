@@ -84,14 +84,17 @@ else if(isset($_POST["delete"]))
 	deleteNetport($_POST);
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." deleted networking port.");
 	switch($n->fields["device_type"]){
-	case 1:
+	case COMPUTER_TYPE:
 		header("Location: ".$cfg_install["root"]."/computers/");
 		break;
-	case 2:
+	case NETWORKING_TYPE:
 		header("Location: ".$cfg_install["root"]."/networking/");
 		break;
-	case 3:
+	case PRINTER_TYPE:
 		header("Location: ".$cfg_install["root"]."/printers/");
+		break;
+	case PERIPHERAL_TYPE:
+		header("Location: ".$cfg_install["root"]."/peripherals/");
 		break;
 	default :
 		header("Location: ".$cfg_install["root"]."/computers/");
