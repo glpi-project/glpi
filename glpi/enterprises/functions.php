@@ -47,7 +47,7 @@ function titleEnterprise(){
 function searchFormEnterprise($field="",$phrasetype= "",$contains="",$sort= "",$deleted="") {
 	// Print Search Form
 	
-	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
+	GLOBAL $cfg_install, $cfg_layout, $layout, $lang, $HTMLRel;
 
 	$option["glpi_enterprises.ID"]				= $lang["financial"][28];
 	$option["glpi_enterprises.name"]				= $lang["financial"][27];
@@ -57,7 +57,7 @@ function searchFormEnterprise($field="",$phrasetype= "",$contains="",$sort= "",$
 	$option["glpi_enterprises.comments"]			= $lang["financial"][12];
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/enterprises/enterprises-search.php\">";
-	echo "<div align='center'><table class='tab_cadre' width='800'>";
+	echo "<div align='center'><table class='tab_cadre' width='750'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
@@ -92,7 +92,8 @@ function searchFormEnterprise($field="",$phrasetype= "",$contains="",$sort= "",$
 		echo ">".$val."</option>\n";
 	}
 	echo "</select> ";
-	echo "<input type=checkbox name='deleted' ".($deleted=='Y'?" checked ":"").">".$lang["common"][3];
+	echo "&nbsp;<input type='checkbox' name='deleted' ".($deleted=='Y'?" checked ":"").">";
+	echo "<img src=\"".$HTMLRel."pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
