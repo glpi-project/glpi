@@ -146,7 +146,6 @@ class Netport {
 		// Make new database object and fill variables
 		$db = new DB;
 		$query = "SELECT * FROM networking_ports WHERE (ID = '$ID')";
-		echo $query;
 		if ($result = $db->query($query))
 		{
 			$data = mysql_fetch_array($result);
