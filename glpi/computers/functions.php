@@ -7,11 +7,6 @@ GLPI - Gestionnaire Libre de Parc Informatique
  
  http://indepnet.net/   http://glpi.indepnet.org
  ----------------------------------------------------------------------
- Based on:
-IRMA, Information Resource-Management and Administration
-Christian Bauer 
-
- ----------------------------------------------------------------------
  LICENSE
 
 This file is part of GLPI.
@@ -29,12 +24,15 @@ This file is part of GLPI.
     You should have received a copy of the GNU General Public License
     along with GLPI; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- ----------------------------------------------------------------------
- Original Author of file:
- Purpose of file:
- ----------------------------------------------------------------------
 */
  
+// Based on:
+// IRMA, Information Resource-Management and Administration
+// Christian Bauer 
+// ----------------------------------------------------------------------
+// Original Author of file:
+// Purpose of file:
+// ----------------------------------------------------------------------
 
 include ("_relpos.php");
 // FUNCTIONS Computers

@@ -25,11 +25,14 @@ This file is part of GLPI.
     along with GLPI; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
- ----------------------------------------------------------------------
- Original Author of file: Bazile Lebeau
- Purpose of file:
- ----------------------------------------------------------------------
 */
+
+// ----------------------------------------------------------------------
+// Original Author of file:
+// Purpose of file:
+// ----------------------------------------------------------------------
+
+
 include ("_relpos.php");
 include ($phproot . "/glpi/common/classes.php");
 include ($phproot . "/glpi/common/functions.php");
