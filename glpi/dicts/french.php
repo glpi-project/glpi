@@ -787,10 +787,14 @@ $lang["update"][92]  ="Vous allez mettre  &#224; jour votre base de donn&eacute;
 $lang["update"][93]  ="Connexion &agrave; la base de donn&eacute;es r&eacute;ussie";
 $lang["update"][94]  ="La mise &agrave; jour est r&eacute;ussie, votre base de donn&eacute;es est actualis&eacute;e";
 $lang["update"][95]  ="La connexion  &#224; la base de donn&eacute;es a &eacute;chou&eacute;e, verifiez les paramètres de connexion figurant dans le fichier config_db.php";
-
-
-
-
-
+$lang["update"][96]	= "Tous vos utilisateurs ayant précedement les droits \"admin\" se sont vu attribuer les droits \"super-admin\" avec l'ajout de ce nouveau type d'utilisateur";
+$lang["update"][97]	= "La base de données que vous venez de mettre à jour ne contient aucun utilisateur \"super-admin\"";
+$lang["update"][98]	= "Vous devez en creer un absolument afin de pouvoir re-configurer l'application (notament les accés aux sources de données externes)";
+$lang["update"][99]	= "Vous pourrez supprimer cet utilisateur une fois que vous aurez configuré l'application";
+$lang["update"][100]	= "Entrez le login";
+$lang["update"][101]	= "Entrez le mot de passe";
+$lang["update"][102]	= "Re-entrez le mot de passe";
+$lang["update"][103]	= "Le Login ou le mot de passe sont vides, ou vous avez saisi deux mots de passes différents";
+$lang["update"][104]	= "Utilisateur bien enregistré vous pouvez vous connecter à l'application";
 
 ?>

@@ -83,6 +83,9 @@ class DBmysql {
 	function list_fields($table) {
 		return mysql_list_fields($this->dbdefault,$table);
 	}
+	function affected_rows() {
+		return mysql_affected_rows($this->dbh);
+	}
 	function errno()
 	{
 		return mysql_errno();
