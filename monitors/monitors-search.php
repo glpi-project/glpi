@@ -48,7 +48,7 @@ if(empty($_GET["order"])) $_GET["order"] = "ASC";
 
 titleMonitors();
 
-searchFormMonitors();
+searchFormMonitors($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
 
 showMonitorList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
 

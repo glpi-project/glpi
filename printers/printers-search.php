@@ -49,7 +49,7 @@ if(empty($_GET["order"])) $_GET["order"] = "ASC";
 
 titlePrinters();
 
-searchFormPrinters();
+searchFormPrinters($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
 
 showPrintersList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
 
