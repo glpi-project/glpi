@@ -27,24 +27,6 @@ $cfg_formats[FORMAT_ENTIER] = "FF0";
 $cfg_formats[FORMAT_REEL]   = "FF2";
 $cfg_formats[FORMAT_TEXTE]  = "FG0";
 
-		function write_line($enr){
-            global $nbcol,$ligne,$num_format,$format;
-            // parcours des champs
-            for ($cpt = 0; $cpt < $nbcol; $cpt++)
-            {
-            	$enr[$cpt]=preg_replace('/\x0A/',' ',$enr[$cpt]);
-            	$enr[$cpt]=preg_replace('/\x0D/','',$enr[$cpt]);
-                // format
-                echo "F;P".$num_format[$cpt].";".$format[$cpt];
-                echo ($cpt == 0 ? ";Y".$ligne : "").";X".($cpt+1)."\n";
-                // valeur
-                if ($num_format[$cpt] == FORMAT_TEXTE)
-                    echo "C;N;K\"".str_replace(';', ';;', $enr[$cpt])."\"\n"; // ajout des ""
-                else
-                    echo "C;N;K".$enr[$cpt]."\n";
-            }
-            echo "\n";
-		}
 
 // ----------------------------------------------------------------------------
 $db = new DB;
@@ -52,23 +34,50 @@ $db = new DB;
 
     // construction de la requête
     // ------------------------------------------------------------------------
-$query_nb = "select distinct glpi_networking.ID from glpi_networking";
-$result = $db->query($query_nb);
-$nbrows=$db->numrows($result)+1;
+$table="networking"; // ou monitors, printers, computers, peripherals
 
-$query = "select glpi_networking.*, glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac ";
-$query.= "from glpi_networking LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type = 2 AND glpi_networking_ports.on_device = glpi_networking.ID) ORDER by glpi_networking.ID";
-//echo $query;
-
-
-/*    $sql  = "SELECT code, rubrique, titre, auteur ";
-    $sql .= "FROM astuces ";
-    $sql .= "WHERE theme=1 "; // PHP
-    $sql .= "ORDER BY rubrique, titre";
-*/
-    $champs = Array(
-      //     champ       en-tête     format         align  width
-      Array( 'ID',     html_entity_decode($lang["networking"][42]),FORMAT_TEXTE, 'L',    20 ,'0'),
+switch($table){
+	case "printers" :
+		$query_nb = "select distinct glpi_printers.ID from glpi_printers";
+		
+		$query = "select glpi_printers.*, glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac ";
+		$query.= "from glpi_printers LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type = 3 AND glpi_networking_ports.on_device = glpi_printers.ID) ORDER by glpi_printers.ID";
+//		echo $query;
+//	exit;
+	    $champs = Array(
+      //     champ       en-tête     format         align  width multiple_zone
+      Array( 'ID',     html_entity_decode($lang["printers"][19]),FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'name', html_entity_decode($lang["printers"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'date_mod',    html_entity_decode($lang["printers"][16]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'contact',    html_entity_decode($lang["printers"][8]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'contactnum',    html_entity_decode($lang["printers"][7]), FORMAT_TEXTE, 'L',    20 ,'0'),      
+      Array( 'serial',    html_entity_decode($lang["printers"][10]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'otherserial',    html_entity_decode($lang["printers"][11]), FORMAT_TEXTE, 'L',    20 ,'0'),      
+      Array( 'flags_serial',     html_entity_decode($lang["printers"][14]),FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'flags_par', html_entity_decode($lang["printers"][15]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'flags_usb',    html_entity_decode($lang["printers"][27]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'comments',    html_entity_decode($lang["printers"][12]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'achat_date',    html_entity_decode($lang["printers"][20]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'date_fin_garantie',   html_entity_decode($lang["printers"][21]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'maintenance',    html_entity_decode($lang["printers"][22]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'ramSize',    html_entity_decode($lang["printers"][23]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'location',    html_entity_decode($lang["printers"][6]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'type',    html_entity_decode($lang["printers"][9]), FORMAT_TEXTE, 'L',    20 ,'0'),      
+      Array( 'ifaddr', html_entity_decode($lang["networking"][14]), FORMAT_TEXTE, 'L',    20 ,'1'),
+      Array( 'ifmac',    html_entity_decode($lang["networking"][15]), FORMAT_TEXTE, 'L',    20 ,'1')
+    );
+ 	break;
+    // ------------------------------------------------------------------------
+	case "networking" :
+		$query_nb = "select distinct glpi_networking.ID from glpi_networking";
+		
+		$query = "select glpi_networking.*, glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac ";
+		$query.= "from glpi_networking LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type = 2 AND glpi_networking_ports.on_device = glpi_networking.ID) ORDER by glpi_networking.ID";
+//		echo $query;
+//		exit;	
+	    $champs = Array(
+      //     champ       en-tête     format         align  width multiple_zone
+      Array( 'ID',     html_entity_decode($lang["networking"][50]),FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'name', html_entity_decode($lang["networking"][0]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'ram',    html_entity_decode($lang["networking"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'serial',   html_entity_decode($lang["networking"][6]), FORMAT_TEXTE, 'L',    20 ,'0'),
@@ -86,8 +95,12 @@ $query.= "from glpi_networking LEFT JOIN glpi_networking_ports ON (glpi_networki
       Array( 'ifaddr', html_entity_decode($lang["networking"][14]), FORMAT_TEXTE, 'L',    20 ,'1'),
       Array( 'ifmac',    html_entity_decode($lang["networking"][15]), FORMAT_TEXTE, 'L',    20 ,'1')
     );
+ 	break;
     // ------------------------------------------------------------------------
 
+}	
+		$result = $db->query($query_nb);
+		$nbrows=$db->numrows($result)+1;
 
 
 
@@ -95,7 +108,7 @@ $query.= "from glpi_networking LEFT JOIN glpi_networking_ports ON (glpi_networki
     {
         // en-tête HTTP
         // --------------------------------------------------------------------
-        header('Content-disposition: filename=reseau.slk');
+        header("Content-disposition: filename=".$table.".slk");
         header('Content-type: application/octetstream');
         header('Pragma: no-cache');
         header('Expires: 0');
@@ -151,6 +164,24 @@ $query.= "from glpi_networking LEFT JOIN glpi_networking_ports ON (glpi_networki
 
         // données
         // --------------------------------------------------------------------
+		function write_line($enr){
+            global $nbcol,$ligne,$num_format,$format;
+            // parcours des champs
+            for ($cpt = 0; $cpt < $nbcol; $cpt++)
+            {
+            	$enr[$cpt]=preg_replace('/\x0A/',' ',$enr[$cpt]);
+            	$enr[$cpt]=preg_replace('/\x0D/','',$enr[$cpt]);
+                // format
+                echo "F;P".$num_format[$cpt].";".$format[$cpt];
+                echo ($cpt == 0 ? ";Y".$ligne : "").";X".($cpt+1)."\n";
+                // valeur
+                if ($num_format[$cpt] == FORMAT_TEXTE)
+                    echo "C;N;K\"".str_replace(';', ';;', $enr[$cpt])."\"\n"; // ajout des ""
+                else
+                    echo "C;N;K".$enr[$cpt]."\n";
+            }
+            echo "\n";
+		}
 		
 
         $ligne = 2;
@@ -184,8 +215,12 @@ $query.= "from glpi_networking LEFT JOIN glpi_networking_ports ON (glpi_networki
 					$ligne_content[$i]=getDropdownName("glpi_dropdown_locations",$enr[$i]);
 				}
 				elseif($name == "type") {
-					$ligne_content[$i]=getDropdownName("glpi_type_networking",$enr[$i]);
+					$ligne_content[$i]=getDropdownName("glpi_type_".$table,$enr[$i]);
 				}
+				elseif($name == "ramtype") {
+					$ligne_content[$i]=html_entity_decode(getDropdownName("glpi_dropdown_ram",$enr[$i]));
+				}
+				
 				else
 				 $ligne_content[$i]=$enr[$i];
  				
