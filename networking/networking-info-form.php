@@ -39,6 +39,7 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_reservation.php");
 include ($phproot . "/glpi/includes_tracking.php");
+include ($phproot . "/glpi/includes_financial.php");
 
 if(!isset($_GET["ID"])) $_GET["ID"] = "";
 
@@ -63,6 +64,8 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
 	showNetworkingForm ($_SERVER["PHP_SELF"],$_POST["ID"]);
+	showInfocomAssociated(NETWORKING_TYPE,$tab["ID"]);
+	showContractAssociated(NETWORKING_TYPE,$tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_POST["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_POST["ID"]);
 
@@ -77,7 +80,10 @@ else
 
 	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
 	showNetworkingForm ($_SERVER["PHP_SELF"],$_GET["ID"]);
+
 	if (!empty($_GET["ID"])){
+	showInfocomAssociated(NETWORKING_TYPE,$tab["ID"]);
+	showContractAssociated(NETWORKING_TYPE,$tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_GET["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_GET["ID"]);
 	}

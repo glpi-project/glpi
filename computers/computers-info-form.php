@@ -45,6 +45,8 @@ include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_reservation.php");
+include ($phproot . "/glpi/includes_financial.php");
+
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -81,6 +83,8 @@ else if (isset($tab["update"])) {
 	showPorts($tab["ID"], COMPUTER_TYPE);
 	showPortsAdd($tab["ID"],COMPUTER_TYPE);
 	showConnections($tab["ID"]);
+	showInfocomAssociated(COMPUTER_TYPE,$tab["ID"]);
+	showContractAssociated(COMPUTER_TYPE,$tab["ID"]);
 	showSoftwareInstalled($tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
@@ -157,6 +161,8 @@ else {
 			showPorts($tab["ID"], COMPUTER_TYPE);
 			showPortsAdd($tab["ID"],COMPUTER_TYPE);
 			showConnections($tab["ID"]);
+			showInfocomAssociated(COMPUTER_TYPE,$tab["ID"]);
+			showContractAssociated(COMPUTER_TYPE,$tab["ID"]);
 			showSoftwareInstalled($tab["ID"]);
 			showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
 			showOldJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);

@@ -41,6 +41,7 @@ include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_reservation.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_cartridges.php");
+include ($phproot . "/glpi/includes_financial.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -69,6 +70,8 @@ else if (isset($_POST["update"]))
 	commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
 	showPrintersForm($_SERVER["PHP_SELF"],$_POST["ID"]);
 	showCartridgeInstalled($_POST["ID"]);
+	showInfocomAssociated(PRINTER_TYPE,$tab["ID"]);
+	showContractAssociated(PRINTER_TYPE,$tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$_POST["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$_POST["ID"]);
 
@@ -83,6 +86,8 @@ else if (isset($tab["disconnect"]))
 	commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
 	showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	showCartridgeInstalled($tab["ID"]);
+	showInfocomAssociated(PRINTER_TYPE,$tab["ID"]);
+	showContractAssociated(PRINTER_TYPE,$tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
 
@@ -112,6 +117,8 @@ else if(isset($tab["connect"]))
 		logEvent($tab["sID"], "printers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
 		showPrintersForm($_SERVER["PHP_SELF"],$tab["sID"]);
 		showCartridgeInstalled($tab["ID"]);
+		showInfocomAssociated(PRINTER_TYPE,$tab["ID"]);
+		showContractAssociated(PRINTER_TYPE,$tab["ID"]);
 		showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
 		showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
 
@@ -128,6 +135,8 @@ else
 	showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	if (!empty($_GET["ID"])){
 	showCartridgeInstalled($tab["ID"]);
+	showInfocomAssociated(PRINTER_TYPE,$tab["ID"]);
+	showContractAssociated(PRINTER_TYPE,$tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
 	}

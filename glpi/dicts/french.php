@@ -1147,5 +1147,7 @@ $lang["financial"][62] = "dimanche et fêtes";
 $lang["financial"][63] = "Début";
 $lang["financial"][64] = "Fin";
 $lang["financial"][65] = "Entreprises associées";
+$lang["financial"][66] = "Contrats associées";
+$lang["financial"][67] = "Informations Commerciales associées";
 
 ?>

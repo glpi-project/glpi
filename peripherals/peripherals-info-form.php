@@ -36,6 +36,7 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_reservation.php");
 include ($phproot . "/glpi/includes_tracking.php");
+include ($phproot . "/glpi/includes_financial.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -64,6 +65,8 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
 	showPeripheralForm($_SERVER["PHP_SELF"],$_POST["ID"]);
+	showInfocomAssociated(PERIPHERAL_TYPE,$tab["ID"]);
+	showContractAssociated(PERIPHERAL_TYPE,$tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$_POST["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$_POST["ID"]);
 	commonFooter();
@@ -76,6 +79,8 @@ else if (isset($tab["disconnect"]))
 	logEvent($tab["ID"], "Peripherals", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
 	commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
 	showPeripheralForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	showInfocomAssociated(PERIPHERAL_TYPE,$tab["ID"]);
+	showContractAssociated(PERIPHERAL_TYPE,$tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
 
@@ -104,6 +109,8 @@ else if(isset($tab["connect"]))
 		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],PERIPHERAL_TYPE);
 		logEvent($tab["sID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." connected item.");
 		showPeripheralForm($_SERVER["PHP_SELF"],$tab["sID"]);
+		showInfocomAssociated(PERIPHERAL_TYPE,$tab["ID"]);
+		showContractAssociated(PERIPHERAL_TYPE,$tab["ID"]);
 		showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
 		showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
 		commonFooter();
@@ -117,7 +124,10 @@ else
 
 	commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
 	showPeripheralForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	
 	if (!empty($_GET["ID"])){
+	showInfocomAssociated(PERIPHERAL_TYPE,$tab["ID"]);
+	showContractAssociated(PERIPHERAL_TYPE,$tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
 	}

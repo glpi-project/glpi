@@ -77,7 +77,9 @@ else if (isset($_POST["purge"]))
 }
 else if (isset($_POST["additem"])){
 	checkAuthentication("admin");
+	if(isset($_POST["item"]))
 	list($type,$ID)=explodeAllItemsSelectResult($_POST["item"]);
+	else {$type=$_POST["type"];$ID=$_POST["ID"];}
 	
 	addDeviceContract($_POST["conID"],$type,$ID);
 	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." associate device.");
