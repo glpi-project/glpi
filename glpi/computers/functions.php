@@ -346,7 +346,7 @@ function showComputerForm ($template,$target,$ID) {
 		echo "<tr><td class='tab_bg_1' valign='top'>";
 		echo "<form name='form' method='post' action=\"$target\">";
 
-		echo "<table cellpadding='2px' cellspacing='0' border='0'>\n";
+		echo "<table cellpadding='1px' cellspacing='0' border='0'>\n";
 		
 		echo "<tr><td>".$lang["computers"][7].":		</td>";
 		echo "<td><input type='text' name='name' value=\"".$comp->fields["name"]."\" size='20'></td>";
@@ -385,7 +385,7 @@ function showComputerForm ($template,$target,$ID) {
 
 		echo "</td>\n";	
 		echo "<td class='tab_bg_1' valign='top'>\n";
-		echo "<table cellpadding='2px' cellspacing='0' border='0'>";
+		echo "<table cellpadding='1px' cellspacing='0' border='0'>";
 
 
 		echo "<tr><td>".$lang["computers"][8].": 	</td>";
