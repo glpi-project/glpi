@@ -630,7 +630,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		$expirecss="";
 		if ($expire!=NULL&&$today>$expire) {$expirer=1; $expirecss="_2";}
 		// Get installed licences
-		$query_inst = "SELECT glpi_inst_software.ID AS ID, glpi_inst_software.license AS lID, glpi_computers.deleted as deleted, glpi_computers.ID AS cID, glpi_computers.name AS cname FROM glpi_licenses, glpi_inst_software LEFT JOIN glpi_computers ON (glpi_inst_software.cID= glpi_computers.ID) WHERE $SEARCH_LICENCE ";
+		$query_inst = "SELECT glpi_inst_software.ID AS ID, glpi_inst_software.license AS lID, glpi_computers.deleted as deleted, glpi_computers.ID AS cID, glpi_computers.name AS cname FROM glpi_licenses, glpi_inst_software INNER JOIN glpi_computers ON (glpi_computers.deleted='N' AND glpi_computers.is_template='0' AND glpi_inst_software.cID= glpi_computers.ID) WHERE $SEARCH_LICENCE ";
 		
 		$query_inst.= " AND glpi_inst_software.license = glpi_licenses.ID";	
 
@@ -1217,7 +1217,9 @@ function getInstalledLicence($sID){
 		$installed=0;
 		while ($data =  $db->fetch_array($result))
 			{
-			$query2 = "SELECT license FROM glpi_inst_software WHERE (license = '".$data["ID"]."')";
+			$query2 = "SELECT glpi_inst_software.license FROM glpi_inst_software ";
+			$query2.= " INNER JOIN glpi_computers ON glpi_inst_software.cID=glpi_computers.ID AND glpi_computers.deleted='N' AND glpi_computers.is_template='0' ";
+			$query2.= " WHERE (glpi_inst_software.license = '".$data["ID"]."')";
 			$result2 = $db->query($query2);
 			$installed += $db->numrows($result2);
 			}
