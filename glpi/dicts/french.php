@@ -396,6 +396,11 @@ $lang["reports"][7]	="Imprimantes";
 $lang["reports"][8]	="Materiel r&eacute;seau";
 $lang["reports"][9]	="Moniteurs";
 $lang["reports"][10]	="S&eacute;lectionnez un type de mat&eacute;riel";
+$lang["reports"][11]    ="Materiel sous contrat de maintenance";
+$lang["reports"][12]    ="Type de materiel";
+$lang["reports"][13]    ="Date d'achat";
+$lang["reports"][14]    ="Option de tri";
+$lang["reports"][15]    ="Afficher rapport";
 
 // LDAP
 $lang["ldap"][0]	= "recherche";
