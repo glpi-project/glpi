@@ -1169,6 +1169,10 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 
 
 	$query.=" WHERE '1' = '1'";
+	
+	if ($computers_search)
+	$query.=" AND glpi_tracking.device_type= '1'";
+	
 	if ($computers_search) $query .= "AND $wherecomp";
 	if ($date1!="") $query.=" AND glpi_tracking.date >= '$date1'";
 	if ($date2!="") $query.=" AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
@@ -1186,9 +1190,11 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 	if ($author!="all") $query.=" AND glpi_tracking.author = '$author'";
 	
    $query.=" ORDER BY ID";
+
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);
+
 		// Limit the result, if no limit applies, use prior result
 		if ($numrows>$cfg_features["list_limit"]) {
 			$query_limit = $query. " LIMIT $start,".$cfg_features["list_limit"]." ";
@@ -1211,6 +1217,7 @@ echo "<th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
 		echo "<th colspan='2'>".$lang["joblist"][6]."</th>";
 			echo "</tr>";
 			for ($i=0; $i < $numrows_limit; $i++) {
+				
 				$ID = $db->result($result_limit, $i, "ID");
 				showJobShort($ID, 1);
 			}
