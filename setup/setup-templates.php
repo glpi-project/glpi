@@ -53,21 +53,21 @@ if(isset($tab["add"]))
 	logEvent(0,"Templates", 5, "setup", $_SESSION["glpiname"]." added template ".$tab["templname"].".");
 	header("Location: $_SERVER[HTTP_REFERER]?done");
 }
-else if(isset($tab["delete"]))
+elseif(isset($tab["delete"]))
 {
 	checkAuthentication("admin");
 	deleteTemplate($tab);
 	logEvent(0,"Templates", 5, "setup", $_SESSION["glpiname"]." deleted template ".$tab["ID"].".");
 	header("Location: $_SERVER[HTTP_REFERER]?done");
 }
-else if(isset($tab["update"]))
+elseif(isset($tab["update"]))
 {
 	checkAuthentication("admin");
 	updateTemplate($tab);
 	logEvent(0,"Templates", 5, "setup", $_SESSION["glpiname"]." updated template ".$tab["ID"].".");
 	header("Location: $_SERVER[HTTP_REFERER]?done");
 }
-else if(isset($tab["showform"]))
+elseif(isset($tab["showform"]))
 {
 	checkAuthentication("admin");
 	commonHeader("glpi Setup",$_SERVER["PHP_SELF"]);
