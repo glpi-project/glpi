@@ -55,9 +55,11 @@ $update_list = array();
 $user_present=1;
 $identificat = new Identification($_POST['login_name']);
 
+$auth_succeded=false;
+// Pas en premier car sinon on ne fait pas le blankpassword
 // First try to connect via le DATABASE
-$auth_succeded = $identificat->connection_db($_POST['login_name'],$_POST['login_password']);
-if ($auth_succeded) $user_present = $identificat->user->getFromDB($_POST['login_name']);
+//$auth_succeded = $identificat->connection_db($_POST['login_name'],$_POST['login_password']);
+//if ($auth_succeded) $user_present = $identificat->user->getFromDB($_POST['login_name']);
 
 // Second try IMAP/POP
 if (!$auth_succeded) {
@@ -124,6 +126,12 @@ if (!$auth_succeded) {
 			}
 		}
    }
+}
+
+// Finally try to connect via le DATABASE
+if (!$auth_succeded) {
+	$auth_succeded = $identificat->connection_db($_POST['login_name'],$_POST['login_password']);
+	if ($auth_succeded) $user_present = $identificat->user->getFromDB($_POST['login_name']);
 }
 
 // we have done at least a good login? No, we exit.
