@@ -1,0 +1,4 @@
+Le code contenu dans les fichiers de ces repertoires
+n'as pas été modifié pour GLPI il est conforme a ce
+qu'il etait pour IRMA v0.8.
+GLPI n'utilise pas ces fonctionnalités pour le moment. 
