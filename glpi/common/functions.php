@@ -779,8 +779,12 @@ function dropdown($table,$myname) {
 	
 	// Make a select box
 	$db = new DB;
-	
-	if($table == "glpi_dropdown_netpoint") {
+	if($table == "glpi_dropdown_locations" || $table == "glpi_dropdown_kbcategories") {
+	echo "<select name=\"$myname\">";
+	showTreeListSelect($table,-1, 0);
+	echo "</select>";
+	}
+	else if($table == "glpi_dropdown_netpoint") {
 		$query = "select t1.ID as ID, t1.name as netpname, t2.name as locname from glpi_dropdown_netpoint as t1";
 		$query .= " left join glpi_dropdown_locations as t2 on t1.location = t2.ID";
 		$query .= " order by t2.name, t1.name"; 
@@ -798,49 +802,6 @@ function dropdown($table,$myname) {
 			}
 		}
 		echo "</select>";
-	}
-	else if ($table == "glpi_dropdown_locations") {
-		$query = "SELECT MAX(level) AS MAX FROM $table";
-		$result = $db->query($query);
-		$MAX_LEVEL= $db->result($result,0,"MAX");
-		$VALUES=array();
-
-	$SELECT_ALL="";
-	$FROM_ALL="";
-	$WHERE_ALL="";
-	$ORDER_ALL="";
-
-	for ($i=1;$i<=$MAX_LEVEL;$i++){
-	$SELECT_ALL.=" , location$i.name AS NAME$i, location$i.ID AS ID$i  ";
-	$FROM_ALL.=" LEFT JOIN glpi_dropdown_locations AS location$i ON location".($i-1).".ID = location$i.level_up ";
-	//$WHERE_ALL.=" AND location$i.level='$i' ";
-	$ORDER_ALL.=" , NAME$i";
-
-	}
-
-	$query="select location0.name AS NAME0,location0.ID AS ID0 $SELECT_ALL FROM glpi_dropdown_locations AS location0 $FROM_ALL  WHERE location0.level='0' $WHERE_ALL  ORDER BY NAME0 $ORDER_ALL";
-//echo $query;
-	$result = $db->query($query);
-
-	echo "<select name=\"$myname\">";
-	$data_old=array();
-
-	while ($data =  $db->fetch_array($result)){
-	for ($i=0;$i<=$MAX_LEVEL;$i++)
-	if (!empty($data["ID$i"]))
-	if (!isset($data_old["ID$i"])||$data_old["ID$i"]!=$data["ID$i"]){
-		$ID=$data["ID$i"];
-		$name=getDropdownLocationName($ID);
-
-		echo "<option value=\"$ID\">";
-		echo $name;
-		echo "</option>";
-	}
-	$data_old=$data;
-	}
-	echo "</select>";
-		
-
 	}
  else {
 		$query = "SELECT * FROM $table ORDER BY name";
@@ -865,8 +826,12 @@ function dropdownValue($table,$myname,$value) {
 	// Make a select box with preselected values
 
 	$db = new DB;
-
-	if($table == "glpi_dropdown_netpoint") {
+	if ($table == "glpi_dropdown_locations" || $table=="glpi_dropdown_kbcategories"){
+	echo "<select name=\"$myname\">";
+	showTreeListSelect($table,$value, 0);
+	echo "</select>";
+	}
+	else if($table == "glpi_dropdown_netpoint") {
 		$query = "select t1.ID as ID, t1.name as netpname, t2.ID as locID from glpi_dropdown_netpoint as t1";
 		$query .= " left join glpi_dropdown_locations as t2 on t1.location = t2.ID";
 		$query .= " order by t1.name,t2.name "; 
@@ -886,52 +851,7 @@ function dropdownValue($table,$myname,$value) {
 			}
 		}
 		echo "</select>";
-	} else if ($table == "glpi_dropdown_locations") {
-		$query = "SELECT MAX(level) AS MAX FROM $table";
-		$result = $db->query($query);
-		$MAX_LEVEL= $db->result($result,0,"MAX");
-		$VALUES=array();
-
-	$SELECT_ALL="";
-	$FROM_ALL="";
-	$WHERE_ALL="";
-	$ORDER_ALL="";
-
-	for ($i=1;$i<=$MAX_LEVEL;$i++){
-	$SELECT_ALL.=" , location$i.name AS NAME$i, location$i.ID AS ID$i  ";
-	$FROM_ALL.=" LEFT JOIN glpi_dropdown_locations AS location$i ON location".($i-1).".ID = location$i.level_up ";
-	//$WHERE_ALL.=" AND location$i.level='$i' ";
-	$ORDER_ALL.=" , NAME$i";
-
-	}
-
-	$query="select location0.name AS NAME0,location0.ID AS ID0 $SELECT_ALL FROM glpi_dropdown_locations AS location0 $FROM_ALL  WHERE location0.level='0' $WHERE_ALL  ORDER BY NAME0 $ORDER_ALL";
-//echo $query;
-	$result = $db->query($query);
-
-	echo "<select name=\"$myname\">";
-	$data_old=array();
-	echo "<option value=\"NULL\">-----</option>";
-	while ($data =  $db->fetch_array($result)){
-	for ($i=0;$i<=$MAX_LEVEL;$i++)
-	if (!empty($data["ID$i"]))
-	if (!isset($data_old["ID$i"])||$data_old["ID$i"]!=$data["ID$i"]){
-		$ID=$data["ID$i"];
-		$name=getDropdownLocationName($ID);
-
-		echo "<option value=\"$ID\"";		
-		if ($ID===$value) echo " selected ";
-		echo ">";
-		echo $name;
-		echo "</option>";
-	}
-	$data_old=$data;
-	}
-	echo "</select>";
-		
-
-	}
-	else {
+	}	else {
 
 	$query = "SELECT * FROM $table ORDER BY name";
 	$result = $db->query($query);
@@ -959,54 +879,6 @@ function dropdownValue($table,$myname,$value) {
 function dropdownNoValue($table,$myname,$value) {
 	// Make a select box without parameters value
 
-if ($table == "glpi_dropdown_locations") {
-	$db=new DB();
-		$query = "SELECT MAX(level) AS MAX FROM $table";
-		$result = $db->query($query);
-		$MAX_LEVEL= $db->result($result,0,"MAX");
-		$VALUES=array();
-
-	$SELECT_ALL="";
-	$FROM_ALL="";
-	$WHERE_ALL="";
-	$ORDER_ALL="";
-
-	for ($i=1;$i<=$MAX_LEVEL;$i++){
-	$SELECT_ALL.=" , location$i.name AS NAME$i, location$i.ID AS ID$i  ";
-	$FROM_ALL.=" LEFT JOIN glpi_dropdown_locations AS location$i ON location".($i-1).".ID = location$i.level_up ";
-	//$WHERE_ALL.=" AND location$i.level='$i' ";
-	$ORDER_ALL.=" , NAME$i";
-
-	}
-
-	$query="select location0.name AS NAME0,location0.ID AS ID0 $SELECT_ALL FROM glpi_dropdown_locations AS location0 $FROM_ALL  WHERE location0.level='0' $WHERE_ALL  ORDER BY NAME0 $ORDER_ALL";
-//echo $query;
-	$result = $db->query($query);
-
-	echo "<select name=\"$myname\">";
-	$data_old=array();
-
-	while ($data =  $db->fetch_array($result)){
-	for ($i=0;$i<=$MAX_LEVEL;$i++)
-	if (!empty($data["ID$i"]))
-	if (!isset($data_old["ID$i"])||$data_old["ID$i"]!=$data["ID$i"]){
-		$ID=$data["ID$i"];
-		$name=getDropdownLocationName($ID);
-		if ($ID === $value) {}
-		else {
-		echo "<option value=\"$ID\"";		
-		echo ">";
-		echo $name;
-		echo "</option>";
-		}
-	}
-	$data_old=$data;
-	}
-	echo "</select>";
-		
-
-	} else {
-
 
 
 	$db = new DB;
@@ -1029,7 +901,6 @@ if ($table == "glpi_dropdown_locations") {
 		}
 	}
 	echo "</select>";
-	}
 }
 
 function NetpointLocationSearch($search,$myname,$location,$value='') {
@@ -1175,9 +1046,9 @@ function getDropdownName($table,$id) {
 	$query = "select * from ". $table ." where ID = '". $id ."'";
 	$result = $db->query($query);
 	if($db->numrows($result) != 0) {
-		if ($table=="glpi_dropdown_locations"){
-		$name=getDropdownLocationName($id);
-		
+		if ($table=="glpi_dropdown_locations"||$table=="glpi_dropdown_kbcategories"){
+		$name=getTreeValueName($table,$id);
+	
 		} else {
 		$name = $db->result($result,0,"name");
 		if ($table=="glpi_dropdown_netpoint")
@@ -1967,6 +1838,81 @@ function rembo($string){
 	return $string;
 }
 
+function showTreeListSelect($table,$current, $parentID=0, $categoryname="")
+{
+	$query = "select * from $table where (parentID = $parentID) order by name ";
+
+	$db=new DB;
+	
+	if ($result=$db->query($query)){
+		if ($db->numrows($result)>0){
+	
+			
+		while ($row=$db->fetch_array($result)){
+		
+			$ID = $row["ID"];
+			$name = $categoryname . $row["name"];
+			echo "<option value='$ID'";
+			if($current == $ID)
+			{
+				echo " selected";
+			}
+			echo ">$name</option>\n";
+			$name = $name . "\\";
+			showTreeListSelect($table,$current, $ID, $name);
+		}
+	}	}
+
+
+}
+
+function getTreeLeafValueName($table,$ID)
+{
+	$query = "select * from $table where (ID = $ID)";
+	$db=new DB;
+	$name="";
+	if ($result=$db->query($query)){
+		if ($db->numrows($result)==1){
+			$name=$db->result($result,0,"name");
+		}
+		
+	}
+return $name;
+}
+
+function getTreeValueName($table,$ID, $wholename="")
+{
+	// show name catégory
+	// ok ??
+	
+	global $lang;
+	
+	$query = "select * from $table where (ID = $ID)";
+	$db=new DB;
+	
+	if ($result=$db->query($query)){
+		if ($db->numrows($result)>0){
+		
+		$row=$db->fetch_array($result);
+		
+		$parentID = $row["parentID"];
+		if($wholename == "")
+		{
+			$name = $row["name"];
+		} else
+		{
+			$name = $row["name"] . "\\";
+		}
+		$name = getTreeValueName($table,$parentID, $name) . $name;
+		if($parentID == 0)
+		{
+			$name = "\\" . $name;
+		}
+	}
+	
+	}
+return (@$name);
+}
 
 
 

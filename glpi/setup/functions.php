@@ -35,6 +35,85 @@ Christian Bauer
 include ("_relpos.php");
 // FUNCTIONS Setup
 
+function showFormTreeDown ($target,$name,$human,$ID) {
+
+	GLOBAL $cfg_layout, $lang, $HTMLRel;
+
+	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='70%'>";
+	echo "<a name=\"$name\"></a>";
+	echo "<tr><th colspan='3'>$human:</th></tr>";
+	if (countElementsInTable("glpi_dropdown_".$name)>0){
+	echo "<form method='post' action=\"$target\">";
+	echo "<input type='hidden' name='which' value='$name'>";
+	echo "<tr><td align='center' class='tab_bg_1'>";
+
+
+	$value=getTreeLeafValueName("glpi_dropdown_".$name,$ID);
+//	getDropdownName("glpi_dropdown_".$name,$ID);
+
+	dropdownValue("glpi_dropdown_".$name, "ID",$ID);
+        // on ajoute un input text pour entrer la valeur modifier
+		echo "<input type='image' src=\"".$HTMLRel."pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>";
+
+//        echo "<img src=\"".$HTMLRel."pics/puce.gif\" alt='' title=''>";
+
+ 	echo "<input type='text' maxlength='100' size='20' name='value' value='$value'>";
+	//
+	echo "</td><td align='center' class='tab_bg_2'>";
+	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."'>";
+	//  on ajoute un bouton modifier
+        echo "<input type='submit' name='update' value='".$lang["buttons"][14]."' class='submit'>";
+        echo "</td><td align='center' class='tab_bg_2'>";
+        //
+        echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+	echo "</td></form></tr>";
+	
+	echo "<form method='post' action=\"$target\">";
+	echo "<input type='hidden' name='which' value='$name'>";
+	echo "<tr><td align='center'  class='tab_bg_1'>";
+
+	dropdown("glpi_dropdown_".$name, "value_to_move");
+//		echo "<select name='type'>";
+//		echo "<option value='under'>".$lang["setup"][75]."</option>";
+		echo $lang["setup"][75].":";
+//		echo "<option value='over'>".$lang["setup"][77]."</option>";
+//		echo "<option value='same'>".$lang["setup"][76]."</option>";
+//		echo "</select>";
+
+	dropdown("glpi_dropdown_".$name, "value_where");
+	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
+	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
+	echo "<input type='submit' name='move' value=\"".$lang["buttons"][20]."\" class='submit' class='submit'>";
+	
+	echo "</td></form></tr>";	
+	
+	}
+	echo "<form action=\"$target\" method='post'>";
+	echo "<input type='hidden' name='which' value='$name'>";
+	echo "<tr><td align='center'  class='tab_bg_1'>";
+		echo "<input type='text' maxlength='100' size='10' name='value'>";
+
+	if (countElementsInTable("glpi_dropdown_".$name)>0){
+		echo "<select name='type'>";
+		echo "<option value='under'>".$lang["setup"][75]."</option>";
+		echo "<option value='same'>".$lang["setup"][76]."</option>";
+		echo "</select>";
+
+		dropdown("glpi_dropdown_".$name, "value2");
+		}		
+	else echo "<input type='hidden' name='type' value='first'>";
+	 		
+	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
+	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
+	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit' class='submit'>";
+	echo "</td></tr>";
+	
+	
+	echo "</form>";
+	echo "</table></div>";
+}
+
+
 function showFormDropDown ($target,$name,$human,$ID) {
 
 	GLOBAL $cfg_layout, $lang, $HTMLRel;
@@ -86,27 +165,6 @@ function showFormDropDown ($target,$name,$human,$ID) {
         echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 	echo "</td></form></tr>";
 	
-	if ($name=="locations"){
-	echo "<form method='post' action=\"$target\">";
-	echo "<input type='hidden' name='which' value='$name'>";
-	echo "<tr><td align='center'  class='tab_bg_1'>";
-
-		dropdown("glpi_dropdown_locations", "value_to_move");
-//		echo "<select name='type'>";
-//		echo "<option value='under'>".$lang["setup"][75]."</option>";
-		echo $lang["setup"][75].":";
-//		echo "<option value='over'>".$lang["setup"][77]."</option>";
-//		echo "<option value='same'>".$lang["setup"][76]."</option>";
-//		echo "</select>";
-
-		dropdown("glpi_dropdown_locations", "value_where");
-	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
-	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
-	echo "<input type='submit' name='move' value=\"".$lang["buttons"][20]."\" class='submit' class='submit'>";
-	
-	echo "</td></form></tr>";	
-	}
-	
 	}
 	echo "<form action=\"$target\" method='post'>";
 	echo "<input type='hidden' name='which' value='$name'>";
@@ -116,20 +174,6 @@ function showFormDropDown ($target,$name,$human,$ID) {
 		dropdown("glpi_dropdown_locations", "value2");
 		echo $lang["networking"][52].": ";
 		echo "<input type='text' maxlength='100' size='10' name='value'>";
-	}
-	else if ($name=="locations"){
-		echo "<input type='text' maxlength='100' size='10' name='value'>";
-
-	if (countElementsInTable("glpi_dropdown_".$name)>0){
-		echo "<select name='type'>";
-		echo "<option value='under'>".$lang["setup"][75]."</option>";
-		echo "<option value='same'>".$lang["setup"][76]."</option>";
-		echo "</select>";
-
-		dropdown("glpi_dropdown_locations", "value2");
-		}		
-	else echo "<input type='hidden' name='type' value='first'>";
-	 		
 	}
 	else {
 		echo "<input type='text' maxlength='100' size='20' name='value'>";
@@ -185,83 +229,30 @@ function showFormTypeDown ($target,$name,$human,$ID) {
 	echo "</td></form></tr>";
 	echo "</table></div>";
 }
-function moveLocationUnder($to_move,$where){
+function moveTreeUnder($table,$to_move,$where){
 	$db=new DB();
 	if ($where!=$to_move){
-		$query = "SELECT level FROM glpi_dropdown_locations WHERE ID='$to_move'";
-		$result = $db->query($query);
-		$TO_MOVE_LEVEL= $db->result($result,0,"level");
-	
-		$query = "SELECT level FROM glpi_dropdown_locations WHERE ID='$where'";
-		$result = $db->query($query);
-		$WHERE_LEVEL= $db->result($result,0,"level");
-
 		// Is the $where location under the to move ???
 		$impossible_move=false;
 		
-		$SELECT_ALL="";
-		$FROM_ALL="";
-		$WHERE_ALL="";
-
-		for ($i=1;$i<=$WHERE_LEVEL;$i++){
-			$SELECT_ALL.=" , location$i.name AS NAME$i, location$i.ID AS ID$i  ";
-			$FROM_ALL.=" LEFT JOIN glpi_dropdown_locations AS location$i ON location".($i-1).".ID = location$i.level_up ";
-		}
-		$query="select location0.name AS NAME0,location0.ID AS ID0 $SELECT_ALL FROM glpi_dropdown_locations AS location0 $FROM_ALL  WHERE location0.level='0' $WHERE_ALL AND location".$WHERE_LEVEL.".ID='$where'";
+		$current_ID=$where;
+		while ($current_ID!=0&&$impossible_move==false){
+		$query="select * from $table WHERE ID='$current_ID'";
 		$result = $db->query($query);
-		for ($i=0;$i<=$WHERE_LEVEL;$i++)
-			if ($db->result($result,0,"ID".$i)==$to_move)
-				$impossible_move=true;
+		$current_ID=$db->result($result,0,"parentID");
+		if ($current_ID==$to_move) $imposible_move=true;
+		}
 		
 		if (!$impossible_move){
-			$diff_level=$WHERE_LEVEL-$TO_MOVE_LEVEL+1;
 	
 			// Move Location
-			$query = "UPDATE glpi_dropdown_locations SET level_up='$where' where ID='$to_move'";
+			$query = "UPDATE $table SET parentID='$where' where ID='$to_move'";
 			$result = $db->query($query);
 
-			if ($diff_level!=0)
-			moveLevelofSubTreeLocation($to_move,$diff_level);
 		}	
 	
 	}	
 }
-
-function moveLevelofSubTreeLocation($where,$level){
-	$db=new DB();
-	$query = "SELECT level FROM glpi_dropdown_locations WHERE ID='$where'";
-	$result = $db->query($query);
-	$WHERE_LEVEL= $db->result($result,0,"level");
-
-	$query = "SELECT MAX(level) AS MAX FROM glpi_dropdown_locations";
-	$result = $db->query($query);
-	$MAX_LEVEL= $db->result($result,0,"MAX");
-
-	$SELECT_ALL="";
-	$FROM_ALL="";
-	$WHERE_ALL="";
-
-	for ($i=$WHERE_LEVEL+1;$i<=$MAX_LEVEL;$i++){
-	$SELECT_ALL.=" , location$i.level AS LEVEL$i, location$i.ID AS ID$i  ";
-	$FROM_ALL.=" LEFT JOIN glpi_dropdown_locations AS location$i ON location".($i-1).".ID = location$i.level_up ";
-	//$WHERE_ALL.=" AND location$i.level='$i' ";
-
-	}
-
-	$query="select location".$WHERE_LEVEL.".level AS LEVEL".$WHERE_LEVEL.",location".$WHERE_LEVEL.".ID AS ID".$WHERE_LEVEL." $SELECT_ALL FROM glpi_dropdown_locations AS location".$WHERE_LEVEL." $FROM_ALL  WHERE location".$WHERE_LEVEL.".ID='$where' $WHERE_ALL";
-	$result = $db->query($query);
-	while ($data =  $db->fetch_array($result)){
-	for ($i=$WHERE_LEVEL;$i<=$MAX_LEVEL;$i++){		
-	$query_update="update glpi_dropdown_locations SET level='".($data["LEVEL$i"]+$level)."' WHERE ID='".$data["ID$i"]."'";
-//	echo "---".$query_update."<br>";
-	$db->query($query_update);
-	}		
-	}
-
-
-	
-}
-
 
 function updateDropdown($input) {
 	$db = new DB;
@@ -288,20 +279,18 @@ function addDropdown($input) {
 	if($input["tablename"] == "glpi_dropdown_netpoint") {
 		$query = "INSERT INTO ".$input["tablename"]." (name,location) VALUES ('".$input["value"]."', '".$input["value2"]."')";
 	}
-	else if ($input["tablename"] == "glpi_dropdown_locations"){
+	else if ($input["tablename"] == "glpi_dropdown_locations" || $input["tablename"] == "glpi_dropdown_kbcategories"){
 		if ($input['type']=="first"){
-		    $query = "INSERT INTO ".$input["tablename"]." (name,level,level_up) VALUES ('".$input["value"]."', '0', '-1')";		
+		    $query = "INSERT INTO ".$input["tablename"]." (name,parentID) VALUES ('".$input["value"]."', '0')";		
 		} else {
 			$query="SELECT * from ".$input["tablename"]." where ID='".$input["value2"]."'";
 			$result=$db->query($query);
 			$data=$db->fetch_array($result);
-			$level=$data["level"];
-			$level_up=$data["level_up"];
+			$level_up=$data["parentID"];
 			if ($input["type"]=="under") {
-				$level++;
 				$level_up=$data["ID"];
 			} 
-			$query = "INSERT INTO ".$input["tablename"]." (name,level,level_up) VALUES ('".$input["value"]."', '$level', '$level_up')";		
+			$query = "INSERT INTO ".$input["tablename"]." (name,parentID) VALUES ('".$input["value"]."', '$level_up')";		
 		}
 	}
 	else {
@@ -401,13 +390,18 @@ function showDeleteConfirmForm($target,$table, $ID) {
 	
 	if ($table=="glpi_dropdown_locations"){
 		$db=new DB();
-		$query = "Select count(*) as cpt FROM glpi_dropdown_locations where level_up = ".$ID."";
+		$query = "Select count(*) as cpt FROM $table where parentID = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  {
 		echo "<center><p style='color:red'>".$lang["setup"][74]."</p></center>";
 		return;
 		}
 	}	
+
+	if ($table=="glpi_dropdown_kbcategories"){
+	echo "<center><p style='color:red'>".$lang["setup"][74]."</p></center>";
+	return;
+	}
 		
 	echo "<div align='center'>";
 	echo "<p style='color:red'>".$lang["setup"][63]."</p>";
@@ -484,8 +478,17 @@ function dropdownUsed($table, $ID) {
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
+	case "kbcategories" :
+		$query = "Select count(*) as cpt FROM glpi_dropdown_kbcategories where parentID = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		$query = "Select count(*) as cpt FROM glpi_kbitems where categoryID = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+
+		break;
 	case "location" :
-		$query = "Select count(*) as cpt FROM glpi_dropdown_locations where level_up = ".$ID."";
+		$query = "Select count(*) as cpt FROM glpi_dropdown_locations where parentID = ".$ID."";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 	
@@ -1809,165 +1812,5 @@ function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_ad
 	if($db->query($query)) return true;
 	else return false;
 }
-
-
-
-// functions setup knowbase
-
-
-
-function titleKnowbaseconf(){
-// Un titre pour la gestion de la base de connaissances
-		
-		GLOBAL  $lang,$HTMLRel;
-                echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/knowbase.png\" alt='' title=''></td><td><span class='icon_nav'>".$lang["knowbase"][0]."</span>";
-		 echo "</b></td></tr></table></div>";
-}
-
-
-function addKbCategories($categoryID,$categoryname) {
-
-GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
-
-
-$db=new DB;
-
-$query = "INSERT INTO glpi_kbcategories VALUES (null, $categoryID, \"".$categoryname."\")";
-
-
-
-if ($result=$db->query($query)){
-
-echo "<div align='center'>";
-echo $lang["knowbase"][16]." ". $categoryname."<br>  <a href=\"".$cfg_install["root"]."/setup/setup-knowbase.php\">".$lang["buttons"][13]."</a>";
-echo "</div>";
-}
-
-
-
-}
-
-
-function delKbCategories($id,$categoryname) {
-
-GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
-
-
-$db=new DB;
-
-$query = "SELECT * FROM glpi_kbitems WHERE (categoryID = $id)";
-	
-	if ($result=$db->query($query)){
-	
-	// On  empeche la supression d'une catégorie si un item est présent dans cette catégorie !!
-	
-	echo "<div align='center'>";
-	echo  $categoryname." <br> <span class='red'> ".$lang["knowbase"][19]."</span><br><a href=\"".$cfg_install["root"]."/setup/setup-knowbase.php\">".$lang["buttons"][13]."</a>";
-	echo "</div>";
-
-	}else{
-
-		$query = "DELETE FROM glpi_kbcategories WHERE (ID = $id)";
-		if ($result=$db->query($query)){
-		echo "<div align='center'>";
-		echo $lang["knowbase"][18]."(".$id.")". $categoryname."<a href=\"".$cfg_install["root"]."/setup/setup-knowbase.php\">".$lang["buttons"][13]."</a>";
-		echo "</div>";
-		}
-  
-	}	
-}
-
-
-function showSetupKbCategories($target) {
-
-GLOBAL  $lang;
-
-
-// Ajout
-
-echo "<div align='center'>";
-
-echo "<form action=\"$target\" name='2'  method=\"post\"><table width='600px'
-		class='tab_cadre'><tr>
-		<th colspan=2><strong>".$lang["knowbase"][15]."</strong></th></tr>";
-echo "<tr class='tab_bg_1'> <td>".$lang["knowbase"][13].":<br> 
-		<input type='text' size=\"65%\" name='categoryname'></td>";
-		echo "<td>".$lang["knowbase"][14]." :  ";
-		kbcategoryList(0);
-		echo "</td>";
-echo "</tr>";
-echo "<tr bgcolor=#CCCCCC><td align='center' colspan='2'><input class='submit' type='submit' name='Add' value='".$lang["buttons"][2]."'>
-		</td></tr></table></form>";
-
-
-// modif /delete
-
-$query = "SELECT * FROM glpi_kbcategories";
-$db=new DB;
- 	if ($result=$db->query($query)){
-
-	
-		if ($db->numrows($result)>0){
-			while ($row=$db->fetch_array($result))
-			{
-			$id = $row["ID"];
-			$categoryname = $row["name"];
-			$parentID = $row["parentID"];
-			$fullcategoryname  = kbcategoryname($id);
-		
-			
-			
-			echo "<form action=\"$target\"  method=\"post\">";
-			echo "
-					<table width='600px' class='tab_cadre'>
-					<tr><th colspan=2><strong>$fullcategoryname
-					</strong></th></tr>";
-			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$lang["knowbase"][13]." :
-					<br><input type='text' size=\"65%\" 
-					name='categoryname' value=\"$categoryname\">";
-			echo "</td>";
-			echo "<td>".$lang["knowbase"][14].": ";
-			kbcategoryList($parentID);
-			echo "</td>\n";
-			echo "\n</tr>\n";
-			echo "<tr class='tab_bg_1'><td align='center'><input type='hidden' 
-					name='id' value=\"$id\"><input class='submit' type='submit' 
-					name='Update' value='".$lang["buttons"][7]."'></td><td align='center'><input type='hidden' 
-					name='id' value=\"$id\"><input type='hidden' name='categoryname'
-					value=\"$categoryname\"><input class='submit' type='submit' 
-					name='Delete' value='".$lang["buttons"][6]."' ></form></td></tr></table>";
-			echo "<br>";
-			}
-		}
-	}
-		
-
-
-echo "</div>";
-		
-			
-}
-
-
-
-function updateKbCategories($id,$categorylist,$categoryname) {
-
-GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
-
-$query = "UPDATE glpi_kbcategories SET parentID='$categorylist', name='$categoryname' WHERE ID = $id";
-$db=new DB;
-	if ($result=$db->query($query)){
-
-	echo "<div align='center'>";
-	echo $lang["knowbase"][17]." (".$id.") ". $categoryname."<br> <a href=\"".$cfg_install["root"]."/setup/setup-knowbase.php\">".$lang["buttons"][13]."</a>";
-	echo "</div>";
-	}
-
-}
-
-
-
 
 ?>
