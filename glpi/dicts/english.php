@@ -195,6 +195,7 @@ $lang["job"][14]	= "New intervention";
 $lang["job"][15]	= "History";
 $lang["job"][16]	= "found";
 $lang["job"][17]    = "tracking";
+$lang["job"][18]        = "old";
 
 // Computers
 
