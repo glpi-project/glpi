@@ -454,9 +454,13 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE  FROM g
 		$expirecss="";
 		if ($expire!=NULL&&$today>$expire) {$expirer=1; $expirecss="_2";}
 		// Get installed licences
-		$query_inst = "SELECT glpi_inst_software.ID AS ID, glpi_computers.ID AS cID, glpi_computers.name AS cname FROM glpi_licenses, glpi_inst_software LEFT JOIN glpi_computers ON (glpi_inst_software.cID= glpi_computers.ID) WHERE glpi_licenses.sID = $sID  AND glpi_licenses.serial = '$serial' AND glpi_licenses.expire = '$expire' AND glpi_inst_software.license = glpi_licenses.ID";	
+		$query_inst = "SELECT glpi_inst_software.ID AS ID, glpi_computers.ID AS cID, glpi_computers.name AS cname FROM glpi_licenses, glpi_inst_software LEFT JOIN glpi_computers ON (glpi_inst_software.cID= glpi_computers.ID) WHERE glpi_licenses.sID = $sID  AND glpi_licenses.serial = '$serial' ";
+		if ($expire=="")
+		$query_inst.=" AND glpi_licenses.expire IS NULL";
+		else $query_inst.=" AND glpi_licenses.expire = '$expire'";
+		$query_inst.= " AND glpi_inst_software.license = glpi_licenses.ID";	
 
-//		echo $query_inst;
+		echo $query_inst;
 		$result_inst = $db->query($query_inst);
 		$num_inst=$db->numrows($result_inst);
 
