@@ -1,4 +1,5 @@
-#GLPI Dump database on 2005-03-20 19:23
+#GLPI Dump database on 2005-03-22 14:01
+
 ### Dump table glpi_cartridges
 
 DROP TABLE IF EXISTS glpi_cartridges;
@@ -18,6 +19,7 @@ CREATE TABLE glpi_cartridges (
    KEY date_out (date_out)
 );
 
+
 ### Dump table glpi_cartridges_assoc
 
 DROP TABLE IF EXISTS glpi_cartridges_assoc;
@@ -30,6 +32,7 @@ CREATE TABLE glpi_cartridges_assoc (
    KEY FK_glpi_cartridges_type (FK_glpi_cartridges_type),
    KEY FK_glpi_type_printer_2 (FK_glpi_type_printer)
 );
+
 
 ### Dump table glpi_cartridges_type
 
@@ -49,6 +52,7 @@ CREATE TABLE glpi_cartridges_type (
    KEY tech_num (tech_num),
    KEY deleted (deleted)
 );
+
 
 ### Dump table glpi_computer_device
 
@@ -114,6 +118,7 @@ INSERT INTO glpi_computer_device VALUES ('46','','9','3','15');
 INSERT INTO glpi_computer_device VALUES ('47','','9','3','18');
 INSERT INTO glpi_computer_device VALUES ('48','','9','3','20');
 INSERT INTO glpi_computer_device VALUES ('49','','9','3','21');
+
 ### Dump table glpi_computers
 
 DROP TABLE IF EXISTS glpi_computers;
@@ -154,6 +159,8 @@ INSERT INTO glpi_computers VALUES ('18','IBM 945gx','0','9854-5f-4s4f','','Jeann
 INSERT INTO glpi_computers VALUES ('19','','0','','','','','0','Empty Template',NULL,'2','0','1','1','Blank Template','0','N');
 INSERT INTO glpi_computers VALUES ('20','','0','','','','','0','Standard iMac',NULL,'9','0','3','1','iMac','0','N');
 INSERT INTO glpi_computers VALUES ('21','','0','','','','','0','',NULL,'12','1','1','1','test','0','N');
+INSERT INTO glpi_computers VALUES ('22','','0','','','','','0','',NULL,NULL,NULL,NULL,'1','Blank Template','0','N');
+
 ### Dump table glpi_config
 
 DROP TABLE IF EXISTS glpi_config;
@@ -211,6 +218,7 @@ CREATE TABLE glpi_config (
 );
 
 INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15','0.5','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31');
+
 ### Dump table glpi_connect_wire
 
 DROP TABLE IF EXISTS glpi_connect_wire;
@@ -226,6 +234,7 @@ CREATE TABLE glpi_connect_wire (
    KEY type (type)
 );
 
+
 ### Dump table glpi_contact_enterprise
 
 DROP TABLE IF EXISTS glpi_contact_enterprise;
@@ -238,6 +247,7 @@ CREATE TABLE glpi_contact_enterprise (
    KEY FK_enterprise_2 (FK_enterprise),
    KEY FK_contact (FK_contact)
 );
+
 
 ### Dump table glpi_contacts
 
@@ -257,6 +267,7 @@ CREATE TABLE glpi_contacts (
    KEY type (type)
 );
 
+
 ### Dump table glpi_contract_device
 
 DROP TABLE IF EXISTS glpi_contract_device;
@@ -271,6 +282,7 @@ CREATE TABLE glpi_contract_device (
    KEY FK_device (FK_device, device_type)
 );
 
+
 ### Dump table glpi_contract_enterprise
 
 DROP TABLE IF EXISTS glpi_contract_enterprise;
@@ -283,6 +295,7 @@ CREATE TABLE glpi_contract_enterprise (
    KEY FK_enterprise_2 (FK_enterprise),
    KEY FK_contract (FK_contract)
 );
+
 
 ### Dump table glpi_contracts
 
@@ -316,6 +329,7 @@ CREATE TABLE glpi_contracts (
    KEY bill_type (bill_type)
 );
 
+
 ### Dump table glpi_device_gfxcard
 
 DROP TABLE IF EXISTS glpi_device_gfxcard;
@@ -334,6 +348,7 @@ INSERT INTO glpi_device_gfxcard VALUES ('1','ATI Rage Pro 3D AGP','','AGP','','0
 INSERT INTO glpi_device_gfxcard VALUES ('2','Matrox Millenium G400DH','','AGP','','0');
 INSERT INTO glpi_device_gfxcard VALUES ('3','S3 Trio 64V+','','AGP','','0');
 INSERT INTO glpi_device_gfxcard VALUES ('4','integrated','','AGP','','0');
+
 ### Dump table glpi_device_hdd
 
 DROP TABLE IF EXISTS glpi_device_hdd;
@@ -351,6 +366,7 @@ CREATE TABLE glpi_device_hdd (
 
 INSERT INTO glpi_device_hdd VALUES ('1','IBM DTTA 35101','','IDE','','','0');
 INSERT INTO glpi_device_hdd VALUES ('2','IBM DCAS 34330','','IDE','','','0');
+
 ### Dump table glpi_device_iface
 
 DROP TABLE IF EXISTS glpi_device_iface;
@@ -375,6 +391,7 @@ INSERT INTO glpi_device_iface VALUES ('8','AMD 10Mbps','','','0');
 INSERT INTO glpi_device_iface VALUES ('9','Realtek 10Mbps','','','0');
 INSERT INTO glpi_device_iface VALUES ('10','Realtek 100Mbps','','','0');
 INSERT INTO glpi_device_iface VALUES ('11','integrated','','','0');
+
 ### Dump table glpi_device_moboard
 
 DROP TABLE IF EXISTS glpi_device_moboard;
@@ -391,6 +408,7 @@ CREATE TABLE glpi_device_moboard (
 INSERT INTO glpi_device_moboard VALUES ('1','Asus T2P4S','','','0');
 INSERT INTO glpi_device_moboard VALUES ('2','Asus P2BX','','','0');
 INSERT INTO glpi_device_moboard VALUES ('3','unknown','','','0');
+
 ### Dump table glpi_device_processor
 
 DROP TABLE IF EXISTS glpi_device_processor;
@@ -430,6 +448,7 @@ INSERT INTO glpi_device_processor VALUES ('23','ULTRASparc II','0','','0');
 INSERT INTO glpi_device_processor VALUES ('24','Intel Pentium IV','0','','0');
 INSERT INTO glpi_device_processor VALUES ('25','AMD Athlon','0','','0');
 INSERT INTO glpi_device_processor VALUES ('26','AMD Duron','0','','0');
+
 ### Dump table glpi_device_ram
 
 DROP TABLE IF EXISTS glpi_device_ram;
@@ -453,6 +472,7 @@ INSERT INTO glpi_device_ram VALUES ('6','SDRAM DIMMs (&lt;10ns)','EDO','','','0'
 INSERT INTO glpi_device_ram VALUES ('7','ECC DIMMs','EDO','','','0');
 INSERT INTO glpi_device_ram VALUES ('8','Other','EDO','','','0');
 INSERT INTO glpi_device_ram VALUES ('9','iMac DIMMS','EDO','','','0');
+
 ### Dump table glpi_device_sndcard
 
 DROP TABLE IF EXISTS glpi_device_sndcard;
@@ -469,6 +489,7 @@ CREATE TABLE glpi_device_sndcard (
 INSERT INTO glpi_device_sndcard VALUES ('1','Soundblaster 128 PCI','','','0');
 INSERT INTO glpi_device_sndcard VALUES ('2','Soundblaster 16 PnP','','','0');
 INSERT INTO glpi_device_sndcard VALUES ('3','integrated','','','0');
+
 ### Dump table glpi_doc_device
 
 DROP TABLE IF EXISTS glpi_doc_device;
@@ -482,6 +503,7 @@ CREATE TABLE glpi_doc_device (
    KEY FK_doc_2 (FK_doc),
    KEY FK_device (FK_device, device_type)
 );
+
 
 ### Dump table glpi_docs
 
@@ -501,6 +523,7 @@ CREATE TABLE glpi_docs (
    KEY date_mod (date_mod)
 );
 
+
 ### Dump table glpi_dropdown_enttype
 
 DROP TABLE IF EXISTS glpi_dropdown_enttype;
@@ -510,6 +533,7 @@ CREATE TABLE glpi_dropdown_enttype (
    PRIMARY KEY (ID)
 );
 
+
 ### Dump table glpi_dropdown_firmware
 
 DROP TABLE IF EXISTS glpi_dropdown_firmware;
@@ -518,6 +542,7 @@ CREATE TABLE glpi_dropdown_firmware (
     name varchar(255) NOT NULL,
    PRIMARY KEY (ID)
 );
+
 
 ### Dump table glpi_dropdown_iface
 
@@ -536,6 +561,7 @@ INSERT INTO glpi_dropdown_iface VALUES ('5','Frame Relay');
 INSERT INTO glpi_dropdown_iface VALUES ('6','ISDN');
 INSERT INTO glpi_dropdown_iface VALUES ('7','T1/E1 +');
 INSERT INTO glpi_dropdown_iface VALUES ('8','Serial Link');
+
 ### Dump table glpi_dropdown_kbcategories
 
 DROP TABLE IF EXISTS glpi_dropdown_kbcategories;
@@ -547,6 +573,7 @@ CREATE TABLE glpi_dropdown_kbcategories (
    UNIQUE parentID_2 (parentID, name),
    KEY parentID (parentID)
 );
+
 
 ### Dump table glpi_dropdown_locations
 
@@ -562,6 +589,7 @@ CREATE TABLE glpi_dropdown_locations (
 
 INSERT INTO glpi_dropdown_locations VALUES ('1','1 ier etage','0');
 INSERT INTO glpi_dropdown_locations VALUES ('2','2nd etage','0');
+
 ### Dump table glpi_dropdown_netpoint
 
 DROP TABLE IF EXISTS glpi_dropdown_netpoint;
@@ -572,6 +600,7 @@ CREATE TABLE glpi_dropdown_netpoint (
    PRIMARY KEY (ID),
    KEY location (location)
 );
+
 
 ### Dump table glpi_dropdown_os
 
@@ -595,6 +624,7 @@ INSERT INTO glpi_dropdown_os VALUES ('10','Windows 95 OSR2');
 INSERT INTO glpi_dropdown_os VALUES ('11','Windows 98 SR2');
 INSERT INTO glpi_dropdown_os VALUES ('12','Debian woody 3.0');
 INSERT INTO glpi_dropdown_os VALUES ('13','Windows NT 4.0 - SP3');
+
 ### Dump table glpi_dropdown_rubdocs
 
 DROP TABLE IF EXISTS glpi_dropdown_rubdocs;
@@ -604,6 +634,7 @@ CREATE TABLE glpi_dropdown_rubdocs (
    PRIMARY KEY (ID)
 );
 
+
 ### Dump table glpi_dropdown_tracking_category
 
 DROP TABLE IF EXISTS glpi_dropdown_tracking_category;
@@ -612,6 +643,7 @@ CREATE TABLE glpi_dropdown_tracking_category (
     name varchar(255),
    PRIMARY KEY (ID)
 );
+
 
 ### Dump table glpi_enterprises
 
@@ -630,6 +662,7 @@ CREATE TABLE glpi_enterprises (
    KEY type (type)
 );
 
+
 ### Dump table glpi_event_log
 
 DROP TABLE IF EXISTS glpi_event_log;
@@ -647,8 +680,9 @@ CREATE TABLE glpi_event_log (
    KEY itemtype (itemtype)
 );
 
-INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-03-20 12:36:55','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-03-20 19:23:55','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-03-22 13:59:10','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-03-22 14:01:34','login','3','glpi logged in.');
+
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -666,10 +700,10 @@ CREATE TABLE glpi_followups (
 
 INSERT INTO glpi_followups VALUES ('1','1','2003-09-18 00:53:35','tech','J\'ai été voir, je pense que la carte mere a grillé.');
 INSERT INTO glpi_followups VALUES ('2','1','2003-09-18 00:54:06','tech','L\'alimentation est foutue, je vais tester la carte mere pour voir si elle est recuperable');
-INSERT INTO glpi_followups VALUES ('3','1','2003-09-18 00:54:40','tech','Probleme reglé j\'ai seulement changé l\'alimentation.
-Le reste fonctionne tres bien.');
+INSERT INTO glpi_followups VALUES ('3','1','2003-09-18 00:54:40','tech','Probleme reglé j\'ai seulement changé l\'alimentation.Le reste fonctionne tres bien.');
 INSERT INTO glpi_followups VALUES ('4','3','2003-09-18 00:55:08','tech','Je pense que l\'on peux changer la souris.');
 INSERT INTO glpi_followups VALUES ('5','2','2003-09-18 00:55:52','tech','Je suis passé, il faudra faire une restauration de windows NT4.');
+
 ### Dump table glpi_infocoms
 
 DROP TABLE IF EXISTS glpi_infocoms;
@@ -698,6 +732,7 @@ CREATE TABLE glpi_infocoms (
 );
 
 INSERT INTO glpi_infocoms VALUES ('1','18','1','2001-09-24','0000-00-00','12','',NULL,'','','','0',NULL,'0','','0','');
+
 ### Dump table glpi_inst_software
 
 DROP TABLE IF EXISTS glpi_inst_software;
@@ -714,6 +749,7 @@ INSERT INTO glpi_inst_software VALUES ('2','10','7');
 INSERT INTO glpi_inst_software VALUES ('1','8','8');
 INSERT INTO glpi_inst_software VALUES ('3','8','6');
 INSERT INTO glpi_inst_software VALUES ('4','8','9');
+
 ### Dump table glpi_kbitems
 
 DROP TABLE IF EXISTS glpi_kbitems;
@@ -726,6 +762,7 @@ CREATE TABLE glpi_kbitems (
    PRIMARY KEY (ID),
    KEY categoryID (categoryID)
 );
+
 
 ### Dump table glpi_licenses
 
@@ -748,6 +785,7 @@ INSERT INTO glpi_licenses VALUES ('4','4','au-23-as-23-cd',NULL,'N','0','Y');
 INSERT INTO glpi_licenses VALUES ('5','4','qw-as-23-0k-23-dg',NULL,'N','0','Y');
 INSERT INTO glpi_licenses VALUES ('8','3','free',NULL,'N','0','Y');
 INSERT INTO glpi_licenses VALUES ('9','5','free',NULL,'N','0','Y');
+
 ### Dump table glpi_monitors
 
 DROP TABLE IF EXISTS glpi_monitors;
@@ -785,6 +823,7 @@ CREATE TABLE glpi_monitors (
 INSERT INTO glpi_monitors VALUES ('3','nokia 20\'','2003-09-18 00:14:14','','','0','Ecran infographiste','','','20','1','1','1','0','1','1','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('2','Sony 19\'','2003-09-18 00:14:50','','','0','ecran documentation','','','19','0','0','1','1','1','3','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('4','','0000-00-00 00:00:00','','','0','','','','0','0','0','0','0',NULL,NULL,'0','N','1','Blank Template');
+
 ### Dump table glpi_networking
 
 DROP TABLE IF EXISTS glpi_networking;
@@ -806,8 +845,8 @@ CREATE TABLE glpi_networking (
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
     is_template enum('0','1') DEFAULT '0' NOT NULL,
     tplname varchar(255),
-    ifmac varchar(30) NOT NULL default '',
-    ifaddr varchar(30) NOT NULL default '',
+    ifmac varchar(30) NOT NULL,
+    ifaddr varchar(30) NOT NULL,
    PRIMARY KEY (ID),
    KEY location (location),
    KEY type (type),
@@ -818,8 +857,9 @@ CREATE TABLE glpi_networking (
    KEY tech_num (tech_num)
 );
 
-INSERT INTO glpi_networking VALUES (9, 'Dlink 450', '', '4586-puis-kioe', '', '', '', 0, '2005-03-21 17:55:46', '', 1, 1, 0, 0, 'N', '0', NULL, '', '');
-INSERT INTO glpi_networking VALUES (10, '', '', '', '', '', '', 0, '0000-00-00 00:00:00', '', NULL, NULL, NULL, 0, 'N', '1', 'Blank Template', '', '');
+INSERT INTO glpi_networking VALUES ('9','Dlink 450','','4586-puis-kioe','','','','0','0000-00-00 00:00:00','','1','1',NULL,'0','N','0',NULL,'','');
+INSERT INTO glpi_networking VALUES ('10','','','','','','','0','0000-00-00 00:00:00','',NULL,NULL,NULL,'0','N','1','Blank Template','','');
+
 ### Dump table glpi_networking_ports
 
 DROP TABLE IF EXISTS glpi_networking_ports;
@@ -846,6 +886,7 @@ INSERT INTO glpi_networking_ports VALUES ('5','9','2','1','Dlink port','10.10.0.
 INSERT INTO glpi_networking_ports VALUES ('6','9','2','2','Dlink port','10.10.0.1','','2',NULL);
 INSERT INTO glpi_networking_ports VALUES ('7','9','2','3','Dlink port','10.10.0.1','','2',NULL);
 INSERT INTO glpi_networking_ports VALUES ('8','10','2','0','','','','5',NULL);
+
 ### Dump table glpi_networking_wire
 
 DROP TABLE IF EXISTS glpi_networking_wire;
@@ -862,6 +903,7 @@ CREATE TABLE glpi_networking_wire (
 INSERT INTO glpi_networking_wire VALUES ('1','5','1');
 INSERT INTO glpi_networking_wire VALUES ('2','6','2');
 INSERT INTO glpi_networking_wire VALUES ('3','7','3');
+
 ### Dump table glpi_peripherals
 
 DROP TABLE IF EXISTS glpi_peripherals;
@@ -892,6 +934,7 @@ CREATE TABLE glpi_peripherals (
 );
 
 INSERT INTO glpi_peripherals VALUES ('1','','0000-00-00 00:00:00','','','0','','','','0','0','','0','N','1','Blank Template');
+
 ### Dump table glpi_prefs
 
 DROP TABLE IF EXISTS glpi_prefs;
@@ -909,6 +952,7 @@ INSERT INTO glpi_prefs VALUES ('Helpdesk','no','french','2');
 INSERT INTO glpi_prefs VALUES ('normal','','english','3');
 INSERT INTO glpi_prefs VALUES ('tech','yes','french','4');
 INSERT INTO glpi_prefs VALUES ('post-only','','english','5');
+
 ### Dump table glpi_printers
 
 DROP TABLE IF EXISTS glpi_printers;
@@ -945,6 +989,7 @@ CREATE TABLE glpi_printers (
 INSERT INTO glpi_printers VALUES ('1','HP laser','2003-09-18 00:12:43','','','0','hp-jsgsj-658','','0','1','0','Imprimante bureau du directeur','','1','1','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('2','HP deskjet','2003-09-18 00:13:11','','','0','45dskjs-ds','','0','1','0','Imprimante documentation','','2','3','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('3','','0000-00-00 00:00:00','','','0','','','0','0','0','','',NULL,NULL,'0','N','1','Blank Template');
+
 ### Dump table glpi_repair_item
 
 DROP TABLE IF EXISTS glpi_repair_item;
@@ -957,6 +1002,7 @@ CREATE TABLE glpi_repair_item (
    KEY device_type_2 (device_type, id_device)
 );
 
+
 ### Dump table glpi_reservation_item
 
 DROP TABLE IF EXISTS glpi_reservation_item;
@@ -966,11 +1012,11 @@ CREATE TABLE glpi_reservation_item (
     id_device int(11) DEFAULT '0' NOT NULL,
     comments text NOT NULL,
    PRIMARY KEY (ID),
-   KEY device_type (device_type),
-   KEY device_type_2 (device_type, id_device)
+   KEY device_type (device_type)
 );
 
 INSERT INTO glpi_reservation_item VALUES ('1','1','10','Pile Poil');
+
 ### Dump table glpi_reservation_resa
 
 DROP TABLE IF EXISTS glpi_reservation_resa;
@@ -987,6 +1033,7 @@ CREATE TABLE glpi_reservation_resa (
    KEY begin (begin),
    KEY end (end)
 );
+
 
 ### Dump table glpi_software
 
@@ -1020,6 +1067,7 @@ INSERT INTO glpi_software VALUES ('3','Acrobat PDF Viewer','4',NULL,NULL,'0','5'
 INSERT INTO glpi_software VALUES ('4','MS Windows NT','4.0',NULL,NULL,'0','5','N','-1','0','N','0',NULL,NULL);
 INSERT INTO glpi_software VALUES ('5','Latex','6.2','Latex','1','0','2','N','-1','0','N','0',NULL,NULL);
 INSERT INTO glpi_software VALUES ('6','','',NULL,NULL,'0',NULL,'N','-1','0','N','1','Blank Template',NULL);
+
 ### Dump table glpi_tracking
 
 DROP TABLE IF EXISTS glpi_tracking;
@@ -1050,9 +1098,9 @@ CREATE TABLE glpi_tracking (
 );
 
 INSERT INTO glpi_tracking VALUES ('1','2003-09-18 00:46:40','2003-09-18 00:54:43','old','Helpdesk','tech','1','8','Mon ordinateur ne s\'allume plus, et il ya des bruits byzarres','3','no','','','0',NULL);
-INSERT INTO glpi_tracking VALUES ('2','2003-09-18 00:48:19','0000-00-00 00:00:00','new','Helpdesk','tech','1','10','Un message en anglais s\'affiche, je n\'y comprend rien, je n\'ose plus toucher à rien de peur de tout casser.
-Venez vite !!!!','4','no','','','0',NULL);
+INSERT INTO glpi_tracking VALUES ('2','2003-09-18 00:48:19','0000-00-00 00:00:00','new','Helpdesk','tech','1','10','Un message en anglais s\'affiche, je n\'y comprend rien, je n\'ose plus toucher à rien de peur de tout casser.Venez vite !!!!','4','no','','','0',NULL);
 INSERT INTO glpi_tracking VALUES ('3','2003-09-18 00:49:29','0000-00-00 00:00:00','new','Helpdesk','tech','1','18','Ma souris se bloque sans arret, elle defile mal sur l\'ecran et elle glisse tres mal sur le tapis de souris.','3','no','','','0',NULL);
+
 ### Dump table glpi_type_computers
 
 DROP TABLE IF EXISTS glpi_type_computers;
@@ -1066,6 +1114,7 @@ INSERT INTO glpi_type_computers VALUES ('1','Generic x86 PC');
 INSERT INTO glpi_type_computers VALUES ('2','PowerMac G4');
 INSERT INTO glpi_type_computers VALUES ('3','iMac 2nd Generation');
 INSERT INTO glpi_type_computers VALUES ('4','PowerMac G3');
+
 ### Dump table glpi_type_docs
 
 DROP TABLE IF EXISTS glpi_type_docs;
@@ -1135,6 +1184,7 @@ INSERT INTO glpi_type_docs VALUES ('50','OpenOffice Calc','sxc','sxc-dist.png','
 INSERT INTO glpi_type_docs VALUES ('51','LaTeX','tex','tex-dist.png','','Y','2004-12-13 19:47:22');
 INSERT INTO glpi_type_docs VALUES ('52','GIMP multi-layer','xcf','xcf-dist.png','','Y','2004-12-13 19:47:22');
 INSERT INTO glpi_type_docs VALUES ('53','JPEG','jpeg','jpg-dist.png','','Y','2005-03-07 22:23:17');
+
 ### Dump table glpi_type_monitors
 
 DROP TABLE IF EXISTS glpi_type_monitors;
@@ -1148,6 +1198,7 @@ INSERT INTO glpi_type_monitors VALUES ('1','Nokia 445Xav');
 INSERT INTO glpi_type_monitors VALUES ('2','Sony 200GDM');
 INSERT INTO glpi_type_monitors VALUES ('3','Sony 200sf');
 INSERT INTO glpi_type_monitors VALUES ('4','integrated');
+
 ### Dump table glpi_type_networking
 
 DROP TABLE IF EXISTS glpi_type_networking;
@@ -1158,6 +1209,7 @@ CREATE TABLE glpi_type_networking (
 );
 
 INSERT INTO glpi_type_networking VALUES ('1','Dlink Switch');
+
 ### Dump table glpi_type_peripherals
 
 DROP TABLE IF EXISTS glpi_type_peripherals;
@@ -1166,6 +1218,7 @@ CREATE TABLE glpi_type_peripherals (
     name varchar(255),
    PRIMARY KEY (ID)
 );
+
 
 ### Dump table glpi_type_printers
 
@@ -1179,6 +1232,7 @@ CREATE TABLE glpi_type_printers (
 INSERT INTO glpi_type_printers VALUES ('1','HP Laserjet 4050N');
 INSERT INTO glpi_type_printers VALUES ('2','HP Laserjet 4+');
 INSERT INTO glpi_type_printers VALUES ('3','HP Deskjet 850c');
+
 ### Dump table glpi_users
 
 DROP TABLE IF EXISTS glpi_users;
