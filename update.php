@@ -674,16 +674,6 @@ $query = "ALTER TABLE `glpi_networking` ADD INDEX ( `firmware` ) ";
 $db->query($query) or die("39 ".$lang["update"][90].$db->error());
 }
 
-if(!isIndex("glpi_networking_wire", "end1")) {
-$query = "ALTER TABLE `glpi_networking_wire` ADD INDEX ( `end1` ) ";
-$db->query($query) or die("40 ".$lang["update"][90].$db->error());
-}
-
-if(!isIndex("glpi_networking_wire", "end2")) {
-$query = "ALTER TABLE `glpi_networking_wire` ADD INDEX ( `end2` ) ";
-$db->query($query) or die("41 ".$lang["update"][90].$db->error());
-}
-
 if(!isIndex("glpi_printers", "type")) {
 $query = "ALTER TABLE `glpi_printers` ADD INDEX ( `type` ) ";
 $db->query($query) or die("42 ".$lang["update"][90].$db->error());
@@ -722,6 +712,64 @@ if(!FieldExists("glpi_networking_ports","netpoint")) {
 if(!isIndex("glpi_networking_ports", "netpoint")) {
 $query = "ALTER TABLE `glpi_networking_ports` ADD INDEX ( `netpoint` ) ";
 $db->query($query) or die("47 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_networking_wire", "end1")) {
+$query = "ALTER TABLE `glpi_networking_wire` ADD INDEX ( `end1` ) ";
+$db->query($query) or die("40 ".$lang["update"][90].$db->error());
+
+
+// Clean Table
+$query = "SELECT * FROM  `glpi_networking_wire` ORDER BY end1, end2 ";
+$result=$db->query($query);
+$curend1=-1;
+$curend2=-1;
+while($line = $db->fetch_array($result)) {
+	if ($curend1==$line['end1']&&$curend2==$line['end2']){
+		$q2="DELETE FROM `glpi_networking_wire` WHERE `ID`='".$line['ID']."' LIMIT 1";
+		$db->query($q2);
+		}
+	else $curend1=$line['end1'];$curend2=$line['end2'];
+	}	
+		
+$query = "ALTER TABLE `glpi_networking_wire` ADD UNIQUE ( `end1`,`end2` ) ";
+$db->query($query) or die("477 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_networking_wire", "end2")) {
+$query = "ALTER TABLE `glpi_networking_wire` ADD INDEX ( `end2` ) ";
+$db->query($query) or die("41 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_connect_wire", "end1")) {
+$query = "ALTER TABLE `glpi_connect_wire` ADD INDEX ( `end1` ) ";
+$db->query($query) or die("40 ".$lang["update"][90].$db->error());
+
+// Clean Table
+$query = "SELECT * FROM  `glpi_connect_wire` ORDER BY type, end1, end2 ";
+$result=$db->query($query);
+$curend1=-1;
+$curend2=-1;
+$curtype=-1;
+while($line = $db->fetch_array($result)) {
+	if ($curend1==$line['end1']&&$curend2==$line['end2']&&$curtype==$line['type']){
+		$q2="DELETE FROM `glpi_connect_wire` WHERE `ID`='".$line['ID']."' LIMIT 1";
+		$db->query($q2);
+		}
+	else $curend1=$line['end1'];$curend2=$line['end2'];$curtype=$line['type'];
+	}	
+$query = "ALTER TABLE `glpi_connect_wire` ADD UNIQUE ( `end1`,`end2`,`type` ) ";
+$db->query($query) or die("478 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_connect_wire", "end2")) {
+$query = "ALTER TABLE `glpi_connect_wire` ADD INDEX ( `end2` ) ";
+$db->query($query) or die("40 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_connect_wire", "type")) {
+$query = "ALTER TABLE `glpi_connect_wire` ADD INDEX ( `type` ) ";
+$db->query($query) or die("40 ".$lang["update"][90].$db->error());
 }
 
 if(!FieldExists("glpi_config","ldap_condition")) {
@@ -763,6 +811,7 @@ function showFormSu() {
 }
 
 //Debut du script
+	
 	if(!isset($_SESSION)) session_start();
 	if(empty($_SESSION["dict"])) $_SESSION["dict"] = "french";
 	global $lang;
