@@ -685,4 +685,48 @@ $lang["stats"][25] = "Dur&eacute;e r&eacute;elle moyenne de l'intervention";
 $lang["stats"][26] = "Types";
 
 
+// install update
+
+$lang["install"][0]	= "Installation ou mise à jour de GLPI";
+$lang["install"][1]	= " Choissisez \"Installation\" pour  une nouvelle installation complète de GLPI ( les seules données présentes dans la base seront les données par defaut).";
+$lang["install"][2]	= "Choisissez \" Mise à jour\"  pour mettre  à jour GLPI à partir d'une version antérieure";
+$lang["install"][3]	= "Installation";
+$lang["install"][4]	= "Mise à jour";
+$lang["install"][5]	= "Vérification de la compatibilité de votre environnement  avec l'éxecution de GLPI";
+$lang["install"][6]	= "Test effectué";
+$lang["install"][7]	= "Résultats";
+$lang["install"][8]	= "Test du Parser PHP";
+$lang["install"][9]	= "Vous devez installer  PHP4 Vous pouvez le télécharger ici : <a href='http://www.php.net'>www.php.net";
+$lang["install"][10]	= "Vous utilisez une des versions 4.0.0 ou 4.0.1 de PHP - Nous vous conseillons de mettre à jour votre PHP"; 
+$lang["install"][11]	= "La version de PHP est 4.x - Parfait !"; 
+$lang["install"][12]	= "Test des Sessions"; 
+$lang["install"][13]	= "Votre parser PHP n'as pas été compilé avec le support des sessions ! "; 
+$lang["install"][14]	= "Le support des sessions est opérationnel - Parfait"; 
+$lang["install"][15]	= "Verifiez que le support des sessions est bien activé dans votre php.ini"; 
+$lang["install"][16]	= "Tests d'écriture de fichiers dump"; 
+$lang["install"][17]	= "Le fichier n'a pas pu être créé."; 
+$lang["install"][18]	= "Vérifiez que PHP a un droit d'écriture pour le répertoire 'backups/dump/' Si vous êtes sous un environnement de Microsoft Windows, regardez si c'est en lecture seule."; 
+$lang["install"][19]	= "Le fichier a été créé mais n'a pas pu être supprimé."; 
+$lang["install"][20]	= "Le fichier a été créé et supprimé - Parfait !"; 
+$lang["install"][21]	= "Test d'écriture de fichiers temporaires";
+$lang["install"][22]	= "Vérifiez que PHP a un droit d'écriture pour le répertoire : 'reports/reports/convexcel/tmp/' Si vous êtes sous un environnement de Microsoft Windows, regardez si c'est en lecture seule."; 
+$lang["install"][23]	= "Test d'écriture de fichier configuration"; 
+$lang["install"][24]	= "Vérifiez que PHP a un droit d'écriture pour le répertoire : 'glpi/config/' Si vous êtes sous un environnement de Microsoft Windows, regardez si c'est en lecture seule."; 
+$lang["install"][25]	= "Continuer ?"; 
+$lang["install"][26]	= "Continuer";
+$lang["install"][27]	= "Réessayer"; 
+$lang["install"][28]	= "Configuration de la connection à la base de données"; 
+$lang["install"][29]	= "Paramètres de connection à la base de données";
+$lang["install"][30]	= "Mysql server";
+$lang["install"][31]	= "Mysql user"; 
+$lang["install"][32]	= "Mysql pass"; 
+$lang["install"][33]	= "Retour"; 
+$lang["install"][34]	= "Test de la connection à la base de données"; 
+$lang["install"][35]	= "Impossible de se connecter à la base de données"; 
+$lang["install"][36]	= " Le serveur à répondu"; 
+$lang["install"][37]	= "Le champs serveur ou/et le champ user est vide"; 
+
+
+
+
 ?>

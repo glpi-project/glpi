@@ -668,10 +668,10 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 						
 			// Location			
 			echo "<th>";
-			if ($sort=="glpi_users.location") {
+			if ($sort=="glpi_dropdown_locations.name") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.location&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=ASC&start=$start\">";
 			echo $lang["setup"][16]."</a></th></tr>";
 
 
