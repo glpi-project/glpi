@@ -43,7 +43,7 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-checkAuthentication("normal");
+checkAuthentication("admin");
 
 commonHeader("Tracking",$_SERVER["PHP_SELF"]);
 if(empty($_GET["isgroup"])) $_GET["isgroup"] = "";
