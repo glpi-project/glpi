@@ -43,7 +43,7 @@ if(empty($tab["ID"])) $tab["ID"] = "";
 
 if (isset($_POST["add"]))
 {
-	checkAuthentication("admin");
+	checkAuthentication("super-admin");
 	
 	addTypedoc($_POST);
 	logEvent(0, "typedoc", 4, "setup", $_SESSION["glpiname"]." added ".$_POST["name"].".");
@@ -51,7 +51,7 @@ if (isset($_POST["add"]))
 }
 else if (isset($tab["delete"]))
 {
-	checkAuthentication("admin");
+	checkAuthentication("super-admin");
 	deleteTypedoc($tab,1);
 
 	logEvent($tab["ID"], "typedoc", 4, "setup", $_SESSION["glpiname"]." deleted item.");
@@ -62,7 +62,7 @@ else if (isset($tab["delete"]))
 }
 else if (isset($_POST["update"]))
 {
-	checkAuthentication("admin");
+	checkAuthentication("super-admin");
 	updateTypedoc($_POST);
 	logEvent($_POST["ID"], "typedoc", 4, "setup", $_SESSION["glpiname"]." updated item.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
@@ -70,7 +70,7 @@ else if (isset($_POST["update"]))
 }
 else
 {
-	checkAuthentication("admin");
+	checkAuthentication("super-admin");
 
 	commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 	showTypedocForm($_SERVER["PHP_SELF"],$tab["ID"]);
