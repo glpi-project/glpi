@@ -282,7 +282,6 @@ class Identification
 		$_SESSION["glpiname"] = $name;
 		$_SESSION["glpitype"] = $type;
 		$_SESSION["authorisation"] = true;
-	 	SetCookie("glpiname", $name, 0, "/");
 	}
 
 	function eraseCookies()

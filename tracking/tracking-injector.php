@@ -42,17 +42,16 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_setup.php");
 
+if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk"))
+{
+	$id = new Identification("Helpdesk");
+	$id->setCookies();
+}
 checkAuthentication("post-only");
 
 $glpiname = $_SESSION["glpiname"];
 
-if (!$glpiname || $glpiname == "bogus")
-{
-	
-	$glpiname = "Helpdesk";
-}
-
-loadLanguage($glpiname);
+loadLanguage($_SESSION["glpiname"]);
 
 $status = "new";
 
