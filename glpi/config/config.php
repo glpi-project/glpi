@@ -51,14 +51,14 @@ class DB extends DBmysql {
 
 	var $dbhost	= "localhost";
 	var $dbuser 	= "root"; 
-	var $dbpassword	= "";
+	var $dbpassword	= "bazounet";
 	var $dbdefault	= "glpidb";
 }
 
 
 //root document
 //document root
-$cfg_install["root"]		= "/glpi-gna";
+$cfg_install["root"]		= "/glpi";
 
 
 // *************************** Eléments optionnels  **********************

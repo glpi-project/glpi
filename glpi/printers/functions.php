@@ -426,7 +426,7 @@ function addPrinter($input) {
 	
 	// fill array for update
 	foreach ($input as $key => $val) {
-		if ($printer->fields[$key] != $input[$key]) {
+		if (empty($printer->fields[$key]) || $printer->fields[$key] != $input[$key]) {
 			$printer->fields[$key] = $input[$key];
 		}
 	}

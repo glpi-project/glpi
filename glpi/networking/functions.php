@@ -220,7 +220,7 @@ function addNetdevice($input) {
 	
 	// fill array for update
 	foreach ($input as $key => $val) {
-		if ($netdev->fields[$key] != $input[$key]) {
+		if (empty($netdev->fields[$key]) || $netdev->fields[$key]  != $input[$key]) {
 			$netdev->fields[$key] = $input[$key];
 		}
 	}
