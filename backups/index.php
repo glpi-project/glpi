@@ -419,7 +419,8 @@ $numtab++;
 for (;$offsettable<$numtab;$offsettable++){
 // Dump de la strucutre table
 if ($offsetrow==-1){
-	$todump=get_def($db,$tables[$offsettable]);
+	
+	$todump="\n".get_def($db,$tables[$offsettable]);
 	fwrite ($fileHandle,$todump);
 	$offsetrow++;
 	$cpt++;
