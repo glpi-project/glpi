@@ -647,10 +647,10 @@ function showJobDetails($ID) {
 		if (can_assign_job($_SESSION["glpiname"]))
 			assignFormTracking($ID,$_SESSION["glpiname"],$cfg_install["root"]."/tracking/tracking-assign-form.php");
 		else echo $lang["job"][5]." <b>".($job->assign==""?"[Nobody]":$job->assign)."</b>";
-		
-		if (can_assign_job($_SESSION["glpiname"]))
+		echo "<br />";
+		if (isAdmin($_SESSION["glpitype"]))
 			categoryFormTracking($ID,$cfg_install["root"]."/tracking/tracking-category-form.php");
-		else echo $lang["job"][5]." <b>".($job->assign==""?"[Nobody]":$job->assign)."</b>";
+		else echo $lang["tracking"][20].": <b>".getDropdownName("glpi_dropdown_tarcking_category",$job->category)."</b>";
 		
 		
 		echo "</td>";
