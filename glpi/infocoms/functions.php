@@ -90,6 +90,8 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1) {
 	    echo "</td>";
 		echo "</tr>";
 
+		if ($show_immo==1){
+		
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][15].":	</td><td>";
 		dropdownContractTime("warranty_duration",$ic->fields["warranty_duration"]);
 		echo " ".$lang["financial"][57];
@@ -110,7 +112,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1) {
 		echo "<td>".$lang["financial"][16].":		</td>";
 		echo "<td ><input type='text' name='warranty_info' value=\"".$ic->fields["warranty_info"]."\" size='25'></td>";
 		echo "</tr>";
-		
+		}
 		
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][21].":		</td><td  ".($show_immo==1?"":" colspan='3'")."><input type='text' name='value' value=\"".$ic->fields["value"]."\" size='10'></td>";
 		if ($show_immo==1){
