@@ -42,7 +42,7 @@ $lang["common"][2] = "ID";
 
 //Login
 
-$lang["login"][0] = "Impossible to log in, make sure your browser accepts cookies";
+$lang["login"][0] = "Unable to log in, make sure your browser accepts cookies";
 $lang["login"][1] = "Log in again";
 $lang["login"][2] = "Your password is no longer valid, if you've just changed it, please log in with your new password";
 $lang["login"][3] = "Not Logged in";
@@ -71,6 +71,7 @@ $lang["buttons"][16] 	= "Blank";
 $lang["buttons"][17] 	= "Delete"; 
 $lang["buttons"][18] 	= "Check All"; 
 $lang["buttons"][19] 	= "UnCheck All"; 
+$lang["buttons"][20] ="Move";
 
 $lang["choice"][0] 	= "Yes"; 
 $lang["choice"][1] 	= "No"; 
@@ -154,6 +155,7 @@ $lang["Menu"][15]	="Administration";
 $lang["Menu"][16]	="Peripherals";
 $lang["Menu"][17]	="Reservations";
 $lang["Menu"][18]	="Utils";
+$lang["Menu"][19]	="Knowledge database";
 
 //Data
 
@@ -197,6 +199,15 @@ $lang["tracking"][14] = "Netdevices only";
 $lang["tracking"][15] = "Printers only";
 $lang["tracking"][16] = "Monitors only";
 $lang["tracking"][17] = "Peripherals only";
+$lang["tracking"][18] = "Software only";
+
+// 1 computers
+// 2 networking
+// 3 printers
+// 4 monitors
+// 5 peripherals
+// 6 software
+
 
 $lang["joblist"][0]	= "Status";
 $lang["joblist"][1]	= "Date";
@@ -293,7 +304,8 @@ $lang["computers"][43]	= "Maintenance";
 $lang["computers"][44]  = "Computers";
 $lang["computers"][45] = "Select a template";
 $lang["computers"][46] 	= "Peripherals"; 
-$lang["computers"][47] 	= "No connected peripheral"; 
+$lang["computers"][47] 	= "No connected peripheral";
+$lang["computers"][48] 	= "Place modification. The items connected have been in the same place."; 
 
 // Networking
 
@@ -445,6 +457,17 @@ $lang["software"][24] 	= "End date";
 $lang["software"][25] 	= "Expire on"; 
 $lang["software"][26] 	= "Never expired"; 
 $lang["software"][27] 	= "Expired licence"; 
+$lang["software"][28]   = "OEM";
+$lang["software"][29]   = "Update";
+$lang["software"][30]   = "since";
+$lang["software"][31]	= "Licence number";
+$lang["software"][32]   = "Expiration";
+$lang["software"][33]   = "OEM";
+$lang["software"][34]	= "Change a licence";
+$lang["software"][35]   = "Bought";
+$lang["software"][36]   = "update(s) found";
+$lang["software"][37]   = "To buy";
+
 
 
 
@@ -600,7 +623,12 @@ $lang["setup"][69] 	= "Peripheral types";
 $lang["setup"][70] 	= "General setup"; 
 $lang["setup"][71] 	= "Firmware"; 
 $lang["setup"][72] 	= "Select a dropdown"; 
-$lang["setup"][73] 	= "Network point"; 
+$lang["setup"][73] 	= "Network point";
+$lang["setup"][74] = "You can't delete that place, because it had sub-places";
+$lang["setup"][75] = "As son of";
+$lang["setup"][76] = "At the same level";
+$lang["setup"][77] = "As father of";
+ 
 
 $lang["setup"][100] 	= "General setup"; 
 $lang["setup"][101]="Installation path";
@@ -692,6 +720,7 @@ $lang["help"][27] 	= "Printer";
 $lang["help"][28] 	= "Monitor";
 $lang["help"][29] 	= "Peripheral";
 $lang["help"][30] 	= "General";
+$lang["help"][31] 	= "Software";
 
   // Mois
   $lang["calendarM"][0] = "January" ;
@@ -883,6 +912,30 @@ $lang["reservation"][21]	= "See reservations";
 $lang["reservation"][22]	= "Modify the comment";
 $lang["reservation"][23]	= "Comment";
 $lang["reservation"][24]	= "Loan";
+$lang["reservation"][25]	= "All the lended hardware";
+$lang["reservation"][26]	= "See all";
+
+$lang["knowbase"][0] ="Knowledge database";
+$lang["knowbase"][1] ="FAQ";
+$lang["knowbase"][2] ="Add an item to the knowledge database";
+$lang["knowbase"][3] ="Question";
+$lang["knowbase"][4] ="Answer";
+$lang["knowbase"][5] ="Set this item into the public FAQ";
+$lang["knowbase"][6] ="Select a category for this item : ";
+$lang["knowbase"][7] ="Delete this item from the public FAQ";
+$lang["knowbase"][8] ="Edit this item ";
+$lang["knowbase"][9] ="Delete this item ";
+$lang["knowbase"][10] ="This item is part of the public FAQ ";
+$lang["knowbase"][11] ="This item isn't part of the public FAQ ";
+$lang["knowbase"][12] ="Root  ";
+$lang["knowbase"][13] ="Category name ";
+$lang["knowbase"][14] ="Sub-category of ... ";
+$lang["knowbase"][15] ="Add a new category ";
+$lang["knowbase"][16] ="Addition of the new category ";
+$lang["knowbase"][17] ="Edition of the category ";
+$lang["knowbase"][18] ="Deletion of the category ";
+$lang["knowbase"][19] ="Deletion failure: This categorie has items, you have to delete all the items of this category before deletion ";
+$lang["knowbase"][20] ="Empty knowledge database";
 
 
 ?>
