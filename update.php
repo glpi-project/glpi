@@ -570,6 +570,10 @@ if(!FieldExists("glpi_tracking","realtime")) {
 	$query = "ALTER TABLE `glpi_tracking` ADD `realtime` FLOAT NOT NULL;";
 	$db->query($query) or die("erreur lors de la migration".$db->error());
 }
+if(!FieldExists("glpi_tracking","realtime")) {
+	$query = "ALTER TABLE `glpi_printers` ADD `flags_usb` TINYINT DEFAULT '0' NOT NULL AFTER `flags_par`";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+}
 
 }
 
