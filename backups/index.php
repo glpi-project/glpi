@@ -339,7 +339,7 @@ if ($db->error)
      echo "<hr>ERREUR à partir de [$formattedQuery]<br>".mysql_error()."<hr>";
 
 fclose($fileHandle);
-$offset=0;
+$offset=-1;
 return TRUE;
 }
 
@@ -458,11 +458,14 @@ if (!isset($_GET["fichier"])) {
 	
 $tab=$db->list_tables();
 $tot=$db->numrows($tab);
-if(isset($offsettable))
-$percent=min(100,round(110*$offsettable/$tot,0));
+if(isset($offsettable)){
+if ($offsettable>=0)
+$percent=min(100,round(100*$offsettable/$tot,0));
+else $percent=100;
+}
 else $percent=0;
 
-if ($percent > 0) {
+if ($percent >= 0) {
  
  $percentwitdh=$percent*4;
 
@@ -471,26 +474,19 @@ if ($percent > 0) {
 
 }
 
-
-//echo "Sauvegarde de la BDD dans le $fichier.<br>Traitement en cours... ";
-//if ($duree>0) echo "Durée limite de $duree s.<br>";
-//if(isset($cpt))
-//echo "<br>Nombre de requêtes traitées à ce stade : $cpt<br>";
-//echo "A partir de la table numéro $offsettable à la ligne ".number_format($offsetrow,0,""," ");
 flush();
 
-//nom du fichier, nom de la base, nom d'utilisateur, mot de passe, serveur, duree
+if ($offsettable>=0){
 if (backupMySql($db,$fichier,$duree,$rowlimit))
 {
-    if ($offsettable>=0)
-    {
     echo "<br>Redirection automatique sinon cliquez <a href=\"index.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">ici</a>";
     echo "<script>window.location=\"index.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\";</script>";
-    }
-    else
-     echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt</p></div>";
+    
 
 }
+}
+else  echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt</p></div>";
+
 }	
 }
 
@@ -522,12 +518,14 @@ if (!isset($_GET["duree"])) $duree=1;
 else $duree=$_GET["duree"];
 
 $fsize=filesize($path.$_GET["file"]);
-if(isset($offset))
-$percent=min(100,round(110*$offset/$fsize,0));
+if(isset($offset)){
+if ($offset==-1)
+$percent=100;
+else $percent=min(100,round(100*$offset/$fsize,0));
+}
 else $percent=0;
-//echo "<center>".$percent."%";
 
-if ($percent > 0) {
+if ($percent >= 0) {
       	
 $percentwitdh=$percent*4;
 
@@ -535,27 +533,16 @@ $percentwitdh=$percent*4;
 
 
 }
-//echo "Restauration de $path$file.<br>Traitement en cours... ";
-//if ($duree>0) echo "timeout de $duree s.<br>";
-//if (isset($cpt))
-//echo "<br>Nombre de requêtes traitées à ce stade : $cpt<br>";
-//echo "<br>mais il faut continuer à l'octet ".number_format($offset,0,""," ");
-//flush();
- 
-//echo "$offset";
-//exit;
-//nom du fichier, nom de la base, nom d'utilisateur, mot de passe, serveur, duree
+
+if ($offset!=-1){
 if (restoreMySqlDump($db,$path.$_GET["file"],$duree))
 {
-    if ($offset!=0)
-    {
     echo "<br>Redirection automatique sinon cliquez <a href=\"index.php?file=".$_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt\">ici</a>";
     echo "<script>window.location=\"index.php?file=".$_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt\";</script>";
-    }
-    else
-     echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt<p></div>";
 
 }
+} else    echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt<p></div>";
+
 
 }
 
