@@ -146,6 +146,13 @@ elseif (isset($_POST["connect_device"])) {
 		header("Location: ".$_SERVER["PHP_SELF"]."?ID=".$_POST["cID"]."&withtemplate=".$tab["withtemplate"]);
 	}
 }
+// Unlink a device 
+elseif(isset($_POST["unlink_device"])) {
+	checkAuthentication("admin");
+	unlink_device_computer($_POST["unlink_device"]);
+	logEvent($_POST["unlink_device"],"computers",4,"inventory",$_SESSION["glpiname"] ." Unlinked a device from computer ".$tab["ID"].".");
+	header("Location: ".$_SERVER['HTTP_REFERER']);
+}
 //print computer informations
 else {
 

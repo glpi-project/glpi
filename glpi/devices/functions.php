@@ -157,7 +157,6 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			if(empty($specif)) $specif = "&nbsp;";
 			echo "<td>".$specificity_label." : </td>";
 			echo "<td align='center'>".$specif."</td>";
-			
 		}
 		else {
 			echo "<form name='form_update_device_$compDevID' action=\"\" method=\"post\" >";
@@ -165,16 +164,23 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			echo "<td align='center'>";
 			echo "<img src='".$HTMLRel."pics/edit.png' class='calendrier' alt='".$lang["buttons"][7]."' title='".$lang["buttons"][7]."'
 			onclick='form_update_device_$compDevID.submit()'>";
-			//<input type='submit' class='submit' name='update_device' value=\"".$lang["buttons"][7]."\" size='20' />
 			echo "</td>";
-			//echo "<input type=\"hidden\" name=\"compDevID\" value=\"".$compDevID."\" />";
 			echo "<input type=\"hidden\" name=\"update_device\" value=\"".$compDevID."\" />";
+			echo "</form>";
+			echo "<form name='form_unlink_device_$compDevID' action=\"\" method=\"post\" >";
+			echo "<td><a href='#' onclick='form_unlink_device_$compDevID.submit()'>retirer</a></td>";
+			echo "<input type=\"hidden\" name=\"unlink_device\" value=\"".$compDevID."\" />";
 			echo "</form>";
 		}
 		
-	} else echo "<td>&nbsp;</td><td>&nbsp;</td>";
+	} else {
+		echo "<td>&nbsp;</td><td>&nbsp;</td>";
+		echo "<form name='form_unlink_device_$compDevID' action=\"\" method=\"post\" >";
+		echo "<td><a href='#' onclick='form_unlink_device_$compDevID.submit()'>retirer</a></td>";
+		echo "<input type=\"hidden\" name=\"unlink_device\" value=\"".$compDevID."\" />";
+		echo "</form>";
+	}
 	echo "</tr>";
-	
 }
 
 //Update an internal device specificity
@@ -186,6 +192,21 @@ function update_device_specif($newValue,$compDevID) {
 	else return false;
 }
 
+
+/**
+* Unlink a device, linked to a computer.
+* 
+* Unlink a device and a computer witch link ID is $compDevID (on table glpi_computer_device)
+*
+* @param $compDevID ID of the computer-device link (table glpi_computer_device)
+* @returns boolean
+**/
+function unlink_device_computer($compDevID) {
+	$db = new DB;
+	$query = "DELETE FROM glpi_computer_device where ID = '".$compDevID."'";
+	if($db->query($query)) return true;
+	else return false;
+}
 //print select form for device type
 function device_selecter($target,$cID,$withtemplate='') {
 	global $lang;
