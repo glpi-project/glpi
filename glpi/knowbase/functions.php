@@ -36,7 +36,16 @@ include ("_relpos.php");
 
 // FUNCTIONS knowledgebase
 
-
+/**
+* Print out an HTML "<form>" for Search knowbase item
+*
+* 
+* 
+*
+* @param $target 
+* @param $contains 
+* @return nothing (display the form)
+**/
 function searchFormKnowbase($target,$contains){
 global $lang;
 	echo "<form method=post action=\"$target\">";
@@ -57,7 +66,15 @@ global $lang;
 	
 }
 
-
+/**
+* Print out a title  for knowbase module
+*
+* 
+* 
+*
+* 
+* @return nothing (display the title)
+**/
 function titleknowbase(){
 
 	
@@ -74,6 +91,16 @@ function titleknowbase(){
 }
 
 
+/**
+* Print out an HTML "<form>" for knowbase item
+*
+* 
+* 
+*
+* @param $target 
+* @param $ID
+* @return nothing (display the form)
+**/
 function showKbItemForm($target,$ID){
 
 	// show kb item form
@@ -158,7 +185,15 @@ function showKbItemForm($target,$ID){
 	echo "</form></div>";
 } 
 
-
+/**
+* Print out an HTML Menu for knowbase item
+*
+* 
+* 
+*
+* @param $ID
+* @return nothing (display the form)
+**/
 function kbItemMenu($ID)
 {
 	global $lang,$HTMLRel, $cfg_install, $cfg_layout, $layout;
@@ -200,6 +235,15 @@ function kbItemMenu($ID)
 }
 
 
+/**
+* Add kb item in DB
+*
+* 
+* @param $input (array)
+*
+* 
+* @return nothing 
+**/
 function addKbItem($input){
 // Add kb Item, nasty hack until we get PHP4-array-functions
 // ok
@@ -221,6 +265,16 @@ function addKbItem($input){
 
 }
 
+
+/**
+* delete kb item in DB
+*
+* 
+* @param $input (array)
+*
+* 
+* @return nothing 
+**/
 function deleteKbItem($input){
 
 	// Delete Reservation Item 
@@ -230,7 +284,15 @@ function deleteKbItem($input){
 	$ki->deleteFromDB($input);
 }
 
-
+/**
+* Update kb item in DB
+*
+* 
+* @param $input (array)
+*
+* 
+* @return nothing 
+**/
 function updateKbItem($input) {
 	
 	// Update a kbitem in the database
@@ -269,7 +331,15 @@ function updateKbItem($input) {
 }
 
 
-
+/**
+* Print out all kb catégories
+*
+* 
+* 
+*
+* 
+* @return nothing (display all kb catégories)
+**/
 function showKbCategoriesall()
 {
 
@@ -285,7 +355,15 @@ function showKbCategoriesall()
 }
 
 
-
+/**
+* Print out kb catégories
+*
+* @param $parentID integer
+* 
+*
+* 
+* @return nothing (display kb catégories in a list)
+**/
 
 function showKbCategories($parentID=0)
 {
@@ -332,6 +410,15 @@ function showKbCategories($parentID=0)
 	
 }
 
+/**
+* Print out kb item in each categories
+*
+* @param $parentID integer
+* 
+*
+* 
+* @return nothing (display kb items in a list)
+**/
 function showKbItemAll($parentID)
 {
 	// show kb item in each categories
@@ -356,7 +443,15 @@ function showKbItemAll($parentID)
 	}
 }
 
-
+/**
+* Print out each kb items
+*
+* @param $ID integer
+* 
+*
+* 
+* @return nothing (display kb items in a list)
+**/
 function showKbItem($ID)
 {
 	// show each kb items
@@ -376,7 +471,15 @@ function showKbItem($ID)
 
 
 
-
+/**
+* Print out (html) show item : question and answer
+*
+* @param $ID integer
+* 
+*
+* 
+* @return nothing (display item : question and answer)
+**/
 function ShowKbItemFull($ID)
 {
 	
@@ -411,6 +514,16 @@ function ShowKbItemFull($ID)
 	
 }
 
+
+/**
+* Print out (html) <select> show select category
+*
+* @param $current integer
+* @param $nullroot string yes or no
+*
+* 
+* @return nothing (display <select>)
+**/
 function kbcategoryList($current=0,$nullroot="yes")
 {
 	// show select category
@@ -439,7 +552,15 @@ function kbcategoryList($current=0,$nullroot="yes")
 
 
 
-
+/**
+* Add kb item to the public FAQ
+*
+* 
+* @param $ID integer
+*
+* 
+* @return nothing 
+**/
 function KbItemaddtofaq($ID)
 {
 	
@@ -449,6 +570,15 @@ function KbItemaddtofaq($ID)
 	$db->query("UPDATE glpi_kbitems SET faq='yes' WHERE ID=$ID");
 }
 
+/**
+* Remove kb item from the public FAQ
+*
+* 
+* @param $ID integer
+*
+* 
+* @return nothing 
+**/
 function KbItemremovefromfaq($ID)
 {
 	
@@ -460,7 +590,15 @@ function KbItemremovefromfaq($ID)
 }
  
 
-
+/**
+* 
+* get FAQ Categories
+* 
+* 
+*
+* 
+* @return $catNumbers
+**/
 function getFAQCategories()
 {
 	
@@ -487,6 +625,15 @@ function getFAQCategories()
 }
 }	
 
+/**
+* 
+* get parent FAQ Categories
+* 
+* @param $ID
+* @param $catNumbers
+* 
+* @return $catNumbers
+**/
 function getFAQParentCategories($ID, &$catNumbers)
 {
 	
@@ -513,7 +660,15 @@ function getFAQParentCategories($ID, &$catNumbers)
 	}
 }
 
-
+/**
+* 
+* Print out all FAQ catégories 
+* 
+* @param $target
+* @param $contains
+* 
+* @return nothing (display faq catégories)
+**/
 function faqShowCategoriesall($target,$contains)
 {
 
@@ -530,6 +685,15 @@ function faqShowCategoriesall($target,$contains)
 	echo "</td></tr></table></div>";
 }
 
+/**
+* 
+* To be commented
+* 
+* @param $parentID
+* 
+* 
+* @return 
+**/
 function faqShowCategories($parentID=0)
 {
 	global $HTMLRel;
@@ -578,6 +742,15 @@ function faqShowCategories($parentID=0)
 	} 
 }
 
+/**
+* 
+* To be commented
+* 
+* @param $parentID
+* 
+* 
+* @return 
+**/
 function faqShowItems($parentID)
 {
 	
@@ -597,6 +770,15 @@ function faqShowItems($parentID)
 }
 }
 
+/**
+* 
+* To be commented
+* 
+* @param $ID
+* 
+* 
+* @return 
+**/
 function faqShowItem($ID)
 {
 	// ok
@@ -614,6 +796,15 @@ function faqShowItem($ID)
 
 }
 
+/**
+* 
+* To be commented
+* 
+* 
+* 
+* 
+* @return 
+**/
 function initExpandSessionVar(){
 	if (!isset($_SESSION["kb_show"])){
 	$query = "select ID from glpi_dropdown_kbcategories";
@@ -625,10 +816,30 @@ function initExpandSessionVar(){
 	}
 	}	
 }
+
+/**
+* 
+* To be commented
+* 
+* @param $ID
+* 
+* 
+* @return 
+**/
 function ExpandSessionVarHide($ID){
 	$_SESSION["kb_show"][$ID]='N';
 	
 }
+
+/**
+* 
+* To be commented
+* 
+* @param $ID
+* @param $recurse
+* 
+* @return 
+**/
 function ExpandSessionVarShow($ID,$recurse=0){
 	$_SESSION["kb_show"][$ID]='Y';
 	if ($recurse!=0){
@@ -642,7 +853,15 @@ function ExpandSessionVarShow($ID,$recurse=0){
 
 }
 
-
+/**
+* 
+* To be commented
+* 
+* 
+* 
+* 
+* @return 
+**/
 function ExpandSessionVarHideAll(){
 	$query = "select ID from glpi_dropdown_kbcategories";
 
@@ -653,6 +872,15 @@ function ExpandSessionVarHideAll(){
 	}
 }
 
+/**
+* 
+* To be commented
+* 
+* 
+* 
+* 
+* @return 
+**/
 function ExpandSessionVarShowAll(){
 	$query = "select ID from glpi_dropdown_kbcategories";
 
@@ -663,6 +891,15 @@ function ExpandSessionVarShowAll(){
 	}
 }
 
+/**
+* 
+* To be commented
+* 
+* @param $contains
+* 
+* 
+* @return 
+**/
 function searchLimitSessionVarKnowbase($contains){
 	ExpandSessionVarHideAll();	
 	$db=new DB;
