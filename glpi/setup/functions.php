@@ -488,11 +488,21 @@ function showUserform($target,$name) {
 		if ($user->fields["type"]=="post-only") { echo " selected"; }
 		echo ">Post Only";
 		echo "</select>";
-	}
-	else {
+	} else {
 		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td><input name='realname' size='20' value=\"".$user->fields["realname"]."\"></td></tr>";
 		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][20]."</td><td>";
-		echo $user->fields["type"];
+		if($user->fields["type"] != "super-admin" && $user->fields["type"] != "admin") {
+			echo "<select name='type' >";
+			echo "<option value='normal'";
+			if (empty($name)||$user->fields["type"]=="normal") { echo " selected"; }
+			echo ">Normal";
+			echo "<option value=\"post-only\"";
+			if ($user->fields["type"]=="post-only") { echo " selected"; }
+			echo ">Post Only";
+			echo "</select>";	
+		} else {
+			echo "<td align='center'>".$user->fields["type"]."</td>";
+		}
 	}
 	echo "</td></tr>";	
 	echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td><input name='email_form' size='20' value=\"".$user->fields["email"]."\"></td></tr>";
@@ -518,14 +528,23 @@ function showUserform($target,$name) {
 		echo "</td>";
 		echo "</tr>";	
 	} else {
-		echo "<tr>";
-		echo "<td class='tab_bg_2' valign='top' >";	
-		echo "<center><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' ></center>";
-		echo "</td>";
-		echo "<td class='tab_bg_2' valign='top' >\n";
-		echo "<center><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' ></center>";
-		echo "</td>";
-		echo "</tr>";
+		if(isSuperadmin($_SESSION["glpitype"])) {
+			echo "<tr>";
+			echo "<td class='tab_bg_2' valign='top' >";	
+			echo "<center><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' ></center>";
+			echo "</td>";
+			echo "<td class='tab_bg_2' valign='top' >\n";
+			echo "<center><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' ></center>";
+			echo "</td>";
+			echo "</tr>";
+		}
+		else {
+			echo "<tr>";
+			echo "<td class='tab_bg_2' valign='top' colspan='2'>";	
+			echo "<center><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' ></center>";
+			echo "</td>";
+			echo "</tr>";
+		}
 	}
 
 	echo "</table></form></div>";
@@ -750,32 +769,43 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 
 
 function addUser($input) {
-	// Add User, nasty hack until we get PHP4-array-functions
-	$user = new User($input["name"]);
-	if(empty($input["password"]))  $input["password"] = "";
- 	// dump status
-	$null = array_pop($input);
-
-
-	// change email_form to email (not to have a problem with preselected email)
-	if (isset($input["email_form"])){
-	$input["email"]=$input["email_form"];
-	unset($input["email_form"]);
-	}
 	
-	// fill array for update
-	foreach ($input as $key => $val) {
-		if (!isset($user->fields[$key]) || $user->fields[$key] != $input[$key]) {
-			$user->fields[$key] = $input[$key];
+	//only admin and superadmin can add some user
+	if(isAdmin($_SESSION["glpitype"])) {
+		//Only super-admin's can add users with admin or super-admin access.
+		//set to "normal" by default
+		if(!isSuperAdmin($_SESSION["glpitype"])) {
+			if($input["type"] != "normal" && $input["type"] != "post-only") {
+				$input["type"] = "normal";
+			}
 		}
-	}
+			// Add User, nasty hack until we get PHP4-array-functions
+			$user = new User($input["name"]);
+			if(empty($input["password"]))  $input["password"] = "";
+			// dump status
+			$null = array_pop($input);
+			// change email_form to email (not to have a problem with preselected email)
+			if (isset($input["email_form"])){
+				$input["email"]=$input["email_form"];
+				unset($input["email_form"]);
+			}
+	
+			// fill array for update
+			foreach ($input as $key => $val) {
+				if (!isset($user->fields[$key]) || $user->fields[$key] != $input[$key]) {
+					$user->fields[$key] = $input[$key];
+				}
+			}
 
-	if ($user->addToDB()) {
-		// Give him some default prefs...
-		$query = "INSERT INTO glpi_prefs VALUES ('".$input["name"]."','','english')";
-		$db = new DB;
-		$result=$db->query($query);
-		return true;
+			if ($user->addToDB()) {
+				// Give him some default prefs...
+				$query = "INSERT INTO glpi_prefs VALUES ('".$input["name"]."','','english')";
+				$db = new DB;
+				$result=$db->query($query);
+				return true;
+			} else {
+				return false;
+			}
 	} else {
 		return false;
 	}
@@ -783,15 +813,26 @@ function addUser($input) {
 
 
 function updateUser($input) {
-	// Update User in the database
 
+	//only admin and superadmin can update some user
+	if(!isAdmin($_SESSION["glpitype"])) {
+		return false;
+	}
+	//Only super-admin's can set admin or super-admin access.
+	//set to "normal" by default.
+	if(!isSuperAdmin($_SESSION["glpitype"])) {
+		if($input["type"] != "normal" && $input["type"] != "post-only") {
+			$input["type"] = "normal";
+		}
+	}
+	// Update User in the database
 	$user = new User($input["name"]);
 	$user->getFromDB($input["name"]); 
 
  	// dump status
 	$null = array_pop($input);
 	// password updated?
-	if(empty($input["password"])) {
+	if(empty($input["password"]) || !isSuperAdmin($_SESSION["glpitype"])) {
 		$user->fields["password"]="";
 	}
 	// change email_form to email (not to have a problem with preselected email)
@@ -814,10 +855,11 @@ function updateUser($input) {
 }
 
 function deleteUser($input) {
-	// Delete User
-	
-	$user = new User($input["name"]);
-	$user->deleteFromDB($input["name"]);
+	// Delete User (only superadmin can delete an user)
+	if(isSuperAdmin($_SESSION["glpitype"])) {
+		$user = new User($input["name"]);
+		$user->deleteFromDB($input["name"]);
+	}
 } 
 
 
