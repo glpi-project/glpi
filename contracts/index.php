@@ -32,13 +32,28 @@ This file is part of GLPI.
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/contacts/classes.php");
-include ($phproot . "/glpi/contacts/functions.php");
-include ($phproot . "/glpi/enterprises/classes.php");
-include ($phproot . "/glpi/enterprises/functions.php");
-include ($phproot . "/glpi/infocoms/classes.php");
-include ($phproot . "/glpi/infocoms/functions.php");
-include ($phproot . "/glpi/contracts/classes.php");
-include ($phproot . "/glpi/contracts/functions.php");
+include ($phproot . "/glpi/includes.php");
+include ($phproot . "/glpi/includes_financial.php");
+
+checkAuthentication("normal");
+
+commonHeader($lang["title"][20],$_SERVER["PHP_SELF"]);
+
+titleContract();
+
+if(!isset($_GET["start"])) $_GET["start"] = 0;
+if (!isset($_GET["order"])) $_GET["order"] = "ASC";
+if (!isset($_GET["field"])) $_GET["field"] = "glpi_contracts.num";
+if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
+if (!isset($_GET["contains"])) $_GET["contains"] = "";
+if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_contracts.num";
+if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
+
+searchFormContract($_SERVER["PHP_SELF"]);
+
+showContractList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"]);
+
+
+commonFooter();
 
 ?>

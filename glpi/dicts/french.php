@@ -1131,6 +1131,21 @@ $lang["financial"][46] = "Contacts associés";
 $lang["financial"][47] = "Linéaire";
 $lang["financial"][48] = "Dégressif";
 $lang["financial"][49] = "Eléments associés";
-$lang["financial"][50] = "";
+$lang["financial"][50] = "Prêt";
+$lang["financial"][51] = "Location";
+$lang["financial"][52] = "Leasing";
+$lang["financial"][53] = "Assurances";
+$lang["financial"][54] = "Maintenace Hardware";
+$lang["financial"][55] = "Maintenance Software";
+$lang["financial"][56] = "Prestation";
+$lang["financial"][57] = "mois";
+$lang["financial"][58] = "Facturation";
+$lang["financial"][59] = "Heures d'intervention";
+$lang["financial"][60] = "en semaine";
+$lang["financial"][61] = "le samedi";
+$lang["financial"][62] = "dimanche et fêtes";
+$lang["financial"][63] = "Début";
+$lang["financial"][64] = "Fin";
+$lang["financial"][65] = "Entreprises associées";
 
 ?>
