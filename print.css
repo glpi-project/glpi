@@ -2,21 +2,18 @@
 
 
 
+/* #################################### */
 /* ###### general ###### */
-
-@page { size: landscape; 
- 	margin: 0cm;
- } ;
- 
- 
+/* #################################### */
   body 
   {  
-    padding :0px;
+    padding :5px;
 	margin :0;
-	background-color : #FFFFFF;
+	font-size : 12px;
+ 	background-color : #FFFFFF;
 	color : #000000;
 	font-family: Verdana,Arial,Helvetica,sans-serif;
-	font-size: 10px;
+
   }
 
   img {
@@ -44,82 +41,124 @@ text-align:center;
 .blue {color:blue;}
 .green {color:green;}
 
- /* ###### form ###### */
- 
- form
-  {font-size: 10px;
+
+
+/* #################################### */
+ /* ###### liens ###### */
+/* #################################### */
+
+
+  a, a:link
+  {
+    font-wheight: bold;
+    text-decoration: none;
+  	color : #009966;
   }
+
+  /*
+ a:visited   {
+    font-wheight: bold;
+    text-decoration: none;
+     color : #009966;
+  }
+*/
+
+  a:hover
+  {
+    color: black;
+  }
+
+  hr{border: 1px solid #cccccc;
+       }
+
+
+/* #################################### */
+ /* ###### form ###### */
+ /* #################################### */
+ 
+ form  {font-size: 12px;
+  margin:0;
+  padding:0;  }
 
  option {border:1px solid #ccc;
         background-color:#ffffff;}
 
- .submit {
-  display:none;
-  text-align:center;}
+ .submit { 
+ display:none;
+ text-align:center;}
   
-select { 
-
-font-size: 11px;
+select { font-size: 11px;
 }
 
 
 input.submit {
-        
-	display:none;
+        display:none;
 	border:1px solid #009966;
         background-color:#eeeeee;
         }
         
 input.submit:hover {
-        border:1px solid #009966;
+        display:none;
+	border:1px solid #009966;
        background-color:#ffffff;
         }
 
 .button {
-        
-	display:none;
+        display:none;
 	border:1px solid #009966;
         background-color:#eeeeee;
         }
 
-        .button:hover{
+.button:hover{
+        display:none;
+	border:1px solid #009966;
+       background-color:#ffffff;
+        }
+
+
+.calendrier{
+       border:1px solid #009966;
+        background-color:#eeeeee;
+	vertical-align:middle;
+        }
+	
+.calendrier:hover{
         border:1px solid #009966;
        background-color:#ffffff;
         }
 
 
 
-
-
+/* #################################### */
  /* ###### table ###### */
+/* #################################### */
+ table {   }
 
- table { 
- font-size: 10px;
- width:100%;}
-   }
-
-  th
-  {  
-    font-size: 10px;
+  th {  
+    font-size: 12px;
     font-weight: bold;
-    background-color: #FFC65D;
-  }
+   /* background-color: #FFC65D;*/
+    background-color: #fccc6f;
+	vertical-align:bottom;}
 
-  td
-  { font-size: 10px;
-  }
+  
+  
+  td { font-size: 11px;}
 
 .tab_cadre{
-
+ -moz-border-radius: 4px;
+  border: 1px solid #cccccc;
 }
 
 .tab_cadre2{
 text-align:center;
- 
+ -moz-border-radius: 4px;
+  border: 1px solid #cccccc;
 }
 
+
 .tab_bg_1 {
-background-color: #cccccc;
+background-color: #ccccc7;
 
 }
 .tab_bg_1_2 {
@@ -128,35 +167,50 @@ background-color: #cc5555;
 }
 
 .tab_bg_2 {
-background-color: #dddddd;
+background-color: #d7d7d2;
+
+}
+
+.tab_bg_2_2 {
+background-color: #cc5555;
 
 }
 
 .tab_bg_3 {
-background-color: #eeeeee;
+  /*background-color: #eeeeee;*/
+background-color: #e7e7e2;
 
 }  
 
+.tab_resa {
+border:1px dashed #cccccc;
+background-color: #d7d7d2;
+font-size:8px
+}
 
-.software-instal {
-display:none;}
+.tab_resa:hover {
 
-.delete-old-job {
-display:none;}
+background-color: #ffffff;
+border:1px dotted #000000;
 
+
+}
  
-  /* ###### login ###### */
 
+/* #################################### */
+ /* ###### login ###### */
+/* #################################### */
 #contenulogin {
 /* a voir je suis pas bien sûr  */
-height: 100%;
+/*height: 100%;*/
 font-family : Verdana,Arial,Helvetica,sans-serif;
 font-size : 12px;
-position: relative; /*ou absolute */
+/*position: relative; *//*ou absolute */
 left: 50%;
 width: 300px;
-margin-left: -150px;
+/*margin-left: -150px;*/
 color :#009966;
+margin: 0 auto;
 }
 
 #boxlogin {
@@ -202,74 +256,88 @@ margin-top: 100px;
 	}
 
 
-  /* ###### liens ###### */
 
 
 
-  a, a:link
-  {
-    font-size: 10px;
-    font-wheight: bold;
-    text-decoration: none;
-  	color : #009966;
-  }
-
-  /*
- a:visited   {
-    font-wheight: bold;
-    text-decoration: none;
-     color : #009966;
-  }
-*/
-
-  a:hover
-  {
-    color: black;
-  }
-
-  hr{
-  display:none;
-  border: 1px solid #cccccc;
-       }
 
 
-/* ###### entete footer ###### */
-
+/* #################################### */
+/* ###### entete  et navigation ###### */
+/* #################################### */
 #navigation{
-	display:none;
 	
-	background-color: #C5DAC8;
+	display:none;
+	/* ## background-color: #C5DAC8;*/
+	background-color: #efefe7;
 	-moz-border-radius: 8px;
-        border: 2px outset #009966;
-
+        /*border: 2px outset #009966;*/
+	
+	
+	border: 2px outset #FFC65D;
+	
 	margin-bottom: 10px;
 	padding: 5px;
 	
 	}
+
 	
+.menu_title {
+	font-size : 10px;
+ 	
+	color : #000000;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-weight: bold;
+}	
+	
+	
+		
 .menu a {
 		font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
-	font-size : 13px;
-	color : #000000;
-	background-color: #C5DAC8;
+	font-size : 11px;
+	color : #757575;
+	background-color: transparent;
 	text-decoration: none;
+	font-weight: bold;
 }
 
 .menu a:hover {
 font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
-	font-size : 13px;
+	font-size : 11px;
 	color : #FFFFFF;
 	text-decoration: none;
 	border: none;
-	font-weight: normal;
+	font-weight:bold;
 background-color: #339966;
 }
+
+
+a.icon_logo img{
+	padding: 7px;
+	margin: 1px;
+	border: 1px solid #aaaaaa;
+	background-color: #ffffff;
+	-moz-border-radius: 5px;
+       	font-size : 12px;
+        font-weight: bold;
+}
+
+
+a.icon_logo:hover img {
+	padding: 7px;
+	margin: 1px;
+	border: 1px solid #999999;
+	background-color: #e4e4e4;
+	-moz-border-radius: 5px;
+}
+
+
+
 
 .icon_nav {
 	padding: 4px;
 	margin: 1px;
 	border: 1px solid #aaaaaa;
-	background-color: #e4e4e4;
+	background-color: #C5DAC8;
 	-moz-border-radius: 5px;
        	font-size : 12px;
         font-weight: bold;
@@ -280,7 +348,7 @@ a.icon_nav_move img {
 	padding: 4px;
 	margin: 1px;
 	border: 1px solid #aaaaaa;
-	background-color: #e4e4e4;
+	background-color: #C5DAC8;
 	-moz-border-radius: 5px;
 }
 
@@ -288,13 +356,29 @@ a.icon_nav_move:hover img {
 	padding: 4px;
 	margin: 1px;
 	border: 1px solid #999999;
-	background-color: white;
+	background-color: #e4e4e4;
 	-moz-border-radius: 5px;
 }
 
 
-/* ###### navig-console ###### */
+.nav_horl {
+	padding: 4px;
+	margin: 1px;
+	border: 1px solid #aaaaaa;
+	
+	-moz-border-radius: 5px;
+       	font-size : 9px;
+        
+}
 
+
+
+
+	
+
+/* #################################### */
+/* ###### navig-console ###### */
+/* #################################### */
 
 
 .icon_consol {
@@ -324,20 +408,201 @@ padding-bottom: 10px;
 }
 
 
+/* #################################### */
+/* Footer */
+/* #################################### */
 #footer{
-	
 	display:none;
-	
-	background-color: #C5DAC8;
+	/* ## background-color: #C5DAC8;*/
+	background-color: #efefe7;
 	-moz-border-radius: 8px;
-        border: 2px outset #009966;
+        /*border: 2px outset #009966;*/
+
+	border: 2px outset #FFC65D;
 	padding: 5px;
 	margin-top: 200px;
 	 clear:both;
 	}
 
+	
+	
+.copyright {
+	font-size : 10px;
+ 	
+	color :#757575;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-weight: bold;
 
 
+
+
+}	
+	
+	
+/* #################################### */
+/* style onglet */
+/* #################################### */
+
+#barre_onglets {
+display:none;
+width:700px;
+margin-left: auto;
+margin-right: auto;
+margin-bottom:0;
+padding-bottom:0;
+
+
+}
+
+
+ul#onglet {
+    font: bold 10px verdana, arial, sans-serif;
+    list-style-type: none;
+   padding-bottom: 24px;
+   border-bottom: 1px solid #ffffff;
+    margin: 0;
+padding-left:0;
+
+}
+
+ul#onglet li {
+    
+    float: left;
+    height: 21px;
+    background-color: #eeeeee;
+    margin: 2px 2px 0 2px;
+    border: 1px solid #009966;
+   border-bottom: 1px solid #fff;
+ -moz-border-radius: 4px;	
+}
+
+ul#onglet li.actif {
+    border-bottom: 1px ridge #009966;
+    background-color: #fff;
+}
+
+ul#onglet li.invisible {
+    border-bottom: 1px solid #fff;
+    border: 1px solid #fff;
+    background-color: #ffffff;
+    width: 20px;
+}
+
+ul#onglet li.actif a {
+    color: #000;
+}
+
+#onglet a {
+    float: left;
+    display: block;
+    color: #666;
+    text-decoration: none;
+    padding: 4px;
+}
+
+#onglet a:hover {
+   color : #009966;
+  
+}
+
+
+
+
+/* #################################### */
+/* Raccourcis typo */
+/* #################################### */
+.verdana1 { font-family: Verdana, Arial, Sans, sans-serif; font-size: 10px; }
+
+/* #################################### */
+/* ###### knowledge base / FAQ  ###### */
+/* #################################### */
+
+#contenukb {
+/* a voir je suis pas bien sûr  */
+height: 100%;
+position: relative; /*ou absolute */
+left: 35%;
+width: 600px;
+margin-left: -150px;
+}
+
+#contenukb legend {
+
+font-weight: bold;
+
+}
+
+#contenukb fieldset {
+background-color: #eeeeee;
+border: 1px solid #FFC65D;
+-moz-border-radius: 8px;
+padding-bottom:10px;
+width: 600px;
+
+}	
+
+#contenukb textarea {
+
+width:550px;
+
+}
+
+
+.code {	
+width: 95%;
+ border: dotted 2px #ccc;
+
+	}
+
+
+/* #################################### */
+/* Toolbar */
+
+/* #################################### */
+p.toolbar
+{
+	
+
+	padding: 4px;
+	margin-bottom: 0px;
+}
+
+p.toolbar a
+{
+	
+	font-size: 12px;
+	font-family: Verdana, Arial, sans-serif;
+	padding: 5px;
+	margin: 2px;
+	color: #000;
+
+
+}
+
+p.toolbar a, p.toolbar a:link, p.toolbar a:visited
+{
+	border: 1px solid #999;
+	-moz-border-radius: 5px;
+	text-decoration: none;
+	
+
+}
+
+p.toolbar a:hover
+{
+	border: 1px solid #666;
+	-moz-border-radius: 5px;
+	background-color: #ffffff;
+	text-decoration: none;
+}
+
+
+/* #################################### */
+/* style Toolbar-> code knowbase */
+/* #################################### */
+.souligne {text-decoration : underline;}
+
+.barre { text-decoration : line-through; }
 
 
 
