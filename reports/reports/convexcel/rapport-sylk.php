@@ -32,6 +32,8 @@ $cfg_formats[FORMAT_TEXTE]  = "FG0";
             // parcours des champs
             for ($cpt = 0; $cpt < $nbcol; $cpt++)
             {
+            	$enr[$cpt]=preg_replace('/\x0A/',' ',$enr[$cpt]);
+            	$enr[$cpt]=preg_replace('/\x0D/','',$enr[$cpt]);
                 // format
                 echo "F;P".$num_format[$cpt].";".$format[$cpt];
                 echo ($cpt == 0 ? ";Y".$ligne : "").";X".($cpt+1)."\n";
