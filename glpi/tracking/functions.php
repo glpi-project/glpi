@@ -688,7 +688,7 @@ function addFormTracking ($ID,$author,$assign,$target,$error,$searchauthor='') {
 
 	echo "<tr><td class='tab_bg_2' align='center'>".$lang["joblist"][0].":</td>";
 	echo "<td align='center' class='tab_bg_2' colspan='3'><select name='status'>";
-	echo "<option value='new selected'>".$lang["job"][14]."</option>";
+	echo "<option value='new' selected>".$lang["job"][14]."</option>";
 	echo "<option value='old'>".$lang["job"][15]."</option>";
 	echo "</select></td></tr>";
 
