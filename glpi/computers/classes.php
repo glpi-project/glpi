@@ -146,6 +146,16 @@ class Computer {
 			$result = $db->query($query);
 			$query = "DELETE FROM glpi_inst_software WHERE (cID = '$ID')";
 			$result = $db->query($query);
+
+			$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '1')";
+			$result = $db->query($query);
+			$data = $db->fetch_array($result);
+				foreach ($data as $key => $val) {
+					$q = "DELETE FROM glpi_networking_wire WHERE (end1 = '$val' OR end2 = '$val')";
+					$result = $db->query($q);					
+					}
+
+
 			$query = "DELETE FROM glpi_networking_ports WHERE (device_on = '$ID' AND device_type = '1')";
 			$result = $db->query($query);
 			$query = "DELETE FROM glpi_connect_wire WHERE (end2 = '$ID')";

@@ -132,6 +132,14 @@ function getEmpty () {
 
 		$query = "DELETE from glpi_printers WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
+			$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '3')";
+			$result = $db->query($query);
+			$data = $db->fetch_array($result);
+				foreach ($data as $key => $val) {
+					$q = "DELETE FROM glpi_networking_wire WHERE (end1 = '$val' OR end2 = '$val')";
+					$result = $db->query($q);					
+					}
+
 			$query2 = "DELETE FROM glpi_networking_ports WHERE (device_on = $ID AND device_type = 3)";
 			$result2 = $db->query($query2);
 			$query3 = "DELETE FROM glpi_connect_wires WHERE (end1 = $ID AND type = 3)";
