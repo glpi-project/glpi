@@ -911,7 +911,7 @@ function dropdownValue($table,$myname,$value) {
 
 	echo "<select name=\"$myname\">";
 	$data_old=array();
-
+	echo "<option value=\"NULL\">-----</option>";
 	while ($data =  $db->fetch_array($result)){
 	for ($i=0;$i<=$MAX_LEVEL;$i++)
 	if (!empty($data["ID$i"]))
