@@ -487,6 +487,9 @@ $lang["setup"][59]      = "Configurer les droits d'attribution d'intervention";
 $lang["setup"][60]      = "Non";
 $lang["setup"][61]  = "Oui";
 $lang["setup"][62]       = "Selectionnez la cat&eacute;gorie &agrave; configurer";
+$lang["setup"][63]     = "Attention vous êtes sur le point de supprimer un intitulé utilisé pour un ou plusieurs items";
+$lang["setup"][64]     = "Si vous confirmez la suppression les items utilisant cet intitulé se verront atribbuer un champs NULL";
+$lang["setup"][65]     = "Vous pouvez aussi remplacer toutes les occurences de cet intitulé par un autre :";
 
 
 // Helpdesk
