@@ -937,6 +937,11 @@ $lang["install"][70]	= "Impossible de cr&eacute;er le fichier de connexion  &#22
 $lang["install"][71]	 = "Test de l'extension mysql.";
 $lang["install"][72]	 = "Vous devez compiler votre php avec l'extension Mysql.";
 $lang["install"][73]	= "Ok - la fonction mysql_connect() existe - Parfait !";
+$lang["install"][74]	 = "Test de l'utilisation de Session_use_trans_id";
+$lang["install"][75]	 = "Vous devez desactiv&eacute; l'option Session_use_trans_id dans votre PHP.ini";
+$lang["install"][76]	= "Ok - l'option Session_use_trans_id est désactivée - Parfait !";
+
+
 
 $lang["update"][90]  ="Erreur durant la mise  &#224; jour de la base de donn&eacute;es";
 $lang["update"][91]  ="Attention ! &nbsp;";

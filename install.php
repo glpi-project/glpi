@@ -220,9 +220,19 @@ function step1($update)
 		echo "<td>".$lang["install"][11]."</td></tr>";
 	}
 // end parser test
-//	echo "<h2>GLPI environment test</h2>";
-//	echo "<table>";
-//	echo "<tr><th>Test effectué</th><th colspan='2'>Résultats</th></tr>";
+
+// Check for mysql extension ni php
+	echo "<tr><td><h4>".$lang["install"][71]."</h4></td>";
+	if(!function_exists("mysql_connect")) {
+		echo "<td>".$lang["install"][72]."</td></tr>";
+		$error = 2;
+	} else {
+		echo "<td>".$lang["install"][73]."</td></tr>";
+	}
+	
+
+// ***********
+
 // session test
 	echo "<tr><td><h4>".$lang["install"][12]."</h4></td>";
 
@@ -240,6 +250,20 @@ function step1($update)
 		if($error != 2) $error = 1;
 		echo "<td>".$lang["install"][15]."</td></tr>";
 	}
+	
+	//Test for option session use trans_id loaded or not.
+	echo "<tr><td><h4>".$lang["install"][74]."</h4></td>";
+	if(ini_get('session.use_trans_sid')) {
+		echo "<td class='red'>".$lang["install"][75]."</td></tr>";
+		$error = 2;
+	}
+	else {
+		echo "<td>".$lang["install"][76]."</td></tr>";
+		
+	}
+	
+	
+	
 	//Test for sybase extension loaded or not.
 	echo "<tr><td><h4>".$lang["install"][65]."</h4></td>";
 	if(ini_get('magic_quotes_sybase')) {
@@ -253,17 +277,6 @@ function step1($update)
 // *********
 
 
-// Check for mysql extension ni php
-	echo "<tr><td><h4>".$lang["install"][71]."</h4></td>";
-	if(!function_exists("mysql_connect")) {
-		echo "<td>".$lang["install"][72]."</td></tr>";
-		$error = 2;
-	} else {
-		echo "<td>".$lang["install"][73]."</td></tr>";
-	}
-	
-
-// ***********
 
 // file test
 
@@ -289,27 +302,7 @@ function step1($update)
 
 		}
 	}
-	/* A supprimer Obsolète 
 	
-	echo "<tr><td><h4>".$lang["install"][21]."</h4></td>";
-		$fp = fopen("reports/reports/convexcel/tmp/test_glpi.txt",'w');
-	if (empty($fp)) {
-		echo "<td><p class='red'>".$lang["install"][17]."</p>". $lang["install"][22]."</td></tr>";
-		$error = 2;
-	}
-	else {
-		$fw = fwrite($fp,"This file was created for testing reasons. ");
-		fclose($fp);
-		$delete = unlink("reports/reports/convexcel/tmp/test_glpi.txt");
-		if (!$delete) {
-			echo "<td>".$lang["install"][19]."</td></tr>";
-			if($error != 2) $error = 1;
-		}
-		else {
-			echo "<td>".$lang["install"][20]."</td></tr>";
-		}
-	}
-	*/
 	
 	echo "<tr><td><h4>".$lang["install"][23]."</h4></td>";
 	$fp = fopen("glpi/config/test_glpi.txt",'w');
@@ -556,67 +549,6 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	
 }
 
-/*
-// Step 5 Start the glpi configuration
-//
-function step5()
-{
-	global $lang;
-	
-	include ("_relpos.php");
-	include ($phproot . "/glpi/common/classes.php");
-	include ($phproot . "/glpi/common/functions.php");
-	include ($phproot . "/glpi/config/config_db.php");
-	$db = new DB;
-	$query = "select * from glpi_config where ID = 1";
-	$result = $db->query($query);
-	echo "<p>".$lang["install"][51]. "</p>";
-	echo "<p>".$lang["install"][52]. "</p>";
-	echo "<form action=\"install.php\" method=\"post\">";
-	$root_doc = ereg_replace("/install.php","",$_SERVER['REQUEST_URI']);
-	echo "<p><label>".$lang["setup"][101]." : <input type=\"text\" name=\"root_doc\" value=\"". $root_doc ."\"></label></p>";
-	echo "<p><label>".$lang["setup"][102]." <select name=\"event_loglevel\"><label></p>";
-	$level=$db->result($result,0,"event_loglevel");
-	echo "<option value=\"1\"";  if($level==1){ echo "selected";} echo ">".$lang["setup"][103]." </option>";
-	echo "<option value=\"2\"";  if($level==2){ echo "selected";} echo ">".$lang["setup"][104]."</option>";
-	echo "<option value=\"3\"";  if($level==3){ echo "selected";} echo ">".$lang["setup"][105]."</option>";
-	echo "<option value=\"4\"";  if($level==4){ echo "selected";} echo ">".$lang["setup"][106]." </option>";
-	echo "<option value=\"5\">".$lang["setup"][107]."</option>";
-	echo "</select>";
-	echo "<p><label>".$lang["setup"][108]." : <input type=\"text\" name=\"num_of_events\" value=\"". $db->result($result,0,"num_of_events") ."\"><label></p>";
-	echo "<p><label>".$lang["setup"][109]." : <input type=\"text\" name=\"expire_events\" value=\"". $db->result($result,0,"expire_events") ."\"><label></p>";
-	echo "<p> ".$lang["setup"][110]." :  <input type=\"radio\" name=\"jobs_at_login\" value=\"1\" checked=\"checked\" /><label>".$lang["choice"][0]."</label>";
-	echo " <input type=\"radio\" name=\"jobs_at_login\" value=\"0\" /><label>".$lang["choice"][1] ."</label></p>";
-	echo "<p><label>".$lang["setup"][111]."  : <input type=\"text\" name=\"list_limit\" value=\"". $db->result($result,0,"list_limit") ."\"><label></p>";
-	echo "<p><label>".$lang["setup"][112]." : <input type=\"text\" name=\"cut\" value=\"". $db->result($result,0,"cut") ."\"><label></p>";
-	echo "<p> ".$lang["setup"][219]." :  <input type=\"radio\" name=\"permit_helpdesk\" value=\"1\" /><label>".$lang["choice"][0]."</label>";
-	echo "<input type=\"radio\" name=\"permit_helpdesk\" value=\"0\" checked=\"checked\" /><label>".$lang["choice"][1] ."</label></p>";
-	echo "<input type=\"hidden\" name=\"install\" value=\"Etape_5\" />";
-	echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][26]."\" /></p>";
-	echo "</form>";
-}
-*/
-// STEP 6 Get the config and fill database
-/*
-function step6($root_doc, $event_loglevel, $num_of_events, $expire_events,$jobs_at_login, $list_limit, $cut, $permit_helpdesk)
-{
-	global $lang;
-	
-	include ("_relpos.php");
-	require_once ($phproot . "/glpi/common/classes.php");
-	require_once ($phproot . "/glpi/common/functions.php");
-	require_once ($phproot . "/glpi/config/config_db.php");
-	$db = new DB;
-	$query = "update glpi_config set root_doc = '". $root_doc ."', expire_events = '". $expire_events ."', event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', jobs_at_login = '". $jobs_at_login ."', list_limit = '". $list_limit ."', cut = '". $cut ."', permit_helpdesk = '".$permit_helpdesk."'"; 
-	$db->query($query);
-	echo "<p>".$lang["install"][53]. "</p>";
-	echo "<p>".$lang["install"][54]. "</p>";
-	echo "<br /><form action=\"install.php\" method=\"post\">";
-	echo "<input type=\"hidden\" name=\"install\" value=\"Etape_6\" />";
-	echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][26]."\" /></p>";
-	echo "</form>";
-}
-*/
 
 
 function step7() {
@@ -735,16 +667,7 @@ loadLang($_SESSION["dict"]);
 				header_html("Etape 4");
 				step7();
 				break;
-			/*	
-			case "Etape_5" :
-				header_html("Etape 5");
-				step6($_POST["root_doc"], $_POST["event_loglevel"], $_POST["num_of_events"], $_POST["expire_events"], $_POST["jobs_at_login"],$_POST["list_limit"], $_POST["cut"],$_POST["permit_helpdesk"]);
-				break;
-			case "Etape_6" :
-				header_html("Etape 6");
-				step7();
-				break;
-			*/
+		
 			case "update_1" : 
 				if(empty($_POST["databasename"])) $_POST["databasename"] ="";
 				update1($_POST["db_host"],$_POST["db_user"],$_POST["db_pass"],$_POST["databasename"]);
