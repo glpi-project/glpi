@@ -52,13 +52,13 @@ if (isset($_GET["show"]))
 	if(isset($_GET["contains"]))
 	{
 		searchFormTracking($_GET["show"],$_GET["contains"]);
-		showJobList($_SESSION["glpiname"],$_GET["show"],$_GET["contains"],$_GET["machine"]);
+		showJobList($_SESSION["glpiname"],$_GET["show"],$_GET["contains"],"");
 		
 	}
 	else
 	{
 		searchFormTracking($_GET["show"],"");
-		showJobList($_SESSION["glpiname"],$_GET["show"],"",$_GET["machine"]);
+		showJobList($_SESSION["glpiname"],$_GET["show"],"","");
 		
 	}
 }
@@ -67,13 +67,13 @@ else
 	if(isset($_GET["contains"]))
 	{
 		searchFormTracking("",$_GET["contains"]);
-		showJobList($_SESSION["glpiname"],"",$_GET["contains"],$_GET["machine"]);
+		showJobList($_SESSION["glpiname"],"",$_GET["contains"],"");
 		
 	}
 	else
 	{
 		searchFormTracking("","");
-		showJobList($_SESSION["glpiname"],"","",$_GET["machine"]);
+		showJobList($_SESSION["glpiname"],"","","");
 		
 	}
 }

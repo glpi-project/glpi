@@ -90,9 +90,12 @@ function getTrackingPrefs ($username) {
 	$result = $db->query($query);
 	$tracking_order = $db->result($result, 0, "tracking_order");
 
-	if($tracking_order == "yes") {
+	if($tracking_order == "yes")
+	{
 		$prefs["order"] = "ASC";
-	} else {
+	} 
+	else
+	{
 		$prefs["order"] = "DESC";
 	}
 
@@ -113,10 +116,12 @@ function showJobList($username,$show,$contains,$item) {
 	if ($contains)
 	{
 		$where = "(contents LIKE \"%$contains%\")";
-	} else if ($show == "old")
+	}
+	else if ($show == "old")
 	{
 		$where = "(status = 'old')";
-	} else
+	}
+	else
 	{
 		$where = "(status = 'new')";
 	}
@@ -125,15 +130,21 @@ function showJobList($username,$show,$contains,$item) {
 	// Build query, two completely different things here, need to be fixed
 	// and made into a more featured query-parser
 	
-	if ($show == "individual") {
+	if ($show == "individual")
+	{
 		$query = "SELECT ID FROM tracking WHERE $where and (assign = '$username') ORDER BY date ".$prefs["order"]."";
-	} else if ($show == "unassigned") {
+	}
+	else if ($show == "unassigned")
+	{
 		$query = "SELECT ID FROM tracking WHERE $where and (assign is null) ORDER BY date ".$prefs["order"]."";
-	} else {
+	}
+	else
+	{
 		$query = "SELECT ID FROM tracking WHERE $where ORDER BY date ".$prefs["order"]."";
 	}
 
-	if ($item) {
+	if ($item)
+	{
 		$query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY date ".$prefs["order"]."";
 	}	
 		
@@ -158,7 +169,8 @@ function showJobList($username,$show,$contains,$item) {
 			showJobShort($ID, 0);
 			$i++;
 		}
-		if ($item) {
+		if ($item)
+		{
 			echo "<tr bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
 			echo "<td align=center colspan=8 bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><b>";
 			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item\">";
@@ -167,12 +179,15 @@ function showJobList($username,$show,$contains,$item) {
 			echo "</b></td></tr>";
 		}
 		echo "</table></center>";
-	} else {
+	}
+	else
+	{
 		echo "<br><center>";
 		echo "<table border=0 width=90%>";
 		echo "<tr><th>".$lang["joblist"][8]."</th></tr>";
 
-		if ($item) {
+		if ($item) 
+		{
 			echo "<tr><td align=center bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><b>";
 			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item\">";
 			echo $lang["joblist"][7];
@@ -203,7 +218,8 @@ $query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY
 	$i = 0;
 	$number = $db->numrows($result);
 
-	if ($number > 0) {
+	if ($number > 0)
+	{
 		echo "<center><table border=0 width=90%>";
 		echo "<tr><th colspan=8>$number anciennes ".$lang["job"][17]."";
 		if ($number > 1) { echo "s"; }
@@ -212,22 +228,27 @@ $query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY
 		echo "<th width=5>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
 		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["joblist"][5]."</th>";
 		echo "<th colspan=2>".$lang["joblist"][6]."</th></tr>";
-		while ($i < $number) {
+		while ($i < $number)
+		{
 			$ID = $db->result($result, $i, "ID");
 			showJobShort($ID, 0);
 			$i++;
 		}
-		if ($item) {
+		if ($item)
+		{
 			echo "<tr bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
 			echo "<td align=center colspan=8 bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><b>";
 		}
 		echo "</table></center>";
-	} else {
+	} 
+	else
+	{
 		echo "<br><center>";
 		echo "<table border=0 width=90%>";
 		echo "<tr><th>".$lang["joblist"][22]."</th></tr>";
 
-		if ($item) {
+		if ($item)
+		{
 			echo "<tr><td align=center bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><b>";
 		}
 		echo "</table>";
@@ -246,14 +267,18 @@ function showJobShort($ID, $followup) {
 
 	$job = new Job;
 	
-	if ($job->getfromDB($ID,0)) {
+	if ($job->getfromDB($ID,0))
+	{
 
-		if ($job->status == "new") {
+		if ($job->status == "new")
+		{
 			echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
 			echo "<td align=center><font color=\"green\"><b>".$lang["joblist"][9]."</b></font></td>";
 			echo "<td width=30%><nobr><small>".$lang["joblist"][11].":<br>&nbsp;$job->date</nobr></small></td>";
 
-		} else {
+		}
+		else
+		{
  			echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
 			echo "<td align=center><b>".$lang["joblist"][10]."</b></td>";
 			echo "<td width=30%><nobr><small>".$lang["joblist"][11].":<br>&nbsp;$job->date<br>";
@@ -267,9 +292,12 @@ function showJobShort($ID, $followup) {
 
 		echo "</b></td>";
 
-		if ($job->assign == "") {
+		if ($job->assign == "")
+		{
 			echo "<td align=center>[Nobody]</td>"; 
-	    	} else {
+	    	}
+		else
+		{
 			echo "<td align=center><b>$job->assign</b></td>";
 		}    
 		
@@ -282,7 +310,8 @@ function showJobShort($ID, $followup) {
 		echo "<td width=10% bgcolor=\"".$cfg_layout["tab_bg_2"]."\" align=center>";
 		echo "<b><a href=\"".$cfg_install["root"]."/tracking/tracking-followups.php?ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;($job->num_of_followups)&nbsp;<br>";
 
-		if ($job->status == "new") {
+		if ($job->status == "new")
+		{
 			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-mark.php?ID=$job->ID\">".$lang["joblist"][14]."</a><br>";
 		}
 		echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-assign-form.php?ID=$job->ID\">".$lang["joblist"][15]."</a></b></td>";
@@ -290,13 +319,16 @@ function showJobShort($ID, $followup) {
 		// Finish Line
 		echo "</tr>";
 
-		if (isset($followups)) {
+		if (isset($followups))
+		{
 			echo "<tr><th>&nbsp;</th><td colspan=7>";
 			showFollowups($job->ID);
 			echo "</td></tr>"; 
 		}
 	
-	} else {
+	}
+	else
+	{
     		echo "<tr bgcolor=".$cfg_layout["tab_bg_2"]."><td colspan=6><i>".$lang["joblist"][16]."</i></td></tr>";
 	}
 }
