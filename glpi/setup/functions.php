@@ -38,7 +38,7 @@
 include ("_relpos.php");
 // FUNCTIONS Setup
 
-function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove='') {
+function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove='',$type='') {
 
 	GLOBAL $cfg_layout, $lang, $HTMLRel;
 
@@ -98,8 +98,8 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 
 	if (countElementsInTable("glpi_dropdown_".$name)>0){
 		echo "<select name='type'>";
-		echo "<option value='under'>".$lang["setup"][75]."</option>";
-		echo "<option value='same'>".$lang["setup"][76]."</option>";
+		echo "<option value='under' ".($type=='under'?" selected ":"").">".$lang["setup"][75]."</option>";
+		echo "<option value='same' ".($type=='same'?" selected ":"").">".$lang["setup"][76]."</option>";
 		echo "</select>&nbsp;&nbsp;&nbsp;";
 ;
 		dropdownValue("glpi_dropdown_".$name, "value2",$value2);
@@ -290,12 +290,14 @@ function addDropdown($input) {
 		} else {
 			$query="SELECT * from ".$input["tablename"]." where ID='".$input["value2"]."'";
 			$result=$db->query($query);
-			$data=$db->fetch_array($result);
-			$level_up=$data["parentID"];
-			if ($input["type"]=="under") {
-				$level_up=$data["ID"];
-			} 
-			$query = "INSERT INTO ".$input["tablename"]." (name,parentID) VALUES ('".$input["value"]."', '$level_up')";		
+			if ($db->numrows($result)>0){
+				$data=$db->fetch_array($result);
+				$level_up=$data["parentID"];
+				if ($input["type"]=="under") {
+					$level_up=$data["ID"];
+				} 
+				$query = "INSERT INTO ".$input["tablename"]." (name,parentID) VALUES ('".$input["value"]."', '$level_up')";		
+			} else $query = "INSERT INTO ".$input["tablename"]." (name,parentID) VALUES ('".$input["value"]."', '0')";				
 		}
 	}
 	else {
