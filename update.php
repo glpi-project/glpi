@@ -65,6 +65,19 @@ function updaterootdoc() {
 	$db->query($query) or die(" root_doc ".$lang["update"][90].$db->error());
 }
 
+//Affiche le formulaire de mise a jour du contenu (pour la compatibilité avec les addslashes de la V0.4)
+function showContentUpdateForm() {
+	
+	global $lang;
+	echo "<div align='center'>";
+	echo "<h3>".$lang["update"][94]."</h3>";
+	echo "<p>".$lang["install"][63]."</p>";
+	echo "<p>".$lang["update"][107]."</p></div>";
+	echo "<p class='submit'> <a href=\"update_content.php\"><span class='button'>".$lang["choice"][0]."</span></a>";
+	echo "&nbsp;&nbsp; <a href=\"index.php\"><span class='button'>".$lang["choice"][1]."->".$lang["install"][64]."</span></a></p>";
+}
+
+
 //Verifie si la table $tablename existe
 function TableExists($tablename) {
   
@@ -965,14 +978,10 @@ elseif(empty($_POST["ajout_su"])) {
 		}
 		else {
 			echo "<div align='center'>";
-			echo "<h3>".$lang["update"][94]."</h3>";
-			echo "<p>".$lang["install"][63]."</p></div>";
 			if(!empty($tab) && $tab["adminchange"]) {
 				echo "<div align='center'> <h2>". $lang["update"][96] ."<h2></div>";
 			}
-		
-			echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
-	
+			showContentUpdateForm();
 		}
 	}
 	else {
@@ -989,9 +998,8 @@ elseif(!empty($_POST["ajout_su"])) {
 		echo "<div align='center'>";
 		echo "<h3>".$lang["update"][104]."</h3>";
 		echo "</div>";
-		echo "<div align='center'>";
-		echo "<h3>".$lang["update"][94]."</h3>";
-		echo "<p>".$lang["install"][63]."</p></div>";
+		
+		showContentUpdateForm();
 		echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
 	}
 	else {
