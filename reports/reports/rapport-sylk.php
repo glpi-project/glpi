@@ -106,10 +106,11 @@ switch($table){
 	case "networking" :
 		$query_nb = "select distinct glpi_networking.ID from glpi_networking";
 		
-		$query = "select glpi_networking.*, glpi_users.name as techname, glpi_enterprises.name as entname, glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac, glpi_networking_ports.netpoint ";
+		$query = "select glpi_networking.*, glpi_dropdown_netpoint.name as netpoint, glpi_users.name as techname, glpi_enterprises.name as entname, glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac ";
 		$query.= "from glpi_networking LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type = 2 AND glpi_networking_ports.on_device = glpi_networking.ID)";
 		$query.= "LEFT JOIN glpi_users ON glpi_users.ID = glpi_networking.tech_num ";
 		$query.= "LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_networking.FK_glpi_enterprise ";
+		$query.= "LEFT JOIN glpi_dropdown_netpoint ON glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint ";
 		$query.= " WHERE glpi_networking.is_template='0' ";
 		$query.=" ORDER by glpi_networking.deleted DESC, glpi_networking.ID ASC";
 
