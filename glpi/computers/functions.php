@@ -436,6 +436,16 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		
 		echo "<td>".$lang["computers"][15]."&nbsp;:		</td><td><input type='text' name='contact_num' value=\"".$comp->fields["contact_num"]."\" size='20'></td></tr>";
 
+				echo "<tr class='tab_bg_1'>";
+		
+		echo "<td >".$lang["computers"][8]."&nbsp;: 	</td>";
+		echo "<td >";
+			dropdownValue("glpi_type_computers", "type", $comp->fields["type"]);
+		
+		echo "</td>";
+		
+		echo "<td>&nbsp;</td><td>&nbsp;</td></tr>";
+
 		echo "<tr class='tab_bg_1'>";
 		
 		echo "<td >".$lang["common"][10]."&nbsp;: 	</td>";
