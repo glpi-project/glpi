@@ -350,7 +350,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		include ($phproot . "/glpi/includes.php");
 		$db = new DB;
 		$db_file = $phproot ."/mysql/glpi-0.3-default.sql";
-		$dbf_handle = fopen($db_file, "r");
+		$dbf_handle = fopen($db_file, "rt");
 		$sql_query = fread($dbf_handle, filesize($db_file));
 		fclose($dbf_handle);
 		foreach ( explode(";\n", "$sql_query") as $sql_line) {
