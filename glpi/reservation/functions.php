@@ -531,6 +531,23 @@ function showAddReservationForm($target,$ID,$date){
 	}
 	echo "</select>";
 	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][27].":	</td>";
+	echo "<td>";
+	echo "<select name='periodicity'>";
+	echo "<option value='day'>".$lang["reservation"][29]."</option>";	
+	echo "<option value='week'>".$lang["reservation"][28]."</option>";		
+	echo "</select>";	
+	echo "<select name='periodicity_times'>";
+	for ($i=1;$i<60;$i+=1){
+	echo "<option value='$i'";
+	echo ">$i</option>";
+	}
+	echo "</select>";
+
+	echo $lang["reservation"][30];
+	echo "</td></tr>";
+
 	echo "<tr class='tab_bg_2'>";
 	echo "<td colspan='2'  valign='top' align='center'>";
 	echo "<input type='submit' name='add_resa' value=\"".$lang["buttons"][8]."\" class='submit' class='submit'>";
@@ -584,7 +601,7 @@ function printReservationItem($target,$ID,$date){
 		$m=new ReservationItem;
 		$m->getfromDB($ID);
 		$user=new User;
-
+		list($year,$month,$day)=split("-",$date);
 		$debut=$date." 00:00:00";
 		$fin=$date." 23:59:59";
 		$query = "SELECT * FROM glpi_reservation_resa".
@@ -614,7 +631,7 @@ $display="";
 					$delete="";
 
 					if ($_SESSION["glpiID"]==$user->fields["ID"]||isAdmin($_SESSION["glpitype"]))
-						$delete="<a  href=\"".$target."?show=resa&ID=$ID&clear=".$row['ID']."\" alt='".$lang["reservation"][14]."' title='".$lang["reservation"][14]."'><img  src=\"".$HTMLRel."pics/clear.png\"></a>";
+						$delete="<a  href=\"".$target."?show=resa&ID=$ID&clear=".$row['ID']."&mois_courant=$month&annee_courante=$year\" alt='".$lang["reservation"][14]."' title='".$lang["reservation"][14]."'><img  src=\"".$HTMLRel."pics/clear.png\"></a>";
 
 		
 		echo $delete."</td><td align='center' class='tab_bg_2' style='border:1px dashed #cccccc'><span style='font-size:10px'>".$display."<br><b>".$user->fields["name"]."</b></span>";
@@ -643,9 +660,9 @@ function deleteReservation($ID){
 }
 
 
-function addReservation($input,$target){
+function addReservation($input,$target,$ok=true){
 	// Add a Reservation
-
+	if ($ok){
 	$resa = new ReservationResa;
 	
   // set new date.
@@ -664,7 +681,7 @@ function addReservation($input,$target){
 		return false;
 	}
 	return $resa->addToDB();
-
+}
 }
 function get_hour_from_sql($time){
 $t=explode(" ",$time);
