@@ -1536,7 +1536,69 @@ function titleExtSources(){
 
 
 
-function showFormExtsources($target) {
+function showMailServerConfig($value){
+global $lang;
+if (ereg(":",$value)){
+$addr=ereg_replace("{","",preg_replace("/:.*/","",$value));
+$port=preg_replace("/.*:/","",preg_replace("/\/.*/","",$value));
+}
+else {
+	if (ereg("/",$value))
+	$addr=ereg_replace("{","",preg_replace("/\/.*/","",$value));
+	else $addr=ereg_replace("{","",preg_replace("/}.*/","",$value));
+	$port="";
+}
+$mailbox=preg_replace("/.*}/","",$value);
+
+echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][163]."</td><td><input size='30' type=\"text\" name=\"mail_server\" value=\"". $addr."\" ></td></tr>";	
+echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][168]."</td><td>";
+echo "<select name='server_type'>";
+echo "<option value=''>&nbsp;</option>";
+echo "<option value='/imap' ".(ereg("/imap",$value)?" selected ":"").">IMAP</option>";
+echo "<option value='/pop' ".(ereg("/pop",$value)?" selected ":"").">POP</option>";
+echo "</select>";
+echo "<select name='server_ssl'>";
+echo "<option value=''>&nbsp;</option>";
+echo "<option value='/ssl' ".(ereg("/ssl",$value)?" selected ":"").">SSL</option>";
+echo "</select>";
+echo "<select name='server_cert'>";
+echo "<option value=''>&nbsp;</option>";
+echo "<option value='/novalidate-cert' ".(ereg("/novalidate-cert",$value)?" selected ":"").">NO-VALIDATE-CERT</option>";
+echo "<option value='/validate-cert' ".(ereg("/validate-cert",$value)?" selected ":"").">VALIDATE-CERT</option>";
+echo "</select>";
+echo "<select name='server_tls'>";
+echo "<option value=''>&nbsp;</option>";
+echo "<option value='/tls' ".(ereg("/tls",$value)?" selected ":"").">TLS</option>";
+echo "<option value='/notls' ".(ereg("/notls",$value)?" selected ":"").">NO-TLS</option>";
+echo "</select>";
+
+echo "</td></tr>";	
+
+echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][169]."</td><td><input size='30' type=\"text\" name=\"server_mailbox\" value=\"". $mailbox."\" ></td></tr>";	
+echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][171]."</td><td><input size='10' type=\"text\" name=\"server_port\" value=\"". $port."\" ></td></tr>";	
+echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][170]."</td><td><b>$value</b></td></tr>";	
+
+}	
+
+function constructIMAPAuthServer($input){
+
+$out="";
+if (isset($input['mail_server'])&&!empty($input['mail_server'])) $out.="{".$input['mail_server'];
+else return $out;
+if (isset($input['server_port'])&&!empty($input['server_port'])) $out.=":".$input['server_port'];
+if (isset($input['server_type'])) $out.=$input['server_type'];
+if (isset($input['server_ssl'])) $out.=$input['server_ssl'];
+if (isset($input['server_cert'])) $out.=$input['server_cert'];
+if (isset($input['server_tls'])) $out.=$input['server_tls'];
+
+$out.="}";
+if (isset($input['server_mailbox'])) $out.=$input['server_mailbox'];
+
+return $out;
+	
+}
+
+function showFormExtSources($target) {
 
 	GLOBAL  $lang,$HTMLRel;
 	
@@ -1547,13 +1609,16 @@ function showFormExtsources($target) {
 	echo "<form action=\"$target\" method=\"post\">";
 	
 	if(function_exists('imap_open')) {
+
 		echo "<div align='center'>";
 		echo "<p >".$lang["setup"][160]."</p>";
-		echo "<p>".$lang["setup"][161]."</p>";
+//		echo "<p>".$lang["setup"][161]."</p>";
 		echo "<table class='tab_cadre'>";
 		echo "<tr><th colspan='2'>".$lang["setup"][162]."</th></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][163]."</td><td><input type=\"text\" name=\"imap_auth_server\" value=\"". $db->result($result,0,"imap_auth_server") ."\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][164]."</td><td><input type=\"text\" name=\"imap_host\" value=\"". $db->result($result,0,"imap_host") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][164]."</td><td><input size='30' type=\"text\" name=\"imap_host\" value=\"". $db->result($result,0,"imap_host") ."\" ></td></tr>";
+
+		showMailServerConfig($db->result($result,0,"imap_auth_server"));
+//		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][163]."</td><td><input type=\"text\" name=\"imap_auth_server\" value=\"". $db->result($result,0,"imap_auth_server") ."\" ></td></tr>";
 		echo "</table></div>";
 	}
 	else {
@@ -1713,11 +1778,9 @@ function updateLDAP($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$ldap_condit
 function updateIMAP($imap_auth_server,$imap_host) {
 	$db = new DB;
 	//TODO : test the remote IMAP connection
-	if(!empty($imap_auth_server)) {
 		$query = "update glpi_config set imap_auth_server = '". $imap_auth_server ."', ";
 		$query.= "imap_host = '". $imap_host ."' where ID = '1'";
 		$db->query($query);
-	}
 }
 
 function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_admin,$mailing_followup_admin,$mailing_finish_admin,$mailing_new_all_admin,$mailing_followup_all_admin,$mailing_finish_all_admin,$mailing_new_all_normal,$mailing_followup_all_normal,$mailing_finish_all_normal,$mailing_followup_attrib,$mailing_finish_attrib,$mailing_new_user,$mailing_followup_user,$mailing_finish_user,$mailing_new_attrib) {
