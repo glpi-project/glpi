@@ -1091,37 +1091,30 @@ $lang["device_hdd"][1] = "Cache";
 $lang["device_hdd"][2] = "Interface";
 $lang["device_hdd"][3] = "";
 $lang["device_hdd"][4] = "Capacit&eacute;";
-$lang["device_hdd"][5] = "Commentaire";
 
 
 $lang["device_iface"][0] = "Debit";
-$lang["device_iface"][1] = "Commentaire";
+$lang["device_iface"][1] = "";
 $lang["device_iface"][2] = "Adresse Mac";
 
 
 $lang["device_gfxcard"][0] = "memoire";
-$lang["device_gfxcard"][1] = "Commentaire";
+$lang["device_gfxcard"][1] = "";
 $lang["device_gfxcard"][2] = "interface";
 
 
 $lang["device_moboard"][0] = "Chipset";
-$lang["device_moboard"][1] = "Commentaire";
 
 
 $lang["device_processor"][0] = "Frequence";
-$lang["device_processor"][1] = "";
-$lang["device_processor"][2] = "";
-$lang["device_processor"][3] = "Commentaire";
 
 
 $lang["device_ram"][0] = "Type";
 $lang["device_ram"][1] = "Frequence";
-$lang["device_ram"][2] = "Commentaire";
 
 
 $lang["device_sndcard"][0] = "Type";
-$lang["device_sndcard"][1] = "Commentaire";
-$lang["device_sndcard"][2] = "";
+
 
 $lang["devices"][0] = "Ajouter un nouveau periph&eacute;rique interne";
 $lang["devices"][1] = "Disque dur";
@@ -1135,6 +1128,13 @@ $lang["devices"][8] = "D&eacute;signation";
 $lang["devices"][9] = "Ajout d'un nouveau periph&eacute;rique interne pour l'ordinateur: ";
 $lang["devices"][10] = "P&eacute;riph&eacute;riques Internes ";
 $lang["devices"][11] = "Retirer";
+$lang["devices"][12] = "Ajouter Périphérique ...";
+$lang["devices"][13] = "ID";
+$lang["devices"][14] = "Désignation";
+$lang["devices"][15] = "Commentaire";
+$lang["devices"][16] = "unknown";
+$lang["devices"][17] = "Selectionnez un type de périphérique interne.";
+$lang["devices"][18] = "Pas de périphérique trouvé";
 
 $lang["cartridges"][0] = "Cartouche";
 $lang["cartridges"][1] = "Nom";
