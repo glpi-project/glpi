@@ -333,7 +333,9 @@ while(!feof($fileHandle))
         return TRUE;
 
 //    echo $TPSCOUR."<br>";
-    $buffer=fgets($fileHandle);
+    
+    // on indique le  length pour la fonction fgets pour compatibilité avec les versions <=PHP 4.2
+    $buffer=fgets($fileHandle,1024);
     if (substr($buffer,strlen($buffer),1)==0)
         $buffer=substr($buffer,0,strlen($buffer)-1);
     
