@@ -75,7 +75,7 @@ $lang["search"][6]	= "trié par";
 
 // Central
 $lang["central"][0] 	= "Bienvenue ";
-$lang["central"][1] 	= "vous êtes sur la console centrale.";
+$lang["central"][1] 	= "vous &ecirc;tes sur la console centrale.";
 $lang["central"][2] 	= "derniers";
 $lang["central"][3] 	= "Evénements";
 $lang["central"][4] 	= "Pas d'événement";
