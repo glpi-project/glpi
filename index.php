@@ -65,18 +65,18 @@ echo "<div id='navigation'>";
 echo "<img src=\"./pics/logo-glpi.png\" border='0' alt=\"Logo GLPI Powered By Indepnet\" title=\"Powered By Indepnet\"vspace='10' />\n";
 
 // Headline
-echo "<br />";
+echo "<br>";
 echo "<b>Gestionnaire Libre de Parc Informatique</b>";
-echo "<br />";
+echo "<br>";
 
-echo "<br />";
+echo "<br>";
 echo "</div>";
 
 
 
 	
 // Login Form
-echo "<br /><br /><br /><br />";
+echo "<br><br><br><br>";
 echo "<form method='post' action='login.php'>";
 echo "<table border='0'>";
 echo "<tr><th colspan='2'>login:</th></tr>";
@@ -93,7 +93,7 @@ echo "<div id='footer'>";
 	echo "GLPI ".$cfg_install["version"]."";
 	echo "</a></b></small></div>";
 	echo "</div>";
-echo "<br />";
+echo "<br>";
 echo "</body></html>";
 
 ?>
