@@ -50,7 +50,7 @@ function titleComputers(){
 
 
 
-function searchFormComputers($field="",$phrasetype= "",$contains="",$sort= "",$deleted= "") {
+function searchFormComputers($field="",$contains="",$sort= "",$deleted= "") {
 	// Print Search Form
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel;
@@ -99,15 +99,7 @@ function searchFormComputers($field="",$phrasetype= "",$contains="",$sort= "",$d
 		echo ">". $val ."</option>\n";
 	}
 	echo "</select>&nbsp;";
-	echo $lang["search"][1];
-	echo "&nbsp;<select name='phrasetype' size='1' >";
-	echo "<option value='contains'";
-	if($phrasetype == "contains") echo "selected";
-	echo ">".$lang["search"][2]."</option>";
-	echo "<option value='exact'";
-	if($phrasetype == "exact") echo "selected";
-	echo ">".$lang["search"][3]."</option>";
-	echo "</select>";
+	echo "&nbsp;";
 	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" />";
 	echo "&nbsp;";
 	echo $lang["search"][4];
@@ -139,9 +131,8 @@ function IsDropdown($field) {
 }
 
 function IsDevice($field) {
-	//$devices = array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
-	$devices = array("moboard","processor","ram","hdd","iface","gfxcard","sndcard");
-	if(in_array($field,$devices)) {
+	global $cfg_devices_tables;
+	if(in_array($field,$cfg_devices_tables)) {
 		return true;
 	}
 	else  {
@@ -149,12 +140,12 @@ function IsDevice($field) {
 	}
 }
 
-function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted) {
+function showComputerList($target,$username,$field,$contains,$sort,$order,$start,$deleted) {
 
 	$db = new DB;
 	// Lists Computers
 
-	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang,$HTMLRel;
+	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang,$HTMLRel, $cfg_devices_tables;
 
 
 	// Build query
@@ -178,9 +169,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			}
 			$i++;
 		}
-		//$devices = array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
-		$devices = array("moboard","processor","ram","hdd","iface","gfxcard","sndcard");
-		foreach($devices as $key => $val) {
+		foreach($cfg_devices_tables as $key => $val) {
 			$where .= " OR ".$val.".designation LIKE '%".$contains."%'";
 		}
 		$where .= " OR glpi_networking_ports.ifaddr LIKE '%".$contains."%'";
@@ -240,7 +229,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="comp.name") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=comp.name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&contains=$contains&sort=comp.name&order=ASC&start=$start\">";
 			echo $lang["computers"][7]."</a></th>";
 		
 			// Manufacturer		
@@ -248,7 +237,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="glpi_enterprises.name") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&contains=$contains&sort=glpi_enterprises.name&order=ASC&start=$start\">";
 			echo $lang["common"][5]."</a></th>";
 			
 		        // Serial
@@ -256,7 +245,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="comp.serial") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=comp.serial&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&contains=$contains&sort=comp.serial&order=ASC&start=$start\">";
 			echo $lang["computers"][6]."</a></th>";
 		
 
@@ -265,7 +254,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="glpi_type_computers.name") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_computers.name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&contains=$contains&sort=glpi_type_computers.name&order=ASC&start=$start\">";
 			echo $lang["computers"][8]."</a></th>";
 
 			// OS
@@ -273,7 +262,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="glpi_dropdown_os.name") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_os.name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&contains=$contains&sort=glpi_dropdown_os.name&order=ASC&start=$start\">";
 			echo $lang["computers"][9]."</a></th>";
 
 			// Location			
@@ -281,7 +270,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="glpi_dropdown_locations.name") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&contains=$contains&sort=glpi_dropdown_locations.name&order=ASC&start=$start\">";
 			echo $lang["computers"][10]."</a></th>";
 
 			// Last modified		
@@ -289,7 +278,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="date_mod") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=date_mod&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&contains=$contains&sort=date_mod&order=DESC&start=$start\">";
 			echo $lang["computers"][11]."</a></th>";
 
 			// Contact person
@@ -297,7 +286,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="contact") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=contact&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&contains=$contains&sort=contact&order=ASC&start=$start\">";
 			echo $lang["computers"][16]."</a></th>";
 
 			echo "</tr>";
@@ -326,7 +315,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			echo "</table></div>";
 
 			// Pager
-			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort";
+			$parameters="field=$field&contains=$contains&sort=$sort";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
