@@ -485,6 +485,7 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		echo "</form>";
 		
 		
+	if (!empty($ID)){
 			//print devices.
 		echo "<div align='center'>";
 		echo "<table width='700' class='tab_cadre' >";
@@ -502,7 +503,8 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		}
 		//ADD a new device form.
 		device_selecter($_SERVER["PHP_SELF"],$comp->fields["ID"],$withtemplate);
-		echo "</table>";
+		echo "</table></div>";
+	}	
 		return true;
 	}
 	else {
