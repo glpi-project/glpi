@@ -408,9 +408,10 @@ function showLicenses ($sID) {
 				if ($db->numrows($result2)!=0) { 
 				echo "<table width='100%'>";
 				while ($data2=$db->fetch_array($result2)) {
+					
 					echo "<tr><td align=center>";
 					echo "<b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$data2["cID"]."\">";
-					echo $data2[cname];
+					echo $data2["cname"];
 					echo "</a></b></td><td align=center>";
 					echo "<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&ID=".$data2["ID"]."\">";
 					echo $lang["buttons"][5];
