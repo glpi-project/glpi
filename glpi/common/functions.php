@@ -575,6 +575,7 @@ $config = array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	// Affichage du message apres redirection
 	if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])&&!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])){
 		echo "<center><b>".$_SESSION["MESSAGE_AFTER_REDIRECT"]."</b></center>";
+		$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
 		unset($_SESSION["MESSAGE_AFTER_REDIRECT"]);
 	}
 }
