@@ -47,7 +47,7 @@ class DBmysql {
 	var $dbh;
 	var $error = 0;
 
-	function DB()
+	function DBmysql()
 	{  // Constructor
 		$this->dbh = mysql_connect($this->dbhost, $this->dbuser, $this->dbpassword) or $this->error = 1;
 		mysql_select_db($this->dbdefault) or $this->error = 1;
