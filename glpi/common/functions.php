@@ -2685,7 +2685,7 @@ function showCalendarForm($form,$element,$value='',$withtemplate=''){
 		
 		if ($withtemplate!=2){
 			echo "&nbsp;<img src='".$HTMLRel."pics/calendar.png' class='calendrier' alt='".$lang["buttons"][15]."' title='".$lang["buttons"][15]."'
-			onclick=\"window.open('$HTMLRel/mycalendar.php?form=$form&amp;elem=$element&amp;value=$value','".$lang["buttons"][15]."','width=200,height=220')\" >";
+			onclick=\"window.open('".$HTMLRel."mycalendar.php?form=$form&amp;elem=$element&amp;value=$value','".$lang["buttons"][15]."','width=200,height=220')\" >";
 		
 			echo "&nbsp;<img src='".$HTMLRel."pics/reset.png' class='calendrier' onClick=\"document.forms['$form'].$element.value='0000-00-00'\" alt='Reset' title='Reset'>";	
 		}
