@@ -442,7 +442,7 @@ function updateNetdevice($input) {
 	// set new date and make sure it gets updated
 	$updates[0]= "date_mod";
 	$netdev->fields["date_mod"] = date("Y-m-d H:i:s");
- 
+
  	// Pop off the last two attributes, no longer needed
 	$null=array_pop($input);
 	$null=array_pop($input);
@@ -1041,7 +1041,26 @@ function removeConnector($ID) {
 
 	GLOBAL $cfg_layout, $cfg_install;
 	
+	// Update to blank networking item
+	$nw=new Netwire;
+	$ID2=$nw->getOppositeContact($ID);
+	$np1=new Netport;
+	$np2=new Netport;
+	$np1->getFromDB($ID);
+	$np2->getFromDB($ID2);
+	$npup=-1;
+	if ($np1->fields["device_type"]==2&&$np2->fields["device_type"]!=2){
+		$npup=$ID;
+		}
+	if ($np2->fields["device_type"]==2&&$np1->fields["device_type"]!=2){
+		$npup=$ID2;
+		}
 	$db = new DB;
+	if ($npup!=-1){
+		$query = "UPDATE glpi_networking_ports SET netpoint=NULL, ifaddr='', ifmac='' WHERE ID='$npup'";	
+		$db->query($query);
+	}
+	
 	$query = "DELETE FROM glpi_networking_wire WHERE (end1 = '$ID' OR end2 = '$ID')";
 	if ($result=$db->query($query)) {
 		return true;
