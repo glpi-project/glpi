@@ -995,6 +995,7 @@ $lang["title"][20] = "Contrats";
 $lang["title"][21] = "Infos Commerciales";
 $lang["title"][22] = "Contacts";
 $lang["title"][23] = "Entreprises";
+$lang["title"][24] = "Assistance";
 
 $lang["device_hdd"][0] = "Rpm";
 $lang["device_hdd"][1] = "Cache";
@@ -1149,5 +1150,6 @@ $lang["financial"][64] = "Fin";
 $lang["financial"][65] = "Entreprises associées";
 $lang["financial"][66] = "Contrats associées";
 $lang["financial"][67] = "Informations Commerciales associées";
+$lang["financial"][68] = "Activer les informations commerciales";
 
 ?>

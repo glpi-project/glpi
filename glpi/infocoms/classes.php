@@ -39,7 +39,26 @@ class InfoCom {
 	var $fields	= array();
 	var $updates	= array();
 	
-	function getfromDB ($ID) {
+	function getfromDB ($device_type,$ID) {
+
+		$db = new DB;
+		$query = "SELECT * FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='$device_type')";
+		
+		if ($result = $db->query($query)) {
+		if ($db->numrows($result)==1){	
+			$data = $db->fetch_array($result);
+			
+			foreach ($data as $key => $val) {
+				$this->fields[$key] = $val;
+			}
+			return true;
+		} else return false;
+		} else {
+			return false;
+		}
+	}
+
+	function getfromDBbyID ($ID) {
 
 		$db = new DB;
 		$query = "SELECT * FROM glpi_infocoms WHERE (ID = '$ID')";
@@ -90,6 +109,7 @@ class InfoCom {
 			$query .= "' WHERE ID='";
 			$query .= $this->fields["ID"];	
 			$query .= "'";
+//			echo $query."<br>";
 			$result=$db->query($query);
 		}
 		
@@ -129,32 +149,15 @@ class InfoCom {
 		}
 
 	}
-	function isUsed($ID){
-	$db = new DB;		
-	$query="SELECT * from glpi_infocom_device where FK_infocom = '$ID'";
-	$result = $db->query($query);
-	return ($db->numrows($result)>0);
-	}
 
-	function deleteFromDB($ID,$force=0) {
+	function deleteFromDB($ID) {
 
 		$db = new DB;
-		$this->getFromDB($ID);		
-		if ($force==1||!$this->isUsed($ID)){
-			$query = "DELETE from glpi_infocoms WHERE ID = '$ID'";
-			if ($result = $db->query($query)) {
-				
-				// Delete all enterprises associations from infocoms and contract
-				$query3 = "DELETE FROM glpi_infocom_device WHERE (FK_infocom = '$ID')";
-				$result3 = $db->query($query3);
-				
-					return true;
-			} else {
-				return false;
-			}
+		$query = "DELETE from glpi_infocoms WHERE ID = '$ID'";
+		if ($result = $db->query($query)) {
+				return true;
 		} else {
-		$query = "UPDATE glpi_infocoms SET deleted='Y' WHERE ID = '$ID'";		
-		return ($result = $db->query($query));
+				return false;
 		}
 	}
 	

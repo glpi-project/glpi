@@ -74,7 +74,7 @@ else
 	showNetworkingForm ($_SERVER["PHP_SELF"],$_GET["ID"]);
 
 	if (!empty($_GET["ID"])){
-	showInfocomAssociated(NETWORKING_TYPE,$tab["ID"]);
+	showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",NETWORKING_TYPE,$tab["ID"]);
 	showContractAssociated(NETWORKING_TYPE,$tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_GET["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_GET["ID"]);

@@ -46,12 +46,12 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 if(!isset($tab["search"])) $tab["search"] = "";
 
-if (isset($_POST["add"]))
+if (isset($_GET["add"]))
 {
 	checkAuthentication("admin");
 
-	addInfocom($_POST);
-	logEvent(0, "infocom", 4, "financial", $_SESSION["glpiname"]." added item ".$_POST["num_commande"].".");
+	addInfocom($_GET);
+	logEvent(0, "infocom", 4, "financial", $_SESSION["glpiname"]." added infocoms.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
@@ -61,45 +61,12 @@ else if (isset($_POST["delete"]))
 	logEvent($tab["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/infocoms/");
 }
-else if (isset($_POST["restore"]))
-{
-	checkAuthentication("admin");
-	restoreInfocom($_POST);
-	logEvent($tab["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." restored item.");
-	header("Location: ".$cfg_install["root"]."/infocoms/");
-}
-else if (isset($_POST["purge"]))
-{
-	checkAuthentication("admin");
-	deleteInfocom($_POST,1);
-	logEvent($tab["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." purge item.");
-	header("Location: ".$cfg_install["root"]."/infocoms/");
-}
-else if (isset($_POST["additem"])){
-	checkAuthentication("admin");
-	if(isset($_POST["item"]))
-	list($type,$ID)=explodeAllItemsSelectResult($_POST["item"]);
-	else {$type=$_POST["type"];$ID=$_POST["ID"];}
-	
-	addDeviceInfocom($_POST["icID"],$type,$ID);
-	logEvent($tab["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." associate device.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-}
-else if (isset($_GET["deleteitem"])){
-	checkAuthentication("admin");
-	deleteDeviceInfocom($_GET["ID"]);
-	logEvent($tab["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." delete device.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-}
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateInfocom($_POST);
 	logEvent($_POST["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." updated item.");
-	commonHeader($lang["title"][21],$_SERVER["PHP_SELF"]);
-	showInfocomForm($_SERVER["PHP_SELF"],$_POST["ID"]);
-
-	commonFooter();
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 
 } 
 else

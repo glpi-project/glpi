@@ -295,7 +295,7 @@ function commonHeader($title,$url)
 	
 $utils = array($lang["Menu"][17]=>array("/reservation/index.php","1"),
 		$lang["Menu"][19]=>array("/knowbase/index.php"," "),
-		"Helpdesk"=>array("/helpdesk/index.php"," "),
+        $lang["Menu"][6]=>array("/reports/index.php"," "),
 		);	
 	
 $inventory = 	array($lang["Menu"][0]=>array("/computers/index.php","1"),
@@ -310,12 +310,11 @@ $inventory = 	array($lang["Menu"][0]=>array("/computers/index.php","1"),
 
 $financial = array($lang["Menu"][22]=>array("/contacts/index.php","1"),
 		$lang["Menu"][23]=>array("/enterprises/index.php"," "),
-		$lang["Menu"][24]=>array("/infocoms/index.php"," "),
 		$lang["Menu"][25]=>array("/contracts/index.php"," "),
 		);	
 
 $maintain =	array($lang["Menu"][5]=>array("/tracking/index.php","6"),
-	              $lang["Menu"][6]=>array("/reports/index.php"," "),
+			"Helpdesk"=>array("/helpdesk/index.php"," "),
 		      $lang["Menu"][13]=>array("/stats/index.php"," "));
 
 				
@@ -407,9 +406,9 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	
 	 if ($navigation->maintain) {
 		echo "<td align='center' valign='top' width='20%'>";
-				echo "<img class='icon_nav' src=\"".$HTMLRel."pics/maintenance.png\" alt=\"\" title=\"".$lang["setup"][55]."\"><br>";
+				echo "<img class='icon_nav' src=\"".$HTMLRel."pics/maintenance.png\" alt=\"\" title=\"".$lang["title"][24]."\"><br>";
 
-		echo "<small>-&nbsp;".$lang["setup"][55]."&nbsp;-</small><br>";
+		echo "<small>-&nbsp;".$lang["title"][24]."&nbsp;-</small><br>";
 		foreach ($maintain as $key => $val) {
 			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
 		}
