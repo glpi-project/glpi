@@ -240,25 +240,33 @@ function replaceDropDropDown($input) {
 function showDeleteConfirmForm($target,$table, $ID) {
 	global $lang;
 	
-	echo $lang["setup"][63];
-	echo $lang["setup"][64];
+	echo "<div align='center'>";
+	echo "<p style='color:red'>".$lang["setup"][63]."</p>";
+	echo "<p>".$lang["setup"][64]."</p>";
+	
 	echo "<form action=\"". $target ."\" method=\"post\">";
 	echo "<input type=\"hidden\" name=\"tablename\" value=\"". $table ."\"  />";
 	echo "<input type=\"hidden\" name=\"ID\" value=\"". $ID ."\"  />";
 	echo "<input type=\"hidden\" name=\"which\" value=\"". str_replace("glpi_type_","",str_replace("glpi_dropdown_","",$table)) ."\"  />";
 	echo "<input type=\"hidden\" name=\"forcedelete\" value=\"1\" />";
-	echo "<input type=\"submit\" name=\"delete\" value=\"Confirmer\" />";
+	
+	echo "<table class='tab_cadre'><tr><td>";
+	echo "<input class='button' type=\"submit\" name=\"delete\" value=\"Confirmer\" /></td>";
+	
 	echo "<form action=\" ". $target ."\" method=\"post\">";
-	echo "<input type=\"submit\" name=\"annuler\" value=\"Annuler\" />";
+	echo "<td><input class='button' type=\"submit\" name=\"annuler\" value=\"Annuler\" /></td></tr></table>";
 	echo "</form>";
-	echo "<br />". $lang["setup"][65];
+	echo "<p>". $lang["setup"][65]."</p>";
 	echo "<form action=\" ". $target ."\" method=\"post\">";
 	echo "<input type=\"hidden\" name=\"which\" value=\"". str_replace("glpi_type_","",str_replace("glpi_dropdown_","",$table)) ."\"  />";
+	echo "<table class='tab_cadre'><tr><td>";
 	dropdownNoValue($table,"newID",$ID);
 	echo "<input type=\"hidden\" name=\"tablename\" value=\"". $table ."\"  />";
 	echo "<input type=\"hidden\" name=\"oldID\" value=\"". $ID ."\"  />";
-	echo "<input type=\"submit\" name=\"replace\" value=\"Remplacer\" />";
+	echo "</td><td><input class='button' type=\"submit\" name=\"replace\" value=\"Remplacer\" /></td></tr></table>";
 	echo "</form>";
+	
+	echo "</div>";
 }
 
 

@@ -501,7 +501,7 @@ $lang["reports"][29] 	= "Peripherals";
 $lang["reports"][30] 	= "Peripherals under maintenance contract"; 
 $lang["reports"][31]    ="complete";
 $lang["reports"][32]    ="limited";
-$lang["reports"][33]    ="If you used a software which does not know anything with the standards (Excel for example), use the limited version in order not to have a problem with the size of the fields. The long fields will be truncated.";
+
 
 // LDAP
 $lang["ldap"][0]	= "Search";
