@@ -56,6 +56,7 @@ else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
 	deletePrinter($_POST);
+	Disconnect($tab["ID"],3);	
 	logEvent($_POST["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/printers/");
 }

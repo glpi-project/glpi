@@ -54,6 +54,7 @@ if (isset($_POST["add"]))
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
+	Disconnect($tab["ID"],4);
 	deleteMonitor($_POST);
 	logEvent($_POST["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/monitors/");

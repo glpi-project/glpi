@@ -50,6 +50,7 @@ else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
 	deletePeripheral($_POST);
+	Disconnect($tab["ID"],5);
 	logEvent($_POST["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/peripherals/");
 }

@@ -593,6 +593,7 @@ function addComputer($input) {
 function deleteComputer($input) {
 	// Delete Computer
 	if(empty($input["template"])) $input["template"] = "";
+	else removeConnectComputer($input["ID"]);
 	$comp = new Computer;
 	$comp->deleteFromDB($input["ID"],$input["template"]);
 } 	
