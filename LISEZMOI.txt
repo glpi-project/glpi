@@ -102,7 +102,7 @@ II) Récupération et installation des fichiers.
 
 -[votre_racine_http/]glpi/backups/dump
 -[votre_racine_http/]glpi/glpi/config/
--[votre_racine_http/]glpi/reports/reports/convexcel/temp
+
 
 de manière à ce que PHP y ait les droits décriture.
 
