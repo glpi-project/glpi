@@ -222,9 +222,7 @@ class User {
 			if ( ($updates[$i]=="password") && ($this->fields[$updates[$i]] != "") ) {
 				$query .= "PASSWORD('".$this->fields[$updates[$i]]."')";
 				$mdpchiff = md5($this->fields[$updates[$i]]);
-			}
-			elseif (($updates[$i]=="password_md5") && ($this->fields[$updates[$i]] != "") ) {
-				$query .= "'".$mdpchiff."'";
+				$query .= ", password_md5='". $mdpchiff ."'";
 			} else {
 				$query .= "'".$this->fields[$updates[$i]]."'";
 			}
