@@ -39,6 +39,7 @@ class writeexcel_worksheet extends writeexcel_biffwriter {
     var $_ext_sheets;
     var $_using_tmpfile;
     var $_filehandle;
+    var $_tmpfile;
     var $_fileclosed;
     var $_offset;
     var $_xls_rowmax;
@@ -198,7 +199,8 @@ class writeexcel_worksheet extends writeexcel_biffwriter {
 function _initialize() {
 
     # Open tmp file for storing Worksheet data.
-    $fh=fopen(tempnam($this->_tempdir, "php_writeexcel"), "w+b");
+    $this->_tmpfile=tempnam($this->_tempdir, "php_writeexcel");
+    $fh=fopen($this->_tmpfile, "w+b");
 
     if ($fh) {
         # Store filehandle
@@ -283,6 +285,8 @@ function _initialize() {
 
         $this->_store_selection($this->_selection);
         $this->_store_eof();
+        if ($this->_filehandle)
+        unlink($this->_tmpfile);
     }
 
     /*
