@@ -78,21 +78,29 @@ if(isset($_POST["Submit"]))
 	echo " <tr class='tab_bg3'>";
 	echo " <td align='center' width='70%'><b>".$lang["reports"][19]."</b></td>";
 	echo " <td align='center' width='30%'><b>".$lang["computers"][13]."</b></td>";
+	echo " <td align='center' width='30%'><b>".$lang["computers"][17]."&nbsp;/&nbsp;".$lang["computers"][18]."</b></td>";
 	echo " </tr>";
 	
 
 	$db = new DB;
-	$query = "select ID,contact from glpi_computers where contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%'";
+	$query = "select ID,contact, serial, otherserial from glpi_computers where contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%'";
 	$result = $db->query($query);
 	while($ligne = $db->fetch_array($result))
 	{
 		$Comp_num = $ligne['ID'];
 		$Contact = $ligne['contact'];
-
+		$s1 = $ligne['serial'];
+		$s2 = $ligne['otherserial'];
 		echo " <tr class='tab_bg_1' onClick=\"fillidfield(".$Comp_num.")\">";
-		echo "<td width='70%' align='center'><b> $Contact </b></td>";
-		echo "<td  width='30%'";
-		echo "<b> $Comp_num </b></td></tr>";
+		echo "<td width='50%' align='center'><b> $Contact </b></td>";
+		echo "<td  width='20%' align='center'>";
+		echo "<b> $Comp_num </b></td>";
+		echo "<td width='30%' align='center'>";
+		if ($s1!="") echo $s1;
+		if ($s1!=""&&$s2!="") echo "&nbsp;/&nbsp;";
+		if ($s2!="") echo $s2;
+		echo "</td>";
+		echo "</tr>";
 
 	}
      echo "</table>";
