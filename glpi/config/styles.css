@@ -73,7 +73,7 @@
 	}
 #navigation a{
 		font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
-
+	font-size : 13px;
 	color : #000000;
 	background-color: transparent;
 	text-decoration: none;
@@ -81,7 +81,7 @@
 
 #navigation a:hover{
 		font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
-
+	font-size : 13px;
 	color : #FFFFFF;
 	text-decoration: none;
 	border: none;

@@ -210,25 +210,20 @@ $report_list["Par_annee"]["file"] = "reports/parAnnee.php";
 $report_list["excel"]["name"] = "excel";
 $report_list["excel"]["file"] = "reports/geneExcel.php";
 
-// options d'installation et interface graphique
-// Installation and graphical options
+// options d'installation
+// Installation  option
+
+ // dicts
+//dictionnaires
+$cfg_install["languages"]	= array("english","deutsch","french");
+
+// END OF CONFIGURATION
+
 
 // version number
 // numero de version
 $cfg_install["version"]		=" 0.3 Alpha ";
-  
-
-// dicts
-//dictionnaires
-$cfg_install["languages"]	= array("english","deutsch","french");
-
-//logo
-//$cfg_layout["logogfx"]		= "glpi/pics/logo-glpi.png";
-//txt du logo
 $cfg_layout["logotxt"]		= "GLPI powered by indepnet";
 
 
-
-
-// END OF CONFIGURATION
 ?>
