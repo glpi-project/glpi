@@ -110,20 +110,21 @@ function get_update_content($db, $table,$from,$limit)
      
      if($result)
      while($row = mysql_fetch_assoc($result)) {
-         if (!isset($row["ID"])) {echo "ERROR";exit();}
-     	if (get_magic_quotes_runtime()) $row=stripslashes_deep($row);
-     	$row=stripslashes_deep($row);
-         $insert = "UPDATE $table SET ";
-         foreach ($row as $key => $val) {
-         	$insert.=" ".$key."=";
-            if(!isset($val)) $insert .= "NULL,";
-            else if($val != "") $insert .= "'".addslashes($val)."',";
-            else $insert .= "'',";
-         }
-         $insert = ereg_replace(",$","",$insert);
-         $insert.=" WHERE ID = '".$row["ID"]."' ";
-         $insert .= ";\n";
-         $content .= $insert;
+         if (isset($row["ID"])) {
+     		if (get_magic_quotes_runtime()) $row=stripslashes_deep($row);
+     		$row=stripslashes_deep($row);
+         	$insert = "UPDATE $table SET ";
+         	foreach ($row as $key => $val) {
+	         	$insert.=" ".$key."=";
+            	if(!isset($val)) $insert .= "NULL,";
+            	else if($val != "") $insert .= "'".addslashes($val)."',";
+            	else $insert .= "'',";
+         	}
+         	$insert = ereg_replace(",$","",$insert);
+         	$insert.=" WHERE ID = '".$row["ID"]."' ";
+         	$insert .= ";\n";
+         	$content .= $insert;
+		}
      }
      return $content;
 }
