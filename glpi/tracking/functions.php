@@ -588,7 +588,7 @@ function showJobDetails($ID) {
 		if ($job->status == "new") {
 			$hour=floor($job->realtime);
 			$minute=round(($job->realtime-$hour)*60,0);
-			echo "<form method=get action=\"".$cfg_install["root"]."/tracking/tracking-mark.php\">";
+			echo "<form method=post action=\"".$cfg_install["root"]."/tracking/tracking-mark.php\">";
 			echo "<tr class='tab_bg_1'>";
 			echo "<td colspan='3' align='center'>";
 			echo "<input type='hidden' name='ID' value=$job->ID>";			
@@ -608,19 +608,19 @@ function showJobDetails($ID) {
 			}
 			echo "</select>".$lang["job"][22]."&nbsp;&nbsp;";
 
-			echo "<input type='submit' value=\"".$lang["job"][3]."\" class='submit'>";
+			echo "<input type='submit' name='close' value=\"".$lang["job"][3]."\" class='submit'>";
 			echo "</td></tr>";
 			echo "</form>";
 
 		}
-		if ($job->status == "old") {
-			echo "<form method=get action=\"".$cfg_install["root"]."/tracking/tracking-mark.php\">";
+		else if ($job->status == "old") {
+			echo "<form method=post action=\"".$cfg_install["root"]."/tracking/tracking-mark.php\">";
 			echo "<tr class='tab_bg_1'>";
 			echo "<td colspan='3' align='center'>";
 
 			echo "<input type='hidden' name='ID' value=$job->ID>";			
 			echo "<input type='hidden' name='status' value='new'>";			
-			echo "<input type='submit' value=\"".$lang["job"][23]."\" class='submit'>";
+			echo "<input type='submit' name='restore' value=\"".$lang["job"][23]."\" class='submit'>";
 			echo "</td></tr>";
 
 			echo "</form>";
@@ -755,12 +755,12 @@ function showFollowups($ID) {
 	if(strcmp($_SESSION["glpitype"],"post-only")!=0)
 	if ($job->status=="new") {
 		echo "<div align='center'>&nbsp;<table class='tab_cadre' width='90%'>\n\n";
-		echo "<form method=get action=\"".$cfg_install["root"]."/tracking/tracking-followups.php\">";
+		echo "<form method=post action=\"".$cfg_install["root"]."/tracking/tracking-followups.php\">";
 		echo "<input type='hidden' name=ID value=$ID>";
 		echo "<tr><th>".$lang["job"][9].":</th></tr>";
 		echo "<tr class='tab_bg_1'><td width='100%' align='center'><textarea cols='60' rows='5' name='contents' ></textarea></td></tr>";
 		echo "<tr><td align='center' class='tab_bg_1'>";
-		echo "<input type='submit' value=\"".$lang["buttons"][2]."\" class='submit'></td>";
+		echo "<input type='submit' name='add_followup' value=\"".$lang["buttons"][2]."\" class='submit'></td>";
 		echo "</tr></form></table></div>";
 	}
 
