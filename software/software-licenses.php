@@ -40,29 +40,58 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_software.php");
+include ($phproot . "/glpi/includes_computers.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
+if(!isset($tab["lID"])) $tab["lID"] = "";
+if(!isset($tab["sID"])) $tab["sID"] = "";
+if(!isset($tab["search_computer"])) $tab["search_computer"] = "";
+if(!isset($tab["search_software"])) $tab["search_software"] = "";
 
-if (isset($tab["addform"]))
-{
+
+if (isset($tab["Modif_Interne"])){
 	checkAuthentication("admin");
 	commonHeader("Software",$_SERVER["PHP_SELF"]);
-	showLicenseForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	showLicenseForm($_SERVER["PHP_SELF"],$tab['form'],$tab["sID"],$tab["lID"],$tab['search_computer'],$tab['search_software']);
 	commonFooter();
+
 }
 else if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
+	//print_r($_POST);
 	if ($_POST["serial"]=="free")$number=1;
 	else $number=$_POST["number"];
 	unset($tab["number"]);
+	unset($tab["search_computer"]);
+	unset($tab["search_software"]);
+	
 	
 	for ($i=1;$i<=$number;$i++){
 	addLicense($tab);
 	}
+	
 	logEvent($tab["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." added a license.");
+	
+	header("Location: ".$_SERVER['PHP_SELF']."?form=add&sID=".$tab["sID"]);
+}
+else if (isset($tab["update"]))
+{
+	checkAuthentication("admin");
+	unset($tab["search_computer"]);
+	unset($tab["search_software"]);
+
+	updateLicense($tab);
+	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." update a license.");
 	header("Location: ".$_SERVER['HTTP_REFERER']." ");
+}
+else if (isset($tab["form"]))
+{
+	checkAuthentication("admin");
+	commonHeader("Software",$_SERVER["PHP_SELF"]);
+	showLicenseForm($_SERVER["PHP_SELF"],$tab['form'],$tab["sID"],$tab["lID"],$tab['search_computer'],$tab['search_software']);
+	commonFooter();
 }
 else if (isset($tab["delete"]))
 {

@@ -49,8 +49,10 @@ class Software {
 		// Make new database object and fill variables
 		$db = new DB;
 		$query = "SELECT * FROM glpi_software WHERE (ID = '$ID')";
+		
 		if ($result = $db->query($query)) {
 			$data = $db->fetch_array($result);
+			if (!empty($data))	
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}
@@ -125,7 +127,7 @@ function getEmpty () {
 			}
 		}
 		$query .= ")";
-
+		//echo $query;
 		if ($result=$db->query($query)) {
 			return true;
 		} else {
@@ -162,10 +164,9 @@ function getEmpty () {
 
 class License {
 
-	var $ID		= 0;
-	var $sID	= 0;
-	var $serial	= "";
-	var $expire	= "";
+
+	var $fields	= array();
+	var $updates	= array();
 	
 	function getfromDB ($ID) {
 
@@ -173,15 +174,34 @@ class License {
 		$db = new DB;
 		$query = "SELECT * FROM glpi_licenses WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
-			$this->ID = $ID;
-			$this->sID = $db->result($result,0,"sID");
-			$this->serial = $db->result($result,0,"serial");
-			$this->expire = $db->result($result,0,"expire");
+			$data = $db->fetch_array($result);
+			foreach ($data as $key => $val) {
+				$this->fields[$key] = $val;
+			}
 			return true;
 
 		} else {
 			return false;
 		}
+	}
+
+
+	function updateInDB($updates)  {
+
+		$db = new DB;
+
+		for ($i=0; $i < count($updates); $i++) {
+			$query  = "UPDATE glpi_licenses SET ";
+			$query .= $updates[$i];
+			$query .= "='";
+			$query .= $this->fields[$updates[$i]];
+			$query .= "' WHERE ID='";
+			$query .= $this->fields["ID"];	
+			$query .= "'";
+			
+			$result=$db->query($query);
+		}
+		
 	}
 	
 	function addToDB() {
@@ -189,14 +209,35 @@ class License {
 		$db = new DB;
 
 		// Build query
-		if ($this->expire!=""&&$this->expire!="0000-00-00")		
-		$query = "INSERT INTO glpi_licenses VALUES (NULL,$this->sID,'$this->serial','$this->expire')";
-		else $query = "INSERT INTO glpi_licenses VALUES (NULL,$this->sID,'$this->serial',NULL)";
+		$query = "INSERT INTO glpi_licenses (";
+		$i=0;
+		foreach ($this->fields as $key => $val) {
+			$fields[$i] = $key;
+			$values[$i] = $val;
+			$i++;
+		}		
+		for ($i=0; $i < count($fields); $i++) {
+			$query .= $fields[$i];
+			if ($i!=count($fields)-1) {
+				$query .= ",";
+			}
+		}
+		$query .= ") VALUES (";
+		for ($i=0; $i < count($values); $i++) {
+			$query .= "'".$values[$i]."'";
+			if ($i!=count($values)-1) {
+				$query .= ",";
+			}
+		}
+		$query .= ")";
+		//echo $query;
+		
 		if ($result=$db->query($query)) {
 			return true;
 		} else {
 			return false;
 		}
+
 	}
 
 

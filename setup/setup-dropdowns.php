@@ -42,8 +42,9 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-if(isset($_SERVER['HTTP_REFERER']))
-$httpreferer=preg_replace("/\?which=\w*/","",$_SERVER['HTTP_REFERER']);
+
+//if(isset($_SERVER['HTTP_REFERER']))
+//$httpreferer=preg_replace("/\?which=\w*/","",$_SERVER['HTTP_REFERER']);
 
 if (isset($_POST["which"]))$which=$_POST["which"];
 elseif (isset($_GET["which"]))$which=$_GET["which"];
@@ -51,14 +52,14 @@ else $which="";
 
 // Selected Item
 if (isset($_POST["ID"])) $ID=$_POST["ID"];
+elseif (isset($_GET["ID"])) $ID=$_GET["ID"];
 else $ID="";
-//echo $which."---";
 
 if (isset($_POST["add"])) {
 	checkAuthentication("admin");
 	addDropdown($_POST);
 	logEvent(0, "dropdowns", 5, "setup", $_SESSION["glpiname"]." added a value to a dropdown.");
-	header("Location: $httpreferer?which=$which");
+	header("Location: ".$_SERVER['PHP_SELF']."?which=$which");
 } else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
 	if(!dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
@@ -68,23 +69,24 @@ if (isset($_POST["add"])) {
 	} else {
 		deleteDropdown($_POST);
 		logEvent(0, "templates", 4, "inventory", $_SESSION["glpiname"]." deleted a dropdown value.");
-		header("Location: $httpreferer?which=$which");
+		header("Location: ".$_SERVER['PHP_SELF']."?which=$which");
 	}
 
 } else if (isset($_POST["update"])) {
 	checkAuthentication("admin");
 	updateDropdown($_POST);
 	logEvent(0, "templates", 4, "inventory", $_SESSION["glpiname"]." updated a dropdown value.");
-	header("Location: $httpreferer?which=$which");
+	header("Location: ".$_SERVER['PHP_SELF']."?which=$which&ID=$ID");
 } else if (isset($_POST["replace"])) {
 	checkAuthentication("admin");
 	replaceDropDropDown($_POST);
 	logEvent(0, "templates", 4, "inventory", $_SESSION["glpiname"]." replaced a dropdown value in each items.");
-	header("Location: $httpreferer?which=$which");
+	header("Location: ".$_SERVER['PHP_SELF']."?which=$which");
 }
- if (!isset($_POST["delete"])){
+ else {
 	checkAuthentication("normal");
 	commonHeader("Setup",$_SERVER["PHP_SELF"]);
+
 	$dp=array();
 	$dp["locations"]=$lang["setup"][3];	
 	$dp["computers"]=$lang["setup"][4];	

@@ -82,7 +82,54 @@ class Computer {
 			$query .= $this->fields["ID"];	
 			$query .= "'";
 			$result=$db->query($query);
+		// Mise a jour du lieu des éléments rattachés
+		if ($updates[$i]=="location"){
+			$updates2[0]="location";
+			//printers
+			$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='3'";
+			if ($result=$db->query($query)) {
+				$resultnum = $db->numrows($result);
+				if ($resultnum>0) {
+				for ($i=0; $i < $resultnum; $i++) {
+					$tID = $db->result($result, $i, "end1");
+					$printer = new Printer;
+					$printer->getfromDB($tID);
+					$printer->fields['location']=$this->fields['location'];
+					$printer->updateInDB($updates2);
+					}
+				}
+			}
+			//monitors
+			$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='4'";
+			if ($result=$db->query($query)) {
+				$resultnum = $db->numrows($result);
+				if ($resultnum>0) {
+				for ($i=0; $i < $resultnum; $i++) {
+					$tID = $db->result($result, $i, "end1");
+					$monitor = new Monitor;
+					$monitor->getfromDB($tID);
+					$monitor->fields['location']=$this->fields['location'];
+					$monitor->updateInDB($updates2);
+					}
+				}
+			}
+			//Peripherals
+			$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='5'";
+			if ($result=$db->query($query)) {
+				$resultnum = $db->numrows($result);
+				if ($resultnum>0) {
+				for ($i=0; $i < $resultnum; $i++) {
+					$tID = $db->result($result, $i, "end1");
+					$peri = new Peripheral;
+					$peri->getfromDB($tID);
+					$peri->fields['location']=$this->fields['location'];
+					$peri->updateInDB($updates2);
+					}
+				}
+			}
 		}
+		}
+		
 		
 	}
 	

@@ -950,11 +950,12 @@ function dropdownValueSearch($table,$myname,$value,$search) {
 		$i = 0;		
 		while ($i < $number) {
 			$output = $db->result($result, $i, "name");
+			$ID = $db->result($result, $i, "ID");
 
 			if ($output == $value) {
-				echo "<option value=\"$output\" selected>$output</option>";
+				echo "<option value=\"$ID\" selected>$output</option>";
 			} else {
-				echo "<option value=\"$output\">$output</option>";
+				echo "<option value=\"$ID\">$output</option>";
 			}
 			$i++;
 		}

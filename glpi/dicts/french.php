@@ -433,10 +433,10 @@ $lang["software"][12] 	= "Ajouter licence...";
 $lang["software"][13]	= "licence(s) trouv&eacute;e(s)";
 $lang["software"][14]	= "Pas de licence pour ce logiciel.";
 $lang["software"][15]	= "Ajouter des licences pour un logiciel";
-$lang["software"][16]	= "Num&eacute;ros de s&eacute;rie ('free' pour les logiciels libres)";
+$lang["software"][16]	= "Num&eacute;ros de s&eacute;rie <br>('free' pour les logiciels libres)";
 $lang["software"][17]	= "logiciel install&eacute;"; 
 $lang["software"][18]	= "Licence deja install&eacute;e.";
-$lang["software"][19]	= "Install&eacute;";
+$lang["software"][19]	= "Installations";
 $lang["software"][20]	= "Restant";
 $lang["software"][21]	= "Total"; 
 $lang["software"][22]	= "Pas de logiciel trouv&eacute;.";
@@ -445,6 +445,16 @@ $lang["software"][24]   = "Date fin";
 $lang["software"][25]   = "Expire le";
 $lang["software"][26]   = "N'expire jamais";
 $lang["software"][27]   = "Licence expirée";
+$lang["software"][28]   = "OEM";
+$lang["software"][29]   = "Mise à jour";
+$lang["software"][30]   = "depuis";
+$lang["software"][31]	= "Num&eacute;ros de s&eacute;rie";
+$lang["software"][32]   = "Expiration";
+$lang["software"][33]   = "OEM";
+$lang["software"][34]	= "Modifier une licence";
+$lang["software"][35]   = "Acheté";
+$lang["software"][36]   = "mise(s) à jour trouvée(s)";
+
 
 // Peripherals
 $lang["peripherals"][0]	= "Ajouter p&eacute;riph&eacute;rique...";
