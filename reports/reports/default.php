@@ -93,7 +93,8 @@ $i = 0;
 $number = $db->numrows($result);
 while ($i < $number) {
 	$os = $db->result($result, $i, "name");
-	$query = "SELECT count(*) FROM glpi_computers WHERE (os = '$os')";
+	$id= $db->result($result, $i, "ID");
+	$query = "SELECT count(*) FROM glpi_computers WHERE (os = '$id')";
 	$result2 = $db->query($query);
 	$counter = $db->result($result2,0,0);
 	echo "<tr><td>$os</td><td>$counter</td></tr>";
