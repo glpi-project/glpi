@@ -48,7 +48,7 @@ commonHeader("Command Center",$_SERVER["PHP_SELF"]);
 // Greet the user
 
 echo "<center><b>".$lang["central"][0].$_SESSION["glpiname"].", ".$lang["central"][1]."</b></center>";
-echo "<hr noshade>";
+//echo "<hr noshade>";
 
 // New database object
 $db= new DB;
