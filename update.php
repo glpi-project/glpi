@@ -1433,6 +1433,9 @@ $query= "CREATE TABLE glpi_dropdown_tracking_category (
 );";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_dropdown_tracking_category ".$lang["update"][90].$db->error());
 
+}
+
+if(!FieldExists("glpi_tracking","category")) {
 	$query= "ALTER TABLE `glpi_tracking` ADD `category` INT( 11 ) ;";
 	$db->query($query) or die("0.5 alter tracking add categorie ".$lang["update"][90].$db->error());
 }
@@ -2236,7 +2239,7 @@ $db->query($query) or die("0.5 alter field date ".$lang["update"][90].$db->error
 
 if(!isIndex("glpi_tracking", "category")) {
 $query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `category` ) ";
-$db->query($query) or die("0.5 alter field date ".$lang["update"][90].$db->error());
+$db->query($query) or die("0.5 alter field category ".$lang["update"][90].$db->error());
 }
 
 if(!FieldExists("glpi_config","date_fiscale")) {
