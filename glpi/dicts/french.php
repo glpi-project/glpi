@@ -641,6 +641,7 @@ $lang["setup"][76] = "Au même niveau que";
 $lang["setup"][77] = "Comme p&egrave;re de";
 $lang["setup"][78] = "Base de connaissances";
 $lang["setup"][79] = "Cat&eacute;gorie des suivis";
+$lang["setup"][80] = "Type de Tiers";
 
 $lang["setup"][100]="Configuration g&eacute;n&eacute;rale";
 $lang["setup"][101]="Chemin d'installation";
@@ -1166,5 +1167,6 @@ $lang["financial"][75] = "Bi-annuel";
 $lang["financial"][76] = "Date de mise en service";
 $lang["financial"][77] = "Coefficient d'amortissement";
 $lang["financial"][78] = "Valeur extension garantie";
+$lang["financial"][79] = "Type de Tiers";
 
 ?>

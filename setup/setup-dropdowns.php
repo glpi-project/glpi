@@ -117,6 +117,7 @@ if (isset($_POST["move"])) {
 	$dp["iface"]=$lang["setup"][9];		
 	$dp["firmware"]=$lang["setup"][71];
 	$dp["netpoint"]=$lang["setup"][73];		
+	$dp["enttype"]=$lang["setup"][80];
 	
 //	asort($dp);
 	
@@ -162,6 +163,10 @@ echo "<option value='$key' $sel>".$val."</option>";
 		case "os" :
 		showFormDropDown($_SERVER["PHP_SELF"],"os",$lang["setup"][5],$ID);
 		break;
+		case "enttype" :
+		showFormDropDown($_SERVER["PHP_SELF"],"enttype",$lang["setup"][80],$ID);
+		break;
+
 		case "ram" :
 		showFormDropDown($_SERVER["PHP_SELF"],"ram",$lang["setup"][6],$ID);
 		break;
