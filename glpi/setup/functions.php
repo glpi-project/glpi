@@ -1159,19 +1159,16 @@ function showFormMailing($target) {
 }
 
 function updateExt($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$imap_auth_server,$imap_host) {
+	
 	$db = new DB;
-	if(!empty($ldap_host)) {
-			//TODO : test the remote LDAP connection
-			$query = "update glpi_config set ldap_host = '". $ldap_host ."', ";
-			$query.= "ldap_basedn = '". $ldap_basedn ."', ldap_rootdn = '". $ldap_rootdn ."', ";
-			$query .= "ldap_pass = '". $ldap_pass ."' where config_id = '1' ";
-			$db->query($query);
-		}
-	if(!empty($imap_host)) {
-			$query = "update glpi_config set imap_auth_server = '". $imap_auth_server ."', ";
-			$query.= "imap_host = '". $imap_host ."' where config_id = '1'";
-			$db->query($query);
-	}
+	//TODO : test the remote LDAP connection
+	$query = "update glpi_config set ldap_host = '". $ldap_host ."', ";
+	$query.= "ldap_basedn = '". $ldap_basedn ."', ldap_rootdn = '". $ldap_rootdn ."', ";
+	$query .= "ldap_pass = '". $ldap_pass ."' where config_id = '1' ";
+	$db->query($query);
+	$query = "update glpi_config set imap_auth_server = '". $imap_auth_server ."', ";
+	$query.= "imap_host = '". $imap_host ."' where config_id = '1'";
+	$db->query($query);
 }
 
 function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_admin,$mailing_attrib_admin,$mailing_followup_admin,$mailing_finish_admin,$mailing_new_all_admin,$mailing_attrib_all_admin,$mailing_followup_all_admin,$mailing_finish_all_admin,$mailing_new_all_normal,$mailing_attrib_all_normal,$mailing_followup_all_normal,$mailing_finish_all_normal,$mailing_attrib_attrib,$mailing_followup_attrib,$mailing_finish_attrib,$mailing_new_user,$mailing_attrib_user,$mailing_followup_user,$mailing_finish_user,$mailing_new_attrib) {
