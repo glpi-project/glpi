@@ -44,20 +44,16 @@ if(!empty($_GET["next"])) {
 	if($_GET["next"] == "extsources") {
 	
 		commonHeader("External sources infos",$_SERVER["PHP_SELF"]);
+		titleExtSources();
 		showFormExtSources($_SERVER["PHP_SELF"]);
 	}
 	elseif($_GET["next"] == "mailing") {
 	
 		commonHeader("Mailing infos",$_SERVER["PHP_SELF"]);
-		if (function_exists('mail')) {
 		
-			echo "<br />La fonction mail() existe bien sur votre système : Veuillez configurer les envois de mails.";
-			showFormMailing($_SERVER["PHP_SELF"]);
-		}
-		else {
 		
-			echo "La fonction mail n'existe pas sur votre systeme, impossible de configurer les envois de suivis par mails";
-		}
+		titleMailing();
+		showFormMailing($_SERVER["PHP_SELF"]);
 		
 		
 		
