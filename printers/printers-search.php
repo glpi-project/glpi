@@ -41,8 +41,13 @@ include ($phproot . "/glpi/includes_printers.php");
 checkAuthentication("normal");
 
 commonHeader("Printers",$_SERVER["PHP_SELF"]);
-
+if(isset($_GET["order"])
+{
 showPrintersList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
-
+}
+else
+{
+showPrintersList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
+}
 commonFooter();
 ?>
