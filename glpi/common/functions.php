@@ -96,6 +96,24 @@ function isSuperAdmin($authtype) {
 			return false;
 		}
 }
+function searchUserbyType($authtype) {
+	switch ($authtype){
+		case "post-only" :
+			return " 1=1 ";
+			break;
+		case "normal" :
+			return " type ='super-admin' || type ='admin' || type ='normal'";
+			break;
+		case "admin":
+			return " type ='super-admin' || type ='admin' ";
+			break;
+		case "super-admin":
+			return " type ='super-admin' ";
+			break;
+		default :
+			return "";
+		}
+}
 
 function checkAuthentication($authtype) {
 	// Checks a GLOBAL user and password against the database
@@ -793,7 +811,7 @@ function dropdownUsers($value, $myname) {
 	// Make a select box with all glpi users
 
 	$db = new DB;
-	$query = "SELECT * FROM glpi_users WHERE (type = 'admin' || type = 'normal') ORDER BY name";
+	$query = "SELECT * FROM glpi_users WHERE (".searchUserbyType("normal").") ORDER BY name";
 	$result = $db->query($query);
 
 	echo "<select name=\"$myname\">";
