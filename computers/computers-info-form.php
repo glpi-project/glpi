@@ -54,7 +54,7 @@ if (isset($tab["add"])) {
 	checkAuthentication("admin");
 	addComputer($tab);
 	logEvent(0, "computers", 4, "inventory", $_SESSION["glpiname"]." added ".$tab["name"].".");
-	header("Location: $_SERVER[HTTP_REFERER]");
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 } else if (isset($tab["delete"])) {
 	checkAuthentication("admin");
 	deleteComputer($tab);
@@ -110,7 +110,7 @@ else if(isset($tab["connect"])&&isset($tab["device_type"]))
 	checkAuthentication("admin");
 	update_device_specif($_POST["device_value"],$_POST["compDevID"]);
 	logEvent($_POST["compDevID"],"computers",4,"inventory",$_SESSION["glpiname"] ." modified a computer device spécificity.");
-	header("Location: $_SERVER[HTTP_REFERER]");
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 }elseif(isset($_POST["new_device_type"])){
 	checkAuthentication("admin");
 	commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);

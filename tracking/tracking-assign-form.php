@@ -51,7 +51,7 @@ if (can_assign_job($_SESSION["glpiname"]))
 if (isset($_GET["update"]))
 {
 	assignJob ($_GET["ID"],$_GET["user"],$_SESSION["glpiname"]);	
-	header("Location: $_SERVER[HTTP_REFERER]");
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 
 }
 else

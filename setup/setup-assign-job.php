@@ -46,7 +46,7 @@ if (can_assign_job($_SESSION["glpiname"]))
 	{
 		updateUser($_POST);
 		logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]." updated user ".$_POST["name"].".");
-		header("Location: $_SERVER[HTTP_REFERER]");
+		header("Location: ".$_SERVER['HTTP_REFERER']);
     	}
 	else
     	{

@@ -47,7 +47,7 @@ if (isset($_POST["add"]))
 	checkAuthentication("admin");
 	addPeripheral($_POST);
 	logEvent(0, "Peripheral", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["name"].".");
-	header("Location: $_SERVER[HTTP_REFERER]");
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["delete"]))
 {

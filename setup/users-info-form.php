@@ -44,7 +44,7 @@ if (isset($_POST["add"])) {
 		addUser($_POST);
 		logEvent(0, "users", 4, "setup", $_SESSION["glpiname"]." added user ".$_POST["name"].".");
 	}
-	header("Location: $_SERVER[HTTP_REFERER]");
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
 	deleteUser($_POST);

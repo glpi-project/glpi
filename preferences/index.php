@@ -44,17 +44,17 @@ if (isset($_POST["changepw"])) {
 	
 	if ($_SESSION["extauth"]!=1)
 		updateUser($_POST);
-	header("Location: $_SERVER[HTTP_REFERER]");
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["updatesort"])) {
 	checkAuthentication("normal");
 	updateSort($_POST);
-	header("Location: $_SERVER[HTTP_REFERER]");
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["changelang"])) {
 	checkAuthentication("post-only");
 	updateLanguage($_POST);
 	
 	
-	header("Location: $_SERVER[HTTP_REFERER]");
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 } else {
 	checkAuthentication("normal");
 	commonHeader($lang["title"][17],$_SERVER["PHP_SELF"]);
