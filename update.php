@@ -1292,6 +1292,74 @@ if(!TableExists("glpi_device_sndcard")) {
 	compDpd2Device(SND_DEVICE,"sndcard","sndcard","sndcard");
 }
 
+if(!TableExists("glpi_device_power")) {
+	$query = "CREATE TABLE glpi_device_power (
+	ID int(11) NOT NULL auto_increment,
+	designation varchar(255) NOT NULL default '',
+	power varchar(20) NOT NULL default '',
+	atx enum('Y','N') NOT NULL default 'Y',
+	`comment` text NOT NULL,
+	FK_glpi_enterprise int(11) NOT NULL default '0',
+	PRIMARY KEY (ID),
+	KEY FK_glpi_enterprise (FK_glpi_enterprise)
+	) TYPE=MyISAM;";
+	$db->query($query) or die("Error : ".$query." ".mysql_error());
+}
+
+if(!TableExists("glpi_device_case")) {
+	$query = "CREATE TABLE glpi_device_case(
+	ID int( 11 ) NOT NULL AUTO_INCREMENT ,
+	designation varchar( 255 ) NOT NULL default '',
+	format enum( 'Grand', 'Moyen', 'Micro' ) NOT NULL default 'Moyen',
+	`comment` text NOT NULL ,
+	FK_glpi_enterprise int( 11 ) NOT NULL default '0',
+	PRIMARY KEY ( ID ) ,
+	KEY FK_glpi_enterprise( FK_glpi_enterprise )
+	)TYPE = MyISAM;";
+	$db->query($query) or die("Error : ".$query." ".mysql_error());
+}
+
+if(!TableExists("glpi_device_drive")) {
+	$query = "CREATE TABLE `glpi_device_drive` (
+	`ID` INT NOT NULL AUTO_INCREMENT ,
+	`designation` VARCHAR( 255 ) NOT NULL ,
+	`write` ENUM( 'Y', 'N' ) DEFAULT 'Y' NOT NULL ,
+	`speed` VARCHAR( 30 ) NOT NULL ,
+	`interface` ENUM( 'IDE', 'SATA', 'SCSI' ) NOT NULL ,
+	`comment` TEXT NOT NULL ,
+	`FK_glpi_enterprise` INT NOT NULL ,
+	PRIMARY KEY ( `ID` )
+	)TYPE=MyISAM;";
+	$db->query($query) or die("Error : ".$query." ".mysql_error());
+}
+
+if(!TableExists("glpi_device_pci")) {
+	$query = "CREATE TABLE glpi_device_pci (
+	ID int(11) NOT NULL auto_increment,
+	designation varchar(255) NOT NULL default '',
+	`comment` text NOT NULL,
+	FK_glpi_enterprise int(11) NOT NULL default '0',
+	PRIMARY KEY (ID),
+	KEY FK_glpi_enterprise (FK_glpi_enterprise)
+	) TYPE=MyISAM;";
+	$db->query($query) or die("Error : ".$query." ".mysql_error());
+} 
+
+if(!TableExists("glpi_device_control")) {
+	$query = "CREATE TABLE glpi_device_control (
+	ID int(11) NOT NULL auto_increment,
+	designation varchar(255) NOT NULL default '',
+	interface enum('IDE','SATA','SCSI','USB') NOT NULL default 'IDE',
+	raid enum('Y','N') NOT NULL default 'Y',
+	`comment` text NOT NULL,
+	FK_glpi_enterprise int(11) NOT NULL default '0',
+	PRIMARY KEY (ID),
+	KEY FK_glpi_enterprise (FK_glpi_enterprise)
+	) TYPE=MyISAM;";
+	$db->query($query) or die("Error : ".$query." ".mysql_error());
+}
+
+
 // END new internal devices.
 
 if(!TableExists("glpi_enterprises")) {
