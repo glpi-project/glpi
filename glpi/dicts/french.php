@@ -154,7 +154,7 @@ $lang["Menu"][14]	="Utilisateurs";
 $lang["Menu"][15]	="Administration";
 $lang["Menu"][16]	="P&eacute;riphériques";
 $lang["Menu"][17]	="R&eacute;servations";
-
+$lang["Menu"][18]	="Outils";
 
 //Donn&eacute;es
 
