@@ -49,12 +49,13 @@ if(empty($_POST["date1"])) $_POST["date1"] = "";
 if(empty($_POST["date2"])) $_POST["date2"] = "";
 
 echo "<div align='center'><form method=\"post\" name=\"form\" action=\"stat_technicien.php\">";
-echo "Date de debut : <input type=\"texte\" name=\"date1\" value=\"". $_POST["date1"] ."\" />";
-echo "<input name='button' type='button' class='button'  onClick=\"window.open('mycalendar.php?form=form&amp;elem=date1','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-echo "<br />Date de fin : <input type=\"texte\" name=\"date2\" value=\"". $_POST["date2"] ."\" />";
-echo "<input name='button' type='button' class='button'  onClick=\"window.open('mycalendar.php?form=form&amp;elem=date2','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-echo "<br /><input type=\"submit\" class='button' name\"submit\" Value=\"". $lang["buttons"][7] ."\" />";
-echo "</form></div>";
+echo "<table><tr><td align='right'>";
+echo "Date de debut :</td><td> <input type=\"texte\" readonly name=\"date1\" value=\"". $_POST["date1"] ."\" /></td>";
+echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('mycalendar.php?form=form&amp;elem=date1','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'></td></tr>";
+echo "<tr><td align='right'>Date de fin :</td><td><input type=\"texte\" readonly name=\"date2\" value=\"". $_POST["date2"] ."\" /></td>";
+echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('mycalendar.php?form=form&amp;elem=date2','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'></td>";
+echo "<tr><td></td><td align='center'><input type=\"submit\" class='button' name\"submit\" Value=\"". $lang["buttons"][7] ."\" /></td><td></td></tr>";
+echo "</table></form></div>";
 echo "<hr noshade>";
 
 //recuperation des different utilisateurs ayant eu des interventions attribuées
