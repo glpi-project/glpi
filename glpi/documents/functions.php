@@ -222,7 +222,7 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "<a href=\"".$cfg_install["root"]."/documents/documents-info-form.php?ID=$ID\">";
 				echo $ct->fields["name"]." (".$ct->fields["ID"].")";
 				echo "</a></b></td>";
-				echo "<td>".$ct->fields["filename"]."</td>";
+				echo "<td>".getDocumentLink($ct->fields["filename"])."</td>";
 				echo "<td>".getDropdownName("glpi_dropdown_rubdocs",$ct->fields["rubrique"])."</td>";
 				echo "<td>".$ct->fields["mime"]."</td>";
 				echo "<td>".$ct->fields["comment"]."</td>";				
@@ -238,7 +238,7 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<div align='center'><b>".$lang["document"][40]."</b></div>";
+			echo "<div align='center'><b>".$lang["document"][23]."</b></div>";
 			
 		}
 	}
@@ -268,10 +268,12 @@ function showDocumentForm ($target,$ID,$search) {
 	echo "<td colspan='2'><input type='text' name='name' value=\"".$con->fields["name"]."\" size='25'></td>";
 	echo "</tr>";
 	
+	if (!empty($ID)){
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][22].":		</td>";
-	echo "<td colspan='2'>".$con->fields["filename"]."</td>";
+	echo "<td colspan='2'>".getDocumentLink($con->fields["filename"])."</td>";
+	echo "<input type='hidden' name='current_filename' value='".$con->fields["filename"]."'>";
 	echo "</tr>";
-
+}
 	
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][2].":		</td>";
 	echo "<td colspan='2'><input type='file' name='filename' value=\"".$con->fields["filename"]."\" size='25'></td>";
@@ -343,9 +345,18 @@ function updateDocument($input) {
 
 	$con = new Document;
 	$con->getFromDB($input["ID"]);
-
+	
  	// Pop off the last attribute, no longer needed
 	$null=array_pop($input);
+	
+	if (isset($_FILES['filename']['type'])&&!empty($_FILES['filename']['type']))
+		$input['mime']=$_FILES['filename']['type'];
+		
+
+	$input['filename']= uploadDocument($_FILES['filename'],$input['current_filename']);
+	if (empty($input['filename'])) unset($input['filename']);
+	unset($input['current_filename']);	
+
 
 	// Fill the update-array with changes
 	$x=0;
@@ -362,24 +373,20 @@ function updateDocument($input) {
 	}
 }
 
-function addDocument($input) {
-	global $cfg_install,$phproot;
-	$con = new Document;
 
-	// dump status
-	$null = array_pop($input);
-	
-	
-	if (isset($_FILES['filename']['type'])&&!empty($_FILES['filename']['type']))
-		$input['mime']=$_FILES['filename']['type'];
-		
+function uploadDocument($FILEDESC,$old_file=''){
+	global $cfg_install,$phproot,$lang;
+
 	$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
 	// Is a file uploaded ?
-	if (count($_FILES)>0){
+	if (count($FILEDESC)>0&&!empty($FILEDESC['name'])){
 		// Clean is name
-		$filename=strtolower(ereg_replace("[^[:alnum:].-_]","",$_FILES['filename']['name']));
+		$filename=ereg_replace("[^[:alnum:].-_]","",$FILEDESC['name']);
+		$force=0;
 		// Is it a valid file ?
 		$dir=isvalidDoc($filename);
+		if (!empty($old_file)&&$dir."/".$filename==$old_file) $force=1;
+		
 		if (!empty($dir)){
 			// Test existance repertoire DOCS
 			if (is_dir($phproot.$cfg_install["doc_dir"])){
@@ -390,25 +397,43 @@ function addDocument($input) {
 			}
 			// Copy du fichier uploadé si répertoire existe
 			if (is_dir($phproot.$cfg_install["doc_dir"]."/".$dir)){
-				if (!is_file($phproot.$cfg_install["doc_dir"]."/".$dir."/".$filename)){
-					if (move_uploaded_file($_FILES['filename']['tmp_name'],$phproot.$cfg_install["doc_dir"]."/".$dir."/".$filename )) {
-   						$_SESSION["MESSAGE_AFTER_REDIRECT"].="Le fichier est valide, et a été téléchargé avec succès.<br>";
-						$input['filename']=$dir."/".$filename;
+				if ($force||!is_file($phproot.$cfg_install["doc_dir"]."/".$dir."/".$filename)){
+					// Delete old file
+					if(!empty($old_file)&& is_file($phproot.$cfg_install["doc_dir"]."/".$old_file)&& !is_dir($phproot.$cfg_install["doc_dir"]."/".$old_file)) {
+						if (unlink($phproot.$cfg_install["doc_dir"]."/".$old_file))
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][24].$phproot.$cfg_install["doc_dir"]."/".$old_file."<br>";
+						} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][25].$phproot.$cfg_install["doc_dir"]."/".$old_file."<br>";
+					
+					if (move_uploaded_file($FILEDESC['tmp_name'],$phproot.$cfg_install["doc_dir"]."/".$dir."/".$filename )) {
+   						$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][26]."<br>";
+						return $dir."/".$filename;
 					} else {
-	   					$_SESSION["MESSAGE_AFTER_REDIRECT"].="Attaque par upload potentielle. <br>";
+	   					$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][27]."<br>";
 					}
-				} else $_SESSION["MESSAGE_AFTER_REDIRECT"].="Attention fichier existant. Upload non réalisé<br>";
+				} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][28]."<br>";
 			
-			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].="Echec de la création du répertoire ".$phproot.$cfg_install["doc_dir"]."/".$dir." Vérifiez que vous avez les droits<br>";
+			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][29].$phproot.$cfg_install["doc_dir"]."/".$dir." ".$lang["document"][30]."<br>";
 			
-			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= "Répertoire de stockage des documents inexistant : ".$phproot.$cfg_install["doc_dir"]."<br>";
+			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][31].$phproot.$cfg_install["doc_dir"]."<br>";
 		
-		} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= "Type de données ne pouvant pas être uploadé<br>";
+		} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][32]."<br>";
+	
+	}	
+return "";	
+}
+
+function addDocument($input) {
+
+	$con = new Document;
+
+	// dump status
+	$null = array_pop($input);
+	
+	
+	if (isset($_FILES['filename']['type'])&&!empty($_FILES['filename']['type']))
+		$input['mime']=$_FILES['filename']['type'];
 		
-	
-	
-	}
-	
+	$input['filename']= uploadDocument($_FILES['filename']);		
 
 	// fill array for update
 	foreach ($input as $key => $val) {
@@ -550,7 +575,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		$con->getFromDB($cID);
 	echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
 	echo "<td align='center'><a href='".$HTMLRel."documents/documents-info-form.php?ID=$cID'><b>".$con->fields["name"]." (".$con->fields["ID"].")</b></a></td>";
-	echo "<td align='center'>".$con->fields["filename"]."</td>";
+	echo "<td align='center'>".getDocumentLink($con->fields["filename"])."</td>";
 	echo "<td align='center'>".getDropdownName("glpi_dropdown_rubdocs",$con->fields["rubrique"])."</td>";
 	echo "<td align='center'>".$con->fields["mime"]."</td>";
 
@@ -574,6 +599,26 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	echo "</table>"    ;
 	
 	
+}
+
+function getDocumentLink($filename){
+global $HTMLRel,$cfg_install;	
+	$splitter=split("/",$filename);
+	if (count($splitter)==2)
+	$fileout=$splitter[1];
+	else $fileout=$filename;
+	$out="<b><a href='".$HTMLRel."documents/send-document.php?file=$filename' target='_blank'>$fileout</a></b>";	
+	if (count($splitter)==2){
+		$db=new DB;
+		$query="SELECT * from glpi_type_docs WHERE ext LIKE '".$splitter[0]."' AND icon <> ''";
+		$result=$db->query($query);
+		if ($db->numrows($result)>0){
+			$icon=$db->result($result,0,'icon');
+			$out.="<a href='".$HTMLRel."documents/send-document.php?file=$filename' target='_blank'><img width='20' src='".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/$icon'</a>";				
+			}
+	
+	}
+	return $out;
 }
 
 ?>

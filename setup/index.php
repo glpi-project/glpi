@@ -63,7 +63,7 @@ echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-config.php?next=m
 
 echo "<tr class='tab_bg_1'><td align='center'><a href=\"setup-config.php?next=confgen\"><b>".$lang["setup"][70]."</b></a></td> </tr>";
 
-echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."typedocs\"><b>".$lang["document"][7]."</b></a></td> </tr>";
+echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."typedocs/\"><b>".$lang["document"][7]."</b></a></td> </tr>";
 
 
 echo "</table></div>";

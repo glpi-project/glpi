@@ -205,8 +205,8 @@ function showTypedocList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				echo $mon->fields["name"]." (".$mon->fields["ID"].")";
 				echo "</a></b></td>";
 				echo "<td>". $mon->fields["ext"] ."</td>";
-				echo "<td>". $mon->fields["icon"];
-				if (!empty($mon->fields["icon"])) echo "<img src='".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/".$mon->fields["icon"]."'>";
+				echo "<td>&nbsp;";
+				if (!empty($mon->fields["icon"])) echo "<img width='25' src='".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/".$mon->fields["icon"]."'>";
 				echo "</td>";
 				echo "<td>". $mon->fields["mime"] ."</td>";
 				echo "<td>". $mon->fields["upload"] ."</td>";
@@ -392,7 +392,7 @@ function isValidDoc($filename){
 	$query="SELECT * from glpi_type_docs where ext LIKE '$ext' AND upload='Y'";
 	if ($result = $db->query($query))
 	if ($db->numrows($result)>0)
-	return $ext;
+	return strtoupper($ext);
 	
 return "";
 }

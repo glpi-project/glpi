@@ -1251,4 +1251,14 @@ $lang["document"][19]	= "Eléments associés";
 $lang["document"][20]	= "Type";
 $lang["document"][21]	= "Documents Associés";
 $lang["document"][22]	= "Fichier courant";
+$lang["document"][23]	= "Pas de document trouvé";
+$lang["document"][24]	= "Suppression avec succès du fichier ";
+$lang["document"][25]	= "Echec de la suppression du fichier ";
+$lang["document"][26]	= "Le fichier est valide, et a été téléchargé avec succès.";
+$lang["document"][27]	= "Attaque par upload potentielle.";
+$lang["document"][28]	= "Attention fichier existant. Upload non réalisé";
+$lang["document"][29]	= "Echec de la création du répertoire";
+$lang["document"][30]	= "Vérifiez que vous avez les droits";
+$lang["document"][31]	= "Répertoire de stockage des documents inexistant : ";
+$lang["document"][32]	= "Type de données ne pouvant pas être uploadé";
 ?>
