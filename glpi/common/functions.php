@@ -34,7 +34,15 @@
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
-
+/**
+* Test if an user have the right to assign a job to another user 
+*
+* Return true if the user with name $name is allowed to assign a job.
+* Else return false.
+*
+*@param $name (username).
+*@return boolean
+*/
 function can_assign_job($name)
 {
   $db = new DB;
@@ -51,7 +59,18 @@ function can_assign_job($name)
 	 return false;
 	 }
 }
-
+/**
+* Test if an user has the postonly rights or higher.
+*
+* Return true if the user with authentication type $authtype has
+* the postonly rights.
+*
+*
+*@param $authtype authentication type
+*
+*@return boolean
+*
+**/
 function isPostOnly($authtype) {
 	switch ($authtype){
 		case "post-only" :
@@ -64,7 +83,18 @@ function isPostOnly($authtype) {
 			return false;
 		}
 }
-
+/**
+* Test if an user has the normal rights or higher.
+*
+* Return true if the user with authentication type $authtype has
+* the normal rights.
+*
+*
+*@param $authtype authentication type
+*
+*@return boolean
+*
+**/
 function isNormal($authtype) {
 	switch ($authtype){
 		case "normal" :
@@ -77,7 +107,18 @@ function isNormal($authtype) {
 		}
 }
 
-
+/**
+* Test if an user has the admin rights or higher.
+*
+* Return true if the user with authentication type $authtype has
+* the admin rights.
+*
+*
+*@param $authtype authentication type
+*
+*@return boolean
+*
+**/
 function isAdmin($authtype) {
 	switch ($authtype){
 		case "admin":
@@ -88,7 +129,18 @@ function isAdmin($authtype) {
 			return false;
 		}
 }
-
+/**
+* Test if an user has the super-admin rights or higher.
+*
+* Return true if the user with authentication type $authtype has
+* the super-admin rights.
+*
+*
+*@param $authtype authentication type
+*
+*@return boolean
+*
+**/
 function isSuperAdmin($authtype) {
 	switch ($authtype){
 			case "super-admin":
@@ -98,6 +150,17 @@ function isSuperAdmin($authtype) {
 			return false;
 		}
 }
+/**
+* Make a "where" clause for a mysql query on user table
+*
+*
+* Return a string witch contain the where clause, for a query 
+* under the glpi_users table, witch return users that have the right $authtype.
+* 
+*
+*@params : $authtype auth type
+*@returns : string (in order to construct a SQL where clause)
+**/
 function searchUserbyType($authtype) {
 	switch ($authtype){
 		case "post-only" :
@@ -116,6 +179,15 @@ function searchUserbyType($authtype) {
 			return "";
 		}
 }
+/**
+* To be commented
+*
+*
+*
+* @param $s
+* @return 
+*
+*/
 
 function getDictEntryfromDB($s){
 GLOBAL $lang;
@@ -123,83 +195,124 @@ $a=split("_",$s);
 return $lang[$a[0]][$a[1]];
 }
 
-   function stripslashes_deep($value)
-   {
-//echo "strip";
+/**
+* To be commented
+*
+*
+*
+* @param $s
+* @return 
+*
+*/
+function stripslashes_deep($value) {
        $value = is_array($value) ?
                    array_map('stripslashes_deep', $value) :
                    (is_null($value) ? NULL : stripslashes($value));
                    
        return $value;
-   }
-   function addslashes_deep($value)
-   {
-//echo "add";
+}
+
+/**
+* To be commented
+*
+*
+*
+* @param $value
+* @return 
+*
+*/
+function addslashes_deep($value) {
        $value = is_array($value) ?
                    array_map('addslashes_deep', $value) :
                    (is_null($value) ? NULL : addslashes($value));
        return $value;
-   }
+}
 
-   function htmlentities_deep($value)
-   {
-//echo "add";
+/**
+* To be commented
+*
+*
+*
+* @param $value
+* @return 
+*
+*/
+function htmlentities_deep($value){
        $value = is_array($value) ?
                    array_map('htmlentities_deep', $value) :
                    (is_null($value) ? NULL : htmlentities($value,ENT_QUOTES));
        return $value;
-   }
-	// Nécessaire pour PHP < 4.3
-	function unhtmlentities ($string)
-	{
-	   $trans_tbl = get_html_translation_table (HTML_ENTITIES,ENT_QUOTES);
-	   if( $trans_tbl["'"] != '&#039;' ) { # some versions of PHP match single quotes to &#39;
-       		$trans_tbl["'"] = '&#039;';
-   	}
-	   $trans_tbl = array_flip ($trans_tbl);
-	   return strtr ($string, $trans_tbl);
+}
+
+/**
+* To be commented
+* Nécessaire pour PHP < 4.3
+*
+*
+* @param $value
+* @return 
+*
+*/
+function unhtmlentities ($string) {
+	$trans_tbl = get_html_translation_table (HTML_ENTITIES,ENT_QUOTES);
+	if( $trans_tbl["'"] != '&#039;' ) { # some versions of PHP match single quotes to &#39;
+		$trans_tbl["'"] = '&#039;';
 	}
-   function unhtmlentities_deep($value)
-   {
-       $value = is_array($value) ?
-                   array_map('unhtmlentities_deep', $value) :
-                   (is_null($value) ? NULL : unhtmlentities($value,ENT_QUOTES));
-       return $value;
-   }
-    
+	$trans_tbl = array_flip ($trans_tbl);
+	return strtr ($string, $trans_tbl);
+}
+
+/**
+* To be commented
+* Nécessaire pour PHP < 4.3
+*
+*
+* @param $value
+* @return 
+*
+*/
+function unhtmlentities_deep($value) {
+	$value = is_array($value) ?
+		array_map('unhtmlentities_deep', $value) :
+			(is_null($value) ? NULL : unhtmlentities($value,ENT_QUOTES));
+	return $value;
+}
+
+/**
+* Verify if the current user has some rights
+*
+* Do nothing if the current user (wich session call this func) has 
+* rights egal or higher as $authtype.
+* 
+* @param $authtype min level right we wish to allow
+* @Return Nothing (display function)
+*
+**/      
 function checkAuthentication($authtype) {
 	// Universal method to have a magic-quote-gpc system
 	global $_POST, $_GET,$_COOKIE,$tab;
 	// Clean array and addslashes
 	
-if (get_magic_quotes_gpc()) {
+	if (get_magic_quotes_gpc()) {
+		if (isset($_POST)){
+			$_POST = array_map('stripslashes_deep', $_POST);
+		}
+		if (isset($_GET)){
+			$_GET = array_map('stripslashes_deep', $_GET);
+		}
+		if (isset($tab)){
+			$tab = array_map('stripslashes_deep', $tab);    
+		}
+	}    
 	if (isset($_POST)){
-	$_POST = array_map('stripslashes_deep', $_POST);
+		$_POST = array_map('addslashes_deep', $_POST);
 	}
 	if (isset($_GET)){
-    $_GET = array_map('stripslashes_deep', $_GET);
+		$_GET = array_map('addslashes_deep', $_GET);
 	}
-/*	if (isset($_COOKIE)){
-    $_COOKIE = array_map('stripslashes_deep', $_COOKIE);
-    $_COOKIE = array_map('addslashes_deep', $_COOKIE);
+	if (isset($tab)){
+		$tab = array_map('addslashes_deep', $tab);    
 	}
-*/	if (isset($tab)){
-    $tab = array_map('stripslashes_deep', $tab);    
-    }
-}    
-
-	if (isset($_POST)){
-	$_POST = array_map('addslashes_deep', $_POST);
-	}
-	if (isset($_GET)){
-    $_GET = array_map('addslashes_deep', $_GET);
-	}
-/*	if (isset($_COOKIE)){
-    $_COOKIE = array_map('addslashes_deep', $_COOKIE);
-	}
-*/	if (isset($tab)){
-    $tab = array_map('addslashes_deep', $tab);    
-    }
 
 	// Checks a GLOBAL user and password against the database
 	// If $authtype is "normal" or "admin", it checks if the user
@@ -219,10 +332,8 @@ if (get_magic_quotes_gpc()) {
 
 	
 	// New database object
-//	print_r($_SESSION);
-        loadLanguage();
+	loadLanguage();
 	$type = $_SESSION["glpitype"];	
-
 	// Check username and password
 	if (!isset($_SESSION["glpiname"])) {
 		header("Vary: User-Agent");
@@ -252,8 +363,7 @@ if (get_magic_quotes_gpc()) {
 				if (!isAdmin($type)) 
 				{
 					commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
-						echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
-
+					echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
 					echo "<b>".$lang["login"][5]."</b></center>";
 					commonFooter();
 					exit();
@@ -264,8 +374,7 @@ if (get_magic_quotes_gpc()) {
 				if (!isNormal($type))
 				{
 					commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
-				      echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
-
+					echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
 					echo "<b>".$lang["login"][5]."</b></center>";
 					commonFooter();
 					exit();
@@ -273,20 +382,25 @@ if (get_magic_quotes_gpc()) {
 			break;
 		
 			case "post-only";
-				if (!isPostOnly($type))
-				{
+				if (!isPostOnly($type)) {
 					commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
-											echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
-
+					echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
 					echo "<b>".$lang["login"][5]."</b></center>";
 					commonFooter();
 					exit();
-				}	
+				}
 			break;
 		}
 	}
 }
-
+/**
+* Print a nice HTML head for every page
+*
+*
+* @param $tittle tittle of the page
+* @param $url not used anymore.
+*
+**/
 function commonHeader($title,$url)
 {
 	// Print a nice HTML-head for every page
@@ -296,11 +410,11 @@ function commonHeader($title,$url)
 	
 $utils = array($lang["Menu"][17]=>array("/reservation/index.php","1"),
 		$lang["Menu"][19]=>array("/knowbase/index.php"," "),
-        $lang["Menu"][6]=>array("/reports/index.php"," "),
-	$lang["Menu"][27]=>array("/documents/index.php"," "),
-		);	
+		$lang["Menu"][6]=>array("/reports/index.php"," "),
+		$lang["Menu"][27]=>array("/documents/index.php"," "),
+		);
 	
-$inventory = 	array($lang["Menu"][0]=>array("/computers/index.php","1"),
+$inventory = array($lang["Menu"][0]=>array("/computers/index.php","1"),
 	              $lang["Menu"][1]=>array("/networking/index.php","2"),
 	              $lang["Menu"][2]=>array("/printers/index.php","3"),
 	              $lang["Menu"][3]=>array("/monitors/index.php","4"),
@@ -313,80 +427,62 @@ $inventory = 	array($lang["Menu"][0]=>array("/computers/index.php","1"),
 $financial = array($lang["Menu"][22]=>array("/contacts/index.php","1"),
 		$lang["Menu"][23]=>array("/enterprises/index.php"," "),
 		$lang["Menu"][25]=>array("/contracts/index.php"," "),
-		);	
+		);
 
 $maintain =	array($lang["Menu"][5]=>array("/tracking/index.php","6"),
-			"Helpdesk"=>array("/helpdesk/index.php"," "),
-		      $lang["Menu"][13]=>array("/stats/index.php"," "));
+		"Helpdesk"=>array("/helpdesk/index.php"," "),
+		$lang["Menu"][13]=>array("/stats/index.php"," "));
 
 				
-$config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
-		       $lang["Menu"][10]=>array("/setup/index.php"," "),
-		      $lang["Menu"][11]=>array("/preferences/index.php"," "),
-	              $lang["Menu"][12]=>array("/backups/index.php"," "));
-
+$config = array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
+		$lang["Menu"][10]=>array("/setup/index.php"," "),
+		$lang["Menu"][11]=>array("/preferences/index.php"," "),
+		$lang["Menu"][12]=>array("/backups/index.php"," "));
 	// Send extra expires header if configured
 	if ($cfg_features["sendexpire"]) {
 		header("Expires: Fri, Jun 12 1981 08:20:00 GMT\nPragma: no-cache");
 	}
-
 	// Start the page
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
 	echo "<html><head><title>GLPI - ".$title."</title>";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1 \" >";
-       
 	// Send extra expires header if configured
 	if ($cfg_features["sendexpire"]) {
 		echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
 		echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
 		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
 	}
-
 	//  Appel  CSS
 	
-         echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
+        echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
 	echo "<link rel='stylesheet' type='text/css' media='print' href='".$HTMLRel."print.css' >";
 	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' >";
 
 	// Some Javascript-Functions which we may need later
 	
 	echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
-	
-	
-	
-	
-	
 	// End of Head
 	echo "</head>\n";
-	
 	// Body with configured stuff
 	echo "<body>";
-
 	// Main Headline
 	echo "<div id='navigation'>";
 	echo "<table  cellspacing='0' border='0' width='100%'>";
 	echo "<tr>";
-
 	// New object from the configured base functions, we check some
 	// object-variables in this object: inventory, maintain, admin
 	// and settings. We build the navigation bar here.
-
 	$navigation = new baseFunctions;
-
 	
 	// Logo with link to command center
 	echo "<td width='80px'  valign='middle' align='center' >\n";
 	echo "<a class='icon_logo' href=\"".$cfg_install["root"]."/central.php\" accesskey=\"0\"><img  src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>";
 	echo "<br><br><div style='width:80px; text-align:center;'><p class='nav_horl'><b>".$_SESSION["glpiname"]."</b></p></div>";
 	echo "</td>";
-
 	echo "<td valign='middle' style='padding-left:20px'>";
-	
 	
 	// Get object-variables and build the navigation-elements
 	echo "<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr>";
-	
-	
 	if ($navigation->inventory) {
 		echo "<td align='center' valign='top' width='20%'>";
 		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/inventaire.png\" alt=\"\" title=\"".$lang["setup"][10]."\"><br>";
@@ -404,11 +500,9 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 		echo "</td></tr></table>";
 		echo "</td>";
 	}
-	
-	
-	 if ($navigation->maintain) {
+	if ($navigation->maintain) {
 		echo "<td align='center' valign='top' width='20%'>";
-				echo "<img class='icon_nav' src=\"".$HTMLRel."pics/maintenance.png\" alt=\"\" title=\"".$lang["title"][24]."\"><br>";
+		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/maintenance.png\" alt=\"\" title=\"".$lang["title"][24]."\"><br>";
 
 		echo "<span class='menu_title'>-&nbsp;".$lang["title"][24]."&nbsp;-</span><br>";
 		foreach ($maintain as $key => $val) {
@@ -416,10 +510,9 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 		}
 		echo "</td>";
 	}
-
-	 if ($navigation->financial) {
+	if ($navigation->financial) {
 		echo "<td align='center' valign='top' width='20%'>";
-				echo "<img class='icon_nav' src=\"".$HTMLRel."pics/gestion.png\" alt=\"\" title=\"".$lang["setup"][55]."\"><br>";
+		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/gestion.png\" alt=\"\" title=\"".$lang["setup"][55]."\"><br>";
 
 		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][26]."&nbsp;-</span><br>";
 		foreach ($financial as $key => $val) {
@@ -430,9 +523,8 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	
 	
 	if ($navigation->utils) {
-	echo "<td align='center' valign='top' width='20%'>";
-	echo "<img class='icon_nav' src=\"".$HTMLRel."pics/outils.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>";
-
+		echo "<td align='center' valign='top' width='20%'>";
+		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/outils.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>";
 		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][18]."&nbsp;-</span><br>";
 		foreach ($utils as $key => $val) {
 			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
@@ -442,12 +534,11 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	
 	if ($navigation->settings) {
 		echo "<td align='center' valign='top' width='20%'>";
-				echo "<img class='icon_nav' src=\"".$HTMLRel."pics/config.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>";
-
+		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/config.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>";
 		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][15]."&nbsp;-</span><br>";
 		foreach ($config as $key => $val) {
 			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
-		}	
+		}
 		echo "</td>";
 	}
 	
@@ -474,16 +565,23 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 
 	
 	echo "</td></tr>";	
-echo "</table>\n";
+	echo "</table>\n";
 				echo "</div>";
-// Affichage du message apres redirection
-if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])&&!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])){
-echo "<center><b>".$_SESSION["MESSAGE_AFTER_REDIRECT"]."</b></center>";
-unset($_SESSION["MESSAGE_AFTER_REDIRECT"]);
-}
+	// Affichage du message apres redirection
+	if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])&&!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])){
+		echo "<center><b>".$_SESSION["MESSAGE_AFTER_REDIRECT"]."</b></center>";
+		unset($_SESSION["MESSAGE_AFTER_REDIRECT"]);
+	}
 }
 
-
+/**
+* Print a nice HTML head for help page
+*
+*
+* @param $tittle tittle of the page
+* @param $url not used anymore.
+* @param $name 
+**/
 function helpHeader($title,$url,$name) {
 	// Print a nice HTML-head for help page
 
@@ -585,6 +683,14 @@ function helpHeader($title,$url,$name) {
 				echo "</div>";
 }
 
+/**
+* Print a nice HTML head with no controls
+*
+*
+* @param $tittle tittle of the page
+* @param $url not used anymore.
+* @param $name 
+**/
 function nullHeader($title,$url) {
 	// Print a nice HTML-head with no controls
 
@@ -645,7 +751,11 @@ function nullHeader($title,$url) {
 				echo "</div>";
 }
 
-
+/**
+* Print footer for every page
+*
+*
+**/
 function commonFooter() {
 	// Print foot for every page
 
@@ -658,6 +768,11 @@ echo "<div id='footer'><div align='right'>";
 	echo "</body></html>";
 }
 
+/**
+* Print footer for help page
+*
+*
+**/
 function helpFooter() {
 	// Print foot for help page
 GLOBAL $cfg_install;
@@ -670,8 +785,13 @@ echo "<div id='footer'><div align='right'>";
 	echo "</body></html>";
 }
 
+/**
+* Print footer for null page
+*
+*
+**/
 function nullFooter() {
-	// Print foot for help page
+	// Print foot for null page
 GLOBAL $cfg_install;
 echo "<div id='footer'><div align='right'>";
 	echo "<a href=\"http://GLPI.indepnet.org/\">";
@@ -682,6 +802,18 @@ echo "<div id='footer'><div align='right'>";
 	echo "</body></html>";
 }
 
+/**
+* Log an event.
+*
+* Log the event $event on the glpi_event table with all the others args, if
+* $level is above or equal to setting from configuration.
+*
+* @param $item 
+* @param $itemtype
+* @param $level
+* @param $service
+* @param $event
+**/
 function logEvent ($item, $itemtype, $level, $service, $event) {
 	// Logs the event if level is above or equal to setting from configuration
 
@@ -693,7 +825,16 @@ function logEvent ($item, $itemtype, $level, $service, $event) {
 	}
 }
 
-
+/**
+* Print a nice tab for last event
+*
+* Print a great tab to present lasts events occured on glpi
+*
+*
+* @param $target where to go when complete
+* @param $order order by clause occurences (eg: ) 
+* @param $sort order by clause occurences (eg: date) 
+**/
 function showEvents($target,$order,$sort) {
 	// Show events from $result in table form
 
@@ -794,7 +935,16 @@ function showEvents($target,$order,$sort) {
 }
 
 
-
+/**
+* Print out an HTML "<select>" for a dropdown
+*
+* 
+* 
+*
+* @param $table the dropdown table from witch we want values on the select
+* @param $myname the name of the HTML select
+* @return nothing (display the select box)
+**/
 function dropdown($table,$myname) {
 	
 	global $deleted_tables;	
@@ -847,7 +997,19 @@ function dropdown($table,$myname) {
 	}
 }
 
-
+/**
+* Print out an HTML "<select>" for a dropdown with preselected value
+*
+*
+*
+*
+*
+* @param $table the dropdown table from witch we want values on the select
+* @param $myname the name of the HTML select
+* @param $value the preselected value we want
+* @return nothing (display the select box)
+*
+*/
 function dropdownValue($table,$myname,$value) {
 	
 	global $deleted_tables,$template_tables;
@@ -949,6 +1111,19 @@ function dropdownNoValue($table,$myname,$value) {
 	echo "</select>";
 }
 
+/**
+* Make a select box with preselected values for table dropdown_netpoint
+*
+*
+*
+*
+*
+* @param $search
+* @param $myname
+* @param $location
+* @param $value
+* @return nothing (print out an HTML select box)
+*/
 function NetpointLocationSearch($search,$myname,$location,$value='') {
 // Make a select box with preselected values for table dropdown_netpoint
 	$db = new DB;
@@ -988,7 +1163,19 @@ function NetpointLocationSearch($search,$myname,$location,$value='') {
 	}
 	echo "</select>";
 }
-
+/**
+*  Make a select box with preselected values and search option
+*
+*
+*
+* @param $table
+* @param $myname
+* @param $value
+* @param $search
+* @return nothing (print out an HTML select box)
+*
+*
+*/
 function dropdownValueSearch($table,$myname,$value,$search) {
 	// Make a select box with preselected values
 	global $deleted_tables;
@@ -1031,6 +1218,19 @@ function dropdownValueSearch($table,$myname,$value,$search) {
 	echo "</select>";
 }
 
+
+/**
+* Make a select box with all glpi users where select key = name
+*
+* Think it's unused now.
+*
+*
+* @param $value
+* @param $myname
+* @return nothing (print out an HTML select box)
+*
+*
+*/
 function dropdownUsers($value, $myname) {
 	// Make a select box with all glpi users
 
@@ -1058,6 +1258,16 @@ function dropdownUsers($value, $myname) {
 	echo "</select>";
 }
 
+
+/**
+* Make a select box with all glpi users where select key = ID
+*
+*
+*
+* @param $value
+* @param $myname
+* @return nothing (print out an HTML select box)
+*/
 function dropdownUsersID($value, $myname) {
 	// Make a select box with all glpi users
 
@@ -1086,6 +1296,16 @@ function dropdownUsersID($value, $myname) {
 	echo "</select>";
 }
 
+/**
+* Get the value of a dropdown 
+*
+*
+* Returns the value of the dropdown from $table with ID $id.
+*
+* @param $table
+* @param $id
+* @return string the value of the dropdown or "" (\0) if not exists
+*/
 function getDropdownName($table,$id) {
 	global $cfg_install;
 	$db = new DB;
@@ -1108,6 +1328,17 @@ function getDropdownName($table,$id) {
 	}
 	return $name;
 }
+
+/**
+* Make a select box with all glpi users in tracking table
+*
+*
+*
+* @param $value
+* @param $myname
+* @param $champ
+* @return nothing (print out an HTML select box)
+*/
 
 function dropdownUsersTracking($value, $myname,$champ) {
 	// Make a select box with all glpi users in tracking table
@@ -1135,7 +1366,16 @@ function dropdownUsersTracking($value, $myname,$champ) {
 	echo "</select>";
 }
 
-
+/**
+* 
+*
+*
+*
+* @param $value
+* @param $myname
+* @param $store_path
+* @return nothing (print out an HTML select box)
+*/
 function dropdownIcons($myname,$value,$store_path){
 global $HTMLRel;
 if (is_dir($store_path)){
@@ -1163,7 +1403,16 @@ if ($dh = opendir($store_path)) {
 
 }
 
-
+/**
+* 
+*
+*
+*
+* @param $name
+* @param $search
+* @param $value
+* @return nothing (print out an HTML select box)
+*/
 function dropdownAllItems($name,$search='',$value='') {
 	$db=new DB;
 	
@@ -1180,43 +1429,52 @@ function dropdownAllItems($name,$search='',$value='') {
 
 	foreach ($items as $type => $table){
 
-	$where="WHERE '1' = '1' ";
-	if ($table=="glpi_computers")
-	$where.="AND is_template='0' ";
+		$where="WHERE '1' = '1' ";
+		if ($table=="glpi_computers")
+		$where.="AND is_template='0' ";
 	
-	if (!empty($search))
-	$where.="AND name LIKE '%$search%' ";
-	
+		if (!empty($search))
+		$where.="AND name LIKE '%$search%' ";
+		
 //	if ($table=="glpi_enterprises"||$table=="glpi_cartridge_type")
 //		$where = "WHERE deleted='N' ";
 
-	$query = "SELECT ID FROM $table $where ORDER BY name";
+		$query = "SELECT ID FROM $table $where ORDER BY name";
 	
-	$result = $db->query($query);
+		$result = $db->query($query);
 	
-	$i = 0;
-	$number = $db->numrows($result);
+		$i = 0;
+		$number = $db->numrows($result);
 	
-	if ($number > 0) {
-		while ($i < $number) {
-			$ID=$db->result($result, $i, "ID");
-			$ci=new CommonItem;
-			$ci->getFromDB($type,$ID);
-			$output=$ci->getType()." - ".$ci->getName();
-			if (createAllItemsSelectValue($type,$ID) === $value) {
-				echo "<option value=\"".$type."_".$ID."\" selected>$output</option>";
-			} else {
-				echo "<option value=\"".$type."_".$ID."\">$output</option>";
+		if ($number > 0) {
+			while ($i < $number) {
+				$ID=$db->result($result, $i, "ID");
+				$ci=new CommonItem;
+				$ci->getFromDB($type,$ID);
+				$output=$ci->getType()." - ".$ci->getName();
+				if (createAllItemsSelectValue($type,$ID) === $value) {
+					echo "<option value=\"".$type."_".$ID."\" selected>$output</option>";
+				} else {
+					echo "<option value=\"".$type."_".$ID."\">$output</option>";
+				}
+				$i++;
 			}
-			$i++;
 		}
-	}
 	}
 	echo "</select>";
 	
 }
 
-function	dropdownYesNo($name,$value){
+/**
+* Make a select box for a boolean choice (Yes/No)
+*
+*
+*
+* @param $name select name
+* @param $value preselected value.
+*
+*/
+function dropdownYesNo($name,$value){
 	global $lang;
 	echo "<select name='$name'>";
 	echo "<option value='N' ".($value=='N'?" selected ":"").">".$lang["choice"][1]."</option>";
@@ -1234,26 +1492,37 @@ function explodeAllItemsSelectResult($val){
 	return array($splitter[0],$splitter[1]);
 }
 
-
+/**
+* Include the good language dict.
+*
+* Get the default language from current user in $_SESSION["glpilanguage"].
+* And load the dict that correspond.
+*
+* @return nothing (make an include)
+*
+*/
 function loadLanguage() {
 
 	GLOBAL $lang,$cfg_install;
 
-	if(empty($_SESSION["glpilanguage"]))
-	{	
+	if(empty($_SESSION["glpilanguage"])) {
 		$file= "/glpi/dicts/".$cfg_install["languages"][$cfg_install["default_language"]][1];
-	}
-	else {
-		//$file = "/glpi/dicts/".$_SESSION["glpilanguage"].".php";
-	
+	} else {
 		$file = "/glpi/dicts/".$cfg_install["languages"][$_SESSION["glpilanguage"]][1];
-	
 	}
 		include ("_relpos.php");
 		include ($phproot . $file);
 }
 
-
+/**
+* Prints a direct connection to a computer
+*
+* @param $target the page where we'll print out this.
+* @param $ID the connection ID
+* @param $type the connection type
+* @return nothing (print out a table)
+*
+*/
 function showConnect($target,$ID,$type) {
 		// Prints a direct connection to a computer
 
@@ -1289,6 +1558,14 @@ function showConnect($target,$ID,$type) {
 		echo "</table></center><br>";
 }
 
+/**
+* Disconnects a direct connection
+* 
+*
+* @param $ID the connection to disconnect ID.
+* @param $type the connection to disconnect type.
+* @return nothing
+*/
 function Disconnect($ID,$type) {
 	// Disconnects a direct connection
 
@@ -1297,6 +1574,18 @@ function Disconnect($ID,$type) {
 	$connect->deletefromDB($ID);
 }
 
+
+/**
+*
+* Makes a direct connection
+*
+*
+*
+* @param $target
+* @param $sID connection source ID.
+* @param $cID computer ID (where the sID would be connected).
+* @param $type connection type.
+*/
 function Connect($target,$sID,$cID,$type) {
 	global $lang;
 	// Makes a direct connection
@@ -1322,6 +1611,16 @@ function Connect($target,$sID,$cID,$type) {
 
 }
 
+/**
+* Print a select box for an item to be connected
+* 
+* 
+*
+*
+* @param $target where we go when done.
+* @param $ID connection source ID.
+* @param $type connection type.
+*/
 function showConnectSearch($target,$ID,$type="computer") {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
@@ -1366,7 +1665,14 @@ function showConnectSearch($target,$ID,$type="computer") {
 	echo "</center>";
 }
 
-
+/**
+* To be commented
+* 
+*
+* @param $target where we go when done
+* @param $input 
+* @return nothing
+*/
 function listConnectComputers($target,$input) {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
@@ -1408,6 +1714,17 @@ function listConnectComputers($target,$input) {
 
 }
 
+/**
+*
+* To be commented
+*
+*
+*
+* @param $target where we go when done
+* @param $input
+*
+* @return nothing
+*/
 function listConnectElement($target,$input) {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
@@ -1475,6 +1792,13 @@ function listConnectElement($target,$input) {
 
 }
 
+/**
+* Print the helpdesk 
+*
+* @param $name
+* @param $from_helpdesk
+* @return nothing (print the helpdesk)
+*/
 function printHelpDesk ($name,$from_helpdesk) {
 
 	GLOBAL $cfg_layout,$cfg_install,$lang,$cfg_features;
@@ -1553,6 +1877,18 @@ function printHelpDesk ($name,$from_helpdesk) {
 
 }
 
+/**
+* Print pager for search option (first/previous/next/last)
+*
+*
+*
+* @param $start from witch item we start
+* @param $numrows total items
+* @param $target page would be open when click on the option (last,previous etc)
+* @param $parameters paramters would be passed on the URL.S 
+* @return nothing (print a pager)
+*
+*/
 function printPager($start,$numrows,$target,$parameters) {
 
 	GLOBAL $cfg_layout, $cfg_features, $lang;
@@ -1617,6 +1953,17 @@ function printPager($start,$numrows,$target,$parameters) {
 	echo "</table></center>";
 }
 
+/**
+* affiche un rapport personalisé a partir d'une requete $query
+* pour un type de materiel ($item_type)
+* 
+* Print out a report from a query ($query) for an item type ($item_type).
+*
+*
+* @param $query query for make the report
+* @param $item_type item type.
+* @return nothing (print out a report).
+*/
 function report_perso($item_type,$query)
 //affiche un rapport personalisé a partir d'une requete $query
 //pour un type de materiel ($item_type) 
@@ -1980,6 +2327,14 @@ switch($item_type)
 	}	
 }
 
+/**
+* Count the number of elements in a table.
+*
+*
+* @param $table table name
+*
+* return int nb of elements in table
+*/
 function countElementsInTable($table){
 $db=new DB;
 $query="SELECT count(*) as cpt from $table";
@@ -2127,6 +2482,16 @@ function rembo($string){
 	return $string;
 }
 
+
+/**
+* To be commented
+*
+* @param $table
+* @param $current
+* @param $parentID
+* @param $categoryname
+* @return nothing 
+*/
 function showTreeListSelect($table,$current, $parentID=0, $categoryname="")
 {
 
@@ -2153,6 +2518,14 @@ function showTreeListSelect($table,$current, $parentID=0, $categoryname="")
 
 }
 
+
+/**
+* To be commented
+*
+* @param $table
+* @param $ID
+* @return nothing 
+*/
 function getTreeLeafValueName($table,$ID)
 {
 	$query = "select * from $table where (ID = $ID)";
@@ -2167,6 +2540,14 @@ function getTreeLeafValueName($table,$ID)
 return $name;
 }
 
+/**
+* show name catégory
+*
+* @param $table
+* @param $ID
+* @param $wholename
+* @return string name
+*/
 function getTreeValueName($table,$ID, $wholename="")
 {
 	// show name catégory
@@ -2197,6 +2578,16 @@ function getTreeValueName($table,$ID, $wholename="")
 return (@$name);
 }
 
+
+/**
+* To be commented
+*
+* @param $form
+* @param $element
+* @param $value
+* @param $withtemplate
+* @return nothing
+*/
 function showCalendarForm($form,$element,$value='',$withtemplate=''){
 		global $HTMLRel,$lang;
 		echo "<input type='text' name='$element' readonly size='10' value='$value'>";
@@ -2209,6 +2600,13 @@ function showCalendarForm($form,$element,$value='',$withtemplate=''){
 		}
 }
 
+/**
+* To be commented
+*
+* @param $file
+* @param $filename
+* @return nothing
+*/
 function sendFile($file,$filename){
         
 	if (!file_exists($file)){
