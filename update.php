@@ -750,7 +750,7 @@ while($line = $db->fetch_array($result)) {
 		$q2="DELETE FROM `glpi_networking_wire` WHERE `ID`='".$line['ID']."' LIMIT 1";
 		$db->query($q2);
 		}
-	else $curend1=$line['end1'];$curend2=$line['end2'];
+	else {$curend1=$line['end1'];$curend2=$line['end2'];}
 	}	
 		
 $query = "ALTER TABLE `glpi_networking_wire` ADD UNIQUE ( `end1`,`end2` ) ";
@@ -777,7 +777,7 @@ while($line = $db->fetch_array($result)) {
 		$q2="DELETE FROM `glpi_connect_wire` WHERE `ID`='".$line['ID']."' LIMIT 1";
 		$db->query($q2);
 		}
-	else $curend1=$line['end1'];$curend2=$line['end2'];$curtype=$line['type'];
+	else{ $curend1=$line['end1'];$curend2=$line['end2'];$curtype=$line['type'];}
 	}	
 $query = "ALTER TABLE `glpi_connect_wire` ADD UNIQUE ( `end1`,`end2`,`type` ) ";
 $db->query($query) or die("478 ".$lang["update"][90].$db->error());
