@@ -193,6 +193,8 @@ $lang["job"][14]	= "Neues Eingreifen";
 $lang["job"][15]	= "Chronik";
 $lang["job"][16]	= "gefunden";
 $lang["job"][17]        = "eingreifen";
+//to be translated
+$lang["job"][18]        = "old";
 
 // Computers
 
