@@ -53,7 +53,7 @@ function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "",$d
 	$option["glpi_cartridges_type.name"]				= $lang["cartridges"][1];
 	$option["glpi_cartridges_type.ref"]			= $lang["cartridges"][2];
 	$option["glpi_cartridges_type.type"]			= $lang["cartridges"][3];
-	$option["glpi_cartridges_type.FK_glpi_enterprise"]			= $lang["cartridges"][8];	
+	$option["glpi_enterprises.name"]			= $lang["cartridges"][8];	
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/cartridges/cartridge-search.php\">";
 	echo "<div align='center'><table class='tab_cadre' width='750'>";
@@ -137,9 +137,9 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 		$order = "ASC";
 	}
 	
-	$query = "SELECT glpi_cartridges_type.ID as ID FROM glpi_cartridges_type ";
-	
-	$query.= " WHERE $where AND deleted='$deleted'  ORDER BY $sort";
+	$query = "SELECT glpi_cartridges_type.*, glpi_enterprises.name FROM glpi_cartridges_type ";
+	$query.= " LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_cartridges_type.FK_glpi_enterprise ";
+	$query.= " WHERE $where AND glpi_cartridges_type.deleted='$deleted'  ORDER BY $sort";
 //	echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
@@ -180,15 +180,15 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 			if ($sort=="glpi_cartridges_type.type") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_cartridges_type.type&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_cartridges_type.type&order=ASC&start=$start\">";
 			echo $lang["cartridges"][3]."</a></th>";
 
 			// Manufacturer		
 			echo "<th>";
-			if ($sort=="glpi_cartridges_type.FK_glpi_enterprise") {
+			if ($sort=="glpi_enterprises.name") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_cartridges_type.FK_glpi_enterprise&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.name&order=ASC&start=$start\">";
 			echo $lang["cartridges"][8]."</a></th>";
 
 			// Cartouches
@@ -209,7 +209,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 				echo "</a></b></td>";
 				echo "<td>".$ct->fields["ref"]."</td>";
 				echo "<td>".getCartridgeTypeName($ct->fields["type"])."</td>";
-				echo "<td>". getDropdownName("glpi_enterprise",$ct->fields["FK_glpi_enterprise"]) ."</td>";
+				echo "<td>". getDropdownName("glpi_enterprises",$ct->fields["FK_glpi_enterprise"]) ."</td>";
 				echo "<td>";
 					countCartridges($ct->fields["ID"]);
 				echo "</td>";
@@ -263,7 +263,7 @@ function showCartridgeTypeForm ($target,$ID) {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][8].": 	</td><td colspan='2'>";
-		dropdownValue("glpi_enterprise","FK_glpi_enterprise",$ct->fields["FK_glpi_enterprise"]);
+		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$ct->fields["FK_glpi_enterprise"]);
 	echo "</td></tr>";
 
 
@@ -300,6 +300,7 @@ function showCartridgeTypeForm ($target,$ID) {
 		
 		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'></div>";
 		}
+		echo "</form>";
 		echo "</td>";
 		echo "</tr>";
 
@@ -720,8 +721,8 @@ function dropdownCartridgeType($name,$value=0){
 	global $lang;
 	
 	echo "<select name='$name'>";
-	echo "<option value='2' ".($value==2?" selected ":"").">".$lang["cartridges"][10]."";
-	echo "<option value='1' ".($value==1?" selected ":"").">".$lang["cartridges"][11]."";
+	echo "<option value='2' ".($value==2?" selected ":"").">".$lang["cartridges"][10]."</option>";
+	echo "<option value='1' ".($value==1?" selected ":"").">".$lang["cartridges"][11]."</option>";
 	echo "</select>";	
 }
 
