@@ -211,7 +211,7 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 
 function showOldJobListForItem($username,$item) {
 	// $item is required
-	//affiche toutes les vielles intervention pour un $item donné. 
+	// affiche toutes les vielles intervention pour un $item donné. 
 
 
 	GLOBAL $cfg_layout, $cfg_install, $lang;
@@ -244,12 +244,13 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item') ORD
 			showJobShort($ID, 0);
 			$i++;
 		}
-		if ($item)
+/*		if ($item)
 		{
 			echo "<tr class='tab_bg_2'>";
 		        echo "<td align='center' colspan='8' class='tab_bg_1'>";
 
 		}
+		*/
 		echo "</table></div>";
 	} 
 	else
@@ -356,7 +357,7 @@ function showJobShort($ID, $followups	) {
 		{
  			echo "<tr class='tab_bg_1'>";
 			echo "<td align='center'><b>".$lang["joblist"][10]."</b></td>";
-			echo "<td width='100'><small>".$lang["joblist"][11].":<br>&nbsp;$job->date<br>";
+			echo "<td width='130'><small>".$lang["joblist"][11].":<br>&nbsp;$job->date<br>";
 			echo "<i>".$lang["joblist"][12].":<br>&nbsp;$job->closedate</i>";
 			if ($job->realtime>0) echo "<br>".$lang["job"][20].": <br>".getRealtime($job->realtime);
 			echo "</small></td>";
@@ -457,17 +458,17 @@ function showJobDetails($ID) {
 		}
 		echo "</td></tr>";
 
-		echo "<tr><td>".$lang["joblist"][2]."</td><td><b>";
+		echo "<tr><td>".$lang["joblist"][2].":</td><td><b>";
 		echo "<b>".$job->priority."</b></td></tr>";	
 
-		echo "<tr><td>".$lang["joblist"][3]."</td><td>";
+		echo "<tr><td>".$lang["joblist"][3].":</td><td>";
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		echo "<b><a href=\"".$cfg_install["root"]."/setup/users-info.php?ID=$job->author\">$job->author</a></b>";
 		else 
 		echo "<b>$job->author</b>";
 		echo "</td></tr>";
 
-		echo "<tr><td>".$lang["joblist"][5]."</td><td>";
+		echo "<tr><td>".$lang["joblist"][5].":</td><td>";
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		echo "<b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$job->computer\">$job->computername ($job->computer)</a></b>";
 		else
@@ -512,17 +513,22 @@ function showJobDetails($ID) {
 		echo "</tr><tr class='tab_bg_2'>";
 		
 		echo "<td colspan='3'>";
-		echo $lang["joblist"][6].":<br><br>";
-		echo "<b>$job->contents</b>";
-		echo "<br><br></td>";
+		echo "<table><tr><td width='90'>";
+		echo $lang["joblist"][6].":";
+		echo "</td><td>";
+		echo "<b>$job->contents</b>";		
+		echo "</td></tr></table>";
+
+
+		echo "</td>";
 		
 		echo "</tr>";
 	
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		if ($job->status == "new") {
+			echo "<form method=get action=\"".$cfg_install["root"]."/tracking/tracking-mark.php\">";
 			echo "<tr class='tab_bg_1'>";
 			echo "<td colspan='3' align='center'>";
-			echo "<form method=get action=\"".$cfg_install["root"]."/tracking/tracking-mark.php\">";
 			echo "<input type='hidden' name='ID' value=$job->ID>";			
 			echo $lang["job"][20].":&nbsp;";
 			echo "<select name='hour'>";
@@ -535,8 +541,8 @@ function showJobDetails($ID) {
 			echo "</select>".$lang["job"][22]."&nbsp;&nbsp;";
 
 			echo "<input type='submit' value=\"".$lang["job"][3]."\" class='submit'>";
-			echo "</form>";
 			echo "</td></tr>";
+			echo "</form>";
 
 		}
 		echo "</table>";
