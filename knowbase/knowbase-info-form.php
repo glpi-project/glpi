@@ -52,7 +52,7 @@ if (empty($tab["ID"])) {
 
 	
 	if ($tab["ID"]=="new"){
-// ajoute un item dans la base de connaisssances 
+// on affiche le formulaire de saisie de l'item
 
 	checkAuthentication("admin");
 	commonHeader("Knowledgebase",$_SERVER["PHP_SELF"]);
@@ -64,7 +64,7 @@ if (empty($tab["ID"])) {
 	}
 			
 	else if (isset($_POST["add"])){
-	
+// ajoute un item dans la base de connaisssances 	
 	checkAuthentication("admin");
 	
 	
@@ -75,8 +75,9 @@ if (empty($tab["ID"])) {
 	
 	}
 	
-	else if (isset($tab["ID"]) && $tab["modify"]=="yes"){
+	else if (isset($tab["ID"])  && strcmp($tab["modify"],"yes") == 0){
 	
+		
 	// modifier un item dans la base de connaissance
 	
 	checkAuthentication("admin");
@@ -101,7 +102,9 @@ if (empty($tab["ID"])) {
 	
 	}
 	
-	else if (isset($tab["ID"]) && $tab["delete"]=="yes"){
+	else if (isset($tab["ID"])  && strcmp($tab["delete"],"yes") == 0){
+	
+	
 	
 	// effacer un item dans la base de connaissances
 	
@@ -112,7 +115,9 @@ if (empty($tab["ID"])) {
 
 	}
 	
-	else if (isset($tab["ID"]) && $tab["addtofaq"]=="yes"){
+	
+	else if (isset($tab["ID"])  && strcmp($tab["addtofaq"],"yes") == 0){
+	
 	
 	// ajouter  un item dans la faq
 	
@@ -126,7 +131,9 @@ if (empty($tab["ID"])) {
 	
 	}
 	
-	else if (isset($tab["ID"]) && $tab["removefromfaq"]=="yes"){
+	
+	else if (isset($tab["ID"])  && strcmp($tab["removefromfaq"],"yes") == 0){
+	
 	
 	// retirer  un item de la faq
 	
