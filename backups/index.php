@@ -574,7 +574,7 @@ echo " <div align='center'> <table border='0'><tr><td><b><img src=\"". $HTMLRel.
  
 
 <br>
-  <table border="0" cellpadding="5">
+  <table class='tab_cadre'  cellpadding="5">
     <tr align="center"> 
       <th><u><i><?php echo $lang["backup"][10]; ?></i></u></th>
       <th><u><i><?php echo $lang["backup"][11]; ?></i></u></th>
@@ -587,7 +587,7 @@ echo " <div align='center'> <table border='0'><tr><td><b><img src=\"". $HTMLRel.
 	    if ($file != "." && $file != ".." && eregi("\.sql",$file)) { 
 	    	$taille_fic = filesize($path.$file)/1024;
 		$taille_fic = (int)$taille_fic;
-	        echo "<tr><td>$file&nbsp;</td>
+	        echo "<tr class='tab_bg_2'><td>$file&nbsp;</td>
 	        	<td align=\"right\">&nbsp;" . $taille_fic . " kB&nbsp;</td>
 	        	<td>&nbsp;" . date("Y-m-d H:i",filemtime($path.$file)) . "</td>
 	       		<td>&nbsp;<a href=\"javascript:erase('$file')\">".$lang["backup"][20]."</a>&nbsp;</td>
@@ -603,8 +603,8 @@ $dir=opendir($path);
 	        $taille_fic = filesize($path.$file)/1024;
 		$taille_fic = (int)$taille_fic;
 	        echo "
-	   	        <tr ><td colspan='6' ><hr noshade></td></tr>
-	   	    	<tr><td>$file&nbsp;</td>
+	   	        <tr class='tab_bg_1'><td colspan='6' ><hr noshade></td></tr>
+	   	    	<tr class='tab_bg_2'><td>$file&nbsp;</td>
 	        	<td align=\"right\">&nbsp;" . $taille_fic . " kB&nbsp;</td>
 	        	<td>&nbsp;" . date("Y-m-d H:i",filemtime($path.$file)) . "</td>
 	       		<td>&nbsp;<a href=\"javascript:erase('$file')\">".$lang["backup"][20]."</a>&nbsp;</td>
