@@ -175,11 +175,6 @@ $maintain =	array($lang["Menu"][5]=>"/tracking/index.php",
 		      $lang["Menu"][13]=>"/stats/index.php");
 			
 				
-
-$LDAP =	        array($lang["Menu"][7]=>"/ldap/index.php?type=posixGroup",
-	              $lang["Menu"][8]=>"/ldap/index.php?type=posixAccount",
-	              $lang["Menu"][9]=>"/ldap/index.php?type=qmailUser");
-				
 $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	              $lang["Menu"][11]=>"/preferences/index.php",
 	              $lang["Menu"][12]=>"/backups/index.php");			
@@ -261,17 +256,6 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 		}
 		echo "</td>";
 	}
-	 if ($navigation->admin) {
-		echo "<td align='center' valign='top'>";
-		echo "<img src=\"".$cfg_install["root"]."/pics/ldap.png\" alt=\"\"><br>";
-
-		echo "<small>-&nbsp;".$lang["ldap"][7]."-</small><br>";
-
-		foreach ($LDAP as $key => $val) {
-			echo "<a href=\"".$cfg_install["root"].$val."\">".$key."</a><br>";
-		}	
-		echo "</td>";
-	}	
 	if ($navigation->settings) {
 		echo "<td align='center' valign='top'>";
 				echo "<img src=\"".$cfg_install["root"]."/pics/config.png\" alt=\"\"><br>";
