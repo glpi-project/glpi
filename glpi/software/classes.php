@@ -99,6 +99,16 @@ function getEmpty () {
 		
 	}
 	
+	function restoreInDB($ID) {
+		$db = new DB;
+		$query = "UPDATE glpi_software SET deleted='N' WHERE (ID = '$ID')";
+		if ($result = $db->query($query)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+		
 	function addToDB() {
 		
 		$db = new DB;
@@ -134,37 +144,42 @@ function getEmpty () {
 
 	}
 
-	function deleteFromDB($ID) {
+	function deleteFromDB($ID,$force=0) {
 
 		$db = new DB;
+		
+		if ($force==1){
+			$query = "DELETE from glpi_software WHERE ID = '$ID'";
+			if ($result = $db->query($query)) {
 
-		$query = "DELETE from glpi_software WHERE ID = '$ID'";
-		if ($result = $db->query($query)) {
+				$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".SOFTWARE_TYPE."')";
+				$result = $db->query($query);
 
-			$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".SOFTWARE_TYPE."')";
-			$result = $db->query($query);
+				$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".SOFTWARE_TYPE."')";
+				$result = $db->query($query);
 
-			$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".SOFTWARE_TYPE."')";
-			$result = $db->query($query);
+				$query = "DELETE FROM glpi_tracking WHERE (computer = '$ID' AND device_type='".SOFTWARE_TYPE."')";
+				$result = $db->query($query);
 
-			$query = "DELETE FROM glpi_tracking WHERE (computer = '$ID' AND device_type='".SOFTWARE_TYPE."')";
-			$result = $db->query($query);
-
-			// Delete all Licenses
-			$query2 = "SELECT ID FROM glpi_licenses WHERE (sID = \"$ID\")";
+				// Delete all Licenses
+				$query2 = "SELECT ID FROM glpi_licenses WHERE (sID = \"$ID\")";
 	
-			if ($result2 = $db->query($query2)) {
-				$i=0;
-				while ($i < $db->numrows($result2)) {
-					$lID = $db->result($result2,$i,"ID");
-					$lic = new License;
-					$lic->deleteFromDB($lID);
-					$i++;
-				}			
-				return true;
+				if ($result2 = $db->query($query2)) {
+					$i=0;
+					while ($i < $db->numrows($result2)) {
+						$lID = $db->result($result2,$i,"ID");
+						$lic = new License;
+						$lic->deleteFromDB($lID);
+						$i++;
+					}			
+					return true;
+				}
+			} else {
+				return false;
 			}
 		} else {
-			return false;
+		$query = "UPDATE glpi_software SET deleted='Y' WHERE ID = '$ID'";		
+		return ($result = $db->query($query));
 		}
 	}
 
