@@ -212,7 +212,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 				$where .= " glpi_dropdown_". $line["Field"] .".name LIKE '%".$contains."%'";
 			}
 			elseif($line["Field"] == "location") {
-				$where .= " glpi_dropdown_locations.name LIKE '%".$contains."%'";
+				$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains);
 			}
 			else {
    				$where .= "comp.".$line["Field"] . " LIKE '%".$contains."%'";
@@ -235,6 +235,9 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 	else {
 		if(IsDevice($field)) {
 			$where = "(glpi_device_".$field." LIKE '%".$contains."')";
+		}
+		else if ($field=="glpi_dropdown_locations.name"){
+			$where = getRealSearchForTreeItem("glpi_dropdown_locations",$contains);
 		}
 		else {
 			$where = "($field LIKE '%".$contains."%')";
@@ -267,7 +270,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = comp.tech_num ) ";
 	$query.= " LEFT JOIN glpi_type_computers ON (glpi_type_computers.ID = comp.type ) ";
 	$query .= " where $where AND comp.deleted='$deleted' AND comp.is_template = '0'  ORDER BY $sort $order";
-	
+
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);
