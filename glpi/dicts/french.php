@@ -108,8 +108,8 @@ $lang["connect"][4]	= "Faire une connection directe";
 $lang["connect"][5]	= "Sur un ordinateur qui";
 $lang["connect"][6]	= "Nom";
 $lang["connect"][7]	= "ID";
-$lang["connect"][8]	= "Contient";
-$lang["connect"][9]	= "choisissez un ordinateur dans la liste";
+$lang["connect"][8] 	= "contient"; 
+$lang["connect"][9] 	= "Choisissez un ordinateur dans la liste"; 
 
 //header menu
 
@@ -164,7 +164,7 @@ $lang["tracking"][5]	= "Quand la description contient";
 $lang["tracking"][6]    = "Vous n'etes pas autoris&eacute; &agrave; (re-)attribuer cette intervention";
 $lang["tracking"][7]    = "Afficher...";
 $lang["tracking"][8]    = "Pas de description, veuillez recommencer";
-$lang["tracking"][9]    = "Nouvelle intervention post&eacute;e, suivante...";
+$lang["tracking"][9] 	= "Nouvelle intervention post&eacute;e, suivante..."; 
 $lang["tracking"][10]    = "Ajout de l'intervention impossible, verifiez la base de donn&eacute;es";
 $lang["tracking"][11]   =  "Intervention(s) requise(s) par cet utilisateur";
 
@@ -174,7 +174,7 @@ $lang["joblist"][0]	= "Statut";
 $lang["joblist"][1]	= "Date";
 $lang["joblist"][2]	= "Priorit&eacute;";
 $lang["joblist"][3]	= "Auteur";
-$lang["joblist"][4]	= "attribu&eacute;";
+$lang["joblist"][4] 	= "Attribu&eacute;"; 
 $lang["joblist"][5]	= "Ordinateur";
 $lang["joblist"][6]	= "Description";
 $lang["joblist"][7]	= "Nouvelle intervention pour cet item...";
@@ -198,9 +198,9 @@ $lang["job"][0]		= "Num&eacute;ro d'intervention";
 $lang["job"][1]		= "Intervention toujours ouverte...";
 $lang["job"][2]		= "Cette intervention a &eacute;t&eacute; ouverte &agrave;";
 $lang["job"][3]		= "Intervention termin&eacute;e, marquer comme ancienne.";
-$lang["job"][4]		= "attribuer intervention";
-$lang["job"][5]		= "attribu&eacute;e &agrave;";
-$lang["job"][6]		= "attribuer";
+$lang["job"][4] 	= "Attribuer intervention"; 
+$lang["job"][5] 	= "Attribu&eacute;e &agrave;"; 
+$lang["job"][6] 	= "Attribuer"; 
 $lang["job"][7]		= "Suivi";
 $lang["job"][8]		= "Pas de suivi pour cette intervention.";
 $lang["job"][9]		= "Envoyer un nouveau suivi pour cette intervention";
@@ -208,7 +208,7 @@ $lang["job"][10]	= "Pas de suivi pour cette intervention.";
 $lang["job"][11]	= "D&eacute;crivez le probleme/action";
 $lang["job"][12]	= "Pas de suivi pour cette intervention.";
 $lang["job"][13]	= "Ajouter une nouvelle intervention";
-$lang["job"][14]	= "nouvelle intervention";
+$lang["job"][14] 	= "Nouvelle intervention"; 
 $lang["job"][15]	= "Historique";
 $lang["job"][16]	= "trouv&eacute;e ";
 $lang["job"][17]        = "intervention";
@@ -216,7 +216,7 @@ $lang["job"][18]        = "ancienne";
 $lang["job"][19]        = "Suivi par Email";
 $lang["job"][20]        = "Durée réelle de l'intervention";
 $lang["job"][21]        = "Heure(s)";
-$lang["job"][22]        = "Minutes(s)";
+$lang["job"][22] 	= "Minute(s)"; 
 
 // Computers
 
@@ -263,7 +263,7 @@ $lang["computers"][43]	= "Maintenance";
 $lang["computers"][44]  = "Ordinateurs";
 $lang["computers"][45]  = "Choisissez un mod&egrave;le";
 $lang["computers"][46]	= "Périphériques";
-$lang["computers"][47]	= "Pas de périphériques connectés";
+$lang["computers"][47] 	= "Pas de p&eacute;riph&eacute;rique connect&eacute;"; 
 
 // Networking
 
@@ -540,7 +540,7 @@ $lang["setup"][60]      = "Non";
 $lang["setup"][61]  = "Oui";
 $lang["setup"][62]       = "Selectionnez la cat&eacute;gorie &agrave; configurer";
 $lang["setup"][63]     = "Attention vous êtes sur le point de supprimer un intitulé utilisé pour un ou plusieurs items";
-$lang["setup"][64]     = "Si vous confirmez la suppression les items utilisant cet intitulé se verront atribbuer un champs NULL";
+$lang["setup"][64] 	= "Si vous confirmez la suppression les items utilisant cet intitul&eacute; se verront attribuer un champs NULL"; 
 $lang["setup"][65]     = "Vous pouvez aussi remplacer toutes les occurences de cet intitulé par un autre :";
 $lang["setup"][66]	= "Pas d'utilisateur trouvé";
 $lang["setup"][67]	= "Authentifications externes";

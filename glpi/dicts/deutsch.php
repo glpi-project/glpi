@@ -58,6 +58,7 @@ $lang["buttons"][11]	= "Nächst";
 $lang["buttons"][12]	= "Vorherig";
 $lang["buttons"][13]	= "R&uuml;ckkehr";
 $lang["buttons"][14]	= "Wechseln";
+$lang["buttons"][15] 	= "Zeitplan"; 
 
 $lang["choice"][0]	= "Nein";
 $lang["choice"][1]	= "Ja";
@@ -90,6 +91,7 @@ $lang["event"][4]	= "Botschaft";
 // Pager
 $lang["pager"][1]	= "F&uuml;r";
 $lang["pager"][2]	= "von";
+$lang["pager"][3] 	= "auf"; 
 
 // Direct Connections
 $lang["connect"][0]	= "Gerade Verbindungen";
@@ -120,6 +122,9 @@ $lang["Menu"][11]	="Vorzüge";
 $lang["Menu"][12]	="Daten";
 //To be translated
 $lang["Menu"][13]	="Stats";
+$lang["Menu"][14] 	= "Benutzer"; 
+$lang["Menu"][15] 	= "Verwaltung"; 
+$lang["Menu"][16] 	= "Peripheriger&auml;t"; 
 
 //Données
 $lang["backup"][0]	="Dump SQL";
@@ -152,6 +157,7 @@ $lang["tracking"][3]	= "Nur die unbeimessene Eingreifen zeigen";
 $lang["tracking"][4]	= "Nur die fertige Eingreifen zeigen";
 $lang["tracking"][5]	= "Wann die Beschreibung enthält :";
 $lang["tracking"][6]    = "Sie sind nicht erlaubt, dieses Eingreifen jemandem anderen zu beimessen";
+$lang["tracking"][7] 	= "Anzuschlagen..."; 
 
 
 $lang["joblist"][0]	= "Sachverhalt";
@@ -198,6 +204,8 @@ $lang["job"][16]	= "gefunden";
 $lang["job"][17]        = "eingreifen";
 //to be translated
 $lang["job"][18]        = "old";
+$lang["job"][21] 	= "Stunde(n)"; 
+$lang["job"][22] 	= "Minute(n)"; 
 
 // Computers
 
@@ -320,6 +328,7 @@ $lang["printers"][22]	= "Erhaltung";
 $lang["printers"][23]   = "Arbeitsspeicher";
 $lang["printers"][24]   = "Identifizierer";
 $lang["printers"][25]   = "Drucker";
+$lang["printers"][26] 	= "Zahl"; 
 
 // Monitors
 $lang["monitors"][0]	= "Monitor hinzuf&uuml;gen..";

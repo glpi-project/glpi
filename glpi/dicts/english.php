@@ -75,6 +75,8 @@ $lang["search"][4]	= "sorted by";
 $lang["search"][5]	= "View by location";
 $lang["search"][6]	= "sorted by";
 $lang["search"][7]	= "Global search";
+$lang["search"][8] 	= "Begin date"; 
+$lang["search"][9] 	= "End date"; 
 
 // Central
 $lang["central"][0] 	= "Welcome ";
@@ -96,6 +98,7 @@ $lang["event"][4]	= "Message";
 // Pager
 $lang["pager"][1]	= "to";
 $lang["pager"][2]	= "from";
+$lang["pager"][3] 	= "in"; 
 
 // Direct Connections
 $lang["connect"][0]	= "Direct Connections";
@@ -158,6 +161,11 @@ $lang["tracking"][3]	= "Show only interventions not assigned yet";
 $lang["tracking"][4]	= "Show only old interventions";
 $lang["tracking"][5]	= "Where the description contains";
 $lang["tracking"][6]    = "You are not allowed to (re-)assign this intervention";
+$lang["tracking"][7] 	= "Show..."; 
+$lang["tracking"][8] 	= "No description, please retry"; 
+$lang["tracking"][9] 	= "New intervention post, next..."; 
+$lang["tracking"][10] 	= "Impossible to add the intervention, check the data base"; 
+$lang["tracking"][11] 	= "Intervention(s) required by this user"; 
 
 $lang["joblist"][0]	= "Status";
 $lang["joblist"][1]	= "Date";
@@ -181,6 +189,8 @@ $lang["joblist"][18]	= "High";
 $lang["joblist"][19]	= "Normal";
 $lang["joblist"][20]	= "Low";
 $lang["joblist"][21]	= "Very Low";
+$lang["joblist"][22] 	= "No old intervention found"; 
+$lang["joblist"][23] 	= "Add an old intervention to the history"; 
 $lang["job"][0]		= "Intervention Number";
 $lang["job"][1]		= "Intervention still open...";
 $lang["job"][2]		= "This job was open for";
@@ -200,6 +210,10 @@ $lang["job"][15]	= "History";
 $lang["job"][16]	= "found";
 $lang["job"][17]    = "tracking";
 $lang["job"][18]        = "old";
+$lang["job"][19] 	= "Email Followups"; 
+$lang["job"][20] 	= "Real time of the intervention"; 
+$lang["job"][21] 	= "Hour(s)"; 
+$lang["job"][22] 	= "Minute(s)"; 
 
 // Computers
 
@@ -245,6 +259,8 @@ $lang["computers"][42]	= "Warranty expiration date";
 $lang["computers"][43]	= "Maintenance";
 $lang["computers"][44]  = "Computers";
 $lang["computers"][45] = "Select a template";
+$lang["computers"][46] 	= "Peripherals"; 
+$lang["computers"][47] 	= "No connected peripheral"; 
 
 // Networking
 
@@ -326,6 +342,7 @@ $lang["printers"][22]	= "Maintenance";
 $lang["printers"][23]   = "RAM";
 $lang["printers"][24]   = "Identifier";
 $lang["printers"][25]   = "Printers";
+$lang["printers"][26] 	= "Number"; 
 
 
 // Monitors
@@ -397,6 +414,16 @@ $lang["reports"][7]	="Printers";
 $lang["reports"][8]	="Net devices";
 $lang["reports"][9]	="Monitors";
 $lang["reports"][10]	="S&eacute;lect type to be displayed";
+$lang["reports"][13] 	= "Buy date(s)"; 
+$lang["reports"][14] 	= "Sort option"; 
+$lang["reports"][15] 	= "Show report"; 
+$lang["reports"][16] 	= "All"; 
+$lang["reports"][17] 	= "Buy date"; 
+$lang["reports"][18] 	= "Serial number"; 
+$lang["reports"][19] 	= "Contact name"; 
+$lang["reports"][20] 	= "Location"; 
+$lang["reports"][23] 	= "Date(s)"; 
+$lang["reports"][24] 	= "Restrict to computers"; 
 
 // LDAP
 $lang["ldap"][0]	= "Search";
@@ -472,6 +499,13 @@ $lang["setup"][58]      = "Right of intervention assignement";
 $lang["setup"][59]      = "Setup the rights of intervention assignement";
 $lang["setup"][60]      = "No";
 $lang["setup"][61]      = "Yes";
+$lang["setup"][62] 	= "Select the category to configure"; 
+$lang["setup"][63] 	= "Attention you are about to remove a heading used for one or more items"; 
+$lang["setup"][64] 	= "If you confirm the deletion the items using this heading will see allotting fields NULL"; 
+$lang["setup"][65] 	= "You can also replace all the events of this heading by another:"; 
+$lang["setup"][66] 	= "No user found"; 
+$lang["setup"][68] 	= "Email Followup"; 
+$lang["setup"][71] 	= "Firmware"; 
 
 // Helpdesk
 
