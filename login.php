@@ -165,7 +165,7 @@ $query = "SELECT * FROM glpi_prefs WHERE (user = '".$_POST['login_name']."')";
 $result = $db->query($query);
 if ($db->numrows($result) == 0)
 {
-	$query = "INSERT INTO glpi_prefs VALUES ('".$_POST['login_name']."', 'yes','french')";
+	$query = "INSERT INTO glpi_prefs (`user`,`tracking_order`,`language`) VALUES ('".$_POST['login_name']."', 'yes','french')";
 	$result = $db->query($query);
 }
 

@@ -417,7 +417,6 @@ if(!TableExists("glpi_computers")) {
 	$query = "ALTER TABLE users RENAME glpi_users";
 	$db->query($query) or die($lang["update"][90].$db->error()); 
 
-	echo "Version 0.4  <br/>";
 }	
 
 //Ajout d'un champs ID dans la table users
@@ -861,6 +860,14 @@ if(!TableExists("glpi_reservation_resa")) {
 if(!FieldExists("glpi_tracking","device_type")) {
 	$query = "ALTER TABLE `glpi_tracking` ADD `device_type` INT DEFAULT '1' NOT NULL AFTER `assign` ;";
 	$db->query($query) or die("4203 ".$lang["update"][90].$db->error());
+}
+
+// Ajout language par defaut
+if(!FieldExists("glpi_config","default_language")) {
+
+	$query = "ALTER TABLE `glpi_config` ADD `default_language` VARCHAR( 255 ) DEFAULT 'french' NOT NULL ;";
+	$db->query($query) or die("4204 ".$lang["update"][90].$db->error());
+
 }
 
 

@@ -785,6 +785,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 
 
 function addUser($input) {
+global $cfg_install;
 	
 	//only admin and superadmin can add some user
 	if(isAdmin($_SESSION["glpitype"])) {
@@ -815,7 +816,7 @@ function addUser($input) {
 
 			if ($user->addToDB()) {
 				// Give him some default prefs...
-				$query = "INSERT INTO glpi_prefs (user,tracking_order,language) VALUES ('".$input["name"]."','no','english')";
+				$query = "INSERT INTO glpi_prefs (user,tracking_order,language) VALUES ('".$input["name"]."','no','".$cfg_install["default_language"]."')";
 
 				$db = new DB;
 				$result=$db->query($query);
@@ -1287,7 +1288,7 @@ GLOBAL  $lang,$HTMLRel;
 
 function showFormConfigGen($target){
 	
-	GLOBAL  $lang,$HTMLRel;
+	GLOBAL  $lang,$HTMLRel,$cfg_install;
 	
 	$db = new DB;
 	$query = "select * from glpi_config where ID = 1";
@@ -1297,6 +1298,14 @@ function showFormConfigGen($target){
 	echo "<div align='center'><table class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$lang["setup"][100]."</th></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][101]." </td><td> <input type=\"text\" name=\"root_doc\" value=\"". $db->result($result,0,"root_doc") ."\"></td></tr>";
+	$default_language=$db->result($result,0,"default_language");
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][113]." </td><td><select name=\"default_language\">";
+	foreach ($cfg_install["languages"] as $key => $val){
+	echo "<option value=\"$val\"";  if($default_language==$val){ echo " selected";} echo ">".$val." </option>";
+		
+	}
+	echo "</select></td></tr>";
+	
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][102]." </td><td><select name=\"event_loglevel\">";
 	$level=$db->result($result,0,"event_loglevel");
 	echo "<option value=\"1\"";  if($level==1){ echo " selected";} echo ">".$lang["setup"][103]." </option>";
@@ -1485,12 +1494,12 @@ function showFormMailing($target) {
 
 }
 
-function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events,$jobs_at_login,$list_limit,$cut, $permit_helpdesk) {
+function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events,$jobs_at_login,$list_limit,$cut, $permit_helpdesk,$default_language) {
 	
 	$db = new DB;
 	
 		$query = "update glpi_config set root_doc = '". $root_doc ."', ";
-		$query.= "event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', ";
+		$query.= "event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', default_language = '". $default_language ."',";
 		$query .= "expire_events = '". $expire_events ."', jobs_at_login = '". $jobs_at_login ."' , list_limit = '". $list_limit ."' , cut = '". $cut ."', permit_helpdesk='". $permit_helpdesk ."' where ID = '1' ";
 		$db->query($query);
 	

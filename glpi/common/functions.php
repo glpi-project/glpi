@@ -1007,11 +1007,11 @@ function dropdownUsersTracking($value, $myname,$champ) {
 
 function loadLanguage() {
 
-	GLOBAL $lang;
+	GLOBAL $lang,$cfg_install;
 
 	if(empty($_SESSION["glpilanguage"]))
 	{	
-		$file= "/glpi/dicts/french.php";
+		$file= "/glpi/dicts/".$cfg_install["default_language"].".php";
 	}
 	else {
 		$file = "/glpi/dicts/".$_SESSION["glpilanguage"].".php";

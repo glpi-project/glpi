@@ -42,6 +42,8 @@ class User {
 	var $prefs = array();
 
   function User($name = '') {
+  	global $cfg_install;
+  	
 	  $this->fields['ID'] = 0;
   	$this->fields['name'] = $name;
   	$this->fields['password'] = '';
@@ -53,7 +55,7 @@ class User {
   	$this->fields['realname'] = $name;
   	$this->fields['can_assign_job'] = 'no';
 	$this->prefs['tracking_order'] = 'no';
-	$this->prefs['language'] = 'french';
+	$this->prefs['language'] = $cfg_install["default_language"];
 }
 	
 	function getFromDB($name) {
@@ -95,6 +97,7 @@ class User {
 	}
 	
 	function getPrefsFromDB() {
+		global $cfg_install;
 		$db = new DB;
 		$query = "select * from glpi_prefs where (user = '". $this->fields["name"] ."')";
 		if($result = $db->query($query)) {
@@ -103,7 +106,7 @@ class User {
 				$this->prefs["language"] = $db->result($result,0,"language");
 			}
 			else {
-				$query = "insert into glpi_prefs value (".$this->fields["name"].",'no','french')"; 
+				$query = "insert into glpi_prefs value (".$this->fields["name"].",'no','".$cfg_install["default_language"]."')"; 
 				$db->query($query);
 			}
 		}

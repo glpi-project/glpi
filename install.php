@@ -463,7 +463,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		include ($phproot . "/glpi/common/functions.php");
 		include ($phproot . "/glpi/config/config_db.php");
 		$db = new DB;
-		$db_file = $phproot ."/mysql/glpi-0.4-default.sql";
+		$db_file = $phproot ."/mysql/glpi-0.42-default.sql";
 		$dbf_handle = fopen($db_file, "rt");
 		$sql_query = fread($dbf_handle, filesize($db_file));
 		fclose($dbf_handle);

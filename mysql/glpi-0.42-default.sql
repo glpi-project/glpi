@@ -1,4 +1,4 @@
-#GLPI Dump database on 2004-11-11 22:43
+#GLPI Dump database on 2004-11-14 14:00
 ### Dump table glpi_computers
 
 DROP TABLE IF EXISTS glpi_computers;
@@ -94,10 +94,11 @@ CREATE TABLE glpi_config (
     ldap_field_phone varchar(200) NOT NULL,
     ldap_condition varchar(255) NOT NULL,
     permit_helpdesk varchar(200) NOT NULL,
+    default_language varchar(255) DEFAULT 'french' NOT NULL,
    PRIMARY KEY (ID)
 );
 
-INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15',' 0.4','GLPI powered by indepnet','/dombre/glpi-test','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','');
+INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15',' 0.42','GLPI powered by indepnet','/','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','0','english');
 ### Dump table glpi_connect_wire
 
 DROP TABLE IF EXISTS glpi_connect_wire;
@@ -319,11 +320,7 @@ CREATE TABLE glpi_event_log (
    KEY date (date)
 );
 
-INSERT INTO glpi_event_log VALUES ('363','-1','system','2004-11-11 22:38:45','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('364','-1','system','2004-11-11 22:40:26','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('365','0','software','2004-11-11 22:40:32','inventory','4','glpi added reservation item 1-15.');
-INSERT INTO glpi_event_log VALUES ('366','1','reservatio','2004-11-11 22:40:42','inventory','4','glpiadd a reservation.');
-INSERT INTO glpi_event_log VALUES ('367','9','computers','2004-11-11 22:41:26','tracking','4','glpi added new job.');
+INSERT INTO glpi_event_log VALUES ('363','-1','system','2004-11-14 13:59:51','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -558,7 +555,6 @@ CREATE TABLE glpi_reservation_item (
    KEY device_type (device_type)
 );
 
-INSERT INTO glpi_reservation_item VALUES ('1','1','15');
 ### Dump table glpi_reservation_resa
 
 DROP TABLE IF EXISTS glpi_reservation_resa;
@@ -575,7 +571,6 @@ CREATE TABLE glpi_reservation_resa (
    KEY end (end)
 );
 
-INSERT INTO glpi_reservation_resa VALUES ('1','1','2004-11-05 12:00:00','2004-11-05 15:00:00','2');
 ### Dump table glpi_software
 
 DROP TABLE IF EXISTS glpi_software;
@@ -660,7 +655,6 @@ INSERT INTO glpi_tracking VALUES ('1','2003-09-18 00:46:40','2003-09-18 00:54:43
 INSERT INTO glpi_tracking VALUES ('2','2003-09-18 00:48:19','0000-00-00 00:00:00','new','Helpdesk','tech','1','10','Un message en anglais s\'affiche, je n\'y comprend rien, je n\'ose plus toucher à rien de peur de tout casser.
 Venez vite !!!!','4','no','','','0');
 INSERT INTO glpi_tracking VALUES ('3','2003-09-18 00:49:29','0000-00-00 00:00:00','new','Helpdesk','tech','1','18','Ma souris se bloque sans arret, elle defile mal sur l\'ecran et elle glisse tres mal sur le tapis de souris.','3','no','','','0');
-INSERT INTO glpi_tracking VALUES ('4','2004-11-11 22:41:26','0000-00-00 00:00:00','new','glpi','','2','9','qsqs','3','no','','','0');
 ### Dump table glpi_type_computers
 
 DROP TABLE IF EXISTS glpi_type_computers;
