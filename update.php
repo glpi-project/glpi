@@ -41,7 +41,7 @@ include ($phproot . "/glpi/includes.php");
 
 function test_connect() {
 $db = new DB;
-$query = "select MAX(ID) from computers";
+$query = "SELECT MAX(ID) FROM computers";
 if($db->query($query)) {
 	return true;
 }
@@ -63,6 +63,7 @@ $db = new DB;
  $query = "Update users set can_assign_job = 'yes' where type = 'admin'";
  $db->query($query) or die("erreur lors de la migration".$db->error());
  
+ echo "<br>Version 0.2 et inferieures Changement du champs can_assign_job<br>";
 
 //Version 0.21 ajout du champ ramSize a la table printers si non existant.
 $db = new DB;
@@ -82,6 +83,8 @@ if($var1 == true) {
 	$query = "alter table printers add ramSize varchar(6) NOT NULL default ''";
 	$db->query($query) or die("erreur lors de la migration".$db->error());
 }
+
+ echo "Version 0.21 ajout du champ ramSize a la table printers si non existant.<br>";
 
 //Version 0.3
 //Ajout de NOT NULL et des valeurs par defaut.
@@ -183,6 +186,11 @@ $query = "ALTER TABLE users MODIFY location varchar(100) NOT NULL default ''";
 $db->query($query) or die("erreur lors de la migration".$db->error());
 $query = "ALTER TABLE users MODIFY phone varchar(100) NOT NULL default ''";
 
+ echo "Version 0.3 Ajout de NOT NULL et des valeurs par defaut.<br>";
+
+//******commentaires*****
+// Faut faire un test là sur la partie qui suit car si glpi_config existe (cas de ma version) : l'upgrade s'arrête
+//******commentaires*****
 
 
 //Version Superieur a 0.31 ajout de la table glpi_config
@@ -240,72 +248,80 @@ $query = "INSERT INTO `glpi_config` VALUES (1, '10', '10', '1', '80', '30', '15'
 $db->query($query) or die("erreur lors de la migration".$db->error());
 
 
+  echo "Version Superieur à 0.31 ajout de la table glpi_config<br>";
 
 //0.4 Prefixage des tables : 
 
 
-$query = "alter table 'computers' RENAME 'glpi_computers'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'connect_wire' RENAME 'glpi_connect_wire'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'dropdown_gfxcard' RENAME 'glpi_dropdown_gfxcard'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'dropdown_hdtype' RENAME 'glpi_dropdown_hdtype'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'dropdown_iface' RENAME 'glpi_dropdown_iface'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'dropdown_locations' RENAME 'glpi_dropdown_locations'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'dropdown_moboard' RENAME 'glpi_dropdown_moboard'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'dropdown_network' RENAME 'glpi_dropdown_network'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'dropdown_os' RENAME 'glpi_dropdown_os'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'dropdown_processor' RENAME 'glpi_dropdown_processor'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'dropdown_ram' RENAME 'glpi_dropdown_ram'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'dropdown_sndcard' RENAME 'glpi_dropdown_sndcard'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'event_log' RENAME 'glpi_event_log'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'followups' RENAME 'glpi_followups'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'glpi_config' RENAME 'glpi_glpi_config'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'inst_software' RENAME 'glpi_inst_software'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'licenses' RENAME 'glpi_licenses'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'monitors' RENAME 'glpi_monitors'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'networking' RENAME 'glpi_networking'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'networking_ports' RENAME 'glpi_networking_ports'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'networking_wire' RENAME 'glpi_networking_wire'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'prefs' RENAME 'glpi_prefs'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'printers' RENAME 'glpi_printers'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'software' RENAME 'glpi_software'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'templates' RENAME 'glpi_templates'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'tracking' RENAME 'glpi_tracking'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'type_computers' RENAME 'glpi_type_computers'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'type_monitors' RENAME 'glpi_type_monitors'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'type_networking' RENAME 'glpi_type_networking'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'type_printers' RENAME 'glpi_type_printers'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error());
-$query = "alter table 'users' RENAME 'glpi_users'";
-$db->query($query) or die(or die("erreur lors de la migration".$db->error()); 
+$query = "ALTER TABLE computers RENAME glpi_computers";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE connect_wire RENAME glpi_connect_wire";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE dropdown_gfxcard RENAME glpi_dropdown_gfxcard";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE dropdown_hdtype RENAME glpi_dropdown_hdtype";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE dropdown_iface RENAME glpi_dropdown_iface";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE dropdown_locations RENAME glpi_dropdown_locations";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE dropdown_moboard RENAME glpi_dropdown_moboard";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE dropdown_network RENAME glpi_dropdown_network";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE dropdown_os RENAME glpi_dropdown_os";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE dropdown_processor RENAME glpi_dropdown_processor";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE dropdown_ram RENAME glpi_dropdown_ram";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE dropdown_sndcard RENAME glpi_dropdown_sndcard";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE event_log RENAME glpi_event_log";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE followups RENAME glpi_followups";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+
+//******commentaires*****
+//nawak on a pas besoin de ça, cette table est déjà préfixée
+//$query = "ALTER TABLE glpi_config RENAME glpi_glpi_config";
+//$db->query($query) or die("erreur lors de la migration".$db->error());
+//******commentaires*****
+
+$query = "ALTER TABLE inst_software RENAME glpi_inst_software";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE licenses RENAME glpi_licenses";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE monitors RENAME glpi_monitors";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE networking RENAME glpi_networking";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE networking_ports RENAME glpi_networking_ports";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE networking_wire RENAME glpi_networking_wire";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE prefs RENAME glpi_prefs";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE printers RENAME glpi_printers";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE software RENAME glpi_software";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE templates RENAME glpi_templates";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE tracking RENAME glpi_tracking";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE type_computers RENAME glpi_type_computers";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE type_monitors RENAME glpi_type_monitors";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE type_networking RENAME glpi_type_networking";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE type_printers RENAME glpi_type_printers";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE users RENAME glpi_users";
+$db->query($query) or die("erreur lors de la migration".$db->error()); 
+
+ echo "Version 0.4 Prefixage des tables  <br>";
 
 }
 
