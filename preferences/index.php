@@ -41,8 +41,15 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
 if (isset($_POST["changepw"])) {
+	
 	checkAuthentication("post-only");
+	
 	if ($_SESSION["extauth"]!=1)
+	
+	foreach($_POST as $key=>$val) {
+ echo $key.'=>'.$val.'<p>'; 
+ }
+	
 		updateUser($_POST);
 	header("Location: $_SERVER[HTTP_REFERER]");
 } else if (isset($_POST["updatesort"])) {
@@ -52,6 +59,8 @@ if (isset($_POST["changepw"])) {
 } else if (isset($_POST["changelang"])) {
 	checkAuthentication("post-only");
 	updateLanguage($_POST);
+	
+	
 	header("Location: $_SERVER[HTTP_REFERER]");
 } else {
 	checkAuthentication("normal");
