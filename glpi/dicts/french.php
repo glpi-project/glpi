@@ -46,6 +46,7 @@ $lang["common"][5] = "Fabriquant";
 $lang["common"][6]	= "Nom du mod&egrave;le";
 $lang["common"][7]  = "Choisissez un mod&egrave;le";
 $lang["common"][8]  = "Mod&egrave;les";
+$lang["common"][9]  = "Ajouter mod&egrave;le...";
 
 //Login
 
