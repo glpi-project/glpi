@@ -739,7 +739,6 @@ $lang["install"][34]	= "Test de la connection  &#224; la base de donn&eacute;es"
 $lang["install"][35]	= "Impossible de se connecter  &#224; la base de donn&eacute;es"; 
 $lang["install"][36]	= " Le serveur a r&eacute;pondu"; 
 $lang["install"][37]	= "Le champs serveur ou/et le champ user est vide"; 
-$lang["install"][371]	= "Connexion r&eacute;ussie !"; 
 $lang["install"][38]	= "Veuillez selectionner une base de donn&eacute;es : "; 
 $lang["install"][39]	= "Cr&eacute;er une nouvelle base :"; 
 $lang["install"][40]	= "Veuillez selectionner la base de donn&eacute;es   &#224; mettre  &#224; jour : "; 
