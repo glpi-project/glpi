@@ -7,12 +7,6 @@ GLPI - Gestionnaire Libre de Parc Informatique
  
  http://indepnet.net/   http://glpi.indepnet.org
  Report bugs on glpi-dev @ gna.org
-
- ----------------------------------------------------------------------
- Based on:
-IRMA, Information Resource-Management and Administration
-Christian Bauer 
-
  ----------------------------------------------------------------------
  LICENSE
 
@@ -28,13 +22,16 @@ Christian Bauer
 
  To read the license please visit http://www.gnu.org/copyleft/gpl.html
  ----------------------------------------------------------------------
- Original Author of file:
- Purpose of file:
- Translator: Simon DEPIETS 2df@tuxfamily.org
- ----------------------------------------------------------------------
 */
 
-
+// Based on:
+// IRMA, Information Resource-Management and Administration
+// Christian Bauer 
+// ----------------------------------------------------------------------
+// Original Author of file:
+// Purpose of file:
+// ----------------------------------------------------------------------
+//  Translator: Simon DEPIETS 2df@tuxfamily.org
 
 // English Dictionary
 

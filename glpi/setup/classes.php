@@ -7,11 +7,6 @@ GLPI - Gestionnaire Libre de Parc Informatique
  
  http://indepnet.net/   http://glpi.indepnet.org
  ----------------------------------------------------------------------
- Based on:
-IRMA, Information Resource-Management and Administration
-Christian Bauer 
-
- ----------------------------------------------------------------------
  LICENSE
 
  This program is free software; you can redistribute it and/or
@@ -25,13 +20,17 @@ Christian Bauer
  GNU General Public License for more details.
 
  To read the license please visit http://www.gnu.org/copyleft/gpl.html
- ----------------------------------------------------------------------
- Original Author of file:
- Purpose of file:
- ----------------------------------------------------------------------
-// And Marco Gaiarin for ldap features
+
 */
- 
+
+// Based on:
+// IRMA, Information Resource-Management and Administration
+// Christian Bauer 
+// ----------------------------------------------------------------------
+// Original Author of file:
+// Purpose of file:
+// ----------------------------------------------------------------------
+// And Marco Gaiarin for ldap features 
 
 include ("_relpos.php");
 // CLASSES Setup

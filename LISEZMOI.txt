@@ -1,13 +1,9 @@
+/*
   ----------------------------------------------------------------------
 GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2004 by the INDEPNET Development Team.
  
  http://indepnet.net/   http://glpi.indepnet.org
- ----------------------------------------------------------------------
- Based on:
-IRMA, Information Resource-Management and Administration
-Christian Bauer 
-
  ----------------------------------------------------------------------
  LICENSE
 
@@ -26,6 +22,11 @@ Christian Bauer
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  ----------------------------------------------------------------------
+*/
+
+// Based on:
+// IRMA, Information Resource-Management and Administration
+// Christian Bauer 
  
 Contenu :
 
