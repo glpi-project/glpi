@@ -331,7 +331,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item') ORD
 }
 
 
-function showJobShort($ID, $followup	) {
+function showJobShort($ID, $followups	) {
 	// Prints a job in short form
 	// Should be called in a <table>-segment
 	// Print links or not in case of user view
@@ -349,14 +349,14 @@ function showJobShort($ID, $followup	) {
 		{
 			echo "<tr class='tab_bg_1'>";
 			echo "<td align='center'><font color=\"green\"><b>".$lang["joblist"][9]."</b></font></td>";
-			echo "<td width='30%'><small>".$lang["joblist"][11].":<br>&nbsp;$job->date</small></td>";
+			echo "<td width='100'><small>".$lang["joblist"][11].":<br>&nbsp;$job->date</small></td>";
 
 		}
 		else
 		{
  			echo "<tr class='tab_bg_1'>";
 			echo "<td align='center'><b>".$lang["joblist"][10]."</b></td>";
-			echo "<td width='30%'><small>".$lang["joblist"][11].":<br>&nbsp;$job->date<br>";
+			echo "<td width='100'><small>".$lang["joblist"][11].":<br>&nbsp;$job->date<br>";
 			echo "<i>".$lang["joblist"][12].":<br>&nbsp;$job->closedate</i>";
 			if ($job->realtime>0) echo "<br>".$lang["job"][20].": <br>".getRealtime($job->realtime);
 			echo "</small></td>";
@@ -383,12 +383,18 @@ function showJobShort($ID, $followup	) {
 		}    
 		
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
-		echo "<td><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$job->computer\"><b>$job->computername ($job->computer)</b></a></td>";
+		echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$job->computer\"><b>$job->computername ($job->computer)</b></a></td>";
 		else
-		echo "<td><b>$job->computername($job->computer)</b></td>";
+		echo "<td  align='center'><b>$job->computername($job->computer)</b></td>";
 
 		$stripped_content = substr($job->contents,0,$cfg_features["cut"]);
-		echo "<td><b>$stripped_content</b></td>";
+		echo "<td><b>$stripped_content</b>";
+		if ($followups==1)
+		{
+			showFollowupsShort($job->ID);
+		}
+
+		echo "</td>";
 
 		// Job Controls
 		echo "<td width='10%' class='tab_bg_2' align='center'>";
@@ -406,14 +412,6 @@ function showJobShort($ID, $followup	) {
 
 		// Finish Line
 		echo "</tr>";
-
-		if (isset($followups))
-		{
-			echo "<tr><th>&nbsp;</th><td colspan=7>";
-			showFollowups($job->ID);
-			echo "</td></tr>"; 
-		}
-	
 	}
 	else
 	{
@@ -837,5 +835,230 @@ function getRealtime($realtime){
 		$output.=round((($realtime-floor($realtime))*60))." ".$lang["job"][22];
 		return $output;
 		}
+
+function searchFormTrackingReport() {
+	// Print Search Form
+	
+	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
+
+	
+	$option["comp.ID"]				= $lang["computers"][31];
+	$option["comp.name"]				= $lang["computers"][7];
+	$option["glpi_dropdown_locations.name"]			= $lang["computers"][10];
+	$option["glpi_type_computers.name"]				= $lang["computers"][8];
+	$option["glpi_dropdown_os.name"]				= $lang["computers"][9];
+	$option["comp.osver"]			= $lang["computers"][20];
+	$option["comp.processor"]			= $lang["computers"][21];
+	$option["comp.processor_speed"]		= $lang["computers"][22];
+	$option["comp.serial"]			= $lang["computers"][17];
+	$option["comp.otherserial"]			= $lang["computers"][18];
+	$option["glpi_dropdown.ram.name"]			= $lang["computers"][23];
+	$option["comp.ram"]				= $lang["computers"][24];
+	$option["glpi_dropdown_network.name"]			= $lang["computers"][26];
+	$option["comp.hdspace"]			= $lang["computers"][25];
+	$option["glpi_dropdown_sndcard.name"]			= $lang["computers"][33];
+	$option["glpi_dropdown_gfxcard.name"]			= $lang["computers"][34];
+	$option["glpi_dropdown_moboard.name"]			= $lang["computers"][35];
+	$option["glpi_dropdown_hdtype.name"]			= $lang["computers"][36];
+	$option["comp.comments"]			= $lang["computers"][19];
+	$option["comp.contact"]			= $lang["computers"][16];
+	$option["comp.contact_num"]		        = $lang["computers"][15];
+	$option["comp.date_mod"]			= $lang["computers"][11];
+
+	echo "<form method=get name=\"form\" action=\"".$_SERVER["PHP_SELF"]."\">";
+	
+	
+	echo "<div align='center'>";
+	echo "<table border='0' width='750' class='tab_cadre'>";
+
+	
+	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
+echo "<tr class='tab_bg_1'><td align='center'>".$lang["search"][8].":&nbsp;<input type=\"texte\" readonly name=\"date1\" value=\"". $_GET["date1"] ."\" />";
+echo "<input name='button' type='button' class='button'  onClick=\"window.open('../../mycalendar.php?form=form&amp;elem=date1','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>&nbsp;&nbsp;&nbsp;&nbsp;";
+echo $lang["search"][9].":&nbsp;<input type=\"texte\" readonly name=\"date2\" value=\"". $_GET["date2"] ."\" />";
+echo "<input name='button' type='button' class='button'  onClick=\"window.open('../../mycalendar.php?form=form&amp;elem=date2','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'></td></tr>";
+
+	echo "<tr class='tab_bg_1'>";
+	echo "<td align='center'>";
+	$selected="";
+	if ($_GET["only_computers"]) $selected="checked";
+	echo "<input type='checkbox' name='only_computers' value='1' $selected>".$lang["reports"][24].":&nbsp;";
+
+	echo "<select name=\"field\" size='1'>";
+		$selected="";
+		if (!isset($_GET["field"])||$_GET["field"]=="all") $selected="selected";
+        echo "<option value='all' $selected>".$lang["search"][7]."</option>";
+        reset($option);
+	foreach ($option as $key => $val) {
+		$selected="";
+		if (isset($_GET["field"])&&$_GET["field"]==$key) $selected="selected";
+		
+		echo "<option value=$key $selected>$val\n";
+	}
+	echo "</select>&nbsp;";
+	echo $lang["search"][1];
+	echo "&nbsp;<select name='phrasetype' size='1' >";
+	$selected="";
+	if ($_GET["phrasetype"]=="contains") $selected="selected";
+	echo "<option value='contains' $selected>".$lang["search"][2]."</option>";
+	$selected="";
+	if ($_GET["phrasetype"]=="exact") $selected="selected";
+	echo "<option value='exact' $selected>".$lang["search"][3]."</option>";
+	echo "</select>";
+	echo "<input type='text' size='15' name=\"contains\" value=\"".$_GET["contains"]."\">";
+	echo "</td></tr>";
+	echo "<tr><td width='80' align='center' class='tab_bg_2'>";
+	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
+	echo "</td></tr></table></div></form>";
+
+
+}
+
+
+function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$start,$date1,$date2,$computers_search) {
+	// Lists all Jobs, needs $show which can have keywords 
+	// (individual, unassigned) and $contains with search terms.
+	// If $item is given, only jobs for a particular machine
+	// are listed.
+
+	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang;
+		
+	$prefs = getTrackingPrefs($username);
+	$db=new DB;
+	// Reduce computer list
+	if ($computers_search){
+	if($field == "all") {
+		$wherecomp = " (";
+		$fields = $db->list_fields("glpi_computers");
+		$columns = $db->num_fields($fields);
+		
+		for ($i = 0; $i < $columns; $i++) {
+			if($i != 0) {
+				$wherecomp .= " OR ";
+			}
+			$coco = mysql_field_name($fields, $i);
+			if(IsDropdown($coco)) {
+				$wherecomp .= " glpi_dropdown_". $coco .".name LIKE '%".$contains."%'";
+			}
+			elseif($coco == "ramtype") {
+				$wherecomp .= " glpi_dropdown_ram.name LIKE '%".$contains."%'";
+			}
+			elseif($coco == "location") {
+				$wherecomp .= " glpi_dropdown_locations.name LIKE '%".$contains."%'";
+			}
+			elseif($coco == "type") {
+				$wherecomp .= " glpi_type_computers.name LIKE '%".$contains."%'";
+			}
+			else {
+   				$wherecomp .= "comp.".$coco . " LIKE '%".$contains."%'";
+			}
+		}
+		$wherecomp .= ")";
+	}
+	else {
+		if ($phrasetype == "contains") {
+			$wherecomp = "($field LIKE '%".$contains."%')";
+		}
+		else {
+			$wherecomp = "($field LIKE '".$contains."')";
+		}
+	}
+	}
+	if (!$start) {
+		$start = 0;
+	}
+//	$query = "select comp.ID from glpi_computers as comp";
+	$query = "select glpi_tracking.ID as ID from glpi_tracking";
+	if ($computers_search){
+	$query.= " LEFT JOIN glpi_computers as comp on comp.ID=glpi_tracking.computer ";
+	$query.= " LEFT JOIN glpi_dropdown_locations on comp.location=glpi_dropdown_locations.ID ";
+	$query .= "LEFT JOIN glpi_dropdown_os on comp.os=glpi_dropdown_os.ID LEFT JOIN glpi_type_computers on comp.type = glpi_type_computers.ID ";
+	$query .= "LEFT JOIN glpi_dropdown_hdtype on comp.hdtype = glpi_dropdown_hdtype.ID LEFT JOIN glpi_dropdown_processor on comp.processor = glpi_dropdown_processor.ID ";
+	$query .= "LEFT JOIN glpi_dropdown_ram on comp.ramtype = glpi_dropdown_ram.ID LEFT JOIN glpi_dropdown_network on comp.network = glpi_dropdown_network.ID ";
+	$query .= "LEFT JOIN glpi_dropdown_gfxcard on comp.gfxcard = glpi_dropdown_gfxcard.ID LEFT JOIN glpi_dropdown_moboard on comp.moboard = glpi_dropdown_moboard.ID ";
+	$query .= "LEFT JOIN glpi_dropdown_sndcard on comp.sndcard = glpi_dropdown_sndcard.ID ";
+	}
+	$query.=" WHERE '1' = '1'";
+	if ($computers_search) $query .= "AND $wherecomp";
+	if ($date1!="") $query.=" AND glpi_tracking.date >= '$date1'";
+	if ($date2!="") $query.=" AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	
+   $query.=" ORDER BY ID";
+//	echo $query;
+	// Get it from database	
+	if ($result = $db->query($query)) {
+		$numrows= $db->numrows($result);
+
+		// Limit the result, if no limit applies, use prior result
+		if ($numrows>$cfg_features["list_limit"]) {
+			$query_limit = $query. " LIMIT $start,".$cfg_features["list_limit"]." ";
+			$result_limit = $db->query($query_limit);
+			$numrows_limit = $db->numrows($result_limit);
+		} else {
+			$numrows_limit = $numrows;
+			$result_limit = $result;
+		}
+		
+		if ($numrows_limit>0) {
+			// Produce headline
+			echo "<div align='center'><table border='0' class='tab_cadre'><tr>";
+
+echo "<th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
+		echo "<th width=5>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
+		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["joblist"][5]."</th>";
+		echo "<th colspan='2'>".$lang["joblist"][6]."</th>";
+			echo "</tr>";
+
+			for ($i=0; $i < $numrows_limit; $i++) {
+				$ID = $db->result($result_limit, $i, "ID");
+				showJobShort($ID, 1);
+				$i++;
+			}
+
+			// Close Table
+			echo "</table></div>";
+
+			// Pager
+			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&date1=$date1&date2=$date2&only_computers=$computers_search";
+			printPager($start,$numrows,$target,$parameters);
+
+		} else {
+			echo "<div align='center'><b>".$lang["joblist"][8]."</b></div>";
+			echo "<hr noshade>";
+		//	searchFormComputers();
+		}
+	}
+}
+
+function showFollowupsShort($ID) {
+	// Print Followups for a job
+
+	GLOBAL $cfg_install, $cfg_layout, $lang;
+
+	// Get Number of Followups
+
+	$job = new Job;
+	$job->getFromDB($ID,0);
+
+	if ($job->num_of_followups) {
+		echo "<center><table class='tab_cadre' width='100%' cellpadding='2'>\n";
+		echo "<tr><th>".$lang["joblist"][1]."</th><th>".$lang["joblist"][3]."</th><th>".$lang["joblist"][6]."</th></tr>\n";
+
+		for ($i=0; $i < $job->num_of_followups; $i++) {
+			$fup = new Followup;
+			$fup->getFromDB($ID,$i);
+			echo "<tr class='tab_bg_2'>";
+			echo "<td align='center'>$fup->date</td>";
+			echo "<td align='center'>$fup->author</td>";
+			echo "<td width=70%><b>$fup->contents</b></td>";
+			echo "</tr>";
+		}		
+
+		echo "</center></table>";
+	
+	} else {
+		echo "<b>".$lang["job"][8]."</b>";
+	}
+}
 
 ?>
