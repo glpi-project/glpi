@@ -519,4 +519,80 @@ function getAmortTypeName($value){
 	}	
 }
 
+function dropdownInfocoms($name){
+
+	$db=new DB;
+	$query="SELECT glpi_infocoms.buy_date as buy_date, glpi_infocoms.ID as ID, glpi_enterprises.name as name ";
+	$query.= " from glpi_infocoms LEFT JOIN glpi_enterprises ON glpi_infocoms.FK_enterprise = glpi_enterprises.ID ";
+	$query.= " WHERE glpi_infocoms.deleted = 'N' order by glpi_infocoms.buy_date DESC";
+	$result=$db->query($query);
+	echo "<select name='$name'>";
+	while ($data=$db->fetch_array($result)){
+		
+	echo "<option value='".$data["ID"]."'>";
+	echo $data["buy_date"]." - ".$data["name"];
+	echo "</option>";
+	}
+
+	echo "</select>";	
+	
+	
+	
+}
+
+
+function showInfocomAssociated($device_type,$ID){
+
+	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
+
+    $db = new DB;
+	$query = "SELECT * FROM glpi_infocom_device WHERE glpi_infocom_device.FK_device = '$ID' AND glpi_infocom_device.device_type = '$device_type' ";
+	
+
+	$result = $db->query($query);
+	$number = $db->numrows($result);
+	$i = 0;
+	
+    echo "<form method='post' action=\"".$cfg_install["root"]."/infocoms/infocoms-info-form.php\">";
+	echo "<br><br><center><table class='tab_cadre' width='90%'>";
+	echo "<tr><th colspan='6'>".$lang["financial"][67].":</th></tr>";
+	echo "<tr><th>".$lang['financial'][14]."</th>";
+	echo "<th>".$lang['financial'][15]."</th>";
+	echo "<th>".$lang['financial'][26]."</th>";
+	echo "<th>".$lang['financial'][18]."</th>";	
+	echo "<th>".$lang['financial'][21]."</th>";	
+	echo "<th>&nbsp;</th></tr>";
+
+	while ($i < $number) {
+		$icID=$db->result($result, $i, "FK_infocom");
+		$assocID=$db->result($result, $i, "ID");
+		$con=new Infocom;
+		$con->getFromDB($icID);
+		$ent=new Enterprise;
+		$ent->getFromDB($con->fields["FK_enterprise"]);
+	echo "<tr class='tab_bg_1'>";
+	echo "<td align='center'>".$con->fields["buy_date"]."</td>";
+	echo "<td align='center'>".$con->fields["warranty_end_date"]."</td>";
+	echo "<td align='center'>".$ent->fields["name"]."</td>";	
+	echo "<td align='center'>".$con->fields["num_commande"]."</td>";
+	echo "<td align='center'>".$con->fields["value"]."</td>";
+
+	echo "<td align='center' class='tab_bg_2'><a href='".$HTMLRel."infocoms/infocoms-info-form.php?deleteitem=deleteitem&ID=$assocID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+	$i++;
+	}
+	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+	echo "<div class='software-instal'><input type='hidden' name='ID' value='$ID'><input type='hidden' name='type' value='$device_type'>";
+		dropdownInfocoms("icID");
+		echo "</td><td align='center'>";
+	echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
+	echo "</div></td>";
+	echo "</form>";
+	echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+	
+	echo "</table>"    ;
+	
+	
+}
+
+
 ?>

@@ -39,6 +39,7 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_monitors.php");
 include ($phproot . "/glpi/includes_reservation.php");
 include ($phproot . "/glpi/includes_tracking.php");
+include ($phproot . "/glpi/includes_financial.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -67,6 +68,8 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
 	showMonitorsForm($_SERVER["PHP_SELF"],$_POST["ID"]);
+	showInfocomAssociated(MONITOR_TYPE,$tab["ID"]);
+	showContractAssociated(MONITOR_TYPE,$tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_POST["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_POST["ID"]);
 	commonFooter();
@@ -79,6 +82,8 @@ else if (isset($tab["disconnect"]))
 	logEvent($tab["ID"], "monitors", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
 	commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
 	showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	showInfocomAssociated(MONITOR_TYPE,$tab["ID"]);
+	showContractAssociated(MONITOR_TYPE,$tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
 	commonFooter();
@@ -106,6 +111,8 @@ else if(isset($tab["connect"]))
 		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],MONITOR_TYPE);
 		logEvent($tab["sID"], "monitors", 5, "inventory", $_SESSION["glpiname"]." connected item.");
 		showMonitorsForm($_SERVER["PHP_SELF"],$tab["sID"]);
+		showInfocomAssociated(MONITOR_TYPE,$tab["ID"]);
+		showContractAssociated(MONITOR_TYPE,$tab["ID"]);
 		showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
 		showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
 
@@ -120,7 +127,10 @@ else
 
 	commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
 	showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	
 	if (!empty($_GET["ID"])){
+	showInfocomAssociated(MONITOR_TYPE,$tab["ID"]);
+	showContractAssociated(MONITOR_TYPE,$tab["ID"]);		
 	showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
 	}

@@ -39,7 +39,7 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_computers.php");
 include ($phproot . "/glpi/includes_tracking.php");
-
+include ($phproot . "/glpi/includes_financial.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -69,6 +69,8 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 	showSoftwareForm($_SERVER["PHP_SELF"],$_POST["ID"]);
+	showInfocomAssociated(SOFTWARE_TYPE,$tab["ID"]);
+	showContractAssociated(SOFTWARE_TYPE,$tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$_POST["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$_POST["ID"]);
 
@@ -79,6 +81,8 @@ else if (isset($tab["Modif_Interne"])){
 	checkAuthentication("admin");
 	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 	showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"],$tab['search_software']);
+	showInfocomAssociated(SOFTWARE_TYPE,$tab["ID"]);
+	showContractAssociated(SOFTWARE_TYPE,$tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
 
@@ -94,6 +98,8 @@ else
 	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 	showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	if (!empty($_GET["ID"])){
+	showInfocomAssociated(SOFTWARE_TYPE,$tab["ID"]);
+	showContractAssociated(SOFTWARE_TYPE,$tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
 	}
