@@ -187,11 +187,24 @@ class Job {
 	}
 
 	function categoryTo($category) {
-		// assign Job to user
+		// change category
 		
 		$db = new DB;
 		$this->category=$category;
 		$query = "UPDATE glpi_tracking SET category = '$category' WHERE ID = '$this->ID'";
+		if ($result = $db->query($query)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	function priorityTo($priority) {
+		// change priority
+		
+		$db = new DB;
+		$this->priority=$priority;
+		$query = "UPDATE glpi_tracking SET priority = '$priority' WHERE ID = '$this->ID'";
+//		echo $query;
 		if ($result = $db->query($query)) {
 			return true;
 		} else {

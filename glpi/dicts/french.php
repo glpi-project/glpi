@@ -204,6 +204,7 @@ $lang["tracking"][18] = "Seulement les logiciels";
 $lang["tracking"][19] = "Seulement Générales";
 $lang["tracking"][20] = "Catégorie";
 $lang["tracking"][21]    = "Vous n'etes pas autoris&eacute; &agrave; modifier la catégorie de cette intervention";
+$lang["tracking"][22]    = "Vous n'etes pas autoris&eacute; &agrave; modifier la priorité de cette intervention";
 
 // 1 computers
 // 2 networking
@@ -765,6 +766,8 @@ $lang["mailing"][10]="Nouveau suivi d'intervention";
 $lang["mailing"][11]="Intervention terminée le ";
 $lang["mailing"][12]="Attribution de l'intervention";
 $lang["mailing"][13]="Erreur dans la génération de l'email automatique";
+$lang["mailing"][14]="Changement de catégorie de l'intervention";
+$lang["mailing"][15]="Changement de priorité de l'intervention";
 
 
 //Les stats
