@@ -372,10 +372,10 @@ function showComputerForm($target,$ID,$withtemplate='') {
 			$template = false;
 		}
 		
-		
+		echo "<form name='form' method='post' action=\"$target\">";
 		echo "<div align='center'>";
 		echo "<table width='700px' class='tab_cadre' >";
-		echo "<form name='form' method='post' action=\"$target\">";
+		
 		if(strcmp($template,"newtemplate") === 0) {
 			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
 		}
@@ -396,7 +396,7 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		echo "<td><input type='text' name='name' value=\"".$comp->fields["name"]."\" size='20'></td>";
 						
 		echo "<td>".$lang["computers"][16]."&nbsp;:	</td><td><input type='text' name='contact' size='20' value=\"".$comp->fields["contact"]."\">";
-		echo "</tr>";
+		echo "</td></tr>";
 		
 		echo "<tr class='tab_bg_1'>";
 		
@@ -422,7 +422,7 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$comp->fields["FK_glpi_enterprise"]);
 		echo "</td>";
 
-		echo "<td valign='center' rowspan='4'>".$lang["computers"][19]."&nbsp;:</td><td valign='center' rowspan='4'><textarea  cols='35' rows='6' name='comments' >".$comp->fields["comments"]."</textarea></td></tr>";
+		echo "<td valign='middle' rowspan='4'>".$lang["computers"][19]."&nbsp;:</td><td valign='middle' rowspan='4'><textarea  cols='35' rows='6' name='comments' >".$comp->fields["comments"]."</textarea></td></tr>";
 		echo "<tr class='tab_bg_1'><td>".$lang["computers"][18]."&nbsp;:	</td>";
 		echo "<td><input type='text' size='20' name='otherserial' value=\"".$comp->fields["otherserial"]."\">";
 		echo "</td></tr>";
@@ -514,8 +514,8 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		
 		echo "</table>";
 		echo "</div>";
-
-		echo "</form>";
+	echo "</form>";
+		
 		
 		return true;
 	}
