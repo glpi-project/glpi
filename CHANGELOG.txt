@@ -1,3 +1,12 @@
+26/05/2004
+Implémentation du module de statistiques développé par Mustapha Saddalah
+en janvier 2004, pas mal de modifications sur les fichiers d'orgine.
+Le fichier fonctions est directement dans le repertoire stats pour l'instant.
+
+22/06/05
+Changement de version de la classe PHPwriteexcel.
+La classe passe dans le dossier reports/reports/convexcel.
+
 02/05/2004
 Fin de la compatibilité avec les derniers recommandations de PHP.
 Suppression de toutes les erreurs affichées lorsque le php.ini contient error_reporting E_ALL
