@@ -82,7 +82,7 @@ function searchFormComputers() {
 	$option["date_mod"]			= $lang["computers"][11];
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
-	echo "<div align='center'><table border='0' width='750'>";
+	echo "<div align='center'><table border='0' width='750' class='tab_cadre'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
@@ -169,7 +169,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 		
 		if ($numrows_limit>0) {
 			// Produce headline
-			echo "<div align='center'><table border='0'><tr>";
+			echo "<div align='center'><table border='0' class='tab_cadre'><tr>";
 
 			// Name
 			echo "<th>";
@@ -282,7 +282,7 @@ function showComputerForm ($template,$target,$ID) {
 			$date = $comp->fields["date_mod"];
 		}
 		echo "<form name='form' method='post' action=\"$target\">";
-                echo "<div align='center'><table border='0'>";
+                echo "<div align='center'><table border='0' class='tab_cadre'>";
 		echo "<tr><th align='center'>";
 		if ($template) {
 			echo $lang["computers"][12].": ".$comp->fields["templname"];
@@ -342,7 +342,7 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][20].":</td>";
-		echo "<td><input type='text' size=8 name=osver value=\"".$comp->fields["osver"]."\">";
+		echo "<td><input type='text' size='8' name='osver' value=\"".$comp->fields["osver"]."\">";
 		echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][21].":	</td>";
@@ -552,7 +552,7 @@ function showConnections($ID) {
 
 	$db = new DB;
 
-	echo "<div align='center'><table border='0' width='90%' >";
+	echo "<div align='center'><table border='0' width='90%' class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$lang["connect"][0].":</th></tr>";
 	echo "<tr><th>".$lang["computers"][39].":</th><th>".$lang["computers"][40].":</th></tr>";
 
