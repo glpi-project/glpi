@@ -451,6 +451,9 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		
 		
 			//print devices.
+		echo "<div align='center'>";
+		echo "<table width='700' class='tab_cadre' >";
+		echo "<tr><th colspan='64'>".$lang["devices"][10]."</th></tr>";
 		foreach($comp->devices as $key => $val) {
 			$devType = $val["devType"];
 			$devID = $val["devID"];
@@ -458,10 +461,11 @@ function showComputerForm($target,$ID,$withtemplate='') {
 			$compDevID = $val["compDevID"];
 			$device = new Device($devType);
 			$device->getFromDB($devID);
-			echo "<div align='center'>";
 			printDeviceComputer(&$device,$specif,$comp->fields["ID"],$compDevID,$withtemplate);
+			
 			echo "</div>";
 		}
+		echo "</table>";
 		echo "<br />";
 		
 		//ADD a new device form.
