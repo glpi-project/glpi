@@ -630,7 +630,7 @@ function logEvent ($item, $itemtype, $level, $service, $event) {
 function showEvents($target,$order,$sort) {
 	// Show events from $result in table form
 
-	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang;
+	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
 
 	// new database object
 	$db = new DB;
@@ -667,31 +667,31 @@ function showEvents($target,$order,$sort) {
 
 	echo "<th colspan='2'>";
 	if ($sort=="item") {
-		echo "&middot;&nbsp;";
+		echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 	}
 	echo "<a href=\"$target?sort=item&order=ASC\">".$lang["event"][0]."</a></th>";
 
 	echo "<th>";
 	if ($sort=="date") {
-		echo "&middot;&nbsp;";	
+		echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 	}
 	echo "<a href=\"$target?sort=date&order=DESC\">".$lang["event"][1]."</a></th>";
 
-	echo "<th>";
+	echo "<th width='8%'>";
 	if ($sort=="service") {
-		echo "&middot;&nbsp;";	
+		echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 	}
 	echo "<a href=\"$target?sort=service&order=ASC\">".$lang["event"][2]."</a></th>";
 
-	echo "<th width='5%'>";
+	echo "<th width='8%'>";
 	if ($sort=="level") {
-		echo "&middot;&nbsp;";	
+		echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 	}
 	echo "<a href=\"$target?sort=level&order=DESC\">".$lang["event"][3]."</a></th>";
 
-	echo "<th width='70%'>";
+	echo "<th width='60%'>";
 	if ($sort=="message") {
-		echo "&middot;&nbsp;";	
+		echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 	}
 	echo "<a href=\"$target?sort=message&order=ASC\">".$lang["event"][4]."</a></th></tr>";
 

@@ -89,9 +89,11 @@ input.submit:hover {
     font-size: 12px;
     font-weight: bold;
     background-color: #FFC65D;
-	vertical-align:middle;
+	vertical-align:bottom;
 }
 
+  
+  
   td
   { font-size: 11px;
   }
