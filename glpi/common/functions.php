@@ -402,7 +402,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 
 	echo "<td  align='right' valign='top' width='100'>";
 	//help
-	echo "<a class='icon_nav_move'  href='#' onClick=\"window.open('".$HTMLRel."help/".$_SESSION["glpilanguage"].".html','helpdesk','width=400,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a><br><br>";
+	echo "<a class='icon_nav_move'  href='#' onClick=\"window.open('".$HTMLRel."help/".$_SESSION["glpilanguage"].".html','helpdesk','width=700,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a><br><br>";
 	echo date("H").":".date("i")."<p><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i></p>";
 	echo "<a  class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img  src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></td>";
