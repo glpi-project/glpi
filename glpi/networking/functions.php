@@ -709,7 +709,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 	{
 		$netport->getFromNull();
 	}
-
+	
 	// Ajout des infos déjà remplies
 	if (isset($_POST)&&!empty($_POST)){
 	foreach ($netport->fields as $key => $val)
@@ -810,7 +810,7 @@ function addNetport($input) {
 	// Add Netport, nasty hack until we get PHP4-array-functions
 
 	$netport = new Netport;
-
+	
 	// dump status
 	unset($input['search']);
 	$null = array_pop($input);
@@ -889,7 +889,7 @@ function showPortsAdd($ID,$devtype) {
 	echo $lang["networking"][19];
 	echo "</b></a></td>";
 	echo "<td align='center' class='tab_bg_2' width='50%'>";
-	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ondevice=$ID&devtype=$devtype&several=yes&location=$location\"><b>";
+	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?on_device=$ID&device_type=$devtype&several=yes&location=$location\"><b>";
 	echo $lang["networking"][46];
 	echo "</b></a></td>";
 
