@@ -53,7 +53,8 @@ function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "",$d
 	$option["glpi_cartridges_type.name"]				= $lang["cartridges"][1];
 	$option["glpi_cartridges_type.ref"]			= $lang["cartridges"][2];
 	$option["glpi_cartridges_type.type"]			= $lang["cartridges"][3];
-	$option["glpi_enterprises.name"]			= $lang["cartridges"][8];	
+	$option["glpi_enterprises.name"]			= $lang["cartridges"][8];
+	$option["glpi_dropdown_locations.name"]			= $lang["cartridges"][36];	
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/cartridges/cartridge-search.php\">";
 	echo "<div align='center'><table class='tab_cadre' width='750'>";
@@ -127,6 +128,8 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 			$coco = mysql_field_name($fields, $i);
 			$where .= "glpi_cartridges_type.".$coco . " LIKE '%".$contains."%'";
 		}
+		$where.=" OR glpi_enterprises.name LIKE '%".$contains."%'";
+		$where.=" OR glpi_dropdown_locations.name LIKE '%".$contains."%'";
 		$where .= ")";
 	}
 	else {
@@ -148,6 +151,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 	
 	$query = "SELECT glpi_cartridges_type.*, glpi_enterprises.name FROM glpi_cartridges_type ";
 	$query.= " LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_cartridges_type.FK_glpi_enterprise ";
+	$query.= " LEFT JOIN glpi_dropdown_locations ON glpi_dropdown_locations.ID = glpi_cartridges_type.location ";
 	$query.= " WHERE $where AND glpi_cartridges_type.deleted='$deleted'  ORDER BY $sort";
 //	echo $query;
 	// Get it from database	
@@ -156,7 +160,10 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 
 		// Limit the result, if no limit applies, use prior result
 		if ($numrows>$cfg_features["list_limit"]) {
-			$query_limit = "SELECT glpi_cartridges_type.ID as ID FROM glpi_cartridges_type WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
+			$query_limit = "SELECT glpi_cartridges_type.ID as ID FROM glpi_cartridges_type ";
+			$query_limit .= " LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_cartridges_type.FK_glpi_enterprise ";
+			$query_limit .= " LEFT JOIN glpi_dropdown_locations ON glpi_dropdown_locations.ID = glpi_cartridges_type.location ";
+			$query_limit .= " WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
 			$result_limit = $db->query($query_limit);
 			$numrows_limit = $db->numrows($result_limit);
 		} else {
@@ -200,6 +207,14 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.name&order=ASC&start=$start\">";
 			echo $lang["cartridges"][8]."</a></th>";
 
+			// Location		
+			echo "<th>";
+			if ($sort=="glpi_dropdown_locations.name") {
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=ASC&start=$start\">";
+			echo $lang["cartridges"][36]."</a></th>";
+			
 			// Cartouches
 			echo "<th>".$lang["cartridges"][0]."</th>";
 		
@@ -219,6 +234,8 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 				echo "<td>".$ct->fields["ref"]."</td>";
 				echo "<td>".getCartridgeTypeName($ct->fields["type"])."</td>";
 				echo "<td>". getDropdownName("glpi_enterprises",$ct->fields["FK_glpi_enterprise"]) ."</td>";
+				echo "<td>". getDropdownName("glpi_dropdown_locations",$ct->fields["location"]) ."</td>";
+				
 				echo "<td>";
 					countCartridges($ct->fields["ID"]);
 				echo "</td>";
@@ -275,6 +292,9 @@ function showCartridgeTypeForm ($target,$ID) {
 		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$ct->fields["FK_glpi_enterprise"]);
 	echo "</td></tr>";
 
+	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][36].": 	</td><td colspan='2'>";
+		dropdownValue("glpi_dropdown_locations","location",$ct->fields["location"]);
+	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td valign='top'>";
 	echo $lang["cartridges"][5].":	</td>";

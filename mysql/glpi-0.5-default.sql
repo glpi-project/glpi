@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-03-02 16:52
+#GLPI Dump database on 2005-03-03 15:01
 ### Dump table glpi_cartridges
 
 DROP TABLE IF EXISTS glpi_cartridges;
@@ -38,6 +38,7 @@ CREATE TABLE glpi_cartridges_type (
     ID int(11) NOT NULL auto_increment,
     name varchar(255) NOT NULL,
     ref varchar(255) NOT NULL,
+    location int(11) DEFAULT '0' NOT NULL,
     type tinyint(4) DEFAULT '0' NOT NULL,
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
@@ -46,6 +47,7 @@ CREATE TABLE glpi_cartridges_type (
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
 );
 
+INSERT INTO glpi_cartridges_type VALUES ('1','TEST','','1','2','0','N','');
 ### Dump table glpi_computer_device
 
 DROP TABLE IF EXISTS glpi_computer_device;
@@ -273,7 +275,6 @@ CREATE TABLE glpi_contract_device (
    KEY FK_device (FK_device, device_type)
 );
 
-INSERT INTO glpi_contract_device VALUES ('1','1','18','1');
 ### Dump table glpi_contract_enterprise
 
 DROP TABLE IF EXISTS glpi_contract_enterprise;
@@ -318,7 +319,6 @@ CREATE TABLE glpi_contracts (
    KEY begin_date (begin_date)
 );
 
-INSERT INTO glpi_contracts VALUES ('1','qsqs','','0','0','0000-00-00','0','0','0','0','0','','','N','00:00:00','00:00:00','00:00:00','00:00:00','N','00:00:00','00:00:00','N');
 ### Dump table glpi_device_gfxcard
 
 DROP TABLE IF EXISTS glpi_device_gfxcard;
@@ -727,9 +727,8 @@ CREATE TABLE glpi_event_log (
    KEY date (date)
 );
 
-INSERT INTO glpi_event_log VALUES ('368','18','contract','2005-03-02 16:49:20','financial','4','glpi associate device.');
-INSERT INTO glpi_event_log VALUES ('367','0','contract','2005-03-02 16:48:08','financial','4','glpi added item .');
-INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-03-02 16:48:00','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('367','0','cartridge','2005-03-03 15:01:25','inventory','4','glpi added item TEST.');
+INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-03-03 15:01:16','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
