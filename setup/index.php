@@ -59,7 +59,7 @@ echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-dropdowns.php\"><
 
 echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-templates.php\"><b>".$lang["setup"][1]."</b></a></td></tr>";
 
-echo "<tr class='tab_bg_1'><td align='center'><a href=\"setup-users.php\"><b>".$lang["setup"][2]."</b></a></td> </tr>";
+echo "<tr class='tab_bg_1'><td align='center'><a href=\"setup-users.php\"><b>".$lang["setup"][57]."</b></a></td> </tr>";
 
 
 echo "</table></div>";

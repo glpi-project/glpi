@@ -42,9 +42,12 @@ include ($phproot . "/glpi/includes_setup.php");
 
 	checkAuthentication("normal");
 	commonHeader("Setup",$_SERVER["PHP_SELF"]);
-	echo "<center><table cellpadding=4><tr><th>".$lang["setup"][2].":</th></tr></table></center>";
+
+titleUsers();
 	
 searchFormUsers();
+
+
 
 if(empty($_GET["start"])) $_GET["start"] = 0;
 if(empty($_GET["order"])) $_GET["order"] = "ASC";

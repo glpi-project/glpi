@@ -430,7 +430,7 @@ $lang["ldap"][7]	= "LDAP";
 // Setup
 $lang["setup"][0]	= "Intitul&eacute;";
 $lang["setup"][1]	= "Mod&egrave;le";
-$lang["setup"][2]	= "Utilisateur GLPI";
+$lang["setup"][2]	= "Ajouter un Utilisateur GLPI";
 $lang["setup"][3]	= "Lieu";
 $lang["setup"][4]	= "Type de machines";
 $lang["setup"][5]	= "Syst&egrave;me d'exploitation";
@@ -494,6 +494,8 @@ $lang["setup"][62]       = "Selectionnez la cat&eacute;gorie &agrave; configurer
 $lang["setup"][63]     = "Attention vous êtes sur le point de supprimer un intitulé utilisé pour un ou plusieurs items";
 $lang["setup"][64]     = "Si vous confirmez la suppression les items utilisant cet intitulé se verront atribbuer un champs NULL";
 $lang["setup"][65]     = "Vous pouvez aussi remplacer toutes les occurences de cet intitulé par un autre :";
+$lang["setup"][66]	= "Pas d'utilisateur trouvé";
+
 
 
 // Helpdesk
@@ -544,20 +546,22 @@ $lang["help"][21]	= "Veuillez prendre contact avec un  technicien. SVP";
   $lang["calendarD"][5] = "V" ;
   $lang["calendarD"][6] = "S" ;
 
+  // Mail  ne pas mettre au format html !!!!
+  
 $lang["mailing"][0]="-----------------------";
 $lang["mailing"][1]="--------------------------------------";
 $lang["mailing"][2]="Auteur : ";
 $lang["mailing"][3]="Contenu : ";
-$lang["mailing"][4]="Intervention(s) d&eacute;j&agrave; effectu&eacute;e(s)";
+$lang["mailing"][4]="Intervention(s) déjà; effectuée(s)";
 $lang["mailing"][5]="Description de l'intervention";
-$lang["mailing"][6]="Date de d&eacute;but : ";
-$lang["mailing"][7]="Ordinateur concern&eacute; : ";
-$lang["mailing"][8]="Attribu&eacute; &agrave; : ";
+$lang["mailing"][6]="Date de début : ";
+$lang["mailing"][7]="Ordinateur concerné; : ";
+$lang["mailing"][8]="Attribué à : ";
 $lang["mailing"][9]="Nouvelle demande d'intervention";
 $lang["mailing"][10]="Nouveau suivi d'intervention";
-$lang["mailing"][11]="Intervention termin&eacute;e le ";
+$lang["mailing"][11]="Intervention terminée le ";
 $lang["mailing"][12]="Attribution de l'intervention";
-$lang["mailing"][13]="Erreur dans la g&eacute;n&eacute;ration de l'email automatique";
+$lang["mailing"][13]="Erreur dans la génération de l'email automatique";
 
 
 //Les stats
