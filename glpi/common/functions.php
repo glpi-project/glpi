@@ -846,6 +846,7 @@ function dropdownValue($table,$myname,$value) {
 	$db = new DB;
 	if ($table == "glpi_dropdown_locations" || $table=="glpi_dropdown_kbcategories"){
 	echo "<select name=\"$myname\">";
+	echo "<option value=\"NULL\">-----</option>";
 	showTreeListSelect($table,$value, 0);
 	echo "</select>";
 	}
@@ -1895,7 +1896,6 @@ function showTreeListSelect($table,$current, $parentID=0, $categoryname="")
 	if ($result=$db->query($query)){
 		if ($db->numrows($result)>0){
 	
-			
 		while ($row=$db->fetch_array($result)){
 		
 			$ID = $row["ID"];

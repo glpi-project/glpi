@@ -1087,6 +1087,7 @@ $lang["cartridges"][32] = "Type d'imprimantes compatibles";
 $lang["cartridges"][33] = "Cartouches utilis&eacute;es";
 $lang["cartridges"][34] = "Pas de cartouche libre";
 $lang["cartridges"][35] = "Vieilles Cartouches";
+$lang["cartridges"][36] = "Lieu Stockage";
 
 $lang["financial"][0] = "Ajouter Contrat...";
 $lang["financial"][1] = "Contrat";

@@ -1199,6 +1199,7 @@ $query= "CREATE TABLE `glpi_cartridges_type` (
   `ID` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
   `ref` varchar(255) NOT NULL default '',
+  `location` int(11) NOT NULL default '0',
   `type` tinyint(4) NOT NULL default '0',
   `FK_glpi_enterprise` int(11) NOT NULL default '0',
   `deleted` enum('Y','N') NOT NULL default 'N',
