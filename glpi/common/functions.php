@@ -1210,7 +1210,7 @@ function listConnectComputers($target,$input) {
 		$dID = $db->result($result, $i, "ID");
 		$name = $db->result($result, $i, "name");
 		$location = $db->result($result, $i, "location");
-		echo "<option value=\"$dID\">".$name." (".getDropdownLocationName($location).")</option>";
+		echo "<option value=\"$dID\">".$name." (".getTreeValueName("glpi_dropdown_locations",$location).")</option>";
 		$i++;
 	}
 	echo  "</select>";
@@ -1275,7 +1275,7 @@ function listConnectElement($target,$input) {
 		$dID = $db->result($result, $i, "ID");
 		$name = $db->result($result, $i, "name");
 		$location = $db->result($result, $i, "location");
-		echo "<option value=\"$dID\">".$name." (".getDropdownLocationName($location).")</option>";
+		echo "<option value=\"$dID\">".$name." (".getTreeValueName("glpi_dropdown_locations",$location).")</option>";
 		$i++;
 	}
 	echo  "</select>";
