@@ -899,19 +899,15 @@ function searchFormTrackingReport() {
 
 	echo "<form method=get name=\"form\" action=\"".$_SERVER["PHP_SELF"]."\">";
 	
-	
+	echo "<div align='center'><p><b>".$lang["reports"][25]."</b></p></div>";
 	echo "<div align='center'>";
-	echo "<table border='0' width='750' class='tab_cadre'>";
+				
+	echo "<table border='0' width='760' class='tab_cadre'>";
 
 	
-	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
-echo "<tr class='tab_bg_1'><td align='center'>".$lang["search"][8].":&nbsp;<input type=\"texte\" readonly name=\"date1\" value=\"". $_GET["date1"] ."\" />";
-echo "<input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date1&amp;value=".$_GET["date1"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-echo "<input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date1.value=''\" value='reset'>";
-echo $lang["search"][9].":&nbsp;<input type=\"texte\" readonly name=\"date2\" value=\"". $_GET["date2"] ."\" />";
-echo "<input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date2&amp;value=".$_GET["date2"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-echo "<input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date2.value=''\" value='reset'>";
-echo "</td></tr>";
+	echo "<tr><th colspan='7'><b>".$lang["search"][0].":</b></th></tr>";
+
+
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
@@ -924,28 +920,28 @@ echo "</td></tr>";
  
  }
  echo "</select>";
- echo " &nbsp;<select name='phrasetype2' size='1' >";
+ echo " </td><td align='center'><select name='phrasetype2' size='1' >";
 	$selected="";
 	if ($_GET["phrasetype2"]=="contains") $selected="selected";
 	echo "<option value='contains' $selected>".$lang["search"][2]."</option>";
 	$selected="";
 	if ($_GET["phrasetype2"]=="exact") $selected="selected";
 	echo "<option value='exact' $selected>".$lang["search"][3]."</option>";
-	echo "</select>";
+	echo "</select></td><td align='center'>";
 	echo "<input type='text' size='15' name=\"contains2\" value=\"".$_GET["contains2"]."\">";
-	echo "&nbsp;&nbsp;&nbsp;".$lang["job"][5].":";
+	echo "</td><td  colspan='2'' align='center'>".$lang["job"][5]."&nbsp;:&nbsp;";
 	dropdownUsersTracking($_GET["attrib"],"attrib","assign");
-	echo "&nbsp;&nbsp;&nbsp;".$lang["joblist"][3].":";
+	echo "</td><td  colspan='2' align='center'>".$lang["joblist"][3]."&nbsp;:&nbsp;";
 	dropdownUsersTracking($_GET["author"],"author","author");
 
 	echo "</td></tr>";
 
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>";
+	echo "<td align='center' colspan='2'>";
 	$selected="";
 	if ($_GET["only_computers"]) $selected="checked";
-	echo "<input type='checkbox' name='only_computers' value='1' $selected>".$lang["reports"][24].":&nbsp;";
+	echo "<input type='checkbox' name='only_computers' value='1' $selected>".$lang["reports"][24].":</td><td align='center'>";
 
 	echo "<select name=\"field\" size='1'>";
 		$selected="";
@@ -958,21 +954,26 @@ echo "</td></tr>";
 		
 		echo "<option value=$key $selected>$val\n";
 	}
-	echo "</select>&nbsp;";
+	echo "</select></td><td align='center' colspan='3'>";
 	echo $lang["search"][1];
-	echo "&nbsp;<select name='phrasetype' size='1' >";
+	echo "&nbsp;:&nbsp;<select name='phrasetype' size='1' >";
 	$selected="";
 	if ($_GET["phrasetype"]=="contains") $selected="selected";
 	echo "<option value='contains' $selected>".$lang["search"][2]."</option>";
 	$selected="";
 	if ($_GET["phrasetype"]=="exact") $selected="selected";
 	echo "<option value='exact' $selected>".$lang["search"][3]."</option>";
-	echo "</select>";
+	echo "</select></td><td align='center' colspan='2'>";
 	echo "<input type='text' size='15' name=\"contains\" value=\"".$_GET["contains"]."\">";
 	echo "</td></tr>";
-	echo "<tr><td width='80' align='center' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
-	echo "</td></tr></table></div></form>";
+	
+	echo "<tr class='tab_bg_1'><td align='center' colspan='2'>".$lang["search"][8].":&nbsp;<input type=\"texte\" readonly size='10' name=\"date1\" value=\"". $_GET["date1"] ."\" />";
+echo "&nbsp;&nbsp;<input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date1&amp;value=".$_GET["date1"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."'>";
+echo "&nbsp;&nbsp;<input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date1.value=''\" value='".$lang["buttons"][16]."'></td><td align='center' colspan='4'>";
+echo $lang["search"][9].":&nbsp;<input type=\"texte\" readonly  size='10' name=\"date2\" value=\"". $_GET["date2"] ."\" />";
+echo "&nbsp;&nbsp;<input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date2&amp;value=".$_GET["date2"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."'>&nbsp;&nbsp;";
+echo "<input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date2.value=''\" value='".$lang["buttons"][16]."'>";
+echo "</td><td align='center'><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'></td></tr></table></div></form>";
 
 
 }
@@ -1087,6 +1088,8 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 		
 		if ($numrows_limit>0) {
 			// Produce headline
+			
+						
 			echo "<div align='center'><table border='0' class='tab_cadre' width='90%'><tr>";
 
 echo "<th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
