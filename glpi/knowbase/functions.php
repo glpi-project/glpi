@@ -288,6 +288,7 @@ function showKbCategories($parentID=0)
 			$ID = $row["ID"];
 
 			echo "<li><b>";
+			if (!isset($_SESSION["kb_show"][$ID])) $_SESSION["kb_show"][$ID]='Y';
 			if ($_SESSION["kb_show"][$ID]=='Y')
 			echo "<a href=\"".$_SERVER["PHP_SELF"]."?tohide=$ID\"><img src='".$HTMLRel."pics/puce-down.gif'></a>";
 			else 
@@ -531,6 +532,7 @@ function faqShowCategories($parentID=0)
 				{
 				
 				echo "<li><b>";
+				if (!isset($_SESSION["kb_show"][$ID])) $_SESSION["kb_show"][$ID]='Y';
 				if ($_SESSION["kb_show"][$ID]=='Y')
 					echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&tohide=$ID\"><img src='".$HTMLRel."pics/puce-down.gif'></a>";
 				else 
