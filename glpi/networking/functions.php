@@ -132,6 +132,10 @@ function showNetworkingForm ($target,$ID) {
 	echo "<tr><td>".$lang["networking"][2].": 	</td><td>";
 		dropdownValue("glpi_type_networking", "type", $netdev->fields["type"]);
 	echo "</td></tr>";
+	
+	echo "<tr><td>".$lang["networking"][49].": 	</td><td>";
+	dropdownValue("glpi_dropdown_firmware", "firmware", $netdev->fields["firmware"]);
+	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["networking"][5].":	</td>";
 	echo "<td><input type='text' name='ram' value=\"".$netdev->fields["ram"]."\" size='3'></td>";
