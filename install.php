@@ -638,7 +638,7 @@ function mailing_config_to_db($admin_email, $mailing_signature,$mailing_new_admi
 	include ("_relpos.php");
 	require_once ($phproot . "/glpi/includes.php");
 	$db = new DB;
-	$query = "update glpi_config set admin_email = $admin_email, ";
+	$query = "update glpi_config set admin_email = '$admin_email', ";
 	$query .= "mailing_signature = '". $mailing_signature ."', ";
 	$query .= "mailing_new_admin = '". $mailing_new_admin ."', ";
 	$query .= "mailing_attrib_admin = '". $mailing_attrib_admin ."', ";
@@ -658,7 +658,7 @@ function mailing_config_to_db($admin_email, $mailing_signature,$mailing_new_admi
 	$query .= "mailing_new_user = '". $mailing_new_user ."', ";
 	$query .= "mailing_attrib_user = '". $mailing_attrib_user ."', ";
 	$query .= "mailing_followup_user = '". $mailing_followup_user ."', ";
-	$query .= "mailing_finish_user = '". $mailing_finish_user ."' ";
+	$query .= "mailing_finish_user = '". $mailing_finish_user ."', ";
 	$query .= "mailing_new_attrib = '". $mailing_new_attrib ."' ";
 	$query .= "where config_id = 1";
 	$db->query($query);
@@ -712,6 +712,7 @@ include ("_relpos.php");
 			case "Etape_6" :
 				header_html("Etape 6");
 				if(!empty($_POST["mailing"])) {
+				
 				mailing_config_to_db($_POST["admin_email"],$_POST["mailing_signature"],$_POST["mailing_new_admin"],$_POST["mailing_attrib_admin"],$_POST["mailing_followup_admin"],$_POST["mailing_finish_admin"],$_POST["mailing_new_all_admin"],$_POST["mailing_attrib_all_admin"],$_POST["mailing_followup_all_admin"],$_POST["mailing_finish_all_admin"],$_POST["mailing_new_all_normal"],$_POST["mailing_attrib_all_normal"],$_POST["mailing_followup_all_normal"],$_POST["mailing_finish_all_normal"],$_POST["mailing_attrib_attrib"],$_POST["mailing_followup_attrib"],$_POST["mailing_finish_attrib"],$_POST["mailing_new_user"],$_POST["mailing_attrib_user"],$_POST["mailing_followup_user"],$_POST["mailing_finish_user"],$_POST["mailing_new_attrib"]);
 				}
 				step7();
