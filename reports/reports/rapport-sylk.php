@@ -233,7 +233,7 @@ switch($table){
 
 // ADD OEM
 
-		echo $query;
+//		echo $query;
 //		exit;	
 	    $champs = Array(
       //     champ       en-tête     format         align  width multiple_zone
