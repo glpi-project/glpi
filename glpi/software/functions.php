@@ -936,7 +936,7 @@ function showSoftwareInstalled($instID) {
 
 	echo "<br><br><center><table class='tab_cadre' width='90%'>";
 	echo "<tr><th colspan='6'>".$lang["software"][17].":</th></tr>";
-			echo "<tr><th>".$lang['software'][2]."</th><th>".$lang['software'][32]."</th><th>".$lang['software'][33]."</th><th>".$lang['software'][29]."</th><th>".$lang['software'][35]."</th><th>&nbsp;</th></tr>";
+			echo "<tr><th>".$lang['software'][2]."</th><th>".$lang['software'][32]."</th><th>".$lang['software'][33]."</th><th>".$lang['software'][35]."</th><th>&nbsp;</th></tr>";
 	
 	while ($i < $number) {
 		$lID = $db->result($result, $i, "license");
@@ -981,22 +981,6 @@ function showSoftwareInstalled($instID) {
 			else echo "N/A";
 			echo "<b>";
 			} 
-			echo "</td>";
-				// UPDATE
-			if ($data["is_update"]=='Y') {
-			$sw=new Software();
-			$sw->getFromDB($data["update_software"]);
-			}
-
-			echo "<td align='center' class='tab_bg_1".($data["is_update"]=='Y'&&!isset($sw->fields['ID'])?"_2":"")."'>".($data["is_update"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
-			if ($data["is_update"]=='Y') {
-			echo "<br><b>";
-			if (isset($sw->fields['ID']))
-			echo "<a href='".$cfg_install["root"]."/software/software-info-form.php?ID=".$sw->fields['ID']."'>".$sw->fields['name']."&nbsp;".$sw->fields['version']."</a>";
-			else echo "N/A";
-			echo "<b>";
-			} 
-		
 			echo "</td>";
 		
 			// BUY
