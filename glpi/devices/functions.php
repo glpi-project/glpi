@@ -31,14 +31,57 @@ This file is part of GLPI.
  ----------------------------------------------------------------------
 */
 
+function getDeviceTable($dev_type){
+		switch ($dev_type){
+			case MOBOARD_DEVICE :
+				return "glpi_device_moboard";
+				break;
+			case PROCESSOR_DEVICE :
+				return "glpi_device_processor";
+				break;
+			case RAM_DEVICE :
+				return "glpi_device_ram";
+				break;
+			case HDD_DEVICE :
+				return "glpi_device_hdd";
+				break;
+			case NETWORK_DEVICE :
+				return "glpi_device_iface";
+				break;
+			case DRIVE_DEVICE :
+				return "glpi_device_drive";
+				break;
+			case CONTROL_DEVICE :
+				return "glpi_device_control";
+				break;
+			case GFX_DEVICE :
+				return "glpi_device_gfxcard";
+				break;
+			case SND_DEVICE :
+				return "glpi_device_sndcard";
+				break;
+			case PCI_DEVICE :
+				return "glpi_device_pci";
+				break;
+			case CASE_DEVICE :
+				return "glpi_device_case";
+				break;
+			case POWER_DEVICE :
+				return "glpi_device_power";
+				break;
+				
+		}
+	
+}
+
+
 //print form/tab for a device linked to a computer
 function printDeviceComputer($device,$specif,$compID,$compDevID) {
 	global $lang;
-	#print_r($device);
 	
 	//print the good form switch the wanted device type.
-	switch($device->table) {
-		case "glpi_device_hdd" :
+	switch($device->type) {
+		case HDD_DEVICE :
 			
 			echo "<tr><th width='300px' >".$lang["devices"][1]."</th>";
 			
@@ -61,7 +104,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID) {
 			$specificity_label = $lang["device_hdd"][4];
 		
 		break;
-		case "glpi_device_gfxcard" :
+		case GFX_DEVICE :
 			
 			echo "<tr><th width='300px' >".$lang["devices"][2]."</th>";
 			
@@ -76,7 +119,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID) {
 			echo "</tr>";
 			$specificity_label = "";
 		break;
-		case "glpi_device_iface" :
+		case NETWORK_DEVICE :
 			
 			echo "<tr><th width='300px' >".$lang["devices"][3]."</th>";
 			
@@ -89,7 +132,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID) {
 			echo "</tr>";
 			$specificity_label = $lang["device_iface"][2];
 		break;
-		case "glpi_device_moboard" :
+		case MOBOARD_DEVICE :
 			
 			echo "<tr><th width='300px' >".$lang["devices"][5]."</th>";
 			
@@ -102,7 +145,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID) {
 			echo "</tr>";
 			$specificity_label = "";
 		break;
-		case "glpi_device_processor" :
+		case PROCESSOR_DEVICE :
 			
 			echo "<tr><th width='300px' >".$lang["devices"][4]."</th>";
 			
@@ -116,7 +159,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID) {
 			echo "</tr>";
 			$specificity_label = $lang["device_processor"][0];
 		break;
-		case "glpi_device_ram" :
+		case RAM_DEVICE :
 			
 			echo "<tr><th width='300px' >".$lang["devices"][6]."</th>";
 			
@@ -130,7 +173,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID) {
 			echo "</tr>";
 			$specificity_label = $lang["device_ram"][0];
 		break;
-		case "glpi_device_sndcard" :
+		case SND_DEVICE :
 			
 			echo "<tr><th width='300px' >".$lang["devices"][7]."</th>";
 			
@@ -170,13 +213,13 @@ function device_selecter($target,$cID) {
 	global $lang;
 	echo "<form action=\"$target\" method=\"post\">";
 	echo "<select name=\"new_device_type\">";
-	echo "<option value=\"glpi_device_hdd\">".$lang["devices"][1]."</option>";
-	echo "<option value=\"glpi_device_gfxcard\">".$lang["devices"][2]."</option>";
-	echo "<option value=\"glpi_device_iface\">".$lang["devices"][3]."</option>";
-	echo "<option value=\"glpi_device_processor\">".$lang["devices"][4]."</option>";
-	echo "<option value=\"glpi_device_moboard\">".$lang["devices"][5]."</option>";
-	echo "<option value=\"glpi_device_ram\">".$lang["devices"][6]."</option>";
-	echo "<option value=\"glpi_device_sndcard\">".$lang["devices"][7]."</option>";
+	echo "<option value=\"".HDD_DEVICE."\">".$lang["devices"][1]."</option>";
+	echo "<option value=\"".GFX_DEVICE."\">".$lang["devices"][2]."</option>";
+	echo "<option value=\"".NETWORK_DEVICE."\">".$lang["devices"][3]."</option>";
+	echo "<option value=\"".PROCESSOR_DEVICE."\">".$lang["devices"][4]."</option>";
+	echo "<option value=\"".MOBOARD_DEVICE."\">".$lang["devices"][5]."</option>";
+	echo "<option value=\"".RAM_DEVICE."\">".$lang["devices"][6]."</option>";
+	echo "<option value=\"".SND_DEVICE."\">".$lang["devices"][7]."</option>";
 	echo "</select>";
 	echo "<input type=\"hidden\" name=\"cID\" value=\"".$cID."\" >";
 	echo "<input type=\"submit\" class ='submit' value=\"".$lang["buttons"][2]."\" />";
@@ -187,16 +230,18 @@ function device_selecter($target,$cID) {
 function compdevice_form_add($target,$device_type,$cID) {
 	global $lang;
 	$db = new DB;
-	$query = "SELECT `ID`, `designation` FROM `".$device_type."`";
+
+	$query = "SELECT `ID`, `designation` FROM `".getDeviceTable($device_type)."`";
+//	echo $query;
 	if($result = $db->query($query)) {
 		echo "<div align=\"center\">";
-		echo "<table>";
+		echo "<table class='tab_cadre'>";
 		echo "<tr>";
 		echo "<th>";
 		echo $lang["devices"][9].$cID;
 		echo "</th>";
 		echo "</tr>";
-		echo "<tr>";
+		echo "<tr><td align='center'>";
 		echo "<form action=\"$target\" method=\"post\">";
 		echo "<select name=\"new_device_id\">";
 		$device = new Device($device_type);
@@ -209,6 +254,7 @@ function compdevice_form_add($target,$device_type,$cID) {
 		echo "<input type=\"hidden\" name=\"cID\" value=\"".$cID."\" >";
 		echo "<input type=\"submit\" value=\"".$lang["buttons"][2]."\" />";
 		echo "</form>";
+		echo "</td></tr>";
 		echo "</table>";
 		echo "</div>";
 	} else {

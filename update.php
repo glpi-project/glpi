@@ -37,6 +37,22 @@ include ("_relpos.php");
 include ($phproot . "/glpi/common/classes.php");
 include ($phproot . "/glpi/common/functions.php");
 include ($phproot . "/glpi/config/config_db.php");
+
+
+// DEVICE TYPE
+define("MOBOARD_DEVICE","1");
+define("PROCESSOR_DEVICE","2");
+define("RAM_DEVICE","3");
+define("HDD_DEVICE","4");
+define("NETWORK_DEVICE","5");
+define("DRIVE_DEVICE","6"); 
+define("CONTROL_DEVICE","7");
+define("GFX_DEVICE","8");
+define("SND_DEVICE","9");
+define("PCI_DEVICE","10");
+define("CASE_DEVICE","11");
+define("POWER_DEVICE","12");
+
 //Load language
 if(!function_exists('loadLang')) {
 	function loadLang($language) {
@@ -54,7 +70,7 @@ if(!function_exists('loadLang')) {
 //compDpName (eg: hdtype)
 //compcapacityname (eg: hdspace)
 
-function compDpd2Device($devname,$dpdname,$compDpdName,$specif='') {
+function compDpd2Device($devtype,$devname,$dpdname,$compDpdName,$specif='') {
 	global $lang;
 	$query = "select * from glpi_dropdown_".$dpdname."";
 	$db = new DB;
@@ -66,11 +82,11 @@ function compDpd2Device($devname,$dpdname,$compDpdName,$specif='') {
 		$query3 = "select * from glpi_computers where ".$compDpdName." = '".$lndropd["ID"]."'";
 		$result3 = $db->query($query3);
 		while($lncomp = $db->fetch_array($result3)) {
-			$query4 = "insert into glpi_computer_device (device_type, FK_device, FK_computers) values ('glpi_device_".$devname."','".$devid."','".$lncomp["ID"]."')";
+			$query4 = "insert into glpi_computer_device (device_type, FK_device, FK_computers) values ('$devtype','".$devid."','".$lncomp["ID"]."')";
 			if(!empty($specif)) {
 				$queryspecif = "SELECT ".$specif." FROM glpi_computers WHERE ID = '".$lncomp["ID"]."'";
 				if($resultspecif = $db->query($queryspecif)) {
-					$query4 = "insert into glpi_computer_device (specificity, device_type, FK_device, FK_computers) values ('".$db->result($resultspecif,0,$specif)."','glpi_device_".$devname."','".$devid."','".$lncomp["ID"]."')";
+					$query4 = "insert into glpi_computer_device (specificity, device_type, FK_device, FK_computers) values ('".$db->result($resultspecif,0,$specif)."','$devtype','".$devid."','".$lncomp["ID"]."')";
 				}
 				
 			}
@@ -955,7 +971,7 @@ if(!TableExists("glpi_computer_device")) {
 	$query = "CREATE TABLE `glpi_computer_device` (
   `ID` int(11) NOT NULL auto_increment,
   `specificity` varchar(250) NOT NULL default '',
-  `device_type` varchar(50) NOT NULL default '',
+  `device_type` tinyint(4) NOT NULL default '0',
   `FK_device` int(11) NOT NULL default '0',
   `FK_computers` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
@@ -978,7 +994,7 @@ if(!TableExists("glpi_device_gfxcard")) {
   KEY(`FK_glpi_enterprise`)
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 create table `glpi_device_gfxcard` ".$lang["update"][90].$db->error());
-	compDpd2Device("gfxcard","gfxcard","gfxcard");
+	compDpd2Device(GFX_DEVICE,"gfxcard","gfxcard","gfxcard");
 }
 if(!TableExists("glpi_device_hdd")) {
 	$query = "CREATE TABLE `glpi_device_hdd` (
@@ -993,7 +1009,7 @@ if(!TableExists("glpi_device_hdd")) {
   KEY(`FK_glpi_enterprise`)
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_hdtype` ".$lang["update"][90].$db->error());
-	compDpd2Device("hdd","hdtype","hdtype","hdspace");
+	compDpd2Device(HDD_DEVICE,"hdd","hdtype","hdtype","hdspace");
 }
 if(!TableExists("glpi_device_iface")) {
 	$query = "CREATE TABLE `glpi_device_iface` (
@@ -1006,7 +1022,7 @@ if(!TableExists("glpi_device_iface")) {
   KEY(`FK_glpi_enterprise`)
 ) TYPE=MyISAM";
 	$db->query($query) or die("0.5- CREATE TABLE `glpi_device_iface` ".$lang["update"][90].$db->error());
-	compDpd2Device("iface","network","network");
+	compDpd2Device(NETWORK_DEVICE,"iface","network","network");
 }
 if(!TableExists("glpi_device_moboard")) {
 	$query = "CREATE TABLE `glpi_device_moboard` (
@@ -1019,7 +1035,7 @@ if(!TableExists("glpi_device_moboard")) {
   KEY(`FK_glpi_enterprise`)
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_moboard` ".$lang["update"][90].$db->error());
-	compDpd2Device("moboard","moboard","moboard");
+	compDpd2Device(MOBOARD_DEVICE,"moboard","moboard","moboard");
 }
 if(!TableExists("glpi_device_processor")) {
 	$query = "CREATE TABLE `glpi_device_processor` (
@@ -1032,7 +1048,7 @@ if(!TableExists("glpi_device_processor")) {
   KEY(`FK_glpi_enterprise`)
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_processor` ".$lang["update"][90].$db->error());
-	compDpd2Device("processor","processor","processor","processor_speed");
+	compDpd2Device(PROCESSOR_DEVICE,"processor","processor","processor","processor_speed");
 }
 if(!TableExists("glpi_device_ram")) {
 	$query = "CREATE TABLE `glpi_device_ram` (
@@ -1046,7 +1062,7 @@ if(!TableExists("glpi_device_ram")) {
   KEY(`FK_glpi_enterprise`)
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_ram` ".$lang["update"][90].$db->error());
-	compDpd2Device("ram","ram","ramtype","ram");
+	compDpd2Device(RAM_DEVICE,"ram","ram","ramtype","ram");
 }
 if(!TableExists("glpi_device_sndcard")) {
 	$query = "CREATE TABLE `glpi_device_sndcard` (
@@ -1059,7 +1075,7 @@ if(!TableExists("glpi_device_sndcard")) {
   KEY(`FK_glpi_enterprise`)
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_sndcard ".$lang["update"][90].$db->error());
-	compDpd2Device("sndcard","sndcard","sndcard");
+	compDpd2Device(SND_DEVICE,"sndcard","sndcard","sndcard");
 }
 if(!TableExists("glpi_enterprise")) {
 	$query = "CREATE TABLE `glpi_enterprise` (

@@ -41,10 +41,12 @@ include ("_relpos.php");
 class Device {
 	var $fields = array();
 	var $updates = array();
-	var $table;
-	
-	function Device($dev_table) {
-		$this->table = $dev_table;
+	var $table='';
+	var $type=0;
+
+	function Device($dev_type) {
+		$this->type=$dev_type;
+		$this->table=getDeviceTable($dev_type);
 	}
 	
 	function getFromDB($ID) {
@@ -56,8 +58,8 @@ class Device {
 				foreach ($data as $key => $val) {
 					$this->fields[$key] = $val;
 				}
-				#print_r($this->fields);
-				#print_r($data);
+				//print_r($this->fields);
+				//print_r($data);
 				return true;
 			} else return false;
 		} else {
