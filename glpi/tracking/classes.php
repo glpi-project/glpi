@@ -158,10 +158,6 @@ class Job {
 		}
 	}
 	
-	function getRealtime(){
-		global $lang;	
-		return floor($job->realtime)." ".$lang["job"][21]." ".(($job->realtime-floor($job->realtime))*60)." ".$lang["job"][22];
-		}
 
 	function assignTo($user) {
 		// assign Job to user
