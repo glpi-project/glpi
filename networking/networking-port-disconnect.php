@@ -42,8 +42,9 @@ include ($phproot . "/glpi/includes_networking.php");
 checkAuthentication("admin");
 
 removeConnector($_GET["ID"]);
+if (isset($_GET["sport"])) $fin="?sport=".$_GET["sport"];
 
-header("Location: $_SERVER[HTTP_REFERER]");
+header("Location: $_SERVER[HTTP_REFERER]".$fin);
 
 ?>
 

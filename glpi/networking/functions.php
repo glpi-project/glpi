@@ -929,7 +929,9 @@ function listConnectorPorts($target,$input) {
 				echo "</a>";
 				echo "</td>";
 				echo "<td align='right'><b>";
-				echo "<a href=\"".$cfg_install["root"]."/networking/networking-port-disconnect.php?ID=".$netport->fields["ID"]."\">".$lang["buttons"][10]."</a>";
+				echo "<a href=\"".$cfg_install["root"]."/networking/networking-port-disconnect.php?ID=".$netport->fields["ID"];
+				if (!empty($pID1)) echo "&sport=$pID1";
+				echo "\">".$lang["buttons"][10]."</a>";
 				echo "</b></td>";
 				echo "</tr></table>";
 		
@@ -957,10 +959,16 @@ function makeConnector($sport,$dport) {
 	// Get netpoint for $sport and $dport
 	$ps=new Netport;
 	$ps->getFromDB($sport);
-	$nps=$ps->fields["netpoint"];
+	$nps="";
+	if (isset($ps->fields["netpoint"]))
+		$nps=$ps->fields["netpoint"];
+		echo $nps;
 	$pd=new Netport;
 	$pd->getFromDB($dport);
+	$npd="";
+	if (isset($pd->fields["netpoint"]))
 	$npd=$pd->fields["netpoint"];
+	echo $npd;
 	// Update unknown netpoint
 	$updates[0]="netpoint";
 	if (empty($nps)&&!empty($npd)){
