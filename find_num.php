@@ -60,7 +60,7 @@ window.close();}
 </div>
 <?php
 
-if(isset($_POST["Submi"]t))
+if(isset($_POST["Submit"]))
 {
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
