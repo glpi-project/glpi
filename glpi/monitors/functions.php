@@ -41,7 +41,7 @@ include ("_relpos.php");
 function titleMonitors(){
                 GLOBAL  $lang,$HTMLRel;
                 echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/ecran.png\" alt='".$lang["monitors"][0]."' title='".$lang["monitors"][0]."'></td><td><a  class='icon_consol' href=\"monitors-info-form.php?new=1\"><b>".$lang["monitors"][0]."</b></a>";
+                echo "<img src=\"".$HTMLRel."pics/ecran.png\" alt='".$lang["monitors"][0]."' title='".$lang["monitors"][0]."'></td><td><a  class='icon_consol' href=\"monitors-add-select.php\"><b>".$lang["monitors"][0]."</b></a>";
                 echo "</td></tr></table></div>";
 }
 
@@ -275,23 +275,53 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 }
 
 
-function showMonitorsForm ($target,$ID) {
+function showMonitorsForm ($target,$ID,$withtemplate='') {
 
 	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel;
 
 	$mon = new Monitor;
+	$mon_spotted = false;
 
-	echo "<center><form method='post' name=form action=\"$target\">";
-	echo "<table class='tab_cadre' cellpadding='2'>";
-	echo "<tr><th colspan='2'><b>";
-	if (empty($ID)) {
-		echo $lang["monitors"][3].":";
-		$mon->getEmpty();
+	if(empty($ID) && $withtemplate == 1) {
+		if($mon->getEmpty()) $mon_spotted = true;
 	} else {
-		$mon->getfromDB($ID);
-		echo $lang["monitors"][4]." ID $ID:";
-	}		
-	echo "</b></th></tr>";
+		if($mon->getfromDB($ID)) $mon_spotted = true;
+	}
+
+	if($mon_spotted) {
+		if(!empty($withtemplate) && $withtemplate == 2) {
+			$template = "newcomp";
+			$datestring = $lang["computers"][14].": ";
+			$date = date("Y-m-d H:i:s");
+		} elseif(!empty($withtemplate) && $withtemplate == 1) { 
+			$template = "newtemplate";
+			$datestring = $lang["computers"][14].": ";
+			$date = date("Y-m-d H:i:s");
+		} else {
+			$datestring = $lang["computers"][11]." : ";
+			$date = $mon->fields["date_mod"];
+			$template = false;
+		}
+
+	echo "<div align='center'><form method='post' name=form action=\"$target\">";
+		if(strcmp($template,"newtemplate") === 0) {
+			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
+		}
+	
+	echo "<table class='tab_cadre' cellpadding='2'>";
+
+		echo "<tr><th align='center' >";
+		if(!$template) {
+			echo $lang["monitors"][29].": ".$mon->fields["ID"];
+		}elseif (strcmp($template,"newcomp") === 0) {
+			echo $lang["monitors"][3].": ".$mon->fields["tplname"];
+		}elseif (strcmp($template,"newtemplate") === 0) {
+			echo $lang["common"][6]."&nbsp;: <input type='text' name='tplname' value=\"".$mon->fields["tplname"]."\" size='20'>";
+		}
+		
+		echo "</th><th  align='center'>".$datestring.$date;
+		echo "</th></tr>";
+
 	
 	echo "<tr><td class='tab_bg_1' valign='top'>";
 
@@ -407,20 +437,26 @@ echo "</td></tr>";
 
 	echo "</td>";
 	echo "</tr>";
+
+	echo "<tr>";
 	
-	if ($ID=="") {
+	if ($template) {
 
-		echo "<tr>";
-		echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-		echo "<center><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></center>";
-		echo "</td>";
-		echo "</form></tr>";
+			if (empty($ID)||$withtemplate==2){
+			echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
+			echo "<input type='hidden' name='ID' value=$ID>";
+			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+			echo "</td>\n";
+			} else {
+			echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
+			echo "<input type='hidden' name='ID' value=$ID>";
+			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+			echo "</td>\n";
+			}
 
-		echo "</table></center>";
 
 	} else {
 
-		echo "<tr>";
 		echo "<td class='tab_bg_2' valign='top'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<center><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' class='submit'></center>";
@@ -438,12 +474,22 @@ echo "</td></tr>";
 		}
 		echo "</div>";
 		echo "</td>";
+	}
 		echo "</form></tr>";
 
-		echo "</table></center>";
+		echo "</table></div>";
+	
+	return true;
+		}
+	else {
+                echo "<div align='center'><b>".$lang["monitors"][17]."</b></div>";
+                echo "<hr noshade>";
+                searchFormMonitors();
+                return false;
+        }
 
-		showConnect($target,$ID,MONITOR_TYPE);
-	}
+	
+	
 }
 
 
@@ -486,12 +532,19 @@ function updateMonitor($input) {
 
 function addMonitor($input) {
 	// Add Monitor, nasty hack until we get PHP4-array-functions
+	$db=new DB;
 
 	$mon = new Monitor;
 
 	// dump status
+	$oldID=$input["ID"];
+
+	$null = array_pop($input);
 	$null = array_pop($input);
 	
+ 	// set new date.
+ 	$mon->fields["date_mod"] = date("Y-m-d H:i:s");
+
 	// fill array for udpate
 	foreach ($input as $key => $val) {
 		if (!isset($mon->fields[$key]) || $mon->fields[$key] != $input[$key]) {
@@ -500,6 +553,26 @@ function addMonitor($input) {
 	}
 
 	$mon->addToDB();
+	$newID=$mon->getInsertElementID();
+	
+	// ADD Infocoms
+	$ic= new Infocom();
+	if ($ic->getFromDB(MONITOR_TYPE,$oldID)){
+		$ic->fields["FK_device"]=$newID;
+		unset ($ic->fields["ID"]);
+		$ic->addToDB();
+	}
+
+	// ADD Contract				
+	$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='$oldID' AND device_type='".MONITOR_TYPE."';";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		
+		while ($data=$db->fetch_array($result))
+			addDeviceContract($data["FK_contract"],MONITOR_TYPE,$newID);
+	}
+	
+	
 
 }
 

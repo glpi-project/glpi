@@ -413,7 +413,7 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 	
 	if ($template) {
 
-			if ($template=="newcomp"){
+			if (empty($ID)||$withtemplate==2){
 			echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
 			echo "<input type='hidden' name='ID' value=$ID>";
 			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";

@@ -45,6 +45,7 @@ include ($phproot . "/glpi/includes_financial.php");
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(empty($tab["ID"])) $tab["ID"] = "";
+if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 
 
 if (isset($_POST["add"]))
@@ -54,11 +55,17 @@ if (isset($_POST["add"]))
 	logEvent(0, "monitors", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
-else if (isset($_POST["delete"]))
+else if (isset($tab["delete"]))
 {
 	checkAuthentication("admin");
-	deleteMonitor($_POST);
-	logEvent($_POST["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
+	if (!empty($tab["withtemplate"]))
+		deleteMonitor($tab,1);
+	else deleteMonitor($tab);
+	
+	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
+	if(!empty($tab["withtemplate"])) 
+		header("Location: ".$cfg_install["root"]."/setup/setup-templates.php");
+	 else 
 	header("Location: ".$cfg_install["root"]."/monitors/");
 }
 else if (isset($_POST["restore"]))
@@ -120,22 +127,33 @@ else
 	checkAuthentication("admin");
 	else checkAuthentication("normal");
 
+	commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
 
-	if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
-		$j=new Job;
-		foreach ($_POST["todel"] as $key => $val){
-			if ($val==1) $j->deleteInDB($key);
-			}
+	if (!empty($tab["withtemplate"])) {
+
+		showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);
+		
+		if (!empty($tab["ID"])){
+		showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",MONITOR_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+		showContractAssociated(MONITOR_TYPE,$tab["ID"],$tab["withtemplate"]);
+		}
+		
+	} else {
+
+		if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
+			$j=new Job;
+			foreach ($_POST["todel"] as $key => $val){
+				if ($val==1) $j->deleteInDB($key);
+				}
 		}
 
-	commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
-	showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"]);
-	
-	if (!empty($_GET["ID"])){
-	showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",MONITOR_TYPE,$tab["ID"]);
-	showContractAssociated(MONITOR_TYPE,$tab["ID"]);		
-	showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
+		if (showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"])){
+			showConnect($_SERVER["PHP_SELF"],$tab['ID'],MONITOR_TYPE);
+			showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",MONITOR_TYPE,$tab["ID"]);
+			showContractAssociated(MONITOR_TYPE,$tab["ID"]);		
+			showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
+			showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
+		}
 	}
 	commonFooter();
 }

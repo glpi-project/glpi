@@ -442,6 +442,7 @@ $lang["monitors"][25]	= "Expiration garantie";
 $lang["monitors"][26]	= "Maintenance";
 $lang["monitors"][27]   = "identifiant";
 $lang["monitors"][28]	= "Ecrans";
+$lang["monitors"][29]	= "Ecran ID";
 
 // Software
 $lang["software"][0]	= "Ajouter logiciel..."; 
