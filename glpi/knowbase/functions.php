@@ -200,7 +200,7 @@ function updateKbItem($input) {
 
 	// Pop off the last  attribute, no longer needed
 	$null=array_pop($input);
-	print_r($input);
+	
 	
 	// Get faq and fill with no if unchecked in form
 	foreach ($ki->fields as $key => $val) {
@@ -223,6 +223,24 @@ function updateKbItem($input) {
 	if (isset($updates))
 		$ki->updateInDB($updates);
 
+}
+
+
+
+function showKbCategoriesall()
+{
+
+	global $lang;	
+
+	echo "<div align='center'>";
+	
+	echo "<div align='center'><table border='0' class='tab_cadre' >";
+	echo "<tr><th align='center' width='700px'>".$lang["knowbase"][0]."</th></tr><tr><td>";	
+	
+	
+	showKbCategories();
+	
+	echo "</td></tr></table></div>";
 }
 
 
@@ -325,10 +343,10 @@ function ShowKbItemFull($ID)
 	echo "<div align='center'><table class='tab_cadre' cellpadding='10' width='500px'><tr><th>";
 	
 	echo "Catégorie : ".$fullcategoryname."</th></tr>";
-	echo "<tr class='tab_bg_2'><td><H2>Question :</h2>";
+	echo "<tr class='tab_bg_2'><td><h2>".$lang["knowbase"][3]."</h2>";
 	echo clicurl($question);
 	echo "</td></tr>\n";
-	echo "<tr  class='tab_bg_2'><td><H2>Answer:</h2>\n";
+	echo "<tr  class='tab_bg_2'><td><h2>".$lang["knowbase"][4]."</h2>\n";
 	$answer = autop($ki->fields["answer"]);
 	//$answer = $ki->fields["answer"];
 	echo clicurl($answer);
@@ -342,9 +360,12 @@ function kbcategoryList($current=0)
 	// show select category
 	// ok ?
 	
+	global $lang;
+	
+	
 	echo "<select name='categoryID' size='1'>\n";
 	//echo "<option value='0'>Main</option>\n";
-	kbcategoryListSelect($current, 0, "Main\\");
+	kbcategoryListSelect($current, 0, "".$lang["knowbase"][12]."\\");
 	echo "</select>\n";
 }
 
@@ -384,6 +405,8 @@ function kbcategoryname($ID, $wholename="")
 	// show name catégory
 	// ok ??
 	
+	global $lang;
+	
 	$query = "select * from glpi_kbcategories where (ID = $ID)";
 	$db=new DB;
 	
@@ -403,7 +426,7 @@ function kbcategoryname($ID, $wholename="")
 		$name = kbcategoryname($parentID, $name) . $name;
 		if($parentID == 0)
 		{
-			$name = "Main\\" . $name;
+			$name = $lang["knowbase"][12]."\\" . $name;
 		}
 	}
 	
@@ -489,6 +512,23 @@ function getFAQParentCategories($ID, &$catNumbers)
 		}
 	}
 	}
+}
+
+
+function faqShowCategoriesall()
+{
+
+	global $lang;	
+
+	echo "<div align='center'>";
+	
+	echo "<div align='center'><table border='0' class='tab_cadre' >";
+	echo "<tr><th align='center' width='700px'>".$lang["knowbase"][1]."</th></tr><tr><td>";	
+	
+	
+	faqShowCategories();
+	
+	echo "</td></tr></table></div>";
 }
 
 function faqShowCategories($parentID=0)

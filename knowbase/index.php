@@ -44,14 +44,9 @@ checkAuthentication("normal");
 
 	titleknowbase();
 	
-echo "<div align='center'>";	
-	echo "<div align='center'><table border='0' class='tab_cadre' >";
-	echo "<tr><th align='center' width='700px'>Bases de connnaisances";	
-	echo "</th></tr><tr><td>";	
+	showKbCategoriesall();
 
-showKbCategories();
 
-echo "</td></tr></table></div>";
 commonFooter();
 
 
