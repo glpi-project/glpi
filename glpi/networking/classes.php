@@ -224,7 +224,7 @@ class Netport {
 		$query = "SELECT * FROM glpi_networking_ports WHERE (ID = '$ID')";
 		if ($result = $db->query($query))
 		{
-			$data = $db->fetch_array($result);
+			$data = $db->fetch_assoc($result);
 			if (is_array($data))
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
