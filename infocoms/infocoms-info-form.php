@@ -44,6 +44,7 @@ include ($phproot . "/glpi/includes_software.php");
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
+if(!isset($tab["search"])) $tab["search"] = "";
 
 if (isset($_POST["add"]))
 {
@@ -106,7 +107,7 @@ else
 	else checkAuthentication("normal");
 
 	commonHeader($lang["title"][21],$_SERVER["PHP_SELF"]);
-	showInfocomForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	showInfocomForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["search"]);
 
 	commonFooter();
 }

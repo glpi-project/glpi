@@ -1078,7 +1078,7 @@ function dropdownUsersTracking($value, $myname,$champ) {
 	echo "</select>";
 }
 
-function dropdownAllItems($name,$value='') {
+function dropdownAllItems($name,$search='',$value='') {
 	$db=new DB;
 	
 	$items=array(
@@ -1094,11 +1094,18 @@ function dropdownAllItems($name,$value='') {
 
 	foreach ($items as $type => $table){
 
-	$where="";
+	$where="WHERE '1' = '1' ";
+	if ($table=="glpi_computers")
+	$where.="AND is_template='0' ";
+	
+	if (!empty($search))
+	$where.="AND name LIKE '%$search%' ";
+	
 //	if ($table=="glpi_enterprises"||$table=="glpi_cartridge_type")
 //		$where = "WHERE deleted='N' ";
 
 	$query = "SELECT ID FROM $table $where ORDER BY name";
+	
 	$result = $db->query($query);
 	
 	$i = 0;

@@ -248,7 +248,7 @@ function showInfocomList($target,$username,$field,$phrasetype,$contains,$sort,$o
 
 
 
-function showInfocomForm ($target,$ID) {
+function showInfocomForm ($target,$ID,$search='') {
 	// Show Infocom or blank form
 	
 	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel;
@@ -357,7 +357,7 @@ function showInfocomForm ($target,$ID) {
 
 		echo "</table></div>";
 		
-		showDeviceInfocom($ID);
+		showDeviceInfocom($ID,$search);
 	}
 
 }
@@ -423,7 +423,7 @@ function restoreInfocom($input) {
 } 
 
 
-function showDeviceInfocom($instID) {
+function showDeviceInfocom($instID,$search='') {
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
     $db = new DB;
@@ -453,9 +453,15 @@ function showDeviceInfocom($instID) {
 	}
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 	echo "<div class='software-instal'><input type='hidden' name='icID' value='$instID'>";
-		dropdownAllItems("item");
-	echo "</div></td><td align='center' class='tab_bg_2'>";
+		dropdownAllItems("item",$search);
 	echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
+	echo "</div></td>";
+	echo "</form>";
+	echo "<form method='get' action=\"".$cfg_install["root"]."/infocoms/infocoms-info-form.php?ID=$instID\">";	
+	echo "<td align='center' class='tab_bg_2'>";
+	echo "<input type='text' name='search' value=\"".$search."\" size='15'>";
+	echo "<input type='hidden' name='ID' value='$instID'>";
+	echo "<input type='submit' name='bsearch' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr>";
 	
 	echo "</table></form>"    ;
