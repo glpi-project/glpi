@@ -43,8 +43,6 @@ include ($phproot . "/glpi/includes_monitors.php");
 include ($phproot . "/glpi/includes_printers.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_software.php");
-if(empty($_POST["show"])) $_POST["show"] = "";
-if(empty($_POST["contains"])) $_POST["contains"] = "";
 
 if (isset($_POST["add"])) {
 	checkAuthentication("admin");
@@ -57,6 +55,8 @@ if (isset($_POST["add"])) {
 	logEvent($_POST["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/computers/");
 } else if (isset($_POST["update"])) {
+	if(empty($_POST["show"])) $_POST["show"] = "";
+	if(empty($_POST["contains"])) $_POST["contains"] = "";
 	checkAuthentication("admin");
 	updateComputer($_POST);
 	logEvent($_POST["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]."updated item.");
