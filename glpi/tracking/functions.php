@@ -1171,11 +1171,13 @@ function searchFormTrackingReport() {
 	echo "<option value='exact' $selected>".$lang["search"][3]."</option>";
 	echo "</select></td><td align='center'>";
 	echo "<input type='text' size='15' name=\"contains2\" value=\"".$_GET["contains2"]."\">";
-	echo "</td><td  colspan='2'' align='center'>".$lang["job"][5]."&nbsp;:&nbsp;";
+	echo "</td><td  colspan='2' align='center'>".$lang["job"][5]."&nbsp;:&nbsp;";
 	dropdownUsersTracking($_GET["attrib"],"attrib","assign");
-	echo "</td><td  colspan='2' align='center'>".$lang["joblist"][3]."&nbsp;:&nbsp;";
+	echo "</td>";
+	echo "<td  colspan='1' align='center'>".$lang["joblist"][3]."&nbsp;:&nbsp;";
 	dropdownUsersTracking($_GET["author"],"author","author");
-
+	echo "</td><td align='center'>".$lang["tracking"][20]."&nbsp;:&nbsp;";
+	dropdownValue("glpi_dropdown_tracking_category","category",$_GET["category"]);
 	echo "</td></tr>";
 
 
@@ -1221,7 +1223,7 @@ echo "</td><td align='center'><input type='submit' value=\"".$lang["buttons"][0]
 }
 
 
-function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$start,$date1,$date2,$computers_search,$field2,$phrasetype2,$contains2,$author,$assign) {
+function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$start,$date1,$date2,$computers_search,$field2,$phrasetype2,$contains2,$author,$assign,$category) {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -1299,6 +1301,8 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 	
 	if ($computers_search)
 	$query.=" AND glpi_tracking.device_type= '1'";
+	if ($category > 0)
+	$query.=" AND glpi_tracking.category = '$category'";
 	
 	if ($computers_search) $query .= "AND $wherecomp";
 	if ($date1!="") $query.=" AND glpi_tracking.date >= '$date1'";
