@@ -1375,7 +1375,7 @@ function showFormExtsources($target) {
 		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>".$lang["setup"][157]."</p><p>".$lang["setup"][158]."</p></td></th></table></div>";
 	}
 	
-	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_ext\" class=\"submit\" value=\"".$lang["buttons"][22]."\" ></p>";
+	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_ext\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
 	echo "</form>";
 }
 
