@@ -48,7 +48,7 @@ function searchFormSoftware() {
 	$option["version"]			= $lang["software"][5];
 	$option["comments"]			= $lang["software"][6];
 
-	echo "<form method=post action=\"".$cfg_install["root"]."/software/software-search.php\">";
+	echo "<form method=get action=\"".$cfg_install["root"]."/software/software-search.php\">";
 	echo "<center><table border=0 width=90%>";
 	echo "<tr><th colspan=2><b>".$lang["search"][5].":</b></th></tr>";
 	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
@@ -68,7 +68,7 @@ function searchFormSoftware() {
 	echo "<input type=submit value=\"".$lang["buttons"][1]."\">";
 	echo "</td></tr></table></form></center>";
 
-	echo "<form method=post action=\"".$cfg_install["root"]."/software/software-search.php\">";
+	echo "<form method=get action=\"".$cfg_install["root"]."/software/software-search.php\">";
 	echo "<center><table border=0 width=90%>";
 	echo "<tr><th colspan=2><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
