@@ -57,6 +57,13 @@ function superAdminExists() {
 	return $var1;
 }
 
+function updaterootdoc() {
+	$root_doc = ereg_replace("/update.php","",$_SERVER['REQUEST_URI']);
+	$db = new DB;
+	$query = "update glpi_config set root_doc = '".$root_doc."' where ID = '1'";
+	$db->query($query) or die(" root_doc ".$lang["update"][90].$db->error());
+}
+
 //Verifie si la table $tablename existe
 function TableExists($tablename) {
   
@@ -935,11 +942,12 @@ elseif(empty($_POST["ajout_su"])) {
 		echo "<h3>".$lang["update"][93]."</h3>";
 		if(!TableExists("glpi_config")) {
 			updateDbTo031();
-			updateDbUpTo031();
-		}
-		else 
-		{
 			$tab = updateDbUpTo031();
+			updaterootdoc();
+		}
+		else {
+			$tab = updateDbUpTo031();
+			updaterootdoc();
 		}
 		if(!superAdminExists()) {
 			showFormSu();
