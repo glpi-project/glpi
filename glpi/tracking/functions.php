@@ -90,7 +90,7 @@ function getTrackingPrefs ($username) {
 	$db = new DB;
 	$query = "SELECT tracking_order FROM glpi_prefs WHERE (user = '$username')";
 	$result = $db->query($query);
-	if ($db->numrows($result)==1)
+	if ($result&&$db->numrows($result)==1)
 	$tracking_order = $db->result($result, 0, "tracking_order");
 	else $tracking_order="yes";
 
