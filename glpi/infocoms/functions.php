@@ -77,22 +77,13 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1) {
 		echo "<td ><input type='text' name='bon_livraison' value=\"".$ic->fields["bon_livraison"]."\" size='25'></td>";
 		echo "</tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$lang["financial"][14].":	</td>";
-		echo "<td  ><input type='text' name='buy_date' readonly size='10' value=\"".$ic->fields["buy_date"]."\">";
-		
-		echo "&nbsp;<img src='".$HTMLRel."pics/calendar.png' class='calendrier' alt='".$lang["buttons"][15]."' title='".$lang["buttons"][15]."' onClick=\"window.open('$HTMLRel/mycalendar.php?form=form_ic&amp;elem=buy_date&amp;value=".$ic->fields["buy_date"]."','".$lang["buttons"][15]."','width=200,height=220')\" >";
-		
-		echo "&nbsp;<img src='".$HTMLRel."pics/reset.png' class='calendrier' onClick=\"document.forms['form_ic'].buy_date.value='0000-00-00'\" alt='Reset' title='Reset'>";
+		echo "<tr class='tab_bg_1'><td>".$lang["financial"][14].":	</td><td>";
+		showCalendarForm("form_ic","buy_date",$ic->fields["buy_date"]);	
 	    echo "</td>";
 		
 
-		echo "<td>".$lang["financial"][76].":	</td>";
-		echo "<td colspan='2'><input type='text' name='use_date' readonly size='10' value=\"".$ic->fields["use_date"]."\">";
-		
-		echo "&nbsp;<img src='".$HTMLRel."pics/calendar.png' class='calendrier' alt='".$lang["buttons"][15]."' title='".$lang["buttons"][15]."'
-		onclick=\"window.open('$HTMLRel/mycalendar.php?form=form_ic&amp;elem=use_date&amp;value=".$ic->fields["use_date"]."','".$lang["buttons"][15]."','width=200,height=220')\" >";
-		
-		echo "&nbsp;<img src='".$HTMLRel."pics/reset.png' class='calendrier' onClick=\"document.forms['form_ic'].use_date.value='0000-00-00'\" alt='Reset' title='Reset'>";
+		echo "<td>".$lang["financial"][76].":	</td><td>";
+		showCalendarForm("form_ic","use_date",$ic->fields["use_date"]);	
 	    echo "</td>";
 	    echo "</td>";
 		echo "</tr>";

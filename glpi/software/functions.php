@@ -685,9 +685,8 @@ function showLicenseForm($target,$action,$sID,$lID="",$search_computer="") {
 	echo "</select></td></tr>";
 	}
 	
-	echo "<tr class='tab_bg_1'><td>".$lang["software"][24].":</td><td><input type='text' name='expire' value='".$values['expire']."' readonly size='10' >";
-	echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=expire','".$lang["buttons"][15]."','width=200, height=220')\" value='".$lang["buttons"][15]."...'>";
-	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].expire.value=''\" value='reset'>";
+	echo "<tr class='tab_bg_1'><td>".$lang["software"][24].":</td><td>";
+	showCalendarForm("form","expire",$values['expire']);
 	echo "</td></tr>"; 
 	
 	// OEM
