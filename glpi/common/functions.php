@@ -1804,12 +1804,14 @@ switch($item_type)
 		case 'glpi_networking_lieu' :
 		echo "<table width='100%' height='60' border='0'>";
 		echo "<tr> ";
-		//echo "<th><div align='center'><b>".$lang["reports"][34]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][35]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][37]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][41]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][52]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][38]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][46]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][53]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][47]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][38]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][53]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][36]."</b></div></th>";
 		echo "</tr>";
 		
@@ -1817,22 +1819,26 @@ switch($item_type)
 					{
 					//echo $ligne['location'];
 					//print_r($ligne);
-					$bureau = $ligne['bureau'];
-					//$etage=$ligne['etage'];
 					$prise=$ligne['prise'];
 					$port=$ligne['port'];
 					$switch=$ligne['switch'];
 					$portordi=$ligne['portordi'];
-					$ordi=$ligne['ordi'];					
+					$ordi=$ligne['ordi'];
+					$ip=$ligne['ip'];
+					$mac=$ligne['mac'];
+					$ip2=$ligne['ip2'];
+					$mac2=$ligne['mac2'];					
 					//inserer ces valeures dans un tableau
 					
 					echo "<tr>";	
-					//if($etage) echo "<td><div align='center'>$etage</div></td>"; else echo //"<td><div align='center'> N/A </div></td>";
-					if($bureau) echo "<td><div align='center'>$bureau</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($prise) echo "<td><div align='center'>$prise</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($switch) echo "<td><div align='center'>$switch</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($ip) echo "<td><div align='center'>$ip</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($port) echo "<td><div align='center'>$port</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($mac) echo "<td><div align='center'>$mac</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($portordi) echo "<td><div align='center'>$portordi</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($ip2) echo "<td><div align='center'>$ip2</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($mac2) echo "<td><div align='center'>$mac2</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($ordi) echo "<td><div align='center'>$ordi</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					}	
 		echo "</table><br><hr><br>";
@@ -1841,12 +1847,13 @@ switch($item_type)
 	case 'glpi_networking_switch' :
 		echo "<table width='100%' height='60' border='0'>";
 		echo "<tr> ";
-		//echo "<th><div align='center'><b>".$lang["reports"][42]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][35]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][39]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][37]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][20]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][38]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][46]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][53]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][47]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][38]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][53]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][36]."</b></div></th>";
 		echo "</tr>";
 		
@@ -1854,23 +1861,27 @@ switch($item_type)
 					{
 					//$switch = $ligne['switch'];
 					//echo $ligne['location'];
-					//print_r($ligne);
-					$bureau=$ligne['bureau'];
-					$etage=$ligne['etage'];
-					$prise=$ligne['prise'];
+					$ID=$ligne['ID'];
+					$lieu=getDropdownName("glpi_dropdown_locations",$ID);
+					//$prise=$ligne['prise'];
 					$port = $ligne['port'];
 					$portordi=$ligne['portordi'];
 					$ordi=$ligne['ordi'];
-					
+					$ip=$ligne['ip'];
+					$mac=$ligne['mac'];
+					$ip2=$ligne['ip2'];
+					$mac2=$ligne['mac2'];
 					//inserer ces valeures dans un tableau
 					
 					echo "<tr>";	
 					//if($switch) echo "<td><div align='center'>$switch</div></td>"; else echo //"<td><div align='center'> N/A </div></td>";
-					if($bureau) echo "<td><div align='center'>$bureau</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($etage) echo "<td><div align='center'>$etage</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($prise) echo "<td><div align='center'>$prise</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($lieu) echo "<td><div align='center'>$lieu</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($port) echo "<td><div align='center'>$port</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($ip) echo "<td><div align='center'>$ip</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($mac) echo "<td><div align='center'>$mac</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($portordi) echo "<td><div align='center'>$portordi</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($ip2) echo "<td><div align='center'>$ip2</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($mac2) echo "<td><div align='center'>$mac2</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($ordi) echo "<td><div align='center'>$ordi</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					}	
 		echo "</table><br><hr><br>";
@@ -1880,24 +1891,31 @@ switch($item_type)
 		case 'glpi_networking_prise' :
 		echo "<table width='100%' height='60' border='0'>";
 		echo "<tr> ";
-		//echo "<th><div align='center'><b>".$lang["reports"][44]."</b></div></th>";
-		//echo "<th><div align='center'><b>".$lang["reports"][39]."</b></div></th>";
-		//echo "<th><div align='center'><b>".$lang["reports"][43]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][42]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][20]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][52]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][38]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][46]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][53]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][47]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][38]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][53]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][36]."</b></div></th>";
 		echo "</tr>";
 		
 		while( $ligne = $db->fetch_array($result))
 					{
 					$prise=$ligne['prise'];
-					$bureau = $ligne['bureau'];
-					$etage=$ligne['etage'];
+					$ID=$ligne['ID'];
+					$lieu=getDropdownName("glpi_dropdown_locations",$ID);
+					//$etage=$ligne['etage'];
 					$switch=$ligne['switch'];
 					$port=$ligne['port'];
 					$portordi=$ligne['portordi'];
 					$ordi=$ligne['ordi'];
+					$ip=$ligne['ip'];
+					$mac=$ligne['mac'];
+					$ip2=$ligne['ip2'];
+					$mac2=$ligne['mac2'];
 					//echo $ligne['location'];
 					//print_r($ligne);
 					//$ports=$ligne['ports'];
@@ -1906,17 +1924,19 @@ switch($item_type)
 					
 					//inserer ces valeures dans un tableau
 					
-					echo "<tr>";	
-					//if($prise) echo "<td><div align='center'>$prise</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					//if($etage) echo "<td><div align='center'>$etage</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					//if($bureau) echo "<td><div align='center'>$bureau</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					echo "<tr>";
+					if($lieu) echo "<td><div align='center'>$lieu</div></td>"; else echo "<td><div align='center'> N/A </div></td>";	
 					if($switch) echo "<td><div align='center'>$switch</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($ip) echo "<td><div align='center'>$ip</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($port) echo "<td><div align='center'>$port</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($mac) echo "<td><div align='center'>$mac</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($portordi) echo "<td><div align='center'>$portordi</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($ip2) echo "<td><div align='center'>$ip2</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($mac2) echo "<td><div align='center'>$mac2</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($ordi) echo "<td><div align='center'>$ordi</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					}	
 		echo "</table><br><hr><br>";
-		break;		
+		break;	
 		
 	}	
 }
