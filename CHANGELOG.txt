@@ -1,3 +1,25 @@
+**** GLPI 0.3.1 ***
+
+09/07/2004
+Mise en place d'accesskeys dans la console centrale.
+
+
+09/07/2004
+Gestion plus logique des sessions postonly et helpdesk.
+
+
+07/07/2004
+Ajout d'un formulaire de recherche globale sur les ordinateurs...
+
+
+04/07/2004
+ajout d'une colonne supplémentaire dans le tableau de liste ordinateur avec l'affichage
+du numéro de série
+
+15/06/2004
+Ajout des fonctionnalités permettant de s'identifier via LDAP.
+Feature from Marco Gaiarin.
+
 
 **** GLPI 0.3 ***
 

@@ -51,14 +51,29 @@ methods to build a database with basic information about your network-topology.
 2) MySQL 3.22 and +
 
 
---- UPDATE FROM PREVIOUS VERSIONS
+--- UPDATE FROM 0.3
+
+1) Save your glpi/glpi/config/config.php settings.
+2) Delete glpi repository.
+3) unpack the new archive at the same place.
+4) edit the glpi/config/config.php and fill variables.
+5) Set the right chmod on the following directory's to be writable by php : 
+
+- glpi/backups/dump
+- glpi/reports/reports/convexcel/tmp
+
+6) move the file glpi/update.php to glpi/update.bak
+ (This file would not be used if the the previous version was 0.3).
+
+
+--- UPDATE FROM PREVIOUS VERSIONS (0.2.* or 0.1.*)
 
 1) Save your glpi/glpi/config/config.php settings.
 2) Delete glpi repository.
 3) unpack the new archive at the same place.
 4) edit the glpi/config/config.php and fill variables.
 5) run (in your favorite browser) http://xxxx/glpi/update.php in order to update the DB.
-6) delete the file update.php
+6) move the file glpi/update.php to glpi/update.bak
 7) Set the right chmod on the following directory's to be writable by php : 
 
 - glpi/backups/dump

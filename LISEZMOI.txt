@@ -66,9 +66,30 @@ avec l'une des ressources techniques à laquelle ils ont accès.
 2) MySQL 3.22 et supperieures
 
 
+****
+--- MISES A JOUR DEPUIS LA VERSION 0.3
+
+1) Sauvegardez votre base de données GLPI (par sécurité).
+
+2) Sauvegardez ou notez les paramètres présents dans glpi/glpi/config/config.php
+
+3) Supprimez tous les fichiers de GLPI.
+
+4) Décompressez l'archive de la nouvelle version à la place.
+
+5) Editez le fichier glpi/config/config.php et re-faites la configuration à l'aide du fichier de configuration que vous avez sauvegardé.
+
+6) (re)Donnez à PHP les droits d'écriture dans les répertoires suivants : 
+
+- glpi/backups/dump
+- glpi/reports/reports/convexcel/tmp
+
+7) 7) Renomez le fichier glpi/update.php en update.bak (Vous n'avez pas à l'utiliser si vous avez déjà la 
+version 0.3).
+
 
 *****
---- MISES A JOUR DEPUIS UNE VERSION ANTERIEURE
+--- MISES A JOUR DEPUIS UNE VERSION ANTERIEURE (Version 0.2.* et 0.1.*) 
 
 1) Sauvegardez votre base de données GLPI (par sécurité).
 
