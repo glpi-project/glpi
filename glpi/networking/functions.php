@@ -676,7 +676,8 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 	
 	
 	echo "<div align='center'>";
-	echo "<b><a href='$REFERER'>".$lang["buttons"][13]."</a></b>";
+	echo "<p><a class='icon_consol' href='$REFERER'>".$lang["buttons"][13]."</a></p>";
+	
 	echo "<table class='tab_cadre'><tr>";
 	
 	echo "<th colspan='4'>".$lang["networking"][20].":</th>";

@@ -1057,6 +1057,7 @@ $lang["title"][21] = "Infos Commerciales";
 $lang["title"][22] = "Contacts";
 $lang["title"][23] = "Entreprises";
 $lang["title"][24] = "Assistance";
+$lang["title"][25] = "Documents";
 
 $lang["device_hdd"][0] = "Rpm";
 $lang["device_hdd"][1] = "Cache";
