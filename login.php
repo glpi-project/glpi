@@ -43,9 +43,8 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-#$database=$cfg_db["database"];
-
-#SetCookie("cfg_dbdb",$database,0,"/");
+//$database=$cfg_db["database"];
+//SetCookie("cfg_dbdb",$database,0,"/");
 
 $db = new DB;
 
@@ -58,11 +57,18 @@ $login_ok=0;
 //echo "test";
 $identificat = new Identification($_POST['login_name']);
 $auth_succeded = $identificat->connection_imap($cfg_login['imap']['auth_server'],$_POST['login_name'],$_POST['login_password']);
-
 // we check all the auth sources in turn...
+// First, we get the dn and then, we try to log in
 if (!$auth_succeded) {
-	$auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$_POST['login_name'],$_POST['login_password']);
+   $found_dn=false;
+   $auth_succeded=0;
+   $found_dn=$identificat->ldap_get_dn($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$_POST['login_name'],$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass']);
+   if ($found_dn!=false&&!empty($_POST['login_password']))
+   { 
+     $auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$found_dn,$_POST['login_name'],$_POST['login_password'],$cfg_login['ldap']['condition']);
+   }
 }
+
 if (!$auth_succeded) {
 	$auth_succeded = $identificat->connection_db($_POST['login_name'],$_POST['login_password']);
 }

@@ -42,10 +42,9 @@ class User {
 	var $prefs = array();
 
   function User($name = '') {
-  
   	$this->fields['name'] = $name;
   	$this->fields['password'] = '';
-  	$this->fields['email'] = $name;
+  	$this->fields['email'] = '';
   	$this->fields['location'] = 'NULL';
   	$this->fields['phone'] = '';
   	$this->fields['type'] = 'post-only';
@@ -130,6 +129,7 @@ class User {
 	  		$f = array_values($fields);
 	  		$sr = ldap_search($conn, $basedn, "uid=".$name, $f);
 	  		$v = ldap_get_entries($conn, $sr);
+//	  		print_r($v);
 	  		if ( (empty($v)) || empty($v[0][$fields['name']][0]) ) {
 	  			return false;
 	  		}
