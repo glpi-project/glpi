@@ -51,12 +51,13 @@ class peripheral {
 		$db = new DB;
 		$query = "SELECT * FROM glpi_peripherals WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
+			if ($db->numrows($result)==1){
 			$data = $db->fetch_array($result);
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}
 			return true;
-
+		} else return false;
 		} else {
 			return false;
 		}
@@ -130,7 +131,14 @@ function getEmpty () {
 
 		$query = "DELETE from glpi_peripherals WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
-			$query2 = "DELETE FROM glpi_connect_wire where (end1='$ID' AND type='4')";
+
+				$query="select * from glpi_reservation_item where (device_type='5' and id_device='$ID')";
+				if ($result = $db->query($query)) {
+					if ($db->numrows($result)>0)
+					deleteReservationItem(array("ID"=>$db->result($result,0,"ID")));
+				}
+
+			$query2 = "DELETE FROM glpi_connect_wire where (end1='$ID' AND type='5')";
 			if ($result2 = $db->query($query2)) {
 				return true;
 			}

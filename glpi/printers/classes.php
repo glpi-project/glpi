@@ -51,12 +51,14 @@ class Printer {
 		$db = new DB;
 		$query = "SELECT * FROM glpi_printers WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
+			if ($db->numrows($result)==1){
 			$data = $db->fetch_array($result);
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}
 			return true;
-
+		} else return false;
+		
 		} else {
 			return false;
 		}
@@ -134,6 +136,13 @@ function getEmpty () {
 			$result2 = $db->query($query2);
 			$query3 = "DELETE FROM glpi_connect_wires WHERE (end1 = $ID AND type = 3)";
 			$result3 = $db->query($query3);
+
+			$query="select * from glpi_reservation_item where (device_type='3' and id_device='$ID')";
+			if ($result = $db->query($query)) {
+				if ($db->numrows($result)>0)
+				deleteReservationItem(array("ID"=>$db->result($result,0,"ID")));
+			}
+			
 			return true;
 		} else {
 			return false;

@@ -51,12 +51,13 @@ class Monitor {
 		$db = new DB;
 		$query = "SELECT * FROM glpi_monitors WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
+			if ($db->numrows($result)==1){
 			$data = $db->fetch_array($result);
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}
 			return true;
-
+		} else return false;
 		} else {
 			return false;
 		}
@@ -130,6 +131,13 @@ function getEmpty () {
 
 		$query = "DELETE from glpi_monitors WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
+
+			$query="select * from glpi_reservation_item where (device_type='4' and id_device='$ID')";
+			if ($result = $db->query($query)) {
+				if ($db->numrows($result)>0)
+				deleteReservationItem(array("ID"=>$db->result($result,0,"ID")));
+			}
+
 			$query2 = "DELETE FROM glpi_connect_wire where (end1='$ID' AND type='4')";
 			if ($result2 = $db->query($query2)) {
 				return true;

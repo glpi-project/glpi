@@ -57,13 +57,13 @@ class Computer {
 		$db = new DB;
 		$query = "SELECT * FROM $table WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
-			if ($db->numrows($result)) {
+			if ($db->numrows($result)==1) {
 				$data = $db->fetch_array($result);
 				foreach ($data as $key => $val) {
 					$this->fields[$key] = $val;
 				}
 				return true;
-			}
+			} else return false;
 		} else {
 			return false;
 		}
@@ -150,6 +150,12 @@ class Computer {
 			$result = $db->query($query);
 			$query = "DELETE FROM glpi_connect_wire WHERE (end2 = '$ID')";
 			$result = $db->query($query);
+
+			$query="select * from glpi_reservation_item where (device_type='1' and id_device='$ID')";
+			if ($result = $db->query($query)) {
+				if ($db->numrows($result)>0)
+				deleteReservationItem(array("ID"=>$db->result($result,0,"ID")));
+			}
 
 			return true;
 		} else {
