@@ -1,0 +1,343 @@
+/*#########Fichier CSS########*/
+
+
+
+/* ###### general ###### */
+
+@page { size: landscape; 
+ 	margin: 0cm;
+ } ;
+ 
+ 
+  body 
+  {  
+    padding :0px;
+	margin :0;
+	background-color : #FFFFFF;
+	color : #000000;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 10px;
+  }
+
+  img {
+  border: 0;
+ 
+  }
+ 
+ small
+  {  
+    font-family: verdana;
+	font-size: 10px;
+	text-decoration: underline;
+  } 
+
+  b
+  {
+    font-wheight: bold;
+  }
+
+ .center {
+text-align:center;
+}
+
+.red { color:red;}
+.blue {color:blue;}
+.green {color:green;}
+
+ /* ###### form ###### */
+ 
+ form
+  {font-size: 10px;
+  }
+
+ option {border:1px solid #ccc;
+        background-color:#ffffff;}
+
+ .submit {
+  display:none;
+  text-align:center;}
+  
+select { 
+
+font-size: 11px;
+}
+
+
+input.submit {
+        
+	display:none;
+	border:1px solid #009966;
+        background-color:#eeeeee;
+        }
+        
+input.submit:hover {
+        border:1px solid #009966;
+       background-color:#ffffff;
+        }
+
+.button {
+        
+	display:none;
+	border:1px solid #009966;
+        background-color:#eeeeee;
+        }
+
+        .button:hover{
+        border:1px solid #009966;
+       background-color:#ffffff;
+        }
+
+
+
+
+
+ /* ###### table ###### */
+
+ table { 
+ font-size: 10px;
+ width:100%;}
+   }
+
+  th
+  {  
+    font-size: 10px;
+    font-weight: bold;
+    background-color: #FFC65D;
+  }
+
+  td
+  { font-size: 10px;
+  }
+
+.tab_cadre{
+
+}
+
+.tab_cadre2{
+text-align:center;
+ 
+}
+
+.tab_bg_1 {
+background-color: #cccccc;
+
+}
+.tab_bg_1_2 {
+background-color: #cc5555;
+
+}
+
+.tab_bg_2 {
+background-color: #dddddd;
+
+}
+
+.tab_bg_3 {
+background-color: #eeeeee;
+
+}  
+
+
+.software-instal {
+display:none;}
+
+.delete-old-job {
+display:none;}
+
+ 
+  /* ###### login ###### */
+
+#contenulogin {
+/* a voir je suis pas bien sûr  */
+height: 100%;
+font-family : Verdana,Arial,Helvetica,sans-serif;
+font-size : 12px;
+position: relative; /*ou absolute */
+left: 50%;
+width: 300px;
+margin-left: -150px;
+color :#009966;
+}
+
+#boxlogin {
+background-color: #FFFFFF;
+text-align: center;
+height: 200px;
+width: 300px;
+margin-top: 10px;
+
+}
+
+
+#boxlogin fieldset {
+background-color: #eeeeee;
+border: 2px solid #FFC65D;
+padding-bottom:10px;
+}
+
+#boxlogin legend {
+font-family:"Trebuchet MS",Verdana,Geneva,Arial,Helvetica,sans-serif;
+font-size: 16px;
+font-weight: 700;
+background-color: transparent;
+}
+
+
+#boxlogin input {
+
+border: 1px solid #009966;
+}
+
+#logo-login {
+text-align: center;
+margin-top: 100px;
+
+}
+
+.sous_logo {
+  font-family: arial;
+	font-size: 9px;
+	color: #eeeee;
+	text-decoration: none;
+	}
+
+
+  /* ###### liens ###### */
+
+
+
+  a, a:link
+  {
+    font-size: 10px;
+    font-wheight: bold;
+    text-decoration: none;
+  	color : #009966;
+  }
+
+  /*
+ a:visited   {
+    font-wheight: bold;
+    text-decoration: none;
+     color : #009966;
+  }
+*/
+
+  a:hover
+  {
+    color: black;
+  }
+
+  hr{
+  display:none;
+  border: 1px solid #cccccc;
+       }
+
+
+/* ###### entete footer ###### */
+
+#navigation{
+	display:none;
+	
+	background-color: #C5DAC8;
+	-moz-border-radius: 8px;
+        border: 2px outset #009966;
+
+	margin-bottom: 10px;
+	padding: 5px;
+	
+	}
+	
+.menu a {
+		font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
+	font-size : 13px;
+	color : #000000;
+	background-color: #C5DAC8;
+	text-decoration: none;
+}
+
+.menu a:hover {
+font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
+	font-size : 13px;
+	color : #FFFFFF;
+	text-decoration: none;
+	border: none;
+	font-weight: normal;
+background-color: #339966;
+}
+
+.icon_nav {
+	padding: 4px;
+	margin: 1px;
+	border: 1px solid #aaaaaa;
+	background-color: #e4e4e4;
+	-moz-border-radius: 5px;
+       	font-size : 12px;
+        font-weight: bold;
+}
+
+
+a.icon_nav_move img {
+	padding: 4px;
+	margin: 1px;
+	border: 1px solid #aaaaaa;
+	background-color: #e4e4e4;
+	-moz-border-radius: 5px;
+}
+
+a.icon_nav_move:hover img {
+	padding: 4px;
+	margin: 1px;
+	border: 1px solid #999999;
+	background-color: white;
+	-moz-border-radius: 5px;
+}
+
+
+/* ###### navig-console ###### */
+
+
+
+.icon_consol {
+	font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
+	font-size : 12px;
+        font-weight: bold;
+        padding: 4px;
+	padding-right: 8px;
+        margin: 1px;
+	border: 1px solid #aaaaaa;
+	background-color: #e4e4e4;
+	-moz-border-radius: 5px;
+
+}
+
+.icon_consol img{
+padding-bottom: 10px;
+}
+
+.icon_consol:hover {
+	padding: 4px;
+	padding-right: 8px;
+        margin: 1px;
+	border: 1px solid #999999;
+	background-color: white;
+	-moz-border-radius: 5px;
+}
+
+
+#footer{
+	
+	display:none;
+	
+	background-color: #C5DAC8;
+	-moz-border-radius: 8px;
+        border: 2px outset #009966;
+	padding: 5px;
+	margin-top: 200px;
+	 clear:both;
+	}
+
+
+
+
+
+

@@ -248,7 +248,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	//  Appel  CSS
 	
          echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
-
+	echo "<link rel='stylesheet' type='text/css' media='print' href='".$HTMLRel."print.css' />";
 	
 
 	// Some Javascript-Functions which we may need later
@@ -382,7 +382,7 @@ function helpHeader($title,$url,$name) {
 	// Appel CSS
 	
         echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
-
+	echo "<link rel='stylesheet' type='text/css' media='print' href='".$HTMLRel."print.css' />";
 	
 	// End of Head
 	echo "</head>\n";
