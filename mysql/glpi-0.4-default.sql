@@ -695,7 +695,7 @@ CREATE TABLE glpi_users (
     ID int(11) NOT NULL auto_increment,
     name varchar(80) NOT NULL,
     password varchar(80) NOT NULL,
-    password_md5 varchar(32) NOT NULL,
+    password_md5 varchar(80) NOT NULL,
     email varchar(80) NOT NULL,
     phone varchar(100),
     type enum('normal','admin','post-only','super-admin') DEFAULT 'normal' NOT NULL,
@@ -708,8 +708,8 @@ CREATE TABLE glpi_users (
    KEY name_2 (name)
 );
 
-INSERT INTO glpi_users VALUES ('1','Helpdesk','14e43c2d31dcbdd1','','',NULL,'post-only','Helpdesk Injector','no',NULL);
-INSERT INTO glpi_users VALUES ('2','glpi','5b9b1ee2216a5ffe','41ece51526515624ff89973668497d00','','','super-admin','glpi','yes','2');
-INSERT INTO glpi_users VALUES ('3','post-only','3eb831c67be6aeda','','',NULL,'post-only','post-only','no','1');
-INSERT INTO glpi_users VALUES ('4','tech','37bd7c4221e8a247','','',NULL,'super-admin','technicien','yes','2');
-INSERT INTO glpi_users VALUES ('5','normal','109e7883561b4202','','',NULL,'normal','utilisateur normal','no','1');
+INSERT INTO glpi_users VALUES ('1','Helpdesk','','','',NULL,'post-only','Helpdesk Injector','no',NULL);
+INSERT INTO glpi_users VALUES ('2','glpi',PASSWORD('glpi'),'b41fa77966e571a9922b004b8019421e','','','super-admin','glpi','yes','2');
+INSERT INTO glpi_users VALUES ('3','post-only',PASSWORD('postonly'),'9800ec478fc9707589ab8f3257630600','',NULL,'post-only','post-only','no','1');
+INSERT INTO glpi_users VALUES ('4','tech',PASSWORD('tech'),'1d44651c461e9e12b6b85f688304a2c4','',NULL,'super-admin','technicien','yes','2');
+INSERT INTO glpi_users VALUES ('5','normal',PASSWORD('normal'),'baa536c3c2a4e2aa2122265ece13b991','',NULL,'normal','utilisateur normal','no','1');
