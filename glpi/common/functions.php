@@ -846,7 +846,7 @@ function dropdownValue($table,$myname,$value) {
 	$db = new DB;
 	if ($table == "glpi_dropdown_locations" || $table=="glpi_dropdown_kbcategories"){
 	echo "<select name=\"$myname\">";
-	echo "<option value=\"NULL\">-----</option>";
+	echo "<option value=\"0\">-----</option>";
 	showTreeListSelect($table,$value, 0);
 	echo "</select>";
 	}
@@ -880,7 +880,7 @@ function dropdownValue($table,$myname,$value) {
 	$result = $db->query($query);
 	
 	echo "<select name=\"$myname\" size='1'>";
-	echo "<option value=\"NULL\">-----</option>";
+	echo "<option value=\"0\">-----</option>";
 	$i = 0;
 	$number = $db->numrows($result);
 	if ($number > 0) {
@@ -960,7 +960,7 @@ function NetpointLocationSearch($search,$myname,$location,$value='') {
 	
 	
 	echo "<select name=\"$myname\" size='1'>";
-	echo "<option value=\"NULL\">---</option>";
+	echo "<option value=\"0\">---</option>";
 	
 	if($db->numrows($result) > 0) {
 		while($line = $db->fetch_array($result)) {

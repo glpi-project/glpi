@@ -64,8 +64,8 @@ else if (isset($tab["delete"])) {
 	checkAuthentication("admin");
 	deleteComputer($tab);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
-	if(!empty($withtemplate)) {
-		header("Location: ".$cfg_install["root"]."/setup/setup-templates/");
+	if(!empty($tab["withtemplate"])) {
+		header("Location: ".$cfg_install["root"]."/setup/setup-templates.php");
 	} else {
 		header("Location: ".$cfg_install["root"]."/computers/");
 	}
