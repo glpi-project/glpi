@@ -41,7 +41,7 @@ if (isAdmin($_SESSION["glpitype"]))
 if (isset($_GET["update"]))
 {
 	categoryJob ($_GET["ID"],$_GET["category"],$_SESSION["glpiname"]);	
-	header("Location: $_SERVER[HTTP_REFERER]");
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 
 }
 else

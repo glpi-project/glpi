@@ -101,13 +101,13 @@ else {
 	{
 		addReservationItem($_GET);
 		logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." added reservation item ".$_GET["device_type"]."-".$_GET["id_device"].".");
-		header("Location: $_SERVER[HTTP_REFERER]");
+		header("Location: ".$_SERVER['HTTP_REFERER']);
 	} 
 	else if (isset($_GET["delete"]))
 	{
 		deleteReservationItem($_GET);
 		logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." deleted reservation item.");
-		header("Location: $_SERVER[HTTP_REFERER]");
+		header("Location: ".$_SERVER['HTTP_REFERER']);
 	}
 
 

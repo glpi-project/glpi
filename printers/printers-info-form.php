@@ -51,7 +51,7 @@ if (isset($_POST["add"]))
 	checkAuthentication("admin");
 	addPrinter($_POST);
 	logEvent(0, "Printers", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["name"].".");
-	header("Location: $_SERVER[HTTP_REFERER]");
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["delete"]))
 {

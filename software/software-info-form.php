@@ -52,7 +52,7 @@ if (isset($_POST["add"]))
 
 	addSoftware($_POST);
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." added item ".$_POST["name"].".");
-	header("Location: $_SERVER[HTTP_REFERER]");
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {

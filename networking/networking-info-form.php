@@ -47,7 +47,7 @@ if (isset($_POST["add"]))
 	checkAuthentication("admin");
 	addNetdevice($_POST);
 	logEvent(0, "networking", 4, "inventory", $_SESSION["glpiname"]." added item name ".$_POST["name"].".");
-	header("Location: $_SERVER[HTTP_REFERER]");
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["delete"]))
 {
