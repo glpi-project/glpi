@@ -124,9 +124,10 @@ else
 	else checkAuthentication("normal");
 	commonHeader("Printers",$_SERVER["PHP_SELF"]);
 	showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	if (!empty($_GET["ID"])){
 	showJobListForItem($_SESSION["glpiname"],3,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],3,$tab["ID"]);
-
+	}
 	commonFooter();
 }
 
