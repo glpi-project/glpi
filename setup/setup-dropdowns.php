@@ -130,7 +130,7 @@ if ($which==$key) $sel="selected";
 echo "<option value='$key' $sel>".$val."</option>";
 }
 	echo "</select></td>";
-	echo "<td><input type='submit' value=\"".$lang["buttons"][2]."\" class='submit' /></td></tr>";
+	echo "<td><input type='submit' value=\"".$lang["buttons"][2]."\" class='submit' ></td></tr>";
 	echo "</table></form></div>";
 
 	switch ($which){

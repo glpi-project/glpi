@@ -43,7 +43,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 	if (countElementsInTable("glpi_dropdown_".$name)>0){
 	echo "<form method='post' action=\"$target\">";
 	echo "<input type='hidden' name='which' value='$name'>";
-	echo "<tr><td align='center' class='tab_bg_1'>";
+	echo "<tr><td style='text-align:left; padding-left:80px' class='tab_bg_1'>";
 
 
 	$value=getTreeLeafValueName("glpi_dropdown_".$name,$ID);
@@ -68,12 +68,12 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 	
 	echo "<form method='post' action=\"$target\">";
 	echo "<input type='hidden' name='which' value='$name'>";
-	echo "<tr><td align='center'  class='tab_bg_1'>";
+	echo "<tr><td style='text-align:left; padding-left:80px' class='tab_bg_1'>";
 
 	dropdownValue("glpi_dropdown_".$name, "value_to_move",$tomove);
 //		echo "<select name='type'>";
 //		echo "<option value='under'>".$lang["setup"][75]."</option>";
-		echo $lang["setup"][75].":";
+		echo "&nbsp;&nbsp;&nbsp;".$lang["setup"][75]." :&nbsp;&nbsp;&nbsp;";
 //		echo "<option value='over'>".$lang["setup"][77]."</option>";
 //		echo "<option value='same'>".$lang["setup"][76]."</option>";
 //		echo "</select>";
@@ -88,14 +88,14 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 	}
 	echo "<form action=\"$target\" method='post'>";
 	echo "<input type='hidden' name='which' value='$name'>";
-	echo "<tr><td align='center'  class='tab_bg_1'>";
-		echo "<input type='text' maxlength='100' size='10' name='value'>";
+	echo "<tr><td style='text-align:left; padding-left:80px'  class='tab_bg_1'>";
+		echo "<input type='text' maxlength='100' size='15' name='value'>&nbsp;&nbsp;&nbsp;";
 
 	if (countElementsInTable("glpi_dropdown_".$name)>0){
 		echo "<select name='type'>";
 		echo "<option value='under'>".$lang["setup"][75]."</option>";
 		echo "<option value='same'>".$lang["setup"][76]."</option>";
-		echo "</select>";
+		echo "</select>&nbsp;&nbsp;&nbsp;";
 ;
 		dropdownValue("glpi_dropdown_".$name, "value2",$value2);
 		}		
@@ -107,8 +107,9 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 	echo "</td></tr>";
 	
 	
-	echo "</form>";
+	
 	echo "</table></div>";
+	echo "</form>";
 }
 
 
