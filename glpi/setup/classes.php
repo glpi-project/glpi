@@ -239,21 +239,16 @@ class Template {
 		}
 	}
 	
-	// Make new database empty object
-	function getEmpty () {
-		$db = new DB;
-		$query = "SELECT * FROM glpi_templates limit 0,1";
-		if ($result = $db->query($query)) {
-			$data = $db->fetch_array($result);
-			foreach ($data as $key => $val) {
-				$this->fields[$key] = "";
-			}
-			return true;
-
-		} else {
-			return false;
-		}
+// Make new database empty object
+function getEmpty () {
+	$db = new DB;
+	$fields = $db->list_fields("glpi_printers");
+	$columns = mysql_num_fields($fields);
+	for ($i = 0; $i < $columns; $i++) {
+		$name = mysql_field_name($fields, $i);
+		$this->fields[$name] = "";
 	}
+}
 
 	function updateInDB($updates)  {
 

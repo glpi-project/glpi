@@ -61,21 +61,18 @@ class Netdevice {
 			return false;
 		}
 	}
-	function getEmpty() {
+	
+function getEmpty() {
 		//make an empty database object
 		$db = new DB;
-		$query = "SELECT * FROM glpi_networking limit 0,1";
-		if ($result = $db->query($query)) {
-			$data = $db->fetch_array($result);
-			foreach ($data as $key => $val) {
-				$this->fields[$key] = "";
-			}
-			return true;
-
-		} else {
-			return false;
+		
+		$fields = $db->list_fields("glpi_networking");
+		$columns = mysql_num_fields($fields);
+		for ($i = 0; $i < $columns; $i++) {
+			$name = mysql_field_name($fields, $i);
+			$this->fields[$name] = "";
 		}
-	}
+}
 
 	function updateInDB($updates)  {
 		$db = new DB;
