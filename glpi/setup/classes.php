@@ -242,7 +242,7 @@ class Template {
 // Make new database empty object
 function getEmpty () {
 	$db = new DB;
-	$fields = $db->list_fields("glpi_printers");
+	$fields = $db->list_fields("glpi_templates");
 	$columns = mysql_num_fields($fields);
 	for ($i = 0; $i < $columns; $i++) {
 		$name = mysql_field_name($fields, $i);
