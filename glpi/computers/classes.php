@@ -44,29 +44,44 @@ class Computer {
 
 	var $fields	= array();
 	var $updates	= array();
+	//format $device = array(ID,"nom de table periph","ID dans la table device","valeur de specificity")
+	var $devices	= array();
 	
-	function getfromDB ($ID,$template=0) {
+	function getfromDB ($ID) {
 
-		if ($template) {
+		/*if ($template) {
 			$table = "glpi_templates";
-		} else {
-			$table = "glpi_computers";
-		}
+		} else {*/
+		$table = "glpi_computers";
+		//}
 		
 		// Make new database object and fill variables
 		$db = new DB;
-		$query = "SELECT * FROM $table WHERE (ID = '$ID')";
+		$query = "SELECT * FROM $table WHERE (ID = '$ID') limit 0,1";
+		//echo $query;
 		if ($result = $db->query($query)) {
 			if ($db->numrows($result)==1) {
 				$data = $db->fetch_array($result);
 				foreach ($data as $key => $val) {
 					$this->fields[$key] = $val;
 				}
-				return true;
-			} else return false;
-		} else {
-			return false;
+				$query = "SELECT ID, device_type, FK_device, specificity FROM glpi_computer_device WHERE (FK_computers = '$ID')";
+				if ($result = $db->query($query)) {
+					if ($db->numrows($result)>0) {
+						$i = 0;
+						while($data = $db->fetch_array($result)) {
+							$this->devices[$i] = array("compDevID"=>$data["ID"],"devTable"=>$data["device_type"],"devID"=>$data["FK_device"],"specificity"=>$data["specificity"]);
+							$i++;
+						}
+						return true;
+					}
+					else return false;
+				} 
+				else return false;
+			}
+			else return false;
 		}
+		else return false;
 	}
 
 	function updateInDB($updates)  {
@@ -210,16 +225,19 @@ class Computer {
 
 			$query="select * from glpi_reservation_item where (device_type='1' and id_device='$ID')";
 			if ($result = $db->query($query)) {
-				if ($db->numrows($result)>0)
-				deleteReservationItem(array("ID"=>$db->result($result,0,"ID")));
+				if ($db->numrows($result)>0) {
+					deleteReservationItem(array("ID"=>$db->result($result,0,"ID")));
+				}
 			}
+			$query = "DELETE FROM glpi_computer_device WHERE (FK_computer = '$ID')";
+			$result = $db->query($query);
 
 			return true;
 		} else {
 			return false;
 		}
 	}
-
 }
+
 
 ?>
