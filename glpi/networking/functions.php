@@ -483,6 +483,19 @@ function showPorts ($device,$device_type) {
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 	
 	$db = new DB;
+	switch($device_type) {
+		case 1 :
+			$device_real_table_name = "glpi_computers";
+			break;
+		case 2 :
+			$device_real_table_name = "glpi_networking";
+			break;
+		case 3 :
+			$device_real_table_name = "glpi_printers";
+			break;
+	}
+	$query = "SELECT location from ".$device_real_table_name." where ID = ".$device."";
+	$location = $db->result($db->query($query),0,"location");
 
 	$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = $device AND device_type = $device_type) ORDER BY logical_number";
 	if ($result = $db->query($query)) {
@@ -505,7 +518,7 @@ function showPorts ($device,$device_type) {
 				$netport->getfromDB(current($devid));
 				echo "<tr class='tab_bg_1'>";
 				echo "<td align='center'><b>";
-				echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ID=".$netport->fields["ID"]."\">";
+				echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ID=".$netport->fields["ID"]."&location=".$location."\">";
 				echo $netport->fields["logical_number"];
 				echo "</a>";
 				echo "</b></td>";
@@ -517,7 +530,7 @@ function showPorts ($device,$device_type) {
 					showConnection($netport->fields["ID"]);
 				echo "</td>";
 				echo "</tr>";
-			}	
+			}
 			echo "</table></div>\n\n";
 		}
 	}
@@ -525,7 +538,7 @@ function showPorts ($device,$device_type) {
 
 
 
-function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
+function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $location = '') {
 
 	GLOBAL $cfg_install, $cfg_layout, $lang, $REFERER;
 
@@ -542,9 +555,9 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 
 	echo "<div align='center'>";
 	echo "<b><a href='$REFERER'>".$lang["buttons"][13]."</a></b>";
-	echo "<table><tr>";
+	echo "<table class='tab_cadre'><tr>";
 	
-	echo "<th colspan='2'>".$lang["networking"][20].":</th>";
+	echo "<th colspan='4'>".$lang["networking"][20].":</th>";
 	echo "</tr>";
 	echo "<form method='post' action=\"$target\">";
 	echo "<input type='hidden' name='referer' value='$REFERER'>";
@@ -585,6 +598,15 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 
 	echo "<tr class='tab_bg_1'><td>".$lang["networking"][23]."</td>";
 	echo "<td><input type='text' size=25 name=ifmac value=\"".$netport->fields["ifmac"]."\">";
+	echo "</td></tr>";
+	
+	echo "<tr class='tab_bg_1'><td>".$lang["networking"][51].":</td>";
+	
+	echo "<td align='center' >";
+		NetpointLocationSearch($search,"netpoint",$location);
+	echo "</td>";
+        echo "<td><input type='text' size='10'  name='search'></td>";
+	echo "<td><input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
 	echo "</td></tr>";
 
 	if ($ID) {
@@ -676,15 +698,29 @@ function deleteNetport($input) {
 function showPortsAdd($ID,$devtype) {
 	
 	GLOBAL $cfg_layout, $cfg_install, $lang;
-	
+	$db = new DB;
+	switch($devtype) {
+		case 1 :
+			$device_real_table_name = "glpi_computers";
+			break;
+		case 2 :
+			$device_real_table_name = "glpi_networking";
+			break;
+		case 3 :
+			$device_real_table_name = "glpi_printers";
+			break;
+	}
+	$query = "SELECT location from ".$device_real_table_name." where ID = ".$ID."";
+	$location = $db->result($db->query($query),0,"location");
+
 	echo "<div align='center'><table class='tab_cadre' width='90%' cellpadding='2'>";
 	echo "<tr>";
 	echo "<td align='center' class='tab_bg_2'  >";
-	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ondevice=$ID&devtype=$devtype\"><b>";
+	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ondevice=$ID&devtype=$devtype&location=$location\"><b>";
 	echo $lang["networking"][19];
 	echo "</b></a></td>";
 	echo "<td align='center' class='tab_bg_2' width='50%'>";
-	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ondevice=$ID&devtype=$devtype&several=yes\"><b>";
+	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ondevice=$ID&devtype=$devtype&several=yes&location=$location\"><b>";
 	echo $lang["networking"][46];
 	echo "</b></a></td>";
 

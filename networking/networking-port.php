@@ -41,6 +41,7 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_networking.php");
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
+if(empty($tab["search"])) $tab["search"] = "";
 
 $REFERER=$_SERVER["HTTP_REFERER"];
 if (isset($tab["referer"])) $REFERER=$tab["referer"];
@@ -94,11 +95,11 @@ else
 	commonHeader("Networking",$_SERVER["PHP_SELF"]);
 	if(isset($tab["ID"]))
 	{
-		showNetportForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["ondevice"],$tab["devtype"],$tab["several"]);
+		showNetportForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["ondevice"],$tab["devtype"],$tab["several"],$tab["search"],$tab["location"]);
 	}
 	else
 	{
-		showNetportForm($_SERVER["PHP_SELF"],"",$tab["ondevice"],$tab["devtype"],$tab["several"]);
+		showNetportForm($_SERVER["PHP_SELF"],"",$tab["ondevice"],$tab["devtype"],$tab["several"],$tab["search"],$tab["location"]);
 	}
 	commonFooter();
 }

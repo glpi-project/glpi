@@ -580,21 +580,42 @@ function showEvents($target,$order,$sort) {
 function dropdown($table,$myname) {
 	// Make a select box
 	$db = new DB;
-	$query = "SELECT * FROM $table ORDER BY name";
-	$result = $db->query($query);
-
-	echo "<select name=\"$myname\" size='1'>";
-	$i = 0;
-	$number = $db->numrows($result);
-	if ($number > 0) {
-		while ($i < $number) {
-			$output = $db->result($result, $i, "name");
-			$ID = $db->result($result, $i, "ID");
-			echo "<option value=\"$ID\">$output</option>";
-			$i++;
+	
+	if($table == "glpi_dropdown_netpoint") {
+		$query = "select t1.ID as ID, t1.name as netpname, t2.name as locname from glpi_dropdown_netpoint as t1";
+		$query .= " left join glpi_dropdown_locations as t2 on t1.location = t2.ID";
+		$query .= " order by t2.name, t1.name"; 
+		$result = $db->query($query);
+		echo "<select name=\"$myname\">";
+		$i = 0;
+		$number = $db->numrows($result);
+		if ($number > 0) {
+			while ($i < $number) {
+				$output = $db->result($result, $i, "netpname");
+				$loc = $db->result($result, $i, "locname");
+				$ID = $db->result($result, $i, "ID");
+				echo "<option value=\"$ID\">$loc - $output</option>";
+				$i++;
+			}
 		}
+		echo "</select>";
 	}
-	echo "</select>";
+	else {
+		$query = "SELECT * FROM $table ORDER BY name";
+		$result = $db->query($query);
+		echo "<select name=\"$myname\" size='1'>";
+		$i = 0;
+		$number = $db->numrows($result);
+		if ($number > 0) {
+			while ($i < $number) {
+				$output = $db->result($result, $i, "name");
+				$ID = $db->result($result, $i, "ID");
+				echo "<option value=\"$ID\">$output</option>";
+				$i++;
+			}
+		}
+		echo "</select>";
+	}
 }
 
 
@@ -650,6 +671,55 @@ function dropdownNoValue($table,$myname,$value) {
 	echo "</select>";
 }
 
+function NetpointLocationSearch($search,$myname,$location) {
+// Make a select box with preselected values for table dropdown_netpoint
+	$db = new DB;
+	
+	$query = "SELECT t1.ID, t1.name as netpointname, t2.name as locname
+	FROM glpi_dropdown_netpoint AS t1
+	LEFT JOIN glpi_dropdown_locations AS t2
+	ON t1.location = t2.ID
+	WHERE t2.ID = '". $location ."' 
+	ANd (t2.name LIKE '%". $search ."%'
+	OR t1.name LIKE '%". $search ."%')
+	ORDER BY t1.name, t2.name";
+	$result1 = $db->query($query);
+	
+	$query = "SELECT t1.ID, t1.name as netpointname, t2.name as locname
+	FROM glpi_dropdown_netpoint AS t1
+	LEFT JOIN glpi_dropdown_locations AS t2
+	ON t1.location = t2.ID
+	WHERE t2.ID != '". $location ."' 
+	AND (t2.name LIKE '%". $search ."%'
+	OR t1.name LIKE '%". $search ."%')
+	ORDER BY t1.name, t2.name";
+	$result = $db->query($query);
+	
+	if ($db->numrows($result) == 0 && $db->numrows($result1) == 0) {
+		$query = "SELECT *
+			FROM glpi_dropdown_netpoint AS t1
+			LEFT JOIN glpi_dropdown_locations AS t2 ON t1.location = t2.ID
+			ORDER BY t1.name, t2.name";
+		$result = $db->query($query);
+	}
+	
+	
+	echo "<select name=\"$myname\" size='1'>";
+	echo "<option value=\"NULL\">---</option>";
+	
+	if($db->numrows($result1) > 0) {
+		while($line = $db->fetch_array($result1)) {
+			echo "<option value=\"". $line["t1.ID"] ."\">". $line["locname"] ." - ". $line["netpointname"] ."</option>";
+		}
+	}
+	
+	if($db->numrows($result) > 0) {
+		while($line = $db->fetch_array($result)) {
+			echo "<option value=\"". $line["t1.ID"] ."\">". $line["locname"] ." - ". $line["netpointname"] ."</option>";
+		}
+	}
+	echo "</select>";
+}
 
 function dropdownValueSearch($table,$myname,$value,$search) {
 	// Make a select box with preselected values

@@ -46,11 +46,18 @@ function showFormDropdown ($target,$name,$human) {
 	echo "<input type='hidden' name='which' value='$name'>";
 	echo "<tr><td align='center' class='tab_bg_1'>";
 
+	
 	dropdown("glpi_dropdown_".$name, "ID");
         // on ajoute un input text pour entrer la valeur modifier
         echo "<img src=\"".$HTMLRel."pics/puce.gif\" alt='' title=''>";
-        echo "<input type='text' maxlength='100' size='20' name='value'>";
-        //
+	if($name = "netpoint") {
+		dropdown("glpi_dropdown_locations", "value2");
+		echo "<input type='text' maxlength='100' size='10' name='value'>";
+	}
+	else {
+        	echo "<input type='text' maxlength='100' size='20' name='value'>";
+        }
+	//
 	echo "</td><td align='center' class='tab_bg_2'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."'>";
 	//  on ajoute un bouton modifier
@@ -62,7 +69,13 @@ function showFormDropdown ($target,$name,$human) {
 	echo "<form action=\"$target\" method='post'>";
 	echo "<input type='hidden' name='which' value='$name'>";
 	echo "<tr><td align='center'  class='tab_bg_1'>";
-	echo "<input type='text' maxlength='100' size='20' name='value'>";
+	if($name = "netpoint") {
+		dropdown("glpi_dropdown_locations", "value2");
+		echo "<input type='text' maxlength='100' size='10' name='value'>";
+	}
+	else {
+		echo "<input type='text' maxlength='100' size='20' name='value'>";
+	}
 	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
 	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit' class='submit'>";
@@ -107,7 +120,13 @@ function showFormTypeDown ($target,$name,$human) {
 function updateDropdown($input) {
 	$db = new DB;
 	
-	$query = "update ".$input["tablename"]." SET name = '".$input["value"]."' where ID = '".$input["ID"]."'";
+	if($input["tablename"] == "glpi_dropdown_netpoint") {
+		$query = "update ".$input["tablename"]." SET name = '".$input["value"]."', location = '".$input["value2"]."' where ID = '".$input["ID"]."'";
+		
+	}
+	else {
+		$query = "update ".$input["tablename"]." SET name = '".$input["value"]."' where ID = '".$input["ID"]."'";
+	}
 	if ($result=$db->query($query)) {
 		return true;
 	} else {
@@ -119,8 +138,12 @@ function updateDropdown($input) {
 function addDropdown($input) {
 
 	$db = new DB;
-	
-	$query = "INSERT INTO ".$input["tablename"]." (NAME) VALUES ('".$input["value"]."')";
+	if($input["tablename"] == "glpi_dropdown_netpoint") {
+		$query = "INSERT INTO ".$input["tablename"]." (name,location) VALUES ('".$input["value"]."', '".$input["value2"]."')";
+	}
+	else {
+		$query = "INSERT INTO ".$input["tablename"]." (name) VALUES ('".$input["value"]."')";
+	}
 	if ($result=$db->query($query)) {
 		return true;
 	} else {
@@ -196,6 +219,9 @@ function replaceDropDropDown($input) {
 		$query = "update glpi_templates set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
+	case "netpoint" : 
+		$query = "update glpi_networking_ports set netpoint = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		$result = $db->query($query);
 	}
 	$query = "delete from ". $input["tablename"] ." where ID = '". $input["oldID"] ."'";
 	$db->query($query);
@@ -229,7 +255,6 @@ function showDeleteConfirmForm($target,$table, $ID) {
 function getDropdownNameFromTable($table) {
 
 	if(ereg("glpi_type_",$table)){
-		//$name = ereg_replace("glpi_type_","",$table);
 		$name = "type";
 	}
 	else {
@@ -314,6 +339,12 @@ function dropdownUsed($table, $ID) {
 		break;
 	case "templates" :
 		$query = "Select count(*) as cpt FROM glpi_templates where type = '".$ID."'";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
+	
+	case "netpoint" : 
+		$query = "Select count(*) as cpt FROM glpi_networking_ports where netpoint = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;

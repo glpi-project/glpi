@@ -329,6 +329,7 @@ $lang["networking"][47] = "De";
 $lang["networking"][48] = "A";
 $lang["networking"][49] = "Firmware";
 $lang["networking"][50] = "ID";
+$lang["networking"][51] = "Prise reseau";
 
 // Printers
 $lang["printers"][0]	= "Ajouter imprimante...";
@@ -566,6 +567,7 @@ $lang["setup"][69]	= "Types de périphériques";
 $lang["setup"][70]	= "Configuration générale";
 $lang["setup"][71]	= "Firmware";
 $lang["setup"][72] 	= "Selectionnez un intitulé"; 
+$lang["setup"][73] = "Prise reseau";
 
 $lang["setup"][100]="Configuration générale";
 $lang["setup"][101]="Chemin d'installation";

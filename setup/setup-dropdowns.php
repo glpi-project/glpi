@@ -96,7 +96,8 @@ if (isset($_POST["add"])) {
 	$dp["hdtype"]=$lang["setup"][48];		
 	$dp["network"]=$lang["setup"][8];		
 	$dp["iface"]=$lang["setup"][9];		
-	$dp["firmware"]=$lang["setup"][71];		
+	$dp["firmware"]=$lang["setup"][71];
+	$dp["netpoint"]=$lang["setup"][73];		
 	
 //	asort($dp);
 	
@@ -160,7 +161,10 @@ echo "<option value='$key' $sel>".$val."</option>";
 		break;
 		case "firmware" :
 		showFormDropDown($_SERVER["PHP_SELF"],"firmware",$lang["setup"][71]);
-		break;	
+		break;
+		case "netpoint" : 
+		showFormDropDown($_SERVER["PHP_SELF"],"netpoint",$lang["setup"][73]);
+		break;
 	default : break;
 	}
 	commonFooter();
