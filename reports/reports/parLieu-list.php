@@ -58,19 +58,13 @@ if ($db->numrows($result)==1){
         $name=getDropdownName("glpi_dropdown_locations",$_POST["location"]);
 	echo "<div align='center'><h2>".$lang["reports"][54]." $name </h2></div><br><br>";
         	
-        $query="SELECT glpi_dropdown_netpoint.name AS prise, a.name AS port, a.ifaddr            
-AS ip, a.ifmac AS mac, glpi_networking.name AS switch, b.name AS portordi, 
-b.ifaddr AS ip2, b.ifmac AS mac2, glpi_networking_wire.end1 as end1
+        $query="SELECT glpi_dropdown_netpoint.name AS prise, c.name AS port, c.ifaddr            
+AS ip, c.ifmac AS mac,c.ID AS IDport
  FROM glpi_dropdown_locations
  LEFT JOIN glpi_dropdown_netpoint ON glpi_dropdown_netpoint.location = 
 glpi_dropdown_locations.ID
- LEFT JOIN glpi_networking_ports a ON a.netpoint = glpi_dropdown_netpoint.ID
- AND a.device_type =".NETWORKING_TYPE."
- LEFT JOIN glpi_networking_wire ON glpi_networking_wire.end2 = a.ID
- LEFT JOIN glpi_networking ON glpi_networking.ID = a.on_device
- LEFT JOIN glpi_networking_ports b ON b.ID = glpi_networking_wire.end1
- WHERE glpi_dropdown_locations.ID =".$_POST["location"]."";
-        	
+LEFT JOIN glpi_networking_ports c ON c.netpoint=glpi_dropdown_netpoint.id 
+ WHERE glpi_dropdown_locations.ID =".$_POST["location"]." AND c.device_type=".NETWORKING_TYPE.";";
 	/*!
  	on envoie la requête de selection qui varie selon le choix fait dans la dropdown à la fonction report perso qui
  	affiche un rapport en fonction de l'étage choisi  

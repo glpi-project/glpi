@@ -2273,16 +2273,26 @@ switch($item_type)
 					//print_r($ligne);
 					$prise=$ligne['prise'];
 					$port=$ligne['port'];
-					$switch=$ligne['switch'];
-					$portordi=$ligne['portordi'];
+					$nw=new NetWire();
+					$end1=$nw->getOppositeContact($ligne['IDport']);
 					$np=new Netport();
-					$np->getFromDB($ligne['end1']);
+					$np->getFromDB($end1);
 					$np->getDeviceData($np->fields["on_device"],$np->fields["device_type"]);
 					$ordi=$np->device_name;
 					$ip=$ligne['ip'];
 					$mac=$ligne['mac'];
-					$ip2=$ligne['ip2'];
-					$mac2=$ligne['mac2'];					
+					$ip2=$np->fields['ifaddr'];
+					$mac2=$np->fields['ifmac'];
+					$portordi=$np->fields['name'];
+
+					$np=new Netport();
+					$np->getFromDB($ligne['IDport']);
+
+					$nd=new Netdevice();
+					$nd->getFromDB($np->fields["on_device"]);
+					$switch=$nd->fields["name"];
+					
+
 					//inserer ces valeures dans un tableau
 					
 					echo "<tr>";	
@@ -2302,7 +2312,7 @@ switch($item_type)
 	case 'glpi_networking_switch' :
 		echo "<table width='100%' height='60' border='0'>";
 		echo "<tr> ";
-		echo "<th><div align='center'><b>".$lang["reports"][20]."</b></div></th>";
+		echo "<th><div align='center'>&nbsp;</div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][46]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][38]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][53]."</b></div></th>";
@@ -2314,23 +2324,25 @@ switch($item_type)
 		
 		while( $ligne = $db->fetch_array($result))
 					{
-					//$switch = $ligne['switch'];
+					$switch = $ligne['switch'];
 					//echo $ligne['location'];
-					$ID=$ligne['ID'];
-					$lieu=getDropdownName("glpi_dropdown_locations",$ID);
 					//$prise=$ligne['prise'];
 					$port = $ligne['port'];
-					$portordi=$ligne['portordi'];
-					$ordi=$ligne['ordi'];
+					$nw=new NetWire();
+					$end1=$nw->getOppositeContact($ligne['IDport']);
+					$np=new Netport();
+					$np->getFromDB($end1);
+					$np->getDeviceData($np->fields["on_device"],$np->fields["device_type"]);
+					$ordi=$np->device_name;
 					$ip=$ligne['ip'];
 					$mac=$ligne['mac'];
-					$ip2=$ligne['ip2'];
-					$mac2=$ligne['mac2'];
+					$ip2=$np->fields['ifaddr'];
+					$mac2=$np->fields['ifmac'];
+					$portordi=$np->fields['name'];
 					//inserer ces valeures dans un tableau
 					
 					echo "<tr>";	
-					//if($switch) echo "<td><div align='center'>$switch</div></td>"; else echo //"<td><div align='center'> N/A </div></td>";
-					if($lieu) echo "<td><div align='center'>$lieu</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($switch) echo "<td><div align='center'>$switch</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($port) echo "<td><div align='center'>$port</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($ip) echo "<td><div align='center'>$ip</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($mac) echo "<td><div align='center'>$mac</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
@@ -2363,18 +2375,24 @@ switch($item_type)
 					$ID=$ligne['ID'];
 					$lieu=getDropdownName("glpi_dropdown_locations",$ID);
 					//$etage=$ligne['etage'];
-					$switch=$ligne['switch'];
-					$port=$ligne['port'];
-					$portordi=$ligne['portordi'];
-					$ordi=$ligne['ordi'];
+					$nw=new NetWire();
+					$end1=$nw->getOppositeContact($ligne['IDport']);
+					$np=new Netport();
+					$np->getFromDB($end1);
+					$np->getDeviceData($np->fields["on_device"],$np->fields["device_type"]);
+					$ordi=$np->device_name;
 					$ip=$ligne['ip'];
 					$mac=$ligne['mac'];
-					$ip2=$ligne['ip2'];
-					$mac2=$ligne['mac2'];
-					//echo $ligne['location'];
-					//print_r($ligne);
-					//$ports=$ligne['ports'];
-					//$ifaddr = $ligne['ifaddr'];
+					$port=$ligne['port'];
+					$ip2=$np->fields['ifaddr'];
+					$mac2=$np->fields['ifmac'];
+					$portordi=$np->fields['name'];
+					$np=new Netport();
+					$np->getFromDB($ligne['IDport']);
+
+					$nd=new Netdevice();
+					$nd->getFromDB($np->fields["on_device"]);
+					$switch=$nd->fields["name"];
 					
 					
 					//inserer ces valeures dans un tableau
