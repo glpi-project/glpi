@@ -337,13 +337,13 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	
 
 	// Some Javascript-Functions which we may need later
-	echo "<script type=\"text/javascript\" language=\"JavaScript\">";
-	echo "function jumpTo(URL_List){ var URL = URL_List.options[URL_List.selectedIndex].value;  window.location.href = URL; }\n\n";
-	echo "browserName=navigator.appName;";
-  	echo "browserVer=parseInt(navigator.appVersion);";
-	echo "if ((browserName==\"Netscape\" && browserVer>=3) || (browserName==\"Microsoft Internet Explorer\" && browserVer>=4)) version=\"n3\";";
-	echo "else version=\"n2\"; function historyback() { history.back(); } function historyforward() { history.forward(); }";
-	echo "</script>";
+	
+	echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
+	
+	
+	
+	
+	
 	// End of Head
 	echo "</head>\n";
 	
@@ -479,13 +479,8 @@ function helpHeader($title,$url,$name) {
 	}
 
 	// Some Javascript-Functions which we may need later
-	echo "<script type=\"text/javascript\" language=\"JavaScript\">";
-	echo "function jumpTo(URL_List){ var URL = URL_List.options[URL_List.selectedIndex].value;  window.location.href = URL; }\n\n";
-	echo "browserName=navigator.appName;";
-  	echo "browserVer=parseInt(navigator.appVersion);";
-	echo "if ((browserName==\"Netscape\" && browserVer>=3) || (browserName==\"Microsoft Internet Explorer\" && browserVer>=4)) version=\"n3\";";
-	echo "else version=\"n2\"; function historyback() { history.back(); } function historyforward() { history.forward(); }";
-	echo "</script>";
+	
+	echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
 	
 	// Appel CSS
 	
@@ -579,13 +574,8 @@ function nullHeader($title,$url) {
 	}
 
 	// Some Javascript-Functions which we may need later
-	echo "<script type=\"text/javascript\" language=\"JavaScript\">";
-	echo "function jumpTo(URL_List){ var URL = URL_List.options[URL_List.selectedIndex].value;  window.location.href = URL; }\n\n";
-	echo "browserName=navigator.appName;";
-  	echo "browserVer=parseInt(navigator.appVersion);";
-	echo "if ((browserName==\"Netscape\" && browserVer>=3) || (browserName==\"Microsoft Internet Explorer\" && browserVer>=4)) version=\"n3\";";
-	echo "else version=\"n2\"; function historyback() { history.back(); } function historyforward() { history.forward(); }";
-	echo "</script>";
+	
+	echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
 	
 	// Appel CSS
 	
@@ -768,6 +758,8 @@ function showEvents($target,$order,$sort) {
 
 
 function dropdown($table,$myname) {
+	
+	
 	// Make a select box
 	$db = new DB;
 	

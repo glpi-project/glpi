@@ -51,6 +51,9 @@ checkAuthentication("post-only");
 include ("_relpos.php");
 // Appel CSS
  echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
+// Appel javascript
+echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
+
 ?>
 
 </head>
