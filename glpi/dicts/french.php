@@ -381,6 +381,8 @@ $lang["networking"][49] = "Firmware";
 $lang["networking"][50] = "ID";
 $lang["networking"][51] = "Prise reseau";
 $lang["networking"][52] = "N° Prise";
+$lang["networking"][53]	= "Nouvel mat&eacute;riel &agrave; partir d'un mod&egrave;le";
+$lang["networking"][54]   = "Mat&eacute;riel ID";
 
 // Printers
 $lang["printers"][0]	= "Ajouter imprimante...";
@@ -443,6 +445,8 @@ $lang["monitors"][26]	= "Maintenance";
 $lang["monitors"][27]   = "identifiant";
 $lang["monitors"][28]	= "Ecrans";
 $lang["monitors"][29]	= "Ecran ID";
+$lang["monitors"][30]	= "Nouvel &eacute;cran &agrave; partir d'un mod&egrave;le";
+
 
 // Software
 $lang["software"][0]	= "Ajouter logiciel..."; 
@@ -516,6 +520,8 @@ $lang["peripherals"][25]	= "Expiration garantie";
 $lang["peripherals"][26]	= "Maintenance";
 $lang["peripherals"][27]   = "identifiant";
 $lang["peripherals"][28]	= "P&eacute;riph&eacute;riques";
+$lang["peripherals"][29]	= "P&eacute;riph&eacute;rique ID";
+$lang["peripherals"][30]	= "Nouvel p&eacute;riph&eacute;rique &agrave; partir d'un mod&egrave;le";
 
 
 // Reports

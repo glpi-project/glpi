@@ -172,7 +172,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 	$query = "select mon.ID from glpi_monitors as mon LEFT JOIN glpi_dropdown_locations on mon.location=glpi_dropdown_locations.ID ";
 	$query .= "LEFT JOIN glpi_type_monitors on mon.type = glpi_type_monitors.ID ";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = mon.FK_glpi_enterprise ) ";
-	$query .= " where $where AND mon.deleted='$deleted' ORDER BY $sort $order";
+	$query .= " where $where AND mon.deleted='$deleted' AND mon.is_template = '0' ORDER BY $sort $order";
 //	echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
@@ -314,7 +314,7 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 		if(!$template) {
 			echo $lang["monitors"][29].": ".$mon->fields["ID"];
 		}elseif (strcmp($template,"newcomp") === 0) {
-			echo $lang["monitors"][3].": ".$mon->fields["tplname"];
+			echo $lang["monitors"][30].": ".$mon->fields["tplname"];
 		}elseif (strcmp($template,"newtemplate") === 0) {
 			echo $lang["common"][6]."&nbsp;: <input type='text' name='tplname' value=\"".$mon->fields["tplname"]."\" size='20'>";
 		}
