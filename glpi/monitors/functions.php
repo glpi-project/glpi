@@ -53,36 +53,17 @@ function searchFormMonitors() {
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
 
-	$option["name"]				= $lang["monitors"][5];
-	$option["ID"]				= $lang["monitors"][23];
-	$option["location"]			= $lang["monitors"][6];
-	$option["type"]				= $lang["monitors"][9];
-	$option["serial"]			= $lang["monitors"][10];
-	$option["otherserial"]		= $lang["monitors"][11]	;
-	$option["comments"]			= $lang["monitors"][12];
-	$option["contact"]			= $lang["monitors"][8];
-	$option["contact_num"]		= $lang["monitors"][7];
-	$option["date_mod"]			= $lang["monitors"][16];
-/*
-	echo "<form method='get' action=\"".$cfg_install["root"]."/monitors/monitors-search.php\">";
-	echo "<center><table border='0' width='90%'>";
-	echo "<tr><th colspan='2'><b>".$lang["search"][5].":</b></th></tr>";
-	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>";
-		dropdown( "dropdown_locations",  "contains");
-	echo "<input type='hidden' name='field' value='location'>&nbsp;";
-	echo $lang["search"][6];
-	echo "&nbsp;<select name=sort size=1>";
-	reset($option);
-	foreach ($option as $key => $val) {
-		echo "<option value=$key>$val\n";
-	}
-	echo "</select>";
-	echo "<input type='hidden' name='phrasetype' value='exact'>";
-	echo "</td><td width='80' align='center' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'>";
-	echo "</td></tr></table></form></center>";
- */
+	$option["mon.name"]			= $lang["monitors"][5];
+	$option["mon.ID"]			= $lang["monitors"][23];
+	$option["glpi_dropdown.locations.name"]	= $lang["monitors"][6];
+	$option["glpi_type_monitors.name"]	= $lang["monitors"][9];
+	$option["mon.serial"]			= $lang["monitors"][10];
+	$option["mon.otherserial"]		= $lang["monitors"][11]	;
+	$option["mon.comments"]			= $lang["monitors"][12];
+	$option["mon.contact"]			= $lang["monitors"][8];
+	$option["mon.contact_num"]		= $lang["monitors"][7];
+	$option["mon.date_mod"]			= $lang["monitors"][16];
+
 	echo "<form method='get' action=\"".$cfg_install["root"]."/monitors/monitors-search.php\">";
 	echo "<div align='center'><table  width='750' class='tab_cadre'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
@@ -132,8 +113,9 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 	if (!$order) {
 		$order = "ASC";
 	}
-	$query = "SELECT * FROM glpi_monitors WHERE $where ORDER BY $sort $order";
-
+	$query = "select mon.ID from glpi_monitors as mon LEFT JOIN glpi_dropdown_locations on mon.location=glpi_dropdown_locations.ID ";
+	$query .= "LEFT JOIN glpi_type_monitors on mon.type = glpi_type_monitors.ID ";
+	$query .= "where $where ORDER BY $sort $order";
 	// Get it from database	
 	$db = new DB;
 	if ($result = $db->query($query)) {
@@ -141,7 +123,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 
 		// Limit the result, if no limit applies, use prior result
 		if ($numrows>$cfg_features["list_limit"]) {
-			$query_limit = "SELECT * FROM glpi_monitors WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
+			$query_limit = $query ." LIMIT $start,".$cfg_features["list_limit"]." ";
 			$result_limit = $db->query($query_limit);
 			$numrows_limit = $db->numrows($result_limit);
 		} else {
@@ -159,7 +141,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			if ($sort=="name") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=mon.name&order=ASC&start=$start\">";
 			echo $lang["monitors"][5]."</a></th>";
 
 			// Location			
@@ -167,7 +149,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			if ($sort=="location") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=location&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=mon.location&order=ASC&start=$start\">";
 			echo $lang["monitors"][6]."</a></th>";
 
 			// Type
@@ -175,7 +157,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			if ($sort=="type") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=type&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=mon.type&order=ASC&start=$start\">";
 			echo $lang["monitors"][9]."</a></th>";
 
 			// Last modified		
@@ -183,7 +165,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			if ($sort=="date_mod") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=date_mod&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=mon.date_mod&order=DESC&start=$start\">";
 			echo $lang["monitors"][16]."</a></th>";
 
 			// Contact person
@@ -191,13 +173,13 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			if ($sort=="contact") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=contact&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=mon.contact&order=ASC&start=$start\">";
 			echo $lang["monitors"][8]."</a></th>";
 
 			echo "</tr>";
 
 			for ($i=0; $i < $numrows_limit; $i++) {
-				$ID = $db->result($result_limit, $i, "ID");
+				$ID = $db->result($result_limit, $i, "mon.ID");
 				$mon = new Monitor;
 				$mon->getfromDB($ID);
 				echo "<tr class='tab_bg_2'>";
@@ -222,7 +204,6 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 		} else {
 			echo "<center><b>".$lang["monitors"][17]."</b></center>";
 			echo "<hr noshade>";
-			searchFormMonitors();
 		}
 	}
 }

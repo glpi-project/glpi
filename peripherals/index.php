@@ -46,10 +46,10 @@ commonHeader("Peripherals",$_SERVER["PHP_SELF"]);
 
 if(!isset($_GET["start"])) $_GET["start"] = 0;
 if (!isset($_GET["order"])) $_GET["order"] = "ASC";
-if (!isset($_GET["field"])) $_GET["field"] = "name";
+if (!isset($_GET["field"])) $_GET["field"] = "periph.name";
 if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
 if (!isset($_GET["contains"])) $_GET["contains"] = "";
-if (!isset($_GET["sort"])) $_GET["sort"] = "name";
+if (!isset($_GET["sort"])) $_GET["sort"] = "periph.name";
 
 titlePeripherals();
 
