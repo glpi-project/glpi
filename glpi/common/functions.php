@@ -2004,4 +2004,26 @@ function showCalendarForm($form,$element,$value='',$withtemplate=''){
 		}
 }
 
+function sendFile($file,$filename){
+        
+	if (!file_exists($file)){
+	echo "Error file $file does not exist";
+	} else {
+		header("Content-disposition: filename=$filename");
+        	header('Content-type: application/octetstream');
+        	header('Pragma: no-cache');
+        	header('Expires: 0');
+		$f=fopen($file,"r");
+		
+		if (!$f){
+		echo "Error opening file $file";
+		} else {
+			while (!feof($f)){
+           		echo  fread($f, 1024);
+       			}
+		}
+	
+	}
+}
+
 ?>

@@ -38,6 +38,16 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
+
+// full path 
+$path=$phproot."/backups/";
+$path = $path . "dump/";
+if (!is_dir($path)) mkdir($path, 0777);
+if (isset($_GET["sendFile"])){
+sendFile($path.$_GET["sendFile"],$_GET["sendFile"]);
+exit();
+}
+
 checkauthentication("super-admin");
 
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
@@ -83,7 +93,6 @@ function xmlnow(what4){
 <?php
 
 
-
 // mySQL - variables
 $db = new DB;
 $dbhost=$db->dbhost;
@@ -97,8 +106,6 @@ $dbname=$db->dbdefault;
 // 1 only with ZLib support, else change value to 0
 $compression = 0;
 
-// full path to phpMyBackup
-$path=$phproot."/backups/";
 
 
 if ($compression==1) $filetype = "sql.gz";
@@ -107,8 +114,8 @@ else $filetype = "sql";
 // DO NOT CHANGE THE LINES BELOW
 flush();
 $conn = mysql_connect($dbhost,$dbuser,$dbpass) or die(mysql_error());
-$path = $path . "dump/";
-if (!is_dir($path)) mkdir($path, 0777);
+
+
 
 
 // génére un fichier backup.xml a partir de base dbhost connecté avec l'utilisateur dbuser et le mot de passe
@@ -618,7 +625,7 @@ echo " <div align='center'> <table border='0'><tr><td><img src=\"". $HTMLRel."pi
 	       		<td>&nbsp;<a href=\"javascript:erase('$file')\">".$lang["backup"][20]."</a>&nbsp;</td>
 
 			<td>&nbsp;<a href=\"javascript:restore('$file')\">".$lang["backup"][14]."</a>&nbsp;</td>
-	        	<td>&nbsp;<a href=\"dump/$file\">".$lang["backup"][13]."</a></td></tr>";
+	        	<td>&nbsp;<a href=\"index.php?sendFile=$file\">".$lang["backup"][13]."</a></td></tr>";
 	    }
 	      }
 closedir($dir);
