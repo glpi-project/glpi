@@ -68,11 +68,11 @@ echo "</select></td>";
 
 echo "<td align='right'>";
 echo "Date de debut :</td><td> <input type=\"texte\" readonly name=\"date1\"  size ='10' value=\"". $_POST["date1"] ."\" /></td>";
-echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date1&amp;value=".$_POST["date1"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."'>";
+echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date1&amp;value=".$_POST["date1"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."'>";
 echo "</td><td><input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date1.value=''\" value='".$lang["buttons"][16]."'>";
 echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name\"submit\" Value=\"". $lang["buttons"][7] ."\" /></td></tr>";
 echo "<tr class='tab_bg_2'><td align='right'>Date de fin :</td><td><input type=\"texte\" readonly name=\"date2\"  size ='10' value=\"". $_POST["date2"] ."\" /></td>";
-echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date2&amp;value=".$_POST["date2"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."'>";
+echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date2&amp;value=".$_POST["date2"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."'>";
 echo "</td><td><input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date2.value=''\" value='".$lang["buttons"][16]."'>";
 echo "</td></tr>";
 echo "</table></form></div>";

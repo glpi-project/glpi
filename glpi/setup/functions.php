@@ -845,17 +845,17 @@ function updateUser($input) {
 	unset($input["email_form"]);
 	}
 	//Only super-admin's can set admin or super-admin access.
-	//set to "post-only" by default
+	//set to "normal" by default
 	//if user type is allready admin or super-admin do not touch it
 	if(!isSuperAdmin($_SESSION["glpitype"])) {
 		if(!empty($input["type"]) && $input["type"] != "normal" && $input["type"] != "post-only") {
-			$input["type"] = "post-only";
+			$input["type"] = "normal";
 		}
-		if($user->fields["type"] == "super-admin") {
+		if($user->fields["type"] == "") {
 			$input["type"] = "super-admin";
 		}
 		if($user->fields["type"] == "admin") {
-			$input["type"] = "admin";
+			$input["type"] = "";
 		}
 		
 	}
@@ -1089,13 +1089,13 @@ function showTemplateForm($target,$ID) {
 	
 	echo "<tr><td>".$lang["setup"][53].":	</td>";
 	echo "<td><input type='text' name='achat_date' readonly size='10' value=\"". $templ->fields["achat_date"] ."\">";
-	echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&elem=achat_date&value=". $templ->fields["achat_date"] ."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+	echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&elem=achat_date&value=". $templ->fields["achat_date"] ."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].achat_date.value='0000-00-00'\" value='reset'>";
   echo "</td></tr>";
 	
 	echo "<tr><td>".$lang["setup"][54].":	</td>";
 	echo "<td><input type='text' name='date_fin_garantie' readonly size='10' value=\"". $templ->fields["date_fin_garantie"] ."\">";
-	echo "&nbsp; <input name='button' type='button' class='button' readonly onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&elem=date_fin_garantie&value=". $templ->fields["date_fin_garantie"] ."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+	echo "&nbsp; <input name='button' type='button' class='button' readonly onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&elem=date_fin_garantie&value=". $templ->fields["date_fin_garantie"] ."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date_fin_garantie.value='0000-00-00'\" value='reset'>";
   echo "</td></tr>";
 	

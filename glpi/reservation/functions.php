@@ -362,7 +362,7 @@ echo "</tr></table>";
 
 function showAddReservationForm($target,$ID,$date){
 	global $lang,$HTMLRel;
-	if ($HTMLRel=="")$HTMLRel=".";
+
 	echo "<center><form method='post' name=form action=\"$target\">";
 	echo "<input type='hidden' name='id_user' value='".$_SESSION["glpiID"]."'>";
 	echo "<input type='hidden' name='id_item' value='$ID'>";
@@ -382,7 +382,7 @@ function showAddReservationForm($target,$ID,$date){
 
 	echo "<tr><td>".$lang["reservation"][10].":	</td>";
 	echo "<td><input type='text' name='begin_date' readonly size='10' value='$date'>";
-	echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&elem=begin_date&value=$date','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+	echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('".$HTMLRel."mycalendar.php?form=form&elem=begin_date&value=$date','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].begin_date.value='$date'\" value='reset'>";
     echo "</td></tr>";
 
@@ -406,7 +406,7 @@ function showAddReservationForm($target,$ID,$date){
 
 	echo "<tr><td>".$lang["reservation"][11].":	</td>";
 	echo "<td><input type='text' name='end_date' readonly size='10' value='$date'>";
-	echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&elem=end_date&value=$date','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+	echo "&nbsp; <input name='button' type='button' class='button'  onClick=\"window.open('".$HTMLRel."mycalendar.php?form=form&elem=end_date&value=$date','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].end_date.value='$date'\" value='reset'>";
     echo "</td></tr>";
 
@@ -438,8 +438,6 @@ function showAddReservationForm($target,$ID,$date){
 
 function printReservation($target,$ID,$date){
 		global $HTMLRel;
-
-		if ($HTMLRel=="") $HTMLRel=".";
 
 		$id_user=$_SESSION["glpiID"];
 
@@ -477,8 +475,8 @@ $display="";
 
 					$delete="";
 
-					if ($_SESSION["glpiID"]==$user->fields["ID"])
-						$delete="<a border=0 href=\"".$target."?show=resa&clear=".$row['ID']."\"><img border=0 height=16 width=16 src=\"".$HTMLRel."/pics/clear.png\"></a>";
+					if ($_SESSION["glpiID"]==$user->fields["ID"]||isAdmin($_SESSION["glpitype"]))
+						$delete="<a border=0 href=\"".$target."?show=resa&clear=".$row['ID']."\"><img border=0 height=16 width=16 src=\"".$HTMLRel."pics/clear.png\"></a>";
 
 		echo $delete.$display.": ".$user->fields["name"];
 
@@ -518,12 +516,12 @@ function addReservation($input){
    $resa->fields["end"] = $input["end_date"]." ".$input["end_hour"].":".$input["end_min"].":00";
 
 	if (!$resa->test_valid_date()){
-		$resa->displayError("date");
+		$resa->displayError("date",$input["id_item"]);
 		return false;
 	}
 	
 	if ($resa->is_reserved()){
-		$resa->displayError("is_res");
+		$resa->displayError("is_res",$input["id_item"]);
 		return false;
 	}
 	return $resa->addToDB();
@@ -538,8 +536,6 @@ return $p[0].":".$p[1];
 function printReservationItems(){
 global $lang,$HTMLRel;
 
-if ($HTMLRel=="")$HTMLRel=".";
-
 $ri=new ReservationItem;
 
 $db=new DB;
@@ -549,7 +545,7 @@ $query="select ID from glpi_reservation_item ORDER BY device_type";
 	if ($result = $db->query($query)) {
 		while ($row=$db->fetch_array($result)){
 			$ri->getfromDB($row['ID']);
-			echo "<a href='$HTMLRel/helpdesk.php?show=resa&ID=".$row['ID']."'>".$ri->getType()." - ".$ri->getName()."</a><br>";
+			echo "<a href='".$HTMLRel."helpdesk.php?show=resa&ID=".$row['ID']."'>".$ri->getType()." - ".$ri->getName()."</a><br>";
 		}
 	}
 }

@@ -559,7 +559,7 @@ function showLicenseForm($target,$ID) {
 		echo "<option value='$i'>$i</option>";
 	echo "</select>";
 	echo "&nbsp;".$lang["software"][24].":<input type='text' name='expire' readonly size='10' >";
-	echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=expire','Calendrier','width=200, height=220')\" value='".$lang["buttons"][15]."...'>";
+	echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=expire','".$lang["buttons"][15]."','width=200, height=220')\" value='".$lang["buttons"][15]."...'>";
 	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].expire.value='0000-00-00'\" value='reset'>";
 	echo "</td>";
 

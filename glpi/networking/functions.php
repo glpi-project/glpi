@@ -347,13 +347,13 @@ function showNetworkingForm ($target,$ID) {
 	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
 	echo "<tr><td>".$lang["networking"][39].":	</td>";
 	echo "<td><input type='text' name='achat_date' readonly size='10' value='".$netdev->fields["achat_date"]."'>";
-	echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&elem=achat_date&value=".$netdev->fields["achat_date"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+	echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&elem=achat_date&value=".$netdev->fields["achat_date"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].achat_date.value='0000-00-00'\" value='reset'>";
   echo "</td></tr>";
 	
 	echo "<tr><td>".$lang["networking"][40].":	</td>";
 	echo "<td><input type='text' name='date_fin_garantie' readonly size='10' value='".$netdev->fields["date_fin_garantie"]."'>";
-	echo "&nbsp; <input name='button' type='button' class='button' readonly onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&elem=date_fin_garantie&value=".$netdev->fields["date_fin_garantie"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+	echo "&nbsp; <input name='button' type='button' class='button' readonly onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&elem=date_fin_garantie&value=".$netdev->fields["date_fin_garantie"]."','".$lang["buttons"][15]."','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date_fin_garantie.value='0000-00-00'\" value='reset'>";
   echo "</td></tr>";
 	
