@@ -588,7 +588,9 @@ function step6($root_doc, $event_loglevel, $num_of_events, $expire_events,$jobs_
 function step7() {
 
 	global $lang;
-	
+	$root_doc = ereg_replace("/install.php","",$_SERVER['REQUEST_URI']);
+	$query = "update glpi_config set root_doc = '".$root_doc."'";
+	$db->query($query);
 	echo "<h2>".$lang["install"][55]."</h2>";
 	echo "<p>".$lang["install"][57]."</p>";
 	echo "<p><ul><li> ".$lang["install"][58]."</li>";
