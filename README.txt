@@ -290,7 +290,7 @@ This stage informs you that the database is initialized with the default values.
 Some informations are given to you on these values. Read this information attentively and click on « continue ». 
 
 Step 4 : This stage indicates that the installation of GLPI is now finished, a summary is displayed.
-Read these informations attentively and click on "use GLPI" to carry out your first connection 
+Read these informations attentively and click on "use GLPI" to perform your first connection 
 with the application. 
 
 --- End of the installation
