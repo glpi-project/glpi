@@ -201,14 +201,15 @@ border:1px dotted #000000;
 /* #################################### */
 #contenulogin {
 /* a voir je suis pas bien sûr  */
-height: 100%;
+/*height: 100%;*/
 font-family : Verdana,Arial,Helvetica,sans-serif;
 font-size : 12px;
-position: relative; /*ou absolute */
+/*position: relative; *//*ou absolute */
 left: 50%;
 width: 300px;
-margin-left: -150px;
+/*margin-left: -150px;*/
 color :#009966;
+margin: 0 auto;
 }
 
 #boxlogin {
