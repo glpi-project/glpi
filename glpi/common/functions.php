@@ -186,8 +186,8 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	}
 
 	// Start the page
-	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">";
-         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\" />"
+	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN \">";
+         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1 \" />";
 	echo "<html><head><title>glpi: ".$title."</title>";
 
 	// Send extra expires header if configured
