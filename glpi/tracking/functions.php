@@ -522,7 +522,7 @@ function showJobDetails($ID) {
 	}
 }
 
-function postJob($ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$contents) {
+function postJob($ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$contents,$assign="") {
 	// Put Job in database
 
 	GLOBAL $cfg_install, $cfg_features, $cfg_layout;
@@ -541,6 +541,7 @@ function postJob($ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$c
 	$job->priority = $priority;
 	$job->uemail = $uemail;
 	$job->emailupdates = $emailupdates;
+	$job->assign = $assign;
 	
 	if ($job->putinDB()) {
 		// Log this event
@@ -670,11 +671,11 @@ function postFollowups ($ID,$author,$contents) {
 	}
 }
 
-function addFormTracking ($ID,$author,$target,$error) {
+function addFormTracking ($ID,$author,$assign,$target,$error,$searchauthor='') {
 	// Prints a nice form to add jobs
 
 	GLOBAL $cfg_layout, $lang;
-	
+
 	if (!empty($error)) {
 		echo "<div align='center'><b>$error</b></div>";
 	}
@@ -701,7 +702,17 @@ function addFormTracking ($ID,$author,$target,$error) {
 	echo "</select></td></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$lang["joblist"][3].":</td>";
-	echo "<td align='center'>$author</td></tr>";
+	
+	echo "<td align='center'>";
+	dropdownValueSearch("glpi_users","user",$author,$searchauthor);
+	echo "<input type=text size=10  name='search'>";
+	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";	
+	echo "</td></tr>";
+	echo "<tr class='tab_bg_2'><td>".$lang["joblist"][15].":</td>";
+	
+	echo "<td align='center'>";
+	dropdownUsers($assign,"assign");
+	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$lang["joblist"][5].":</td>";
 	echo "<td align='center'>";
