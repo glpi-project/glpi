@@ -914,12 +914,12 @@ function showConnectorSearch($target,$ID) {
 
 	echo "<tr class='tab_bg_1'>";
 	
-	echo "<td>".$lang["networking"][29]." <select name=type>";
+	echo "<td>".$lang["networking"][29]." <select name='type'>";
 	echo "<option value='name'>".$lang["networking"][0]."</option>";
 	echo "<option value='id'>ID</option>";
 	echo "</select>";
 	echo $lang["networking"][30]." <input type='text' size='10' name='comp'>";
-	echo "<input type='hidden' name='pID1' value=$ID>";
+	echo "<input type='hidden' name='pID1' value=\"$ID\">";
 	echo "<input type='hidden' name='next' value=\"compsearch\">";
 	echo "</td><td class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][11]."\" class='submit'>";
@@ -930,7 +930,7 @@ function showConnectorSearch($target,$ID) {
 	echo "<form method='post' action=\"$target\">";
 	echo "<td>".$lang["networking"][31].":";
 	$db = new DB;
-	$query = "SELECT glpi_networking.ID AS ID, glpi_networking.name AS name, glpi_dropdown_locations.ID as location from glpi_networking LEFT JOIN glpi_dropdown_locations ON glpi_networking.location = glpi_dropdown_locations.id";
+	$query = "SELECT glpi_networking.ID AS ID, glpi_networking.name AS name, glpi_dropdown_locations.ID as location from glpi_networking LEFT JOIN glpi_dropdown_locations ON glpi_networking.location = glpi_dropdown_locations.id ORDER BY name";
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 	echo "<select name='dID'>";
@@ -940,11 +940,11 @@ function showConnectorSearch($target,$ID) {
 		$dID = $db->result($result, $i, "ID");
 		$name = $db->result($result, $i, "name");
 		$location = $db->result($result, $i, "location");
-		echo "<option value=$dID>$name (".getTreeValueName("glpi_dropdown_locations",$location).")</option>";
+		echo "<option value=\"$dID\">$name (".getTreeValueName("glpi_dropdown_locations",$location).")</option>";
 		$i++;
 	}
 	echo "</select>";
-	echo "<input type='hidden' name='pID1' value=$ID>";
+	echo "<input type='hidden' name='pID1' value=\"$ID\">";
 	echo "<input type='hidden' name='next' value=\"showports\">";
 	echo "<input type='hidden' name='device_type' value='2'>";
 	echo "</td><td class='tab_bg_2'>";
@@ -984,7 +984,7 @@ function listConnectorComputers($target,$input) {
 		$dID = $db->result($result, $i, "ID");
 		$name = $db->result($result, $i, "name");
 		$location = $db->result($result, $i, "location");
-		echo "<option value=$dID>$dID - $name (".getTreeValueName("glpi_dropdown_locations",$location).")</option>";
+		echo "<option value=\"$dID\">$dID - $name (".getTreeValueName("glpi_dropdown_locations",$location).")</option>";
 		$i++;
 	}
 	echo  "</select>";
