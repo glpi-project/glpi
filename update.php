@@ -1204,6 +1204,7 @@ if(!TableExists("glpi_device_gfxcard")) {
   `interface` enum('AGP','PCI','PCI-X','Other') NOT NULL default 'AGP',
   `comment` text NOT NULL,
   `FK_glpi_enterprise` int(11) NOT NULL default '0',
+   `specif_default` VARCHAR( 250 ) NOT NULL,
   PRIMARY KEY  (`ID`),
   KEY(`FK_glpi_enterprise`)
 ) TYPE=MyISAM;";
@@ -1219,6 +1220,7 @@ if(!TableExists("glpi_device_hdd")) {
   `cache` varchar(20) NOT NULL default '',
   `comment` text NOT NULL,
   `FK_glpi_enterprise` int(11) NOT NULL default '0',
+  `specif_default` VARCHAR( 250 ) NOT NULL,
   PRIMARY KEY  (`ID`),
   KEY(`FK_glpi_enterprise`)
 ) TYPE=MyISAM;";
@@ -1232,6 +1234,7 @@ if(!TableExists("glpi_device_iface")) {
   `bandwidth` varchar(20) NOT NULL default '',
   `comment` text NOT NULL,
   `FK_glpi_enterprise` int(11) NOT NULL default '0',
+  `specif_default` VARCHAR( 250 ) NOT NULL,
   PRIMARY KEY  (`ID`),
   KEY(`FK_glpi_enterprise`)
 ) TYPE=MyISAM;";
@@ -1245,6 +1248,7 @@ if(!TableExists("glpi_device_moboard")) {
   `chipset` varchar(120) NOT NULL default '',
   `comment` text NOT NULL,
   `FK_glpi_enterprise` int(11) NOT NULL default '0',
+  `specif_default` VARCHAR( 250 ) NOT NULL,
   PRIMARY KEY  (`ID`),
   KEY(`FK_glpi_enterprise`)
 ) TYPE=MyISAM;";
@@ -1258,6 +1262,7 @@ if(!TableExists("glpi_device_processor")) {
   `frequence` int(11) NOT NULL default '0',
   `comment` text NOT NULL,
   `FK_glpi_enterprise` int(11) NOT NULL default '0',
+  `specif_default` VARCHAR( 250 ) NOT NULL,
   PRIMARY KEY  (`ID`),
   KEY(`FK_glpi_enterprise`)
 ) TYPE=MyISAM;";
@@ -1272,6 +1277,7 @@ if(!TableExists("glpi_device_ram")) {
   `frequence` varchar(8) NOT NULL default '',
   `comment` text NOT NULL,
   `FK_glpi_enterprise` int(11) NOT NULL default '0',
+  `specif_default` VARCHAR( 250 ) NOT NULL,
   PRIMARY KEY  (`ID`),
   KEY(`FK_glpi_enterprise`)
 ) TYPE=MyISAM;";
@@ -1285,6 +1291,7 @@ if(!TableExists("glpi_device_sndcard")) {
   `type` varchar(100) NOT NULL default '',
   `comment` text NOT NULL,
   `FK_glpi_enterprise` int(11) NOT NULL default '0',
+  `specif_default` VARCHAR( 250 ) NOT NULL,
   PRIMARY KEY  (`ID`),
   KEY(`FK_glpi_enterprise`)
 ) TYPE=MyISAM;";
@@ -1300,6 +1307,7 @@ if(!TableExists("glpi_device_power")) {
 	atx enum('Y','N') NOT NULL default 'Y',
 	`comment` text NOT NULL,
 	FK_glpi_enterprise int(11) NOT NULL default '0',
+	`specif_default` VARCHAR( 250 ) NOT NULL,
 	PRIMARY KEY (ID),
 	KEY FK_glpi_enterprise (FK_glpi_enterprise)
 	) TYPE=MyISAM;";
@@ -1313,6 +1321,7 @@ if(!TableExists("glpi_device_case")) {
 	format enum( 'Grand', 'Moyen', 'Micro' ) NOT NULL default 'Moyen',
 	`comment` text NOT NULL ,
 	FK_glpi_enterprise int( 11 ) NOT NULL default '0',
+	`specif_default` VARCHAR( 250 ) NOT NULL,
 	PRIMARY KEY ( ID ) ,
 	KEY FK_glpi_enterprise( FK_glpi_enterprise )
 	)TYPE = MyISAM;";
@@ -1328,6 +1337,8 @@ if(!TableExists("glpi_device_drive")) {
 	`interface` ENUM( 'IDE', 'SATA', 'SCSI' ) NOT NULL ,
 	`comment` TEXT NOT NULL ,
 	`FK_glpi_enterprise` INT NOT NULL ,
+	`specif_default` VARCHAR( 250 ) NOT NULL,
+	KEY FK_glpi_enterprise( FK_glpi_enterprise )
 	PRIMARY KEY ( `ID` )
 	)TYPE=MyISAM;";
 	$db->query($query) or die("Error : ".$query." ".mysql_error());
@@ -1339,6 +1350,7 @@ if(!TableExists("glpi_device_pci")) {
 	designation varchar(255) NOT NULL default '',
 	`comment` text NOT NULL,
 	FK_glpi_enterprise int(11) NOT NULL default '0',
+	`specif_default` VARCHAR( 250 ) NOT NULL,
 	PRIMARY KEY (ID),
 	KEY FK_glpi_enterprise (FK_glpi_enterprise)
 	) TYPE=MyISAM;";
@@ -1353,6 +1365,7 @@ if(!TableExists("glpi_device_control")) {
 	raid enum('Y','N') NOT NULL default 'Y',
 	`comment` text NOT NULL,
 	FK_glpi_enterprise int(11) NOT NULL default '0',
+	`specif_default` VARCHAR( 250 ) NOT NULL,
 	PRIMARY KEY (ID),
 	KEY FK_glpi_enterprise (FK_glpi_enterprise)
 	) TYPE=MyISAM;";

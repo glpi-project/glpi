@@ -1161,7 +1161,7 @@ $lang["devices"][20] = "Controlleurs";
 $lang["devices"][21] = "PCI générique";
 $lang["devices"][22] = "Boitiers";
 $lang["devices"][23] = "Alimentation";
-$lang["devices"][24] = "";
+$lang["devices"][24] = "defaut spécif";
 
 $lang["cartridges"][0] = "Cartouche";
 $lang["cartridges"][1] = "Nom";
