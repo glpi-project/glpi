@@ -754,7 +754,7 @@ function showConnection ($ID) {
 		} else if ($netport->fields["device_type"]==2) {
 			echo "<a href=\"".$cfg_install["root"]."/networking/networking-info-form.php?ID=".$netport->device_ID."\">";
 		} else if ($netport->fields["device_type"]==3) {
-			echo "<a href=\"".$cfg_install["root"]."/networkings/networkings-info-form.php?ID=".$netport->device_ID."\">";
+			echo "<a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=".$netport->device_ID."\">";
 		}
 		echo $netport->device_name." (".$netport->device_ID.")";
 		echo "</a>";
