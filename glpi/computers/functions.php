@@ -228,6 +228,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 		$where .= " OR glpi_networking_ports.ifmac LIKE '%".$contains."%'";
 		$where .= " OR glpi_dropdown_netpoint.name LIKE '%".$contains."%'";
 		$where .= " OR glpi_enterprises.name LIKE '%".$contains."%'";
+		$where .= " OR glpi_type_computers.name LIKE '%".$contains."%'";
 		$where .= " OR resptech.name LIKE '%".$contains."%'";
 		$where .= ")";
 	}
@@ -264,7 +265,9 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 	$query.= "LEFT JOIN glpi_dropdown_locations on (glpi_dropdown_locations.ID = comp.location)";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = comp.FK_glpi_enterprise ) ";
 	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = comp.tech_num ) ";
+	$query.= " LEFT JOIN glpi_type_computers ON (glpi_type_computers.ID = comp.type ) ";
 	$query .= " where $where AND comp.deleted='$deleted' AND comp.is_template = '0'  ORDER BY $sort $order";
+	
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);

@@ -42,7 +42,7 @@ $lang["common"][1] = "Mat&eacute;riel";
 $lang["common"][2] = "ID";
 $lang["common"][3] = "Supprim&eacute;s";
 $lang["common"][4] = "Web";
-$lang["common"][5] = "Fabriquant";
+$lang["common"][5] = "Fabricant";
 $lang["common"][6]	= "Nom du mod&egrave;le";
 $lang["common"][7]  = "Choisissez un mod&egrave;le";
 $lang["common"][8]  = "G&eacute;rer Mod&egrave;les...";
@@ -1326,4 +1326,8 @@ $lang["repair"][0]	= "R&eacute;paration";
 $lang["repair"][1] 	= "Mat&eacute;riel en r&eacute;paration";
 $lang["repair"][2]	= "Sortir le mat&eacute;riel de r&eacute;paration";
 $lang["repair"][3]	= "Mettre le mat&eacute;riel en r&eacute;paration";
+$lang["repair"][4]	= "ID";
+$lang["repair"][5]	= "";
+$lang["repair"][6]	= "Type de mat&eacute;riel";
+$lang["repair"][7]	= "Pas de mat&eacute;riel trouv&eacute;";
 ?>
