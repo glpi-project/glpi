@@ -70,8 +70,10 @@ if (isset($tab["add"])) {
 	showComputerForm(0,$_SERVER["PHP_SELF"],$tab["ID"]);
 	showPorts($tab["ID"], 1);
 	showPortsAdd($tab["ID"],1);
+	showConnections($tab["ID"]);
 	showSoftwareInstalled($tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],$tab["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],$tab["ID"]);
 	commonFooter();
 } 
 else if (isset($tab["disconnect"]))
