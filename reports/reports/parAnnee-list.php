@@ -42,6 +42,7 @@ $item_db_name[0] = "glpi_computers";
 $item_db_name[1] = "glpi_printers";
 $item_db_name[2] = "glpi_monitors";
 $item_db_name[3] = "glpi_networking";
+$item_db_name[4] = "glpi_peripherals";
 
 $db = new DB;
 
@@ -73,7 +74,7 @@ if(isset($_POST["item_type"][0])&&$_POST["item_type"][0] != 'tous')
 else
 {
 	$query=array();
-		for($i=0;$i<4;$i++)
+		for($i=0;$i<count($item_db_name);$i++)
 		{
 			$query[$i] = "select * from ".$item_db_name[$i]." ";
 
