@@ -120,7 +120,7 @@ else
 	checkAuthentication("admin");
 	else checkAuthentication("normal");
 
-	commonHeader($lang["title"][20],$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][25],$_SERVER["PHP_SELF"]);
 	showDocumentForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["search"]);
 
 	commonFooter();

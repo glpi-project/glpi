@@ -274,8 +274,11 @@ function showDocumentForm ($target,$ID,$search) {
 	echo "<input type='hidden' name='current_filename' value='".$con->fields["filename"]."'>";
 	echo "</td></tr>";
 	}
+	$max_size=return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
+	$max_size/=1024*1024;
+	$max_size=round($max_size,1);
 	
-	echo "<tr class='tab_bg_1'><td>".$lang["document"][2].":		</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["document"][2]." (".$max_size."Mo max):	</td>";
 	echo "<td colspan='2'><input type='file' name='filename' value=\"".$con->fields["filename"]."\" size='25'></td>";
 	echo "</tr>";
 
