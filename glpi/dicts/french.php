@@ -1171,4 +1171,7 @@ $lang["financial"][77] = "Coefficient d'amortissement";
 $lang["financial"][78] = "Valeur extension garantie";
 $lang["financial"][79] = "Type de Tiers";
 
+$lang["financial"][80]	= "Expiration garantie";
+$lang["financial"][81]	= "Valeur nette comptable";
+
 ?>
