@@ -220,7 +220,8 @@ function get_content($db, $table,$from,$limit)
      $result = $db->query("SELECT * FROM $table LIMIT $from,$limit");
      if($result)
      while($row = $db->fetch_row($result)) {
-     	$row=addslashes_deep($row);
+     	$row=stripslashes_deep($row);
+     	$row=stripslashes_deep($row);
          $insert = "INSERT INTO $table VALUES (";
          for($j=0; $j<$db->num_fields($result);$j++) {
             if(!isset($row[$j])) $insert .= "NULL,";
@@ -277,7 +278,8 @@ function restoreMySqlDump($db,$dumpFile , $duree)
 // $histMySql, nom de la machine serveur MySQl
 // $duree=timeout pour changement de page (-1 = aucun)
 
-// Desactivation pour empecher les addslashes au niveau de la creation des tables
+// Desactivation pour empecher les addslashes au niveau de la creation des tables
+// En plus, au niveau du dump on considère qu'on est bon
 set_magic_quotes_runtime(0);
 
 global $TPSCOUR,$offset,$cpt;
