@@ -495,6 +495,19 @@ $lang["calendarD"][4] = "D" ;
 $lang["calendarD"][5] = "F" ;
 $lang["calendarD"][6] = "S" ;
 
-
+$lang["mailing"][0]="-----------------------";
+$lang["mailing"][1]="--------------------------------------";
+$lang["mailing"][2]="Auteur : ";
+$lang["mailing"][3]="Contenu : ";
+$lang["mailing"][4]="Intervention(s) déjà effectuée(s)";
+$lang["mailing"][5]="Description de l'intervention";
+$lang["mailing"][6]="Date de début : ";
+$lang["mailing"][7]="Ordinateur concerné : ";
+$lang["mailing"][8]="Attribué à : ";
+$lang["mailing"][9]="Nouvelle demande d'intervention";
+$lang["mailing"][10]="Nouveau suivi d'intervention";
+$lang["mailing"][11]="Intervention terminée le ";
+$lang["mailing"][12]="Attribution de l'intervention";
+$lang["mailing"][13]="Erreur dans la génération de l'email automatique";
 
 ?>
