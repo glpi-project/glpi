@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
 	showComputerForm(0,$_SERVER["PHP_SELF"],$_POST["ID"]);
 	showPorts($_POST["ID"], 1);
 	showPortsAdd($_POST["ID"],1);
-	showJobList($_SESSION["glpiname"],$_POST["show"],$_POST["contains"],$_POST["ID"]);
+	showJobListForItem($_SESSION["glpiname"],$_POST["show"],$_POST["contains"],$_POST["ID"]);
 	showSoftwareInstalled($_POST["ID"]);
 	commonFooter();
 } else {
@@ -86,7 +86,7 @@ if (isset($_POST["add"])) {
 		
 			showConnections($_GET["ID"]);
 		
-			showJobList($_SESSION["glpiname"],"","",$_GET["ID"]);
+			showJobListForItem($_SESSION["glpiname"],"","",$_GET["ID"]);
 	
 			showOldJobListForItem($_SESSION["glpiname"],"",$_GET["ID"]);
 	

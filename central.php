@@ -63,7 +63,8 @@ else
 }
 if ($cfg_features["jobs_at_login"]==1)
 {
-	showJobList($_SESSION["glpiname"],"individual","","");
+	if(empty($_GET["start"])) $_GET["start"] = 0;
+	showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"individual","","",$_GET["start"]);
 }
 
 commonFooter();

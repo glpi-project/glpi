@@ -227,7 +227,7 @@ $query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY
 	if ($number > 0)
 	{
 		echo "<div align='center'><table border='0' width='90%'>";
-		echo "<tr><th colspan=8>$number anciennes ".$lang["job"][17]."";
+		echo "<tr><th colspan=8>".$number." ".$lang["job"][18]."  ".$lang["job"][17]."";
 		if ($number > 1) { echo "s"; }
 		echo " ".$lang["job"][16].":</th></tr>";
 		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
@@ -252,7 +252,65 @@ $query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY
 	{
 		echo "<br><div align='center'>";
 		echo "<table border='0' width='90%'>";
-		echo "<tr><th>".$lang["joblist"][22]."</th></tr>";
+		echo "<tr><th>".$lang["joblist"][8]."</th></tr>";
+
+		if ($item)
+		{
+		          echo "<tr><td align='center' class='tab_bg_1'>";
+		}
+		echo "</table>";
+		echo "</div><br>";
+	}
+}
+
+function showJobListForItem($username,$contains,$item) {
+	// $item is required
+	//affiche toutes les vielles intervention pour un $item donné. 
+
+
+	GLOBAL $cfg_layout, $cfg_install, $lang;
+		
+	$prefs = getTrackingPrefs($username);
+	
+$where = "(status = 'new')";	
+$query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY date ".$prefs["order"]."";
+	
+
+	$db = new DB;
+	$result = $db->query($query);
+
+	$i = 0;
+	$number = $db->numrows($result);
+
+	if ($number > 0)
+	{
+		echo "<div align='center'><table border='0' width='90%'>";
+		echo "<tr><th colspan=8>".$number." ".$lang["job"][17]."";
+		if ($number > 1) { echo "s"; }
+		echo " ".$lang["job"][16].":</th></tr>";
+		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
+		echo "<th width=5>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
+		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["joblist"][5]."</th>";
+		echo "<th colspan='2'>".$lang["joblist"][6]."</th></tr>";
+		while ($i < $number)
+		{
+			$ID = $db->result($result, $i, "ID");
+			showJobShort($ID, 0);
+			$i++;
+		}
+		if ($item)
+		{
+			echo "<tr class='tab_bg_2'>";
+		        echo "<td align='center' colspan=8 class='tab_bg_1'>";
+
+		}
+		echo "</table></div>";
+	} 
+	else
+	{
+		echo "<br><div align='center'>";
+		echo "<table border='0' width='90%'>";
+		echo "<tr><th>".$lang["joblist"][8]."</th></tr>";
 
 		if ($item)
 		{
