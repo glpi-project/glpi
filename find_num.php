@@ -57,8 +57,9 @@ include ("_relpos.php");
 
 <body>
 <script language="javascript">
-function fillidfield(Id){
+function fillidfield(Type,Id){
 window.opener.document.forms["helpdeskform"].elements["computer"].value = Id;
+window.opener.document.forms["helpdeskform"].elements["device_type"].value = Type;
 window.close();}
 </script>
 
@@ -84,8 +85,9 @@ if(isset($_POST["Submit"]))
 	echo "<table width='100%' class='tab_cadre'>";
 	echo " <tr class='tab_bg3'>";
 	echo " <td align='center' width='70%'><b>".$lang["reports"][19]."</b></td>";
-	echo " <td align='center' width='70%'><b>".$lang["joblist"][5]."</b></td>";
-	echo " <td align='center' width='30%'><b>".$lang["computers"][13]."</b></td>";
+	echo " <td align='center' width='70%'><b>".$lang["help"][24]."</b></td>";
+	echo " <td align='center' width='70%'><b>".$lang["common"][1]."</b></td>";
+	echo " <td align='center' width='30%'><b>".$lang["common"][2]."</b></td>";
 	echo " <td align='center' width='30%'><b>".$lang["computers"][17]."&nbsp;/&nbsp;".$lang["computers"][18]."</b></td>";
 	echo " </tr>";
 	
@@ -100,8 +102,9 @@ if(isset($_POST["Submit"]))
 		$Computer = $ligne['name'];
 		$s1 = $ligne['serial'];
 		$s2 = $ligne['otherserial'];
-		echo " <tr class='tab_bg_1' onClick=\"fillidfield(".$Comp_num.")\">";
+		echo " <tr class='tab_bg_1' onClick=\"fillidfield(1,".$Comp_num.")\">";
 		echo "<td width='25%' align='center'><b> $Contact </b></td>";
+		echo "<td width='25%' align='center'><b> ".$lang["help"][25]."</b></td>";
 		echo "<td width='25%' align='center'><b> $Computer </b></td>";
 		echo "<td  width='25%' align='center'>";
 		echo "<b> $Comp_num </b></td>";
@@ -111,8 +114,100 @@ if(isset($_POST["Submit"]))
 		if ($s2!="") echo $s2;
 		echo "</td>";
 		echo "</tr>";
-
 	}
+
+	$query = "select name,ID,contact, serial, otherserial from glpi_networking where contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%'";
+	$result = $db->query($query);
+	while($ligne = $db->fetch_array($result))
+	{
+		$Comp_num = $ligne['ID'];
+		$Contact = $ligne['contact'];
+		$Computer = $ligne['name'];
+		$s1 = $ligne['serial'];
+		$s2 = $ligne['otherserial'];
+		echo " <tr class='tab_bg_1' onClick=\"fillidfield(2,".$Comp_num.")\">";
+		echo "<td width='25%' align='center'><b> $Contact </b></td>";
+		echo "<td width='25%' align='center'><b> ".$lang["help"][26]."</b></td>";
+		echo "<td width='25%' align='center'><b> $Computer </b></td>";
+		echo "<td  width='25%' align='center'>";
+		echo "<b> $Comp_num </b></td>";
+		echo "<td width='25%' align='center'>";
+		if ($s1!="") echo $s1;
+		if ($s1!=""&&$s2!="") echo "&nbsp;/&nbsp;";
+		if ($s2!="") echo $s2;
+		echo "</td>";
+		echo "</tr>";
+	}
+
+	$query = "select name,ID,contact, serial, otherserial from glpi_printers where contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%'";
+	$result = $db->query($query);
+	while($ligne = $db->fetch_array($result))
+	{
+		$Comp_num = $ligne['ID'];
+		$Contact = $ligne['contact'];
+		$Computer = $ligne['name'];
+		$s1 = $ligne['serial'];
+		$s2 = $ligne['otherserial'];
+		echo " <tr class='tab_bg_1' onClick=\"fillidfield(3,".$Comp_num.")\">";
+		echo "<td width='25%' align='center'><b> $Contact </b></td>";
+		echo "<td width='25%' align='center'><b> ".$lang["help"][27]."</b></td>";
+		echo "<td width='25%' align='center'><b> $Computer </b></td>";
+		echo "<td  width='25%' align='center'>";
+		echo "<b> $Comp_num </b></td>";
+		echo "<td width='25%' align='center'>";
+		if ($s1!="") echo $s1;
+		if ($s1!=""&&$s2!="") echo "&nbsp;/&nbsp;";
+		if ($s2!="") echo $s2;
+		echo "</td>";
+		echo "</tr>";
+	}
+
+	$query = "select name,ID,contact, serial, otherserial from glpi_monitors where contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%'";
+	$result = $db->query($query);
+	while($ligne = $db->fetch_array($result))
+	{
+		$Comp_num = $ligne['ID'];
+		$Contact = $ligne['contact'];
+		$Computer = $ligne['name'];
+		$s1 = $ligne['serial'];
+		$s2 = $ligne['otherserial'];
+		echo " <tr class='tab_bg_1' onClick=\"fillidfield(4,".$Comp_num.")\">";
+		echo "<td width='25%' align='center'><b> $Contact </b></td>";
+		echo "<td width='25%' align='center'><b> ".$lang["help"][28]."</b></td>";
+		echo "<td width='25%' align='center'><b> $Computer </b></td>";
+		echo "<td  width='25%' align='center'>";
+		echo "<b> $Comp_num </b></td>";
+		echo "<td width='25%' align='center'>";
+		if ($s1!="") echo $s1;
+		if ($s1!=""&&$s2!="") echo "&nbsp;/&nbsp;";
+		if ($s2!="") echo $s2;
+		echo "</td>";
+		echo "</tr>";
+	}
+
+	$query = "select name,ID,contact, serial, otherserial from glpi_peripherals where contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%'";
+	$result = $db->query($query);
+	while($ligne = $db->fetch_array($result))
+	{
+		$Comp_num = $ligne['ID'];
+		$Contact = $ligne['contact'];
+		$Computer = $ligne['name'];
+		$s1 = $ligne['serial'];
+		$s2 = $ligne['otherserial'];
+		echo " <tr class='tab_bg_1' onClick=\"fillidfield(5,".$Comp_num.")\">";
+		echo "<td width='25%' align='center'><b> $Contact </b></td>";
+		echo "<td width='25%' align='center'><b> ".$lang["help"][29]."</b></td>";
+		echo "<td width='25%' align='center'><b> $Computer </b></td>";
+		echo "<td  width='25%' align='center'>";
+		echo "<b> $Comp_num </b></td>";
+		echo "<td width='25%' align='center'>";
+		if ($s1!="") echo $s1;
+		if ($s1!=""&&$s2!="") echo "&nbsp;/&nbsp;";
+		if ($s2!="") echo $s2;
+		echo "</td>";
+		echo "</tr>";
+	}
+
      echo "</table>";
 }
 ?>

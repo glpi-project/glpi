@@ -96,7 +96,9 @@ class ReservationItem{
 	
 	}
 	function getName(){
+		if (isset($this->obj->fields["name"])&&$this->obj->fields["name"]!="")
 	return $this->obj->fields["name"];
+	else return "N/A";
 	}
 	
 	function getLink(){

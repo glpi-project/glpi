@@ -1228,7 +1228,7 @@ function printHelpDesk ($name) {
 	echo "<option value='5'>".$lang["help"][3]."";
 	echo "<option value='4'>".$lang["help"][4]."";
 	echo "<option value='3' selected>".$lang["help"][5]."";
-	echo"<option value='2'>".$lang["help"][6]."";
+	echo "<option value='2'>".$lang["help"][6]."";
 	echo "<option value='1'>".$lang["help"][7]."";
 	echo "</select>";
 	echo "</td></tr>";
@@ -1252,6 +1252,17 @@ function printHelpDesk ($name) {
 	echo "<td><input name='computer' size='10'>";
 	echo "</td>";
 	echo "</tr>";
+
+	echo "<tr class='tab_bg_1'>";
+	echo "<td>".$lang["help"][24].": </td>";
+	echo "<td><select name=device_type>";
+	echo "<option value='1' selected>".$lang["help"][25]."";
+	echo "<option value='2'>".$lang["help"][26]."";
+	echo "<option value='3'>".$lang["help"][27]."";
+	echo "<option value='4'>".$lang["help"][28]."";
+	echo "<option value='5'>".$lang["help"][29]."";
+	echo "</select>";
+	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td colspan='2' align='center'>".$lang["help"][13].":</td>";

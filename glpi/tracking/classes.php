@@ -101,9 +101,9 @@ class Job {
 			}		
 */
 			$m= new CommonItem;
-			if ($m->getfromDB($this->device_type,$this->computer))
+			if ($m->getfromDB($this->device_type,$this->computer)){
 				$this->computername=$m->getName();
-
+			}
 			if ($this->computername==""){
 				$this->computername = "N/A";
 				$this->computerfound=0;				
