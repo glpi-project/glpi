@@ -51,7 +51,7 @@ if (isset($_POST["add"]))
 	checkAuthentication("admin");
 	addSoftware($_POST);
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." added item ".$_POST["name"].".");
-	header("Location: ".$cfg_install["root"]."/software/");
+	header("Location: $_SERVER[HTTP_REFERER]");
 } 
 else if (isset($_POST["delete"]))
 {
