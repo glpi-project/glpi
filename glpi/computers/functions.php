@@ -172,6 +172,8 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
    				$where .= "comp.".$coco . " LIKE '%".$contains."%'";
 			}
 		}
+		$where .= " OR glpi_networking_ports.ifaddr LIKE '%".$contains."%'";
+		$where .= " OR glpi_networking_ports.ifmac LIKE '%".$contains."%'";
 		$where .= ")";
 	}
 	else {
