@@ -328,11 +328,12 @@ function showComputerForm ($template,$target,$ID) {
 			$date = date("Y-m-d H:i:s"); 
 			
 		} else {
-			$datestring = $lang["computers"][11].": ";
+			$datestring = $lang["computers"][11]." : ";
 			$date = $comp->fields["date_mod"];
 		}
 
-                echo "<div align='center'><table border='0' class='tab_cadre' >";
+                		echo "<form name='form' method='post' action=\"$target\">";
+				echo "<div align='center'><table border='0' class='tab_cadre' >";
 		echo "<tr><th align='center' width='300px'>";
 		if ($template) {
 			echo $lang["computers"][12].": ".$comp->fields["templname"];
@@ -340,11 +341,11 @@ function showComputerForm ($template,$target,$ID) {
 			echo $lang["computers"][13].": ".$comp->fields["ID"];
 		}
 		
-		echo "</th><th align='right'>".$datestring.$date;
+		echo "</th><th align='center'>".$datestring.$date;
 		echo "</th></tr>";
 		
 		echo "<tr><td class='tab_bg_1' valign='top'>";
-		echo "<form name='form' method='post' action=\"$target\">";
+
 
 		echo "<table cellpadding='1px' cellspacing='0' border='0'>\n";
 		
@@ -432,7 +433,7 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][24].":	</td>";
-		echo "<td><input type='text' name='ram' value=\"".$comp->fields["ram"]."\" size=3>";
+		echo "<td><input type='text' name='ram' value=\"".$comp->fields["ram"]."\" size='3'>";
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][36].":	</td>";
@@ -629,11 +630,11 @@ function showConnections($ID) {
 				$tID = $db->result($result, $i, "end1");
 				$printer = new Printer;
 				$printer->getfromDB($tID);
-				echo "<td align='center'><b><a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=$tID\">";
+				echo "<td align='center'><a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=$tID\"><b>";
 				echo $printer->fields["name"]." (".$printer->fields["ID"].")";
 				echo "</b></a></td>";
 				
-				echo "<td align='center'><b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=3\">";
+				echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=3\"><b>";
 				echo $lang["buttons"][10];
 				echo "</b></a></td>";
 				echo "</tr>";
@@ -642,7 +643,7 @@ function showConnections($ID) {
 		} else {
 			echo $lang["computers"][38]."<br>";
 		}
-		echo "<b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=printer\">";
+		echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=printer\"><b>";
 		echo $lang["buttons"][9];
 		echo "</b></a>";
 
@@ -661,10 +662,10 @@ function showConnections($ID) {
 				$tID = $db->result($result, $i, "end1");
 				$monitor = new Monitor;
 				$monitor->getfromDB($tID);
-				echo "<td align='center'><b><a href=\"".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=$tID\">";
+				echo "<td align='center'><a href=\"".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=$tID\"><b>";
 				echo $monitor->fields["name"]." (".$monitor->fields["ID"].")";
 				echo "</b></a></td>";
-				echo "<td align='center'><b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=4\">";
+				echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=4\"><b>";
 				echo $lang["buttons"][10];
 				echo "</b></a></td>";
 
@@ -674,7 +675,7 @@ function showConnections($ID) {
 		} else {
 			echo $lang["computers"][37]."<br>";
 		}
-		echo "<b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=monitor\">";
+		echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=monitor\"><b>";
 		echo $lang["buttons"][9];
 		echo "</b></a>";
 
@@ -693,10 +694,10 @@ function showConnections($ID) {
 				$tID = $db->result($result, $i, "end1");
 				$periph = new Peripheral;
 				$periph->getfromDB($tID);
-				echo "<td align='center'><b><a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=$tID\">";
+				echo "<td align='center'><a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=$tID\"><b>";
 				echo $periph->fields["name"]." (".$periph->fields["ID"].")";
 				echo "</b></a></td>";
-				echo "<td align='center'><b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=5\">";
+				echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=5\"><b>";
 				echo $lang["buttons"][10];
 				echo "</b></a></td>";
 
@@ -706,7 +707,7 @@ function showConnections($ID) {
 		} else {
 			echo $lang["computers"][47]."<br>";
 		}
-		echo "<b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=peripheral\">";
+		echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=peripheral\"><b>";
 		echo $lang["buttons"][9];
 		echo "</b></a>";
 

@@ -260,7 +260,7 @@ function showPrintersForm ($target,$ID) {
 
 	$printer = new Printer;
 
-	echo "<center><form method='post' name='form' action=\"$target\">";
+	echo "<div align='center'><form method='post' name='form' action=\"$target\">";
 	echo "<table class='tab_cadre' cellpadding='2'>";
 	echo "<tr><th colspan='2'><b>";
 	if (empty($ID)) {
@@ -274,8 +274,8 @@ function showPrintersForm ($target,$ID) {
 	
 	echo "<tr><td class='tab_bg_1' valign='top'>";
 
+	// table identification
 	echo "<table cellpadding='1px' cellspacing='0' border='0'>\n";
-
 	echo "<tr><td>".$lang["printers"][5].":	</td>";
 	echo "<td><input type='text' name='name' value=\"".$printer->fields["name"]."\" size='20'></td>";
 	echo "</tr>";
@@ -291,18 +291,17 @@ function showPrintersForm ($target,$ID) {
 	echo "<tr><td>".$lang["printers"][8].":	</td>";
 	echo "<td><input type='text' name='contact' size='20' value=\"".$printer->fields["contact"]."\"></td>";
 	echo "</tr>";
-	
-	echo "<tr><td>".$lang["reservation"][24].":</td><td><b>";
+		echo "<tr><td>".$lang["reservation"][24].":</td><td><b>";
 	if (!empty($ID))
 	showReservationForm(3,$ID);
 	echo "</b></td></tr>";
-
 	echo "</table>";
 
 	echo "</td>\n";	
 	echo "<td class='tab_bg_1' valign='top'>";
 
-	echo "<table cellpadding='1px' cellspacing='0' border='0'";
+	// table type,serial..
+	echo "<table cellpadding='1px' cellspacing='0' border='0'>";
 
 	echo "<tr><td>".$lang["printers"][9].": 	</td><td>";
 		dropdownValue("glpi_type_printers", "type", $printer->fields["type"]);
@@ -340,6 +339,7 @@ function showPrintersForm ($target,$ID) {
 		echo "</td><td>".$lang["printers"][15]."</td>";
 		echo "</tr></table>";
 		
+		// USB ?
 		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
 		echo "<td>";
 		if ($printer->fields["flags_usb"] == 1) {
@@ -350,6 +350,7 @@ function showPrintersForm ($target,$ID) {
 		echo "</td><td>".$lang["printers"][27]."</td>";
 		echo "</tr></table>";
 		
+		// Ram ?
 		echo "<tr><td>".$lang["printers"][23].":</td>";
 		echo "<td><input type='text' size='12' name='ramSize' value=\"".$printer->fields["ramSize"]."\"></td>";
 		echo "</tr>";
@@ -359,11 +360,12 @@ function showPrintersForm ($target,$ID) {
 	echo "</table>";
 	echo "</td>\n";	
 	echo "</tr>";
+	
 	echo "<tr>";
 	echo "<td class='tab_bg_1' valign='top' colspan='2'>";
 	
 	
-	
+		// table Date achat, maintenance
 		echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
 	    echo "<tr><td>".$lang["printers"][20].":	</td>";
 		echo "<td><input type='text' name='achat_date' readonly size='10' value='".$printer->fields["achat_date"]."'>";
@@ -389,11 +391,13 @@ function showPrintersForm ($target,$ID) {
 		echo "</td></tr>";
 		
 	echo "</table>";	
+	
 	echo "</td>\n";	
 	echo "</tr>";
 	echo "<tr>";
 	echo "<td class='tab_bg_1' valign='top' colspan='2'>";
 
+	// table commentaires
 	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
 	echo $lang["printers"][12].":	</td>";
 	echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$printer->fields["comments"]."</textarea>";
@@ -405,28 +409,28 @@ function showPrintersForm ($target,$ID) {
 	if ($ID=="") {
 
 		echo "<tr>";
-		echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-		echo "<center><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></center>";
+		echo "<td class='tab_bg_2' valign='top' colspan='2' align='center'>";
+		echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 		echo "</td>";
 		echo "</form></tr>";
 
-		echo "</table></center>";
+		echo "</table></div>";
 
 	} else {
 
 		echo "<tr>";
-		echo "<td class='tab_bg_2' valign='top'>";
+		echo "<td class='tab_bg_2' valign='top' align='center'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<center><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></center>";
+		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
 		echo "</td></form>\n\n";
 		echo "<form action=\"$target\" method='post'>\n";
-		echo "<td class='tab_bg_2' valign='top'>\n";
+		echo "<td class='tab_bg_2' valign='top' align='center'>\n";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<center><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></center>";
+		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 		echo "</td>";
 		echo "</form></tr>";
 
-		echo "</table></center>";
+		echo "</table></div>";
 
 		showConnect($target,$ID,3);
 
