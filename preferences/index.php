@@ -56,9 +56,9 @@ if (isset($_POST["changepw"])) {
 	checkAuthentication("normal");
 	commonHeader("Preferences",$_SERVER["PHP_SELF"]);
         // titre
-        echo "<div align='center'><table border='0'><tr><td><b>";
-        echo "<img src=\"".$HTMLRel."pics/preferences.png\" ></td><td><span class='icon_nav'>".$lang["Menu"][11]."</span>";
-        echo "</b></td></tr></table></div>";
+        echo "<div align='center'><table border='0'><tr><td>";
+        echo "<img src=\"".$HTMLRel."pics/preferences.png\" alt='".$lang["Menu"][11]."' title='".$lang["Menu"][11]."'></td><td><span class='icon_nav'><b>".$lang["Menu"][11]."</b></span>";
+        echo "</td></tr></table></div>";
 
 	showPasswordForm($_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	showSortForm($_SERVER["PHP_SELF"],$_SESSION["glpiname"]);

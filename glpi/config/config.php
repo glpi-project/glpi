@@ -66,7 +66,7 @@ $report_list["Maintenance"]["name"] = "Maintenance";
 $report_list["Maintenance"]["file"] = "reports/maintenance.php";
 $report_list["Par_annee"]["name"] = "Par date";
 $report_list["Par_annee"]["file"] = "reports/parAnnee.php";
-$report_list["excel"]["name"] = "excel";
+$report_list["excel"]["name"] = "Excel";
 $report_list["excel"]["file"] = "reports/geneExcel.php";
 
 // *************************** Eléments optionnels  **********************
