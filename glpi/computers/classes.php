@@ -196,66 +196,99 @@ class Computer {
 		}
 	}
 
-	function deleteFromDB($ID,$template) {
-
-//		if (!empty($template)) {
-//			$table = "glpi_templates";
-//		} else {
-			$table = "glpi_computers";
-//		}
-
+	function restoreInDB($ID) {
 		$db = new DB;
-
-		$query = "DELETE from $table WHERE ID = '$ID'";
+		$query = "UPDATE glpi_computers SET deleted='N' WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
-			$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID')";
-			$result = $db->query($query);
-			$number = $db->numrows($result);
-			$i=0;
-			while ($i < $number) {
-		  		$job = $db->result($result,$i,"ID");
-		    		$query = "DELETE FROM glpi_followups WHERE (tracking = '$job')";
-		      		$db->query($query);
-				$i++;
-			}
-			$query = "DELETE FROM glpi_tracking WHERE (computer = '$ID' AND device_type='".COMPUTER_TYPE."')";
-			$result = $db->query($query);
-			$query = "DELETE FROM glpi_inst_software WHERE (cID = '$ID')";
-			$result = $db->query($query);
-
-
-			$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".COMPUTER_TYPE."')";
-			$result = $db->query($query);
-
-
-			$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".COMPUTER_TYPE."')";
-			$result = $db->query($query);
-
-			$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '".COMPUTER_TYPE."')";
-			$result = $db->query($query);
-			while ($data = $db->fetch_array($result)){
-					$q = "DELETE FROM glpi_networking_wire WHERE (end1 = '".$data["ID"]."' OR end2 = '".$data["ID"]."')";
-					$result2 = $db->query($q);					
-					}
-
-
-			$query = "DELETE FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '".COMPUTER_TYPE."')";
-			$result = $db->query($query);
-			$query = "DELETE FROM glpi_connect_wire WHERE (end2 = '$ID')";
-			$result = $db->query($query);
-
-			$query="select * from glpi_reservation_item where (device_type='".COMPUTER_TYPE."' and id_device='$ID')";
-			if ($result = $db->query($query)) {
-				if ($db->numrows($result)>0) {
-					deleteReservationItem(array("ID"=>$db->result($result,0,"ID")));
-				}
-			}
-			$query = "DELETE FROM glpi_computer_device WHERE (FK_computer = '$ID')";
-			$result = $db->query($query);
-
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	function isUsed($ID){
+	$db = new DB;		
+	$query="SELECT * from glpi_connect_wire where end2 = '$ID'";
+	$result = $db->query($query);
+	if ($db->numrows($result)>0) return true;
+	
+	$query="SELECT * from glpi_tracking where computer = '$ID' AND device_type='".COMPUTER_TYPE."'";
+	$result = $db->query($query);
+	if ($db->numrows($result)>0) return true;
+	
+	$query="SELECT * from glpi_networking_ports where on_device = '$ID' AND device_type='".COMPUTER_TYPE."'";
+	$result = $db->query($query);
+	if ($db->numrows($result)==0) return false;
+	else {
+		while ($data=$db->fetch_array($result)){
+			$query2="SELECT * from glpi_networking_wire where end1 = '".$data['ID']."' OR end2='".$data['ID']."'";
+			$result2 = $db->query($query2);
+			if ($db->numrows($result2)>0) return true;
+		}
+		return false;
+	}
+	}
+
+
+	function deleteFromDB($ID,$force=0) {
+
+		$table = "glpi_computers";
+
+		$db = new DB;
+
+		if ($force==1||!$this->isUsed($ID)){
+
+			$query = "DELETE from $table WHERE ID = '$ID'";
+			if ($result = $db->query($query)) {
+				$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID')";
+				$result = $db->query($query);
+				$number = $db->numrows($result);
+				$i=0;
+				while ($i < $number) {
+			  		$job = $db->result($result,$i,"ID");
+			    		$query = "DELETE FROM glpi_followups WHERE (tracking = '$job')";
+			      		$db->query($query);
+					$i++;
+				}
+				$query = "DELETE FROM glpi_tracking WHERE (computer = '$ID' AND device_type='".COMPUTER_TYPE."')";
+				$result = $db->query($query);
+				$query = "DELETE FROM glpi_inst_software WHERE (cID = '$ID')";
+				$result = $db->query($query);		
+
+				$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".COMPUTER_TYPE."')";
+				$result = $db->query($query);
+
+				$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".COMPUTER_TYPE."')";
+				$result = $db->query($query);
+
+				$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '".COMPUTER_TYPE."')";
+				$result = $db->query($query);
+				while ($data = $db->fetch_array($result)){
+						$q = "DELETE FROM glpi_networking_wire WHERE (end1 = '".$data["ID"]."' OR end2 = '".$data["ID"]."')";
+						$result2 = $db->query($q);					
+						}	
+
+				$query = "DELETE FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '".COMPUTER_TYPE."')";
+				$result = $db->query($query);
+				$query = "DELETE FROM glpi_connect_wire WHERE (end2 = '$ID')";
+				$result = $db->query($query);
+
+				$query="select * from glpi_reservation_item where (device_type='".COMPUTER_TYPE."' and id_device='$ID')";
+				if ($result = $db->query($query)) {
+					if ($db->numrows($result)>0) {
+						deleteReservationItem(array("ID"=>$db->result($result,0,"ID")));
+					}
+				}
+				$query = "DELETE FROM glpi_computer_device WHERE (FK_computer = '$ID')";
+				$result = $db->query($query);
+
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+		$query = "UPDATE glpi_computers SET deleted='Y' WHERE ID = '$ID'";		
+		return ($result = $db->query($query));
 		}
 	}
 }
