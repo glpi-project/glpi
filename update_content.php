@@ -193,7 +193,6 @@ if ($offsetrow==-1){
 if (mysql_error())
      echo "<hr>ERREUR à partir de [$formattedQuery]<br>".mysql_error()."<hr>";
 $offsettable=-1;
-fclose($fileHandle);
 return TRUE;
 }
 
