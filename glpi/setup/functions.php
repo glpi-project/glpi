@@ -174,8 +174,8 @@ function listUsersForm($target) {
 	$query = "SELECT name FROM users where name <> 'Helpdesk' ORDER BY type DESC";
 	
 	if ($result = $db->query($query)) {
-
-		echo "<center><table border='0'>";
+                echo "<div align='center'>";
+		echo "<table border='0'>";
 		echo "<tr><th>".$lang["setup"][18]."</th><th>".$lang["setup"][19]."</th>";
 		echo "<th>".$lang["setup"][13]."</th><th>".$lang["setup"][20]."</th>";
 		echo "<th>".$lang["setup"][14]."</th><th>".$lang["setup"][15]."</th>";
@@ -187,18 +187,20 @@ function listUsersForm($target) {
 			$user = new User($name);
 			$user->getFromDB($name);
 			
-			echo "<tr class='tab_bg_1'>";	
-			echo "<form method='post' action=\"$target\">";
+                        
+			echo "<tr class='tab_bg_1'><form method='post' action=\"$target\">";	
+		
 			echo "<td align='center'><b>".$user->fields["name"]."</b>";
-			echo "<input type='hidden' name=name value=\"".$user->fields["name"]."\">";
-			echo "</td>";
-			echo "<td><input type=password name=password size=6></td>";
 			
-			echo "<td><input name=realname size=10 value=\"".$user->fields["realname"]."\"></td>";
+                        echo "<input type='hidden' name='name' value=\"".$user->fields["name"]."\">";
+			echo "</td>";
+			echo "<td><input type='password' name='password' size='6'></td>";
+			
+			echo "<td><input name='realname' size='10' value=\"".$user->fields["realname"]."\"></td>";
 
 			echo "<td>";
-			echo "<select name=type>";
-			echo "<option value=admin";
+			echo "<select name='type'>";
+			echo "<option value='admin'";
 				if ($user->fields["type"]=="admin") { echo " selected"; }
 			echo ">Admin";
 			echo "<option value=normal";
@@ -216,18 +218,19 @@ function listUsersForm($target) {
 			echo "</td>";
 			echo "<td class='tab_bg_2'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></td>";
 			echo "<td class='tab_bg_2'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></td>";
-			echo "</tr></form>";
+			echo "</form></tr>";
 			$i++;
-		}	
+		}
 
 		echo "</table>";
 		
+                echo "<form method='post' action=\"$target\">";
 		echo "<table border='0'>";
 		echo "<tr><th>Login</th><th>".$lang["setup"][13]."</th><th>".$lang["setup"][20]."</th>";
 		echo "<th>".$lang["setup"][14]."</th><th>".$lang["setup"][15]."</th>";
 		echo "<th>".$lang["setup"][16]."</th></tr>";
 		echo "<tr class='tab_bg_1'>";	
-		echo "<form method='post' action=\"$target\">";
+		
 		echo "<td><input name='name' size='7' value=\"\"></td>";
 		echo "<td><input name='realname' size='15' value=\"\"></td>";
 		echo "<td>";
@@ -241,7 +244,7 @@ function listUsersForm($target) {
 		echo "<td><input name='phone' size='10' value=\"\"></td>";
 		echo "<td>";
 			dropdownValue("dropdown_locations", "location", "");
-		echo "</td";
+		echo "</td>";
 					
 		echo "</tr>";
 		echo "<tr class='tab_bg_2'>";
@@ -249,9 +252,9 @@ function listUsersForm($target) {
 		echo "<td align='center'>";
 		echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 		echo "</td>";
-		echo "</tr></form>";
+		echo "</tr>";
 
-		echo "</table></center>";	
+		echo "</table></form></div>";
 	}
 }
 
@@ -369,7 +372,7 @@ function listTemplates($target) {
 	$query = "SELECT * FROM templates";
 	if ($result = $db->query($query)) {
 		
-		echo "<center><table border='0' width=50%>";
+		echo "<center><table border='0' width='50%'>";
 		echo "<tr><th colspan='2'>".$lang["setup"][1].":</th></tr>";
 		$i=0;
 		while ($i < $db->numrows($result)) {
@@ -420,7 +423,7 @@ function showTemplateForm($target,$ID) {
 		echo $lang["setup"][23].": '".$templ->fields["templname"]."'";
 	
 	} else {
-		echo $lang["setup"][23].": <input type='text' name=templname size=10>";	
+		echo $lang["setup"][23].": <input type='text' name='templname' size='10'>";
 	}
 	echo "</th></tr>";
 	
@@ -428,7 +431,7 @@ function showTemplateForm($target,$ID) {
 	echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
 
 	echo "<tr><td>".$lang["setup"][24].":		</td>";
-	echo "<td><input type='text' name=name value=\"".$templ->fields["name"]."\" size=10></td>";
+	echo "<td><input type='text' name='name' value=\"".$templ->fields["name"]."\" size='10'></td>";
 	echo "</tr>";
 
 	echo "<tr><td>".$lang["setup"][25].": 	</td>";
@@ -437,23 +440,23 @@ function showTemplateForm($target,$ID) {
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["setup"][26].":		</td>";
-	echo "<td><input type='text' name=contact_num value=\"".$templ->fields["contact_num"]."\" size=5>";
+	echo "<td><input type='text' name='contact_num' value=\"".$templ->fields["contact_num"]."\" size='5'>";
 	echo "</td></tr>";
 	
 	echo "<tr><td>".$lang["setup"][27].":	</td>";
-	echo "<td><input type='text' name=contact size=12 value=\"".$templ->fields["contact"]."\">";
+	echo "<td><input type='text' name='contact' size='12' value=\"".$templ->fields["contact"]."\">";
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["setup"][28].":	</td>";
-	echo "<td><input type='text' name=serial size=12 value=\"".$templ->fields["serial"]."\">";
+	echo "<td><input type='text' name='serial' size='12' value=\"".$templ->fields["serial"]."\">";
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["setup"][29].":	</td>";
-	echo "<td><input type='text' size=12 name=otherserial value=\"".$templ->fields["otherserial"]."\">";
+	echo "<td><input type='text' size='12' name='otherserial' value=\"".$templ->fields["otherserial"]."\">";
 	echo "</td></tr>";
 
 	echo "<tr><td valign='top'>".$lang["setup"][30].":</td>";
-	echo "<td><textarea 0 rows=8 name=comments >".$templ->fields["comments"]."</textarea>";
+	echo "<td><textarea 0 rows='8' name='comments' >".$templ->fields["comments"]."</textarea>";
 	echo "</td></tr>";
 
 	echo "</table>";
@@ -474,7 +477,7 @@ function showTemplateForm($target,$ID) {
 	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["setup"][33].":</td>";
-	echo "<td><input type='text' size=8 name=osver value=\"".$templ->fields["osver"]."\">";
+	echo "<td><input type='text' size='8' name=osver value=\"".$templ->fields["osver"]."\">";
 	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["setup"][34].":	</td>";
@@ -483,7 +486,7 @@ function showTemplateForm($target,$ID) {
 	echo "</td></tr>";
 	
 	echo "<tr><td>".$lang["setup"][35].":	</td>";
-	echo "<td><input type='text' name=processor_speed size=4 value=\"".$templ->fields["processor_speed"]."\">";
+	echo "<td><input type='text' name='processor_speed' size='4' value=\"".$templ->fields["processor_speed"]."\">";
 	echo "</td></tr>";
 	
 	echo "<tr><td>".$lang["setup"][49].":	</td>";
@@ -507,7 +510,7 @@ function showTemplateForm($target,$ID) {
 	echo "</td></tr>";
 	
 	echo "<tr><td>".$lang["setup"][37].":	</td>";
-	echo "<td><input type='text' name=ram value=\"".$templ->fields["ram"]."\" size=3>";
+	echo "<td><input type='text' name='ram' value=\"".$templ->fields["ram"]."\" size=3>";
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["setup"][52].":	</td>";
@@ -516,7 +519,7 @@ function showTemplateForm($target,$ID) {
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["setup"][38].":	</td>";
-	echo "<td><input type='text' name=hdspace size=3 value=\"".$templ->fields["hdspace"]."\">";
+	echo "<td><input type='text' name='hdspace' size='3' value=\"".$templ->fields["hdspace"]."\">";
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["setup"][39].":	</td>";
@@ -541,11 +544,11 @@ function showTemplateForm($target,$ID) {
 echo "<tr><td>".$lang["setup"][55].":	</td>";
 		echo "<td>";
 		if ($templ->fields["maintenance"] == 1) {
-			echo " OUI <input type='radio' name='maintenance' value=1 checked>";
-			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value=0>";
+			echo " OUI <input type='radio' name='maintenance' value='1' checked>";
+			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value='0'>";
 		} else {
-			echo " OUI <input type='radio' name='maintenance' value=1>";
-			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value=0 checked >";
+			echo " OUI <input type='radio' name='maintenance' value='1'>";
+			echo "&nbsp; &nbsp; NON <input type='radio' name='maintenance' value='0' checked >";
 		}
 		echo "</td></tr>";
 
@@ -632,7 +635,7 @@ function showSortForm($target,$ID) {
 	$query = "SELECT tracking_order FROM prefs WHERE (user = '$ID')";
 	$result=$db->query($query);
 
-	echo "<center><table border='0' cellpadding=5 width='30%'>";
+	echo "<center><table border='0' cellpadding='5' width='30%'>";
 	echo "<form method='post' action=\"$target\">";
 	echo "<tr><th colspan='2'>".$lang["setup"][40]."</th></tr>";
 	echo "<tr><td width='100%' align='center' class='tab_bg_1'>";
