@@ -45,7 +45,7 @@ class Computer {
 	var $fields	= array();
 	var $updates	= array();
 	
-	function getfromDB ($ID,$template) {
+	function getfromDB ($ID,$template=0) {
 
 		if ($template) {
 			$table = "glpi_templates";

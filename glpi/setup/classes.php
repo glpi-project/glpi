@@ -42,9 +42,10 @@ class User {
 	var $prefs = array();
 
   function User($name = '') {
+	  $this->fields['ID'] = 0;
   	$this->fields['name'] = $name;
   	$this->fields['password'] = '';
-	$this->fields['password_md5'] = '';
+	  $this->fields['password_md5'] = '';
   	$this->fields['email'] = '';
   	$this->fields['location'] = 'NULL';
   	$this->fields['phone'] = '';
@@ -267,7 +268,6 @@ class User {
 			}
 		}
 		$query .= ")";
-		
 		
 		if ($result=$db->query($query)) {
 			return true;

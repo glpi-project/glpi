@@ -40,6 +40,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_printers.php");
 include ($phproot . "/glpi/includes_networking.php");
+include ($phproot . "/glpi/includes_reservation.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;

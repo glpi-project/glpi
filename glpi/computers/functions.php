@@ -331,20 +331,23 @@ function showComputerForm ($template,$target,$ID) {
 			$datestring = $lang["computers"][11].": ";
 			$date = $comp->fields["date_mod"];
 		}
-		echo "<form name='form' method='post' action=\"$target\">";
+
                 echo "<div align='center'><table border='0' class='tab_cadre'>";
-		echo "<tr><th align='center'>";
+		echo "<tr><th align='center' width=200>";
 		if ($template) {
 			echo $lang["computers"][12].": ".$comp->fields["templname"];
 		} else {
 			echo $lang["computers"][13].": ".$comp->fields["ID"];
 		}
+		
 		echo "</th><th align='right'>".$datestring.$date;
 		echo "</th></tr>";
 		
 		echo "<tr><td class='tab_bg_1' valign='top'>";
-		echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
+		echo "<form name='form' method='post' action=\"$target\">";
 
+		echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
+		
 		echo "<tr><td>".$lang["computers"][7].":		</td>";
 		echo "<td><input type='text' name='name' value=\"".$comp->fields["name"]."\" size='20'></td>";
 		echo "</tr>";
@@ -374,6 +377,9 @@ function showComputerForm ($template,$target,$ID) {
 		echo "<td><textarea  cols='20' rows='8' name='comments' >".$comp->fields["comments"]."</textarea>";
 		echo "</td></tr>";
 
+		echo "<tr><td></td><td><b>";
+		showReservationForm(1,$ID);
+		echo "</b></td></tr>";
 		echo "</table>";
 
 		echo "</td>\n";	
@@ -522,7 +528,7 @@ function showComputerForm ($template,$target,$ID) {
 		//echo "</div>\n";
 
 		echo "</table></div></form>";
-
+		
 		return true;
 	} else {
 		echo "<div align='center'><b>".$lang["computers"][32]."</b></div>";
