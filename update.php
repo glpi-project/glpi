@@ -447,13 +447,14 @@ if(!FieldExists("glpi_prefs", "ID")) {
 	$db->query($query) or die("erreur lors de la migration".$db->error());
 	$query = "ALTER TABLE `glpi_prefs` ADD UNIQUE (`user`)";
 	$db->query($query) or die("erreur lors de la migration".$db->error());
-	$query = "Alter table glpi_prefs add ID INT(11) not null primary key";
+	$query = "Alter table glpi_prefs add ID INT(11) not null auto_increment primary key";
 	$db->query($query) or die("erreur lors de la migration".$db->error());
 }
 if(!FieldExists("glpi_config", "ID")) {
 
-$query = "ALTER TABLE `glpi_config` CHANGE `config_id` `ID` INT( 11 ) NOT NULL AUTO_INCREMENT ";
-$db->query($query) or die("erreur lors de la migration".$db->error());
+	$query = "ALTER TABLE `glpi_config` CHANGE `config_id` `ID` INT( 11 ) NOT NULL AUTO_INCREMENT ";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+}
 }
 
 
