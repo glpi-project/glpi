@@ -1,3 +1,25 @@
+02/05/2004
+Fin de la compatibilité avec les derniers recommandations de PHP.
+Suppression de toutes les erreurs affichées lorsque le php.ini contient error_reporting E_ALL
+GLPI est compatible nativement avec la confoguration de easyphp 1.7 a partir de cette version.
+Le schema de la base de donnée change, plusieurs champs etant marqués comme potentiellement NULL
+dans le SGBD deviennent not null.
+Le nouveau dump est annoté 0.23.sql un script sql permettant de passer depuis la 0.21 à la 0.23 suivra
+il sera noté 0.21-to-0.23.sql et comportera la partie deja faite dans le 0.21-to-0.22
+
+
+
+20/03/2004
+Compatibilité register_global on et gestion de l'
+identifications via les sessions.
+
+
+
+09/03/2004
+Envoie de mail automatique re-implementée.
+Configuration possible dans le fichier config.php
+
+
 03/02/2004
 Implémentation de la possibilité de se logguer a GLPI
 via d'autres sources d'information (comme des login imap/pop,

@@ -38,14 +38,8 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_networking.php");
-If(isset($_GET))
-{
-	  $tab = $_GET;
-}
-elseif(isset($_POST)) 
-{
-	$tab = $_POST;
-}
+if(isset($_GET)) $tab = $_GET;
+if(empty($tab) && isset($_POST)) $tab = $_POST;
 
 if(isset($_POST["add"]))
 {

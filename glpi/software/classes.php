@@ -59,6 +59,23 @@ class Software {
 			return false;
 		}
 	}
+	
+	function getEmpty () {
+
+		// Make new empty object
+		$db = new DB;
+		$query = "SELECT * FROM software limit 0,1";
+		if ($result = $db->query($query)) {
+			$data = mysql_fetch_array($result);
+			foreach ($data as $key => $val) {
+				$this->fields[$key] = "";
+			}
+			return true;
+
+		} else {
+			return false;
+		}
+	}
 
 	function countInstallations() {
 		$db = new DB;

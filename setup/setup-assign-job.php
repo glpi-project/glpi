@@ -45,7 +45,7 @@ checkAuthentication("admin");
 
 if (can_assign_job($_SESSION["glpiname"]))
  {
-	if($_POST["update"])
+	if(isset($_POST["update"]))
 	{
 		updateUser($_POST);
 		logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]." updated user ".$_POST["name"].".");

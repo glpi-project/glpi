@@ -60,6 +60,23 @@ class Monitor {
 			return false;
 		}
 	}
+		
+	function getEmpty () {
+
+		// Make new empty database object 
+		$db = new DB;
+		$query = "SELECT * FROM monitors limit 0,1";
+		if ($result = $db->query($query)) {
+			$data = mysql_fetch_array($result);
+			foreach ($data as $key => $val) {
+				$this->fields[$key] = "";
+			}
+			return true;
+
+		} else {
+			return false;
+		}
+	}
 
 	function updateInDB($updates)  {
 
@@ -82,7 +99,7 @@ class Monitor {
 		
 		$db = new DB;
 
-		$this->comments = addslashes($this->comments);
+		$this->fields["comments"] = addslashes($this->fields["comments"]);
 		
 		// Build query
 		$query = "INSERT INTO monitors (";

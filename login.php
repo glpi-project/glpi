@@ -41,9 +41,9 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-$database=$cfg_db["database"];
+#$database=$cfg_db["database"];
 
-SetCookie("cfg_dbdb",$database,0,"/");
+#SetCookie("cfg_dbdb",$database,0,"/");
 
 $db = new DB;
 
@@ -110,7 +110,7 @@ switch ($conn)
 			echo "<center><b>".$identificat->getErr().".</b><br><br>";
 			echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">Relogin</a></b></center>";
 			nullFooter();
-			logevent(-1, "system", 1, "login", "failed login: ".$POST_['name']);
+			logevent(-1, "system", 1, "login", "failed login: ".$_POST['name']);
 			break;
 
 		}

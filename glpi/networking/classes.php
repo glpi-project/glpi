@@ -50,7 +50,7 @@ class Netdevice {
 		$db = new DB;
 		$query = "SELECT * FROM networking WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
-			$data = mysql_fetch_array($result);
+			$data = $db->fetch_array($result);
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}
@@ -60,10 +60,23 @@ class Netdevice {
 			return false;
 		}
 	}
+	function getEmpty() {
+		//make an empty database object
+		$db = new DB;
+		$query = "SELECT * FROM networking limit 0,1";
+		if ($result = $db->query($query)) {
+			$data = $db->fetch_array($result);
+			foreach ($data as $key => $val) {
+				$this->fields[$key] = "";
+			}
+			return true;
 
+		} else {
+			return false;
+		}
+	}
 
 	function updateInDB($updates)  {
-
 		$db = new DB;
 
 		for ($i=0; $i < count($updates); $i++) {
@@ -241,8 +254,6 @@ class Netport {
 	function addToDB()
 	{
 		$db = new DB;
-
-		$this->comments = addslashes($this->comments);
 		
 		// Build query
 		$query = "INSERT INTO networking_ports (";

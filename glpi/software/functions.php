@@ -214,6 +214,7 @@ function showSoftwareForm ($target,$ID) {
 	echo "<tr><th colspan=2><b>";
 	if (!$ID) {
 		echo $lang["software"][0].":";
+		$sw->getEmpty();
 	} else {
 		$sw->getfromDB($ID);
 		echo $lang["software"][10]." ID $ID:";

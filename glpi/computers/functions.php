@@ -501,10 +501,10 @@ function addComputer($input) {
    
 	// dump status
 	$null=array_pop($input);
-	
+	$i=0;
 	// fill array for update
 	foreach ($input as $key => $val){
-	if ($comp->fields[$key] != $input[$key]) {
+	if (!isset($comp->fields[$key]) || $comp->fields[$key] != $input[$key]) {
 			$comp->fields[$key] = $input[$key];
 		}		
 	}

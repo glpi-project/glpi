@@ -42,13 +42,12 @@ checkAuthentication("normal");
 
 commonHeader("Computers",$_SERVER["PHP_SELF"]);
 
-if (isset($_GET["order"]))
-{
+if(!isset($_GET["start"])) $_GET["start"] = 0;
+if (!isset($_GET["order"])) $_GET["order"] = "ASC";
+
+
 showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
-}
-else 
-{
-showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],"",$_GET["start"]);
-}
+
+
 commonFooter();
 ?>

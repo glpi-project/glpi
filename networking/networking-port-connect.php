@@ -44,6 +44,8 @@ checkAuthentication("admin");
 commonHeader("Networking",$_SERVER["PHP_SELF"]);
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
+if(!isset($tab["ID"])) $tab["ID"] = "";
+
 
 if(!(isset($tab["next"])))
 {

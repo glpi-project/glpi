@@ -89,7 +89,7 @@ class Computer {
 		
 		$db = new DB;
 
-		$this->comments = addslashes($this->comments);
+		$this->field["comments"] = addslashes($this->fields["comments"]);
 		
 		// Build query
 		$query = "INSERT INTO computers (";

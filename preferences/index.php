@@ -39,15 +39,15 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-if ($_POST["changepw"]) {
+if (isset($_POST["changepw"])) {
 	checkAuthentication("post-only");
 	updateUser($_POST);
 	header("Location: $_SERVER[HTTP_REFERER]?done");
-} else if ($_POST["updatesort"]) {
+} else if (isset($_POST["updatesort"])) {
 	checkAuthentication("normal");
 	updateSort($_POST);
 	header("Location: $_SERVER[HTTP_REFERER]?done");
-} else if ($_POST["changelang"]) {
+} else if (isset($_POST["changelang"])) {
 	checkAuthentication("post-only");
 	updateLanguage($_POST);
 	header("Location: $_SERVER[HTTP_REFERER]?done");

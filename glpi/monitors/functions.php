@@ -54,7 +54,7 @@ function searchFormMonitors() {
 	$option["contact_num"]		= $lang["monitors"][7];
 	$option["date_mod"]			= $lang["monitors"][16];
 	
-	echo "<form method=post action=\"".$cfg_install["root"]."/monitors/monitors-search.php\">";
+	echo "<form method='get' action=\"".$cfg_install["root"]."/monitors/monitors-search.php\">";
 	echo "<center><table border=0 width=90%>";
 	echo "<tr><th colspan=2><b>".$lang["search"][5].":</b></th></tr>";
 	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
@@ -73,7 +73,7 @@ function searchFormMonitors() {
 	echo "<input type=submit value=\"".$lang["buttons"][1]."\">";
 	echo "</td></tr></table></form></center>";
 
-	echo "<form method=post action=\"".$cfg_install["root"]."/monitors/monitors-search.php\">";
+	echo "<form method='get' action=\"".$cfg_install["root"]."/monitors/monitors-search.php\">";
 	echo "<center><table border=0 width=90%>";
 	echo "<tr><th colspan=2><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
@@ -227,8 +227,9 @@ function showMonitorsForm ($target,$ID) {
 	echo "<center><form method=post name=form action=\"$target\">";
 	echo "<table border=0 cellpadding=2>";
 	echo "<tr><th colspan=2><b>";
-	if ($ID=="") {
+	if (empty($ID)) {
 		echo $lang["monitors"][3].":";
+		$mon->getEmpty();
 	} else {
 		$mon->getfromDB($ID);
 		echo $lang["monitors"][4]." ID $ID:";
@@ -442,7 +443,7 @@ function addMonitor($input) {
 	
 	// fill array for udpate
 	foreach ($input as $key => $val) {
-		if ($mon->fields[$key] != $input[$key]) {
+		if (!isset($mon->fields[$key]) || $mon->fields[$key] != $input[$key]) {
 			$mon->fields[$key] = $input[$key];
 		}
 	}
