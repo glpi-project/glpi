@@ -44,7 +44,7 @@ function titleperipherals(){
                 echo "<div align='center'><table border='0'><tr><td>";
                 echo "<img src=\"".$HTMLRel."pics/periphs.png\" alt='".$lang["peripherals"][0]."' title='".$lang["peripherals"][0]."'></td><td><a  class='icon_consol' href=\"peripherals-add-select.php\"><b>".$lang["peripherals"][0]."</b></a>";
                 echo "</td>";
-                echo "<td><a href='".$HTMLRel."setup/setup-templates.php?type=".PERIPHERAL_TYPE."'>".$lang["common"][8]."</a></td>";
+                echo "<td><a class='icon_consol' href='".$HTMLRel."setup/setup-templates.php?type=".PERIPHERAL_TYPE."'>".$lang["common"][9]."</a></td>";
                 echo "</tr></table></div>";
 }
 
