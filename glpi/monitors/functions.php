@@ -383,6 +383,11 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 		showReservationForm(MONITOR_TYPE,$ID);
 		echo "</b></td></tr>";
 	}
+	if (!$template){
+		echo "<tr><td>".$lang["repair"][0].":</td><td><b>";
+		showRepairForm(MONITOR_TYPE,$ID);
+		echo "</b></td></tr>";
+	}
 
 	echo "</table>";
 

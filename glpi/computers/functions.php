@@ -443,7 +443,11 @@ function showComputerForm($target,$ID,$withtemplate='') {
 			dropdownUsersID( $comp->fields["tech_num"],"tech_num");
 		echo "</td>";
 		
-		echo "<td>&nbsp;:</td><td>&nbsp;</td></tr>";
+		if (!$template){
+		echo "<td>".$lang["repair"][0]."&nbsp;:</td><td><b>";
+		showRepairForm(COMPUTER_TYPE,$ID);
+		echo "</b></td>";
+		} else echo "<td>&nbsp;</td><td>&nbsp;</td>";
 		
 	
 		echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td>";

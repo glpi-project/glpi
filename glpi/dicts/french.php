@@ -179,6 +179,7 @@ $lang["Menu"][24]	="Infos commerciales";
 $lang["Menu"][25]	="Contrats";
 $lang["Menu"][26]	="Gestion";
 $lang["Menu"][27]	="Documents";
+$lang["Menu"][28]	="Réparation";
 
 //Donn&eacute;es
 
@@ -518,7 +519,7 @@ $lang["peripherals"][13]	= "Lieu";
 $lang["peripherals"][14]	= "";
 $lang["peripherals"][15]	= "";
 $lang["peripherals"][16]	= "Derni&egrave;re modification";
-$lang["peripherals"][17]	= "Pas de peripherique trouv&eacute;.";
+$lang["peripherals"][17]	= "Pas de p&eacute;ripherique trouv&eacute;.";
 $lang["peripherals"][18]	= "Marque";
 $lang["peripherals"][19]	= "";
 $lang["peripherals"][20]	= "";
@@ -1004,6 +1005,7 @@ $lang["reservation"][29]	= "Par jour";
 $lang["reservation"][30]	= "fois";
 $lang["reservation"][31]	= "Par";
 $lang["reservation"][32]	= "Editer r&eacute;servation";
+$lang["reservation"][33]	= "Pas de mat&eacute;riel trouv&eacute;.";
 
 $lang["knowbase"][0] ="Base de connaissances";
 $lang["knowbase"][1] ="FAQ";
@@ -1277,4 +1279,9 @@ $lang["document"][29]	= "Echec de la cr&eacute;ation du r&eacute;pertoire";
 $lang["document"][30]	= "V&eacute;rifiez que vous avez les droits";
 $lang["document"][31]	= "R&eacute;pertoire de stockage des documents inexistant : ";
 $lang["document"][32]	= "Type de fichier non autoris&eacute;";
+
+$lang["repair"][0]	= "R&eacute;paration";
+$lang["repair"][1] 	= "Matériel en r&eacute;paration";
+$lang["repair"][2]	= "Sortir le mat&eacute;riel de r&eacute;paration";
+$lang["repair"][3]	= "Mettre le mat&eacute;riel en r&eacute;paration";
 ?>
