@@ -714,31 +714,52 @@ function addFormTracking ($ID,$author,$assign,$target,$error,$searchauthor='') {
 
 	echo "<tr><td class='tab_bg_2' align='center'>".$lang["joblist"][0].":</td>";
 	echo "<td align='center' class='tab_bg_2' colspan='3'><select name='status'>";
-	echo "<option value='new' selected>".$lang["job"][14]."</option>";
-	echo "<option value='old'>".$lang["job"][15]."</option>";
+	echo "<option value='new' ";
+	if ($_GET["status"]=="new") echo "selected";
+	echo ">".$lang["job"][14]."</option>";
+	echo "<option value='old' ";
+	if ($_GET["status"]=="old") echo "selected";	
+	echo ">".$lang["job"][15]."</option>";
 	echo "</select></td></tr>";
 
 			echo "<tr>";
 			echo "<td class='tab_bg_2' align='center'>";
 			echo $lang["job"][20].":</td>";
 			echo "<td align='center' colspan='3' class='tab_bg_2'><select name='hour'>";
-			for ($i=0;$i<100;$i++)
-			echo "<option value='$i'>$i</option>";
+			for ($i=0;$i<100;$i++){
+			$selected="";
+			if ($_GET["hour"]==$i) $selected="selected";
+			echo "<option value='$i' $selected>$i</option>";
+			}			
+		
 			echo "</select>".$lang["job"][21]."&nbsp;&nbsp;";
 			echo "<select name='minute'>";
-			for ($i=0;$i<60;$i++)
-			echo "<option value='$i'>$i</option>";
+			for ($i=0;$i<60;$i++){
+			$selected="";
+			if ($_GET["minute"]==$i) $selected="selected";
+			echo "<option value='$i' $selected>$i</option>";
+			}
 			echo "</select>".$lang["job"][22]."&nbsp;&nbsp;";
 			echo "</td></tr>";
 
 
 	echo "<tr><td class='tab_bg_2' align='center'>".$lang["joblist"][2].":</td>";
 	echo "<td align='center' class='tab_bg_2' colspan='3'><select name='priority'>";
-	echo "<option value='5'>".$lang["joblist"][17]."</option>";
-	echo "<option value='4'>".$lang["joblist"][18]."</option>";
-	echo "<option value='3' selected>".$lang["joblist"][19]."</option>";
-	echo "<option value='2'>".$lang["joblist"][20]."</option>";
-	echo "<option value='1'>".$lang["joblist"][21]."</option>";
+	echo "<option value='5' ";
+	echo ">".$lang["joblist"][17]."</option>";
+	if (isset($_GET["priority"])&&$_GET["priority"]==5) echo "selected";
+	echo "<option value='4' ";
+	if (isset($_GET["priority"])&&$_GET["priority"]==4) echo "selected";
+	echo ">".$lang["joblist"][18]."</option>";
+	echo "<option value='3' ";
+	if (!isset($_GET["priority"])||$_GET["priority"]==3) echo "selected";	
+	echo ">".$lang["joblist"][19]."</option>";
+	echo "<option value='2'";
+	if (isset($_GET["priority"])&&$_GET["priority"]==2) echo "selected";	
+	echo ">".$lang["joblist"][20]."</option>";
+	echo "<option value='1'";
+	if (isset($_GET["priority"])&&$_GET["priority"]==1) echo "selected";	
+	echo ">".$lang["joblist"][21]."</option>";
 	echo "</select></td></tr>";
 
 	echo "<tr class='tab_bg_2' align='center'><td>".$lang["joblist"][3].":</td>";

@@ -47,6 +47,8 @@ checkAuthentication("normal");
 
 commonHeader("Tracking",$_SERVER["PHP_SELF"]);
 if(empty($_GET["isgroup"])) $_GET["isgroup"] = "";
+if(empty($_GET["status"])) $_GET["status"] = "new";
+
 if(empty($_GET["uemail"])) $_GET["uemail"] = "";
 if(empty($_GET["emailupdates"])) $_GET["emailupdates"] = "";
 $error = "";
