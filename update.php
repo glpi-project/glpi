@@ -1470,7 +1470,7 @@ $query= "CREATE TABLE `glpi_cartridges` (
   `pages` int(11)  NOT NULL default '0',
   PRIMARY KEY  (`ID`),
   KEY(`FK_glpi_cartridges_type`),
-  KEY(`FK_glpi_printers`),
+  KEY(`FK_glpi_printers`)
 );";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_cartridges ".$lang["update"][90].$db->error());
 
