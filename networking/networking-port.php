@@ -78,7 +78,7 @@ else if(isset($_POST["update"]))
 	checkAuthentication("admin");
 	updateNetport($_POST);
 	commonHeader("Networking",$_SERVER["PHP_SELF"]);
-	showNetportForm($_SERVER["PHP_SELF"],$_POST["ID"],$_POST["ondevice"],$_POST["devtype"]);
+	showNetportForm($_SERVER["PHP_SELF"],$_POST["ID"],$_POST["ondevice"],$_POST["devtype"],$_POST["several"]);
 	commonFooter();
 }
 else 
