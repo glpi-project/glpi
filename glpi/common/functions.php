@@ -592,7 +592,7 @@ function showEvents($target,$order,$sort) {
 		$level = $db->result($result, $i, "level");
 		$message = $db->result($result, $i, "message");
 		
-		echo "<tr bgcolor=".$cfg_layout["tab_bg_2"].">";
+		echo "<tr class='tab_bg_2'>";
 		echo "<td>$itemtype:</td><td align=center><b><nobr>";
 		if ($item=="-1" || $item=="0") {
 			echo $item;
@@ -710,18 +710,18 @@ function showConnect($target,$ID,$type) {
 
 		if ($computer) {
 			$connect->getComputerData($computer);
-			echo "<tr><td bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><b>Computer: ";
+			echo "<tr><td class='tab_bg_1'><b>Computer: ";
 			echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$connect->device_ID."\">";
 			echo $connect->device_name." (".$connect->device_ID.")";
 			echo "</a>";
 			echo "</b></td>";
-			echo "<td bgcolor=\"".$cfg_layout["tab_bg_2"]."\" align=center><b>";
+			echo "<td class='tab_bg_2' align=center><b>";
 			echo "<a href=\"$target?disconnect=1&ID=$ID\">".$lang["connect"][3]."</a>";
 		} else {
-			echo "<tr><td bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><b>Computer: </b>";
+			echo "<tr><td class='tab_bg_1'><b>Computer: </b>";
 			echo "<i>".$lang["connect"][1]."</i>";
 			echo "</td>";
-			echo "<td bgcolor=\"".$cfg_layout["tab_bg_2"]."\" align=center><b>";
+			echo "<td class='tab_bg_2' align=center><b>";
 			echo "<a href=\"$target?connect=1&ID=$ID\">".$lang["connect"][2]."</a>";
 		}
 
@@ -756,7 +756,7 @@ function showConnectSearch($target,$ID) {
 	echo "<center><table border=0>";
 	echo "<tr><th colspan=2>".$lang["connect"][4].":</th></tr>";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+	echo "<tr class='tab_bg_1'>";
 	echo "<form method=post action=\"$target\">";
 	echo "<td>".$lang["connect"][5]." <select name=type>";
 	echo "<option value=name>".$lang["connect"][6]."</option>";
@@ -765,7 +765,7 @@ function showConnectSearch($target,$ID) {
 	echo $lang["connect"][8]." <input type=text size=10 name=comp>";
 	echo "<input type=hidden name=pID1 value=$ID>";
 	echo "<input type=hidden name=connect value=2>";
-	echo "</td><td bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
+	echo "</td><td class='tab_bg_2'>";
 	echo "<input type=submit value=\"".$lang["buttons"][11]."\">";
 	echo "</td></tr>";	
 
@@ -785,7 +785,7 @@ function listConnectComputers($target,$input) {
 	echo "<tr><th colspan=2>".$lang["connect"][9].":</th></tr>";
 	echo "<form method=post action=\"$target\"><tr><td>";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+	echo "<tr class='tab_bg_1'>";
 	echo "<td align=center>";
 
 	$db = new DB;
@@ -807,7 +807,7 @@ function listConnectComputers($target,$input) {
 	echo  "</select>";
 
 	echo "</td>";
-	echo "<td bgcolor=\"".$cfg_layout["tab_bg_2"]."\" align=center>";
+	echo "<td class='tab_bg_2' align=center>";
 	echo "<input type=hidden name=sID value=\"".$input["pID1"]."\">";
 	echo "<input type=hidden name=connect value=3>";
 	echo "<input type=submit value=\"".$lang["buttons"][9]."\">";
@@ -830,7 +830,7 @@ function printHelpDesk ($name) {
 	echo "<center><table border=0>";
 
 	echo "<tr><th colspan=2>".$lang["help"][0]." $realname, ".$lang["help"][1].":</th></tr>";
-	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
+	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$lang["help"][2].": </td>";
 	echo "<td><select name=priority>";
 	echo "<option value=5>".$lang["help"][3]."";
@@ -841,7 +841,7 @@ function printHelpDesk ($name) {
 	echo "</select>";
 	echo "</td></tr>";
 
-	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
+	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$lang["help"][8].":</td>";
 	echo "<td>	<select name=emailupdates>";
 	echo "<option value=no selected>".$lang["help"][9]."";
@@ -850,25 +850,25 @@ function printHelpDesk ($name) {
 	echo "</td></tr>";
 
 
-	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
+	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$lang["help"][11].":</td>";
 	echo "<td>	<input name=uemail value=\"$email\" size=20>";
 	echo "</td></tr>";
 
-	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
+	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$lang["help"][12]." <a href=\"#\" onClick=\"window.open('".$cfg_install["root"]."/find_num.php','Help','scrollbars=1,resizable=1,width=400,height=400')\"><img src=\"".$cfg_install["root"]."/pics/aide.png\" border=0 alt=\"help\"></a></td>";
 	echo "<td><input name=computer size=10>";
 	echo "</td>";
 	echo "</tr>";
 
-	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
+	echo "<tr class='tab_bg_1'>";
 	echo "<td colspan=2 align=center>".$lang["help"][13].":</td>";
 	echo "</tr>";
-	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
+	echo "<tr class='tab_bg_1'>";
 	echo "<td colspan=2 align=center><textarea name=contents cols=40 rows=20 wrap=soft></textarea>";
 	echo "</td></tr>";
 
-	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
+	echo "<tr class='tab_bg_1'>";
 	echo "<td colspan=2 align=center> <input type=submit value=\"".$lang["help"][14]."\">";
 	echo "</td></tr>";
 
@@ -922,7 +922,7 @@ function printPager($start,$numrows,$target,$parameters) {
 	}
 
 	// Print the "where am I?" 
-	echo "<td width=100% align=center bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><b>";
+	echo "<td width=100% align=center class='tab_bg_1'><b>";
 	echo $current_start."&nbsp;".$lang["pager"][1]."&nbsp;".$current_end."&nbsp;".$lang["pager"][2]."&nbsp;".$numrows."&nbsp;";
 	echo "</b></td>";
 

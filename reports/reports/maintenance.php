@@ -74,16 +74,16 @@ $number_of_networking = $db->numrows($result);
 
 
 
-echo "<tr><td bgcolor=".$cfg_layout["tab_bg_2"]." colspan=2 align=center>Nombre d'ordinateurs :&nbsp;&nbsp;</td><td bgcolor=".$cfg_layout["tab_bg_2"]." align=center>$number_of_computers</td></tr>";	
-echo "<tr><td bgcolor=".$cfg_layout["tab_bg_2"]." colspan=2 align=center>Nombre d'imprimantes/scanners :&nbsp;&nbsp; </td><td bgcolor=".$cfg_layout["tab_bg_2"]." align=center>$number_of_printers</td></tr>";
-echo "<tr><td bgcolor=".$cfg_layout["tab_bg_2"]." colspan=2 align=center>Nombre de moniteurs :&nbsp; &nbsp;</td><td bgcolor=".$cfg_layout["tab_bg_2"]." align=center> $number_of_monitors</td></tr>";
-echo "<tr><td bgcolor=".$cfg_layout["tab_bg_2"]." colspan=2 align=center>Nombre de materiel reseau : &nbsp; &nbsp; </td><td bgcolor=".$cfg_layout["tab_bg_2"]." align=center>$number_of_networking</td></tr>";
+echo "<tr><td class='tab_bg_2' colspan=2 align=center>Nombre d'ordinateurs :&nbsp;&nbsp;</td><td class='tab_bg_2' align=center>$number_of_computers</td></tr>";	
+echo "<tr><td class='tab_bg_2' colspan=2 align=center>Nombre d'imprimantes/scanners :&nbsp;&nbsp; </td><td class='tab_bg_2' align=center>$number_of_printers</td></tr>";
+echo "<tr><td class='tab_bg_2' colspan=2 align=center>Nombre de moniteurs :&nbsp; &nbsp;</td><td class='tab_bg_2' align=center> $number_of_monitors</td></tr>";
+echo "<tr><td class='tab_bg_2' colspan=2 align=center>Nombre de materiel reseau : &nbsp; &nbsp; </td><td class='tab_bg_2' align=center>$number_of_networking</td></tr>";
 
 
 
 
 # 3. Selection d'affichage pour generer la liste
-	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
+	echo "<tr class='tab_bg_1'>";
 		echo "<td colspan=2 align=center>";
 
 echo "<form name='form' method='post' action='maintenance-list.php'>";

@@ -70,7 +70,7 @@ function searchFormComputers() {
 	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
 	echo "<center><table border=0 width=90%>";
 	echo "<tr><th colspan=2><b>".$lang["search"][5].":</b></th></tr>";
-	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
+	echo "<tr class='tab_bg_1'>";
 	echo "<td align=center>";
 		dropdown( "dropdown_locations",  "contains");
 	echo "<input type=hidden name=field value=location>&nbsp;";
@@ -82,14 +82,14 @@ function searchFormComputers() {
 	}
 	echo "</select>";
 	echo "<input type=hidden name=phrasetype value=exact>";
-	echo "</td><td width=80 align=center bgcolor=".$cfg_layout["tab_bg_2"].">";
+	echo "</td><td width=80 align=center class='tab_bg_2'>";
 	echo "<input type=submit value=\"".$lang["buttons"][1]."\">";
 	echo "</td></tr></table></form></center>";
 	
 	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
 	echo "<center><table border=0 width=90%>";
 	echo "<tr><th colspan=2><b>".$lang["search"][0].":</b></th></tr>";
-	echo "<tr bgcolor=".$cfg_layout["tab_bg_1"].">";
+	echo "<tr class='tab_bg_1'>";
 	echo "<td align=center>";
 	echo "<select name=\"field\" size=1>";
 	reset($option);
@@ -111,7 +111,7 @@ function searchFormComputers() {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select> ";
-	echo "</td><td width=80 align=center bgcolor=".$cfg_layout["tab_bg_2"].">";
+	echo "</td><td width=80 align=center class='tab_bg_2'>";
 	echo "<input type=submit value=\"".$lang["buttons"][0]."\">";
 	echo "</td></tr></table></center></form>";
 }
@@ -210,7 +210,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 				$ID = $db->result($result_limit, $i, "ID");
 				$comp = new Computer;
 				$comp->getfromDB($ID,0);
-				echo "<tr bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
+				echo "<tr class='tab_bg_2'>";
 				echo "<td><b>";
 				echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID\">";
 				echo $comp->fields["name"]." (".$comp->fields["ID"].")";
@@ -528,7 +528,7 @@ function showConnections($ID) {
 	echo "<tr><th colspan=2>".$lang["connect"][0].":</th></tr>";
 	echo "<tr><th>".$lang["computers"][39].":</th><th>".$lang["computers"][40].":</th></tr>";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+	echo "<tr class='tab_bg_1'>";
 
 	// Printers
 	echo "<td align=center>";

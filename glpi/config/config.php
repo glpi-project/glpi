@@ -228,24 +228,6 @@ $cfg_layout["logogfx"]		= "glpi/pics/logo-glpi.png";
 $cfg_layout["logotxt"]		= "GLPI powered by indepnet";
 
 
-// Interface graphique...
-
-/*
-
-Obsolète JMD
-
-$cfg_layout["body_bg"]		= "#FFFFFF";
-$cfg_layout["body_text"]	= "#000000";
-$cfg_layout["body_link"]	= "#009966";
-$cfg_layout["body_vlink"]	= "#009966";
-$cfg_layout["body_alink"]	= "#009966";
-
-*/
-
-$cfg_layout["tab_bg_1"] 	= "#cccccc";
-$cfg_layout["tab_bg_2"]		= "#dddddd";
-$cfg_layout["tab_bg_3"]		= "#eeeeee";
-
 
 
 // END OF CONFIGURATION

@@ -56,7 +56,7 @@ function listNetdevices() {
 			while ($devid=$db->fetch_row($result)) {
 				$netdev = new Netdevice;
 				$netdev->getfromDB(current($devid));
-				echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+				echo "<tr class='tab_bg_1'>";
 				echo "<td><a href=\"".$cfg_install["root"]."/networking/networking-info-form.php?ID=".$netdev->fields["ID"]."\">".$netdev->fields["name"];
 				echo " (".$netdev->fields["ID"].")</a></td>";
 				echo "<td>".$netdev->fields["location"]."</td>";
@@ -91,7 +91,7 @@ function showNetworkingForm ($target,$ID) {
 	}		
 	echo "</b></th></tr>";
 	
-	echo "<tr><td bgcolor=".$cfg_layout["tab_bg_1"]." valign=top>";
+	echo "<tr><td class='tab_bg_1' valign=top>";
 
 	echo "<table cellpadding=0 cellspacing=0 border=0>\n";
 
@@ -113,7 +113,7 @@ function showNetworkingForm ($target,$ID) {
 	echo "</table>";
 
 	echo "</td>\n";	
-	echo "<td bgcolor=".$cfg_layout["tab_bg_1"]." valign=top>";
+	echo "<td class='tab_bg_1' valign=top>";
 
 	echo "<table cellpadding=0 cellspacing=0 border=0";
 
@@ -137,7 +137,7 @@ function showNetworkingForm ($target,$ID) {
 	echo "</td>\n";	
 	echo "</tr>";
 	echo "<tr>";
-	echo "<td bgcolor=".$cfg_layout["tab_bg_1"]." valign=top colspan=2>";
+	echo "<td class='tab_bg_1' valign=top colspan=2>";
 	
 	echo "<table width=100% cellpadding=0 cellspacing=0 border=0><tr><td valign=top>";
 	echo "<tr><td>".$lang["networking"][39].":	</td>";
@@ -168,7 +168,7 @@ function showNetworkingForm ($target,$ID) {
 	echo "</td>\n";	
 	echo "</tr>";
 	echo "<tr>";
-	echo "<td bgcolor=".$cfg_layout["tab_bg_1"]." valign=top colspan=2>";
+	echo "<td class='tab_bg_1' valign=top colspan=2>";
 
 	echo "<table width=100% cellpadding=0 cellspacing=0 border=0><tr><td valign=top>";
 	echo $lang["networking"][8].":	</td>";
@@ -181,7 +181,7 @@ function showNetworkingForm ($target,$ID) {
 	if (!$ID) {
 
 		echo "<tr>";
-		echo "<td bgcolor=".$cfg_layout["tab_bg_2"]." valign=top colspan=2>";
+		echo "<td class='tab_bg_2' valign=top colspan=2>";
 		echo "<center><input type=submit name=add value=\"".$lang["buttons"][8]."\"></center>";
 		echo "</td>";
 		echo "</form></tr>";
@@ -191,12 +191,12 @@ function showNetworkingForm ($target,$ID) {
 	} else {
 
 		echo "<tr>";
-		echo "<td bgcolor=".$cfg_layout["tab_bg_2"]." valign=top>";
+		echo "<td class='tab_bg_2' valign=top>";
 		echo "<input type=hidden name=ID value=\"$ID\">\n";
 		echo "<center><input type=submit name=update value=\"".$lang["buttons"][7]."\"></center>";
 		echo "</td></form>\n\n";
 		echo "<form action=\"$target\" method=post>\n";
-		echo "<td bgcolor=".$cfg_layout["tab_bg_2"]." valign=top>\n";
+		echo "<td class='tab_bg_2' valign=top>\n";
 		echo "<input type=hidden name=ID value=\"$ID\">\n";
 		echo "<center><input type=submit name=delete value=\"".$lang["buttons"][6]."\"></center>";
 		echo "</td>";
@@ -347,33 +347,33 @@ function showNetportForm($target,$ID,$ondevice,$devtype) {
 	echo "</tr>";
 	echo "<form method=post action=\"$target\">";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td>".$lang["networking"][21].":</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["networking"][21].":</td>";
 	echo "<td><input type=text size=5 name=logical_number value=\"".$netport->fields["logical_number"]."\">";
 	echo "</td></tr>";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td>".$lang["networking"][0]."</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["networking"][0]."</td>";
 	echo "<td><input type=text size=20 name=name value=\"".$netport->fields["name"]."\">";
 	echo "</td></tr>";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td>".$lang["networking"][16]."</td><td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["networking"][16]."</td><td>";
 		dropdownValue("dropdown_iface","iface", $netport->fields["iface"]);
 	echo "</td></tr>";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td>".$lang["networking"][22]."</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["networking"][22]."</td>";
 	echo "<td><input type=text size=20 name=ifaddr value=\"".$netport->fields["ifaddr"]."\">";
 	echo "</td></tr>";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td>".$lang["networking"][23]."</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["networking"][23]."</td>";
 	echo "<td><input type=text size=25 name=ifmac value=\"".$netport->fields["ifmac"]."\">";
 	echo "</td></tr>";
 
 	if ($ID) {
-		echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td>".$lang["networking"][24]."</td>";
+		echo "<tr class='tab_bg_1'><td>".$lang["networking"][24]."</td>";
 		echo "<td>";
 			showConnection($netport->fields["ID"]);
 		echo "</td></tr>";
 
-		echo "<tr bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
+		echo "<tr class='tab_bg_2'>";
 		echo "<td align=center>";
 		echo "<input type=hidden name=ID value=".$netport->fields["ID"].">";
 		echo "<input type=submit name=update value=\"".$lang["buttons"][7]."\">";
@@ -387,7 +387,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype) {
 	} else 
 	{
 
-		echo "<tr bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
+		echo "<tr class='tab_bg_2'>";
 		echo "<td align=center colspan=2>";
 		echo "<input type=hidden name=on_device value=".$ondevice.">";
 		echo "<input type=hidden name=device_type value=".$devtype.">";
@@ -458,7 +458,7 @@ function showPortsAdd($ID,$devtype) {
 	GLOBAL $cfg_layout, $cfg_install, $lang;
 	
 	echo "<center><table border=0 width=90% cellpadding=2>";
-	echo "<tr><td align=center bgcolor=\"".$cfg_layout["tab_bg_2"]."\"><b>";
+	echo "<tr><td align=center class='tab_bg_2'><b>";
 	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ondevice=$ID&devtype=$devtype\">";
 	echo $lang["networking"][19];
 	echo "</a></b></td></tr>";
@@ -516,7 +516,7 @@ function showConnectorSearch($target,$ID) {
 	echo "<center><table border=0>";
 	echo "<tr><th colspan=2>".$lang["networking"][27]." $ID ".$lang["networking"][28].":</th></tr>";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+	echo "<tr class='tab_bg_1'>";
 	echo "<form method=post action=\"$target\">";
 	echo "<td>".$lang["networking"][29]." <select name=type>";
 	echo "<option value=name>".$lang["networking"][0]."</option>";
@@ -525,12 +525,12 @@ function showConnectorSearch($target,$ID) {
 	echo $lang["networking"][30]." <input type=text size=10 name=comp>";
 	echo "<input type=hidden name=pID1 value=$ID>";
 	echo "<input type=hidden name=next value=\"compsearch\">";
-	echo "</td><td bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
+	echo "</td><td class='tab_bg_2'>";
 	echo "<input type=submit value=\"".$lang["buttons"][11]."\">";
 	echo "</td></tr>";	
 	echo "</form>";
 	
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+	echo "<tr class='tab_bg_1'>";
 	echo "<form method=post action=\"$target\">";
 	echo "<td>".$lang["networking"][31].":";
 	$db = new DB;
@@ -550,7 +550,7 @@ function showConnectorSearch($target,$ID) {
 	echo "<input type=hidden name=pID1 value=$ID>";
 	echo "<input type=hidden name=next value=\"showports\">";
 	echo "<input type=hidden name=device_type value=2>";
-	echo "</td><td bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
+	echo "</td><td class='tab_bg_2'>";
 	echo "<input type=submit value=\"".$lang["buttons"][11]."\">";
 	echo "</td></tr>";
 	echo "</form>";
@@ -568,7 +568,7 @@ function listConnectorComputers($target,$input) {
 	echo "<tr><th colspan=2>".$lang["networking"][27]." $pID1 ".$lang["networking"][32].". ".$lang["networking"][33].":</th></tr>";
 	echo "<form method=post action=\"$target\"><tr><td>";
 
-	echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+	echo "<tr class='tab_bg_1'>";
 	echo "<td align=center>";
 
 	$db = new DB;
@@ -591,7 +591,7 @@ function listConnectorComputers($target,$input) {
 	echo  "</select>";
 
 	echo "</td>";
-	echo "<td bgcolor=\"".$cfg_layout["tab_bg_2"]."\" align=center>";
+	echo "<td class='tab_bg_2' align=center>";
 	echo "<input type=hidden name=device_type value=1>";
 	echo "<input type=hidden name=pID1 value=\"".$pID1."\">";
 	echo "<input type=hidden name=next value=\"showports\">";
@@ -629,7 +629,7 @@ function listConnectorPorts($target,$input) {
 		
 			$contact = new Netport;
 			
-			echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
+			echo "<tr class='tab_bg_1'>";
 			echo "<td>".$data["logical_number"]."</td>";
 			echo "<td>";
 			echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ID=".$data["ID"]."\">";
