@@ -72,7 +72,11 @@ checkauthentication("normal");
   $day[4] = $lang["calendarD"][4] ; 
    $day[5] = $lang["calendarD"][5] ;
   $day[6] = $lang["calendarD"][6];
-$error01 = "Erreur : date invalide"
+  $error01 = "Erreur : date invalide" ;
+
+   $form    = $_GET["form"];
+   $elem = $_GET["elem"];
+
 
 ?>
 <html>
