@@ -51,8 +51,7 @@ class Netdevice {
 		$query = "SELECT * FROM networking WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			$data = mysql_fetch_array($result);
-			for($i=0; $i < count($data); $i++) {
-				list($key,$val) = each($data);
+			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}
 			return true;
@@ -88,10 +87,11 @@ class Netdevice {
 		
 		// Build query
 		$query = "INSERT INTO networking (";
-		for ($i=0; $i < count($this->fields); $i++) {
-			list($key,$val) = each($this->fields);
+		$i=0;
+		foreach ($this->fields as $key => $val) {
 			$fields[$i] = $key;
 			$values[$i] = $val;
+			$i++;
 		}		
 		for ($i=0; $i < count($fields); $i++) {
 			$query .= $fields[$i];
@@ -149,9 +149,7 @@ class Netport {
 		if ($result = $db->query($query))
 		{
 			$data = mysql_fetch_array($result);
-			for($i=0; $i < count($data); $i++)
-			{
-				list($key,$val) = each($data);
+			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}
 
@@ -248,11 +246,11 @@ class Netport {
 		
 		// Build query
 		$query = "INSERT INTO networking_ports (";
-		for ($i=0; $i < count($this->fields); $i++)
-		{
-			list($key,$val) = each($this->fields);
+		$i=0;
+		foreach ($this->fields as $key => $val) {
 			$fields[$i] = $key;
 			$values[$i] = $val;
+			$i++;
 		}		
 		for ($i=0; $i < count($fields); $i++)
 		{

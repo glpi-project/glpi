@@ -242,8 +242,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 		echo "<td align=center valign=top><small>";
 		echo "<img src=\"".$cfg_install["root"]."/pics/inventaire.png\" alt=\"\"><br>";
 		echo "-&nbsp;".$lang["setup"][10]."&nbsp;-</small><br>";
-		for ($i=0; $i < count($inventory); $i++) {
-			list($key,$val) = each($inventory);
+		foreach ($inventory as $key => $val) {
 			echo "<a href=\"".$cfg_install["root"].$val."\">".$key."</a><br>";
 		}	
 		echo "</td>";
@@ -253,8 +252,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 				echo "<img src=\"".$cfg_install["root"]."/pics/maintenance.png\" alt=\"\"><br>";
 
 		echo "-&nbsp;".$lang["setup"][55]."&nbsp;-</small><br>";
-		for ($i=0; $i < count($maintain); $i++) {
-			list($key,$val) = each($maintain);
+		foreach ($maintain as $key => $val) {
 			echo "<a href=\"".$cfg_install["root"].$val."\">".$key."</a><br>";
 		}
 		echo "</td>";
@@ -265,8 +263,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 
 		echo "-&nbsp;".$lang["ldap"][7]."-</small><br>";
 
-		for ($i=0; $i < count($LDAP); $i++) {
-			list($key,$val) = each($LDAP);
+		foreach ($LDAP as $key => $val) {
 			echo "<a href=\"".$cfg_install["root"].$val."\">".$key."</a><br>";
 		}	
 		echo "</td>";
@@ -276,8 +273,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 				echo "<img src=\"".$cfg_install["root"]."/pics/config.png\" alt=\"\"><br>";
 
 		echo "-&nbsp;".$lang["setup"][56]."&nbsp;-</small><br>";
-		for ($i=0; $i < count($config); $i++) {
-			list($key,$val) = each($config);
+		foreach ($config as $key => $val) {
 			echo "<a href=\"".$cfg_install["root"].$val."\">".$key."</a><br>";
 		}	
 		echo "</td>";

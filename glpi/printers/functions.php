@@ -65,8 +65,7 @@ function searchFormPrinters() {
 	echo $lang["search"][6];
 	echo "&nbsp;<select name=sort size=1>";
 	reset($option);
-	for ($i=0; $i < count($option); $i++) {
-		list($key,$val) = each ($option);
+	foreach ($option as $key => $val) {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select>";
@@ -82,8 +81,7 @@ function searchFormPrinters() {
 	echo "<td align=center>";
 	echo "<select name=\"field\" size=1>";
 	reset($option);
-	for ($i=0; $i < count($option); $i++) {
-		list($key,$val) = each ($option);
+	foreach ($option as $key => $val) {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select>&nbsp;";
@@ -97,8 +95,7 @@ function searchFormPrinters() {
 	echo $lang["search"][4];
 	echo "&nbsp;<select name=sort size=1>";
 	reset($option);
-	for ($i=0; $i < count($option); $i++) {
-		list($key,$val) = each ($option);
+	foreach ($option as $key => $val) {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select> ";
@@ -396,8 +393,7 @@ function updatePrinter($input) {
 	$null=array_pop($input);
 	
 	// Get all flags and fill with 0 if unchecked in form
-	for ($i=0; $i < count($printer->fields); $i++) {
-		list($key,$val) = each($printer->fields);
+	foreach ($printer->fields as $key => $val) {
 		if (eregi("\.*flag\.*",$key)) {
 			if (!isset($input[$key])) {
 				$input[$key]=0;
@@ -407,8 +403,7 @@ function updatePrinter($input) {
 
 	// Fill the update-array with changes
 	$x=1;
-	for ($i=0; $i < count($input); $i++) {
-		list($key,$val) = each($input);
+	foreach ($input as $key => $val) {
 		if ($printer->fields[$key] != $input[$key]) {
 			$printer->fields[$key] = $input[$key];
 			$updates[$x] = $key;
@@ -429,8 +424,7 @@ function addPrinter($input) {
 	$null = array_pop($input);
 	
 	// fill array for update
-	for ($i=0; $i < count($input); $i++) {
-		list($key,$val) = each($input);
+	foreach ($input as $key => $val) {
 		if ($printer->fields[$key] != $input[$key]) {
 			$printer->fields[$key] = $input[$key];
 		}

@@ -64,8 +64,7 @@ function searchFormMonitors() {
 	echo $lang["search"][6];
 	echo "&nbsp;<select name=sort size=1>";
 	reset($option);
-	for ($i=0; $i < count($option); $i++) {
-		list($key,$val) = each ($option);
+	foreach ($option as $key => $val) {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select>";
@@ -81,8 +80,7 @@ function searchFormMonitors() {
 	echo "<td align=center>";
 	echo "<select name=\"field\" size=1>";
 	reset($option);
-	for ($i=0; $i < count($option); $i++) {
-		list($key,$val) = each ($option);
+	foreach ($option as $key => $val) {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select>&nbsp;";
@@ -96,8 +94,7 @@ function searchFormMonitors() {
 	echo $lang["search"][4];
 	echo "&nbsp;<select name=sort size=1>";
 	reset($option);
-	for ($i=0; $i < count($option); $i++) {
-		list($key,$val) = each ($option);
+	foreach ($option as $key => $val) {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select> ";
@@ -413,8 +410,7 @@ function updateMonitor($input) {
 	$null=array_pop($input);
 	
 	// Get all flags and fill with 0 if unchecked in form
-	for ($i=0; $i < count($mon->fields); $i++) {
-		list($key,$val) = each($mon->fields);
+	foreach ($mon->fields as $key => $val) {
 		if (eregi("\.*flag\.*",$key)) {
 			if (!isset($input[$key])) {
 				$input[$key]=0;
@@ -424,8 +420,7 @@ function updateMonitor($input) {
 
 	// Fill the update-array with changes
 	$x=1;
-	for ($i=0; $i < count($input); $i++) {
-		list($key,$val) = each($input);
+	foreach ($input as $key => $val) {
 		if ($mon->fields[$key] != $input[$key]) {
 			$mon->fields[$key] = $input[$key];
 			$updates[$x] = $key;
@@ -446,8 +441,7 @@ function addMonitor($input) {
 	$null = array_pop($input);
 	
 	// fill array for udpate
-	for ($i=0; $i < count($input); $i++) {
-		list($key,$val) = each($input);
+	foreach ($input as $key => $val) {
 		if ($mon->fields[$key] != $input[$key]) {
 			$mon->fields[$key] = $input[$key];
 		}

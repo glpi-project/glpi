@@ -43,8 +43,7 @@ class User {
 		$query = "SELECT * FROM users WHERE (name = '$name')";
 		if ($result = $db->query($query)) {
 			$data = mysql_fetch_array($result);
-			for($i=0; $i < count($data); $i++) {
-				list($key,$val) = each($data);
+			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}
 			return true;
@@ -62,10 +61,11 @@ class User {
 		
 		// Build query
 		$query = "INSERT INTO users (";
-		for ($i=0; $i < count($this->fields); $i++) {
-			list($key,$val) = each($this->fields);
+		$i=0;
+		foreach ($this->fields as $key => $val) {
 			$fields[$i] = $key;
 			$values[$i] = $val;
+			$i++;
 		}		
 		for ($i=0; $i < count($fields); $i++) {
 			$query .= $fields[$i];
@@ -149,8 +149,7 @@ class Template {
 		$query = "SELECT * FROM templates WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			$data = mysql_fetch_array($result);
-			for($i=0; $i < count($data); $i++) {
-				list($key,$val) = each($data);
+			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}
 			return true;
@@ -185,10 +184,11 @@ class Template {
 		
 		// Build query
 		$query = "INSERT INTO templates (";
-		for ($i=0; $i < count($this->fields); $i++) {
-			list($key,$val) = each($this->fields);
+		$i=0;
+		foreach ($this->fields as $key => $val) {
 			$fields[$i] = $key;
 			$values[$i] = $val;
+			$i++;
 		}		
 		for ($i=0; $i < count($fields); $i++) {
 			$query .= $fields[$i];

@@ -130,6 +130,7 @@ class Job {
 		$db = new DB;
 		$query = "UPDATE tracking SET status = '$status' WHERE ID = $this->ID";
 		if ($result = $db->query($query)) {
+			$this->closedate=date("Y-m-d G:i:s");
 			$query = "UPDATE tracking SET closedate = NOW() WHERE ID = $this->ID";
 			if ($result = $db->query($query)) {
 				return true;
@@ -146,6 +147,7 @@ class Job {
 		// assign Job to user
 		
 		$db = new DB;
+		$this->assign=$user;
 		$query = "UPDATE tracking SET assign = '$user' WHERE ID = '$this->ID'";
 		if ($result = $db->query($query)) {
 			return true;
@@ -172,7 +174,18 @@ class Job {
 	
 	function textDescription(){
 		GLOBAL $lang;
-
+		
+		if ($this->computername==""){
+			$db=new DB;
+			$scndquery = "SELECT name FROM computers WHERE (ID = $this->computer)";
+			$scndresult = $db->query($scndquery);
+			if ($db->numrows($scndresult)) {
+				$this->computername = $db->result($scndresult, 0, "name");
+			} else {
+				$this->computername = "n/a";
+			}		
+		}
+		
 		$message = $lang["mailing"][1]."\n".$lang["mailing"][5]."\n".$lang["mailing"][1]."\n";
 		$message.= $lang["mailing"][2].$this->author."\n";
 		$message.= $lang["mailing"][6].$this->date."\n";
