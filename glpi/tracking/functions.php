@@ -357,8 +357,9 @@ function showJobShort($ID, $followup	) {
  			echo "<tr class='tab_bg_1'>";
 			echo "<td align='center'><b>".$lang["joblist"][10]."</b></td>";
 			echo "<td width='30%'><small>".$lang["joblist"][11].":<br>&nbsp;$job->date<br>";
-			echo "<i>".$lang["joblist"][12].":<br>&nbsp;$job->closedate</i><br>";
-			echo $lang["job"][20].": <br>".getRealtime($job->realtime)."</small></td>";
+			echo "<i>".$lang["joblist"][12].":<br>&nbsp;$job->closedate</i>";
+			if ($job->realtime>0) echo "<br>".$lang["job"][20].": <br>".getRealtime($job->realtime);
+			echo "</small></td>";
 		}
 
 		echo "<td align='center'><b>$job->priority</b></td>";
@@ -471,21 +472,18 @@ function showJobDetails($ID) {
 
 		echo "<td>";
 		echo "<table cellpadding='2' cellspacing='0' border='0'>";
-		echo "<tr><td>".$lang["joblist"][11].":</td>";
+		echo "<tr><td align='right'>".$lang["joblist"][11].":</td>";
 		echo "<td><b>".$job->date."</b></td></tr>";
-		echo "<tr><td>".$lang["joblist"][12].":</td>";
+		echo "<tr><td align='right'>".$lang["joblist"][12].":</td>";
 		if ($job->closedate == "0000-00-00 00:00:00" || $job->closedate == "")
 		{
 			echo "<td><i>".$lang["job"][1]."</i></td></tr>";
 		}
 		else
 		{
-			$db = new DB;
-			$query = "SELECT SEC_TO_TIME(UNIX_TIMESTAMP('$job->closedate') - UNIX_TIMESTAMP('$job->date'))";
-			$result = $db->query($query);
-			$opentime = $db->result($result, 0, 0);
 			echo "<td><b>$job->closedate</b></tr>";
-			echo "<tr><td colspan='2'>".$lang["job"][2].": $opentime</td></tr>";
+			if ($job->realtime>0)
+			echo "<tr><td align='right'>".$lang["job"][20].":</td><td><b>".getRealtime($job->realtime)."</b></td></tr>";
 		}
 		if ($cfg_features["mailing"]==1){
 		if ($job->emailupdates=='yes') $suivi=$lang["choice"][0];
