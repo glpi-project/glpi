@@ -507,12 +507,12 @@ function searchFormUsers() {
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
 
-	$option["name"]				= $lang["setup"][18];
-	$option["realname"]			= $lang["setup"][13];
-	$option["type"]			= $lang["setup"][20];
-	$option["email"]			= $lang["setup"][14];
-	$option["phone"]		= $lang["setup"][15];
-	$option["location"]			= $lang["setup"][3];
+	$option["glpi_users.name"]				= $lang["setup"][18];
+	$option["glpi_users.realname"]			= $lang["setup"][13];
+	$option["glpi_users.type"]			= $lang["setup"][20];
+	$option["glpi_users.email"]			= $lang["setup"][14];
+	$option["glpi_users.phone"]		= $lang["setup"][15];
+	$option["glpi_dropdown_locations.name"]			= $lang["setup"][3];
 	
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/setup/users-search.php\">";
@@ -521,6 +521,10 @@ function searchFormUsers() {
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 	echo "<select name=\"field\" size='1'>";
+    echo "<option value='all' ";
+	if($_GET["field"] == "all") echo "selected";
+	echo ">".$lang["search"][7]."</option>";
+
 	reset($option);
 	foreach ($option as $key => $val) {
 		echo "<option value=$key>$val\n";
@@ -551,29 +555,53 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 
 	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
 
+	$db = new DB;
+
 	// Build query
-	if ($phrasetype == "contains") {
-		$where = "($field LIKE '%".$contains."%')";
-	} else {
-		$where = "($field LIKE '".$contains."')";
+	if($field=="all") {
+		$where = " (";
+		$fields = $db->list_fields("glpi_users");
+		$columns = $db->num_fields($fields);
+		
+		for ($i = 0; $i < $columns; $i++) {
+			if($i != 0) {
+				$where .= " OR ";
+			}
+			$coco = mysql_field_name($fields, $i);
+			if($coco == "location") {
+				$where .= " glpi_dropdown_locations.name LIKE '%".$contains."%'";
+			}
+			else {
+   				$where .= "glpi_users.".$coco . " LIKE '%".$contains."%'";
+			}
+		}
+		$where .= ")";
 	}
+	else {
+		if ($phrasetype == "contains") {
+			$where = "($field LIKE '%".$contains."%')";
+		}
+		else {
+			$where = "($field LIKE '".$contains."')";
+		}
+	}
+	
 	if (!$start) {
 		$start = 0;
 	}
 	if (!$order) {
 		$order = "ASC";
 	}
-	$query = "SELECT * FROM glpi_users WHERE $where ORDER BY $sort $order";
+	$query = "SELECT * FROM glpi_users  LEFT JOIN glpi_dropdown_locations on glpi_users.location=glpi_dropdown_locations.ID ";
+	$query.=" WHERE $where ORDER BY $sort $order";
 
-		
 	// Get it from database	
-	$db = new DB;
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);
 
 		// Limit the result, if no limit applies, use prior result
 		if ($numrows>$cfg_features["list_limit"]) {
-			$query_limit = "SELECT * FROM glpi_users WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
+			$query_limit = $query." LIMIT $start,".$cfg_features["list_limit"]." ";
 			$result_limit = $db->query($query_limit);
 			$numrows_limit = $db->numrows($result_limit);
 		} else {
