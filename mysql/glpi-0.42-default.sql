@@ -1,4 +1,4 @@
-#GLPI Dump database on 2004-11-14 14:00
+#GLPI Dump database on 2004-11-14 15:54
 ### Dump table glpi_computers
 
 DROP TABLE IF EXISTS glpi_computers;
@@ -98,7 +98,7 @@ CREATE TABLE glpi_config (
    PRIMARY KEY (ID)
 );
 
-INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15',' 0.42','GLPI powered by indepnet','/','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','0','english');
+INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15',' 0.42','GLPI powered by indepnet','/','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french');
 ### Dump table glpi_connect_wire
 
 DROP TABLE IF EXISTS glpi_connect_wire;
@@ -320,7 +320,9 @@ CREATE TABLE glpi_event_log (
    KEY date (date)
 );
 
-INSERT INTO glpi_event_log VALUES ('363','-1','system','2004-11-14 13:59:51','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('363','-1','system','2004-11-14 15:53:55','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('364','0','software','2004-11-14 15:54:03','inventory','4','glpi added reservation item 1-15.');
+INSERT INTO glpi_event_log VALUES ('365','0','software','2004-11-14 15:54:13','inventory','4','glpi update reservation comment.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -551,10 +553,12 @@ CREATE TABLE glpi_reservation_item (
     ID int(11) NOT NULL auto_increment,
     device_type tinyint(4) DEFAULT '0' NOT NULL,
     id_device int(11) DEFAULT '0' NOT NULL,
+    comments text NOT NULL,
    PRIMARY KEY (ID),
    KEY device_type (device_type)
 );
 
+INSERT INTO glpi_reservation_item VALUES ('1','1','15','Pile Poil');
 ### Dump table glpi_reservation_resa
 
 DROP TABLE IF EXISTS glpi_reservation_resa;

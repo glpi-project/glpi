@@ -286,7 +286,7 @@ function showperipheralForm ($target,$ID) {
 	echo "<tr><td>".$lang["peripherals"][8].":	</td>";
 	echo "<td><input type='text' name='contact' size='12' value=\"".$mon->fields["contact"]."\"></td>";
 	echo "</tr>";
-	echo "<tr><td></td><td><b>";
+	echo "<tr><td>".$lang["reservation"][24].":</td><td><b>";
 	if (!empty($ID))
 	showReservationForm(5,$ID);
 	echo "</b></td></tr>";
