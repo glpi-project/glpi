@@ -84,9 +84,9 @@ if (isset($_POST["add"])) {
 		
 			showConnections($_GET["ID"]);
 		
-			showJobList($_SESSION["glpiname"],$_GET["show"],$_GET["contains"],$_GET["ID"]);
+			showJobList($_SESSION["glpiname"],"","",$_GET["ID"]);
 	
-			showOldJobListForItem($_SESSION["glpiname"],$_GET["contains"],$_GET["ID"]);
+			showOldJobListForItem($_SESSION["glpiname"],"",$_GET["ID"]);
 	
 			showSoftwareInstalled($_GET["ID"]);
 		}
