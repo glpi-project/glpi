@@ -56,19 +56,19 @@ class DBmysql {
 		return mysql_query($query);
 	}
 	function result($result, $i, $field) {
-		return mysql_result($result, $i, $field);
+		return stripslashes_deep(mysql_result($result, $i, $field));
 	}
 	function numrows($result) {
 		return mysql_num_rows($result);
 	}
 	function fetch_array($result) {
-		return mysql_fetch_array($result);
+		return stripslashes_deep(mysql_fetch_array($result));
 	}
 	function fetch_row($result) {
-		return mysql_fetch_row($result);
+		return stripslashes_deep(mysql_fetch_row($result));
 	}
 	function fetch_assoc($result) {
-		return mysql_fetch_assoc($result);
+		return stripslashes_deep(mysql_fetch_assoc($result));
 	}
 	function num_fields($result) {
 		return mysql_num_fields($result);

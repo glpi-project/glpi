@@ -223,7 +223,7 @@ function get_content($db, $table,$from,$limit)
          $insert = "INSERT INTO $table VALUES (";
          for($j=0; $j<$db->num_fields($result);$j++) {
             if(!isset($row[$j])) $insert .= "NULL,";
-            else if($row[$j] != "") $insert .= "'".addslashes(stripslashes($row[$j]))."',";
+            else if($row[$j] != "") $insert .= "'".addslashes($row[$j])."',";
             else $insert .= "'',";
          }
          $insert = ereg_replace(",$","",$insert);
