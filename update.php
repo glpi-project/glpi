@@ -1168,8 +1168,12 @@ if(!FieldExists("glpi_computers","is_template")) {
 	$query = "DROP TABLE glpi_templates";
 	$db->query($query) or die("0.5 drop table templates ".$db->error());
 	
-	$query="INSERT INTO glpi_computers (is_template,tplname) VALUES ('1','Blank Template')";
-	$db->query($query) or die("0.5 add blank template ".$lang["update"][90].$db->error());	
+	$query="SELECT ID FROM glpi_computers WHERE tplname='Blank Template'";
+	$result=$db->query($query);
+	if ($db->numrows($result)==0){
+		$query="INSERT INTO glpi_computers (is_template,tplname) VALUES ('1','Blank Template')";
+		$db->query($query) or die("0.5 add blank template ".$lang["update"][90].$db->error());	
+	}
 
 	 echo "<br>Version 0.5 <br />";
 }
@@ -1458,18 +1462,15 @@ $query= "ALTER TABLE `glpi_config` ADD `priority_1` VARCHAR( 200 ) DEFAULT '#fff
 if(!TableExists("glpi_cartridges")) {
 $query= "CREATE TABLE `glpi_cartridges` (
   `ID` int(11) NOT NULL auto_increment,
-  `FK_glpi_cartridges_type` int(11) default NULL,
-  `FK_glpi_printers` int(11) default NULL,
+  `FK_glpi_cartridges_type` int(11) NOT NULL default '0',
+  `FK_glpi_printers` int(11) NOT NULL default '0',
   `date_in` date default NULL,
   `date_use` date default NULL,
   `date_out` date default NULL,
-  `pages` varchar(30) default NULL,
+  `pages` int(11)  NOT NULL default '0',
   PRIMARY KEY  (`ID`),
   KEY(`FK_glpi_cartridges_type`),
   KEY(`FK_glpi_printers`),
-  KEY(`date_in`),
-  KEY(`date_use`),
-  KEY(`date_out`)
 );";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_cartridges ".$lang["update"][90].$db->error());
 
