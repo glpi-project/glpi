@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-03-20 12:42
+#GLPI Dump database on 2005-03-20 19:25
 ### Dump table glpi_cartridges
 
 DROP TABLE IF EXISTS glpi_cartridges;
@@ -6406,10 +6406,11 @@ CREATE TABLE glpi_config (
     priority_3 varchar(200) DEFAULT '#ffcece' NOT NULL,
     priority_4 varchar(200) DEFAULT '#ffbfbf' NOT NULL,
     priority_5 varchar(200) DEFAULT '#ffadad' NOT NULL,
+    date_fiscale date DEFAULT '2005-12-31' NOT NULL,
    PRIMARY KEY (ID)
 );
 
-INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15','0.5','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','0','0','0','0','0','0','1','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','0','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad');
+INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15','0.5','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','0','0','0','0','0','0','1','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','0','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31');
 ### Dump table glpi_connect_wire
 
 DROP TABLE IF EXISTS glpi_connect_wire;
@@ -9901,7 +9902,6 @@ INSERT INTO glpi_dropdown_netpoint VALUES ('1997','21','netpoint 1996');
 INSERT INTO glpi_dropdown_netpoint VALUES ('1998','3','netpoint 1997');
 INSERT INTO glpi_dropdown_netpoint VALUES ('1999','15','netpoint 1998');
 INSERT INTO glpi_dropdown_netpoint VALUES ('2000','5','netpoint 1999');
-
 ### Dump table glpi_dropdown_os
 
 DROP TABLE IF EXISTS glpi_dropdown_os;
@@ -15543,8 +15543,6 @@ INSERT INTO glpi_networking_wire VALUES ('732','732','1514');
 INSERT INTO glpi_networking_wire VALUES ('733','733','1515');
 INSERT INTO glpi_networking_wire VALUES ('734','734','1516');
 INSERT INTO glpi_networking_wire VALUES ('735','735','1517');
-
-
 ### Dump table glpi_peripherals
 
 DROP TABLE IF EXISTS glpi_peripherals;
@@ -15943,6 +15941,18 @@ INSERT INTO glpi_printers VALUES ('318','printer 318','0000-00-00 00:00:00','con
 INSERT INTO glpi_printers VALUES ('319','printer 319','0000-00-00 00:00:00','contact 319','num 319','0','serial 319','','0','1','0','',NULL,'5','80','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('321','printer 321','0000-00-00 00:00:00','contact 321','num 321','0','serial 321','','0','0','0','ADRESSE IP : 10.3.21.50LIEU : BUREAU RESPONSABLE 1B',NULL,'17','75','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('322','','0000-00-00 00:00:00','','','0','','','0','0','0','',NULL,NULL,NULL,'0','N','1','Blank Template');
+### Dump table glpi_repair_item
+
+DROP TABLE IF EXISTS glpi_repair_item;
+CREATE TABLE glpi_repair_item (
+    ID int(11) NOT NULL auto_increment,
+    device_type tinyint(4) DEFAULT '0' NOT NULL,
+    id_device int(11) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (ID),
+   KEY device_type (device_type),
+   KEY device_type_2 (device_type, id_device)
+);
+
 ### Dump table glpi_reservation_item
 
 DROP TABLE IF EXISTS glpi_reservation_item;
@@ -15952,7 +15962,8 @@ CREATE TABLE glpi_reservation_item (
     id_device int(11) DEFAULT '0' NOT NULL,
     comments text NOT NULL,
    PRIMARY KEY (ID),
-   KEY device_type (device_type)
+   KEY device_type (device_type),
+   KEY device_type_2 (device_type, id_device)
 );
 
 ### Dump table glpi_reservation_resa
