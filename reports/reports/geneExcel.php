@@ -43,8 +43,8 @@ echo "<html><body bgcolor=#ffffff>";
 echo "<big><b>Génération des rapports excel</b></big><br><br>";
 echo "<b> cliquez sur les liens pour generer et telecharger les fichiers de rapports excel</b><br><br>";
 
-echo "<a href='phpexcel/rapport-computer.php' target=blanc_>Ordinateurs</a><br><br>";
-echo "<a href='phpexcel/rapport-imprimantes.php' target=blanc_>Imprimantes</a><br><br>";
-echo "<a href='phpexcel/rapport-reseaux.php' target=blanc_>Materiel reseau</a><br><br>";
-echo "<a href='phpexcel/rapport-moniteurs.php' target=blanc_>Moniteurs</a>";
+echo "<a href='convexcel/rapport-computer.php' target=blanc_>Ordinateurs</a><br><br>";
+echo "<a href='convexcel/rapport-imprimantes.php' target=blanc_>Imprimantes</a><br><br>";
+echo "<a href='convexcel/rapport-reseaux.php' target=blanc_>Materiel reseau</a><br><br>";
+echo "<a href='convexcel/rapport-moniteurs.php' target=blanc_>Moniteurs</a>";
 ?>
