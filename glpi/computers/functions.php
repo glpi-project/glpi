@@ -557,7 +557,7 @@ function addComputer($input) {
 
 function deleteComputer($input) {
 	// Delete Computer
-	if(empty($_POST["template"])) $_POST["template"] = "";
+	if(empty($input["template"])) $input["template"] = "";
 	$comp = new Computer;
 	$comp->deleteFromDB($input["ID"],$input["template"]);
 } 	
