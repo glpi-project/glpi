@@ -841,9 +841,9 @@ function listConnectComputers($target,$input) {
 
 	$db = new DB;
 	if ($input["type"] == "name") {
-		$query = "SELECT glpi_computers.ID as ID,glpi_computers.name as name, glpi_dropdown_locations as location  from glpi_computers left join glpi_dropdown_locations on glpi_computers.location = glpi_dropdown_locations.id WHERE glpi_computers.name LIKE '%".$input["comp"]."%' order by name ASC";
+		$query = "SELECT glpi_computers.ID as ID,glpi_computers.name as name, glpi_dropdown_locations.name as location  from glpi_computers left join glpi_dropdown_locations on glpi_computers.location = glpi_dropdown_locations.id WHERE glpi_computers.name LIKE '%".$input["comp"]."%' order by name ASC";
 	} else {
-		$query = "SELECT glpi_computers.ID as ID,glpi_computers.name as name, glpi_dropdown_locations as location from glpi_computers left join glpi_dropdown_locations on glpi_computers.location = glpi_dropdown_locations.id WHERE glpi_computers.ID LIKE '%".$input["comp"]."%' order by name ASC";
+		$query = "SELECT glpi_computers.ID as ID,glpi_computers.name as name, glpi_dropdown_locations.name as location from glpi_computers left join glpi_dropdown_locations on glpi_computers.location = glpi_dropdown_locations.id WHERE glpi_computers.ID LIKE '%".$input["comp"]."%' order by name ASC";
 	} 
 	$result = $db->query($query);
 	$number = $db->numrows($result);
