@@ -681,8 +681,8 @@ function NetpointLocationSearch($search,$myname,$location,$value='') {
 	ON t1.location = t2.ID
 	WHERE (";
 	if ($location!="")
-		$query.= " t2.ID = '". $location ."'"; 
-	$query.=" AND (t2.name LIKE '%". $search ."%'
+		$query.= " t2.ID = '". $location ."' AND "; 
+	$query.=" (t2.name LIKE '%". $search ."%'
 	OR t1.name LIKE '%". $search ."%'))";
 	if ($value!="")
 		$query.=" OR t1.ID = '$value' ";
