@@ -43,10 +43,10 @@ if(empty($_GET["order"])) $_GET["order"] = "DESC";
 if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
 else $_GET["deleted"] = "Y";
 
-titleInfocom();
+titleContract();
 
-searchFormInfocom($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["deleted"]);
-showInfocomList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"]);
+searchFormContract($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["deleted"]);
+showContractList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"]);
 
 commonFooter();
 ?>
