@@ -2300,8 +2300,8 @@ switch($item_type)
 		echo "<table width='100%' height='60' border='0'>";
 		echo "<tr> ";
 		echo "<th><div align='center'><b>".$lang["reports"][20]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][38]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][46]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][38]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][53]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][47]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][38]."</b></div></th>";
