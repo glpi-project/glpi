@@ -120,7 +120,7 @@ class Connection {
 		$query = "SELECT * FROM glpi_connect_wire WHERE (end1 = '$ID' AND type = '$this->type')";
 		if ($result=$db->query($query)) {
 			$data = $db->fetch_array($result);
-			$this->end2 = $data["end2"];
+			if (isset($data["end2"])) $this->end2 = $data["end2"];
 			return $this->end2;
 		} else {
 				return false;

@@ -782,7 +782,7 @@ function showConnectorSearch($target,$ID) {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
-	echo "<div align='center'><table border='0'>";
+	echo "<div align='center'><table border='0' class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$lang["networking"][27]." $ID ".$lang["networking"][28].":</th></tr>";
 
 	echo "<tr class='tab_bg_1'>";
@@ -833,7 +833,7 @@ function listConnectorComputers($target,$input) {
 
 	$pID1 = $input["pID1"];
 
-	echo "<div align='center'><table border='0'>";
+	echo "<div align='center'><table border='0' class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$lang["networking"][27]." $pID1 ".$lang["networking"][32].". ".$lang["networking"][33].":</th></tr>";
 	echo "<form method='post' action=\"$target\"><tr><td>";
 
@@ -885,11 +885,11 @@ function listConnectorPorts($target,$input) {
 		echo "<div align='center'><b>".$lang["networking"][34]."</b></div>";
 	} else {
 
-		echo "<div align='center'><table border='0' cellspacing=2 width='90%'>";
+		echo "<div align='center'><table border='0' cellspacing=2 width='90%' class='tab_cadre'>";
 		echo "<tr><th>".$lang["networking"][27]." $pID1 ".$lang["networking"][35].". ".$lang["networking"][36]." ".$input["dID"].":</th></tr>";
 		echo "</table></div>";
 
-		echo "\n\n<br><div align='center'><table border='0' cellpadding='2' width='90%'>";
+		echo "\n\n<br><div align='center'><table border='0' cellpadding='2' width='90%' class='tab_cadre'>";
 		echo "<tr><th>#</th><th>".$lang["networking"][0]."</th><th>".$lang["networking"][51]."</th>";
 		echo "<th>".$lang["networking"][14]."</th><th>".$lang["networking"][15]."</th>";
 		echo "<th>".$lang["networking"][16]."</th><th>".$lang["networking"][17].":</th></tr>\n";
