@@ -69,13 +69,16 @@ function searchFormTracking ($show,$contains,$device) {
 	echo "</td>";
 	echo "<td align='center'><input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'></td>";
 	echo "</tr>";
-	
+
 	echo "<tr class='tab_bg_1'>";
 	echo "<td colspan='2' align='center'>";
 	echo "<select name=\"device\" size='1'>";
 
-	echo "<option "; if ($device == "0") { echo "selected"; }
-	echo " value=\"0\">".$lang["tracking"][12]."</option>";
+	echo "<option "; if ($device == "-1") { echo "selected"; }
+	echo " value=\"-1\">".$lang["tracking"][12]."</option>";
+
+	echo "<option "; if ($device == '0') { echo "selected"; }
+	echo " value='0'>".$lang["tracking"][19]."</option>";
 
 	echo "<option "; if ($device == "1") { echo "selected"; }
 	echo " value=\"1\">".$lang["tracking"][13]."</option>";
@@ -137,7 +140,7 @@ function getTrackingPrefs ($username) {
 	return $prefs;
 }
 
-function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$device='0') {
+function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$device='-1') {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -160,10 +163,10 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 	{
 		$where = "(status = 'new')";
 	}
-	if($device != 0) {
+	if($device != -1) {
 		$where .= " AND (device_type = '".$device."')";
 	} 
-	
+
 	// Build query, two completely different things here, need to be fixed
 	// and made into a more featured query-parser
 
@@ -189,7 +192,7 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 		$query = "SELECT ID FROM glpi_tracking WHERE ".$where." and (device_type = '".$item_type."' and computer = '".$item."') ORDER BY date ".$prefs["order"]."";
 	}	
 	$lim_query = " LIMIT ".$start.",".$cfg_features["list_limit"]."";	
-	
+
 	$db = new DB;
 	$result = $db->query($query);
 	$numrows = $db->numrows($result);
