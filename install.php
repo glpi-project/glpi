@@ -237,8 +237,16 @@ function step1($update)
 		if($error != 2) $error = 1;
 		echo "<td>".$lang["install"][15]."</td></tr>";
 	}
-
-
+	//Test for sybase extension loaded or not.
+	echo "<tr><td><h4>".$lang["install"][65]."</h4></td>";
+	if(ini_get('magic_quotes_sybase')) {
+		echo "<td>".$lang["install"][66]."</td></tr>";
+		$error = 2;
+	}
+	else {
+		echo "<td>".$lang["install"][67]."</td></tr>";
+		
+	}
 // *********
 // file test
 
