@@ -1,3 +1,114 @@
+**** GLPI 0.5 ***
+
+18/03/05
+Noms des prioirtés plus neutres
+Blocage demande intervention pour matériel inconnu
+Ajout de boutons suivant/précédent
+Ajout ID dans la liste des suivis
+
+17/03/05
+Ajout des ports sur les périphérques externes (gestion téléphones...)
+
+
+16/03/05
+Amélioration gestion des mots de passe
+
+11/03/05
+Amélioration système envoi de mails
+
+10/03/05
+Ajout d'onglets dans l'inventaire
+
+08/03/05
+Gestion des documents liés
+
+07/03/05
+Sécurité accrue pour la récupération des fichiers stockés
+Ajout statistiques réseaux
+Ajout responsable technique des matériels de l'inventaire
+
+05/03/05
+Barre d'édition pour la base de connaissance
+
+04/03/05
+Templates pour tous les éléments de l'inventaire
+Compatibiliét avec des décompacteurs pas très futés
+
+03/03/05
+Ajout champs fabriquant pour tous les élèments de l'inventaire
+Nouveau système de suppression pour les élèments de l'inventaire (suppression/purge/restauration)
+
+27/02/05
+Réservations effectuées modifiables
+
+24/02/05
+Refonte du système de recherche des éléments
+
+19/02/05
+Un nouveau logo pour GLPI
+Gestion des contrats et informations commerciales avec prise en compte des contacts et entreprises associés
+
+18/02/05
+Mise en place architecture pour documentation développeur
+
+13/02/05
+Priorité des interventions modifiables
+Gestion des consommables imprimantes
+
+12/02/05
+Ajout de la catégorisation des interventions
+Colorisation des priorités pour les suivis
+Nouvelle gestion des périphériques internes (possibilité de n éléments par type)
+
+10/02/05
+Ajout comentaire pour les réservations
+Réservation possible pour d'autres personnes par l'admin
+
+05/02/05
+Nouvelle statistiques globales avec des graphiques à la SPIP
+
+02/02/05
+Ajout recherche dans la base de connaissances
+
+31/01/05
+Pas d'élèments de dropdown vide
+Gestion de la périodicité pour les réservations
+Base de connaissance replable et depliable a volonté
+
+29/01/05
+Gestion des licences site
+Amélioration configuration authentification par email
+
+25/01/05
+Compatibilité IIS accrue
+
+24/01/05
+Visualisation possible de tous les matériels sur la page de réservation
+
+23/01/05
+Gestion hiérarchique des lieux
+
+20/01/05
+Compatibilité PHP5
+
+17/01/05
+Amélioration de la gestion des licences : duplication/modification/suppression
+Interventions possibles sur les logiciels
+
+15/01/05
+Gestion des licences OEM et des mises a jour
+Gestion licences a acheter
+Déplacement des éléments connectés à un PC lors de son déplacement (imprimante/ecran/periph externe)
+
+04/01/05
+Langues proposées dans leur langues respectives
+
+28/12/04
+Ajout d'une base de connaissances
+
+22/11/04 
+Ajout d'un support de navigation par mois pour la réservation
+
 **** GLPI 0.42 ***
 
 
