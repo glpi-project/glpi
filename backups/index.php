@@ -220,19 +220,17 @@ function get_content($db, $table,$from,$limit)
      $result = $db->query("SELECT * FROM $table LIMIT $from,$limit");
      if($result)
      while($row = $db->fetch_row($result)) {
-     	addslashes_deep($row);
+     	$row=addslashes_deep($row);
          $insert = "INSERT INTO $table VALUES (";
          for($j=0; $j<$db->num_fields($result);$j++) {
             if(!isset($row[$j])) $insert .= "NULL,";
-            else if($row[$j] != "") $insert .= "'".$row[$j]."',";
+            else if($row[$j] != "") $insert .= "'".addslashes($row[$j])."',";
             else $insert .= "'',";
          }
          $insert = ereg_replace(",$","",$insert);
          $insert .= ");\n";
          $content .= $insert;
      }
-     echo $content;
-     exit;
      return $content;
 }
 
@@ -243,6 +241,7 @@ function get_def($db, $table) {
     $def .= "CREATE TABLE $table (\n";
     $result = $db->query("SHOW FIELDS FROM $table");
     while($line = $db->fetch_array($result)) {
+    	$line=stripslashes_deep($line);
         $def .= "    $line[Field] $line[Type]";
         if (isset($line["Default"]) && $line["Default"] != "") $def .= " DEFAULT '$line[Default]'";
         if (isset($line["Null"]) && $line["Null"] != "YES") $def .= " NOT NULL";
@@ -277,6 +276,7 @@ function restoreMySqlDump($db,$dumpFile , $duree)
 // $mysqlPassword, mot de passe
 // $histMySql, nom de la machine serveur MySQl
 // $duree=timeout pour changement de page (-1 = aucun)
+set_magic_quotes_runtime(0);
 
 global $TPSCOUR,$offset,$cpt;
 $db=new DB;
@@ -327,7 +327,8 @@ while(!feof($fileHandle))
     {
         $formattedQuery .= $buffer;
         if (substr($formattedQuery,-1)==";")
-        if ($db->query($formattedQuery)) //réussie sinon continue à conca&téner
+        // Do not use the $db->query 
+        if (mysql_query($formattedQuery)) //réussie sinon continue à conca&téner
         {
             $offset=ftell($fileHandle);
             $formattedQuery = "";
@@ -356,7 +357,6 @@ function backupMySql($db,$dumpFile, $duree,$rowlimit)
 // $duree=timeout pour changement de page (-1 = aucun)
 
 global $TPSCOUR,$offsettable,$offsetrow,$cpt;
-
 if ($db->error)
 {
      echo "Connexion impossible à $hostMySql pour $mysqlUser";
