@@ -161,7 +161,7 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 	$numrows = $db->numrows($result);
 
 	// Form to delete old item
-	if ($show=="old"&&$_SESSION["glpitype"]=="admin"){
+	if ($show=="old"&&isAdmin($_SESSION["glpitype"])){
 		echo "<form method='post' action=\"$target\">";
 		echo "<input type='hidden' name='show' value='$show'>";
 		echo "<input type='hidden' name='contains' value='$contains'>";
@@ -233,7 +233,7 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 		echo "</div><br>";
 	}
 	// End form for delete item
-	if ($show=="old"&&$_SESSION["glpitype"]=="admin")
+	if ($show=="old"&&isAdmin($_SESSION["glpitype"]))
 	echo "</form>";
 }
 
@@ -245,7 +245,7 @@ function showOldJobListForItem($username,$item) {
 	GLOBAL $cfg_layout, $cfg_install, $lang,$HTMLRel;
 		
 	// Form to delete old item
-	if ($_SESSION["glpitype"]=="admin"){
+	if (isAdmin($_SESSION["glpitype"])){
 		echo "<form method='post' action=\"computers-info-form.php\">";
 		echo "<input type='hidden' name='ID' value='$item'>";
 		}
@@ -313,7 +313,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item') ORD
 	}
 
 	// End form for delete item
-	if ($_SESSION["glpitype"]=="admin")
+	if (isAdmin($_SESSION["glpitype"]))
 	echo "</form>";
 
 }
@@ -407,7 +407,7 @@ function showJobShort($ID, $followups	) {
 		{
  			echo "<tr class='tab_bg_1'>";
 			echo "<td align='center'><b>".$lang["joblist"][10]."</b>";
-			if ($_SESSION["glpitype"]=="admin"){
+			if (isAdmin($_SESSION["glpitype"])){
 				$sel="";
 				if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
 			echo "<br><input type='checkbox' name='todel[".$job->ID."]' value='1' $sel>";
