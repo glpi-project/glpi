@@ -39,7 +39,12 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 
-echo "<html><head><title>GLPI Login</title>";
+// Start the page
+echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
+echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">";
+echo "<head><title>GLPI Login</title>\n";
+echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1 \" />\n";
+echo "<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\" />\n";
 
 // Include CSS
 echo "<style type=\"text/css\">\n";
@@ -49,12 +54,15 @@ echo "</style>\n";
 echo "</head>";
 
 // Body with configured stuff
-echo "<body bgcolor=".$cfg_layout["body_bg"]." text=".$cfg_layout["body_text"]." link=".$cfg_layout["body_link"]." vlink=".$cfg_layout["body_vlink"]." alink=".$cfg_layout["body_alink"].">\n";
+
+echo "<body>";
+
 
 // Logo
-echo "<div id=navigation>";
-echo "<div align=center>";
-echo "<IMG src=\"".$cfg_layout["logogfx"]."\" border=0 alt=\"".$cfg_layout["logotxt"]."\" vspace=10>\n";
+echo "<div align='center'>";
+echo "<div id='navigation'>";
+
+echo "<img src=\"./pics/logo-glpi.png\" border='0' alt=\"Logo GLPI Powered By Indepnet\" title=\"Powered By Indepnet\"vspace='10' />\n";
 
 // Headline
 echo "<br />";
@@ -63,12 +71,12 @@ echo "<br />";
 
 echo "<br />";
 echo "</div>";
-echo "</div>";
+
 
 
 	
 // Login Form
-echo "<center><br><br><br><br>";
+echo "<br /><br /><br /><br />";
 echo "<form method='post' action='login.php'>";
 echo "<table border='0'>";
 echo "<tr><th colspan='2'>login:</th></tr>";
@@ -78,13 +86,13 @@ echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
 echo "<td colspan='2' align='center'><input type='submit' value='Login' /></td></tr>";
 echo "</table>";
 echo "</form>";
-
+echo "</div>";
 // End
 echo "<div id='footer'>";
-	echo "<a href=\"http://GLPI.indepnet.org/\">";
-	echo "<small><b><div align='right'>GLPI ".$cfg_install["version"]."</div></b></small>";
-	echo "</a>";
-		echo "</div>";
+	echo "<div align='right'><small><b><a href=\"http://GLPI.indepnet.org/\">";
+	echo "GLPI ".$cfg_install["version"]."";
+	echo "</a></b></small></div>";
+	echo "</div>";
 echo "<br />";
 echo "</body></html>";
 

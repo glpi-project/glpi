@@ -51,14 +51,14 @@ class DB extends DBmysql {
 
 	var $dbhost	= "localhost";
 	var $dbuser 	= "root"; 
-	var $dbpassword	= "bazounet";
+	var $dbpassword	= "";
 	var $dbdefault	= "glpidb";
 }
 
 
 //root document
 //document root
-$cfg_install["root"]		= "/glpi";
+$cfg_install["root"]		= "/glpi-gna";
 
 
 // *************************** Eléments optionnels  **********************
@@ -126,7 +126,7 @@ $cfg_features["event_loglevel"]	= 5;
 // Utilisation des fonctions mailing ou non
 $cfg_features["mailing"]	= 0;	
 // Addresse de l'administrateur (obligatoire si mailing activé)
-$cfg_mailing["admin_email"]	= "admsys@sic.sp2mi.xxxxx.fr";	
+$cfg_mailing["admin_email"]	= "admsys@sic.sp2mi.xxxxx.fr";
 // Signature for automatic generated E-Mails
 $cfg_mailing["signature"]	= "SIGNATURE";
 
@@ -223,12 +223,16 @@ $cfg_install["version"]		=" 0.3 Alpha ";
 $cfg_install["languages"]	= array("english","deutsch","french");
 
 //logo
-$cfg_layout["logogfx"]		= "/glpi/pics/logo-glpi.png";
+$cfg_layout["logogfx"]		= "glpi/pics/logo-glpi.png";
 //txt du logo
 $cfg_layout["logotxt"]		= "GLPI powered by indepnet";
 
 
 // Interface graphique...
+
+/*
+
+Obsolète JMD
 
 $cfg_layout["body_bg"]		= "#FFFFFF";
 $cfg_layout["body_text"]	= "#000000";
@@ -236,9 +240,13 @@ $cfg_layout["body_link"]	= "#009966";
 $cfg_layout["body_vlink"]	= "#009966";
 $cfg_layout["body_alink"]	= "#009966";
 
+*/
+
 $cfg_layout["tab_bg_1"] 	= "#cccccc";
 $cfg_layout["tab_bg_2"]		= "#dddddd";
 $cfg_layout["tab_bg_3"]		= "#eeeeee";
+
+
 
 // END OF CONFIGURATION
 ?>
