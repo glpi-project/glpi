@@ -138,10 +138,10 @@ $lang["backup"][11]     ="Taille";
 $lang["backup"][12]     ="Date";
 $lang["backup"][13]     ="Voir/T&eacute;l&eacute;charger";
 $lang["backup"][14]     ="Restaurer";
-$lang["backup"][15]     ="Etes vous s&ucirc;r de vouloir sauvegarder la base de donn&eacute;es";
-$lang["backup"][16]     ="Etes vous s&ucirc;r de vouloir remplacer la base de donn&eacute;es actuelle par le dump :";
-$lang["backup"][17]     ="Etes vous s&ucirc;r de vouloir supprimer ce fichier";
-$lang["backup"][18]     ="Etes vous s&ucirc;r de vouloir sauvegarder la base de donn&eacute;es";
+$lang["backup"][15]     ="Etes vous sur de vouloir sauvegarder la base de donnees";
+$lang["backup"][16]     ="Etes vous certain de vouloir remplacer la base de donnees actuelle par le fichier de sauvegarde :";
+$lang["backup"][17]     ="Etes vous certain de vouloir supprimer ce fichier";
+$lang["backup"][18]     ="Etes vous certain de vouloir sauvegarder la base de donnees";
 $lang["backup"][19]     ="Maintenant";
 $lang["backup"][20]     ="Supp";
 
@@ -386,7 +386,7 @@ $lang["reports"][4]     = "Liste du materiel sous contrat de maintenance";
 $lang["reports"][5]     = "Ordinateurs sous contrat de maintenance";
 $lang["reports"][6]	= "Ordinateurs";
 $lang["reports"][7]	="Imprimantes";
-$lang["reports"][8]	="Materiel reseau";
+$lang["reports"][8]	="Materiel r&eacute;seau";
 $lang["reports"][9]	="Moniteurs";
 $lang["reports"][10]	="S&eacute;lectionnez un type de mat&eacute;riel";
 
@@ -553,5 +553,7 @@ $lang["stats"][19] = "Statistiques lieux";
 $lang["stats"][20] = "Nom d'utilisateur";
 $lang["stats"][21] = "Lieu";
 $lang["stats"][22] = "Nombre d'interventions demand&eacute;es";
+
+
 
 ?>
