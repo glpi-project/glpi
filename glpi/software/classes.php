@@ -148,7 +148,7 @@ function getEmpty () {
 
 		$db = new DB;
 		
-		if ($force==1){
+		if ($force==1||getInstalledLicence($ID)==0){
 			$query = "DELETE from glpi_software WHERE ID = '$ID'";
 			if ($result = $db->query($query)) {
 
