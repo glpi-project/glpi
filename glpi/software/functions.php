@@ -424,7 +424,7 @@ function deleteSoftware($input,$force=0) {
 	
 } 
 
-function dropdownSoftware() {
+function dropdownSoftware($withtemplate='') {
 	$db = new DB;
 	$query = "SELECT * FROM glpi_software WHERE deleted='N' order by name";
 	$result = $db->query($query);
@@ -436,6 +436,8 @@ function dropdownSoftware() {
 		$version = $db->result($result, $i, "version");
 		$name = $db->result($result, $i, "name");
 		$sID = $db->result($result, $i, "ID");
+		
+		if (empty($withtemplate)||isGlobalSoftware($sID)||isFreeSoftware($sID))
 		echo  "<option value=$sID>$name (v. $version)</option>";
 		$i++;
 	}
@@ -1011,6 +1013,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 
 		$i++;		
 	}
+
 	if(!empty($withtemplate) && $withtemplate == 2) {
 	//Do nothing
 	} else {
@@ -1018,7 +1021,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 		echo "<div class='software-instal'><input type='hidden' name='cID' value='$instID'>";
 		echo "<input type='hidden' name='withtemplate' value='".$withtemplate."'>";
-			dropdownSoftware();
+			dropdownSoftware($withtemplate);
 		echo "</div></td><td align='center' class='tab_bg_2'>";
 		echo "<input type='submit' name='select' value=\"".$lang["buttons"][4]."\" class='submit'>";
 		echo "</td><td>&nbsp;</td><td>&nbsp;</td></tr>";

@@ -550,7 +550,7 @@ function updateComputer($input) {
 
 function addComputer($input) {
 	// Add Computer
-
+	$db=new DB;
 	$comp = new Computer;
 	
   	// set new date.
@@ -585,7 +585,25 @@ function addComputer($input) {
 	$ic->fields["FK_device"]=$newID;
 	unset ($ic->fields["ID"]);
 	$ic->addToDB();
-				
+	
+	// ADD software
+	$query="SELECT license from glpi_inst_software WHERE cID='$oldID'";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		
+		while ($data=$db->fetch_array($result))
+			installSoftware($newID,$data['license']);
+	}
+	
+	// ADD Contract				
+	$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='$oldID' AND device_type='".COMPUTER_TYPE."';";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		
+		while ($data=$db->fetch_array($result))
+			addDeviceContract($data["FK_contract"],COMPUTER_TYPE,$newID);
+	}
+	
 	// TODO ADD THE OTHERS ELEMENTS : PORTS, SOFTWARE
 	
 }
