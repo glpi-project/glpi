@@ -62,8 +62,8 @@ echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-templates.php\"><
 echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-config.php?next=extsources\"><b>".$lang["setup"][67]."</b></a></td></tr>";
 
 echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-config.php?next=mailing\"><b>".$lang["setup"][68]."</b></a></td></tr>";
-// A remplacer par l'entrée  sur la configuration de GLPI proprement dite
-//echo "<tr class='tab_bg_1'><td align='center'><a href=\"setup-users.php\"><b>".$lang["setup"][57]."</b></a></td> </tr>";
+
+echo "<tr class='tab_bg_1'><td align='center'><a href=\"setup-config.php?next=confgen\"><b>".$lang["setup"][70]."</b></a></td> </tr>";
 
 
 echo "</table></div>";
