@@ -106,11 +106,10 @@ switch($table){
 	case "networking" :
 		$query_nb = "select distinct glpi_networking.ID from glpi_networking";
 		
-		$query = "select glpi_networking.*, glpi_dropdown_netpoint.name as netpoint, glpi_users.name as techname, glpi_enterprises.name as entname, glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac ";
+		$query = "select glpi_networking.*, glpi_users.name as techname, glpi_enterprises.name as entname, glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac, glpi_networking_ports.netpoint ";
 		$query.= "from glpi_networking LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type = 2 AND glpi_networking_ports.on_device = glpi_networking.ID)";
 		$query.= "LEFT JOIN glpi_users ON glpi_users.ID = glpi_networking.tech_num ";
 		$query.= "LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_networking.FK_glpi_enterprise ";
-		$query.= "LEFT JOIN glpi_dropdown_netpoint ON glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint ";
 		$query.= " WHERE glpi_networking.is_template='0' ";
 		$query.=" ORDER by glpi_networking.deleted DESC, glpi_networking.ID ASC";
 
@@ -178,15 +177,13 @@ switch($table){
 	case "peripherals" :
 		$query_nb = "select distinct glpi_peripherals.ID from glpi_peripherals";
 		
-		$query = "select glpi_peripherals.*, glpi_users.name as techname, glpi_enterprises.name as entname ";
+		$query = "select glpi_peripherals.*, glpi_users.name as techname, glpi_enterprises.name as entname, glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac , glpi_networking_ports.netpoint";
 		$query.= " from glpi_peripherals LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type = ".PERIPHERAL_TYPE." AND glpi_networking_ports.on_device = glpi_peripherals.ID) ";
 		$query.= "LEFT JOIN glpi_users ON glpi_users.ID = glpi_peripherals.tech_num ";
 		$query.= "LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_peripherals.FK_glpi_enterprise ";
 		$query.= " WHERE glpi_peripherals.is_template='0' ";
 		$query.=" ORDER by glpi_peripherals.deleted DESC, glpi_peripherals.ID ASC";
 
-//		echo $query;
-//		exit;	
 	    $champs = Array(
       //     champ       en-tête     format         align  width multiple_zone
       Array( 'ID',     unhtmlentities($lang["peripherals"][23]),FORMAT_TEXTE, 'L',    20 ,'0'),
@@ -443,15 +440,51 @@ switch($table){
 					$name=$champs[$i][0];
 					if ($enr[$champs[$i][0]]!=""&&!is_null($enr[$champs[$i][0]])){
 					$value="";
-						if($name == "montype") {
-							$value=getDropdownName("glpi_type_monitors",$enr[$champs[$i][0]]);
-						}
-						elseif($name == "printtype") {
-							$value=getDropdownName("glpi_type_printers",$enr[$champs[$i][0]]);
-						}
-						elseif($name == "periphtype") {
-							$value=getDropdownName("glpi_type_peripherals",$enr[$champs[$i][0]]);
-						}
+				if($name == "firmware") {
+					$value=getDropdownName("glpi_dropdown_firmware",$enr[$champs[$i][0]]);
+				}
+				elseif($name == "location") {
+					$value=getDropdownName("glpi_dropdown_locations",$enr[$champs[$i][0]]);
+				}
+				elseif($name == "type") {
+					$value=getDropdownName("glpi_type_".$table,$enr[$champs[$i][0]]);
+				}
+				elseif($name == "montype") {
+					$value=getDropdownName("glpi_type_monitors",$enr[$champs[$i][0]]);
+				}
+				elseif($name == "printtype") {
+					$value=getDropdownName("glpi_type_printers",$enr[$champs[$i][0]]);
+				}
+				elseif($name == "periphtype") {
+					$value=getDropdownName("glpi_type_peripherals",$enr[$champs[$i][0]]);
+				}
+				elseif($name == "ramtype") {
+					$value=getDropdownName("glpi_dropdown_ram",$enr[$champs[$i][0]]);
+				}
+				elseif($name == "netpoint") {
+					$value=getDropdownName("glpi_dropdown_netpoint",$enr[$champs[$i][0]]);
+				}
+				elseif($name == "os") {
+					$value=getDropdownName("glpi_dropdown_os",$enr[$champs[$i][0]]);
+				}
+				elseif($name == "hdtype") {
+					$value=getDropdownName("glpi_dropdown_hdtype",$enr[$champs[$i][0]]);
+				}
+				elseif($name == "sndcard") {
+					$value=getDropdownName("glpi_dropdown_sndcard",$enr[$champs[$i][0]]);
+				}
+				elseif($name == "moboard") {
+					$value=getDropdownName("glpi_dropdown_moboard",$enr[$champs[$i][0]]);
+				}
+				elseif($name == "gfxcard") {
+					$value=getDropdownName("glpi_dropdown_gfxcard",$enr[$champs[$i][0]]);
+				}
+				elseif($name == "network") {
+					$value=getDropdownName("glpi_dropdown_network",$enr[$champs[$i][0]]);
+				}
+				elseif($name == "processor") {
+					$value=getDropdownName("glpi_dropdown_processor",$enr[$champs[$i][0]]);
+				}
 						else $value=$enr[$champs[$i][0]];
 
 					if (!ereg($value,$ligne_content[$champs[$i][0]])) $ligne_content[$champs[$i][0]].=" - ".$value;
