@@ -168,7 +168,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			echo "<input type=\"hidden\" name=\"update_device\" value=\"".$compDevID."\" />";
 			echo "</form>";
 			echo "<form name='form_unlink_device_$compDevID' action=\"\" method=\"post\" >";
-			echo "<td><a href='#' onclick='form_unlink_device_$compDevID.submit()'>retirer</a></td>";
+			echo "<td><a href='#' onclick='form_unlink_device_$compDevID.submit()'>".$lang["devices"][11]."</a></td>";
 			echo "<input type=\"hidden\" name=\"unlink_device\" value=\"".$compDevID."\" />";
 			echo "</form>";
 		}
@@ -176,7 +176,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 	} else {
 		echo "<td>&nbsp;</td><td>&nbsp;</td>";
 		echo "<form name='form_unlink_device_$compDevID' action=\"\" method=\"post\" >";
-		echo "<td><a href='#' onclick='form_unlink_device_$compDevID.submit()'>retirer</a></td>";
+		echo "<td><a href='#' onclick='form_unlink_device_$compDevID.submit()'>".$lang["devices"][11]."</a></td>";
 		echo "<input type=\"hidden\" name=\"unlink_device\" value=\"".$compDevID."\" />";
 		echo "</form>";
 	}
