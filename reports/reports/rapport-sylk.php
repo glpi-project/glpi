@@ -300,6 +300,8 @@ switch($table){
 		function write_line($enr){
             global $nbcol,$ligne,$num_format,$format,$champs;
             // parcours des champs
+			$enr=unhtmlentities_deep($enr);
+        	if (get_magic_quotes_runtime()) $enr=stripslashes_deep($enr);
 
             for ($cpt = 0; $cpt < $nbcol; $cpt++)
             {
@@ -310,6 +312,7 @@ switch($table){
                 echo "F;P".$num_format[$champs[$cpt][0]].";".$format[$champs[$cpt][0]];
                 echo ($cpt == 0 ? ";Y".$ligne : "").";X".($cpt+1)."\n";
                 // valeur
+
                 if ($num_format[$champs[$cpt][0]] == FORMAT_TEXTE)
                     echo "C;N;K\"".str_replace(';', ';;', $enr[$champs[$cpt][0]])."\"\n"; // ajout des ""
                 else
