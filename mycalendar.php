@@ -115,14 +115,17 @@ if (isset($_GET["value"])&&$_GET["value"]!=""&&$_GET["value"]!="0000-00-00"&&!is
 list($annee,$mois,$jour)=split("-",$_GET["value"]);
 }
 
-if (!isset($jour))
+if (!isset($_GET["jour"]))
        $jour = date("j") ;
+else $jour=$_GET["jour"];       
 
-if (!isset($mois))
+if (!isset($_GET["mois"]))
        $mois = date("m") ;
+else $mois=$_GET["mois"] ;
 
 if (!isset($annee))
        $annee = date("Y") ;
+else $annee=$_GET["annee"];
 
     // nombre de jours par mois
   $nbjmonth[0] = 31 ;
