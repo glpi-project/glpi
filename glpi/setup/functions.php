@@ -1050,7 +1050,7 @@ function showSortForm($target,$ID) {
 	$query = "SELECT tracking_order FROM glpi_prefs WHERE (user = '$ID')";
 	$result=$db->query($query);
 
-	echo "<div align='center'>&nbsp;<table clarcesform() in /home/bass='tab_cadre' cellpadding='5' width='30%'>";
+	echo "<div align='center'>&nbsp;<table class='tab_cadre' cellpadding='5' width='30%'>";
 	echo "<form method='post' action=\"$target\">";
 	echo "<tr><th colspan='2'>".$lang["setup"][40]."</th></tr>";
 	echo "<tr><td width='100%' align='center' class='tab_bg_1'>";
