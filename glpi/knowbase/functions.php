@@ -36,6 +36,25 @@ include ("_relpos.php");
 // FUNCTIONS knowledgebase
 
 
+function searchFormKnowbase($target,$contains){
+global $lang;
+	echo "<form method=post action=\"$target\">";
+	echo "<div align='center'><table border='0' width='500px' class='tab_cadre'>";
+
+    echo "<tr><td><input type='text' size='30' name=\"contains\" value=\"". $contains ."\" /><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit' /></td>";
+	// From helpdesk or central
+    if (ereg("\?",$target)) $separator="&";
+    else $separator="?";
+    
+    echo "<td><a href=\"".$target.$separator."toshow=all\">".$lang["knowbase"][21]."</a> </td>";
+    echo "<td align='right'><a href=\"".$target.$separator."tohide=all\">".$lang["knowbase"][22]."</a>";
+    echo "</td></tr>";
+	
+	echo "</form>";
+	
+	
+}
+
 
 function titleknowbase(){
 
@@ -45,11 +64,8 @@ function titleknowbase(){
          echo "<div align='center'><table border='0'><tr><td>";
          echo "<img src=\"".$HTMLRel."pics/knowbase.png\" alt='".$lang["knowbase"][2]."' title='".$lang["knowbase"][2]."'></td><td><a  class='icon_consol' href=\"knowbase-info-form.php?ID=new\"><b>".$lang["knowbase"][2]."</b></a>";
          echo "</td></tr>";
-         echo "<tr><td><a href=\"".$_SERVER["PHP_SELF"]."?toshow=all\">Voir Tous</a> </td><td align='right'><a href=\"".$_SERVER["PHP_SELF"]."?tohide=all\">Masquer Tous</a> </td></tr>";
 		echo "</table></div>";
 	
-	
-		   
 }
 
 
@@ -463,13 +479,12 @@ function getFAQParentCategories($ID, &$catNumbers)
 }
 
 
-function faqShowCategoriesall()
+function faqShowCategoriesall($target,$contains)
 {
 
 	global $lang;	
 
-	echo "<div align='center'>";
-    echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&toshow=all\">Voir Tous</a> </td><td align='right'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&tohide=all\">Masquer Tous</a>";	
+	searchFormKnowbase($target,$contains);
 	
 	echo "<div align='center'><table border='0' class='tab_cadre' >";
 	echo "<tr><th align='center' width='700px'>".$lang["knowbase"][1]."</th></tr><tr><td>";	
@@ -567,9 +582,19 @@ function initExpandSessionVar(){
 }
 function ExpandSessionVarHide($ID){
 	$_SESSION["kb_show"][$ID]='N';
+	
 }
-function ExpandSessionVarShow($ID){
+function ExpandSessionVarShow($ID,$recurse=0){
 	$_SESSION["kb_show"][$ID]='Y';
+	if ($recurse!=0){
+		$db=new DB();
+		$query="select parentID from glpi_dropdown_kbcategories where ID=$ID";
+		$result=$db->query($query);
+		$data=$db->fetch_array($result);
+		if ($data["parentID"]!=0)
+			ExpandSessionVarShow($data["parentID"],$recurse);
+	}
+
 }
 
 
@@ -591,5 +616,26 @@ function ExpandSessionVarShowAll(){
 		while ($data=$db->fetch_array($result))
 		$_SESSION["kb_show"][$data["ID"]]='Y';
 	}
+}
+
+function searchLimitSessionVarKnowbase($contains){
+	ExpandSessionVarHideAll();	
+	$db=new DB;
+
+// Recherche categories
+	$query = "select ID from glpi_dropdown_kbcategories WHERE name LIKE '%$contains%'";
+	if ($result=$db->query($query)){
+		while ($data=$db->fetch_array($result))
+		ExpandSessionVarShow($data["ID"],1);
+	}
+// Recherche items
+	$query = "select categoryID from glpi_kbitems WHERE question LIKE '%$contains%' OR answer LIKE '%$contains%'";
+	if ($result=$db->query($query)){
+		while ($data=$db->fetch_array($result))
+		ExpandSessionVarShow($data["categoryID"],1);
+	}
+	
+
+	
 }
 ?>

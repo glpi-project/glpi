@@ -127,8 +127,13 @@ else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
 			ExpandSessionVarHideAll();
 		else ExpandSessionVarHide($_GET["tohide"]);
 	}
+	if (isset($_POST["contains"])) $contains=$_POST["contains"];
+	else $contains="";
+
+	if (isset($_POST["contains"])) searchLimitSessionVarKnowbase($_POST["contains"]);
+
 	
-	faqShowCategoriesall();
+	faqShowCategoriesall($_SERVER["PHP_SELF"]."?show=faq",$contains);
 	}
 }
 //*******************
