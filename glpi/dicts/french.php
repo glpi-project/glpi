@@ -92,6 +92,8 @@ $lang["central"][3] 	= "Ev&eacute;nements";
 $lang["central"][4] 	= "Pas d'&eacute;v&eacute;nement";
 $lang["central"][5]	= "Accueil";
 $lang["central"][6]	= "D&eacute;connexion";
+$lang["central"][7]	= "Aide";
+
 
 //event
 $lang["event"][0]	= "Item (ID)";
@@ -145,6 +147,8 @@ $lang["Menu"][13]	="Statistiques";
 $lang["Menu"][14]	="Utilisateurs";
 $lang["Menu"][15]	="Administration";
 $lang["Menu"][16]	="Périphériques";
+
+
 
 //Donn&eacute;es
 
