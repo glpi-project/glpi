@@ -37,6 +37,7 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_printers.php");
+include ($phproot . "/glpi/includes_computers.php");
 include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_reservation.php");
 include ($phproot . "/glpi/includes_tracking.php");
@@ -67,31 +68,14 @@ else if (isset($_POST["update"]))
 	checkAuthentication("admin");
 	updatePrinter($_POST);
 	logEvent($_POST["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." updated item.");
-	commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
-	showPrintersForm($_SERVER["PHP_SELF"],$_POST["ID"]);
-	showCartridgeInstalled($_POST["ID"]);
-	showInfocomAssociated(PRINTER_TYPE,$tab["ID"]);
-	showContractAssociated(PRINTER_TYPE,$tab["ID"]);
-	showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$_POST["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$_POST["ID"]);
-
-	commonFooter();
-
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["disconnect"]))
 {
 	checkAuthentication("admin");
 	Disconnect($tab["ID"],PRINTER_TYPE);
 	logEvent($tab["ID"], "printers", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
-	commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
-	showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"]);
-	showCartridgeInstalled($tab["ID"]);
-	showInfocomAssociated(PRINTER_TYPE,$tab["ID"]);
-	showContractAssociated(PRINTER_TYPE,$tab["ID"]);
-	showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
-
-	commonFooter();
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 else if(isset($tab["connect"]))
 {
@@ -112,17 +96,10 @@ else if(isset($tab["connect"]))
 	else if($tab["connect"]==3)
 	{
 		checkAuthentication("admin");
-		commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
 		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],PRINTER_TYPE);
 		logEvent($tab["sID"], "printers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
-		showPrintersForm($_SERVER["PHP_SELF"],$tab["sID"]);
-		showCartridgeInstalled($tab["ID"]);
-		showInfocomAssociated(PRINTER_TYPE,$tab["ID"]);
-		showContractAssociated(PRINTER_TYPE,$tab["ID"]);
-		showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
-		showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
-
-		commonFooter();
+		
+		header("Location: ".$cfg_install["root"]."/printers/printers-info-form.php?ID=".$tab["sID"]);
 
 	}
 }

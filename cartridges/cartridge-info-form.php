@@ -87,10 +87,7 @@ else if (isset($_POST["update"]))
 	checkAuthentication("admin");
 	updateCartridgeType($_POST);
 	logEvent($_POST["ID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." updated item.");
-	commonHeader($lang["title"][19],$_SERVER["PHP_SELF"]);
-	showCartridgeTypeForm($_SERVER["PHP_SELF"],$_POST["ID"]);
-
-	commonFooter();
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 
 } 
 else

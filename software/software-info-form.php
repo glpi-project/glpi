@@ -67,14 +67,7 @@ else if (isset($_POST["update"]))
 	unset($_POST["search_software"]);
 	updateSoftware($_POST);
 	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." updated item.");
-	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
-	showSoftwareForm($_SERVER["PHP_SELF"],$_POST["ID"]);
-	showInfocomAssociated(SOFTWARE_TYPE,$tab["ID"]);
-	showContractAssociated(SOFTWARE_TYPE,$tab["ID"]);
-	showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$_POST["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$_POST["ID"]);
-
-	commonFooter();
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 
 } 
 else if (isset($tab["Modif_Interne"])){
