@@ -47,13 +47,12 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["lID"])) $tab["lID"] = "";
 if(!isset($tab["sID"])) $tab["sID"] = "";
 if(!isset($tab["search_computer"])) $tab["search_computer"] = "";
-if(!isset($tab["search_software"])) $tab["search_software"] = "";
 
 
 if (isset($tab["Modif_Interne"])){
 	checkAuthentication("admin");
 	commonHeader("Software",$_SERVER["PHP_SELF"]);
-	showLicenseForm($_SERVER["PHP_SELF"],$tab['form'],$tab["sID"],$tab["lID"],$tab['search_computer'],$tab['search_software']);
+	showLicenseForm($_SERVER["PHP_SELF"],$tab['form'],$tab["sID"],$tab["lID"],$tab['search_computer']);
 	commonFooter();
 
 }
@@ -65,7 +64,6 @@ else if (isset($_POST["add"]))
 	else $number=$_POST["number"];
 	unset($tab["number"]);
 	unset($tab["search_computer"]);
-	unset($tab["search_software"]);
 	
 	
 	for ($i=1;$i<=$number;$i++){
@@ -105,7 +103,7 @@ else if (isset($tab["form"]))
 {
 	checkAuthentication("admin");
 	commonHeader("Software",$_SERVER["PHP_SELF"]);
-	showLicenseForm($_SERVER["PHP_SELF"],$tab['form'],$tab["sID"],$tab["lID"],$tab['search_computer'],$tab['search_software']);
+	showLicenseForm($_SERVER["PHP_SELF"],$tab['form'],$tab["sID"],$tab["lID"],$tab['search_computer']);
 	commonFooter();
 }
 else if (isset($tab["delete"]))

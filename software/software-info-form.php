@@ -52,6 +52,8 @@ if(!isset($tab["ID"])) $tab["ID"] = "";
 if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
+	unset($_POST["search_software"]);
+
 	addSoftware($_POST);
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." added item ".$_POST["name"].".");
 	header("Location: $_SERVER[HTTP_REFERER]");
@@ -66,6 +68,7 @@ else if (isset($_POST["delete"]))
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
+	unset($_POST["search_software"]);
 	updateSoftware($_POST);
 	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	commonHeader("Software",$_SERVER["PHP_SELF"]);
@@ -76,6 +79,16 @@ else if (isset($_POST["update"]))
 	commonFooter();
 
 } 
+else if (isset($tab["Modif_Interne"])){
+	checkAuthentication("admin");
+	commonHeader("Software",$_SERVER["PHP_SELF"]);
+	showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"],$tab['search_software']);
+	showJobListForItem($_SESSION["glpiname"],6,$tab["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],6,$tab["ID"]);
+
+	commonFooter();
+
+}
 else
 {
 	if (empty($tab["ID"]))
