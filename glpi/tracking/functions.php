@@ -483,7 +483,8 @@ function showJobDetails($ID) {
 		echo "<tr><td align='right'>".$lang["joblist"][11].":</td>";
 		echo "<td><b>".$job->date."</b></td></tr>";
 		echo "<tr><td align='right'>".$lang["joblist"][12].":</td>";
-		if ($job->closedate == "0000-00-00 00:00:00" || $job->closedate == "")
+//		if ($job->closedate == "0000-00-00 00:00:00" || $job->closedate == "")
+		if ($job->status=="new")
 		{
 			echo "<td><i>".$lang["job"][1]."</i></td></tr>";
 		}
