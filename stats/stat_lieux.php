@@ -100,7 +100,7 @@ if (is_array($type))
       	 	$count=$db->result($result,0,0);
       	 else $count=0; 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td>".getDropdownName($_POST["dropdown"],$key["ID"]) ."($count)</td>";
+	echo "<td>".getDropdownName($_POST["dropdown"],$key["ID"]) ."&nbsp;($count)</td>";
 	//le nombre d'intervention
 	//the number of intervention
 		echo "<td>".getNbinter(4,"glpi_computers.".getDropdownNameFromTable($_POST["dropdown"]),$key["ID"],$_POST["date1"],$_POST["date2"] )."</td>";
