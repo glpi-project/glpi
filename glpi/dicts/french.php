@@ -112,7 +112,7 @@ $lang["Menu"][1]	="R&eacute;seaux";
 $lang["Menu"][2]	="Imprimantes";
 $lang["Menu"][3]	="Ecrans";
 $lang["Menu"][4]	="Logiciels";
-$lang["Menu"][5]	="Afficher";
+$lang["Menu"][5]	="Suivi";
 $lang["Menu"][6]	="Rapports";
 $lang["Menu"][7]	="Groupes";
 $lang["Menu"][8]	="Comptes";
@@ -524,19 +524,19 @@ $lang["mailing"][12]="Attribution de l'intervention";
 $lang["mailing"][13]="Erreur dans la g&eacute;n&eacute;ration de l'email automatique";
 
 
-//Les stats (a passer au filtre des accents etc ...)
-$lang["stats"][0] = "S&eacute;lectionnez les statistiques à visionner";
+//Les stats
+$lang["stats"][0] = "S&eacute;lectionnez les statistiques &agrave; visualiser";
 $lang["stats"][1] = "Globales";
-$lang["stats"][2] = "Par techniciens";
-$lang["stats"][3] = "Par lieux";
-$lang["stats"][4] = "Par utilisateurs";
+$lang["stats"][2] = "Par technicien";
+$lang["stats"][3] = "Par lieu";
+$lang["stats"][4] = "Par utilisateur";
 $lang["stats"][5] = "Nombre total d'interventions";
 $lang["stats"][6] = "D&eacute;lai moyen de r&eacute;solution de panne";
 $lang["stats"][7] = "D&eacute;lai maximal de r&eacute;solution de panne";
 $lang["stats"][8] = "Ce mois ci";
 $lang["stats"][9] = "Cette ann&eacute;e";
 $lang["stats"][10] = "Au total";
-$lang["stats"][11] = "Nombre d'interventions resolues";
+$lang["stats"][11] = "Nombre d'interventions r&eacute;solues";
 $lang["stats"][12] = "Statistiques Globales";
 $lang["stats"][13] = "Nombre d'interventions attribu&eacute;es";
 $lang["stats"][14] = "Nombre d'interventions r&eacute;solues";
