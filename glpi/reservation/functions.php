@@ -466,9 +466,10 @@ echo "</td></tr></table></div>";
 
 function showAddReservationForm($target,$ID,$date){
 	global $lang,$HTMLRel;
-
+	
 	echo "<div align='center'><form method='post' name=form action=\"$target\">";
-	echo "<input type='hidden' name='id_user' value='".$_SESSION["glpiID"]."'>";
+	
+	
 	echo "<input type='hidden' name='id_item' value='$ID'>";
 
 	echo "<table class='tab_cadre' cellpadding='2'>";
@@ -482,6 +483,15 @@ function showAddReservationForm($target,$ID,$date){
 	echo "<td>";
 	echo "<b>".$r->getType()." - ".$r->getName()."</b>";
     echo "</td></tr>";
+	if (!isAdmin($_SESSION["glpitype"]))
+	echo "<input type='hidden' name='id_user' value='".$_SESSION["glpiID"]."'>";
+	else {
+	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][31].":	</td>";
+	echo "<td>";
+	dropdownValue("glpi_users","id_user",$_SESSION["glpiID"]);
+    echo "</td></tr>";
+	
+	}
 
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][10].":	</td>";
@@ -547,6 +557,10 @@ function showAddReservationForm($target,$ID,$date){
 
 	echo $lang["reservation"][30];
 	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][23].":	</td>";
+	echo "<td><input type='text' name='comment' size='30' value=''>";
+    echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'>";
 	echo "<td colspan='2'  valign='top' align='center'>";
@@ -634,7 +648,7 @@ $display="";
 						$delete="<a  href=\"".$target."?show=resa&ID=$ID&clear=".$row['ID']."&mois_courant=$month&annee_courante=$year\" alt='".$lang["reservation"][14]."' title='".$lang["reservation"][14]."'><img  src=\"".$HTMLRel."pics/clear.png\"></a>";
 
 		
-		echo $delete."</td><td align='center' class='tab_bg_2' style='border:1px dashed #cccccc'><span style='font-size:10px'>".$display."<br><b>".$user->fields["name"]."</b></span>";
+		echo $delete."</td><td title='".$row['comment']."' alt='".$row['comment']."' align='center' class='tab_bg_2' style='border:1px dashed #cccccc'><span style='font-size:10px'>".$display."<br><b>".$user->fields["name"]."</b></span>";
 
 			echo "</td></tr>";
 				
@@ -667,6 +681,7 @@ function addReservation($input,$target,$ok=true){
 	
   // set new date.
    $resa->fields["id_item"] = $input["id_item"];
+   $resa->fields["comment"] = $input["comment"];
    $resa->fields["id_user"] = $input["id_user"];
    $resa->fields["begin"] = $input["begin_date"]." ".$input["begin_hour"].":".$input["begin_min"].":00";
    $resa->fields["end"] = $input["end_date"]." ".$input["end_hour"].":".$input["end_min"].":00";
