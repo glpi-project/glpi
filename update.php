@@ -1027,6 +1027,7 @@ if(!FieldExists("glpi_computers","is_template")) {
 	}
 	$query = "DROP TABLE glpi_templates";
 	$db->query($query) or die("0.5 drop table templates ".$db->error());
+	 echo "<br>Version 0.5 <br />";
 }
 
 
