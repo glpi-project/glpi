@@ -143,7 +143,7 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 	}
 	else if ($show == "unassigned")
 	{
-		$query = "SELECT ID FROM glpi_tracking WHERE ".$where." and (assign is null) ORDER BY date ".$prefs["order"]."";
+		$query = "SELECT ID FROM glpi_tracking WHERE ".$where." and (assign ='' OR assign is null) ORDER BY date ".$prefs["order"]."";
 	}
 	else
 	{
@@ -155,6 +155,7 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 		$query = "SELECT ID FROM glpi_tracking WHERE ".$where." and (computer = '".$item."') ORDER BY date ".$prefs["order"]."";
 	}	
 	$lim_query = " LIMIT ".$start.",".$cfg_features["list_limit"]."";	
+
 	$db = new DB;
 	$result = $db->query($query);
 	$numrows = $db->numrows($result);
