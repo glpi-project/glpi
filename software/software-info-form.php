@@ -41,20 +41,20 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_software.php");
 
-if($_GET) $tab = $_GET;
-elseif($_POST) $tab = $_POST;
+if(isset($_GET)) $tab = $_GET;
+elseif(isset($_POST)) $tab = $_POST;
 
-if ($tab["add"]) {
+if (isset($_POST["add"])) {
 	checkAuthentication("admin");
 	addSoftware($tab);
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." added item ".$tab["name"].".");
 	header("Location: ".$cfg_install["root"]."/software/");
-} else if ($tab["delete"]) {
+} else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
 	deleteSoftware($tab);
 	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/software/");
-} else if ($tab["update"]) {
+} else if (isset($_POST["update"])) {
 	checkAuthentication("admin");
 	updateSoftware($tab);
 	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." updated item.");
