@@ -105,7 +105,7 @@ function searchFormSoftware($field="",$phrasetype= "",$contains="",$sort= "") {
 	if($phrasetype == "exact") echo "selected";
 	echo ">".$lang["search"][3]."</option>";
 	echo "</select>";
-	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" />";
+	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
 	echo "&nbsp;";
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
@@ -191,7 +191,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 		if ($numrows_limit>0) {
 			// Produce headline
-			echo "<center><table class='tab_cadre'><tr>";
+			echo "<center><table class='tab_cadre' width='750'><tr>";
 
 			// Name
 			echo "<th>";
@@ -1028,7 +1028,7 @@ function countInstallations($sID) {
 
 			// Output
 			echo "<table width='100%' cellpadding='2' cellspacing='0'><tr>";
-			echo "<td>".$lang["software"][19].": <b>$installed</b></td>";
+			echo "<td width='35%'>".$lang["software"][19].": <b>$installed</b></td>";
 			if ($remaining < 0) {
 				$remaining = "<span class='red'>$remaining";
 				$remaining .= "</span>";
@@ -1039,12 +1039,14 @@ function countInstallations($sID) {
 				$remaining = "<span class='blue'>$remaining";
 				$remaining .= "</span>";
 			}			
-			echo "<td>".$lang["software"][20].": <b>$remaining</b></td>";
-			echo "<td>".$lang["software"][21].": <b>".$total."</b></td>";
+			echo "<td width='20%'>".$lang["software"][20].": <b>$remaining</b></td>";
+			echo "<td width='20%'>".$lang["software"][21].": <b>".$total."</b></td>";
 			$tobuy=getLicenceToBuy($sID);
-			if ($tobuy>0)
-			echo "<td>".$lang["software"][37].": <b>".$tobuy."</b></td>";
-
+			if ($tobuy>0){
+			echo "<td width='25%'>".$lang["software"][37].": <b><span class='red'>".$tobuy."</span></b></td>";
+			} else {
+			echo "<td width='25%'>&nbsp;</td>";
+			}
 			echo "</tr></table>";
 		} else {
 			// Get installed
