@@ -218,6 +218,7 @@ function getfromDB ($ID) {
 		$query = "SELECT * FROM glpi_reservation_resa WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			$data = $db->fetch_array($result);
+			if (!empty($data))
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}
