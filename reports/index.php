@@ -71,7 +71,7 @@ $report_list["Par_annee"]["name"] = $lang["reports"][28];
 $report_list["Par_annee"]["file"] = "reports/parAnnee.php";
 $report_list["Intervention"]["name"] = $lang["reports"][25];
 $report_list["Intervention"]["file"] = "reports/tracking.php";
-$report_list["excel"]["name"] = "Excel";
+$report_list["excel"]["name"] = "Excel, OpenOffice (Sylk)";
 $report_list["excel"]["file"] = "reports/geneExcel.php";
 
 
