@@ -278,19 +278,21 @@ class Identification
 		$name = $this->user->fields['name'];
 		$password = md5($this->user->fields['password']);
 		$type = $this->user->fields['type'];
+		$language = $this->user->prefs['language'];
+		$tracking_order = $this->user->prefs['tracking_order'];
 		session_start();
 		$_SESSION["glpipass"] = $password;
 		$_SESSION["glpiname"] = $name;
 		$_SESSION["glpitype"] = $type;
+		$_SESSION["glpilanguage"] = $language;
+		$_SESSION["tracking_order"] = $tracking_order;
 		$_SESSION["authorisation"] = true;
 	}
 
 	function eraseCookies()
 	{
-	$_SESSION["glpipass"] = "";
-	$_SESSION["glpiname"] = "bogus";
-	$_SESSION["glpitype"] = "";
-	$_SESSION["authorisation"] = false;
+	$_SESSION = array();
+	session_destroy();
 	}
 
 	function getErr()

@@ -69,16 +69,9 @@ function checkAuthentication($authtype) {
 
 	
 	// New database object
-	$db = new DB;
 	
-	
-        loadLanguage('Helpdesk');
-	// Get user from database
-	$query = "SELECT * FROM glpi_users WHERE (name = '".$_SESSION["glpiname"]."')";
-	
-	$result = $db->query($query);
-	$password = $db->result($result, 0, "password");
-	$type = $db->result($result, 0, "type");	
+        loadLanguage();
+	$type = $_SESSION["glpitype"];	
 
 	// Check username and password
 	if (!isset($_SESSION["glpiname"])) {
@@ -88,16 +81,10 @@ function checkAuthentication($authtype) {
 		echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">".$lang["login"][1]."</a></b></center>";
 		nullFooter();
 		exit();
-/*	} else if ($_SESSION["glpipass"] != md5($password)) {
-		nullHeader($lang["login"][4],$_SERVER["PHP_SELF"]);
-		echo "<center><b>".$lang["login"][2]."</b><br><br>";
-		echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">".$lang["login"][1]."</a></b></center>";
-		nullFooter();
-		exit(); */
 	} else {
 		header("Vary: User-Agent");
 
-		loadLanguage($_SESSION["glpiname"]);
+		loadLanguage();
 
 		switch ($authtype) {
 
@@ -763,22 +750,19 @@ function dropdownUsersTracking($value, $myname,$champ) {
 }
 
 
-function loadLanguage($user) {
+function loadLanguage() {
 
-	GLOBAL $lang;	
-	$db = new DB;
-	$query = "SELECT language FROM glpi_prefs WHERE (user = '$user')";
-	if ($result=$db->query($query))
-	if ($db->numrows($result)>0){
-	$language = $db->result($result,0,"language");
-	$file = "/glpi/dicts/".$language.".php";
-	} else {$file= "/glpi/dicts/english.php";
-	// Insert new pref for the user :
-	$query= "INSERT INTO glpi_prefs (user,language) VALUES ('$user','english')";
-	$result=$db->query($query);
+	GLOBAL $lang;
+
+	if(empty($_SESSION["glpilanguage"]))
+	{	
+		$file= "/glpi/dicts/english.php";
 	}
-	include ("_relpos.php");
-	include ($phproot . $file);
+	else {
+		$file = "/glpi/dicts/".$_SESSION["glpilanguage"].".php";
+	}
+		include ("_relpos.php");
+		include ($phproot . $file);
 }
 
 

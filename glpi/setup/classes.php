@@ -39,6 +39,7 @@ include ("_relpos.php");
 class User {
 
 	var $fields = array();
+	var $prefs = array();
 
   function User($name = '') {
   
@@ -50,7 +51,9 @@ class User {
   	$this->fields['type'] = 'post-only';
   	$this->fields['realname'] = $name;
   	$this->fields['can_assign_job'] = 'no';
-  }
+	$this->prefs['tracking_order'] = 'no';
+	$this->prefs['language'] = 'french';
+}
 	
 	function getFromDB($name) {
 		$db = new DB;
@@ -63,10 +66,27 @@ class User {
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}
+			$this->getPrefsFromDB();
 			return true;
 		}
 		return false;
 	}
+	
+	function getPrefsFromDB() {
+		$db = new DB;
+		$query = "select * from prefs where (user = '". $this->fields["name"] ."')";
+		if($result = $db->query($query)) {
+			if($db->numrows($result) >= 1) {
+				$this->prefs["tracking_order"] = $db->result($result,0,"tracking_order");
+				$this->prefs["language"] = $db->result($result,0,"language");
+			}
+			else {
+				$query = "insert into prefs value (".$this->fields["name"].",'no','french')"; 
+				$db->query($query);
+			}
+		}
+	}
+	
 	
 	function getEmpty () {
 	//make an empty database object
