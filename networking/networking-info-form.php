@@ -40,6 +40,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_reservation.php");
+include ($phproot . "/glpi/includes_tracking.php");
 
 if(!isset($_GET["ID"])) $_GET["ID"] = "";
 
@@ -64,6 +65,9 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	commonHeader("Networking",$_SERVER["PHP_SELF"]);
 	showNetworkingForm ($_SERVER["PHP_SELF"],$_POST["ID"]);
+	showJobListForItem($_SESSION["glpiname"],2,$_POST["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],2,$_POST["ID"]);
+
 	commonFooter();
 
 }
@@ -75,6 +79,9 @@ else
 
 	commonHeader("Networking",$_SERVER["PHP_SELF"]);
 	showNetworkingForm ($_SERVER["PHP_SELF"],$_GET["ID"]);
+	showJobListForItem($_SESSION["glpiname"],2,$_GET["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],2,$_GET["ID"]);
+
 	commonFooter();
 }
 
