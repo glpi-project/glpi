@@ -671,32 +671,26 @@ function dropdownNoValue($table,$myname,$value) {
 	echo "</select>";
 }
 
-function NetpointLocationSearch($search,$myname,$location) {
+function NetpointLocationSearch($search,$myname,$location,$value='') {
 // Make a select box with preselected values for table dropdown_netpoint
 	$db = new DB;
 	
-	$query = "SELECT t1.ID, t1.name as netpointname, t2.name as locname
+	$query = "SELECT t1.ID as ID, t1.name as netpointname, t2.name as locname
 	FROM glpi_dropdown_netpoint AS t1
 	LEFT JOIN glpi_dropdown_locations AS t2
 	ON t1.location = t2.ID
-	WHERE t2.ID = '". $location ."' 
-	ANd (t2.name LIKE '%". $search ."%'
-	OR t1.name LIKE '%". $search ."%')
-	ORDER BY t1.name, t2.name";
-	$result1 = $db->query($query);
-	
-	$query = "SELECT t1.ID, t1.name as netpointname, t2.name as locname
-	FROM glpi_dropdown_netpoint AS t1
-	LEFT JOIN glpi_dropdown_locations AS t2
-	ON t1.location = t2.ID
-	WHERE t2.ID != '". $location ."' 
-	AND (t2.name LIKE '%". $search ."%'
-	OR t1.name LIKE '%". $search ."%')
-	ORDER BY t1.name, t2.name";
+	WHERE (";
+	if ($location!="")
+		$query.= " t2.ID = '". $location ."'"; 
+	$query.=" AND (t2.name LIKE '%". $search ."%'
+	OR t1.name LIKE '%". $search ."%'))";
+	if ($value!="")
+		$query.=" OR t1.ID = '$value' ";
+	$query.=" ORDER BY t1.name, t2.name";
 	$result = $db->query($query);
-	
-	if ($db->numrows($result) == 0 && $db->numrows($result1) == 0) {
-		$query = "SELECT *
+
+	if ($db->numrows($result) == 0) {
+		$query = "SELECT t1.ID as ID, t1.name as netpointname, t2.name as locname
 			FROM glpi_dropdown_netpoint AS t1
 			LEFT JOIN glpi_dropdown_locations AS t2 ON t1.location = t2.ID
 			ORDER BY t1.name, t2.name";
@@ -707,15 +701,11 @@ function NetpointLocationSearch($search,$myname,$location) {
 	echo "<select name=\"$myname\" size='1'>";
 	echo "<option value=\"NULL\">---</option>";
 	
-	if($db->numrows($result1) > 0) {
-		while($line = $db->fetch_array($result1)) {
-			echo "<option value=\"". $line["t1.ID"] ."\">". $line["locname"] ." - ". $line["netpointname"] ."</option>";
-		}
-	}
-	
 	if($db->numrows($result) > 0) {
 		while($line = $db->fetch_array($result)) {
-			echo "<option value=\"". $line["t1.ID"] ."\">". $line["locname"] ." - ". $line["netpointname"] ."</option>";
+			echo "<option value=\"". $line["ID"] ."\" ";
+			if ($value==$line["ID"]) echo " selected ";
+			echo ">". $line["locname"] ." - ". $line["netpointname"] ."</option>";
 		}
 	}
 	echo "</select>";

@@ -39,9 +39,11 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_networking.php");
+//print_r($_POST);
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(empty($tab["search"])) $tab["search"] = "";
+//if(empty($tab["location"])) $tab["location"] = "";
 
 $REFERER=$_SERVER["HTTP_REFERER"];
 if (isset($tab["referer"])) $REFERER=$tab["referer"];
@@ -51,6 +53,7 @@ if(isset($_POST["add"]))
 	checkAuthentication("admin");
 	commonHeader("Networking",$_SERVER["PHP_SELF"]);
 	unset($_POST["referer"]);
+	unset($tab["referer"]);
 	if (!isset($tab["several"])){
 	addNetport($_POST);
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added networking port.");
@@ -74,15 +77,33 @@ if(isset($_POST["add"]))
 else if(isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
+	$n=new Netport();
+	$n->getFromDB($_POST["ID"]);
 	deleteNetport($_POST);
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." deleted networking port.");
-	header("Location: ".$cfg_install["root"]."/networking/");
+	switch($n->fields["device_type"]){
+	case 1:
+		header("Location: ".$cfg_install["root"]."/computers/");
+		break;
+	case 2:
+		header("Location: ".$cfg_install["root"]."/networking/");
+		break;
+	case 3:
+		header("Location: ".$cfg_install["root"]."/printers/");
+		break;
+	default :
+		header("Location: ".$cfg_install["root"]."/computers/");
+		break;
+	}
 }
 else if(isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateNetport($_POST);
 	commonHeader("Networking",$_SERVER["PHP_SELF"]);
+	if (!isset($_POST["ondevice"])) $_POST["ondevice"]="";
+	if (!isset($_POST["devtype"])) $_POST["devtype"]="";
+	if (!isset($_POST["several"])) $_POST["several"]="";
 	showNetportForm($_SERVER["PHP_SELF"],$_POST["ID"],$_POST["ondevice"],$_POST["devtype"],$_POST["several"]);
 	commonFooter();
 }

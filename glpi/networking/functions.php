@@ -600,15 +600,15 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 	echo "<td><input type='text' size=25 name=ifmac value=\"".$netport->fields["ifmac"]."\">";
 	echo "</td></tr>";
 	
+	if ($several!="yes"){
 	echo "<tr class='tab_bg_1'><td>".$lang["networking"][51].":</td>";
 	
 	echo "<td align='center' >";
-		NetpointLocationSearch($search,"netpoint",$location);
-	echo "</td>";
-        echo "<td><input type='text' size='10'  name='search'></td>";
-	echo "<td><input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
+		NetpointLocationSearch($search,"netpoint",$location,$netport->fields["netpoint"]);
+        echo "<input type='text' size='10'  name='search'>";
+	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
 	echo "</td></tr>";
-
+	}
 	if ($ID) {
 		echo "<tr class='tab_bg_1'><td>".$lang["networking"][24]."</td>";
 		echo "<td>";
@@ -646,6 +646,7 @@ function addNetport($input) {
 	$netport = new Netport;
 
 	// dump status
+	unset($input['search']);
 	$null = array_pop($input);
 	
 	// fill array for update 
@@ -669,11 +670,12 @@ function updateNetport($input) {
 	$netport->getFromDB($input["ID"]);
 
 	// Pop off the last two attributes, no longer needed
+	unset($input['referer']);
+	unset($input['search']);
 	$null=array_pop($input);
-	$null=array_pop($input);
-	
 	// Fill the update-array with changes
 	$x=0;
+	$updates=array();
 	foreach ($input as $key => $val) {
 		if ($netport->fields[$key] != $input[$key]) {
 			$netport->fields[$key] = $input[$key];
@@ -681,10 +683,7 @@ function updateNetport($input) {
 			$x++;
 		}
 	}
-
-
 	$netport->updateInDB($updates);
-
 }
 
 function deleteNetport($input) {
