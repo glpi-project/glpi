@@ -43,7 +43,7 @@ function titlePrinters(){
            
            echo "<div align='center'><table border='0'><tr><td>";
 
-           echo "<img src=\"".$HTMLRel."pics/printer.png\" alt='".$lang["printers"][0]."' title='".$lang["printers"][0]."'></td><td><a  class='icon_consol' href=\"printers-info-form.php?new=1\"><b>".$lang["printers"][0]."</b></a>";
+           echo "<img src=\"".$HTMLRel."pics/printer.png\" alt='".$lang["printers"][0]."' title='".$lang["printers"][0]."'></td><td><a  class='icon_consol' href=\"printers-add-select.php\"><b>".$lang["printers"][0]."</b></a>";
 
 
            echo "</td></tr></table></div>";
@@ -176,7 +176,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 	$query .= "LEFT JOIN glpi_networking_ports on (printer.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='3')";	
 	$query .= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";	
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = printer.FK_glpi_enterprise ) ";
-	$query .= "where $where AND printer.deleted='$deleted' ORDER BY $sort $order";
+	$query .= "where $where AND printer.deleted='$deleted' AND printer.is_template = '0' ORDER BY $sort $order";
 	
 //	echo $query;
 	// Get it from database	
@@ -272,24 +272,56 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 }
 
 
-function showPrintersForm ($target,$ID) {
+function showPrintersForm ($target,$ID,$withtemplate='') {
 
 	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel;
 
 	$printer = new Printer;
 
-	echo "<div align='center'><form method='post' name='form' action=\"$target\">";
-	echo "<table class='tab_cadre' cellpadding='2'>";
-	echo "<tr><th colspan='2'><b>";
-	if (empty($ID)) {
-		echo $lang["printers"][3].":";
-		$printer->getEmpty();
+	$printer_spotted = false;
+
+	if(empty($ID) && $withtemplate == 1) {
+		if($printer->getEmpty()) $printer_spotted = true;
 	} else {
-		$printer->getfromDB($ID);
-		echo $lang["printers"][4]." ID $ID:";
-	}		
-	echo "</b></th></tr>";
-	
+		if($printer->getfromDB($ID)) $printer_spotted = true;
+	}
+
+	if($printer_spotted) {
+		if(!empty($withtemplate) && $withtemplate == 2) {
+			$template = "newcomp";
+			$datestring = $lang["computers"][14].": ";
+			$date = date("Y-m-d H:i:s");
+		} elseif(!empty($withtemplate) && $withtemplate == 1) { 
+			$template = "newtemplate";
+			$datestring = $lang["computers"][14].": ";
+			$date = date("Y-m-d H:i:s");
+		} else {
+			$datestring = $lang["computers"][11]." : ";
+			$date = $printer->fields["date_mod"];
+			$template = false;
+		}
+
+
+	echo "<div align='center'><form method='post' name='form' action=\"$target\">";
+		if(strcmp($template,"newtemplate") === 0) {
+			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
+		}
+
+	echo "<table class='tab_cadre' cellpadding='2'>";
+
+		echo "<tr><th align='center' >";
+		if(!$template) {
+			echo $lang["printers"][29].": ".$printer->fields["ID"];
+		}elseif (strcmp($template,"newcomp") === 0) {
+			echo $lang["printers"][28].": ".$printer->fields["tplname"];
+		}elseif (strcmp($template,"newtemplate") === 0) {
+			echo $lang["common"][6]."&nbsp;: <input type='text' name='tplname' value=\"".$printer->fields["tplname"]."\" size='20'>";
+		}
+		
+		echo "</th><th  align='center'>".$datestring.$date;
+		echo "</th></tr>";
+
+
 	echo "<tr><td class='tab_bg_1' valign='top'>";
 
 	// table identification
@@ -396,19 +428,25 @@ function showPrintersForm ($target,$ID) {
 	echo "</td>";
 	echo "</tr>";
 	
-	if ($ID=="") {
-
 		echo "<tr>";
-		echo "<td class='tab_bg_2' valign='top' colspan='2' align='center'>";
-		echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
-		echo "</td>";
-		echo "</form></tr>";
 
-		echo "</table></div>";
+	if ($template) {
+
+			if (empty($ID)||$withtemplate==2){
+			echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
+			echo "<input type='hidden' name='ID' value=$ID>";
+			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+			echo "</td>\n";
+			} else {
+			echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
+			echo "<input type='hidden' name='ID' value=$ID>";
+			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+			echo "</td>\n";
+			}
+
 
 	} else {
 
-		echo "<tr>";
 		echo "<td class='tab_bg_2' valign='top' align='center'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
@@ -426,16 +464,21 @@ function showPrintersForm ($target,$ID) {
 		}
 		echo "</div>";
 		echo "</td>";
+
+	}
 		echo "</form></tr>";
 
 		echo "</table></div>";
 
-		showConnect($target,$ID,3);
-
-		showPorts($ID,PRINTER_TYPE);
-
-		showPortsAdd($ID,PRINTER_TYPE);
+	return true;	
 	}
+	else {
+                echo "<div align='center'><b>".$lang["printers"][17]."</b></div>";
+                echo "<hr noshade>";
+                searchFormPrinters();
+                return false;
+        }
+
 }
 
 
@@ -478,12 +521,18 @@ function updatePrinter($input) {
 
 function addPrinter($input) {
 	// Add Printer, nasty hack until we get PHP4-array-functions
-
+	$db=new DB;
 	$printer = new Printer;
 	
 	// dump status
+	$oldID=$input["ID"];
+
 	$null = array_pop($input);
-	
+	$null = array_pop($input);
+
+ 	// set new date.
+ 	$printer->fields["date_mod"] = date("Y-m-d H:i:s");
+ 	
 	// fill array for update
 	foreach ($input as $key => $val) {
 		if (empty($printer->fields[$key]) || $printer->fields[$key] != $input[$key]) {
@@ -492,6 +541,41 @@ function addPrinter($input) {
 	}
 
 	$printer->addToDB();
+	$newID=$printer->getInsertElementID();
+	
+	// ADD Infocoms
+	$ic= new Infocom();
+	$ic->getFromDB(PRINTER_TYPE,$oldID);
+	$ic->fields["FK_device"]=$newID;
+	unset ($ic->fields["ID"]);
+	$ic->addToDB();
+	
+		// ADD Ports
+	$query="SELECT ID from glpi_networking_ports WHERE on_device='$oldID' AND device_type='".PRINTER_TYPE."';";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		
+		while ($data=$db->fetch_array($result)){
+			$np= new Netport();
+			$np->getFromDB($data["ID"]);
+			unset($np->fields["ID"]);
+			unset($np->fields["ifaddr"]);
+			unset($np->fields["ifmac"]);
+			unset($np->fields["netpoint"]);
+			$np->fields["on_device"]=$newID;
+			$np->addToDB();
+			}
+	}
+
+	// ADD Contract				
+	$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='$oldID' AND device_type='".PRINTER_TYPE."';";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		
+		while ($data=$db->fetch_array($result))
+			addDeviceContract($data["FK_contract"],PRINTER_TYPE,$newID);
+	}
+
 
 }
 

@@ -137,7 +137,7 @@ class Computer {
 			$query .= "'";
 			$result=$db->query($query);
 		// Mise a jour du lieu des éléments rattachés
-		if ($updates[$i]=="location"){
+		if ($updates[$i]=="location" && $this->fields[$updates[$i]]!=0){
 			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][48];
 			$updates2[0]="location";
 			//printers
