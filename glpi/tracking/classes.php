@@ -190,7 +190,7 @@ class Job {
 		// get the last followup for this job and give its contents as
 		GLOBAL $lang;
 	
-		$message = $lang["mailing"][1]."\n".$lang["mailing"][4]." (".$this->num_of_followups.")"."\n".$lang["mailing"][1]."\n";
+		$message = $lang["mailing"][1]."\n".$lang["mailing"][4]." : ".$this->num_of_followups."\n".$lang["mailing"][1]."\n";
 		
 		for ($i=0; $i < $this->num_of_followups; $i++) {
 			$fup = new Followup;
@@ -216,7 +216,7 @@ class Job {
 			}		
 		}
 		
-		$message = $lang["mailing"][1]."\n".$lang["mailing"][5]."\n".$lang["mailing"][1]."\n";
+		$message = $lang["mailing"][1]."\n*".$lang["mailing"][5]."*\n".$lang["mailing"][1]."\n";
 		$message.= $lang["mailing"][2].$this->author."\n";
 		$message.= $lang["mailing"][6].$this->date."\n";
 		$message.= $lang["mailing"][7].$this->computername."\n";

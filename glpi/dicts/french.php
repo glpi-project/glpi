@@ -706,11 +706,11 @@ $lang["help"][30] 	= "G&eacute;n&eacute;ral";
   // Mail  ne pas mettre au format html !!!!
   
 $lang["mailing"][0]="-----------------------";
-$lang["mailing"][1]="--------------------------------------";
+$lang["mailing"][1]="=======================================";
 $lang["mailing"][2]="Auteur : ";
 $lang["mailing"][3]="Contenu : ";
-$lang["mailing"][4]="Intervention(s) déjà; effectuée(s)";
-$lang["mailing"][5]="D&eacute;scription de l'intervention";
+$lang["mailing"][4]="Intervention(s) déjà effectuée(s)";
+$lang["mailing"][5]="Description de l'intervention";
 $lang["mailing"][6]="Date de d&eacute;but : ";
 $lang["mailing"][7]="Ordinateur concerné : ";
 $lang["mailing"][8]="Attribué à : ";

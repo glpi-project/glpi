@@ -646,7 +646,7 @@ class Mailing
 		GLOBAL $lang;
 		
 		// Create the message subject 
-		$subject="";
+		$subject="[GLPI] ";
 		switch ($this->type){
 			case "new":
 			$subject.=$lang["mailing"][9];
@@ -665,7 +665,7 @@ class Mailing
 				break;
 		}
 		
-		if ($this->type!="new") $subject .= " (ref ".$this->job->ID.")";		
+		if ($this->type!="new") $subject .= " (Ref #".$this->job->ID.")";		
 		
 		return $subject;
 	}
@@ -701,7 +701,7 @@ class Mailing
 				// get users to send mail
 				$users=$this->get_users_to_send_mail();
 				// get body + signature OK
-				$body=$this->get_mail_body()."\n".$cfg_mailing["signature"];
+				$body=$this->get_mail_body()."\n-- \n".$cfg_mailing["signature"];
 				$body=ereg_replace("<br />","",$body);
 				$body=ereg_replace("<br>","",$body);
 				$body=stripslashes($body);
@@ -718,7 +718,8 @@ class Mailing
 				mail($users[$i],$subject,$body,
 				"From: $sender\r\n" .
 			    "Reply-To: $replyto\r\n" .
-     		   "X-Mailer: PHP/" . phpversion()) ;
+     		   	"X-Powered: by GLPI\r\n" .
+		   "X-Mailer: PHP/" . phpversion()) ;
 				}
 			} else {
 				echo "Type d'envoi invalide";
