@@ -893,12 +893,14 @@ function showConnection ($ID,$withtemplate='') {
 		else echo $lang["common"][0];
 		echo "</a></b>";
 		echo " ".$lang["networking"][25]." <b>";
-		if ($netport->fields["device_type"]==1) {
+		if ($netport->fields["device_type"]==COMPUTER_TYPE) {
 			echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$netport->device_ID."\">";
-		} else if ($netport->fields["device_type"]==2) {
+		} else if ($netport->fields["device_type"]==NETWORKING_TYPE) {
 			echo "<a href=\"".$cfg_install["root"]."/networking/networking-info-form.php?ID=".$netport->device_ID."\">";
-		} else if ($netport->fields["device_type"]==3) {
+		} else if ($netport->fields["device_type"]==PRINTER_TYPE) {
 			echo "<a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=".$netport->device_ID."\">";
+		} else if ($netport->fields["device_type"]==PERIPHERAL_TYPE) {
+			echo "<a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=".$netport->device_ID."\">";
 		}
 		echo $netport->device_name." (".$netport->device_ID.")";
 		echo "</a>";
