@@ -49,7 +49,7 @@ if(empty($_GET["order"])) $_GET["order"] = "ASC";
 
 titleNetdevices();
 
-searchFormNetworking();
+searchFormNetworking($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
 
 showNetworkingList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
 

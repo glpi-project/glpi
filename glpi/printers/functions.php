@@ -53,7 +53,7 @@ function titlePrinters(){
 
 
 
-function searchFormPrinters() {
+function searchFormPrinters($field="",$phrasetype= "",$contains="",$sort= "") {
 	// Print Search Form
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
@@ -76,24 +76,34 @@ function searchFormPrinters() {
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 	echo "<select name=\"field\" size='1'>";
-
+        echo "<option value='all' ";
+	if($field == "all") echo "selected";
+	echo ">".$lang["search"][7]."</option>";
         reset($option);
 	foreach ($option as $key => $val) {
-		echo "<option value=$key>$val\n";
+		echo "<option value=\"".$key."\""; 
+		if($key == $field) echo "selected";
+		echo ">". $val ."</option>\n";
 	}
 	echo "</select>&nbsp;";
 	echo $lang["search"][1];
-	echo "&nbsp;<select name='phrasetype' size='1'>";
-	echo "<option value='contains'>".$lang["search"][2]."</option>";
-	echo "<option value='exact'>".$lang["search"][3]."</option>";
+	echo "&nbsp;<select name='phrasetype' size='1' >";
+	echo "<option value='contains'";
+	if($phrasetype == "contains") echo "selected";
+	echo ">".$lang["search"][2]."</option>";
+	echo "<option value='exact'";
+	if($phrasetype == "exact") echo "selected";
+	echo ">".$lang["search"][3]."</option>";
 	echo "</select>";
-	echo "<input type='text' size='10' name=\"contains\">";
+	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" />";
 	echo "&nbsp;";
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
 	reset($option);
 	foreach ($option as $key => $val) {
-		echo "<option value=$key>$val\n";
+		echo "<option value=\"".$key."\"";
+		if($key == $sort) echo "selected";
+		echo ">".$val."</option>\n";
 	}
 	echo "</select> ";
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
