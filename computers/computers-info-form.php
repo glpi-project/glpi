@@ -159,6 +159,7 @@ else {
 		showPortsAdd($tab["ID"],COMPUTER_TYPE);
 		
 		showSoftwareInstalled($tab["ID"],$tab["withtemplate"]);
+		showContractAssociated(COMPUTER_TYPE,$tab["ID"]);
 		
 		
 	} else {
