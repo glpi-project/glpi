@@ -689,6 +689,8 @@ include ("_relpos.php");
 				break;
 			case "Etape_3" :
 				header_html("Etape 3");
+				if(empty($_POST["databasename"])) $_POST["databasename"] ="";
+				if(empty($_POST["newdatabasename"])) $_POST["newdatabasename"] ="";
 				step4($_POST["db_host"],$_POST["db_user"],$_POST["db_pass"],$_POST["databasename"],$_POST["newdatabasename"]);
 				break;
 			case "Etape_4" :
