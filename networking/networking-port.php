@@ -110,8 +110,8 @@ else if(isset($_POST["update"]))
 }
 else 
 {
-	if(empty($tab["ondevice"])) $tab["ondevice"] ="";
-	if(empty($tab["devtype"])) $tab["devtype"] ="";
+	if(empty($tab["on_device"])) $tab["on_device"] ="";
+	if(empty($tab["device_type"])) $tab["device_type"] ="";
 	if(empty($tab["several"])) $tab["several"] ="";
 	if(empty($tab["location"])) $tab["location"] = "";
 	checkAuthentication("admin");
@@ -119,11 +119,11 @@ else
 	
 	if(isset($tab["ID"]))
 	{
-		showNetportForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["ondevice"],$tab["devtype"],$tab["several"],$tab["search"],$tab["location"]);
+		showNetportForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["on_device"],$tab["device_type"],$tab["several"],$tab["search"],$tab["location"]);
 	}
 	else
 	{
-		showNetportForm($_SERVER["PHP_SELF"],"",$tab["ondevice"],$tab["devtype"],$tab["several"],$tab["search"],$tab["location"]);
+		showNetportForm($_SERVER["PHP_SELF"],"",$tab["on_device"],$tab["device_type"],$tab["several"],$tab["search"],$tab["location"]);
 	}
 	commonFooter();
 }

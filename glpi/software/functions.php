@@ -358,8 +358,7 @@ function updateSoftware($input) {
 }
 
 function addSoftware($input) {
-	// Add Software, nasty hack until we get PHP4-array-functions
-
+	
 	$sw = new Software;
 
 	// dump status
@@ -411,9 +410,9 @@ function showLicensesAdd($ID) {
 	
 	GLOBAL $cfg_layout,$cfg_install,$lang;
 	
-	echo "<div align='center'><table class='tab_cadre' width='50%' cellpadding='2'>";
+	echo "<div align='center'><table class='tab_cadre' width='70%' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><b>";
-	echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?addform=addform&ID=$ID\">";
+	echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=add&sID=$ID\">";
 	echo $lang["software"][12];
 	echo "</a></b></td></tr>";
 	echo "</table></div><br>";
@@ -425,16 +424,28 @@ function showLicenses ($sID) {
 	
 	$db = new DB;
 
-	$query = "SELECT  count(ID) AS COUNT  FROM glpi_licenses WHERE (sID = $sID)";
+	$query = "SELECT count(ID) AS COUNT  FROM glpi_licenses WHERE (sID = $sID)";
+	$query_update = "SELECT count(ID) AS COUNT  FROM glpi_licenses WHERE (update_software = $sID and is_update='Y')";
+	
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 
-			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre' width='50%'>";
-			echo "<tr><th colspan='3'>";
-			echo $db->result($result, 0, "COUNT");
-			echo " ".$lang["software"][13]." :</th>";
+			$result_update = $db->query($query_update);
+			$nb_licences=$db->result($result, 0, "COUNT");
+			$nb_updates=$db->result($result_update, 0, "COUNT");
+			$installed = getInstalledLicence($sID);
+			// As t'on utilisé trop de licences en prenant en compte les mises a jours (double install original + mise à jour)
+			// Rien si free software
+			$pb="";
+			if (($nb_licences-$nb_updates-$installed)<0&&!isFreeSoftware($sID)) $pb="class='tab_bg_1_2'";
+			
+			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre' width='70%'>";
+			echo "<tr><th colspan='6' $pb >";
+			echo $nb_licences;
+			echo "&nbsp;".$lang["software"][13]."&nbsp;-&nbsp;$nb_updates&nbsp;".$lang["software"][36]."&nbsp;-&nbsp;$installed&nbsp;".$lang["software"][19]."</th>";
 			echo "<th colspan='1'>";
 			echo " ".$lang["software"][19]." :</th></tr>";
 			$i=0;
+			echo "<tr><th>".$lang['software'][31]."</th><th>".$lang['software'][21]."</th><th>".$lang['software'][32]."</th><th>".$lang['software'][33]."</th><th>".$lang['software'][29]."</th><th>".$lang['software'][35]."</th><th>&nbsp;</th></tr>";
 				} else {
 
 			echo "<br><div align='center'><table border='0' width='50%' cellpadding='2'>";
@@ -443,21 +454,31 @@ function showLicenses ($sID) {
 		}
 	}
 
-$query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE  FROM glpi_licenses WHERE (sID = $sID) GROUP BY serial, expire ORDER BY serial";
+$query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as OEM, oem_computer as OEM_COMPUTER, is_update as ISUPDATE, update_software as UPDATE_SOFTWARE, buy as BUY  FROM glpi_licenses WHERE (sID = $sID) GROUP BY serial, expire, oem, oem_computer, is_update, update_software, buy ORDER BY serial,oem, oem_computer, is_update,update_software";
+//echo $query;
 	if ($result = $db->query($query)) {			
 	while ($data=$db->fetch_array($result)) {
 		$serial=$data["SERIAL"];
 		$num_tot=$data["COUNT"];
-		$expire=$data["EXPIRE"];		
+		$expire=$data["EXPIRE"];
+		$oem=$data["OEM"];
+		$oem_computer=$data["OEM_COMPUTER"];
+		$is_update=$data["ISUPDATE"];
+		$update_software=$data["UPDATE_SOFTWARE"];
+		$buy=$data["BUY"];
+		
+		$SEARCH_LICENCE="(glpi_licenses.sID = $sID AND glpi_licenses.serial = '$serial'  AND glpi_licenses.oem = '$oem' AND glpi_licenses.oem_computer = '$oem_computer' AND glpi_licenses.is_update = '$is_update' AND glpi_licenses.update_software = '$update_software' AND glpi_licenses.buy = '$buy' ";
+		if ($expire=="")
+		$SEARCH_LICENCE.=" AND glpi_licenses.expire IS NULL)";
+		else $SEARCH_LICENCE.=" AND glpi_licenses.expire = '$expire')";
+		
 		$today=date("Y-m-d"); 
 		$expirer=0;
 		$expirecss="";
 		if ($expire!=NULL&&$today>$expire) {$expirer=1; $expirecss="_2";}
 		// Get installed licences
-		$query_inst = "SELECT glpi_inst_software.ID AS ID, glpi_computers.ID AS cID, glpi_computers.name AS cname FROM glpi_licenses, glpi_inst_software LEFT JOIN glpi_computers ON (glpi_inst_software.cID= glpi_computers.ID) WHERE glpi_licenses.sID = $sID  AND glpi_licenses.serial = '$serial' ";
-		if ($expire=="")
-		$query_inst.=" AND glpi_licenses.expire IS NULL";
-		else $query_inst.=" AND glpi_licenses.expire = '$expire'";
+		$query_inst = "SELECT glpi_inst_software.ID AS ID, glpi_inst_software.license AS lID, glpi_computers.ID AS cID, glpi_computers.name AS cname FROM glpi_licenses, glpi_inst_software LEFT JOIN glpi_computers ON (glpi_inst_software.cID= glpi_computers.ID) WHERE $SEARCH_LICENCE ";
+		
 		$query_inst.= " AND glpi_inst_software.license = glpi_licenses.ID";	
 
 		$result_inst = $db->query($query_inst);
@@ -465,7 +486,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE  FROM g
 
 		echo "<tr class='tab_bg_1'>";
 		echo "<td align='center'><b>".$serial."</b></td>";
-		echo "<td align='center'><b>".$lang["software"][21].":&nbsp;";
+		echo "<td align='center'><b>";
 		echo $num_tot;
 		echo "</b></td>";
 		
@@ -478,7 +499,45 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE  FROM g
 			}
 
 		echo "</b></td>";
+		if ($serial!="free"){
+			// OEM
+			if ($data["OEM"]=='Y') {
+			$comp=new Computer();
+			$comp->getFromDB($data["OEM_COMPUTER"]);
+			}
+			echo "<td align='center' class='tab_bg_1".($data["OEM"]=='Y'&&!isset($comp->fields['ID'])?"_2":"")."'>".($data["OEM"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
+			if ($data["OEM"]=='Y') {
+			echo "<br><b>";
+			if (isset($comp->fields['ID']))
+			echo "<a href='".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
+			else echo "N/A";
+			echo "<b>";
+			} 
+			echo "</td>";
+		
+			// UPDATE
+			if ($data["ISUPDATE"]=='Y') {
+			$sw=new Software();
+			$sw->getFromDB($data["UPDATE_SOFTWARE"]);
+			}
 
+			echo "<td align='center' class='tab_bg_1".($data["ISUPDATE"]=='Y'&&!isset($sw->fields['ID'])?"_2":"")."'>".($data["ISUPDATE"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
+			if ($data["ISUPDATE"]=='Y') {
+			echo "<br><b>";
+			if (isset($sw->fields['ID']))
+			echo "<a href='".$cfg_install["root"]."/software/software-info-form.php?ID=".$sw->fields['ID']."'>".$sw->fields['name']."&nbsp;".$sw->fields['version']."</a>";
+			else echo "N/A";
+			echo "<b>";
+			} 
+		
+			echo "</td>";
+		
+			// BUY
+			echo "<td align='center'>".($data["BUY"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
+			echo "</td>";
+		} else 
+		echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
+		
 		echo "<td align='center'>";
 		/// Logiciels installés :
 		echo "<table width='100%'>";
@@ -488,7 +547,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE  FROM g
 		if ($serial!="free") echo $lang["software"][20].": ".($num_tot-$num_inst);
 		if ($num_tot!=$num_inst||$serial=="free") {
 			// Get first non installed license ID
-			$query_first="SELECT glpi_licenses.ID as ID, glpi_inst_software.license as iID FROM glpi_licenses LEFT JOIN glpi_inst_software ON glpi_inst_software.license = glpi_licenses.ID WHERE (glpi_licenses.sID = $sID  AND glpi_licenses.serial = '$serial')";
+			$query_first="SELECT glpi_licenses.ID as ID, glpi_inst_software.license as iID FROM glpi_licenses LEFT JOIN glpi_inst_software ON glpi_inst_software.license = glpi_licenses.ID WHERE $SEARCH_LICENCE";
 			if ($result_first = $db->query($query_first)) {			
 				if ($serial=="free")
 				$ID=$db->result($result_first,0,"ID");
@@ -504,7 +563,10 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE  FROM g
 				echo "</td><td align='center'>";
 				echo "<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?delete=delete&ID=$ID\">";
 				echo $lang["buttons"][6];
-				echo "</b></a>";
+				echo "</a></b>";
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=update&lID=$ID&sID=$sID\">";
+				echo $lang["buttons"][14];
+				echo "</a></b>";
 				}
 			}
 		}
@@ -513,13 +575,17 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE  FROM g
 		
 		// Logiciels installés
 		while ($data_inst=$db->fetch_array($result_inst)){
-			echo "<tr><td align=center>";
+			echo "<tr class='tab_bg_1".($data["OEM"]=='Y'&&$data["OEM_COMPUTER"]!=$data_inst["cID"]?"_2":"")."'><td align='center'>";
 			echo "<b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$data_inst["cID"]."\">";
 			echo $data_inst["cname"];
-			echo "</b></a></td><td align=center>";
+			echo "</b></a></td><td align='center'>";
 			echo "<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&ID=".$data_inst["ID"]."&cID=".$data_inst["cID"]."\">";
 			echo $lang["buttons"][5];
 			echo "</b></a>";
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=update&lID=".$data_inst["lID"]."&sID=$sID\">";
+				echo $lang["buttons"][14];
+				echo "</a></b>";
+			
 			echo "</td></tr>";
 		}
 			
@@ -536,39 +602,104 @@ echo "</table></div>\n\n";
 }
 
 
-function showLicenseForm($target,$ID) {
+function showLicenseForm($target,$action,$sID,$lID="",$search_computer="",$search_software="") {
 
 	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel;
 
+	switch ($action){
+	case "add" :
+	$title= $lang["software"][15]." ($sID):";
+	$button= $lang["buttons"][8];
+		break;
+	case "update" :
+	$title = $lang["software"][34]." ($lID):";
+	$button= $lang["buttons"][14];
+	}
+	
+	// Get previous values or defaults values
+	$values=array();
+	// defaults values :
+	$values['serial']='';
+	//$values['number']='1';
+	$values['expire']='';
+	$values['oem']='N';
+	$values["oem_computer"]='';
+	$values['is_update']='N';
+	$values["update_software"]='';
+	$values['buy']='Y';
+	
+	
+	if (isset($_POST)&&!empty($_POST)){ // Get from post form
+	foreach ($values as $key => $val)
+		if (isset($_POST[$key]))
+		$values[$key]=$_POST[$key];
+	
+	}
+	else if (!empty($lID)){ // Get from DB
+	$lic=new License();
+	$lic->getfromDB($lID);
+	$values=$lic->fields;
+	} 
+	
+	
+	
+	
 	echo "<div align='center'><b>";
-	echo "<a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=$ID\">";
+	echo "<a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=$sID\">";
 	echo $lang["buttons"][13]."</b>";
 	echo "</a><br>";
 	
 	echo "<form name='form' method='post' action=\"$target\">";
 	
-	echo "<table class='tab_cadre'><tr><th colspan='3'>".$lang["software"][15]." ($ID):</th></tr>";
+	echo "<table class='tab_cadre'><tr><th colspan='3'>$title</th></tr>";
 	
 
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][16].":</td>";
-	echo "<td><input type='text' size='20' name='serial' value=\"\">";
-	echo "</td><td>";
-	echo $lang["printers"][26].":<select name=number>";
+	echo "<td><input type='text' size='20' name='serial' value='".$values['serial']."'>";
+	echo "</td></tr>";
+	
+	if ($action!="update"){
+	echo "<tr class='tab_bg_1'><td>";
+	echo $lang["printers"][26].":</td><td><select name=number>";
 	echo "<option value='1' selected>1</option>";
 	for ($i=2;$i<=1000;$i++)
 		echo "<option value='$i'>$i</option>";
-	echo "</select>";
-	echo "&nbsp;".$lang["software"][24].":<input type='text' name='expire' readonly size='10' >";
+	echo "</select></td></tr>";
+	}
+	
+	echo "<tr class='tab_bg_1'><td>".$lang["software"][24].":</td><td><input type='text' name='expire' value='".$values['expire']."' readonly size='10' >";
 	echo "&nbsp; <input name='button' type='button' class='button' onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=expire','".$lang["buttons"][15]."','width=200, height=220')\" value='".$lang["buttons"][15]."...'>";
-	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].expire.value='0000-00-00'\" value='reset'>";
-	echo "</td>";
+	echo "&nbsp; <input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].expire.value=''\" value='reset'>";
+	echo "</td></tr>"; 
+	
+	// OEM
+	echo "<tr class='tab_bg_1'><td>".$lang["software"][28]."</td><td>";
+	echo "<select name='oem'><option value='Y' ".($values['oem']=='Y'?"selected":"").">".$lang['choice'][0]."</option><option value='N' ".($values['oem']=='N'?"selected":"").">".$lang['choice'][1]."</option></select>";
+	dropdownValueSearch("glpi_computers","oem_computer",$values["oem_computer"],$search_computer);
+        echo "<input type='text' size='10'  name='search_computer' value='$search_computer'>";
+	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
+	
+	echo "</td></tr>";
+	// UPDATE
+	echo "<tr class='tab_bg_1'><td>".$lang["software"][29]."</td><td>";
+	echo "<select name='is_update'><option value='Y' ".($values['is_update']=='Y'?"selected":"").">".$lang['choice'][0]."</option><option value='N' ".($values['is_update']=='N'?"selected":"").">".$lang['choice'][1]."</option></select>";
+	echo "&nbsp;".$lang["pager"][2]."&nbsp;";
+	dropdownValueSearch("glpi_software","update_software",$values["update_software"],$search_software);
+        echo "<input type='text' size='10'  name='search_software' value='$search_software'>";
+	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
 
-	echo "</tr>";
-
+	echo "</td></tr>";
+	// BUY
+	echo "<tr class='tab_bg_1'><td>".$lang["software"][35]."</td><td>";
+	echo "<select name='buy'><option value='Y' ".($values['buy']=='Y'?"selected":"").">".$lang['choice'][0]."</option><option value='N' ".($values['buy']=='N'?"selected":"").">".$lang['choice'][1]."</option></select>";
+	echo "</td></tr>";
+	
 	echo "<tr class='tab_bg_2'>";
 	echo "<td align='center' colspan='3'>";
-	echo "<input type='hidden' name='sID' value=".$ID.">";
-	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+	echo "<input type='hidden' name='sID' value=".$sID.">";
+	echo "<input type='hidden' name='lID' value=".$lID.">";
+	echo "<input type='hidden' name='form' value=".$action.">";
+	echo "<input type='submit' name='$action' value=\"".$button."\" class='submit'>";
 	echo "</td>";
 
 	echo "</table></form></div>";
@@ -576,17 +707,57 @@ function showLicenseForm($target,$ID) {
 
 
 function addLicense($input) {
-	// Add License, nasty hack until we get PHP4-array-functions
-
 	$lic = new License;
 
-	$lic->sID = $input["sID"];
-	$lic->serial = $input["serial"];
-	$lic->expire = $input["expire"];
+	// dump status
+	$null = array_pop($input);
+	$null = array_pop($input);
+	$null = array_pop($input);
+	
+	if (empty($input['expire'])) unset($input['expire']);
+	if ($input['oem']=='N') $input['oem_computer']=-1;
+	if ($input['is_update']=='N') $input['update_software']=-1;
+	// fill array for update
+	foreach ($input as $key => $val) {
+		if (empty($lic->fields[$key]) || $sw->fields[$key] != $input[$key]) {
+			$lic->fields[$key] = $input[$key];
+		}
+	}
 	if ($lic->addToDB()) {
 		return true;
 	} else {
 		return false;
+	}
+}
+
+function updateLicense($input) {
+	// Update License in the database
+
+	$lic = new License;
+	$lic->getFromDB($input["lID"]);
+
+ 	// Pop off the last attribute, no longer needed
+	$null=array_pop($input);
+	$null=array_pop($input);
+	$null=array_pop($input);
+
+	if (empty($input['expire'])) unset($input['expire']);
+	if ($input['oem']=='N') $input['oem_computer']=-1;
+	if ($input['is_update']=='N') $input['update_software']=-1;
+	
+	
+	// Fill the update-array with changes
+	$x=0;
+	foreach ($input as $key => $val) {
+		if (empty($lic->fields[$key]) || $lic->fields[$key] != $input[$key]) {
+			$lic->fields[$key] = $input[$key];
+			$updates[$x] = $key;
+			$x++;
+		}
+	}
+	if(!empty($updates)) {
+	
+		$lic->updateInDB($updates);
 	}
 }
 
@@ -606,20 +777,22 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 
 	$back = urlencode($back);
 	
-	$query = "SELECT DISTINCT glpi_licenses.ID as ID FROM glpi_licenses LEFT JOIN glpi_inst_software ON glpi_licenses.ID = glpi_inst_software.license WHERE (glpi_licenses.sID = $sID AND glpi_inst_software.ID IS NULL) OR (glpi_licenses.sID = $sID AND glpi_licenses.serial='free')";
+	$query = "SELECT DISTINCT glpi_licenses.ID as ID FROM glpi_licenses LEFT JOIN glpi_inst_software ON glpi_licenses.ID = glpi_inst_software.license WHERE (glpi_licenses.sID = $sID AND glpi_inst_software.ID IS NULL) OR (glpi_licenses.sID = $sID AND glpi_licenses.serial='free') ORDER BY glpi_licenses.serial";
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 
 			echo "<br><center><table cellpadding='2' class='tab_cadre' width='50%'>";
-			echo "<tr><th colspan='4'>";
+			echo "<tr><th colspan='7'>";
 			echo $db->numrows($result);
 			echo " ".$lang["software"][13].":</th></tr>";
+			echo "<tr><th>".$lang['software'][31]."</th><th>".$lang['software'][2]."</th><th>".$lang['software'][32]."</th><th>".$lang['software'][33]."</th><th>".$lang['software'][29]."</th><th>".$lang['software'][35]."</th><th>&nbsp;</th></tr>";
+
 			$i=0;
 			while ($data=$db->fetch_row($result)) {
 				$ID = current($data);
 				
 				$lic = new License;
 				$lic->getfromDB($ID);
-				if ($lic->serial!="free") {
+				if ($lic->fields['serial']!="free") {
 				
 					$query2 = "SELECT license FROM glpi_inst_software WHERE (license = '$ID')";
 					$result2 = $db->query($query2);
@@ -629,13 +802,14 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 						$today=date("Y-m-d"); 
 						$expirer=0;
 						$expirecss="";
-						if ($lic->expire!=NULL&&$today>$lic->expire) {$expirer=1; $expirecss="_2";}
+						if ($lic->fields['expire']!=NULL&&$today>$lic->fields['expire']) {$expirer=1; $expirecss="_2";}
 
 						echo "<tr class='tab_bg_1'>";
-						echo "<td><b>$i</b></td>";
-						echo "<td width='50%' align='center'><b>".$lic->serial."</b></td>";
+						echo "<td><b>$ID</b></td>";
+						echo "<td width='50%' align='center'><b>".$lic->fields['serial']."</b></td>";
+						
 						echo "<td width='50%' align='center' class='tab_bg_1$expirecss'><b>";
-						if ($lic->expire==NULL)
+						if ($lic->fields['expire']==NULL)
 							echo $lang["software"][26];
 						else {
 							if ($expirer) echo $lang["software"][27];
@@ -643,6 +817,40 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 						}
 
 						echo "</b></td>";
+		// OEM
+		if ($lic->fields["oem"]=='Y') {
+		$comp=new Computer();
+		$comp->getFromDB($lic->fields["oem_computer"]);
+		}
+		echo "<td align='center' class='tab_bg_1".($lic->fields["oem"]=='Y'&&!isset($comp->fields['ID'])?"_2":"")."'>".($lic->fields["oem"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
+		if ($lic->fields["oem"]=='Y') {
+		echo "<br><b>";
+		if (isset($comp->fields['ID']))
+		echo "<a href='".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
+		else echo "N/A";
+		echo "<b>";
+		} 
+		echo "</td>";
+			// UPDATE
+		if ($lic->fields["is_update"]=='Y') {
+		$sw=new Software();
+		$sw->getFromDB($lic->fields["update_software"]);
+		}
+
+		echo "<td align='center' class='tab_bg_1".($lic->fields["is_update"]=='Y'&&!isset($sw->fields['ID'])?"_2":"")."'>".($lic->fields["is_update"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
+		if ($lic->fields["is_update"]=='Y') {
+		echo "<br><b>";
+		if (isset($sw->fields['ID']))
+		echo "<a href='".$cfg_install["root"]."/software/software-info-form.php?ID=".$sw->fields['ID']."'>".$sw->fields['name']."&nbsp;".$sw->fields['version']."</a>";
+		else echo "N/A";
+		echo "<b>";
+		} 
+		
+		echo "</td>";
+		
+		// BUY
+		echo "<td align='center'>".($lic->fields["buy"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
+		echo "</td>";				
 						echo "<td align='center'><b>";
 							echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?back=$back&install=install&cID=$cID&lID=$ID\">";
 							echo $lang["buttons"][4];
@@ -661,10 +869,13 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 				} else {
 					echo "<tr class='tab_bg_1'>";
 					echo "<td><b>$i</b></td>";
-					echo "<td width='100%' align='center'><b>".$lic->serial."</b></td>";
+					echo "<td width='100%' align='center'><b>".$lic->fields['serial']."</b></td>";
 					echo "<td width='50%' align='center' class='tab_bg_1'><b>";
 					echo $lang["software"][26];
 					echo "</b></td>";
+					echo "<td>&nbsp;</td>";
+					echo "<td>&nbsp;</td>";
+					echo "<td>&nbsp;</td>";
 					echo "<td align='center'><b>";
 					echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?back=$back&install=install&cID=$cID&lID=$ID\">";
 					echo $lang["buttons"][4];
@@ -721,39 +932,75 @@ function showSoftwareInstalled($instID) {
         echo "<form method='post' action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
 
 	echo "<br><br><center><table class='tab_cadre' width='90%'>";
-	echo "<tr><th colspan='3'>".$lang["software"][17].":</th></tr>";
+	echo "<tr><th colspan='6'>".$lang["software"][17].":</th></tr>";
+			echo "<tr><th>".$lang['software'][2]."</th><th>".$lang['software'][32]."</th><th>".$lang['software'][33]."</th><th>".$lang['software'][29]."</th><th>".$lang['software'][35]."</th><th>&nbsp;</th></tr>";
 	
 	while ($i < $number) {
 		$lID = $db->result($result, $i, "license");
 		$ID = $db->result($result, $i, "ID");
-		$query2 = "SELECT sID,serial,expire FROM glpi_licenses WHERE (ID = '$lID')";
+		$query2 = "SELECT * FROM glpi_licenses WHERE (ID = '$lID')";
 		$result2 = $db->query($query2);
-		$sID = $db->result($result2,0,"sID");
-		$serial = $db->result($result2,0,"serial");
-		$expire = $db->result($result2,0,"expire");
+		$data=mysql_fetch_array($result2);
 		$today=date("Y-m-d"); 
 		$expirer=0;
 		$expirecss="";
-		if ($expire!=NULL&&$today>$expire) {$expirer=1; $expirecss="_2";}
+		if ($data['expire']!=NULL&&$today>$data['expire']) {$expirer=1; $expirecss="_2";}
 
 		$sw = new Software;
-		$sw->getFromDB($sID);
+		$sw->getFromDB($data['sID']);
 
 		echo "<tr class='tab_bg_1$expirecss'>";
 	
-		echo "<td align='center'><b><a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=$sID\">";
+		echo "<td align='center'><b><a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=".$data['sID']."\">";
 		echo $sw->fields["name"]." (v. ".$sw->fields["version"].")</a>";
 		echo "</b>";
-		echo " - ".$serial."</td>";
+		echo " - ".$data['serial']."</td>";
 		echo "<td align='center'><b>";
-		if ($expire==NULL)
+		if ($data['expire']==NULL)
 		echo $lang["software"][26];
 		else {
 			if ($expirer) echo $lang["software"][27];
-			else echo $lang["software"][25]."&nbsp;".$expire;
+			else echo $lang["software"][25]."&nbsp;".$data['expire'];
 		}
 
 						echo "</b></td>";
+		if ($data['serial']!="free"){
+			// OEM
+			if ($data["oem"]=='Y') {
+			$comp=new Computer();
+			$comp->getFromDB($data["oem_computer"]);
+			}
+			echo "<td align='center' class='tab_bg_1".($data["oem"]=='Y'&&$comp->fields['ID']!=$instID?"_2":"")."'>".($data["oem"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
+			if ($data["oem"]=='Y') {
+			echo "<br><b>";
+			if (isset($comp->fields['ID']))
+			echo "<a href='".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
+			else echo "N/A";
+			echo "<b>";
+			} 
+			echo "</td>";
+				// UPDATE
+			if ($data["is_update"]=='Y') {
+			$sw=new Software();
+			$sw->getFromDB($data["update_software"]);
+			}
+
+			echo "<td align='center' class='tab_bg_1".($data["is_update"]=='Y'&&!isset($sw->fields['ID'])?"_2":"")."'>".($data["is_update"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
+			if ($data["is_update"]=='Y') {
+			echo "<br><b>";
+			if (isset($sw->fields['ID']))
+			echo "<a href='".$cfg_install["root"]."/software/software-info-form.php?ID=".$sw->fields['ID']."'>".$sw->fields['name']."&nbsp;".$sw->fields['version']."</a>";
+			else echo "N/A";
+			echo "<b>";
+			} 
+		
+			echo "</td>";
+		
+			// BUY
+			echo "<td align='center'>".($data["buy"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
+			echo "</td>";								
+		}
+		else echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";					
 		echo "<td align='center' class='tab_bg_2'>";
 		echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&ID=$ID&cID=$instID\">";
 		echo "<b>".$lang["buttons"][5]."</b></a>";
@@ -766,7 +1013,7 @@ function showSoftwareInstalled($instID) {
 		dropdownSoftware();
 	echo "</div></td><td align='center' class='tab_bg_2'>";
 	echo "<input type='submit' name='select' value=\"".$lang["buttons"][4]."\" class='submit'>";
-	echo "</td></tr>";
+	echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
         echo "</table></center>";
 	echo "</form>";
 

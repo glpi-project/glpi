@@ -562,6 +562,14 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 		$netport->getFromNull();
 	}
 
+	// Ajout des infos déjà remplies
+	if (isset($_POST)&&!empty($_POST)){
+	foreach ($netport->fields as $key => $val)
+		if ($key!='ID'&&isset($_POST[$key]))
+		$netport->fields[$key]=$_POST[$key];
+	}
+	
+	
 	echo "<div align='center'>";
 	echo "<b><a href='$REFERER'>".$lang["buttons"][13]."</a></b>";
 	echo "<table class='tab_cadre'><tr>";
@@ -640,8 +648,8 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td align='center' colspan='2'>";
-		echo "<input type='hidden' name='on_device' value=".$ondevice.">";
-		echo "<input type='hidden' name='device_type' value=".$devtype.">";
+		echo "<input type='hidden' name='on_device' value='$ondevice'>";
+		echo "<input type='hidden' name='device_type' value='$devtype'>";
 		echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 		echo "</td></form>";
 	}
@@ -729,7 +737,7 @@ function showPortsAdd($ID,$devtype) {
 	echo "<div align='center'><table class='tab_cadre' width='90%' cellpadding='2'>";
 	echo "<tr>";
 	echo "<td align='center' class='tab_bg_2'  >";
-	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ondevice=$ID&devtype=$devtype&location=$location\"><b>";
+	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?on_device=$ID&device_type=$devtype&location=$location\"><b>";
 	echo $lang["networking"][19];
 	echo "</b></a></td>";
 	echo "<td align='center' class='tab_bg_2' width='50%'>";
@@ -1039,7 +1047,8 @@ function makeConnector($sport,$dport) {
 	
 	$query = "INSERT INTO glpi_networking_wire VALUES (NULL,$sport,$dport)";
 	if ($result = $db->query($query)) {
-		echo "<br><div align='center'><b>".$lang["networking"][44]." ".$sport." ".$lang["networking"][45]." ".$dport."</b></div>";
+		
+		echo "<br><div align='center'><b>".$lang["networking"][44]." ".$ps->fields['logical_number']."  (".$ps->fields['ifaddr']." - ".$ps->fields['ifmac'].") ".$lang["networking"][45]." ".$ps->fields['logical_number']." (".$pd->fields['ifaddr']." - ".$pd->fields['ifmac'].") </b></div>";
 		return true;
 	} else {
 		return false;

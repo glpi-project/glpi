@@ -41,9 +41,11 @@ include ($phproot . "/glpi/includes_setup.php");
 if(empty($_GET["name"])) $_GET["name"] = "";
 if (isset($_POST["add"])) {
 	checkAuthentication("admin");
-	
-	addUser($_POST);
-	logEvent(0, "users", 4, "setup", $_SESSION["glpiname"]." added user ".$_POST["name"].".");
+	// Pas de nom pas d'ajout	
+	if (!empty($_POST["name"])){
+		addUser($_POST);
+		logEvent(0, "users", 4, "setup", $_SESSION["glpiname"]." added user ".$_POST["name"].".");
+	}
 	header("Location: $_SERVER[HTTP_REFERER]");
 } else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
