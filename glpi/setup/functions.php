@@ -1292,6 +1292,7 @@ function showFormExtsources($target) {
 		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][154]."</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"". $db->result($result,0,"ldap_basedn") ."\" ></td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][155]."</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"". $db->result($result,0,"ldap_rootdn") ."\" ></td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][156]."</td><td><input type=\"text\" name=\"ldap_pass\" value=\"". $db->result($result,0,"ldap_pass") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][159]."</td><td><input type=\"text\" name=\"ldap_condition\" value=\"". $db->result($result,0,"ldap_condition") ."\" ></td></tr>";
 		echo "</table>&nbsp;</div>";
 	}
 	else {
@@ -1427,14 +1428,14 @@ function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events
 }
 
 
-function updateLDAP($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass) {
+function updateLDAP($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$ldap_condition) {
 	
 	$db = new DB;
 	//TODO : test the remote LDAP connection
 	if(!empty($ldap_host)) {
 		$query = "update glpi_config set ldap_host = '". $ldap_host ."', ";
 		$query.= "ldap_basedn = '". $ldap_basedn ."', ldap_rootdn = '". $ldap_rootdn ."', ";
-		$query .= "ldap_pass = '". $ldap_pass ."' where ID = '1' ";
+		$query .= "ldap_pass = '". $ldap_pass ."', ldap_condition = '". $ldap_condition ."' where ID = '1' ";
 		$db->query($query);
 	}
 }
