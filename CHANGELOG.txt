@@ -1,5 +1,8 @@
 **** GLPI 0.5 ***
 
+20/03/05
+Gestion des matériels en réparation
+
 18/03/05
 Noms des priorités plus neutres
 Blocage demande intervention pour matériel inconnu
