@@ -311,28 +311,34 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 	}
 }
 
-function showComputerForm($target,$ID) {
+function showComputerForm($target,$ID,$withtemplate='') {
 	global $lang,$HTMLRel;;
 	$comp = new Computer;
 	if($comp->getfromDB($ID)) {
-		if($comp->fields["is_template"] == 1) {
+		if(!empty($withtemplate) && $withtemplate == 2) {
+			$template = "newcomp";
 			$datestring = $lang["computers"][14].": ";
 			$date = date("Y-m-d H:i:s");
-			$template = true;
+		} elseif(!empty($withtemplate) && $withtemplate == 1) { 
+			$template = "newtemplate";
+			$datestring = $lang["computers"][14].": ";
+			$date = date("Y-m-d H:i:s");
 		} else {
 			$datestring = $lang["computers"][11]." : ";
 			$date = $comp->fields["date_mod"];
 			$template = false;
-			
 		}
+		
 		echo "<form name='form' method='post' action=\"$target\">";
 		echo "<div align='center'>";
 		echo "<table width='700px' border='0' class='tab_cadre' >";
 		echo "<tr><th colspan ='2'align='center' >";
-		if ($template) {
-			echo $lang["computers"][12].": ".$comp->fields["tplname"];
-		} else {
+		if(!$template) {
 			echo $lang["computers"][13].": ".$comp->fields["ID"];
+		}elseif (strcmp($template,"newcomp") === 0) {
+			echo $lang["computers"][12].": ".$comp->fields["tplname"];
+		}elseif (strcmp($template,"newtemplate") === 0) {
+			echo $lang["computers"][49].": <input type='text' name='tplname' value=\"".$comp->fields["tplname"]."\" size='20'>";
 		}
 		
 		echo "</th><th  colspan ='2' align='center'>".$datestring.$date;
@@ -459,26 +465,15 @@ function showComputerForm($target,$ID) {
 			$device = new Device($devType);
 			$device->getFromDB($devID);
 			echo "<div align='center'>";
-			echo "<table width='700px' class='tab_cadre' >";
-			printDeviceComputer(&$device,$specif,$comp->fields["ID"],$compDevID);
-			echo "</table>";
+			printDeviceComputer(&$device,$specif,$comp->fields["ID"],$compDevID,$withtemplate);
 			echo "</div>";
 		}
 		echo "<br />";
 		
 		//ADD a new device form.
 		echo "<div align=\"center\">";
-		echo "<table class='tab_cadre'>";
-		echo "<tr><th>";
-		echo $lang["devices"][0];
-		echo "</th></tr>";
-		
-		echo "<tr>";
-		echo "<td align ='center'>"; 
-		device_selecter($_SERVER["PHP_SELF"],$comp->fields["ID"]);
-		echo "</td>";
-		echo "</tr>";
-		echo "</table></div>";
+		device_selecter($_SERVER["PHP_SELF"],$comp->fields["ID"],$withtemplate);
+		echo "</div>";
 		return true;
 	}
 	else {
@@ -580,19 +575,26 @@ function showConnections($ID,$withtemplate='') {
 				echo "<td align='center'><a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=$tID\"><b>";
 				echo $printer->fields["name"]." (".$printer->fields["ID"].")";
 				echo "</b></a></td>";
-				
-				echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=".PRINTER_TYPE."&withtemplate=".$withtemplate."\"><b>";
-				echo $lang["buttons"][10];
-				echo "</b></a></td>";
+				if(!empty($withtemplate) && $withtemplate == 2) {
+					//do nothing
+				} else {
+					echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=".PRINTER_TYPE."&withtemplate=".$withtemplate."\"><b>";
+					echo $lang["buttons"][10];
+					echo "</b></a></td>";
+				}
 				echo "</tr>";
 			}
 			echo "</table>";
 		} else {
 			echo $lang["computers"][38]."<br>";
 		}
-		echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=printer&withtemplate=".$withtemplate."\"><b>";
-		echo $lang["buttons"][9];
-		echo "</b></a>";
+		if(!empty($withtemplate) && $withtemplate == 2) {
+			//do nothing
+		} else {
+			echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=printer&withtemplate=".$withtemplate."\"><b>";
+			echo $lang["buttons"][9];
+			echo "</b></a>";
+		}
 
 	}
 	echo "</td>";
@@ -612,19 +614,26 @@ function showConnections($ID,$withtemplate='') {
 				echo "<td align='center'><a href=\"".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=$tID\"><b>";
 				echo $monitor->fields["name"]." (".$monitor->fields["ID"].")";
 				echo "</b></a></td>";
-				echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=".MONITOR_TYPE."&withtemplate=".$withtemplate."\"><b>";
-				echo $lang["buttons"][10];
-				echo "</b></a></td>";
-
+				if(!empty($withtemplate) && $withtemplate == 2) {
+					//do nothing
+				} else {
+					echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=".MONITOR_TYPE."&withtemplate=".$withtemplate."\"><b>";
+					echo $lang["buttons"][10];
+					echo "</b></a></td>";
+				}
 				echo "</tr>";
 			}
 			echo "</table>";			
 		} else {
 			echo $lang["computers"][37]."<br>";
 		}
-		echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=monitor&withtemplate=".$withtemplate."\"><b>";
-		echo $lang["buttons"][9];
-		echo "</b></a>";
+		if(!empty($withtemplate) && $withtemplate == 2) {
+			//do nothing
+		} else {
+			echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=monitor&withtemplate=".$withtemplate."\"><b>";
+			echo $lang["buttons"][9];
+			echo "</b></a>";
+		}
 
 	}
 	echo "</td>";
@@ -644,19 +653,26 @@ function showConnections($ID,$withtemplate='') {
 				echo "<td align='center'><a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=$tID\"><b>";
 				echo $periph->fields["name"]." (".$periph->fields["ID"].")";
 				echo "</b></a></td>";
-				echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=".PERIPHERAL_TYPE."&withtemplate=".$withtemplate."\"><b>";
-				echo $lang["buttons"][10];
-				echo "</b></a></td>";
-
+				if(!empty($withtemplate) && $withtemplate == 2) {
+					//do nothing
+				} else {
+					echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=".PERIPHERAL_TYPE."&withtemplate=".$withtemplate."\"><b>";
+					echo $lang["buttons"][10];
+					echo "</b></a></td>";
+				}
 				echo "</tr>";
 			}
 			echo "</table>";			
 		} else {
 			echo $lang["computers"][47]."<br>";
 		}
-		echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=peripheral&withtemplate=".$withtemplate."\"><b>";
-		echo $lang["buttons"][9];
-		echo "</b></a>";
+		if(!empty($withtemplate) && $withtemplate == 2) {
+			//do nothing
+		} else {
+			echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=peripheral&withtemplate=".$withtemplate."\"><b>";
+			echo $lang["buttons"][9];
+			echo "</b></a>";
+		}
 
 	}
 

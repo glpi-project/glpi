@@ -76,10 +76,11 @@ function getDeviceTable($dev_type){
 
 
 //print form/tab for a device linked to a computer
-function printDeviceComputer($device,$specif,$compID,$compDevID) {
+function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate='') {
 	global $lang;
 	
 	//print the good form switch the wanted device type.
+	echo "<table width='700px' class='tab_cadre' >";
 	switch($device->type) {
 		case HDD_DEVICE :
 			
@@ -190,13 +191,22 @@ function printDeviceComputer($device,$specif,$compID,$compDevID) {
 	if(!empty($specificity_label)) {
 		echo "<tr class='tab_bg_2'>";
 		//Mise a jour des spécificitées
-		echo "<form action=\"\" method=\"post\" >";
-		echo "<td>".$specificity_label." : <input type='text' name='device_value' value=\"".$specif."\" size='20' /></td>";
-		echo "<td align='center'><input type='submit' class='submit' name='update_device' value=\"".$lang["buttons"][7]."\" size='20' /></td>";
-		echo "<input type=\"hidden\" name=\"compDevID\" value=\"".$compDevID."\" />";
-		echo "</form>";
+		if(!empty($withtemplate) && $withtemplate == 2) {
+			if(empty($specif)) $specif = "&nbsp;";
+			echo "<td>".$specificity_label." : </td>";
+			echo "<td align='center'>".$specif."</td>";
+			
+		}
+		else {
+			echo "<form action=\"\" method=\"post\" >";
+			echo "<td>".$specificity_label." : <input type='text' name='device_value' value=\"".$specif."\" size='20' /></td>";
+			echo "<td align='center'><input type='submit' class='submit' name='update_device' value=\"".$lang["buttons"][7]."\" size='20' /></td>";
+			echo "<input type=\"hidden\" name=\"compDevID\" value=\"".$compDevID."\" />";
+			echo "</form>";
+		}
 		echo "</tr>";
 	}
+	echo "</table>";
 }
 
 //Update an internal device specificity
@@ -211,21 +221,34 @@ function update_device_specif($newValue,$compDevID) {
 //print select form for device type
 function device_selecter($target,$cID,$withtemplate='') {
 	global $lang;
-	echo "<form action=\"$target\" method=\"post\">";
-	echo "<select name=\"new_device_type\">";
-	echo "<option value=\"".HDD_DEVICE."\">".$lang["devices"][1]."</option>";
-	echo "<option value=\"".GFX_DEVICE."\">".$lang["devices"][2]."</option>";
-	echo "<option value=\"".NETWORK_DEVICE."\">".$lang["devices"][3]."</option>";
-	echo "<option value=\"".PROCESSOR_DEVICE."\">".$lang["devices"][4]."</option>";
-	echo "<option value=\"".MOBOARD_DEVICE."\">".$lang["devices"][5]."</option>";
-	echo "<option value=\"".RAM_DEVICE."\">".$lang["devices"][6]."</option>";
-	echo "<option value=\"".SND_DEVICE."\">".$lang["devices"][7]."</option>";
-	echo "</select>";
-	echo "<input type=\"hidden\" name=\"withtemplate\" value=\"".$withtemplate."\" >";
-	echo "<input type=\"hidden\" name=\"connect_device\" value=\"".true."\" >";
-	echo "<input type=\"hidden\" name=\"cID\" value=\"".$cID."\" >";
-	echo "<input type=\"submit\" class ='submit' value=\"".$lang["buttons"][2]."\" />";
-	echo "</form>";
+	if(!empty($withtemplate) && $withtemplate == 2) {
+	//do nothing
+	} else {
+		echo "<table class='tab_cadre'>";
+		echo "<tr><th>";
+		echo $lang["devices"][0];
+		echo "</th></tr>";
+		echo "<tr>";
+		echo "<td align ='center'>"; 
+		echo "<form action=\"$target\" method=\"post\">";
+		echo "<select name=\"new_device_type\">";
+		echo "<option value=\"".HDD_DEVICE."\">".$lang["devices"][1]."</option>";
+		echo "<option value=\"".GFX_DEVICE."\">".$lang["devices"][2]."</option>";
+		echo "<option value=\"".NETWORK_DEVICE."\">".$lang["devices"][3]."</option>";
+		echo "<option value=\"".PROCESSOR_DEVICE."\">".$lang["devices"][4]."</option>";
+		echo "<option value=\"".MOBOARD_DEVICE."\">".$lang["devices"][5]."</option>";
+		echo "<option value=\"".RAM_DEVICE."\">".$lang["devices"][6]."</option>";
+		echo "<option value=\"".SND_DEVICE."\">".$lang["devices"][7]."</option>";
+		echo "</select>";
+		echo "<input type=\"hidden\" name=\"withtemplate\" value=\"".$withtemplate."\" >";
+		echo "<input type=\"hidden\" name=\"connect_device\" value=\"".true."\" >";
+		echo "<input type=\"hidden\" name=\"cID\" value=\"".$cID."\" >";
+		echo "<input type=\"submit\" class ='submit' value=\"".$lang["buttons"][2]."\" />";
+		echo "</form>";
+		echo "</td>";
+		echo "</tr>";
+		echo "</table>";
+	}
 }
 
 //Print the form/tab to add a new device on a computer

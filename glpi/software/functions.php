@@ -903,7 +903,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	$number = $db->numrows($result);
 	$i = 0;
 		
-        echo "<form method='post' action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
+        
 
 	echo "<br><br><center><table class='tab_cadre' width='90%'>";
 	echo "<tr><th colspan='5'>".$lang["software"][17].":</th></tr>";
@@ -958,23 +958,34 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 			echo "<td align='center'>".($data["buy"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
 			echo "</td>";								
 		}
-		else echo "<td>&nbsp;</td><td>&nbsp;</td>";					
+		else echo "<td>&nbsp;</td><td>&nbsp;</td>";
 		echo "<td align='center' class='tab_bg_2'>";
-		echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&ID=$ID&cID=$instID\">";
-		echo "<strong>".$lang["buttons"][5]."</strong></a>";
+		if(!empty($withtemplate) && $withtemplate == 2) {
+			//do nothing
+			echo "&nbsp;";
+		} else {
+			echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&ID=$ID&cID=$instID\">";
+			echo "<strong>".$lang["buttons"][5]."</strong></a>";
+		}
 		echo "</td></tr>";
 
 		$i++;		
 	}
-	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
-	echo "<div class='software-instal'><input type='hidden' name='cID' value='$instID'>";
-	echo "<input type='hidden' name='withtemplate' value='".$withtemplate."'>";
-		dropdownSoftware();
-	echo "</div></td><td align='center' class='tab_bg_2'>";
-	echo "<input type='submit' name='select' value=\"".$lang["buttons"][4]."\" class='submit'>";
-	echo "</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
-        echo "</table></center>";
-	echo "</form>";
+	if(!empty($withtemplate) && $withtemplate == 2) {
+	//Do nothing
+	} else {
+		echo "<form method='post' action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
+		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+		echo "<div class='software-instal'><input type='hidden' name='cID' value='$instID'>";
+		echo "<input type='hidden' name='withtemplate' value='".$withtemplate."'>";
+			dropdownSoftware();
+		echo "</div></td><td align='center' class='tab_bg_2'>";
+		echo "<input type='submit' name='select' value=\"".$lang["buttons"][4]."\" class='submit'>";
+		echo "</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+        	echo "</form>";
+	}
+	echo "</table></center>";
+		
 
 }
 

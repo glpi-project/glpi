@@ -50,6 +50,7 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
+
 //Add a new computer
 if (isset($tab["add"])) {
 	checkAuthentication("admin");
@@ -76,7 +77,7 @@ else if (isset($tab["update"])) {
 	updateComputer($tab);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]."updated item.");
 	commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
-	showComputerForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	showComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);
 	showPorts($tab["ID"], COMPUTER_TYPE);
 	showPortsAdd($tab["ID"],COMPUTER_TYPE);
 	showConnections($tab["ID"]);
@@ -140,7 +141,7 @@ else {
 	commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
 	//show computer form to add
 	if (!empty($tab["withtemplate"])) {
-		showComputerForm($_SERVER["PHP_SELF"],$tab["ID"]);
+		showComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);
 		showConnections($tab["ID"],$tab["withtemplate"]);
 		showSoftwareInstalled($tab["ID"],$tab["withtemplate"]);
 		
@@ -152,7 +153,7 @@ else {
 			}
 		}
 
-		if (showComputerForm($_SERVER["PHP_SELF"],$tab["ID"])) {
+		if (showComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])) {
 			showPorts($tab["ID"], COMPUTER_TYPE);
 			showPortsAdd($tab["ID"],COMPUTER_TYPE);
 			showConnections($tab["ID"]);
