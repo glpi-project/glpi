@@ -404,7 +404,7 @@ function deleteSoftware($input) {
 
 function dropdownSoftware() {
 	$db = new DB;
-	$query = "SELECT * FROM glpi_software";
+	$query = "SELECT * FROM glpi_software order by name";
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 
@@ -874,7 +874,6 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 					echo "</b></td>";
 					echo "<td>&nbsp;</td>";
 					echo "<td>&nbsp;</td>";
-					echo "<td>&nbsp;</td>";
 					echo "<td align='center'><b>";
 					echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?back=$back&install=install&cID=$cID&lID=$ID\">";
 					echo $lang["buttons"][4];
@@ -923,7 +922,8 @@ function showSoftwareInstalled($instID) {
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
         $db = new DB;
-	$query = "SELECT * FROM glpi_inst_software WHERE (cID = $instID)";
+	$query = "SELECT glpi_inst_software.license as license, glpi_inst_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_licenses WHERE glpi_inst_software.license = glpi_licenses.ID AND glpi_licenses.sID = glpi_software.ID AND (glpi_inst_software.cID = '$instID') order by glpi_software.name";
+	
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 	$i = 0;
