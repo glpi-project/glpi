@@ -125,7 +125,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 	// Lists Software
 
-	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
+	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
 
 	$db = new DB;
 
@@ -196,7 +196,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_software.name") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_software.name&order=ASC&start=$start\">";
 			echo $lang["software"][2]."</a></th>";
@@ -204,7 +204,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Version			
 			echo "<th>";
 			if ($sort=="glpi_software.version") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_software.version&order=ASC&start=$start\">";
 			echo $lang["software"][5]."</a></th>";
@@ -212,7 +212,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Platform		
 			echo "<th>";
 			if ($sort=="glpi_dropdown_os.name") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_os.name&order=DESC&start=$start\">";
 			echo $lang["software"][3]."</a></th>";

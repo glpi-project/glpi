@@ -142,7 +142,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 	$db = new DB;
 	// Lists Computers
 
-	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
+	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang,$HTMLRel;
 
 
 	// Build query
@@ -221,7 +221,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Name
 			echo "<th>";
 			if ($sort=="comp.name") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=comp.name&order=ASC&start=$start\">";
 			echo $lang["computers"][7]."</a></th>";
@@ -229,7 +229,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 		        // Serial
 			echo "<th>";
 			if ($sort=="comp.serial") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=comp.serial&order=ASC&start=$start\">";
 			echo $lang["computers"][6]."</a></th>";
@@ -238,7 +238,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Type
 			echo "<th>";
 			if ($sort=="glpi_type_computers.name") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_computers.name&order=ASC&start=$start\">";
 			echo $lang["computers"][8]."</a></th>";
@@ -246,7 +246,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// OS
 			echo "<th>";
 			if ($sort=="glpi_dropdown_os.name") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_os.name&order=ASC&start=$start\">";
 			echo $lang["computers"][9]."</a></th>";
@@ -254,7 +254,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Location			
 			echo "<th>";
 			if ($sort=="glpi_dropdown_locations.name") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=ASC&start=$start\">";
 			echo $lang["computers"][10]."</a></th>";
@@ -262,7 +262,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Last modified		
 			echo "<th>";
 			if ($sort=="date_mod") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=date_mod&order=DESC&start=$start\">";
 			echo $lang["computers"][11]."</a></th>";
@@ -270,7 +270,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Contact person
 			echo "<th>";
 			if ($sort=="contact") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=contact&order=ASC&start=$start\">";
 			echo $lang["computers"][16]."</a></th>";

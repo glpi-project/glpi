@@ -110,7 +110,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 
 	// Lists peripheral
 
-	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
+	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
 
 	$db = new DB;
 
@@ -178,7 +178,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			// Name
 			echo "<th>";
 			if ($sort=="periph.name") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.name&order=ASC&start=$start\">";
 			echo $lang["peripherals"][5]."</a></th>";
@@ -186,7 +186,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			// Location			
 			echo "<th>";
 			if ($sort=="glpi_dropdown_locations.name") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=ASC&start=$start\">";
 			echo $lang["peripherals"][6]."</a></th>";
@@ -194,7 +194,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			// Type
 			echo "<th>";
 			if ($sort=="glpi_type_peripherals.name") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_peripherals.name&order=ASC&start=$start\">";
 			echo $lang["peripherals"][9]."</a></th>";
@@ -202,7 +202,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			// Last modified		
 			echo "<th>";
 			if ($sort=="periph.date_mod") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.date_mod&order=DESC&start=$start\">";
 			echo $lang["peripherals"][16]."</a></th>";
@@ -210,7 +210,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			// Contact person
 			echo "<th>";
 			if ($sort=="periph.contact") {
-				echo "&middot;&nbsp;";
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.contact&order=ASC&start=$start\">";
 			echo $lang["peripherals"][8]."</a></th>";
