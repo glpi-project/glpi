@@ -132,6 +132,7 @@ class Connection {
 		$db = new DB;
 		$query = "SELECT * FROM glpi_computers WHERE (ID = '$ID')";
 		if ($result=$db->query($query)) {
+			if ($db->numrows($result)==0) return false;
 			$data = $db->fetch_array($result);
 			$this->device_name = $data["name"];
 			$this->device_ID = $ID;
@@ -146,6 +147,17 @@ class Connection {
 		$db = new DB;
 
 		$query = "DELETE from glpi_connect_wire WHERE (end1 = '$ID' AND type = '$this->type')";
+		if ($result = $db->query($query)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	function deleteAllForComputer($ID) {
+
+		$db = new DB;
+
+		$query = "DELETE from glpi_connect_wire WHERE (end2 = '$ID')";
 		if ($result = $db->query($query)) {
 			return true;
 		} else {
