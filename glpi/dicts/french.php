@@ -1223,8 +1223,28 @@ $lang["financial"][76] = "Date de mise en service";
 $lang["financial"][77] = "Coefficient d'amortissement";
 $lang["financial"][78] = "Valeur extension garantie";
 $lang["financial"][79] = "Type de Tiers";
-
 $lang["financial"][80]	= "Expiration garantie";
 $lang["financial"][81]	= "Valeur nette comptable";
 
+$lang["document"][0]	= "Documents";
+$lang["document"][1]	= "Nom";
+$lang["document"][2]	= "Fichier";
+$lang["document"][3]	= "Rubrique";
+$lang["document"][4]	= "Type MIME";
+$lang["document"][5]	= "Date de modification";
+$lang["document"][6]	= "Commentaires";
+$lang["document"][7]	= "Type de document";
+$lang["document"][8]	= "Titre";
+$lang["document"][9]	= "Extension";
+$lang["document"][10]	= "Icône";
+$lang["document"][11]	= "Permettre l'upload";
+$lang["document"][12]	= "";
+$lang["document"][13]	= "";
+$lang["document"][14]	= "";
+$lang["document"][15]	= "";
+$lang["document"][16]	= "";
+$lang["document"][17]	= "";
+$lang["document"][18]	= "";
+$lang["document"][19]	= "";
+$lang["document"][20]	= "";
 ?>
