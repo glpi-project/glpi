@@ -293,7 +293,8 @@ function commonHeader($title,$url)
 	GLOBAL $cfg_install,$lang, $cfg_layout,$cfg_features,$HTMLRel,$phproot ;
 	
 	
-$reservation = array($lang["Menu"][17]=>array("/reservation/index.php","1"));	
+$utils = array($lang["Menu"][17]=>array("/reservation/index.php","1"),
+			   "Helpdesk"=>array("/helpdesk/index.php","1"));	
 	
 $inventory = 	array($lang["Menu"][0]=>array("/computers/index.php","1"),
 	              $lang["Menu"][1]=>array("/networking/index.php","2"),
@@ -402,12 +403,12 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	}
 	
 	
-	if ($navigation->inventory) {
+	if ($navigation->utils) {
 	echo "<td align='center' valign='top'>";
 	echo "<img class='icon_nav' src=\"".$HTMLRel."pics/outils.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>";
 
 		echo "<small>-&nbsp;".$lang["Menu"][18]."&nbsp;-</small><br>";
-		foreach ($reservation as $key => $val) {
+		foreach ($utils as $key => $val) {
 			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
 		}
 	}
@@ -1221,7 +1222,7 @@ function listConnectElement($target,$input) {
 
 }
 
-function printHelpDesk ($name) {
+function printHelpDesk ($name,$from_helpdesk) {
 
 	GLOBAL $cfg_layout,$cfg_install,$lang,$cfg_features;
 
@@ -1234,6 +1235,8 @@ function printHelpDesk ($name) {
 	$name = $db->result($result,0,"name");
 
 	echo "<form method='post' name=\"helpdeskform\" action=\"".$cfg_install["root"]."/tracking/tracking-injector.php\">";
+	echo "<input type='hidden' name='from_helpdesk' value='$from_helpdesk'>";
+
 	echo "<center><table  class='tab_cadre'>";
 
 	if ($realname!='') $name=$realname;
@@ -1285,7 +1288,7 @@ function printHelpDesk ($name) {
 	echo "<td colspan='2' align='center'>".$lang["help"][13].":</td>";
 	echo "</tr>";
 	echo "<tr class='tab_bg_1'>";
-	echo "<td colspan='2' align='center'><textarea name='contents' cols='40' rows='20' ></textarea>";
+	echo "<td colspan='2' align='center'><textarea name='contents' cols='45' rows='14' ></textarea>";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'>";

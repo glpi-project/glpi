@@ -72,6 +72,9 @@ class baseFunctions {
 	var $maintain	= true;
 
 	var $settings	= true;
+
+	var $utils	= true;
+
 }
 
 //Options gérée dynamiquement, ne pas toucher cette partie.

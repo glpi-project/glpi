@@ -63,9 +63,10 @@ if (!empty($_POST["priority"]) && empty($_POST["contents"]))
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 		nullHeader("Tracking",$_SERVER["PHP_SELF"]);
 	}
-	else {
+	else if ($_POST["from_helpdesk"]){
 		helpHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	}
+	else commonHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 	echo $lang["help"][15]."<br><br>";
 	echo "<a href=\"javascript:history.back()\">...back</a>";
@@ -78,9 +79,11 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] == "yes" && isse
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 		nullHeader("Tracking",$_SERVER["PHP_SELF"]);
 	}
-	else {
+	else if ($_POST["from_helpdesk"]){
 		helpHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	}
+	else commonHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	
 	echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
 	echo $lang["help"][16]."<br><br>";
@@ -94,9 +97,10 @@ elseif (empty($ID))
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 		nullHeader("Tracking",$_SERVER["PHP_SELF"]);
 	}
-	else {
+	else if ($_POST["from_helpdesk"]){
 		helpHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	}
+	else commonHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
 	echo $lang["help"][17]."<br><br>";
@@ -115,9 +119,11 @@ else
 		if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 			nullHeader("Tracking",$_SERVER["PHP_SELF"]);
 		}
-		else {
+		else if ($_POST["from_helpdesk"]){
 			helpHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 		}
+		else commonHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+
 		echo "<center><img src=\"".$cfg_install["root"]."/pics/ok.png\" alt=\"OK\"><br><br><b>";
 		echo $lang["help"][18]."<br>";
 		echo $lang["help"][19];
@@ -130,9 +136,11 @@ else
 		if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 			nullHeader("Tracking",$_SERVER["PHP_SELF"]);
 		}
-		else {
+		else if ($_POST["from_helpdesk"]){
 			helpHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 		}
+		else commonHeader("Helpdesk Access Only",$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+
 		echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 		echo $lang["help"][20]."<br>";
 		echo $lang["help"][21];
