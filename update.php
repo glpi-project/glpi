@@ -1125,6 +1125,46 @@ $query= "ALTER TABLE `glpi_config` ADD `priority_1` VARCHAR( 200 ) DEFAULT '#fff
 	$db->query($query) or die("0.5 alter config add priority_X ".$lang["update"][90].$db->error());
 
 }
+// Gestion des cartouches
+if(!TableExists("glpi_cartridges")) {
+$query= "CREATE TABLE `glpi_cartridges` (
+  `ID` int(11) NOT NULL auto_increment,
+  `FK_glpi_cartridges_type` int(11) default NULL,
+  `FK_glpi_printers` int(11) default NULL,
+  `date_in` date default NULL,
+  `date_use` date default NULL,
+  `date_out` date default NULL,
+  `pages` varchar(30) default NULL,
+  PRIMARY KEY  (`ID`)
+);
+";
+	$db->query($query) or die("0.5 CREATE TABLE glpi_cartridges ".$lang["update"][90].$db->error());
+
+$query= "CREATE TABLE `glpi_cartridges_type` (
+  `ID` int(11) NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL default '',
+  `ref` varchar(255) NOT NULL default '',
+  `type` tinyint(4) NOT NULL default '0',
+  `FK_glpi_manufacturer` int(11) NOT NULL default '0',
+  `deleted` enum('Y','N') NOT NULL default 'N',
+  `comments` text NOT NULL,
+  PRIMARY KEY  (`ID`)
+);
+";
+	$db->query($query) or die("0.5 CREATE TABLE glpi_cartridges_type ".$lang["update"][90].$db->error());
+	
+$query= "CREATE TABLE `glpi_cartridges_assoc` (
+  `ID` int(11) NOT NULL auto_increment,
+  `FK_glpi_cartridges_type` int(11) NOT NULL default '0',
+  `FK_glpi_type_printer` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`ID`),
+  UNIQUE KEY `FK_glpi_type_printer` (`FK_glpi_type_printer`,`FK_glpi_cartridges_type`)
+);
+";
+	$db->query($query) or die("0.5 CREATE TABLE glpi_cartridges_assoc ".$lang["update"][90].$db->error());
+}
+
+
 
 // Update version number
 $query="UPDATE glpi_config set version='0.5' WHERE ID='1'";
