@@ -92,8 +92,9 @@ $lang["event"][3]	= "Niveau";
 $lang["event"][4]	= "Message";
 
 // Pager
-$lang["pager"][1]	= "pour";
+$lang["pager"][1]	= "à";
 $lang["pager"][2]	= "de";
+$lang["pager"][3]	= "sur";
 
 // Direct Connections
 $lang["connect"][0]	= "Connections directes";
