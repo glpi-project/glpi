@@ -717,13 +717,14 @@ class Mailing
 				for ($i=0;$i<count($users);$i++)
 				{
 				mail($users[$i],$subject,$body,
-				"From: $sender\r\n" .
-			    "Reply-To: $replyto\r\n" .
-     	   	"X-Powered: by GLPI\r\n" .
-   			 "MIME-Version: 1.0\n" .
+				"From: $sender\n" .
+				"Reply-To: $replyto\n" .
+				"X-Powered: by GLPI\n" .
+				"X-Mailer: PHP/" . phpversion()."\n".
+				"MIME-Version: 1.0\n" .
 				"Content-Type: text/plain; charset=ISO-8859-1\n" .
-			    "Content-Transfer-Encoding: 8bit\n" .
-		   	 "X-Mailer: PHP/" . phpversion()) ;
+				"Content-Transfer-Encoding: 8bit\n"
+				) ;
 				}
 			} else {
 				echo "Type d'envoi invalide";
