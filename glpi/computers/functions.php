@@ -132,9 +132,10 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
 
+
 	// Build query
 	if($field == "all") {
-		$where = " AND (";
+		$where = " (";
 		$fields = $db->list_fields("glpi_computers");
 		$columns = $db->num_fields($fields);
 		
@@ -183,6 +184,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 	$query .= "LEFT JOIN glpi_dropdown_sndcard on comp.sndcard = glpi_dropdown_sndcard.ID ";
 	$query .= "where $where ORDER BY $sort $order";
 	//$query = "SELECT * FROM glpi_computers WHERE $where ORDER BY $sort $order";
+
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);
