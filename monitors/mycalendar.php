@@ -119,14 +119,14 @@ checkauthentication("normal");
 
 if (empty($jour))
        $jour = date("j");
-       echo "bla";
+       
 
   if (empty($mois))
        $mois = date("m") ;
-	 echo "bla1";
+	 
   if (empty($annee))
        $annee = date("Y") ;
-	 echo "bla2";
+	 
     // nombre de jours par mois
   $nbjmonth[0] = 31 ;
   $nbjmonth[1] = ($annee%4==0?($annee%100==0?($annee%400?29:28):29):28) ;
