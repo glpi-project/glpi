@@ -149,9 +149,9 @@ function getEmpty() {
 	if ($db->numrows($result)==0) return false;
 	else {
 		while ($data=$db->fetch_array($result)){
-			$query="SELECT * from glpi_networking_wire where end1 = '".$data['ID']."' OR end2='".$data['ID']."'";
-			$result = $db->query($query);
-			if ($db->numrows($result)>0) return true;
+			$query2="SELECT * from glpi_networking_wire where end1 = '".$data['ID']."' OR end2='".$data['ID']."'";
+			$result2 = $db->query($query2);
+			if ($db->numrows($result2)>0) return true;
 		}
 		return false;
 	}

@@ -62,13 +62,30 @@ if (isset($tab["add"])) {
 // delete a computer
 else if (isset($tab["delete"])) {
 	checkAuthentication("admin");
-	deleteComputer($tab);
+
+	if (isset($tab["withtemplate"])&&!empty($tab["withtemplate"]))
+	deleteComputer($tab,1);
+	else deleteComputer($tab);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	if(!empty($tab["withtemplate"])) {
 		header("Location: ".$cfg_install["root"]."/setup/setup-templates.php");
 	} else {
 		header("Location: ".$cfg_install["root"]."/computers/");
 	}
+}
+else if (isset($_POST["restore"]))
+{
+	checkAuthentication("admin");
+	restoreComputer($_POST);
+	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." restored item.");
+	header("Location: ".$cfg_install["root"]."/computers/");
+}
+else if (isset($_POST["purge"]))
+{
+	checkAuthentication("admin");
+	deleteComputer($_POST,1);
+	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." purge item.");
+	header("Location: ".$cfg_install["root"]."/computers/");
 }
 //update a computer
 else if (isset($tab["update"])) {

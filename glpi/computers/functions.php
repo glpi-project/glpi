@@ -50,10 +50,10 @@ function titleComputers(){
 
 
 
-function searchFormComputers($field="",$phrasetype= "",$contains="",$sort= "") {
+function searchFormComputers($field="",$phrasetype= "",$contains="",$sort= "",$deleted= "") {
 	// Print Search Form
 	
-	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
+	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel;
 
 	
 	$option["comp.ID"]				= $lang["computers"][31];
@@ -85,7 +85,7 @@ function searchFormComputers($field="",$phrasetype= "",$contains="",$sort= "") {
 	
 	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
 	echo "<div align='center'><table border='0' width='750' class='tab_cadre'>";
-	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 	echo "<select name=\"field\" size='1'>";
@@ -119,6 +119,8 @@ function searchFormComputers($field="",$phrasetype= "",$contains="",$sort= "") {
 		echo ">".$val."</option>\n";
 	}
 	echo "</select> ";
+	echo "</td><td><input type='checkbox' name='deleted' ".($deleted=='Y'?" checked ":"").">";
+	echo "<img src=\"".$HTMLRel."pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit' />";
 	echo "</td></tr></table></div></form>";
@@ -136,7 +138,7 @@ function IsDropdown($field) {
 	}
 }
 
-function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start) {
+function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted) {
 
 
 	$db = new DB;
@@ -201,7 +203,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 	$query .= "LEFT JOIN glpi_networking_ports on (comp.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='1')";
 	$query .= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = comp.FK_glpi_enterprise ) ";
-	$query .= " where $where ORDER BY $sort $order";
+	$query .= " where $where AND comp.deleted='$deleted' ORDER BY $sort $order";
 	//$query = "SELECT * FROM glpi_computers WHERE $where ORDER BY $sort $order";
 //echo $query;
 	// Get it from database	
@@ -460,8 +462,15 @@ function showComputerForm($target,$ID,$withtemplate='') {
 			echo "</td>\n";
                         echo "<td class='tab_bg_2' colspan='2'  align='center'>\n";
 			echo "<input type='hidden' name='ID' value=$ID>";
-			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-			echo "";
+		echo "<div align='center'>";
+		if ($comp->fields["deleted"]=='N')
+		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+		else {
+		echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+		
+		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>";
+		}
+		echo "</div>";
 			echo "</td>";
 		}
 
@@ -559,13 +568,19 @@ function addComputer($input) {
 	$comp->addToDB();
 }
 
-function deleteComputer($input) {
+function deleteComputer($input,$force=0) {
 	// Delete Computer
-	if(empty($input["template"])) $input["template"] = "";
 
 	$comp = new Computer;
-	$comp->deleteFromDB($input["ID"],$input["template"]);
+	$comp->deleteFromDB($input["ID"],$force);
 } 	
+
+function restoreComputer($input) {
+	// Restore Computer
+	
+	$ct = new Computer;
+	$ct->restoreInDB($input["ID"]);
+} 
 
 function showConnections($ID,$withtemplate='') {
 

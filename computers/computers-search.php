@@ -44,25 +44,14 @@ commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
 
 titleComputers();
 
-
-
 if(!isset($_GET["start"])) $_GET["start"] = 0;
 if (!isset($_GET["order"])) $_GET["order"] = "ASC";
+if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
+else $_GET["deleted"] = "Y";
 
-searchFormComputers($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
+searchFormComputers($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["deleted"]);
 
-if($_GET["field"]!="glo_search") {
-
-	showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
-}
-else {
-
-
-       	showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"all","contains",$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
-
-
-}
-
+showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"]);
 
 commonFooter();
 ?>

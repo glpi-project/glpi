@@ -54,8 +54,9 @@ if (!isset($_GET["field"])) $_GET["field"] = "all";
 if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
 if (!isset($_GET["contains"])) $_GET["contains"] = "";
 if (!isset($_GET["sort"])) $_GET["sort"] = "comp.name";
+if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
 
-showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
+showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"]);
 
 commonFooter();
 ?>
