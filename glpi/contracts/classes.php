@@ -129,11 +129,18 @@ class Contract {
 
 	}
 
+	function isUsed($ID){
+	$db = new DB;		
+	$query="SELECT * from glpi_contract_device where FK_contract = '$ID'";
+	$result = $db->query($query);
+	return ($db->numrows($result)>0);
+	}
+	
 	function deleteFromDB($ID,$force=0) {
 
 		$db = new DB;
 		$this->getFromDB($ID);		
-		if ($force==1){
+		if ($force==1||!$this->isUsed($ID)){
 			$query = "DELETE from glpi_contracts WHERE ID = '$ID'";
 			if ($result = $db->query($query)) {
 				
