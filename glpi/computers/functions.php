@@ -448,6 +448,7 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		if ($template) {
 			if (empty($ID)||$withtemplate==2){
 			echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
+			echo "<input type='hidden' name='ID' value=$ID>";
 			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 			echo "</td>\n";
 			} else {
@@ -525,7 +526,7 @@ function updateComputer($input) {
 	// Pop off the last two attributes, no longer needed
 	$null=array_pop($input);
 	$null=array_pop($input);
-	$null=array_pop($input);
+	
 	// Get all flags and fill with 0 if unchecked in form
 	foreach  ($comp->fields as $key => $val) {
 		if (eregi("\.*flag\.*",$key)) {
@@ -552,12 +553,15 @@ function addComputer($input) {
 
 	$comp = new Computer;
 	
-  // set new date.
-   $comp->fields["date_mod"] = date("Y-m-d H:i:s");
+  	// set new date.
+   	$comp->fields["date_mod"] = date("Y-m-d H:i:s");
    
 	// dump status
+	$oldID=$input["ID"];
 	$null=array_pop($input);
 	$null=array_pop($input);
+	$null=array_pop($input);
+	
 	$i=0;
 	// fill array for update
 	foreach ($input as $key => $val){
@@ -566,6 +570,24 @@ function addComputer($input) {
 		}		
 	}
 	$comp->addToDB();
+	
+	
+	// ADD Devices
+	$newID=$comp->getInsertElementID();
+	$comp->getFromDB($oldID);
+	foreach($comp->devices as $key => $val) {
+			compdevice_add($newID,$val["devType"],$val["devID"],$val["specificity"]);
+		}
+	
+	// ADD Infocoms
+	$ic= new Infocom();
+	$ic->getFromDB(COMPUTER_TYPE,$oldID);
+	$ic->fields["FK_device"]=$newID;
+	unset ($ic->fields["ID"]);
+	$ic->addToDB();
+				
+	// TODO ADD THE OTHERS ELEMENTS : PORTS, SOFTWARE
+	
 }
 
 function deleteComputer($input,$force=0) {

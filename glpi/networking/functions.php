@@ -494,7 +494,7 @@ function restoreNetdevice($input) {
 
 ///// Manage Ports on Devices /////
 
-function showPorts ($device,$device_type) {
+function showPorts ($device,$device_type,$withtemplate='') {
 	
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 	
@@ -534,9 +534,9 @@ function showPorts ($device,$device_type) {
 				$netport->getfromDB(current($devid));
 				echo "<tr class='tab_bg_1'>";
 				echo "<td align='center'><b>";
-				echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ID=".$netport->fields["ID"]."&location=".$location."\">";
+				if ($withtemplate!=2) echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ID=".$netport->fields["ID"]."&location=".$location."\">";
 				echo $netport->fields["logical_number"];
-				echo "</a>";
+				if ($withtemplate!=2) echo "</a>";
 				echo "</b></td>";
         echo "<td>".$netport->fields["name"]."</td>";
 		echo "<td>".getDropdownName("glpi_dropdown_netpoint",$netport->fields["netpoint"])."</td>";
@@ -544,7 +544,7 @@ function showPorts ($device,$device_type) {
 				echo "<td>".$netport->fields["ifmac"]."</td>";
 				echo "<td>".getDropdownName("glpi_dropdown_iface",$netport->fields["iface"])."</td>";
 				echo "<td>";
-					showConnection($netport->fields["ID"]);
+					showConnection($netport->fields["ID"],$withtemplate);
 				echo "</td>";
 				echo "</tr>";
 			}
@@ -757,7 +757,7 @@ function showPortsAdd($ID,$devtype) {
 	echo "</table></div><br>";
 }
 
-function showConnection ($ID) {
+function showConnection ($ID,$withtemplate='') {
 
 	GLOBAL $cfg_layout, $cfg_install, $lang;
 
@@ -785,7 +785,9 @@ function showConnection ($ID) {
 		echo "</a>";
 		echo "</b></td>";
 		echo "<td align='right'><b>";
+		if ($withtemplate!=2)
 		echo "<a href=\"".$cfg_install["root"]."/networking/networking-port-disconnect.php?ID=$ID\">".$lang["buttons"][10]."</a>";
+		else "&nbsp;";
 		echo "</b></td>";
 		echo "</tr></table>";
 		
@@ -793,7 +795,9 @@ function showConnection ($ID) {
 		echo "<table border='0' cellspacing='0' width='100%'><tr>";
 		echo "<td>".$lang["networking"][26]."</td>";
 		echo "<td align='right'><b>";
+		if ($withtemplate!=2&&$withtemplate!=1)
 		echo "<a href=\"".$cfg_install["root"]."/networking/networking-port-connect.php?ID=$ID\">".$lang["buttons"][9]."</a>";
+		else echo "&nbsp;";
 		echo "</b></td>";
 		echo "</tr></table>";
 	}

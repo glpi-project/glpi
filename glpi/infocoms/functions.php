@@ -33,7 +33,7 @@ This file is part of GLPI.
 
 include ("_relpos.php");
 
-function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1) {
+function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplate='') {
 	// Show Infocom or blank form
 	
 	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel;
@@ -45,6 +45,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1) {
 	echo "&nbsp;<div align='center'>";
 	
 	if (!$ic->getfromDB($device_type,$dev_ID)){
+		if ($withtemplate!=2)
 		echo "<b><a href='$target?device_type=$device_type&FK_device=$dev_ID&add=add'>Activer les informations commerciales</a></b><br>";
 	} else {
 
