@@ -193,7 +193,7 @@ margin-top: 100px;
 height: 100%;
 position: relative; /*ou absolute */
 left: 35%;
-width: 500px;
+width: 600px;
 margin-left: -150px;
 }
 
@@ -202,6 +202,8 @@ margin-left: -150px;
 background-color: #eeeeee;
 border: 2px solid #FFC65D;
 padding-bottom:10px;
+width: 600px;
+
 }	
 	
 	
