@@ -325,7 +325,7 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</td></tr>";
 	
 		echo "<tr><td>".$lang["computers"][22].":	</td>";
-		echo "<td><input type='text' name=processor_speed size=4 value=\"".$comp->fields["processor_speed"]."\">";
+		echo "<td><input type='text' name='processor_speed' size='4' value=\"".$comp->fields["processor_speed"]."\">";
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][35].":	</td>";
@@ -349,7 +349,7 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][24].":	</td>";
-		echo "<td><input type='text' name=ram value=\"".$comp->fields["ram"]."\" size=3>";
+		echo "<td><input type='text' name='ram' value=\"".$comp->fields["ram"]."\" size=3>";
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][36].":	</td>";
@@ -358,7 +358,7 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][25].":	</td>";
-		echo "<td><input type='text' name=hdspace size=3 value=\"".$comp->fields["hdspace"]."\">";
+		echo "<td><input type='text' name='hdspace' size='3' value=\"".$comp->fields["hdspace"]."\">";
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["computers"][26].":	</td>";
@@ -368,13 +368,13 @@ function showComputerForm ($template,$target,$ID) {
 		
 		echo "<tr><td>".$lang["computers"][41].":	</td>";
 		echo "<td><input type='text' name='achat_date' readonly size=10 value=\"".$comp->fields["achat_date"]."\">";
-		echo "&nbsp; <input name='button' type='button'  onClick=\"window.open('mycalendar.php?form=form&elem=achat_date','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+		echo "&nbsp; <input name='button' type='button'  onClick=\"window.open('mycalendar.php?form=form&amp;elem=achat_date','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 		echo "&nbsp; <input name='button_reset' type='button' onClick=\"document.forms['form'].achat_date.value='0000-00-00'\" value='reset'>";
     echo "</td></tr>";
 		
 		echo "<tr><td>".$lang["computers"][42].":	</td>";
-		echo "<td><input type='text' name='date_fin_garantie' readonly size=10 value=\"".$comp->fields["date_fin_garantie"]."\">";
-		echo "&nbsp; <input name='button' type='button' onClick=\"window.open('mycalendar.php?form=form&elem=date_fin_garantie','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+		echo "<td><input type='text' name='date_fin_garantie' readonly size='10' value=\"".$comp->fields["date_fin_garantie"]."\">";
+		echo "&nbsp; <input name='button' type='button' onClick=\"window.open('mycalendar.php?form=form&amp;elem=date_fin_garantie','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
 		echo "&nbsp; <input name='button_reset' type='button' onClick=\"document.forms['form'].date_fin_garantie.value='0000-00-00'\" value='reset'>";
     echo "</td></tr>";
 		
@@ -424,14 +424,16 @@ function showComputerForm ($template,$target,$ID) {
 		if ($template) {
 			echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
 			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\">";
-			echo "</td></form>\n";	
+			//echo "</td></form>\n";
+                        	echo "</td>\n";
 		} else {
 			echo "<td class='tab_bg_2' align='center' valign='top'>\n";
 			echo "<input type='hidden' name='ID' value=$ID>";
 			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\">";
-			echo "</td></form>\n";	
-			echo "<td class='tab_bg_2' align='center'>\n";
-			echo "<form method='post' action=\"$target\">";
+		//	echo "</td></form>\n";
+				echo "</td>\n";
+                        echo "<td class='tab_bg_2' align='center'>\n";
+		//	echo "<form method='post' action=\"$target\">";
 			echo "<input type='hidden' name='ID' value=$ID>";
 			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\">";
 			echo "";
@@ -439,9 +441,9 @@ function showComputerForm ($template,$target,$ID) {
 		}
 
 		echo "</tr>\n";
-		echo "</table>\n";
+		//echo "</table>\n";
 
-		echo "</div>\n";
+		//echo "</div>\n";
 
 		echo "</table></div></form>";
 

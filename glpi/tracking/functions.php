@@ -43,7 +43,7 @@ function searchFormTracking ($show,$contains) {
 	
 	GLOBAL $cfg_layout, $cfg_install,$lang;
 	
-	echo "\n<center>";
+	echo "\n<div align='center'>";
 	echo "<form method=\"get\" action=\"".$cfg_install["root"]."/tracking/index.php\">";
 echo "<table border='0'>";
 	echo "<tr><th align='center' colspan=3>".$lang["tracking"][0].":</th></tr>";
@@ -79,7 +79,7 @@ echo "<table border='0'>";
 
 	echo "</table>\n";
 		echo "</form>";
-                echo "</center><br>\n";
+                echo "</div><br>\n";
 }       
 
 function getTrackingPrefs ($username) {
@@ -161,7 +161,7 @@ function showJobList($username,$show,$contains,$item) {
 	$number = $db->numrows($result);
 
 	if ($number > 0) {
-		echo "<center><table border='0' width='90%'>";
+		echo "<div align='center'><table border='0' width='90%'>";
 		echo "<tr><th colspan=8>$number Job";
 		if ($number > 1) { echo "s"; }
 		echo " ".$lang["job"][16].":</th></tr>";
@@ -183,11 +183,11 @@ function showJobList($username,$show,$contains,$item) {
 			echo "</a>";
 			echo "</b></td></tr>";
 		}
-		echo "</table></center>";
+		echo "</table></div>";
 	}
 	else
 	{
-		echo "<br><center>";
+		echo "<br><div align='center'>";
 		echo "<table border='0' width='90%'>";
 		echo "<tr><th>".$lang["joblist"][8]."</th></tr>";
 
@@ -200,7 +200,7 @@ function showJobList($username,$show,$contains,$item) {
 			echo "</b></td></tr>";
 		}
 		echo "</table>";
-		echo "</center><br>";
+		echo "</div><br>";
 	}
 }
 
@@ -225,7 +225,7 @@ $query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY
 
 	if ($number > 0)
 	{
-		echo "<center><table border='0' width='90%'>";
+		echo "<div align='center'><table border='0' width='90%'>";
 		echo "<tr><th colspan=8>$number anciennes ".$lang["job"][17]."";
 		if ($number > 1) { echo "s"; }
 		echo " ".$lang["job"][16].":</th></tr>";
@@ -242,22 +242,23 @@ $query = "SELECT ID FROM tracking WHERE $where and (computer = '$item') ORDER BY
 		if ($item)
 		{
 			echo "<tr class='tab_bg_2'>";
-			echo "<td align='center' colspan=8 class='tab_bg_1'><b>";
+		        echo "<td align='center' colspan=8 class='tab_bg_1'>";
+
 		}
-		echo "</table></center>";
+		echo "</table></div>";
 	} 
 	else
 	{
-		echo "<br><center>";
+		echo "<br><div align='center'>";
 		echo "<table border='0' width='90%'>";
 		echo "<tr><th>".$lang["joblist"][22]."</th></tr>";
 
 		if ($item)
 		{
-			echo "<tr><td align='center' class='tab_bg_1'><b>";
+		          echo "<tr><td align='center' class='tab_bg_1'>";
 		}
 		echo "</table>";
-		echo "</center><br>";
+		echo "</div><br>";
 	}
 }
 
@@ -364,7 +365,7 @@ function showJobDetails($ID) {
 		if (strcmp($_SESSION["glpitype"],"post-only")==0&&!strcmp($_SESSION["glpiname"],$job->author)==0)
 		   { echo "Warning !! ";return;}
 
-		echo "<center><table border='0' width='90%' cellpadding=5>\n";
+		echo "<div align='center'><table border='0' width='90%' cellpadding=5>\n";
 		echo "<tr><th colspan='2'>".$lang["job"][0]." $job->ID:</th></tr>";
 		echo "<tr class='tab_bg_2'>";
 		echo "<td width=50% rowspan=2>";
@@ -445,7 +446,7 @@ function showJobDetails($ID) {
 		}
 		echo "</table>";
 		echo "<br><br><table width='90%' border='0'><tr><th>".$lang["job"][7].":</th></tr></table>";
-		echo "</center>";
+		echo "</div>";
 
 		showFollowups($job->ID);
 	} 
@@ -541,7 +542,7 @@ function showFollowups($ID) {
 	$job->getFromDB($ID,0);
 
 	if ($job->num_of_followups) {
-		echo "<center><table border='0' width='90%' cellpadding='2'>\n";
+		echo "<div align='center'><table border='0' width='90%' cellpadding='2'>\n";
 		echo "<tr><th>".$lang["joblist"][1]."</th><th>".$lang["joblist"][3]."</th><th>".$lang["joblist"][6]."</th></tr>\n";
 
 		for ($i=0; $i < $job->num_of_followups; $i++) {
@@ -554,23 +555,23 @@ function showFollowups($ID) {
 			echo "</tr>";
 		}		
 
-		echo "</table></center>";
+		echo "</table></div>";
 	
 	} else {
-		echo "<center><b>".$lang["job"][8]."</b></center>";
+		echo "<div align='center'><b>".$lang["job"][8]."</b></div>";
 	}
 
 	// Show input field only if job is still open
 	if(strcmp($_SESSION["glpitype"],"post-only")!=0)
 	if ($job->closedate=="0000-00-00 00:00:00") {
-		echo "<center><table border='0' width='90%'>\n\n";
+		echo "<div align='center'><table border='0' width='90%'>\n\n";
 		echo "<form method=get action=\"".$cfg_install["root"]."/tracking/tracking-followups.php\">";
 		echo "<input type='hidden' name=ID value=$ID>";
 		echo "<tr><th>".$lang["job"][9].":</th></tr>";
 		echo "<tr class='tab_bg_1'><td width='100%' align='center'><textarea cols=60 rows=5 name=contents ></textarea></td></tr>";
 		echo "<tr><td align='center' class='tab_bg_1'>";
 		echo "<input type='submit' value=\"".$lang["buttons"][2]."\"></td>";
-		echo "</tr></form></table></center>";
+		echo "</tr></form></table></div>";
 	}
 
 }
@@ -609,10 +610,10 @@ function addFormTracking ($ID,$author,$target,$error) {
 	GLOBAL $cfg_layout, $lang;
 	
 	if ($error) {
-		echo "<center><b>$error</b></center>";
+		echo "<div align='center'><b>$error</b></div>";
 	}
 	echo "<form method=get action=$target>";
-	echo "<center><table border='0'>";
+	echo "<div align='center'><table border='0'>";
 	echo "<tr><th colspan='2'>".$lang["job"][13].":</th></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$lang["joblist"][1].":</td>";
@@ -655,7 +656,7 @@ function addFormTracking ($ID,$author,$target,$error) {
 	echo "<input type='submit' value=\"".$lang["buttons"][2]."\">";
 	echo "</td></tr>";
 	
-	echo "</table></center>";
+	echo "</table></div>";
 
 }
 
