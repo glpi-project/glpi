@@ -356,13 +356,12 @@ function showUserform($target,$name) {
 	
 	GLOBAL $cfg_layout, $lang;
 	
-	$user = new User($name);
+	$user = new User();
 	
 	if (empty($name)) {
-	echo "Ajouter";
 	// Partie ajout d'un user
 	// il manque un getEmpty pour les users	
-	//$user->getEmpty();
+	$user->getEmpty();
 	
 	} else {
 		$user->getfromDB($name);
@@ -640,7 +639,8 @@ function addUser($input) {
 	// Add User, nasty hack until we get PHP4-array-functions
 
 	$user = new User($input["name"]);
-
+	if(empty($input["password"]))  $input["password"] = "";
+	
 	// dump status
 	$null = array_pop($input);
 	
