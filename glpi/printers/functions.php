@@ -51,10 +51,10 @@ function titlePrinters(){
 
 
 
-function searchFormPrinters($field="",$phrasetype= "",$contains="",$sort= "") {
+function searchFormPrinters($field="",$phrasetype= "",$contains="",$sort= "",$deleted="") {
 	// Print Search Form
 	
-	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
+	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel;
 
 	$option["printer.name"]				= $lang["printers"][5];
 	$option["printer.ID"]				= $lang["printers"][19];
@@ -73,7 +73,7 @@ function searchFormPrinters($field="",$phrasetype= "",$contains="",$sort= "") {
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/printers/printers-search.php\">";
 	echo "<div align='center'><table  width='750' class='tab_cadre'>";
-	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
@@ -113,13 +113,15 @@ function searchFormPrinters($field="",$phrasetype= "",$contains="",$sort= "") {
 		echo ">".$val."</option>\n";
 	}
 	echo "</select> ";
+	echo "</td><td><input type='checkbox' name='deleted' ".($deleted=='Y'?" checked ":"").">";
+	echo "<img src=\"".$HTMLRel."pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
 
 
-function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start) {
+function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted) {
 
 	// Lists Printers
 
@@ -174,7 +176,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 	$query .= "LEFT JOIN glpi_networking_ports on (printer.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='3')";	
 	$query .= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";	
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = printer.FK_glpi_enterprise ) ";
-	$query .= "where $where ORDER BY $sort $order";
+	$query .= "where $where AND printer.deleted='$deleted' ORDER BY $sort $order";
 	
 //	echo $query;
 	// Get it from database	
@@ -414,7 +416,15 @@ function showPrintersForm ($target,$ID) {
 		echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign='top' align='center'>\n";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+		echo "<div align='center'>";
+		if ($printer->fields["deleted"]=='N')
 		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+		else {
+		echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+		
+		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>";
+		}
+		echo "</div>";
 		echo "</td>";
 		echo "</form></tr>";
 
@@ -485,13 +495,19 @@ function addPrinter($input) {
 
 }
 
-function deletePrinter($input) {
+function deletePrinter($input,$force=0) {
 	// Delete Printer
 	
 	$printer = new Printer;
-	$printer->deleteFromDB($input["ID"]);
+	$printer->deleteFromDB($input["ID"],$force);
 	
 } 	
 
+function restorePrinter($input) {
+	// Restore Printer
+	
+	$ct = new Printer;
+	$ct->restoreInDB($input["ID"]);
+} 
 
 ?>

@@ -137,6 +137,10 @@ function getEmpty () {
 	$db = new DB;		
 	$query="SELECT * from glpi_connect_wire where end1 = '$ID' AND type='".PERIPHERAL_TYPE."'";
 	$result = $db->query($query);
+	if ($db->numrows($result)>0) return true;
+	
+	$query="SELECT * from glpi_tracking where computer = '$ID' AND device_type='".PERIPHERAL_TYPE."'";
+	$result = $db->query($query);
 	return ($db->numrows($result)>0);
 	}
 
