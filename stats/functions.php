@@ -631,6 +631,7 @@ $end.=" 23:59:59";
 			
 	}
 //echo $query;
+$entrees=array();
 if (empty($query)) return array();
 
 	$result=$db->query($query);
@@ -658,6 +659,7 @@ if ($type=="inter_avgtakeaccount"){
 
 $min=-1;		
 $max=0;		
+if (count($entrees)==0) return $entrees;
 
 foreach ($entrees as $key => $val){
 $time=strtotime($key."-01");
