@@ -62,6 +62,7 @@ class Netdevice {
 		}
 	}
 
+
 	function updateInDB($updates)  {
 
 		$db = new DB;
@@ -139,7 +140,8 @@ class Netport {
 	var $device_name	= "";
 	var $device_ID		= 0;
 	
-	function getFromDB($ID) {
+	function getFromDB($ID) 
+	{
 
 		// Make new database object and fill variables
 		$db = new DB;
@@ -157,45 +159,72 @@ class Netport {
 			return false;
 		}
 	}
+	function getFromNull()
+	{
+		$db = new DB;
+		$query = "select * from networking_ports";
+		$result = $db->query($query);
+		$num_flds = $db->num_fields($result);
+		for($i=0; $i < $num_flds; $i++)
+		{
+			$key = $db->field_name($result,$i);
+			$this->fields[$key] = "";
+		}
+	}
 
-	function getDeviceData($ID,$type) {
+	function getDeviceData($ID,$type)
+	{
 		$db = new DB;
 
-		if ($type==2) {
+		if ($type==2)
+		{
 			$table = "networking";
-		} else if ($type==1) {
+		}
+		else if ($type==1)
+		{
 			$table = "computers";
-		} else if ($type==3) {
+		} 
+		else if ($type==3)
+		{
 			$table = "printers";
 		}
 
 		$query = "SELECT * FROM $table WHERE (ID = '$ID')";
-		if ($result=$db->query($query)) {
+		if ($result=$db->query($query))
+		{
 			$data = mysql_fetch_array($result);
 			$this->device_name = $data["name"];
 			$this->device_ID = $ID;
 			return true;
-		} else {
+		}
+		else 
+		{
 			return false;
 		}
 	}
 
-	function getContact($ID) {
+	function getContact($ID) 
+	{
 	
 		$wire = new Netwire;
-		if ($this->contact_id = $wire->getOppositeContact($ID)) {
+		if ($this->contact_id = $wire->getOppositeContact($ID))
+		{
 			return true;
-		} else {
+		}
+		else
+		{
 			return false;
 		}
 		
 	}
 
-	function updateInDB($updates)  {
+	function updateInDB($updates)
+	{
 
 		$db = new DB;
 
-		for ($i=0; $i < count($updates); $i++) {
+		for ($i=0; $i < count($updates); $i++)
+		{
 			$query  = "UPDATE networking_ports SET ";
 			$query .= $updates[$i];
 			$query .= "='";
@@ -208,50 +237,62 @@ class Netport {
 		
 	}
 	
-	function addToDB() {
+	function addToDB()
+	{
 		$db = new DB;
 
 		$this->comments = addslashes($this->comments);
 		
 		// Build query
 		$query = "INSERT INTO networking_ports (";
-		for ($i=0; $i < count($this->fields); $i++) {
+		for ($i=0; $i < count($this->fields); $i++)
+		{
 			list($key,$val) = each($this->fields);
 			$fields[$i] = $key;
 			$values[$i] = $val;
 		}		
-		for ($i=0; $i < count($fields); $i++) {
+		for ($i=0; $i < count($fields); $i++)
+		{
 			$query .= $fields[$i];
-			if ($i!=count($fields)-1) {
+			if ($i!=count($fields)-1)
+			{
 				$query .= ",";
 			}
 		}
 		$query .= ") VALUES (";
-		for ($i=0; $i < count($values); $i++) {
+		for ($i=0; $i < count($values); $i++) 
+		{
 			$query .= "'".$values[$i]."'";
-			if ($i!=count($values)-1) {
+			if ($i!=count($values)-1)
+			{
 				$query .= ",";
 			}
 		}
 		$query .= ")";
 
-		if ($result=$db->query($query)) {
+		if ($result=$db->query($query))
+		{
 			return true;
-		} else {
+		} else
+		{
 			return false;
 		}
 	
 	}
 
 	
-	function deleteFromDB($ID) {
+	function deleteFromDB($ID)
+	{
 
 		$db = new DB;
 
 		$query = "DELETE from networking_ports WHERE ID = '$ID'";
-		if ($result = $db->query($query)) {
+		if ($result = $db->query($query))
+		{
 			return true;
-		} else {
+		} 
+		else
+		{
 			return false;
 		}
 	}
@@ -265,19 +306,26 @@ class Netwire {
 	var $end1	= 0;
 	var $end2	= 0;
 
-	function getOppositeContact ($ID) {
+	function getOppositeContact ($ID)
+	{
 		$db = new DB;
 		$query = "SELECT * FROM networking_wire WHERE (end1 = '$ID' OR end2 = '$ID')";
-		if ($result=$db->query($query)) {
+		if ($result=$db->query($query))
+		{
 			$data = mysql_fetch_array($result);
 			$this->end1 = $data["end1"];
 			$this->end2 = $data["end2"];
 
-			if ($this->end1 == $ID) {
+			if ($this->end1 == $ID)
+			{
 				return $this->end2;
-			} else if ($this->end2 == $ID) {
+			} 
+			else if ($this->end2 == $ID)
+			{
 				return $this->end1;
-			} else {
+			} 
+			else 
+			{
 				return false;
 			}
 		}

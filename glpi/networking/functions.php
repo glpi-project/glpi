@@ -338,6 +338,10 @@ function showNetportForm($target,$ID,$ondevice,$devtype) {
 	{
 		$netport->getFromDB($ID);
 		$netport->getDeviceData($netport->fields["on_device"],$netport->fields["device_type"]);
+	}
+	else
+	{
+		$netport->getFromNull();
 	}	
 
 	echo "<center><table><tr>";
@@ -365,7 +369,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype) {
 	echo "<td><input type=text size=25 name=ifmac value=\"".$netport->fields["ifmac"]."\">";
 	echo "</td></tr>";
 
-	if ($ID) {
+	if (isset($ID)) {
 		echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td>".$lang["networking"][24]."</td>";
 		echo "<td>";
 			showConnection($netport->fields["ID"]);
@@ -382,7 +386,8 @@ function showNetportForm($target,$ID,$ondevice,$devtype) {
 		echo "<td align=center>";
 		echo "<input type=submit name=delete value=\"".$lang["buttons"][6]."\">";
 		echo "</td></tr></form>";
-	} else {
+	} else 
+	{
 
 		echo "<tr bgcolor=\"".$cfg_layout["tab_bg_2"]."\">";
 		echo "<td align=center colspan=2>";

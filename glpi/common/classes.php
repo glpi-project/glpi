@@ -66,10 +66,14 @@ class DBmysql {
 		return mysql_fetch_row($result);
 	}
 	function num_fields($result) {
-	return mysql_num_fields($result);
+		return mysql_num_fields($result);
+	}
+	function field_name($result,$nb)
+	{
+		return mysql_field_name($result,$nb);
 	}
 	function list_tables() {
-	return mysql_list_tables($this->dbdefault);
+		return mysql_list_tables($this->dbdefault);
 	}
 	function errno()
 	{
