@@ -38,11 +38,12 @@ include ("_relpos.php");
 function showFormDropdown ($target,$name,$human) {
 
 	GLOBAL $cfg_layout, $lang;
-	
-	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='50%'>";
+
+	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='70%'>";
+	echo "<a name=\"$name\"></a>";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
 	echo "<form method='post' action=\"$target\">";
-
+	echo "<input type='hidden' name='where' value='$name'>";
 	echo "<tr><td align='center' class='tab_bg_1'>";
 
 	dropdown("glpi_dropdown_".$name, "ID");
@@ -59,6 +60,7 @@ function showFormDropdown ($target,$name,$human) {
         echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 	echo "</td></form></tr>";
 	echo "<form action=\"$target\" method='post'>";
+	echo "<input type='hidden' name='where' value='$name'>";
 	echo "<tr><td align='center'  class='tab_bg_1'>";
 	echo "<input type='text' maxlength='100' size='20' name='value'>";
 	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
@@ -72,10 +74,11 @@ function showFormTypeDown ($target,$name,$human) {
 
 	GLOBAL $cfg_layout, $lang;
 	
-	echo "<div align='center'>&nbsp;<table class='tab_cadre' width=50%>";
+	echo "<div align='center'>&nbsp;<table class='tab_cadre' width=70%>";
+	echo "<a name=\"$name\"></a>";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
 	echo "<form method='post' action=\"$target\">";
-
+	echo "<input type='hidden' name='where' value='$name'>";
 	echo "<tr><td align='center' class='tab_bg_1'>";
 
 	dropdown("glpi_type_".$name, "ID");
@@ -91,6 +94,7 @@ function showFormTypeDown ($target,$name,$human) {
         echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 	echo "</td></form></tr>";
 	echo "<form action=\"$target\" method='post'>";
+	echo "<input type='hidden' name='where' value='$name'>";
 	echo "<tr><td align='center' class='tab_bg_1'>";
 	echo "<input type='text' maxlength='100' size='20' name='value'>";
 	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
@@ -205,6 +209,7 @@ function showDeleteConfirmForm($target,$table, $ID) {
 	echo "<form action=\"". $target ."\" method=\"post\">";
 	echo "<input type=\"hidden\" name=\"tablename\" value=\"". $table ."\"  />";
 	echo "<input type=\"hidden\" name=\"ID\" value=\"". $ID ."\"  />";
+	echo "<input type=\"hidden\" name=\"where\" value=\"". str_replace("glpi_type_","",str_replace("glpi_dropdown_","",$table)) ."\"  />";
 	echo "<input type=\"hidden\" name=\"forcedelete\" value=\"1\" />";
 	echo "<input type=\"submit\" name=\"delete\" value=\"Confirmer\" />";
 	echo "<form action=\" ". $target ."\" method=\"post\">";
@@ -212,6 +217,7 @@ function showDeleteConfirmForm($target,$table, $ID) {
 	echo "</form>";
 	echo "<br />". $lang["setup"][65];
 	echo "<form action=\" ". $target ."\" method=\"post\">";
+	echo "<input type=\"hidden\" name=\"where\" value=\"". str_replace("glpi_type_","",str_replace("glpi_dropdown_","",$table)) ."\"  />";
 	dropdownNoValue($table,"newID",$ID);
 	echo "<input type=\"hidden\" name=\"tablename\" value=\"". $table ."\"  />";
 	echo "<input type=\"hidden\" name=\"oldID\" value=\"". $ID ."\"  />";
