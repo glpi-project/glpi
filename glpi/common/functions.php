@@ -1145,7 +1145,7 @@ function Connect($target,$sID,$cID,$type) {
 
 }
 
-function showConnectSearch($target,$ID,$type="computer") {
+function showConnectSearch($target,$ID,$type="computer",$withtemplate) {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
@@ -1177,6 +1177,7 @@ function showConnectSearch($target,$ID,$type="computer") {
 	echo "<option value=id>".$lang["connect"][7]."</option>";
 	echo "</select> ";
 	echo $lang["connect"][8]." <input type='text' size=10 name=search>";
+	echo "<input type=\"hidden\" name=\"withtemplate\" value=\"".$withtemplate."\" >";
 	echo "<input type='hidden' name='pID1' value=$ID>";
 	echo "<input type='hidden' name='device_type' value=$type>";
 	echo "<input type='hidden' name='connect' value='2'>";
@@ -1190,7 +1191,7 @@ function showConnectSearch($target,$ID,$type="computer") {
 }
 
 
-function listConnectComputers($target,$input) {
+function listConnectComputers($target,$input,$withtemplate) {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
@@ -1223,6 +1224,7 @@ function listConnectComputers($target,$input) {
 
 	echo "</td>";
 	echo "<td class='tab_bg_2' align='center'>";
+	echo "<input type=\"hidden\" name=\"withtemplate\" value=\"".$withtemplate."\" >";
 	echo "<input type='hidden' name='sID' value=\"".$input["pID1"]."\">";
 	echo "<input type='hidden' name='connect' value='3'>";
 	echo "<input type='hidden' name='device_type' value='computer'>";
@@ -1290,9 +1292,10 @@ function listConnectElement($target,$input) {
 	echo "<td class='tab_bg_2' align='center'>";
 	echo "<input type='hidden' name='cID' value=\"".$input["pID1"]."\">";
 	echo "<input type='hidden' name='connect' value='3'>";
+	echo "<input type=\"hidden\" name=\"withtemplate\" value=\"".$input["withtemplate"]."\" >";
 	echo "<input type='hidden' name='device_type' value='$device_id'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
-	} else echo $lang["connect"][16]."<br><b><a href=\"".$_SERVER["PHP_SELF"]."?ID=".$input["pID1"]."\">".$lang["buttons"][13]."</a></b>";
+	} else echo $lang["connect"][16]."<br><b><a href=\"".$_SERVER["PHP_SELF"]."?ID=".$input["pID1"]."&withtemplate=".$input["withtemplate"]."\">".$lang["buttons"][13]."</a></b>";
 	
 	echo "</td></form></tr></table>";	
 
