@@ -56,7 +56,7 @@ $lang["buttons"][2]	= "Valider";
 $lang["buttons"][3]	= "Attribuer";
 $lang["buttons"][4]	= "Installer";
 $lang["buttons"][5]	= "D&eacute;sinstaller";
-$lang["buttons"][6]	= "supprimer";
+$lang["buttons"][6]	= "Supprimer";
 $lang["buttons"][7]	= "Actualiser";
 $lang["buttons"][8]	= "Ajouter";
 $lang["buttons"][9]	= "Connecter";
@@ -871,5 +871,9 @@ $lang["reservation"][17]	= "D&egrave;s";
 $lang["reservation"][18]	= "Le mat&eacute;riel demand&eacute; est d&eacute;j&agrave; r&eacute;serv&eacute; pour cette plage.";
 $lang["reservation"][19]	= "Erreur dans l'entr&eacute;e de vos date. La date de d&eacute;but est surement sup&eacute;rieure &agrave; la date de fin";
 $lang["reservation"][20]	= "Retour au calendrier";
+$lang["reservation"][21]	= "Voir les r&eacute;servations";
+$lang["reservation"][22]	= "Modifier le commentaire";
+$lang["reservation"][23]	= "Commentaire";
+$lang["reservation"][24]	= "Pr&ecirc;t";
 
 ?>

@@ -97,6 +97,12 @@ else {
 	}
 
 
+	if (isset($_POST["updatecomment"]))
+	{
+		updateReservationComment($_POST);
+		logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." update reservation comment.");
+	} 
+
 	if(!isset($_GET["start"])) $_GET["start"] = 0;
 	if (!isset($_GET["order"])) $_GET["order"] = "ASC";
 	if (!isset($_GET["field"])) $_GET["field"] = "glpi_reservation_item.ID";
@@ -105,15 +111,24 @@ else {
 	if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_reservation_item.ID";
 
 
-	if (empty($tab["ID"]))
 	checkAuthentication("admin");
-	else checkAuthentication("normal");
 
 	commonHeader("Reservation",$_SERVER["PHP_SELF"]);
+	if (isset($_GET["comment"])){
+		if (showReservationCommentForm($_SERVER["PHP_SELF"],$_GET["comment"])){
+			}
+		else {
+			titleReservation();
+			searchFormReservationItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
+			showReservationItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
+		}
+		
+	}else {
+	
 	titleReservation();
-
 	searchFormReservationItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
 	showReservationItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
+	}
 }
 }
 commonFooter();

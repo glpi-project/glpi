@@ -48,6 +48,8 @@ class ReservationItem{
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}
+		if (!isset($this->fields["device_type"]))			
+		return false;
 			switch ($this->fields["device_type"]){
 			case 1 :
 				$this->obj=new Computer;

@@ -846,7 +846,7 @@ if($db->numrows($result) != $db->numrows($result2)) {
 
 if(!TableExists("glpi_reservation_item")) {
 
-	$query = "CREATE TABLE glpi_reservation_item (ID int(11) NOT NULL auto_increment,device_type tinyint(4) NOT NULL default '0', id_device int(11) NOT NULL default '0', PRIMARY KEY  (ID), KEY device_type (device_type));";
+	$query = "CREATE TABLE glpi_reservation_item (ID int(11) NOT NULL auto_increment,device_type tinyint(4) NOT NULL default '0', id_device int(11) NOT NULL default '0', comments text NOT NULL, PRIMARY KEY  (ID), KEY device_type (device_type));";
 
 	$db->query($query) or die("4201 ".$lang["update"][90].$db->error());
 }

@@ -60,11 +60,11 @@ function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort=
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
 
-	$option["glpi_reservation_item.ID"]				= $lang["software"][1];
-//	$option["type"]			= $lang["software"][3];
+	$option["glpi_reservation_item.ID"]				= $lang["reservation"][2];
+//	$option["glpi_reservation_item.device_type"]			= $lang["reservation"][3];
 //	$option["glpi_dropdown_locations.name"]			= $lang["software"][4];
 //	$option["glpi_software.version"]			= $lang["software"][5];
-//	$option["glpi_software.comments"]			= $lang["software"][6];
+	$option["glpi_reservation.comments"]			= $lang["reservation"][23];
 	
 	echo "<form method=get action=\"".$cfg_install["root"]."/reservation/index.php\">";
 	echo "<center><table class='tab_cadre' width='750'>";
@@ -182,6 +182,8 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.id_device&order=ASC&start=$start\">";
 			echo $lang["reservation"][4]."</a></th>";
 
+			echo "<th>".$lang["reservation"][23]."</th>";
+			echo "<th>&nbsp;</th>";
 			echo "<th>&nbsp;</th>";
 			echo "<th>&nbsp;</th>";
 			echo "</tr>";
@@ -197,11 +199,16 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 				
 				echo "<td>". $ri->getType()."</td>";
 				echo "<td><b>". $ri->getLink() ."</b></td>";
+				echo "<td><b>". substr(unhtmlentities_deep($ri->fields["comments"]),0,$cfg_features["cut"])."</b></td>";
+				echo "<td>";
+				echo "<a href='".$target."?comment=$ID'>".$lang["reservation"][22]."</a>";
+				echo "</td>";
+
 				echo "<td>";
 				showReservationForm($ri->fields["device_type"],$ri->fields["id_device"]);
 				echo "</td>";
 				echo "<td>";
-				echo "<a href='".$target."?show=resa&ID=$ID'>Voir les réservations</a>";
+				echo "<a href='".$target."?show=resa&ID=$ID'>".$lang["reservation"][21]."</a>";
 				echo "</td>";
 				echo "</tr>";
 			}
@@ -570,7 +577,7 @@ return $p[0].":".$p[1];
 
 function printReservationItems($target){
 global $lang,$HTMLRel;
-          
+
 $ri=new ReservationItem;
 
 $db=new DB;
@@ -579,14 +586,87 @@ $query="select ID from glpi_reservation_item ORDER BY device_type";
 
 	if ($result = $db->query($query)) {
 		echo "<div align='center'><table class='tab_cadre' cellspacing='5'>";
-		echo "<tr><th>".$lang["reservation"][1]."</th></tr>";
+		echo "<tr><th colspan='2'>".$lang["reservation"][1]."</th></tr>";
 		while ($row=$db->fetch_array($result)){
 			$ri->getfromDB($row['ID']);
-			echo "<tr class='tab_bg_2'><td><a href='".$target."?show=resa&ID=".$row['ID']."'>".$ri->getType()." - ".$ri->getName()."</a></td></tr>";
+			echo "<tr class='tab_bg_2'><td><a href='".$target."?show=resa&ID=".$row['ID']."'>".$ri->getType()." - ".$ri->getName()."</a></td>";
+			echo "<td>".nl2br($ri->fields["comments"])."</td>";
+			echo "</tr>";
 		}
 	echo "</table></div>";
 	
 	}
+}
+
+
+function showReservationCommentForm($target,$ID){
+	global $lang,$HTMLRel;
+
+
+	$r=new ReservationItem;
+	if ($r->getfromDB($ID)){
+
+	echo "<div align='center'><form method='post' name=form action=\"$target\">";
+	echo "<input type='hidden' name='ID' value='$ID'>";
+
+	echo "<table class='tab_cadre' cellpadding='2'>";
+	echo "<tr><th colspan='2'><b>";
+	echo $lang["reservation"][22];
+	echo "</b></th></tr>";
+	// Ajouter le nom du matériel
+	echo "<tr class='tab_bg_1'><td>".$lang["reservation"][4].":	</td>";
+	echo "<td>";
+	echo "<b>".$r->getType()." - ".$r->getName()."</b>";
+    echo "</td></tr>";
+
+	echo "<tr class='tab_bg_1'><td>".$lang["reservation"][23].":	</td>";
+	echo "<td>";
+	echo "<textarea name='comments' cols='30' rows='10' >".$r->fields["comments"]."</textarea>";
+    echo "</td></tr>";
+
+
+	echo "<tr class='tab_bg_2'>";
+	echo "<td colspan='2'  valign='top' align='center'>";
+	echo "<input type='submit' name='updatecomment' value=\"".$lang["buttons"][14]."\" class='submit' class='submit'>";
+	echo "</td></tr>\n";
+	
+	echo "</table></div>";
+	echo "</form>";
+	return true;
+	} else return false;
+}
+
+function updateReservationComment($input){
+
+	// Update a printer in the database
+
+	$ri = new ReservationItem;
+	$ri->getFromDB($input["ID"]);
+
+	// Pop off the last two attributes, no longer needed
+	$null=array_pop($input);
+
+	// Get all flags and fill with 0 if unchecked in form
+	foreach ($ri->fields as $key => $val) {
+		if (eregi("\.*flag\.*",$key)) {
+			if (!isset($input[$key])) {
+				$input[$key]=0;
+			}
+		}
+	}	
+
+	// Fill the update-array with changes
+	$x=0;
+	foreach ($input as $key => $val) {
+		if ($ri->fields[$key] != $input[$key]) {
+			$ri->fields[$key] = $input[$key];
+			$updates[$x] = $key;
+			$x++;
+		}
+	}
+	if (isset($updates))
+		$ri->updateInDB($updates);
+
 }
 
 ?>
