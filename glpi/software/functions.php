@@ -854,8 +854,9 @@ function showLicenseForm($target,$action,$sID,$lID="",$search_computer="") {
 
 function addLicense($input) {
 	$lic = new License;
-
+	
 	// dump status
+	$null = array_pop($input);
 	$null = array_pop($input);
 	$null = array_pop($input);
 	$null = array_pop($input);
@@ -881,8 +882,9 @@ function updateLicense($input) {
 
 	$lic = new License;
 	$lic->getFromDB($input["lID"]);
-
- 	// Pop off the last attribute, no longer needed
+ 	
+	// Pop off the last attribute, no longer needed
+	$null=array_pop($input);
 	$null=array_pop($input);
 	$null=array_pop($input);
 	$null=array_pop($input);
