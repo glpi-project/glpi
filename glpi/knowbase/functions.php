@@ -401,7 +401,7 @@ function kbcategoryList($current=0,$nullroot="yes")
 	echo "<select name='categoryID' size='1'>\n";
 	
 	if ($nullroot=="yes"){
-	echo "<option value='0'>".$lang["knowbase"][12]."</option>\n";
+	echo "<option value='0'>--- ".$lang["knowbase"][12]." ---</option>\n";
 	}
 	showTreeListSelect("glpi_dropdown_kbcategories",$current, $parentID=0, $categoryname="");
 	
