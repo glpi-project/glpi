@@ -332,8 +332,8 @@ $lang["printers"][26] 	= "Zahl";
 
 // Monitors
 $lang["monitors"][0]	= "Monitor hinzuf&uuml;gen..";
-$lang["monitors"][1]	= "Nach Standort zeigen";
-$lang["monitors"][2]	= "klassifiziert mit";
+$lang["monitors"][1] 	= ""; 
+$lang["monitors"][2] 	= ""; 
 $lang["monitors"][3]	= "Monitor hinzuf&uuml;gen";
 $lang["monitors"][4]	= "Monitor";
 $lang["monitors"][5]	= "Name";
