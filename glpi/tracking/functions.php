@@ -1132,11 +1132,9 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 	if ($author!="all") $query.=" AND glpi_tracking.author = '$author'";
 	
    $query.=" ORDER BY ID";
-
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);
-
 		// Limit the result, if no limit applies, use prior result
 		if ($numrows>$cfg_features["list_limit"]) {
 			$query_limit = $query. " LIMIT $start,".$cfg_features["list_limit"]." ";
@@ -1169,7 +1167,7 @@ echo "<th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
 			echo "</table></div>";
 
 			// Pager
-			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&date1=$date1&date2=$date2&only_computers=$computers_search&field2=$field2&phrasetype2=$phrasetype2&contains2=$contains2";
+			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&date1=$date1&date2=$date2&only_computers=$computers_search&field2=$field2&phrasetype2=$phrasetype2&contains2=$contains2&attrib=$assign&author=$author";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
