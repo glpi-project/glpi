@@ -46,7 +46,7 @@ checkAuthentication("normal");
 
 commonHeader("Tracking",$_SERVER["PHP_SELF"]);
 
-if (isset($_POST["contents"])&&isAdmin($_SESSION["glpitype"]))
+if (isset($_POST["contents"])&&!empty($_POST["contents"])&&isAdmin($_SESSION["glpitype"]))
 {
 	postFollowups ($_POST["ID"],$_SESSION["glpiname"],$_POST["contents"]);
 }
