@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-03-29 23:40
+#GLPI Dump database on 2005-04-04 13:50
 
 ### Dump table glpi_cartridges
 
@@ -66,7 +66,6 @@ CREATE TABLE glpi_computer_device (
    KEY FK_computers (FK_computers)
 );
 
-INSERT INTO glpi_computer_device VALUES ('1','','8','1','19');
 INSERT INTO glpi_computer_device VALUES ('2','','8','4','8');
 INSERT INTO glpi_computer_device VALUES ('3','','8','4','10');
 INSERT INTO glpi_computer_device VALUES ('4','','8','4','15');
@@ -77,14 +76,11 @@ INSERT INTO glpi_computer_device VALUES ('8','20','4','1','15');
 INSERT INTO glpi_computer_device VALUES ('9','20','4','1','18');
 INSERT INTO glpi_computer_device VALUES ('10','6','4','1','20');
 INSERT INTO glpi_computer_device VALUES ('11','10','4','2','8');
-INSERT INTO glpi_computer_device VALUES ('12','','4','2','19');
 INSERT INTO glpi_computer_device VALUES ('13','','5','1','8');
 INSERT INTO glpi_computer_device VALUES ('14','','5','1','10');
 INSERT INTO glpi_computer_device VALUES ('15','','5','1','18');
-INSERT INTO glpi_computer_device VALUES ('16','','5','1','19');
 INSERT INTO glpi_computer_device VALUES ('17','','5','5','15');
 INSERT INTO glpi_computer_device VALUES ('18','','5','5','20');
-INSERT INTO glpi_computer_device VALUES ('19','','1','2','19');
 INSERT INTO glpi_computer_device VALUES ('20','','1','3','8');
 INSERT INTO glpi_computer_device VALUES ('21','','1','3','10');
 INSERT INTO glpi_computer_device VALUES ('22','','1','3','15');
@@ -95,14 +91,11 @@ INSERT INTO glpi_computer_device VALUES ('26','750','2','7','8');
 INSERT INTO glpi_computer_device VALUES ('27','750','2','7','10');
 INSERT INTO glpi_computer_device VALUES ('28','750','2','7','15');
 INSERT INTO glpi_computer_device VALUES ('29','750','2','7','18');
-INSERT INTO glpi_computer_device VALUES ('30','','2','11','19');
-INSERT INTO glpi_computer_device VALUES ('31','','3','1','19');
 INSERT INTO glpi_computer_device VALUES ('32','512','3','6','8');
 INSERT INTO glpi_computer_device VALUES ('33','128','3','6','10');
 INSERT INTO glpi_computer_device VALUES ('34','512','3','6','15');
 INSERT INTO glpi_computer_device VALUES ('35','128','3','6','18');
 INSERT INTO glpi_computer_device VALUES ('36','128','3','9','20');
-INSERT INTO glpi_computer_device VALUES ('37','','9','1','19');
 INSERT INTO glpi_computer_device VALUES ('38','','9','3','8');
 INSERT INTO glpi_computer_device VALUES ('39','','9','3','10');
 INSERT INTO glpi_computer_device VALUES ('40','','9','3','15');
@@ -755,6 +748,14 @@ CREATE TABLE glpi_event_log (
 
 INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-03-29 23:40:42','login','3','glpi logged in.');
 INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-03-29 23:38:04','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('368','-1','system','2005-04-04 13:49:48','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('369','19','computers','2005-04-04 13:50:01','inventory','4','glpi Unlinked a device from computer 19.');
+INSERT INTO glpi_event_log VALUES ('370','30','computers','2005-04-04 13:50:02','inventory','4','glpi Unlinked a device from computer 19.');
+INSERT INTO glpi_event_log VALUES ('371','31','computers','2005-04-04 13:50:03','inventory','4','glpi Unlinked a device from computer 19.');
+INSERT INTO glpi_event_log VALUES ('372','12','computers','2005-04-04 13:50:04','inventory','4','glpi Unlinked a device from computer 19.');
+INSERT INTO glpi_event_log VALUES ('373','16','computers','2005-04-04 13:50:05','inventory','4','glpi Unlinked a device from computer 19.');
+INSERT INTO glpi_event_log VALUES ('374','1','computers','2005-04-04 13:50:05','inventory','4','glpi Unlinked a device from computer 19.');
+INSERT INTO glpi_event_log VALUES ('375','37','computers','2005-04-04 13:50:07','inventory','4','glpi Unlinked a device from computer 19.');
 
 ### Dump table glpi_followups
 
@@ -1023,9 +1024,9 @@ CREATE TABLE glpi_prefs (
 
 INSERT INTO glpi_prefs VALUES ('glpi','yes','french','1');
 INSERT INTO glpi_prefs VALUES ('Helpdesk','no','french','2');
-INSERT INTO glpi_prefs VALUES ('normal','','english','3');
+INSERT INTO glpi_prefs VALUES ('normal','','french','3');
 INSERT INTO glpi_prefs VALUES ('tech','yes','french','4');
-INSERT INTO glpi_prefs VALUES ('post-only','','english','5');
+INSERT INTO glpi_prefs VALUES ('post-only','','french','5');
 
 ### Dump table glpi_printers
 
