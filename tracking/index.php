@@ -56,7 +56,7 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 
 if(empty($tab["start"])) $tab["start"] = 0;
 
-if (isset($tab["delete"])&&!empty($tab["todel"])){
+if ($_SESSION["glpitype"]=="admin"&&isset($tab["delete"])&&!empty($tab["todel"])){
 	$j=new Job;
 	foreach ($tab["todel"] as $key => $val){
 		if ($val==1) $j->deleteInDB($key);
