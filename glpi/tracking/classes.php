@@ -244,10 +244,9 @@ class Followup {
 		$query = "SELECT * FROM glpi_followups WHERE (tracking = $ID) ORDER BY date ASC";
 	
 		if ($result = $db->query($query)) {
-			$this->date = stripslashes($db->result($result,$iteration,"date"));
-			$this->author = stripslashes($db->result($result, $iteration, "author"));
+			$this->date = $db->result($result,$iteration,"date");
+			$this->author = $db->result($result, $iteration, "author");
 			$this->contents = nl2br($db->result($result, $iteration, "contents"));
-			$this->contents = stripslashes($this->contents);
 
 			return true;
 
