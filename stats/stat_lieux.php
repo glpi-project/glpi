@@ -44,7 +44,18 @@ checkAuthentication("normal");
 
 commonHeader("Stats",$_SERVER["PHP_SELF"]);
 
-echo "<div align='center'><b>".$lang["stats"][19]."</b></div><hr noshade>";
+echo "<div align='center'><b>".$lang["stats"][19]."</b></div>";
+if(empty($_POST["date1"])) $_POST["date1"] = "";
+if(empty($_POST["date2"])) $_POST["date2"] = "";
+
+echo "<div align='center'><form method=\"post\" name=\"form\" action=\"stat_lieux.php\">";
+echo "Date de debut : <input type=\"texte\" name=\"date1\" value=\"". $_POST["date1"] ."\" />";
+echo "<input name='button' type='button' class='button'  onClick=\"window.open('mycalendar.php?form=form&amp;elem=date1','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+echo "<br />Date de fin : <input type=\"texte\" name=\"date2\" value=\"". $_POST["date2"] ."\" />";
+echo "<input name='button' type='button' class='button'  onClick=\"window.open('mycalendar.php?form=form&amp;elem=date2','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
+echo "<br /><input type=\"submit\" class='button' name\"submit\" Value=\"". $lang["buttons"][7] ."\" />";
+echo "</form></div>";
+echo "<hr noshade>";
 
 //recuperation des differents lieux d'interventions
 //Get the distincts intervention location
@@ -66,14 +77,29 @@ if (is_array($nomLieux))
 	echo "<td>".getDropdownName("glpi_dropdown_locations",$key["ID"]) ."</td>";
 	//le nombre d'intervention
 	//the number of intervention
-	echo "<td>".getNbinter(1,'glpi_computers.location',$key["ID"])."</td>";
+	if(!empty($_POST["date1"]) && !empty($_POST["date2"])) {
+	
+		echo "<td>".getNbinter(4,'glpi_computers.location',$key["ID"],$_POST["date1"],$_POST["date2"] )."</td>";
+	}
+	else {
+		echo "<td>".getNbinter(1,'glpi_computers.location',$key["ID"])."</td>";
+	}
 	//le nombre d'intervention resolues
 	//the number of resolved intervention
-	echo "<td>".getNbresol(1,'glpi_computers.location',$key["ID"])."</td>";
+	if(!empty($_POST["date1"]) && !empty($_POST["date2"])) {
+		echo "<td>".getNbresol(4,'glpi_computers.location',$key["ID"],$_POST["date1"],$_POST["date2"])."</td>";
+	}
+	else {
+		echo "<td>".getNbresol(1,'glpi_computers.location',$key["ID"])."</td>";
+	}
 	//Le temps moyen de resolution
 	//The average time to resolv
-	echo "<td>".getResolAvg(1,'glpi_computers.location',$key["ID"])."</td>";
-	
+	if(!empty($_POST["date1"]) && !empty($_POST["date2"])) {
+		echo "<td>".getResolAvg(4,'glpi_computers.location',$key["ID"],$_POST["date1"],$_POST["date2"])."</td>";
+	}
+	else {
+		echo "<td>".getResolAvg(1,'glpi_computers.location',$key["ID"])."</td>";
+	}
 	echo "</tr>";
   }
 echo "</table>";
