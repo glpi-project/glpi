@@ -849,7 +849,7 @@ function dropdown($table,$myname) {
 
 function dropdownValue($table,$myname,$value) {
 	
-	global $deleted_tables;
+	global $deleted_tables,$template_tables;
 	
 	// Make a select box with preselected values
 	$db = new DB;
@@ -881,11 +881,14 @@ function dropdownValue($table,$myname,$value) {
 		echo "</select>";
 	}	else {
 
-	$where="";
+	$where="WHERE '1'='1' ";
 	if (in_array($table,$deleted_tables))
-		$where="WHERE deleted='N'";
-
+		$where.="AND deleted='N'";
+	if (in_array($table,$template_tables))
+		$where.="AND is_template='0'";
+		
 	$query = "SELECT * FROM $table $where ORDER BY name";
+	
 	$result = $db->query($query);
 	
 	echo "<select name=\"$myname\" size='1'>";
