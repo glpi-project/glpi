@@ -31,10 +31,16 @@ This file is part of GLPI.
 */
 	include ("_relpos.php");
 	include ($phproot . "/glpi/includes.php");
-	if(!isset($_SESSION)) session_start();	
-	if (!empty($_SESSION)||ereg("helpdesk.html",$_SERVER["HTTP_REFERER"])){
-	loadLanguage();
-	
+	include ($phproot . "/glpi/includes_setup.php");
+
+
+if(isset($_GET["name"]) && ($_GET["name"] == "Helpdesk") && ($cfg_features["permit_helpdesk"] == "1"))
+{
+	$id = new Identification("Helpdesk");
+	$id->setCookies();
+}
+checkAuthentication("post-only");
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -111,4 +117,3 @@ if(isset($_POST["Submit"]))
 }
 ?>
 </body></html>
-<?}?>
