@@ -1244,10 +1244,10 @@ function removeConnector($ID) {
 	$np1->getFromDB($ID);
 	$np2->getFromDB($ID2);
 	$npup=-1;
-	if ($np1->fields["device_type"]==2&&$np2->fields["device_type"]!=2){
+	if ($np1->fields["device_type"]!=NETWORKING_TYPE&&$np2->fields["device_type"]==NETWORKING_TYPE){
 		$npup=$ID;
 		}
-	if ($np2->fields["device_type"]==2&&$np1->fields["device_type"]!=2){
+	if ($np2->fields["device_type"]!=NETWORKING_TYPE&&$np1->fields["device_type"]==NETWORKING_TYPE){
 		$npup=$ID2;
 		}
 	$db = new DB;
