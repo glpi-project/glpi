@@ -83,7 +83,7 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] == "yes" && isse
 	echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
 	echo $lang["help"][16]."<br><br>";
-	echo "<a href=\"javascript:history.back()\">...back</a>";
+	echo "<a href=\"javascript:history.back()\">".$lang["buttons"][13]."</a>";
 	echo "</b></center>";
 	nullFooter();
 	exit;
@@ -99,7 +99,7 @@ elseif (empty($ID))
 	echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
 	echo $lang["help"][17]."<br><br>";
-	echo "<a href=\"javascript:history.back()\">...back</a>";
+	echo "<a href=\"javascript:history.back()\">".$lang["buttons"][13]."</a>";
 	echo "</b></center>";
 	nullFooter();
 	exit;
