@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-03-23 17:41
+#GLPI Dump database on 2005-03-24 12:30
 
 ### Dump table glpi_cartridges
 
@@ -415,7 +415,7 @@ CREATE TABLE glpi_device_hdd (
 );
 
 INSERT INTO glpi_device_hdd VALUES ('1','IBM DTTA 35101','','IDE','','','0','');
-INSERT INTO glpi_device_hdd VALUES ('2','IBM DCAS 34330','','IDE','','','0','80');
+INSERT INTO glpi_device_hdd VALUES ('2','IBM DCAS 34330','','IDE','','','0','');
 
 ### Dump table glpi_device_iface
 
@@ -552,7 +552,7 @@ INSERT INTO glpi_device_ram VALUES ('2','72pin SIMMS (Fast Page)','EDO','','','0
 INSERT INTO glpi_device_ram VALUES ('3','72pin SIMMS (EDO)','EDO','','','0','');
 INSERT INTO glpi_device_ram VALUES ('4','Unbuffered DIMMs','EDO','','','0','');
 INSERT INTO glpi_device_ram VALUES ('5','DIMMs w/EEPROM','EDO','','','0','');
-INSERT INTO glpi_device_ram VALUES ('6','SDRAM DIMMs (&lt;10ns)','EDO','','','0','');
+INSERT INTO glpi_device_ram VALUES ('6','SDRAM DIMMs (<10ns)','EDO','','','0','');
 INSERT INTO glpi_device_ram VALUES ('7','ECC DIMMs','EDO','','','0','');
 INSERT INTO glpi_device_ram VALUES ('8','Other','EDO','','','0','');
 INSERT INTO glpi_device_ram VALUES ('9','iMac DIMMS','EDO','','','0','');
@@ -765,10 +765,7 @@ CREATE TABLE glpi_event_log (
    KEY itemtype (itemtype)
 );
 
-INSERT INTO glpi_event_log VALUES ('368','51','computers','2005-03-23 17:38:23','inventory','4','glpi Unlinked a device from computer 15.');
-INSERT INTO glpi_event_log VALUES ('367','2','Devices','2005-03-23 17:38:03','inventory','4','glpi updated item.');
-INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-03-23 17:27:34','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('369','50','computers','2005-03-23 17:38:25','inventory','4','glpi Unlinked a device from computer 15.');
+INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-03-24 11:52:49','login','3','glpi logged in.');
 
 ### Dump table glpi_followups
 
