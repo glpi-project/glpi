@@ -6,11 +6,6 @@ GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2004 by the INDEPNET Development Team.
  http://indepnet.net/   http://glpi.indepnet.org
  ----------------------------------------------------------------------
- Based on:
-IRMA, Information Resource-Management and Administration
-Christian Bauer 
-
- ----------------------------------------------------------------------
  LICENSE
 
  This program is free software; you can redistribute it and/or
@@ -24,13 +19,16 @@ Christian Bauer
  GNU General Public License for more details.
 
  To read the license please visit http://www.gnu.org/copyleft/gpl.html
- ----------------------------------------------------------------------
- Original Author of file:
- Purpose of file:
- Translator: Marco Gaiarin  < gaio (at) sv . lnf . it >
- ----------------------------------------------------------------------
 */
 
+// Based on:
+// IRMA, Information Resource-Management and Administration
+// Christian Bauer 
+// ----------------------------------------------------------------------
+// Original Author of file:
+// Purpose of file:
+// ----------------------------------------------------------------------
+//  Translator: Marco Gaiarin  < gaio (at) sv . lnf . it >
 
 
 // Italian Dictionary
