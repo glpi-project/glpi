@@ -949,7 +949,7 @@ function NetpointLocationSearch($search,$myname,$location,$value='') {
 // Make a select box with preselected values for table dropdown_netpoint
 	$db = new DB;
 	
-	$query = "SELECT t1.ID as ID, t1.name as netpointname, t2.name as locname
+	$query = "SELECT t1.ID as ID, t1.name as netpointname, t2.name as locname, t2.ID as locID
 	FROM glpi_dropdown_netpoint AS t1
 	LEFT JOIN glpi_dropdown_locations AS t2
 	ON t1.location = t2.ID
@@ -1054,6 +1054,33 @@ function dropdownUsers($value, $myname) {
 	echo "</select>";
 }
 
+function dropdownUsersID($value, $myname) {
+	// Make a select box with all glpi users
+
+	$db = new DB;
+	$query = "SELECT * FROM glpi_users WHERE (".searchUserbyType("normal").") ORDER BY name";
+	$result = $db->query($query);
+
+	echo "<select name=\"$myname\">";
+	$i = 0;
+	
+	$number = $db->numrows($result);
+	echo "<option value=\"\">[ Nobody ]</option>";
+	if ($number > 0) {
+		while ($i < $number) {
+			$ID = $db->result($result, $i, "ID");
+			$output = unhtmlentities($db->result($result, $i, "name"));
+			if ($ID == $value) {
+				echo "<option value=\"$ID\" selected>".$output;
+			} else {
+				echo "<option value=\"$ID\">".$output;
+			}
+			$i++;
+			echo "</option>";
+   		}
+	}
+	echo "</select>";
+}
 
 function getDropdownName($table,$id) {
 	global $cfg_install;
@@ -1770,6 +1797,123 @@ switch($item_type)
 					}	
 		echo "</table><br><hr><br>";
 		break;
+		// Rapport réseau par lieu
+		case 'glpi_networking_lieu' :
+		echo "<table width='100%' height='60' border='0'>";
+		echo "<tr> ";
+		//echo "<th><div align='center'><b>".$lang["reports"][34]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][35]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][37]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][41]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][46]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][47]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][36]."</b></div></th>";
+		echo "</tr>";
+		
+		while( $ligne = $db->fetch_array($result))
+					{
+					//echo $ligne['location'];
+					//print_r($ligne);
+					$bureau = $ligne['bureau'];
+					//$etage=$ligne['etage'];
+					$prise=$ligne['prise'];
+					$port=$ligne['port'];
+					$switch=$ligne['switch'];
+					$portordi=$ligne['portordi'];
+					$ordi=$ligne['ordi'];					
+					//inserer ces valeures dans un tableau
+					
+					echo "<tr>";	
+					//if($etage) echo "<td><div align='center'>$etage</div></td>"; else echo //"<td><div align='center'> N/A </div></td>";
+					if($bureau) echo "<td><div align='center'>$bureau</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($prise) echo "<td><div align='center'>$prise</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($switch) echo "<td><div align='center'>$switch</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($port) echo "<td><div align='center'>$port</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($portordi) echo "<td><div align='center'>$portordi</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($ordi) echo "<td><div align='center'>$ordi</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					}	
+		echo "</table><br><hr><br>";
+		break;
+	//rapport reseau par switch	
+	case 'glpi_networking_switch' :
+		echo "<table width='100%' height='60' border='0'>";
+		echo "<tr> ";
+		//echo "<th><div align='center'><b>".$lang["reports"][42]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][35]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][39]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][37]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][46]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][47]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][36]."</b></div></th>";
+		echo "</tr>";
+		
+		while( $ligne = $db->fetch_array($result))
+					{
+					//$switch = $ligne['switch'];
+					//echo $ligne['location'];
+					//print_r($ligne);
+					$bureau=$ligne['bureau'];
+					$etage=$ligne['etage'];
+					$prise=$ligne['prise'];
+					$port = $ligne['port'];
+					$portordi=$ligne['portordi'];
+					$ordi=$ligne['ordi'];
+					
+					//inserer ces valeures dans un tableau
+					
+					echo "<tr>";	
+					//if($switch) echo "<td><div align='center'>$switch</div></td>"; else echo //"<td><div align='center'> N/A </div></td>";
+					if($bureau) echo "<td><div align='center'>$bureau</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($etage) echo "<td><div align='center'>$etage</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($prise) echo "<td><div align='center'>$prise</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($port) echo "<td><div align='center'>$port</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($portordi) echo "<td><div align='center'>$portordi</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($ordi) echo "<td><div align='center'>$ordi</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					}	
+		echo "</table><br><hr><br>";
+		break;
+		
+		//rapport reseau par prise
+		case 'glpi_networking_prise' :
+		echo "<table width='100%' height='60' border='0'>";
+		echo "<tr> ";
+		//echo "<th><div align='center'><b>".$lang["reports"][44]."</b></div></th>";
+		//echo "<th><div align='center'><b>".$lang["reports"][39]."</b></div></th>";
+		//echo "<th><div align='center'><b>".$lang["reports"][43]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][42]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][46]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][47]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["reports"][36]."</b></div></th>";
+		echo "</tr>";
+		
+		while( $ligne = $db->fetch_array($result))
+					{
+					$prise=$ligne['prise'];
+					$bureau = $ligne['bureau'];
+					$etage=$ligne['etage'];
+					$switch=$ligne['switch'];
+					$port=$ligne['port'];
+					$portordi=$ligne['portordi'];
+					$ordi=$ligne['ordi'];
+					//echo $ligne['location'];
+					//print_r($ligne);
+					//$ports=$ligne['ports'];
+					//$ifaddr = $ligne['ifaddr'];
+					
+					
+					//inserer ces valeures dans un tableau
+					
+					echo "<tr>";	
+					//if($prise) echo "<td><div align='center'>$prise</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					//if($etage) echo "<td><div align='center'>$etage</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					//if($bureau) echo "<td><div align='center'>$bureau</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($switch) echo "<td><div align='center'>$switch</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($port) echo "<td><div align='center'>$port</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($portordi) echo "<td><div align='center'>$portordi</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($ordi) echo "<td><div align='center'>$ordi</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					}	
+		echo "</table><br><hr><br>";
+		break;		
 		
 	}	
 }
@@ -1923,6 +2067,7 @@ function rembo($string){
 
 function showTreeListSelect($table,$current, $parentID=0, $categoryname="")
 {
+
 	$query = "select * from $table where (parentID = $parentID) order by name ";
 
 	$db=new DB;
@@ -1935,11 +2080,9 @@ function showTreeListSelect($table,$current, $parentID=0, $categoryname="")
 			$ID = $row["ID"];
 			$name = $categoryname . $row["name"];
 			echo "<option value='$ID'";
-			if($current == $ID)
-			{
-				echo " selected";
-			}
+			if($current == $ID)	echo " selected";
 			echo ">$name</option>\n";
+			
 			$name = $name . "\\";
 			showTreeListSelect($table,$current, $ID, $name);
 		}

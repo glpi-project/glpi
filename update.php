@@ -214,13 +214,15 @@ function FieldExists($table, $field) {
 // return true if the field $field of the table $table is a mysql index
 // else return false
 function isIndex($table, $field) {
-	$db = new DB;
-	$result = $db->query("select ". $field ." from ". $table ."");
-	$flags = mysql_field_flags($result,$field);
-	if(eregi("multiple_key",$flags) || eregi("primary_key",$flags)) {
-		return true;
-	}
-	else return false;
+	if (FieldExists($table, $field)){
+		$db = new DB;
+		$result = $db->query("select ". $field ." from ". $table ."");
+		$flags = mysql_field_flags($result,$field);
+		if(eregi("multiple_key",$flags) || eregi("primary_key",$flags)) {
+			return true;
+		}
+		else return false;
+	} else return true;
 }
 
 //test la connection a la base de donnée.
@@ -1702,6 +1704,51 @@ if(!FieldExists("glpi_networking","date_mod")) {
 	$db->query($query) or die("Error : ".$query." ".mysql_error());
 }
 
+// Ajout tech_num
+if(!FieldExists("glpi_computers","tech_num")) {
+	$query = "ALTER TABLE `glpi_computers` ADD `tech_num` int(11) NOT NULL default '0' AFTER `contact_num`";
+	$db->query($query) or die("Error : ".$query." ".mysql_error());
+}
+// Ajout tech_num
+if(!FieldExists("glpi_networking","tech_num")) {
+	$query = "ALTER TABLE `glpi_networking` ADD `tech_num` int(11) NOT NULL default '0' AFTER `contact_num`";
+	$db->query($query) or die("Error : ".$query." ".mysql_error());
+}
+// Ajout tech_num
+if(!FieldExists("glpi_printers","tech_num")) {
+	$query = "ALTER TABLE `glpi_printers` ADD `tech_num` int(11) NOT NULL default '0' AFTER `contact_num`";
+	$db->query($query) or die("Error : ".$query." ".mysql_error());
+}
+
+// Ajout tech_num
+if(!FieldExists("glpi_monitors","tech_num")) {
+	$query = "ALTER TABLE `glpi_monitors` ADD `tech_num` int(11) NOT NULL default '0' AFTER `contact_num`";
+	$db->query($query) or die("Error : ".$query." ".mysql_error());
+}
+
+// Ajout tech_num
+if(!FieldExists("glpi_software","tech_num")) {
+	$query = "ALTER TABLE `glpi_software` ADD `tech_num` int(11) NOT NULL default '0' AFTER `location`";
+	$db->query($query) or die("Error : ".$query." ".mysql_error());
+}
+
+// Ajout tech_num
+if(!FieldExists("glpi_peripherals","tech_num")) {
+	$query = "ALTER TABLE `glpi_peripherals` ADD `tech_num` int(11) NOT NULL default '0' AFTER `contact_num`";
+	$db->query($query) or die("Error : ".$query." ".mysql_error());
+}
+
+// Ajout tech_num
+if(!FieldExists("glpi_software","tech_num")) {
+	$query = "ALTER TABLE `glpi_software` ADD `tech_num` int(11) NOT NULL default '0'";
+	$db->query($query) or die("Error : ".$query." ".mysql_error());
+}
+
+// Ajout tech_num
+if(!FieldExists("glpi_cartridges_type","tech_num")) {
+	$query = "ALTER TABLE `glpi_cartridges_type` ADD `tech_num` int(11) NOT NULL default '0'";
+	$db->query($query) or die("Error : ".$query." ".mysql_error());
+}
 
 // Update version number
 $query="UPDATE glpi_config set version='0.5' WHERE ID='1'";

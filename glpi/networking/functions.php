@@ -353,10 +353,10 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 		dropdownValue("glpi_dropdown_locations", "location", $netdev->fields["location"]);
 	echo "</td></tr>";
 	
-	echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>";
-		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$netdev->fields["FK_glpi_enterprise"]);
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>";
+		dropdownUsersID( $netdev->fields["tech_num"],"tech_num");
 	echo "</td></tr>";
-	
+		
 	echo "<tr><td>".$lang["networking"][4].":	</td>";
 	echo "<td><input type='text' name='contact_num' value=\"".$netdev->fields["contact_num"]."\" size='20'></td>";
 	echo "</tr>";
@@ -379,6 +379,10 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 
 	echo "<tr><td>".$lang["networking"][2].": 	</td><td>";
 		dropdownValue("glpi_type_networking", "type", $netdev->fields["type"]);
+	echo "</td></tr>";
+	
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>";
+		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$netdev->fields["FK_glpi_enterprise"]);
 	echo "</td></tr>";
 	
 	echo "<tr><td>".$lang["networking"][49].": 	</td><td>";

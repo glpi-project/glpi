@@ -340,6 +340,10 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$printer->fields["FK_glpi_enterprise"]);
 	echo "</td></tr>";
 	
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>";
+		dropdownUsersID( $printer->fields["tech_num"],"tech_num");
+	echo "</td></tr>";
+	
 	echo "<tr><td>".$lang["printers"][7].":	</td>";
 	echo "<td><input type='text' name='contact_num' value=\"".$printer->fields["contact_num"]."\" size='20'></td>";
 	echo "</tr>";

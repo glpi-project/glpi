@@ -47,6 +47,7 @@ $lang["common"][6]	= "Nom du mod&egrave;le";
 $lang["common"][7]  = "Choisissez un mod&egrave;le";
 $lang["common"][8]  = "Mod&egrave;les";
 $lang["common"][9]  = "Ajouter mod&egrave;le...";
+$lang["common"][10]	= "Responsable technique";
 
 //Login
 
@@ -566,6 +567,25 @@ $lang["reports"][29]	="P&eacute;riph&eacute;riques";
 $lang["reports"][30]     = "P&eacute;riph&eacute;riques sous contrat de maintenance";
 $lang["reports"][31]    ="complet";
 $lang["reports"][32]    ="limit&eacute;";
+$lang["reports"][33]    ="Rapport réseau";
+$lang["reports"][34]    ="numéro de l'&eacute;tage";
+$lang["reports"][35]    ="Bureau";
+$lang["reports"][36]    ="Periphériques connectés";
+$lang["reports"][37]    ="Prises";
+$lang["reports"][38]    ="IP";
+$lang["reports"][39]    ="Par lieu";
+$lang["reports"][40]    ="Par bureau";
+$lang["reports"][41]    ="Par switch";
+$lang["reports"][42]    ="Par prise";
+$lang["reports"][43]    ="num&eacute;ro du bureau";
+$lang["reports"][44]    ="numéro de la prise";
+$lang["reports"][45]    ="carte";
+$lang["reports"][46]    ="port du switch";
+$lang["reports"][47]    ="port du p&eacute;riph&eacute;rique";
+$lang["reports"][48]	="Erreur dans l'appel du rapport à afficher";
+$lang["reports"][49]	="Rapport r&eacute;seau par switch";
+$lang["reports"][50]	="Rapport r&eacute;seau par lieu";
+$lang["reports"][51]	="Rapport r&eacute;seau par prise";
 
 
 // LDAP
