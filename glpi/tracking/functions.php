@@ -1193,23 +1193,28 @@ function searchFormTrackingReport() {
 	$option["glpi_dropdown_locations.name"]			= $lang["computers"][10];
 	$option["glpi_type_computers.name"]				= $lang["computers"][8];
 	$option["glpi_dropdown_os.name"]				= $lang["computers"][9];
-	$option["comp.osver"]			= $lang["computers"][20];
-	$option["comp.processor"]			= $lang["computers"][21];
-	$option["comp.processor_speed"]		= $lang["computers"][22];
+	//$option["comp.osver"]			= $lang["computers"][20];
+	$option["processor.designation"]			= $lang["computers"][21];
+	//$option["processorspeed"]		= $lang["computers"][22];
 	$option["comp.serial"]			= $lang["computers"][17];
 	$option["comp.otherserial"]			= $lang["computers"][18];
-	$option["glpi_dropdown.ram.name"]			= $lang["computers"][23];
-	$option["comp.ram"]				= $lang["computers"][24];
-	$option["glpi_dropdown_network.name"]			= $lang["computers"][26];
-	$option["comp.hdspace"]			= $lang["computers"][25];
-	$option["glpi_dropdown_sndcard.name"]			= $lang["computers"][33];
-	$option["glpi_dropdown_gfxcard.name"]			= $lang["computers"][34];
-	$option["glpi_dropdown_moboard.name"]			= $lang["computers"][35];
-	$option["glpi_dropdown_hdtype.name"]			= $lang["computers"][36];
+	$option["ram.designation"]			= $lang["computers"][23];
+	//$option["comp.ram"]				= $lang["computers"][24];
+	$option["iface.designation"]			= $lang["computers"][26];
+	//$option["comp.hdspace"]			= $lang["computers"][25];
+	$option["sndcard.designation"]			= $lang["computers"][33];
+	$option["gfxcard.designation"]			= $lang["computers"][34];
+	$option["moboard.designation"]			= $lang["computers"][35];
+	$option["hdd.designation"]			= $lang["computers"][36];
 	$option["comp.comments"]			= $lang["computers"][19];
 	$option["comp.contact"]			= $lang["computers"][16];
 	$option["comp.contact_num"]		        = $lang["computers"][15];
 	$option["comp.date_mod"]			= $lang["computers"][11];
+	$option["glpi_networking_ports.ifaddr"] = $lang["networking"][14];
+	$option["glpi_networking_ports.ifmac"] = $lang["networking"][15];
+	$option["glpi_dropdown_netpoint.name"]			= $lang["networking"][51];
+	$option["glpi_enterprises.name"]			= $lang["common"][5];
+	$option["resptech.name"]			=$lang["common"][10];
 
 	echo "<form method=get name=\"form\" action=\"".$_SERVER["PHP_SELF"]."\">";
 	
@@ -1235,6 +1240,8 @@ function searchFormTrackingReport() {
  }
  echo "</select>";
  echo " </td><td align='center'><select name='phrasetype2' size='1' >";
+
+
 	$selected="";
 	if ($_GET["phrasetype2"]=="contains") $selected="selected";
 	echo "<option value='contains' $selected>".$lang["search"][2]."</option>";
@@ -1257,30 +1264,25 @@ function searchFormTrackingReport() {
 	echo "<td align='center' colspan='2'>";
 	$selected="";
 	if ($_GET["only_computers"]) $selected="checked";
-	echo "<input type='checkbox' name='only_computers' value='1' $selected>".$lang["reports"][24].":</td><td align='center'>";
+	echo "<input type='checkbox' name='only_computers' value='1' $selected>".$lang["reports"][24].":</td>";
+	echo "<td align='left' colspan='5'>";
 
+	echo "<input type='text' size='15' name=\"contains\" value=\"". $_GET['contains'] ."\" >";
+	echo "&nbsp;";
+	echo $lang["search"][10]."&nbsp;";
+	
 	echo "<select name=\"field\" size='1'>";
-		$selected="";
-		if (!isset($_GET["field"])||$_GET["field"]=="all") $selected="selected";
-        echo "<option value='all' $selected>".$lang["search"][7]."</option>";
+        echo "<option value='all' ";
+	if($_GET['field'] == "all") echo "selected";
+	echo ">".$lang["search"][7]."</option>";
         reset($option);
 	foreach ($option as $key => $val) {
-		$selected="";
-		if (isset($_GET["field"])&&$_GET["field"]==$key) $selected="selected";
-		
-		echo "<option value=$key $selected>$val\n";
+		echo "<option value=\"".$key."\""; 
+		if($key == $_GET['field']) echo "selected";
+		echo ">". $val ."</option>\n";
 	}
-	echo "</select></td><td align='center' colspan='3'>";
-	echo $lang["search"][1];
-	echo "&nbsp;:&nbsp;<select name='phrasetype' size='1' >";
-	$selected="";
-	if ($_GET["phrasetype"]=="contains") $selected="selected";
-	echo "<option value='contains' $selected>".$lang["search"][2]."</option>";
-	$selected="";
-	if ($_GET["phrasetype"]=="exact") $selected="selected";
-	echo "<option value='exact' $selected>".$lang["search"][3]."</option>";
-	echo "</select></td><td align='center' colspan='2'>";
-	echo "<input type='text' size='15' name=\"contains\" value=\"".$_GET["contains"]."\">";
+	echo "</select>&nbsp;";
+
 	echo "</td></tr>";
 	
 	echo "<tr class='tab_bg_1'><td align='center' colspan='2'>".$lang["search"][8].":&nbsp;";
@@ -1301,46 +1303,50 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 	// If $item is given, only jobs for a particular machine
 	// are listed.
 
-	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang;
+	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang,$cfg_devices_tables;
 		
 	$prefs = getTrackingPrefs($username);
 	$db=new DB;
 	// Reduce computer list
 	if ($computers_search){
+	// Build query
 	if($field == "all") {
 		$wherecomp = " (";
-		$fields = $db->list_fields("glpi_computers");
-		$columns = $db->num_fields($fields);
-		
-		for ($i = 0; $i < $columns; $i++) {
+		$query = "SHOW COLUMNS FROM glpi_computers";
+		$result = $db->query($query);
+		$i = 0;
+		while($line = $db->fetch_array($result)) {
 			if($i != 0) {
 				$wherecomp .= " OR ";
 			}
-			$coco = mysql_field_name($fields, $i);
-			if(IsDropdown($coco)) {
-				$wherecomp .= " glpi_dropdown_". $coco .".name LIKE '%".$contains."%'";
+			if(IsDropdown($line["Field"])) {
+				$wherecomp .= " glpi_dropdown_". $line["Field"] .".name LIKE '%".$contains."%'";
 			}
-			elseif($coco == "ramtype") {
-				$wherecomp .= " glpi_dropdown_ram.name LIKE '%".$contains."%'";
-			}
-			elseif($coco == "location") {
+			elseif($line["Field"] == "location") {
 				$wherecomp .= " glpi_dropdown_locations.name LIKE '%".$contains."%'";
 			}
-			elseif($coco == "type") {
-				$wherecomp .= " glpi_type_computers.name LIKE '%".$contains."%'";
-			}
 			else {
-   				$wherecomp .= "comp.".$coco . " LIKE '%".$contains."%'";
+   			$wherecomp .= "comp.".$line["Field"] . " LIKE '%".$contains."%'";
 			}
+			$i++;
 		}
+		foreach($cfg_devices_tables as $key => $val) {
+			$wherecomp .= " OR ".$val.".designation LIKE '%".$contains."%'";
+		}
+		$wherecomp .= " OR glpi_networking_ports.ifaddr LIKE '%".$contains."%'";
+		$wherecomp .= " OR glpi_networking_ports.ifmac LIKE '%".$contains."%'";
+		$wherecomp .= " OR glpi_dropdown_netpoint.name LIKE '%".$contains."%'";
+		$wherecomp .= " OR glpi_enterprises.name LIKE '%".$contains."%'";
+		$wherecomp .= " OR resptech.name LIKE '%".$contains."%'";
+		
 		$wherecomp .= ")";
 	}
 	else {
-		if ($phrasetype == "contains") {
-			$wherecomp = "($field LIKE '%".$contains."%')";
+		if(IsDevice($field)) {
+			$wherecomp = "(glpi_device_".$field." LIKE '%".$contains."')";
 		}
 		else {
-			$wherecomp = "($field LIKE '".$contains."')";
+			$wherecomp = "($field LIKE '%".$contains."%')";
 		}
 	}
 	}
@@ -1351,12 +1357,20 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 	$query = "select DISTINCT glpi_tracking.ID as ID from glpi_tracking";
 	if ($computers_search){
 	$query.= " LEFT JOIN glpi_computers as comp on comp.ID=glpi_tracking.computer ";
-	$query.= " LEFT JOIN glpi_dropdown_locations on comp.location=glpi_dropdown_locations.ID ";
-	$query .= "LEFT JOIN glpi_dropdown_os on comp.os=glpi_dropdown_os.ID LEFT JOIN glpi_type_computers on comp.type = glpi_type_computers.ID ";
-	$query .= "LEFT JOIN glpi_dropdown_hdtype on comp.hdtype = glpi_dropdown_hdtype.ID LEFT JOIN glpi_dropdown_processor on comp.processor = glpi_dropdown_processor.ID ";
-	$query .= "LEFT JOIN glpi_dropdown_ram on comp.ramtype = glpi_dropdown_ram.ID LEFT JOIN glpi_dropdown_network on comp.network = glpi_dropdown_network.ID ";
-	$query .= "LEFT JOIN glpi_dropdown_gfxcard on comp.gfxcard = glpi_dropdown_gfxcard.ID LEFT JOIN glpi_dropdown_moboard on comp.moboard = glpi_dropdown_moboard.ID ";
-	$query .= "LEFT JOIN glpi_dropdown_sndcard on comp.sndcard = glpi_dropdown_sndcard.ID ";
+	$query.= " LEFT JOIN glpi_computer_device as gcdev ON (comp.ID = gcdev.FK_computers) ";
+	$query.= "LEFT JOIN glpi_device_moboard as moboard ON (moboard.ID = gcdev.FK_device AND gcdev.device_type = '".MOBOARD_DEVICE."') ";
+	$query.= "LEFT JOIN glpi_device_processor as processor ON (processor.ID = gcdev.FK_device AND gcdev.device_type = '".PROCESSOR_DEVICE."') ";
+	$query.= "LEFT JOIN glpi_device_gfxcard as gfxcard ON (gfxcard.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".GFX_DEVICE."') ";
+	$query.= "LEFT JOIN glpi_device_hdd as hdd ON (hdd.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".HDD_DEVICE."') ";
+	$query.= "LEFT JOIN glpi_device_iface as iface ON (iface.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".NETWORK_DEVICE."') ";
+	$query.= "LEFT JOIN glpi_device_ram as ram ON (ram.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".RAM_DEVICE."') ";
+	$query.= "LEFT JOIN glpi_device_sndcard as sndcard ON (sndcard.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".SND_DEVICE."') ";
+	$query.= "LEFT JOIN glpi_networking_ports on (comp.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='1')";
+	$query.= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";
+	$query.= "LEFT JOIN glpi_dropdown_os on (glpi_dropdown_os.ID = comp.os)";
+	$query.= "LEFT JOIN glpi_dropdown_locations on (glpi_dropdown_locations.ID = comp.location)";
+	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = comp.FK_glpi_enterprise ) ";
+	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = comp.tech_num ) ";
 	}
 
 	if ($contains2!=""&&$field2!="content") {
@@ -1393,7 +1407,7 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 	if ($author!="all") $query.=" AND glpi_tracking.author = '$author'";
 	
    $query.=" ORDER BY ID";
-
+//	echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);

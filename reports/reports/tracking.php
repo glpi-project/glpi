@@ -54,6 +54,7 @@ commonHeader($lang["title"][16],$_SERVER["PHP_SELF"]);
 if(!isset($_GET["start"])) $_GET["start"] = 0;
 if (!isset($_GET["order"])) $_GET["order"] = "ASC";
 if (!isset($_GET["contains"])) $_GET["contains"] = "";
+if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
 if (!isset($_GET["contains2"])) $_GET["contains2"] = "";
 if (!isset($_GET["contains3"])) $_GET["contains3"] = "";
 if(!isset($_GET["attrib"])) $_GET["attrib"] = "";
