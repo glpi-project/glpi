@@ -57,7 +57,7 @@ function searchFormEnterprise($field="",$phrasetype= "",$contains="",$sort= "",$
 	$option["glpi_enterprises.comments"]			= $lang["financial"][12];
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/enterprises/enterprises-search.php\">";
-	echo "<div align='center'><table class='tab_cadre' width='750'>";
+	echo "<div align='center'><table class='tab_cadre' width='800'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
