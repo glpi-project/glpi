@@ -34,36 +34,26 @@ This file is part of GLPI.
  Purpose of file:
  ----------------------------------------------------------------------
 */
- 
 
 include ("_relpos.php");
-
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_networking.php");
 
 checkAuthentication("normal");
 
-commonHeader("Networking",$_SERVER["PHP_SELF"]);
+commonHeader("Printers",$_SERVER["PHP_SELF"]);
+if(empty($_GET["start"])) $_GET["start"] = 0;
+if(empty($_GET["order"])) $_GET["order"] = "ASC";
+
+
 
 titleNetdevices();
-
-//listNetdevices();
-
-
-if(!isset($_GET["start"])) $_GET["start"] = 0;
-if (!isset($_GET["order"])) $_GET["order"] = "ASC";
-if (!isset($_GET["field"])) $_GET["field"] = "networking.name";
-if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
-if (!isset($_GET["contains"])) $_GET["contains"] = "";
-if (!isset($_GET["sort"])) $_GET["sort"] = "networking.name";
-
-
-
-
 
 searchFormNetworking();
 
 showNetworkingList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
+
+
 
 
 commonFooter();

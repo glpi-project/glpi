@@ -46,13 +46,14 @@ if(isset($_POST["add"]))
 {	
 	checkAuthentication("admin");
 	if (!isset($tab["several"])){
+	echo "<a href='".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$tab["ondevice"]."'>";
 	addNetport($_POST);
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added networking port.");
 //???	header("Location: ".$cfg_install["root"]."/networking/");
 	header("Location: $_SERVER[HTTP_REFERER]");
 	}
 	else {
-
+echo "<a href='".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$tab["ondevice"]."'>";
 		unset($tab['several']);
 		unset($tab['from_logical_number']);
 		unset($tab['to_logical_number']);		
@@ -90,10 +91,14 @@ else
 	commonHeader("Networking",$_SERVER["PHP_SELF"]);
 	if(isset($tab["ID"]))
 	{
+		echo "<a href='".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$tab["ondevice"]."'>";
+		
 		showNetportForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["ondevice"],$tab["devtype"],$tab["several"]);
 	}
 	else
 	{
+		echo "<a href='".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$tab["ondevice"]."'>";
+	
 		showNetportForm($_SERVER["PHP_SELF"],"",$tab["ondevice"],$tab["devtype"],$tab["several"]);
 	}
 	commonFooter();
