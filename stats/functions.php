@@ -56,10 +56,10 @@ function getNbIntervTech()
 
 //return an array from tracking
 //it contains the distinct location where there is/was an intervention
-function getNbIntervLieux()
+function getNbIntervDropdown($dropdown)
 {
 	$db = new DB;
-	$query = "SELECT ID from glpi_dropdown_locations order by name";
+	$query = "SELECT ID from ". $dropdown ." order by name";
 	$result = $db->query($query);
 	if($db->numrows($result) >=1) {
 		$i = 0;
@@ -102,11 +102,12 @@ function getNbIntervAuthor()
 //common usage in query  "where $chps = '$value'";
 function getNbInter($quoi, $chps, $value, $date1 = '', $date2 = '')
 {
+	$dropdowns = array ("location", "hdtype", "type", "moboard", "gfxcard", "processor", "os");
 	$db = new DB;
 	if($quoi == 1) {
-				$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
+		$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
 		if(!empty($chps) && !empty($value)) {
-			if($chps == "glpi_computers.location") {
+			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query .= ", glpi_computers where glpi_tracking.computer = glpi_computers.ID and $chps = '$value' ";
 			}
 			else {
@@ -125,7 +126,7 @@ function getNbInter($quoi, $chps, $value, $date1 = '', $date2 = '')
 		$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
 		
 		if(!empty($chps) && !empty($value)) {
-			if($chps == "glpi_computers.location") {
+			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query .= ", glpi_computers where glpi_tracking.computer = glpi_computers.ID and $chps = '$value' ";
 			}
 			else {
@@ -151,10 +152,11 @@ function getNbInter($quoi, $chps, $value, $date1 = '', $date2 = '')
 function getNbResol($quoi, $chps, $value, $date1 = '', $date2= '')
 {
 	$db = new DB;
+	$dropdowns = array ("location", "hdtype", "type", "moboard", "gfxcard", "processor", "os");
 	if($quoi == 1) {
 		$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
 		if(!empty($chps) && !empty($value)) {
-			if($chps == "glpi_computers.location") {
+			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query .= ", glpi_computers where glpi_tracking.status = 'old' and glpi_tracking.computer = glpi_computers.ID and $chps = '$value'";
 			}
 			else {
@@ -174,7 +176,7 @@ function getNbResol($quoi, $chps, $value, $date1 = '', $date2= '')
 	elseif($quoi == 4) {
 		$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
 		if(!empty($chps) && !empty($value)) {
-			if($chps == "glpi_computers.location") {
+			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query .= ", glpi_computers where glpi_tracking.status = 'old' and glpi_tracking.computer = glpi_computers.ID and $chps = '$value'";
 			}
 			else {
@@ -202,11 +204,11 @@ function getNbResol($quoi, $chps, $value, $date1 = '', $date2= '')
 //common usage in query  "where $chps = '$value'";
 function getResolAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 {
+	$dropdowns = array ("location", "hdtype", "type", "moboard", "gfxcard", "processor", "os");
 	$db = new DB;
 	if($quoi == 1) {
-			
-		if(!empty($chps) && !empty($value)) {
-			if($chps == "glpi_computers.location") {
+	if(!empty($chps) && !empty($value)) {
+			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))";
 				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
 			}
@@ -228,7 +230,7 @@ function getResolAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 	}
 	elseif($quoi == 4) {
 		if(!empty($chps) && !empty($value)) {
-			if($chps == "glpi_computers.location") {
+			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))";
 				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
 				
@@ -268,10 +270,11 @@ function getResolAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 function getRealAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 {
 	$db = new DB;
+	$dropdowns = array ("location", "hdtype", "type", "moboard", "gfxcard", "processor", "os");
 	if($quoi == 1) {
 			
 		if(!empty($chps) && !empty($value)) {
-			if($chps == "glpi_computers.location") {
+			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select AVG(glpi_tracking.realtime)";
 				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value' and glpi_tracking.realtime > 0";
 			}
@@ -293,7 +296,7 @@ function getRealAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 	}
 	elseif($quoi == 4) {
 		if(!empty($chps) && !empty($value)) {
-			if($chps == "glpi_computers.location") {
+			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select AVG(glpi_tracking.realtime)";
 				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value' and glpi_tracking.realtime > 0";
 				

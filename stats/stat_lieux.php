@@ -38,6 +38,7 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_tracking.php");
+include ($phproot . "/glpi/includes_setup.php");
 require ("functions.php");
 
 
@@ -48,9 +49,18 @@ commonHeader("Stats",$_SERVER["PHP_SELF"]);
 echo "<div align='center'><b>".$lang["stats"][19]."</b></div>";
 if(empty($_POST["date1"])) $_POST["date1"] = "";
 if(empty($_POST["date2"])) $_POST["date2"] = "";
-
+if(empty($_POST["dropdown"])) $_POST["dropdown"] = "glpi_type_computers";
 echo "<div align='center'><form method=\"post\" name=\"form\" action=\"stat_lieux.php\">";
-echo "<table><tr><td align='right'>";
+echo "<table><tr><td align='center'>";
+echo "<select name=\"dropdown\">";
+echo "<option value=\"glpi_type_computers\">".$lang["computers"][8]."</option>";
+echo "<option value=\"glpi_dropdown_os\">".$lang["computers"][9]."</option>";
+echo "<option value=\"glpi_dropdown_moboard\">".$lang["computers"][35]."</option>";
+echo "<option value=\"glpi_dropdown_processor\">".$lang["setup"][7]."</option>";
+echo "<option value=\"glpi_dropdown_locations\">".$lang["stats"][21]."</option>";
+echo "<option value=\"glpi_dropdown_gfxcard\">".$lang["computers"][34]."</option>";
+echo "<option value=\"glpi_dropdown_hdtype\">".$lang["computers"][36]."</option>";
+echo "</select></td></tr><tr><td align='right'>";
 echo "Date de debut :</td><td><input type=\"texte\" readonly name=\"date1\" value=\"". $_POST["date1"] ."\" /></td>";
 echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('mycalendar.php?form=form&amp;elem=date1','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'></td></tr>";
 echo "<tr><td align='right'>Date de fin :</td><td><input type=\"texte\" readonly name=\"date2\" value=\"". $_POST["date2"] ."\" /></td>";
@@ -62,11 +72,11 @@ echo "<hr noshade>";
 
 //recuperation des differents lieux d'interventions
 //Get the distincts intervention location
-$nomLieux = getNbIntervLieux();
+$type = getNbIntervDropdown($_POST["dropdown"]);
 
 echo "<div align ='center'>";
 
-if (is_array($nomLieux))
+if (is_array($type))
    {
  //affichage du tableau
  echo "<table class='tab_cadre2' cellpadding='5' >";
@@ -74,42 +84,42 @@ if (is_array($nomLieux))
 
  //Pour chaque lieu on affiche
  //for each location displays
-      foreach($nomLieux as $key)
+      foreach($type as $key)
       {
 	echo "<tr class='tab_bg_1'>";
-	echo "<td>".getDropdownName("glpi_dropdown_locations",$key["ID"]) ."</td>";
+	echo "<td>".getDropdownName($_POST["dropdown"],$key["ID"]) ."</td>";
 	//le nombre d'intervention
 	//the number of intervention
 	if(!empty($_POST["date1"]) && !empty($_POST["date2"])) {
 	
-		echo "<td>".getNbinter(4,'glpi_computers.location',$key["ID"],$_POST["date1"],$_POST["date2"] )."</td>";
+		echo "<td>".getNbinter(4,"glpi_computers.".getDropdownNameFromTable($_POST["dropdown"]),$key["ID"],$_POST["date1"],$_POST["date2"] )."</td>";
 	}
 	else {
-		echo "<td>".getNbinter(1,'glpi_computers.location',$key["ID"])."</td>";
+		echo "<td>".getNbinter(1,"glpi_computers.".getDropdownNameFromTable($_POST["dropdown"]),$key["ID"])."</td>";
 	}
 	//le nombre d'intervention resolues
 	//the number of resolved intervention
 	if(!empty($_POST["date1"]) && !empty($_POST["date2"])) {
-		echo "<td>".getNbresol(4,'glpi_computers.location',$key["ID"],$_POST["date1"],$_POST["date2"])."</td>";
+		echo "<td>".getNbresol(4,"glpi_computers.".getDropdownNameFromTable($_POST["dropdown"]),$key["ID"],$_POST["date1"],$_POST["date2"])."</td>";
 	}
 	else {
-		echo "<td>".getNbresol(1,'glpi_computers.location',$key["ID"])."</td>";
+		echo "<td>".getNbresol(1,"glpi_computers.".getDropdownNameFromTable($_POST["dropdown"]),$key["ID"])."</td>";
 	}
 	//Le temps moyen de resolution
 	//The average time to resolv
 	if(!empty($_POST["date1"]) && !empty($_POST["date2"])) {
-		echo "<td>".getResolAvg(4,'glpi_computers.location',$key["ID"],$_POST["date1"],$_POST["date2"])."</td>";
+		echo "<td>".getResolAvg(4,"glpi_computers.".getDropdownNameFromTable($_POST["dropdown"]),$key["ID"],$_POST["date1"],$_POST["date2"])."</td>";
 	}
 	else {
-		echo "<td>".getResolAvg(1,'glpi_computers.location',$key["ID"])."</td>";
+		echo "<td>".getResolAvg(1,"glpi_computers.".getDropdownNameFromTable($_POST["dropdown"]),$key["ID"])."</td>";
 	}
 	//Le temps moyen de l'intervention réelle
 	//The average realtime to resolv
 	if(!empty($_POST["date1"]) && !empty($_POST["date2"])) {
-		echo "<td>".getRealAvg(4,'glpi_computers.location',$key["ID"],$_POST["date1"],$_POST["date2"])."</td>";
+		echo "<td>".getRealAvg(4,"glpi_computers.".getDropdownNameFromTable($_POST["dropdown"]),$key["ID"],$_POST["date1"],$_POST["date2"])."</td>";
 	}
 	else {
-		echo "<td>".getRealAvg(1,'glpi_computers.location',$key["ID"])."</td>";
+		echo "<td>".getRealAvg(1,"glpi_computers.".getDropdownNameFromTable($_POST["dropdown"]),$key["ID"])."</td>";
 	}
 
 	echo "</tr>";
