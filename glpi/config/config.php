@@ -238,7 +238,15 @@ $cfg_features["permit_helpdesk"] = $db->result($result,0,"permit_helpdesk");
 $cfg_install["version"]		= $db->result($result,0,"version");
 $cfg_layout["logotxt"]		= $db->result($result,0,"logotxt");
 
+// Priority colors
+$cfg_layout["priority_1"] = $db->result($result,0,"priority_1");
+$cfg_layout["priority_2"] = $db->result($result,0,"priority_2");
+$cfg_layout["priority_3"] = $db->result($result,0,"priority_3");
+$cfg_layout["priority_4"] = $db->result($result,0,"priority_4");
+$cfg_layout["priority_5"] = $db->result($result,0,"priority_5");
+
 }
+
 
 }
 ?>
