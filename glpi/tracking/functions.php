@@ -166,7 +166,7 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 		echo "<input type='hidden' name='contains' value='$contains'>";
 		echo "<input type='hidden' name='item' value='$item'>";
 		$newstart=$start;
-		if ($numrows<=($start+$cfg_features["list_limit"]))
+		if (isset($_GET["select"])&&$_GET["select"]=="all"&&($numrows<=($start+$cfg_features["list_limit"])))
 			$newstart=$start-$cfg_features["list_limit"];
 		echo "<input type='hidden' name='start' value='$newstart'>";
 		}
