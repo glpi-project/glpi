@@ -157,7 +157,7 @@ function getTrackingPrefs ($username) {
 	return $prefs;
 }
 
-function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$device='-1',$category=NULL) {
+function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$device='-1',$category='NULL') {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -212,6 +212,7 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 	{
 		$query = "SELECT ID FROM glpi_tracking WHERE ".$where." and (device_type = '".$item_type."' and computer = '".$item."') ORDER BY date ".$prefs["order"]."";
 	}	
+	
 	$lim_query = " LIMIT ".$start.",".$cfg_features["list_limit"]."";	
 
 	$db = new DB;
