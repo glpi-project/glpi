@@ -48,20 +48,6 @@ if(!function_exists('loadLang')) {
 			include($file);
 	}
 }
-
-//transert de dropdown vers device
-/*function dropdown2Device($devname, $dpdname) {
-	global $lang;
-	$query = "select * from glpi_dropdown_".$dpdname."";
-	$db = new DB;
-	$result = $db->query($query);
-	while($line = $db->fetch_array($result)) {
-		$query2 = "insert into glpi_device_".$devname." (designation) values ('".$line["name"]."')";
-		#$db->query($query2) or die("unable to transfer ".$dpdname." to ".$devname."  ".$lang["update"][90].$db->error());
-	}
-}
-*/
-
 //computers-dropdowns to devices
 //devname (eg: hdd)
 //dpdname (eg: hdtype)
@@ -80,21 +66,23 @@ function compDpd2Device($devname,$dpdname,$compDpdName,$specif='') {
 		$query3 = "select * from glpi_computers where ".$compDpdName." = '".$lndropd["ID"]."'";
 		$result3 = $db->query($query3);
 		while($lncomp = $db->fetch_array($result3)) {
+			$query4 = "insert into glpi_computer_device (device_type, FK_device, FK_computers) values ('glpi_device_".$devname."','".$devid."','".$lncomp["ID"]."')";
 			if(!empty($specif)) {
-				$query4 = "insert into glpi_computer_device (specificity, device_type, FK_device, FK_computers) values ('".$specif."','glpi_device_".$devname."','".$devid."','".$lncomp["ID"]."')";
-			} else {
-				$query4 = "insert into glpi_computer_device (device_type, FK_device, FK_computers) values ('glpi_device_".$devname."','".$devid."','".$lncomp["ID"]."')";
+				$queryspecif = "SELECT ".$specif." FROM glpi_computers WHERE ID = '".$lncomp["ID"]."'";
+				if($resultspecif = $db->query($queryspecif)) {
+					$query4 = "insert into glpi_computer_device (specificity, device_type, FK_device, FK_computers) values ('".$db->result($resultspecif,0,$specif)."','glpi_device_".$devname."','".$devid."','".$lncomp["ID"]."')";
+				}
+				
 			}
 			$db->query($query4) or die("unable to migrate from ".$dpdname." to ".$devname." for item computer:".$lncomp["ID"]."  ".$lang["update"][90].$db->error());
 		}
 	}
-	$query = "ALTER TABLE glpi_computers drop `".$compDpdName."`";
-	$db->query($query2) or die("Error : ".$query." ".mysql_error());
+	//TODO decommenter avant la mise en prod.
+	/*$query = "ALTER TABLE glpi_computers drop `".$compDpdName."`";
+	$db->query($query) or die("Error : ".$query." ".mysql_error());
 	$query = "DROP TABLE `glpi_dropdown_".$dpdname."`";
-	$db->query($query2) or die("Error : ".$query." ".mysql_error());
+	$db->query($query) or die("Error : ".$query." ".mysql_error());*/
 }
-
-
 
 //Verifie si il existe bien un utilisateur ayant les droits super-admin
 function superAdminExists() {
