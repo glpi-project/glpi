@@ -76,12 +76,9 @@ text-align:center;
  /* ###### form ###### */
  /* #################################### */
  
- form
-  {font-size: 12px;
+ form  {font-size: 12px;
   margin:0;
-  padding:0;
-  
-  }
+  padding:0;  }
 
  option {border:1px solid #ccc;
         background-color:#ffffff;}
@@ -129,23 +126,18 @@ input.submit:hover {
 /* #################################### */
  /* ###### table ###### */
 /* #################################### */
- table {
-   }
+ table {   }
 
-  th
-  {  
+  th {  
     font-size: 12px;
     font-weight: bold;
    /* background-color: #FFC65D;*/
     background-color: #fccc6f;
-	vertical-align:bottom;
-}
+	vertical-align:bottom;}
 
   
   
-  td
-  { font-size: 11px;
-  }
+  td { font-size: 11px;}
 
 .tab_cadre{
  -moz-border-radius: 4px;
@@ -287,10 +279,6 @@ margin-top: 100px;
 	color : #000000;
 	font-family: Verdana,Arial,Helvetica,sans-serif;
 	font-weight: bold;
-
-
-
-
 }	
 	
 	
