@@ -635,7 +635,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		$oem_computer=$data["OEM_COMPUTER"];
 		$buy=$data["BUY"];
 		
-		$SEARCH_LICENCE="(glpi_licenses.sID = $sID AND glpi_licenses.serial = '$serial'  AND glpi_licenses.oem = '$oem' AND glpi_licenses.oem_computer = '$oem_computer'  AND glpi_licenses.buy = '$buy' ";
+		$SEARCH_LICENCE="(glpi_licenses.sID = $sID AND glpi_licenses.serial = '".unhtmlentities($serial)."'  AND glpi_licenses.oem = '$oem' AND glpi_licenses.oem_computer = '$oem_computer'  AND glpi_licenses.buy = '$buy' ";
 		if ($expire=="")
 		$SEARCH_LICENCE.=" AND glpi_licenses.expire IS NULL)";
 		else $SEARCH_LICENCE.=" AND glpi_licenses.expire = '$expire')";
