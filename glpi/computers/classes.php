@@ -133,12 +133,67 @@ class Computer {
 			$query .= $this->fields["ID"];	
 			$query .= "'";
 			$result=$db->query($query);
+			
+		// Mise a jour du contact des éléments rattachés
+		if ($updates[$i]=="contact" ||$updates[$i]=="contact_num"){
+			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][49];
+			$updates3[0]="contact";
+			$updates3[1]="contact_num";
+			//printers
+			$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".PRINTER_TYPE."'";
+			if ($result=$db->query($query)) {
+				$resultnum = $db->numrows($result);
+				if ($resultnum>0) {
+				for ($i=0; $i < $resultnum; $i++) {
+					$tID = $db->result($result, $i, "end1");
+					$printer = new Printer;
+					$printer->getfromDB($tID);
+					$printer->fields['contact']=$this->fields['contact'];
+					$printer->fields['contact_num']=$this->fields['contact_num'];
+					$printer->updateInDB($updates3);
+					}
+				}
+			}
+			//monitors
+			$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".MONITOR_TYPE."'";
+			if ($result=$db->query($query)) {
+				$resultnum = $db->numrows($result);
+				if ($resultnum>0) {
+				for ($i=0; $i < $resultnum; $i++) {
+					$tID = $db->result($result, $i, "end1");
+					$monitor = new Monitor;
+					$monitor->getfromDB($tID);
+					$monitor->fields['contact']=$this->fields['contact'];
+					$monitor->fields['contact_num']=$this->fields['contact_num'];
+					$monitor->updateInDB($updates3);
+					}
+				}
+			}
+			//Peripherals
+			$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".PERIPHERAL_TYPE."'";
+			if ($result=$db->query($query)) {
+				$resultnum = $db->numrows($result);
+				if ($resultnum>0) {
+				for ($i=0; $i < $resultnum; $i++) {
+					$tID = $db->result($result, $i, "end1");
+					$peri = new Peripheral;
+					$peri->getfromDB($tID);
+					$peri->fields['contact']=$this->fields['contact'];
+					$peri->fields['contact_num']=$this->fields['contact_num'];
+					$peri->updateInDB($updates3);
+					}
+				}
+			}
+		
+		
+		}
+		
 		// Mise a jour du lieu des éléments rattachés
 		if ($updates[$i]=="location" && $this->fields[$updates[$i]]!=0){
 			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][48];
 			$updates2[0]="location";
 			//printers
-			$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='3'";
+			$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".PRINTER_TYPE."'";
 			if ($result=$db->query($query)) {
 				$resultnum = $db->numrows($result);
 				if ($resultnum>0) {
@@ -152,7 +207,7 @@ class Computer {
 				}
 			}
 			//monitors
-			$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='4'";
+			$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".MONITOR_TYPE."'";
 			if ($result=$db->query($query)) {
 				$resultnum = $db->numrows($result);
 				if ($resultnum>0) {
@@ -166,7 +221,7 @@ class Computer {
 				}
 			}
 			//Peripherals
-			$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='5'";
+			$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".PERIPHERAL_TYPE."'";
 			if ($result=$db->query($query)) {
 				$resultnum = $db->numrows($result);
 				if ($resultnum>0) {
