@@ -71,13 +71,13 @@ function LDAPshowEntries ($filter,$combine,$attribute,$display,$type) {
 	// Print the objects
 
 	// Start Table
-	echo "<center><table border=0 width=60%>\n";
+	echo "<center><table border='0' width=60%>\n";
 
 	for ($i=0; $i < count($object); $i++) {
 
 		// Show Headline for the entry
 		$dn = $object[$i]->getDN();
-		echo "<tr><th colspan=3 align=center>";
+		echo "<tr><th colspan=3 align='center'>";
 		echo $dn;
 		echo "</th></tr>\n";
 
@@ -92,7 +92,7 @@ function LDAPshowEntries ($filter,$combine,$attribute,$display,$type) {
 			$attribute = $object[$i]->getAttribute($x);	
 			$values = $object[$i]->getValues($attribute);
 
-			echo "<td valign=center align=right><b>";
+			echo "<td valign='center' align='right'><b>";
 			echo $attribute;
 			if (count($values)<2) {
 				echo "<input type=hidden name=\"attributes[]\" value=\"".$attribute."\">";
@@ -109,7 +109,7 @@ function LDAPshowEntries ($filter,$combine,$attribute,$display,$type) {
 			echo "<td colspan=2>";
 			
 			// Show Values for attribute
-			echo "<table cellpadding=2 cellspacing=3 border=0 width=100%>";
+			echo "<table cellpadding=2 cellspacing=3 border='0' width='100%'>";
 
 			// Special attribute Type "multiline
 			if ($object[$i]->attribute_types[$attribute]=="multiline") {
@@ -138,7 +138,7 @@ function LDAPshowEntries ($filter,$combine,$attribute,$display,$type) {
 					echo "</td>";
 	
 				// Delete Value
-				echo "<td align=right><b>";
+				echo "<td align='right'><b>";
 				echo "<a href=\"ldap-mod-attributes.php?type=$type&action=delete&attributes%5B%5D=".$attribute."&values%5B%5D=".urlencode($values[$y])."&dn=".urlencode($dn)."\">\n";
 				echo "<small>(D)</small>";
 				echo "</a></b></td>";
@@ -158,14 +158,14 @@ function LDAPshowEntries ($filter,$combine,$attribute,$display,$type) {
 		echo "<tr class='tab_bg_2'>\n";
 
 		// Update Entry	
-		echo "<td colspan=2 align=center>";
+		echo "<td colspan=2 align='center'>";
 		echo "<input type=hidden name= dn value=\"".$dn."\">\n";
 		echo "<input type=submit value=\"".$lang["buttons"][7]."\"></td>\n";
 		echo "</form>";
 				
 		// Delete Entry
 		echo "\n<form action=\"ldap-del-entry.php?type=$type\" method=post>";
-		echo "<td align=center>";
+		echo "<td align='center'>";
 		echo "<input type=hidden name=dn value=\"".$dn."\">\n";
 		echo "<input type=submit value=\"".$lang["buttons"][6]."\"></td>\n";
 		echo "</tr>\n";
@@ -183,7 +183,7 @@ function LDAPshowEntries ($filter,$combine,$attribute,$display,$type) {
 		}
 		echo "</select>\n";
 		echo "<td><input name=\"values[]\" size=25></td>\n";
-		echo "<td class='tab_bg_2' align=center>\n";
+		echo "<td class='tab_bg_2' align='center'>\n";
 		echo "<input type=hidden name=dn value=\"".$dn."\">\n";
 		echo "<input type=submit value=\"".$lang["buttons"][8]."\"></td>\n";
 		echo "</form>\n";
@@ -210,10 +210,10 @@ function LDAPsearchForm($type,$target) {
 	$object = new $constructobject;
 	
 	echo "<center><form action=\"".$target."\" method=post>\n";
-	echo "<table border=0><tr>";
-	echo "<th align=center>".$lang["ldap"][1]." $type ".$lang["ldap"][2]."</th>";
-	echo "<th align=center>".$lang["ldap"][3]."</th></tr>\n";
-	echo "<tr><td valign=top class='tab_bg_1' align=center>\n";
+	echo "<table border='0'><tr>";
+	echo "<th align='center'>".$lang["ldap"][1]." $type ".$lang["ldap"][2]."</th>";
+	echo "<th align='center'>".$lang["ldap"][3]."</th></tr>\n";
+	echo "<tr><td valign=top class='tab_bg_1' align='center'>\n";
 
 	echo "<select name=\"display[]\" size=7 multiple>";
 	echo "<option value=\"all\" selected>[all Attributes]";
@@ -251,7 +251,7 @@ function LDAPsearchForm($type,$target) {
 	echo "<b>contains&nbsp; </b>\n";
 	echo "<input name=filter[0] size=10>\n";
 
-	echo "<div align=left>";
+	echo "<div align='left'>";
 	echo "&nbsp;&nbsp;&nbsp;<select name=combine><option value=\"|\">or<option value=\"&\">and</select>\n";
 	echo "</div>";
 
@@ -273,7 +273,7 @@ function LDAPsearchForm($type,$target) {
 	echo "<input name=filter[1] size=10>\n";
 
 	echo "<br>";
-	echo "<div align=right>";
+	echo "<div align='right'>";
 	echo "<input name=refresh type=submit value=\"Search\">&nbsp;\n";
 	echo "</div>";
 
@@ -303,7 +303,7 @@ function LDAPprintForm ($objecttype,$error,$input) {
 	// Print Form
 	echo "\n<center><form action=\"ldap-add-entry.php?type=$objecttype\" method=post>\n";
 	echo "<table class='tab_bg_1'>\n";
-	echo "<tr><th colspan=2 align=center>".$lang["ldap"][4]." ($objecttype):</th></tr>\n";
+	echo "<tr><th colspan=2 align='center'>".$lang["ldap"][4]." ($objecttype):</th></tr>\n";
 
 	// Print Objectclasses
 	echo "<tr><td><b>objectclass:</b></td><td>\n";
@@ -312,7 +312,7 @@ function LDAPprintForm ($objecttype,$error,$input) {
 	}
 	echo "</td></tr>\n";
 
-	echo "\n<tr><th colspan=2 align=center><b>".$lang["ldap"][5].":</b></th></tr>\n";
+	echo "\n<tr><th colspan=2 align='center'><b>".$lang["ldap"][5].":</b></th></tr>\n";
 	
 	// Make input-fields for all required attributes
 	for ($i=0; $i<count($object->attributes_req); $i++) {
@@ -320,7 +320,7 @@ function LDAPprintForm ($objecttype,$error,$input) {
 		echo "<td><input name=\"".$object->attributes_req[$i]."\" size=25 value=\"".$input[$object->attributes_req[$i]]."\"></b></td></tr>\n";	
 	}
 
-	echo "\n<tr><th colspan=2 align=center><b>".$lang["ldap"][6].":</b></th></tr>\n";
+	echo "\n<tr><th colspan=2 align='center'><b>".$lang["ldap"][6].":</b></th></tr>\n";
 
 	// Make input-fields for all allowed attributes
 	for ($i=0; $i<count($object->attributes_allow); $i++) {
@@ -329,7 +329,7 @@ function LDAPprintForm ($objecttype,$error,$input) {
 	}
 
 	echo "\n<input type=hidden name=\"objecttype\" value=\"$objecttype\">\n";
-	echo "<tr><td class='tab_bg_2' colspan=2 align=center>\n";
+	echo "<tr><td class='tab_bg_2' colspan=2 align='center'>\n";
 	echo "<input type=submit value=\"".$lang["buttons"][8]."\"></td></tr>\n";
 	echo "</table></form></center>\n\n";
 }

@@ -42,7 +42,7 @@ checkAuthentication("admin");
 commonHeader("LDAP Administration - $type",$_SERVER["PHP_SELF"]);
 
 
-echo "<center><table border=0><tr><td><b>";
+echo "<center><table border='0'><tr><td><b>";
 echo "<a href=\"ldap-add-entry.php?type=$type\">".$lang["ldap"][4]."</a>\n";
 echo "</b></td></tr></table></center>";
 echo "<hr noshade>";

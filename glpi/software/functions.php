@@ -49,10 +49,10 @@ function searchFormSoftware() {
 	$option["comments"]			= $lang["software"][6];
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/software/software-search.php\">";
-	echo "<center><table border=0 width=90%>";
+	echo "<center><table border='0' width='90%'>";
 	echo "<tr><th colspan=2><b>".$lang["search"][5].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align=center>";
+	echo "<td align='center'>";
 		dropdown( "dropdown_locations",  "contains");
 	echo "<input type=hidden name=field value=location>&nbsp;";
 	echo $lang["search"][6];
@@ -63,15 +63,15 @@ function searchFormSoftware() {
 	}
 	echo "</select>";
 	echo "<input type=hidden name=phrasetype value=exact>";
-	echo "</td><td width=80 align=center class='tab_bg_2'>";
+	echo "</td><td width=80 align='center' class='tab_bg_2'>";
 	echo "<input type=submit value=\"".$lang["buttons"][1]."\">";
 	echo "</td></tr></table></form></center>";
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/software/software-search.php\">";
-	echo "<center><table border=0 width=90%>";
+	echo "<center><table border='0' width='90%'>";
 	echo "<tr><th colspan=2><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align=center>";
+	echo "<td align='center'>";
 	echo "<select name=\"field\" size=1>";
 	reset($option);
 	foreach ($option as $key => $val) {
@@ -92,7 +92,7 @@ function searchFormSoftware() {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select> ";
-	echo "</td><td width=80 align=center class='tab_bg_2'>";
+	echo "</td><td width=80 align='center' class='tab_bg_2'>";
 	echo "<input type=submit value=\"".$lang["buttons"][0]."\">";
 	echo "</td></tr></table></center></form>";
 }
@@ -135,7 +135,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 		if ($numrows_limit>0) {
 			// Produce headline
-			echo "<center><table border=0><tr>";
+			echo "<center><table border='0'><tr>";
 
 			// Name
 			echo "<th>";
@@ -210,7 +210,7 @@ function showSoftwareForm ($target,$ID) {
 	$sw = new Software;
 
 	echo "<center><form method=post action=\"$target\">";
-	echo "<table border=0>";
+	echo "<table border='0'>";
 	echo "<tr><th colspan=2><b>";
 	if (!$ID) {
 		echo $lang["software"][0].":";
@@ -240,7 +240,7 @@ function showSoftwareForm ($target,$ID) {
 
 	echo "<tr class='tab_bg_1'><td valign=top>";
 	echo $lang["software"][6].":	</td>";
-	echo "<td align=center><textarea cols=35 rows=4 name=comments wrap=soft>".$sw->fields["comments"]."</textarea>";
+	echo "<td align='center'><textarea cols=35 rows=4 name=comments wrap=soft>".$sw->fields["comments"]."</textarea>";
 	echo "</td></tr>";
 	
 	if (!$ID) {
@@ -354,8 +354,8 @@ function showLicensesAdd($ID) {
 	
 	GLOBAL $cfg_layout,$cfg_install,$lang;
 	
-	echo "<center><table border=0 width=50% cellpadding=2>";
-	echo "<tr><td align=center class='tab_bg_2'><b>";
+	echo "<center><table border='0' width=50% cellpadding=2>";
+	echo "<tr><td align='center' class='tab_bg_2'><b>";
 	echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?addform=addform&ID=$ID\">";
 	echo $lang["software"][12];
 	echo "</a></b></td></tr>";
@@ -371,7 +371,7 @@ function showLicenses ($sID) {
 	$query = "SELECT ID FROM licenses WHERE (sID = $sID)";
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 
-			echo "<br><center><table cellpadding=2 border=0 width=50%>";
+			echo "<br><center><table cellpadding=2 border='0' width=50%>";
 			echo "<tr><th colspan=2>";
 			echo $db->numrows($result);
 			echo " ".$lang["software"][13].":</th></tr>";
@@ -381,8 +381,8 @@ function showLicenses ($sID) {
 				$lic = new License;
 				$lic->getfromDB($ID);
 				echo "<tr class='tab_bg_1'>";
-				echo "<td width=100% align=center><b>".$lic->serial."</b></td>";
-				echo "<td align=center><b>";
+				echo "<td width='100%' align='center'><b>".$lic->serial."</b></td>";
+				echo "<td align='center'><b>";
 				echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?delete=delete&ID=$ID\">";
 				echo $lang["buttons"][6];
 				echo "</a></b></td>";
@@ -391,7 +391,7 @@ function showLicenses ($sID) {
 			echo "</table></center>\n\n";
 		} else {
 
-			echo "<br><center><table border=0 width=50% cellpadding=2>";
+			echo "<br><center><table border='0' width=50% cellpadding=2>";
 			echo "<tr><th>".$lang["software"][14]."</th></tr>";
 			echo "</table></center>";
 		}
@@ -416,7 +416,7 @@ function showLicenseForm($target,$ID) {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'>";
-	echo "<td align=center colspan=2>";
+	echo "<td align='center' colspan=2>";
 	echo "<input type=hidden name=sID value=".$ID.">";
 	echo "<input type=submit name=add value=\"".$lang["buttons"][8]."\">";
 	echo "</td></form>";
@@ -459,7 +459,7 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 	$query = "SELECT ID FROM licenses WHERE (sID = $sID)";
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 
-			echo "<br><center><table cellpadding=2 border=0 width=50%>";
+			echo "<br><center><table cellpadding=2 border='0' width=50%>";
 			echo "<tr><th colspan=3>";
 			echo $db->numrows($result);
 			echo " ".$lang["software"][13].":</th></tr>";
@@ -478,8 +478,8 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 						$lic->getfromDB($ID);
 						echo "<tr class='tab_bg_1'>";
 						echo "<td><b>$i</b></td>";
-						echo "<td width=100% align=center><b>".$lic->serial."</b></td>";
-						echo "<td align=center><b>";
+						echo "<td width='100%' align='center'><b>".$lic->serial."</b></td>";
+						echo "<td align='center'><b>";
 						echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?back=$back&install=install&cID=$cID&lID=$ID\">";
 						echo $lang["buttons"][4];
 						echo "</a></b></td>";
@@ -487,7 +487,7 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 					} else {
 						echo "<tr class='tab_bg_1'>";
 						echo "<td><b>$i</b></td>";
-						echo "<td colspan=2 align=center>";
+						echo "<td colspan=2 align='center'>";
 						echo "<b>".$lang["software"][18]."</b>";
 						echo "</td>";
 						echo "</tr>";
@@ -496,8 +496,8 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 				} else {
 					echo "<tr class='tab_bg_1'>";
 					echo "<td><b>$i</b></td>";
-					echo "<td width=100% align=center><b>".$lic->serial."</b></td>";
-					echo "<td align=center><b>";
+					echo "<td width='100%' align='center'><b>".$lic->serial."</b></td>";
+					echo "<td align='center'><b>";
 					echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?back=$back&install=install&cID=$cID&lID=$ID\">";
 					echo $lang["buttons"][4];
 					echo "</a></b></td>";
@@ -507,7 +507,7 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 			echo "</table></center><br>\n\n";
 		} else {
 
-			echo "<br><center><table border=0 width=50% cellpadding=2>";
+			echo "<br><center><table border='0' width=50% cellpadding=2>";
 			echo "<tr><th>".$lang["software"][14]."</th></tr>";
 			echo "</table></center><br>";
 		}
@@ -546,7 +546,7 @@ function showSoftwareInstalled($instID) {
 	$number = $db->numrows($result);
 	$i = 0;
 	
-	echo "<br><br><center><table border=0 width=90%>";
+	echo "<br><br><center><table border='0' width='90%'>";
 	echo "<tr><th colspan=2>".$lang["software"][17].":</th></tr>";
 	
 	while ($i < $number) {
@@ -560,23 +560,23 @@ function showSoftwareInstalled($instID) {
 
 		echo "<tr class='tab_bg_1'>";
 	
-		echo "<td align=center><b><a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=$sID\">";
+		echo "<td align='center'><b><a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=$sID\">";
 		echo $sw->fields["name"]." (v. ".$sw->fields["version"].")</a>";
 		echo "</b>";
 		echo " - ".$serial."</td>";
 		
-		echo "<td align=center class='tab_bg_2'>";
+		echo "<td align='center' class='tab_bg_2'>";
 		echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&lID=$lID\">";
 		echo "<b>".$lang["buttons"][5]."</b></a>";
 		echo "</td></tr>";
 
 		$i++;		
 	}
-	echo "<tr class='tab_bg_1'><td align=center>";
+	echo "<tr class='tab_bg_1'><td align='center'>";
 	echo "<form method=post action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
 	echo "<input type=hidden name=cID value=$instID>";
 		dropdownSoftware();
-	echo "</td><td align=center class='tab_bg_2'>";
+	echo "</td><td align='center' class='tab_bg_2'>";
 	echo "<input type=submit name=select value=\"".$lang["buttons"][4]."\">";
 	echo "</td></tr>";
 	echo "</form>";
@@ -616,7 +616,7 @@ function countInstallations($sID) {
 			$remaining = $total - $installed;
 
 			// Output
-			echo "<table width=100% border=0 cellpadding=2 cellspacing=0><tr>";
+			echo "<table width='100%' border='0' cellpadding=2 cellspacing='0'><tr>";
 			echo "<td>".$lang["software"][19].": <b>$installed</b></td>";
 			if ($remaining < 0) {
 				$remaining = "<font color=red>$remaining";

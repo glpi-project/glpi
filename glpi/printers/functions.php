@@ -56,10 +56,10 @@ function searchFormPrinters() {
 	$option["date_mod"]			= $lang["printers"][16];
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/printers/printers-search.php\">";
-	echo "<center><table border=0 width=90%>";
+	echo "<center><table border='0' width='90%'>";
 	echo "<tr><th colspan=2><b>".$lang["search"][5].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align=center>";
+	echo "<td align='center'>";
 		dropdown( "dropdown_locations",  "contains");
 	echo "<input type=hidden name=field value=location>&nbsp;";
 	echo $lang["search"][6];
@@ -70,15 +70,15 @@ function searchFormPrinters() {
 	}
 	echo "</select>";
 	echo "<input type=hidden name=phrasetype value=exact>";
-	echo "</td><td width=80 align=center class='tab_bg_2'>";
+	echo "</td><td width=80 align='center' class='tab_bg_2'>";
 	echo "<input type=submit value=\"".$lang["buttons"][1]."\">";
 	echo "</td></tr></table></form></center>";
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/printers/printers-search.php\">";
-	echo "<center><table border=0 width=90%>";
+	echo "<center><table border='0' width='90%'>";
 	echo "<tr><th colspan=2><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align=center>";
+	echo "<td align='center'>";
 	echo "<select name=\"field\" size=1>";
 	reset($option);
 	foreach ($option as $key => $val) {
@@ -99,7 +99,7 @@ function searchFormPrinters() {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select> ";
-	echo "</td><td width=80 align=center class='tab_bg_2'>";
+	echo "</td><td width=80 align='center' class='tab_bg_2'>";
 	echo "<input type=submit value=\"".$lang["buttons"][0]."\">";
 	echo "</td></tr></table></center></form>";
 }
@@ -144,7 +144,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 		if ($numrows_limit>0) {
 			// Produce headline
-			echo "<center><table border=0><tr>";
+			echo "<center><table border='0'><tr>";
 
 			// Name
 			echo "<th>";
@@ -218,7 +218,7 @@ function showPrintersForm ($target,$ID) {
 	$printer = new Printer;
 
 	echo "<center><form method=post name=form action=\"$target\">";
-	echo "<table border=0 cellpadding=2>";
+	echo "<table border='0' cellpadding=2>";
 	echo "<tr><th colspan=2><b>";
 	if (empty($ID)) {
 		echo $lang["printers"][3].":";
@@ -231,7 +231,7 @@ function showPrintersForm ($target,$ID) {
 	
 	echo "<tr><td class='tab_bg_1' valign=top>";
 
-	echo "<table cellpadding=0 cellspacing=0 border=0>\n";
+	echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
 
 	echo "<tr><td>".$lang["printers"][5].":	</td>";
 	echo "<td><input type=text name=name value=\"".$printer->fields["name"]."\" size=10></td>";
@@ -254,7 +254,7 @@ function showPrintersForm ($target,$ID) {
 	echo "</td>\n";	
 	echo "<td class='tab_bg_1' valign=top>";
 
-	echo "<table cellpadding=0 cellspacing=0 border=0";
+	echo "<table cellpadding='0' cellspacing='0' border='0'";
 
 	echo "<tr><td>".$lang["printers"][9].": 	</td><td>";
 		dropdownValue("type_printers", "type", $printer->fields["type"]);
@@ -271,7 +271,7 @@ function showPrintersForm ($target,$ID) {
 		echo "<tr><td>".$lang["printers"][18].": </td><td>";
 
 		// serial interface?
-		echo "<table border=0 cellpadding=2 cellspacing=0><tr>";
+		echo "<table border='0' cellpadding=2 cellspacing='0'><tr>";
 		echo "<td>";
 		if ($printer->fields["flags_serial"] == 1) {
 			echo "<input type=checkbox name=flags_serial value=1 checked>";
@@ -282,7 +282,7 @@ function showPrintersForm ($target,$ID) {
 		echo "</tr></table>";
 
 		// parallel interface?
-		echo "<table border=0 cellpadding=2 cellspacing=0><tr>";
+		echo "<table border='0' cellpadding=2 cellspacing='0'><tr>";
 		echo "<td>";
 		if ($printer->fields["flags_par"] == 1) {
 			echo "<input type=checkbox name=flags_par value=1 checked>";
@@ -306,7 +306,7 @@ function showPrintersForm ($target,$ID) {
 	
 	
 	
-		echo "<table width=100% cellpadding=0 cellspacing=0 border=0><tr><td valign=top>";
+		echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign=top>";
 	    echo "<tr><td>".$lang["printers"][20].":	</td>";
 		echo "<td><input type=text name='achat_date' readonly size=10 value='".$printer->fields["achat_date"]."'>";
 		echo "&nbsp; <input name='button' type='button'  onClick=\"window.open('mycalendar.php?form=form&elem=achat_date','Calendrier','width=200,height=220')\" value=".$lang["buttons"][15]."...'>";
@@ -336,9 +336,9 @@ function showPrintersForm ($target,$ID) {
 	echo "<tr>";
 	echo "<td class='tab_bg_1' valign=top colspan=2>";
 
-	echo "<table width=100% cellpadding=0 cellspacing=0 border=0><tr><td valign=top>";
+	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign=top>";
 	echo $lang["printers"][12].":	</td>";
-	echo "<td align=center><textarea cols=35 rows=4 name=comments wrap=soft>".$printer->fields["comments"]."</textarea>";
+	echo "<td align='center'><textarea cols=35 rows=4 name=comments wrap=soft>".$printer->fields["comments"]."</textarea>";
 	echo "</td></tr></table>";
 
 	echo "</td>";

@@ -42,7 +42,7 @@ checkAuthentication("normal");
 
 commonHeader("Reports",$_SERVER["PHP_SELF"]);
 
-echo "<center><table border=0 cellpadding=5>";
+echo "<center><table border='0' cellpadding=5>";
 echo "<tr><th>".$lang["reports"][0].":</th></tr>";
 
 $i = 0;
@@ -51,7 +51,7 @@ while($data = each($report_list)) {
 	$val = $data[0];
 	$name = $report_list["$val"]["name"];
 	$file = $report_list["$val"]["file"];
-	echo  "<tr class='tab_bg_1'><td align=center><b><a href=\"$file\">$name</a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><b><a href=\"$file\">$name</a></td></tr>";
 	$i++;
 }
 

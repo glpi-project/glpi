@@ -45,7 +45,7 @@ checkAuthentication("normal");
 
 commonHeader("Software",$_SERVER["PHP_SELF"]);
 
-echo "<center><table border=0><tr><td><b>";
+echo "<center><table border='0'><tr><td><b>";
 echo "<a href=\"software-info-form.php\">".$lang["software"][0]."</a>";
 echo "</b></td></tr></table></center>";
 

@@ -47,7 +47,7 @@ commonHeader("Computers",$_SERVER["PHP_SELF"]);
       GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
 
 
-echo "<center><table border=0 cellpadding=5>";
+echo "<center><table border='0' cellpadding=5>";
 echo "<tr><th>";
 echo $lang["computers"][45];
 echo "</th></tr>";
@@ -61,7 +61,7 @@ $number = $db->numrows($result);
 while ($i < $number) {
 	$ID = $db->result($result,$i, "ID");
   	$name = $db->result($result, $i, "templname");
-	echo "<tr class='tab_bg_1'><td align=center><a href=\"computers-info-form.php?withtemplate=1&ID=$ID\">$name</a></td></tr>";
+	echo "<tr class='tab_bg_1'><td align='center'><a href=\"computers-info-form.php?withtemplate=1&ID=$ID\">$name</a></td></tr>";
 	$i++;
 }
 

@@ -47,8 +47,8 @@ $db = new DB;
 
 
 echo "<div align='center'>";
-echo "<table border=0 cellpading=1>";
-	echo "<tr><th align=center colspan=4 ><big><b>Materiel sous contrat de maintenance</b></big></th></tr>";
+echo "<table border='0' cellpading=1>";
+	echo "<tr><th align='center' colspan=4 ><big><b>Materiel sous contrat de maintenance</b></big></th></tr>";
 
 
 
@@ -74,17 +74,17 @@ $number_of_networking = $db->numrows($result);
 
 
 
-echo "<tr><td class='tab_bg_2' colspan=2 align=center>Nombre d'ordinateurs :&nbsp;&nbsp;</td><td class='tab_bg_2' align=center>$number_of_computers</td></tr>";	
-echo "<tr><td class='tab_bg_2' colspan=2 align=center>Nombre d'imprimantes/scanners :&nbsp;&nbsp; </td><td class='tab_bg_2' align=center>$number_of_printers</td></tr>";
-echo "<tr><td class='tab_bg_2' colspan=2 align=center>Nombre de moniteurs :&nbsp; &nbsp;</td><td class='tab_bg_2' align=center> $number_of_monitors</td></tr>";
-echo "<tr><td class='tab_bg_2' colspan=2 align=center>Nombre de materiel reseau : &nbsp; &nbsp; </td><td class='tab_bg_2' align=center>$number_of_networking</td></tr>";
+echo "<tr><td class='tab_bg_2' colspan=2 align='center'>Nombre d'ordinateurs :&nbsp;&nbsp;</td><td class='tab_bg_2' align='center'>$number_of_computers</td></tr>";	
+echo "<tr><td class='tab_bg_2' colspan=2 align='center'>Nombre d'imprimantes/scanners :&nbsp;&nbsp; </td><td class='tab_bg_2' align='center'>$number_of_printers</td></tr>";
+echo "<tr><td class='tab_bg_2' colspan=2 align='center'>Nombre de moniteurs :&nbsp; &nbsp;</td><td class='tab_bg_2' align='center'> $number_of_monitors</td></tr>";
+echo "<tr><td class='tab_bg_2' colspan=2 align='center'>Nombre de materiel reseau : &nbsp; &nbsp; </td><td class='tab_bg_2' align='center'>$number_of_networking</td></tr>";
 
 
 
 
 # 3. Selection d'affichage pour generer la liste
 	echo "<tr class='tab_bg_1'>";
-		echo "<td colspan=2 align=center>";
+		echo "<td colspan=2 align='center'>";
 
 echo "<form name='form' method='post' action='maintenance-list.php'>";
 echo "<b>Type de materiel : </b>&nbsp;&nbsp; ";
@@ -115,7 +115,7 @@ echo "<option value='location'>Lieu</option>";
 echo "</select> &nbsp;&nbsp; ";
 	echo "</td>";
 
-echo "<td align=center><input type=submit value='afficher rapport'></td>";
+echo "<td align='center'><input type=submit value='afficher rapport'></td>";
 echo "</tr>";
 echo "</form>";
 

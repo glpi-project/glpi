@@ -55,10 +55,10 @@ function searchFormMonitors() {
 	$option["date_mod"]			= $lang["monitors"][16];
 	
 	echo "<form method='get' action=\"".$cfg_install["root"]."/monitors/monitors-search.php\">";
-	echo "<center><table border=0 width=90%>";
+	echo "<center><table border='0' width='90%'>";
 	echo "<tr><th colspan=2><b>".$lang["search"][5].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align=center>";
+	echo "<td align='center'>";
 		dropdown( "dropdown_locations",  "contains");
 	echo "<input type=hidden name=field value=location>&nbsp;";
 	echo $lang["search"][6];
@@ -69,15 +69,15 @@ function searchFormMonitors() {
 	}
 	echo "</select>";
 	echo "<input type=hidden name=phrasetype value=exact>";
-	echo "</td><td width=80 align=center class='tab_bg_2'>";
+	echo "</td><td width=80 align='center' class='tab_bg_2'>";
 	echo "<input type=submit value=\"".$lang["buttons"][1]."\">";
 	echo "</td></tr></table></form></center>";
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/monitors/monitors-search.php\">";
-	echo "<center><table border=0 width=90%>";
+	echo "<center><table border='0' width='90%'>";
 	echo "<tr><th colspan=2><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align=center>";
+	echo "<td align='center'>";
 	echo "<select name=\"field\" size=1>";
 	reset($option);
 	foreach ($option as $key => $val) {
@@ -98,7 +98,7 @@ function searchFormMonitors() {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select> ";
-	echo "</td><td width=80 align=center class='tab_bg_2'>";
+	echo "</td><td width=80 align='center' class='tab_bg_2'>";
 	echo "<input type=submit value=\"".$lang["buttons"][0]."\">";
 	echo "</td></tr></table></center></form>";
 }
@@ -142,7 +142,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 
 		if ($numrows_limit>0) {
 			// Produce headline
-			echo "<center><table border=0><tr>";
+			echo "<center><table border='0'><tr>";
 
 			// Name
 			echo "<th>";
@@ -225,7 +225,7 @@ function showMonitorsForm ($target,$ID) {
 	$mon = new Monitor;
 
 	echo "<center><form method=post name=form action=\"$target\">";
-	echo "<table border=0 cellpadding=2>";
+	echo "<table border='0' cellpadding=2>";
 	echo "<tr><th colspan=2><b>";
 	if (empty($ID)) {
 		echo $lang["monitors"][3].":";
@@ -238,7 +238,7 @@ function showMonitorsForm ($target,$ID) {
 	
 	echo "<tr><td class='tab_bg_1' valign=top>";
 
-	echo "<table cellpadding=0 cellspacing=0 border=0>\n";
+	echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
 
 	echo "<tr><td>".$lang["monitors"][5].":	</td>";
 	echo "<td><input type=text name=name value=\"".$mon->fields["name"]."\" size=10></td>";
@@ -261,7 +261,7 @@ function showMonitorsForm ($target,$ID) {
 	echo "</td>\n";	
 	echo "<td class='tab_bg_1' valign=top>";
 
-	echo "<table cellpadding=0 cellspacing=0 border=0";
+	echo "<table cellpadding='0' cellspacing='0' border='0'";
 
 	echo "<tr><td>".$lang["monitors"][9].": 	</td><td>";
 		dropdownValue("type_monitors", "type", $mon->fields["type"]);
@@ -282,7 +282,7 @@ function showMonitorsForm ($target,$ID) {
 		echo "<tr><td>".$lang["monitors"][18].": </td><td>";
 
 		// micro?
-		echo "<table border=0 cellpadding=2 cellspacing=0><tr>";
+		echo "<table border='0' cellpadding=2 cellspacing='0'><tr>";
 		echo "<td>";
 		if ($mon->fields["flags_micro"] == 1) {
 			echo "<input type=checkbox name=flags_micro value=1 checked>";
@@ -293,7 +293,7 @@ function showMonitorsForm ($target,$ID) {
 		echo "</tr></table>";
 
 		// speakers?
-		echo "<table border=0 cellpadding=2 cellspacing=0><tr>";
+		echo "<table border='0' cellpadding=2 cellspacing='0'><tr>";
 		echo "<td>";
 		if ($mon->fields["flags_speaker"] == 1) {
 			echo "<input type=checkbox name=flags_speaker value=1 checked>";
@@ -304,7 +304,7 @@ function showMonitorsForm ($target,$ID) {
 		echo "</tr></table>";
 
 		// sub-d?
-		echo "<table border=0 cellpadding=2 cellspacing=0><tr>";
+		echo "<table border='0' cellpadding=2 cellspacing='0'><tr>";
 		echo "<td>";
 		if ($mon->fields["flags_subd"] == 1) {
 			echo "<input type=checkbox name=flags_subd value=1 checked>";
@@ -315,7 +315,7 @@ function showMonitorsForm ($target,$ID) {
 		echo "</tr></table>";
 
 		// bnc?
-		echo "<table border=0 cellpadding=2 cellspacing=0><tr>";
+		echo "<table border='0' cellpadding=2 cellspacing='0'><tr>";
 		echo "<td>";
 		if ($mon->fields["flags_bnc"] == 1) {
 			echo "<input type=checkbox name=flags_bnc value=1 checked>";
@@ -357,9 +357,9 @@ echo "</td></tr>";
 	echo "<tr>";
 	echo "<td class='tab_bg_1' valign=top colspan=2>";
 
-	echo "<table width=100% cellpadding=0 cellspacing=0 border=0><tr><td valign=top>";
+	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign=top>";
 	echo $lang["monitors"][12].":	</td>";
-	echo "<td align=center><textarea cols=35 rows=4 name=comments wrap=soft>".$mon->fields["comments"]."</textarea>";
+	echo "<td align='center'><textarea cols=35 rows=4 name=comments wrap=soft>".$mon->fields["comments"]."</textarea>";
 	echo "</td></tr></table>";
 
 	echo "</td>";

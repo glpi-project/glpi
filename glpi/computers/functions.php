@@ -68,10 +68,10 @@ function searchFormComputers() {
 	$option["date_mod"]			= $lang["computers"][11];
 	
 	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
-	echo "<center><table border=0 width=90%>";
+	echo "<center><table border='0' width='90%'>";
 	echo "<tr><th colspan=2><b>".$lang["search"][5].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align=center>";
+	echo "<td align='center'>";
 		dropdown( "dropdown_locations",  "contains");
 	echo "<input type=hidden name=field value=location>&nbsp;";
 	echo $lang["search"][6];
@@ -82,15 +82,15 @@ function searchFormComputers() {
 	}
 	echo "</select>";
 	echo "<input type=hidden name=phrasetype value=exact>";
-	echo "</td><td width=80 align=center class='tab_bg_2'>";
+	echo "</td><td width=80 align='center' class='tab_bg_2'>";
 	echo "<input type=submit value=\"".$lang["buttons"][1]."\">";
 	echo "</td></tr></table></form></center>";
 	
 	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
-	echo "<center><table border=0 width=90%>";
+	echo "<center><table border='0' width='90%'>";
 	echo "<tr><th colspan=2><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align=center>";
+	echo "<td align='center'>";
 	echo "<select name=\"field\" size=1>";
 	reset($option);
 	foreach ($option as $key => $val) {
@@ -111,7 +111,7 @@ function searchFormComputers() {
 		echo "<option value=$key>$val\n";
 	}
 	echo "</select> ";
-	echo "</td><td width=80 align=center class='tab_bg_2'>";
+	echo "</td><td width=80 align='center' class='tab_bg_2'>";
 	echo "<input type=submit value=\"".$lang["buttons"][0]."\">";
 	echo "</td></tr></table></center></form>";
 }
@@ -154,7 +154,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 		
 		if ($numrows_limit>0) {
 			// Produce headline
-			echo "<center><table border=0><tr>";
+			echo "<center><table border='0'><tr>";
 
 			// Name
 			echo "<th>";
@@ -255,19 +255,19 @@ function showComputerForm ($template,$target,$ID) {
 			$datestring = $lang["computers"][11].": ";
 			$date = $comp->fields["date_mod"];
 		}
-		echo "<center><table border=0>";
+		echo "<center><table border='0'>";
 		echo "<form name=form method=post action=$target>";
-		echo "<tr><th align=center>";
+		echo "<tr><th align='center'>";
 		if ($template) {
 			echo $lang["computers"][12].": ".$comp->fields["templname"];
 		} else {
 			echo $lang["computers"][13].": ".$comp->fields["ID"];
 		}
-		echo "</th><th align=right>".$datestring.$date;
+		echo "</th><th align='right'>".$datestring.$date;
 		echo "</th></tr>";
 		
 		echo "<tr><td bgcolor=#CCCCCC valign=top>";
-		echo "<table cellpadding=0 cellspacing=0 border=0>\n";
+		echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
 
 		echo "<tr><td>".$lang["computers"][7].":		</td>";
 		echo "<td><input type=text name=name value=\"".$comp->fields["name"]."\" size=10></td>";
@@ -302,7 +302,7 @@ function showComputerForm ($template,$target,$ID) {
 
 		echo "</td>\n";	
 		echo "<td bgcolor=#CCCCCC valign=top>\n";
-		echo "<table cellpadding=0 cellspacing=0 border=0>";
+		echo "<table cellpadding='0' cellspacing='0' border='0'>";
 
 
 		echo "<tr><td>".$lang["computers"][8].": 	</td>";
@@ -393,7 +393,7 @@ function showComputerForm ($template,$target,$ID) {
 		echo "<tr><td>".$lang["computers"][27].": </td><td>";
 		
 		// Is Server?
-		echo "<table border=0 cellpadding=2 cellspacing=0><tr>";
+		echo "<table border='0' cellpadding=2 cellspacing='0'><tr>";
 		echo "<td>";
 		if (isset($comp->fields["flags_server"]))
 		{
@@ -422,15 +422,15 @@ function showComputerForm ($template,$target,$ID) {
 		echo "</tr><tr>";
 
 		if ($template) {
-			echo "<td bgcolor=#DDDDDD align=center colspan=2>\n";
+			echo "<td class='tab_bg_2' align='center' colspan=2>\n";
 			echo "<input type=submit name=add value=\"".$lang["buttons"][8]."\">";
 			echo "</td></form>\n";	
 		} else {
-			echo "<td bgcolor=#DDDDDD align=center valign=top>\n";
+			echo "<td class='tab_bg_2' align='center' valign=top>\n";
 			echo "<input type=hidden name=ID value=$ID>";
 			echo "<input type=submit name=update value=\"".$lang["buttons"][7]."\">";
 			echo "</td></form>\n";	
-			echo "<td bgcolor=#DDDDDD align=center>\n";
+			echo "<td class='tab_bg_2' align='center'>\n";
 			echo "<form method=post action=\"$target\">";
 			echo "<input type=hidden name=ID value=$ID>";
 			echo "<input type=submit name=delete value=\"".$lang["buttons"][6]."\">";
@@ -524,14 +524,14 @@ function showConnections($ID) {
 
 	$db = new DB;
 
-	echo "<center><table border=0 width=90% cols=2>";
+	echo "<center><table border='0' width='90%' cols=2>";
 	echo "<tr><th colspan=2>".$lang["connect"][0].":</th></tr>";
 	echo "<tr><th>".$lang["computers"][39].":</th><th>".$lang["computers"][40].":</th></tr>";
 
 	echo "<tr class='tab_bg_1'>";
 
 	// Printers
-	echo "<td align=center>";
+	echo "<td align='center'>";
 	$query = "SELECT * from connect_wire WHERE end2='$ID' AND type='3'";
 	if ($result=$db->query($query)) {
 		$resultnum = $db->numrows($result);
@@ -551,7 +551,7 @@ function showConnections($ID) {
 	echo "</td>";
 
 	// Monitors
-	echo "<td align=center>";
+	echo "<td align='center'>";
 	$query = "SELECT * from connect_wire WHERE end2='$ID' AND type='4'";
 	if ($result=$db->query($query)) {
 		$resultnum = $db->numrows($result);

@@ -52,7 +52,7 @@ commonHeader("Setup",$_SERVER["PHP_SELF"]);
 
 <hr noshade>
 
-<table border=0>
+<table border='0'>
 <tr>
 	<td><b><a href="setup-dropdowns.php"><?php
 
