@@ -403,7 +403,7 @@ function showAssociatedContact($instID) {
 	echo "<td align='center'>".$db->result($result, $i, "glpi_contacts.fax")."</td>";
 	echo "<td align='center'><a href='mailto:".$db->result($result, $i, "glpi_contacts.email")."'>".$db->result($result, $i, "glpi_contacts.email")."</a></td>";
 	echo "<td align='center'>".getContactTypeName($db->result($result, $i, "glpi_contacts.type"))."</td>";
-	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deletecontact=deletecontact&ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deletecontact=deletecontact&ID=$ID&eID=$instID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
 	}
 	

@@ -83,26 +83,34 @@ else if (isset($_POST["additem"])){
 	
 	addDeviceContract($_POST["conID"],$type,$ID);
 	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." associate device.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
+	$end="";
+	if (!ereg("ID=",$_SERVER['HTTP_REFERER']))
+		if(!ereg("contracts",$_SERVER['HTTP_REFERER'])) $end="?ID=$ID";
+	else $end="?ID=".$_POST["conID"];
+	header("Location: ".$_SERVER['HTTP_REFERER'].$end);
 }
 else if (isset($_GET["deleteitem"])){
 	checkAuthentication("admin");
 	deleteDeviceContract($_GET["ID"]);
 	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." delete device.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
+	$end="";
+	if (!ereg("ID=",$_SERVER['HTTP_REFERER']))
+		if(!ereg("contracts",$_SERVER['HTTP_REFERER'])) $end="?ID=$ID";
+	else $end="?ID=".$_POST["conID"];
+	header("Location: ".$_SERVER['HTTP_REFERER'].$end);
 }
 else if (isset($_POST["addenterprise"])){
 	checkAuthentication("admin");
 
 	addEnterpriseContract($_POST["conID"],$_POST["entID"]);
 	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." associate device.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
+	header("Location: ".$cfg_install["root"]."/contracts/contracts-info-form.php?ID=".$_POST["conID"]);
 }
 else if (isset($_GET["deleteenterprise"])){
 	checkAuthentication("admin");
 	deleteEnterpriseContract($_GET["ID"]);
 	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." delete device.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
+	header("Location: ".$cfg_install["root"]."/contracts/contracts-info-form.php?ID=".$_POST["conID"]);
 }
 else if (isset($_POST["update"]))
 {
