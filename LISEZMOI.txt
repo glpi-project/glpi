@@ -67,7 +67,7 @@ avec l'une des ressources techniques à laquelle ils ont accès.
 *************************************************************************************************************
 
 1) Apache 1.3.>6 with PHP 4 
-2) MySQL 3.22 et supperieures
+2) MySQL 3.22 et supérieures
 
 
 *************************************************************************************************************
@@ -81,9 +81,9 @@ Avant de faire quoi que ce soit il convient de faire deux choses :
 
 Sauvegardez votre base de donnée via l'interface de sauvegarde de glpi et récupérez le fichier dump contenant les données dans le répertoire backups/dump/ et faites en une sauvegarde.
 
-Récuperez le fichier config.php dans le répertoire glpi/config/ et copiez le ailleurs sur votre disque et faites en une sauvegarde.
+Récupérez le fichier config.php dans le répertoire glpi/config/ et copiez le ailleurs sur votre disque et faites en une sauvegarde.
 
-A partir de là, si la mise à jour se déroule mal ou que les nouvelles implémentations de la version 0.4 ne vous conviennent pas, il sera facile de revenir à votre version précédente.
+A partir de là, si la mise à jour se déroule mal ou que les nouvelles implantation de la version 0.4 ne vous conviennent pas, il sera facile de revenir à votre version précédente.
 
 Si néanmoins cette procédure se déroulait mal, merci de nous faire parvenir au plus vite sur les mailing listes, ou sur le forum du site du projet, ou sur le bugtrack la procédure utilisée et le message d'erreur que vous obtenez.
 
@@ -103,7 +103,7 @@ II) Récupération et installation des fichiers.
 -[votre_racine_http/]glpi/glpi/config/
 
 
-de manière à ce que PHP y ait les droits décriture.
+de manière à ce que PHP y ait les droits d'écriture.
 
 
 III)Lancement de la mise à jour :
@@ -114,12 +114,12 @@ III)Lancement de la mise à jour :
 
 3) Cliquez sur « mise à jour ».
 
-4) Vérifiez que les tests d'environnement on bien tous été réalisé avec succés, sinon suivez les instructions et re-essayez.
+4) Vérifiez que les tests d'environnement on bien tous été réalisé avec succès, sinon suivez les instructions et réessayez.
 
 Si tout c'est bien passé, cliquez sur « continuer ».
 
 5)Configurez l'accès au serveur Mysql, aidez vous du fichier config.php que vous avez sauvegardé, pour remplir :
-Mysql serveur : le nom d'hote mysql
+Mysql serveur : le nom d'hôte mysql
 Mysql user : le nom d'utilisateur mysql
 Mysql pass : le mot de passe associé au nom d'utilisateur mysql
 
@@ -166,11 +166,11 @@ Une fois la configuration terminée, vous pourrez supprimer cet utilisateur. Atte
 --- INSTALLATION DE GLPI ET CONFIGURATION
 *************************************************************************************************************
 
-Linstallation de GLPI est assez simple. Depuis la version 0.4 il ny a plus, en particulier, de fichier à modifier « à la main ».
+L'installation de GLPI est assez simple. Depuis la version 0.4 il n'y a plus, en particulier, de fichier à modifier « à la main ».
 
 La procédure est la suivante :
 
-1. Récupérez larchive de GLPI sur notre serveur, et la décompacter sur votre ordinateur personnel. Vous obtenez un dossier « GLPI... » contenant lensemble des fichiers du logiciel GLPI.
+1. Récupérez l'archive de GLPI sur notre serveur, et la décompacter sur votre ordinateur personnel. Vous obtenez un dossier « GLPI... » contenant l'ensemble des fichiers du logiciel GLPI.
 
 2. Installez le contenu de ce dossier sur le serveur destiné à accueillir GLPI.
 
@@ -179,45 +179,45 @@ Procédure détaillée
 
 Configuration nécessaire
 
-Vous devez au minimum disposer dun espace sur un serveur Web avec :
--  un accès FTP pour linstallation des fichiers ;
+Vous devez au minimum disposer d'un espace sur un serveur Web avec :
+-  un accès FTP pour l'installation des fichiers ;
 -  le support de PHP4 ou supérieure compilée avec le support des sessions ;
 -  un accès à une base de données MySQL.
 
-Avant linstallation, vous devez avoir une base MySQL disponible. Si vous nêtes pas ladministrateur du serveur, il faut demander lactivation dune base MySQL à ladministrateur.
+Avant l'installation, vous devez avoir une base MySQL disponible. Si vous n'êtes pas l'administrateur du serveur, il faut demander l'activation dune base MySQL à l'administrateur.
 
-Vous devez connaître les données de votre connexion MySQL (fournies par ladministrateur) :
--  ladresse du serveur MySQL ;
+Vous devez connaître les données de votre connexion MySQL (fournies par l'administrateur) :
+-  l'adresse du serveur MySQL ;
 -  votre login MySQL ;
 -  votre password MySQL,
 -  le nom de la base de données
 
 Récupérer GLPI
 
-GLPI est disponible en téléchargement par le Web à ladresse :
+GLPI est disponible en téléchargement par le Web à l'adresse :
 -  http://glpi.indepnet.org rubrique téléchargement.
 
-Choisissez la version qui vous intéresse, décompactez larchive sur votre ordinateur dans un répertoire de votre choix, puis transférez le contenu de ce répertoire sur le serveur Web via FTP (par exemple).
+Choisissez la version qui vous intéresse, décompactez l'archive sur votre ordinateur dans un répertoire de votre choix, puis transférez le contenu de ce répertoire sur le serveur Web via FTP (par exemple).
 
-Si vous êtes ladministrateur du serveur décompresser larchive dans le répertoire /var/www quApache a crée pour vous.
+Si vous êtes l'administrateur du serveur décompresser l'archive dans le répertoire /var/www qu'Apache a crée pour vous.
 
 Installer les fichiers
 
-Installez lensemble des fichiers de GLPI dans lespace Web, à lendroit où vous voulez que GLPI soit accessible au public.
+Installez l'ensemble des fichiers de GLPI dans l'espace Web, à l'endroit où vous voulez que GLPI soit accessible au public.
 
-Maintenant, il est nécessaire daccorder des permissions à certains répertoires, de manière à ce que PHP ait les droits en écriture sur : /backups/dump /glpi/config
+Maintenant, il est nécessaire d'accorder des permissions à certains répertoires, de manière à ce que PHP ait les droits en écriture sur : /backups/dump /glpi/config
 
-Début de linstallation
+Début de l'installation
 
-Désormais tout se déroule en ligne. Pour débuter linstallation il vous suffit de faire pointer votre navigateur web sur le dossier racine de GLPI : http://votreserveur/glpi/ (par défaut).
+Désormais tout se déroule en ligne. Pour débuter l'installation il vous suffit de faire pointer votre navigateur web sur le dossier racine de GLPI : http://votreserveur/glpi/ (par défaut).
 
-Lors de la première connexion à cette adresse, une procédure dinstallation pas-à-pas démarre. Linterface est intuitive, il suffit dentrer les informations demandées.
+Lors de la première connexion à cette adresse, une procédure d'installation pas-à-pas démarre. L'interface est intuitive, il suffit d'entrer les informations demandées.
 
 Étapes préliminaires :
 
 A- Choix de la langue.
 
-Vous arrivez alors sur la première étape préliminaire, qui consiste à choisir la langue dans laquelle se déroulera linstallation.
+Vous arrivez alors sur la première étape préliminaire, qui consiste à choisir la langue dans laquelle se déroulera l'installation.
 
 Si vous voulez que la langue soit le Français sélectionnez « french » et cliquez sur « OK ».
 
@@ -225,34 +225,34 @@ B- Installation ou mise à jour.
 
 Vous souhaitez faire une installation, donc cliquez sur « Installation ».
 
-C- Vérification de la compatibilité de votre environnement avec lexécution de GLPI
+C- Vérification de la compatibilité de votre environnement avec l'exécution de GLPI
 
-Cette étape va vérifier que vous avez correctement réalisé les pré-requis à linstallation. Si ce nest pas le cas, il vous sera impossible daccéder aux étapes suivantes. Un message derreur assez explicite vous indiquera les actions à réaliser avant de re-essayer.
+Cette étape va vérifier que vous avez correctement réalisé les pré-requis à l'installation. Si ce n'est pas le cas, il vous sera impossible d'accéder aux étapes suivantes. Un message d'erreur assez explicite vous indiquera les actions à réaliser avant de réessayer.
 
-Si toutes les vérifications ont été réalisées avec succés, cliquez sur « continuer ».
+Si toutes les vérifications ont été réalisées avec succès, cliquez sur « continuer ».
 
-Étapes de linstallation
+Étapes de l'installation
 
 Étape 1 : Configuration des informations de connection au serveur de base de données.
 
-Vous arrivez alors sur un formulaire vous permettant dentrer les informations nécessaire à la connection au serveur MySQL.
+Vous arrivez alors sur un formulaire vous permettant d'entrer les informations nécessaire à la connection au serveur MySQL.
 
-Dans le champs « Mysql server » entrez le chemin reseau daccès au serveur, par exemple : localhost, ou mysql.domaine.tld
+Dans le champs « Mysql server » entrez le chemin réseau d'accès au serveur, par exemple : localhost, ou mysql.domaine.tld
 
-Dans le champs « Mysql user » entrez le nom dutilisateur vous permettant de vous connecter au serveur Mysql.
+Dans le champs « Mysql user » entrez le nom d'utilisateur vous permettant de vous connecter au serveur Mysql.
 
-Dans le champs « Mysql pass » entrez le mot de passe associé à lutilisateur que vous venez dentrer dans le champs « Mysql user » Ce champs peut être laissé vide si lutilisateur nas pas de mot de passe (Il ne sera pas fait de commentaires sur la sécurité dun tel usage de Mysql car ce nest pas lobjet de cet article).
+Dans le champs « Mysql pass » entrez le mot de passe associé à l'utilisateur que vous venez d'entrer dans le champs « Mysql user » Ce champs peut être laissé vide si l'utilisateur n'as pas de mot de passe (Il ne sera pas fait de commentaires sur la sécurité d'un tel usage de Mysql car ce n'est pas l'objet de cet article).
 
 Une fois que ces trois champs sont correctement remplis cliquez sur « continuer ».
 
 Là deux possibilités :
 
--  soit vos paramètres sont valides, auquel cas vous passez à létape suivante.
--  Soit vos paramètres sont invalides, auquel cas un message derreur est affiché, cliquez sur retour pour modifier vos paramètres de connection et essayer de nouveau.
+-  soit vos paramètres sont valides, auquel cas vous passez à l'étape suivante.
+-  Soit vos paramètres sont invalides, auquel cas un message d'erreur est affiché, cliquez sur retour pour modifier vos paramètres de connection et essayer de nouveau.
 
 Étape 2 : Création ou choix de la base de données et initialisation.
 
-Maintenant que vous êtes correctement connecté au serveur MySQL, vous devez créer ou choisir la base de données destinée à accueillir lapplication GLPI.
+Maintenant que vous êtes correctement connecté au serveur MySQL, vous devez créer ou choisir la base de données destinée à accueillir l'application GLPI.
 
 Deux possibilités :
 
@@ -262,22 +262,22 @@ Sélectionnez cette base dans la liste des bases affichées. Cliquez sur continuer
 
 -  Vous souhaitez créer une nouvelle base de données pour accueillir GLPI :
 
-Attention cette étape nécessite que lutilisateur ai les droits nécessaires à la création dune nouvelle base.
+Attention cette étape nécessite que l'utilisateur ai les droits nécessaires à la création dune nouvelle base.
 
 Sélectionnez « créer une nouvelle base de données ». Entrez le nom que vous souhaitez donner à la base dans le champs texte prévu à cet effet. Cliquez sur continuer pour initialiser la base de données..
 
 Étape 3 : Transition et explications :
 
-Cette étape vous informe que la base de données est initialisée avec les valeurs par défaut. Et vous donne un certain nombre dindications sur ces valeurs. Lisez attentivement ces informations et cliquez sur « continuer ».
+Cette étape vous informe que la base de données est initialisée avec les valeurs par défaut. Et vous donne un certain nombre d'indications sur ces valeurs. Lisez attentivement ces informations et cliquez sur « continuer ».
 
-Létape 4 : vous indique que linstallation de GLPI est maintenant terminée, et vous récapitule un certain nombre dinformations. Lisez attentivement ces informations et cliquez sur « utiliser GLPI » pour effectuer votre première connection à lapplication.
+L'étape 4 : vous indique que l'installation de GLPI est maintenant terminée, et vous récapitule un certain nombre d'informations. Lisez attentivement ces informations et cliquez sur « utiliser GLPI » pour effectuer votre première connection à l'application.
 
-Fin de linstallation
+Fin de l'installation
 
-En cas de grosse erreur (du genre : vous avez oublié votre propre accès à GLPI...), pour « relancer » cette procédure dinstallation, il faut utiliser votre logiciel FTP (par exemple) et effacer le fichier suivant :
+En cas de grosse erreur (du genre : vous avez oublié votre propre accès à GLPI...), pour « relancer » cette procédure d'installation, il faut utiliser votre logiciel FTP (par exemple) et effacer le fichier suivant :
 -  glpi/config/config_db.php
 
-Pointer votre navigateur web sur le dossier racine de GLPI : http://votreserveur/glpi/ (par défaut) relancera alors la procédure de configuration (en réalité, cest labsence de fichier « config_db.php » qui provoque le lancement de cette procédure).
+Pointer votre navigateur web sur le dossier racine de GLPI : http://votreserveur/glpi/ (par défaut) relancera alors la procédure de configuration (en réalité, c'est l'absence de fichier « config_db.php » qui provoque le lancement de cette procédure).
 
 
 
