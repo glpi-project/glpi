@@ -239,7 +239,7 @@ function showCartridgeTypeForm ($target,$ID) {
 
 	$ct = new CartridgeType;
 
-	echo "<div align='center'><form method='post' action=\"$target\">";
+	echo "<form method='post' action=\"$target\"><div align='center'>";
 	echo "<table class='tab_cadre'>";
 	echo "<tr><th colspan='3'><b>";
 	if (!$ID) {
@@ -281,7 +281,7 @@ function showCartridgeTypeForm ($target,$ID) {
 		echo "</td>";
 		echo "</tr>";
 
-		echo "</table></form></div>";
+		echo "</table></div></form>";
 
 	} else {
 
@@ -298,7 +298,7 @@ function showCartridgeTypeForm ($target,$ID) {
 		echo "</td>";
 		echo "</tr>";
 
-		echo "</table></form></div>";
+		echo "</table></div>";
 		
 		showCompatiblePrinters($ID);
 		showCartridges($ID);
