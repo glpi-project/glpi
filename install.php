@@ -34,10 +34,11 @@ This file is part of GLPI.
 // Pas besoin des warnings de PHP
 error_reporting(0);
 
+
 // en test !!
 // début d'internationalisation
 // il reste à faire choisir la langue c'est pas implémenté encore 
-include("glpi/dicts/french.php");
+//include("glpi/dicts/french.php");
 // pour l'instant je bosse avec le french
 //
 
@@ -149,6 +150,41 @@ function footer_html()
 {
 		echo "</div></body></html>";
 }
+
+// choose language
+
+function choose_language()
+
+{
+echo "<form action=\"install.php\" method=\"post\">";
+echo "<p align='center'><label>Choose your language <select name=\"language\"><label></p>";
+	echo "<option value=\"french\">French</option>";
+	echo "<option value=\"english\">English</option>";
+	echo "<option value=\"deutch\">Deutch</option>";
+	echo "<option value=\"italian\">Italian</option>";
+	echo "</select>"; 
+	echo "<input type=\"hidden\" name=\"install\" value=\"Etap_confirm\" />";
+	echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"OK\" /></p>";
+	echo "</form>";
+}
+
+// load language
+
+function loadLanguage($language) {
+	
+global $lang;
+	
+	if(empty($language))
+	{	
+		$file= "glpi/dicts/english.php";
+	}
+	else {
+		$file = "glpi/dicts/".$language.".php";
+	}
+		include ( $file);
+		
+	}
+
 
 
 //confirm install form
@@ -354,7 +390,7 @@ function step3($host,$user,$password,$update)
                 
 	}
 	else {
-		echo "Connection réussie !! <br />";
+		echo $lang["install"][38]."<br />";
 		if($update == "no") {
 			echo $lang["install"][38];
 			echo "<form action=\"install.php\" method=\"post\">";
@@ -589,7 +625,7 @@ function update1($host,$user,$password,$dbname) {
 	global $lang;	
 
 	if(create_conn_file($host,$user,$password,$dbname)) {
-		//echo "bla";
+		
 		include("update.php");
 		
 	}
@@ -617,19 +653,25 @@ include ("_relpos.php");
 			die();
 		}
 		else {
-			header_html("Début de l'installation");
-			step0();
-		}
+			header_html("Language");
+			choose_language();
+			}
 	}
 	else {
 		switch ($_POST["install"]) {
+			
+			case "Etap_confirm" :
+			loadLanguage($_POST["language"]);
+			header_html("Début de l'installation");
+			step0();
+			break;
 			case "Etape_0" :
-				session_start();
-				header_html("Etape 0");
-				$_SESSION["Test_session_GLPI"] = 1;
-				session_destroy();
-				step1($_POST["update"]);
-				break;
+			session_start();
+			header_html("Etape 0");
+			$_SESSION["Test_session_GLPI"] = 1;
+			session_destroy();
+			step1($_POST["update"]);
+			break;
 			case "Etape_1" :
 				header_html("Etape 1");
 				step2($_POST["update"]);

@@ -739,6 +739,7 @@ $lang["install"][34]	= "Test de la connection à la base de données";
 $lang["install"][35]	= "Impossible de se connecter à la base de données"; 
 $lang["install"][36]	= " Le serveur a répondu"; 
 $lang["install"][37]	= "Le champs serveur ou/et le champ user est vide"; 
+$lang["install"][371]	= "Connexion réussie !"; 
 $lang["install"][38]	= "Veuillez selectionner une base de données : "; 
 $lang["install"][39]	= "Créer une nouvelle base :"; 
 $lang["install"][40]	= "Veuillez selectionner la base de données  à mettre à jour : "; 
@@ -767,13 +768,6 @@ $lang["install"][62]	= "Vous pouvez supprimer ou modifier ces comptes ainsi que 
 $lang["install"][63]	= "Attention tout de même NE SUPPRIMEZ PAS l'utilisateur HELPDESK."; 
 $lang["install"][64]	= "Utiliser GLPI"; 
 $lang["install"][70]	= "Impossible de créer le fichier de connection à la base de données, vérifiez les droits sur les fichiers"; 
-$lang["install"][71]	= "post-only/post-only pour le compte postonly"; 
-$lang["install"][72]	= "post-only/post-only pour le compte postonly"; 
-$lang["install"][73]	= "post-only/post-only pour le compte postonly"; 
-$lang["install"][74]	= "post-only/post-only pour le compte postonly"; 
-$lang["install"][75]	= "post-only/post-only pour le compte postonly"; 
-$lang["install"][76]	= "post-only/post-only pour le compte postonly"; 
-$lang["install"][77]	= "post-only/post-only pour le compte postonly"; 
 
 
 
