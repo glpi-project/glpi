@@ -82,6 +82,7 @@ function searchFormComputers($field="",$phrasetype= "",$contains="",$sort= "") {
 	$option["comp.date_mod"]			= $lang["computers"][11];
 	$option["glpi_networking_ports.ifaddr"] = $lang["networking"][14];
 	$option["glpi_networking_ports.ifmac"] = $lang["networking"][15];
+	$option["glpi_dropdown_netpoint.name"]			= $lang["networking"][51];
 	
 	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
 	echo "<div align='center'><table border='0' width='750' class='tab_cadre'>";
@@ -174,6 +175,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 		}
 		$where .= " OR glpi_networking_ports.ifaddr LIKE '%".$contains."%'";
 		$where .= " OR glpi_networking_ports.ifmac LIKE '%".$contains."%'";
+		$where .= " OR glpi_dropdown_netpoint.name LIKE '%".$contains."%'";
 		$where .= ")";
 	}
 	else {
@@ -197,6 +199,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 	$query .= "LEFT JOIN glpi_dropdown_gfxcard on comp.gfxcard = glpi_dropdown_gfxcard.ID LEFT JOIN glpi_dropdown_moboard on comp.moboard = glpi_dropdown_moboard.ID ";
 	$query .= "LEFT JOIN glpi_dropdown_sndcard on comp.sndcard = glpi_dropdown_sndcard.ID ";
 	$query .= "LEFT JOIN glpi_networking_ports on (comp.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='1')";
+	$query .= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";
 	$query .= "where $where ORDER BY $sort $order";
 	//$query = "SELECT * FROM glpi_computers WHERE $where ORDER BY $sort $order";
 //	echo $query;
