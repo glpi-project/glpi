@@ -195,11 +195,12 @@ $config =	array($lang["Menu"][10]=>array("/setup/index.php"," "),
 	}
 
 	// Include CSS
-	echo "<style type=\"text/css\">\n";
+	//echo "<style type=\"text/css\">\n";
 	//	include ("_relpos.php");
+         echo "<link rel='stylesheet'  href='".$HTMLRel."glpi/config/styles.css' type='text/css' media='screen' >";
 
-		include ($phproot . "/glpi/config/styles.css");
-	echo "</style>\n";
+	//	include ($phproot . "/glpi/config/styles.css");
+	//echo "</style>\n";
 
 	// Some Javascript-Functions which we may need later
 	echo "<script type=\"text/javascript\" language=\"JavaScript\">";
@@ -216,7 +217,7 @@ $config =	array($lang["Menu"][10]=>array("/setup/index.php"," "),
 	echo "<body>";
 
 	// Main Headline
-			echo "<div id='navigation'>";
+	echo "<div id='navigation'>";
 	echo "<table  cellspacing='0' border='0' width='98%'>";
 	echo "<tr>";
 	
@@ -320,11 +321,12 @@ function helpHeader($title,$url,$name) {
 	echo "</script>";
 	
 	// Include CSS
-	echo "<style type=\"text/css\">\n";
+	//echo "<style type=\"text/css\">\n";
 	//			include ("_relpos.php");
+        echo "<link rel='stylesheet'  href='".$HTMLRel."glpi/config/styles.css' type='text/css' media='screen' >";
 
-		include ($phproot . "/glpi/config/styles.css");
-	echo "</style>\n";
+	//	include ($phproot . "/glpi/config/styles.css");
+	//echo "</style>\n";
 
 	// End of Head
 	echo "</head>\n";
@@ -412,11 +414,12 @@ function nullHeader($title,$url) {
 	echo "</script>";
 	
 	// Include CSS
-	echo "<style type=\"text/css\">\n";
+	//echo "<style type=\"text/css\">\n";
 	//			include ("_relpos.php");
+        echo "<link rel='stylesheet'  href='".$HTMLRel."glpi/config/styles.css' type='text/css' media='screen' >";
 
-		include ($phproot . "/glpi/config/styles.css");
-	echo "</style>\n";
+	//	include ($phproot . "/glpi/config/styles.css");
+	//echo "</style>\n";
 
 	// End of Head
 	echo "</head>\n";
@@ -425,7 +428,7 @@ function nullHeader($title,$url) {
 	echo "<body>";
 
 	// Main Headline
-				echo "<div id='navigation'>";
+	echo "<div id='navigation'>";
 
 	echo "<table cellspacing='0' border='0' width='98%'>";
 	echo "<tr>";

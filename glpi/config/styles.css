@@ -1,16 +1,16 @@
-//<!--
+
 
 
 /* ###### general ###### */
 
   body 
   {  
-    padding :0;
+    padding :5px;
 	margin :0;
 	font-size : 13px;
  	background-color : #FFFFFF;
 	color : #000000;
-	font-family: verdana;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
 
   }
 
@@ -49,18 +49,21 @@ text-align:center;
         background-color:#ffffff;}
 
  .submit { text-align:center;}
-       
-        input.submit {
+  
+  
+
+
+input.submit {
         border:1px solid #009966;
         background-color:#eeeeee;
         }
         
-        input.submit:hover {
+input.submit:hover {
         border:1px solid #009966;
        background-color:#ffffff;
         }
 
-   .button {
+.button {
         border:1px solid #009966;
         background-color:#eeeeee;
         }
@@ -76,16 +79,27 @@ text-align:center;
 
  /* ###### table ###### */
 
-  th   
+ table {
+
+  }
+
+  th
   {  
-    font-size: 13px;
+    font-size: 12px;
     font-weight: bold;
     background-color: #FFC65D;
   }
 
   td
-  { font-size: 12px;
+  { font-size: 11px;
   }
+
+.tab_cadre{
+
+ -moz-border-radius: 4px;
+  border: 1px thin #cccccc;
+
+}
 
 
 .tab_bg_1 {
@@ -288,4 +302,4 @@ padding-bottom: 10px;
 
 
 
-//-->
+

@@ -55,9 +55,12 @@ echo "<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\" />\n"
 
 
 // Include CSS
-echo "<style type=\"text/css\">\n";
-include ($phproot . "/glpi/config/styles.css");
-echo "</style>\n";
+//echo "<style type=\"text/css\">\n";
+
+echo "<link rel='stylesheet'  href='".$HTMLRel."glpi/config/styles.css' type='text/css' media='screen' >";
+
+//include ($phproot . "/glpi/config/styles.css");
+//echo "</style>\n";
 
 echo "</head>";
 
@@ -71,7 +74,7 @@ echo "<body>";
 echo "<div id='contenulogin'>";
 
 echo "<div id='logo-login'>";
-echo "<img src=\"./pics/logo-glpi-login.png\"  alt=\"Logo GLPI Powered By Indepnet\" title=\"Powered By Indepnet\" /><br />";
+echo "<img src=\"".$HTMLRel."pics/logo-glpi-login.png\"  alt=\"Logo GLPI Powered By Indepnet\" title=\"Powered By Indepnet\" /><br />";
 echo "<a href=\"http://GLPI.indepnet.org/\" class='sous_logo'>";
 	echo "GLPI version ".$cfg_install["version"]."";
 	echo "</a>";
