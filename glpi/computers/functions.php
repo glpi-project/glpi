@@ -205,7 +205,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 			// Name
 			echo "<th>";
-			if ($sort=="name") {
+			if ($sort=="comp.name") {
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=comp.name&order=ASC&start=$start\">";
@@ -213,7 +213,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 		
 		        // Serial
 			echo "<th>";
-			if ($sort=="serial") {
+			if ($sort=="comp.serial") {
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=comp.serial&order=ASC&start=$start\">";
@@ -222,7 +222,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 			// Type
 			echo "<th>";
-			if ($sort=="type") {
+			if ($sort=="glpi_type_computers.name") {
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_computers.name&order=ASC&start=$start\">";
@@ -230,7 +230,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 			// OS
 			echo "<th>";
-			if ($sort=="os") {
+			if ($sort=="glpi_dropdown_os.name") {
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_os.name&order=ASC&start=$start\">";
@@ -238,7 +238,7 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 			// Location			
 			echo "<th>";
-			if ($sort=="location") {
+			if ($sort=="glpi_dropdown_locations.name") {
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=ASC&start=$start\">";
