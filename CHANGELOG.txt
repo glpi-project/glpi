@@ -2,17 +2,17 @@
 
 
 14/11/04 
-Gestion d'une langue par défaut
+Gestion d'une langue par défaut : configurable dans le menu config.
 
 13/11/04 
 Refontes cosmétiques 
-Reorganisation du central : n'importa quel utilisateur peut maintenant tout faire du central
+Reorganisation du central : les utilisateurs ayant accés au central peuvent tout faire à partir du  central
 
 11/11/04 
-Gestion du suivi sur tout type de matériel + gestion des interventiosn générales
+Gestion du suivi des interventions sur tout type de matériel + gestion des interventions générales
 
 11/11/04 
-Mise en place de l agestion des réservations de matériel
+Gestion des réservations de matériel : acces via helpdesk et central
 
 **** GLPI 0.4 ***
 
