@@ -1,10 +1,20 @@
 <?
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
-/* CREATE TEMPORARY TABLE 
-
-
-*/
+//Verifie que le champs $field existe bien dans la table $table
+function FieldExists($table, $field) {
+	$db = new DB;
+	$result = $db->query("SELECT * FROM ". $table ."");
+	$fields = mysql_num_fields($result);
+	$var1 = false;
+	for ($i=0; $i < $fields; $i++) {
+		$name  = mysql_field_name($result, $i);
+		if($name == $field) {
+			$var1 = true;
+		}
+	}
+	return $var1;
+}
 
 //Verifie si la table $tablename existe
 function TableExists($tablename) {
@@ -21,46 +31,8 @@ function TableExists($tablename) {
    return false;
 }
 
-//print_r($_POST);
-if (!isset($_POST['root'])) $_POST['root']='';
-if (!isset($_POST['car_sep'])) $_POST['car_sep']='';
+if (!FieldExists("glpi_dropdown_locations", "level")){
 
-if(!TableExists("glpi_dropdown_locations_new")) {
-	$query = " CREATE TABLE `glpi_dropdown_locations_new` (`ID` INT NOT NULL ,`name` VARCHAR( 255 ) NOT NULL ,`level` TINYINT NOT NULL ,`level_up` INT NOT NULL ,PRIMARY KEY ( `ID` ),UNIQUE (`name`,`level`,`level_up`) );";
-	$db->query($query) or die("LOCATION ".$db->error());
-}
-
-
-	echo "<div align='center'>";
-	echo "<h3>Mise à jour des lieux</h3>";
-	echo "<p>La nouvelle structure est hierarchique</p>";
-	echo "<p>Si vous utilisiez un caractère de séparation vous pouvez l'indiquer pour automatiser la génération de la hierarchie. Vous pouvez aussi spécifier un lieu de base qui incluera tous les lieux générés.</p>";
-	echo "<form action=\"".$_SERVER["PHP_SELF"]."\" method=\"post\">";
-	echo "<p>Caractère de séparation <input type=\"text\" name=\"car_sep\" value=\"".$_POST['car_sep']."\"/></p>";
-	echo "<p>Lieu racine <input type=\"text\" name=\"root\" value=\"".$_POST['root']."\"/></p>";
-	echo "<input type=\"submit\" class='submit' name=\"new_location\" value=\"Valider\" />";
-	echo "</form>";
-	echo "</div>";
-
-
-
-if (isset($_POST["new_location"])){
-location_create_new($_POST['car_sep'],$_POST['root']);	
-display_old_locations();	
-display_new_locations();	
-	echo "<p>Valider nouvelle hierarchie</p>";
-	echo "<form action=\"".$_SERVER["PHP_SELF"]."\" method=\"post\">";
-	echo "<input type=\"submit\" class='submit' name=\"validate_location\" value=\"Valider\" />";
-	echo "</form>";
-
-
-}
-else if (isset($_POST["validate_location"])){
-validate_new_location();
-echo "OK UPDATE LIEU";
-} else {
-display_old_locations();	
-}
 
 function validate_new_location(){
 $db=new DB;
@@ -209,4 +181,48 @@ $query_auto_inc= "ALTER TABLE `glpi_dropdown_locations_new` CHANGE `ID` `ID` INT
 $result_auto_inc=$db->query($query_auto_inc);
 }
 
+
+
+if (!isset($_POST['root'])) $_POST['root']='';
+if (!isset($_POST['car_sep'])) $_POST['car_sep']='';
+
+if(!TableExists("glpi_dropdown_locations_new")) {
+	$query = " CREATE TABLE `glpi_dropdown_locations_new` (`ID` INT NOT NULL ,`name` VARCHAR( 255 ) NOT NULL ,`level` TINYINT NOT NULL ,`level_up` INT NOT NULL ,PRIMARY KEY ( `ID` ),UNIQUE (`name`,`level`,`level_up`) );";
+	$db->query($query) or die("LOCATION ".$db->error());
+}
+
+
+	echo "<div align='center'>";
+	echo "<h3>Mise à jour des lieux</h3>";
+	echo "<p>La nouvelle structure est hierarchique</p>";
+	echo "<p>Si vous utilisiez un caractère de séparation vous pouvez l'indiquer pour automatiser la génération de la hierarchie. Vous pouvez aussi spécifier un lieu de base qui incluera tous les lieux générés.</p>";
+	echo "<form action=\"".$_SERVER["PHP_SELF"]."\" method=\"post\">";
+	echo "<p>Caractère de séparation <input type=\"text\" name=\"car_sep\" value=\"".$_POST['car_sep']."\"/></p>";
+	echo "<p>Lieu racine <input type=\"text\" name=\"root\" value=\"".$_POST['root']."\"/></p>";
+	echo "<input type=\"submit\" class='submit' name=\"new_location\" value=\"Valider\" />";
+	echo "</form>";
+	echo "</div>";
+
+
+
+if (isset($_POST["new_location"])){
+location_create_new($_POST['car_sep'],$_POST['root']);	
+display_old_locations();	
+display_new_locations();	
+	echo "<p>Valider nouvelle hierarchie</p>";
+	echo "<form action=\"".$_SERVER["PHP_SELF"]."\" method=\"post\">";
+	echo "<input type=\"submit\" class='submit' name=\"validate_location\" value=\"Valider\" />";
+	echo "</form>";
+
+
+}
+else if (isset($_POST["validate_location"])){
+validate_new_location();
+echo "OK UPDATE LIEU";
+} else {
+display_old_locations();	
+}
+
+
+}
 ?>
