@@ -39,7 +39,7 @@
 
 <UL><a href="#admin">3 - Partie Administration</a>
 <li><a href="#admina">a) Gestion des utilisateurs</a></li>
-<li><a href="#adminb">b) Configuration de GLPI</a></li>
+<li><a href="#adminb">b) Configuration</a></li>
 <li><a href="#adminc">c) Préférences</a></li>
 <li><a href="#admind">d) Données (Sauvegarde/Restauration)</a></li>
 </UL>
@@ -57,7 +57,63 @@
 
 <h2><A NAME="admin"></A>3 - Partie Administration</h2>
 <h3><A NAME="admina"></A>a) Gestion des utilisateurs</h3>
+
+<p>Cette partie fonctionne exactement de la même façon que les élèments de l'inventaire. Vous pouvez ajouter, modifier et supprimer les utilisateurs.</p>
+
 <h3><A NAME="adminb"></A>b) Configuration de GLPI</h3>
+<UL>
+<li>Intitulés</li>
+<p>Vous pouvez dans cette zone, modifier entièrement les données présentes dans les listes de sélection proposées 
+par exemple pour les lieux et les microprocesseurs.<p>
+<p>Une fois sélectionner la liste que vous voulez modifier vous pouvez ajouter des élèments, les modifier et les supprimer.<br>
+<b>Attention !!</b> Si vous supprimer des élèments utilisés vous devrez alors faire un choix entre modifier les entrées existantes ou bien les mettre à NULL.</p>
+</p>
+
+<li>Modèle</li>
+
+<p>Vous pouvez ici définir des modèles d'ordinateurs vous permettant d'ajouter ensuite très facilement un ensemble de postes de même type.</p>
+
+<li>Authentifications externes</li>
+
+<p>Les authentifications externes vous permettent d'utiliser des sources alternatives d'authentifiaction. Cela vous évite ainsi d'avoir à ajouter à la main tous les utilisateurs.</p>
+<p>La première solution est d'utiliser un serveur de mail :<br>
+- Vous devez alors définir dans la première partie le serveur à utiliser. Pour le définir correctement reportez vous au lien fournit vers php.net qui fournit de nombreux exemples.
+Quelques exemples : {localhost:110/pop3}, {localhost:993/imap/ssl}, {localhost:995/pop3/ssl/novalidate-cert}...<br>
+- Le deuxième paramètre définit le domaine de mail utilisé qui va servir a remplir automatiquement les adresses mails des nouveaux utilisateurs. 
+si l'utilisateur s'appelle toto, sont adresse mail sera alors toto@domaine_mail. 
+</p>
+<p>La deuxième solution est l'utilisation d'un annuaire LDAP ou d'un Active Directory. Pour cette configuration reportez vous à la documentation correspondate présente sur le <a target=_blank href="http://glpi.indepnet.org/article.php3?id_article=33">site web de GLPI.</A></p>
+
+<li>Suivis par emails</li>
+
+<p>Cette section vous permet d'activer le suivi des interventions par email.
+Si vous activez cette fonctionnalité des emails seront alors envoyés au moment de la création d'une nouvelle intervention, à l'ajout de chaque suivi et à la fermeture des interventions.<br>
+- Vous pouvez alors renseigner l'adresse mail de l'administrateur et la signature ajoutée à chaque email<br>
+- Les autres options vous permettent de limiter les emails envoyés. Pour chaque type de personnes vous pouvez activer ou non l'envoi à la création d'une intervention, à l'ajout de nouveau suivi et la cloture d'une intervention.<br>
+- Les groupes de personnes définis sont : l'administrateur, tous les utilisateurs de type 'admin' ou 'normal', le responsable de la tâche et le demandeur de l'intervention.<br>
+- Le demandeur ne recevra un email que s'il a activé le suivi par email lors de sa demande d'intervention.<br>
+</p>
+
+<li>Configuration générale</li>
+<p>
+La configuration générale de l'application permet de régler certains paramètres :<br>
+- Le chemin d'installation. <b>Attention !!</b> Ce chemin est détecté automatiquement au moment de l'instaltion ou de la mise à jour, vous ne devriez donc pas avoir besoin de le modifier.<br>
+- Le niveau de log<br>
+- Le nombre d'évènements à afficher correspond au nombre de lignes de log présentes sur la page d'accueil du centrak.<br>
+- Le temps de conservation des logs. <b>Attention !!</b> Si vous les gardez trop longtemps votre table peut contenir énormèment de données.<br>
+- Montrer les interventions au login : voir les interventions actives sur la page d'accueil du central ou non.<br>
+- Nombre d'éléments à afficher par page (valable pour toutes les listes d'élèments affichées - suivis, ordinateurs...)<br>
+- Nombre de caractères maximum pour chaque éléments de la liste : réduction de la taille des chaines de charactères affichées pour obtenir un affichage correct.<br>
+- Permettre le helpdesk.html : active ou non les demandes d'interventions anonymes via le fichier helpdesk.html.<br>
+</p>
+
+</UL>
 <h3><A NAME="adminc"></A>c) Préférences</h3>
+<p>Cette zone vous permet de changer votre mot de passe, de définir l'ordre par défaut utilisé dans l'affichage 
+des interventions et de définir la langue avec laquelle l'interface est affichée.</p>
 <h3><A NAME="admind"></A>d) Données (Sauvegarde/Restauration)</h3>
+<p>Cette zone vous permet de créer des sauvegardes de la base de données ("Sauvegarde SQL").</p>
+<p>Vous pouvez également supprimer les fichiers de sauvegarde, les restaurer ou télécharger les fichiers SQL.</p>
+<p>Vous pouvez aussi générer une sauvegarde au format XML de la base de données. ("Sauvegarde XML").</p>
+
 </body> 
