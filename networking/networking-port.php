@@ -45,6 +45,7 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(empty($tab["search"])) $tab["search"] = "";
 //if(empty($tab["location"])) $tab["location"] = "";
 
+if (isset($_SERVER["HTTP_REFERER"]))
 $REFERER=$_SERVER["HTTP_REFERER"];
 if (isset($tab["referer"])) $REFERER=$tab["referer"];
 

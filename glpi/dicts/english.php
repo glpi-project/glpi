@@ -68,8 +68,8 @@ $lang["buttons"][17] 	= "Delete";
 $lang["buttons"][18] 	= "Check All"; 
 $lang["buttons"][19] 	= "UnCheck All"; 
 
-$lang["choice"][0]	= "No";
-$lang["choice"][1]	= "Yes";
+$lang["choice"][0] 	= "Yes"; 
+$lang["choice"][1] 	= "No"; 
 
 $lang["search"][0]	= "Search by";
 $lang["search"][1]	= "where this field";
@@ -162,7 +162,7 @@ $lang["backup"][15]     ="Are you sure you want to save the database";
 $lang["backup"][16]     ="Are you sure you want to overwrite the database with the file";
 $lang["backup"][17]     ="Are you sure you want to delete this file";
 $lang["backup"][18]     ="Are you sure you want to save the database";
-$lang["backup"][19]     ="now";
+$lang["backup"][19] 	= "Now"; 
 $lang["backup"][20]     ="Del";
 // Tracking
 $lang["tracking"][0]	= "Follow up of interventions";
@@ -327,6 +327,8 @@ $lang["networking"][47] 	= "From";
 $lang["networking"][48] 	= "To"; 
 $lang["networking"][49] 	= "Firmware"; 
 $lang["networking"][50] 	= "ID"; 
+$lang["networking"][51] 	= "Network point"; 
+$lang["networking"][52] 	= "Netpoint "; 
 
 
 
@@ -418,6 +420,10 @@ $lang["software"][20]	= "Remaining";
 $lang["software"][21]	= "Total";
 $lang["software"][22]	= "No Software found.";
 $lang["software"][23]   = "Software";
+$lang["software"][24] 	= "End date"; 
+$lang["software"][25] 	= "Expire on"; 
+$lang["software"][26] 	= "Never expired"; 
+$lang["software"][27] 	= "Expired licence"; 
 
 
 
@@ -463,7 +469,7 @@ $lang["reports"][6]	="Computers";
 $lang["reports"][7]	="Printers";
 $lang["reports"][8]	="Net devices";
 $lang["reports"][9]	="Monitors";
-$lang["reports"][10]	="S&eacute;lect type to be displayed";
+$lang["reports"][10] 	= "Select type to be displayed"; 
 $lang["reports"][11] 	= "Hardwares under maintenance contract"; 
 $lang["reports"][12] 	= "Hardware Type"; 
 $lang["reports"][13] 	= "Buy date(s)"; 
@@ -475,13 +481,13 @@ $lang["reports"][18] 	= "Serial number";
 $lang["reports"][19] 	= "Contact name"; 
 $lang["reports"][20] 	= "Location"; 
 $lang["reports"][21] 	= "Warranty expiration date"; 
-$lang["reports"][22] 	= "Date Type"; 
+$lang["reports"][22] 	= "Date type"; 
 $lang["reports"][23] 	= "Date(s)"; 
 $lang["reports"][24] 	= "Restrict to computers"; 
 $lang["reports"][25]    ="Tracking report";
 $lang["reports"][26]    ="Default report";
 $lang["reports"][27]    ="Maintenance";
-$lang["reports"][28]    ="Par année";
+$lang["reports"][28] 	= "By year"; 
 $lang["reports"][29] 	= "Peripherals"; 
 
 // LDAP
@@ -563,14 +569,18 @@ $lang["setup"][63] 	= "Attention you are about to remove a heading used for one 
 $lang["setup"][64] 	= "If you confirm the deletion the items using this heading will see allotting fields NULL"; 
 $lang["setup"][65] 	= "You can also replace all the events of this heading by another:"; 
 $lang["setup"][66] 	= "No user found"; 
+$lang["setup"][67] 	= "External authentifications"; 
 $lang["setup"][68] 	= "Email Followup"; 
+$lang["setup"][69] 	= "Peripheral types"; 
+$lang["setup"][70] 	= "General setup"; 
 $lang["setup"][71] 	= "Firmware"; 
 $lang["setup"][72] 	= "Select a dropdown"; 
+$lang["setup"][73] 	= "Network point"; 
 
 // to be translated--------------
-$lang["setup"][100]="Configuration générale";
+$lang["setup"][100] 	= "General setup"; 
 $lang["setup"][101]="Chemin d'installation";
-$lang["setup"][102]="Niveau de log";
+$lang["setup"][102] 	= "Log Level"; 
 $lang["setup"][103]="1- Critique (erreur de login seulement)";
 $lang["setup"][104]="2- Sévère (Non utilisée) ";
 $lang["setup"][105]="3- Important (logins réussis) ";
@@ -591,6 +601,7 @@ $lang["setup"][155]="rootdn (for non anonymous binds)";
 $lang["setup"][156]="Pass (for non-anonymous binds)";
 $lang["setup"][157]="L'extension LDAP de votre parser PHP n'est pas installé";
 $lang["setup"][158]="Impossible d'utiliser LDAP comme source de connection externe";
+$lang["setup"][159] 	= "Connection filter"; 
 
 $lang["setup"][160]=" Si vous ne souhaitez pas utiliser IMAP/POP comme source(s) de connection laissez les champs vides";
 $lang["setup"][161]="Plus d'informations pour la syntaxe du Auth Server sur <a target=\"_blank\" href=\"http://www.php.net/manual/fr/function.imap-open.php\">php.net</a>. Le paramètre qui vous intéresse est le premier (mailbox).";
@@ -607,11 +618,11 @@ $lang["setup"][166]=" Impossible d'utiliser IMAP/POP comme source de connection 
 $lang["help"][0]	= "Welcome";
 $lang["help"][1]	= "Please describe your problem";
 $lang["help"][2]	= "The problem must be solved";
-$lang["help"][3]	= "yesterday";
+$lang["help"][3] 	= "Yesterday"; 
 $lang["help"][4]	= "Very quickly";
 $lang["help"][5]	= "In the course of the day";
-$lang["help"][6]	= "next week";
-$lang["help"][7]	= "when time is free";
+$lang["help"][6] 	= "Next week"; 
+$lang["help"][7] 	= "When time is free"; 
 $lang["help"][8]	= "Inform me about the taken pursuant actions ";
 $lang["help"][9]	= "No";
 $lang["help"][10]	= "Yes";
@@ -626,6 +637,8 @@ $lang["help"][18]	= "Your message has been sent successfully, your request is in
 $lang["help"][19]	= "Thank you for using our automatic Helpdesk-System.";
 $lang["help"][20]	= "The description of your problem could not be added to our database.";
 $lang["help"][21]	= "Please contact your local system administrator.";
+$lang["help"][22] 	= "Search the ID of your computer"; 
+$lang["help"][23] 	= "Enter the first letters (user name, computer or serial)"; 
 
   // Mois
   $lang["calendarM"][0] = "January" ;
@@ -692,6 +705,97 @@ $lang["stats"][23] = "No stats are available";
 $lang["stats"][25] 	= "Average real time of intervention"; 
 $lang["stats"][26] 	= "Types"; 
 $lang["stats"][27] 	= "Total real time of intervention"; 
+$lang["stats"][28] 	= "Maximum time to resolve an intervention"; 
+$lang["stats"][29] 	= "Minimum delay to take into account the intervention"; 
+$lang["stats"][30] 	= "Average delay to take into account the intervention"; 
+$lang["stats"][31] 	= "Day(s)"; 
+$lang["stats"][32] 	= "Hour(s)"; 
+$lang["stats"][33] 	= "Min(s)"; 
+$lang["stats"][34] 	= "Sec(s)"; 
 
+$lang["install"][0] 	= "Install or update GLPI"; 
+$lang["install"][1]	= " Choose \"Install\" for a new complete installation of GLPI ( the imported data by GLPI will be the default datas).";
+$lang["install"][2]	= "Choose \"Update\" for an update of GLPI from a former version";
+$lang["install"][3] 	= "Install"; 
+$lang["install"][4] 	= "Update"; 
+$lang["install"][5]	= "Checking of the compatibility of your environment with the execution of GLPI";
+$lang["install"][6] 	= "Test done"; 
+$lang["install"][7] 	= "Results"; 
+$lang["install"][8] 	= "Test PHP Parser"; 
+$lang["install"][9] 	= "You must to install PHP4. You must download it here :"; 
+$lang["install"][10]	= "You use 4.0.0 or 4.0.1 PHP version - We advise you to update your PHP"; 
+$lang["install"][11] 	= "PHP version is 4.x - Perfect !"; 
+$lang["install"][12] 	= "Sessions Test"; 
+$lang["install"][13]	= "Your PHP parser is not compiled with the support of the sessions ! "; 
+$lang["install"][14] 	= "Support of the sessions is available  - Perfect !"; 
+$lang["install"][15]	= "Check that the support of the sessions is well activated in your php.ini "; 
+$lang["install"][16]	= "Check writing mode for dump files"; 
+$lang["install"][17]	= "The file could not be created."; 
+$lang["install"][18]	= "Check that PHP has a right of writing for the directory: 'backups/dump/'. If you are under a Microsoft Windows environment, check if it is only in read right mode."; 
+$lang["install"][19]	= "The file was created but can not be deleted."; 
+$lang["install"][20] 	= "File was deleted - Perfect !"; 
+$lang["install"][21]	= "Check writing mode for temporary files";
+$lang["install"][22]	= "Check that PHP has a right of writing for the directory: 'reports/reports/convexcel/tmp/'. If you are under a Microsoft Windows environment, check if it is only in read right mode."; 
+$lang["install"][23] 	= "Check writing mode for setting diles"; 
+$lang["install"][24]	= "Check that PHP has a right of writing for the directory: 'glpi/config/'. If you are under a Microsoft Windows environment, check if it is only in read right mode."; 
+$lang["install"][25] 	= "Continue ?"; 
+$lang["install"][26] 	= "Continue"; 
+$lang["install"][27] 	= "Retry"; 
+$lang["install"][28] 	= "Database connection setup"; 
+$lang["install"][29] 	= "Database connection parameters"; 
+$lang["install"][30]	= "Mysql server";
+$lang["install"][31]	= "Mysql user"; 
+$lang["install"][32]	= "Mysql pass"; 
+$lang["install"][33] 	= "Back"; 
+$lang["install"][34] 	= "Test of the connection at the database"; 
+$lang["install"][35] 	= "Impossible to connect at the databse"; 
+$lang["install"][36] 	= "The server answered"; 
+$lang["install"][37] 	= "Server or/and user field is empty"; 
+$lang["install"][38] 	= "Please select a database:"; 
+$lang["install"][39] 	= "Create a new database:"; 
+$lang["install"][40] 	= "Please select the database to update:"; 
+$lang["install"][41] 	= "Impossible to use the database:"; 
+$lang["install"][42] 	= ""; 
+$lang["install"][43] 	= "OK - database was initialized"; 
+$lang["install"][44] 	= "Default values have been entered, delete them if you want"; 
+$lang["install"][45] 	= "Do not delete the 'helpdesk' user"; 
+$lang["install"][46] 	= "At the first connection, you can use the login &quot;glpi&quot; and the password &quot;glpi&quot; in order to access the application and have the administrator rights"; 
+$lang["install"][47] 	= "Impossible to write the database setup file"; 
+$lang["install"][48] 	= "Error in creating database !"; 
+$lang["install"][49]	= "You did not select a database !"; 
+$lang["install"][50] 	= ""; 
+$lang["install"][51] 	= "GLPI setup :"; 
+$lang["install"][52]	= "The preselected values are the default values, it is recommended to leave these values "; 
+$lang["install"][53] 	= "Settings were indeed recorded"; 
+$lang["install"][54]	= "Click on 'Continuer' to finish the installation"; 
+$lang["install"][55]	= "The install is finished"; 
+$lang["install"][56]	= "It is now recommended to apply a chmod+0 to the files install.php and update.php"; 
+$lang["install"][57]	= "Default logins / passwords are:"; 
+$lang["install"][58]	= "glpi/glpi for the  administrator account"; 
+$lang["install"][59]	= "tech/tech for the technician account"; 
+$lang["install"][60]	= "normal for the normal account"; 
+$lang["install"][61]	= "post-only/post-only for the postonly account"; 
+$lang["install"][62]	= "You can delete or modify these accounts as well as the first entries in the database."; 
+$lang["install"][63]	= "Attention DO NOT DELETE the HELPDESK user."; 
+$lang["install"][64] 	= "Use GLPI"; 
+$lang["install"][70] 	= "Impossible to create the database connection file, please verify the rights on the files"; 
+
+$lang["update"][90] 	= "Error during the database update"; 
+$lang["update"][91] 	= "Attention !"; 
+$lang["update"][92] 	= "You will update the GLPI database named :"; 
+$lang["update"][93] 	= "Database connection succed"; 
+$lang["update"][94] 	= "Update succed, your databse is up to date"; 
+$lang["update"][95] 	= "Connection to databse failed, verify the connection parameters included in config_db.php file"; 
+$lang["update"][96] 	= "Now, all administrators have \&quot;super-admin\&quot; rights. This new user type was also added."; 
+$lang["update"][97]	= "The updated database do not contains any \"super-admin\" user";
+$lang["update"][98]	= "You must to create one in order to be able to configure the application (in particular accesses to the external data sources )";
+$lang["update"][99]	= "You will be able to remove this user once that you will have configured the application ";
+$lang["update"][100] 	= "Enter the login"; 
+$lang["update"][101] 	= "Enter the password"; 
+$lang["update"][102] 	= "Re-enter the password"; 
+$lang["update"][103]	= "The login or the password is empty, or you entered 2 different passwords";
+$lang["update"][104]	= "Well recorded user you can connect to the application ";
+$lang["update"][105]	= "Impossible to reach the update in this way!! ";
+$lang["update"][106]	= "Go back to GLPI";
 
 ?>
