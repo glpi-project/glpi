@@ -63,7 +63,7 @@ class Computer {
 				foreach ($data as $key => $val) {
 					$this->fields[$key] = $val;
 				}
-				$query = "SELECT ID, device_type, FK_device, specificity FROM glpi_computer_device WHERE (FK_computers = '$ID')";
+				$query = "SELECT ID, device_type, FK_device, specificity FROM glpi_computer_device WHERE (FK_computers = '$ID') ORDER BY device_type";
 				if ($result = $db->query($query)) {
 					if ($db->numrows($result)>0) {
 						$i = 0;
