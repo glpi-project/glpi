@@ -398,7 +398,7 @@ function showKbCategories($parentID=0)
 			
 			echo " $name</b>\n";
 			if ($_SESSION["kb_show"][$ID]=='Y'){
-	  	  showKbItemAll($ID);
+	  	  	showKbItemAll($ID);
 			showKbCategories($ID);
 			}
 			}
@@ -616,11 +616,10 @@ function getFAQCategories()
 	
 				while ($row=$db->fetch_array($result)){
 	
-				getFAQParentCategories($row["categoryID"], $catNumbers);
+				$catNumbers=getFAQParentCategories($row["categoryID"], $catNumbers);
 				//	$catNumbers[] = $result["categoryID"];
 				}
 			}
-
 	return($catNumbers);
 }
 }	
@@ -656,8 +655,10 @@ function getFAQParentCategories($ID, $catNumbers)
 			$szecatNumbers = sizeof($catNumbers);
 			$catNumbers[$szecatNumbers] = $ID;
 		}
+		
 	}
 	}
+	return($catNumbers);
 }
 
 /**
@@ -699,6 +700,7 @@ function faqShowCategories($parentID=0)
 	global $HTMLRel;
 		
 	$catNumbers = getFAQCategories();
+	
 	$query = "select * from glpi_dropdown_kbcategories where (parentID = $parentID) order by name asc";
 
 	$db=new DB;
@@ -720,6 +722,7 @@ function faqShowCategories($parentID=0)
 			
 				$name = $row["name"];
 				$ID = $row["ID"];
+				
 				if(in_array($ID, $catNumbers))
 				{
 				
