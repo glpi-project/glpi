@@ -1085,10 +1085,70 @@ if(!TableExists("glpi_manufacturer")) {
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_manufacturer ".$lang["update"][90].$db->error());
 }
 
+/// Base connaissance
+if(!TableExists("glpi_dropdown_kbcategories")) {
+$query="CREATE TABLE `glpi_dropdown_kbcategories` (
+  `ID` int(11) NOT NULL auto_increment,
+  `parentID` int(11) NOT NULL default '0',
+  `name` text NOT NULL,
+  PRIMARY KEY  (`ID`)
+)  TYPE=MyISAM;
+";
+	$db->query($query) or die("0.5 CREATE TABLE `glpi_dropdown_kbcategories ".$lang["update"][90].$db->error());
 
+$query="CREATE TABLE `glpi_kbitems` (
+  `ID` int(11) NOT NULL auto_increment,
+  `categoryID` int(11) NOT NULL default '0',
+  `question` text NOT NULL,
+  `answer` text NOT NULL,
+  `faq` enum('yes','no') NOT NULL default 'no',
+  PRIMARY KEY  (`ID`)
+) TYPE=MyISAM
+";
+	$db->query($query) or die("0.5 CREATE TABLE `glpi_kbitems ".$lang["update"][90].$db->error());
 
+}
 
+// Comment reservation
+if(!FieldExists("glpi_reservation","comment")) {
+	$query = "ALTER TABLE `glpi_reservation_resa` ADD `comment` VARCHAR( 255 ) NOT NULL ;";
+	$db->query($query) or die("0.5 alter reservation add comment ".$lang["update"][90].$db->error());
+}	
 
+// Tracking categorie
+if(!TableExists("glpi_dropdown_tracking_category")) {
+
+$query= "CREATE TABLE glpi_dropdown_tracking_category (
+  ID int(11) NOT NULL auto_increment,
+  name varchar(255) default NULL,
+  PRIMARY KEY  (ID)
+);
+";
+	$db->query($query) or die("0.5 CREATE TABLE `glpi_dropdown_tracking_category ".$lang["update"][90].$db->error());
+
+	$query= "ALTER TABLE `glpi_tracking` ADD `category` INT( 11 ) ;";
+	$db->query($query) or die("0.5 alter tracking add categorie ".$lang["update"][90].$db->error());
+}
+
+// Nouvelle gestion des software et licenses
+if(!FieldExists("glpi_licenses","oem")) {
+$query = "ALTER TABLE `glpi_licenses` ADD `oem` ENUM( 'N', 'Y' ) DEFAULT 'N' NOT NULL , ADD `oem_computer` INT( 11 ) NOT NULL, ADD `buy` ENUM( 'Y', 'N' ) DEFAULT 'Y' NOT NULL;";
+	$db->query($query) or die("0.5 alter licenses add oem + buy ".$lang["update"][90].$db->error());
+
+$query = "ALTER TABLE `glpi_software` ADD `is_update` ENUM( 'N', 'Y' ) DEFAULT 'N' NOT NULL , ADD `update_software` INT( 11 ) NOT NULL DEFAULT '-1';";
+	$db->query($query) or die("0.5 alter software add update ".$lang["update"][90].$db->error());
+}
+
+// Couleur pour les priorités
+if(!FieldExists("glpi_config","priority_1")) {
+$query= "ALTER TABLE `glpi_config` ADD `priority_1` VARCHAR( 200 ) DEFAULT '#fff2f2' NOT NULL, ADD `priority_2` VARCHAR( 200 ) DEFAULT '#ffe0e0' NOT NULL, ADD `priority_3` VARCHAR( 200 ) DEFAULT '#ffcece' NOT NULL, ADD `priority_4` VARCHAR( 200 ) DEFAULT '#ffbfbf' NOT NULL, ADD `priority_5` VARCHAR( 200 ) DEFAULT '#ffadad' NOT NULL ;";
+	$db->query($query) or die("0.5 alter config add priority_X ".$lang["update"][90].$db->error());
+
+}
+
+// Update version number
+$query="UPDATE glpi_config set version='0.5' WHERE ID='1'";
+	$db->query($query) or die("0.5 update config version ".$lang["update"][90].$db->error());
 
 //Et enfin on supprime toutes les tables glpi_dropdown concernées ainsi que les champs inutiles de la table computer
 //Et on decommente la suppréssion de la table "templates".
