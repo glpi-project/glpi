@@ -113,7 +113,7 @@ function compDpd2Device($devtype,$devname,$dpdname,$compDpdName,$specif='') {
 	$db = new DB;
 	$result = $db->query($query);
 	while($lndropd = $db->fetch_array($result)) {
-		$query2 = "insert into glpi_device_".$devname." (designation) values ('".$lndropd["name"]."')";
+		$query2 = "insert into glpi_device_".$devname." (designation) values ('".unhtmlentities($lndropd["name"])."')";
 		$db->query($query2) or die("unable to transfer ".$dpdname." to ".$devname."  ".$lang["update"][90].$db->error());
 		$devid = mysql_insert_id();
 		$query3 = "select * from glpi_computers where ".$compDpdName." = '".$lndropd["ID"]."'";
@@ -123,7 +123,7 @@ function compDpd2Device($devtype,$devname,$dpdname,$compDpdName,$specif='') {
 			if(!empty($specif)) {
 				$queryspecif = "SELECT ".$specif." FROM glpi_computers WHERE ID = '".$lncomp["ID"]."'";
 				if($resultspecif = $db->query($queryspecif)) {
-					$query4 = "insert into glpi_computer_device (specificity, device_type, FK_device, FK_computers) values ('".$db->result($resultspecif,0,$specif)."','$devtype','".$devid."','".$lncomp["ID"]."')";
+					$query4 = "insert into glpi_computer_device (specificity, device_type, FK_device, FK_computers) values ('".unhtmlentities($db->result($resultspecif,0,$specif))."','$devtype','".$devid."','".$lncomp["ID"]."')";
 				}
 				
 			}
