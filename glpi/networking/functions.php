@@ -475,7 +475,6 @@ function deleteNetdevice($input) {
 	
 	$netdev = new Netdevice;
 	$netdev->deleteFromDB($input["ID"]);
-	
 } 
 
 
@@ -696,7 +695,8 @@ function deleteNetport($input) {
 	
 	$netport = new Netport;
 	$netport->deleteFromDB($input["ID"]);
-	
+	// Delete Netwire
+	removeConnector($input["ID"]);	
 } 
 
 function showPortsAdd($ID,$devtype) {
@@ -962,13 +962,11 @@ function makeConnector($sport,$dport) {
 	$nps="";
 	if (isset($ps->fields["netpoint"]))
 		$nps=$ps->fields["netpoint"];
-		echo $nps;
 	$pd=new Netport;
 	$pd->getFromDB($dport);
 	$npd="";
 	if (isset($pd->fields["netpoint"]))
 	$npd=$pd->fields["netpoint"];
-	echo $npd;
 	// Update unknown netpoint
 	$updates[0]="netpoint";
 	if (empty($nps)&&!empty($npd)){
