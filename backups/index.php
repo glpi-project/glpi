@@ -30,12 +30,8 @@ This file is part of GLPI.
  Purpose of file:
  ----------------------------------------------------------------------
 */
-// D'aprés PHPmybakcup
-//http://www.nm-service.de/phpmybackup
-//Copyright (c) 2000-2001 by Holger Mauermann, mauermann@nm-service.de
 ?>
 <?php
-
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
@@ -43,6 +39,11 @@ include ($phproot . "/glpi/includes_setup.php");
 checkauthentication("admin");
 
 commonHeader("Setup",$_SERVER["PHP_SELF"]);
+
+
+$max_time=min(get_cfg_var("max_execution_time"),get_cfg_var("max_input_time"));
+if ($max_time>5) {$defaulttimeout=$max_time-2;$defaulttimeout=5;}
+else {$defaulttimeout=1;$defaulttimeout=2;}
 
 
 
@@ -446,10 +447,10 @@ else $offsettable=$_GET["offsettable"];
 if (!isset($_GET["offsetrow"])) $offsetrow=-1; 
 else $offsetrow=$_GET["offsetrow"];
 //timeout de 5 secondes par défaut, -1 pour utiliser sans timeout
-if (!isset($_GET["duree"])) $duree=1; 
+if (!isset($_GET["duree"])) $duree=$defaulttimeout; 
 else $duree=$_GET["duree"];
 //Limite de lignes à dumper à chaque fois
-if (!isset($_GET["rowlimit"])) $rowlimit=4; 
+if (!isset($_GET["rowlimit"])) $rowlimit=$defaultrowlimit; 
 else  $rowlimit=$_GET["rowlimit"];
 
  //si le nom du fichier n'est pas en paramètre le mettre ici
@@ -518,7 +519,7 @@ init_time(); //initialise le temps
 if (!isset($_GET["offset"])) $offset=0;
 else  $offset=$_GET["offset"];
 //timeout de 5 secondes par défaut, -1 pour utiliser sans timeout
-if (!isset($_GET["duree"])) $duree=1; 
+if (!isset($_GET["duree"])) $duree=$defaulttimeout; 
 else $duree=$_GET["duree"];
 
 $fsize=filesize($path.$_GET["file"]);
