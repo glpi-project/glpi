@@ -260,7 +260,6 @@ class Followup {
 		// prepare variables
 
 		$this->date = date("Y-m-d H:i:s");
-		$this->contents = $this->contents;
 	
 		// dump into database
 		$db = new DB;
