@@ -43,10 +43,10 @@ checkAuthentication("normal");
 
 commonHeader("Stats",$_SERVER["PHP_SELF"]);
 
-echo "<center><b>".$lang["stats"][17]."</b></center><hr noshade>";
+echo "<div align ='center'><b>".$lang["stats"][17]."</b></div><hr noshade>";
 //affichage du tableu
 //table display
-echo "<center><table border='0' cellpadding=5>";
+echo "<div align ='center'><table border='0' cellpadding=5>";
 echo "<tr><th>".$lang["stats"][16]."</th><th>".$lang["stats"][13]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th></tr>";
 
 //recuperation des different utilisateurs ayant eu des interventions attribuées
@@ -71,5 +71,7 @@ foreach($nomTech as $key)
 	echo "</tr>";
 }
 echo "</table>";
+echo "</div>";
+
 commonFooter();
 ?>

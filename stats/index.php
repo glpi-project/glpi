@@ -46,10 +46,10 @@ echo "<center><table border='0' cellpadding=5>";
 echo "<tr><th>".$lang["stats"][0].":</th></tr>";
 
 
-	echo  "<tr class='tab_bg_1'><td align='center'><b><a href=\"stat_global.php\">".$lang["stats"][1]."</a></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><b><a href=\"stat_technicien.php\">".$lang["stats"][2]."</a></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><b><a href=\"stat_lieux.php\">".$lang["stats"][3]."</a></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><b><a href=\"stat_user.php\">".$lang["stats"][4]."</a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><b><a href=\"stat_global.php\">".$lang["stats"][1]."</a></b></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><b><a href=\"stat_technicien.php\">".$lang["stats"][2]."</a></b></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><b><a href=\"stat_lieux.php\">".$lang["stats"][3]."</a></b></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><b><a href=\"stat_user.php\">".$lang["stats"][4]."</a></b></td></tr>";
 
 
 echo "</table></center>";
