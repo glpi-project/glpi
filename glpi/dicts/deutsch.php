@@ -635,6 +635,7 @@ $lang["setup"][216]="At the closing of his interventions";
 $lang["setup"][217]="The mail function is unknown or is not activated on your system";
 $lang["setup"][218]="Impossible to configure the email followups";
 $lang["setup"][219]="Allow anonymous tracking post (helpdesk.html)";
+$lang["setup"][220]="'Helpdesk' user could not be modified";
 
 // Helpdesk
 

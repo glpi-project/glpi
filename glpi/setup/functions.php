@@ -447,7 +447,7 @@ function showUserform($target,$name) {
 	$user = new User();
 	if($name == 'Helpdesk') {
 		echo "<div align='center'>";
-		echo "Les modifications sur l'utilisateur Helpdesk sont impossibles";
+		echo $lang["setup"][220];
 		echo "</div>";
 		return 0;
 	}
