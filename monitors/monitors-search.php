@@ -42,14 +42,12 @@ include ($phproot . "/glpi/includes_monitors.php");
 checkAuthentication("normal");
 
 commonHeader("Monitors",$_SERVER["PHP_SELF"]);
-if(isset($_GET["order"]))
-{
+if(empty($_GET["start"])) $_GET["start"] = 0;
+if(empty($_GET["order"])) $_GET["order"] = "ASC";
+
 	showMonitorList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
-}
-else
-{
-	showMonitorList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],"","");
-}
+
+
 
 commonFooter();
 ?>
