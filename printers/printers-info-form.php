@@ -42,22 +42,22 @@ include ($phproot . "/glpi/includes_networking.php");
 if($_GET) $tab = $_GET;
 elseif($_POST) $tab = $_POST;
 
-if ($tab["add"]) {
+if (isset($_POST["add"])) {
 	checkAuthentication("admin");
-	addPrinter($tab);
-	logEvent(0, "Printers", 4, "inventory", $_SESSION["glpiname"]." added ".$tab["name"].".");
+	addPrinter($_POST);
+	logEvent(0, "Printers", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	header("Location: $_SERVER[HTTP_REFERER]");
-} else if ($tab["delete"]) {
+} else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
-	deletePrinter($tab);
-	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
+	deletePrinter($_POST);
+	logEvent($_POST["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/printers/");
-} else if ($tab["update"]) {
+} else if (isset($_POST["update"])) {
 	checkAuthentication("admin");
-	updatePrinter($tab);
-	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." updated item.");
+	updatePrinter($_POST);
+	logEvent($_POST["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	commonHeader("Printers",$_SERVER["PHP_SELF"]);
-	showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	showPrintersForm($_SERVER["PHP_SELF"],$_POST["ID"]);
 	commonFooter();
 
 } else if ($tab["disconnect"]) {
