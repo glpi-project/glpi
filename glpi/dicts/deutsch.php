@@ -545,5 +545,5 @@ $lang["stats"][19] = "Location stats";
 $lang["stats"][20] = "Username";
 $lang["stats"][21] = "Location";
 $lang["stats"][22] = "Numbre of asked interventions";
-
+$lang["stats"][23] = "No stats are available";
 ?>

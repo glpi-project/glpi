@@ -45,19 +45,23 @@ checkAuthentication("normal");
 commonHeader("Stats",$_SERVER["PHP_SELF"]);
 
 echo "<div align ='center'><b>".$lang["stats"][18]."</b></div><hr noshade>";
-//affichage du tableau
-//table display
-echo "<div align ='center'><table border='0' cellpadding=5>";
-echo "<tr><th>".$lang["stats"][20]."</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th></tr>";
 
 //On recupere les differents auteurs d'interventions
 //Get the distinct intervention authors
 $nomUsr = getNbIntervAuthor();
 
+echo "<div align ='center'>";
+
+if (is_array($nomUsr))
+{
+//affichage du tableau
+//table display
+echo "<table border='0' cellpadding='5' class='center'>";
+echo "<tr><th>".$lang["stats"][20]."</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th></tr>";
 //Pour chacun de ces auteurs on affiche
 //foreach these authors display
-foreach($nomUsr as $key)
-{
+   foreach($nomUsr as $key)
+   {
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$key["author"]."</td>";
 	//le nombre d'intervention
@@ -71,8 +75,16 @@ foreach($nomUsr as $key)
 	echo "<td>".getResolAvg(1, 'author',$key["author"])."</td>";
 	
 	echo "</tr>";
-}
+  }
 echo "</table>";
-echo "</div>";
+}
+else {
+
+echo $lang["stats"][23];
+}
+
+echo "</div>"; 
+
+
 commonFooter();
 ?>

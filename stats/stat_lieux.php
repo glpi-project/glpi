@@ -45,18 +45,23 @@ checkAuthentication("normal");
 commonHeader("Stats",$_SERVER["PHP_SELF"]);
 
 echo "<div align='center'><b>".$lang["stats"][19]."</b></div><hr noshade>";
-//affichage du tableau
-echo "<div align='center'><table border='0' cellpadding=5>";
-echo "<tr><th>".$lang["stats"][21]."</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th></tr>";
 
 //recuperation des differents lieux d'interventions
 //Get the distincts intervention location
 $nomLieux = getNbIntervLieux();
 
-//Pour chaque lieu on affiche
-//for each location displays
-foreach($nomLieux as $key)
-{
+echo "<div align ='center'>";
+
+if (is_array($nomLieux))
+   {
+ //affichage du tableau
+ echo "<table border='0' cellpadding='5' class='center'>";
+ echo "<tr><th>".$lang["stats"][21]."</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th></tr>";
+
+ //Pour chaque lieu on affiche
+ //for each location displays
+      foreach($nomLieux as $key)
+      {
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$key["location"]."</td>";
 	//le nombre d'intervention
@@ -70,8 +75,16 @@ foreach($nomLieux as $key)
 	echo "<td>".getResolAvg(1,'computers.location',$key["location"])."</td>";
 	
 	echo "</tr>";
-}
+  }
 echo "</table>";
-echo "</div>";
+}
+else {
+
+echo $lang["stats"][23];
+}
+
+echo "</div>"; 
+
+
 commonFooter();
 ?>

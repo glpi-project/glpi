@@ -45,19 +45,24 @@ checkAuthentication("normal");
 commonHeader("Stats",$_SERVER["PHP_SELF"]);
 
 echo "<div align ='center'><b>".$lang["stats"][17]."</b></div><hr noshade>";
-//affichage du tableu
-//table display
-echo "<div align ='center'><table border='0' cellpadding=5>";
-echo "<tr><th>".$lang["stats"][16]."</th><th>".$lang["stats"][13]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th></tr>";
 
 //recuperation des different utilisateurs ayant eu des interventions attribuées
 //get distinct user who has intervention assigned to
 $nomTech = getNbIntervTech();
 
+echo "<div align ='center'>";
+if (is_array($nomTech))
+
+ {
+//affichage du tableu
+//table display
+echo "<table border='0' cellpadding='5' class='center'>";
+echo "<tr><th>".$lang["stats"][16]."</th><th>".$lang["stats"][13]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th></tr>";
 //Pour chacun de ces utilisateurs on affiche
 //foreach these users display
-foreach($nomTech as $key)
-{
+
+  foreach($nomTech as $key)
+  {
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$key["assign"]."</td>";
 	//le nombre d'intervention
@@ -70,9 +75,16 @@ foreach($nomTech as $key)
 	//The average time to resolv
 	echo "<td>".getResolAvg(1, 'assign',$key["assign"])."</td>";
 	echo "</tr>";
-}
+  }
 echo "</table>";
-echo "</div>";
+}
+else {
+
+echo $lang["stats"][23];
+}
+
+echo "</div>"; 
+
 
 commonFooter();
 ?>
