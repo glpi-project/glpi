@@ -88,7 +88,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			if (!empty($device->fields["cache"])) $entry[$lang["device_hdd"][1]]=$device->fields["cache"];
 			
 			$specificity_label = $lang["device_hdd"][4];
-		
+			$specificity_size = 10;
 		break;
 		case GFX_DEVICE :
 			$type=$lang["devices"][2];
@@ -97,6 +97,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			if (!empty($device->fields["interface"])) $entry[$lang["device_gfxcard"][2]]=$device->fields["interface"];
 			
 			$specificity_label = "";
+			$specificity_size = 10;
 		break;
 		case NETWORK_DEVICE :
 			$type=$lang["devices"][3];
@@ -104,6 +105,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			if (!empty($device->fields["bandwidth"])) $entry[$lang["device_iface"][0]]=$device->fields["bandwidth"];
 			
 			$specificity_label = $lang["device_iface"][2];
+			$specificity_size = 18;
 		break;
 		case MOBOARD_DEVICE :
 			$type=$lang["devices"][5];
@@ -111,6 +113,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			if (!empty($device->fields["chipset"])) $entry[$lang["device_moboard"][0]]=$device->fields["chipset"];
 			
 			$specificity_label = "";
+			$specificity_size = 10;
 		break;
 		case PROCESSOR_DEVICE :
 			$type=$lang["devices"][4];
@@ -118,6 +121,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			if (!empty($device->fields["frequence"])) $entry[$lang["device_processor"][0]]=$device->fields["frequence"];
 			
 			$specificity_label = $lang["device_processor"][0];
+			$specificity_size = 10;
 		break;
 		case RAM_DEVICE :
 			$type=$lang["devices"][6];
@@ -126,6 +130,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			if (!empty($device->fields["frequence"])) $entry[$lang["device_ram"][1]]=$device->fields["frequence"];
 			
 			$specificity_label = $lang["device_ram"][0];
+			$specificity_size = 10;
 		break;
 		case SND_DEVICE :
 			
@@ -134,6 +139,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			if (!empty($device->fields["type"])) $entry[$lang["device_sndcard"][0]]=$device->fields["type"];
 			
 			$specificity_label = "";
+			$specificity_size = 10;
 		break;
 	}
 	
@@ -141,13 +147,16 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 	echo "<td align='center'>$type</td><td align='center'>$name</td>";
 	
 	if (count($entry)>0){
-		$colspan=60/count($entry);
+		$more=0;
+		if(!empty($specificity_label)) $more=1;
+		$colspan=60/(count($entry)+$more);
 		foreach ($entry as $key => $val){
 		echo "<td colspan='$colspan'>$key:&nbsp;$val</td>";
 	
 		}
 	
-	} else echo "<td colspan='60'>&nbsp;</td>";
+	} else if(empty($specificity_label)) echo "<td colspan='60'>&nbsp;</td>";
+	else $colspan=60;
 	
 	
 	if(!empty($specificity_label)) {
@@ -155,12 +164,11 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 		//Mise a jour des spécificitées
 		if(!empty($withtemplate) && $withtemplate == 2) {
 			if(empty($specif)) $specif = "&nbsp;";
-			echo "<td>".$specificity_label." : </td>";
-			echo "<td align='center'>".$specif."</td>";
+			echo "<td colspan='$colspan'>".$specificity_label.":&nbsp;$specif</td><td>&nbsp;</td>";
 		}
 		else {
 			echo "<form name='form_update_device_$compDevID' action=\"\" method=\"post\" >";
-			echo "<td align='right'>".$specificity_label." : <input type='text' name='device_value' value=\"".$specif."\" size='10' /></td>";
+			echo "<td align='right' colspan='$colspan'>".$specificity_label.":&nbsp;<input type='text' name='device_value' value=\"".$specif."\" size='$specificity_size' /></td>";
 			echo "<td align='center'>";
 			echo "<img src='".$HTMLRel."pics/actualiser.png' class='calendrier' alt='".$lang["buttons"][7]."' title='".$lang["buttons"][7]."'
 			onclick='form_update_device_$compDevID.submit()'>";
@@ -174,7 +182,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 		}
 		
 	} else {
-   		echo "<td>&nbsp;</td><td>&nbsp;</td>";
+   		echo "<td>&nbsp;</td>";
 		if(!empty($withtemplate) && $withtemplate == 2) {
   		  echo "<td>&nbsp;</td>";
   		 } else {
@@ -224,10 +232,10 @@ function device_selecter($target,$cID,$withtemplate='') {
 	//do nothing
 	} else {
 		
-		echo "<tr  class='tab_bg_1'><td colspan='2'>";
+		echo "<tr  class='tab_bg_1'><td colspan='2' align='right'>";
 		echo $lang["devices"][0].":";
 		echo "</td>";
-		echo "<td align ='center' colspan='63'>"; 
+		echo "<td colspan='63'>"; 
 		echo "<form action=\"$target\" method=\"post\">";
 		echo "<select name=\"new_device_type\">";
 		echo "<option value=\"".HDD_DEVICE."\">".$lang["devices"][1]."</option>";
