@@ -88,7 +88,8 @@ input.submit:hover {
   {  
     font-size: 12px;
     font-weight: bold;
-    background-color: #FFC65D;
+   /* background-color: #FFC65D;*/
+    background-color: #fccc6f;
 	vertical-align:bottom;
 }
 
@@ -111,7 +112,7 @@ text-align:center;
 
 
 .tab_bg_1 {
-background-color: #cccccc;
+background-color: #ccccc7;
 
 }
 .tab_bg_1_2 {
@@ -120,12 +121,13 @@ background-color: #cc5555;
 }
 
 .tab_bg_2 {
-background-color: #dddddd;
+background-color: #d7d7d2;
 
 }
 
 .tab_bg_3 {
-background-color: #eeeeee;
+  /*background-color: #eeeeee;*/
+background-color: #e7e7e2;
 
 }  
  
@@ -239,10 +241,13 @@ width: 600px;
 /* ###### entete footer ###### */
 
 #navigation{
-	background-color: #C5DAC8;
+	/* ## background-color: #C5DAC8;*/
+	background-color: #efefe7;
 	-moz-border-radius: 8px;
-        border: 2px outset #009966;
+        /*border: 2px outset #009966;*/
 
+	border: 1px solid #FFC65D;
+	
 	margin-bottom: 10px;
 	padding: 5px;
 	
@@ -336,9 +341,14 @@ padding-bottom: 10px;
 
 
 #footer{
-	background-color: #C5DAC8;
+	
+	/* ## background-color: #C5DAC8;*/
+	background-color: #efefe7;
 	-moz-border-radius: 8px;
-        border: 2px outset #009966;
+        /*border: 2px outset #009966;*/
+
+	border: 1px solid #FFC65D;
+	
 	padding: 5px;
 	margin-top: 200px;
 	 clear:both;
