@@ -314,7 +314,13 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 function showComputerForm($target,$ID,$withtemplate='') {
 	global $lang,$HTMLRel;;
 	$comp = new Computer;
-	if($comp->getfromDB($ID)) {
+	$computer_spotted = false;
+	if(empty($ID) && $withtemplate == 1) {
+		if($comp->getEmpty()) $computer_spotted = true;
+	} else {
+		if($comp->getfromDB($ID)) $computer_spotted = true;
+	}
+	if($computer_spotted) {
 		if(!empty($withtemplate) && $withtemplate == 2) {
 			$template = "newcomp";
 			$datestring = $lang["computers"][14].": ";
@@ -330,6 +336,9 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		}
 		
 		echo "<form name='form' method='post' action=\"$target\">";
+		if(strcmp($template,"newtemplate") === 0) {
+			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
+		}
 		echo "<div align='center'>";
 		echo "<table width='700px' border='0' class='tab_cadre' >";
 		echo "<tr><th colspan ='2'align='center' >";

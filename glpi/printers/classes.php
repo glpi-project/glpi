@@ -93,7 +93,6 @@ function getEmpty () {
 	function addToDB() {
 		
 		$db = new DB;
-
 		// Build query
 		$query = "INSERT INTO glpi_printers (";
 		$i=0;
