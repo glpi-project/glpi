@@ -338,8 +338,10 @@ if ($_GET["delfile"]!=""){
 	$dir=opendir($path); 
 	while ($file = readdir ($dir)) { 
 	    if ($file != "." && $file != ".." && eregi("\.sql",$file)) { 
+	    	$taille_fic = filesize($path.$file)/1024;
+		$taille_fic = (int)$taille_fic;
 	        echo "<tr><td>$file&nbsp;</td>
-	        	<td align=\"right\">&nbsp;" . bcdiv(filesize($path.$file),1024,1) . " kB&nbsp;</td>
+	        	<td align=\"right\">&nbsp;" . $taille_fic . " kB&nbsp;</td>
 	        	<td>&nbsp;" . date("Y-m-d H:i",filemtime($path.$file)) . "</td>
 	       		<td>&nbsp;<a href=\"javascript:erase('$file')\">".$lang["backup"][20]."</a>&nbsp;</td>
 
@@ -351,10 +353,12 @@ closedir($dir);
 $dir=opendir($path);
 	while ($file = readdir ($dir)) {
 	    if ($file != "." && $file != ".." && eregi("\.xml",$file)) {
-	       echo "
+	        $taille_fic = filesize($path.$file)/1024;
+		$taille_fic = (int)$taille_fic;
+	        echo "
 	   	        <tr ><td colspan='6' ><hr noshade></td></tr>
 	   	    	<tr><td>$file&nbsp;</td>
-	        	<td align=\"right\">&nbsp;" . bcdiv(filesize($path.$file),1024,1) . " kB&nbsp;</td>
+	        	<td align=\"right\">&nbsp;" . $taille_fic . " kB&nbsp;</td>
 	        	<td>&nbsp;" . date("Y-m-d H:i",filemtime($path.$file)) . "</td>
 	       		<td>&nbsp;<a href=\"javascript:erase('$file')\">".$lang["backup"][20]."</a>&nbsp;</td>
                          	<td>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</td>

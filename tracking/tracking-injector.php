@@ -43,7 +43,8 @@ include ($phproot . "/glpi/includes_setup.php");
 
 $glpiname = $_SESSION["glpiname"];
 
-if (!$glpiname || $glpiname == "bogus") {
+if (!$glpiname || $glpiname == "bogus")
+{
 	
 	$glpiname = "Helpdesk";
 }
@@ -62,7 +63,8 @@ if ($_GET["priority"] && !$_GET["contents"])
 	echo "</b></center>";
 	nullFooter();
 	exit;
-} elseif ($_GET["emailupdates"] == "yes" && $_GET["uemail"]=="")
+}
+elseif ($_GET["emailupdates"] == "yes" && $_GET["uemail"]=="")
 {
 	nullHeader("Tracking",$_SERVER["PHP_SELF"]);
 		echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
@@ -73,7 +75,7 @@ if ($_GET["priority"] && !$_GET["contents"])
 	nullFooter();
 	exit;
 }
-elseif (!$ID)
+elseif (empty($ID))
 {
 	nullHeader("Tracking",$_SERVER["PHP_SELF"]);
 		echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";

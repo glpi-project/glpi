@@ -39,17 +39,22 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_networking.php");
 
-if (isset($_POST["add"])) {
+if (isset($_POST["add"]))
+{
 	checkAuthentication("admin");
 	addNetdevice($_POST);
 	logEvent(0, "networking", 4, "inventory", $_SESSION["glpiname"]." added item name ".$_POST["name"].".");
 	header("Location: ".$cfg_install["root"]."/networking/");
-} else if (isset($_POST["delete"])) {
+}
+else if (isset($_POST["delete"]))
+{
 	checkAuthentication("admin");
 	deleteNetdevice($_POST);
 	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"] ."deleted item.");
 	header("Location: ".$cfg_install["root"]."/networking/");
-} else if (isset($_POST["update"])) {
+}
+else if (isset($_POST["update"]))
+{
 	checkAuthentication("admin");
 	updateNetdevice($_POST);
 	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." updated item.");
@@ -57,7 +62,9 @@ if (isset($_POST["add"])) {
 	showNetworkingForm ($_SERVER["PHP_SELF"],$_POST["ID"]);
 	commonFooter();
 
-} else {
+}
+else
+{
 	checkAuthentication("normal");
 	commonHeader("Networking",$_SERVER["PHP_SELF"]);
 	showNetworkingForm ($_SERVER["PHP_SELF"],$_GET["ID"]);

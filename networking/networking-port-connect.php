@@ -42,15 +42,9 @@ checkAuthentication("admin");
 
 
 commonHeader("Networking",$_SERVER["PHP_SELF"]);
-If($_GET)
-{
-	  $tab = $_GET;
-}
-elseif($_POST) 
-{
-	$tab = $_POST;
-	
-}
+if(isset($_GET)) $tab = $_GET;
+if(empty($tab) && isset($_POST)) $tab = $_POST;
+
 if(!(isset($tab["next"])))
 {
 	showConnectorSearch($_SERVER["PHP_SELF"],$tab["ID"]);

@@ -40,28 +40,40 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
+if(isset($_GET)) $tab = $_GET;
+if(empty($tab) && isset($_POST)) $tab = $_POST;
 
-if ($_POST["add"]) {
+
+if(isset($tab["add"]))
+{
 	checkAuthentication("admin");
-	addTemplate($_POST);
-	logEvent(0,"Templates", 5, "setup", $_SESSION["glpiname"]." added template ".$_POST["templname"].".");
+	addTemplate($tab);
+	logEvent(0,"Templates", 5, "setup", $_SESSION["glpiname"]." added template ".$tab["templname"].".");
 	header("Location: $_SERVER[$HTTP_REFERER]?done");
-} else if ($_POST["delete"]) {
+}
+else if(isset($tab["delete"]))
+{
 	checkAuthentication("admin");
-	deleteTemplate($HTTP_GET_VARS);
-	logEvent(0,"Templates", 5, "setup", $_SESSION["glpiname"]." deleted template ".$_POST["ID"].".");
+	deleteTemplate($tab);
+	logEvent(0,"Templates", 5, "setup", $_SESSION["glpiname"]." deleted template ".$tab["ID"].".");
 	header("Location: $_SERVER[$HTTP_REFERER]?done");
-} else if ($_POST["update"]) {
+}
+else if(isset($tab["update"]))
+{
 	checkAuthentication("admin");
-	updateTemplate($_POST);
-	logEvent(0,"Templates", 5, "setup", $_SESSION["glpiname"]." updated template ".$_POST["ID"].".");
+	updateTemplate($tab);
+	logEvent(0,"Templates", 5, "setup", $_SESSION["glpiname"]." updated template ".$tab["ID"].".");
 	header("Location: $_SERVER[$HTTP_REFERER]?done");
-} else if ($_POST["showform"]) {
+}
+else if(isset($tab["showform"]))
+{
 	checkAuthentication("admin");
 	commonHeader("glpi Setup",$_SERVER["PHP_SELF"]);
-	showTemplateForm($_SERVER["PHP_SELF"],$_POST["ID"]);
+	showTemplateForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	commonFooter();
-} else {
+}
+else
+{
 	checkAuthentication("normal");
 	commonHeader("glpi Setup",$_SERVER["PHP_SELF"]);
 	listTemplates($_SERVER["PHP_SELF"]);
