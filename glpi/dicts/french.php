@@ -117,6 +117,7 @@ $lang["connect"][12] 	= "Choisissez un écran dans la liste";
 $lang["connect"][13]	= "Sur une imprimante qui";
 $lang["connect"][14]	= "Sur un périphérique qui";
 $lang["connect"][15]	= "Sur un écran qui";
+$lang["connect"][16]	= "Aucun élément trouvé";
 
 //header menu
 

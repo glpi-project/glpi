@@ -606,18 +606,26 @@ function showConnections($ID) {
 	if ($result=$db->query($query)) {
 		$resultnum = $db->numrows($result);
 		if ($resultnum>0) {
+			echo "<table width='100%'>";
 			for ($i=0; $i < $resultnum; $i++) {
+				echo "<tr>";
 				$tID = $db->result($result, $i, "end1");
 				$printer = new Printer;
 				$printer->getfromDB($tID);
-				echo "<li><b><a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=$tID\">";
+				echo "<td align='center'><b><a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=$tID\">";
 				echo $printer->fields["name"]." (".$printer->fields["ID"].")";
-				echo "</b></a><br>";
-			}			
+				echo "</b></a></td>";
+				
+				echo "<td align='center'><b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=3\">";
+				echo $lang["buttons"][10];
+				echo "</b></a></td>";
+				echo "</tr>";
+			}
+			echo "</table>";
 		} else {
-			echo $lang["computers"][38];
+			echo $lang["computers"][38]."<br>";
 		}
-		echo "<br><b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=printer\">";
+		echo "<b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=printer\">";
 		echo $lang["buttons"][9];
 		echo "</b></a>";
 
@@ -630,18 +638,26 @@ function showConnections($ID) {
 	if ($result=$db->query($query)) {
 		$resultnum = $db->numrows($result);
 		if ($resultnum>0) {
+			echo "<table width='100%'>";
 			for ($i=0; $i < $resultnum; $i++) {
+				echo "<tr>";
 				$tID = $db->result($result, $i, "end1");
 				$monitor = new Monitor;
 				$monitor->getfromDB($tID);
-				echo "<li><b><a href=\"".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=$tID\">";
+				echo "<td align='center'><b><a href=\"".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=$tID\">";
 				echo $monitor->fields["name"]." (".$monitor->fields["ID"].")";
-				echo "</b></a><br>";
-			}			
+				echo "</b></a></td>";
+				echo "<td align='center'><b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=4\">";
+				echo $lang["buttons"][10];
+				echo "</b></a></td>";
+
+				echo "</tr>";
+			}
+			echo "</table>";			
 		} else {
-			echo $lang["computers"][37];
+			echo $lang["computers"][37]."<br>";
 		}
-		echo "<br><b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=monitor\">";
+		echo "<b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=monitor\">";
 		echo $lang["buttons"][9];
 		echo "</b></a>";
 
@@ -654,18 +670,26 @@ function showConnections($ID) {
 	if ($result=$db->query($query)) {
 		$resultnum = $db->numrows($result);
 		if ($resultnum>0) {
+			echo "<table width='100%'>";
 			for ($i=0; $i < $resultnum; $i++) {
+				echo "<tr>";
 				$tID = $db->result($result, $i, "end1");
 				$periph = new Peripheral;
 				$periph->getfromDB($tID);
-				echo "<li><b><a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=$tID\">";
+				echo "<td align='center'><b><a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=$tID\">";
 				echo $periph->fields["name"]." (".$periph->fields["ID"].")";
-				echo "</b></a><br>";
-			}			
+				echo "</b></a></td>";
+				echo "<td align='center'><b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=5\">";
+				echo $lang["buttons"][10];
+				echo "</b></a></td>";
+
+				echo "</tr>";
+			}
+			echo "</table>";			
 		} else {
-			echo $lang["computers"][47];
+			echo $lang["computers"][47]."<br>";
 		}
-		echo "<br><b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=peripheral\">";
+		echo "<b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=peripheral\">";
 		echo $lang["buttons"][9];
 		echo "</b></a>";
 
