@@ -51,6 +51,6 @@ echo "<tr><th colspan='3'>".$lang["reports"][10].":</th></tr>";
 	echo  "<tr class='tab_bg_1'><td align='center'><b>".$lang["reports"][29]."</b></td><td><a href='rapport-sylk.php?table=peripherals&limited=no' target='_blank'><b>".$lang["reports"][31]."</b></a></td><td><a href='rapport-sylk.php?table=peripherals&limited=yes' target='_blank'><b>".$lang["reports"][32]."</b></a></td></tr>";
 	
 echo "</table></div>";
-echo "<br><center><b>".$lang["reports"][33]."</b></center>";
+
 commonFooter();
 ?>

@@ -499,7 +499,7 @@ $lang["reports"][29]	="P&eacute;riph&eacute;riques";
 $lang["reports"][30]     = "P&eacute;riph&eacute;riques sous contrat de maintenance";
 $lang["reports"][31]    ="complet";
 $lang["reports"][32]    ="limité";
-$lang["reports"][33]    ="Si vous utilisez un logiciel qui ne connait rien aux standards (Excel par exemple), utilisez la version limitée pour ne pas avoir de problème avec la taille des champs. Les champs trop longs seront tronqués.";
+
 
 // LDAP
 $lang["ldap"][0]	= "recherche";
@@ -863,5 +863,9 @@ $lang["reservation"][10]	= "Date Début";
 $lang["reservation"][11]	= "Date Fin";
 $lang["reservation"][12]	= "Heure Début";
 $lang["reservation"][13]	= "Heure Fin";
+$lang["reservation"][14]	= "Supprimer r&eacute;servation";
+$lang["reservation"][15]	= "Journ&eacute;e";
+$lang["reservation"][16]	= "Jusqu'à";
+$lang["reservation"][17]	= "D&eacute;s";
 
 ?>

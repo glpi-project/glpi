@@ -41,7 +41,7 @@
 include ("_relpos.php");
 // FUNCTIONS Reservation
 
-/// TOCHANGE
+
 function titleReservation(){
            GLOBAL  $lang,$HTMLRel;
            
@@ -157,7 +157,7 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 		
 		if ($numrows_limit>0) {
 			// Produce headline
-			echo "<center><table  class='tab_cadre'><tr>";
+			echo "<div align='center'><table  class='tab_cadre'><tr>";
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_reservation_item.ID") {
@@ -207,14 +207,14 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 			}
 
 			// Close Table
-			echo "</table></center>";
+			echo "</table></div>";
 
 			// Pager
 			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<center><b>".$lang["peripherals"][17]."</b></center>";
+			echo "<div align='center'><b>".$lang["peripherals"][17]."</b></div>";
 			//echo "<hr noshade>";
 			//searchFormperipheral();
 		}
@@ -334,7 +334,8 @@ echo "<div align='center'>";
 
 echo "<table cellpadding='20' ><tr><td><a href=\"".$target.$str_precedent."\"><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></td><td><b>".
 	$lang["calendarM"][$mois_courant-1]."</b></td><td><a href=\"".$target.$str_suivant."\"><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></td></tr></table>";
-echo "<table class='tab_cadre'>";
+
+echo "<table class='tab_cadre' width='730'>";
 echo "<th width='14%'>".$lang["calendarD"][1]."</th>";
 echo "<th width='14%'>".$lang["calendarD"][2]."</th>";
 echo "<th width='14%'>".$lang["calendarD"][3]."</th>";
@@ -348,7 +349,7 @@ echo "<tr class='tab_bg_3'>";
 // Il faut insérer des cases vides pour mettre le premier jour du mois
 // en face du jour de la semaine qui lui correspond.
 for ($i=1;$i<$jour_debut_mois;$i++)
-	echo "<td>&nbsp;</td>";
+	echo "<td style='background-color:#ffffff'>&nbsp;</td>";
 
 // voici le remplissage proprement dit
 if ($mois_courant<10&&strlen($mois_courant)==1) $mois_courant="0".$mois_courant;
@@ -387,7 +388,7 @@ for ($i=1;$i<$nb_jour[$mois_courant-1]+1;$i++){
 // on recommence pour finir le tableau proprement pour les mêmes raisons
 
 if ($jour_fin_mois!=0)
-for ($i=0;$i<7-$jour_fin_mois;$i++) 	echo "<td>&nbsp;</td>";
+for ($i=0;$i<7-$jour_fin_mois;$i++) 	echo "<td style='background-color:#ffffff'>&nbsp;</td>";
 
 echo "</tr></table></div>";
 	
@@ -470,7 +471,7 @@ function showAddReservationForm($target,$ID,$date){
 }
 
 function printReservation($target,$ID,$date){
-		global $HTMLRel;
+		global $lang, $HTMLRel;
 
 		$id_user=$_SESSION["glpiID"];
 
@@ -499,17 +500,17 @@ $display="";
 					else $heure_fin=get_hour_from_sql($row['end']);
 					
 					if (strcmp($heure_debut,"00:00")==0&&strcmp($heure_fin,"24:00")==0)
-						$display="Journée";
+						$display=$lang["reservation"][15];
 					else if (strcmp($heure_debut,"00:00")==0) 
-						$display="Jusqu'à ".$heure_fin;
+						$display=$lang["reservation"][16]."&nbsp;".$heure_fin;
 					else if (strcmp($heure_fin,"24:00")==0) 
-						$display="Dès ".$heure_debut;
+						$display=$lang["reservation"][17]."&nbsp;".$heure_debut;
 					else $display=$heure_debut."-".$heure_fin;
 
 					$delete="";
 
 					if ($_SESSION["glpiID"]==$user->fields["ID"]||isAdmin($_SESSION["glpitype"]))
-						$delete="<a  href=\"".$target."?show=resa&ID=$ID&clear=".$row['ID']."\" title='Delete'><img  src=\"".$HTMLRel."pics/clear.png\"></a>";
+						$delete="<a  href=\"".$target."?show=resa&ID=$ID&clear=".$row['ID']."\" alt='".$lang["reservation"][14]."' title='".$lang["reservation"][14]."'><img  src=\"".$HTMLRel."pics/clear.png\"></a>";
 
 		
 		echo $delete."</td><td align='center' class='tab_bg_2' style='border:1px dashed #cccccc'><span style='font-size:10px'>".$display."<br><b>".$user->fields["name"]."</b></span>";
