@@ -183,7 +183,8 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 		}
 		echo "</table></div>";
 		// Pager
-		$parameters="show=$show&contains=$contains&sort=$sort";
+		if(empty($sort)) $sort = "";
+		$parameters="show=".$show."&contains=".$contains."&sort=".$sort;
 		printPager($start,$numrows,$target,$parameters);
 	}
 	else

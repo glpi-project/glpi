@@ -40,7 +40,7 @@ include ("_relpos.php");
 include ("glpi/includes.php");
 include ($phproot . "/glpi/includes_tracking.php");
 
-checkAuthentication("post-only");
+checkAuthentication("normal");
 
 commonHeader("Command Center",$_SERVER["PHP_SELF"]);
 
