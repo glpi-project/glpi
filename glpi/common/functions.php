@@ -1901,7 +1901,7 @@ function rembo($string){
 		{
 			$string .= $outside[$i];
 			if (isset($inside[$i]))
-				$string .= '<br><br><table style="width: 95%; border: dotted 2px #cccccc;" align="center" cellspacing="4" cellpadding="6"><tr><td class="punquote"><b>Code:</b><br><br><pre>'.trim($inside[$i]).'</pre></td></tr></table><br>';
+				$string .= '<br><br><table  class="code" align="center" cellspacing="4" cellpadding="6"><tr><td class="punquote"><b>Code:</b><br><br><pre>'.trim($inside[$i]).'</pre></td></tr></table><br>';
 		}
 	}
 
