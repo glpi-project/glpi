@@ -343,7 +343,7 @@ function compdevice_form_add($target,$device_type,$cID,$withtemplate='') {
 	global $lang;
 	$db = new DB;
 
-	$query = "SELECT `ID`, `designation` FROM `".getDeviceTable($device_type)."`";
+	$query = "SELECT `ID`, `designation` FROM `".getDeviceTable($device_type)."` ORDER BY designation";
 	if($result = $db->query($query)) {
 		echo "<form action=\"$target\" method=\"post\">";
 		echo "<div align=\"center\">";
