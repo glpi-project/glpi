@@ -864,9 +864,11 @@ if(!FieldExists("glpi_tracking","device_type")) {
 }
 
 
-	
 
 
+// Mise a jour du numéro de version ---- A LAISSER 0 LA FIN
+	$query = "UPDATE `glpi_config` SET `version` = ' 0.42';";
+	$db->query($query) or die("4203 ".$lang["update"][90].$db->error());
 return $ret;
 }
 
