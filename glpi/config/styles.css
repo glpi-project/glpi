@@ -1,5 +1,8 @@
 //<!--
 
+
+/* ###### general ###### */
+
   body 
   {  
     padding :0;
@@ -8,7 +11,7 @@
  	background-color : #FFFFFF;
 	color : #000000;
 	font-family: verdana;
-  
+
   }
 
   img {
@@ -16,10 +19,31 @@
  
   }
  
-  
+ small
+  {  
+    font-family: verdana;
+	font-size: 10px;
+	text-decoration: underline;
+  } 
 
+  b
+  {
+    font-wheight: bold;
+  }
 
+ .center {
+text-align:center;
+}
 
+.red { color:red;}
+.blue {color:blue;}
+.green {color:green;}
+
+ /* ###### form ###### */
+ 
+ form
+  {font-size: 12px;
+  }
 
  option {border:1px solid #ccc;
         background-color:#ffffff;}
@@ -46,12 +70,7 @@
        background-color:#ffffff;
         }
 
-  small
-  {  
-    font-family: verdana;
-	font-size: 10px;
-	text-decoration: underline;
-  }
+ /* ###### table ###### */
 
   th   
   {  
@@ -64,14 +83,82 @@
   { font-size: 12px;
   }
 
-  b
-  {
-    font-wheight: bold;
-  }
+
+.tab_bg_1 {
+background-color: #cccccc;
+
+}
+
+.tab_bg_2 {
+background-color: #dddddd;
+
+}
+
+.tab_bg_3 {
+background-color: #eeeeee;
+
+}  
  
-  form
-  {font-size: 12px;
-  }
+  /* ###### login ###### */
+
+#contenulogin {
+/* a voir je suis pas bien sûr  */
+height: 100%;
+font-family : Verdana,Arial,Helvetica,sans-serif;
+font-size : 12px;
+position: relative; /*ou absolute */
+left: 50%;
+width: 300px;
+margin-left: -150px;
+color :#009966;
+}
+
+#boxlogin {
+background-color: #FFFFFF;
+text-align: center;
+height: 200px;
+width: 300px;
+margin-top: 10px;
+
+}
+
+
+#boxlogin fieldset {
+background-color: #eeeeee;
+border: 2px solid #FFC65D;
+padding-bottom:10px;
+}
+
+#boxlogin legend {
+font-family:"Trebuchet MS",Verdana,Geneva,Arial,Helvetica,sans-serif;
+font-size: 16px;
+font-weight: 700;
+background-color: transparent;
+}
+
+
+#boxlogin input {
+
+border: 1px solid #009966;
+}
+
+#logo-login {
+text-align: center;
+margin-top: 100px;
+
+}
+
+.sous_logo {
+  font-family: arial;
+	font-size: 9px;
+	color: #eeeee;
+	text-decoration: none;
+	}
+
+
+  /* ###### liens ###### */
+
+
 
   A:link
   {
@@ -94,6 +181,8 @@
   hr{border: 1px solid #cccccc;
        }
 
+
+/* ###### entete footer ###### */
 
 #navigation{
 	background-color: #C5DAC8;
@@ -132,27 +221,7 @@
 	}
 
 
-.tab_bg_1 {
-background-color: #cccccc;
 
-}
 
-.tab_bg_2 {
-background-color: #dddddd;
-
-}
-
-.tab_bg_3 {
-background-color: #eeeeee;
-
-}
-
-.center {
-text-align:center;
-}
-
-.red { color:red;}
-.blue {color:blue;}
-.green {color:green;}
 
 //-->
