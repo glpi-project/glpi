@@ -491,13 +491,13 @@ function showPorts ($device,$device_type) {
 	
 	$db = new DB;
 	switch($device_type) {
-		case 1 :
+		case COMPUTER_TYPE :
 			$device_real_table_name = "glpi_computers";
 			break;
-		case 2 :
+		case NETWORKING_TYPE :
 			$device_real_table_name = "glpi_networking";
 			break;
-		case 3 :
+		case PRINTER_TYPE :
 			$device_real_table_name = "glpi_printers";
 			break;
 	}
@@ -720,13 +720,13 @@ function showPortsAdd($ID,$devtype) {
 	GLOBAL $cfg_layout, $cfg_install, $lang;
 	$db = new DB;
 	switch($devtype) {
-		case 1 :
+		case COMPUTER_TYPE :
 			$device_real_table_name = "glpi_computers";
 			break;
-		case 2 :
+		case NETWORKING_TYPE :
 			$device_real_table_name = "glpi_networking";
 			break;
-		case 3 :
+		case PRINTER_TYPE :
 			$device_real_table_name = "glpi_printers";
 			break;
 	}
