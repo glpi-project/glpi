@@ -1,4 +1,4 @@
-#GLPI Dump database on 2004-09-20 20:26
+#GLPI Dump database on 2004-09-22 23:44
 ### Dump table glpi_computers
 
 DROP TABLE IF EXISTS glpi_computers;
@@ -97,7 +97,7 @@ CREATE TABLE glpi_config (
    PRIMARY KEY (ID)
 );
 
-INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15',' 0.4-alpha','GLPI powered by indepnet','/glpi','1','0','','','','','','','admin@xxxxx.fr','SIGNATURE','1','1','1','0','0','0','0','0','0','1','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','0');
+INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15',' 0.4','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','');
 ### Dump table glpi_connect_wire
 
 DROP TABLE IF EXISTS glpi_connect_wire;
@@ -113,7 +113,6 @@ CREATE TABLE glpi_connect_wire (
    KEY type (type)
 );
 
-INSERT INTO glpi_connect_wire VALUES ('1','2','8','5');
 ### Dump table glpi_dropdown_firmware
 
 DROP TABLE IF EXISTS glpi_dropdown_firmware;
@@ -320,10 +319,7 @@ CREATE TABLE glpi_event_log (
    KEY date (date)
 );
 
-INSERT INTO glpi_event_log VALUES ('381','-1','system','2004-08-29 23:30:38','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('382','-1','system','2004-09-11 23:16:27','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('383','-1','system','2004-09-14 19:35:00','login','1','failed login: glpi');
-INSERT INTO glpi_event_log VALUES ('384','-1','system','2004-09-14 19:35:06','login','1','failed login: glpi');
+INSERT INTO glpi_event_log VALUES ('363','-1','system','2004-09-22 23:44:13','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -338,10 +334,11 @@ CREATE TABLE glpi_followups (
    KEY author (author)
 );
 
-INSERT INTO glpi_followups VALUES ('1','1','2003-09-18 00:53:35','tech','J\'ai été voir, je pense que la carte mere a grillé.');
-INSERT INTO glpi_followups VALUES ('2','1','2003-09-18 00:54:06','tech','L\'alimentation est foutue, je vais tester la carte mere pour voir si elle est recuperable');
-INSERT INTO glpi_followups VALUES ('3','1','2003-09-18 00:54:40','tech','Probleme reglé j\'ai seulement changé l\'alimentation.Le reste fonctionne tres bien.');
-INSERT INTO glpi_followups VALUES ('4','3','2003-09-18 00:55:08','tech','Je pense que l\'on peux changer la souris.');
+INSERT INTO glpi_followups VALUES ('1','1','2003-09-18 00:53:35','tech','J\\\'ai été voir, je pense que la carte mere a grillé.');
+INSERT INTO glpi_followups VALUES ('2','1','2003-09-18 00:54:06','tech','L\\\'alimentation est foutue, je vais tester la carte mere pour voir si elle est recuperable');
+INSERT INTO glpi_followups VALUES ('3','1','2003-09-18 00:54:40','tech','Probleme reglé j\\\'ai seulement changé l\\\'alimentation.
+Le reste fonctionne tres bien.');
+INSERT INTO glpi_followups VALUES ('4','3','2003-09-18 00:55:08','tech','Je pense que l\\\'on peux changer la souris.');
 INSERT INTO glpi_followups VALUES ('5','2','2003-09-18 00:55:52','tech','Je suis passé, il faudra faire une restauration de windows NT4.');
 ### Dump table glpi_inst_software
 
@@ -499,8 +496,6 @@ CREATE TABLE glpi_peripherals (
    KEY location (location)
 );
 
-INSERT INTO glpi_peripherals VALUES ('1','Mustek plat','0000-00-00 00:00:00','Rose','','','132-12465-4564','','0000-00-00','2004-07-21','0','1','1','Mustek');
-INSERT INTO glpi_peripherals VALUES ('2','Ax704','2004-07-21 02:31:56','Eloise','','-','1321-5465-4564','','0000-00-00','2004-07-21','1','1','2','Sony');
 ### Dump table glpi_prefs
 
 DROP TABLE IF EXISTS glpi_prefs;
@@ -622,14 +617,15 @@ CREATE TABLE glpi_tracking (
    KEY computer (computer),
    KEY author (author),
    KEY assign (assign),
-   KEY status (status),
    KEY date (date),
-   KEY closedate (closedate)
+   KEY closedate (closedate),
+   KEY status (status)
 );
 
-INSERT INTO glpi_tracking VALUES ('1','2003-09-18 00:46:40','2003-09-18 00:54:43','old','Helpdesk','tech','8','Mon ordinateur ne s\'allume plus, et il ya des bruits byzarres','3','no','','','0');
-INSERT INTO glpi_tracking VALUES ('2','2003-09-18 00:48:19','0000-00-00 00:00:00','new','Helpdesk','tech','10','Un message en anglais s\'affiche, je n\'y comprend rien, je n\'ose plus toucher à rien de peur de tout casser.Venez vite !!!!','4','no','','','0');
-INSERT INTO glpi_tracking VALUES ('3','2003-09-18 00:49:29','0000-00-00 00:00:00','new','Helpdesk','tech','18','Ma souris se bloque sans arret, elle defile mal sur l\'ecran et elle glisse tres mal sur le tapis de souris.','3','no','','','0');
+INSERT INTO glpi_tracking VALUES ('1','2003-09-18 00:46:40','2003-09-18 00:54:43','old','Helpdesk','tech','8','Mon ordinateur ne s\\\'allume plus, et il ya des bruits byzarres','3','no','','','0');
+INSERT INTO glpi_tracking VALUES ('2','2003-09-18 00:48:19','0000-00-00 00:00:00','new','Helpdesk','tech','10','Un message en anglais s\\\'affiche, je n\\\'y comprend rien, je n\\\'ose plus toucher à rien de peur de tout casser.
+Venez vite !!!!','4','no','','','0');
+INSERT INTO glpi_tracking VALUES ('3','2003-09-18 00:49:29','0000-00-00 00:00:00','new','Helpdesk','tech','18','Ma souris se bloque sans arret, elle defile mal sur l\\\'ecran et elle glisse tres mal sur le tapis de souris.','3','no','','','0');
 ### Dump table glpi_type_computers
 
 DROP TABLE IF EXISTS glpi_type_computers;
@@ -675,8 +671,6 @@ CREATE TABLE glpi_type_peripherals (
    PRIMARY KEY (ID)
 );
 
-INSERT INTO glpi_type_peripherals VALUES ('1','scanner');
-INSERT INTO glpi_type_peripherals VALUES ('2','Vidéo projecteur');
 ### Dump table glpi_type_printers
 
 DROP TABLE IF EXISTS glpi_type_printers;
@@ -709,8 +703,8 @@ CREATE TABLE glpi_users (
    KEY name_2 (name)
 );
 
-INSERT INTO glpi_users VALUES ('1','Helpdesk','','','',NULL,'post-only','Helpdesk Injector','no',NULL);
-INSERT INTO glpi_users VALUES ('2','glpi','5b9b1ee2216a5ffe','b41fa77966e571a9922b004b8019421e','','','super-admin','glpi','yes','2');
-INSERT INTO glpi_users VALUES ('3','post-only','3eb831c67be6aeda','9800ec478fc9707589ab8f3257630600','',NULL,'post-only','post-only','no','1');
-INSERT INTO glpi_users VALUES ('4','tech','37bd7c4221e8a247','1d44651c461e9e12b6b85f688304a2c4','',NULL,'super-admin','technicien','yes','2');
-INSERT INTO glpi_users VALUES ('5','normal','109e7883561b4202','baa536c3c2a4e2aa2122265ece13b991','',NULL,'normal','utilisateur normal','no','1');
+INSERT INTO glpi_users VALUES ('1','Helpdesk','14e43c2d31dcbdd1','','',NULL,'post-only','Helpdesk Injector','no',NULL);
+INSERT INTO glpi_users VALUES ('2','glpi','5b9b1ee2216a5ffe','41ece51526515624ff89973668497d00','','','super-admin','glpi','yes','2');
+INSERT INTO glpi_users VALUES ('3','post-only','3eb831c67be6aeda','','',NULL,'post-only','post-only','no','1');
+INSERT INTO glpi_users VALUES ('4','tech','37bd7c4221e8a247','','',NULL,'super-admin','technicien','yes','2');
+INSERT INTO glpi_users VALUES ('5','normal','109e7883561b4202','','',NULL,'normal','utilisateur normal','no','1');
