@@ -39,82 +39,31 @@ checkAuthentication("normal");
 
 commonHeader("Stats",$_SERVER["PHP_SELF"]);
 
+///////// Stats nombre intervention
+// Total des interventions
+$entrees_total=constructEntryValues("inter_total");
+	if (count($entrees_total)>0)
+graphByMonth($entrees_total,$lang["stats"][5],$lang["stats"][35]);
 
-echo "<div align ='center'><p><b>".$lang["stats"][12]."</b></p></div>";
-//affichage du tableau
-//table displaying
-echo "<div align ='center'><table class='tab_cadre2' cellpadding='5'>";
-echo "<tr><th colspan=\"1\"></th><th>".$lang["stats"][8]."</th><th>".$lang["stats"][9]."</th><th>".$lang["stats"][10]."</th></tr>";
+// Total des interventions résolues
+$entrees_solved=constructEntryValues("inter_solved");
+	if (count($entrees_solved)>0)
+graphByMonth($entrees_solved,$lang["stats"][11],$lang["stats"][35]);
 
-echo "<tr class='tab_bg_1'>";
-//Nombre d'interventions
-//number of interventions
-echo "<td>".$lang["stats"][5]."</td>";
-echo "<td>".getNbInter(3,"","")."</td>";
-echo "<td>".getNbInter(2,"","")."</td>";
-echo "<td>".getNbInter(1,"","")."</td>";
-echo "</tr>";
-//Nombre d'intervention résolues
-//Number of resolved/old intervention 
-echo "<tr class='tab_bg_1'>";
-echo "<td>".$lang["stats"][11]."</td>";
-echo "<td>".getNbResol(3,"","")."</td>";
-echo "<td>".getNbResol(2,"","")."</td>";
-echo "<td>".getNbResol(1,"","")."</td>";
-echo "</tr>";
 //Temps moyen de resolution d'intervention
-//Average time to resolve intervention
-echo "<tr class='tab_bg_1'>";
-echo "<td>".$lang["stats"][6]."</td>";
-echo "<td>".getResolAvg(3,"","")."</td>";
-echo "<td>".getResolAvg(2,"","")."</td>";
-echo "<td>".getResolAvg(1,"","")."</td>";
-echo "</tr>";
-//Temps maximal de resolution d'intervention
-//Max time to resolv intervention
-echo "<tr class='tab_bg_1'>";
-echo "<td>".$lang["stats"][7]."</td>";
-echo "<td>".getResolMax(3)."</td>";
-echo "<td>".getResolMax(2)."</td>";
-echo "<td>".getResolMax(1)."</td>";
-echo "</tr>";
+$entrees_avgtime=constructEntryValues("inter_avgsolvedtime");
+	if (count($entrees_avgtime)>0)
+graphByMonth($entrees_avgtime,$lang["stats"][6],$lang["stats"][32],0);
+
 //Temps moyen d'intervention réel
-//Max real time to resolv intervention
-echo "<tr class='tab_bg_1'>";
-echo "<td>".$lang["stats"][25]."</td>";
-echo "<td>".getRealAvg(3,"","")."</td>";
-echo "<td>".getRealAvg(2,"","")."</td>";
-echo "<td>".getRealAvg(1,"","")."</td>";
-echo "</tr>";
+$entrees_avgtime=constructEntryValues("inter_avgrealtime");
+	if (count($entrees_avgtime)>0)
+graphByMonth($entrees_avgtime,$lang["stats"][25],$lang["stats"][33],0);
 
-//Temps max d'intervention réel
-//Max real time to resolv intervention
-echo "<tr class='tab_bg_1'>";
-echo "<td>".$lang["stats"][28]."</td>";
-echo "<td>".getRealResolMax(3)."</td>";
-echo "<td>".getRealResolMax(2)."</td>";
-echo "<td>".getRealResolMax(1)."</td>";
-echo "</tr>";
+//Temps moyen de prise en compte de l'intervention
+$entrees_avgtime=constructEntryValues("inter_avgtakeaccount");
+	if (count($entrees_avgtime)>0)
+graphByMonth($entrees_avgtime,$lang["stats"][30],$lang["stats"][32],0);
 
-//Temps max de prise en compte de l'intervention
-//Max real time to resolv intervention
-echo "<tr class='tab_bg_1'>";
-echo "<td>".$lang["stats"][29]."</td>";
-echo "<td>".getFirstActionMin(3)."</td>";
-echo "<td>".getFirstActionMin(2)."</td>";
-echo "<td>".getFirstActionMin(1)."</td>";
-echo "</tr>";
-
-//Temps max de prise en compte de l'intervention
-//Max real time to resolv intervention
-echo "<tr class='tab_bg_1'>";
-echo "<td>".$lang["stats"][30]."</td>";
-echo "<td>".getFirstActionAvg(3,"","")."</td>";
-echo "<td>".getFirstActionAvg(2,"","")."</td>";
-echo "<td>".getFirstActionAvg(1,"","")."</td>";
-echo "</tr>";
-
-echo "</table>";
-echo "</div>";
 commonFooter();
 ?>
