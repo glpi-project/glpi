@@ -42,9 +42,9 @@ function showFormDropDown ($target,$name,$human) {
 	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='70%'>";
 	echo "<a name=\"$name\"></a>";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
+	if (countElementsInTable("glpi_dropdown_".$name)>0){
 	echo "<form method='post' action=\"$target\">";
 	echo "<input type='hidden' name='which' value='$name'>";
-	if (countElementsInTable("glpi_dropdown_".$name)>0){
 	echo "<tr><td align='center' class='tab_bg_1'>";
 
 	dropdown("glpi_dropdown_".$name, "ID");
@@ -95,6 +95,7 @@ function showFormTypeDown ($target,$name,$human) {
 	echo "<div align='center'>&nbsp;<table class='tab_cadre' width=70%>";
 	echo "<a name=\"$name\"></a>";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
+	if (countElementsInTable("glpi_type_".$name)>0){
 	echo "<form method='post' action=\"$target\">";
 	echo "<input type='hidden' name='which' value='$name'>";
 	echo "<tr><td align='center' class='tab_bg_1'>";
@@ -111,6 +112,7 @@ function showFormTypeDown ($target,$name,$human) {
 	echo "</td><td align='center' class='tab_bg_2'>";
         echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 	echo "</td></form></tr>";
+	}
 	echo "<form action=\"$target\" method='post'>";
 	echo "<input type='hidden' name='which' value='$name'>";
 	echo "<tr><td align='center' class='tab_bg_1'>";
