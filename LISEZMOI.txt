@@ -183,8 +183,8 @@ Si cette procédure réussi, votre base de données maintenant à jour vous pouvez c
 sur « utilisez GLPI » et en vous connectant avec l'utilisateur que vous venez de créer.
 
 Une fois la configuration terminée, vous pourrez supprimer cet utilisateur. Attention assurez vous qu'il 
-reste toujours un utilisateur « super-admin » ayant la possibilité de se connecter à l'application depuis 
-MySQL, ne serait qu'en cas de problèmes avec les sources de données externes.
+reste toujours un utilisateur « super-admin » ayant la possibilité de se connecter à l'application, 
+ne serait qu'en cas de problèmes avec les sources de données externes.
 
 
 
