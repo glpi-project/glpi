@@ -791,6 +791,8 @@ $lang["help"][28] 	= "Moniteur";
 $lang["help"][29] 	= "P&eacute;riph&eacute;rique";
 $lang["help"][30] 	= "G&eacute;n&eacute;ral";
 $lang["help"][31] 	= "Logiciel";
+$lang["help"][32]	= "Vous n'avez pas spécifi&eacute; de num&eacute;ro de mat&eacute;riel pour une cat&eacute;gorie de mat&eacute;riel pr&eacute;cis.";
+$lang["help"][33]	= "Si vous ne trouvez pas votre mat&eacute;riel, vous pouvez utiliser le type G&eacute;n&eacute;ral";
 
   // Mois
   $lang["calendarM"][0] = "Janvier" ;
