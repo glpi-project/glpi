@@ -248,8 +248,8 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "</a></b></td>";
 				echo "<td>".$ct->fields["num"]."</td>";
 				echo "<td>".$ct->fields["begin_date"]."</td>";
-				echo "<td>".$ct->fields["duration"]."</td>";
-				echo "<td>".$ct->fields["notice"]."</td>";				
+				echo "<td>".$ct->fields["duration"]." ".$lang["financial"][57]."</td>";
+				echo "<td>".$ct->fields["notice"]." ".$lang["financial"][57]."</td>";				
 				echo "<td>".$ct->fields["cost"]."</td>";				
 				echo "<td>".$ct->fields["bill_type"]."</td>";				
 				
@@ -316,11 +316,15 @@ function showContractForm ($target,$ID,$search) {
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][8].":		</td><td colspan='2'>";
 	dropdownContractTime("duration",$con->fields["duration"]);
 	echo " ".$lang["financial"][57];
+	if ($con->fields["begin_date"]!=''&&$con->fields["begin_date"]!="0000-00-00")
+	echo " -> ".getWarrantyExpir($con->fields["begin_date"],$con->fields["duration"]);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][10].":		</td><td colspan='2'>";
 	dropdownContractTime("notice",$con->fields["notice"]);
 	echo " ".$lang["financial"][57];
+	if ($con->fields["begin_date"]!=''&&$con->fields["begin_date"]!="0000-00-00")
+	echo " -> ".getWarrantyExpir($con->fields["begin_date"],$con->fields["duration"]-$con->fields["notice"]);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][69].":		</td><td colspan='2'>";
@@ -776,7 +780,9 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	echo "<td align='center'>".getContractTypeName($con->fields["contract_type"])."</td>";
 	echo "<td align='center'>".getContractEnterprises($cID)."</td>";	
 	echo "<td align='center'>".$con->fields["begin_date"]."</td>";
-	echo "<td align='center'>".$con->fields["duration"]." ".$lang["financial"][9]."</td>";
+	echo "<td align='center'>".$con->fields["duration"]." ".$lang["financial"][57];
+	if ($con->fields["begin_date"]!=''&&$con->fields["begin_date"]!="0000-00-00") echo " -> ".getWarrantyExpir($con->fields["begin_date"],$con->fields["duration"]);
+	echo "</td>";
 
 	if ($withtemplate!=2)echo "<td align='center' class='tab_bg_2'><a href='".$HTMLRel."contracts/contracts-info-form.php?deleteitem=deleteitem&ID=$assocID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
