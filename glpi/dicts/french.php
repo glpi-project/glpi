@@ -438,7 +438,7 @@ $lang["software"][12] 	= "Ajouter licence...";
 $lang["software"][13]	= "licence(s) trouv&eacute;e(s)";
 $lang["software"][14]	= "Pas de licence pour ce logiciel.";
 $lang["software"][15]	= "Ajouter des licences pour un logiciel";
-$lang["software"][16]	= "Num&eacute;ros de s&eacute;rie <br>('free' pour les logiciels libres)";
+$lang["software"][16]	= "Num&eacute;ros de s&eacute;rie <br>'free' -> logiciels libres<br>'global' -> licences site";
 $lang["software"][17]	= "logiciel install&eacute;"; 
 $lang["software"][18]	= "Licence deja install&eacute;e.";
 $lang["software"][19]	= "Installations";
@@ -460,6 +460,8 @@ $lang["software"][34]	= "Modifier une licence";
 $lang["software"][35]   = "Acheté";
 $lang["software"][36]   = "mise(s) à jour trouvée(s)";
 $lang["software"][37]   = "A acheter";
+$lang["software"][38]   = "Licence site";
+$lang["software"][39]   = "Logiciel libre";
 
 
 // Peripherals
