@@ -201,6 +201,8 @@ $lang["job"][18]        = "old";
 // Computers
 
 $lang["computers"][0]	= "Add Computer...";
+$lang["computers"][1]   = "Id";
+$lang["computers"][6]	= "Serial";
 $lang["computers"][7]	= "Name";
 $lang["computers"][8]	= "Type";
 $lang["computers"][9]	= "OS";

@@ -165,6 +165,15 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=name&order=ASC&start=$start\">";
 			echo $lang["computers"][7]."</a></th>";
 		
+		        // Serial
+			echo "<th>";
+			if ($sort=="serial") {
+				echo "&middot;&nbsp;";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=serial&order=ASC&start=$start\">";
+			echo $lang["computers"][6]."</a></th>";
+		
+
 			// Type
 			echo "<th>";
 			if ($sort=="type") {
@@ -216,12 +225,14 @@ function showComputerList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID\">";
 				echo $comp->fields["name"]." (".$comp->fields["ID"].")";
 				echo "</a></b></td>";
-				echo "<td>".$comp->fields["type"]."</td>";
+				echo "<td>".$comp->fields["serial"]."</td>";
+                                echo "<td>".$comp->fields["type"]."</td>";
 				echo "<td>".$comp->fields["os"]."</td>";
 				echo "<td>".$comp->fields["location"]."</td>";
 				echo "<td>".$comp->fields["date_mod"]."</td>";
 				echo "<td>".$comp->fields["contact"]."</td>";
-				echo "</tr>";
+                                
+                                echo "</tr>";
 			}
 
 			// Close Table

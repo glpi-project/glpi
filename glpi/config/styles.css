@@ -8,14 +8,21 @@
  	background-color : #FFFFFF;
 	color : #000000;
 	font-family: verdana;
-  }
   
+  }
+
   img {
   border: 0;
  
   }
  
   
+
+
+
+
+ option {border:1px solid #ccc;
+        background-color:#ffffff;}
 
  .submit { text-align:center;}
        
