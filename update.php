@@ -419,7 +419,7 @@ if(!TableExists("glpi_type_peripherals")) {
 
 $query = "CREATE TABLE `glpi_type_peripherals` (
 	`ID` int(11) NOT NULL auto_increment,
-	`name` varchar(255) NOT NULL default '',
+	`name` varchar(255),
 	 PRIMARY KEY  (`ID`)
 	) TYPE=MyISAM;";
 $db->query($query)or die("erreur lors de la migration".$db->error());
@@ -467,6 +467,35 @@ if(!isIndex("glpi_computers", "location")) {
 	$db->query($query) or die("erreur lors de la migration".$db->error());
 }
 
+if(!isIndex("glpi_computers", "os")) {
+	$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `os` ) ";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+}
+
+if(!isIndex("glpi_computers", "type")) {
+	$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `type` ) ";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+}
+if(!isIndex("glpi_computers", "hdtype")) {
+	$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `hdtype` ) ";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+}
+
+if(!isIndex("glpi_computers", "moboard")) {
+	$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `moboard` ) ";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+}
+
+if(!isIndex("glpi_computers", "gfxcard")) {
+	$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `gfxcard` ) ";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+}
+
+if(!isIndex("glpi_computers", "processor")) {
+	$query = "ALTER TABLE `glpi_computers` ADD INDEX ( `processor` ) ";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+}
+
 if(!isIndex("glpi_followups", "tracking")) {
 	$query = "ALTER TABLE `glpi_followups` ADD INDEX ( `tracking` ) ";
 	$db->query($query) or die("erreur lors de la migration".$db->error());
@@ -509,6 +538,16 @@ if(!isIndex("glpi_tracking", "author")) {
 
 if(!isIndex("glpi_tracking", "assign")) {
 	$query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `assign` ) ";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+}
+
+if(!isIndex("glpi_tracking", "date")) {
+	$query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `date` ) ";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+}
+
+if(!isIndex("glpi_tracking", "closedate")) {
+	$query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `closedate` ) ";
 	$db->query($query) or die("erreur lors de la migration".$db->error());
 }
 
