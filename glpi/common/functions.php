@@ -975,7 +975,7 @@ function printPager($start,$numrows,$target,$parameters) {
 
 	// Print the "where am I?" 
 	echo "<td width='750' align='center' class='tab_bg_2'><b>";
-	echo $current_start."&nbsp;".$lang["pager"][1]."&nbsp;".$current_end."&nbsp;".$lang["pager"][2]."&nbsp;".$numrows."&nbsp;";
+	echo $lang["pager"][2]."&nbsp;".$current_start."&nbsp;".$lang["pager"][1]."&nbsp;".$current_end."&nbsp;".$lang["pager"][3]."&nbsp;".$numrows."&nbsp;";
 	echo "</b></td>";
 
 	// Forward and fast forward button
