@@ -827,19 +827,19 @@ if(!FieldExists("glpi_config","permit_helpdesk")) {
 
 //Mise a jour 0.42 verification des prefs pour chaque user.
 $query = "select ID, name from glpi_users";
-$query2 = "select ID from glpi_prefs";
+$query2 = "select ID, user from glpi_prefs";
 $result = $db->query($query);
 $result2 = $db->query($query2);
 if($db->numrows($result) != $db->numrows($result2)) { 
 	$users = array();
 	$i = 0;
 	while ($line = $db->fetch_array($result2)) {
-		$prefs[$i] = $line["ID"];
+		$prefs[$i] = $line["user"];
 		$i++;
 	}
 	while($line = $db->fetch_array($result)) {
-		if(!in_array($line["ID"],$prefs)) {
-			$query_insert =  "INSERT INTO `glpi_prefs` ( `user` , `tracking_order` , `language` , `ID` ) VALUES ( '".$line["name"]."', 'no', 'french', '".$line["ID"]."')";
+		if(!in_array($line["name"],$prefs)) {
+			$query_insert =  "INSERT INTO `glpi_prefs` ( `user` , `tracking_order` , `language`) VALUES ( '".$line["name"]."', 'no', 'french')";
 			$db->query($query_insert) or die("glpi maj prefs ".$lang["update"][90].$db->error()); 
 		}
 	}
