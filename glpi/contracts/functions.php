@@ -494,7 +494,7 @@ function showDeviceContract($instID,$search='') {
 		$con->getFromDB($type,$ID);
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>".$con->getType()."</td>";
-	echo "<td align='center'>".$con->getLink()."</td>";
+	echo "<td align='center' ".(isset($con->obj->fields['deleted'])&&$con->obj->fields['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$con->getLink()."</td>";
 	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
 	}
@@ -775,7 +775,7 @@ function showContractAssociated($device_type,$ID){
 		$assocID=$db->result($result, $i, "ID");
 		$con=new Contract;
 		$con->getFromDB($cID);
-	echo "<tr class='tab_bg_1'>";
+	echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
 	echo "<td align='center'><a href='".$HTMLRel."contracts/contracts-info-form.php?ID=$cID'><b>".$con->fields["name"]." (".$con->fields["ID"].")</b></a></td>";
 	echo "<td align='center'>".$con->fields["num"]."</td>";
 	echo "<td align='center'>".getContractTypeName($con->fields["contract_type"])."</td>";
