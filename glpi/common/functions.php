@@ -58,7 +58,7 @@ function checkAuthentication($authtype) {
 	
 	GLOBAL $cfg_install;
 
-	if(!($_SESSION["authorisation"]))
+	if(empty($_SESSION["authorisation"]))
 	{
 		nullHeader("Login",$_SERVER["PHP_SELF"]);
 		echo "<div align='center'><b><a href=\"".$cfg_install["root"]."/logout.php\">Relogin</a></b></div>";
@@ -170,7 +170,8 @@ $inventory = 	array($lang["Menu"][0]=>"/computers/index.php",
 				
 				
 $maintain =	array($lang["Menu"][5]=>"/tracking/index.php",
-	              $lang["Menu"][6]=>"/reports/index.php");
+	              $lang["Menu"][6]=>"/reports/index.php",
+		      $lang["Menu"][13]=>"/stats/index.php");
 			
 				
 
