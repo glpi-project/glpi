@@ -445,7 +445,7 @@ else $offsettable=$_GET["offsettable"];
 if (!isset($_GET["offsetrow"])) $offsetrow=-1; 
 else $offsetrow=$_GET["offsetrow"];
 //timeout de 5 secondes par défaut, -1 pour utiliser sans timeout
-if (!isset($_GET["duree"])) $duree=2; 
+if (!isset($_GET["duree"])) $duree=1; 
 else $duree=$_GET["duree"];
 //Limite de lignes à dumper à chaque fois
 if (!isset($_GET["rowlimit"])) $rowlimit=4; 
@@ -456,11 +456,17 @@ if (!isset($_GET["fichier"])) {
 	$fichier=$filename;
 } else $fichier=$_GET["fichier"];
 	
-echo "Sauvegarde de la BDD dans le $fichier.<br>Traitement en cours... ";
-if ($duree>0) echo "Durée limite de $duree s.<br>";
-if(isset($cpt))
-echo "<br>Nombre de requêtes traitées à ce stade : $cpt<br>";
-echo "A partir de la table numéro $offsettable à la ligne ".number_format($offsetrow,0,""," ");
+
+if(isset($offsettable))
+$percent=min(100,round(110*$offsettable/26,0));
+else $percent=0;
+echo "<center>".$percent."%</center>";
+
+//echo "Sauvegarde de la BDD dans le $fichier.<br>Traitement en cours... ";
+//if ($duree>0) echo "Durée limite de $duree s.<br>";
+//if(isset($cpt))
+//echo "<br>Nombre de requêtes traitées à ce stade : $cpt<br>";
+//echo "A partir de la table numéro $offsettable à la ligne ".number_format($offsetrow,0,""," ");
 flush();
 
 //nom du fichier, nom de la base, nom d'utilisateur, mot de passe, serveur, duree
@@ -502,15 +508,22 @@ init_time(); //initialise le temps
 if (!isset($_GET["offset"])) $offset=0;
 else  $offset=$_GET["offset"];
 //timeout de 5 secondes par défaut, -1 pour utiliser sans timeout
-if (!isset($_GET["duree"])) $duree=2; 
+if (!isset($_GET["duree"])) $duree=1; 
 else $duree=$_GET["duree"];
 
-echo "Restauration de $path$file.<br>Traitement en cours... ";
-if ($duree>0) echo "timeout de $duree s.<br>";
-if (isset($cpt))
-echo "<br>Nombre de requêtes traitées à ce stade : $cpt<br>";
-echo "<br>mais il faut continuer à l'octet ".number_format($offset,0,""," ");
-flush();
+$fsize=filesize($path.$_GET["file"]);
+if(isset($offset))
+$percent=min(100,round(110*$offset/$fsize,0));
+else $percent=0;
+echo "<center>".$percent."%</center>";
+
+
+//echo "Restauration de $path$file.<br>Traitement en cours... ";
+//if ($duree>0) echo "timeout de $duree s.<br>";
+//if (isset($cpt))
+//echo "<br>Nombre de requêtes traitées à ce stade : $cpt<br>";
+//echo "<br>mais il faut continuer à l'octet ".number_format($offset,0,""," ");
+//flush();
  
 //echo "$offset";
 //exit;
