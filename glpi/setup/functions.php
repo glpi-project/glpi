@@ -35,7 +35,7 @@ Christian Bauer
 include ("_relpos.php");
 // FUNCTIONS Setup
 
-function showFormTreeDown ($target,$name,$human,$ID) {
+function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove='') {
 
 	GLOBAL $cfg_layout, $lang, $HTMLRel;
 
@@ -72,7 +72,7 @@ function showFormTreeDown ($target,$name,$human,$ID) {
 	echo "<input type='hidden' name='which' value='$name'>";
 	echo "<tr><td align='center'  class='tab_bg_1'>";
 
-	dropdown("glpi_dropdown_".$name, "value_to_move");
+	dropdownValue("glpi_dropdown_".$name, "value_to_move",$tomove);
 //		echo "<select name='type'>";
 //		echo "<option value='under'>".$lang["setup"][75]."</option>";
 		echo $lang["setup"][75].":";
@@ -80,7 +80,7 @@ function showFormTreeDown ($target,$name,$human,$ID) {
 //		echo "<option value='same'>".$lang["setup"][76]."</option>";
 //		echo "</select>";
 
-	dropdown("glpi_dropdown_".$name, "value_where");
+	dropdownValue("glpi_dropdown_".$name, "value_where",$where);
 	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
 	echo "<input type='submit' name='move' value=\"".$lang["buttons"][20]."\" class='submit' class='submit'>";
@@ -98,8 +98,8 @@ function showFormTreeDown ($target,$name,$human,$ID) {
 		echo "<option value='under'>".$lang["setup"][75]."</option>";
 		echo "<option value='same'>".$lang["setup"][76]."</option>";
 		echo "</select>";
-
-		dropdown("glpi_dropdown_".$name, "value2");
+;
+		dropdownValue("glpi_dropdown_".$name, "value2",$value2);
 		}		
 	else echo "<input type='hidden' name='type' value='first'>";
 	 		
@@ -114,7 +114,7 @@ function showFormTreeDown ($target,$name,$human,$ID) {
 }
 
 
-function showFormDropDown ($target,$name,$human,$ID) {
+function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 
 	GLOBAL $cfg_layout, $lang, $HTMLRel;
 
@@ -171,7 +171,7 @@ function showFormDropDown ($target,$name,$human,$ID) {
 	echo "<tr><td align='center'  class='tab_bg_1'>";
 	if($name == "netpoint") {
 		echo $lang["networking"][1].": ";		
-		dropdown("glpi_dropdown_locations", "value2");
+		dropdownValue("glpi_dropdown_locations", "value2",$value2);
 		echo $lang["networking"][52].": ";
 		echo "<input type='text' maxlength='100' size='10' name='value'>";
 	}

@@ -842,7 +842,7 @@ function dropdownValue($table,$myname,$value) {
 		if ($number > 0) {
 			while ($i < $number) {
 				$output = $db->result($result, $i, "netpname");
-				$loc = getDropdownLocationName($db->result($result, $i, "locID"));
+				$loc = getTreeValueName("glpi_dropdown_locations",$db->result($result, $i, "locID"));
 				$ID = $db->result($result, $i, "ID");
 				echo "<option value=\"$ID\"";
 				if ($ID==$value) echo " selected ";
@@ -937,7 +937,7 @@ function NetpointLocationSearch($search,$myname,$location,$value='') {
 		while($line = $db->fetch_array($result)) {
 			echo "<option value=\"". $line["ID"] ."\" ";
 			if ($value==$line["ID"]) echo " selected ";
-			echo ">". $line["netpointname"]." (".getDropdownLocationName($line["locID"]) .")</option>";
+			echo ">". $line["netpointname"]." (".getTreeValueName("glpi_dropdown_locations",$line["locID"]) .")</option>";
 		}
 	}
 	echo "</select>";
@@ -1005,39 +1005,6 @@ function dropdownUsers($value, $myname) {
 	echo "</select>";
 }
 
-function getDropdownLocationName($id){
-	$db = new DB;
-	$query = "select * from glpi_dropdown_locations where ID = '". $id ."'";
-//	echo $query;
-	$result = $db->query($query);
-	$LEVEL=$db->result($result,0,"level");	
-//echo $LEVEL."---";
-	$SELECT_ALL="";
-	$FROM_ALL="";
-	$WHERE_ALL="";
-	$ORDER_ALL="";
-
-	for ($i=1;$i<=$LEVEL;$i++){
-	$SELECT_ALL.=" , location$i.name AS NAME$i, location$i.ID AS ID$i  ";
-	$FROM_ALL.=" LEFT JOIN glpi_dropdown_locations AS location$i ON location".($i-1).".ID = location$i.level_up ";
-	//$WHERE_ALL.=" AND location$i.level='$i' ";
-	$ORDER_ALL.=" , NAME$i";
-
-	}
-
-	$query="select location0.name AS NAME0,location0.ID AS ID0 $SELECT_ALL FROM glpi_dropdown_locations AS location0 $FROM_ALL  WHERE location0.level='0' $WHERE_ALL  AND location$LEVEL.ID=$id ORDER BY NAME0 $ORDER_ALL";
-//echo $query."<br>";
-	$result = $db->query($query);
-	
-	$name="";
-	for ($i=0;$i<$LEVEL;$i++)
-	$name.= $db->result($result,0,"NAME$i")."-";
-
-	$name.= $db->result($result,0,"NAME$LEVEL");
-
-return $name;
-	
-}
 
 function getDropdownName($table,$id) {
 	
