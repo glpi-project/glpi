@@ -39,7 +39,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 
 checkAuthentication("normal");
-commonHeader("Reports",$HTTP_SERVER_VARS[PHP_SELF]);
+commonHeader("Reports",$_SERVER[PHP_SELF]);
 
 $item_db_name[0] = "computers";
 $item_db_name[1] = "printers";
@@ -53,30 +53,30 @@ $db = new DB;
 echo "<big><b><strong>".$lang["reports"][4]."</strong></b></big><br><br>";
 
 # Construction  la requete, et appel de la fonction affichant les valeurs.
-if($item_type != 'tous')
+if($_POST["item_type"] != 'tous')
 {
 
-		$query = "select * from $item_type  where maintenance = 1 ";
+		$query = "select * from ".$_POST["item_type"]."  where maintenance = 1 ";
 		
-		if($annee_achat != 'toutes')
+		if($_POST["annee_achat"] != 'toutes')
 		{
-			$query.= "  and YEAR(achat_date) = '$annee_achat' ";
+			$query.= "  and YEAR(achat_date) = '".$_POST["annee_achat"]."' ";
 		}
-		$query.= " order by $tri_par asc";
-		report_perso($item_type,$query);
+		$query.= " order by ".$_POST["tri_par"]." asc";
+		report_perso($_POST["item_type"],$query);
 }
 else
 {
 
 		for($i=0;$i<4;$i++)
 		{
-			$query[$i] = "select * from $item_db_name[$i] where maintenance = 1";
+			$query[$i] = "select * from ".$item_db_name[$i]." where maintenance = 1";
 		
-			if($annee_achat != 'toutes')
+			if($_POST["annee_achat"] != 'toutes')
 			{
-				$query[$i].= " and YEAR(achat_date) = '$annee_achat'";
+				$query[$i].= " and YEAR(achat_date) = '".$_POST["annee_achat"]."'";
 			}
-			$query[$i].=" order by $tri_par asc";
+			$query[$i].=" order by ".$_POST["tri_par"]." asc";
 		
 
 			report_perso($item_db_name[$i],$query[$i]);

@@ -44,47 +44,51 @@ include ($phproot . "/glpi/includes_printers.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_software.php");
 
-if ($add) {
+if ($_POST["add"]) {
 	checkAuthentication("admin");
-	addComputer($HTTP_POST_VARS);
-	logEvent(0, "computers", 4, "inventory", "$IRMName added ".$HTTP_POST_VARS["name"].".");
-	header("Location: $HTTP_REFERER");
-} else if ($delete) {
+	addComputer($_POST);
+	logEvent(0, "computers", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["name"].".");
+	header("Location: $_SERVER[HTTP_REFERER]");
+} else if ($_POST["delete"]) {
 	checkAuthentication("admin");
-	deleteComputer($HTTP_POST_VARS);
-	logEvent($HTTP_POST_VARS["ID"], "computers", 4, "inventory", "$IRMName deleted item.");
+	deleteComputer($_POST);
+	logEvent($_POST["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/computers/");
-} else if ($update) {
+} else if ($_POST["update"]) {
 	checkAuthentication("admin");
-	updateComputer($HTTP_POST_VARS);
-	logEvent($HTTP_POST_VARS["ID"], "computers", 4, "inventory", "$IRMName updated item.");
-	commonHeader("Computers",$HTTP_SERVER_VARS[PHP_SELF]);
-	showComputerForm(0,$HTTP_SERVER_VARS[PHP_SELF],$ID);
-	showPorts($ID, 1);
-	showPortsAdd($ID,1);
-	showJobList($IRMName,$show,$contains,$ID);
-	showSoftwareInstalled($ID);
+	updateComputer($_POST);
+	logEvent($_POST["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]."updated item.");
+	commonHeader("Computers",$_SERVER[PHP_SELF]);
+	showComputerForm(0,$_SERVER[PHP_SELF],$_POST["ID"]);
+	showPorts($_POST["ID"], 1);
+	showPortsAdd($_POST["ID"],1);
+	showJobList($_SESSION["glpiname"],$_POST["show"],$_POST["contains"],$_POST["ID"]);
+	showSoftwareInstalled($_POST["ID"]);
 	commonFooter();
 } else {
 
 	checkAuthentication("normal");
-	commonHeader("Computers",$HTTP_SERVER_VARS[PHP_SELF]);
-	if ($withtemplate == 1) {
-		showComputerForm($withtemplate,$HTTP_SERVER_VARS[PHP_SELF],$ID);
-	} else {
-		if (showComputerForm(0,$HTTP_SERVER_VARS[PHP_SELF],$ID)) {
+	//print_r($_GET);
+	commonHeader("Computers",$_SERVER[PHP_SELF]);
+	if ($_GET["withtemplate"] == 1)
+	{
+		showComputerForm($_GET["withtemplate"],$_SERVER[PHP_SELF],$_GET["ID"]);
+	}
+	else
+	{
+		if (showComputerForm(0,$_SERVER[PHP_SELF],$_GET["ID"])) {
 	
-			showPorts($ID, 1);
+			showPorts($_GET["ID"], 1);
 			
-			showPortsAdd($ID,1);
+			showPortsAdd($_GET["ID"],1);
 		
-			showConnections($ID);
+			showConnections($_GET["ID"]);
 		
-			showJobList($IRMName,$show,$contains,$ID);
+			showJobList($_SESSION["glpiname"],$_GET["show"],$_GET["contains"],$_GET["ID"]);
 	
-			showOldJobListForItem($IRMName,$contains,$ID);
+			showOldJobListForItem($_SESSION["glpiname"],$_GET["contains"],$_GET["ID"]);
 	
-			showSoftwareInstalled($ID);
+			showSoftwareInstalled($_GET["ID"]);
 		}
 	}
 	commonFooter();

@@ -538,7 +538,8 @@ function showConnectorSearch($target,$ID) {
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 	echo "<select name=dID>";
-	while ($i < $number) {
+	while ($i < $number)
+	{
 		$dID = $db->result($result, $i, "ID");
 		$name = $db->result($result, $i, "name");
 		$location = $db->result($result, $i, "location");
@@ -579,7 +580,8 @@ function listConnectorComputers($target,$input) {
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 	echo "<select name=dID>";
-	while ($i < $number) {
+	while ($i < $number)
+	{
 		$dID = $db->result($result, $i, "ID");
 		$name = $db->result($result, $i, "name");
 		$location = $db->result($result, $i, "location");
@@ -591,7 +593,7 @@ function listConnectorComputers($target,$input) {
 	echo "</td>";
 	echo "<td bgcolor=\"".$cfg_layout["tab_bg_2"]."\" align=center>";
 	echo "<input type=hidden name=device_type value=1>";
-	echo "<input type=hidden name=pID1 value=\"".$input["pID1"]."\">";
+	echo "<input type=hidden name=pID1 value=\"".$pID1."\">";
 	echo "<input type=hidden name=next value=\"showports\">";
 	echo "<input type=submit value=\"".$lang["buttons"][11]."\">";
 	echo "</td></form></tr></table>";	

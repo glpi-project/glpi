@@ -41,27 +41,30 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_setup.php");
 
+$glpiname = $_SESSION["glpiname"];
 
-if (!$IRMName || $IRMName == "bogus") {
+if (!$glpiname || $glpiname == "bogus") {
 	
-	$IRMName = "Helpdesk";
+	$glpiname = "Helpdesk";
 }
 
-loadLanguage($IRMName);
+loadLanguage($glpiname);
 
 $status = "new";
-$ID = $computer;
+$ID = $_GET["computer"];
 
-if ($priority && !$contents) {
-	nullHeader("Tracking",$HTTP_SERVER_VARS[PHP_SELF]);
+if ($_GET["priority"] && !$_GET["contents"])
+{
+	nullHeader("Tracking",$_SERVER[PHP_SELF]);
 	echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 	echo $lang["help"][15]."<br><br>";
 	echo "<a href=\"javascript:history.back()\">...back</a>";
 	echo "</b></center>";
 	nullFooter();
 	exit;
-} elseif ($emailupdates == "yes" && $uemail=="") {
-	nullHeader("Tracking",$HTTP_SERVER_VARS[PHP_SELF]);
+} elseif ($_GET["emailupdates"] == "yes" && $_GET["uemail"]=="")
+{
+	nullHeader("Tracking",$_SERVER[PHP_SELF]);
 		echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
 	echo $lang["help"][16]."<br><br>";
@@ -69,8 +72,10 @@ if ($priority && !$contents) {
 	echo "</b></center>";
 	nullFooter();
 	exit;
-} elseif (!$ID) {
-	nullHeader("Tracking",$HTTP_SERVER_VARS[PHP_SELF]);
+}
+elseif (!$ID)
+{
+	nullHeader("Tracking",$_SERVER[PHP_SELF]);
 		echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
 	echo $lang["help"][17]."<br><br>";
@@ -78,17 +83,22 @@ if ($priority && !$contents) {
 	echo "</b></center>";
 	nullFooter();
 	exit;
-} else {
-	if (postJob($ID,$IRMName,$status,$priority,$computer,$isgroup,$uemail,$emailupdates,$contents)) {
-		nullHeader("Tracking",$HTTP_SERVER_VARS[PHP_SELF]);
+} 
+else
+{
+	if (postJob($ID,$glpiname,$status,$_GET["priority"],$_GET["computer"],$_GET["isgroup"],$_GET["uemail"],$_GET["emailupdates"],$_GET["contents"]))
+	{
+		nullHeader("Tracking",$_SERVER[PHP_SELF]);
 		echo "<center><img src=\"".$cfg_install["root"]."/pics/ok.png\" alt=\"OK\"><br><br><b>";
 		echo $lang["help"][18]."<br>";
 		echo $lang["help"][19];
 		echo "</b></center>";
 		nullFooter();
 	
-	} else {
-		nullHeader("Tracking",$HTTP_SERVER_VARS[PHP_SELF]);
+	}
+	else
+	{
+		nullHeader("Tracking",$_SERVER[PHP_SELF]);
 			echo "<center><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
 		echo $lang["help"][20]."<br>";

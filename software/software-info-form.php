@@ -41,28 +41,31 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_software.php");
 
-if ($add) {
+if($_GET) $tab = $_GET;
+elseif($_POST) $tab = $_POST;
+
+if ($tab["add"]) {
 	checkAuthentication("admin");
-	addSoftware($HTTP_POST_VARS);
-	logEvent(0, "software", 4, "inventory", "$IRMName added item ".$HTTP_POST_VARS["name"].".");
+	addSoftware($tab);
+	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." added item ".$tab["name"].".");
 	header("Location: ".$cfg_install["root"]."/software/");
-} else if ($delete) {
+} else if ($tab["delete"]) {
 	checkAuthentication("admin");
-	deleteSoftware($HTTP_POST_VARS);
-	logEvent($HTTP_POST_VARS["ID"], "software", 4, "inventory", "$IRMName deleted item.");
+	deleteSoftware($tab);
+	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/software/");
-} else if ($update) {
+} else if ($tab["update"]) {
 	checkAuthentication("admin");
-	updateSoftware($HTTP_POST_VARS);
-	logEvent($HTTP_POST_VARS["ID"], "software", 4, "inventory", "$IRMName updated item.");
-	commonHeader("Software",$HTTP_SERVER_VARS[PHP_SELF]);
-	showSoftwareForm($HTTP_SERVER_VARS[PHP_SELF],$ID);
+	updateSoftware($tab);
+	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." updated item.");
+	commonHeader("Software",$_SERVER[PHP_SELF]);
+	showSoftwareForm($_SERVER[PHP_SELF],$tab["ID"]);
 	commonFooter();
 
 } else {
 	checkAuthentication("normal");
-	commonHeader("Software",$HTTP_SERVER_VARS[PHP_SELF]);
-	showSoftwareForm($HTTP_SERVER_VARS[PHP_SELF],$ID);
+	commonHeader("Software",$_SERVER[PHP_SELF]);
+	showSoftwareForm($_SERVER[PHP_SELF],$tab["ID"]);
 	commonFooter();
 }
 

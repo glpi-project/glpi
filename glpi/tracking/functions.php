@@ -342,9 +342,12 @@ function showJobDetails($ID) {
 		echo "<tr><td>".$lang["joblist"][11].":</td>";
 		echo "<td><b>".$job->date."</b></td></tr>";
 		echo "<tr><td>".$lang["joblist"][12].":</td>";
-		if ($job->closedate == "0000-00-00 00:00:00" || $job->closedate == "") {
+		if ($job->closedate == "0000-00-00 00:00:00" || $job->closedate == "")
+		{
 			echo "<td><i>".$lang["job"][1]."</i></td></tr>";
-		} else {
+		}
+		else
+		{
 			$db = new DB;
 			$query = "SELECT SEC_TO_TIME(UNIX_TIMESTAMP('$job->closedate') - UNIX_TIMESTAMP('$job->date'))";
 			$result = $db->query($query);
@@ -358,7 +361,7 @@ function showJobDetails($ID) {
 		echo "</tr><tr bgcolor=".$cfg_layout["tab_bg_2"].">";
 		echo "<td align=center>";	
 
-			assignFormTracking($ID,$IRMName,$cfg_install["root"]."/tracking/tracking-assign-form.php");
+			assignFormTracking($ID,$_SESSION["glpiname"],$cfg_install["root"]."/tracking/tracking-assign-form.php");
 		
 		echo "</td>";
 		
@@ -382,7 +385,9 @@ function showJobDetails($ID) {
 		echo "</center>";
 	
 		showFollowups($job->ID);
-	} else {
+	} 
+	else
+	{
     		echo "<tr bgcolor=".$cfg_layout["tab_bg_2"]."><td colspan=6><i>".$lang["joblist"][16]."</i></td></tr>";
 	}
 }
@@ -498,7 +503,7 @@ function showFollowups($ID) {
 	// Show input field only if job is still open
 	if ($job->closedate=="0000-00-00 00:00:00") {
 		echo "<center><table border=0 width=90%>\n\n";
-		echo "<form method=post action=\"".$cfg_install["root"]."/tracking/tracking-followups.php\">";
+		echo "<form method=get action=\"".$cfg_install["root"]."/tracking/tracking-followups.php\">";
 		echo "<input type=hidden name=ID value=$ID>";
 		echo "<tr><th>".$lang["job"][9].":</th></tr>";
 		echo "<tr bgcolor=\"".$cfg_layout["tab_bg_1"]."\"><td width=100% align=center><textarea cols=60 rows=5 name=contents wrap=soft></textarea></td></tr>";
@@ -607,7 +612,7 @@ function assignFormTracking ($ID,$admin,$target) {
 
 	echo "<table border=0>";
 	echo "<tr><th>".$lang["job"][4]." $ID:</th></tr>";
-	echo "<form method=post action=\"".$target."\">";
+	echo "<form method=get action=\"".$target."\">";
 	echo "<td align=center bgcolor=\"".$cfg_layout["tab_bg_1"]."\">";
 
 	echo "<table border=0>";

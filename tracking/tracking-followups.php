@@ -43,13 +43,14 @@ include ($phproot . "/glpi/includes_setup.php");
 
 checkAuthentication("normal");
 
-commonHeader("Tracking",$HTTP_SERVER_VARS[PHP_SELF]);
+commonHeader("Tracking",$_SERVER[PHP_SELF]);
 
-if ($contents) {
-	postFollowups ($ID,$IRMName,$contents);
+if ($_GET["contents"])
+{
+	postFollowups ($_GET["ID"],$_SESSION["glpiname"],$_GET["contents"]);
 }
 
-showJobDetails($ID);
+showJobDetails($_GET["ID"]);
 
 commonFooter();
 ?>

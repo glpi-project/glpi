@@ -223,8 +223,12 @@ class Identification
 		$name = $this->user->fields['name'];
 		$password = md5($this->user->fields['password']);
 		$type = $this->user->fields['type'];
-	 	SetCookie("IRMName", $name, 0, "/");
-		SetCookie("IRMPass", $password, 0, "/");
+		session_start();
+		$_SESSION["glpipass"] = $password;
+		$_SESSION["glpiname"] = $name;
+		$_SESSION["authorisation"] = true;
+	 	//SetCookie("IRMName", $name, 0, "/");
+		//SetCookie("IRMPass", $password, 0, "/");
 	}
 
 	//Add an user to DB or update his password if user allready exist.
@@ -305,9 +309,9 @@ class Mailing
 	}
 	function test_type()
 	{
-		if (!is_a($this->job,"Job"))
+		if (!(get_class($this->job)=="Job"))
 			$this->job=NULL;
-		if (!is_a($this->user,"User"))
+		if (!(get_class($this->user)=="User"))
 			$this->user=NULL;	
 	}
 	// Return array of emails of people to send mail

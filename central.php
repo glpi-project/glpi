@@ -46,7 +46,7 @@ commonHeader("Command Center",$HTTP_SERVER_VARS[PHP_SELF]);
 
 // Greet the user
 
-echo "<center><b>".$lang["central"][0].$IRMName.", ".$lang["central"][1]."</b></center>";
+echo "<center><b>".$lang["central"][0].$_SESSION["glpiname"].", ".$lang["central"][1]."</b></center>";
 echo "<hr noshade>";
 
 // New database object
@@ -56,8 +56,9 @@ $db= new DB;
 showEvents($HTTP_SERVER_VARS[PHP_SELF],$result,$sort);
 
 
-if ($cfg_features["jobs_at_login"]==1) {
-	showJobList($IRMName,"individual",$contains,$item);
+if ($cfg_features["jobs_at_login"]==1)
+{
+	showJobList($_SESSION["glpiname"],"individual",$contains,$item);
 }
 
 commonFooter();

@@ -43,13 +43,14 @@ include ($phproot . "/glpi/includes_setup.php");
 
 checkAuthentication("admin");
 
-if (!$status) {
+if (!$status)
+{
 	$status = "old";
 }
 
-markJob ($ID,$status);
+markJob ($_GET["ID"],$status);
 
 
-header("Location: $HTTP_REFERER");
+header("Location: $_SERVER[HTTP_REFERER]");
 
 ?>

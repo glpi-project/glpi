@@ -41,28 +41,29 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-if ($add) {
+if ($_POST["add"]) {
 	checkAuthentication("admin");
-	addUser($HTTP_POST_VARS);
-	logEvent(0, "users", 4, "setup", "$IRMName added user ".$HTTP_POST_VARS["name"].".");
-	header("Location: $HTTP_REFERER?done");
-} else if ($delete) {
+	addUser($_POST);
+	logEvent(0, "users", 4, "setup", $_SESSION["glpiname"]." added user ".$_POST["name"].".");
+	header("Location: $_SERVER[$HTTP_REFERER]?done");
+} else if ($_POST["delete"]) {
 	checkAuthentication("admin");
-	deleteUser($HTTP_POST_VARS);
-	logEvent(0,"users", 4, "setup", "$IRMName deleted user ".$HTTP_POST_VARS["name"].".");
-	header("Location: $HTTP_REFERER?done");
-} else if ($update) {
+	deleteUser($_POST);
+	logEvent(0,"users", 4, "setup", $_SESSION["glpiname"]." deleted user ".$_POST["name"].".");
+	header("Location: $_SERVER[$HTTP_REFERER]?done");
+} else if ($_POST["update"]) {
 	checkAuthentication("admin");
-	updateUser($HTTP_POST_VARS);
-	logEvent(0,"users", 5, "setup", "$IRMName updated user ".$HTTP_POST_VARS["name"].".");
-	header("Location: $HTTP_REFERER?done");
+	updateUser($_POST);
+	logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]." updated user ".$_POST["name"].".");
+	header("Location: $_SERVER[$HTTP_REFERER]?done");
 } else {
 	checkAuthentication("normal");
 	commonHeader("Setup",$HTTP_SERVER_VARS[PHP_SELF]);
 	echo "<center><table cellpadding=4><tr><th>".$lang["setup"][2].":</th></tr></table></center>";
 	listUsersForm($HTTP_SERVER_VARS[PHP_SELF]);
-	if (can_assign_job($IRMName)) {
-	 echo "<center><strong><a href='setup-assign-job.php'>".$lang["setup"][59]."</a></strong></center>";
+	if (can_assign_job($_SESSION["glpiname"]))
+	{
+		 echo "<center><strong><a href='setup-assign-job.php'>".$lang["setup"][59]."</a></strong></center>";
 	}
 	commonFooter();
 }

@@ -166,11 +166,11 @@ if($login_ok)
 			// Redirect to Command Central if not post-only
 			if ($identificat->user->fields['type'] == "post-only")
 			{
-				header("Location: helpdesk.php");
+				header("Location: helpdesk.php?".SID);
 			}
 			else
 			{
-				header("Location: central.php");
+				header("Location: central.php?".SID);
 			}
 }
 ?>

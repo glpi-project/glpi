@@ -39,28 +39,28 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_networking.php");
 
-if ($add) {
+if ($_POST["add"]) {
 	checkAuthentication("admin");
-	addNetdevice($HTTP_POST_VARS);
-	logEvent(0, "networking", 4, "inventory", "$IRMName added item name ".$HTTP_POST_VARS["name"].".");
+	addNetdevice($_POST);
+	logEvent(0, "networking", 4, "inventory", $_SESSION["glpiname"]." added item name ".$_POST["name"].".");
 	header("Location: ".$cfg_install["root"]."/networking/");
-} else if ($delete) {
+} else if ($_POST["delete"]) {
 	checkAuthentication("admin");
-	deleteNetdevice($HTTP_POST_VARS);
-	logEvent($HTTP_POST_VARS["ID"], "networking", 4, "inventory", "$IRMName deleted item.");
+	deleteNetdevice($_POST);
+	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"] ."deleted item.");
 	header("Location: ".$cfg_install["root"]."/networking/");
-} else if ($update) {
+} else if ($_POST["update"]) {
 	checkAuthentication("admin");
-	updateNetdevice($HTTP_POST_VARS);
-	logEvent($HTTP_POST_VARS["ID"], "networking", 4, "inventory", "$IRMName updated item.");
-	commonHeader("Networking",$HTTP_SERVER_VARS[PHP_SELF]);
-	showNetworkingForm ($HTTP_SERVER_VARS[PHP_SELF],$ID);
+	updateNetdevice($_POST);
+	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." updated item.");
+	commonHeader("Networking",$_SERVER[PHP_SELF]);
+	showNetworkingForm ($_SERVER[PHP_SELF],$_POST["ID"]);
 	commonFooter();
 
 } else {
 	checkAuthentication("normal");
-	commonHeader("Networking",$HTTP_SERVER_VARS[PHP_SELF]);
-	showNetworkingForm ($HTTP_SERVER_VARS[PHP_SELF],$ID);
+	commonHeader("Networking",$_SERVER[PHP_SELF]);
+	showNetworkingForm ($_SERVER[PHP_SELF],$_GET["ID"]);
 	commonFooter();
 }
 

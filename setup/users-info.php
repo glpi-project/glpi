@@ -42,8 +42,8 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
 checkAuthentication("normal");
-commonHeader("Userinfo",$HTTP_SERVER_VARS[PHP_SELF]);
-showUser($HTTP_REFERER,$ID);
+commonHeader("Userinfo",$_SERVER[PHP_SELF]);
+showUser($_SERVER[HTTP_REFERER],$_POST["ID"]);
 commonFooter();
 
 ?>

@@ -43,19 +43,20 @@ include ($phproot . "/glpi/includes_setup.php");
 
 checkAuthentication("admin");
 
-if (can_assign_job($IRMName)) {
-	  if($update)
-	  {
-	  updateUser($HTTP_POST_VARS);
-	  logEvent(0,"users", 5, "setup", "$IRMName updated user ".$HTTP_POST_VARS["name"].".");
-    header("Location: $HTTP_REFERER?done");
-    }
-    else
-    {
-    commonHeader("Setup",$HTTP_SERVER_VARS[PHP_SELF]);
-	  showFormAssign($HTTP_SERVER_VARS[PHP_SELF]);
-	  commonFooter();
-	  }
+if (can_assign_job($_SESSION["glpiname"]))
+ {
+	if($_POST["update"])
+	{
+		updateUser($_POST);
+		logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]." updated user ".$_POST["name"].".");
+		header("Location: $_SERVER[HTTP_REFERER]?done");
+    	}
+	else
+    	{
+    		commonHeader("Setup",$_SERVER[PHP_SELF]);
+		showFormAssign($_SERVER[PHP_SELF]);
+		commonFooter();
+	}
 }	
 	
 

@@ -39,37 +39,38 @@ This file is part of GLPI.
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_software.php");
-
-if ($addform) {
+if($_POST) $tab = $_POST;
+elseif($_GET) $tab = $_GET;
+if ($tab["addform"]) {
 	checkAuthentication("admin");
-	commonHeader("Software",$HTTP_SERVER_VARS[PHP_SELF]);
-	showLicenseForm($HTTP_SERVER_VARS[PHP_SELF],$ID);
+	commonHeader("Software",$_SERVER[PHP_SELF]);
+	showLicenseForm($_SERVER[PHP_SELF],$tab["ID"]);
 	commonFooter();
-} else if ($add) {
+} else if ($tab["add"]) {
 	checkAuthentication("admin");
-	addLicense($HTTP_POST_VARS);
-	logEvent($HTTP_POST_VARS["sID"], "software", 4, "inventory", "$IRMName added a license.");
-	header("Location: $HTTP_REFERER");
-} else if ($delete) {
+	addLicense($tab);
+	logEvent($tab["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." added a license.");
+	header("Location: $_SERVER[HTTP_REFERER]");
+} else if ($tab["delete"]) {
 	checkAuthentication("admin");
-	deleteLicense($ID);
-	logEvent(0, "software", 4, "inventory", "$IRMName deleted a license.");
-	header("Location: $HTTP_REFERER");
-} else if ($select) {
+	deleteLicense($tab["ID"]);
+	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." deleted a license.");
+	header("Location: $_SERVER[HTTP_REFERER]");
+} else if ($tab["select"]) {
 	checkAuthentication("admin");
-	commonHeader("Software",$HTTP_SERVER_VARS[PHP_SELF]);
-	showLicenseSelect($HTTP_REFERER,$HTTP_SERVER_VARS[PHP_SELF],$cID,$sID);
+	commonHeader("Software",$_SERVER[PHP_SELF]);
+	showLicenseSelect($_SERVER[HTTP_REFERER],$_SERVER[PHP_SELF],$tab["cID"],$tab["sID"]);
 	commonFooter();
-} else if ($install) {
+} else if ($tab["install"]) {
 	checkAuthentication("admin");
-	installSoftware($cID,$lID);
-	logEvent($cID, "computers", 5, "inventory", "$IRMName installed software.");
-	header("Location: $back");
-} else if ($uninstall) {
+	installSoftware($tab["cID"],$tab["lID"]);
+	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed software.");
+	header("Location: $_SERVER[HTTP_REFERER]");
+} else if ($tab["uninstall"]) {
 	checkAuthentication("admin");
-	uninstallSoftware($lID);
-	logEvent($cID, "computers", 5, "inventory", "$IRMName uninstalled software.");
-	header("Location: $HTTP_REFERER");
+	uninstallSoftware($tab["lID"]);
+	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." uninstalled software.");
+	header("Location: $_SERVER[HTTP_REFERER]");
 }
 
 
