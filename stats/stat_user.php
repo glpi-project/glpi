@@ -6,12 +6,7 @@ GLPI - Gestionnaire libre de parc informatique
  Copyright (C) 2002 by the INDEPNET Development Team.
  Bazile Lebeau, baaz@indepnet.net - Jean-Mathieu Doléans, jmd@indepnet.net
  http://indepnet.net/   http://glpi.indepnet.org
- ----------------------------------------------------------------------
- Based on:
-IRMA, Information Resource-Management and Administration
-Christian Bauer, turin@incubus.de 
-
- ----------------------------------------------------------------------
+  ----------------------------------------------------------------------
  LICENSE
 
 This file is part of GLPI.
@@ -45,7 +40,7 @@ checkAuthentication("normal");
 
 commonHeader("Stats",$_SERVER["PHP_SELF"]);
 
-echo "<div align ='center'><b>".$lang["stats"][18]."</b></div>";
+echo "<div align ='center'><p><b>".$lang["stats"][18]."</b></p></div>";
 if(empty($_POST["date1"])) $_POST["date1"] = "";
 if(empty($_POST["date2"])) $_POST["date2"] = "";
 if ($_POST["date1"]!=""&&$_POST["date2"]!=""&&strcmp($_POST["date2"],$_POST["date1"])<0){
@@ -55,19 +50,16 @@ $_POST["date2"]=$tmp;
 }
 
 echo "<div align='center'><form method=\"post\" name=\"form\" action=\"stat_user.php\">";
-echo "<table><tr><td align='right'>";
-echo "Date de debut :</td><td><input type=\"texte\" name=\"date1\" readonly value=\"". $_POST["date1"] ."\" /></td>";
-echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date1&amp;value=".$_POST["date1"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-echo "<input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date1.value=''\" value='reset'>";
+echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
+echo "Date de debut :</td><td> <input type=\"texte\" readonly name=\"date1\"  size ='10' value=\"". $_POST["date1"] ."\" /></td>";
+echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date1&amp;value=".$_POST["date1"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."'>";
+echo "</td><td><input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date1.value=''\" value='".$lang["buttons"][16]."'>";
+echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name\"submit\" Value=\"". $lang["buttons"][7] ."\" /></td></tr>";
+echo "<tr class='tab_bg_2'><td align='right'>Date de fin :</td><td><input type=\"texte\" readonly name=\"date2\"  size ='10' value=\"". $_POST["date2"] ."\" /></td>";
+echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date2&amp;value=".$_POST["date2"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."'>";
+echo "</td><td><input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date2.value=''\" value='".$lang["buttons"][16]."'>";
 echo "</td></tr>";
-echo "<tr><td align='right'>Date de fin :</td><td><input type=\"texte\" name=\"date2\" readonly  value=\"". $_POST["date2"] ."\" /></td>";
-echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date2&amp;value=".$_POST["date2"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-echo "<input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date2.value=''\" value='reset'>";
-echo "</td></tr>";
-echo "<tr><td></td><td align='center'><input type=\"submit\" class='button' name\"submit\" Value=\"". $lang["buttons"][7] ."\" /></td><td></td>";
-echo "</tr></table>";
-echo "</form></div>";
-echo "<hr noshade>";
+echo "</table></form></div>";
 
 //On recupere les differents auteurs d'interventions
 //Get the distinct intervention authors

@@ -6,12 +6,7 @@ GLPI - Gestionnaire libre de parc informatique
  Copyright (C) 2002 by the INDEPNET Development Team.
  Bazile Lebeau, baaz@indepnet.net - Jean-Mathieu Doléans, jmd@indepnet.net
  http://indepnet.net/   http://glpi.indepnet.org
- ----------------------------------------------------------------------
- Based on:
-IRMA, Information Resource-Management and Administration
-Christian Bauer, turin@incubus.de 
-
- ----------------------------------------------------------------------
+  ----------------------------------------------------------------------
  LICENSE
 
 This file is part of GLPI.
@@ -46,7 +41,8 @@ checkAuthentication("normal");
 
 commonHeader("Stats",$_SERVER["PHP_SELF"]);
 
-echo "<div align='center'><b>".$lang["stats"][19]."</b>";
+echo "<div align='center'><p><b>".$lang["stats"][19]."</p></b>";
+
 if(empty($_POST["date1"])) $_POST["date1"] = "";
 if(empty($_POST["date2"])) $_POST["date2"] = "";
 if ($_POST["date1"]!=""&&$_POST["date2"]!=""&&strcmp($_POST["date2"],$_POST["date1"])<0){
@@ -56,7 +52,10 @@ $_POST["date2"]=$tmp;
 }
 
 if(empty($_POST["dropdown"])) $_POST["dropdown"] = "glpi_type_computers";
+
 echo "<form method=\"post\" name=\"form\" action=\"stat_lieux.php\">";
+
+echo "<table class='tab_cadre'><tr class='tab_bg_2'><td rowspan='2'>";
 echo "<select name=\"dropdown\">";
 echo "<option value=\"glpi_type_computers\" ".($_POST["dropdown"]=="glpi_type_computers"?"selected":"").">".$lang["computers"][8]."</option>";
 echo "<option value=\"glpi_dropdown_os\" ".($_POST["dropdown"]=="glpi_dropdown_os"?"selected":"").">".$lang["computers"][9]."</option>";
@@ -65,20 +64,18 @@ echo "<option value=\"glpi_dropdown_processor\" ".($_POST["dropdown"]=="glpi_dro
 echo "<option value=\"glpi_dropdown_locations\" ".($_POST["dropdown"]=="glpi_dropdown_locations"?"selected":"").">".$lang["stats"][21]."</option>";
 echo "<option value=\"glpi_dropdown_gfxcard\" ".($_POST["dropdown"]=="glpi_dropdown_gfxcard"?"selected":"").">".$lang["computers"][34]."</option>";
 echo "<option value=\"glpi_dropdown_hdtype\" ".($_POST["dropdown"]=="glpi_dropdown_hdtype"?"selected":"").">".$lang["computers"][36]."</option>";
-echo "</select>";
-echo "<table><tr><td align='right'>";
-echo $lang["search"][8]." :</td><td><input type=\"texte\" readonly name=\"date1\" value=\"". $_POST["date1"] ."\" /></td>";
-echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date1&amp;value=".$_POST["date1"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-echo "<input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date1.value=''\" value='reset'>";
+echo "</select></td>";
+
+echo "<td align='right'>";
+echo "Date de debut :</td><td> <input type=\"texte\" readonly name=\"date1\"  size ='10' value=\"". $_POST["date1"] ."\" /></td>";
+echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date1&amp;value=".$_POST["date1"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."'>";
+echo "</td><td><input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date1.value=''\" value='".$lang["buttons"][16]."'>";
+echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name\"submit\" Value=\"". $lang["buttons"][7] ."\" /></td></tr>";
+echo "<tr class='tab_bg_2'><td align='right'>Date de fin :</td><td><input type=\"texte\" readonly name=\"date2\"  size ='10' value=\"". $_POST["date2"] ."\" /></td>";
+echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date2&amp;value=".$_POST["date2"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."'>";
+echo "</td><td><input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date2.value=''\" value='".$lang["buttons"][16]."'>";
 echo "</td></tr>";
-echo "<tr><td align='right'>".  $lang["search"][9] ." :</td><td><input type=\"texte\" readonly name=\"date2\" value=\"". $_POST["date2"] ."\" /></td>";
-echo "<td><input name='button' type='button' class='button'  onClick=\"window.open('$HTMLRel/mycalendar.php?form=form&amp;elem=date2&amp;value=".$_POST["date2"]."','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
-echo "<input name='button_reset' type='button' class='button' onClick=\"document.forms['form'].date2.value=''\" value='reset'>";
-echo "</td></tr>";
-echo "<tr><td></td><td align='center'><input type=\"submit\" class='button' name\"submit\" Value=\"". $lang["buttons"][7] ."\" /></td><td></td>";
-echo "</tr></table>";
-echo "</form></div>";
-echo "<hr noshade>";
+echo "</table></form></div>";
 
 //recuperation des differents lieux d'interventions
 //Get the distincts intervention location
