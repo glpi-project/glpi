@@ -553,14 +553,14 @@ echo "<tr><td>".$lang["setup"][55].":	</td>";
 	echo "</td>\n";	
 	echo "</tr><tr>";
 
-	if ($ID) {
+	if (!empty($ID)) {
 		echo "<td bgcolor=\"".$cfg_layout["tab_bg_2"]."\" align=center valign=top colspan=2>\n";
-		echo "<input type=hidden name=ID value=$ID>";
-		echo "<input type=submit name=update value=\"".$lang["buttons"][7]."\">";
+		echo "<input type=hidden name=\"ID\" value=\"".$ID."\">";
+		echo "<input type=submit name=\"update\" value=\"".$lang["buttons"][7]."\">";
 		echo "</td></form>\n";	
 	} else {
-		echo "<td bgcolor=\"".$cfg_layout["tab_bg_2"]."\" align=center valign=top colspan=2>\n";
-		echo "<input type=submit name=add value=\"".$lang["buttons"][8]."\">";
+		echo "<td bgcolor=\"".$cfg_layout["tab_bg_2"]."\" align=\"center\" valign=\"top\" colspan=\"2\">\n";
+		echo "<input type=submit name=\"add\" value=\"".$lang["buttons"][8]."\">";
 		echo "</td></form>\n";	
 	}
 	
@@ -606,11 +606,10 @@ function addTemplate($input) {
 	
 	// fill array for update 
 	foreach ($input as $key => $val) {
-		if (!isset($templ->fields[$key]) || $templ->fields[$key] != $input[$key]) {
+		if (empty($templ->fields[$key]) || $templ->fields[$key] != $input[$key]) {
 			$templ->fields[$key] = $input[$key];
 		}
 	}
-
 	$templ->addToDB();
 
 }

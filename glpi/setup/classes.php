@@ -219,7 +219,6 @@ class Template {
 			}
 		}
 		$query .= ")";
-
 		if ($result=$db->query($query)) {
 			return true;
 		} else {

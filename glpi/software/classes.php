@@ -109,7 +109,7 @@ class Software {
 		
 		$db = new DB;
 
-		$this->comments = addslashes($this->comments);
+		$this->fields["comments"] = addslashes($this->fields["comments"]);
 		
 		// Build query
 		$query = "INSERT INTO software (";

@@ -288,15 +288,16 @@ function updateSoftware($input) {
 	// Fill the update-array with changes
 	$x=0;
 	foreach ($input as $key => $val) {
-		if ($sw->fields[$key] != $input[$key]) {
+		if (empty($sw->fields[$key]) || $sw->fields[$key] != $input[$key]) {
 			$sw->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;
 		}
 	}
-
-	$sw->updateInDB($updates);
-
+	if(!empty($updates)) {
+	
+		$sw->updateInDB($updates);
+	}
 }
 
 function addSoftware($input) {
@@ -309,7 +310,7 @@ function addSoftware($input) {
 	
 	// fill array for update
 	foreach ($input as $key => $val) {
-		if ($sw->fields[$key] != $input[$key]) {
+		if (empty($sw->fields[$key]) || $sw->fields[$key] != $input[$key]) {
 			$sw->fields[$key] = $input[$key];
 		}
 	}

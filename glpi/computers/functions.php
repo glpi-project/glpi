@@ -473,7 +473,7 @@ function updateComputer($input) {
 	// Get all flags and fill with 0 if unchecked in form
 	foreach  ($comp->fields as $key => $val) {
 		if (eregi("\.*flag\.*",$key)) {
-			if (!$input[$key]) {
+			if (empty($input[$key])) {
 				$input[$key]=0;
 			}
 		}
@@ -482,7 +482,7 @@ function updateComputer($input) {
 	// Fill the update-array with changes
 	$x=1;
 	foreach ($input as $key => $val) {
-		if ($comp->fields[$key] != $input[$key]) {
+		if (empty($comp->fields[$key]) || $comp->fields[$key]  != $input[$key]) {
 			$comp->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;
