@@ -54,8 +54,7 @@ echo "<big><b><strong>Liste du materiel sous contrat de maintenance</strong></b>
 # Construction  la requete, et appel de la fonction affichant les valeurs.
 if($_POST["item_type"] != 'tous')
 {
-
-		$query = "select * from ".$_POST["item_type"].";";
+		$query = "select * from ".$_POST["item_type"];
 		
 			if($_POST["annee"] != 'toutes')
 			{
@@ -63,11 +62,12 @@ if($_POST["item_type"] != 'tous')
 			}
 			
 		$query.= " order by ".$_POST["tri_par"]." asc";
+		
 		report_perso($_POST["item_type"],$query);
 }
 else
 {
-
+	$query=array();
 		for($i=0;$i<4;$i++)
 		{
 			$query[$i] = "select * from ".$item_db_name[$i]." ";
@@ -78,7 +78,6 @@ else
 			}
 		
 			$query[$i].=" order by ".$_POST["tri_par"]." asc";
-		
 
 			report_perso($item_db_name[$i],$query[$i]);
 		 }		
