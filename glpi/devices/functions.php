@@ -80,7 +80,7 @@ global $lang;
 				return $lang["device_processor"][0];
 				break;
 			case RAM_DEVICE :
-				return $lang["device_ram"][0];
+				return  $lang["device_ram"][2];
 				break;
 			case HDD_DEVICE :
 				return $lang["device_hdd"][4];
@@ -580,7 +580,13 @@ function showDevicesForm ($target,$ID,$device_type) {
 		break;
 		case "glpi_device_ram" :
 			echo "<tr><td>".$lang["device_ram"][0].":</td>";
-			echo "<td><input type='text' size='12' name='type' value=\"".$device->fields["type"]."\"></td>";
+			echo "<td><select name='type'>";
+			echo "<option value='DDR' ".($device->fields["type"]=="DDR"?"selected":"").">DDR</option>";
+			echo "<option value='EDO' ".($device->fields["type"]=="EDO"?"selected":"").">EDO</option>";
+			echo "<option value='SDRAM' ".($device->fields["type"]=="SDRAM"?"selected":"").">SDRAM</option>";
+			echo "<option value='SDRAM-2' ".($device->fields["type"]=="SDRAM-2"?"selected":"").">SDRAM-2</option>";
+			echo "</select>";
+			echo "</td>";
 			echo "</tr>";
 			echo "<tr><td>".$lang["device_ram"][1].":</td>";
 			echo "<td><input type='text' size='12' name='frequence' value=\"".$device->fields["frequence"]."\"></td>";
@@ -593,8 +599,16 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "<tr><td>".$lang["device_hdd"][1].":</td>";
 			echo "<td><input type='text' size='12' name='cache' value=\"".$device->fields["cache"]."\"></td>";
 			echo "</tr>";
+
+
 			echo "<tr><td>".$lang["device_hdd"][2].":</td>";
-			echo "<td><input type='text' size='12' name='interface' value=\"".$device->fields["interface"]."\"></td>";
+			echo "<td><select name='interface'>";
+			echo "<option value='IDE' ".($device->fields["interface"]=="IDE"?"selected":"").">IDE</option>";
+			echo "<option value='SATA' ".($device->fields["interface"]=="SATA"?"selected":"").">SATA</option>";
+			echo "<option value='SCSI' ".($device->fields["interface"]=="SCSI"?"selected":"").">SCSI</option>";
+			echo "</select>";
+			echo "</td>";
+
 			echo "</tr>";
 		break;
 		case "glpi_device_iface" :
@@ -666,7 +680,13 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "<td><input type='text' size='12' name='ram' value=\"".$device->fields["ram"]."\"></td>";
 			echo "</tr>";
 			echo "<tr><td>".$lang["device_gfxcard"][2].":</td>";
-			echo "<td><input type='text' size='12' name='interface' value=\"".$device->fields["interface"]."\"></td>";
+			echo "<td><select name='interface'>";
+			echo "<option value='AGP' ".($device->fields["interface"]=="AGP"?"selected":"").">AGP</option>";
+			echo "<option value='PCI' ".($device->fields["interface"]=="PCI"?"selected":"").">PCI</option>";
+			echo "<option value='PCI-X' ".($device->fields["interface"]=="PCI-X"?"selected":"").">PCI-X</option>";
+			echo "<option value='Other' ".($device->fields["interface"]=="Other"?"selected":"").">Other</option>";
+			echo "</select>";
+			echo "</td>";
 			echo "</tr>";
 		break;
 		case "glpi_device_sndcard" :
