@@ -2,14 +2,14 @@
 /*
 
   ----------------------------------------------------------------------
-GLPI - Gestionnaire libre de parc informatique
- Copyright (C) 2002 by the INDEPNET Development Team.
- Bazile Lebeau, baaz@indepnet.net - Jean-Mathieu Doléans, jmd@indepnet.net
+GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2004 by the INDEPNET Development Team.
+ 
  http://indepnet.net/   http://glpi.indepnet.org
  ----------------------------------------------------------------------
  Based on:
 IRMA, Information Resource-Management and Administration
-Christian Bauer, turin@incubus.de
+Christian Bauer
 
  ----------------------------------------------------------------------
  LICENSE
