@@ -48,6 +48,7 @@ echo "<tr><th>".$lang["reports"][10].":</th></tr>";
 	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='convexcel/rapport-imprimantes.php' target=blanc_>".$lang["reports"][7]."</a></b></td></tr>";
 	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='convexcel/rapport-reseaux.php' target=blanc_>".$lang["reports"][8]."</a></b></td></tr>";
 	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='convexcel/rapport-moniteurs.php' target=blanc_>".$lang["reports"][9]."</a></b></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='convexcel/rapport-peripherals.php' target=blanc_>".$lang["reports"][29]."</a></b></td></tr>";
 
 
 echo "</table></center>";
