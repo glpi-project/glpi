@@ -387,7 +387,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	
 	
 	if ($navigation->inventory) {
-		echo "<td align='center' valign='top' width='25%'>";
+		echo "<td align='center' valign='top' width='20%'>";
 		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/inventaire.png\" alt=\"\" title=\"".$lang["setup"][10]."\"><br>";
 		echo "<small>-&nbsp;".$lang["setup"][10]."&nbsp;-</small><br>";
 
@@ -406,7 +406,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	
 	
 	 if ($navigation->maintain) {
-		echo "<td align='center' valign='top' width='25%'>";
+		echo "<td align='center' valign='top' width='20%'>";
 				echo "<img class='icon_nav' src=\"".$HTMLRel."pics/maintenance.png\" alt=\"\" title=\"".$lang["setup"][55]."\"><br>";
 
 		echo "<small>-&nbsp;".$lang["setup"][55]."&nbsp;-</small><br>";
@@ -429,7 +429,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	
 	
 	if ($navigation->utils) {
-	echo "<td align='center' valign='top' width='25%'>";
+	echo "<td align='center' valign='top' width='20%'>";
 	echo "<img class='icon_nav' src=\"".$HTMLRel."pics/outils.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>";
 
 		echo "<small>-&nbsp;".$lang["Menu"][18]."&nbsp;-</small><br>";
@@ -440,7 +440,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	
 	
 	if ($navigation->settings) {
-		echo "<td align='center' valign='top' width='25%'>";
+		echo "<td align='center' valign='top' width='20%'>";
 				echo "<img class='icon_nav' src=\"".$HTMLRel."pics/config.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>";
 
 		echo "<small>-&nbsp;".$lang["Menu"][15]."&nbsp;-</small><br>";
