@@ -754,6 +754,7 @@ $lang["setup"][218]="Impossible de configurer les envois de suivis par mails";
 $lang["setup"][219]="Voulez vous permettre les soumissions d'intervention anonymes (helpdesk.html)";
 $lang["setup"][220]="Impossible de modifier l'utilisateur 'Helpdesk'";
 $lang["setup"][221]="Date de début d'exercide fiscale (jour et mois)";
+$lang["setup"][222]="Périphériques internes";
 
 
 // Helpdesk
@@ -1115,6 +1116,26 @@ $lang["device_ram"][1] = "Frequence";
 
 $lang["device_sndcard"][0] = "Type";
 
+$lang["device_power"][0] = "Puissance";
+$lang["device_power"][1] = "ATX";
+
+$lang["device_case"][0] = "format";
+$lang["device_case"][1] = "grand";
+$lang["device_case"][2] = "moyen";
+$lang["device_case"][3] = "micro";
+
+$lang["device_drive"][0] = "Ecriture";
+$lang["device_drive"][1] = "Vitesse";
+$lang["device_drive"][2] = "Interface";
+
+$lang["device_pci"][0] = "";
+
+$lang["device_control"][0] = "RAID";
+$lang["device_control"][1] = "Interface";
+$lang["device_control"][2] = "IDE";
+$lang["device_control"][3] = "SATA";
+$lang["device_control"][4] = "SCSI";
+$lang["device_control"][5] = "USB";
 
 $lang["devices"][0] = "Ajouter un nouveau periph&eacute;rique interne";
 $lang["devices"][1] = "Disque dur";
@@ -1135,6 +1156,12 @@ $lang["devices"][15] = "Commentaire";
 $lang["devices"][16] = "unknown";
 $lang["devices"][17] = "Selectionnez un type de périphérique interne.";
 $lang["devices"][18] = "Pas de périphérique trouvé";
+$lang["devices"][19] = "Lecteurs";
+$lang["devices"][20] = "Controlleurs";
+$lang["devices"][21] = "PCI générique";
+$lang["devices"][22] = "Boitiers";
+$lang["devices"][23] = "Alimentation";
+$lang["devices"][24] = "";
 
 $lang["cartridges"][0] = "Cartouche";
 $lang["cartridges"][1] = "Nom";
@@ -1284,7 +1311,7 @@ $lang["document"][23]	= "Pas de document trouv&eacute;";
 $lang["document"][24]	= "Suppression avec succ&egrave;s du fichier ";
 $lang["document"][25]	= "Echec de la suppression du fichier ";
 $lang["document"][26]	= "Le fichier est valide, et a &eacute;t&eacute; t&eacute;l&eacute;charg&eacute; avec succ&egrave;s.";
-$lang["document"][27]	= " Le fichier uploadé n'a pas réussit a être déplacé. Attaque par upload potentielle.";
+$lang["document"][27]	= "Attaque par upload potentielle.";
 $lang["document"][28]	= "Attention fichier existant.T&eacute;l&eacute;chargement non r&eacute;alis&eacute;";
 $lang["document"][29]	= "Echec de la cr&eacute;ation du r&eacute;pertoire";
 $lang["document"][30]	= "V&eacute;rifiez que vous avez les droits";
