@@ -37,6 +37,7 @@ This file is part of GLPI.
  
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
+include ($phproot . "/glpi/includes_tracking.php");
 require ("functions.php");
 
 
@@ -70,7 +71,7 @@ if (is_array($nomUsr))
 //affichage du tableau
 //table display
 echo "<table class='tab_cadre2' cellpadding='5' >";
-echo "<tr><th>".$lang["stats"][20]."</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th></tr>";
+echo "<tr><th>".$lang["stats"][20]."</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th></tr>";
 //Pour chacun de ces auteurs on affiche
 //foreach these authors display
    foreach($nomUsr as $key)
@@ -82,11 +83,13 @@ echo "<tr><th>".$lang["stats"][20]."</th><th>".$lang["stats"][22]."</th><th>".$l
 		echo "<td>".getNbinter(4,'author',$key["author"], $_POST["date1"], $_POST["date2"])."</td>";
 		echo "<td>".getNbresol(4,'author',$key["author"], $_POST["date1"], $_POST["date2"])."</td>";
 		echo "<td>".getResolAvg(4, 'author',$key["author"], $_POST["date1"], $_POST["date2"])."</td>";
+		echo "<td>".getRealAvg(4, 'author',$key["author"], $_POST["date1"], $_POST["date2"])."</td>";
 	}
 	else {
 		echo "<td>".getNbinter(1,'author',$key["author"])."</td>";
 		echo "<td>".getNbresol(1,'author',$key["author"])."</td>";
 		echo "<td>".getResolAvg(1, 'author',$key["author"])."</td>";
+		echo "<td>".getRealAvg(1, 'author',$key["author"])."</td>";
 	}
 	echo "</tr>";
   }

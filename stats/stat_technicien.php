@@ -37,6 +37,7 @@ This file is part of GLPI.
  
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
+include ($phproot . "/glpi/includes_tracking.php");
 require ("functions.php");
 
 
@@ -69,7 +70,7 @@ if (is_array($nomTech))
 //affichage du tableu
 //table display
 echo "<table class='tab_cadre2' cellpadding='5' >";
-echo "<tr><th>".$lang["stats"][16]."</th><th>".$lang["stats"][13]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th></tr>";
+echo "<tr><th>".$lang["stats"][16]."</th><th>".$lang["stats"][13]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th></tr>";
 //Pour chacun de ces utilisateurs on affiche
 //foreach these users display
 
@@ -87,6 +88,10 @@ echo "<tr><th>".$lang["stats"][16]."</th><th>".$lang["stats"][13]."</th><th>".$l
 	//Le temps moyen de resolution
 	//The average time to resolv
 		echo "<td>".getResolAvg(4, 'assign',$key["assign"],$_POST["date1"],$_POST["date2"])."</td>";
+	//Le temps moyen de l'intervention réelle
+	//The average realtime to resolv
+		echo "<td>".getRealAvg(4, 'assign',$key["assign"],$_POST["date1"],$_POST["date2"])."</td>";
+
 	}
 	else {
 		//le nombre d'intervention
@@ -98,6 +103,10 @@ echo "<tr><th>".$lang["stats"][16]."</th><th>".$lang["stats"][13]."</th><th>".$l
 	//Le temps moyen de resolution
 	//The average time to resolv
 		echo "<td>".getResolAvg(1, 'assign',$key["assign"])."</td>";
+	//Le temps moyen de l'intervention réelle
+	//The average realtime to resolv
+		echo "<td>".getRealAvg(1, 'assign',$key["assign"])."</td>";
+
 	}
 	echo "</tr>";
   }
