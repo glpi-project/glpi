@@ -432,6 +432,15 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 	echo "<tr><td>".$lang["networking"][7].":</td>";
 	echo "<td><input type='text' size='20' name='otherserial' value=\"".$netdev->fields["otherserial"]."\"></td>";
 	echo "</tr>";
+	
+	echo "<tr><td>".$lang["networking"][14].":</td>";
+	echo "<td><input type='text' size='20' name='ifaddr' value=\"".$netdev->fields["ifaddr"]."\"></td>";
+	echo "</tr>";
+
+	echo "<tr><td>".$lang["networking"][15].":</td>";
+	echo "<td><input type='text' size='20' name='ifmac' value=\"".$netdev->fields["ifmac"]."\"></td>";
+	echo "</tr>";
+		
 	echo "</table>";
 	
 	echo "</td>\n";	

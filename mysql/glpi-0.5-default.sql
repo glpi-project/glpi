@@ -806,6 +806,8 @@ CREATE TABLE glpi_networking (
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
     is_template enum('0','1') DEFAULT '0' NOT NULL,
     tplname varchar(255),
+    ifmac varchar(30) NOT NULL default '',
+    ifaddr varchar(30) NOT NULL default '',
    PRIMARY KEY (ID),
    KEY location (location),
    KEY type (type),
@@ -816,8 +818,8 @@ CREATE TABLE glpi_networking (
    KEY tech_num (tech_num)
 );
 
-INSERT INTO glpi_networking VALUES ('9','Dlink 450','','4586-puis-kioe','','','','0','0000-00-00 00:00:00','','1','1',NULL,'0','N','0',NULL);
-INSERT INTO glpi_networking VALUES ('10','','','','','','','0','0000-00-00 00:00:00','',NULL,NULL,NULL,'0','N','1','Blank Template');
+INSERT INTO glpi_networking VALUES (9, 'Dlink 450', '', '4586-puis-kioe', '', '', '', 0, '2005-03-21 17:55:46', '', 1, 1, 0, 0, 'N', '0', NULL, '', '');
+INSERT INTO glpi_networking VALUES (10, '', '', '', '', '', '', 0, '0000-00-00 00:00:00', '', NULL, NULL, NULL, 0, 'N', '1', 'Blank Template', '', '');
 ### Dump table glpi_networking_ports
 
 DROP TABLE IF EXISTS glpi_networking_ports;

@@ -1970,6 +1970,16 @@ if(!FieldExists("glpi_config","date_fiscale")) {
 	$db->query($query) or die("48 ".$lang["update"][90].$db->error());
 }
 
+if(!FieldExists("glpi_networking","ifmac")) {
+	$query = "ALTER TABLE `glpi_networking` ADD `ifmac` char(30) NOT NULL default ''";
+	$db->query($query) or die("48 ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_networking","ifaddr")) {
+	$query = "ALTER TABLE `glpi_networking` ADD `ifaddr` char(30) NOT NULL default ''";
+	$db->query($query) or die("48 ".$lang["update"][90].$db->error());
+}
+
 if(!TableExists("glpi_repair_item")) {
 
 	$query = "CREATE TABLE glpi_repair_item (ID int(11) NOT NULL auto_increment,device_type tinyint(4) NOT NULL default '0', id_device int(11) NOT NULL default '0', PRIMARY KEY  (ID), KEY device_type (device_type), KEY device_type_2 (device_type,id_device));";

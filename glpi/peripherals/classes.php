@@ -180,11 +180,14 @@ function getEmpty () {
 			$query = "DELETE from glpi_peripherals WHERE ID = '$ID'";
 			if ($result = $db->query($query)) {
 
-					$query="select * from glpi_reservation_item where (device_type='".PERIPHERAL_TYPE."' and id_device='$ID')";
-					if ($result = $db->query($query)) {
-						if ($db->numrows($result)>0)
-						deleteReservationItem(array("ID"=>$db->result($result,0,"ID")));
-					}
+				$query="select * from glpi_repair_item where (device_type='".PERIPHERAL_TYPE."' and id_device='$ID')";
+				$result = $db->query($query);
+					
+				$query="select * from glpi_reservation_item where (device_type='".PERIPHERAL_TYPE."' and id_device='$ID')";
+				if ($result = $db->query($query)) {
+					if ($db->numrows($result)>0)
+					deleteReservationItem(array("ID"=>$db->result($result,0,"ID")));
+				}
 
 				$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".PERIPHERAL_TYPE."')";
 				$result = $db->query($query);
