@@ -758,6 +758,9 @@ class CommonItem{
 			case SOFTWARE_TYPE : 
 				$this->obj= new Software;	
 				break;				
+			case CONTRACT_TYPE : 
+				$this->obj= new Contract;	
+				break;				
 			}
 
 			if ($this->obj!=NULL){
@@ -790,6 +793,9 @@ class CommonItem{
 				break;				
 			case SOFTWARE_TYPE : 
 				return $lang["software"][10];
+				break;				
+			case CONTRACT_TYPE : 
+				return $lang["financial"][1];
 				break;				
 			}
 	
@@ -834,6 +840,9 @@ class CommonItem{
 				break;				
 			case SOFTWARE_TYPE : 
 				return "<a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
+				break;				
+			case CONTRACT_TYPE : 
+				return "<a href=\"".$cfg_install["root"]."/contracts/contracts-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
 				break;				
 			}
 
