@@ -39,7 +39,7 @@ This file is part of GLPI.
 function getNbIntervTech()
 {
 	$db = new DB;
-	$query = "SELECT distinct(tracking.assign) as assign FROM tracking where tracking.assign != 'NULL'";
+	$query = "SELECT distinct(tracking.assign) as assign FROM tracking where tracking.assign != ''";
 	$result = $db->query($query);
 	if($db->numrows($result) >=1) {
 		$i = 0;
@@ -150,10 +150,10 @@ function getNbResol($quoi, $chps, $value)
 		}	
 	}
 	elseif($quoi == 2) {
-		$query = "select count(ID) as total from tracking where status = 'old' and YEAR(tracking.date) = YEAR(NOW())";
+		$query = "select count(ID) as total from tracking where tracking.status = 'old' and YEAR(tracking.date) = YEAR(NOW())";
 	}
 	elseif($quoi == 3) {
-		$query = "select count(ID) as total from tracking where status = 'old' and YEAR(tracking.date) = YEAR(NOW()) and MONTH(tracking.date) = MONTH(NOW())";
+		$query = "select count(ID) as total from tracking where tracking.status = 'old' and YEAR(tracking.date) = YEAR(NOW()) and MONTH(tracking.date) = MONTH(NOW())";
 	}
 	$result = $db->query($query);
 	return $db->result($result,0,"total");
@@ -172,37 +172,43 @@ function getResolAvg($quoi, $chps, $value)
 {
 	$db = new DB;
 	if($quoi == 1) {
-		$query = "select (UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date)) as total from tracking";	
+			
 		if(!empty($chps) && !empty($value)) {
 			if($chps == "computers.location") {
-				$query .= ", computers where tracking.computer = computers.ID and $chps = '$value' group by computers.location";
+				$query = "select SUM(UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date))/count(computers.location)";
+				$query .= " as total from tracking, computers where tracking.computer = computers.ID and tracking.status = 'old' and tracking.closedate != '0000-00-00'  and $chps = '$value'";
 			}
 			else {
-				$query .= " where $chps = '$value' and status = 'old'";
+				$query = "select SUM(UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date))/count(tracking.ID)";
+				$query .= " as total from tracking where $chps = '$value' and tracking.status = 'old' and tracking.closedate != '0000-00-00'";
 			}
 		}
 		else {
-			$query .= " where  status = 'old'";
+			$query = "select SUM(UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date))/count(tracking.id) as total from tracking";
+			$query .= " where tracking.status = 'old' and tracking.closedate != '0000-00-00'";
 		}
 	}
 	elseif($quoi == 2) {
-		$query = "select (UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date)) as total from tracking where status ='old' and YEAR(tracking.date) = YEAR(NOW())";
+		$query = "select SUM(UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date))/count(tracking.ID) as total from tracking where tracking.status ='old'  and closedate != '0000-00-00' and YEAR(tracking.date) = YEAR(NOW())";
 	}
 	elseif($quoi == 3) {
-		$query = "select (UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date)) as total from tracking where status = 'old' and YEAR(tracking.date) = YEAR(NOW()) and MONTH(tracking.date) = MONTH(NOW())";
+		$query = "select SUM(UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date))/count(tracking.ID) as total from tracking where tracking.status = 'old' and closedate != '0000-00-00' and YEAR(tracking.date) = YEAR(NOW()) and MONTH(tracking.date) = MONTH(NOW())";
 	}
 	$result = $db->query($query);
-	if($db->numrows($result) >= 1)
+	if($db->numrows($result) == 1)
 	{
-		$i=0;
-		$sec = 0;
-		while($line = $db->fetch_array($result)) {
-			$sec += $line["total"];
-			$i++;
-		}
-		$sec = $sec/$i;
+		$sec = $db->result($result,0,"total");
 	}
 	if(empty($sec)) $sec = 0;
+	$temps = toTimeStr($sec);
+	return $temps;
+	
+}
+
+//Make a good string from the unix timestamp $sec
+//
+function toTimeStr($sec)
+{
 	if($sec < 60) {
 		return $sec." Sec";
 	}
@@ -224,7 +230,6 @@ function getResolAvg($quoi, $chps, $value)
 		$sec = $sec%60;
 		return $jour." Jours ".$heure." Heure ".$min." min ".$sec." Sec";
 	}
-	
 }
 
 //Return the maximal time to reslove an intervention
@@ -235,37 +240,18 @@ function getResolMax($quoi)
 {
 	$db = new DB;
 	if($quoi == 1) {
-		$query = "select MAX(UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date)) as total from tracking where status = 'old'";	
+		$query = "select MAX(UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date)) as total from tracking where tracking.status = 'old'";	
 	}
 	elseif($quoi == 2) {
-		$query = "select MAX(UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date)) as total from tracking where status ='old' and YEAR(tracking.date) = YEAR(NOW())";
+		$query = "select MAX(UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date)) as total from tracking where tracking.status ='old' and YEAR(tracking.date) = YEAR(NOW())";
 	}
 	elseif($quoi == 3) {
-		$query = "select MAX(UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date)) as total from tracking where status = 'old' and YEAR(tracking.date) = YEAR(NOW()) and MONTH(tracking.date) = MONTH(NOW())";
+		$query = "select MAX(UNIX_TIMESTAMP(tracking.closedate)-UNIX_TIMESTAMP(tracking.date)) as total from tracking where tracking.status = 'old' and YEAR(tracking.date) = YEAR(NOW()) and MONTH(tracking.date) = MONTH(NOW())";
 	}
 	$result = $db->query($query);
 	$sec = $db->result($result,0,"total");
 	if(empty($sec)) $sec = 0;
-	if($sec < 60) {
-		return $sec." Sec";
-	}
-	elseif($sec < 3600) {
-		$min = (int)($sec/60);
-		$sec = $sec%60;
-		return $min." min ".$sec." Sec";
-	}
-	elseif($sec <  86400) {
-		$heure = (int)($sec/3600);
-		$min = (int)(($sec%60)/(60));
-		$sec = (int)$sec%60;
-		return $heure." Heure ".$min." min ".$sec." Sec";
-	}
-	else {
-		$jour = (int)($sec/86400);
-		$heure = (int)(($sec%60)/(3600));
-		$min = (int)(($sec%60)/(60));
-		$sec = $sec%60;
-		return $jour." Jours ".$heure." Heure ".$min." min ".$sec." Sec";
-	}
+	$temps = toTimeStr($sec);
+	return $temps;
 }
 ?>
