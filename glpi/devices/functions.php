@@ -35,83 +35,121 @@ This file is part of GLPI.
 function printDeviceComputer($device,$specif,$compID,$compDevID) {
 	global $lang;
 	#print_r($device);
-	echo "<tr><th width='300px' >".$lang["devices"][8].":</th>";
-	echo "<th colspan='2'>".$device->fields["designation"]."</th>";
-	echo "</tr>";
+	
 	//print the good form switch the wanted device type.
 	switch($device->table) {
 		case "glpi_device_hdd" :
-			echo "<tr class='tab_bg_2'><td>".$lang["device_hdd"][0].":</td>";
-			echo "<td>".$device->fields["rpm"]."</td>";
-			echo "<td>&nbsp;</td>";
+			
+			echo "<tr><th width='300px' >".$lang["devices"][1]."</th>";
+			
+			echo "<th >".$lang["devices"][8]." : ".$device->fields["designation"]."</th>";
 			echo "</tr>";
-			echo "<tr class='tab_bg_2'><td>".$lang["device_hdd"][2].":</td>";
-			echo "<td>".$device->fields["interface"]."</td>";
-			echo "<td>&nbsp;</td>";
-			echo "</tr>";
-			echo "<tr class='tab_bg_2'><td>".$lang["device_hdd"][1].":</td>";
-			echo "<td>".$device->fields["cache"]."</td>";
+			
+			echo "<tr class='tab_bg_2'><td>".$lang["device_hdd"][0]." : ".$device->fields["rpm"]."</td>";
+			//echo "<td></td>";
+			//echo "<td>&nbsp;</td>";
+			
+			echo "<td>".$lang["device_hdd"][2]." : ".$device->fields["interface"]."</td>";
+			//echo "<td></td>";
+			//echo "<td>&nbsp;</td>";
+			echo "</tr><tr class='tab_bg_2'>";
+			
+			echo "<td>".$lang["device_hdd"][1]." : ".$device->fields["cache"]."</td>";
+			//echo "<td></td>";
 			echo "<td>&nbsp;</td>";
 			echo "</tr>";
 			$specificity_label = $lang["device_hdd"][4];
+		
 		break;
 		case "glpi_device_gfxcard" :
-			echo "<tr class='tab_bg_2'><td>".$lang["device_gfxcard"][0].":</td>";
-			echo "<td>".$device->fields["ram"]."</td>";
-			echo "<td>&nbsp;</td>";
+			
+			echo "<tr><th width='300px' >".$lang["devices"][2]."</th>";
+			
+			echo "<th >".$lang["devices"][8]." : ".$device->fields["designation"]."</th>";
 			echo "</tr>";
-			echo "<tr class='tab_bg_2'><td>".$lang["device_gfxcard"][2].":</td>";
-			echo "<td>".$device->fields["interface"]."</td>";
-			echo "<td>&nbsp;</td>";
+			
+			echo "<tr class='tab_bg_2'><td>".$lang["device_gfxcard"][0]." : ".$device->fields["ram"]."</td>";
+			
+			
+			echo "<td>".$lang["device_gfxcard"][2]." : ".$device->fields["interface"]."</td>";
+			
 			echo "</tr>";
 			$specificity_label = "";
 		break;
 		case "glpi_device_iface" :
-			echo "<tr class='tab_bg_2'><td>".$lang["device_iface"][0].":</td>";
-			echo "<td>".$device->fields["bandwidth"]."</td>";
+			
+			echo "<tr><th width='300px' >".$lang["devices"][3]."</th>";
+			
+			echo "<th >".$lang["devices"][8]." : ".$device->fields["designation"]."</th>";
+			echo "</tr>";
+			
+			echo "<tr class='tab_bg_2'><td>".$lang["device_iface"][0]." : ".$device->fields["bandwidth"]."</td>";
+			
 			echo "<td>&nbsp;</td>";
 			echo "</tr>";
 			$specificity_label = $lang["device_iface"][2];
 		break;
 		case "glpi_device_moboard" :
-			echo "<tr class='tab_bg_2'><td>".$lang["device_moboard"][0].":</td>";
-			echo "<td>".$device->fields["chipset"]."</td>";
+			
+			echo "<tr><th width='300px' >".$lang["devices"][5]."</th>";
+			
+			echo "<th >".$lang["devices"][8]." : ".$device->fields["designation"]."</th>";
+			echo "</tr>";
+			
+			echo "<tr class='tab_bg_2'><td>".$lang["device_moboard"][0].":".$device->fields["chipset"]."</td>";
+			
 			echo "<td>&nbsp;</td>";
 			echo "</tr>";
 			$specificity_label = "";
 		break;
 		case "glpi_device_processor" :
-			echo "<tr class='tab_bg_2'><td>".$lang["device_processor"][0].":</td>";
-			echo "<td>".$device->fields["frequence"]."</td>";
+			
+			echo "<tr><th width='300px' >".$lang["devices"][4]."</th>";
+			
+			echo "<th colspan='2'>".$lang["devices"][8]." : ".$device->fields["designation"]."</th>";
+			echo "</tr>";
+			
+			
+			echo "<tr class='tab_bg_2'><td>".$lang["device_processor"][0]." : ".$device->fields["frequence"]."</td>";
+			
 			echo "<td>&nbsp;</td>";
 			echo "</tr>";
 			$specificity_label = $lang["device_processor"][0];
 		break;
 		case "glpi_device_ram" :
-			echo "<tr class='tab_bg_2'><td>".$lang["device_ram"][0].":</td>";
-			echo "<td>".$device->fields["type"]."</td>";
-			echo "<td>&nbsp;</td>";
+			
+			echo "<tr><th width='300px' >".$lang["devices"][6]."</th>";
+			
+			echo "<th >".$lang["devices"][8]." : ".$device->fields["designation"]."</th>";
 			echo "</tr>";
-			echo "<tr class='tab_bg_2'><td>".$lang["device_ram"][1].":</td>";
-			echo "<td>".$device->fields["frequence"]."</td>";
-			echo "<td>&nbsp;</td>";
+			
+			echo "<tr class='tab_bg_2'><td>".$lang["device_ram"][0]." : ".$device->fields["type"]."</td>";
+			
+			echo "<td>".$lang["device_ram"][1]." : ".$device->fields["frequence"]."</td>";
+			
 			echo "</tr>";
 			$specificity_label = $lang["device_ram"][0];
 		break;
 		case "glpi_device_sndcard" :
-			echo "<tr class='tab_bg_2'><td>".$lang["device_sndcard"][0].":</td>";
-			echo "<td>".$device->fields["type"]."</td>";
+			
+			echo "<tr><th width='300px' >".$lang["devices"][7]."</th>";
+			
+			echo "<th >".$lang["devices"][8]." : ".$device->fields["designation"]."</th>";
+			echo "</tr>";
+			
+			echo "<tr class='tab_bg_2'><td>".$lang["device_sndcard"][0]." : ".$device->fields["type"]."</td>";
+			
 			echo "<td>&nbsp;</td>";
 			echo "</tr>";
 			$specificity_label = "";
 		break;
 	}
 	if(!empty($specificity_label)) {
-		echo "<tr class='tab_bg_2'><td>".$specificity_label.":</td>";
+		echo "<tr class='tab_bg_2'>";
 		//Mise a jour des spécificitées
 		echo "<form action=\"\" method=\"post\" >";
-		echo "<td><input type='text' name='device_value' value=\"".$specif."\" size='20' /></td>";
-		echo "<td align='center'><input type='submit' name='update_device' value=\"".$lang["buttons"][7]."\" size='20' /></td>";
+		echo "<td>".$specificity_label." : <input type='text' name='device_value' value=\"".$specif."\" size='20' /></td>";
+		echo "<td align='center'><input type='submit' class='submit' name='update_device' value=\"".$lang["buttons"][7]."\" size='20' /></td>";
 		echo "<input type=\"hidden\" name=\"compDevID\" value=\"".$compDevID."\" />";
 		echo "</form>";
 		echo "</tr>";
@@ -141,7 +179,7 @@ function device_selecter($target,$cID) {
 	echo "<option value=\"glpi_device_sndcard\">".$lang["devices"][7]."</option>";
 	echo "</select>";
 	echo "<input type=\"hidden\" name=\"cID\" value=\"".$cID."\" >";
-	echo "<input type=\"submit\" value=\"".$lang["buttons"][2]."\" />";
+	echo "<input type=\"submit\" class ='submit' value=\"".$lang["buttons"][2]."\" />";
 	echo "</form>";
 }
 
