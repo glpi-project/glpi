@@ -625,53 +625,53 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 
 			// Name
 			echo "<th>";
-			if ($sort=="name") {
+			if ($sort=="glpi_users.name") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.name&order=ASC&start=$start\">";
 			echo $lang["setup"][12]."</a></th>";
 			
 			// realname		
 			echo "<th>";
-			if ($sort=="realname") {
+			if ($sort=="glpi_users.realname") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=realname&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.realname&order=ASC&start=$start\">";
 			echo $lang["setup"][13]."</a></th>";
 
 			// type
 			echo "<th>";
-			if ($sort=="type") {
+			if ($sort=="glpi_users.type") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=type&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.type&order=ASC&start=$start\">";
 			echo $lang["setup"][17]."</a></th>";			
 			
 			// email
 			echo "<th>";
-			if ($sort=="email") {
+			if ($sort=="glpi_users.email") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=email&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.email&order=ASC&start=$start\">";
 			echo $lang["setup"][14]."</a></th>";
 
 						
 			// Phone
 			echo "<th>";
-			if ($sort=="phone") {
+			if ($sort=="glpi_users.phone") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=phone&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.phone&order=ASC&start=$start\">";
 			echo $lang["setup"][15]."</a></th>";
 
 			
 						
 			// Location			
 			echo "<th>";
-			if ($sort=="location") {
+			if ($sort=="glpi_users.location") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=location&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.location&order=ASC&start=$start\">";
 			echo $lang["setup"][16]."</a></th></tr>";
 
 
