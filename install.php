@@ -609,7 +609,7 @@ include ("_relpos.php");
 				step7();
 				break;
 			case "update_1" : 
-				update1($_POST["db_host"],$_POST["dbuser"],$_POST["db_pass"],$_POST["databasename"]);
+				update1($_POST["db_host"],$_POST["db_user"],$_POST["db_pass"],$_POST["databasename"]);
 				break;
 		}
 	}
