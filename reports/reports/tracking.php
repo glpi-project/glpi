@@ -45,7 +45,7 @@ include ($phproot . "/glpi/includes_monitors.php");
 include ($phproot . "/glpi/includes_networking.php");
 checkAuthentication("normal");
 
-commonHeader("Reports",$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][16],$_SERVER["PHP_SELF"]);
 
 
 

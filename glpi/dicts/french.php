@@ -971,5 +971,8 @@ $lang["title"][12] = "Logiciels";
 $lang["title"][13] = "Informations Utilisateur";
 $lang["title"][14] = "Sources d'aithentification externes";
 $lang["title"][15] = "Mailing";
+$lang["title"][16] = "Rapports";
+$lang["title"][17] = "Préférences";
+$lang["title"][18] = "Ecrans";
 
 ?>

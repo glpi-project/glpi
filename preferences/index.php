@@ -57,7 +57,7 @@ if (isset($_POST["changepw"])) {
 	header("Location: $_SERVER[HTTP_REFERER]");
 } else {
 	checkAuthentication("normal");
-	commonHeader("Preferences",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][17],$_SERVER["PHP_SELF"]);
         // titre
         echo "<div align='center'><table border='0'><tr><td>";
         echo "<img src=\"".$HTMLRel."pics/preferences.png\" alt='".$lang["Menu"][11]."' title='".$lang["Menu"][11]."'></td><td><span class='icon_nav'><b>".$lang["Menu"][11]."</b></span>";

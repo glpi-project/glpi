@@ -40,7 +40,7 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_software.php");
 
 checkAuthentication("normal");
-commonHeader("Reports",$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][16],$_SERVER["PHP_SELF"]);
 
 
 # Title

@@ -41,7 +41,7 @@ include ($phproot . "/glpi/includes_setup.php");
 
 checkAuthentication("admin");
 
-commonHeader("Computers",$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
 
       GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
 

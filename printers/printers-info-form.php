@@ -65,7 +65,7 @@ else if (isset($_POST["update"]))
 	checkAuthentication("admin");
 	updatePrinter($_POST);
 	logEvent($_POST["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." updated item.");
-	commonHeader("Printers",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
 	showPrintersForm($_SERVER["PHP_SELF"],$_POST["ID"]);
 	showJobListForItem($_SESSION["glpiname"],3,$_POST["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],3,$_POST["ID"]);
@@ -78,7 +78,7 @@ else if (isset($tab["disconnect"]))
 	checkAuthentication("admin");
 	Disconnect($tab["ID"],3);
 	logEvent($tab["ID"], "printers", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
-	commonHeader("Printers",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
 	showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],3,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],3,$tab["ID"]);
@@ -90,21 +90,21 @@ else if(isset($tab["connect"]))
 	if($tab["connect"]==1)
 	{
 		checkAuthentication("admin");
-		commonHeader("Printers",$_SERVER["PHP_SELF"]);
+		commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
 		showConnectSearch($_SERVER["PHP_SELF"],$tab["ID"]);
 		commonFooter();
 	}	 
 	else if($tab["connect"]==2)
 	{
 		checkAuthentication("admin");
-		commonHeader("Printers",$_SERVER["PHP_SELF"]);
+		commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
 		listConnectComputers($_SERVER["PHP_SELF"],$tab);
 		commonFooter();
 	} 
 	else if($tab["connect"]==3)
 	{
 		checkAuthentication("admin");
-		commonHeader("Printers",$_SERVER["PHP_SELF"]);
+		commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
 		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],3);
 		logEvent($tab["sID"], "printers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
 		showPrintersForm($_SERVER["PHP_SELF"],$tab["sID"]);
@@ -120,7 +120,7 @@ else
 	if (empty($tab["ID"]))
 	checkAuthentication("admin");
 	else checkAuthentication("normal");
-	commonHeader("Printers",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
 	showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	if (!empty($_GET["ID"])){
 	showJobListForItem($_SESSION["glpiname"],3,$tab["ID"]);

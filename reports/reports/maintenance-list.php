@@ -40,7 +40,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 
 checkAuthentication("normal");
-commonHeader("Reports",$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][16],$_SERVER["PHP_SELF"]);
 
 $item_db_name[0] = "glpi_computers";
 $item_db_name[1] = "glpi_printers";

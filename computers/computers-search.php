@@ -39,7 +39,7 @@ include ($phproot . "/glpi/includes_computers.php");
 
 checkAuthentication("normal");
 
-commonHeader("Computers",$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
 
 titleComputers();
 

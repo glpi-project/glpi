@@ -49,7 +49,7 @@ if(!isset($tab["ID"])) $tab["ID"] = "";
 if (isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"resa") == 0)){
 	checkAuthentication("normal");
 
-	commonHeader("Reservation",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][9],$_SERVER["PHP_SELF"]);
 
 	if (isset($_GET["clear"])){
 		if (deleteReservation($_GET["clear"])){
@@ -92,7 +92,7 @@ if (isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"re
 else {
 	checkAuthentication("normal");
 	if ($_SESSION["glpitype"]=="normal"){
-		commonHeader("Reservation",$_SERVER["PHP_SELF"]);
+		commonHeader($lang["title"][9],$_SERVER["PHP_SELF"]);
 		printReservationItems($_SERVER["PHP_SELF"]);
 	}
 	// On est pas normal -> admin ou super-admin
@@ -127,7 +127,7 @@ else {
 
 	checkAuthentication("admin");
 
-	commonHeader("Reservation",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][9],$_SERVER["PHP_SELF"]);
 	if (isset($_GET["comment"])){
 		if (showReservationCommentForm($_SERVER["PHP_SELF"],$_GET["comment"])){
 			}
