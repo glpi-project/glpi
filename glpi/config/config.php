@@ -99,8 +99,8 @@ $cfg_login['imap']['host'] = "";
 
 // LDAP setup.
 // We can use LDAP both for authentication and for user information
-$cfg_login['ldap']['host'] = "ldap://localhost/";
-$cfg_login['ldap']['basedn'] = "dc=melnibone";
+$cfg_login['ldap']['host'] = "";
+$cfg_login['ldap']['basedn'] = "";
 $cfg_login['ldap']['rootdn'] ="";
 $cfg_login['ldap']['pass'] ="";
 // some lDAP server (eg, M$ Active Directory) does not like anonymous
@@ -108,7 +108,8 @@ $cfg_login['ldap']['pass'] ="";
 //$cfg_login['ldap']['rootdn'] = "cn=admin,ou=People,dc=sv,dc=lnf,dc=it";
 //$cfg_login['ldap']['pass'] = "secret";
 // relation between the GLPI users table field and the LDAP field
-$cfg_login['ldap']['fields'] = array( "name" => "uid", "email" => "mail", "location" => "physicaldeliveryofficename", "phone" => "telephonenumber", "realname" => "cn");
+$cfg_login['ldap']['fields'] = "";
+// $cfg_login['ldap']['fields'] = array( "name" => "uid", "email" => "mail", "location" => "physicaldeliveryofficename", "phone" => "telephonenumber", "realname" => "cn");
 
 
 //other sources
@@ -131,7 +132,7 @@ $cfg_features["event_loglevel"]	= 5;
 //Necessite que votre fonction mail() fonctionne.
 $cfg_features["mailing"]	= 0;	
 // Addresse de l'administrateur (obligatoire si mailing activé)
-$cfg_mailing["admin_email"]	= "admsys@sic.sp2mi.xxxxx.fr";
+$cfg_mailing["admin_email"]	= " ";
 // Signature for automatic generated E-Mails
 $cfg_mailing["signature"]	= "SIGNATURE";
 
@@ -222,14 +223,14 @@ $report_list["excel"]["file"] = "reports/geneExcel.php";
 
  // dicts
 //dictionnaires
-$cfg_install["languages"]	= array("english","deutsch","french","italian");
+$cfg_install["languages"]	= array("english","deutsch","french");
 
 // END OF CONFIGURATION
 
 
 // version number
 // numero de version
-$cfg_install["version"]		=" 0.3";
+$cfg_install["version"]		=" 0.31";
 $cfg_layout["logotxt"]		= "GLPI powered by indepnet";
 
 
