@@ -46,10 +46,10 @@ function titleMonitors(){
 }
 
 
-function searchFormMonitors($field="",$phrasetype= "",$contains="",$sort= "") {
+function searchFormMonitors($field="",$phrasetype= "",$contains="",$sort= "",$deleted="") {
 	// Print Search Form
 	
-	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
+	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel;
 
 	$option["mon.name"]			= $lang["monitors"][5];
 	$option["mon.ID"]			= $lang["monitors"][23];
@@ -65,7 +65,7 @@ function searchFormMonitors($field="",$phrasetype= "",$contains="",$sort= "") {
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/monitors/monitors-search.php\">";
 	echo "<div align='center'><table  width='750' class='tab_cadre'>";
-	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
@@ -109,13 +109,15 @@ function searchFormMonitors($field="",$phrasetype= "",$contains="",$sort= "") {
 		echo ">".$val."</option>\n";
 	}
 	echo "</select> ";
+	echo "</td><td><input type='checkbox' name='deleted' ".($deleted=='Y'?" checked ":"").">";
+	echo "<img src=\"".$HTMLRel."pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
 
 
-function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start) {
+function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted) {
 
 	// Lists Monitors
 
@@ -170,7 +172,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 	$query = "select mon.ID from glpi_monitors as mon LEFT JOIN glpi_dropdown_locations on mon.location=glpi_dropdown_locations.ID ";
 	$query .= "LEFT JOIN glpi_type_monitors on mon.type = glpi_type_monitors.ID ";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = mon.FK_glpi_enterprise ) ";
-	$query .= " where $where ORDER BY $sort $order";
+	$query .= " where $where AND mon.deleted='$deleted' ORDER BY $sort $order";
 //	echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
@@ -426,13 +428,21 @@ echo "</td></tr>";
 		echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<center><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' class='submit'></center>";
+		echo "<div align='center'>";
+		if ($mon->fields["deleted"]=='N')
+		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+		else {
+		echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+		
+		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>";
+		}
+		echo "</div>";
 		echo "</td>";
 		echo "</form></tr>";
 
 		echo "</table></center>";
 
-		showConnect($target,$ID,4);
+		showConnect($target,$ID,MONITOR_TYPE);
 	}
 }
 
@@ -493,13 +503,19 @@ function addMonitor($input) {
 
 }
 
-function deleteMonitor($input) {
+function deleteMonitor($input,$force=0) {
 	// Delete Printer
 	
 	$mon = new Monitor;
-	$mon->deleteFromDB($input["ID"]);
+	$mon->deleteFromDB($input["ID"],$force);
 	
 } 	
 
+function restoreMonitor($input) {
+	// Restore Monitor
+	
+	$mon = new Monitor;
+	$mon->restoreInDB($input["ID"]);
+} 
 
 ?>
