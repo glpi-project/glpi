@@ -738,10 +738,10 @@ class CommonItem{
 		// Make new database object and fill variables
 
 			switch ($device_type){
-			case COMPUTER_DEVICE :
+			case COMPUTER_TYPE :
 				$this->obj=new Computer;
 				break;
-			case NETWORKING_DEVICE :
+			case NETWORKING_TYPE :
 				$this->obj=new Netdevice;
 				break;
 			case PRINTER_TYPE :

@@ -68,12 +68,12 @@ if (isset($tab["add"])) {
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]."updated item.");
 	commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
 	showComputerForm($_SERVER["PHP_SELF"],$tab["ID"]);
-	showPorts($tab["ID"], 1);
-	showPortsAdd($tab["ID"],1);
+	showPorts($tab["ID"], COMPUTER_TYPE);
+	showPortsAdd($tab["ID"],COMPUTER_TYPE);
 	showConnections($tab["ID"]);
 	showSoftwareInstalled($tab["ID"]);
-	showJobListForItem($_SESSION["glpiname"],1,$tab["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],1,$tab["ID"]);
+	showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
 	commonFooter();
 } 
 else if (isset($tab["disconnect"]))
@@ -138,12 +138,12 @@ else if(isset($tab["connect"])&&isset($tab["device_type"]))
 		}
 
 		if (showComputerForm($_SERVER["PHP_SELF"],$tab["ID"])) {
-			showPorts($tab["ID"], 1);
-			showPortsAdd($tab["ID"],1);
+			showPorts($tab["ID"], COMPUTER_TYPE);
+			showPortsAdd($tab["ID"],COMPUTER_TYPE);
 			showConnections($tab["ID"]);
 			showSoftwareInstalled($tab["ID"]);
-			showJobListForItem($_SESSION["glpiname"],1,$tab["ID"]);
-			showOldJobListForItem($_SESSION["glpiname"],1,$tab["ID"]);
+			showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
+			showOldJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
 			
 		}
 	}

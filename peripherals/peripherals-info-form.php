@@ -53,7 +53,7 @@ else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
 	deletePeripheral($_POST);
-	Disconnect($tab["ID"],5);
+	Disconnect($tab["ID"],PERIPHERAL_TYPE);
 	logEvent($_POST["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/peripherals/");
 }
@@ -64,20 +64,20 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
 	showPeripheralForm($_SERVER["PHP_SELF"],$_POST["ID"]);
-	showJobListForItem($_SESSION["glpiname"],5,$_POST["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],5,$_POST["ID"]);
+	showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$_POST["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$_POST["ID"]);
 	commonFooter();
 
 }
 else if (isset($tab["disconnect"]))
 {
 	checkAuthentication("admin");
-	Disconnect($tab["ID"],5);
+	Disconnect($tab["ID"],PERIPHERAL_TYPE);
 	logEvent($tab["ID"], "Peripherals", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
 	commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
 	showPeripheralForm($_SERVER["PHP_SELF"],$tab["ID"]);
-	showJobListForItem($_SESSION["glpiname"],5,$tab["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],5,$tab["ID"]);
+	showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
 
 	commonFooter();
 }
@@ -101,11 +101,11 @@ else if(isset($tab["connect"]))
 	{
 		checkAuthentication("admin");
 		commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
-		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],5);
+		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],PERIPHERAL_TYPE);
 		logEvent($tab["sID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." connected item.");
 		showPeripheralForm($_SERVER["PHP_SELF"],$tab["sID"]);
-		showJobListForItem($_SESSION["glpiname"],5,$tab["ID"]);
-		showOldJobListForItem($_SESSION["glpiname"],5,$tab["ID"]);
+		showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
+		showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
 		commonFooter();
 	}
 }
@@ -118,8 +118,8 @@ else
 	commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
 	showPeripheralForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	if (!empty($_GET["ID"])){
-	showJobListForItem($_SESSION["glpiname"],5,$tab["ID"]);
-	showOldJobListForItem($_SESSION["glpiname"],5,$tab["ID"]);
+	showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
+	showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
 	}
 	commonFooter();
 }
