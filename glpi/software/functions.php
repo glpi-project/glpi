@@ -143,7 +143,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=name&order=ASC&start=$start\">";
-			echo $lang["software"][2]."</th>";
+			echo $lang["software"][2]."</a></th>";
 
 			// Version			
 			echo "<th>";
@@ -151,7 +151,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=version&order=ASC&start=$start\">";
-			echo $lang["software"][5]."</th>";
+			echo $lang["software"][5]."</a></th>";
 
 			// Platform		
 			echo "<th>";
@@ -159,7 +159,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=platform&order=DESC&start=$start\">";
-			echo $lang["software"][3]."</th>";
+			echo $lang["software"][3]."</a></th>";
 
 			// Licenses
 			echo "<th>".$lang["software"][11]."</th>";
@@ -176,7 +176,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "<td><b>";
 				echo "<a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=$ID\">";
 				echo $sw->fields["name"]." (".$sw->fields["ID"].")";
-				echo "</b></a></td>";
+				echo "</a></b></td>";
 				echo "<td>".$sw->fields["version"]."</td>";
 				echo "<td>".$sw->fields["platform"]."</td>";
 				echo "<td>";
@@ -620,23 +620,23 @@ function countInstallations($sID) {
 			echo "<table width='100%' border='0' cellpadding='2' cellspacing='0'><tr>";
 			echo "<td>".$lang["software"][19].": <b>$installed</b></td>";
 			if ($remaining < 0) {
-				$remaining = "<font color=red>$remaining";
-				$remaining .= "</font>";
+				$remaining = "<span class='red'>$remaining";
+				$remaining .= "</span>";
 			} else if ($remaining == 0) {
-				$remaining = "<font color=green>$remaining";
-				$remaining .= "</font>";
+				$remaining = "<span class='green'>$remaining";
+				$remaining .= "</span>";
 			} else {
-				$remaining = "<font color=yellow>$remaining";
-				$remaining .= "</font>";
+				$remaining = "<span class='blue'>$remaining";
+				$remaining .= "</span>";
 			}			
 			echo "<td>".$lang["software"][20].": <b>$remaining</b></td>";
 			echo "<td>".$lang["software"][21].": <b>".$total."</b></td>";
 			echo "</tr></table>";
 		} else {
-			echo "<i><center>free software</center></i>";
+			echo "<center><i>free software</i></center>";
 		}
 	} else {
-			echo "<i><center>no licenses</center></i>";
+			echo "<center><i>no licenses</i></center>";
 	}
 }	
 
