@@ -218,10 +218,10 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 				$ct->getfromDB($ID);
 
 				echo "<tr class='tab_bg_2' align='center'>";
-				echo "<td><b>";
-				echo "<a href=\"".$cfg_install["root"]."/documents/documents-info-form.php?ID=$ID\">";
+				echo "<td>";
+				echo "<a href=\"".$cfg_install["root"]."/documents/documents-info-form.php?ID=$ID\"><b>";
 				echo $ct->fields["name"]." (".$ct->fields["ID"].")";
-				echo "</a></b></td>";
+				echo "</b></a></td>";
 				echo "<td align='left'>".getDocumentLink($ct->fields["filename"])."</td>";
 				echo "<td>".getDropdownName("glpi_dropdown_rubdocs",$ct->fields["rubrique"])."</td>";
 				echo "<td>".$ct->fields["mime"]."</td>";
@@ -270,9 +270,9 @@ function showDocumentForm ($target,$ID,$search) {
 	
 	if (!empty($ID)){
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][22].":		</td>";
-	echo "<td colspan='2'>".getDocumentLink($con->fields["filename"])."</td>";
+	echo "<td colspan='2'>".getDocumentLink($con->fields["filename"])."";
 	echo "<input type='hidden' name='current_filename' value='".$con->fields["filename"]."'>";
-	echo "</tr>";
+	echo "</td></tr>";
 	}
 	
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][2].":		</td>";
@@ -318,8 +318,8 @@ function showDocumentForm ($target,$ID,$search) {
                 echo "<td class='tab_bg_2' valign='top'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
-		echo "</td></form>\n\n";
-		echo "<form action=\"$target\" method='post'>\n";
+		echo "</td>\n\n";
+		
 		echo "<td class='tab_bg_2' valign='top'>\n";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		if ($con->fields["deleted"]=='N')
@@ -329,11 +329,12 @@ function showDocumentForm ($target,$ID,$search) {
 		
 		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'></div>";
 		}
-		echo "</form>";
+		
 		echo "</td>";
 		echo "</tr>";
 
 		echo "</table></div>";
+		echo "</form>";
 		
 		showDeviceDocument($ID,$search);
 	}
@@ -478,7 +479,7 @@ function showDeviceDocument($instID,$search='') {
 	$i = 0;
 	
     echo "<form method='post' action=\"".$cfg_install["root"]."/documents/documents-info-form.php\">";
-	echo "<br><br><center><table class='tab_cadre' width='90%'>";
+	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
 	echo "<tr><th colspan='3'>".$lang["document"][19].":</th></tr>";
 	echo "<tr><th>".$lang['document'][20]."</th>";
 	echo "<th>".$lang['document'][1]."</th>";
@@ -496,20 +497,21 @@ function showDeviceDocument($instID,$search='') {
 	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
 	}
+	
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 	echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 		dropdownAllItems("item",$search);
-	echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
-	echo "</div></td>";
+	echo "</div><input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</form>";
-	echo "<form method='get' action=\"".$cfg_install["root"]."/documents/documents-info-form.php?ID=$instID\">";	
+	echo "</td>";
 	echo "<td align='center' class='tab_bg_2'>";
+	echo "<form method='get' action=\"".$cfg_install["root"]."/documents/documents-info-form.php?ID=$instID\">";	
 	echo "<input type='text' name='search' value=\"".$search."\" size='15'>";
 	echo "<input type='hidden' name='ID' value='$instID'>";
 	echo "<input type='submit' name='bsearch' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr>";
 	
-	echo "</table></form>"    ;
+	echo "</table></div></form>"    ;
 	
 }
 
@@ -560,7 +562,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	$i = 0;
 	
     if ($withtemplate!=2) echo "<form method='post' action=\"".$cfg_install["root"]."/documents/documents-info-form.php\">";
-	echo "<br><br><center><table class='tab_cadre' width='90%'>";
+	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
 	echo "<tr><th colspan='7'>".$lang["document"][21].":</th></tr>";
 	echo "<tr><th>".$lang['document'][1]."</th>";
 	echo "<th>".$lang['document'][2]."</th>";
@@ -592,14 +594,14 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 		echo "<div class='software-instal'><input type='hidden' name='ID' value='$ID'><input type='hidden' name='type' value='$device_type'>";
 		dropdownDocuments("conID");
-		echo "</td><td align='center'>";
+		echo "</div></td><td align='center'>";
 		echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
-		echo "</div></td>";
-		echo "</form>";
+		echo "</td>";
+		
 		echo "<td>&nbsp;</td><td>&nbsp;</td></tr>";
 	}
-	echo "</table>"    ;
-	
+	echo "</table></div>"    ;
+	echo "</form>";
 	
 }
 
@@ -616,12 +618,12 @@ global $HTMLRel,$cfg_install;
 		$result=$db->query($query);
 		if ($db->numrows($result)>0){
 			$icon=$db->result($result,0,'icon');
-			$out="<a href='".$HTMLRel."documents/send-document.php?file=$filename' target='_blank'>&nbsp;<img style='vertical-align:middle; margin-left:3px; margin-right:6px;' alt='".$fileout."' title='".$fileout."' src='".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/$icon'</a>";				
+			$out="<a href=\"".$HTMLRel."documents/send-document.php?file=$filename\" target=\"_blank\">&nbsp;<img style=\"vertical-align:middle; margin-left:3px; margin-right:6px;\" alt='".$fileout."' title='".$fileout."' src=\"".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/$icon\" ></a>";				
 			}
 	
 	}
 	
-	$out.="<b><a href='".$HTMLRel."documents/send-document.php?file=$filename' target='_blank'>$fileout</a></b>";	
+	$out.="<a href=\"".$HTMLRel."documents/send-document.php?file=$filename\" target=\"_blank\"><b>$fileout</b></a>";	
 	
 	
 	return $out;

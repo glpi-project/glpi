@@ -387,8 +387,8 @@ function showContractForm ($target,$ID,$search) {
                 echo "<td class='tab_bg_2' valign='top'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
-		echo "</td></form>\n\n";
-		echo "<form action=\"$target\" method='post'>\n";
+		echo "</td>\n\n";
+		
 		echo "<td class='tab_bg_2' valign='top'>\n";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		if ($con->fields["deleted"]=='N')
@@ -398,12 +398,12 @@ function showContractForm ($target,$ID,$search) {
 		
 		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'></div>";
 		}
-		echo "</form>";
+		
 		echo "</td>";
 		echo "</tr>";
 
 		echo "</table></div>";
-		
+		echo "</form>";
 	}
 
 }
@@ -480,7 +480,7 @@ function showDeviceContract($instID,$search='') {
 	$i = 0;
 	
     echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
-	echo "<br><br><center><table class='tab_cadre' width='90%'>";
+	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
 	echo "<tr><th colspan='3'>".$lang["financial"][49].":</th></tr>";
 	echo "<tr><th>".$lang['financial'][37]."</th>";
 	echo "<th>".$lang['financial'][27]."</th>";
@@ -501,17 +501,19 @@ function showDeviceContract($instID,$search='') {
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 	echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 		dropdownAllItems("item",$search);
-	echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
-	echo "</div></td>";
+	echo "</div><input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</form>";
-	echo "<form method='get' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php?ID=$instID\">";	
+	echo "</td>";
+	
+	
 	echo "<td align='center' class='tab_bg_2'>";
+	echo "<form method='get' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php?ID=$instID\">";	
 	echo "<input type='text' name='search' value=\"".$search."\" size='15'>";
 	echo "<input type='hidden' name='ID' value='$instID'>";
 	echo "<input type='submit' name='bsearch' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr>";
 	
-	echo "</table></form>"    ;
+	echo "</table></div></form>"    ;
 	
 }
 
@@ -541,7 +543,7 @@ function showEnterpriseContract($instID) {
 	$i = 0;
 	
     echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
-	echo "<br><br><center><table class='tab_cadre' width='90%'>";
+	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
 	echo "<tr><th colspan='5'>".$lang["financial"][65].":</th></tr>";
 	echo "<tr><th>".$lang['financial'][26]."</th>";
 	echo "<th>".$lang['financial'][79]."</th>";
@@ -568,13 +570,13 @@ function showEnterpriseContract($instID) {
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 	echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 		dropdown("glpi_enterprises","entID");
-	echo "</td><td align='center'>";
+	echo "</div></td><td align='center'>";
 	echo "<input type='submit' name='addenterprise' value=\"".$lang["buttons"][8]."\" class='submit'>";
-	echo "</div></td><td>&nbsp;</td><td>&nbsp;</td>";
+	echo "</td><td>&nbsp;</td><td>&nbsp;</td>";
 	
 	echo "</tr>";
 	
-	echo "</table></form>"    ;
+	echo "</table></div></form>"    ;
 	
 }
 
@@ -752,7 +754,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	$i = 0;
 	
     if ($withtemplate!=2) echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
-	echo "<br><br><center><table class='tab_cadre' width='90%'>";
+	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
 	echo "<tr><th colspan='7'>".$lang["financial"][66].":</th></tr>";
 	echo "<tr><th>".$lang['financial'][27]."</th>";
 	echo "<th>".$lang['financial'][4]."</th>";
@@ -787,14 +789,14 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 		echo "<div class='software-instal'><input type='hidden' name='ID' value='$ID'><input type='hidden' name='type' value='$device_type'>";
 		dropdownContracts("conID");
-		echo "</td><td align='center'>";
+		echo "</div></td><td align='center'>";
 		echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
-		echo "</div></td>";
-		echo "</form>";
+		echo "</td>";
+		
 		echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
 	}
-	echo "</table>"    ;
-	
+	echo "</table></div>"    ;
+	echo "</form>";
 	
 }
 
