@@ -1083,14 +1083,15 @@ if(!TableExists("glpi_device_sndcard")) {
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_device_sndcard ".$lang["update"][90].$db->error());
 	compDpd2Device(SND_DEVICE,"sndcard","sndcard","sndcard");
 }
-if(!TableExists("glpi_enterprise")) {
-	$query = "CREATE TABLE `glpi_enterprise` (
+if(!TableExists("glpi_enterprises")) {
+	$query = "CREATE TABLE `glpi_enterprises` (
   `ID` int(11) NOT NULL auto_increment,
   `name` varchar(50) NOT NULL default '',
-  `address` varchar(200) NOT NULL default '',
+  `address` text NOT NULL default '',
   `website` varchar(100) NOT NULL default '',
   `phonenumber` varchar(20) NOT NULL default '',
   `comments` text NOT NULL,
+  `deleted` enum('Y','N') NOT NULL default 'N',
   PRIMARY KEY  (`ID`)
 ) TYPE=MyISAM;
 ";
@@ -1218,6 +1219,7 @@ $query= "CREATE TABLE `glpi_contacts` (
   `email` varchar(255) NOT NULL default '',
   `type` tinyint(4) NOT NULL default '1',
   `comments` text NOT NULL,
+  `deleted` enum('Y','N') NOT NULL default 'N',
   PRIMARY KEY  (`ID`)
 ) TYPE=MyISAM;
 ";
@@ -1227,7 +1229,10 @@ $query= "CREATE TABLE `glpi_contact_enterprise` (
   `ID` int(11) NOT NULL auto_increment,
   `FK_enterprise` int(11) NOT NULL default '0',
   `FK_contact` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`ID`)
+  PRIMARY KEY  (`ID`),
+  UNIQUE KEY `FK_enterprise` (`FK_enterprise`,`FK_contact`),
+  KEY(`FK_enterprise`),
+  KEY(`FK_contact`) 
 ) TYPE=MyISAM;
 ";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_contact_enterprise ".$lang["update"][90].$db->error());
@@ -1246,8 +1251,8 @@ $query= "CREATE TABLE `glpi_contracts` (
   `deleted` enum('Y','N') NOT NULL default 'N',
   `week_begin_hour` time NOT NULL default '00:00:00',
   `week_end_hour` time NOT NULL default '00:00:00',
-  `satruday_begin_hour` time NOT NULL default '00:00:00',
-  `satruday_end_hour` time NOT NULL default '00:00:00',
+  `saturday_begin_hour` time NOT NULL default '00:00:00',
+  `saturday_end_hour` time NOT NULL default '00:00:00',
   `monday_begin_hour` time NOT NULL default '00:00:00',
   `monday_end_hour` time NOT NULL default '00:00:00',
   PRIMARY KEY  (`ID`),
@@ -1263,8 +1268,9 @@ $query= "CREATE TABLE `glpi_contract_device` (
   `FK_device` int(11) NOT NULL default '0',
   `device_type` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  KEY `FK_contract` (`FK_contract`),
-  KEY `FK_device` (`FK_device`,`device_type`)
+  UNIQUE KEY `FK_contract` (`FK_contract`,`FK_device`,`device_type` ),
+  KEY (`FK_contract`),
+  KEY (`FK_device`,`device_type`)
 ) TYPE=MyISAM;
 ";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_contract_device ".$lang["update"][90].$db->error());
@@ -1274,8 +1280,9 @@ $query= "CREATE TABLE `glpi_contract_enterprise` (
   `FK_enterprise` int(11) NOT NULL default '0',
   `FK_contract` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  KEY `FK_enterprise` (`FK_enterprise`),
-  KEY `FK_contract` (`FK_contract`)
+  UNIQUE KEY `FK_enterprise` (`FK_enterprise`,`FK_contract`),
+  KEY  (`FK_enterprise`),
+  KEY (`FK_contract`)
 ) TYPE=MyISAM;
 ";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_contrat_enterprise ".$lang["update"][90].$db->error());
@@ -1307,7 +1314,9 @@ $query= "CREATE TABLE `glpi_infocom_device` (
   `FK_device` int(11) NOT NULL default '0',
   `device_type` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  KEY `FK_infocom` (`FK_infocom`)
+  UNIQUE KEY `FK_infocom` (`FK_infocom`,`FK_device`,`device_type` ),
+  KEY (`FK_infocom`),
+  KEY (`FK_device`,`device_type`)
 ) TYPE=MyISAM;
 ";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_infocom_device ".$lang["update"][90].$db->error());

@@ -99,7 +99,7 @@ function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "",$d
 
 function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted) {
 
-	// Lists Software
+	// Lists CartridgeType
 
 	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
 
@@ -225,8 +225,6 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 
 		} else {
 			echo "<div align='center'><b>".$lang["cartridges"][7]."</b></div>";
-			
-			//searchFormSoftware();
 		}
 	}
 }
@@ -234,7 +232,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 
 
 function showCartridgeTypeForm ($target,$ID) {
-	// Show Software or blank form
+	// Show CartridgeType or blank form
 	
 	GLOBAL $cfg_layout,$cfg_install,$lang;
 
@@ -316,7 +314,7 @@ function showCartridgeTypeForm ($target,$ID) {
 }
 
 function updateCartridgeType($input) {
-	// Update Software in the database
+	// Update CartridgeType in the database
 
 	$sw = new CartridgeType;
 	$sw->getFromDB($input["ID"]);
