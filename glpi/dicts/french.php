@@ -501,7 +501,7 @@ $lang["ldap"][7]	= "LDAP";
 // Setup
 $lang["setup"][0]	= "Intitul&eacute;";
 $lang["setup"][1]	= "Mod&egrave;le";
-$lang["setup"][2]	= "Ajouter un Utilisateur GLPI";
+$lang["setup"][2]	= "Ajouter un utilisateur GLPI";
 $lang["setup"][3]	= "Lieu";
 $lang["setup"][4]	= "Type de machines";
 $lang["setup"][5]	= "Syst&egrave;me d'exploitation";
