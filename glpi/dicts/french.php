@@ -161,6 +161,11 @@ $lang["Menu"][18]	="Outils";
 $lang["Menu"][19]	="Base connaissances";
 $lang["Menu"][20]	="Fichiers configuration";
 $lang["Menu"][21]	="Cartouches";
+$lang["Menu"][22]	="Contacts";
+$lang["Menu"][23]	="Entreprises";
+$lang["Menu"][24]	="Infos commerciales";
+$lang["Menu"][25]	="Contrats";
+$lang["Menu"][26]	="Gestion";
 
 //Donn&eacute;es
 
@@ -988,6 +993,9 @@ $lang["title"][18] = "Ecrans";
 $lang["title"][19] = "Cartouches";
 $lang["title"][20] = "Contrats";
 $lang["title"][21] = "Infos Commerciales";
+$lang["title"][21] = "Infos Commerciales";
+$lang["title"][22] = "Contacts";
+$lang["title"][23] = "Entreprises";
 
 $lang["device_hdd"][0] = "Rpm";
 $lang["device_hdd"][1] = "Cache";
@@ -1098,5 +1106,27 @@ $lang["financial"][20] = "Numéro d'immobilisation";
 $lang["financial"][21] = "Valeur";
 $lang["financial"][22] = "Type d'amortissement";
 $lang["financial"][23] = "Durée d'amortissement";
+$lang["financial"][24] = "Ajouter Contact...";
+$lang["financial"][25] = "Ajouter Entrepise...";
+$lang["financial"][26] = "Entreprise";
+$lang["financial"][27] = "Nom";
+$lang["financial"][28] = "ID";
+$lang["financial"][29] = "Téléphone";
+$lang["financial"][30] = "Fax";
+$lang["financial"][31] = "Email";
+$lang["financial"][32] = "Contact";
+$lang["financial"][33] = "Ajouter un Contact";
+$lang["financial"][34] = "Ajouter une Entreprise";
+$lang["financial"][35] = "Ajouter une Information Commerciale";
+$lang["financial"][36] = "Ajouter un Contrat";
+$lang["financial"][37] = "Type";
+$lang["financial"][38] = "Pas de contact trouvé";
+$lang["financial"][39] = "Pas d'entreprise trouvée";
+$lang["financial"][40] = "Pas de contrat trouvé";
+$lang["financial"][41] = "Pas d'Information Commerciale trouvée";
+$lang["financial"][42] = "Commercial";
+$lang["financial"][43] = "Technicien";
+$lang["financial"][44] = "";
+$lang["financial"][45] = "";
 
 ?>

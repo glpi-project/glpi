@@ -1208,8 +1208,8 @@ $query= "CREATE TABLE `glpi_cartridges_assoc` (
 }
 
 // La gestion des contrats
-if(!TableExists("glpi_contract")) {
-$query= "CREATE TABLE `glpi_contact` (
+if(!TableExists("glpi_contracts")) {
+$query= "CREATE TABLE `glpi_contacts` (
   `ID` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
   `phone` varchar(30) NOT NULL default '',
@@ -1232,7 +1232,7 @@ $query= "CREATE TABLE `glpi_contact_enterprise` (
 ";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_contact_enterprise ".$lang["update"][90].$db->error());
 
-$query= "CREATE TABLE `glpi_contract` (
+$query= "CREATE TABLE `glpi_contracts` (
   `ID` int(11) NOT NULL auto_increment,
   `num` varchar(255) NOT NULL default '',
   `cost` float NOT NULL default '0',
@@ -1280,7 +1280,7 @@ $query= "CREATE TABLE `glpi_contract_enterprise` (
 ";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_contrat_enterprise ".$lang["update"][90].$db->error());
 
-$query= "CREATE TABLE `glpi_infocom` (
+$query= "CREATE TABLE `glpi_infocoms` (
   `ID` int(11) NOT NULL auto_increment,
   `buy_date` date NOT NULL default '0000-00-00',
   `warranty_end_date` date NOT NULL default '0000-00-00',
