@@ -32,6 +32,7 @@ This file is part of GLPI.
 */
 include ("_relpos.php");
 include ($phproot . "/glpi/common/classes.php");
+include ($phproot . "/glpi/common/functions.php");
 include ($phproot . "/glpi/config/config_db.php");
 //Load language
 if(!function_exists('loadLang')) {
