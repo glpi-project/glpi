@@ -39,7 +39,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 	
 	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel;
 
-	$date_fiscale="0000-12-31";
+	$date_fiscale=$cfg_install["date_fiscale"];
 	
 	$ic = new Infocom;
 

@@ -82,7 +82,7 @@ elseif(!empty($_POST["update_ext"])) {
 	header("Location: ".$cfg_install["root"]."/setup/index.php");
 }
 elseif(!empty($_POST["update_confgen"])) {
-	updateConfigGen($_POST["root_doc"], $_POST["event_loglevel"], $_POST["num_of_events"], $_POST["expire_events"], $_POST["jobs_at_login"],$_POST["list_limit"], $_POST["cut"],$_POST["permit_helpdesk"],$_POST["default_language"],$_POST["priority"]);
+	updateConfigGen($_POST["root_doc"], $_POST["event_loglevel"], $_POST["num_of_events"], $_POST["expire_events"], $_POST["jobs_at_login"],$_POST["list_limit"], $_POST["cut"],$_POST["permit_helpdesk"],$_POST["default_language"],$_POST["priority"],$_POST["date_fiscale"]);
 header("Location: ".$cfg_install["root"]."/setup/index.php");
 }
 

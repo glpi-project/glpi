@@ -292,6 +292,10 @@ $cfg_features["permit_helpdesk"] = $db->result($result,0,"permit_helpdesk");
 // numero de version
 
 $cfg_install["version"]		= $db->result($result,0,"version");
+
+//Date fiscale
+$cfg_install["date_fiscale"]		= $db->result($result,0,"date_fiscale");
+
 $cfg_layout["logotxt"]		= $db->result($result,0,"logotxt");
 
 // Priority colors
