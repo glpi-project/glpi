@@ -534,7 +534,11 @@ function showJobDetails($ID) {
 
 		echo "<tr><td>".$lang["joblist"][5].":</td><td>";
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
-		echo "<b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$job->computer\">$job->computername ($job->computer)</a></b>";
+		{
+			if ($job->computerfound)	echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$job->computer\">";
+			echo "<b>$job->computername ($job->computer)</b>";
+			if ($job->computerfound) echo "</a>";
+		}
 		else
 		echo "<b>$job->computername ($job->computer)</b>";
 		echo "</td></tr>";
