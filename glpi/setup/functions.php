@@ -1137,7 +1137,7 @@ GLOBAL  $lang,$HTMLRel;
 
 function showFormConfigGen($target){
 	$db = new DB;
-	$query = "select * from glpi_config where config_id = 1";
+	$query = "select * from glpi_config where ID = 1";
 	$result = $db->query($query);
 	
 	echo "<form action=\"$target\" method=\"post\">";
@@ -1188,7 +1188,7 @@ function titleExtSources(){
 function showFormExtsources($target) {
 
 	$db = new DB;
-	$query = "select * from glpi_config where config_id = 1";
+	$query = "select * from glpi_config where ID = 1";
 	$result = $db->query($query);
 	
 	echo "<form action=\"$target\" method=\"post\">";
@@ -1250,7 +1250,7 @@ function titleMailing(){
 function showFormMailing($target) {
 	
 		$db = new DB;
-		$query = "select * from glpi_config where config_id = 1";
+		$query = "select * from glpi_config where ID = 1";
 		$result = $db->query($query);
 		echo "<form action=\"$target\" method=\"post\">";
 		
@@ -1331,7 +1331,7 @@ function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events
 	
 		$query = "update glpi_config set root_doc = '". $root_doc ."', ";
 		$query.= "event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', ";
-		$query .= "expire_events = '". $expire_events ."', jobs_at_login = '". $jobs_at_login ."' , list_limit = '". $list_limit ."' , cut = '". $cut ."' where config_id = '1' ";
+		$query .= "expire_events = '". $expire_events ."', jobs_at_login = '". $jobs_at_login ."' , list_limit = '". $list_limit ."' , cut = '". $cut ."' where ID = '1' ";
 		$db->query($query);
 	
 }
@@ -1344,7 +1344,7 @@ function updateLDAP($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass) {
 	if(!empty($ldap_host)) {
 		$query = "update glpi_config set ldap_host = '". $ldap_host ."', ";
 		$query.= "ldap_basedn = '". $ldap_basedn ."', ldap_rootdn = '". $ldap_rootdn ."', ";
-		$query .= "ldap_pass = '". $ldap_pass ."' where config_id = '1' ";
+		$query .= "ldap_pass = '". $ldap_pass ."' where ID = '1' ";
 		$db->query($query);
 	}
 }
@@ -1353,7 +1353,7 @@ function updateIMAP($imap_auth_server,$imap_host) {
 	//TODO : test the remote IMAP connection
 	if(!empty($imap_auth_server)) {
 		$query = "update glpi_config set imap_auth_server = '". $imap_auth_server ."', ";
-		$query.= "imap_host = '". $imap_host ."' where config_id = '1'";
+		$query.= "imap_host = '". $imap_host ."' where ID = '1'";
 		$db->query($query);
 	}
 }
@@ -1384,7 +1384,7 @@ function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_ad
 	$query .= "mailing_followup_user = '". $mailing_followup_user ."', ";
 	$query .= "mailing_finish_user = '". $mailing_finish_user ."', ";
 	$query .= "mailing_new_attrib = '". $mailing_new_attrib ."' ";
-	$query .= "where config_id = 1";
+	$query .= "where ID = 1";
 	
 	if($db->query($query)) return true;
 	else return false;

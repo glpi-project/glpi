@@ -449,7 +449,7 @@ function step5()
 	include ("_relpos.php");
 	include ($phproot . "/glpi/includes.php");
 	$db = new DB;
-	$query = "select * from glpi_config where config_id = 1";
+	$query = "select * from glpi_config where ID = 1";
 	$result = $db->query($query);
 	echo "Configuration de GLPI : ";
 	echo "<p>Les valeurs présélectionnées sont les valeurs par defaut, il est recommandé de laisser ces valeurs</p>";
@@ -584,7 +584,7 @@ function step7($extsources)
 	require_once ($phproot . "/glpi/includes.php");
 	if($extsources == 1) {
 		$db = new DB;
-		$query = "select * from glpi_config where config_id = 1";
+		$query = "select * from glpi_config where ID = 1";
 		$result = $db->query($query);
 		echo "Configuration des paramètres de connection externe";
 		echo "<br /> Si vous ne souhaitez pas utiliser LDAP ou/et IMAP comme source(s) de connection laissez les champs vides";
@@ -623,7 +623,7 @@ function step8($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$imap_auth_server
 			//TODO : test the remote LDAP connection
 			$query = "update glpi_config set ldap_host = '". $ldap_host ."', ";
 			$query.= "ldap_basedn = '". $ldap_basedn ."', ldap_rootdn = '". $ldap_rootdn ."', ";
-			$query .= "ldap_pass = '". $ldap_pass ."' where config_id = '1' ";
+			$query .= "ldap_pass = '". $ldap_pass ."' where ID = '1' ";
 			$db->query($query);
 			echo "Vos paramètres de connection LDAP ont bien été enregistrés";
 		}
@@ -635,7 +635,7 @@ function step8($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$imap_auth_server
 		if(function_exists('imap_open')) {
 			//TODO : test the remote IMAP connection
 			$query = "update glpi_config set imap_auth_server = '". $imap_auth_server ."', ";
-			$query.= "imap_host = '". $imap_host ."' where config_id = '1'";
+			$query.= "imap_host = '". $imap_host ."' where ID = '1'";
 			$db->query($query);
 			echo "Vos paramètres de connection IMAP ont bien été enregistrés";
 		}
@@ -689,7 +689,7 @@ function mailing_config_to_db($admin_email, $mailing_signature,$mailing_new_admi
 	$query .= "mailing_followup_user = '". $mailing_followup_user ."', ";
 	$query .= "mailing_finish_user = '". $mailing_finish_user ."', ";
 	$query .= "mailing_new_attrib = '". $mailing_new_attrib ."' ";
-	$query .= "where config_id = 1";
+	$query .= "where ID = 1";
 	$db->query($query);
 }
 
