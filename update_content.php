@@ -292,7 +292,7 @@ loadLang();
         echo "<body>";
 	echo "<div class=\"principal\">";
 //end style and co
-if (!isset($_POST["oui"])&&!isset($_POST["non"])&&!isset($_GET["dump"]))
+/*if (!isset($_POST["oui"])&&!isset($_POST["non"])&&!isset($_GET["dump"]))
 if (test_content_ok()) {
 	echo "<div align=\"center\">";
 	echo $lang["update"]["108"];
@@ -312,10 +312,8 @@ else {
 	echo "</form></div>";
 
 }
-
+*/
 // #################" UPDATE CONTENT #################################
-
-if (isset($_POST["oui"])||isset($_GET["dump"])){
 
     $time_file=date("Y-m-d-h-i");
 	$cur_time=date("Y-m-d H:i");
@@ -364,11 +362,12 @@ else  {
 	echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
 }
 
-}
+//}
 	
-if (isset($_POST["non"])){
+/*if (isset($_POST["non"])){
 	// Redirection à faire
 	
 	echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
 }
+*/
 ?>

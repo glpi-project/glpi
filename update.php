@@ -73,8 +73,8 @@ function showContentUpdateForm() {
 	echo "<h3>".$lang["update"][94]."</h3>";
 	echo "<p>".$lang["install"][63]."</p>";
 	echo "<p>".$lang["update"][107]."</p></div>";
-	echo "<p class='submit'> <a href=\"update_content.php\"><span class='button'>".$lang["choice"][0]."</span></a>";
-	echo "&nbsp;&nbsp; <a href=\"index.php\"><span class='button'>".$lang["choice"][1]."->".$lang["install"][64]."</span></a></p>";
+	echo "<p class='submit'> <a href=\"update_content.php\"><span class='button'>".$lang["install"][25]."</span></a>";
+//	echo "&nbsp;&nbsp; <a href=\"index.php\"><span class='button'>".$lang["choice"][1]."->".$lang["install"][64]."</span></a></p>";
 }
 
 
