@@ -70,6 +70,7 @@ $lang["buttons"][16] ="Raz";
 $lang["buttons"][17] ="Supprimer";
 $lang["buttons"][18] ="Tout cocher";
 $lang["buttons"][19] ="Tout décocher";
+$lang["buttons"][20] ="Déplacer";
 
 $lang["choice"][0]	= "Oui";
 $lang["choice"][1]	= "Non";
@@ -614,8 +615,9 @@ $lang["setup"][71]	= "Firmware";
 $lang["setup"][72] 	= "Selectionnez un intitulé"; 
 $lang["setup"][73] = "Prise reseau";
 $lang["setup"][74] = "Vous ne pouvez pas supprimer ce lieu car il possède des sous-lieux";
-$lang["setup"][75] = "Comme fils de ";
+$lang["setup"][75] = "Comme fils de";
 $lang["setup"][76] = "Au même niveau que";
+$lang["setup"][77] = "Comme père de";
 
 $lang["setup"][100]="Configuration générale";
 $lang["setup"][101]="Chemin d'installation";
