@@ -66,7 +66,23 @@ if (isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"re
 		showAddReservationForm($_SERVER["PHP_SELF"],$_GET["add"],$_GET["date"]);
 	}
 	else if (isset($_POST["add_resa"])){
-		if (addReservation($_POST,$_SERVER["PHP_SELF"])){
+		$ok=true;
+		$times=$_POST["periodicity_times"];
+		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
+		list($end_year,$end_month,$end_day)=split("-",$_POST["end_date"]);
+		$to_add=1;
+		if ($_POST["periodicity"]=="week") $to_add=7;
+		for ($i=1;$i<=$times&&$ok;$i++){
+			$_POST["begin_date"]=date("Y-m-d",mktime(0,0,0,$begin_month,$begin_day+($i-1)*$to_add,$begin_year));
+			$_POST["end_date"]=date("Y-m-d",mktime(0,0,0,$end_month,$end_day+($i-1)*$to_add,$end_year));
+			$ok=addReservation($_POST,$_SERVER["PHP_SELF"],$ok);
+
+		}
+		// Positionnement du calendrier au mois de debut
+		$_GET["mois_courant"]=$begin_month;
+		$_GET["annee_courant"]=$begin_year;
+		
+		if ($ok){
 			logEvent($_POST["id_item"], "reservation", 4, "inventory", $_SESSION["glpiname"]." add a reservation.");
 			printCalendrier($_SERVER["PHP_SELF"],$_POST["id_item"]);
 		}

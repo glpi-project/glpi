@@ -918,6 +918,10 @@ $lang["reservation"][23]	= "Commentaire";
 $lang["reservation"][24]	= "Pr&ecirc;t";
 $lang["reservation"][25]	= "Tous les mat&eacute;riels en pr&ecirc;t";
 $lang["reservation"][26]	= "Voir tous";
+$lang["reservation"][27]	= "P&eacute;riodicit&eacute;";
+$lang["reservation"][28]	= "Par semaine";
+$lang["reservation"][29]	= "Par jour";
+$lang["reservation"][30]	= "fois";
 
 $lang["knowbase"][0] ="Base de connaissances";
 $lang["knowbase"][1] ="FAQ";
