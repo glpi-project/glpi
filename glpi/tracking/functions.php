@@ -202,7 +202,7 @@ function showJobList($target,$username,$show,$contains,$item,$start) {
 		if(empty($sort)) $sort = "";
 		$parameters="show=".$show."&contains=".$contains."&sort=".$sort."&ID=".$username;
 		// Delete selected item
-		if ($show == "old"){
+		if (isAdmin($_SESSION["glpitype"])&&$show == "old"){
 			echo "<br><div align='center'>";
 			echo "<table cellpadding='5' width='90%'>";
 			echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" ></td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&select=all&start=$start'>".$lang["buttons"][18]."</a></td>";
@@ -289,7 +289,9 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item') ORD
 		*/
 		echo "</table></div>";
 
+		if (isAdmin($_SESSION["glpitype"])){
 		echo "<br><div align='center'>";
+		
 		echo "<table cellpadding='5' width='90%'>";
 		echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" ></td><td><a href='".$_SERVER["PHP_SELF"]."?select=all&ID=$item'>".$lang["buttons"][18]."</a></td>";
 			
@@ -297,6 +299,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item') ORD
 		echo "</td><td>";
 		echo "<input type='submit' value=\"".$lang["buttons"][17]."\" name='delete_inter' class='submit'></td>";
 		echo "<td width='75%'>&nbsp;</td></table></div>";
+		}
 	} 
 	else
 	{

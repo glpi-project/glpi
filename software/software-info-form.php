@@ -72,7 +72,10 @@ else if (isset($_POST["update"]))
 } 
 else
 {
-	checkAuthentication("normal");
+	if (empty($tab["ID"]))
+	checkAuthentication("admin");
+	else checkAuthentication("normal");
+
 	commonHeader("Software",$_SERVER["PHP_SELF"]);
 	showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	commonFooter();

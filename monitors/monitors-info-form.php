@@ -105,7 +105,10 @@ else if(isset($tab["connect"]))
 }
 else
 {
-	checkAuthentication("normal");
+	if (empty($tab["ID"]))
+	checkAuthentication("admin");
+	else checkAuthentication("normal");
+
 	commonHeader("Monitors",$_SERVER["PHP_SELF"]);
 	showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	commonFooter();

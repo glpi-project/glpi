@@ -100,7 +100,10 @@ else if(isset($tab["connect"]))
 }
 else
 {
-	checkAuthentication("normal");
+	if (empty($tab["ID"]))
+	checkAuthentication("admin");
+	else checkAuthentication("normal");
+
 	commonHeader("Peripherals",$_SERVER["PHP_SELF"]);
 	showPeripheralForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	commonFooter();
