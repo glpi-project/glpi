@@ -185,7 +185,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 			// Name
 			echo "<th>";
-			if ($sort=="name") {
+			if ($sort=="printer.name") {
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=printer.name&order=ASC&start=$start\">";
@@ -193,7 +193,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 			// Location			
 			echo "<th>";
-			if ($sort=="location") {
+			if ($sort=="glpi_dropdown_locations.name") {
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=ASC&start=$start\">";
@@ -201,7 +201,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 			// Type
 			echo "<th>";
-			if ($sort=="type") {
+			if ($sort=="glpi_type_printers.name") {
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_printers.name&order=ASC&start=$start\">";
@@ -209,7 +209,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 			// Last modified		
 			echo "<th>";
-			if ($sort=="date_mod") {
+			if ($sort=="printer.date_mod") {
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=printer.date_mod&order=DESC&start=$start\">";

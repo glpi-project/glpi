@@ -180,7 +180,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 
 			// Name
 			echo "<th>";
-			if ($sort=="name") {
+			if ($sort=="mon.name") {
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=mon.name&order=ASC&start=$start\">";
@@ -188,7 +188,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 
 			// Location			
 			echo "<th>";
-			if ($sort=="location") {
+			if ($sort=="glpi_dropdown_locations.name") {
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=ASC&start=$start\">";
@@ -196,7 +196,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 
 			// Type
 			echo "<th>";
-			if ($sort=="type") {
+			if ($sort=="glpi_type_monitors.name") {
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_monitors.name&order=ASC&start=$start\">";
@@ -204,7 +204,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 
 			// Last modified		
 			echo "<th>";
-			if ($sort=="date_mod") {
+			if ($sort=="mon.date_mod") {
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=mon.date_mod&order=DESC&start=$start\">";
@@ -212,7 +212,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 
 			// Contact person
 			echo "<th>";
-			if ($sort=="contact") {
+			if ($sort=="mon.contact") {
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=mon.contact&order=ASC&start=$start\">";

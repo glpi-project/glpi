@@ -177,7 +177,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			echo "<center><table  class='tab_cadre'><tr>";
 			// Name
 			echo "<th>";
-			if ($sort=="name") {
+			if ($sort=="periph.name") {
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.name&order=ASC&start=$start\">";
@@ -185,23 +185,23 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 
 			// Location			
 			echo "<th>";
-			if ($sort=="location") {
+			if ($sort=="glpi_dropdown_locations.name") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.location&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=ASC&start=$start\">";
 			echo $lang["peripherals"][6]."</a></th>";
 
 			// Type
 			echo "<th>";
-			if ($sort=="type") {
+			if ($sort=="glpi_type_peripherals.name") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.type&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_peripherals.name&order=ASC&start=$start\">";
 			echo $lang["peripherals"][9]."</a></th>";
 
 			// Last modified		
 			echo "<th>";
-			if ($sort=="date_mod") {
+			if ($sort=="periph.date_mod") {
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.date_mod&order=DESC&start=$start\">";
@@ -209,7 +209,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 
 			// Contact person
 			echo "<th>";
-			if ($sort=="contact") {
+			if ($sort=="periph.contact") {
 				echo "&middot;&nbsp;";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.contact&order=ASC&start=$start\">";
