@@ -483,6 +483,7 @@ if (backupMySql($db,$fichier,$duree,$rowlimit))
     echo "<br>Redirection automatique sinon cliquez <a href=\"index.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">ici</a>";
     echo "<script>window.location=\"index.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\";</script>";
 	flush();    
+	exit;
 
 }
 }
@@ -543,6 +544,7 @@ if (restoreMySqlDump($db,$path.$_GET["file"],$duree))
     echo "<br>Redirection automatique sinon cliquez <a href=\"index.php?file=".$_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt\">ici</a>";
     echo "<script>window.location=\"index.php?file=".$_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt\";</script>";
 	flush();
+	exit;
 }
 } else   { //echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt<p></div>";
 }
@@ -563,14 +565,14 @@ if (isset($_GET["delfile"]) && $_GET["delfile"] != ""){
 
 }
 
+// Title backup
+echo " <div align='center'> <table border='0'><tr><td><b><img src=\"". $HTMLRel."pics/sauvegardes.png\"></td> <td><a href=\"javascript:dump('".$lang["backup"][19]."')\"  class='icon_consol'><b>". $lang["backup"][0]."</b></a></td><td><a href=\"javascript:xmlnow('".$lang["backup"][19]."')\" class='icon_consol'><b>". $lang["backup"][1]."</b></a></td></tr></table>";
 
 
 ?>
 
 
  
-// Title backup
-echo " <div align='center'> <table border='0'><tr><td><b><img src=\"". $HTMLRel."pics/sauvegardes.png\"></td> <td><a href=\"javascript:dump('".$lang["backup"][19]."')\"  class='icon_consol'><b>". $lang["backup"][0]."</b></a></td><td><a href=\"javascript:xmlnow('".$lang["backup"][19]."')\" class='icon_consol'><b>". $lang["backup"][1]."</b></a></td></tr></table>";
 
 <br>
   <table border="0" cellpadding="5">
