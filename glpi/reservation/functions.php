@@ -365,7 +365,7 @@ for ($i=1;$i<$nb_jour[$mois_courant-1]+1;$i++){
 	//}
 //	echo $annee_courante."-".$mois_courant."-".$ii;
 	//if (($i-1+$jour_debut_mois)%7!=6&&($i-1+$jour_debut_mois)%7!=0)
-	echo "<tr><td><a href=\"".$target."?show=resa&add=$ID&date=".$annee_courante."-".$mois_courant."-".$ii."\">".$lang["reservation"][8]."</a></td></tr>";
+	echo "<tr><td align='center'><a href=\"".$target."?show=resa&add=$ID&date=".$annee_courante."-".$mois_courant."-".$ii."\">".$lang["reservation"][8]."</a></td></tr>";
 	echo "</table>";
 	echo "</td>";
 
@@ -479,9 +479,9 @@ function printReservation($target,$ID,$date){
 //		echo $query."<br>";
 		if ($result=$db->query($query)){
 			if ($db->numrows($result)>0){
-				echo "<table width='100%'>";
+				echo "<table width='100%' >";
 			while ($row=$db->fetch_array($result)){
-				echo "<tr><td>";
+				echo "<tr><td align='center' valign='middle' >";
 				$user->getfromDBbyID($row["id_user"]);
 $display="";					
 				if ($debut>$row['begin']) $heure_debut="00:00";
@@ -503,7 +503,7 @@ $display="";
 					if ($_SESSION["glpiID"]==$user->fields["ID"]||isAdmin($_SESSION["glpitype"]))
 						$delete="<a  href=\"".$target."?show=resa&clear=".$row['ID']."\" title='Delete'><img  src=\"".$HTMLRel."pics/clear.png\"></a>";
 
-		echo $delete.$display."<br>".$user->fields["name"];
+		echo $delete."</td><td align='center' class='tab_bg_2' style='border:1px dashed #cccccc'>".$display."<br><b>".$user->fields["name"]."</b>";
 
 			echo "</td></tr>";
 				
