@@ -222,6 +222,7 @@ function isIndex($table, $field) {
 			return true;
 		}
 		else return false;
+	// IF the fields does not exists return true in order to !isIndex value is false
 	} else return true;
 }
 
