@@ -591,20 +591,19 @@ function markJob ($ID,$status) {
 function assignJob ($ID,$user,$admin) {
 	// Assign a job to someone
 
-	GLOBAL $cfg_features, $cfg_layout;	
+	GLOBAL $cfg_features, $cfg_layout,$lang;	
 	$job = new Job;
 	$job->getFromDB($ID,0);
 
+	$newuser=$user;
+	$olduser=$job->assign;
+			
 	$job->assignTo($user);
-	
-	// Processing Email
-	if ($cfg_features["mailing"])
-		{
-			$user=new User;
-			$user->getfromDB($_SESSION["glpiname"]);
-			$mail = new Mailing("attrib",$job,$user);
-			$mail->send();
-		}
+
+	// Add a Followup for a assignment change
+
+	$content=date("Y-m-d H:i:s").": ".$lang["mailing"][12].": ".$olduser." -> ".$newuser;
+	postFollowups ($ID,$_SESSION["glpiname"],$content);
 }
 
 function showFollowups($ID) {
