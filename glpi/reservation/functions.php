@@ -539,7 +539,7 @@ function deleteReservation($ID){
 }
 
 
-function addReservation($input){
+function addReservation($input,$target){
 	// Add a Reservation
 
 	$resa = new ReservationResa;
@@ -551,12 +551,12 @@ function addReservation($input){
    $resa->fields["end"] = $input["end_date"]." ".$input["end_hour"].":".$input["end_min"].":00";
 
 	if (!$resa->test_valid_date()){
-		$resa->displayError("date",$input["id_item"]);
+		$resa->displayError("date",$input["id_item"],$target);
 		return false;
 	}
 	
 	if ($resa->is_reserved()){
-		$resa->displayError("is_res",$input["id_item"]);
+		$resa->displayError("is_res",$input["id_item"],$target);
 		return false;
 	}
 	return $resa->addToDB();
@@ -568,14 +568,9 @@ $p=explode(":",$t[1]);
 return $p[0].":".$p[1];
 }
 
-function printReservationItems(){
+function printReservationItems($target){
 global $lang,$HTMLRel;
           
-              
-	     
-	        
-
-
 $ri=new ReservationItem;
 
 $db=new DB;
@@ -587,7 +582,7 @@ $query="select ID from glpi_reservation_item ORDER BY device_type";
 		echo "<tr><th>".$lang["reservation"][1]."</th></tr>";
 		while ($row=$db->fetch_array($result)){
 			$ri->getfromDB($row['ID']);
-			echo "<tr class='tab_bg_2'><td><a href='".$HTMLRel."helpdesk.php?show=resa&ID=".$row['ID']."'>".$ri->getType()." - ".$ri->getName()."</a></td></tr>";
+			echo "<tr class='tab_bg_2'><td><a href='".$target."?show=resa&ID=".$row['ID']."'>".$ri->getType()." - ".$ri->getName()."</a></td></tr>";
 		}
 	echo "</table></div>";
 	

@@ -66,13 +66,13 @@ if (isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"re
 		showAddReservationForm($_SERVER["PHP_SELF"],$_GET["add"],$_GET["date"]);
 	}
 	else if (isset($_POST["add_resa"])){
-		if (addReservation($_POST)){
+		if (addReservation($_POST,$_SERVER["PHP_SELF"])){
 			logEvent($_POST["id_item"], "reservation", 4, "inventory", $_SESSION["glpiname"]."add a reservation.");
 			printCalendrier($_SERVER["PHP_SELF"],$_POST["id_item"]);
 		}
 	}
 	else {
-		printReservationItems();
+		printReservationItems($_SERVER["PHP_SELF"]);
 	}
 }
 else {

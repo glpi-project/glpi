@@ -317,7 +317,7 @@ function getEmpty () {
 		return (strtotime($this->fields["begin"])<strtotime($this->fields["end"]));
 		}
 
-	function displayError($type,$ID){
+	function displayError($type,$ID,$target){
 		global $HTMLRel;
 		
 		echo "<br><center>";
@@ -332,7 +332,7 @@ function getEmpty () {
 				echo "Erreur Inconnue";
 			break;
 		}
-		echo "<br><a href='".$HTMLRel."helpdesk.php?show=resa&ID=$ID'>Retour au calendrier</a>";
+		echo "<br><a href='".$target."?show=resa&ID=$ID'>Retour au calendrier</a>";
 		echo "</center>";
 		}
 
