@@ -148,6 +148,58 @@ class User {
 
 	} // getFromLDAP()
 
+// Function that try to load from LDAP the user information...
+	//
+	function getFromLDAP_active_directory($host,$basedn,$adm,$pass,$fields,$name)
+	{
+		// we prevent some delay..
+		if (empty($host)) {
+			return false;
+		}
+	
+		// some defaults...
+		$this->fields['password'] = "";
+
+	  if ( $conn = ldap_connect($host) )
+	  {
+			// switch to protocol version 3 to make ssl work
+			ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+	  	if ( $adm != "" )
+	  	{
+		$dn = $basedn;
+ 		$findcn=explode(",",$dn);
+                 $findcn=explode("=",$findcn[0]);
+                 $filter="(CN=".$findcn[1].")";
+
+                 if ($condition!="") $filter="(& $filter $condition)";
+	  		$bv = ldap_bind($conn, $dn, $pass);
+	  	}
+	  	else
+	  	{
+	  		$bv = ldap_bind($conn);
+	  	}
+
+	  	if ( $bv )
+	  	{
+	  		$f = array_values($fields);
+	  		$sr = ldap_search($conn, $basedn, $filter, $f);
+	  		$v = ldap_get_entries($conn, $sr);
+//	  		print_r($v);
+	  		if ( (empty($v)) || empty($v[0][$fields['name']][0]) ) {
+	  			return false;
+	  		}
+				foreach ($fields as $k => $e)
+				{
+					$this->fields[$k] = $v[0][$e][0];
+				}
+				
+				return true;
+  		}
+  	}
+  	
+  	return false;
+
+	} // getFromLDAP_active_directory()
 
   // Function that try to load from IMAP the user information... this is
   // a fake one, as you can see...
@@ -191,8 +243,17 @@ class User {
 		$query .= ") VALUES (";
 		for ($i=0; $i < count($values); $i++) {
 			if($i === $indice) {
-				$query .= " PASSWORD('".$values[$i]."')";
-				$mdpchiff = md5($values[$i]);
+				if (!empty($values[$i])) {
+					$mdpchiff = md5($values[$i]);
+					$query .= " PASSWORD('".$values[$i]."')";
+					}
+				else {
+					$query .= " '' ";
+					$mdpchiff='';
+				}
+				
+				
+				
 			}
 			elseif($i === $indice2) {
 				$query .= " '".$mdpchiff."'";
@@ -205,6 +266,7 @@ class User {
 			}
 		}
 		$query .= ")";
+		
 		if ($result=$db->query($query)) {
 			return true;
 		} else {

@@ -296,6 +296,110 @@ class Identification
    return implode(",",$thedn);
   }  		 // ldap_get_dn()
  		
+ // return 1 if the connection to the LDAP host, auth mode, was successful
+  // $condition is used to restrict login ($condition is set in glpi/config/config.php 
+  function connection_ldap_active_directory($host,$basedn,$login,$pass,$condition)
+  {
+		// we prevent some delay...
+		if (empty($host)) {
+			return false;
+		}
+  	error_reporting(16);
+  	$dn = $basedn;
+  	$rv = false;
+  	if ( $conn = ldap_connect($host) )
+  	{
+  		// switch to protocol version 3 to make ssl work
+  		ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+//  		if ( ldap_bind($conn, $dn, $pass) ) {
+//  			$rv = true;
+
+  		if (ldap_bind($conn, $dn, $pass) ) {
+			$findcn=explode(",",$dn);
+ 			$findcn=explode("=",$findcn[0]);
+ 			$filter="(CN=".$findcn[1].")";
+                     if ($condition!="") $filter="(& $filter $condition)";
+                     $sr=ldap_search($conn, $basedn, $filter);
+                     $info = ldap_get_entries ( $conn, $sr );
+                     if ( $info["count"] == 1 )
+                     {
+                        $rv=true;
+                     }
+                     else
+                     {
+                       $this->err = "Not allowed to log in";
+                     }
+  		}
+  		else
+  		{
+  			$this->err = ldap_error();
+  		}
+  		ldap_close($conn);
+  	}
+  	else
+  	{
+  		$this->err = ldap_error();
+  	}
+  	
+  	return($rv);
+
+  } // connection_ldap_active_directory()
+ 
+ 
+// Gets the dn using anonymous Ldap login
+ function ldap_get_dn_active_directory($host,$ldap_base_dn,$login,$rdn,$rpass)
+ {
+
+  // we prevent some delay...
+  if (empty($host)) {
+	return false;
+  }
+
+  $ldap_server=$host;
+  $ldap_login_attr = "sAMAccountName";                          
+  $ldap_dn ="";
+//	error_reporting(16);
+  $ds = ldap_connect ($ldap_server);
+  if (!$ds)
+    {
+     return $false;
+    }
+    //echo "CONNECT";
+  ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+  if ($rdn=="") {$r = ldap_bind ( $ds);//echo "sans";
+  }
+  else {$r = ldap_bind ( $ds,$rdn,$rpass);//echo "avec";
+  }
+  //echo $rdn."---".$rpass."---".$ds;
+  if (!$r)
+      {
+       ldap_close ( $ds );
+       return false;
+      }
+      //echo "BIND";
+    $sr = ldap_search ($ds, $ldap_base_dn, "($ldap_login_attr=$login)");
+//echo " SEARCH";
+    if (!$sr)
+       {
+       ldap_close ( $ds );
+       return false;
+       }
+       
+    $info = ldap_get_entries ( $ds, $sr );
+
+    if ( $info["count"] != 1 )
+       {
+       ldap_free_result ( $sr );
+       ldap_close ( $ds );
+       return false;
+       }
+   ldap_free_result ( $sr );
+   ldap_close ( $ds );
+   $thedn=explode(",", $info[0]["dn"]);
+   //unset($thedn[0]);
+   return implode(",",$thedn);
+  }  		 // ldap_get_dn_active_directory()
+ 		
 
 	// void;
 	//try to connect to DB
