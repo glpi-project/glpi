@@ -214,7 +214,10 @@ function getEmpty() {
 
 				$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".NETWORKING_TYPE."')";
 				$result = $db->query($query);
-
+				
+				$query="select * from glpi_repair_item where (device_type='".NETWORKING_TYPE."' and id_device='$ID')";
+				$result = $db->query($query);
+				
 				$query="select * from glpi_reservation_item where (device_type='".NETWORKING_TYPE."' and id_device='$ID')";
 				if ($result = $db->query($query)) {
 					if ($db->numrows($result)>0) {
