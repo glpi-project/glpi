@@ -37,7 +37,7 @@
 # http://www.phpmyadmin.net
 #
 # Serveur: localhost
-# Généré le : Dimanche 18 Juillet 2004 à 01:27
+# Généré le : Mercredi 21 Juillet 2004 à 02:34
 # Version du serveur: 4.0.20
 # Version de PHP: 4.3.8
 # 
@@ -151,7 +151,7 @@ CREATE TABLE `glpi_config` (
 # Contenu de la table `glpi_config`
 #
 
-INSERT INTO `glpi_config` VALUES (1, '10', '10', '1', '80', '30', '15', ' 0.4-alpha', 'GLPI powered by indepnet', '/glpi', '5', '0', '', '', '', '', '', '', 'admin@xxxxx.fr', 'SIGNATURE', '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '1', '1', '1', '1', '1', '1', 'uid', 'mail', 'physicaldeliveryofficename', 'cn', 'telephonenumber');
+INSERT INTO `glpi_config` VALUES (1, '10', '1', '1', '80', '30', '15', ' 0.4-alpha', 'GLPI powered by indepnet', '/glpi', '5', '0', '', '', '', '', '', '', 'admin@xxxxx.fr', 'SIGNATURE', '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '1', '1', '1', '1', '1', '1', 'uid', 'mail', 'physicaldeliveryofficename', 'cn', 'telephonenumber');
 
 # --------------------------------------------------------
 
@@ -166,12 +166,13 @@ CREATE TABLE `glpi_connect_wire` (
   `end2` int(11) NOT NULL default '0',
   `type` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=1 ;
+) TYPE=MyISAM AUTO_INCREMENT=2 ;
 
 #
 # Contenu de la table `glpi_connect_wire`
 #
 
+INSERT INTO `glpi_connect_wire` VALUES (1, 2, 8, 5);
 
 # --------------------------------------------------------
 
@@ -451,7 +452,7 @@ CREATE TABLE `glpi_event_log` (
   PRIMARY KEY  (`ID`),
   KEY `comp` (`item`),
   KEY `date` (`date`)
-) TYPE=MyISAM AUTO_INCREMENT=367 ;
+) TYPE=MyISAM AUTO_INCREMENT=375 ;
 
 #
 # Contenu de la table `glpi_event_log`
@@ -461,6 +462,14 @@ INSERT INTO `glpi_event_log` VALUES (363, -1, 'system', '2004-07-18 01:16:19', '
 INSERT INTO `glpi_event_log` VALUES (364, -1, 'system', '2004-07-18 01:17:52', 'login', 3, 'glpi logged in.');
 INSERT INTO `glpi_event_log` VALUES (365, -1, 'system', '2004-07-18 01:18:45', 'login', 3, 'glpi logged in.');
 INSERT INTO `glpi_event_log` VALUES (366, -1, 'system', '2004-07-18 01:20:23', 'login', 3, 'glpi logged in.');
+INSERT INTO `glpi_event_log` VALUES (367, -1, 'system', '2004-07-21 02:28:34', 'login', 3, 'glpi logged in.');
+INSERT INTO `glpi_event_log` VALUES (368, -1, 'system', '2004-07-21 02:29:06', 'login', 3, 'glpi logged in.');
+INSERT INTO `glpi_event_log` VALUES (369, 0, 'dropdowns', '2004-07-21 02:29:28', 'setup', 5, 'glpi added a value to a dropdown.');
+INSERT INTO `glpi_event_log` VALUES (370, 0, 'dropdowns', '2004-07-21 02:29:46', 'setup', 5, 'glpi added a value to a dropdown.');
+INSERT INTO `glpi_event_log` VALUES (371, 0, 'Peripheral', '2004-07-21 02:30:35', 'inventory', 4, 'glpi added Mustek plat.');
+INSERT INTO `glpi_event_log` VALUES (372, 0, 'Peripheral', '2004-07-21 02:31:19', 'inventory', 4, 'glpi added Ax704.');
+INSERT INTO `glpi_event_log` VALUES (373, 2, 'Peripheral', '2004-07-21 02:31:56', 'inventory', 4, 'glpi updated item.');
+INSERT INTO `glpi_event_log` VALUES (374, 2, 'Peripheral', '2004-07-21 02:32:17', 'inventory', 5, 'glpi connected item.');
 
 # --------------------------------------------------------
 
@@ -659,6 +668,38 @@ CREATE TABLE `glpi_networking_wire` (
 INSERT INTO `glpi_networking_wire` VALUES (1, 5, 1);
 INSERT INTO `glpi_networking_wire` VALUES (2, 6, 2);
 INSERT INTO `glpi_networking_wire` VALUES (3, 7, 3);
+
+# --------------------------------------------------------
+
+#
+# Structure de la table `glpi_peripherals`
+#
+
+DROP TABLE IF EXISTS `glpi_peripherals`;
+CREATE TABLE `glpi_peripherals` (
+  `ID` int(11) NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL default '',
+  `date_mod` datetime NOT NULL default '0000-00-00 00:00:00',
+  `contact` varchar(255) NOT NULL default '',
+  `contact_num` varchar(255) NOT NULL default '',
+  `comments` text NOT NULL,
+  `serial` varchar(255) NOT NULL default '',
+  `otherserial` varchar(255) NOT NULL default '',
+  `date_fin_garantie` date default NULL,
+  `achat_date` date NOT NULL default '0000-00-00',
+  `maintenance` int(2) default '0',
+  `location` int(11) NOT NULL default '0',
+  `type` int(11) NOT NULL default '0',
+  `brand` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`ID`)
+) TYPE=MyISAM AUTO_INCREMENT=3 ;
+
+#
+# Contenu de la table `glpi_peripherals`
+#
+
+INSERT INTO `glpi_peripherals` VALUES (1, 'Mustek plat', '0000-00-00 00:00:00', 'Rose', '', '', '132-12465-4564', '', '0000-00-00', '2004-07-21', 0, 1, 1, 'Mustek');
+INSERT INTO `glpi_peripherals` VALUES (2, 'Ax704', '2004-07-21 02:31:56', 'Eloise', '', '-', '1321-5465-4564', '', '0000-00-00', '2004-07-21', 1, 1, 2, 'Sony');
 
 # --------------------------------------------------------
 
@@ -881,6 +922,26 @@ CREATE TABLE `glpi_type_networking` (
 #
 
 INSERT INTO `glpi_type_networking` VALUES (1, 'Dlink Switch');
+
+# --------------------------------------------------------
+
+#
+# Structure de la table `glpi_type_peripherals`
+#
+
+DROP TABLE IF EXISTS `glpi_type_peripherals`;
+CREATE TABLE `glpi_type_peripherals` (
+  `ID` int(11) NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`ID`)
+) TYPE=MyISAM AUTO_INCREMENT=3 ;
+
+#
+# Contenu de la table `glpi_type_peripherals`
+#
+
+INSERT INTO `glpi_type_peripherals` VALUES (1, 'scanner');
+INSERT INTO `glpi_type_peripherals` VALUES (2, 'Vidéo projecteur');
 
 # --------------------------------------------------------
 
