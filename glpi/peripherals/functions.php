@@ -46,10 +46,10 @@ function titleperipherals(){
 }
 
 
-function searchFormperipheral($field="",$phrasetype= "",$contains="",$sort= "") {
+function searchFormperipheral($field="",$phrasetype= "",$contains="",$sort= "",$deleted="") {
 	// Print Search Form
 	
-	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
+	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel;
 
 	$option["periph.name"]				= $lang["peripherals"][5];
 	$option["periph.ID"]				= $lang["peripherals"][23];
@@ -65,7 +65,7 @@ function searchFormperipheral($field="",$phrasetype= "",$contains="",$sort= "") 
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/peripherals/peripherals-search.php\">";
 	echo "<div align='center'><table  width='750' class='tab_cadre'>";
-	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
@@ -104,13 +104,15 @@ function searchFormperipheral($field="",$phrasetype= "",$contains="",$sort= "") 
 		echo ">".$val."</option>\n";
 	}
 	echo "</select> ";
+	echo "</td><td><input type='checkbox' name='deleted' ".($deleted=='Y'?" checked ":"").">";
+	echo "<img src=\"".$HTMLRel."pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
 
 
-function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start) {
+function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted) {
 
 	// Lists peripheral
 
@@ -134,7 +136,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 				$where .= " glpi_dropdown_locations.name LIKE '%".$contains."%'";
 			}
 			elseif($coco == "type") {
-				$where .= " glpi_type_peripherals.name LIKE '%".$contains."%'";
+-				$where .= " glpi_type_peripherals.name LIKE '%".$contains."%'";
 			}
 			else {
    				$where .= "periph.".$coco . " LIKE '%".$contains."%'";
@@ -161,7 +163,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 	$query = "select periph.ID from glpi_peripherals as periph LEFT JOIN glpi_dropdown_locations on periph.location=glpi_dropdown_locations.ID ";
 	$query .= "LEFT JOIN glpi_type_peripherals on periph.type = glpi_type_peripherals.ID ";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = periph.FK_glpi_enterprise ) ";
-	$query .= "where $where ORDER BY $sort $order";
+	$query .= "where $where AND periph.deleted='$deleted' ORDER BY $sort $order";
 
 	// Get it from database	
 	if ($result = $db->query($query)) {
@@ -372,7 +374,15 @@ echo "</td></tr>";
 		echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<center><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' class='submit'></center>";
+		echo "<div align='center'>";
+		if ($mon->fields["deleted"]=='N')
+		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+		else {
+		echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+		
+		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>";
+		}
+		echo "</div>";
 		echo "</td>";
 		echo "</form></tr>";
 
@@ -439,11 +449,19 @@ function addPeripheral($input) {
 
 }
 
-function deletePeripheral($input) {
+function deletePeripheral($input,$force=0) {
 	// Delete Printer
 	
 	$mon = new Peripheral;
-	$mon->deleteFromDB($input["ID"]);
+	$mon->deleteFromDB($input["ID"],$force);
 	
-} 	
+}
+
+function restorePeripheral($input) {
+	// Restore CartridgeType
+	
+	$ct = new Peripheral;
+	$ct->restoreInDB($input["ID"]);
+} 
+ 	
 ?>
