@@ -145,6 +145,9 @@ function searchUserbyType($authtype) {
 	function unhtmlentities ($string)
 	{
 	   $trans_tbl = get_html_translation_table (HTML_ENTITIES,ENT_QUOTES);
+	   if( $trans_tbl["'"] != '&#039;' ) { # some versions of PHP match single quotes to &#39;
+       		$trans_tbl["'"] = '&#039;';
+   	}
 	   $trans_tbl = array_flip ($trans_tbl);
 	   return strtr ($string, $trans_tbl);
 	}
