@@ -460,13 +460,13 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE  FROM g
 		$result_inst = $db->query($query_inst);
 		$num_inst=$db->numrows($result_inst);
 
-		echo "<tr class='tab_bg_1$expirecss'>";
+		echo "<tr class='tab_bg_1'>";
 		echo "<td align='center'><b>".$serial."</b></td>";
 		echo "<td align='center'><b>".$lang["software"][21].":&nbsp;";
 		echo $num_tot;
 		echo "</b></td>";
 		
-		echo "<td align='center'><b>";
+		echo "<td align='center' class='tab_bg_1$expirecss'><b>";
 		if ($expire==NULL)
 			echo $lang["software"][26];
 		else {
@@ -628,10 +628,10 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 						$expirecss="";
 						if ($lic->expire!=NULL&&$today>$lic->expire) {$expirer=1; $expirecss="_2";}
 
-						echo "<tr class='tab_bg_1$expirecss'>";
+						echo "<tr class='tab_bg_1'>";
 						echo "<td><b>$i</b></td>";
 						echo "<td width='50%' align='center'><b>".$lic->serial."</b></td>";
-						echo "<td width='50%' align='center'><b>";
+						echo "<td width='50%' align='center' class='tab_bg_1$expirecss'><b>";
 						if ($lic->expire==NULL)
 							echo $lang["software"][26];
 						else {
