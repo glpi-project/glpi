@@ -198,11 +198,11 @@ class Computer {
 
 	function deleteFromDB($ID,$template) {
 
-		if (!empty($template)) {
-			$table = "glpi_templates";
-		} else {
+//		if (!empty($template)) {
+//			$table = "glpi_templates";
+//		} else {
 			$table = "glpi_computers";
-		}
+//		}
 
 		$db = new DB;
 
@@ -218,12 +218,20 @@ class Computer {
 		      		$db->query($query);
 				$i++;
 			}
-			$query = "DELETE FROM glpi_tracking WHERE (computer = '$ID')";
+			$query = "DELETE FROM glpi_tracking WHERE (computer = '$ID' AND device_type='".COMPUTER_TYPE."')";
 			$result = $db->query($query);
 			$query = "DELETE FROM glpi_inst_software WHERE (cID = '$ID')";
 			$result = $db->query($query);
 
-			$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '1')";
+
+			$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".COMPUTER_TYPE."')";
+			$result = $db->query($query);
+
+
+			$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".COMPUTER_TYPE."')";
+			$result = $db->query($query);
+
+			$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '".COMPUTER_TYPE."')";
 			$result = $db->query($query);
 			while ($data = $db->fetch_array($result)){
 					$q = "DELETE FROM glpi_networking_wire WHERE (end1 = '".$data["ID"]."' OR end2 = '".$data["ID"]."')";
@@ -231,12 +239,12 @@ class Computer {
 					}
 
 
-			$query = "DELETE FROM glpi_networking_ports WHERE (device_on = '$ID' AND device_type = '1')";
+			$query = "DELETE FROM glpi_networking_ports WHERE (device_on = '$ID' AND device_type = '".COMPUTER_TYPE."')";
 			$result = $db->query($query);
 			$query = "DELETE FROM glpi_connect_wire WHERE (end2 = '$ID')";
 			$result = $db->query($query);
 
-			$query="select * from glpi_reservation_item where (device_type='1' and id_device='$ID')";
+			$query="select * from glpi_reservation_item where (device_type='".COMPUTER_TYPE."' and id_device='$ID')";
 			if ($result = $db->query($query)) {
 				if ($db->numrows($result)>0) {
 					deleteReservationItem(array("ID"=>$db->result($result,0,"ID")));

@@ -130,13 +130,25 @@ function getEmpty () {
 		$query = "DELETE from glpi_monitors WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
 
-			$query="select * from glpi_reservation_item where (device_type='4' and id_device='$ID')";
+			$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".MONITOR_TYPE."')";
+			$result = $db->query($query);
+
+			$query = "DELETE FROM glpi_tracking WHERE (computer = '$ID' AND device_type='".MONITOR_TYPE."')";
+			$result = $db->query($query);
+
+
+			$query="select * from glpi_reservation_item where (device_type='".MONITOR_TYPE."' and id_device='$ID')";
 			if ($result = $db->query($query)) {
-				if ($db->numrows($result)>0)
-				deleteReservationItem(array("ID"=>$db->result($result,0,"ID")));
+				if ($db->numrows($result)>0) {
+					deleteReservationItem(array("ID"=>$db->result($result,0,"ID")));
+				}
 			}
 
-			$query2 = "DELETE FROM glpi_connect_wire where (end1='$ID' AND type='4')";
+			$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".MONITOR_TYPE."')";
+			$result = $db->query($query);
+
+
+			$query2 = "DELETE FROM glpi_connect_wire where (end1='$ID' AND type='".MONITOR_TYPE."')";
 			if ($result2 = $db->query($query2)) {
 				return true;
 			}
