@@ -47,7 +47,7 @@ qui pointe vers une page sur laquelle :
 	- Soit on va vers la génération de la base ou de certaines tables au format XML 
 
 //fait
-
+ 
 
 
 GLPI patch's:
