@@ -328,8 +328,8 @@ function showComputerForm($target,$ID) {
 		}
 		echo "<form name='form' method='post' action=\"$target\">";
 		echo "<div align='center'>";
-		echo "<table border='0' class='tab_cadre' >";
-		echo "<tr><th align='center' width='300px'>";
+		echo "<table width='700px' border='0' class='tab_cadre' >";
+		echo "<tr><th align='center' >";
 		if ($template) {
 			echo $lang["computers"][12].": ".$comp->fields["tplname"];
 		} else {
@@ -427,7 +427,7 @@ function showComputerForm($target,$ID) {
 			$device = new Device($devTable);
 			$device->getFromDB($devID);
 			echo "<div align='center'>";
-			echo "<table border='1' class='tab_cadre' >";
+			echo "<table width='700px' class='tab_cadre' >";
 			printDeviceComputer(&$device,$specif,$comp->fields["ID"],$compDevID);
 			echo "</table>";
 			echo "</div>";

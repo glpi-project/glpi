@@ -35,72 +35,83 @@ This file is part of GLPI.
 function printDeviceComputer($device,$specif,$compID,$compDevID) {
 	global $lang;
 	#print_r($device);
-	echo "<tr><th>".$lang["devices"][8].":</th>";
-	echo "<th>".$device->fields["designation"]."</th>";
+	echo "<tr><th width='300px' >".$lang["devices"][8].":</th>";
+	echo "<th colspan='2'>".$device->fields["designation"]."</th>";
 	echo "</tr>";
 	//print the good form switch the wanted device type.
 	switch($device->table) {
 		case "glpi_device_hdd" :
-			echo "<tr><td>".$lang["device_hdd"][0].":</td>";
+			echo "<tr class='tab_bg_2'><td>".$lang["device_hdd"][0].":</td>";
 			echo "<td>".$device->fields["rpm"]."</td>";
+			echo "<td>&nbsp;</td>";
 			echo "</tr>";
-			echo "<tr><td>".$lang["device_hdd"][2].":</td>";
+			echo "<tr class='tab_bg_2'><td>".$lang["device_hdd"][2].":</td>";
 			echo "<td>".$device->fields["interface"]."</td>";
+			echo "<td>&nbsp;</td>";
 			echo "</tr>";
-			echo "<tr><td>".$lang["device_hdd"][1].":</td>";
+			echo "<tr class='tab_bg_2'><td>".$lang["device_hdd"][1].":</td>";
 			echo "<td>".$device->fields["cache"]."</td>";
+			echo "<td>&nbsp;</td>";
 			echo "</tr>";
 			$specificity_label = $lang["device_hdd"][4];
 		break;
 		case "glpi_device_gfxcard" :
-			echo "<tr><td>".$lang["device_gfxcard"][0].":</td>";
+			echo "<tr class='tab_bg_2'><td>".$lang["device_gfxcard"][0].":</td>";
 			echo "<td>".$device->fields["ram"]."</td>";
+			echo "<td>&nbsp;</td>";
 			echo "</tr>";
-			echo "<tr><td>".$lang["device_gfxcard"][2].":</td>";
+			echo "<tr class='tab_bg_2'><td>".$lang["device_gfxcard"][2].":</td>";
 			echo "<td>".$device->fields["interface"]."</td>";
+			echo "<td>&nbsp;</td>";
 			echo "</tr>";
 			$specificity_label = "";
 		break;
 		case "glpi_device_iface" :
-			echo "<tr><td>".$lang["device_iface"][0].":</td>";
+			echo "<tr class='tab_bg_2'><td>".$lang["device_iface"][0].":</td>";
 			echo "<td>".$device->fields["bandwidth"]."</td>";
+			echo "<td>&nbsp;</td>";
 			echo "</tr>";
 			$specificity_label = $lang["device_iface"][2];
 		break;
 		case "glpi_device_moboard" :
-			echo "<tr><td>".$lang["device_moboard"][0].":</td>";
+			echo "<tr class='tab_bg_2'><td>".$lang["device_moboard"][0].":</td>";
 			echo "<td>".$device->fields["chipset"]."</td>";
+			echo "<td>&nbsp;</td>";
 			echo "</tr>";
 			$specificity_label = "";
 		break;
 		case "glpi_device_processor" :
-			echo "<tr><td>".$lang["device_processor"][0].":</td>";
+			echo "<tr class='tab_bg_2'><td>".$lang["device_processor"][0].":</td>";
 			echo "<td>".$device->fields["frequence"]."</td>";
+			echo "<td>&nbsp;</td>";
 			echo "</tr>";
 			$specificity_label = $lang["device_processor"][0];
 		break;
 		case "glpi_device_ram" :
-			echo "<tr><td>".$lang["device_ram"][0].":</td>";
+			echo "<tr class='tab_bg_2'><td>".$lang["device_ram"][0].":</td>";
 			echo "<td>".$device->fields["type"]."</td>";
+			echo "<td>&nbsp;</td>";
 			echo "</tr>";
-			echo "<tr><td>".$lang["device_ram"][1].":</td>";
+			echo "<tr class='tab_bg_2'><td>".$lang["device_ram"][1].":</td>";
 			echo "<td>".$device->fields["frequence"]."</td>";
+			echo "<td>&nbsp;</td>";
 			echo "</tr>";
 			$specificity_label = $lang["device_ram"][0];
 		break;
 		case "glpi_device_sndcard" :
-			echo "<tr><td>".$lang["device_sndcard"][0].":</td>";
+			echo "<tr class='tab_bg_2'><td>".$lang["device_sndcard"][0].":</td>";
 			echo "<td>".$device->fields["type"]."</td>";
+			echo "<td>&nbsp;</td>";
 			echo "</tr>";
 			$specificity_label = "";
 		break;
 	}
 	if(!empty($specificity_label)) {
-		echo "<tr><td>".$specificity_label.":</td>";
+		echo "<tr class='tab_bg_2'><td>".$specificity_label.":</td>";
 		//Mise a jour des spécificitées
 		echo "<form action=\"\" method=\"post\" >";
 		echo "<td><input type='text' name='device_value' value=\"".$specif."\" size='20' /></td>";
-		echo "<td><input type='submit' name='update_device' value=\"".$lang["buttons"][7]."\" size='20' /></td>";
+		echo "<td align='center'><input type='submit' name='update_device' value=\"".$lang["buttons"][7]."\" size='20' /></td>";
 		echo "<input type=\"hidden\" name=\"compDevID\" value=\"".$compDevID."\" />";
 		echo "</form>";
 		echo "</tr>";
