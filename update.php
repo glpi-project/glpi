@@ -823,6 +823,8 @@ if(!FieldExists("glpi_config","permit_helpdesk")) {
 	$db->query($query) or die("glpi_config_permit_helpdesk ".$lang["update"][90].$db->error());
 }
 
+ echo "<br>Version 0.42 <br />";
+
 //Mise a jour 0.42 verification des prefs pour chaque user.
 $query = "select ID, name from glpi_users";
 $query2 = "select ID from glpi_prefs";
@@ -841,8 +843,29 @@ if($db->numrows($result) != $db->numrows($result2)) {
 			$db->query($query_insert) or die("glpi maj prefs ".$lang["update"][90].$db->error()); 
 		}
 	}
-	
 }
+
+if(!TableExists("glpi_reservation_item")) {
+
+	$query = "CREATE TABLE glpi_reservation_item (ID int(11) NOT NULL auto_increment,device_type tinyint(4) NOT NULL default '0', id_device int(11) NOT NULL default '0', PRIMARY KEY  (ID), KEY device_type (device_type));";
+
+	$db->query($query) or die("4201 ".$lang["update"][90].$db->error());
+}
+
+if(!TableExists("glpi_reservation_resa")) {
+	$query = "CREATE TABLE glpi_reservation_resa (  ID bigint(20) NOT NULL auto_increment,  id_item int(11) NOT NULL default '0',  begin datetime NOT NULL default '0000-00-00 00:00:00',  end datetime NOT NULL default '0000-00-00 00:00:00',  id_user int(11) NOT NULL default '0',  PRIMARY KEY  (ID),  KEY id_item (id_item),  KEY id_user (id_user),  KEY begin (begin),  KEY end (end));";
+
+	$db->query($query) or die("4202 ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_tracking","device_type")) {
+	$query = "ALTER TABLE `glpi_tracking` ADD `device_type` INT DEFAULT '1' NOT NULL AFTER `assign` ;";
+	$db->query($query) or die("4203 ".$lang["update"][90].$db->error());
+}
+
+
+	
+
 
 return $ret;
 }
