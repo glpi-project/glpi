@@ -829,7 +829,7 @@ CREATE TABLE glpi_config (
    PRIMARY KEY (ID)
 );
 
-INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15',' 0.3','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','0','0','0','0','0','0','1','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','0');
+INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15',' 0.4','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','0','0','0','0','0','0','1','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','0');
 ### Dump table glpi_connect_wire
 
 DROP TABLE IF EXISTS glpi_connect_wire;
