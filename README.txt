@@ -26,6 +26,10 @@ GLPI - Gestionnaire Libre de Parc Informatique
 // Based on:
 // IRMA, Information Resource-Management and Administration
 // Christian Bauer 
+// ----------------------------------------------------------------------
+// Original Author of file:
+// Purpose of file:
+// ----------------------------------------------------------------------
  
 Contents:
 
