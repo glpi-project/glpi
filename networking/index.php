@@ -44,7 +44,7 @@ checkAuthentication("normal");
 
 commonHeader("Networking",$_SERVER["PHP_SELF"]);
 
-echo "<center><table border=0><tr><td><b>";
+echo "<center><table border='0'><tr><td><b>";
 echo "<a href=\"networking-info-form.php\">".$lang["networking"][11]."</a>";
 echo "</b></td></tr></table></center>";
 echo "<hr noshade>";

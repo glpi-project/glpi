@@ -30,6 +30,7 @@ This file is part of GLPI.
  ----------------------------------------------------------------------
 */
 ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -47,9 +48,9 @@ window.close();}
   <form name="form1" method="post" action="find_num.php">
     <table cellspacing=1 width="100%" border="0">
       <tr> 
-        <td align=center bgcolor="#CCCCCC" width="100%" height="29">Saisissez votre nom ou les 
+        <td align='center' bgcolor="#CCCCCC" width="100%" height="29">Saisissez votre nom ou les 
           premières lettres de votre nom </td>
-        </tr><tr><td bgcolor="#CCCCCC" align=center width="100%"> 
+        </tr><tr><td bgcolor="#CCCCCC" align='center' width="100%"> 
 		<input name="NomContact" type="text" id="NomContact" value="<?php echo $NomContact ; ?>"> 
            <input type="submit" name="Submit" value="Rechercher">
  </td>
@@ -66,8 +67,8 @@ if(isset($_POST["Submit"]))
 	include ($phproot . "/glpi/includes.php");
 	echo "<table width='100%' border='0'>";
 	echo " <tr bgcolor=#D2F2D5>";
-	echo " <td align=center width='70%'><b>Nom du contact </b></td>";
-	echo " <td align=center width='30%'><b>N° machine </b></td>";
+	echo " <td align='center' width='70%'><b>Nom du contact </b></td>";
+	echo " <td align='center' width='30%'><b>N° machine </b></td>";
 	echo " </tr>";
 	echo "</table>";
 
@@ -81,7 +82,7 @@ if(isset($_POST["Submit"]))
 		echo "<table width='100%' border='0'>";
 		echo " <tr bgcolor=#cccccc onClick=\"fillidfield(".$Comp_num.")\">";
 		echo "<td width='70%'><b> $Contact </b></td>";
-		echo "<td align=center width='30%'";
+		echo "<td align='center' width='30%'";
 		echo "<b> $Comp_num </b></td>";
 		echo " </tr>";
 		echo "</table>";

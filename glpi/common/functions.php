@@ -186,9 +186,9 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	}
 
 	// Start the page
-	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN \">";
+	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
 	echo "<html><head><title>glpi: ".$title."</title>";
-        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1 \" />";
+        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1 \" >";
        
 	// Send extra expires header if configured
 	if ($cfg_features["sendexpire"]) {
@@ -219,13 +219,13 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	echo "<body>";
 
 	// Main Headline
-			echo "<div id=navigation>";
-	echo "<table  cellspacing=0 border=0 width=98%>";
+			echo "<div id='navigation'>";
+	echo "<table  cellspacing='0' border='0' width=98%>";
 	echo "<tr>";
 	
 	// Logo with link to command center
-	echo "<td align=center width=25% >\n";
-	echo "<a href=\"".$cfg_install["root"]."/central.php\"><IMG src=\"".$cfg_layout["logogfx"]."\" border=0 alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>\n";
+	echo "<td align='center' width=25% >\n";
+	echo "<a href=\"".$cfg_install["root"]."/central.php\"><IMG src=\"".$cfg_layout["logogfx"]."\" border='0' alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>\n";
 	echo "</td>";
 
 	echo "<td valign=middle>";
@@ -237,9 +237,9 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	$navigation = new baseFunctions;
 
 	// Get object-variables and build the navigation-elements
-	echo "<table width=100% cellspacing=0 cellpadding=0 border=0><tr>";
+	echo "<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr>";
 	if ($navigation->inventory) {
-		echo "<td align=center valign=top><small>";
+		echo "<td align='center' valign=top><small>";
 		echo "<img src=\"".$cfg_install["root"]."/pics/inventaire.png\" alt=\"\"><br>";
 		echo "-&nbsp;".$lang["setup"][10]."&nbsp;-</small><br>";
 		foreach ($inventory as $key => $val) {
@@ -248,7 +248,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 		echo "</td>";
 	}
 	 if ($navigation->maintain) {
-		echo "<td align=center valign=top><small>";
+		echo "<td align='center' valign=top><small>";
 				echo "<img src=\"".$cfg_install["root"]."/pics/maintenance.png\" alt=\"\"><br>";
 
 		echo "-&nbsp;".$lang["setup"][55]."&nbsp;-</small><br>";
@@ -258,7 +258,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 		echo "</td>";
 	}
 	 if ($navigation->admin) {
-		echo "<td align=center valign=top><small>";
+		echo "<td align='center' valign=top><small>";
 		echo "<img src=\"".$cfg_install["root"]."/pics/ldap.png\" alt=\"\"><br>";
 
 		echo "-&nbsp;".$lang["ldap"][7]."-</small><br>";
@@ -269,7 +269,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 		echo "</td>";
 	}	
 	if ($navigation->settings) {
-		echo "<td align=center valign=top><small>";
+		echo "<td align='center' valign=top><small>";
 				echo "<img src=\"".$cfg_install["root"]."/pics/config.png\" alt=\"\"><br>";
 
 		echo "-&nbsp;".$lang["setup"][56]."&nbsp;-</small><br>";
@@ -282,7 +282,7 @@ $config =	array($lang["Menu"][10]=>"/setup/index.php",
 	// On the right side of the navigation bar, we have a clock with
 	// date and a logout-link.
 
-	echo "<td align=right width=100><b><div align=right>";
+	echo "<td align='right' width=100><b><div align='right'>";
 	echo date("H")."<blink>:</blink>".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i><br><a href=\"".$cfg_install["root"]."/logout.php\"><img src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></b></td>";
 
@@ -309,9 +309,9 @@ function helpHeader($title,$url,$name) {
 	}
 
 	// Start the page
-	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN \">";
+	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
         echo "<html><head><title>GLPI Internal Helpdesk : ".$title."</title>";
-        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1 \" />";
+        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1 \" >";
 
 	// Send extra expires header if configured
 	if ($cft_features["sendexpire"]) {
@@ -343,19 +343,19 @@ function helpHeader($title,$url,$name) {
 	echo "<body>";
 
 	// Main Headline
-				echo "<div id=navigation>";
+				echo "<div id='navigation'>";
 
-	echo "<table cellspacing=0 border=0 width=98%>";
+	echo "<table cellspacing='0' border='0' width=98%>";
 	echo "<tr>";
 	
 	// Logo with link to command center
-	echo "<td align=center width=25%>\n";
-	echo "<a href=\"".$cfg_install["root"]."/central.php\"><IMG src=\"".$cfg_layout["logogfx"]."\" border=0 alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" vspace=10></a>\n";
+	echo "<td align='center' width=25%>\n";
+	echo "<a href=\"".$cfg_install["root"]."/central.php\"><IMG src=\"".$cfg_layout["logogfx"]."\" border='0' alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" vspace=10></a>\n";
 	echo "</td>";
 
 	echo "<td valign=middle>";
 
-	echo "<table width=100% cellspacing=0 cellpadding=0 border=0><tr>";
+	echo "<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr>";
 
 	// Just give him a language selector
 	echo "<td>";
@@ -373,7 +373,7 @@ function helpHeader($title,$url,$name) {
 	echo "</b></td>";
 	// On the right side of the navigation bar, we have a clock with
 	// date and a logout-link.
-	echo "<td align=right width=100><b><div align=right>";
+	echo "<td align='right' width=100><b><div align='right'>";
 	echo date("H")."<blink>:</blink>".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i><br><a href=\"".$cfg_install["root"]."/logout.php\"><img src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></b></td>";
 
@@ -399,9 +399,9 @@ function nullHeader($title,$url) {
 	}
 
 	// Start the page
-       	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN \">";
+       	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
         echo "<html><head><title>glpi: ".$title."</title>";
-        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1 \" />";
+        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1 \" >";
 
 	// Send extra expires header if configured
 	if (!empty($cft_features["sendexpire"])) {
@@ -433,25 +433,25 @@ function nullHeader($title,$url) {
 	echo "<body>";
 
 	// Main Headline
-				echo "<div id=navigation>";
+				echo "<div id='navigation'>";
 
-	echo "<table cellspacing=0 border=0 width=98%>";
+	echo "<table cellspacing='0' border='0' width=98%>";
 	echo "<tr>";
 	
 	// Logo with link to command center
-	echo "<td align=center width=25%>\n";
-	echo "<a href=\"".$cfg_install["root"]."/central.php\"><IMG src=\"".$cfg_layout["logogfx"]."\" border=0 alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" vspace=10></a>\n";
+	echo "<td align='center' width=25%>\n";
+	echo "<a href=\"".$cfg_install["root"]."/central.php\"><IMG src=\"".$cfg_layout["logogfx"]."\" border='0' alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" vspace=10></a>\n";
 	echo "</td>";
 
 	echo "<td valign=middle>";
 
-	echo "<table width=100% cellspacing=0 cellpadding=0 border=0><tr>";
+	echo "<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr>";
 
 	// Just give him nothing
 
 	// On the right side of the navigation bar, we have a clock with
 	// date and a logout-link.
-	echo "<td align=right width=100><b><div align=right>";
+	echo "<td align='right' width=100><b><div align='right'>";
 	echo date("H")."<blink>:</blink>".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i><br><a href=\"".$cfg_install["root"]."/logout.php\"><img src=\"".$cfg_install["root"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></b></td>";
 
@@ -471,10 +471,10 @@ function commonFooter() {
 	// Print foot for every page
 
 GLOBAL $cfg_install;
-echo "<div id=footer>";
+echo "<div id='footer'><div align='right'>";
 	echo "<a href=\"http://GLPI.indepnet.org/\">";
-	echo "<small><b><div align=right>GLPI ".$cfg_install["version"]."</div></b></small>";
-	echo "</a>";
+	echo "<small><b>GLPI ".$cfg_install["version"]."</b></small>";
+	echo "</a></div>";
 	echo "</div>";
 	echo "</body></html>";
 }
@@ -482,10 +482,10 @@ echo "<div id=footer>";
 function helpFooter() {
 	// Print foot for help page
 GLOBAL $cfg_install;
-echo "<div id=footer>";
+echo "<div id='footer'><div align='right'>";
 	echo "<a href=\"http://GLPI.indepnet.org/\">";
-	echo "<small><b><div align=right>GLPI ".$cfg_install["version"]."</div></b></small>";
-	echo "</a>";
+	echo "<small><b>GLPI ".$cfg_install["version"]."</b></small>";
+	echo "</a></div>";
 		echo "</div>";
 
 	echo "</body></html>";
@@ -494,11 +494,11 @@ echo "<div id=footer>";
 function nullFooter() {
 	// Print foot for help page
 GLOBAL $cfg_install;
-echo "<div id=footer>";
+echo "<div id='footer'><div align='right'>";
 	echo "<a href=\"http://GLPI.indepnet.org/\">";
-	echo "<small><b><div align=right>GLPI ".$cfg_install["version"]."</div></b></small>";
+	echo "<small><b>GLPI ".$cfg_install["version"]."</b></small>";
 	echo "</a>";
-		echo "</div>";
+		echo "</div></div>";
 
 	echo "</body></html>";
 }
@@ -549,7 +549,7 @@ function showEvents($target,$order,$sort) {
 	// Output events
 	$i = 0;
 
-	echo "<p><center><table border=0 width=90%>";
+	echo "<p><center><table border='0' width='90%'>";
 	echo "<tr><th colspan=6>".$lang["central"][2]." ".$cfg_features["num_of_events"]." ".$lang["central"][3].":</th></tr>";
 	echo "<tr>";
 
@@ -593,7 +593,7 @@ function showEvents($target,$order,$sort) {
 		$message = $db->result($result, $i, "message");
 		
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>$itemtype:</td><td align=center><b><nobr>";
+		echo "<td>$itemtype:</td><td align='center'><b><nobr>";
 		if ($item=="-1" || $item=="0") {
 			echo $item;
 		} else {
@@ -601,7 +601,7 @@ function showEvents($target,$order,$sort) {
 			echo $item;
 			echo "\">$item</a>";
 		}			
-		echo "</nobr></b></td><td><nobr>$date</nobr></td><td align=center>$service</td><td align=center>$level</td><td>$message</td>";
+		echo "</nobr></b></td><td><nobr>$date</nobr></td><td align='center'>$service</td><td align='center'>$level</td><td>$message</td>";
 		echo "</tr>";
 
 		$i++; 
@@ -715,13 +715,13 @@ function showConnect($target,$ID,$type) {
 			echo $connect->device_name." (".$connect->device_ID.")";
 			echo "</a>";
 			echo "</b></td>";
-			echo "<td class='tab_bg_2' align=center><b>";
+			echo "<td class='tab_bg_2' align='center'><b>";
 			echo "<a href=\"$target?disconnect=1&ID=$ID\">".$lang["connect"][3]."</a>";
 		} else {
 			echo "<tr><td class='tab_bg_1'><b>Computer: </b>";
 			echo "<i>".$lang["connect"][1]."</i>";
 			echo "</td>";
-			echo "<td class='tab_bg_2' align=center><b>";
+			echo "<td class='tab_bg_2' align='center'><b>";
 			echo "<a href=\"$target?connect=1&ID=$ID\">".$lang["connect"][2]."</a>";
 		}
 
@@ -753,7 +753,7 @@ function showConnectSearch($target,$ID) {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
-	echo "<center><table border=0>";
+	echo "<center><table border='0'>";
 	echo "<tr><th colspan=2>".$lang["connect"][4].":</th></tr>";
 
 	echo "<tr class='tab_bg_1'>";
@@ -781,12 +781,12 @@ function listConnectComputers($target,$input) {
 
 	$pID1 = $input["pID1"];
 
-	echo "<center><table border=0>";
+	echo "<center><table border='0'>";
 	echo "<tr><th colspan=2>".$lang["connect"][9].":</th></tr>";
 	echo "<form method=post action=\"$target\"><tr><td>";
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align=center>";
+	echo "<td align='center'>";
 
 	$db = new DB;
 	if ($input["type"] == "name") {
@@ -807,7 +807,7 @@ function listConnectComputers($target,$input) {
 	echo  "</select>";
 
 	echo "</td>";
-	echo "<td class='tab_bg_2' align=center>";
+	echo "<td class='tab_bg_2' align='center'>";
 	echo "<input type=hidden name=sID value=\"".$input["pID1"]."\">";
 	echo "<input type=hidden name=connect value=3>";
 	echo "<input type=submit value=\"".$lang["buttons"][9]."\">";
@@ -827,7 +827,7 @@ function printHelpDesk ($name) {
 	$realname = $db->result($result,0,"realname");
 
 	echo "<form method=post name=\"helpdeskform\" action=\"".$cfg_install["root"]."/tracking/tracking-injector.php\">";
-	echo "<center><table border=0>";
+	echo "<center><table border='0'>";
 
 	echo "<tr><th colspan=2>".$lang["help"][0]." $realname, ".$lang["help"][1].":</th></tr>";
 	echo "<tr class='tab_bg_1'>";
@@ -856,20 +856,20 @@ function printHelpDesk ($name) {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td>".$lang["help"][12]." <a href=\"#\" onClick=\"window.open('".$cfg_install["root"]."/find_num.php','Help','scrollbars=1,resizable=1,width=400,height=400')\"><img src=\"".$cfg_install["root"]."/pics/aide.png\" border=0 alt=\"help\"></a></td>";
+	echo "<td>".$lang["help"][12]." <a href=\"#\" onClick=\"window.open('".$cfg_install["root"]."/find_num.php','Help','scrollbars=1,resizable=1,width=400,height=400')\"><img src=\"".$cfg_install["root"]."/pics/aide.png\" border='0' alt=\"help\"></a></td>";
 	echo "<td><input name=computer size=10>";
 	echo "</td>";
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td colspan=2 align=center>".$lang["help"][13].":</td>";
+	echo "<td colspan=2 align='center'>".$lang["help"][13].":</td>";
 	echo "</tr>";
 	echo "<tr class='tab_bg_1'>";
-	echo "<td colspan=2 align=center><textarea name=contents cols=40 rows=20 wrap=soft></textarea>";
+	echo "<td colspan=2 align='center'><textarea name=contents cols=40 rows=20 wrap=soft></textarea>";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td colspan=2 align=center> <input type=submit value=\"".$lang["help"][14]."\">";
+	echo "<td colspan=2 align='center'> <input type=submit value=\"".$lang["help"][14]."\">";
 	echo "</td></tr>";
 
 	echo "<input type=hidden name=IRMName value=\"$name\">";
@@ -906,33 +906,33 @@ function printPager($start,$numrows,$target,$parameters) {
 	}
 
 	// Print it
-	echo "<br><center><table border=0 width=90%>";
+	echo "<br><center><table border='0' width='90%'>";
 	echo "<tr>";
 	
 	// Back and fast backward button
 	if (!$start==0) {
-		echo "<th align=left>";
+		echo "<th align='left'>";
 		echo "<a href=\"$target?$parameters&start=$back\">";
 		echo "&nbsp;<&nbsp;";
 		echo "</a></th>";
-		echo "<th align=left>";
+		echo "<th align='left'>";
 		echo "<a href=\"$target?$parameters&start=0\">";
 		echo "&nbsp;<<&nbsp;";
 		echo "</a></th>";
 	}
 
 	// Print the "where am I?" 
-	echo "<td width=100% align=center class='tab_bg_1'><b>";
+	echo "<td width='100%' align='center' class='tab_bg_1'><b>";
 	echo $current_start."&nbsp;".$lang["pager"][1]."&nbsp;".$current_end."&nbsp;".$lang["pager"][2]."&nbsp;".$numrows."&nbsp;";
 	echo "</b></td>";
 
 	// Forward and fast forward button
 	if ($forward<$numrows) {
-		echo "<th align=right>";
+		echo "<th align='right'>";
 		echo "<a href=\"$target?$parameters&start=$forward\">";
 		echo "&nbsp;>&nbsp;";
 		echo "</a></th>";
-		echo "<th align=right>";
+		echo "<th align='right'>";
 		echo "<a href=\"$target?$parameters&start=$end\">";
 		echo "&nbsp;>>&nbsp;";
 		echo "</a></th>";

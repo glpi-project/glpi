@@ -48,7 +48,7 @@ function listNetdevices() {
 
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)>0) {
-			echo "<center><table border=0><tr>";
+			echo "<center><table border='0'><tr>";
 			echo "<th>".$lang["networking"][0]."</th><th>".$lang["networking"][1]."</th>";
 			echo "<th>".$lang["networking"][2]."</th><th>".$lang["networking"][3]."</th>";
 			echo "<th>".$lang["networking"][9]."</th></tr>";
@@ -80,7 +80,7 @@ function showNetworkingForm ($target,$ID) {
 	$netdev = new Netdevice;
 
 	echo "<center><form name=form method=post action=\"$target\">";
-	echo "<table border=0 cellpadding=2>";
+	echo "<table border='0' cellpadding=2>";
 	echo "<tr><th colspan=2><b>";
 	if (empty($ID)) {
 		echo $lang["networking"][11].":";
@@ -93,7 +93,7 @@ function showNetworkingForm ($target,$ID) {
 	
 	echo "<tr><td class='tab_bg_1' valign=top>";
 
-	echo "<table cellpadding=0 cellspacing=0 border=0>\n";
+	echo "<table cellpadding='0' cellspacing='0' border='0'>\n";
 
 	echo "<tr><td>".$lang["networking"][0].":	</td>";
 	echo "<td><input type=text name=name value=\"".$netdev->fields["name"]."\" size=10></td>";
@@ -115,7 +115,7 @@ function showNetworkingForm ($target,$ID) {
 	echo "</td>\n";	
 	echo "<td class='tab_bg_1' valign=top>";
 
-	echo "<table cellpadding=0 cellspacing=0 border=0";
+	echo "<table cellpadding='0' cellspacing='0' border='0'";
 
 	echo "<tr><td>".$lang["networking"][2].": 	</td><td>";
 		dropdownValue("type_networking", "type", $netdev->fields["type"]);
@@ -139,7 +139,7 @@ function showNetworkingForm ($target,$ID) {
 	echo "<tr>";
 	echo "<td class='tab_bg_1' valign=top colspan=2>";
 	
-	echo "<table width=100% cellpadding=0 cellspacing=0 border=0><tr><td valign=top>";
+	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign=top>";
 	echo "<tr><td>".$lang["networking"][39].":	</td>";
 	echo "<td><input type=text name='achat_date' readonly size=10 value='".$netdev->fields["achat_date"]."'>";
 	echo "&nbsp; <input name='button' type='button' onClick=\"window.open('mycalendar.php?form=form&elem=achat_date','Calendrier','width=200,height=220')\" value='".$lang["buttons"][15]."...'>";
@@ -170,9 +170,9 @@ function showNetworkingForm ($target,$ID) {
 	echo "<tr>";
 	echo "<td class='tab_bg_1' valign=top colspan=2>";
 
-	echo "<table width=100% cellpadding=0 cellspacing=0 border=0><tr><td valign=top>";
+	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign=top>";
 	echo $lang["networking"][8].":	</td>";
-	echo "<td align=center><textarea cols=35 rows=4 name=comments wrap=soft>".$netdev->fields["comments"]."</textarea>";
+	echo "<td align='center'><textarea cols=35 rows=4 name=comments wrap=soft>".$netdev->fields["comments"]."</textarea>";
 	echo "</td></tr></table>";
 
 	echo "</td>";
@@ -290,7 +290,7 @@ function showPorts ($device,$device_type) {
 	$query = "SELECT ID FROM networking_ports WHERE (on_device = $device AND device_type = $device_type) ORDER BY logical_number";
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 
-			echo "<br><center><table cellpadding=2 width=90%>";
+			echo "<br><center><table cellpadding=2 width='90%'>";
 			echo "<tr><th colspan=6>";
 			echo $db->numrows($result)." ";
 			if ($db->numrows($result)<2) {
@@ -306,7 +306,7 @@ function showPorts ($device,$device_type) {
 			while ($devid=$db->fetch_row($result)) {
 				$netport = new Netport;
 				$netport->getfromDB(current($devid));
-				echo "<td align=center><b>";
+				echo "<td align='center'><b>";
 				echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ID=".$netport->fields["ID"]."\">";
 				echo $netport->fields["logical_number"];
 				echo "</a>";
@@ -374,21 +374,21 @@ function showNetportForm($target,$ID,$ondevice,$devtype) {
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
-		echo "<td align=center>";
+		echo "<td align='center'>";
 		echo "<input type=hidden name=ID value=".$netport->fields["ID"].">";
 		echo "<input type=submit name=update value=\"".$lang["buttons"][7]."\">";
 		echo "</td></form>";
 
 		echo "<form method=post action=$target>";
 		echo "<input type=hidden name=ID value=$ID>";
-		echo "<td align=center>";
+		echo "<td align='center'>";
 		echo "<input type=submit name=delete value=\"".$lang["buttons"][6]."\">";
 		echo "</td></tr></form>";
 	} else 
 	{
 
 		echo "<tr class='tab_bg_2'>";
-		echo "<td align=center colspan=2>";
+		echo "<td align='center' colspan=2>";
 		echo "<input type=hidden name=on_device value=".$ondevice.">";
 		echo "<input type=hidden name=device_type value=".$devtype.">";
 		echo "<input type=submit name=add value=\"".$lang["buttons"][8]."\">";
@@ -457,8 +457,8 @@ function showPortsAdd($ID,$devtype) {
 	
 	GLOBAL $cfg_layout, $cfg_install, $lang;
 	
-	echo "<center><table border=0 width=90% cellpadding=2>";
-	echo "<tr><td align=center class='tab_bg_2'><b>";
+	echo "<center><table border='0' width='90%' cellpadding=2>";
+	echo "<tr><td align='center' class='tab_bg_2'><b>";
 	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ondevice=$ID&devtype=$devtype\">";
 	echo $lang["networking"][19];
 	echo "</a></b></td></tr>";
@@ -474,7 +474,7 @@ function showConnection ($ID) {
 		$netport = new Netport;
 		$netport->getfromDB($contact->contact_id);
 		$netport->getDeviceData($netport->fields["on_device"],$netport->fields["device_type"]);
-		echo "\n\n<table border=0 cellspacing=0 width=100%><tr>";
+		echo "\n\n<table border='0' cellspacing='0' width='100%'><tr>";
 		echo "<td><b>";
 		echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ID=".$netport->fields["ID"]."\">";
 		echo $netport->fields["name"];
@@ -490,15 +490,15 @@ function showConnection ($ID) {
 		echo $netport->device_name." (".$netport->device_ID.")";
 		echo "</a>";
 		echo "</b></td>";
-		echo "<td align=right><b>";
+		echo "<td align='right'><b>";
 		echo "<a href=\"".$cfg_install["root"]."/networking/networking-port-disconnect.php?ID=$ID\">".$lang["buttons"][10]."</a>";
 		echo "</b></td>";
 		echo "</tr></table>";
 		
 	} else {
-		echo "<table border=0 cellspacing=0 width=100%><tr>";
+		echo "<table border='0' cellspacing='0' width='100%'><tr>";
 		echo "<td>".$lang["networking"][26]."</td>";
-		echo "<td align=right><b>";
+		echo "<td align='right'><b>";
 		echo "<a href=\"".$cfg_install["root"]."/networking/networking-port-connect.php?ID=$ID\">".$lang["buttons"][9]."</a>";
 		echo "</b></td>";
 		echo "</tr></table>";
@@ -513,7 +513,7 @@ function showConnectorSearch($target,$ID) {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
-	echo "<center><table border=0>";
+	echo "<center><table border='0'>";
 	echo "<tr><th colspan=2>".$lang["networking"][27]." $ID ".$lang["networking"][28].":</th></tr>";
 
 	echo "<tr class='tab_bg_1'>";
@@ -564,12 +564,12 @@ function listConnectorComputers($target,$input) {
 
 	$pID1 = $input["pID1"];
 
-	echo "<center><table border=0>";
+	echo "<center><table border='0'>";
 	echo "<tr><th colspan=2>".$lang["networking"][27]." $pID1 ".$lang["networking"][32].". ".$lang["networking"][33].":</th></tr>";
 	echo "<form method=post action=\"$target\"><tr><td>";
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align=center>";
+	echo "<td align='center'>";
 
 	$db = new DB;
 	if ($input["type"] == "name") {
@@ -591,7 +591,7 @@ function listConnectorComputers($target,$input) {
 	echo  "</select>";
 
 	echo "</td>";
-	echo "<td class='tab_bg_2' align=center>";
+	echo "<td class='tab_bg_2' align='center'>";
 	echo "<input type=hidden name=device_type value=1>";
 	echo "<input type=hidden name=pID1 value=\"".$pID1."\">";
 	echo "<input type=hidden name=next value=\"showports\">";
@@ -615,11 +615,11 @@ function listConnectorPorts($target,$input) {
 		echo "<center><b>".$lang["networking"][34]."</b></center>";
 	} else {
 
-		echo "<center><table border=0 cellspacing=2 width=90%>";
+		echo "<center><table border='0' cellspacing=2 width='90%'>";
 		echo "<tr><th>".$lang["networking"][27]." $pID1 ".$lang["networking"][35].". ".$lang["networking"][36]." ".$input["dID"].":</th></tr>";
 		echo "</table></center>";
 
-		echo "\n\n<br><center><table border=0 cellpadding=2 width=90%>";
+		echo "\n\n<br><center><table border='0' cellpadding=2 width='90%'>";
 		echo "<tr><th>#</th><th>".$lang["networking"][0]."</th>";
 		echo "<th>".$lang["networking"][14]."</th><th>".$lang["networking"][15]."</th>";
 		echo "<th>".$lang["networking"][16]."</th><th>".$lang["networking"][17].":</th></tr>\n";
@@ -645,7 +645,7 @@ function listConnectorPorts($target,$input) {
 				$netport = new Netport;
 				$netport->getfromDB($contact->contact_id);
 				$netport->getDeviceData($netport->fields["on_device"],$netport->fields["device_type"]);
-				echo "\n\n<table border=0 cellspacing=0 width=100%><tr>";
+				echo "\n\n<table border='0' cellspacing='0' width='100%'><tr>";
 				echo "<td>";
 				echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ID=".$netport->fields["ID"]."\">";
 				echo $netport->fields["name"];
@@ -655,15 +655,15 @@ function listConnectorPorts($target,$input) {
 				echo $netport->device_name." (".$netport->device_ID.")";
 				echo "</a>";
 				echo "</td>";
-				echo "<td align=right><b>";
+				echo "<td align='right'><b>";
 				echo "<a href=\"".$cfg_install["root"]."/networking/networking-port-disconnect.php?ID=".$netport->fields["ID"]."\">".$lang["buttons"][10]."</a>";
 				echo "</b></td>";
 				echo "</tr></table>";
 		
 			} else {
-				echo "<table border=0 cellspacing=0 width=100%><tr>";
+				echo "<table border='0' cellspacing='0' width='100%'><tr>";
 				echo "<td>".$lang["networking"][26]."</td>";
-				echo "<td align=right><b>";
+				echo "<td align='right'><b>";
 				echo "<a href=\"$target?next=connect&sport=$pID1&dport=$pID2\">".$lang["buttons"][9]."</a>";
 				echo "</b></td>";
 				echo "</tr></table>";

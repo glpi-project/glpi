@@ -60,7 +60,7 @@ $number_of_software = $db->numrows($result);
 
 # 2. Spew out the data in a table
 
-echo "<table border=0 width=100%>";
+echo "<table border='0' width='100%'>";
 echo "<tr><td>Number of Computers:</td><td>$number_of_computers</td></tr>";	
 echo "<tr><td>Amount of Software:</td><td>$number_of_software</td></tr>";
 echo "<tr><td colspan=2 height=10></td></tr>";

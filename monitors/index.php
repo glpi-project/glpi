@@ -47,7 +47,7 @@ commonHeader("Monitors",$_SERVER["PHP_SELF"]);
 ?>
 
 <center>
-<table border=0>
+<table border='0'>
 <tr>
 	<td><b>
 <?php
