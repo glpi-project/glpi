@@ -576,6 +576,7 @@ function addComputer($input) {
    
 	// dump status
 	$null=array_pop($input);
+	$null=array_pop($input);
 	$i=0;
 	// fill array for update
 	foreach ($input as $key => $val){
