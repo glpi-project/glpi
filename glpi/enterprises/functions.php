@@ -199,6 +199,9 @@ function showEnterpriseList($target,$username,$field,$phrasetype,$contains,$sort
 
 				$ct = new Enterprise;
 				$ct->getfromDB($ID);
+				if(!ereg("https*://",$ct->fields["website"]))
+				$website="http://".$ct->fields["website"];
+				else $website=$ct->fields["website"];
 
 				echo "<tr class='tab_bg_2' align='center'>";
 				echo "<td><b>";
@@ -206,7 +209,7 @@ function showEnterpriseList($target,$username,$field,$phrasetype,$contains,$sort
 				echo $ct->fields["name"]." (".$ct->fields["ID"].")";
 				echo "</a></b></td>";
 				echo "<td>".$ct->fields["address"]."</td>";
-				echo "<td>".$ct->fields["website"]."</td>";
+				echo "<td><a target=_blank href='$website'>".$ct->fields["website"]."</a></td>";
 				echo "<td>".$ct->fields["phonenumber"] ."</td>";
 				echo "</tr>";
 			}
@@ -259,8 +262,13 @@ function showEnterpriseForm ($target,$ID) {
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][45].":		</td>";
-	echo "<td colspan='2'><input type='text' name='website' value=\"".$ent->fields["website"]."\" size='25'></td>";
-	echo "</tr>";
+	echo "<td colspan='2'><input type='text' name='website' value=\"".$ent->fields["website"]."\" size='25'>";
+	if (!empty($ent->fields['website'])){
+		
+		
+	}
+
+	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td valign='top'>";
 	echo $lang["financial"][12].":	</td>";
@@ -392,7 +400,7 @@ function showAssociatedContact($instID) {
 	echo "<td align='center'>".$db->result($result, $i, "glpi_contacts.phone")."</td>";
 	echo "<td align='center'>".$db->result($result, $i, "glpi_contacts.phone2")."</td>";
 	echo "<td align='center'>".$db->result($result, $i, "glpi_contacts.fax")."</td>";
-	echo "<td align='center'>".$db->result($result, $i, "glpi_contacts.email")."</td>";
+	echo "<td align='center'><a href='mailto:".$db->result($result, $i, "glpi_contacts.email")."'>".$db->result($result, $i, "glpi_contacts.email")."</a></td>";
 	echo "<td align='center'>".getContactTypeName($db->result($result, $i, "glpi_contacts.type"))."</td>";
 	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deletecontact=deletecontact&ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;

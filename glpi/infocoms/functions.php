@@ -225,7 +225,13 @@ function showInfocomList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				echo $ct->fields["buy_date"]." (".$ct->fields["ID"].")";
 				echo "</a></b></td>";
 				echo "<td>".$ct->fields["warranty_duration"]." ".$lang["financial"][9]."</td>";
-				echo "<td>".getDropdownName("glpi_enterprises",$ct->fields["FK_enterprise"])."</td>";
+				echo "<td>";
+				if ($ct->fields["FK_enterprise"]!=0){
+				echo "<a href='".$HTMLRel."enterprises/enterprises-info-form.php?ID=".$ct->fields["FK_enterprise"]."'>";
+				echo getDropdownName("glpi_enterprises",$ct->fields["FK_enterprise"]);
+				echo "</a>";
+				}
+				echo "</td>";
 				echo "<td>".$ct->fields["num_commande"]."</td>";
 				echo "<td>".$ct->fields["bon_livraison"]."</td>";
 				echo "<td>".$ct->fields["num_immo"]."</td>";				
@@ -266,10 +272,21 @@ function showInfocomForm ($target,$ID,$search='') {
 		echo $lang["financial"][3]." ID $ID:";
 	}		
 	echo "</b></th></tr>";
-
+	
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][26].":		</td>";
 	echo "<td colspan='2'>";
 	dropdownValue("glpi_enterprises","FK_enterprise",$ic->fields["FK_enterprise"]);
+	$ent=new Enterprise();
+	if ($ent->getFromDB($ic->fields["FK_enterprise"])){
+		if (!empty($ent->fields['website'])){
+			if (!ereg("https*://",$ent->fields['website']))	$website="http://".$ent->fields['website'];
+			else $website=$ent->fields['website'];
+			echo "<a href='$website'>SITE WEB</a>";
+		}
+	echo "&nbsp;&nbsp;";
+	echo "<a href='".$HTMLRel."enterprises/enterprises-info-form.php?ID=".$ent->fields['ID']."'>MODIF</a>";
+	}
+	
 	echo "</td></tr>";
 
 
@@ -444,7 +461,7 @@ function showDeviceInfocom($instID,$search='') {
 		$ic->getFromDB($type,$ID);
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>".$ic->getType()."</td>";
-	echo "<td align='center'>".$ic->getName()."</td>";
+	echo "<td align='center'>".$ic->getLink()."</td>";
 	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
 	}
@@ -571,9 +588,15 @@ function showInfocomAssociated($device_type,$ID){
 			$ent_name=$ent->fields["name"];
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>".$con->fields["buy_date"]."</td>";
+	echo "<td align='center'><a href='".$HTMLRel."infocoms/infocoms-info-form.php?ID=$icID'>".$con->fields["buy_date"]."</a></td>";
 	echo "<td align='center'>".$con->fields["warranty_duration"]." ".$lang["financial"][9]."</td>";
-	echo "<td align='center'>".$ent_name."</td>";	
+	echo "<td align='center'>";
+	if ($con->fields["FK_enterprise"]!=0)
+		echo "<a href='".$HTMLRel."enterprises/enterprises-info-form.php?ID=".$con->fields["FK_enterprise"]."'>";
+	echo $ent_name;
+	if ($con->fields["FK_enterprise"]!=0)
+		echo "</a>";
+	echo "</td>";	
 	echo "<td align='center'>".$con->fields["num_commande"]."</td>";
 	echo "<td align='center'>".$con->fields["value"]."</td>";
 
