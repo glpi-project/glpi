@@ -40,6 +40,7 @@ include ($phproot . "/glpi/includes_reservation.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_financial.php");
 include ($phproot . "/glpi/includes_documents.php");
+include ($phproot . "/glpi/includes_networking.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -146,6 +147,11 @@ else
 				case 5 :
 					showDocumentAssociated(PERIPHERAL_TYPE,$tab["ID"],$tab["withtemplate"]);
 					break;
+				default :
+					showPorts($tab["ID"], PERIPHERAL_TYPE,$tab["withtemplate"]);
+					if ($tab["withtemplate"]!=2)	showPortsAdd($tab["ID"],PERIPHERAL_TYPE);
+
+					break;
 			}
 		}
 		}
@@ -174,6 +180,8 @@ else
 					break;
 				default :
 					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PERIPHERAL_TYPE);
+					showPorts($tab["ID"], PERIPHERAL_TYPE,$tab["withtemplate"]);
+					if ($tab["withtemplate"]!=2)	showPortsAdd($tab["ID"],PERIPHERAL_TYPE);
 					break;
 			}
 			

@@ -529,6 +529,22 @@ function addPeripheral($input) {
 		$ic->addToDB();
 	}
 	
+		// ADD Ports
+	$query="SELECT ID from glpi_networking_ports WHERE on_device='$oldID' AND device_type='".PERIPHERAL_TYPE."';";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		
+		while ($data=$db->fetch_array($result)){
+			$np= new Netport();
+			$np->getFromDB($data["ID"]);
+			unset($np->fields["ID"]);
+			unset($np->fields["ifaddr"]);
+			unset($np->fields["ifmac"]);
+			unset($np->fields["netpoint"]);
+			$np->fields["on_device"]=$newID;
+			$np->addToDB();
+			}
+	}
 
 	// ADD Contract				
 	$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='$oldID' AND device_type='".PERIPHERAL_TYPE."';";
