@@ -344,7 +344,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	
          echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
 	echo "<link rel='stylesheet' type='text/css' media='print' href='".$HTMLRel."print.css' >";
-	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' />";
+	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' >";
 
 	// Some Javascript-Functions which we may need later
 	
@@ -362,7 +362,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 
 	// Main Headline
 	echo "<div id='navigation'>";
-	echo "<table  cellspacing='0' border='0' width='98%'>";
+	echo "<table  cellspacing='0' border='0' width='100%'>";
 	echo "<tr>";
 
 	// New object from the configured base functions, we check some
@@ -373,8 +373,8 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 
 	
 	// Logo with link to command center
-	echo "<td width='80px'  valign='center' align='center' >\n";
-	echo "<a href=\"".$cfg_install["root"]."/central.php\" accesskey=\"0\"><img src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>";
+	echo "<td width='80px'  valign='middle' align='center' >\n";
+	echo "<a class='icon_logo' href=\"".$cfg_install["root"]."/central.php\" accesskey=\"0\"><img  src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>";
 	echo "<br><br><div style='width:80px; text-align:center;'><p class='nav_horl'><b>".$_SESSION["glpiname"]."</b></p></div>";
 	echo "</td>";
 
@@ -388,7 +388,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	if ($navigation->inventory) {
 		echo "<td align='center' valign='top' width='20%'>";
 		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/inventaire.png\" alt=\"\" title=\"".$lang["setup"][10]."\"><br>";
-		echo "<small>-&nbsp;".$lang["setup"][10]."&nbsp;-</small><br>";
+		echo "<span class='menu_title'>-&nbsp;".$lang["setup"][10]."&nbsp;-</span><br>";
 
 		 echo "<table cellspacing='0' border='0' cellpadding='0'><tr><td>";
 		$i=0;
@@ -408,7 +408,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 		echo "<td align='center' valign='top' width='20%'>";
 				echo "<img class='icon_nav' src=\"".$HTMLRel."pics/maintenance.png\" alt=\"\" title=\"".$lang["title"][24]."\"><br>";
 
-		echo "<small>-&nbsp;".$lang["title"][24]."&nbsp;-</small><br>";
+		echo "<span class='menu_title'>-&nbsp;".$lang["title"][24]."&nbsp;-</span><br>";
 		foreach ($maintain as $key => $val) {
 			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
 		}
@@ -419,7 +419,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 		echo "<td align='center' valign='top' width='20%'>";
 				echo "<img class='icon_nav' src=\"".$HTMLRel."pics/maintenance.png\" alt=\"\" title=\"".$lang["setup"][55]."\"><br>";
 
-		echo "<small>-&nbsp;".$lang["Menu"][26]."&nbsp;-</small><br>";
+		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][26]."&nbsp;-</span><br>";
 		foreach ($financial as $key => $val) {
 			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
 		}
@@ -431,7 +431,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	echo "<td align='center' valign='top' width='20%'>";
 	echo "<img class='icon_nav' src=\"".$HTMLRel."pics/outils.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>";
 
-		echo "<small>-&nbsp;".$lang["Menu"][18]."&nbsp;-</small><br>";
+		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][18]."&nbsp;-</span><br>";
 		foreach ($utils as $key => $val) {
 			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
 		}
@@ -442,7 +442,7 @@ $config =	array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 		echo "<td align='center' valign='top' width='20%'>";
 				echo "<img class='icon_nav' src=\"".$HTMLRel."pics/config.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>";
 
-		echo "<small>-&nbsp;".$lang["Menu"][15]."&nbsp;-</small><br>";
+		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][15]."&nbsp;-</span><br>";
 		foreach ($config as $key => $val) {
 			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
 		}	
@@ -650,7 +650,7 @@ function commonFooter() {
 GLOBAL $cfg_install;
 echo "<div id='footer'><div align='right'>";
 	echo "<a href=\"http://GLPI.indepnet.org/\">";
-	echo "<small>GLPI ".$cfg_install["version"]."</small>";
+	echo "<span class='copyright'>GLPI ".$cfg_install["version"]." Copyright (C) 2003-2005 by the INDEPNET Development Team.</span>";
 	echo "</a></div>";
 	echo "</div>";
 	echo "</body></html>";
@@ -661,7 +661,7 @@ function helpFooter() {
 GLOBAL $cfg_install;
 echo "<div id='footer'><div align='right'>";
 	echo "<a href=\"http://GLPI.indepnet.org/\">";
-	echo "<small>GLPI ".$cfg_install["version"]."</small>";
+	echo "<span class='copyright'>GLPI ".$cfg_install["version"]." Copyright (C) 2003-2005 by the INDEPNET Development Team.</span>";
 	echo "</a></div>";
 		echo "</div>";
 
@@ -673,7 +673,7 @@ function nullFooter() {
 GLOBAL $cfg_install;
 echo "<div id='footer'><div align='right'>";
 	echo "<a href=\"http://GLPI.indepnet.org/\">";
-	echo "<small>GLPI ".$cfg_install["version"]."</small>";
+	echo "<span class='copyright'>GLPI ".$cfg_install["version"]." Copyright (C) 2003-2005 by the INDEPNET Development Team.</span>";
 	echo "</a>";
 		echo "</div></div>";
 

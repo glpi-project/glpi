@@ -61,7 +61,9 @@ function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "",$d
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center' >";
 	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
-	echo "&nbsp;";echo $lang["search"][10]."&nbsp;<select name=\"field\" size='1'>";
+	echo "&nbsp;";
+	
+	echo $lang["search"][10]."&nbsp;";
 	
 	echo "<select name=\"field\" size='1'>";
         echo "<option value='all' ";
