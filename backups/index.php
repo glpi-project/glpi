@@ -536,7 +536,7 @@ $percentwitdh=$percent*4;
 
 
 }
-
+flush();
 if ($offset!=-1){
 if (restoreMySqlDump($db,$path.$_GET["file"],$duree))
 {
