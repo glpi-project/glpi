@@ -1,3 +1,4 @@
+#GLPI Dump database on 2004-07-22 01:47
 ### Dump table glpi_computers
 
 DROP TABLE IF EXISTS glpi_computers;
@@ -29,7 +30,8 @@ CREATE TABLE glpi_computers (
     processor int(11),
     type int(11),
    PRIMARY KEY (ID),
-   KEY flags (flags_server)
+   KEY flags (flags_server),
+   KEY location (location)
 );
 
 INSERT INTO glpi_computers VALUES ('43','computer 43','0','','1700','serial 43','','128','40','contact 43','num 43','comment 43','2004-05-17 16:49:59','2002-09-16','2005-09-15','1','4','1','4','4','2','12','6','2','10','32');
@@ -2070,7 +2072,8 @@ CREATE TABLE glpi_followups (
     date datetime,
     author varchar(200),
     contents text,
-   PRIMARY KEY (ID)
+   PRIMARY KEY (ID),
+   KEY tracking (tracking)
 );
 
 INSERT INTO glpi_followups VALUES ('1','4','2003-02-12 15:20:18','glpi','j\'ai fait ca et ca doit marcher  mais je suis pas sur en fait bref 1');
@@ -5058,7 +5061,8 @@ CREATE TABLE glpi_networking (
     maintenance int(2) DEFAULT '0',
     location int(11),
     type int(11),
-   PRIMARY KEY (ID)
+   PRIMARY KEY (ID),
+   KEY location (location)
 );
 
 ### Dump table glpi_networking_ports
@@ -5073,7 +5077,8 @@ CREATE TABLE glpi_networking_ports (
     ifaddr char(30) NOT NULL,
     ifmac char(30) NOT NULL,
     iface int(11),
-   PRIMARY KEY (ID)
+   PRIMARY KEY (ID),
+   KEY on_device (on_device, device_type)
 );
 
 INSERT INTO glpi_networking_ports VALUES ('92','17','1','1','Port 1','92.92.92.92','aabbccddeeff','2');
@@ -5207,7 +5212,9 @@ CREATE TABLE glpi_peripherals (
     location int(11) DEFAULT '0' NOT NULL,
     type int(11) DEFAULT '0' NOT NULL,
     brand varchar(255) NOT NULL,
-   PRIMARY KEY (ID)
+   PRIMARY KEY (ID),
+   KEY type (type),
+   KEY location (location)
 );
 
 ### Dump table glpi_prefs
@@ -5257,7 +5264,8 @@ CREATE TABLE glpi_printers (
     location int(11),
     type int(11),
    PRIMARY KEY (ID),
-   KEY id (ID)
+   KEY id (ID),
+   KEY location (location)
 );
 
 INSERT INTO glpi_printers VALUES ('4','printer 4','2003-04-29 12:56:43','contact 4','num 4','serial 4','','0','0','','0000-00-00',NULL,'1',NULL,'2','43');
@@ -5687,7 +5695,11 @@ CREATE TABLE glpi_tracking (
     is_group enum('no','yes') DEFAULT 'no' NOT NULL,
     uemail varchar(100),
     emailupdates varchar(4),
-   PRIMARY KEY (ID)
+   PRIMARY KEY (ID),
+   KEY computer (computer),
+   KEY author (author),
+   KEY assign (assign),
+   KEY status (status)
 );
 
 INSERT INTO glpi_tracking VALUES ('28','2003-04-25 18:06:55','2003-04-28 13:01:52','old','Helpdesk',NULL,'35','oulala ca crame de partout 28','3','no','','');
@@ -7995,8 +8007,7 @@ CREATE TABLE glpi_users (
     location int(11),
    PRIMARY KEY (ID),
    UNIQUE name (name),
-   KEY type (type),
-   KEY name_2 (name)
+   KEY type (type)
 );
 
 INSERT INTO glpi_users VALUES ('1','Helpdesk','14e43c2d31dcbdd1','',NULL,'post-only','user1','no',NULL);

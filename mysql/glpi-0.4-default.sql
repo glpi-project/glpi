@@ -1,3 +1,4 @@
+#GLPI Dump database on 2004-07-22 01:50
 ### Dump table glpi_computers
 
 DROP TABLE IF EXISTS glpi_computers;
@@ -29,7 +30,8 @@ CREATE TABLE glpi_computers (
     processor int(11),
     type int(11),
    PRIMARY KEY (ID),
-   KEY flags (flags_server)
+   KEY flags (flags_server),
+   KEY location (location)
 );
 
 INSERT INTO glpi_computers VALUES ('8','Dell Inspiron 450','0','','750','4586-sd6-fds','','512','10','Roger Rabbit','5462','','2003-09-18 00:15:44','0000-00-00','0000-00-00','0','5','2','3','3','4','1','6','1','7','1');
@@ -40,7 +42,7 @@ INSERT INTO glpi_computers VALUES ('18','IBM 945gx','0','','750','9854-5f-4s4f',
 
 DROP TABLE IF EXISTS glpi_config;
 CREATE TABLE glpi_config (
-    ID int(11) NOT NULL auto_increment,
+    config_id int(11) NOT NULL auto_increment,
     num_of_events varchar(200) NOT NULL,
     jobs_at_login varchar(200) NOT NULL,
     sendexpire varchar(200) NOT NULL,
@@ -85,7 +87,7 @@ CREATE TABLE glpi_config (
     ldap_field_location varchar(200) NOT NULL,
     ldap_field_realname varchar(200) NOT NULL,
     ldap_field_phone varchar(200) NOT NULL,
-   PRIMARY KEY (ID)
+   PRIMARY KEY (config_id)
 );
 
 INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15',' 0.4-alpha','GLPI powered by indepnet','/glpi','5','0','','','','','','','admin@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber');
@@ -308,7 +310,8 @@ CREATE TABLE glpi_followups (
     date datetime,
     author varchar(200),
     contents text,
-   PRIMARY KEY (ID)
+   PRIMARY KEY (ID),
+   KEY tracking (tracking)
 );
 
 INSERT INTO glpi_followups VALUES ('1','1','2003-09-18 00:53:35','tech','J\\\'ai été voir, je pense que la carte mere a grillé.');
@@ -395,7 +398,8 @@ CREATE TABLE glpi_networking (
     maintenance int(2) DEFAULT '0',
     location int(11),
     type int(11),
-   PRIMARY KEY (ID)
+   PRIMARY KEY (ID),
+   KEY location (location)
 );
 
 INSERT INTO glpi_networking VALUES ('9','Dlink 450','','4586-puis-kioe','','','','0000-00-00 00:00:00','','0000-00-00','0000-00-00','0','1','1');
@@ -411,7 +415,8 @@ CREATE TABLE glpi_networking_ports (
     ifaddr char(30) NOT NULL,
     ifmac char(30) NOT NULL,
     iface int(11),
-   PRIMARY KEY (ID)
+   PRIMARY KEY (ID),
+   KEY on_device (on_device, device_type)
 );
 
 INSERT INTO glpi_networking_ports VALUES ('1','8','1','1','3Com','10.10.0.26','','2');
@@ -453,7 +458,9 @@ CREATE TABLE glpi_peripherals (
     location int(11) DEFAULT '0' NOT NULL,
     type int(11) DEFAULT '0' NOT NULL,
     brand varchar(255) NOT NULL,
-   PRIMARY KEY (ID)
+   PRIMARY KEY (ID),
+   KEY type (type),
+   KEY location (location)
 );
 
 INSERT INTO glpi_peripherals VALUES ('1','Mustek plat','0000-00-00 00:00:00','Rose','','','132-12465-4564','','0000-00-00','2004-07-21','0','1','1','Mustek');
@@ -465,16 +472,14 @@ CREATE TABLE glpi_prefs (
     user varchar(80) NOT NULL,
     tracking_order enum('no','yes') DEFAULT 'no' NOT NULL,
     language varchar(255) NOT NULL,
-    ID int(11) NOT NULL auto_increment,
-   PRIMARY KEY (ID),
-   UNIQUE user (user)
+   PRIMARY KEY (user)
 );
 
-INSERT INTO glpi_prefs VALUES ('glpi','yes','french','1');
-INSERT INTO glpi_prefs VALUES ('Helpdesk','no','french','2');
-INSERT INTO glpi_prefs VALUES ('normal','','english','3');
-INSERT INTO glpi_prefs VALUES ('tech','yes','french','4');
-INSERT INTO glpi_prefs VALUES ('post-only','','english','5');
+INSERT INTO glpi_prefs VALUES ('glpi','yes','french');
+INSERT INTO glpi_prefs VALUES ('Helpdesk','no','french');
+INSERT INTO glpi_prefs VALUES ('normal','','english');
+INSERT INTO glpi_prefs VALUES ('tech','yes','french');
+INSERT INTO glpi_prefs VALUES ('post-only','','english');
 ### Dump table glpi_printers
 
 DROP TABLE IF EXISTS glpi_printers;
@@ -496,7 +501,8 @@ CREATE TABLE glpi_printers (
     location int(11),
     type int(11),
    PRIMARY KEY (ID),
-   KEY id (ID)
+   KEY id (ID),
+   KEY location (location)
 );
 
 INSERT INTO glpi_printers VALUES ('1','HP laser','2003-09-18 00:12:43','','','hp-jsgsj-658','','0','1','Imprimante bureau du directeur','0000-00-00','0000-00-00','0','','1','1');
@@ -568,7 +574,11 @@ CREATE TABLE glpi_tracking (
     is_group enum('no','yes') DEFAULT 'no' NOT NULL,
     uemail varchar(100),
     emailupdates varchar(4),
-   PRIMARY KEY (ID)
+   PRIMARY KEY (ID),
+   KEY computer (computer),
+   KEY author (author),
+   KEY assign (assign),
+   KEY status (status)
 );
 
 INSERT INTO glpi_tracking VALUES ('1','2003-09-18 00:46:40','2003-09-18 00:54:43','old','Helpdesk','tech','8','Mon ordinateur ne s\\\'allume plus, et il ya des bruits byzarres','3','no','','');
