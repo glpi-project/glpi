@@ -387,18 +387,44 @@ function showLicenses ($sID) {
 			echo "<br><center><table cellpadding='2' border='0' width=50%>";
 			echo "<tr><th colspan='2'>";
 			echo $db->numrows($result);
-			echo " ".$lang["software"][13].":</th></tr>";
+			echo " ".$lang["software"][13]." :</th>";
+			echo "<th colspan='1'>";
+			echo " ".$lang["software"][19]." :</th></tr>";
 			$i=0;
 			while ($data=$db->fetch_row($result)) {
 				$ID = current($data);
 				$lic = new License;
 				$lic->getfromDB($ID);
 				echo "<tr class='tab_bg_1'>";
-				echo "<td width='100%' align='center'><b>".$lic->serial."</b></td>";
+				echo "<td align='center'><b>".$lic->serial."</b></td>";
 				echo "<td align='center'><b>";
 				echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?delete=delete&ID=$ID\">";
 				echo $lang["buttons"][6];
 				echo "</a></b></td>";
+				echo "<td align='center'>";
+				$query2="SELECT glpi_inst_software.ID AS ID, glpi_computers.ID AS cID, glpi_computers.name AS cname FROM glpi_inst_software, glpi_computers";
+				$query2.= " WHERE glpi_inst_software.cID= glpi_computers.ID AND glpi_inst_software.license=$ID";
+				if ($result2 = $db->query($query2)) {
+				if ($db->numrows($result2)!=0) { 
+				echo "<table width='100%'>";
+				while ($data2=$db->fetch_array($result2)) {
+					echo "<tr><td align=center>";
+					echo "<b><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$data2["cID"]."\">";
+					echo $data2[cname];
+					echo "</a></b></td><td align=center>";
+					echo "<b><a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&ID=".$data2["ID"]."\">";
+					echo $lang["buttons"][5];
+					echo "</a></b>";
+//					http://localhost/dombre/glpi-test/software/software-licenses.php?uninstall=uninstall&lID=8
+					echo "</td></tr>";
+					}
+					echo "</table>";
+				} else { echo "&nbsp;";}
+				}
+				
+				
+				echo "</td>";
+				
 				echo "</tr>";
 			}	
 			echo "</table></center>\n\n";
@@ -538,10 +564,11 @@ function installSoftware($cID,$lID) {
 	}
 }
 
-function uninstallSoftware($lID) {
+function uninstallSoftware($ID) {
 
 	$db = new DB;
-	$query = "DELETE FROM glpi_inst_software WHERE(license = '$lID')";
+	$query = "DELETE FROM glpi_inst_software WHERE(ID = '$ID')";
+//	echo $query;
 	if ($result = $db->query($query)) {
 		return true;
 	} else {
@@ -566,6 +593,7 @@ function showSoftwareInstalled($instID) {
 	
 	while ($i < $number) {
 		$lID = $db->result($result, $i, "license");
+		$ID = $db->result($result, $i, "ID");
 		$query2 = "SELECT sID,serial FROM glpi_licenses WHERE (ID = '$lID')";
 		$result2 = $db->query($query2);
 		$sID = $db->result($result2,0,"sID");
@@ -581,7 +609,7 @@ function showSoftwareInstalled($instID) {
 		echo " - ".$serial."</td>";
 		
 		echo "<td align='center' class='tab_bg_2'>";
-		echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&lID=$lID\">";
+		echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&ID=$ID\">";
 		echo "<b>".$lang["buttons"][5]."</b></a>";
 		echo "</td></tr>";
 
