@@ -569,7 +569,7 @@ function step6($root_doc, $event_loglevel, $num_of_events, $expire_events,$jobs_
 	include ("_relpos.php");
 	require_once ($phproot . "/glpi/includes.php");
 	$db = new DB;
-	$query = "update glpi_config set root_doc = '". $root_doc ."', event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', jobs_at_login = '". $jobs_at_login ."', list_limit = '". $list_limit ."', cut = '". $cut ."'"; 
+	$query = "update glpi_config set root_doc = '". $root_doc ."', expire_events = '". $expire_events ."', event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', jobs_at_login = '". $jobs_at_login ."', list_limit = '". $list_limit ."', cut = '". $cut ."'"; 
 	$db->query($query);
 	echo "<p>".$lang["install"][53]. "</p>";
 	echo "<p>".$lang["install"][54]. "</p>";
