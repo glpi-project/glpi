@@ -1000,7 +1000,7 @@ if(!TableExists("glpi_device_iface")) {
   PRIMARY KEY  (`ID`)
 ) TYPE=MyISAM";
 	$db->query($query) or die("0.5- CREATE TABLE `glpi_device_iface` ".$lang["update"][90].$db->error());
-	compDpd2Device("iface","iface","network");
+	compDpd2Device("iface","network","network");
 }
 if(!TableExists("glpi_device_moboard")) {
 	$query = "CREATE TABLE `glpi_device_moboard` (
