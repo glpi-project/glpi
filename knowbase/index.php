@@ -56,9 +56,15 @@ checkAuthentication("normal");
 			ExpandSessionVarHideAll();
 		else ExpandSessionVarHide($_GET["tohide"]);
 	}
-
+	if (isset($_POST["contains"])) $contains=$_POST["contains"];
+	else $contains="";
+	
+	if (isset($_POST["contains"])) searchLimitSessionVarKnowbase($_POST["contains"]);
+	
 	titleknowbase();
 	
+	searchFormKnowbase($_SERVER["PHP_SELF"],$contains);
+
 	showKbCategoriesall();
 
 

@@ -944,4 +944,6 @@ $lang["knowbase"][17] ="Modification de la cat&eacute;gorie ";
 $lang["knowbase"][18] ="Supression de la cat&eacute;gorie ";
 $lang["knowbase"][19] ="Echec de la suppression : Cette cat&eacute;gorie contient des items, vous devez effacer tous les items de cette cat&eacute;gorie avant de la supprimer ";
 $lang["knowbase"][20] ="Base de connaissances vide";
+$lang["knowbase"][21] ="Voir Tous";
+$lang["knowbase"][22] ="Masquer Tous";
 ?>
