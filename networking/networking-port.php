@@ -50,8 +50,10 @@ if (isset($tab["referer"])) $REFERER=$tab["referer"];
 
 if(isset($_POST["add"]))
 {	
+	
 	checkAuthentication("admin");
 	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
+	
 	unset($_POST["referer"]);
 	unset($tab["referer"]);
 	if (!isset($tab["several"])){
@@ -101,10 +103,10 @@ else if(isset($_POST["update"]))
 	checkAuthentication("admin");
 	updateNetport($_POST);
 	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
-	if (!isset($_POST["ondevice"])) $_POST["ondevice"]="";
-	if (!isset($_POST["devtype"])) $_POST["devtype"]="";
+	if (!isset($_POST["on_device"])) $_POST["on_device"]="";
+	if (!isset($_POST["device_type"])) $_POST["device_type"]="";
 	if (!isset($_POST["several"])) $_POST["several"]="";
-	showNetportForm($_SERVER["PHP_SELF"],$_POST["ID"],$_POST["ondevice"],$_POST["devtype"],$_POST["several"]);
+	showNetportForm($_SERVER["PHP_SELF"],$_POST["ID"],$_POST["on_device"],$_POST["device_type"],$_POST["several"]);
 	commonFooter();
 }
 else 
