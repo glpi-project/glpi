@@ -40,18 +40,18 @@ checkAuthentication("normal");
 commonHeader("Sylk Reports",$_SERVER["PHP_SELF"]);
 
 //Affichage du tableau de présentation
-echo "<center><table class='tab_cadre2' cellpadding=5>";
+echo "<div align='center'><table class='tab_cadre2' cellpadding='5'>";
 echo "<tr><th>".$lang["reports"][10].":</th></tr>";
 
 
-	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='rapport-sylk.php?table=computers' target=blanc_>".$lang["reports"][6]."</a></b></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='rapport-sylk.php?table=printers' target=blanc_>".$lang["reports"][7]."</a></b></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='rapport-sylk.php?table=networking' target=blanc_>".$lang["reports"][8]."</a></b></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='rapport-sylk.php?table=monitors' target=blanc_>".$lang["reports"][9]."</a></b></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><b><a href='rapport-sylk.php?table=peripherals' target=blanc_>".$lang["reports"][29]."</a></b></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><a href='rapport-sylk.php?table=computers' target='_blank'><b>".$lang["reports"][6]."</b></a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><a href='rapport-sylk.php?table=printers' target='_blank'><b>".$lang["reports"][7]."</b></a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><a href='rapport-sylk.php?table=networking' target='_blank'><b>".$lang["reports"][8]."</b></a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><a href='rapport-sylk.php?table=monitors' target='_blank'><b>".$lang["reports"][9]."</b></a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><a href='rapport-sylk.php?table=peripherals' target='_blank'><b>".$lang["reports"][29]."</b></a></td></tr>";
 
 
-echo "</table></center>";
+echo "</table></div>";
 
 commonFooter();
 ?>
