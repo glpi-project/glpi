@@ -1,0 +1,167 @@
+<?php
+/*
+ 
+ ----------------------------------------------------------------------
+GLPI - Gestionnaire libre de parc informatique
+ Copyright (C) 2002 by the INDEPNET Development Team.
+ http://indepnet.net/   http://glpi.indepnet.org
+ ----------------------------------------------------------------------
+ Based on:
+IRMA, Information Resource-Management and Administration
+Christian Bauer, turin@incubus.de 
+
+ ----------------------------------------------------------------------
+ LICENSE
+
+This file is part of GLPI.
+
+    GLPI is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    GLPI is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with GLPI; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+ ----------------------------------------------------------------------
+ Original Author of file: Bazile Lebeau
+ Purpose of file:
+ ----------------------------------------------------------------------
+*/
+ 
+$db = new DB;
+// Version 0.2 et inferieures Changement du champs can_assign_job
+ $query = "Alter table users drop can_assign_job";
+ $db->query($query) or die("erreur lors de la migration".$db->error());
+ $query = "Alter table users add can_assign_job enum('yes','no') NOT NULL default 'no'";
+ $db->query($query) or die("erreur lors de la migration".$db->error());
+ $query = "Update users set can_assign_job = 'yes' where type = 'admin'";
+ $db->query($query) or die("erreur lors de la migration".$db->error());
+ 
+
+//Version 0.21 ajout du champ ramSize a la table printers si non existant.
+$db = new DB;
+$result = $db->query("SELECT * FROM printers");
+$fields = mysql_num_fields($result);
+$var1 = true;
+for ($i=0; $i < $fields; $i++) {
+	//$type  = mysql_field_type($result, $i);
+	$name  = mysql_field_name($result, $i);
+	//$len  = mysql_field_len($result, $i);
+	$flags = mysql_field_flags($result, $i);
+	if($name == "ramSize") {
+		$var1 = false;
+	}
+}
+if($var1 == true) {
+	$query = "alter table printers add ramSize varchar(6) NOT NULL default ''";
+	$db->query($query) or die("erreur lors de la migration".$db->error());
+}
+
+//Version 0.3
+//Ajout de NOT NULL et des valeurs par defaut.
+
+$query = "ALTER TABLE computers MODIFY name VARCHAR(200) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE computers MODIFY type VARCHAR(100) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE computers MODIFY os VARCHAR(100) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE computers MODIFY osver VARCHAR(20) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE computers MODIFY processor VARCHAR(30) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE computers MODIFY processor_speed VARCHAR(30) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE computers MODIFY hdspace VARCHAR(6) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE computers MODIFY contact VARCHAR(90) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE computers MODIFY contact_num VARCHAR(90) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE computers MODIFY achat_date date NOT NULL default '0000-00-00'";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE computers MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
+
+
+$query = "ALTER TABLE monitors MODIFY achat_date date NOT NULL default '0000-00-00'";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE monitors MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
+
+$query = "ALTER TABLE networking MODIFY ram varchar(10) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE networking MODIFY serial varchar(50) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE networking MODIFY otherserial varchar(50) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE networking MODIFY achat_date date NOT NULL default '0000-00-00'";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE networking MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
+
+
+$query = "ALTER TABLE printers MODIFY achat_date date NOT NULL default '0000-00-00'";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE printers MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
+
+$query = "ALTER TABLE software MODIFY name varchar(200) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE software MODIFY platform varchar(200) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE software MODIFY version varchar(20) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE software MODIFY location varchar(200) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE software MODIFY comments text NOT NULL";
+
+
+$query = "ALTER TABLE templates MODIFY templname varchar(200) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE templates MODIFY name varchar(200) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE templates MODIFY os varchar(200) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE templates MODIFY osver varchar(20) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE templates MODIFY processor varchar(200) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE templates MODIFY processor_speed varchar(100) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE templates MODIFY location varchar(200) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE templates MODIFY serial varchar(200) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE templates MODIFY otherserial varchar(200) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE templates MODIFY ramtype varchar(200) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE templates MODIFY ram varchar(20) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE templates MODIFY network varchar(200) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE templates MODIFY hdspace varchar(10) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE templates MODIFY contact varchar(200) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE templates MODIFY contact_num varchar(200) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE templates MODIFY comments text NOT NULL";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE templates MODIFY achat_date date NOT NULL default '0000-00-00'";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE templates MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
+
+$query = "ALTER TABLE users MODIFY password varchar(80) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE users MODIFY email varchar(80) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE users MODIFY location varchar(100) NOT NULL default ''";
+$db->query($query) or die("erreur lors de la migration".$db->error());
+$query = "ALTER TABLE users MODIFY phone varchar(100) NOT NULL default ''";
+
+?>
