@@ -35,7 +35,7 @@ Christian Bauer
 include ("_relpos.php");
 // FUNCTIONS Setup
 
-function showFormDropDown ($target,$name,$human) {
+function showFormDropDown ($target,$name,$human,$ID) {
 
 	GLOBAL $cfg_layout, $lang, $HTMLRel;
 
@@ -47,17 +47,34 @@ function showFormDropDown ($target,$name,$human) {
 	echo "<input type='hidden' name='which' value='$name'>";
 	echo "<tr><td align='center' class='tab_bg_1'>";
 
-	dropdown("glpi_dropdown_".$name, "ID");
+	dropdownValue("glpi_dropdown_".$name, "ID",$ID);
         // on ajoute un input text pour entrer la valeur modifier
-        echo "<img src=\"".$HTMLRel."pics/puce.gif\" alt='' title=''>";
+		echo "<input type='image' src=\"".$HTMLRel."pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>";
+
+//        echo "<img src=\"".$HTMLRel."pics/puce.gif\" alt='' title=''>";
+	if ($name != "netpoint"){
+		if (!empty($ID))
+			$value=getDropdownName("glpi_dropdown_".$name,$ID);
+		else $value="";
+	} else {$value="";$loc="";}
+
 	if($name == "netpoint") {
+		$db=new DB;
+		$query = "select * from glpi_dropdown_netpoint where ID = '". $ID ."'";
+		$result = $db->query($query);
+		
+		if($db->numrows($result) == 1) {
+		$value = $db->result($result,0,"name");
+		$loc = $db->result($result,0,"location");
+		}
+
 		echo $lang["networking"][1].": ";		
-		dropdown("glpi_dropdown_locations", "value2");
+		dropdownValue("glpi_dropdown_locations", "value2",$loc);
 		echo $lang["networking"][52].": ";
-		echo "<input type='text' maxlength='100' size='10' name='value'>";
+		echo "<input type='text' maxlength='100' size='10' name='value' value='$value'>";
 	}
 	else {
-        	echo "<input type='text' maxlength='100' size='20' name='value'>";
+        	echo "<input type='text' maxlength='100' size='20' name='value' value='$value'>";
         }
 	//
 	echo "</td><td align='center' class='tab_bg_2'>";
@@ -88,7 +105,7 @@ function showFormDropDown ($target,$name,$human) {
 	echo "</table></div>";
 }
 
-function showFormTypeDown ($target,$name,$human) {
+function showFormTypeDown ($target,$name,$human,$ID) {
 
 	GLOBAL $cfg_layout, $lang, $HTMLRel;
 	
@@ -100,13 +117,19 @@ function showFormTypeDown ($target,$name,$human) {
 	echo "<input type='hidden' name='which' value='$name'>";
 	echo "<tr><td align='center' class='tab_bg_1'>";
 
-	dropdown("glpi_type_".$name, "ID");
+	dropdownValue("glpi_type_".$name, "ID",$ID);
 	// on ajoute un input text pour entrer la valeur modifier
-         echo "<img src=\"".$HTMLRel."pics/puce.gif\" alt='' title=''>";
-        echo "<input type='text' maxlength='100' size='20' name='value'>";
+		echo "<input type='image' src=\"".$HTMLRel."pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>";
+
+	if (!empty($ID))
+		$value=getDropdownName("glpi_type_".$name,$ID);
+	else $value="";
+
+    echo "<input type='text' maxlength='100' size='20' name='value'  value='$value'>";
+
 
 	echo "</td><td align='center' class='tab_bg_2'>";
-	echo "<input type='hidden' name='tablename' value=\"glpi_type_".$name."\" />";
+	echo "<input type='hidden' name='tablename' value=\"glpi_type_".$name."\"/>";
 	//  on ajoute un bouton modifier
         echo "<input type='submit' name='update' value='".$lang["buttons"][14]."' class='submit'>";
 	echo "</td><td align='center' class='tab_bg_2'>";
