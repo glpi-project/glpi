@@ -88,9 +88,17 @@ else
 	checkAuthentication("admin");
 	else checkAuthentication("normal");
 
+	if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
+		$j=new Job;
+		foreach ($_POST["todel"] as $key => $val){
+			if ($val==1) $j->deleteInDB($key);
+			}
+		}
+
+
 	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 	showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"]);
-	if (!empty($_GET["ID"])){
+	if (!empty($tab["ID"])){
 	showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"],0);
 	showContractAssociated(SOFTWARE_TYPE,$tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);

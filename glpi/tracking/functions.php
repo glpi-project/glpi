@@ -307,7 +307,7 @@ function showOldJobListForItem($username,$item_type,$item) {
 		
 	// Form to delete old item
 	if (isAdmin($_SESSION["glpitype"])){
-		echo "<form method='post' action=\"computers-info-form.php\">";
+		echo "<form method='post' action=\"".$_SERVER["PHP_SELF"]."?ID=$item\">";
 		echo "<input type='hidden' name='ID' value='$item'>";
 		}
 

@@ -107,6 +107,14 @@ else
 	checkAuthentication("admin");
 	else checkAuthentication("normal");
 
+
+	if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
+		$j=new Job;
+		foreach ($_POST["todel"] as $key => $val){
+			if ($val==1) $j->deleteInDB($key);
+			}
+		}
+
 	commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
 	showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	

@@ -140,9 +140,9 @@ else {
 		showSoftwareInstalled($tab["ID"],$tab["withtemplate"]);
 		
 	} else {
-	if (isAdmin($_SESSION["glpitype"])&&isset($tab["delete_inter"])&&!empty($tab["todel"])){
+	if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
 		$j=new Job;
-		foreach ($tab["todel"] as $key => $val){
+		foreach ($_POST["todel"] as $key => $val){
 			if ($val==1) $j->deleteInDB($key);
 			}
 		}
