@@ -55,6 +55,7 @@ function searchFormEnterprise($field="",$phrasetype= "",$contains="",$sort= "",$
 	$option["glpi_enterprises.website"]			= $lang["financial"][45];
 	$option["glpi_enterprises.phonenumber"]			= $lang["financial"][29];	
 	$option["glpi_enterprises.comments"]			= $lang["financial"][12];
+	$option["glpi_dropdown_enttype.name"]			= $lang["financial"][79];
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/enterprises/enterprises-search.php\">";
 	echo "<div align='center'><table class='tab_cadre' width='750'>";
@@ -128,6 +129,9 @@ function showEnterpriseList($target,$username,$field,$phrasetype,$contains,$sort
 			$coco = mysql_field_name($fields, $i);
 			$where .= "glpi_enterprises.".$coco . " LIKE '%".$contains."%'";
 		}
+		
+		$where.=" OR glpi_dropdown_enttype.name  LIKE '%".$contains."%'" ;
+		
 		$where .= ")";
 	}
 	else {
@@ -147,7 +151,7 @@ function showEnterpriseList($target,$username,$field,$phrasetype,$contains,$sort
 		$order = "ASC";
 	}
 	
-	$query = "SELECT glpi_enterprises.ID as ID FROM glpi_enterprises ";
+	$query = "SELECT glpi_enterprises.ID as ID,glpi_dropdown_enttype.name as TYPE FROM glpi_enterprises LEFT JOIN glpi_dropdown_enttype ON glpi_dropdown_enttype.ID = glpi_enterprises.type";
 	
 	$query.= " WHERE $where AND deleted='$deleted'  ORDER BY $sort";
 //	echo $query;
@@ -157,7 +161,7 @@ function showEnterpriseList($target,$username,$field,$phrasetype,$contains,$sort
 
 		// Limit the result, if no limit applies, use prior result
 		if ($numrows>$cfg_features["list_limit"]) {
-			$query_limit = "SELECT glpi_enterprises.ID as ID FROM glpi_enterprises WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
+			$query_limit = "SELECT glpi_enterprises.ID as ID,glpi_dropdown_enttype.name as TYPE  FROM glpi_enterprises LEFT JOIN glpi_dropdown_enttype ON glpi_dropdown_enttype.ID = glpi_enterprises.type WHERE $where ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"]." ";
 			$result_limit = $db->query($query_limit);
 			$numrows_limit = $db->numrows($result_limit);
 		} else {
@@ -176,6 +180,14 @@ function showEnterpriseList($target,$username,$field,$phrasetype,$contains,$sort
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.name&order=ASC&start=$start\">";
 			echo $lang["financial"][27]."</a></th>";
+
+						// Name
+			echo "<th>";
+			if ($sort=="glpi_dropdown_enttype.name") {
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_enttype.name&order=ASC&start=$start\">";
+			echo $lang["financial"][79]."</a></th>";
 
 			// Address			
 			echo "<th>";
@@ -205,6 +217,7 @@ function showEnterpriseList($target,$username,$field,$phrasetype,$contains,$sort
 
 			for ($i=0; $i < $numrows_limit; $i++) {
 				$ID = $db->result($result_limit, $i, "ID");
+				$TYPE = $db->result($result_limit, $i, "TYPE");
 
 				$ct = new Enterprise;
 				$ct->getfromDB($ID);
@@ -217,6 +230,7 @@ function showEnterpriseList($target,$username,$field,$phrasetype,$contains,$sort
 				echo "<a href=\"".$cfg_install["root"]."/enterprises/enterprises-info-form.php?ID=$ID\">";
 				echo $ct->fields["name"]." (".$ct->fields["ID"].")";
 				echo "</a></b></td>";
+				echo "<td>$TYPE</td>";
 				echo "<td>".$ct->fields["address"]."</td>";
 				echo "<td><a target=_blank href='$website'>".$ct->fields["website"]."</a></td>";
 				echo "<td>".$ct->fields["phonenumber"] ."</td>";
@@ -261,6 +275,10 @@ function showEnterpriseForm ($target,$ID) {
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][27].":		</td>";
 	echo "<td colspan='2'><input type='text' name='name' value=\"".$ent->fields["name"]."\" size='25'></td>";
 	echo "</tr>";
+
+	echo "<tr class='tab_bg_1'><td>".$lang["financial"][79].":		</td><td colspan='2'>";
+	dropdownValue("glpi_dropdown_enttype", "type", $ent->fields["type"]);
+	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][44].":		</td>";
 	echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='address' >".$ent->fields["address"]."</textarea>";

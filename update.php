@@ -1100,6 +1100,7 @@ if(!TableExists("glpi_enterprises")) {
 	$query = "CREATE TABLE `glpi_enterprises` (
   `ID` int(11) NOT NULL auto_increment,
   `name` varchar(50) NOT NULL default '',
+  `type` int(11) NOT NULL default '0',
   `address` text NOT NULL default '',
   `website` varchar(100) NOT NULL default '',
   `phonenumber` varchar(20) NOT NULL default '',
@@ -1238,6 +1239,10 @@ $query= "CREATE TABLE `glpi_contacts` (
 ";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_contact ".$lang["update"][90].$db->error());
 
+$query = " CREATE TABLE `glpi_dropdown_enttype` (`ID` INT NOT NULL AUTO_INCREMENT ,`name` VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( `ID` ))";
+$db->query($query) or die("23 ".$lang["update"][90].$db->error());
+
+	
 $query= "CREATE TABLE `glpi_contact_enterprise` (
   `ID` int(11) NOT NULL auto_increment,
   `FK_enterprise` int(11) NOT NULL default '0',
@@ -1252,6 +1257,7 @@ $query= "CREATE TABLE `glpi_contact_enterprise` (
 
 $query= "CREATE TABLE `glpi_contracts` (
   `ID` int(11) NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL default '',
   `num` varchar(255) NOT NULL default '',
   `cost` float NOT NULL default '0',
   `contract_type` int(11) NOT NULL default '0',
@@ -1434,7 +1440,7 @@ $result=$db->query($query) or die("0.5 alter2 for update warranty ".$lang["updat
 // Update Maintenance Infos
 if (isMaintenanceUsed()){
 
-	$query="INSERT INTO `glpi_contracts` VALUES (1, 'Maintenance', '0', 5, '2005-01-01', 120, 0, 0, 0, 0, '', '', 'N', '00:00:00', '00:00:00', '00:00:00', '00:00:00', 'N', '00:00:00', '00:00:00', 'N');";
+	$query="INSERT INTO `glpi_contracts` VALUES (1, 'Maintenance', '', '0', 5, '2005-01-01', 120, 0, 0, 0, 0, '', '', 'N', '00:00:00', '00:00:00', '00:00:00', '00:00:00', 'N', '00:00:00', '00:00:00', 'N');";
 	$result=$db->query($query) or die("0.5 insert_init for update maintenace ".$lang["update"][90].$db->error());
 
 	if ($result){

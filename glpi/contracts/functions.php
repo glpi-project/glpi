@@ -50,6 +50,7 @@ function searchFormContract($field="",$phrasetype= "",$contains="",$sort= "",$de
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel;
 
 	$option["glpi_contracts.ID"]				= $lang["financial"][28];
+	$option["glpi_contracts.name"]			= $lang["financial"][27];
 	$option["glpi_contracts.num"]			= $lang["financial"][4];
 	$option["glpi_contracts.contract_type"]				= $lang["financial"][37];
 	$option["glpi_contracts.begin_date"]			= $lang["financial"][7];	
@@ -173,6 +174,15 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.contract_type&order=DESC&start=$start\">";
 			echo $lang["financial"][37]."</a></th>";
 
+			
+			// nom
+			echo "<th>";
+			if ($sort=="glpi_contracts.name") {
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.name&order=DESC&start=$start\">";
+			echo $lang["financial"][27]."</a></th>";
+			
 			// num
 			echo "<th>";
 			if ($sort=="glpi_contracts.num") {
@@ -233,8 +243,9 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "<td>".getContractTypeName($ct->fields["contract_type"])."</td>";
 				echo "<td><b>";
 				echo "<a href=\"".$cfg_install["root"]."/contracts/contracts-info-form.php?ID=$ID\">";
-				echo $ct->fields["num"]." (".$ct->fields["ID"].")";
+				echo $ct->fields["name"]." (".$ct->fields["ID"].")";
 				echo "</a></b></td>";
+				echo "<td>".$ct->fields["num"]."</td>";
 				echo "<td>".$ct->fields["begin_date"]."</td>";
 				echo "<td>".$ct->fields["duration"]."</td>";
 				echo "<td>".$ct->fields["notice"]."</td>";				
@@ -282,6 +293,10 @@ function showContractForm ($target,$ID,$search='') {
 	dropdownContractType("contract_type",$con->fields["contract_type"]);
 	echo "</td></tr>";
 
+	echo "<tr class='tab_bg_1'><td>".$lang["financial"][27].":		</td>";
+	echo "<td colspan='2'><input type='text' name='name' value=\"".$con->fields["name"]."\" size='25'></td>";
+	echo "</tr>";
+
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][4].":		</td>";
 	echo "<td colspan='2'><input type='text' name='num' value=\"".$con->fields["num"]."\" size='25'></td>";
 	echo "</tr>";
@@ -293,7 +308,7 @@ function showContractForm ($target,$ID,$search='') {
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][7].":	</td>";
 	echo "<td colspan='2'>";
 	showCalendarForm("form","begin_date",$con->fields["begin_date"]);	
-    echo "</td>";
+    	echo "</td>";
 	echo "</tr>";
 
 
@@ -519,7 +534,7 @@ function showEnterpriseContract($instID) {
 	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
 
     $db = new DB;
-	$query = "SELECT glpi_contract_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.phonenumber as phone ";
+	$query = "SELECT glpi_contract_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type";
 	$query.= " FROM glpi_enterprises,glpi_contract_enterprise WHERE glpi_contract_enterprise.FK_contract = '$instID' AND glpi_contract_enterprise.FK_enterprise = glpi_enterprises.ID";
 	$result = $db->query($query);
 	$number = $db->numrows($result);
@@ -527,8 +542,9 @@ function showEnterpriseContract($instID) {
 	
     echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
 	echo "<br><br><center><table class='tab_cadre' width='90%'>";
-	echo "<tr><th colspan='4'>".$lang["financial"][65].":</th></tr>";
+	echo "<tr><th colspan='5'>".$lang["financial"][65].":</th></tr>";
 	echo "<tr><th>".$lang['financial'][26]."</th>";
+	echo "<th>".$lang['financial'][79]."</th>";
 	echo "<th>".$lang['financial'][29]."</th>";
 	echo "<th>".$lang['financial'][45]."</th>";
 	echo "<th>&nbsp;</th></tr>";
@@ -543,6 +559,7 @@ function showEnterpriseContract($instID) {
 		}
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'><a href='".$HTMLRel."enterprises/enterprises-info-form.php?ID=$ID'>".$db->result($result, $i, "name")."</a></td>";
+	echo "<td align='center'>".getDropdownName("glpi_dropdown_enttype",$db->result($result, $i, "type"))."</td>";
 	echo "<td align='center'>".$db->result($result, $i, "phone")."</td>";
 	echo "<td align='center'>".$website."</td>";
 	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteenterprise=deleteenterprise&ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
@@ -553,7 +570,7 @@ function showEnterpriseContract($instID) {
 		dropdown("glpi_enterprises","entID");
 	echo "</td><td align='center'>";
 	echo "<input type='submit' name='addenterprise' value=\"".$lang["buttons"][8]."\" class='submit'>";
-	echo "</div></td><td>&nbsp;</td>";
+	echo "</div></td><td>&nbsp;</td><td>&nbsp;</td>";
 	
 	echo "</tr>";
 	
@@ -720,7 +737,7 @@ function dropdownContracts($name){
 	while ($data=$db->fetch_array($result)){
 		
 	echo "<option value='".$data["ID"]."'>";
-	echo $data["begin_date"]." - ".$data["num"];
+	echo $data["begin_date"]." - ".$data["name"];
 	echo "</option>";
 	}
 
@@ -744,8 +761,9 @@ function showContractAssociated($device_type,$ID){
 	
     echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
 	echo "<br><br><center><table class='tab_cadre' width='90%'>";
-	echo "<tr><th colspan='6'>".$lang["financial"][66].":</th></tr>";
-	echo "<tr><th>".$lang['financial'][4]."</th>";
+	echo "<tr><th colspan='7'>".$lang["financial"][66].":</th></tr>";
+	echo "<tr><th>".$lang['financial'][27]."</th>";
+	echo "<th>".$lang['financial'][4]."</th>";
 	echo "<th>".$lang['financial'][6]."</th>";
 	echo "<th>".$lang['financial'][26]."</th>";
 	echo "<th>".$lang['financial'][7]."</th>";	
@@ -758,7 +776,8 @@ function showContractAssociated($device_type,$ID){
 		$con=new Contract;
 		$con->getFromDB($cID);
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'><a href='".$HTMLRel."contracts/contracts-info-form.php?ID=$cID'>".$con->fields["num"]."</a></td>";
+	echo "<td align='center'><a href='".$HTMLRel."contracts/contracts-info-form.php?ID=$cID'><b>".$con->fields["name"]." (".$con->fields["ID"].")</b></a></td>";
+	echo "<td align='center'>".$con->fields["num"]."</td>";
 	echo "<td align='center'>".getContractTypeName($con->fields["contract_type"])."</td>";
 	echo "<td align='center'>".getContractEnterprises($cID)."</td>";	
 	echo "<td align='center'>".$con->fields["begin_date"]."</td>";
@@ -774,7 +793,7 @@ function showContractAssociated($device_type,$ID){
 	echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</div></td>";
 	echo "</form>";
-	echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+	echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
 	
 	echo "</table>"    ;
 	

@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-03-01 15:53
+#GLPI Dump database on 2005-03-02 16:52
 ### Dump table glpi_cartridges
 
 DROP TABLE IF EXISTS glpi_cartridges;
@@ -292,6 +292,7 @@ CREATE TABLE glpi_contract_enterprise (
 DROP TABLE IF EXISTS glpi_contracts;
 CREATE TABLE glpi_contracts (
     ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
     num varchar(255) NOT NULL,
     cost float DEFAULT '0' NOT NULL,
     contract_type int(11) DEFAULT '0' NOT NULL,
@@ -317,7 +318,7 @@ CREATE TABLE glpi_contracts (
    KEY begin_date (begin_date)
 );
 
-INSERT INTO glpi_contracts VALUES ('1','Maintenance','0','5','2005-01-01','120','0','0','0','0','','','N','00:00:00','00:00:00','00:00:00','00:00:00','N','00:00:00','00:00:00','N');
+INSERT INTO glpi_contracts VALUES ('1','qsqs','','0','0','0000-00-00','0','0','0','0','0','','','N','00:00:00','00:00:00','00:00:00','00:00:00','N','00:00:00','00:00:00','N');
 ### Dump table glpi_device_gfxcard
 
 DROP TABLE IF EXISTS glpi_device_gfxcard;
@@ -471,6 +472,15 @@ CREATE TABLE glpi_device_sndcard (
 INSERT INTO glpi_device_sndcard VALUES ('1','Soundblaster 128 PCI','','','0');
 INSERT INTO glpi_device_sndcard VALUES ('2','Soundblaster 16 PnP','','','0');
 INSERT INTO glpi_device_sndcard VALUES ('3','integrated','','','0');
+### Dump table glpi_dropdown_enttype
+
+DROP TABLE IF EXISTS glpi_dropdown_enttype;
+CREATE TABLE glpi_dropdown_enttype (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID)
+);
+
 ### Dump table glpi_dropdown_firmware
 
 DROP TABLE IF EXISTS glpi_dropdown_firmware;
@@ -692,6 +702,7 @@ DROP TABLE IF EXISTS glpi_enterprises;
 CREATE TABLE glpi_enterprises (
     ID int(11) NOT NULL auto_increment,
     name varchar(50) NOT NULL,
+    type int(11) DEFAULT '0' NOT NULL,
     address text NOT NULL,
     website varchar(100) NOT NULL,
     phonenumber varchar(20) NOT NULL,
@@ -716,9 +727,9 @@ CREATE TABLE glpi_event_log (
    KEY date (date)
 );
 
-INSERT INTO glpi_event_log VALUES ('368','0','Peripheral','2005-03-01 15:53:09','inventory','4','glpi added qsq.');
-INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-03-01 15:44:50','login','3','glpi logged in.');
-INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-03-01 15:44:28','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('368','18','contract','2005-03-02 16:49:20','financial','4','glpi associate device.');
+INSERT INTO glpi_event_log VALUES ('367','0','contract','2005-03-02 16:48:08','financial','4','glpi added item .');
+INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-03-02 16:48:00','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -929,7 +940,6 @@ CREATE TABLE glpi_peripherals (
    KEY location (location)
 );
 
-INSERT INTO glpi_peripherals VALUES ('1','qsq','0000-00-00 00:00:00','','','','','','1','0','');
 ### Dump table glpi_prefs
 
 DROP TABLE IF EXISTS glpi_prefs;
