@@ -60,7 +60,7 @@ window.close();}
 </div>
 <?php
 
-if(isset($Submit))
+if(isset($_POST["Submi"]t))
 {
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
@@ -72,7 +72,7 @@ echo " </tr>";
 echo "</table>";
 
 $db = new DB;
-$query = "select ID,contact from computers where contact like '%$NomContact%'";
+$query = "select ID,contact from computers where contact like '%$_POST["NomContact"]%'";
 $result = $db->query($query);
 while($ligne = $db->fetch_array($result))
 
