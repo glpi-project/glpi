@@ -50,14 +50,20 @@ if(!empty($_GET["next"])) {
 	elseif($_GET["next"] == "mailing") {
 	
 		commonHeader("Mailing infos",$_SERVER["PHP_SELF"]);
-		
-		
 		titleMailing();
 		showFormMailing($_SERVER["PHP_SELF"]);
-		
-		
+	}
+	elseif($_GET["next"] == "confgen") {
+	
+	
+	
+		commonHeader("Configuration",$_SERVER["PHP_SELF"]);
+		titleConfigGen();
+		showFormConfigGen($_SERVER["PHP_SELF"]);
 		
 	}
+	
+	
 }
 elseif(!empty($_POST["update_mailing"])) {
 
@@ -75,7 +81,10 @@ elseif(!empty($_POST["update_ext"])) {
 	}
 	header("Location: ".$cfg_install["root"]."/setup/index.php");
 }
-
+elseif(!empty($_POST["update_confgen"])) {
+	updateConfigGen($_POST["root_doc"], $_POST["event_loglevel"], $_POST["num_of_events"], $_POST["expire_events"], $_POST["jobs_at_login"],$_POST["list_limit"], $_POST["cut"]);
+header("Location: ".$cfg_install["root"]."/setup/index.php");
+}
 
 commonFooter();
 

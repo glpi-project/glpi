@@ -1125,9 +1125,54 @@ function updateLanguage($input) {
 	}
 }
 
+function titleConfigGen(){
+GLOBAL  $lang,$HTMLRel;
+                echo "<div align='center'><table border='0'><tr><td>";
+                echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_nav'>Configuration générale</span>";
+		 echo "</b></td></tr></table>&nbsp;</div>";
+
+
+}
+
+
+function showFormConfigGen($target){
+	$db = new DB;
+	$query = "select * from glpi_config where config_id = 1";
+	$result = $db->query($query);
+	
+	echo "<form action=\"$target\" method=\"post\">";
+	echo "<div align='center'><table class='tab_cadre'>";
+	echo "<tr><th colspan='2'>Configuration Générale</th></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>Document root </td><td> <input type=\"text\" name=\"root_doc\" value=\"". $db->result($result,0,"root_doc") ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>Niveau de log </td><td><select name=\"event_loglevel\">";
+	$level=$db->result($result,0,"event_loglevel");
+	echo "<option value=\"1\"";  if($level==1){ echo "selected";} echo ">1- Critique (erreur de login seulement) </option>";
+	echo "<option value=\"2\"";  if($level==2){ echo "selected";} echo ">2- Sévère (Non utilisée) </option>";
+	echo "<option value=\"3\"";  if($level==3){ echo "selected";} echo ">3- Important (logins réussis) </option>";
+	echo "<option value=\"4\"";  if($level==4){ echo "selected";} echo ">4- Notices (Ajout, suppression, tracking) </option>";
+	echo "<option value=\"5\">5- Complet (Log quasiment tout) </option>";
+	echo "</select></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>Nombre d'évenements de log a afficher</td><td> <input type=\"text\" name=\"num_of_events\" value=\"". $db->result($result,0,"num_of_events") ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>Temps en jours durant lequel on conserve les logs (0 pour infini)</td><td><input type=\"text\" name=\"expire_events\" value=\"". $db->result($result,0,"expire_events") ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'> Montrer les interventions au login</td><td>   &nbsp;Oui  &nbsp;<input type=\"radio\" name=\"jobs_at_login\" value=\"1\" "; if($db->result($result,0,"jobs_at_login") == 1) echo "checked"; echo " > &nbsp;Non  &nbsp;<input type=\"radio\" name=\"jobs_at_login\" value=\"0\" "; if($db->result($result,0,"jobs_at_login") == 0) echo "checked"; 
+	echo " ></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>Nombre d'élements à afficher par page</td><td> <input type=\"text\" name=\"list_limit\" value=\"". $db->result($result,0,"list_limit") ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>Nombre de caractères maximum pour chaque éléments de la liste </td><td><input type=\"text\" name=\"cut\" value=\"". $db->result($result,0,"cut") ."\"></td></tr>";
+	
+		echo "</table>&nbsp;</div>";	
+	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_confgen\" class=\"submit\" value=\"Valider\" ></p>";
+
+	
+	echo "</form>";
+}
+
+
+
+
+
 //TODO : add entries to french dict
 function titleExtSources(){
-// Un titre pour la gestion du suivi par mail
+// Un titre pour la gestion des sources externes
 		
 		GLOBAL  $lang,$HTMLRel;
                 echo "<div align='center'><table border='0'><tr><td>";
@@ -1279,6 +1324,18 @@ function showFormMailing($target) {
 		echo "</form>";
 
 }
+
+function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events,$jobs_at_login,$list_limit,$cut) {
+	
+	$db = new DB;
+	
+		$query = "update glpi_config set root_doc = '". $root_doc ."', ";
+		$query.= "event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', ";
+		$query .= "expire_events = '". $expire_events ."', jobs_at_login = '". $jobs_at_login ."' , list_limit = '". $list_limit ."' , cut = '". $cut ."' where config_id = '1' ";
+		$db->query($query);
+	
+}
+
 
 function updateLDAP($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass) {
 	

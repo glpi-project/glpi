@@ -536,6 +536,7 @@ $lang["setup"][66]	= "Pas d'utilisateur trouvé";
 $lang["setup"][67]	= "Authentifications externes";
 $lang["setup"][68]	= "Suivis par emails";
 $lang["setup"][69]	= "Types de périphériques";
+$lang["setup"][70]	= "Configuration générale";
 
 
 // Helpdesk
