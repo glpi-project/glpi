@@ -766,7 +766,7 @@ CREATE TABLE printers (
   ramSize varchar(6) NOT NULL default '',
   PRIMARY KEY  (ID),
   KEY id (ID)
-) TYPE=MyISAM
+) TYPE=MyISAM;
 #
 # Contenu de la table `printers`
 #
