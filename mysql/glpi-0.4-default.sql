@@ -1,4 +1,4 @@
-#GLPI Dump database on 2004-07-23 12:38
+#GLPI Dump database on 2004-07-23 23:21
 ### Dump table glpi_computers
 
 DROP TABLE IF EXISTS glpi_computers;
@@ -63,23 +63,18 @@ CREATE TABLE glpi_config (
     admin_email varchar(200) NOT NULL,
     mailing_signature varchar(200) NOT NULL,
     mailing_new_admin varchar(200) NOT NULL,
-    mailing_attrib_admin varchar(200) NOT NULL,
     mailing_followup_admin varchar(200) NOT NULL,
     mailing_finish_admin varchar(200) NOT NULL,
     mailing_new_all_admin varchar(200) NOT NULL,
-    mailing_attrib_all_admin varchar(200) NOT NULL,
     mailing_followup_all_admin varchar(200) NOT NULL,
     mailing_finish_all_admin varchar(200) NOT NULL,
     mailing_new_all_normal varchar(200) NOT NULL,
-    mailing_attrib_all_normal varchar(200) NOT NULL,
     mailing_followup_all_normal varchar(200) NOT NULL,
     mailing_finish_all_normal varchar(200) NOT NULL,
     mailing_new_attrib varchar(200) NOT NULL,
-    mailing_attrib_attrib varchar(200) NOT NULL,
     mailing_followup_attrib varchar(200) NOT NULL,
     mailing_finish_attrib varchar(200) NOT NULL,
     mailing_new_user varchar(200) NOT NULL,
-    mailing_attrib_user varchar(200) NOT NULL,
     mailing_followup_user varchar(200) NOT NULL,
     mailing_finish_user varchar(200) NOT NULL,
     ldap_field_name varchar(200) NOT NULL,
@@ -90,7 +85,7 @@ CREATE TABLE glpi_config (
    PRIMARY KEY (ID)
 );
 
-INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15',' 0.4-alpha','GLPI powered by indepnet','/glpi','5','0','','','','','','','admin@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber');
+INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15',' 0.4-alpha','GLPI powered by indepnet','/glpi','5','0','','','','','','','admin@xxxxx.fr','SIGNATURE','1','1','1','0','0','0','0','0','0','1','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber');
 ### Dump table glpi_connect_wire
 
 DROP TABLE IF EXISTS glpi_connect_wire;
@@ -103,6 +98,15 @@ CREATE TABLE glpi_connect_wire (
 );
 
 INSERT INTO glpi_connect_wire VALUES ('1','2','8','5');
+### Dump table glpi_dropdown_firmware
+
+DROP TABLE IF EXISTS glpi_dropdown_firmware;
+CREATE TABLE glpi_dropdown_firmware (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID)
+);
+
 ### Dump table glpi_dropdown_gfxcard
 
 DROP TABLE IF EXISTS glpi_dropdown_gfxcard;
@@ -302,6 +306,8 @@ INSERT INTO glpi_event_log VALUES ('372','0','Peripheral','2004-07-21 02:31:19',
 INSERT INTO glpi_event_log VALUES ('373','2','Peripheral','2004-07-21 02:31:56','inventory','4','glpi updated item.');
 INSERT INTO glpi_event_log VALUES ('374','2','Peripheral','2004-07-21 02:32:17','inventory','5','glpi connected item.');
 INSERT INTO glpi_event_log VALUES ('375','-1','system','2004-07-23 12:38:33','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('376','-1','system','2004-07-23 23:13:10','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('377','-1','system','2004-07-23 23:20:58','login','3','glpi logged in.');
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -399,11 +405,12 @@ CREATE TABLE glpi_networking (
     maintenance int(2) DEFAULT '0',
     location int(11),
     type int(11),
+    firmware int(11),
    PRIMARY KEY (ID),
    KEY location (location)
 );
 
-INSERT INTO glpi_networking VALUES ('9','Dlink 450','','4586-puis-kioe','','','','0000-00-00 00:00:00','','0000-00-00','0000-00-00','0','1','1');
+INSERT INTO glpi_networking VALUES ('9','Dlink 450','','4586-puis-kioe','','','','0000-00-00 00:00:00','','0000-00-00','0000-00-00','0','1','1',NULL);
 ### Dump table glpi_networking_ports
 
 DROP TABLE IF EXISTS glpi_networking_ports;
@@ -577,6 +584,7 @@ CREATE TABLE glpi_tracking (
     is_group enum('no','yes') DEFAULT 'no' NOT NULL,
     uemail varchar(100),
     emailupdates varchar(4),
+    realtime float DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
    KEY computer (computer),
    KEY author (author),
@@ -584,10 +592,10 @@ CREATE TABLE glpi_tracking (
    KEY status (status)
 );
 
-INSERT INTO glpi_tracking VALUES ('1','2003-09-18 00:46:40','2003-09-18 00:54:43','old','Helpdesk','tech','8','Mon ordinateur ne s\\\'allume plus, et il ya des bruits byzarres','3','no','','');
+INSERT INTO glpi_tracking VALUES ('1','2003-09-18 00:46:40','2003-09-18 00:54:43','old','Helpdesk','tech','8','Mon ordinateur ne s\\\'allume plus, et il ya des bruits byzarres','3','no','','','0');
 INSERT INTO glpi_tracking VALUES ('2','2003-09-18 00:48:19','0000-00-00 00:00:00','new','Helpdesk','tech','10','Un message en anglais s\\\'affiche, je n\\\'y comprend rien, je n\\\'ose plus toucher à rien de peur de tout casser.
-Venez vite !!!!','4','no','','');
-INSERT INTO glpi_tracking VALUES ('3','2003-09-18 00:49:29','0000-00-00 00:00:00','new','Helpdesk','tech','18','Ma souris se bloque sans arret, elle defile mal sur l\\\'ecran et elle glisse tres mal sur le tapis de souris.','3','no','','');
+Venez vite !!!!','4','no','','','0');
+INSERT INTO glpi_tracking VALUES ('3','2003-09-18 00:49:29','0000-00-00 00:00:00','new','Helpdesk','tech','18','Ma souris se bloque sans arret, elle defile mal sur l\\\'ecran et elle glisse tres mal sur le tapis de souris.','3','no','','','0');
 ### Dump table glpi_type_computers
 
 DROP TABLE IF EXISTS glpi_type_computers;
