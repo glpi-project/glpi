@@ -138,9 +138,9 @@ $template_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_
 $cfg_install["root"] = $db->result($result,0,"root_doc");
 
 // Path for icon of document type
-$cfg_install["typedoc_icon_dir"] = "/pics/icones";
+$cfg_install["typedoc_icon_dir"] = "pics/icones";
 
-// Path for docuemnts storage
+// Path for documents storage
 $cfg_install["doc_dir"] = "/docs";
 
 // Default language
