@@ -2,15 +2,10 @@
 /*
 
   ----------------------------------------------------------------------
-GLPI - Gestionnaire libre de parc informatique
+ GLPI - Gestionnaire libre de parc informatique
  Copyright (C) 2002 by the INDEPNET Development Team.
  Bazile Lebeau, baaz@indepnet.net - Jean-Mathieu Doléans, jmd@indepnet.net
  http://indepnet.net/   http://glpi.indepnet.org
- ----------------------------------------------------------------------
- Based on:
-IRMA, Information Resource-Management and Administration
-Christian Bauer, turin@incubus.de
-
  ----------------------------------------------------------------------
  LICENSE
 
@@ -132,18 +127,18 @@ echo "</form>";
 function step1()
 {
 	$error = 0;
-	echo "Nous allons proceder à des tests pour verifier que votre envirronement est bien compatible avec l'execution de GLPI<br /><br />";
+	echo "Nous allons procéder à des tests afin de vérifier que votre environnement est bien compatible avec l'éxecution de GLPI<br /><br />";
 	echo "<table>";
 	echo "<tr><th>Test effectué</th><th colspan='2'>Résultats</th></tr>";
 // Parser test
-	echo "<tr><td><h4>Teste du Parser PHP</h4></td>";
+	echo "<tr><td><h4>Test du Parser PHP</h4></td>";
 // PHP Version  - exclude PHP3
 	if (substr(phpversion(),0,1) == "3") {
 		$error = 2;
-		echo "<td>Vous devez avoir PHP4<br /><br /> Vous pouvez le télécharger ici : <a href='http://www.php.net'>www.php.net</a>.\n</td>";
+		echo "<td>Vous devez installer  PHP4<br /><br /> Vous pouvez le télécharger ici : <a href='http://www.php.net'>www.php.net</a>.\n</td>";
 	}
 	elseif (substr(phpversion(),0,3) == "4.0" and ereg("0|1",substr(phpversion(),4,1))) {
-		echo "<td><span class='wrong'>&nbsp;<td>Vous utilisez une les versions 4.0.0 ou 4.0.1 de PHP - Nous vous conseillons de mettre à jour votre PHP<td>";
+		echo "<td><span class='wrong'>&nbsp;<td>Vous utilisez une des versions 4.0.0 ou 4.0.1 de PHP - Nous vous conseillons de mettre à jour votre PHP<td>";
 		if($error != 2) $error = 1;
 	}
 	else {
@@ -161,14 +156,14 @@ function step1()
   // check whether session are enabled at all!!
 	if (!extension_loaded('session')) {
 		$error = 2;
-		echo "<td><h2>Votre parser php n'as pas été compilé avec le support des sessions ! </h2></td></tr>";
+		echo "<td><h2>Votre parser PHP n'as pas été compilé avec le support des sessions ! </h2></td></tr>";
 	} 
 	if ($_SESSION["Test_session_GLPI"] == 1) {
-		echo "<td><i>Le support des sessions marche - Parfait</i></td></tr>";
+		echo "<td><i>Le support des sessions est opérationnel - Parfait</i></td></tr>";
 	}
 	else {
 		if($error != 2) $error = 1;
-		echo "<td>Verifiez que les support des sessions est bien activé dans votre php.ini</td></tr>";
+		echo "<td>Verifiez que le support des sessions est bien activé dans votre php.ini</td></tr>";
 	}
 
 
@@ -177,11 +172,11 @@ function step1()
 
 // il faut un test dans /dump et un dans /tmp pour phpexcel et /glpi/config/
 
-	echo "<tr><td><h4>Test d'ecriture de fichiers dump</h4></td>";
+	echo "<tr><td><h4>Tests d'écriture de fichiers dump</h4></td>";
 	
 	$fp = fopen("backups/dump/test_glpi.txt",'w');
 	if (empty($fp)) {
-		echo "<td>Le fichier n'a pas pu être créé. Vérifiez que PHP a un droit d'écriture pour les repertoires... Si vous etez sous un environnement de Microsoft Windows, regarder si c'est en lecture seule.</td></tr>";
+		echo "<td>Le fichier n'a pas pu être créé. Vérifiez que PHP a un droit d'écriture pour les répertoires... Si vous êtes sous un environnement de Microsoft Windows, regardez si c'est en lecture seule.</td></tr>";
 		$error = 2;
 	}
 	else {
@@ -200,7 +195,7 @@ function step1()
 	echo "<tr><td><h4>Test d'ecriture de fichiers Excel</h4></td>";
 		$fp = fopen("reports/reports/convexcel/tmp/test_glpi.txt",'w');
 	if (empty($fp)) {
-		echo "<td>Le fichier n'a pas pu être créé. Vérifiez que PHP a un droit d'écriture pour les repertoires... Si vous etez sous un environnement de Microsoft Windows, regarder si c'est en lecture seule.</td></tr>";
+		echo "<td>Le fichier n'a pas pu être créé. Vérifiez que PHP a un droit d'écriture pour les répertoires... Si vous êtes sous un environnement de Microsoft Windows, regardez si c'est en lecture seule.</td></tr>";
 		$error = 2;
 	}
 	else {
@@ -218,7 +213,7 @@ function step1()
 	echo "<tr><td><h4>Test d'ecriture de fichier configuration</h4></td>";
 	$fp = fopen("glpi/config/test_glpi.txt",'w');
 	if (empty($fp)) {
-		echo "<td>Le fichier n'a pas pu être créé. Vérifiez que PHP a un droit d'écriture pour les repertoires... Si vous etez sous un environnement de Microsoft Windows, regarder si c'est en lecture seule.</td></tr>";
+		echo "<td>Le fichier n'a pas pu être créé. Vérifiez que PHP a un droit d'écriture pour les répertoires... Si vous êtes sous un environnement de Microsoft Windows, regardez si c'est en lecture seule.</td></tr>";
 		$error = 2;
 	}
 	else {
@@ -269,7 +264,7 @@ function step1()
 function step2()
 {
 
-		echo "<p>Nous allons maintenant passer à la configuration de votre connection à la base de données</p>";
+		echo "<p>Nous allons maintenant configurer votre connection à la base de données</p>";
 		echo "<form action=\"install.php\" method=\"post\">";
 		echo "<fieldset><legend>Paramètres de connection à la base de données</legend>";
                 echo "<p><label>Mysql server : <input type=\"text\" name=\"db_host\" /></label></p>";
@@ -284,7 +279,7 @@ function step2()
 function step3($host,$user,$password)
 {
 	error_reporting(16);
-	echo "<h3>Tests de la connection à la base de données</h3>";
+	echo "<h3>Test de la connection à la base de données</h3>";
 	$link = mysql_connect($host,$user,$password);
 	if (!$link || empty($host) || empty($user)) {
 		echo "Impossible de se connecter à la base de données : \n
@@ -308,7 +303,7 @@ function step3($host,$user,$password)
 		while ($row = mysql_fetch_object($db_list)) {
 			echo "<p><input type=\"radio\" name=\"databasename\" value=\"". $row->Database ."\" />$row->Database.</p>";
 		}
-		echo "<p><input type=\"radio\" name=\"databasename\" value=\"0\" />Creer une nouvelle base : ";
+		echo "<p><input type=\"radio\" name=\"databasename\" value=\"0\" />Créer une nouvelle base : ";
 		echo "<input type=\"text\" name=\"newdatabasename\"/></p>";
 		echo "<input type=\"hidden\" name=\"db_host\" value=\"". $host ."\" />";
 		echo "<input type=\"hidden\" name=\"db_user\" value=\"". $user ."\" />";
@@ -387,14 +382,14 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		else {
 			if (create_conn_file($host,$user,$password,$databasename)) {
 				fill_db();
-				echo "<p>OK - La base à bien été initialisée</p>";
-				echo "<p>Des valeurs par defaut on été entrées, n'hesitez pas à supprimer ces entrées</p>";
+				echo "<p>OK - La base a bien été initialisée</p>";
+				echo "<p>Des valeurs par défaut ont été entrées, n'hésitez pas à supprimer ces dernières</p>";
 				echo "<p>Ne supprimez pas l'utilisateur \"helpdesk\"</p>";
-				echo "<p>A la premiere connection vous pouvez utiliser le login \"glpi\" et le mot de passe \"glpi\" pour accéder à l'application avec des droits administrateur</p>";
+				echo "<p>A la première connection vous pouvez utiliser le login \"glpi\" et le mot de passe \"glpi\" pour accéder à l'application avec des droits administrateur</p>";
 				next_form();
 			}
 			else {
-				echo "<p>Impossible d'ecrire le fichiers de config de votre base de données</p>";
+				echo "<p>Impossible d'écrire le fichier de configuration de votre base de données</p>";
 				prev_form();
 			}
 		}
@@ -410,26 +405,26 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 			mysql_select_db($newdatabasename, $link);
 			if (create_conn_file($host,$user,$password,$newdatabasename)) {
 				fill_db();
-				echo "<p>OK - La base à bien été initialisée</p>";
-				echo "<p>Des valeurs par defaut on été entrées, n'hesitez pas à supprimer ces entrées</p>";
+				echo "<p>OK - La base a bien été initialisée</p>";
+				echo "<p>Des valeurs par defaut on été entrées, n'hésitez pas à supprimer ces dernières</p>";
 				echo "<p>Ne supprimez pas l'utilisateur \"helpdesk\"</p>";
-				echo "<p>A la premiere connection vous pouvez utiliser le login \"glpi\" et le mot de passe \"glpi\" pour accéder à l'application avec des droits administrateur</p>";
+				echo "<p>A la première connection vous pouvez utiliser le login \"glpi\" et le mot de passe \"glpi\" pour accéder à l'application avec des droits administrateur</p>";
 				next_form();
 			}
 			else {
-				echo "<p>Impossible d'ecrire le fichiers de config de votre base de données</p>";
+				echo "<p>Impossible d'écrire le fichiers de configuration de votre base de données</p>";
 				prev_form();
 			}
 		}
 		else {
 			echo "Erreur lors de la création de la base !";
-			echo "<br />Le serveur à répondu : " . mysql_error();
+			echo "<br />Le serveur a répondu : " . mysql_error();
 			prev_form();
 		}
 		mysql_close($link);
 	}
 	else {
-		echo "<p>Vous n'avez pas séléctionné de base de donnée !</p>";
+		echo "<p>Vous n'avez pas séléctionné de base de données !</p>";
 		prev_form();
 		mysql_close($link);
 	}
@@ -446,22 +441,22 @@ function step5()
 		$query = "select * from glpi_config where config_id = 1";
 		$result = $db->query($query);
 		echo "Configuration de GLPI : ";
-		echo "<p>Les valeurs présélectionnée sont les valeurs par defaut, il est recommandé de laisser ces valeurs</p>";
+		echo "<p>Les valeurs présélectionnées sont les valeurs par defaut, il est recommandé de laisser ces valeurs</p>";
 		echo "<form action=\"install.php\" method=\"post\">";
 		echo "<p><label>Document root : <input type=\"text\" name=\"root_doc\" value=\"". $db->result($result,0,"root_doc") ."\"></label></p>";
 		echo "<p><label>Niveau de log : <select name=\"event_loglevel\"><label></p>";
 		echo "<option value=\"1\">1- Critique (erreur de login seulement) </option>";
-		echo "<option value=\"2\">2- Severe (Non utilisé) </option>";
-		echo "<option value=\"3\">3- Important (login réussis) </option>";
-		echo "<option value=\"4\" selected>4- Notices (Ajout, suppréssions, tracking) </option>";
-		echo "<option value=\"5\">5- Complet (Log Quasiment tout) </option>";
+		echo "<option value=\"2\">2- Sévère (Non utilisée) </option>";
+		echo "<option value=\"3\">3- Important (logins réussis) </option>";
+		echo "<option value=\"4\" selected>4- Notices (Ajout, suppression, tracking) </option>";
+		echo "<option value=\"5\">5- Complet (Log quasiment tout) </option>";
 		echo "</select>";
-		echo "<p><label>Nombre d'evenements de log a afficher : <input type=\"text\" name=\"num_of_events\" value=\"". $db->result($result,0,"num_of_events") ."\"><label></p>";
+		echo "<p><label>Nombre d'évenements de log a afficher : <input type=\"text\" name=\"num_of_events\" value=\"". $db->result($result,0,"num_of_events") ."\"><label></p>";
 		echo "<p><label>Temps en jours durant lequel on conserve les logs (0 pour infini) : <input type=\"text\" name=\"expire_events\" value=\"". $db->result($result,0,"expire_events") ."\"><label></p>";
 		echo "<p> Montrer les interventions au login :  <input type=\"radio\" name=\"jobs_at_login\" value=\"1\" checked /><label>Oui</label>";
 		echo " <input type=\"radio\" name=\"jobs_at_login\" value=\"0\" /><label> Non </label></p>";
-		echo "<p><label>Nombre d'élements a afficher par page de listes : <input type=\"text\" name=\"list_limit\" value=\"". $db->result($result,0,"list_limit") ."\"><label></p>";
-		echo "<p><label>Nombre de caractères //maximum pour chaque éléments de la liste : <input type=\"text\" name=\"cut\" value=\"". $db->result($result,0,"cut") ."\"><label></p>";
+		echo "<p><label>Nombre d'élements à afficher par page  : <input type=\"text\" name=\"list_limit\" value=\"". $db->result($result,0,"list_limit") ."\"><label></p>";
+		echo "<p><label>Nombre de caractères maximum pour chaque éléments de la liste : <input type=\"text\" name=\"cut\" value=\"". $db->result($result,0,"cut") ."\"><label></p>";
 		echo "<p>Voulez vous utiliser les fonctionnalitées de mailing ? (Notifications par mail) ";
 		echo " <input type=\"radio\" name=\"mailing\" value=\"1\" /><label>Oui</label>";
 		echo "<input type=\"radio\" name=\"mailing\" value=\"0\" checked /><label>Non<label></p>";
@@ -484,7 +479,7 @@ function step6($root_doc, $event_loglevel, $num_of_events, $expire_events, $list
 		echo "<br />Signature automatique  : <input type=\"text\" name=\"mailing_signature\" />";
 		echo "<br /> Options de configuration : <br />";
 		
-		echo "<table><tr>L'administrateur Systeme doit recevoir une notification:<td>&nbsp;</td>&nbsp;<td></td>&nbsp;<td></td></tr>";
+		echo "<table><tr>L'administrateur Système doit recevoir une notification:<td>&nbsp;</td>&nbsp;<td></td>&nbsp;<td></td></tr>";
 		echo "<tr><td>A chaque nouvelle intervention</td><td>Oui : <input type=\"radio\" name=\"mailing_new_admin\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_new_admin\" value=\"0\"></td></tr>";
 		echo "<tr><td>A chaque changement de responsable</td><td>Oui : <input type=\"radio\" name=\"mailing_attrib_admin\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_attrib_admin\" value=\"0\"></td></tr>";
 		echo "<tr><td>Pour chaque nouveau suivi</td><td>Oui : <input type=\"radio\" name=\"mailing_followup_admin\" value=\"1\"></td><td>Non : <input type=\"radio\" name=\"mailing_followup_admin\" value=\"0\"></td></tr>";
@@ -529,13 +524,13 @@ function step6($root_doc, $event_loglevel, $num_of_events, $expire_events, $list
 	echo "Votre configuration a bien été enregistrée";
 	if($mailing == 1) {
 		if (function_exists('mail')) {
-			echo "<br />La fonction mail() existe bien sur votre systeme : Veuillez configurer les envois de mails.";
+			echo "<br />La fonction mail() existe bien sur votre système : Veuillez configurer les envois de mails.";
 			$query = "update glpi_config set mailing = '1'";
 			$db->query($query);
 			mailing_form();
 		}
 		else {
-			echo " La fonction mail n'existe pas sur ce systeme : impossible d'utiliser les fonctions mailing";
+			echo " La fonction mail n'existe pas sur ce système : impossible d'utiliser les notifications par mail";
 			echo "<br /><form action=\"install.php\" method=\"post\">";
 			echo "<input type=\"hidden\" name=\"install\" value=\"Etape_4\" />";
 			echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Retour\" />";
@@ -564,8 +559,8 @@ function step7()
 	$db = new DB;
 	$query = "select * from glpi_config where config_id = 1";
 	$result = $db->query($query);
-	echo "Configuration des parametres de connection externe";
-	echo "<br /> Si vous ne souhaitez pas utiliser LDAP ou/et IMAP comme sources de connections laissez les champs vides";
+	echo "Configuration des paramètres de connection externe";
+	echo "<br /> Si vous ne souhaitez pas utiliser LDAP ou/et IMAP comme source(s) de connection laissez les champs vides";
 	echo "<br /><form action=\"install.php\" method=\"post\">";
 	echo "<table>";
 	echo "<tr><td>LDAP configuration</td><td></td></tr>";
@@ -598,7 +593,7 @@ function step8($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$imap_auth_server
 			echo "Vos paramètres de connection LDAP ont bien été enregistrés";
 		}
 		else {
-			echo " La librairie LDAP pour PHP ne semble pas installée sur votre systeme, impossible d'utiliser les identifications LDAP pour l'instant";
+			echo " La librairie LDAP pour PHP ne semble pas être installée sur votre système, impossible d'utiliser les identifications LDAP pour l'instant";
 		}
 	}
 	if(!empty($imap_host)) {
@@ -610,19 +605,19 @@ function step8($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$imap_auth_server
 			echo "Vos paramètres de connection IMAP ont bien été enregistrés";
 		}
 		else {
-			echo " La librairie IMAP pour PHP ne semble pas installée sur votre systeme, impossible d'utiliser les identification IMAP pour l'instant";
+			echo " La librairie IMAP pour PHP ne semble pas installée sur votre système, impossible d'utiliser les identification IMAP pour l'instant";
 		}
 	}
-	echo "<br />L'installation s'est bien terminée ";
-	echo "<br />Il est recommandé maintenant d'appliquer un chmod+0 sur le fichier install.php";
-	echo "<br />Vous pouvez utiliser l'application en cliquant <a href=\"index.php\">sur ce lien </a>.";
-	echo "<br />Les logins mots de passes par defauts sont :";
-	echo "<br /><br />&nbsp;<li> glpi/glpi pour le compte administrateur</li>";
+	echo "<h2>L'installation s'est bien terminée </h2>";
+	echo "<p>Il est recommandé maintenant d'appliquer un chmod+0 sur le fichier install.php</p>";
+	echo "<p>Vous pouvez utiliser l'application en cliquant <a href=\"index.php\">sur ce lien </a>.</p>";
+	echo "<p>Les logins mots de passes par defauts sont :</p>";
+	echo "<p>&nbsp;<li> glpi/glpi pour le compte administrateur</li>";
 	echo "&nbsp;<li>tech/tech pour le compte technicien</li>";
 	echo "&nbsp;<li>normal pour le compte normal</li>";
-	echo "&nbsp;<li>post-only/post-only pour le compte postonly</li>";
-	echo "<br />Vous pouvez supprimer ces comptes ainsi que les premieres entrées dans la base de données.";
-	echo "<br />Attention tout de même NE SUPPRIMEZ PAS l'utilisateur HELPDESK.";
+	echo "&nbsp;<li>post-only/post-only pour le compte postonly</li></p>";
+	echo "<p>Vous pouvez supprimer ces comptes ainsi que les premières entrées dans la base de données.</p>";
+	echo "<p>Attention tout de même NE SUPPRIMEZ PAS l'utilisateur HELPDESK.</p>";
 }
 
 //fill database with mailing configuration
