@@ -181,7 +181,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 				$networking->getfromDB($ID);
 				echo "<tr class='tab_bg_2'>";
 				echo "<td><b>";
-				echo "<a href=\"".$cfg_install["root"]."/networkings/networkings-info-form.php?ID=$ID\">";
+				echo "<a href=\"".$cfg_install["root"]."/networking/networking-info-form.php?ID=$ID\">";
 				echo $networking->fields["name"]." (".$networking->fields["ID"].")";
 				echo "</a></b></td>";
 				echo "<td>". getDropdownName("glpi_dropdown_locations",$networking->fields["location"]) ."</td>";
