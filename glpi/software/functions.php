@@ -198,7 +198,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="name") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_software.name&order=ASC&start=$start\">";
 			echo $lang["software"][2]."</a></th>";
 
 			// Version			
@@ -206,7 +206,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="version") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=version&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_software.version&order=ASC&start=$start\">";
 			echo $lang["software"][5]."</a></th>";
 
 			// Platform		
@@ -214,7 +214,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if ($sort=="platform") {
 				echo "&middot;&nbsp;";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=platform&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_os.name&order=DESC&start=$start\">";
 			echo $lang["software"][3]."</a></th>";
 
 			// Licenses
