@@ -235,9 +235,7 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<div align='center'><b>".$lang["peripherals"][17]."</b></div>";
-			//echo "<hr noshade>";
-			//searchFormperipheral();
+			echo "<div align='center'><b>".$lang["reservation"][33]."</b></div>";
 		}
 	}
 	
@@ -255,19 +253,13 @@ if ($result = $db->query($query)) {
 echo "<a href=\"".$cfg_install["root"]."/reservation/index.php?";
 // Ajouter le matériel
 if ($numrows==0){
-//echo "<input type='hidden' name='id_device' value='$id_device'>";
-//echo "<input type='hidden' name='device_type' value='$device_type'>";
-//echo "<input class='submit' type='submit' name='add' value='".$lang["reservation"][7]."'>";
 echo "id_device=$id_device&device_type=$device_type&add=add\">".$lang["reservation"][7]."</a>";
 }
 // Supprimer le matériel
 else {
-//echo "<input type='hidden' name='ID' value='".$db->result($result,0,"ID")."'>";
-//echo "<input class='submit' type='submit' name='delete' value='".$lang["reservation"][6]."'>";
 echo "ID=".$db->result($result,0,"ID")."&delete=delete\">".$lang["reservation"][6]."</a>";
 }
 
-//echo "</form>";
 }
 }
 

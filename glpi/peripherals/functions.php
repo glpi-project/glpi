@@ -398,10 +398,14 @@ function showperipheralForm ($target,$ID,$withtemplate='') {
 	echo "<tr><td>".$lang["peripherals"][11].":</td>";
 	echo "<td><input type='text' size='20' name='otherserial' value=\"".$mon->fields["otherserial"]."\"></td>";
 	echo "</tr>";
+
+	if (!$template){
+		echo "<tr><td>".$lang["repair"][0].":</td><td><b>";
+		showRepairForm(PERIPHERAL_TYPE,$ID);
+		echo "</b></td></tr>";
+	}
+
 	
-
-echo "</td></tr>";
-
 	echo "</table>";
 	echo "</td>\n";	
 	echo "</tr>";

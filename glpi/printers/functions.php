@@ -380,6 +380,11 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 		showReservationForm(PRINTER_TYPE,$ID);
 		echo "</b></td></tr>";
 	}
+	if (!$template){
+		echo "<tr><td>".$lang["repair"][0].":</td><td><b>";
+		showRepairForm(PRINTER_TYPE,$ID);
+		echo "</b></td></tr>";
+	}
 	echo "</table>"; // fin table indentification
 
 	echo "</td>\n";	
