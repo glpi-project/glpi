@@ -73,8 +73,14 @@ elseif (isset($_GET["priority"]) && !empty($_GET["contents"]))
 		$u->getfromDB($_GET["user"]);
 		$uemail=$u->fields['email'];
 		}
-	if (postJob($_GET["ID"],$_GET["user"],$_GET["status"],$_GET["priority"],$_GET["isgroup"],$uemail,$_GET["emailupdates"],$_GET["contents"],$_GET["assign"]))
+		
+	if (isset($_GET["hour"])&&isset($_GET["minute"]))
+	$realtime=$_GET["hour"]+$_GET["minute"]/60;
+
+
+	if (postJob($_GET["ID"],$_GET["user"],$_GET["status"],$_GET["priority"],$_GET["isgroup"],$uemail,$_GET["emailupdates"],$_GET["contents"],$_GET["assign"],$realtime))
 	{
+		
 		$error=$lang["tracking"][9];
 		addFormTracking($_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error);
 	}
