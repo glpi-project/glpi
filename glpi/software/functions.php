@@ -778,27 +778,16 @@ function countInstallations($sID) {
 	
 	$db = new DB;
 	
-	$query = "SELECT ID,serial FROM glpi_licenses WHERE (sID = '$sID')";
-	$result = $db->query($query);
+	// Get total
+	$total = getLicenceNumber($sID);
 
-	if ($db->numrows($result)!=0) {
+	if ($total!=0) {
 
-		if ($db->result($result,0,"serial")!="free") {
-	
-			// Get total
-			$total = $db->numrows($result);
+		if (!isFreeSoftware($sID)) {
 	
 			// Get installed
 			$i=0;
-			$installed = 0;
-			while ($i < $db->numrows($result))
-			{
-				$lID = $db->result($result,$i,"ID");
-				$query2 = "SELECT license FROM glpi_inst_software WHERE (license = '$lID')";
-				$result2 = $db->query($query2);
-				$installed += $db->numrows($result2);
-				$i++;
-			}
+			$installed = getInstalledLicence($sID);
 		
 			// Get remaining
 			$remaining = $total - $installed;
@@ -822,15 +811,7 @@ function countInstallations($sID) {
 		} else {
 			// Get installed
 			$i=0;
-			$installed = 0;
-			while ($i < $db->numrows($result))
-			{
-				$lID = $db->result($result,$i,"ID");
-				$query2 = "SELECT license FROM glpi_inst_software WHERE (license = '$lID')";
-				$result2 = $db->query($query2);
-				$installed += $db->numrows($result2);
-				$i++;
-			}
+			$installed = getInstalledLicence($sID);
 			echo "<center><i>free software</i>&nbsp;&nbsp;".$lang["software"][19].": <b>$installed</b></center>";
 		}
 	} else {
@@ -838,4 +819,35 @@ function countInstallations($sID) {
 	}
 }	
 
+function getInstalledLicence($sID){
+	$db=new DB;
+	$query = "SELECT ID,serial FROM glpi_licenses WHERE (sID = '$sID')";
+	$result = $db->query($query);
+	if ($db->numrows($result)!=0){
+		$installed=0;
+		while ($data =  $db->fetch_array($result))
+			{
+			$query2 = "SELECT license FROM glpi_inst_software WHERE (license = '".$data["ID"]."')";
+			$result2 = $db->query($query2);
+			$installed += $db->numrows($result2);
+			}
+		return $installed;
+	} else return 0;
+	
+}
+
+function getLicenceNumber($sID){
+	$db=new DB;
+	$query = "SELECT ID,serial FROM glpi_licenses WHERE (sID = '$sID')";
+	$result = $db->query($query);
+	return $db->numrows($result);
+}
+
+
+function isFreeSoftware($sID){
+	$db=new DB;
+	$query = "SELECT ID,serial FROM glpi_licenses WHERE (sID = '$sID')";
+	$result = $db->query($query);
+	return (strcmp($db->result($result,0,"serial"),"free")==0);
+}
 ?>
