@@ -54,7 +54,7 @@ echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favi
 // Appel CSS
 
 
-echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
+echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' />";
 
 
 
