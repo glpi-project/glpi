@@ -270,7 +270,7 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 }
 
 
-function showContractForm ($target,$ID,$search='') {
+function showContractForm ($target,$ID,$search) {
 	// Show Contract or blank form
 	
 	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel;
@@ -747,7 +747,7 @@ function dropdownContracts($name){
 	
 }
 
-function showContractAssociated($device_type,$ID){
+function showContractAssociated($device_type,$ID,$withtemplate=''){
 
 	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
 
@@ -759,7 +759,7 @@ function showContractAssociated($device_type,$ID){
 	$number = $db->numrows($result);
 	$i = 0;
 	
-    echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
+    if ($withtemplate!=2) echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
 	echo "<br><br><center><table class='tab_cadre' width='90%'>";
 	echo "<tr><th colspan='7'>".$lang["financial"][66].":</th></tr>";
 	echo "<tr><th>".$lang['financial'][27]."</th>";
@@ -768,7 +768,8 @@ function showContractAssociated($device_type,$ID){
 	echo "<th>".$lang['financial'][26]."</th>";
 	echo "<th>".$lang['financial'][7]."</th>";	
 	echo "<th>".$lang['financial'][8]."</th>";	
-	echo "<th>&nbsp;</th></tr>";
+	if ($withtemplate!=2)echo "<th>&nbsp;</th>";
+	echo "</tr>";
 
 	while ($i < $number) {
 		$cID=$db->result($result, $i, "FK_contract");
@@ -783,18 +784,19 @@ function showContractAssociated($device_type,$ID){
 	echo "<td align='center'>".$con->fields["begin_date"]."</td>";
 	echo "<td align='center'>".$con->fields["duration"]." ".$lang["financial"][9]."</td>";
 
-	echo "<td align='center' class='tab_bg_2'><a href='".$HTMLRel."contracts/contracts-info-form.php?deleteitem=deleteitem&ID=$assocID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+	if ($withtemplate!=2)echo "<td align='center' class='tab_bg_2'><a href='".$HTMLRel."contracts/contracts-info-form.php?deleteitem=deleteitem&ID=$assocID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
 	}
-	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
-	echo "<div class='software-instal'><input type='hidden' name='ID' value='$ID'><input type='hidden' name='type' value='$device_type'>";
+	if ($withtemplate!=2){
+		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+		echo "<div class='software-instal'><input type='hidden' name='ID' value='$ID'><input type='hidden' name='type' value='$device_type'>";
 		dropdownContracts("conID");
 		echo "</td><td align='center'>";
-	echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
-	echo "</div></td>";
-	echo "</form>";
-	echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
-	
+		echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
+		echo "</div></td>";
+		echo "</form>";
+		echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+	}
 	echo "</table>"    ;
 	
 	
