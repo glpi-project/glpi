@@ -48,7 +48,7 @@ if(!file_exists($phproot ."/glpi/config/config_db.php")) {
 else
 {
 
-require_once ("config_db.php");
+require_once ($phproot ."/glpi/config/config_db.php");
 
 //Statics config options
 // options d'installation statiques
