@@ -544,7 +544,7 @@ function showJobDetails($ID) {
 	}
 }
 
-function postJob($ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$contents,$assign="") {
+function postJob($ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$contents,$assign="",$realtime=0) {
 	// Put Job in database
 
 	GLOBAL $cfg_install, $cfg_features, $cfg_layout;
@@ -564,6 +564,7 @@ function postJob($ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$c
 	$job->uemail = $uemail;
 	$job->emailupdates = $emailupdates;
 	$job->assign = $assign;
+	$job->realtime = $realtime;
 	
 	if ($job->putinDB()) {
 		// Log this event
@@ -717,6 +718,20 @@ function addFormTracking ($ID,$author,$assign,$target,$error,$searchauthor='') {
 	echo "<option value='new' selected>".$lang["job"][14]."</option>";
 	echo "<option value='old'>".$lang["job"][15]."</option>";
 	echo "</select></td></tr>";
+
+			echo "<tr>";
+			echo "<td class='tab_bg_2' align='center'>";
+			echo $lang["job"][20].":</td>";
+			echo "<td align='center' colspan='3' class='tab_bg_2'><select name='hour'>";
+			for ($i=0;$i<100;$i++)
+			echo "<option value='$i'>$i</option>";
+			echo "</select>".$lang["job"][21]."&nbsp;&nbsp;";
+			echo "<select name='minute'>";
+			for ($i=0;$i<60;$i++)
+			echo "<option value='$i'>$i</option>";
+			echo "</select>".$lang["job"][22]."&nbsp;&nbsp;";
+			echo "</td></tr>";
+
 
 	echo "<tr><td class='tab_bg_2' align='center'>".$lang["joblist"][2].":</td>";
 	echo "<td align='center' class='tab_bg_2' colspan='3'><select name='priority'>";
