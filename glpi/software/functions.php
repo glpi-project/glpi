@@ -326,6 +326,10 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 		dropdownValue("glpi_dropdown_locations", "location", $sw->fields["location"]);
 	echo "</td></tr>";
 
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>";
+		dropdownUsersID( $sw->fields["tech_num"],"tech_num");
+	echo "</td></tr>";
+	
 	echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>";
 		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$sw->fields["FK_glpi_enterprise"]);
 	echo "</td></tr>";

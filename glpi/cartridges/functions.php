@@ -290,6 +290,10 @@ function showCartridgeTypeForm ($target,$ID) {
 		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$ct->fields["FK_glpi_enterprise"]);
 	echo "</td></tr>";
 
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>";
+		dropdownUsersID( $ct->fields["tech_num"],"tech_num");
+	echo "</td></tr>";
+
 	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][36].": 	</td><td colspan='2'>";
 		dropdownValue("glpi_dropdown_locations","location",$ct->fields["location"]);
 	echo "</td></tr>";

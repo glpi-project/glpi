@@ -385,6 +385,15 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		echo "</td>";
 		
 		echo "<td>".$lang["computers"][15]."&nbsp;:		</td><td><input type='text' name='contact_num' value=\"".$comp->fields["contact_num"]."\" size='20'></td></tr>";
+
+		echo "<tr class='tab_bg_1'>";
+		
+		echo "<td >".$lang["common"][10]."&nbsp;: 	</td>";
+		echo "<td >";
+			dropdownUsersID( $comp->fields["tech_num"],"tech_num");
+		echo "</td>";
+		
+		echo "<td>&nbsp;:</td><td>&nbsp;</td></tr>";
 		
 	
 		echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td>";

@@ -330,6 +330,10 @@ function showperipheralForm ($target,$ID,$withtemplate='') {
 		dropdownValue("glpi_dropdown_locations", "location", $mon->fields["location"]);
 	echo "</td></tr>";
 
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>";
+		dropdownUsersID( $mon->fields["tech_num"],"tech_num");
+	echo "</td></tr>";
+		
 	echo "<tr><td>".$lang["peripherals"][7].":	</td>";
 	echo "<td><input type='text' name='contact_num' value=\"".$mon->fields["contact_num"]."\" size='20'></td>";
 	echo "</tr>";
