@@ -185,6 +185,27 @@ echo "</head>";
 // Body with configured stuff
 
 echo "<body>";
-echo "Votre base de données est desormais a jour \n vous pouvez supprimer le fichier update.php de votre repository";
+
+// step 1    avec bouton de confirmation
+
+echo "Attention ! Vous allez mettre à jour votre base de données GLPI";
+echo "Be carreful ! Your are going to update GLPI" ;
+
+echo "Etes vous certain de vouloir continuer ?"  ;
+echo "Continue ? " ;
+
+// Step 2  avec message d'erreur en cas d'echec de connexion
+
+echo "Connexion à la base de données réussie";
+
+echo "La connexion à la base de données a échouée, verifiez les paramètres de connexion figurant dans le fichier config.php";
+
+
+// Step 3 Si tout va bien
+
+echo "La mise à jour à réussie, votre base de données est actualisée \n vous pouvez supprimer le fichier update.php de votre repertoire";
+
+
+
 echo "</body></html>";
 ?>
