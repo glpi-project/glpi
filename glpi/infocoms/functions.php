@@ -33,7 +33,7 @@ This file is part of GLPI.
 
 include ("_relpos.php");
 
-function showInfocomForm ($target,$device_type,$dev_ID) {
+function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1) {
 	// Show Infocom or blank form
 	
 	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel;
@@ -99,36 +99,44 @@ function showInfocomForm ($target,$device_type,$dev_ID) {
 		echo "<td colspan='2'><input type='text' name='warranty_info' value=\"".$ic->fields["warranty_info"]."\" size='25'></td>";
 		echo "</tr>";
 
-
+		if ($show_immo==1){
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][20].":		</td>";
 		echo "<td colspan='2'><input type='text' name='num_immo' value=\"".$ic->fields["num_immo"]."\" size='25'></td>";
 		echo "</tr>";
+		}
 
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][21].":		</td>";
-		echo "<td ><input type='text' name='value' value=\"".$ic->fields["value"]."\" size='10'></td>";
+		echo "<td ".($show_immo==1?"":" colspan='2'")."><input type='text' name='value' value=\"".$ic->fields["value"]."\" size='10'></td>";
 		
+		if ($show_immo==1){
 		echo "<td>Valeur nette comptable :";
 		echo  TableauAmort($ic->fields["amort_type"],$ic->fields["value"],$ic->fields["amort_time"],$ic->fields["amort_coeff"],$ic->fields["buy_date"],$ic->fields["use_date"],$date_fiscale,$view="n");
 		
-		echo "</td>";		
+		echo "</td>";
+		}	
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][78].":		</td>";
 		echo "<td colspan='2'><input type='text' name='warranty_value' value=\"".$ic->fields["warranty_value"]."\" size='10'></td>";
 		echo "</tr>";
-
+		
+		if ($show_immo==1){
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][22].":		</td><td colspan='2'>";
 		dropdownAmortType("amort_type",$ic->fields["amort_type"]);
 		echo "</td></tr>";
-
+		}
+		
+		if ($show_immo==1){
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][23].":		</td><td colspan='2'>";
 		dropdownDuration("amort_time",$ic->fields["amort_time"]);
 		echo " ".$lang["financial"][9];
 		echo "</td></tr>";
-
+		}
+		if ($show_immo==1){
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][77].":		</td>";
 		echo "<td colspan='2'><input type='text' name='amort_coeff' value=\"".$ic->fields["amort_coeff"]."\" size='10'></td>";
 		echo "</tr>";
+		}
 
 		echo "<tr class='tab_bg_1'><td valign='top'>";
 		echo $lang["financial"][12].":	</td>";

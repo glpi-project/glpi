@@ -91,7 +91,7 @@ else
 	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 	showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	if (!empty($_GET["ID"])){
-	showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"]);
+	showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"],0);
 	showContractAssociated(SOFTWARE_TYPE,$tab["ID"]);
 	showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
 	showOldJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
