@@ -40,7 +40,7 @@ include ($phproot . "/glpi/includes_knowbase.php");
 
 checkAuthentication("normal");
 
-	commonHeader("Base de connaissances",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][5],$_SERVER["PHP_SELF"]);
 
 	initExpandSessionVar();
 

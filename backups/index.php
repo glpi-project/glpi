@@ -40,7 +40,7 @@ include ($phproot . "/glpi/includes_setup.php");
 
 checkauthentication("super-admin");
 
-commonHeader("Setup",$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 
 
 $max_time=min(get_cfg_var("max_execution_time"),get_cfg_var("max_input_time"));

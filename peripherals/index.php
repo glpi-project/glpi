@@ -37,7 +37,7 @@ include ($phproot . "/glpi/includes_peripherals.php");
 
 checkAuthentication("normal");
 
-commonHeader("Peripherals",$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
 
 if(!isset($_GET["start"])) $_GET["start"] = 0;
 if (!isset($_GET["order"])) $_GET["order"] = "ASC";

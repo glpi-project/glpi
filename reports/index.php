@@ -39,7 +39,7 @@ include ($phproot . "/glpi/includes.php");
 
 checkAuthentication("normal");
 
-commonHeader("Reports",$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][16],$_SERVER["PHP_SELF"]);
 
  // titre
         echo "<div align='center'><table ><tr><td>";

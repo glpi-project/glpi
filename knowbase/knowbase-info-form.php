@@ -56,7 +56,7 @@ if (empty($tab["ID"])) {
 // on affiche le formulaire de saisie de l'item
 
 	checkAuthentication("admin");
-	commonHeader("Knowledgebase",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][5],$_SERVER["PHP_SELF"]);
 	
 	showKbItemForm($_SERVER["PHP_SELF"],"");
 	
@@ -82,7 +82,7 @@ if (empty($tab["ID"])) {
 	// modifier un item dans la base de connaissance
 	
 	checkAuthentication("admin");
-	commonHeader("Knowledgebase",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][5],$_SERVER["PHP_SELF"]);
 
 	showKbItemForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	
@@ -155,7 +155,7 @@ if (empty($tab["ID"])) {
 // Affiche un item de la base de connaissances
 
 	checkAuthentication("normal");
-	commonHeader("Knowledgebase",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][5],$_SERVER["PHP_SELF"]);
 	ShowKbItemFull($tab["ID"]);
 	
 		if ($_SESSION["glpitype"]=="admin"||$_SESSION["glpitype"]=="super-admin"){

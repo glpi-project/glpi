@@ -37,7 +37,7 @@ include ($phproot . "/glpi/includes.php");
 checkAuthentication("normal");
 
 
-commonHeader("Sylk Reports",$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][16],$_SERVER["PHP_SELF"]);
 
 //Affichage du tableau de présentation
 echo "<div align='center'><table class='tab_cadre2' cellpadding='5'>";

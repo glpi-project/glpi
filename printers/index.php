@@ -40,7 +40,7 @@ include ($phproot . "/glpi/includes_printers.php");
 
 checkAuthentication("normal");
 
-commonHeader("Printers",$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
   
 if(!isset($_GET["start"])) $_GET["start"] = 0;
 if (!isset($_GET["order"])) $_GET["order"] = "ASC";
