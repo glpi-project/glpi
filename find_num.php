@@ -99,7 +99,7 @@ if(isset($_POST["Submit"]))
 	
 
 	$db = new DB;
-	$query = "select name,ID,contact, serial, otherserial from glpi_computers where contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%'";
+	$query = "select name,ID,contact, serial, otherserial from glpi_computers where is_template='0' AND deleted='N' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
 	$result = $db->query($query);
 	while($ligne = $db->fetch_array($result))
 	{
@@ -122,7 +122,7 @@ if(isset($_POST["Submit"]))
 		echo "</tr>";
 	}
 
-	$query = "select name,ID,contact, serial, otherserial from glpi_networking where contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%'";
+	$query = "select name,ID,contact, serial, otherserial from glpi_networking where is_template='0' AND deleted='N' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
 	$result = $db->query($query);
 	while($ligne = $db->fetch_array($result))
 	{
@@ -145,7 +145,7 @@ if(isset($_POST["Submit"]))
 		echo "</tr>";
 	}
 
-	$query = "select name,ID,contact, serial, otherserial from glpi_printers where contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%'";
+	$query = "select name,ID,contact, serial, otherserial from glpi_printers where is_template='0' AND deleted='N' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
 	$result = $db->query($query);
 	while($ligne = $db->fetch_array($result))
 	{
@@ -168,7 +168,7 @@ if(isset($_POST["Submit"]))
 		echo "</tr>";
 	}
 
-	$query = "select name,ID,contact, serial, otherserial from glpi_monitors where contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%'";
+	$query = "select name,ID,contact, serial, otherserial from glpi_monitors where is_template='0' AND deleted='N' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
 	$result = $db->query($query);
 	while($ligne = $db->fetch_array($result))
 	{
@@ -191,7 +191,7 @@ if(isset($_POST["Submit"]))
 		echo "</tr>";
 	}
 
-	$query = "select name,ID,contact, serial, otherserial from glpi_peripherals where contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%'";
+	$query = "select name,ID,contact, serial, otherserial from glpi_peripherals where is_template='0' AND deleted='N' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
 	$result = $db->query($query);
 	while($ligne = $db->fetch_array($result))
 	{
@@ -214,7 +214,7 @@ if(isset($_POST["Submit"]))
 		echo "</tr>";
 	}
 
-	$query = "select name,ID from glpi_software where name like '%".$_POST["NomContact"]."%' ";
+	$query = "select name,ID from glpi_software where is_template='0' AND deleted='N' AND (name like '%".$_POST["NomContact"]."%' )";
 	$result = $db->query($query);
 	while($ligne = $db->fetch_array($result))
 	{
