@@ -1118,7 +1118,7 @@ function listTemplates($target) {
 	GLOBAL $cfg_layout, $lang;
 
 	$db = new DB;
-	$query = "SELECT * FROM glpi_templates ORDER by templname";
+	$query = "SELECT * FROM glpi_computers where is_template = '1' ORDER by tplname";
 	if ($result = $db->query($query)) {
 		
 		echo "<div align='center'><table class='tab_cadre' width='50%'>";
@@ -1126,11 +1126,11 @@ function listTemplates($target) {
 		$i=0;
 		while ($i < $db->numrows($result)) {
 			$ID = $db->result($result,$i,"ID");
-			$templname = $db->result($result,$i,"templname");
+			$templname = $db->result($result,$i,"tplname");
 			
 			echo "<tr>";
 			echo "<td align='center' class='tab_bg_1'>";
-			echo "<a href=\"$target?ID=$ID&showform=showform\">&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
+			echo "<a href=\"$target?ID=$ID&withtemplate=1\">&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
 			echo "<td align='center' class='tab_bg_2'>";
 			echo "<b><a href=\"$target?ID=$ID&delete=delete\">".$lang["buttons"][6]."</a></b></td>";
 			echo "</tr>";		
@@ -1140,7 +1140,7 @@ function listTemplates($target) {
 
 		echo "<tr>";
 		echo "<td colspan='2' align='center' class='tab_bg_2'>";
-		echo "<b><a href=\"$target?showform=showform\">".$lang["setup"][22]."</a></b>";
+		echo "<b><a href=\"$target?withtemplate=1\">".$lang["setup"][22]."</a></b>";
 		echo "</td>";
 		echo "</tr>";
 		echo "</form>";
@@ -1150,7 +1150,7 @@ function listTemplates($target) {
 	
 
 }
-
+/* EX templates 
 function showTemplateForm($target,$ID) {
 
 	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel;
@@ -1373,6 +1373,7 @@ function deleteTemplate($input) {
 	$templ->deleteFromDB($input["ID"]);
 	
 } 	
+*/
 
 function showSortForm($target) {
 

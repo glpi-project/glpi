@@ -52,14 +52,14 @@ echo $lang["computers"][45];
 echo "</th></tr>";
 
 $db = new DB;
-$query = "SELECT * FROM glpi_templates ORDER BY templname";
+$query = "SELECT * FROM glpi_computers where is_template = '1' ORDER BY tplname";
 $result = $db->query($query);
 $i = 0;
 $number = $db->numrows($result);
 
 while ($i < $number) {
 	$ID = $db->result($result,$i, "ID");
-  	$name = $db->result($result, $i, "templname");
+  	$name = $db->result($result, $i, "tplname");
 	echo "<tr class='tab_bg_1'><td align='center'><a href=\"computers-info-form.php?withtemplate=1&ID=$ID\">$name</a></td></tr>";
 	$i++;
 }

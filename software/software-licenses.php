@@ -44,7 +44,7 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["lID"])) $tab["lID"] = "";
 if(!isset($tab["sID"])) $tab["sID"] = "";
 if(!isset($tab["search_computer"])) $tab["search_computer"] = "";
-
+if(!isset($tab["withtemplate"])) $tab["withtemplate"] = 0;
 
 if (isset($tab["Modif_Interne"])){
 	checkAuthentication("admin");
@@ -114,7 +114,7 @@ else if (isset($tab["select"]))
 {
 	checkAuthentication("admin");
 	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
-	showLicenseSelect($_SERVER['HTTP_REFERER'],$_SERVER["PHP_SELF"],$tab["cID"],$tab["sID"]);
+	showLicenseSelect($_SERVER['HTTP_REFERER']."&withtemplate=".$tab["withtemplate"],$_SERVER["PHP_SELF"],$tab["cID"],$tab["sID"],$tab["withtemplate"]);
 	commonFooter();
 }
 else if (isset($tab["install"]))
@@ -122,7 +122,6 @@ else if (isset($tab["install"]))
 	checkAuthentication("admin");
 	installSoftware($tab["cID"],$tab["lID"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed software.");
-	//echo $tab["back"];
 	header("Location: ".$tab['back']." ");
 }
 else if (isset($tab["uninstall"]))
