@@ -604,7 +604,23 @@ function addComputer($input) {
 			addDeviceContract($data["FK_contract"],COMPUTER_TYPE,$newID);
 	}
 	
-	// TODO ADD THE OTHERS ELEMENTS : PORTS, SOFTWARE
+	// ADD Ports
+	$query="SELECT ID from glpi_networking_ports WHERE on_device='$oldID' AND device_type='".COMPUTER_TYPE."';";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		
+		while ($data=$db->fetch_array($result)){
+			$np= new Netport();
+			$np->getFromDB($data["ID"]);
+			unset($np->fields["ID"]);
+			unset($np->fields["ifaddr"]);
+			unset($np->fields["ifmac"]);
+			unset($np->fields["netpoint"]);
+			$np->fields["on_device"]=$newID;
+			$np->addToDB();
+			}
+	}
+		
 	
 }
 
