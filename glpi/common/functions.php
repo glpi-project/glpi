@@ -197,7 +197,7 @@ $config =	array($lang["Menu"][10]=>array("/setup/index.php"," "),
 	// Include CSS
 	//echo "<style type=\"text/css\">\n";
 	//	include ("_relpos.php");
-         echo "<link rel='stylesheet'  href='".$HTMLRel."glpi/config/styles.css' type='text/css' media='screen' >";
+         echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
 
 	//	include ($phproot . "/glpi/config/styles.css");
 	//echo "</style>\n";
@@ -323,7 +323,7 @@ function helpHeader($title,$url,$name) {
 	// Include CSS
 	//echo "<style type=\"text/css\">\n";
 	//			include ("_relpos.php");
-        echo "<link rel='stylesheet'  href='".$HTMLRel."glpi/config/styles.css' type='text/css' media='screen' >";
+        echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
 
 	//	include ($phproot . "/glpi/config/styles.css");
 	//echo "</style>\n";
@@ -416,7 +416,7 @@ function nullHeader($title,$url) {
 	// Include CSS
 	//echo "<style type=\"text/css\">\n";
 	//			include ("_relpos.php");
-        echo "<link rel='stylesheet'  href='".$HTMLRel."glpi/config/styles.css' type='text/css' media='screen' >";
+        echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
 
 	//	include ($phproot . "/glpi/config/styles.css");
 	//echo "</style>\n";
