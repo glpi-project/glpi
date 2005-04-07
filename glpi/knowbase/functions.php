@@ -615,9 +615,8 @@ function getFAQCategories()
 	
 	
 				while ($row=$db->fetch_array($result)){
-	
 				$catNumbers=getFAQParentCategories($row["categoryID"], $catNumbers);
-				//	$catNumbers[] = $result["categoryID"];
+				array_push($catNumbers,$result["categoryID"]);
 				}
 			}
 	return($catNumbers);
@@ -648,12 +647,11 @@ function getFAQParentCategories($ID, $catNumbers)
 		$parentID = $data["parentID"];
 		if(!in_array($parentID, $catNumbers))
 		{
-			getFAQParentCategories($parentID, $catNumbers);
+			$catNumbers=getFAQParentCategories($parentID, $catNumbers);
 		}
 		if(!in_array($ID, $catNumbers))
 		{
-			$szecatNumbers = sizeof($catNumbers);
-			$catNumbers[$szecatNumbers] = $ID;
+			array_push($catNumbers,$ID);
 		}
 		
 	}
