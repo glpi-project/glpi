@@ -497,7 +497,7 @@ function ShowKbItemFull($ID)
 	
 	echo "<div align='center'><table class='tab_cadre' cellpadding='10' width='700px'><tr><th>";
 	
-	echo $lang["kownbase"][23].": ".$fullcategoryname."</th></tr>";
+	echo $lang["knowbase"][23].": ".$fullcategoryname."</th></tr>";
 	echo "<tr class='tab_bg_3'><td><h2>".$lang["knowbase"][3]."</h2>";
 	//$question = autop($ki->fields["question"]);
 	$question = rembo($ki->fields["question"]);
