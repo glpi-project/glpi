@@ -753,7 +753,7 @@ $lang["setup"][217]="La fonction mail n'existe pas ou est d&eacute;sactiv&eacute
 $lang["setup"][218]="Impossible de configurer les envois de suivis par mails";
 $lang["setup"][219]="Voulez vous permettre les soumissions d'intervention anonymes (helpdesk.html)";
 $lang["setup"][220]="Impossible de modifier l'utilisateur 'Helpdesk'";
-$lang["setup"][221]="Date de d&eacute;but d'exercide fiscale (jour et mois)";
+$lang["setup"][221]="Date de d&eacute;but d'exercice fiscale (jour et mois)";
 $lang["setup"][222]="P&eacute;riph&eacute;riques internes";
 
 
