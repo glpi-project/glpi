@@ -599,6 +599,7 @@ $lang["knowbase"][19]="Deletion failure: This categorie has items, you have to d
 $lang["knowbase"][20]="Empty knowledge database"; 
 $lang["knowbase"][21]="Show all"; 
 $lang["knowbase"][22]="Hide all"; 
+$lang["knowbase"][23]="Category"; 
 
 $lang["ldap"][0]="Search"; 
 $lang["ldap"][1]="Show"; 
