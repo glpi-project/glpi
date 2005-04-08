@@ -138,8 +138,8 @@ else
 		if (showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"],$tab['search_software'])){
 			switch($_SESSION['glpi_onglet']){
 				case -1:
-					showLicenses($tab["ID"]);
 					showLicensesAdd($tab["ID"]);
+					showLicenses($tab["ID"]);
 					showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"]);
 					showContractAssociated(SOFTWARE_TYPE,$tab["ID"]);
 					showDocumentAssociated(SOFTWARE_TYPE,$tab["ID"]);
@@ -158,8 +158,8 @@ else
 					showOldJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
 					break;
 				default :
-					showLicenses($tab["ID"]);
 					showLicensesAdd($tab["ID"]);
+					showLicenses($tab["ID"]);
 					break;
 			}
 		}
