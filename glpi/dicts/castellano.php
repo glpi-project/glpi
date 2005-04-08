@@ -599,6 +599,7 @@ $lang["knowbase"][19]="Fall&oacute; la supresi&oacute;n: esta categor&iacute;a c
 $lang["knowbase"][20]="Base de conocimientos vac&iacute;a"; 
 $lang["knowbase"][21]="Desplegar todo"; 
 $lang["knowbase"][22]="Replegar todo"; 
+$lang["knowbase"][23]="Categoría"; 
 
 $lang["ldap"][0]="b&uacute;squeda"; 
 $lang["ldap"][1]="Mostrar"; 
