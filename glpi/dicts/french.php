@@ -1045,6 +1045,7 @@ $lang["knowbase"][19] ="Echec de la suppression : Cette cat&eacute;gorie contien
 $lang["knowbase"][20] ="Base de connaissances vide";
 $lang["knowbase"][21] ="Tout d&eacute;plier";
 $lang["knowbase"][22] ="Tout replier";
+$lang["knowbase"][23] = "Cat&eacute;gorie";
 
 $lang["toolbar"][0]="";
 $lang["toolbar"][1]="Gras";
