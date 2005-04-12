@@ -599,6 +599,7 @@ $lang["knowbase"][19]="Errore nell'eliminazione: questa categoria ha degli eleme
 $lang["knowbase"][20]="Knowledgebase vuota"; 
 $lang["knowbase"][21]="Mostra tutto"; 
 $lang["knowbase"][22]="Nascondi tutto"; 
+$lang["knowbase"][23]="Categoria"; 
 
 $lang["ldap"][0]="Cerca"; 
 $lang["ldap"][1]="Mostra"; 
@@ -1201,7 +1202,7 @@ $lang["tracking"][8]="No description, please retry";
 $lang["tracking"][9]="New intervention post, next..."; 
 $lang["tracking"][10]="Impossible to add the intervention, check the data base"; 
 $lang["tracking"][11]="Intervention(s) required by this user"; 
-$lang["tracking"][12]="All the devices"; 
+$lang["tracking"][12]="All the intervention types"; 
 $lang["tracking"][13]="Computers only"; 
 $lang["tracking"][14]="Netdevices only"; 
 $lang["tracking"][15]="Printers only"; 
@@ -1212,6 +1213,7 @@ $lang["tracking"][19]="Only Common";
 $lang["tracking"][20]="Categoria"; 
 $lang["tracking"][21]="You are not allowed to modify the tracking category"; 
 $lang["tracking"][22]="You are not allowed to modify the tracking priority"; 
+$lang["tracking"][23]="or the ID is"; 
 
 $lang["update"][90]="Error during the database update"; 
 $lang["update"][91]="Caution !"; 

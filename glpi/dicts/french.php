@@ -228,7 +228,7 @@ $lang["tracking"][19] = "Seulement G&eacute;n&eacute;rales";
 $lang["tracking"][20] = "Cat&eacute;gorie";
 $lang["tracking"][21]    = "Vous n'&ecirc;tes pas autoris&eacute; &agrave; modifier la cat&eacute;gorie de cette intervention";
 $lang["tracking"][22]    = "Vous n'&ecirc;tes pas autoris&eacute; &agrave; modifier la priorit&eacute; de cette intervention";
-$lang["tracking"][23]	= "o&ugrave; l'ID vaut";
+$lang["tracking"][23]	= "ou l'ID vaut";
 
 // 1 computers
 // 2 networking
