@@ -50,7 +50,7 @@ function titleTracking(){
 
 
 
-function searchFormTracking ($show,$contains,$device,$category) {
+function searchFormTracking ($show,$contains,$containsID,$device,$category) {
 	// Tracking Search Block
 	
 	GLOBAL $cfg_layout, $cfg_install,$lang;
@@ -125,8 +125,8 @@ function searchFormTracking ($show,$contains,$device,$category) {
 	//echo "<form method=\"get\" action=\"".$cfg_install["root"]."/tracking/index.php\">";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td class='tab_bg_2'>";
-	echo "<strong>".$lang["tracking"][5].":</strong> </td><td><input type='text' name='contains' value=\"$contains\" size='15'>";
-	echo "</td><td>";
+	echo "<strong>".$lang["tracking"][5].":</strong> <input type='text' name='contains' value=\"$contains\" size='15'></td><td>";
+	echo "<strong>".$lang["tracking"][23].":</strong> <input type='text' name='containsID' value=\"$containsID\" size='5'>";	echo "</td><td>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr>";
 
@@ -140,7 +140,7 @@ function getTrackingPrefs ($username) {
 	// Currently only supports sort order
 
 	$db = new DB;
-	$query = "SELECT tracking_order FROM glpi_prefs WHERE (user = '$username')";
+	$query = "SELECT tracking_order FROM glpi_prefs WHERE (username = '$username')";
 	$result = $db->query($query);
 	if ($result&&$db->numrows($result)==1)
 	$tracking_order = $db->result($result, 0, "tracking_order");
@@ -158,7 +158,7 @@ function getTrackingPrefs ($username) {
 	return $prefs;
 }
 
-function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$device='-1',$category='NULL') {
+function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$device='-1',$category='NULL',$containsID='') {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -169,18 +169,24 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 	$prefs = getTrackingPrefs($username);
 
 	// Build where-clause
-	if ($contains)
+	if ($contains||$containsID)
 	{
-		$where = "(contents LIKE '%$contains%' OR ID = '$contains')";
+		$where= "  '1'='1' ";
+		if ($contains)
+			$where .= " AND (contents LIKE '%$contains%')";
+		if ($containsID)
+			$where .= " AND (ID = '$containsID')";
 	}
-	else if ($show == "old")
+	else  if ($show == "old")
 	{
-		$where = "(status = 'old')";
+		$where = " (status = 'old')";
 	}
 	else
 	{
-		$where = "(status = 'new')";
+		$where = " (status = 'new')";
 	}
+	
+	
 	if($device != -1) {
 		$where .= " AND (device_type = '".$device."')";
 	} 
@@ -215,7 +221,8 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 	}	
 	
 	$lim_query = " LIMIT ".$start.",".$cfg_features["list_limit"]."";	
-
+	
+	
 	$db = new DB;
 	$result = $db->query($query);
 	$numrows = $db->numrows($result);

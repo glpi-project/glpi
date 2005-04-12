@@ -982,7 +982,7 @@ global $cfg_install;
 
 			if ($user->addToDB()) {
 				// Give him some default prefs...
-				$query = "INSERT INTO glpi_prefs (user,tracking_order,language) VALUES ('".$input["name"]."','no','".$cfg_install["default_language"]."')";
+				$query = "INSERT INTO glpi_prefs (username,tracking_order,language) VALUES ('".$input["name"]."','no','".$cfg_install["default_language"]."')";
 
 				$db = new DB;
 				$result=$db->query($query);
@@ -1202,7 +1202,7 @@ function updateSort($input) {
 
 	$db = new DB;
 	//print_r($input);
-	$query = "UPDATE glpi_prefs SET tracking_order = '".$input["tracking_order"]."' WHERE (user = '".$_SESSION["glpiname"]."')";
+	$query = "UPDATE glpi_prefs SET tracking_order = '".$input["tracking_order"]."' WHERE (username = '".$_SESSION["glpiname"]."')";
 	if ($result=$db->query($query)) {
 		$_SESSION["tracking_order"] = $input["tracking_order"];
 		return true;
@@ -1251,7 +1251,7 @@ function showLangSelect($target) {
 function updateLanguage($input) {
 
 	$db = new DB;
-	$query = "UPDATE glpi_prefs SET language = '".$input["language"]."' WHERE (user = '".$_SESSION["glpiname"]."')";
+	$query = "UPDATE glpi_prefs SET language = '".$input["language"]."' WHERE (username = '".$_SESSION["glpiname"]."')";
 	if ($result=$db->query($query)) {
 		$_SESSION["glpilanguage"] = $input["language"];
 		return true;
