@@ -102,7 +102,7 @@ class User {
 	function getPrefsFromDB() {
 		global $cfg_install;
 		$db = new DB;
-		$query = "select * from glpi_prefs where (user = '". $this->fields["name"] ."')";
+		$query = "select * from glpi_prefs where (username = '". $this->fields["name"] ."')";
 		if($result = $db->query($query)) {
 			if($db->numrows($result) >= 1) {
 				$this->prefs["tracking_order"] = $db->result($result,0,"tracking_order");
@@ -362,8 +362,9 @@ class User {
 
 		$query = "DELETE from glpi_users WHERE name = '$name'";
 		if ($result = $db->query($query)) {
-			$query2 = "DELETE from glpi_prefs WHERE user = '$name'";
+			$query2 = "DELETE from glpi_prefs WHERE username = '$name'";
 			if ($result2 = $db->query($query2)) {
+				
 				// Tracking items left?
 				$query_track = "SELECT assign FROM glpi_tracking WHERE (assign = '$name')";
 				$result_track = $db->query($query_track);

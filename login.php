@@ -160,11 +160,11 @@ if (!$user_present) {
 $identificat->setcookies();
 
 // If no prefs for user, set default
-$query = "SELECT * FROM glpi_prefs WHERE (user = '".$_POST['login_name']."')";
+$query = "SELECT * FROM glpi_prefs WHERE (username = '".$_POST['login_name']."')";
 $result = $db->query($query);
 if ($db->numrows($result) == 0)
 {
-	$query = "INSERT INTO glpi_prefs (`user`,`tracking_order`,`language`) VALUES ('".$_POST['login_name']."', 'yes','french')";
+	$query = "INSERT INTO glpi_prefs (`username`,`tracking_order`,`language`) VALUES ('".$_POST['login_name']."', 'yes','french')";
 	$result = $db->query($query);
 }
 
@@ -180,11 +180,11 @@ $result_exp = $db_exp->query($query_exp);
 // Redirect to Command Central if not post-only
 if ($identificat->user->fields['type'] == "post-only")
 {
-	header("Location: helpdesk.php?".SID);
+	header("Location: helpdesk.php");
 }
 else
 {
-	header("Location: central.php?".SID);
+	header("Location: central.php");
 }
 
 ?>

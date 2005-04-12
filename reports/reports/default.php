@@ -99,7 +99,7 @@ $number = $db->numrows($result);
 while ($i < $number) {
 	$os = $db->result($result, $i, "name");
 	$id= $db->result($result, $i, "ID");
-	$query = "SELECT count(*) FROM glpi_computers WHERE (os = '$id')";
+	$query = "SELECT count(*) FROM glpi_computers WHERE deleted ='N'  AND is_template = '0' AND (os = '$id')";
 	$result2 = $db->query($query);
 	$counter = $db->result($result2,0,0);
 	echo "<tr><td>$os</td><td>$counter</td></tr>";

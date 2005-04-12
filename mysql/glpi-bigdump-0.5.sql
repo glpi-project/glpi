@@ -15709,12 +15709,12 @@ INSERT INTO glpi_peripherals VALUES ('2','','0000-00-00 00:00:00','','','0','','
 
 DROP TABLE IF EXISTS glpi_prefs;
 CREATE TABLE glpi_prefs (
-    user varchar(80) NOT NULL,
+    username varchar(80) NOT NULL,
     tracking_order enum('no','yes') DEFAULT 'no' NOT NULL,
     language varchar(255) NOT NULL,
     ID int(11) NOT NULL auto_increment,
    PRIMARY KEY (ID),
-   UNIQUE user (user)
+   UNIQUE username (username)
 );
 
 INSERT INTO glpi_prefs VALUES ('irma','no','french','1');

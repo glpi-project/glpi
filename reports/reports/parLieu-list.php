@@ -59,12 +59,12 @@ if ($db->numrows($result)==1){
 	echo "<div align='center'><h2>".$lang["reports"][54]." $name </h2></div><br><br>";
         	
         $query="SELECT glpi_dropdown_netpoint.name AS prise, c.name AS port, c.ifaddr            
-AS ip, c.ifmac AS mac,c.ID AS IDport
+AS ip, c.ifmac AS mac,c.ID AS IDport, glpi_dropdown_locations.ID as location
  FROM glpi_dropdown_locations
  LEFT JOIN glpi_dropdown_netpoint ON glpi_dropdown_netpoint.location = 
 glpi_dropdown_locations.ID
 LEFT JOIN glpi_networking_ports c ON c.netpoint=glpi_dropdown_netpoint.id 
- WHERE glpi_dropdown_locations.ID =".$_POST["location"]." AND c.device_type=".NETWORKING_TYPE.";";
+ WHERE ".getRealQueryForTreeItem("glpi_dropdown_locations",$_POST["location"])." AND c.device_type=".NETWORKING_TYPE.";";
 	/*!
  	on envoie la requête de selection qui varie selon le choix fait dans la dropdown à la fonction report perso qui
  	affiche un rapport en fonction de l'étage choisi  

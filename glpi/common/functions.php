@@ -1714,9 +1714,9 @@ function listConnectComputers($target,$input) {
 
 	$db = new DB;
 	if ($input["type"] == "name") {
-		$query = "SELECT glpi_computers.ID as ID,glpi_computers.name as name, glpi_dropdown_locations.ID as location  from glpi_computers left join glpi_dropdown_locations on glpi_computers.location = glpi_dropdown_locations.id WHERE glpi_computers.deleted = 'N' AND glpi_computers.name LIKE '%".$input["search"]."%' order by name ASC";
+		$query = "SELECT glpi_computers.ID as ID,glpi_computers.name as name, glpi_dropdown_locations.ID as location  from glpi_computers left join glpi_dropdown_locations on glpi_computers.location = glpi_dropdown_locations.id WHERE glpi_computers.deleted = 'N' AND glpi_computers.is_template ='0' AND glpi_computers.name LIKE '%".$input["search"]."%' order by name ASC";
 	} else {
-		$query = "SELECT glpi_computers.ID as ID,glpi_computers.name as name, glpi_dropdown_locations.ID as location from glpi_computers left join glpi_dropdown_locations on glpi_computers.location = glpi_dropdown_locations.id WHERE glpi_computers.deleted = 'N' AND glpi_computers.ID LIKE '%".$input["search"]."%' order by name ASC";
+		$query = "SELECT glpi_computers.ID as ID,glpi_computers.name as name, glpi_dropdown_locations.ID as location from glpi_computers left join glpi_dropdown_locations on glpi_computers.location = glpi_dropdown_locations.id WHERE glpi_computers.deleted = 'N' AND glpi_computers.is_template ='0' AND glpi_computers.ID LIKE '%".$input["search"]."%' order by name ASC";
 	} 
 	$result = $db->query($query);
 	$number = $db->numrows($result);
@@ -2256,6 +2256,7 @@ switch($item_type)
 		case 'glpi_networking_lieu' :
 		echo "<table width='100%' height='60' border='0'>";
 		echo "<tr> ";
+		echo "<th><div align='center'><b>".$lang["reports"][20]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][37]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][52]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][38]."</b></div></th>";
@@ -2269,6 +2270,7 @@ switch($item_type)
 		
 		while( $ligne = $db->fetch_array($result))
 					{
+					$lieu=getTreeValueName("glpi_dropdown_locations",$ligne["location"]);
 					//echo $ligne['location'];
 					//print_r($ligne);
 					$prise=$ligne['prise'];
@@ -2276,14 +2278,23 @@ switch($item_type)
 					$nw=new NetWire();
 					$end1=$nw->getOppositeContact($ligne['IDport']);
 					$np=new Netport();
-					$np->getFromDB($end1);
-					$np->getDeviceData($np->fields["on_device"],$np->fields["device_type"]);
-					$ordi=$np->device_name;
+
+					$ordi="";
+					$ip2="";
+					$mac2="";
+					$portordi="";
+
+					if ($end1){
+						$np->getFromDB($end1);
+						$np->getDeviceData($np->fields["on_device"],$np->fields["device_type"]);
+						$ordi=$np->device_name;
+						$ip2=$np->fields['ifaddr'];
+						$mac2=$np->fields['ifmac'];
+						$portordi=$np->fields['name'];
+					}
+
 					$ip=$ligne['ip'];
 					$mac=$ligne['mac'];
-					$ip2=$np->fields['ifaddr'];
-					$mac2=$np->fields['ifmac'];
-					$portordi=$np->fields['name'];
 
 					$np=new Netport();
 					$np->getFromDB($ligne['IDport']);
@@ -2296,6 +2307,7 @@ switch($item_type)
 					//inserer ces valeures dans un tableau
 					
 					echo "<tr>";	
+					if($lieu) echo "<td><div align='center'>$lieu</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($prise) echo "<td><div align='center'>$prise</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($switch) echo "<td><div align='center'>$switch</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
 					if($ip) echo "<td><div align='center'>$ip</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
@@ -2331,14 +2343,22 @@ switch($item_type)
 					$nw=new NetWire();
 					$end1=$nw->getOppositeContact($ligne['IDport']);
 					$np=new Netport();
-					$np->getFromDB($end1);
-					$np->getDeviceData($np->fields["on_device"],$np->fields["device_type"]);
-					$ordi=$np->device_name;
+
+					$ip2="";
+					$mac2="";
+					$portordi="";
+
+					if ($end1){
+						$np->getFromDB($end1);
+						$np->getDeviceData($np->fields["on_device"],$np->fields["device_type"]);
+						$ordi=$np->device_name;
+						$ip2=$np->fields['ifaddr'];
+						$mac2=$np->fields['ifmac'];
+						$portordi=$np->fields['name'];
+					} 
+
 					$ip=$ligne['ip'];
 					$mac=$ligne['mac'];
-					$ip2=$np->fields['ifaddr'];
-					$mac2=$np->fields['ifmac'];
-					$portordi=$np->fields['name'];
 					//inserer ces valeures dans un tableau
 					
 					echo "<tr>";	
@@ -2378,15 +2398,24 @@ switch($item_type)
 					$nw=new NetWire();
 					$end1=$nw->getOppositeContact($ligne['IDport']);
 					$np=new Netport();
-					$np->getFromDB($end1);
-					$np->getDeviceData($np->fields["on_device"],$np->fields["device_type"]);
-					$ordi=$np->device_name;
+
+					$ordi="";
+					$ip2="";
+					$mac2="";
+					$portordi="";
+
+					if ($end1){
+						$np->getFromDB($end1);
+						$np->getDeviceData($np->fields["on_device"],$np->fields["device_type"]);
+						$ordi=$np->device_name;
+						$ip2=$np->fields['ifaddr'];
+						$mac2=$np->fields['ifmac'];
+						$portordi=$np->fields['name'];
+					}
+
 					$ip=$ligne['ip'];
 					$mac=$ligne['mac'];
 					$port=$ligne['port'];
-					$ip2=$np->fields['ifaddr'];
-					$mac2=$np->fields['ifmac'];
-					$portordi=$np->fields['name'];
 					$np=new Netport();
 					$np->getFromDB($ligne['IDport']);
 
@@ -2692,10 +2721,10 @@ return (@$name);
 }
 
 /**
-* Get the equivalent serach query using ID that the search of the string argument
+* Get the equivalent search query using ID that the search of the string argument
 *
 * @param $table
-* @param $search the search strin value
+* @param $search the search string value
 * @return string the query
 */
 function getRealSearchForTreeItem($table,$search){
@@ -2749,6 +2778,67 @@ if (count($id_found)>0){
 	
 	return $ret;
 }else return " ( $table.name LIKE '%$search%') ";
+}
+
+
+/**
+* Get the equivalent search query using ID of soons that the search of the father's ID argument
+*
+* @param $table
+* @param $IDf The ID of the father
+* @return string the query
+*/
+function getRealQueryForTreeItem($table,$IDf){
+
+if (empty($IDf)) return "";
+
+$db=new DB();
+
+// IDs to be present in the final query
+$id_found=array();
+// current ID found to be added
+$found=array();
+
+// First request init the  varriables
+$query="SELECT ID from $table WHERE ID = '$IDf'";
+if ( ($result=$db->query($query)) && ($db->numrows($result)>0) ){
+	while ($row=$db->fetch_array($result)){
+		array_push($id_found,$row['ID']);
+		array_push($found,$row['ID']);
+	}
+} else return " ( $table.ID = '$IDf') ";
+
+// Get the leafs of previous founded item
+while (count($found)>0){
+	// Get next elements
+	$query="SELECT ID from $table WHERE '0'='1' ";
+	foreach ($found as $key => $val)
+		$query.= " OR parentID = '$val' ";
+		
+	// CLear the found array
+	unset($found);
+	$found=array();
+	
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		while ($row=$db->fetch_array($result)){
+			if (!in_array($row['ID'],$id_found)){
+				array_push($id_found,$row['ID']);
+				array_push($found,$row['ID']);
+			}
+		}		
+	}
+}
+
+// Construct the final request
+if (count($id_found)>0){
+	$ret=" ( '0' = '1' ";
+	foreach ($id_found as $key => $val)
+		$ret.=" OR $table.ID = '$val' ";
+	$ret.=") ";
+	
+	return $ret;
+}else return " ( $table.ID = '$IDf') ";
 }
 
 
