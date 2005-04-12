@@ -243,7 +243,7 @@ switch($table){
       Array( 'platform',    unhtmlentities($lang["software"][3]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'serial',   unhtmlentities($lang["software"][31]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'buy',    unhtmlentities($lang["software"][35]), FORMAT_TEXTE, 'L',    20 ,'0'),
-      Array( 'install_on',    unhtmlentities($lang["software"][19]), FORMAT_TEXTE, 'L',    20 ,'0'),
+      Array( 'install_on',    unhtmlentities($lang["software"][19]), FORMAT_TEXTE, 'L',    20 ,'1'),
       Array( 'expire',    unhtmlentities($lang["software"][32]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'oem',    unhtmlentities($lang["software"][28]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'oem_comp',    unhtmlentities($lang["software"][28]), FORMAT_TEXTE, 'L',    20 ,'0'),
