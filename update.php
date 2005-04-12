@@ -2248,12 +2248,11 @@ if(!TableExists("glpi_repair_item")) {
 }
 
 if(!FieldExists("glpi_prefs","username")) {
+	
 	$query = " ALTER TABLE `glpi_prefs` CHANGE `user` `username` VARCHAR( 80 ) NOT NULL;";
 	$db->query($query) or die("0.5 change user to username ".$lang["update"][90].$db->error());
-	if(isIndex("glpi_prefs", "user")) {
-		$query = " ALTER TABLE `glpi_prefs` DROP INDEX `user`;";
-		$db->query($query) or die("0.5 drop key user ".$lang["update"][90].$db->error());
-	}
+	$query = " ALTER TABLE `glpi_prefs` DROP INDEX `user`;";
+	$db->query($query) or die("0.5 drop key user ".$lang["update"][90].$db->error());
 	$query = "ALTER TABLE `glpi_prefs` ADD UNIQUE ( `username` ) ";
 	$db->query($query) or die("0.5 alter field username ".$lang["update"][90].$db->error());
 }
