@@ -171,11 +171,13 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 	// Build where-clause
 	if ($contains||$containsID)
 	{
-		$where= "  '1'='1' ";
+		$where= "  ( '0'='1' ";
 		if ($contains)
-			$where .= " AND (contents LIKE '%$contains%')";
+			$where .= " OR (contents LIKE '%$contains%')";
 		if ($containsID)
-			$where .= " AND (ID = '$containsID')";
+			$where .= " OR (ID = '$containsID')";
+			
+		$where.=" ) ";
 	}
 	else  if ($show == "old")
 	{
