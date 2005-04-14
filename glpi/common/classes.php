@@ -200,7 +200,7 @@ class Identification
 			return true;
 		}
 
-		$this->err = imap_last_error();
+		$this->err .= imap_last_error()."<br>";
 		imap_close($mbox);
 		return false;
 	}
@@ -234,18 +234,18 @@ class Identification
                      }
                      else
                      {
-                       $this->err = "Not allowed to log in";
+				       $this->err.="User not found or several users found.<br>\n";
                      }
   		}
   		else
   		{
-  			$this->err = ldap_error();
+  			$this->err .= ldap_error($ds)."<br>";
   		}
   		ldap_close($conn);
   	}
   	else
   	{
-  		$this->err = ldap_error();
+  		$this->err .= ldap_error($ds)."<br>";
   	}
   	
   	return($rv);
@@ -261,30 +261,35 @@ class Identification
   if (empty($host)) {
 	return false;
   }
-
   $ldap_server=$host;
   $ldap_login_attr = "uid";                          
   $ldap_dn ="";
-	error_reporting(16);
+  error_reporting(16);
   $ds = ldap_connect ($ldap_server);
+
   if (!$ds)
     {
+     $this->err.=ldap_error($ds)."<br>";
      return false;
+     
     }
   ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
-  
+
   if ($rdn=="") $r = ldap_bind ( $ds);
   else $r = ldap_bind ( $ds,$rdn,$rpass);
+
   if (!$r)
       {
+       $this->err.=ldap_error($ds)."<br>";
        ldap_close ( $ds );
        return false;
       }
-      
+	exit();      
     $sr = ldap_search ($ds, $ldap_base_dn, "($ldap_login_attr=$login)");
 
     if (!$sr)
        {
+   	$this->err.=ldap_error($ds)."<br>";
        ldap_close ( $ds );
        return false;
        }
@@ -293,6 +298,7 @@ class Identification
 
     if ( $info["count"] != 1 )
        {
+       $this->err.="User not found or several users found.<br>\n";
        ldap_free_result ( $sr );
        ldap_close ( $ds );
        return false;
@@ -336,18 +342,18 @@ class Identification
                      }
                      else
                      {
-                       $this->err = "Not allowed to log in";
+                       $this->err.="User not found or several users found.<br>\n";
                      }
   		}
   		else
   		{
-  			$this->err = ldap_error();
+  			$this->err .= ldap_error($ds)."<br>";
   		}
   		ldap_close($conn);
   	}
   	else
   	{
-  		$this->err = ldap_error();
+  		$this->err .= ldap_error($ds)."<br>";
   	}
   	
   	return($rv);
@@ -367,10 +373,11 @@ class Identification
   $ldap_server=$host;
   $ldap_login_attr = "sAMAccountName";                          
   $ldap_dn ="";
-//	error_reporting(16);
+	error_reporting(16);
   $ds = ldap_connect ($ldap_server);
   if (!$ds)
     {
+ 	$this->err .= ldap_error($ds)."<br>";
      return false;
     }
     //echo "CONNECT";
@@ -384,6 +391,7 @@ class Identification
   //echo $rdn."---".$rpass."---".$ds;
   if (!$r)
       {
+		$this->err .= ldap_error($ds)."<br>";
        ldap_close ( $ds );
        return false;
       }
@@ -392,6 +400,7 @@ class Identification
 //echo " SEARCH";
     if (!$sr)
        {
+		$this->err .= ldap_error($ds)."<br>";
        ldap_close ( $ds );
        return false;
        }
@@ -400,6 +409,7 @@ class Identification
 
     if ( $info["count"] != 1 )
        {
+       $this->err.="User not found or several users found.<br>\n";
        ldap_free_result ( $sr );
        ldap_close ( $ds );
        return false;
@@ -425,7 +435,7 @@ class Identification
 		//
 		if ( empty($password) )
 		{
-			$this->err = "Empty Password";
+			$this->err .= "Empty Password<br>";
 			return false;
 		}
 		
@@ -433,13 +443,13 @@ class Identification
 		$query = "SELECT password, password_md5 from glpi_users where (name = '".$name."')";
 		$result = $db->query($query);
 		if (!$result){
-		$this->err = "Unknown username";
+		$this->err .= "Unknown username<br>";
 		return false;	
 		}
 		$query2 = "SELECT PASSWORD('".$password."') as password";
 		$result2 = $db->query($query2);
 		if (!$result2){
-		$this->err = "Bad username or password";
+		$this->err .= "Bad username or password<br>";
 		return false;	
 		}
 		if($result&&$result2)
@@ -463,18 +473,18 @@ class Identification
 					return true;
 				}
 				else {
-				$this->err = "Bad username or password";
+				$this->err .= "Bad username or password<br>";
 				return false;
 				}
 			}
 			else
 			{
-				$this->err = "Bad username or password";
+				$this->err .= "Bad username or password<br>";
 				return false;
 			}
 		}
 
-		$this->err = "Erreur numero : ".$db->errno().": ";
+		$this->err .= "Erreur numero : ".$db->errno().": ";
 		$this->err .= $db->error();
 		return false;
 
