@@ -284,7 +284,7 @@ class Identification
        ldap_close ( $ds );
        return false;
       }
-	exit();      
+
     $sr = ldap_search ($ds, $ldap_base_dn, "($ldap_login_attr=$login)");
 
     if (!$sr)
