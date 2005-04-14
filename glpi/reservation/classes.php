@@ -103,6 +103,12 @@ class ReservationItem{
 	return $this->obj->fields["name"];
 	else return "N/A";
 	}
+
+	function getLocation(){
+		if (isset($this->obj->fields["location"])&&$this->obj->fields["location"]!="")
+	return getTreeValueName("glpi_dropdown_locations",$this->obj->fields["location"]);
+	else return "N/A";
+	}
 	
 	function getLink(){
 	

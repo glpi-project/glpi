@@ -168,7 +168,7 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.ID&order=ASC&start=$start\">";
 			echo $lang["reservation"][2]."</a></th>";
 
-			// Location			
+			// Device_Type			
 			echo "<th>";
 			if ($sort=="glpi_reservation_item.device_type") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
@@ -176,13 +176,21 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.device_type&order=ASC&start=$start\">";
 			echo $lang["reservation"][3]."</a></th>";
 
-			// Type
+			// device
 			echo "<th>";
 			if ($sort=="glpi_reservation_item.id_device") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.id_device&order=ASC&start=$start\">";
 			echo $lang["reservation"][4]."</a></th>";
+
+			// Lieu
+			echo "<th>";
+//			if ($sort=="glpi_reservation_item.id_device") {
+//				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+//			}
+//			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.id_device&order=ASC&start=$start\">";
+			echo $lang["computers"][10]."</th>";
 
 			// Comments
 			echo "<th>";
@@ -191,7 +199,6 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.comments&order=ASC&start=$start\">";
 			echo $lang["reservation"][23]."</a></th>";
-			
 			
 			
 			
@@ -213,6 +220,8 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 				
 				echo "<td>". $ri->getType()."</td>";
 				echo "<td><b>". $ri->getLink() ."</b></td>";
+				echo "<td>". $ri->getLocation() ."</td>";
+
 				echo "<td>". substr(unhtmlentities_deep($ri->fields["comments"]),0,$cfg_features["cut"])."</td>";
 				echo "<td>";
 				echo "<a href='".$target."?comment=$ID'>".$lang["reservation"][22]."</a>";
@@ -752,11 +761,12 @@ $query="select ID from glpi_reservation_item ORDER BY device_type";
 
 	if ($result = $db->query($query)) {
 		echo "<div align='center'><table class='tab_cadre' cellspacing='5'>";
-		echo "<tr><th colspan='2'>".$lang["reservation"][1]."</th></tr>";
+		echo "<tr><th colspan='3'>".$lang["reservation"][1]."</th></tr>";
 		while ($row=$db->fetch_array($result)){
 			$ri->getfromDB($row['ID']);
 			if (isset($ri->obj->fields["deleted"])&&$ri->obj->fields["deleted"]=='N'){
 			echo "<tr class='tab_bg_2'><td><a href='".$target."?show=resa&ID=".$row['ID']."'>".$ri->getType()." - ".$ri->getName()."</a></td>";
+			echo "<td>".$ri->getLocation()."</td>";
 			echo "<td>".nl2br($ri->fields["comments"])."</td>";
 			echo "</tr>";
 			}
