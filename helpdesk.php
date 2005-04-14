@@ -57,11 +57,13 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 	include ($phproot . "/glpi/includes_monitors.php");
 	include ($phproot . "/glpi/includes_networking.php");
 	include ($phproot . "/glpi/includes_software.php");
+	
+	if (!isset($_GET["start"])) $_GET["start"]=0;
 
 	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 
 	if (!isset($_GET["ID"])) {
-		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["show"],"","","",0);
+		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["show"],"","","",$_GET["start"]);
 	}
 	else {
 		 showJobDetails($_GET["ID"]);
