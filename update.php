@@ -1623,7 +1623,7 @@ function updateMaintenanceInfos($table,$type,$ID){
 	$query_insert="INSERT INTO glpi_contract_device (FK_contract,FK_device,device_type) VALUES ('$ID','".$data["ID"]."','$type')";	
 	$result_insert=$db->query($query_insert) or die("0.5 insert for update maintenance ".$lang["update"][90].$db->error());
 	}
-// TOADD BEFORE RELEASE
+
 	$query_drop =  "ALTER TABLE `$table` DROP `maintenance`";
 	$result_drop=$db->query($query_drop) or die("0.5 drop for update maintenance ".$lang["update"][90].$db->error());
 
@@ -1646,7 +1646,7 @@ function updateWarrantyInfos($table,$type){
 			$result_insert=$db->query($query_insert) or die("0.5 insert for update warranty ".$lang["update"][90].$db->error());
 		}
 	}
-// TOADD BEFORE RELEASE
+
 	$query_drop =  "ALTER TABLE `$table` DROP `achat_date`";
 	$result_drop=$db->query($query_drop) or die("0.5 drop1 for update warranty ".$lang["update"][90].$db->error());
 	$query_drop =  "ALTER TABLE `$table` DROP `date_fin_garantie`";
