@@ -51,7 +51,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 	
 	if (!$ic->getfromDB($device_type,$dev_ID)){
 		if ($withtemplate!=2)
-		echo "<b><a href='$target?device_type=$device_type&FK_device=$dev_ID&add=add'>Activer les informations commerciales</a></b><br>";
+		echo "<b><a href='$target?device_type=$device_type&FK_device=$dev_ID&add=add'>".$lang["financial"][68]."</a></b><br>";
 	} else {
 		if ($withtemplate!=2)
 		echo "<form name='form_ic' method='post' action=\"$target\">";
