@@ -198,27 +198,30 @@ border:1px dotted #000000;
  /* ###### login ###### */
 /* #################################### */
 #contenulogin {
-/* a voir je suis pas bien sûr  */
-/*height: 100%;*/
+
 font-family : Verdana,Arial,Helvetica,sans-serif;
 font-size : 12px;
-/*position: relative; *//*ou absolute */
-left: 50%;
-width: 300px;
-/*margin-left: -150px;*/
+text-align: center;
 color :#009966;
-margin: 0 auto;
+
 }
 
 #boxlogin {
 background-color: #FFFFFF;
-text-align: center;
+
+margin-left: auto;
+margin-right: auto;
+text-align: left;  /* Bug IE Grrr */
 height: 200px;
 width: 300px;
 margin-top: 10px;
 
 }
 
+#boxlogin p {
+
+text-align:center;
+}
 
 #boxlogin fieldset {
 background-color: #eeeeee;
