@@ -168,6 +168,7 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 		
 	$prefs = getTrackingPrefs($username);
 
+
 	// Build where-clause
 	if ($contains||$containsID)
 	{
@@ -183,10 +184,10 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 	{
 		$where = " (status = 'old')";
 	}
-	else
+	else if ($show !="user")
 	{
 		$where = " (status = 'new')";
-	}
+	} else $where= " ('1'='1') ";
 	
 	
 	if($device != -1) {
@@ -224,7 +225,6 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 	
 	$lim_query = " LIMIT ".$start.",".$cfg_features["list_limit"]."";	
 	
-	
 	$db = new DB;
 	$result = $db->query($query);
 	$numrows = $db->numrows($result);
@@ -241,8 +241,8 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 		echo "<input type='hidden' name='start' value='$newstart'>";
 		}
 
-	
-	$query .= $lim_query;
+//	if ($show!="user")	
+		$query .= $lim_query;
 	
 	$result = $db->query($query);
 	$i = 0;
@@ -272,7 +272,9 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 		echo "</table></div>";
 		// Pager
 		if(empty($sort)) $sort = "";
-		$parameters="show=".$show."&contains=".$contains."&sort=".$sort."&ID=".$username;
+		$parameters="show=".$show."&contains=".$contains."&sort=".$sort;
+		if ($show!="user")
+			$parameters.="&ID=".$username;
 		// Delete selected item
 		if (isAdmin($_SESSION["glpitype"])&&$show == "old"){
 			echo "<br><div align='center'>";
@@ -285,7 +287,8 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 			echo "<td width='75%'>&nbsp;</td></table></div>";
 		}
 		
-		printPager($start,$numrows,$target,$parameters);
+//	if ($show!="user")	
+			printPager($start,$numrows,$target,$parameters);
 	}
 	else
 	{
