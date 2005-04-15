@@ -108,7 +108,7 @@ if(isset($_POST["Submit"]))
 		$Computer = $ligne['name'];
 		$s1 = $ligne['serial'];
 		$s2 = $ligne['otherserial'];
-		echo " <tr class='tab_bg_1' onClick=\"fillidfield(1,".$Comp_num.")\">";
+		echo " <tr class='tab_find' onClick=\"fillidfield(1,".$Comp_num.")\">";
 		echo "<td width='25%' align='center'><b> $Contact </b></td>";
 		echo "<td width='25%' align='center'><b> ".$lang["help"][25]."</b></td>";
 		echo "<td width='25%' align='center'><b> $Computer </b></td>";
@@ -131,7 +131,7 @@ if(isset($_POST["Submit"]))
 		$Computer = $ligne['name'];
 		$s1 = $ligne['serial'];
 		$s2 = $ligne['otherserial'];
-		echo " <tr class='tab_bg_1' onClick=\"fillidfield(2,".$Comp_num.")\">";
+		echo " <tr class='tab_find' onClick=\"fillidfield(2,".$Comp_num.")\">";
 		echo "<td width='25%' align='center'><b> $Contact </b></td>";
 		echo "<td width='25%' align='center'><b> ".$lang["help"][26]."</b></td>";
 		echo "<td width='25%' align='center'><b> $Computer </b></td>";
@@ -154,7 +154,7 @@ if(isset($_POST["Submit"]))
 		$Computer = $ligne['name'];
 		$s1 = $ligne['serial'];
 		$s2 = $ligne['otherserial'];
-		echo " <tr class='tab_bg_1' onClick=\"fillidfield(3,".$Comp_num.")\">";
+		echo " <tr class='tab_find' onClick=\"fillidfield(3,".$Comp_num.")\">";
 		echo "<td width='25%' align='center'><b> $Contact </b></td>";
 		echo "<td width='25%' align='center'><b> ".$lang["help"][27]."</b></td>";
 		echo "<td width='25%' align='center'><b> $Computer </b></td>";
@@ -177,7 +177,7 @@ if(isset($_POST["Submit"]))
 		$Computer = $ligne['name'];
 		$s1 = $ligne['serial'];
 		$s2 = $ligne['otherserial'];
-		echo " <tr class='tab_bg_1' onClick=\"fillidfield(4,".$Comp_num.")\">";
+		echo " <tr class='tab_find' onClick=\"fillidfield(4,".$Comp_num.")\">";
 		echo "<td width='25%' align='center'><b> $Contact </b></td>";
 		echo "<td width='25%' align='center'><b> ".$lang["help"][28]."</b></td>";
 		echo "<td width='25%' align='center'><b> $Computer </b></td>";
@@ -200,7 +200,7 @@ if(isset($_POST["Submit"]))
 		$Computer = $ligne['name'];
 		$s1 = $ligne['serial'];
 		$s2 = $ligne['otherserial'];
-		echo " <tr class='tab_bg_1' onClick=\"fillidfield(5,".$Comp_num.")\">";
+		echo " <tr class='tab_find' onClick=\"fillidfield(5,".$Comp_num.")\">";
 		echo "<td width='25%' align='center'><b> $Contact </b></td>";
 		echo "<td width='25%' align='center'><b> ".$lang["help"][29]."</b></td>";
 		echo "<td width='25%' align='center'><b> $Computer </b></td>";
@@ -220,7 +220,7 @@ if(isset($_POST["Submit"]))
 	{
 		$Comp_num = $ligne['ID'];
 		$Computer = $ligne['name'];
-		echo " <tr class='tab_bg_1' onClick=\"fillidfield(6,".$Comp_num.")\">";
+		echo " <tr class='tab_find' onClick=\"fillidfield(6,".$Comp_num.")\">";
 		echo "<td width='25%' align='center'>&nbsp;</td>";
 		echo "<td width='25%' align='center'><b>".$lang["help"][31]."</b></td>";
 		echo "<td width='25%' align='center'><b> $Computer </b></td>";
