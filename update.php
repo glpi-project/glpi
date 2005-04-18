@@ -343,7 +343,7 @@ function showLocationUpdateForm(){
 	if (!isset($_POST['car_sep'])) $_POST['car_sep']='';
 
 	if(!TableExists("glpi_dropdown_locations_new")) {
-		$query = " CREATE TABLE `glpi_dropdown_locations_new` (`ID` INT NOT NULL ,`name` VARCHAR( 255 ) NOT NULL ,`parentID` INT NOT NULL ,PRIMARY KEY ( `ID` ),UNIQUE KEY (`name`,`parentID`), KEY(`parentID`));";
+		$query = " CREATE TABLE `glpi_dropdown_locations_new` (`ID` INT NOT NULL ,`name` VARCHAR( 255 ) NOT NULL ,`parentID` INT NOT NULL ,PRIMARY KEY ( `ID` ),UNIQUE KEY (`name`,`parentID`), KEY(`parentID`)) TYPE=MyISAM;";
 		$db->query($query) or die("LOCATION ".$db->error());
 	}
 
@@ -1409,7 +1409,7 @@ $query= "CREATE TABLE glpi_dropdown_tracking_category (
   ID int(11) NOT NULL auto_increment,
   name varchar(255) default NULL,
   PRIMARY KEY  (ID)
-);";
+) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE `glpi_dropdown_tracking_category ".$lang["update"][90].$db->error());
 
 }
@@ -1448,7 +1448,7 @@ $query= "CREATE TABLE `glpi_cartridges` (
   PRIMARY KEY  (`ID`),
   KEY(`FK_glpi_cartridges_type`),
   KEY(`FK_glpi_printers`)
-);";
+) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_cartridges ".$lang["update"][90].$db->error());
 
 $query= "CREATE TABLE `glpi_cartridges_type` (
@@ -1465,7 +1465,7 @@ $query= "CREATE TABLE `glpi_cartridges_type` (
   KEY(`FK_glpi_enterprise`),
   KEY(`tech_num`),
   KEY(`deleted`)
-);";
+) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_cartridges_type ".$lang["update"][90].$db->error());
 	
 $query= "CREATE TABLE `glpi_cartridges_assoc` (
@@ -1476,7 +1476,7 @@ $query= "CREATE TABLE `glpi_cartridges_assoc` (
   UNIQUE KEY `FK_glpi_type_printer` (`FK_glpi_type_printer`,`FK_glpi_cartridges_type`),
  KEY(`FK_glpi_cartridges_type`),
  KEY(`FK_glpi_type_printer`) 
-);";
+) TYPE=MyISAM;";
 	$db->query($query) or die("0.5 CREATE TABLE glpi_cartridges_assoc ".$lang["update"][90].$db->error());
 }
 
