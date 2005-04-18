@@ -282,7 +282,7 @@ function get_def($db, $table) {
           else $def .= "   KEY $x (" . implode($columns, ", ") . ")";
      }
 
-     $def .= "\n);\n\n";
+     $def .= "\n) TYPE=MyISAM;\n\n";
      return $def;
 }
 

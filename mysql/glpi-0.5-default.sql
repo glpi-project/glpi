@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-04-12 15:02
+#GLPI Dump database on 2005-04-18 18:15
 
 ### Dump table glpi_cartridges
 
@@ -14,7 +14,7 @@ CREATE TABLE glpi_cartridges (
    PRIMARY KEY (ID),
    KEY FK_glpi_cartridges_type (FK_glpi_cartridges_type),
    KEY FK_glpi_printers (FK_glpi_printers)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_cartridges_assoc
@@ -28,7 +28,7 @@ CREATE TABLE glpi_cartridges_assoc (
    UNIQUE FK_glpi_type_printer (FK_glpi_type_printer, FK_glpi_cartridges_type),
    KEY FK_glpi_cartridges_type (FK_glpi_cartridges_type),
    KEY FK_glpi_type_printer_2 (FK_glpi_type_printer)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_cartridges_type
@@ -48,7 +48,7 @@ CREATE TABLE glpi_cartridges_type (
    KEY FK_glpi_enterprise (FK_glpi_enterprise),
    KEY tech_num (tech_num),
    KEY deleted (deleted)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_computer_device
@@ -64,7 +64,7 @@ CREATE TABLE glpi_computer_device (
    KEY device_type (device_type),
    KEY device_type_2 (device_type, FK_device),
    KEY FK_computers (FK_computers)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_computer_device VALUES ('1','','8','1','19');
 INSERT INTO glpi_computer_device VALUES ('2','','8','1','21');
@@ -147,7 +147,7 @@ CREATE TABLE glpi_computers (
    KEY is_template (is_template),
    KEY date_mod (date_mod),
    KEY tech_num (tech_num)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_computers VALUES ('8','Dell Inspiron 450','0','4586-sd6-fds','','Roger Rabbit','5462','0','','2003-09-18 00:15:44','5','1','1','0',NULL,'0','N');
 INSERT INTO glpi_computers VALUES ('10','Dell Inspiron 450','0','4598-jhd-545','','Peter Pan','8565','0','','2003-09-18 00:07:58','13','1','1','0',NULL,'0','N');
@@ -211,7 +211,7 @@ CREATE TABLE glpi_config (
     priority_5 varchar(200) DEFAULT '#ffadad' NOT NULL,
     date_fiscale date DEFAULT '2005-12-31' NOT NULL,
    PRIMARY KEY (ID)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15','0.5','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31');
 
@@ -228,7 +228,7 @@ CREATE TABLE glpi_connect_wire (
    KEY end1 (end1),
    KEY end2 (end2),
    KEY type (type)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_contact_enterprise
@@ -242,7 +242,7 @@ CREATE TABLE glpi_contact_enterprise (
    UNIQUE FK_enterprise (FK_enterprise, FK_contact),
    KEY FK_enterprise_2 (FK_enterprise),
    KEY FK_contact (FK_contact)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_contacts
@@ -261,7 +261,7 @@ CREATE TABLE glpi_contacts (
    PRIMARY KEY (ID),
    KEY deleted (deleted),
    KEY type (type)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_contract_device
@@ -276,7 +276,7 @@ CREATE TABLE glpi_contract_device (
    UNIQUE FK_contract (FK_contract, FK_device, device_type),
    KEY FK_contract_2 (FK_contract),
    KEY FK_device (FK_device, device_type)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_contract_enterprise
@@ -290,7 +290,7 @@ CREATE TABLE glpi_contract_enterprise (
    UNIQUE FK_enterprise (FK_enterprise, FK_contract),
    KEY FK_enterprise_2 (FK_enterprise),
    KEY FK_contract (FK_contract)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_contracts
@@ -323,7 +323,7 @@ CREATE TABLE glpi_contracts (
    KEY contract_type (contract_type),
    KEY begin_date (begin_date),
    KEY bill_type (bill_type)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_device_case
@@ -338,7 +338,7 @@ CREATE TABLE glpi_device_case (
     specif_default varchar(250) NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_device_control
@@ -354,7 +354,7 @@ CREATE TABLE glpi_device_control (
     specif_default varchar(250) NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_device_drive
@@ -371,7 +371,7 @@ CREATE TABLE glpi_device_drive (
     specif_default varchar(250) NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_device_gfxcard
@@ -387,7 +387,7 @@ CREATE TABLE glpi_device_gfxcard (
     specif_default varchar(250) NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_device_gfxcard VALUES ('1','ATI Rage Pro 3D AGP','','AGP','','0','');
 INSERT INTO glpi_device_gfxcard VALUES ('2','Matrox Millenium G400DH','','AGP','','0','');
@@ -408,7 +408,7 @@ CREATE TABLE glpi_device_hdd (
     specif_default varchar(250) NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_device_hdd VALUES ('1','IBM DTTA 35101','','IDE','','','0','');
 INSERT INTO glpi_device_hdd VALUES ('2','IBM DCAS 34330','','IDE','','','0','');
@@ -425,7 +425,7 @@ CREATE TABLE glpi_device_iface (
     specif_default varchar(250) NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_device_iface VALUES ('1','3Com (100Mbps)','','','0','');
 INSERT INTO glpi_device_iface VALUES ('2','3Com (10Mbps)','','','0','');
@@ -451,7 +451,7 @@ CREATE TABLE glpi_device_moboard (
     specif_default varchar(250) NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_device_moboard VALUES ('1','Asus T2P4S','','','0','');
 INSERT INTO glpi_device_moboard VALUES ('2','Asus P2BX','','','0','');
@@ -468,7 +468,7 @@ CREATE TABLE glpi_device_pci (
     specif_default varchar(250) NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_device_power
@@ -484,7 +484,7 @@ CREATE TABLE glpi_device_power (
     specif_default varchar(250) NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_device_processor
@@ -499,7 +499,7 @@ CREATE TABLE glpi_device_processor (
     specif_default varchar(250) NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_device_processor VALUES ('1','Intel Pentium','0','','0','');
 INSERT INTO glpi_device_processor VALUES ('2','Intel Pentium II','0','','0','');
@@ -541,7 +541,7 @@ CREATE TABLE glpi_device_ram (
     specif_default varchar(250) NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_device_ram VALUES ('1','36pin SIMMS','EDO','','','0','');
 INSERT INTO glpi_device_ram VALUES ('2','72pin SIMMS (Fast Page)','EDO','','','0','');
@@ -565,7 +565,7 @@ CREATE TABLE glpi_device_sndcard (
     specif_default varchar(250) NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_device_sndcard VALUES ('1','Soundblaster 128 PCI','','','0','');
 INSERT INTO glpi_device_sndcard VALUES ('2','Soundblaster 16 PnP','','','0','');
@@ -583,7 +583,7 @@ CREATE TABLE glpi_doc_device (
    UNIQUE FK_doc (FK_doc, FK_device, device_type),
    KEY FK_doc_2 (FK_doc),
    KEY FK_device (FK_device, device_type)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_docs
@@ -602,7 +602,7 @@ CREATE TABLE glpi_docs (
    KEY rubrique (rubrique),
    KEY deleted (deleted),
    KEY date_mod (date_mod)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_dropdown_enttype
@@ -612,7 +612,7 @@ CREATE TABLE glpi_dropdown_enttype (
     ID int(11) NOT NULL auto_increment,
     name varchar(255) NOT NULL,
    PRIMARY KEY (ID)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_dropdown_firmware
@@ -622,7 +622,7 @@ CREATE TABLE glpi_dropdown_firmware (
     ID int(11) NOT NULL auto_increment,
     name varchar(255) NOT NULL,
    PRIMARY KEY (ID)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_dropdown_iface
@@ -632,7 +632,7 @@ CREATE TABLE glpi_dropdown_iface (
     ID int(11) NOT NULL auto_increment,
     name varchar(255),
    PRIMARY KEY (ID)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_dropdown_iface VALUES ('1','10Mbps Ethernet (UTP)');
 INSERT INTO glpi_dropdown_iface VALUES ('2','100Mbps Ethernet (UTP)');
@@ -653,7 +653,7 @@ CREATE TABLE glpi_dropdown_kbcategories (
    PRIMARY KEY (ID),
    UNIQUE parentID_2 (parentID, name),
    KEY parentID (parentID)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_dropdown_locations
@@ -666,7 +666,7 @@ CREATE TABLE glpi_dropdown_locations (
    PRIMARY KEY (ID),
    UNIQUE name (name, parentID),
    KEY parentID (parentID)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_dropdown_locations VALUES ('1','1 ier etage','0');
 INSERT INTO glpi_dropdown_locations VALUES ('2','2nd etage','0');
@@ -680,7 +680,7 @@ CREATE TABLE glpi_dropdown_netpoint (
     name varchar(255) NOT NULL,
    PRIMARY KEY (ID),
    KEY location (location)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_dropdown_os
@@ -690,7 +690,7 @@ CREATE TABLE glpi_dropdown_os (
     ID int(11) NOT NULL auto_increment,
     name varchar(255),
    PRIMARY KEY (ID)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_dropdown_os VALUES ('1','Windows 2000 - SP2');
 INSERT INTO glpi_dropdown_os VALUES ('2','Linux (Redhat 6.2)');
@@ -713,7 +713,7 @@ CREATE TABLE glpi_dropdown_rubdocs (
     ID int(11) NOT NULL auto_increment,
     name varchar(255),
    PRIMARY KEY (ID)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_dropdown_tracking_category
@@ -723,7 +723,7 @@ CREATE TABLE glpi_dropdown_tracking_category (
     ID int(11) NOT NULL auto_increment,
     name varchar(255),
    PRIMARY KEY (ID)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_enterprises
@@ -741,7 +741,7 @@ CREATE TABLE glpi_enterprises (
    PRIMARY KEY (ID),
    KEY deleted (deleted),
    KEY type (type)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_event_log
@@ -759,9 +759,9 @@ CREATE TABLE glpi_event_log (
    KEY comp (item),
    KEY date (date),
    KEY itemtype (itemtype)
-);
+) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-04-12 15:02:04','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-04-18 18:14:42','login','3','glpi logged in.');
 
 ### Dump table glpi_followups
 
@@ -776,7 +776,7 @@ CREATE TABLE glpi_followups (
    KEY tracking (tracking),
    KEY author (author),
    KEY date (date)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_followups VALUES ('1','1','2003-09-18 00:53:35','tech','J\'ai été voir, je pense que la carte mere a grillé.');
 INSERT INTO glpi_followups VALUES ('2','1','2003-09-18 00:54:06','tech','L\'alimentation est foutue, je vais tester la carte mere pour voir si elle est recuperable');
@@ -810,7 +810,7 @@ CREATE TABLE glpi_infocoms (
    UNIQUE FK_device (FK_device, device_type),
    KEY FK_enterprise (FK_enterprise),
    KEY buy_date (buy_date)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_infocoms VALUES ('1','18','1','2001-09-24','0000-00-00','12','',NULL,'','','','0',NULL,'0','','0','');
 
@@ -824,7 +824,7 @@ CREATE TABLE glpi_inst_software (
    PRIMARY KEY (ID),
    KEY cID (cID),
    KEY sID (license)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_inst_software VALUES ('2','10','7');
 INSERT INTO glpi_inst_software VALUES ('1','8','8');
@@ -842,7 +842,7 @@ CREATE TABLE glpi_kbitems (
     faq enum('yes','no') DEFAULT 'no' NOT NULL,
    PRIMARY KEY (ID),
    KEY categoryID (categoryID)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_licenses
@@ -858,7 +858,7 @@ CREATE TABLE glpi_licenses (
     buy enum('Y','N') DEFAULT 'Y' NOT NULL,
    PRIMARY KEY (ID),
    KEY sID (sID)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_licenses VALUES ('7','4','12-aa-asd-12-aa',NULL,'N','0','Y');
 INSERT INTO glpi_licenses VALUES ('6','4','asd-asdf-asdf-12',NULL,'N','0','Y');
@@ -899,7 +899,7 @@ CREATE TABLE glpi_monitors (
    KEY deleted (deleted),
    KEY is_template (is_template),
    KEY tech_num (tech_num)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_monitors VALUES ('3','nokia 20\'','2003-09-18 00:14:14','','','0','Ecran infographiste','','','20','1','1','1','0','1','1','0','N','0',NULL);
 INSERT INTO glpi_monitors VALUES ('2','Sony 19\'','2003-09-18 00:14:50','','','0','ecran documentation','','','19','0','0','1','1','1','3','0','N','0',NULL);
@@ -936,7 +936,7 @@ CREATE TABLE glpi_networking (
    KEY deleted (deleted),
    KEY is_template (is_template),
    KEY tech_num (tech_num)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_networking VALUES ('9','Dlink 450','','4586-puis-kioe','','','','0','0000-00-00 00:00:00','','1','1',NULL,'0','N','0',NULL,'','');
 INSERT INTO glpi_networking VALUES ('10','','','','','','','0','0000-00-00 00:00:00','',NULL,NULL,NULL,'0','N','1','Blank Template','','');
@@ -957,7 +957,7 @@ CREATE TABLE glpi_networking_ports (
    PRIMARY KEY (ID),
    KEY on_device (on_device, device_type),
    KEY netpoint (netpoint)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_networking_ports VALUES ('1','8','1','1','3Com','10.10.0.26','','2',NULL);
 INSERT INTO glpi_networking_ports VALUES ('2','10','1','1','3com','10.10.0.27','','2',NULL);
@@ -979,7 +979,7 @@ CREATE TABLE glpi_networking_wire (
    UNIQUE end1_1 (end1, end2),
    KEY end1 (end1),
    KEY end2 (end2)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_networking_wire VALUES ('1','5','1');
 INSERT INTO glpi_networking_wire VALUES ('2','6','2');
@@ -1012,7 +1012,7 @@ CREATE TABLE glpi_peripherals (
    KEY deleted (deleted),
    KEY is_template (is_template),
    KEY tech_num (tech_num)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_peripherals VALUES ('1','','0000-00-00 00:00:00','','','0','','','','0','0','','0','N','1','Blank Template');
 
@@ -1026,7 +1026,7 @@ CREATE TABLE glpi_prefs (
     ID int(11) NOT NULL auto_increment,
    PRIMARY KEY (ID),
    UNIQUE username (username)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_prefs VALUES ('glpi','yes','french','1');
 INSERT INTO glpi_prefs VALUES ('Helpdesk','no','french','2');
@@ -1065,7 +1065,7 @@ CREATE TABLE glpi_printers (
    KEY deleted (deleted),
    KEY is_template (is_template),
    KEY tech_num (tech_num)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_printers VALUES ('1','HP laser','2003-09-18 00:12:43','','','0','hp-jsgsj-658','','0','1','0','Imprimante bureau du directeur','','1','1','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('2','HP deskjet','2003-09-18 00:13:11','','','0','45dskjs-ds','','0','1','0','Imprimante documentation','','2','3','0','N','0',NULL);
@@ -1081,7 +1081,7 @@ CREATE TABLE glpi_repair_item (
    PRIMARY KEY (ID),
    KEY device_type (device_type),
    KEY device_type_2 (device_type, id_device)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_reservation_item
@@ -1094,7 +1094,7 @@ CREATE TABLE glpi_reservation_item (
     comments text NOT NULL,
    PRIMARY KEY (ID),
    KEY device_type (device_type)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_reservation_item VALUES ('1','1','10','Pile Poil');
 
@@ -1113,7 +1113,7 @@ CREATE TABLE glpi_reservation_resa (
    KEY id_user (id_user),
    KEY begin (begin),
    KEY end (end)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_software
@@ -1142,7 +1142,7 @@ CREATE TABLE glpi_software (
    KEY is_template (is_template),
    KEY date_mod (date_mod),
    KEY tech_num (tech_num)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_software VALUES ('3','Acrobat PDF Viewer','4',NULL,NULL,'0','5','N','-1','0','N','0',NULL,NULL);
 INSERT INTO glpi_software VALUES ('4','MS Windows NT','4.0',NULL,NULL,'0','5','N','-1','0','N','0',NULL,NULL);
@@ -1176,7 +1176,7 @@ CREATE TABLE glpi_tracking (
    KEY closedate (closedate),
    KEY status (status),
    KEY category (category)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_tracking VALUES ('1','2003-09-18 00:46:40','2003-09-18 00:54:43','old','Helpdesk','tech','1','8','Mon ordinateur ne s\'allume plus, et il ya des bruits byzarres','3','no','','','0',NULL);
 INSERT INTO glpi_tracking VALUES ('2','2003-09-18 00:48:19','0000-00-00 00:00:00','new','Helpdesk','tech','1','10','Un message en anglais s\'affiche, je n\'y comprend rien, je n\'ose plus toucher à rien de peur de tout casser.
@@ -1190,7 +1190,7 @@ CREATE TABLE glpi_type_computers (
     ID int(11) NOT NULL auto_increment,
     name varchar(255),
    PRIMARY KEY (ID)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_type_computers VALUES ('1','Generic x86 PC');
 INSERT INTO glpi_type_computers VALUES ('2','PowerMac G4');
@@ -1211,7 +1211,7 @@ CREATE TABLE glpi_type_docs (
    PRIMARY KEY (ID),
    UNIQUE extension (ext),
    KEY upload (upload)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_type_docs VALUES ('1','JPEG','jpg','jpg-dist.png','','Y','2004-12-13 19:47:21');
 INSERT INTO glpi_type_docs VALUES ('2','PNG','png','png-dist.png','','Y','2004-12-13 19:47:21');
@@ -1274,7 +1274,7 @@ CREATE TABLE glpi_type_monitors (
     ID int(11) NOT NULL auto_increment,
     name varchar(255),
    PRIMARY KEY (ID)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_type_monitors VALUES ('1','Nokia 445Xav');
 INSERT INTO glpi_type_monitors VALUES ('2','Sony 200GDM');
@@ -1288,7 +1288,7 @@ CREATE TABLE glpi_type_networking (
     ID int(11) NOT NULL auto_increment,
     name varchar(255),
    PRIMARY KEY (ID)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_type_networking VALUES ('1','Dlink Switch');
 
@@ -1299,7 +1299,7 @@ CREATE TABLE glpi_type_peripherals (
     ID int(11) NOT NULL auto_increment,
     name varchar(255),
    PRIMARY KEY (ID)
-);
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_type_printers
@@ -1309,7 +1309,7 @@ CREATE TABLE glpi_type_printers (
     ID int(11) NOT NULL auto_increment,
     name varchar(255),
    PRIMARY KEY (ID)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_type_printers VALUES ('1','HP Laserjet 4050N');
 INSERT INTO glpi_type_printers VALUES ('2','HP Laserjet 4+');
@@ -1333,7 +1333,7 @@ CREATE TABLE glpi_users (
    UNIQUE name (name),
    KEY type (type),
    KEY name_2 (name)
-);
+) TYPE=MyISAM;
 
 INSERT INTO glpi_users VALUES ('1','Helpdesk','14e43c2d31dcbdd1','','',NULL,'post-only','Helpdesk Injector','no',NULL);
 INSERT INTO glpi_users VALUES ('2','glpi','5b9b1ee2216a5ffe','41ece51526515624ff89973668497d00','','','super-admin','glpi','yes','2');
