@@ -421,7 +421,7 @@ function isIndex($table, $field) {
 		$result = $db->query("select ". $field ." from ". $table);
 		if ($result){
 			$flags = mysql_field_flags($result,$field);
-			if(eregi("multiple_key",$flags) || eregi("primary_key",$flags)) {
+			if(eregi("multiple_key",$flags) || eregi("primary_key",$flags) || eregi("unique_key",$flags)) {
 				return true;
 			}
 			else return false;
