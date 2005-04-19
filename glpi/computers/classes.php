@@ -116,8 +116,8 @@ class Computer {
 			if ($result=$db->query($query)) {
 				$resultnum = $db->numrows($result);
 				if ($resultnum>0) {
-				for ($i=0; $i < $resultnum; $i++) {
-					$tID = $db->result($result, $i, "end1");
+				for ($j=0; $j < $resultnum; $j++) {
+					$tID = $db->result($result, $j, "end1");
 					$printer = new Printer;
 					$printer->getfromDB($tID);
 					$printer->fields['contact']=$this->fields['contact'];
@@ -131,8 +131,8 @@ class Computer {
 			if ($result=$db->query($query)) {
 				$resultnum = $db->numrows($result);
 				if ($resultnum>0) {
-				for ($i=0; $i < $resultnum; $i++) {
-					$tID = $db->result($result, $i, "end1");
+				for ($j=0; $j < $resultnum; $j++) {
+					$tID = $db->result($result, $j, "end1");
 					$monitor = new Monitor;
 					$monitor->getfromDB($tID);
 					$monitor->fields['contact']=$this->fields['contact'];
@@ -146,8 +146,8 @@ class Computer {
 			if ($result=$db->query($query)) {
 				$resultnum = $db->numrows($result);
 				if ($resultnum>0) {
-				for ($i=0; $i < $resultnum; $i++) {
-					$tID = $db->result($result, $i, "end1");
+				for ($j=0; $j < $resultnum; $j++) {
+					$tID = $db->result($result, $j, "end1");
 					$peri = new Peripheral;
 					$peri->getfromDB($tID);
 					$peri->fields['contact']=$this->fields['contact'];
@@ -169,8 +169,8 @@ class Computer {
 			if ($result=$db->query($query)) {
 				$resultnum = $db->numrows($result);
 				if ($resultnum>0) {
-				for ($i=0; $i < $resultnum; $i++) {
-					$tID = $db->result($result, $i, "end1");
+				for ($j=0; $j < $resultnum; $j++) {
+					$tID = $db->result($result, $j, "end1");
 					$printer = new Printer;
 					$printer->getfromDB($tID);
 					$printer->fields['location']=$this->fields['location'];
@@ -183,8 +183,8 @@ class Computer {
 			if ($result=$db->query($query)) {
 				$resultnum = $db->numrows($result);
 				if ($resultnum>0) {
-				for ($i=0; $i < $resultnum; $i++) {
-					$tID = $db->result($result, $i, "end1");
+				for ($j=0; $j < $resultnum; $j++) {
+					$tID = $db->result($result, $j, "end1");
 					$monitor = new Monitor;
 					$monitor->getfromDB($tID);
 					$monitor->fields['location']=$this->fields['location'];
@@ -197,8 +197,8 @@ class Computer {
 			if ($result=$db->query($query)) {
 				$resultnum = $db->numrows($result);
 				if ($resultnum>0) {
-				for ($i=0; $i < $resultnum; $i++) {
-					$tID = $db->result($result, $i, "end1");
+				for ($j=0; $j < $resultnum; $j++) {
+					$tID = $db->result($result, $j, "end1");
 					$peri = new Peripheral;
 					$peri->getfromDB($tID);
 					$peri->fields['location']=$this->fields['location'];
