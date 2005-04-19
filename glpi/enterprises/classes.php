@@ -79,6 +79,7 @@ class Enterprise {
 		}
 	}
 	function isUsed() {
+		return true;
 		$db = new DB;
 		$query = "SELECT * FROM glpi_contact_enterprise WHERE (FK_enterprise = '".$this->fields["ID"]."')";
 		if ($result = $db->query($query)) {

@@ -143,6 +143,7 @@ function getEmpty () {
 
 	}
 	function isUsed($ID){
+	return true;
 	$db = new DB;		
 	
 	$query="SELECT * from glpi_tracking where computer = '$ID' AND device_type='".SOFTWARE_TYPE."'";

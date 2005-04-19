@@ -129,6 +129,7 @@ class Contract {
 	}
 
 	function isUsed($ID){
+	return true;
 	$db = new DB;		
 	$query="SELECT * from glpi_contract_device where FK_contract = '$ID'";
 	$result = $db->query($query);
