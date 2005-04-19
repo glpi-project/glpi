@@ -256,6 +256,7 @@ class Computer {
 	}
 
 	function isUsed($ID){
+	return true;
 	$db = new DB;		
 	$query="SELECT * from glpi_connect_wire where end2 = '$ID'";
 	$result = $db->query($query);

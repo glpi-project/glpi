@@ -133,6 +133,7 @@ function getEmpty () {
 	}
 
 	function isUsed($ID){
+	return true;
 	$db = new DB;		
 	$query="SELECT * from glpi_connect_wire where end1 = '$ID' AND type='".PRINTER_TYPE."'";
 	$result = $db->query($query);

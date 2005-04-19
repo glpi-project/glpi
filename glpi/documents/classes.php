@@ -129,6 +129,7 @@ class Document {
 	}
 
 	function isUsed($ID){
+	return true;
 	$db = new DB;		
 	$query="SELECT * from glpi_doc_device where FK_doc = '$ID'";
 	$result = $db->query($query);
