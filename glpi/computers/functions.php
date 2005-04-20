@@ -761,7 +761,7 @@ function showConnections($ID,$withtemplate='') {
 
 	$db = new DB;
 
-	echo "<div align='center'><table border='0' width='90%' class='tab_cadre'>";
+	echo "&nbsp;<div align='center'><table border='0' width='90%' class='tab_cadre'>";
 	echo "<tr><th colspan='3'>".$lang["connect"][0].":</th></tr>";
 	echo "<tr><th>".$lang["computers"][39].":</th><th>".$lang["computers"][40].":</th><th>".$lang["computers"][46].":</th></tr>";
 
