@@ -37,7 +37,15 @@
 
 include ("_relpos.php");
 // FUNCTIONS Computers
-
+/**
+* Print a good title for computer pages
+*
+*
+*
+*
+*@return nothing (diplays)
+*
+**/
 function titleComputers(){
               //titre
               
@@ -51,7 +59,18 @@ function titleComputers(){
 
 }
 
-
+/**
+* Print "onglets" (on the top of items forms)
+*
+* Print "onglets" for a better navigation.
+*
+*@param $target filename : The php file to display then
+*@param $withtemplate bool : template or basic computers
+*@param $actif witch of all the "onglets" is selected
+*
+*@return nothing (diplays)
+*
+**/
 function showComputerOnglets($target,$withtemplate,$actif){
 	global $lang;
 	
@@ -83,7 +102,19 @@ function showComputerOnglets($target,$withtemplate,$actif){
 
 
 
-
+/**
+* Print search form for computers
+*
+* 
+*
+*@param $field='' field selected in the search form
+*@param $contains='' the search string
+*@param $sort='' the "sort by" field value
+*@param $deleted='' the deleted value 
+*
+*@return nothing (diplays)
+*
+**/
 function searchFormComputers($field="",$contains="",$sort= "",$deleted= "") {
 	// Print Search Form
 	
@@ -92,31 +123,27 @@ function searchFormComputers($field="",$contains="",$sort= "",$deleted= "") {
 	
 	$option["comp.ID"]				= $lang["computers"][31];
 	$option["comp.name"]				= $lang["computers"][7];
-	$option["glpi_dropdown_locations.name"]			= $lang["computers"][10];
-	$option["glpi_type_computers.name"]				= $lang["computers"][8];
-	$option["glpi_dropdown_os.name"]				= $lang["computers"][9];
-	//$option["comp.osver"]			= $lang["computers"][20];
-	$option["processor.designation"]			= $lang["computers"][21];
-	//$option["processorspeed"]		= $lang["computers"][22];
-	$option["comp.serial"]			= $lang["computers"][17];
+	$option["glpi_dropdown_locations.name"]		= $lang["computers"][10];
+	$option["glpi_type_computers.name"]		= $lang["computers"][8];
+	$option["glpi_dropdown_os.name"]		= $lang["computers"][9];
+	$option["processor.designation"]		= $lang["computers"][21];
+	$option["comp.serial"]				= $lang["computers"][17];
 	$option["comp.otherserial"]			= $lang["computers"][18];
 	$option["ram.designation"]			= $lang["computers"][23];
-	//$option["comp.ram"]				= $lang["computers"][24];
 	$option["iface.designation"]			= $lang["computers"][26];
-	//$option["comp.hdspace"]			= $lang["computers"][25];
 	$option["sndcard.designation"]			= $lang["computers"][33];
 	$option["gfxcard.designation"]			= $lang["computers"][34];
 	$option["moboard.designation"]			= $lang["computers"][35];
 	$option["hdd.designation"]			= $lang["computers"][36];
 	$option["comp.comments"]			= $lang["computers"][19];
-	$option["comp.contact"]			= $lang["computers"][16];
+	$option["comp.contact"]				= $lang["computers"][16];
 	$option["comp.contact_num"]		        = $lang["computers"][15];
 	$option["comp.date_mod"]			= $lang["computers"][11];
-	$option["glpi_networking_ports.ifaddr"] = $lang["networking"][14];
-	$option["glpi_networking_ports.ifmac"] = $lang["networking"][15];
-	$option["glpi_dropdown_netpoint.name"]			= $lang["networking"][51];
-	$option["glpi_enterprises.name"]			= $lang["common"][5];
-	$option["resptech.name"]			=$lang["common"][10];
+	$option["glpi_networking_ports.ifaddr"]		= $lang["networking"][14];
+	$option["glpi_networking_ports.ifmac"]		= $lang["networking"][15];
+	$option["glpi_dropdown_netpoint.name"]		= $lang["networking"][51];
+	$option["glpi_enterprises.name"]		= $lang["common"][5];
+	$option["resptech.name"]			= $lang["common"][10];
 	
 	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
 	echo "<div align='center'><table border='0' width='750' class='tab_cadre'>";
@@ -139,21 +166,6 @@ function searchFormComputers($field="",$contains="",$sort= "",$deleted= "") {
 	}
 	echo "</select>&nbsp;";
 
-/*	echo "<select name=\"field\" size='1'>";
-        echo "<option value='all' ";
-	if($field == "all") echo "selected";
-	echo ">".$lang["search"][7]."</option>";
-        reset($option);
-	foreach ($option as $key => $val) {
-		echo "<option value=\"".$key."\""; 
-		if($key == $field) echo "selected";
-		echo ">". $val ."</option>\n";
-	}
-	echo "</select>&nbsp;";
-	echo "&nbsp;";
-	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
-	echo "&nbsp;";
-	*/
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
 	reset($option);
@@ -168,10 +180,20 @@ function searchFormComputers($field="",$contains="",$sort= "",$deleted= "") {
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit' >";
 	echo "</td></tr></table></div></form>";
-
-
 }
 
+/**
+* Test if a field is a dropdown
+*
+* Return true if the field $field is a dropdown 
+* or false if not.
+*
+*@param $field string field name
+*
+*
+*@return bool
+*
+**/
 function IsDropdown($field) {
 	$dropdown = array("netpoint","os");
 	if(in_array($field,$dropdown)) {
@@ -181,7 +203,18 @@ function IsDropdown($field) {
 		return false;
 	}
 }
-
+/**
+* Test if a field is a device
+*
+* Return true if the field $field is a device 
+* or false if not.
+*
+*@param $field string device name
+*
+*
+*@return bool
+*
+**/
 function IsDevice($field) {
 	global $cfg_devices_tables;
 	if(in_array($field,$cfg_devices_tables)) {
@@ -191,7 +224,25 @@ function IsDevice($field) {
 		return false;
 	}
 }
-
+/**
+* Search and list computers
+*
+*
+* Build the query, make the search and list computers after a search.
+*
+*@param $target filename where to go when done.
+*@param $username not used to be deleted.
+*@param $field the field in witch the search would be done
+*@param $contains the search string
+*@param $sort the "sort by" field value
+*@param $order ASC or DSC (for mysql query)
+*@param $start row number from witch we start the query (limit $start,xxx)
+*@param $deleted Query on deleted items or not.
+*
+*
+*@return Nothing (display)
+*
+**/
 function showComputerList($target,$username,$field,$contains,$sort,$order,$start,$deleted) {
 
 	$db = new DB;
@@ -395,7 +446,20 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 		}
 	}
 }
-
+/**
+* Print the computer form
+*
+*
+* Print général computer form
+*
+*@param $target filename : where to go when done.
+*@param $ID Integer : Id of the computer or the template to print
+*@param $withtemplate='' boolean : template or basic computer
+*
+*
+*@return Nothing (display)
+*
+**/
 function showComputerForm($target,$ID,$withtemplate='') {
 	global $lang,$HTMLRel;;
 	$comp = new Computer;
@@ -588,7 +652,20 @@ function showComputerForm($target,$ID,$withtemplate='') {
          return false;
         }
 }
-
+/**
+* Print the form for devices linked to a computer or a template
+*
+*
+* Print the form for devices linked to a computer or a template 
+*
+*@param $target filename : where to go when done.
+*@param $ID Integer : Id of the computer or the template to print
+*@param $withtemplate='' boolean : template or basic computer
+*
+*
+*@return Nothing (display)
+*
+**/
 function showDeviceComputerForm($target,$ID,$withtemplate='') {
 	global $lang;
 	$comp = new Computer;
@@ -621,7 +698,17 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 
 
 }
-
+/**
+* Update some elements of a computer in the database.
+*
+* Update some elements of a computer in the database.
+*
+*@param $input array : the _POST vars returned bye the computer form when press update (see showcomputerform())
+*
+*
+*@return Nothing (call to the class member Computers->updateInDB )
+*
+**/
 function updateComputer($input) {
 	// Update a computer in the database
 
@@ -656,7 +743,17 @@ function updateComputer($input) {
 	}
 	$comp->updateInDB($updates);
 }
-
+/**
+* Add a computer in the database.
+*
+* Add a computer in the database with all it's items.
+*
+*@param $input array : the _POST vars returned bye the computer form when press add(see showcomputerform())
+*
+*
+*@return Nothing (call to classes members)
+*
+**/
 function addComputer($input) {
 	// Add Computer
 	$db=new DB;
@@ -740,14 +837,33 @@ function addComputer($input) {
 		
 	
 }
-
+/**
+* Delete a computer in the database.
+*
+* Delete a computer in the database.
+*
+*@param $input array : the _POST vars returned bye the computer form when press delete(see showcomputerform())
+*@param $force=0 int : how far the computer is deleted (moved to trash or purged from db).
+*
+*@return Nothing ()
+*
+**/
 function deleteComputer($input,$force=0) {
 	// Delete Computer
 
 	$comp = new Computer;
 	$comp->deleteFromDB($input["ID"],$force);
 } 	
-
+/**
+* Restore a computer trashed in the database.
+*
+* Restore a computer trashed in the database.
+*
+*@param $input array : the _POST vars returned bye the computer form when press restore(see showcomputerform())
+*
+*@return Nothing ()
+*
+**/
 function restoreComputer($input) {
 	// Restore Computer
 	
@@ -755,6 +871,17 @@ function restoreComputer($input) {
 	$ct->restoreInDB($input["ID"]);
 } 
 
+/**
+* Print the computers or template local connections form. 
+*
+* Print the form for computers or templates connections to printers, screens or peripherals
+*
+*@param $ID integer: Computer or template ID
+*@param $withtemplate=''  boolean : Template or basic item.
+*
+*@return Nothing (call to classes members)
+*
+**/
 function showConnections($ID,$withtemplate='') {
 
 	GLOBAL $cfg_layout, $cfg_install, $lang;
