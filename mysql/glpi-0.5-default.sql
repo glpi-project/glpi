@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-04-18 18:15
+#GLPI Dump database on 2005-04-20 09:20
 
 ### Dump table glpi_cartridges
 
@@ -762,6 +762,19 @@ CREATE TABLE glpi_event_log (
 ) TYPE=MyISAM;
 
 INSERT INTO glpi_event_log VALUES ('366','-1','system','2005-04-18 18:14:42','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('367','-1','system','2005-04-20 09:16:16','login','1','failed login: post-only');
+INSERT INTO glpi_event_log VALUES ('368','-1','system','2005-04-20 09:16:21','login','1','failed login: normal');
+INSERT INTO glpi_event_log VALUES ('369','-1','system','2005-04-20 09:16:30','login','1','failed login: post-only');
+INSERT INTO glpi_event_log VALUES ('370','-1','system','2005-04-20 09:16:34','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('371','0','users','2005-04-20 09:17:18','setup','5','glpi updated user post-only.');
+INSERT INTO glpi_event_log VALUES ('372','0','users','2005-04-20 09:17:36','setup','5','glpi updated user glpi.');
+INSERT INTO glpi_event_log VALUES ('373','0','users','2005-04-20 09:17:44','setup','5','glpi updated user normal.');
+INSERT INTO glpi_event_log VALUES ('374','0','users','2005-04-20 09:18:33','setup','5','glpi updated user tech.');
+INSERT INTO glpi_event_log VALUES ('375','0','users','2005-04-20 09:18:43','setup','5','glpi updated user post-only.');
+INSERT INTO glpi_event_log VALUES ('376','0','users','2005-04-20 09:19:04','setup','5','glpi updated user post-only.');
+INSERT INTO glpi_event_log VALUES ('377','-1','system','2005-04-20 09:19:10','login','3','post-only logged in.');
+INSERT INTO glpi_event_log VALUES ('378','-1','system','2005-04-20 09:19:28','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('379','2','Peripherals','2005-04-20 09:20:27','inventory','4','glpi purge item.');
 
 ### Dump table glpi_followups
 
@@ -780,10 +793,6 @@ CREATE TABLE glpi_followups (
 
 INSERT INTO glpi_followups VALUES ('1','1','2003-09-18 00:53:35','tech','J\'ai été voir, je pense que la carte mere a grillé.');
 INSERT INTO glpi_followups VALUES ('2','1','2003-09-18 00:54:06','tech','L\'alimentation est foutue, je vais tester la carte mere pour voir si elle est recuperable');
-INSERT INTO glpi_followups VALUES ('3','1','2003-09-18 00:54:40','tech','Probleme reglé j\'ai seulement changé l\'alimentation.
-Le reste fonctionne tres bien.');
-INSERT INTO glpi_followups VALUES ('4','3','2003-09-18 00:55:08','tech','Je pense que l\'on peux changer la souris.');
-INSERT INTO glpi_followups VALUES ('5','2','2003-09-18 00:55:52','tech','Je suis passé, il faudra faire une restauration de windows NT4.');
 
 ### Dump table glpi_infocoms
 
@@ -1336,7 +1345,7 @@ CREATE TABLE glpi_users (
 ) TYPE=MyISAM;
 
 INSERT INTO glpi_users VALUES ('1','Helpdesk','14e43c2d31dcbdd1','','',NULL,'post-only','Helpdesk Injector','no',NULL);
-INSERT INTO glpi_users VALUES ('2','glpi','5b9b1ee2216a5ffe','41ece51526515624ff89973668497d00','','','super-admin','glpi','yes','2');
-INSERT INTO glpi_users VALUES ('3','post-only','3eb831c67be6aeda','','',NULL,'post-only','post-only','no','1');
-INSERT INTO glpi_users VALUES ('4','tech','37bd7c4221e8a247','','',NULL,'super-admin','technicien','yes','2');
-INSERT INTO glpi_users VALUES ('5','normal','109e7883561b4202','','',NULL,'normal','utilisateur normal','no','1');
+INSERT INTO glpi_users VALUES ('2','glpi','*64B4BB8F2A8C2F41C639DBC894D2759330199470','41ece51526515624ff89973668497d00','','','super-admin','','yes','2');
+INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','post-only','','no','1');
+INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','super-admin','','yes','2');
+INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','normal','','no','1');
