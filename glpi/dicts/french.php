@@ -54,7 +54,7 @@ $lang["common"][10]	= "Responsable technique";
 $lang["login"][0] = "Login impossible, v&eacute;rifiez que votre navigateur accepte les cookies.";
 $lang["login"][1] = "Se reloguer";
 $lang["login"][2] = "Votre mot de passe n'est plus valide... Si vous venez de le changer reloguez vous avec le nouveau";
-$lang["login"][3] = "Non loggu&eacute;";
+$lang["login"][3] = "Non logu&eacute;";
 $lang["login"][4] = "Mauvais mot de passe";
 $lang["login"][5] = "Acc&eacute;s refus&eacute;";
 
