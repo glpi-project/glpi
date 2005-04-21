@@ -34,7 +34,15 @@
 
 include ("_relpos.php");
 
-
+/**
+* Print a good title for Cartridge pages
+*
+*
+*
+*
+*@return nothing (diplays)
+*
+**/
 function titleCartridge(){
 
          GLOBAL  $lang,$HTMLRel;
@@ -44,7 +52,19 @@ function titleCartridge(){
          echo "</td></tr></table></div>";
 }
 
-
+/**
+* Print search form for cartridges
+*
+* 
+*
+*@param $field='' field selected in the search form
+*@param $contains='' the search string
+*@param $sort='' the "sort by" field value
+*@param $deleted='' the deleted value 
+*
+*@return nothing (diplays)
+*
+**/
 function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "",$deleted="") {
 	// Print Search Form
 	
@@ -79,20 +99,7 @@ function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "",$d
 		echo ">". $val ."</option>\n";
 	}
 	echo "</select>&nbsp;";
-	
-	/*
-	echo $lang["search"][1];
-	echo "&nbsp;<select name='phrasetype' size='1' >";
-	echo "<option value='contains'";
-	if($phrasetype == "contains") echo "selected";
-	echo ">".$lang["search"][2]."</option>";
-	echo "<option value='exact'";
-	if($phrasetype == "exact") echo "selected";
-	echo ">".$lang["search"][3]."</option>";
-	echo "</select>";
-	*/
-	
-	
+
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
 	reset($option);
@@ -108,7 +115,26 @@ function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "",$d
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
-
+/**
+* Search and list computers
+*
+*
+* Build the query, make the search and list selected cartridges after a search query.
+*
+*@param $target filename where to go when done.
+*@param $username not used to be deleted.
+*@param $field the field in witch the search would be done
+*@param $phrasetype not used any more (to be deleted)
+*@param $contains the search string
+*@param $sort the "sort by" field value
+*@param $order ASC or DSC (for mysql query)
+*@param $start row number from witch we start the query (limit $start,xxx)
+*@param $deleted Query on deleted items or not.
+*
+*
+*@return Nothing (display)
+*
+**/
 function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted) {
 
 	// Lists CartridgeType
@@ -263,7 +289,19 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 }
 
 
-
+/**
+* Print the cartridge type form
+*
+*
+* Print général cartridge type form
+*
+*@param $target filename : where to go when done.
+*@param $ID Integer : Id of the cartridge type
+*
+*
+*@return Nothing (display)
+*
+**/
 function showCartridgeTypeForm ($target,$ID) {
 	// Show CartridgeType or blank form
 	
@@ -355,7 +393,17 @@ function showCartridgeTypeForm ($target,$ID) {
 	}
 
 }
-
+/**
+* Update some elements of a cartridge type in the database.
+*
+* Update some elements of a cartridge type in the database.
+*
+*@param $input array : the _POST vars returned bye the cartrdge form when press update (see showcartridgetype())
+*
+*
+*@return Nothing (call to the class member)
+*TODO : error reporting.
+**/
 function updateCartridgeType($input) {
 	// Update CartridgeType in the database
 
@@ -379,7 +427,17 @@ function updateCartridgeType($input) {
 		$sw->updateInDB($updates);
 	}
 }
-
+/**
+* Add  a cartridge type in the database.
+*
+* Add from $input, a cartridge type in the database. return true if it has been added correcly, false elsewhere.
+*
+*@param $input array : the _POST vars returned bye the cartrdge form when press add (see showcartridgetype())
+*
+*
+*@return boolean true or false.
+*
+**/
 function addCartridgeType($input) {
 	
 	$sw = new CartridgeType;
@@ -397,7 +455,17 @@ function addCartridgeType($input) {
 	return $sw->addToDB();
 }
 
-
+/**
+* Delete a cartridge type in the database.
+*
+* Delete a cartridge type in the database.
+*
+*@param $input array : the _POST vars returned bye the cartridge form when press delete (see showcartridgetype())
+*@param $force=0 int : how far the cartridge is deleted (moved to trash or purged from db).
+*
+*@return Nothing (call to the class member)
+*TODO : error reporting.
+**/
 function deleteCartridgeType($input,$force=0) {
 	// Delete CartridgeType
 	
@@ -405,6 +473,17 @@ function deleteCartridgeType($input,$force=0) {
 	$ct->deleteFromDB($input["ID"],$force);
 } 
 
+/**
+* restore some elements of a cartridge type in the database.
+*
+* restore some elements of a cartridge type witch has been deleted but not purged in the database.
+*
+*@param $input array : the _POST vars returned bye the cartridge form when press restore (see showcartridgetype())
+*
+*
+*@return Nothing (call to the class member)
+*TODO : error reporting.
+**/
 function restoreCartridgeType($input) {
 	// Restore CartridgeType
 	
@@ -412,6 +491,16 @@ function restoreCartridgeType($input) {
 	$ct->restoreInDB($input["ID"]);
 } 
 
+/**
+* Print out a link to add directly a new cartridge from a cartridge type.
+*
+* Print out the link witch make a new cartridge from cartridge type idetified by $ID
+*
+*@param $ID Cartridge type identifier.
+*
+*
+*@return Nothing (displays)
+**/
 function showCartridgesAdd($ID) {
 	
 	GLOBAL $cfg_layout,$cfg_install,$lang;
@@ -423,7 +512,16 @@ function showCartridgesAdd($ID) {
 	echo "</a></b></td></tr>";
 	echo "</table></div><br>";
 }
-
+/**
+* Print out the cartridges of a defined type
+*
+* Print out all the cartridges that are issued from the cartridge type identified by $ID
+*
+*@param $ID integer : Cartridge type identifier.
+*@param $show_old=0 boolean : show old cartridges or not. 
+*
+*@return Nothing (displays)
+**/
 function showCartridges ($tID,$show_old=0) {
 
 	GLOBAL $cfg_layout, $cfg_install,$lang,$HTMLRel;
@@ -514,6 +612,17 @@ echo "</table></div>\n\n";
 	
 }
 
+/**
+* Add  a cartridge in the database.
+*
+* Add a new cartridge that type is identified by $ID
+*
+*@param $tID : cartridge type identifier
+*
+*
+*@return boolean true or false.
+*
+**/
 function addCartridge($tID) {
 	$c = new Cartridge;
 	
@@ -528,15 +637,37 @@ function addCartridge($tID) {
 	}
 	return $c->addToDB();
 }
-
+/**
+* delete a cartridge in the database.
+*
+* delete a cartridge that is identified by $ID
+*
+*@param $tID : cartridge type identifier
+*
+*
+*@return nothing
+*TODO error reporting
+*
+**/
 function deleteCartridge($ID) {
-	// Delete License
+	// Delete cartridge
 	
 	$lic = new Cartridge;
 	$lic->deleteFromDB($ID);
 	
 } 
-
+/**
+* Link a cartridge to a printer.
+*
+* Link the first unused cartridge of type $Tid to the printer $pID
+*
+*@param $tID : cartridge type identifier
+*@param $pID : printer identifier
+*
+*@return nothing
+*TODO error reporting
+*
+**/
 function installCartridge($pID,$tID) {
 	global $lang;
 	$db = new DB;
@@ -559,7 +690,16 @@ function installCartridge($pID,$tID) {
 
 }
 
-
+/**
+* UnLink a cartridge linked to a printer
+*
+* UnLink the cartridge identified by $ID
+*
+*@param $ID : cartridge identifier
+*
+*@return boolean
+*
+**/
 function uninstallCartridge($ID) {
 
 	$db = new DB;
@@ -572,7 +712,16 @@ function uninstallCartridge($ID) {
 	}
 }
 
-
+/**
+* Show the printer types that are compatible with a cartridge type
+*
+* Show the printer types that are compatible with the cartridge type identified by $instID
+*
+*@param $instID : cartridge type identifier
+*
+*@return nothing (display)
+*
+**/
 function showCompatiblePrinters($instID) {
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
@@ -607,6 +756,17 @@ function showCompatiblePrinters($instID) {
 	
 }
 
+/**
+* Add a compatible printer type for a cartridge type
+*
+* Add the compatible printer $type type for the cartridge type $tID
+*
+*@param $tID integer: cartridge type identifier
+*@param $type integer: printer type identifier
+*@return nothing ()
+*TODO error_reporting
+*
+**/
 function addCompatibleType($tID,$type){
 
 $db = new DB;
@@ -614,6 +774,17 @@ $query="INSERT INTO glpi_cartridges_assoc (FK_glpi_cartridges_type,FK_glpi_type_
 $result = $db->query($query);
 }
 
+/**
+* delete a compatible printer associated to a cartridge
+*
+* Delete a compatible printer associated to a cartridge with assoc identifier $ID
+*
+*@param $ID integer: glpi_cartridge_assoc identifier.
+*
+*@return nothing ()
+*TODO error_reporting
+*
+**/
 function deleteCompatibleType($ID){
 
 $db = new DB;
@@ -621,6 +792,16 @@ $query="DELETE FROM glpi_cartridges_assoc WHERE ID= '$ID';";
 $result = $db->query($query);
 }
 
+/**
+* Show installed cartridges
+*
+* Show installed cartridge for the printer type $instID
+*
+*@param $instID integer: printer type identifier.
+*
+*@return nothing (display)
+*
+**/
 function showCartridgeInstalled($instID) {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
@@ -675,7 +856,16 @@ function showCartridgeInstalled($instID) {
 	echo "</form>";
 
 }
-
+/**
+* Print a select with compatible cartridge
+*
+* Print a select that contains compatibles cartridge for a printer type $pID
+*
+*@param $pID integer: printer type identifier.
+*
+*@return nothing (display)
+*
+**/
 function dropdownCompatibleCartridges($pID) {
 	
 	global $lang;
@@ -701,6 +891,16 @@ function dropdownCompatibleCartridges($pID) {
 	echo "</select>";
 }
 
+/**
+* Print the cartridge count HTML array for a defined cartridge type
+*
+* Print the cartridge count HTML array for the cartridge type $tID
+*
+*@param $tID integer: cartridge type identifier.
+*
+*@return nothing (display)
+*
+**/
 function countCartridges($tID) {
 	
 	GLOBAL $cfg_layout, $lang;
@@ -722,7 +922,16 @@ function countCartridges($tID) {
 	}
 }	
 
-
+/**
+* count how many cartbridge for a cartbridge type
+*
+* count how many cartbridge for the cartbridge type $tID
+*
+*@param $tID integer: cartridge type identifier.
+*
+*@return integer : number of cartridge counted.
+*
+**/
 function getCartridgesNumber($tID){
 	$db=new DB;
 	$query = "SELECT ID FROM glpi_cartridges WHERE ( FK_glpi_cartridges_type = '$tID')";
@@ -730,6 +939,16 @@ function getCartridgesNumber($tID){
 	return $db->numrows($result);
 }
 
+/**
+* count how many cartridge used for a cartbridge type
+*
+* count how many cartridge used for the cartbridge type $tID
+*
+*@param $tID integer: cartridge type identifier.
+*
+*@return integer : number of cartridge used counted.
+*
+**/
 function getUsedCartridgesNumber($tID){
 	$db=new DB;
 	$query = "SELECT ID FROM glpi_cartridges WHERE ( FK_glpi_cartridges_type = '$tID' AND date_use IS NOT NULL AND date_out IS NULL)";
@@ -737,13 +956,32 @@ function getUsedCartridgesNumber($tID){
 	return $db->numrows($result);
 }
 
+/**
+* count how many old cartbridge for a cartbridge type
+*
+* count how many old cartbridge for the cartbridge type $tID
+*
+*@param $tID integer: cartridge type identifier.
+*
+*@return integer : number of old cartridge counted.
+*
+**/
 function getOldCartridgesNumber($tID){
 	$db=new DB;
 	$query = "SELECT ID FROM glpi_cartridges WHERE ( FK_glpi_cartridges_type = '$tID'  AND date_out IS NOT NULL)";
 	$result = $db->query($query);
 	return $db->numrows($result);
 }
-
+/**
+* count how many cartbridge unused for a cartbridge type
+*
+* count how many cartbridge unused for the cartbridge type $tID
+*
+*@param $tID integer: cartridge type identifier.
+*
+*@return integer : number of cartridge unused counted.
+*
+**/
 function getUnusedCartridgesNumber($tID){
 	$db=new DB;
 	$query = "SELECT ID FROM glpi_cartridges WHERE ( FK_glpi_cartridges_type = '$tID'  AND date_use IS NULL)";
@@ -751,6 +989,17 @@ function getUnusedCartridgesNumber($tID){
 	return $db->numrows($result);
 }
 
+/**
+* Print a select with cartridge type
+*
+* Print a select that contains cartridge type for a printer type $pID
+*
+*@param $name string: the select name.
+*@param $value=0 integer : default select value
+*
+*@return nothing (display)
+*
+**/
 function dropdownCartridgeType($name,$value=0){
 	global $lang;
 	
@@ -761,6 +1010,16 @@ function dropdownCartridgeType($name,$value=0){
 	echo "</select>";	
 }
 
+/**
+* Get the dict value of a cartridge type
+*
+* Print a select that contains cartridge type for a printer type $pID
+*
+*@param $value integer : cartridge type.
+*
+*@return string : dict value for the cartridge type.
+*
+**/
 function getCartridgeTypeName($value){
 	global $lang;
 	
@@ -777,6 +1036,16 @@ function getCartridgeTypeName($value){
 	}	
 }
 
+/**
+* To be commented
+*
+* 
+*
+*@param $cID integer : cartridge type.
+*
+*@return 
+*
+**/
 function isNewCartridge($cID){
 $db=new DB;
 $query = "SELECT ID FROM glpi_cartridges WHERE ( ID= '$cID' AND date_use IS NULL)";
@@ -784,6 +1053,16 @@ $result = $db->query($query);
 return ($db->numrows($result)==1);
 }
 
+/**
+* To be commented
+*
+* 
+*
+*@param $cID integer : cartridge type.
+*
+*@return 
+*
+**/
 function isUsedCartridge($cID){
 $db=new DB;
 $query = "SELECT ID FROM glpi_cartridges WHERE ( ID= '$cID' AND date_use IS NOT NULL AND date_out IS NULL)";
@@ -791,6 +1070,16 @@ $result = $db->query($query);
 return ($db->numrows($result)==1);
 }
 
+/**
+* To be commented
+*
+* 
+*
+*@param $cID integer : cartridge type.
+*
+*@return 
+*
+**/
 function isOldCartridge($cID){
 $db=new DB;
 $query = "SELECT ID FROM glpi_cartridges WHERE ( ID= '$cID' AND date_out IS NOT NULL)";
@@ -798,6 +1087,16 @@ $result = $db->query($query);
 return ($db->numrows($result)==1);
 }
 
+/**
+* Get the dict value for the status of a cartridge
+*
+* 
+*
+*@param $cID integer : cartridge ID.
+*
+*@return string : dict value for the cartridge status.
+*
+**/
 function getCartridgeStatus($cID){
 global $lang;
 if (isNewCartridge($cID)) return $lang["cartridges"][20];
