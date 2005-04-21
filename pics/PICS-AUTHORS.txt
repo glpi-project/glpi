@@ -1,0 +1,13 @@
+
+**********************************************************************
+
+**********************************************************************
+
+
+- GLPI interface icons come or are inspired  from Gnome Desktop by  Jakub 'jimmac' Steiner
+
+- Except GLPI logo and knowledge base icons by Jean-Mathieu Doleans (jmd at indepnet.net)
+
+
+
+**********************************************************************
