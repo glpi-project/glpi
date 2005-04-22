@@ -319,7 +319,7 @@ function updateKbItem($input) {
 	// Fill the update-array with changes
 	$x=0;
 	foreach ($input as $key => $val) {
-		if ($ki->fields[$key] != $input[$key]) {
+		if (isset($ki->fields[$key]) && $ki->fields[$key] != $input[$key]) {
 			$ki->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;

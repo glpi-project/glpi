@@ -787,7 +787,7 @@ function updateDevice($input) {
 	$x=0;
 	$updates = array();
 	foreach ($input as $key => $val) {
-		if ($device->fields[$key] != $input[$key]) {
+		if (isset($device->fields[$key])&&$device->fields[$key] != $input[$key]) {
 			$device->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;

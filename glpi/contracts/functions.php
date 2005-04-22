@@ -478,7 +478,7 @@ function updateContract($input) {
 	// Fill the update-array with changes
 	$x=0;
 	foreach ($input as $key => $val) {
-		if (empty($con->fields[$key]) || $con->fields[$key] != $input[$key]) {
+		if (isset($con->fields[$key]) && $con->fields[$key] != $input[$key]) {
 			$con->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;

@@ -473,7 +473,7 @@ function updateSoftware($input) {
 	// Fill the update-array with changes
 	$x=1;
 	foreach ($input as $key => $val) {
-		if (empty($sw->fields[$key]) || $sw->fields[$key] != $input[$key]) {
+		if (isset($sw->fields[$key]) && $sw->fields[$key] != $input[$key]) {
 			$sw->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;
@@ -916,7 +916,7 @@ function updateLicense($input) {
 	// Fill the update-array with changes
 	$x=0;
 	foreach ($input as $key => $val) {
-		if (empty($lic->fields[$key]) || $lic->fields[$key] != $input[$key]) {
+		if (isset($lic->fields[$key]) && $lic->fields[$key] != $input[$key]) {
 			$lic->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;

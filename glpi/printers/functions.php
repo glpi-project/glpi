@@ -555,7 +555,7 @@ function updatePrinter($input) {
 	// Fill the update-array with changes
 	$x=1;
 	foreach ($input as $key => $val) {
-		if ($printer->fields[$key] != $input[$key]) {
+		if (isset($printer->fields[$key]) && $printer->fields[$key] != $input[$key]) {
 			$printer->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;
