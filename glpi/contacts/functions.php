@@ -35,7 +35,15 @@
 include ("_relpos.php");
 // FUNCTIONS contact
 
-
+/**
+* Print a good title for coontact pages
+*
+*
+*
+*
+*@return nothing (diplays)
+*
+**/
 function titleContacts(){
                 GLOBAL  $lang,$HTMLRel;
                 echo "<div align='center'><table border='0'><tr><td>";
@@ -43,7 +51,19 @@ function titleContacts(){
                 echo "</td></tr></table></div>";
 }
 
-
+/**
+* Print search form for contacts
+*
+* 
+*
+*@param $field='' field selected in the search form
+*@param $contains='' the search string
+*@param $sort='' the "sort by" field value
+*@param $phrasetype=''  not used (to be deleted)
+*
+*@return nothing (diplays)
+*
+**/
 function searchFormContact($field="",$phrasetype= "",$contains="",$sort= "") {
 	// Print Search Form
 	
@@ -76,18 +96,6 @@ function searchFormContact($field="",$phrasetype= "",$contains="",$sort= "") {
 	}
 	echo "</select>&nbsp;";
 	
-	/*
-	echo $lang["search"][1];
-	echo "&nbsp;<select name='phrasetype' size='1' >";
-	echo "<option value='contains'";
-	if($phrasetype == "contains") echo "selected";
-	echo ">".$lang["search"][2]."</option>";
-	echo "<option value='exact'";
-	if($phrasetype == "exact") echo "selected";
-	echo ">".$lang["search"][3]."</option>";
-	echo "</select>";
-	*/
-	
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
 	reset($option);
@@ -102,7 +110,25 @@ function searchFormContact($field="",$phrasetype= "",$contains="",$sort= "") {
 	echo "</td></tr></table></div></form>";
 }
 
-
+/**
+* Search and list contacts
+*
+*
+* Build the query, make the search and list contacts after a search.
+*
+*@param $target filename where to go when done.
+*@param $username not used to be deleted.
+*@param $field the field in witch the search would be done
+*@param $contains the search string
+*@param $sort the "sort by" field value
+*@param $order ASC or DSC (for mysql query)
+*@param $start row number from witch we start the query (limit $start,xxx)
+*@param $deleted Query on deleted items or not.
+*@param $phrasetype='' not used (to be deleted)
+*
+*@return Nothing (display)
+*
+**/
 function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start) {
 
 	// Lists contact
@@ -144,7 +170,6 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 	}
 	$query = "select * from glpi_contacts ";
 	$query .= "where $where ORDER BY $sort $order";
-//echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows =  $db->numrows($result);
@@ -239,13 +264,23 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 
 		} else {
 			echo "<div align='center'><b>".$lang["financial"][38]."</b></div>";
-			//echo "<hr noshade>";
-			//searchFormperipheral();
 		}
 	}
 }
 
-
+/**
+* Print the contact form
+*
+*
+* Print général contact form
+*
+*@param $target filename : where to go when done.
+*@param $ID Integer : Id of the contact to print
+*
+*
+*@return Nothing (display)
+*
+**/
 function showContactForm ($target,$ID) {
 
 	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel;
@@ -334,7 +369,17 @@ function showContactForm ($target,$ID) {
 	}
 }
 
-
+/**
+* Update some elements of a contact in the database
+*
+* Update some elements of a contact in the database.
+*
+*@param $input array : the _POST vars returned bye the contact form when press update (see showcontactform())
+*
+*
+*@return Nothing (call to the class member)
+*
+**/
 function updateContact($input) {
 	// Update a Contact in the database
 
@@ -358,6 +403,17 @@ function updateContact($input) {
 
 }
 
+/**
+* Add a contact in the database.
+*
+* Add a contact in the database with all it's items.
+*
+*@param $input array : the _POST vars returned bye the contact form when press add(see showcontactform())
+*
+*
+*@return Nothing (call to classes members)
+*
+**/
 function addContact($input) {
 	// Add Contact, nasty hack until we get PHP4-array-functions
 
@@ -376,15 +432,36 @@ function addContact($input) {
 	$con->addToDB();
 
 }
-
+/**
+* Delete a contact in the database.
+*
+* Delete a contact in the database.
+*
+*@param $input array : the _POST vars returned bye the contact form when press delete(see showcontactform())
+*
+*
+*@return Nothing ()
+*
+**/
 function deleteContact($input) {
 	// Delete Contact
 	
 	$con = new Contact;
 	$con->deleteFromDB($input["ID"]);
 	
-} 	
-
+} 
+/**	
+* Print a great select for contacts
+*
+* Print a select with name field is $name and selected value is $value
+*
+*@param $name string : the select name
+*@param $value=0 integer : the selected value
+*
+*
+*@return Nothing (display)
+*
+**/
 function dropdownContactType($name,$value=0){
 	global $lang;
 	
@@ -393,6 +470,18 @@ function dropdownContactType($name,$value=0){
 	echo "<option value='1' ".($value==1?" selected ":"").">".$lang["financial"][43]."</option>";
 	echo "</select>";	
 }
+
+/**	
+* Get from dicts the Contact Type name
+*
+* Get the contact type name from dicts.
+*
+*@param $value integer : contact type value.
+*
+*
+*@return string : dict entry
+*
+**/
 function getContactTypeName($value){
 	global $lang;
 	

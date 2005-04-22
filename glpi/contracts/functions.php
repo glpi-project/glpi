@@ -34,7 +34,15 @@
 
 include ("_relpos.php");
 
-
+/**
+* Print a good title for contract pages
+*
+*
+*
+*
+*@return nothing (diplays)
+*
+**/
 function titleContract(){
 
          GLOBAL  $lang,$HTMLRel;
@@ -44,7 +52,20 @@ function titleContract(){
          echo "</td></tr></table></div>";
 }
 
+/**
+* Print search form for contracts
+*
+* 
+*
+*@param $field='' field selected in the search form
+*@param $contains='' the search string
+*@param $sort='' the "sort by" field value
+*@param $phrasetype=''  not used (to be deleted)
+*@param $deleted='' boolean : display deleted items or not.
 
+*@return nothing (diplays)
+*
+**/
 function searchFormContract($field="",$phrasetype= "",$contains="",$sort= "",$deleted="") {
 	// Print Search Form
 	
@@ -77,18 +98,7 @@ function searchFormContract($field="",$phrasetype= "",$contains="",$sort= "",$de
 		echo ">". $val ."</option>\n";
 	}
 	echo "</select>&nbsp;";
-	
-	/*
-	echo $lang["search"][1];
-	echo "&nbsp;<select name='phrasetype' size='1' >";
-	echo "<option value='contains'";
-	if($phrasetype == "contains") echo "selected";
-	echo ">".$lang["search"][2]."</option>";
-	echo "<option value='exact'";
-	if($phrasetype == "exact") echo "selected";
-	echo ">".$lang["search"][3]."</option>";
-	echo "</select>";
-	*/
+
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
 	reset($option);
@@ -105,6 +115,27 @@ function searchFormContract($field="",$phrasetype= "",$contains="",$sort= "",$de
 	echo "</td></tr></table></div></form>";
 }
 
+
+/**
+* Search and list contacts
+*
+*
+* Build the query, make the search and list contacts after a search.
+*
+*@param $target filename where to go when done.
+*@param $username not used to be deleted.
+*@param $field the field in witch the search would be done
+*@param $contains the search string
+*@param $sort the "sort by" field value
+*@param $order ASC or DSC (for mysql query)
+*@param $start row number from witch we start the query (limit $start,xxx)
+*@param $deleted Query on deleted items or not.
+*@param $phrasetype='' not used (to be deleted)
+*@param $deleted='' boolean : display deleted items or not
+*
+*@return Nothing (display)
+*
+**/
 function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted) {
 
 	// Lists Contract
@@ -270,7 +301,19 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 	}
 }
 
-
+/**
+* Print the contract form
+*
+*
+* Print général contract form
+*
+*@param $target filename : where to go when done.
+*@param $ID Integer : Id of the contact to print
+*@param $search : not used (to be deleted)
+*
+*@return Nothing (display)
+*
+**/
 function showContractForm ($target,$ID,$search) {
 	// Show Contract or blank form
 	
@@ -412,6 +455,17 @@ function showContractForm ($target,$ID,$search) {
 
 }
 
+/**
+* Update some elements of a contract in the database
+*
+* Update some elements of a contract in the database.
+*
+*@param $input array : the _POST vars returned bye the contract form when press update (see showcontractform())
+*
+*
+*@return Nothing (call to the class member)
+*
+**/
 function updateContract($input) {
 	// Update Software in the database
 
@@ -436,6 +490,17 @@ function updateContract($input) {
 	}
 }
 
+/**
+* Add a contract in the database.
+*
+* Add a contract in the database with all it's items.
+*
+*@param $input array : the _POST vars returned bye the contact form when press add(see showcontractform())
+*
+*
+*@return boolean : true or false
+*
+**/
 function addContract($input) {
 	
 	$con = new Contract;
@@ -453,7 +518,17 @@ function addContract($input) {
 	return $con->addToDB();
 }
 
-
+/**
+* Delete a contract in the database.
+*
+* Delete a contract in the database.
+*
+*@param $input array : the _POST vars returned bye the contact form when press delete(see showcontractform())
+*@param $force=0 boolean : int : how far the contract is deleted (moved to trash or purged from db).
+*
+*@return Nothing ()
+*
+**/
 function deleteContract($input,$force=0) {
 	// Delete Contract
 	
@@ -461,6 +536,16 @@ function deleteContract($input,$force=0) {
 	$con->deleteFromDB($input["ID"],$force);
 } 
 
+/**
+* Restore a contract trashed in the database.
+*
+* Restore a contract trashed in the database.
+*
+*@param $input array : the _POST vars returned bye the contract form when press restore(see showcontractform())
+*
+*@return Nothing ()
+*
+**/
 function restoreContract($input) {
 	// Restore Contract
 	
@@ -468,7 +553,17 @@ function restoreContract($input) {
 	$con->restoreInDB($input["ID"]);
 } 
 
-
+/**
+* Print the HTML array for contract on devices
+*
+* Print the HTML array for contract on devices $instID
+*
+*@param $instID array : Contract identifier.
+*@param $search='' not used (to be deleted)
+*
+*@return Nothing (display)
+*
+**/
 function showDeviceContract($instID,$search='') {
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
@@ -517,6 +612,18 @@ function showDeviceContract($instID,$search='') {
 	
 }
 
+/**
+* Link a contract to a device
+*
+* Link the contract $conID to the device $ID witch device type is $type. 
+*
+*@param $conID integer : contract identifier.
+*@param $type integer : device type identifier.
+*@param $ID integer : device identifier.
+*
+*@return Nothing ()
+*
+**/
 function addDeviceContract($conID,$type,$ID){
 
 $db = new DB;
@@ -524,6 +631,16 @@ $query="INSERT INTO glpi_contract_device (FK_contract,FK_device, device_type ) V
 $result = $db->query($query);
 }
 
+/**
+* Delete a contract device
+*
+* Delete the contract device $ID
+*
+*@param $ID integer : contract device identifier.
+*
+*@return Nothing ()
+*
+**/
 function deleteDeviceContract($ID){
 
 $db = new DB;
@@ -532,6 +649,16 @@ $query="DELETE FROM glpi_contract_device WHERE ID= '$ID';";
 $result = $db->query($query);
 }
 
+/**
+* Print the HTML array for contract on entreprises
+*
+* Print the HTML array for contract on entreprises for contract $instID
+*
+*@param $instID array : Contract identifier.
+*
+*@return Nothing (display)
+*
+**/
 function showEnterpriseContract($instID) {
 	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
 
@@ -580,7 +707,17 @@ function showEnterpriseContract($instID) {
 	
 }
 
-
+/**
+* Link a contract to an entreprise
+*
+* Link the contract $conID to the entreprise $ID witch device type is $type. 
+*
+*@param $conID integer : contract identifier.
+*@param $ID integer : entreprise identifier.
+*
+*@return Nothing ()
+*
+**/
 function addEnterpriseContract($conID,$ID){
 
 $db = new DB;
@@ -588,6 +725,16 @@ $query="INSERT INTO glpi_contract_enterprise (FK_contract,FK_enterprise ) VALUES
 $result = $db->query($query);
 }
 
+/**
+* Delete a contract entreprise
+*
+* Delete the contract entreprise $ID
+*
+*@param $ID integer : contract entreprise identifier.
+*
+*@return Nothing ()
+*
+**/
 function deleteEnterpriseContract($ID){
 
 $db = new DB;
@@ -595,7 +742,17 @@ $query="DELETE FROM glpi_contract_enterprise WHERE ID= '$ID';";
 $result = $db->query($query);
 }
 
-
+/**
+* Print a select with contract time options
+*
+* Print a select named $name with contract time options and selected value $value
+*
+*@param $name string : HTML select name
+*@param $value=0 integer : HTML select selected value
+*
+*@return Nothing (display)
+*
+**/
 function dropdownContractTime($name,$value=0){
 	global $lang;
 	
@@ -605,7 +762,17 @@ function dropdownContractTime($name,$value=0){
 	echo "</select>";	
 }
 
-
+/**
+* Print a select with contract priority
+*
+* Print a select named $name with contract priority options and selected value $value
+*
+*@param $name string : HTML select name
+*@param $value=0 integer : HTML select selected value
+*
+*@return Nothing (display)
+*
+**/
 function dropdownContractPeriodicity($name,$value=0){
 	global $lang;
 	
@@ -619,6 +786,18 @@ function dropdownContractPeriodicity($name,$value=0){
 	echo "<option value='6' ".($value==6?" selected ":"").">".$lang["financial"][75]."</option>";
 	echo "</select>";	
 }
+
+/**	
+* Get from dicts the Contract periodicity string
+*
+* Get the contract periodicity identified bye $value from dicts.
+*
+*@param $value integer : contract periodicity value.
+*
+*
+*@return string : dict entry
+*
+**/
 function getContractPeriodicity($value){
 	global $lang;
 	
@@ -648,6 +827,17 @@ function getContractPeriodicity($value){
 	}	
 }
 
+/**
+* Print a select with contract type
+*
+* Print a select named $name with contract type options and selected value $value
+*
+*@param $name string : HTML select name
+*@param $value=0 integer : HTML select selected value
+*
+*@return Nothing (display)
+*
+**/
 function dropdownContractType($name,$value=0){
 	global $lang;
 	
@@ -662,6 +852,18 @@ function dropdownContractType($name,$value=0){
 	echo "<option value='7' ".($value==7?" selected ":"").">".$lang["financial"][56]."</option>";
 	echo "</select>";	
 }
+
+/**	
+* Get from dicts the Contract type name string
+*
+* Get the contract type name identified bye $value from dicts.
+*
+*@param $value integer : contract type name value.
+*
+*
+*@return string : dict entry
+*
+**/
 function getContractTypeName($value){
 	global $lang;
 	
@@ -694,7 +896,18 @@ function getContractTypeName($value){
 	}	
 }
 
-function	dropdownHours($name,$value){
+/**
+* Print a select with hours
+*
+* Print a select named $name with hours options and selected value $value
+*
+*@param $name string : HTML select name
+*@param $value=0 integer : HTML select selected value
+*
+*@return Nothing (display)
+*
+**/
+function dropdownHours($name,$value){
 
 	echo "<select name='$name'>";
 	for ($i=0;$i<10;$i++){
@@ -709,6 +922,17 @@ function	dropdownHours($name,$value){
 	echo "</select>";	
 }	
 
+
+/**
+* Get the entreprise identifier from a contract
+*
+* Get the entreprise identifier for the contract $ID
+*
+*@param $ID integer : Contract entreprise identifier
+*
+*@return integer enterprise identifier
+*
+**/
 function getContractEnterprises($ID){
 	global $HTMLRel;
     $db = new DB;
@@ -722,6 +946,16 @@ function getContractEnterprises($ID){
 	return $out;
 }
 
+/**
+* Print a select with contracts
+*
+* Print a select named $name with contracts options and selected value $value
+*
+*@param $name string : HTML select name
+*
+*@return Nothing (display)
+*
+**/
 function dropdownContracts($name){
 
 	$db=new DB;
@@ -741,6 +975,18 @@ function dropdownContracts($name){
 	
 }
 
+/**
+* Print an HTML array with contracts associated to a device
+*
+* Print an HTML array with contracts associated to the device identified by $ID from device type $device_type 
+*
+*@param $device_type string : HTML select name
+*@param $ID integer device ID
+*@param $withtemplate='' not used (to be deleted)
+*
+*@return Nothing (display)
+*
+**/
 function showContractAssociated($device_type,$ID,$withtemplate=''){
 
 	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
