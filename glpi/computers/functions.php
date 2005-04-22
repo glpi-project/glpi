@@ -735,7 +735,7 @@ function updateComputer($input) {
 	// Fill the update-array with changes
 	$x=1;
 	foreach ($input as $key => $val) {
-		if (empty($comp->fields[$key]) || $comp->fields[$key]  != $input[$key]) {
+		if (isset($comp->fields[$key]) && $comp->fields[$key]  != $input[$key]) {
 			$comp->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;

@@ -282,9 +282,7 @@ function addReservationItem($input){
 	
 	// fill array for update
 	foreach ($input as $key => $val) {
-		if (empty($sw->fields[$key]) || $sw->fields[$key] != $input[$key]) {
-			$ri->fields[$key] = $input[$key];
-		}
+		$ri->fields[$key] = $input[$key];
 	}
 
 	return $ri->addToDB();
@@ -836,7 +834,7 @@ function updateReservationComment($input){
 	// Fill the update-array with changes
 	$x=0;
 	foreach ($input as $key => $val) {
-		if ($ri->fields[$key] != $input[$key]) {
+		if (isset($ri->fields[$key]) && $ri->fields[$key] != $input[$key]) {
 			$ri->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;
@@ -866,7 +864,7 @@ global $lang;
 	// Fill the update-array with changes
 	$x=0;
 	foreach ($input as $key => $val) {
-		if ($ri->fields[$key] != $input[$key]) {
+		if (isset($ri->fields[$key]) && $ri->fields[$key] != $input[$key]) {
 			$ri->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;

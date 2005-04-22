@@ -1039,7 +1039,7 @@ function updateUser($input) {
 	// fill array for update
 	$x=0;
 	foreach ($input as $key => $val) {
-		if (empty($input[$key]) ||  $input[$key] != $user->fields[$key]) {
+		if (isset($input[$key]) &&  $input[$key] != $user->fields[$key]) {
 			$user->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;

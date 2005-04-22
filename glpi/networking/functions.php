@@ -614,7 +614,7 @@ function updateNetdevice($input) {
 	// Fill the update-array with changes
 	$x=1;
 	foreach ($input as $key => $val) {
-		if ($netdev->fields[$key] != $input[$key]) {
+		if (isset($netdev->fields[$key]) && $netdev->fields[$key] != $input[$key]) {
 			$netdev->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;
@@ -851,7 +851,7 @@ function updateNetport($input) {
 	$x=0;
 	$updates=array();
 	foreach ($input as $key => $val) {
-		if ($netport->fields[$key] != $input[$key]) {
+		if (isset($netport->fields[$key]) && $netport->fields[$key] != $input[$key]) {
 			$netport->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;

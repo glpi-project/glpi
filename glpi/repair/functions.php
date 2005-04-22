@@ -221,9 +221,7 @@ function addRepairItem($input){
 	
 	// fill array for update
 	foreach ($input as $key => $val) {
-		if (empty($sw->fields[$key]) || $sw->fields[$key] != $input[$key]) {
 			$ri->fields[$key] = $input[$key];
-		}
 	}
 
 	return $ri->addToDB();

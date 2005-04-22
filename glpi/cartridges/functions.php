@@ -416,7 +416,7 @@ function updateCartridgeType($input) {
 	// Fill the update-array with changes
 	$x=0;
 	foreach ($input as $key => $val) {
-		if (empty($sw->fields[$key]) || $sw->fields[$key] != $input[$key]) {
+		if (isset($sw->fields[$key]) && $sw->fields[$key] != $input[$key]) {
 			$sw->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;

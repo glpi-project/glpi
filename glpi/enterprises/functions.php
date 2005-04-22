@@ -353,7 +353,7 @@ function updateEnterprise($input) {
 	// Fill the update-array with changes
 	$x=0;
 	foreach ($input as $key => $val) {
-		if (empty($ent->fields[$key]) || $ent->fields[$key] != $input[$key]) {
+		if (isset($ent->fields[$key]) && $ent->fields[$key] != $input[$key]) {
 			$ent->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;

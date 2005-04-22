@@ -185,7 +185,7 @@ function updateInfocom($input) {
 	// Fill the update-array with changes
 	$x=0;
 	foreach ($input as $key => $val) {
-		if (empty($ic->fields[$key]) || $ic->fields[$key] != $input[$key]) {
+		if (isset($ic->fields[$key]) && $ic->fields[$key] != $input[$key]) {
 			$ic->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;

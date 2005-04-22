@@ -345,7 +345,7 @@ function updateTypedoc($input) {
 	// Fill the update-array with changes
 	$x=1;
 	foreach ($input as $key => $val) {
-		if ($mon->fields[$key] != $input[$key]) {
+		if (isset($mon->fields[$key]) && $mon->fields[$key] != $input[$key]) {
 			$mon->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;
