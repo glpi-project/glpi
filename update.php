@@ -274,6 +274,17 @@ function location_create_new($split_char,$add_first){
 
 	$db=new DB;
 	
+	$query_auto_inc= "ALTER TABLE `glpi_dropdown_locations_new` CHANGE `ID` `ID` INT( 11 ) NOT NULL";
+	$result_auto_inc=$db->query($query_auto_inc);
+	
+	$query="SELECT MAX(ID) AS MAX from glpi_dropdown_locations;";
+	//echo $query."<br>";
+	$result=$db->query($query);
+	$new_ID=$db->result($result,0,"MAX");
+	$new_ID++;
+
+
+	
 	$query="SELECT * from glpi_dropdown_locations;";
 	$result=$db->query($query);
 
@@ -283,11 +294,13 @@ function location_create_new($split_char,$add_first){
 	$result_clear_new=$db->query($query_clear_new); 
 
 	if (!empty($add_first)){
-		$query_insert="INSERT INTO glpi_dropdown_locations_new (name,parentID) VALUES ('".addslashes($add_first)."',0)";
+		$root_ID=$new_ID;
+		$new_ID++;
+		$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$root_ID','".addslashes($add_first)."',0)";
 		
 		//echo $query_insert."<br>";
 		$result_insert=$db->query($query_insert);
-		$root_ID=$db->insert_id();
+		
 	} else {
 		$root_ID=0;
 	}
@@ -307,21 +320,24 @@ function location_create_new($split_char,$add_first){
 			if ($db->numrows($result_search)==1){	// Found
 				$up_ID=$db->result($result_search,0,"ID");
 			} else { // Not FOUND -> INSERT
-				$query_insert="INSERT INTO glpi_dropdown_locations_new (name, parentID) VALUES ('".addslashes(unhtmlentities($splitter[$i]))."','$up_ID')";
+				$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$new_ID','".addslashes(unhtmlentities($splitter[$i]))."','$up_ID')";
 					//echo $query_insert."<br>";
 				$result_insert=$db->query($query_insert);
-				$up_ID=$db->insert_id();
+				$up_ID=$new_ID++;
 
 			}
 		}
 
 		// Ajout du dernier
-		$query_insert="INSERT INTO glpi_dropdown_locations_new (name,parentID) VALUES ('".unhtmlentities($splitter[count($splitter)-1])."','$up_ID')";
+		$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('".$data["ID"]."','".unhtmlentities($splitter[count($splitter)-1])."','$up_ID')";
 			//echo $query_insert."<br>";
 
 		$result_insert=$db->query($query_insert);
 
 	}
+	
+	$query_auto_inc= "ALTER TABLE `glpi_dropdown_locations_new` CHANGE `ID` `ID` INT( 11 ) NOT NULL AUTO_INCREMENT";
+	$result_auto_inc=$db->query($query_auto_inc);
 
 }
 
