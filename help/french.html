@@ -20,43 +20,39 @@
 
 	  
 <style type="text/css">
-
 #right{
 float: right;
-width: 30%;
+margin-top:15px;
+width: 250px;
 height: 500px;
 background: #eee;
 }
 
 #left{
- 
-width: 70%;
-
-height: 500px;
+ position:absolute;   left:10px; width:490px; height:500px; 
+margin-top:15px;
 background: #eee;
 }
 
-
-#right a, a:hover, a:visited, a:active, a:link {
-
+#right a, a:visited, a:active, a:link {
+color:black;
 text-decoration: none;
-
 }
 
+#right  a:hover {
+background-color:#D2F2D5;
+text-decoration:none;
 
+}
 .menu
 {
  overflow: auto;
-
 height: 490px;
 padding-left: 30px;
 font-family: Trebuchet MS, Arial, Sans, sans-serif;
 font-size: 10px;
-
 font-weight: bold;
 color: black;
-
-
 }
 
 
@@ -72,23 +68,46 @@ margin-left: 0;
 list-style: none;
 margin: 0;
 padding: 0.25em;
-border-top: 1px solid gray;
+
 }
-
-
 
 .content
  {
   overflow: auto;
-
 height: 490px;
- 
- 
  font-family: Arial, Sans, sans-serif;
 font-size: 11px;
-
- 
  }
+
+ h1{  
+ margin-left:15px;
+ text-align:center;
+ font-family: Trebuchet MS, Arial, Sans, sans-serif;
+font-size: 18px;  
+font-weight:200%;
+color:  #FFC65D;
+margin :10px;
+-moz-border-radius: 4px;
+border: 1px solid #FFC65D;
+}
+
+h2{
+margin-left:5px;
+border-left: 2px solid #339966;
+border-bottom: 1px solid #339966;
+font-weight:200%;
+padding: 5px;
+font-family: Trebuchet MS, Arial, Sans, sans-serif;
+font-size: 15px;  
+}
+
+h3{
+margin-left:15px;
+padding: 5px;
+font-family: Trebuchet MS, Arial, Sans, sans-serif;
+font-size: 13px;  
+}
+
 </style>	  
 	  
 	  
@@ -97,55 +116,55 @@ font-size: 11px;
 
  <body>
 	    
-<h1>Aide CENTRAL</h1>
-
 
 
 
 <div id="right">
 <div class='menu'>
-<h2>Sommaire</h2>
-<UL><a href="#invent">1 - Partie Inventaire</a>
+<h1>Sommaire</h1>
+<ul><a href="#invent">1 - Partie Inventaire</a>
 <li><a href="#inventa">a) Considération générales</a></li>
 <li><a href="#inventb">b) Gestion des modèles</a></li>
 <li><a href="#inventc">c) Gestion des périphériques internes aux ordinateurs</a></li>
 <li><a href="#inventd">d) Gestion des connections directes</a></li>
 <li><a href="#invente">e) Gestion des ports réseaux</a></li>
 <li><a href="#inventf">f) Gestion des logiciels</a></li>
-<li><a href="#inventg">f) Gestion des réparations</a></li>
-</UL>
+<li><a href="#inventg">g) Gestion des réparations</a></li>
+</ul>
 
-<UL><a href="#assist">2 - Partie Assistance</a>
+<ul><a href="#assist">2 - Partie Assistance</a>
 <li><a href="#assista">a) Suivi</a></li>
 <li><a href="#assistb">b) Helpdesk</a></li>
 <li><a href="#assistc">c) Statistiques</a></li>
-</UL>
+</ul>
 
-<UL><a href="#gestion">3 - Partie Gestion</a>
+<ul><a href="#gestion">3 - Partie Gestion</a>
 <li><a href="#gestiona">a) Contacts</a></li>
 <li><a href="#gestionb">b) Entreprises</a></li>
 <li><a href="#gestionc">c) Contrats</a></li>
 <li><a href="#gestiond">d) Documents</a></li>
-</UL>
+</ul>
 
-<UL><a href="#outils">4 - Partie Outils</a>
+<ul><a href="#outils">4 - Partie Outils</a>
 <li><a href="#outilsa">a) Réservations</a></li>
 <li><a href="#outilsb">b) Bases de connaissances</a></li>
 <li><a href="#outilsc">c) Rapports</a></li>
-</UL>
+</ul>
 
-<UL><a href="#admin">5 - Partie Administration</a>
+<ul><a href="#admin">5 - Partie Administration</a>
 <li><a href="#admina">a) Gestion des utilisateurs</a></li>
 <li><a href="#adminb">b) Configuration</a></li>
-<li><a href="#adminb1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i) Intitulés</a></li>
-<li><a href="#adminb2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ii) Périphériques internes</a></li>
-<li><a href="#adminb3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iii) Authentifications externes</a></li>
-<li><a href="#adminb4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iv) Suivis par emails</a></li>
-<li><a href="#adminb5">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;v) Configuration générale</a></li>
-<li><a href="#adminb6">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vi) Type de document</a></li>
+<ul>
+	<li><a href="#adminb1"> i) Intitulés</a></li>
+	<li><a href="#adminb2"> ii) Périphériques internes</a></li>
+	<li><a href="#adminb3"> iii) Authentifications externes</a></li>
+	<li><a href="#adminb4"> iv) Suivis par emails</a></li>
+	<li><a href="#adminb5"> v) Configuration générale</a></li>
+	<li><a href="#adminb6"> vi) Type de document</a></li>
+</ul>
 <li><a href="#adminc">c) Préférences</a></li>
 <li><a href="#admind">d) Données (Sauvegarde/Restauration)</a></li>
-</UL>
+</ul>
  
 </div>
 </div>
@@ -154,10 +173,12 @@ font-size: 11px;
 
 <div id='left'>
 <div class='content'>
-   
-<h2><A NAME="invent"></A>1 - Partie Inventaire</h2>
 
-<h3><A NAME="inventa"></A>a) Considération générales</h3>
+<h1>Aide central</h1>   
+
+<h2><a name="invent"></a>1 - Partie Inventaire</h2>
+
+<h3><a name="inventa"></a>a) Considération générales</h3>
 <p>Dans la partie inventaire vous pouvez lister et consulter l'inventaire matériel et logiciel du parc.</p>
 <p>Vous avez la possibilité d'effectuer des recherches paramétrées et triées, sur un des types de l'inventaire (ordinateurs, matériel reseau, imprimantes, cartouches, écrans, périphériques, logiciels et réparation).</p>
 <p>A partir de là vous pouvez afficher la fiche contenant les informations précises de chaque élément répertorié, ou ajouter un élément.</p>
@@ -165,48 +186,48 @@ font-size: 11px;
 <p>Dans chaque fiche d'informations, des onglets sont disponibles pour obtenir un affichage plus lisible des diverses infos. Vous pouvez choisir d'afficher toutes les informations en cliquant sur l'onglet "Tous".</p>
 <p>Les onglets <i><<</i> et <i>>></i> vous permettent de naviguer au sein des éléments de l'inventaire en allant respectivement à l'élément précédent et suivant (en fonction de leurs ID) </p>
 
-<h3><A NAME="inventb"></A>b) Gestion des modèles</h3>
+<h3><a name="inventb"></a>b) Gestion des modèles</h3>
 
 <p>Pour l'ensemble des éléments de l'inventaire vous devez créer les nouveaux élements via des modèles.</p>
 <p>Ces modèles vous permettent de définir les configurations standards de votre parc. Il sera ainsi très simple d'ajouter un grand nombre d'élements quasi identiques.</p>
 
-<h3><A NAME="inventc"></A>c) Gestion des périphériques internes aux ordinateurs</h3>
+<h3><a name="inventc"></a>c) Gestion des périphériques internes aux ordinateurs</h3>
 
 <p>Depuis GLPI 0.5, la notion de périphérique interne est apparue. Celle-ci vous permet d'ajouter autant d'éléments que nécessaire dans un ordinateur.</p>
 <p>Vous pouvez gérer la liste des périphériques internes de votre parc dans la partie Configuration/Périphériques Internes.</p>
 <p>Pour certains type de périphériques internes vous pouvez spécifier une caratéristique spécifique (la capacité d'un disque dur par exemple).</p>
 
-<h3><A NAME="inventd"></A>d) Gestion des connections directes</h3>
-<p>Les connections directes permettent de modéliser la relation entre l'unité centrale d'un ordinateur et des composants extérieurs.</p>
+<h3><a name="inventd"></a>d) Gestion des connections directes</h3>
+<p>Les connections directes représentent la relation entre l'unité centrale d'un ordinateur et des composants extérieurs.</p>
 <p>Une connection directe se fait entre un ordinateur et une imprimante, un moniteur ou un periphérique externe. </p>
 <p>Les connections ou déconnections se font depuis la fiche d'un ordinateur ou depuis celle du matériel lié.</p>
 
-<h3><A NAME="invente"></A>e) Gestion des ports réseaux</h3>
+<h3><a name="invente"></a>e) Gestion des ports réseaux</h3>
 <p>Un port réseau permet de modéliser la sortie d'une interface réseau sur un matériel donné.</p>
-<p>Chaque ports disposent genéralement d'une adresse IP, d'une adresse mac et d'une prise réseau à laquelle il est relié.</p>
+<p>Chaque port dispose genéralement d'une adresse IP, d'une adresse mac et d'une prise réseau à laquelle il est relié.</p>
 <p>Les connections réseau se font en reliant deux ports entres eux, pour relier deux matériels ensemble il faut donc qu'il y ait un port libre sur chacun de ces matériels.</p>
 <p>Dans la plupart des configurations les connections se feront entre un port présent sur un ordinateur, un périphérique ou une imprimante et un port présent sur un matériel réseau (hub, switch)</p>
 <p>Lors de la connection entre deux matériels, les informations telles que l'adresse IP et la prise reseau sont mises à jour pour chacun des deux ports concernés</p>
 <p>Pour chaque matériel, il est possible à tout moment d'ajouter un ou plusieurs ports</p>
 
-<h3><A NAME="inventf"></A>f) Gestion des logiciels</h3>
+<h3><a name="inventf"></a>f) Gestion des logiciels</h3>
 <p>Un logiciel, comporte un certain nombre de licences ayant chacune un numéro de série associé et une date d'expiration</p>
 <p>L'installation d'un logiciel se fait depuis la fiche d'un ordinateur.</p>
-<p>A chaque fois qu'un logiciel est installé, le nombre de licence disponibles pour ce logiciel baisse.</p>
+<p>A chaque fois qu'un logiciel est installé, le nombre de licence disponibles pour ce logiciel diminue.</p>
 <p>Il est impossible d'installer un logiciel, lorsqu'aucune licence n'est disponible.</p>
 <p>Il est néanmoins possible d'indiquer le mot clé "free" à la place du numéro de serie lors de l'ajout d'une licence à un logiciel, pour que ce dernier soit installable sans se soucier du nombre des licences</p>
 <p>Il est aussi possible d'indiquer le mot clé "global" à la place du numéro de série si vous avez des logiciels avec des licences global (site) pour votre parc.</p>
 <p>Il est possible d'ajouter plusieurs licences en une seule fois, le numéro et de série et la date d'expiration sera la même pour chacune d'entre elles.</p>
 <p>Vous pouvez catégoriser vos logiciels selon s'ils sont OEM, achetés ou même une mise à jour d'un logiciel existant.</p>
 
-<h3><A NAME="inventg"></A>g) Gestion des réparations</h3>
+<h3><a name="inventg"></a>g) Gestion des réparations</h3>
 <p>Dans cette section vous pouvez voir le status de votre matériel en réparation</p>
 <p>Pour mettre un matériel en réparation il s'agit d'aller dans la fiche d'information de ce matériel et cliquer sur "mettre le matériel en réparation".</p>
 <p>Pour remettre un matériel en production, il s'agit de cliquer sur "Sortir le matériel de réparation" dans la fiche d'information de celle-ci.</p>
 
-<h2><A NAME="assist"></A>2 - Partie Assistance</h2>
+<h2><a name="assist"></a>2 - Partie Assistance</h2>
 
-<h3><A NAME="assista"></A>a) Suivi</h3>
+<h3><a name="assista"></a>a) Suivi</h3>
 <p>Le module de suivi permet d'afficher la liste des interventions en fonction de certains critères.</p>
 <p>Vous pouvez afficher :</p>
 <ul>
@@ -231,7 +252,7 @@ font-size: 11px;
 <p>La restauration d'une intervention terminée est possible. Il suffit pour cela de cliquer sur "info" puis "restaurer".</p>
 <p>Il est possible de supprimer des interventions terminées si vous ne souhaitez pas les conserver dans la base. Pour cela il suffit de cocher la case statut et de cliquer sur "Supprimer" dans la liste des interventions.</p>
 
-<h3><A NAME="assistb"></A>b) Helpdesk</h3>
+<h3><a name="assistb"></a>b) Helpdesk</h3>
 
 <p>Le helpdesk est utilisé pour entrer les demandes d'interventions. Pouvant être utilisé par tous les types de comptes utilisateurs.</p>
 <p>Il est possible de spécifier la priorité des problèmes, le numéro d'identification(ID) du matériel ou logiciel concerné et le type d'intervention demandé.</p>
@@ -239,7 +260,7 @@ font-size: 11px;
 <p>Vous retrouverez les demandes d'interventions dans la section suivi de GLPI.</p>
 
 
-<h3><A NAME="assistc"></A>c) Statistiques</h3>
+<h3><a name="assistc"></a>c) Statistiques</h3>
 
 <h4>Statistiques globales</h4>
 <P>Ces statistiques regroupent les principales données sur les interventions sur le mois, l'année et au total :</P>
@@ -290,36 +311,36 @@ font-size: 11px;
 </ul>
 
 
-<h2><A NAME="gestion"></A>3 - Partie Gestions</h2>
+<h2><a name="gestion"></a>3 - Partie Gestions</h2>
 
-<h3><A NAME="gestiona"></A>a) Contacts</h3>
+<h3><a name="gestiona"></a>a) Contacts</h3>
 <p>Vous pouvez entrer tous vos divers contacts dans cette section et classer vos contacts selon leurs types commercial ou technicien. Par la suite vous pourrez associer des contacts aux entreprises avec qui vous faites des affaires.</p>
-<h3><A NAME="gestionb"></A>b) Entreprises</h3>
+<h3><a name="gestionb"></a>b) Entreprises</h3>
 <p>Dans cette section, Il est possible de répertorier tous les entreprises et leurs tiers qui ont des relations avec votre entreprise et d'y associer les contacts de chacune de ces entreprises. Pour ajouter ou modifier la liste déroulante des tiers, allez dans la section configurations de GLPI sous l'option intitulés.</p>
-<h3><A NAME="gestionc"></A>c) Contrats</h3>
+<h3><a name="gestionc"></a>c) Contrats</h3>
 <p>Dans cette section, vous pouvez gérer l'ensemble des contrats de type divers qui sont liés à vos matériels ainsi que les informations liées à ces contarts.
 Les type de contrats possibles sont : prêt, location, leasing, assurance, maintenance hardware et software, prestation.</p>
 
 <p>Vous pouvez alors lier les contrats créés aux éléments de l'inventaire depuis la page du contrat ou celles de l'inventaire</p>
-<h3><A NAME="gestiond"></A>d) Documents</h3>
+<h3><a name="gestiond"></a>d) Documents</h3>
 <p>Cette section vous permet d'enregistrer des documents sur votre serveur GLPI. Vous pouvez par la suite associer un document à tous matériels ou logiciels de votre inventaire et les classer selon divers rubriques. Il est aussi possible de spécifier le type MIME d'un document si celui-ci n'est pas déjà existant.</p>
 <p>Pour ajouter ou modifier la liste des rubriques, allez dans la section Administration et Configuration sous l'option intitulés.</p>
 <p>Il est aussi possible d'ajouter des types de documents supplémentaires. Pour se faire, allez dans Administration et Configuration sous l'option Type de document.</p>
-<h2><A NAME="outils"></A>4 - Partie Outils</h2>
+<h2><a name="outils"></a>4 - Partie Outils</h2>
 
-<h3><A NAME="outilsa"></A>a) Réservations</h3>
+<h3><a name="outilsa"></a>a) Réservations</h3>
 <p>Cette section sert à voir le matériel réservable et à faire vos réservations</p>
 <p>Vous pouvez ajouter des commentaires au matériel réservable. Pour se faire, cliquez sur le bouton "modifier le commentaire".</p>
 <p>Pour rendre un matériel réservable, il sufit d'aller dans la fiche d'information de celui-ci et de cliquer sur l'option "Autoriser le prêt".</p>
 <p>Pour les utilisateurs "HelpDesk" une section "matériel réservable" est disponible</p>
 
-<h3><A NAME="outilsb"></A>b) Base de connaissances</h3>
-<p>La base de connaissances sert à mettre en place un système de Foire Aux Questions qui a deux buts principaux. 
+<h3><a name="outilsb"></a>b) Base de connaissances</h3>
+<p>La base de connaissances sert à mettre en place un système de Foire Aux Questions qui a deux objectifs principaux. 
 Le premier est de centraliser des connaissances internes aux différents techniciens. 
 Le second est de mettre à disposition des utilisateurs des informations leur permettant de résoudre seuls leurs problèmes.</p>
-<p>Pour dissocier ces deux buts, la notion de FAQ publique est disponible. 
-Ainsi seuls les éléments de la FAQ publique seront visibles par les utilisateurs. Les éléments non définis comme faisant partie de la FAQ publique seront visible unique au sein du central.</p>
-<p>Vous pouvez créer des catégories et sous catégories afin d'indexer vos connaissances. Il est donc facile pour quelqu'un de retrouver de l'information nécessaire à ses tâches.</p>
+<p>Pour dissocier ces deux objectifs, la notion de FAQ publique est disponible. 
+Ainsi seuls les éléments de la FAQ publique seront visibles par les utilisateurs. Les éléments non définis comme faisant partie de la FAQ publique seront visibles uniquement au sein du central.</p>
+<p>Vous pouvez créer des catégories et sous-catégories afin d'indexer vos connaissances. Il est donc facile pour quelqu'un de retrouver de l'information nécessaire à ses tâches.</p>
 <p>Vous pouvez utiliser des raccourcis de mise en forme :</p>
 <p>
 Les marqueurs suivants changent l'apparence du texte:<br><br>
@@ -346,7 +367,7 @@ Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tan
 				g&eacute;n&egrave;re du code comme ceci:<br><br>
 				<table style="width: 95%; border: dotted 1px #000000" align="center" cellspacing="4" cellpadding="6"><tr><td ><span ><b>Code:</b></span><br><br><pre>Voici un bout de code.</pre></td></tr></table><br>
 			
-<h3><A NAME="outilsc"></A>b) Rapports</h3>
+<h3><a name="outilsc"></a>b) Rapports</h3>
 
 <p>GLPI autorise la génération d'un certain nombre de rapports :</p>
 
@@ -367,25 +388,25 @@ Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tan
 </ul>
 
 
-<h2><A NAME="admin"></A>4 - Partie Administration</h2>
+<h2><a name="admin"></a>4 - Partie Administration</h2>
 
-<h3><A NAME="admina"></A>a) Gestion des utilisateurs</h3>
+<h3><a name="admina"></a>a) Gestion des utilisateurs</h3>
 <p>Cette partie fonctionne exactement de la même façon que les éléments de l'inventaire. Vous pouvez ajouter, modifier et supprimer des utilisateurs.</p>
 
-<h3><A NAME="adminb"></A>b) Configuration de GLPI</h3>
-<UL>
-<A NAME="adminb1"></A><h4>i) Intitulés</h4>
+<h3><a name="adminb"></a>b) Configuration de GLPI</h3>
+<ul>
+<a name="adminb1"></a><h4>i) Intitulés</h4>
 <p>Vous pouvez dans cette zone modifier entièrement les données présentes dans les listes de sélection proposées 
 par exemple pour les lieux et les microprocesseurs.</p>
 <p>Une fois sélectionné la liste que vous voulez modifier vous pouvez ajouter des éléments, les modifier et les supprimer.<br>
 <b>Attention !!</b> Si vous supprimez des élèments utilisés vous devrez alors faire un choix entre modifier les entrées existantes ou bien les mettre à NULL.</p>
 </p>
 
-<A NAME="adminb2"></A><h4>ii) Périphériques internes</h4>
+<a name="adminb2"></a><h4>ii) Périphériques internes</h4>
 
 <p>Vous pouvez dans cette zone modifier entièrement les périphériques internes que vous pouvez ajouter à vos ordinateurs.</p>
 
-<A NAME="adminb3"></A><h4>iii) Authentifications externes</h4>
+<a name="adminb3"></a><h4>iii) Authentifications externes</h4>
 
 <p>Les authentifications externes vous permettent d'utiliser des sources alternatives d'authentification. Cela vous évite ainsi d'avoir à ajouter manuellement tous les utilisateurs.</p>
 <p>La première solution est d'utiliser un serveur de mail :<br>
@@ -398,9 +419,9 @@ Les différents paramètres que vous allez choisir peuvent vous donner des chaînes
 - Le deuxième paramètre définit le domaine de mail utilisé qui va servir à remplir automatiquement les adresses mails des nouveaux utilisateurs. 
 Si l'utilisateur s'appelle <i>toto</i>, sont adresse mail sera alors toto@domaine_mail. 
 </p>
-<p>La deuxième solution est l'utilisation d'un annuaire LDAP ou d'un Active Directory. Pour cette configuration reportez vous à la documentation correspondante présente sur le <a target=_blank href="http://glpi.indepnet.org/article.php3?id_article=33">site web de GLPI.</A></p>
+<p>La deuxième solution est l'utilisation d'un annuaire LDAP ou d'un Active Directory. Pour cette configuration reportez vous à la documentation correspondante présente sur le <a target=_blank href="http://glpi.indepnet.org/article.php3?id_article=33">site web de GLPI.</a></p>
 
-<A NAME="adminb4"></A><h4>iv) Suivis par emails</h4>
+<a name="adminb4"></a><h4>iv) Suivis par emails</h4>
 
 <p>Cette section vous permet d'activer le suivi des interventions par email.
 Si vous activez cette fonctionnalité, des emails seront alors envoyés au moment de la création d'une nouvelle intervention, à l'ajout de chaque suivi et à la fermeture des interventions.<br>
@@ -410,7 +431,7 @@ Si vous activez cette fonctionnalité, des emails seront alors envoyés au moment 
 - Le demandeur ne recevra un email que s'il a activé le suivi par email lors de sa demande d'intervention.<br>
 </p>
 
-<A NAME="adminb5"></A><h4>v) Configuration générale</h4>
+<a name="adminb5"></a><h4>v) Configuration générale</h4>
 <p>
 La configuration générale de l'application permet de régler certains paramètres :<br>
 - Le chemin d'installation. <b>Attention !!</b> Ce chemin est détecté automatiquement au moment de l'installation ou de la mise à jour, vous ne devriez donc pas avoir besoin de le modifier.<br>
@@ -423,7 +444,7 @@ La configuration générale de l'application permet de régler certains paramètres 
 - Permettre le helpdesk.html : active ou non les demandes d'interventions anonymes via le fichier helpdesk.html.<br>
 </p>
 
-<A NAME="adminb6"></A><h4>vi) Type de document</h4>
+<a name="adminb6"></a><h4>vi) Type de document</h4>
 <p>
 Dans cette section, vous pouvez ajouter ou modifier les types de documents autorisés à être gérés par GLPI.
 Les informations à fournir sont :<br>
@@ -433,12 +454,12 @@ Les informations à fournir sont :<br>
 - Le type MIME si nécessaire.<br>
 - Autorisation de téléchargement de ce type de fichier (oui ou non).<br>
 </p>
-</UL>
-<h3><A NAME="adminc"></A>c) Préférences</h3>
+</ul>
+<h3><a name="adminc"></a>c) Préférences</h3>
 <p>Cette zone vous permet de changer votre mot de passe, de définir l'ordre par défaut utilisé dans l'affichage 
 des interventions et de définir la langue avec laquelle l'interface est affichée.</p>
 
-<h3><A NAME="admind"></A>d) Données (Sauvegarde/Restauration)</h3>
+<h3><a name="admind"></a>d) Données (Sauvegarde/Restauration)</h3>
 <p>Cette zone vous permet de créer des sauvegardes de la base de données ("Sauvegarde SQL").</p>
 <p>Vous pouvez également supprimer les fichiers de sauvegarde, les restaurer ou télécharger les fichiers SQL.</p>
 <p>Vous pouvez aussi générer une sauvegarde au format XML de la base de données. ("Sauvegarde XML").</p>
