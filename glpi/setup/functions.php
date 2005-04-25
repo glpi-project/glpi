@@ -808,7 +808,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 			if($i != 0) {
 				$where .= " OR ";
 			}
-			$coco = mysql_field_name($fields, $i);
+			$coco = $db->field_name($fields, $i);
 			if($coco == "location") {
 				$where .= " glpi_dropdown_locations.name LIKE '%".$contains."%' and glpi_users.name != 'Helpdesk'";
 			}

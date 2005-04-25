@@ -164,7 +164,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if($i != 0) {
 				$where .= " OR ";
 			}
-			$coco = mysql_field_name($fields, $i);
+			$coco = $db->field_name($fields, $i);
 			if($coco == "platform") {
 				$where .= " glpi_dropdown_os.name LIKE '%".$contains."%'";
 			}
@@ -1082,7 +1082,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 		$ID = $db->result($result, $i, "ID");
 		$query2 = "SELECT * FROM glpi_licenses WHERE (ID = '$lID')";
 		$result2 = $db->query($query2);
-		$data=mysql_fetch_array($result2);
+		$data=$db->fetch_array($result2);
 		$today=date("Y-m-d"); 
 		$expirer=0;
 		$expirecss="";

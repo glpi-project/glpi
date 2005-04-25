@@ -83,8 +83,15 @@ class DBmysql {
 	{
 		return mysql_field_name($result,$nb);
 	}
+	function field_flags($result,$field)
+	{
+		return mysql_field_flags($result,$field);
+	}
 	function list_tables() {
 		return mysql_list_tables($this->dbdefault);
+	}
+	function table_name($result,$nb) {
+		return mysql_tablename($result,$nb);
 	}
 	function list_fields($table) {
 		return mysql_list_fields($this->dbdefault,$table);

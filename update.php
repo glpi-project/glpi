@@ -115,7 +115,7 @@ function compDpd2Device($devtype,$devname,$dpdname,$compDpdName,$specif='') {
 	while($lndropd = $db->fetch_array($result)) {
 		$query2 = "insert into glpi_device_".$devname." (designation) values ('".addslashes(unhtmlentities($lndropd["name"]))."')";
 		$db->query($query2) or die("unable to transfer ".$dpdname." to ".$devname."  ".$lang["update"][90].$db->error());
-		$devid = mysql_insert_id();
+		$devid = $db->insert_id();
 		$query3 = "select * from glpi_computers where ".$compDpdName." = '".$lndropd["ID"]."'";
 		$result3 = $db->query($query3);
 		while($lncomp = $db->fetch_array($result3)) {
@@ -132,12 +132,12 @@ function compDpd2Device($devtype,$devname,$dpdname,$compDpdName,$specif='') {
 	}
 	//Delete unused elements (dropdown on the computer table, dropdown table and specif)
 	$query = "ALTER TABLE glpi_computers drop `".$compDpdName."`";
-	$db->query($query) or die("Error : ".$query." ".mysql_error());
+	$db->query($query) or die("Error : ".$query." ".$db->error());
 	$query = "DROP TABLE `glpi_dropdown_".$dpdname."`";
-	$db->query($query) or die("Error : ".$query." ".mysql_error());
+	$db->query($query) or die("Error : ".$query." ".$db->error());
 	if(!empty($specif)) {
 		$query = "ALTER TABLE glpi_computers drop `".$specif."`";
-		$db->query($query) or die("Error : ".$query." ".mysql_error());
+		$db->query($query) or die("Error : ".$query." ".$db->error());
 	}
 }
 
@@ -404,7 +404,7 @@ function TableExists($tablename) {
 
    // Check each in list for a match.
    for ($i=0;$i<$rcount;$i++) {
-       if (mysql_tablename($result, $i)==$tablename) return true;
+       if ($db->table_name($result, $i)==$tablename) return true;
    }
    return false;
 }
@@ -413,10 +413,10 @@ function TableExists($tablename) {
 function FieldExists($table, $field) {
 	$db = new DB;
 	$result = $db->query("SELECT * FROM ". $table ."");
-	$fields = mysql_num_fields($result);
+	$fields = $db->num_fields($result);
 	$var1 = false;
 	for ($i=0; $i < $fields; $i++) {
-		$name  = mysql_field_name($result, $i);
+		$name  = $db->field_name($result, $i);
 		if($name == $field) {
 			$var1 = true;
 		}
@@ -430,7 +430,7 @@ function isIndex($table, $field) {
 		$db = new DB;
 		$result = $db->query("select ". $field ." from ". $table);
 		if ($result){
-			$flags = mysql_field_flags($result,$field);
+			$flags = $db->field_flags($result,$field);
 			if(eregi("multiple_key",$flags) || eregi("primary_key",$flags) || eregi("unique_key",$flags)) {
 				return true;
 			}
@@ -1300,7 +1300,7 @@ if(!TableExists("glpi_device_power")) {
 	PRIMARY KEY (ID),
 	KEY FK_glpi_enterprise (FK_glpi_enterprise)
 	) TYPE=MyISAM;";
-	$db->query($query) or die("Error : ".$query." ".mysql_error());
+	$db->query($query) or die("Error : ".$query." ".$db->error());
 }
 
 if(!TableExists("glpi_device_case")) {
@@ -1314,7 +1314,7 @@ if(!TableExists("glpi_device_case")) {
 	PRIMARY KEY ( ID ) ,
 	KEY FK_glpi_enterprise( FK_glpi_enterprise )
 	)TYPE = MyISAM;";
-	$db->query($query) or die("Error : ".$query." ".mysql_error());
+	$db->query($query) or die("Error : ".$query." ".$db->error());
 }
 
 if(!TableExists("glpi_device_drive")) {
@@ -1330,7 +1330,7 @@ if(!TableExists("glpi_device_drive")) {
 	KEY FK_glpi_enterprise( FK_glpi_enterprise ),
 	PRIMARY KEY ( `ID` )
 	)TYPE=MyISAM;";
-	$db->query($query) or die("Error : ".$query." ".mysql_error());
+	$db->query($query) or die("Error : ".$query." ".$db->error());
 }
 
 if(!TableExists("glpi_device_pci")) {
@@ -1343,7 +1343,7 @@ if(!TableExists("glpi_device_pci")) {
 	PRIMARY KEY (ID),
 	KEY FK_glpi_enterprise (FK_glpi_enterprise)
 	) TYPE=MyISAM;";
-	$db->query($query) or die("Error : ".$query." ".mysql_error());
+	$db->query($query) or die("Error : ".$query." ".$db->error());
 } 
 
 if(!TableExists("glpi_device_control")) {
@@ -1358,7 +1358,7 @@ if(!TableExists("glpi_device_control")) {
 	PRIMARY KEY (ID),
 	KEY FK_glpi_enterprise (FK_glpi_enterprise)
 	) TYPE=MyISAM;";
-	$db->query($query) or die("Error : ".$query." ".mysql_error());
+	$db->query($query) or die("Error : ".$query." ".$db->error());
 }
 
 
@@ -1974,7 +1974,7 @@ if(!FieldExists("glpi_printers","is_template")) {
 // Ajout date_mod
 if(!FieldExists("glpi_printers","date_mod")) {
 	$query = "ALTER TABLE `glpi_printers` ADD `date_mod` DATETIME DEFAULT NULL";
-	$db->query($query) or die("Error : ".$query." ".mysql_error());
+	$db->query($query) or die("Error : ".$query." ".$db->error());
 
 	$query="ALTER TABLE `glpi_printers` ADD INDEX ( `date_mod` )" ;
 	$db->query($query) or die("0.5 alter field date_mod ".$lang["update"][90].$db->error());
@@ -1989,7 +1989,7 @@ if(!isIndex("glpi_computers", "date_mod")) {
 // Ajout date_mod
 if(!FieldExists("glpi_monitors","date_mod")) {
 	$query = "ALTER TABLE `glpi_monitors` ADD `date_mod` DATETIME DEFAULT NULL";
-	$db->query($query) or die("Error : ".$query." ".mysql_error());
+	$db->query($query) or die("Error : ".$query." ".$db->error());
 	
 	$query="ALTER TABLE `glpi_monitors` ADD INDEX ( `date_mod` )" ;
 	$db->query($query) or die("0.5 alter field date_mod ".$lang["update"][90].$db->error());
@@ -1998,7 +1998,7 @@ if(!FieldExists("glpi_monitors","date_mod")) {
 // Ajout date_mod
 if(!FieldExists("glpi_software","date_mod")) {
 	$query = "ALTER TABLE `glpi_software` ADD `date_mod` DATETIME DEFAULT NULL";
-	$db->query($query) or die("Error : ".$query." ".mysql_error());
+	$db->query($query) or die("Error : ".$query." ".$db->error());
 	
 	$query="ALTER TABLE `glpi_software` ADD INDEX ( `date_mod` )" ;
 	$db->query($query) or die("0.5 alter field date_mod ".$lang["update"][90].$db->error());
@@ -2007,7 +2007,7 @@ if(!FieldExists("glpi_software","date_mod")) {
 // Ajout date_mod
 if(!FieldExists("glpi_networking","date_mod")) {
 	$query = "ALTER TABLE `glpi_networking` ADD `date_mod` DATETIME DEFAULT NULL";
-	$db->query($query) or die("Error : ".$query." ".mysql_error());
+	$db->query($query) or die("Error : ".$query." ".$db->error());
 	
 	$query="ALTER TABLE `glpi_networking` ADD INDEX ( `date_mod` )" ;
 	$db->query($query) or die("0.5 alter field date_mod ".$lang["update"][90].$db->error());
@@ -2016,7 +2016,7 @@ if(!FieldExists("glpi_networking","date_mod")) {
 // Ajout tech_num
 if(!FieldExists("glpi_computers","tech_num")) {
 	$query = "ALTER TABLE `glpi_computers` ADD `tech_num` int(11) NOT NULL default '0' AFTER `contact_num`";
-	$db->query($query) or die("Error : ".$query." ".mysql_error());
+	$db->query($query) or die("Error : ".$query." ".$db->error());
 	
 	$query="ALTER TABLE `glpi_computers` ADD INDEX ( `tech_num` )" ;
 	$db->query($query) or die("0.5 alter field tech_num ".$lang["update"][90].$db->error());
@@ -2024,7 +2024,7 @@ if(!FieldExists("glpi_computers","tech_num")) {
 // Ajout tech_num
 if(!FieldExists("glpi_networking","tech_num")) {
 	$query = "ALTER TABLE `glpi_networking` ADD `tech_num` int(11) NOT NULL default '0' AFTER `contact_num`";
-	$db->query($query) or die("Error : ".$query." ".mysql_error());
+	$db->query($query) or die("Error : ".$query." ".$db->error());
 	
 	$query="ALTER TABLE `glpi_networking` ADD INDEX ( `tech_num` )" ;
 	$db->query($query) or die("0.5 alter field tech_num ".$lang["update"][90].$db->error());
@@ -2032,7 +2032,7 @@ if(!FieldExists("glpi_networking","tech_num")) {
 // Ajout tech_num
 if(!FieldExists("glpi_printers","tech_num")) {
 	$query = "ALTER TABLE `glpi_printers` ADD `tech_num` int(11) NOT NULL default '0' AFTER `contact_num`";
-	$db->query($query) or die("Error : ".$query." ".mysql_error());
+	$db->query($query) or die("Error : ".$query." ".$db->error());
 	
 	$query="ALTER TABLE `glpi_printers` ADD INDEX ( `tech_num` )" ;
 	$db->query($query) or die("0.5 alter field tech_num ".$lang["update"][90].$db->error());
@@ -2041,7 +2041,7 @@ if(!FieldExists("glpi_printers","tech_num")) {
 // Ajout tech_num
 if(!FieldExists("glpi_monitors","tech_num")) {
 	$query = "ALTER TABLE `glpi_monitors` ADD `tech_num` int(11) NOT NULL default '0' AFTER `contact_num`";
-	$db->query($query) or die("Error : ".$query." ".mysql_error());
+	$db->query($query) or die("Error : ".$query." ".$db->error());
 	
 	$query="ALTER TABLE `glpi_monitors` ADD INDEX ( `tech_num` )" ;
 	$db->query($query) or die("0.5 alter field tech_num ".$lang["update"][90].$db->error());
@@ -2050,7 +2050,7 @@ if(!FieldExists("glpi_monitors","tech_num")) {
 // Ajout tech_num
 if(!FieldExists("glpi_software","tech_num")) {
 	$query = "ALTER TABLE `glpi_software` ADD `tech_num` int(11) NOT NULL default '0' AFTER `location`";
-	$db->query($query) or die("Error : ".$query." ".mysql_error());
+	$db->query($query) or die("Error : ".$query." ".$db->error());
 	
 	$query="ALTER TABLE `glpi_software` ADD INDEX ( `tech_num` )" ;
 	$db->query($query) or die("0.5 alter field tech_num ".$lang["update"][90].$db->error());
@@ -2059,7 +2059,7 @@ if(!FieldExists("glpi_software","tech_num")) {
 // Ajout tech_num
 if(!FieldExists("glpi_peripherals","tech_num")) {
 	$query = "ALTER TABLE `glpi_peripherals` ADD `tech_num` int(11) NOT NULL default '0' AFTER `contact_num`";
-	$db->query($query) or die("Error : ".$query." ".mysql_error());
+	$db->query($query) or die("Error : ".$query." ".$db->error());
 	
 	$query="ALTER TABLE `glpi_peripherals` ADD INDEX ( `tech_num` )" ;
 	$db->query($query) or die("0.5 alter field tech_num ".$lang["update"][90].$db->error());
@@ -2068,7 +2068,7 @@ if(!FieldExists("glpi_peripherals","tech_num")) {
 // Ajout tech_num
 if(!FieldExists("glpi_software","tech_num")) {
 	$query = "ALTER TABLE `glpi_software` ADD `tech_num` int(11) NOT NULL default '0'";
-	$db->query($query) or die("Error : ".$query." ".mysql_error());
+	$db->query($query) or die("Error : ".$query." ".$db->error());
 	
 	$query="ALTER TABLE `glpi_software` ADD INDEX ( `tech_num` )" ;
 	$db->query($query) or die("0.5 alter field tech_num ".$lang["update"][90].$db->error());
@@ -2090,7 +2090,7 @@ $query = "CREATE TABLE glpi_type_docs (
 		  KEY (upload)
 		) TYPE=MyISAM;";
 		
-$db->query($query) or die("Error creating table typedoc ".$query." ".mysql_error());
+$db->query($query) or die("Error creating table typedoc ".$query." ".$db->error());
 
 
 
@@ -2153,7 +2153,7 @@ $query = "INSERT INTO glpi_type_docs (ID, name, ext, icon, mime, upload, date_mo
 
 
 
-$db->query($query) or die("Error inserting elements in table typedoc ".$query." ".mysql_error());
+$db->query($query) or die("Error inserting elements in table typedoc ".$query." ".$db->error());
 	
 }
 
@@ -2174,7 +2174,7 @@ $query = "CREATE TABLE glpi_docs (
   KEY date_mod (date_mod)
 ) TYPE=MyISAM;";
 
-$db->query($query) or die("Error creating table docs ".$query." ".mysql_error());
+$db->query($query) or die("Error creating table docs ".$query." ".$db->error());
 }
 
 if(!TableExists("glpi_doc_device")) {
@@ -2190,7 +2190,7 @@ $query = "CREATE TABLE glpi_doc_device (
   KEY FK_device (FK_device,device_type)
 ) TYPE=MyISAM;";
 
-$db->query($query) or die("Error creating table docs ".$query." ".mysql_error());
+$db->query($query) or die("Error creating table docs ".$query." ".$db->error());
 }
 
 if(!TableExists("glpi_dropdown_rubdocs")) {
@@ -2200,7 +2200,7 @@ $query = "CREATE TABLE glpi_dropdown_rubdocs (
   name varchar(255) default NULL,
   PRIMARY KEY  (ID)
 ) TYPE=MyISAM;";
-$db->query($query) or die("Error creating table docs ".$query." ".mysql_error());
+$db->query($query) or die("Error creating table docs ".$query." ".$db->error());
 }
 
 if(!isIndex("glpi_contacts", "deleted")) {

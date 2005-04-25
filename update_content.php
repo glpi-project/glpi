@@ -110,7 +110,7 @@ function get_update_content($db, $table,$from,$limit)
      $result = $db->query("SELECT * FROM $table LIMIT $from,$limit");
      
      if($result)
-     while($row = mysql_fetch_assoc($result)) {
+     while($row = $db->fetch_assoc($result)) {
          if (isset($row["ID"])) {
      		if (get_magic_quotes_runtime()) $row=stripslashes_deep($row);
      		$row=stripslashes_deep($row);
@@ -175,7 +175,7 @@ if ($offsetrow==-1){
 	$rowtodump=substr_count($todump, "UPDATE ");
 	if ($rowtodump>0){
 //	echo $todump;
-	$result = mysql_query($todump);
+	$result = $db->query($todump);
 //	if (!$result) echo "ECHEC ".$todump;
 	
 	$cpt+=$rowtodump;
@@ -194,8 +194,8 @@ if ($offsetrow==-1){
         return TRUE;
 	
 }
-if (mysql_error())
-     echo "<hr>ERREUR à partir de [$formattedQuery]<br>".mysql_error()."<hr>";
+if ($db->error())
+     echo "<hr>ERREUR à partir de [$formattedQuery]<br>".$db->error()."<hr>";
 $offsettable=-1;
 return TRUE;
 }
