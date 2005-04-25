@@ -168,7 +168,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			if($i != 0) {
 				$where .= " OR ";
 			}
-			$coco = mysql_field_name($fields, $i);
+			$coco = $db->field_name($fields, $i);
 
 			if($coco == "firmware") {
 				$where .= " glpi_dropdown_firmware.name LIKE '%".$contains."%'";

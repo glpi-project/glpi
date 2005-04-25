@@ -120,7 +120,7 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 			if($i != 0) {
 				$where .= " OR ";
 			}
-			$coco = mysql_field_name($fields, $i);
+			$coco = $db->field_name($fields, $i);
 			$where .= "glpi_docs.".$coco . " LIKE '%".$contains."%'";
 		}
 		$where .= ")";

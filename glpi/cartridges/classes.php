@@ -85,9 +85,9 @@ class CartridgeType {
 	function getEmpty () {
 	$db = new DB;
 	$fields = $db->list_fields("glpi_cartridges_type");
-	$columns = mysql_num_fields($fields);
+	$columns = $db->num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
-			$name = mysql_field_name($fields, $i);
+			$name = $db->field_name($fields, $i);
 			$this->fields[$name] = "";
 		}
 	}

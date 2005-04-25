@@ -111,13 +111,6 @@ $compression = 0;
 if ($compression==1) $filetype = "sql.gz";
 else $filetype = "sql";
 
-// DO NOT CHANGE THE LINES BELOW
-flush();
-$conn = mysql_connect($dbhost,$dbuser,$dbpass) or die(mysql_error());
-
-
-
-
 // génére un fichier backup.xml a partir de base dbhost connecté avec l'utilisateur dbuser et le mot de passe
 //dbpassword sur le serveur dbdefault
 function xmlbackup($dbdefault,$dbhost,$dbuser,$dbpassword)
@@ -353,7 +346,7 @@ while(!feof($fileHandle))
 	if (get_magic_quotes_runtime()) $formattedQuery=stripslashes($formattedQuery);
         if (substr($formattedQuery,-1)==";")
         // Do not use the $db->query 
-        if (mysql_query($formattedQuery)) //réussie sinon continue à conca&téner
+        if ($db->query($formattedQuery)) //réussie sinon continue à conca&téner
         {
             $offset=ftell($fileHandle);
             $formattedQuery = "";
@@ -365,7 +358,7 @@ while(!feof($fileHandle))
 }
 
 if ($db->error)
-     echo "<hr>ERREUR à partir de [$formattedQuery]<br>".mysql_error()."<hr>";
+     echo "<hr>ERREUR à partir de [$formattedQuery]<br>".$db->error()."<hr>";
 
 fclose($fileHandle);
 $offset=-1;
@@ -451,8 +444,8 @@ if ($offsetrow==-1){
         return TRUE;
 	
 }
-if (mysql_error())
-     echo "<hr>ERREUR à partir de [$formattedQuery]<br>".mysql_error()."<hr>";
+if ($db->error())
+     echo "<hr>ERREUR à partir de [$formattedQuery]<br>".$db->error()."<hr>";
 $offsettable=-1;
 fclose($fileHandle);
 return TRUE;

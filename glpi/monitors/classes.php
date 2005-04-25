@@ -66,9 +66,9 @@ function getEmpty () {
 	//make an empty database object
 	$db = new DB;
 	$fields = $db->list_fields("glpi_monitors");
-	$columns = mysql_num_fields($fields);
+	$columns = $db->num_fields($fields);
 	for ($i = 0; $i < $columns; $i++) {
-		$name = mysql_field_name($fields, $i);
+		$name = $db->field_name($fields, $i);
 		$this->fields[$name] = "";
 	}
 	return true;

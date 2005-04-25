@@ -147,7 +147,7 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			if($i != 0) {
 				$where .= " OR ";
 			}
-			$coco = mysql_field_name($fields, $i);
+			$coco = $db->field_name($fields, $i);
 
 			$where .= "glpi_contacts.".$coco . " LIKE '%".$contains."%'";
 		}

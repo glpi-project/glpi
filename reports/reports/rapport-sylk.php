@@ -431,7 +431,7 @@ switch($table){
         $ligne = 2;
 		$old_ID=-1;
 		$ligne_content=array();
-        while ($enr = mysql_fetch_assoc($resultat))
+        while ($enr = $db->fetch_assoc($resultat))
         {
         	// Same entry
 			if ($enr[$champs[0][0]]==$old_ID)      {
