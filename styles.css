@@ -346,7 +346,7 @@ a.icon_logo:hover img {
 	padding: 4px;
 	margin: 1px;
 	border: 1px solid #aaaaaa;
-	background-color: #C5DAC8;
+	background-color: #ffffff;
 	-moz-border-radius: 5px;
        	font-size : 12px;
         font-weight: bold;
@@ -357,7 +357,7 @@ a.icon_nav_move img {
 	padding: 4px;
 	margin: 1px;
 	border: 1px solid #aaaaaa;
-	background-color: #C5DAC8;
+	background-color: #ffffff;
 	-moz-border-radius: 5px;
 }
 
@@ -365,7 +365,7 @@ a.icon_nav_move:hover img {
 	padding: 4px;
 	margin: 1px;
 	border: 1px solid #999999;
-	background-color: #e4e4e4;
+	background-color:#e4e4e4;
 	-moz-border-radius: 5px;
 }
 
