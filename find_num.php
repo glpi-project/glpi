@@ -69,24 +69,22 @@ window.opener.document.forms["helpdeskform"].elements["device_type"].value = Typ
 window.close();}
 </script>
 
-<div align="center">
-  <p><strong><?echo $lang["help"][22];?></strong></p>
-  <form name="form1" method="post" action="find_num.php">
-    <table cellspacing="1" width="100%" class='tab_cadre'>
-      <tr> 
-        <th align='center'  width="100%" height="29"><?echo $lang["help"][23];?></th>
-        </tr><tr><td class='tab_bg_1' align='center' width="100%"> 
-		<input name="NomContact" type="text" id="NomContact" >
-           <input type="submit" name="Submit" value="<?echo $lang["buttons"][0];?>">
- </td>
-      </tr>
-    </table>
-	
-  </form>
-</div>
-<?php
+<?php 
 
-if(isset($_POST["Submit"]))
+echo "<div align='center'>";
+echo "<p><strong>".$lang["help"][22]."</strong></p>";
+echo " <form name=\"form1\" method=\"post\"  action=\"".$_SERVER["PHP_SELF"]."\">"; 
+
+echo "<table cellspacing='1' width='100%'  class='tab_cadre'>";
+echo "<tr><th align='center'  width='100%' height='29'>".$lang["help"][23]."</th>";
+ echo "</tr><tr><td class='tab_bg_1' align='center' width='100%'>"; 
+echo "<input name='NomContact' type='text' id='NomContact' >";
+ echo "<input type='hidden' name='send' value='1' />"; // bug IE ! La validation par enter ne fonctionne pas sans cette ligne  incroyable mais vrai !
+echo "<input type='submit' name='send' value=\"". $lang["buttons"][0]."\">";
+ echo "</td>  </tr> </table> </form></div>";
+ 
+ 
+if(isset($_POST["send"]))
 {
 	echo "<table width='100%' class='tab_cadre'>";
 	echo " <tr class='tab_bg3'>";
