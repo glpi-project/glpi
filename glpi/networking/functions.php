@@ -1020,18 +1020,12 @@ function listConnectorComputers($target,$input) {
 
 	$pID1 = $input["pID1"];
 
-	echo "<div align='center'><form method='get' action=\"$target\"><table border='0' class='tab_cadre'>";
-	echo "<tr><th colspan='2'>".$lang["networking"][27]." $pID1 ".$lang["networking"][32].". ".$lang["networking"][33].":</th></tr>";
-	echo "<tr><td>";
-
-	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>";
 
 	$db = new DB;
 	if ($input["type"] == "name") {
-		$query = "SELECT glpi_computers.ID as ID, glpi_computers.name as name, glpi_dropdown_locations.ID as location from glpi_computers, glpi_dropdown_locations WHERE  glpi_computers.location = glpi_dropdown_locations.id AND glpi_computers.name LIKE '%".$input["comp"]."%'";
+		$query = "SELECT glpi_computers.ID as ID, glpi_computers.name as name, glpi_dropdown_locations.ID as location from glpi_computers LEFT JOIN glpi_dropdown_locations ON  glpi_computers.location = glpi_dropdown_locations.id WHERE glpi_computers.name LIKE '%".$input["comp"]."%'";
 	} else {
-		$query = "SELECT glpi_computers.ID as ID, glpi_computers.name as name, glpi_dropdown_locations.ID as location from glpi_computers, glpi_dropdown_locations WHERE glpi_computers.location = glpi_dropdown_locations.id AND glpi_computers.ID LIKE '%".$input["comp"]."%'";
+		$query = "SELECT glpi_computers.ID as ID, glpi_computers.name as name, glpi_dropdown_locations.ID as location from glpi_computers LEFT JOIN glpi_dropdown_locations ON glpi_computers.location = glpi_dropdown_locations.id WHERE glpi_computers.ID LIKE '%".$input["comp"]."%'";
 	} 
 	
 	$query.=" AND glpi_computers.is_template='0' and glpi_computers.deleted='N' ";
@@ -1039,6 +1033,22 @@ function listConnectorComputers($target,$input) {
 	$query.= " ORDER BY glpi_computers.name";
 	$result = $db->query($query);
 	$number = $db->numrows($result);
+	if ($number==0){
+		echo "<div align=\"center\"><strong>";
+		echo $lang["computers"][32]."<br>";
+		echo "<a href=\"javascript:history.back()\">".$lang["buttons"][13]."</a>";
+		echo "</strong></div>";
+		return;
+	}
+
+	echo "<div align='center'><form method='get' action=\"$target\"><table border='0' class='tab_cadre'>";
+	echo "<tr><th colspan='2'>".$lang["networking"][27]." $pID1 ".$lang["networking"][32].". ".$lang["networking"][33].":</th></tr>";
+	echo "<tr><td>";
+
+	echo "<tr class='tab_bg_1'>";
+	echo "<td align='center'>";
+	
+		
 	echo "<select name='dID'>";
 	$i=0;
 	while ($i < $number)
