@@ -987,7 +987,7 @@ function showConnectorSearch($target,$ID) {
 	echo "</form>";
 	
 	echo "<tr class='tab_bg_1'>";
-	echo "<form method='post' action=\"$target\">";
+	echo "<form method='get' action=\"$target\">";
 	echo "<td>".$lang["networking"][31].":";
 	$db = new DB;
 	$query = "SELECT glpi_networking.ID AS ID, glpi_networking.name AS name, glpi_dropdown_locations.ID as location from glpi_networking LEFT JOIN glpi_dropdown_locations ON glpi_networking.location = glpi_dropdown_locations.id WHERE glpi_networking.is_template='0' AND glpi_networking.deleted='N' ORDER BY name";
@@ -1020,7 +1020,7 @@ function listConnectorComputers($target,$input) {
 
 	$pID1 = $input["pID1"];
 
-	echo "<div align='center'><form method='post' action=\"$target\"><table border='0' class='tab_cadre'>";
+	echo "<div align='center'><form method='get' action=\"$target\"><table border='0' class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$lang["networking"][27]." $pID1 ".$lang["networking"][32].". ".$lang["networking"][33].":</th></tr>";
 	echo "<tr><td>";
 
