@@ -346,33 +346,39 @@ function compdevice_form_add($target,$device_type,$cID,$withtemplate='') {
 
 	$query = "SELECT `ID`, `designation` FROM `".getDeviceTable($device_type)."` ORDER BY designation";
 	if($result = $db->query($query)) {
-		echo "<form action=\"$target\" method=\"post\">";
-		echo "<div align=\"center\">";
-		echo "<table class='tab_cadre'>";
-		echo "<tr>";
-		echo "<th>";
-		echo $lang["devices"][9].$cID;
-		echo "</th>";
-		echo "</tr>";
-		echo "<tr><td align='center'>";
+		if ($db->numrows($result)==0){
+			echo "<div align=\"center\"><strong>";
+			echo $lang["devices"][18]."<br>";
+			echo "<a href=\"javascript:history.back()\">".$lang["buttons"][13]."</a>";
+			echo "</strong></div>";
+		} else {
+			echo "<form action=\"$target\" method=\"post\">";
+			echo "<div align=\"center\">";
+			echo "<table class='tab_cadre'>";
+			echo "<tr>";
+			echo "<th>";
+			echo $lang["devices"][9].$cID;
+			echo "</th>";
+			echo "</tr>";
+			echo "<tr><td align='center'>";
+			echo "<select name=\"new_device_id\">";
+			$device = new Device($device_type);
+			while($line = $db->fetch_array($result)){
+				echo "<option value=\"";
+				echo $line["ID"]."\" >".$line["designation"]."</option>"; 
+			}
+			echo "</select>";
+			echo "<input type=\"hidden\" name=\"withtemplate\" value=\"".$withtemplate."\" >";
+			echo "<input type=\"hidden\" name=\"connect_device\" value=\"".true."\" >";
+			echo "<input type=\"hidden\" name=\"device_type\" value=\"".$device_type."\" >";
+			echo "<input type=\"hidden\" name=\"cID\" value=\"".$cID."\" >";
+			echo "<input type=\"submit\" value=\"".$lang["buttons"][2]."\" >";
 		
-		echo "<select name=\"new_device_id\">";
-		$device = new Device($device_type);
-		while($line = $db->fetch_array($result)){
-			echo "<option value=\"";
-			echo $line["ID"]."\" >".$line["designation"]."</option>"; 
+			echo "</td></tr>";
+			echo "</table>";
+			echo "</div>";
+			echo "</form>";
 		}
-		echo "</select>";
-		echo "<input type=\"hidden\" name=\"withtemplate\" value=\"".$withtemplate."\" >";
-		echo "<input type=\"hidden\" name=\"connect_device\" value=\"".true."\" >";
-		echo "<input type=\"hidden\" name=\"device_type\" value=\"".$device_type."\" >";
-		echo "<input type=\"hidden\" name=\"cID\" value=\"".$cID."\" >";
-		echo "<input type=\"submit\" value=\"".$lang["buttons"][2]."\" >";
-		
-		echo "</td></tr>";
-		echo "</table>";
-		echo "</div>";
-		echo "</form>";
 	} else {
 		
 		//or display an error message.
