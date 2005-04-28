@@ -60,6 +60,7 @@ echo "Delete LDAP directories";
 
 echo "Delete various scripts and directories"
 \rm make_release.sh;
+\rm Doxyfile;
 \rm modify_headers.pl;
 \rm -rf reports/reports/phpexcel
 \rm -rf conffiles
