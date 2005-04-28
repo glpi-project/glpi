@@ -26,9 +26,6 @@
  ------------------------------------------------------------------------
 */
 
-// Based on:
-// IRMA, Information Resource-Management and Administration
-// Christian Bauer 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
@@ -309,7 +306,7 @@ votre base de données.
 
 9) Il existe une différence majeure en les versions < à 0.5 et les versions > 0.5 : la gestion des lieux.
 En effet, celle-ci est maintenant hiérarchique. 
-Un système vous permet donc d'adpater vos anciens lieux a cette nouvelle architecture.
+Un système vous permet donc d'adapter vos anciens lieux a cette nouvelle architecture.
 Pour cela, deux paramètres vous sont présentés en bas de la page :
 1 - le caractère de séparation qui vous avez peut-etre utilisé pour définir votre hierarchie interne
 2 - la définition d'un lieu RACINE si vous le voulez
