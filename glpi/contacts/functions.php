@@ -216,7 +216,7 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			if ($sort=="glpi_contact.fax") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contact.fax&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contacts.fax&order=ASC&start=$start\">";
 			echo $lang["financial"][30]."</a></th>";
 
 			// Email
@@ -224,7 +224,7 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			if ($sort=="glpi_contact.email") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contact.email&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contacts.email&order=ASC&start=$start\">";
 			echo $lang["financial"][31]."</a></th>";
 
 			// Type
@@ -232,7 +232,7 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			if ($sort=="glpi_contact.type") {
 				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contact.type&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contacts.type&order=ASC&start=$start\">";
 			echo $lang["financial"][37]."</a></th>";
 
 
