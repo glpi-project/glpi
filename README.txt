@@ -26,9 +26,6 @@
  ------------------------------------------------------------------------
 */
 
-// Based on:
-// IRMA, Information Resource-Management and Administration
-// Christian Bauer 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
@@ -106,6 +103,7 @@ of the GLPI project (http://glpi.indepnet.org).
 
 -[your_http_root/]glpi/backups/dump
 -[your_http_root/]glpi/glpi/config/
+-[your_http_root/]glpi/glpi/docs/
 
 in order that PHP can write in them.
 
@@ -136,11 +134,25 @@ Click on « continue »
 
 8) The update begin. The time of the update depend of your database size, so it must be quite long.
 
+#### VERSION < 0.4
 ATTENTION : The update do not keep your previous configurations whoch are store in the config.php file 
 (general configuration, external auth, mailing, etc)
 
 You must to use the post-install configuration forms in the "configuration" section of GLPI to setup them again.
+###########
 
+9) There is a major difference in the versions < with 0.5 and the 0.5 one: the management of the locations. 
+Indeed, it is now hierarchical.
+A system thus allows you to adapt your old locations has this new architecture. 
+For that, two parameters are presented to you in bottom of the page: 
+1 - character of separation which you perhaps used to define your internal hierarchy 
+2 - the definition of a ROTT place if you want it 
+
+Once these selected options a table presented the new generated hierarchy to you. 
+If it is appropriate to you, you can validate in lower part of the table. 
+If not, you can change your parameters and regenerate a hierarchy while clicking on the first << Validate >> 
+
+10 ) 
 All these configurations are only accessible by a new type of user: the « super-admin ».
 The update automaticaly convert the « admin » user to « super-admin ».
 
