@@ -181,9 +181,13 @@ $cfg_login['ldap']['condition'] = $db->result($result,0,"ldap_condition");
 // relation between the GLPI users table field and the LDAP field
 
 //// AJOUTER CA DANS LA CONFIG POST INSTALL
-$cfg_login['ldap']['fields'] = array( "name" => $db->result($result,0,"ldap_field_name"), "email" => $db->result($result,0,"ldap_field_email"), "location" => $db->result($result,0,"ldap_field_location"), "phone" => $db->result($result,0,"ldap_field_phone"), "realname" => $db->result($result,0,"ldap_field_realname"));
+$cfg_login['ldap']['fields'] = array( "name" => $db->result($result,0,"ldap_field_name"), 
+									"email" => $db->result($result,0,"ldap_field_email"), 
+									"location" => $db->result($result,0,"ldap_field_location"), 
+									"phone" => $db->result($result,0,"ldap_field_phone"), 
+									"realname" => $db->result($result,0,"ldap_field_realname"));
 
-
+unhtmlentities_deep($cfg_login['ldap']);
 
 //other sources
 //$cfg_login['other_source']...
