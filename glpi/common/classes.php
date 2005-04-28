@@ -503,6 +503,7 @@ class Identification
 	{
 		$ID = $this->user->fields['ID'];
 		$name = $this->user->fields['name'];
+		$realname = $this->user->fields['realname'];
 		$password = md5($this->user->fields['password']);
 		$type = $this->user->fields['type'];
 		$language = $this->user->prefs['language'];
@@ -512,6 +513,7 @@ class Identification
 		$_SESSION["glpiID"] = $ID;
 		$_SESSION["glpipass"] = $password;
 		$_SESSION["glpiname"] = $name;
+		$_SESSION["glpirealname"] = $realname;
 		$_SESSION["glpitype"] = $type;
 		$_SESSION["glpilanguage"] = $language;
 		$_SESSION["tracking_order"] = $tracking_order;
