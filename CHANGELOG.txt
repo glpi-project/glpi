@@ -1,5 +1,32 @@
 **** GLPI 0.5 ***
 
+28/04/05
+Affichage du nom réel sur central.
+
+14/04/05
+L'utilisateur post-only peut consulter ses anciennes interventions.
+
+05/04/05
+Ajout de la langue espagnol.
+
+31/03/05
+Refonte des rapports réseau.
+
+28/03/05
+Ajout onglet "Tout" dans inventaire.
+
+24/03/05
+Ajout onglets "Suivants/précédents" dans inventaire.
+
+23/03/05
+Gestion des rubans pour les types de cartouches.
+
+22/03/05
+Modification automatique des contacts sur les périphériques connectés.
+
+21/03/05
+Gestion des adresses IP/Mac sur matériel réseau
+
 20/03/05
 Gestion des matériels en réparation
 
