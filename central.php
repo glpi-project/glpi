@@ -52,11 +52,8 @@ commonHeader($lang["title"][0],$_SERVER["PHP_SELF"]);
 
 // Greet the user
 
-echo "<center><b>".$lang["central"][0].$_SESSION["glpiname"].", ".$lang["central"][1]."</b></center>";
+echo "<center><b>".$lang["central"][0].(empty($_SESSION["glpirealname"])?$_SESSION["glpiname"]:$_SESSION["glpirealname"]).", ".$lang["central"][1]."</b></center>";
 //echo "<hr noshade>";
-
-// New database object
-$db= new DB;
 
 // Show last events
 if(isset($_GET["order"]))
