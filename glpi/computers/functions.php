@@ -719,10 +719,6 @@ function updateComputer($input) {
 	$updates[0]= "date_mod";
 	$comp->fields["date_mod"] = date("Y-m-d H:i:s");
 
-	// Pop off the last two attributes, no longer needed
-	$null=array_pop($input);
-	$null=array_pop($input);
-	
 	// Get all flags and fill with 0 if unchecked in form
 	foreach  ($comp->fields as $key => $val) {
 		if (eregi("\.*flag\.*",$key)) {
@@ -731,11 +727,11 @@ function updateComputer($input) {
 			}
 		}
 	}
-
+	
 	// Fill the update-array with changes
 	$x=1;
 	foreach ($input as $key => $val) {
-		if (isset($comp->fields[$key]) && $comp->fields[$key]  != $input[$key]) {
+		if (array_key_exists($key,$comp->fields) && $comp->fields[$key]  != $input[$key]) {
 			$comp->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;
@@ -769,6 +765,7 @@ function addComputer($input) {
 	$null=array_pop($input);
 	
 	$i=0;
+	
 	// fill array for update
 	foreach ($input as $key => $val){
 	if (!isset($comp->fields[$key]) || $comp->fields[$key] != $input[$key]) {

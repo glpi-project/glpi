@@ -472,13 +472,10 @@ function updateContract($input) {
 	$con = new Contract;
 	$con->getFromDB($input["ID"]);
 
- 	// Pop off the last attribute, no longer needed
-	$null=array_pop($input);
-
 	// Fill the update-array with changes
 	$x=0;
 	foreach ($input as $key => $val) {
-		if (isset($con->fields[$key]) && $con->fields[$key] != $input[$key]) {
+		if (array_key_exists($key,$con->fields) && $con->fields[$key] != $input[$key]) {
 			$con->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;

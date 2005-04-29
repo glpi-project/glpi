@@ -598,10 +598,6 @@ function updateNetdevice($input) {
 	$updates[0]= "date_mod";
 	$netdev->fields["date_mod"] = date("Y-m-d H:i:s");
 
- 	// Pop off the last two attributes, no longer needed
-	$null=array_pop($input);
-	$null=array_pop($input);
-
 	// Get all flags and fill with 0 if unchecked in form
 	foreach ($netdev->fields as $key => $val) {
 		if (eregi("\.*flag\.*",$key)) {
@@ -614,7 +610,7 @@ function updateNetdevice($input) {
 	// Fill the update-array with changes
 	$x=1;
 	foreach ($input as $key => $val) {
-		if (isset($netdev->fields[$key]) && $netdev->fields[$key] != $input[$key]) {
+		if (array_key_exists($key,$netdev->fields) && $netdev->fields[$key] != $input[$key]) {
 			$netdev->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;
@@ -843,15 +839,11 @@ function updateNetport($input) {
 	$netport = new Netport;
 	$netport->getFromDB($input["ID"]);
 
-	// Pop off the last two attributes, no longer needed
-	unset($input['referer']);
-	unset($input['search']);
-	$null=array_pop($input);
 	// Fill the update-array with changes
 	$x=0;
 	$updates=array();
 	foreach ($input as $key => $val) {
-		if (isset($netport->fields[$key]) && $netport->fields[$key] != $input[$key]) {
+		if (array_key_exists($key,$netport->fields) && $netport->fields[$key] != $input[$key]) {
 			$netport->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;

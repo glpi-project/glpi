@@ -461,9 +461,6 @@ function updateSoftware($input) {
 	$sw = new Software;
 	$sw->getFromDB($input["ID"]);
  
- 	// Pop off the last attribute, no longer needed
-	$null=array_pop($input);
-
 	if ($input['is_update']=='N') $input['update_software']=-1;
 
 	// set new date and make sure it gets updated
@@ -473,7 +470,7 @@ function updateSoftware($input) {
 	// Fill the update-array with changes
 	$x=1;
 	foreach ($input as $key => $val) {
-		if (isset($sw->fields[$key]) && $sw->fields[$key] != $input[$key]) {
+		if (array_key_exists($key,$sw->fields) && $sw->fields[$key] != $input[$key]) {
 			$sw->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;
@@ -902,25 +899,21 @@ function updateLicense($input) {
 
 	$lic = new License;
 	$lic->getFromDB($input["lID"]);
-	
-	// Pop off the last attribute, no longer needed
-	$null=array_pop($input);
-	$null=array_pop($input);
-	$null=array_pop($input);
 
 	if (empty($input['expire'])) unset($input['expire']);
 	if ($input['oem']=='N') $input['oem_computer']=-1;
-	
+
 	
 	// Fill the update-array with changes
 	$x=0;
 	foreach ($input as $key => $val) {
-		if (isset($lic->fields[$key]) && $lic->fields[$key] != $input[$key]) {
+		if (array_key_exists($key,$lic->fields) && $lic->fields[$key] != $input[$key]) {
 			$lic->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;
 		}
 	}
+	
 	if(!empty($updates)) {
 	
 		$lic->updateInDB($updates);

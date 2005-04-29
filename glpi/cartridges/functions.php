@@ -410,13 +410,10 @@ function updateCartridgeType($input) {
 	$sw = new CartridgeType;
 	$sw->getFromDB($input["ID"]);
  
- 	// Pop off the last attribute, no longer needed
-	$null=array_pop($input);
-
 	// Fill the update-array with changes
 	$x=0;
 	foreach ($input as $key => $val) {
-		if (isset($sw->fields[$key]) && $sw->fields[$key] != $input[$key]) {
+		if (array_key_exists($key,$sw->fields) && $sw->fields[$key] != $input[$key]) {
 			$sw->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;

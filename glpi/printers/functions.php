@@ -539,10 +539,6 @@ function updatePrinter($input) {
 	$updates[0]= "date_mod";
 	$printer->fields["date_mod"] = date("Y-m-d H:i:s");
 	
-	// Pop off the last two attributes, no longer needed
-	$null=array_pop($input);
-	$null=array_pop($input);
-	
 	// Get all flags and fill with 0 if unchecked in form
 	foreach ($printer->fields as $key => $val) {
 		if (eregi("\.*flag\.*",$key)) {
@@ -555,7 +551,7 @@ function updatePrinter($input) {
 	// Fill the update-array with changes
 	$x=1;
 	foreach ($input as $key => $val) {
-		if (isset($printer->fields[$key]) && $printer->fields[$key] != $input[$key]) {
+		if (array_key_exists($key,$printer->fields) && $printer->fields[$key] != $input[$key]) {
 			$printer->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;
