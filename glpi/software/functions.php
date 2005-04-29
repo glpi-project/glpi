@@ -1118,7 +1118,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 			if ($data["oem"]=='Y') {
 			echo "<br><strong>";
 			if (isset($comp->fields['ID']))
-			echo "<a href='".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."&withtemplate=".$withtemplate."</a>";
+			echo "<a href='".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
 			else echo "N/A";
 			echo "<strong>";
 			} 
