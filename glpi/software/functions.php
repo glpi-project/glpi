@@ -902,9 +902,8 @@ function updateLicense($input) {
 
 	$lic = new License;
 	$lic->getFromDB($input["lID"]);
- 	
+	
 	// Pop off the last attribute, no longer needed
-	$null=array_pop($input);
 	$null=array_pop($input);
 	$null=array_pop($input);
 	$null=array_pop($input);
