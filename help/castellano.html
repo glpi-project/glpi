@@ -1,246 +1,595 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">     
-   <head>
-          <title>AIDE HELPDESK - GLPI </title>
-          <meta http-equiv="Content-type" content="text/html; charset=iso-8859-15"/>
-          <meta http-equiv="Content-Script-Type" content="text/javascript"/>
-          <meta http-equiv="Content-Style-Type" content="text/css"/>
-          <meta name="revisit-after" content="15 days"/>
-          <meta name="robots" content="index,follow"/>
-          <meta name="DC.Publisher" content="INDEPNET.NET"/>
-          <link rel="alternate" title="Version Docbook/XML" type="text/xml" href="docbook.xml"/>
-          <link rel="alternate" title="Version brute" type="text/html" href="xhtml.xml"/>
-          <meta name="DC.Language" scheme="RFC3066" content="en"/>
-          <meta name="DC.Identifier" content="structure"/>
-          <meta name="DC.Creator" content="GLPI dev team"/>
-          <meta name="DC.Date.created" scheme="W3CDTF" content="2004-09-21"/>
-          <meta name="DC.Date.modified" scheme="W3CDTF" content="2004-09-21"/>
-          <meta name="DC.Rights" content="This article is under GPL license."/>
-          <meta name="DC.Subject" content="HELPDESK"/>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
+<head>
+  <title>Ayuda Helpdesk de GLPI</title>
+  <meta http-equiv="Content-type"
+ content="text/html; charset=iso-8859-15">
+  <meta http-equiv="Content-Script-Type" content="text/javascript">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <meta name="revisit-after" content="15 days">
+  <meta name="robots" content="index,follow">
+  <meta name="DC.Publisher" content="INDEPNET.NET">
+  <link rel="alternate" title="Version Docbook/XML" type="text/xml"
+ href="docbook.xml">
+  <link rel="alternate" title="Version brute" type="text/html"
+ href="xhtml.xml">
+  <meta name="DC.Language" scheme="RFC3066" content="fr">
+  <meta name="DC.Identifier" content="structure">
+  <meta name="DC.Creator" content="GLPI dev team">
+  <meta name="DC.Date.created" scheme="W3CDTF" content="2004-09-21">
+  <meta name="DC.Date.modified" scheme="W3CDTF" content="2004-09-21">
+  <meta name="DC.Rights" content="Cet article est sous licence GPL.">
+  <meta name="DC.Subject" content="HELPDESK">
+  <style type="text/css">
+#right{
+float: right;
+margin-top:15px;
+width: 250px;
+height: 500px;
+background: #eee;
+}
 
-        </head>
+#left{
+ position:absolute;   left:10px; width:490px; height:500px; 
+margin-top:15px;
+background: #eee;
+}
 
- <body>
-	    
-<h1>CENTRAL Help </h1>
-(bad translation, submit to us any improvement)
-<h2>Table of contents</h2>
-<UL><a href="#invent">1 - Inventory Section</a>
-<li><a href="#inventa">a) General informations</a></li>
-<li><a href="#inventb">b) Management of the direct connections</a></li>
-<li><a href="#inventc">c) Management of the networking ports</a></li>
-<li><a href="#inventd">d) Management of the softwares</a></li>
-</UL>
+#right a, a:visited, a:active, a:link {
+color:black;
+text-decoration: none;
+}
 
-<UL><a href="#maint">2 - Maintenance Section</a>
-<li><a href="#mainta">a) Tracking</a></li>
-<li><a href="#maintb">b) Reports</a></li>
-<li><a href="#maintc">c) Stats</a></li>
-</UL>
+#right  a:hover {
+background-color:#D2F2D5;
+text-decoration:none;
 
-<UL><a href="#admin">3 - Administration Section</a>
-<li><a href="#admina">a) Management of the users</a></li>
-<li><a href="#adminb">b) Setup</a></li>
-<li><a href="#adminc">c) Setting</a></li>
-<li><a href="#admind">d) Data (Save/Restore)</a></li>
-</UL>
-    
-<h2><A NAME="invent"></A>1 - Inventory Section</h2>
+}
+.menu
+{
+ overflow: auto;
+height: 490px;
+padding-left: 30px;
+font-family: Trebuchet MS, Arial, Sans, sans-serif;
+font-size: 10px;
+font-weight: bold;
+color: black;
+}
 
-<h3><A NAME="inventa"></A>a) General informations</h3>
-<p>In the inventory part you can list and consult the hardware and software inventory park. </p>
 
-<p>You are able to perform parameterized and sorted researches on one of the types of the inventory (computers, networks, printers, monitors, peripherals and softwares).</p>
-<p>Here, you can post the form containing precise information of each indexed item, or add an item.</p>
-<p>You have then the possibility to modify or delete each item.</p>
+.menu ul
+{
+padding-left: 5px;
+margin-left: 0;
 
-<h3><A NAME="inventb"></A>b) Management of the direct connections</h3>
-<p>The direct connections make it possible to model the relation between the central processing unit of a computer and external components.</p>
-<p>A direct connection is done between a computer and a printer, a monitor or peripheric external.</p>
-<p>The connections or disconnections are done since the page of a computer or that of the dependent material. </p>
+}
 
-<h3><A NAME="inventc"></A>c) Management of the networking ports</h3>
-<p>A port network makes it possible to model a network interface on a given material.</p>
-<p>Each port has of an IP address, a mac address and a nework point to which it is connected.</p>
-<p>The network connections are done by connecting two ports. To connect two materials together they must have a free port.</p>
-<p>In the majority of the configurations the connections will be done between a networking port on a computer, a screen or a printer and a networking port on a network material (hub, switch)</p>
-<p>At the time of the connection between two materials, informations such as the IP address and the network point are updated in order to be equals on the two ports</p>
-<p>For each material, it is possible to add one or several ports </p>
+.menu li
+{
+list-style: none;
+margin: 0;
+padding: 0.25em;
 
-<h3><A NAME="inventd"></A>d) Management of the softwares</h3>
-<p>A software can have several licences having each one an associated serial and an end date</p>
-<p>The installation of a software is done since the page of a computer. </p>
-<p>Each time that a software is installed, the number of licence available for this software decreases.</p>
-<p>It is impossible to install a software, when no licence is available.</p>
-<p>Nevertheless, tt is possible to indicate the keyword "free" as serial when you add a new licence to a software. This license is installable without worrying about the number of the licenses.</p>
-<p>It is possible to add several licences in one time. The serial and the end date will be the same one for each license added.</p>
+}
 
-<h2><A NAME="maint"></A>2 - Maintenance Section</h2>
-<h3><A NAME="mainta"></A>a) Tracking</h3>
+.content
+ {
+  overflow: auto;
+height: 490px;
+ font-family: Arial, Sans, sans-serif;
+font-size: 11px;
+ }
 
+ h1{  
+ margin-left:15px;
+ text-align:center;
+ font-family: Trebuchet MS, Arial, Sans, sans-serif;
+font-size: 18px;  
+font-weight:200%;
+color:  #FFC65D;
+margin :10px;
+-moz-border-radius: 4px;
+border: 1px solid #FFC65D;
+}
+
+h2{
+margin-left:5px;
+border-left: 2px solid #339966;
+border-bottom: 1px solid #339966;
+font-weight:200%;
+padding: 5px;
+font-family: Trebuchet MS, Arial, Sans, sans-serif;
+font-size: 15px;  
+}
+
+h3{
+margin-left:15px;
+padding: 5px;
+font-family: Trebuchet MS, Arial, Sans, sans-serif;
+font-size: 13px;  
+}
+
+  </style>
+</head>
+<body>
+<div id="right">
+<div class="menu">
+<h1>Sumario</h1>
+<ul>
+  <a href="#invent">1 - Sección Inventario</a>
+  <li><a href="#inventa">a) Consideraciones generales</a></li>
+  <li><a href="#inventb">b) Gestión de modelos</a></li>
+  <li><a href="#inventc">c) Gestión de periféricos internos de los
+computadores</a></li>
+  <li><a href="#inventd">d) Gestión de conexiones</a></li>
+  <li><a href="#invente">e) Gestión de ports de red</a></li>
+  <li><a href="#inventf">f) Gestión de software</a></li>
+  <li><a href="#inventg">g) Gestión de reparaciones</a></li>
+</ul>
+<ul>
+  <a href="#assist">2 - Sección Soporte</a>
+  <li><a href="#assista">a) Seguimientos</a></li>
+  <li><a href="#assistb">b) Helpdesk</a></li>
+  <li><a href="#assistc">c) Estadísticas</a></li>
+</ul>
+<ul>
+  <a href="#gestion">3 - Sección Gestión</a>
+  <li><a href="#gestiona">a) Contactos</a></li>
+  <li><a href="#gestionb">b) Empresas</a></li>
+  <li><a href="#gestionc">c) Contratos</a></li>
+  <li><a href="#gestiond">c) Documentos</a></li>
+</ul>
+<ul>
+  <a href="#outils">4 - Sección Útiles</a>
+  <li><a href="#outilsa">a) Reservas</a></li>
+  <li><a href="#outilsb">b) Base de conocimiento</a></li>
+  <li><a href="#outilsc">c) Reportes</a></li>
+</ul>
+<ul>
+  <a href="#admin">4 - Sección Administración</a>
+  <li><a href="#admina">a) Gestión de usuarios</a></li>
+  <li><a href="#adminb">b) Configuración</a></li>
+  <ul>
+    <li><a href="#adminb1"> i) Rubros</a></li>
+    <li><a href="#adminb2"> ii) Periféricos internos</a></li>
+    <li><a href="#adminb3"> iii) Autenticación externa</a></li>
+    <li><a href="#adminb4"> iv) Seguimientos por email</a></li>
+    <li><a href="#adminb5"> v) Configuración general</a></li>
+    <li><a href="#adminb6"> vi) Tipos de documentos</a></li>
+  </ul>
+  <li><a href="#adminc">c) Preferencias</a></li>
+  <li><a href="#admind">d) Datos (Backup/Recuperación)</a></li>
+</ul>
+</div>
+</div>
+<div id="left">
+<div class="content">
+<h1>Ayuda principal</h1>
+<h2><a name="invent"></a>1 - Sección Inventario</h2>
+<h3><a name="inventa"></a>a) Consideraciones Generales</h3>
+<p>En la sección Inventario podemos listar y consultar el inventario de
+hardware y software del parque informático.</p>
+<p>Tenemos la posibilidad de efectuar búsquedas parametrizadas y
+ordenadas, sobre uno de los tipos de inventario (computadores, material
+de red, impresoras, cartuchos, monitores, periféricos externos,
+software y reparaciones).</p>
+<p>A partir de aquí podemos desplegar la ficha conteniendo los datos
+particulares de cada elemento inventariado, o agregar un elemento.</p>
+<p>Luego tenemos la posibilidad de modificar o eliminar cada elemento.</p>
+<p>En cada ficha de información, hay pestañas disponibles para obtener
+una visión más legible de los diversos datos. Podemos elegir mostrar
+todos los datos haciendo click sobre la pestaña "Todos".</p>
+<p>Las pestañas <i>&lt;&lt;</i> y <i>&gt;&gt;</i> nos permiten
+navegar dentro de los elementos del inventario yendo respectivamente al
+elemento anterior y al siguiente (según su ID).</p>
+<h3><a name="inventb"></a>b) Gestión de modelos</h3>
+<p>Para el conjunto de los elementos del inventario, debemos crear los
+nuevos elementos a través de modelos.</p>
+<p>Estos modelos nos permiten definir las configuraciones estándar de
+nuestro parque. Será así muy simple agregar una gran cantidad de
+elementos casi idénticos.</p>
+<h3><a name="inventc"></a>c) Gestión de periféricos internos de los
+computadores</h3>
+<p>A partir de GLPI 0.5 se ha incorporado la noción de periférico
+interno. Ella nos permite añadir tantos elementos como sea necesario en
+un computador.</p>
+<p>Podemos administrar la lista de periféricos internos de nuestro
+parque en la sección Configuración/Periféricos Internos.</p>
+<p>Para ciertos tipos de periféricos internos, podemos especificar una
+característica específica (por ejemplo, la capacidad de un disco
+rígido).</p>
+<h3><a name="inventd"></a>d) Gestión de conexiones directas</h3>
+<p>Las conexiones directas representan la relación entre la unidad
+central de un computador y sus componentes exteriores.</p>
+<p>Una conexión directa es la realizada entre un computador y una
+impresora, un monitor o un periférico externo.</p>
+<p>Las conexiones o desconexiones se hacen desde la ficha de un
+computador o desde la ficha de aquel material que está ligado a él.</p>
+<h3><a name="invente"></a>e) Gestión de ports de red</h3>
+<p>Un port de red permite modelizar la salida de una interfaz de red
+sobre un material dado. </p>
+<p>Cada port dispone de una dirección IP, una dirección MAC y una boca
+de red con la cual está relacionado.</p>
+<p>Las conexiones de red se realizan ligando dos ports entre sí. Para
+ligar dos materiales entre sí es necesario que haya un port libre sobre
+cada uno de estos materiales.</p>
+<p>En la mayoría de las configuraciones, las conexiones se harán entre
+un port presente en un computador, un periférico o una impresora, y un
+port presente sobre un material de red (hub, switch).</p>
+<p>Cuando se conectan dos materiales, los datos como la dirección IP y
+la boca de red son actualizadas para cada uno de los dos ports
+involucrados.</p>
+<p>Para cada material, es posible en todo momento agregar uno o varios
+ports. </p>
+<h3><a name="inventf"></a>d) Gestión de software</h3>
+<p>Un software se relaciona con un cierto número de licencias, cada una
+con un número de serie asociado y una fecha de expiración.</p>
+<p>La instalación de un software se hace desde la ficha de un
+computador.</p>
+<p>Cada vez que se instala un software, el número de licencias
+disponibles para este software se decrementa.</p>
+<p>No es posible instalar un software cuando no hay más licencias
+disponibles.</p>
+<p>Sin embargo es posible indicar la palabra clave "free" en lugar del
+número de serie al agregar una licencia a un software, para que este
+último sea instalable sin preocuparse por el número de licencias.</p>
+<p>También es posible indicar la palabra clave "global" en lugar del
+número de serie si tenemos software con licencias globales (<i>site
+licenses</i>) para nuestro parque.</p>
+<p>Es posible agregar varias licencias de una sola vez; el número de
+serie y la fecha de expiración serán los mismos para cada una de ellas.</p>
+<p>Podemos categorizar nuestro software según que sea OEM, comprado, o
+actualización de un software existente.</p>
+<h3><a name="inventg"></a>d) Gestión de reparaciones</h3>
+<p>En esta sección podemos ver el estado de nuestro material en
+reparación.</p>
+<p>Para poner un material en reparación se debe ir a la ficha de
+información de ese material y hacer click sobre "poner el material en
+reparación".</p>
+<p>Para devolver un material al estado de producción, se debe hacer
+click sobre "Sacar el material de reparación" en su ficha.</p>
+<h2><a name="assist"></a>2 - Sección Soporte</h2>
+<h3><a name="assista"></a>a) Seguimientos</h3>
+<p>El módulo de seguimientos permite mostrar la lista de servicios en
+función de ciertos criterios.</p>
+<p>Podemos visualizar:</p>
+<ul>
+  <li>Todos los servicios activos</li>
+  <p>Todos los servicios que no han sido cerrados.</p>
+  <li>Solamente los servicios que nos han sido asignados.</li>
+  <p>Los servicios a los que hemos sido afectados.</p>
+  <li>Solamente los servicios no asignados.</li>
+  <p>Los servicios aún por asignar a un técnico.</p>
+  <li>Solamente los servicios terminados</li>
+  <p>Los servicios que han sido cerrados.</p>
+</ul>
+<p>También podemos hacer una búsqueda sobre los servicios a partir de
+una descripción o de un número de identificación (ID).</p>
+<p>Si se encuentran servicios, GLPI muestra un cuadro presentándolos,
+conteniendo para cada servicio: Su estado (nuevo o viejo), el número de
+identificación (ID),la fecha de apertura y de cierre, el nivel de
+prioridad, el autor de la solicitud de trabajo, la persona a quien ha
+sido asignado el servicio, el material involucrado, la categoría del
+servicio, la descripción de la solicitud de trabajo y los datos
+disponibles sobre el seguimiento del servicio.</p>
+<p>Un click sobre uno de estos elementos nos permitirá acceder a datos
+complementarios. </p>
+<p>Para agregar elementos de seguimiento a un servicio, cerrarlo o
+reasignarlo, basta con hacer click sobre "infos". Obtendremos entonces
+el histórico completo de este servicio. Podremos entonces agregar un
+elemento de seguimiento o cerrar el servicio indicando eventualmente la
+duración real del mismo.</p>
+<p>Podemos clasificar nuestros servicios por categorías utilizando la
+lista descolgable prevista a este efecto. Para agregar o modificar las
+categorías de seguimientos, diríjase a la modificación de rubros en la
+sección Configuración.</p>
+<p>También es posible modificar la prioridad de un servicio si ésta
+cambia mientras el servicio está en marcha, utilizando la lista
+descolgable de prioridades.</p>
+<h4>Caso particular de los servicios terminados</h4>
+<p>La restauración de un servicio terminado es posible. Basta con hacer
+click sobre "info" y luego "restaurar".</p>
+<p>Es posible suprimir servicios terminados si no deseamos conservarlos
+más en la base. Para esto basta marcar el casillero "Estado" y hacer
+click sobre el botón "Suprimir" en la lista de servicios.</p>
+<h3><a name="assistb"></a>b) Helpdesk</h3>
+<p>La función de helpdesk se utiliza para ingresar las solicitudes de
+servicios. Puede ser utilizada por todos los tipos de cuentas de
+usuario.</p>
+<p>Es posible especificar la prioridad de los problemas, el número de
+identificación (ID) del material o software involucrado, y el tipo de
+servicio solicitado.</p>
+<p>Si activamos los seguimientos por email en la configuración de GLPI,
+se hará disponible un campo adicional para ingresar allí la dirección
+de correo electrónico del solicitante.</p>
+<p>Encontraremos las solicitudes de servicio en la sección de
+seguimientos de GLPI.</p>
+<h3><a name="assistc"></a>c) Estadísticas</h3>
+<h4>Estadísticas globales</h4>
+<p>Estas estadísticas agrupan los principales datos sobre los servicios
+en el mes, en el año y en total:</p>
+<ul>
+  <li>Cantidad total de servicios</li>
+  <li>Cantidad de servicios resueltos</li>
+  <li>Demora media de resolución de problemas</li>
+  <li>Demora máxima de resolución de problemas</li>
+  <li>Duración real media de servicios</li>
+  <li>Duración máxima de resolución real de problemas</li>
+  <li>Demora mínima de notificación de servicios</li>
+  <li>Demora media de notificación de servicios</li>
+</ul>
+<h4>Por técnico</h4>
+<p>Estas estadísticas proveen un estado de la actividad de los técnicos
+para un período dado:</p>
+<ul>
+  <li>Cantidad de servicios asignados</li>
+  <li>Cantidad de servicios resueltos</li>
+  <li>Duración media de apertura </li>
+  <li>Duración real media del servicio</li>
+  <li>Duración real total de intervenciones</li>
+  <li>Demora media de notificación de servicio</li>
+</ul>
+<h4>Por Rubros</h4>
+<p>Estadísticas de servicios por Lugar, Tipo de computador, OS, CPU,
+Tipo HD, Placa gráfica, Motherboard, sobre un período dado:</p>
+<ul>
+  <li>Cantidad de servicios demandados</li>
+  <li>Cantidad de servicios resueltos</li>
+  <li>Duración media de apertura </li>
+  <li>Duración real media del servicio</li>
+  <li>Duración real total de intervenciones</li>
+  <li>Demora media de notificación de servicio</li>
+</ul>
+<h4>Por usuario</h4>
+<p>Estadísticas de servicios por usuario sobre un período dado:</p>
+<ul>
+  <li>Cantidad de servicios demandados</li>
+  <li>Cantidad de servicios resueltos</li>
+  <li>Duración media de apertura </li>
+  <li>Duración real media del servicio</li>
+  <li>Duración real total de intervenciones</li>
+  <li>Demora media de notificación de servicio</li>
+</ul>
+<h2><a name="gestion"></a>3 - Sección Gestión</h2>
+<h3><a name="gestiona"></a>a) Contactos</h3>
+<p>Podemos ingresar todos nuestros diferentes contactos en esta sección
+y clasificarlos según su tipo: comercial o técnico. A continuación
+podremos asociar los contactos con las empresas con las cuales tratamos.</p>
+<h3><a name="gestionb"></a>b) Empresas</h3>
+<p>En esta sección es posible catalogar todas las empresas y los
+terceros que tienen relación con nuestra organización, y asociarles los
+contactos. Para agregar o modificar la lista descolgable de terceros,
+diríjase a la sección configuración de GLPI bajo la opción Rubros.</p>
+<h3><a name="gestionc"></a>c) Contratos</h3>
+<p>En esta sección es posible gestionar el conjunto de contratos de
+diverso tipo que estén ligados a nuestros materiales, así como la
+información relacionada con estos contratos.
+Los tipos de contratos posibles son: préstamo, locación, leasing,
+seguros, mantenimiento de hardware y software, prestación.</p>
+<p>Podemos ligar los contratos creados a los elementos del inventario
+desde la página del contrato o desde las del inventario.</p>
+<h3><a name="gestiond"></a>d) Documentos</h3>
+<p>Esta sección nos permite almacenar documentos sobre nuestro servidor
+GLPI. Es posible asociar un documento a todos los materiales o software
+de nuestro inventario y clasificarlos en diferentes apartados. Es
+posible también especificar el tipo MIME de un documento si aún no
+existiera.</p>
+<p>Para agregar o modificar la lista de apartados, diríjase a la
+sección Administración y Configuración bajo la opción Rubros.</p>
+<p>También es posible agregar tipos adicionales de documentos. Para
+hacerlo, diríjase a la sección Administración y Configuración bajo la
+opción Tipos de Documentos.</p>
+<h2><a name="outils"></a>3 - Sección Útiles</h2>
+<h3><a name="outilsa"></a>a) Reservas</h3>
+<p>Esta sección permite ver el material reservable y hacer reservas.</p>
+<p>Podemos agregar comentarios al material reservable. Para hacerlo,
+basta hacer click sobre el botón "modificar comentario".</p>
+<p>Para hacer reservable un material, basta dirigirse a la ficha de
+datos del mismo y hacer click sobre la opción "Autorizar el préstamo".</p>
+<p>Para los usuarios "HelpDesk" hay disponible una sección "Material
+reservable".</p>
+<h3><a name="outilsb"></a>b) Base de conocimiento</h3>
+<p>La base de conocimiento ofrece un sistema de Preguntas Frecuentes
+(FAQ) que tiene dos objetivos principales.
+El primero es centralizar los conocimientos internos de los diferentes
+técnicos.
+El segundo es poner a disposición de los usuarios la información que
+les permita resolver solos sus problemas.</p>
+<p>Para separar estos dos objetivos existe la noción de FAQ pública.
+De este modo solamente los elementos de la FAQ pública serán visibles
+por los usuarios. Los elementos no definidos como parte de la FAQ
+pública serán visibles únicamente dentro de la central.</p>
+<p>Podemos crear categorías y subcategorías a fin de indexar nuestros
+conocimientos. Así será más fácil para todos recuperar la información
+necesaria para sus tareas.</p>
+<p>Podemos utilizar recursos de formateo.</p>
 <p>
-The tracking module makes it possible to post the list of the interventions according to several criteria.</p>
-<p>You can show:</p>
-<ul>
-<li>All active interventions</li>
-<p>All the interventions which were not closed. </p>
-<li>Only intervention assigned to you</li>
-<p>The interventions which were assigned to you.</p>
-<li>Only interventions not assigned yet</li>
-<p>The interventions which must be assigned to a technician.</p>
-<li>Only old interventions</li>
-<p>The closed interventions.</p>
-</ul>
-
-<p>You can also perform a research on the interventions based on a description</p>
-
-<p>If interventions are found, GLPI shows a table including the interventions. It shows for each intervention: its statute (new or old), the opening and close date, the priority level, the author of the request, the person to which was assigned the intervention, the affected computer, the description of the request and the informations available on the followup of the intervention.</p>
-
-<p>A click on one of these elements will enable you to reach additional information. </p>
-
-<p>To add elements of followup to an intervention, to close it or to reassign it, click on "infos". Then, You will obtain the complete history of the intervention. You will be able to add an element of followup or close the intervention (optional: indicate the real time of intervention).</p>
-
-
-<H4>Particular case of the closed interventions </H4>
-<p>The restoration of a finished intervention is possible. Click on "information" then "Restore". </p>
-
-<p>It is possible to remove closed interventions if you do not wish to preserve them in the database. 
-For that, check the checkbox in the status column and click on "Delete" at the bottom of the list of the interventions.</p>
-
-<h3><A NAME="maintb"></A>b) Reports</h3>
-
-<p>GLPI authorizes the generation of a certain number of reports: </p>
-
-<ul>
-<li>The default report</li>
-<p>This report lists the number of item and software present in the inventory.</p>
-<li>Material under maintenance contract </li>
-<p>This report indicates the number of item under maintenance contract. It is possible to obtain a detailed report by type of item and date of purchase. The multiple selection is authorized.
+Los marcadores siguientes cambian el aspecto del texto:<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[b]Texto negrita[/b] produce <b>Texto negrita</b><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[u]Texto subrayado[/u] produce <u>Texto
+subrayado</u><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[i]Texto cursiva[/i] produce <i>Texto cursiva</i><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[color=#FF0000]Texto rojo[/color] produce <span
+ style="color: rgb(255, 0, 0);">Texto rojo</span><br>
+<br>
 </p>
-<li>Report by purchase date or end of guarantee</li>
-<p>This report indicates the number of item by purchase date or end of guarantee for one or several years. The multiple selection is authorized.</p>
-<li>Report on interventions</li>
-<p>This report makes it possible to obtain the list of the interventions and their history according to many criteria's. Research can be perform over a given period, for a precise type of item or for a part of this item and according to its author and/or of his assign technician.</p>
-<li>Excel, OpenOffice (Sylk)</li>
-<p>GLPI can generate exploitable reports by type of into unsing a spreadsheet. For that GLPI generates SYLK files. This format is exploitable by many spreadsheves.</p>
-<p>If you used a software which does not know well with the standards (Excel for example), use the limited version in order not to have a problem with the size of the fields. The long fields will be truncated.</p>
-</ul>
-
-
-
-
-<h3><A NAME="maintc"></A>c) Stats</h3>
-
-<h4>Global Stats</h4>
-
-<P>These statistics gather the principal data on the interventions over the month, the year and on the whole time you use GLPI:</P>
-<ul>
-<li>Number of interventions</li>	
-<li>Number of resolved interventions</li>
-<li>Average resolution delay</li>
-<li>Max resoltution delay</li>
-<li>Average real time of intervention</li>
-<li>Maximum time to resolve an intervention</li>
-<li>Minimum delay to take into account the intervention</li>
-<li>Average delay to take into account the intervention</li>
-</ul>
-<h4>Per techincian</h4>
-<p>These statistics provide a state of the activity of the technicians for a given period :</p>
-<ul>
-<li>Number of attribued interventions</li>
-<li>Number of resolved interventions</li>
-<li>Average resolution delay</li>
-<li>Average real time of intervention</li>
-<li>Total real time of intervention</li>
-<li>Average delay to take into account the intervention</li>
-
-</ul>
-
-
-<h4>Per Item</h4>
-<p>Statistiques des interventions par Lieu, Type d'ordinateur, OS, CPU, HD-Type, Carte graphique, Carte mère  sur une période donnée :</p>
-<ul>
-<li>Numbre of asked interventions</li>	
-<li>Number of resolved interventions</li>
-<li>Average resolution delay</li>
-<li>Average real time of intervention</li>
-<li>Total real time of intervention</li>
-<li>Average delay to take into account the intervention</li>
-</ul>
-
-
-<h4>Per user</h4>
-<p>Statistics of the interventions by users over a given period: </p>
-<ul>
-<li>Numbre of asked interventions</li>	
-<li>Number of resolved interventions</li>
-<li>Average resolution delay</li>
-<li>Average real time of intervention</li>
-<li>Total real time of intervention</li>
-<li>Average delay to take into account the intervention</li>
-</ul>
-
-
-<h2><A NAME="admin"></A>3 - Administration Section</h2>
-<h3><A NAME="admina"></A>a) Management of the users</h3>
-
-<p>This part works exactly in the same way that the items of the inventory. You can add, modify and remove users.</p>
-
-<h3><A NAME="adminb"></A>b) Setup</h3>
-<UL>
-<li>Dropdowns</li>
-<p>You can in this section completly modify the data included in the select lists for example for the locations and the processors.<p>
-<p>Once selected the list that you want to modify you can add of the elements, modify them and remove them.<br>
-<b>Caution !!</b> If you remove elements used, then,  you will have to make a choice between modifying the existing entries or to put them at NULL.</p>
+<p>Para crear vínculos (<i>links</i>) a otros documentos o a una
+dirección de email, utilicemos los marcadores siguientes:<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;http://glpi.indepnet.org produce <a
+ href="http://glpi.indepnet.org">http://glpi.indepnet.org</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[email]nombre@dominio.com[/email] produce <a
+ href="mailto:nombre@dominio.com">nombre@dominio.com</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[email=nombre@dominio.com]Mi dirección de
+email[/email] produce <a href="mailto:nombre@dominio.com">Mi dirección
+de email</a><br>
+<br>
 </p>
-
-<liTemplates</li>
-
-<p>You can define models of computers allowing you to add several similar computers very easily.</p>
-
-<li>External authentifications</li>
-
-<p>The external authentifications enable you to use alternative sources of authentification. That avoids you having to add all the users manually.</p>
-<p>The first solution is to use a mail server:<br>
-- In the first part, you must to define the mail server you want to use. Please, to fill it correctly follow this link  <a href="http://www.php.net/manual/en/function.imap-open.php">php.net</a> which provide several examples.
-Some exwmples : {localhost:110/pop3}, {localhost:993/imap/ssl}, {localhost:995/pop3/ssl/novalidate-cert}...<br>
-- The second parameter defines the mail domain used which will be used automatically to fill the mail addresses of the new users. If the user is called <i>toto</i>, then, his mail address will be toto@mail_domain. 
-</p>
-<p>The second solution id to use an LDAP server or an Active Directory. For this configuration defer to corresponding documentation present on the <a target=_blank href="http://glpi.indepnet.org/article.php3?id_article=33">Web site of GLPI</A>.</p>
-
-<li>Email Followups</li>
-
-<p>
-
-This section enables you to activate the followup of the interventions by email. 
-If you activate this functionality, emails will be sent for the creation of a new intervention, the addition of each followup and the closing of the interventions.<br>
-- You should fill the email address of the administrator and the email signature which will be added to each email send<br>
-- The other options enable you to limit the emails sent. For each type of people you can activate or not the sending for the creation of an intervention, the addition of followups and the closing of an intervention.<br>
-- The defined groups of people are: the administrator, all 'admin' or 'normal' users, the person in charge of the task and the caller of the intervention.<br>
-- The caller will not receive an email if it do not activated the email followup when he request for the intervention.<br>
-</p>
-
-<li>General Configuration</li>
-<p>
-The general configuration of the application makes it possible to define certain parameters: <br>
-- The installation path. <b>Caution !!</b> 
-This path is detected automatically at the time of the installation or of the update, you should not need to modify it.<br>
-- The log level.<br>
-- The number of events to be posted corresponds to the number of lines of log present on the banner page of the central.<br>
-- The time of conservation of the logs. <b>Caution!!</b> If you keep them a long time your table can contain lots of data.<br>
-- Show the interventions at the login: to or not to see the active interventions on the banner page of the central.<br>
-- Number of elements ti print by page (valid for all the lists of elements posted - Tracking, computers...)<br>
-- Maximum number of characters for each elements of the list: reduce the size of the character strings to show in order to obtain a readable posting.<br>
-- Allow anonymous tracking post (helpdesk.html): activate or not the anonymous requests for interventions via the helpdesk.html file.<br>
-</p>
-
-</UL>
-<h3><A NAME="adminc"></A>c) Setting</h3>
-<p>This section allows you to change your password, to define the default order used in the posting of the interventions and to define the language used. </p>
-
-<h3><A NAME="admind"></A>d) Data (Save/Restore)</h3>
-<p>This zone allows you to create SQL safeguards of the database ("Dump SQL").</p>
-<p>You can also remove the backup files, to restore them or to download SQL files.</p>
-<p>You can also generate a XML safeguard of the database. ("Dump XML").</p>
-
-</body> 
+Para mostrar código, utilice el marcador CODE. El texto mostrado como
+CODE no será afectado por los otros marcadores.<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[code]Este es un trozo de código.[/code]<br>
+<br>
+Generará un código como el siguiente:<br>
+<br>
+<table style="border: 1px dotted rgb(0, 0, 0); width: 95%;"
+ align="center" cellspacing="4" cellpadding="6">
+  <tbody>
+    <tr>
+      <td><span><b>Code:</b></span><br>
+      <br>
+      <pre>Este es un trozo de código.</pre>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<h3><a name="outilsc"></a>b) Reportes</h3>
+<p>GLPI permite la generación de una cantidad de reportes:</p>
+<ul>
+  <li>Informe por defecto</li>
+  <p>Este reporte lista la cantidad de cada material y software
+presentes en el parque.</p>
+  <li>Material bajo contrato de mantenimiento</li>
+  <p>Este reporte indica la cantidad de material bajo contrato de
+mantenimiento de un tercero. Es posible obtener un estado detallado por
+tipo de material y por fecha de compra. Se permiten selecciones
+múltiples.</p>
+  <li>Reporte por fecha de compra o de fin de garantía</li>
+  <p>Este reporte lista el material por fecha de fin de garantía sobre
+uno o varios años. Se permiten selecciones múltiples.</p>
+  <li>Reporte de servicios</li>
+  <p>Este reporte permite obtener la lista de servicios así como su
+histórico según varios criterios. La búsqueda puede realizarse sobre un
+período dado, por un tipo de material dado o una parte de este
+material, y en función de su autor y/o de su asignación.</p>
+  <li>Reporte de red</li>
+  <p>Este reporte permite obtener la lista de datos de nuestra red
+según lugares, switches, o bocas de red.</p>
+  <li>Excel, OpenOffice (Sylk)</li>
+  <p>GLPI puede generar reportes por tipo de material explotables por
+planillas de cálculo. Para esto GLPI genera archivos de tipo SYLK. Este
+formato es explotable por numerosos programas de planilla de cálculo.</p>
+  <p>Si utilizamos un programa que no respeta completamente los
+estándares (por ejemplo, Excel), usaremos la versión limitada para no
+tener problemas con el tamaño de los campos. Los campos demasiado
+largos serán truncados.</p>
+</ul>
+<h2><a name="admin"></a>4 - Sección Administración</h2>
+<h3><a name="admina"></a>a) Gestión de usuarios</h3>
+<p>Esta sección funciona exactamente de la misma forma que los
+elementos del inventario. Podemos agregar, modificar y suprimir
+usuarios.</p>
+<h3><a name="adminb"></a>b) Configuración de GLPI</h3>
+<ul>
+  <a name="adminb1"></a>
+  <h4>i) Rubros</h4>
+  <p>En esta zona podemos modificar totalmente los datos presentes en
+las listas de selección propuestas, por ejemplo, para lugares,
+microprocesadores, etc.</p>
+  <p></p>
+  <p>Una vez seleccionada la lista que deseamos modificar, podemos
+agregar elementos, modificarlos o suprimirlos.<br>
+  <b>Atención!</b> Si se suprimen elementos utilizados, tendremos que
+tomar una decisión entre modificar las entradas existentes, o ponerlas
+en NULL (en blanco).</p>
+  <a name="adminb2"></a>
+  <h4>ii) Periféricos internos</h4>
+  <p>En esta zona podemos modificar totalmente los periféricos internos
+que podemos agregar a los computadores.</p>
+  <a name="adminb3"></a>
+  <h4>iii) Autenticaciones externas</h4>
+  <p>Las autenticaciones externas nos permiten utilizar fuentes
+alternativas de autenticación. Esto nos evita tener que agregar
+manualmente todos los usuarios.</p>
+  <p>La primera solución es utilizar un servidor de mail:<br>
+- Debemos definir en la primera sección el servidor a utilizar. Para
+definirlo correctamente diríjase al link provisto en <a
+ href="http://www.php.net/manual/fr/function.imap-open.php">php.net</a>
+que da numerosos ejemplos.
+Algunos ejemplos: {localhost:110/pop3}, {localhost:993/imap/ssl},
+{localhost:995/pop3/ssl/novalidate-cert}...<br>
+- El segundo parámetro define el dominio de mail utlizado que va a
+servir para reemplazar automáticamente las direcciones de email de los
+usuarios.
+Si el usuario se llama <i>toto</i>, su dirección email será entonces
+toto@dominio_mail. </p>
+  <p>La segunda solución es el uso de un directorio LDAP o Active
+Directory. Para esta configuración diríjase a la documentación
+correspondiente sobre el <a target="_blank"
+ href="http://glpi.indepnet.org/article.php3?id_article=33">sitio web
+de GLPI.</a></p>
+  <a name="adminb4"></a>
+  <h4>iv) Seguimientos por email</h4>
+  <p>Esta sección nos permite activar el seguimiento de servicios por
+email.
+Si activamos esta funcionalidad, se enviarán emails al momento de la
+creación de un nuevo servicio, al agregar cada seguimiento, y al cierre
+del servicio.<br>
+- Podemos luego informar la dirección email del administrador y la
+firma agregada a cada email<br>
+- Las demás opciones nos permiten limitar los emails enviados. Para
+cada tipo de persona, se puede activar o no el envío a la creación de
+un servicio, al agregar cada seguimiento, y al cierre del servicio. <br>
+- Los grupos de personas definidas son: el administrador, todos los
+usuarios de tipo "admin" o "normal", el responsable de la tarea y el
+solicitante del servicio.<br>
+- El solicitante recibirá un email sólo si ha activado el seguimiento
+por email de su solicitud de servicio.<br>
+  </p>
+  <a name="adminb5"></a>
+  <h4>v) Configuración general</h4>
+  <p>
+La configuración general de la aplicación permite definir ciertos
+parámetros:<br>
+- El camino de instalación. <b>Atención!</b> Este camino se detecta
+automáticamente en el momento de la instalación o de la actualización.
+No deberíamos tener necesidad de modificarlo.<br>
+- El nivel de log.<br>
+- La cantidad de eventos a visualizar corresponde al número de líneas
+de log presentes sobre la página de acceso a la central.<br>
+- El tiempo de conservación de los logs. <b>Atención!</b> Si los
+guardamos durante demasiado tiempo nuestra tabla puede contener una
+gran cantidad de datos.<br>
+- Mostrar los servicios al conectarse: visualizar los servicios activos
+sobre la página de acceso a la central, o no.<br>
+- Cantidad de elementos a mostrar por página (válido para todas las
+listas de elementos visualizados: seguimientos, computadores, etc.).<br>
+- Cantidad máxima de caracteres para cada elemento de la lista: reducir
+el tamaño de las cadenas de caracteres para obtener una visualización
+legible.<br>
+- Permitir helpdesk.html : activar o no las solicitudes de servicio
+anónimas a través del archivo helpdesk.html.<br>
+  </p>
+  <a name="adminb6"></a>
+  <h4>vi) Tipos de documentos</h4>
+  <p>
+En esta sección podemos agregar o modificar los tipos de documentos
+autorizados a ser gestionados por GLPI.
+Los datos a proveer son:<br>
+- Nombre del tipo de documento.<br>
+- Extension, ejemplo: .txt<br>
+- Nombre del archivo para el ícono del documento deseado. Ubicaremos
+los archivos de íconos en el subdirectorio pics/icones bajo el árbol de
+GLPI.<br>
+- El tipo MIME si es necesario.<br>
+- Autorización de subida de este tipo de archivo (sí o no).<br>
+  </p>
+</ul>
+<h3><a name="adminc"></a>c) Preferencias</h3>
+<p>Esta zona nos permite cambiar nuestra palabra clave, definir el
+orden por defecto utilizado en la presentación
+de los servicios y definir el idioma con el cual se presenta la
+interfaz.</p>
+<h3><a name="admind"></a>d) Datos (Backup/restauración) </h3>
+<p>Esta zona nos permite crear resguardos de la base de datos ("Guardar
+SQL"). </p>
+<p>También podemos borrar los archivos de respaldo, restaurarlos o
+descargar los archivos SQL. </p>
+<p>También podemos generar un resguardo en formato XML de la base de
+datos ("Guardar XML").</p>
+</div>
+</div>
+</body>
+</html>
