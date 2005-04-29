@@ -180,12 +180,11 @@ function updateInfocom($input) {
 
 	$ic = new Infocom;
 	$ic->getFromDBbyID($input["ID"]);
- 	// Pop off the last attribute, no longer needed
-	$null=array_pop($input);
+
 	// Fill the update-array with changes
 	$x=0;
 	foreach ($input as $key => $val) {
-		if (isset($ic->fields[$key]) && $ic->fields[$key] != $input[$key]) {
+		if (array_key_exists($key,$ic->fields) && $ic->fields[$key] != $input[$key]) {
 			$ic->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;

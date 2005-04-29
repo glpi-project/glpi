@@ -784,16 +784,11 @@ function updateDevice($input) {
 	$device = new Device($input["device_type"]);
 	$device->getFromDB($input["ID"]);
 	
-	// Pop off the last Three attributes, no longer needed
-	$null=array_pop($input);
-	$null=array_pop($input);
-	$null=array_pop($input);
-	
 	// Fill the update-array with changes
 	$x=0;
 	$updates = array();
 	foreach ($input as $key => $val) {
-		if (isset($device->fields[$key])&&$device->fields[$key] != $input[$key]) {
+		if (array_key_exists($key,$device->fields)&&$device->fields[$key] != $input[$key]) {
 			$device->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;

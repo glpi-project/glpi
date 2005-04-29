@@ -347,13 +347,10 @@ function updateEnterprise($input) {
 	$ent = new Enterprise;
 	$ent->getFromDB($input["ID"]);
 
- 	// Pop off the last attribute, no longer needed
-	$null=array_pop($input);
-
 	// Fill the update-array with changes
 	$x=0;
 	foreach ($input as $key => $val) {
-		if (isset($ent->fields[$key]) && $ent->fields[$key] != $input[$key]) {
+		if (array_key_exists($key,$ent->fields) && $ent->fields[$key] != $input[$key]) {
 			$ent->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;

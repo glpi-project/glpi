@@ -301,12 +301,6 @@ function updateKbItem($input) {
 	$ki = new kbitem;
 	$ki->getFromDB($input["ID"]);
 
-	
-
-	// Pop off the last  attribute, no longer needed
-	$null=array_pop($input);
-	
-	
 	// Get faq and fill with no if unchecked in form
 	foreach ($ki->fields as $key => $val) {
 		if (eregi("\.*faq\.*",$key)) {
@@ -319,7 +313,7 @@ function updateKbItem($input) {
 	// Fill the update-array with changes
 	$x=0;
 	foreach ($input as $key => $val) {
-		if (isset($ki->fields[$key]) && $ki->fields[$key] != $input[$key]) {
+		if (array_key_exists($key,$ki->fields) && $ki->fields[$key] != $input[$key]) {
 			$ki->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;

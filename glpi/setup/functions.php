@@ -1007,8 +1007,6 @@ function updateUser($input) {
 	$user = new User($input["name"]);
 	$user->getFromDB($input["name"]); 
 
-	// dump status
-	$null = array_pop($input);
 	// password updated by admin user or own password for user
 	if(empty($input["password"]) || (!isAdmin($_SESSION["glpitype"])&&$_SESSION["glpiname"]!=$input['name'])) {
 		unset($user->fields["password"]);
@@ -1039,7 +1037,7 @@ function updateUser($input) {
 	// fill array for update
 	$x=0;
 	foreach ($input as $key => $val) {
-		if (isset($input[$key]) &&  $input[$key] != $user->fields[$key]) {
+		if (array_key_exists($key,$user->fields) &&  $input[$key] != $user->fields[$key]) {
 			$user->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;

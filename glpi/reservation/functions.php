@@ -819,9 +819,6 @@ function updateReservationComment($input){
 	$ri = new ReservationItem;
 	$ri->getFromDB($input["ID"]);
 	
-	// Pop off the last two attributes, no longer needed
-	$null=array_pop($input);
-	
 	// Get all flags and fill with 0 if unchecked in form
 	foreach ($ri->fields as $key => $val) {
 		if (eregi("\.*flag\.*",$key)) {
@@ -834,7 +831,7 @@ function updateReservationComment($input){
 	// Fill the update-array with changes
 	$x=0;
 	foreach ($input as $key => $val) {
-		if (isset($ri->fields[$key]) && $ri->fields[$key] != $input[$key]) {
+		if (array_key_exists($key,$ri->fields) && $ri->fields[$key] != $input[$key]) {
 			$ri->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;
@@ -864,7 +861,7 @@ global $lang;
 	// Fill the update-array with changes
 	$x=0;
 	foreach ($input as $key => $val) {
-		if (isset($ri->fields[$key]) && $ri->fields[$key] != $input[$key]) {
+		if (array_key_exists($key,$ri->fields) && $ri->fields[$key] != $input[$key]) {
 			$ri->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;
