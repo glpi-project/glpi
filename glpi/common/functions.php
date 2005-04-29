@@ -954,7 +954,7 @@ function showEvents($target,$order,$sort) {
 **/
 function dropdown($table,$myname) {
 	
-	global $deleted_tables;	
+	global $deleted_tables,$template_tables;	
 	
 	// Make a select box
 	$db = new DB;
@@ -983,10 +983,11 @@ function dropdown($table,$myname) {
 		echo "</select>";
 	}
  else {
-		$where="";
+		$where="WHERE '1'='1' ";
 		if (in_array($table,$deleted_tables))
-			$where="WHERE deleted='N'";
-			
+			$where.="AND deleted='N'";
+		if (in_array($table,$template_tables))
+			$where.="AND is_template='0'";			
 		$query = "SELECT * FROM $table $where ORDER BY name";
 		$result = $db->query($query);
 		echo "<select name=\"$myname\" size='1'>";
@@ -1196,12 +1197,14 @@ function NetpointLocationSearch($search,$myname,$location,$value='') {
 */
 function dropdownValueSearch($table,$myname,$value,$search) {
 	// Make a select box with preselected values
-	global $deleted_tables;
+	global $deleted_tables,$template_tables;
 	$db = new DB;
 
 	$where="";
 	if (in_array($table,$deleted_tables))
-		$where="AND deleted='N'";
+		$where.="AND deleted='N'";
+	if (in_array($table,$template_tables))
+		$where.="AND is_template='0'";	
 
 	$query = "SELECT * FROM $table WHERE name LIKE '%$search%' $where ORDER BY name";
 	$result = $db->query($query);
