@@ -692,6 +692,8 @@ $lang["setup"][78] = "Base de connaissances";
 $lang["setup"][79] = "Cat&eacute;gorie des suivis";
 $lang["setup"][80] = "Type de Tiers";
 $lang["setup"][81] = "Rubriques des documents";
+$lang["setup"][82] = "Type de Contacts";
+
 
 $lang["setup"][100]="Configuration g&eacute;n&eacute;rale";
 $lang["setup"][101]="Chemin d'installation";
