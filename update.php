@@ -2299,6 +2299,10 @@ if(!FieldExists("glpi_infocoms","facture")) {
 	$db->query($query) or die("0.51 add field facture ".$lang["update"][90].$db->error());
 }
 
+if(!FieldExists("glpi_enterprises","fax")) {
+	$query = "ALTER TABLE `glpi_enterprises` ADD `fax` char(255) NOT NULL default ''";
+	$db->query($query) or die("0.51 add field fax ".$lang["update"][90].$db->error());
+}
 
 // Update version number
 $query="UPDATE glpi_config set version='0.51' WHERE ID='1'";

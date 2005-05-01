@@ -55,6 +55,7 @@ function searchFormEnterprise($field="",$phrasetype= "",$contains="",$sort= "",$
 	$option["glpi_enterprises.address"]			= $lang["financial"][44];
 	$option["glpi_enterprises.website"]			= $lang["financial"][45];
 	$option["glpi_enterprises.phonenumber"]			= $lang["financial"][29];	
+	$option["glpi_enterprises.fax"]			= $lang["financial"][30];	
 	$option["glpi_enterprises.comments"]			= $lang["financial"][12];
 	$option["glpi_dropdown_enttype.name"]			= $lang["financial"][79];
 
@@ -214,6 +215,14 @@ function showEnterpriseList($target,$username,$field,$phrasetype,$contains,$sort
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.phonenumber&order=ASC&start=$start\">";
 			echo $lang["financial"][29]."</a></th>";
 
+			// Fax		
+			echo "<th>";
+			if ($sort=="glpi_enterprises.phonenumber") {
+				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.fax&order=ASC&start=$start\">";
+			echo $lang["financial"][30]."</a></th>";
+
 			echo "</tr>";
 
 			for ($i=0; $i < $numrows_limit; $i++) {
@@ -235,6 +244,7 @@ function showEnterpriseList($target,$username,$field,$phrasetype,$contains,$sort
 				echo "<td>".$ct->fields["address"]."</td>";
 				echo "<td><a target=_blank href='$website'>".$ct->fields["website"]."</a></td>";
 				echo "<td>".$ct->fields["phonenumber"] ."</td>";
+				echo "<td>".$ct->fields["fax"] ."</td>";
 				echo "</tr>";
 			}
 
@@ -287,6 +297,10 @@ function showEnterpriseForm ($target,$ID) {
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][29].":		</td>";
 	echo "<td colspan='2'><input type='text' name='phonenumber' value=\"".$ent->fields["phonenumber"]."\" size='25'></td>";
+	echo "</tr>";
+
+	echo "<tr class='tab_bg_1'><td>".$lang["financial"][30].":		</td>";
+	echo "<td colspan='2'><input type='text' name='fax' value=\"".$ent->fields["fax"]."\" size='25'></td>";
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][45].":		</td>";
