@@ -97,14 +97,14 @@ else if (isset($_POST["addenterprise"])){
 	checkAuthentication("admin");
 
 	addEnterpriseContract($_POST["conID"],$_POST["entID"]);
-	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." associate device.");
+	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." associate enterprise.");
 	header("Location: ".$cfg_install["root"]."/contracts/contracts-info-form.php?ID=".$_POST["conID"]);
 }
 else if (isset($_GET["deleteenterprise"])){
 	checkAuthentication("admin");
 	deleteEnterpriseContract($_GET["ID"]);
-	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." delete device.");
-	header("Location: ".$cfg_install["root"]."/contracts/contracts-info-form.php?ID=".$_POST["conID"]);
+	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." delete enterprise.");
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["update"]))
 {

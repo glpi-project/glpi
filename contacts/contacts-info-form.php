@@ -63,6 +63,20 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["ID"], "Contacts", 4, "financial", $_SESSION["glpiname"]." updated item.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
+else if (isset($_POST["addenterprise"])){
+	checkAuthentication("admin");
+
+	addContactEnterprise($_POST["entID"],$_POST["conID"]);
+	logEvent($tab["ID"], "contact", 4, "financial", $_SESSION["glpiname"]." associate enterprise.");
+	header("Location: ".$cfg_install["root"]."/contacts/contacts-info-form.php?ID=".$_POST["conID"]);
+}
+else if (isset($_GET["deleteenterprise"])){
+	checkAuthentication("admin");
+	deleteContactEnterprise($_GET["ID"]);
+	logEvent($tab["ID"], "contact", 4, "financial", $_SESSION["glpiname"]." delete enterprise.");
+	header("Location: ".$_SERVER['HTTP_REFERER']);
+}
+
 else
 {
 	if (empty($tab["ID"]))
@@ -71,6 +85,8 @@ else
 
 	commonHeader($lang["title"][22],$_SERVER["PHP_SELF"]);
 	showContactForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	if (!empty($tab["ID"]))
+		showEnterpriseContact($tab["ID"]);
 	commonFooter();
 }
 
