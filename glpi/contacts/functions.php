@@ -251,7 +251,7 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				echo "<td>".$con->fields["phone2"]."</td>";
 				echo "<td>".$con->fields["fax"]."</td>";
 				echo "<td><a href='mailto:".$con->fields["email"]."'>".$con->fields["email"]."</a></td>";
-				echo "<td>".getContactTypeName($con->fields["type"])."</td>";
+				echo "<td>".getDropdownName("glpi_dropdown_contact_type",$con->fields["type"])."</td>";
 				echo "</tr>";
 			}
 
@@ -323,7 +323,7 @@ function showContactForm ($target,$ID) {
 	echo "</tr>";
 	echo "<tr><td>".$lang["financial"][37].":	</td>";
 	echo "<td>";
-	dropdownContactType("type",$con->fields["type"]);
+	dropdownValue("glpi_dropdown_contact_type","type",$con->fields["type"]);
 	echo "</td>";
 	echo "</tr>";
 
@@ -447,49 +447,5 @@ function deleteContact($input) {
 	$con->deleteFromDB($input["ID"]);
 	
 } 
-/**	
-* Print a great select for contacts
-*
-* Print a select with name field is $name and selected value is $value
-*
-*@param $name string : the select name
-*@param $value=0 integer : the selected value
-*
-*
-*@return Nothing (display)
-*
-**/
-function dropdownContactType($name,$value=0){
-	global $lang;
-	
-	echo "<select name='$name'>";
-	echo "<option value='2' ".($value==2?" selected ":"").">".$lang["financial"][42]."</option>";
-	echo "<option value='1' ".($value==1?" selected ":"").">".$lang["financial"][43]."</option>";
-	echo "</select>";	
-}
-
-/**	
-* Get from dicts the Contact Type name
-*
-* Get the contact type name from dicts.
-*
-*@param $value integer : contact type value.
-*
-*
-*@return string : dict entry
-*
-**/
-function getContactTypeName($value){
-	global $lang;
-	
-	switch ($value){
-	case 2 :
-		return $lang["financial"][42];
-		break;
-	case 1 :
-		return $lang["financial"][43];
-		break;
-	}	
-}
 
 ?>

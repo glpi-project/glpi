@@ -2304,6 +2304,24 @@ if(!FieldExists("glpi_enterprises","fax")) {
 	$db->query($query) or die("0.51 add field fax ".$lang["update"][90].$db->error());
 }
 
+if(!TableExists("glpi_dropdown_contact_type")) {
+
+$query = "CREATE TABLE glpi_dropdown_contact_type (
+  ID int(11) NOT NULL auto_increment,
+  name varchar(255) NOT NULL default '',
+  PRIMARY KEY  (ID)
+) TYPE=MyISAM;
+";
+
+$db->query($query) or die("0.51 add table dropdown_contact_type ".$lang["update"][90].$db->error());
+
+$query="INSERT INTO glpi_dropdown_contact_type (name) VALUES ('".$lang["financial"][43]."');";
+$db->query($query) or die("0.51 add entries to dropdown_contact_type ".$lang["update"][90].$db->error());
+$query="INSERT INTO glpi_dropdown_contact_type (name) VALUES ('".$lang["financial"][42]."');";
+$db->query($query) or die("0.51 add entries to dropdown_contact_type ".$lang["update"][90].$db->error());
+
+
+}
 // Update version number
 $query="UPDATE glpi_config set version='0.51' WHERE ID='1'";
 	$db->query($query) or die("0.5 update config version ".$lang["update"][90].$db->error());
