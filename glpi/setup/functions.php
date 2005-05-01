@@ -327,8 +327,12 @@ function replaceDropDropDown($input) {
 	$db = new DB;
 	$name = getDropdownNameFromTable($input["tablename"]);
 	switch($name) {
-	case  "hdtype" : case "sndcard" : case "moboard" : case "gfxcard" : case "network" : case "ramtype" : case "processor" :
-		$query = "update glpi_computers set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+	case "enttype":
+		$query = "update glpi_enterprises set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		$db->query($query);
+		break;
+	case "firmware":
+		$query = "update glpi_networking set firmware = '". $input["newID"] ."'  where firmware = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
 	case "os" :
@@ -356,6 +360,10 @@ function replaceDropDropDown($input) {
 		$db->query($query);
 		$query = "update glpi_dropdown_netpoint set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$db->query($query);
+		$query = "update glpi_cartridges_type set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		$db->query($query);
+		$query = "update glpi_users set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		$result = $db->query($query);
 
 		break;
 	case "monitors" :
@@ -370,15 +378,31 @@ function replaceDropDropDown($input) {
 	case "printers" :
 		$query = "update glpi_printers set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$result = $db->query($query);
+		$query = "update glpi_cartridges_assoc set FK_glpi_type_printer = '". $input["newID"] ."'  where FK_glpi_type_printer = '".$input["oldID"]."'";
+		$result = $db->query($query);
 		break;
 	case "networking" :
 		$query = "update glpi_networking set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
 	case "netpoint" : 
-		$query = "update glpi_networking_ports set netpoint = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		$query = "update glpi_networking_ports set netpoint = '". $input["newID"] ."'  where netpoint = '".$input["oldID"]."'";
 		$result = $db->query($query);
+		break;
+	case "rubdocs" : 
+		$query = "update glpi_docs set rubrique = '". $input["newID"] ."'  where rubrique = '".$input["oldID"]."'";
+		$result = $db->query($query);
+		break;
+	case "tracking_category":
+		$query = "update glpi_tracking set category = '". $input["newID"] ."'  where category = '".$input["oldID"]."'";
+		$result = $db->query($query);
+		break;
+	case "peripherals" :
+		$query = "update glpi_peripherals set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		$result = $db->query($query);
+		break;
 	}
+
 	$query = "delete from ". $input["tablename"] ." where ID = '". $input["oldID"] ."'";
 	$db->query($query);
 }
@@ -434,7 +458,7 @@ function showDeleteConfirmForm($target,$table, $ID) {
 function getDropdownNameFromTable($table) {
 
 	if(ereg("glpi_type_",$table)){
-		$name = "type";
+		$name = ereg_replace("glpi_type_","",$table);
 	}
 	else {
 		if($table == "glpi_dropdown_locations") $name = "location";
@@ -453,18 +477,15 @@ function dropdownUsed($table, $ID) {
 
 	$var1 = true;
 	switch($name) {
-	case  "hdtype" : case "sndcard" : case "moboard" : case "gfxcard" : case "network" : case "ramtype" : case "processor" :
-		$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = ".$ID."";
+	case "enttype":
+		$query = "Select count(*) as cpt FROM glpi_enterprises where type = ".$ID."";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "os" :
-		$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = ".$ID."";
+	case "firmware":
+		$query = "Select count(*) as cpt FROM glpi_networking where firmware = ".$ID."";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
-		$query = "Select count(*) as cpt FROM glpi_software where platform = ".$ID."";
-		$result = $db->query($query);
-		if($db->result($result,0,"cpt") > 0)  $var1 = false;	
 		break;
 	case "iface" : 
 		$query = "Select count(*) as cpt FROM glpi_networking_ports where ". $name ." = ".$ID."";
@@ -506,10 +527,34 @@ function dropdownUsed($table, $ID) {
 		$query = "Select count(*) as cpt FROM glpi_dropdown_netpoint where ". $name ." = ".$ID."";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		$query = "Select count(*) as cpt FROM glpi_cartridges_type where ". $name ." = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		$query = "Select count(*) as cpt FROM glpi_users where ". $name ." = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 
 		break;
-	case "monitors" :
-		$query = "Select count(*) as cpt FROM glpi_monitors where type = '".$ID."'";
+	case "netpoint" : 
+		$query = "Select count(*) as cpt FROM glpi_networking_ports where netpoint = '".$ID."'";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
+	case "os" :
+		$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		$query = "Select count(*) as cpt FROM glpi_software where platform = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;	
+		break;
+	case "rubdocs":
+		$query = "Select count(*) as cpt FROM glpi_docs where rubrique = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
+	case "tracking_category":
+		$query = "Select count(*) as cpt FROM glpi_tracking where category = ".$ID."";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
@@ -518,8 +563,8 @@ function dropdownUsed($table, $ID) {
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "printers" :
-		$query = "Select count(*) as cpt FROM glpi_printers where type = '".$ID."'";
+	case "monitors" :
+		$query = "Select count(*) as cpt FROM glpi_monitors where type = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
@@ -528,12 +573,21 @@ function dropdownUsed($table, $ID) {
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-
-	case "netpoint" : 
-		$query = "Select count(*) as cpt FROM glpi_networking_ports where netpoint = '".$ID."'";
+	case "peripherals":
+		$query = "Select count(*) as cpt FROM glpi_peripherals where type = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
+	case "printers" :
+		$query = "Select count(*) as cpt FROM glpi_printers where type = '".$ID."'";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		$query = "Select count(*) as cpt FROM glpi_cartridges_assoc where FK_glpi_type_printer = '".$ID."'";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+
+		break;
+
 	}
 	return $var1;
 
