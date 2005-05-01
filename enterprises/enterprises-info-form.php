@@ -72,13 +72,13 @@ else if (isset($_POST["purge"]))
 else if (isset($_POST["addcontact"])){
 	checkAuthentication("admin");
 	addContactEnterprise($_POST["eID"],$_POST["cID"]);
-	logEvent($tab["ID"], "enterprise", 4, "financial", $_SESSION["glpiname"]." associate type.");
+	logEvent($tab["ID"], "enterprise", 4, "financial", $_SESSION["glpiname"]." associate contact.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deletecontact"])){
 	checkAuthentication("admin");
 	deleteContactEnterprise($_GET["ID"]);
-	logEvent($tab["ID"], "enterprise", 4, "financial", $_SESSION["glpiname"]." delete type.");
+	logEvent($tab["ID"], "enterprise", 4, "financial", $_SESSION["glpiname"]." delete contact.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["update"]))
