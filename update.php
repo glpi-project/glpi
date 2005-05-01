@@ -2292,12 +2292,13 @@ if($db->numrows($result) != $db->numrows($result2)) {
 	}
 }
 
+/*******************************GLPI 0.51***********************************************/
 
 
 
 
 // Update version number
-$query="UPDATE glpi_config set version='0.5' WHERE ID='1'";
+$query="UPDATE glpi_config set version='0.51' WHERE ID='1'";
 	$db->query($query) or die("0.5 update config version ".$lang["update"][90].$db->error());
 
 optimize_tables();
