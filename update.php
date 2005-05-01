@@ -2294,7 +2294,10 @@ if($db->numrows($result) != $db->numrows($result2)) {
 
 /*******************************GLPI 0.51***********************************************/
 
-
+if(!FieldExists("glpi_infocoms","facture")) {
+	$query = "ALTER TABLE `glpi_infocoms` ADD `facture` char(255) NOT NULL default ''";
+	$db->query($query) or die("0.51 add field facture ".$lang["update"][90].$db->error());
+}
 
 
 // Update version number

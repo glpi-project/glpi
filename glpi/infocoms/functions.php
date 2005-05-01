@@ -57,15 +57,18 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		echo "<form name='form_ic' method='post' action=\"$target\">";
 		echo "<div align='center'>";
 		echo "<table class='tab_cadre' width='700'>";
+
 		echo "<tr><th colspan='4'><b>".$lang["financial"][3]."</b></th></tr>";
 	
-		echo "<tr class='tab_bg_1'><td colspan='2'>".$lang["financial"][26].":		</td>";
-		echo "<td colspan='2' align='center'>";
+		echo "<tr class='tab_bg_1'><td>".$lang["financial"][26].":		</td>";
+		echo "<td align='center'>";
 		if ($withtemplate==2)
 		getdropdownName("glpi_enterprises","FK_enterprise",$ic->fields["FK_enterprise"]);
 		else dropdownValue("glpi_enterprises","FK_enterprise",$ic->fields["FK_enterprise"]);
 		
 		echo "</td>";
+		echo "<td>".$lang["financial"][82].":		</td>";
+		echo "<td ><input type='text' $option name='facture' value=\"".$ic->fields["facture"]."\" size='25'></td>";
 		
 		echo "</tr>";
 
