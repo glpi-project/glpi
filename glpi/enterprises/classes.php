@@ -88,6 +88,10 @@ class Enterprise {
 				$query2 = "SELECT * FROM glpi_infocoms WHERE (FK_enterprise = '".$this->fields["ID"]."')";
 				$result2 = $db->query($query2);
 				if ($db->numrows($result2)>0) return true;
+				
+					$query="SELECT * from glpi_tracking where computer = '".$this->fields["ID"]."' AND device_type='".ENTERPRISE_TYPE."'";
+					$result = $db->query($query);
+					if ($db->numrows($result)>0) return true;
 				else {
 					
 				/// TODO : ajouter tous les liens FK_manufacturer !!!
@@ -167,6 +171,21 @@ class Enterprise {
 		if ($force==1||!$this->isUsed()){
 			$query = "DELETE from glpi_enterprises WHERE ID = '$ID'";
 			if ($result = $db->query($query)) {
+
+				$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='".ENTERPRISE_TYPE."')";
+				$result = $db->query($query);
+				$number = $db->numrows($result);
+				$i=0;
+				while ($i < $number) {
+			  		$job = $db->result($result,$i,"ID");
+			    		$query = "DELETE FROM glpi_followups WHERE (tracking = '$job')";
+			      		$db->query($query);
+					$i++;
+				}
+
+				$query = "DELETE FROM glpi_tracking WHERE (computer = '$ID' AND device_type='".ENTERPRISE_TYPE."')";
+				$result = $db->query($query);
+
 				
 				// Delete all enterprises associations from infocoms and contract
 				$query3 = "DELETE FROM glpi_contract_enterprise WHERE (FK_enterprise = \"$ID\")";

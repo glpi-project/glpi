@@ -921,42 +921,47 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_users.name") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["setup"][12]."</a></th>";
 			
 			// realname		
 			echo "<th>";
 			if ($sort=="glpi_users.realname") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.realname&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.realname&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["setup"][13]."</a></th>";
 
 			// type
 			echo "<th>";
 			if ($sort=="glpi_users.type") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.type&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.type&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["setup"][17]."</a></th>";			
 			
 			// email
 			echo "<th>";
 			if ($sort=="glpi_users.email") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.email&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.email&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["setup"][14]."</a></th>";
 
 						
 			// Phone
 			echo "<th>";
 			if ($sort=="glpi_users.phone") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.phone&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.phone&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["setup"][15]."</a></th>";
 
 			
@@ -964,9 +969,10 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 			// Location			
 			echo "<th>";
 			if ($sort=="glpi_dropdown_locations.name") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["setup"][16]."</a></th></tr>";
 
 

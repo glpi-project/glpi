@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-05-01 17:24
+#GLPI Dump database on 2005-05-01 22:55
 
 ### Dump table glpi_cartridges
 
@@ -598,6 +598,7 @@ CREATE TABLE glpi_docs (
     date_mod datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
     comment text NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
+    link varchar(255) NOT NULL,
    PRIMARY KEY (ID),
    KEY rubrique (rubrique),
    KEY deleted (deleted),
@@ -788,7 +789,7 @@ INSERT INTO glpi_event_log VALUES ('376','0','users','2005-04-20 09:19:04','setu
 INSERT INTO glpi_event_log VALUES ('377','-1','system','2005-04-20 09:19:10','login','3','post-only logged in.');
 INSERT INTO glpi_event_log VALUES ('378','-1','system','2005-04-20 09:19:28','login','3','glpi logged in.');
 INSERT INTO glpi_event_log VALUES ('379','2','Peripherals','2005-04-20 09:20:27','inventory','4','glpi purge item.');
-INSERT INTO glpi_event_log VALUES ('380','-1','system','2005-05-01 17:24:06','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('380','-1','system','2005-05-01 22:55:27','login','3','glpi logged in.');
 
 ### Dump table glpi_followups
 

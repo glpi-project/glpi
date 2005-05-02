@@ -174,6 +174,17 @@ function getEmpty() {
 						$result2 = $db->query($q);				
 				}
 
+				$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='".NETWORKING_TYPE."')";
+				$result = $db->query($query);
+				$number = $db->numrows($result);
+				$i=0;
+				while ($i < $number) {
+			  		$job = $db->result($result,$i,"ID");
+			    		$query = "DELETE FROM glpi_followups WHERE (tracking = '$job')";
+			      		$db->query($query);
+					$i++;
+				}
+
 				$query = "DELETE FROM glpi_tracking WHERE (computer = '$ID' AND device_type='".NETWORKING_TYPE."')";
 				$result = $db->query($query);
 			

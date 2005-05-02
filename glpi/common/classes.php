@@ -797,6 +797,9 @@ class CommonItem{
 			case CONTRACT_TYPE : 
 				$this->obj= new Contract;	
 				break;				
+			case ENTERPRISE_TYPE : 
+				$this->obj= new Enterprise;	
+				break;				
 			}
 
 			if ($this->obj!=NULL){
@@ -832,6 +835,9 @@ class CommonItem{
 				break;				
 			case CONTRACT_TYPE : 
 				return $lang["financial"][1];
+				break;				
+			case ENTERPRISE_TYPE : 
+				return $lang["financial"][26];
 				break;				
 			}
 	
@@ -879,6 +885,9 @@ class CommonItem{
 				break;				
 			case CONTRACT_TYPE : 
 				return "<a href=\"".$cfg_install["root"]."/contracts/contracts-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
+				break;				
+			case ENTERPRISE_TYPE : 
+				return "<a href=\"".$cfg_install["root"]."/enterprises/enterprises-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
 				break;				
 			}
 

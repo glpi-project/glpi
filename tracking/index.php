@@ -44,6 +44,7 @@ include ($phproot . "/glpi/includes_monitors.php");
 include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_software.php");
+include ($phproot . "/glpi/includes_enterprises.php");
 
 
 checkAuthentication("normal");

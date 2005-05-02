@@ -221,49 +221,55 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			// Name
 			echo "<th>";
 			if ($sort=="periph.name") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["peripherals"][5]."</a></th>";
 
 			// Manufacturer		
 			echo "<th>";
 			if ($sort=="glpi_enterprises.name") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["common"][5]."</a></th>";
 			
 			// Location			
 			echo "<th>";
 			if ($sort=="glpi_dropdown_locations.name") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["peripherals"][6]."</a></th>";
 
 			// Type
 			echo "<th>";
 			if ($sort=="glpi_type_peripherals.name") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_peripherals.name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_peripherals.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["peripherals"][9]."</a></th>";
 
 			// Last modified		
 			echo "<th>";
 			if ($sort=="periph.date_mod") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.date_mod&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.date_mod&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["peripherals"][16]."</a></th>";
 
 			// Contact person
 			echo "<th>";
 			if ($sort=="periph.contact") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.contact&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.contact&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["peripherals"][8]."</a></th>";
 
 			echo "</tr>";

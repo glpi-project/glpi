@@ -2304,6 +2304,11 @@ if(!FieldExists("glpi_enterprises","fax")) {
 	$db->query($query) or die("0.51 add field fax ".$lang["update"][90].$db->error());
 }
 
+if(!FieldExists("glpi_docs","link")) {
+	$query = "ALTER TABLE `glpi_docs` ADD `link` char(255) NOT NULL default ''";
+	$db->query($query) or die("0.51 add field fax ".$lang["update"][90].$db->error());
+}
+
 if(!TableExists("glpi_dropdown_contact_type")) {
 
 $query = "CREATE TABLE glpi_dropdown_contact_type (

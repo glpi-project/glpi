@@ -803,6 +803,10 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	break;
 	case SOFTWARE_TYPE :
 	$item = "software";
+	break;
+	case ENTERPRISE_TYPE :
+	$item = "enterprise";
+	break;
 	}
 	
 	
@@ -1236,7 +1240,7 @@ function searchFormTrackingReport() {
 	echo "<table border='0' width='760' class='tab_cadre'>";
 
 	
-	echo "<tr><th colspan='7'><strong>".$lang["search"][0].":</strong></th></tr>";
+	echo "<tr><th colspan='6'><strong>".$lang["search"][0].":</strong></th></tr>";
 
 
 
@@ -1263,9 +1267,24 @@ function searchFormTrackingReport() {
 	echo "</td>";
 	echo "<td  colspan='1' align='center'>".$lang["joblist"][3]."&nbsp;:&nbsp;";
 	dropdownUsersTracking($_GET["author"],"author","author");
-	echo "</td><td align='center'>".$lang["tracking"][20]."&nbsp;:&nbsp;";
-	dropdownValue("glpi_dropdown_tracking_category","category",$_GET["category"]);
 	echo "</td></tr>";
+
+
+	echo "<tr  class='tab_bg_1'>";
+	echo "<td align='center'>".$lang["tracking"][20]."&nbsp;:&nbsp;";
+	dropdownValue("glpi_dropdown_tracking_category","category",$_GET["category"]);
+	echo "</td>";
+	echo "<td colspan='2' align='center'>".$lang["joblist"][0].":";
+	echo "<select name='status'>";
+	echo "<option value='all' ".($_GET["status"]=="all"?"selected":"").">".$lang["joblist"][9]." / ".$lang["joblist"][10]."</option>";
+	echo "<option value='new' ".($_GET["status"]=="new"?"selected":"").">".$lang["joblist"][9]."</option>";
+	echo "<option value='old' ".($_GET["status"]=="old"?"selected":"").">".$lang["joblist"][10]."</option>";	
+	echo "</select></td>";
+	
+	echo "<td align='center' colspan='3'>".$lang["reports"][59].":<select name='showfollowups'>";
+	echo "<option value='1' ".($_GET["showfollowups"]=="1"?"selected":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".($_GET["showfollowups"]=="0"?"selected":"").">".$lang["choice"][1]."</option>";	
+	echo "</select></td></tr>";
 
 
 	echo "<tr class='tab_bg_1'>";
@@ -1273,7 +1292,7 @@ function searchFormTrackingReport() {
 	$selected="";
 	if ($_GET["only_computers"]) $selected="checked";
 	echo "<input type='checkbox' name='only_computers' value='1' $selected>".$lang["reports"][24].":</td>";
-	echo "<td align='left' colspan='5'>";
+	echo "<td align='left' colspan='4'>";
 
 	echo "<input type='text' size='15' name=\"contains\" value=\"". $_GET['contains'] ."\" >";
 	echo "&nbsp;";
@@ -1295,7 +1314,7 @@ function searchFormTrackingReport() {
 	
 	echo "<tr class='tab_bg_1'><td align='center' colspan='2'>".$lang["search"][8].":&nbsp;";
 showCalendarForm("form","date1",$_GET["date1"]);
-echo "</td><td align='center' colspan='4'>";
+echo "</td><td align='center' colspan='3'>";
 echo $lang["search"][9].":&nbsp;";
 showCalendarForm("form","date2",$_GET["date2"]);
 echo "</td><td align='center'><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'></td></tr>";
@@ -1305,7 +1324,7 @@ echo "</table></div></form>";
 }
 
 
-function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$start,$date1,$date2,$computers_search,$field2,$phrasetype2,$contains2,$author,$assign,$category) {
+function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$start,$date1,$date2,$computers_search,$field2,$phrasetype2,$contains2,$author,$assign,$category,$status,$showfollowups) {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -1409,7 +1428,9 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 			break;
 		}
 	}
-	
+
+
+	if ($status!="all") $query.=" AND glpi_tracking.status = '$status'";
 	
 	if ($assign!="all") $query.=" AND glpi_tracking.assign = '$assign'";
 	if ($author!="all") $query.=" AND glpi_tracking.author = '$author'";
@@ -1446,7 +1467,7 @@ echo "<th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
 			for ($i=0; $i < $numrows_limit; $i++) {
 				
 				$ID = $db->result($result_limit, $i, "ID");
-				showJobShort($ID, 1);
+				showJobShort($ID, $showfollowups);
 			}
 
 			// Close Table

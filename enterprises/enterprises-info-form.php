@@ -35,6 +35,8 @@
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_financial.php");
+include ($phproot . "/glpi/includes_documents.php");
+include ($phproot . "/glpi/includes_tracking.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -95,8 +97,46 @@ else
 	checkAuthentication("admin");
 	else checkAuthentication("normal");
 
+	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
+	if (isset($_GET['onglet'])) {
+		$_SESSION['glpi_onglet']=$_GET['onglet'];
+		header("Location: ".$_SERVER['HTTP_REFERER']);
+	}
+
+
 	commonHeader($lang["title"][23],$_SERVER["PHP_SELF"]);
-	showEnterpriseForm($_SERVER["PHP_SELF"],$tab["ID"]);
+
+	showEnterpriseOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], 0,$_SESSION['glpi_onglet'] );
+
+	if (showEnterpriseForm($_SERVER["PHP_SELF"],$tab["ID"])){
+		switch($_SESSION['glpi_onglet']){
+			case -1:
+				showAssociatedContact($tab["ID"]);
+				showContractAssociatedEnterprise($tab["ID"]);
+				showDocumentAssociated(ENTERPRISE_TYPE,$tab["ID"]);
+				showJobListForItem($_SESSION["glpiname"],ENTERPRISE_TYPE,$tab["ID"]);
+				showOldJobListForItem($_SESSION["glpiname"],ENTERPRISE_TYPE,$tab["ID"]);	
+				break;
+			case 1 :
+				showAssociatedContact($tab["ID"]);
+				break;
+			case 4 :
+				showContractAssociatedEnterprise($tab["ID"]);
+				break;
+			case 5 :
+				showDocumentAssociated(ENTERPRISE_TYPE,$tab["ID"],0);
+				break;
+			case 6 :
+				showJobListForItem($_SESSION["glpiname"],ENTERPRISE_TYPE,$tab["ID"]);
+				showOldJobListForItem($_SESSION["glpiname"],ENTERPRISE_TYPE,$tab["ID"]);	
+
+				break;
+			default : 
+				showAssociatedContact($tab["ID"]);
+
+				break;
+		}
+	}
 
 	commonFooter();
 }

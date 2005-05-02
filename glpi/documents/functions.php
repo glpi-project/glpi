@@ -53,6 +53,7 @@ function searchFormDocument($field="",$phrasetype= "",$contains="",$sort= "",$de
 	$option["glpi_docs.ID"]				= $lang["document"][14];
 	$option["glpi_docs.name"]			= $lang["document"][1];
 	$option["glpi_docs.filename"]			= $lang["document"][2];
+	$option["glpi_docs.link"]			= $lang["document"][33];
 	$option["glpi_dropdown_rubdocs.name"]		= $lang["document"][3];
 	$option["glpi_docs.mime"]			= $lang["document"][4];	
 	$option["glpi_docs.comment"]			= $lang["document"][6];
@@ -146,7 +147,6 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 	
 	$query.= " WHERE $where AND deleted='$deleted'  ORDER BY $sort $order";
 	
-	//	echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows = $db->numrows($result);
@@ -170,42 +170,56 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_docs.name") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_docs.name&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_docs.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["document"][1]."</a></th>";
 
 			
 			// filename
 			echo "<th>";
 			if ($sort=="glpi_docs.filename") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_docs.filename&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_docs.filename&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["document"][2]."</a></th>";
+
+			// link
+			echo "<th>";
+			if ($sort=="glpi_docs.link") {
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_docs.link&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo $lang["document"][33]."</a></th>";
 			
 			// num
 			echo "<th>";
 			if ($sort=="glpi_dropdown_rubdocs.name") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_rubdocs.name&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_rubdocs.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["document"][3]."</a></th>";
 	
 			// mime
 			echo "<th>";
 			if ($sort=="glpi_docs.mime") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_docs.mime&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_docs.mime&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["document"][4]."</a></th>";
 
 			// comment		
 			echo "<th>";
 			if ($sort=="glpi_docs.comment") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_docs.comment&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_docs.comment&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["document"][6]."</a></th>";
 
 
@@ -222,7 +236,9 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo "<a href=\"".$cfg_install["root"]."/documents/documents-info-form.php?ID=$ID\"><b>";
 				echo $ct->fields["name"]." (".$ct->fields["ID"].")";
 				echo "</b></a></td>";
+
 				echo "<td align='left'>".getDocumentLink($ct->fields["filename"])."</td>";
+				echo "<td><a href=\"".$ct->fields["link"]."\">".$ct->fields["link"]."</a></td>";
 				echo "<td>".getDropdownName("glpi_dropdown_rubdocs",$ct->fields["rubrique"])."</td>";
 				echo "<td>".$ct->fields["mime"]."</td>";
 				echo "<td>".$ct->fields["comment"]."</td>";				
@@ -280,6 +296,10 @@ function showDocumentForm ($target,$ID,$search) {
 	
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][2]." (".$max_size."Mo max):	</td>";
 	echo "<td colspan='2'><input type='file' name='filename' value=\"".$con->fields["filename"]."\" size='25'></td>";
+	echo "</tr>";
+
+	echo "<tr class='tab_bg_1'><td>".$lang["document"][33].":		</td>";
+	echo "<td colspan='2'><input type='text' name='link' value='".$con->fields["link"]."' size='40'></td>";
 	echo "</tr>";
 
 	
@@ -495,7 +515,7 @@ function showDeviceDocument($instID,$search='') {
 	
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 	echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
-		dropdownAllItems("item",$search);
+		dropdownAllItems("item",1,$search,'');
 	echo "</div><input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</form>";
 	echo "</td>";
@@ -561,6 +581,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	echo "<tr><th colspan='7'>".$lang["document"][21].":</th></tr>";
 	echo "<tr><th>".$lang['document'][1]."</th>";
 	echo "<th>".$lang['document'][2]."</th>";
+	echo "<th>".$lang['document'][33]."</th>";
 	echo "<th>".$lang['document'][3]."</th>";
 	echo "<th>".$lang['document'][4]."</th>";
 	if ($withtemplate!=2)echo "<th>&nbsp;</th>";
@@ -575,6 +596,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
 	echo "<td align='center'><a href='".$HTMLRel."documents/documents-info-form.php?ID=$cID'><b>".$con->fields["name"]." (".$con->fields["ID"].")</b></a></td>";
 	echo "<td align='center'>".getDocumentLink($con->fields["filename"])."</td>";
+	echo "<td align='center'><a target=_blank href='".$con->fields["link"]."'>".$con->fields["link"]."</a></td>";
 	echo "<td align='center'>".getDropdownName("glpi_dropdown_rubdocs",$con->fields["rubrique"])."</td>";
 	echo "<td align='center'>".$con->fields["mime"]."</td>";
 
@@ -593,7 +615,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
 		echo "</td>";
 		
-		echo "<td>&nbsp;</td><td>&nbsp;</td></tr>";
+		echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
 	}
 	echo "</table></div>"    ;
 	echo "</form>";

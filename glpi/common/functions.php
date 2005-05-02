@@ -882,33 +882,38 @@ function showEvents($target,$order,$sort) {
 
 	echo "<th colspan='2'>";
 	if ($sort=="item") {
-		echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+		else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=item&order=ASC\">".$lang["event"][0]."</a></th>";
+	echo "<a href=\"$target?sort=item&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][0]."</a></th>";
 
 	echo "<th>";
 	if ($sort=="date") {
-		echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+		else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=date&order=DESC\">".$lang["event"][1]."</a></th>";
+	echo "<a href=\"$target?sort=date&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][1]."</a></th>";
 
 	echo "<th width='8%'>";
 	if ($sort=="service") {
-		echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+		else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=service&order=ASC\">".$lang["event"][2]."</a></th>";
+	echo "<a href=\"$target?sort=service&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][2]."</a></th>";
 
 	echo "<th width='8%'>";
 	if ($sort=="level") {
-		echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+		else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=level&order=DESC\">".$lang["event"][3]."</a></th>";
+	echo "<a href=\"$target?sort=level&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][3]."</a></th>";
 
 	echo "<th width='60%'>";
 	if ($sort=="message") {
-		echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+		else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=message&order=ASC\">".$lang["event"][4]."</a></th></tr>";
+	echo "<a href=\"$target?sort=message&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][4]."</a></th></tr>";
 
 	while ($i < $number) {
 		$ID = $db->result($result, $i, "ID");
@@ -1430,11 +1435,12 @@ if ($dh = opendir($store_path)) {
 *
 *
 * @param $name
+* @param $withenterprise
 * @param $search
 * @param $value
 * @return nothing (print out an HTML select box)
 */
-function dropdownAllItems($name,$search='',$value='') {
+function dropdownAllItems($name,$withenterprise=0,$search='',$value='') {
 	$db=new DB;
 	
 	$items=array(
@@ -1446,6 +1452,8 @@ function dropdownAllItems($name,$search='',$value='') {
 	SOFTWARE_TYPE=>"glpi_software",
 	);
 
+	if ($withenterprise==1) $items[ENTERPRISE_TYPE]="glpi_enterprises";
+	
 	echo "<select name=\"$name\" size='1'>";
 
 	foreach ($items as $type => $table){
@@ -1881,12 +1889,13 @@ function printHelpDesk ($name,$from_helpdesk) {
 	echo "<td><select name=device_type>";
     //if (isAdmin($_SESSION["glpitype"]))
     echo "<option value='0' >".$lang["help"][30]."";
-	echo "<option value='1' selected>".$lang["help"][25]."";
-	echo "<option value='2'>".$lang["help"][26]."";
-	echo "<option value='3'>".$lang["help"][27]."";
-	echo "<option value='4'>".$lang["help"][28]."";
-	echo "<option value='5'>".$lang["help"][29]."";
-	echo "<option value='6'>".$lang["help"][31]."";
+	echo "<option value='".COMPUTER_TYPE."' selected>".$lang["help"][25]."";
+	echo "<option value='".NETWORKING_TYPE."'>".$lang["help"][26]."";
+	echo "<option value='".PRINTER_TYPE."'>".$lang["help"][27]."";
+	echo "<option value='".MONITOR_TYPE."'>".$lang["help"][28]."";
+	echo "<option value='".PERIPHERAL_TYPE."'>".$lang["help"][29]."";
+	echo "<option value='".SOFTWARE_TYPE."'>".$lang["help"][31]."";
+	echo "<option value='".ENTERPRISE_TYPE."'>".$lang["help"][34]."";	
 	echo "</select>";
 	echo "</td></tr>";
 
@@ -2963,8 +2972,17 @@ function sendFile($file,$filename){
 * @return the next ID, -1 if not exist
 */
 function getNextItem($table,$ID){
+global $deleted_tables,$template_tables;
 
-$query = "select ID from $table where ID > $ID AND deleted='N' AND is_template='0' order by ID";
+$query = "select ID from $table where ID > $ID ";
+
+if (in_array($table,$deleted_tables))
+	$query.="AND deleted='N'";
+if (in_array($table,$template_tables))
+	$query.="AND is_template='0'";	
+		
+$query.=" order by ID";
+
 $db=new DB;
 $result=$db->query($query);
 if ($db->numrows($result)>0)
@@ -2981,8 +2999,18 @@ else return -1;
 * @return the previous ID, -1 if not exist
 */
 function getPreviousItem($table,$ID){
+global $deleted_tables,$template_tables;
 
-$query = "select ID from $table where ID < $ID AND deleted='N' AND is_template='0' order by ID DESC";
+$query = "select ID from $table where ID < $ID ";
+
+if (in_array($table,$deleted_tables))
+	$query.="AND deleted='N'";
+if (in_array($table,$template_tables))
+	$query.="AND is_template='0'";	
+		
+$query.=" order by ID";
+
+
 $db=new DB;
 $result=$db->query($query);
 if ($db->numrows($result)>0)
