@@ -274,7 +274,11 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 				echo "<td>". getDropdownName("glpi_enterprises",$ct->fields["FK_glpi_enterprise"]) ."</td>";
 				echo "<td>". getDropdownName("glpi_dropdown_locations",$ct->fields["location"]) ."</td>";
 				
-				echo "<td>";
+				$highlight="";
+				if (getUnusedCartridgesNumber($ct->fields["ID"])<=$cfg_features["cartridges_alarm"])
+				$highlight="class='tab_bg_1_2'";
+				
+				echo "<td $highlight>";
 					countCartridges($ct->fields["ID"]);
 				echo "</td>";
 				echo "</tr>";
@@ -392,8 +396,8 @@ function showCartridgeTypeForm ($target,$ID) {
 		echo "</table></div>";
 		
 		showCompatiblePrinters($ID);
-		showCartridges($ID);
 		showCartridgesAdd($ID);
+		showCartridges($ID);
 		showCartridges($ID,1);
 	}
 

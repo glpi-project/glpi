@@ -2319,9 +2319,13 @@ $query="INSERT INTO glpi_dropdown_contact_type (name) VALUES ('".$lang["financia
 $db->query($query) or die("0.51 add entries to dropdown_contact_type ".$lang["update"][90].$db->error());
 $query="INSERT INTO glpi_dropdown_contact_type (name) VALUES ('".$lang["financial"][42]."');";
 $db->query($query) or die("0.51 add entries to dropdown_contact_type ".$lang["update"][90].$db->error());
-
-
 }
+
+if(!FieldExists("glpi_config","cartridges_alarm")) {
+	$query = "ALTER TABLE `glpi_config` ADD `cartridges_alarm` int(11) NOT NULL default '10'";
+	$db->query($query) or die("0.51 add field cartrodges_alarm ".$lang["update"][90].$db->error());
+}
+
 
 // Update version number and default langage ---- LEAVE AT THE END
 	$query = "UPDATE `glpi_config` SET `version` = ' 0.51', default_language='".$_SESSION["dict"]."' ;";
