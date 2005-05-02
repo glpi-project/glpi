@@ -175,6 +175,7 @@ echo "<p style='text-align:center;'><label>Choose your language </label><select 
 	echo "<option value=\"english\">English</option>";
 	echo "<option value=\"deutch\">Deutch</option>";
 	echo "<option value=\"italian\">Italiano</option>";
+	echo "<option value=\"castellano\">Español (castellano)</option>";
 	echo "</select></p>"; 
 	echo "";
 	echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"lang_select\" /><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"OK\" /></p>";

@@ -1129,10 +1129,6 @@ if(!FieldExists("glpi_config","default_language")) {
 	$db->query($query) or die("4204 ".$lang["update"][90].$db->error());
 
 
-// Mise a jour du numéro de version et de la langue par defaut---- A LAISSER 0 LA FIN
-	$query = "UPDATE `glpi_config` SET `version` = ' 0.42', default_language='".$_SESSION["dict"]."' ;";
-	$db->query($query) or die("4203 ".$lang["update"][90].$db->error());
-
 /*******************************GLPI 0.5***********************************************/
 //pass all templates to computers
 if(!FieldExists("glpi_computers","is_template")) {
@@ -2315,8 +2311,7 @@ $query = "CREATE TABLE glpi_dropdown_contact_type (
   ID int(11) NOT NULL auto_increment,
   name varchar(255) NOT NULL default '',
   PRIMARY KEY  (ID)
-) TYPE=MyISAM;
-";
+) TYPE=MyISAM;";
 
 $db->query($query) or die("0.51 add table dropdown_contact_type ".$lang["update"][90].$db->error());
 
@@ -2327,9 +2322,10 @@ $db->query($query) or die("0.51 add entries to dropdown_contact_type ".$lang["up
 
 
 }
-// Update version number
-$query="UPDATE glpi_config set version='0.51' WHERE ID='1'";
-	$db->query($query) or die("0.5 update config version ".$lang["update"][90].$db->error());
+
+// Update version number and default langage ---- LEAVE AT THE END
+	$query = "UPDATE `glpi_config` SET `version` = ' 0.51', default_language='".$_SESSION["dict"]."' ;";
+	$db->query($query) or die("0.51 ".$lang["update"][90].$db->error());
 
 optimize_tables();
 
