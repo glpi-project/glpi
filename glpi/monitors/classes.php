@@ -157,6 +157,17 @@ function getEmpty () {
 				$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".MONITOR_TYPE."')";
 				$result = $db->query($query);
 
+				$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='".MONITOR_TYPE."')";
+				$result = $db->query($query);
+				$number = $db->numrows($result);
+				$i=0;
+				while ($i < $number) {
+			  		$job = $db->result($result,$i,"ID");
+			    		$query = "DELETE FROM glpi_followups WHERE (tracking = '$job')";
+			      		$db->query($query);
+					$i++;
+				}
+
 				$query = "DELETE FROM glpi_tracking WHERE (computer = '$ID' AND device_type='".MONITOR_TYPE."')";
 				$result = $db->query($query);
 				

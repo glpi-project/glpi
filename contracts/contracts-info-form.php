@@ -98,7 +98,7 @@ else if (isset($_POST["addenterprise"])){
 
 	addEnterpriseContract($_POST["conID"],$_POST["entID"]);
 	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." associate enterprise.");
-	header("Location: ".$cfg_install["root"]."/contracts/contracts-info-form.php?ID=".$_POST["conID"]);
+	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deleteenterprise"])){
 	checkAuthentication("admin");

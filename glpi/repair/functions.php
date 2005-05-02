@@ -155,25 +155,28 @@ function showRepairItemList($target,$username,$field,$phrasetype,$contains,$sort
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_repair_item.ID") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_repair_item.ID&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_repair_item.ID&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["repair"][4]."</a></th>";
 
 			// Location			
 			echo "<th>";
 			if ($sort=="glpi_repair_item.device_type") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_repair_item.device_type&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_repair_item.device_type&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["repair"][6]."</a></th>";
 
 			// Type
 			echo "<th>";
 			if ($sort=="glpi_repair_item.id_device") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_repair_item.id_device&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_repair_item.id_device&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["repair"][1]."</a></th>";
 			echo "<th>&nbsp;</th>";
 			echo "</tr>";

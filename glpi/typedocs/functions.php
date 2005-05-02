@@ -158,41 +158,46 @@ function showTypedocList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_type_docs.name") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_docs.name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_docs.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["document"][1]."</a></th>";
 
 			// Extension
 			echo "<th>";
 			if ($sort=="glpi_type_docs.ext") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_docs.ext&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_docs.ext&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["document"][9]."</a></th>";
 			
 			// icon			
 			echo "<th>";
 			if ($sort=="glpi_type_docs.icon") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_docs.icon&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_docs.icon&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["document"][10]."</a></th>";
 
 			// MIME
 			echo "<th>";
 			if ($sort=="glpi_type_docs.mime") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_docs.mime&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_docs.mime&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["document"][4]."</a></th>";
 
 			// Upload		
 			echo "<th>";
 			if ($sort=="glpi_type_docs.upload") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_docs.upload&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_docs.upload&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["document"][15]."</a></th>";
 
 			for ($i=0; $i < $numrows_limit; $i++) {

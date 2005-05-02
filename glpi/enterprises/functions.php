@@ -44,6 +44,35 @@ function titleEnterprise(){
          echo "</td></tr></table></div>";
 }
 
+function showEnterpriseOnglets($target,$withtemplate,$actif){
+	global $lang;
+	
+	echo "<div id='barre_onglets'><ul id='onglet'>";
+	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&onglet=1'>".$lang["title"][26]."</a></li>";
+	echo "<li "; if ($actif=="4") {echo "class='actif'";} echo "><a href='$target&onglet=4'>".$lang["Menu"][26]."</a></li>";
+	echo "<li "; if ($actif=="5") {echo "class='actif'";} echo "><a href='$target&onglet=5'>".$lang["title"][25]."</a></li>";
+	if(empty($withtemplate)){
+	echo "<li "; if ($actif=="6") {echo "class='actif'";} echo "><a href='$target&onglet=6'>".$lang["title"][28]."</a></li>";
+	echo "<li class='invisible'>&nbsp;</li>";
+	echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&onglet=-1'>".$lang["title"][29]."</a></li>";
+	}
+	
+	echo "<li class='invisible'>&nbsp;</li>";
+	
+	if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
+	$ID=$ereg[1];
+	$next=getNextItem("glpi_enterprises",$ID);
+	$prev=getPreviousItem("glpi_enterprises",$ID);
+	$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
+	if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><</a></li>";
+	if ($next>0) echo "<li><a href='$cleantarget?ID=$next'>></a></li>";
+	}
+
+	echo "</ul></div>";
+	
+}
+
+
 
 function searchFormEnterprise($field="",$phrasetype= "",$contains="",$sort= "",$deleted="") {
 	// Print Search Form
@@ -155,7 +184,7 @@ function showEnterpriseList($target,$username,$field,$phrasetype,$contains,$sort
 	
 	$query = "SELECT glpi_enterprises.ID as ID,glpi_dropdown_enttype.name as TYPE FROM glpi_enterprises LEFT JOIN glpi_dropdown_enttype ON glpi_dropdown_enttype.ID = glpi_enterprises.type";
 	
-	$query.= " WHERE $where AND deleted='$deleted'  ORDER BY $sort";
+	$query.= " WHERE $where AND deleted='$deleted'  ORDER BY $sort $order";
 //	echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
@@ -178,49 +207,55 @@ function showEnterpriseList($target,$username,$field,$phrasetype,$contains,$sort
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_enterprises.name") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][27]."</a></th>";
 
 						// Name
 			echo "<th>";
 			if ($sort=="glpi_dropdown_enttype.name") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_enttype.name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_enttype.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][79]."</a></th>";
 
 			// Address			
 			echo "<th>";
 			if ($sort=="glpi_enterprises.address") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.address&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.address&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][44]."</a></th>";
 
 			// Website
 			echo "<th>";
 			if ($sort=="glpi_enterprises.website") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.website&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.website&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][45]."</a></th>";
 
 			// PhoneNumber		
 			echo "<th>";
 			if ($sort=="glpi_enterprises.phonenumber") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.phonenumber&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.phonenumber&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][29]."</a></th>";
 
 			// Fax		
 			echo "<th>";
-			if ($sort=="glpi_enterprises.phonenumber") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+			if ($sort=="glpi_enterprises.fax") {
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.fax&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.fax&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][30]."</a></th>";
 
 			echo "</tr>";
@@ -272,8 +307,8 @@ function showEnterpriseForm ($target,$ID) {
 	$ent = new Enterprise;
 
 	echo "<form method='post' action=\"$target\"><div align='center'>";
-	echo "<table class='tab_cadre'>";
-	echo "<tr><th colspan='3'><b>";
+	echo "<table class='tab_cadre' width='700'>";
+	echo "<tr><th colspan='4'><b>";
 	if (!$ID) {
 		echo $lang["financial"][25].":";
 		$ent->getEmpty();
@@ -284,35 +319,28 @@ function showEnterpriseForm ($target,$ID) {
 	echo "</b></th></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][27].":		</td>";
-	echo "<td colspan='2'><input type='text' name='name' value=\"".$ent->fields["name"]."\" size='25'></td>";
-	echo "</tr>";
+	echo "<td><input type='text' name='name' value=\"".$ent->fields["name"]."\" size='25'></td>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["financial"][79].":		</td><td colspan='2'>";
+	echo "<td>".$lang["financial"][79].":		</td><td colspan='2'>";
 	dropdownValue("glpi_dropdown_enttype", "type", $ent->fields["type"]);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["financial"][44].":		</td>";
-	echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='address' >".$ent->fields["address"]."</textarea>";
-	echo "</tr>";
-
+	
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][29].":		</td>";
-	echo "<td colspan='2'><input type='text' name='phonenumber' value=\"".$ent->fields["phonenumber"]."\" size='25'></td>";
-	echo "</tr>";
+	echo "<td><input type='text' name='phonenumber' value=\"".$ent->fields["phonenumber"]."\" size='25'></td>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["financial"][30].":		</td>";
-	echo "<td colspan='2'><input type='text' name='fax' value=\"".$ent->fields["fax"]."\" size='25'></td>";
+	echo "<td>".$lang["financial"][30].":		</td>";
+	echo "<td><input type='text' name='fax' value=\"".$ent->fields["fax"]."\" size='25'></td>";
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][45].":		</td>";
-	echo "<td colspan='2'><input type='text' name='website' value=\"".$ent->fields["website"]."\" size='25'>";
-	if (!empty($ent->fields['website'])){
-		
-		
-	}
+	echo "<td><input type='text' name='website' value=\"".$ent->fields["website"]."\" size='25'>";
+	echo "</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
 
-	echo "</td></tr>";
+	echo "<tr class='tab_bg_1'><td >".$lang["financial"][44].":		</td>";
+	echo "<td align='center'><textarea cols='35' rows='4' name='address' >".$ent->fields["address"]."</textarea>";
 
-	echo "<tr class='tab_bg_1'><td valign='top'>";
+	echo "<td valign='top'>";
 	echo $lang["financial"][12].":	</td>";
 	echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$ent->fields["comments"]."</textarea>";
 	echo "</td></tr>";
@@ -335,7 +363,7 @@ function showEnterpriseForm ($target,$ID) {
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
 		echo "</td>\n\n";
-		echo "<td class='tab_bg_2' valign='top'>\n";
+		echo "<td class='tab_bg_2'>&nbsp;</td><td class='tab_bg_2' valign='top'>\n";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		if ($ent->fields["deleted"]=='N')
 		echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
@@ -350,7 +378,8 @@ function showEnterpriseForm ($target,$ID) {
 
 		echo "</table></div>";
 		echo "</form>";
-		showAssociatedContact($ID);
+		
+		return true;
 	}
 
 }

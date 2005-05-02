@@ -106,7 +106,7 @@ if(isset($_POST["send"]))
 		$Computer = $ligne['name'];
 		$s1 = $ligne['serial'];
 		$s2 = $ligne['otherserial'];
-		echo " <tr class='tab_find' onClick=\"fillidfield(1,".$Comp_num.")\">";
+		echo " <tr class='tab_find' onClick=\"fillidfield(".COMPUTER_TYPE.",".$Comp_num.")\">";
 		echo "<td width='25%' align='center'><b> $Contact </b></td>";
 		echo "<td width='25%' align='center'><b> ".$lang["help"][25]."</b></td>";
 		echo "<td width='25%' align='center'><b> $Computer </b></td>";
@@ -129,7 +129,7 @@ if(isset($_POST["send"]))
 		$Computer = $ligne['name'];
 		$s1 = $ligne['serial'];
 		$s2 = $ligne['otherserial'];
-		echo " <tr class='tab_find' onClick=\"fillidfield(2,".$Comp_num.")\">";
+		echo " <tr class='tab_find' onClick=\"fillidfield(".NETWORKING_TYPE.",".$Comp_num.")\">";
 		echo "<td width='25%' align='center'><b> $Contact </b></td>";
 		echo "<td width='25%' align='center'><b> ".$lang["help"][26]."</b></td>";
 		echo "<td width='25%' align='center'><b> $Computer </b></td>";
@@ -152,7 +152,7 @@ if(isset($_POST["send"]))
 		$Computer = $ligne['name'];
 		$s1 = $ligne['serial'];
 		$s2 = $ligne['otherserial'];
-		echo " <tr class='tab_find' onClick=\"fillidfield(3,".$Comp_num.")\">";
+		echo " <tr class='tab_find' onClick=\"fillidfield(".PRINTER_TYPE.",".$Comp_num.")\">";
 		echo "<td width='25%' align='center'><b> $Contact </b></td>";
 		echo "<td width='25%' align='center'><b> ".$lang["help"][27]."</b></td>";
 		echo "<td width='25%' align='center'><b> $Computer </b></td>";
@@ -175,7 +175,7 @@ if(isset($_POST["send"]))
 		$Computer = $ligne['name'];
 		$s1 = $ligne['serial'];
 		$s2 = $ligne['otherserial'];
-		echo " <tr class='tab_find' onClick=\"fillidfield(4,".$Comp_num.")\">";
+		echo " <tr class='tab_find' onClick=\"fillidfield(".MONITOR_TYPE.",".$Comp_num.")\">";
 		echo "<td width='25%' align='center'><b> $Contact </b></td>";
 		echo "<td width='25%' align='center'><b> ".$lang["help"][28]."</b></td>";
 		echo "<td width='25%' align='center'><b> $Computer </b></td>";
@@ -198,7 +198,7 @@ if(isset($_POST["send"]))
 		$Computer = $ligne['name'];
 		$s1 = $ligne['serial'];
 		$s2 = $ligne['otherserial'];
-		echo " <tr class='tab_find' onClick=\"fillidfield(5,".$Comp_num.")\">";
+		echo " <tr class='tab_find' onClick=\"fillidfield(".PERIPHERAL_TYPE.",".$Comp_num.")\">";
 		echo "<td width='25%' align='center'><b> $Contact </b></td>";
 		echo "<td width='25%' align='center'><b> ".$lang["help"][29]."</b></td>";
 		echo "<td width='25%' align='center'><b> $Computer </b></td>";
@@ -218,9 +218,27 @@ if(isset($_POST["send"]))
 	{
 		$Comp_num = $ligne['ID'];
 		$Computer = $ligne['name'];
-		echo " <tr class='tab_find' onClick=\"fillidfield(6,".$Comp_num.")\">";
+		echo " <tr class='tab_find' onClick=\"fillidfield(".SOFTWARE_TYPE.",".$Comp_num.")\">";
 		echo "<td width='25%' align='center'>&nbsp;</td>";
 		echo "<td width='25%' align='center'><b>".$lang["help"][31]."</b></td>";
+		echo "<td width='25%' align='center'><b> $Computer </b></td>";
+		echo "<td  width='25%' align='center'>";
+		echo "<b> $Comp_num </b></td>";
+		echo "<td width='25%' align='center'>";
+		echo "&nbsp;/&nbsp;";
+		echo "</td>";
+		echo "</tr>";
+	}
+
+	$query = "select name,ID from glpi_enterprises where (name like '%".$_POST["NomContact"]."%' )";
+	$result = $db->query($query);
+	while($ligne = $db->fetch_array($result))
+	{
+		$Comp_num = $ligne['ID'];
+		$Computer = $ligne['name'];
+		echo " <tr class='tab_find' onClick=\"fillidfield(".ENTERPRISE_TYPE.",".$Comp_num.")\">";
+		echo "<td width='25%' align='center'>&nbsp;</td>";
+		echo "<td width='25%' align='center'><b>".$lang["help"][34]."</b></td>";
 		echo "<td width='25%' align='center'><b> $Computer </b></td>";
 		echo "<td  width='25%' align='center'>";
 		echo "<b> $Comp_num </b></td>";

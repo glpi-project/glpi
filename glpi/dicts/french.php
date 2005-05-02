@@ -597,6 +597,7 @@ $lang["reports"][55]	="Logiciels";
 $lang["reports"][56]     = "Logiciels sous contrat";
 $lang["reports"][57]     = "Liste des mat&eacute;riels";
 $lang["reports"][58]     = "Rapport des mat&eacute;riels par ann&eacute;es";
+$lang["reports"][59]     = "Voir les suivis";
 
 // LDAP
 $lang["ldap"][0]	= "recherche";
@@ -796,6 +797,7 @@ $lang["help"][30] 	= "G&eacute;n&eacute;ral";
 $lang["help"][31] 	= "Logiciel";
 $lang["help"][32]	= "Vous n'avez pas spécifi&eacute; de num&eacute;ro de mat&eacute;riel pour une cat&eacute;gorie de mat&eacute;riel pr&eacute;cis.";
 $lang["help"][33]	= "Si vous ne trouvez pas votre mat&eacute;riel, vous pouvez utiliser le type G&eacute;n&eacute;ral";
+$lang["help"][34] 	= "Entreprise";
 
   // Mois
   $lang["calendarM"][0] = "Janvier" ;
@@ -1328,6 +1330,8 @@ $lang["document"][29]	= "Echec de la cr&eacute;ation du r&eacute;pertoire";
 $lang["document"][30]	= "V&eacute;rifiez que vous avez les droits";
 $lang["document"][31]	= "R&eacute;pertoire de stockage des documents inexistant : ";
 $lang["document"][32]	= "Type de fichier non autoris&eacute;";
+$lang["document"][33]	= "Lien Web";
+
 
 $lang["repair"][0]	= "R&eacute;paration";
 $lang["repair"][1] 	= "Mat&eacute;riel en r&eacute;paration";

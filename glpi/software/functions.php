@@ -235,34 +235,38 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_software.name") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_software.name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_software.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["software"][2]."</a></th>";
 
 			
 			// Manufacturer		
 			echo "<th>";
 			if ($sort=="glpi_enterprises.name") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.name&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["common"][5]."</a></th>";
 			
 			// Version			
 			echo "<th>";
 			if ($sort=="glpi_software.version") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_software.version&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_software.version&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["software"][5]."</a></th>";
 
 			// Platform		
 			echo "<th>";
 			if ($sort=="glpi_dropdown_os.name") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_os.name&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_os.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["software"][3]."</a></th>";
 
 			// Licenses
@@ -282,7 +286,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo $sw->fields["name"]." (".$sw->fields["ID"].")";
 				echo "</a></strong></td>";
 				echo "<td>". getDropdownName("glpi_enterprises",$sw->fields["FK_glpi_enterprise"]) ."</td>";
-				echo "<td width='5%' align='center'>".$sw->fields["version"]."</td>";
+				echo "<td align='center'>".$sw->fields["version"]."</td>";
 				echo "<td align='center'>". getDropdownName("glpi_dropdown_os",$sw->fields["platform"]) ."</td>";
 				echo "<td>";
 					countInstallations($sw->fields["ID"]);

@@ -201,66 +201,74 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Type
 			echo "<th>";
 			if ($sort=="glpi_contracts.contract_type") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.contract_type&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.contract_type&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][37]."</a></th>";
 
 			
 			// nom
 			echo "<th>";
 			if ($sort=="glpi_contracts.name") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.name&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][27]."</a></th>";
 			
 			// num
 			echo "<th>";
 			if ($sort=="glpi_contracts.num") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.num&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.num&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][4]."</a></th>";
 
 			// Begin date
 			echo "<th>";
 			if ($sort=="glpi_contracts.begin_date") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.begin_date&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.begin_date&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][7]."</a></th>";
 
 			// Duration		
 			echo "<th>";
 			if ($sort=="glpi_contracts.duration") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.duration&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.duration&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][8]."</a></th>";
 
 			// notice
 			echo "<th>";
 			if ($sort=="glpi_contracts.notice") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.notice&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.notice&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][10]."</a></th>";
 
 			// Cost
 			echo "<th>";
 			if ($sort=="glpi_contracts.cost") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.cost&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.cost&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][5]."</a></th>";
 
 			// Bill type
 			echo "<th>";
 			if ($sort=="glpi_contracts.bill_type") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.bill_type&order=DESC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.bill_type&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][58]."</a></th>";
 
 			echo "</tr>";
@@ -592,7 +600,7 @@ function showDeviceContract($instID,$search='') {
 	}
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 	echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
-		dropdownAllItems("item",$search);
+		dropdownAllItems("item",0,$search);
 	echo "&nbsp;<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
 	echo "</form>";
 	echo "</td>";
@@ -990,7 +998,6 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 
     $db = new DB;
 	$query = "SELECT * FROM glpi_contract_device WHERE glpi_contract_device.FK_device = '$ID' AND glpi_contract_device.device_type = '$device_type' ";
-	
 
 	$result = $db->query($query);
 	$number = $db->numrows($result);
@@ -1044,5 +1051,79 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	echo "</form>";
 	
 }
+
+
+/**
+* Print an HTML array with contracts associated to a device
+*
+* Print an HTML array with contracts associated to the device identified by $ID from device type $device_type 
+*
+*@param $device_type string : HTML select name
+*@param $ID integer device ID
+*@param $withtemplate='' not used (to be deleted)
+*
+*@return Nothing (display)
+*
+**/
+function showContractAssociatedEnterprise($ID){
+
+	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
+
+    $db = new DB;
+	$query = "SELECT * FROM glpi_contract_enterprise WHERE glpi_contract_enterprise.FK_enterprise = '$ID'";
+
+	$result = $db->query($query);
+	$number = $db->numrows($result);
+	$i = 0;
+	
+    echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
+	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
+	echo "<tr><th colspan='7'>".$lang["financial"][66].":</th></tr>";
+	echo "<tr><th>".$lang['financial'][27]."</th>";
+	echo "<th>".$lang['financial'][4]."</th>";
+	echo "<th>".$lang['financial'][6]."</th>";
+	echo "<th>".$lang['financial'][26]."</th>";
+	echo "<th>".$lang['financial'][7]."</th>";	
+	echo "<th>".$lang['financial'][8]."</th>";	
+	echo "<th>&nbsp;</th>";
+	echo "</tr>";
+
+	while ($i < $number) {
+		$cID=$db->result($result, $i, "FK_contract");
+		$assocID=$db->result($result, $i, "ID");
+		$con=new Contract;
+		$con->getFromDB($cID);
+	echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
+	echo "<td align='center'><a href='".$HTMLRel."contracts/contracts-info-form.php?ID=$cID'><b>".$con->fields["name"]." (".$con->fields["ID"].")</b></a></td>";
+	echo "<td align='center'>".$con->fields["num"]."</td>";
+	echo "<td align='center'>".getContractTypeName($con->fields["contract_type"])."</td>";
+	echo "<td align='center'>".getContractEnterprises($cID)."</td>";	
+	echo "<td align='center'>".$con->fields["begin_date"]."</td>";
+	echo "<td align='center'>".$con->fields["duration"]." ".$lang["financial"][57];
+	if ($con->fields["begin_date"]!=''&&$con->fields["begin_date"]!="0000-00-00") echo " -> ".getWarrantyExpir($con->fields["begin_date"],$con->fields["duration"]);
+	echo "</td>";
+
+	echo "<td align='center' class='tab_bg_2'><a href='".$HTMLRel."contracts/contracts-info-form.php?deleteenterprise=deleteenterprise&ID=$assocID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+	$i++;
+	}
+	$q="SELECT * FROM glpi_contracts WHERE deleted='N'";
+	$result = $db->query($q);
+	$nb = $db->numrows($result);
+	
+	if ($nb>0){
+		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+		echo "<div class='software-instal'><input type='hidden' name='entID' value='$ID'>";
+		dropdownContracts("conID");
+		echo "</div></td><td align='center'>";
+		echo "<input type='submit' name='addenterprise' value=\"".$lang["buttons"][8]."\" class='submit'>";
+		echo "</td>";
+		
+		echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+	}
+	echo "</table></div>"    ;
+	echo "</form>";
+	
+}
+
 
 ?>

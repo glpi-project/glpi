@@ -163,41 +163,46 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_reservation_item.ID") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.ID&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.ID&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["reservation"][2]."</a></th>";
 
 			// Device_Type			
 			echo "<th>";
 			if ($sort=="glpi_reservation_item.device_type") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.device_type&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.device_type&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["reservation"][3]."</a></th>";
 
 			// device
 			echo "<th>";
 			if ($sort=="glpi_reservation_item.id_device") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.id_device&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.id_device&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["reservation"][4]."</a></th>";
 
 			// Lieu
 			echo "<th>";
 //			if ($sort=="glpi_reservation_item.id_device") {
-//				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+//				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+//				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 //			}
-//			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.id_device&order=ASC&start=$start\">";
+//			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.id_device&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["computers"][10]."</th>";
 
 			// Comments
 			echo "<th>";
 			if ($sort=="glpi_reservation_item.comments") {
-				echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.comments&order=ASC&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.comments&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["reservation"][23]."</a></th>";
 			
 			
