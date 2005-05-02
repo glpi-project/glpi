@@ -1394,7 +1394,10 @@ function showFormConfigGen($target){
 	echo "<td bgcolor='".$db->result($result,0,"priority_5")."'>5:<input type=\"text\" name=\"priority[5]\" size='7' value=\"".$db->result($result,0,"priority_5")."\"></td>";
 	echo "</tr></table>";
 	echo "</td></tr>";
-	
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][115]."</td><td><select name='cartridges_alarm'>";
+	for ($i=1;$i<=100;$i++)
+		echo "<option value='$i' ".($i==$db->result($result,0,"cartridges_alarm")?" selected ":"").">$i</option>";
+	echo "</select></td></tr>";
 	
 		echo "</table>&nbsp;</div>";	
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_confgen\" class=\"submit\" value=\"".$lang["buttons"][7]."\" ></p>";
@@ -1633,7 +1636,7 @@ function showFormMailing($target) {
 
 }
 
-function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events,$jobs_at_login,$list_limit,$cut, $permit_helpdesk,$default_language,$priority,$date_fiscale) {
+function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events,$jobs_at_login,$list_limit,$cut, $permit_helpdesk,$default_language,$priority,$date_fiscale,$cartridges_alarm) {
 	
 	$db = new DB;
 	
@@ -1641,7 +1644,7 @@ function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events
 		$query.= "event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', default_language = '". $default_language ."',";
 		$query.= "expire_events = '". $expire_events ."', jobs_at_login = '". $jobs_at_login ."' , list_limit = '". $list_limit ."' , cut = '". $cut ."', permit_helpdesk='". $permit_helpdesk ."',";
 		$query.= "priority_1 = '". $priority[1] ."', priority_2 = '". $priority[2] ."', priority_3 = '". $priority[3] ."', priority_4 = '". $priority[4] ."', priority_5 = '". $priority[5] ."', ";
-		$query.= " date_fiscale = '". $date_fiscale ."' where ID = '1' ";
+		$query.= " date_fiscale = '". $date_fiscale ."', cartridges_alarm='".$cartridges_alarm."' where ID = '1' ";
 		$db->query($query);
 	
 }

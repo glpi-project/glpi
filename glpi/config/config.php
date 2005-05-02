@@ -277,6 +277,10 @@ $cfg_features["list_limit"]		= $db->result($result,0,"list_limit");
 //utilisation du helpdesk.html ou pas
 $cfg_features["permit_helpdesk"] = $db->result($result,0,"permit_helpdesk");
 
+
+//show alarm when number of unused cartridges if under the threshold 
+$cfg_features["cartridges_alarm"] = $db->result($result,0,"cartridges_alarm");
+
 // version number
 // numero de version
 
