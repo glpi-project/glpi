@@ -123,9 +123,12 @@ else
 	commonHeader($lang["title"][20],$_SERVER["PHP_SELF"]);
 	
 	showContractForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["search"]);
-	showDocumentAssociated(CONTRACT_TYPE,$tab["ID"],$tab["search"]);
-	showEnterpriseContract($tab["ID"]);
-	showDeviceContract($tab["ID"],$tab["search"]);
+	
+	if (!empty($tab["ID"])){
+		showDocumentAssociated(CONTRACT_TYPE,$tab["ID"],$tab["search"]);
+		showEnterpriseContract($tab["ID"]);
+		showDeviceContract($tab["ID"],$tab["search"]);
+	}
 	
 	
 	commonFooter();
