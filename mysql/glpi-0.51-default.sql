@@ -739,8 +739,6 @@ CREATE TABLE glpi_dropdown_state (
    PRIMARY KEY (ID)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_dropdown_state VALUES ('1','R&eacute;paration');
-
 ### Dump table glpi_dropdown_tracking_category
 
 DROP TABLE IF EXISTS glpi_dropdown_tracking_category;
