@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-05-01 22:55
+#GLPI Dump database on 2005-05-03 07:01
 
 ### Dump table glpi_cartridges
 
@@ -210,10 +210,11 @@ CREATE TABLE glpi_config (
     priority_4 varchar(200) DEFAULT '#ffbfbf' NOT NULL,
     priority_5 varchar(200) DEFAULT '#ffadad' NOT NULL,
     date_fiscale date DEFAULT '2005-12-31' NOT NULL,
+    cartridges_alarm int(11) DEFAULT '10' NOT NULL,
    PRIMARY KEY (ID)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15','0.51','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31');
+INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15',' 0.51','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10');
 
 ### Dump table glpi_connect_wire
 
@@ -789,7 +790,7 @@ INSERT INTO glpi_event_log VALUES ('376','0','users','2005-04-20 09:19:04','setu
 INSERT INTO glpi_event_log VALUES ('377','-1','system','2005-04-20 09:19:10','login','3','post-only logged in.');
 INSERT INTO glpi_event_log VALUES ('378','-1','system','2005-04-20 09:19:28','login','3','glpi logged in.');
 INSERT INTO glpi_event_log VALUES ('379','2','Peripherals','2005-04-20 09:20:27','inventory','4','glpi purge item.');
-INSERT INTO glpi_event_log VALUES ('380','-1','system','2005-05-01 22:55:27','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('380','-1','system','2005-05-03 07:00:55','login','3','glpi logged in.');
 
 ### Dump table glpi_followups
 
