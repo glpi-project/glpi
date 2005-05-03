@@ -236,8 +236,10 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			// Name
 			echo "<th>";
 			if ($sort=="mon.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
+\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
+\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=mon.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["monitors"][5]."</a></th>";
@@ -245,8 +247,10 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			// Manufacturer		
 			echo "<th>";
 			if ($sort=="glpi_enterprises.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
+\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
+\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["common"][5]."</a></th>";
@@ -254,8 +258,10 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			// Location			
 			echo "<th>";
 			if ($sort=="glpi_dropdown_locations.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
+\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
+\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["monitors"][6]."</a></th>";
@@ -263,8 +269,10 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			// Type
 			echo "<th>";
 			if ($sort=="glpi_type_monitors.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
+\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
+\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_monitors.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["monitors"][9]."</a></th>";
@@ -272,8 +280,10 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			// Last modified		
 			echo "<th>";
 			if ($sort=="mon.date_mod") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
+\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
+\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=mon.date_mod&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["monitors"][16]."</a></th>";
@@ -281,8 +291,10 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			// Contact person
 			echo "<th>";
 			if ($sort=="mon.contact") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
+\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
+\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=mon.contact&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["monitors"][8]."</a></th>";
