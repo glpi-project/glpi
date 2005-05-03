@@ -546,8 +546,10 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		echo "</td>";
 		
 		if (!$template){
-		echo "<td>".$lang["repair"][0]."&nbsp;:</td><td><b>";
-		showRepairForm(COMPUTER_TYPE,$ID);
+		echo "<td>".$lang["state"][0]."&nbsp;:</td><td><b>";
+		$si=new StateItem();
+		$si->getfromDB(COMPUTER_TYPE,$comp->fields["ID"]);
+		dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
 		echo "</b></td>";
 		} else echo "<td>&nbsp;</td><td>&nbsp;</td>";
 		
@@ -745,7 +747,9 @@ function updateComputer($input) {
 			$x++;
 		}
 	}
+	updateState(COMPUTER_TYPE,$input["ID"],$input["state"]);
 	$comp->updateInDB($updates);
+	
 }
 /**
 * Add a computer in the database.

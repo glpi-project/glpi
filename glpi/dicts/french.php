@@ -179,7 +179,7 @@ $lang["Menu"][24]	="Infos commerciales";
 $lang["Menu"][25]	="Contrats";
 $lang["Menu"][26]	="Gestion";
 $lang["Menu"][27]	="Documents";
-$lang["Menu"][28]	="R&eacute;paration";
+$lang["Menu"][28]	="Etats";
 
 //Donn&eacute;es
 
@@ -694,7 +694,7 @@ $lang["setup"][79] = "Cat&eacute;gorie des suivis";
 $lang["setup"][80] = "Type de Tiers";
 $lang["setup"][81] = "Rubriques des documents";
 $lang["setup"][82] = "Type de Contacts";
-
+$lang["setup"][83] = "Etat des mat&eacute;riels";
 
 $lang["setup"][100]="Configuration g&eacute;n&eacute;rale";
 $lang["setup"][101]="Chemin d'installation";
@@ -1342,4 +1342,14 @@ $lang["repair"][4]	= "ID";
 $lang["repair"][5]	= "";
 $lang["repair"][6]	= "Type de mat&eacute;riel";
 $lang["repair"][7]	= "Pas de mat&eacute;riel trouv&eacute;";
+
+$lang["state"][0]	= "Etat";
+$lang["state"][1]	= "Etats des mat&eacute;riels";
+$lang["state"][2]	= "Sortir le mat&eacute;riel de son état";
+$lang["state"][4]	= "ID";
+$lang["state"][5]	= "";
+$lang["state"][6]	= "Type de mat&eacute;riel";
+$lang["state"][7]	= "Pas de mat&eacute;riel trouv&eacute;";
+
+
 ?>

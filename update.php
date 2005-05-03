@@ -2323,9 +2323,30 @@ $db->query($query) or die("0.51 add entries to dropdown_contact_type ".$lang["up
 
 if(!FieldExists("glpi_config","cartridges_alarm")) {
 	$query = "ALTER TABLE `glpi_config` ADD `cartridges_alarm` int(11) NOT NULL default '10'";
-	$db->query($query) or die("0.51 add field cartrodges_alarm ".$lang["update"][90].$db->error());
+	$db->query($query) or die("0.51 add field cartridges_alarm ".$lang["update"][90].$db->error());
 }
 
+if(!TableExists("glpi_state_item")) {
+
+	$query = "ALTER TABLE `glpi_repair_item` RENAME `glpi_state_item`;";
+	$db->query($query) or die("0.51 alter glpi_state_item table name ".$lang["update"][90].$db->error());
+
+	$query = "ALTER TABLE `glpi_state_item` ADD `state` INT DEFAULT '1';";
+	$db->query($query) or die("0.51 add state field ".$lang["update"][90].$db->error());
+}
+
+if(!TableExists("glpi_dropdown_state")) {
+	$query = "CREATE TABLE glpi_dropdown_state (
+  ID int(11) NOT NULL auto_increment,
+  name varchar(255) default NULL,
+  PRIMARY KEY  (ID)
+) TYPE=MyISAM;
+";
+	$db->query($query) or die("0.51 add state field ".$lang["update"][90].$db->error());
+
+	$query="INSERT INTO `glpi_dropdown_state` ( `ID` , `name` ) VALUES ('', '".addslashes(unhtmlentities($lang["repair"][0]))."');";
+	$db->query($query) or die("0.51 add state repair item ".$lang["update"][90].$db->error());	
+}
 
 // Update version number and default langage ---- LEAVE AT THE END
 	$query = "UPDATE `glpi_config` SET `version` = ' 0.51', default_language='".$_SESSION["dict"]."' ;";

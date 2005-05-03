@@ -45,7 +45,7 @@ include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_cartridges.php");
 include ($phproot . "/glpi/includes_financial.php");
 include ($phproot . "/glpi/includes_documents.php");
-include ($phproot . "/glpi/includes_repair.php");
+include ($phproot . "/glpi/includes_state.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;

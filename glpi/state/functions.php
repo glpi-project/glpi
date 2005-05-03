@@ -33,34 +33,34 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-// FUNCTIONS Repair
+// FUNCTIONS State
 
 
-function titleRepair(){
+function titleState(){
            GLOBAL  $lang,$HTMLRel;
            
               
 	     
 	     echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/maintenance.png\" alt='' title=''></td><td><b><span class='icon_nav'>".$lang["repair"][1]."</span>";
+                echo "<img src=\"".$HTMLRel."pics/maintenance.png\" alt='' title=''></td><td><b><span class='icon_nav'>".$lang["state"][1]."</span>";
 		 echo "</b></td></tr></table>&nbsp;</div>";
 	   
 	   
 	   
 }
 
-function searchFormRepairItem($field="",$phrasetype= "",$contains="",$sort= ""){
+function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= ""){
 	// Print Search Form
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
 
-	$option["glpi_repair_item.ID"]				= $lang["repair"][4];
+	$option["glpi_state_item.ID"]				= $lang["state"][4];
 //	$option["glpi_reservation_item.device_type"]			= $lang["reservation"][3];
 //	$option["glpi_dropdown_locations.name"]			= $lang["software"][4];
 //	$option["glpi_software.version"]			= $lang["software"][5];
-//      $option["glpi_repair.comments"]			= $lang["repair"][5];
+//      $option["glpi_state.comments"]			= $lang["state"][5];
 	
-	echo "<form method=get action=\"".$cfg_install["root"]."/repair/index.php\">";
+	echo "<form method=get action=\"".$cfg_install["root"]."/state/index.php\">";
 	echo "<center><table class='tab_cadre' width='750'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
@@ -101,7 +101,7 @@ function searchFormRepairItem($field="",$phrasetype= "",$contains="",$sort= ""){
 	echo "</td></tr></table></center></form>";
 }
 
-function showRepairItemList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start){
+function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start){
 	// Lists Reservation Items
 
 	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
@@ -132,9 +132,10 @@ function showRepairItemList($target,$username,$field,$phrasetype,$contains,$sort
 		$order = "ASC";
 	}
 	
-	$query = "select glpi_repair_item.ID from glpi_repair_item ";
+	$query = "select glpi_state_item.device_type as d_type, glpi_state_item.id_device as id_device from glpi_state_item ";
+	$query.= " LEFT JOIN glpi_dropdown_state ON (glpi_dropdown_state.ID = glpi_state_item.state) ";
 	$query .= " where  $where ORDER BY $sort $order";
-//	echo $query;
+
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows =  $db->numrows($result);
@@ -154,37 +155,48 @@ function showRepairItemList($target,$username,$field,$phrasetype,$contains,$sort
 			echo "<div align='center'><table  class='tab_cadre'><tr>";
 			// Name
 			echo "<th>";
-			if ($sort=="glpi_repair_item.ID") {
+			if ($sort=="glpi_state_item.ID") {
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_repair_item.ID&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
-			echo $lang["repair"][4]."</a></th>";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_state_item.ID&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo $lang["state"][4]."</a></th>";
 
-			// Location			
+			// Type			
 			echo "<th>";
-			if ($sort=="glpi_repair_item.device_type") {
+			if ($sort=="glpi_state_item.device_type") {
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_repair_item.device_type&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
-			echo $lang["repair"][6]."</a></th>";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_state_item.device_type&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo $lang["state"][6]."</a></th>";
 
-			// Type
+			// Item
 			echo "<th>";
-			if ($sort=="glpi_repair_item.id_device") {
+			if ($sort=="glpi_state_item.id_device") {
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_repair_item.id_device&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
-			echo $lang["repair"][1]."</a></th>";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_state_item.id_device&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo $lang["state"][1]."</a></th>";
+
+			// State			
+			echo "<th>";
+			if ($sort=="glpi_dropdown_state.name") {
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
+			}
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_state.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo $lang["state"][0]."</a></th>";
+
 			echo "<th>&nbsp;</th>";
 			echo "</tr>";
 
 			for ($i=0; $i < $numrows_limit; $i++) {
-				$ID = $db->result($result_limit, $i, "ID");
-				$ri = new RepairItem;
-				$ri->getfromDB($ID);
+				$id_device = $db->result($result_limit, $i, "id_device");
+				$type = $db->result($result_limit, $i, "d_type");
+				$ri = new StateItem;
+				$ri->getfromDB($type,$id_device);
 				echo "<tr class='tab_bg_2".(isset($ri->obj->fields["deleted"])&&$ri->obj->fields["deleted"]=='Y'?"_2":"")."' align='center'>";
 				echo "<td>";
 				echo $ri->fields["ID"];
@@ -192,8 +204,9 @@ function showRepairItemList($target,$username,$field,$phrasetype,$contains,$sort
 				
 				echo "<td>". $ri->getType()."</td>";
 				echo "<td><b>". $ri->getLink() ."</b></td>";
+				echo "<td><b>". getDropdownName("glpi_dropdown_state",$ri->fields["state"]) ."</b></td>";
 				echo "<td>";
-				showRepairForm($ri->fields["device_type"],$ri->fields["id_device"]);
+				echo "<a href='".$HTMLRel."state/index.php?deletestate=deletestate&device_id=$id_device&device_type=$type'>".$lang["state"][2]."</a>";
 				echo "</td>";
 
 				echo "</tr>";
@@ -207,58 +220,28 @@ function showRepairItemList($target,$username,$field,$phrasetype,$contains,$sort
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<div align='center'><b>".$lang["repair"][7]."</b></div>";
+			echo "<div align='center'><b>".$lang["state"][7]."</b></div>";
 		}
 	}
 	
 }
 
+function updateState($device_type,$id_device, $state){
+$si=new StateItem;
 
-function addRepairItem($input){
-// Add Repair Item, nasty hack until we get PHP4-array-functions
-
-	$ri = new RepairItem;
-
-	// dump status
-	$null = array_pop($input);
-	
-	// fill array for update
-	foreach ($input as $key => $val) {
-			$ri->fields[$key] = $input[$key];
-	}
-
-	return $ri->addToDB();
-}
-
-function deleteRepairItem($input){
-
-	// Delete eRepair Item 
-	
-	$ri = new RepairItem;
-	$ri->deleteFromDB($input["ID"]);
-}
-
-function showRepairForm($device_type,$id_device){
-
-GLOBAL $cfg_install,$lang;
-
-$query="select * from glpi_repair_item where (device_type='$device_type' and id_device='$id_device')";
+$si->getFromDB($device_type,$id_device);
 $db=new DB;
-if ($result = $db->query($query)) {
-		$numrows =  $db->numrows($result);
-//echo "<form name='resa_form' method='post' action=".$cfg_install["root"]."/reservation/index.php>";
-echo "<a href=\"".$cfg_install["root"]."/repair/index.php?";
-// Ajouter le matériel
-if ($numrows==0){
-echo "id_device=$id_device&device_type=$device_type&add=add\">".$lang["repair"][3]."</a>";
-}
-// Supprimer le matériel
-else {
-echo "ID=".$db->result($result,0,"ID")."&delete=delete\">".$lang["repair"][2]."</a>";
-}
+if ($si->fields["state"]!=0&&$state!=$si->fields["state"]){
+if ($state==0)
+	$db->query("DELETE FROM glpi_state_item WHERE device_type='$device_type' and id_device='$id_device';");
+else $db->query("UPDATE glpi_state_item SET state='$state' WHERE device_type='$device_type' and id_device='$id_device';");
 
+} else {
+if ($state!=0)
+	$db->query("INSERT INTO glpi_state_item (device_type,id_device,state) VALUES ('$device_type','$id_device','$state');");
+	
 }
+	
 }
-
 
 ?>

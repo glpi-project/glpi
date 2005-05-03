@@ -405,6 +405,10 @@ function replaceDropDropDown($input) {
 		$query = "update glpi_peripherals set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
+	case "state" :
+		$query = "update glpi_state_item set state = '". $input["newID"] ."'  where state = '".$input["oldID"]."'";
+		$result = $db->query($query);
+		break;
 	}
 
 	$query = "delete from ". $input["tablename"] ." where ID = '". $input["oldID"] ."'";
@@ -562,6 +566,13 @@ function dropdownUsed($table, $ID) {
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
+	case "state":
+		$query = "Select count(*) as cpt FROM glpi_state_item where state = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
+
+
 	case "tracking_category":
 		$query = "Select count(*) as cpt FROM glpi_tracking where category = ".$ID."";
 		$result = $db->query($query);

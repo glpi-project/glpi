@@ -46,7 +46,7 @@ include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_reservation.php");
-include ($phproot . "/glpi/includes_repair.php");
+include ($phproot . "/glpi/includes_state.php");
 include ($phproot . "/glpi/includes_financial.php");
 include ($phproot . "/glpi/includes_documents.php");
 

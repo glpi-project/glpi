@@ -33,7 +33,7 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/repair/classes.php");
-include ($phproot . "/glpi/repair/functions.php");
+include ($phproot . "/glpi/state/classes.php");
+include ($phproot . "/glpi/state/functions.php");
 
 ?>
