@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-05-03 07:01
+#GLPI Dump database on 2005-05-04 01:15
 
 ### Dump table glpi_cartridges
 
@@ -730,6 +730,17 @@ CREATE TABLE glpi_dropdown_rubdocs (
 ) TYPE=MyISAM;
 
 
+### Dump table glpi_dropdown_state
+
+DROP TABLE IF EXISTS glpi_dropdown_state;
+CREATE TABLE glpi_dropdown_state (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255),
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
+INSERT INTO glpi_dropdown_state VALUES ('1','R&eacute;paration');
+
 ### Dump table glpi_dropdown_tracking_category
 
 DROP TABLE IF EXISTS glpi_dropdown_tracking_category;
@@ -790,7 +801,7 @@ INSERT INTO glpi_event_log VALUES ('376','0','users','2005-04-20 09:19:04','setu
 INSERT INTO glpi_event_log VALUES ('377','-1','system','2005-04-20 09:19:10','login','3','post-only logged in.');
 INSERT INTO glpi_event_log VALUES ('378','-1','system','2005-04-20 09:19:28','login','3','glpi logged in.');
 INSERT INTO glpi_event_log VALUES ('379','2','Peripherals','2005-04-20 09:20:27','inventory','4','glpi purge item.');
-INSERT INTO glpi_event_log VALUES ('380','-1','system','2005-05-03 07:00:55','login','3','glpi logged in.');
+INSERT INTO glpi_event_log VALUES ('380','-1','system','2005-05-04 01:08:31','login','3','glpi logged in.');
 
 ### Dump table glpi_followups
 
@@ -1097,19 +1108,6 @@ INSERT INTO glpi_printers VALUES ('1','HP laser','2003-09-18 00:12:43','','','0'
 INSERT INTO glpi_printers VALUES ('2','HP deskjet','2003-09-18 00:13:11','','','0','45dskjs-ds','','0','1','0','Imprimante documentation','','2','3','0','N','0',NULL);
 INSERT INTO glpi_printers VALUES ('3','','0000-00-00 00:00:00','','','0','','','0','0','0','','',NULL,NULL,'0','N','1','Blank Template');
 
-### Dump table glpi_repair_item
-
-DROP TABLE IF EXISTS glpi_repair_item;
-CREATE TABLE glpi_repair_item (
-    ID int(11) NOT NULL auto_increment,
-    device_type tinyint(4) DEFAULT '0' NOT NULL,
-    id_device int(11) DEFAULT '0' NOT NULL,
-   PRIMARY KEY (ID),
-   KEY device_type (device_type),
-   KEY device_type_2 (device_type, id_device)
-) TYPE=MyISAM;
-
-
 ### Dump table glpi_reservation_item
 
 DROP TABLE IF EXISTS glpi_reservation_item;
@@ -1174,6 +1172,21 @@ INSERT INTO glpi_software VALUES ('3','Acrobat PDF Viewer','4',NULL,NULL,'0','5'
 INSERT INTO glpi_software VALUES ('4','MS Windows NT','4.0',NULL,NULL,'0','5','N','-1','0','N','0',NULL,NULL);
 INSERT INTO glpi_software VALUES ('5','Latex','6.2','Latex','1','0','2','N','-1','0','N','0',NULL,NULL);
 INSERT INTO glpi_software VALUES ('6','','',NULL,NULL,'0',NULL,'N','-1','0','N','1','Blank Template',NULL);
+
+### Dump table glpi_state_item
+
+DROP TABLE IF EXISTS glpi_state_item;
+CREATE TABLE glpi_state_item (
+    ID int(11) NOT NULL auto_increment,
+    device_type tinyint(4) DEFAULT '0' NOT NULL,
+    id_device int(11) DEFAULT '0' NOT NULL,
+    state int(11) DEFAULT '1',
+   PRIMARY KEY (ID),
+   KEY device_type (device_type),
+   KEY device_type_2 (device_type, id_device)
+) TYPE=MyISAM;
+
+INSERT INTO glpi_state_item VALUES ('1','1','8','1');
 
 ### Dump table glpi_tracking
 
