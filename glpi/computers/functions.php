@@ -359,7 +359,8 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 			// Manufacturer		
 			echo "<th>";
 			if ($sort=="glpi_enterprises.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
+\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
 \" alt='' title=''>";
 			}
@@ -369,7 +370,8 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 		        // Serial
 			echo "<th>";
 			if ($sort=="comp.serial") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
+\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
 \" alt='' title=''>";
 			}
@@ -380,7 +382,8 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 			// Type
 			echo "<th>";
 			if ($sort=="glpi_type_computers.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
+\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
 \" alt='' title=''>";
 			}
@@ -390,7 +393,8 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 			// OS
 			echo "<th>";
 			if ($sort=="glpi_dropdown_os.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
+\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
 \" alt='' title=''>";
 			}
@@ -400,7 +404,8 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 			// Location			
 			echo "<th>";
 			if ($sort=="glpi_dropdown_locations.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
+\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
 \" alt='' title=''>";
 			}
@@ -410,7 +415,8 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 			// Last modified		
 			echo "<th>";
 			if ($sort=="date_mod") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
+\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
 \" alt='' title=''>";
 			}
@@ -420,7 +426,8 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 			// Contact person
 			echo "<th>";
 			if ($sort=="contact") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
+\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
 \" alt='' title=''>";
 			}
