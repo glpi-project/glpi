@@ -244,8 +244,10 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_networking.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
+\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
+\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_networking.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["networking"][0]."</a></th>";
@@ -253,8 +255,10 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			// Manufacturer		
 			echo "<th>";
 			if ($sort=="glpi_enterprises.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
+\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
+\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["common"][5]."</a></th>";
@@ -262,8 +266,10 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			// Location			
 			echo "<th>";
 			if ($sort=="glpi_dropdown_locations.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
+\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
+\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["networking"][1]."</a></th>";
@@ -271,8 +277,10 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			// Type
 			echo "<th>";
 			if ($sort=="glpi_type_networking.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
+\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
+\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_networking.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["networking"][2]."</a></th>";
@@ -281,8 +289,10 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			// Firmware
 			echo "<th>";
 			if ($sort=="glpi_dropdown_firmware.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
+\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
+\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_firmware.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["networking"][49]."</a></th>";
@@ -292,8 +302,10 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			// Last modified		
 			echo "<th>";
 			if ($sort=="glpi_networking.date_mod") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.gif\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.gif\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
+\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
+\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_networking.date_mod&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["networking"][9]."</a></th>";
