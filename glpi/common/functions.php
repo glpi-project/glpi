@@ -425,7 +425,7 @@ $inventory = array($lang["Menu"][0]=>array("/computers/index.php","1"),
 	              $lang["Menu"][4]=>array("/software/index.php","5"),
 		      $lang["Menu"][16]=>array("/peripherals/index.php","6"),
 		      $lang["Menu"][21]=>array("/cartridges/index.php","7"),
-		      $lang["Menu"][28]=>array("/repair/index.php","8"),
+		      $lang["Menu"][28]=>array("/state/index.php","8"),
 		      );
 
 $financial = array($lang["Menu"][22]=>array("/contacts/index.php","1"),

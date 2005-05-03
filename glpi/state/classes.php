@@ -33,18 +33,23 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-// CLASSES Repair_Item
+// CLASSES State_Item
 
-class RepairItem{
+class StateItem{
 	var $fields	= array();
 	var $updates	= array();
+	var $state = array();
 	var $obj = NULL;	
-	function getfromDB ($ID) {
 
+	function getfromDB ($device_type,$id_device) {
+		
+		$this->fields["state"]=0;
 		// Make new database object and fill variables
 		$db = new DB;
-		$query = "SELECT * FROM glpi_repair_item WHERE (ID = '$ID')";
-		if ($result = $db->query($query)) {
+		$query = "SELECT * FROM glpi_state_item WHERE (device_type='$device_type' AND id_device = '$id_device')";
+
+		if ($result = $db->query($query)) 
+		if ($db->numrows($result)>0){
 			$data = $db->fetch_array($result);
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
@@ -133,7 +138,7 @@ class RepairItem{
 	function getEmpty () {
 		//make an empty database object
 		$db = new DB;
-		$fields = $db->list_fields("glpi_repair_item");
+		$fields = $db->list_fields("glpi_state_item");
 		$columns = $db->num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
 			$name = $db->field_name($fields, $i);
@@ -146,7 +151,7 @@ class RepairItem{
 		$db = new DB;
 
 		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE glpi_repair_item SET ";
+			$query  = "UPDATE glpi_state_item SET ";
 			$query .= $updates[$i];
 			$query .= "='";
 			$query .= $this->fields[$updates[$i]];
@@ -163,7 +168,7 @@ class RepairItem{
 		$db = new DB;
 
 		// Build query
-		$query = "INSERT INTO glpi_repair_item (";
+		$query = "INSERT INTO glpi_state_item (";
 		$i=0;
 		foreach ($this->fields as $key => $val) {
 			$fields[$i] = $key;
@@ -193,7 +198,7 @@ class RepairItem{
 
 		$db = new DB;
 
-		$query = "DELETE from glpi_repair_item WHERE ID = '$ID'";
+		$query = "DELETE from glpi_state_item WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
 			return true;
 		} else {

@@ -401,11 +401,14 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 		showReservationForm(MONITOR_TYPE,$ID);
 		echo "</b></td></tr>";
 	}
-	if (!$template){
-		echo "<tr><td>".$lang["repair"][0].":</td><td><b>";
-		showRepairForm(MONITOR_TYPE,$ID);
-		echo "</b></td></tr>";
-	}
+
+		if (!$template){
+		echo "<td>".$lang["state"][0]."&nbsp;:</td><td><b>";
+		$si=new StateItem();
+		$si->getfromDB(MONITOR_TYPE,$mon->fields["ID"]);
+		dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
+		echo "</b></td>";
+		} 
 
 	echo "</table>";
 
@@ -576,6 +579,7 @@ function updateMonitor($input) {
 			$x++;
 		}
 	}
+	updateState(MONITOR_TYPE,$input["ID"],$input["state"]);
 
 	$mon->updateInDB($updates);
 

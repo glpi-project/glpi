@@ -40,43 +40,33 @@ include ($phproot . "/glpi/includes_printers.php");
 include ($phproot . "/glpi/includes_monitors.php");
 include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_networking.php");
-include ($phproot . "/glpi/includes_repair.php");
+include ($phproot . "/glpi/includes_state.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 
-	if (isset($_GET["add"]))
-	{
-		checkAuthentication("admin");
-		addRepairItem($_GET);
-		logEvent(0, "repair", 4, "inventory", $_SESSION["glpiname"]." added repair item ".$_GET["device_type"]."-".$_GET["id_device"].".");
-		header("Location: ".$_SERVER['HTTP_REFERER']);
-	} 
-	else if (isset($_GET["delete"]))
-	{
-		checkAuthentication("admin");
-		deleteRepairItem($_GET);
-		logEvent(0, "repair", 4, "inventory", $_SESSION["glpiname"]." deleted repair item.");
-		header("Location: ".$_SERVER['HTTP_REFERER']);
-	}
-
-
 	if(!isset($_GET["start"])) $_GET["start"] = 0;
 	if (!isset($_GET["order"])) $_GET["order"] = "ASC";
-	if (!isset($_GET["field"])) $_GET["field"] = "glpi_repair_item.ID";
+	if (!isset($_GET["field"])) $_GET["field"] = "glpi_state_item.ID";
 	if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
 	if (!isset($_GET["contains"])) $_GET["contains"] = "";
-	if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_repair_item.ID";
+	if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_dropdown_state.name";
 
+if (isset($tab["deletestate"])) {
+	checkAuthentication("admin");
+	updateState($tab["device_type"],$tab["device_id"],0);
+
+	logEvent(0, "state", 4, "state", $_SESSION["glpiname"]." delete state.");
+}
 
 	checkAuthentication("normal");
 
 	commonHeader($lang["title"][9],$_SERVER["PHP_SELF"]);
 	
-	titleRepair();
-	searchFormRepairItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
-	showRepairItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
+	titleState();
+	searchFormStateItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
+	showStateItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
 
 
 commonFooter();

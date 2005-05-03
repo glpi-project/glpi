@@ -379,12 +379,12 @@ function showperipheralForm ($target,$ID,$withtemplate='') {
 	echo "<tr><td>".$lang["peripherals"][8].":	</td>";
 	echo "<td><input type='text' name='contact' size='20' value=\"".$mon->fields["contact"]."\"></td>";
 	echo "</tr>";
-	if (!$template){
-		echo "<tr><td>".$lang["reservation"][24].":</td><td><b>";
-		showReservationForm(PERIPHERAL_TYPE,$ID);
-		echo "</b></td></tr>";
-	}
 
+		if (!$template){
+		echo "<td>".$lang["reservation"][24]."&nbsp;:</td><td><b>";
+		showReservationForm(PERIPHERAL_TYPE,$ID);
+		echo "</b></td>";
+		}
 	echo "</table>";
 
 	echo "</td>\n";	
@@ -413,11 +413,13 @@ function showperipheralForm ($target,$ID,$withtemplate='') {
 	echo "<td><input type='text' size='20' name='otherserial' value=\"".$mon->fields["otherserial"]."\"></td>";
 	echo "</tr>";
 
-	if (!$template){
-		echo "<tr><td>".$lang["repair"][0].":</td><td><b>";
-		showRepairForm(PERIPHERAL_TYPE,$ID);
-		echo "</b></td></tr>";
-	}
+		if (!$template){
+		echo "<td>".$lang["state"][0]."&nbsp;:</td><td><b>";
+		$si=new StateItem();
+		$si->getfromDB(PERIPHERAL_TYPE,$mon->fields["ID"]);
+		dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
+		echo "</b></td>";
+		} 
 
 	
 	echo "</table>";
@@ -515,6 +517,7 @@ function updatePeripheral($input) {
 			$x++;
 		}
 	}
+	updateState(PERIPHERAL_TYPE,$input["ID"],$input["state"]);
 
 	$mon->updateInDB($updates);
 
