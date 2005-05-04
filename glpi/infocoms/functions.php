@@ -62,8 +62,8 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 	
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][26].":		</td>";
 		echo "<td align='center'>";
-		if ($withtemplate==2)
-		getdropdownName("glpi_enterprises","FK_enterprise",$ic->fields["FK_enterprise"]);
+		if ($withtemplate==2) 
+		echo getDropdownName("glpi_enterprises",$ic->fields["FK_enterprise"]);
 		else dropdownValue("glpi_enterprises","FK_enterprise",$ic->fields["FK_enterprise"]);
 		
 		echo "</td>";
