@@ -201,10 +201,8 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Type
 			echo "<th>";
 			if ($sort=="glpi_contracts.contract_type") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.contract_type&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][37]."</a></th>";
@@ -213,10 +211,8 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// nom
 			echo "<th>";
 			if ($sort=="glpi_contracts.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][27]."</a></th>";
@@ -224,10 +220,8 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// num
 			echo "<th>";
 			if ($sort=="glpi_contracts.num") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.num&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][4]."</a></th>";
@@ -235,10 +229,8 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Begin date
 			echo "<th>";
 			if ($sort=="glpi_contracts.begin_date") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.begin_date&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][7]."</a></th>";
@@ -246,10 +238,8 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Duration		
 			echo "<th>";
 			if ($sort=="glpi_contracts.duration") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.duration&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][8]."</a></th>";
@@ -257,10 +247,8 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// notice
 			echo "<th>";
 			if ($sort=="glpi_contracts.notice") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.notice&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][10]."</a></th>";
@@ -268,10 +256,8 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Cost
 			echo "<th>";
 			if ($sort=="glpi_contracts.cost") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.cost&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][5]."</a></th>";
@@ -279,10 +265,8 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Bill type
 			echo "<th>";
 			if ($sort=="glpi_contracts.bill_type") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contracts.bill_type&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][58]."</a></th>";

@@ -170,10 +170,8 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_docs.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_docs.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["document"][1]."</a></th>";
@@ -182,10 +180,8 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// filename
 			echo "<th>";
 			if ($sort=="glpi_docs.filename") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_docs.filename&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["document"][2]."</a></th>";
@@ -193,10 +189,8 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// link
 			echo "<th>";
 			if ($sort=="glpi_docs.link") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_docs.link&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["document"][33]."</a></th>";
@@ -204,10 +198,8 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// num
 			echo "<th>";
 			if ($sort=="glpi_dropdown_rubdocs.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_rubdocs.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["document"][3]."</a></th>";
@@ -215,10 +207,8 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// mime
 			echo "<th>";
 			if ($sort=="glpi_docs.mime") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_docs.mime&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["document"][4]."</a></th>";
@@ -226,10 +216,8 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// comment		
 			echo "<th>";
 			if ($sort=="glpi_docs.comment") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_docs.comment&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["document"][6]."</a></th>";

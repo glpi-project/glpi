@@ -191,10 +191,8 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_contacts.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contacts.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][27]."</a></th>";
@@ -202,10 +200,8 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			// Phone
 			echo "<th>";
 			if ($sort=="glpi_contacts.phone") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contacts.phone&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][29]."</a></th>";
@@ -213,10 +209,8 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			// Phone2
 			echo "<th>";
 			if ($sort=="glpi_contacts.phone2") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contacts.phone2&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][29]." 2</a></th>";
@@ -224,10 +218,8 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			// Fax
 			echo "<th>";
 			if ($sort=="glpi_contacts.fax") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contacts.fax&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][30]."</a></th>";
@@ -235,10 +227,8 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			// Email
 			echo "<th>";
 			if ($sort=="glpi_contacts.email") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contacts.email&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][31]."</a></th>";
@@ -246,10 +236,8 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			// Type
 			echo "<th>";
 			if ($sort=="glpi_contacts.type") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contacts.type&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["financial"][37]."</a></th>";
