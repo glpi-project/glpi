@@ -54,7 +54,17 @@ else if (isset($_GET["add"]))
 	
 	checkAuthentication("admin");
 	addCartridge($_GET["tID"]);
-	logEvent($tab["tID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." added a license.");
+	logEvent($tab["tID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." added a cartridge.");
+	
+	header("Location: ".$_SERVER['HTTP_REFERER']);
+}
+else if (isset($_POST["add_several"]))
+{
+	
+	checkAuthentication("admin");
+	for ($i=0;$i<$_POST["to_add"];$i++)
+		addCartridge($_POST["tID"]);
+	logEvent($tab["tID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." added a ".$_POST["to_add"]." cartridge.");
 	
 	header("Location: ".$_SERVER['HTTP_REFERER']);
 }
