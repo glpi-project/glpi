@@ -519,14 +519,27 @@ function restoreCartridgeType($input) {
 **/
 function showCartridgesAdd($ID) {
 	
-	GLOBAL $cfg_layout,$cfg_install,$lang;
+	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel;
 	
+	
+	echo "<form method='post'  action=\"".$HTMLRel."cartridges/cartridge-edit.php\">";
 	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='90%' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><b>";
 	echo "<a href=\"".$cfg_install["root"]."/cartridges/cartridge-edit.php?add=add&tID=$ID\">";
 	echo $lang["cartridges"][17];
-	echo "</a></b></td></tr>";
-	echo "</table></div><br>";
+	echo "</a></b></td>";
+	echo "<td align='center' class='tab_bg_2'>";
+	echo "<input type='submit' name='add_several' value=\"".$lang["buttons"][8]."\" class='submit'>";
+	echo "<input type='hidden' name='tID' value=\"$ID\">\n";
+
+	echo "&nbsp;&nbsp;<select name='to_add'>";
+	for ($i=1;$i<100;$i++)
+	echo "<option value='$i'>$i</option>";
+	echo "</select>&nbsp;&nbsp;";
+	echo $lang["cartridges"][16];
+	echo "</td></tr>";
+	echo "</table></div>";
+	echo "</form><br>";
 }
 /**
 * Print out the cartridges of a defined type
