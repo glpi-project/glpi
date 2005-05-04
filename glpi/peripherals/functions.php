@@ -221,10 +221,8 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			// Name
 			echo "<th>";
 			if ($sort=="periph.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["peripherals"][5]."</a></th>";
@@ -232,10 +230,8 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			// Manufacturer		
 			echo "<th>";
 			if ($sort=="glpi_enterprises.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["common"][5]."</a></th>";
@@ -243,10 +239,8 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			// Location			
 			echo "<th>";
 			if ($sort=="glpi_dropdown_locations.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["peripherals"][6]."</a></th>";
@@ -254,10 +248,8 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			// Type
 			echo "<th>";
 			if ($sort=="glpi_type_peripherals.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_peripherals.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["peripherals"][9]."</a></th>";
@@ -265,10 +257,8 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			// Last modified		
 			echo "<th>";
 			if ($sort=="periph.date_mod") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.date_mod&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["peripherals"][16]."</a></th>";
@@ -276,10 +266,8 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			// Contact person
 			echo "<th>";
 			if ($sort=="periph.contact") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.contact&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["peripherals"][8]."</a></th>";

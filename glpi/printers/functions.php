@@ -240,10 +240,8 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Name
 			echo "<th>";
 			if ($sort=="printer.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=printer.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["printers"][5]."</a></th>";
@@ -251,10 +249,8 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Manufacturer		
 			echo "<th>";
 			if ($sort=="glpi_enterprises.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["common"][5]."</a></th>";
@@ -262,10 +258,8 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Location			
 			echo "<th>";
 			if ($sort=="glpi_dropdown_locations.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 					}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["printers"][6]."</a></th>";
@@ -273,10 +267,8 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Type
 			echo "<th>";
 			if ($sort=="glpi_type_printers.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 					}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_printers.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["printers"][9]."</a></th>";
@@ -284,10 +276,8 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 			// Last modified		
 			echo "<th>";
 			if ($sort=="printer.date_mod") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 					}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=printer.date_mod&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["printers"][16]."</a></th>";
