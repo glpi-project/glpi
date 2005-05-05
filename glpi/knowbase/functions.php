@@ -341,7 +341,7 @@ function showKbCategoriesall()
 
 	
 	echo "<div align='center'><table border='0' class='tab_cadre' >";
-	echo "<tr><th align='center' width='700px'>".$lang["knowbase"][0]."</th></tr><tr><td>";	
+	echo "<tr><th align='center' width='700'>".$lang["knowbase"][0]."</th></tr><tr><td align='left'>";	
 	
 	showKbCategories();
 	
@@ -670,7 +670,7 @@ function faqShowCategoriesall($target,$contains)
 	searchFormKnowbase($target,$contains);
 	
 	echo "<div align='center'><table border='0' class='tab_cadre' >";
-	echo "<tr><th align='center' width='700px'>".$lang["knowbase"][1]."</th></tr><tr><td>";	
+	echo "<tr><th align='center' width='700px'>".$lang["knowbase"][1]."</th></tr><tr><td  align='left'>";	
 	
 	
 	faqShowCategories();
