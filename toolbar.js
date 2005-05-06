@@ -3,6 +3,9 @@
 // derive du:
 // bbCode control by subBlue design : www.subBlue.com
 
+// Startup variables
+var theSelection = false;
+
 // Check for Browser & Platform for PC & IE specific bits
 // More details from: http://www.mozilla.org/docs/web-developer/sniffer/browser_type.html
 var clientPC = navigator.userAgent.toLowerCase(); // Get client info
@@ -26,6 +29,10 @@ function mozWrap(txtarea, open, close)
 	if (selEnd == 1 || selEnd == 2) {
 		selEnd = selLength;
 	}
+	
+	// Raccourcir la selection par double-clic si dernier caractere est espace	
+	if (selEnd - selStart > 0 && (txtarea.value).substring(selEnd-1,selEnd) == ' ') selEnd = selEnd-1;
+	
 	var s1 = (txtarea.value).substring(0,selStart);
 	var s2 = (txtarea.value).substring(selStart, selEnd)
 	var s3 = (txtarea.value).substring(selEnd, selLength);
@@ -33,21 +40,40 @@ function mozWrap(txtarea, open, close)
 	return;
 }
 
-function raccourciTypo(toolbarfield, begin, end)
-{
-	var txtarea = toolbarfield;
+
+
+function raccourciTypo(champ,debut,fin) {
+	var txtarea = champ;
+
 	txtarea.focus();
-	if ((clientVer >= 4) && is_ie && is_win) {
-		var str = document.selection.createRange().text;
-		var sel = document.selection.createRange();
-		sel.text = begin + str + end;
-	} else if (txtarea.selectionEnd && (txtarea.selectionEnd - txtarea.selectionStart > 0)) {
-		mozWrap(txtarea, begin, end);
+	donotinsert = false;
+	theSelection = false;
+	bblast = 0;
+
+	if ((clientVer >= 4) && is_ie && is_win)
+	{
+		theSelection = document.selection.createRange().text; // Get text selection
+		if (theSelection) {
+
+			while (theSelection.substring(theSelection.length-1, theSelection.length) == ' ')
+			{
+				theSelection = theSelection.substring(0, theSelection.length-1);
+				fin = fin + " ";
+			}
+		
+			// Add tags around selection
+			document.selection.createRange().text = debut + theSelection + fin;
+			txtarea.focus();
+			theSelection = '';
+			return;
+		}
 	}
-	return;
+	else if (txtarea.selectionEnd && (txtarea.selectionEnd - txtarea.selectionStart > 0))
+	{
+		mozWrap(txtarea, debut, fin);
+		return;
+	}
 }
-
-
 
 
 
