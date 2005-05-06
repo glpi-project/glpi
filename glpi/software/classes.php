@@ -171,7 +171,7 @@ function getEmpty () {
 				$result = $db->query($query);
 
 				// Delete all Licenses
-				$query2 = "SELECT ID FROM glpi_licenses WHERE (sID = \"$ID\")";
+				$query2 = "SELECT ID FROM glpi_licenses WHERE (sID = '$ID')";
 	
 				if ($result2 = $db->query($query2)) {
 					$i=0;
@@ -278,9 +278,11 @@ class License {
 		$db = new DB;
 
 		$query = "DELETE from glpi_licenses WHERE ID = '$ID'";
+		
 		if ($result = $db->query($query)) {
 			// Delete Installations
 			$query2 = "DELETE FROM glpi_inst_software WHERE (license = '$ID')";
+			
 			if ($result2 = $db->query($query2)) {
 				return true;
 			}
