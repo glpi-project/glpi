@@ -552,8 +552,23 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 
 }
 
+function addInfocomOptionFieldsToResearch($option){
+global $lang;
+$option["glpi_infocoms.num_immo"]=$lang["financial"][20];
+$option["glpi_infocoms.num_commande"]=$lang["financial"][18];
+$option["glpi_infocoms.bon_livraison"]=$lang["financial"][19];
+$option["glpi_infocoms.facture"]=$lang["financial"][82];
+return $option;
 
+}
 
+function getInfocomSearchToRequest($table,$type){
+return " LEFT JOIN glpi_infocoms ON ($table.ID = glpi_infocoms.FK_device AND glpi_infocoms.device_type='".$type."')";
 
+}
+
+function getInfocomSearchToViewAllRequest($contains){
+return " OR glpi_infocoms.num_immo LIKE '%".$contains."%' OR glpi_infocoms.num_commande LIKE '%".$contains."%' OR glpi_infocoms.bon_livraison LIKE '%".$contains."%' OR glpi_infocoms.facture LIKE '%".$contains."%'";
+}
 
 ?>

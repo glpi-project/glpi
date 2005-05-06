@@ -144,6 +144,8 @@ function searchFormComputers($field="",$contains="",$sort= "",$deleted= "") {
 	$option["glpi_dropdown_netpoint.name"]		= $lang["networking"][51];
 	$option["glpi_enterprises.name"]		= $lang["common"][5];
 	$option["resptech.name"]			= $lang["common"][10];
+	$option=addInfocomOptionFieldsToResearch($option);
+	
 	
 	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
 	echo "<div align='center'><table border='0' width='750' class='tab_cadre'>";
@@ -287,6 +289,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 		$where .= " OR glpi_networking_ports.ifmac LIKE '%".$contains."%'";
 		$where .= " OR glpi_dropdown_netpoint.name LIKE '%".$contains."%'";
 		$where .= " OR glpi_type_computers.name LIKE '%".$contains."%'";
+		$where .= getInfocomSearchToViewAllRequest($contains);
 		$where .= ")";
 	}
 	else {
@@ -307,25 +310,26 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 		$order = "ASC";
 	}
 	$query = "select DISTINCT comp.ID from glpi_computers as comp LEFT JOIN glpi_computer_device as gcdev ON (comp.ID = gcdev.FK_computers) ";
-	$query.= "LEFT JOIN glpi_device_moboard as moboard ON (moboard.ID = gcdev.FK_device AND gcdev.device_type = '".MOBOARD_DEVICE."') ";
-	$query.= "LEFT JOIN glpi_device_processor as processor ON (processor.ID = gcdev.FK_device AND gcdev.device_type = '".PROCESSOR_DEVICE."') ";
-	$query.= "LEFT JOIN glpi_device_gfxcard as gfxcard ON (gfxcard.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".GFX_DEVICE."') ";
-	$query.= "LEFT JOIN glpi_device_hdd as hdd ON (hdd.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".HDD_DEVICE."') ";
-	$query.= "LEFT JOIN glpi_device_iface as iface ON (iface.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".NETWORK_DEVICE."') ";
-	$query.= "LEFT JOIN glpi_device_ram as ram ON (ram.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".RAM_DEVICE."') ";
-	$query.= "LEFT JOIN glpi_device_sndcard as sndcard ON (sndcard.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".SND_DEVICE."') ";
-	$query.= "LEFT JOIN glpi_device_drive as drive ON (drive.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".DRIVE_DEVICE."') ";
-	$query.= "LEFT JOIN glpi_device_control as control ON (control.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".CONTROL_DEVICE."') ";
-	$query.= "LEFT JOIN glpi_device_pci as pci ON (pci.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".PCI_DEVICE."') ";
-	$query.= "LEFT JOIN glpi_device_case as Tcase ON (Tcase.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".CASE_DEVICE."') ";
-	$query.= "LEFT JOIN glpi_device_power as power ON (power.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".POWER_DEVICE."') ";
-	$query.= "LEFT JOIN glpi_networking_ports on (comp.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='1')";
-	$query.= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";
-	$query.= "LEFT JOIN glpi_dropdown_os on (glpi_dropdown_os.ID = comp.os)";
-	$query.= "LEFT JOIN glpi_dropdown_locations on (glpi_dropdown_locations.ID = comp.location)";
+	$query.= " LEFT JOIN glpi_device_moboard as moboard ON (moboard.ID = gcdev.FK_device AND gcdev.device_type = '".MOBOARD_DEVICE."') ";
+	$query.= " LEFT JOIN glpi_device_processor as processor ON (processor.ID = gcdev.FK_device AND gcdev.device_type = '".PROCESSOR_DEVICE."') ";
+	$query.= " LEFT JOIN glpi_device_gfxcard as gfxcard ON (gfxcard.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".GFX_DEVICE."') ";
+	$query.= " LEFT JOIN glpi_device_hdd as hdd ON (hdd.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".HDD_DEVICE."') ";
+	$query.= " LEFT JOIN glpi_device_iface as iface ON (iface.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".NETWORK_DEVICE."') ";
+	$query.= " LEFT JOIN glpi_device_ram as ram ON (ram.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".RAM_DEVICE."') ";
+	$query.= " LEFT JOIN glpi_device_sndcard as sndcard ON (sndcard.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".SND_DEVICE."') ";
+	$query.= " LEFT JOIN glpi_device_drive as drive ON (drive.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".DRIVE_DEVICE."') ";
+	$query.= " LEFT JOIN glpi_device_control as control ON (control.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".CONTROL_DEVICE."') ";
+	$query.= " LEFT JOIN glpi_device_pci as pci ON (pci.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".PCI_DEVICE."') ";
+	$query.= " LEFT JOIN glpi_device_case as Tcase ON (Tcase.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".CASE_DEVICE."') ";
+	$query.= " LEFT JOIN glpi_device_power as power ON (power.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".POWER_DEVICE."') ";
+	$query.= " LEFT JOIN glpi_networking_ports on (comp.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='1') ";
+	$query.= " LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint) ";
+	$query.= " LEFT JOIN glpi_dropdown_os on (glpi_dropdown_os.ID = comp.os) ";
+	$query.= " LEFT JOIN glpi_dropdown_locations on (glpi_dropdown_locations.ID = comp.location) ";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = comp.FK_glpi_enterprise ) ";
 	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = comp.tech_num ) ";
 	$query.= " LEFT JOIN glpi_type_computers ON (glpi_type_computers.ID = comp.type ) ";
+	$query.= getInfocomSearchToRequest("comp",COMPUTER_TYPE);
 	$query .= " where $where AND comp.deleted='$deleted' AND comp.is_template = '0'  ORDER BY $sort $order";
 
 	// Get it from database	
