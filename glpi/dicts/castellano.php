@@ -326,6 +326,7 @@ $lang["document"][29]="Fall&oacute; la creaci&oacute;n del directorio";
 $lang["document"][30]="Verifique que usted tiene los derechos"; 
 $lang["document"][31]="Directorio de almacenamiento de documentos inexistente:"; 
 $lang["document"][32]="Tipo de archivo no autorizado"; 
+$lang["document"][33]="Enlace web"; 
 
 $lang["event"][0]="Item (ID)"; 
 $lang["event"][1]="Fecha"; 
@@ -415,6 +416,7 @@ $lang["financial"][78]="Valor extensi&oacute;n garant&iacute;a";
 $lang["financial"][79]="Tipo de Tercero"; 
 $lang["financial"][80]="Expiraci&oacute;n de garat&iacute;a"; 
 $lang["financial"][81]="Valor neto contable"; 
+$lang["financial"][82]="N&uacute;mero de factura"; 
 
 $lang["help"][0]="Bienvenido"; 
 $lang["help"][1]="Por favor, describa su problema"; 
@@ -448,6 +450,7 @@ $lang["help"][28]="Monitor";
 $lang["help"][29]="Perif&eacute;rico"; 
 $lang["help"][30]="General"; 
 $lang["help"][31]="Software"; 
+$lang["help"][34]="Empresa"; 
 $lang["help"][32]="No ha especificado número de material para una categoría de material precisa."; 
 $lang["help"][33]="Si no encuentra su material, puede utilizar el tipo General"; 
 
@@ -524,6 +527,10 @@ $lang["install"][73]="Ok - la funci&oacute;n mysql_connect() existe - Perfecto!"
 $lang["install"][74]="Test de utilizaci&oacute;n de Session_use_trans_id"; 
 $lang["install"][75]="Debe desactivar la opci&oacute;n Session_use_trans_id en su PHP.ini"; 
 $lang["install"][76]="Ok - Las sesiones funcionan (no hay problemas de trans_id) - Perfecto!"; 
+$lang["install"][80]="Base vac&iacute;a"; 
+$lang["install"][78]="&iquest;Cu&aacute;l base por defecto desea utilizar?"; 
+$lang["install"][79]="Base por defecto"; 
+$lang["install"][77]="Etapa"; 
 
 $lang["job"][0]="N&uacute;mero de servicio"; 
 $lang["job"][1]="Servicio siempre abierto..."; 
@@ -663,7 +670,7 @@ $lang["Menu"][24]="Infos comerciales";
 $lang["Menu"][25]="Contratos"; 
 $lang["Menu"][26]="Gesti&oacute;n"; 
 $lang["Menu"][27]="Documentos"; 
-$lang["Menu"][28]="Reparaciones"; 
+$lang["Menu"][28]="Estados"; 
 
 $lang["monitors"][0]="Agregar monitor..."; 
 $lang["monitors"][3]="Agregar monitor"; 
@@ -790,7 +797,7 @@ $lang["printers"][7]="contacto n&uacute;mero";
 $lang["printers"][8]="Contacto Persona"; 
 $lang["printers"][9]="Tipo"; 
 $lang["printers"][10]="N&uacute;mero de serie"; 
-$lang["printers"][11]="n&uacute;mero de inventario"; 
+$lang["printers"][11]="N&uacute;mero de inventario"; 
 $lang["printers"][12]="Comentario"; 
 $lang["printers"][13]="Lugar"; 
 $lang["printers"][14]="Port serial"; 
@@ -873,6 +880,7 @@ $lang["reports"][51]="Reporte de red por boca";
 $lang["reports"][52]="switch"; 
 $lang["reports"][53]="Direcci&oacute;n MAC"; 
 $lang["reports"][54]="Reporte de red por lugar"; 
+$lang["reports"][59]="Ver los seguimientos"; 
 $lang["reports"][55]="Software"; 
 $lang["reports"][56]="Software bajo contrato"; 
 $lang["reports"][57]="Lista de materiales"; 
@@ -1064,6 +1072,9 @@ $lang["setup"][217]="La funci&oacute;n de mail no existe o est&aacute; desactiva
 $lang["setup"][218]="Imposible configurar los env&iacute;os de seguimientos por mail"; 
 $lang["setup"][219]="desea permitir las solicitudes de servicio an&oacute;nimas (helpdesk.html)"; 
 $lang["setup"][220]="Imposible modificar el usuario 'Helpdesk'"; 
+$lang["setup"][115]="Umbral de alarma para los cartuchos"; 
+$lang["setup"][82]="Tipo de contactos"; 
+$lang["setup"][83]="Estado de materiales"; 
 $lang["setup"][221]="Fecha de inicio de ejercicio fiscal (D&iacute;a y mes)"; 
 $lang["setup"][222]="Perif&eacute;ricos internos"; 
 
@@ -1110,6 +1121,13 @@ $lang["software"][39]="Software libre";
 $lang["software"][40]="Ninguna licencia"; 
 $lang["software"][41]="Software ID"; 
 $lang["software"][42]="Nuevo software a partir de un modelo"; 
+
+$lang["state"][0]="Estado"; 
+$lang["state"][1]="Estados de materiales"; 
+$lang["state"][2]="Sacar el material de su estado"; 
+$lang["state"][4]="ID"; 
+$lang["state"][6]="Tipo de material"; 
+$lang["state"][7]="No se encontraron materiales"; 
 
 $lang["stats"][0]="Seleccione las estad&iacute;sticas a visualizar"; 
 $lang["stats"][1]="Globales"; 
