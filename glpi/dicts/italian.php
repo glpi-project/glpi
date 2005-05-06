@@ -326,6 +326,7 @@ $lang["document"][29]="Fail to create the directory";
 $lang["document"][30]="Verify that you have the correct rights"; 
 $lang["document"][31]="Directory for documents does not exist"; 
 $lang["document"][32]="Tipo di file non consentito"; 
+$lang["document"][33]="Link al web"; 
 
 $lang["event"][0]="Item (ID)"; 
 $lang["event"][1]="Data"; 
@@ -415,6 +416,7 @@ $lang["financial"][78]="Importo estensione garanzia";
 $lang["financial"][79]="Rapporto"; 
 $lang["financial"][80]="Scadenza garanzia"; 
 $lang["financial"][81]="Importo netto contabile"; 
+$lang["financial"][82]="Numero d'ordine"; 
 
 $lang["help"][0]="Benvenuto"; 
 $lang["help"][1]="per piacere descrivi il tuo problema"; 
@@ -448,6 +450,7 @@ $lang["help"][28]="Schermo";
 $lang["help"][29]="Periferica"; 
 $lang["help"][30]="Generica"; 
 $lang["help"][31]="Software"; 
+$lang["help"][34]="Azienda"; 
 $lang["help"][32]="You do not specify the ID of the item for a precise category of item."; 
 $lang["help"][33]="If you do not found your item, you could used the common type."; 
 
@@ -524,6 +527,10 @@ $lang["install"][73]="Ok - the function mysql_connect() exist - Perfect !";
 $lang["install"][74]="Test de l'utilisation de Session_use_trans_id"; 
 $lang["install"][75]="You must descativate the Session_use_trans_id option in your php.ini"; 
 $lang["install"][76]="Ok - the sessions works (no problem with trans_id) - Perfect !"; 
+$lang["install"][80]="Database vuoto"; 
+$lang["install"][78]="Quale database iniziale vuoi usare?"; 
+$lang["install"][79]="Database di default"; 
+$lang["install"][77]="Passo"; 
 
 $lang["job"][0]="Numero di chiamata"; 
 $lang["job"][1]="Chiamata ancora aperta..."; 
@@ -663,7 +670,7 @@ $lang["Menu"][24]="Informazioni commerciali";
 $lang["Menu"][25]="Gestione"; 
 $lang["Menu"][26]="Gestione"; 
 $lang["Menu"][27]="Documenti"; 
-$lang["Menu"][28]="Riparazione"; 
+$lang["Menu"][28]="Stati"; 
 
 $lang["monitors"][0]="Aggiungi schermo..."; 
 $lang["monitors"][3]="Aggiungi schermo"; 
@@ -873,6 +880,7 @@ $lang["reports"][51]="Networking report by netpoint";
 $lang["reports"][52]="switch"; 
 $lang["reports"][53]="Indirizzo MAC"; 
 $lang["reports"][54]="Networking report by location"; 
+$lang["reports"][59]="Mostra i commenti"; 
 $lang["reports"][55]="Programmi"; 
 $lang["reports"][56]="Softwares under contract"; 
 $lang["reports"][57]="Material list"; 
@@ -1064,6 +1072,9 @@ $lang["setup"][217]="The mail function is unknown or is not activated on your sy
 $lang["setup"][218]="Impossible to configure the email followups"; 
 $lang["setup"][219]="Allow anonymous tracking post (helpdesk.html)"; 
 $lang["setup"][220]="'Helpdesk' user could not be modified"; 
+$lang["setup"][115]="Soglia per il calcolo dei consumabili"; 
+$lang["setup"][82]="Tipologia indirizzo"; 
+$lang["setup"][83]="Stato"; 
 $lang["setup"][221]="Beginning of fiscal year (day and month)"; 
 $lang["setup"][222]="Dispositivi interni"; 
 
@@ -1110,6 +1121,13 @@ $lang["software"][39]="Software Libero";
 $lang["software"][40]="Nessuna licenza"; 
 $lang["software"][41]="ID software"; 
 $lang["software"][42]="Nuovo software da modello"; 
+
+$lang["state"][0]="Stato"; 
+$lang["state"][1]="Stato"; 
+$lang["state"][2]="Riporta il dispositivo al suo stato normale"; 
+$lang["state"][4]="ID"; 
+$lang["state"][6]="Tipo"; 
+$lang["state"][7]="Nessun elemento trovato"; 
 
 $lang["stats"][0]="Select stats to be displayed"; 
 $lang["stats"][1]="Global"; 
