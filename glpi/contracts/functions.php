@@ -1125,5 +1125,20 @@ function showContractAssociatedEnterprise($ID){
 	
 }
 
+function addContractOptionFieldsToResearch($option){
+global $lang;
+$option["glpi_contracts.name"]=$lang["financial"][27]." ".$lang["financial"][1];
+$option["glpi_contracts.num"]=$lang["financial"][4]." ".$lang["financial"][1];
+return $option;
 
+}
+
+function getContractSearchToRequest($table,$type){
+return " LEFT JOIN glpi_contract_device ON ($table.ID = glpi_contract_device.FK_device AND glpi_contract_device.device_type='".$type."') LEFT JOIN glpi_contracts ON (glpi_contracts.ID = glpi_contract_device.FK_contract)";
+
+}
+
+function getContractSearchToViewAllRequest($contains){
+return " OR glpi_contracts.name LIKE '%".$contains."%' OR glpi_contracts.num LIKE '%".$contains."%' ";
+}
 ?>

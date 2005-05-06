@@ -1468,9 +1468,7 @@ function dropdownAllItems($name,$withenterprise=0,$search='',$value='') {
 
 	foreach ($items as $type => $table){
 
-		$where="WHERE '1' = '1' ";
-		if ($table=="glpi_computers")
-		$where.="AND is_template='0' ";
+		$where="WHERE is_template='0' AND deleted='N' ";
 	
 		if (!empty($search))
 		$where.="AND name LIKE '%$search%' ";
@@ -1479,7 +1477,7 @@ function dropdownAllItems($name,$withenterprise=0,$search='',$value='') {
 //		$where = "WHERE deleted='N' ";
 
 		$query = "SELECT ID FROM $table $where ORDER BY name";
-	
+	//echo $query;
 		$result = $db->query($query);
 	
 		$i = 0;

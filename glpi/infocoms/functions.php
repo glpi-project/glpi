@@ -563,12 +563,12 @@ return $option;
 }
 
 function getInfocomSearchToRequest($table,$type){
-return " LEFT JOIN glpi_infocoms ON ($table.ID = glpi_infocoms.FK_device AND glpi_infocoms.device_type='".$type."')";
+return " LEFT JOIN glpi_infocoms ON ($table.ID = glpi_infocoms.FK_device AND glpi_infocoms.device_type='".$type."') ";
 
 }
 
 function getInfocomSearchToViewAllRequest($contains){
-return " OR glpi_infocoms.num_immo LIKE '%".$contains."%' OR glpi_infocoms.num_commande LIKE '%".$contains."%' OR glpi_infocoms.bon_livraison LIKE '%".$contains."%' OR glpi_infocoms.facture LIKE '%".$contains."%'";
+return " OR glpi_infocoms.num_immo LIKE '%".$contains."%' OR glpi_infocoms.num_commande LIKE '%".$contains."%' OR glpi_infocoms.bon_livraison LIKE '%".$contains."%' OR glpi_infocoms.facture LIKE '%".$contains."%' ";
 }
 
 ?>

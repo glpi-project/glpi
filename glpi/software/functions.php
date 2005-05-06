@@ -93,6 +93,7 @@ function searchFormSoftware($field="",$phrasetype= "",$contains="",$sort= "",$de
 	$option["glpi_enterprises.name"]			= $lang["common"][5];
 	$option["resptech.name"]			=$lang["common"][10];
 	$option=addInfocomOptionFieldsToResearch($option);
+	$option=addContractOptionFieldsToResearch($option);
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/software/software-search.php\">";
 	echo "<center><table class='tab_cadre' width='750'>";
@@ -186,6 +187,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 		$where.=" OR glpi_enterprises.name LIKE '%".$contains."%'";
 		$where .= " OR resptech.name LIKE '%".$contains."%'";
 		$where .= getInfocomSearchToViewAllRequest($contains);
+		$where .= getContractSearchToViewAllRequest($contains);
 		$where .= ")";
 	}
 	else {
@@ -208,12 +210,13 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 		$order = "ASC";
 	}
 	
-	$query = "SELECT glpi_software.ID as ID FROM glpi_software ";
+	$query = "SELECT DISTINCT glpi_software.ID as ID FROM glpi_software ";
 	$query .= "LEFT JOIN glpi_dropdown_os on glpi_software.platform=glpi_dropdown_os.ID ";
 	$query.= " LEFT JOIN glpi_dropdown_locations on glpi_software.location=glpi_dropdown_locations.ID ";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = glpi_software.FK_glpi_enterprise ) ";
 	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = glpi_software.tech_num ) ";
 	$query.= getInfocomSearchToRequest("glpi_software",SOFTWARE_TYPE);
+	$query.= getContractSearchToRequest("glpi_software",SOFTWARE_TYPE);
 	$query.= " WHERE $where AND glpi_software.deleted='$deleted'  AND glpi_software.is_template = '0' ORDER BY $sort $order";
 
 	// Get it from database	
