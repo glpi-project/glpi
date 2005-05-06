@@ -1451,6 +1451,8 @@ if ($dh = opendir($store_path)) {
 * @return nothing (print out an HTML select box)
 */
 function dropdownAllItems($name,$withenterprise=0,$search='',$value='') {
+	global $deleted_tables, $template_tables;
+	
 	$db=new DB;
 	
 	$items=array(
@@ -1468,8 +1470,15 @@ function dropdownAllItems($name,$withenterprise=0,$search='',$value='') {
 
 	foreach ($items as $type => $table){
 
-		$where="WHERE is_template='0' AND deleted='N' ";
-	
+		$where="WHERE '1' = '1' ";
+		
+		if (in_array($table,$deleted_tables))
+			$where.= " AND deleted='N' ";
+		
+		if (in_array($table,$template_tables))
+			$where.= " AND is_template='0' ";
+		
+		
 		if (!empty($search))
 		$where.="AND name LIKE '%$search%' ";
 		
