@@ -957,7 +957,10 @@ $lang["install"][73]	= "Ok - la fonction mysql_connect() existe - Parfait !";
 $lang["install"][74]	 = "Test de l'utilisation de Session_use_trans_id";
 $lang["install"][75]	 = "Vous devez desactiver l'option Session_use_trans_id dans votre PHP.ini";
 $lang["install"][76]	= "Ok - Le sessions fonctionnent (pas de probl&egrave;mes de trans_id) - Parfait !";
-
+$lang["install"][77]	= "Etape" ;
+$lang["install"][78]	= "Quelle base par d&eacute;faut voulez vous utiliser ?" ;
+$lang["install"][79]	= "Base par d&eacute;faut" ;
+$lang["install"][80]	= "Base vide" ;
 
 
 $lang["update"][90]  ="Erreur durant la mise  &#224; jour de la base de donn&eacute;es";
