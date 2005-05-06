@@ -94,6 +94,7 @@ function searchFormMonitors($field="",$phrasetype= "",$contains="",$sort= "",$de
 	$option["glpi_enterprises.name"]			= $lang["common"][5];
 	$option["resptech.name"]			=$lang["common"][10];
 	$option=addInfocomOptionFieldsToResearch($option);
+	$option=addContractOptionFieldsToResearch($option);
 	
 	echo "<form method='get' action=\"".$cfg_install["root"]."/monitors/monitors-search.php\">";
 	echo "<div align='center'><table  width='750' class='tab_cadre'>";
@@ -187,6 +188,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 		}
 		
 		$where .= getInfocomSearchToViewAllRequest($contains);
+		$where .= getContractSearchToViewAllRequest($contains);
 		
 		$where .= ")";
 	}
@@ -211,11 +213,12 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 	if (!$order) {
 		$order = "ASC";
 	}
-	$query = "select mon.ID from glpi_monitors as mon LEFT JOIN glpi_dropdown_locations on mon.location=glpi_dropdown_locations.ID ";
+	$query = "select DISTINCT mon.ID from glpi_monitors as mon LEFT JOIN glpi_dropdown_locations on mon.location=glpi_dropdown_locations.ID ";
 	$query.= " LEFT JOIN glpi_type_monitors on mon.type = glpi_type_monitors.ID ";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = mon.FK_glpi_enterprise ) ";
 	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = mon.tech_num ) ";
 	$query.= getInfocomSearchToRequest("mon",MONITOR_TYPE);
+	$query.= getContractSearchToRequest("mon",MONITOR_TYPE);
 	$query .= " where $where AND mon.deleted='$deleted' AND mon.is_template = '0' ORDER BY $sort $order";
 	//echo $query;
 	// Get it from database	

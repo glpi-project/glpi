@@ -100,6 +100,7 @@ function searchFormPrinters($field="",$phrasetype= "",$contains="",$sort= "",$de
 	$option["glpi_enterprises.name"]			= $lang["common"][5];
 	$option["resptech.name"]			=$lang["common"][10];
 	$option=addInfocomOptionFieldsToResearch($option);
+	$option=addContractOptionFieldsToResearch($option);
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/printers/printers-search.php\">";
 	echo "<div align='center'><table  width='750' class='tab_cadre'>";
@@ -190,6 +191,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 		$where .= " OR glpi_networking_ports.ifmac LIKE '%".$contains."%'";
 		$where .= " OR glpi_dropdown_netpoint.name LIKE '%".$contains."%'";
 		$where .= getInfocomSearchToViewAllRequest($contains);
+		$where .= getContractSearchToViewAllRequest($contains);
 		$where .= ")";
 	}
 	else {
@@ -217,6 +219,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = printer.FK_glpi_enterprise ) ";
 	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = printer.tech_num ) ";
 	$query.= getInfocomSearchToRequest("printer",PRINTER_TYPE);
+	$query.= getContractSearchToRequest("printer",PRINTER_TYPE);
 	$query .= "where $where AND printer.deleted='$deleted' AND printer.is_template = '0' ORDER BY $sort $order";
 	
 //	echo $query;

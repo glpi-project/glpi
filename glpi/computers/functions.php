@@ -145,6 +145,7 @@ function searchFormComputers($field="",$contains="",$sort= "",$deleted= "") {
 	$option["glpi_enterprises.name"]		= $lang["common"][5];
 	$option["resptech.name"]			= $lang["common"][10];
 	$option=addInfocomOptionFieldsToResearch($option);
+	$option=addContractOptionFieldsToResearch($option);
 	
 	
 	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
@@ -290,6 +291,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 		$where .= " OR glpi_dropdown_netpoint.name LIKE '%".$contains."%'";
 		$where .= " OR glpi_type_computers.name LIKE '%".$contains."%'";
 		$where .= getInfocomSearchToViewAllRequest($contains);
+		$where .= getContractSearchToViewAllRequest($contains);
 		$where .= ")";
 	}
 	else {
@@ -330,6 +332,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = comp.tech_num ) ";
 	$query.= " LEFT JOIN glpi_type_computers ON (glpi_type_computers.ID = comp.type ) ";
 	$query.= getInfocomSearchToRequest("comp",COMPUTER_TYPE);
+	$query.= getContractSearchToRequest("comp",COMPUTER_TYPE);
 	$query .= " where $where AND comp.deleted='$deleted' AND comp.is_template = '0'  ORDER BY $sort $order";
 
 	// Get it from database	
