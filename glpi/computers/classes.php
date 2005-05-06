@@ -333,7 +333,7 @@ class Computer {
 						deleteReservationItem(array("ID"=>$db->result($result,0,"ID")));
 					}
 				}
-				$query = "DELETE FROM glpi_computer_device WHERE (FK_computer = '$ID')";
+				$query = "DELETE FROM glpi_computer_device WHERE (FK_computers = '$ID')";
 				$result = $db->query($query);
 
 				return true;
