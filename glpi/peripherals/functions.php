@@ -92,6 +92,7 @@ function searchFormperipheral($field="",$phrasetype= "",$contains="",$sort= "",$
 	$option["periph.date_mod"]			= $lang["peripherals"][16];
 	$option["glpi_enterprises.name"]			= $lang["common"][5];
 	$option["resptech.name"]			=$lang["common"][10];
+	$option=addInfocomOptionFieldsToResearch($option);
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/peripherals/peripherals-search.php\">";
 	echo "<div align='center'><table  width='750' class='tab_cadre'>";
@@ -174,6 +175,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 		}
 		$where.=" OR glpi_enterprises.name LIKE '%".$contains."%'";
 		$where .= " OR resptech.name LIKE '%".$contains."%'";
+		$where .= getInfocomSearchToViewAllRequest($contains);
 		$where .= ")";
 	}
 	else {
@@ -195,9 +197,10 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 		$order = "ASC";
 	}
 	$query = "select periph.ID from glpi_peripherals as periph LEFT JOIN glpi_dropdown_locations on periph.location=glpi_dropdown_locations.ID ";
-	$query .= "LEFT JOIN glpi_type_peripherals on periph.type = glpi_type_peripherals.ID ";
+	$query .= " LEFT JOIN glpi_type_peripherals on periph.type = glpi_type_peripherals.ID ";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = periph.FK_glpi_enterprise ) ";
 	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = periph.tech_num ) ";
+	$query.= getInfocomSearchToRequest("periph",PERIPHERAL_TYPE);
 	$query .= "where $where AND periph.deleted='$deleted' AND periph.is_template = '0' ORDER BY $sort $order";
 
 	// Get it from database	

@@ -100,6 +100,7 @@ function searchFormNetworking($field="",$phrasetype= "",$contains="",$sort= "",$
 	$option["glpi_dropdown_netpoint.name"]			= $lang["networking"][51];
 	$option["glpi_enterprises.name"]			= $lang["common"][5];
 	$option["resptech.name"]			=$lang["common"][10];
+	$option=addInfocomOptionFieldsToResearch($option);
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/networking/networking-search.php\">";
 	echo "<div align='center'><table  width='750' class='tab_cadre'>";
@@ -192,6 +193,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 		$where .= " OR glpi_networking_ports.ifaddr LIKE '%".$contains."%'";
 		$where .= " OR glpi_networking_ports.ifmac LIKE '%".$contains."%'";
 		$where .= " OR glpi_dropdown_netpoint.name LIKE '%".$contains."%'";
+		$where .= getInfocomSearchToViewAllRequest($contains);
 		$where .= ")";
 	}
 	else {
@@ -213,12 +215,13 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 		$order = "ASC";
 	}
 	$query = "select DISTINCT glpi_networking.ID from glpi_networking LEFT JOIN glpi_dropdown_locations on glpi_networking.location=glpi_dropdown_locations.ID ";
-	$query .= "LEFT JOIN glpi_type_networking on glpi_networking.type = glpi_type_networking.ID ";
-	$query .= "LEFT JOIN glpi_dropdown_firmware on glpi_networking.firmware = glpi_dropdown_firmware.ID ";
-	$query .= "LEFT JOIN glpi_networking_ports on (glpi_networking.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='2')";	
-	$query .= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";
+	$query .= " LEFT JOIN glpi_type_networking on glpi_networking.type = glpi_type_networking.ID ";
+	$query .= " LEFT JOIN glpi_dropdown_firmware on glpi_networking.firmware = glpi_dropdown_firmware.ID ";
+	$query .= " LEFT JOIN glpi_networking_ports on (glpi_networking.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='2')";	
+	$query .= " LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = glpi_networking.FK_glpi_enterprise ) ";
 	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = glpi_networking.tech_num ) ";
+	$query.= getInfocomSearchToRequest("glpi_networking",NETWORKING_TYPE);
 	$query .= "where $where AND glpi_networking.deleted='$deleted' AND glpi_networking.is_template = '0' ORDER BY $sort $order";
 
 	// Get it from database	
