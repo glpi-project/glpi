@@ -200,7 +200,9 @@ while ($i < $number) {
 }
 
 echo "</table>";
-echo "</body></html>";
+
+commonFooter();
+
 
 
 
