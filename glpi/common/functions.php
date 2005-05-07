@@ -767,11 +767,15 @@ function commonFooter() {
 	// Print foot for every page
 
 GLOBAL $cfg_install,$cfg_debug,$DEBUG_SQL_STRING,$TIMER_DEBUG,$SQL_TOTAL_TIMER,$SQL_TOTAL_REQUEST;
-echo "<div id='footer' ><div align='right'>";
-	echo "<a href=\"http://GLPI.indepnet.org/\">";
-	echo "<span class='copyright'>GLPI ".$cfg_install["version"]." Copyright (C) 2003-2005 by the INDEPNET Development Team.</span>";
-	echo "</a></div>";
-	echo "</div>";
+echo "<div id='footer' >";
+echo "<table width='100%'><tr><td align='left'>";
+echo $TIMER_DEBUG->Get_Time()."s";
+echo "</td><td align='right'>";
+echo "<a href=\"http://GLPI.indepnet.org/\">";
+echo "<span class='copyright'>GLPI ".$cfg_install["version"]." Copyright (C) 2003-2005 by the INDEPNET Development Team.</span>";
+echo "</a>";
+echo "</div>";
+echo "</td></tr>";
 	if ($cfg_debug["active"]){
 		echo "<h1>DEBUG</h1>";
 		if ($cfg_debug["profile"]){

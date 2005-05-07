@@ -39,11 +39,13 @@ include ("_relpos.php");
 include ($phproot . "/glpi/common/classes.php");
 include ($phproot . "/glpi/common/functions.php");
 include ($phproot . "/glpi/config/config.php");
+
+include ($phproot . "/glpi/common/Timer.php");
+$TIMER_DEBUG=new Script_Timer;
+$TIMER_DEBUG->Start_Timer();
+
 if ($cfg_debug["active"]){
 	if ($cfg_debug["profile"]){		
-		include ($phproot . "/glpi/common/Timer.php");
-		$TIMER_DEBUG=new Script_Timer;
-		$TIMER_DEBUG->Start_Timer();
 		$SQL_TOTAL_TIMER=0;
 		$SQL_TOTAL_REQUEST=0;
 	}
