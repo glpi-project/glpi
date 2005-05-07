@@ -573,7 +573,7 @@ function showDeviceContract($instID,$search='') {
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
     $db = new DB;
-	$query = "SELECT * FROM glpi_contract_device WHERE glpi_contract_device.FK_contract = '$instID' order by device_type";
+	$query = "SELECT * FROM glpi_contract_device WHERE glpi_contract_device.FK_contract = '$instID' order by device_type, FK_device";
 //echo $query;	
 	$result = $db->query($query);
 	$number = $db->numrows($result);
