@@ -148,7 +148,7 @@ $cfg_install["doc_dir"] = "/docs";
 // Default language
 $cfg_install["default_language"] = $db->result($result,0,"default_language");
 
-$cfg_debug["active"]=1;
+$cfg_debug["active"]=0;
 $cfg_debug["sql"]=1;
 $cfg_debug["vars"]=1;
 $cfg_debug["profile"]=1;
