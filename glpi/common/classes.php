@@ -52,7 +52,31 @@ class DBmysql {
 		mysql_select_db($this->dbdefault) or $this->error = 1;
 	}
 	function query($query) {
-		return mysql_query($query);
+		global $cfg_debug,$DEBUG_SQL_STRING,$SQL_TOTAL_TIMER;
+		
+		if ($cfg_debug["active"]) {
+			if ($cfg_debug["sql"]){		
+				$DEBUG_SQL_STRING.=$query;
+				if ($cfg_debug["profile"]){		
+					$TIMER=new Script_Timer;
+					$TIMER->Start_Timer();
+				}
+			}
+		}
+		$res=mysql_query($query);
+
+		if ($cfg_debug["active"]) {
+			if ($cfg_debug["profile"]&&$cfg_debug["sql"]){		
+				$TIME=$TIMER->Get_Time();
+				$DEBUG_SQL_STRING.="<br><b>Time: </b>".$TIME."s";
+				$SQL_TOTAL_TIMER+=$TIME;
+			}
+			if ($cfg_debug["sql"]){
+				$DEBUG_SQL_STRING.="<hr>";
+			}
+		}
+		
+		return $res;
 	}
 	function result($result, $i, $field) {
 		$value=get_magic_quotes_runtime()?stripslashes_deep(mysql_result($result, $i, $field)):mysql_result($result, $i, $field);
