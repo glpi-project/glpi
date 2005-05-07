@@ -63,10 +63,10 @@ echo "<select name=\"dropdown\">";
 echo "<option value=\"glpi_type_computers\" ".($_POST["dropdown"]=="glpi_type_computers"?"selected":"").">".$lang["computers"][8]."</option>";
 echo "<option value=\"glpi_dropdown_os\" ".($_POST["dropdown"]=="glpi_dropdown_os"?"selected":"").">".$lang["computers"][9]."</option>";
 echo "<option value=\"glpi_dropdown_locations\" ".($_POST["dropdown"]=="glpi_dropdown_locations"?"selected":"").">".$lang["stats"][21]."</option>";
-echo "<option value=\"".MOBOARD_DEVICE."\" ".($_POST["dropdown"]=="glpi_device_moboard"?"selected":"").">".$lang["computers"][35]."</option>";
-echo "<option value=\"".PROCESSOR_DEVICE."\" ".($_POST["dropdown"]=="glpi_device_processor"?"selected":"").">".$lang["setup"][7]."</option>";
-echo "<option value=\"".GFX_DEVICE."\" ".($_POST["dropdown"]=="glpi_device_gfxcard"?"selected":"").">".$lang["computers"][34]."</option>";
-echo "<option value=\"".HDD_DEVICE."\" ".($_POST["dropdown"]=="glpi_device_hdd"?"selected":"").">".$lang["computers"][36]."</option>";
+echo "<option value=\"".MOBOARD_DEVICE."\" ".($_POST["dropdown"]==MOBOARD_DEVICE?"selected":"").">".$lang["computers"][35]."</option>";
+echo "<option value=\"".PROCESSOR_DEVICE."\" ".($_POST["dropdown"]==PROCESSOR_DEVICE?"selected":"").">".$lang["setup"][7]."</option>";
+echo "<option value=\"".GFX_DEVICE."\" ".($_POST["dropdown"]==GFX_DEVICE?"selected":"").">".$lang["computers"][34]."</option>";
+echo "<option value=\"".HDD_DEVICE."\" ".($_POST["dropdown"]==HDD_DEVICE?"selected":"").">".$lang["computers"][36]."</option>";
 echo "</select></td>";
 
 echo "<td align='right'>";
@@ -101,26 +101,27 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 			if ($result=$db->query($query))
 				$count=$db->result($result,0,0);
 			else $count=0; 
+
 			echo "<tr class='tab_bg_1'>";
 			echo "<td>".getDropdownName($_POST["dropdown"],$key["ID"]) ."&nbsp;($count)</td>";
 			//le nombre d'intervention
 			//the number of intervention
-			echo "<td>".getNbinter(4,"glpi_computers.".getDropdownNameFromTable($_POST["dropdown"]),$key["ID"],$_POST["date1"],$_POST["date2"] )."</td>";
+			echo "<td>".getNbinter(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$key["ID"],$_POST["date1"],$_POST["date2"] )."</td>";
 			//le nombre d'intervention resolues
 			//the number of resolved intervention
-			echo "<td>".getNbresol(4,"glpi_computers.".getDropdownNameFromTable($_POST["dropdown"]),$key["ID"],$_POST["date1"],$_POST["date2"])."</td>";
+			echo "<td>".getNbresol(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$key["ID"],$_POST["date1"],$_POST["date2"])."</td>";
 			//Le temps moyen de resolution
 			//The average time to resolv
-			echo "<td>".getResolAvg(4,"glpi_computers.".getDropdownNameFromTable($_POST["dropdown"]),$key["ID"],$_POST["date1"],$_POST["date2"])."</td>";
+			echo "<td>".getResolAvg(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$key["ID"],$_POST["date1"],$_POST["date2"])."</td>";
 			//Le temps moyen de l'intervention réelle
 			//The average realtime to resolv
-			echo "<td>".getRealAvg(1,"glpi_computers.".getDropdownNameFromTable($_POST["dropdown"]),$key["ID"])."</td>";
+			echo "<td>".getRealAvg(1,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$key["ID"])."</td>";
 			//Le temps total de l'intervention réelle
 			//The total realtime to resolv
-			echo "<td>".getRealTotal(1,"glpi_computers.".getDropdownNameFromTable($_POST["dropdown"]),$key["ID"])."</td>";
+			echo "<td>".getRealTotal(1,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$key["ID"])."</td>";
 			//
 			//
-			echo "<td>".getFirstActionAvg(1,"glpi_computers.".getDropdownNameFromTable($_POST["dropdown"]),$key["ID"])."</td>";
+			echo "<td>".getFirstActionAvg(1,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$key["ID"])."</td>";
 
 			echo "</tr>";
 		}

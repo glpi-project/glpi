@@ -477,6 +477,21 @@ function getDropdownNameFromTable($table) {
 	return $name;
 }
 
+function getDropdownNameFromTableForStats($table) {
+
+	if(ereg("glpi_type_",$table)){
+		$name = "type";
+	}
+	else {
+		if($table == "glpi_dropdown_locations") $name = "location";
+		else {
+			$name = ereg_replace("glpi_dropdown_","",$table);
+		}
+	}
+	return $name;
+}
+
+
 //check if the dropdown $ID is used into item tables
 function dropdownUsed($table, $ID) {
 
