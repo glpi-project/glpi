@@ -133,7 +133,7 @@ else
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {
 		$_SESSION['glpi_onglet']=$_GET['onglet'];
-		header("Location: ".$_SERVER['HTTP_REFERER']);
+//		header("Location: ".$_SERVER['HTTP_REFERER']);
 	}
 	
 	commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
