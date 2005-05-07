@@ -45,6 +45,7 @@ if ($cfg_debug["active"]){
 		$TIMER_DEBUG=new Script_Timer;
 		$TIMER_DEBUG->Start_Timer();
 		$SQL_TOTAL_TIMER=0;
+		$SQL_TOTAL_REQUEST=0;
 	}
 	if ($cfg_debug["sql"]){		
 		$DEBUG_SQL_STRING="";

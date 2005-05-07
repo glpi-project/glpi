@@ -52,11 +52,12 @@ class DBmysql {
 		mysql_select_db($this->dbdefault) or $this->error = 1;
 	}
 	function query($query) {
-		global $cfg_debug,$DEBUG_SQL_STRING,$SQL_TOTAL_TIMER;
+		global $cfg_debug,$DEBUG_SQL_STRING,$SQL_TOTAL_TIMER, $SQL_TOTAL_REQUEST;
 		
 		if ($cfg_debug["active"]) {
 			if ($cfg_debug["sql"]){		
 				$DEBUG_SQL_STRING.=$query;
+				$SQL_TOTAL_REQUEST++;
 				if ($cfg_debug["profile"]){		
 					$TIMER=new Script_Timer;
 					$TIMER->Start_Timer();

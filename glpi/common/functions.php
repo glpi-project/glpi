@@ -766,7 +766,7 @@ function nullHeader($title,$url) {
 function commonFooter() {
 	// Print foot for every page
 
-GLOBAL $cfg_install,$cfg_debug,$DEBUG_SQL_STRING,$TIMER_DEBUG,$SQL_TOTAL_TIMER;
+GLOBAL $cfg_install,$cfg_debug,$DEBUG_SQL_STRING,$TIMER_DEBUG,$SQL_TOTAL_TIMER,$SQL_TOTAL_REQUEST;
 echo "<div id='footer' ><div align='right'>";
 	echo "<a href=\"http://GLPI.indepnet.org/\">";
 	echo "<span class='copyright'>GLPI ".$cfg_install["version"]." Copyright (C) 2003-2005 by the INDEPNET Development Team.</span>";
@@ -792,8 +792,9 @@ echo "<div id='footer' ><div align='right'>";
 	
 		if ($cfg_debug["sql"]){	
 			echo "<h2>SQL REQUEST</h2>";
+			echo "<b> Number of request:</b> ".$SQL_TOTAL_REQUEST."<br>";
 			if ($cfg_debug["profile"]){
-				echo "<b>Total Time :</b> ".$SQL_TOTAL_TIMER."s<br><hr>";
+				echo "<b>Total Time:</b> ".$SQL_TOTAL_TIMER."s<br><hr>";
 			}
 			echo eregi_replace("ORDER BY","<br>ORDER BY",eregi_replace("SORT","<br>SORT",eregi_replace("LEFT JOIN","<br>LEFT JOIN",eregi_replace("WHERE","<br>WHERE",eregi_replace("FROM","<br>FROM",$DEBUG_SQL_STRING)))));
 		}
