@@ -443,15 +443,10 @@ function step3($host,$user,$password,$update)
 	else {
 		echo $lang["update"][93]."<br><br>";
 		if($update == "no") {
-			echo $lang["install"][78]."<br>";
-			echo "<form action=\"install.php\" method=\"post\">";
-			echo "<select name='selecteddump'>";
-			echo "<option value='default'>".$lang["install"][79]."</option>";
-			echo "<option value='empty'>".$lang["install"][80]."</option>";
-			echo "</select><br><br>";
 
 			echo $lang["install"][38];
 			
+			echo "<form action=\"install.php\" method=\"post\">";
 			
 			$db_list = mysql_list_dbs($link);
 			while ($row = mysql_fetch_object($db_list)) {
@@ -516,7 +511,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename,$selecteddu
 	}
 	
 	//Fill the database
-	function fill_db($selecteddump)
+	function fill_db()
 	{
 		global $lang;
 		
@@ -526,7 +521,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename,$selecteddu
 		include ($phproot . "/glpi/config/config_db.php");
 		
 		$db = new DB;
-		$db_file = $phproot ."/mysql/glpi-0.51-".$selecteddump.".sql";
+		$db_file = $phproot ."/mysql/glpi-0.51-empty.sql";
 		$dbf_handle = fopen($db_file, "rt");
 		$sql_query = fread($dbf_handle, filesize($db_file));
 		fclose($dbf_handle);
@@ -555,7 +550,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename,$selecteddu
 		}
 		else {
 			if (create_conn_file($host,$user,$password,$databasename)) {
-				fill_db($selecteddump);
+				fill_db();
 				echo "<p>".$lang["install"][43]."</p>";
 				echo "<p>".$lang["install"][44]."</p>";
 				echo "<p>".$lang["install"][45]."</p>";
@@ -578,7 +573,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename,$selecteddu
 			echo "<p>Base de données créée </p>";
 			mysql_select_db($newdatabasename, $link);
 			if (create_conn_file($host,$user,$password,$newdatabasename)) {
-				fill_db($selecteddump);
+				fill_db();
 				echo "<p>".$lang["install"][43]."</p>";
 				echo "<p>".$lang["install"][44]."</p>";
 				echo "<p>".$lang["install"][45]."</p>";
@@ -720,9 +715,8 @@ loadLang($_SESSION["dict"]);
 				header_html($lang['install'][77]." 3");
 				if(empty($_POST["databasename"])) $_POST["databasename"] ="";
 				if(empty($_POST["newdatabasename"])) $_POST["newdatabasename"] ="";
-				if(empty($_POST["selecteddump"])) $_POST["selecteddump"] ="";
 				
-				step4($_POST["db_host"],$_POST["db_user"],$_POST["db_pass"],$_POST["databasename"],$_POST["newdatabasename"],$_POST["selecteddump"]);
+				step4($_POST["db_host"],$_POST["db_user"],$_POST["db_pass"],$_POST["databasename"],$_POST["newdatabasename"]);
 				break;
 			case "Etape_4" :
 				header_html($lang['install'][77]." 4");
