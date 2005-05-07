@@ -225,7 +225,7 @@ if(isset($_POST["send"]))
 		echo "<td  width='25%' align='center'>";
 		echo "<b> $Comp_num </b></td>";
 		echo "<td width='25%' align='center'>";
-		echo "&nbsp;/&nbsp;";
+		echo "&nbsp;";
 		echo "</td>";
 		echo "</tr>";
 	}
@@ -243,7 +243,7 @@ if(isset($_POST["send"]))
 		echo "<td  width='25%' align='center'>";
 		echo "<b> $Comp_num </b></td>";
 		echo "<td width='25%' align='center'>";
-		echo "&nbsp;/&nbsp;";
+		echo "&nbsp;";
 		echo "</td>";
 		echo "</tr>";
 	}

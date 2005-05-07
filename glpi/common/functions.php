@@ -1468,8 +1468,10 @@ function dropdownAllItems($name,$withenterprise=0,$search='',$value='') {
 	
 	echo "<select name=\"$name\" size='1'>";
 
-	foreach ($items as $type => $table){
+	$ci=new CommonItem;
 
+	foreach ($items as $type => $table){
+		$ci->setType($type);
 		$where="WHERE '1' = '1' ";
 		
 		if (in_array($table,$deleted_tables))
@@ -1485,7 +1487,7 @@ function dropdownAllItems($name,$withenterprise=0,$search='',$value='') {
 //	if ($table=="glpi_enterprises"||$table=="glpi_cartridge_type")
 //		$where = "WHERE deleted='N' ";
 
-		$query = "SELECT ID FROM $table $where ORDER BY name";
+		$query = "SELECT ID,name FROM $table $where ORDER BY name";
 	//echo $query;
 		$result = $db->query($query);
 	
@@ -1495,9 +1497,8 @@ function dropdownAllItems($name,$withenterprise=0,$search='',$value='') {
 		if ($number > 0) {
 			while ($i < $number) {
 				$ID=$db->result($result, $i, "ID");
-				$ci=new CommonItem;
-				$ci->getFromDB($type,$ID);
-				$output=$ci->getType()." - ".$ci->getName();
+				$name=$db->result($result, $i, "name");
+				$output=$ci->getType()." - ".$name;
 				if (createAllItemsSelectValue($type,$ID) === $value) {
 					echo "<option value=\"".$type."_".$ID."\" selected>$output</option>";
 				} else {
