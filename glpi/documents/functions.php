@@ -487,7 +487,7 @@ function showDeviceDocument($instID,$search='') {
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
     $db = new DB;
-	$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' order by device_type";
+	$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' order by device_type, FK_device";
 //echo $query;	
 	$result = $db->query($query);
 	$number = $db->numrows($result);
