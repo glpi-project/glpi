@@ -808,6 +808,10 @@ class CommonItem{
 			else return false;
 			
 	}
+	function setType ($device_type){
+		$this->device_type=$device_type;
+	}
+
 	function getType (){
 		global $lang;
 		
