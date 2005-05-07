@@ -613,5 +613,33 @@ p.toolbar a:hover
 
 .barre { text-decoration : line-through; }
 
+/* #################################### */
+/* DEBUG */
+/* #################################### */
+
+#debug{
+
+
+}
+
+
+#debug h1{
+font-size:14px; text-align:center; background-color:#efefe7;
+-moz-border-radius: 8px;
+  /*border: 2px outset #009966;*/
+border: 2px outset #FFC65D;
+padding: 5px;
+
+}
+
+#debug h2{
+font-size:14px; 
+padding-left: 10px;
+border-left: 4px solid #FFC65D;
+border-bottom: 2px solid #FFC65D;
+}
+
+
+
 
 

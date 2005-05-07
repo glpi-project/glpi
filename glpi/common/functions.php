@@ -767,42 +767,48 @@ function commonFooter() {
 	// Print foot for every page
 
 GLOBAL $cfg_install,$cfg_debug,$DEBUG_SQL_STRING,$TIMER_DEBUG,$SQL_TOTAL_TIMER,$SQL_TOTAL_REQUEST;
+
 echo "<div id='footer' >";
-echo "<table width='100%'><tr><td align='left'>";
-echo $TIMER_DEBUG->Get_Time()."s";
+echo "<table width='100%'><tr><td align='left'><span class='copyright'>";
+echo $TIMER_DEBUG->Get_Time()."s</span>";
 echo "</td><td align='right'>";
 echo "<a href=\"http://GLPI.indepnet.org/\">";
 echo "<span class='copyright'>GLPI ".$cfg_install["version"]." Copyright (C) 2003-2005 by the INDEPNET Development Team.</span>";
 echo "</a>";
-echo "</div>";
+
 echo "</td></tr>";
+echo "</table></div>";
+
 	if ($cfg_debug["active"]){
-		echo "<h1>DEBUG</h1>";
+		
+		echo "<div id='debug'>";
+		echo "<h1 >GLPI MODE DEBUG</h1>";
 		if ($cfg_debug["profile"]){
-			echo "<h2>TIME</h2>";
+			echo "<h2 >TIME</h2>";
 			echo $TIMER_DEBUG->Get_Time()."s";
 		}
 		if ($cfg_debug["vars"]){
-			echo "<h2>POST VARIABLE</h2>";
+			echo "<h2 >POST VARIABLE</h2>";
 			foreach($_POST as $key => $val)
 				echo $key." => ".$val."<br>";
-			echo "<h2>GET VARIABLE</h2>";
+			echo "<h2 >GET VARIABLE</h2>";
 			foreach($_GET as $key => $val)
 				echo $key." => ".$val."<br>";
-			echo "<h2>SESSION VARIABLE</h2>";
+			echo "<h2 >SESSION VARIABLE</h2>";
 			foreach($_SESSION as $key => $val)
 				echo $key." => ".$val."<br>";
 		}
 	
 		if ($cfg_debug["sql"]){	
 			echo "<h2>SQL REQUEST</h2>";
-			echo "<b> Number of request:</b> ".$SQL_TOTAL_REQUEST."<br>";
+			echo "<p><b> Number of request:</b> ".$SQL_TOTAL_REQUEST."</p>";
 			if ($cfg_debug["profile"]){
-				echo "<b>Total Time:</b> ".$SQL_TOTAL_TIMER."s<br><hr>";
+				echo "<p><b>Total Time:</b> ".$SQL_TOTAL_TIMER."s</p><hr>";
 			}
+			
 			echo eregi_replace("ORDER BY","<br>ORDER BY",eregi_replace("SORT","<br>SORT",eregi_replace("LEFT JOIN","<br>LEFT JOIN",eregi_replace("WHERE","<br>WHERE",eregi_replace("FROM","<br>FROM",$DEBUG_SQL_STRING)))));
 		}
-	
+	echo "</div>";
 	}
 	echo "</body></html>";
 }
