@@ -1,12 +1,11 @@
-GLPI - 0.51
-===========
+*** GLPI - 0.51 ***
 
 - 0000065: [Général] Correction Bugs : delete des intitulés + delete des followups + update des licences + bug update des lieux dans la mise à jour
 - 0000064: [Module Gestion] Optimisation dropdownAllItems pour les contrats et les documents
 - 0000063: [Général] Mode debug pour GLPI
 - 0000062: [Installation / Mise à Jour] Script de transfert IRM -> GLPI
 - 0000059: [Général] Pb d'affichage dû à la prise en compte de la variable "onglet" sous IIS 2003 server
-- 0000058: [Installation / Mise à Jour] gestion de 2 bases de données par défaut : une vide et une pré-remplie pour le test.
+- 0000058: [Installation / Mise à Jour] La base de données par défaut est totalement vide désormais.
 - 0000029: [Module Inventaire] Recherche par infos commerciales et/ou contrats
 - 0000055: [Module Inventaire] Ajout de plusieurs cartouches
 - 0000045: [Module Inventaire] Etat du matériel
