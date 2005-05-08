@@ -1,3 +1,28 @@
+GLPI - 0.51
+===========
+
+- 0000065: [Général] Correction Bugs : delete des intitulés + delete des followups + update des licences + bug update des lieux dans la mise à jour
+- 0000064: [Module Gestion] Optimisation dropdownAllItems pour les contrats et les documents
+- 0000063: [Général] Mode debug pour GLPI
+- 0000062: [Installation / Mise à Jour] Script de transfert IRM -> GLPI
+- 0000059: [Général] Pb d'affichage dû à la prise en compte de la variable "onglet" sous IIS 2003 server
+- 0000058: [Installation / Mise à Jour] gestion de 2 bases de données par défaut : une vide et une pré-remplie pour le test.
+- 0000029: [Module Inventaire] Recherche par infos commerciales et/ou contrats
+- 0000055: [Module Inventaire] Ajout de plusieurs cartouches
+- 0000045: [Module Inventaire] Etat du matériel
+- 0000033: [Module Inventaire] Alarme pour stock cartouches
+- 0000039: [Général] Permettre un tri ascendant et descendant dans les listes
+- 0000034: [Module Gestion] URL pour gestion de docs
+- 0000025: [Module Assistance] Interventions et entreprises
+- 0000032: [Module Statistiques / Rapports] Rapport intervention : ajout ouvert / fermée + pas voir followups
+- 0000043: [Module Gestion] associé un document à une entreprise.
+- 0000041: [Module Gestion] Edition type de contacts
+- 0000040: [Module Gestion] Numéro de fax dans entreprise
+- 0000038: [Module Gestion] Lien entreprise contact bidirectionnel
+- 0000030: [Module Gestion] Numéro de facture dans les infocoms
+- 0000052: [Module Gestion] Tri des contacts par Fax / Email / Type
+- 0000050: [Général] Mauvaise gestion du '&' dans le filtre de connection LDAP
+
 **** GLPI 0.5 ***
 
 28/04/05
