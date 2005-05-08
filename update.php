@@ -1488,7 +1488,7 @@ $query= "CREATE TABLE `glpi_cartridges_assoc` (
 	$db->query($query) or die("0.5 CREATE TABLE glpi_cartridges_assoc ".$lang["update"][90].$db->error());
 }
 
-// La gestion des contrats
+//// DEBUT INSERTION PARTIE GESTION 
 if(!TableExists("glpi_contracts")) {
 $query= "CREATE TABLE `glpi_contacts` (
   `ID` int(11) NOT NULL auto_increment,
@@ -1712,6 +1712,7 @@ if (isMaintenanceUsed()){
 } else dropMaintenanceField();
 
 }
+//// FIN INSERTION PARTIE GESTION 
 
 // Merge de l'OS et de la version
 if(FieldExists("glpi_computers","osver")) {
