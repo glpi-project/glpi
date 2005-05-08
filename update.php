@@ -2341,8 +2341,7 @@ if(!TableExists("glpi_dropdown_state")) {
   ID int(11) NOT NULL auto_increment,
   name varchar(255) default NULL,
   PRIMARY KEY  (ID)
-) TYPE=MyISAM;
-";
+) TYPE=MyISAM;";
 	$db->query($query) or die("0.51 add state field ".$lang["update"][90].$db->error());
 
 	$query="INSERT INTO `glpi_dropdown_state` ( `ID` , `name` ) VALUES ('', '".addslashes(unhtmlentities($lang["repair"][0]))."');";

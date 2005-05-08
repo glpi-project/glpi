@@ -1,4 +1,4 @@
-*** GLPI - 0.51 ***
+*** GLPI  0.51 ***
 
 - 0000065: [Général] Correction Bugs : delete des intitulés + delete des followups + update des licences + bug update des lieux dans la mise à jour
 - 0000064: [Module Gestion] Optimisation dropdownAllItems pour les contrats et les documents
