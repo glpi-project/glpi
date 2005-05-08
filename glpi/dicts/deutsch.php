@@ -1123,7 +1123,7 @@ $lang["software"][41]="Software ID";
 $lang["software"][42]="New software based on a template"; 
 
 $lang["state"][0]="State"; 
-$lang["state"][1]="Item State"; 
+$lang["state"][1]="Item States"; 
 $lang["state"][2]="Go back the item to its normal state"; 
 $lang["state"][4]="ID"; 
 $lang["state"][6]="Item Type"; 
@@ -1174,7 +1174,7 @@ $lang["title"][5]="Knownledge database";
 $lang["title"][6]="Networking"; 
 $lang["title"][7]="Devices"; 
 $lang["title"][8]="Printers"; 
-$lang["title"][9]="Reservation"; 
+$lang["title"][9]="Item States"; 
 $lang["title"][10]="Tracking"; 
 $lang["title"][11]="Statistics"; 
 $lang["title"][12]="Softwares"; 
