@@ -2415,6 +2415,7 @@ switch($item_type)
 					$ip2="";
 					$mac2="";
 					$portordi="";
+					$ordi="";
 
 					if ($end1){
 						$np->getFromDB($end1);
