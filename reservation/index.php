@@ -63,7 +63,8 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		if (isAdmin($_SESSION["glpitype"])||$_SESSION["glpiID"]==$_POST["id_user"]) 
 		if (updateReservationResa($_POST,$_SERVER["PHP_SELF"],$item))
 			header("Location: ".$cfg_install["root"]."/reservation/index.php?show=resa&ID=$item&mois_courant=$begin_month&annee_courante=$begin_year");
-		else exit();
+		
+		exit();
 	}
 
 
@@ -130,12 +131,14 @@ else {
 		addReservationItem($_GET);
 		logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." added reservation item ".$_GET["device_type"]."-".$_GET["id_device"].".");
 		header("Location: ".$_SERVER['HTTP_REFERER']);
+		exit();
 	} 
 	else if (isset($_GET["delete"]))
 	{
 		deleteReservationItem($_GET);
 		logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." deleted reservation item.");
 		header("Location: ".$_SERVER['HTTP_REFERER']);
+		exit();
 	}
 
 

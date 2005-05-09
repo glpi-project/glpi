@@ -55,6 +55,7 @@ if (isset($_POST["add"]))
 	addPeripheral($_POST);
 	logEvent(0, "Peripheral", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if (isset($tab["delete"]))
 {
@@ -68,6 +69,7 @@ else if (isset($tab["delete"]))
 		header("Location: ".$cfg_install["root"]."/setup/setup-templates.php");
 	 else 
 	header("Location: ".$cfg_install["root"]."/peripherals/");
+	exit();
 }
 else if (isset($_POST["restore"]))
 {
@@ -75,6 +77,7 @@ else if (isset($_POST["restore"]))
 	restorePeripheral($_POST);
 	logEvent($tab["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." restored item.");
 	header("Location: ".$cfg_install["root"]."/peripherals/");
+	exit();
 }
 else if (isset($tab["purge"]))
 {
@@ -82,6 +85,7 @@ else if (isset($tab["purge"]))
 	deletePeripheral($tab,1);
 	logEvent($tab["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." purge item.");
 	header("Location: ".$cfg_install["root"]."/peripherals/");
+	exit();
 }
 else if (isset($_POST["update"]))
 {
@@ -89,7 +93,7 @@ else if (isset($_POST["update"]))
 	updatePeripheral($_POST);
 	logEvent($_POST["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
-
+	exit();
 }
 else if (isset($tab["disconnect"]))
 {
@@ -97,6 +101,7 @@ else if (isset($tab["disconnect"]))
 	Disconnect($tab["ID"],PERIPHERAL_TYPE);
 	logEvent($tab["ID"], "Peripherals", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if(isset($tab["connect"]))
 {
@@ -120,6 +125,7 @@ else if(isset($tab["connect"]))
 		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],PERIPHERAL_TYPE);
 		logEvent($tab["sID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." connected item.");
 		header("Location: ".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=".$tab["sID"]);
+		exit();
 	}
 }
 else

@@ -100,6 +100,7 @@ else if(isset($_POST["delete"]))
 		header("Location: ".$cfg_install["root"]."/computers/");
 		break;
 	}
+	exit();
 }
 else if(isset($_POST["update"]))
 {

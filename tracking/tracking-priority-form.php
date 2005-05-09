@@ -51,7 +51,7 @@ if (isset($_GET["update"]))
 {
 	priorityJob ($_GET["ID"],$_GET["priority"],$_SESSION["glpiname"]);	
 	header("Location: ".$_SERVER['HTTP_REFERER']);
-
+	exit();
 }
 else
 {

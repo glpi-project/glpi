@@ -57,6 +57,7 @@ if (isset($_POST["add"]))
 	addSoftware($_POST);
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." added item ".$_POST["name"].".");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if (isset($tab["delete"]))
 {
@@ -70,6 +71,7 @@ else if (isset($tab["delete"]))
 		header("Location: ".$cfg_install["root"]."/setup/setup-templates.php");
 	 else 
 	header("Location: ".$cfg_install["root"]."/software/");
+	exit();
 }
 else if (isset($_POST["restore"]))
 {
@@ -77,6 +79,7 @@ else if (isset($_POST["restore"]))
 	restoreSoftware($_POST);
 	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." restored item.");
 	header("Location: ".$cfg_install["root"]."/software/");
+	exit();
 }
 else if (isset($tab["purge"]))
 {
@@ -84,6 +87,7 @@ else if (isset($tab["purge"]))
 	deleteSoftware($tab,1);
 	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." purge item.");
 	header("Location: ".$cfg_install["root"]."/software/");
+	exit();
 }
 else if (isset($_POST["update"]))
 {
@@ -92,7 +96,7 @@ else if (isset($_POST["update"]))
 	updateSoftware($_POST);
 	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
-
+	exit();
 } 
 else
 {

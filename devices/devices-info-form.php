@@ -62,18 +62,21 @@ if (isset($_POST["add"])) {
 	addDevice($_POST);
 	logEvent(0, "Devices", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["designation"].".");
 	header("Location: ".$cfg_install["root"]."/devices/index.php?device_type=".$_POST["device_type"]);
+	exit();
 }
 else if (isset($tab["delete"])) {
 	checkAuthentication("admin");
 	deleteDevice($tab);
 	logEvent($tab["ID"], "Devices", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/devices/index.php?device_type=".$tab["device_type"]);
+	exit();
 }
 else if (isset($_POST["update"])) {
 	checkAuthentication("admin");
 	updateDevice($_POST);
 	logEvent($_POST["ID"], "Devices", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	header("Location: ".$_SERVER['HTTP_REFERER']."&referer=$REFERER");
+	exit();
 }
 else {
 	checkAuthentication("normal");

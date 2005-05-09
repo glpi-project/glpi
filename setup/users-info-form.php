@@ -46,11 +46,13 @@ if (isset($_POST["add"])) {
 		logEvent(0, "users", 4, "setup", $_SESSION["glpiname"]." added user ".$_POST["name"].".");
 	}
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 } else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
 	deleteUser($_POST);
 	logEvent(0,"users", 4, "setup", $_SESSION["glpiname"]." deleted user ".$_POST["name"].".");
 	header("Location: ".$cfg_install["root"]."/setup/setup-users.php");
+	exit();
 } else if (isset($_POST["update"])) {
 	checkAuthentication("admin");
 	commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);

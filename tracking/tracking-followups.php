@@ -53,7 +53,7 @@ if (isset($_POST["contents"])&&!empty($_POST["contents"])&&isAdmin($_SESSION["gl
 {
 	postFollowups ($_POST["ID"],$_SESSION["glpiname"],$_POST["contents"]);
 	header("Location: ".$cfg_install["root"]."/tracking/tracking-followups.php?ID=".$_POST["ID"]);
-
+	exit();
 }
 
 commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);

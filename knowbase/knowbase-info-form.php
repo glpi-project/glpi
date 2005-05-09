@@ -50,6 +50,7 @@ if(!isset($tab["removefromfaq"])) $tab["removefromfaq"] = "";
 
 if (empty($tab["ID"])) {
 	header("Location: ".$cfg_install["root"]."/knowbase/");
+	exit();
 	}
 
 	
@@ -74,7 +75,7 @@ if (empty($tab["ID"])) {
 	logEvent(0, "knowledge", 5, "tools", $_SESSION["glpiname"]." add an item");	
 	
 	header("Location: ".$cfg_install["root"]."/knowbase/");
-	
+	exit();	
 	}
 	
 	else if (isset($tab["ID"])  && strcmp($tab["modify"],"yes") == 0){
@@ -101,7 +102,7 @@ if (empty($tab["ID"])) {
 	
 		
 	header("Location: ".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=".$tab["ID"]);
-	
+	exit();	
 	}
 	
 	else if (isset($tab["ID"])  && strcmp($tab["delete"],"yes") == 0){
@@ -114,7 +115,7 @@ if (empty($tab["ID"])) {
 	
 	deleteKbItem($tab["ID"]);
 	header("Location: ".$cfg_install["root"]."/knowbase/");
-
+	exit();
 	}
 	
 	
@@ -130,7 +131,7 @@ if (empty($tab["ID"])) {
 	
 		
 	header("Location: ".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=".$tab["ID"]);
-	
+	exit();
 	}
 	
 	
@@ -147,7 +148,7 @@ if (empty($tab["ID"])) {
 	
 		
 	header("Location: ".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=".$tab["ID"]);
-
+	exit();
 	}
 	
 		

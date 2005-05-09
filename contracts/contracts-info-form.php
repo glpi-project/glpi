@@ -55,6 +55,7 @@ if (isset($_POST["add"]))
 	addContract($_POST);
 	logEvent(0, "contract", 4, "financial", $_SESSION["glpiname"]." added item ".$_POST["num"].".");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 } 
 else if (isset($_POST["delete"]))
 {
@@ -62,6 +63,7 @@ else if (isset($_POST["delete"]))
 	deleteContract($_POST);
 	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/contracts/");
+	exit();
 }
 else if (isset($_POST["restore"]))
 {
@@ -69,6 +71,7 @@ else if (isset($_POST["restore"]))
 	restoreContract($_POST);
 	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." restored item.");
 	header("Location: ".$cfg_install["root"]."/contracts/");
+	exit();
 }
 else if (isset($_POST["purge"]))
 {
@@ -76,6 +79,7 @@ else if (isset($_POST["purge"]))
 	deleteContract($_POST,1);
 	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." purge item.");
 	header("Location: ".$cfg_install["root"]."/contracts/");
+	exit();
 }
 else if (isset($_POST["additem"])){
 	checkAuthentication("admin");
@@ -86,12 +90,14 @@ else if (isset($_POST["additem"])){
 	addDeviceContract($_POST["conID"],$type,$ID);
 	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." associate device.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if (isset($_GET["deleteitem"])){
 	checkAuthentication("admin");
 	deleteDeviceContract($_GET["ID"]);
 	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." delete device.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if (isset($_POST["addenterprise"])){
 	checkAuthentication("admin");
@@ -99,12 +105,14 @@ else if (isset($_POST["addenterprise"])){
 	addEnterpriseContract($_POST["conID"],$_POST["entID"]);
 	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." associate enterprise.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if (isset($_GET["deleteenterprise"])){
 	checkAuthentication("admin");
 	deleteEnterpriseContract($_GET["ID"]);
 	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." delete enterprise.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if (isset($_POST["update"]))
 {
@@ -112,6 +120,7 @@ else if (isset($_POST["update"]))
 	updateContract($_POST);
 	logEvent($_POST["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." updated item.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 
 } 
 else
