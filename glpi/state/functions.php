@@ -231,7 +231,8 @@ $si=new StateItem;
 
 $si->getFromDB($device_type,$id_device);
 $db=new DB;
-if ($si->fields["state"]!=0&&$state!=$si->fields["state"]){
+if ($state!=$si->fields["state"])
+if ($si->fields["state"]!=0){
 if ($state==0)
 	$db->query("DELETE FROM glpi_state_item WHERE device_type='$device_type' and id_device='$id_device';");
 else $db->query("UPDATE glpi_state_item SET state='$state' WHERE device_type='$device_type' and id_device='$id_device';");

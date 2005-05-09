@@ -137,9 +137,10 @@ class Document {
 	}
 	
 	function deleteFromDB($ID,$force=0) {
-
+	global $cfg_install,$phproot,$lang;
+	
 		$db = new DB;
-		$this->getFromDB($ID);		
+		$this->getFromDB($ID);	
 		if ($force==1||!$this->isUsed($ID)){
 			$query = "DELETE from glpi_docs WHERE ID = '$ID'";
 			if ($result = $db->query($query)) {
@@ -147,7 +148,14 @@ class Document {
 				$query3 = "DELETE FROM glpi_doc_device WHERE (FK_doc = '$ID')";
 				$result3 = $db->query($query3);
 				
-				// TODO : UNLINK DU FICHIER
+				// UNLINK DU FICHIER
+				if (!empty($this->fields["filename"]))
+				if(is_file($phproot.$cfg_install["doc_dir"]."/".$this->fields["filename"])&& !is_dir($phproot.$cfg_install["doc_dir"]."/".$this->fields["filename"])) {
+						if (unlink($phproot.$cfg_install["doc_dir"]."/".$this->fields["filename"]))
+						$_SESSION["MESSAGE_AFTER_REDIRECT"]= $lang["document"][24].$phproot.$cfg_install["doc_dir"]."/".$this->fields["filename"]."<br>";
+						else $_SESSION["MESSAGE_AFTER_REDIRECT"]= $lang["document"][25].$phproot.$cfg_install["doc_dir"]."/".$this->fields["filename"]."<br>";
+						}
+
 				
 					return true;
 			} else {
