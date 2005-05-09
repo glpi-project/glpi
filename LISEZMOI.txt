@@ -239,6 +239,10 @@ Sauvegardez votre base de donnée via l'interface de sauvegarde de glpi et
 récupérez le fichier dump contenant les données dans le répertoire backups/dump/ 
 et faites en une sauvegarde.
 
+#### VERSION > 0.5
+Faites également une sauvegarde du répertoire docs car vous devrez le remettre en place sur votre version mise à jour.
+####
+
 A partir de là, si la mise à jour se déroule mal ou que les nouvelles implantation de 
 la version 0.5 ne vous conviennent pas, il sera facile de revenir à votre version précédente.
 
@@ -350,6 +354,11 @@ peuvent avoir été stocké de manière non conforme au moteur de GLPI actuel.
 Pour remédier à cela et afin que l'affichage de vos données soit correcte, l'ensemble de votre base données
 est analysée et mise à jour. Cela peut prendre pas mal de temps en fonction du volume d'information
 contenu dans votre base de données.
+
+#### VERSION > 0.5
+Recopiez le répertoire docs sauvegardé à la place du répertoire vide de l'archive.
+####
+
 
 
 12) Fin de la Mise à jour

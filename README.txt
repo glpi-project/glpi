@@ -69,7 +69,7 @@ and indexing a problem encountered with one of the technical resources to which 
 
 
 *************************************************************************************************************
---- UPDATE FROM 0.3
+--- UPDATE
 *************************************************************************************************************
 
 I) Save your configuration :
@@ -79,9 +79,15 @@ First of all you must do 2 things :
 Save your databse using the GLPI interface. Get the dump file in the backups/dump/ directory 
 and make a backup of it.
 
+#### VERSION <= 0.3
 Backup the file config.php which is in the glpi/config/ directory 
+####
 
-Now, if the update is going wrong or that you do not appreciate the v0.4, 
+#### VERSION > 0.5
+Backup the docs directory because you will copy it on the new directory to keep your files.
+####
+
+Now, if the update is going wrong or that you do not appreciate new version, 
 it is easy to return to your preceding version.
 
 Nevertheless, if this first step proceeded badly,  thanks for forwarding to us as fast as possible 
@@ -93,7 +99,7 @@ II) Get and install the files
 
 1) Delete your previous GLPI directory
 
-2) Download the v0.4 tarball on the download ("Télécharger" in french) section of the website 
+2) Download the last tarball on the download ("Télécharger" in french) section of the website 
 of the GLPI project (http://glpi.indepnet.org).
 
 
@@ -181,7 +187,9 @@ When you finish to configure GLPI, you can delete this user.
 Please, keep attention on the fact that you must always have a « super-admin » user 
 in order to connect to GLPI when the external authentification sources are down.
 
-
+#### VERSION > 0.5
+Copy the backup of the docs directory in the empty dir of your new installation.
+####
 
 *************************************************************************************************************
 --- FRESH INSTALLATION
