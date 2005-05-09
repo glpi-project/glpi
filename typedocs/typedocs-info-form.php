@@ -48,6 +48,7 @@ if (isset($_POST["add"]))
 	addTypedoc($_POST);
 	logEvent(0, "typedoc", 4, "setup", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if (isset($tab["delete"]))
 {
@@ -59,6 +60,7 @@ else if (isset($tab["delete"]))
 		header("Location: ".$cfg_install["root"]."/setup/setup-templates.php");
 	 else 
 	header("Location: ".$cfg_install["root"]."/typedocs/");
+	exit();
 }
 else if (isset($_POST["update"]))
 {
@@ -66,7 +68,7 @@ else if (isset($_POST["update"]))
 	updateTypedoc($_POST);
 	logEvent($_POST["ID"], "typedoc", 4, "setup", $_SESSION["glpiname"]." updated item.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
-
+	exit();
 }
 else
 {

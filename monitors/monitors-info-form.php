@@ -57,6 +57,7 @@ if (isset($_POST["add"]))
 	addMonitor($_POST);
 	logEvent(0, "monitors", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if (isset($tab["delete"]))
 {
@@ -70,6 +71,7 @@ else if (isset($tab["delete"]))
 		header("Location: ".$cfg_install["root"]."/setup/setup-templates.php");
 	 else 
 	header("Location: ".$cfg_install["root"]."/monitors/");
+	exit();
 }
 else if (isset($_POST["restore"]))
 {
@@ -77,6 +79,7 @@ else if (isset($_POST["restore"]))
 	restoreMonitor($_POST);
 	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." restored item.");
 	header("Location: ".$cfg_install["root"]."/monitors/");
+	exit();
 }
 else if (isset($tab["purge"]))
 {
@@ -84,6 +87,7 @@ else if (isset($tab["purge"]))
 	deleteMonitor($tab,1);
 	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." purge item.");
 	header("Location: ".$cfg_install["root"]."/monitors/");
+	exit();
 }
 else if (isset($_POST["update"]))
 {
@@ -91,7 +95,7 @@ else if (isset($_POST["update"]))
 	updateMonitor($_POST);
 	logEvent($_POST["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
-
+	exit();
 }
 else if (isset($tab["disconnect"]))
 {
@@ -99,6 +103,7 @@ else if (isset($tab["disconnect"]))
 	Disconnect($tab["ID"],4);
 	logEvent($tab["ID"], "monitors", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if(isset($tab["connect"]))
 {
@@ -122,6 +127,7 @@ else if(isset($tab["connect"]))
 		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],MONITOR_TYPE);
 		logEvent($tab["sID"], "monitors", 5, "inventory", $_SESSION["glpiname"]." connected item.");
 		header("Location: ".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=".$tab["sID"]);
+		exit();
 	}
 }
 else

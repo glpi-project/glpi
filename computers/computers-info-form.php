@@ -61,6 +61,7 @@ if (isset($tab["add"])) {
 	addComputer($tab);
 	logEvent(0, "computers", 4, "inventory", $_SESSION["glpiname"]." added ".$tab["name"].".");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 // delete a computer
 else if (isset($tab["delete"])) {
@@ -74,7 +75,7 @@ else if (isset($tab["delete"])) {
 		header("Location: ".$cfg_install["root"]."/setup/setup-templates.php");
 	 else 
 		header("Location: ".$cfg_install["root"]."/computers/");
-	
+	exit();
 }
 else if (isset($_POST["restore"]))
 {
@@ -82,6 +83,7 @@ else if (isset($_POST["restore"]))
 	restoreComputer($_POST);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." restored item.");
 	header("Location: ".$cfg_install["root"]."/computers/");
+	exit();
 }
 else if (isset($tab["purge"]))
 {
@@ -89,6 +91,7 @@ else if (isset($tab["purge"]))
 	deleteComputer($tab,1);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." purge item.");
 	header("Location: ".$cfg_install["root"]."/computers/");
+	exit();
 }
 //update a computer
 else if (isset($tab["update"])) {
@@ -98,6 +101,7 @@ else if (isset($tab["update"])) {
 	updateComputer($tab);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]."updated item.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 //Disconnect a device 
 else if (isset($tab["disconnect"])) {
@@ -105,6 +109,7 @@ else if (isset($tab["disconnect"])) {
 	Disconnect($tab["eID"],$tab["device_type"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
 	header("Location: ".$_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
+	exit();
 }
 //Connect a peripheral
 else if(isset($tab["connect"])&&isset($tab["device_type"])) {
@@ -125,6 +130,7 @@ else if(isset($tab["connect"])&&isset($tab["device_type"])) {
 		Connect($_SERVER["PHP_SELF"],$tab["ID"],$tab["cID"],$tab["device_type"],$tab["withtemplate"]);
 		logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
 		header("Location: ".$_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
+		exit();
 	}
 }
 //Update a device specification
@@ -133,6 +139,7 @@ elseif(isset($_POST["update_device"])) {
 	update_device_specif($_POST["device_value"],$_POST["update_device"]);
 	logEvent($_POST["update_device"],"computers",4,"inventory",$_SESSION["glpiname"] ." modified a computer device spécificity.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 //add a new device
 elseif (isset($_POST["connect_device"])) {
@@ -145,6 +152,7 @@ elseif (isset($_POST["connect_device"])) {
 		checkAuthentication("admin");
 		compdevice_add($_POST["cID"],$_POST["device_type"],$_POST["new_device_id"]);
 		header("Location: ".$_SERVER["PHP_SELF"]."?ID=".$_POST["cID"]."&withtemplate=".$tab["withtemplate"]);
+		exit();
 	}
 }
 // Unlink a device 
@@ -153,6 +161,7 @@ elseif(isset($_POST["unlink_device"])) {
 	unlink_device_computer($_POST["unlink_device"]);
 	logEvent($_POST["unlink_device"],"computers",4,"inventory",$_SESSION["glpiname"] ." Unlinked a device from computer ".$tab["ID"].".");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 //print computer informations
 else {

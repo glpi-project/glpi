@@ -59,6 +59,7 @@ if (isset($_POST["add"]))
 	addPrinter($_POST);
 	logEvent(0, "Printers", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if (isset($tab["delete"]))
 {
@@ -71,6 +72,7 @@ else if (isset($tab["delete"]))
 		header("Location: ".$cfg_install["root"]."/setup/setup-templates.php");
 	 else 
 		header("Location: ".$cfg_install["root"]."/printers/");
+	exit();
 }
 else if (isset($_POST["restore"]))
 {
@@ -78,6 +80,7 @@ else if (isset($_POST["restore"]))
 	restorePrinter($_POST);
 	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." restored item.");
 	header("Location: ".$cfg_install["root"]."/printers/");
+	exit();
 }
 else if (isset($tab["purge"]))
 {
@@ -85,6 +88,7 @@ else if (isset($tab["purge"]))
 	deletePrinter($tab,1);
 	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." purge item.");
 	header("Location: ".$cfg_install["root"]."/printers/");
+	exit();
 }
 else if (isset($_POST["update"]))
 {
@@ -92,6 +96,7 @@ else if (isset($_POST["update"]))
 	updatePrinter($_POST);
 	logEvent($_POST["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if (isset($tab["disconnect"]))
 {
@@ -99,6 +104,7 @@ else if (isset($tab["disconnect"]))
 	Disconnect($tab["ID"],PRINTER_TYPE);
 	logEvent($tab["ID"], "printers", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if(isset($tab["connect"]))
 {
@@ -123,7 +129,7 @@ else if(isset($tab["connect"]))
 		logEvent($tab["sID"], "printers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
 		
 		header("Location: ".$cfg_install["root"]."/printers/printers-info-form.php?ID=".$tab["sID"]);
-
+		exit();
 	}
 }
 else

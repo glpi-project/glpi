@@ -50,6 +50,7 @@ if (isset($_POST["add"]))
 	addCartridgeType($_POST);
 	logEvent(0, "cartridge", 4, "inventory", $_SESSION["glpiname"]." added item ".$_POST["name"].".");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 } 
 else if (isset($_POST["delete"]))
 {
@@ -57,6 +58,7 @@ else if (isset($_POST["delete"]))
 	deleteCartridgeType($_POST);
 	logEvent($tab["ID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/cartridges/");
+	exit();
 }
 else if (isset($_POST["restore"]))
 {
@@ -64,6 +66,7 @@ else if (isset($_POST["restore"]))
 	restoreCartridgeType($_POST);
 	logEvent($tab["ID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." restored item.");
 	header("Location: ".$cfg_install["root"]."/cartridges/");
+	exit();
 }
 else if (isset($_POST["purge"]))
 {
@@ -71,18 +74,21 @@ else if (isset($_POST["purge"]))
 	deleteCartridgeType($_POST,1);
 	logEvent($tab["ID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." purge item.");
 	header("Location: ".$cfg_install["root"]."/cartridges/");
+	exit();
 }
 else if (isset($_POST["addtype"])){
 	checkAuthentication("admin");
 	addCompatibleType($_POST["tID"],$_POST["type"]);
 	logEvent($tab["ID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." associate type.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if (isset($_GET["deletetype"])){
 	checkAuthentication("admin");
 	deleteCompatibleType($_GET["ID"]);
 	logEvent($tab["ID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." delete type.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if (isset($_POST["update"]))
 {
@@ -90,6 +96,7 @@ else if (isset($_POST["update"]))
 	updateCartridgeType($_POST);
 	logEvent($_POST["ID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 
 } 
 else

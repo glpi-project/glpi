@@ -54,6 +54,7 @@ if (isset($_GET["add"]))
 	addInfocom($_GET);
 	logEvent(0, "infocom", 4, "financial", $_SESSION["glpiname"]." added infocoms.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 } 
 else if (isset($_POST["delete"]))
 {
@@ -61,6 +62,7 @@ else if (isset($_POST["delete"]))
 	deleteInfocom($_POST);
 	logEvent($tab["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if (isset($_POST["update"]))
 {
@@ -68,7 +70,7 @@ else if (isset($_POST["update"]))
 	updateInfocom($_POST);
 	logEvent($_POST["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." updated item.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
-
+	exit();
 } 
 else
 {

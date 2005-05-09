@@ -47,6 +47,7 @@ if (isset($_POST["add"]))
 	addContact($_POST);
 	logEvent(0, "Contacts", 4, "financial", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if (isset($_POST["delete"]))
 {
@@ -55,6 +56,7 @@ else if (isset($_POST["delete"]))
 	Disconnect($tab["ID"],PERIPHERAL_TYPE);
 	logEvent($_POST["ID"], "Contacts", 4, "financial", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/contacts/");
+	exit();
 }
 else if (isset($_POST["update"]))
 {
@@ -62,6 +64,7 @@ else if (isset($_POST["update"]))
 	updateContact($_POST);
 	logEvent($_POST["ID"], "Contacts", 4, "financial", $_SESSION["glpiname"]." updated item.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if (isset($_POST["addenterprise"])){
 	checkAuthentication("admin");
@@ -69,12 +72,14 @@ else if (isset($_POST["addenterprise"])){
 	addContactEnterprise($_POST["entID"],$_POST["conID"]);
 	logEvent($tab["ID"], "contact", 4, "financial", $_SESSION["glpiname"]." associate enterprise.");
 	header("Location: ".$cfg_install["root"]."/contacts/contacts-info-form.php?ID=".$_POST["conID"]);
+	exit();
 }
 else if (isset($_GET["deleteenterprise"])){
 	checkAuthentication("admin");
 	deleteContactEnterprise($_GET["ID"]);
 	logEvent($tab["ID"], "contact", 4, "financial", $_SESSION["glpiname"]." delete enterprise.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 
 else

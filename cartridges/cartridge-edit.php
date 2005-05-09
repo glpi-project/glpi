@@ -57,6 +57,7 @@ else if (isset($_GET["add"]))
 	logEvent($tab["tID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." added a cartridge.");
 	
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if (isset($_POST["add_several"]))
 {
@@ -67,6 +68,7 @@ else if (isset($_POST["add_several"]))
 	logEvent($tab["tID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." added a ".$_POST["to_add"]." cartridge.");
 	
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if (isset($tab["delete"]))
 {
@@ -74,6 +76,7 @@ else if (isset($tab["delete"]))
 	deleteCartridge($tab["ID"]);
 	logEvent(0, "cartridge", 4, "inventory", $_SESSION["glpiname"]." deleted a license.");
 	header("Location: ".$_SERVER['HTTP_REFERER']." ");
+	exit();
 }
 else if (isset($tab["install"]))
 {
@@ -82,6 +85,7 @@ else if (isset($tab["install"]))
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed cartridge.");
 	//echo $tab["back"];
 	header("Location: ".$cfg_install["root"]."/printers/printers-info-form.php?ID=".$tab["pID"]);
+	exit();
 }
 else if (isset($tab["uninstall"]))
 {
@@ -89,11 +93,13 @@ else if (isset($tab["uninstall"]))
 	uninstallCartridge($tab["ID"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." uninstalled cartridge.");
 	header("Location: ".$_SERVER['HTTP_REFERER']." ");
+	exit();
 }
 else if (isset($tab["back"]))
 {
 	
 	header("Location: ".$tab["back"]." ");
+	exit();
 }
 
 

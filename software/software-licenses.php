@@ -71,6 +71,7 @@ else if (isset($_POST["add"]))
 	logEvent($tab["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." added a license.");
 	
 	header("Location: ".$_SERVER['PHP_SELF']."?form=add&sID=".$tab["sID"]);
+	exit();
 }
 else if (isset($tab["duplicate"]))
 {
@@ -86,6 +87,7 @@ else if (isset($tab["duplicate"]))
 	logEvent($tab["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." added a license.");
 	
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if (isset($tab["update"]))
 {
@@ -96,6 +98,7 @@ else if (isset($tab["update"]))
 	updateLicense($tab);
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." update a license.");
 	header("Location: ".$_SERVER['HTTP_REFERER']." ");
+	exit();
 }
 else if (isset($tab["form"]))
 {
@@ -110,6 +113,7 @@ else if (isset($tab["delete"]))
 	deleteLicense($tab["ID"]);
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." deleted a license.");
 	header("Location: ".$_SERVER['HTTP_REFERER']." ");
+	exit();
 }
 else if (isset($tab["select"]))
 {
@@ -124,6 +128,7 @@ else if (isset($tab["install"]))
 	installSoftware($tab["cID"],$tab["lID"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed software.");
 	header("Location: ".$tab['back']." ");
+	exit();
 }
 else if (isset($tab["uninstall"]))
 {
@@ -131,11 +136,13 @@ else if (isset($tab["uninstall"]))
 	uninstallSoftware($tab["ID"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." uninstalled software.");
 	header("Location: ".$_SERVER['HTTP_REFERER']." ");
+	exit();
 }
 else if (isset($tab["back"]))
 {
 	
 	header("Location: ".$tab["back"]." ");
+	exit();
 }
 
 

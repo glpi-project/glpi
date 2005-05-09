@@ -55,6 +55,7 @@ if (isset($_POST["add"]))
 	addDocument($_POST);
 	logEvent(0, "contract", 4, "document", $_SESSION["glpiname"]." added item ".$_POST["name"].".");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 } 
 else if (isset($_POST["delete"]))
 {
@@ -62,6 +63,7 @@ else if (isset($_POST["delete"]))
 	deleteDocument($_POST);
 	logEvent($tab["ID"], "contract", 4, "document", $_SESSION["glpiname"]." deleted item.");
 	header("Location: ".$cfg_install["root"]."/documents/");
+	exit();
 }
 else if (isset($_POST["restore"]))
 {
@@ -69,6 +71,7 @@ else if (isset($_POST["restore"]))
 	restoreDocument($_POST);
 	logEvent($tab["ID"], "contract", 4, "document", $_SESSION["glpiname"]." restored item.");
 	header("Location: ".$cfg_install["root"]."/documents/");
+	exit();
 }
 else if (isset($_POST["purge"]))
 {
@@ -76,6 +79,7 @@ else if (isset($_POST["purge"]))
 	deleteDocument($_POST,1);
 	logEvent($tab["ID"], "contract", 4, "document", $_SESSION["glpiname"]." purge item.");
 	header("Location: ".$cfg_install["root"]."/documents/");
+	exit();
 }
 else if (isset($_POST["additem"])){
 	checkAuthentication("admin");
@@ -86,12 +90,14 @@ else if (isset($_POST["additem"])){
 	addDeviceDocument($_POST["conID"],$type,$ID);
 	logEvent($tab["ID"], "contract", 4, "document", $_SESSION["glpiname"]." associate device.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if (isset($_GET["deleteitem"])){
 	checkAuthentication("admin");
 	deleteDeviceDocument($_GET["ID"]);
 	logEvent($tab["ID"], "contract", 4, "document", $_SESSION["glpiname"]." delete device.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if (isset($_POST["addenterprise"])){
 	checkAuthentication("admin");
@@ -99,12 +105,14 @@ else if (isset($_POST["addenterprise"])){
 	addEnterpriseDocument($_POST["conID"],$_POST["entID"]);
 	logEvent($tab["ID"], "contract", 4, "document", $_SESSION["glpiname"]." associate device.");
 	header("Location: ".$cfg_install["root"]."/documents/documents-info-form.php?ID=".$_POST["conID"]);
+	exit();
 }
 else if (isset($_GET["deleteenterprise"])){
 	checkAuthentication("admin");
 	deleteEnterpriseDocument($_GET["ID"]);
 	logEvent($tab["ID"], "contract", 4, "document", $_SESSION["glpiname"]." delete device.");
 	header("Location: ".$cfg_install["root"]."/documents/documents-info-form.php?ID=".$_POST["conID"]);
+	exit();
 }
 else if (isset($_POST["update"]))
 {
@@ -112,6 +120,7 @@ else if (isset($_POST["update"]))
 	updateDocument($_POST);
 	logEvent($_POST["ID"], "contract", 4, "document", $_SESSION["glpiname"]." updated item.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 
 } 
 else

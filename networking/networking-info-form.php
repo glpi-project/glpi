@@ -55,6 +55,7 @@ if (isset($_POST["add"]))
 	addNetdevice($_POST);
 	logEvent(0, "networking", 4, "inventory", $_SESSION["glpiname"]." added item name ".$_POST["name"].".");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else if (isset($tab["delete"]))
 {
@@ -68,6 +69,7 @@ else if (isset($tab["delete"]))
 		header("Location: ".$cfg_install["root"]."/setup/setup-templates.php");
 	 else 
 	header("Location: ".$cfg_install["root"]."/networking/");
+	exit();
 }
 else if (isset($_POST["restore"]))
 {
@@ -75,6 +77,7 @@ else if (isset($_POST["restore"]))
 	restoreNetdevice($_POST);
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." restored item.");
 	header("Location: ".$cfg_install["root"]."/networking/");
+	exit();
 }
 else if (isset($tab["purge"]))
 {
@@ -82,6 +85,7 @@ else if (isset($tab["purge"]))
 	deleteNetdevice($tab,1);
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." purge item.");
 	header("Location: ".$cfg_install["root"]."/networking/");
+	exit();
 }
 else if (isset($_POST["update"]))
 {
@@ -89,6 +93,7 @@ else if (isset($_POST["update"]))
 	updateNetdevice($_POST);
 	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	header("Location: ".$_SERVER['HTTP_REFERER']);
+	exit();
 }
 else
 {
