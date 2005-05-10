@@ -17,69 +17,213 @@
           <meta name="DC.Date.modified" scheme="W3CDTF" content="2004-09-21"/>
           <meta name="DC.Rights" content="This article is under GPL license."/>
           <meta name="DC.Subject" content="HELPDESK"/>
+	  
+<style type="text/css">
+#right{
+float: right;
+margin-top:15px;
+width: 250px;
+height: 500px;
+background: #eee;
+}
 
-        </head>
+#left{
+ position:absolute;   left:10px; width:490px; height:500px; 
+margin-top:15px;
+background: #eee;
+}
+
+#right a, a:visited, a:active, a:link {
+color:black;
+text-decoration: none;
+}
+
+#right  a:hover {
+background-color:#D2F2D5;
+text-decoration:none;
+
+}
+.menu
+{
+ overflow: auto;
+height: 490px;
+padding-left: 30px;
+font-family: Trebuchet MS, Arial, Sans, sans-serif;
+font-size: 10px;
+font-weight: bold;
+color: black;
+}
+
+
+.menu ul
+{
+padding-left: 5px;
+margin-left: 0;
+
+}
+
+.menu li
+{
+list-style: none;
+margin: 0;
+padding: 0.25em;
+
+}
+
+.content
+ {
+  overflow: auto;
+height: 490px;
+ font-family: Arial, Sans, sans-serif;
+font-size: 11px;
+ }
+
+ h1{  
+ margin-left:15px;
+ text-align:center;
+ font-family: Trebuchet MS, Arial, Sans, sans-serif;
+font-size: 18px;  
+font-weight:200%;
+color:  #FFC65D;
+margin :10px;
+-moz-border-radius: 4px;
+border: 1px solid #FFC65D;
+}
+
+h2{
+margin-left:5px;
+border-left: 2px solid #339966;
+border-bottom: 1px solid #339966;
+font-weight:200%;
+padding: 5px;
+font-family: Trebuchet MS, Arial, Sans, sans-serif;
+font-size: 15px;  
+}
+
+h3{
+margin-left:15px;
+padding: 5px;
+font-family: Trebuchet MS, Arial, Sans, sans-serif;
+font-size: 13px;  
+}
+
+</style>	  
+	  
+	  
+	  
+	</head>
+       
 
  <body>
 	    
-<h1>CENTRAL Help </h1>
-(bad translation, submit to us any improvement)
-<h2>Table of contents</h2>
-<UL><a href="#invent">1 - Inventory Section</a>
+<div id="right">
+<div class='menu'>
+<h1>Summary</h1>
+<ul><a href="#invent">1 - Inventory Section</a>
 <li><a href="#inventa">a) General informations</a></li>
-<li><a href="#inventb">b) Management of the direct connections</a></li>
-<li><a href="#inventc">c) Management of the networking ports</a></li>
-<li><a href="#inventd">d) Management of the softwares</a></li>
-</UL>
+<li><a href="#inventb">b) Templates Management</a></li>
+<li><a href="#inventc">c) Management of the computers internals devices</a></li>
+<li><a href="#inventd">d) Management of the direct connections</a></li>
+<li><a href="#invente">e) Management of the networking ports</a></li>
+<li><a href="#inventf">f) Management of the softwares</a></li>
+<li><a href="#inventg">g) Management of the material states</a></li>
+</ul>
 
-<UL><a href="#maint">2 - Maintenance Section</a>
-<li><a href="#mainta">a) Tracking</a></li>
-<li><a href="#maintb">b) Reports</a></li>
-<li><a href="#maintc">c) Stats</a></li>
-</UL>
+<ul><a href="#assist">2 - Assistance</a>
+<li><a href="#assista">a) Tracking</a></li>
+<li><a href="#assistb">b) Helpdesk</a></li>
+<li><a href="#assistc">c) Statistics</a></li>
+</ul>
 
-<UL><a href="#admin">3 - Administration Section</a>
-<li><a href="#admina">a) Management of the users</a></li>
+<ul><a href="#manage">3 - Management Section</a>
+<li><a href="#managea">a) Contacts</a></li>
+<li><a href="#manageb">b) Enterprises</a></li>
+<li><a href="#managec">c) Contracts</a></li>
+<li><a href="#managed">d) Documents</a></li>
+</ul>
+
+<ul><a href="#tool">4 - Utils Section</a>
+<li><a href="#toola">a) Reservations</a></li>
+<li><a href="#toolb">b) Knowledge database</a></li>
+<li><a href="#toolc">c) Reports</a></li>
+</ul>
+
+<ul><a href="#admin">5 - Administration Section</a>
+<li><a href="#admina">a) Users Management</a></li>
 <li><a href="#adminb">b) Setup</a></li>
-<li><a href="#adminc">c) Setting</a></li>
-<li><a href="#admind">d) Data (Save/Restore)</a></li>
-</UL>
-    
+<ul>
+<li><a href="#adminb1"> i) Dropdowns</a></li>
+<li><a href="#adminb2"> ii) Internals devices</a></li>
+<li><a href="#adminb3"> iii) External authentifications</a></li>
+<li><a href="#adminb4"> iv) Email Followup</a></li>
+<li><a href="#adminb5"> v) General Configuration</a></li>
+<li><a href="#adminb6"> vi) Document Type</a></li>
+</ul>
+<li><a href="#adminc">c) Settings</a></li>
+<li><a href="#admind">d) Data (Backup/Restore)</a></li>
+</ul>
+ 
+</div>
+</div>
+
+
+
+<div id='left'>
+<div class='content'>
+
+<h1>Help Center</h1>
+	
 <h2><A NAME="invent"></A>1 - Inventory Section</h2>
 
 <h3><A NAME="inventa"></A>a) General informations</h3>
 <p>In the inventory part you can list and consult the hardware and software inventory park. </p>
 
-<p>You are able to perform parameterized and sorted researches on one of the types of the inventory (computers, networks, printers, monitors, peripherals and softwares).</p>
+<p>You are able to perform parameterized and sorted researches on one of the types of the inventory (computers, networks, printers, monitors, cartridges, peripherals and softwares).</p>
 <p>Here, you can post the form containing precise information of each indexed item, or add an item.</p>
 <p>You have then the possibility to modify or delete each item.</p>
+<p>Inside each kind of forms (computers, printers etc.), tabs are available to sorts the informations to be more clear and readable. You can chose the "ALL" tab to see all the availables informations.</p>
+<p>The tabs <i><<</i> & <i>>></i> let you browse between the differents items of your inventory (Using the ID as condition).</p>
 
-<h3><A NAME="inventb"></A>b) Management of the direct connections</h3>
+<h3><A NAME="inventb"></A>b) Templates Management</h3>
+<p>You can define models of each type of items in your park, this allowing you to add several similar items very easily.</p>
+
+<h3><A NAME="inventc"></A>c) Management of the computers internals devices</h3>
+<p>Since GLPI 0.5, the notion of internal devices has appear. This let you add as much devices as you need in a computer.</p>
+<p>You can manage the list of all the internal devices of your park in the Setup/Internal devices section.</p>
+<p>Some internal devices type let you specify some specifics informations such as the hardware capacity.</p>
+
+<h3><A NAME="inventd"></A>d) Management of the direct connections</h3>
 <p>The direct connections make it possible to model the relation between the central processing unit of a computer and external components.</p>
-<p>A direct connection is done between a computer and a printer, a monitor or peripheric external.</p>
-<p>The connections or disconnections are done since the page of a computer or that of the dependent material. </p>
+<p>A direct connection is done between a computer and a printer, a monitor or an external device.</p>
+<p>The connections or disconnections are done since the form of a computer or that of the dependent material.</p>
 
-<h3><A NAME="inventc"></A>c) Management of the networking ports</h3>
+<h3><A NAME="invente"></A>e) Management of the networking ports</h3>
 <p>A port network makes it possible to model a network interface on a given material.</p>
-<p>Each port has of an IP address, a mac address and a nework point to which it is connected.</p>
-<p>The network connections are done by connecting two ports. To connect two materials together they must have a free port.</p>
-<p>In the majority of the configurations the connections will be done between a networking port on a computer, a screen or a printer and a networking port on a network material (hub, switch)</p>
-<p>At the time of the connection between two materials, informations such as the IP address and the network point are updated in order to be equals on the two ports</p>
+<p>Each port has an IP address, a mac address and a nework point to which it is connected.</p>
+<p>The network connections are done by connecting two ports. To connect two materials together they must have an available port.</p>
+<p>In most of the configurations, the connections will be done between a networking port on a computer, a screen or a printer and a networking port on a network material (hub, switch)</p>
+<p>When connecting two materials, informations such as the IP address and the network point are updated for both of the ports</p>
 <p>For each material, it is possible to add one or several ports </p>
 
-<h3><A NAME="inventd"></A>d) Management of the softwares</h3>
+<h3><A NAME="inventf"></A>f) Management of the softwares</h3>
 <p>A software can have several licences having each one an associated serial and an end date</p>
-<p>The installation of a software is done since the page of a computer. </p>
+<p>The installation of a software is done since the formsheet of a computer. </p>
 <p>Each time that a software is installed, the number of licence available for this software decreases.</p>
 <p>It is impossible to install a software, when no licence is available.</p>
-<p>Nevertheless, tt is possible to indicate the keyword "free" as serial when you add a new licence to a software. This license is installable without worrying about the number of the licenses.</p>
+<p>Nevertheless, it is possible to indicate the keyword "free" as serial when you add a new licence to a software. This license is installable without worrying about the number of the licenses.</p>
+<p>its also possible to use the keyword "Global" when you are using a global licence your entire park.</p>
 <p>It is possible to add several licences in one time. The serial and the end date will be the same one for each license added.</p>
+<p>There are many options available when creating a software, you can specify if the software is OEM, bought or if its an upgrade to another software.</p>
 
-<h2><A NAME="maint"></A>2 - Maintenance Section</h2>
-<h3><A NAME="mainta"></A>a) Tracking</h3>
+<h3><A NAME="inventg"></A>g) Management of the material states</h3>
+<p>In this section you can see the states of all the material. This section can be used to add or remove and item from the proposal states.</p>
+<p>Also to put a state to a material, you must go into the formsheet of this material and use the dropdown "states" and chose the appropriate state then click the update button to confirm it. This will place the item into the "Material states" section.</p>
+<p>To remove the state of a material, simply do the same thing as when you add a state to a material but simply chose the "---" and click the update button.</p>
 
-<p>
-The tracking module makes it possible to post the list of the interventions according to several criteria.</p>
+<h2><A NAME="assist"></A>2 - Assistance Section</h2>
+
+<h3><A NAME="assista"></A>a) Tracking</h3>
+<p>The tracking module makes it possible to post the list of the interventions according to several criteria.</p>
 <p>You can show:</p>
 <ul>
 <li>All active interventions</li>
@@ -92,44 +236,23 @@ The tracking module makes it possible to post the list of the interventions acco
 <p>The closed interventions.</p>
 </ul>
 
-<p>You can also perform a research on the interventions based on a description</p>
-
-<p>If interventions are found, GLPI shows a table including the interventions. It shows for each intervention: its statute (new or old), the opening and close date, the priority level, the author of the request, the person to which was assigned the intervention, the affected computer, the description of the request and the informations available on the followup of the intervention.</p>
-
+<p>You can also perform a research on the interventions based on a description or the ID number.</p>
+<p>If interventions are found, GLPI shows a table including the interventions. It shows for each intervention: its status (new or old),the ID number, the opening and close date, the priority level, the author of the request, the person to which was assigned the intervention, the affected material, the category,the description of the request and the informations available on the followup of the intervention.</p>
 <p>A click on one of these elements will enable you to reach additional information. </p>
-
 <p>To add elements of followup to an intervention, to close it or to reassign it, click on "infos". Then, You will obtain the complete history of the intervention. You will be able to add an element of followup or close the intervention (optional: indicate the real time of intervention).</p>
-
 
 <H4>Particular case of the closed interventions </H4>
 <p>The restoration of a finished intervention is possible. Click on "information" then "Restore". </p>
-
 <p>It is possible to remove closed interventions if you do not wish to preserve them in the database. 
 For that, check the checkbox in the status column and click on "Delete" at the bottom of the list of the interventions.</p>
 
-<h3><A NAME="maintb"></A>b) Reports</h3>
+<h3><A NAME="assistb"></A>b) Helpdesk</h3>
+<p>The helpdesk is use to add the interventions requests. You can use this section with all type of glpi users.</p>
+<p>Its possible to state the lvl of priotity of the intervention, the ID number of the software or hardware in trouble and the type of intervention.</p>
+<P>If you activate the emails followup in the GLPI settings, another field will be available to enter the email of the request person.</p>
+<P>You can see the interventions in the Tracking section of GLPI.</p>
 
-<p>GLPI authorizes the generation of a certain number of reports: </p>
-
-<ul>
-<li>The default report</li>
-<p>This report lists the number of item and software present in the inventory.</p>
-<li>Material under maintenance contract </li>
-<p>This report indicates the number of item under maintenance contract. It is possible to obtain a detailed report by type of item and date of purchase. The multiple selection is authorized.
-</p>
-<li>Report by purchase date or end of guarantee</li>
-<p>This report indicates the number of item by purchase date or end of guarantee for one or several years. The multiple selection is authorized.</p>
-<li>Report on interventions</li>
-<p>This report makes it possible to obtain the list of the interventions and their history according to many criteria's. Research can be perform over a given period, for a precise type of item or for a part of this item and according to its author and/or of his assign technician.</p>
-<li>Excel, OpenOffice (Sylk)</li>
-<p>GLPI can generate exploitable reports by type of into unsing a spreadsheet. For that GLPI generates SYLK files. This format is exploitable by many spreadsheves.</p>
-<p>If you used a software which does not know well with the standards (Excel for example), use the limited version in order not to have a problem with the size of the fields. The long fields will be truncated.</p>
-</ul>
-
-
-
-
-<h3><A NAME="maintc"></A>c) Stats</h3>
+<h3><A NAME="assistc"></A>c) Stats</h3>
 
 <h4>Global Stats</h4>
 
@@ -180,26 +303,97 @@ For that, check the checkbox in the status column and click on "Delete" at the b
 <li>Average delay to take into account the intervention</li>
 </ul>
 
+<h2><A NAME="manage"></A>3 - Management Section</h2>
 
-<h2><A NAME="admin"></A>3 - Administration Section</h2>
-<h3><A NAME="admina"></A>a) Management of the users</h3>
+<h3><A NAME="managea"></A>a) Contacts</h3>
+<p>You can enter all your contacts in this section and classify them between the commercial or technicien type. Secondly you can associate those contacts with the companies you are doing business.</p>
 
+<h3><A NAME="manageb"></A>b) Enterprises</h3>
+<p>In this section, its possible to classify all the companies and their third party type who have some relations with your company and associate the contacts of those companies. To add or modify the third party dropdown, go into the GLPI setup section under the dropdown option.</p>
+
+<h3><A NAME="managec"></A>c) Contracts</h3>
+Within this section, you can manage all types of contracts who are associated with the material of your park and also the informations related to these contracts. Here are the possibles types of contract : loan, location, leasing, insurance, hardware and sofware maintenance and the prestation.</p>
+<p>You can associate the created contracts to all elements in your inventory from the contract section or the formsheet of an item.</p>
+
+<h3><A NAME="managed"></A>d) Documents</h3>
+<p>This section let you save some importants documents to your GLPI server then you can associate these documents to all materials or software in your inventory and classify them between differents headings. It is possible to specify the MIME type of the document if this one is not present already.</p>
+<p>To add or modify the headings list, go into the Administration and setup section under the dropdown option, chose the "item state".</p>
+
+<h2><A NAME="tool"></A>4 - Utils Section</h2>
+
+<h3><A NAME="toola"></A>a) Rerservations</h3>
+<p>This section will show you what material is reservable.</p>
+<p>You can add some comments to the reservables materials. To do it, click on the "modify comment" button.</p>
+<p>To set materials to be reservable, simply go the formsheet of the material and click on the "Authorize the loan" link.</p>
+<p>For the Helpdesk users, a section is available to see the reservables materials.</p>
+
+<h3><A NAME="toolb"></A>b) Knowledge database</h3>
+<p>The knowledge database has two goals.
+The first one is the centralize all the knowledge of your business to all techniciens.
+The second is to give users informations to be able to solve their problems themself.</p>
+<p>To be able to dissociate those objectives, the notion of public FAQ is available.
+From this, only the elements into the public FAQ is available to all users. The elements not defined in the public FAQ are only available from the central.</p>
+<p>You can create your own category and sub-category for a better consultation later on. Its then easy for someone to retreive the information needed for his work.</p>
+<p>Its possible to use some layout shotcuts:</p>
+<p>
+these marks following change the apparence of the text:<br><br>
+
+				&nbsp;&nbsp;&nbsp;&nbsp;[b]Bold Text[/b] show <b>Bold text</b><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;[u]Underline text[/u] show <u>Underline text</u><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;[i]Italic text[/i] show <i>Italic text</i><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;[color=#FF0000]Red text[/color] show <span style="color: #ff0000">Red text</span><br><br>
+</p>
+<p>To create links to others documents or email, use these text marks:<br><br>
+
+				&nbsp;&nbsp;&nbsp;&nbsp;http://glpi.indepnet.org show <a href="http://glpi.indepnet.org">http://glpi.indepnet.org</a><br>
+				
+				&nbsp;&nbsp;&nbsp;&nbsp;[email]myname@mydomain.com[/email] show <a href="mailto:myname@mydomain.com">myname@mydomain.com</a><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;[email=myname@mydomain.com]My email address[/email] show <a href="mailto:myname@mydomain.com">My email address</a><br><br>
+</p>
+
+<p>To use code, use the text marker "CODE". The text shown as code isnt affected by the others text marks.<br><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;[code]Here some codes.[/code]<br><br>
+				Create code like this:<br><br>
+<table style="width: 95%; border: dotted 1px #000000" align="center" cellspacing="4" cellpadding="6"><tr><td ><span ><b>Code:</b></span><br><br><pre>Here some codes.</pre></td></tr></table><br></p>
+				
+<h3><A NAME="toolc"></A>c) Reports</h3>
+
+<p>GLPI authorizes the generation of a certain number of reports: </p>
+
+<ul>
+<li>The default report</li>
+<p>This report lists the number of item and software present in the inventory.</p>
+<li>Material under maintenance contract </li>
+<p>This report indicates the number of item under maintenance contract. It is possible to obtain a detailed report by type of item and date of purchase. The multiple selection is authorized.
+</p>
+<li>Report by purchase date or end of guarantee</li>
+<p>This report indicates the number of item by purchase date or end of guarantee for one or several years. The multiple selection is authorized.</p>
+<li>Report on interventions</li>
+<p>This report makes it possible to obtain the list of the interventions and their history according to many criteria's. Research can be perform over a given period, for a precise type of item or for a part of this item and according to its author and/or of his assign technician.</p>
+<li>Network report</li>
+<p>This report show you the list of informations concerning your network by the location, the switch or the network point.</p>
+<li>Excel, OpenOffice (Sylk)</li>
+<p>GLPI can generate exploitable reports by type of into unsing a spreadsheet. For that GLPI generates SYLK files. This format is exploitable by many spreadsheves.</p>
+<p>If you used a software which does not know well with the standards (Excel for example), use the limited version in order not to have a problem with the size of the fields. The long fields will be truncated.</p>
+</ul>
+
+<h2><A NAME="admin"></A>5 - Administration Section</h2>
+
+<h3><A NAME="admina"></A>a) Users Management</h3>
 <p>This part works exactly in the same way that the items of the inventory. You can add, modify and remove users.</p>
 
 <h3><A NAME="adminb"></A>b) Setup</h3>
 <UL>
-<li>Dropdowns</li>
+<a name="adminb1"></a><h4>i) Dropdowns</h4>
 <p>You can in this section completly modify the data included in the select lists for example for the locations and the processors.<p>
 <p>Once selected the list that you want to modify you can add of the elements, modify them and remove them.<br>
 <b>Caution !!</b> If you remove elements used, then,  you will have to make a choice between modifying the existing entries or to put them at NULL.</p>
 </p>
 
-<liTemplates</li>
+<a name="adminb2"></a><h4>ii) Internals perepherals</h4>
+<p>Here you can modify all the internals devices that you can add into computers.</p>
 
-<p>You can define models of computers allowing you to add several similar computers very easily.</p>
-
-<li>External authentifications</li>
-
+<a name="adminb3"></a><h4>iii) External authentifications</h4>
 <p>The external authentifications enable you to use alternative sources of authentification. That avoids you having to add all the users manually.</p>
 <p>The first solution is to use a mail server:<br>
 - In the first part, you must to define the mail server you want to use. Please, to fill it correctly follow this link  <a href="http://www.php.net/manual/en/function.imap-open.php">php.net</a> which provide several examples.
@@ -208,11 +402,8 @@ Some exwmples : {localhost:110/pop3}, {localhost:993/imap/ssl}, {localhost:995/p
 </p>
 <p>The second solution id to use an LDAP server or an Active Directory. For this configuration defer to corresponding documentation present on the <a target=_blank href="http://glpi.indepnet.org/article.php3?id_article=33">Web site of GLPI</A>.</p>
 
-<li>Email Followups</li>
-
-<p>
-
-This section enables you to activate the followup of the interventions by email. 
+<a name="adminb4"></a><h4>iv) Email Followup</h4>
+<p>This section enables you to activate the followup of the interventions by email. Data (Save/Restore)
 If you activate this functionality, emails will be sent for the creation of a new intervention, the addition of each followup and the closing of the interventions.<br>
 - You should fill the email address of the administrator and the email signature which will be added to each email send<br>
 - The other options enable you to limit the emails sent. For each type of people you can activate or not the sending for the creation of an intervention, the addition of followups and the closing of an intervention.<br>
@@ -220,9 +411,8 @@ If you activate this functionality, emails will be sent for the creation of a ne
 - The caller will not receive an email if it do not activated the email followup when he request for the intervention.<br>
 </p>
 
-<li>General Configuration</li>
-<p>
-The general configuration of the application makes it possible to define certain parameters: <br>
+<a name="adminb5"></a><h4>v) General Configuration</h4>
+<p>The general configuration of the application makes it possible to define certain parameters: <br>
 - The installation path. <b>Caution !!</b> 
 This path is detected automatically at the time of the installation or of the update, you should not need to modify it.<br>
 - The log level.<br>
@@ -234,13 +424,25 @@ This path is detected automatically at the time of the installation or of the up
 - Allow anonymous tracking post (helpdesk.html): activate or not the anonymous requests for interventions via the helpdesk.html file.<br>
 </p>
 
+<a name="adminb6"></a><h4>vi) Document Type</h4>
+<p>Within this section, you can add or modify the documents types authorized to be managed by GLPI.
+The needed informations are :<br>
+- The name of the document type.<br>
+- The extention ex: .txt<br>
+- the name of the icon file of the document. Place the icons files in this folder pics/icones under the GLPI path.<br>
+- The MIME type if needed.<br>
+- Authorization of download of this file type (yes or no).<br>
+</p>
 </UL>
-<h3><A NAME="adminc"></A>c) Setting</h3>
+<h3><A NAME="adminc"></A>c) Settings</h3>
 <p>This section allows you to change your password, to define the default order used in the posting of the interventions and to define the language used. </p>
 
-<h3><A NAME="admind"></A>d) Data (Save/Restore)</h3>
+<h3><A NAME="admind"></A>d) Data (Backup/Restore)</h3>
 <p>This zone allows you to create SQL safeguards of the database ("Dump SQL").</p>
 <p>You can also remove the backup files, to restore them or to download SQL files.</p>
 <p>You can also generate a XML safeguard of the database. ("Dump XML").</p>
 
+
+</div>
+</div>
 </body> 
