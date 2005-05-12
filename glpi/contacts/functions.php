@@ -254,9 +254,9 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				echo "<a href=\"".$cfg_install["root"]."/contacts/contacts-info-form.php?ID=$ID\">";
 				echo $con->fields["name"]." (".$con->fields["ID"].")";
 				echo "</a></b></td>";
-				echo "<td>".$con->fields["phone"]."</td>";
-				echo "<td>".$con->fields["phone2"]."</td>";
-				echo "<td>".$con->fields["fax"]."</td>";
+				echo "<td width='100'>".$con->fields["phone"]."</td>";
+				echo "<td width='100'>".$con->fields["phone2"]."</td>";
+				echo "<td width='100'>".$con->fields["fax"]."</td>";
 				echo "<td><a href='mailto:".$con->fields["email"]."'>".$con->fields["email"]."</a></td>";
 				echo "<td>".getDropdownName("glpi_dropdown_contact_type",$con->fields["type"])."</td>";
 				echo "</tr>";
