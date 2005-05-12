@@ -47,12 +47,6 @@ if(!isset($tab["addtofaq"])) $tab["addtofaq"] = "";
 if(!isset($tab["removefromfaq"])) $tab["removefromfaq"] = "";
 	
 
-
-if (empty($tab["ID"])) {
-	header("Location: ".$cfg_install["root"]."/knowbase/");
-	exit();
-	}
-
 	
 	if ($tab["ID"]=="new"){
 // on affiche le formulaire de saisie de l'item
@@ -151,7 +145,10 @@ if (empty($tab["ID"])) {
 	exit();
 	}
 	
-		
+	else if (empty($tab["ID"])) {
+	header("Location: ".$cfg_install["root"]."/knowbase/");
+	exit();
+	}		
 
 	else  {
 // Affiche un item de la base de connaissances
