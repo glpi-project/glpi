@@ -276,10 +276,10 @@ function showEnterpriseList($target,$username,$field,$phrasetype,$contains,$sort
 				echo $ct->fields["name"]." (".$ct->fields["ID"].")";
 				echo "</a></b></td>";
 				echo "<td>$TYPE</td>";
-				echo "<td>".$ct->fields["address"]."</td>";
+				echo "<td>".nl2br($ct->fields["address"])."</td>";
 				echo "<td><a target=_blank href='$website'>".$ct->fields["website"]."</a></td>";
-				echo "<td>".$ct->fields["phonenumber"] ."</td>";
-				echo "<td>".$ct->fields["fax"] ."</td>";
+				echo "<td width='100'>".$ct->fields["phonenumber"] ."</td>";
+				echo "<td width='100'>".$ct->fields["fax"] ."</td>";
 				echo "</tr>";
 			}
 
