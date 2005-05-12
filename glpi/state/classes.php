@@ -43,7 +43,7 @@ class StateItem{
 
 	function getfromDB ($device_type,$id_device) {
 		
-		$this->fields["state"]=0;
+		$this->fields["state"]=-1;
 		// Make new database object and fill variables
 		$db = new DB;
 		$query = "SELECT * FROM glpi_state_item WHERE (device_type='$device_type' AND id_device = '$id_device')";
