@@ -1696,8 +1696,8 @@ function Connect($target,$sID,$cID,$type) {
 	if ($comp->fields['contact']!=$dev->obj->fields['contact']||$comp->fields['contact_num']!=$dev->obj->fields['contact_num']){
 	$updates[0]="contact";
 	$updates[1]="contact_num";
-	$dev->obj->fields['contact']=$comp->fields['contact'];
-	$dev->obj->fields['contact_num']=$comp->fields['contact_num'];
+	$dev->obj->fields['contact']=unhtmlentities($comp->fields['contact']);
+	$dev->obj->fields['contact_num']=unhtmlentities($comp->fields['contact_num']);
 	$dev->obj->updateInDB($updates);
 	$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][49];
 	}
