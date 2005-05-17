@@ -64,6 +64,6 @@ markJob ($_POST["ID"],$status,$opt);
 $referer=$_SERVER["HTTP_REFERER"];
 $referer=preg_replace("/\?ID=[0-9]*/","",$referer);
 
-header("Location: $referer?ID=".$_POST["ID"]);
-exit();
+glpi_header("$referer?ID=".$_POST["ID"]);
+
 ?>

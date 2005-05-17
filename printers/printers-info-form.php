@@ -58,8 +58,7 @@ if (isset($_POST["add"]))
 	checkAuthentication("admin");
 	addPrinter($_POST);
 	logEvent(0, "Printers", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["name"].".");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))
 {
@@ -69,42 +68,37 @@ else if (isset($tab["delete"]))
 	else deletePrinter($tab);
 	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	if(!empty($tab["withtemplate"])) 
-		header("Location: ".$cfg_install["root"]."/setup/setup-templates.php");
+		glpi_header($cfg_install["root"]."/setup/setup-templates.php");
 	 else 
-		header("Location: ".$cfg_install["root"]."/printers/");
-	exit();
+		glpi_header($cfg_install["root"]."/printers/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restorePrinter($_POST);
 	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." restored item.");
-	header("Location: ".$cfg_install["root"]."/printers/");
-	exit();
+	glpi_header($cfg_install["root"]."/printers/");
 }
 else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
 	deletePrinter($tab,1);
 	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." purge item.");
-	header("Location: ".$cfg_install["root"]."/printers/");
-	exit();
+	glpi_header($cfg_install["root"]."/printers/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updatePrinter($_POST);
 	logEvent($_POST["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." updated item.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["disconnect"]))
 {
 	checkAuthentication("admin");
 	Disconnect($tab["ID"],PRINTER_TYPE);
 	logEvent($tab["ID"], "printers", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if(isset($tab["connect"]))
 {
@@ -128,27 +122,19 @@ else if(isset($tab["connect"]))
 		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],PRINTER_TYPE);
 		logEvent($tab["sID"], "printers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
 		
-		header("Location: ".$cfg_install["root"]."/printers/printers-info-form.php?ID=".$tab["sID"]);
-		exit();
+		glpi_header($cfg_install["root"]."/printers/printers-info-form.php?ID=".$tab["sID"]);
 	}
 }
 else
 {
 	checkAuthentication("normal");
-
-	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
-	if (isset($_GET['onglet'])) {
-		$_SESSION['glpi_onglet']=$_GET['onglet'];
-		header("Location: ".$_SERVER['HTTP_REFERER']);
-		exit();
-	}
 	
 	commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
 
 if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 if (isset($_GET['onglet'])) {
 	$_SESSION['glpi_onglet']=$_GET['onglet'];
-		header("Location: ".$_SERVER['HTTP_REFERER']);
+		glpi_header($_SERVER['HTTP_REFERER']);
 }	
 	showPrinterOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 	if (!empty($tab["withtemplate"])) {

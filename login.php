@@ -180,11 +180,11 @@ $result_exp = $db_exp->query($query_exp);
 // Redirect to Command Central if not post-only
 if ($identificat->user->fields['type'] == "post-only")
 {
-	header("Location: helpdesk.php");
+	glpi_header("helpdesk.php");
 }
 else
 {
-	header("Location: central.php");
+	glpi_header("central.php");
 }
 
 ?>

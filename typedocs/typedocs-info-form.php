@@ -47,8 +47,7 @@ if (isset($_POST["add"]))
 	
 	addTypedoc($_POST);
 	logEvent(0, "typedoc", 4, "setup", $_SESSION["glpiname"]." added ".$_POST["name"].".");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))
 {
@@ -57,18 +56,17 @@ else if (isset($tab["delete"]))
 
 	logEvent($tab["ID"], "typedoc", 4, "setup", $_SESSION["glpiname"]." deleted item.");
 	if(!empty($tab["withtemplate"])) 
-		header("Location: ".$cfg_install["root"]."/setup/setup-templates.php");
+		glpi_header($cfg_install["root"]."/setup/setup-templates.php");
 	 else 
-	header("Location: ".$cfg_install["root"]."/typedocs/");
-	exit();
+	glpi_header($cfg_install["root"]."/typedocs/");
+
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("super-admin");
 	updateTypedoc($_POST);
 	logEvent($_POST["ID"], "typedoc", 4, "setup", $_SESSION["glpiname"]." updated item.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
 {

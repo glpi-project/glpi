@@ -66,13 +66,12 @@ if (isset($_POST["move"])) {
 	checkAuthentication("admin");
 	moveTreeUnder($_POST["tablename"],$_POST["value_to_move"],$_POST["value_where"]);
 	logEvent(0, "dropdowns", 5, "setup", $_SESSION["glpiname"]." moved a location.");
-	header("Location: ".$_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type");
+	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type");
 }else if (isset($_POST["add"])) {
 	checkAuthentication("admin");
 	addDropdown($_POST);
 	logEvent(0, "dropdowns", 5, "setup", $_SESSION["glpiname"]." added a value to a dropdown.");
-	header("Location: ".$_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type");
-	exit();
+	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type");
 } else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
 	if(!dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
@@ -82,22 +81,19 @@ if (isset($_POST["move"])) {
 	} else {
 		deleteDropdown($_POST);
 		logEvent(0, "templates", 4, "inventory", $_SESSION["glpiname"]." deleted a dropdown value.");
-		header("Location: ".$_SERVER['PHP_SELF']."?which=$which");
-		exit();
+		glpi_header($_SERVER['PHP_SELF']."?which=$which");
 	}
 
 } else if (isset($_POST["update"])) {
 	checkAuthentication("admin");
 	updateDropdown($_POST);
 	logEvent(0, "templates", 4, "inventory", $_SESSION["glpiname"]." updated a dropdown value.");
-	header("Location: ".$_SERVER['PHP_SELF']."?which=$which&ID=$ID");
-	exit();	
+	glpi_header($_SERVER['PHP_SELF']."?which=$which&ID=$ID");
 } else if (isset($_POST["replace"])) {
 	checkAuthentication("admin");
 	replaceDropDropDown($_POST);
 	logEvent(0, "templates", 4, "inventory", $_SESSION["glpiname"]." replaced a dropdown value in each items.");
-	header("Location: ".$_SERVER['PHP_SELF']."?which=$which");
-	exit();	
+	glpi_header($_SERVER['PHP_SELF']."?which=$which");
 }
  else {
 	checkAuthentication("normal");

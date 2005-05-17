@@ -60,8 +60,7 @@ if (isset($tab["add"])) {
 	checkAuthentication("admin");
 	addComputer($tab);
 	logEvent(0, "computers", 4, "inventory", $_SESSION["glpiname"]." added ".$tab["name"].".");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 // delete a computer
 else if (isset($tab["delete"])) {
@@ -72,26 +71,23 @@ else if (isset($tab["delete"])) {
 	else deleteComputer($tab);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	if(!empty($tab["withtemplate"])) 
-		header("Location: ".$cfg_install["root"]."/setup/setup-templates.php");
+		glpi_header($cfg_install["root"]."/setup/setup-templates.php");
 	 else 
-		header("Location: ".$cfg_install["root"]."/computers/");
-	exit();
+		glpi_header($cfg_install["root"]."/computers/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreComputer($_POST);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." restored item.");
-	header("Location: ".$cfg_install["root"]."/computers/");
-	exit();
+	glpi_header($cfg_install["root"]."/computers/");
 }
 else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
 	deleteComputer($tab,1);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." purge item.");
-	header("Location: ".$cfg_install["root"]."/computers/");
-	exit();
+	glpi_header($cfg_install["root"]."/computers/");
 }
 //update a computer
 else if (isset($tab["update"])) {
@@ -100,16 +96,14 @@ else if (isset($tab["update"])) {
 	checkAuthentication("admin");
 	updateComputer($tab);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]."updated item.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 //Disconnect a device 
 else if (isset($tab["disconnect"])) {
 	checkAuthentication("admin");
 	Disconnect($tab["eID"],$tab["device_type"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
-	header("Location: ".$_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
-	exit();
+	glpi_header($_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
 }
 //Connect a peripheral
 else if(isset($tab["connect"])&&isset($tab["device_type"])) {
@@ -129,8 +123,7 @@ else if(isset($tab["connect"])&&isset($tab["device_type"])) {
 		checkAuthentication("admin");
 		Connect($_SERVER["PHP_SELF"],$tab["ID"],$tab["cID"],$tab["device_type"],$tab["withtemplate"]);
 		logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
-		header("Location: ".$_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
-		exit();
+		glpi_header($_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
 	}
 }
 //Update a device specification
@@ -138,8 +131,7 @@ elseif(isset($_POST["update_device"])) {
 	checkAuthentication("admin");
 	update_device_specif($_POST["device_value"],$_POST["update_device"]);
 	logEvent($_POST["update_device"],"computers",4,"inventory",$_SESSION["glpiname"] ." modified a computer device spécificity.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 //add a new device
 elseif (isset($_POST["connect_device"])) {
@@ -151,8 +143,7 @@ elseif (isset($_POST["connect_device"])) {
 	}elseif(isset($_POST["new_device_id"])){
 		checkAuthentication("admin");
 		compdevice_add($_POST["cID"],$_POST["device_type"],$_POST["new_device_id"]);
-		header("Location: ".$_SERVER["PHP_SELF"]."?ID=".$_POST["cID"]."&withtemplate=".$tab["withtemplate"]);
-		exit();
+		glpi_header($_SERVER["PHP_SELF"]."?ID=".$_POST["cID"]."&withtemplate=".$tab["withtemplate"]);
 	}
 }
 // Unlink a device 
@@ -160,8 +151,7 @@ elseif(isset($_POST["unlink_device"])) {
 	checkAuthentication("admin");
 	unlink_device_computer($_POST["unlink_device"]);
 	logEvent($_POST["unlink_device"],"computers",4,"inventory",$_SESSION["glpiname"] ." Unlinked a device from computer ".$tab["ID"].".");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 //print computer informations
 else {
@@ -172,8 +162,7 @@ else {
 if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 if (isset($_GET['onglet'])) {
 	$_SESSION['glpi_onglet']=$_GET['onglet'];
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 	commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);

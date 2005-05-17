@@ -45,14 +45,12 @@ if (isset($_POST["add"])) {
 		addUser($_POST);
 		logEvent(0, "users", 4, "setup", $_SESSION["glpiname"]." added user ".$_POST["name"].".");
 	}
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
 	deleteUser($_POST);
 	logEvent(0,"users", 4, "setup", $_SESSION["glpiname"]." deleted user ".$_POST["name"].".");
-	header("Location: ".$cfg_install["root"]."/setup/setup-users.php");
-	exit();
+	glpi_header($cfg_install["root"]."/setup/setup-users.php");
 } else if (isset($_POST["update"])) {
 	checkAuthentication("admin");
 	commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);

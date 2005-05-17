@@ -62,9 +62,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		unset($_POST["edit_resa"]);unset($_POST["id_item"]);
 		if (isAdmin($_SESSION["glpitype"])||$_SESSION["glpiID"]==$_POST["id_user"]) 
 		if (updateReservationResa($_POST,$_SERVER["PHP_SELF"],$item))
-			header("Location: ".$cfg_install["root"]."/reservation/index.php?show=resa&ID=$item&mois_courant=$begin_month&annee_courante=$begin_year");
-		
-		exit();
+			glpi_header($cfg_install["root"]."/reservation/index.php?show=resa&ID=$item&mois_courant=$begin_month&annee_courante=$begin_year");
 	}
 
 
@@ -130,15 +128,13 @@ else {
 	{
 		addReservationItem($_GET);
 		logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." added reservation item ".$_GET["device_type"]."-".$_GET["id_device"].".");
-		header("Location: ".$_SERVER['HTTP_REFERER']);
-		exit();
+		glpi_header($_SERVER['HTTP_REFERER']);
 	} 
 	else if (isset($_GET["delete"]))
 	{
 		deleteReservationItem($_GET);
 		logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." deleted reservation item.");
-		header("Location: ".$_SERVER['HTTP_REFERER']);
-		exit();
+		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
 

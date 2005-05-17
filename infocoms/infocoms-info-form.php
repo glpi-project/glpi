@@ -53,24 +53,21 @@ if (isset($_GET["add"]))
 
 	addInfocom($_GET);
 	logEvent(0, "infocom", 4, "financial", $_SESSION["glpiname"]." added infocoms.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
 	deleteInfocom($_POST);
 	logEvent($tab["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." deleted item.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateInfocom($_POST);
 	logEvent($_POST["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." updated item.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else
 {

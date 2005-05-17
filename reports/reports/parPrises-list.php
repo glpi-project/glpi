@@ -37,7 +37,6 @@ This file is part of GLPI.
  
 
 include ("_relpos.php");
-include($phproot . "/glpi/networking/_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_networking.php");
 checkAuthentication("normal");
@@ -77,7 +76,7 @@ if ($db->numrows($result)==1){
 	
 	commonFooter();
 
-} else  header("Location: ".$_SERVER['HTTP_REFERER']); 
+} else  glpi_header($_SERVER['HTTP_REFERER']); 
   	
 	
 		

@@ -54,8 +54,7 @@ if (isset($_POST["add"]))
 	checkAuthentication("admin");
 	addPeripheral($_POST);
 	logEvent(0, "Peripheral", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["name"].".");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))
 {
@@ -66,42 +65,37 @@ else if (isset($tab["delete"]))
 
 	logEvent($tab["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	if(!empty($tab["withtemplate"])) 
-		header("Location: ".$cfg_install["root"]."/setup/setup-templates.php");
+		glpi_header($cfg_install["root"]."/setup/setup-templates.php");
 	 else 
-	header("Location: ".$cfg_install["root"]."/peripherals/");
-	exit();
+	glpi_header($cfg_install["root"]."/peripherals/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restorePeripheral($_POST);
 	logEvent($tab["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." restored item.");
-	header("Location: ".$cfg_install["root"]."/peripherals/");
-	exit();
+	glpi_header($cfg_install["root"]."/peripherals/");
 }
 else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
 	deletePeripheral($tab,1);
 	logEvent($tab["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." purge item.");
-	header("Location: ".$cfg_install["root"]."/peripherals/");
-	exit();
+	glpi_header($cfg_install["root"]."/peripherals/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updatePeripheral($_POST);
 	logEvent($_POST["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." updated item.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["disconnect"]))
 {
 	checkAuthentication("admin");
 	Disconnect($tab["ID"],PERIPHERAL_TYPE);
 	logEvent($tab["ID"], "Peripherals", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if(isset($tab["connect"]))
 {
@@ -124,8 +118,7 @@ else if(isset($tab["connect"]))
 		checkAuthentication("admin");
 		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],PERIPHERAL_TYPE);
 		logEvent($tab["sID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." connected item.");
-		header("Location: ".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=".$tab["sID"]);
-		exit();
+		glpi_header($cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=".$tab["sID"]);
 	}
 }
 else
@@ -135,8 +128,7 @@ else
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {
 		$_SESSION['glpi_onglet']=$_GET['onglet'];
-		header("Location: ".$_SERVER['HTTP_REFERER']);
-		exit();
+		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 	
 	
