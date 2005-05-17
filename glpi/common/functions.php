@@ -2992,14 +2992,27 @@ function sendFile($file,$filename){
 			$mime=$db->result($result,0,0);
 			
 		} else {
-			// Cas particulier
-			switch ($splitter[count($splitter)-2]) {
-				case "SQL" : 
-					$mime="text/x-sql";
-					break;
-				case "XML" :
-					$mime="text/xml";
-					break;
+			// fichiers DUMP SQL et XML
+			if ($splitter[count($splitter)-2]=="dump"){
+				$splitter2=split("\.",$file);
+				switch ($splitter2[count($splitter2)-1]) {
+					case "sql" : 
+						$mime="text/x-sql";
+						break;
+					case "xml" :
+						$mime="text/xml";
+						break;
+				}
+			} else {
+				// Cas particulier
+				switch ($splitter[count($splitter)-2]) {
+					case "SQL" : 
+						$mime="text/x-sql";
+						break;
+					case "XML" :
+						$mime="text/xml";
+						break;
+				}
 			}
 			
 		}
