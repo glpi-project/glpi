@@ -46,5 +46,5 @@ $id->eraseCookies();
 
 // Redirect to the login-page
 
-header("Location: ".$cfg_install["root"]."/");
+glpi_header($cfg_install["root"]."/");
 ?>

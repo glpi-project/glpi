@@ -46,8 +46,7 @@ if (isset($_POST["add"]))
 	checkAuthentication("admin");
 	addContact($_POST);
 	logEvent(0, "Contacts", 4, "financial", $_SESSION["glpiname"]." added ".$_POST["name"].".");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["delete"]))
 {
@@ -55,31 +54,27 @@ else if (isset($_POST["delete"]))
 	deleteContact($_POST);
 	Disconnect($tab["ID"],PERIPHERAL_TYPE);
 	logEvent($_POST["ID"], "Contacts", 4, "financial", $_SESSION["glpiname"]." deleted item.");
-	header("Location: ".$cfg_install["root"]."/contacts/");
-	exit();
+	glpi_header($cfg_install["root"]."/contacts/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateContact($_POST);
 	logEvent($_POST["ID"], "Contacts", 4, "financial", $_SESSION["glpiname"]." updated item.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["addenterprise"])){
 	checkAuthentication("admin");
 
 	addContactEnterprise($_POST["entID"],$_POST["conID"]);
 	logEvent($tab["ID"], "contact", 4, "financial", $_SESSION["glpiname"]." associate enterprise.");
-	header("Location: ".$cfg_install["root"]."/contacts/contacts-info-form.php?ID=".$_POST["conID"]);
-	exit();
+	glpi_header($cfg_install["root"]."/contacts/contacts-info-form.php?ID=".$_POST["conID"]);
 }
 else if (isset($_GET["deleteenterprise"])){
 	checkAuthentication("admin");
 	deleteContactEnterprise($_GET["ID"]);
 	logEvent($tab["ID"], "contact", 4, "financial", $_SESSION["glpiname"]." delete enterprise.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 else

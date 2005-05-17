@@ -86,7 +86,7 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 		unset($_POST["edit_resa"]);unset($_POST["id_item"]);
 		if ($_SESSION["glpiID"]==$_POST["id_user"]) // test Sécurité
 		if (updateReservationResa($_POST,$_SERVER["PHP_SELF"],$item))
-			header("Location: ".$cfg_install["root"]."/helpdesk.php?show=resa&ID=$item&mois_courant=$begin_month&annee_courante=$begin_year");
+			glpi_header($cfg_install["root"]."/helpdesk.php?show=resa&ID=$item&mois_courant=$begin_month&annee_courante=$begin_year");
 		else exit();			
 	}
 

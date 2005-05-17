@@ -49,55 +49,47 @@ if (isset($_POST["add"]))
 
 	addCartridgeType($_POST);
 	logEvent(0, "cartridge", 4, "inventory", $_SESSION["glpiname"]." added item ".$_POST["name"].".");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
 	deleteCartridgeType($_POST);
 	logEvent($tab["ID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
-	header("Location: ".$cfg_install["root"]."/cartridges/");
-	exit();
+	glpi_header($cfg_install["root"]."/cartridges/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreCartridgeType($_POST);
 	logEvent($tab["ID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." restored item.");
-	header("Location: ".$cfg_install["root"]."/cartridges/");
-	exit();
+	glpi_header($cfg_install["root"]."/cartridges/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
 	deleteCartridgeType($_POST,1);
 	logEvent($tab["ID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." purge item.");
-	header("Location: ".$cfg_install["root"]."/cartridges/");
-	exit();
+	glpi_header($cfg_install["root"]."/cartridges/");
 }
 else if (isset($_POST["addtype"])){
 	checkAuthentication("admin");
 	addCompatibleType($_POST["tID"],$_POST["type"]);
 	logEvent($tab["ID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." associate type.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deletetype"])){
 	checkAuthentication("admin");
 	deleteCompatibleType($_GET["ID"]);
 	logEvent($tab["ID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." delete type.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateCartridgeType($_POST);
 	logEvent($_POST["ID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." updated item.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
-
+	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else
 {

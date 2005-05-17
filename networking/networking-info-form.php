@@ -54,8 +54,7 @@ if (isset($_POST["add"]))
 	checkAuthentication("admin");
 	addNetdevice($_POST);
 	logEvent(0, "networking", 4, "inventory", $_SESSION["glpiname"]." added item name ".$_POST["name"].".");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))
 {
@@ -66,34 +65,30 @@ else if (isset($tab["delete"]))
 
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"] ."deleted item.");
 	if(!empty($tab["withtemplate"])) 
-		header("Location: ".$cfg_install["root"]."/setup/setup-templates.php");
+		glpi_header($cfg_install["root"]."/setup/setup-templates.php");
 	 else 
-	header("Location: ".$cfg_install["root"]."/networking/");
-	exit();
+	glpi_header($cfg_install["root"]."/networking/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreNetdevice($_POST);
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." restored item.");
-	header("Location: ".$cfg_install["root"]."/networking/");
-	exit();
+	glpi_header($cfg_install["root"]."/networking/");
 }
 else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
 	deleteNetdevice($tab,1);
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." purge item.");
-	header("Location: ".$cfg_install["root"]."/networking/");
-	exit();
+	glpi_header($cfg_install["root"]."/networking/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateNetdevice($_POST);
 	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." updated item.");
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
 {
@@ -102,8 +97,7 @@ else
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {
 		$_SESSION['glpi_onglet']=$_GET['onglet'];
-		header("Location: ".$_SERVER['HTTP_REFERER']);
-		exit();
+		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
 	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);

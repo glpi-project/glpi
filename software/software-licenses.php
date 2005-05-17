@@ -70,8 +70,7 @@ else if (isset($_POST["add"]))
 	
 	logEvent($tab["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." added a license.");
 	
-	header("Location: ".$_SERVER['PHP_SELF']."?form=add&sID=".$tab["sID"]);
-	exit();
+	glpi_header($_SERVER['PHP_SELF']."?form=add&sID=".$tab["sID"]);
 }
 else if (isset($tab["duplicate"]))
 {
@@ -86,8 +85,7 @@ else if (isset($tab["duplicate"]))
 		
 	logEvent($tab["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." added a license.");
 	
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["update"]))
 {
@@ -97,8 +95,7 @@ else if (isset($tab["update"]))
 
 	updateLicense($tab);
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." update a license.");
-	header("Location: ".$_SERVER['HTTP_REFERER']." ");
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
 else if (isset($tab["form"]))
 {
@@ -112,8 +109,7 @@ else if (isset($tab["delete"]))
 	checkAuthentication("admin");
 	deleteLicense($tab["ID"]);
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." deleted a license.");
-	header("Location: ".$_SERVER['HTTP_REFERER']." ");
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
 else if (isset($tab["select"]))
 {
@@ -127,22 +123,19 @@ else if (isset($tab["install"]))
 	checkAuthentication("admin");
 	installSoftware($tab["cID"],$tab["lID"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed software.");
-	header("Location: ".$tab['back']." ");
-	exit();
+	glpi_header($tab['back']." ");
 }
 else if (isset($tab["uninstall"]))
 {
 	checkAuthentication("admin");
 	uninstallSoftware($tab["ID"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." uninstalled software.");
-	header("Location: ".$_SERVER['HTTP_REFERER']." ");
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
 else if (isset($tab["back"]))
 {
 	
-	header("Location: ".$tab["back"]." ");
-	exit();
+	glpi_header($tab["back"]." ");
 }
 
 

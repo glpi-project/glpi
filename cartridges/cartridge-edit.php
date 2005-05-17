@@ -56,8 +56,7 @@ else if (isset($_GET["add"]))
 	addCartridge($_GET["tID"]);
 	logEvent($tab["tID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." added a cartridge.");
 	
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["add_several"]))
 {
@@ -67,16 +66,14 @@ else if (isset($_POST["add_several"]))
 		addCartridge($_POST["tID"]);
 	logEvent($tab["tID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." added a ".$_POST["to_add"]." cartridge.");
 	
-	header("Location: ".$_SERVER['HTTP_REFERER']);
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))
 {
 	checkAuthentication("admin");
 	deleteCartridge($tab["ID"]);
 	logEvent(0, "cartridge", 4, "inventory", $_SESSION["glpiname"]." deleted a license.");
-	header("Location: ".$_SERVER['HTTP_REFERER']." ");
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
 else if (isset($tab["install"]))
 {
@@ -84,22 +81,19 @@ else if (isset($tab["install"]))
 	installCartridge($tab["pID"],$tab["tID"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed cartridge.");
 	//echo $tab["back"];
-	header("Location: ".$cfg_install["root"]."/printers/printers-info-form.php?ID=".$tab["pID"]);
-	exit();
+	glpi_header($cfg_install["root"]."/printers/printers-info-form.php?ID=".$tab["pID"]);
 }
 else if (isset($tab["uninstall"]))
 {
 	checkAuthentication("admin");
 	uninstallCartridge($tab["ID"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." uninstalled cartridge.");
-	header("Location: ".$_SERVER['HTTP_REFERER']." ");
-	exit();
+	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
 else if (isset($tab["back"]))
 {
 	
-	header("Location: ".$tab["back"]." ");
-	exit();
+	glpi_header($tab["back"]." ");
 }
 
 

@@ -3106,4 +3106,9 @@ function return_bytes_from_ini_vars($val) {
    return $val;
 }
 
+function glpi_header($dest){
+echo "<script language=javascript>window.location=\"".$dest."\"</script>";
+exit();
+}
+
 ?>
