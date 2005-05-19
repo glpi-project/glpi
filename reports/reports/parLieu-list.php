@@ -48,7 +48,7 @@ FROM glpi_dropdown_locations
 WHERE glpi_dropdown_locations.id=".$_POST["location"]."";
 $result = $db->query($query2);
 if ($db->numrows($result)==1){
-	commonHeader("Reports",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["Menu"][6],$_SERVER["PHP_SELF"]);
 	
 	$ligne = $db->fetch_array($result);
 	$stage=$ligne['stage'];

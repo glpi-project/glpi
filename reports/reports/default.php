@@ -41,7 +41,7 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_software.php");
 
 checkAuthentication("normal");
-commonHeader("Reports",$_SERVER["PHP_SELF"]);
+commonHeader($lang["Menu"][6],$_SERVER["PHP_SELF"]);
 
 $db = new DB;
 
