@@ -3078,7 +3078,7 @@ if (in_array($table,$deleted_tables))
 if (in_array($table,$template_tables))
 	$query.="AND is_template='0'";	
 		
-$query.=" order by ID";
+$query.=" order by ID DESC";
 
 
 $db=new DB;
