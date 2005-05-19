@@ -112,7 +112,7 @@ echo  "<tr><td colspan='2'><b>".$lang["Menu"][4].":</b></td></tr>";
 
 # 4. Get some more number data (installed softwares)
 
-$query = "SELECT ID, name FROM glpi_software ORDER BY name";
+$query = "SELECT ID, name FROM glpi_software WHERE deleted ='N'  AND is_template = '0' ORDER BY name";
 $result = $db->query($query);
 $i = 0;
 $number = $db->numrows($result);
@@ -135,7 +135,7 @@ $number = $db->numrows($result);
 while ($i < $number) {
 	$type = $db->result($result, $i, "ID");
 	$net = $db->result($result, $i, "name");
-	$query = "SELECT count(*) FROM glpi_networking WHERE (type = '$type')";
+	$query = "SELECT count(*) FROM glpi_networking WHERE (type = '$type' AND deleted ='N'  AND is_template = '0')";
 	$result3 = $db->query($query);
 	$counter = $db->result($result3,0,0);
 	echo "<tr><td>$net</td><td>$counter</td></tr>";
@@ -154,7 +154,7 @@ $number = $db->numrows($result);
 while ($i < $number) {
 	$type = $db->result($result, $i, "ID");
 	$net = $db->result($result, $i, "name");
-	$query = "SELECT count(*) FROM glpi_monitors WHERE (type = '$type')";
+	$query = "SELECT count(*) FROM glpi_monitors WHERE (type = '$type' AND deleted ='N'  AND is_template = '0')";
 	$result3 = $db->query($query);
 	$counter = $db->result($result3,0,0);
 	echo "<tr><td>$net</td><td>$counter</td></tr>";
@@ -173,7 +173,7 @@ $number = $db->numrows($result);
 while ($i < $number) {
 	$type = $db->result($result, $i, "ID");
 	$net = $db->result($result, $i, "name");
-	$query = "SELECT count(*) FROM glpi_printers WHERE (type = '$type')";
+	$query = "SELECT count(*) FROM glpi_printers WHERE (type = '$type' AND deleted ='N'  AND is_template = '0')";
 	$result3 = $db->query($query);
 	$counter = $db->result($result3,0,0);
 	echo "<tr><td>$net</td><td>$counter</td></tr>";
@@ -192,7 +192,7 @@ $number = $db->numrows($result);
 while ($i < $number) {
 	$type = $db->result($result, $i, "ID");
 	$net = $db->result($result, $i, "name");
-	$query = "SELECT count(*) FROM glpi_peripherals WHERE (type = '$type')";
+	$query = "SELECT count(*) FROM glpi_peripherals WHERE (type = '$type' AND deleted ='N'  AND is_template = '0')";
 	$result3 = $db->query($query);
 	$counter = $db->result($result3,0,0);
 	echo "<tr><td>$net</td><td>$counter</td></tr>";
