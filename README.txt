@@ -109,7 +109,7 @@ of the GLPI project (http://glpi.indepnet.org).
 
 -[your_http_root/]glpi/backups/dump
 -[your_http_root/]glpi/glpi/config/
--[your_http_root/]glpi/glpi/docs/
+-[your_http_root/]glpi/docs/
 
 in order that PHP can write in them.
 
