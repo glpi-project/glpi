@@ -45,7 +45,7 @@ if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
 	addContact($_POST);
-	logEvent(0, "Contacts", 4, "financial", $_SESSION["glpiname"]." added ".$_POST["name"].".");
+	logEvent(0, "contacts", 4, "financial", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["delete"]))
@@ -53,27 +53,26 @@ else if (isset($_POST["delete"]))
 	checkAuthentication("admin");
 	deleteContact($_POST);
 	Disconnect($tab["ID"],PERIPHERAL_TYPE);
-	logEvent($_POST["ID"], "Contacts", 4, "financial", $_SESSION["glpiname"]." deleted item.");
+	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." deleted item.");
 	glpi_header($cfg_install["root"]."/contacts/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateContact($_POST);
-	logEvent($_POST["ID"], "Contacts", 4, "financial", $_SESSION["glpiname"]." updated item.");
+	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." updated item.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["addenterprise"])){
 	checkAuthentication("admin");
-
 	addContactEnterprise($_POST["entID"],$_POST["conID"]);
-	logEvent($tab["ID"], "contact", 4, "financial", $_SESSION["glpiname"]." associate enterprise.");
+	logEvent($tab["conID"], "contacts", 4, "financial", $_SESSION["glpiname"]." associate enterprise.");
 	glpi_header($cfg_install["root"]."/contacts/contacts-info-form.php?ID=".$_POST["conID"]);
 }
 else if (isset($_GET["deleteenterprise"])){
 	checkAuthentication("admin");
 	deleteContactEnterprise($_GET["ID"]);
-	logEvent($tab["ID"], "contact", 4, "financial", $_SESSION["glpiname"]." delete enterprise.");
+	logEvent(0, "contacts", 4, "financial", $_SESSION["glpiname"]." delete associate enterprise.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
