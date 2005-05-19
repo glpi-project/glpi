@@ -80,7 +80,7 @@ else if (isset($_POST["addcontact"])){
 else if (isset($_GET["deletecontact"])){
 	checkAuthentication("admin");
 	deleteContactEnterprise($_GET["ID"]);
-	logEvent($tab["ID"], "enterprise", 4, "financial", $_SESSION["glpiname"]." delete contact.");
+	logEvent(0, "enterprise", 4, "financial", $_SESSION["glpiname"]." delete associate contact.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["update"]))
