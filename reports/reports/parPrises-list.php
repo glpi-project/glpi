@@ -52,7 +52,7 @@ LEFT JOIN glpi_dropdown_locations b ON b.id=a.parentid
 WHERE glpi_dropdown_netpoint.id=".$_POST["prise"]."";
 $result = $db->query($query2);
 if ($db->numrows($result)==1){
-	commonHeader("Reports",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["Menu"][6],$_SERVER["PHP_SELF"]);
 
 	$ligne = $db->fetch_array($result);
 	$prise=$ligne['prise'];

@@ -56,7 +56,7 @@ $result = $db->query($query2);
 
 // Titre
 if ($db->numrows($result)==1){
-	commonHeader("Reports",$_SERVER["PHP_SELF"]);
+	commonHeader($lang["Menu"][6],$_SERVER["PHP_SELF"]);
 
 	$ligne = $db->fetch_array($result);
 	$switch=$ligne['switch'];
