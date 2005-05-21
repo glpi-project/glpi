@@ -35,10 +35,9 @@ Contents:
 
 - WHAT IS IT?
 - REQUIREMENTS
+- UPDATE
 - FRESH INSTALLATION
-- CONFIGURATION
-- TESTING
-
+- PLUGINS
 
 *************************************************************************************************************
 --- WHAT IS IT?
@@ -330,3 +329,10 @@ installation, it is necessary to use your software ftp (for example) and to eras
 Use your browser to get the root of GLPI: http://yourserver/glpi/ (by default) to start again 
 the procedure of configuration then (actually, it is the absence of file "config_db.php" which causes 
 the launching of this procedure). 
+
+*************************************************************************************************************
+--- PLUGINS
+*************************************************************************************************************
+
+Plugins are managed by GLPI in the plugins directory.
+Just copy the directory of the plugin into the plugins directory and it will appeared in the menu.
