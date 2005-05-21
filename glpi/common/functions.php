@@ -1944,8 +1944,8 @@ function printHelpDesk ($name,$from_helpdesk) {
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$lang["help"][8].":</td>";
 		echo "<td>	<select name='emailupdates'>";
-		echo "<option value='no' selected>".$lang["help"][9]."";
-		echo "<option value='yes'>".$lang["help"][10]."";
+		echo "<option value='no'>".$lang["help"][9]."";
+		echo "<option value='yes'  selected>".$lang["help"][10]."";
 		echo "</select>";
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_1'>";
