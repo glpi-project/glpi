@@ -535,6 +535,26 @@ $config = array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
 		}
 	}
+
+	// PLUGINS
+	$dirplug=$phproot."/plugins";
+	$dh  = opendir($dirplug);
+	while (false !== ($filename = readdir($dh))) {
+   	
+   	if ($filename!="."&&$filename!=".."&&is_dir($dirplug."/".$filename))
+   	$plugins[]=$filename;
+	}
+	if (count($plugins)>0){
+		echo "<td align='center' valign='top' width='20%'>";
+		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/config.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>";
+		echo "<span class='menu_title'>-&nbsp;Plugins&nbsp;-</span><br>";
+		foreach ($plugins as $key => $val) {
+			echo "<span class='menu'><a  href=\"".$cfg_install["root"]."/plugins/".$val."/\" accesskey=\"".$val."\">".$val."</a></span><br>";
+		}
+		echo "</td>";
+		
+		
+	}
 	
 	
 	if ($navigation->settings) {
