@@ -279,11 +279,13 @@ class User {
 		$query = "INSERT INTO glpi_users (";
 		$i=0;
 		foreach ($this->fields as $key => $val) {
-			$fields[$i] = $key;
-			if($key == "password") $indice = $i;
-			if($key == "password_md5") $indice2 = $i;
-			$values[$i] = $val;
-			$i++;
+			if ($key!="ID"){
+				$fields[$i] = $key;
+				if($key == "password") $indice = $i;
+				if($key == "password_md5") $indice2 = $i;
+				$values[$i] = $val;
+				$i++;
+			}
 		}		
 		for ($i=0; $i < count($fields); $i++) {
 			$query .= "glpi_users.".$fields[$i];
@@ -317,7 +319,7 @@ class User {
 			}
 		}
 		$query .= ")";
-		
+
 		$result=$db->query($query);
 		return $db->insert_id();
 	}
