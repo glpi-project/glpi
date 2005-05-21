@@ -318,11 +318,8 @@ class User {
 		}
 		$query .= ")";
 		
-		if ($result=$db->query($query)) {
-			return true;
-		} else {
-			return false;
-		}
+		$result=$db->query($query);
+		return $db->insert_id();
 	}
 
 	function updateInDB($updates)  {

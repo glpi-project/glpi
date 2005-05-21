@@ -148,7 +148,7 @@ if ( ! $auth_succeded ) {
 // if not, we update it.
 if ($auth_succeded)
 if (!$user_present) {
-	$identificat->user->addToDB();
+	$_SESSION["glpiID"]=$identificat->user->addToDB();
 } else if (!empty($update_list)) {
 	$identificat->user->updateInDB($update_list);
 	// Blank PWD to clean old database for the external auth
