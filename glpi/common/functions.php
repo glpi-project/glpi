@@ -541,7 +541,7 @@ $config = array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
 	$dh  = opendir($dirplug);
 	while (false !== ($filename = readdir($dh))) {
    	
-   	if ($filename!="."&&$filename!=".."&&is_dir($dirplug."/".$filename))
+   	if ($filename!="CVS"&&$filename!="."&&$filename!=".."&&is_dir($dirplug."/".$filename))
    	$plugins[]=$filename;
 	}
 	if (count($plugins)>0){
