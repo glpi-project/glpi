@@ -37,6 +37,7 @@ Contenu :
 - Dépendances
 - Installation et configuration
 - Mise à jour
+- Plugins
 
 
 
@@ -371,4 +372,9 @@ reste toujours un utilisateur « super-admin » ayant la possibilité de se connect
 ne serait qu'en cas de problèmes avec les sources de données externes.
 
 
+*************************************************************************************************************
+--- PLUGINS
+*************************************************************************************************************
 
+Les plugins sont gérés par GLPI au sein du répertoire plugins.
+Il suffit de mettre en place le répertoire du plugin dans ce répertoire et il apparait ensuite dans le menu.
