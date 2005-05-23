@@ -1352,6 +1352,44 @@ function dropdownUsers($value, $myname) {
 	echo "</select>";
 }
 
+/**
+* Make a select box with all glpi users where select key = name
+*
+* Think it's unused now.
+*
+*
+* @param $value
+* @param $myname
+* @return nothing (print out an HTML select box)
+*
+*
+*/
+function dropdownAllUsersSearch($value, $myname,$search) {
+	// Make a select box with all glpi users
+
+	$db = new DB;
+	$query = "SELECT * FROM glpi_users WHERE name LIKE '%$search%' OR realname LIKE '%$search%' ORDER BY name";
+	$result = $db->query($query);
+
+	echo "<select name=\"$myname\">";
+	$i = 0;
+	
+	$number = $db->numrows($result);
+	echo "<option value=\"\">[ Nobody ]</option>";
+	if ($number > 0) {
+		while ($i < $number) {
+			$output = unhtmlentities($db->result($result, $i, "name"));
+			if ($output == $value) {
+				echo "<option value=\"$output\" selected>".$output;
+			} else {
+				echo "<option value=\"$output\">".$output;
+			}
+			$i++;
+			echo "</option>";
+   		}
+	}
+	echo "</select>";
+}
 
 /**
 * Make a select box with all glpi users where select key = ID
