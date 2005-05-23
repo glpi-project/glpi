@@ -180,6 +180,11 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_state_item.id_device&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["state"][1]."</a></th>";
 
+			
+			// Location			
+			echo "<th>";
+			echo $lang["computers"][10]."</th>";
+			
 			// State			
 			echo "<th>";
 			if ($sort=="glpi_dropdown_state.name") {
@@ -204,6 +209,7 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 				
 				echo "<td>". $ri->getType()."</td>";
 				echo "<td><b>". $ri->getLink() ."</b></td>";
+				echo "<td>". getDropdownName("glpi_dropdown_locations",$ri->obj->fields["location"]) ."</td>";
 				echo "<td><b>". getDropdownName("glpi_dropdown_state",$ri->fields["state"]) ."</b></td>";
 				echo "<td>";
 				echo "<a href='".$HTMLRel."state/index.php?deletestate=deletestate&device_id=$id_device&device_type=$type'>".$lang["state"][2]."</a>";
