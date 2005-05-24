@@ -544,7 +544,7 @@ $config = array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
    	if ($filename!="CVS"&&$filename!="."&&$filename!=".."&&is_dir($dirplug."/".$filename))
    	$plugins[]=$filename;
 	}
-	if (count($plugins)>0){
+	if (isset($plugins)&&count($plugins)>0){
 		echo "<td align='center' valign='top' width='20%'>";
 		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/config.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>";
 		echo "<span class='menu_title'>-&nbsp;Plugins&nbsp;-</span><br>";
