@@ -95,7 +95,7 @@ else if (isset($tab["update"])) {
 	if(empty($tab["contains"])) $tab["contains"] = "";
 	checkAuthentication("admin");
 	updateComputer($tab);
-	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]."updated item.");
+	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 //Disconnect a device 
