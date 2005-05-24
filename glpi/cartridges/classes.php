@@ -165,7 +165,7 @@ class CartridgeType {
 
 		$db = new DB;
 		$this->getFromDB($ID);		
-		if ($force==1||$this->countCartridges()==0){
+		if ($force==1/*||$this->countCartridges()==0*/){
 			$query = "DELETE from glpi_cartridges_type WHERE ID = '$ID'";
 			if ($result = $db->query($query)) {
 				// Delete cartridges
