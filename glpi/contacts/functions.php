@@ -469,7 +469,7 @@ function showEnterpriseContact($instID) {
 	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
 
     $db = new DB;
-	$query = "SELECT glpi_contact_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type";
+	$query = "SELECT glpi_contact_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.fax as fax,glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type";
 	$query.= " FROM glpi_enterprises,glpi_contact_enterprise WHERE glpi_contact_enterprise.FK_contact = '$instID' AND glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID";
 	$result = $db->query($query);
 	$number = $db->numrows($result);
@@ -477,10 +477,11 @@ function showEnterpriseContact($instID) {
 	
     echo "<form method='post' action=\"".$cfg_install["root"]."/contacts/contacts-info-form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
-	echo "<tr><th colspan='5'>".$lang["financial"][65].":</th></tr>";
+	echo "<tr><th colspan='6'>".$lang["financial"][65].":</th></tr>";
 	echo "<tr><th>".$lang['financial'][26]."</th>";
 	echo "<th>".$lang['financial'][79]."</th>";
 	echo "<th>".$lang['financial'][29]."</th>";
+	echo "<th>".$lang['financial'][30]."</th>";
 	echo "<th>".$lang['financial'][45]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
@@ -495,7 +496,8 @@ function showEnterpriseContact($instID) {
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>".getDropdownName("glpi_enterprises",$db->result($result, $i, "entID"))."</td>";
 	echo "<td align='center'>".getDropdownName("glpi_dropdown_enttype",$db->result($result, $i, "type"))."</td>";
-	echo "<td align='center'>".$db->result($result, $i, "phone")."</td>";
+	echo "<td align='center'  width='100'>".$db->result($result, $i, "phone")."</td>";
+	echo "<td align='center'  width='100'>".$db->result($result, $i, "fax")."</td>";
 	echo "<td align='center'>".$website."</td>";
 	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteenterprise=deleteenterprise&ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
@@ -503,9 +505,10 @@ function showEnterpriseContact($instID) {
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 	echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 		dropdown("glpi_enterprises","entID");
-	echo "</div></td><td align='center'>";
-	echo "<input type='submit' name='addenterprise' value=\"".$lang["buttons"][8]."\" class='submit'>";
-	echo "</td><td>&nbsp;</td><td>&nbsp;</td>";
+	
+	echo "&nbsp;&nbsp;<input type='submit' name='addenterprise' value=\"".$lang["buttons"][8]."\" class='submit'>";
+	echo "</div>";
+	echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
 	
 	echo "</tr>";
 	
