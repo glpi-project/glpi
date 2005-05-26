@@ -63,6 +63,15 @@ $status = "new";
 if (isset($_POST["computer"]))
 $ID=$_POST["computer"];
 
+// Sauvegarde des données dans le cas de retours avec des navigateurs pourris style IE
+$varstosav = array('emailupdates', 'uemail', 'computer', 'device_type', 'contents');
+
+foreach ($varstosav as $v){
+		if (isset($_POST[$v]))
+        $_SESSION["helpdeskSaved"][$v] = $_POST[$v];
+}
+
+
 if (!empty($_POST["priority"]) && empty($_POST["contents"]))
 {
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
@@ -154,7 +163,8 @@ else
 		echo $lang["help"][19];
 		echo "</b></div>";
 		nullFooter();
-	
+		// Delete des infos sauvegardées pour les problèmes de retour
+		unset($_SESSION["helpdeskSaved"]);
 	}
 	else
 	{

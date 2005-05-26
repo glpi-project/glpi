@@ -1964,6 +1964,24 @@ function printHelpDesk ($name,$from_helpdesk) {
 	$realname = $db->result($result,0,"realname");
 	$name = $db->result($result,0,"name");
 
+	// Get saved data from a back system
+        $emailupdates = 'yes';
+        $device_type = COMPUTER_TYPE;
+		$computer="";
+		$contents="";
+		
+		if (isset($_SESSION["helpdeskSaved"]["emailupdates"]))
+               $emailupdates = $_SESSION["helpdeskSaved"]["emailupdates"];
+		if (isset($_SESSION["helpdeskSaved"]["email"]))
+                $email = $_SESSION["helpdeskSaved"]["uemail"];
+		if (isset($_SESSION["helpdeskSaved"]["computer"]))
+                $computer = $_SESSION["helpdeskSaved"]["computer"];
+		if (isset($_SESSION["helpdeskSaved"]["device_type"]))
+                $device_type = $_SESSION["helpdeskSaved"]["device_type"];
+		if (isset($_SESSION["helpdeskSaved"]["contents"]))
+                $contents = $_SESSION["helpdeskSaved"]["contents"];
+
+
 	echo "<form method='post' name=\"helpdeskform\" action=\"".$cfg_install["root"]."/tracking/tracking-injector.php\">";
 	echo "<input type='hidden' name='from_helpdesk' value='$from_helpdesk'>";
 
@@ -1982,8 +2000,8 @@ function printHelpDesk ($name,$from_helpdesk) {
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$lang["help"][8].":</td>";
 		echo "<td>	<select name='emailupdates'>";
-		echo "<option value='no'>".$lang["help"][9]."";
-		echo "<option value='yes'  selected>".$lang["help"][10]."";
+		echo "<option value='no' ".(($emailupdates=="no")?" selected":"").">".$lang["help"][9]."";
+		echo "<option value='yes' ".(($emailupdates=="yes")?" selected":"").">".$lang["help"][10]."";
 		echo "</select>";
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_1'>";
@@ -1994,7 +2012,7 @@ function printHelpDesk ($name,$from_helpdesk) {
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$lang["help"][12]." <img src=\"".$cfg_install["root"]."/pics/aide.png\" style='cursor:pointer;' alt=\"help\"onClick=\"window.open('".$cfg_install["root"]."/find_num.php','Help','scrollbars=1,resizable=1,width=600,height=600')\"></td>";
-	echo "<td><input name='computer' size='10'>";
+	echo "<td><input name='computer' size='10' value='$computer'>";
 	echo "</td>";
 	echo "</tr>";
 
@@ -2003,13 +2021,13 @@ function printHelpDesk ($name,$from_helpdesk) {
 	echo "<td><select name=device_type>";
     //if (isAdmin($_SESSION["glpitype"]))
     echo "<option value='0' >".$lang["help"][30]."";
-	echo "<option value='".COMPUTER_TYPE."' selected>".$lang["help"][25]."";
-	echo "<option value='".NETWORKING_TYPE."'>".$lang["help"][26]."";
-	echo "<option value='".PRINTER_TYPE."'>".$lang["help"][27]."";
-	echo "<option value='".MONITOR_TYPE."'>".$lang["help"][28]."";
-	echo "<option value='".PERIPHERAL_TYPE."'>".$lang["help"][29]."";
-	echo "<option value='".SOFTWARE_TYPE."'>".$lang["help"][31]."";
-	echo "<option value='".ENTERPRISE_TYPE."'>".$lang["help"][34]."";	
+	echo "<option value='".COMPUTER_TYPE."' ".(($device_type==COMPUTER_TYPE)?" selected":"").">".$lang["help"][25]."";
+	echo "<option value='".NETWORKING_TYPE."' ".(($device_type==NETWORKING_TYPE)?" selected":"").">".$lang["help"][26]."";
+	echo "<option value='".PRINTER_TYPE."' ".(($device_type==PRINTER_TYPE)?" selected":"").">".$lang["help"][27]."";
+	echo "<option value='".MONITOR_TYPE."' ".(($device_type==MONITOR_TYPE)?" selected":"").">".$lang["help"][28]."";
+	echo "<option value='".PERIPHERAL_TYPE."' ".(($device_type==PERIPHERAL_TYPE)?" selected":"").">".$lang["help"][29]."";
+	echo "<option value='".SOFTWARE_TYPE."' ".(($device_type==SOFTWARE_TYPE)?" selected":"").">".$lang["help"][31]."";
+	echo "<option value='".ENTERPRISE_TYPE."' ".(($device_type==ENTERPRISE_TYPE)?" selected":"").">".$lang["help"][34]."";	
 	echo "</select>";
 	echo "</td></tr>";
 
@@ -2017,7 +2035,7 @@ function printHelpDesk ($name,$from_helpdesk) {
 	echo "<td colspan='2' align='center'>".$lang["help"][13].":</td>";
 	echo "</tr>";
 	echo "<tr class='tab_bg_1'>";
-	echo "<td colspan='2' align='center'><textarea name='contents' cols='45' rows='14' ></textarea>";
+	echo "<td colspan='2' align='center'><textarea name='contents' cols='45' rows='14' >$contents</textarea>";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'>";
