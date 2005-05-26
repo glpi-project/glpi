@@ -168,8 +168,14 @@ if ($db->numrows($result) == 0)
 	$result = $db->query($query);
 }
 
+// GET THE IP OF THE CLIENT
+$ip = (getenv("HTTP_X_FORWARDED_FOR")
+? getenv("HTTP_X_FORWARDED_FOR")
+: getenv("REMOTE_ADDR"));
+
+
 // Log Event
-logEvent("-1", "system", 3, "login", $_POST['login_name']." logged in.");
+logEvent("-1", "system", 3, "login", $_POST['login_name']." logged in from $ip.");
 
 // Expire Event Log
 $secs =  $cfg_features["expire_events"]*86400;
