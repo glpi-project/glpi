@@ -137,7 +137,7 @@ function getNbInter($quoi, $chps, $value, $date1 = '', $date2 = '')
 	$db = new DB;
 	if($quoi == 1) {
 		$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
-		if(!empty($chps) && !empty($value)) {
+		if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query .= ", glpi_computers where glpi_tracking.computer = glpi_computers.ID and $chps = '$value' ";
 			}
@@ -189,7 +189,7 @@ function getNbResol($quoi, $chps, $value, $date1 = '', $date2= '')
 	$dropdowns = array ("location", "type", "os");
 	if($quoi == 1) {
 		$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
-		if(!empty($chps) && !empty($value)) {
+		if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query .= ", glpi_computers where glpi_tracking.status = 'old' and glpi_tracking.computer = glpi_computers.ID and $chps = '$value'";
 			}
@@ -209,7 +209,7 @@ function getNbResol($quoi, $chps, $value, $date1 = '', $date2= '')
 	}
 	elseif($quoi == 4) {
 		$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
-		if(!empty($chps) && !empty($value)) {
+		if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query .= ", glpi_computers where glpi_tracking.status = 'old' and glpi_tracking.computer = glpi_computers.ID and $chps = '$value'";
 			}
@@ -243,7 +243,7 @@ function getResolAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 	$dropdowns = array ("location", "type", "os");
 	$db = new DB;
 	if($quoi == 1) {
-	if(!empty($chps) && !empty($value)) {
+	if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))";
 				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
@@ -265,7 +265,7 @@ function getResolAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 		$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking where glpi_tracking.status = 'old' and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
 	}
 	elseif($quoi == 4) {
-		if(!empty($chps) && !empty($value)) {
+		if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))";
 				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
@@ -310,7 +310,7 @@ function getRealAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 	$dropdowns = array ("location", "type", "os");
 	if($quoi == 1) {
 			
-		if(!empty($chps) && !empty($value)) {
+		if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select AVG(glpi_tracking.realtime)";
 				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value' and glpi_tracking.realtime > 0";
@@ -332,7 +332,7 @@ function getRealAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 		$query = "select AVG(glpi_tracking.realtime) as total from glpi_tracking where glpi_tracking.status = 'old' and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW()) and glpi_tracking.realtime > 0";
 	}
 	elseif($quoi == 4) {
-		if(!empty($chps) && !empty($value)) {
+		if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select AVG(glpi_tracking.realtime)";
 				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value' and glpi_tracking.realtime > 0";
@@ -377,7 +377,7 @@ function getRealTotal($quoi, $chps, $value, $date1 = '', $date2 = '')
 	$dropdowns = array ("location", "type", "os");
 	if($quoi == 1) {
 			
-		if(!empty($chps) && !empty($value)) {
+		if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select SUM(glpi_tracking.realtime)";
 				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value' and glpi_tracking.realtime > 0";
@@ -399,7 +399,7 @@ function getRealTotal($quoi, $chps, $value, $date1 = '', $date2 = '')
 		$query = "select SUM(glpi_tracking.realtime) as total from glpi_tracking where glpi_tracking.status = 'old' and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW()) and glpi_tracking.realtime > 0";
 	}
 	elseif($quoi == 4) {
-		if(!empty($chps) && !empty($value)) {
+		if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select SUM(glpi_tracking.realtime)";
 				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value' and glpi_tracking.realtime > 0";
@@ -545,7 +545,7 @@ function getFirstActionAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 	$dropdowns = array ("location", "type", "os");
 	if($quoi == 1) {
 			
-		if(!empty($chps) && !empty($value)) {
+		if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select glpi_tracking.ID AS ID, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first";
 				$query .= " from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID), glpi_computers where glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
@@ -567,7 +567,7 @@ function getFirstActionAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 		$query = "select glpi_tracking.ID AS ID, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where glpi_tracking.status = 'old' and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
 	}
 	elseif($quoi == 4) {
-		if(!empty($chps) && !empty($value)) {
+		if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select glpi_tracking.ID AS ID, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first";
 				$query .= " from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID), glpi_computers where glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
