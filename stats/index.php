@@ -59,6 +59,7 @@ echo "<tr><th>".$lang["stats"][0].":</th></tr>";
 	.", ".$lang["computers"][8]	= "Type".", ".$lang["computers"][9]	= "OS".", ".$lang["computers"][21].", ".$lang["computers"][36]
 	.", ".$lang["computers"][34].", ".$lang["computers"][35].")</td></tr>";
 	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat_user.php\"><b>".$lang["stats"][4]."</b></a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat_category.php\"><b>".$lang["stats"][36]."</b></a></td></tr>";
 
 
 echo "</table></div>";
