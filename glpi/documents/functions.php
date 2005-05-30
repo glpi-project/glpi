@@ -563,7 +563,7 @@ function dropdownDocuments($name){
 	
 	
 }
-
+// $withtemplate==3 -> visu via le helpdesk -> plus aucun lien
 function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
 	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
@@ -584,7 +584,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	echo "<th>".$lang['document'][33]."</th>";
 	echo "<th>".$lang['document'][3]."</th>";
 	echo "<th>".$lang['document'][4]."</th>";
-	if ($withtemplate!=2)echo "<th>&nbsp;</th>";
+	if ($withtemplate<2)echo "<th>&nbsp;</th>";
 	echo "</tr>";
 
 	while ($i < $number) {
@@ -594,20 +594,24 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		$con=new Document;
 		$con->getFromDB($cID);
 	echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
-	echo "<td align='center'><a href='".$HTMLRel."documents/documents-info-form.php?ID=$cID'><b>".$con->fields["name"]." (".$con->fields["ID"].")</b></a></td>";
+	if ($withtemplate!=3)
+		echo "<td align='center'><a href='".$HTMLRel."documents/documents-info-form.php?ID=$cID'><b>".$con->fields["name"]." (".$con->fields["ID"].")</b></a></td>";
+	else echo "<td align='center'><b>".$con->fields["name"]." (".$con->fields["ID"].")</b></td>";
+	
 	echo "<td align='center'>".getDocumentLink($con->fields["filename"])."</td>";
+	
 	echo "<td align='center'><a target=_blank href='".$con->fields["link"]."'>".$con->fields["link"]."</a></td>";
 	echo "<td align='center'>".getDropdownName("glpi_dropdown_rubdocs",$con->fields["rubrique"])."</td>";
 	echo "<td align='center'>".$con->fields["mime"]."</td>";
 
-	if ($withtemplate!=2)echo "<td align='center' class='tab_bg_2'><a href='".$HTMLRel."documents/documents-info-form.php?deleteitem=deleteitem&ID=$assocID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+	if ($withtemplate<2)echo "<td align='center' class='tab_bg_2'><a href='".$HTMLRel."documents/documents-info-form.php?deleteitem=deleteitem&ID=$assocID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
 	}
 	$q="SELECT * FROM glpi_docs WHERE deleted='N'";
 	$result = $db->query($q);
 	$nb = $db->numrows($result);
 	
-	if ($withtemplate!=2&&$nb>0){
+	if ($withtemplate<2&&$nb>0){
 		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 		echo "<div class='software-instal'><input type='hidden' name='ID' value='$ID'><input type='hidden' name='type' value='$device_type'>";
 		dropdownDocuments("conID");

@@ -36,6 +36,7 @@
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_knowbase.php");
+include ($phproot . "/glpi/includes_documents.php");
 
 
 if(isset($_GET)) $tab = $_GET;
@@ -153,6 +154,7 @@ if(!isset($tab["removefromfaq"])) $tab["removefromfaq"] = "";
 	
 		if ($_SESSION["glpitype"]=="admin"||$_SESSION["glpitype"]=="super-admin"){
 		kbItemMenu($tab["ID"]);
+		showDocumentAssociated(KNOWBASE_TYPE,$tab["ID"]);
 		}
 	commonFooter();
 	}
