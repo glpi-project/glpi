@@ -154,8 +154,10 @@ else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
 	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	
 	if (isset($_GET["ID"])){
-
+	include ($phproot . "/glpi/includes_documents.php");
+	
 	ShowKbItemFull($_GET["ID"]);
+	showDocumentAssociated(KNOWBASE_TYPE,$_GET["ID"],3);
 	
 	} else {
 	initExpandSessionVar();

@@ -825,7 +825,10 @@ class CommonItem{
 				break;				
 			case ENTERPRISE_TYPE : 
 				$this->obj= new Enterprise;	
-				break;				
+				break;	
+			case KNOWBASE_TYPE : 
+				$this->obj= new kbitem;	
+				break;					
 			}
 
 			if ($this->obj!=NULL){
@@ -868,7 +871,10 @@ class CommonItem{
 				break;				
 			case ENTERPRISE_TYPE : 
 				return $lang["financial"][26];
-				break;				
+				break;
+			case KNOWBASE_TYPE : 
+				return $lang["knowbase"][0];
+				break;						
 			}
 	
 	}
@@ -876,7 +882,9 @@ class CommonItem{
 		global $lang;
 		if ($this->device_type==0)
 		return "";
-		if ($this->obj!=NULL&&isset($this->obj->fields["name"])&&$this->obj->fields["name"]!="")
+		if ($this->device_type==KNOWBASE_TYPE&&$this->obj!=NULL&&isset($this->obj->fields["question"])&&$this->obj->fields["question"]!="")
+			return $this->obj->fields["question"];
+		else if ($this->obj!=NULL&&isset($this->obj->fields["name"])&&$this->obj->fields["name"]!="")
 			return $this->obj->fields["name"];
 		else 
 			return "N/A";
@@ -918,7 +926,10 @@ class CommonItem{
 				break;				
 			case ENTERPRISE_TYPE : 
 				return "<a href=\"".$cfg_install["root"]."/enterprises/enterprises-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
-				break;				
+				break;
+			case KNOWBASE_TYPE : 
+				return "<a href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
+				break;						
 			}
 
 	
