@@ -1164,6 +1164,9 @@ $lang["stats"][32]="Hour(s)";
 $lang["stats"][33]="Min(s)"; 
 $lang["stats"][34]="Sec(s)"; 
 $lang["stats"][35]="Tracking(s)"; 
+$lang["stats"][38]="Categoria"; 
+$lang["stats"][37]="Statistics by categories"; 
+$lang["stats"][36]="By category"; 
 
 $lang["title"][0]="Centro di comando"; 
 $lang["title"][1]="Accesso diretto all'HelpDesk"; 
