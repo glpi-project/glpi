@@ -101,6 +101,26 @@ function getNbIntervAuthor()
 	
 }
 
+//return an array from tracking
+//it contains the distinct category of interventions.
+function getNbIntervCategory()
+{	
+	$db = new DB;
+	$query = "SELECT id as ID, name as category FROM glpi_dropdown_tracking_category order by name";
+	$result = $db->query($query);
+	if($db->numrows($result) >=1) {
+		$i = 0;
+		while($line = $db->fetch_assoc($result)) {
+		$tab[$i] = $line;
+		$i++;
+		}
+		return $tab;
+	}
+	else return 0;	
+	
+}
+
+
 //Return a counted number of intervention
 //$quoi == 1 it return the number at all
 //$quoi == 2 it return the number for current year
