@@ -144,14 +144,19 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 	while($line = $db->fetch_array($result)) {
 		
 		//select computers IDs that are using this device;
-		$query2 = "SELECT glpi_computers.ID as compid FROM glpi_computers, glpi_computer_device WHERE glpi_computers.ID = glpi_computer_device.FK_computers  ";
-		$query2.= " AND is_template <> '1' AND ";
-		$query2.= "glpi_computer_device.device_type = '".$device_type."' ";
-		$query2.=  "AND glpi_computer_device.FK_device = '".$line["ID"]."'";
+		$query2 = "SELECT distinct(glpi_computers.ID) as compid FROM glpi_computers INNER JOIN glpi_computer_device ON ( glpi_computers.ID = glpi_computer_device.FK_computers AND glpi_computer_device.device_type = '".$device_type."' AND glpi_computer_device.FK_device = '".$line["ID"]."') WHERE ";
+		$query2.= " is_template <> '1'";
+		
 		$result2 = $db->query($query2);
 		$designation = $line["designation"];
 		$i = 0;
 		$j = 0;
+		$resolvavg = 0;
+		$realavg = 0;
+		$realtotal = 0;
+		$realfirst = 0;
+		$nbinterv=array();
+		$nbintervresolv=array();
 		while($line2 = $db->fetch_array($result2)) {
 			//select ID of tracking using this computer id
 			//nbintervresolv
