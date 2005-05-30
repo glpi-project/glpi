@@ -108,12 +108,14 @@ function getNbIntervCategory()
 	$db = new DB;
 	$query = "SELECT id as ID, name as category FROM glpi_dropdown_tracking_category order by name";
 	$result = $db->query($query);
+	$tab[0]="&nbsp;";
 	if($db->numrows($result) >=1) {
 		$i = 0;
 		while($line = $db->fetch_assoc($result)) {
-		$tab[$i] = $line;
+		$tab[$line["ID"]] = $line["category"];
 		$i++;
 		}
+		
 		return $tab;
 	}
 	else return 0;	
@@ -154,7 +156,7 @@ function getNbInter($quoi, $chps, $value, $date1 = '', $date2 = '')
 	elseif($quoi == 4) {
 		$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
 		
-		if(!empty($chps) && !empty($value)) {
+		if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query .= ", glpi_computers where glpi_tracking.computer = glpi_computers.ID and $chps = '$value' ";
 			}

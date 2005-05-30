@@ -882,6 +882,8 @@ $lang["stats"][34] = "Sec(s)";
 $lang["stats"][35] = "Intervention(s)";
 $lang["stats"][36] = "Par cat&eacute;gorie";
 $lang["stats"][37] = "Statistiques par cat&eacute;gorie";
+$lang["stats"][38] = "Cat&eacute;gorie";
+
 // install update
 
 $lang["install"][0]	= "Installation ou mise &agrave; jour de GLPI";
