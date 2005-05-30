@@ -3057,6 +3057,7 @@ function sendFile($file,$filename){
 	}
 	if (!file_exists($file)){
 	echo "Error file $file does not exist";
+	return;
 	} else {
 		$db = new DB;
 		$splitter=split("/",$file);
