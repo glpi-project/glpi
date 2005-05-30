@@ -640,7 +640,7 @@ $lang["mailing"][12]="Attribution of the intervention";
 $lang["mailing"][13]="Error in the automatic e-mail generation"; 
 $lang["mailing"][14]="Update of the category of the tracking"; 
 $lang["mailing"][15]="Update of the priority of the tracking"; 
-$lang["mailing"][16]="Priority"; 
+$lang["mailing"][16]="Priority: "; 
 
 $lang["Menu"][0]="Computers"; 
 $lang["Menu"][1]="Networks"; 
@@ -1164,6 +1164,9 @@ $lang["stats"][32]="Hour(s)";
 $lang["stats"][33]="Min(s)"; 
 $lang["stats"][34]="Sec(s)"; 
 $lang["stats"][35]="Tracking(s)"; 
+$lang["stats"][38]="Category"; 
+$lang["stats"][37]="Statistics by categories"; 
+$lang["stats"][36]="By category"; 
 
 $lang["title"][0]="Command Center"; 
 $lang["title"][1]="Helpdesk Access Only"; 
