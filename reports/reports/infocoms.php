@@ -190,12 +190,14 @@ echo "</td></tr>";
 echo "</table>";
 
 
-if (count($valeurgraphtot)>0){
 
 	echo "<div align='center'><h1>".$lang["software"][21].": ".$lang["financial"][21]."=$valeurtot - ".$lang["financial"][81]."=$valeurnettetot</h1></div>";
 
+if (count($valeurnettegraphtot)>0){
 	$valeurnettegraphtotdisplay=array_map('round',$valeurnettegraphtot);
 	graphBy($valeurnettegraphtotdisplay,$lang["financial"][81],"",0,"year");
+}
+if (count($valeurgraphtot)>0){	
 	$valeurgraphtotdisplay=array_map('round',$valeurgraphtot);
 	graphBy($valeurgraphtotdisplay,$lang["financial"][21],"",0,"year");
 }
