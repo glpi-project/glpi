@@ -72,6 +72,8 @@ $report_list["Intervention"]["name"] = $lang["reports"][25];
 $report_list["Intervention"]["file"] = "reports/tracking.php";
 $report_list["Rapport prises reseau"]["name"]=$lang["reports"][33];
 $report_list["Rapport prises reseau"]["file"]="reports/reseau.php";
+$report_list["Infocoms"]["name"]=$lang["financial"][3];
+$report_list["Infocoms"]["file"]="reports/infocoms.php";
 $report_list["excel"]["name"] = "Excel, OpenOffice, gnumeric, mulitplan (Sylk)";
 $report_list["excel"]["file"] = "reports/geneSylk.php";
 

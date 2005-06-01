@@ -727,8 +727,11 @@ return $entrees;
 
 
 // BASED ON SPIP DISPLAY GRAPH : www.spip.net
-function graphByMonth($entrees,$titre="",$unit="",$showtotal=1){
+// $type = "month" or "year"
+function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
+
 	global $HTMLRel,$lang;
+	
 		// Couleurs cf. bas du fichier
 		/// Bleu
 		$couleur_foncee="#3874B0";
@@ -834,8 +837,12 @@ function graphByMonth($entrees,$titre="",$unit="",$showtotal=1){
 		if ($largeur>10){
 			echo "<tr><td></td>";
 			foreach ($entrees as $key => $val){
+				if ($type=="month"){
 				$splitter=split("-",$key);
 				echo "<td align='center'>".substr($lang["calendarM"][$splitter[1]-1],0,1)."</td>";
+				} else if ($type=="year"){
+				echo "<td align='center'>".substr($key,2,2)."</td>";
+				}
 			}
 		echo "</tr>";
 		}
