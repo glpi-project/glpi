@@ -106,21 +106,27 @@ function display_infocoms_report($device_type,$begin,$end){
 		while ($line=$db->fetch_array($result)){
 			
 			$comp->getFromDB($device_type,$line["FK_device"]);
+//				print_r($comp);
+			if (isset($comp->obj->fields["is_template"])&&$comp->obj->fields["is_template"]==0){
 
-			if ($comp->obj->fields["is_template"]==0){
-				$valeursoustot+=$line["value"];	
+				if ($line["value"]>0) $valeursoustot+=$line["value"];	
+				
 				$valeurnette=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$cfg_install["date_fiscale"],"n");
 				$tmp=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$cfg_install["date_fiscale"],"all");
 			
 				if (is_array($tmp)&&count($tmp)>0)
 				foreach ($tmp["annee"] as $key => $val){
-					if (!isset($valeurnettegraph[$val])) $valeurnettegraph[$val]=0;
-					$valeurnettegraph[$val]+=$tmp["vcnetfin"][$key];
+					if ($tmp["vcnetfin"][$key]>0){
+						if (!isset($valeurnettegraph[$val])) $valeurnettegraph[$val]=0;
+						$valeurnettegraph[$val]+=$tmp["vcnetfin"][$key];
+					}
 				}
 				if ($line["buy_date"]!="0000-00-00"){
 					$year=substr($line["buy_date"],0,4);
-					if (!isset($valeurgraph[$year])) $valeurgraph[$year]=0;
-					$valeurgraph[$year]+=$line["value"];
+					if ($line["value"]>0){
+						if (!isset($valeurgraph[$year])) $valeurgraph[$year]=0;
+						$valeurgraph[$year]+=$line["value"];
+					}
 				}
 				
 			
@@ -130,6 +136,7 @@ function display_infocoms_report($device_type,$begin,$end){
 			}
 
 		}	
+	
 	$valeurtot+=$valeursoustot;
 	$valeurnettetot+=$valeurnettesoustot;
 
