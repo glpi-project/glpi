@@ -72,27 +72,27 @@ echo "</table></form></div>";
 // Total des interventions
 $entrees_total=constructEntryValues("inter_total",$_POST["date1"],$_POST["date2"]);
 	if (count($entrees_total)>0)
-graphByMonth($entrees_total,$lang["stats"][5],$lang["stats"][35]);
+graphBy($entrees_total,$lang["stats"][5],$lang["stats"][35],1,"month");
 
 // Total des interventions résolues
 $entrees_solved=constructEntryValues("inter_solved",$_POST["date1"],$_POST["date2"]);
 	if (count($entrees_solved)>0)
-graphByMonth($entrees_solved,$lang["stats"][11],$lang["stats"][35]);
+graphBy($entrees_solved,$lang["stats"][11],$lang["stats"][35],1,"month");
 
 //Temps moyen de resolution d'intervention
 $entrees_avgtime=constructEntryValues("inter_avgsolvedtime",$_POST["date1"],$_POST["date2"]);
 	if (count($entrees_avgtime)>0)
-graphByMonth($entrees_avgtime,$lang["stats"][6],$lang["stats"][32],0);
+graphBy($entrees_avgtime,$lang["stats"][6],$lang["stats"][32],0,"month");
 
 //Temps moyen d'intervention réel
 $entrees_avgtime=constructEntryValues("inter_avgrealtime",$_POST["date1"],$_POST["date2"]);
 	if (count($entrees_avgtime)>0)
-graphByMonth($entrees_avgtime,$lang["stats"][25],$lang["stats"][33],0);
+graphBy($entrees_avgtime,$lang["stats"][25],$lang["stats"][33],0,"month");
 
 //Temps moyen de prise en compte de l'intervention
 $entrees_avgtime=constructEntryValues("inter_avgtakeaccount",$_POST["date1"],$_POST["date2"]);
 	if (count($entrees_avgtime)>0)
-graphByMonth($entrees_avgtime,$lang["stats"][30],$lang["stats"][32],0);
+graphBy($entrees_avgtime,$lang["stats"][30],$lang["stats"][32],0,"month");
 
 commonFooter();
 ?>
