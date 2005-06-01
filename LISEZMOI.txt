@@ -236,13 +236,8 @@ I) Sauvegarde de votre ancienne configuration :
 
 Avant de faire quoi que ce soit il convient de faire deux choses :
 
-Sauvegardez votre base de donnée via l'interface de sauvegarde de glpi et 
-récupérez le fichier dump contenant les données dans le répertoire backups/dump/ 
-et faites en une sauvegarde.
-
-#### VERSION > 0.5
-Faites également une sauvegarde du répertoire docs car vous devrez le remettre en place sur votre version mise à jour.
-####
+1 - Sauvegardez votre base de donnée via l'interface de sauvegarde de glpi. 
+2 - Sauvegardez tout le répertoire GLPI (il contiendra la sauvegarde de votre base SQL et vos documents (GLPI >= 0.5))
 
 A partir de là, si la mise à jour se déroule mal ou que les nouvelles implantation de 
 la version 0.5 ne vous conviennent pas, il sera facile de revenir à votre version précédente.
@@ -253,21 +248,12 @@ et le message d'erreur que vous obtenez.
 
 II) Récupération et installation des fichiers.
 
-#### VERSION < 0.4
-IMPORTANT : La mise à jour depuis une version inférieure vers GLPI 0.4 ne vous permet pas de préserver 
-automatiquement vos configurations précises (configurations générales, sources externes, mailing etc etc)
- qui étaient conservées dans le fichier config.php.
-####
-
-
-1)Supprimez le répertoire contenant GLPI ainsi que tout son contenu, de votre racine http.
-
-2)Téléchargez le tarball de la version 0.5 disponible dans la rubrique téléchargement du site du 
+1)Téléchargez le tarball de la version 0.5 disponible dans la rubrique téléchargement du site du 
 projet glpi (http://glpi.indepnet.org).
 
-3)Décompressez la nouvelle archive de GLPI, à la place de l'ancienne.
+2)Décompressez la nouvelle archive de GLPI, à la place de l'ancienne.
 
-4)Changez les droits sur les dossiers suivants :
+3)Changez les droits sur les dossiers suivants :
 
 -[votre_racine_http/]glpi/backups/dump
 -[votre_racine_http/]glpi/glpi/config/
