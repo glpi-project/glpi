@@ -140,6 +140,9 @@ function display_infocoms_report($device_type,$begin,$end){
 	$valeurtot+=$valeursoustot;
 	$valeurnettetot+=$valeurnettesoustot;
 
+	echo "<tr><td colspan='6' align='center'><h1>".$lang["software"][21].": ".$lang["financial"][21]."=$valeursoustot - ".$lang["financial"][81]."=$valeurnettesoustot</h2></td></tr>";
+
+
 	if (count($valeurnettegraph)>0){
 	
 		echo "<tr><td colspan='5'  align='center'>";
