@@ -95,7 +95,9 @@ of the GLPI project (http://glpi.indepnet.org).
 
 2) Uncompress the GLPI tarball where the previous one was.
 
-3) Change acces rights to the following directory (add write access) :
+3) Delete the file [your_http_root/]glpi/glpi/config/config_db.php
+
+4) Change acces rights to the following directory (add write access) :
 
 -[your_http_root/]glpi/backups/dump
 -[your_http_root/]glpi/glpi/config/

@@ -253,7 +253,9 @@ projet glpi (http://glpi.indepnet.org).
 
 2)Décompressez la nouvelle archive de GLPI, à la place de l'ancienne.
 
-3)Changez les droits sur les dossiers suivants :
+3)Supprimez le fichier [votre_racine_http/]glpi/glpi/config/config_db.php
+
+4)Changez les droits sur les dossiers suivants :
 
 -[votre_racine_http/]glpi/backups/dump
 -[votre_racine_http/]glpi/glpi/config/
