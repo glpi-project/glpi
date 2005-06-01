@@ -75,16 +75,9 @@ I) Save your configuration :
 
 First of all you must do 2 things :
 
-Save your databse using the GLPI interface. Get the dump file in the backups/dump/ directory 
-and make a backup of it.
+1 - Save your database using the GLPI interface. 
+2 - Save all the glpi directory containing your SQL backup and your documents (GLPI >= 0.5)
 
-#### VERSION <= 0.3
-Backup the file config.php which is in the glpi/config/ directory 
-####
-
-#### VERSION > 0.5
-Backup the docs directory because you will copy it on the new directory to keep your files.
-####
 
 Now, if the update is going wrong or that you do not appreciate new version, 
 it is easy to return to your preceding version.
@@ -96,15 +89,13 @@ the site of the project, or on the bugtrack).
 II) Get and install the files
 
 
-1) Delete your previous GLPI directory
-
-2) Download the last tarball on the download ("Télécharger" in french) section of the website 
+1) Download the last tarball on the download ("Télécharger" in french) section of the website 
 of the GLPI project (http://glpi.indepnet.org).
 
 
-3) Uncompress the GLPI tarball where the previous one was.
+2) Uncompress the GLPI tarball where the previous one was.
 
-4) Change acces rights to the following directory (add write access) :
+3) Change acces rights to the following directory (add write access) :
 
 -[your_http_root/]glpi/backups/dump
 -[your_http_root/]glpi/glpi/config/

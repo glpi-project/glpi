@@ -38,7 +38,7 @@ include ($phproot . "/glpi/common/classes.php");
 include ($phproot . "/glpi/common/functions.php");
 include ($phproot . "/glpi/config/config_db.php");
 
-session_start();
+if(!session_id()){@session_start();}
 
 //################################ Functions ################################
 function loadLang() {
