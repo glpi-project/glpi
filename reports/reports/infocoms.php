@@ -87,6 +87,7 @@ function display_infocoms_report($device_type,$begin,$end){
 	if (!empty($begin)) $query.= " AND (glpi_infocoms.buy_date >= '".$begin."' OR glpi_infocoms.use_date >= '".$begin."' )";
 	if (!empty($end)) $query.= " AND (glpi_infocoms.buy_date <= '".$end."' OR glpi_infocoms.use_date <= '".$end."' )";
 
+	$query .=" ORDER BY buy_date, use_date";
 
 	$result=$db->query($query);
 	if ($db->numrows($result)>0){
@@ -110,10 +111,10 @@ function display_infocoms_report($device_type,$begin,$end){
 			if (isset($comp->obj->fields["is_template"])&&$comp->obj->fields["is_template"]==0){
 
 				if ($line["value"]>0) $valeursoustot+=$line["value"];	
-				
+
 				$valeurnette=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$cfg_install["date_fiscale"],"n");
 				$tmp=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$cfg_install["date_fiscale"],"all");
-			
+
 				if (is_array($tmp)&&count($tmp)>0)
 				foreach ($tmp["annee"] as $key => $val){
 					if ($tmp["vcnetfin"][$key]>0){
@@ -130,7 +131,8 @@ function display_infocoms_report($device_type,$begin,$end){
 				}
 				
 			
-				$valeurnettesoustot+=$valeurnette;	
+				$valeurnettesoustot+=str_replace(" ","",$valeurnette);	
+
 				echo "<tr class='tab_bg_1'><td>".$comp->getName()."</td><td>".$line["value"]."</td><td>$valeurnette</td><td>".$line["buy_date"]."</td><td>".$line["use_date"]."</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
 	
 			}
