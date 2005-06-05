@@ -1122,6 +1122,7 @@ $lang["software"][40]="Ninguna licencia";
 $lang["software"][41]="Software ID"; 
 $lang["software"][42]="Nuevo software a partir de un modelo"; 
 
+$lang["state"][5]="Nombre"; 
 $lang["state"][0]="Estado"; 
 $lang["state"][1]="Estados de materiales"; 
 $lang["state"][2]="Sacar el material de su estado"; 

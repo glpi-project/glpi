@@ -1122,6 +1122,7 @@ $lang["software"][40]="Nessuna licenza";
 $lang["software"][41]="ID software"; 
 $lang["software"][42]="Nuovo software da modello"; 
 
+$lang["state"][5]="Nome"; 
 $lang["state"][0]="Stato"; 
 $lang["state"][1]="Stato"; 
 $lang["state"][2]="Riporta il dispositivo al suo stato normale"; 
