@@ -1354,7 +1354,7 @@ $lang["state"][0]	= "Etat";
 $lang["state"][1]	= "Etats des mat&eacute;riels";
 $lang["state"][2]	= "Sortir le mat&eacute;riel de son état";
 $lang["state"][4]	= "ID";
-$lang["state"][5]	= "";
+$lang["state"][5]	= "Nom";
 $lang["state"][6]	= "Type de mat&eacute;riel";
 $lang["state"][7]	= "Pas de mat&eacute;riel trouv&eacute;";
 
