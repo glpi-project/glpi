@@ -50,7 +50,7 @@ function titleTracking(){
 
 
 
-function searchFormTracking ($show,$contains,$containsID,$device,$category) {
+function searchFormTracking ($show,$contains,$containsID,$device,$category,$desc) {
 	// Tracking Search Block
 	
 	GLOBAL $cfg_layout, $cfg_install,$lang;
@@ -125,7 +125,19 @@ function searchFormTracking ($show,$contains,$containsID,$device,$category) {
 	//echo "<form method=\"get\" action=\"".$cfg_install["root"]."/tracking/index.php\">";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td class='tab_bg_2'>";
-	echo "<strong>".$lang["tracking"][5].":</strong> <input type='text' name='contains' value=\"$contains\" size='15'></td><td>";
+
+ $elts=array("both"=>$lang["joblist"][6]." / ".$lang["job"][7],"contents"=>$lang["joblist"][6],"followup" => $lang["job"][7]);
+ echo "<select name='desc'>";
+ foreach ($elts as $key => $val){
+ $selected="";
+ if ($desc==$key) $selected="selected";
+ echo "<option value=\"$key\" $selected>$val</option>";
+ 
+ }
+ echo "</select>";
+
+
+	echo "<strong> ".$lang["search"][2].":</strong> <input type='text' name='contains' value=\"$contains\" size='15'></td><td>";
 	echo "<strong>".$lang["tracking"][23].":</strong> <input type='text' name='containsID' value=\"$containsID\" size='5'>";	echo "</td><td>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr>";
@@ -158,7 +170,7 @@ function getTrackingPrefs ($username) {
 	return $prefs;
 }
 
-function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$device='-1',$category='NULL',$containsID='') {
+function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$device='-1',$category='NULL',$containsID='',$desc="both") {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -173,58 +185,75 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 	if ($contains||$containsID)
 	{
 		$where= "  ( '0'='1' ";
-		if ($contains)
-			$where .= " OR (contents LIKE '%$contains%')";
+		if ($contains){
+			switch ($desc){
+			case "both" :
+			$where.= " OR (glpi_followups.contents LIKE '%".$contains."%' OR glpi_tracking.contents LIKE '%".$contains."%')";
+			break;
+			case "followup" :
+			$where.= " OR (glpi_followups.contents LIKE '%".$contains."%')";
+			break;
+			case "contents" :
+			$where.= " OR (glpi_tracking.contents LIKE '%".$contains."%')";
+			break;
+		}
+		}
+
 		if ($containsID)
-			$where .= " OR (ID = '$containsID')";
+			$where .= " OR (glpi_tracking.ID = '$containsID')";
 			
 		$where.=" ) ";
 	}
 	else  if ($show == "old")
 	{
-		$where = " (status = 'old')";
+		$where = " (glpi_tracking.status = 'old')";
 	}
 	else if ($show !="user")
 	{
-		$where = " (status = 'new')";
+		$where = " (glpi_tracking.status = 'new')";
 	} else $where= " ('1'='1') ";
 	
 	
 	if($device != -1) {
-		$where .= " AND (device_type = '".$device."')";
+		$where .= " AND (glpi_tracking.device_type = '".$device."')";
 	} 
 
 	if($category!=0) {
-		$where .= " AND (category = '".$category."')";
+		$where .= " AND (glpi_tracking.category = '".$category."')";
 	} 
 
 	// Build query, two completely different things here, need to be fixed
 	// and made into a more featured query-parser
 
+	$joinfollowups="";
+	if ($contains!=""&&$desc!="contents") {
+		$joinfollowups.= " LEFT JOIN glpi_followups ON ( glpi_followups.tracking = glpi_tracking.ID)";
+	}
+	
 	if ($show == "individual")
 	{
-		$query = "SELECT ID FROM glpi_tracking WHERE ".$where." and (assign = '".$username."') ORDER BY date ".$prefs["order"]."";
+		$query = "SELECT glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.assign = '".$username."') ORDER BY glpi_tracking.date ".$prefs["order"]."";
 	}
 	else if ($show == "user")
 	{
-		$query = "SELECT ID FROM glpi_tracking WHERE ".$where." and (author = '".$username."') ORDER BY date ".$prefs["order"]."";
+		$query = "SELECT glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.author = '".$username."') ORDER BY glpi_tracking.date ".$prefs["order"]."";
 	}
 	else if ($show == "unassigned")
 	{
-		$query = "SELECT ID FROM glpi_tracking WHERE ".$where." and (assign ='' OR assign is null) ORDER BY date ".$prefs["order"]."";
+		$query = "SELECT glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.assign ='' OR glpi_tracking.assign is null) ORDER BY glpi_tracking.date ".$prefs["order"]."";
 	}
 	else
 	{
-		$query = "SELECT ID FROM glpi_tracking WHERE ".$where." ORDER BY date ".$prefs["order"]."";
+		$query = "SELECT glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." ORDER BY glpi_tracking.date ".$prefs["order"]."";
 	}
 
 	if ($item&&$item_type)
 	{
-		$query = "SELECT ID FROM glpi_tracking WHERE ".$where." and (device_type = '".$item_type."' and computer = '".$item."') ORDER BY date ".$prefs["order"]."";
+		$query = "SELECT glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.device_type = '".$item_type."' and glpi_tracking.computer = '".$item."') ORDER BY glpi_tracking.date ".$prefs["order"]."";
 	}	
 	
 	$lim_query = " LIMIT ".$start.",".$cfg_features["list_limit"]."";	
-	
+
 	$db = new DB;
 	$result = $db->query($query);
 	$numrows = $db->numrows($result);

@@ -62,6 +62,7 @@ if(!isset($tab["category"])) $tab["category"] = 0;
 if(!isset($tab["contains"])) $tab["contains"] = "";
 if(!isset($tab["containsID"])) $tab["containsID"] ="";
 if(!isset($tab["show"])) $tab["show"] ="";
+if(!isset($tab["desc"])) $tab["desc"] ="both";
 
 if (isAdmin($_SESSION["glpitype"])&&isset($tab["delete"])&&!empty($tab["todel"])){
 	$j=new Job;
@@ -71,8 +72,8 @@ if (isAdmin($_SESSION["glpitype"])&&isset($tab["delete"])&&!empty($tab["todel"])
 	}
 
 
-searchFormTracking($tab["show"],$tab["contains"],$tab["containsID"],$tab["device"],$tab["category"]);
-showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$tab["show"],$tab["contains"],"","",$tab["start"],$tab["device"],$tab["category"],$tab["containsID"]);
+searchFormTracking($tab["show"],$tab["contains"],$tab["containsID"],$tab["device"],$tab["category"],$tab["desc"]);
+showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$tab["show"],$tab["contains"],"","",$tab["start"],$tab["device"],$tab["category"],$tab["containsID"],$tab["desc"]);
 
 commonFooter();
 ?>
