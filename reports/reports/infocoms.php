@@ -119,7 +119,7 @@ function display_infocoms_report($device_type,$begin,$end){
 				foreach ($tmp["annee"] as $key => $val){
 					if ($tmp["vcnetfin"][$key]>0){
 						if (!isset($valeurnettegraph[$val])) $valeurnettegraph[$val]=0;
-						$valeurnettegraph[$val]+=$tmp["vcnetfin"][$key];
+						$valeurnettegraph[$val]+=$tmp["vcnetdeb"][$key];
 					}
 				}
 				if ($line["buy_date"]!="0000-00-00"){
