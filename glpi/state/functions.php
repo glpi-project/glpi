@@ -178,7 +178,7 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_state_item.id_device&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
-			echo $lang["state"][1]."</a></th>";
+			echo $lang["state"][5]."</a></th>";
 
 			
 			// Location			
