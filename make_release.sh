@@ -70,7 +70,7 @@ echo "Delete various scripts and directories"
 \rm -rf conffiles
 
 echo "Must be root to generate a clean tarball - Please login"
-su -c "cd /tmp; tar czvf /tmp/glpi-$RELEASE.tar.gz glpi;"
+su -c "cd /tmp; chown -R root.root glpi; tar czvf /tmp/glpi-$RELEASE.tar.gz glpi; \rm -rf /tmp/glpi"
 
 echo "Creating tarball";
 #cd ..;
@@ -84,6 +84,6 @@ echo "Logout root user";
 
 
 echo "Deleting temp directory";
-\rm -rf /tmp/glpi;
+#\rm -rf /tmp/glpi;
 
 echo "The Tarball is in the /tmp directory";
