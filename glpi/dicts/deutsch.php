@@ -1122,6 +1122,7 @@ $lang["software"][40]="No licence";
 $lang["software"][41]="Software ID"; 
 $lang["software"][42]="New software based on a template"; 
 
+$lang["state"][5]="Name"; 
 $lang["state"][0]="State"; 
 $lang["state"][1]="Item States"; 
 $lang["state"][2]="Go back the item to its normal state"; 
