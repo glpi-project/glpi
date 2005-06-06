@@ -178,7 +178,7 @@ else
 				showContractAssociated(MONITOR_TYPE,$tab["ID"]);			
 				break;
 			case 5 :			
-				showDocumentAssociated(COMPUTER_TYPE,$tab["ID"]);	
+				showDocumentAssociated(MONITOR_TYPE,$tab["ID"]);	
 				break;
 			case 6 :			
 				showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
