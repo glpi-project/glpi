@@ -535,7 +535,7 @@ class Identification
 		$language = $this->user->prefs['language'];
 		$tracking_order = $this->user->prefs['tracking_order'];
 		//echo $tracking_order;
-		session_start();
+		if(!session_id()) session_start();
 		$_SESSION["glpiID"] = $ID;
 		$_SESSION["glpipass"] = $password;
 		$_SESSION["glpiname"] = $name;
