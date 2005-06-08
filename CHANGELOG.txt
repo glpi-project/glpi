@@ -1,3 +1,32 @@
+Changelog Complet : http://mantis.indepnet.org/changelog_page.php
+
+*** GLPI  0.51a ***
+- 0000145: [Module Inventaire] Lors de la recherche d'un logiciel, pouvoir saisir un numéro de licence
+- 0000147: [Module Gestion] impossible de lier un document à un écran
+- 0000067: [Autre] Bug Etat des matériels 
+- 0000132: [Module Assistance] rechercher des interventions par description et/ou suivi 
+- 0000133: [Module Inventaire] erreur libellé 
+- 0000143: [Installation / Mise à Jour] Enlever ou ammoindrir l'importance du message sur la suppression de l'utilisateur helpdesk. 
+- 0000131: [Module Statistiques / Rapports] Statistique / Rapports sur les infos commerciales 
+- 0000124: [Installation / Mise à Jour] Message pour les documents au moment de la mise à jour 
+- 0000138: [Général] Login LDAP avec mot de passe vide 
+- 0000137: [Module Configuration] Perte du type de compte Admin lors du changement de mot de passe 
+- 0000128: [Module Statistiques / Rapports] Statistiques par catégorie de suivi 
+- 0000129: [Module Outils] Lien de fichiers pour la base de connaissance 
+- 0000104: [Module Statistiques / Rapports] Problème dans rapport réseau par switch 
+- 0000108: [Module Assistance] bug Internet Explorer : suppresion des données du formulaire en cas de mauvaise(s) entrée(s) 
+- 0000125: [Général] Adresse IP dans les logs 
+- 0000075: [Module Statistiques / Rapports] Bug rapport par défaut 
+- 0000106: [Installation / Mise à Jour] Coquille dans le readme 
+- 0000110: [Autre] Bug dans le log pour les contact 
+- 0000066: [Module Configuration] l'intitulé est ajouté plusieurs fois dans la table 
+- 0000073: [Général] Problème affichage numero fax et telephone 
+- 0000105: [Module Statistiques / Rapports] Probleme de traduction 
+- 0000113: [Général] Gestion des plugins 
+- 0000070: [Général] Bug dans la réservation de matériel... 
+- 0000072: [Module Inventaire] Bug de sur les états : 
+- 0000069: [Module Gestion] document non effacé 
+
 *** GLPI  0.51 ***
 
 - 0000065: [Général] Correction Bugs : delete des intitulés + delete des followups + update des licences + bug update des lieux dans la mise à jour
