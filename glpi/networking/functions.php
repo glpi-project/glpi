@@ -813,6 +813,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 
 		echo "<form method='post' action=$target>";
 		echo "<input type='hidden' name='ID' value=$ID>";
+		echo "<input type='hidden' name='referer' value='$REFERER'>";
 		echo "<td align='center'>";
 		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 		echo "</td></tr></form>";

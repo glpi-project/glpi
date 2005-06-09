@@ -83,23 +83,7 @@ else if(isset($_POST["delete"]))
 	$n->getFromDB($_POST["ID"]);
 	deleteNetport($_POST);
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." deleted networking port.");
-	switch($n->fields["device_type"]){
-	case COMPUTER_TYPE:
-		glpi_header($cfg_install["root"]."/computers/");
-		break;
-	case NETWORKING_TYPE:
-		glpi_header($cfg_install["root"]."/networking/");
-		break;
-	case PRINTER_TYPE:
-		glpi_header($cfg_install["root"]."/printers/");
-		break;
-	case PERIPHERAL_TYPE:
-		glpi_header($cfg_install["root"]."/peripherals/");
-		break;
-	default :
-		glpi_header($cfg_install["root"]."/computers/");
-		break;
-	}
+	glpi_header($_POST["referer"]);
 }
 else if(isset($_POST["update"]))
 {
