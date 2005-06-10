@@ -1,6 +1,7 @@
 Changelog Complet : http://mantis.indepnet.org/changelog_page.php
 
 *** GLPI  0.51a ***
+- 0000156: [Module Statistiques / Rapports] Bug statistiques user / tech avec caractères accentués dans les login
 - 0000153: [Général] Problème de redirection après la suppression de ports sur des périphériques
 - 0000145: [Module Inventaire] Lors de la recherche d'un logiciel, pouvoir saisir un numéro de licence
 - 0000147: [Module Gestion] impossible de lier un document à un écran
