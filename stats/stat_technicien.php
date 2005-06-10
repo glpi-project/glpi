@@ -83,22 +83,22 @@ echo "<tr><th>".$lang["stats"][16]."</th><th>".$lang["stats"][13]."</th><th>".$l
 	echo "<td>".$key["assign"]."</td>";
 	//le nombre d'intervention
 	//the number of intervention
-		echo "<td>".getNbinter(4,'assign',$key["assign"],$_POST["date1"],$_POST["date2"])."</td>";
+		echo "<td>".getNbinter(4,'assign',unhtmlentities($key["assign"]),$_POST["date1"],$_POST["date2"])."</td>";
 	//le nombre d'intervention resolues
 	//the number of resolved intervention
-		echo "<td>".getNbresol(4,'assign',$key["assign"],$_POST["date1"],$_POST["date2"])."</td>";
+		echo "<td>".getNbresol(4,'assign',unhtmlentities($key["assign"]),$_POST["date1"],$_POST["date2"])."</td>";
 	//Le temps moyen de resolution
 	//The average time to resolv
-		echo "<td>".getResolAvg(4, 'assign',$key["assign"],$_POST["date1"],$_POST["date2"])."</td>";
+		echo "<td>".getResolAvg(4, 'assign',unhtmlentities($key["assign"]),$_POST["date1"],$_POST["date2"])."</td>";
 	//Le temps moyen de l'intervention réelle
 	//The average realtime to resolv
-		echo "<td>".getRealAvg(4, 'assign',$key["assign"],$_POST["date1"],$_POST["date2"])."</td>";
+		echo "<td>".getRealAvg(4, 'assign',unhtmlentities($key["assign"]),$_POST["date1"],$_POST["date2"])."</td>";
 	//Le temps total de l'intervention réelle
 	//The total realtime to resolv
-		echo "<td>".getRealTotal(4, 'assign',$key["assign"],$_POST["date1"],$_POST["date2"])."</td>";
+		echo "<td>".getRealTotal(4, 'assign',unhtmlentities($key["assign"]),$_POST["date1"],$_POST["date2"])."</td>";
 	//Le temps total de l'intervention réelle
 	//The total realtime to resolv
-		echo "<td>".getFirstActionAvg(4, 'assign',$key["assign"],$_POST["date1"],$_POST["date2"])."</td>";
+		echo "<td>".getFirstActionAvg(4, 'assign',unhtmlentities($key["assign"]),$_POST["date1"],$_POST["date2"])."</td>";
 
 	echo "</tr>";
   }

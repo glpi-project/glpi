@@ -80,12 +80,12 @@ echo "<tr><th>".$lang["stats"][20]."</th><th>".$lang["stats"][22]."</th><th>".$l
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$key["author"]."</td>";
 
-		echo "<td>".getNbinter(4,'glpi_tracking.author',$key["author"], $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getNbresol(4,'glpi_tracking.author',$key["author"], $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getResolAvg(4, 'glpi_tracking.author',$key["author"], $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getRealAvg(4, 'glpi_tracking.author',$key["author"], $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getRealTotal(4, 'glpi_tracking.author',$key["author"], $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getFirstActionAvg(4, 'glpi_tracking.author',$key["author"], $_POST["date1"], $_POST["date2"])."</td>";
+		echo "<td>".getNbinter(4,'glpi_tracking.author',unhtmlentities($key["author"]), $_POST["date1"], $_POST["date2"])."</td>";
+		echo "<td>".getNbresol(4,'glpi_tracking.author',unhtmlentities($key["author"]), $_POST["date1"], $_POST["date2"])."</td>";
+		echo "<td>".getResolAvg(4, 'glpi_tracking.author',unhtmlentities($key["author"]), $_POST["date1"], $_POST["date2"])."</td>";
+		echo "<td>".getRealAvg(4, 'glpi_tracking.author',unhtmlentities($key["author"]), $_POST["date1"], $_POST["date2"])."</td>";
+		echo "<td>".getRealTotal(4, 'glpi_tracking.author',unhtmlentities($key["author"]), $_POST["date1"], $_POST["date2"])."</td>";
+		echo "<td>".getFirstActionAvg(4, 'glpi_tracking.author',unhtmlentities($key["author"]), $_POST["date1"], $_POST["date2"])."</td>";
 
 	echo "</tr>";
   }
