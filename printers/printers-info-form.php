@@ -134,7 +134,7 @@ else
 if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 if (isset($_GET['onglet'])) {
 	$_SESSION['glpi_onglet']=$_GET['onglet'];
-		glpi_header($_SERVER['HTTP_REFERER']);
+//		glpi_header($_SERVER['HTTP_REFERER']);
 }	
 	showPrinterOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 	if (!empty($tab["withtemplate"])) {
