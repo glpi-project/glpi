@@ -2348,9 +2348,18 @@ if(!TableExists("glpi_dropdown_state")) {
 	$db->query($query) or die("0.51 add state repair item ".$lang["update"][90].$db->error());	
 }
 
+
+/*******************************GLPI 0.6***********************************************/
+if(FieldExists("glpi_tracking","category")) {
+$query= "ALTER TABLE `glpi_tracking` CHANGE `category` `category` INT( 11 ) DEFAULT '0' NOT NULL";
+$db->query($query) or die("0.6 alter category tracking ".$lang["update"][90].$db->error());	
+}
+
+
+
 // Update version number and default langage ---- LEAVE AT THE END
-	$query = "UPDATE `glpi_config` SET `version` = ' 0.51', default_language='".$_SESSION["dict"]."' ;";
-	$db->query($query) or die("0.51 ".$lang["update"][90].$db->error());
+	$query = "UPDATE `glpi_config` SET `version` = ' 0.6', default_language='".$_SESSION["dict"]."' ;";
+	$db->query($query) or die("0.6 ".$lang["update"][90].$db->error());
 
 optimize_tables();
 

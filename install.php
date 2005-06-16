@@ -521,7 +521,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename,$selecteddu
 		include ($phproot . "/glpi/config/config_db.php");
 		
 		$db = new DB;
-		$db_file = $phproot ."/mysql/glpi-0.51-empty.sql";
+		$db_file = $phproot ."/mysql/glpi-0.6-empty.sql";
 		$dbf_handle = fopen($db_file, "rt");
 		$sql_query = fread($dbf_handle, filesize($db_file));
 		fclose($dbf_handle);
