@@ -2278,12 +2278,12 @@ if($db->numrows($result) != $db->numrows($result2)) {
 	$users = array();
 	$i = 0;
 	while ($line = $db->fetch_array($result2)) {
-		$prefs[$i] = $line["username"];
+		$prefs[$i] = unhtmlentities($line["username"]);
 		$i++;
 	}
 	while($line = $db->fetch_array($result)) {
-		if(!in_array($line["name"],$prefs)) {
-			$query_insert =  "INSERT INTO `glpi_prefs` ( `username` , `tracking_order` , `language`) VALUES ( '".$line["name"]."', 'no', 'french')";
+		if(!in_array(unhtmlentities($line["name"]),$prefs)) {
+			$query_insert =  "INSERT INTO `glpi_prefs` ( `username` , `tracking_order` , `language`) VALUES ( '".unhtmlentities($line["name"])."', 'no', 'french')";
 			$db->query($query_insert) or die("glpi maj prefs ".$lang["update"][90].$db->error()); 
 		}
 	}
