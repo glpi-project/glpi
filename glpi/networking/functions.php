@@ -421,13 +421,15 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 	echo "</b></td></tr>";
 	}
 
-		if (!$template){
+		
 		echo "<td>".$lang["state"][0]."&nbsp;:</td><td><b>";
 		$si=new StateItem();
-		$si->getfromDB(NETWORKING_TYPE,$netdev->fields["ID"]);
+		$t=0;
+		if ($template) $t=1;
+		$si->getfromDB(NETWORKING_TYPE,$netdev->fields["ID"],$t);
 		dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
 		echo "</b></td>";
-		} else echo "<td>&nbsp;</td><td>&nbsp;</td>";
+		
 
 	echo "</table>";
 
@@ -544,6 +546,11 @@ function addNetdevice($input) {
 
 	$null = array_pop($input);
 	$null = array_pop($input);
+	
+	// Manage state
+	$state=$input["state"];
+	unset($input["state"]);
+
  	// set new date.
  	$netdev->fields["date_mod"] = date("Y-m-d H:i:s");
 	
@@ -555,6 +562,11 @@ function addNetdevice($input) {
 	}
 
 	$newID=$netdev->addToDB();
+	
+	// Add state
+	if (isset($input["is_template"])&&$input["is_template"]==1)
+	updateState(NETWORKING_TYPE,$newID,$state,1);
+	else updateState(NETWORKING_TYPE,$newID,$state);
 	
 	// ADD Infocoms
 	$ic= new Infocom();
@@ -631,7 +643,9 @@ function updateNetdevice($input) {
 			$x++;
 		}
 	}
-	updateState(NETWORKING_TYPE,$input["ID"],$input["state"]);
+	if (isset($input["is_template"])&&$input["is_template"]==1)
+	updateState(NETWORKING_TYPE,$input["ID"],$input["state"],1);
+	else updateState(NETWORKING_TYPE,$input["ID"],$input["state"]);
 
 	$netdev->updateInDB($updates);
 

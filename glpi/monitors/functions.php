@@ -409,13 +409,13 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 		echo "</b></td></tr>";
 	}
 
-		if (!$template){
 		echo "<td>".$lang["state"][0]."&nbsp;:</td><td><b>";
 		$si=new StateItem();
-		$si->getfromDB(MONITOR_TYPE,$mon->fields["ID"]);
+		$t=0;
+		if ($template) $t=1;
+		$si->getfromDB(MONITOR_TYPE,$mon->fields["ID"],$t);
 		dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
 		echo "</b></td>";
-		} 
 
 	echo "</table>";
 
@@ -586,8 +586,10 @@ function updateMonitor($input) {
 			$x++;
 		}
 	}
-	updateState(MONITOR_TYPE,$input["ID"],$input["state"]);
-
+	if (isset($input["is_template"])&&$input["is_template"]==1)
+	updateState(MONITOR_TYPE,$input["ID"],$input["state"],1);
+	else updateState(MONITOR_TYPE,$input["ID"],$input["state"]);
+	
 	$mon->updateInDB($updates);
 
 }
@@ -604,6 +606,10 @@ function addMonitor($input) {
 	$null = array_pop($input);
 	$null = array_pop($input);
 	
+	// Manage state
+	$state=$input["state"];
+	unset($input["state"]);
+	
  	// set new date.
  	$mon->fields["date_mod"] = date("Y-m-d H:i:s");
 
@@ -615,6 +621,11 @@ function addMonitor($input) {
 	}
 
 	$newID=$mon->addToDB();
+	
+	// Add state
+	if (isset($input["is_template"])&&$input["is_template"]==1)
+	updateState(MONITOR_TYPE,$newID,$state,1);
+	else updateState(MONITOR_TYPE,$newID,$state);
 	
 	// ADD Infocoms
 	$ic= new Infocom();

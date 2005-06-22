@@ -403,13 +403,15 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 		showReservationForm(PRINTER_TYPE,$ID);
 		echo "</b></td></tr>";
 	}
-		if (!$template){
+		
 		echo "<td>".$lang["state"][0]."&nbsp;:</td><td><b>";
 		$si=new StateItem();
-		$si->getfromDB(PRINTER_TYPE,$printer->fields["ID"]);
+		$t=0;
+		if ($template) $t=1;
+		$si->getfromDB(PRINTER_TYPE,$printer->fields["ID"],$t);
 		dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
 		echo "</b></td>";
-		} 
+		 
 	echo "</table>"; // fin table indentification
 
 	echo "</td>\n";	
@@ -570,7 +572,9 @@ function updatePrinter($input) {
 			$x++;
 		}
 	}
-	updateState(PRINTER_TYPE,$input["ID"],$input["state"]);
+	if (isset($input["is_template"])&&$input["is_template"]==1)
+	updateState(PRINTER_TYPE,$input["ID"],$input["state"],1);
+	else updateState(PRINTER_TYPE,$input["ID"],$input["state"]);
 
 	$printer->updateInDB($updates);
 
@@ -586,7 +590,11 @@ function addPrinter($input) {
 
 	$null = array_pop($input);
 	$null = array_pop($input);
-
+	
+	// Manage state
+	$state=$input["state"];
+	unset($input["state"]);
+	
  	// set new date.
  	$printer->fields["date_mod"] = date("Y-m-d H:i:s");
  	
@@ -598,6 +606,12 @@ function addPrinter($input) {
 	}
 
 	$newID=$printer->addToDB();
+	
+	
+	// Add state
+	if (isset($input["is_template"])&&$input["is_template"]==1)
+	updateState(PRINTER_TYPE,$newID,$state,1);
+	else updateState(PRINTER_TYPE,$newID,$state);
 	
 	// ADD Infocoms
 	$ic= new Infocom();

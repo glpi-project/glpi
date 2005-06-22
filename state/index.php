@@ -55,7 +55,7 @@ if(!isset($tab["ID"])) $tab["ID"] = "";
 
 if (isset($tab["deletestate"])) {
 	checkAuthentication("admin");
-	updateState($tab["device_type"],$tab["device_id"],-1);
+	updateState($tab["device_type"],$tab["device_id"],0);
 
 	logEvent(0, "state", 4, "state", $_SESSION["glpiname"]." delete state.");
 }

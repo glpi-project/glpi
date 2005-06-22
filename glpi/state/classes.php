@@ -41,12 +41,12 @@ class StateItem{
 	var $state = array();
 	var $obj = NULL;	
 
-	function getfromDB ($device_type,$id_device) {
+	function getfromDB ($device_type,$id_device,$template=0) {
 		
 		$this->fields["state"]=-1;
 		// Make new database object and fill variables
 		$db = new DB;
-		$query = "SELECT * FROM glpi_state_item WHERE (device_type='$device_type' AND id_device = '$id_device')";
+		$query = "SELECT * FROM glpi_state_item WHERE (device_type='$device_type' AND id_device = '$id_device' AND is_template='$template' )";
 
 		if ($result = $db->query($query)) 
 		if ($db->numrows($result)>0){
@@ -73,6 +73,7 @@ class StateItem{
 				$this->obj= new Peripheral;	
 				break;				
 			}
+			
 			if ($this->obj!=NULL)
 			return $this->obj->getfromDB($this->fields["id_device"]);
 			else return false;
