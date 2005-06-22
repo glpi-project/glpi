@@ -134,7 +134,7 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 	
 	$query = "select glpi_state_item.device_type as d_type, glpi_state_item.id_device as id_device from glpi_state_item ";
 	$query.= " LEFT JOIN glpi_dropdown_state ON (glpi_dropdown_state.ID = glpi_state_item.state) ";
-	$query .= " where  $where ORDER BY $sort $order";
+	$query .= " where  $where AND glpi_state_item.is_template='0' ORDER BY $sort $order";
 
 	// Get it from database	
 	if ($result = $db->query($query)) {
@@ -232,21 +232,29 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 	
 }
 
-function updateState($device_type,$id_device, $state){
+function updateState($device_type,$id_device, $state,$template=0){
 $si=new StateItem;
+
+$where="";
+if ($template==1)
+$where= " AND is_template='1'";
 
 $si->getFromDB($device_type,$id_device);
 $db=new DB;
 
 if ($state!=$si->fields["state"])
 if ($si->fields["state"]!=-1){
-if ($state==-1)
-	$db->query("DELETE FROM glpi_state_item WHERE device_type='$device_type' and id_device='$id_device';");
-else $db->query("UPDATE glpi_state_item SET state='$state' WHERE device_type='$device_type' and id_device='$id_device';");
+if ($state==0)
+	$db->query("DELETE FROM glpi_state_item WHERE device_type='$device_type' and id_device='$id_device' $where;");
+else $db->query("UPDATE glpi_state_item SET state='$state' WHERE device_type='$device_type' and id_device='$id_device' $where;");
 
 } else {
-if ($state!=0)
+if ($state!=0){
+	if ($template==1)
+	$db->query("INSERT INTO glpi_state_item (device_type,id_device,state,is_template) VALUES ('$device_type','$id_device','$state','1');");
+	else 
 	$db->query("INSERT INTO glpi_state_item (device_type,id_device,state) VALUES ('$device_type','$id_device','$state');");
+	}
 	
 }
 	

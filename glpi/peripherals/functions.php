@@ -419,13 +419,15 @@ function showperipheralForm ($target,$ID,$withtemplate='') {
 	echo "<td><input type='text' size='20' name='otherserial' value=\"".$mon->fields["otherserial"]."\"></td>";
 	echo "</tr>";
 
-		if (!$template){
+		
 		echo "<td>".$lang["state"][0]."&nbsp;:</td><td><b>";
 		$si=new StateItem();
-		$si->getfromDB(PERIPHERAL_TYPE,$mon->fields["ID"]);
+		$t=0;
+		if ($template) $t=1;
+		$si->getfromDB(PERIPHERAL_TYPE,$mon->fields["ID"],$t);
 		dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
 		echo "</b></td>";
-		} 
+		
 
 	
 	echo "</table>";
@@ -523,7 +525,9 @@ function updatePeripheral($input) {
 			$x++;
 		}
 	}
-	updateState(PERIPHERAL_TYPE,$input["ID"],$input["state"]);
+	if (isset($input["is_template"])&&$input["is_template"]==1)
+	updateState(PERIPHERAL_TYPE,$input["ID"],$input["state"],1);
+	else updateState(PERIPHERAL_TYPE,$input["ID"],$input["state"]);
 
 	$mon->updateInDB($updates);
 
@@ -540,7 +544,11 @@ function addPeripheral($input) {
 	$null = array_pop($input);
 	$null = array_pop($input);
 
- 	// set new date.
+	// Manage state
+	$state=$input["state"];
+	unset($input["state"]);
+ 	
+	// set new date.
  	$mon->fields["date_mod"] = date("Y-m-d H:i:s");
 	
 	// fill array for udpate
@@ -552,6 +560,12 @@ function addPeripheral($input) {
 
 	$newID=$mon->addToDB();
 
+	
+	// Add state
+	if (isset($input["is_template"])&&$input["is_template"]==1)
+	updateState(PERIPHERAL_TYPE,$newID,$state,1);
+	else updateState(PERIPHERAL_TYPE,$newID,$state);
+	
 	// ADD Infocoms
 	$ic= new Infocom();
 	if ($ic->getFromDB(PERIPHERAL_TYPE,$oldID)){

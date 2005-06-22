@@ -552,13 +552,15 @@ function showComputerForm($target,$ID,$withtemplate='') {
 			dropdownUsersID( $comp->fields["tech_num"],"tech_num");
 		echo "</td>";
 		
-		if (!$template){
+		
 		echo "<td>".$lang["state"][0]."&nbsp;:</td><td><b>";
 		$si=new StateItem();
-		$si->getfromDB(COMPUTER_TYPE,$comp->fields["ID"]);
+		$t=0;
+		if ($template) $t=1;
+		$si->getfromDB(COMPUTER_TYPE,$comp->fields["ID"],$t);
 		dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
 		echo "</b></td>";
-		} else echo "<td>&nbsp;</td><td>&nbsp;</td>";
+		
 		
 	
 		echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td>";
@@ -754,7 +756,10 @@ function updateComputer($input) {
 			$x++;
 		}
 	}
-	updateState(COMPUTER_TYPE,$input["ID"],$input["state"]);
+	
+	if (isset($input["is_template"])&&$input["is_template"]==1)
+	updateState(COMPUTER_TYPE,$input["ID"],$input["state"],1);
+	else updateState(COMPUTER_TYPE,$input["ID"],$input["state"]);
 	$comp->updateInDB($updates);
 	
 }
@@ -783,6 +788,9 @@ function addComputer($input) {
 	$null=array_pop($input);
 	$null=array_pop($input);
 	
+	// Manage state
+	$state=$input["state"];
+	unset($input["state"]);
 	$i=0;
 	
 	// fill array for update
@@ -792,6 +800,11 @@ function addComputer($input) {
 		}		
 	}
 	$newID=$comp->addToDB();
+	
+	// Add state
+	if (isset($input["is_template"])&&$input["is_template"]==1)
+	updateState(COMPUTER_TYPE,$newID,$state,1);
+	else updateState(COMPUTER_TYPE,$newID,$state);
 	
 	// ADD Devices
 	$comp->getFromDB($oldID);
