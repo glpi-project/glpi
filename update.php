@@ -2350,13 +2350,11 @@ if(!TableExists("glpi_dropdown_state")) {
 
 
 /*******************************GLPI 0.6***********************************************/
-if(FieldExists("glpi_tracking","category")) {
 $query= "ALTER TABLE `glpi_tracking` CHANGE `category` `category` INT( 11 ) DEFAULT '0' NOT NULL";
 $db->query($query) or die("0.6 alter category tracking ".$lang["update"][90].$db->error());	
-}
 
 // state pour les template 
-if(FieldExists("glpi_state_item","is_template")) {
+if(!FieldExists("glpi_state_item","is_template")) {
 $query= "ALTER TABLE `glpi_state_item` ADD `is_template` ENUM( '0', '1' ) DEFAULT '0' NOT NULL ;";
 $db->query($query) or die("0.6 add is_template in state_item ".$lang["update"][90].$db->error());	
 }
