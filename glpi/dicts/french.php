@@ -695,6 +695,7 @@ $lang["setup"][80] = "Type de Tiers";
 $lang["setup"][81] = "Rubriques des documents";
 $lang["setup"][82] = "Type de Contacts";
 $lang["setup"][83] = "Etat des mat&eacute;riels";
+$lang["setup"][84] = "Type de cartouches";
 
 $lang["setup"][100]="Configuration g&eacute;n&eacute;rale";
 $lang["setup"][101]="Chemin d'installation";

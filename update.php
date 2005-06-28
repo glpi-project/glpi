@@ -2360,6 +2360,25 @@ $db->query($query) or die("0.6 add is_template in state_item ".$lang["update"][9
 }
 
 
+if(!TableExists("glpi_dropdown_cartridge_type")) {
+
+$query = "CREATE TABLE glpi_dropdown_cartridge_type (
+  ID int(11) NOT NULL auto_increment,
+  name varchar(255) NOT NULL default '',
+  PRIMARY KEY  (ID)
+) TYPE=MyISAM;";
+
+$db->query($query) or die("0.6 add table dropdown_cartridge_type ".$lang["update"][90].$db->error());
+
+$query="INSERT INTO glpi_dropdown_cartridge_type (name) VALUES ('".$lang["cartridges"][11]."');";
+$db->query($query) or die("0.6 add entries to dropdown_cartridge_type ".$lang["update"][90].$db->error());
+$query="INSERT INTO glpi_dropdown_cartridge_type (name) VALUES ('".$lang["cartridges"][10]."');";
+$db->query($query) or die("0.6 add entries to dropdown_cartridge_type ".$lang["update"][90].$db->error());
+$query="INSERT INTO glpi_dropdown_cartridge_type (name) VALUES ('".$lang["cartridges"][37]."');";
+$db->query($query) or die("0.6 add entries to dropdown_cartridge_type ".$lang["update"][90].$db->error());
+}
+
+
 
 // Update version number and default langage ---- LEAVE AT THE END
 	$query = "UPDATE `glpi_config` SET `version` = ' 0.6', default_language='".$_SESSION["dict"]."' ;";
