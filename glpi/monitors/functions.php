@@ -248,7 +248,10 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=mon.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["monitors"][5]."</a></th>";
-
+			
+			// State		
+			echo "<th>".$lang["state"][0]."</th>";
+			
 			// Manufacturer		
 			echo "<th>";
 			if ($sort=="glpi_enterprises.name") {
@@ -300,11 +303,15 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				$ID = $db->result($result_limit, $i, "mon.ID");
 				$mon = new Monitor;
 				$mon->getfromDB($ID);
+				$state=new StateItem;
+				$state->getfromDB(MONITOR_TYPE,$ID);
+				
 				echo "<tr class='tab_bg_2'>";
 				echo "<td><b>";
 				echo "<a href=\"".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=$ID\">";
 				echo $mon->fields["name"]." (".$mon->fields["ID"].")";
 				echo "</a></b></td>";
+				echo "<td>".getDropdownName("glpi_dropdown_state",$state->fields["state"])."</td>";
 				echo "<td>". getDropdownName("glpi_enterprises",$mon->fields["FK_glpi_enterprise"]) ."</td>";
 				echo "<td>". getDropdownName("glpi_dropdown_locations",$mon->fields["location"]) ."</td>";
 				echo "<td>". getDropdownName("glpi_type_monitors",$mon->fields["type"]) ."</td>";

@@ -256,6 +256,9 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_networking.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["networking"][0]."</a></th>";
 
+			// State		
+			echo "<th>".$lang["state"][0]."</th>";
+			
 			// Manufacturer		
 			echo "<th>";
 			if ($sort=="glpi_enterprises.name") {
@@ -310,11 +313,15 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 				$ID = $db->result($result_limit, $i, "ID");
 				$networking = new Netdevice;
 				$networking->getfromDB($ID);
+				$state=new StateItem;
+				$state->getfromDB(NETWORKING_TYPE,$ID);
+				
 				echo "<tr class='tab_bg_2'>";
 				echo "<td><b>";
 				echo "<a href=\"".$cfg_install["root"]."/networking/networking-info-form.php?ID=$ID\">";
 				echo $networking->fields["name"]." (".$networking->fields["ID"].")";
 				echo "</a></b></td>";
+				echo "<td>".getDropdownName("glpi_dropdown_state",$state->fields["state"])."</td>";
 				echo "<td>". getDropdownName("glpi_enterprises",$networking->fields["FK_glpi_enterprise"]) ."</td>";
 				echo "<td>". getDropdownName("glpi_dropdown_locations",$networking->fields["location"]) ."</td>";
 				echo "<td>". getDropdownName("glpi_type_networking",$networking->fields["type"]) ."</td>";
