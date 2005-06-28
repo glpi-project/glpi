@@ -280,7 +280,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 				echo $ct->fields["name"]." (".$ct->fields["ID"].")";
 				echo "</a></b></td>";
 				echo "<td>".$ct->fields["ref"]."</td>";
-				echo "<td>".getCartridgeTypeName($ct->fields["type"])."</td>";
+				echo "<td>".getDropdownName("glpi_dropdown_cartridge_type",$ct->fields["type"])."</td>";
 				echo "<td>". getDropdownName("glpi_enterprises",$ct->fields["FK_glpi_enterprise"]) ."</td>";
 				echo "<td>". getDropdownName("glpi_dropdown_locations",$ct->fields["location"]) ."</td>";
 				
@@ -349,7 +349,7 @@ function showCartridgeTypeForm ($target,$ID) {
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][3].": 	</td><td colspan='2'>";
-		dropdownCartridgeType("type",$ct->fields["type"]);
+		dropdownValue("glpi_dropdown_cartridge_type","type",$ct->fields["type"]);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][8].": 	</td><td colspan='2'>";
@@ -1018,52 +1018,6 @@ function getUnusedCartridgesNumber($tID){
 	return $db->numrows($result);
 }
 
-/**
-* Print a select with cartridge type
-*
-* Print a select that contains cartridge type for a printer type $pID
-*
-*@param $name string: the select name.
-*@param $value=0 integer : default select value
-*
-*@return nothing (display)
-*
-**/
-function dropdownCartridgeType($name,$value=0){
-	global $lang;
-	
-	echo "<select name='$name'>";
-	echo "<option value='3' ".($value==3?" selected ":"").">".$lang["cartridges"][37]."</option>";
-	echo "<option value='2' ".($value==2?" selected ":"").">".$lang["cartridges"][10]."</option>";
-	echo "<option value='1' ".($value==1?" selected ":"").">".$lang["cartridges"][11]."</option>";
-	echo "</select>";	
-}
-
-/**
-* Get the dict value of a cartridge type
-*
-* Print a select that contains cartridge type for a printer type $pID
-*
-*@param $value integer : cartridge type.
-*
-*@return string : dict value for the cartridge type.
-*
-**/
-function getCartridgeTypeName($value){
-	global $lang;
-	
-	switch ($value){
-	case 3 :
-		return $lang["cartridges"][37];
-		break;
-	case 2 :
-		return $lang["cartridges"][10];
-		break;
-	case 1 :
-		return $lang["cartridges"][11];
-		break;
-	}	
-}
 
 /**
 * To be commented

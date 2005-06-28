@@ -327,6 +327,10 @@ function replaceDropDropDown($input) {
 	$db = new DB;
 	$name = getDropdownNameFromTable($input["tablename"]);
 	switch($name) {
+	case "cartridge_type":
+		$query = "update glpi_cartridges_type set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		$db->query($query);
+		break;
 	case "contact_type":
 		$query = "update glpi_contacts set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$db->query($query);
@@ -500,6 +504,11 @@ function dropdownUsed($table, $ID) {
 
 	$var1 = true;
 	switch($name) {
+	case "cartridge_type":
+		$query = "Select count(*) as cpt FROM glpi_cartridges_type where type = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
 	case "contact_type":
 		$query = "Select count(*) as cpt FROM glpi_contacts where type = ".$ID."";
 		$result = $db->query($query);

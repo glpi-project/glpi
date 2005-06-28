@@ -116,6 +116,7 @@ if (isset($_POST["move"])) {
 	$dp["rubdocs"]=$lang["setup"][81];
 	$dp["contact_type"]=$lang["setup"][82];
 	$dp["state"]=$lang["setup"][83];
+	$dp["cartridge_type"]=$lang["setup"][84];
 	
 //	asort($dp);
 	
@@ -182,6 +183,9 @@ echo "<option value='$key' $sel>".$val."</option>";
 		break;
 		case "state" : 
 		showFormDropDown($_SERVER["PHP_SELF"],"state",$lang["setup"][83],$ID,$value2);
+		break;
+		case "cartridge_type" : 
+		showFormDropDown($_SERVER["PHP_SELF"],"cartridge_type",$lang["setup"][83],$ID,$value2);
 		break;
 	default : break;
 	}
