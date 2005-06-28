@@ -251,7 +251,10 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=printer.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["printers"][5]."</a></th>";
-
+			
+			// State		
+			echo "<th>".$lang["state"][0]."</th>";
+			
 			// Manufacturer		
 			echo "<th>";
 			if ($sort=="glpi_enterprises.name") {
@@ -294,11 +297,15 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 				$ID = $db->result($result_limit, $i, "ID");
 				$printer = new Printer;
 				$printer->getfromDB($ID);
+				$state=new StateItem;
+				$state->getfromDB(PRINTER_TYPE,$ID);
+				
 				echo "<tr class='tab_bg_2'>";
 				echo "<td><b>";
 				echo "<a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=$ID\">";
 				echo $printer->fields["name"]." (".$printer->fields["ID"].")";
 				echo "</a></b></td>";
+				echo "<td>".getDropdownName("glpi_dropdown_state",$state->fields["state"])."</td>";
 				echo "<td>". getDropdownName("glpi_enterprises",$printer->fields["FK_glpi_enterprise"]) ."</td>";
 				echo "<td>". getDropdownName("glpi_dropdown_locations",$printer->fields["location"]) ."</td>";
 				echo "<td>". getDropdownName("glpi_type_printers",$printer->fields["type"]) ."</td>";

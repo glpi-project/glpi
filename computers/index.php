@@ -39,7 +39,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_computers.php");
 include ($phproot . "/glpi/includes_financial.php");
-
+include ($phproot . "/glpi/includes_state.php");
 
 checkAuthentication("normal");
 

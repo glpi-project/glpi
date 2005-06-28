@@ -232,7 +232,10 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=periph.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["peripherals"][5]."</a></th>";
-
+			
+			// State		
+			echo "<th>".$lang["state"][0]."</th>";
+			
 			// Manufacturer		
 			echo "<th>";
 			if ($sort=="glpi_enterprises.name") {
@@ -284,11 +287,14 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 				$ID = $db->result($result_limit, $i, "ID");
 				$mon = new Peripheral;
 				$mon->getfromDB($ID);
+				$state=new StateItem;
+				$state->getfromDB(PERIPHERAL_TYPE,$ID);
 				echo "<tr class='tab_bg_2'>";
 				echo "<td><b>";
 				echo "<a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=$ID\">";
 				echo $mon->fields["name"]." (".$mon->fields["ID"].")";
 				echo "</a></b></td>";
+				echo "<td>".getDropdownName("glpi_dropdown_state",$state->fields["state"])."</td>";
 				echo "<td>". getDropdownName("glpi_enterprises",$mon->fields["FK_glpi_enterprise"]) ."</td>";
 				echo "<td>". getDropdownName("glpi_dropdown_locations",$mon->fields["location"]) ."</td>";
 				echo "<td>". getDropdownName("glpi_type_peripherals",$mon->fields["type"]) ."</td>";

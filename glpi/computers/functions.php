@@ -362,6 +362,10 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 			echo "<a href=\"$target?field=$field&contains=$contains&sort=comp.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["computers"][7]."</a></th>";
 		
+			// State		
+			echo "<th>".$lang["state"][0]."</th>";
+			
+			
 			// Manufacturer		
 			echo "<th>";
 			if ($sort=="glpi_enterprises.name") {
@@ -432,11 +436,15 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 				$ID = $db->result($result_limit, $i, "ID");
 				$comp = new Computer;
 				$comp->getfromDB($ID,0);
+				$state=new StateItem;
+				$state->getfromDB(COMPUTER_TYPE,$ID);
+				
 				echo "<tr class='tab_bg_2'>";
 				echo "<td><b>";
 				echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID\">";
 				echo $comp->fields["name"]." (".$comp->fields["ID"].")";
 				echo "</a></b></td>";
+				echo "<td>".getDropdownName("glpi_dropdown_state",$state->fields["state"])."</td>";
 				echo "<td>". getDropdownName("glpi_enterprises",$comp->fields["FK_glpi_enterprise"]) ."</td>";
 				echo "<td>".$comp->fields["serial"]."</td>";
                                 echo "<td>". getDropdownName("glpi_type_computers",$comp->fields["type"]) ."</td>";
