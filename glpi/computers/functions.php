@@ -506,7 +506,13 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 			echo "</table></div>";
 
 			// Pager
-			$parameters="field=".urlencode(serialize($field))."&contains=".urlencode(serialize($contains))."&link=".urlencode(serialize($link))."&sort=$sort";
+			//$parameters="field=".urlencode(serialize($field))."&contains=".urlencode(serialize($contains))."&link=".urlencode(serialize($link))."&sort=$sort";
+			$parameters="sort=$sort";
+			foreach($field as $key => $val){
+				$parameters.="&field[$key]=".$field[$key];
+				$parameters.="&contains[$key]=".stripslashes($contains[$key]);			
+				if ($key!=0) $parameters.="&link[$key]=".$link[$key];
+			}
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
