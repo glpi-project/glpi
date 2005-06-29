@@ -184,8 +184,12 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 	
 	foreach ($field as $k => $f)
 	if ($k<$_SESSION["glpisearchcount"])
-	if ($contains[$k]!=""){
-		if ($k>0&&isset($link[$k-1])) $where.=" ".$link[$k]." ";
+		if ($contains[$k]==""){
+		if ($k>0) $where.=" ".$link[$k]." ";
+		$where.=" ('1'='1') ";
+		}
+	else {
+		if ($k>0) $where.=" ".$link[$k]." ";
 		$where.="( ";
 		// Build query
 		if($f=="all") {
