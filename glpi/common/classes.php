@@ -545,6 +545,7 @@ class Identification
 		$_SESSION["tracking_order"] = $tracking_order;
 		$_SESSION["authorisation"] = true;
 		$_SESSION["extauth"] = $this->extauth;
+		$_SESSION["glpisearchcount"] = 1;
 	}
 
 	function eraseCookies()
