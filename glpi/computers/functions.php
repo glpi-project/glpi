@@ -115,11 +115,14 @@ function showComputerOnglets($target,$withtemplate,$actif){
 *@return nothing (diplays)
 *
 **/
-function searchFormComputers($field="",$contains="",$sort= "",$deleted= "") {
+function searchFormComputers($field="",$contains="",$sort= "",$deleted= "",$link="") {
 	// Print Search Form
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel;
 
+	if ($field=="") $field=array(0=>"all");
+	if ($contains=="") $contains=array(0=>"");
+	
 	
 	$option["comp.ID"]				= $lang["computers"][31];
 	$option["comp.name"]				= $lang["computers"][7];
@@ -149,26 +152,55 @@ function searchFormComputers($field="",$contains="",$sort= "",$deleted= "") {
 	
 	
 	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
-	echo "<div align='center'><table border='0' width='750' class='tab_cadre'>";
-	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<div align='center'><table border='0' width='800' class='tab_cadre'>";
+	echo "<tr><th colspan='4'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
-	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
-	echo "&nbsp;";
-	echo $lang["search"][10]."&nbsp;";
+	echo "<table>";
 	
-	echo "<select name=\"field\" size='1'>";
-        echo "<option value='all' ";
-	if($field == "all") echo "selected";
-	echo ">".$lang["search"][7]."</option>";
-        reset($option);
-	foreach ($option as $key => $val) {
-		echo "<option value=\"".$key."\""; 
-		if($key == $field) echo "selected";
-		echo ">". $val ."</option>\n";
-	}
-	echo "</select>&nbsp;";
+	for ($i=0;$i<$_SESSION["glpisearchcount"];$i++){
+		echo "<tr><td align='right'>";
+		if ($i==0){
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?add_search_count=1'>+++</a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			if ($_SESSION["glpisearchcount"]>1)
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?delete_search_count=1'>---</a>&nbsp;&nbsp;&nbsp;&nbsp;";
+		}
+		if ($i>0) {
+			echo "<select name='link[$i]'>";
+			
+			echo "<option value='AND' ";
+			if(isset($link[$i]) && $link[$i] == "AND") echo "selected";
+			echo ">AND</option>";
+			
+			echo "<option value='OR' ";
+			if(isset($link[$i]) && $link[$i] == "OR") echo "selected";
+			echo ">OR</option>";		
 
+			echo "</select>";
+		}
+		
+		echo "<input type='text' size='15' name=\"contains[$i]\" value=\"". (isset($contains[$i])?$contains[$i]:"" )."\" >";
+		echo "&nbsp;";
+		echo $lang["search"][10]."&nbsp;";
+	
+		echo "<select name=\"field[$i]\" size='1'>";
+        	echo "<option value='all' ";
+		if(isset($field[$i]) && $field[$i] == "all") echo "selected";
+		echo ">".$lang["search"][7]."</option>";
+        	reset($option);
+		foreach ($option as $key => $val) {
+			echo "<option value=\"".$key."\""; 
+			if(isset($field[$i]) && $key == $field[$i]) echo "selected";
+			echo ">". $val ."</option>\n";
+		}
+		echo "</select>&nbsp;";
+
+		
+		echo "</td></tr>";
+	}
+	echo "</table>";
+	echo "</td>";
+	echo "<td>";
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
 	reset($option);
@@ -178,7 +210,9 @@ function searchFormComputers($field="",$contains="",$sort= "",$deleted= "") {
 		echo ">".$val."</option>\n";
 	}
 	echo "</select> ";
-	echo "</td><td><input type='checkbox' name='deleted' ".($deleted=='Y'?" checked ":"").">";
+	echo "</td>";
+	
+	echo "<td><input type='checkbox' name='deleted' ".($deleted=='Y'?" checked ":"").">";
 	echo "<img src=\"".$HTMLRel."pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit' >";
@@ -246,65 +280,72 @@ function IsDevice($field) {
 *@return Nothing (display)
 *
 **/
-function showComputerList($target,$username,$field,$contains,$sort,$order,$start,$deleted) {
+function showComputerList($target,$username,$field,$contains,$sort,$order,$start,$deleted,$link) {
 
 	$db = new DB;
 	// Lists Computers
 
 	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang,$HTMLRel, $cfg_devices_tables;
 
-	
-	// Build query
-	if($field == "all") {
-		$where = " (";
-		$query = "SHOW COLUMNS FROM glpi_computers";
-		$result = $db->query($query);
-		$i = 0;
-		while($line = $db->fetch_array($result)) {
-			if($i != 0) {
-				$where .= " OR ";
+	$where ="";
+	foreach ($field as $k => $f)
+	if ($contains[$k]!=""){
+		if ($k>0) $where.=" ".$link[$k]." ";
+		$where.="( ";
+		// Build query
+		if($f == "all") {
+		
+			$query = "SHOW COLUMNS FROM glpi_computers";
+			$result = $db->query($query);
+			$i = 0;
+			while($line = $db->fetch_array($result)) {
+				if($i != 0) {
+					$where .= " OR ";
+				}
+				if(IsDropdown($line["Field"])) {
+					$where .= " glpi_dropdown_". $line["Field"] .".name LIKE '%".$contains[$k]."%'";
+				}
+				elseif($line["Field"] == "location") {
+					$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains[$k]);
+				}
+				elseif($line["Field"] == "FK_glpi_enterprise") {
+					$where .= "glpi_enterprises.name LIKE '%".$contains[$k]."%'";
+				}
+				elseif ($line["Field"]=="tech_num"){
+					$where .= " resptech.name LIKE '%".$contains[$k]."%'";
+				} 
+				else {
+   					$where .= "comp.".$line["Field"] . " LIKE '%".$contains[$k]."%'";
+				}
+				$i++;
 			}
-			if(IsDropdown($line["Field"])) {
-				$where .= " glpi_dropdown_". $line["Field"] .".name LIKE '%".$contains."%'";
+			foreach($cfg_devices_tables as $key => $val) {
+				//Hack pour ne pas avoir un "case" dans la requete (mot clé).
+				if(strcmp($val,"case") == 0) $val = "Tcase";
+				$where .= " OR ".$val.".designation LIKE '%".$contains[$k]."%'";
 			}
-			elseif($line["Field"] == "location") {
-				$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains);
-			}
-			elseif($line["Field"] == "FK_glpi_enterprise") {
-				$where .= "glpi_enterprises.name LIKE '%".$contains."%'";
-			}
-			elseif ($line["Field"]=="tech_num"){
-				$where .= " resptech.name LIKE '%".$contains."%'";
-			} 
-			else {
-   				$where .= "comp.".$line["Field"] . " LIKE '%".$contains."%'";
-			}
-			$i++;
-		}
-		foreach($cfg_devices_tables as $key => $val) {
-			//Hack pour ne pas avoir un "case" dans la requete (mot clé).
-			if(strcmp($val,"case") == 0) $val = "Tcase";
-			$where .= " OR ".$val.".designation LIKE '%".$contains."%'";
-		}
-		$where .= " OR glpi_networking_ports.ifaddr LIKE '%".$contains."%'";
-		$where .= " OR glpi_networking_ports.ifmac LIKE '%".$contains."%'";
-		$where .= " OR glpi_dropdown_netpoint.name LIKE '%".$contains."%'";
-		$where .= " OR glpi_type_computers.name LIKE '%".$contains."%'";
-		$where .= getInfocomSearchToViewAllRequest($contains);
-		$where .= getContractSearchToViewAllRequest($contains);
-		$where .= ")";
-	}
-	else {
-		if(IsDevice($field)) {
-			$where = "(glpi_device_".$field." LIKE '%".$contains."')";
-		}
-		else if ($field=="glpi_dropdown_locations.name"){
-			$where = getRealSearchForTreeItem("glpi_dropdown_locations",$contains);
+			$where .= " OR glpi_networking_ports.ifaddr LIKE '%".$contains[$k]."%'";
+			$where .= " OR glpi_networking_ports.ifmac LIKE '%".$contains[$k]."%'";
+			$where .= " OR glpi_dropdown_netpoint.name LIKE '%".$contains[$k]."%'";
+			$where .= " OR glpi_type_computers.name LIKE '%".$contains[$k]."%'";
+			$where .= getInfocomSearchToViewAllRequest($contains[$k]);
+			$where .= getContractSearchToViewAllRequest($contains[$k]);
 		}
 		else {
-			$where = "($field LIKE '%".$contains."%')";
+			if(IsDevice($f)) {
+				$where .= "glpi_device_".$f." LIKE '%".$contains[$k]."'";
+			}
+			else if ($f=="glpi_dropdown_locations.name"){
+				$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains[$k]);
+			}
+			else {
+				$where .= "$f LIKE '%".$contains[$k]."%'";
+			}
 		}
+	$where.=" )";
 	}
+	
+	
 	if (!$start) {
 		$start = 0;
 	}
@@ -333,7 +374,9 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 	$query.= " LEFT JOIN glpi_type_computers ON (glpi_type_computers.ID = comp.type ) ";
 	$query.= getInfocomSearchToRequest("comp",COMPUTER_TYPE);
 	$query.= getContractSearchToRequest("comp",COMPUTER_TYPE);
-	$query .= " where $where AND comp.deleted='$deleted' AND comp.is_template = '0'  ORDER BY $sort $order";
+	$query.= " where ";
+	if (!empty($where)) $query .= " $where AND ";
+	$query .= " comp.deleted='$deleted' AND comp.is_template = '0'  ORDER BY $sort $order";
 
 	// Get it from database	
 	if ($result = $db->query($query)) {

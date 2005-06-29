@@ -43,6 +43,15 @@ include ($phproot . "/glpi/includes_state.php");
 
 checkAuthentication("normal");
 
+if (isset($_GET["add_search_count"])){
+	$_SESSION["glpisearchcount"]++;
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+if (isset($_GET["delete_search_count"])){
+	$_SESSION["glpisearchcount"]--;
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+
 commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
 
 titleComputers();
@@ -51,9 +60,10 @@ if(!isset($_GET["start"])) $_GET["start"] = 0;
 if (!isset($_GET["order"])) $_GET["order"] = "ASC";
 if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
 else $_GET["deleted"] = "Y";
+if (!isset($_GET["link"])) $_GET["link"] = "";
 
-searchFormComputers($_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"]);
-showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"]);
+searchFormComputers($_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"]);
+showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"]);
 
 commonFooter();
 ?>
