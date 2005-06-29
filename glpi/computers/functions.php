@@ -121,10 +121,6 @@ function searchFormComputers($field="",$contains="",$sort= "",$deleted= "",$link
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel;
 
-	if ($field=="") $field=array(0=>"all");
-	if ($contains=="") $contains=array(0=>"");
-	
-	
 	$option["comp.ID"]				= $lang["computers"][31];
 	$option["comp.name"]				= $lang["computers"][7];
 	$option["glpi_dropdown_locations.name"]		= $lang["computers"][10];
@@ -150,7 +146,7 @@ function searchFormComputers($field="",$contains="",$sort= "",$deleted= "",$link
 	$option["resptech.name"]			= $lang["common"][10];
 	$option=addInfocomOptionFieldsToResearch($option);
 	$option=addContractOptionFieldsToResearch($option);
-	
+
 	
 	echo "<form method=get action=\"".$cfg_install["root"]."/computers/computers-search.php\">";
 	echo "<div align='center'><table border='0' width='800' class='tab_cadre'>";
@@ -170,28 +166,28 @@ function searchFormComputers($field="",$contains="",$sort= "",$deleted= "",$link
 			echo "<select name='link[$i]'>";
 			
 			echo "<option value='AND' ";
-			if(isset($link[$i]) && $link[$i] == "AND") echo "selected";
+			if(is_array($link)&&isset($link[$i]) && $link[$i] == "AND") echo "selected";
 			echo ">AND</option>";
 			
 			echo "<option value='OR' ";
-			if(isset($link[$i]) && $link[$i] == "OR") echo "selected";
+			if(is_array($link)&&isset($link[$i]) && $link[$i] == "OR") echo "selected";
 			echo ">OR</option>";		
 
 			echo "</select>";
 		}
 		
-		echo "<input type='text' size='15' name=\"contains[$i]\" value=\"". (isset($contains[$i])?stripslashes($contains[$i]):"" )."\" >";
+		echo "<input type='text' size='15' name=\"contains[$i]\" value=\"". (is_array($contains)&&isset($contains[$i])?stripslashes($contains[$i]):"" )."\" >";
 		echo "&nbsp;";
 		echo $lang["search"][10]."&nbsp;";
 	
 		echo "<select name=\"field[$i]\" size='1'>";
         	echo "<option value='all' ";
-		if(isset($field[$i]) && $field[$i] == "all") echo "selected";
+		if(is_array($field)&&isset($field[$i]) && $field[$i] == "all") echo "selected";
 		echo ">".$lang["search"][7]."</option>";
         	reset($option);
 		foreach ($option as $key => $val) {
 			echo "<option value=\"".$key."\""; 
-			if(isset($field[$i]) && $key == $field[$i]) echo "selected";
+			if(is_array($field)&&isset($field[$i]) && $key == $field[$i]) echo "selected";
 			echo ">". $val ."</option>\n";
 		}
 		echo "</select>&nbsp;";

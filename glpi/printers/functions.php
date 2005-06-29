@@ -120,28 +120,28 @@ function searchFormPrinters($field="",$phrasetype= "",$contains="",$sort= "",$de
 			echo "<select name='link[$i]'>";
 			
 			echo "<option value='AND' ";
-			if(isset($link[$i]) && $link[$i] == "AND") echo "selected";
+			if(is_array($link)&&isset($link[$i]) && $link[$i] == "AND") echo "selected";
 			echo ">AND</option>";
 			
 			echo "<option value='OR' ";
-			if(isset($link[$i]) && $link[$i] == "OR") echo "selected";
+			if(is_array($link)&&isset($link[$i]) && $link[$i] == "OR") echo "selected";
 			echo ">OR</option>";		
 
 			echo "</select>";
 		}
 		
-		echo "<input type='text' size='15' name=\"contains[$i]\" value=\"". (isset($contains[$i])?stripslashes($contains[$i]):"" )."\" >";
+		echo "<input type='text' size='15' name=\"contains[$i]\" value=\"". (is_array($contains)&&isset($contains[$i])?stripslashes($contains[$i]):"" )."\" >";
 		echo "&nbsp;";
 		echo $lang["search"][10]."&nbsp;";
 	
 		echo "<select name=\"field[$i]\" size='1'>";
         	echo "<option value='all' ";
-		if(isset($field[$i]) && $field[$i] == "all") echo "selected";
+		if(is_array($field)&&isset($field[$i]) && $field[$i] == "all") echo "selected";
 		echo ">".$lang["search"][7]."</option>";
         	reset($option);
 		foreach ($option as $key => $val) {
 			echo "<option value=\"".$key."\""; 
-			if(isset($field[$i]) && $key == $field[$i]) echo "selected";
+			if(is_array($field)&&isset($field[$i]) && $key == $field[$i]) echo "selected";
 			echo ">". $val ."</option>\n";
 		}
 		echo "</select>&nbsp;";

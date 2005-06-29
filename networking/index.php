@@ -58,6 +58,7 @@ if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
 if (!isset($_GET["contains"])) $_GET["contains"] = array(0=>"");
 if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_networking.name";
 if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
+if (!isset($_GET["link"])) $_GET["link"] = "";
 
 
 searchFormNetworking();
