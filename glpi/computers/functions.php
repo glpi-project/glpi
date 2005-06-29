@@ -107,10 +107,11 @@ function showComputerOnglets($target,$withtemplate,$actif){
 *
 * 
 *
-*@param $field='' field selected in the search form
-*@param $contains='' the search string
+*@param $field='' array of the fields selected in the search form
+*@param $contains='' array of the search strings
 *@param $sort='' the "sort by" field value
 *@param $deleted='' the deleted value 
+*@param $link='' array of the link between each search.
 *
 *@return nothing (diplays)
 *
@@ -269,12 +270,13 @@ function IsDevice($field) {
 *
 *@param $target filename where to go when done.
 *@param $username not used to be deleted.
-*@param $field the field in witch the search would be done
-*@param $contains the search string
+*@param $field array of fields in witch the search would be done
+*@param $contains array of the search strings
 *@param $sort the "sort by" field value
 *@param $order ASC or DSC (for mysql query)
 *@param $start row number from witch we start the query (limit $start,xxx)
 *@param $deleted Query on deleted items or not.
+*@param $link array of the link between each search.
 *
 *
 *@return Nothing (display)
