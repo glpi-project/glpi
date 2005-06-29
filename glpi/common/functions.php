@@ -418,31 +418,31 @@ $utils = array($lang["Menu"][17]=>array("/reservation/index.php","1"),
 		$lang["Menu"][6]=>array("/reports/index.php"," "),
 		);
 	
-$inventory = array($lang["Menu"][0]=>array("/computers/index.php","1"),
-	              $lang["Menu"][1]=>array("/networking/index.php","2"),
-	              $lang["Menu"][2]=>array("/printers/index.php","3"),
-	              $lang["Menu"][3]=>array("/monitors/index.php","4"),
-	              $lang["Menu"][4]=>array("/software/index.php","5"),
-		      $lang["Menu"][16]=>array("/peripherals/index.php","6"),
-		      $lang["Menu"][21]=>array("/cartridges/index.php","7"),
-		      $lang["Menu"][28]=>array("/state/index.php","8"),
+$inventory = array($lang["Menu"][0]=>array("/computers/index.php","c"),
+	              $lang["Menu"][1]=>array("/networking/index.php","n"),
+	              $lang["Menu"][2]=>array("/printers/index.php","p"),
+	              $lang["Menu"][3]=>array("/monitors/index.php","m"),
+	              $lang["Menu"][4]=>array("/software/index.php","s"),
+		      $lang["Menu"][16]=>array("/peripherals/index.php","r"),
+		      $lang["Menu"][21]=>array("/cartridges/index.php","c"),
+		      $lang["Menu"][28]=>array("/state/index.php","s"),
 		      );
 
-$financial = array($lang["Menu"][22]=>array("/contacts/index.php","1"),
-		$lang["Menu"][23]=>array("/enterprises/index.php"," "),
-		$lang["Menu"][25]=>array("/contracts/index.php"," "),
-		$lang["Menu"][27]=>array("/documents/index.php"," "),
+$financial = array($lang["Menu"][22]=>array("/contacts/index.php","t"),
+		$lang["Menu"][23]=>array("/enterprises/index.php","e"),
+		$lang["Menu"][25]=>array("/contracts/index.php","n"),
+		$lang["Menu"][27]=>array("/documents/index.php","d"),
 		);
 
-$maintain =	array($lang["Menu"][5]=>array("/tracking/index.php","6"),
-		"Helpdesk"=>array("/helpdesk/index.php"," "),
-		$lang["Menu"][13]=>array("/stats/index.php"," "));
+$maintain =	array($lang["Menu"][5]=>array("/tracking/index.php","t"),
+		"Helpdesk"=>array("/helpdesk/index.php","h"),
+		$lang["Menu"][13]=>array("/stats/index.php","1"));
 
 				
-$config = array($lang["Menu"][14]=>array("/setup/setup-users.php"," "),
-		$lang["Menu"][10]=>array("/setup/index.php"," "),
-		$lang["Menu"][11]=>array("/preferences/index.php"," "),
-		$lang["Menu"][12]=>array("/backups/index.php"," "));
+$config = array($lang["Menu"][14]=>array("/setup/setup-users.php","u"),
+		$lang["Menu"][10]=>array("/setup/index.php","2"),
+		$lang["Menu"][11]=>array("/preferences/index.php","p"),
+		$lang["Menu"][12]=>array("/backups/index.php","b"));
 	// Send extra expires header if configured
 	if ($cfg_features["sendexpire"]) {
 		header("Expires: Fri, Jun 12 1981 08:20:00 GMT\nPragma: no-cache");
