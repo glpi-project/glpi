@@ -285,7 +285,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 				echo "<td>". getDropdownName("glpi_dropdown_locations",$ct->fields["location"]) ."</td>";
 				
 				$highlight="";
-				if (getUnusedCartridgesNumber($ct->fields["ID"])<=$cfg_features["cartridges_alarm"])
+				if (getUnusedCartridgesNumber($ct->fields["ID"])<=$ct->fields["alarm"])
 				$highlight="class='tab_bg_1_2'";
 				
 				echo "<td $highlight>";
@@ -364,6 +364,12 @@ function showCartridgeTypeForm ($target,$ID) {
 		dropdownValue("glpi_dropdown_locations","location",$ct->fields["location"]);
 	echo "</td></tr>";
 
+	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][38].":</td><td colspan='2'><select name='alarm'>";
+	for ($i=1;$i<=100;$i++)
+		echo "<option value='$i' ".($i==$ct->fields["alarm"]?" selected ":"").">$i</option>";
+	echo "</select></td></tr>";
+	
+	
 	echo "<tr class='tab_bg_1'><td valign='top'>";
 	echo $lang["cartridges"][5].":	</td>";
 	echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$ct->fields["comments"]."</textarea>";
@@ -460,7 +466,7 @@ function addCartridgeType($input) {
 
 	// dump status
 	$null = array_pop($input);
-
+	
 	// fill array for update
 	foreach ($input as $key => $val) {
 		if (empty($sw->fields[$key]) || $sw->fields[$key] != $input[$key]) {

@@ -712,7 +712,7 @@ $lang["setup"][111]="Nombre d'&eacute;l&eacute;ments &agrave; afficher par page"
 $lang["setup"][112]="Nombre de caract&egrave;res maximum pour chaque &eacute;l&eacute;ments de la liste";
 $lang["setup"][113]="Langue par d&eacute;faut";
 $lang["setup"][114]="Couleurs des priorit&eacute;s";
-$lang["setup"][115]="Seuil d'alerte pour les cartouches";
+$lang["setup"][115]="Seuil d'alerte par d&eacute;faut pour les cartouches";
 
 $lang["setup"][150]="Sources d'authentification externes";
 $lang["setup"][151]=" Si vous ne souhaitez pas utiliser LDAP comme source(s) de connexion laissez les champs vides";
@@ -1221,6 +1221,7 @@ $lang["cartridges"][34] = "Pas de cartouche libre";
 $lang["cartridges"][35] = "Vieilles Cartouches";
 $lang["cartridges"][36] = "Lieu Stockage";
 $lang["cartridges"][37] = "Ruban";
+$lang["cartridges"][38] = "Seuil d'alarme";
 
 $lang["financial"][0] = "Ajouter Contrat...";
 $lang["financial"][1] = "Contrat";
