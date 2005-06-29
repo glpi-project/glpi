@@ -83,6 +83,7 @@ class CartridgeType {
 	}
 	
 	function getEmpty () {
+	global $cfg_features;
 	$db = new DB;
 	$fields = $db->list_fields("glpi_cartridges_type");
 	$columns = $db->num_fields($fields);
@@ -90,6 +91,8 @@ class CartridgeType {
 			$name = $db->field_name($fields, $i);
 			$this->fields[$name] = "";
 		}
+		
+	$this->fields["alarm"]=$cfg_features["cartridges_alarm"];
 	}
 
 	function countCartridges() {
