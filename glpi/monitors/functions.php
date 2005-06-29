@@ -76,7 +76,7 @@ function showMonitorOnglets($target,$withtemplate,$actif){
 	
 }
 
-function searchFormMonitors($field="",$phrasetype= "",$contains="",$sort= "",$deleted="") {
+function searchFormMonitors($field="",$phrasetype= "",$contains="",$sort= "",$deleted="",$link="") {
 	// Print Search Form
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel;
@@ -97,40 +97,57 @@ function searchFormMonitors($field="",$phrasetype= "",$contains="",$sort= "",$de
 	$option=addContractOptionFieldsToResearch($option);
 	
 	echo "<form method='get' action=\"".$cfg_install["root"]."/monitors/monitors-search.php\">";
-	echo "<div align='center'><table  width='750' class='tab_cadre'>";
-	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<div align='center'><table  width='800' class='tab_cadre'>";
+	echo "<tr><th colspan='4'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
-	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
-	echo "&nbsp;";
+
+	echo "<table>";
 	
-	echo $lang["search"][10]."&nbsp;";
+	for ($i=0;$i<$_SESSION["glpisearchcount"];$i++){
+		echo "<tr><td align='right'>";
+		if ($i==0){
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?add_search_count=1'>+++</a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			if ($_SESSION["glpisearchcount"]>1)
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?delete_search_count=1'>---</a>&nbsp;&nbsp;&nbsp;&nbsp;";
+		}
+		if ($i>0) {
+			echo "<select name='link[$i]'>";
+			
+			echo "<option value='AND' ";
+			if(isset($link[$i]) && $link[$i] == "AND") echo "selected";
+			echo ">AND</option>";
+			
+			echo "<option value='OR' ";
+			if(isset($link[$i]) && $link[$i] == "OR") echo "selected";
+			echo ">OR</option>";		
+
+			echo "</select>";
+		}
+		
+		echo "<input type='text' size='15' name=\"contains[$i]\" value=\"". (isset($contains[$i])?stripslashes($contains[$i]):"" )."\" >";
+		echo "&nbsp;";
+		echo $lang["search"][10]."&nbsp;";
 	
-	
-	echo "<select name=\"field\" size='1'>";
-        echo "<option value='all' ";
-	if($field == "all") echo "selected";
-	echo ">".$lang["search"][7]."</option>";
-        reset($option);
-	foreach ($option as $key => $val) {
-		echo "<option value=\"".$key."\""; 
-		if($key == $field) echo "selected";
-		echo ">". $val ."</option>\n";
+		echo "<select name=\"field[$i]\" size='1'>";
+        	echo "<option value='all' ";
+		if(isset($field[$i]) && $field[$i] == "all") echo "selected";
+		echo ">".$lang["search"][7]."</option>";
+        	reset($option);
+		foreach ($option as $key => $val) {
+			echo "<option value=\"".$key."\""; 
+			if(isset($field[$i]) && $key == $field[$i]) echo "selected";
+			echo ">". $val ."</option>\n";
+		}
+		echo "</select>&nbsp;";
+
+		
+		echo "</td></tr>";
 	}
-	echo "</select>&nbsp;";
-	
-	
-	/*
-	echo $lang["search"][1];
-	echo "&nbsp;<select name='phrasetype' size='1' >";
-	echo "<option value='contains'";
-	if($phrasetype == "contains") echo "selected";
-	echo ">".$lang["search"][2]."</option>";
-	echo "<option value='exact'";
-	if($phrasetype == "exact") echo "selected";
-	echo ">".$lang["search"][3]."</option>";
-	echo "</select>";
-	*/
+	echo "</table>";
+	echo "</td>";
+
+	echo "<td>";
 	
 	
 	echo $lang["search"][4];
@@ -150,7 +167,7 @@ function searchFormMonitors($field="",$phrasetype= "",$contains="",$sort= "",$de
 }
 
 
-function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted) {
+function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted,$link) {
 
 	// Lists Monitors
 
@@ -158,55 +175,58 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 
 	$db = new DB;
 
-	// Build query
-	if($field=="all") {
-		$where = " (";
-		$fields = $db->list_fields("glpi_monitors");
-		$columns = $db->num_fields($fields);
+	$where ="";
+	
+	foreach ($field as $k => $f)
+	if ($k<$_SESSION["glpisearchcount"])
+	if ($contains[$k]!=""){
+		if ($k>0&&isset($link[$k-1])) $where.=" ".$link[$k]." ";
+		$where.="( ";
+		// Build query
+		if($f=="all") {
+			$fields = $db->list_fields("glpi_monitors");
+			$columns = $db->num_fields($fields);
+			
+			for ($i = 0; $i < $columns; $i++) {
+				if($i != 0) {
+					$where .= " OR ";
+				}
+					$coco = $db->field_name($fields, $i);
+	
+				if($coco == "location") {
+					$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains[$k]);
+				}
+				elseif($coco == "type") {
+					$where .= " glpi_type_monitors.name LIKE '%".$contains[$k]."%'";
+				}
+				elseif($coco == "FK_glpi_enterprise") {
+					$where .= "glpi_enterprises.name LIKE '%".$contains[$k]."%'";
+				}
+				else if ($coco=="tech_num"){
+					$where .= " resptech.name LIKE '%".$contains[$k]."%'";
+				} 
+				else {
+	   				$where .= "mon.".$coco . " LIKE '%".$contains[$k]."%'";
+				}	
+			}
 		
-		for ($i = 0; $i < $columns; $i++) {
-			if($i != 0) {
-				$where .= " OR ";
-			}
-			$coco = $db->field_name($fields, $i);
-
-			if($coco == "location") {
-				$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains);
-			}
-			elseif($coco == "type") {
-				$where .= " glpi_type_monitors.name LIKE '%".$contains."%'";
-			}
-			elseif($coco == "FK_glpi_enterprise") {
-				$where .= "glpi_enterprises.name LIKE '%".$contains."%'";
-			}
-			else if ($coco=="tech_num"){
-				$where .= " resptech.name LIKE '%".$contains."%'";
-			} 
-			else {
-   				$where .= "mon.".$coco . " LIKE '%".$contains."%'";
-			}
-		}
-		
-		$where .= getInfocomSearchToViewAllRequest($contains);
-		$where .= getContractSearchToViewAllRequest($contains);
-		
-		$where .= ")";
-	}
-	else {
-
-		if ($field=="glpi_dropdown_locations.name"){
-			$where = getRealSearchForTreeItem("glpi_dropdown_locations",$contains);
-		}		
-		else if ($phrasetype == "contains") {
-			$where = "($field LIKE '%".$contains."%')";
+			$where .= getInfocomSearchToViewAllRequest($contains[$k]);
+			$where .= getContractSearchToViewAllRequest($contains[$k]);
 		}
 		else {
-			$where = "($field LIKE '".$contains."')";
-		}
+			if ($f=="glpi_dropdown_locations.name"){
+				$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains[$k]);
+			}		
+			else if ($phrasetype == "contains") {
+				$where .= "($f LIKE '%".$contains[$k]."%')";
+			}
+			else {
+					$where .= "($ LIKE '".$contains[$k]."')";
+				}
+			}
+	$where.=" )";
 	}
-
-
-
+echo $where;
 	if (!$start) {
 		$start = 0;
 	}
@@ -219,7 +239,9 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = mon.tech_num ) ";
 	$query.= getInfocomSearchToRequest("mon",MONITOR_TYPE);
 	$query.= getContractSearchToRequest("mon",MONITOR_TYPE);
-	$query .= " where $where AND mon.deleted='$deleted' AND mon.is_template = '0' ORDER BY $sort $order";
+	$query.= " where ";
+	if (!empty($where)) $query .= " $where AND ";
+	$query .= " mon.deleted='$deleted' AND mon.is_template = '0'  ORDER BY $sort $order";
 	//echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
@@ -324,7 +346,12 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			echo "</table></center>";
 
 			// Pager
-			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
+			$parameters="sort=$sort&order=$order";
+			foreach($field as $key => $val){
+				$parameters.="&field[$key]=".$field[$key];
+				$parameters.="&contains[$key]=".stripslashes($contains[$key]);			
+				if ($key!=0) $parameters.="&link[$key]=".$link[$key];
+			}
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {

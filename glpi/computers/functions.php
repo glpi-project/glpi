@@ -295,7 +295,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 	foreach ($field as $k => $f)
 	if ($k<$_SESSION["glpisearchcount"])
 	if ($contains[$k]!=""){
-		if ($k>0) $where.=" ".$link[$k]." ";
+		if ($k>0&&isset($link[$k-1])) $where.=" ".$link[$k]." ";
 		$where.="( ";
 		// Build query
 		if($f == "all") {
@@ -508,7 +508,6 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 			echo "</table></div>";
 
 			// Pager
-			//$parameters="field=".urlencode(serialize($field))."&contains=".urlencode(serialize($contains))."&link=".urlencode(serialize($link))."&sort=$sort";
 			$parameters="sort=$sort&order=$order";
 			foreach($field as $key => $val){
 				$parameters.="&field[$key]=".$field[$key];
