@@ -65,7 +65,7 @@ function titleCartridge(){
 *@return nothing (diplays)
 *
 **/
-function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "",$deleted="") {
+function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "",$deleted="",$link="") {
 	// Print Search Form
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang, $HTMLRel;
@@ -79,26 +79,56 @@ function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "",$d
 	$option["resptech.name"]			=$lang["common"][10];
 	
 	echo "<form method=get action=\"".$cfg_install["root"]."/cartridges/cartridge-search.php\">";
-	echo "<div align='center'><table class='tab_cadre' width='750'>";
-	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<div align='center'><table class='tab_cadre' width='800'>";
+	echo "<tr><th colspan='4'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center' >";
-	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
-	echo "&nbsp;";
+	echo "<table>";
 	
-	echo $lang["search"][10]."&nbsp;";
+	for ($i=0;$i<$_SESSION["glpisearchcount"];$i++){
+		echo "<tr><td align='right'>";
+		if ($i==0){
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?add_search_count=1'><img src=\"".$HTMLRel."pics/plus.png\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			if ($_SESSION["glpisearchcount"]>1)
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?delete_search_count=1'><img src=\"".$HTMLRel."pics/moins.png\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+		}
+		if ($i>0) {
+			echo "<select name='link[$i]'>";
+			
+			echo "<option value='AND' ";
+			if(isset($link[$i]) && $link[$i] == "AND") echo "selected";
+			echo ">AND</option>";
+			
+			echo "<option value='OR' ";
+			if(isset($link[$i]) && $link[$i] == "OR") echo "selected";
+			echo ">OR</option>";		
+
+			echo "</select>";
+		}
+		
+		echo "<input type='text' size='15' name=\"contains[$i]\" value=\"". (isset($contains[$i])?stripslashes($contains[$i]):"" )."\" >";
+		echo "&nbsp;";
+		echo $lang["search"][10]."&nbsp;";
 	
-	echo "<select name=\"field\" size='1'>";
-        echo "<option value='all' ";
-	if($field == "all") echo "selected";
-	echo ">".$lang["search"][7]."</option>";
-        reset($option);
-	foreach ($option as $key => $val) {
-		echo "<option value=\"".$key."\""; 
-		if($key == $field) echo "selected";
-		echo ">". $val ."</option>\n";
+		echo "<select name=\"field[$i]\" size='1'>";
+        	echo "<option value='all' ";
+		if(isset($field[$i]) && $field[$i] == "all") echo "selected";
+		echo ">".$lang["search"][7]."</option>";
+        	reset($option);
+		foreach ($option as $key => $val) {
+			echo "<option value=\"".$key."\""; 
+			if(isset($field[$i]) && $key == $field[$i]) echo "selected";
+			echo ">". $val ."</option>\n";
+		}
+		echo "</select>&nbsp;";
+
+		
+		echo "</td></tr>";
 	}
-	echo "</select>&nbsp;";
+	echo "</table>";
+	echo "</td>";
+
+	echo "<td>";
 
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
@@ -135,7 +165,7 @@ function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "",$d
 *@return Nothing (display)
 *
 **/
-function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted) {
+function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted,$link) {
 
 	// Lists CartridgeType
 
@@ -143,39 +173,51 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 
 	$db = new DB;
 
-	// Build query
-	if($field == "all") {
-		$where = " (";
-		$fields = $db->list_fields("glpi_cartridges_type");
-		$columns = $db->num_fields($fields);
-		
-		for ($i = 0; $i < $columns; $i++) {
-			if($i != 0) {
-				$where .= " OR ";
-			}
-			$coco = $db->field_name($fields, $i);
-			if ($coco=="location"){
-				$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains);		
-			} else if ($coco=="FK_glpi_enterprise"){
-				$where.="glpi_enterprises.name LIKE '%".$contains."%'";
-			} else if ($coco=="tech_num"){
-				$where .= " resptech.name LIKE '%".$contains."%'";
-			} else 
-			$where .= "glpi_cartridges_type.".$coco . " LIKE '%".$contains."%'";
+	$where ="";
+	
+	foreach ($field as $k => $f)
+	if ($k<$_SESSION["glpisearchcount"])
+	if ($contains[$k]==""){
+		if ($k>0) $where.=" ".$link[$k]." ";
+		$where.=" ('1'='1') ";
 		}
-		$where .= ")";
-	}
 	else {
-				if ($field=="glpi_dropdown_locations.name"){
-			$where = getRealSearchForTreeItem("glpi_dropdown_locations",$contains);
-		}		
-		else if ($phrasetype == "contains") {
-			$where = "($field LIKE '%".$contains."%')";
+		if ($k>0) $where.=" ".$link[$k]." ";
+		$where.="( ";
+		// Build query
+		if($f == "all") {
+			$fields = $db->list_fields("glpi_cartridges_type");
+			$columns = $db->num_fields($fields);
+			
+			for ($i = 0; $i < $columns; $i++) {
+				if($i != 0) {
+					$where .= " OR ";
+				}
+				$coco = $db->field_name($fields, $i);
+				if ($coco=="location"){
+					$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains[$k]);		
+				} else if ($coco=="FK_glpi_enterprise"){
+					$where.="glpi_enterprises.name LIKE '%".$contains[$k]."%'";
+				} else if ($coco=="tech_num"){
+					$where .= " resptech.name LIKE '%".$contains[$k]."%'";
+				} else 
+				$where .= "glpi_cartridges_type.".$coco . " LIKE '%".$contains[$k]."%'";
+			}
 		}
 		else {
-			$where = "($field LIKE '".$contains."')";
+					if ($f=="glpi_dropdown_locations.name"){
+				$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains[$k]);
+			}		
+			else if ($phrasetype == "contains") {
+				$where .= "($f LIKE '%".$contains[$k]."%')";
+			}
+			else {
+				$where .= "($f LIKE '".$contains[$k]."')";
+			}
 		}
+	$where.=" )";
 	}
+ 
 
 	if (!$start) {
 		$start = 0;
@@ -188,8 +230,10 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 	$query.= " LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_cartridges_type.FK_glpi_enterprise ";
 	$query.= " LEFT JOIN glpi_dropdown_locations ON glpi_dropdown_locations.ID = glpi_cartridges_type.location ";
 	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = glpi_cartridges_type.tech_num ) ";
-	$query.= " WHERE $where AND glpi_cartridges_type.deleted='$deleted'  ORDER BY $sort $order";
-//	echo $query;
+	$query.= " where ";
+	if (!empty($where)) $query .= " $where AND ";
+	$query .= " glpi_cartridges_type.deleted='$deleted'  ORDER BY $sort $order";
+
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows = $db->numrows($result);
@@ -211,10 +255,8 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_cartridges_type.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_cartridges_type.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["cartridges"][1]."</a></th>";
@@ -222,10 +264,8 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 			// Ref			
 			echo "<th>";
 			if ($sort=="glpi_cartridges_type.ref") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_cartridges_type.ref&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["cartridges"][2]."</a></th>";
@@ -233,10 +273,8 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 			// Type		
 			echo "<th>";
 			if ($sort=="glpi_cartridges_type.type") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_cartridges_type.type&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["cartridges"][3]."</a></th>";
@@ -244,10 +282,8 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 			// Manufacturer		
 			echo "<th>";
 			if ($sort=="glpi_enterprises.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["cartridges"][8]."</a></th>";
@@ -255,10 +291,8 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 			// Location		
 			echo "<th>";
 			if ($sort=="glpi_dropdown_locations.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["cartridges"][36]."</a></th>";
@@ -266,6 +300,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 			// Cartouches
 			echo "<th>".$lang["cartridges"][0]."</th>";
 		
+
 			echo "</tr>";
 
 			for ($i=0; $i < $numrows_limit; $i++) {
@@ -298,7 +333,12 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 			echo "</table></div>";
 
 			// Pager
-			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort";
+			$parameters="sort=$sort&order=$order";
+			foreach($field as $key => $val){
+				$parameters.="&field[$key]=".$field[$key];
+				$parameters.="&contains[$key]=".stripslashes($contains[$key]);			
+				if ($key!=0) $parameters.="&link[$key]=".$link[$key];
+			}
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
