@@ -62,6 +62,14 @@ if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
 else $_GET["deleted"] = "Y";
 if (!isset($_GET["link"])) $_GET["link"] = "";
 
+	
+	if (!is_array($_GET["field"])){
+		
+		$_GET["field"]=unserialize(urldecode(stripslashes($_GET["field"])));
+		$_GET["link"]=unserialize(urldecode(stripslashes($_GET["link"])));
+		$_GET["contains"]=unserialize(urldecode(stripslashes($_GET["contains"])));
+	}
+	
 searchFormComputers($_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"]);
 showComputerList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"]);
 
