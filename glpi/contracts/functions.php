@@ -66,7 +66,7 @@ function titleContract(){
 *@return nothing (diplays)
 *
 **/
-function searchFormContract($field="",$phrasetype= "",$contains="",$sort= "",$deleted="") {
+function searchFormContract($field="",$phrasetype= "",$contains="",$sort= "",$deleted="",$link="") {
 	// Print Search Form
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel;
@@ -82,22 +82,57 @@ function searchFormContract($field="",$phrasetype= "",$contains="",$sort= "",$de
 	$option["glpi_contracts.compta_num"]			= $lang["financial"][13];
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/contracts/contracts-search.php\">";
-	echo "<div align='center'><table class='tab_cadre' width='750'>";
-	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<div align='center'><table class='tab_cadre' width='800'>";
+	echo "<tr><th colspan='4'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
-	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
-	echo "&nbsp;";echo $lang["search"][10]."&nbsp;<select name=\"field\" size='1'>";
-        echo "<option value='all' ";
-	if($field == "all") echo "selected";
-	echo ">".$lang["search"][7]."</option>";
-        reset($option);
-	foreach ($option as $key => $val) {
-		echo "<option value=\"".$key."\""; 
-		if($key == $field) echo "selected";
-		echo ">". $val ."</option>\n";
+
+	echo "<table>";
+	
+	for ($i=0;$i<$_SESSION["glpisearchcount"];$i++){
+		echo "<tr><td align='right'>";
+		if ($i==0){
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?add_search_count=1'><img src=\"".$HTMLRel."pics/plus.png\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			if ($_SESSION["glpisearchcount"]>1)
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?delete_search_count=1'><img src=\"".$HTMLRel."pics/moins.png\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+		}
+		if ($i>0) {
+			echo "<select name='link[$i]'>";
+			
+			echo "<option value='AND' ";
+			if(isset($link[$i]) && $link[$i] == "AND") echo "selected";
+			echo ">AND</option>";
+			
+			echo "<option value='OR' ";
+			if(isset($link[$i]) && $link[$i] == "OR") echo "selected";
+			echo ">OR</option>";		
+
+			echo "</select>";
+		}
+		
+		echo "<input type='text' size='15' name=\"contains[$i]\" value=\"". (isset($contains[$i])?stripslashes($contains[$i]):"" )."\" >";
+		echo "&nbsp;";
+		echo $lang["search"][10]."&nbsp;";
+	
+		echo "<select name=\"field[$i]\" size='1'>";
+        	echo "<option value='all' ";
+		if(isset($field[$i]) && $field[$i] == "all") echo "selected";
+		echo ">".$lang["search"][7]."</option>";
+        	reset($option);
+		foreach ($option as $key => $val) {
+			echo "<option value=\"".$key."\""; 
+			if(isset($field[$i]) && $key == $field[$i]) echo "selected";
+			echo ">". $val ."</option>\n";
+		}
+		echo "</select>&nbsp;";
+
+		
+		echo "</td></tr>";
 	}
-	echo "</select>&nbsp;";
+	echo "</table>";
+	echo "</td>";
+
+	echo "<td>";
 
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
@@ -136,7 +171,7 @@ function searchFormContract($field="",$phrasetype= "",$contains="",$sort= "",$de
 *@return Nothing (display)
 *
 **/
-function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted) {
+function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted,$link) {
 
 	// Lists Contract
 
@@ -144,28 +179,39 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 	$db = new DB;
 
-	// Build query
-	if($field == "all") {
-		$where = " (";
-		$fields = $db->list_fields("glpi_contracts");
-		$columns = $db->num_fields($fields);
-		
-		for ($i = 0; $i < $columns; $i++) {
-			if($i != 0) {
-				$where .= " OR ";
-			}
-			$coco = $db->field_name($fields, $i);
-			$where .= "glpi_contracts.".$coco . " LIKE '%".$contains."%'";
+	$where ="";
+	
+	foreach ($field as $k => $f)
+	if ($k<$_SESSION["glpisearchcount"])
+	if ($contains[$k]==""){
+		if ($k>0) $where.=" ".$link[$k]." ";
+		$where.=" ('1'='1') ";
 		}
-		$where .= ")";
-	}
 	else {
-		if ($phrasetype == "contains") {
-			$where = "($field LIKE '%".$contains."%')";
+		if ($k>0) $where.=" ".$link[$k]." ";
+		$where.="( ";
+		// Build query
+		if($f == "all") {
+			$fields = $db->list_fields("glpi_contracts");
+			$columns = $db->num_fields($fields);
+		
+			for ($i = 0; $i < $columns; $i++) {
+				if($i != 0) {
+					$where .= " OR ";
+				}
+				$coco = $db->field_name($fields, $i);
+				$where .= "glpi_contracts.".$coco . " LIKE '%".$contains[$k]."%'";
+			}
 		}
 		else {
-			$where = "($field LIKE '".$contains."')";
+			if ($phrasetype == "contains") {
+				$where .= "($f LIKE '%".$contains[$k]."%')";
+			}
+			else {
+				$where .= "($f LIKE '".$contains[$k]."')";
+			}
 		}
+	$where.=" )";
 	}
 
 
@@ -178,7 +224,9 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 	
 	$query = "SELECT glpi_contracts.ID as ID FROM glpi_contracts ";
 	
-	$query.= " WHERE $where AND deleted='$deleted'  ORDER BY $sort $order";
+	$query.= " where ";
+	if (!empty($where)) $query .= " $where AND ";
+	$query .= " glpi_contracts.deleted='$deleted'  ORDER BY $sort $order";
 //	echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
@@ -299,7 +347,12 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 			echo "</table></div>";
 
 			// Pager
-			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort";
+			$parameters="sort=$sort&order=$order";
+			foreach($field as $key => $val){
+				$parameters.="&field[$key]=".$field[$key];
+				$parameters.="&contains[$key]=".stripslashes($contains[$key]);			
+				if ($key!=0) $parameters.="&link[$key]=".$link[$key];
+			}
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {

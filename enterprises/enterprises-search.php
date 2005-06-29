@@ -44,11 +44,12 @@ if(empty($_GET["order"])) $_GET["order"] = "ASC";
 if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
 else $_GET["deleted"] = "Y";
 if(empty($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
+if (!isset($_GET["link"])) $_GET["link"] = "";
 
 titleEnterprise();
 
-searchFormEnterprise($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["deleted"]);
-showEnterpriseList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"]);
+searchFormEnterprise($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"]);
+showEnterpriseList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"]);
 
 commonFooter();
 ?>
