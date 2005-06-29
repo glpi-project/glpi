@@ -180,7 +180,7 @@ function searchFormComputers($field="",$contains="",$sort= "",$deleted= "",$link
 			echo "</select>";
 		}
 		
-		echo "<input type='text' size='15' name=\"contains[$i]\" value=\"". (isset($contains[$i])?$contains[$i]:"" )."\" >";
+		echo "<input type='text' size='15' name=\"contains[$i]\" value=\"". (isset($contains[$i])?stripslashes($contains[$i]):"" )."\" >";
 		echo "&nbsp;";
 		echo $lang["search"][10]."&nbsp;";
 	
@@ -290,6 +290,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang,$HTMLRel, $cfg_devices_tables;
 
 	$where ="";
+	
 	foreach ($field as $k => $f)
 	if ($contains[$k]!=""){
 		if ($k>0) $where.=" ".$link[$k]." ";
@@ -505,7 +506,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 			echo "</table></div>";
 
 			// Pager
-			$parameters="field=$field&contains=$contains&sort=$sort";
+			$parameters="field=".urlencode(serialize($field))."&contains=".urlencode(serialize($contains))."&link=".urlencode(serialize($link))."&sort=$sort";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
