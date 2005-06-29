@@ -42,17 +42,27 @@ include ($phproot . "/glpi/includes_financial.php");
 
 checkAuthentication("normal");
 
+if (isset($_GET["add_search_count"])){
+	$_SESSION["glpisearchcount"]++;
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+if (isset($_GET["delete_search_count"])){
+	$_SESSION["glpisearchcount"]--;
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+
 commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 if(empty($_GET["start"])) $_GET["start"] = 0;
 if(empty($_GET["order"])) $_GET["order"] = "ASC";
 if(empty($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
 if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
 else $_GET["deleted"] = "Y";
+if (!isset($_GET["link"])) $_GET["link"] = "";
 
 titleSoftware();
 
-searchFormSoftware($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["deleted"]);
-showSoftwareList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"]);
+searchFormSoftware($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"]);
+showSoftwareList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"]);
 
 commonFooter();
 ?>

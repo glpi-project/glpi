@@ -78,7 +78,7 @@ function showSoftwareOnglets($target,$withtemplate,$actif){
 }
 
 
-function searchFormSoftware($field="",$phrasetype= "",$contains="",$sort= "",$deleted="") {
+function searchFormSoftware($field="",$phrasetype= "",$contains="",$sort= "",$deleted="",$link="") {
 	global $HTMLRel;
 	// Print Search Form
 	
@@ -98,40 +98,57 @@ function searchFormSoftware($field="",$phrasetype= "",$contains="",$sort= "",$de
 	$option=addContractOptionFieldsToResearch($option);
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/software/software-search.php\">";
-	echo "<center><table class='tab_cadre' width='750'>";
-	echo "<tr><th colspan='3'><strong>".$lang["search"][0].":</strong></th></tr>";
+	echo "<center><table class='tab_cadre' width='800'>";
+	echo "<tr><th colspan='4'><strong>".$lang["search"][0].":</strong></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 	
-	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
-	echo "&nbsp;";
+	echo "<table>";
 	
-	echo $lang["search"][10]."&nbsp;";
+	for ($i=0;$i<$_SESSION["glpisearchcount"];$i++){
+		echo "<tr><td align='right'>";
+		if ($i==0){
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?add_search_count=1'>+++</a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			if ($_SESSION["glpisearchcount"]>1)
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?delete_search_count=1'>---</a>&nbsp;&nbsp;&nbsp;&nbsp;";
+		}
+		if ($i>0) {
+			echo "<select name='link[$i]'>";
+			
+			echo "<option value='AND' ";
+			if(isset($link[$i]) && $link[$i] == "AND") echo "selected";
+			echo ">AND</option>";
+			
+			echo "<option value='OR' ";
+			if(isset($link[$i]) && $link[$i] == "OR") echo "selected";
+			echo ">OR</option>";		
+
+			echo "</select>";
+		}
+		
+		echo "<input type='text' size='15' name=\"contains[$i]\" value=\"". (isset($contains[$i])?stripslashes($contains[$i]):"" )."\" >";
+		echo "&nbsp;";
+		echo $lang["search"][10]."&nbsp;";
 	
-	
-	echo "<select name=\"field\" size='1'>";
-        echo "<option value='all' ";
-	if($field == "all") echo "selected";
-	echo ">".$lang["search"][7]."</option>";
-        reset($option);
-	foreach ($option as $key => $val) {
-		echo "<option value=\"".$key."\""; 
-		if($key == $field) echo "selected";
-		echo ">". $val ."</option>\n";
+		echo "<select name=\"field[$i]\" size='1'>";
+        	echo "<option value='all' ";
+		if(isset($field[$i]) && $field[$i] == "all") echo "selected";
+		echo ">".$lang["search"][7]."</option>";
+        	reset($option);
+		foreach ($option as $key => $val) {
+			echo "<option value=\"".$key."\""; 
+			if(isset($field[$i]) && $key == $field[$i]) echo "selected";
+			echo ">". $val ."</option>\n";
+		}
+		echo "</select>&nbsp;";
+
+		
+		echo "</td></tr>";
 	}
-	echo "</select>&nbsp;";
-	
-	/*
-	echo $lang["search"][1];
-	echo "&nbsp;<select name='phrasetype' size='1' >";
-	echo "<option value='contains'";
-	if($phrasetype == "contains") echo "selected";
-	echo ">".$lang["search"][2]."</option>";
-	echo "<option value='exact'";
-	if($phrasetype == "exact") echo "selected";
-	echo ">".$lang["search"][3]."</option>";
-	echo "</select>";
-	*/
+	echo "</table>";
+	echo "</td>";
+
+	echo "<td>";
 	
 	
 	echo $lang["search"][4];
@@ -150,7 +167,7 @@ function searchFormSoftware($field="",$phrasetype= "",$contains="",$sort= "",$de
 	echo "</td></tr></table></center></form>";
 }
 
-function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted) {
+function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted,$link) {
 
 	// Lists Software
 
@@ -158,53 +175,63 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 	$db = new DB;
 
-	// Build query
-	if($field == "all") {
-		$where = " (";
-		$fields = $db->list_fields("glpi_software");
-		$columns = $db->num_fields($fields);
-		
-		for ($i = 0; $i < $columns; $i++) {
-			if($i != 0) {
-				$where .= " OR ";
-			}
-			$coco = $db->field_name($fields, $i);
-			if($coco == "platform") {
-				$where .= " glpi_dropdown_os.name LIKE '%".$contains."%'";
-			}
-			elseif($coco == "location") {
-				$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains);
-			}
-			elseif($coco == "FK_glpi_enterprise") {
-				$where .= "glpi_enterprises.name LIKE '%".$contains."%'";
-			}
-			else if ($coco=="tech_num"){
-				$where .= " resptech.name LIKE '%".$contains."%'";
-			} 
-			
-			else {
-   				$where .= "glpi_software.".$coco . " LIKE '%".$contains."%'";
-			}
+	$where ="";
+	
+	foreach ($field as $k => $f)
+	if ($k<$_SESSION["glpisearchcount"])
+	if ($contains[$k]==""){
+		if ($k>0) $where.=" ".$link[$k]." ";
+		$where.=" ('1'='1') ";
 		}
-		$where.=" OR glpi_enterprises.name LIKE '%".$contains."%'";
-		$where .= " OR resptech.name LIKE '%".$contains."%'";
-		$where .= " OR glpi_licenses.serial LIKE '%".$contains."%'";
-		$where .= getInfocomSearchToViewAllRequest($contains);
-		$where .= getContractSearchToViewAllRequest($contains);
-		$where .= ")";
-	}
 	else {
-		if ($field=="glpi_dropdown_locations.name"){
-			$where = getRealSearchForTreeItem("glpi_dropdown_locations",$contains);
-		}		
-		else if ($phrasetype == "contains") {
-			$where = "($field LIKE '%".$contains."%')";
+		if ($k>0) $where.=" ".$link[$k]." ";
+		$where.="( ";
+		// Build query
+		if($f == "all") {
+			$fields = $db->list_fields("glpi_software");
+			$columns = $db->num_fields($fields);
+			
+			for ($i = 0; $i < $columns; $i++) {
+				if($i != 0) {
+					$where .= " OR ";
+				}
+				$coco = $db->field_name($fields, $i);
+					if($coco == "platform") {
+					$where .= " glpi_dropdown_os.name LIKE '%".$contains[$k]."%'";
+				}
+				elseif($coco == "location") {
+					$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains[$k]);
+				}
+				elseif($coco == "FK_glpi_enterprise") {
+					$where .= "glpi_enterprises.name LIKE '%".$contains[$k]."%'";
+				}
+				else if ($coco=="tech_num"){
+					$where .= " resptech.name LIKE '%".$contains[$k]."%'";
+				} 
+				
+				else {
+	   				$where .= "glpi_software.".$coco . " LIKE '%".$contains[$k]."%'";
+				}
+			}
+			$where.=" OR glpi_enterprises.name LIKE '%".$contains[$k]."%'";
+			$where .= " OR resptech.name LIKE '%".$contains[$k]."%'";
+			$where .= " OR glpi_licenses.serial LIKE '%".$contains[$k]."%'";
+			$where .= getInfocomSearchToViewAllRequest($contains[$k]);
+			$where .= getContractSearchToViewAllRequest($contains[$k]);
 		}
 		else {
-			$where = "($field LIKE '".$contains."')";
+			if ($f=="glpi_dropdown_locations.name"){
+				$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains[$k]);
+			}		
+			else if ($phrasetype == "contains") {
+				$where .= "($f LIKE '%".$contains[$k]."%')";
+			}
+			else {
+				$where .= "($f LIKE '".$contains[$k]."')";
+			}
 		}
+	$where.=" )";
 	}
-
 
 	if (!$start) {
 		$start = 0;
@@ -221,7 +248,9 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 	$query.= " LEFT JOIN glpi_licenses ON (glpi_licenses.sID = glpi_software.ID ) ";
 	$query.= getInfocomSearchToRequest("glpi_software",SOFTWARE_TYPE);
 	$query.= getContractSearchToRequest("glpi_software",SOFTWARE_TYPE);
-	$query.= " WHERE $where AND glpi_software.deleted='$deleted'  AND glpi_software.is_template = '0' ORDER BY $sort $order";
+	$query.= " where ";
+	if (!empty($where)) $query .= " $where AND ";
+	$query .= " glpi_software.deleted='$deleted' AND glpi_software.is_template = '0'  ORDER BY $sort $order";
 
 	// Get it from database	
 	if ($result = $db->query($query)) {
@@ -308,7 +337,12 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 			echo "</table></div>";
 
 			// Pager
-			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort";
+			$parameters="sort=$sort&order=$order";
+			foreach($field as $key => $val){
+				$parameters.="&field[$key]=".$field[$key];
+				$parameters.="&contains[$key]=".stripslashes($contains[$key]);			
+				if ($key!=0) $parameters.="&link[$key]=".$link[$key];
+			}
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
