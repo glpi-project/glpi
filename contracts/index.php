@@ -44,15 +44,16 @@ titleContract();
 
 if(!isset($_GET["start"])) $_GET["start"] = 0;
 if (!isset($_GET["order"])) $_GET["order"] = "ASC";
-if (!isset($_GET["field"])) $_GET["field"] = "glpi_contracts.num";
+if (!isset($_GET["field"])) $_GET["field"] = array(0 => "glpi_contracts.num");
 if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
-if (!isset($_GET["contains"])) $_GET["contains"] = "";
+if (!isset($_GET["contains"])) $_GET["contains"] = array(0=>"");
 if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_contracts.num";
 if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
+if (!isset($_GET["link"])) $_GET["link"] = "";
 
 searchFormContract($_SERVER["PHP_SELF"]);
 
-showContractList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"]);
+showContractList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"]);
 
 
 commonFooter();
