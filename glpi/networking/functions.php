@@ -180,7 +180,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 	$db = new DB;
 
 	$where ="";
-	
+
 	foreach ($field as $k => $f)
 	if ($k<$_SESSION["glpisearchcount"])
 	if ($contains[$k]!=""){
@@ -228,10 +228,10 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 				$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains[$k]);
 			}		
 			else if ($phrasetype == "contains") {
-				$where .= "($field LIKE '%".$contains[$k]."%')";
+				$where .= "($f LIKE '%".$contains[$k]."%')";
 			}
 			else {
-				$where .= "($field LIKE '".$contains[$k]."')";
+				$where .= "($f LIKE '".$contains[$k]."')";
 			}
 		}
 	$where.=" )";
