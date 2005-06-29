@@ -184,7 +184,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 	foreach ($field as $k => $f)
 	if ($k<$_SESSION["glpisearchcount"])
 	if ($contains[$k]!=""){
-		if ($k>0) $where.=" ".$link[$k]." ";
+		if ($k>0&&isset($link[$k-1])) $where.=" ".$link[$k]." ";
 		$where.="( ";
 
 		// Build query

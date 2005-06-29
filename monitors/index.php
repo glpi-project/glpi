@@ -47,17 +47,19 @@ commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
 
 if(!isset($_GET["start"])) $_GET["start"] = 0;
 if (!isset($_GET["order"])) $_GET["order"] = "ASC";
-if (!isset($_GET["field"])) $_GET["field"] = "mon.name";
+if (!isset($_GET["field"])) $_GET["field"] = array(0 => "mon.name");
 if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
-if (!isset($_GET["contains"])) $_GET["contains"] = "";
+if (!isset($_GET["contains"])) $_GET["contains"] = array(0=>"");
 if (!isset($_GET["sort"])) $_GET["sort"] = "mon.name";
 if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
+if (!isset($_GET["link"])) $_GET["link"] = "";
+
 
 titleMonitors();
 
 searchFormMonitors();
 
-showMonitorList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"]);
+showMonitorList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"]);
 
 
 commonFooter();
