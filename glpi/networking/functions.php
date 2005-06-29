@@ -79,7 +79,7 @@ function showNetworkingOnglets($target,$withtemplate,$actif){
 	
 }
 
-function searchFormNetworking($field="",$phrasetype= "",$contains="",$sort= "",$deleted= "") {
+function searchFormNetworking($field="",$phrasetype= "",$contains="",$sort= "",$deleted= "",$link="") {
 	// Netwokirng Search Form
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel;
@@ -104,36 +104,55 @@ function searchFormNetworking($field="",$phrasetype= "",$contains="",$sort= "",$
 	$option=addContractOptionFieldsToResearch($option);
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/networking/networking-search.php\">";
-	echo "<div align='center'><table  width='750' class='tab_cadre'>";
-	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<div align='center'><table  width='800' class='tab_cadre'>";
+	echo "<tr><th colspan='4'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
-	
 	echo "<td align='center'>";
-	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
-	echo "&nbsp;";
-	echo $lang["search"][10]."&nbsp;";
-	echo "<select name=\"field\" size='1'>";
-        echo "<option value='all' ";
-	if($field == "all") echo "selected";
-	echo ">".$lang["search"][7]."</option>";
-        reset($option);
-	foreach ($option as $key => $val) {
-		echo "<option value=\"".$key."\""; 
-		if($key == $field) echo "selected";
-		echo ">". $val ."</option>\n";
+
+	echo "<table>";
+	
+	for ($i=0;$i<$_SESSION["glpisearchcount"];$i++){
+		echo "<tr><td align='right'>";
+		if ($i==0){
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?add_search_count=1'>+++</a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			if ($_SESSION["glpisearchcount"]>1)
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?delete_search_count=1'>---</a>&nbsp;&nbsp;&nbsp;&nbsp;";
+		}
+		if ($i>0) {
+			echo "<select name='link[$i]'>";
+			
+			echo "<option value='AND' ";
+			if(isset($link[$i]) && $link[$i] == "AND") echo "selected";
+			echo ">AND</option>";
+			
+			echo "<option value='OR' ";
+			if(isset($link[$i]) && $link[$i] == "OR") echo "selected";
+			echo ">OR</option>";		
+
+			echo "</select>";
+		}
+		
+		echo "<input type='text' size='15' name=\"contains[$i]\" value=\"". (isset($contains[$i])?stripslashes($contains[$i]):"" )."\" >";
+		echo "&nbsp;";
+		echo $lang["search"][10]."&nbsp;";
+	
+		echo "<select name=\"field[$i]\" size='1'>";
+        	echo "<option value='all' ";
+		if(isset($field[$i]) && $field[$i] == "all") echo "selected";
+		echo ">".$lang["search"][7]."</option>";
+        	reset($option);
+		foreach ($option as $key => $val) {
+			echo "<option value=\"".$key."\""; 
+			if(isset($field[$i]) && $key == $field[$i]) echo "selected";
+			echo ">". $val ."</option>\n";
+		}
+		echo "</select>&nbsp;";
+
+		
+		echo "</td></tr>";
 	}
-	echo "</select>&nbsp;";
-	/*
-	echo $lang["search"][1];
-	echo "&nbsp;<select name='phrasetype' size='1' >";
-	echo "<option value='contains'";
-	if($phrasetype == "contains") echo "selected";
-	echo ">".$lang["search"][2]."</option>";
-	echo "<option value='exact'";
-	if($phrasetype == "exact") echo "selected";
-	echo ">".$lang["search"][3]."</option>";
-	echo "</select>";
-	*/
+	echo "</table>";
+	echo "</td><td>";
 	
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
@@ -152,7 +171,7 @@ function searchFormNetworking($field="",$phrasetype= "",$contains="",$sort= "",$
 }
 
 
-function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted) {
+function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted,$link) {
 
 	// Lists networking
 
@@ -160,54 +179,62 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 
 	$db = new DB;
 
-	// Build query
-	if($field=="all") {
-		$where = " (";
-		$fields = $db->list_fields("glpi_networking");
-		$columns = $db->num_fields($fields);
-		
-		for ($i = 0; $i < $columns; $i++) {
-			if($i != 0) {
-				$where .= " OR ";
-			}
-			$coco = $db->field_name($fields, $i);
+	$where ="";
+	
+	foreach ($field as $k => $f)
+	if ($k<$_SESSION["glpisearchcount"])
+	if ($contains[$k]!=""){
+		if ($k>0) $where.=" ".$link[$k]." ";
+		$where.="( ";
 
-			if($coco == "firmware") {
-				$where .= " glpi_dropdown_firmware.name LIKE '%".$contains."%'";
+		// Build query
+		if($f=="all") {
+			$fields = $db->list_fields("glpi_networking");
+			$columns = $db->num_fields($fields);
+		
+			for ($i = 0; $i < $columns; $i++) {
+				if($i != 0) {
+					$where .= " OR ";
+				}
+				$coco = $db->field_name($fields, $i);
+
+				if($coco == "firmware") {
+					$where .= " glpi_dropdown_firmware.name LIKE '%".$contains[$k]."%'";
+				}
+				elseif($coco == "location") {
+					$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains[$k]);
+				}
+				elseif($coco == "FK_glpi_enterprise") {
+					$where .= "glpi_enterprises.name LIKE '%".$contains[$k]."%'";
+				}
+				elseif ($coco=="tech_num"){
+					$where .= " resptech.name LIKE '%".$contains[$k]."%'";
+				} 
+				elseif($coco == "type") {
+					$where .= " glpi_type_networking.name LIKE '%".$contains[$k]."%'";
+				}
+				else {
+ 	  				$where .= "glpi_networking.".$coco . " LIKE '%".$contains[$k]."%'";
+				}
 			}
-			elseif($coco == "location") {
-				$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains);
-			}
-			elseif($coco == "FK_glpi_enterprise") {
-				$where .= "glpi_enterprises.name LIKE '%".$contains."%'";
-			}
-			elseif ($coco=="tech_num"){
-				$where .= " resptech.name LIKE '%".$contains."%'";
-			} 
-			elseif($coco == "type") {
-				$where .= " glpi_type_networking.name LIKE '%".$contains."%'";
-			}
-			else {
-   				$where .= "glpi_networking.".$coco . " LIKE '%".$contains."%'";
-			}
-		}
-		$where .= " OR glpi_networking_ports.ifaddr LIKE '%".$contains."%'";
-		$where .= " OR glpi_networking_ports.ifmac LIKE '%".$contains."%'";
-		$where .= " OR glpi_dropdown_netpoint.name LIKE '%".$contains."%'";
-		$where .= getInfocomSearchToViewAllRequest($contains);
-		$where .= getContractSearchToViewAllRequest($contains);
-		$where .= ")";
-	}
-	else {
-		if ($field=="glpi_dropdown_locations.name"){
-			$where = getRealSearchForTreeItem("glpi_dropdown_locations",$contains);
-		}		
-		else if ($phrasetype == "contains") {
-			$where = "($field LIKE '%".$contains."%')";
+			$where .= " OR glpi_networking_ports.ifaddr LIKE '%".$contains[$k]."%'";
+			$where .= " OR glpi_networking_ports.ifmac LIKE '%".$contains[$k]."%'";
+			$where .= " OR glpi_dropdown_netpoint.name LIKE '%".$contains[$k]."%'";
+			$where .= getInfocomSearchToViewAllRequest($contains[$k]);
+			$where .= getContractSearchToViewAllRequest($contains[$k]);
 		}
 		else {
-			$where = "($field LIKE '".$contains."')";
+			if ($f=="glpi_dropdown_locations.name"){
+				$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains[$k]);
+			}		
+			else if ($phrasetype == "contains") {
+				$where .= "($field LIKE '%".$contains[$k]."%')";
+			}
+			else {
+				$where .= "($field LIKE '".$contains[$k]."')";
+			}
 		}
+	$where.=" )";
 	}
 
 	if (!$start) {
@@ -225,7 +252,9 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = glpi_networking.tech_num ) ";
 	$query.= getInfocomSearchToRequest("glpi_networking",NETWORKING_TYPE);
 	$query.= getContractSearchToRequest("glpi_networking",NETWORKING_TYPE);
-	$query .= "where $where AND glpi_networking.deleted='$deleted' AND glpi_networking.is_template = '0' ORDER BY $sort $order";
+	$query.= " where ";
+	if (!empty($where)) $query .= " $where AND ";
+	$query .= " glpi_networking.deleted='$deleted' AND glpi_networking.is_template = '0'  ORDER BY $sort $order";
 
 	// Get it from database	
 	if ($result = $db->query($query)) {
@@ -334,7 +363,13 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			echo "</table></center>";
 
 			// Pager
-			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
+			$parameters="sort=$sort&order=$order";
+			foreach($field as $key => $val){
+				$parameters.="&field[$key]=".$field[$key];
+				$parameters.="&contains[$key]=".stripslashes($contains[$key]);			
+				if ($key!=0) $parameters.="&link[$key]=".$link[$key];
+			}
+
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
