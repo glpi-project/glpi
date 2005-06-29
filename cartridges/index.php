@@ -45,15 +45,15 @@ titleCartridge();
 
 if(!isset($_GET["start"])) $_GET["start"] = 0;
 if (!isset($_GET["order"])) $_GET["order"] = "ASC";
-if (!isset($_GET["field"])) $_GET["field"] = "glpi_cartridges_type.name";
+if (!isset($_GET["field"])) $_GET["field"] = array(0 => "glpi_cartridges_type.name");
 if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
-if (!isset($_GET["contains"])) $_GET["contains"] = "";
+if (!isset($_GET["contains"])) $_GET["contains"] = array(0=>"");
 if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_cartridges_type.name";
 if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
 
 searchFormCartridge($_SERVER["PHP_SELF"]);
 
-showCartridgeList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"]);
+showCartridgeList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"]);
 
 
 commonFooter();
