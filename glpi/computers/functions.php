@@ -201,6 +201,7 @@ function searchFormComputers($field="",$contains="",$sort= "",$deleted= "",$link
 	}
 	echo "</table>";
 	echo "</td>";
+
 	echo "<td>";
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
@@ -292,6 +293,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 	$where ="";
 	
 	foreach ($field as $k => $f)
+	if ($k<$_SESSION["glpisearchcount"])
 	if ($contains[$k]!=""){
 		if ($k>0) $where.=" ".$link[$k]." ";
 		$where.="( ";
@@ -507,7 +509,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 
 			// Pager
 			//$parameters="field=".urlencode(serialize($field))."&contains=".urlencode(serialize($contains))."&link=".urlencode(serialize($link))."&sort=$sort";
-			$parameters="sort=$sort";
+			$parameters="sort=$sort&order=$order";
 			foreach($field as $key => $val){
 				$parameters.="&field[$key]=".$field[$key];
 				$parameters.="&contains[$key]=".stripslashes($contains[$key]);			

@@ -43,19 +43,30 @@ include ($phproot . "/glpi/includes_state.php");
 
 checkAuthentication("normal");
 
+if (isset($_GET["add_search_count"])){
+	$_SESSION["glpisearchcount"]++;
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+if (isset($_GET["delete_search_count"])){
+	$_SESSION["glpisearchcount"]--;
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+
+
 commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
 if(empty($_GET["start"])) $_GET["start"] = 0;
 if(empty($_GET["order"])) $_GET["order"] = "ASC";
 if(empty($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
 if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
 else $_GET["deleted"] = "Y";
+if (!isset($_GET["link"])) $_GET["link"] = "";
 
 
 titleNetdevices();
 
-searchFormNetworking($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["deleted"]);
+searchFormNetworking($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"]);
 
-showNetworkingList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"]);
+showNetworkingList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"]);
 
 commonFooter();
 ?>
