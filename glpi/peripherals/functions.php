@@ -51,6 +51,7 @@ function titleperipherals(){
 function showPeripheralOnglets($target,$withtemplate,$actif){
 	global $lang;
 	
+	$template="";
 	if(!empty($withtemplate)){
 		$template="&withtemplate=$withtemplate";
 	}
