@@ -2390,6 +2390,13 @@ $query= "ALTER TABLE `glpi_enterprises` ADD `email` VARCHAR( 255 ) NOT NULL;";
 $db->query($query) or die("0.6 add email in enterprises ".$lang["update"][90].$db->error());	
 }
 
+// ldap_port for config
+if(!FieldExists("glpi_config","ldap_port")) {
+$query= "ALTER TABLE `glpi_config` ADD `ldap_port` VARCHAR( 10 ) DEFAULT '389' NOT NULL AFTER `ID` ;";
+$db->query($query) or die("0.6 add ldap_port in config ".$lang["update"][90].$db->error());	
+}
+
+
 
 // Update version number and default langage ---- LEAVE AT THE END
 	$query = "UPDATE `glpi_config` SET `version` = ' 0.6', default_language='".$_SESSION["dict"]."' ;";
