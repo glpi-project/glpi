@@ -54,6 +54,7 @@ function titleNetdevices() {
 function showNetworkingOnglets($target,$withtemplate,$actif){
 	global $lang;
 	
+	$template="";
 	if(!empty($withtemplate)){
 		$template="&withtemplate=$withtemplate";
 	}

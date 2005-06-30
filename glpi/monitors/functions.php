@@ -51,6 +51,7 @@ function titleMonitors(){
 function showMonitorOnglets($target,$withtemplate,$actif){
 	global $lang;
 
+	$template="";
 	if(!empty($withtemplate)){
 		$template="&withtemplate=$withtemplate";
 	}
