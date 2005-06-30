@@ -218,7 +218,6 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 	$where.=" )";
 	}
  
-
 	if (!$start) {
 		$start = 0;
 	}
@@ -258,7 +257,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_cartridges_type.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?sort=glpi_cartridges_type.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["cartridges"][1]."</a></th>";
 
 			// Ref			
@@ -267,7 +266,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_cartridges_type.ref&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?sort=glpi_cartridges_type.ref&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["cartridges"][2]."</a></th>";
 
 			// Type		
@@ -276,7 +275,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_cartridges_type.type&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?sort=glpi_cartridges_type.type&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["cartridges"][3]."</a></th>";
 
 			// Manufacturer		
@@ -285,7 +284,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_enterprises.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?sort=glpi_enterprises.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["cartridges"][8]."</a></th>";
 
 			// Location		
@@ -294,7 +293,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?sort=glpi_dropdown_locations.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["cartridges"][36]."</a></th>";
 			
 			// Cartouches
@@ -333,12 +332,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 			echo "</table></div>";
 
 			// Pager
-			$parameters="sort=$sort&order=$order";
-			foreach($field as $key => $val){
-				$parameters.="&field[$key]=".$field[$key];
-				$parameters.="&contains[$key]=".stripslashes($contains[$key]);			
-				if ($key!=0) $parameters.="&link[$key]=".$link[$key];
-			}
+			$parameters="sort=$sort&order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {

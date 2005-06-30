@@ -3226,4 +3226,16 @@ echo "<script language=javascript>window.location=\"".$dest."\"</script>";
 exit();
 }
 
+function getMultiSearchItemForLink($name,$array){
+	
+	$out="";
+	if (is_array($array)&&count($array)>0)
+	foreach($array as $key => $val){
+		if ($name!="link"||$key!=0)
+			$out.="&".$name."[$key]=".$array[$key];
+	}
+	return $out;
+	
+}
+
 ?>
