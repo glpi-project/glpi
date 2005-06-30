@@ -686,7 +686,7 @@ function showDeviceContract($instID,$search='') {
 *@return Nothing ()
 *
 **/
-function addDeviceContract($conID,$type,$ID,$template){
+function addDeviceContract($conID,$type,$ID,$template=0){
 
 $db = new DB;
 $query="INSERT INTO glpi_contract_device (FK_contract,FK_device, device_type, is_template ) VALUES ('$conID','$ID','$type','$template');";

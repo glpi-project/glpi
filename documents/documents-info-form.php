@@ -83,8 +83,11 @@ else if (isset($_POST["additem"])){
 	if(isset($_POST["item"]))
 	list($type,$ID)=explodeAllItemsSelectResult($_POST["item"]);
 	else {$type=$_POST["type"];$ID=$_POST["ID"];}
+
+	$template=0;
+	if (isset($_POST["is_template"])) $template=1;
 	
-	addDeviceDocument($_POST["conID"],$type,$ID);
+	addDeviceDocument($_POST["conID"],$type,$ID,$template);
 	logEvent($tab["ID"], "contract", 4, "document", $_SESSION["glpiname"]." associate device.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }

@@ -417,7 +417,7 @@ function FieldExists($table, $field) {
 	$var1 = false;
 	for ($i=0; $i < $fields; $i++) {
 		$name  = $db->field_name($result, $i);
-		if($name == $field) {
+		if(strcmp($name,$field)==0) {
 			$var1 = true;
 		}
 	}
@@ -2421,11 +2421,20 @@ if(!FieldExists("glpi_contracts","device_countmax")) {
 $query= "ALTER TABLE `glpi_contracts` ADD `device_countmax` INT DEFAULT '0' NOT NULL ;";
 $db->query($query) or die("0.6 add device_countmax in contracts ".$lang["update"][90].$db->error());	
 }
+
 if(!FieldExists("glpi_contract_device","is_template")) {
-$query= "ALTER TABLE `glpi_contract_device` ADD `is_template ` ENUM( '0', '1' ) DEFAULT '0' NOT NULL ;ALTER TABLE `glpi_contract_device` ADD `is_template` ENUM( '0', '1' ) DEFAULT '0' NOT NULL ;";
-$db->query($query) or die("0.6 add is_template in contract_device ".$lang["update"][90].$db->error());	
-$query= "ALTER TABLE `glpi_contract_device` ADD INDEX ( `is_template` ) ;";
-$db->query($query) or die("0.6 add is_template in contract_device ".$lang["update"][90].$db->error());	
+$query= "ALTER TABLE `glpi_contract_device` ADD `is_template` ENUM( '0', '1' ) DEFAULT '0' NOT NULL ;";
+$db->query($query) or die("0.6 add is_template in contract_device ".$lang["update"][90].$db->error());
+//$query= " ALTER TABLE `glpi_contract_device` ADD INDEX ( `is_template ` ) ";
+//$db->query($query) or die("0.6 alter is_template in contract_device ".$lang["update"][90].$db->error());	
+// TODO SET TO 1 the template item
+}
+
+if(!FieldExists("glpi_doc_device","is_template")) {
+$query= "ALTER TABLE `glpi_doc_device` ADD `is_template` ENUM( '0', '1' ) DEFAULT '0' NOT NULL ;";
+$db->query($query) or die("0.6 add is_template in doc_device ".$lang["update"][90].$db->error());	
+$query= "ALTER TABLE `glpi_doc_device` ADD INDEX ( `is_template` ) ;";
+$db->query($query) or die("0.6 alter is_template in doc_device ".$lang["update"][90].$db->error());	
 // TODO SET TO 1 the template item
 }
 
