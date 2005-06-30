@@ -379,7 +379,7 @@ function showContractForm ($target,$ID,$search) {
 
 	echo "<form name='form' method='post' action=\"$target\"><div align='center'>";
 	echo "<table class='tab_cadre'>";
-	echo "<tr><th colspan='3'><b>";
+	echo "<tr><th colspan='4'><b>";
 	if (!$ID) {
 		echo $lang["financial"][36].":";
 		$con->getEmpty();
@@ -389,75 +389,84 @@ function showContractForm ($target,$ID,$search) {
 	}		
 	echo "</b></th></tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["financial"][6].":		</td><td colspan='2'>";
+	echo "<tr class='tab_bg_1'><td>".$lang["financial"][6].":		</td><td >";
 	dropdownContractType("contract_type",$con->fields["contract_type"]);
-	echo "</td></tr>";
+	echo "</td>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["financial"][27].":		</td>";
-	echo "<td colspan='2'><input type='text' name='name' value=\"".$con->fields["name"]."\" size='25'></td>";
+	echo "<td>".$lang["financial"][27].":		</td>";
+	echo "<td><input type='text' name='name' value=\"".$con->fields["name"]."\" size='25'></td>";
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][4].":		</td>";
-	echo "<td colspan='2'><input type='text' name='num' value=\"".$con->fields["num"]."\" size='25'></td>";
-	echo "</tr>";
+	echo "<td><input type='text' name='num' value=\"".$con->fields["num"]."\" size='25'></td>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["financial"][5].":		</td>";
-	echo "<td colspan='2'><input type='text' name='cost' value=\"".$con->fields["cost"]."\" size='10'></td>";
-	echo "</tr>";
-
-	echo "<tr class='tab_bg_1'><td>".$lang["financial"][7].":	</td>";
-	echo "<td colspan='2'>";
+	echo "<td>".$lang["financial"][7].":	</td>";
+	echo "<td>";
 	showCalendarForm("form","begin_date",$con->fields["begin_date"]);	
     	echo "</td>";
 	echo "</tr>";
 
 
-	echo "<tr class='tab_bg_1'><td>".$lang["financial"][8].":		</td><td colspan='2'>";
+	echo "<tr class='tab_bg_1'><td>".$lang["financial"][5].":		</td>";
+	echo "<td><input type='text' name='cost' value=\"".$con->fields["cost"]."\" size='10'></td>";
+
+	echo "<td>".$lang["financial"][13].":		</td>";
+	echo "<td><input type='text' name='compta_num' value=\"".$con->fields["compta_num"]."\" size='25'></td>";
+	echo "</tr>";
+
+
+	echo "<tr class='tab_bg_1'><td>".$lang["financial"][8].":		</td><td>";
 	dropdownContractTime("duration",$con->fields["duration"]);
 	echo " ".$lang["financial"][57];
 	if ($con->fields["begin_date"]!=''&&$con->fields["begin_date"]!="0000-00-00")
 	echo " -> ".getWarrantyExpir($con->fields["begin_date"],$con->fields["duration"]);
-	echo "</td></tr>";
+	echo "</td>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["financial"][10].":		</td><td colspan='2'>";
+	echo "<td>".$lang["financial"][10].":		</td><td>";
 	dropdownContractTime("notice",$con->fields["notice"]);
 	echo " ".$lang["financial"][57];
 	if ($con->fields["begin_date"]!=''&&$con->fields["begin_date"]!="0000-00-00")
 	echo " -> ".getWarrantyExpir($con->fields["begin_date"],$con->fields["duration"]-$con->fields["notice"]);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["financial"][69].":		</td><td colspan='2'>";
+	echo "<tr class='tab_bg_1'><td>".$lang["financial"][69].":		</td><td>";
 	dropdownContractPeriodicity("periodicity",$con->fields["periodicity"]);
-	echo "</td></tr>";
+	echo "</td>";
 
 
-	echo "<tr class='tab_bg_1'><td>".$lang["financial"][11].":		</td>";
-	echo "<td colspan='2'>";
+	echo "<td>".$lang["financial"][11].":		</td>";
+	echo "<td>";
 		dropdownContractPeriodicity("facturation",$con->fields["facturation"]);
 	echo "</td></tr>";
 
 
-	echo "<tr class='tab_bg_1'><td>".$lang["financial"][13].":		</td>";
-	echo "<td colspan='2'><input type='text' name='compta_num' value=\"".$con->fields["compta_num"]."\" size='25'></td>";
-	echo "</tr>";
+	echo "<tr class='tab_bg_1'><td>".$lang["financial"][83].":		</td><td>";
+	dropdownContractTime("device_countmax",$con->fields["device_countmax"]);
+	echo "</td>";
+
+
+	echo "<td>&nbsp;</td>";
+	echo "<td>&nbsp;</td></tr>";
+
+
 
 	echo "<tr class='tab_bg_1'><td valign='top'>";
 	echo $lang["financial"][12].":	</td>";
-	echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$con->fields["comments"]."</textarea>";
+	echo "<td align='center' colspan='3'><textarea cols='50' rows='4' name='comments' >".$con->fields["comments"]."</textarea>";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$lang["financial"][59].":		</td>";
-	echo "<td colspan='2'>&nbsp;</td>";
+	echo "<td colspan='3'>&nbsp;</td>";
 	echo "</tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["financial"][60].":		</td><td colspan='2'>";
+	echo "<tr class='tab_bg_1'><td>".$lang["financial"][60].":		</td><td colspan='3'>";
 	echo $lang["financial"][63].":";
 	dropdownHours("week_begin_hour",$con->fields["week_begin_hour"]);	
 	echo $lang["financial"][64].":";
 	dropdownHours("week_end_hour",$con->fields["week_end_hour"]);	
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["financial"][61].":		</td><td colspan='2'>";
+	echo "<tr class='tab_bg_1'><td>".$lang["financial"][61].":		</td><td colspan='3'>";
 	dropdownYesNo("saturday",$con->fields["saturday"]);
 	echo $lang["financial"][63].":";
 	dropdownHours("saturday_begin_hour",$con->fields["saturday_begin_hour"]);	
@@ -465,7 +474,7 @@ function showContractForm ($target,$ID,$search) {
 	dropdownHours("saturday_end_hour",$con->fields["saturday_end_hour"]);	
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["financial"][62].":		</td><td colspan='2'>";
+	echo "<tr class='tab_bg_1'><td>".$lang["financial"][62].":		</td><td colspan='3'>";
 	dropdownYesNo("monday",$con->fields["monday"]);
 	echo $lang["financial"][63].":";
 	dropdownHours("monday_begin_hour",$con->fields["monday_begin_hour"]);	
@@ -476,7 +485,7 @@ function showContractForm ($target,$ID,$search) {
 	if (!$ID) {
 
 		echo "<tr>";
-		echo "<td class='tab_bg_2' valign='top' colspan='3'>";
+		echo "<td class='tab_bg_2' valign='top' colspan='4'>";
 		echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
 		echo "</td>";
 		echo "</tr>";
@@ -492,7 +501,7 @@ function showContractForm ($target,$ID,$search) {
 		echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
 		echo "</td>\n\n";
 		
-		echo "<td class='tab_bg_2' valign='top'>\n";
+		echo "<td class='tab_bg_2' valign='top'  colspan='2'>\n";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		if ($con->fields["deleted"]=='N')
 		echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
@@ -621,7 +630,7 @@ function showDeviceContract($instID,$search='') {
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
     $db = new DB;
-	$query = "SELECT * FROM glpi_contract_device WHERE glpi_contract_device.FK_contract = '$instID' order by device_type, FK_device";
+	$query = "SELECT * FROM glpi_contract_device WHERE glpi_contract_device.FK_contract = '$instID' AND glpi_contract_device.is_template='0' order by device_type, FK_device";
 //echo $query;	
 	$result = $db->query($query);
 	$number = $db->numrows($result);
@@ -677,10 +686,10 @@ function showDeviceContract($instID,$search='') {
 *@return Nothing ()
 *
 **/
-function addDeviceContract($conID,$type,$ID){
+function addDeviceContract($conID,$type,$ID,$template){
 
 $db = new DB;
-$query="INSERT INTO glpi_contract_device (FK_contract,FK_device, device_type ) VALUES ('$conID','$ID','$type');";
+$query="INSERT INTO glpi_contract_device (FK_contract,FK_device, device_type, is_template ) VALUES ('$conID','$ID','$type','$template');";
 $result = $db->query($query);
 }
 
@@ -1095,6 +1104,8 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		
 		echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
 	}
+	if (!empty($withtemplate))
+	echo "<input type='hidden' name='is_template' value='1'>";
 	echo "</table></div>"    ;
 	echo "</form>";
 	

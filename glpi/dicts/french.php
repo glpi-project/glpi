@@ -1314,6 +1314,7 @@ $lang["financial"][79] = "Type de Tiers";
 $lang["financial"][80]	= "Expiration garantie";
 $lang["financial"][81]	= "Valeur nette comptable";
 $lang["financial"][82] = "Num&eacute;ro de facture";
+$lang["financial"][83] = "Nombre max d'&eacute;l&eacute;ments (0=illimt&eacute;)";
 
 $lang["document"][0]	= "Documents";
 $lang["document"][1]	= "Nom";
