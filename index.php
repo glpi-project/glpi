@@ -42,6 +42,12 @@ if(!file_exists($phproot ."/glpi/config/config_db.php")) {
 else
 {
 include ($phproot . "/glpi/includes.php");
+// Using CAS server
+if (!empty($cfg_login['cas']['host'])&&!isset($_GET["noCAS"])) {
+	glpi_header("login.php");
+}
+
+
 
 // Start the page
 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
@@ -79,6 +85,8 @@ echo "</div>";
 echo "<div id='boxlogin'>";
 
 echo "<form action='login.php' method='post'>";
+
+if (isset($_GET["noCAS"])) echo "<input type='hidden' name='noCAS' value='1' />";
 
 echo "<fieldset>";
 echo "<legend>Identification</legend>";

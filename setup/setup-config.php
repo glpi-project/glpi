@@ -80,7 +80,10 @@ elseif(!empty($_POST["update_ext"])) {
 		$auth_server=constructIMAPAuthServer($_POST);
 		updateIMAP($auth_server,$_POST["imap_host"]);
 	}
-	glpi_header($cfg_install["root"]."/setup/index.php");
+	if(empty($_POST["CA_Test"])) {
+		updateCAS($_POST["cas_host"],$_POST["cas_port"],$_POST["cas_uri"]);
+	}
+	glpi_header($cfg_install["root"]."/setup/setup-config.php?next=extsources");
 }
 elseif(!empty($_POST["update_confgen"])) {
 	updateConfigGen($_POST["root_doc"], $_POST["event_loglevel"], $_POST["num_of_events"], $_POST["expire_events"], $_POST["jobs_at_login"],$_POST["list_limit"], $_POST["cut"],$_POST["permit_helpdesk"],$_POST["default_language"],$_POST["priority"],$_POST["date_fiscale"],$_POST["cartridges_alarm"]);

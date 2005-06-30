@@ -194,6 +194,10 @@ $cfg_login['ldap']['fields'] = array( "name" => unhtmlentities($db->result($resu
 									"location" => unhtmlentities($db->result($result,0,"ldap_field_location")), 
 									"phone" => unhtmlentities($db->result($result,0,"ldap_field_phone")), 
 									"realname" => unhtmlentities($db->result($result,0,"ldap_field_realname")));
+// CAS authentification method
+$cfg_login["cas"]["host"]=unhtmlentities($db->result($result,0,"cas_host"));
+$cfg_login["cas"]["port"]=unhtmlentities($db->result($result,0,"cas_port"));
+$cfg_login["cas"]["uri"]=unhtmlentities($db->result($result,0,"cas_uri"));
 
 //other sources
 //$cfg_login['other_source']...

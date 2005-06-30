@@ -1574,6 +1574,25 @@ function showFormExtSources($target) {
 		echo "<tr><th colspan='2'>".$lang["setup"][152]."</th></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>".$lang["setup"][157]."</p><p>".$lang["setup"][158]."</p></td></th></table></div>";
 	}
+
+	if(extension_loaded('curl')&&extension_loaded('domxml'))
+	{
+		echo "<div align='center'><p > ".$lang["setup"][173]."</p>";
+
+		echo "<table class='tab_cadre'>";
+		echo "<tr><th colspan='2'>".$lang["setup"][177]."</th></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][174]."</td><td><input type=\"text\" name=\"cas_host\" value=\"". $db->result($result,0,"cas_host") ."\"></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][175]."</td><td><input type=\"text\" name=\"cas_port\" value=\"". $db->result($result,0,"cas_port") ."\"></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][176]."</td><td><input type=\"text\" name=\"cas_uri\" value=\"". $db->result($result,0,"cas_uri") ."\" ></td></tr>";
+		
+		echo "</table>&nbsp;</div>";
+	}
+	else {
+		echo "<input type=\"hidden\" name=\"CAS_Test\" value=\"1\" >";
+		echo "<div align='center'><table class='tab_cadre' width='400'>";
+		echo "<tr><th colspan='2'>".$lang["setup"][177]."</th></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>".$lang["setup"][178]."</p><p>".$lang["setup"][179]."</p></td></th></table></div>";
+	}
 	
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_ext\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
 	echo "</form>";
@@ -1702,6 +1721,15 @@ function updateIMAP($imap_auth_server,$imap_host) {
 	//TODO : test the remote IMAP connection
 		$query = "update glpi_config set imap_auth_server = '". $imap_auth_server ."', ";
 		$query.= "imap_host = '". $imap_host ."' where ID = '1'";
+		$db->query($query);
+}
+
+function updateCAS($cas_host,$cas_port,$cas_uri) {
+	$db = new DB;
+	//TODO : test the remote IMAP connection
+		$query = "update glpi_config set cas_host = '". $cas_host ."', ";
+		$query.= "cas_uri = '". $cas_uri."',";
+		$query.= "cas_port = '". $cas_port ."' where ID = '1'";
 		$db->query($query);
 }
 

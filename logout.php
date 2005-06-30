@@ -39,12 +39,26 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
+@session_start();
 
-session_start();
+if (!isset($_SESSION["noCAS"])&&!empty($cfg_login['cas']['host'])) {
+	include ($phproot . "/glpi/CAS/CAS.php");
+	phpCAS::client(CAS_VERSION_2_0,$cfg_login['cas']['host'],intval($cfg_login['cas']['port']),$cfg_login['cas']['uri']);
+	phpCAS::logout();
+}
+
+$noCAS="";
+if (isset($_SESSION["noCAS"])) $noCAS="?noCAS=1";
+
+
+
+
+
 $id = new Identification('bogus');
 $id->eraseCookies();
 
+
 // Redirect to the login-page
 
-glpi_header($cfg_install["root"]."/");
+glpi_header($cfg_install["root"]."/".$noCAS);
 ?>
