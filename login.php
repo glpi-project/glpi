@@ -69,6 +69,7 @@ if (!isset($_POST["noCAS"])&&!empty($cfg_login['cas']['host'])) {
 	$auth_succeded=true;
 	$identificat->extauth=1;
 	$user_present = $identificat->user->getFromDB($user);
+	if (!$user_present) $identificat->user->fields["name"]=$user;
 }
 if (isset($_POST["noCAS"])) $_SESSION["noCAS"]=1;
 
