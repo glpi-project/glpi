@@ -177,6 +177,8 @@ $cfg_login['ldap']['basedn'] = unhtmlentities($db->result($result,0,"ldap_basedn
 $cfg_login['ldap']['rootdn'] = unhtmlentities($db->result($result,0,"ldap_rootdn"));
 $cfg_login['ldap']['pass'] = unhtmlentities($db->result($result,0,"ldap_pass"));
 
+$cfg_login['ldap']['port'] = unhtmlentities($db->result($result,0,"ldap_port"));
+
 // Log in filter A AJOUTER DANS LA DB
 $cfg_login['ldap']['condition'] = unhtmlentities($db->result($result,0,"ldap_condition"));
 

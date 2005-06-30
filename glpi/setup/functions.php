@@ -1554,6 +1554,7 @@ function showFormExtSources($target) {
 		echo "<table class='tab_cadre'>";
 		echo "<tr><th colspan='2'>".$lang["setup"][152]."</th></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][153]."</td><td><input type=\"text\" name=\"ldap_host\" value=\"". $db->result($result,0,"ldap_host") ."\"></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][172]."</td><td><input type=\"text\" name=\"ldap_port\" value=\"". $db->result($result,0,"ldap_port") ."\"></td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][154]."</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"". $db->result($result,0,"ldap_basedn") ."\" ></td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][155]."</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"". $db->result($result,0,"ldap_rootdn") ."\" ></td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][156]."</td><td><input type=\"password\" name=\"ldap_pass\" value=\"". $db->result($result,0,"ldap_pass") ."\" ></td></tr>";
@@ -1681,7 +1682,7 @@ function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events
 }
 
 
-function updateLDAP($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$ldap_condition,$field_name,$field_email,$field_location,$field_phone,$field_realname) {
+function updateLDAP($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$ldap_condition,$field_name,$field_email,$field_location,$field_phone,$field_realname,$ldap_port) {
 	
 	$db = new DB;
 	//TODO : test the remote LDAP connection
@@ -1691,7 +1692,7 @@ function updateLDAP($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$ldap_condit
 		$query .= "ldap_pass = '". $ldap_pass ."', ldap_condition = '". $ldap_condition ."', ";
 		$query .= "ldap_field_name = '". $field_name ."', ldap_field_email = '". $field_email ."', ";
 		$query .= "ldap_field_location = '". $field_location ."', ldap_field_phone = '". $field_phone ."', ";
-		$query .= "ldap_field_realname = '". $field_realname ."' ";
+		$query .= "ldap_field_realname = '". $field_realname ."', ldap_port = '". $ldap_port ."' ";
 		$query.= " where ID = '1' ";
 		$db->query($query);
 	}

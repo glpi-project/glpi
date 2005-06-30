@@ -88,7 +88,7 @@ $identificat->err="Empty Login or Password";
    		$auth_succeded=0;
    		$found_dn=$identificat->ldap_get_dn($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$_POST['login_name'],$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass']);
 	   	if ($found_dn!=false&&!empty($_POST['login_password'])){ 
-		    $auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$found_dn,$_POST['login_name'],$_POST['login_password'],$cfg_login['ldap']['condition']);
+		    $auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$found_dn,$_POST['login_name'],$_POST['login_password'],$cfg_login['ldap']['condition'],$cfg_login['ldap']['port']);
 			if ($auth_succeded) {
 				$identificat->extauth=1;
 				$user_present = $identificat->user->getFromDB($_POST['login_name']);
@@ -103,7 +103,7 @@ $identificat->err="Empty Login or Password";
 	// Fourth try for flat LDAP 
 	// LDAP : Try now with the first base_dn
 	if (!$auth_succeded) {
-		$auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$_POST['login_name'],$_POST['login_password'],$cfg_login['ldap']['condition']);
+		$auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$_POST['login_name'],$_POST['login_password'],$cfg_login['ldap']['condition'],$cfg_login['ldap']['port']);
 		if ($auth_succeded) {
 			$identificat->extauth=1;
 			$user_present = $identificat->user->getFromDB($_POST['login_name']);
@@ -124,7 +124,7 @@ $identificat->err="Empty Login or Password";
 	   	$found_dn=$identificat->ldap_get_dn_active_directory($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$_POST['login_name'],$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass']);
    		//echo $found_dn."---";
 	   	if ($found_dn!=false&&!empty($_POST['login_password'])){ 
-		    $auth_succeded = $identificat->connection_ldap_active_directory($cfg_login['ldap']['host'],$found_dn,$_POST['login_name'],$_POST['login_password'],$cfg_login['ldap']['condition']);
+		    $auth_succeded = $identificat->connection_ldap_active_directory($cfg_login['ldap']['host'],$found_dn,$_POST['login_name'],$_POST['login_password'],$cfg_login['ldap']['condition'],$cfg_login['ldap']['port']);
 			if ($auth_succeded) {
 				$identificat->extauth=1;
 				$user_present = $identificat->user->getFromDB($_POST['login_name']);

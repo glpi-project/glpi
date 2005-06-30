@@ -737,6 +737,7 @@ $lang["setup"][168]="Options de connexion";
 $lang["setup"][169]="Boîte Mail (optionnel)";
 $lang["setup"][170]="Chaîne de connexion obtenue";
 $lang["setup"][171]="Port (optionnel)";
+$lang["setup"][172]="LDAP Port (default=389)";
 
 $lang["setup"][200]="Suivis par emails";
 $lang["setup"][201]="Configuration de la fonction";

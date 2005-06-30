@@ -240,8 +240,9 @@ class Identification
 
   // return 1 if the connection to the LDAP host, auth mode, was successful
   // $condition is used to restrict login ($condition is set in glpi/config/config.php 
-  function connection_ldap($host,$basedn,$login,$pass,$condition)
+  function connection_ldap($host,$basedn,$login,$pass,$condition,$port)
   {
+		
 		// we prevent some delay...
 		if (empty($host)) {
 			return false;
@@ -249,7 +250,7 @@ class Identification
   	error_reporting(16);
   	$dn = "uid=" . $login . "," . $basedn;
   	$rv = false;
-  	if ( $conn = ldap_connect($host) )
+  	if ( $conn = ldap_connect($host,$port) )
   	{
   		// switch to protocol version 3 to make ssl work
   		ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3) ;
