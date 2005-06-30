@@ -1025,10 +1025,11 @@ function dropdownContracts($name){
 	$result=$db->query($query);
 	echo "<select name='$name'>";
 	while ($data=$db->fetch_array($result)){
-		
-	echo "<option value='".$data["ID"]."'>";
-	echo $data["begin_date"]." - ".$data["name"];
-	echo "</option>";
+	if ($data["device_countmax"]==0||$data["device_countmax"]>countDeviceForContract($data['ID'])){
+		echo "<option value='".$data["ID"]."'>";
+		echo $data["begin_date"]." - ".$data["name"];
+		echo "</option>";
+	}
 	}
 
 	echo "</select>";	
@@ -1199,5 +1200,14 @@ return " LEFT JOIN glpi_contract_device ON ($table.ID = glpi_contract_device.FK_
 
 function getContractSearchToViewAllRequest($contains){
 return " OR glpi_contracts.name LIKE '%".$contains."%' OR glpi_contracts.num LIKE '%".$contains."%' ";
+}
+
+function countDeviceForContract($ID){
+    $db = new DB;
+	$query = "SELECT * FROM glpi_contract_device WHERE FK_contract = '$ID' AND is_template='0'";
+
+	$result = $db->query($query);
+	return $db->numrows($result);
+	
 }
 ?>
