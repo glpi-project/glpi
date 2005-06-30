@@ -2384,7 +2384,12 @@ $query= "ALTER TABLE `glpi_cartridges_type` ADD `alarm` TINYINT DEFAULT '10' NOT
 $db->query($query) or die("0.6 add alarm in cartridges_type ".$lang["update"][90].$db->error());	
 }
 
- 
+// email for enterprises
+if(!FieldExists("glpi_enterprises","email")) {
+$query= "ALTER TABLE `glpi_enterprises` ADD `email` VARCHAR( 255 ) NOT NULL;";
+$db->query($query) or die("0.6 add email in enterprises ".$lang["update"][90].$db->error());	
+}
+
 
 // Update version number and default langage ---- LEAVE AT THE END
 	$query = "UPDATE `glpi_config` SET `version` = ' 0.6', default_language='".$_SESSION["dict"]."' ;";

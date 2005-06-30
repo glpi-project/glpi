@@ -371,7 +371,11 @@ function showEnterpriseForm ($target,$ID) {
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][45].":		</td>";
 	echo "<td><input type='text' name='website' value=\"".$ent->fields["website"]."\" size='25'>";
-	echo "</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+	echo "</td>";
+	echo "<td>".$lang["financial"][31].":		</td>";
+	echo "<td><input type='text' name='email' value=\"".$ent->fields["email"]."\" size='25'></td>";
+	echo "</tr>";
+	
 
 	echo "<tr class='tab_bg_1'><td >".$lang["financial"][44].":		</td>";
 	echo "<td align='center'><textarea cols='35' rows='4' name='address' >".$ent->fields["address"]."</textarea>";
