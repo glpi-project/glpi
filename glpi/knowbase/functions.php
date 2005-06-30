@@ -487,7 +487,7 @@ function ShowKbItemFull($ID)
 		
 	
 	$categoryID = $ki->fields["categoryID"];
-	$fullcategoryname = getTreeValueName("glpi_dropdown_kbcategories",$categoryID);
+	$fullcategoryname = getTreeValueCompleteName("glpi_dropdown_kbcategories",$categoryID);
 	
 	echo "<div align='center'><table class='tab_cadre' cellpadding='10' width='700px'><tr><th>";
 	
@@ -531,7 +531,8 @@ function kbcategoryList($current=0,$nullroot="yes")
 	if ($nullroot=="yes"){
 	echo "<option value='0'>--- ".$lang["knowbase"][12]." ---</option>\n";
 	}
-	showTreeListSelect("glpi_dropdown_kbcategories",$current, $parentID=0, $categoryname="");
+	
+	dropdown("glpi_dropdown_kbcategories",$current);
 	
 //	kbcategoryListSelect($current, 0, "\\");
 	echo "</select>\n";

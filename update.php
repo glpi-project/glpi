@@ -2404,6 +2404,19 @@ ADD `cas_uri` VARCHAR( 255 ) NOT NULL ;";
 $db->query($query) or die("0.6 add cas config in config ".$lang["update"][90].$db->error());	
 }
 
+// Update Tree dropdown
+if(!FieldExists("glpi_dropdown_locations","completename")) {
+$query= "ALTER TABLE `glpi_dropdown_locations` ADD `completename` TEXT NOT NULL ;";
+$db->query($query) or die("0.6 add completename in dropdown_locations ".$lang["update"][90].$db->error());	
+regenerateTreeCompleteName("glpi_dropdown_locations");
+}
+if(!FieldExists("glpi_dropdown_kbcategories","completename")) {
+$query= "ALTER TABLE `glpi_dropdown_kbcategories` ADD `completename` TEXT NOT NULL ;";
+$db->query($query) or die("0.6 add completename in dropdown_kbcategories ".$lang["update"][90].$db->error());	
+regenerateTreeCompleteName("glpi_dropdown_kbcategories");
+}
+
+
 
 // Update version number and default langage ---- LEAVE AT THE END
 	$query = "UPDATE `glpi_config` SET `version` = ' 0.6', default_language='".$_SESSION["dict"]."' ;";

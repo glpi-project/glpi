@@ -1069,7 +1069,7 @@ function showConnectorSearch($target,$ID) {
 		$dID = $db->result($result, $i, "ID");
 		$name = $db->result($result, $i, "name");
 		$location = $db->result($result, $i, "location");
-		echo "<option value=\"$dID\">$name (".getTreeValueName("glpi_dropdown_locations",$location).")</option>";
+		echo "<option value=\"$dID\">$name (".getTreeValueCompleteName("glpi_dropdown_locations",$location).")</option>";
 		$i++;
 	}
 	echo "</select>";
@@ -1125,7 +1125,7 @@ function listConnectorComputers($target,$input) {
 		$dID = $db->result($result, $i, "ID");
 		$name = $db->result($result, $i, "name");
 		$location = $db->result($result, $i, "location");
-		echo "<option value=\"$dID\">$dID - $name (".getTreeValueName("glpi_dropdown_locations",$location).")</option>";
+		echo "<option value=\"$dID\">$dID - $name (".getTreeValueCompleteName("glpi_dropdown_locations",$location).")</option>";
 		$i++;
 	}
 	echo  "</select>";
