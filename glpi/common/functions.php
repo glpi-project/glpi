@@ -1031,12 +1031,8 @@ function dropdown($table,$myname) {
 	
 	// Make a select box
 	$db = new DB;
-	if($table == "glpi_dropdown_locations" || $table == "glpi_dropdown_kbcategories") {
-	echo "<select name=\"$myname\">";
-	showTreeListSelect($table,-1, 0);
-	echo "</select>";
-	}
-	else if($table == "glpi_dropdown_netpoint") {
+
+	if($table == "glpi_dropdown_netpoint") {
 		$query = "select t1.ID as ID, t1.name as netpname, t2.name as locname from glpi_dropdown_netpoint as t1";
 		$query .= " left join glpi_dropdown_locations as t2 on t1.location = t2.ID";
 		$query .= " order by t2.name, t1.name"; 
@@ -1061,7 +1057,9 @@ function dropdown($table,$myname) {
 			$where.="AND deleted='N'";
 		if (in_array($table,$template_tables))
 			$where.="AND is_template='0'";			
-		$query = "SELECT * FROM $table $where ORDER BY name";
+		if($table == "glpi_dropdown_locations" || $table == "glpi_dropdown_kbcategories")
+			$query = "SELECT ID, completename as name FROM $table $where ORDER BY completename";
+		else $query = "SELECT * FROM $table $where ORDER BY name";
 		$result = $db->query($query);
 		echo "<select name=\"$myname\" size='1'>";
 		$i = 0;
@@ -1097,13 +1095,8 @@ function dropdownValue($table,$myname,$value) {
 	
 	// Make a select box with preselected values
 	$db = new DB;
-	if ($table == "glpi_dropdown_locations" || $table=="glpi_dropdown_kbcategories"){
-	echo "<select name=\"$myname\">";
-	echo "<option value=\"0\">-----</option>";
-	showTreeListSelect($table,$value, 0);
-	echo "</select>";
-	}
-	else if($table == "glpi_dropdown_netpoint") {
+
+	if($table == "glpi_dropdown_netpoint") {
 		$query = "select t1.ID as ID, t1.name as netpname, t2.ID as locID from glpi_dropdown_netpoint as t1";
 		$query .= " left join glpi_dropdown_locations as t2 on t1.location = t2.ID";
 		$query .= " order by t1.name,t2.name "; 
@@ -1114,7 +1107,7 @@ function dropdownValue($table,$myname,$value) {
 		if ($number > 0) {
 			while ($i < $number) {
 				$output = $db->result($result, $i, "netpname");
-				$loc = getTreeValueName("glpi_dropdown_locations",$db->result($result, $i, "locID"));
+				$loc = getTreeValueCompleteName("glpi_dropdown_locations",$db->result($result, $i, "locID"));
 				$ID = $db->result($result, $i, "ID");
 				echo "<option value=\"$ID\"";
 				if ($ID==$value) echo " selected ";
@@ -1131,7 +1124,10 @@ function dropdownValue($table,$myname,$value) {
 	if (in_array($table,$template_tables))
 		$where.="AND is_template='0'";
 		
-	$query = "SELECT * FROM $table $where ORDER BY name";
+
+	if($table == "glpi_dropdown_locations" || $table == "glpi_dropdown_kbcategories")
+		$query = "SELECT ID, completename as name FROM $table $where ORDER BY completename";
+	else $query = "SELECT ID, name FROM $table $where ORDER BY name";
 	
 	$result = $db->query($query);
 	
@@ -1183,7 +1179,9 @@ function dropdownNoValue($table,$myname,$value) {
 	if (in_array($table,$deleted_tables))
 		$where="WHERE deleted='N'";
 
-	$query = "SELECT * FROM $table $where ORDER BY name";
+	if($table == "glpi_dropdown_locations" || $table == "glpi_dropdown_kbcategories")
+		$query = "SELECT ID FROM $table $where ORDER BY completename";
+	else $query = "SELECT ID FROM $table $where ORDER BY name";
 	$result = $db->query($query);
 	
 	echo "<select name=\"$myname\" size='1'>";
@@ -1191,11 +1189,10 @@ function dropdownNoValue($table,$myname,$value) {
 	$number = $db->numrows($result);
 	if ($number > 0) {
 		while ($i < $number) {
-			$output = $db->result($result, $i, "name");
 			$ID = $db->result($result, $i, "ID");
 			if ($ID === $value) {
 			} else {
-				echo "<option value=\"$ID\">$output</option>";
+				echo "<option value=\"$ID\">".getDropdownName($table,$ID)."</option>";
 			}
 			$i++;
 		}
@@ -1250,7 +1247,7 @@ function NetpointLocationSearch($search,$myname,$location,$value='') {
 		while($line = $db->fetch_array($result)) {
 			echo "<option value=\"". $line["ID"] ."\" ";
 			if ($value==$line["ID"]) echo " selected ";
-			echo ">". $line["netpointname"]." (".getTreeValueName("glpi_dropdown_locations",$line["locID"]) .")</option>";
+			echo ">". $line["netpointname"]." (".getTreeValueCompleteName("glpi_dropdown_locations",$line["locID"]) .")</option>";
 		}
 	}
 	echo "</select>";
@@ -1446,7 +1443,7 @@ function getDropdownName($table,$id) {
 	if ($result = $db->query($query))
 	if($db->numrows($result) != 0) {
 		if ($table=="glpi_dropdown_locations"||$table=="glpi_dropdown_kbcategories"){
-		$name=getTreeValueName($table,$id);
+		$name=getTreeValueCompleteName($table,$id);
 	
 		} else {
 		$name = $db->result($result,0,"name");
@@ -1850,7 +1847,7 @@ function listConnectComputers($target,$input) {
 		$dID = $db->result($result, $i, "ID");
 		$name = $db->result($result, $i, "name");
 		$location = $db->result($result, $i, "location");
-		echo "<option value=\"$dID\">".$name." (".getTreeValueName("glpi_dropdown_locations",$location).")</option>";
+		echo "<option value=\"$dID\">".$name." (".getTreeValueCompleteName("glpi_dropdown_locations",$location).")</option>";
 		$i++;
 	}
 	echo  "</select>";
@@ -1928,7 +1925,7 @@ function listConnectElement($target,$input) {
 		$dID = $db->result($result, $i, "ID");
 		$name = $db->result($result, $i, "name");
 		$location = $db->result($result, $i, "location");
-		echo "<option value=\"$dID\">".$name." (".getTreeValueName("glpi_dropdown_locations",$location).")</option>";
+		echo "<option value=\"$dID\">".$name." (".getTreeValueCompleteName("glpi_dropdown_locations",$location).")</option>";
 		$i++;
 	}
 	echo  "</select>";
@@ -2414,7 +2411,7 @@ switch($item_type)
 		
 		while( $ligne = $db->fetch_array($result))
 					{
-					$lieu=getTreeValueName("glpi_dropdown_locations",$ligne["location"]);
+					$lieu=getTreeValueCompleteName("glpi_dropdown_locations",$ligne["location"]);
 					//echo $ligne['location'];
 					//print_r($ligne);
 					$prise=$ligne['prise'];
@@ -2779,32 +2776,6 @@ function rembo($string){
 * @param $categoryname
 * @return nothing 
 */
-function showTreeListSelect($table,$current, $parentID=0, $categoryname="")
-{
-
-	$query = "select * from $table where (parentID = $parentID) order by name ";
-
-	$db=new DB;
-	
-	if ($result=$db->query($query)){
-		if ($db->numrows($result)>0){
-	
-		while ($row=$db->fetch_array($result)){
-		
-			$ID = $row["ID"];
-			$name = $categoryname . $row["name"];
-			echo "<option value='$ID'";
-			if($current == $ID)	echo " selected";
-			echo ">$name</option>\n";
-			
-			$name = $name . "\\";
-			showTreeListSelect($table,$current, $ID, $name);
-		}
-	}	}
-
-
-}
-
 
 /**
 * To be commented
@@ -2828,6 +2799,27 @@ return $name;
 }
 
 /**
+* To be commented
+*
+* @param $table
+* @param $ID
+* @return nothing 
+*/
+function getTreeValueCompleteName($table,$ID)
+{
+	$query = "select * from $table where (ID = $ID)";
+	$db=new DB;
+	$name="";
+	if ($result=$db->query($query)){
+		if ($db->numrows($result)==1){
+			$name=$db->result($result,0,"completename");
+		}
+		
+	}
+return $name;
+}
+
+/**
 * show name catégory
 *
 * @param $table
@@ -2835,6 +2827,7 @@ return $name;
 * @param $wholename
 * @return string name
 */
+// DO NOT DELETE THIS FUNCTION : USED IN THE UPDATE
 function getTreeValueName($table,$ID, $wholename="")
 {
 	// show name catégory
@@ -2874,7 +2867,9 @@ return (@$name);
 */
 function getRealSearchForTreeItem($table,$search){
 
-if (empty($search)) return " ( $table.name LIKE '%$search%' ) ";
+return " ( $table.completename LIKE '%$search%' ) ";
+
+/*if (empty($search)) return " ( $table.name LIKE '%$search%' ) ";
 
 $db=new DB();
 
@@ -2912,6 +2907,7 @@ while (count($found)>0){
 			}
 		}		
 	}
+
 }
 
 // Construct the final request
@@ -2923,7 +2919,9 @@ if (count($id_found)>0){
 	
 	return $ret;
 }else return " ( $table.name LIKE '%$search%') ";
+*/
 }
+
 
 
 /**
@@ -3015,6 +3013,46 @@ while (1)
 
 return -1;
 
+}
+
+/**
+* To be commented
+*
+* @param $table
+* @return nothing
+*/
+function regenerateTreeCompleteName($table){
+	$db=new DB;
+	$query="SELECT ID from $table";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		while ($data=$db->fetch_array($result)){
+		$query="UPDATE $table SET completename='".addslashes(unhtmlentities(getTreeValueName("$table",$data['ID'])))."' WHERE ID='".$data['ID']."'";
+		$db->query($query);
+		}
+	}
+	
+}
+
+/**
+* To be commented
+*
+* @param $table
+* @param $ID
+* @return nothing
+*/
+function regenerateTreeCompleteNameUnderID($table,$ID){
+	$db=new DB;
+	$query="UPDATE $table SET completename='".addslashes(unhtmlentities(getTreeValueName("$table",$ID)))."' WHERE ID='".$ID."'";
+	$db->query($query);
+	$query="SELECT ID FROM $table WHERE parentID='$ID'";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		while ($data=$db->fetch_array($result)){
+			regenerateTreeCompleteNameUnderID($table,$data["ID"]);
+		}
+	}
+	
 }
 
 

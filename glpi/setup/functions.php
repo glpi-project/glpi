@@ -253,7 +253,7 @@ function moveTreeUnder($table,$to_move,$where){
 			// Move Location
 			$query = "UPDATE $table SET parentID='$where' where ID='$to_move'";
 			$result = $db->query($query);
-
+			regenerateTreeCompleteNameUnderID($table,$to_move);
 		}	
 	
 	}	
@@ -270,6 +270,8 @@ function updateDropdown($input) {
 		$query = "update ".$input["tablename"]." SET name = '".$input["value"]."' where ID = '".$input["ID"]."'";
 	}
 	if ($result=$db->query($query)) {
+		if ($input["tablename"]=="glpi_dropdown_locations"||$input["tablename"]=="glpi_dropdown_kbcategories")
+			regenerateTreeCompleteNameUnderID($input["tablename"],$input["ID"]);
 		return true;
 	} else {
 		return false;
@@ -305,6 +307,8 @@ function addDropdown($input) {
 	}
 
 	if ($result=$db->query($query)) {
+		if ($input["tablename"] == "glpi_dropdown_locations" || $input["tablename"] == "glpi_dropdown_kbcategories")
+			regenerateTreeCompleteNameUnderID($input["tablename"],$db->insert_id());		
 		return true;
 	} else {
 		return false;
