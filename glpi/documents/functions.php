@@ -523,7 +523,7 @@ function showDeviceDocument($instID,$search='') {
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
     $db = new DB;
-	$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' order by device_type, FK_device";
+	$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by device_type, FK_device";
 //echo $query;	
 	$result = $db->query($query);
 	$number = $db->numrows($result);
@@ -566,10 +566,10 @@ function showDeviceDocument($instID,$search='') {
 	
 }
 
-function addDeviceDocument($conID,$type,$ID){
+function addDeviceDocument($conID,$type,$ID,$template=0){
 
 $db = new DB;
-$query="INSERT INTO glpi_doc_device (FK_doc,FK_device, device_type ) VALUES ('$conID','$ID','$type');";
+$query="INSERT INTO glpi_doc_device (FK_doc,FK_device, device_type ,is_template) VALUES ('$conID','$ID','$type','$template');";
 $result = $db->query($query);
 }
 
@@ -657,6 +657,9 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		
 		echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
 	}
+	if (!empty($withtemplate))
+	echo "<input type='hidden' name='is_template' value='1'>";
+
 	echo "</table></div>"    ;
 	echo "</form>";
 	
