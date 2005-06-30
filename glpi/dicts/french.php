@@ -738,6 +738,13 @@ $lang["setup"][169]="Boîte Mail (optionnel)";
 $lang["setup"][170]="Chaîne de connexion obtenue";
 $lang["setup"][171]="Port (optionnel)";
 $lang["setup"][172]="LDAP Port (default=389)";
+$lang["setup"][173]=" Si vous ne souhaitez pas utiliser CAS comme source de connexion laissez les champs vides";
+$lang["setup"][174]="Hote CAS";
+$lang["setup"][175]="Port";
+$lang["setup"][176]="R&eacute;pertoire de base (optionnel)";
+$lang["setup"][177]="CAS configuration";
+$lang["setup"][178]="L'extension CURL ou DOMXML de votre parser PHP n'est pas install&eacute;";
+$lang["setup"][179]="Impossible d'utiliser CAS comme source de connexion externe";
 
 $lang["setup"][200]="Suivis par emails";
 $lang["setup"][201]="Configuration de la fonction";

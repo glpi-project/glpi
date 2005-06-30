@@ -2396,6 +2396,13 @@ $query= "ALTER TABLE `glpi_config` ADD `ldap_port` VARCHAR( 10 ) DEFAULT '389' N
 $db->query($query) or die("0.6 add ldap_port in config ".$lang["update"][90].$db->error());	
 }
 
+// CAS configuration
+if(!FieldExists("glpi_config","cas_host")) {
+$query= "ALTER TABLE `glpi_config` ADD `cas_host` VARCHAR( 255 ) NOT NULL ,
+ADD `cas_port` VARCHAR( 255 ) NOT NULL ,
+ADD `cas_uri` VARCHAR( 255 ) NOT NULL ;";
+$db->query($query) or die("0.6 add cas config in config ".$lang["update"][90].$db->error());	
+}
 
 
 // Update version number and default langage ---- LEAVE AT THE END
