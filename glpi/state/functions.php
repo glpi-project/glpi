@@ -181,9 +181,13 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 			echo $lang["state"][5]."</a></th>";
 
 			
+			// Type			
+			echo "<th>";
+			echo $lang["state"][9]."</th>";
+
 			// Location			
 			echo "<th>";
-			echo $lang["computers"][10]."</th>";
+			echo $lang["state"][8]."</th>";
 			
 			// State			
 			echo "<th>";
@@ -209,6 +213,7 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 				
 				echo "<td>". $ri->getType()."</td>";
 				echo "<td><b>". $ri->getLink() ."</b></td>";
+				echo "<td>". $ri->getItemType() ."</td>";
 				echo "<td>". getDropdownName("glpi_dropdown_locations",$ri->obj->fields["location"]) ."</td>";
 				echo "<td><b>". getDropdownName("glpi_dropdown_state",$ri->fields["state"]) ."</b></td>";
 				echo "<td>";
