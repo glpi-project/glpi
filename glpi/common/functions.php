@@ -1799,6 +1799,8 @@ function showConnectSearch($target,$ID,$type="computer") {
 	echo " <select name=type>";
 	echo "<option value=name>".$lang["connect"][6]."</option>";
 	echo "<option value=id>".$lang["connect"][7]."</option>";
+	echo "<option value=serial>".$lang["connect"][23]."</option>";
+	echo "<option value=otherserial>".$lang["connect"][24]."</option>";
 	echo "</select> ";
 	echo $lang["connect"][8]." <input type='text' size=10 name=search>";
 	echo "<input type='hidden' name='pID1' value=$ID>";
@@ -1835,11 +1837,10 @@ function listConnectComputers($target,$input) {
 	echo "<td align='center'>";
 
 	$db = new DB;
-	if ($input["type"] == "name") {
-		$query = "SELECT glpi_computers.ID as ID,glpi_computers.name as name, glpi_dropdown_locations.ID as location  from glpi_computers left join glpi_dropdown_locations on glpi_computers.location = glpi_dropdown_locations.id WHERE glpi_computers.deleted = 'N' AND glpi_computers.is_template ='0' AND glpi_computers.name LIKE '%".$input["search"]."%' order by name ASC";
-	} else {
-		$query = "SELECT glpi_computers.ID as ID,glpi_computers.name as name, glpi_dropdown_locations.ID as location from glpi_computers left join glpi_dropdown_locations on glpi_computers.location = glpi_dropdown_locations.id WHERE glpi_computers.deleted = 'N' AND glpi_computers.is_template ='0' AND glpi_computers.ID LIKE '%".$input["search"]."%' order by name ASC";
-	} 
+	
+		
+	$query = "SELECT glpi_computers.ID as ID,glpi_computers.name as name, glpi_dropdown_locations.ID as location from glpi_computers left join glpi_dropdown_locations on glpi_computers.location = glpi_dropdown_locations.id WHERE glpi_computers.deleted = 'N' AND glpi_computers.is_template ='0' AND glpi_computers.".$input["type"]." LIKE '%".$input["search"]."%' order by name ASC";
+	
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 	echo "<select name=\"cID\">";
@@ -1900,7 +1901,7 @@ function listConnectElement($target,$input) {
 	case "peripheral":
 	echo 	$lang["connect"][11];break;
 	}
-
+	
 	
 	echo ":</th></tr>";
 	echo "<form method='post' action=\"$target\"><tr><td>";
@@ -1909,11 +1910,8 @@ function listConnectElement($target,$input) {
 	echo "<td align='center'>";
 
 	$db = new DB;
-	if ($input["type"] == "name") {
-		$query = "SELECT $table.ID as ID,$table.name as name, glpi_dropdown_locations.ID as location from $table left join glpi_dropdown_locations on $table.location = glpi_dropdown_locations.id left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = $device_id) WHERE $table.deleted='N' AND $table.is_template='0' AND $table.name LIKE '%".$input["search"]."%' AND glpi_connect_wire.ID IS NULL order by name ASC";
-	} else {
-		$query = "SELECT $table.ID as ID,$table.name as name, glpi_dropdown_locations.ID as location from $table left join glpi_dropdown_locations on $table.location = glpi_dropdown_locations.id left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = $device_id) WHERE $table.deleted='N' AND $table.is_template='0' AND $table.ID LIKE '%".$input["search"]."%' AND glpi_connect_wire.ID IS NULL order by name ASC";
-	} 
+	
+	$query = "SELECT $table.ID as ID,$table.name as name, glpi_dropdown_locations.ID as location from $table left join glpi_dropdown_locations on $table.location = glpi_dropdown_locations.id left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = $device_id) WHERE $table.deleted='N' AND $table.is_template='0' AND $table.".$input["type"]." LIKE '%".$input["search"]."%' AND glpi_connect_wire.ID IS NULL order by name ASC";
 	
 	
 	//echo $query;

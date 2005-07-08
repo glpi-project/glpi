@@ -148,6 +148,8 @@ $lang["connect"][19]	= "Mise &agrave; jour automatique de l'adresse IP qui n'&ea
 $lang["connect"][20]	= "Attention !! Les adresses IP des deux mat&eacute;riels ne correspondent pas.";
 $lang["connect"][21]	= "Mise &agrave; jour automatique de l'adresse MAC qui n'&eacute;tait pas renseign&eacute;e";
 $lang["connect"][22]	= "Attention !! Les adresses MAC des deux mat&eacute;riels ne correspondent pas.";
+$lang["connect"][23]	= "Num&eacute;ro de s&eacute;rie";
+$lang["connect"][24]	= "Num&eacute;ro d'inventaire";
 
 //header menu
 
