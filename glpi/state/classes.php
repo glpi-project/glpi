@@ -104,6 +104,30 @@ class StateItem{
 			}
 	
 	}
+	
+	function getItemType (){
+		global $lang;
+		
+		switch ($this->fields["device_type"]){
+			case COMPUTER_TYPE :
+				return getDropdownName("glpi_type_computers",$this->obj->fields["type"]);
+				break;
+			case NETWORKING_TYPE :
+				return getDropdownName("glpi_type_networking",$this->obj->fields["type"]);
+				break;
+			case PRINTER_TYPE :
+				return getDropdownName("glpi_type_printers",$this->obj->fields["type"]);
+				break;
+			case MONITOR_TYPE : 
+				return getDropdownName("glpi_type_monitors",$this->obj->fields["type"]);
+				break;
+			case PERIPHERAL_TYPE : 
+				return getDropdownName("glpi_type_peripherals",$this->obj->fields["type"]);
+				break;				
+			}
+	
+	}
+	
 	function getName(){
 		if (isset($this->obj->fields["name"])&&$this->obj->fields["name"]!="")
 	return $this->obj->fields["name"];

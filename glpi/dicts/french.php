@@ -1370,6 +1370,8 @@ $lang["state"][4]	= "ID";
 $lang["state"][5]	= "Nom";
 $lang["state"][6]	= "Type de mat&eacute;riel";
 $lang["state"][7]	= "Pas de mat&eacute;riel trouv&eacute;";
+$lang["state"][8]	= "Lieu";
+$lang["state"][9]	= "Type";
 
 
 ?>
