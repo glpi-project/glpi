@@ -63,24 +63,24 @@ else {$defaulttimeout=1;$defaultrowlimit=2;}
 <script language="JavaScript" type="text/javascript">
 <!--
 function dump(what3){
-   if (confirm("<?php echo $lang["backup"][15];?> " + what3 +  "?")) {
+   if (confirm("<?php echo unhtmlentities($lang["backup"][15]);?> " + what3 +  "?")) {
          window.location = "index.php?dump=" + what3;
    }
 }
 function restore(what) {
-   if (confirm("<?php echo $lang["backup"][16];?> " + what +  "?")) {
+   if (confirm("<?php echo unhtmlentities($lang["backup"][16]);?> " + what +  "?")) {
          window.location = "index.php?file=" + what;
    }
 }
 
 function erase(what2){
-   if (confirm("<?php echo $lang["backup"][17];?> " + what2 +  "?")) {
+   if (confirm("<?php echo unhtmlentities($lang["backup"][17]);?> " + what2 +  "?")) {
          window.location = "index.php?delfile=" + what2;
    }
 }
 
 function xmlnow(what4){
-   if (confirm("<?php echo $lang["backup"][18] ;?> " + what4 +  "?")) {
+   if (confirm("<?php echo unhtmlentities($lang["backup"][18]) ;?> " + what4 +  "?")) {
          window.location = "index.php?xmlnow=" + what4;
    }
 }
