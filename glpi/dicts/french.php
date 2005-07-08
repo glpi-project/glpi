@@ -600,6 +600,8 @@ $lang["reports"][56]     = "Logiciels sous contrat";
 $lang["reports"][57]     = "Liste des mat&eacute;riels";
 $lang["reports"][58]     = "Rapport des mat&eacute;riels par ann&eacute;es";
 $lang["reports"][59]     = "Voir les suivis";
+$lang["reports"][60]     = "Date d'ouverture";
+$lang["reports"][61]     = "Date de cloture";
 
 // LDAP
 $lang["ldap"][0]	= "recherche";
