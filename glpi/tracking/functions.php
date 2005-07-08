@@ -1341,11 +1341,18 @@ function searchFormTrackingReport() {
 
 	echo "</td></tr>";
 	
-	echo "<tr class='tab_bg_1'><td align='center' colspan='2'>".$lang["search"][8].":&nbsp;";
+	echo "<tr class='tab_bg_1'><td>".$lang["reports"][60].":</td><td align='center' colspan='2'>".$lang["search"][8].":&nbsp;";
 showCalendarForm("form","date1",$_GET["date1"]);
-echo "</td><td align='center' colspan='3'>";
+echo "</td><td align='center' colspan='2'>";
 echo $lang["search"][9].":&nbsp;";
 showCalendarForm("form","date2",$_GET["date2"]);
+echo "</td><td align='center'>&nbsp;</td></tr>";
+
+echo "<tr class='tab_bg_1'><td>".$lang["reports"][61].":</td><td align='center' colspan='2'>".$lang["search"][8].":&nbsp;";
+showCalendarForm("form","enddate1",$_GET["enddate1"]);
+echo "</td><td align='center' colspan='2'>";
+echo $lang["search"][9].":&nbsp;";
+showCalendarForm("form","enddate2",$_GET["enddate2"]);
 echo "</td><td align='center'><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'></td></tr>";
 echo "</table></div></form>";
 
@@ -1353,7 +1360,7 @@ echo "</table></div></form>";
 }
 
 
-function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$start,$date1,$date2,$computers_search,$field2,$phrasetype2,$contains2,$author,$assign,$category,$status,$showfollowups) {
+function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$start,$date1,$date2,$computers_search,$field2,$phrasetype2,$contains2,$author,$assign,$category,$status,$showfollowups,$enddate1,$enddate2) {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -1443,6 +1450,8 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 	if ($computers_search) $query .= "AND $wherecomp";
 	if ($date1!="") $query.=" AND glpi_tracking.date >= '$date1'";
 	if ($date2!="") $query.=" AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	if ($enddate1!="") $query.=" AND glpi_tracking.closedate >= '$enddate1'";
+	if ($enddate2!="") $query.=" AND glpi_tracking.closedate <= adddate( '". $enddate2 ."' , INTERVAL 1 DAY ) ";
 	
 	if ($contains2!=""){
 		switch ($field2){
