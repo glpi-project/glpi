@@ -113,6 +113,9 @@ else if (isset($tab["delete"]))
 }
 else if (isset($tab["select"]))
 {
+	if ($tab["sID"]==-1)
+		glpi_header($_SERVER['HTTP_REFERER']." ");
+	
 	checkAuthentication("admin");
 	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 	showLicenseSelect($_SERVER['HTTP_REFERER']."&withtemplate=".$tab["withtemplate"],$_SERVER["PHP_SELF"],$tab["cID"],$tab["sID"],$tab["withtemplate"]);

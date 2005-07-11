@@ -608,6 +608,7 @@ function dropdownSoftware($withtemplate='') {
 
 	$i = 0;
 	echo "<select name=sID size=1>";
+	echo "<option value='-1'>------</option>";
 	while ($i < $number) {
 		$version = $db->result($result, $i, "version");
 		$name = $db->result($result, $i, "name");
