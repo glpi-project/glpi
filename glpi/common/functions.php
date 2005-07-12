@@ -1062,6 +1062,7 @@ function dropdown($table,$myname) {
 		else $query = "SELECT * FROM $table $where ORDER BY name";
 		$result = $db->query($query);
 		echo "<select name=\"$myname\" size='1'>";
+		echo "<option value=\"-1\">-----</option>";
 		$i = 0;
 		$number = $db->numrows($result);
 		if ($number > 0) {
@@ -1132,7 +1133,7 @@ function dropdownValue($table,$myname,$value) {
 	$result = $db->query($query);
 	
 	echo "<select name=\"$myname\" size='1'>";
-	echo "<option value=\"0\">-----</option>";
+	echo "<option value=\"-1\">-----</option>";
 	$i = 0;
 	$number = $db->numrows($result);
 	if ($number > 0) {
@@ -1560,7 +1561,7 @@ function dropdownAllItems($name,$withenterprise=0,$search='',$value='') {
 	if ($withenterprise==1) $items[ENTERPRISE_TYPE]="glpi_enterprises";
 	
 	echo "<select name=\"$name\" size='1'>";
-
+	echo "<option value='-1'>-----</option>";
 	$ci=new CommonItem;
 
 	foreach ($items as $type => $table){

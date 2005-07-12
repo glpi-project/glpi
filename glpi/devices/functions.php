@@ -247,11 +247,13 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			echo "<td align='center'>";
 			echo "<img src='".$HTMLRel."pics/actualiser.png' class='calendrier' alt='".$lang["buttons"][7]."' title='".$lang["buttons"][7]."'
 			onclick='form_update_device_$compDevID.submit()'>";
-			echo "</td>";
 			echo "<input type=\"hidden\" name=\"update_device\" value=\"".$compDevID."\" >";
 			echo "</form>";
+			echo "</td>";
+
+			echo "<td>";
 			echo "<form name='form_unlink_device_$compDevID' action=\"\" method=\"post\" >";
-			echo "<td><img class='calendrier' src='".$HTMLRel."pics/delete2.png'  onclick='form_unlink_device_$compDevID.submit()' title ='".$lang["devices"][11]."' alt='".$lang["devices"][11]."'</td>";
+			echo "<img class='calendrier' src='".$HTMLRel."pics/delete2.png'  onclick='form_unlink_device_$compDevID.submit()' title ='".$lang["devices"][11]."' alt='".$lang["devices"][11]."'</td>";
 			echo "<input type=\"hidden\" name=\"unlink_device\" value=\"".$compDevID."\" >";
 			echo "</form>";
 		}
@@ -315,6 +317,7 @@ function device_selecter($target,$cID,$withtemplate='') {
 		echo "<select name=\"new_device_type\">";
 		
 		
+		echo "<option value=\"-1\">-----</option>";
 		echo "<option value=\"".MOBOARD_DEVICE."\">".getDictDeviceLabel(MOBOARD_DEVICE)."</option>";
 		echo "<option value=\"".HDD_DEVICE."\">".getDictDeviceLabel(HDD_DEVICE)."</option>";
 		echo "<option value=\"".GFX_DEVICE."\">".getDictDeviceLabel(GFX_DEVICE)."</option>";

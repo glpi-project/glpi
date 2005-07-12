@@ -688,9 +688,11 @@ function showDeviceContract($instID,$search='') {
 **/
 function addDeviceContract($conID,$type,$ID,$template=0){
 
-$db = new DB;
-$query="INSERT INTO glpi_contract_device (FK_contract,FK_device, device_type, is_template ) VALUES ('$conID','$ID','$type','$template');";
-$result = $db->query($query);
+if ($ID>0&&$conID>0){
+	$db = new DB;
+	$query="INSERT INTO glpi_contract_device (FK_contract,FK_device, device_type, is_template ) VALUES ('$conID','$ID','$type','$template');";
+	$result = $db->query($query);
+}
 }
 
 /**
@@ -781,10 +783,11 @@ function showEnterpriseContract($instID) {
 *
 **/
 function addEnterpriseContract($conID,$ID){
-
-$db = new DB;
-$query="INSERT INTO glpi_contract_enterprise (FK_contract,FK_enterprise ) VALUES ('$conID','$ID');";
-$result = $db->query($query);
+if ($conID>0&&$ID>0){
+	$db = new DB;
+	$query="INSERT INTO glpi_contract_enterprise (FK_contract,FK_enterprise ) VALUES ('$conID','$ID');";
+	$result = $db->query($query);
+}
 }
 
 /**
@@ -1024,6 +1027,7 @@ function dropdownContracts($name){
 	$query="SELECT * from glpi_contracts WHERE deleted = 'N' order by begin_date DESC";
 	$result=$db->query($query);
 	echo "<select name='$name'>";
+	echo "<option value='-1'>-----</option>";
 	while ($data=$db->fetch_array($result)){
 	if ($data["device_countmax"]==0||$data["device_countmax"]>countDeviceForContract($data['ID'])){
 		echo "<option value='".$data["ID"]."'>";
