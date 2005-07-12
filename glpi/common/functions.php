@@ -3032,7 +3032,6 @@ function regenerateTreeCompleteName($table){
 		$db->query($query);
 		}
 	}
-	exit();
 }
 
 /**
