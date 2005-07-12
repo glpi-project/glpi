@@ -1027,7 +1027,7 @@ function showEvents($target,$order,$sort) {
 **/
 function dropdown($table,$myname) {
 	
-	global $deleted_tables,$template_tables;	
+	global $deleted_tables,$template_tables,$dropdowntree_tables;	
 	
 	// Make a select box
 	$db = new DB;
@@ -1057,12 +1057,12 @@ function dropdown($table,$myname) {
 			$where.="AND deleted='N'";
 		if (in_array($table,$template_tables))
 			$where.="AND is_template='0'";			
-		if($table == "glpi_dropdown_locations" || $table == "glpi_dropdown_kbcategories")
+		if (in_array($table,$dropdowntree_tables))
 			$query = "SELECT ID, completename as name FROM $table $where ORDER BY completename";
 		else $query = "SELECT * FROM $table $where ORDER BY name";
 		$result = $db->query($query);
 		echo "<select name=\"$myname\" size='1'>";
-		echo "<option value=\"-1\">-----</option>";
+		echo "<option value=\"0\">-----</option>";
 		$i = 0;
 		$number = $db->numrows($result);
 		if ($number > 0) {
@@ -1092,7 +1092,7 @@ function dropdown($table,$myname) {
 */
 function dropdownValue($table,$myname,$value) {
 	
-	global $deleted_tables,$template_tables;
+	global $deleted_tables,$template_tables,$dropdowntree_tables;
 	
 	// Make a select box with preselected values
 	$db = new DB;
@@ -1126,14 +1126,14 @@ function dropdownValue($table,$myname,$value) {
 		$where.="AND is_template='0'";
 		
 
-	if($table == "glpi_dropdown_locations" || $table == "glpi_dropdown_kbcategories")
+	if (in_array($table,$dropdowntree_tables))
 		$query = "SELECT ID, completename as name FROM $table $where ORDER BY completename";
 	else $query = "SELECT ID, name FROM $table $where ORDER BY name";
 	
 	$result = $db->query($query);
 	
 	echo "<select name=\"$myname\" size='1'>";
-	echo "<option value=\"-1\">-----</option>";
+	echo "<option value=\"0\">-----</option>";
 	$i = 0;
 	$number = $db->numrows($result);
 	if ($number > 0) {
@@ -1172,15 +1172,17 @@ function dropdownValue($table,$myname,$value) {
 function dropdownNoValue($table,$myname,$value) {
 	// Make a select box without parameters value
 
-	global $deleted_tables;
+	global $deleted_tables,$template_tables,$dropdowntree_tables;
 
 	$db = new DB;
 
 	$where="";
 	if (in_array($table,$deleted_tables))
 		$where="WHERE deleted='N'";
-
-	if($table == "glpi_dropdown_locations" || $table == "glpi_dropdown_kbcategories")
+	if (in_array($table,$template_tables))
+		$where.="AND is_template='0'";
+		
+	if (in_array($table,$dropdowntree_tables))
 		$query = "SELECT ID FROM $table $where ORDER BY completename";
 	else $query = "SELECT ID FROM $table $where ORDER BY name";
 	$result = $db->query($query);
@@ -1437,13 +1439,13 @@ function dropdownUsersID($value, $myname) {
 * @return string the value of the dropdown or "" (\0) if not exists
 */
 function getDropdownName($table,$id) {
-	global $cfg_install;
+	global $cfg_install,$dropdowntree_tables;
 	$db = new DB;
 	$name = "";
 	$query = "select * from ". $table ." where ID = '". $id ."'";
 	if ($result = $db->query($query))
 	if($db->numrows($result) != 0) {
-		if ($table=="glpi_dropdown_locations"||$table=="glpi_dropdown_kbcategories"){
+		if (in_array($table,$dropdowntree_tables)){
 		$name=getTreeValueCompleteName($table,$id);
 	
 		} else {
@@ -1452,8 +1454,7 @@ function getDropdownName($table,$id) {
 			$name .= " (".getDropdownName("glpi_dropdown_locations",$db->result($result,0,"location")).")";
 		}
 		if ($table=="glpi_enterprises"){
-			$name.=getEnterpriseLinks($id);
-			
+			$name.=getEnterpriseLinks($id);	
 		}
 	}
 	return $name;
@@ -1561,7 +1562,7 @@ function dropdownAllItems($name,$withenterprise=0,$search='',$value='') {
 	if ($withenterprise==1) $items[ENTERPRISE_TYPE]="glpi_enterprises";
 	
 	echo "<select name=\"$name\" size='1'>";
-	echo "<option value='-1'>-----</option>";
+	echo "<option value='0'>-----</option>";
 	$ci=new CommonItem;
 
 	foreach ($items as $type => $table){
@@ -3027,10 +3028,11 @@ function regenerateTreeCompleteName($table){
 	if ($db->numrows($result)>0){
 		while ($data=$db->fetch_array($result)){
 		$query="UPDATE $table SET completename='".addslashes(unhtmlentities(getTreeValueName("$table",$data['ID'])))."' WHERE ID='".$data['ID']."'";
+		echo $query."<br>";
 		$db->query($query);
 		}
 	}
-	
+	exit();
 }
 
 /**

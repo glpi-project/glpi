@@ -260,6 +260,8 @@ function moveTreeUnder($table,$to_move,$where){
 }
 
 function updateDropdown($input) {
+	global $dropdowntree_tables;
+	
 	$db = new DB;
 	
 	if($input["tablename"] == "glpi_dropdown_netpoint") {
@@ -269,8 +271,9 @@ function updateDropdown($input) {
 	else {
 		$query = "update ".$input["tablename"]." SET name = '".$input["value"]."' where ID = '".$input["ID"]."'";
 	}
+	
 	if ($result=$db->query($query)) {
-		if ($input["tablename"]=="glpi_dropdown_locations"||$input["tablename"]=="glpi_dropdown_kbcategories")
+		if (in_array($input["tablename"],$dropdowntree_tables))
 			regenerateTreeCompleteNameUnderID($input["tablename"],$input["ID"]);
 		return true;
 	} else {
@@ -280,13 +283,15 @@ function updateDropdown($input) {
 
 
 function addDropdown($input) {
+	global $dropdowntree_tables;
+	
 	if (!empty($input["value"])){
 	$db = new DB;
 
 	if($input["tablename"] == "glpi_dropdown_netpoint") {
 		$query = "INSERT INTO ".$input["tablename"]." (name,location) VALUES ('".$input["value"]."', '".$input["value2"]."')";
 	}
-	else if ($input["tablename"] == "glpi_dropdown_locations" || $input["tablename"] == "glpi_dropdown_kbcategories"){
+	else if (in_array($input["tablename"],$dropdowntree_tables)){
 		if ($input['type']=="first"){
 		    $query = "INSERT INTO ".$input["tablename"]." (name,parentID) VALUES ('".$input["value"]."', '0')";		
 		} else {
@@ -305,9 +310,9 @@ function addDropdown($input) {
 	else {
 		$query = "INSERT INTO ".$input["tablename"]." (name) VALUES ('".$input["value"]."')";
 	}
-
 	if ($result=$db->query($query)) {
-		if ($input["tablename"] == "glpi_dropdown_locations" || $input["tablename"] == "glpi_dropdown_kbcategories")
+
+		if (in_array($input["tablename"],$dropdowntree_tables))
 			regenerateTreeCompleteNameUnderID($input["tablename"],$db->insert_id());		
 		return true;
 	} else {
