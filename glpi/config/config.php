@@ -136,6 +136,8 @@ $deleted_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_m
 
 $template_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software");
 
+$dropdowntree_tables=array("glpi_dropdown_locations","glpi_dropdown_kbcategories");
+
 //root document
 //document root
 $cfg_install["root"] = $db->result($result,0,"root_doc");
