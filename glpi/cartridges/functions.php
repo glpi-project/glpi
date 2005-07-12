@@ -838,9 +838,11 @@ function showCompatiblePrinters($instID) {
 **/
 function addCompatibleType($tID,$type){
 
-$db = new DB;
-$query="INSERT INTO glpi_cartridges_assoc (FK_glpi_cartridges_type,FK_glpi_type_printer ) VALUES ('$tID','$type');";
-$result = $db->query($query);
+if ($tID>0&&$type>0){
+	$db = new DB;
+	$query="INSERT INTO glpi_cartridges_assoc (FK_glpi_cartridges_type,FK_glpi_type_printer ) VALUES ('$tID','$type');";
+	$result = $db->query($query);
+}
 }
 
 /**

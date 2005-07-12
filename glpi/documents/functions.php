@@ -568,9 +568,11 @@ function showDeviceDocument($instID,$search='') {
 
 function addDeviceDocument($conID,$type,$ID,$template=0){
 
-$db = new DB;
-$query="INSERT INTO glpi_doc_device (FK_doc,FK_device, device_type ,is_template) VALUES ('$conID','$ID','$type','$template');";
-$result = $db->query($query);
+if ($conID>0&&$ID>0){
+	$db = new DB;
+	$query="INSERT INTO glpi_doc_device (FK_doc,FK_device, device_type ,is_template) VALUES ('$conID','$ID','$type','$template');";
+	$result = $db->query($query);
+}
 }
 
 function deleteDeviceDocument($ID){
@@ -587,6 +589,7 @@ function dropdownDocuments($name){
 	$query="SELECT * from glpi_docs WHERE deleted = 'N' order by name";
 	$result=$db->query($query);
 	echo "<select name='$name'>";
+	echo "<option value='-1'>-----</option>";
 	while ($data=$db->fetch_array($result)){
 		
 	echo "<option value='".$data["ID"]."'>";

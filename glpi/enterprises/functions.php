@@ -521,10 +521,11 @@ function showAssociatedContact($instID) {
 }
 
 function addContactEnterprise($eID,$cID){
-
-$db = new DB;
-$query="INSERT INTO glpi_contact_enterprise (FK_enterprise,FK_contact ) VALUES ('$eID','$cID');";
-$result = $db->query($query);
+if ($eID>0&&$cID>0){
+	$db = new DB;
+	$query="INSERT INTO glpi_contact_enterprise (FK_enterprise,FK_contact ) VALUES ('$eID','$cID');";
+	$result = $db->query($query);
+}
 }
 
 function deleteContactEnterprise($ID){

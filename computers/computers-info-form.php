@@ -136,6 +136,7 @@ elseif(isset($_POST["update_device"])) {
 //add a new device
 elseif (isset($_POST["connect_device"])) {
 	if(isset($_POST["new_device_type"])){
+		if ($_POST["new_device_type"]==-1) glpi_header($_SERVER['HTTP_REFERER']." ");
 		checkAuthentication("admin");
 		commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
 		compdevice_form_add($_SERVER["HTTP_REFERER"],$_POST["new_device_type"],$_POST["cID"],$tab["withtemplate"]);
