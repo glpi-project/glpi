@@ -65,6 +65,7 @@ class DBmysql {
 				}
 			}
 		}
+
 		$res=mysql_query($query);
 
 		if ($cfg_debug["active"]) {
@@ -82,22 +83,26 @@ class DBmysql {
 	}
 	function result($result, $i, $field) {
 		$value=get_magic_quotes_runtime()?stripslashes_deep(mysql_result($result, $i, $field)):mysql_result($result, $i, $field);
-		return htmlentities_deep($value);
+		return $value;
+//		return htmlentities_deep($value);
 	}
 	function numrows($result) {
 		return mysql_num_rows($result);
 	}
 	function fetch_array($result) {
 		$value=get_magic_quotes_runtime()?stripslashes_deep(mysql_fetch_array($result)):mysql_fetch_array($result);
-		return htmlentities_deep($value);
+		return $value;
+//		return htmlentities_deep($value);
 	}
 	function fetch_row($result) {
 		$value=get_magic_quotes_runtime()?stripslashes_deep(mysql_fetch_row($result)):mysql_fetch_row($result);
-		return htmlentities_deep($value);	
+		return $value;
+//		return htmlentities_deep($value);	
 	}
 	function fetch_assoc($result) {
 		$value=get_magic_quotes_runtime()?stripslashes_deep(mysql_fetch_assoc($result)):mysql_fetch_assoc($result);
-		return htmlentities_deep($value);
+		return $value;
+//		return htmlentities_deep($value);
 	}
 	function insert_id() {
  		return mysql_insert_id();

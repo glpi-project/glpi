@@ -497,7 +497,7 @@ class MIMEMailMessage extends MIMEMailContent
     
     
     function MIMEMailMessage($fnameordata, $mode) {
-        $this->charset = 'iso-8859-1';
+        $this->charset = 'utf8';
         if($this->MIMEMailContent($fnameordata, $mode) === FALSE) { return FALSE; }
         return $this;
     }
