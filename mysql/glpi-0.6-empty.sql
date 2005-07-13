@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-06-30 22:09
+#GLPI Dump database on 2005-07-13 23:59
 
 ### Dump table glpi_cartridges
 
@@ -161,10 +161,11 @@ CREATE TABLE glpi_config (
     cas_host varchar(255) NOT NULL,
     cas_port varchar(255) NOT NULL,
     cas_uri varchar(255) NOT NULL,
+    utf8_conv int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.6','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','');
+INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.6','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','0');
 
 ### Dump table glpi_connect_wire
 
@@ -223,6 +224,7 @@ CREATE TABLE glpi_contract_device (
     FK_contract int(11) DEFAULT '0' NOT NULL,
     FK_device int(11) DEFAULT '0' NOT NULL,
     device_type tinyint(4) DEFAULT '0' NOT NULL,
+    is_template enum('0','1') DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
    UNIQUE FK_contract (FK_contract, FK_device, device_type),
    KEY FK_contract_2 (FK_contract),
@@ -270,6 +272,7 @@ CREATE TABLE glpi_contracts (
     monday_begin_hour time DEFAULT '00:00:00' NOT NULL,
     monday_end_hour time DEFAULT '00:00:00' NOT NULL,
     monday enum('Y','N') DEFAULT 'N' NOT NULL,
+    device_countmax int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
    KEY contract_type (contract_type),
    KEY begin_date (begin_date),
@@ -472,10 +475,12 @@ CREATE TABLE glpi_doc_device (
     FK_doc int(11) DEFAULT '0' NOT NULL,
     FK_device int(11) DEFAULT '0' NOT NULL,
     device_type tinyint(4) DEFAULT '0' NOT NULL,
+    is_template enum('0','1') DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
    UNIQUE FK_doc (FK_doc, FK_device, device_type),
    KEY FK_doc_2 (FK_doc),
-   KEY FK_device (FK_device, device_type)
+   KEY FK_device (FK_device, device_type),
+   KEY is_template (is_template)
 ) TYPE=MyISAM;
 
 
@@ -668,8 +673,6 @@ CREATE TABLE glpi_event_log (
    KEY date (date),
    KEY itemtype (itemtype)
 ) TYPE=MyISAM;
-
-INSERT INTO glpi_event_log VALUES ('1','-1','system','2005-06-30 22:09:33','login','3','glpi logged in from 127.0.0.1.');
 
 ### Dump table glpi_followups
 
