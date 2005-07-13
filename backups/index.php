@@ -460,8 +460,9 @@ if (isset($_GET["dump"]) && $_GET["dump"] != ""){
 	$cur_time=date("Y-m-d H:i");
 	$filename=$path."$time_file.$filetype";
 
+	
 if (!isset($_GET["duree"])&&is_file($filename)){
-echo "<center>Le fichier existe déjà</center>";
+echo "<center>".$lang["backup"][21]."</center>";
 } else {
 init_time(); //initialise le temps
 //début de fichier

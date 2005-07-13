@@ -205,6 +205,7 @@ $lang["backup"][17]     ="Etes-vous certain de vouloir supprimer ce fichier";
 $lang["backup"][18]     ="Etes-vous certain de vouloir sauvegarder la base de donn&eacute;es";
 $lang["backup"][19]     ="Maintenant";
 $lang["backup"][20]     ="Supp";
+$lang["backup"][21]     ="Le fichier existe déjà";
 
 // Tracking
 $lang["tracking"][0]	= "Suivi des interventions";
