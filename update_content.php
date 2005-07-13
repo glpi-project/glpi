@@ -40,7 +40,25 @@ include ($phproot . "/glpi/config/config_db.php");
 
 if(!session_id()){@session_start();}
 
+
+
 //################################ Functions ################################
+
+function FieldExists($table, $field) {
+	$db = new DB;
+	$result = $db->query("SELECT * FROM ". $table ."");
+	$fields = $db->num_fields($result);
+	$var1 = false;
+	for ($i=0; $i < $fields; $i++) {
+		$name  = $db->field_name($result, $i);
+		if(strcmp($name,$field)==0) {
+			$var1 = true;
+		}
+	}
+	return $var1;
+}
+
+
 function loadLang() {
 			unset($lang);
 			global $lang;
@@ -104,7 +122,7 @@ function test_content_ok(){
 
 
 
-function get_update_content($db, $table,$from,$limit)
+function get_update_content($db, $table,$from,$limit,$conv_utf8)
 {
      $content="";
      $result = $db->query("SELECT * FROM $table LIMIT $from,$limit");
@@ -118,8 +136,12 @@ function get_update_content($db, $table,$from,$limit)
          	$insert = "UPDATE $table SET ";
          	foreach ($row as $key => $val) {
 	         	$insert.=" ".$key."=";
+	         	
             	if(!isset($val)) $insert .= "NULL,";
-            	else if($val != "") $insert .= "'".addslashes($val)."',";
+            	else if($val != "") {
+            		if ($conv_utf8) $val=utf8_encode($val);
+            		$insert .= "'".addslashes($val)."',";
+            		}
             	else $insert .= "'',";
          	}
          	$insert = ereg_replace(",$","",$insert);
@@ -132,7 +154,7 @@ function get_update_content($db, $table,$from,$limit)
 }
 
 
-function UpdateContent($db, $duree,$rowlimit)
+function UpdateContent($db, $duree,$rowlimit,$conv_utf8)
 {
 // $dumpFile, fichier source
 // $database, nom de la base de données cible
@@ -171,7 +193,7 @@ if ($offsetrow==-1){
 
 	$fin=0;
 	while (!$fin){
-	$todump=get_update_content($db,$tables[$offsettable],$offsetrow,$rowlimit);
+	$todump=get_update_content($db,$tables[$offsettable],$offsetrow,$rowlimit,$conv_utf8);
 //	echo $todump."<br>";
 	$rowtodump=substr_count($todump, "UPDATE ");
 	if ($rowtodump>0){
@@ -208,7 +230,7 @@ loadLang();
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">";
         echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">";
         echo "<head>";
-        echo " <meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\" />";
+        echo " <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf8\" />";
         echo "<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\" /> ";
         echo "<meta http-equiv=\"Content-Style-Type\" content=\"text/css\" /> ";
         echo "<meta http-equiv=\"Content-Language\" content=\"fr\" /> ";
@@ -352,9 +374,14 @@ if ($percent >= 0) {
 	echo "<div align='center'><table class='tab_cadre' width='400'><tr><td width='400' align='center'> Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>";
 
 }
+$conv_utf8=false;
+if(!FieldExists("glpi_config","utf8_conv")) {
+$conv_utf8=true;
+}
+
 flush();
 if ($offsettable>=0){
-	if (UpdateContent($db,$duree,$rowlimit))
+	if (UpdateContent($db,$duree,$rowlimit,$conv_utf8))
 	{
     echo "<br>Redirection automatique sinon cliquez <a href=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\">ici</a>";
     echo "<script>window.location=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\";</script>";
@@ -365,6 +392,12 @@ if ($offsettable>=0){
 else  { 
 //echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt</p></div>";
 	echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
+}
+
+if ($conv_utf8){
+$db=new DB;
+$query = "ALTER TABLE `glpi_config` ADD `utf8_conv` INT( 11 ) DEFAULT '0' NOT NULL";
+$db->query($query) or die(" 0.6 add utf8_conv to glpi_config".$lang["update"][90].$db->error());
 }
 
 //}

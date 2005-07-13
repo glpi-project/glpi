@@ -238,10 +238,13 @@ function addslashes_deep($value) {
 *
 */
 function htmlentities_deep($value){
+return $value;
+/*
        $value = is_array($value) ?
                    array_map('htmlentities_deep', $value) :
                    (is_null($value) ? NULL : htmlentities($value,ENT_QUOTES));
        return $value;
+*/       
 }
 
 /**
@@ -254,12 +257,14 @@ function htmlentities_deep($value){
 *
 */
 function unhtmlentities ($string) {
-	$trans_tbl = get_html_translation_table (HTML_ENTITIES,ENT_QUOTES);
+return $string;
+/*	$trans_tbl = get_html_translation_table (HTML_ENTITIES,ENT_QUOTES);
 	if( $trans_tbl["'"] != '&#039;' ) { # some versions of PHP match single quotes to &#39;
 		$trans_tbl["'"] = '&#039;';
 	}
 	$trans_tbl = array_flip ($trans_tbl);
 	return strtr ($string, $trans_tbl);
+*/	
 }
 
 /**
@@ -272,11 +277,22 @@ function unhtmlentities ($string) {
 *
 */
 function unhtmlentities_deep($value) {
-	$value = is_array($value) ?
+return $value;
+/*	$value = is_array($value) ?
 		array_map('unhtmlentities_deep', $value) :
 			(is_null($value) ? NULL : unhtmlentities($value,ENT_QUOTES));
 	return $value;
+*/	
 }
+
+function utf8_decode_deep($value) {
+	$value = is_array($value) ?
+		array_map('utf8_decode_deep', $value) :
+			(is_null($value) ? NULL : utf8_decode($value));
+	return $value;
+	
+}
+
 
 /**
 * Verify if the current user has some rights
@@ -450,7 +466,7 @@ $config = array($lang["Menu"][14]=>array("/setup/setup-users.php","u"),
 	// Start the page
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
 	echo "<html><head><title>GLPI - ".$title."</title>";
-        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1 \" >";
+        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf8 \" >";
 	// Send extra expires header if configured
 	if ($cfg_features["sendexpire"]) {
 		echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
@@ -621,7 +637,7 @@ function helpHeader($title,$url,$name) {
 	// Start the page
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
         echo "<html><head><title>GLPI Helpdesk - ".$title."</title>";
-        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1 \" >";
+        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf8 \" >";
 	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' />";
 	// Send extra expires header if configured
 	if ($cfg_features["sendexpire"]) {
@@ -731,7 +747,7 @@ function nullHeader($title,$url) {
 	// Start the page
        	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
         echo "<html><head><title>GLPI - ".$title."</title>";
-        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1 \" >";
+        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf8 \" >";
 	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' />";
 	// Send extra expires header if configured
 	if (!empty($cft_features["sendexpire"])) {
@@ -3028,7 +3044,6 @@ function regenerateTreeCompleteName($table){
 	if ($db->numrows($result)>0){
 		while ($data=$db->fetch_array($result)){
 		$query="UPDATE $table SET completename='".addslashes(unhtmlentities(getTreeValueName("$table",$data['ID'])))."' WHERE ID='".$data['ID']."'";
-		echo $query."<br>";
 		$db->query($query);
 		}
 	}
