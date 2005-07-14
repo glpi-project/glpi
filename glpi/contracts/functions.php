@@ -328,7 +328,7 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 				$ct->getfromDB($ID);
 
 				echo "<tr class='tab_bg_2' align='center'>";
-				echo "<td>".getContractTypeName($ct->fields["contract_type"])."</td>";
+				echo "<td>".getDropdownName("glpi_dropdown_contract_type",$ct->fields["contract_type"])."</td>";
 				echo "<td><b>";
 				echo "<a href=\"".$cfg_install["root"]."/contracts/contracts-info-form.php?ID=$ID\">";
 				echo $ct->fields["name"]." (".$ct->fields["ID"].")";
@@ -390,7 +390,7 @@ function showContractForm ($target,$ID,$search) {
 	echo "</b></th></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][6].":		</td><td >";
-	dropdownContractType("contract_type",$con->fields["contract_type"]);
+	dropdownValue("glpi_dropdown_contract_type","contract_type",$con->fields["contract_type"]);
 	echo "</td>";
 
 	echo "<td>".$lang["financial"][27].":		</td>";
@@ -892,74 +892,6 @@ function getContractPeriodicity($value){
 	}	
 }
 
-/**
-* Print a select with contract type
-*
-* Print a select named $name with contract type options and selected value $value
-*
-*@param $name string : HTML select name
-*@param $value=0 integer : HTML select selected value
-*
-*@return Nothing (display)
-*
-**/
-function dropdownContractType($name,$value=0){
-	global $lang;
-	
-	echo "<select name='$name'>";
-	echo "<option value='0' ".($value==0?" selected ":"").">-------------</option>";
-	echo "<option value='1' ".($value==1?" selected ":"").">".$lang["financial"][50]."</option>";
-	echo "<option value='2' ".($value==2?" selected ":"").">".$lang["financial"][51]."</option>";
-	echo "<option value='3' ".($value==3?" selected ":"").">".$lang["financial"][52]."</option>";
-	echo "<option value='4' ".($value==4?" selected ":"").">".$lang["financial"][53]."</option>";
-	echo "<option value='5' ".($value==5?" selected ":"").">".$lang["financial"][54]."</option>";
-	echo "<option value='6' ".($value==6?" selected ":"").">".$lang["financial"][55]."</option>";
-	echo "<option value='7' ".($value==7?" selected ":"").">".$lang["financial"][56]."</option>";
-	echo "</select>";	
-}
-
-/**	
-* Get from dicts the Contract type name string
-*
-* Get the contract type name identified bye $value from dicts.
-*
-*@param $value integer : contract type name value.
-*
-*
-*@return string : dict entry
-*
-**/
-function getContractTypeName($value){
-	global $lang;
-	
-	switch ($value){
-	case 7 :
-		return $lang["financial"][56];
-		break;
-	case 6 :
-		return $lang["financial"][55];
-		break;
-	case 5 :
-		return $lang["financial"][54];
-		break;
-	case 4 :
-		return $lang["financial"][53];
-		break;
-	case 3 :
-		return $lang["financial"][52];
-		break;
-	case 2 :
-		return $lang["financial"][51];
-		break;
-	case 1 :
-		return $lang["financial"][50];
-		break;
-	case 0 :
-		return "";
-		break;
-	
-	}	
-}
 
 /**
 * Print a select with hours
@@ -1085,7 +1017,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
 	echo "<td align='center'><a href='".$HTMLRel."contracts/contracts-info-form.php?ID=$cID'><b>".$con->fields["name"]." (".$con->fields["ID"].")</b></a></td>";
 	echo "<td align='center'>".$con->fields["num"]."</td>";
-	echo "<td align='center'>".getContractTypeName($con->fields["contract_type"])."</td>";
+	echo "<td align='center'>".getDropdownName("glpi_dropdown_contract_type",$con->fields["contract_type"])."</td>";
 	echo "<td align='center'>".getContractEnterprises($cID)."</td>";	
 	echo "<td align='center'>".$con->fields["begin_date"]."</td>";
 	echo "<td align='center'>".$con->fields["duration"]." ".$lang["financial"][57];
@@ -1160,7 +1092,7 @@ function showContractAssociatedEnterprise($ID){
 	echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
 	echo "<td align='center'><a href='".$HTMLRel."contracts/contracts-info-form.php?ID=$cID'><b>".$con->fields["name"]." (".$con->fields["ID"].")</b></a></td>";
 	echo "<td align='center'>".$con->fields["num"]."</td>";
-	echo "<td align='center'>".getContractTypeName($con->fields["contract_type"])."</td>";
+	echo "<td align='center'>".getDropdownName("glpi_dropdown_contract_type",$con->fields["contract_type"])."</td>";
 	echo "<td align='center'>".getContractEnterprises($cID)."</td>";	
 	echo "<td align='center'>".$con->fields["begin_date"]."</td>";
 	echo "<td align='center'>".$con->fields["duration"]." ".$lang["financial"][57];

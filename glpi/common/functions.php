@@ -2197,7 +2197,7 @@ switch($item_type)
 						$lieu = $ligne['location'];
 						$achat_date = $ligne['buy_date'];
 						$fin_garantie = getWarrantyExpir($ligne["buy_date"],$ligne["warranty_duration"]);
-						$contract_type = getContractTypeName($ligne["contract_type"]);
+						$contract_type = getDropdownName("glpi_dropdown_contract_type",$ligne["contract_type"]);
 						$contract_begin = $ligne['begin_date'];
 						$contract_end = getWarrantyExpir($ligne["begin_date"],$ligne["duration"]);
 		
@@ -2240,7 +2240,7 @@ switch($item_type)
 						$lieu = $ligne['location'];
 						$achat_date = $ligne['buy_date'];
 						$fin_garantie = getWarrantyExpir($ligne["buy_date"],$ligne["warranty_duration"]);
-						$contract_type = getContractTypeName($ligne["contract_type"]);
+						$contract_type = getDropdownName("glpi_dropdown_contract_type",$ligne["contract_type"]);
 						$contract_begin = $ligne['begin_date'];
 						$contract_end = getWarrantyExpir($ligne["begin_date"],$ligne["duration"]);
 					
@@ -2281,7 +2281,7 @@ switch($item_type)
 						$lieu = $ligne['location'];
 						$achat_date = $ligne['buy_date'];
 						$fin_garantie = getWarrantyExpir($ligne["buy_date"],$ligne["warranty_duration"]);
-						$contract_type = getContractTypeName($ligne["contract_type"]);
+						$contract_type = getDropdownName("glpi_dropdown_contract_type",$ligne["contract_type"]);
 						$contract_begin = $ligne['begin_date'];
 						$contract_end = getWarrantyExpir($ligne["begin_date"],$ligne["duration"]);
 					//inserer ces valeures dans un tableau
@@ -2322,7 +2322,7 @@ switch($item_type)
 						$lieu = $ligne['location'];
 						$achat_date = $ligne['buy_date'];
 						$fin_garantie = getWarrantyExpir($ligne["buy_date"],$ligne["warranty_duration"]);
-						$contract_type = getContractTypeName($ligne["contract_type"]);
+						$contract_type = getDropdownName("glpi_dropdown_contract_type",$ligne["contract_type"]);
 						$contract_begin = $ligne['begin_date'];
 						$contract_end = getWarrantyExpir($ligne["begin_date"],$ligne["duration"]);
 					//inserer ces valeures dans un tableau
@@ -2362,7 +2362,7 @@ switch($item_type)
 						$lieu = $ligne['location'];
 						$achat_date = $ligne['buy_date'];
 						$fin_garantie = getWarrantyExpir($ligne["buy_date"],$ligne["warranty_duration"]);
-						$contract_type = getContractTypeName($ligne["contract_type"]);
+						$contract_type = getDropdownName("glpi_dropdown_contract_type",$ligne["contract_type"]);
 						$contract_begin = $ligne['begin_date'];
 						$contract_end = getWarrantyExpir($ligne["begin_date"],$ligne["duration"]);
 					//inserer ces valeures dans un tableau
@@ -2402,7 +2402,7 @@ switch($item_type)
 						$lieu = $ligne['location'];
 						$achat_date = $ligne['buy_date'];
 						$fin_garantie = getWarrantyExpir($ligne["buy_date"],$ligne["warranty_duration"]);
-						$contract_type = getContractTypeName($ligne["contract_type"]);
+						$contract_type = getDropdownName("glpi_dropdown_contract_type",$ligne["contract_type"]);
 						$contract_begin = $ligne['begin_date'];
 						$contract_end = getWarrantyExpir($ligne["begin_date"],$ligne["duration"]);
 					//inserer ces valeures dans un tableau
@@ -2876,7 +2876,7 @@ function getTreeValueName($table,$ID, $wholename="")
 			$name = $row["name"];
 		} else
 		{
-			$name = $row["name"] . "\\";
+			$name = $row["name"] . ">";
 		}
 		$name = getTreeValueName($table,$parentID, $name) . $name;
 	}
