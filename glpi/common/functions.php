@@ -459,6 +459,10 @@ $config = array($lang["Menu"][14]=>array("/setup/setup-users.php","u"),
 		$lang["Menu"][10]=>array("/setup/index.php","2"),
 		$lang["Menu"][11]=>array("/preferences/index.php","p"),
 		$lang["Menu"][12]=>array("/backups/index.php","b"));
+
+	// Send UTF8 Headers
+	header("Content-Type: text/html; charset=UTF-8");
+
 	// Send extra expires header if configured
 	if ($cfg_features["sendexpire"]) {
 		header("Expires: Fri, Jun 12 1981 08:20:00 GMT\nPragma: no-cache");
@@ -634,12 +638,16 @@ function helpHeader($title,$url,$name) {
 		header("Expires: Fri, Jun 12 1981 08:20:00 GMT\nPragma: no-cache");
 	}
 
+	// Send UTF8 Headers
+	header("Content-Type: text/html; charset=UTF-8");
+
 	// Start the page
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
         echo "<html><head><title>GLPI Helpdesk - ".$title."</title>";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf8 \" >";
 	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' />";
 	// Send extra expires header if configured
+
 	if ($cfg_features["sendexpire"]) {
 	        echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
 		echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
@@ -738,6 +746,9 @@ function nullHeader($title,$url) {
 	// Print a nice HTML-head with no controls
 
 	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel,$phproot ;
+
+	// Send UTF8 Headers
+	header("Content-Type: text/html; charset=UTF-8");
 
 	// Send extra expires header if configured
 	if (!empty($cfg_features["sendexpire"])) {
