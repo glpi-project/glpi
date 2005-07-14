@@ -2438,6 +2438,34 @@ $db->query($query) or die("0.6 alter is_template in doc_device ".$lang["update"]
 // TODO SET TO 1 the template item
 }
 
+// Contract Type to dropdown
+if(!TableExists("glpi_dropdown_contract_type")) {
+
+$query = "CREATE TABLE glpi_dropdown_contract_type (
+  ID int(11) NOT NULL auto_increment,
+  name varchar(255) NOT NULL default '',
+  PRIMARY KEY  (ID)
+) TYPE=MyISAM;";
+
+$db->query($query) or die("0.6 add table dropdown_contract_type ".$lang["update"][90].$db->error());
+
+$query="INSERT INTO glpi_dropdown_contract_type (name) VALUES ('".$lang["financial"][50]."');";
+$db->query($query) or die("0.6 add entries to dropdown_contract_type ".$lang["update"][90].$db->error());
+$query="INSERT INTO glpi_dropdown_contract_type (name) VALUES ('".$lang["financial"][51]."');";
+$db->query($query) or die("0.6 add entries to dropdown_contract_type ".$lang["update"][90].$db->error());
+$query="INSERT INTO glpi_dropdown_contract_type (name) VALUES ('".$lang["financial"][52]."');";
+$db->query($query) or die("0.6 add entries to dropdown_contract_type ".$lang["update"][90].$db->error());
+$query="INSERT INTO glpi_dropdown_contract_type (name) VALUES ('".$lang["financial"][53]."');";
+$db->query($query) or die("0.6 add entries to dropdown_contract_type ".$lang["update"][90].$db->error());
+$query="INSERT INTO glpi_dropdown_contract_type (name) VALUES ('".$lang["financial"][54]."');";
+$db->query($query) or die("0.6 add entries to dropdown_contract_type ".$lang["update"][90].$db->error());
+$query="INSERT INTO glpi_dropdown_contract_type (name) VALUES ('".$lang["financial"][55]."');";
+$db->query($query) or die("0.6 add entries to dropdown_contract_type ".$lang["update"][90].$db->error());
+$query="INSERT INTO glpi_dropdown_contract_type (name) VALUES ('".$lang["financial"][56]."');";
+$db->query($query) or die("0.6 add entries to dropdown_contract_type ".$lang["update"][90].$db->error());
+
+}
+
 
 
 // Update version number and default langage ---- LEAVE AT THE END

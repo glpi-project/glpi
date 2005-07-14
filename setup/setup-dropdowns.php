@@ -117,6 +117,7 @@ if (isset($_POST["move"])) {
 	$dp["contact_type"]=$lang["setup"][82];
 	$dp["state"]=$lang["setup"][83];
 	$dp["cartridge_type"]=$lang["setup"][84];
+	$dp["contract_type"]=$lang["setup"][85];
 	
 //	asort($dp);
 	
@@ -185,7 +186,10 @@ echo "<option value='$key' $sel>".$val."</option>";
 		showFormDropDown($_SERVER["PHP_SELF"],"state",$lang["setup"][83],$ID,$value2);
 		break;
 		case "cartridge_type" : 
-		showFormDropDown($_SERVER["PHP_SELF"],"cartridge_type",$lang["setup"][83],$ID,$value2);
+		showFormDropDown($_SERVER["PHP_SELF"],"cartridge_type",$lang["setup"][84],$ID,$value2);
+		break;
+		case "contract_type" : 
+		showFormDropDown($_SERVER["PHP_SELF"],"contract_type",$lang["setup"][85],$ID,$value2);
 		break;
 	default : break;
 	}
