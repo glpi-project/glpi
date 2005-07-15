@@ -45,6 +45,7 @@ include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_enterprises.php");
+include ($phproot . "/glpi/includes_setup.php");
 
 
 checkAuthentication("normal");
@@ -53,7 +54,7 @@ commonHeader($lang["title"][0],$_SERVER["PHP_SELF"]);
 
 // Greet the user
 
-echo "<center><b>".$lang["central"][0].(empty($_SESSION["glpirealname"])?$_SESSION["glpiname"]:$_SESSION["glpirealname"]).", ".$lang["central"][1]."</b></center>";
+echo "<center><b>".$lang["central"][0]." ".(empty($_SESSION["glpirealname"])?$_SESSION["glpiname"]:$_SESSION["glpirealname"]).", ".$lang["central"][1]."</b></center>";
 //echo "<hr noshade>";
 
 // Show last events
@@ -68,7 +69,7 @@ else
 if ($cfg_features["jobs_at_login"] == "1")
 {
 	if(empty($_GET["start"])) $_GET["start"] = 0;
-	showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],"individual","","","",$_GET["start"]);
+	showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiID"],"individual","","","",$_GET["start"]);
 }
 
 commonFooter();

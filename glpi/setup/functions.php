@@ -690,7 +690,7 @@ function showPasswordForm($target,$ID) {
 }
 
 
-function showUserinfo($target,$name) {
+function showUserinfo($target,$ID) {
 	
 	// Affiche les infos User
 	
@@ -699,7 +699,7 @@ function showUserinfo($target,$name) {
 	$user = new User();
 	
 	
-	$user->getfromDB($name);
+	$user->getfromDBbyID($ID);
 		
 	
 	

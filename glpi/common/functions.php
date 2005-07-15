@@ -1363,14 +1363,15 @@ function dropdownUsers($value, $myname) {
 	$i = 0;
 	
 	$number = $db->numrows($result);
-	echo "<option value=\"\">[ Nobody ]</option>";
+	echo "<option value=\"0\">[ Nobody ]</option>";
 	if ($number > 0) {
 		while ($i < $number) {
 			$output = unhtmlentities($db->result($result, $i, "name"));
-			if ($output == $value) {
-				echo "<option value=\"$output\" selected>".$output;
+			$ID = unhtmlentities($db->result($result, $i, "ID"));
+			if ($ID == $value) {
+				echo "<option value=\"$ID\" selected>".$output;
 			} else {
-				echo "<option value=\"$output\">".$output;
+				echo "<option value=\"$ID\">".$output;
 			}
 			$i++;
 			echo "</option>";
@@ -1379,6 +1380,68 @@ function dropdownUsers($value, $myname) {
 	echo "</select>";
 }
 
+
+/**
+* Make a select box with all glpi users where select key = name
+*
+* Think it's unused now.
+*
+*
+* @param $value
+* @param $myname
+* @return nothing (print out an HTML select box)
+*
+*
+*/
+function dropdownAssign($value, $value_type,$myname) {
+	// Make a select box with all glpi users
+
+	$db = new DB;
+	$query = "SELECT * FROM glpi_users WHERE (".searchUserbyType("normal").") ORDER BY name";
+	$result = $db->query($query);
+
+	$query2 = "SELECT * FROM glpi_enterprises ORDER BY name";
+	
+	$result2 = $db->query($query2);
+		
+	
+	echo "<select name=\"$myname\">";
+	$i = 0;
+	
+	$number = $db->numrows($result);
+	echo "<option value=\"15_0\">[ Nobody ]</option>";
+	if ($number > 0) {
+		while ($i < $number) {
+			$output = unhtmlentities($db->result($result, $i, "name"));
+			$ID = unhtmlentities($db->result($result, $i, "ID"));
+			if ($value_type==USER_TYPE&&$ID == $value) {
+				echo "<option value=\"".USER_TYPE."_$ID\" selected>".$output;
+			} else {
+				echo "<option value=\"".USER_TYPE."_$ID\">".$output;
+			}
+			$i++;
+			echo "</option>";
+   		}
+	}
+	echo "<option value=\"15_0\">-------</option>";
+	$i=0;
+	$number2 = $db->numrows($result2);
+	if ($number2 > 0) {
+		while ($i < $number2) {
+			$output = unhtmlentities($db->result($result2, $i, "name"));
+			$ID = unhtmlentities($db->result($result2, $i, "ID"));
+			if ($value_type==ENTERPRISE_TYPE&&$ID == $value) {
+				echo "<option value=\"".ENTERPRISE_TYPE."_$ID\" selected>".$output;
+			} else {
+				echo "<option value=\"".ENTERPRISE_TYPE."_$ID\">".$output;
+			}
+			$i++;
+			echo "</option>";
+   		}
+	}
+	
+	echo "</select>";
+}
 /**
 * Make a select box with all glpi users where select key = name
 *
@@ -1402,14 +1465,15 @@ function dropdownAllUsersSearch($value, $myname,$search) {
 	$i = 0;
 	
 	$number = $db->numrows($result);
-	echo "<option value=\"\">[ Nobody ]</option>";
+	echo "<option value=\"0\">[ Nobody ]</option>";
 	if ($number > 0) {
 		while ($i < $number) {
 			$output = unhtmlentities($db->result($result, $i, "name"));
-			if ($output == $value) {
-				echo "<option value=\"$output\" selected>".$output;
+			$ID = unhtmlentities($db->result($result, $i, "ID"));
+			if ($ID == $value) {
+				echo "<option value=\"$ID\" selected>".$output;
 			} else {
-				echo "<option value=\"$output\">".$output;
+				echo "<option value=\"$ID\">".$output;
 			}
 			$i++;
 			echo "</option>";
@@ -1430,7 +1494,8 @@ function dropdownAllUsersSearch($value, $myname,$search) {
 function dropdownUsersID($value, $myname) {
 	// Make a select box with all glpi users
 
-	$db = new DB;
+	dropdownUsers($value, $myname);
+/*	$db = new DB;
 	$query = "SELECT * FROM glpi_users WHERE (".searchUserbyType("normal").") ORDER BY name";
 	$result = $db->query($query);
 
@@ -1453,6 +1518,7 @@ function dropdownUsersID($value, $myname) {
    		}
 	}
 	echo "</select>";
+*/	
 }
 
 /**
@@ -2051,7 +2117,6 @@ function printHelpDesk ($name,$from_helpdesk) {
 	echo "<option value='".MONITOR_TYPE."' ".(($device_type==MONITOR_TYPE)?" selected":"").">".$lang["help"][28]."";
 	echo "<option value='".PERIPHERAL_TYPE."' ".(($device_type==PERIPHERAL_TYPE)?" selected":"").">".$lang["help"][29]."";
 	echo "<option value='".SOFTWARE_TYPE."' ".(($device_type==SOFTWARE_TYPE)?" selected":"").">".$lang["help"][31]."";
-	echo "<option value='".ENTERPRISE_TYPE."' ".(($device_type==ENTERPRISE_TYPE)?" selected":"").">".$lang["help"][34]."";	
 	echo "</select>";
 	echo "</td></tr>";
 
@@ -3262,6 +3327,19 @@ function getMultiSearchItemForLink($name,$array){
 	}
 	return $out;
 	
+}
+
+function getUserName($ID,$link=0){
+	global $cfg_install;
+	$user=new User();
+	$user->getFromDBbyID($ID);
+	$before="";
+	$after="";
+	if ($link){
+		$before="<a href=\"".$cfg_install["root"]."/setup/users-info.php?ID=".$ID."\">";
+		$after="</a>";
+	}
+	return $before.$user->getName().$after;
 }
 
 ?>

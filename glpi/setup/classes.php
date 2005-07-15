@@ -79,6 +79,12 @@ class User {
 		}
 		return false;
 	}
+	
+	function getName(){
+	if (strlen($this->fields["realname"])>0) return $this->fields["realname"];
+	else return $this->fields["name"];
+	
+	}
 
 	function getFromDBbyID($ID) {
 		$db = new DB;

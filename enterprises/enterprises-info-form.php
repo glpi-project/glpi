@@ -37,10 +37,22 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_financial.php");
 include ($phproot . "/glpi/includes_documents.php");
 include ($phproot . "/glpi/includes_tracking.php");
+include ($phproot . "/glpi/includes_setup.php");
+include ($phproot . "/glpi/includes_computers.php");
+include ($phproot . "/glpi/includes_printers.php");
+include ($phproot . "/glpi/includes_monitors.php");
+include ($phproot . "/glpi/includes_peripherals.php");
+include ($phproot . "/glpi/includes_networking.php");
+include ($phproot . "/glpi/includes_software.php");
+
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
+
+if (isset($_GET["start"])) $start=$_GET["start"];
+else $start=0;
+
 
 if (isset($_POST["add"]))
 {
@@ -113,8 +125,7 @@ else
 				showAssociatedContact($tab["ID"]);
 				showContractAssociatedEnterprise($tab["ID"]);
 				showDocumentAssociated(ENTERPRISE_TYPE,$tab["ID"]);
-				showJobListForItem($_SESSION["glpiname"],ENTERPRISE_TYPE,$tab["ID"]);
-				showOldJobListForItem($_SESSION["glpiname"],ENTERPRISE_TYPE,$tab["ID"]);	
+				showJobList($_SERVER["PHP_SELF"],$_GET["ID"],"enterprise","","","",$start);
 				break;
 			case 1 :
 				showAssociatedContact($tab["ID"]);
@@ -126,8 +137,7 @@ else
 				showDocumentAssociated(ENTERPRISE_TYPE,$tab["ID"],0);
 				break;
 			case 6 :
-				showJobListForItem($_SESSION["glpiname"],ENTERPRISE_TYPE,$tab["ID"]);
-				showOldJobListForItem($_SESSION["glpiname"],ENTERPRISE_TYPE,$tab["ID"]);	
+				showJobList($_SERVER["PHP_SELF"],$_GET["ID"],"enterprise","","","",$start);	
 
 				break;
 			default : 

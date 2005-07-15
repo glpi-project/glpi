@@ -52,7 +52,10 @@ checkAuthentication("post-only");
 if (can_assign_job($_SESSION["glpiname"]))
 if (isset($_GET["update"]))
 {
-	assignJob ($_GET["ID"],$_GET["user"],$_SESSION["glpiname"]);	
+
+	list($type,$ID)=explodeAllItemsSelectResult($_GET["user"]);
+
+	assignJob ($_GET["ID"],$type,$ID,$_SESSION["glpiname"]);	
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else

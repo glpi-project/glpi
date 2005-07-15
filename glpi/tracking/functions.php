@@ -238,6 +238,10 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 	{
 		$query = "SELECT glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.author = '".$username."') ORDER BY glpi_tracking.date ".$prefs["order"]."";
 	}
+	else if ($show == "enterprise")
+	{
+		$query = "SELECT glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.assign = '".$username."' AND glpi_tracking.assign_type='".ENTERPRISE_TYPE."') ORDER BY glpi_tracking.date ".$prefs["order"]."";
+	}
 	else if ($show == "unassigned")
 	{
 		$query = "SELECT glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.assign ='' OR glpi_tracking.assign is null) ORDER BY glpi_tracking.date ".$prefs["order"]."";
@@ -491,7 +495,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and 
 }
 
 
-function showJobShort($ID, $followups	) {
+function showJobShort($ID, $followups) {
 	// Prints a job in short form
 	// Should be called in a <table>-segment
 	// Print links or not in case of user view
@@ -532,13 +536,13 @@ function showJobShort($ID, $followups	) {
 		echo "<td align='center'  >";
 
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
-		echo "<a href=\"".$cfg_install["root"]."/setup/users-info.php?ID=$job->author\"><strong>$job->author</strong></a>";
+		echo "<strong>".$job->getAuthorName(1)."</strong>";
 		else
-		echo "<strong>$job->author</strong>";
+		echo "<strong>".$job->getAuthorName()."</strong>";
 
 		echo "</td>";
 
-		if ($job->assign == "")
+		if ($job->assign == 0)
 		{
 			echo "<td align='center' >[Nobody]</td>"; 
 	    	}
@@ -546,9 +550,9 @@ function showJobShort($ID, $followups	) {
 		{
 			echo "<td align='center' >";
 			if (strcmp($_SESSION["glpitype"],"post-only")!=0)
-			echo "<a href=\"".$cfg_install["root"]."/setup/users-info.php?ID=$job->assign\"><strong>$job->assign</strong></a>";
+			echo $job->getAssignName(1);
 			else
-			echo "<strong>$job->assign</strong>";
+			echo "<strong>".$job->getAssignName()."</strong>";
 
 //			$job->assign
 			
@@ -783,7 +787,7 @@ function showJobDetails($ID) {
 	}
 }
 
-function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$contents,$assign="",$realtime=0) {
+function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$contents,$assign=0,$realtime=0,$assign_type=USER_TYPE) {
 	// Put Job in database
 
 	GLOBAL $cfg_install, $cfg_features, $cfg_layout;
@@ -807,6 +811,7 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	$job->uemail = $uemail;
 	$job->emailupdates = $emailupdates;
 	$job->assign = $assign;
+	$job->assign_type = $assign_type;
 	$job->realtime = $realtime;
 
 	// ajout suite  à tracking sur tous les items 
@@ -832,9 +837,6 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	break;
 	case SOFTWARE_TYPE :
 	$item = "software";
-	break;
-	case ENTERPRISE_TYPE :
-	$item = "enterprise";
 	break;
 	}
 	
@@ -880,7 +882,7 @@ function markJob ($ID,$status,$opt='') {
 
 }
 
-function assignJob ($ID,$user,$admin) {
+function assignJob ($ID,$type,$user,$admin) {
 	// Assign a job to someone
 
 	GLOBAL $cfg_features, $cfg_layout,$lang;	
@@ -889,13 +891,16 @@ function assignJob ($ID,$user,$admin) {
 
 	$newuser=$user;
 	$olduser=$job->assign;
+	$newuser_type=$type;
+	$olduser_type=$job->assign_type;
+	$oldname=$job->getAssignName();
 			
-	$job->assignTo($user);
-
+	$job->assignTo($user,$type);
+	$newname=$job->getAssignName();
 	// Add a Followup for a assignment change
-	if (strcmp($newuser,$olduser)!=0){
-	$content=$lang["mailing"][12].": ".$olduser." -> ".$newuser." (".$_SESSION["glpiname"].")";
-	postFollowups ($ID,$_SESSION["glpiname"],addslashes($content));
+	if ($newuser!=$olduser||$newuser_type!=$olduser_type){
+	$content=$lang["mailing"][12].": ".$oldname." -> ".$newname;
+	postFollowups ($ID,$_SESSION["glpiID"],addslashes($content));
 	}
 }
 
@@ -911,8 +916,8 @@ function categoryJob ($ID,$category,$admin) {
 	$newcat=$job->category;
 	// Add a Followup for a category change
 	if ($newcat!=$oldcat){
-	$content=$lang["mailing"][14].": ".getDropdownName("glpi_dropdown_tracking_category",$job->category)." (".$_SESSION["glpiname"].")";
-	postFollowups ($ID,$_SESSION["glpiname"],addslashes(unhtmlentities($content)));
+	$content=$lang["mailing"][14].": ".getDropdownName("glpi_dropdown_tracking_category",$job->category);
+	postFollowups ($ID,$_SESSION["glpiID"],addslashes(unhtmlentities($content)));
 	}
 	
 }
@@ -929,8 +934,8 @@ function priorityJob ($ID,$priority,$admin) {
 	$newprio=$job->priority;
 	// Add a Followup for a priority change
 	if ($newprio!=$oldprio){
-	$content=$lang["mailing"][14].": ".getPriorityName($job->priority)." (".$_SESSION["glpiname"].")";
-	postFollowups ($ID,$_SESSION["glpiname"],addslashes(unhtmlentities($content)));
+	$content=$lang["mailing"][14].": ".getPriorityName($job->priority);
+	postFollowups ($ID,$_SESSION["glpiID"],addslashes(unhtmlentities($content)));
 	}
 	
 }
@@ -954,7 +959,7 @@ function showFollowups($ID) {
 			$fup->getFromDB($ID,$i);
 			echo "<tr class='tab_bg_2'>";
 			echo "<td align='center'>$fup->date</td>";
-			echo "<td align='center'>$fup->author</td>";
+			echo "<td align='center'>".$fup->getAuthorName(1)."</td>";
 			echo "<td width=70%><strong>$fup->contents</strong></td>";
 			echo "</tr>";
 		}		
@@ -999,7 +1004,7 @@ function postFollowups ($ID,$author,$contents) {
 			$job= new Job;
 			$job->getfromDB($ID,0);
 			$user=new User;
-			$user->getfromDB($author);
+			$user->getfromDBbyID($author);
 			$mail = new Mailing("followup",$job,$user);
 			$mail->send();
 		}
@@ -1145,7 +1150,7 @@ function assignFormTracking ($ID,$admin,$target) {
 	echo "<table border='0'>";
 	echo "<tr>";
 	echo "<td>".$lang["job"][5].":</td><td>";
-		dropdownUsers($job->assign, "user");
+		dropdownAssign($job->assign,$job->assign_type, "user");
 	echo "<input type='hidden' name='update' value=\"1\">";
 	echo "<input type='hidden' name='ID' value='$job->ID'>";
 	echo "</td><td><input type='submit' value=\"".$lang["job"][6]."\" class='submit'></td>";
@@ -1586,6 +1591,28 @@ function getPriorityName($value){
 	}	
 }
 
-
+	function getAssignName($ID,$type,$link=0){
+	global $cfg_install;
+	$job=new Job;
+	$job->assign=$ID;
+	$job->assign_type=$type;
+	
+	if ($job->assign_type==USER_TYPE){
+		return getUserName($job->assign,$link);
+		
+	} else if ($job->assign_type==ENTERPRISE_TYPE){
+		$ent=new Enterprise();
+		$ent->getFromDB($job->assign);
+		$before="";
+		$after="";
+		if ($link){
+			$before="<a href=\"".$cfg_install["root"]."/enterprises/enterprises-info-form.php?ID=".$job->assign."\">";
+			$after="</a>";
+		}
+		
+		return $before.$ent->fields["name"].$after;
+	}
+	
+	}
 
 ?>

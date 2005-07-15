@@ -148,7 +148,7 @@ else
 		echo "<a href=\"javascript:history.back()\">".$lang["buttons"][13]."</a>";
 		echo "</div>";
 		
-	} else if (postJob($_POST["device_type"],$ID,$glpiname,$status,$_POST["priority"],$_POST["isgroup"],$_POST["uemail"],$_POST["emailupdates"],$_POST["contents"]))
+	} else if (postJob($_POST["device_type"],$ID,$_SESSION["glpiID"],$status,$_POST["priority"],$_POST["isgroup"],$_POST["uemail"],$_POST["emailupdates"],$_POST["contents"]))
 	{
 		if(isset($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 			nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);

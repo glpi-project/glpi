@@ -51,7 +51,7 @@ checkAuthentication("normal");
 
 if (isset($_POST["contents"])&&!empty($_POST["contents"])&&isAdmin($_SESSION["glpitype"]))
 {
-	postFollowups ($_POST["ID"],$_SESSION["glpiname"],$_POST["contents"]);
+	postFollowups ($_POST["ID"],$_SESSION["glpiID"],$_POST["contents"]);
 	glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=".$_POST["ID"]);
 }
 

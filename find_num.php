@@ -233,24 +233,6 @@ if(isset($_POST["send"]))
 		echo "</tr>";
 	}
 
-	$query = "select name,ID from glpi_enterprises where (name like '%".$_POST["NomContact"]."%' )";
-	$result = $db->query($query);
-	while($ligne = $db->fetch_array($result))
-	{
-		$Comp_num = $ligne['ID'];
-		$Computer = $ligne['name'];
-		echo " <tr class='tab_find' onClick=\"fillidfield(".ENTERPRISE_TYPE.",".$Comp_num.")\">";
-		echo "<td width='25%' align='center'>&nbsp;</td>";
-		echo "<td width='25%' align='center'><b>".$lang["help"][34]."</b></td>";
-		echo "<td width='25%' align='center'><b> $Computer </b></td>";
-		echo "<td  width='25%' align='center'>";
-		echo "<b> $Comp_num </b></td>";
-		echo "<td width='25%' align='center'>";
-		echo "&nbsp;";
-		echo "</td>";
-		echo "</tr>";
-	}
-
      echo "</table>";
 }
 ?>
