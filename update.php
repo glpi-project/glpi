@@ -51,6 +51,10 @@ define("ENTERPRISE_TYPE","8");
 define("INFOCOM_TYPE","9");
 define("CONTRACT_TYPE","10");
 define("CARTRIDGE_TYPE","11");
+define("TYPEDOC_TYPE","12");
+define("DOCUMENT_TYPE","13");
+define("KNOWBASE_TYPE","14");
+define("USER_TYPE","15");
 
 // DEVICE TYPE
 define("MOBOARD_DEVICE","1");
@@ -2466,7 +2470,98 @@ $db->query($query) or die("0.6 add entries to dropdown_contract_type ".$lang["up
 
 }
 
+//// Update author and assign from tracking / followups
+if(!FieldExists("glpi_tracking","assign_type")) {
 
+// Create assin_type field
+$query= "ALTER TABLE `glpi_tracking` ADD `assign_type` TINYINT DEFAULT '0' NOT NULL AFTER `assign` ;";
+$db->query($query) or die("0.6 add assign_type in tracking ".$lang["update"][90].$db->error());	
+
+$users=array();
+// Load All users
+$query="SELECT ID, name FROM glpi_users";
+$result=$db->query($query);
+while($line = $db->fetch_array($result)) {
+	$users[$line["name"]]=$line["ID"];
+}
+
+
+// Load tracking authors tables
+$authors=array();
+$query="SELECT ID, author FROM glpi_tracking";
+$result=$db->query($query);
+while($line = $db->fetch_array($result)) {
+	$authors[$line["ID"]]=$line["author"];
+}
+
+// Update authors tracking
+$query= "ALTER TABLE `glpi_tracking` CHANGE `author` `author` INT( 11 ) DEFAULT '0' NOT NULL";
+$db->query($query) or die("0.6 alter author in tracking ".$lang["update"][90].$db->error());	
+
+if (count($authors)>0)
+foreach ($authors as $ID => $val){
+	if (isset($users[$val])){
+		$query="UPDATE glpi_tracking SET author='".$users[$val]."' WHERE ID='$ID'";
+		$db->query($query);
+	}
+}
+
+$assign=array();
+// Load tracking assign tables
+$query="SELECT ID, assign FROM glpi_tracking";
+$result=$db->query($query);
+while($line = $db->fetch_array($result)) {
+	$assign[$line["ID"]]=$line["assign"];
+}
+
+
+// Update assign tracking
+$query= "ALTER TABLE `glpi_tracking` CHANGE `assign` `assign` INT( 11 ) DEFAULT '0' NOT NULL";
+$db->query($query) or die("0.6 alter assign in tracking ".$lang["update"][90].$db->error());	
+
+if (count($assign)>0)
+foreach ($assign as $ID => $val){
+	if (isset($users[$val])){
+		$query="UPDATE glpi_tracking SET assign='".$users[$val]."', assign_type='".USER_TYPE."' WHERE ID='$ID'";
+		$db->query($query);
+	}
+}
+unset($assign);
+
+$authors=array();
+// Load followup authors tables
+$query="SELECT ID, author FROM glpi_followups";
+$result=$db->query($query);
+while($line = $db->fetch_array($result)) {
+	$authors[$line["ID"]]=$line["author"];
+}
+
+// Update authors tracking
+$query= "ALTER TABLE `glpi_followups` CHANGE `author` `author` INT( 11 ) DEFAULT '0' NOT NULL";
+$db->query($query) or die("0.6 alter author in followups ".$lang["update"][90].$db->error());	
+
+if (count($authors)>0)
+foreach ($authors as $ID => $val){
+	if (isset($users[$val])){
+		$query="UPDATE glpi_followups SET author='".$users[$val]."' WHERE ID='$ID'";
+		$db->query($query);
+	}
+}
+unset($authors);
+
+// Update Enterprise Tracking
+$query="SELECT computer, ID FROM glpi_tracking WHERE device_type='".ENTERPRISE_TYPE."'";
+$result=$db->query($query);
+
+if ($db->numrows($result)>0)
+while($line = $db->fetch_array($result)) {
+	$query="UPDATE glpi_tracking SET assign='".$line["computer"]."', assign_type='".ENTERPRISE_TYPE."', device_type='0', computer='0' WHERE ID='".$line["ID"]."'";
+	$db->query($query);
+}
+
+
+
+}
 
 // Update version number and default langage ---- LEAVE AT THE END
 	$query = "UPDATE `glpi_config` SET `version` = ' 0.6', default_language='".$_SESSION["dict"]."' ;";

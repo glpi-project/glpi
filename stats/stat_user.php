@@ -35,6 +35,7 @@
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_tracking.php");
+include ($phproot . "/glpi/includes_setup.php");
 require ("functions.php");
 
 
@@ -75,10 +76,17 @@ echo "<table class='tab_cadre2' cellpadding='5' >";
 echo "<tr><th>".$lang["stats"][20]."</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
 //Pour chacun de ces auteurs on affiche
 //foreach these authors display
-   foreach($nomUsr as $key)
+foreach($nomUsr as $key){
+$name=getUserName($key["author"]);
+$val[$name]["author"]=$key["author"];
+}
+ksort($val);
+
+
+   foreach($val as $k=>$key)
    {
 	echo "<tr class='tab_bg_1'>";
-	echo "<td>".$key["author"]."</td>";
+	echo "<td>".getUserName($key["author"],1)."</td>";
 
 		echo "<td>".getNbinter(4,'glpi_tracking.author',unhtmlentities($key["author"]), $_POST["date1"], $_POST["date2"])."</td>";
 		echo "<td>".getNbresol(4,'glpi_tracking.author',unhtmlentities($key["author"]), $_POST["date1"], $_POST["date2"])."</td>";

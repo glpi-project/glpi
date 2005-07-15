@@ -49,7 +49,7 @@ function is_dropdown_stat($postfromselect) {
 function getNbIntervTech()
 {
 	$db = new DB;
-	$query = "SELECT distinct(glpi_tracking.assign) as assign FROM glpi_tracking where glpi_tracking.assign != '' order by assign";
+	$query = "SELECT distinct glpi_tracking.assign as assign, glpi_tracking.assign_type as assign_type FROM glpi_tracking where glpi_tracking.assign != 0 order by assign_type, assign";
 	$result = $db->query($query);
 	if($db->numrows($result) >=1) {
 		$i = 0;
@@ -614,10 +614,10 @@ if (empty($begin)) $begin=date("Y-m-d",mktime(0,0,0,date("m"),date("d"),date("Y"
 $begin.=" 00:00:00";
 
 	$query="";
+	$WHERE="WHERE assign_type<>'".ENTERPRISE_TYPE."' ";
 	switch($type)	{
 	
 		case "inter_total": 
-			$WHERE="WHERE '1' = '1'";
 			if (!empty($begin)) $WHERE.= " AND date >= '$begin' ";
 			 if (!empty($end)) $WHERE.= " AND date <= '$end' ";
 
@@ -626,7 +626,7 @@ $begin.=" 00:00:00";
 				" GROUP BY date_unix ORDER BY date";
 				break;
 		case "inter_solved": 
-			$WHERE="WHERE status = 'old' AND closedate <> '0000-00-00 00:00:00' ";
+			$WHERE.=" AND status = 'old' AND closedate <> '0000-00-00 00:00:00' ";
 			if (!empty($begin)) $WHERE.= " AND closedate >= '$begin' ";
 			 if (!empty($end)) $WHERE.= " AND closedate <= '$end' ";
 
@@ -635,7 +635,7 @@ $begin.=" 00:00:00";
 				" GROUP BY date_unix ORDER BY closedate";
 				break;
 	case "inter_avgsolvedtime" :
-			$WHERE="WHERE status = 'old' AND closedate <> '0000-00-00 00:00:00' ";
+			$WHERE.=" AND status = 'old' AND closedate <> '0000-00-00 00:00:00' ";
 			if (!empty($begin)) $WHERE.= " AND closedate >= '$begin' ";
 			 if (!empty($end)) $WHERE.= " AND closedate <= '$end' ";
 
@@ -644,7 +644,7 @@ $begin.=" 00:00:00";
 				" GROUP BY date_unix ORDER BY closedate";
 				break;
 	case "inter_avgrealtime" :
-			$WHERE="WHERE realtime > '0' ";
+			$WHERE.=" AND realtime > '0' ";
 			if (!empty($begin)) $WHERE.= " AND closedate >= '$begin' ";
 			 if (!empty($end)) $WHERE.= " AND closedate <= '$end' ";
 
@@ -653,7 +653,7 @@ $begin.=" 00:00:00";
 				" GROUP BY date_unix ORDER BY closedate";
 				break;
 	case "inter_avgtakeaccount" :
-			$WHERE="WHERE glpi_tracking.status = 'old' AND closedate <> '0000-00-00 00:00:00' ";
+			$WHERE.=" AND glpi_tracking.status = 'old' AND closedate <> '0000-00-00 00:00:00' ";
 			if (!empty($begin)) $WHERE.= " AND glpi_tracking.date >= '$begin' ";
 			 if (!empty($end)) $WHERE.= " AND glpi_tracking.date <= '$end' ";
 

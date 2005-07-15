@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-07-13 23:59
+#GLPI Dump database on 2005-07-15 17:36
 
 ### Dump table glpi_cartridges
 
@@ -527,6 +527,23 @@ CREATE TABLE glpi_dropdown_contact_type (
 ) TYPE=MyISAM;
 
 
+### Dump table glpi_dropdown_contract_type
+
+DROP TABLE IF EXISTS glpi_dropdown_contract_type;
+CREATE TABLE glpi_dropdown_contract_type (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
+INSERT INTO glpi_dropdown_contract_type VALUES ('1','Pr&#234;t');
+INSERT INTO glpi_dropdown_contract_type VALUES ('2','Location');
+INSERT INTO glpi_dropdown_contract_type VALUES ('3','Leasing');
+INSERT INTO glpi_dropdown_contract_type VALUES ('4','Assurances');
+INSERT INTO glpi_dropdown_contract_type VALUES ('5','Maintenance Hardware');
+INSERT INTO glpi_dropdown_contract_type VALUES ('6','Maintenance Software');
+INSERT INTO glpi_dropdown_contract_type VALUES ('7','Prestation');
+
 ### Dump table glpi_dropdown_enttype
 
 DROP TABLE IF EXISTS glpi_dropdown_enttype;
@@ -674,6 +691,8 @@ CREATE TABLE glpi_event_log (
    KEY itemtype (itemtype)
 ) TYPE=MyISAM;
 
+INSERT INTO glpi_event_log VALUES ('1','-1','system','2005-07-15 17:36:34','login','3','glpi logged in from 127.0.0.1.');
+
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS glpi_followups;
@@ -681,7 +700,7 @@ CREATE TABLE glpi_followups (
     ID int(11) NOT NULL auto_increment,
     tracking int(11),
     date datetime,
-    author varchar(200),
+    author int(11) DEFAULT '0' NOT NULL,
     contents text,
    PRIMARY KEY (ID),
    KEY tracking (tracking),
@@ -1048,8 +1067,9 @@ CREATE TABLE glpi_tracking (
     date datetime,
     closedate datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
     status enum('new','old'),
-    author varchar(200),
-    assign varchar(200),
+    author int(11) DEFAULT '0' NOT NULL,
+    assign int(11) DEFAULT '0' NOT NULL,
+    assign_type tinyint(4) DEFAULT '0' NOT NULL,
     device_type int(11) DEFAULT '1' NOT NULL,
     computer int(11),
     contents text,

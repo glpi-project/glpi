@@ -46,6 +46,7 @@ class Job {
 	var $status		= "";
 	var $author		= "";
 	var $assign		= "";
+	var $assign_type	= "";
 	var $computer		= 0;
 	var $computername	= "";
 	var $computerfound	= 0;
@@ -72,8 +73,9 @@ class Job {
 			$this->date = $db->result($result,0,"date");
 			$this->closedate = $db->result($result, 0, "closedate");
 			$this->status = $db->result($result, 0, "status");
-			$this->author = unhtmlentities($db->result($result, 0, "author"));
-			$this->assign = unhtmlentities($db->result($result, 0, "assign"));
+			$this->author = $db->result($result, 0, "author");
+			$this->assign = $db->result($result, 0, "assign");
+			$this->assign_type = $db->result($result, 0, "assign_type");
 			$this->device_type = $db->result($result, 0, "device_type");
 			$this->computer = $db->result($result, 0, "computer");
 			if (!$purecontent) {
@@ -133,7 +135,7 @@ class Job {
 		
 		// dump into database
 		$db = new DB;
-		$query = "INSERT INTO glpi_tracking VALUES (NULL, '$this->date', '$this->closedate', '$this->status','$this->author', '$this->assign', $this->device_type, $this->computer, '$this->contents', '$this->priority', '$this->isgroup','$this->uemail', '$this->emailupdates','$this->realtime','$this->category')";
+		$query = "INSERT INTO glpi_tracking VALUES (NULL, '$this->date', '$this->closedate', '$this->status','$this->author', '$this->assign', '$this->assign_type', $this->device_type, $this->computer, '$this->contents', '$this->priority', '$this->isgroup','$this->uemail', '$this->emailupdates','$this->realtime','$this->category')";
 
 		if ($result = $db->query($query)) {
 			return true;
@@ -174,12 +176,13 @@ class Job {
 	}
 	
 
-	function assignTo($user) {
+	function assignTo($user,$type) {
 		// assign Job to user
 		
 		$db = new DB;
 		$this->assign=$user;
-		$query = "UPDATE glpi_tracking SET assign = '$user' WHERE ID = '$this->ID'";
+		$this->assign_type=$type;
+		$query = "UPDATE glpi_tracking SET assign = '$user',assign_type = '$type' WHERE ID = '$this->ID'";
 		if ($result = $db->query($query)) {
 			return true;
 		} else {
@@ -223,7 +226,7 @@ class Job {
 			$fup = new Followup;
 			$fup->getFromDB($this->ID,$i);
 			$message .= "[ ".$fup->date." ]\n";
-			$message .= $lang["mailing"][2].$fup->author."\n";
+			$message .= $lang["mailing"][2]." ".$fup->getAuthorName()."\n";
 			$message .= $lang["mailing"][3]."\n".$fup->contents."\n".$lang["mailing"][0]."\n";
 		}
 		return $message;
@@ -241,11 +244,11 @@ class Job {
 		
 		
 		$message = $lang["mailing"][1]."\n*".$lang["mailing"][5]."*\n".$lang["mailing"][1]."\n";
-		$message.= $lang["mailing"][2].$this->author."\n";
-		$message.= $lang["mailing"][6].$this->date."\n";
-		$message.= $lang["mailing"][7].$name."\n";
-		$message.= $lang["mailing"][8].$this->assign."\n";
-		$message.= $lang["mailing"][16].getPriorityName($this->priority)."\n";
+		$message.= $lang["mailing"][2]." ".$this->getAuthorName()."\n";
+		$message.= $lang["mailing"][6]." ".$this->date."\n";
+		$message.= $lang["mailing"][7]." ".$name."\n";
+		$message.= $lang["mailing"][8]." ".$this->getAssignName()."\n";
+		$message.= $lang["mailing"][16]." ".getPriorityName($this->priority)."\n";
 		$message.= $lang["mailing"][3]."\n".$this->contents."\n";	
 		$message.="\n\n";
 		return $message;
@@ -264,6 +267,33 @@ class Job {
 			}
 			 return false;		
 	}
+	
+	function getAssignName($link=0){
+	global $cfg_install;
+	
+	if ($this->assign_type==USER_TYPE){
+		return getUserName($this->assign,$link);
+		
+	} else if ($this->assign_type==ENTERPRISE_TYPE){
+		$ent=new Enterprise();
+		$ent->getFromDB($this->assign);
+		$before="";
+		$after="";
+		if ($link){
+			$before="<a href=\"".$cfg_install["root"]."/enterprises/enterprises-info-form.php?ID=".$this->assign."\">";
+			$after="</a>";
+		}
+		
+		return $before.$ent->fields["name"].$after;
+	}
+	
+	}
+	
+	function getAuthorName($link=0){
+	
+	return getUserName($this->author,$link);
+	}
+	
 }
 
 
@@ -303,6 +333,8 @@ class Followup {
 		// dump into database
 		$db = new DB;
 		$query = "INSERT INTO glpi_followups VALUES (NULL, $this->tracking, '$this->date','$this->author', '$this->contents')";
+//		echo $query;
+//		exit();
 		if ($result = $db->query($query)) {
 			return true;
 		} else {
@@ -326,6 +358,9 @@ class Followup {
 		
 	}
 
+	function getAuthorName($link=0){
+	return getUserName($this->author,$link);
+	}	
 
 }
 

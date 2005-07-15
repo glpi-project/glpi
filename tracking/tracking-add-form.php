@@ -59,9 +59,9 @@ if(empty($_GET["uemail"])) $_GET["uemail"] = "";
 if(empty($_GET["emailupdates"])) $_GET["emailupdates"] = "";
 $error = "";
 
-if (!isset($_GET["user"])) $user=$_SESSION["glpiname"];
+if (!isset($_GET["user"])) $user=$_SESSION["glpiID"];
 else $user=$_GET["user"];
-if (!isset($_GET["assign"])) $assign=$_SESSION["glpiname"];
+if (!isset($_GET["assign"])) $assign=$_SESSION["glpiID"];
 else $assign=$_GET["assign"];
 
 

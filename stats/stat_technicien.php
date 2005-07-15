@@ -35,6 +35,8 @@
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_tracking.php");
+include ($phproot . "/glpi/includes_enterprises.php");
+include ($phproot . "/glpi/includes_setup.php");
 require ("functions.php");
 
 
@@ -68,7 +70,6 @@ $nomTech = getNbIntervTech();
 
 echo "<div align ='center'>";
 if (is_array($nomTech))
-
  {
 //affichage du tableu
 //table display
@@ -77,10 +78,17 @@ echo "<tr><th>".$lang["stats"][16]."</th><th>".$lang["stats"][13]."</th><th>".$l
 //Pour chacun de ces utilisateurs on affiche
 //foreach these users display
 
-  foreach($nomTech as $key)
+foreach($nomTech as $key){
+$name=getAssignName($key["assign"],$key["assign_type"]);
+$val[$name]["assign"]=$key["assign"];
+$val[$name]["assign_type"]=$key["assign_type"];
+}
+ksort($val);
+  
+  foreach($val as $k=>$key)
   {
 	echo "<tr class='tab_bg_2'>";
-	echo "<td>".$key["assign"]."</td>";
+	echo "<td>".getAssignName($key["assign"],$key["assign_type"],1)."</td>";
 	//le nombre d'intervention
 	//the number of intervention
 		echo "<td>".getNbinter(4,'assign',unhtmlentities($key["assign"]),$_POST["date1"],$_POST["date2"])."</td>";

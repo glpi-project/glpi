@@ -81,6 +81,7 @@ define("CARTRIDGE_TYPE","11");
 define("TYPEDOC_TYPE","12");
 define("DOCUMENT_TYPE","13");
 define("KNOWBASE_TYPE","14");
+define("USER_TYPE","15");
 
 // DEVICE TYPE
 define("MOBOARD_DEVICE","1");
