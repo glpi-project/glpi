@@ -637,7 +637,7 @@ $dir=opendir($path);
 	       		<td>&nbsp;<a href=\"javascript:erase('$file')\">".$lang["backup"][20]."</a>&nbsp;</td>
                          	<td>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</td>
 
-	        	<td>&nbsp;<a <a href=\"index.php?sendFile=$file\">".$lang["backup"][13]."</a></td></tr>";
+	        	<td>&nbsp;<a  href=\"index.php?sendFile=$file\">".$lang["backup"][13]."</a></td></tr>";
 	    }
 	}
 	closedir($dir);
