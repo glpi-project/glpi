@@ -573,7 +573,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename,$selecteddu
 		// END BUG
 		if (mysql_query("CREATE DATABASE ".$newdatabasename)){
 
-			echo "<p>Base de données créée </p>";
+			echo "<p>".$lang["install"][82]."</p>";
 			mysql_select_db($newdatabasename, $link);
 			if (create_conn_file($host,$user,$password,$newdatabasename)) {
 				fill_db();
@@ -697,7 +697,7 @@ loadLang($_SESSION["dict"]);
 		switch ($_POST["install"]) {
 			
 			case "lang_select" :
-			header_html("Début de l'installation");
+			header_html("".$lang["install"][81]."");
 			step0();
 			break;
 			case "Etape_0" :

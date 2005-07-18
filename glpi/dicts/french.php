@@ -536,6 +536,8 @@ $lang["install"][77]="Etape";
 $lang["install"][78]="Quelle base par défaut voulez vous utiliser ?"; 
 $lang["install"][79]="Base par défaut"; 
 $lang["install"][80]="Base vide"; 
+$lang["install"][81]="Début de l'installation";
+$lang["install"][82]="Base de données créées";  
 
 $lang["job"][0]="Numéro d'intervention"; 
 $lang["job"][1]="Intervention toujours ouverte..."; 
