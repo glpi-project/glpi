@@ -566,7 +566,7 @@ $config = array($lang["Menu"][14]=>array("/setup/setup-users.php","u"),
 	}
 	if (isset($plugins)&&count($plugins)>0){
 		echo "<td align='center' valign='top' width=''>";
-		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/config.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>";
+		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/plugins.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>";
 		echo "<span class='menu_title'>-&nbsp;Plugins&nbsp;-</span><br>";
 		foreach ($plugins as $key => $val) {
 			echo "<span class='menu'><a  href=\"".$cfg_install["root"]."/plugins/".$val."/\" accesskey=\"".$val."\">".$val."</a></span><br>";
