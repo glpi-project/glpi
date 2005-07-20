@@ -399,7 +399,7 @@ function showCartridgeTypeForm ($target,$ID) {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][38].":</td><td colspan='2'><select name='alarm'>";
-	for ($i=1;$i<=100;$i++)
+	for ($i=0;$i<=100;$i++)
 		echo "<option value='$i' ".($i==$ct->fields["alarm"]?" selected ":"").">$i</option>";
 	echo "</select></td></tr>";
 	
