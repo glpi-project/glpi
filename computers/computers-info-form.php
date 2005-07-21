@@ -130,8 +130,13 @@ else if(isset($tab["connect"])&&isset($tab["device_type"])) {
 //Update a device specification
 elseif(isset($_POST["update_device"])) {
 	checkAuthentication("admin");
-	update_device_specif($_POST["device_value"],$_POST["update_device"]);
-	logEvent($_POST["update_device"],"computers",4,"inventory",$_SESSION["glpiname"] ." modified a computer device spécificity.");
+	foreach ($_POST as $key => $val){
+		$tab=split("_",$key);
+		if (count($tab)==2&&$tab[0]=="devicevalue"){
+		update_device_specif($val,$tab[1]);
+		}
+	}
+	logEvent($_POST["update_device"],"computers",4,"inventory",$_SESSION["glpiname"] ." modified a computer device specificity.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 //add a new device
