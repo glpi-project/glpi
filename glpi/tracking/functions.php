@@ -627,6 +627,9 @@ function showJobDetails($ID) {
 	
 	if ($job->getfromDB($ID,0)) {
 
+		$author=new User();
+		$author->getFromDBbyID($job->author);
+
 		// test if the user if authorized to view this job
 		if (strcmp($_SESSION["glpitype"],"post-only")==0&&!strcmp($_SESSION["glpiname"],$job->author)==0)
 		   { echo "Warning !! ";return;}
@@ -649,7 +652,7 @@ function showJobDetails($ID) {
 
 		echo "<tr><td>".$lang["joblist"][3].":</td><td>";
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
-		echo "<strong><a href=\"".$cfg_install["root"]."/setup/users-info.php?ID=$job->author\">$job->author</a></strong>";
+		echo "<strong><a href=\"".$cfg_install["root"]."/setup/users-info.php?ID=$job->author\">".$author->getName()."</a></strong>";
 		else 
 		echo "<strong>$job->author</strong>";
 		echo "</td></tr>";
@@ -696,9 +699,11 @@ function showJobDetails($ID) {
 			echo "<tr><td align='right'>".$lang["job"][20].":</td><td><strong>".getRealtime($job->realtime)."</strong></td></tr>";
 		}
 		if ($cfg_features["mailing"]==1){
-		if ($job->emailupdates=='yes') $suivi=$lang["choice"][0];
-		else $suivi=$lang["choice"][1];
-		echo "<tr><td>".$lang["job"][19].":</td><td>$suivi</td></tr>";
+			if ($job->emailupdates=='yes') $suivi=$lang["choice"][0];
+			else $suivi=$lang["choice"][1];
+			echo "<tr><td>".$lang["job"][19].":</td><td>$suivi</td></tr>";
+			if ($author->fields["email"]!=$job->uemail)
+				echo "<tr><td align='right'>".$lang["joblist"][3].":</td><td>".$job->uemail."</td></tr>";
 		}
 		echo "</table>";
 		echo "</td>";
