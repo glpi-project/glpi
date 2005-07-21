@@ -1321,17 +1321,25 @@ function removeConnector($ID) {
 	$np2=new Netport;
 	$np1->getFromDB($ID);
 	$np2->getFromDB($ID2);
-	$npup=-1;
+	$npnet=-1;
+	$npdev=-1;
 	if ($np1->fields["device_type"]!=NETWORKING_TYPE&&$np2->fields["device_type"]==NETWORKING_TYPE){
-		$npup=$ID;
+		$npnet=$ID2;
+		$npdev=$ID;
 		}
 	if ($np2->fields["device_type"]!=NETWORKING_TYPE&&$np1->fields["device_type"]==NETWORKING_TYPE){
-		$npup=$ID2;
+		$npnet=$ID;
+		$npdev=$ID2;
 		}
 	$db = new DB;
-	if ($npup!=-1){
-		$query = "UPDATE glpi_networking_ports SET netpoint=NULL, ifaddr='', ifmac='' WHERE ID='$npup'";	
+	if ($npnet!=-1&&$npdev!=-1){
+		// Unset MAC and IP fron networking device
+		$query = "UPDATE glpi_networking_ports SET ifaddr='', ifmac='' WHERE ID='$npnet'";	
 		$db->query($query);
+		// Unset netpoint from common device
+		$query = "UPDATE glpi_networking_ports SET netpoint=NULL WHERE ID='$npdev'";	
+		$db->query($query);
+
 	}
 	
 	$query = "DELETE FROM glpi_networking_wire WHERE (end1 = '$ID' OR end2 = '$ID')";
