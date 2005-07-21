@@ -238,7 +238,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 		//Mise a jour des spécificitées
 		if(!empty($withtemplate) && $withtemplate == 2) {
 			if(empty($specif)) $specif = "&nbsp;";
-			echo "<td colspan='$colspan'>".$specificity_label.":&nbsp;$specif</td><td>&nbsp;</td>";
+			echo "<td colspan='$colspan'>".$specificity_label.":&nbsp;$specif</td><td>&nbsp;</td><td>&nbsp;</td>";
 		}
 		else {
 
