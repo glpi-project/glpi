@@ -402,6 +402,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 		}
 		
 		if ($numrows_limit>0) {
+
 			// Produce headline
 			echo "<div align='center'><table border='0' class='tab_cadre'><tr>";
 
@@ -757,6 +758,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 	if (!empty($ID)){
 			//print devices.
 		echo "<div align='center'>";
+		echo "<form name='form_device_action' action=\"\" method=\"post\" >";
 		echo "<table width='700' class='tab_cadre' >";
 		echo "<tr><th colspan='66'>".$lang["devices"][10]."</th></tr>";
 		foreach($comp->devices as $key => $val) {
@@ -768,8 +770,8 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 			$device->getFromDB($devID);
 			printDeviceComputer($device,$specif,$comp->fields["ID"],$compDevID,$withtemplate);
 			
-			echo "</div>";
 		}
+		echo "</form>";
 		//ADD a new device form.
 		device_selecter($_SERVER["PHP_SELF"],$comp->fields["ID"],$withtemplate);
 		echo "</table></div>";
