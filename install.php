@@ -541,7 +541,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename,$selecteddu
 	}
 	
 	$link = mysql_connect($host,$user,$password);
-	
+
 	if(!empty($databasename)) {
 		$db_selected = mysql_select_db($databasename, $link);
 		
@@ -571,7 +571,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename,$selecteddu
 		// BUG cette fonction est obsolète je l'ai remplacé par la nouvelle
                 //if (mysql_create_db($newdatabasename)) {
 		// END BUG
-		if (mysql_query("CREATE DATABASE ".$newdatabasename)){
+		if (mysql_query("CREATE DATABASE `".$newdatabasename."`")){
 
 			echo "<p>".$lang["install"][82]."</p>";
 			mysql_select_db($newdatabasename, $link);
