@@ -765,7 +765,7 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 		
 		echo "<table cellpadding='0' cellspacing='0' border='0' ><tr><td background='".$HTMLRel."pics/fond-stats.gif'>";
 		echo "<table cellpadding='0' cellspacing='0' border='0'><tr>";
-		echo "<td bgcolor='black'><img src='".$HTMLRel."pics/rien.gif' width='1' height='200'></td>";
+		echo "<td bgcolor='black'><img src='".$HTMLRel."pics/noir.png' width='1' height='200'></td>";
 	
 		// Presentation graphique
 		$n = 0;
@@ -794,45 +794,45 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 			if ($hauteur > 0){
 				if ($hauteur_moyenne > $hauteur) {
 					$difference = ($hauteur_moyenne - $hauteur) -1;
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height='1' style='background-color:#333333;'>";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/noir.png' width=".$largeur." height='1'>";
 					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height=".$difference.">";
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height='1' style='background-color:$couleur_foncee;'>";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/fondgraph2.png'' width=".$largeur." height='1'>";
 					if (ereg("-01",$key)){ // janvier en couleur foncee
-						echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height=".$hauteur." style='background-color:$couleur_foncee;'>";
+						echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/fondgraph1.png'' width=".$largeur." height=".$hauteur.">";
 					} 
 					else {
-						echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height=".$hauteur." style='background-color:$couleur_claire;'>";
+						echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/fondgraph2.png'' width=".$largeur." height=".$hauteur.">";
 					}
 				}
 				else if ($hauteur_moyenne < $hauteur) {
 					$difference = ($hauteur - $hauteur_moyenne) -1;
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height='1' style='background-color:$couleur_foncee;'>";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/fondgraph1.png'' width=".$largeur." height='1'>";
 					if (ereg("-01",$key)){ // janvier en couleur foncee
-						$couleur =  $couleur_foncee;
+						$couleur =  "1";
 					} 
 					else {
-						$couleur = $couleur_claire;
+						$couleur = "2";
 					}
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height=".$difference". style='background-color:$couleur;'>";
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height='1' style='background-color:#333333;'>";
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height=".$hauteur_moyenne." style='background-color:$couleur;'>";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/fondgraph$couleur.png' width=".$largeur." height=".$difference.">";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/noir.png' width=".$largeur." height='1'>";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/fondgraph$couleur.png' width=".$largeur." height=".$hauteur_moyenne.">";
 				}
 				else {
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height='1' style='background-color:$couleur_foncee;'>";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/fondgraph1.png' width=".$largeur." height='1'>";
 					if (ereg("-01",$key)){ // janvier en couleur foncee
-						echo "<img alt=\"$key: $val_tab\" title=\"$key: $value\" src='".$HTMLRel."pics/rien.gif' width=".$largeur." height=".$hauteur". style='background-color:$couleur_foncee;'>";
+						echo "<img alt=\"$key: $val_tab\" title=\"$key: $value\" src='".$HTMLRel."pics/fondgraph1.png' width=".$largeur." height=".$hauteur.">";
 					} 
 					else {
-						echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height=".$hauteur." style='background-color:$couleur_claire;'>";
+						echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/fondgraph2.png' width=".$largeur." height=".$hauteur.">";
 					}
 				}
 			}
 			
-			echo "<img alt=\"$value\" title=\"$value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height='1' style='background-color:black;'>";
+			echo "<img alt=\"$value\" title=\"$value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height='1'>";
 			echo "</td>\n";
 			
 		}
-		echo "<td bgcolor='black'><img src='".$HTMLRel."pics/rien.gif' width='1' height='1'></td>";
+		echo "<td bgcolor='black'><img src='".$HTMLRel."pics/noir.png' width='1' height='1'></td>";
 		echo "</tr>";
 		if ($largeur>10){
 			echo "<tr><td></td>";
