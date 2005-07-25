@@ -732,13 +732,6 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 
 	global $HTMLRel,$lang;
 	
-		// Couleurs cf. bas du fichier
-		/// Bleu
-		$couleur_foncee="#3874B0";
-		$couleur_claire="#EDF3FE";
-		$couleur_lien="#814E1B";
-		$couleur_lien_off="#435E79";
-
 		$db =new DB();
 		$total="";
 		if ($showtotal==1) $total=array_sum($entrees);
@@ -893,100 +886,5 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 }
 
 
-/*
-
-switch ($prefs['couleur']) {
-	case 1:
-		/// Vert
-		$couleur_foncee="#02531B";
-		$couleur_claire="#CFFEDE";
-		$couleur_lien_off="#304C38";
-		$couleur_lien="#854270";
-		break;
-	case 2:
-		/// Rouge
-		$couleur_foncee="#640707";
-		$couleur_claire="#FFE0E0";
-		$couleur_lien="#346868";
-		$couleur_lien_off="#684747";
-		break;
-	case 3:
-		/// Jaune
-		$couleur_foncee="#666500";
-		$couleur_claire="#FFFFE0";
-		$couleur_lien="#65659C";
-		$couleur_lien_off="#6A6A43";
-		break;
-	case 4:
-		/// Violet
-		$couleur_foncee="#340049";
-		$couleur_claire="#F9EBFF";
-		$couleur_lien="#396B25";
-		$couleur_lien_off="#472854";
-		break;
-	case 5:
-		/// Gris
-		$couleur_foncee="#3F3F3F";
-		$couleur_claire="#F2F2F2";
-		$couleur_lien="#854270";
-		$couleur_lien_off="#666666";
-		break;
-	case 6:
-		/// Bleu
-		$couleur_foncee="#3874B0";
-		$couleur_claire="#EDF3FE";
-		$couleur_lien="#814E1B";
-		$couleur_lien_off="#435E79";
-		break;
-	case 7:
-		/// Bleu pastelle
-		$couleur_foncee="#766CF6";
-		$couleur_claire="#EBE9FF";
-		$couleur_lien="#869100";
-		$couleur_lien_off="#5B55A0";
-		break;
-	case 8:
-		/// Vert pastelles
-		$couleur_foncee="#009F3C";
-		$couleur_claire="#E2FDEC";
-		$couleur_lien="#EE0094";
-		$couleur_lien_off="#02722C";
-		break;
-	case 9:
-		/// Rouge vif
-		$couleur_foncee="#FF0000";
-		$couleur_claire="#FFEDED";
-		$couleur_lien="#D302CE";
-		$couleur_lien_off="#D40202";
-		break;
-	case 10:
-		/// Orange
-		$couleur_foncee="#E95503";
-		$couleur_claire="#FFF2EB";
-		$couleur_lien="#81A0C1";
-		$couleur_lien_off="#FF5B00";
-		break;
-	case 11:
-		/// Violet clair
-		$couleur_foncee="#CD006F";
-		$couleur_claire="#FDE5F2";
-		$couleur_lien="#E95503";
-		$couleur_lien_off="#8F004D";
-		break;
-	case 12:
-		/// Marron
-		$couleur_foncee="#8C6635";
-		$couleur_claire="#F5EEE5";
-		$couleur_lien="#1A64DF";
-		$couleur_lien_off="#955708";
-		break;
-	default:
-		/// Bleu
-		$couleur_foncee="#3874B0";
-		$couleur_claire="#EDF3FE";
-		$couleur_lien="#814E1B";
-		$couleur_lien_off="#435E79";
-}
-*/
 
 ?>
