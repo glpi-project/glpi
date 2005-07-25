@@ -62,7 +62,17 @@ if (isset($_POST["ID"])) $ID=$_POST["ID"];
 elseif (isset($_GET["ID"])) $ID=$_GET["ID"];
 else $ID="";
 
-if (isset($_POST["move"])) {
+if (isset($_POST["several_add"])) {
+	checkAuthentication("admin");
+	for ($i=$_POST["from"];$i<=$_POST["to"];$i++){
+		$_POST["value"]=$_POST["before"].$i.$_POST["after"];
+		addDropdown($_POST);
+	}
+
+
+	logEvent(0, "dropdowns", 5, "setup", $_SESSION["glpiname"]." added several values to a dropdown.");
+	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type");
+}else if (isset($_POST["move"])) {
 	checkAuthentication("admin");
 	moveTreeUnder($_POST["tablename"],$_POST["value_to_move"],$_POST["value_where"]);
 	logEvent(0, "dropdowns", 5, "setup", $_SESSION["glpiname"]." moved a location.");

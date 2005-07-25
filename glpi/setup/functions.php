@@ -150,7 +150,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 		$value = $db->result($result,0,"name");
 		$loc = $db->result($result,0,"location");
 		}
-
+		echo "<br>";
 		echo $lang["networking"][1].": ";		
 		dropdownValue("glpi_dropdown_locations", "value2",$loc);
 		echo $lang["networking"][52].": ";
@@ -186,6 +186,32 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
 	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit' class='submit'>";
 	echo "</td></tr>";
+	
+	// Multiple Add for Netpoint
+	if($name == "netpoint") {
+		echo "<form action=\"$target\" method='post'>";
+		echo "<input type='hidden' name='which' value='$name'>";
+		echo "<tr><td align='center'  class='tab_bg_1'>";
+
+		echo $lang["networking"][1].": ";		
+		dropdownValue("glpi_dropdown_locations", "value2",$value2);
+		echo $lang["networking"][52].": ";
+		echo "<input type='text' maxlength='100' size='5' name='before'>";
+		echo "<select name='from'>";
+		for ($i=0;$i<200;$i++) echo "<option value='$i'>$i</option>";
+		echo "</select>";
+		echo "-->";
+		echo "<select name='to'>";
+		for ($i=0;$i<200;$i++) echo "<option value='$i'>$i</option>";
+		echo "</select>";
+
+		echo "<input type='text' maxlength='100' size='5' name='after'>";	
+
+		echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
+		echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
+		echo "<input type='submit' name='several_add' value=\"".$lang["buttons"][8]."\" class='submit' class='submit'>";
+		echo "</td></tr>";
+	}
 	
 	
 	echo "</form>";
@@ -310,6 +336,7 @@ function addDropdown($input) {
 	else {
 		$query = "INSERT INTO ".$input["tablename"]." (name) VALUES ('".$input["value"]."')";
 	}
+
 	if ($result=$db->query($query)) {
 
 		if (in_array($input["tablename"],$dropdowntree_tables))
