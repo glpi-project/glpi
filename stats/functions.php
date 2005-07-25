@@ -787,7 +787,7 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 			if ($hauteur > 0){
 				if ($hauteur_moyenne > $hauteur) {
 					$difference = ($hauteur_moyenne - $hauteur) -1;
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/fondgraph1.png' width=".$largeur." height='1'>";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/moyenne.png' width=".$largeur." height='1'>";
 					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height=".$difference.">";
 					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/noir.png'' width=".$largeur." height='1'>";
 					if (ereg("-01",$key)){ // janvier en couleur foncee
@@ -809,7 +809,7 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 						$couleur2 = "1";
 					}
 					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/fondgraph$couleur.png' width=".$largeur." height=".$difference.">";
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/fondgraph$couleur2.png' width=".$largeur." height='1'>";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/moyenne.png' width=".$largeur." height='1'>";
 					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/fondgraph$couleur.png' width=".$largeur." height=".$hauteur_moyenne.">";
 				}
 				else {
