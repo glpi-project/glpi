@@ -1129,13 +1129,23 @@ function dropdownValue($table,$myname,$value) {
 		$query .= " left join glpi_dropdown_locations as t2 on t1.location = t2.ID";
 		$query .= " order by t1.name,t2.name "; 
 		$result = $db->query($query);
+		// Get Location Array
+		$query2="SELECT ID, completename FROM glpi_dropdown_locations";
+		$result2 = $db->query($query2);
+		$locat=array();
+		if ($db->numrows($result2)>0)
+		while ($a=$db->fetch_array($result2)){
+			$locat[$a["ID"]]=$a["completename"];
+		}
+
 		echo "<select name=\"$myname\">";
 		$i = 0;
 		$number = $db->numrows($result);
 		if ($number > 0) {
 			while ($i < $number) {
 				$output = $db->result($result, $i, "netpname");
-				$loc = getTreeValueCompleteName("glpi_dropdown_locations",$db->result($result, $i, "locID"));
+				//$loc = getTreeValueCompleteName("glpi_dropdown_locations",$db->result($result, $i, "locID"));
+				$loc=$locat[$db->result($result, $i, "locID")];
 				$ID = $db->result($result, $i, "ID");
 				echo "<option value=\"$ID\"";
 				if ($ID==$value) echo " selected ";
