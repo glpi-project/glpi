@@ -763,9 +763,9 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 			if ($largeur > 50) $largeur = 50;
 		}
 		
-		echo "<table cellpadding=0 cellspacing=0 border=0><tr><td background='".$HTMLRel."pics/fond-stats.gif'>";
-		echo "<table cellpadding=0 cellspacing=0 border=0><tr>";
-		echo "<td bgcolor='black'><img src='".$HTMLRel."pics/rien.gif' width=1 height=200></td>";
+		echo "<table cellpadding='0' cellspacing='0' border='0' ><tr><td background='".$HTMLRel."pics/fond-stats.gif'>";
+		echo "<table cellpadding='0' cellspacing='0' border='0'><tr>";
+		echo "<td bgcolor='black'><img src='".$HTMLRel."pics/rien.gif' width='1' height='200'></td>";
 	
 		// Presentation graphique
 		$n = 0;
@@ -789,50 +789,50 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 			
 			$hauteur_moyenne = round($moyenne * $rapport) - 1;
 			$hauteur = round($value * $rapport)	- 1;
-			echo "<td valign='bottom' width=$largeur>";
+			echo "<td valign='bottom' width=".$largeur.">";
 			
 			if ($hauteur > 0){
 				if ($hauteur_moyenne > $hauteur) {
 					$difference = ($hauteur_moyenne - $hauteur) -1;
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=$largeur height=1 style='background-color:#333333;'>";
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=$largeur height=$difference>";
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=$largeur height=1 style='background-color:$couleur_foncee;'>";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height='1' style='background-color:#333333;'>";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height=".$difference.">";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height='1' style='background-color:$couleur_foncee;'>";
 					if (ereg("-01",$key)){ // janvier en couleur foncee
-						echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=$largeur height=$hauteur style='background-color:$couleur_foncee;'>";
+						echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height=".$hauteur." style='background-color:$couleur_foncee;'>";
 					} 
 					else {
-						echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=$largeur height=$hauteur style='background-color:$couleur_claire;'>";
+						echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height=".$hauteur." style='background-color:$couleur_claire;'>";
 					}
 				}
 				else if ($hauteur_moyenne < $hauteur) {
 					$difference = ($hauteur - $hauteur_moyenne) -1;
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=$largeur height=1 style='background-color:$couleur_foncee;'>";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height='1' style='background-color:$couleur_foncee;'>";
 					if (ereg("-01",$key)){ // janvier en couleur foncee
 						$couleur =  $couleur_foncee;
 					} 
 					else {
 						$couleur = $couleur_claire;
 					}
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=$largeur height=$difference style='background-color:$couleur;'>";
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=$largeur height=1 style='background-color:#333333;'>";
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=$largeur height=$hauteur_moyenne style='background-color:$couleur;'>";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height=".$difference". style='background-color:$couleur;'>";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height='1' style='background-color:#333333;'>";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height=".$hauteur_moyenne." style='background-color:$couleur;'>";
 				}
 				else {
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=$largeur height=1 style='background-color:$couleur_foncee;'>";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height='1' style='background-color:$couleur_foncee;'>";
 					if (ereg("-01",$key)){ // janvier en couleur foncee
-						echo "<img alt=\"$key: $val_tab\" title=\"$key: $value\" src='".$HTMLRel."pics/rien.gif' width=$largeur height=$hauteur style='background-color:$couleur_foncee;'>";
+						echo "<img alt=\"$key: $val_tab\" title=\"$key: $value\" src='".$HTMLRel."pics/rien.gif' width=".$largeur." height=".$hauteur". style='background-color:$couleur_foncee;'>";
 					} 
 					else {
-						echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=$largeur height=$hauteur style='background-color:$couleur_claire;'>";
+						echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height=".$hauteur." style='background-color:$couleur_claire;'>";
 					}
 				}
 			}
 			
-			echo "<img alt=\"$value\" title=\"$value\"  src='".$HTMLRel."pics/rien.gif' width=$largeur height=1 style='background-color:black;'>";
+			echo "<img alt=\"$value\" title=\"$value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height='1' style='background-color:black;'>";
 			echo "</td>\n";
 			
 		}
-		echo "<td bgcolor='black'><img src='".$HTMLRel."pics/rien.gif' width=1 height=1></td>";
+		echo "<td bgcolor='black'><img src='".$HTMLRel."pics/rien.gif' width='1' height='1'></td>";
 		echo "</tr>";
 		if ($largeur>10){
 			echo "<tr><td></td>";
@@ -852,36 +852,36 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 		else $r=0;
 		echo "</table>";
 		echo "</td>";
-		echo "<td background='".$HTMLRel."pics/fond-stats.gif' valign='bottom'><img src='".$HTMLRel."pics/rien.gif' style='background-color:black;' width=3 height=1></td>";
-		echo "<td><img src='".$HTMLRel."pics/rien.gif' width=5 height=1></td>";
-		echo "<td valign='top'><font face='Verdana,Arial,Sans,sans-serif' size=2>";
-		echo "<table cellpadding=0 cellspacing=0 border=0>";
-		echo "<tr><td height=15 valign='top'>";		
-		echo "<font face='arial,helvetica,sans-serif' size=1><b>".round($maxgraph,$r)."</b></font>";
+		echo "<td background='".$HTMLRel."pics/fond-stats.gif' valign='bottom'><img src='".$HTMLRel."pics/rien.gif' style='background-color:black;' width='3' height='1'></td>";
+		echo "<td><img src='".$HTMLRel."pics/rien.gif' width='5' height='1'></td>";
+		echo "<td valign='top'><font face='Verdana,Arial,Sans,sans-serif' size='2'>";
+		echo "<table cellpadding='0' cellspacing='0' border='0'>";
+		echo "<tr><td height='15' valign='top'>";		
+		echo "<font face='arial,helvetica,sans-serif' size='1'><b>".round($maxgraph,$r)."</b></font>";
 		echo "</td></tr>";
 		echo "<tr><td height=25 valign='middle'>";		
-		echo "<font face='arial,helvetica,sans-serif' size=1 color='#999999'>".round(7*($maxgraph/8),$r)."</font>";
+		echo "<font face='arial,helvetica,sans-serif' size='1' color='#999999'>".round(7*($maxgraph/8),$r)."</font>";
 		echo "</td></tr>";
 		echo "<tr><td height=25 valign='middle'>";		
-		echo "<font face='arial,helvetica,sans-serif' size=1>".round(3*($maxgraph/4),$r)."</font>";
+		echo "<font face='arial,helvetica,sans-serif' size='1'>".round(3*($maxgraph/4),$r)."</font>";
 		echo "</td></tr>";
 		echo "<tr><td height=25 valign='middle'>";		
-		echo "<font face='arial,helvetica,sans-serif' size=1 color='#999999'>".round(5*($maxgraph/8),$r)."</font>";
+		echo "<font face='arial,helvetica,sans-serif' size='1' color='#999999'>".round(5*($maxgraph/8),$r)."</font>";
 		echo "</td></tr>";
 		echo "<tr><td height=25 valign='middle'>";		
-		echo "<font face='arial,helvetica,sans-serif' size=1><b>".round($maxgraph/2,$r)."</b></font>";
+		echo "<font face='arial,helvetica,sans-serif' size='1'><b>".round($maxgraph/2,$r)."</b></font>";
 		echo "</td></tr>";
 		echo "<tr><td height=25 valign='middle'>";		
-		echo "<font face='arial,helvetica,sans-serif' size=1 color='#999999'>".round(3*($maxgraph/8),$r)."</font>";
+		echo "<font face='arial,helvetica,sans-serif' size='1' color='#999999'>".round(3*($maxgraph/8),$r)."</font>";
 		echo "</td></tr>";
 		echo "<tr><td height=25 valign='middle'>";		
-		echo "<font face='arial,helvetica,sans-serif' size=1>".round($maxgraph/4,$r)."</font>";
+		echo "<font face='arial,helvetica,sans-serif' size='1'>".round($maxgraph/4,$r)."</font>";
 		echo "</td></tr>";
 		echo "<tr><td height=25 valign='middle'>";		
-		echo "<font face='arial,helvetica,sans-serif' size=1 color='#999999'>".round(1*($maxgraph/8),$r)."</font>";
+		echo "<font face='arial,helvetica,sans-serif' size='1' color='#999999'>".round(1*($maxgraph/8),$r)."</font>";
 		echo "</td></tr>";
 		echo "<tr><td height=10 valign='bottom'>";		
-		echo "<font face='arial,helvetica,sans-serif' size=1><b>0</b></font>";
+		echo "<font face='arial,helvetica,sans-serif' size='1'><b>0</b></font>";
 		echo "</td>";
 
 		echo "</tr></table>";
