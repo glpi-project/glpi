@@ -74,14 +74,14 @@ case "technicien":
 	} else $next=$prev=-1;
 
 	echo "<div align='center'>";
-	echo "<table class='icon_consol'>";
+	echo "<table class='icon_nav'>";
 	echo "<tr>";
-	echo "<td>";
-	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$prev'><</a>";
+	echo "<td >";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
 	echo "</td>";
-	echo "<td width='400' align='center'><b>".$lang["stats"][16].": ".$job->getAssignName(1)."</b></td>";
-	echo "<td>";
-	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$next'>></a>";
+	echo "<td style='text-align=center; padding:0px 30px 0px 30px;'><b>".$lang["stats"][16].": ".$job->getAssignName(1)."</b></td>";
+	echo "<td  >";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
 	echo "</td>";
 	echo "</tr>";
 	echo "</table></div><br>";
@@ -190,7 +190,7 @@ echo "<div align='center'><form method=\"post\" name=\"form\" action=\"".$_SERVE
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
 echo $lang["search"][8]." :</td><td>";
 showCalendarForm("form","date1",$_POST["date1"]);
-echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name\"submit\" Value=\"". $lang["buttons"][7] ."\" /></td></tr>";
+echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" value=\"". $lang["buttons"][7] ."\" /></td></tr>";
 echo "<tr class='tab_bg_2'><td align='right'>".$lang["search"][9]." :</td><td>";
 showCalendarForm("form","date2",$_POST["date2"]);
 echo "</td></tr>";
