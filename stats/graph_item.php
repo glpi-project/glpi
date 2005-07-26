@@ -96,14 +96,14 @@ case "user":
 	$cleantarget=preg_replace("/ID=([0-9]+[&]{0,1})/","",$_SERVER['QUERY_STRING']);
 
 	echo "<div align='center'>";
-	echo "<table class='icon_consol'>";
+	echo "<table class='icon_nav'>";
 	echo "<tr>";
 	echo "<td>";
-	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$prev'><</a>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
 	echo "</td>";
 	echo "<td width='400' align='center'><b>".$lang["stats"][16].": ".$job->getAuthorName(1)."</b></td>";
 	echo "<td>";
-	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$next'>></a>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
 	echo "</td>";
 	echo "</tr>";
 	echo "</table></div><br>";
@@ -118,14 +118,14 @@ case "category":
 	$cleantarget=preg_replace("/ID=([0-9]+[&]{0,1})/","",$_SERVER['QUERY_STRING']);
 	
 	echo "<div align='center'>";
-	echo "<table class='icon_consol'>";
+	echo "<table class='icon_nav'>";
 	echo "<tr>";
 	echo "<td>";
-	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$prev'><</a>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
 	echo "</td>";
 	echo "<td width='400' align='center'><b>".$lang["stats"][38].": ".getDropdownName("glpi_dropdown_tracking_category",$_GET["ID"])."</b></td>";
 	echo "<td>";
-	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$next'>></a>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
 	echo "</td>";
 	echo "</tr>";
 	echo "</table></div><br>";
@@ -145,14 +145,14 @@ case "device":
 	$result=$db->query($query);
 	
 	echo "<div align='center'>";
-	echo "<table class='icon_consol'>";
+	echo "<table class='icon_nav'>";
 	echo "<tr>";
 	echo "<td>";
-	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$prev'><</a>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
 	echo "</td>";
 	echo "<td width='400' align='center'><b>".$lang["stats"][19].": ".$db->result($result,0,"designation")."</b></td>";
 	echo "<td>";
-	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$next'>></a>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
 	echo "</td>";
 	echo "</tr>";
 	echo "</table></div><br>";
@@ -169,14 +169,14 @@ case "comp_champ":
 	$cleantarget=preg_replace("/ID=([0-9]+[&]{0,1})/","",$_SERVER['QUERY_STRING']);
 	
 	echo "<div align='center'>";
-	echo "<table class='icon_consol'>";
+	echo "<table class='icon_nav'>";
 	echo "<tr>";
 	echo "<td>";
-	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$prev'><</a>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
 	echo "</td>";
 	echo "<td width='400' align='center'><b>".$lang["stats"][26].": ".getDropdownName($table,$_GET["ID"])."</b></td>";
 	echo "<td>";
-	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$next'>></a>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
 	echo "</td>";
 	echo "</tr>";
 	echo "</table></div><br>";

@@ -42,7 +42,7 @@ checkAuthentication("normal");
 
 commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
 
-echo "<div align ='center'><p><b>".$lang["stats"][37]."</b></p></div>";
+echo "<div align ='center'><p><b><span class='icon_nav'>".$lang["stats"][37]."</span></b></p></div>";
 if(empty($_POST["date1"])) $_POST["date1"] = "";
 if(empty($_POST["date2"])) $_POST["date2"] = "";
 if ($_POST["date1"]!=""&&$_POST["date2"]!=""&&strcmp($_POST["date2"],$_POST["date1"])<0){
