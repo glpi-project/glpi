@@ -518,6 +518,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 
 			// Pager
 //			$parameters="sort=$sort&order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
+			echo "<br>";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
