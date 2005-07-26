@@ -74,7 +74,7 @@ if (is_array($nomTech))
 //affichage du tableu
 //table display
 echo "<table class='tab_cadre2' cellpadding='5' >";
-echo "<tr><th>".$lang["stats"][16]."</th><th>".$lang["stats"][13]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
+echo "<tr><th>".$lang["stats"][16]."</th><th>&nbsp;</th><th>".$lang["stats"][13]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
 //Pour chacun de ces utilisateurs on affiche
 //foreach these users display
 
@@ -88,7 +88,7 @@ ksort($val);
   foreach($val as $k=>$key)
   {
 	echo "<tr class='tab_bg_2'>";
-	echo "<td>".getAssignName($key["assign"],$key["assign_type"],1)."</td>";
+	echo "<td>".getAssignName($key["assign"],$key["assign_type"],1)."</td><td><a target=_blank href='graph_item.php?ID=".$key["assign"]."&assign_type=".$key["assign_type"]."&type=technicien'>Graph</a></td>";
 	//le nombre d'intervention
 	//the number of intervention
 		echo "<td>".getNbinter(4,'assign',unhtmlentities($key["assign"]),$_POST["date1"],$_POST["date2"])."</td>";
