@@ -427,6 +427,13 @@ function commonHeader($title,$url)
 	// Print a nice HTML-head for every page
 
 	GLOBAL $cfg_install,$lang, $cfg_layout,$cfg_features,$HTMLRel,$phproot ;
+
+// Override list-limit if choosen
+ if (isset($_POST['list_limit'])) {
+       $_SESSION['list_limit']=$_POST['list_limit'];
+       $cfg_features["list_limit"]=$_POST['list_limit'];
+ }
+
 	
 	
 $utils = array($lang["Menu"][17]=>array("/reservation/index.php","1"),
@@ -2204,9 +2211,19 @@ function printPager($start,$numrows,$target,$parameters) {
 	}
 
 	// Print the "where am I?" 
-	echo "<td width='750' align='center' class='tab_bg_2'><b>";
+	echo "<form method='POST' name='pager_list_limit' action='$target?$parameters&start=$start'>";
+	echo "<td width='50%' align='center' class='tab_bg_2'><b>";
+	echo $lang["pager"][4]."&nbsp;";
+	echo "<select name='list_limit' onChange='submit()'>";
+	for ($i=5;$i<=200;$i+=5) echo "<option value='$i' ".((isset($_SESSION["list_limit"])&&$_SESSION["list_limit"]==$i)?" selected ":"").">$i</option>";
+	echo "</select>&nbsp;";
+	echo $lang["pager"][5]."</td>";
+
+	echo "<td  width='50%' align='center' class='tab_bg_2'>";
+
 	echo $lang["pager"][2]."&nbsp;".$current_start."&nbsp;".$lang["pager"][1]."&nbsp;".$current_end."&nbsp;".$lang["pager"][3]."&nbsp;".$numrows."&nbsp;";
 	echo "</b></td>";
+	echo "</form>";
 
 	// Forward and fast forward button
 	if ($forward<$numrows) {

@@ -289,6 +289,7 @@ $cfg_features["expire_events"]	= $db->result($result,0,"expire_events");
 //la liste de recherche par page.
 
 $cfg_features["list_limit"]		= $db->result($result,0,"list_limit");	
+if (isset($_SESSION['list_limit'])) $cfg_features["list_limit"]=$_SESSION['list_limit'];
 
 //use helpdesk.html or not
 //utilisation du helpdesk.html ou pas
