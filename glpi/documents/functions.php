@@ -44,6 +44,33 @@ function titleDocument(){
          echo "</td></tr></table></div>";
 }
 
+function showDocumentOnglets($target,$withtemplate,$actif){
+	global $lang;
+
+	$template="";
+	if(!empty($withtemplate)){
+		$template="&withtemplate=$withtemplate";
+	}
+	
+	echo "<div id='barre_onglets'><ul id='onglet'>";
+	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&onglet=1$template'>".$lang["title"][26]."</a></li>";
+	
+	
+	echo "<li class='invisible'>&nbsp;</li>";
+	
+	if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
+	$ID=$ereg[1];
+	$next=getNextItem("glpi_docs",$ID);
+	$prev=getPreviousItem("glpi_docs",$ID);
+	$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
+	if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><</a></li>";
+	if ($next>0) echo "<li><a href='$cleantarget?ID=$next'>></a></li>";
+	}
+
+	echo "</ul></div>";
+	
+}
+
 
 function searchFormDocument($field="",$phrasetype= "",$contains="",$sort= "",$deleted="",$link="") {
 	// Print Search Form
@@ -305,7 +332,7 @@ function showDocumentForm ($target,$ID,$search) {
 	$con = new Document;
 
 	echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\"><div align='center'>";
-	echo "<table class='tab_cadre'>";
+	echo "<table class='tab_cadre' width='700'>";
 	echo "<tr><th colspan='3'><b>";
 	if (!$ID) {
 		echo $lang["document"][16].":";

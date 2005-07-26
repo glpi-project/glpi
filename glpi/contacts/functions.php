@@ -51,6 +51,34 @@ function titleContacts(){
                 echo "</td></tr></table></div>";
 }
 
+function showContactOnglets($target,$withtemplate,$actif){
+	global $lang;
+
+	$template="";
+	if(!empty($withtemplate)){
+		$template="&withtemplate=$withtemplate";
+	}
+	
+	echo "<div id='barre_onglets'><ul id='onglet'>";
+	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&onglet=1$template'>".$lang["title"][26]."</a></li>";
+	
+	
+	echo "<li class='invisible'>&nbsp;</li>";
+	
+	if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
+	$ID=$ereg[1];
+	$next=getNextItem("glpi_contacts",$ID);
+	$prev=getPreviousItem("glpi_contacts",$ID);
+	$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
+	if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><</a></li>";
+	if ($next>0) echo "<li><a href='$cleantarget?ID=$next'>></a></li>";
+	}
+
+	echo "</ul></div>";
+	
+}
+
+
 /**
 * Print search form for contacts
 *
@@ -296,7 +324,7 @@ function showContactForm ($target,$ID) {
 	$con = new Contact;
 
 	echo "<form method='post' name=form action=\"$target\"><div align='center'>";
-	echo "<table class='tab_cadre' cellpadding='2'>";
+	echo "<table class='tab_cadre' cellpadding='2' width='700'>";
 	echo "<tr><th colspan='2'><b>";
 	if (empty($ID)) {
 		echo $lang["financial"][33].":";
@@ -343,7 +371,7 @@ function showContactForm ($target,$ID) {
 
 	echo "<table cellpadding='1px' cellspacing='0' border='0'><tr><td>";
 	echo $lang["financial"][12].":	</td></tr>";
-	echo "<tr><td align='center'><textarea cols='35' rows='4' name='comments' >".$con->fields["comments"]."</textarea>";
+	echo "<tr><td align='center'><textarea cols='45' rows='4' name='comments' >".$con->fields["comments"]."</textarea>";
 	echo "</td></tr></table>";
 
 	echo "</td>";
