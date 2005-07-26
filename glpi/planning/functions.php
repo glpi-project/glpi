@@ -228,7 +228,7 @@ function showPlanning($who,$when,$type){
 }
 
 function displayplanning($who,$when){
-global $cfg_features;
+global $cfg_features,$HTMLRel;
 $db=new DB;
 $debut=$when;
 $tmp=split(" ",$when);
@@ -246,6 +246,7 @@ if ($db->numrows($result)>0)
 while ($data=$db->fetch_array($result)){
 	$job->getFromDB($data["id_tracking"],0);
 
+	$interv[$data["id_tracking"]]["ID"]=$data["ID"];
 	$interv[$data["id_tracking"]]["begin"]=$data["begin"];
 	$interv[$data["id_tracking"]]["end"]=$data["end"];
 	$interv[$data["id_tracking"]]["content"]=substr($job->contents,0,$cfg_features["cut"]);
@@ -258,7 +259,12 @@ echo "<b>".display_time($hour[0]).":00<br></b>";
 if (count($interv)>0)
 foreach ($interv as $key => $val){
 echo "<div>";
-echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"]."<br>";
+echo "<a href='".$HTMLRel."tracking/tracking-followups.php?ID=$key'";
+echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"];
+echo "</a>";
+echo "<a href='".$HTMLRel."planning/planning-add-form.php?delete=delete&ID=".$val["ID"]."'><img src='$HTMLRel/pics/delete.png'></a>";
+
+echo "<br>";
 echo $val["content"];
 echo "</div>";
 }
@@ -279,13 +285,11 @@ else return $time;
 function deletePlanningTracking($ID){
 	// Delete a Planning Tracking
 
-	$resa = new ReservationResa;
-	
-	
+	$resa = new PlanningTracking;
 	if ($resa->getfromDB($ID))
 	if (isset($resa->fields["id_assign"])&&($resa->fields["id_assign"]==$_SESSION["glpiID"]||isAdmin($_SESSION["glpitype"])))
 	return $resa->deleteFromDB($ID);
-	
+
 	return false;
 }
 

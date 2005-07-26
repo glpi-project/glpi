@@ -619,7 +619,7 @@ function showJobShort($ID, $followups) {
 function showJobDetails($ID) {
 	// Prints a job in long form with all followups and stuff
 
-	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
+	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang,$HTMLRel;
 	
 	// Make new job object and fill it from database, if success, print it
 
@@ -706,24 +706,41 @@ function showJobDetails($ID) {
 				echo "<tr><td align='right'>".$lang["joblist"][3].":</td><td>".$job->uemail."</td></tr>";
 		}
 		// Print planning
-		echo "<tr><td colspan='2' align='center'>&nbsp;</td></tr>";
-		echo "<tr><td colspan='2' align='center'>";
-		echo "<a href=\"".$cfg_install["root"]."/planning/planning-add-form.php?job=".$job->ID."\">".$lang["planning"][7]."</a>";
-		echo "</td></tr>";
-		
-		
-		$query2="SELECT * from glpi_tracking_planning WHERE id_tracking='".$job->ID."'";
-		
-		$result2=$db->query($query2);
-		if ($db->numrows($result2)>0)
-		while ($data=$db->fetch_array($result2)){
-			echo "<tr><td colspan='2' align='left'>";
-			echo date("Y-m-d H:i",strtotime($data["begin"]))." -> ".date("Y-m-d H:i",strtotime($data["end"]))."<br>";
+		$planning_realtime=0;		
+
+		if (isAdmin($_SESSION['glpitype'])){
+
+			echo "<tr><td colspan='2' align='center'>&nbsp;</td></tr>";
+			echo "<tr><td colspan='2' align='center'>";
+			echo "<a href=\"".$cfg_install["root"]."/planning/planning-add-form.php?job=".$job->ID."\">".$lang["planning"][7]."</a>";
 			echo "</td></tr>";
+
+			$query2="SELECT * from glpi_tracking_planning WHERE id_tracking='".$job->ID."'";
+			$result2=$db->query($query2);
+			if ($db->numrows($result2)>0)
+			while ($data=$db->fetch_array($result2)){
+				echo "<tr><td colspan='2' align='left'>";
+				echo date("Y-m-d H:i",strtotime($data["begin"]))." -> ".date("Y-m-d H:i",strtotime($data["end"]))." - ".getUserName($data['id_assign']);
+				echo "<a href='".$HTMLRel."planning/planning-add-form.php?delete=delete&ID=".$data['ID']."'><img src='$HTMLRel/pics/delete.png'></a>";
+				echo "<br>";
+				$tmp_beg=split(" ",$data["begin"]);
+				$tmp_end=split(" ",$data["end"]);
+				$tmp_dbeg=split("-",$tmp_beg[0]);
+				$tmp_dend=split("-",$tmp_end[0]);
+				$tmp_hbeg=split(":",$tmp_beg[1]);
+				$tmp_hend=split(":",$tmp_end[1]);
+				
+				$dateDiff = mktime($tmp_hend[0],$tmp_hend[1],$tmp_hend[2],$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
+						  - mktime($tmp_hbeg[0],$tmp_hbeg[1],$tmp_hbeg[2],$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
+
+				$planning_realtime+=$dateDiff/60/60;
+				echo "</td></tr>";
+			}
 		}
 		
 		echo "</table>";
 		echo "</td>";
+		if ($job->realtime==0) $job->realtime=$planning_realtime;
 	
 		//echo "</tr><tr class='tab_bg_2'>";
 		
