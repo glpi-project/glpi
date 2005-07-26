@@ -54,14 +54,33 @@ checkAuthentication("normal");
 if (addPlanningTracking($_POST,$_SERVER["REQUEST_URI"])){
 	logEvent(0, "planning", 4, "planning", $_SESSION["glpiname"]." add a planning.");
 	glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=".$_POST["id_tracking"]);
-}
+} 
+} else if (isset($_POST["edit_planning"])){
+	print_r($_POST);
+	list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
+	list($end_year,$end_month,$end_day)=split("-",$_POST["end_date"]);
 
+	$_POST["begin"]=date("Y-m-d H:i:00",mktime($_POST["begin_hour"],$_POST["begin_min"],0,$begin_month,$begin_day,$begin_year));
+	$_POST["end"]=date("Y-m-d H:i:00",mktime($_POST["end_hour"],$_POST["end_min"],0,$end_month,$end_day,$end_year));
+
+	if (updatePlanningTracking($_POST,$_SERVER["PHP_SELF"],$_POST["ID"])){
+		glpi_header($_SERVER['HTTP_REFERER']);
+	}
+	logEvent(0, "planning", 4, "planning", $_SESSION["glpiname"]." edit a planning.");
+	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_GET["delete"])){
 	deletePlanningTracking($_GET["ID"]);
 	logEvent(0, "planning", 4, "planning", $_SESSION["glpiname"]." delete a planning.");
 	glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_GET["edit"])){
+	commonHeader($lang["title"][31],$_SERVER["PHP_SELF"]);
+
+	showAddPlanningTrackingForm($_SERVER["PHP_SELF"],$_GET["job"],$_GET["ID"]);
+	
+	commonFooter();
 } else {
 	commonHeader($lang["title"][31],$_SERVER["PHP_SELF"]);
+
 	showAddPlanningTrackingForm($_SERVER["PHP_SELF"],$_GET["job"]);
 	
 	commonFooter();
