@@ -707,7 +707,6 @@ $begin_time=strtotime(date("Y-m",strtotime($begin))."-01");
 
 if ($max<$end_time) $max=$end_time;
 if ($min>$begin_time) $min=$begin_time;
-
 $current=$min;
 //print_r($entrees);
 while ($current<=$max){
@@ -780,11 +779,11 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 				$moyenne += $val_tab;
 			$moyenne = $moyenne / count($tab_moyenne);
 			
-			$hauteur_moyenne = round($moyenne * $rapport) - 1;
-			$hauteur = round($value * $rapport)	- 1;
+			$hauteur_moyenne = round($moyenne * $rapport) ;
+			$hauteur = round($value * $rapport)	;
 			echo "<td valign='bottom' width=".$largeur.">";
-			
-			if ($hauteur > 0){
+
+			if ($hauteur >= 0){
 				if ($hauteur_moyenne > $hauteur) {
 					$difference = ($hauteur_moyenne - $hauteur) -1;
 					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/moyenne.png' width=".$largeur." height='1'>";
