@@ -2172,7 +2172,7 @@ function printHelpDesk ($name,$from_helpdesk) {
 */
 function printPager($start,$numrows,$target,$parameters) {
 
-	GLOBAL $cfg_layout, $cfg_features, $lang;
+	GLOBAL $cfg_layout, $cfg_features, $lang, $HTMLRel;
 	
 	// Forward is the next step forward
 	$forward = $start+$cfg_features["list_limit"];
@@ -2203,12 +2203,14 @@ function printPager($start,$numrows,$target,$parameters) {
 	// Back and fast backward button
 	if (!$start==0) {
 		echo "<th align='left'>";
-		echo "<a href=\"$target?$parameters&start=$back\">";
-		echo "&nbsp;<&nbsp;";
+		echo "<a href=\"$target?$parameters&start=0\">";
+		echo "<img src=\"".$HTMLRel."pics/first.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'>";
+		
+		
 		echo "</a></th>";
 		echo "<th align='left'>";
-		echo "<a href=\"$target?$parameters&start=0\">";
-		echo "&nbsp;<<&nbsp;";
+		echo "<a href=\"$target?$parameters&start=$back\">";
+		echo "<img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'>";
 		echo "</a></th>";
 	}
 
@@ -2231,11 +2233,11 @@ function printPager($start,$numrows,$target,$parameters) {
 	if ($forward<$numrows) {
 		echo "<th align='right'>";
 		echo "<a href=\"$target?$parameters&start=$forward\">";
-		echo "&nbsp;>&nbsp;";
+		echo "<img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'>";
 		echo "</a></th>";
 		echo "<th align='right'>";
 		echo "<a href=\"$target?$parameters&start=$end\">";
-		echo "&nbsp;>>&nbsp;";
+		echo "<img src=\"".$HTMLRel."pics/last.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'>";
 		echo "</a></th>";
 	}
 
