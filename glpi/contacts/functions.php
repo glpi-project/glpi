@@ -76,6 +76,7 @@ function searchFormContact($field="",$phrasetype= "",$contains="",$sort= "") {
 	$option["glpi_contacts.fax"]			= $lang["financial"][30];
 	$option["glpi_contacts.email"]		= $lang["financial"][31]	;
 	$option["glpi_contacts.comments"]			= $lang["financial"][12];
+	$option["glpi_dropdown_contact_type.name"]			= $lang["financial"][37];
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/contacts/contacts-search.php\">";
 	echo "<div align='center'><table  width='750' class='tab_cadre'>";
@@ -168,7 +169,7 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 	if (!$order) {
 		$order = "ASC";
 	}
-	$query = "select * from glpi_contacts ";
+	$query = "select * from glpi_contacts LEFT JOIN glpi_dropdown_contact_type ON (glpi_contacts.type=glpi_dropdown_contact_type.ID)";
 	$query .= "where $where ORDER BY $sort $order";
 	// Get it from database	
 	if ($result = $db->query($query)) {
