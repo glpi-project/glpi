@@ -1456,6 +1456,20 @@ function showFormConfigGen($target){
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][111]."</td><td> <input type=\"text\" name=\"list_limit\" value=\"". $db->result($result,0,"list_limit") ."\"></td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][112]."</td><td><input type=\"text\" name=\"cut\" value=\"". $db->result($result,0,"cut") ."\"></td></tr>";
 
+	
+	$plan_begin=split(":",$db->result($result,0,"planning_begin"));
+	$plan_end=split(":",$db->result($result,0,"planning_end"));
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][223]."</td><td>";
+	echo "<select name='planning_begin'>";
+	for ($i=0;$i<=24;$i++) echo "<option value='$i'".($plan_begin[0]==$i?" selected ":"").">$i</option>";
+	echo "</select>-->";
+	
+	echo "<select name='planning_end'>";
+	for ($i=0;$i<=24;$i++) echo "<option value='$i' ".($plan_end[0]==$i?" selected ":"").">$i</option>";
+	echo "</select>";
+	
+	echo "</td></tr>";
+	
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][221]."</td><td>";
 	showCalendarForm("form","date_fiscale",$db->result($result,0,"date_fiscale"),0);	
 	echo "</td></tr>";
@@ -1732,7 +1746,7 @@ function showFormMailing($target) {
 
 }
 
-function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events,$jobs_at_login,$list_limit,$cut, $permit_helpdesk,$default_language,$priority,$date_fiscale,$cartridges_alarm) {
+function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events,$jobs_at_login,$list_limit,$cut, $permit_helpdesk,$default_language,$priority,$date_fiscale,$cartridges_alarm,$planning_begin,$planning_end) {
 	
 	$db = new DB;
 	
@@ -1740,7 +1754,8 @@ function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events
 		$query.= "event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', default_language = '". $default_language ."',";
 		$query.= "expire_events = '". $expire_events ."', jobs_at_login = '". $jobs_at_login ."' , list_limit = '". $list_limit ."' , cut = '". $cut ."', permit_helpdesk='". $permit_helpdesk ."',";
 		$query.= "priority_1 = '". $priority[1] ."', priority_2 = '". $priority[2] ."', priority_3 = '". $priority[3] ."', priority_4 = '". $priority[4] ."', priority_5 = '". $priority[5] ."', ";
-		$query.= " date_fiscale = '". $date_fiscale ."', cartridges_alarm='".$cartridges_alarm."' where ID = '1' ";
+		$query.= " date_fiscale = '". $date_fiscale ."', cartridges_alarm='".$cartridges_alarm."', ";
+		$query.= " planning_begin = '". $planning_begin .":00:00', planning_end='".$planning_end.":00:00' where ID = '1' ";
 		$db->query($query);
 	
 }

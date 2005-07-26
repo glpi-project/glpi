@@ -83,6 +83,15 @@ $lang["calendarD"][4]="J";
 $lang["calendarD"][5]="V"; 
 $lang["calendarD"][6]="S"; 
 
+$lang["calendarDay"][0]="Dimanche"; 
+$lang["calendarDay"][1]="Lundi"; 
+$lang["calendarDay"][2]="Mardi"; 
+$lang["calendarDay"][3]="Mercredi"; 
+$lang["calendarDay"][4]="Jeudi"; 
+$lang["calendarDay"][5]="Vendredi"; 
+$lang["calendarDay"][6]="Samedi"; 
+
+
 $lang["calendarM"][0]="Janvier"; 
 $lang["calendarM"][1]="Février"; 
 $lang["calendarM"][2]="Mars"; 
@@ -678,6 +687,7 @@ $lang["Menu"][25]="Contrats";
 $lang["Menu"][26]="Gestion"; 
 $lang["Menu"][27]="Documents"; 
 $lang["Menu"][28]="Etats"; 
+$lang["Menu"][29]="Planning"; 
 
 $lang["monitors"][0]="Ajouter moniteur..."; 
 $lang["monitors"][3]="Ajouter moniteur"; 
@@ -792,6 +802,18 @@ $lang["peripherals"][27]="identifiant";
 $lang["peripherals"][28]="Périphériques"; 
 $lang["peripherals"][29]="Périphérique ID"; 
 $lang["peripherals"][30]="Nouveau périphérique à partir d'un modèle"; 
+
+$lang["planning"][0]="Le technicien demandé a déjà une intervention prévue pour cette plage."; 
+$lang["planning"][1]="Erreur dans l'entrée de vos dates. La date de début est surement supérieure à la date de fin"; 
+$lang["planning"][2]="Retour";
+$lang["planning"][3]="Planning"; 
+$lang["planning"][4]="Date"; 
+$lang["planning"][5]="Journée"; 
+$lang["planning"][6]="Semaine"; 
+$lang["planning"][7]="Ajouter un horaire d'intervention"; 
+$lang["planning"][8]="Intervention"; 
+$lang["planning"][9]="Par"; 
+$lang["planning"][10]="Matériel"; 
 
 $lang["printers"][0]="Ajouter imprimante..."; 
 $lang["printers"][1]="Voir par lieu"; 
@@ -1096,6 +1118,7 @@ $lang["setup"][219]="Voulez vous permettre les soumissions d'intervention anonym
 $lang["setup"][220]="Impossible de modifier l'utilisateur 'Helpdesk'"; 
 $lang["setup"][221]="Date de début d'exercice fiscale (jour et mois)"; 
 $lang["setup"][222]="Périphériques internes"; 
+$lang["setup"][223]="Limite des horaires pour le planning"; 
 
 $lang["software"][0]="Ajouter logiciel..."; 
 $lang["software"][1]="ID"; 
@@ -1221,6 +1244,7 @@ $lang["title"][27]="Connexions";
 $lang["title"][28]="Interventions"; 
 $lang["title"][29]="Tous"; 
 $lang["title"][30]="Périphériques internes"; 
+$lang["title"][31]="Planning"; 
 
 $lang["toolbar"][1]="Gras"; 
 $lang["toolbar"][2]="Italique"; 
