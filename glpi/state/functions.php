@@ -151,6 +151,10 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 		}
 		
 		if ($numrows_limit>0) {
+			// Pager
+			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
+			printPager($start,$numrows,$target,$parameters);
+
 			// Produce headline
 			echo "<div align='center'><table  class='tab_cadre'><tr>";
 			// Name
@@ -227,7 +231,8 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 			echo "</table></div>";
 
 			// Pager
-			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
+			echo "<br>";
+//			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {

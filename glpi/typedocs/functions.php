@@ -153,6 +153,10 @@ function showTypedocList($target,$username,$field,$phrasetype,$contains,$sort,$o
 		
 
 		if ($numrows_limit>0) {
+			// Pager
+			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
+			printPager($start,$numrows,$target,$parameters);
+
 			// Produce headline
 			echo "<center><table  class='tab_cadre'><tr>";
 			// Name
@@ -225,7 +229,8 @@ function showTypedocList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			echo "</table></center>";
 
 			// Pager
-			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
+//			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
+			echo "<br>";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {

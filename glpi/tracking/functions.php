@@ -282,6 +282,13 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 	$number = $db->numrows($result);
 
 	if ($number > 0) {
+		// Pager
+		if(empty($sort)) $sort = "";
+		$parameters="show=".$show."&contains=".$contains."&sort=".$sort;
+		if ($show!="user")
+			$parameters.="&ID=".$username;
+		printPager($start,$numrows,$target,$parameters);
+
 		echo "<div align='center'><table class='tab_cadre' width='90%'>";
 		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
 		echo "<th width=5>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
@@ -304,10 +311,11 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 		}
 		echo "</table></div>";
 		// Pager
-		if(empty($sort)) $sort = "";
+/*		if(empty($sort)) $sort = "";
 		$parameters="show=".$show."&contains=".$contains."&sort=".$sort;
 		if ($show!="user")
 			$parameters.="&ID=".$username;
+*/
 		// Delete selected item
 		if (isAdmin($_SESSION["glpitype"])&&$show == "old"){
 			echo "<br><div align='center'>";
@@ -320,7 +328,7 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 			echo "<td width='75%'>&nbsp;</td></table></div>";
 		}
 		
-//	if ($show!="user")	
+			echo "<br>";
 			printPager($start,$numrows,$target,$parameters);
 	}
 	else
@@ -1536,8 +1544,11 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 //	echo $query;
 		
 		if ($numrows_limit>0) {
-			// Produce headline
+			// Pager
+			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&date1=$date1&date2=$date2&only_computers=$computers_search&field2=$field2&phrasetype2=$phrasetype2&contains2=$contains2&attrib=$assign&author=$author";
+			printPager($start,$numrows,$target,$parameters);
 			
+			// Produce headline
 						
 			echo "<div align='center'><table border='0' class='tab_cadre' width='90%'><tr>";
 
@@ -1557,7 +1568,8 @@ echo "<th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
 			echo "</table></div>";
 
 			// Pager
-			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&date1=$date1&date2=$date2&only_computers=$computers_search&field2=$field2&phrasetype2=$phrasetype2&contains2=$contains2&attrib=$assign&author=$author";
+			echo "<br>";
+//			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&date1=$date1&date2=$date2&only_computers=$computers_search&field2=$field2&phrasetype2=$phrasetype2&contains2=$contains2&attrib=$assign&author=$author";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {

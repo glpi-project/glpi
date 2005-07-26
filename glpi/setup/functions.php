@@ -995,6 +995,10 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 		
 
 		if ($numrows_limit>0) {
+			// Pager
+			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
+			printPager($start,$numrows,$target,$parameters);
+
 			// Produce headline
 			echo "<center><table  class='tab_cadre'><tr>";
 
@@ -1082,7 +1086,8 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 			echo "</table></center>";
 
 			// Pager
-			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
+			echo "<br>";
+//			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {

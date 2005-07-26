@@ -280,6 +280,10 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 
 		if ($numrows_limit>0) {
+			// Pager
+			$parameters="sort=$sort&order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
+			printPager($start,$numrows,$target,$parameters);
+
 			// Produce headline
 			echo "<center><table class='tab_cadre'><tr>";
 
@@ -357,7 +361,8 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 			echo "</table></center>";
 
 			// Pager
-			$parameters="sort=$sort&order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
+			echo "<br>";
+			//$parameters="sort=$sort&order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
