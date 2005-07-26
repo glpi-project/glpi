@@ -248,6 +248,10 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 		}
 
 		if ($numrows_limit>0) {
+			// Pager
+			$parameters="sort=$sort&order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
+			printPager($start,$numrows,$target,$parameters);
+
 			// Produce headline
 			echo "<div align='center'><table class='tab_cadre' width='750'><tr>";
 
@@ -332,7 +336,8 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 			echo "</table></div>";
 
 			// Pager
-			$parameters="sort=$sort&order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
+			echo "<br>";
+			//$parameters="sort=$sort&order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {

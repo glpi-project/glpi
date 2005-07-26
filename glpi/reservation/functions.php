@@ -158,15 +158,17 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 		}
 		
 		if ($numrows_limit>0) {
+			// Pager
+			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
+			printPager($start,$numrows,$target,$parameters);
+
 			// Produce headline
 			echo "<div align='center'><table  class='tab_cadre'><tr>";
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_reservation_item.ID") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.ID&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["reservation"][2]."</a></th>";
@@ -247,7 +249,8 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 			echo "</table></div>";
 
 			// Pager
-			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
+			echo "<br>";
+//			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
