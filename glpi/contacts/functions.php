@@ -215,6 +215,10 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 		
 
 		if ($numrows_limit>0) {
+			// Pager
+			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
+			printPager($start,$numrows,$target,$parameters);
+
 			// Produce headline
 			echo "<div align='center'><table  class='tab_cadre' width='750'><tr>";
 			// Name
@@ -295,7 +299,8 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			echo "</table></div>";
 
 			// Pager
-			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
+			echo "<br>";
+//			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
