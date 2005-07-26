@@ -452,6 +452,7 @@ $financial = array($lang["Menu"][22]=>array("/contacts/index.php","t"),
 
 $maintain =	array($lang["Menu"][5]=>array("/tracking/index.php","t"),
 		"Helpdesk"=>array("/helpdesk/index.php","h"),
+		$lang["Menu"][29]=>array("/planning/index.php","l"),
 		$lang["Menu"][13]=>array("/stats/index.php","1"));
 
 				
@@ -3350,6 +3351,12 @@ function getUserName($ID,$link=0){
 		$after="</a>";
 	}
 	return $before.$user->getName().$after;
+}
+
+function get_hour_from_sql($time){
+$t=explode(" ",$time);
+$p=explode(":",$t[1]);
+return $p[0].":".$p[1];
 }
 
 ?>

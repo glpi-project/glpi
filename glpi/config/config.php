@@ -315,6 +315,9 @@ $cfg_layout["priority_3"] = $db->result($result,0,"priority_3");
 $cfg_layout["priority_4"] = $db->result($result,0,"priority_4");
 $cfg_layout["priority_5"] = $db->result($result,0,"priority_5");
 
+// Planning being and end
+$cfg_features["planning_begin"] = $db->result($result,0,"planning_begin");
+$cfg_features["planning_end"] = $db->result($result,0,"planning_end");
 }
 
 

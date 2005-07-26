@@ -624,7 +624,7 @@ function showJobDetails($ID) {
 	// Make new job object and fill it from database, if success, print it
 
 	$job = new Job;
-	
+	$db=new DB();
 	if ($job->getfromDB($ID,0)) {
 
 		$author=new User();
@@ -705,6 +705,23 @@ function showJobDetails($ID) {
 			if ($author->fields["email"]!=$job->uemail)
 				echo "<tr><td align='right'>".$lang["joblist"][3].":</td><td>".$job->uemail."</td></tr>";
 		}
+		// Print planning
+		echo "<tr><td colspan='2' align='center'>&nbsp;</td></tr>";
+		echo "<tr><td colspan='2' align='center'>";
+		echo "<a href=\"".$cfg_install["root"]."/planning/planning-add-form.php?job=".$job->ID."\">".$lang["planning"][7]."</a>";
+		echo "</td></tr>";
+		
+		
+		$query2="SELECT * from glpi_tracking_planning WHERE id_tracking='".$job->ID."'";
+		
+		$result2=$db->query($query2);
+		if ($db->numrows($result2)>0)
+		while ($data=$db->fetch_array($result2)){
+			echo "<tr><td colspan='2' align='left'>";
+			echo date("Y-m-d H-i",strtotime($data["begin"]))." -> ".date("Y-m-d H-i",strtotime($data["end"]))."<br>";
+			echo "</td></tr>";
+		}
+		
 		echo "</table>";
 		echo "</td>";
 	

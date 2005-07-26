@@ -749,11 +749,7 @@ function addReservation($input,$target,$ok=true){
 	else return true;
 }
 }
-function get_hour_from_sql($time){
-$t=explode(" ",$time);
-$p=explode(":",$t[1]);
-return $p[0].":".$p[1];
-}
+
 
 function printReservationItems($target){
 global $lang,$HTMLRel;
