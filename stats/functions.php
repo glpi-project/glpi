@@ -604,7 +604,7 @@ function getFirstActionAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 	
 }
 
-function constructEntryValues($type,$begin="",$end=""){
+function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value2=""){
 	$db=new DB();
 
 if (empty($end)) $end=date("Y-m-d");
@@ -615,6 +615,43 @@ $begin.=" 00:00:00";
 
 	$query="";
 	$WHERE="WHERE assign_type<>'".ENTERPRISE_TYPE."' ";
+	
+	switch ($param){
+	case "technicien":
+		$WHERE.=" AND assign='$value' AND assign_type='$value2'";
+		break;
+	case "user":
+		$WHERE.=" AND author='$value'";
+		break;
+	case "category":
+		$WHERE.=" AND category='$value'";
+		break;
+		
+	case "device":
+		//select computers IDs that are using this device;
+		$query2 = "SELECT distinct(glpi_computers.ID) as compid FROM glpi_computers INNER JOIN glpi_computer_device ON ( glpi_computers.ID = glpi_computer_device.FK_computers AND glpi_computer_device.device_type = '".$value2."' AND glpi_computer_device.FK_device = '".$value."') WHERE glpi_computers.is_template <> '1'";
+		
+		$result2 = $db->query($query2);
+		$WHERE.=" AND (device_type = '".COMPUTER_TYPE."' AND ('0'='1'";
+		while($line2 = $db->fetch_array($result2)) {
+			$WHERE.=" OR computer='".$line2["compid"]."'";
+		}
+		$WHERE.=") )";
+		
+		break;
+	case "comp_champ":
+		//select computers IDs that are using this field;
+		$query2 = "SELECT distinct(ID) as compid FROM glpi_computers WHERE  $value2='$value'";
+		
+		$result2 = $db->query($query2);
+		$WHERE.=" AND (device_type = '".COMPUTER_TYPE."' AND ('0'='1'";
+		while($line2 = $db->fetch_array($result2)) {
+			$WHERE.=" OR computer='".$line2["compid"]."'";
+		}
+		$WHERE.=") )";
+	
+		break;
+	}
 	switch($type)	{
 	
 		case "inter_total": 
@@ -661,10 +698,11 @@ $begin.=" 00:00:00";
 				$WHERE.
 				" GROUP BY ID";
 				break;
+		
 //		$query = " from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where glpi_tracking.status ='old'  and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW())";	
 			
 	}
-//echo $query;
+//echo $query."<br><br>";
 $entrees=array();
 if (empty($query)) return array();
 

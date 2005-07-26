@@ -73,7 +73,7 @@ if (is_array($nomUsr))
 //affichage du tableau
 //table display
 echo "<table class='tab_cadre2' cellpadding='5' >";
-echo "<tr><th>".$lang["stats"][20]."</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
+echo "<tr><th>".$lang["stats"][20]."</th><th>&nbsp;</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
 //Pour chacun de ces auteurs on affiche
 //foreach these authors display
 foreach($nomUsr as $key){
@@ -86,7 +86,7 @@ ksort($val);
    foreach($val as $k=>$key)
    {
 	echo "<tr class='tab_bg_1'>";
-	echo "<td>".getUserName($key["author"],1)."</td>";
+	echo "<td>".getUserName($key["author"],1)."</td><td><a target=_blank href='graph_item.php?ID=".$key["author"]."&type=user'>Graph</a></td>";
 
 		echo "<td>".getNbinter(4,'glpi_tracking.author',unhtmlentities($key["author"]), $_POST["date1"], $_POST["date2"])."</td>";
 		echo "<td>".getNbresol(4,'glpi_tracking.author',unhtmlentities($key["author"]), $_POST["date1"], $_POST["date2"])."</td>";

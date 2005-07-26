@@ -72,13 +72,13 @@ if (is_array($nomUsr))
 //affichage du tableau
 //table display
 echo "<table class='tab_cadre2' cellpadding='5' >";
-echo "<tr><th>".$lang["stats"][38]."</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
+echo "<tr><th>".$lang["stats"][38]."</th><th>&nbsp;</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
 //Pour chacun de ces auteurs on affiche
 //foreach these authors display
    foreach($nomUsr as $key => $val)
    {
 	echo "<tr class='tab_bg_1'>";
-	echo "<td>".$val."</td>";
+	echo "<td>".$val."</td><td><a target=_blank href='graph_item.php?ID=".$key."&type=category'>Graph</a></td>";
 
 		echo "<td>".getNbinter(4,'glpi_tracking.category',$key, $_POST["date1"], $_POST["date2"])."</td>";
 		echo "<td>".getNbresol(4,'glpi_tracking.category',$key, $_POST["date1"], $_POST["date2"])."</td>";
