@@ -403,6 +403,10 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 		
 		if ($numrows_limit>0) {
 
+			// Pager
+			$parameters="sort=$sort&order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
+			printPager($start,$numrows,$target,$parameters);
+
 			// Produce headline
 			echo "<div align='center'><table border='0' class='tab_cadre'><tr>";
 
@@ -513,7 +517,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 			echo "</table></div>";
 
 			// Pager
-			$parameters="sort=$sort&order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
+//			$parameters="sort=$sort&order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
