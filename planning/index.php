@@ -47,7 +47,7 @@ include ($phproot . "/glpi/includes_enterprises.php");
 
 
 if (!isset($_GET["date"])) $_GET["date"]=strftime("%Y-%m-%d");
-if (!isset($_GET["type"])) $_GET["type"]="day";
+if (!isset($_GET["type"])) $_GET["type"]="week";
 
 checkAuthentication("normal");
 
