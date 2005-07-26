@@ -141,7 +141,10 @@ class PlanningTracking{
 		$ID_where=" (ID <> '".$this->fields["ID"]."') AND ";
 		
 		$query = "SELECT * FROM glpi_tracking_planning".
-		" WHERE $ID_where (id_assign = '".$this->fields["id_assign"]."') AND ( ('".$this->fields["begin"]."' <= begin AND '".$this->fields["end"]."' >= begin) OR ('".$this->fields["begin"]."' <= end AND '".$this->fields["end"]."' >= end) OR ('".$this->fields["begin"]."' >= begin AND '".$this->fields["end"]."' <= end))";
+		" WHERE $ID_where (id_assign = '".$this->fields["id_assign"]."') AND ".
+		" ( ('".$this->fields["begin"]."' < begin AND '".$this->fields["end"]."' > begin) ".
+		" OR ('".$this->fields["begin"]."' < end AND '".$this->fields["end"]."' >= end) ".
+		" OR ('".$this->fields["begin"]."' >= begin AND '".$this->fields["end"]."' < end))";
 //		echo $query."<br>";
 		if ($result=$db->query($query)){
 			return ($db->numrows($result)>0);

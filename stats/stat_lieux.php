@@ -103,7 +103,7 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 			else $count=0; 
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".getDropdownName($_POST["dropdown"],$key["ID"]) ."&nbsp;($count)</td><td><a target=_blank href='graph_item.php?ID=".$key["ID"]."&champ=".$champ."&type=comp_champ'>Graph</a></td>";
+			echo "<td>".getDropdownName($_POST["dropdown"],$key["ID"]) ."&nbsp;($count)</td><td><a href='graph_item.php?ID=".$key["ID"]."&champ=".$champ."&type=comp_champ'>Graph</a></td>";
 			//le nombre d'intervention
 			//the number of intervention
 			echo "<td>".getNbinter(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$key["ID"],$_POST["date1"],$_POST["date2"] )."</td>";
@@ -214,7 +214,7 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 		echo "<tr class='tab_bg_1'>";
 		//first column name of the device
 		echo "<td>".$designation."</td>";
-		echo "<td><a target=_blank href='graph_item.php?ID=".$line["ID"]."&device=".$device_type."&type=device'>Graph</a>";
+		echo "<td><a href='graph_item.php?ID=".$line["ID"]."&device=".$device_type."&type=device'>Graph</a>";
 		//second column count nb interv
 		echo "<td>".$nbinterv."</td>";
 		//third column nb resolved interventions

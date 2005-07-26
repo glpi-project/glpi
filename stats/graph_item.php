@@ -37,10 +37,12 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_enterprises.php");
 include ($phproot . "/glpi/includes_setup.php");
+include ($phproot . "/glpi/includes_devices.php");
 require ("functions.php");
 
+
 checkAuthentication("normal");
-header("Content-Type: text/html; charset=UTF-8");
+commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
 
 if(empty($_POST["date1"])&&empty($_POST["date2"])) {
 $year=date("Y")-2;
@@ -57,6 +59,132 @@ $_POST["date1"]=$_POST["date2"];
 $_POST["date2"]=$tmp;
 }
 
+$job=new Job();
+switch($_GET["type"]){
+case "technicien":
+	$val1=$_GET["ID"];
+	$val2=$_GET["assign_type"];
+	$job->assign=$_GET["ID"];
+	$job->assign_type=$_GET["assign_type"];
+
+	if ($_GET["assign_type"]==USER_TYPE){
+	$next=getNextItem("glpi_users",$_GET["ID"]);
+	$prev=getPreviousItem("glpi_users",$_GET["ID"]);
+	$cleantarget=preg_replace("/ID=([0-9]+[&]{0,1})/","",$_SERVER['QUERY_STRING']);
+	} else $next=$prev=-1;
+
+	echo "<div align='center'>";
+	echo "<table class='icon_consol'>";
+	echo "<tr>";
+	echo "<td>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$prev'><</a>";
+	echo "</td>";
+	echo "<td width='400' align='center'><b>".$lang["stats"][16].": ".$job->getAssignName(1)."</b></td>";
+	echo "<td>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$next'>></a>";
+	echo "</td>";
+	echo "</tr>";
+	echo "</table></div><br>";
+	break;
+case "user":
+	$val1=$_GET["ID"];
+	$val2="";
+	$job->author=$_GET["ID"];
+
+	$next=getNextItem("glpi_users",$_GET["ID"]);
+	$prev=getPreviousItem("glpi_users",$_GET["ID"]);
+	$cleantarget=preg_replace("/ID=([0-9]+[&]{0,1})/","",$_SERVER['QUERY_STRING']);
+
+	echo "<div align='center'>";
+	echo "<table class='icon_consol'>";
+	echo "<tr>";
+	echo "<td>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$prev'><</a>";
+	echo "</td>";
+	echo "<td width='400' align='center'><b>".$lang["stats"][16].": ".$job->getAuthorName(1)."</b></td>";
+	echo "<td>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$next'>></a>";
+	echo "</td>";
+	echo "</tr>";
+	echo "</table></div><br>";
+
+	break;	
+case "category":
+	$val1=$_GET["ID"];
+	$val2="";
+
+	$next=getNextItem("glpi_dropdown_tracking_category",$_GET["ID"]);
+	$prev=getPreviousItem("glpi_dropdown_tracking_category",$_GET["ID"]);
+	$cleantarget=preg_replace("/ID=([0-9]+[&]{0,1})/","",$_SERVER['QUERY_STRING']);
+	
+	echo "<div align='center'>";
+	echo "<table class='icon_consol'>";
+	echo "<tr>";
+	echo "<td>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$prev'><</a>";
+	echo "</td>";
+	echo "<td width='400' align='center'><b>".$lang["stats"][38].": ".getDropdownName("glpi_dropdown_tracking_category",$_GET["ID"])."</b></td>";
+	echo "<td>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$next'>></a>";
+	echo "</td>";
+	echo "</tr>";
+	echo "</table></div><br>";
+
+	break;	
+case "device":
+	$val1=$_GET["ID"];
+	$val2=$_GET["device"];
+
+	$device_table = getDeviceTable($_GET["device"]);
+
+	$next=getNextItem($device_table,$_GET["ID"]);
+	$prev=getPreviousItem($device_table,$_GET["ID"]);
+	$cleantarget=preg_replace("/ID=([0-9]+[&]{0,1})/","",$_SERVER['QUERY_STRING']);
+	$db=new DB();
+	$query = "select  designation from ".$device_table." WHERE ID='".$_GET['ID']."'";
+	$result=$db->query($query);
+	
+	echo "<div align='center'>";
+	echo "<table class='icon_consol'>";
+	echo "<tr>";
+	echo "<td>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$prev'><</a>";
+	echo "</td>";
+	echo "<td width='400' align='center'><b>".$lang["stats"][19].": ".$db->result($result,0,"designation")."</b></td>";
+	echo "<td>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$next'>></a>";
+	echo "</td>";
+	echo "</tr>";
+	echo "</table></div><br>";
+
+	break;
+case "comp_champ":
+	$val1=$_GET["ID"];
+	$val2=$_GET["champ"];
+
+	$table=str_replace("dropdown_type","type_computers",str_replace("location","locations","glpi_dropdown_".$_GET["champ"]));
+
+	$next=getNextItem($table,$_GET["ID"]);
+	$prev=getPreviousItem($table,$_GET["ID"]);
+	$cleantarget=preg_replace("/ID=([0-9]+[&]{0,1})/","",$_SERVER['QUERY_STRING']);
+	
+	echo "<div align='center'>";
+	echo "<table class='icon_consol'>";
+	echo "<tr>";
+	echo "<td>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$prev'><</a>";
+	echo "</td>";
+	echo "<td width='400' align='center'><b>".$lang["stats"][26].": ".getDropdownName($table,$_GET["ID"])."</b></td>";
+	echo "<td>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$next'>></a>";
+	echo "</td>";
+	echo "</tr>";
+	echo "</table></div><br>";
+
+	break;
+
+}
+
 
 echo "<div align='center'><form method=\"post\" name=\"form\" action=\"".$_SERVER["REQUEST_URI"]."\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
@@ -68,29 +196,6 @@ showCalendarForm("form","date2",$_POST["date2"]);
 echo "</td></tr>";
 echo "</table></form></div>";
 
-switch($_GET["type"]){
-case "technicien":
-	$val1=$_GET["ID"];
-	$val2=$_GET["assign_type"];
-	break;
-case "user":
-	$val1=$_GET["ID"];
-	$val2="";
-	break;	
-case "category":
-	$val1=$_GET["ID"];
-	$val2="";
-	break;	
-case "device":
-	$val1=$_GET["ID"];
-	$val2=$_GET["device"];
-	break;
-case "comp_champ":
-	$val1=$_GET["ID"];
-	$val2=$_GET["champ"];
-	break;
-
-}
 
 
 ///////// Stats nombre intervention
@@ -119,5 +224,6 @@ $entrees_avgtime=constructEntryValues("inter_avgtakeaccount",$_POST["date1"],$_P
 	if (count($entrees_avgtime)>0)
 graphBy($entrees_avgtime,$lang["stats"][30],$lang["stats"][32],0,"month");
 
+commonFooter();
 
 ?>

@@ -99,7 +99,7 @@ function showAddPlanningTrackingForm($target,$job){
 	echo "</b></th></tr>";
 	// Ajouter le job
 	$j=new Job;
-	$j->getfromDB($job,1);
+	$j->getfromDB($job,0);
 	echo "<tr class='tab_bg_1'><td>".$lang["planning"][8].":	</td>";
 	echo "<td>";
 	echo "<b>".$j->contents."</b>";
@@ -210,18 +210,12 @@ function showPlanning($who,$when,$type){
 		switch ($type){
 		case "week":
 			for ($i=1;$i<=7;$i++){
-			echo "<td class='tab_bg_2' width='12%'>";
-			echo "<b>".display_time($hour).":00<br></b>";
 			displayplanning($who,date("Y-m-d",strtotime($when)+mktime(0,0,0,0,$i,0)-mktime(0,0,0,0,$dayofweek,0))." $hour:00:00");
-			echo "</td>";
 			}
 		
 			break;
 		case "day":
-			echo "<td class='tab_bg_2' width='80%'>";
-			echo "<b>".display_time($hour).":00<br></b>";
 			displayplanning($who,$when." $hour:00:00");
-			echo "</td>";
 			break;
 		}
 	echo "</tr>\n";
@@ -234,9 +228,11 @@ function showPlanning($who,$when,$type){
 }
 
 function displayplanning($who,$when){
-
+global $cfg_features;
 $db=new DB;
 $debut=$when;
+$tmp=split(" ",$when);
+$hour=split(":",$tmp[1]);
 
 
 $query="SELECT * from glpi_tracking_planning WHERE id_assign='$who' AND (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL 59 MINUTE ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL 59 MINUTE ) > end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL 59 MINUTE ) AND end > adddate( '". $debut ."' , INTERVAL 59 MINUTE )))";
@@ -244,14 +240,30 @@ $query="SELECT * from glpi_tracking_planning WHERE id_assign='$who' AND (('".$de
 $result=$db->query($query);
 
 $job=new Job();
+
+$interv=array();
 if ($db->numrows($result)>0)
 while ($data=$db->fetch_array($result)){
+	$job->getFromDB($data["id_tracking"],0);
+
+	$interv[$data["id_tracking"]]["begin"]=$data["begin"];
+	$interv[$data["id_tracking"]]["end"]=$data["end"];
+	$interv[$data["id_tracking"]]["content"]=substr($job->contents,0,$cfg_features["cut"]);
+	$interv[$data["id_tracking"]]["device"]=$job->computername;
+}
+
+echo "<td class='tab_bg_2' width='12%' valign='top' >";
+echo "<b>".display_time($hour[0]).":00<br></b>";
+
+if (count($interv)>0)
+foreach ($interv as $key => $val){
 echo "<div>";
-$job->getFromDB($data["id_tracking"],1);
-echo date("H-i",strtotime($data["begin"]))." -> ".date("H-i",strtotime($data["end"])).":<br>";
-echo $job->contents;
+echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"]."<br>";
+echo $val["content"];
 echo "</div>";
 }
+
+echo "</td>";
 
 }
 
@@ -297,6 +309,7 @@ function addPlanningTracking($input,$target){
 		$resa->displayError("is_res",$input["id_assign"],$target);
 		return false;
 	}
+
 	if ($input["id_tracking"]>0)
 		return $resa->addToDB();
 	else return true;

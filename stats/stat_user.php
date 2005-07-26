@@ -86,7 +86,7 @@ ksort($val);
    foreach($val as $k=>$key)
    {
 	echo "<tr class='tab_bg_1'>";
-	echo "<td>".getUserName($key["author"],1)."</td><td><a target=_blank href='graph_item.php?ID=".$key["author"]."&type=user'>Graph</a></td>";
+	echo "<td>".getUserName($key["author"],1)."</td><td><a href='graph_item.php?ID=".$key["author"]."&type=user'>Graph</a></td>";
 
 		echo "<td>".getNbinter(4,'glpi_tracking.author',unhtmlentities($key["author"]), $_POST["date1"], $_POST["date2"])."</td>";
 		echo "<td>".getNbresol(4,'glpi_tracking.author',unhtmlentities($key["author"]), $_POST["date1"], $_POST["date2"])."</td>";

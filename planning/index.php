@@ -58,7 +58,7 @@ titleTrackingPlanning();
 	echo "<div align='center'><form method=\"get\" name=\"form\" action=\"index.php\">";
 	echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
 	echo $lang["planning"][4].":</td><td>";
-	echo showCalendarForm("form","planningdate",$_GET["date"]);
+	echo showCalendarForm("form","date",$_GET["date"]);
 	echo "</td>";
 	echo "<td><select name='type'>";
 	echo "<option value='day' ".($_GET["type"]=="day"?" selected ":"").">".$lang["planning"][5]."</option>";

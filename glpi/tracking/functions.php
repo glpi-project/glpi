@@ -584,7 +584,7 @@ function showJobShort($ID, $followups) {
 		echo "<td  align='center' ><strong>".getDropdownName("glpi_dropdown_tracking_category",$job->category)."</strong></td>";
 		
 		$stripped_content=$job->contents;
-		if (!$followups) $stripped_content =substr($job->contents,0,5);
+		if (!$followups) $stripped_content =substr($job->contents,0,$cfg_features["cut"]);
 		echo "<td ><strong>$stripped_content</strong>";
 		if ($followups)
 		{
@@ -718,7 +718,7 @@ function showJobDetails($ID) {
 		if ($db->numrows($result2)>0)
 		while ($data=$db->fetch_array($result2)){
 			echo "<tr><td colspan='2' align='left'>";
-			echo date("Y-m-d H-i",strtotime($data["begin"]))." -> ".date("Y-m-d H-i",strtotime($data["end"]))."<br>";
+			echo date("Y-m-d H:i",strtotime($data["begin"]))." -> ".date("Y-m-d H:i",strtotime($data["end"]))."<br>";
 			echo "</td></tr>";
 		}
 		
