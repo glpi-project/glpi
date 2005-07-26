@@ -51,10 +51,10 @@ include ($phproot . "/glpi/includes_enterprises.php");
 if (isset($_POST["add_planning"])){
 
 checkAuthentication("normal");
-addPlanningTracking($_POST,$_SERVER["REQUEST_URI"]);
-logEvent($_POST["ID"], "planning", 4, "planning", $_SESSION["glpiname"]." add a planning.");
-glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=".$_POST["id_tracking"]);
-
+if (addPlanningTracking($_POST,$_SERVER["REQUEST_URI"])){
+	logEvent($_POST["id_tracking"], "planning", 4, "planning", $_SESSION["glpiname"]." add a planning.");
+	glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=".$_POST["id_tracking"]);
+}
 } else {
 	commonHeader($lang["title"][31],$_SERVER["PHP_SELF"]);
 	showAddPlanningTrackingForm($_SERVER["PHP_SELF"],$_GET["job"]);
