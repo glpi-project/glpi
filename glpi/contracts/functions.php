@@ -52,6 +52,34 @@ function titleContract(){
          echo "</td></tr></table></div>";
 }
 
+
+function showContractOnglets($target,$withtemplate,$actif){
+	global $lang;
+
+	$template="";
+	if(!empty($withtemplate)){
+		$template="&withtemplate=$withtemplate";
+	}
+	
+	echo "<div id='barre_onglets'><ul id='onglet'>";
+	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&onglet=1$template'>".$lang["title"][26]."</a></li>";
+	
+	
+	echo "<li class='invisible'>&nbsp;</li>";
+	
+	if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
+	$ID=$ereg[1];
+	$next=getNextItem("glpi_contracts",$ID);
+	$prev=getPreviousItem("glpi_contracts",$ID);
+	$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
+	if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><</a></li>";
+	if ($next>0) echo "<li><a href='$cleantarget?ID=$next'>></a></li>";
+	}
+
+	echo "</ul></div>";
+	
+}
+
 /**
 * Print search form for contracts
 *
@@ -378,7 +406,7 @@ function showContractForm ($target,$ID,$search) {
 	$con = new Contract;
 
 	echo "<form name='form' method='post' action=\"$target\"><div align='center'>";
-	echo "<table class='tab_cadre'>";
+	echo "<table class='tab_cadre' width='700'>";
 	echo "<tr><th colspan='4'><b>";
 	if (!$ID) {
 		echo $lang["financial"][36].":";

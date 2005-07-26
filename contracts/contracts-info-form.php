@@ -120,7 +120,15 @@ else
 	checkAuthentication("admin");
 	else checkAuthentication("normal");
 
+	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
+	if (isset($_GET['onglet'])) {
+		$_SESSION['glpi_onglet']=$_GET['onglet'];
+//		glpi_header($_SERVER['HTTP_REFERER']);
+	}
+
 	commonHeader($lang["title"][20],$_SERVER["PHP_SELF"]);
+
+	showContractOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 	
 	showContractForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["search"]);
 	
