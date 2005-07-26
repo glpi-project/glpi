@@ -70,14 +70,19 @@ echo "ID=".$db->result($result,0,"ID")."&delete=delete\">".$lang["reservation"][
 
 
 
-function showAddPlanningTrackingForm($target,$job){
+function showAddPlanningTrackingForm($target,$job,$planID=-1){
 	global $lang,$HTMLRel;
 	
 	$planning= new PlanningTracking;
-	
-	$planning->getEmpty();
-	$planning->fields["begin"]=date("Y-m-d")." 12:00:00";
-	$planning->fields["end"]=date("Y-m-d")." 13:00:00";
+
+	if ($planID!=-1)
+		$planning->getFromDB($planID);
+	else {
+		$planning->getEmpty();
+		$planning->fields["begin"]=date("Y-m-d")." 12:00:00";
+		$planning->fields["end"]=date("Y-m-d")." 13:00:00";
+	}
+
 	
 	$begin=strtotime($planning->fields["begin"]);
 	$end=strtotime($planning->fields["end"]);
@@ -90,6 +95,8 @@ function showAddPlanningTrackingForm($target,$job){
 	$end_min=date("i",$end);
 
 	echo "<div align='center'><form method='post' name=form action=\"$target\">";
+	if ($planID!=-1)
+	echo "<input type='hidden' name='ID' value='$planID'>";
 	
 	echo "<input type='hidden' name='id_tracking' value='$job'>";
 
@@ -114,7 +121,10 @@ function showAddPlanningTrackingForm($target,$job){
 	else {
 	echo "<tr class='tab_bg_2'><td>".$lang["planning"][9].":	</td>";
 	echo "<td>";
+	if ($planID==-1)
 	dropdownValue("glpi_users","id_assign",$_SESSION["glpiID"]);
+	else dropdownValue("glpi_users","id_assign",$planning->fields["id_assign"]);
+
 	echo "</td></tr>";
 	
 	}
@@ -166,11 +176,22 @@ function showAddPlanningTrackingForm($target,$job){
 	echo "</select>";
 	echo "</td></tr>";
 
+
+
+	if ($planID==-1){
 	echo "<tr class='tab_bg_2'>";
 	echo "<td colspan='2'  valign='top' align='center'>";
 	echo "<input type='submit' name='add_planning' value=\"".$lang["buttons"][8]."\" class='submit' class='submit'>";
 	echo "</td></tr>\n";
-	
+	} else {
+	echo "<tr class='tab_bg_2'>";
+	echo "<td valign='top' align='center'>";
+	echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' class='submit'>";
+	echo "</td><td valign='top' align='center'>";
+	echo "<input type='submit' name='edit_planning' value=\"".$lang["buttons"][14]."\" class='submit' class='submit'>";
+	echo "</td></tr>\n";
+	}
+
 	echo "</table></div>";
 	echo "</form>";
 }
@@ -262,7 +283,7 @@ echo "<div>";
 echo "<a href='".$HTMLRel."tracking/tracking-followups.php?ID=$key'";
 echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"];
 echo "</a>";
-echo "<a href='".$HTMLRel."planning/planning-add-form.php?delete=delete&ID=".$val["ID"]."'><img src='$HTMLRel/pics/delete.png'></a>";
+echo "<a href='".$HTMLRel."planning/planning-add-form.php?edit=edit&job=$key&ID=".$val["ID"]."'><img src='$HTMLRel/pics/edit.png'></a>";
 
 echo "<br>";
 echo $val["content"];
@@ -348,17 +369,17 @@ global $lang;
 	}
 	$ri->fields["begin"]=$_POST["begin"];
 	$ri->fields["end"]=$_POST["end"];
+
 	if (!$ri->test_valid_date()){
 		$ri->displayError("date",$item,$target);
 		return false;
 	}
-	
+
 	if ($ri->is_alreadyplanned()){
 		$ri->displayError("is_res",$item,$target);
 		return false;
 	}
-	
-	
+
 	if (isset($updates))
 		$ri->updateInDB($updates);
 	return true;
