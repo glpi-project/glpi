@@ -101,7 +101,7 @@ case "user":
 	echo "<td>";
 	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
 	echo "</td>";
-	echo "<td width='400' align='center'><b>".$lang["stats"][16].": ".$job->getAuthorName(1)."</b></td>";
+	echo "<td width='400' align='center'><b>".$lang["stats"][20].": ".$job->getAuthorName(1)."</b></td>";
 	echo "<td>";
 	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
 	echo "</td>";
