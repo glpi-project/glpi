@@ -2197,7 +2197,7 @@ function printPager($start,$numrows,$target,$parameters) {
 	}
 
 	// Print it
-	echo "<br><center><table class='tab_cadre2' width='750'>";
+	echo "<div align='center'><table class='tab_cadre2' width='800'>";
 	echo "<tr>";
 	
 	// Back and fast backward button
@@ -2241,7 +2241,7 @@ function printPager($start,$numrows,$target,$parameters) {
 
 	// End pager
 	echo "</tr>";
-	echo "</table></center>";
+	echo "</table><br></div>";
 }
 
 /**
