@@ -51,7 +51,7 @@ function titleSoftware(){
 }
 
 function showSoftwareOnglets($target,$withtemplate,$actif){
-	global $lang;
+	global $lang,$HTMLRel;
 	
 	$template="";
 	if(!empty($withtemplate)){
@@ -75,8 +75,8 @@ function showSoftwareOnglets($target,$withtemplate,$actif){
 	$next=getNextItem("glpi_software",$ID);
 	$prev=getPreviousItem("glpi_software",$ID);
 	$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
-		if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><</a></li>";
-	if ($next>0) echo "<li><a href='$cleantarget?ID=$next'>></a></li>";
+		if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
+	if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
 	}
 	echo "</ul></div>";
 	
