@@ -44,7 +44,7 @@ checkAuthentication("normal");
 
 commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
 
-echo "<div align='center'><p><b>".$lang["stats"][19]."</p></b>";
+echo "<div align='center'><p><b><span class='icon_nav'>".$lang["stats"][19]."</b></span></p>";
 
 if(empty($_POST["date1"])) $_POST["date1"] = "";
 if(empty($_POST["date2"])) $_POST["date2"] = "";
