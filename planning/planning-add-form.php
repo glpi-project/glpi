@@ -52,13 +52,13 @@ if (isset($_POST["add_planning"])){
 
 checkAuthentication("normal");
 if (addPlanningTracking($_POST,$_SERVER["REQUEST_URI"])){
-	logEvent($_POST["id_tracking"], "planning", 4, "planning", $_SESSION["glpiname"]." add a planning.");
+	logEvent(0, "planning", 4, "planning", $_SESSION["glpiname"]." add a planning.");
 	glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=".$_POST["id_tracking"]);
 }
 
 } else if (isset($_GET["delete"])){
 	deletePlanningTracking($_GET["ID"]);
-	logEvent($_GET["ID"], "planning", 4, "planning", $_SESSION["glpiname"]." delete a planning.");
+	logEvent(0, "planning", 4, "planning", $_SESSION["glpiname"]." delete a planning.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
 	commonHeader($lang["title"][31],$_SERVER["PHP_SELF"]);

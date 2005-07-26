@@ -978,6 +978,8 @@ function showConnections($ID,$withtemplate='') {
 	GLOBAL $cfg_layout, $cfg_install, $lang;
 
 	$db = new DB;
+	
+	$state=new StateItem();
 
 	echo "&nbsp;<div align='center'><table border='0' width='90%' class='tab_cadre'>";
 	echo "<tr><th colspan='3'>".$lang["connect"][0].":</th></tr>";
@@ -996,10 +998,15 @@ function showConnections($ID,$withtemplate='') {
 				$tID = $db->result($result, $i, "end1");
 				$printer = new Printer;
 				$printer->getfromDB($tID);
+				
 				echo "<tr ".($printer->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
 				echo "<td align='center'><a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=$tID\"><b>";
 				echo $printer->fields["name"]." (".$printer->fields["ID"].")";
-				echo "</b></a></td>";
+				echo "</b></a>";
+				if ($state->getfromDB(PRINTER_TYPE,$tID))
+				echo " - ".getDropdownName("glpi_dropdown_state",$state->fields['state']);
+
+				echo "</td>";
 				if(!empty($withtemplate) && $withtemplate == 2) {
 					//do nothing
 				} else {
@@ -1038,7 +1045,11 @@ function showConnections($ID,$withtemplate='') {
 				echo "<tr ".($monitor->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
 				echo "<td align='center'><a href=\"".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=$tID\"><b>";
 				echo $monitor->fields["name"]." (".$monitor->fields["ID"].")";
-				echo "</b></a></td>";
+				echo "</b></a>";
+				if ($state->getfromDB(MONITOR_TYPE,$tID))
+				echo " - ".getDropdownName("glpi_dropdown_state",$state->fields['state']);
+				
+				echo "</td>";
 				if(!empty($withtemplate) && $withtemplate == 2) {
 					//do nothing
 				} else {
@@ -1077,7 +1088,12 @@ function showConnections($ID,$withtemplate='') {
 				echo "<tr ".($periph->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
 				echo "<td align='center'><a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=$tID\"><b>";
 				echo $periph->fields["name"]." (".$periph->fields["ID"].")";
-				echo "</b></a></td>";
+				echo "</b></a>";
+
+				if ($state->getfromDB(PERIPHERAL_TYPE,$tID))
+				echo " - ".getDropdownName("glpi_dropdown_state",$state->fields['state']);
+				
+				echo "</td>";
 				if(!empty($withtemplate) && $withtemplate == 2) {
 					//do nothing
 				} else {
