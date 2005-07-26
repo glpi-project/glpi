@@ -306,7 +306,7 @@ function utf8_decode_deep($value) {
 **/      
 function checkAuthentication($authtype) {
 	// Universal method to have a magic-quote-gpc system
-	global $_POST, $_GET,$_COOKIE,$tab;
+	global $_POST, $_GET,$_COOKIE,$tab,$cfg_features;
 	// Clean array and addslashes
 	
 	if (get_magic_quotes_gpc()) {
@@ -339,6 +339,8 @@ function checkAuthentication($authtype) {
 	
 	//if(!isset($_SESSION)) session_start();
 	if(!session_id()){@session_start();}
+	// Override cfg_features by session value
+	if (isset($_SESSION['list_limit'])) $cfg_features["list_limit"]=$_SESSION['list_limit'];
 	
 	
 	GLOBAL $cfg_install, $lang, $HTMLRel;
