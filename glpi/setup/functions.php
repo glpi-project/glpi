@@ -1134,13 +1134,13 @@ global $cfg_install;
 				}
 			}
 
-			if ($user->addToDB()) {
+			if ($newID=$user->addToDB()) {
 				// Give him some default prefs...
 				$query = "INSERT INTO glpi_prefs (username,tracking_order,language) VALUES ('".$input["name"]."','no','".$cfg_install["default_language"]."')";
 
 				$db = new DB;
 				$result=$db->query($query);
-				return true;
+				return $newID;
 			} else {
 				return false;
 			}

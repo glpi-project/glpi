@@ -162,10 +162,8 @@ function showTypedocList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_type_docs.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_docs.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["document"][1]."</a></th>";
@@ -383,7 +381,7 @@ function addTypedoc($input) {
 		}
 	}
 
-	$mon->addToDB();
+	return $mon->addToDB();
 }
 
 function deleteTypedoc($input,$force=0) {
