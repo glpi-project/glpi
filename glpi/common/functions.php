@@ -953,12 +953,12 @@ function showAddEvents($target,$order,$sort,$user="") {
 		$order = "DESC";
 	}
 	
-	$usersearch="";
+	$usersearch="%";
 	if (!empty($user))
 	$usersearch=$user." ";
 	
 	// Query Database
-	$query = "SELECT * FROM glpi_event_log WHERE message LIKE '%".$usersearch."added%' ORDER BY $sort $order LIMIT 0,".$cfg_features["num_of_events"];
+	$query = "SELECT * FROM glpi_event_log WHERE message LIKE '".$usersearch."added%' ORDER BY $sort $order LIMIT 0,".$cfg_features["num_of_events"];
 
 	// Get results
 	$result = $db->query($query);
@@ -976,7 +976,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 	// Output events
 	$i = 0;
 
-	echo "<p><center><table width='90%' class='tab_cadre'>";
+	echo "<p><center><table width='45%' class='tab_cadre'>";
 	echo "<tr><th colspan='6'>".$lang["central"][2]." ".$cfg_features["num_of_events"]." ".$lang["central"][8].":</th></tr>";
 	echo "<tr>";
 
