@@ -216,14 +216,6 @@ function showCentralJobList($target,$start) {
 		echo "<table border='0' width='90%'>";
 		echo "<tr><th>".$lang["joblist"][8]."</th></tr>";
 
-		if ($item) 
-		{
-			echo "<tr><td align='center' class='tab_bg_1'>";
-			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&device_type=$item_type\"><strong>";
-			echo $lang["joblist"][7];
-			echo "</strong></a>";
-			echo "</td></tr>";
-		}
 		echo "</table>";
 		echo "</div><br>";
 	}
