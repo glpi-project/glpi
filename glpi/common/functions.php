@@ -460,7 +460,7 @@ $financial = array($lang["Menu"][22]=>array("/contacts/index.php","t"),
 		);
 
 $maintain =	array($lang["Menu"][5]=>array("/tracking/index.php","t"),
-		"Helpdesk"=>array("/helpdesk/index.php","h"),
+		$lang["Menu"][31]=>array("/helpdesk/index.php","h"),
 		$lang["Menu"][29]=>array("/planning/index.php","l"),
 		$lang["Menu"][13]=>array("/stats/index.php","1"));
 
@@ -468,7 +468,8 @@ $maintain =	array($lang["Menu"][5]=>array("/tracking/index.php","t"),
 $config = array($lang["Menu"][14]=>array("/setup/setup-users.php","u"),
 		$lang["Menu"][10]=>array("/setup/index.php","2"),
 		$lang["Menu"][11]=>array("/preferences/index.php","p"),
-		$lang["Menu"][12]=>array("/backups/index.php","b"));
+		$lang["Menu"][12]=>array("/backups/index.php","b"),
+		$lang["Menu"][30]=>array("/logs.php","l"),);
 
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
@@ -928,6 +929,120 @@ function logEvent ($item, $itemtype, $level, $service, $event) {
 }
 
 /**
+* Print a nice tab for last event from inventory section
+*
+* Print a great tab to present lasts events occured on glpi
+*
+*
+* @param $target where to go when complete
+* @param $order order by clause occurences (eg: ) 
+* @param $sort order by clause occurences (eg: date) 
+**/
+function showAddEvents($target,$order,$sort) {
+	// Show events from $result in table form
+
+	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
+
+	// new database object
+	$db = new DB;
+
+	// define default sorting
+	
+	if (!$sort) {
+		$sort = "date";
+		$order = "DESC";
+	}
+	
+	// Query Database
+	$query = "SELECT * FROM glpi_event_log WHERE message LIKE '%added%' ORDER BY $sort $order LIMIT 0,".$cfg_features["num_of_events"];
+
+	// Get results
+	$result = $db->query($query);
+	
+	
+	// Number of results
+	$number = $db->numrows($result);
+
+	// No Events in database
+	if ($number < 1) {
+		echo "<b>".$lang["central"][4]."</b>";
+		return;
+	}
+	
+	// Output events
+	$i = 0;
+
+	echo "<p><center><table width='90%' class='tab_cadre'>";
+	echo "<tr><th colspan='6'>".$lang["central"][2]." ".$cfg_features["num_of_events"]." ".$lang["central"][8].":</th></tr>";
+	echo "<tr>";
+
+	echo "<th colspan='2'>";
+	if ($sort=="item") {
+		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
+	}
+	echo "<a href=\"$target?sort=item&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][0]."</a></th>";
+
+	echo "<th>";
+	if ($sort=="date") {
+		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
+	}
+	echo "<a href=\"$target?sort=date&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][1]."</a></th>";
+
+	echo "<th width='8%'>";
+	if ($sort=="service") {
+		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
+	}
+	echo "<a href=\"$target?sort=service&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][2]."</a></th>";
+
+	echo "<th width='8%'>";
+	if ($sort=="level") {
+		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
+	}
+	echo "<a href=\"$target?sort=level&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][3]."</a></th>";
+
+	echo "<th width='60%'>";
+	if ($sort=="message") {
+		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
+	}
+	echo "<a href=\"$target?sort=message&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][4]."</a></th></tr>";
+
+	while ($i < $number) {
+		$ID = $db->result($result, $i, "ID");
+		$item = $db->result($result, $i, "item");
+		$itemtype = $db->result($result, $i, "itemtype");
+		$date = $db->result($result, $i, "date");
+		$service = $db->result($result, $i, "service");
+		$level = $db->result($result, $i, "level");
+		$message = $db->result($result, $i, "message");
+		
+		echo "<tr class='tab_bg_2'>";
+		echo "<td>$itemtype:</td><td align='center'><b>";
+		if ($item=="-1" || $item=="0") {
+			echo $item;
+		} else {
+				if ($itemtype=="reservation"){
+				echo "<a href=\"".$cfg_install["root"]."/$itemtype/index.php?show=resa&ID=";
+				} else {
+				echo "<a href=\"".$cfg_install["root"]."/$itemtype/".$itemtype."-info-form.php?ID=";
+				}
+			echo $item;
+			echo "\">$item</a>";
+		}			
+		echo "</b></td><td>$date</td><td align='center'>$service</td><td align='center'>$level</td><td>$message</td>";
+		echo "</tr>";
+
+		$i++; 
+	}
+
+	echo "</table></center><br>";
+}
+
+/**
 * Print a nice tab for last event
 *
 * Print a great tab to present lasts events occured on glpi
@@ -977,46 +1092,36 @@ function showEvents($target,$order,$sort) {
 
 	echo "<th colspan='2'>";
 	if ($sort=="item") {
-		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-		else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 	}
 	echo "<a href=\"$target?sort=item&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][0]."</a></th>";
 
 	echo "<th>";
 	if ($sort=="date") {
-		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-		else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 	}
 	echo "<a href=\"$target?sort=date&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][1]."</a></th>";
 
 	echo "<th width='8%'>";
 	if ($sort=="service") {
-		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-		else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 	}
 	echo "<a href=\"$target?sort=service&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][2]."</a></th>";
 
 	echo "<th width='8%'>";
 	if ($sort=="level") {
-		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-		else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 	}
 	echo "<a href=\"$target?sort=level&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][3]."</a></th>";
 
 	echo "<th width='60%'>";
 	if ($sort=="message") {
-		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png
-\" alt='' title=''>";
-		else echo "<img src=\"".$HTMLRel."pics/puce-up.png
-\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 	}
 	echo "<a href=\"$target?sort=message&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][4]."</a></th></tr>";
 

@@ -60,16 +60,19 @@ echo "<center><b>".$lang["central"][0]." ".(empty($_SESSION["glpirealname"])?$_S
 // Show last events
 if(isset($_GET["order"]))
 {
-	showEvents($_SERVER["PHP_SELF"],$_GET["order"],$_GET["sort"]);
+	showAddEvents($_SERVER["PHP_SELF"],$_GET["order"],$_GET["sort"]);
 }
 else
 {
-	showEvents($_SERVER["PHP_SELF"],"","");
+	showAddEvents($_SERVER["PHP_SELF"],"","");
 }
+
+
+
 if ($cfg_features["jobs_at_login"] == "1")
 {
 	if(empty($_GET["start"])) $_GET["start"] = 0;
-	showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiID"],"individual","","","",$_GET["start"]);
+	showJobList($_SERVER["PHP_SELF"],"","unassigned","","","",$_GET["start"]);
 }
 
 commonFooter();
