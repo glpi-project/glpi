@@ -762,31 +762,7 @@ function listTemplates($type,$target) {
 
 }
 
-function showSortForm($target) {
 
-	GLOBAL $cfg_layout, $lang;
-	
-	$order = $_SESSION["tracking_order"];
-	
-	echo "<div align='center'>&nbsp;<table class='tab_cadre' cellpadding='5' width='30%'>";
-	echo "<form method='post' action=\"$target\">";
-	echo "<tr><th colspan='2'>".$lang["setup"][40]."</th></tr>";
-	echo "<tr><td width='100%' align='center' class='tab_bg_1'>";
-	echo "<select name='tracking_order'>";
-	echo "<option value=\"yes\"";
-	if ($order=="yes") { echo " selected"; }	
-	echo ">".$lang["choice"][1];
-	echo "<option value=\"no\"";
-	if ($order=="no") { echo " selected"; }
-	echo ">".$lang["choice"][0];
-	echo "</select>";
-	echo "</td>";
-	echo "<td align='center' class='tab_bg_2'>";
-	echo "<input type='submit' name='updatesort' value=\"".$lang["buttons"][14]."\" class='submit'>";
-	echo "</td></tr>";
-	echo "</form>";
-	echo "</table></div>";
-}
 
 
 
