@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-07-15 17:36
+#GLPI Dump database on 2005-07-27 19:34
 
 ### Dump table glpi_cartridges
 
@@ -161,11 +161,13 @@ CREATE TABLE glpi_config (
     cas_host varchar(255) NOT NULL,
     cas_port varchar(255) NOT NULL,
     cas_uri varchar(255) NOT NULL,
+    planning_begin time DEFAULT '08:00:00' NOT NULL,
+    planning_end time DEFAULT '20:00:00' NOT NULL,
     utf8_conv int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.6','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','0');
+INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.6','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0');
 
 ### Dump table glpi_connect_wire
 
@@ -691,7 +693,6 @@ CREATE TABLE glpi_event_log (
    KEY itemtype (itemtype)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('1','-1','system','2005-07-15 17:36:34','login','3','glpi logged in from 127.0.0.1.');
 
 ### Dump table glpi_followups
 
@@ -916,24 +917,6 @@ CREATE TABLE glpi_peripherals (
 
 INSERT INTO glpi_peripherals VALUES ('1','','0000-00-00 00:00:00','','','0','','','','0','0','','0','N','1','Blank Template');
 
-### Dump table glpi_prefs
-
-DROP TABLE IF EXISTS glpi_prefs;
-CREATE TABLE glpi_prefs (
-    username varchar(80) NOT NULL,
-    tracking_order enum('no','yes') DEFAULT 'no' NOT NULL,
-    language varchar(255) NOT NULL,
-    ID int(11) NOT NULL auto_increment,
-   PRIMARY KEY (ID),
-   UNIQUE username (username)
-) TYPE=MyISAM;
-
-INSERT INTO glpi_prefs VALUES ('glpi','yes','french','1');
-INSERT INTO glpi_prefs VALUES ('Helpdesk','no','french','2');
-INSERT INTO glpi_prefs VALUES ('normal','','english','3');
-INSERT INTO glpi_prefs VALUES ('tech','yes','french','4');
-INSERT INTO glpi_prefs VALUES ('post-only','','english','5');
-
 ### Dump table glpi_printers
 
 DROP TABLE IF EXISTS glpi_printers;
@@ -1090,6 +1073,22 @@ CREATE TABLE glpi_tracking (
 ) TYPE=MyISAM;
 
 
+### Dump table glpi_tracking_planning
+
+DROP TABLE IF EXISTS glpi_tracking_planning;
+CREATE TABLE glpi_tracking_planning (
+    ID bigint(20) NOT NULL auto_increment,
+    id_tracking int(11) DEFAULT '0' NOT NULL,
+    id_assign int(11) DEFAULT '0' NOT NULL,
+    begin datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+    end datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+   PRIMARY KEY (ID),
+   KEY id_tracking (id_tracking),
+   KEY begin (begin),
+   KEY end (end)
+) TYPE=MyISAM;
+
+
 ### Dump table glpi_type_computers
 
 DROP TABLE IF EXISTS glpi_type_computers;
@@ -1224,14 +1223,16 @@ CREATE TABLE glpi_users (
     realname varchar(255) NOT NULL,
     can_assign_job enum('yes','no') DEFAULT 'no' NOT NULL,
     location int(11),
+    tracking_order enum('yes','no') DEFAULT 'no' NOT NULL,
+    language varchar(255) NOT NULL,
    PRIMARY KEY (ID),
    UNIQUE name (name),
    KEY type (type),
    KEY name_2 (name)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_users VALUES ('1','Helpdesk','14e43c2d31dcbdd1','','',NULL,'post-only','Helpdesk Injector','no',NULL);
-INSERT INTO glpi_users VALUES ('2','glpi','*64B4BB8F2A8C2F41C639DBC894D2759330199470','41ece51526515624ff89973668497d00','','','super-admin','','yes','0');
-INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','post-only','','no','0');
-INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','super-admin','','yes','0');
-INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','normal','','no','0');
+INSERT INTO glpi_users VALUES ('1','Helpdesk','14e43c2d31dcbdd1','','',NULL,'post-only','Helpdesk Injector','no',NULL,'no','french');
+INSERT INTO glpi_users VALUES ('2','glpi','*64B4BB8F2A8C2F41C639DBC894D2759330199470','41ece51526515624ff89973668497d00','','','super-admin','','yes','0','yes','french');
+INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','post-only','','no','0','','english');
+INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','super-admin','','yes','0','yes','french');
+INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','normal','','no','0','','english');
