@@ -68,7 +68,7 @@ echo "</td><td  align='center'  width='45%'>";
 showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
 echo "</td></tr></table>";
 echo "</div>";
-
+echo "<br>";
 
 if(empty($_GET["start"])) $_GET["start"] = 0;
 	showJobList($_SERVER["PHP_SELF"],"","unassigned","","","",$_GET["start"]);
