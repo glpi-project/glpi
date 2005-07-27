@@ -526,16 +526,9 @@ function kbcategoryList($current=0,$nullroot="yes")
 	global $lang;
 	
 	
-	echo "<select name='categoryID' size='1'>\n";
-	
-	if ($nullroot=="yes"){
-	echo "<option value='0'>--- ".$lang["knowbase"][12]." ---</option>\n";
-	}
 
-	dropdown("glpi_dropdown_kbcategories",$current);
+	dropdownValue("glpi_dropdown_kbcategories","categoryID",$current);
 	
-//	kbcategoryListSelect($current, 0, "\\");
-	echo "</select>\n";
 }
 
 
