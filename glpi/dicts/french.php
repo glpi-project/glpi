@@ -153,6 +153,7 @@ $lang["central"][4]="Pas d'événement";
 $lang["central"][5]="Accueil"; 
 $lang["central"][6]="Déconnexion"; 
 $lang["central"][7]="Aide"; 
+$lang["central"][8]="Ajouts"; 
 
 $lang["choice"][0]="Oui"; 
 $lang["choice"][1]="Non"; 
@@ -688,6 +689,8 @@ $lang["Menu"][26]="Gestion";
 $lang["Menu"][27]="Documents"; 
 $lang["Menu"][28]="Etats"; 
 $lang["Menu"][29]="Planning"; 
+$lang["Menu"][30]="Logs"; 
+$lang["Menu"][31]="Helpdesk"; 
 
 $lang["monitors"][0]="Ajouter moniteur..."; 
 $lang["monitors"][3]="Ajouter moniteur"; 
@@ -1062,7 +1065,7 @@ $lang["setup"][106]="4- Notices (Ajout, suppression, tracking)";
 $lang["setup"][107]="5- Complet (Tout)";
 $lang["setup"][108]="Nombre d'événements de log à afficher";
 $lang["setup"][109]="Temps en jours de conservation des logs (0 pour infini)";
-$lang["setup"][110]="Montrer les interventions au login";
+$lang["setup"][110]="Montrer les interventions non affectées au login";
 $lang["setup"][111]="Nombre d'éléments à afficher par page";
 $lang["setup"][112]="Nombre de caractères maximum pour chaque éléments de la liste";
 $lang["setup"][113]="Langue par défaut";
@@ -1247,6 +1250,7 @@ $lang["title"][28]="Interventions";
 $lang["title"][29]="Tous"; 
 $lang["title"][30]="Périphériques internes"; 
 $lang["title"][31]="Planning"; 
+$lang["title"][32]="Logs"; 
 
 $lang["toolbar"][1]="Gras"; 
 $lang["toolbar"][2]="Italique"; 

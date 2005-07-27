@@ -74,7 +74,7 @@ if (isAdmin($_SESSION["glpitype"])&&isset($tab["delete"])&&!empty($tab["todel"])
 
 
 searchFormTracking($tab["show"],$tab["contains"],$tab["containsID"],$tab["device"],$tab["category"],$tab["desc"]);
-showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$tab["show"],$tab["contains"],"","",$tab["start"],$tab["device"],$tab["category"],$tab["containsID"],$tab["desc"]);
+showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiID"],$tab["show"],$tab["contains"],"","",$tab["start"],$tab["device"],$tab["category"],$tab["containsID"],$tab["desc"]);
 
 commonFooter();
 ?>
