@@ -613,6 +613,34 @@ p.toolbar a:hover
 
 .barre { text-decoration : line-through; }
 
+
+
+/* #################################### */
+/* planning */
+/* #################################### */
+
+
+.planning {
+text-align:center;
+border:1px dashed #cccccc;
+background-color: #d7d7d2;
+font-size:9px;
+
+}
+
+.planing:hover {
+border: 1px solid #999999;
+background-color: white;
+	
+}
+
+
+
+
+
+
+
+
 /* #################################### */
 /* DEBUG */
 /* #################################### */
@@ -638,8 +666,4 @@ padding-left: 10px;
 border-left: 4px solid #FFC65D;
 border-bottom: 2px solid #FFC65D;
 }
-
-
-
-
 

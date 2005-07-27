@@ -203,7 +203,7 @@ function showPlanning($who,$when,$type){
 	$time=mktime(1,0,0,$date[1],$date[2],$date[0]);
 	$dayofweek=date("w",$time);
 
-	echo "<div align='center'><table width='800'>";
+	echo "<div align='center'><table class='tab_cadre' width='800'>";
 	// Print Headers
 	echo "<tr>";
 	switch ($type){
@@ -231,12 +231,12 @@ function showPlanning($who,$when,$type){
 		switch ($type){
 		case "week":
 			for ($i=1;$i<=7;$i++){
-			displayplanning($who,date("Y-m-d",strtotime($when)+mktime(0,0,0,0,$i,0)-mktime(0,0,0,0,$dayofweek,0))." $hour:00:00");
+			displayplanning($who,date("Y-m-d",strtotime($when)+mktime(0,0,0,0,$i,0)-mktime(0,0,0,0,$dayofweek,0))." $hour:00:00",$type);
 			}
 		
 			break;
 		case "day":
-			displayplanning($who,$when." $hour:00:00");
+			displayplanning($who,$when." $hour:00:00",$type);
 			break;
 		}
 	echo "</tr>\n";
@@ -248,7 +248,7 @@ function showPlanning($who,$when,$type){
 
 }
 
-function displayplanning($who,$when){
+function displayplanning($who,$when,$type){
 global $cfg_features,$HTMLRel;
 $db=new DB;
 $debut=$when;
@@ -274,20 +274,32 @@ while ($data=$db->fetch_array($result)){
 	$interv[$data["id_tracking"]]["device"]=$job->computername;
 }
 
-echo "<td class='tab_bg_2' width='12%' valign='top' >";
-echo "<b>".display_time($hour[0]).":00<br></b>";
+echo "<td class='tab_bg_3' width='12%' valign='top' >";
+echo "<b>".display_time($hour[0]).":00</b><br>";
 
 if (count($interv)>0)
 foreach ($interv as $key => $val){
-echo "<div>";
-echo "<a href='".$HTMLRel."tracking/tracking-followups.php?ID=$key'";
+if($type=='day'){
+echo "<div style='margin:auto; text-align:center; border:1px dashed #cccccc; background-color: #d7d7d2; font-size:9px; width:80%;'>";
+echo "<div style=float:right'><a  href='".$HTMLRel."planning/planning-add-form.php?edit=edit&job=$key&ID=".$val["ID"]."'><img src='$HTMLRel/pics/edit.png'></a></div>";
+echo "<a  href='".$HTMLRel."tracking/tracking-followups.php?ID=$key'>";
 echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"];
 echo "</a>";
-echo "<a href='".$HTMLRel."planning/planning-add-form.php?edit=edit&job=$key&ID=".$val["ID"]."'><img src='$HTMLRel/pics/edit.png'></a>";
-
 echo "<br>";
 echo $val["content"];
+echo "";
+
+echo "</div><br>";
+
+}else{
+echo "<div class='planning' >";
+echo "<a  href='".$HTMLRel."tracking/tracking-followups.php?ID=$key'>";
+echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["device"];
+echo "</a>";
 echo "</div>";
+}
+
+
 }
 
 echo "</td>";
