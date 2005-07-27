@@ -152,7 +152,7 @@ function getTrackingPrefs ($ID) {
 	// Currently only supports sort order
 
 	$db = new DB;
-	$query = "SELECT tracking_order FROM glpi_prefs WHERE (id_user = '$ID')";
+	$query = "SELECT tracking_order FROM glpi_users WHERE (ID = '$ID')";
 	$result = $db->query($query);
 	if ($result&&$db->numrows($result)==1)
 	$tracking_order = $db->result($result, 0, "tracking_order");

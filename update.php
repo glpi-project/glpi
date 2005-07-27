@@ -302,7 +302,7 @@ function location_create_new($split_char,$add_first){
 		$new_ID++;
 		$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$root_ID','".addslashes($add_first)."',0)";
 		
-		//echo $query_insert."<br>";
+		echo $query_insert."<br>";
 		$result_insert=$db->query($query_insert);
 		
 	} else {
@@ -351,7 +351,10 @@ function showLocationUpdateForm(){
 	global $lang;
 	$db=new DB;
 	
-	if (FieldExists("glpi_dropdown_locations", "parentID")) return true;
+	if (FieldExists("glpi_dropdown_locations", "parentID")) {
+		updateTreeDropdown();
+		return true;
+	}
 
 	if (!isset($_POST['root'])) $_POST['root']='';
 	if (!isset($_POST['car_sep'])) $_POST['car_sep']='';
@@ -360,7 +363,6 @@ function showLocationUpdateForm(){
 		$query = " CREATE TABLE `glpi_dropdown_locations_new` (`ID` INT NOT NULL auto_increment,`name` VARCHAR( 255 ) NOT NULL ,`parentID` INT NOT NULL ,PRIMARY KEY ( `ID` ),UNIQUE KEY (`name`,`parentID`), KEY(`parentID`)) TYPE=MyISAM;";
 		$db->query($query) or die("LOCATION ".$db->error());
 	}
-
 
 	if (!isset($_POST["validate_location"])){
 		echo "<div align='center'>";
@@ -392,6 +394,7 @@ function showLocationUpdateForm(){
 	}
 	else if (isset($_POST["validate_location"])){
 		validate_new_location();
+		updateTreeDropdown();
 		return true;
 	} else {
 	display_old_locations();	
@@ -720,8 +723,10 @@ if(!TableExists("glpi_computers")) {
 	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE networking_wire RENAME glpi_networking_wire";
 	$db->query($query) or die($lang["update"][90].$db->error());
-	$query = "ALTER TABLE prefs RENAME glpi_prefs";
-	$db->query($query) or die($lang["update"][90].$db->error());
+	if(TableExists("prefs")&&!TableExists("glpi_prefs")) {
+		$query = "ALTER TABLE prefs RENAME glpi_prefs";
+		$db->query($query) or die($lang["update"][90].$db->error());
+	}
 	$query = "ALTER TABLE printers RENAME glpi_printers";
 	$db->query($query) or die($lang["update"][90].$db->error());
 	$query = "ALTER TABLE software RENAME glpi_software";
@@ -825,7 +830,7 @@ if(!TableExists("glpi_peripherals")) {
 $db->query($query) or die("0 ".$lang["update"][90].$db->error());
 }
 
-if(!FieldExists("glpi_prefs", "ID")) {
+if(TableExists("glpi_prefs")&&!FieldExists("glpi_prefs", "ID")) {
 	$query = "Alter table glpi_prefs drop primary key";
 	$db->query($query) or die("1 ".$lang["update"][90].$db->error());
 	$query = "Alter table glpi_prefs add ID INT(11) not null auto_increment primary key";
@@ -2260,7 +2265,7 @@ if(!TableExists("glpi_repair_item")) {
 	$db->query($query) or die("0.5 create glpirepair_item table ".$lang["update"][90].$db->error());
 }
 
-if(!FieldExists("glpi_prefs","username")&&!FieldExists("glpi_prefs","id_user")) {
+if(TableExists("glpi_prefs")&&!FieldExists("glpi_prefs","username")) {
 	
 	if(isIndex("glpi_prefs", "user")) {
 		$query = " ALTER TABLE `glpi_prefs` DROP INDEX `user`;";
@@ -2274,7 +2279,7 @@ if(!FieldExists("glpi_prefs","username")&&!FieldExists("glpi_prefs","id_user")) 
 }
 
 //Mise a jour 0.5 verification des prefs pour chaque user.
-if (!FieldExists("glpi_prefs","id_user")){
+if (TableExists("glpi_prefs")){
 	$query = "select ID, name from glpi_users";
 	$query2 = "select ID, username from glpi_prefs";
 	$result = $db->query($query);
@@ -2410,18 +2415,6 @@ ADD `cas_uri` VARCHAR( 255 ) NOT NULL ;";
 $db->query($query) or die("0.6 add cas config in config ".$lang["update"][90].$db->error());	
 }
 
-// Update Tree dropdown
-if(!FieldExists("glpi_dropdown_locations","completename")) {
-$query= "ALTER TABLE `glpi_dropdown_locations` ADD `completename` TEXT NOT NULL ;";
-$db->query($query) or die("0.6 add completename in dropdown_locations ".$lang["update"][90].$db->error());	
-regenerateTreeCompleteName("glpi_dropdown_locations");
-}
-if(!FieldExists("glpi_dropdown_kbcategories","completename")) {
-$query= "ALTER TABLE `glpi_dropdown_kbcategories` ADD `completename` TEXT NOT NULL ;";
-$db->query($query) or die("0.6 add completename in dropdown_kbcategories ".$lang["update"][90].$db->error());	
-regenerateTreeCompleteName("glpi_dropdown_kbcategories");
-}
-
 // Limit Item for contracts and correct template bug 
 if(!FieldExists("glpi_contracts","device_countmax")) {
 $query= "ALTER TABLE `glpi_contracts` ADD `device_countmax` INT DEFAULT '0' NOT NULL ;";
@@ -2487,30 +2480,6 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 		$users[$line["name"]]=$line["ID"];
 	}
 
-
-	// Load pref users tables
-	$authors=array();
-	$query="SELECT ID, username FROM glpi_prefs";
-	$result=$db->query($query);
-	while($line = $db->fetch_array($result)) {
-		$authors[$line["ID"]]=$line["username"];
-	}
-
-	// Update authors tracking
-	$query= "ALTER TABLE `glpi_prefs` ADD `id_user` INT( 11 ) DEFAULT '0' NOT NULL";
-	$db->query($query) or die("0.6 add id_user in prefs ".$lang["update"][90].$db->error());	
-	$query= "ALTER TABLE `glpi_prefs` DROP `username`";
-	$db->query($query) or die("0.6 delete username in prefs ".$lang["update"][90].$db->error());	
-
-	if (count($authors)>0)
-	foreach ($authors as $ID => $val){
-		if (isset($users[$val])){
-			$query="UPDATE glpi_prefs SET id_user='".$users[$val]."' WHERE ID='$ID'";
-			$db->query($query);
-		}
-	}	
-	unset($authors);
-	
 	// Load tracking authors tables
 	$authors=array();
 	$query="SELECT ID, author FROM glpi_tracking";
@@ -2615,6 +2584,29 @@ $query="ALTER TABLE `glpi_config` ADD `planning_end` TIME DEFAULT '20:00:00' NOT
 $db->query($query) or die("0.6 add planning end in config".$lang["update"][90].$db->error());
 }
 
+// Merge glpi_users and glpi_prefs
+if(!FieldExists("glpi_users","language")) {
+	// Create fields
+	$query="ALTER TABLE `glpi_users` ADD `tracking_order` ENUM( 'yes', 'no' ) DEFAULT 'no' NOT NULL ;";
+	$db->query($query) or die("0.6 add tracking_order in users".$lang["update"][90].$db->error());
+	$query="ALTER TABLE `glpi_users` ADD `language` VARCHAR( 255 ) NOT NULL ;";
+	$db->query($query) or die("0.6 add language in users".$lang["update"][90].$db->error());
+	
+	// Move data
+	$query="SELECT * from glpi_prefs";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0)
+	while ($data=$db->fetch_array($result)){
+	$query2="UPDATE glpi_users SET language='".$data['language']."', tracking_order='".$data['tracking_order']."' WHERE name='".$data['username']."';";	
+	$db->query($query2) or die("0.6 move pref to users".$lang["update"][90].$db->error());	
+	}
+	// Drop glpi_prefs
+	$query="DROP TABLE `glpi_prefs`;";
+	$db->query($query) or die("0.6 drop glpi_prefs".$lang["update"][90].$db->error());
+	
+	
+}
+
 
 // Update version number and default langage ---- LEAVE AT THE END
 	$query = "UPDATE `glpi_config` SET `version` = ' 0.6', default_language='".$_SESSION["dict"]."' ;";
@@ -2625,7 +2617,21 @@ optimize_tables();
 return $ret;
 }
 
+function updateTreeDropdown(){
 
+$db=new DB();
+// Update Tree dropdown
+if(!FieldExists("glpi_dropdown_locations","completename")) {
+$query= "ALTER TABLE `glpi_dropdown_locations` ADD `completename` TEXT NOT NULL ;";
+$db->query($query) or die("0.6 add completename in dropdown_locations ".$lang["update"][90].$db->error());	
+regenerateTreeCompleteName("glpi_dropdown_locations");
+}
+if(!FieldExists("glpi_dropdown_kbcategories","completename")) {
+$query= "ALTER TABLE `glpi_dropdown_kbcategories` ADD `completename` TEXT NOT NULL ;";
+$db->query($query) or die("0.6 add completename in dropdown_kbcategories ".$lang["update"][90].$db->error());	
+regenerateTreeCompleteName("glpi_dropdown_kbcategories");
+}
+}
 
 function showFormSu() {
 	include ("_relpos.php");

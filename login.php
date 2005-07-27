@@ -193,15 +193,6 @@ if (!$user_present) {
 // now we can continue with the process...
 $identificat->setcookies();
 
-// If no prefs for user, set default
-$query = "SELECT * FROM glpi_prefs WHERE (id_user = '".$identificat->user->fields["ID"]."')";
-$result = $db->query($query);
-if ($db->numrows($result) == 0)
-{
-	$query = "INSERT INTO glpi_prefs (`id_user`,`tracking_order`,`language`) VALUES ('".$identificat->user->fields["ID"]."', 'yes','french')";
-	$result = $db->query($query);
-}
-
 // GET THE IP OF THE CLIENT
 $ip = (getenv("HTTP_X_FORWARDED_FOR")
 ? getenv("HTTP_X_FORWARDED_FOR")

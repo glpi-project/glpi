@@ -538,8 +538,8 @@ class Identification
 		$realname = $this->user->fields['realname'];
 		$password = md5($this->user->fields['password']);
 		$type = $this->user->fields['type'];
-		$language = $this->user->prefs['language'];
-		$tracking_order = $this->user->prefs['tracking_order'];
+		$language = $this->user->fields['language'];
+		$tracking_order = $this->user->fields['tracking_order'];
 		//echo $tracking_order;
 		if(!session_id()) session_start();
 		$_SESSION["glpiID"] = $ID;

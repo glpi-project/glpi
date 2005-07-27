@@ -1238,7 +1238,7 @@ function dropdown($table,$myname) {
 */
 function dropdownValue($table,$myname,$value) {
 	
-	global $deleted_tables,$template_tables,$dropdowntree_tables;
+	global $deleted_tables,$template_tables,$dropdowntree_tables,$lang;
 	
 	// Make a select box with preselected values
 	$db = new DB;
@@ -1289,7 +1289,10 @@ function dropdownValue($table,$myname,$value) {
 	$result = $db->query($query);
 	
 	echo "<select name=\"$myname\" size='1'>";
-	echo "<option value=\"0\">-----</option>";
+	if ($table=="glpi_dropdown_kbcategories")
+	echo "<option value=\"0\">--".$lang["knowbase"][12]."--</option>";
+	else echo "<option value=\"0\">-----</option>";
+	
 	$i = 0;
 	$number = $db->numrows($result);
 	if ($number > 0) {
@@ -3075,7 +3078,7 @@ function getTreeValueName($table,$ID, $wholename="")
 		if ($db->numrows($result)>0){
 		
 		$row=$db->fetch_array($result);
-		
+	
 		$parentID = $row["parentID"];
 		if($wholename == "")
 		{
