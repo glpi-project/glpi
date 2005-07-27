@@ -149,16 +149,16 @@ function showKbItemForm($target,$ID){
 	*/
 	
 	echo "<p class='toolbar'>";
-	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[b]', '[/b]')\"><img src=\"".$HTMLRel."pics/gras.png\" alt='".$lang["toolbar"][1]."' title='".$lang["toolbar"][1]."' style=\"vertical-align:middle;\"</img></a>";
-	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[i]', '[/i]')\"><img src=\"".$HTMLRel."pics/italique.png\" alt='".$lang["toolbar"][2]."' title='".$lang["toolbar"][2]."' style='vertical-align:middle;'</img></a>";
-	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[u]', '[/u]')\"><img src=\"".$HTMLRel."pics/souligne.png\" alt='".$lang["toolbar"][3]."' title='".$lang["toolbar"][3]."' style='vertical-align:middle;'</img></a>";
-	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[s]', '[/s]')\"><img src=\"".$HTMLRel."pics/barre.png\" alt='".$lang["toolbar"][4]."' title='".$lang["toolbar"][4]."' style='vertical-align:middle;'</img></a>";		
-	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[g]', '[/g]')\"><img src=\"".$HTMLRel."pics/grand.png\" alt='".$lang["toolbar"][7]."' title='".$lang["toolbar"][7]."' style='vertical-align:middle;'</img></a>";	
-	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[c]', '[/c]')\"><img src=\"".$HTMLRel."pics/centre.png\" alt='".$lang["toolbar"][5]."' title='".$lang["toolbar"][5]."' style='vertical-align:middle;'</img></a>";
-	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[code]', '[/code]')\"><img src=\"".$HTMLRel."pics/code.png\" alt='".$lang["toolbar"][6]."' title='".$lang["toolbar"][6]."' style='vertical-align:middle;'</img></a>";
-	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[color=red]', '[/color]')\"><img src=\"".$HTMLRel."pics/rouge.png\" alt='".$lang["toolbar"][8]."' title='".$lang["toolbar"][8]."' style='vertical-align:middle;'</img></a>";
-	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[color=blue]', '[/color]')\"><img src=\"".$HTMLRel."pics/bleu.png\" alt='".$lang["toolbar"][9]."' title='".$lang["toolbar"][9]."' style='vertical-align:middle;'</img></a>";
-	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[color=yellow]', '[/color]')\"><img src=\"".$HTMLRel."pics/jaune.png\" alt='".$lang["toolbar"][10]."' title='".$lang["toolbar"][10]."' style='vertical-align:middle;'</img></a>";
+	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[b]', '[/b]')\"><img src=\"".$HTMLRel."pics/gras.png\" alt='".$lang["toolbar"][1]."' title='".$lang["toolbar"][1]."' style=\"vertical-align:middle;\"></a>";
+	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[i]', '[/i]')\"><img src=\"".$HTMLRel."pics/italique.png\" alt='".$lang["toolbar"][2]."' title='".$lang["toolbar"][2]."' style='vertical-align:middle;'></a>";
+	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[u]', '[/u]')\"><img src=\"".$HTMLRel."pics/souligne.png\" alt='".$lang["toolbar"][3]."' title='".$lang["toolbar"][3]."' style='vertical-align:middle;'></a>";
+	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[s]', '[/s]')\"><img src=\"".$HTMLRel."pics/barre.png\" alt='".$lang["toolbar"][4]."' title='".$lang["toolbar"][4]."' style='vertical-align:middle;'></a>";		
+	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[g]', '[/g]')\"><img src=\"".$HTMLRel."pics/grand.png\" alt='".$lang["toolbar"][7]."' title='".$lang["toolbar"][7]."' style='vertical-align:middle;'></a>";	
+	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[c]', '[/c]')\"><img src=\"".$HTMLRel."pics/centre.png\" alt='".$lang["toolbar"][5]."' title='".$lang["toolbar"][5]."' style='vertical-align:middle;'></a>";
+	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[code]', '[/code]')\"><img src=\"".$HTMLRel."pics/code.png\" alt='".$lang["toolbar"][6]."' title='".$lang["toolbar"][6]."' style='vertical-align:middle;'></a>";
+	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[color=red]', '[/color]')\"><img src=\"".$HTMLRel."pics/rouge.png\" alt='".$lang["toolbar"][8]."' title='".$lang["toolbar"][8]."' style='vertical-align:middle;'></a>";
+	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[color=blue]', '[/color]')\"><img src=\"".$HTMLRel."pics/bleu.png\" alt='".$lang["toolbar"][9]."' title='".$lang["toolbar"][9]."' style='vertical-align:middle;'></a>";
+	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[color=yellow]', '[/color]')\"><img src=\"".$HTMLRel."pics/jaune.png\" alt='".$lang["toolbar"][10]."' title='".$lang["toolbar"][10]."' style='vertical-align:middle;'></a>";
 	echo "</p>";
 	echo "<textarea cols='80' rows='15'  name='answer' >".$ki->fields["answer"]."</textarea></div>"; 
 	echo "</fieldset>";
@@ -531,7 +531,7 @@ function kbcategoryList($current=0,$nullroot="yes")
 	if ($nullroot=="yes"){
 	echo "<option value='0'>--- ".$lang["knowbase"][12]." ---</option>\n";
 	}
-	
+
 	dropdown("glpi_dropdown_kbcategories",$current);
 	
 //	kbcategoryListSelect($current, 0, "\\");
