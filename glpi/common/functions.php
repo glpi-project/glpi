@@ -976,7 +976,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 	// Output events
 	$i = 0;
 
-	echo "<p><center><table width='45%' class='tab_cadre'>";
+	echo "<p><center><table width='400' class='tab_cadre'>";
 	echo "<tr><th colspan='6'>".$lang["central"][2]." ".$cfg_features["num_of_events"]." ".$lang["central"][8].":</th></tr>";
 	echo "<tr>";
 

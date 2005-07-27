@@ -198,7 +198,7 @@ function showCentralJobList($target,$start) {
 
 	if ($number > 0) {
 
-		echo "<div align='center'><table class='tab_cadre' width='45%'>";
+		echo "<div align='center'><table class='tab_cadre' width='400'>";
 		echo "<tr><th>".$lang["joblist"][0]."</th>";
 		echo "<th>".$lang["joblist"][3]."</th>";
 		echo "<th>".$lang["tracking"][20]."</th>";

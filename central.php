@@ -60,10 +60,10 @@ echo "<center><b>".$lang["central"][0]." ".(empty($_SESSION["glpirealname"])?$_S
 if (!isset($_GET['start'])) $_GET['start']=0;
 
 echo "<div align='center'>";
-echo "<table><tr><td align='center'>";
+echo "<table><tr><td align='center' width='45%'>";
 echo "<b>".$lang["central"][9]."</b><br>";
 showCentralJobList($_SERVER["PHP_SELF"],$_GET['start']);
-echo "</td><td  align='center'>";
+echo "</td><td  align='center'  width='45%'>";
 // Show last add events
 showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
 echo "</td></tr></table>";
