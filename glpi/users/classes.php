@@ -93,7 +93,6 @@ class User {
 				$this->fields[$key] = $val;
 				if ($key=="name") $this->fields[$key] = unhtmlentities($val);
 			}
-			$this->getPrefsFromDB();
 			return true;
 		}
 		return false;
