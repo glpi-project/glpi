@@ -483,16 +483,7 @@ global $cfg_install;
 				}
 			}
 
-			if ($newID=$user->addToDB()) {
-				// Give him some default prefs...
-				$query = "INSERT INTO glpi_prefs (id_user,tracking_order,language) VALUES ('".$newID."','no','".$cfg_install["default_language"]."')";
-
-				$db = new DB;
-				$result=$db->query($query);
-				return $newID;
-			} else {
-				return false;
-			}
+			return $user->addToDB();
 	} else {
 		return false;
 	}
@@ -601,7 +592,7 @@ function updateSort($input) {
 
 	$db = new DB;
 	//print_r($input);
-	$query = "UPDATE glpi_prefs SET tracking_order = '".$input["tracking_order"]."' WHERE (id_user = '".$_SESSION["glpiID"]."')";
+	$query = "UPDATE glpi_users SET tracking_order = '".$input["tracking_order"]."' WHERE (ID = '".$_SESSION["glpiID"]."')";
 	if ($result=$db->query($query)) {
 		$_SESSION["tracking_order"] = $input["tracking_order"];
 		return true;
@@ -650,7 +641,7 @@ function showLangSelect($target) {
 function updateLanguage($input) {
 	
 	$db = new DB;
-	$query = "UPDATE glpi_prefs SET language = '".$input["language"]."' WHERE (id_user = '".$_SESSION["glpiID"]."')";
+	$query = "UPDATE glpi_users SET language = '".$input["language"]."' WHERE (ID = '".$_SESSION["glpiID"]."')";
 	if ($result=$db->query($query)) {
 		$_SESSION["glpilanguage"] = $input["language"];
 		return true;

@@ -38,7 +38,6 @@ include ("_relpos.php");
 class User {
 
 	var $fields = array();
-	var $prefs = array();
 
   function User($ID = '') {
   	global $cfg_install;
@@ -53,8 +52,8 @@ class User {
   	$this->fields['type'] = 'post-only';
   	$this->fields['realname'] = '';
   	$this->fields['can_assign_job'] = 'no';
-	$this->prefs['tracking_order'] = 'no';
-	$this->prefs['language'] = $cfg_install["default_language"];
+	$this->fields['tracking_order'] = 'no';
+	$this->fields['language'] = $cfg_install["default_language"];
 }
 	
 	function getFromDB($name) {
@@ -70,7 +69,6 @@ class User {
 				$this->fields[$key] = $val;
 				if ($key=="name") $this->fields[$key] = unhtmlentities($val);
 			}
-			$this->getPrefsFromDB();
 			return true;
 		}
 		return false;
@@ -100,23 +98,6 @@ class User {
 		}
 		return false;
 	}
-	
-	function getPrefsFromDB() {
-		global $cfg_install;
-		$db = new DB;
-		$query = "select * from glpi_prefs where (id_user = '". $this->fields["ID"] ."')";
-		if($result = $db->query($query)) {
-			if($db->numrows($result) >= 1) {
-				$this->prefs["tracking_order"] = $db->result($result,0,"tracking_order");
-				$this->prefs["language"] = $db->result($result,0,"language");
-			}
-			else {
-				$query = "insert into glpi_prefs value (".$this->fields["name"].",'no','".$cfg_install["default_language"]."')"; 
-				$db->query($query);
-			}
-		}
-	}
-	
 	
 	function getEmpty () {
 	//make an empty database object
@@ -363,10 +344,6 @@ class User {
 
 		$query = "DELETE from glpi_users WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
-			$query2 = "DELETE from glpi_prefs WHERE id_user = '$ID'";
-
-			if ($result2 = $db->query($query2)) {
-				
 				// Tracking items left?
 				$query_track = "SELECT assign FROM glpi_tracking WHERE (assign = '$ID')";
 				$result_track = $db->query($query_track);
@@ -378,7 +355,6 @@ class User {
 				} else {
 					return true;
 				}
-			}
 		} else {
 			return false;
 		}
