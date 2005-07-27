@@ -26,37 +26,33 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  ------------------------------------------------------------------------
 */
-
-// Based on:
-// IRMA, Information Resource-Management and Administration
-// Christian Bauer 
+ 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
- 
 
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_setup.php");
-include ($phproot . "/glpi/includes_tracking.php");
+include ($phproot . "/glpi/includes_users.php");
 
-// on ajoute les includes pour le suivi des interventions de tous les items
-include ($phproot . "/glpi/includes_computers.php");
-include ($phproot . "/glpi/includes_printers.php");
-include ($phproot . "/glpi/includes_networking.php");
-include ($phproot . "/glpi/includes_peripherals.php");
-include ($phproot . "/glpi/includes_monitors.php");
-include ($phproot . "/glpi/includes_software.php");
-include ($phproot . "/glpi/includes_enterprises.php");
+	checkAuthentication("normal");
+	commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 
-checkAuthentication("normal");
-commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
-showUserInfo($_SERVER["PHP_SELF"],$_GET["ID"]);
-if (isset($_GET["start"])) $start=$_GET["start"];
-else $start=0;
-showJobList($_SERVER["PHP_SELF"],$_GET["ID"],"user","","","",$start);
+titleUsers();
+	
+searchFormUsers();
+
+
+
+if(empty($_GET["start"])) $_GET["start"] = 0;
+if(empty($_GET["order"])) $_GET["order"] = "ASC";
+
+
+
+showUsersList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
+
+
 
 commonFooter();
-
 ?>

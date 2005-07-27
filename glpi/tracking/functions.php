@@ -147,12 +147,12 @@ function searchFormTracking ($show,$contains,$containsID,$device,$category,$desc
 	echo "</div><br>\n";
 }       
 
-function getTrackingPrefs ($username) {
+function getTrackingPrefs ($ID) {
 	// Returns users preference settings for job tracking
 	// Currently only supports sort order
 
 	$db = new DB;
-	$query = "SELECT tracking_order FROM glpi_prefs WHERE (username = '$username')";
+	$query = "SELECT tracking_order FROM glpi_prefs WHERE (id_user = '$ID')";
 	$result = $db->query($query);
 	if ($result&&$db->numrows($result)==1)
 	$tracking_order = $db->result($result, 0, "tracking_order");
@@ -178,7 +178,7 @@ function showCentralJobList($target,$start) {
 
 	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
 		
-	$prefs = getTrackingPrefs($_SESSION["glpiname"]);
+	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
 
 
 	
@@ -238,8 +238,7 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 
 	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
 		
-	$prefs = getTrackingPrefs($username);
-
+	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
 
 	// Build where-clause
 	if ($contains||$containsID)
@@ -428,7 +427,7 @@ function showOldJobListForItem($username,$item_type,$item) {
 
 
 
-	$prefs = getTrackingPrefs($username);
+	$prefs = getTrackingPrefs($_SESSION["glpiID"]);	
 	
 $where = "(status = 'old')";	
 $query = "SELECT ID FROM glpi_tracking WHERE $where and (device_type = '$item_type' and computer = '$item') ORDER BY date ".$prefs["order"]."";
@@ -504,7 +503,7 @@ function showJobListForItem($username,$item_type,$item) {
 
 	GLOBAL $cfg_layout, $cfg_install, $lang;
 		
-	$prefs = getTrackingPrefs($username);
+	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
 	
 $where = "(status = 'new')";	
 $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and device_type= '$item_type') ORDER BY date ".$prefs["order"]."";
@@ -805,7 +804,7 @@ function showJobDetails($ID) {
 
 		echo "<tr><td>".$lang["joblist"][3].":</td><td>";
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
-		echo "<strong><a href=\"".$cfg_install["root"]."/setup/users-info.php?ID=$job->author\">".$author->getName()."</a></strong>";
+		echo "<strong><a href=\"".$cfg_install["root"]."/users/users-info.php?ID=$job->author\">".$author->getName()."</a></strong>";
 		else 
 		echo "<strong>$job->author</strong>";
 		echo "</td></tr>";
@@ -1569,7 +1568,8 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 
 	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang,$cfg_devices_tables;
 		
-	$prefs = getTrackingPrefs($username);
+	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
+	
 	$db=new DB;
 	// Reduce computer list
 	if ($computers_search){

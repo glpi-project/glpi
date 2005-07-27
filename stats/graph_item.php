@@ -36,7 +36,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_enterprises.php");
-include ($phproot . "/glpi/includes_setup.php");
+include ($phproot . "/glpi/includes_users.php");
 include ($phproot . "/glpi/includes_devices.php");
 require ("functions.php");
 

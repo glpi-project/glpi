@@ -34,25 +34,38 @@
 
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_setup.php");
+include ($phproot . "/glpi/includes_users.php");
 
-	checkAuthentication("normal");
-	commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 
-titleUsers();
+if(empty($_GET["name"])) $_GET["name"] = "";
+if (isset($_POST["add"])) {
+	checkAuthentication("admin");
+	// Pas de nom pas d'ajout	
+	if (!empty($_POST["name"])){
+		addUser($_POST);
+		logEvent(0, "users", 4, "setup", $_SESSION["glpiname"]." added user ".$_POST["name"].".");
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_POST["delete"])) {
+	checkAuthentication("admin");
+	deleteUser($_POST);
+	logEvent(0,"users", 4, "setup", $_SESSION["glpiname"]." deleted user ".$_POST["ID"].".");
+	glpi_header($cfg_install["root"]."/users/");
+} else if (isset($_POST["update"])) {
+	checkAuthentication("admin");
+	commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
+	updateUser($_POST);
+	logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]." updated user ".$_POST["name"].".");
+	showUserform($_SERVER["PHP_SELF"],$_POST["name"]);
+} else {
+
+checkAuthentication("admin");
+commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
+showUserform($_SERVER["PHP_SELF"],$_GET["name"]);
+}
 	
-searchFormUsers();
-
-
-
-if(empty($_GET["start"])) $_GET["start"] = 0;
-if(empty($_GET["order"])) $_GET["order"] = "ASC";
-
-
-
-showUsersList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
-
 
 
 commonFooter();
+
 ?>

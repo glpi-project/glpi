@@ -26,40 +26,14 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  ------------------------------------------------------------------------
 */
-
-// Based on:
-// IRMA, Information Resource-Management and Administration
-// Christian Bauer 
+ 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_tracking.php");
-include ($phproot . "/glpi/includes_users.php");
-include ($phproot . "/glpi/includes_computers.php");
-include ($phproot . "/glpi/includes_printers.php");
-include ($phproot . "/glpi/includes_monitors.php");
-include ($phproot . "/glpi/includes_peripherals.php");
-include ($phproot . "/glpi/includes_networking.php");
-include ($phproot . "/glpi/includes_software.php");
-include ($phproot . "/glpi/includes_enterprises.php");
+include ($phproot . "/glpi/users/classes.php");
+include ($phproot . "/glpi/users/functions.php");
 
-checkAuthentication("normal");
-
-if (isset($_POST["contents"])&&!empty($_POST["contents"])&&isAdmin($_SESSION["glpitype"]))
-{
-	postFollowups ($_POST["ID"],$_SESSION["glpiID"],$_POST["contents"]);
-	glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=".$_POST["ID"]);
-}
-
-commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
-
-if (isset($_POST["ID"]))
-showJobDetails($_POST["ID"]);
-else 
-showJobDetails($_GET["ID"]);
-commonFooter();
 ?>

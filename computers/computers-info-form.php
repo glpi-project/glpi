@@ -49,7 +49,7 @@ include ($phproot . "/glpi/includes_reservation.php");
 include ($phproot . "/glpi/includes_state.php");
 include ($phproot . "/glpi/includes_financial.php");
 include ($phproot . "/glpi/includes_documents.php");
-include ($phproot . "/glpi/includes_setup.php");
+include ($phproot . "/glpi/includes_users.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
