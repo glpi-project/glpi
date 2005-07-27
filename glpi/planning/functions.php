@@ -256,33 +256,38 @@ $tmp=split(" ",$when);
 $hour=split(":",$tmp[1]);
 
 
-$query="SELECT * from glpi_tracking_planning WHERE id_assign='$who' AND (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL 59 MINUTE ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL 59 MINUTE ) > end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL 59 MINUTE ) AND end > adddate( '". $debut ."' , INTERVAL 59 MINUTE )))";
+$query="SELECT * from glpi_tracking_planning WHERE id_assign='$who' AND (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL 59 MINUTE ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL 59 MINUTE ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL 59 MINUTE ) AND end > adddate( '". $debut ."' , INTERVAL 59 MINUTE ))) ORDER BY begin";
 
 $result=$db->query($query);
 
 $job=new Job();
 
 $interv=array();
+$i=0;
 if ($db->numrows($result)>0)
 while ($data=$db->fetch_array($result)){
 	$job->getFromDB($data["id_tracking"],0);
-
-	$interv[$data["id_tracking"]]["ID"]=$data["ID"];
-	$interv[$data["id_tracking"]]["begin"]=$data["begin"];
-	$interv[$data["id_tracking"]]["end"]=$data["end"];
-	$interv[$data["id_tracking"]]["content"]=substr($job->contents,0,$cfg_features["cut"]);
-	$interv[$data["id_tracking"]]["device"]=$job->computername;
+	
+	
+	$interv[$i]["id_tracking"]=$data["id_tracking"];
+	$interv[$i]["ID"]=$data["ID"];
+	$interv[$i]["begin"]=$data["begin"];
+	$interv[$i]["end"]=$data["end"];
+	$interv[$i]["content"]=substr($job->contents,0,$cfg_features["cut"]);
+	$interv[$i]["device"]=$job->computername;
+	$i++;
 }
 
 echo "<td class='tab_bg_3' width='12%' valign='top' >";
 echo "<b>".display_time($hour[0]).":00</b><br>";
 
+
 if (count($interv)>0)
 foreach ($interv as $key => $val){
 if($type=='day'){
 echo "<div style='margin:auto; text-align:center; border:1px dashed #cccccc; background-color: #d7d7d2; font-size:9px; width:80%;'>";
-echo "<div style=float:right'><a  href='".$HTMLRel."planning/planning-add-form.php?edit=edit&job=$key&ID=".$val["ID"]."'><img src='$HTMLRel/pics/edit.png'></a></div>";
-echo "<a  href='".$HTMLRel."tracking/tracking-followups.php?ID=$key'>";
+echo "<div style=float:right'><a  href='".$HTMLRel."planning/planning-add-form.php?edit=edit&job=".$val["id_tracking"]."&ID=".$val["ID"]."'><img src='$HTMLRel/pics/edit.png'></a></div>";
+echo "<a  href='".$HTMLRel."tracking/tracking-followups.php?ID=".$val["id_tracking"]."'>";
 echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"];
 echo "</a>";
 echo "<br>";
@@ -293,7 +298,7 @@ echo "</div><br>";
 
 }else{
 echo "<div class='planning' >";
-echo "<a  href='".$HTMLRel."tracking/tracking-followups.php?ID=$key'>";
+echo "<a  href='".$HTMLRel."tracking/tracking-followups.php?ID=".$val["id_tracking"]."'>";
 echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["device"];
 echo "</a>";
 echo "</div>";
