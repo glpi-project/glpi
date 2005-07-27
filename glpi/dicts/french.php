@@ -154,6 +154,7 @@ $lang["central"][5]="Accueil";
 $lang["central"][6]="Déconnexion"; 
 $lang["central"][7]="Aide"; 
 $lang["central"][8]="Ajouts"; 
+$lang["central"][9]="Mes Interventions"; 
 
 $lang["choice"][0]="Oui"; 
 $lang["choice"][1]="Non"; 

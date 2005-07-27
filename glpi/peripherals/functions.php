@@ -659,7 +659,7 @@ function addPeripheral($input) {
 			addDeviceDocument($data["FK_doc"],PERIPHERAL_TYPE,$newID);
 	}
 
-
+	return $newID;
 }
 
 function deletePeripheral($input,$force=0) {

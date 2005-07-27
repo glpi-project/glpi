@@ -697,7 +697,7 @@ function addMonitor($input) {
 	}
 
 	
-	
+return $newID;	
 
 }
 

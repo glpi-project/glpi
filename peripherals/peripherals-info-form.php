@@ -53,8 +53,8 @@ if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
-	addPeripheral($_POST);
-	logEvent(0, "Peripheral", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["name"].".");
+	$newID=addPeripheral($_POST);
+	logEvent($newID, "peripherals", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))
@@ -64,7 +64,7 @@ else if (isset($tab["delete"]))
 		deletePeripheral($tab,1);
 	else deletePeripheral($tab);
 
-	logEvent($tab["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
+	logEvent($tab["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
 	if(!empty($tab["withtemplate"])) 
 		glpi_header($cfg_install["root"]."/setup/setup-templates.php");
 	 else 
@@ -74,28 +74,28 @@ else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restorePeripheral($_POST);
-	logEvent($tab["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." restored item.");
+	logEvent($tab["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." restored item.");
 	glpi_header($cfg_install["root"]."/peripherals/");
 }
 else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
 	deletePeripheral($tab,1);
-	logEvent($tab["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." purge item.");
+	logEvent($tab["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." purge item.");
 	glpi_header($cfg_install["root"]."/peripherals/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updatePeripheral($_POST);
-	logEvent($_POST["ID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." updated item.");
+	logEvent($_POST["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["disconnect"]))
 {
 	checkAuthentication("admin");
 	Disconnect($tab["ID"],PERIPHERAL_TYPE);
-	logEvent($tab["ID"], "Peripherals", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
+	logEvent($tab["ID"], "peripherals", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if(isset($tab["connect"]))

@@ -661,7 +661,7 @@ function addNetdevice($input) {
 			addDeviceDocument($data["FK_doc"],NETWORKING_TYPE,$newID);
 	}
 
-
+	return $newID;
 	
 }
 

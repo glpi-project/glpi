@@ -587,7 +587,7 @@ function addSoftware($input) {
 			addDeviceDocument($data["FK_doc"],SOFTWARE_TYPE,$newID);
 	}
 
-
+	return $newID;
 	
 }
 

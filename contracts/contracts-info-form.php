@@ -52,29 +52,29 @@ if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
 
-	addContract($_POST);
-	logEvent(0, "contract", 4, "financial", $_SESSION["glpiname"]." added item ".$_POST["num"].".");
+	$newID=addContract($_POST);
+	logEvent($newID, "contracts", 4, "financial", $_SESSION["glpiname"]." added item ".$_POST["num"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
 	deleteContract($_POST);
-	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." deleted item.");
+	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." deleted item.");
 	glpi_header($cfg_install["root"]."/contracts/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreContract($_POST);
-	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." restored item.");
+	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." restored item.");
 	glpi_header($cfg_install["root"]."/contracts/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
 	deleteContract($_POST,1);
-	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." purge item.");
+	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." purge item.");
 	glpi_header($cfg_install["root"]."/contracts/");
 }
 else if (isset($_POST["additem"])){
@@ -85,33 +85,33 @@ else if (isset($_POST["additem"])){
 	$template=0;
 	if (isset($_POST["is_template"])) $template=1;
 	addDeviceContract($_POST["conID"],$type,$ID,$template);
-	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." associate device.");
+	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." associate device.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deleteitem"])){
 	checkAuthentication("admin");
 	deleteDeviceContract($_GET["ID"]);
-	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." delete device.");
+	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." delete device.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["addenterprise"])){
 	checkAuthentication("admin");
 
 	addEnterpriseContract($_POST["conID"],$_POST["entID"]);
-	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." associate enterprise.");
+	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." associate enterprise.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deleteenterprise"])){
 	checkAuthentication("admin");
 	deleteEnterpriseContract($_GET["ID"]);
-	logEvent($tab["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." delete enterprise.");
+	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." delete enterprise.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateContract($_POST);
-	logEvent($_POST["ID"], "contract", 4, "financial", $_SESSION["glpiname"]." updated item.");
+	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." updated item.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else

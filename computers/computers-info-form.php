@@ -59,8 +59,8 @@ if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 //Add a new computer
 if (isset($tab["add"])) {
 	checkAuthentication("admin");
-	addComputer($tab);
-	logEvent(0, "computers", 4, "inventory", $_SESSION["glpiname"]." added ".$tab["name"].".");
+	$newID=addComputer($tab);
+	logEvent($newID, "computers", 4, "inventory", $_SESSION["glpiname"]." added ".$tab["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 // delete a computer
