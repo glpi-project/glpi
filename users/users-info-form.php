@@ -37,13 +37,21 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_users.php");
 
 
+if (empty($_GET["name"])&&isset($_GET["ID"])){
+$u=new User;
+$u->getFromDBbyID($_GET["ID"]);
+glpi_header($cfg_install["root"]."/users/users-info-form.php?name=".$u->fields['name']);
+}
+
 if(empty($_GET["name"])) $_GET["name"] = "";
+
+
 if (isset($_POST["add"])) {
 	checkAuthentication("admin");
 	// Pas de nom pas d'ajout	
 	if (!empty($_POST["name"])){
-		addUser($_POST);
-		logEvent(0, "users", 4, "setup", $_SESSION["glpiname"]." added user ".$_POST["name"].".");
+		$newID=addUser($_POST);
+		logEvent($newID, "users", 4, "setup", $_SESSION["glpiname"]." added user ".$_POST["name"].".");
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["delete"])) {
