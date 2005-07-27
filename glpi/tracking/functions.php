@@ -641,7 +641,8 @@ function showJobDetails($ID) {
 		// test if the user if authorized to view this job
 		if (strcmp($_SESSION["glpitype"],"post-only")==0&&!strcmp($_SESSION["glpiname"],$job->author)==0)
 		   { echo "Warning !! ";return;}
-
+		echo "<form method='get' action=\"".$cfg_install["root"]."/tracking/tracking-edit-form.php\">";
+		
 		echo "<div align='center'><table class='tab_cadre' width='90%' cellpadding='5'>\n";
 		echo "<tr><th colspan='3'>".$lang["job"][0]." $job->ID:</th></tr>";
 		echo "<tr class='tab_bg_2'>";
@@ -778,7 +779,7 @@ function showJobDetails($ID) {
 		echo "</td>";
 		
 		echo "</tr>";
-	
+		echo "</form>";
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		if ($job->status == "new") {
 			$hour=floor($job->realtime);
@@ -1195,7 +1196,7 @@ function assignFormTracking ($ID,$admin,$target) {
 
 	echo "<table class='tab_cadre'>";
 	echo "<tr><th>".$lang["job"][4]." $ID:</th></tr>";
-	echo "<form method=get action=\"".$target."\">";
+//	echo "<form method=get action=\"".$target."\">";
 	echo "<td align='center' class='tab_bg_1'>";
 
 	echo "<table border='0'>";
@@ -1208,7 +1209,7 @@ function assignFormTracking ($ID,$admin,$target) {
 	echo "</tr></table>";
 
 	echo "</td>";
-	echo "</form>";
+//	echo "</form>";
 	echo "</tr></table>";
 	}
 	else
@@ -1229,7 +1230,7 @@ function categoryFormTracking ($ID,$target) {
 
 	echo "<table class='tab_cadre'>";
 	echo "<tr><th>".$lang["job"][24]." $ID:</th></tr>";
-	echo "<form method=get action=\"".$target."\">";
+//	echo "<form method=get action=\"".$target."\">";
 	echo "<td align='center' class='tab_bg_1'>";
 
 	echo "<table border='0'>";
@@ -1242,7 +1243,7 @@ function categoryFormTracking ($ID,$target) {
 	echo "</tr></table>";
 
 	echo "</td>";
-	echo "</form>";
+//	echo "</form>";
 	echo "</tr></table>";
 	}
 	else
@@ -1261,12 +1262,12 @@ function priorityFormTracking ($ID,$target) {
 	$job = new Job;
 	$job->getFromDB($ID,0);
 
-	echo "<form method=get action=\"".$target."\">";
+//	echo "<form method=get action=\"".$target."\">";
 	dropdownPriority("priority",$job->priority);
 	echo "<input type='hidden' name='update' value=\"1\">";
 	echo "<input type='hidden' name='ID' value='$job->ID'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][14]."\" class='submit'>";
-	echo "</form>";
+//	echo "</form>";
 	}
 	else
 	{
