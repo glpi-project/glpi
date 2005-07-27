@@ -37,8 +37,6 @@
 
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_computers.php");
-include ($phproot . "/glpi/includes_setup.php");
 
 checkAuthentication("admin");
 

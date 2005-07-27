@@ -37,7 +37,7 @@
 
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_setup.php");
+include ($phproot . "/glpi/includes_users.php");
 
 @session_start();
 

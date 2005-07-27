@@ -2260,7 +2260,7 @@ if(!TableExists("glpi_repair_item")) {
 	$db->query($query) or die("0.5 create glpirepair_item table ".$lang["update"][90].$db->error());
 }
 
-if(!FieldExists("glpi_prefs","username")) {
+if(!FieldExists("glpi_prefs","username")&&!FieldExists("glpi_prefs","id_user")) {
 	
 	if(isIndex("glpi_prefs", "user")) {
 		$query = " ALTER TABLE `glpi_prefs` DROP INDEX `user`;";
@@ -2274,21 +2274,23 @@ if(!FieldExists("glpi_prefs","username")) {
 }
 
 //Mise a jour 0.5 verification des prefs pour chaque user.
-$query = "select ID, name from glpi_users";
-$query2 = "select ID, username from glpi_prefs";
-$result = $db->query($query);
-$result2 = $db->query($query2);
-if($db->numrows($result) != $db->numrows($result2)) { 
-	$users = array();
-	$i = 0;
-	while ($line = $db->fetch_array($result2)) {
-		$prefs[$i] = unhtmlentities($line["username"]);
-		$i++;
-	}
-	while($line = $db->fetch_array($result)) {
-		if(!in_array(unhtmlentities($line["name"]),$prefs)) {
-			$query_insert =  "INSERT INTO `glpi_prefs` ( `username` , `tracking_order` , `language`) VALUES ( '".unhtmlentities($line["name"])."', 'no', 'french')";
-			$db->query($query_insert) or die("glpi maj prefs ".$lang["update"][90].$db->error()); 
+if (!FieldExists("glpi_prefs","id_user")){
+	$query = "select ID, name from glpi_users";
+	$query2 = "select ID, username from glpi_prefs";
+	$result = $db->query($query);
+	$result2 = $db->query($query2);
+	if($db->numrows($result) != $db->numrows($result2)) { 
+		$users = array();
+		$i = 0;
+		while ($line = $db->fetch_array($result2)) {
+			$prefs[$i] = unhtmlentities($line["username"]);
+			$i++;
+		}
+		while($line = $db->fetch_array($result)) {
+			if(!in_array(unhtmlentities($line["name"]),$prefs)) {
+				$query_insert =  "INSERT INTO `glpi_prefs` ( `username` , `tracking_order` , `language`) VALUES ( '".unhtmlentities($line["name"])."', 'no', 'french')";
+				$db->query($query_insert) or die("glpi maj prefs ".$lang["update"][90].$db->error()); 
+			}
 		}
 	}
 }
@@ -2486,6 +2488,29 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 	}
 
 
+	// Load pref users tables
+	$authors=array();
+	$query="SELECT ID, username FROM glpi_prefs";
+	$result=$db->query($query);
+	while($line = $db->fetch_array($result)) {
+		$authors[$line["ID"]]=$line["username"];
+	}
+
+	// Update authors tracking
+	$query= "ALTER TABLE `glpi_prefs` ADD `id_user` INT( 11 ) DEFAULT '0' NOT NULL";
+	$db->query($query) or die("0.6 add id_user in prefs ".$lang["update"][90].$db->error());	
+	$query= "ALTER TABLE `glpi_prefs` DROP `username`";
+	$db->query($query) or die("0.6 delete username in prefs ".$lang["update"][90].$db->error());	
+
+	if (count($authors)>0)
+	foreach ($authors as $ID => $val){
+		if (isset($users[$val])){
+			$query="UPDATE glpi_prefs SET id_user='".$users[$val]."' WHERE ID='$ID'";
+			$db->query($query);
+		}
+	}	
+	unset($authors);
+	
 	// Load tracking authors tables
 	$authors=array();
 	$query="SELECT ID, author FROM glpi_tracking";
@@ -2505,7 +2530,8 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 			$db->query($query);
 		}
 	}
-
+	unset($authors);
+	
 	$assign=array();
 	// Load tracking assign tables
 	$query="SELECT ID, assign FROM glpi_tracking";
@@ -2577,11 +2603,16 @@ $query = "CREATE TABLE `glpi_tracking_planning` (
 ) TYPE=MyISAM ;";
 
 $db->query($query) or die("0.6 add table glpi_tracking_planning ".$lang["update"][90].$db->error());
+}
+if(!FieldExists("glpi_config","planning_begin")) {
+$query="ALTER TABLE `glpi_config` ADD `planning_begin` TIME DEFAULT '08:00:00' NOT NULL";
 
-$query="ALTER TABLE `glpi_config` ADD `planning_begin` TIME DEFAULT '08:00:00' NOT NULL ,
-ADD `planning_end` TIME DEFAULT '19:00:00' NOT NULL ;";
+$db->query($query) or die("0.6 add planning begin in config".$lang["update"][90].$db->error());
+}
+if(!FieldExists("glpi_config","planning_end")) {
+$query="ALTER TABLE `glpi_config` ADD `planning_end` TIME DEFAULT '20:00:00' NOT NULL";
 
-$db->query($query) or die("0.6 add planning begin and end ".$lang["update"][90].$db->error());
+$db->query($query) or die("0.6 add planning end in config".$lang["update"][90].$db->error());
 }
 
 

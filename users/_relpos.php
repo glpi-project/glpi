@@ -27,39 +27,24 @@
  ------------------------------------------------------------------------
 */
 
-// Based on:
-// IRMA, Information Resource-Management and Administration
-// Christian Bauer 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_tracking.php");
-include ($phproot . "/glpi/includes_users.php");
-include ($phproot . "/glpi/includes_computers.php");
-include ($phproot . "/glpi/includes_printers.php");
-include ($phproot . "/glpi/includes_monitors.php");
-include ($phproot . "/glpi/includes_peripherals.php");
-include ($phproot . "/glpi/includes_networking.php");
-include ($phproot . "/glpi/includes_software.php");
-include ($phproot . "/glpi/includes_enterprises.php");
-
-checkAuthentication("normal");
-
-if (isset($_POST["contents"])&&!empty($_POST["contents"])&&isAdmin($_SESSION["glpitype"]))
+$Dir = str_replace('\\', '/', getcwd());
+$Dir = explode('/', $Dir);
+$NDir = count($Dir);
+for($i=count($Dir); $i>0;$i--)
 {
-	postFollowups ($_POST["ID"],$_SESSION["glpiID"],$_POST["contents"]);
-	glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=".$_POST["ID"]);
+if(file_exists(implode('/', $Dir) . '/siteroot.php'))
+{
+$phproot = implode('/', $Dir);
+$HTMLRel = str_repeat("../", $NDir - count($Dir));
+$i = 0;
+}
+unset($Dir[$i]);
 }
 
-commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 
-if (isset($_POST["ID"]))
-showJobDetails($_POST["ID"]);
-else 
-showJobDetails($_GET["ID"]);
-commonFooter();
 ?>

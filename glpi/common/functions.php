@@ -465,7 +465,7 @@ $maintain =	array($lang["Menu"][5]=>array("/tracking/index.php","t"),
 		$lang["Menu"][13]=>array("/stats/index.php","1"));
 
 				
-$config = array($lang["Menu"][14]=>array("/setup/setup-users.php","u"),
+$config = array($lang["Menu"][14]=>array("/users/index.php","u"),
 		$lang["Menu"][10]=>array("/setup/index.php","2"),
 		$lang["Menu"][11]=>array("/preferences/index.php","p"),
 		$lang["Menu"][12]=>array("/backups/index.php","b"),
@@ -3477,7 +3477,7 @@ function getUserName($ID,$link=0){
 	$before="";
 	$after="";
 	if ($link){
-		$before="<a href=\"".$cfg_install["root"]."/setup/users-info.php?ID=".$ID."\">";
+		$before="<a href=\"".$cfg_install["root"]."/users/users-info.php?ID=".$ID."\">";
 		$after="</a>";
 	}
 	return $before.$user->getName().$after;

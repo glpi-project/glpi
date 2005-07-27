@@ -26,45 +26,36 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  ------------------------------------------------------------------------
 */
- 
+
+// Based on:
+// IRMA, Information Resource-Management and Administration
+// Christian Bauer 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
+ 
 
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_setup.php");
+include ($phproot . "/glpi/includes_users.php");
+include ($phproot . "/glpi/includes_tracking.php");
 
+// on ajoute les includes pour le suivi des interventions de tous les items
+include ($phproot . "/glpi/includes_computers.php");
+include ($phproot . "/glpi/includes_printers.php");
+include ($phproot . "/glpi/includes_networking.php");
+include ($phproot . "/glpi/includes_peripherals.php");
+include ($phproot . "/glpi/includes_monitors.php");
+include ($phproot . "/glpi/includes_software.php");
+include ($phproot . "/glpi/includes_enterprises.php");
 
-if(empty($_GET["name"])) $_GET["name"] = "";
-if (isset($_POST["add"])) {
-	checkAuthentication("admin");
-	// Pas de nom pas d'ajout	
-	if (!empty($_POST["name"])){
-		addUser($_POST);
-		logEvent(0, "users", 4, "setup", $_SESSION["glpiname"]." added user ".$_POST["name"].".");
-	}
-	glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["delete"])) {
-	checkAuthentication("admin");
-	deleteUser($_POST);
-	logEvent(0,"users", 4, "setup", $_SESSION["glpiname"]." deleted user ".$_POST["name"].".");
-	glpi_header($cfg_install["root"]."/setup/setup-users.php");
-} else if (isset($_POST["update"])) {
-	checkAuthentication("admin");
-	commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
-	updateUser($_POST);
-	logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]." updated user ".$_POST["name"].".");
-	showUserform($_SERVER["PHP_SELF"],$_POST["name"]);
-} else {
-
-checkAuthentication("admin");
+checkAuthentication("normal");
 commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
-showUserform($_SERVER["PHP_SELF"],$_GET["name"]);
-}
-	
-
+showUserInfo($_SERVER["PHP_SELF"],$_GET["ID"]);
+if (isset($_GET["start"])) $start=$_GET["start"];
+else $start=0;
+showJobList($_SERVER["PHP_SELF"],$_GET["ID"],"user","","","",$start);
 
 commonFooter();
 

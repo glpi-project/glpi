@@ -40,6 +40,7 @@
 
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
+include ($phproot . "/glpi/includes_users.php");
 include ($phproot . "/glpi/includes_setup.php");
 
 
@@ -193,11 +194,11 @@ if (!$user_present) {
 $identificat->setcookies();
 
 // If no prefs for user, set default
-$query = "SELECT * FROM glpi_prefs WHERE (username = '".$_POST['login_name']."')";
+$query = "SELECT * FROM glpi_prefs WHERE (id_user = '".$identificat->user->fields["ID"]."')";
 $result = $db->query($query);
 if ($db->numrows($result) == 0)
 {
-	$query = "INSERT INTO glpi_prefs (`username`,`tracking_order`,`language`) VALUES ('".$_POST['login_name']."', 'yes','french')";
+	$query = "INSERT INTO glpi_prefs (`id_user`,`tracking_order`,`language`) VALUES ('".$identificat->user->fields["ID"]."', 'yes','french')";
 	$result = $db->query($query);
 }
 
