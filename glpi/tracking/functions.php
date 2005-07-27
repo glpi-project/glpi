@@ -1064,13 +1064,16 @@ function postFollowups ($ID,$author,$contents) {
 function addFormTracking ($device_type,$ID,$author,$assign,$target,$error,$searchauthor='') {
 	// Prints a nice form to add jobs
 
-	GLOBAL $cfg_layout, $lang,$cfg_features;
+	GLOBAL $cfg_layout, $lang,$cfg_features,$REFERER;
 
 	if (!empty($error)) {
 		echo "<div align='center'><strong>$error</strong></div>";
 	}
 	echo "<form method='get' action='$target'>";
+	echo "<input type='hidden' name='referer' value='$REFERER'>";
 	echo "<div align='center'><table class='tab_cadre'>";
+	echo "<p><a class='icon_consol' href='$REFERER'>".$lang["buttons"][13]."</a></p>";
+	
 	echo "<tr><th colspan='4'>".$lang["job"][13].": <br>";
 	$m=new CommonItem;
 	$m->getfromDB($device_type,$ID);

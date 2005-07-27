@@ -65,6 +65,10 @@ if (!isset($_GET["assign"])) $assign=$_SESSION["glpiID"];
 else $assign=$_GET["assign"];
 
 
+if (isset($_SERVER["HTTP_REFERER"]))
+$REFERER=$_SERVER["HTTP_REFERER"];
+if (isset($_GET["referer"])) $REFERER=$_GET["referer"];
+
 if (isset($_GET["Modif_Interne"])){
 addFormTracking($_GET["device_type"],$_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error,$_GET["search"]);
 }
