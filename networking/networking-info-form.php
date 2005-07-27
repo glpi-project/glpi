@@ -53,8 +53,8 @@ if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
-	addNetdevice($_POST);
-	logEvent(0, "networking", 4, "inventory", $_SESSION["glpiname"]." added item name ".$_POST["name"].".");
+	$newID=addNetdevice($_POST);
+	logEvent($newID, "networking", 4, "inventory", $_SESSION["glpiname"]." added item name ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))

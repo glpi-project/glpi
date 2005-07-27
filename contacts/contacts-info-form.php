@@ -44,8 +44,8 @@ if(empty($tab["ID"])) $tab["ID"] = "";
 if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
-	addContact($_POST);
-	logEvent(0, "contacts", 4, "financial", $_SESSION["glpiname"]." added ".$_POST["name"].".");
+	$newID=addContact($_POST);
+	logEvent($newID, "contacts", 4, "financial", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["delete"]))

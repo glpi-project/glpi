@@ -55,8 +55,8 @@ if (isset($_POST["add"]))
 	checkAuthentication("admin");
 	unset($_POST["search_software"]);
 
-	addSoftware($_POST);
-	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." added item ".$_POST["name"].".");
+	$newID=addSoftware($_POST);
+	logEvent($newID, "software", 4, "inventory", $_SESSION["glpiname"]." added item ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))

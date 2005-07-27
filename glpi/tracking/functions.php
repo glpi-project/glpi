@@ -170,6 +170,66 @@ function getTrackingPrefs ($username) {
 	return $prefs;
 }
 
+function showCentralJobList($target,$start) {
+	// Lists all Jobs, needs $show which can have keywords 
+	// (individual, unassigned) and $contains with search terms.
+	// If $item is given, only jobs for a particular machine
+	// are listed.
+
+	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
+		
+	$prefs = getTrackingPrefs($_SESSION["glpiname"]);
+
+
+	
+	$query = "SELECT glpi_tracking.ID FROM glpi_tracking WHERE (glpi_tracking.status = 'new') AND (glpi_tracking.assign = '".$_SESSION["glpiID"]."') ORDER BY glpi_tracking.date ".$prefs["order"]."";
+	
+	$lim_query = " LIMIT ".$start.",".$cfg_features["list_limit"]."";	
+
+	$db = new DB;
+	$result = $db->query($query);
+	$numrows = $db->numrows($result);
+
+	$query .= $lim_query;
+	
+	$result = $db->query($query);
+	$i = 0;
+	$number = $db->numrows($result);
+
+	if ($number > 0) {
+
+		echo "<div align='center'><table class='tab_cadre' width='45%'>";
+		echo "<tr><th>".$lang["joblist"][0]."</th>";
+		echo "<th>".$lang["joblist"][3]."</th>";
+		echo "<th>".$lang["tracking"][20]."</th>";
+		echo "<th colspan='2'>".$lang["joblist"][6]."</th></tr>";
+		while ($i < $number) {
+			$ID = $db->result($result, $i, "ID");
+			showJobVeryShort($ID);
+			$i++;
+		}
+		echo "</table></div>";
+	}
+	else
+	{
+		echo "<br><div align='center'>";
+		echo "<table border='0' width='90%'>";
+		echo "<tr><th>".$lang["joblist"][8]."</th></tr>";
+
+		if ($item) 
+		{
+			echo "<tr><td align='center' class='tab_bg_1'>";
+			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&device_type=$item_type\"><strong>";
+			echo $lang["joblist"][7];
+			echo "</strong></a>";
+			echo "</td></tr>";
+		}
+		echo "</table>";
+		echo "</div><br>";
+	}
+}
+
+
 function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$device='-1',$category='NULL',$containsID='',$desc="both") {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
@@ -599,6 +659,90 @@ function showJobShort($ID, $followups) {
 			showFollowupsShort($job->ID);
 		}
 
+		echo "</td>";
+
+		// Job Controls
+		echo "<td width='40' align='center' >";
+		
+		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
+		echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-followups.php?ID=$job->ID\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;($job->num_of_followups)&nbsp;<br>";
+		else
+		echo "<a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;($job->num_of_followups)&nbsp;<br>";
+//		if ($job->status == "new"&&strcmp($_SESSION["glpitype"],"post-only")!=0)
+//		{
+//			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-mark.php?ID=$job->ID\">".$lang["joblist"][14]."</a><br>";
+//		}
+//		if(strcmp($_SESSION["glpitype"],"post-only")!=0)
+//		echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-assign-form.php?ID=$job->ID\">".$lang["joblist"][15]."</a></strong></td>";
+
+		// Finish Line
+		echo "</tr>";
+	}
+	else
+	{
+    echo "<tr class='tab_bg_2'><td colspan='6' ><i>".$lang["joblist"][16]."</i></td></tr>";
+	}
+}
+
+function showJobVeryShort($ID) {
+	// Prints a job in short form
+	// Should be called in a <table>-segment
+	// Print links or not in case of user view
+
+	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang;
+
+	// Make new job object and fill it from database, if success, print it
+	$job = new Job;
+
+	if ($job->getfromDB($ID,0))
+	{
+		$bgcolor=$cfg_layout["priority_".$job->priority];
+		if ($job->status == "new")
+		{
+			echo "<tr class='tab_bg_2'>";
+			echo "<td align='center' bgcolor='$bgcolor' >ID: ".$job->ID."</td>";
+
+		}
+		else
+		{
+ 			echo "<tr class='tab_bg_2'>";
+			echo "<td align='center' bgcolor='$bgcolor' >ID: ".$job->ID;
+			echo "</td>";
+		}
+
+	
+		echo "<td align='center'  >";
+
+		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
+		echo "<strong>".$job->getAuthorName(1)."</strong>";
+		else
+		echo "<strong>".$job->getAuthorName()."</strong>";
+
+		echo "</td>";
+
+		if (strcmp($_SESSION["glpitype"],"post-only")!=0){
+			echo "<td align='center' ";
+			$m= new CommonItem;
+			$m->getfromDB($job->device_type,$job->computer);
+			if (isset($m->obj->fields["deleted"])&&$m->obj->fields["deleted"]=='Y')
+			echo "class='tab_bg_1_2'";
+			echo ">";
+			echo $m->getType()."<br>";
+			echo "<strong>";
+			if ($job->computerfound) echo $m->getLink();
+			else echo $m->getNameID();
+			echo "</strong>";
+/*			if ($job->computerfound)	echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$job->computer\">";
+			echo "<strong>$job->computername ($job->computer)</strong>";
+			if ($job->computerfound) echo "</a>";
+*/			
+			echo "</td>";
+		}
+		else
+		echo "<td  align='center' ><strong>$job->computername ($job->computer)</strong></td>";
+
+		$stripped_content =substr($job->contents,0,$cfg_features["cut"]);
+		echo "<td ><strong>$stripped_content</strong>";
 		echo "</td>";
 
 		// Job Controls

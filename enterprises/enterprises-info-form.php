@@ -58,48 +58,48 @@ if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
 
-	addEnterprise($_POST);
-	logEvent(0, "enterprise", 4, "financial", $_SESSION["glpiname"]." added item ".$_POST["name"].".");
+	$newID=addEnterprise($_POST);
+	logEvent($newID, "enterprises", 4, "financial", $_SESSION["glpiname"]." added item ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
 	deleteEnterprise($_POST);
-	logEvent($tab["ID"], "enterprise", 4, "financial", $_SESSION["glpiname"]." deleted item.");
+	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." deleted item.");
 	glpi_header($cfg_install["root"]."/enterprises/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreEnterprise($_POST);
-	logEvent($tab["ID"], "enterprise", 4, "financial", $_SESSION["glpiname"]." restored item.");
+	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." restored item.");
 	glpi_header($cfg_install["root"]."/enterprises/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
 	deleteEnterprise($_POST,1);
-	logEvent($tab["ID"], "enterprise", 4, "financial", $_SESSION["glpiname"]." purge item.");
+	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." purge item.");
 	glpi_header($cfg_install["root"]."/enterprises/");
 }
 else if (isset($_POST["addcontact"])){
 	checkAuthentication("admin");
 	addContactEnterprise($_POST["eID"],$_POST["cID"]);
-	logEvent($tab["ID"], "enterprise", 4, "financial", $_SESSION["glpiname"]." associate contact.");
+	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." associate contact.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deletecontact"])){
 	checkAuthentication("admin");
 	deleteContactEnterprise($_GET["ID"]);
-	logEvent(0, "enterprise", 4, "financial", $_SESSION["glpiname"]." delete associate contact.");
+	logEvent(0, "enterprises", 4, "financial", $_SESSION["glpiname"]." delete associate contact.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateEnterprise($_POST);
-	logEvent($_POST["ID"], "enterprise", 4, "financial", $_SESSION["glpiname"]." updated item.");
+	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." updated item.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else

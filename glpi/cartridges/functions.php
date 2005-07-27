@@ -48,7 +48,7 @@ function titleCartridge(){
          GLOBAL  $lang,$HTMLRel;
          
          echo "<div align='center'><table border='0'><tr><td>";
-         echo "<img src=\"".$HTMLRel."pics/cartouches.png\" alt='".$lang["cartridges"][6]."' title='".$lang["cartridges"][6]."'></td><td><a  class='icon_consol' href=\"cartridge-info-form.php\"><b>".$lang["cartridges"][6]."</b></a>";
+         echo "<img src=\"".$HTMLRel."pics/cartouches.png\" alt='".$lang["cartridges"][6]."' title='".$lang["cartridges"][6]."'></td><td><a  class='icon_consol' href=\"cartridges-info-form.php\"><b>".$lang["cartridges"][6]."</b></a>";
          echo "</td></tr></table></div>";
 }
 
@@ -103,7 +103,7 @@ function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "",$d
 	$option["glpi_dropdown_locations.name"]			= $lang["cartridges"][36];	
 	$option["resptech.name"]			=$lang["common"][10];
 	
-	echo "<form method=get action=\"".$cfg_install["root"]."/cartridges/cartridge-search.php\">";
+	echo "<form method=get action=\"".$cfg_install["root"]."/cartridges/cartridges-search.php\">";
 	echo "<div align='center'><table class='tab_cadre' width='800'>";
 	echo "<tr><th colspan='4'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
@@ -339,7 +339,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 
 				echo "<tr class='tab_bg_2' align='center'>";
 				echo "<td><b>";
-				echo "<a href=\"".$cfg_install["root"]."/cartridges/cartridge-info-form.php?ID=$ID\">";
+				echo "<a href=\"".$cfg_install["root"]."/cartridges/cartridges-info-form.php?ID=$ID\">";
 				echo $ct->fields["name"]." (".$ct->fields["ID"].")";
 				echo "</a></b></td>";
 				echo "<td>".$ct->fields["ref"]."</td>";
@@ -592,10 +592,10 @@ function showCartridgesAdd($ID) {
 	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel;
 	
 	
-	echo "<form method='post'  action=\"".$HTMLRel."cartridges/cartridge-edit.php\">";
+	echo "<form method='post'  action=\"".$HTMLRel."cartridges/cartridges-edit.php\">";
 	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='90%' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><b>";
-	echo "<a href=\"".$cfg_install["root"]."/cartridges/cartridge-edit.php?add=add&tID=$ID\">";
+	echo "<a href=\"".$cfg_install["root"]."/cartridges/cartridges-edit.php?add=add&tID=$ID\">";
 	echo $lang["cartridges"][17];
 	echo "</a></b></td>";
 	echo "<td align='center' class='tab_bg_2'>";
@@ -697,7 +697,7 @@ $query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')
 		echo $date_out;		
 		echo "</td><td align='center'>";
 
-		echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_install["root"]."/cartridges/cartridge-edit.php?delete=delete&ID=".$data["ID"]."'>".$lang["cartridges"][31]."</a>";
+		echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_install["root"]."/cartridges/cartridges-edit.php?delete=delete&ID=".$data["ID"]."'>".$lang["cartridges"][31]."</a>";
 		echo "</td></tr>";
 		
 	}	
@@ -831,7 +831,7 @@ function showCompatiblePrinters($instID) {
 	$number = $db->numrows($result);
 	$i = 0;
 	
-    echo "<form method='post' action=\"".$cfg_install["root"]."/cartridges/cartridge-info-form.php\">";
+    echo "<form method='post' action=\"".$cfg_install["root"]."/cartridges/cartridges-info-form.php\">";
 	echo "<br><br><center><table class='tab_cadre' width='90%'>";
 	echo "<tr><th colspan='3'>".$lang["cartridges"][32].":</th></tr>";
 	echo "<tr><th>".$lang['cartridges'][4]."</th><th>".$lang["printers"][9]."</th><th>&nbsp;</th></tr>";
@@ -915,7 +915,7 @@ function showCartridgeInstalled($instID) {
 	$number = $db->numrows($result);
 	$i = 0;
 		
-    echo "<form method='post' action=\"".$cfg_install["root"]."/cartridges/cartridge-edit.php\">";
+    echo "<form method='post' action=\"".$cfg_install["root"]."/cartridges/cartridges-edit.php\">";
 
 	echo "<br><br><center><table class='tab_cadre' width='90%'>";
 	echo "<tr><th colspan='7'>".$lang["cartridges"][33].":</th></tr>";
@@ -942,7 +942,7 @@ function showCartridgeInstalled($instID) {
 		echo $date_out;		
 		echo "</td><td align='center'>";
 		if (is_null($date_out))
-		echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_install["root"]."/cartridges/cartridge-edit.php?uninstall=uninstall&ID=".$data["ID"]."'>".$lang["cartridges"][29]."</a>";
+		echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_install["root"]."/cartridges/cartridges-edit.php?uninstall=uninstall&ID=".$data["ID"]."'>".$lang["cartridges"][29]."</a>";
 		else echo "&nbsp;";
 		echo "</td></tr>";
 		

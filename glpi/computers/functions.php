@@ -931,7 +931,7 @@ function addComputer($input) {
 			}
 	}
 		
-	
+	return $newID;
 }
 /**
 * Delete a computer in the database.

@@ -938,7 +938,7 @@ function logEvent ($item, $itemtype, $level, $service, $event) {
 * @param $order order by clause occurences (eg: ) 
 * @param $sort order by clause occurences (eg: date) 
 **/
-function showAddEvents($target,$order,$sort) {
+function showAddEvents($target,$order,$sort,$user="") {
 	// Show events from $result in table form
 
 	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
@@ -953,8 +953,12 @@ function showAddEvents($target,$order,$sort) {
 		$order = "DESC";
 	}
 	
+	$usersearch="";
+	if (!empty($user))
+	$usersearch=$user." ";
+	
 	// Query Database
-	$query = "SELECT * FROM glpi_event_log WHERE message LIKE '%added%' ORDER BY $sort $order LIMIT 0,".$cfg_features["num_of_events"];
+	$query = "SELECT * FROM glpi_event_log WHERE message LIKE '%".$usersearch."added%' ORDER BY $sort $order LIMIT 0,".$cfg_features["num_of_events"];
 
 	// Get results
 	$result = $db->query($query);

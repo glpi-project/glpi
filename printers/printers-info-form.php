@@ -57,8 +57,8 @@ if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
-	addPrinter($_POST);
-	logEvent(0, "Printers", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["name"].".");
+	$newID=addPrinter($_POST);
+	logEvent($newID, "printers", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))

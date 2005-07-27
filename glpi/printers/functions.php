@@ -709,7 +709,7 @@ function addPrinter($input) {
 	}
 
 
-
+	return $newID;
 }
 
 function deletePrinter($input,$force=0) {

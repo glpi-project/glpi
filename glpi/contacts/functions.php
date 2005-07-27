@@ -467,7 +467,7 @@ function addContact($input) {
 		}
 	}
 
-	$con->addToDB();
+	return $con->addToDB();
 
 }
 /**
