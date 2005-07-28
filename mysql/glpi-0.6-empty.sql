@@ -704,7 +704,6 @@ CREATE TABLE glpi_event_log (
    KEY itemtype (itemtype)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('1','-1','system','2005-07-28 17:14:41','login','3','glpi logged in from 127.0.0.1.');
 
 ### Dump table glpi_followups
 
