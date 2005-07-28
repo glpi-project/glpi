@@ -33,7 +33,7 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-// FUNCTIONS contact
+// FUNCTIONS links
 
 /**
 * Print a good title for links pages
@@ -67,8 +67,8 @@ function showLinkOnglets($target,$withtemplate,$actif){
 	
 	if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
 	$ID=$ereg[1];
-	$next=getNextItem("glpi_contacts",$ID);
-	$prev=getPreviousItem("glpi_contacts",$ID);
+	$next=getNextItem("glpi_links",$ID);
+	$prev=getPreviousItem("glpi_links",$ID);
 	$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
 	if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
 	if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
@@ -137,7 +137,7 @@ function searchFormLink($field="",$phrasetype= "",$contains="",$sort= "") {
 * Search and list links
 *
 *
-* Build the query, make the search and list contacts after a search.
+* Build the query, make the search and list links after a search.
 *
 *@param $target filename where to go when done.
 *@param $username not used to be deleted.
