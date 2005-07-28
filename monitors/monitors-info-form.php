@@ -45,6 +45,7 @@ include ($phproot . "/glpi/includes_financial.php");
 include ($phproot . "/glpi/includes_documents.php");
 include ($phproot . "/glpi/includes_state.php");
 include ($phproot . "/glpi/includes_users.php");
+include ($phproot . "/glpi/includes_links.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -172,7 +173,7 @@ else
 				showDocumentAssociated(COMPUTER_TYPE,$tab["ID"]);	
 				showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
 				showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);	
-			
+				showLinkOnDevice(MONITOR_TYPE,$tab["ID"]);
 				break;
 			case 4 :			
 				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",MONITOR_TYPE,$tab["ID"]);
@@ -185,6 +186,9 @@ else
 				showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
 				showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);	
 				break;
+			case 7 :
+				showLinkOnDevice(MONITOR_TYPE,$tab["ID"]);
+				break;				
 			default :
 				showConnect($_SERVER["PHP_SELF"],$tab['ID'],MONITOR_TYPE);
 				break;	

@@ -43,6 +43,7 @@ include ($phproot . "/glpi/includes_documents.php");
 include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_state.php");
 include ($phproot . "/glpi/includes_users.php");
+include ($phproot . "/glpi/includes_links.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -177,7 +178,7 @@ else
 					showDocumentAssociated(PERIPHERAL_TYPE,$tab["ID"]);
 					showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
 					showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
-				
+					showLinkOnDevice(PERIPHERAL_TYPE,$tab["ID"]);
 					break;
 				case 4 :
 					showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",PERIPHERAL_TYPE,$tab["ID"]);
@@ -190,6 +191,9 @@ else
 					showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
 					showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
 					break;
+				case 7 :
+					showLinkOnDevice(PERIPHERAL_TYPE,$tab["ID"]);
+					break;					
 				default :
 					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PERIPHERAL_TYPE);
 					showPorts($tab["ID"], PERIPHERAL_TYPE,$tab["withtemplate"]);

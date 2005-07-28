@@ -62,7 +62,9 @@ function showCartridgeOnglets($target,$withtemplate,$actif){
 
 	echo "<div id='barre_onglets'><ul id='onglet'>";
 	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&onglet=1$template'>".$lang["title"][26]."</a></li>";
-	
+	if(empty($withtemplate)){
+	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&onglet=7$template'>".$lang["title"][34]."</a></li>";
+	}	
 	echo "<li class='invisible'>&nbsp;</li>";
 	
 	if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
@@ -475,12 +477,8 @@ function showCartridgeTypeForm ($target,$ID) {
 
 		echo "</table></div>";
 		
-		showCompatiblePrinters($ID);
-		showCartridgesAdd($ID);
-		showCartridges($ID);
-		showCartridges($ID,1);
 	}
-
+	return true;
 }
 /**
 * Update some elements of a cartridge type in the database.

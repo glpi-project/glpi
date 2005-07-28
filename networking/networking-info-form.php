@@ -44,6 +44,7 @@ include ($phproot . "/glpi/includes_financial.php");
 include ($phproot . "/glpi/includes_documents.php");
 include ($phproot . "/glpi/includes_state.php");
 include ($phproot . "/glpi/includes_users.php");
+include ($phproot . "/glpi/includes_links.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -146,7 +147,7 @@ else
 				showDocumentAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
 				showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
 				showOldJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
-			
+				showLinkOnDevice(NETWORKING_TYPE,$tab["ID"]);
 				break;
 			case 4 :
 				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",NETWORKING_TYPE,$tab["ID"]);
@@ -159,6 +160,9 @@ else
 				showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
 				showOldJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
 				break;
+			case 7 :
+				showLinkOnDevice(NETWORKING_TYPE,$tab["ID"]);
+				break;				
 			default :
 				showPorts($tab["ID"],NETWORKING_TYPE);
 				showPortsAdd($tab["ID"],NETWORKING_TYPE);

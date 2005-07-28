@@ -42,6 +42,7 @@ include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_documents.php");
+include ($phproot . "/glpi/includes_links.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -128,15 +129,31 @@ else
 
 	commonHeader($lang["title"][20],$_SERVER["PHP_SELF"]);
 
+	
+	if (!empty($tab['ID']))
 	showContractOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
-	
-	showContractForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["search"]);
-	
-	if (!empty($tab["ID"])){
-		showDocumentAssociated(CONTRACT_TYPE,$tab["ID"],$tab["search"]);
-		showEnterpriseContract($tab["ID"]);
-		showDeviceContract($tab["ID"],$tab["search"]);
-	}
+
+	if (showContractForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["search"])) {
+		if (!empty($tab['ID']))
+		switch($_SESSION['glpi_onglet']){
+		case -1 :	
+			showEnterpriseContract($tab["ID"]);
+			showDeviceContract($tab["ID"],$tab["search"]);
+			showDocumentAssociated(CONTRACT_TYPE,$tab["ID"],$tab["search"]);
+			showLinkOnDevice(CONTACT_TYPE,$tab["ID"]);
+			break;
+		case 5 : 
+			showDocumentAssociated(CONTRACT_TYPE,$tab["ID"],$tab["search"]);
+			break;
+		case 7 : 
+			showLinkOnDevice(CONTRACT_TYPE,$tab["ID"]);
+			break;
+		default :
+			showEnterpriseContract($tab["ID"]);
+			showDeviceContract($tab["ID"],$tab["search"]);
+		break;
+		}
+	}	
 	
 	
 	commonFooter();

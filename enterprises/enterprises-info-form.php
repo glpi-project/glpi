@@ -44,7 +44,7 @@ include ($phproot . "/glpi/includes_monitors.php");
 include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_software.php");
-
+include ($phproot . "/glpi/includes_links.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -126,6 +126,7 @@ else
 				showContractAssociatedEnterprise($tab["ID"]);
 				showDocumentAssociated(ENTERPRISE_TYPE,$tab["ID"]);
 				showJobList($_SERVER["PHP_SELF"],$_GET["ID"],"enterprise","","","",$start);
+				showLinkOnDevice(ENTERPRISE_TYPE,$tab["ID"]);
 				break;
 			case 1 :
 				showAssociatedContact($tab["ID"]);
@@ -138,8 +139,10 @@ else
 				break;
 			case 6 :
 				showJobList($_SERVER["PHP_SELF"],$_GET["ID"],"enterprise","","","",$start);	
-
 				break;
+			case 7 : 
+				showLinkOnDevice(ENTERPRISE_TYPE,$tab["ID"]);
+				break;			
 			default : 
 				showAssociatedContact($tab["ID"]);
 

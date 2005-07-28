@@ -635,6 +635,15 @@ $lang["ldap"][5]="requis";
 $lang["ldap"][6]="permis"; 
 $lang["ldap"][7]="LDAP"; 
 
+$lang["links"][0]="ID";
+$lang["links"][1]="Lien";
+$lang["links"][2]="Ajouter Lien externe...";
+$lang["links"][3]="Ajouter un lien externe";
+$lang["links"][4]="Type de matériel associés";
+$lang["links"][5]="Type";
+$lang["links"][6]="Tags valides";
+$lang["links"][7]="Aucun lien défini";
+
 $lang["login"][0]="Login impossible, vérifiez que votre navigateur accepte les cookies.";
 $lang["login"][1]="Se reloguer"; 
 $lang["login"][2]="Votre mot de passe n'est plus valide... Si vous venez de le changer reloguez vous avec le nouveau"; 
@@ -1057,6 +1066,7 @@ $lang["setup"][83]="Etat des matériels";
 $lang["setup"][84]="Type de cartouches";
 $lang["setup"][85]="Type de contrats"; 
 $lang["setup"][86]="Type de mémoire vive"; 
+$lang["setup"][87]="Liens externes protocolés"; 
 $lang["setup"][100]="Configuration générale";
 $lang["setup"][101]="Chemin d'installation";
 $lang["setup"][102]="Niveau de log";
@@ -1253,6 +1263,8 @@ $lang["title"][29]="Tous";
 $lang["title"][30]="Périphériques internes"; 
 $lang["title"][31]="Planning"; 
 $lang["title"][32]="Logs"; 
+$lang["title"][33]="Liens externes"; 
+$lang["title"][34]="Liens";
 
 $lang["toolbar"][1]="Gras"; 
 $lang["toolbar"][2]="Italique"; 

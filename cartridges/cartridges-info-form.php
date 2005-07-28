@@ -37,7 +37,7 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_cartridges.php");
 include ($phproot . "/glpi/includes_printers.php");
 include ($phproot . "/glpi/includes_enterprises.php");
-
+include ($phproot . "/glpi/includes_links.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -105,10 +105,32 @@ else
 
 	commonHeader($lang["title"][19],$_SERVER["PHP_SELF"]);
 	
+	if (!empty($tab['ID']))
 	showCartridgeOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
-	showCartridgeTypeForm($_SERVER["PHP_SELF"],$tab["ID"]);
-
+	if (showCartridgeTypeForm($_SERVER["PHP_SELF"],$tab["ID"])) {
+		if (!empty($tab['ID']))
+		switch($_SESSION['glpi_onglet']){
+		case -1 :	
+			showCompatiblePrinters($tab["ID"]);
+			showCartridgesAdd($tab["ID"]);
+			showCartridges($tab["ID"]);
+			showCartridges($tab["ID"],1);
+		
+			showLinkOnDevice(CARTRIDGE_TYPE,$tab["ID"]);
+			break;
+		case 7 : 
+			showLinkOnDevice(CARTRIDGE_TYPE,$tab["ID"]);
+			break;
+		default :
+			showCompatiblePrinters($tab["ID"]);
+			showCartridgesAdd($tab["ID"]);
+			showCartridges($tab["ID"]);
+			showCartridges($tab["ID"],1);
+		break;
+		}
+	}
+	
 	commonFooter();
 }
 
