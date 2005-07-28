@@ -375,6 +375,11 @@ function replaceDropDropDown($input) {
 		$query = "update glpi_contracts set contract_type = '". $input["newID"] ."'  where contract_type = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
+	case "ram_type":
+		$query = "update glpi_device_ram set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		$db->query($query);
+		break;
+
 	case "enttype":
 		$query = "update glpi_enterprises set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$db->query($query);
@@ -556,6 +561,11 @@ function dropdownUsed($table, $ID) {
 		break;
 	case "contract_type":
 		$query = "Select count(*) as cpt FROM glpi_contracts where contract_type = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
+	case "ram_type":
+		$query = "Select count(*) as cpt FROM glpi_device_ram where type = ".$ID."";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;

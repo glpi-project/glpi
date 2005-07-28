@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-07-27 19:31
+#GLPI Dump database on 2005-07-28 12:19
 
 ### Dump table glpi_cartridges
 
@@ -7833,28 +7833,28 @@ DROP TABLE IF EXISTS glpi_device_ram;
 CREATE TABLE glpi_device_ram (
     ID int(11) NOT NULL auto_increment,
     designation varchar(100) NOT NULL,
-    type enum('EDO','DDR','SDRAM','SDRAM-2') DEFAULT 'EDO' NOT NULL,
     frequence varchar(8) NOT NULL,
     comment text NOT NULL,
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
     specif_default varchar(250) NOT NULL,
+    type int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_device_ram VALUES ('1','36pin SIMMS','EDO','','','0','');
-INSERT INTO glpi_device_ram VALUES ('2','72pin SIMMS (Fast Page)','EDO','','','0','');
-INSERT INTO glpi_device_ram VALUES ('3','72pin SIMMS (EDO)','EDO','','','0','');
-INSERT INTO glpi_device_ram VALUES ('4','Unbuffered DIMMs','EDO','','','0','');
-INSERT INTO glpi_device_ram VALUES ('5','DIMMs w/EEPROM','EDO','','','0','');
-INSERT INTO glpi_device_ram VALUES ('6','SDRAM DIMMs (&lt;10ns)','EDO','','','0','');
-INSERT INTO glpi_device_ram VALUES ('7','ECC DIMMs','EDO','','','0','');
-INSERT INTO glpi_device_ram VALUES ('8','Other','EDO','','','0','');
-INSERT INTO glpi_device_ram VALUES ('9','iMac DIMMS','EDO','','','0','');
-INSERT INTO glpi_device_ram VALUES ('10','','EDO','','','0','');
-INSERT INTO glpi_device_ram VALUES ('11','RDRAM','EDO','','','0','');
-INSERT INTO glpi_device_ram VALUES ('12','DDRAM','EDO','','','0','');
-INSERT INTO glpi_device_ram VALUES ('13','DDR ECC','EDO','','','0','');
+INSERT INTO glpi_device_ram VALUES ('1','36pin SIMMS','','','0','','1');
+INSERT INTO glpi_device_ram VALUES ('2','72pin SIMMS (Fast Page)','','','0','','1');
+INSERT INTO glpi_device_ram VALUES ('3','72pin SIMMS (EDO)','','','0','','1');
+INSERT INTO glpi_device_ram VALUES ('4','Unbuffered DIMMs','','','0','','1');
+INSERT INTO glpi_device_ram VALUES ('5','DIMMs w/EEPROM','','','0','','1');
+INSERT INTO glpi_device_ram VALUES ('6','SDRAM DIMMs (&lt;10ns)','','','0','','1');
+INSERT INTO glpi_device_ram VALUES ('7','ECC DIMMs','','','0','','1');
+INSERT INTO glpi_device_ram VALUES ('8','Other','','','0','','1');
+INSERT INTO glpi_device_ram VALUES ('9','iMac DIMMS','','','0','','1');
+INSERT INTO glpi_device_ram VALUES ('10','','','','0','','1');
+INSERT INTO glpi_device_ram VALUES ('11','RDRAM','','','0','','1');
+INSERT INTO glpi_device_ram VALUES ('12','DDRAM','','','0','','1');
+INSERT INTO glpi_device_ram VALUES ('13','DDR ECC','','','0','','1');
 
 ### Dump table glpi_device_sndcard
 
@@ -10112,6 +10112,20 @@ INSERT INTO glpi_dropdown_os VALUES ('25','Windows 2000 Server - Service Pack 4'
 INSERT INTO glpi_dropdown_os VALUES ('26','Windows 2000 Server - Sevice Pack 2');
 INSERT INTO glpi_dropdown_os VALUES ('27','Windows 2000 Server - SP4');
 
+### Dump table glpi_dropdown_ram_type
+
+DROP TABLE IF EXISTS glpi_dropdown_ram_type;
+CREATE TABLE glpi_dropdown_ram_type (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
+INSERT INTO glpi_dropdown_ram_type VALUES ('1','EDO');
+INSERT INTO glpi_dropdown_ram_type VALUES ('2','DDR');
+INSERT INTO glpi_dropdown_ram_type VALUES ('3','SDRAM');
+INSERT INTO glpi_dropdown_ram_type VALUES ('4','SDRAM-2');
+
 ### Dump table glpi_dropdown_rubdocs
 
 DROP TABLE IF EXISTS glpi_dropdown_rubdocs;
@@ -10183,6 +10197,7 @@ CREATE TABLE glpi_event_log (
 
 INSERT INTO glpi_event_log VALUES ('13767','0','users','2005-07-27 19:29:05','setup','5','glpi updated user user10.');
 INSERT INTO glpi_event_log VALUES ('13766','-1','system','2005-07-27 19:23:22','login','3','glpi logged in from 127.0.0.1.');
+INSERT INTO glpi_event_log VALUES ('13768','-1','system','2005-07-28 12:19:14','login','3','glpi logged in from 127.0.0.1.');
 
 ### Dump table glpi_followups
 

@@ -59,7 +59,7 @@ if(!empty($tab["device_type"])) {
 	titleDevices($tab["device_type"]);
 }
 
-echo "<div align='center'><form method='post' action=\"".$cfg_install["root"]."/devices/index.php\">";
+echo "<div align='center'><form method='get' action=\"".$cfg_install["root"]."/devices/index.php\">";
 echo "<table class='tab_cadre' cellpadding='3'><tr><th colspan='2'>";
 echo $lang["devices"][17].": </th></tr><tr class='tab_bg_1'><td><select name='device_type'>";
 

@@ -165,7 +165,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 		case RAM_DEVICE :
 			$type=$lang["devices"][6];
 			$name=$device->fields["designation"];
-			if (!empty($device->fields["type"])) $entry[$lang["device_ram"][0]]=$device->fields["type"];
+			if (!empty($device->fields["type"])) $entry[$lang["device_ram"][0]]=getDropdownName("glpi_dropdown_ram_type",$device->fields["type"]);
 			if (!empty($device->fields["frequence"])) $entry[$lang["device_ram"][1]]=$device->fields["frequence"];
 			
 			$specificity_size = 10;
@@ -600,12 +600,8 @@ function showDevicesForm ($target,$ID,$device_type) {
 		break;
 		case "glpi_device_ram" :
 			echo "<tr><td>".$lang["device_ram"][0].":</td>";
-			echo "<td><select name='type'>";
-			echo "<option value='DDR' ".($device->fields["type"]=="DDR"?"selected":"").">DDR</option>";
-			echo "<option value='EDO' ".($device->fields["type"]=="EDO"?"selected":"").">EDO</option>";
-			echo "<option value='SDRAM' ".($device->fields["type"]=="SDRAM"?"selected":"").">SDRAM</option>";
-			echo "<option value='SDRAM-2' ".($device->fields["type"]=="SDRAM-2"?"selected":"").">SDRAM-2</option>";
-			echo "</select>";
+			echo "<td>";
+			dropdownValue("glpi_dropdown_ram_type","type",$device->fields["type"]);
 			echo "</td>";
 			echo "</tr>";
 			echo "<tr><td>".$lang["device_ram"][1].":</td>";
