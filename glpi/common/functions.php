@@ -976,8 +976,8 @@ function showAddEvents($target,$order,$sort,$user="") {
 	// Output events
 	$i = 0;
 
-	echo "<p><center><table width='400' class='tab_cadre'>";
-	echo "<tr><th colspan='6'>".$lang["central"][2]." ".$cfg_features["num_of_events"]." ".$lang["central"][8].":</th></tr>";
+	echo "<div align='center'><br><table width='400' class='tab_cadre'>";
+	echo "<tr><th colspan='5'>".$lang["central"][2]." ".$cfg_features["num_of_events"]." ".$lang["central"][8].":</th></tr>";
 	echo "<tr>";
 
 	echo "<th colspan='2'>";
@@ -1001,13 +1001,14 @@ function showAddEvents($target,$order,$sort,$user="") {
 	}
 	echo "<a href=\"$target?sort=service&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][2]."</a></th>";
 
+	/*
 	echo "<th width='8%'>";
 	if ($sort=="level") {
 		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 	}
 	echo "<a href=\"$target?sort=level&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][3]."</a></th>";
-
+	*/
 	echo "<th width='60%'>";
 	if ($sort=="message") {
 		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
@@ -1021,7 +1022,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 		$itemtype = $db->result($result, $i, "itemtype");
 		$date = $db->result($result, $i, "date");
 		$service = $db->result($result, $i, "service");
-		$level = $db->result($result, $i, "level");
+		//$level = $db->result($result, $i, "level");
 		$message = $db->result($result, $i, "message");
 		
 		echo "<tr class='tab_bg_2'>";
@@ -1037,13 +1038,13 @@ function showAddEvents($target,$order,$sort,$user="") {
 			echo $item;
 			echo "\">$item</a>";
 		}			
-		echo "</b></td><td>$date</td><td align='center'>$service</td><td align='center'>$level</td><td>$message</td>";
+		echo "</b></td><td><span style='font-size:9px;'>$date</span></td><td align='center'>$service</td><td>$message</td>";
 		echo "</tr>";
 
 		$i++; 
 	}
 
-	echo "</table></center><br>";
+	echo "</table></div><br>";
 }
 
 /**
