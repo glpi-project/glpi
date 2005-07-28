@@ -49,7 +49,7 @@ $lang["backup"][17]="Sei sicuro di voler eliminare questo file";
 $lang["backup"][18]="Sei sicuro di voler salvare il database"; 
 $lang["backup"][19]="Adesso"; 
 $lang["backup"][20]="Elimina"; 
-$lang["backup"][21]="Le fichier existe déjà"; 
+$lang["backup"][21]="The file already exists"; 
 
 $lang["buttons"][0]="Cerca"; 
 $lang["buttons"][1]="Elenca"; 
@@ -82,6 +82,14 @@ $lang["calendarD"][3]="Me";
 $lang["calendarD"][4]="G"; 
 $lang["calendarD"][5]="V"; 
 $lang["calendarD"][6]="S"; 
+
+$lang["calendarDay"][0]="Sunday"; 
+$lang["calendarDay"][1]="Monday"; 
+$lang["calendarDay"][2]="Tuesday"; 
+$lang["calendarDay"][3]="Wednesday"; 
+$lang["calendarDay"][4]="Thursday"; 
+$lang["calendarDay"][5]="Friday"; 
+$lang["calendarDay"][6]="Saturday"; 
 
 $lang["calendarM"][0]="Gennaio"; 
 $lang["calendarM"][1]="Febbraio"; 
@@ -144,6 +152,9 @@ $lang["central"][4]="Nessun Evento.";
 $lang["central"][5]="Pagina principale"; 
 $lang["central"][6]="Uscita"; 
 $lang["central"][7]="Aiuto"; 
+$lang["central"][8]="Ajouts"; 
+$lang["central"][9]="Vos interventions en cours"; 
+$lang["central"][10]="Les interventions non attribuées"; 
 
 $lang["choice"][0]="Sí"; 
 $lang["choice"][1]="No"; 
@@ -536,6 +547,8 @@ $lang["install"][77]="Passo";
 $lang["install"][78]="Quale database iniziale vuoi usare?"; 
 $lang["install"][79]="Database di default"; 
 $lang["install"][80]="Database vuoto"; 
+$lang["install"][81]="Début de l'installation"; 
+$lang["install"][82]="Base de données créées"; 
 
 $lang["job"][0]="Numero di chiamata"; 
 $lang["job"][1]="Chiamata ancora aperta..."; 
@@ -622,6 +635,15 @@ $lang["ldap"][5]="necessario";
 $lang["ldap"][6]="consentito"; 
 $lang["ldap"][7]="LDAP"; 
 
+$lang["links"][0]="ID"; 
+$lang["links"][1]="Link"; 
+$lang["links"][2]="Ajouter Lien externe..."; 
+$lang["links"][3]="Ajouter un lien externe"; 
+$lang["links"][4]="Type de matériel associés"; 
+$lang["links"][5]="Type"; 
+$lang["links"][6]="Valid tags"; 
+$lang["links"][7]="Aucun lien défini"; 
+
 $lang["login"][0]="Impossibile effettuare il login, verifica che il tuo browser sia configurato per accettare i cookie"; 
 $lang["login"][1]="Riprova il login"; 
 $lang["login"][2]="La password non é più valida: se l'hai appena cambiata, ti prego utilizza la nuova password"; 
@@ -676,6 +698,9 @@ $lang["Menu"][25]="Gestione";
 $lang["Menu"][26]="Gestione"; 
 $lang["Menu"][27]="Documenti"; 
 $lang["Menu"][28]="Stati"; 
+$lang["Menu"][29]="Planning"; 
+$lang["Menu"][30]="Logs"; 
+$lang["Menu"][31]="Helpdesk"; 
 
 $lang["monitors"][0]="Aggiungi schermo..."; 
 $lang["monitors"][3]="Aggiungi schermo"; 
@@ -764,6 +789,8 @@ $lang["networking"][54]="ID fisico";
 $lang["pager"][1]="a"; 
 $lang["pager"][2]="da"; 
 $lang["pager"][3]="di"; 
+$lang["pager"][4]="Afficher"; 
+$lang["pager"][5]="éléments"; 
 
 $lang["peripherals"][0]="Aggiungi periferica..."; 
 $lang["peripherals"][3]="Aggiungi periferica"; 
@@ -790,6 +817,18 @@ $lang["peripherals"][27]="Identificatore";
 $lang["peripherals"][28]="Periferiche"; 
 $lang["peripherals"][29]="ID periferica"; 
 $lang["peripherals"][30]="Nuova periferica da modello"; 
+
+$lang["planning"][0]="Le technicien demandé a déjà une intervention prévue pour cette plage."; 
+$lang["planning"][1]="Erreur dans l'entrée de vos dates. La date de début est surement supérieure à la date de fin"; 
+$lang["planning"][2]="Back"; 
+$lang["planning"][3]="Planning"; 
+$lang["planning"][4]="Date"; 
+$lang["planning"][5]="Day"; 
+$lang["planning"][6]="Week"; 
+$lang["planning"][7]="Ajouter un horaire d'intervention"; 
+$lang["planning"][8]="Tracking"; 
+$lang["planning"][9]="By"; 
+$lang["planning"][10]="Matériel"; 
 
 $lang["printers"][0]="Aggiungi stampante..."; 
 $lang["printers"][1]="Visualizza per posizione"; 
@@ -1025,6 +1064,9 @@ $lang["setup"][81]="Categorie documenti";
 $lang["setup"][82]="Tipologia indirizzo"; 
 $lang["setup"][83]="Stato"; 
 $lang["setup"][84]="Cartridge Type"; 
+$lang["setup"][85]="Type de contrats"; 
+$lang["setup"][86]="Type de mémoire vive"; 
+$lang["setup"][87]="Liens externes protocolés"; 
 $lang["setup"][100]="Configurazioni globali"; 
 $lang["setup"][101]="Installation path"; 
 $lang["setup"][102]="Log Level"; 
@@ -1093,6 +1135,7 @@ $lang["setup"][219]="Allow anonymous tracking post (helpdesk.html)";
 $lang["setup"][220]="'Helpdesk' user could not be modified"; 
 $lang["setup"][221]="Beginning of fiscal year (day and month)"; 
 $lang["setup"][222]="Dispositivi interni"; 
+$lang["setup"][223]="Limite des horaires pour le planning"; 
 
 $lang["software"][0]="Aggiungi software..."; 
 $lang["software"][1]="ID"; 
@@ -1218,6 +1261,10 @@ $lang["title"][27]="Connessioni";
 $lang["title"][28]="Chiamate"; 
 $lang["title"][29]="Tutto"; 
 $lang["title"][30]="Périphériques internes"; 
+$lang["title"][31]="Planning"; 
+$lang["title"][32]="Logs"; 
+$lang["title"][33]="External Links"; 
+$lang["title"][34]="Links"; 
 
 $lang["toolbar"][1]="Grassetto"; 
 $lang["toolbar"][2]="Corsivo"; 
