@@ -2590,7 +2590,7 @@ if(!FieldExists("glpi_users","language")) {
 	// Create fields
 	$query="ALTER TABLE `glpi_users` ADD `tracking_order` ENUM( 'yes', 'no' ) DEFAULT 'no' NOT NULL ;";
 	$db->query($query) or die("0.6 add tracking_order in users".$lang["update"][90].$db->error());
-	$query="ALTER TABLE `glpi_users` ADD `language` VARCHAR( 255 ) NOT NULL ;";
+	$query="ALTER TABLE `glpi_users` ADD `language` VARCHAR( 255 ) NOT NULL DEFAULT 'english';";
 	$db->query($query) or die("0.6 add language in users".$lang["update"][90].$db->error());
 	
 	// Move data
