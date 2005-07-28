@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-06-16 11:30
+#GLPI Dump database on 2005-07-28 17:18
 
 ### Dump table glpi_cartridges
 
@@ -44,6 +44,7 @@ CREATE TABLE glpi_cartridges_type (
     tech_num int(11) DEFAULT '0',
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
     comments text NOT NULL,
+    alarm tinyint(4) DEFAULT '10' NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise),
    KEY tech_num (tech_num),
@@ -162,6 +163,7 @@ INSERT INTO glpi_computers VALUES ('21','','0','','','','','0','',NULL,'12','1',
 DROP TABLE IF EXISTS glpi_config;
 CREATE TABLE glpi_config (
     ID int(11) NOT NULL auto_increment,
+    ldap_port varchar(10) DEFAULT '389' NOT NULL,
     num_of_events varchar(200) NOT NULL,
     jobs_at_login varchar(200) NOT NULL,
     sendexpire varchar(200) NOT NULL,
@@ -211,10 +213,16 @@ CREATE TABLE glpi_config (
     priority_5 varchar(200) DEFAULT '#ffadad' NOT NULL,
     date_fiscale date DEFAULT '2005-12-31' NOT NULL,
     cartridges_alarm int(11) DEFAULT '10' NOT NULL,
+    cas_host varchar(255) NOT NULL,
+    cas_port varchar(255) NOT NULL,
+    cas_uri varchar(255) NOT NULL,
+    planning_begin time DEFAULT '08:00:00' NOT NULL,
+    planning_end time DEFAULT '20:00:00' NOT NULL,
+    utf8_conv int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','10','1','1','80','30','15',' 0.6','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10');
+INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.6','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0');
 
 ### Dump table glpi_connect_wire
 
@@ -273,6 +281,7 @@ CREATE TABLE glpi_contract_device (
     FK_contract int(11) DEFAULT '0' NOT NULL,
     FK_device int(11) DEFAULT '0' NOT NULL,
     device_type tinyint(4) DEFAULT '0' NOT NULL,
+    is_template enum('0','1') DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
    UNIQUE FK_contract (FK_contract, FK_device, device_type),
    KEY FK_contract_2 (FK_contract),
@@ -320,6 +329,7 @@ CREATE TABLE glpi_contracts (
     monday_begin_hour time DEFAULT '00:00:00' NOT NULL,
     monday_end_hour time DEFAULT '00:00:00' NOT NULL,
     monday enum('Y','N') DEFAULT 'N' NOT NULL,
+    device_countmax int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
    KEY contract_type (contract_type),
    KEY begin_date (begin_date),
@@ -535,24 +545,24 @@ DROP TABLE IF EXISTS glpi_device_ram;
 CREATE TABLE glpi_device_ram (
     ID int(11) NOT NULL auto_increment,
     designation varchar(100) NOT NULL,
-    type enum('EDO','DDR','SDRAM','SDRAM-2') DEFAULT 'EDO' NOT NULL,
     frequence varchar(8) NOT NULL,
     comment text NOT NULL,
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
     specif_default varchar(250) NOT NULL,
+    type int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_device_ram VALUES ('1','36pin SIMMS','EDO','','','0','');
-INSERT INTO glpi_device_ram VALUES ('2','72pin SIMMS (Fast Page)','EDO','','','0','');
-INSERT INTO glpi_device_ram VALUES ('3','72pin SIMMS (EDO)','EDO','','','0','');
-INSERT INTO glpi_device_ram VALUES ('4','Unbuffered DIMMs','EDO','','','0','');
-INSERT INTO glpi_device_ram VALUES ('5','DIMMs w/EEPROM','EDO','','','0','');
-INSERT INTO glpi_device_ram VALUES ('6','SDRAM DIMMs (<10ns)','EDO','','','0','');
-INSERT INTO glpi_device_ram VALUES ('7','ECC DIMMs','EDO','','','0','');
-INSERT INTO glpi_device_ram VALUES ('8','Other','EDO','','','0','');
-INSERT INTO glpi_device_ram VALUES ('9','iMac DIMMS','EDO','','','0','');
+INSERT INTO glpi_device_ram VALUES ('1','36pin SIMMS','','','0','','1');
+INSERT INTO glpi_device_ram VALUES ('2','72pin SIMMS (Fast Page)','','','0','','1');
+INSERT INTO glpi_device_ram VALUES ('3','72pin SIMMS (EDO)','','','0','','1');
+INSERT INTO glpi_device_ram VALUES ('4','Unbuffered DIMMs','','','0','','1');
+INSERT INTO glpi_device_ram VALUES ('5','DIMMs w/EEPROM','','','0','','1');
+INSERT INTO glpi_device_ram VALUES ('6','SDRAM DIMMs (<10ns)','','','0','','1');
+INSERT INTO glpi_device_ram VALUES ('7','ECC DIMMs','','','0','','1');
+INSERT INTO glpi_device_ram VALUES ('8','Other','','','0','','1');
+INSERT INTO glpi_device_ram VALUES ('9','iMac DIMMS','','','0','','1');
 
 ### Dump table glpi_device_sndcard
 
@@ -580,10 +590,12 @@ CREATE TABLE glpi_doc_device (
     FK_doc int(11) DEFAULT '0' NOT NULL,
     FK_device int(11) DEFAULT '0' NOT NULL,
     device_type tinyint(4) DEFAULT '0' NOT NULL,
+    is_template enum('0','1') DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
    UNIQUE FK_doc (FK_doc, FK_device, device_type),
    KEY FK_doc_2 (FK_doc),
-   KEY FK_device (FK_device, device_type)
+   KEY FK_device (FK_device, device_type),
+   KEY is_template (is_template)
 ) TYPE=MyISAM;
 
 
@@ -607,6 +619,19 @@ CREATE TABLE glpi_docs (
 ) TYPE=MyISAM;
 
 
+### Dump table glpi_dropdown_cartridge_type
+
+DROP TABLE IF EXISTS glpi_dropdown_cartridge_type;
+CREATE TABLE glpi_dropdown_cartridge_type (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
+INSERT INTO glpi_dropdown_cartridge_type VALUES ('1','Jet-Encre');
+INSERT INTO glpi_dropdown_cartridge_type VALUES ('2','Toner');
+INSERT INTO glpi_dropdown_cartridge_type VALUES ('3','Ruban');
+
 ### Dump table glpi_dropdown_contact_type
 
 DROP TABLE IF EXISTS glpi_dropdown_contact_type;
@@ -618,6 +643,23 @@ CREATE TABLE glpi_dropdown_contact_type (
 
 INSERT INTO glpi_dropdown_contact_type VALUES ('1','Technicien');
 INSERT INTO glpi_dropdown_contact_type VALUES ('2','Commercial');
+
+### Dump table glpi_dropdown_contract_type
+
+DROP TABLE IF EXISTS glpi_dropdown_contract_type;
+CREATE TABLE glpi_dropdown_contract_type (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
+INSERT INTO glpi_dropdown_contract_type VALUES ('1','Pr&#234;t');
+INSERT INTO glpi_dropdown_contract_type VALUES ('2','Location');
+INSERT INTO glpi_dropdown_contract_type VALUES ('3','Leasing');
+INSERT INTO glpi_dropdown_contract_type VALUES ('4','Assurances');
+INSERT INTO glpi_dropdown_contract_type VALUES ('5','Maintenance Hardware');
+INSERT INTO glpi_dropdown_contract_type VALUES ('6','Maintenance Software');
+INSERT INTO glpi_dropdown_contract_type VALUES ('7','Prestation');
 
 ### Dump table glpi_dropdown_enttype
 
@@ -664,6 +706,7 @@ CREATE TABLE glpi_dropdown_kbcategories (
     ID int(11) NOT NULL auto_increment,
     parentID int(11) DEFAULT '0' NOT NULL,
     name varchar(255) NOT NULL,
+    completename text NOT NULL,
    PRIMARY KEY (ID),
    UNIQUE parentID_2 (parentID, name),
    KEY parentID (parentID)
@@ -677,13 +720,14 @@ CREATE TABLE glpi_dropdown_locations (
     ID int(11) NOT NULL auto_increment,
     name varchar(255) NOT NULL,
     parentID int(11) DEFAULT '0' NOT NULL,
+    completename text NOT NULL,
    PRIMARY KEY (ID),
    UNIQUE name (name, parentID),
    KEY parentID (parentID)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_dropdown_locations VALUES ('1','1 ier etage','0');
-INSERT INTO glpi_dropdown_locations VALUES ('2','2nd etage','0');
+INSERT INTO glpi_dropdown_locations VALUES ('1','1 ier etage','0','1 ier etage');
+INSERT INTO glpi_dropdown_locations VALUES ('2','2nd etage','0','2nd etage');
 
 ### Dump table glpi_dropdown_netpoint
 
@@ -719,6 +763,20 @@ INSERT INTO glpi_dropdown_os VALUES ('10','Windows 95 OSR2');
 INSERT INTO glpi_dropdown_os VALUES ('11','Windows 98 SR2');
 INSERT INTO glpi_dropdown_os VALUES ('12','Debian woody 3.0');
 INSERT INTO glpi_dropdown_os VALUES ('13','Windows NT 4.0 - SP3');
+
+### Dump table glpi_dropdown_ram_type
+
+DROP TABLE IF EXISTS glpi_dropdown_ram_type;
+CREATE TABLE glpi_dropdown_ram_type (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
+INSERT INTO glpi_dropdown_ram_type VALUES ('1','EDO');
+INSERT INTO glpi_dropdown_ram_type VALUES ('2','DDR');
+INSERT INTO glpi_dropdown_ram_type VALUES ('3','SDRAM');
+INSERT INTO glpi_dropdown_ram_type VALUES ('4','SDRAM-2');
 
 ### Dump table glpi_dropdown_rubdocs
 
@@ -763,6 +821,7 @@ CREATE TABLE glpi_enterprises (
     comments text NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
     fax varchar(255) NOT NULL,
+    email varchar(255) NOT NULL,
    PRIMARY KEY (ID),
    KEY deleted (deleted),
    KEY type (type)
@@ -786,7 +845,7 @@ CREATE TABLE glpi_event_log (
    KEY itemtype (itemtype)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('381','-1','system','2005-06-16 10:53:14','login','3','glpi logged in from 127.0.0.1.');
+INSERT INTO glpi_event_log VALUES ('381','-1','system','2005-07-28 17:18:46','login','3','glpi logged in from 127.0.0.1.');
 
 ### Dump table glpi_followups
 
@@ -795,7 +854,7 @@ CREATE TABLE glpi_followups (
     ID int(11) NOT NULL auto_increment,
     tracking int(11),
     date datetime,
-    author varchar(200),
+    author int(11) DEFAULT '0' NOT NULL,
     contents text,
    PRIMARY KEY (ID),
    KEY tracking (tracking),
@@ -803,8 +862,8 @@ CREATE TABLE glpi_followups (
    KEY date (date)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_followups VALUES ('1','1','2003-09-18 00:53:35','tech','J\'ai été voir, je pense que la carte mere a grillé.');
-INSERT INTO glpi_followups VALUES ('2','1','2003-09-18 00:54:06','tech','L\'alimentation est foutue, je vais tester la carte mere pour voir si elle est recuperable');
+INSERT INTO glpi_followups VALUES ('1','1','2003-09-18 00:53:35','4','J\'ai Ã©tÃ© voir, je pense que la carte mere a grillÃ©.');
+INSERT INTO glpi_followups VALUES ('2','1','2003-09-18 00:54:06','4','L\'alimentation est foutue, je vais tester la carte mere pour voir si elle est recuperable');
 
 ### Dump table glpi_infocoms
 
@@ -888,6 +947,30 @@ INSERT INTO glpi_licenses VALUES ('4','4','au-23-as-23-cd',NULL,'N','0','Y');
 INSERT INTO glpi_licenses VALUES ('5','4','qw-as-23-0k-23-dg',NULL,'N','0','Y');
 INSERT INTO glpi_licenses VALUES ('8','3','free',NULL,'N','0','Y');
 INSERT INTO glpi_licenses VALUES ('9','5','free',NULL,'N','0','Y');
+
+### Dump table glpi_links
+
+DROP TABLE IF EXISTS glpi_links;
+CREATE TABLE glpi_links (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
+
+### Dump table glpi_links_device
+
+DROP TABLE IF EXISTS glpi_links_device;
+CREATE TABLE glpi_links_device (
+    ID int(11) NOT NULL auto_increment,
+    FK_links int(11) DEFAULT '0' NOT NULL,
+    device_type int(11) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (ID),
+   UNIQUE device_type_2 (device_type, FK_links),
+   KEY device_type (device_type),
+   KEY FK_links (FK_links)
+) TYPE=MyISAM;
+
 
 ### Dump table glpi_monitors
 
@@ -1038,24 +1121,6 @@ CREATE TABLE glpi_peripherals (
 
 INSERT INTO glpi_peripherals VALUES ('1','','0000-00-00 00:00:00','','','0','','','','0','0','','0','N','1','Blank Template');
 
-### Dump table glpi_prefs
-
-DROP TABLE IF EXISTS glpi_prefs;
-CREATE TABLE glpi_prefs (
-    username varchar(80) NOT NULL,
-    tracking_order enum('no','yes') DEFAULT 'no' NOT NULL,
-    language varchar(255) NOT NULL,
-    ID int(11) NOT NULL auto_increment,
-   PRIMARY KEY (ID),
-   UNIQUE username (username)
-) TYPE=MyISAM;
-
-INSERT INTO glpi_prefs VALUES ('glpi','yes','french','1');
-INSERT INTO glpi_prefs VALUES ('Helpdesk','no','french','2');
-INSERT INTO glpi_prefs VALUES ('normal','','english','3');
-INSERT INTO glpi_prefs VALUES ('tech','yes','french','4');
-INSERT INTO glpi_prefs VALUES ('post-only','','english','5');
-
 ### Dump table glpi_printers
 
 DROP TABLE IF EXISTS glpi_printers;
@@ -1179,12 +1244,13 @@ CREATE TABLE glpi_state_item (
     device_type tinyint(4) DEFAULT '0' NOT NULL,
     id_device int(11) DEFAULT '0' NOT NULL,
     state int(11) DEFAULT '1',
+    is_template enum('0','1') DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
    KEY device_type (device_type),
    KEY device_type_2 (device_type, id_device)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_state_item VALUES ('1','1','8','1');
+INSERT INTO glpi_state_item VALUES ('1','1','8','1','0');
 
 ### Dump table glpi_tracking
 
@@ -1194,8 +1260,9 @@ CREATE TABLE glpi_tracking (
     date datetime,
     closedate datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
     status enum('new','old'),
-    author varchar(200),
-    assign varchar(200),
+    author int(11) DEFAULT '0' NOT NULL,
+    assign int(11) DEFAULT '0' NOT NULL,
+    assign_type tinyint(4) DEFAULT '0' NOT NULL,
     device_type int(11) DEFAULT '1' NOT NULL,
     computer int(11),
     contents text,
@@ -1215,10 +1282,26 @@ CREATE TABLE glpi_tracking (
    KEY category (category)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_tracking VALUES ('1','2003-09-18 00:46:40','2003-09-18 00:54:43','old','Helpdesk','tech','1','8','Mon ordinateur ne s\'allume plus, et il ya des bruits byzarres','3','no','','','0','0');
-INSERT INTO glpi_tracking VALUES ('2','2003-09-18 00:48:19','0000-00-00 00:00:00','new','Helpdesk','tech','1','10','Un message en anglais s\'affiche, je n\'y comprend rien, je n\'ose plus toucher à rien de peur de tout casser.
+INSERT INTO glpi_tracking VALUES ('1','2003-09-18 00:46:40','2003-09-18 00:54:43','old','1','4','15','1','8','Mon ordinateur ne s\'allume plus, et il ya des bruits byzarres','3','no','','','0','0');
+INSERT INTO glpi_tracking VALUES ('2','2003-09-18 00:48:19','0000-00-00 00:00:00','new','1','4','15','1','10','Un message en anglais s\'affiche, je n\'y comprend rien, je n\'ose plus toucher Ã  rien de peur de tout casser.
 Venez vite !!!!','4','no','','','0','0');
-INSERT INTO glpi_tracking VALUES ('3','2003-09-18 00:49:29','0000-00-00 00:00:00','new','Helpdesk','tech','1','18','Ma souris se bloque sans arret, elle defile mal sur l\'ecran et elle glisse tres mal sur le tapis de souris.','3','no','','','0','0');
+INSERT INTO glpi_tracking VALUES ('3','2003-09-18 00:49:29','0000-00-00 00:00:00','new','1','4','15','1','18','Ma souris se bloque sans arret, elle defile mal sur l\'ecran et elle glisse tres mal sur le tapis de souris.','3','no','','','0','0');
+
+### Dump table glpi_tracking_planning
+
+DROP TABLE IF EXISTS glpi_tracking_planning;
+CREATE TABLE glpi_tracking_planning (
+    ID bigint(20) NOT NULL auto_increment,
+    id_tracking int(11) DEFAULT '0' NOT NULL,
+    id_assign int(11) DEFAULT '0' NOT NULL,
+    begin datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+    end datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+   PRIMARY KEY (ID),
+   KEY id_tracking (id_tracking),
+   KEY begin (begin),
+   KEY end (end)
+) TYPE=MyISAM;
+
 
 ### Dump table glpi_type_computers
 
@@ -1366,14 +1449,16 @@ CREATE TABLE glpi_users (
     realname varchar(255) NOT NULL,
     can_assign_job enum('yes','no') DEFAULT 'no' NOT NULL,
     location int(11),
+    tracking_order enum('yes','no') DEFAULT 'no' NOT NULL,
+    language varchar(255) NOT NULL,
    PRIMARY KEY (ID),
    UNIQUE name (name),
    KEY type (type),
    KEY name_2 (name)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_users VALUES ('1','Helpdesk','14e43c2d31dcbdd1','','',NULL,'post-only','Helpdesk Injector','no',NULL);
-INSERT INTO glpi_users VALUES ('2','glpi','*64B4BB8F2A8C2F41C639DBC894D2759330199470','41ece51526515624ff89973668497d00','','','super-admin','','yes','2');
-INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','post-only','','no','1');
-INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','super-admin','','yes','2');
-INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','normal','','no','1');
+INSERT INTO glpi_users VALUES ('1','Helpdesk','14e43c2d31dcbdd1','','',NULL,'post-only','Helpdesk Injector','no',NULL,'no','french');
+INSERT INTO glpi_users VALUES ('2','glpi','*64B4BB8F2A8C2F41C639DBC894D2759330199470','41ece51526515624ff89973668497d00','','','super-admin','','yes','2','yes','french');
+INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','post-only','','no','1','','english');
+INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','super-admin','','yes','2','yes','french');
+INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','normal','','no','1','','english');

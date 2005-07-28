@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-07-28 12:19
+#GLPI Dump database on 2005-07-28 17:17
 
 ### Dump table glpi_cartridges
 
@@ -10198,6 +10198,7 @@ CREATE TABLE glpi_event_log (
 INSERT INTO glpi_event_log VALUES ('13767','0','users','2005-07-27 19:29:05','setup','5','glpi updated user user10.');
 INSERT INTO glpi_event_log VALUES ('13766','-1','system','2005-07-27 19:23:22','login','3','glpi logged in from 127.0.0.1.');
 INSERT INTO glpi_event_log VALUES ('13768','-1','system','2005-07-28 12:19:14','login','3','glpi logged in from 127.0.0.1.');
+INSERT INTO glpi_event_log VALUES ('13769','-1','system','2005-07-28 17:17:06','login','3','glpi logged in from 127.0.0.1.');
 
 ### Dump table glpi_followups
 
@@ -12710,6 +12711,30 @@ INSERT INTO glpi_licenses VALUES ('118','16','154897615',NULL,'N','0','Y');
 INSERT INTO glpi_licenses VALUES ('119','16','154897615',NULL,'N','0','Y');
 INSERT INTO glpi_licenses VALUES ('120','16','154897615',NULL,'N','0','Y');
 INSERT INTO glpi_licenses VALUES ('121','16','154897615',NULL,'N','0','Y');
+
+### Dump table glpi_links
+
+DROP TABLE IF EXISTS glpi_links;
+CREATE TABLE glpi_links (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
+
+### Dump table glpi_links_device
+
+DROP TABLE IF EXISTS glpi_links_device;
+CREATE TABLE glpi_links_device (
+    ID int(11) NOT NULL auto_increment,
+    FK_links int(11) DEFAULT '0' NOT NULL,
+    device_type int(11) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (ID),
+   UNIQUE device_type_2 (device_type, FK_links),
+   KEY device_type (device_type),
+   KEY FK_links (FK_links)
+) TYPE=MyISAM;
+
 
 ### Dump table glpi_monitors
 

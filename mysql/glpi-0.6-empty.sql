@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-07-28 12:16
+#GLPI Dump database on 2005-07-28 17:14
 
 ### Dump table glpi_cartridges
 
@@ -704,6 +704,7 @@ CREATE TABLE glpi_event_log (
    KEY itemtype (itemtype)
 ) TYPE=MyISAM;
 
+INSERT INTO glpi_event_log VALUES ('1','-1','system','2005-07-28 17:14:41','login','3','glpi logged in from 127.0.0.1.');
 
 ### Dump table glpi_followups
 
@@ -790,6 +791,30 @@ CREATE TABLE glpi_licenses (
     buy enum('Y','N') DEFAULT 'Y' NOT NULL,
    PRIMARY KEY (ID),
    KEY sID (sID)
+) TYPE=MyISAM;
+
+
+### Dump table glpi_links
+
+DROP TABLE IF EXISTS glpi_links;
+CREATE TABLE glpi_links (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
+
+### Dump table glpi_links_device
+
+DROP TABLE IF EXISTS glpi_links_device;
+CREATE TABLE glpi_links_device (
+    ID int(11) NOT NULL auto_increment,
+    FK_links int(11) DEFAULT '0' NOT NULL,
+    device_type int(11) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (ID),
+   UNIQUE device_type_2 (device_type, FK_links),
+   KEY device_type (device_type),
+   KEY FK_links (FK_links)
 ) TYPE=MyISAM;
 
 
