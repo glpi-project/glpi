@@ -154,7 +154,7 @@ function searchFormLink($field="",$phrasetype= "",$contains="",$sort= "") {
 **/
 function showLinkList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start) {
 
-	// Lists contact
+	// Lists links
 
 	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
 
@@ -222,7 +222,7 @@ function showLinkList($target,$username,$field,$phrasetype,$contains,$sort,$orde
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contacts.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_links.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["links"][0]."</a></th>";
 			
 			// Name
@@ -231,7 +231,7 @@ function showLinkList($target,$username,$field,$phrasetype,$contains,$sort,$orde
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contacts.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_links.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["links"][1]."</a></th>";
 
 
@@ -275,7 +275,7 @@ function showLinkList($target,$username,$field,$phrasetype,$contains,$sort,$orde
 * Print général link form
 *
 *@param $target filename : where to go when done.
-*@param $ID Integer : Id of the contact to print
+*@param $ID Integer : Id of the link to print
 *
 *
 *@return Nothing (display)
@@ -341,7 +341,7 @@ function showLinkForm ($target,$ID) {
 *
 * Update some elements of a link in the database.
 *
-*@param $input array : the _POST vars returned bye the contact form when press update (see showlinkform())
+*@param $input array : the _POST vars returned bye the link form when press update (see showlinkform())
 *
 *
 *@return Nothing (call to the class member)
@@ -372,7 +372,7 @@ function updateLink($input) {
 *
 * Add a link in the database with all it's items.
 *
-*@param $input array : the _POST vars returned bye the contact form when press add(see showlinkform())
+*@param $input array : the _POST vars returned bye the link form when press add(see showlinkform())
 *
 *
 *@return Nothing (call to classes members)
@@ -401,14 +401,14 @@ function addLink($input) {
 *
 * Delete a link in the database.
 *
-*@param $input array : the _POST vars returned bye the contact form when press delete(see showlinkform())
+*@param $input array : the _POST vars returned bye the link form when press delete(see showlinkform())
 *
 *
 *@return Nothing ()
 *
 **/
 function deleteLink($input) {
-	// Delete Contact
+	// Delete Link
 	
 	$con = new Link;
 	$con->deleteFromDB($input["ID"]);
