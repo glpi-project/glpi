@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-07-27 19:34
+#GLPI Dump database on 2005-07-28 12:16
 
 ### Dump table glpi_cartridges
 
@@ -444,11 +444,11 @@ DROP TABLE IF EXISTS glpi_device_ram;
 CREATE TABLE glpi_device_ram (
     ID int(11) NOT NULL auto_increment,
     designation varchar(100) NOT NULL,
-    type enum('EDO','DDR','SDRAM','SDRAM-2') DEFAULT 'EDO' NOT NULL,
     frequence varchar(8) NOT NULL,
     comment text NOT NULL,
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
     specif_default varchar(250) NOT NULL,
+    type int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
 ) TYPE=MyISAM;
@@ -515,9 +515,6 @@ CREATE TABLE glpi_dropdown_cartridge_type (
    PRIMARY KEY (ID)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_dropdown_cartridge_type VALUES ('1','Jet-Encre');
-INSERT INTO glpi_dropdown_cartridge_type VALUES ('2','Toner');
-INSERT INTO glpi_dropdown_cartridge_type VALUES ('3','Ruban');
 
 ### Dump table glpi_dropdown_contact_type
 
@@ -625,6 +622,20 @@ CREATE TABLE glpi_dropdown_os (
    PRIMARY KEY (ID)
 ) TYPE=MyISAM;
 
+
+### Dump table glpi_dropdown_ram_type
+
+DROP TABLE IF EXISTS glpi_dropdown_ram_type;
+CREATE TABLE glpi_dropdown_ram_type (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
+INSERT INTO glpi_dropdown_ram_type VALUES ('1','EDO');
+INSERT INTO glpi_dropdown_ram_type VALUES ('2','DDR');
+INSERT INTO glpi_dropdown_ram_type VALUES ('3','SDRAM');
+INSERT INTO glpi_dropdown_ram_type VALUES ('4','SDRAM-2');
 
 ### Dump table glpi_dropdown_rubdocs
 
@@ -1040,7 +1051,6 @@ CREATE TABLE glpi_state_item (
    KEY device_type_2 (device_type, id_device)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_state_item VALUES ('1','1','8','1','0');
 
 ### Dump table glpi_tracking
 

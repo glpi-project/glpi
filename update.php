@@ -2573,6 +2573,7 @@ $query = "CREATE TABLE `glpi_tracking_planning` (
 
 $db->query($query) or die("0.6 add table glpi_tracking_planning ".$lang["update"][90].$db->error());
 }
+
 if(!FieldExists("glpi_config","planning_begin")) {
 $query="ALTER TABLE `glpi_config` ADD `planning_begin` TIME DEFAULT '08:00:00' NOT NULL";
 
@@ -2603,6 +2604,50 @@ if(!FieldExists("glpi_users","language")) {
 	// Drop glpi_prefs
 	$query="DROP TABLE `glpi_prefs`;";
 	$db->query($query) or die("0.6 drop glpi_prefs".$lang["update"][90].$db->error());
+	
+	
+}
+
+// Create glpi_dropdown_ram_type
+if(!TableExists("glpi_dropdown_ram_type")) {
+	$query = "CREATE TABLE `glpi_dropdown_ram_type` (
+  	`ID` int(11) NOT NULL auto_increment,
+  	`name` varchar(255) NOT NULL default '',
+  	PRIMARY KEY  (`ID`)
+	) TYPE=MyISAM;";
+
+	$db->query($query) or die("0.6 add table glpi_dropdown_ram_type ".$lang["update"][90].$db->error());
+	$query="ALTER TABLE `glpi_device_ram` ADD `new_type` INT DEFAULT '0' NOT NULL ;";
+	$db->query($query) or die("0.6 create new type field for glpi_device_ram ".$lang["update"][90].$db->error());
+	$query="INSERT INTO `glpi_dropdown_ram_type` (`name` ) VALUES ('EDO');";
+	$db->query($query) or die("0.6 insert value in glpi_dropdown_ram ".$lang["update"][90].$db->error());
+	$query="INSERT INTO `glpi_dropdown_ram_type` (`name` ) VALUES ('DDR');";
+	$db->query($query) or die("0.6 insert value in glpi_dropdown_ram ".$lang["update"][90].$db->error());
+	$query="INSERT INTO `glpi_dropdown_ram_type` (`name` ) VALUES ('SDRAM');";
+	$db->query($query) or die("0.6 insert value in glpi_dropdown_ram ".$lang["update"][90].$db->error());
+	$query="INSERT INTO `glpi_dropdown_ram_type` (`name` ) VALUES ('SDRAM-2');";
+	$db->query($query) or die("0.6 insert value in glpi_dropdown_ram ".$lang["update"][90].$db->error());
+
+	// Get values
+	$query="SELECT * from glpi_dropdown_ram_type";
+	$result=$db->query($query);
+	$val=array();
+	while ($data=$db->fetch_array($result)){
+		$val[$data['name']]=$data['ID'];
+	}	
+	// Update glpi_device_ram
+	$query="SELECT * from glpi_device_ram";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0)
+	while ($data=$db->fetch_array($result)){
+		$query2="UPDATE glpi_device_ram SET new_type='".$val[$data['type']]."' WHERE ID ='".$data['ID']."';";
+		$db->query($query2);
+	}
+	// ALTER glpi_device_ram
+	$query="ALTER TABLE `glpi_device_ram` DROP `type`;";
+	$db->query($query) or die("0.6 drop type in glpi_dropdown_ram ".$lang["update"][90].$db->error());
+	$query="ALTER TABLE `glpi_device_ram` CHANGE `new_type` `type` INT( 11 ) DEFAULT '0' NOT NULL ";
+	$db->query($query) or die("0.6 rename new_type in glpi_dropdown_ram ".$lang["update"][90].$db->error());
 	
 	
 }

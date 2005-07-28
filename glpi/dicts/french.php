@@ -1056,6 +1056,7 @@ $lang["setup"][82]="Type de Contacts";
 $lang["setup"][83]="Etat des matériels"; 
 $lang["setup"][84]="Type de cartouches";
 $lang["setup"][85]="Type de contrats"; 
+$lang["setup"][86]="Type de mémoire vive"; 
 $lang["setup"][100]="Configuration générale";
 $lang["setup"][101]="Chemin d'installation";
 $lang["setup"][102]="Niveau de log";
