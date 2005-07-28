@@ -63,7 +63,8 @@ function showContractOnglets($target,$withtemplate,$actif){
 	
 	echo "<div id='barre_onglets'><ul id='onglet'>";
 	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&onglet=1$template'>".$lang["title"][26]."</a></li>";
-	
+	echo "<li "; if ($actif=="5") {echo "class='actif'";} echo "><a href='$target&onglet=5$template'>".$lang["title"][25]."</a></li>";
+	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&onglet=7$template'>".$lang["title"][34]."</a></li>";
 	
 	echo "<li class='invisible'>&nbsp;</li>";
 	
@@ -550,7 +551,7 @@ function showContractForm ($target,$ID,$search) {
 		echo "</table></div>";
 		echo "</form>";
 	}
-
+return true;
 }
 
 /**

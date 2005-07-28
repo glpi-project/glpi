@@ -2652,6 +2652,30 @@ if(!TableExists("glpi_dropdown_ram_type")) {
 	
 }
 
+// Create external links
+if(!TableExists("glpi_links")) {
+	$query = "CREATE TABLE `glpi_links` (
+  	`ID` int(11) NOT NULL auto_increment,
+  	`name` varchar(255) NOT NULL default '',
+  	PRIMARY KEY  (`ID`)
+	) TYPE=MyISAM;";
+
+	$db->query($query) or die("0.6 add table glpi_links ".$lang["update"][90].$db->error());
+
+	$query = "CREATE TABLE `glpi_links_device` (
+  	`ID` int(11) NOT NULL auto_increment,
+  	`FK_links` int(11) NOT NULL default '0',
+	`device_type` int(11) NOT NULL default '0',
+  	PRIMARY KEY  (`ID`),
+	KEY `device_type` (`device_type`),
+	KEY `FK_links` (`FK_links`),
+	UNIQUE `device_type_2` (`device_type`,`FK_links`)
+	) TYPE=MyISAM;";
+
+	$db->query($query) or die("0.6 add table glpi_links_device ".$lang["update"][90].$db->error());
+
+}
+
 
 // Update version number and default langage ---- LEAVE AT THE END
 	$query = "UPDATE `glpi_config` SET `version` = ' 0.6', default_language='".$_SESSION["dict"]."' ;";

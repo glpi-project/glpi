@@ -1760,6 +1760,49 @@ if ($dh = opendir($store_path)) {
 
 }
 
+
+
+function dropdownDeviceType($name,$device_type){
+global $lang;
+echo "<select name='$name'>";
+	echo "<option value='0'>-----</option>";
+    	echo "<option value='".COMPUTER_TYPE."' ".(($device_type==COMPUTER_TYPE)?" selected":"").">".$lang["help"][25]."</option>";
+	echo "<option value='".NETWORKING_TYPE."' ".(($device_type==NETWORKING_TYPE)?" selected":"").">".$lang["help"][26]."</option>";
+	echo "<option value='".PRINTER_TYPE."' ".(($device_type==PRINTER_TYPE)?" selected":"").">".$lang["help"][27]."</option>";
+	echo "<option value='".MONITOR_TYPE."' ".(($device_type==MONITOR_TYPE)?" selected":"").">".$lang["help"][28]."</option>";
+	echo "<option value='".PERIPHERAL_TYPE."' ".(($device_type==PERIPHERAL_TYPE)?" selected":"").">".$lang["help"][29]."</option>";
+	echo "<option value='".SOFTWARE_TYPE."' ".(($device_type==SOFTWARE_TYPE)?" selected":"").">".$lang["help"][31]."</option>";
+	echo "<option value='".CARTRIDGE_TYPE."' ".(($device_type==CARTRIDGE_TYPE)?" selected":"").">".$lang["Menu"][21]."</option>";
+	echo "<option value='".CONTACT_TYPE."' ".(($device_type==CONTACT_TYPE)?" selected":"").">".$lang["Menu"][22]."</option>";
+	echo "<option value='".ENTERPRISE_TYPE."' ".(($device_type==ENTERPRISE_TYPE)?" selected":"").">".$lang["Menu"][23]."</option>";
+	echo "<option value='".CONTRACT_TYPE."' ".(($device_type==CONTRACT_TYPE)?" selected":"").">".$lang["Menu"][25]."</option>";
+	//echo "<option value='".USER_TYPE."' ".(($device_type==USER_TYPE)?" selected":"").">".$lang["Menu"][14]."</option>";
+	echo "</select>";
+
+
+}
+
+function getDeviceTypeName($ID){
+global $lang;
+switch ($ID){
+	case COMPUTER_TYPE : return $lang["help"][25];break;
+	case NETWORKING_TYPE : return $lang["help"][26];break;
+	case PRINTER_TYPE : return $lang["help"][27];break;
+	case MONITOR_TYPE : return $lang["help"][28];break;
+	case PERIPHERAL_TYPE : return $lang["help"][29];break;
+	case SOFTWARE_TYPE : return $lang["help"][31];break;
+	case CARTRIDGE_TYPE : return $lang["Menu"][21];break;
+	case CONTACT_TYPE : return $lang["Menu"][22];break;
+	case ENTERPRISE_TYPE : return $lang["Menu"][23];break;
+	case CONTRACT_TYPE : return $lang["Menu"][25];break;
+	//case USER_TYPE : return $lang["Menu"][14];break;
+
+
+}
+
+}
+
+
 /**
 * 
 *

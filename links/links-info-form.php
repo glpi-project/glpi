@@ -34,8 +34,8 @@
 
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_financial.php");
 include ($phproot . "/glpi/includes_links.php");
+
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -44,35 +44,36 @@ if(empty($tab["ID"])) $tab["ID"] = "";
 
 if (isset($_POST["add"]))
 {
+	print_r($_POST);
 	checkAuthentication("admin");
-	$newID=addContact($_POST);
-	logEvent($newID, "contacts", 4, "financial", $_SESSION["glpiname"]." added ".$_POST["name"].".");
-	glpi_header($_SERVER['HTTP_REFERER']);
+	$newID=addLink($_POST);
+	logEvent($newID, "links", 4, "setup", $_SESSION["glpiname"]." added ".$_POST["name"].".");
+	glpi_header($cfg_install["root"]."/links/");
 }
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
-	deleteContact($_POST);
-	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." deleted item.");
-	glpi_header($cfg_install["root"]."/contacts/");
+	deleteLink($_POST);
+	logEvent($_POST["ID"], "links", 4, "setup", $_SESSION["glpiname"]." deleted item.");
+	glpi_header($cfg_install["root"]."/links/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
-	updateContact($_POST);
-	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." updated item.");
+	updateLink($_POST);
+	logEvent($_POST["ID"], "links", 4, "setup", $_SESSION["glpiname"]." updated item.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_POST["addenterprise"])){
+else if (isset($_POST["adddevice"])){
 	checkAuthentication("admin");
-	addContactEnterprise($_POST["entID"],$_POST["conID"]);
-	logEvent($tab["conID"], "contacts", 4, "financial", $_SESSION["glpiname"]." associate enterprise.");
-	glpi_header($cfg_install["root"]."/contacts/contacts-info-form.php?ID=".$_POST["conID"]);
+	addLinkDevice($_POST["device_type"],$_POST["lID"]);
+	logEvent($tab["lID"], "links", 4, "setup", $_SESSION["glpiname"]." associate enterprise.");
+	glpi_header($cfg_install["root"]."/links/links-info-form.php?ID=".$_POST["lID"]);
 }
-else if (isset($_GET["deleteenterprise"])){
+else if (isset($_GET["deletedevice"])){
 	checkAuthentication("admin");
-	deleteContactEnterprise($_GET["ID"]);
-	logEvent(0, "contacts", 4, "financial", $_SESSION["glpiname"]." delete associate enterprise.");
+	deleteLinkDevice($_GET["ID"]);
+	logEvent(0, "links", 4, "setup", $_SESSION["glpiname"]." delete associate enterprise.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
@@ -88,28 +89,13 @@ else
 //		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
-	commonHeader($lang["title"][22],$_SERVER["PHP_SELF"]);
-	
-	if (!empty($tab['ID']))
-	showContactOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
+	commonHeader($lang["title"][33],$_SERVER["PHP_SELF"]);
 
-	if (showContactForm($_SERVER["PHP_SELF"],$tab["ID"])) {
-		if (!empty($tab['ID']))
-		switch($_SESSION['glpi_onglet']){
-		case -1 :	
-			showEnterpriseContact($tab["ID"]);
-		
-			showLinkOnDevice(CONTACT_TYPE,$tab["ID"]);
-			break;
-		case 7 : 
-			showLinkOnDevice(CONTACT_TYPE,$tab["ID"]);
-			break;
-		default :
-			showEnterpriseContact($tab["ID"]);
-		break;
-		}
-	}	
-	
+//	showLinkOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
+
+	showLinkForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	if (!empty($tab["ID"]))
+		showLinkDevice($tab["ID"]);
 	commonFooter();
 }
 

@@ -50,6 +50,7 @@ include ($phproot . "/glpi/includes_state.php");
 include ($phproot . "/glpi/includes_financial.php");
 include ($phproot . "/glpi/includes_documents.php");
 include ($phproot . "/glpi/includes_users.php");
+include ($phproot . "/glpi/includes_links.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -222,6 +223,7 @@ if (isset($_GET['onglet'])) {
 				showDocumentAssociated(COMPUTER_TYPE,$tab["ID"]);
 				showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
 				showOldJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
+				showLinkOnDevice(COMPUTER_TYPE,$tab["ID"]);
 				break;
 			case 2 :
 				showSoftwareInstalled($tab["ID"]);
@@ -241,6 +243,9 @@ if (isset($_GET['onglet'])) {
 			case 6 :
 				showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
 				showOldJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
+				break;
+			case 7 :
+				showLinkOnDevice(COMPUTER_TYPE,$tab["ID"]);
 				break;
 			default :
 				showDeviceComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);			

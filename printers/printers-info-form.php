@@ -47,6 +47,7 @@ include ($phproot . "/glpi/includes_financial.php");
 include ($phproot . "/glpi/includes_documents.php");
 include ($phproot . "/glpi/includes_state.php");
 include ($phproot . "/glpi/includes_users.php");
+include ($phproot . "/glpi/includes_links.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -188,7 +189,7 @@ if (isset($_GET['onglet'])) {
 					showDocumentAssociated(PRINTER_TYPE,$tab["ID"]);
 					showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
 					showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);		
-			
+					showLinkOnDevice(PRINTER_TYPE,$tab["ID"]);
 					break;
 				case 3 :			
 					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PRINTER_TYPE);
@@ -206,7 +207,9 @@ if (isset($_GET['onglet'])) {
 					showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
 					showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);		
 					break;
-					
+				case 7 :
+					showLinkOnDevice(PRINTER_TYPE,$tab["ID"]);
+					break;	
 				default :
 
 					showCartridgeInstalled($tab["ID"]);		
