@@ -293,6 +293,20 @@ function step1($update)
 		echo "<td>".$lang["install"][67]."</td></tr>";
 		
 	}
+
+
+	//Test for utf8_encode function.
+	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][83]."</b></td>";
+	if(!function_exists('utf8_encode')||!function_exists('utf8_decode')) {
+		echo "<td class='red'>".$lang["install"][84]."</td></tr>";
+		$error = 2;
+	}
+	else {
+		echo "<td>".$lang["install"][85]."</td></tr>";
+		
+	}
+	
+
 // *********
 
 
