@@ -886,7 +886,7 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 		echo "</td>";
 		echo "<td style='background-image:url(".$HTMLRel."pics/fond-stats.gif)' valign='bottom'><img src='".$HTMLRel."pics/rien.gif' style='background-color:black;' width='3' height='1' alt=''></td>";
 		echo "<td><img src='".$HTMLRel."pics/rien.gif' width='5' height='1' alt=''></td>";
-		echo "<td valign='top'><font face='Verdana,Arial,Sans,sans-serif' size='2'>";
+		echo "<td valign='top'>";
 		echo "<table cellpadding='0' cellspacing='0' border='0'>";
 		echo "<tr><td height='15' valign='top'>";		
 		echo "<font face='arial,helvetica,sans-serif' size='1'><b>".round($maxgraph,$r)."</b></font>";

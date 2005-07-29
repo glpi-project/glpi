@@ -63,7 +63,7 @@ checkAuthentication("normal");
 	titleknowbase();
 	
 	searchFormKnowbase($_SERVER["PHP_SELF"],$contains);
-	echo "&nbsp";
+	echo "&nbsp;";
 	showKbCategoriesall();
 
 
