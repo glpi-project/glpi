@@ -213,6 +213,7 @@ if (isset($_GET['onglet'])) {
 				default :
 
 					showCartridgeInstalled($tab["ID"]);		
+					showCartridgeInstalled($tab["ID"],1);
 					break;
 			}		
 			

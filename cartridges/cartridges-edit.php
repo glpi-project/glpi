@@ -49,12 +49,21 @@ if (isset($tab["Modif_Interne"])){
 	commonFooter();
 
 }
+else if (isset($_POST["update_pages"]))
+{
+	checkAuthentication("admin");
+	updateCartridgePages($_POST["cID"],$_POST['pages']);
+	
+	logEvent(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." update a cartridge.");
+	
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
 else if (isset($_GET["add"]))
 {
 	
 	checkAuthentication("admin");
 	addCartridge($_GET["tID"]);
-	logEvent($tab["tID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." added a cartridge.");
+	logEvent($tab["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." added a cartridge.");
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -64,7 +73,7 @@ else if (isset($_POST["add_several"]))
 	checkAuthentication("admin");
 	for ($i=0;$i<$_POST["to_add"];$i++)
 		addCartridge($_POST["tID"]);
-	logEvent($tab["tID"], "cartridge", 4, "inventory", $_SESSION["glpiname"]." added a ".$_POST["to_add"]." cartridge.");
+	logEvent($tab["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." added a ".$_POST["to_add"]." cartridge.");
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -72,14 +81,14 @@ else if (isset($tab["delete"]))
 {
 	checkAuthentication("admin");
 	deleteCartridge($tab["ID"]);
-	logEvent(0, "cartridge", 4, "inventory", $_SESSION["glpiname"]." deleted a license.");
+	logEvent(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." deleted a license.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
 else if (isset($tab["install"]))
 {
 	checkAuthentication("admin");
 	installCartridge($tab["pID"],$tab["tID"]);
-	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed cartridge.");
+	logEvent($tab["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." installed cartridge.");
 	//echo $tab["back"];
 	glpi_header($cfg_install["root"]."/printers/printers-info-form.php?ID=".$tab["pID"]);
 }
@@ -87,7 +96,7 @@ else if (isset($tab["uninstall"]))
 {
 	checkAuthentication("admin");
 	uninstallCartridge($tab["ID"]);
-	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." uninstalled cartridge.");
+	logEvent(0, "cartridges", 5, "inventory", $_SESSION["glpiname"]." uninstalled cartridge.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
 else if (isset($tab["back"]))

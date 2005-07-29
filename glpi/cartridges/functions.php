@@ -901,23 +901,35 @@ $result = $db->query($query);
 *@return nothing (display)
 *
 **/
-function showCartridgeInstalled($instID) {
+function showCartridgeInstalled($instID,$old=0) {
 
-	GLOBAL $cfg_layout,$cfg_install, $lang;
+	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
 
     $db = new DB;
-	$query = "SELECT glpi_cartridges_type.deleted as deleted, glpi_cartridges_type.ref as ref, glpi_cartridges_type.name as type, glpi_cartridges.ID as ID, glpi_cartridges.date_use as date_use, glpi_cartridges.date_out as date_out, glpi_cartridges.date_in as date_in";
+	
+	$query = "SELECT glpi_cartridges_type.deleted as deleted, glpi_cartridges_type.ref as ref, glpi_cartridges_type.name as type, glpi_cartridges.ID as ID, glpi_cartridges.pages as pages, glpi_cartridges.date_use as date_use, glpi_cartridges.date_out as date_out, glpi_cartridges.date_in as date_in";
+	if ($old==0)
 	$query.= " FROM glpi_cartridges, glpi_cartridges_type WHERE glpi_cartridges.date_out IS NULL AND glpi_cartridges.FK_glpi_printers= '$instID' AND glpi_cartridges.FK_glpi_cartridges_type  = glpi_cartridges_type.ID ORDER BY glpi_cartridges.date_out ASC, glpi_cartridges.date_use DESC, glpi_cartridges.date_in";
+	else 
+	$query.= " FROM glpi_cartridges, glpi_cartridges_type WHERE glpi_cartridges.date_out IS NOT NULL AND glpi_cartridges.FK_glpi_printers= '$instID' AND glpi_cartridges.FK_glpi_cartridges_type  = glpi_cartridges_type.ID ORDER BY glpi_cartridges.date_out ASC, glpi_cartridges.date_use DESC, glpi_cartridges.date_in";
+
+
 //	echo $query;	
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 	$i = 0;
-		
-    echo "<form method='post' action=\"".$cfg_install["root"]."/cartridges/cartridges-edit.php\">";
+	$p=new Printer;
+	$p->getFromDB($instID);
+	$pages=$p->fields['initial_pages'];
 
 	echo "<br><br><center><table class='tab_cadre' width='90%'>";
+	if ($old==0)
 	echo "<tr><th colspan='7'>".$lang["cartridges"][33].":</th></tr>";
-	echo "<tr><th>".$lang["cartridges"][4]."</th><th>".$lang["cartridges"][12]."</th><th>".$lang["cartridges"][23]."</th><th>".$lang["cartridges"][24]."</th><th>".$lang["cartridges"][25]."</th><th>".$lang["cartridges"][26]."</th><th>&nbsp;</th></tr>";
+	else echo "<tr><th colspan='8'>".$lang["cartridges"][35].":</th></tr>";
+	echo "<tr><th>".$lang["cartridges"][4]."</th><th>".$lang["cartridges"][12]."</th><th>".$lang["cartridges"][23]."</th><th>".$lang["cartridges"][24]."</th><th>".$lang["cartridges"][25]."</th><th>".$lang["cartridges"][26]."</th>";
+	if ($old!=0)
+	echo "<th>".$lang["cartridges"][39]."</th>";
+	echo "<th>&nbsp;</th></tr>";
 
 	
 	while ($data=$db->fetch_array($result)) {
@@ -939,22 +951,49 @@ function showCartridgeInstalled($instID) {
 		echo "</td><td align='center'>";
 		echo $date_out;		
 		echo "</td><td align='center'>";
+		if ($old!=0){
+			
+			echo "<form method='post' action=\"".$cfg_install["root"]."/cartridges/cartridges-edit.php\">";
+			echo "<input type='hidden' name='cID' value='".$data['ID']."'>";
+			echo "<input type='text' name='pages' value='".$data['pages']."' size='10'>";
+			echo "<input type='image' name='update_pages' value='update_pages' src='".$HTMLRel."pics/actualiser.png' class='calendrier'>";
+			echo "</form>";
+			
+			if ($pages<$data['pages']){
+				echo ($data['pages']-$pages)." ".$lang["printers"][31];
+				$pages=$data['pages'];
+			}
+			echo "</td><td align='center'>";
+		}
 		if (is_null($date_out))
 		echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_install["root"]."/cartridges/cartridges-edit.php?uninstall=uninstall&ID=".$data["ID"]."'>".$lang["cartridges"][29]."</a>";
-		else echo "&nbsp;";
+		else echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_install["root"]."/cartridges/cartridges-edit.php?delete=delete&ID=".$data["ID"]."'>".$lang["cartridges"][31]."</a>";
 		echo "</td></tr>";
 		
 	}	
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+	echo "<form method='post' action=\"".$cfg_install["root"]."/cartridges/cartridges-edit.php\">";
+	
 	echo "<div class='software-instal'><input type='hidden' name='pID' value='$instID'>";
 		dropdownCompatibleCartridges($instID);
 	echo "</div></td><td align='center' class='tab_bg_2'>";
 	echo "<input type='submit' name='install' value=\"".$lang["buttons"][4]."\" class='submit'>";
-	echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+	echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
+	if ($old!=0)  echo "<td>&nbsp;</td>";
+	echo "</tr>";
         echo "</table></center>";
 	echo "</form>";
 
 }
+
+function updateCartridgePages($ID,$pages){
+
+$db=new DB;
+$query="UPDATE glpi_cartridges SET pages='$pages' WHERE ID='$ID'";
+$db->query($query);
+
+}
+
 /**
 * Print a select with compatible cartridge
 *

@@ -524,6 +524,10 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 		echo "<tr><td>".$lang["printers"][23].":</td>";
 		echo "<td><input type='text' size='12' name='ramSize' value=\"".$printer->fields["ramSize"]."\"></td>";
 		echo "</tr>";
+		// Initial count pages ?
+		echo "<tr><td>".$lang["printers"][30].":</td>";
+		echo "<td><input type='text' size='12' name='initial_pages' value=\"".$printer->fields["initial_pages"]."\"></td>";
+		echo "</tr>";
 
 		echo "</td></tr>";
 
