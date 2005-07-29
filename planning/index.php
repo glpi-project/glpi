@@ -46,12 +46,13 @@ include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_enterprises.php");
 
 
-if (!isset($_GET["date"])) $_GET["date"]=strftime("%Y-%m-%d");
-if (!isset($_GET["type"])) $_GET["type"]="week";
-if (!isset($_GET["uID"])) $_GET["uID"]=$_SESSION["glpiID"];
 checkAuthentication("normal");
 
 commonHeader($lang["title"][31],$_SERVER["PHP_SELF"]);
+
+if (!isset($_GET["date"])) $_GET["date"]=strftime("%Y-%m-%d");
+if (!isset($_GET["type"])) $_GET["type"]="week";
+if (!isset($_GET["uID"])) $_GET["uID"]=$_SESSION["glpiID"];
 
 titleTrackingPlanning();
 
