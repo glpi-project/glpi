@@ -144,6 +144,7 @@ $lang["cartridges"][35]="Vieilles Cartouches";
 $lang["cartridges"][36]="Lieu Stockage"; 
 $lang["cartridges"][37]="Ruban"; 
 $lang["cartridges"][38]="Seuil d'alarme"; 
+$lang["cartridges"][39]="Compteur imprimante"; 
 
 $lang["central"][0]="Bienvenue"; 
 $lang["central"][1]="vous êtes sur la console centrale."; 
@@ -864,6 +865,8 @@ $lang["printers"][26]="Nombre";
 $lang["printers"][27]="Port USB"; 
 $lang["printers"][28]="Nouvelle imprimante à partir d'un modèle"; 
 $lang["printers"][29]="Imprimante ID"; 
+$lang["printers"][30]="Compteur de page initial"; 
+$lang["printers"][31]="Pages imprimées"; 
 
 $lang["repair"][0]="Réparation"; 
 $lang["repair"][1]="Matériel en réparation"; 
