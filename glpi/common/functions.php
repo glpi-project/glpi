@@ -1686,6 +1686,7 @@ function getDropdownName($table,$id) {
 			$name.=getEnterpriseLinks($id);	
 		}
 	}
+	if (empty($name)) return "&nbsp;";
 	return $name;
 }
 
