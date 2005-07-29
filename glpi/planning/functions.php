@@ -249,14 +249,19 @@ function showPlanning($who,$when,$type){
 }
 
 function displayplanning($who,$when,$type){
-global $cfg_features,$HTMLRel;
+global $cfg_features,$HTMLRel,$lang;
 $db=new DB;
 $debut=$when;
 $tmp=split(" ",$when);
 $hour=split(":",$tmp[1]);
 
+$ASSIGN="";
+if ($who!=0)
+$ASSIGN="id_assign='$who' AND";
 
-$query="SELECT * from glpi_tracking_planning WHERE id_assign='$who' AND (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL 59 MINUTE ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL 59 MINUTE ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL 59 MINUTE ) AND end > adddate( '". $debut ."' , INTERVAL 59 MINUTE ))) ORDER BY begin";
+
+
+$query="SELECT * from glpi_tracking_planning WHERE $ASSIGN (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL 59 MINUTE ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL 59 MINUTE ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL 59 MINUTE ) AND end > adddate( '". $debut ."' , INTERVAL 59 MINUTE ))) ORDER BY begin";
 
 $result=$db->query($query);
 
@@ -270,6 +275,7 @@ while ($data=$db->fetch_array($result)){
 	
 	
 	$interv[$i]["id_tracking"]=$data["id_tracking"];
+	$interv[$i]["id_assign"]=$data["id_assign"];
 	$interv[$i]["ID"]=$data["ID"];
 	$interv[$i]["begin"]=$data["begin"];
 	$interv[$i]["end"]=$data["end"];
@@ -289,6 +295,10 @@ echo "<div style='margin:auto; text-align:center; border:1px dashed #cccccc; bac
 echo "<div style=float:right'><a  href='".$HTMLRel."planning/planning-add-form.php?edit=edit&job=".$val["id_tracking"]."&ID=".$val["ID"]."'><img src='$HTMLRel/pics/edit.png'></a></div>";
 echo "<a  href='".$HTMLRel."tracking/tracking-followups.php?ID=".$val["id_tracking"]."'>";
 echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"];
+if ($who==0){
+echo "<br>";
+echo $lang["planning"][9]." ".getUserName($val["id_assign"]);
+} 
 echo "</a>";
 echo "<br>";
 echo $val["content"];
@@ -300,6 +310,10 @@ echo "</div><br>";
 echo "<div class='planning' >";
 echo "<a  href='".$HTMLRel."tracking/tracking-followups.php?ID=".$val["id_tracking"]."'>";
 echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["device"];
+if ($who==0){
+echo "<br>";
+echo $lang["planning"][9]." ".getUserName($val["id_assign"]);
+} 
 echo "</a>";
 echo "</div>";
 }

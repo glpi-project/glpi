@@ -48,7 +48,7 @@ include ($phproot . "/glpi/includes_enterprises.php");
 
 if (!isset($_GET["date"])) $_GET["date"]=strftime("%Y-%m-%d");
 if (!isset($_GET["type"])) $_GET["type"]="week";
-
+if (!isset($_GET["uID"])) $_GET["uID"]=$_SESSION["glpiID"];
 checkAuthentication("normal");
 
 commonHeader($lang["title"][31],$_SERVER["PHP_SELF"]);
@@ -56,7 +56,11 @@ commonHeader($lang["title"][31],$_SERVER["PHP_SELF"]);
 titleTrackingPlanning();
 
 	echo "<div align='center'><form method=\"get\" name=\"form\" action=\"index.php\">";
-	echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
+	echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
+	echo "<td>";
+	dropdownUsers($_GET['uID'], "uID");
+	echo "</td>";
+	echo "<td align='right'>";
 	echo $lang["planning"][4].":</td><td>";
 	echo showCalendarForm("form","date",$_GET["date"]);
 	echo "</td>";
@@ -68,7 +72,7 @@ titleTrackingPlanning();
 	echo "</tr>";
 	echo "</table></form></div>";
 
-showPlanning($_SESSION["glpiID"],$_GET["date"],$_GET["type"]);
+showPlanning($_GET['uID'],$_GET["date"],$_GET["type"]);
 
 commonFooter();
 
