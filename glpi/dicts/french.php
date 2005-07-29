@@ -550,6 +550,9 @@ $lang["install"][79]="Base par défaut";
 $lang["install"][80]="Base vide"; 
 $lang["install"][81]="Début de l'installation";
 $lang["install"][82]="Base de données créées";  
+$lang["install"][83]="Test sur les fonctions utf8_encode et utf8_decode"; 
+$lang["install"][84]="GLPI ne peux pas fonctionner correctement sans les fonctions utf8_encode et utf8_decode ; Essayez d'activer le support du XML pour PHP "; 
+$lang["install"][85]="Les fonctions ont été trouvées - Parfait !";
 
 $lang["job"][0]="Numéro d'intervention"; 
 $lang["job"][1]="Intervention toujours ouverte..."; 
