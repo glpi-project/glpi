@@ -64,6 +64,7 @@ if (addPlanningTracking($_POST,$_SERVER["REQUEST_URI"])){
 	$_POST["end"]=date("Y-m-d H:i:00",mktime($_POST["end_hour"],$_POST["end_min"],0,$end_month,$end_day,$end_year));
 
 	if (updatePlanningTracking($_POST,$_SERVER["PHP_SELF"],$_POST["ID"])){
+		logEvent(0, "planning", 4, "planning", $_SESSION["glpiname"]." edit a planning.");
 		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 	logEvent(0, "planning", 4, "planning", $_SESSION["glpiname"]." edit a planning.");
