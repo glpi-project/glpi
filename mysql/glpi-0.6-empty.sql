@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-07-28 17:14
+#GLPI Dump database on 2005-07-29 12:18
 
 ### Dump table glpi_cartridges
 
@@ -164,10 +164,11 @@ CREATE TABLE glpi_config (
     planning_begin time DEFAULT '08:00:00' NOT NULL,
     planning_end time DEFAULT '20:00:00' NOT NULL,
     utf8_conv int(11) DEFAULT '0' NOT NULL,
+    auto_assign enum('0','1') DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.6','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0');
+INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.6','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0');
 
 ### Dump table glpi_connect_wire
 
@@ -975,6 +976,7 @@ CREATE TABLE glpi_printers (
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
     is_template enum('0','1') DEFAULT '0' NOT NULL,
     tplname varchar(255),
+    initial_pages varchar(30) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
    KEY id (ID),
    KEY location (location),
@@ -985,7 +987,7 @@ CREATE TABLE glpi_printers (
    KEY tech_num (tech_num)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_printers VALUES ('3','','0000-00-00 00:00:00','','','0','','','0','0','0','','',NULL,NULL,'0','N','1','Blank Template');
+INSERT INTO glpi_printers VALUES ('3','','0000-00-00 00:00:00','','','0','','','0','0','0','','',NULL,NULL,'0','N','1','Blank Template','0');
 
 ### Dump table glpi_repair_item
 

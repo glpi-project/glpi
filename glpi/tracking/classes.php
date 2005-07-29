@@ -138,7 +138,7 @@ class Job {
 		$query = "INSERT INTO glpi_tracking VALUES (NULL, '$this->date', '$this->closedate', '$this->status','$this->author', '$this->assign', '$this->assign_type', $this->device_type, $this->computer, '$this->contents', '$this->priority', '$this->isgroup','$this->uemail', '$this->emailupdates','$this->realtime','$this->category')";
 
 		if ($result = $db->query($query)) {
-			return true;
+			return $db->insert_id();
 		} else {
 			return false;
 		}
