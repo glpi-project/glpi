@@ -63,7 +63,7 @@ echo "<div align='center'>";
 echo "<table><tr><td align='center' valign='top'  width='45%'>";
 
 showCentralJobList($_SERVER["PHP_SELF"],$_GET['start']);
-echo "</td><td  align='center'  ' valign='top' width='45%'>";
+echo "</td><td  align='center' valign='top' width='45%'>";
 // Show last add events
 showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
 echo "</td></tr></table>";
