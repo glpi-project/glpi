@@ -826,6 +826,9 @@ function showFormConfigGen($target){
 	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][110]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"jobs_at_login\" value=\"1\" "; if($db->result($result,0,"jobs_at_login") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"jobs_at_login\" value=\"0\" "; if($db->result($result,0,"jobs_at_login") == 0) echo "checked"; 
 	echo " ></td></tr>";
 
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][116]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"auto_assign\" value=\"1\" "; if($db->result($result,0,"auto_assign") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"auto_assign\" value=\"0\" "; if($db->result($result,0,"auto_assign") == 0) echo "checked"; 
+	echo " ></td></tr>";
+
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][111]."</td><td> <input type=\"text\" name=\"list_limit\" value=\"". $db->result($result,0,"list_limit") ."\"></td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][112]."</td><td><input type=\"text\" name=\"cut\" value=\"". $db->result($result,0,"cut") ."\"></td></tr>";
 
@@ -1119,7 +1122,7 @@ function showFormMailing($target) {
 
 }
 
-function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events,$jobs_at_login,$list_limit,$cut, $permit_helpdesk,$default_language,$priority,$date_fiscale,$cartridges_alarm,$planning_begin,$planning_end) {
+function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events,$jobs_at_login,$list_limit,$cut, $permit_helpdesk,$default_language,$priority,$date_fiscale,$cartridges_alarm,$planning_begin,$planning_end,$auto_assign) {
 	
 	$db = new DB;
 	
@@ -1128,7 +1131,9 @@ function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events
 		$query.= "expire_events = '". $expire_events ."', jobs_at_login = '". $jobs_at_login ."' , list_limit = '". $list_limit ."' , cut = '". $cut ."', permit_helpdesk='". $permit_helpdesk ."',";
 		$query.= "priority_1 = '". $priority[1] ."', priority_2 = '". $priority[2] ."', priority_3 = '". $priority[3] ."', priority_4 = '". $priority[4] ."', priority_5 = '". $priority[5] ."', ";
 		$query.= " date_fiscale = '". $date_fiscale ."', cartridges_alarm='".$cartridges_alarm."', ";
-		$query.= " planning_begin = '". $planning_begin .":00:00', planning_end='".$planning_end.":00:00' where ID = '1' ";
+		$query.= " planning_begin = '". $planning_begin .":00:00', planning_end='".$planning_end.":00:00', ";
+		$query.= " auto_assign='$auto_assign' where ID = '1' ";
+		
 		$db->query($query);
 	
 }

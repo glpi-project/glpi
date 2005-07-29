@@ -68,13 +68,15 @@ echo "</td><td  align='center'  ' valign='top' width='45%'>";
 showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
 echo "</td></tr></table>";
 echo "</div>";
+if(empty($_GET["start"])) $_GET["start"] = 0;
+if ($cfg_features["jobs_at_login"]){
 echo "<br>";
 echo "<div align='center'><b>";
 echo $lang["central"][10];
 echo "</b></div>";
-if(empty($_GET["start"])) $_GET["start"] = 0;
-	showJobList($_SERVER["PHP_SELF"],"","unassigned","","","",$_GET["start"]);
 
+showJobList($_SERVER["PHP_SELF"],"","unassigned","","","",$_GET["start"]);
+}
 commonFooter();
 
 ?>

@@ -2683,6 +2683,13 @@ if(!FieldExists("glpi_printers","initial_pages")) {
 	$db->query($query) or die("0.6 add initial_pages in printers".$lang["update"][90].$db->error());
 }
 
+// Auto assign intervention
+if(!FieldExists("glpi_config","auto_assign")) {
+	// Create fields
+	$query="ALTER TABLE `glpi_config` ADD `auto_assign` ENUM( '0', '1' ) DEFAULT '0' NOT NULL ;";
+	$db->query($query) or die("0.6 add auto_assign in config".$lang["update"][90].$db->error());
+}
+
 
 
 // Update version number and default langage ---- LEAVE AT THE END

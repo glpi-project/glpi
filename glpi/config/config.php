@@ -298,6 +298,10 @@ $cfg_features["permit_helpdesk"] = $db->result($result,0,"permit_helpdesk");
 //show alarm when number of unused cartridges if under the threshold 
 $cfg_features["cartridges_alarm"] = $db->result($result,0,"cartridges_alarm");
 
+
+// Auto Assign tracking
+$cfg_features["auto_assign"] = $db->result($result,0,"auto_assign");
+
 // version number
 // numero de version
 

@@ -1004,7 +1004,7 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 			
 	switch ($device_type) {
 	case GENERAL_TYPE :
-	$item = "general";
+	$item = "";
 	break;
 	case COMPUTER_TYPE :
 	$item = "computers";
@@ -1027,12 +1027,22 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	}
 	
 	
-	if ($job->putinDB()) {
+	if ($tID=$job->putinDB()) {
 		// Log this event
 		logEvent($ID,$item,4,"tracking","$author added new job.");
 		
+		$aa=0;
+		if ($cfg_features['auto_assign']){
+			$ci=new CommonItem;
+			$ci->getFromDB($device_type,$ID);
+			if (isset($ci->obj->fields['tech_num'])&&$ci->obj->fields['tech_num']!=0){
+				assignJob ($tID,USER_TYPE,$ci->obj->fields['tech_num'],$_SESSION["glpiname"]);
+				$aa=1;
+			}
+		}
+		
 		// Processing Email
-		if ($cfg_features["mailing"])
+		if ($aa=0&&$cfg_features["mailing"])
 		{
 			$user=new User;
 			$user->getfromDB($author);
