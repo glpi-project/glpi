@@ -511,60 +511,61 @@ $config = array($lang["Menu"][14]=>array("/users/index.php","u"),
 	$navigation = new baseFunctions;
 	
 	// Logo with link to command center
-	echo "<td width='80px'  valign='middle' align='center' >\n";
+	echo "<td width='80'  valign='middle' align='center' >\n";
 	echo "<a class='icon_logo' href=\"".$cfg_install["root"]."/central.php\" accesskey=\"0\"><img  src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a>";
 	echo "<br><br><div style='width:80px; text-align:center;'><p class='nav_horl'><b>".$_SESSION["glpiname"]."</b></p></div>";
-	echo "</td>";
-	echo "<td valign='middle' style='padding-left:20px'>";
+	echo "</td>\n";
+	echo "<td valign='middle' style='padding-left:20px'>\n";
 	
 	// Get object-variables and build the navigation-elements
 	echo "<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr>";
 	if ($navigation->inventory) {
-		echo "<td align='center' valign='top' width='20%'>";
-		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/inventaire.png\" alt=\"\" title=\"".$lang["setup"][10]."\"><br>";
-		echo "<span class='menu_title'>-&nbsp;".$lang["setup"][10]."&nbsp;-</span><br>";
+		echo "<td align='center' valign='top' width='20%'>\n";
+		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/inventaire.png\" alt=\"\" title=\"".$lang["setup"][10]."\"><br>\n";
+		echo "<span class='menu_title'>-&nbsp;".$lang["setup"][10]."&nbsp;-</span><br>\n";
 
-		 echo "<table cellspacing='0' border='0' cellpadding='0'><tr><td>";
+		 echo "<table cellspacing='0' border='0' cellpadding='0'><tr><td>\n";
 		$i=0;
 		 foreach ($inventory as $key => $val) {
-		 			if ($i%2==1) echo "</td><td style='border-left:1px groove #000000; border-right:1px groove #000000'>&nbsp;</td><td style='padding-left:5px; padding-right:5px;' align='center'>";
-		 			else echo "</td></tr><tr><td style='padding-left:5px; padding-right:5px;' align='center'>";
+		 			if ($i%2==1) echo "</td><td style='border-left:1px groove #000000; border-right:1px groove #000000'>&nbsp;</td><td style='padding-left:5px; padding-right:5px;' align='center'>\n";
+		 			else echo "</td></tr><tr><td style='padding-left:5px; padding-right:5px;' align='center'>\n";
                          
-			 echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
+			 echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>\n";
                          $i++;
                    }
-		echo "</td></tr></table>";
-		echo "</td>";
+		echo "</td></tr></table>\n";
+		echo "</td>\n";
 	}
 	if ($navigation->maintain) {
-		echo "<td align='center' valign='top' width='20%'>";
-		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/maintenance.png\" alt=\"\" title=\"".$lang["title"][24]."\"><br>";
+		echo "<td align='center' valign='top' width='20%'>\n";
+		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/maintenance.png\" alt=\"\" title=\"".$lang["title"][24]."\"><br>\n";
 
-		echo "<span class='menu_title'>-&nbsp;".$lang["title"][24]."&nbsp;-</span><br>";
+		echo "<span class='menu_title'>-&nbsp;".$lang["title"][24]."&nbsp;-</span><br>\n";
 		foreach ($maintain as $key => $val) {
-			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
+			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>\n";
 		}
-		echo "</td>";
+		echo "</td>\n";
 	}
 	if ($navigation->financial) {
-		echo "<td align='center' valign='top' width='20%'>";
-		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/gestion.png\" alt=\"\" title=\"".$lang["Menu"][26]."\"><br>";
+		echo "<td align='center' valign='top' width='20%'>\n";
+		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/gestion.png\" alt=\"\" title=\"".$lang["Menu"][26]."\"><br>\n";
 
-		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][26]."&nbsp;-</span><br>";
+		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][26]."&nbsp;-</span><br>\n";
 		foreach ($financial as $key => $val) {
-			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
+			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>\n";
 		}
-		echo "</td>";
+		echo "</td>\n";
 	}
 	
 	
 	if ($navigation->utils) {
-		echo "<td align='center' valign='top' width='20%'>";
-		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/outils.png\" alt=\"\" title=\"".$lang["Menu"][18]."\"><br>";
-		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][18]."&nbsp;-</span><br>";
+		echo "<td align='center' valign='top' width='20%'>\n";
+		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/outils.png\" alt=\"\" title=\"".$lang["Menu"][18]."\"><br>\n";
+		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][18]."&nbsp;-</span><br>\n";
 		foreach ($utils as $key => $val) {
-			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
+			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>\n";
 		}
+	echo "</td>\n";
 	}
 
 	// PLUGINS
@@ -576,26 +577,24 @@ $config = array($lang["Menu"][14]=>array("/users/index.php","u"),
    	$plugins[]=$filename;
 	}
 	if (isset($plugins)&&count($plugins)>0){
-		echo "<td align='center' valign='top' width=''>";
-		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/plugins.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>";
-		echo "<span class='menu_title'>-&nbsp;Plugins&nbsp;-</span><br>";
+		echo "<td align='center' valign='top'>\n";
+		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/plugins.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>\n";
+		echo "<span class='menu_title'>-&nbsp;Plugins&nbsp;-</span><br>\n";
 		foreach ($plugins as $key => $val) {
-			echo "<span class='menu'><a  href=\"".$cfg_install["root"]."/plugins/".$val."/\" accesskey=\"".$val."\">".$val."</a></span><br>";
+			echo "<span class='menu'><a  href=\"".$cfg_install["root"]."/plugins/".$val."/\" accesskey=\"".$val."\">".$val."</a></span><br>\n";
 		}
-		echo "</td>";
-		
-		
+		echo "</td>\n";
 	}
 	
 	
 	if ($navigation->settings) {
-		echo "<td align='center' valign='top' width='20%'>";
-		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/config.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>";
-		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][15]."&nbsp;-</span><br>";
+		echo "<td align='center' valign='top' width='20%'>\n";
+		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/config.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>\n";
+		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][15]."&nbsp;-</span><br>\n";
 		foreach ($config as $key => $val) {
-			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>";
+			echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>\n";
 		}
-		echo "</td>";
+		echo "</td>\n";
 	}
 	
 	
@@ -604,25 +603,25 @@ $config = array($lang["Menu"][14]=>array("/users/index.php","u"),
 	// On the right side of the navigation bar, we have a clock with
 	// date, help and a logout-link.
 
-	echo "<td  align='center' valign='top' width='100px'>";
+	echo "<td  align='center' valign='top' width='100'>\n";
 	//help
-	echo "<a class='icon_nav_move'  href='#' onClick=\"window.open('".$HTMLRel."help/".$cfg_install["languages"][$_SESSION["glpilanguage"]][2]."','helpdesk','width=750,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a>";
+	echo "<a class='icon_nav_move'  href='#' onClick=\"window.open('".$HTMLRel."help/".$cfg_install["languages"][$_SESSION["glpilanguage"]][2]."','helpdesk','width=750,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a>\n";
 	echo "<p>".date("H").":".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
-	echo "</i></p>";
-	echo "<a  class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img  src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a>";
+	echo "</i></p>\n";
+	echo "<a  class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img  src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a>\n";
 	
-	echo "</td>";
+	echo "</td>\n";
 
 	// End navigation bar
 
-	echo "</tr></table>";
+	echo "</tr></table>\n";
 
 	// End headline
 
 	
-	echo "</td></tr>";	
+	echo "</td></tr>\n";	
 	echo "</table>\n";
-				echo "</div>";
+				echo "</div>\n";
 	// Affichage du message apres redirection
 	if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])&&!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])){
 		echo "<center><b>".$_SESSION["MESSAGE_AFTER_REDIRECT"]."</b></center>";
@@ -1091,7 +1090,7 @@ function showEvents($target,$order,$sort) {
 	// Output events
 	$i = 0;
 
-	echo "<p><center><table width='90%' class='tab_cadre'>";
+	echo "<center><table width='90%' class='tab_cadre'>";
 	echo "<tr><th colspan='6'>".$lang["central"][2]." ".$cfg_features["num_of_events"]." ".$lang["central"][3].":</th></tr>";
 	echo "<tr>";
 
@@ -2357,8 +2356,10 @@ function printPager($start,$numrows,$target,$parameters) {
 	}
 
 	// Print it
-	echo "<div align='center'><table class='tab_cadre2' width='800'>";
-	echo "<tr>";
+	echo "<form method='POST' action=\"$target?$parameters&start=$start\">\n";
+
+	echo "<div align='center'><table class='tab_cadre2' width='800'>\n";
+	echo "<tr>\n";
 	
 	// Back and fast backward button
 	if (!$start==0) {
@@ -2367,43 +2368,44 @@ function printPager($start,$numrows,$target,$parameters) {
 		echo "<img src=\"".$HTMLRel."pics/first.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'>";
 		
 		
-		echo "</a></th>";
+		echo "</a></th>\n";
 		echo "<th align='left'>";
 		echo "<a href=\"$target?$parameters&start=$back\">";
 		echo "<img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'>";
-		echo "</a></th>";
+		echo "</a></th>\n";
 	}
 
 	// Print the "where am I?" 
-	echo "<form method='POST' name='pager_list_limit' action='$target?$parameters&start=$start'>";
 	echo "<td width='50%' align='center' class='tab_bg_2'><b>";
-	echo $lang["pager"][4]."&nbsp;";
+	echo $lang["pager"][4]."&nbsp;</b>";
 	echo "<select name='list_limit' onChange='submit()'>";
-	for ($i=5;$i<=200;$i+=5) echo "<option value='$i' ".((isset($_SESSION["list_limit"])&&$_SESSION["list_limit"]==$i)?" selected ":"").">$i</option>";
-	echo "</select>&nbsp;";
-	echo $lang["pager"][5]."</td>";
+	for ($i=5;$i<=200;$i+=5) echo "<option value='$i' ".((isset($_SESSION["list_limit"])&&$_SESSION["list_limit"]==$i)?" selected ":"").">$i</option>\n";
+	echo "</select><b>&nbsp;";
+	echo $lang["pager"][5];
+	echo "</b></td>\n";
 
-	echo "<td  width='50%' align='center' class='tab_bg_2'>";
+	echo "<td  width='50%' align='center' class='tab_bg_2'><b>";
 
 	echo $lang["pager"][2]."&nbsp;".$current_start."&nbsp;".$lang["pager"][1]."&nbsp;".$current_end."&nbsp;".$lang["pager"][3]."&nbsp;".$numrows."&nbsp;";
-	echo "</b></td>";
-	echo "</form>";
+	echo "</b></td>\n";
 
 	// Forward and fast forward button
 	if ($forward<$numrows) {
 		echo "<th align='right'>";
 		echo "<a href=\"$target?$parameters&start=$forward\">";
 		echo "<img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'>";
-		echo "</a></th>";
+		echo "</a></th>\n";
 		echo "<th align='right'>";
 		echo "<a href=\"$target?$parameters&start=$end\">";
 		echo "<img src=\"".$HTMLRel."pics/last.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'>";
-		echo "</a></th>";
+		echo "</a></th>\n";
 	}
 
 	// End pager
-	echo "</tr>";
-	echo "</table><br></div>";
+	echo "</tr>\n";
+	echo "</table><br></div>\n";
+	echo "</form>\n";
+
 }
 
 /**
