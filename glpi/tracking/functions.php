@@ -1107,7 +1107,6 @@ function categoryJob ($ID,$category,$admin) {
 	$job = new Job;
 	$job->getFromDB($ID,0);
 	$oldcat=$job->category;
-	if ($oldcat==0) $oldcat="NULL";
 	$job->categoryTo($category);
 	$newcat=$job->category;
 	// Add a Followup for a category change
