@@ -422,49 +422,49 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 		}
 
 
-	echo "<div align='center'><form name='form' method='post' action=\"$target\">";
+	echo "<div align='center'><form name='form' method='post' action=\"$target\">\n";
 
 		if(strcmp($template,"newtemplate") === 0) {
-			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
+			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />\n";
 		}
 
-	echo "<table width='700' class='tab_cadre' cellpadding='2'>";
+	echo "<table width='700' class='tab_cadre' cellpadding='2'>\n";
 
-		echo "<tr><th align='center' >";
+		echo "<tr><th align='center' >\n";
 		if(!$template) {
 			echo $lang["networking"][54].": ".$netdev->fields["ID"];
 		}elseif (strcmp($template,"newcomp") === 0) {
 			echo $lang["networking"][53].": ".$netdev->fields["tplname"];
 		}elseif (strcmp($template,"newtemplate") === 0) {
-			echo $lang["common"][6]."&nbsp;: <input type='text' name='tplname' value=\"".$netdev->fields["tplname"]."\" size='20'>";
+			echo $lang["common"][6]."&nbsp;: <input type='text' name='tplname' value=\"".$netdev->fields["tplname"]."\" size='20'>\n";
 		}
 		echo "</th><th  align='center'>".$datestring.$date;
-		echo "</th></tr>";
+		echo "</th></tr>\n";
 
 	
-	echo "<tr><td class='tab_bg_1' valign='top'>";
+	echo "<tr><td class='tab_bg_1' valign='top'>\n";
 
 	echo "<table cellpadding='1px' cellspacing='0' border='0'>\n";
 
-	echo "<tr><td>".$lang["networking"][0].":	</td>";
-	echo "<td><input type='text' name='name' value=\"".$netdev->fields["name"]."\" size='20'></td>";
-	echo "</tr>";
+	echo "<tr><td>".$lang["networking"][0].":	</td>\n";
+	echo "<td><input type='text' name='name' value=\"".$netdev->fields["name"]."\" size='20'></td>\n";
+	echo "</tr>\n";
 
-	echo "<tr><td>".$lang["networking"][1].": 	</td><td>";
+	echo "<tr><td>".$lang["networking"][1].": 	</td><td>\n";
 		dropdownValue("glpi_dropdown_locations", "location", $netdev->fields["location"]);
-	echo "</td></tr>";
+	echo "</td></tr>\n";
 	
-	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>";
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>\n";
 		dropdownUsersID( $netdev->fields["tech_num"],"tech_num");
-	echo "</td></tr>";
+	echo "</td></tr>\n";
 		
-	echo "<tr><td>".$lang["networking"][4].":	</td>";
+	echo "<tr><td>".$lang["networking"][4].":	</td>\n";
 	echo "<td><input type='text' name='contact_num' value=\"".$netdev->fields["contact_num"]."\" size='20'></td>";
-	echo "</tr>";
+	echo "</tr>\n";
 
-	echo "<tr><td>".$lang["networking"][3].":	</td>";
+	echo "<tr><td>".$lang["networking"][3].":	</td>\n";
 	echo "<td><input type='text' name='contact' size='20' value=\"".$netdev->fields["contact"]."\"></td>";
-	echo "</tr>";
+	echo "</tr>\n";
 	
 	if (!$template){
 	echo "<tr><td>".$lang["reservation"][24].":</td><td><b>";
@@ -473,70 +473,77 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 	}
 
 		
-		echo "<td>".$lang["state"][0]."&nbsp;:</td><td><b>";
+		echo "<tr><td>".$lang["state"][0]."&nbsp;:</td><td>\n";
 		$si=new StateItem();
 		$t=0;
 		if ($template) $t=1;
 		$si->getfromDB(NETWORKING_TYPE,$netdev->fields["ID"],$t);
 		dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
-		echo "</b></td>";
+		echo "</td></tr>\n";
 		
+	echo "<tr><td>".$lang["setup"][88].": 	</td><td>\n";
+		dropdownValue("glpi_dropdown_network", "network", $netdev->fields["network"]);
+	echo "</td></tr>\n";
 
-	echo "</table>";
+	echo "<tr><td>".$lang["setup"][89].": 	</td><td>\n";
+		dropdownValue("glpi_dropdown_domain", "domain", $netdev->fields["domain"]);
+	echo "</td></tr>\n";
+
+	echo "</table>\n";
 
 	echo "</td>\n";	
-	echo "<td class='tab_bg_1' valign='top'>";
+	echo "<td class='tab_bg_1' valign='top'>\n";
 
-	echo "<table cellpadding='1px' cellspacing='0' border='0'";
+	echo "<table cellpadding='1px' cellspacing='0' border='0'>\n";
 
-	echo "<tr><td>".$lang["networking"][2].": 	</td><td>";
+	echo "<tr><td>".$lang["networking"][2].": 	</td><td>\n";
 		dropdownValue("glpi_type_networking", "type", $netdev->fields["type"]);
-	echo "</td></tr>";
+	echo "</td></tr>\n";
 	
-	echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>";
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>\n";
 		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$netdev->fields["FK_glpi_enterprise"]);
-	echo "</td></tr>";
+	echo "</td></tr>\n";
 	
-	echo "<tr><td>".$lang["networking"][49].": 	</td><td>";
+	echo "<tr><td>".$lang["networking"][49].": 	</td><td>\n";
 	dropdownValue("glpi_dropdown_firmware", "firmware", $netdev->fields["firmware"]);
-	echo "</td></tr>";
+	echo "</td></tr>\n";
 		
-	echo "<tr><td>".$lang["networking"][5].":	</td>";
+	echo "<tr><td>".$lang["networking"][5].":	</td>\n";
 	echo "<td><input type='text' name='ram' value=\"".$netdev->fields["ram"]."\" size='10'></td>";
-	echo "</tr>";
+	echo "</tr>\n";
 
-	echo "<tr><td>".$lang["networking"][6].":	</td>";
+	echo "<tr><td>".$lang["networking"][6].":	</td>\n";
 	echo "<td><input type='text' name='serial' size='20' value=\"".$netdev->fields["serial"]."\"></td>";
-	echo "</tr>";
+	echo "</tr>\n";
 
-	echo "<tr><td>".$lang["networking"][7].":</td>";
+	echo "<tr><td>".$lang["networking"][7].":</td>\n";
 	echo "<td><input type='text' size='20' name='otherserial' value=\"".$netdev->fields["otherserial"]."\"></td>";
-	echo "</tr>";
+	echo "</tr>\n";
 	
-	echo "<tr><td>".$lang["networking"][14].":</td>";
+	echo "<tr><td>".$lang["networking"][14].":</td>\n";
 	echo "<td><input type='text' size='20' name='ifaddr' value=\"".$netdev->fields["ifaddr"]."\"></td>";
-	echo "</tr>";
+	echo "</tr>\n";
 
-	echo "<tr><td>".$lang["networking"][15].":</td>";
+	echo "<tr><td>".$lang["networking"][15].":</td>\n";
 	echo "<td><input type='text' size='20' name='ifmac' value=\"".$netdev->fields["ifmac"]."\"></td>";
-	echo "</tr>";
+	echo "</tr>\n";
 		
-	echo "</table>";
+	echo "</table>\n";
 	
 	echo "</td>\n";	
-	echo "</tr>";
-	echo "<tr>";
-	echo "<td class='tab_bg_1' valign='top' colspan='2'>";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td class='tab_bg_1' valign='top' colspan='2'>\n";
 
-	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
-	echo $lang["networking"][8].":	</td>";
-	echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$netdev->fields["comments"]."</textarea>";
-	echo "</td></tr></table>";
+	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>\n";
+	echo $lang["networking"][8].":	</td>\n";
+	echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$netdev->fields["comments"]."</textarea>\n";
+	echo "</td></tr></table>\n";
 
 	echo "</td>";
-	echo "</tr>";
+	echo "</tr>\n";
 
-	echo "<tr>";
+	echo "<tr>\n";
 	
 	if ($template) {
 
@@ -557,24 +564,25 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 		echo "<td class='tab_bg_2' valign='top'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
-		echo "</td></form>\n\n";
-		echo "<form action=\"$target\" method='post'>\n";
+		echo "</form></td>\n\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
-		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<div align='center'>";
-		if ($netdev->fields["deleted"]=='N')
-		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-		else {
-		echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
-		
-		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>";
-		}
-		echo "</div>";
-		echo "</td>";
-	}
-		echo "</form></tr>";
+		echo "<form action=\"$target\" method='post'>\n";
 
-		echo "</table></div>";
+		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+		echo "<div align='center'>\n";
+		if ($netdev->fields["deleted"]=='N')
+		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>\n";
+		else {
+		echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>\n";
+		
+		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>\n";
+		}
+		echo "</div>\n";
+		echo "</td>\n";
+	}
+		echo "</tr>\n";
+
+		echo "</table></form></div>\n";
 
 	return true;
 		}
@@ -722,7 +730,7 @@ function restoreNetdevice($input) {
 
 function showPorts ($device,$device_type,$withtemplate='') {
 	
-	GLOBAL $cfg_layout,$cfg_install, $lang;
+	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
 	
 	$db = new DB;
 	switch($device_type) {
@@ -745,17 +753,37 @@ function showPorts ($device,$device_type,$withtemplate='') {
 	$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = $device AND device_type = $device_type) ORDER BY logical_number";
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 
+			
+			$colspan=8;
+			if ($withtemplate!=2){
+			echo "<form method=post action=\"".$cfg_install["root"]."/networking/networking-port.php\">";
+			$colspan=4;
+			}
+			
 			echo "<br><div align='center'><table class='tab_cadre' width='90%'>";
-			echo "<tr><th colspan='7'>";
+			echo "<tr><th colspan='$colspan'>";
 			echo $db->numrows($result)." ";
 			if ($db->numrows($result)<2) {
 				echo $lang["networking"][37];
 			} else {
 				echo $lang["networking"][13];
 			}
-			echo ":</th></tr>";        
+			echo ":</th>";
+
+			if ($withtemplate!=2){
+				echo "<th  colspan='$colspan'>";
+				echo $lang["networking"][55].":&nbsp;";
+				dropdown("glpi_dropdown_vlan","vlan");
+				echo "<input type='submit' name='assign_vlan' value='".$lang["buttons"][3]."' class='submit'>";
+				echo "<a href='".$_SERVER["PHP_SELF"]."?ID=$device&select=all'>".$lang["buttons"][18]."</a>";
+				echo "&nbsp;/&nbsp;";
+				echo "<a href='".$_SERVER["PHP_SELF"]."?ID=$device&select=none'>".$lang["buttons"][19]."</a>";
+				echo "</th>";
+			}
+			echo "</tr>";        
 			echo "<tr><th>#</th><th>".$lang["networking"][0]."</th><th>".$lang["networking"][51]."</th>";
 			echo "<th>".$lang["networking"][14]."</th><th>".$lang["networking"][15]."</th>";
+			echo "<th>".$lang["networking"][56]."</th>";
 			echo "<th>".$lang["networking"][16]."</th><th>".$lang["networking"][17].":</th></tr>\n";
 			$i=0;
 			while ($devid=$db->fetch_row($result)) {
@@ -771,18 +799,63 @@ function showPorts ($device,$device_type,$withtemplate='') {
 		echo "<td>".getDropdownName("glpi_dropdown_netpoint",$netport->fields["netpoint"])."</td>";
 				echo "<td>".$netport->fields["ifaddr"]."</td>";
 				echo "<td>".$netport->fields["ifmac"]."</td>";
+				// VLANs
+				echo "<td>";
+					showPortVLAN($netport->fields["ID"],$withtemplate);
+				echo "</td>";
 				echo "<td>".getDropdownName("glpi_dropdown_iface",$netport->fields["iface"])."</td>";
 				echo "<td>";
 					showConnection($netport->fields["ID"],$withtemplate);
 				echo "</td>";
 				echo "</tr>";
 			}
-			echo "</table></div>\n\n";
+			echo "</table>";
+			// Assign VLAN form
+			if ($withtemplate!=2){
+			echo "</form>";
+			}
+
+			echo "</div>\n\n";
 		}
 	}
 }
 
+function showPortVLAN($ID,$withtemplate){
+global $HTMLRel,$lang;
+$db=new DB;
 
+echo "<table cellpadding='0' cellspacing='0'>";
+if ($withtemplate!=2){
+	$sel="";
+	if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
+		echo "<tr><td colspan='2'><input type='checkbox' name='toassign[$ID]' value='1' $sel></td></tr>";
+}
+
+$query="SELECT * from glpi_networking_vlan WHERE FK_port='$ID'";
+$result=$db->query($query);
+if ($db->numrows($result)>0)
+while ($line=$db->fetch_array($result)){
+	echo "<tr><td>".getDropdownName("glpi_dropdown_vlan",$line["FK_vlan"]);
+	echo "<a href='".$HTMLRel."networking/networking-port.php?unassign_vlan=unassigned&ID=".$line["ID"]."'>";
+	echo "</td><td>";
+    echo "<img src=\"".$HTMLRel."/pics/delete2.png\" alt='".$lang["buttons"][6]."' title='".$lang["buttons"][6]."'>";
+    echo "</a></td></tr>";
+}
+echo "</table>";
+
+}
+
+function assignVlan($port,$vlan){
+$db=new DB;
+$query="INSERT INTO glpi_networking_vlan (FK_port,FK_vlan) VALUES ('$port','$vlan')";
+$db->query($query);
+}
+
+function unassignVlan($ID){
+$db=new DB;
+$query="DELETE FROM glpi_networking_vlan WHERE ID='$ID'";
+$db->query($query);
+}
 
 function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $location = '') {
 
@@ -810,11 +883,12 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 	echo "<div align='center'>";
 	echo "<p><a class='icon_consol' href='$REFERER'>".$lang["buttons"][13]."</a></p>";
 	
+	echo "<form method='post' action=\"$target\">";
+
 	echo "<table class='tab_cadre'><tr>";
 	
 	echo "<th colspan='4'>".$lang["networking"][20].":</th>";
 	echo "</tr>";
-	echo "<form method='post' action=\"$target\">";
 	echo "<input type='hidden' name='referer' value='$REFERER'>";
 
 	if ($several!="yes"){
@@ -839,19 +913,50 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 	echo "</td></tr>";
 	}
 	
-	echo "<tr class='tab_bg_1'><td>".$lang["networking"][0]."</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["networking"][0].":</td>";
 	echo "<td><input type='text' size='20' name='name' value=\"".$netport->fields["name"]."\">";
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["networking"][16]."</td><td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["networking"][16].":</td><td>";
 		dropdownValue("glpi_dropdown_iface","iface", $netport->fields["iface"]);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["networking"][22]."</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["networking"][22].":</td>";
 	echo "<td><input type='text' size='20' name='ifaddr' value=\"".$netport->fields["ifaddr"]."\">";
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["networking"][23]."</td>";
+	// Show device MAC adresses
+	if ((!empty($netport->device_type)&&$netport->device_type==1)||($several!="yes"&&$devtype==1)){
+		$comp=new Computer();
+
+		if (!empty($netport->device_type))
+		$comp->getFromDB($netport->device_ID);
+		else 
+		$comp->getFromDB($ondevice);
+		$macs=array();
+		$i=0;
+		// Get MAC adresses :
+		if (count($comp->devices)>0)	
+			foreach ($comp->devices as $key => $val)
+				if ($val['devType']==NETWORK_DEVICE&&!empty($val['specificity'])){
+					$macs[$i]=$val['specificity'];
+					$i++;
+					}
+		if (count($macs)>0){
+			echo "<tr class='tab_bg_1'><td>".$lang["networking"][23].":</td><td>";
+			echo "<select name='pre_mac'>";
+			echo "<option value=''>------</option>";
+			foreach ($macs as $key => $val){
+			echo "<option value='".$val."' >$val</option>";	
+			}
+			echo "</select>";
+
+			echo "</td></tr>";
+		}
+	}
+	
+
+	echo "<tr class='tab_bg_1'><td>".$lang["networking"][23].":</td>";
 	echo "<td><input type='text' size='25' name='ifmac' value=\"".$netport->fields["ifmac"]."\">";
 	echo "</td></tr>";
 	
@@ -865,7 +970,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 	echo "</td></tr>";
 	}
 	if ($ID) {
-		echo "<tr class='tab_bg_1'><td>".$lang["networking"][24]."</td>";
+		echo "<tr class='tab_bg_1'><td>".$lang["networking"][24].":</td>";
 		echo "<td>";
 			showConnection($netport->fields["ID"]);
 		echo "</td></tr>";

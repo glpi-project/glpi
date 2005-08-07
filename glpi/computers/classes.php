@@ -43,7 +43,7 @@ class Computer {
 
 	var $fields	= array();
 	var $updates	= array();
-	//format $device = array(ID,"nom de table periph","ID dans la table device","valeur de specificity")
+	//format $device = array(ID,"ID type periph","ID dans la table device","valeur de specificity")
 	var $devices	= array();
 	
 	function getfromDB ($ID) {
@@ -53,7 +53,7 @@ class Computer {
 		// Make new database object and fill variables
 		$db = new DB;
 		$query = "SELECT * FROM $table WHERE (ID = '$ID') limit 0,1";
-		//echo $query;
+//		echo $query;
 		if ($result = $db->query($query)) {
 			if ($db->numrows($result)==1) {
 				$data = $db->fetch_array($result);

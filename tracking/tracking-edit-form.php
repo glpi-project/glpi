@@ -45,9 +45,20 @@ include ($phproot . "/glpi/includes_enterprises.php");
 include ($phproot . "/glpi/includes_users.php");
 
 checkAuthentication("post-only");
+if (isset($_GET["update_item"])) {
+	commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
+	echo "<center>";
+	itemFormTracking($_GET["ID"],$_SERVER["PHP_SELF"]);
+	echo "</center>";
+	commonFooter();
 
-if (isset($_GET["update"]))
-{
+} else if (isset($_GET["update_item_ok"])) {
+	
+itemJob ($_GET["ID"],$_GET["device_type"],$_GET["computer"]);
+	
+glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=".$_GET["ID"]);
+	
+}else if (isset($_GET["update"])) {
 
 	if (can_assign_job($_SESSION["glpiname"])){
 		list($type,$ID)=explodeAllItemsSelectResult($_GET["user"]);

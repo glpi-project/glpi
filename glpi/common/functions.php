@@ -1298,6 +1298,7 @@ function dropdownValue($table,$myname,$value) {
 	if ($number > 0) {
 		while ($i < $number) {
 			$output = $db->result($result, $i, "name");
+			if (empty($output)) $output="&nbsp;";
 			$ID = $db->result($result, $i, "ID");
 			if ($ID === $value) {
 				echo "<option value=\"$ID\" selected>$output</option>";
@@ -1943,25 +1944,49 @@ function showConnect($target,$ID,$type) {
 		GLOBAL $lang, $cfg_layout, $cfg_install;
 
 		$connect = new Connection;
+
+		// Is global connection ?
+		$global=0;
+		if ($type==PERIPHERAL_TYPE){
+			$periph=new Peripheral;
+			$periph->getFromDB($ID);
+			$global=$periph->fields['is_global'];
+		} else if ($type==MONITOR_TYPE){
+			$mon=new Monitor;
+			$mon->getFromDB($ID);
+			$global=$mon->fields['is_global'];
+		}
+		
 		$connect->type=$type;
-		$computer = $connect->getComputerContact($ID);
+		$computers = $connect->getComputerContact($ID);
 
 		echo "<br><center><table width='50%' class='tab_cadre'><tr><th colspan='2'>";
 		echo $lang["connect"][0].":";
 		echo "</th></tr>";
 
-		if ($computer) {
-			$connect->getComputerData($computer);
-			echo "<tr><td class='tab_bg_1".($connect->deleted=='Y'?"_2":"")."'><b>Computer: ";
-			echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$connect->device_ID."\">";
-			echo $connect->device_name." (".$connect->device_ID.")";
-			echo "</a>";
-			echo "</b></td>";
-			echo "<td class='tab_bg_2".($connect->deleted=='Y'?"_2":"")."' align='center'><b>";
-			echo "<a href=\"$target?disconnect=1&ID=$ID\">".$lang["connect"][3]."</a>";
+		if ($computers&&count($computers)>0) {
+			foreach ($computers as $key => $computer){
+				$connect->getComputerData($computer);
+				echo "<tr><td class='tab_bg_1".($connect->deleted=='Y'?"_2":"")."'><b>Computer: ";
+				echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$connect->device_ID."\">";
+				echo $connect->device_name." (".$connect->device_ID.")";
+				echo "</a>";
+				echo "</b></td>";
+				echo "<td class='tab_bg_2".($connect->deleted=='Y'?"_2":"")."' align='center'><b>";
+				echo "<a href=\"$target?disconnect=1&ID=".$key."\">".$lang["connect"][3]."</a>";
+			}
 		} else {
 			echo "<tr><td class='tab_bg_1'><b>Computer: </b>";
 			echo "<i>".$lang["connect"][1]."</i>";
+			echo "</td>";
+			echo "<td class='tab_bg_2' align='center'><b>";
+			echo "<a href=\"$target?connect=1&ID=$ID\">".$lang["connect"][2]."</a>";
+		}
+
+		if ($global&&$computers&&count($computers)>0){
+			echo "</b></td>";
+			echo "</tr>";
+			echo "<tr><td class='tab_bg_1'>&nbsp;";
 			echo "</td>";
 			echo "<td class='tab_bg_2' align='center'><b>";
 			echo "<a href=\"$target?connect=1&ID=$ID\">".$lang["connect"][2]."</a>";
@@ -1976,15 +2001,13 @@ function showConnect($target,$ID,$type) {
 * Disconnects a direct connection
 * 
 *
-* @param $ID the connection to disconnect ID.
-* @param $type the connection to disconnect type.
+* @param $ID the connection ID to disconnect.
 * @return nothing
 */
-function Disconnect($ID,$type) {
+function Disconnect($ID) {
 	// Disconnects a direct connection
 
 	$connect = new Connection;
-	$connect->type=$type;
 	$connect->deletefromDB($ID);
 }
 
@@ -2013,22 +2036,23 @@ function Connect($target,$sID,$cID,$type) {
 	$dev=new CommonItem();
 	$dev->getFromDB($type,$sID);
 
-	$comp=new Computer();
-	$comp->getFromDB($cID);
-	if ($comp->fields['location']!=$dev->obj->fields['location']){
-	$updates[0]="location";
-	$dev->obj->fields['location']=$comp->fields['location'];
-	$dev->obj->updateInDB($updates);
-	$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][48];
-
-	}
-	if ($comp->fields['contact']!=$dev->obj->fields['contact']||$comp->fields['contact_num']!=$dev->obj->fields['contact_num']){
-	$updates[0]="contact";
-	$updates[1]="contact_num";
-	$dev->obj->fields['contact']=unhtmlentities($comp->fields['contact']);
-	$dev->obj->fields['contact_num']=unhtmlentities($comp->fields['contact_num']);
-	$dev->obj->updateInDB($updates);
-	$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][49];
+	if (!isset($dev->obj->fields["is_global"])||!$dev->obj->fields["is_global"]){
+		$comp=new Computer();
+		$comp->getFromDB($cID);
+		if ($comp->fields['location']!=$dev->obj->fields['location']){
+			$updates[0]="location";
+			$dev->obj->fields['location']=$comp->fields['location'];
+			$dev->obj->updateInDB($updates);
+			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][48];
+		}
+		if ($comp->fields['contact']!=$dev->obj->fields['contact']||$comp->fields['contact_num']!=$dev->obj->fields['contact_num']){
+			$updates[0]="contact";
+			$updates[1]="contact_num";
+			$dev->obj->fields['contact']=unhtmlentities($comp->fields['contact']);
+			$dev->obj->fields['contact_num']=unhtmlentities($comp->fields['contact_num']);
+			$dev->obj->updateInDB($updates);
+			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][49];
+		}
 	}
 	
 }
@@ -2184,8 +2208,12 @@ function listConnectElement($target,$input) {
 	echo "<td align='center'>";
 
 	$db = new DB;
-	
-	$query = "SELECT $table.ID as ID,$table.name as name, glpi_dropdown_locations.ID as location from $table left join glpi_dropdown_locations on $table.location = glpi_dropdown_locations.id left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = $device_id) WHERE $table.deleted='N' AND $table.is_template='0' AND $table.".$input["type"]." LIKE '%".$input["search"]."%' AND glpi_connect_wire.ID IS NULL order by name ASC";
+
+	$CONNECT_SEARCH="(glpi_connect_wire.ID IS NULL";	
+	if ($device_type=="monitor"||$device_type=="peripheral")
+		$CONNECT_SEARCH.=" OR $table.is_global='1' ";
+	$CONNECT_SEARCH.=")";
+	$query = "SELECT $table.ID as ID,$table.name as name, glpi_dropdown_locations.ID as location from $table left join glpi_dropdown_locations on $table.location = glpi_dropdown_locations.id left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = $device_id) WHERE $table.deleted='N' AND $table.is_template='0' AND $table.".$input["type"]." LIKE '%".$input["search"]."%' AND $CONNECT_SEARCH order by name ASC";
 	
 	
 	//echo $query;
@@ -2212,6 +2240,21 @@ function listConnectElement($target,$input) {
 	
 	echo "</td></form></tr></table>";	
 
+}
+
+function dropdownTrackingDeviceType($name,$value){
+	global $lang;
+	echo "<select name='$name'>";
+    //if (isAdmin($_SESSION["glpitype"]))
+    echo "<option value='0' >".$lang["help"][30]."";
+	echo "<option value='".COMPUTER_TYPE."' ".(($value==COMPUTER_TYPE)?" selected":"").">".$lang["help"][25]."";
+	echo "<option value='".NETWORKING_TYPE."' ".(($value==NETWORKING_TYPE)?" selected":"").">".$lang["help"][26]."";
+	echo "<option value='".PRINTER_TYPE."' ".(($value==PRINTER_TYPE)?" selected":"").">".$lang["help"][27]."";
+	echo "<option value='".MONITOR_TYPE."' ".(($value==MONITOR_TYPE)?" selected":"").">".$lang["help"][28]."";
+	echo "<option value='".PERIPHERAL_TYPE."' ".(($value==PERIPHERAL_TYPE)?" selected":"").">".$lang["help"][29]."";
+	echo "<option value='".SOFTWARE_TYPE."' ".(($value==SOFTWARE_TYPE)?" selected":"").">".$lang["help"][31]."";
+	echo "</select>";
+		
 }
 
 /**
@@ -2251,7 +2294,7 @@ function printHelpDesk ($name,$from_helpdesk) {
                 $contents = $_SESSION["helpdeskSaved"]["contents"];
 
 
-	echo "<form method='post' name=\"helpdeskform\" action=\"".$cfg_install["root"]."/tracking/tracking-injector.php\">";
+	echo "<form method='post' name=\"helpdeskform\" action=\"".$cfg_install["root"]."/tracking/tracking-injector.php\"  enctype=\"multipart/form-data\">";
 	echo "<input type='hidden' name='from_helpdesk' value='$from_helpdesk'>";
 
 	echo "<center><table  class='tab_cadre'>";
@@ -2287,16 +2330,9 @@ function printHelpDesk ($name,$from_helpdesk) {
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$lang["help"][24].": </td>";
-	echo "<td><select name=device_type>";
-    //if (isAdmin($_SESSION["glpitype"]))
-    echo "<option value='0' >".$lang["help"][30]."";
-	echo "<option value='".COMPUTER_TYPE."' ".(($device_type==COMPUTER_TYPE)?" selected":"").">".$lang["help"][25]."";
-	echo "<option value='".NETWORKING_TYPE."' ".(($device_type==NETWORKING_TYPE)?" selected":"").">".$lang["help"][26]."";
-	echo "<option value='".PRINTER_TYPE."' ".(($device_type==PRINTER_TYPE)?" selected":"").">".$lang["help"][27]."";
-	echo "<option value='".MONITOR_TYPE."' ".(($device_type==MONITOR_TYPE)?" selected":"").">".$lang["help"][28]."";
-	echo "<option value='".PERIPHERAL_TYPE."' ".(($device_type==PERIPHERAL_TYPE)?" selected":"").">".$lang["help"][29]."";
-	echo "<option value='".SOFTWARE_TYPE."' ".(($device_type==SOFTWARE_TYPE)?" selected":"").">".$lang["help"][31]."";
-	echo "</select>";
+	echo "<td>";
+	dropdownTrackingDeviceType("device_type",$device_type);
+	
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'>";
@@ -2306,9 +2342,17 @@ function printHelpDesk ($name,$from_helpdesk) {
 	echo "<td colspan='2' align='center'><textarea name='contents' cols='45' rows='14' >$contents</textarea>";
 	echo "</td></tr>";
 
+	$max_size=return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
+	$max_size/=1024*1024;
+	$max_size=round($max_size,1);
+	
+	echo "<tr class='tab_bg_1'><td>".$lang["document"][2]." (".$max_size."Mo max):	</td>";
+	echo "<td colspan='2'><input type='file' name='filename' value=\"\" size='25'></td>";
+	echo "</tr>";
+
 	echo "<tr class='tab_bg_1'>";
 	echo "<td colspan='2' align='center'> <input type='submit' value=\"".$lang["help"][14]."\" class='submit'>";
-		echo "<input type='hidden' name='IRMName' value=\"$name\">";
+	echo "<input type='hidden' name='IRMName' value=\"$name\">";
 	echo "</td></tr>";
 
 	echo "</table>";
@@ -2437,7 +2481,7 @@ switch($item_type)
 		
 		
 		echo " <strong>".$lang["reports"][6]."</strong>";
-		echo "<table width='100%' height='60' border='0' bordercolor='black'>";
+		echo "<table width='100%' class='tab_cadre'>";
 		echo "<tr>";
 		echo "<th><div align='center'><b>".$lang["computers"][7]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["common"][3]."</b></div></th>";
@@ -2480,7 +2524,7 @@ switch($item_type)
 		case 'glpi_printers' :
 		
 		echo "<b><strong>".$lang["reports"][7]."</strong></b>";
-		echo "<table width='100%' height='60' border='0'>";
+		echo "<table width='100%' class='tab_cadre'>";
 		echo "<tr> ";
 		echo "<th><div align='center'><b>".$lang["computers"][7]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["common"][3]."</b></div></th>";
@@ -2521,7 +2565,7 @@ switch($item_type)
 		case 'glpi_monitors' :
 		
 		echo " <b><strong>".$lang["reports"][9]."</strong></b>";
-		echo "<table width='100%' height='60' border='0'>";
+		echo "<table width='100%' class='tab_cadre'>";
 		echo "<tr> ";
 		echo "<th><div align='center'><b>".$lang["computers"][7]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["common"][3]."</b></div></th>";
@@ -2562,7 +2606,7 @@ switch($item_type)
 		case 'glpi_networking' :
 		
 		echo " <b><strong>".$lang["reports"][8]."</strong></b>";
-		echo "<table width='100%' height='60' border='0'>";
+		echo "<table width='100%' class='tab_cadre'>";
 		echo "<tr> ";
 		echo "<th><div align='center'><b>".$lang["computers"][7]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["common"][3]."</b></div></th>";
@@ -2602,7 +2646,7 @@ switch($item_type)
 		case 'glpi_peripherals' :
 		
 		echo " <b><strong>".$lang["reports"][29]."</strong></b>";
-		echo "<table width='100%' height='60' border='0'>";
+		echo "<table width='100%' class='tab_cadre'>";
 		echo "<tr> ";
 		echo "<th><div align='center'><b>".$lang["computers"][7]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["common"][3]."</b></div></th>";
@@ -2642,7 +2686,7 @@ switch($item_type)
 		case 'glpi_software' :
 		
 		echo " <b><strong>".$lang["reports"][55]."</strong></b>";
-		echo "<table width='100%' height='60' border='0'>";
+		echo "<table width='100%' class='tab_cadre'>";
 		echo "<tr> ";
 		echo "<th><div align='center'><b>".$lang["computers"][7]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["common"][3]."</b></div></th>";
@@ -2681,7 +2725,7 @@ switch($item_type)
 		break;
 		// Rapport réseau par lieu
 		case 'glpi_networking_lieu' :
-		echo "<table width='100%' height='60' border='0'>";
+		echo "<table width='100%' class='tab_cadre'>";
 		echo "<tr> ";
 		echo "<th><div align='center'><b>".$lang["reports"][20]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][37]."</b></div></th>";
@@ -2749,7 +2793,7 @@ switch($item_type)
 		break;
 	//rapport reseau par switch	
 	case 'glpi_networking_switch' :
-		echo "<table width='100%' height='60' border='0'>";
+		echo "<table width='100%' class='tab_cadre'>";
 		echo "<tr> ";
 		echo "<th><div align='center'>&nbsp;</div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][46]."</b></div></th>";
@@ -2804,7 +2848,7 @@ switch($item_type)
 		
 		//rapport reseau par prise
 		case 'glpi_networking_prise' :
-		echo "<table width='100%' height='60' border='0'>";
+		echo "<table width='100%' class='tab_cadre'>";
 		echo "<tr> ";
 		echo "<th><div align='center'><b>".$lang["reports"][20]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][52]."</b></div></th>";

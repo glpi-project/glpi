@@ -160,9 +160,13 @@ class Connection {
 		$query = "SELECT * FROM glpi_connect_wire WHERE (end1 = '$ID' AND type = '$this->type')";
 		if ($result=$db->query($query)) {
 			if ($db->numrows($result)==0) return false;
-			$data = $db->fetch_array($result);
-			if (isset($data["end2"])) $this->end2 = $data["end2"];
-			return $this->end2;
+			$ret=array();
+			while ($data = $db->fetch_array($result)){
+				if (isset($data["end2"])) {
+					$ret[$data["ID"]] = $data["end2"];
+				}
+			}
+			return $ret;
 		} else {
 				return false;
 		}
@@ -187,7 +191,7 @@ class Connection {
 
 		$db = new DB;
 
-		$query = "DELETE from glpi_connect_wire WHERE (end1 = '$ID' AND type = '$this->type')";
+		$query = "DELETE from glpi_connect_wire WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			return true;
 		} else {

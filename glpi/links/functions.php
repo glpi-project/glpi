@@ -263,7 +263,7 @@ function showLinkList($target,$username,$field,$phrasetype,$contains,$sort,$orde
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<div align='center'><b>".$lang["financial"][38]."</b></div>";
+			echo "<div align='center'><b>".$lang["links"][8]."</b></div>";
 		}
 	}
 }
@@ -301,7 +301,7 @@ function showLinkForm ($target,$ID) {
 	echo "</b></th></tr>";
 	
 	echo "<tr class='tab_bg_1'><td>".$lang["links"][6].":	</td>";
-	echo "<td>[ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC]</td>";
+	echo "<td>[ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK], [DOMAIN]</td>";
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["links"][1].":	</td>";
@@ -500,11 +500,22 @@ global $lang;
 		if (ereg("\[ID\]",$link)){
 			$link=ereg_replace("\[ID\]",$ID,$link);
 		}
+
 		if (ereg("\[LOCATIONID\]",$link)){
-			$link=ereg_replace("\[LOCATIONID\]",$ci->obj->fields["location"],$link);
+			if (isset($ci->obj->fields["location"]))
+				$link=ereg_replace("\[LOCATIONID\]",$ci->obj->fields["location"],$link);
 		}
 		if (ereg("\[LOCATION\]",$link)){
-			$link=ereg_replace("\[LOCATION\]",getDropdownName("glpi_dropdown_locations",$ci->obj->fields["location"]),$link);
+			if (isset($ci->obj->fields["location"]))
+				$link=ereg_replace("\[LOCATION\]",getDropdownName("glpi_dropdown_locations",$ci->obj->fields["location"]),$link);
+		}
+		if (ereg("\[NETWORK\]",$link)){
+			if (isset($ci->obj->fields["network"]))
+				$link=ereg_replace("\[NETWORK\]",getDropdownName("glpi_dropdown_network",$ci->obj->fields["network"]),$link);
+		}
+		if (ereg("\[DOMAIN\]",$link)){
+			if (isset($ci->obj->fields["domain"]))
+				$link=ereg_replace("\[DOMAIN\]",getDropdownName("glpi_dropdown_domain",$ci->obj->fields["domain"]),$link);
 		}
 		$ipmac=array();
 		$i=0;

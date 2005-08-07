@@ -569,7 +569,7 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		
 		echo "<form name='form' method='post' action=\"$target\">";
 		echo "<div align='center'>";
-		echo "<table width='700px' class='tab_cadre' >";
+		echo "<table width='700' class='tab_cadre' >";
 		
 		if(strcmp($template,"newtemplate") === 0) {
 			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
@@ -587,60 +587,57 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		echo "</th><th  colspan ='2' align='center'>".$datestring.$date;
 		echo "</th></tr>";
 		
-		echo "<tr class='tab_bg_1'><td>".$lang["computers"][7]."&nbsp;:		</td>";
+		echo "<tr class='tab_bg_1'><td>".$lang["computers"][7].":		</td>";
 		echo "<td><input type='text' name='name' value=\"".$comp->fields["name"]."\" size='20'></td>";
 						
-		echo "<td>".$lang["computers"][16]."&nbsp;:	</td><td><input type='text' name='contact' size='20' value=\"".$comp->fields["contact"]."\">";
+		echo "<td>".$lang["computers"][16].":	</td><td><input type='text' name='contact' size='20' value=\"".$comp->fields["contact"]."\">";
 		echo "</td></tr>";
 		
 		echo "<tr class='tab_bg_1'>";
 		
-		echo "<td >".$lang["computers"][10]."&nbsp;: 	</td>";
+		echo "<td >".$lang["computers"][10].": 	</td>";
 		echo "<td >";
 			dropdownValue("glpi_dropdown_locations", "location", $comp->fields["location"]);
 		
 		echo "</td>";
 		
-		echo "<td>".$lang["computers"][15]."&nbsp;:		</td><td><input type='text' name='contact_num' value=\"".$comp->fields["contact_num"]."\" size='20'></td></tr>";
+		echo "<td>".$lang["computers"][15].":		</td><td><input type='text' name='contact_num' value=\"".$comp->fields["contact_num"]."\" size='20'></td></tr>";
 
 				echo "<tr class='tab_bg_1'>";
 		
-		echo "<td >".$lang["computers"][8]."&nbsp;: 	</td>";
+		echo "<td >".$lang["computers"][8].": 	</td>";
 		echo "<td >";
 			dropdownValue("glpi_type_computers", "type", $comp->fields["type"]);
 		
 		echo "</td>";
 		
-		echo "<td>&nbsp;</td><td>&nbsp;</td></tr>";
+		echo "<td>".$lang["setup"][88].":</td><td>";
+		dropdownValue("glpi_dropdown_network", "network", $comp->fields["network"]);
+		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'>";
 		
-		echo "<td >".$lang["common"][10]."&nbsp;: 	</td>";
+		echo "<td >".$lang["common"][10].": 	</td>";
 		echo "<td >";
 			dropdownUsersID( $comp->fields["tech_num"],"tech_num");
 		echo "</td>";
 		
+		echo "<td>".$lang["setup"][89].":</td><td>";
+		dropdownValue("glpi_dropdown_domain", "domain", $comp->fields["domain"]);
+		echo "</td></tr>";
 		
-		echo "<td>".$lang["state"][0]."&nbsp;:</td><td><b>";
-		$si=new StateItem();
-		$t=0;
-		if ($template) $t=1;
-		$si->getfromDB(COMPUTER_TYPE,$comp->fields["ID"],$t);
-		dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
-		echo "</b></td>";
-		
-		
-	
+
 		echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td>";
 		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$comp->fields["FK_glpi_enterprise"]);
 		echo "</td>";
 
-		echo "<td valign='middle' rowspan='4'>".$lang["computers"][19]."&nbsp;:</td><td valign='middle' rowspan='4'><textarea  cols='35' rows='6' name='comments' >".$comp->fields["comments"]."</textarea></td></tr>";
-		echo "<tr class='tab_bg_1'><td>".$lang["computers"][18]."&nbsp;:	</td>";
+		echo "<td valign='middle' rowspan='3'>".$lang["computers"][19].":</td><td valign='middle' rowspan='3'><textarea  cols='35' rows='4' name='comments' >".$comp->fields["comments"]."</textarea></td></tr>";
+
+		echo "<tr class='tab_bg_1'><td>".$lang["computers"][18].":	</td>";
 		echo "<td><input type='text' size='20' name='otherserial' value=\"".$comp->fields["otherserial"]."\">";
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$lang["computers"][17]."&nbsp;:	</td>";
+		echo "<tr class='tab_bg_1'><td>".$lang["computers"][17].":	</td>";
 		echo "<td><input type='text' name='serial' size='20' value=\"".$comp->fields["serial"]."\">";
 		echo "</td></tr>";
 
@@ -669,11 +666,16 @@ function showComputerForm($target,$ID,$withtemplate='') {
 			echo "<input type='checkbox' name='flags_server' value='1'>";
 		}
 		echo " &nbsp;".$lang["computers"][28]."</td>";
-		
-		echo "</tr>";
-		
-		
-		
+
+		echo "<td>".$lang["state"][0].":</td><td><b>";
+		$si=new StateItem();
+		$t=0;
+		if ($template) $t=1;
+		$si->getfromDB(COMPUTER_TYPE,$comp->fields["ID"],$t);
+		dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
+		echo "</b></td></tr>";
+
+
 		echo "<tr class='tab_bg_1'>";
 		
 		echo "<td>".$lang["computers"][9]."&nbsp;</td><td>";
@@ -765,7 +767,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 	if (!empty($ID)){
 			//print devices.
 		echo "<div align='center'>";
-		echo "<form name='form_device_action' action=\"\" method=\"post\" >";
+		echo "<form name='form_device_action' action=\"$target\" method=\"post\" >";
 		echo "<table width='700' class='tab_cadre' >";
 		echo "<tr><th colspan='66'>".$lang["devices"][10]."</th></tr>";
 		foreach($comp->devices as $key => $val) {
@@ -778,10 +780,12 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 			printDeviceComputer($device,$specif,$comp->fields["ID"],$compDevID,$withtemplate);
 			
 		}
+		echo "</table>";
+
 		echo "</form>";
 		//ADD a new device form.
 		device_selecter($_SERVER["PHP_SELF"],$comp->fields["ID"],$withtemplate);
-		echo "</table></div>";
+		echo "</div>";
 	}	
 
 

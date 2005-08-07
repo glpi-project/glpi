@@ -229,6 +229,7 @@ class Netport {
 	
 	var $device_name	= "";
 	var $device_ID		= 0;
+	var $device_type		= 0;
 	
 	function getFromDB($ID) 
 	{
@@ -290,6 +291,7 @@ class Netport {
 			$this->device_name = $data["name"];
 			$this->deleted = $data["deleted"];
 			$this->device_ID = $ID;
+			$this->device_type = $type;
 			return true;
 		}
 		else 

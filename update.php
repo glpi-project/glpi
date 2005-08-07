@@ -55,6 +55,7 @@ define("TYPEDOC_TYPE","12");
 define("DOCUMENT_TYPE","13");
 define("KNOWBASE_TYPE","14");
 define("USER_TYPE","15");
+define("TRACKING_TYPE","16");
 
 // DEVICE TYPE
 define("MOBOARD_DEVICE","1");
@@ -2678,16 +2679,79 @@ if(!TableExists("glpi_links")) {
 
 // Initial count page for printer
 if(!FieldExists("glpi_printers","initial_pages")) {
-	// Create fields
 	$query="ALTER TABLE `glpi_printers` ADD `initial_pages` VARCHAR( 30 ) DEFAULT '0' NOT NULL ;";
 	$db->query($query) or die("0.6 add initial_pages in printers".$lang["update"][90].$db->error());
 }
 
 // Auto assign intervention
 if(!FieldExists("glpi_config","auto_assign")) {
-	// Create fields
 	$query="ALTER TABLE `glpi_config` ADD `auto_assign` ENUM( '0', '1' ) DEFAULT '0' NOT NULL ;";
 	$db->query($query) or die("0.6 add auto_assign in config".$lang["update"][90].$db->error());
+}
+
+// Create glpi_dropdown_network
+if(!TableExists("glpi_dropdown_network")) {
+	$query = "CREATE TABLE `glpi_dropdown_network` (
+  	`ID` int(11) NOT NULL auto_increment,
+  	`name` varchar(255) NOT NULL default '',
+  	PRIMARY KEY  (`ID`)
+	) TYPE=MyISAM;";
+	$db->query($query) or die("0.6 add table glpi_dropdown_network ".$lang["update"][90].$db->error());
+	$query="ALTER TABLE `glpi_computers` ADD `network` INT DEFAULT '0' NOT NULL AFTER `location` ;";
+	$db->query($query) or die("0.6 a network in computers".$lang["update"][90].$db->error());
+	$query="ALTER TABLE `glpi_printers` ADD `network` INT DEFAULT '0' NOT NULL AFTER `location` ;";
+	$db->query($query) or die("0.6 a network in printers".$lang["update"][90].$db->error());
+	$query="ALTER TABLE `glpi_networking` ADD `network` INT DEFAULT '0' NOT NULL AFTER `location` ;";
+	$db->query($query) or die("0.6 a network in networking".$lang["update"][90].$db->error());
+}
+
+// Create glpi_dropdown_domain
+if(!TableExists("glpi_dropdown_domain")) {
+	$query = "CREATE TABLE `glpi_dropdown_domain` (
+  	`ID` int(11) NOT NULL auto_increment,
+  	`name` varchar(255) NOT NULL default '',
+  	PRIMARY KEY  (`ID`)
+	) TYPE=MyISAM;";
+	$db->query($query) or die("0.6 add table glpi_dropdown_domain ".$lang["update"][90].$db->error());
+	$query="ALTER TABLE `glpi_computers` ADD `domain` INT DEFAULT '0' NOT NULL AFTER `location` ;";
+	$db->query($query) or die("0.6 a domain in computers".$lang["update"][90].$db->error());
+	$query="ALTER TABLE `glpi_printers` ADD `domain` INT DEFAULT '0' NOT NULL AFTER `location` ;";
+	$db->query($query) or die("0.6 a domain in printers".$lang["update"][90].$db->error());
+	$query="ALTER TABLE `glpi_networking` ADD `domain` INT DEFAULT '0' NOT NULL AFTER `location` ;";
+	$db->query($query) or die("0.6 a domain in networking".$lang["update"][90].$db->error());
+}
+
+// Create glpi_dropdown_vlan
+if(!TableExists("glpi_dropdown_vlan")) {
+	$query = "CREATE TABLE `glpi_dropdown_vlan` (
+  	`ID` int(11) NOT NULL auto_increment,
+  	`name` varchar(255) NOT NULL default '',
+  	PRIMARY KEY  (`ID`)
+	) TYPE=MyISAM;";
+	$db->query($query) or die("0.6 add table glpi_dropdown_vlan ".$lang["update"][90].$db->error());
+
+	$query = "CREATE TABLE `glpi_networking_vlan` (
+  	`ID` int(11) NOT NULL auto_increment,
+  	`FK_port` int(11) NOT NULL default '0',
+	  `FK_vlan` int(11) NOT NULL default '0',
+  	PRIMARY KEY  (`ID`),
+	  KEY `FK_port` (`FK_port`),
+	  KEY `FK_vlan` (`FK_vlan`),
+	  UNIQUE `FK_port_2` (`FK_port`,`FK_vlan`)
+	  ) TYPE=MyISAM;";
+	$db->query($query) or die("0.6 add table glpi_networking_vlan ".$lang["update"][90].$db->error());
+}
+
+// Global Peripherals
+if(!FieldExists("glpi_peripherals","is_global")) {
+	$query="ALTER TABLE `glpi_peripherals` ADD `is_global` ENUM( '0', '1' ) DEFAULT '0' NOT NULL AFTER `FK_glpi_enterprise` ;";
+	$db->query($query) or die("0.6 add is_global in peripherals".$lang["update"][90].$db->error());
+}
+
+// Global Monitors
+if(!FieldExists("glpi_monitors","is_global")) {
+	$query="ALTER TABLE `glpi_monitors` ADD `is_global` ENUM( '0', '1' ) DEFAULT '0' NOT NULL AFTER `FK_glpi_enterprise` ;";
+	$db->query($query) or die("0.6 add is_global in peripherals".$lang["update"][90].$db->error());
 }
 
 

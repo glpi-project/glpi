@@ -42,26 +42,25 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 
 	GLOBAL $cfg_layout, $lang, $HTMLRel;
 
-	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='70%'>";
-	echo "<a name=\"$name\"></a>";
+	echo "<div align='center'>&nbsp;\n";
+	echo "<form method='post' action=\"$target\">";
+
+	echo "<table class='tab_cadre' width='70%'>\n";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
 	if (countElementsInTable("glpi_dropdown_".$name)>0){
-	echo "<form method='post' action=\"$target\">";
-	echo "<input type='hidden' name='which' value='$name'>";
 	echo "<tr><td  align='center'  class='tab_bg_1'>";
+	echo "<input type='hidden' name='which' value='$name'>";
 
 
 	$value=getTreeLeafValueName("glpi_dropdown_".$name,$ID);
-//	getDropdownName("glpi_dropdown_".$name,$ID);
 
 	dropdownValue("glpi_dropdown_".$name, "ID",$ID);
         // on ajoute un input text pour entrer la valeur modifier
 		echo "<input type='image' src=\"".$HTMLRel."pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>";
 
-//        echo "<img src=\"".$HTMLRel."pics/puce.gif\" alt='' title=''>";
 
  	echo "<input type='text' maxlength='100' size='20' name='value' value='$value'>";
-	//
+
 	echo "</td><td align='center' class='tab_bg_2'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."'>";
 	//  on ajoute un bouton modifier
@@ -69,19 +68,14 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
         echo "</td><td align='center' class='tab_bg_2'>";
         //
         echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-	echo "</td></form></tr>";
-	
+	echo "</td></tr></form>";
 	echo "<form method='post' action=\"$target\">";
 	echo "<input type='hidden' name='which' value='$name'>";
+	
 	echo "<tr><td align='center' class='tab_bg_1'>";
 
 	dropdownValue("glpi_dropdown_".$name, "value_to_move",$tomove);
-//		echo "<select name='type'>";
-//		echo "<option value='under'>".$lang["setup"][75]."</option>";
-		echo "&nbsp;&nbsp;&nbsp;".$lang["setup"][75]." :&nbsp;&nbsp;&nbsp;";
-//		echo "<option value='over'>".$lang["setup"][77]."</option>";
-//		echo "<option value='same'>".$lang["setup"][76]."</option>";
-//		echo "</select>";
+	echo "&nbsp;&nbsp;&nbsp;".$lang["setup"][75]." :&nbsp;&nbsp;&nbsp;";
 
 	dropdownValue("glpi_dropdown_".$name, "value_where",$where);
 	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
@@ -113,8 +107,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 	
 	
 	
-	echo "</table></div>";
-	echo "</form>";
+	echo "</table></form></div>";
 }
 
 
@@ -122,13 +115,14 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 
 	GLOBAL $cfg_layout, $lang, $HTMLRel;
 
-	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='70%'>";
-	echo "<a name=\"$name\"></a>";
+	echo "<div align='center'>&nbsp;";
+	echo "<form method='post' action=\"$target\">";
+
+	echo "<table class='tab_cadre' width='70%'>";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
 	if (countElementsInTable("glpi_dropdown_".$name)>0){
-	echo "<form method='post' action=\"$target\">";
-	echo "<input type='hidden' name='which' value='$name'>";
 	echo "<tr><td align='center' class='tab_bg_1'>";
+	echo "<input type='hidden' name='which' value='$name'>";
 
 	dropdownValue("glpi_dropdown_".$name, "ID",$ID);
         // on ajoute un input text pour entrer la valeur modifier
@@ -379,6 +373,26 @@ function replaceDropDropDown($input) {
 		$query = "update glpi_device_ram set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
+	case "vlan":
+		$query = "update glpi_networking_vlan set FK_vlan = '". $input["newID"] ."'  where FK_vlan = '".$input["oldID"]."'";
+		$db->query($query);
+		break;
+	case "domain":
+		$query = "update glpi_computers set domain = '". $input["newID"] ."'  where domain = '".$input["oldID"]."'";
+		$db->query($query);
+		$query = "update glpi_printers set domain = '". $input["newID"] ."'  where domain = '".$input["oldID"]."'";
+		$db->query($query);
+		$query = "update glpi_networking set domain = '". $input["newID"] ."'  where domain = '".$input["oldID"]."'";
+		$db->query($query);
+		break;
+	case "network":
+		$query = "update glpi_computers set network = '". $input["newID"] ."'  where network = '".$input["oldID"]."'";
+		$db->query($query);
+		$query = "update glpi_printers set network = '". $input["newID"] ."'  where network = '".$input["oldID"]."'";
+		$db->query($query);
+		$query = "update glpi_networking set network = '". $input["newID"] ."'  where network = '".$input["oldID"]."'";
+		$db->query($query);
+		break;
 
 	case "enttype":
 		$query = "update glpi_enterprises set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
@@ -566,6 +580,33 @@ function dropdownUsed($table, $ID) {
 		break;
 	case "ram_type":
 		$query = "Select count(*) as cpt FROM glpi_device_ram where type = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
+	case "vlan":
+		$query = "Select count(*) as cpt FROM glpi_networking_vlan where FK_vlan = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
+	case "domain":
+		$query = "Select count(*) as cpt FROM glpi_computers where domain = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		$query = "Select count(*) as cpt FROM glpi_printers where domain = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		$query = "Select count(*) as cpt FROM glpi_networking where domain = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
+	case "network":
+		$query = "Select count(*) as cpt FROM glpi_computers where network = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		$query = "Select count(*) as cpt FROM glpi_printers where network = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		$query = "Select count(*) as cpt FROM glpi_networking where nertwork = ".$ID."";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;

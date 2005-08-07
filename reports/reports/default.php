@@ -47,7 +47,6 @@ $db = new DB;
 
 # Title
 
-echo "<html><body bgcolor=#ffffff>";
 echo "<big><b>GLPI ".$lang["Menu"][6]."</b></big><br><br>";
 
 # 1. Get some number data

@@ -52,6 +52,7 @@ header("Content-Type: text/html; charset=UTF-8");
 <html>
 <head>
  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+ <title>GLPI</title>
 
 <?php
 include ("_relpos.php");
@@ -65,7 +66,7 @@ echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
 </head>
 
 <body>
-<script language="javascript">
+<script language="javascript" type="text/javascript">
 function fillidfield(Type,Id){
 window.opener.document.forms["helpdeskform"].elements["computer"].value = Id;
 window.opener.document.forms["helpdeskform"].elements["device_type"].value = Type;
