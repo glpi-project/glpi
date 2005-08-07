@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-07-29 12:18
+#GLPI Dump database on 2005-08-08 00:49
 
 ### Dump table glpi_cartridges
 
@@ -84,6 +84,8 @@ CREATE TABLE glpi_computers (
     date_mod datetime,
     os int(11),
     location int(11),
+    domain int(11) DEFAULT '0' NOT NULL,
+    network int(11) DEFAULT '0' NOT NULL,
     type int(11),
     is_template enum('0','1') DEFAULT '0' NOT NULL,
     tplname varchar(200),
@@ -101,7 +103,7 @@ CREATE TABLE glpi_computers (
    KEY tech_num (tech_num)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_computers VALUES ('19','','0','','','','','0','Empty Template',NULL,'0','0','0','1','Blank Template','0','N');
+INSERT INTO glpi_computers VALUES ('19','','0','','','','','0','Empty Template',NULL,'0','0','0','0','0','1','Blank Template','0','N');
 
 ### Dump table glpi_config
 
@@ -544,6 +546,16 @@ INSERT INTO glpi_dropdown_contract_type VALUES ('5','Maintenance Hardware');
 INSERT INTO glpi_dropdown_contract_type VALUES ('6','Maintenance Software');
 INSERT INTO glpi_dropdown_contract_type VALUES ('7','Prestation');
 
+### Dump table glpi_dropdown_domain
+
+DROP TABLE IF EXISTS glpi_dropdown_domain;
+CREATE TABLE glpi_dropdown_domain (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
+
 ### Dump table glpi_dropdown_enttype
 
 DROP TABLE IF EXISTS glpi_dropdown_enttype;
@@ -614,6 +626,16 @@ CREATE TABLE glpi_dropdown_netpoint (
 ) TYPE=MyISAM;
 
 
+### Dump table glpi_dropdown_network
+
+DROP TABLE IF EXISTS glpi_dropdown_network;
+CREATE TABLE glpi_dropdown_network (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
+
 ### Dump table glpi_dropdown_os
 
 DROP TABLE IF EXISTS glpi_dropdown_os;
@@ -664,6 +686,16 @@ DROP TABLE IF EXISTS glpi_dropdown_tracking_category;
 CREATE TABLE glpi_dropdown_tracking_category (
     ID int(11) NOT NULL auto_increment,
     name varchar(255),
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
+
+### Dump table glpi_dropdown_vlan
+
+DROP TABLE IF EXISTS glpi_dropdown_vlan;
+CREATE TABLE glpi_dropdown_vlan (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
    PRIMARY KEY (ID)
 ) TYPE=MyISAM;
 
@@ -839,6 +871,7 @@ CREATE TABLE glpi_monitors (
     location int(11),
     type int(11),
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
+    is_global enum('0','1') DEFAULT '0' NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
     is_template enum('0','1') DEFAULT '0' NOT NULL,
     tplname varchar(255),
@@ -852,7 +885,7 @@ CREATE TABLE glpi_monitors (
    KEY tech_num (tech_num)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_monitors VALUES ('4','','0000-00-00 00:00:00','','','0','','','','0','0','0','0','0',NULL,NULL,'0','N','1','Blank Template');
+INSERT INTO glpi_monitors VALUES ('4','','0000-00-00 00:00:00','','','0','','','','0','0','0','0','0',NULL,NULL,'0','0','N','1','Blank Template');
 
 ### Dump table glpi_networking
 
@@ -869,6 +902,8 @@ CREATE TABLE glpi_networking (
     date_mod datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
     comments text NOT NULL,
     location int(11),
+    domain int(11) DEFAULT '0' NOT NULL,
+    network int(11) DEFAULT '0' NOT NULL,
     type int(11),
     firmware int(11),
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
@@ -887,7 +922,7 @@ CREATE TABLE glpi_networking (
    KEY tech_num (tech_num)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_networking VALUES ('10','','','','','','','0','0000-00-00 00:00:00','',NULL,NULL,NULL,'0','N','1','Blank Template','','');
+INSERT INTO glpi_networking VALUES ('10','','','','','','','0','0000-00-00 00:00:00','',NULL,'0','0',NULL,NULL,'0','N','1','Blank Template','','');
 
 ### Dump table glpi_networking_ports
 
@@ -905,6 +940,20 @@ CREATE TABLE glpi_networking_ports (
    PRIMARY KEY (ID),
    KEY on_device (on_device, device_type),
    KEY netpoint (netpoint)
+) TYPE=MyISAM;
+
+
+### Dump table glpi_networking_vlan
+
+DROP TABLE IF EXISTS glpi_networking_vlan;
+CREATE TABLE glpi_networking_vlan (
+    ID int(11) NOT NULL auto_increment,
+    FK_port int(11) DEFAULT '0' NOT NULL,
+    FK_vlan int(11) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (ID),
+   UNIQUE FK_port_2 (FK_port, FK_vlan),
+   KEY FK_port (FK_port),
+   KEY FK_vlan (FK_vlan)
 ) TYPE=MyISAM;
 
 
@@ -939,6 +988,7 @@ CREATE TABLE glpi_peripherals (
     type int(11) DEFAULT '0' NOT NULL,
     brand varchar(255) NOT NULL,
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
+    is_global enum('0','1') DEFAULT '0' NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
     is_template enum('0','1') DEFAULT '0' NOT NULL,
     tplname varchar(255),
@@ -951,7 +1001,7 @@ CREATE TABLE glpi_peripherals (
    KEY tech_num (tech_num)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_peripherals VALUES ('1','','0000-00-00 00:00:00','','','0','','','','0','0','','0','N','1','Blank Template');
+INSERT INTO glpi_peripherals VALUES ('1','','0000-00-00 00:00:00','','','0','','','','0','0','','0','0','N','1','Blank Template');
 
 ### Dump table glpi_printers
 
@@ -971,6 +1021,8 @@ CREATE TABLE glpi_printers (
     comments text NOT NULL,
     ramSize varchar(6) NOT NULL,
     location int(11),
+    domain int(11) DEFAULT '0' NOT NULL,
+    network int(11) DEFAULT '0' NOT NULL,
     type int(11),
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
@@ -987,7 +1039,7 @@ CREATE TABLE glpi_printers (
    KEY tech_num (tech_num)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_printers VALUES ('3','','0000-00-00 00:00:00','','','0','','','0','0','0','','',NULL,NULL,'0','N','1','Blank Template','0');
+INSERT INTO glpi_printers VALUES ('3','','0000-00-00 00:00:00','','','0','','','0','0','0','','',NULL,'0','0',NULL,'0','N','1','Blank Template','0');
 
 ### Dump table glpi_repair_item
 
