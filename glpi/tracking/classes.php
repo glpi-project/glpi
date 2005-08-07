@@ -216,6 +216,21 @@ class Job {
 		}
 	}
 
+	function itemTo($type,$comp) {
+		// change item
+		
+		$db = new DB;
+		$this->device_type = $type;
+		$this->computer = $comp;
+
+		$query = "UPDATE glpi_tracking SET computer = '$comp', device_type='$type' WHERE ID = '$this->ID'";
+		if ($result = $db->query($query)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	function textFollowups() {
 		// get the last followup for this job and give its contents as
 		GLOBAL $lang;

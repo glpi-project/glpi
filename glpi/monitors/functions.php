@@ -422,7 +422,7 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 	
 	echo "<tr><td class='tab_bg_1' valign='top'>";
 
-	echo "<table cellpadding='1px' cellspacing='0' border='0'>\n";
+	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
 	echo "<tr><td>".$lang["monitors"][5].":	</td>";
 	echo "<td><input type='text' name='name' value=\"".$mon->fields["name"]."\" size='20'></td>";
@@ -453,20 +453,27 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 		echo "</b></td></tr>";
 	}
 
-		echo "<td>".$lang["state"][0]."&nbsp;:</td><td><b>";
-		$si=new StateItem();
-		$t=0;
-		if ($template) $t=1;
-		$si->getfromDB(MONITOR_TYPE,$mon->fields["ID"],$t);
-		dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
-		echo "</b></td>";
+	echo "<tr><td>".$lang["state"][0]."&nbsp;:</td><td><b>";
+	$si=new StateItem();
+	$t=0;
+	if ($template) $t=1;
+	$si->getfromDB(MONITOR_TYPE,$mon->fields["ID"],$t);
+	dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
+	echo "</b></td></tr>";
+
+	echo "<tr><td>".$lang["peripherals"][33]."</td><td>";
+	echo "<select name='is_global'>";
+	echo "<option value='0' ".(!$mon->fields["is_global"]?" selected":"").">".$lang["peripherals"][32]."</option>";
+	echo "<option value='1' ".($mon->fields["is_global"]?" selected":"").">".$lang["peripherals"][31]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
 
 	echo "</table>";
 
 	echo "</td>\n";	
 	echo "<td class='tab_bg_1' valign='top'>";
 
-	echo "<table cellpadding='1px' cellspacing='0' border='0'";
+	echo "<table cellpadding='1' cellspacing='0' border='0'";
 
 	echo "<tr><td>".$lang["monitors"][9].": 	</td><td>";
 		dropdownValue("glpi_type_monitors", "type", $mon->fields["type"]);
@@ -568,8 +575,8 @@ echo "</td></tr>";
 
 		echo "<td class='tab_bg_2' valign='top'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<center><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' class='submit'></center>";
-		echo "</td></form>\n\n";
+		echo "<center><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></center>";
+		echo "</form></td>\n\n";
 		echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";

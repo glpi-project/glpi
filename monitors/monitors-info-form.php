@@ -97,8 +97,8 @@ else if (isset($_POST["update"]))
 else if (isset($tab["disconnect"]))
 {
 	checkAuthentication("admin");
-	Disconnect($tab["ID"],4);
-	logEvent($tab["ID"], "monitors", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
+	Disconnect($tab["ID"]);
+	logEvent(0, "monitors", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if(isset($tab["connect"]))

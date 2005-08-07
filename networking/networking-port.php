@@ -38,6 +38,8 @@
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_networking.php");
+include ($phproot . "/glpi/includes_computers.php");
+
 //print_r($_POST);
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -56,6 +58,14 @@ if(isset($_POST["add"]))
 	
 	unset($_POST["referer"]);
 	unset($tab["referer"]);
+
+	// Is a preselected mac adress selected ?
+	if (isset($_POST['pre_mac'])&&!empty($_POST['pre_mac'])){
+		$_POST['ifmac']=$_POST['pre_mac'];
+		unset($_POST['pre_mac']);
+		unset($tab['pre_mac']);
+		
+	}
 	if (!isset($tab["several"])){
 	addNetport($_POST);
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added networking port.");
@@ -88,6 +98,15 @@ else if(isset($_POST["delete"]))
 else if(isset($_POST["update"]))
 {
 	checkAuthentication("admin");
+
+	// Is a preselected mac adress selected ?
+	if (isset($_POST['pre_mac'])&&!empty($_POST['pre_mac'])){
+		$_POST['ifmac']=$_POST['pre_mac'];
+		unset($_POST['pre_mac']);
+		unset($tab['pre_mac']);
+		
+	}
+
 	updateNetport($_POST);
 	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
 	if (!isset($_POST["on_device"])) $_POST["on_device"]="";
@@ -95,6 +114,20 @@ else if(isset($_POST["update"]))
 	if (!isset($_POST["several"])) $_POST["several"]="";
 	showNetportForm($_SERVER["PHP_SELF"],$_POST["ID"],$_POST["on_device"],$_POST["device_type"],$_POST["several"]);
 	commonFooter();
+}
+else if (isset($_POST['assign_vlan'])){
+	if ($_POST["vlan"]!=0&&count($_POST['toassign'])>0){
+		foreach ($_POST['toassign'] as $key => $val){
+			assignVlan($key,$_POST["vlan"]);
+			}
+	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." assign vlan to ports.");
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (isset($_GET['unassign_vlan'])){
+	unassignVlan($_GET['ID']);
+	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." unassign a vlan to a port.");
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else 
 {

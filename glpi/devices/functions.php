@@ -319,7 +319,7 @@ function device_selecter($target,$cID,$withtemplate='') {
 	if(!empty($withtemplate) && $withtemplate == 2) {
 	//do nothing
 	} else {
-		
+		echo "<table width='700' class='tab_cadre'>";
 		echo "<tr  class='tab_bg_1'><td colspan='2' align='right'>";
 		echo $lang["devices"][0].":";
 		echo "</td>";
@@ -349,7 +349,7 @@ function device_selecter($target,$cID,$withtemplate='') {
 		echo "<input type=\"submit\" class ='submit' value=\"".$lang["buttons"][2]."\" >";
 		echo "</form>";
 		echo "</td>";
-		echo "</tr>";
+		echo "</tr></table>";
 		}
 }
 

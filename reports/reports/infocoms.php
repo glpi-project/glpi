@@ -62,7 +62,7 @@ echo "<div align='center'><form method=\"post\" name=\"form\" action=\"infocoms.
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
 echo $lang["search"][8]." :</td><td>";
 showCalendarForm("form","date1",$_POST["date1"]);
-echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name\"submit\" Value=\"". $lang["buttons"][7] ."\" /></td></tr>";
+echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $lang["buttons"][7] ."\" /></td></tr>";
 echo "<tr class='tab_bg_2'><td align='right'>".$lang["search"][9]." :</td><td>";
 showCalendarForm("form","date2",$_POST["date2"]);
 echo "</td></tr>";
@@ -142,7 +142,7 @@ function display_infocoms_report($device_type,$begin,$end){
 	$valeurtot+=$valeursoustot;
 	$valeurnettetot+=$valeurnettesoustot;
 
-	echo "<tr><td colspan='6' align='center'><h1>".$lang["software"][21].": ".$lang["financial"][21]."=$valeursoustot - ".$lang["financial"][81]."=$valeurnettesoustot</h2></td></tr>";
+	echo "<tr><td colspan='6' align='center'><h1>".$lang["software"][21].": ".$lang["financial"][21]."=$valeursoustot - ".$lang["financial"][81]."=$valeurnettesoustot</h1></td></tr>";
 
 
 	if (count($valeurnettegraph)>0){

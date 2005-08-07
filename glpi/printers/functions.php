@@ -404,14 +404,14 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 		}
 
 
-	echo "<div align='center' ><form method='post' name='form' action=\"$target\">";
+	echo "<div align='center' ><form method='post' name='form' action=\"$target\">\n";
 		if(strcmp($template,"newtemplate") === 0) {
-			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
+			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />\n";
 		}
 
-	echo "<table class='tab_cadre' width='700' cellpadding='2'>";
+	echo "<table class='tab_cadre' width='700' cellpadding='2'>\n";
 
-		echo "<tr><th align='center' >";
+		echo "<tr><th align='center' >\n";
 		if(!$template) {
 			echo $lang["printers"][29].": ".$printer->fields["ID"];
 		}elseif (strcmp($template,"newcomp") === 0) {
@@ -421,133 +421,142 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 		}
 		
 		echo "</th><th  align='center'>".$datestring.$date;
-		echo "</th></tr>";
+		echo "</th></tr>\n";
 
 
-	echo "<tr><td class='tab_bg_1' valign='top'>";
+	echo "<tr><td class='tab_bg_1' valign='top'>\n";
 
 	// table identification
 	echo "<table cellpadding='1px' cellspacing='0' border='0'>\n";
-	echo "<tr><td>".$lang["printers"][5].":	</td>";
-	echo "<td><input type='text' name='name' value=\"".$printer->fields["name"]."\" size='20'></td>";
-	echo "</tr>";
+	echo "<tr><td>".$lang["printers"][5].":	</td>\n";
+	echo "<td><input type='text' name='name' value=\"".$printer->fields["name"]."\" size='20'></td>\n";
+	echo "</tr>\n";
 
-	echo "<tr><td>".$lang["printers"][6].": 	</td><td>";
+	echo "<tr><td>".$lang["printers"][6].": 	</td><td>\n";
 		dropdownValue("glpi_dropdown_locations", "location", $printer->fields["location"]);
-	echo "</td></tr>";
+	echo "</td></tr>\n";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>";
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>\n";
 		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$printer->fields["FK_glpi_enterprise"]);
-	echo "</td></tr>";
+	echo "</td></tr>\n";
 	
-	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>";
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>\n";
 		dropdownUsersID( $printer->fields["tech_num"],"tech_num");
-	echo "</td></tr>";
+	echo "</td></tr>\n";
 	
-	echo "<tr><td>".$lang["printers"][7].":	</td>";
+	echo "<tr><td>".$lang["printers"][7].":	</td>\n";
 	echo "<td><input type='text' name='contact_num' value=\"".$printer->fields["contact_num"]."\" size='20'></td>";
-	echo "</tr>";
+	echo "</tr>\n";
 
-	echo "<tr><td>".$lang["printers"][8].":	</td>";
+	echo "<tr><td>".$lang["printers"][8].":	</td>\n";
 	echo "<td><input type='text' name='contact' size='20' value=\"".$printer->fields["contact"]."\"></td>";
-	echo "</tr>";
+	echo "</tr>\n";
 	if (!$template){
-		echo "<tr><td>".$lang["reservation"][24].":</td><td><b>";
+		echo "<tr><td>".$lang["reservation"][24].":</td><td><b>\n";
 		showReservationForm(PRINTER_TYPE,$ID);
-		echo "</b></td></tr>";
+		echo "</b></td></tr>\n";
 	}
 		
-		echo "<td>".$lang["state"][0]."&nbsp;:</td><td><b>";
+		echo "<tr><td>".$lang["state"][0]."&nbsp;:</td><td><b>\n";
 		$si=new StateItem();
 		$t=0;
 		if ($template) $t=1;
 		$si->getfromDB(PRINTER_TYPE,$printer->fields["ID"],$t);
 		dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
-		echo "</b></td>";
+		echo "</b></td></tr>\n";
+
+	echo "<tr><td>".$lang["setup"][88].": 	</td><td>\n";
+		dropdownValue("glpi_dropdown_network", "network", $printer->fields["network"]);
+	echo "</td></tr>\n";
+
+	echo "<tr><td>".$lang["setup"][89].": 	</td><td>\n";
+		dropdownValue("glpi_dropdown_domain", "domain", $printer->fields["domain"]);
+	echo "</td></tr>\n";
+
 		 
 	echo "</table>"; // fin table indentification
 
 	echo "</td>\n";	
-	echo "<td class='tab_bg_1' valign='top'>";
+	echo "<td class='tab_bg_1' valign='top'>\n";
 
 	// table type,serial..
-	echo "<table cellpadding='1px' cellspacing='0' border='0'>";
+	echo "<table cellpadding='1px' cellspacing='0' border='0'>\n";
 
-	echo "<tr><td>".$lang["printers"][9].": 	</td><td>";
+	echo "<tr><td>".$lang["printers"][9].": 	</td><td>\n";
 		dropdownValue("glpi_type_printers", "type", $printer->fields["type"]);
-	echo "</td></tr>";
+	echo "</td></tr>\n";
 		
-	echo "<tr><td>".$lang["printers"][10].":	</td>";
+	echo "<tr><td>".$lang["printers"][10].":	</td>\n";
 	echo "<td><input type='text' name='serial' size='20' value=\"".$printer->fields["serial"]."\"></td>";
-	echo "</tr>";
+	echo "</tr>\n";
 
-	echo "<tr><td>".$lang["printers"][11].":</td>";
+	echo "<tr><td>".$lang["printers"][11].":</td>\n";
 	echo "<td><input type='text' size='20' name='otherserial' value=\"".$printer->fields["otherserial"]."\"></td>";
-	echo "</tr>";
+	echo "</tr>\n";
 
-		echo "<tr><td>".$lang["printers"][18].": </td><td>";
+		echo "<tr><td>".$lang["printers"][18].": </td><td>\n";
 
 		// serial interface?
-		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
+		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>\n";
 		echo "<td>";
 		if ($printer->fields["flags_serial"] == 1) {
 			echo "<input type='checkbox' name='flags_serial' value='1' checked>";
 		} else {
 			echo "<input type='checkbox' name='flags_serial' value='1'>";
 		}
-		echo "</td><td>".$lang["printers"][14]."</td>";
-		echo "</tr></table>";
+		echo "</td><td>".$lang["printers"][14]."</td>\n";
+		echo "</tr></table>\n";
 
 		// parallel interface?
-		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
+		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>\n";
 		echo "<td>";
 		if ($printer->fields["flags_par"] == 1) {
 			echo "<input type='checkbox' name='flags_par' value='1' checked>";
 		} else {
 			echo "<input type='checkbox' name='flags_par' value='1'>";
 		}
-		echo "</td><td>".$lang["printers"][15]."</td>";
-		echo "</tr></table>";
+		echo "</td><td>".$lang["printers"][15]."</td>\n";
+		echo "</tr></table>\n";
 		
 		// USB ?
-		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
-		echo "<td>";
+		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>\n";
+		echo "<td>\n";
 		if ($printer->fields["flags_usb"] == 1) {
 			echo "<input type='checkbox' name='flags_usb' value='1' checked>";
 		} else {
 			echo "<input type='checkbox' name='flags_usb' value='1'>";
 		}
-		echo "</td><td>".$lang["printers"][27]."</td>";
-		echo "</tr></table>";
+		echo "</td><td>".$lang["printers"][27]."</td>\n";
+		echo "</tr></table>\n";
 		
 		// Ram ?
-		echo "<tr><td>".$lang["printers"][23].":</td>";
+		echo "<tr><td>".$lang["printers"][23].":</td>\n";
 		echo "<td><input type='text' size='12' name='ramSize' value=\"".$printer->fields["ramSize"]."\"></td>";
-		echo "</tr>";
+		echo "</tr>\n";
 		// Initial count pages ?
-		echo "<tr><td>".$lang["printers"][30].":</td>";
+		echo "<tr><td>".$lang["printers"][30].":</td>\n";
 		echo "<td><input type='text' size='12' name='initial_pages' value=\"".$printer->fields["initial_pages"]."\"></td>";
-		echo "</tr>";
+		echo "</tr>\n";
 
-		echo "</td></tr>";
+//		echo "</td></tr>\n";
 
-	echo "</table>";
+	echo "</table>\n";
 	echo "</td>\n";	
-	echo "</tr>";
+	echo "</tr>\n";
 	
-	echo "<tr>";
-	echo "<td class='tab_bg_1' valign='top' colspan='2'>";
+	echo "<tr>\n";
+	echo "<td class='tab_bg_1' valign='top' colspan='2'>\n";
 
 	// table commentaires
-	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
-	echo $lang["printers"][12].":	</td>";
-	echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$printer->fields["comments"]."</textarea>";
-	echo "</td></tr></table>";
+	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>\n";
+	echo $lang["printers"][12].":	</td>\n";
+	echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$printer->fields["comments"]."</textarea>\n";
+	echo "</td></tr></table>\n";
 
-	echo "</td>";
-	echo "</tr>";
+	echo "</td>\n";
+	echo "</tr>\n";
 	
-		echo "<tr>";
+		echo "<tr>\n";
 
 	if ($template) {
 
@@ -569,7 +578,7 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 		echo "<td class='tab_bg_2' valign='top' align='center'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
-		echo "</td></form>\n\n";
+		echo "</form></td>\n\n";
 		echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign='top' align='center'>\n";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";

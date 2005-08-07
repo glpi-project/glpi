@@ -129,6 +129,9 @@ if (isset($_POST["several_add"])) {
 	$dp["cartridge_type"]=$lang["setup"][84];
 	$dp["contract_type"]=$lang["setup"][85];
 	$dp["ram_type"]=$lang["setup"][86];
+	$dp["domain"]=$lang["setup"][89];
+	$dp["network"]=$lang["setup"][88];
+	$dp["vlan"]=$lang["setup"][90];
 	
 //	asort($dp);
 	
@@ -204,6 +207,15 @@ echo "<option value='$key' $sel>".$val."</option>";
 		break;
 		case "ram_type" : 
 		showFormDropDown($_SERVER["PHP_SELF"],"ram_type",$lang["setup"][86],$ID,$value2);
+		break;
+		case "domain" : 
+		showFormDropDown($_SERVER["PHP_SELF"],"domain",$lang["setup"][89],$ID,$value2);
+		break;
+		case "network" : 
+		showFormDropDown($_SERVER["PHP_SELF"],"network",$lang["setup"][88],$ID,$value2);
+		break;
+		case "vlan" : 
+		showFormDropDown($_SERVER["PHP_SELF"],"vlan",$lang["setup"][90],$ID,$value2);
 		break;
 	default : break;
 	}

@@ -484,6 +484,31 @@ function uploadDocument($FILEDESC,$old_file=''){
 			}
 			// Copy du fichier uploadé si répertoire existe
 			if (is_dir($phproot.$cfg_install["doc_dir"]."/".$dir)){
+				// Rename file if exists
+				$NB_CHAR_MORE=10;
+				$i=0;
+				$tmpfilename=$filename;
+				while ($i<$NB_CHAR_MORE&&!$force&&is_file($phproot.$cfg_install["doc_dir"]."/".$dir."/".$filename)){
+					$filename="_".$filename;
+					$i++;
+				}
+				
+				if ($i==$NB_CHAR_MORE){
+					$i=0;
+					$filename=$tmpfilename;
+					while ($i<$NB_CHAR_MORE&&!$force&&is_file($phproot.$cfg_install["doc_dir"]."/".$dir."/".$filename)){
+						$filename="-".$filename;
+						$i++;
+					}
+					if ($i==$NB_CHAR_MORE){
+						$i=0;
+						$filename=$tmpfilename;
+						while ($i<$NB_CHAR_MORE&&!$force&&is_file($phproot.$cfg_install["doc_dir"]."/".$dir."/".$filename)){
+							$filename="0".$filename;
+							$i++;
+						}
+					}
+				}
 				if ($force||!is_file($phproot.$cfg_install["doc_dir"]."/".$dir."/".$filename)){
 					// Delete old file
 					if(!empty($old_file)&& is_file($phproot.$cfg_install["doc_dir"]."/".$old_file)&& !is_dir($phproot.$cfg_install["doc_dir"]."/".$old_file)) {
@@ -529,7 +554,7 @@ function addDocument($input) {
 			$con->fields[$key] = $input[$key];
 		}
 	}
-
+//	print_r($con);
 	return $con->addToDB();
 }
 
