@@ -62,9 +62,9 @@ function showContractOnglets($target,$withtemplate,$actif){
 	}
 	
 	echo "<div id='barre_onglets'><ul id='onglet'>";
-	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&onglet=1$template'>".$lang["title"][26]."</a></li>";
-	echo "<li "; if ($actif=="5") {echo "class='actif'";} echo "><a href='$target&onglet=5$template'>".$lang["title"][25]."</a></li>";
-	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&onglet=7$template'>".$lang["title"][34]."</a></li>";
+	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=1$template'>".$lang["title"][26]."</a></li>";
+	echo "<li "; if ($actif=="5") {echo "class='actif'";} echo "><a href='$target&amp;onglet=5$template'>".$lang["title"][25]."</a></li>";
+	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
 	
 	echo "<li class='invisible'>&nbsp;</li>";
 	
@@ -273,7 +273,7 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 		if ($numrows_limit>0) {
 			// Pager
-			$parameters="sort=$sort&order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
+			$parameters="sort=$sort&amp;order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
 			printPager($start,$numrows,$target,$parameters);
 
 			// Produce headline
@@ -285,7 +285,7 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?sort=glpi_contracts.contract_type&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo "<a href=\"$target?sort=glpi_contracts.contract_type&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["financial"][37]."</a></th>";
 
 			
@@ -295,7 +295,7 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?sort=glpi_contracts.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo "<a href=\"$target?sort=glpi_contracts.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["financial"][27]."</a></th>";
 			
 			// num
@@ -304,7 +304,7 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?sort=glpi_contracts.num&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo "<a href=\"$target?sort=glpi_contracts.num&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["financial"][4]."</a></th>";
 
 			// Begin date
@@ -313,7 +313,7 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?sort=glpi_contracts.begin_date&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo "<a href=\"$target?sort=glpi_contracts.begin_date&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["financial"][7]."</a></th>";
 
 			// Duration		
@@ -322,7 +322,7 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?sort=glpi_contracts.duration&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo "<a href=\"$target?sort=glpi_contracts.duration&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["financial"][8]."</a></th>";
 
 			// notice
@@ -331,7 +331,7 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?sort=glpi_contracts.notice&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo "<a href=\"$target?sort=glpi_contracts.notice&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["financial"][10]."</a></th>";
 
 			// Cost
@@ -340,7 +340,7 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?sort=glpi_contracts.cost&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo "<a href=\"$target?sort=glpi_contracts.cost&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["financial"][5]."</a></th>";
 
 			// Bill type
@@ -349,7 +349,7 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?sort=glpi_contracts.bill_type&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo "<a href=\"$target?sort=glpi_contracts.bill_type&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["financial"][58]."</a></th>";
 
 			echo "</tr>";
@@ -381,7 +381,7 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 			// Pager
 			echo "<br>";
-//			$parameters="sort=$sort&order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
+//			$parameters="sort=$sort&amp;order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
@@ -686,7 +686,7 @@ function showDeviceContract($instID,$search='') {
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>".$con->getType()."</td>";
 	echo "<td align='center' ".(isset($con->obj->fields['deleted'])&&$con->obj->fields['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$con->getLink()."</td>";
-	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
 	}
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
@@ -789,7 +789,7 @@ function showEnterpriseContract($instID) {
 	echo "<td align='center'>".getDropdownName("glpi_dropdown_enttype",$db->result($result, $i, "type"))."</td>";
 	echo "<td align='center'>".$db->result($result, $i, "phone")."</td>";
 	echo "<td align='center'>".$website."</td>";
-	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteenterprise=deleteenterprise&ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteenterprise=deleteenterprise&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
 	}
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
@@ -1058,7 +1058,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	if ($con->fields["begin_date"]!=''&&$con->fields["begin_date"]!="0000-00-00") echo " -> ".getWarrantyExpir($con->fields["begin_date"],$con->fields["duration"]);
 	echo "</td>";
 
-	if ($withtemplate!=2)echo "<td align='center' class='tab_bg_2'><a href='".$HTMLRel."contracts/contracts-info-form.php?deleteitem=deleteitem&ID=$assocID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+	if ($withtemplate!=2)echo "<td align='center' class='tab_bg_2'><a href='".$HTMLRel."contracts/contracts-info-form.php?deleteitem=deleteitem&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
 	}
 	$q="SELECT * FROM glpi_contracts WHERE deleted='N'";
@@ -1133,7 +1133,7 @@ function showContractAssociatedEnterprise($ID){
 	if ($con->fields["begin_date"]!=''&&$con->fields["begin_date"]!="0000-00-00") echo " -> ".getWarrantyExpir($con->fields["begin_date"],$con->fields["duration"]);
 	echo "</td>";
 
-	echo "<td align='center' class='tab_bg_2'><a href='".$HTMLRel."contracts/contracts-info-form.php?deleteenterprise=deleteenterprise&ID=$assocID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+	echo "<td align='center' class='tab_bg_2'><a href='".$HTMLRel."contracts/contracts-info-form.php?deleteenterprise=deleteenterprise&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
 	}
 	$q="SELECT * FROM glpi_contracts WHERE deleted='N'";

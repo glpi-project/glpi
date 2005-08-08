@@ -88,7 +88,6 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		echo "<td>".$lang["financial"][76].":	</td><td>";
 		showCalendarForm("form_ic","use_date",$ic->fields["use_date"],$withtemplate);	
 	    echo "</td>";
-	    echo "</td>";
 		echo "</tr>";
 
 		if ($show_immo==1){

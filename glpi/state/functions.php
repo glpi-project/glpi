@@ -152,7 +152,7 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 		
 		if ($numrows_limit>0) {
 			// Pager
-			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
+			$parameters="field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=$sort&amp;order=$order";
 			printPager($start,$numrows,$target,$parameters);
 
 			// Produce headline
@@ -163,7 +163,7 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_state_item.ID&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_state_item.ID&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["state"][4]."</a></th>";
 
 			// Type			
@@ -172,7 +172,7 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_state_item.device_type&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_state_item.device_type&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["state"][6]."</a></th>";
 
 			// Item
@@ -181,7 +181,7 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_state_item.id_device&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_state_item.id_device&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["state"][5]."</a></th>";
 
 			
@@ -199,7 +199,7 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_state.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_dropdown_state.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["state"][0]."</a></th>";
 
 			echo "<th>&nbsp;</th>";
@@ -221,7 +221,7 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 				echo "<td>". getDropdownName("glpi_dropdown_locations",$ri->obj->fields["location"]) ."</td>";
 				echo "<td><b>". getDropdownName("glpi_dropdown_state",$ri->fields["state"]) ."</b></td>";
 				echo "<td>";
-				echo "<a href='".$HTMLRel."state/index.php?deletestate=deletestate&device_id=$id_device&device_type=$type'>".$lang["state"][2]."</a>";
+				echo "<a href='".$HTMLRel."state/index.php?deletestate=deletestate&amp;device_id=$id_device&amp;device_type=$type'>".$lang["state"][2]."</a>";
 				echo "</td>";
 
 				echo "</tr>";
@@ -232,7 +232,6 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 
 			// Pager
 			echo "<br>";
-//			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {

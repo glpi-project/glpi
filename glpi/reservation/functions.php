@@ -159,7 +159,7 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 		
 		if ($numrows_limit>0) {
 			// Pager
-			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
+			$parameters="field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=$sort&amp;order=$order";
 			printPager($start,$numrows,$target,$parameters);
 
 			// Produce headline
@@ -170,7 +170,7 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.ID&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_reservation_item.ID&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["reservation"][2]."</a></th>";
 
 			// Device_Type			
@@ -179,7 +179,7 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.device_type&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_reservation_item.device_type&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["reservation"][3]."</a></th>";
 
 			// device
@@ -188,16 +188,11 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.id_device&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_reservation_item.id_device&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["reservation"][4]."</a></th>";
 
 			// Lieu
 			echo "<th>";
-//			if ($sort=="glpi_reservation_item.id_device") {
-//				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-//				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-//			}
-//			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.id_device&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
 			echo $lang["computers"][10]."</th>";
 
 			// Comments
@@ -206,7 +201,7 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_reservation_item.comments&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_reservation_item.comments&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["reservation"][23]."</a></th>";
 			
 			
@@ -240,7 +235,7 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 				showReservationForm($ri->fields["device_type"],$ri->fields["id_device"]);
 				echo "</td>";
 				echo "<td>";
-				echo "<a href='".$target."?show=resa&ID=$ID'>".$lang["reservation"][21]."</a>";
+				echo "<a href='".$target."?show=resa&amp;ID=$ID'>".$lang["reservation"][21]."</a>";
 				echo "</td>";
 				echo "</tr>";
 			}
@@ -250,7 +245,6 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 
 			// Pager
 			echo "<br>";
-//			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
@@ -272,11 +266,11 @@ if ($result = $db->query($query)) {
 echo "<a href=\"".$cfg_install["root"]."/reservation/index.php?";
 // Ajouter le matériel
 if ($numrows==0){
-echo "id_device=$id_device&device_type=$device_type&add=add\">".$lang["reservation"][7]."</a>";
+echo "id_device=$id_device&amp;device_type=$device_type&amp;add=add\">".$lang["reservation"][7]."</a>";
 }
 // Supprimer le matériel
 else {
-echo "ID=".$db->result($result,0,"ID")."&delete=delete\">".$lang["reservation"][6]."</a>";
+echo "ID=".$db->result($result,0,"ID")."&amp;delete=delete\">".$lang["reservation"][6]."</a>";
 }
 
 }
@@ -331,8 +325,8 @@ if ($mois_suivant==13){
 	$annee_suivante++;
 }
 
-$str_suivant="?show=resa&ID=$ID&mois_courant=$mois_suivant&annee_courante=$annee_suivante";
-$str_precedent="?show=resa&ID=$ID&mois_courant=$mois_precedent&annee_courante=$annee_precedente";
+$str_suivant="?show=resa&amp;ID=$ID&amp;mois_courant=$mois_suivant&amp;annee_courante=$annee_suivante";
+$str_precedent="?show=resa&amp;ID=$ID&amp;mois_courant=$mois_precedent&amp;annee_courante=$annee_precedente";
 
 
 if (!empty($ID)){
@@ -340,7 +334,7 @@ $m=new ReservationItem;
 $m->getfromDB($ID);
 $type=$m->getType();
 $name=$m->getName();
-$all="<a href='$target?show=resa&ID=&mois_courant=$mois_courant&annee_courante=$annee_courante'>".$lang["reservation"][26]."</a>";
+$all="<a href='$target?show=resa&amp;ID=&amp;mois_courant=$mois_courant&amp;annee_courante=$annee_courante'>".$lang["reservation"][26]."</a>";
 } else {
 $type="";
 $name=$lang["reservation"][25];
@@ -387,7 +381,7 @@ echo "<table><tr><td width='100' valign='top'>";
 		echo "<div class='verdana1'>";
 			echo "<div><b>$annee_avant</b></div>";
 			for ($i=$mois_courant; $i < 13; $i++) {
-				echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #cccccc; background-color: #eeeeee;'><a href=\"".$target."?show=resa&ID=$ID&mois_courant=$i&annee_courante=$annee_avant\">".
+				echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #cccccc; background-color: #eeeeee;'><a href=\"".$target."?show=resa&amp;ID=$ID&amp;mois_courant=$i&amp;annee_courante=$annee_avant\">".
 	$lang["calendarM"][$i-1]."</a></div>";
 			}
 		
@@ -398,14 +392,14 @@ echo "<table><tr><td width='100' valign='top'>";
 	$lang["calendarM"][$i-1]."</b></div>";
 			}
 			else {
-				echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #cccccc; background-color: #eeeeee;'><a href=\"".$target."?show=resa&ID=$ID&mois_courant=$i&annee_courante=$annee_courante\">".
+				echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #cccccc; background-color: #eeeeee;'><a href=\"".$target."?show=resa&amp;ID=$ID&amp;mois_courant=$i&amp;annee_courante=$annee_courante\">".
 	$lang["calendarM"][$i-1]."</a></div>";
 			}
 		}
 
 			echo "<div><b>$annee_apres</b></div>";
 			for ($i=1; $i < $mois_courant+1; $i++) {
-				echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #cccccc; background-color: #eeeeee;'><a href=\"".$target."?show=resa&ID=$ID&mois_courant=$i&annee_courante=$annee_apres\">".
+				echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #cccccc; background-color: #eeeeee;'><a href=\"".$target."?show=resa&amp;ID=$ID&amp;mois_courant=$i&amp;annee_courante=$annee_apres\">".
 	$lang["calendarM"][$i-1]."</a></div>";
 		}
 		echo "</div>";
@@ -637,7 +631,7 @@ while ($data=$db->fetch_array($result)){
 	$result2=$db->query($query2);
 	if ($db->numrows($result2)>0){
 		list($annee,$mois,$jour)=split("-",$date);
-		echo "<tr class='tab_bg_1'><td><a href='$target?show=resa&ID=".$data['ID']."&mois_courant=$mois&annee_courante=$annee'>".$m->getType()." - ".$m->getName()."</a></td></tr>";
+		echo "<tr class='tab_bg_1'><td><a href='$target?show=resa&amp;ID=".$data['ID']."&amp;mois_courant=$mois&amp;annee_courante=$annee'>".$m->getType()." - ".$m->getName()."</a></td></tr>";
 		echo "<tr><td>";
 		printReservationItem($target,$data['ID'],$date);
 		echo "</td></tr>";
@@ -769,7 +763,7 @@ $query="select ID from glpi_reservation_item ORDER BY device_type";
 		while ($row=$db->fetch_array($result)){
 			$ri->getfromDB($row['ID']);
 			if (isset($ri->obj->fields["deleted"])&&$ri->obj->fields["deleted"]=='N'){
-			echo "<tr class='tab_bg_2'><td><a href='".$target."?show=resa&ID=".$row['ID']."'>".$ri->getType()." - ".$ri->getName()."</a></td>";
+			echo "<tr class='tab_bg_2'><td><a href='".$target."?show=resa&amp;ID=".$row['ID']."'>".$ri->getType()." - ".$ri->getName()."</a></td>";
 			echo "<td>".$ri->getLocation()."</td>";
 			echo "<td>".nl2br($ri->fields["comments"])."</td>";
 			echo "</tr>";

@@ -57,14 +57,14 @@ function showMonitorOnglets($target,$withtemplate,$actif){
 	}
 	
 	echo "<div id='barre_onglets'><ul id='onglet'>";
-	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&onglet=1$template'>".$lang["title"][26]."</a></li>";
-	echo "<li "; if ($actif=="4") {echo "class='actif'";} echo "><a href='$target&onglet=4$template'>".$lang["Menu"][26]."</a></li>";
-	echo "<li "; if ($actif=="5") {echo "class='actif'";} echo "><a href='$target&onglet=5$template'>".$lang["title"][25]."</a></li>";
+	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=1$template'>".$lang["title"][26]."</a></li>";
+	echo "<li "; if ($actif=="4") {echo "class='actif'";} echo "><a href='$target&amp;onglet=4$template'>".$lang["Menu"][26]."</a></li>";
+	echo "<li "; if ($actif=="5") {echo "class='actif'";} echo "><a href='$target&amp;onglet=5$template'>".$lang["title"][25]."</a></li>";
 	if(empty($withtemplate)){
-	echo "<li "; if ($actif=="6") {echo "class='actif'";} echo "><a href='$target&onglet=6$template'>".$lang["title"][28]."</a></li>";
-	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&onglet=7$template'>".$lang["title"][34]."</a></li>";
+	echo "<li "; if ($actif=="6") {echo "class='actif'";} echo "><a href='$target&amp;onglet=6$template'>".$lang["title"][28]."</a></li>";
+	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
 	echo "<li class='invisible'>&nbsp;</li>";
-	echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&onglet=-1$template'>".$lang["title"][29]."</a></li>";
+	echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
 	}
 	
 	echo "<li class='invisible'>&nbsp;</li>";
@@ -270,7 +270,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 
 		if ($numrows_limit>0) {
 			// Pager
-			$parameters="sort=$sort&order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
+			$parameters="sort=$sort&amp;order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
 			printPager($start,$numrows,$target,$parameters);
 
 			// Produce headline
@@ -282,7 +282,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?sort=mon.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo "<a href=\"$target?sort=mon.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["monitors"][5]."</a></th>";
 			
 			// State		
@@ -294,7 +294,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?sort=glpi_enterprises.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo "<a href=\"$target?sort=glpi_enterprises.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["common"][5]."</a></th>";
 			
 			// Location			
@@ -303,7 +303,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?sort=glpi_dropdown_locations.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo "<a href=\"$target?sort=glpi_dropdown_locations.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["monitors"][6]."</a></th>";
 
 			// Type
@@ -312,7 +312,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?sort=glpi_type_monitors.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo "<a href=\"$target?sort=glpi_type_monitors.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["monitors"][9]."</a></th>";
 
 			// Last modified		
@@ -321,7 +321,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?sort=mon.date_mod&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo "<a href=\"$target?sort=mon.date_mod&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["monitors"][16]."</a></th>";
 
 			// Contact person
@@ -330,7 +330,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?sort=mon.contact&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo "<a href=\"$target?sort=mon.contact&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["monitors"][8]."</a></th>";
 
 			echo "</tr>";
@@ -361,7 +361,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 
 			// Pager
 			echo "<br>";
-			$parameters="sort=$sort&order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
+			$parameters="sort=$sort&amp;order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {

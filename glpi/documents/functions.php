@@ -53,7 +53,7 @@ function showDocumentOnglets($target,$withtemplate,$actif){
 	}
 	
 	echo "<div id='barre_onglets'><ul id='onglet'>";
-	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&onglet=1$template'>".$lang["title"][26]."</a></li>";
+	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=1$template'>".$lang["title"][26]."</a></li>";
 	
 	
 	echo "<li class='invisible'>&nbsp;</li>";
@@ -226,7 +226,7 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 		if ($numrows_limit>0) {
 			// Pager
-			$parameters="sort=$sort&order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
+			$parameters="sort=$sort&amp;order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
 			printPager($start,$numrows,$target,$parameters);
 
 			// Produce headline
@@ -238,7 +238,7 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?sort=glpi_docs.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo "<a href=\"$target?sort=glpi_docs.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["document"][1]."</a></th>";
 
 			
@@ -248,7 +248,7 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?sort=glpi_docs.filename&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo "<a href=\"$target?sort=glpi_docs.filename&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["document"][2]."</a></th>";
 
 			// link
@@ -257,7 +257,7 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?sort=glpi_docs.link&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo "<a href=\"$target?sort=glpi_docs.link&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["document"][33]."</a></th>";
 			
 			// num
@@ -266,7 +266,7 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?sort=glpi_dropdown_rubdocs.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo "<a href=\"$target?sort=glpi_dropdown_rubdocs.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["document"][3]."</a></th>";
 	
 			// mime
@@ -275,7 +275,7 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?sort=glpi_docs.mime&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo "<a href=\"$target?sort=glpi_docs.mime&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["document"][4]."</a></th>";
 
 			// comment		
@@ -284,7 +284,7 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?sort=glpi_docs.comment&order=".($order=="ASC"?"DESC":"ASC")."&start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo "<a href=\"$target?sort=glpi_docs.comment&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["document"][6]."</a></th>";
 
 
@@ -322,7 +322,7 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 
 			// Pager
 			echo "<br>";
-//			$parameters="sort=$sort&order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
+//			$parameters="sort=$sort&amp;order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
@@ -606,7 +606,7 @@ function showDeviceDocument($instID,$search='') {
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>".$con->getType()."</td>";
 	echo "<td align='center' ".(isset($con->obj->fields['deleted'])&&$con->obj->fields['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$con->getLink()."</td>";
-	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
 	}
 	
@@ -704,7 +704,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	echo "<td align='center'>".getDropdownName("glpi_dropdown_rubdocs",$con->fields["rubrique"])."</td>";
 	echo "<td align='center'>".$con->fields["mime"]."</td>";
 
-	if ($withtemplate<2)echo "<td align='center' class='tab_bg_2'><a href='".$HTMLRel."documents/documents-info-form.php?deleteitem=deleteitem&ID=$assocID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+	if ($withtemplate<2)echo "<td align='center' class='tab_bg_2'><a href='".$HTMLRel."documents/documents-info-form.php?deleteitem=deleteitem&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
 	}
 	$q="SELECT * FROM glpi_docs WHERE deleted='N'";

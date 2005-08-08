@@ -60,8 +60,8 @@ function showContactOnglets($target,$withtemplate,$actif){
 	}
 	
 	echo "<div id='barre_onglets'><ul id='onglet'>";
-	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&onglet=1$template'>".$lang["title"][26]."</a></li>";
-	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&onglet=7$template'>".$lang["title"][34]."</a></li>";
+	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=1$template'>".$lang["title"][26]."</a></li>";
+	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
 	
 	echo "<li class='invisible'>&nbsp;</li>";
 	
@@ -216,7 +216,7 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 
 		if ($numrows_limit>0) {
 			// Pager
-			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
+			$parameters="field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=$sort&amp;order=$order";
 			printPager($start,$numrows,$target,$parameters);
 
 			// Produce headline
@@ -227,7 +227,7 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contacts.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_contacts.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["financial"][27]."</a></th>";
 
 			// Phone
@@ -236,7 +236,7 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contacts.phone&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_contacts.phone&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["financial"][29]."</a></th>";
 
 			// Phone2
@@ -245,7 +245,7 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contacts.phone2&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_contacts.phone2&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["financial"][29]." 2</a></th>";
 
 			// Fax
@@ -254,7 +254,7 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contacts.fax&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_contacts.fax&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["financial"][30]."</a></th>";
 
 			// Email
@@ -263,7 +263,7 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contacts.email&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_contacts.email&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["financial"][31]."</a></th>";
 
 			// Type
@@ -272,7 +272,7 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_contacts.type&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_contacts.type&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["financial"][37]."</a></th>";
 
 
@@ -300,7 +300,6 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 
 			// Pager
 			echo "<br>";
-//			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
@@ -534,7 +533,7 @@ function showEnterpriseContact($instID) {
 	echo "<td align='center'  width='100'>".$db->result($result, $i, "phone")."</td>";
 	echo "<td align='center'  width='100'>".$db->result($result, $i, "fax")."</td>";
 	echo "<td align='center'>".$website."</td>";
-	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteenterprise=deleteenterprise&ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteenterprise=deleteenterprise&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
 	}
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
