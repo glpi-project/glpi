@@ -768,7 +768,7 @@ function nullHeader($title,$url) {
        	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
         echo "<html><head><title>GLPI - ".$title."</title>";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" >";
-	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' />";
+	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' >";
 	// Send extra expires header if configured
 	if (!empty($cft_features["sendexpire"])) {
 		echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
