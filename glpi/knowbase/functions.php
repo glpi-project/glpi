@@ -54,7 +54,7 @@ global $lang;
 	echo "<tr ><th colspan='4'><b>".$lang["search"][0].":</b></th></tr>";
     echo "<tr class='tab_bg_2' align='center'><td><input type='text' size='30' name=\"contains\" value=\"". $contains ."\" ></td><td><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit' ></td>";
 	// From helpdesk or central
-    if (ereg("\?",$target)) $separator="&";
+    if (ereg("\?",$target)) $separator="&amp;";
     else $separator="?";
     
     echo "<td><a href=\"".$target.$separator."toshow=all\">".$lang["knowbase"][21]."</a> </td>";
@@ -423,6 +423,7 @@ function showKbItemAll($parentID)
 	$db=new DB;
 	
 	if ($result=$db->query($query)){
+
 		if ($db->numrows($result)>0){
 		echo "<ul>\n";
 
@@ -433,6 +434,7 @@ function showKbItemAll($parentID)
 			showKbItem($ID);
 			}
 		echo "</ul>\n";
+
 		}
 	}
 }
@@ -699,18 +701,17 @@ function faqShowCategories($parentID=0)
 			if ($db->numrows($result)>0){
 		
 			 
-			 
-			echo "<ul>\n";
-
 			while ($row=$db->fetch_array($result)){
 			
 			
 			
 				$name = $row["name"];
 				$ID = $row["ID"];
+
 				
 				if(in_array($ID, $catNumbers))
 				{
+				echo "<ul>\n";
 				
 				echo "<li><b>";
 				if (!isset($_SESSION["kb_show"][$ID])) $_SESSION["kb_show"][$ID]='Y';
@@ -719,17 +720,19 @@ function faqShowCategories($parentID=0)
 				else 
 					echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&amp;toshow=$ID\"><img src='".$HTMLRel."pics/puce.gif'></a>";
 
-				echo "</a> $name</b>\n";
+				echo "$name</b>\n";
 				if ($_SESSION["kb_show"][$ID]=='Y'){
 	  				faqShowItems($ID);
 					faqShowCategories($ID);
 				}
+				echo "</ul>\n";
 				}
+
 			}
-			echo "</ul>\n";
 	}
 	} 
 }
+
 
 /**
 * 
@@ -749,15 +752,17 @@ function faqShowItems($parentID)
 
 	$db=new DB;
 	if ($result=$db->query($query)){
-	echo "<ul>\n";
-	while ($row=$db->fetch_array($result)){
-	
-		$ID = $row["ID"];
-		faqShowItem($ID);
-	}
+	if ($db->numrows($result)>0){
+		echo "<ul>\n";
+		while ($row=$db->fetch_array($result)){
+			$ID = $row["ID"];
+			faqShowItem($ID);
+		}
 	echo "</ul>\n";
+	}
 }
 }
+
 
 /**
 * 
