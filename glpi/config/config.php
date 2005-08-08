@@ -161,7 +161,7 @@ $cfg_debug["active"]=0;
 $cfg_debug["sql"]=1;
 $cfg_debug["vars"]=1;
 $cfg_debug["profile"]=1;
-
+$cfg_debug["lang"]=1;
 
 // Gestion de source d'information alternatives pour le login
 // telles que des serveurs de mail en imap pop...
