@@ -768,9 +768,11 @@ function showJobDetails($ID) {
 
 		$author=new User();
 		$author->getFromDBbyID($job->author);
+		$assign=new User();
+		$assign->getFromDBbyID($job->assign);
 
 		// test if the user if authorized to view this job
-		if (strcmp($_SESSION["glpitype"],"post-only")==0&&!strcmp($_SESSION["glpiname"],$job->author)==0)
+		if (strcmp($_SESSION["glpitype"],"post-only")==0&&$_SESSION["glpiID"]!=$job->author)
 		   { echo "Warning !! ";return;}
 		
 		echo "<div align='center'>";
@@ -797,7 +799,7 @@ function showJobDetails($ID) {
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		echo "<strong><a href=\"".$cfg_install["root"]."/users/users-info.php?ID=$job->author\">".$author->getName()."</a></strong>";
 		else 
-		echo "<strong>$job->author</strong>";
+		echo "<strong>".$author->getName()."</strong>";
 		echo "</td></tr>\n";
 
 		$m= new CommonItem;
@@ -813,6 +815,7 @@ function showJobDetails($ID) {
 		}
 		else
 		echo "<strong>".$m->getNameID()."</strong>&nbsp;&nbsp;";
+		if (isAdmin($_SESSION['glpitype']))
 		echo "<input type='submit' name='update_item' value=\"".$lang["buttons"][14]."\" class='submit'>";
 		echo "</td></tr>\n";
 
@@ -852,12 +855,17 @@ function showJobDetails($ID) {
 		// Print planning
 		$planning_realtime=0;		
 
-		if (isAdmin($_SESSION['glpitype'])){
-
 			echo "<tr><td colspan='2' align='center'>&nbsp;</td></tr>\n";
-			echo "<tr><td colspan='2' align='center'><b>\n";
-			echo "<a href=\"".$cfg_install["root"]."/planning/planning-add-form.php?job=".$job->ID."\">".$lang["planning"][7]."</a></b>\n";
-			echo "</td></tr>\n";
+			if (isAdmin($_SESSION['glpitype'])){
+				echo "<tr><td colspan='2' align='center'><b>\n";
+				echo "<a href=\"".$cfg_install["root"]."/planning/planning-add-form.php?job=".$job->ID."\">".$lang["planning"][7]."</a></b>\n";
+				echo "</td></tr>\n";
+			} else if ($_SESSION["glpiID"]==$job->author){
+				echo "<tr><td colspan='2' align='center'><b>\n";
+				echo $lang["planning"][11];
+				echo "</td></tr>\n";
+			}
+			
 
 			$query2="SELECT * from glpi_tracking_planning WHERE id_tracking='".$job->ID."'";
 			$result2=$db->query($query2);
@@ -865,7 +873,8 @@ function showJobDetails($ID) {
 			while ($data=$db->fetch_array($result2)){
 				echo "<tr><td colspan='2' align='left'>\n";
 				echo date("Y-m-d H:i",strtotime($data["begin"]))." -> ".date("Y-m-d H:i",strtotime($data["end"]))." - ".getUserName($data['id_assign']);
-				echo "<a href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;job=".$job->ID."&amp;ID=".$data["ID"]."'><img src='$HTMLRel/pics/edit.png' alt='Edit'></a>\n";
+				if (isAdmin($_SESSION['glpitype']))
+					echo "<a href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;job=".$job->ID."&amp;ID=".$data["ID"]."'><img src='$HTMLRel/pics/edit.png' alt='Edit'></a>\n";
 
 				echo "<br>";
 				$tmp_beg=split(" ",$data["begin"]);
@@ -881,7 +890,6 @@ function showJobDetails($ID) {
 				$planning_realtime+=$dateDiff/60/60;
 				echo "</td></tr>";
 			}
-		}
 		
 		echo "</table>\n";
 		echo "</td>\n";
@@ -892,11 +900,11 @@ function showJobDetails($ID) {
 		echo "<td align='center'>";	
 		if (can_assign_job($_SESSION["glpiname"]))
 			assignFormTracking($ID,$_SESSION["glpiname"],$cfg_install["root"]."/tracking/tracking-assign-form.php");
-		else echo $lang["job"][5]." <strong>".($job->assign==""?"[Nobody]":$job->assign)."</strong>";
+		else echo $lang["job"][5]." <strong>".($job->assign==0?"[Nobody]":$assign->getName())."</strong>";
 		echo "<br />";
 		if (isAdmin($_SESSION["glpitype"]))
 			categoryFormTracking($ID,$cfg_install["root"]."/tracking/tracking-category-form.php");
-		else echo $lang["tracking"][20].": <strong>".getDropdownName("glpi_dropdown_tarcking_category",$job->category)."</strong>";
+		else echo $lang["tracking"][20].": <strong>".getDropdownName("glpi_dropdown_tracking_category",$job->category)."</strong>";
 		
 		
 		echo "</td>";
@@ -1500,7 +1508,7 @@ function itemFormTracking ($ID,$target) {
 	}
 	else
 	{
-	 echo $lang["tracking"][21];
+	 echo $lang["tracking"][26];
 	}
 }
 

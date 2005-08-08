@@ -41,6 +41,7 @@ include ($phproot . "/glpi/includes_users.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_reservation.php");
 include ($phproot . "/glpi/includes_knowbase.php");
+include ($phproot . "/glpi/includes_documents.php");
 
 
 checkAuthentication("post-only");
