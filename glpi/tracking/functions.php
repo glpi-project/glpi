@@ -337,9 +337,9 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 	if ($number > 0) {
 		// Pager
 		if(empty($sort)) $sort = "";
-		$parameters="show=".$show."&contains=".$contains."&sort=".$sort;
+		$parameters="show=".$show."&amp;contains=".$contains."&amp;sort=".$sort;
 		if ($show!="user")
-			$parameters.="&ID=".$username;
+			$parameters.="&amp;ID=".$username;
 		printPager($start,$numrows,$target,$parameters);
 
 		echo "<div align='center'><table class='tab_cadre' width='90%'>";
@@ -357,25 +357,19 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 		{
 			echo "<tr class='tab_bg_2'>";
 			echo "<td align='center' colspan='8' class='tab_bg_1'>";
-			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&device_type=$item_type\"><strong>";
+			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&amp;device_type=$item_type\"><strong>";
 			echo $lang["joblist"][7];
 			echo "</strong></a>";
 			echo "</td></tr>";
 		}
 		echo "</table></div>";
-		// Pager
-/*		if(empty($sort)) $sort = "";
-		$parameters="show=".$show."&contains=".$contains."&sort=".$sort;
-		if ($show!="user")
-			$parameters.="&ID=".$username;
-*/
 		// Delete selected item
 		if (isAdmin($_SESSION["glpitype"])&&$show == "old"){
 			echo "<br><div align='center'>";
 			echo "<table cellpadding='5' width='90%'>";
-			echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&select=all&start=$start'>".$lang["buttons"][18]."</a></td>";
+			echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=all&amp;start=$start'>".$lang["buttons"][18]."</a></td>";
 			
-			echo "<td>/</td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&select=none&start=$start'>".$lang["buttons"][19]."</a>";
+			echo "<td>/</td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=none&amp;start=$start'>".$lang["buttons"][19]."</a>";
 			echo "</td><td>";
 			echo "<input type='submit' value=\"".$lang["buttons"][17]."\" name='delete' class='submit'></td>";
 			echo "<td width='75%'>&nbsp;</td></table></div>";
@@ -393,7 +387,7 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 		if ($item) 
 		{
 			echo "<tr><td align='center' class='tab_bg_1'>";
-			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&device_type=$item_type\"><strong>";
+			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&amp;device_type=$item_type\"><strong>";
 			echo $lang["joblist"][7];
 			echo "</strong></a>";
 			echo "</td></tr>";
@@ -463,9 +457,9 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (device_type = '$item_ty
 		echo "<br><div align='center'>";
 		
 		echo "<table class ='delete-old-job' cellpadding='5' width='90%'>";
-		echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt='' ></td><td><a href='".$_SERVER["PHP_SELF"]."?select=all&ID=$item'>".$lang["buttons"][18]."</a></td>";
+		echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt='' ></td><td><a href='".$_SERVER["PHP_SELF"]."?select=all&amp;ID=$item'>".$lang["buttons"][18]."</a></td>";
 			
-		echo "<td>/</td><td><a href='".$_SERVER["PHP_SELF"]."?select=none&ID=$item'>".$lang["buttons"][19]."</a>";
+		echo "<td>/</td><td><a href='".$_SERVER["PHP_SELF"]."?select=none&amp;ID=$item'>".$lang["buttons"][19]."</a>";
 		echo "</td><td>";
 		echo "<input type='submit' value=\"".$lang["buttons"][17]."\" name='delete_inter' class='submit'></td>";
 		echo "<td width='75%'>&nbsp;</td></table></div>";
@@ -660,7 +654,7 @@ function showJobShort($ID, $followups) {
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-followups.php?ID=$job->ID\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;($job->num_of_followups)&nbsp;<br>";
 		else
-		echo "<a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;($job->num_of_followups)&nbsp;<br>";
+		echo "<a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&amp;ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;($job->num_of_followups)&nbsp;<br>";
 //		if ($job->status == "new"&&strcmp($_SESSION["glpitype"],"post-only")!=0)
 //		{
 //			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-mark.php?ID=$job->ID\">".$lang["joblist"][14]."</a><br>";
@@ -744,7 +738,7 @@ function showJobVeryShort($ID) {
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-followups.php?ID=$job->ID\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;($job->num_of_followups)&nbsp;<br>";
 		else
-		echo "<a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;($job->num_of_followups)&nbsp;<br>";
+		echo "<a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&amp;ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;($job->num_of_followups)&nbsp;<br>";
 //		if ($job->status == "new"&&strcmp($_SESSION["glpitype"],"post-only")!=0)
 //		{
 //			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-mark.php?ID=$job->ID\">".$lang["joblist"][14]."</a><br>";
@@ -871,7 +865,7 @@ function showJobDetails($ID) {
 			while ($data=$db->fetch_array($result2)){
 				echo "<tr><td colspan='2' align='left'>\n";
 				echo date("Y-m-d H:i",strtotime($data["begin"]))." -> ".date("Y-m-d H:i",strtotime($data["end"]))." - ".getUserName($data['id_assign']);
-				echo "<a href='".$HTMLRel."planning/planning-add-form.php?edit=edit&job=".$job->ID."&ID=".$data["ID"]."'><img src='$HTMLRel/pics/edit.png'></a>\n";
+				echo "<a href='".$HTMLRel."planning/planning-add-form.php?edit=edit&job=".$job->ID."&amp;ID=".$data["ID"]."'><img src='$HTMLRel/pics/edit.png'></a>\n";
 
 				echo "<br>";
 				$tmp_beg=split(" ",$data["begin"]);

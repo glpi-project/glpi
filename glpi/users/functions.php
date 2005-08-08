@@ -345,7 +345,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 
 		if ($numrows_limit>0) {
 			// Pager
-			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
+			$parameters="field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=$sort&amp;order=$order";
 			printPager($start,$numrows,$target,$parameters);
 
 			// Produce headline
@@ -357,7 +357,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_users.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["setup"][12]."</a></th>";
 			
 			// realname		
@@ -366,7 +366,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.realname&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_users.realname&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["setup"][13]."</a></th>";
 
 			// type
@@ -375,7 +375,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.type&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_users.type&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["setup"][17]."</a></th>";			
 			
 			// email
@@ -384,7 +384,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.email&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_users.email&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["setup"][14]."</a></th>";
 
 						
@@ -394,7 +394,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_users.phone&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_users.phone&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["setup"][15]."</a></th>";
 
 			
@@ -405,7 +405,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_dropdown_locations.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_dropdown_locations.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["setup"][16]."</a></th></tr>";
 
 
@@ -436,7 +436,6 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 
 			// Pager
 			echo "<br>";
-//			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {

@@ -1030,7 +1030,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 			echo $item;
 		} else {
 				if ($itemtype=="reservation"){
-				echo "<a href=\"".$cfg_install["root"]."/$itemtype/index.php?show=resa&ID=";
+				echo "<a href=\"".$cfg_install["root"]."/$itemtype/index.php?show=resa&amp;ID=";
 				} else {
 				echo "<a href=\"".$cfg_install["root"]."/$itemtype/".$itemtype."-info-form.php?ID=";
 				}
@@ -1144,7 +1144,7 @@ function showEvents($target,$order,$sort) {
 			echo $item;
 		} else {
 				if ($itemtype=="reservation"){
-				echo "<a href=\"".$cfg_install["root"]."/$itemtype/index.php?show=resa&ID=";
+				echo "<a href=\"".$cfg_install["root"]."/$itemtype/index.php?show=resa&amp;ID=";
 				} else {
 				echo "<a href=\"".$cfg_install["root"]."/$itemtype/".$itemtype."-info-form.php?ID=";
 				}
@@ -1973,14 +1973,14 @@ function showConnect($target,$ID,$type) {
 				echo "</a>";
 				echo "</b></td>";
 				echo "<td class='tab_bg_2".($connect->deleted=='Y'?"_2":"")."' align='center'><b>";
-				echo "<a href=\"$target?disconnect=1&ID=".$key."\">".$lang["connect"][3]."</a>";
+				echo "<a href=\"$target?disconnect=1&amp;ID=".$key."\">".$lang["connect"][3]."</a>";
 			}
 		} else {
 			echo "<tr><td class='tab_bg_1'><b>Computer: </b>";
 			echo "<i>".$lang["connect"][1]."</i>";
 			echo "</td>";
 			echo "<td class='tab_bg_2' align='center'><b>";
-			echo "<a href=\"$target?connect=1&ID=$ID\">".$lang["connect"][2]."</a>";
+			echo "<a href=\"$target?connect=1&amp;ID=$ID\">".$lang["connect"][2]."</a>";
 		}
 
 		if ($global&&$computers&&count($computers)>0){
@@ -1989,7 +1989,7 @@ function showConnect($target,$ID,$type) {
 			echo "<tr><td class='tab_bg_1'>&nbsp;";
 			echo "</td>";
 			echo "<td class='tab_bg_2' align='center'><b>";
-			echo "<a href=\"$target?connect=1&ID=$ID\">".$lang["connect"][2]."</a>";
+			echo "<a href=\"$target?connect=1&amp;ID=$ID\">".$lang["connect"][2]."</a>";
 		}
 
 		echo "</b></td>";
@@ -2400,7 +2400,7 @@ function printPager($start,$numrows,$target,$parameters) {
 	}
 
 	// Print it
-	echo "<form method='POST' action=\"$target?$parameters&start=$start\">\n";
+	echo "<form method='POST' action=\"$target?$parameters&amp;start=$start\">\n";
 
 	echo "<div align='center'><table class='tab_cadre2' width='800'>\n";
 	echo "<tr>\n";
@@ -2408,13 +2408,13 @@ function printPager($start,$numrows,$target,$parameters) {
 	// Back and fast backward button
 	if (!$start==0) {
 		echo "<th align='left'>";
-		echo "<a href=\"$target?$parameters&start=0\">";
+		echo "<a href=\"$target?$parameters&amp;start=0\">";
 		echo "<img src=\"".$HTMLRel."pics/first.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'>";
 		
 		
 		echo "</a></th>\n";
 		echo "<th align='left'>";
-		echo "<a href=\"$target?$parameters&start=$back\">";
+		echo "<a href=\"$target?$parameters&amp;start=$back\">";
 		echo "<img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'>";
 		echo "</a></th>\n";
 	}
@@ -2436,11 +2436,11 @@ function printPager($start,$numrows,$target,$parameters) {
 	// Forward and fast forward button
 	if ($forward<$numrows) {
 		echo "<th align='right'>";
-		echo "<a href=\"$target?$parameters&start=$forward\">";
+		echo "<a href=\"$target?$parameters&amp;start=$forward\">";
 		echo "<img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'>";
 		echo "</a></th>\n";
 		echo "<th align='right'>";
-		echo "<a href=\"$target?$parameters&start=$end\">";
+		echo "<a href=\"$target?$parameters&amp;start=$end\">";
 		echo "<img src=\"".$HTMLRel."pics/last.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'>";
 		echo "</a></th>\n";
 	}
@@ -3401,7 +3401,7 @@ function showCalendarForm($form,$element,$value='',$withtemplate=''){
 		
 		if ($withtemplate!=2){
 			echo "&nbsp;<img src='".$HTMLRel."pics/calendar.png' class='calendrier' alt='".$lang["buttons"][15]."' title='".$lang["buttons"][15]."'
-			onclick=\"window.open('".$HTMLRel."mycalendar.php?form=$form&elem=$element&value=$value','".$lang["buttons"][15]."','width=200,height=220')\" >";
+			onclick=\"window.open('".$HTMLRel."mycalendar.php?form=$form&amp;elem=$element&amp;value=$value','".$lang["buttons"][15]."','width=200,height=220')\" >";
 		
 			echo "&nbsp;<img src='".$HTMLRel."pics/reset.png' class='calendrier' onClick=\"document.forms['$form'].$element.value='0000-00-00'\" alt='Reset' title='Reset'>";	
 		}
@@ -3561,7 +3561,7 @@ function getMultiSearchItemForLink($name,$array){
 	if (is_array($array)&&count($array)>0)
 	foreach($array as $key => $val){
 		if ($name!="link"||$key!=0)
-			$out.="&".$name."[$key]=".$array[$key];
+			$out.="&amp;".$name."[$key]=".$array[$key];
 	}
 	return $out;
 	

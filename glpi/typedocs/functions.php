@@ -154,7 +154,7 @@ function showTypedocList($target,$username,$field,$phrasetype,$contains,$sort,$o
 
 		if ($numrows_limit>0) {
 			// Pager
-			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
+			$parameters="field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=$sort&amp;order=$order";
 			printPager($start,$numrows,$target,$parameters);
 
 			// Produce headline
@@ -165,7 +165,7 @@ function showTypedocList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_docs.name&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_type_docs.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["document"][1]."</a></th>";
 
 			// Extension
@@ -174,7 +174,7 @@ function showTypedocList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_docs.ext&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_type_docs.ext&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["document"][9]."</a></th>";
 			
 			// icon			
@@ -183,7 +183,7 @@ function showTypedocList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_docs.icon&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_type_docs.icon&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["document"][10]."</a></th>";
 
 			// MIME
@@ -192,7 +192,7 @@ function showTypedocList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_docs.mime&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_type_docs.mime&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["document"][4]."</a></th>";
 
 			// Upload		
@@ -201,7 +201,7 @@ function showTypedocList($target,$username,$field,$phrasetype,$contains,$sort,$o
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?field=$field&phrasetype=$phrasetype&contains=$contains&sort=glpi_type_docs.upload&order=".($order=="ASC"?"DESC":"ASC")."&start=$start\">";
+			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_type_docs.upload&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["document"][15]."</a></th>";
 
 			for ($i=0; $i < $numrows_limit; $i++) {
@@ -227,7 +227,6 @@ function showTypedocList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			echo "</table></center>";
 
 			// Pager
-//			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&sort=$sort&order=$order";
 			echo "<br>";
 			printPager($start,$numrows,$target,$parameters);
 

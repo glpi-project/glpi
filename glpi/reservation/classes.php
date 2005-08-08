@@ -345,7 +345,7 @@ function getEmpty () {
 				echo "Erreur Inconnue";
 			break;
 		}
-		echo "<br><a href='".$target."?show=resa&ID=$ID'>".$lang["reservation"][20]."</a>";
+		echo "<br><a href='".$target."?show=resa&amp;ID=$ID'>".$lang["reservation"][20]."</a>";
 		echo "</center>";
 		}
 

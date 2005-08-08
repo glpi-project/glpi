@@ -221,14 +221,14 @@ function kbItemMenu($ID)
 	echo "<tr>\n";
 	if($isFAQ == "yes")
 	{
-		echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=$ID&removefromfaq=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqremove.png\" alt='".$lang["knowbase"][7]."' title='".$lang["knowbase"][7]."'></a></td>\n";
+		echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=$ID&amp;removefromfaq=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqremove.png\" alt='".$lang["knowbase"][7]."' title='".$lang["knowbase"][7]."'></a></td>\n";
 	}
 	else
 	{
-		echo "<td align='center' width=\"33%\"><a  class='icon_nav_move' href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=$ID&addtofaq=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqadd.png\" alt='".$lang["knowbase"][5]."' title='".$lang["knowbase"][5]."'></a></td>\n";
+		echo "<td align='center' width=\"33%\"><a  class='icon_nav_move' href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=$ID&amp;addtofaq=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqadd.png\" alt='".$lang["knowbase"][5]."' title='".$lang["knowbase"][5]."'></a></td>\n";
 	}
-	echo "<td align='center' width=\"34%\"><a class='icon_nav_move' href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=$ID&modify=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqedit.png\" alt='".$lang["knowbase"][8]."' title='".$lang["knowbase"][8]."'></a></td>\n";
-	echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=$ID&delete=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqdelete.png\" alt='".$lang["knowbase"][9]."' title='".$lang["knowbase"][9]."'></a>";
+	echo "<td align='center' width=\"34%\"><a class='icon_nav_move' href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=$ID&amp;modify=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqedit.png\" alt='".$lang["knowbase"][8]."' title='".$lang["knowbase"][8]."'></a></td>\n";
+	echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=$ID&amp;delete=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqdelete.png\" alt='".$lang["knowbase"][9]."' title='".$lang["knowbase"][9]."'></a>";
 	echo "		</td></tr>\n";
 	echo "</table></div>\n";
 	
@@ -780,7 +780,7 @@ function faqShowItem($ID)
 	if ($result=$db->query($query)){
 	$data = $db->fetch_array($result);
 	$question = $data["question"];
-	echo "<li><a href=\"".$cfg_install["root"]."/helpdesk.php?show=faq&ID=$ID\">$question</a>\n";
+	echo "<li><a href=\"".$cfg_install["root"]."/helpdesk.php?show=faq&amp;ID=$ID\">$question</a>\n";
 	}
 
 }

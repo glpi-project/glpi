@@ -58,11 +58,11 @@ if ($result = $db->query($query)) {
 echo "<a href=\"".$cfg_install["root"]."/reservation/index.php?";
 // Ajouter le matériel
 if ($numrows==0){
-echo "id_device=$id_device&device_type=$device_type&add=add\">".$lang["reservation"][7]."</a>";
+echo "id_device=$id_device&device_type=$device_type&amp;add=add\">".$lang["reservation"][7]."</a>";
 }
 // Supprimer le matériel
 else {
-echo "ID=".$db->result($result,0,"ID")."&delete=delete\">".$lang["reservation"][6]."</a>";
+echo "ID=".$db->result($result,0,"ID")."&amp;delete=delete\">".$lang["reservation"][6]."</a>";
 }
 
 }
@@ -292,7 +292,7 @@ if (count($interv)>0)
 foreach ($interv as $key => $val){
 if($type=='day'){
 echo "<div style='margin:auto; text-align:center; border:1px dashed #cccccc; background-color: #d7d7d2; font-size:9px; width:80%;'>";
-echo "<div style=float:right'><a  href='".$HTMLRel."planning/planning-add-form.php?edit=edit&job=".$val["id_tracking"]."&ID=".$val["ID"]."'><img src='$HTMLRel/pics/edit.png'></a></div>";
+echo "<div style=float:right'><a  href='".$HTMLRel."planning/planning-add-form.php?edit=edit&job=".$val["id_tracking"]."&amp;ID=".$val["ID"]."'><img src='$HTMLRel/pics/edit.png'></a></div>";
 echo "<a  href='".$HTMLRel."tracking/tracking-followups.php?ID=".$val["id_tracking"]."'>";
 echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"];
 if ($who==0){
