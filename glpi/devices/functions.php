@@ -214,7 +214,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 	
 	echo "<tr class='tab_bg_2'>";
 	echo "<td align='center'><a href='".$HTMLRel."devices/index.php?device_type=".$device->type."'>$type</a></td>";
-	echo "<td align='center'><a href='".$HTMLRel."devices/devices-info-form.php?ID=".$device->fields['ID']."&device_type=".$device->type."'>&nbsp;$name&nbsp;</a></td>";
+	echo "<td align='center'><a href='".$HTMLRel."devices/devices-info-form.php?ID=".$device->fields['ID']."&amp;device_type=".$device->type."'>&nbsp;$name&nbsp;</a></td>";
 	
 	if (count($entry)>0){
 		$more=0;
@@ -497,7 +497,7 @@ function showDevicesList($device_type,$target) {
 				$device->getFromDB($ID);
 				echo "<tr class='tab_bg_2'>";
 				echo "<td><b>";
-				echo "<a href=\"".$cfg_install["root"]."/devices/devices-info-form.php?ID=$ID&device_type=$device_type\">";
+				echo "<a href=\"".$cfg_install["root"]."/devices/devices-info-form.php?ID=$ID&amp;device_type=$device_type\">";
 				echo $device->fields["designation"]." (".$device->fields["ID"].")";
 				echo "</a></b></td>";
 				echo "<td>". getDropdownName("glpi_enterprises",$device->fields["FK_glpi_enterprise"]) ."</td>";

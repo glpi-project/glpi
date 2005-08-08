@@ -56,7 +56,7 @@ function showContactOnglets($target,$withtemplate,$actif){
 
 	$template="";
 	if(!empty($withtemplate)){
-		$template="&withtemplate=$withtemplate";
+		$template="&amp;withtemplate=$withtemplate";
 	}
 	
 	echo "<div id='barre_onglets'><ul id='onglet'>";

@@ -53,7 +53,7 @@ function showPeripheralOnglets($target,$withtemplate,$actif){
 	
 	$template="";
 	if(!empty($withtemplate)){
-		$template="&withtemplate=$withtemplate";
+		$template="&amp;withtemplate=$withtemplate";
 	}
 
 	echo "<div id='barre_onglets'><ul id='onglet'>";
@@ -111,9 +111,9 @@ function searchFormperipheral($field="",$phrasetype= "",$contains="",$sort= "",$
 	for ($i=0;$i<$_SESSION["glpisearchcount"];$i++){
 		echo "<tr><td align='right'>";
 		if ($i==0){
-			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?add_search_count=1'><img src=\"".$HTMLRel."pics/plus.png\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?add_search_count=1'><img src=\"".$HTMLRel."pics/plus.png\" alt='+'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 			if ($_SESSION["glpisearchcount"]>1)
-			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?delete_search_count=1'><img src=\"".$HTMLRel."pics/moins.png\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?delete_search_count=1'><img src=\"".$HTMLRel."pics/moins.png\" alt='-'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 		}
 		if ($i>0) {
 			echo "<select name='link[$i]'>";

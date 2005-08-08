@@ -56,7 +56,7 @@ function showNetworkingOnglets($target,$withtemplate,$actif){
 	
 	$template="";
 	if(!empty($withtemplate)){
-		$template="&withtemplate=$withtemplate";
+		$template="&amp;withtemplate=$withtemplate";
 	}
 
 	echo "<div id='barre_onglets'><ul id='onglet'>";
@@ -120,9 +120,9 @@ function searchFormNetworking($field="",$phrasetype= "",$contains="",$sort= "",$
 	for ($i=0;$i<$_SESSION["glpisearchcount"];$i++){
 		echo "<tr><td align='right'>";
 		if ($i==0){
-			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?add_search_count=1'><img src=\"".$HTMLRel."pics/plus.png\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?add_search_count=1'><img src=\"".$HTMLRel."pics/plus.png\" alt='+'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 			if ($_SESSION["glpisearchcount"]>1)
-			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?delete_search_count=1'><img src=\"".$HTMLRel."pics/moins.png\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?delete_search_count=1'><img src=\"".$HTMLRel."pics/moins.png\" alt='-'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 		}
 		if ($i>0) {
 			echo "<select name='link[$i]'>";
@@ -775,9 +775,9 @@ function showPorts ($device,$device_type,$withtemplate='') {
 				echo $lang["networking"][55].":&nbsp;";
 				dropdown("glpi_dropdown_vlan","vlan");
 				echo "<input type='submit' name='assign_vlan' value='".$lang["buttons"][3]."' class='submit'>";
-				echo "<a href='".$_SERVER["PHP_SELF"]."?ID=$device&select=all'>".$lang["buttons"][18]."</a>";
+				echo "<a href='".$_SERVER["PHP_SELF"]."?ID=$device&amp;select=all'>".$lang["buttons"][18]."</a>";
 				echo "&nbsp;/&nbsp;";
-				echo "<a href='".$_SERVER["PHP_SELF"]."?ID=$device&select=none'>".$lang["buttons"][19]."</a>";
+				echo "<a href='".$_SERVER["PHP_SELF"]."?ID=$device&amp;select=none'>".$lang["buttons"][19]."</a>";
 				echo "</th>";
 			}
 			echo "</tr>";        
@@ -791,7 +791,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 				$netport->getfromDB(current($devid));
 				echo "<tr class='tab_bg_1'>";
 				echo "<td align='center'><b>";
-				if ($withtemplate!=2) echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ID=".$netport->fields["ID"]."&location=".$location."\">";
+				if ($withtemplate!=2) echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ID=".$netport->fields["ID"]."&amp;location=".$location."\">";
 				echo $netport->fields["logical_number"];
 				if ($withtemplate!=2) echo "</a>";
 				echo "</b></td>";
@@ -1076,11 +1076,11 @@ function showPortsAdd($ID,$devtype) {
 	echo "<div align='center'><table class='tab_cadre' width='90%' cellpadding='2'>";
 	echo "<tr>";
 	echo "<td align='center' class='tab_bg_2'  >";
-	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?on_device=$ID&device_type=$devtype&location=$location\"><b>";
+	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?on_device=$ID&amp;device_type=$devtype&amp;location=$location\"><b>";
 	echo $lang["networking"][19];
 	echo "</b></a></td>";
 	echo "<td align='center' class='tab_bg_2' width='50%'>";
-	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?on_device=$ID&device_type=$devtype&several=yes&location=$location\"><b>";
+	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?on_device=$ID&amp;device_type=$devtype&amp;several=yes&amp;location=$location\"><b>";
 	echo $lang["networking"][46];
 	echo "</b></a></td>";
 
@@ -1308,7 +1308,7 @@ function listConnectorPorts($target,$input) {
 				echo "</td>";
 				echo "<td align='right'><b>";
 				echo "<a href=\"".$cfg_install["root"]."/networking/networking-port-disconnect.php?ID=".$netport->fields["ID"];
-				if (!empty($pID1)) echo "&sport=$pID1";
+				if (!empty($pID1)) echo "&amp;sport=$pID1";
 				echo "\">".$lang["buttons"][10]."</a>";
 				echo "</b></td>";
 				echo "</tr></table>";
@@ -1317,7 +1317,7 @@ function listConnectorPorts($target,$input) {
 				echo "<table border='0' cellspacing='0' width='100%'><tr>";
 				echo "<td>".$lang["networking"][26]."</td>";
 				echo "<td align='right'><b>";
-				echo "<a href=\"$target?next=connect&sport=$pID1&dport=$pID2\">".$lang["buttons"][9]."</a>";
+				echo "<a href=\"$target?next=connect&amp;sport=$pID1&amp;dport=$pID2\">".$lang["buttons"][9]."</a>";
 				echo "</b></td>";
 				echo "</tr></table>";
 			}

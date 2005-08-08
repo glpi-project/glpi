@@ -57,7 +57,7 @@ function showCartridgeOnglets($target,$withtemplate,$actif){
 	
 	$template="";
 	if(!empty($withtemplate)){
-		$template="&withtemplate=$withtemplate";
+		$template="&amp;withtemplate=$withtemplate";
 	}
 
 	echo "<div id='barre_onglets'><ul id='onglet'>";
@@ -115,9 +115,9 @@ function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "",$d
 	for ($i=0;$i<$_SESSION["glpisearchcount"];$i++){
 		echo "<tr><td align='right'>";
 		if ($i==0){
-			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?add_search_count=1'><img src=\"".$HTMLRel."pics/plus.png\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?add_search_count=1'><img src=\"".$HTMLRel."pics/plus.png\" alt='+'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 			if ($_SESSION["glpisearchcount"]>1)
-			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?delete_search_count=1'><img src=\"".$HTMLRel."pics/moins.png\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?delete_search_count=1'><img src=\"".$HTMLRel."pics/moins.png\" alt='-'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 		}
 		if ($i>0) {
 			echo "<select name='link[$i]'>";
@@ -593,7 +593,7 @@ function showCartridgesAdd($ID) {
 	echo "<form method='post'  action=\"".$HTMLRel."cartridges/cartridges-edit.php\">";
 	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='90%' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><b>";
-	echo "<a href=\"".$cfg_install["root"]."/cartridges/cartridges-edit.php?add=add&tID=$ID\">";
+	echo "<a href=\"".$cfg_install["root"]."/cartridges/cartridges-edit.php?add=add&amp;tID=$ID\">";
 	echo $lang["cartridges"][17];
 	echo "</a></b></td>";
 	echo "<td align='center' class='tab_bg_2'>";
