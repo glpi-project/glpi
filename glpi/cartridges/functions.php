@@ -643,7 +643,7 @@ function showCartridges ($tID,$show_old=0) {
 			echo "&nbsp;</th></tr>";
 			}
 			else { // Old
-			echo "<tr><th colspan='6'>";
+			echo "<tr><th colspan='7'>";
 			echo $lang["cartridges"][35];
 			echo "</th>";
 			echo "<th colspan='1'>";
@@ -651,7 +651,11 @@ function showCartridges ($tID,$show_old=0) {
 				
 			}
 			$i=0;
-			echo "<tr><th>".$lang["cartridges"][4]."</th><th>".$lang["cartridges"][23]."</th><th>".$lang["cartridges"][24]."</th><th>".$lang["cartridges"][25]."</th><th>".$lang["cartridges"][27]."</th><th>".$lang["cartridges"][26]."</th><th>&nbsp;</th></tr>";
+			echo "<tr><th>".$lang["cartridges"][4]."</th><th>".$lang["cartridges"][23]."</th><th>".$lang["cartridges"][24]."</th><th>".$lang["cartridges"][25]."</th><th>".$lang["cartridges"][27]."</th><th>".$lang["cartridges"][26]."</th>";
+			if ($show_old==1)
+				echo "<th>".$lang["cartridges"][39]."</th>";
+			
+			echo "<th>&nbsp;</th></tr>";
 				} else {
 
 			echo "<br><div align='center'><table border='0' width='50%' cellpadding='2'>";
@@ -668,11 +672,14 @@ $where= " AND date_out IS NOT NULL";
 
 $query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID') $where ORDER BY date_out ASC, date_use DESC, date_in";
 //echo $query;
+	$pages=array();
 	if ($result = $db->query($query)) {			
 	while ($data=$db->fetch_array($result)) {
 		$date_in=$data["date_in"];
 		$date_use=$data["date_use"];
 		$date_out=$data["date_out"];
+		$printer=$data["FK_glpi_printers"];
+		$page=$data["pages"];
 						
 		echo "<tr  class='tab_bg_1'><td align='center'>";
 		echo $data["ID"]; 
@@ -693,8 +700,26 @@ $query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')
 		
 		echo "</td><td align='center'>";
 		echo $date_out;		
-		echo "</td><td align='center'>";
+		echo "</td>";
+		
+		if ($show_old!=0){
+			// Get initial counter page
+			if (!isset($pages[$printer])){
+			$prn=new Printer;
+			$prn->getfromDB($printer);
+			$pages[$printer]=$prn->fields['initial_pages'];
+			}
+			echo "<td align='center'>";
+				if ($pages[$printer]<$data['pages']){
+				echo ($data['pages']-$pages[$printer])." ".$lang["printers"][31];
+				$pages[$printer]=$data['pages'];
+			}
 
+			echo "</td>";
+		}
+
+		echo "<td align='center'>";
+		
 		echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_install["root"]."/cartridges/cartridges-edit.php?delete=delete&ID=".$data["ID"]."'>".$lang["cartridges"][31]."</a>";
 		echo "</td></tr>";
 		
@@ -929,6 +954,7 @@ function showCartridgeInstalled($instID,$old=0) {
 	echo "<tr><th>".$lang["cartridges"][4]."</th><th>".$lang["cartridges"][12]."</th><th>".$lang["cartridges"][23]."</th><th>".$lang["cartridges"][24]."</th><th>".$lang["cartridges"][25]."</th><th>".$lang["cartridges"][26]."</th>";
 	if ($old!=0)
 	echo "<th>".$lang["cartridges"][39]."</th>";
+	
 	echo "<th>&nbsp;</th></tr>";
 
 	
@@ -971,16 +997,17 @@ function showCartridgeInstalled($instID,$old=0) {
 		echo "</td></tr>";
 		
 	}	
-	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
-	echo "<form method='post' action=\"".$cfg_install["root"]."/cartridges/cartridges-edit.php\">";
+	if ($old==0){
+		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+		echo "<form method='post' action=\"".$cfg_install["root"]."/cartridges/cartridges-edit.php\">";
 	
-	echo "<div class='software-instal'><input type='hidden' name='pID' value='$instID'>";
-		dropdownCompatibleCartridges($instID);
-	echo "</div></td><td align='center' class='tab_bg_2'>";
-	echo "<input type='submit' name='install' value=\"".$lang["buttons"][4]."\" class='submit'>";
-	echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
-	if ($old!=0)  echo "<td>&nbsp;</td>";
-	echo "</tr>";
+		echo "<div class='software-instal'><input type='hidden' name='pID' value='$instID'>";
+			dropdownCompatibleCartridges($instID);
+		echo "</div></td><td align='center' class='tab_bg_2'>";
+		echo "<input type='submit' name='install' value=\"".$lang["buttons"][4]."\" class='submit'>";
+		echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
+		echo "</tr>";
+	}
         echo "</table></center>";
 	echo "</form>";
 
