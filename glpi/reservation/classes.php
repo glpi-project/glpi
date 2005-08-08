@@ -93,6 +93,10 @@ class ReservationItem{
 				return $lang["monitors"][4];
 				break;
 			case PERIPHERAL_TYPE : 
+				if (isset($this->obj->fields["type"])&&$this->obj->fields["type"]!=0)
+					return getDropdownName("glpi_type_peripherals",$this->obj->fields["type"]);
+				else	return $lang["peripherals"][4];
+
 				return $lang["peripherals"][4];
 				break;				
 			}
