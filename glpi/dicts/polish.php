@@ -26,7 +26,7 @@ GLPI - Gestionnaire Libre de Parc Informatique
  Purpose of file:
  ----------------------------------------------------------------------
 */ 
-	//english
+	//polish
 
 
 $lang["backup"][0]="Dump SQL"; 
@@ -160,17 +160,17 @@ $lang["central"][10]="Not assigned interventions";
 $lang["choice"][0]="Yes"; 
 $lang["choice"][1]="No"; 
 
-$lang["common"][0]="Without name"; 
-$lang["common"][1]="Item"; 
+$lang["common"][0]="Bez nazwy"; 
+$lang["common"][1]="Pozycja"; 
 $lang["common"][2]="ID"; 
-$lang["common"][3]="Deleted"; 
-$lang["common"][4]="Web"; 
-$lang["common"][5]="Manufacturer"; 
-$lang["common"][6]="Template Name"; 
-$lang["common"][7]="Choose a template"; 
-$lang["common"][8]="Manage templates..."; 
-$lang["common"][9]="Add template..."; 
-$lang["common"][10]="Technical responsible"; 
+$lang["common"][3]="Usunięty"; 
+$lang["common"][4]="Sieć"; 
+$lang["common"][5]="Producent"; 
+$lang["common"][6]="Nazwa Szablonu"; 
+$lang["common"][7]="Wybierz szablon"; 
+$lang["common"][8]="Zarządzaj szablonami..."; 
+$lang["common"][9]="Dodaj szablon..."; 
+$lang["common"][10]="Odpowiedzialny techniczny"; 
 
 $lang["computers"][0]="Add Computer..."; 
 $lang["computers"][1]="Identifier"; 
@@ -435,41 +435,41 @@ $lang["financial"][81]="Accountant net value";
 $lang["financial"][82]="Invoice Number"; 
 $lang["financial"][83]="Max number of items (0=unlimited)"; 
 
-$lang["help"][0]="Welcome"; 
-$lang["help"][1]="Please describe your problem"; 
-$lang["help"][2]="The problem must be solved"; 
-$lang["help"][3]="Very High"; 
-$lang["help"][4]="High"; 
-$lang["help"][5]="Medium"; 
-$lang["help"][6]="Low"; 
-$lang["help"][7]="Very Low"; 
-$lang["help"][8]="Inform me about the taken pursuant actions"; 
-$lang["help"][9]="No"; 
-$lang["help"][10]="Yes"; 
-$lang["help"][11]="My E-Mail"; 
-$lang["help"][12]="My Item-ID:"; 
-$lang["help"][13]="The Problem"; 
-$lang["help"][14]="Submit Message"; 
-$lang["help"][15]="No Description, please try again."; 
-$lang["help"][16]="If you want be notified about the taken pursuant actions, you must enter your e-mail!"; 
-$lang["help"][17]="Please enter your Item-ID!"; 
-$lang["help"][18]="Your message has been sent successfully, your request is in hand."; 
-$lang["help"][19]="Thank you for using our automatic Helpdesk-System."; 
-$lang["help"][20]="The description of your problem could not be added to our database."; 
-$lang["help"][21]="Please contact your local system administrator."; 
-$lang["help"][22]="Search the ID of your computer"; 
-$lang["help"][23]="Enter the first letters (user name, item or serial)"; 
-$lang["help"][24]="Hardware Type"; 
-$lang["help"][25]="Computer"; 
-$lang["help"][26]="Networking device"; 
-$lang["help"][27]="Printer"; 
+$lang["help"][0]="Witam"; 
+$lang["help"][1]="Proszę opisz Twój problem"; 
+$lang["help"][2]="Problem musi być rozwiązany"; 
+$lang["help"][3]="Bardzo Wysoki"; 
+$lang["help"][4]="Wysoki"; 
+$lang["help"][5]="Średni"; 
+$lang["help"][6]="Niski"; 
+$lang["help"][7]="Bardzo Niski"; 
+$lang["help"][8]="Informuj mnie o podjętych stosownych czynnościach"; 
+$lang["help"][9]="Nie"; 
+$lang["help"][10]="Tak"; 
+$lang["help"][11]="Mój E-Mail"; 
+$lang["help"][12]="Mój identyfikator Item-ID"; 
+$lang["help"][13]="Problem"; 
+$lang["help"][14]="Wyślij Wiadomość"; 
+$lang["help"][15]="Brak Opisu, proszę spróbuj ponownie"; 
+$lang["help"][16]="Jeśli chcesz być informowany o powziętych stosownych działaniach, musisz podać Twój adres e-mail!"; 
+$lang["help"][17]="Proszę podaj Twój identyfikator Item-ID!"; 
+$lang["help"][18]="Twoja wiadomość została wysłana, Twoja prośba jest sprawdzana"; 
+$lang["help"][19]="Dziekuję za używanie automatycznego systemu pomocy Helpdesk-System"; 
+$lang["help"][20]="Opis Twojego problemu nie mógł zostać dodany do naszej bazy danych"; 
+$lang["help"][21]="Proszę skontaktuj się z Twoim lokalnym administratorem systemów"; 
+$lang["help"][22]="Szukaj ID Twojego komputera"; 
+$lang["help"][23]="Wpisz pierwsze litery (nazwy użytkownika, identyfikatora lub numeru seryjnego)"; 
+$lang["help"][24]="Typ Sprzętu"; 
+$lang["help"][25]="Komputer"; 
+$lang["help"][26]="Urządzenie sieciowe"; 
+$lang["help"][27]="Drukarka"; 
 $lang["help"][28]="Monitor"; 
-$lang["help"][29]="Device"; 
-$lang["help"][30]="General"; 
-$lang["help"][31]="Software"; 
-$lang["help"][32]="You do not specify the ID of the item for a precise category of item"; 
-$lang["help"][33]="If you do not found your item, you could used the common type."; 
-$lang["help"][34]="Company"; 
+$lang["help"][29]="Urządzenie"; 
+$lang["help"][30]="Ogólne"; 
+$lang["help"][31]="Oprogramowanie"; 
+$lang["help"][32]="Nie okresliłeś identyfikatora ID pozycji dla szczegółowej kategorii pozycji"; 
+$lang["help"][33]="Jeśli nie znalazłeś Twojej pozycji, możesz użyć wspólego typu."; 
+$lang["help"][34]="Firma"; 
 
 $lang["install"][0]="Install or update GLPI"; 
 $lang["install"][1]="Choose 'Install' for a new complete installation of GLPI (the imported data by GLPI will be the default datas)."; 
@@ -658,7 +658,7 @@ $lang["login"][4]="Bad Password";
 $lang["login"][5]="Access Denied"; 
 
 $lang["mailing"][0]="-----------------------"; 
-$lang["mailing"][1]="--------------------------------------"; 
+$lang["mailing"][1]="======================================="; 
 $lang["mailing"][2]="Author :"; 
 $lang["mailing"][3]="Contents :"; 
 $lang["mailing"][4]="Intervention(s) already done"; 
