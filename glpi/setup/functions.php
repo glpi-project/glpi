@@ -80,7 +80,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 	dropdownValue("glpi_dropdown_".$name, "value_where",$where);
 	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
-	echo "<input type='submit' name='move' value=\"".$lang["buttons"][20]."\" class='submit' class='submit'>";
+	echo "<input type='submit' name='move' value=\"".$lang["buttons"][20]."\" class='submit'>";
 	
 	echo "</td></form></tr>";	
 	
@@ -102,7 +102,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 	 		
 	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
-	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit' class='submit'>";
+	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</td></tr>";
 	
 	
@@ -178,7 +178,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 	}
 	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
-	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit' class='submit'>";
+	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</td></tr>";
 	
 	// Multiple Add for Netpoint
@@ -203,7 +203,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 
 		echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
 		echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
-		echo "<input type='submit' name='several_add' value=\"".$lang["buttons"][8]."\" class='submit' class='submit'>";
+		echo "<input type='submit' name='several_add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 		echo "</td></tr>";
 	}
 	

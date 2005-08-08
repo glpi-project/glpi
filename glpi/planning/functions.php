@@ -181,19 +181,19 @@ function showAddPlanningTrackingForm($target,$job,$planID=-1){
 	if ($planID==-1){
 	echo "<tr class='tab_bg_2'>";
 	echo "<td colspan='2'  valign='top' align='center'>";
-	echo "<input type='submit' name='add_planning' value=\"".$lang["buttons"][8]."\" class='submit' class='submit'>";
+	echo "<input type='submit' name='add_planning' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</td></tr>\n";
 	} else {
 	echo "<tr class='tab_bg_2'>";
 	echo "<td valign='top' align='center'>";
-	echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' class='submit'>";
+	echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 	echo "</td><td valign='top' align='center'>";
-	echo "<input type='submit' name='edit_planning' value=\"".$lang["buttons"][14]."\" class='submit' class='submit'>";
+	echo "<input type='submit' name='edit_planning' value=\"".$lang["buttons"][14]."\" class='submit'>";
 	echo "</td></tr>\n";
 	}
 
-	echo "</table></div>";
-	echo "</form>";
+	echo "</table>";
+	echo "</form></div>";
 }
 
 function showPlanning($who,$when,$type){
@@ -291,8 +291,8 @@ echo "<b>".display_time($hour[0]).":00</b><br>";
 if (count($interv)>0)
 foreach ($interv as $key => $val){
 if($type=='day'){
-echo "<div style='margin:auto; text-align:center; border:1px dashed #cccccc; background-color: #d7d7d2; font-size:9px; width:80%;'>";
-echo "<div style=float:right'><a  href='".$HTMLRel."planning/planning-add-form.php?edit=edit&job=".$val["id_tracking"]."&amp;ID=".$val["ID"]."'><img src='$HTMLRel/pics/edit.png'></a></div>";
+echo "<div style=' margin:auto; text-align:center; border:1px dashed #cccccc; background-color: #d7d7d2; font-size:9px; width:80%;'>";
+echo "<a  href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;job=".$val["id_tracking"]."&amp;ID=".$val["ID"]."'><img src='$HTMLRel/pics/edit.png'></a>";
 echo "<a  href='".$HTMLRel."tracking/tracking-followups.php?ID=".$val["id_tracking"]."'>";
 echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"];
 if ($who==0){

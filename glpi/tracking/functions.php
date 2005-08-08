@@ -865,7 +865,7 @@ function showJobDetails($ID) {
 			while ($data=$db->fetch_array($result2)){
 				echo "<tr><td colspan='2' align='left'>\n";
 				echo date("Y-m-d H:i",strtotime($data["begin"]))." -> ".date("Y-m-d H:i",strtotime($data["end"]))." - ".getUserName($data['id_assign']);
-				echo "<a href='".$HTMLRel."planning/planning-add-form.php?edit=edit&job=".$job->ID."&amp;ID=".$data["ID"]."'><img src='$HTMLRel/pics/edit.png'></a>\n";
+				echo "<a href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;job=".$job->ID."&amp;ID=".$data["ID"]."'><img src='$HTMLRel/pics/edit.png'></a>\n";
 
 				echo "<br>";
 				$tmp_beg=split(" ",$data["begin"]);
