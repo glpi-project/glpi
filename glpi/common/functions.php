@@ -654,7 +654,7 @@ function helpHeader($title,$url,$name) {
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
         echo "<html><head><title>GLPI Helpdesk - ".$title."</title>";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" >";
-	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' />";
+	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' >";
 	// Send extra expires header if configured
 
 	if ($cfg_features["sendexpire"]) {
