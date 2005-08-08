@@ -984,36 +984,28 @@ function showAddEvents($target,$order,$sort,$user="") {
 		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=item&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][0]."</a></th>";
+	echo "<a href=\"$target?sort=item&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][0]."</a></th>";
 
 	echo "<th>";
 	if ($sort=="date") {
 		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=date&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][1]."</a></th>";
+	echo "<a href=\"$target?sort=date&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][1]."</a></th>";
 
 	echo "<th width='8%'>";
 	if ($sort=="service") {
 		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=service&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][2]."</a></th>";
+	echo "<a href=\"$target?sort=service&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][2]."</a></th>";
 
-	/*
-	echo "<th width='8%'>";
-	if ($sort=="level") {
-		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-	}
-	echo "<a href=\"$target?sort=level&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][3]."</a></th>";
-	*/
 	echo "<th width='60%'>";
 	if ($sort=="message") {
 		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=message&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][4]."</a></th></tr>";
+	echo "<a href=\"$target?sort=message&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][4]."</a></th></tr>";
 
 	while ($i < $number) {
 		$ID = $db->result($result, $i, "ID");
@@ -1099,35 +1091,35 @@ function showEvents($target,$order,$sort) {
 		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=item&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][0]."</a></th>";
+	echo "<a href=\"$target?sort=item&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][0]."</a></th>";
 
 	echo "<th>";
 	if ($sort=="date") {
 		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=date&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][1]."</a></th>";
+	echo "<a href=\"$target?sort=date&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][1]."</a></th>";
 
 	echo "<th width='8%'>";
 	if ($sort=="service") {
 		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=service&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][2]."</a></th>";
+	echo "<a href=\"$target?sort=service&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][2]."</a></th>";
 
 	echo "<th width='8%'>";
 	if ($sort=="level") {
 		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=level&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][3]."</a></th>";
+	echo "<a href=\"$target?sort=level&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][3]."</a></th>";
 
 	echo "<th width='60%'>";
 	if ($sort=="message") {
 		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=message&order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][4]."</a></th></tr>";
+	echo "<a href=\"$target?sort=message&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][4]."</a></th></tr>";
 
 	while ($i < $number) {
 		$ID = $db->result($result, $i, "ID");
