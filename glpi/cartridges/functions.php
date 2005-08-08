@@ -394,9 +394,9 @@ function showCartridgeTypeForm ($target,$ID) {
 
 	$ct = new CartridgeType;
 
-	echo "<form method='post' action=\"$target\"><div align='center'>";
-	echo "<table class='tab_cadre' width='700'>";
-	echo "<tr><th colspan='3'><b>";
+	echo "<form method='post' action=\"$target\"><div align='center'>\n";
+	echo "<table class='tab_cadre' width='700'>\n";
+	echo "<tr><th colspan='3'><b>\n";
 	if (!$ID) {
 		echo $lang["cartridges"][6].":";
 		$ct->getEmpty();
@@ -404,56 +404,56 @@ function showCartridgeTypeForm ($target,$ID) {
 		$ct->getfromDB($ID);
 		echo $lang["cartridges"][12]." ID $ID:";
 	}		
-	echo "</b></th></tr>";
+	echo "</b></th></tr>\n";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][1].":		</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][1].":		</td>\n";
 	echo "<td colspan='2'><input type='text' name='name' value=\"".$ct->fields["name"]."\" size='25'></td>";
-	echo "</tr>";
+	echo "</tr>\n";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][2].":		</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][2].":		</td>\n";
 	echo "<td colspan='2'><input type='text' name='ref' value=\"".$ct->fields["ref"]."\" size='25'></td>";
-	echo "</tr>";
+	echo "</tr>\n";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][3].": 	</td><td colspan='2'>";
+	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][3].": 	</td><td colspan='2'>\n";
 		dropdownValue("glpi_dropdown_cartridge_type","type",$ct->fields["type"]);
-	echo "</td></tr>";
+	echo "</td></tr>\n";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][8].": 	</td><td colspan='2'>";
+	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][8].": 	</td><td colspan='2'>\n";
 		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$ct->fields["FK_glpi_enterprise"]);
-	echo "</td></tr>";
+	echo "</td></tr>\n";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>";
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>\n";
 		dropdownUsersID( $ct->fields["tech_num"],"tech_num");
-	echo "</td></tr>";
+	echo "</td></tr>\n";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][36].": 	</td><td colspan='2'>";
+	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][36].": 	</td><td colspan='2'>\n";
 		dropdownValue("glpi_dropdown_locations","location",$ct->fields["location"]);
-	echo "</td></tr>";
+	echo "</td></tr>\n";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][38].":</td><td colspan='2'><select name='alarm'>";
+	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][38].":</td><td colspan='2'><select name='alarm'>\n";
 	for ($i=0;$i<=100;$i++)
 		echo "<option value='$i' ".($i==$ct->fields["alarm"]?" selected ":"").">$i</option>";
-	echo "</select></td></tr>";
+	echo "</select></td></tr>\n";
 	
 	
-	echo "<tr class='tab_bg_1'><td valign='top'>";
+	echo "<tr class='tab_bg_1'><td valign='top'>\n";
 	echo $lang["cartridges"][5].":	</td>";
 	echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$ct->fields["comments"]."</textarea>";
-	echo "</td></tr>";
+	echo "</td></tr>\n";
 	
 	if (!$ID) {
 
-		echo "<tr>";
-		echo "<td class='tab_bg_2' valign='top' colspan='3'>";
+		echo "<tr>\n";
+		echo "<td class='tab_bg_2' valign='top' colspan='3'>\n";
 		echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
 		echo "</td>";
-		echo "</tr>";
+		echo "</tr>\n";
 
 		echo "</table></div></form>";
 
 	} else {
 
-		echo "<tr>";
+		echo "<tr>\n";
                 echo "<td class='tab_bg_2'></td>";
                 echo "<td class='tab_bg_2' valign='top'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
@@ -468,12 +468,12 @@ function showCartridgeTypeForm ($target,$ID) {
 		else {
 		echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
 		
-		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>";
+		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>\n";
 		}
 		echo "</div>";
-		echo "</form>";
 		echo "</td>";
-		echo "</tr>";
+		echo "</form>";
+		echo "</tr>\n";
 
 		echo "</table></div>";
 		
@@ -636,18 +636,18 @@ function showCartridges ($tID,$show_old=0) {
 
 			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre' width='90%'>";
 			if ($show_old==0){
-			echo "<tr><th colspan='6'>";
-			echo $total;
-			echo "&nbsp;".$lang["cartridges"][16]."&nbsp;-&nbsp;$unused&nbsp;".$lang["cartridges"][13]."&nbsp;-&nbsp;$used&nbsp;".$lang["cartridges"][14]."&nbsp;-&nbsp;$old&nbsp;".$lang["cartridges"][15]."</th>";
-			echo "<th colspan='1'>";
-			echo "&nbsp;</th></tr>";
+				echo "<tr><th colspan='6'>";
+				echo $total;
+				echo "&nbsp;".$lang["cartridges"][16]."&nbsp;-&nbsp;$unused&nbsp;".$lang["cartridges"][13]."&nbsp;-&nbsp;$used&nbsp;".$lang["cartridges"][14]."&nbsp;-&nbsp;$old&nbsp;".$lang["cartridges"][15]."</th>";
+				echo "<th colspan='1'>";
+				echo "&nbsp;</th></tr>";
 			}
 			else { // Old
-			echo "<tr><th colspan='7'>";
-			echo $lang["cartridges"][35];
-			echo "</th>";
-			echo "<th colspan='1'>";
-			echo "&nbsp;</th></tr>";
+				echo "<tr><th colspan='7'>";
+				echo $lang["cartridges"][35];
+				echo "</th>";
+				echo "<th colspan='1'>";
+				echo "&nbsp;</th></tr>";
 				
 			}
 			$i=0;
@@ -724,11 +724,7 @@ $query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')
 		echo "</td></tr>";
 		
 	}	
-		echo "</table></td>";
-		
-		echo "</tr>";
-				
-	
+
 	}	
 echo "</table></div>\n\n";
 	

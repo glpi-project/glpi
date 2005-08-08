@@ -55,6 +55,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 	} else {
 		if ($withtemplate!=2)
 		echo "<form name='form_ic' method='post' action=\"$target\">";
+		
 		echo "<div align='center'>";
 		echo "<table class='tab_cadre' width='700'>";
 
@@ -158,7 +159,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		if ($withtemplate!=2){
 			echo "<tr>";
                 
-            echo "<td class='tab_bg_2' colspan='2' align='center'>";
+		        echo "<td class='tab_bg_2' colspan='2' align='center'>";
 			echo "<input type='hidden' name='ID' value=\"".$ic->fields['ID']."\">\n";
 			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
 			echo "</td>\n\n";
@@ -167,12 +168,13 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 			echo "<input type='hidden' name='ID' value=\"".$ic->fields['ID']."\">\n";
 			echo "<td class='tab_bg_2' colspan='2' align='center'>\n";
 			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-			echo "</form>";
+			
 			echo "</td>";
 			echo "</tr>";
 		}
 
 		echo "</table></div>";
+		if ($withtemplate!=2) echo "</form>";
 		
 	}
 echo "<br>";

@@ -1194,7 +1194,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	$nb = $db->numrows($result);
 	
 	if((!empty($withtemplate) && $withtemplate == 2) || $nb==0) {
-	//Do nothing
+		echo "</table></center>";
 	} else {
 		echo "<form method='post' action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
 		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
@@ -1204,9 +1204,10 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 		echo "</div></td><td align='center' class='tab_bg_2'>";
 		echo "<input type='submit' name='select' value=\"".$lang["buttons"][4]."\" class='submit'>";
 		echo "</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+		echo "</table></center>";
         	echo "</form>";
 	}
-	echo "</table></center>";
+	
 		
 
 }
