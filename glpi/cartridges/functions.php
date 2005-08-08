@@ -999,13 +999,14 @@ function showCartridgeInstalled($instID,$old=0) {
 	
 		echo "<div class='software-instal'><input type='hidden' name='pID' value='$instID'>";
 			dropdownCompatibleCartridges($instID);
-		echo "</div></td><td align='center' class='tab_bg_2'>";
 		echo "<input type='submit' name='install' value=\"".$lang["buttons"][4]."\" class='submit'>";
+			
+		echo "</div></form></td><td align='center' class='tab_bg_2'>&nbsp;";
 		echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
 		echo "</tr>";
 	}
         echo "</table></center>";
-	echo "</form>";
+	
 
 }
 
