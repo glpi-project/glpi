@@ -45,7 +45,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 	echo "<div align='center'>&nbsp;\n";
 	echo "<form method='post' action=\"$target\">";
 
-	echo "<table class='tab_cadre' width='70%'>\n";
+	echo "<table class='tab_cadre' width='700'  cellpadding='1'>\n";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
 	if (countElementsInTable("glpi_dropdown_".$name)>0){
 	echo "<tr><td  align='center'  class='tab_bg_1'>";
@@ -61,16 +61,19 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 
  	echo "<input type='text' maxlength='100' size='20' name='value' value='$value'>";
 
-	echo "</td><td align='center' class='tab_bg_2'>";
+	echo "</td><td align='center' class='tab_bg_2' width='99'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."'>";
 	//  on ajoute un bouton modifier
         echo "<input type='submit' name='update' value='".$lang["buttons"][14]."' class='submit'>";
-        echo "</td><td align='center' class='tab_bg_2'>";
+        echo "</td><td align='center' class='tab_bg_2' width='99'>";
         //
         echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-	echo "</td></tr></form>";
+	echo "</td></tr></table></form>";
+
 	echo "<form method='post' action=\"$target\">";
+
 	echo "<input type='hidden' name='which' value='$name'>";
+	echo "<table class='tab_cadre' width='700' cellpadding='1'>\n";
 	
 	echo "<tr><td align='center' class='tab_bg_1'>";
 
@@ -78,15 +81,18 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 	echo "&nbsp;&nbsp;&nbsp;".$lang["setup"][75]." :&nbsp;&nbsp;&nbsp;";
 
 	dropdownValue("glpi_dropdown_".$name, "value_where",$where);
-	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
+	echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
 	echo "<input type='submit' name='move' value=\"".$lang["buttons"][20]."\" class='submit'>";
 	
-	echo "</td></form></tr>";	
-	
+	echo "</td></tr></table></form>";	
+		
 	}
+
 	echo "<form action=\"$target\" method='post'>";
 	echo "<input type='hidden' name='which' value='$name'>";
+
+	echo "<table class='tab_cadre' width='700' cellpadding='1'>\n";
 	echo "<tr><td  align='center'  class='tab_bg_1'>";
 		echo "<input type='text' maxlength='100' size='15' name='value'>&nbsp;&nbsp;&nbsp;";
 
@@ -100,7 +106,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 		}		
 	else echo "<input type='hidden' name='type' value='first'>";
 	 		
-	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
+	echo "</td><td align='center' colspan='2' class='tab_bg_2'  width='202'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
 	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</td></tr>";
@@ -118,7 +124,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 	echo "<div align='center'>&nbsp;";
 	echo "<form method='post' action=\"$target\">";
 
-	echo "<table class='tab_cadre' width='70%'>";
+	echo "<table class='tab_cadre' width='700' cellpadding='1'>";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
 	if (countElementsInTable("glpi_dropdown_".$name)>0){
 	echo "<tr><td align='center' class='tab_bg_1'>";
@@ -154,18 +160,19 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
         	echo "<input type='text' maxlength='100' size='20' name='value' value='$value'>";
         }
 	//
-	echo "</td><td align='center' class='tab_bg_2'>";
+	echo "</td><td align='center' class='tab_bg_2' width='99'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."'>";
 	//  on ajoute un bouton modifier
         echo "<input type='submit' name='update' value='".$lang["buttons"][14]."' class='submit'>";
-        echo "</td><td align='center' class='tab_bg_2'>";
+        echo "</td><td align='center' class='tab_bg_2' width='99'>";
         //
         echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-	echo "</td></form></tr>";
+	echo "</td></tr></table></form>";
 	
 	}
 	echo "<form action=\"$target\" method='post'>";
 	echo "<input type='hidden' name='which' value='$name'>";
+	echo "<table class='tab_cadre' width='700' cellpadding='1'>";
 	echo "<tr><td align='center'  class='tab_bg_1'>";
 	if($name == "netpoint") {
 		echo $lang["networking"][1].": ";		
@@ -176,15 +183,18 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 	else {
 		echo "<input type='text' maxlength='100' size='20' name='value'>";
 	}
-	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
+	echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
 	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</td></tr>";
 	
 	// Multiple Add for Netpoint
 	if($name == "netpoint") {
+		echo "</table></form>";
+
 		echo "<form action=\"$target\" method='post'>";
 		echo "<input type='hidden' name='which' value='$name'>";
+		echo "<table class='tab_cadre' width='700' cellpadding='1'>";
 		echo "<tr><td align='center'  class='tab_bg_1'>";
 
 		echo $lang["networking"][1].": ";		
@@ -201,15 +211,13 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 
 		echo "<input type='text' maxlength='100' size='5' name='after'>";	
 
-		echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
+		echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
 		echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
 		echo "<input type='submit' name='several_add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 		echo "</td></tr>";
 	}
 	
-	
-	echo "</form>";
-	echo "</table></div>";
+	echo "</table></form></div>";
 }
 
 function showFormTypeDown ($target,$name,$human,$ID) {

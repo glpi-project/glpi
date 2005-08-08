@@ -837,8 +837,8 @@ $result=$db->query($query);
 if ($db->numrows($result)>0)
 while ($line=$db->fetch_array($result)){
 	echo "<tr><td>".getDropdownName("glpi_dropdown_vlan",$line["FK_vlan"]);
-	echo "<a href='".$HTMLRel."networking/networking-port.php?unassign_vlan=unassigned&amp;ID=".$line["ID"]."'>";
 	echo "</td><td>";
+	echo "<a href='".$HTMLRel."networking/networking-port.php?unassign_vlan=unassigned&amp;ID=".$line["ID"]."'>";
     echo "<img src=\"".$HTMLRel."/pics/delete2.png\" alt='".$lang["buttons"][6]."' title='".$lang["buttons"][6]."'>";
     echo "</a></td></tr>";
 }
