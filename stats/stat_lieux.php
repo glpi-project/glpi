@@ -36,6 +36,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_users.php");
+include ($phproot . "/glpi/includes_setup.php");
 include ($phproot . "/glpi/includes_devices.php");
 require ("functions.php");
 
@@ -44,7 +45,7 @@ checkAuthentication("normal");
 
 commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
 
-echo "<div align='center'><p><b><span class='icon_nav'>".$lang["stats"][19]."</b></span></p>";
+echo "<div align='center'><p><b><span class='icon_nav'>".$lang["stats"][19]."</span></b></p>";
 
 if(empty($_POST["date1"])) $_POST["date1"] = "";
 if(empty($_POST["date2"])) $_POST["date2"] = "";
