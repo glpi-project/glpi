@@ -58,7 +58,7 @@ if ($result = $db->query($query)) {
 echo "<a href=\"".$cfg_install["root"]."/reservation/index.php?";
 // Ajouter le matériel
 if ($numrows==0){
-echo "id_device=$id_device&device_type=$device_type&amp;add=add\">".$lang["reservation"][7]."</a>";
+echo "id_device=$id_device&amp;device_type=$device_type&amp;add=add\">".$lang["reservation"][7]."</a>";
 }
 // Supprimer le matériel
 else {

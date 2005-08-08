@@ -76,7 +76,7 @@ function showComputerOnglets($target,$withtemplate,$actif){
 	
 	$template="";
 	if(!empty($withtemplate)){
-		$template="&withtemplate=$withtemplate";
+		$template="&amp;withtemplate=$withtemplate";
 	}
 	echo "<div id='barre_onglets'><ul id='onglet'>";
 	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=1$template'>".$lang["title"][26]."</a></li>";
@@ -164,9 +164,9 @@ function searchFormComputers($field="",$contains="",$sort= "",$deleted= "",$link
 	for ($i=0;$i<$_SESSION["glpisearchcount"];$i++){
 		echo "<tr><td align='right'>";
 		if ($i==0){
-			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?add_search_count=1'><img src=\"".$HTMLRel."pics/plus.png\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?add_search_count=1'><img src=\"".$HTMLRel."pics/plus.png\" alt='+'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 			if ($_SESSION["glpisearchcount"]>1)
-			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?delete_search_count=1'><img src=\"".$HTMLRel."pics/moins.png\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?delete_search_count=1'><img src=\"".$HTMLRel."pics/moins.png\" alt='-'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 		}
 		if ($i>0) {
 			echo "<select name='link[$i]'>";
@@ -1021,7 +1021,7 @@ function showConnections($ID,$withtemplate='') {
 				if(!empty($withtemplate) && $withtemplate == 2) {
 					//do nothing
 				} else {
-					echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=".PRINTER_TYPE."&withtemplate=".$withtemplate."\"><b>";
+					echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&amp;eID=$tID&amp;disconnect=1&amp;device_type=".PRINTER_TYPE."&amp;withtemplate=".$withtemplate."\"><b>";
 					echo $lang["buttons"][10];
 					echo "</b></a></td>";
 				}
@@ -1034,7 +1034,7 @@ function showConnections($ID,$withtemplate='') {
 		if(!empty($withtemplate) && $withtemplate == 2) {
 			//do nothing
 		} else {
-			echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=printer&withtemplate=".$withtemplate."\"><b>";
+			echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&amp;connect=1&amp;device_type=printer&amp;withtemplate=".$withtemplate."\"><b>";
 			echo $lang["buttons"][9];
 			echo "</b></a>";
 		}
@@ -1064,7 +1064,7 @@ function showConnections($ID,$withtemplate='') {
 				if(!empty($withtemplate) && $withtemplate == 2) {
 					//do nothing
 				} else {
-					echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=".MONITOR_TYPE."&withtemplate=".$withtemplate."\"><b>";
+					echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&amp;eID=$tID&amp;disconnect=1&amp;device_type=".MONITOR_TYPE."&amp;withtemplate=".$withtemplate."\"><b>";
 					echo $lang["buttons"][10];
 					echo "</b></a></td>";
 				}
@@ -1077,7 +1077,7 @@ function showConnections($ID,$withtemplate='') {
 		if(!empty($withtemplate) && $withtemplate == 2) {
 			//do nothing
 		} else {
-			echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=monitor&withtemplate=".$withtemplate."\"><b>";
+			echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&amp;connect=1&amp;device_type=monitor&amp;withtemplate=".$withtemplate."\"><b>";
 			echo $lang["buttons"][9];
 			echo "</b></a>";
 		}
@@ -1108,7 +1108,7 @@ function showConnections($ID,$withtemplate='') {
 				if(!empty($withtemplate) && $withtemplate == 2) {
 					//do nothing
 				} else {
-					echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&eID=$tID&disconnect=1&device_type=".PERIPHERAL_TYPE."&withtemplate=".$withtemplate."\"><b>";
+					echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&amp;eID=$tID&amp;disconnect=1&amp;device_type=".PERIPHERAL_TYPE."&amp;withtemplate=".$withtemplate."\"><b>";
 					echo $lang["buttons"][10];
 					echo "</b></a></td>";
 				}
@@ -1121,7 +1121,7 @@ function showConnections($ID,$withtemplate='') {
 		if(!empty($withtemplate) && $withtemplate == 2) {
 			//do nothing
 		} else {
-			echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&connect=1&device_type=peripheral&withtemplate=".$withtemplate."\"><b>";
+			echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&amp;connect=1&amp;device_type=peripheral&amp;withtemplate=".$withtemplate."\"><b>";
 			echo $lang["buttons"][9];
 			echo "</b></a>";
 		}

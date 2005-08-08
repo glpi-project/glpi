@@ -56,7 +56,7 @@ function showSoftwareOnglets($target,$withtemplate,$actif){
 	
 	$template="";
 	if(!empty($withtemplate)){
-		$template="&withtemplate=$withtemplate";
+		$template="&amp;withtemplate=$withtemplate";
 	}
 
 	echo "<div id='barre_onglets'><ul id='onglet'>";
@@ -115,9 +115,9 @@ function searchFormSoftware($field="",$phrasetype= "",$contains="",$sort= "",$de
 	for ($i=0;$i<$_SESSION["glpisearchcount"];$i++){
 		echo "<tr><td align='right'>";
 		if ($i==0){
-			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?add_search_count=1'><img src=\"".$HTMLRel."pics/plus.png\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?add_search_count=1'><img src=\"".$HTMLRel."pics/plus.png\" alt='+'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 			if ($_SESSION["glpisearchcount"]>1)
-			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?delete_search_count=1'><img src=\"".$HTMLRel."pics/moins.png\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?delete_search_count=1'><img src=\"".$HTMLRel."pics/moins.png\" alt='-'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 		}
 		if ($i>0) {
 			echo "<select name='link[$i]'>";
@@ -791,7 +791,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		$IDdup=$db->result($result_new,0,0);
 		echo "</td><td align='center' >";
 		
-		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_install["root"]."/software/software-licenses.php?duplicate=duplicate&lID=$IDdup\">";
+		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_install["root"]."/software/software-licenses.php?duplicate=duplicate&amp;lID=$IDdup\">";
 		
 		echo "<img src=\"".$HTMLRel."pics/add.png\" alt='".$lang["buttons"][8]."' title='".$lang["buttons"][8]."'>";
 		
@@ -1051,7 +1051,7 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 		echo "<td align='center'>".($lic->fields["buy"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
 		echo "</td>";				
 						echo "<td align='center'><strong>";
-							echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?back=$back&install=install&cID=$cID&lID=$ID\">";
+							echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?back=$back&amp;install=install&amp;cID=$cID&amp;lID=$ID\">";
 							echo $lang["buttons"][4];
 							echo "</a>";
 						echo "</strong></td>";
@@ -1068,7 +1068,7 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 					echo "<td>&nbsp;</td>";
 					echo "<td>&nbsp;</td>";
 					echo "<td align='center'><strong>";
-					echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?back=$back&install=install&cID=$cID&lID=$ID\">";
+					echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?back=$back&amp;install=install&amp;cID=$cID&amp;lID=$ID\">";
 					echo $lang["buttons"][4];
 					echo "</a></strong></td>";
 					echo "</tr>";	

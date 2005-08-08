@@ -715,9 +715,9 @@ function faqShowCategories($parentID=0)
 				echo "<li><b>";
 				if (!isset($_SESSION["kb_show"][$ID])) $_SESSION["kb_show"][$ID]='Y';
 				if ($_SESSION["kb_show"][$ID]=='Y')
-					echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&tohide=$ID\"><img src='".$HTMLRel."pics/puce-down.gif'></a>";
+					echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&amp;tohide=$ID\"><img src='".$HTMLRel."pics/puce-down.gif'></a>";
 				else 
-					echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&toshow=$ID\"><img src='".$HTMLRel."pics/puce.gif'></a>";
+					echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&amp;toshow=$ID\"><img src='".$HTMLRel."pics/puce.gif'></a>";
 
 				echo "</a> $name</b>\n";
 				if ($_SESSION["kb_show"][$ID]=='Y'){

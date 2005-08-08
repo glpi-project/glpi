@@ -522,7 +522,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and 
 		if ($item)
 		{
 			echo "<tr><td align='center' class='tab_bg_2' colspan='9'>";
-			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&device_type=$item_type\"><strong>";
+			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&amp;device_type=$item_type\"><strong>";
 			echo $lang["joblist"][7];
 			echo "</strong></a>";
 			echo "</td></tr>";
@@ -539,7 +539,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and 
 		{
 			 
 			  echo "<tr><td align='center' class='tab_bg_2' colspan='8'>";
-			  echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&device_type=$item_type\"><strong>";
+			  echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&amp;device_type=$item_type\"><strong>";
 			  echo $lang["joblist"][7];
 			  echo "</strong></a>";
 			  echo "</td></tr>";
@@ -865,7 +865,7 @@ function showJobDetails($ID) {
 			while ($data=$db->fetch_array($result2)){
 				echo "<tr><td colspan='2' align='left'>\n";
 				echo date("Y-m-d H:i",strtotime($data["begin"]))." -> ".date("Y-m-d H:i",strtotime($data["end"]))." - ".getUserName($data['id_assign']);
-				echo "<a href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;job=".$job->ID."&amp;ID=".$data["ID"]."'><img src='$HTMLRel/pics/edit.png'></a>\n";
+				echo "<a href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;job=".$job->ID."&amp;ID=".$data["ID"]."'><img src='$HTMLRel/pics/edit.png' alt='Edit'></a>\n";
 
 				echo "<br>";
 				$tmp_beg=split(" ",$data["begin"]);
@@ -1218,7 +1218,7 @@ function showFollowups($ID) {
 			echo "<tr class='tab_bg_2'>\n";
 			echo "<td align='center'>$fup->date</td>\n";
 			echo "<td align='center'>".$fup->getAuthorName(1)."</td>\n";
-			echo "<td width=70%><strong>$fup->contents</strong></td>\n";
+			echo "<td width='70%'><strong>$fup->contents</strong></td>\n";
 			echo "</tr>";
 		}		
 
@@ -1802,7 +1802,7 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 		
 		if ($numrows_limit>0) {
 			// Pager
-			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&date1=$date1&date2=$date2&only_computers=$computers_search&field2=$field2&phrasetype2=$phrasetype2&contains2=$contains2&attrib=$assign&author=$author";
+			$parameters="field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;phrasetype2=$phrasetype2&amp;contains2=$contains2&amp;attrib=$assign&amp;author=$author";
 			printPager($start,$numrows,$target,$parameters);
 			
 			// Produce headline
@@ -1826,7 +1826,6 @@ echo "<th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
 
 			// Pager
 			echo "<br>";
-//			$parameters="field=$field&phrasetype=$phrasetype&contains=$contains&date1=$date1&date2=$date2&only_computers=$computers_search&field2=$field2&phrasetype2=$phrasetype2&contains2=$contains2&attrib=$assign&author=$author";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
