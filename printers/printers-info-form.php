@@ -180,7 +180,8 @@ if (isset($_GET['onglet'])) {
 		
 			switch($_SESSION['glpi_onglet']){
 				case -1:
-					showCartridgeInstalled($tab["ID"]);		
+					showCartridgeInstalled($tab["ID"]);
+					showCartridgeInstalled($tab["ID"],1);		
 					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PRINTER_TYPE);
 					showPorts($tab["ID"], PRINTER_TYPE,$tab["withtemplate"]);
 					showPortsAdd($tab["ID"],PRINTER_TYPE);	
