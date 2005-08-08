@@ -413,7 +413,7 @@ echo "</td><td valign='top'>";
 // test 
 	
 	
-echo "<table class='tab_cadre' width='700'>";
+echo "<table class='tab_cadre' width='700'><tr>";
 echo "<th width='14%'>".$lang["calendarD"][1]."</th>";
 echo "<th width='14%'>".$lang["calendarD"][2]."</th>";
 echo "<th width='14%'>".$lang["calendarD"][3]."</th>";
@@ -421,7 +421,7 @@ echo "<th width='14%'>".$lang["calendarD"][4]."</th>";
 echo "<th width='14%'>".$lang["calendarD"][5]."</th>";
 echo "<th width='14%'>".$lang["calendarD"][6]."</th>";
 echo "<th width='14%'>".$lang["calendarD"][0]."</th>";
-
+echo "</tr>";
 echo "<tr class='tab_bg_3' >";
 
 // Il faut insérer des cases vides pour mettre le premier jour du mois
@@ -441,12 +441,12 @@ for ($i=1;$i<$nb_jour[$mois_courant-1]+1;$i++){
 	echo "<table align='center' ><tr><td align='center' ><span style='font-family: arial,helvetica,sans-serif; font-size: 14px; color: black'>".$i."</span></td></tr>";
 	
 	if (!empty($ID)){
-	echo "<tr><td align='center'><a href=\"".$target."?show=resa&add=$ID&date=".$annee_courante."-".$mois_courant."-".$ii."\"><img style='color: blue; font-family: Arial, Sans, sans-serif; font-size: 10px;' src=\"".$HTMLRel."pics/addresa.png\" alt='".$lang["reservation"][8]."' title='".$lang["reservation"][8]."'></a></td></tr>";
+	echo "<tr><td align='center'><a href=\"".$target."?show=resa&amp;add=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img style='color: blue; font-family: Arial, Sans, sans-serif; font-size: 10px;' src=\"".$HTMLRel."pics/addresa.png\" alt='".$lang["reservation"][8]."' title='".$lang["reservation"][8]."'></a></td></tr>";
 	}
 	//if (($i-1+$jour_debut_mois)%7!=6&&($i-1+$jour_debut_mois)%7!=0){
 	echo "<tr><td>";
 	printReservation($target,$ID,$annee_courante."-".$mois_courant."-".$ii);
-	echo "</tr></td>";
+	echo "</td></tr>";
 	//}
 //	echo $annee_courante."-".$mois_courant."-".$ii;
 	//if (($i-1+$jour_debut_mois)%7!=6&&($i-1+$jour_debut_mois)%7!=0)
@@ -598,19 +598,19 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 	if ($resaID==-1){
 	echo "<tr class='tab_bg_2'>";
 	echo "<td colspan='2'  valign='top' align='center'>";
-	echo "<input type='submit' name='add_resa' value=\"".$lang["buttons"][8]."\" class='submit' class='submit'>";
+	echo "<input type='submit' name='add_resa' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</td></tr>\n";
 	} else {
 	echo "<tr class='tab_bg_2'>";
 	echo "<td valign='top' align='center'>";
-	echo "<input type='submit' name='clear_resa' value=\"".$lang["buttons"][6]."\" class='submit' class='submit'>";
+	echo "<input type='submit' name='clear_resa' value=\"".$lang["buttons"][6]."\" class='submit'>";
 	echo "</td><td valign='top' align='center'>";
-	echo "<input type='submit' name='edit_resa' value=\"".$lang["buttons"][14]."\" class='submit' class='submit'>";
+	echo "<input type='submit' name='edit_resa' value=\"".$lang["buttons"][14]."\" class='submit'>";
 	echo "</td></tr>\n";
 	}
 	
-	echo "</table></div>";
-	echo "</form>";
+	echo "</table>";
+	echo "</form></div>";
 }
 
 function printReservation($target,$ID,$date){
@@ -803,7 +803,7 @@ function showReservationCommentForm($target,$ID){
 
 	echo "<tr class='tab_bg_2'>";
 	echo "<td colspan='2'  valign='top' align='center'>";
-	echo "<input type='submit' name='updatecomment' value=\"".$lang["buttons"][14]."\" class='submit' class='submit'>";
+	echo "<input type='submit' name='updatecomment' value=\"".$lang["buttons"][14]."\" class='submit'>";
 	echo "</td></tr>\n";
 	
 	echo "</table></div>";

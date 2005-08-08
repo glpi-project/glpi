@@ -97,7 +97,7 @@ function showUserinfo($target,$ID) {
 			echo "</td></tr>";
 	echo "</table></div>";
 
-	echo "<div align='center' ><p><b>".$lang["tracking"][11]."</p></div>";
+	echo "<div align='center' ><p><b>".$lang["tracking"][11]."</b></p></div>";
 	
 }
 
