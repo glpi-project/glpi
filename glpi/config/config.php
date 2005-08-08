@@ -59,14 +59,15 @@ require_once ($phproot ."/glpi/config/config_db.php");
 // dictionnaires
 
 
-$cfg_install["languages"]=array("english"=>array("English","english.php","english.html","hd-english.html"),
-				"deutsch"=>array("Deutsch","deutsch.php","deutsch.html","hd-deutsch.html"),
+$cfg_install["languages"]=array("deutsch"=>array("Deutsch","deutsch.php","deutsch.html","hd-deutsch.html"),
+				"english"=>array("English","english.php","english.html","hd-english.html"),
+				"castellano"=>array("Español (castellano)","castellano.php","castellano.html","hd-castellano.html"),
 				"french"=>array("Français","french.php","french.html","hd-french.html"),
 				"italian"=>array("Italiano","italian.php","italian.html","hd-italian.html"),
-				"castellano"=>array("Español (castellano)","castellano.php","castellano.html","hd-castellano.html"),
+				"polish"=>array("Polish","polish.php","english.html","hd-english.html"),
 				"portugese"=>array("Português (brasileiro)","portugese.php","english.html","hd-english.html"),
 				"rumaninian"=>array("Rumanian","rumanian.php","english.html","hd-english.html"),
-				"polish"=>array("Polish","polish.php","english.html","hd-english.html"),);
+				);
 
 // ITEMS TYPE
 define("GENERAL_TYPE","0");
