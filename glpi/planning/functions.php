@@ -292,7 +292,7 @@ if (count($interv)>0)
 foreach ($interv as $key => $val){
 if($type=='day'){
 echo "<div style=' margin:auto; text-align:center; border:1px dashed #cccccc; background-color: #d7d7d2; font-size:9px; width:80%;'>";
-echo "<a  href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;job=".$val["id_tracking"]."&amp;ID=".$val["ID"]."'><img src='$HTMLRel/pics/edit.png'></a>";
+echo "<a  href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;job=".$val["id_tracking"]."&amp;ID=".$val["ID"]."'><img src='$HTMLRel/pics/edit.png' alt='edit'></a>";
 echo "<a  href='".$HTMLRel."tracking/tracking-followups.php?ID=".$val["id_tracking"]."'>";
 echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"];
 if ($who==0){

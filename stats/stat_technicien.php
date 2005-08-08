@@ -88,7 +88,7 @@ ksort($val);
   foreach($val as $k=>$key)
   {
 	echo "<tr class='tab_bg_2'>";
-	echo "<td>".getAssignName($key["assign"],$key["assign_type"],1)."</td><td><a href='graph_item.php?ID=".$key["assign"]."&assign_type=".$key["assign_type"]."&amp;type=technicien'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
+	echo "<td>".getAssignName($key["assign"],$key["assign_type"],1)."</td><td><a href='graph_item.php?ID=".$key["assign"]."&amp;assign_type=".$key["assign_type"]."&amp;type=technicien'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
 	//le nombre d'intervention
 	//the number of intervention
 		echo "<td>".getNbinter(4,'assign',unhtmlentities($key["assign"]),$_POST["date1"],$_POST["date2"])."</td>";
