@@ -567,7 +567,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 	echo getDictDeviceLabel($device_type)."</th><th align='center' colspan='1'> ID : ".$ID;
 	echo "<tr><td class='tab_bg_1' colspan='1'>";
 	// table commune
-	echo "<table cellpadding='1px' cellspacing='0' border='0'>\n";
+	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 	echo "<tr><td>".$lang["printers"][5].":	</td>";
 	echo "<td><input type='text' name='designation' value=\"".$device->fields["designation"]."\" size='20'></td>";
 	echo "</tr>";
@@ -585,7 +585,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 	echo "<td class='tab_bg_1' valign='top'>";
 
 	// table particuliere
-	echo "<table cellpadding='1px' cellspacing='0' border='0'>";
+	echo "<table cellpadding='1' cellspacing='0' border='0'>";
 		
 	switch(getDeviceTable($device_type)) {
 		case "glpi_device_moboard" : 
@@ -745,7 +745,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 		break;	
 
 	}
-	echo "</td></tr>";
+	//echo "</td></tr>";
 	echo "</table>";
 	echo "</td>\n";	
 	echo "</tr>";
@@ -767,25 +767,28 @@ function showDevicesForm ($target,$ID,$device_type) {
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<input type='hidden' name='device_type' value=\"$device_type\">\n";
 		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
-		echo "</td></form>\n\n";
-		echo "<form action=\"$target\" method='post'>\n";
+		echo "</td>";
+		//echo "</form>\n\n";
+		//echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign='top' align='center'>\n";
-		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<input type='hidden' name='device_type' value=\"$device_type\">\n";
+//		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+//		echo "<input type='hidden' name='device_type' value=\"$device_type\">\n";
 		echo "<div align='center'>";
 		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 		echo "</div>";
 		echo "</td>";
-		echo "</form></tr>";
+		//echo "</form>";
+		echo "</tr>";
 	}
 	else {
 		echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<input type='hidden' name='device_type' value=\"$device_type\">\n";
 		echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
-		echo "</td></form>\n\n";	
+		echo "</td>";
+		//echo "</form>\n\n";	
 	}
-	echo "</table></div>";
+	echo "</table></form></div>";
 }
 
 function updateDevice($input) {

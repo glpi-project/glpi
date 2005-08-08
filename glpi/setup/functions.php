@@ -922,8 +922,8 @@ function titleExtSources(){
 		
 		GLOBAL  $lang,$HTMLRel;
                 echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/authentification.png\" alt='' title=''></td><td><b><span class='icon_nav'>".$lang["setup"][150]."</span>";
-		 echo "</b></td></tr></table>&nbsp;</div>";
+                echo "<img src=\"".$HTMLRel."pics/authentification.png\" alt='' title=''></td><td><span class='icon_nav'>".$lang["setup"][150]."</span>";
+		 echo "</td></tr></table>&nbsp;</div>";
 
 }
 
@@ -933,6 +933,7 @@ function titleExtSources(){
 
 function showMailServerConfig($value){
 global $lang;
+
 if (ereg(":",$value)){
 $addr=ereg_replace("{","",preg_replace("/:.*/","",$value));
 $port=preg_replace("/.*:/","",preg_replace("/\/.*/","",$value));
@@ -971,13 +972,14 @@ echo "</td></tr>";
 
 echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][169]."</td><td><input size='30' type=\"text\" name=\"server_mailbox\" value=\"". $mailbox."\" ></td></tr>";	
 echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][171]."</td><td><input size='10' type=\"text\" name=\"server_port\" value=\"". $port."\" ></td></tr>";	
+if (empty($value)) $value="&nbsp;";
 echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][170]."</td><td><b>$value</b></td></tr>";	
 
 }	
 
 function constructIMAPAuthServer($input){
 
-$out="";
+$out="&nbps;";
 if (isset($input['mail_server'])&&!empty($input['mail_server'])) $out.="{".$input['mail_server'];
 else return $out;
 if (isset($input['server_port'])&&!empty($input['server_port'])) $out.=":".$input['server_port'];
@@ -1081,7 +1083,7 @@ function titleMailing(){
 		GLOBAL  $lang,$HTMLRel;
                 echo "<div align='center'><table border='0'><tr><td>";
                 echo "<img src=\"".$HTMLRel."pics/mail.png\" alt='' title=''></td><td><span class='icon_nav'>".$lang["setup"][200]."</span>";
-		 echo "</b></td></tr></table></div>";
+		 echo "</td></tr></table></div>";
 }
 
 
@@ -1094,7 +1096,7 @@ function showFormMailing($target) {
 		echo "<form action=\"$target\" method=\"post\">";
 		
 		
-		echo "<div align='center'><table class='tab_cadre' width='600''><tr><th colspan='3'>".$lang["setup"][201]."</th></tr>";
+		echo "<div align='center'><table class='tab_cadre' width='600'><tr><th colspan='3'>".$lang["setup"][201]."</th></tr>";
 		
 			if (function_exists('mail')) {
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][202]."</td><td align='center'>&nbsp; ".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"mailing\" value=\"1\" "; if($db->result($result,0,"mailing") == 1) echo "checked"; echo " > &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"mailing\" value=\"0\" "; if($db->result($result,0,"mailing") == 0) echo "checked"; echo " ></td></tr>";
@@ -1103,7 +1105,7 @@ function showFormMailing($target) {
 		
 		echo "<p><b>".$lang["setup"][205]."</b></p>";
 		
-		echo "<table class='tab_cadre' width='600''><tr><th colspan='3'>".$lang["setup"][206]."<th></tr>";
+		echo "<table class='tab_cadre' width='600'><tr><th colspan='3'>".$lang["setup"][206]."<th></tr>";
 		echo "<tr class='tab_bg_2'><td>".$lang["setup"][211]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_new_admin\" value=\"1\" "; if($db->result($result,0,"mailing_new_admin") == 1) echo "checked"; echo " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_new_admin\" value=\"0\" "; if($db->result($result,0,"mailing_new_admin") == 0) echo "checked"; echo " ></td></tr>";
 		
 		//echo "<tr class='tab_bg_2'><td >A chaque changement de responsable</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_attrib_admin\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_admin") == 1) echo "checked"; echo " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_attrib_admin\" value=\"0\" "; if($db->result($result,0,"mailing_attrib_admin") == 0) echo "checked"; echo " ></td></tr>";
@@ -1123,7 +1125,7 @@ function showFormMailing($target) {
 		echo "<tr class='tab_bg_2'><td>".$lang["setup"][213]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_finish_all_admin\" value=\"1\"  "; if($db->result($result,0,"mailing_finish_all_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_finish_all_admin\" value=\"0\"  "; if($db->result($result,0,"mailing_finish_all_admin") == 0) echo "checked"; echo  " ></td></tr>";
 		
 	
-		echo "<tr'><th colspan='3'>".$lang["setup"][208]."</th></tr>";
+		echo "<tr><th colspan='3'>".$lang["setup"][208]."</th></tr>";
 		echo "<tr class='tab_bg_2'><td>".$lang["setup"][211]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_new_all_normal\" value=\"1\"  "; if($db->result($result,0,"mailing_new_all_normal") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_new_all_normal\" value=\"0\"  "; if($db->result($result,0,"mailing_new_all_normal") == 0) echo "checked"; echo  " ></td></tr>";
 		//echo "<tr class='tab_bg_2'><td>A chaque changement de responsable</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_attrib_all_normal\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_all_normal") == 1) echo "checked"; echo  "  ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_attrib_all_normal\" value=\"0\"  "; if($db->result($result,0,"mailing_attrib_all_normal") == 0) echo "checked"; echo  " ></td></tr>";
 		
