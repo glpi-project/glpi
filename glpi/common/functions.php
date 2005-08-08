@@ -341,8 +341,7 @@ function checkAuthentication($authtype) {
 	if(!session_id()){@session_start();}
 	// Override cfg_features by session value
 	if (isset($_SESSION['list_limit'])) $cfg_features["list_limit"]=$_SESSION['list_limit'];
-	
-	
+
 	GLOBAL $cfg_install, $lang, $HTMLRel;
 
 	if(empty($_SESSION["authorisation"]))
@@ -1911,7 +1910,7 @@ function explodeAllItemsSelectResult($val){
 */
 function loadLanguage() {
 
-	GLOBAL $lang,$cfg_install;
+	GLOBAL $lang,$cfg_install,$cfg_debug;
 
 	if(empty($_SESSION["glpilanguage"])) {
 		$file= "/glpi/dicts/".$cfg_install["languages"][$cfg_install["default_language"]][1];
@@ -1920,6 +1919,16 @@ function loadLanguage() {
 	}
 		include ("_relpos.php");
 		include ($phproot . $file);
+		
+	// Debug display lang element with item
+	if ($cfg_debug["active"]&&$cfg_debug["lang"]){
+		foreach ($lang as $module => $tab)
+		foreach ($tab as $num => $val){
+			$lang[$module][$num].="<span style='font-size:4px; color:red;'>$module/$num</span>";
+		
+		}
+	}
+
 }
 
 /**
