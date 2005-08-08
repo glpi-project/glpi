@@ -1508,6 +1508,35 @@ function dropdownUsers($value, $myname,$all=0) {
 	echo "</select>";
 }
 
+function dropdownAllUsers($value, $myname) {
+	global $lang;
+	// Make a select box with all glpi users
+
+	$db = new DB;
+	$query = "SELECT * FROM glpi_users ORDER BY name";
+	$result = $db->query($query);
+
+	echo "<select name=\"$myname\">";
+	$i = 0;
+	
+	$number = $db->numrows($result);
+	echo "<option value=\"0\">[ Nobody ]</option>";
+	if ($number > 0) {
+		while ($i < $number) {
+			$output = unhtmlentities($db->result($result, $i, "name"));
+			$ID = unhtmlentities($db->result($result, $i, "ID"));
+			if ($ID == $value) {
+				echo "<option value=\"$ID\" selected>".$output;
+			} else {
+				echo "<option value=\"$ID\">".$output;
+			}
+			$i++;
+			echo "</option>";
+   		}
+	}
+	echo "</select>";
+}
+
 
 /**
 * Make a select box with all glpi users where select key = name

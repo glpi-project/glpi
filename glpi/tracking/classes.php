@@ -216,6 +216,20 @@ class Job {
 		}
 	}
 
+	function authorTo($author) {
+		// change item
+		
+		$db = new DB;
+		$this->author = $author;
+
+		$query = "UPDATE glpi_tracking SET author = '$author' WHERE ID = '$this->ID'";
+		if ($result = $db->query($query)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	function itemTo($type,$comp) {
 		// change item
 		
@@ -348,8 +362,7 @@ class Followup {
 		// dump into database
 		$db = new DB;
 		$query = "INSERT INTO glpi_followups VALUES (NULL, $this->tracking, '$this->date','$this->author', '$this->contents')";
-//		echo $query;
-//		exit();
+
 		if ($result = $db->query($query)) {
 			return true;
 		} else {

@@ -58,6 +58,19 @@ itemJob ($_GET["ID"],$_GET["device_type"],$_GET["computer"]);
 	
 glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=".$_GET["ID"]);
 	
+}else if (isset($_GET["update_author"])) {
+	commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
+	echo "<center>";
+	authorFormTracking($_GET["ID"],$_SERVER["PHP_SELF"]);
+	echo "</center>";
+	commonFooter();
+
+} else if (isset($_GET["update_author_ok"])) {
+	
+authorJob ($_GET["ID"],$_GET["author"]);
+	
+glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=".$_GET["ID"]);
+	
 }else if (isset($_GET["update"])) {
 
 	if (can_assign_job($_SESSION["glpiname"])){
