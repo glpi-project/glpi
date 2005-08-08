@@ -792,7 +792,7 @@ function showJobDetails($ID) {
 		else {
 			echo "<strong>".$lang["joblist"][10]."</strong>";
 		}
-		echo "</td></tr>\n";
+		echo "</td><td>&nbsp;</td></tr>\n";
 
 
 		echo "<tr><td>".$lang["joblist"][3].":</td><td>\n";
@@ -800,6 +800,11 @@ function showJobDetails($ID) {
 		echo "<strong><a href=\"".$cfg_install["root"]."/users/users-info.php?ID=$job->author\">".$author->getName()."</a></strong>";
 		else 
 		echo "<strong>".$author->getName()."</strong>";
+		echo "</td><td>";
+		if (isAdmin($_SESSION['glpitype']))
+		echo "<input type='submit' name='update_author' value=\"".$lang["buttons"][14]."\" class='submit'>";
+		else "&nbsp;";
+
 		echo "</td></tr>\n";
 
 		$m= new CommonItem;
@@ -815,15 +820,18 @@ function showJobDetails($ID) {
 		}
 		else
 		echo "<strong>".$m->getNameID()."</strong>&nbsp;&nbsp;";
+		echo "</td><td>";
+
 		if (isAdmin($_SESSION['glpitype']))
 		echo "<input type='submit' name='update_item' value=\"".$lang["buttons"][14]."\" class='submit'>";
+		else "&nbsp;";
 		echo "</td></tr>\n";
 
-		echo "<tr><td>".$lang["joblist"][2].":</td><td><strong>";
+		echo "<tr><td>".$lang["joblist"][2].":</td><td>";
 		if (isAdmin($_SESSION["glpitype"]))
 		  priorityFormTracking($job->ID,$cfg_install["root"]."/tracking/tracking-priority-form.php");	
-		else echo getPriorityName($job->priority);	
-		echo "</strong></td></tr>\n";
+		else echo getPriorityName($job->priority)."</td><td>&nbsp;";	
+		echo "</td></tr>\n";
 
 		echo "</table>\n";
 
@@ -1164,7 +1172,7 @@ function categoryJob ($ID,$category,$admin) {
 }
 
 function itemJob ($tID,$device_type,$iID) {
-	// Assign a category to a job
+	// Chage the item of a job
 
 	GLOBAL $cfg_features, $cfg_layout,$lang;	
 	$m= new CommonItem;
@@ -1184,7 +1192,32 @@ function itemJob ($tID,$device_type,$iID) {
 	$m->getfromDB($job->device_type,$job->computer);
 
 	$content=$lang["mailing"][17].": $oldname -> ".$m->getName();
-	postFollowups ($ID,$_SESSION["glpiID"],addslashes(unhtmlentities($content)));
+	postFollowups ($tID,$_SESSION["glpiID"],addslashes(unhtmlentities($content)));
+	}
+	
+}
+
+function authorJob ($tID,$aID) {
+	// Change the author of a job
+
+	GLOBAL $cfg_features, $cfg_layout,$lang;	
+	$u= new User;
+
+	$job = new Job;
+	$job->getFromDB($tID,0);
+	$oldauthor=$job->author;
+	$u->getfromDBbyID($job->author);
+	$oldname=$u->getName();
+	$job->authorTo($aID);
+	$newauthor=$job->author;
+
+	// Add a Followup for a item change
+	if ($newauthor!=$oldauthor){
+
+	$u->getfromDBbyID($job->author);
+
+	$content=$lang["mailing"][18].": $oldname -> ".$u->getName();
+	postFollowups ($tID,$_SESSION["glpiID"],addslashes(unhtmlentities($content)));
 	}
 	
 }
@@ -1263,8 +1296,9 @@ function postFollowups ($ID,$author,$contents) {
 	$fup->tracking = $ID;
 	$fup->author = $author;
 	$fup->contents = $contents;
-	
+
 	if ($fup->putInDB()) {
+
 		// Log this event
 		$fup->logFupUpdate();
 		// Processing Email
@@ -1512,6 +1546,40 @@ function itemFormTracking ($ID,$target) {
 	}
 }
 
+function authorFormTracking ($ID,$target) {
+	GLOBAL $cfg_layout, $lang,$cfg_install;
+
+  if (isAdmin($_SESSION["glpitype"]))
+  {
+
+	$job = new Job;
+	$job->getFromDB($ID,0);
+
+	echo "<form method=get name='helpdeskform' action=\"".$target."\">";
+	echo "<table class='tab_cadre'>";
+	echo "<tr><th colspan='2'>".$lang["job"][26]."</th></tr>";
+	echo "<tr class='tab_bg_1'>";
+	echo "<td>".$lang["joblist"][3].":</td>";
+	echo "<td>";
+	dropdownAllUsers($job->author,"author");
+	echo "</td>";
+	echo "</tr>";
+
+	echo "<tr class='tab_bg_1'><td colspan='2' align='center'>";
+	echo "<input type='hidden' name='ID' value='$ID'>";
+	echo "<input type='submit' name='update_author_ok' value=\"".$lang["buttons"][14]."\" class='submit'>";
+	
+	echo "</td></tr>";
+	echo "</table>";
+
+	echo "</form>";
+	}
+	else
+	{
+	 echo $lang["tracking"][27];
+	}
+}
+
 function priorityFormTracking ($ID,$target) {
 	// Print a nice form to assign jobs if user is allowed
 
@@ -1525,6 +1593,7 @@ function priorityFormTracking ($ID,$target) {
 
 //	echo "<form method=get action=\"".$target."\">";
 	dropdownPriority("priority",$job->priority);
+	echo "</td><td>";
 //	echo "<input type='hidden' name='update' value=\"1\">";
 	echo "<input type='submit' name='update' value=\"".$lang["buttons"][14]."\" class='submit'>";
 //	echo "</form>";
