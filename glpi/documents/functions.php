@@ -302,8 +302,14 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 				echo $ct->fields["name"]." (".$ct->fields["ID"].")";
 				echo "</b></a></td>";
 
-				echo "<td align='left'>".getDocumentLink($ct->fields["filename"])."</td>";
-				echo "<td><a href=\"".$ct->fields["link"]."\">".$ct->fields["link"]."</a></td>";
+				echo "<td align='left'>";
+				echo getDocumentLink($ct->fields["filename"]);
+				echo "</td>";
+				echo "<td>";
+				if (!empty($ct->fields["link"]))
+					echo "<a href=\"".$ct->fields["link"]."\">".$ct->fields["link"]."</a>";
+				else echo "&nbsp;";
+				echo "</td>";
 				echo "<td>".getDropdownName("glpi_dropdown_rubdocs",$ct->fields["rubrique"])."</td>";
 				echo "<td>".$ct->fields["mime"]."</td>";
 				echo "<td>".$ct->fields["comment"]."</td>";				
@@ -725,6 +731,8 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
 function getDocumentLink($filename){
 global $HTMLRel,$cfg_install;	
+	if (empty($filename))
+		return "&nbsp;";
 	$out="";
 	$splitter=split("/",$filename);
 	if (count($splitter)==2)
