@@ -458,10 +458,11 @@ function showCartridgeTypeForm ($target,$ID) {
                 echo "<td class='tab_bg_2' valign='top'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
-		echo "</td></form>\n\n";
-		echo "<form action=\"$target\" method='post'>\n";
+		echo "</td>";
+//		echo "</form>\n\n";
+//		echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
-		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+//		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<div align='center'>";
 		if ($ct->fields["deleted"]=='N')
 		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
@@ -472,10 +473,9 @@ function showCartridgeTypeForm ($target,$ID) {
 		}
 		echo "</div>";
 		echo "</td>";
-		echo "</form>";
 		echo "</tr>\n";
 
-		echo "</table></div>";
+		echo "</table></div></form>";
 		
 	}
 	return true;
@@ -851,7 +851,7 @@ function showCompatiblePrinters($instID) {
 	$i = 0;
 	
     echo "<form method='post' action=\"".$cfg_install["root"]."/cartridges/cartridges-info-form.php\">";
-	echo "<br><br><center><table class='tab_cadre' width='90%'>";
+	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
 	echo "<tr><th colspan='3'>".$lang["cartridges"][32].":</th></tr>";
 	echo "<tr><th>".$lang['cartridges'][4]."</th><th>".$lang["printers"][9]."</th><th>&nbsp;</th></tr>";
 
@@ -870,7 +870,7 @@ function showCompatiblePrinters($instID) {
 	echo "<input type='submit' name='addtype' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</td></tr>";
 	
-	echo "</table></form>"    ;
+	echo "</table></div></form>"    ;
 	
 }
 

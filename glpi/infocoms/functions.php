@@ -47,11 +47,13 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 	if ($withtemplate==2)
 		$option=" readonly ";
 
-	echo "&nbsp;<div align='center'>";
-	
+	echo "<br>";
 	if (!$ic->getfromDB($device_type,$dev_ID)){
-		if ($withtemplate!=2)
-		echo "<b><a href='$target?device_type=$device_type&FK_device=$dev_ID&add=add'>".$lang["financial"][68]."</a></b><br>";
+		if ($withtemplate!=2){
+		echo "<div align='center'>";
+		echo "<b><a href='$target?device_type=$device_type&amp;FK_device=$dev_ID&amp;add=add'>".$lang["financial"][68]."</a></b><br>";
+		echo "</div>";
+		}
 	} else {
 		if ($withtemplate!=2)
 		echo "<form name='form_ic' method='post' action=\"$target\">";
@@ -162,9 +164,9 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 			echo "<input type='hidden' name='ID' value=\"".$ic->fields['ID']."\">\n";
 			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
 			echo "</td>\n\n";
-			echo "</form>";
-			echo "<form method='post' action=\"".$HTMLRel."infocoms/infocoms-info-form.php\"><div align='center'>";
-			echo "<input type='hidden' name='ID' value=\"".$ic->fields['ID']."\">\n";
+//			echo "</form>";
+//			echo "<form method='post' action=\"".$HTMLRel."infocoms/infocoms-info-form.php\"><div align='center'>";
+//			echo "<input type='hidden' name='ID' value=\"".$ic->fields['ID']."\">\n";
 			echo "<td class='tab_bg_2' colspan='2' align='center'>\n";
 			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 			
@@ -176,7 +178,6 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		if ($withtemplate!=2) echo "</form>";
 		
 	}
-echo "<br>";
 }
 
 function updateInfocom($input) {

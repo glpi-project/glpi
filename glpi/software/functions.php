@@ -479,10 +479,11 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
                 echo "<td class='tab_bg_2' valign='top'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
-		echo "</td></form>\n\n";
-		echo "<form action=\"$target\" method='post'>\n";
+		echo "</td>";
+//		echo "</form>\n\n";
+		//echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
-		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+//		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<div align='center'>";
 		if ($sw->fields["deleted"]=='N')
 		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
@@ -635,7 +636,7 @@ function showLicensesAdd($ID) {
 	
 	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='90%' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><strong>";
-	echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=add&sID=$ID\">";
+	echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=add&amp;sID=$ID\">";
 	echo $lang["software"][12];
 	echo "</a></strong></td></tr>";
 	echo "</table></div><br>";
@@ -1121,7 +1122,9 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	$number = $db->numrows($result);
 	$i = 0;
 		
-        echo "<br><br><center><table class='tab_cadre' width='90%'>";
+	echo "<form method='post' action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
+        
+	echo "<br><br><center><table class='tab_cadre' width='90%'>";
 	echo "<tr><th colspan='5'>".$lang["software"][17].":</th></tr>";
 			echo "<tr><th>".$lang['software'][2]."</th><th>".$lang['software'][32]."</th><th>".$lang['software'][33]."</th><th>".$lang['software'][35]."</th><th>&nbsp;</th></tr>";
 	
@@ -1196,7 +1199,6 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	if((!empty($withtemplate) && $withtemplate == 2) || $nb==0) {
 		echo "</table></center>";
 	} else {
-		echo "<form method='post' action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
 		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 		echo "<div class='software-instal'><input type='hidden' name='cID' value='$instID'>";
 		echo "<input type='hidden' name='withtemplate' value='".$withtemplate."'>";

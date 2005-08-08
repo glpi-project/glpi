@@ -536,7 +536,7 @@ function showContractForm ($target,$ID,$search) {
 		echo "</td>\n\n";
 		
 		echo "<td class='tab_bg_2' valign='top'  colspan='2'>\n";
-		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+//		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		if ($con->fields["deleted"]=='N')
 		echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
 		else {
@@ -670,7 +670,6 @@ function showDeviceContract($instID,$search='') {
 	$number = $db->numrows($result);
 	$i = 0;
 	
-    echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
 	echo "<tr><th colspan='3'>".$lang["financial"][49].":</th></tr>";
 	echo "<tr><th>".$lang['financial'][37]."</th>";
@@ -690,6 +689,7 @@ function showDeviceContract($instID,$search='') {
 	$i++;
 	}
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+    echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
 	echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 		dropdownAllItems("item",0,$search);
 	echo "&nbsp;<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
@@ -702,9 +702,10 @@ function showDeviceContract($instID,$search='') {
 	echo "<input type='text' name='search' value=\"".$search."\" size='15'>";
 	echo "<input type='hidden' name='ID' value='$instID'>";
 	echo "&nbsp;<input type='submit' name='bsearch' value=\"".$lang["buttons"][0]."\" class='submit'>";
+	echo "</form>";
 	echo "</td></tr>";
 	
-	echo "</table></div></form>"    ;
+	echo "</table></div>"    ;
 	
 }
 

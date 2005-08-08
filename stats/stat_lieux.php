@@ -104,7 +104,7 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 			else $count=0; 
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".getDropdownName($_POST["dropdown"],$key["ID"]) ."&nbsp;($count)</td><td><a href='graph_item.php?ID=".$key["ID"]."&champ=".$champ."&amp;type=comp_champ'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
+			echo "<td>".getDropdownName($_POST["dropdown"],$key["ID"]) ."&nbsp;($count)</td><td><a href='graph_item.php?ID=".$key["ID"]."&amp;champ=".$champ."&amp;type=comp_champ'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
 			//le nombre d'intervention
 			//the number of intervention
 			echo "<td>".getNbinter(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$key["ID"],$_POST["date1"],$_POST["date2"] )."</td>";
