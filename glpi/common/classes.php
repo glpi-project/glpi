@@ -57,7 +57,7 @@ class DBmysql {
 		if ($cfg_debug["active"]) {
 			if ($cfg_debug["sql"]){		
 				$SQL_TOTAL_REQUEST++;
-				$DEBUG_SQL_STRING.="# ".$SQL_TOTAL_REQUEST." : <br>".$query;
+				$DEBUG_SQL_STRING.="N&#176; ".$SQL_TOTAL_REQUEST." : <br>".$query;
 				
 				if ($cfg_debug["profile"]){		
 					$TIMER=new Script_Timer;
