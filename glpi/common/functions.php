@@ -1924,7 +1924,7 @@ function loadLanguage() {
 	if ($cfg_debug["active"]&&$cfg_debug["lang"]){
 		foreach ($lang as $module => $tab)
 		foreach ($tab as $num => $val){
-			$lang[$module][$num].="<span style='font-size:4px; color:red;'>$module/$num</span>";
+			$lang[$module][$num].="<span style='font-size:8px; color:red;'>$module/$num</span>";
 		
 		}
 	}
