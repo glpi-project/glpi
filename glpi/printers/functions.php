@@ -427,7 +427,7 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 	echo "<tr><td class='tab_bg_1' valign='top'>\n";
 
 	// table identification
-	echo "<table cellpadding='1px' cellspacing='0' border='0'>\n";
+	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 	echo "<tr><td>".$lang["printers"][5].":	</td>\n";
 	echo "<td><input type='text' name='name' value=\"".$printer->fields["name"]."\" size='20'></td>\n";
 	echo "</tr>\n";
@@ -480,7 +480,7 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 	echo "<td class='tab_bg_1' valign='top'>\n";
 
 	// table type,serial..
-	echo "<table cellpadding='1px' cellspacing='0' border='0'>\n";
+	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
 	echo "<tr><td>".$lang["printers"][9].": 	</td><td>\n";
 		dropdownValue("glpi_type_printers", "type", $printer->fields["type"]);
@@ -578,10 +578,11 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 		echo "<td class='tab_bg_2' valign='top' align='center'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
-		echo "</form></td>\n\n";
-		echo "<form action=\"$target\" method='post'>\n";
+		//echo "</form>";
+		echo "</td>\n\n";
+		//echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign='top' align='center'>\n";
-		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+		//echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<div align='center'>";
 		if ($printer->fields["deleted"]=='N')
 		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
@@ -594,9 +595,9 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 		echo "</td>";
 
 	}
-		echo "</form></tr>";
+		echo "</tr>";
 
-		echo "</table></div>";
+		echo "</table></form></div>";
 
 	return true;	
 	}

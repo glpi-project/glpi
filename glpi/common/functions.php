@@ -1206,6 +1206,7 @@ function dropdown($table,$myname) {
 		if ($number > 0) {
 			while ($i < $number) {
 				$output = $db->result($result, $i, "name");
+				if (empty($output)) $output="&nbsp;";
 				$ID = $db->result($result, $i, "ID");
 				echo "<option value=\"$ID\">$output</option>";
 				$i++;

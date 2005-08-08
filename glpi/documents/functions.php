@@ -590,7 +590,6 @@ function showDeviceDocument($instID,$search='') {
 	$number = $db->numrows($result);
 	$i = 0;
 	
-    echo "<form method='post' action=\"".$cfg_install["root"]."/documents/documents-info-form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
 	echo "<tr><th colspan='3'>".$lang["document"][19].":</th></tr>";
 	echo "<tr><th>".$lang['document'][20]."</th>";
@@ -611,6 +610,8 @@ function showDeviceDocument($instID,$search='') {
 	}
 	
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+	echo "<form method='post' action=\"".$cfg_install["root"]."/documents/documents-info-form.php\">";
+	
 	echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 		dropdownAllItems("item",1,$search,'');
 	echo "</div><input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
@@ -621,9 +622,10 @@ function showDeviceDocument($instID,$search='') {
 	echo "<input type='text' name='search' value=\"".$search."\" size='15'>";
 	echo "<input type='hidden' name='ID' value='$instID'>";
 	echo "<input type='submit' name='bsearch' value=\"".$lang["buttons"][0]."\" class='submit'>";
+	echo "</form>";
 	echo "</td></tr>";
 	
-	echo "</table></div></form>"    ;
+	echo "</table></div>"    ;
 	
 }
 
@@ -700,7 +702,11 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	
 	echo "<td align='center'>".getDocumentLink($con->fields["filename"])."</td>";
 	
-	echo "<td align='center'><a target=_blank href='".$con->fields["link"]."'>".$con->fields["link"]."</a></td>";
+	echo "<td align='center'>";
+	if (!empty($con->fields["link"]))
+		echo "<a target=_blank href='".$con->fields["link"]."'>".$con->fields["link"]."</a>";
+	else echo "&nbsp;";
+	echo "</td>";
 	echo "<td align='center'>".getDropdownName("glpi_dropdown_rubdocs",$con->fields["rubrique"])."</td>";
 	echo "<td align='center'>".$con->fields["mime"]."</td>";
 

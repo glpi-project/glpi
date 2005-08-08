@@ -444,7 +444,7 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 	
 	echo "<tr><td class='tab_bg_1' valign='top'>\n";
 
-	echo "<table cellpadding='1px' cellspacing='0' border='0'>\n";
+	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
 	echo "<tr><td>".$lang["networking"][0].":	</td>\n";
 	echo "<td><input type='text' name='name' value=\"".$netdev->fields["name"]."\" size='20'></td>\n";
@@ -494,7 +494,7 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 	echo "</td>\n";	
 	echo "<td class='tab_bg_1' valign='top'>\n";
 
-	echo "<table cellpadding='1px' cellspacing='0' border='0'>\n";
+	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
 	echo "<tr><td>".$lang["networking"][2].": 	</td><td>\n";
 		dropdownValue("glpi_type_networking", "type", $netdev->fields["type"]);
@@ -564,11 +564,11 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 		echo "<td class='tab_bg_2' valign='top'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
-		echo "</form></td>\n\n";
+//		echo "</form></td>\n\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
-		echo "<form action=\"$target\" method='post'>\n";
+//		echo "<form action=\"$target\" method='post'>\n";
 
-		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+//		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<div align='center'>\n";
 		if ($netdev->fields["deleted"]=='N')
 		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>\n";
@@ -810,12 +810,13 @@ function showPorts ($device,$device_type,$withtemplate='') {
 				echo "</tr>";
 			}
 			echo "</table>";
+			echo "</div>\n\n";
 			// Assign VLAN form
 			if ($withtemplate!=2){
 			echo "</form>";
 			}
 
-			echo "</div>\n\n";
+			
 		}
 	}
 }

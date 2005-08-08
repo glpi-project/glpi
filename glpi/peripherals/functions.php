@@ -528,10 +528,11 @@ function showperipheralForm ($target,$ID,$withtemplate='') {
 		echo "<td class='tab_bg_2' valign='top'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<center><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></center>";
-		echo "</td></form>\n\n";
+		echo "</td>";
+//		echo "</form>\n\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
-		echo "<form action=\"$target\" method='post'>\n";
-		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+//		echo "<form action=\"$target\" method='post'>\n";
+//		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<div align='center'>";
 		if ($mon->fields["deleted"]=='N')
 		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
