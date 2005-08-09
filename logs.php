@@ -57,7 +57,8 @@ commonHeader($lang["title"][32],$_SERVER["PHP_SELF"]);
 // Show last events
 if(isset($_GET["order"]))
 {
-	showEvents($_SERVER["PHP_SELF"],$_GET["order"],$_GET["sort"]);
+if(!isset($_GET["start"])) $_GET["start"]=0;
+	showEvents($_SERVER["PHP_SELF"],$_GET["order"],$_GET["sort"],$_GET["start"]);
 }
 else
 {
