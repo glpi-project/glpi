@@ -670,10 +670,17 @@ $where= " AND date_out IS NULL";
 $where= " AND date_out IS NOT NULL";
 }
 
+$stock_time=0;
+$use_time=0;	
+$pages_printed=0;
+$nb_pages_printed=0;
+
 $query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID') $where ORDER BY date_out ASC, date_use DESC, date_in";
+
 //echo $query;
 	$pages=array();
 	if ($result = $db->query($query)) {			
+	$number=$db->numrows($result);
 	while ($data=$db->fetch_array($result)) {
 		$date_in=$data["date_in"];
 		$date_use=$data["date_use"];
@@ -689,17 +696,35 @@ $query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')
 		echo $date_in;
 		echo "</td><td align='center'>";
 		echo $date_use;
+
 		echo "</td><td align='center'>";
 		if (!is_null($date_use)){
 			$p=new Printer;
 			if ($p->getFromDB($data["FK_glpi_printers"]))
 				echo "<a href='".$cfg_install["root"]."/printers/printers-info-form.php?ID=".$p->fields["ID"]."'><b>".$p->fields["name"]." (".$p->fields["ID"].")</b></a>";
 			else echo "N/A";
+
+		$tmp_dbeg=split("-",$date_in);
+		$tmp_dend=split("-",$date_use);
+
+		$stock_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
+					  - mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
+		$stock_time+=$stock_time_tmp;
+
 		}
 		
 		
 		echo "</td><td align='center'>";
 		echo $date_out;		
+
+		if ($show_old!=0){
+			$tmp_dbeg=split("-",$date_use);
+			$tmp_dend=split("-",$date_out);
+
+			$use_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
+						  - mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
+			$use_time+=$use_time_tmp;
+		}
 		echo "</td>";
 		
 		if ($show_old!=0){
@@ -711,10 +736,13 @@ $query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')
 			}
 			echo "<td align='center'>";
 				if ($pages[$printer]<$data['pages']){
+
+				$pages_printed+=$data['pages']-$pages[$printer];
+				$nb_pages_printed++;
+
 				echo ($data['pages']-$pages[$printer])." ".$lang["printers"][31];
 				$pages[$printer]=$data['pages'];
 			}
-
 			echo "</td>";
 		}
 
@@ -724,6 +752,16 @@ $query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')
 		echo "</td></tr>";
 		
 	}	
+	if ($show_old!=0){
+	echo "<tr class='tab_bg_2'><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
+	
+	echo "<td align='center'>".$lang["cartridges"][40].":<br>".round($stock_time/$number/60/60/24/30.5,1)." ".$lang["financial"][57]."</td>";
+	echo "<td>&nbsp;</td>";
+	echo "<td align='center'>".$lang["cartridges"][41].":<br>".round($use_time/$number/60/60/24/30.5,1)." ".$lang["financial"][57]."</td>";
+	echo "<td align='center'>".$lang["cartridges"][42].":<br>".round($pages_printed/$nb_pages_printed)."</td>";
+	echo "<td>&nbsp;</td></tr>";
+		
+	}
 
 	}	
 echo "</table></div>\n\n";
