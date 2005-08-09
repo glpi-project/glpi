@@ -66,7 +66,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 	}
 
 
-	commonHeader($lang["title"][9],$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][35],$_SERVER["PHP_SELF"]);
 
 	if (isset($_POST["clear_resa"])){
 		if (deleteReservation($_POST["ID"])){
@@ -154,7 +154,7 @@ else {
 
 	checkAuthentication("admin");
 
-	commonHeader($lang["title"][9],$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][35],$_SERVER["PHP_SELF"]);
 	if (isset($_GET["comment"])){
 		if (showReservationCommentForm($_SERVER["PHP_SELF"],$_GET["comment"])){
 			}

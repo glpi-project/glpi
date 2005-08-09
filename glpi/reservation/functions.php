@@ -721,6 +721,7 @@ function deleteReservation($ID){
 
 
 function addReservation($input,$target,$ok=true){
+	global $cfg_features;
 	// Add a Reservation
 	if ($ok){
 	$resa = new ReservationResa;
@@ -742,7 +743,15 @@ function addReservation($input,$target,$ok=true){
 		return false;
 	}
 	if ($input["id_user"]>0)
-		return $resa->addToDB();
+		if ($resa->addToDB()){
+			// Processing Email
+			if ($cfg_features["mailing"])
+			{
+				$mail = new MailingResa($resa);
+				$mail->send();
+			}
+		}
+		else return false;
 	else return true;
 }
 }
@@ -843,7 +852,7 @@ function updateReservationComment($input){
 }
 
 function updateReservationResa($input,$target,$item){
-global $lang;
+global $lang,$cfg_features;
 	// Update a printer in the database
 
 	$ri = new ReservationResa;
@@ -880,8 +889,16 @@ global $lang;
 	}
 	
 	
-	if (isset($updates))
+	if (isset($updates)){
 		$ri->updateInDB($updates);
+		// Processing Email
+		if ($cfg_features["mailing"])
+		{
+			$mail = new MailingResa($ri,"update");
+			$mail->send();
+		}
+
+		}
 	return true;
 }
 

@@ -2754,7 +2754,15 @@ if(!FieldExists("glpi_monitors","is_global")) {
 	$db->query($query) or die("0.6 add is_global in peripherals".$lang["update"][90].$db->error());
 }
 
-
+// Mailing Resa
+if(!FieldExists("glpi_config","mailing_resa_admin")) {
+	$query="ALTER TABLE `glpi_config` ADD `mailing_resa_admin` VARCHAR( 200 ) NOT NULL DEFAULT '1' AFTER `admin_email` ;";
+	$db->query($query) or die("0.6 add mailing_resa_admin in config".$lang["update"][90].$db->error());
+	$query="ALTER TABLE `glpi_config` ADD `mailing_resa_user` VARCHAR( 200 ) NOT NULL DEFAULT '1' AFTER `admin_email` ;";
+	$db->query($query) or die("0.6 add mailing_resa_user in config".$lang["update"][90].$db->error());
+	$query="ALTER TABLE `glpi_config` ADD `mailing_resa_all_admin` VARCHAR( 200 ) NOT NULL DEFAULT '0' AFTER `admin_email` ;";
+	$db->query($query) or die("0.6 add mailing_resa_all_admin in config".$lang["update"][90].$db->error());
+}
 
 // Update version number and default langage ---- LEAVE AT THE END
 	$query = "UPDATE `glpi_config` SET `version` = ' 0.6', default_language='".$_SESSION["dict"]."' ;";

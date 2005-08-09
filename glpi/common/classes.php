@@ -784,8 +784,6 @@ class Mailing
 		  		$mmail->Subject($subject);		  
 		  		$mmail->Priority(2);
 		  		$mmail->MessageStream($body);
-		  		
-				
 				
 				// Attach a file
 		  		// $mmail->AttachFile($FILE);
@@ -801,6 +799,161 @@ class Mailing
 		}
 	}
 }
+
+class MailingResa{
+	var $resa;	
+	var $type;
+	function MailingResa ($resa,$type="new")
+	{
+	$this->resa=$resa;
+
+	}
+
+	function is_valid_email($email="")
+	{
+		if( !eregi( "^" .
+			"[a-z0-9]+([_\\.-][a-z0-9]+)*" .    //user
+            "@" .
+            "([a-z0-9]+([\.-][a-z0-9]+)*)+" .   //domain
+            "\\.[a-z]{2,}" .                    //sld, tld 
+            "$", $email)
+                        )
+        {
+        //echo "Erreur: '$email' n'est pas une adresse mail valide!<br>";
+        return false;
+        }
+		else return true;
+	}
+
+	// Return array of emails of people to send mail
+	function get_users_to_send_mail()
+	{
+		GLOBAL $cfg_mailing;
+		
+		$emails=array();
+		$nb=0;
+		$db = new DB;
+		
+		if ($cfg_mailing["resa"]["admin"]&&$this->is_valid_email($cfg_mailing["admin_email"])&&!in_array($cfg_mailing["admin_email"],$emails))
+		{
+			$emails[$nb]=$cfg_mailing["admin_email"];
+			$nb++;
+		}
+
+		if ($cfg_mailing["resa"]["all_admin"])
+		{
+			$query = "SELECT email FROM glpi_users WHERE (".searchUserbyType("admin").")";
+			if ($result = $db->query($query)) 
+			{
+				while ($row = $db->fetch_row($result))
+				{
+					// Test du format du mail et de sa non existance dans la table
+					if ($this->is_valid_email($row[0])&&!in_array($row[0],$emails))
+					{
+						$emails[$nb]=$row[0];
+						$nb++;
+					}
+				}
+			}
+		}	
+
+		if ($cfg_mailing["resa"]["user"])
+		{
+			$user = new User;
+			if ($user->getFromDB($this->resa->fields["id_user"]))
+			if ($this->is_valid_email($user->fields["email"])&&!in_array($user->fields["email"],$emails))
+			{
+				$emails[$nb]=$user->fields["email"];
+				$nb++;
+			}
+		}
+		return $emails;
+	}
+
+	// Format the mail body to send
+	function get_mail_body()
+	{
+		// Create message body from Job and type
+		$body="";
+		
+		$body.=$this->resa->textDescription();
+		
+		return $body;
+	}
+	// Format the mail subject to send
+	function get_mail_subject()
+	{
+		GLOBAL $lang;
+		
+		// Create the message subject 
+		if ($this->type=="new")
+		$subject="[GLPI] ".$lang["mailing"][19];
+		else $subject="[GLPI] ".$lang["mailing"][23];
+		
+		return $subject;
+	}
+	
+	function get_reply_to_address ()
+	{
+		GLOBAL $cfg_mailing;
+	$replyto="";
+
+	$user = new User;
+	if ($user->getFromDB($this->resa->fields["id_user"])){
+		if ($this->is_valid_email($user->fields["email"])) $replyto=$user->fields["email"];		
+		else $replyto=$cfg_mailing["admin_email"];
+	}
+	else $replyto=$cfg_mailing["admin_email"];		
+		
+	return $replyto;		
+	}
+	// Send email 
+	function send()
+	{
+		GLOBAL $cfg_features,$cfg_mailing,$phproot;
+		if ($cfg_features["mailing"]&&$this->is_valid_email($cfg_mailing["admin_email"]))
+		{
+				// get users to send mail
+				$users=$this->get_users_to_send_mail();
+				// get body + signature OK
+				$body=$this->get_mail_body()."\n-- \n".$cfg_mailing["signature"];
+				$body=ereg_replace("<br />","",$body);
+				$body=ereg_replace("<br>","",$body);
+				$body=stripslashes($body);
+				$body=unhtmlentities($body);
+				// get subject OK
+				$subject=$this->get_mail_subject();
+				// get sender :  OK
+				$sender= $cfg_mailing["admin_email"];
+				// get reply-to address : user->email ou job_email if not set OK
+				$replyto=$this->get_reply_to_address ();
+
+				// Send all mails
+				require $phproot."/glpi/common/MIMEMail.php";
+				for ($i=0;$i<count($users);$i++)
+				{
+				$mmail=new MIMEMail();
+		  		$mmail->ReplyTo($replyto);
+		  		$mmail->From($sender);
+		  		
+		  		$mmail->To($users[$i]);
+		  		$mmail->Subject($subject);		  
+		  		$mmail->Priority(2);
+		  		$mmail->MessageStream($body);
+				
+				// Attach a file
+		  		// $mmail->AttachFile($FILE);
+		  		
+				// Notification reception
+				// $mmail->setHeader('Disposition-Notification-To', "\"".$users[0]['name']."\" <".$users[0]['email'].">"); 
+		  
+		  		$mmail->Send();
+				}
+		}
+	}
+	
+}
+
 
 class CommonItem{
 	var $obj = NULL;	
@@ -947,6 +1100,8 @@ class CommonItem{
 	}
 	
 }
+
+
 
 
 ?>

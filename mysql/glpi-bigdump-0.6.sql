@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-08-08 00:52
+#GLPI Dump database on 2005-08-10 00:18
 
 ### Dump table glpi_cartridges
 
@@ -6387,6 +6387,9 @@ CREATE TABLE glpi_config (
     ldap_rootdn varchar(200) NOT NULL,
     ldap_pass varchar(200) NOT NULL,
     admin_email varchar(200) NOT NULL,
+    mailing_resa_all_admin varchar(200) DEFAULT '0' NOT NULL,
+    mailing_resa_user varchar(200) DEFAULT '1' NOT NULL,
+    mailing_resa_admin varchar(200) DEFAULT '1' NOT NULL,
     mailing_signature varchar(200) NOT NULL,
     mailing_new_admin varchar(200) NOT NULL,
     mailing_followup_admin varchar(200) NOT NULL,
@@ -6428,7 +6431,7 @@ CREATE TABLE glpi_config (
    PRIMARY KEY (ID)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.6','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','0','0','0','0','0','0','1','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','0','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0');
+INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.6','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','0','0','0','0','0','0','1','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','0','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0');
 
 ### Dump table glpi_connect_wire
 
@@ -10234,6 +10237,7 @@ INSERT INTO glpi_event_log VALUES ('13768','-1','system','2005-07-28 12:19:14','
 INSERT INTO glpi_event_log VALUES ('13769','-1','system','2005-07-28 17:17:06','login','3','glpi logged in from 127.0.0.1.');
 INSERT INTO glpi_event_log VALUES ('13770','-1','system','2005-07-29 12:17:38','login','3','glpi logged in from 127.0.0.1.');
 INSERT INTO glpi_event_log VALUES ('13771','-1','system','2005-08-08 00:52:24','login','3','glpi logged in from 127.0.0.1.');
+INSERT INTO glpi_event_log VALUES ('13772','-1','system','2005-08-10 00:18:20','login','3','glpi logged in from 127.0.0.1.');
 
 ### Dump table glpi_followups
 

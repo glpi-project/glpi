@@ -227,6 +227,7 @@ function getfromDB ($ID) {
 		if ($result = $db->query($query)) {
 			$data = $db->fetch_array($result);
 			if (!empty($data))
+
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}
@@ -348,6 +349,21 @@ function getEmpty () {
 		echo "<br><a href='".$target."?show=resa&amp;ID=$ID'>".$lang["reservation"][20]."</a>";
 		echo "</center>";
 		}
+	function textDescription(){
+		global $lang;
+		
+		$ci=new ReservationItem();
+		$ci->getFromDB($this->fields["id_item"]);		
+		
+		$content="";
+		
+		$content.=$lang["mailing"][7]." ".$ci->getName()."\n";
+		$content.=$lang["mailing"][20]." ".$this->fields["begin"]."\n";
+		$content.=$lang["mailing"][21]." ".$this->fields["end"]."\n";
+		$content.=$lang["mailing"][22]." ".$this->fields["comment"]."\n";
+		return $content;
+		
+	}
 
 }
 

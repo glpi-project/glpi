@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-08-08 00:49
+#GLPI Dump database on 2005-08-10 00:15
 
 ### Dump table glpi_cartridges
 
@@ -129,6 +129,9 @@ CREATE TABLE glpi_config (
     ldap_rootdn varchar(200) NOT NULL,
     ldap_pass varchar(200) NOT NULL,
     admin_email varchar(200) NOT NULL,
+    mailing_resa_all_admin varchar(200) DEFAULT '0' NOT NULL,
+    mailing_resa_user varchar(200) DEFAULT '1' NOT NULL,
+    mailing_resa_admin varchar(200) DEFAULT '1' NOT NULL,
     mailing_signature varchar(200) NOT NULL,
     mailing_new_admin varchar(200) NOT NULL,
     mailing_followup_admin varchar(200) NOT NULL,
@@ -170,7 +173,7 @@ CREATE TABLE glpi_config (
    PRIMARY KEY (ID)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.6','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0');
+INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.6','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0');
 
 ### Dump table glpi_connect_wire
 
