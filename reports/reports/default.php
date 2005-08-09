@@ -111,12 +111,15 @@ echo  "<tr><td colspan='2'><b>".$lang["Menu"][4].":</b></td></tr>";
 
 # 4. Get some more number data (installed softwares)
 
-$query = "SELECT ID, name FROM glpi_software WHERE deleted ='N'  AND is_template = '0' ORDER BY name";
+$query = "SELECT ID, name,version FROM glpi_software WHERE deleted ='N'  AND is_template = '0' ORDER BY name";
 $result = $db->query($query);
 $i = 0;
 $number = $db->numrows($result);
 while ($i < $number) {
-	echo "<tr><td>".$db->result($result,$i,"name")."</td><td>";
+	$version=$db->result($result,$i,"version");
+	if (!empty($version))
+		$version =" - ".$version;
+	echo "<tr><td>".$db->result($result,$i,"name").$version."</td><td>";
 	countInstallations($db->result($result,$i,"ID"));
 	echo "</td></tr>";
 	$i++;
