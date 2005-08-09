@@ -953,6 +953,10 @@ function showCartridgeInstalled($instID,$old=0) {
 	
 	echo "<th>&nbsp;</th></tr>";
 
+	$stock_time=0;
+	$use_time=0;	
+	$pages_printed=0;
+	$nb_pages_printed=0;
 	
 	while ($data=$db->fetch_array($result)) {
 		$date_in=$data["date_in"];
@@ -970,8 +974,26 @@ function showCartridgeInstalled($instID,$old=0) {
 		echo $date_in;
 		echo "</td><td align='center'>";
 		echo $date_use;
+		
+		$tmp_dbeg=split("-",$date_in);
+		$tmp_dend=split("-",$date_use);
+
+		$stock_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
+					  - mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
+		$stock_time+=$stock_time_tmp;
+
 		echo "</td><td align='center'>";
 		echo $date_out;		
+
+		if ($old!=0){
+			$tmp_dbeg=split("-",$date_use);
+			$tmp_dend=split("-",$date_out);
+
+			$use_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
+						  - mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
+			$use_time+=$use_time_tmp;
+		}
+
 		echo "</td><td align='center'>";
 		if ($old!=0){
 			
@@ -982,6 +1004,8 @@ function showCartridgeInstalled($instID,$old=0) {
 			echo "</form>";
 			
 			if ($pages<$data['pages']){
+				$pages_printed+=$data['pages']-$pages;
+				$nb_pages_printed++;
 				echo ($data['pages']-$pages)." ".$lang["printers"][31];
 				$pages=$data['pages'];
 			}
@@ -1004,6 +1028,15 @@ function showCartridgeInstalled($instID,$old=0) {
 		echo "</div></form></td><td align='center' class='tab_bg_2'>&nbsp;";
 		echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
 		echo "</tr>";
+	} else { // Print average
+	echo "<tr class='tab_bg_2'><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
+	
+	echo "<td align='center'>".$lang["cartridges"][40].":<br>".round($stock_time/$number/60/60/24/30.5,1)." ".$lang["financial"][57]."</td>";
+	echo "<td align='center'>".$lang["cartridges"][41].":<br>".round($use_time/$number/60/60/24/30.5,1)." ".$lang["financial"][57]."</td>";
+	echo "<td align='center'>".$lang["cartridges"][42].":<br>".round($pages_printed/$nb_pages_printed)."</td>";
+	echo "<td>&nbsp;</td></tr>";
+	
+		
 	}
         echo "</table></center>";
 	
