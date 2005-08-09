@@ -1,5 +1,66 @@
 Changelog Complet : http://mantis.indepnet.org/changelog_page.php
 
+*** GLPI  0.6 ***
+- 0000226: [Module Assistance] Modification de l'auteur de l'intervention
+- 0000223: [Autre] Type de périphérique dans l'interface au lieu de "Périphérique"
+- 0000224: [Module Gestion] Renommage du nom de fichier si deja existant
+- 0000021: [Module Inventaire] Gestion des Vlans
+- 0000185: [Module Assistance] Autoriser la ré-affectation d' une intervention à un nouveau materiel dans le suivi des interventions
+- 0000028: [Module Assistance] pieces jointes dans les demandes helpdesk
+- 0000060: [Module Inventaire] Gestion de périphériques "globaux" (clavier/souris)
+- 0000165: [Module Inventaire] Proposer les adresses mac (des périphs internes) lors de l'ajout d'un port sur un computer
+- 0000207: [Module Gestion] Prise en compte du nom réseau et domaine
+- 0000216: [Module Assistance] Bug Attribution d'une intervention
+- 0000130: [Module Statistiques / Rapports] Statistiques/Rapport sur les contrats
+- 0000212: [Installation / Mise à Jour] Ajout Test de présence utf8_encode et utf8_decode
+- 0000214: [Module Assistance] Vue des plannings
+- 0000031: [Module Assistance] Attribution automatique des interventions
+- 0000056: [Module Inventaire] champs compteur dans imprimante
+- 0000007: [Module Inventaire] Lien externe protocolés : http / vnc...
+- 0000109: [Module Inventaire] Memoire vive (RAM) forms et dropdowns
+- 0000210: [Module Outils] Dysfonctionnement du formulaire "Ajouter un item à la base de connaissances"
+- 0000209: [Général] Refonte Page accueil central
+- 0000196: [Module Inventaire] Un seul bouton modifier pour le suivi des interventions
+- 0000208: [Module Gestion] Navigation lors de l'ajout d'une nouvelle intervention
+- 0000201: [Module Assistance] Planning des interventions -> basé sur la contribution de Jmou
+- 0000195: [Module Inventaire] Boutons précédent/suivant en haut de la page
+- 0000183: [Général] Pouvoir choisir le nombre d'item affichés par page de façon ponctuelle
+- 0000179: [Module Inventaire] Affichés les états des matériels connectés
+- 0000161: [Module Statistiques / Rapports] Impression incorrecte des stats globales
+- 0000205: [Module Gestion] Ajouter navigation eléments par éléments lors de la consultation d'une fiche contacts ou documents ...
+- 0000182: [Module Gestion] La recherche sur les types de contacts n'est pas possible
+- 0000009: [Module Statistiques / Rapports] Statistiques style MRTG
+- 0000184: [Module Inventaire] Liaison fichier/écran défaillante
+- 0000198: [Autre] Ajout de prises réseau par lot
+- 0000189: [Module Assistance] aucun renseignement concernant l'adresse email du rapporteur dans "suivi"
+- 0000188: [Installation / Mise à Jour] Limitation dans le nom de la base de données mysql
+- 0000190: [Module Inventaire] Actualisation simultanée de toutes les spécifités des périphériques internes
+- 0000193: [Module Inventaire] Deconnection de ports et perte d'information
+- 0000187: [Autre] Ajout langue : roumain et portugais (brésilien)
+- 0000149: [Général] UTF8 compliance
+- 0000181: [Module Configuration] Seuil d'alerte pour les cartouches
+- 0000123: [Module Gestion] Ajout d'une table glpi_dropdown_contract_type pour ajouter des types de contrats
+- 0000159: [Module Inventaire] 1ere ligne des list Box systématiquement avec -------, pour plus de lisibilité en consultation et lors de l'impression
+- 0000172: [Module Outils] Erreur PHP (classe inexistante) sur les rapports d'intervention
+- 0000121: [Module Inventaire] Carte interne autres que PCI [kat]
+- 0000163: [Installation / Mise à Jour] Le script d'installation vérifie un répertoire et l'affichage parle d'un autre
+- 0000164: [Module Statistiques / Rapports] Modif rapport d'interventions
+- 0000166: [Module Inventaire] Ajouter le type du matériel dans les Etats
+- 0000169: [Général] Recherche par numéro de série ou d'inventaire lors de la connexion de peripheriques externes
+- 0000168: [Module Configuration] Problème accents popup du backup
+- 0000047: [Module Gestion] Contrat unique
+- 0000126: [Module Inventaire] Tri par lieu ne fonctionne pas avec des lieux à 2 ou plus d'étage
+- 0000061: [Autre] Casification de GLPI
+- 0000127: [Module Configuration] Changer le port par défaut de ldap
+- 0000115: [Module Gestion] Champ Email dans les entreprise
+- 0000119: [Général] Filtre de recherche pour affichage [idee de Kat]
+- 0000071: [Module Inventaire] Seuil d'alerte imprimantes non global
+- 0000140: [Module Inventaire] Types de cartouches modifiables
+- 0000068: [Module Inventaire] Affichage de l'Etat dans les listes d'element
+- 0000152: [Module Statistiques / Rapports] Probleme dans les stats
+- 0000114: [Module Inventaire] Etats dans modèles de l'inventaire
+- 0000158: [Installation / Mise à Jour] Bug caractère accentués dans le username pour la mise à jour des prefs
+
 *** GLPI  0.51a ***
 - 0000156: [Module Statistiques / Rapports] Bug statistiques user / tech avec caractères accentués dans les login
 - 0000153: [Général] Problème de redirection après la suppression de ports sur des périphériques
