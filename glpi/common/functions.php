@@ -1047,7 +1047,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 * @param $order order by clause occurences (eg: ) 
 * @param $sort order by clause occurences (eg: date) 
 **/
-function showEvents($target,$order,$sort) {
+function showEvents($target,$order,$sort,$start=0) {
 	// Show events from $result in table form
 
 	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
@@ -1063,13 +1063,17 @@ function showEvents($target,$order,$sort) {
 	}
 	
 	// Query Database
-	$query = "SELECT * FROM glpi_event_log ORDER BY $sort $order LIMIT 0,".$cfg_features["num_of_events"];
+	$query = "SELECT * FROM glpi_event_log ORDER BY $sort $order";
+
+	$query_limit = "SELECT * FROM glpi_event_log ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"];
 
 	// Get results
 	$result = $db->query($query);
 	
 	
 	// Number of results
+	$numrows = $db->numrows($result);
+	$result = $db->query($query_limit);
 	$number = $db->numrows($result);
 
 	// No Events in database
@@ -1081,7 +1085,11 @@ function showEvents($target,$order,$sort) {
 	// Output events
 	$i = 0;
 
-	echo "<center><table width='90%' class='tab_cadre'>";
+	echo "<center>";
+	$parameters="sort=$sort&amp;order=$order";
+	printPager($start,$numrows,$target,$parameters);
+
+	echo "<table width='90%' class='tab_cadre'>";
 	echo "<tr><th colspan='6'>".$lang["central"][2]." ".$cfg_features["num_of_events"]." ".$lang["central"][3].":</th></tr>";
 	echo "<tr>";
 
