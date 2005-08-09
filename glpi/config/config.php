@@ -252,6 +252,9 @@ $cfg_mailing["new"]["user"]=$db->result($result,0,"mailing_new_user");
 $cfg_mailing["followup"]["user"]=$db->result($result,0,"mailing_followup_user");
 $cfg_mailing["finish"]["user"]=$db->result($result,0,"mailing_finish_user");
 
+$cfg_mailing["resa"]["admin"]=$db->result($result,0,"mailing_resa_admin");
+$cfg_mailing["resa"]["all_admin"]=$db->result($result,0,"mailing_resa_all_admin");
+$cfg_mailing["resa"]["user"]=$db->result($result,0,"mailing_resa_user");
 
 
 // Features configuration

@@ -1159,7 +1159,20 @@ function showFormMailing($target) {
 		echo "<tr class='tab_bg_2'><td>".$lang["setup"][215]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_followup_user\" value=\"1\" "; if($db->result($result,0,"mailing_followup_user") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_followup_user\" value=\"0\" "; if($db->result($result,0,"mailing_followup_user") == 0) echo "checked"; echo  " ></td></tr>";
 		
 		echo "<tr class='tab_bg_2'><td>".$lang["setup"][216]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_finish_user\" value=\"1\"  "; if($db->result($result,0,"mailing_finish_user") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_finish_user\" value=\"0\" "; if($db->result($result,0,"mailing_finish_user") == 0) echo "checked"; echo  " ></td></tr>";
-		echo "</table></div>";
+		echo "</table>";
+
+		echo "<p><b>".$lang["setup"][224]."</b></p>";
+		
+		echo "<table class='tab_cadre' width='600'><tr><th colspan='3'>".$lang["setup"][225]."<th></tr>";
+
+		echo "<tr class='tab_bg_2'><td>".$lang["setup"][206]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_resa_admin\" value=\"1\" "; if($db->result($result,0,"mailing_resa_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_resa_admin\" value=\"0\" "; if($db->result($result,0,"mailing_resa_admin") == 0) echo "checked"; echo  " ></td></tr>";
+		echo "<tr class='tab_bg_2'><td>".$lang["setup"][207]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_resa_all_admin\" value=\"1\" "; if($db->result($result,0,"mailing_resa_all_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_resa_all_admin\" value=\"0\" "; if($db->result($result,0,"mailing_resa_all_admin") == 0) echo "checked"; echo  " ></td></tr>";
+		echo "<tr class='tab_bg_2'><td>".$lang["setup"][210]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_resa_user\" value=\"1\" "; if($db->result($result,0,"mailing_resa_user") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_resa_user\" value=\"0\" "; if($db->result($result,0,"mailing_resa_user") == 0) echo "checked"; echo  " ></td></tr>";
+
+		echo "</table>";
+
+
+		echo "</div>";
 		echo "<p class=\"submit\"><input type=\"submit\" name=\"update_mailing\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
 		}
 		else {
@@ -1222,7 +1235,7 @@ function updateCAS($cas_host,$cas_port,$cas_uri) {
 		$db->query($query);
 }
 
-function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_admin,$mailing_followup_admin,$mailing_finish_admin,$mailing_new_all_admin,$mailing_followup_all_admin,$mailing_finish_all_admin,$mailing_new_all_normal,$mailing_followup_all_normal,$mailing_finish_all_normal,$mailing_followup_attrib,$mailing_finish_attrib,$mailing_new_user,$mailing_followup_user,$mailing_finish_user,$mailing_new_attrib) {
+function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_admin,$mailing_followup_admin,$mailing_finish_admin,$mailing_new_all_admin,$mailing_followup_all_admin,$mailing_finish_all_admin,$mailing_new_all_normal,$mailing_followup_all_normal,$mailing_finish_all_normal,$mailing_followup_attrib,$mailing_finish_attrib,$mailing_new_user,$mailing_followup_user,$mailing_finish_user,$mailing_new_attrib,$mailing_resa_admin,$mailing_resa_all_admin,$mailing_resa_user) {
 
 	$db = new DB;
 	$query = "update glpi_config set mailing = '". $mailing ."', ";
@@ -1242,7 +1255,10 @@ function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_ad
 	$query .= "mailing_new_user = '". $mailing_new_user ."', ";
 	$query .= "mailing_followup_user = '". $mailing_followup_user ."', ";
 	$query .= "mailing_finish_user = '". $mailing_finish_user ."', ";
-	$query .= "mailing_new_attrib = '". $mailing_new_attrib ."' ";
+	$query .= "mailing_new_attrib = '". $mailing_new_attrib ."', ";
+	$query .= "mailing_resa_admin = '". $mailing_resa_admin ."', ";
+	$query .= "mailing_resa_all_admin = '". $mailing_resa_all_admin ."', ";
+	$query .= "mailing_resa_user = '". $mailing_resa_user ."' ";
 	$query .= "where ID = 1";
 	
 	if($db->query($query)) return true;
