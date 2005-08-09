@@ -1,25 +1,23 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
-<head>
-  <title>Ayuda Helpdesk de GLPI</title>
-  <meta http-equiv="Content-type"
- content="text/html; charset=iso-8859-15">
-  <meta http-equiv="Content-Script-Type" content="text/javascript">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <meta name="revisit-after" content="15 days">
-  <meta name="robots" content="index,follow">
-  <meta name="DC.Publisher" content="INDEPNET.NET">
-  <link rel="alternate" title="Version Docbook/XML" type="text/xml"
- href="docbook.xml">
-  <link rel="alternate" title="Version brute" type="text/html"
- href="xhtml.xml">
-  <meta name="DC.Language" scheme="RFC3066" content="fr">
-  <meta name="DC.Identifier" content="structure">
-  <meta name="DC.Creator" content="GLPI dev team">
-  <meta name="DC.Date.created" scheme="W3CDTF" content="2004-09-21">
-  <meta name="DC.Date.modified" scheme="W3CDTF" content="2004-09-21">
-  <meta name="DC.Rights" content="Cet article est sous licence GPL.">
-  <meta name="DC.Subject" content="HELPDESK">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">     
+   <head>
+          <title>CENTRAL HELP - GLPI </title>
+          <meta http-equiv="Content-type" content="text/html; charset=iso-8859-15"/>
+          <meta http-equiv="Content-Script-Type" content="text/javascript"/>
+          <meta http-equiv="Content-Style-Type" content="text/css"/>
+          <meta name="revisit-after" content="15 days"/>
+          <meta name="robots" content="index,follow"/>
+          <meta name="DC.Publisher" content="INDEPNET.NET"/>
+          <link rel="alternate" title="Version Docbook/XML" type="text/xml" href="docbook.xml"/>
+          <link rel="alternate" title="Version brute" type="text/html" href="xhtml.xml"/>
+          <meta name="DC.Language" scheme="RFC3066" content="fr"/>
+          <meta name="DC.Identifier" content="structure"/>
+          <meta name="DC.Creator" content="GLPI dev team"/>
+          <meta name="DC.Date.created" scheme="W3CDTF" content="2004-09-21"/>
+          <meta name="DC.Date.modified" scheme="W3CDTF" content="2004-09-21"/>
+          <meta name="DC.Rights" content="This article is under Creative Commons BY-NC-SA free license."/>
+          <meta name="DC.Subject" content="CENTRAL"/>
+	  
   <style type="text/css">
 #right{
 float: right;
@@ -116,7 +114,8 @@ font-size: 13px;
 <div class="menu">
 <h1>Sumario</h1>
 <ul>
-  <a href="#invent">1 - Sección Inventario</a>
+  <li><a href="#invent">1 - Sección Inventario</a></li>
+<li><ul>
   <li><a href="#inventa">a) Consideraciones generales</a></li>
   <li><a href="#inventb">b) Gestión de modelos</a></li>
   <li><a href="#inventc">c) Gestión de periféricos internos de los
@@ -125,41 +124,46 @@ computadores</a></li>
   <li><a href="#invente">e) Gestión de ports de red</a></li>
   <li><a href="#inventf">f) Gestión de software</a></li>
   <li><a href="#inventg">g) Gestión de reparaciones</a></li>
-</ul>
+</ul></li></ul>
+
 <ul>
-  <a href="#assist">2 - Sección Soporte</a>
+  <li><a href="#assist">2 - Sección Soporte</a></li>
+<li><ul>
   <li><a href="#assista">a) Seguimientos</a></li>
   <li><a href="#assistb">b) Helpdesk</a></li>
   <li><a href="#assistc">c) Estadísticas</a></li>
-</ul>
+</ul></li></ul>
 <ul>
-  <a href="#gestion">3 - Sección Gestión</a>
+  <li><a href="#gestion">3 - Sección Gestión</a></li>
+<li><ul>
   <li><a href="#gestiona">a) Contactos</a></li>
   <li><a href="#gestionb">b) Empresas</a></li>
   <li><a href="#gestionc">c) Contratos</a></li>
   <li><a href="#gestiond">c) Documentos</a></li>
-</ul>
+</ul></li></ul>
 <ul>
-  <a href="#outils">4 - Sección Útiles</a>
+  <li><a href="#outils">4 - Sección Útiles</a></li>
+<li><ul>
   <li><a href="#outilsa">a) Reservas</a></li>
   <li><a href="#outilsb">b) Base de conocimiento</a></li>
   <li><a href="#outilsc">c) Reportes</a></li>
-</ul>
+</ul></li></ul>
 <ul>
-  <a href="#admin">4 - Sección Administración</a>
+  <li><a href="#admin">5 - Sección Administración</a></li>
+<li><ul>
   <li><a href="#admina">a) Gestión de usuarios</a></li>
   <li><a href="#adminb">b) Configuración</a></li>
-  <ul>
+  <li><ul>
     <li><a href="#adminb1"> i) Rubros</a></li>
     <li><a href="#adminb2"> ii) Periféricos internos</a></li>
     <li><a href="#adminb3"> iii) Autenticación externa</a></li>
     <li><a href="#adminb4"> iv) Seguimientos por email</a></li>
     <li><a href="#adminb5"> v) Configuración general</a></li>
     <li><a href="#adminb6"> vi) Tipos de documentos</a></li>
-  </ul>
+  </ul></li>
   <li><a href="#adminc">c) Preferencias</a></li>
   <li><a href="#admind">d) Datos (Backup/Recuperación)</a></li>
-</ul>
+</ul></li></ul>
 </div>
 </div>
 <div id="left">
@@ -254,13 +258,13 @@ click sobre "Sacar el material de reparación" en su ficha.</p>
 función de ciertos criterios.</p>
 <p>Podemos visualizar:</p>
 <ul>
-  <li>Todos los servicios activos</li>
+  <li>Todos los servicios activos
   <p>Todos los servicios que no han sido cerrados.</p>
-  <li>Solamente los servicios que nos han sido asignados.</li>
+  <li>Solamente los servicios que nos han sido asignados.
   <p>Los servicios a los que hemos sido afectados.</p>
-  <li>Solamente los servicios no asignados.</li>
+  <li>Solamente los servicios no asignados.
   <p>Los servicios aún por asignar a un técnico.</p>
-  <li>Solamente los servicios terminados</li>
+  <li>Solamente los servicios terminados
   <p>Los servicios que han sido cerrados.</p>
 </ul>
 <p>También podemos hacer una búsqueda sobre los servicios a partir de
@@ -309,46 +313,46 @@ seguimientos de GLPI.</p>
 <p>Estas estadísticas agrupan los principales datos sobre los servicios
 en el mes, en el año y en total:</p>
 <ul>
-  <li>Cantidad total de servicios</li>
-  <li>Cantidad de servicios resueltos</li>
-  <li>Demora media de resolución de problemas</li>
-  <li>Demora máxima de resolución de problemas</li>
-  <li>Duración real media de servicios</li>
-  <li>Duración máxima de resolución real de problemas</li>
-  <li>Demora mínima de notificación de servicios</li>
-  <li>Demora media de notificación de servicios</li>
+  <li>Cantidad total de servicios
+  <li>Cantidad de servicios resueltos
+  <li>Demora media de resolución de problemas
+  <li>Demora máxima de resolución de problemas
+  <li>Duración real media de servicios
+  <li>Duración máxima de resolución real de problemas
+  <li>Demora mínima de notificación de servicios
+  <li>Demora media de notificación de servicios
 </ul>
 <h4>Por técnico</h4>
 <p>Estas estadísticas proveen un estado de la actividad de los técnicos
 para un período dado:</p>
 <ul>
-  <li>Cantidad de servicios asignados</li>
-  <li>Cantidad de servicios resueltos</li>
-  <li>Duración media de apertura </li>
-  <li>Duración real media del servicio</li>
-  <li>Duración real total de intervenciones</li>
-  <li>Demora media de notificación de servicio</li>
+  <li>Cantidad de servicios asignados
+  <li>Cantidad de servicios resueltos
+  <li>Duración media de apertura 
+  <li>Duración real media del servicio
+  <li>Duración real total de intervenciones
+  <li>Demora media de notificación de servicio
 </ul>
 <h4>Por Rubros</h4>
 <p>Estadísticas de servicios por Lugar, Tipo de computador, OS, CPU,
 Tipo HD, Placa gráfica, Motherboard, sobre un período dado:</p>
 <ul>
-  <li>Cantidad de servicios demandados</li>
-  <li>Cantidad de servicios resueltos</li>
-  <li>Duración media de apertura </li>
-  <li>Duración real media del servicio</li>
-  <li>Duración real total de intervenciones</li>
-  <li>Demora media de notificación de servicio</li>
+  <li>Cantidad de servicios demandados
+  <li>Cantidad de servicios resueltos
+  <li>Duración media de apertura 
+  <li>Duración real media del servicio
+  <li>Duración real total de intervenciones
+  <li>Demora media de notificación de servicio
 </ul>
 <h4>Por usuario</h4>
 <p>Estadísticas de servicios por usuario sobre un período dado:</p>
 <ul>
-  <li>Cantidad de servicios demandados</li>
-  <li>Cantidad de servicios resueltos</li>
-  <li>Duración media de apertura </li>
-  <li>Duración real media del servicio</li>
-  <li>Duración real total de intervenciones</li>
-  <li>Demora media de notificación de servicio</li>
+  <li>Cantidad de servicios demandados
+  <li>Cantidad de servicios resueltos
+  <li>Duración media de apertura 
+  <li>Duración real media del servicio
+  <li>Duración real total de intervenciones
+  <li>Demora media de notificación de servicio
 </ul>
 <h2><a name="gestion"></a>3 - Sección Gestión</h2>
 <h3><a name="gestiona"></a>a) Contactos</h3>
@@ -404,70 +408,70 @@ conocimientos. Así será más fácil para todos recuperar la información
 necesaria para sus tareas.</p>
 <p>Podemos utilizar recursos de formateo.</p>
 <p>
-Los marcadores siguientes cambian el aspecto del texto:<br>
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[b]Texto negrita[/b] produce <b>Texto negrita</b><br>
+Los marcadores siguientes cambian el aspecto del texto:<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;[b]Texto negrita[/b] produce <b>Texto negrita</b><br />
 &nbsp;&nbsp;&nbsp;&nbsp;[u]Texto subrayado[/u] produce <u>Texto
-subrayado</u><br>
-&nbsp;&nbsp;&nbsp;&nbsp;[i]Texto cursiva[/i] produce <i>Texto cursiva</i><br>
+subrayado</u><br />
+&nbsp;&nbsp;&nbsp;&nbsp;[i]Texto cursiva[/i] produce <i>Texto cursiva</i><br />
 &nbsp;&nbsp;&nbsp;&nbsp;[color=#FF0000]Texto rojo[/color] produce <span
- style="color: rgb(255, 0, 0);">Texto rojo</span><br>
-<br>
+ style="color: rgb(255, 0, 0);">Texto rojo</span><br />
+<br />
 </p>
 <p>Para crear vínculos (<i>links</i>) a otros documentos o a una
-dirección de email, utilicemos los marcadores siguientes:<br>
-<br>
+dirección de email, utilicemos los marcadores siguientes:<br />
+<br />
 &nbsp;&nbsp;&nbsp;&nbsp;http://glpi.indepnet.org produce <a
- href="http://glpi.indepnet.org">http://glpi.indepnet.org</a><br>
+ href="http://glpi.indepnet.org">http://glpi.indepnet.org</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;[email]nombre@dominio.com[/email] produce <a
- href="mailto:nombre@dominio.com">nombre@dominio.com</a><br>
+ href="mailto:nombre@dominio.com">nombre@dominio.com</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;[email=nombre@dominio.com]Mi dirección de
 email[/email] produce <a href="mailto:nombre@dominio.com">Mi dirección
-de email</a><br>
-<br>
+de email</a><br />
+<br />
 </p>
 Para mostrar código, utilice el marcador CODE. El texto mostrado como
-CODE no será afectado por los otros marcadores.<br>
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[code]Este es un trozo de código.[/code]<br>
-<br>
-Generará un código como el siguiente:<br>
-<br>
+CODE no será afectado por los otros marcadores.<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;[code]Este es un trozo de código.[/code]<br />
+<br />
+Generará un código como el siguiente:<br />
+<br />
 <table style="border: 1px dotted rgb(0, 0, 0); width: 95%;"
  align="center" cellspacing="4" cellpadding="6">
   <tbody>
     <tr>
-      <td><span><b>Code:</b></span><br>
-      <br>
+      <td><span><b>Code:</b></span><br />
+      <br />
       <pre>Este es un trozo de código.</pre>
       </td>
     </tr>
   </tbody>
 </table>
-<br>
+<br />
 <h3><a name="outilsc"></a>b) Reportes</h3>
 <p>GLPI permite la generación de una cantidad de reportes:</p>
 <ul>
-  <li>Informe por defecto</li>
+  <li>Informe por defecto
   <p>Este reporte lista la cantidad de cada material y software
 presentes en el parque.</p>
-  <li>Material bajo contrato de mantenimiento</li>
+  <li>Material bajo contrato de mantenimiento
   <p>Este reporte indica la cantidad de material bajo contrato de
 mantenimiento de un tercero. Es posible obtener un estado detallado por
 tipo de material y por fecha de compra. Se permiten selecciones
 múltiples.</p>
-  <li>Reporte por fecha de compra o de fin de garantía</li>
+  <li>Reporte por fecha de compra o de fin de garantía
   <p>Este reporte lista el material por fecha de fin de garantía sobre
 uno o varios años. Se permiten selecciones múltiples.</p>
-  <li>Reporte de servicios</li>
+  <li>Reporte de servicios
   <p>Este reporte permite obtener la lista de servicios así como su
 histórico según varios criterios. La búsqueda puede realizarse sobre un
 período dado, por un tipo de material dado o una parte de este
 material, y en función de su autor y/o de su asignación.</p>
-  <li>Reporte de red</li>
+  <li>Reporte de red
   <p>Este reporte permite obtener la lista de datos de nuestra red
 según lugares, switches, o bocas de red.</p>
-  <li>Excel, OpenOffice (Sylk)</li>
+  <li>Excel, OpenOffice (Sylk)
   <p>GLPI puede generar reportes por tipo de material explotables por
 planillas de cálculo. Para esto GLPI genera archivos de tipo SYLK. Este
 formato es explotable por numerosos programas de planilla de cálculo.</p>
@@ -476,21 +480,20 @@ estándares (por ejemplo, Excel), usaremos la versión limitada para no
 tener problemas con el tamaño de los campos. Los campos demasiado
 largos serán truncados.</p>
 </ul>
-<h2><a name="admin"></a>4 - Sección Administración</h2>
+<h2><a name="admin"></a>5 - Sección Administración</h2>
 <h3><a name="admina"></a>a) Gestión de usuarios</h3>
 <p>Esta sección funciona exactamente de la misma forma que los
 elementos del inventario. Podemos agregar, modificar y suprimir
 usuarios.</p>
 <h3><a name="adminb"></a>b) Configuración de GLPI</h3>
-<ul>
   <a name="adminb1"></a>
   <h4>i) Rubros</h4>
   <p>En esta zona podemos modificar totalmente los datos presentes en
 las listas de selección propuestas, por ejemplo, para lugares,
 microprocesadores, etc.</p>
-  <p></p>
+  
   <p>Una vez seleccionada la lista que deseamos modificar, podemos
-agregar elementos, modificarlos o suprimirlos.<br>
+agregar elementos, modificarlos o suprimirlos.<br />
   <b>Atención!</b> Si se suprimen elementos utilizados, tendremos que
 tomar una decisión entre modificar las entradas existentes, o ponerlas
 en NULL (en blanco).</p>
@@ -503,13 +506,13 @@ que podemos agregar a los computadores.</p>
   <p>Las autenticaciones externas nos permiten utilizar fuentes
 alternativas de autenticación. Esto nos evita tener que agregar
 manualmente todos los usuarios.</p>
-  <p>La primera solución es utilizar un servidor de mail:<br>
+  <p>La primera solución es utilizar un servidor de mail:<br />
 - Debemos definir en la primera sección el servidor a utilizar. Para
 definirlo correctamente diríjase al link provisto en <a
  href="http://www.php.net/manual/fr/function.imap-open.php">php.net</a>
 que da numerosos ejemplos.
 Algunos ejemplos: {localhost:110/pop3}, {localhost:993/imap/ssl},
-{localhost:995/pop3/ssl/novalidate-cert}...<br>
+{localhost:995/pop3/ssl/novalidate-cert}...<br />
 - El segundo parámetro define el dominio de mail utlizado que va a
 servir para reemplazar automáticamente las direcciones de email de los
 usuarios.
@@ -526,57 +529,56 @@ de GLPI.</a></p>
 email.
 Si activamos esta funcionalidad, se enviarán emails al momento de la
 creación de un nuevo servicio, al agregar cada seguimiento, y al cierre
-del servicio.<br>
+del servicio.<br />
 - Podemos luego informar la dirección email del administrador y la
-firma agregada a cada email<br>
+firma agregada a cada email<br />
 - Las demás opciones nos permiten limitar los emails enviados. Para
 cada tipo de persona, se puede activar o no el envío a la creación de
-un servicio, al agregar cada seguimiento, y al cierre del servicio. <br>
+un servicio, al agregar cada seguimiento, y al cierre del servicio. <br />
 - Los grupos de personas definidas son: el administrador, todos los
 usuarios de tipo "admin" o "normal", el responsable de la tarea y el
-solicitante del servicio.<br>
+solicitante del servicio.<br />
 - El solicitante recibirá un email sólo si ha activado el seguimiento
-por email de su solicitud de servicio.<br>
+por email de su solicitud de servicio.<br />
   </p>
   <a name="adminb5"></a>
   <h4>v) Configuración general</h4>
   <p>
 La configuración general de la aplicación permite definir ciertos
-parámetros:<br>
+parámetros:<br />
 - El camino de instalación. <b>Atención!</b> Este camino se detecta
 automáticamente en el momento de la instalación o de la actualización.
-No deberíamos tener necesidad de modificarlo.<br>
-- El nivel de log.<br>
+No deberíamos tener necesidad de modificarlo.<br />
+- El nivel de log.<br />
 - La cantidad de eventos a visualizar corresponde al número de líneas
-de log presentes sobre la página de acceso a la central.<br>
+de log presentes sobre la página de acceso a la central.<br />
 - El tiempo de conservación de los logs. <b>Atención!</b> Si los
 guardamos durante demasiado tiempo nuestra tabla puede contener una
-gran cantidad de datos.<br>
+gran cantidad de datos.<br />
 - Mostrar los servicios al conectarse: visualizar los servicios activos
-sobre la página de acceso a la central, o no.<br>
+sobre la página de acceso a la central, o no.<br />
 - Cantidad de elementos a mostrar por página (válido para todas las
-listas de elementos visualizados: seguimientos, computadores, etc.).<br>
+listas de elementos visualizados: seguimientos, computadores, etc.).<br />
 - Cantidad máxima de caracteres para cada elemento de la lista: reducir
 el tamaño de las cadenas de caracteres para obtener una visualización
-legible.<br>
+legible.<br />
 - Permitir helpdesk.html : activar o no las solicitudes de servicio
-anónimas a través del archivo helpdesk.html.<br>
+anónimas a través del archivo helpdesk.html.<br />
   </p>
   <a name="adminb6"></a>
   <h4>vi) Tipos de documentos</h4>
   <p>
 En esta sección podemos agregar o modificar los tipos de documentos
 autorizados a ser gestionados por GLPI.
-Los datos a proveer son:<br>
-- Nombre del tipo de documento.<br>
-- Extension, ejemplo: .txt<br>
+Los datos a proveer son:<br />
+- Nombre del tipo de documento.<br />
+- Extension, ejemplo: .txt<br />
 - Nombre del archivo para el ícono del documento deseado. Ubicaremos
 los archivos de íconos en el subdirectorio pics/icones bajo el árbol de
-GLPI.<br>
-- El tipo MIME si es necesario.<br>
-- Autorización de subida de este tipo de archivo (sí o no).<br>
+GLPI.<br />
+- El tipo MIME si es necesario.<br />
+- Autorización de subida de este tipo de archivo (sí o no).<br />
   </p>
-</ul>
 <h3><a name="adminc"></a>c) Preferencias</h3>
 <p>Esta zona nos permite cambiar nuestra palabra clave, definir el
 orden por defecto utilizado en la presentación

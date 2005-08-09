@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">     
    <head>
-          <title>AIDE HELPDESK - GLPI </title>
+          <title>AIDE CENTRAL - GLPI </title>
           <meta http-equiv="Content-type" content="text/html; charset=iso-8859-15"/>
           <meta http-equiv="Content-Script-Type" content="text/javascript"/>
           <meta http-equiv="Content-Style-Type" content="text/css"/>
@@ -15,8 +15,98 @@
           <meta name="DC.Creator" content="GLPI dev team"/>
           <meta name="DC.Date.created" scheme="W3CDTF" content="2004-09-21"/>
           <meta name="DC.Date.modified" scheme="W3CDTF" content="2004-09-21"/>
-          <meta name="DC.Rights" content="This article is under GPL license."/>
-          <meta name="DC.Subject" content="HELPDESK"/>
+          <meta name="DC.Rights" content="This article is under Creative Commons BY-NC-SA free license."/>
+          <meta name="DC.Subject" content="CENTRAL"/>
+<style type="text/css">
+#right{
+float: right;
+margin-top:15px;
+width: 250px;
+height: 500px;
+background: #eee;
+}
+
+#left{
+ position:absolute;   left:10px; width:490px; height:500px; 
+margin-top:15px;
+background: #eee;
+}
+
+#right a, a:visited, a:active, a:link {
+color:black;
+text-decoration: none;
+}
+
+#right  a:hover {
+background-color:#D2F2D5;
+text-decoration:none;
+
+}
+.menu
+{
+ overflow: auto;
+height: 490px;
+padding-left: 30px;
+font-family: Trebuchet MS, Arial, Sans, sans-serif;
+font-size: 10px;
+font-weight: bold;
+color: black;
+}
+
+
+.menu ul
+{
+padding-left: 5px;
+margin-left: 0;
+
+}
+
+.menu li
+{
+list-style: none;
+margin: 0;
+padding: 0.25em;
+
+}
+
+.content
+ {
+  overflow: auto;
+height: 490px;
+ font-family: Arial, Sans, sans-serif;
+font-size: 11px;
+ }
+
+ h1{  
+ margin-left:15px;
+ text-align:center;
+ font-family: Trebuchet MS, Arial, Sans, sans-serif;
+font-size: 18px;  
+font-weight:200%;
+color:  #FFC65D;
+margin :10px;
+-moz-border-radius: 4px;
+border: 1px solid #FFC65D;
+}
+
+h2{
+margin-left:5px;
+border-left: 2px solid #339966;
+border-bottom: 1px solid #339966;
+font-weight:200%;
+padding: 5px;
+font-family: Trebuchet MS, Arial, Sans, sans-serif;
+font-size: 15px;  
+}
+
+h3{
+margin-left:15px;
+padding: 5px;
+font-family: Trebuchet MS, Arial, Sans, sans-serif;
+font-size: 13px;  
+}
+
+</style>	  
 
         </head>
 
@@ -24,26 +114,36 @@
 	    
 <h1>CENTRAL Help </h1>
 (bad translation, submit to us any improvement)
+<div id="right">
+<div class='menu'>
+
 <h2>Table of contents</h2>
-<UL><a href="#invent">1 - Inventory Section</a>
-<li><a href="#inventa">a) General informations</a></li>
+
+<ul><li><a href="#invent">1 - Inventory Section</a></li>
+<li><ul><li><a href="#inventa">a) General informations</a></li>
 <li><a href="#inventb">b) Management of the direct connections</a></li>
 <li><a href="#inventc">c) Management of the networking ports</a></li>
 <li><a href="#inventd">d) Management of the softwares</a></li>
+</ul></li>
 </UL>
 
-<UL><a href="#maint">2 - Maintenance Section</a>
+<UL><li><a href="#maint">2 - Maintenance Section</a></li>
 <li><a href="#mainta">a) Tracking</a></li>
 <li><a href="#maintb">b) Reports</a></li>
 <li><a href="#maintc">c) Stats</a></li>
 </UL>
 
-<UL><a href="#admin">3 - Administration Section</a>
+<UL><li><a href="#admin">3 - Administration Section</a></li>
 <li><a href="#admina">a) Management of the users</a></li>
 <li><a href="#adminb">b) Setup</a></li>
 <li><a href="#adminc">c) Setting</a></li>
 <li><a href="#admind">d) Data (Save/Restore)</a></li>
 </UL>
+</div>
+</div>
+
+<div id='left'>
+<div class='content'>
     
 <h2><A NAME="invent"></A>1 - Inventory Section</h2>
 
@@ -82,13 +182,13 @@
 The tracking module makes it possible to post the list of the interventions according to several criteria.</p>
 <p>You can show:</p>
 <ul>
-<li>All active interventions</li>
+<li>All active interventions
 <p>All the interventions which were not closed. </p>
-<li>Only intervention assigned to you</li>
+<li>Only intervention assigned to you
 <p>The interventions which were assigned to you.</p>
-<li>Only interventions not assigned yet</li>
+<li>Only interventions not assigned yet
 <p>The interventions which must be assigned to a technician.</p>
-<li>Only old interventions</li>
+<li>Only old interventions
 <p>The closed interventions.</p>
 </ul>
 
@@ -112,16 +212,16 @@ For that, check the checkbox in the status column and click on "Delete" at the b
 <p>GLPI authorizes the generation of a certain number of reports: </p>
 
 <ul>
-<li>The default report</li>
+<li>The default report
 <p>This report lists the number of item and software present in the inventory.</p>
-<li>Material under maintenance contract </li>
+<li>Material under maintenance contract
 <p>This report indicates the number of item under maintenance contract. It is possible to obtain a detailed report by type of item and date of purchase. The multiple selection is authorized.
 </p>
-<li>Report by purchase date or end of guarantee</li>
+<li>Report by purchase date or end of guarantee
 <p>This report indicates the number of item by purchase date or end of guarantee for one or several years. The multiple selection is authorized.</p>
-<li>Report on interventions</li>
+<li>Report on interventions
 <p>This report makes it possible to obtain the list of the interventions and their history according to many criteria's. Research can be perform over a given period, for a precise type of item or for a part of this item and according to its author and/or of his assign technician.</p>
-<li>Excel, OpenOffice (Sylk)</li>
+<li>Excel, OpenOffice (Sylk)
 <p>GLPI can generate exploitable reports by type of into unsing a spreadsheet. For that GLPI generates SYLK files. This format is exploitable by many spreadsheves.</p>
 <p>If you used a software which does not know well with the standards (Excel for example), use the limited version in order not to have a problem with the size of the fields. The long fields will be truncated.</p>
 </ul>
@@ -188,50 +288,50 @@ For that, check the checkbox in the status column and click on "Delete" at the b
 
 <h3><A NAME="adminb"></A>b) Setup</h3>
 <UL>
-<li>Dropdowns</li>
-<p>You can in this section completly modify the data included in the select lists for example for the locations and the processors.<p>
-<p>Once selected the list that you want to modify you can add of the elements, modify them and remove them.<br>
+<li>Dropdowns
+<p>You can in this section completly modify the data included in the select lists for example for the locations and the processors.</p>
+<p>Once selected the list that you want to modify you can add of the elements, modify them and remove them.<br />
 <b>Caution !!</b> If you remove elements used, then,  you will have to make a choice between modifying the existing entries or to put them at NULL.</p>
-</p>
 
-<liTemplates</li>
+
+<li>Templates
 
 <p>You can define models of computers allowing you to add several similar computers very easily.</p>
 
-<li>External authentifications</li>
+<li>External authentifications
 
 <p>The external authentifications enable you to use alternative sources of authentification. That avoids you having to add all the users manually.</p>
-<p>The first solution is to use a mail server:<br>
+<p>The first solution is to use a mail server:<br />
 - In the first part, you must to define the mail server you want to use. Please, to fill it correctly follow this link  <a href="http://www.php.net/manual/en/function.imap-open.php">php.net</a> which provide several examples.
-Some exwmples : {localhost:110/pop3}, {localhost:993/imap/ssl}, {localhost:995/pop3/ssl/novalidate-cert}...<br>
+Some exwmples : {localhost:110/pop3}, {localhost:993/imap/ssl}, {localhost:995/pop3/ssl/novalidate-cert}...<br />
 - The second parameter defines the mail domain used which will be used automatically to fill the mail addresses of the new users. If the user is called <i>toto</i>, then, his mail address will be toto@mail_domain. 
 </p>
 <p>The second solution id to use an LDAP server or an Active Directory. For this configuration defer to corresponding documentation present on the <a target=_blank href="http://glpi.indepnet.org/article.php3?id_article=33">Web site of GLPI</A>.</p>
 
-<li>Email Followups</li>
+<li>Email Followups
 
 <p>
 
 This section enables you to activate the followup of the interventions by email. 
-If you activate this functionality, emails will be sent for the creation of a new intervention, the addition of each followup and the closing of the interventions.<br>
-- You should fill the email address of the administrator and the email signature which will be added to each email send<br>
-- The other options enable you to limit the emails sent. For each type of people you can activate or not the sending for the creation of an intervention, the addition of followups and the closing of an intervention.<br>
-- The defined groups of people are: the administrator, all 'admin' or 'normal' users, the person in charge of the task and the caller of the intervention.<br>
-- The caller will not receive an email if it do not activated the email followup when he request for the intervention.<br>
+If you activate this functionality, emails will be sent for the creation of a new intervention, the addition of each followup and the closing of the interventions.<br />
+- You should fill the email address of the administrator and the email signature which will be added to each email send<br />
+- The other options enable you to limit the emails sent. For each type of people you can activate or not the sending for the creation of an intervention, the addition of followups and the closing of an intervention.<br />
+- The defined groups of people are: the administrator, all 'admin' or 'normal' users, the person in charge of the task and the caller of the intervention.<br />
+- The caller will not receive an email if it do not activated the email followup when he request for the intervention.<br />
 </p>
 
-<li>General Configuration</li>
+<li>General Configuration
 <p>
-The general configuration of the application makes it possible to define certain parameters: <br>
+The general configuration of the application makes it possible to define certain parameters: <br />
 - The installation path. <b>Caution !!</b> 
-This path is detected automatically at the time of the installation or of the update, you should not need to modify it.<br>
-- The log level.<br>
-- The number of events to be posted corresponds to the number of lines of log present on the banner page of the central.<br>
-- The time of conservation of the logs. <b>Caution!!</b> If you keep them a long time your table can contain lots of data.<br>
-- Show the interventions at the login: to or not to see the active interventions on the banner page of the central.<br>
-- Number of elements ti print by page (valid for all the lists of elements posted - Tracking, computers...)<br>
-- Maximum number of characters for each elements of the list: reduce the size of the character strings to show in order to obtain a readable posting.<br>
-- Allow anonymous tracking post (helpdesk.html): activate or not the anonymous requests for interventions via the helpdesk.html file.<br>
+This path is detected automatically at the time of the installation or of the update, you should not need to modify it.<br />
+- The log level.<br />
+- The number of events to be posted corresponds to the number of lines of log present on the banner page of the central.<br />
+- The time of conservation of the logs. <b>Caution!!</b> If you keep them a long time your table can contain lots of data.<br />
+- Show the interventions at the login: to or not to see the active interventions on the banner page of the central.<br />
+- Number of elements ti print by page (valid for all the lists of elements posted - Tracking, computers...)<br />
+- Maximum number of characters for each elements of the list: reduce the size of the character strings to show in order to obtain a readable posting.<br />
+- Allow anonymous tracking post (helpdesk.html): activate or not the anonymous requests for interventions via the helpdesk.html file.<br />
 </p>
 
 </UL>
@@ -242,5 +342,7 @@ This path is detected automatically at the time of the installation or of the up
 <p>This zone allows you to create SQL safeguards of the database ("Dump SQL").</p>
 <p>You can also remove the backup files, to restore them or to download SQL files.</p>
 <p>You can also generate a XML safeguard of the database. ("Dump XML").</p>
+</div>
+</div>
 
 </body> 

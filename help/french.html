@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">     
    <head>
-          <title>AIDE HELPDESK - GLPI </title>
+          <title>AIDE CENTRAL - GLPI </title>
           <meta http-equiv="Content-type" content="text/html; charset=iso-8859-15"/>
           <meta http-equiv="Content-Script-Type" content="text/javascript"/>
           <meta http-equiv="Content-Style-Type" content="text/css"/>
@@ -15,8 +15,8 @@
           <meta name="DC.Creator" content="GLPI dev team"/>
           <meta name="DC.Date.created" scheme="W3CDTF" content="2004-09-21"/>
           <meta name="DC.Date.modified" scheme="W3CDTF" content="2004-09-21"/>
-          <meta name="DC.Rights" content="Cet article est sous licence GPL."/>
-          <meta name="DC.Subject" content="HELPDESK"/>
+          <meta name="DC.Rights" content="Cet article est sous licence libre Creative Commons BY-NC-SA."/>
+          <meta name="DC.Subject" content="CENTRAL"/>
 
 	  
 <style type="text/css">
@@ -122,7 +122,8 @@ font-size: 13px;
 <div id="right">
 <div class='menu'>
 <h1>Sommaire</h1>
-<ul><a href="#invent">1 - Partie Inventaire</a>
+<ul><li><a href="#invent">1 - Partie Inventaire</a></li>
+<li><ul>
 <li><a href="#inventa">a) Consid&eacute;ration g&eacute;n&eacute;rales</a></li>
 <li><a href="#inventb">b) Gestion des mod&egrave;les</a></li>
 <li><a href="#inventc">c) Gestion des p&eacute;riph&eacute;riques internes aux ordinateurs</a></li>
@@ -130,40 +131,49 @@ font-size: 13px;
 <li><a href="#invente">e) Gestion des ports r&eacute;seaux</a></li>
 <li><a href="#inventf">f) Gestion des logiciels</a></li>
 <li><a href="#inventg">g) Gestion des r&eacute;parations</a></li>
+</ul></li>
 </ul>
 
-<ul><a href="#assist">2 - Partie Assistance</a>
+<ul><li><a href="#assist">2 - Partie Assistance</a></li>
+<li><ul>
 <li><a href="#assista">a) Suivi</a></li>
 <li><a href="#assistb">b) Helpdesk</a></li>
 <li><a href="#assistc">c) Statistiques</a></li>
+</ul></li>
 </ul>
 
-<ul><a href="#gestion">3 - Partie Gestion</a>
+<ul><li><a href="#gestion">3 - Partie Gestion</a></li>
+<li><ul>
 <li><a href="#gestiona">a) Contacts</a></li>
 <li><a href="#gestionb">b) Entreprises</a></li>
 <li><a href="#gestionc">c) Contrats</a></li>
 <li><a href="#gestiond">d) Documents</a></li>
+</ul></li>
 </ul>
 
-<ul><a href="#outils">4 - Partie Outils</a>
+<ul><li><a href="#outils">4 - Partie Outils</a></li>
+<li><ul>
 <li><a href="#outilsa">a) R&eacute;servations</a></li>
 <li><a href="#outilsb">b) Bases de connaissances</a></li>
 <li><a href="#outilsc">c) Rapports</a></li>
+</ul></li>
 </ul>
 
-<ul><a href="#admin">5 - Partie Administration</a>
+<ul><li><a href="#admin">5 - Partie Administration</a></li>
+<li><ul>
 <li><a href="#admina">a) Gestion des utilisateurs</a></li>
 <li><a href="#adminb">b) Configuration</a></li>
-<ul>
+<li><ul>
 	<li><a href="#adminb1"> i) Intitul&eacute;s</a></li>
 	<li><a href="#adminb2"> ii) P&eacute;riph&eacute;riques internes</a></li>
 	<li><a href="#adminb3"> iii) Authentifications externes</a></li>
 	<li><a href="#adminb4"> iv) Suivis par emails</a></li>
 	<li><a href="#adminb5"> v) Configuration g&eacute;n&eacute;rale</a></li>
 	<li><a href="#adminb6"> vi) Type de document</a></li>
-</ul>
+</ul></li>
 <li><a href="#adminc">c) Pr&eacute;f&eacute;rences</a></li>
 <li><a href="#admind">d) Donn&eacute;es (Sauvegarde/Restauration)</a></li>
+</ul></li>
 </ul>
  
 </div>
@@ -231,13 +241,13 @@ font-size: 13px;
 <p>Le module de suivi permet d'afficher la liste des interventions en fonction de certains crit&egrave;res.</p>
 <p>Vous pouvez afficher :</p>
 <ul>
-<li>Toutes les interventions actives</li>
+<li>Toutes les interventions actives
 <p>Toutes les interventions qui n'ont pas &eacute;t&eacute; clotur&eacute;es.</p>
-<li>Seulement les interventions qui vous sont attribu&eacute;es</li>
+<li>Seulement les interventions qui vous sont attribu&eacute;es
 <p>Les interventions qui vous ont &eacute;t&eacute; affect&eacute;es.</p>
-<li>Seulement les interventions non attribu&eacute;es</li>
+<li>Seulement les interventions non attribu&eacute;es
 <p>Les interventions &agrave; affecter &agrave; un technicien.</p>
-<li>Seulement les interventions termin&eacute;es</li>
+<li>Seulement les interventions termin&eacute;es
 <p>Les interventions clotur&eacute;es.</p>
 </ul>
 
@@ -343,46 +353,46 @@ Ainsi seuls les &eacute;l&eacute;ments de la FAQ publique seront visibles par le
 <p>Vous pouvez cr&eacute;er des cat&eacute;gories et sous-cat&eacute;gories afin d'indexer vos connaissances. Il est donc facile pour quelqu'un de retrouver de l'information n&eacute;cessaire &agrave; ses tâches.</p>
 <p>Vous pouvez utiliser des raccourcis de mise en forme :</p>
 <p>
-Les marqueurs suivants changent l'apparence du texte:<br><br>
+Les marqueurs suivants changent l'apparence du texte:<br /><br />
 
-				&nbsp;&nbsp;&nbsp;&nbsp;[b]Texte gras[/b] produit <b>Texte gras</b><br>
-				&nbsp;&nbsp;&nbsp;&nbsp;[u]Texte soulign&eacute;[/u] produit <u>Texte soulign&eacute;</u><br>
-				&nbsp;&nbsp;&nbsp;&nbsp;[i]Texte italique[/i] produit <i>Texte italique</i><br>
-				&nbsp;&nbsp;&nbsp;&nbsp;[color=#FF0000]Texte rouge[/color] produit <span style="color: #ff0000">Texte rouge</span><br><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;[b]Texte gras[/b] produit <b>Texte gras</b><br />
+				&nbsp;&nbsp;&nbsp;&nbsp;[u]Texte soulign&eacute;[/u] produit <u>Texte soulign&eacute;</u><br />
+				&nbsp;&nbsp;&nbsp;&nbsp;[i]Texte italique[/i] produit <i>Texte italique</i><br />
+				&nbsp;&nbsp;&nbsp;&nbsp;[color=#FF0000]Texte rouge[/color] produit <span style="color: #ff0000">Texte rouge</span><br /><br />
 </p>			
-<p>Pour cr&eacute;er des liens vers d'autres documents ou vers un e-mail, utilisez les marqueurs suivants:<br><br>
+<p>Pour cr&eacute;er des liens vers d'autres documents ou vers un e-mail, utilisez les marqueurs suivants:<br /><br />
 
-				&nbsp;&nbsp;&nbsp;&nbsp;http://glpi.indepnet.org produit <a href="http://glpi.indepnet.org">http://glpi.indepnet.org</a><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;http://glpi.indepnet.org produit <a href="http://glpi.indepnet.org">http://glpi.indepnet.org</a><br />
 				
-				&nbsp;&nbsp;&nbsp;&nbsp;[email]myname@mydomain.com[/email] produit <a href="mailto:myname@mydomain.com">myname@mydomain.com</a><br>
-				&nbsp;&nbsp;&nbsp;&nbsp;[email=myname@mydomain.com]Mon adresse e-mail[/email] produit <a href="mailto:myname@mydomain.com">Mon adresse e-mail</a><br><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;[email]myname@mydomain.com[/email] produit <a href="mailto:myname@mydomain.com">myname@mydomain.com</a><br />
+				&nbsp;&nbsp;&nbsp;&nbsp;[email=myname@mydomain.com]Mon adresse e-mail[/email] produit <a href="mailto:myname@mydomain.com">Mon adresse e-mail</a><br /><br />
 				
 	
 </p>
 
 
-Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tant que code n'est pas affect&eacute; par les autres marqueurs.<br><br>
-				&nbsp;&nbsp;&nbsp;&nbsp;[code]Voici un bout de code.[/code]<br><br>
+Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tant que code n'est pas affect&eacute; par les autres marqueurs.<br /><br />
+				&nbsp;&nbsp;&nbsp;&nbsp;[code]Voici un bout de code.[/code]<br /><br />
 
-				g&eacute;n&egrave;re du code comme ceci:<br><br>
-				<table style="width: 95%; border: dotted 1px #000000" align="center" cellspacing="4" cellpadding="6"><tr><td ><span ><b>Code:</b></span><br><br><pre>Voici un bout de code.</pre></td></tr></table><br>
+				g&eacute;n&egrave;re du code comme ceci:<br /><br />
+				<table style="width: 95%; border: dotted 1px #000000" align="center" cellspacing="4" cellpadding="6"><tr><td ><span ><b>Code:</b></span><br /><br /><pre>Voici un bout de code.</pre></td></tr></table><br />
 			
 <h3><a name="outilsc"></a>b) Rapports</h3>
 
 <p>GLPI autorise la g&eacute;n&eacute;ration d'un certain nombre de rapports :</p>
 
 <ul>
-<li>Le rapport par d&eacute;faut</li>
+<li>Le rapport par d&eacute;faut
 <p>Ce rapport liste le nombre de mat&eacute;riel et logiciels pr&eacute;sents dans le parc. </p>
-<li>Mat&eacute;riel sous contrat de maintenance</li>
+<li>Mat&eacute;riel sous contrat de maintenance
 <p>Ce rapport indique le nombre de mat&eacute;riel sous contrat de maintenance aupr&eacute;s d'un tiers. Il est possible d'obtenir un &eacute;tat d&eacute;taill&eacute; par type de mat&eacute;riel et par date d'achat. La s&eacute;lection multiple est autoris&eacute;e.</p>
-<li>Rapport par date d'achat ou de fin de garantie</li>
+<li>Rapport par date d'achat ou de fin de garantie
 <p>Ce rapport liste le mat&eacute;riel par date d'achat ou de fin de garantie sur une ou plusieurs ann&eacute;es. La s&eacute;lection multiple est autoris&eacute;e.</p>
-<li>Rapport interventions</li>
+<li>Rapport interventions
 <p>Ce rapport permet d'obtenir la liste des interventions ainsi que leur historique  selon de nombreux crit&egrave;res. La recherche peut &ecirc;tre r&eacute;alis&eacute;e sur une p&eacute;riode donn&eacute;e, pour un type de mat&eacute;riel pr&eacute;cis ou une partie de ce mat&eacute;riel et en fonction de son auteur et/ou de son attribution.</p>
-<li>Rapport r&eacute;seau</li>
+<li>Rapport r&eacute;seau
 <p>Ce rapport vous permet d'avoir la liste d'informations de votre r&eacute;seau selon les lieux, les switchs ou une prise r&eacute;seau.</p>
-<li>Excel, OpenOffice (Sylk)</li>
+<li>Excel, OpenOffice (Sylk)
 <p>GLPI peut g&eacute;n&eacute;rer des rapports par type de materiel exploitables par un tableur. Pour cela GLPI g&eacute;n&egrave;re des fichiers de type SYLK. Ce format est exploitable par de nombreux tableurs. </p>
 <p>Si vous utilisez un logiciel qui ne respecte pas totalement les  standards (Excel par exemple), utilisez la version limit&eacute;e pour ne pas avoir de probl&egrave;me avec la taille des champs. Les champs trop longs seront tronqu&eacute;s.</p>
 </ul>
@@ -394,13 +404,13 @@ Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tan
 <p>Cette partie fonctionne exactement de la m&ecirc;me façon que les &eacute;l&eacute;ments de l'inventaire. Vous pouvez ajouter, modifier et supprimer des utilisateurs.</p>
 
 <h3><a name="adminb"></a>b) Configuration de GLPI</h3>
-<ul>
+
 <a name="adminb1"></a><h4>i) Intitul&eacute;s</h4>
 <p>Vous pouvez dans cette zone modifier enti&egrave;rement les donn&eacute;es pr&eacute;sentes dans les listes de s&eacute;lection propos&eacute;es 
 par exemple pour les lieux et les microprocesseurs.</p>
-<p>Une fois s&eacute;lectionn&eacute; la liste que vous voulez modifier vous pouvez ajouter des &eacute;l&eacute;ments, les modifier et les supprimer.<br>
+<p>Une fois s&eacute;lectionn&eacute; la liste que vous voulez modifier vous pouvez ajouter des &eacute;l&eacute;ments, les modifier et les supprimer.<br />
 <b>Attention !!</b> Si vous supprimez des &eacute;l&egrave;ments utilis&eacute;s vous devrez alors faire un choix entre modifier les entr&eacute;es existantes ou bien les mettre &agrave; NULL.</p>
-</p>
+<br />
 
 <a name="adminb2"></a><h4>ii) P&eacute;riph&eacute;riques internes</h4>
 
@@ -409,11 +419,11 @@ par exemple pour les lieux et les microprocesseurs.</p>
 <a name="adminb3"></a><h4>iii) Authentifications externes</h4>
 
 <p>Les authentifications externes vous permettent d'utiliser des sources alternatives d'authentification. Cela vous &eacute;vite ainsi d'avoir &agrave; ajouter manuellement tous les utilisateurs.</p>
-<p>La premi&egrave;re solution est d'utiliser un serveur de mail :<br>
+<p>La premi&egrave;re solution est d'utiliser un serveur de mail :<br />
 - Vous devez alors d&eacute;finir dans la premi&egrave;re partie le serveur &agrave; utiliser. Pour le d&eacute;finir correctement reportez vous au lien fournit vers <a href="http://www.php.net/manual/fr/function.imap-open.php">php.net</a> qui fournit de nombreux exemples.
-Les diff&eacute;rents param&egrave;tres que vous allez choisir peuvent vous donner des chaînes de connexion de ce type :<br>
-- {localhost:110/pop3},<br>
-- {localhost:993/imap/ssl},<br> 
+Les diff&eacute;rents param&egrave;tres que vous allez choisir peuvent vous donner des chaînes de connexion de ce type :<br />
+- {localhost:110/pop3},<br />
+- {localhost:993/imap/ssl},<br /> 
 - {localhost:995/pop3/ssl/novalidate-cert}...
 </p><p>
 - Le deuxi&egrave;me param&egrave;tre d&eacute;finit le domaine de mail utilis&eacute; qui va servir &agrave; remplir automatiquement les adresses mails des nouveaux utilisateurs. 
@@ -424,37 +434,38 @@ Si l'utilisateur s'appelle <i>toto</i>, sont adresse mail sera alors toto@domain
 <a name="adminb4"></a><h4>iv) Suivis par emails</h4>
 
 <p>Cette section vous permet d'activer le suivi des interventions par email.
-Si vous activez cette fonctionnalit&eacute;, des emails seront alors envoy&eacute;s au moment de la cr&eacute;ation d'une nouvelle intervention, &agrave; l'ajout de chaque suivi et &agrave; la fermeture des interventions.<br>
-- Vous pouvez alors renseigner l'adresse mail de l'administrateur et la signature ajout&eacute;e &agrave; chaque email<br>
-- Les autres options vous permettent de limiter les emails envoy&eacute;s. Pour chaque type de personnes vous pouvez activer ou non l'envoi &agrave; la cr&eacute;ation d'une intervention, &agrave; l'ajout de nouveau suivi et la cloture d'une intervention.<br>
-- Les groupes de personnes d&eacute;finis sont : l'administrateur, tous les utilisateurs de type 'admin' ou 'normal', le responsable de la tâche et le demandeur de l'intervention.<br>
-- Le demandeur ne recevra un email que s'il a activ&eacute; le suivi par email lors de sa demande d'intervention.<br>
+Si vous activez cette fonctionnalit&eacute;, des emails seront alors envoy&eacute;s au moment de la cr&eacute;ation d'une nouvelle intervention, &agrave; l'ajout de chaque suivi et &agrave; la fermeture des interventions.<br />
+- Vous pouvez alors renseigner l'adresse mail de l'administrateur et la signature ajout&eacute;e &agrave; chaque email<br />
+- Les autres options vous permettent de limiter les emails envoy&eacute;s. Pour chaque type de personnes vous pouvez activer ou non l'envoi &agrave; la cr&eacute;ation d'une intervention, &agrave; l'ajout de nouveau suivi et la cloture d'une intervention.<br />
+- Les groupes de personnes d&eacute;finis sont : l'administrateur, tous les utilisateurs de type 'admin' ou 'normal', le responsable de la tâche et le demandeur de l'intervention.<br />
+- Le demandeur ne recevra un email que s'il a activ&eacute; le suivi par email lors de sa demande d'intervention.<br />
 </p>
 
 <a name="adminb5"></a><h4>v) Configuration g&eacute;n&eacute;rale</h4>
 <p>
-La configuration g&eacute;n&eacute;rale de l'application permet de r&eacute;gler certains param&egrave;tres :<br>
-- Le chemin d'installation. <b>Attention !!</b> Ce chemin est d&eacute;tect&eacute; automatiquement au moment de l'installation ou de la mise &agrave; jour, vous ne devriez donc pas avoir besoin de le modifier.<br>
-- Le niveau de log.<br>
-- Le nombre d'&eacute;v&egrave;nements &agrave; afficher correspond au nombre de lignes de log pr&eacute;sentes sur la page d'accueil du central.<br>
-- Le temps de conservation des logs. <b>Attention !!</b> Si vous les gardez trop longtemps votre table peut contenir &eacute;normement de donn&eacute;es.<br>
-- Montrer les interventions au login : voir les interventions actives sur la page d'accueil du central ou non.<br>
-- Nombre d'&eacute;l&eacute;ments &agrave; afficher par page (valable pour toutes les listes d'&eacute;l&egrave;ments affich&eacute;es - suivis, ordinateurs...)<br>
-- Nombre de caract&egrave;res maximum pour chaque &eacute;l&eacute;ments de la liste : r&eacute;duction de la taille des chaines de caract&egrave;res affich&eacute;es pour obtenir un affichage lisible.<br>
-- Permettre le helpdesk.html : active ou non les demandes d'interventions anonymes via le fichier helpdesk.html.<br>
+La configuration g&eacute;n&eacute;rale de l'application permet de r&eacute;gler certains param&egrave;tres :<br />
+- Le chemin d'installation. <b>Attention !!</b> Ce chemin est d&eacute;tect&eacute; automatiquement au moment de l'installation ou de la mise &agrave; jour, vous ne devriez donc pas avoir besoin de le modifier.<br />
+- Le niveau de log.<br />
+- Le nombre d'&eacute;v&egrave;nements &agrave; afficher correspond au nombre de lignes de log pr&eacute;sentes sur la page d'accueil du central.<br />
+- Le temps de conservation des logs. <b>Attention !!</b> Si vous les gardez trop longtemps votre table peut contenir &eacute;normement de donn&eacute;es.<br />
+- Montrer les interventions au login : voir les interventions actives sur la page d'accueil du central ou non.<br />
+- Nombre d'&eacute;l&eacute;ments &agrave; afficher par page (valable pour toutes les listes d'&eacute;l&egrave;ments affich&eacute;es - suivis, ordinateurs...)<br />
+- Nombre de caract&egrave;res maximum pour chaque &eacute;l&eacute;ments de la liste : r&eacute;duction de la taille des chaines de caract&egrave;res affich&eacute;es pour obtenir un affichage lisible.<br />
+- Permettre le helpdesk.html : active ou non les demandes d'interventions anonymes via le fichier helpdesk.html.<br />
 </p>
 
 <a name="adminb6"></a><h4>vi) Type de document</h4>
 <p>
 Dans cette section, vous pouvez ajouter ou modifier les types de documents autoris&eacute;s &agrave; &ecirc;tre g&eacute;r&eacute;s par GLPI.
-Les informations &agrave; fournir sont :<br>
-- Le nom du type de document.<br>
-- L'extension ex: .txt<br>
-- Le nom du fichier pour l'ic&ocirc;ne du document d&eacute;sir&eacute;. Placer les fichiers d'ic&ocirc;nes dans le r&eacute;pertoire pics/icones sous l'arborescence de GLPI.<br>
-- Le type MIME si n&eacute;cessaire.<br>
-- Autorisation de t&eacute;l&eacute;chargement de ce type de fichier (oui ou non).<br>
+Les informations &agrave; fournir sont :<br />
+- Le nom du type de document.<br />
+- L'extension ex: .txt<br />
+- Le nom du fichier pour l'ic&ocirc;ne du document d&eacute;sir&eacute;. Placer les fichiers d'ic&ocirc;nes dans le r&eacute;pertoire pics/icones sous l'arborescence de GLPI.<br />
+- Le type MIME si n&eacute;cessaire.<br />
+- Autorisation de t&eacute;l&eacute;chargement de ce type de fichier (oui ou non).<br />
 </p>
-</ul>
+
+
 <h3><a name="adminc"></a>c) Pr&eacute;f&eacute;rences</h3>
 <p>Cette zone vous permet de changer votre mot de passe, de d&eacute;finir l'ordre par d&eacute;faut utilis&eacute; dans l'affichage 
 des interventions et de d&eacute;finir la langue avec laquelle l'interface est affich&eacute;e.</p>
