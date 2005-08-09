@@ -113,7 +113,6 @@ font-size: 13px;
  <body>
 	    
 <h1>CENTRAL Help </h1>
----bad translation, submit to us any improvement---
 <div id="right">
 <div class='menu'>
 
@@ -125,41 +124,42 @@ font-size: 13px;
 <li><a href="#inventc">c) Management of the networking ports</a></li>
 <li><a href="#inventd">d) Management of the softwares</a></li>
 </ul></li>
-</UL>
+</ul>
 
-<UL><li><a href="#maint">2 - Maintenance Section</a></li>
+<ul><li><a href="#maint">2 - Maintenance Section</a></li>
 <li><a href="#mainta">a) Tracking</a></li>
 <li><a href="#maintb">b) Reports</a></li>
 <li><a href="#maintc">c) Stats</a></li>
-</UL>
+</ul>
 
-<UL><li><a href="#admin">3 - Administration Section</a></li>
+<ul><li><a href="#admin">3 - Administration Section</a></li>
 <li><a href="#admina">a) Management of the users</a></li>
 <li><a href="#adminb">b) Setup</a></li>
 <li><a href="#adminc">c) Setting</a></li>
 <li><a href="#admind">d) Data (Save/Restore)</a></li>
-</UL>
+</ul>
 </div>
 </div>
 
 <div id='left'>
 <div class='content'>
+<p>---bad translation, submit to us any improvement---</p>
     
-<h2><A NAME="invent"></A>1 - Inventory Section</h2>
+<h2><a name="invent"></a>1 - Inventory Section</h2>
 
-<h3><A NAME="inventa"></A>a) General informations</h3>
+<h3><a name="inventa"></a>a) General informations</h3>
 <p>In the inventory part you can list and consult the hardware and software inventory park. </p>
 
 <p>You are able to perform parameterized and sorted researches on one of the types of the inventory (computers, networks, printers, monitors, peripherals and softwares).</p>
 <p>Here, you can post the form containing precise information of each indexed item, or add an item.</p>
 <p>You have then the possibility to modify or delete each item.</p>
 
-<h3><A NAME="inventb"></A>b) Management of the direct connections</h3>
+<h3><a name="inventb"></a>b) Management of the direct connections</h3>
 <p>The direct connections make it possible to model the relation between the central processing unit of a computer and external components.</p>
 <p>A direct connection is done between a computer and a printer, a monitor or peripheric external.</p>
 <p>The connections or disconnections are done since the page of a computer or that of the dependent material. </p>
 
-<h3><A NAME="inventc"></A>c) Management of the networking ports</h3>
+<h3><a name="inventc"></a>c) Management of the networking ports</h3>
 <p>A port network makes it possible to model a network interface on a given material.</p>
 <p>Each port has of an IP address, a mac address and a nework point to which it is connected.</p>
 <p>The network connections are done by connecting two ports. To connect two materials together they must have a free port.</p>
@@ -167,7 +167,7 @@ font-size: 13px;
 <p>At the time of the connection between two materials, informations such as the IP address and the network point are updated in order to be equals on the two ports</p>
 <p>For each material, it is possible to add one or several ports </p>
 
-<h3><A NAME="inventd"></A>d) Management of the softwares</h3>
+<h3><a name="inventd"></a>d) Management of the softwares</h3>
 <p>A software can have several licences having each one an associated serial and an end date</p>
 <p>The installation of a software is done since the page of a computer. </p>
 <p>Each time that a software is installed, the number of licence available for this software decreases.</p>
@@ -175,8 +175,8 @@ font-size: 13px;
 <p>Nevertheless, tt is possible to indicate the keyword "free" as serial when you add a new licence to a software. This license is installable without worrying about the number of the licenses.</p>
 <p>It is possible to add several licences in one time. The serial and the end date will be the same one for each license added.</p>
 
-<h2><A NAME="maint"></A>2 - Maintenance Section</h2>
-<h3><A NAME="mainta"></A>a) Tracking</h3>
+<h2><a name="maint"></a>2 - Maintenance Section</h2>
+<h3><a name="mainta"></a>a) Tracking</h3>
 
 <p>
 The tracking module makes it possible to post the list of the interventions according to several criteria.</p>
@@ -184,12 +184,16 @@ The tracking module makes it possible to post the list of the interventions acco
 <ul>
 <li>All active interventions
 <p>All the interventions which were not closed. </p>
+</li>
 <li>Only intervention assigned to you
 <p>The interventions which were assigned to you.</p>
+</li>
 <li>Only interventions not assigned yet
 <p>The interventions which must be assigned to a technician.</p>
+</li>
 <li>Only old interventions
 <p>The closed interventions.</p>
+</li>
 </ul>
 
 <p>You can also perform a research on the interventions based on a description</p>
@@ -201,39 +205,44 @@ The tracking module makes it possible to post the list of the interventions acco
 <p>To add elements of followup to an intervention, to close it or to reassign it, click on "infos". Then, You will obtain the complete history of the intervention. You will be able to add an element of followup or close the intervention (optional: indicate the real time of intervention).</p>
 
 
-<H4>Particular case of the closed interventions </H4>
+<h4>Particular case of the closed interventions </h4>
 <p>The restoration of a finished intervention is possible. Click on "information" then "Restore". </p>
 
 <p>It is possible to remove closed interventions if you do not wish to preserve them in the database. 
 For that, check the checkbox in the status column and click on "Delete" at the bottom of the list of the interventions.</p>
 
-<h3><A NAME="maintb"></A>b) Reports</h3>
+<h3><a name="maintb"></a>b) Reports</h3>
 
 <p>GLPI authorizes the generation of a certain number of reports: </p>
 
 <ul>
 <li>The default report
 <p>This report lists the number of item and software present in the inventory.</p>
+</li>
 <li>Material under maintenance contract
 <p>This report indicates the number of item under maintenance contract. It is possible to obtain a detailed report by type of item and date of purchase. The multiple selection is authorized.
 </p>
+</li>
 <li>Report by purchase date or end of guarantee
 <p>This report indicates the number of item by purchase date or end of guarantee for one or several years. The multiple selection is authorized.</p>
+</li>
 <li>Report on interventions
 <p>This report makes it possible to obtain the list of the interventions and their history according to many criteria's. Research can be perform over a given period, for a precise type of item or for a part of this item and according to its author and/or of his assign technician.</p>
+</li>
 <li>Excel, OpenOffice (Sylk)
 <p>GLPI can generate exploitable reports by type of into unsing a spreadsheet. For that GLPI generates SYLK files. This format is exploitable by many spreadsheves.</p>
 <p>If you used a software which does not know well with the standards (Excel for example), use the limited version in order not to have a problem with the size of the fields. The long fields will be truncated.</p>
+</li>
 </ul>
 
 
 
 
-<h3><A NAME="maintc"></A>c) Stats</h3>
+<h3><a name="maintc"></a>c) Stats</h3>
 
 <h4>Global Stats</h4>
 
-<P>These statistics gather the principal data on the interventions over the month, the year and on the whole time you use GLPI:</P>
+<p>These statistics gather the principal data on the interventions over the month, the year and on the whole time you use GLPI:</p>
 <ul>
 <li>Number of interventions</li>	
 <li>Number of resolved interventions</li>
@@ -281,22 +290,24 @@ For that, check the checkbox in the status column and click on "Delete" at the b
 </ul>
 
 
-<h2><A NAME="admin"></A>3 - Administration Section</h2>
-<h3><A NAME="admina"></A>a) Management of the users</h3>
+<h2><a name="admin"></a>3 - Administration Section</h2>
+<h3><a name="admina"></a>a) Management of the users</h3>
 
 <p>This part works exactly in the same way that the items of the inventory. You can add, modify and remove users.</p>
 
-<h3><A NAME="adminb"></A>b) Setup</h3>
-<UL>
+<h3><a name="adminb"></a>b) Setup</h3>
+<ul>
 <li>Dropdowns
 <p>You can in this section completly modify the data included in the select lists for example for the locations and the processors.</p>
 <p>Once selected the list that you want to modify you can add of the elements, modify them and remove them.<br />
-<b>Caution !!</b> If you remove elements used, then,  you will have to make a choice between modifying the existing entries or to put them at NULL.</p>
+<b>Caution !!</b> If you remove elements used, then,  you will have to make a choice between modifying the existing entries or to put them at NulL.</p>
+</li>
 
 
 <li>Templates
 
 <p>You can define models of computers allowing you to add several similar computers very easily.</p>
+</li>
 
 <li>External authentifications
 
@@ -306,7 +317,8 @@ For that, check the checkbox in the status column and click on "Delete" at the b
 Some exwmples : {localhost:110/pop3}, {localhost:993/imap/ssl}, {localhost:995/pop3/ssl/novalidate-cert}...<br />
 - The second parameter defines the mail domain used which will be used automatically to fill the mail addresses of the new users. If the user is called <i>toto</i>, then, his mail address will be toto@mail_domain. 
 </p>
-<p>The second solution id to use an LDAP server or an Active Directory. For this configuration defer to corresponding documentation present on the <a target=_blank href="http://glpi.indepnet.org/article.php3?id_article=33">Web site of GLPI</A>.</p>
+<p>The second solution id to use an LDAP server or an Active Directory. For this configuration defer to corresponding documentation present on the Web site of GLPI.</p>
+</li>
 
 <li>Email Followups
 
@@ -319,6 +331,7 @@ If you activate this functionality, emails will be sent for the creation of a ne
 - The defined groups of people are: the administrator, all 'admin' or 'normal' users, the person in charge of the task and the caller of the intervention.<br />
 - The caller will not receive an email if it do not activated the email followup when he request for the intervention.<br />
 </p>
+</li>
 
 <li>General Configuration
 <p>
@@ -333,12 +346,13 @@ This path is detected automatically at the time of the installation or of the up
 - Maximum number of characters for each elements of the list: reduce the size of the character strings to show in order to obtain a readable posting.<br />
 - Allow anonymous tracking post (helpdesk.html): activate or not the anonymous requests for interventions via the helpdesk.html file.<br />
 </p>
+</li>
 
-</UL>
-<h3><A NAME="adminc"></A>c) Setting</h3>
+</ul>
+<h3><a name="adminc"></a>c) Setting</h3>
 <p>This section allows you to change your password, to define the default order used in the posting of the interventions and to define the language used. </p>
 
-<h3><A NAME="admind"></A>d) Data (Save/Restore)</h3>
+<h3><a name="admind"></a>d) Data (Save/Restore)</h3>
 <p>This zone allows you to create SQL safeguards of the database ("Dump SQL").</p>
 <p>You can also remove the backup files, to restore them or to download SQL files.</p>
 <p>You can also generate a XML safeguard of the database. ("Dump XML").</p>
@@ -346,3 +360,4 @@ This path is detected automatically at the time of the installation or of the up
 </div>
 
 </body> 
+</html>

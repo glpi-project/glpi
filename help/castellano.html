@@ -260,12 +260,16 @@ función de ciertos criterios.</p>
 <ul>
   <li>Todos los servicios activos
   <p>Todos los servicios que no han sido cerrados.</p>
+  </li>
   <li>Solamente los servicios que nos han sido asignados.
   <p>Los servicios a los que hemos sido afectados.</p>
+</li>
   <li>Solamente los servicios no asignados.
   <p>Los servicios aún por asignar a un técnico.</p>
+</li>
   <li>Solamente los servicios terminados
   <p>Los servicios que han sido cerrados.</p>
+</li>
 </ul>
 <p>También podemos hacer una búsqueda sobre los servicios a partir de
 una descripción o de un número de identificación (ID).</p>
@@ -313,46 +317,46 @@ seguimientos de GLPI.</p>
 <p>Estas estadísticas agrupan los principales datos sobre los servicios
 en el mes, en el año y en total:</p>
 <ul>
-  <li>Cantidad total de servicios
-  <li>Cantidad de servicios resueltos
-  <li>Demora media de resolución de problemas
-  <li>Demora máxima de resolución de problemas
-  <li>Duración real media de servicios
-  <li>Duración máxima de resolución real de problemas
-  <li>Demora mínima de notificación de servicios
-  <li>Demora media de notificación de servicios
+  <li>Cantidad total de servicios</li>
+  <li>Cantidad de servicios resueltos</li>
+  <li>Demora media de resolución de problemas</li>
+  <li>Demora máxima de resolución de problemas</li>
+  <li>Duración real media de servicios</li>
+  <li>Duración máxima de resolución real de problemas</li>
+  <li>Demora mínima de notificación de servicios</li>
+  <li>Demora media de notificación de servicios</li>
 </ul>
 <h4>Por técnico</h4>
 <p>Estas estadísticas proveen un estado de la actividad de los técnicos
 para un período dado:</p>
 <ul>
-  <li>Cantidad de servicios asignados
-  <li>Cantidad de servicios resueltos
-  <li>Duración media de apertura 
-  <li>Duración real media del servicio
-  <li>Duración real total de intervenciones
-  <li>Demora media de notificación de servicio
+  <li>Cantidad de servicios asignados</li>
+  <li>Cantidad de servicios resueltos</li>
+  <li>Duración media de apertura </li>
+  <li>Duración real media del servicio</li>
+  <li>Duración real total de intervenciones</li>
+  <li>Demora media de notificación de servicio</li>
 </ul>
 <h4>Por Rubros</h4>
 <p>Estadísticas de servicios por Lugar, Tipo de computador, OS, CPU,
 Tipo HD, Placa gráfica, Motherboard, sobre un período dado:</p>
 <ul>
-  <li>Cantidad de servicios demandados
-  <li>Cantidad de servicios resueltos
-  <li>Duración media de apertura 
-  <li>Duración real media del servicio
-  <li>Duración real total de intervenciones
-  <li>Demora media de notificación de servicio
+  <li>Cantidad de servicios demandados</li>
+  <li>Cantidad de servicios resueltos</li>
+  <li>Duración media de apertura </li>
+  <li>Duración real media del servicio</li>
+  <li>Duración real total de intervenciones</li>
+  <li>Demora media de notificación de servicio</li>
 </ul>
 <h4>Por usuario</h4>
 <p>Estadísticas de servicios por usuario sobre un período dado:</p>
 <ul>
-  <li>Cantidad de servicios demandados
-  <li>Cantidad de servicios resueltos
-  <li>Duración media de apertura 
-  <li>Duración real media del servicio
-  <li>Duración real total de intervenciones
-  <li>Demora media de notificación de servicio
+  <li>Cantidad de servicios demandados</li>
+  <li>Cantidad de servicios resueltos</li>
+  <li>Duración media de apertura </li>
+  <li>Duración real media del servicio</li>
+  <li>Duración real total de intervenciones</li>
+  <li>Demora media de notificación de servicio</li>
 </ul>
 <h2><a name="gestion"></a>3 - Sección Gestión</h2>
 <h3><a name="gestiona"></a>a) Contactos</h3>
@@ -411,8 +415,7 @@ necesaria para sus tareas.</p>
 Los marcadores siguientes cambian el aspecto del texto:<br />
 <br />
 &nbsp;&nbsp;&nbsp;&nbsp;[b]Texto negrita[/b] produce <b>Texto negrita</b><br />
-&nbsp;&nbsp;&nbsp;&nbsp;[u]Texto subrayado[/u] produce <u>Texto
-subrayado</u><br />
+&nbsp;&nbsp;&nbsp;&nbsp;[u]Texto subrayado[/u] produce <span style="text-decoration: underline">Texto subrayado</span><br />
 &nbsp;&nbsp;&nbsp;&nbsp;[i]Texto cursiva[/i] produce <i>Texto cursiva</i><br />
 &nbsp;&nbsp;&nbsp;&nbsp;[color=#FF0000]Texto rojo[/color] produce <span
  style="color: rgb(255, 0, 0);">Texto rojo</span><br />
@@ -437,8 +440,7 @@ CODE no será afectado por los otros marcadores.<br />
 <br />
 Generará un código como el siguiente:<br />
 <br />
-<table style="border: 1px dotted rgb(0, 0, 0); width: 95%;"
- align="center" cellspacing="4" cellpadding="6">
+<table style="border: 1px dotted rgb(0, 0, 0); width: 95%;" cellspacing="4" cellpadding="6">
   <tbody>
     <tr>
       <td><span><b>Code:</b></span><br />
@@ -455,22 +457,27 @@ Generará un código como el siguiente:<br />
   <li>Informe por defecto
   <p>Este reporte lista la cantidad de cada material y software
 presentes en el parque.</p>
+</li>
   <li>Material bajo contrato de mantenimiento
   <p>Este reporte indica la cantidad de material bajo contrato de
 mantenimiento de un tercero. Es posible obtener un estado detallado por
 tipo de material y por fecha de compra. Se permiten selecciones
 múltiples.</p>
+</li>
   <li>Reporte por fecha de compra o de fin de garantía
   <p>Este reporte lista el material por fecha de fin de garantía sobre
 uno o varios años. Se permiten selecciones múltiples.</p>
+</li>
   <li>Reporte de servicios
   <p>Este reporte permite obtener la lista de servicios así como su
 histórico según varios criterios. La búsqueda puede realizarse sobre un
 período dado, por un tipo de material dado o una parte de este
 material, y en función de su autor y/o de su asignación.</p>
+</li>
   <li>Reporte de red
   <p>Este reporte permite obtener la lista de datos de nuestra red
 según lugares, switches, o bocas de red.</p>
+</li>
   <li>Excel, OpenOffice (Sylk)
   <p>GLPI puede generar reportes por tipo de material explotables por
 planillas de cálculo. Para esto GLPI genera archivos de tipo SYLK. Este
@@ -479,6 +486,7 @@ formato es explotable por numerosos programas de planilla de cálculo.</p>
 estándares (por ejemplo, Excel), usaremos la versión limitada para no
 tener problemas con el tamaño de los campos. Los campos demasiado
 largos serán truncados.</p>
+</li>
 </ul>
 <h2><a name="admin"></a>5 - Sección Administración</h2>
 <h3><a name="admina"></a>a) Gestión de usuarios</h3>
@@ -520,9 +528,7 @@ Si el usuario se llama <i>toto</i>, su dirección email será entonces
 toto@dominio_mail. </p>
   <p>La segunda solución es el uso de un directorio LDAP o Active
 Directory. Para esta configuración diríjase a la documentación
-correspondiente sobre el <a target="_blank"
- href="http://glpi.indepnet.org/article.php3?id_article=33">sitio web
-de GLPI.</a></p>
+correspondiente sobre el sitio web de GLPI.</p>
   <a name="adminb4"></a>
   <h4>iv) Seguimientos por email</h4>
   <p>Esta sección nos permite activar el seguimiento de servicios por
