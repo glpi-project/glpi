@@ -1,6 +1,8 @@
 Changelog Complet : http://mantis.indepnet.org/changelog_page.php
 
 *** GLPI  0.6 ***
+- 0000141: [Général] Gestion financière des cartouches
+- 0000228: [Module Inventaire] informations commerciales sur les licenses
 - 0000229: [Module Inventaire] Gestion des consommables
 - 0000036: [Module Inventaire] Gestion typage des ordinateurs
 - 0000022: [Module Outils] Envoi mail pour réservation
