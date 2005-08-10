@@ -87,6 +87,7 @@ define("DOCUMENT_TYPE","13");
 define("KNOWBASE_TYPE","14");
 define("USER_TYPE","15");
 define("TRACKING_TYPE","16");
+define("CONSUMABLE_TYPE","17");
 
 // DEVICE TYPE
 define("MOBOARD_DEVICE","1");

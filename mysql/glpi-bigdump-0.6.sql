@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-08-10 11:53
+#GLPI Dump database on 2005-08-10 14:27
 
 ### Dump table glpi_cartridges
 
@@ -19,6 +19,14 @@ CREATE TABLE glpi_cartridges (
    KEY date_out (date_out)
 ) TYPE=MyISAM;
 
+INSERT INTO glpi_cartridges VALUES ('1','1',NULL,'2005-08-10',NULL,NULL,NULL);
+INSERT INTO glpi_cartridges VALUES ('2','1',NULL,'2005-08-10',NULL,NULL,NULL);
+INSERT INTO glpi_cartridges VALUES ('3','1',NULL,'2005-08-10',NULL,NULL,NULL);
+INSERT INTO glpi_cartridges VALUES ('4','1',NULL,'2005-08-10',NULL,NULL,NULL);
+INSERT INTO glpi_cartridges VALUES ('5','1',NULL,'2005-08-10',NULL,NULL,NULL);
+INSERT INTO glpi_cartridges VALUES ('6','1',NULL,'2005-08-10',NULL,NULL,NULL);
+INSERT INTO glpi_cartridges VALUES ('7','1',NULL,'2005-08-10',NULL,NULL,NULL);
+INSERT INTO glpi_cartridges VALUES ('8','1',NULL,'2005-08-10',NULL,NULL,NULL);
 
 ### Dump table glpi_cartridges_assoc
 
@@ -54,6 +62,7 @@ CREATE TABLE glpi_cartridges_type (
    KEY deleted (deleted)
 ) TYPE=MyISAM;
 
+INSERT INTO glpi_cartridges_type VALUES ('1','test','','0','0','0','0','N','','10');
 
 ### Dump table glpi_computer_device
 
@@ -5576,7 +5585,8 @@ CREATE TABLE glpi_computers (
    KEY deleted (deleted),
    KEY is_template (is_template),
    KEY date_mod (date_mod),
-   KEY tech_num (tech_num)
+   KEY tech_num (tech_num),
+   KEY type_2 (type)
 ) TYPE=MyISAM;
 
 INSERT INTO glpi_computers VALUES ('43','computer 43','serial 43','','contact 43','num 43','0','comment 43','2004-05-17 16:49:59','4','2','0','0','32',NULL,'0',NULL,'0','N');
@@ -7433,6 +7443,54 @@ INSERT INTO glpi_connect_wire VALUES ('1057','718','796','4');
 INSERT INTO glpi_connect_wire VALUES ('1061','319','105','3');
 INSERT INTO glpi_connect_wire VALUES ('1065','320','197','3');
 
+### Dump table glpi_consumables
+
+DROP TABLE IF EXISTS glpi_consumables;
+CREATE TABLE glpi_consumables (
+    ID int(11) NOT NULL auto_increment,
+    FK_glpi_consumables_type int(11),
+    date_in date,
+    date_out date,
+   PRIMARY KEY (ID),
+   KEY FK_glpi_cartridges_type (FK_glpi_consumables_type),
+   KEY date_in (date_in),
+   KEY date_out (date_out)
+) TYPE=MyISAM;
+
+INSERT INTO glpi_consumables VALUES ('1','1','2005-08-10','2005-08-10');
+INSERT INTO glpi_consumables VALUES ('2','1','2005-08-10','2005-08-10');
+INSERT INTO glpi_consumables VALUES ('3','1','2005-08-10',NULL);
+INSERT INTO glpi_consumables VALUES ('4','1','2005-08-10',NULL);
+INSERT INTO glpi_consumables VALUES ('5','1','2005-08-10',NULL);
+INSERT INTO glpi_consumables VALUES ('6','1','2005-08-10',NULL);
+INSERT INTO glpi_consumables VALUES ('7','1','2005-08-10',NULL);
+INSERT INTO glpi_consumables VALUES ('8','1','2005-08-10',NULL);
+INSERT INTO glpi_consumables VALUES ('9','1','2005-08-10',NULL);
+INSERT INTO glpi_consumables VALUES ('10','1','2005-08-10',NULL);
+INSERT INTO glpi_consumables VALUES ('11','1','2005-08-10',NULL);
+
+### Dump table glpi_consumables_type
+
+DROP TABLE IF EXISTS glpi_consumables_type;
+CREATE TABLE glpi_consumables_type (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+    ref varchar(255) NOT NULL,
+    location int(11) DEFAULT '0' NOT NULL,
+    type tinyint(4) DEFAULT '0' NOT NULL,
+    FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
+    tech_num int(11) DEFAULT '0',
+    deleted enum('Y','N') DEFAULT 'N' NOT NULL,
+    comments text NOT NULL,
+    alarm tinyint(4) DEFAULT '10' NOT NULL,
+   PRIMARY KEY (ID),
+   KEY FK_glpi_enterprise (FK_glpi_enterprise),
+   KEY tech_num (tech_num),
+   KEY deleted (deleted)
+) TYPE=MyISAM;
+
+INSERT INTO glpi_consumables_type VALUES ('1','test','','0','0','0','0','N','','10');
+
 ### Dump table glpi_contact_enterprise
 
 DROP TABLE IF EXISTS glpi_contact_enterprise;
@@ -7931,6 +7989,16 @@ CREATE TABLE glpi_dropdown_cartridge_type (
 INSERT INTO glpi_dropdown_cartridge_type VALUES ('1','Jet-Encre');
 INSERT INTO glpi_dropdown_cartridge_type VALUES ('2','Toner');
 INSERT INTO glpi_dropdown_cartridge_type VALUES ('3','Ruban');
+
+### Dump table glpi_dropdown_consumable_type
+
+DROP TABLE IF EXISTS glpi_dropdown_consumable_type;
+CREATE TABLE glpi_dropdown_consumable_type (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
 
 ### Dump table glpi_dropdown_contact_type
 
@@ -10339,6 +10407,11 @@ INSERT INTO glpi_event_log VALUES ('13770','-1','system','2005-07-29 12:17:38','
 INSERT INTO glpi_event_log VALUES ('13771','-1','system','2005-08-08 00:52:24','login','3','glpi logged in from 127.0.0.1.');
 INSERT INTO glpi_event_log VALUES ('13772','-1','system','2005-08-10 00:18:20','login','3','glpi logged in from 127.0.0.1.');
 INSERT INTO glpi_event_log VALUES ('13773','-1','system','2005-08-10 11:53:29','login','3','glpi logged in from 127.0.0.1.');
+INSERT INTO glpi_event_log VALUES ('13774','-1','system','2005-08-10 14:25:15','login','3','glpi logged in from 127.0.0.1.');
+INSERT INTO glpi_event_log VALUES ('13775','1','cartridges','2005-08-10 14:25:21','inventory','4','glpi added item test.');
+INSERT INTO glpi_event_log VALUES ('13776','1','cartridges','2005-08-10 14:25:31','inventory','4','glpi added 8 cartridge.');
+INSERT INTO glpi_event_log VALUES ('13777','1','consumables','2005-08-10 14:26:39','inventory','4','glpi added item test.');
+INSERT INTO glpi_event_log VALUES ('13778','1','consumables','2005-08-10 14:26:47','inventory','4','glpi added 11 consumable.');
 
 ### Dump table glpi_followups
 

@@ -691,7 +691,7 @@ function showDeviceContract($instID,$search='') {
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
     echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
 	echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
-		dropdownAllItems("item",0,$search);
+		dropdownAllItems("item",0,0,0,$search);
 	echo "&nbsp;<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
 	echo "</form>";
 	echo "</td>";

@@ -113,7 +113,8 @@ if (isset($_POST["several_add"])) {
 	$dp["locations"]=$lang["setup"][3];	
 	$dp["kbcategories"]=$lang["setup"][78];	
 	$dp["tracking_category"]=$lang["setup"][79];	
-	$dp["computers"]=$lang["setup"][4];	
+	$dp["computers"]=$lang["setup"][4];
+	$dp["model"]=$lang["setup"][91];		
 	$dp["networking"]=$lang["setup"][42];		
 	$dp["printers"]=$lang["setup"][43];		
 	$dp["monitors"]=$lang["setup"][44];		
@@ -127,11 +128,13 @@ if (isset($_POST["several_add"])) {
 	$dp["contact_type"]=$lang["setup"][82];
 	$dp["state"]=$lang["setup"][83];
 	$dp["cartridge_type"]=$lang["setup"][84];
+	$dp["consumable_type"]=$lang["setup"][92];
 	$dp["contract_type"]=$lang["setup"][85];
 	$dp["ram_type"]=$lang["setup"][86];
 	$dp["domain"]=$lang["setup"][89];
 	$dp["network"]=$lang["setup"][88];
 	$dp["vlan"]=$lang["setup"][90];
+	
 	
 //	asort($dp);
 	
@@ -190,6 +193,9 @@ echo "<option value='$key' $sel>".$val."</option>";
 		case "netpoint" : 
 		showFormDropDown($_SERVER["PHP_SELF"],"netpoint",$lang["setup"][73],$ID,$value2);
 		break;
+		case "model" : 
+		showFormDropDown($_SERVER["PHP_SELF"],"model",$lang["setup"][91],$ID,$value2);
+		break;
 		case "rubdocs" : 
 		showFormDropDown($_SERVER["PHP_SELF"],"rubdocs",$lang["setup"][81],$ID,$value2);
 		break;
@@ -201,6 +207,9 @@ echo "<option value='$key' $sel>".$val."</option>";
 		break;
 		case "cartridge_type" : 
 		showFormDropDown($_SERVER["PHP_SELF"],"cartridge_type",$lang["setup"][84],$ID,$value2);
+		break;
+		case "consumable_type" : 
+		showFormDropDown($_SERVER["PHP_SELF"],"consumable_type",$lang["setup"][92],$ID,$value2);
 		break;
 		case "contract_type" : 
 		showFormDropDown($_SERVER["PHP_SELF"],"contract_type",$lang["setup"][85],$ID,$value2);

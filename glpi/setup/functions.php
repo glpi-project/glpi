@@ -369,6 +369,10 @@ function replaceDropDropDown($input) {
 		$query = "update glpi_cartridges_type set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
+	case "consumable_type":
+		$query = "update glpi_consumables_type set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		$db->query($query);
+		break;
 	case "contact_type":
 		$query = "update glpi_contacts set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$db->query($query);
@@ -446,8 +450,11 @@ function replaceDropDropDown($input) {
 		$result = $db->query($query);
 		break;
 	case "computers" :
-		
 		$query = "update glpi_computers set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		$result = $db->query($query);
+		break;
+	case "model" :
+		$query = "update glpi_computers set model = '". $input["newID"] ."'  where model = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
 	case "printers" :
@@ -573,6 +580,11 @@ function dropdownUsed($table, $ID) {
 	switch($name) {
 	case "cartridge_type":
 		$query = "Select count(*) as cpt FROM glpi_cartridges_type where type = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
+	case "consumable_type":
+		$query = "Select count(*) as cpt FROM glpi_consumables_type where type = ".$ID."";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
@@ -708,6 +720,11 @@ function dropdownUsed($table, $ID) {
 		break;
 	case "computers" :
 		$query = "Select count(*) as cpt FROM glpi_computers where type = '".$ID."'";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
+	case "model" :
+		$query = "Select count(*) as cpt FROM glpi_computers where model = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
