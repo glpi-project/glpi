@@ -700,7 +700,7 @@ $query = "SELECT * FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$tID
 		echo "</td>";
 
 		echo "<td align='center'>";
-		showDisplayInfocomLink(CARTRIDGE_ITEM_TYPE,$data["ID"],1);
+		showDisplayInfocomLink(CONSUMABLE_ITEM_TYPE,$data["ID"],1);
 		echo "</td>";
 
 				
