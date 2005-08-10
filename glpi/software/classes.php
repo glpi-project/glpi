@@ -206,11 +206,13 @@ class License {
 		$db = new DB;
 		$query = "SELECT * FROM glpi_licenses WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
-			$data = $db->fetch_array($result);
-			foreach ($data as $key => $val) {
-				$this->fields[$key] = $val;
-			}
-			return true;
+			if ($db->numrows($result)==1){
+				$data = $db->fetch_array($result);
+				foreach ($data as $key => $val) {
+					$this->fields[$key] = $val;
+				}
+				return true;
+			}else return false;
 
 		} else {
 			return false;
