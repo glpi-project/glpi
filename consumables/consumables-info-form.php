@@ -36,7 +36,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_consumables.php");
 include ($phproot . "/glpi/includes_printers.php");
-include ($phproot . "/glpi/includes_enterprises.php");
+include ($phproot . "/glpi/includes_financial.php");
 include ($phproot . "/glpi/includes_links.php");
 include ($phproot . "/glpi/includes_documents.php");
 
@@ -107,6 +107,10 @@ else
 			showDocumentAssociated(CONSUMABLE_TYPE,$tab["ID"]);
 			showLinkOnDevice(CONSUMABLE_TYPE,$tab["ID"]);
 			break;
+		case 4 :
+			showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",CONSUMABLE_TYPE,$tab["ID"],1);
+			break;
+			
 		case 5 :
 			showDocumentAssociated(CONSUMABLE_TYPE,$tab["ID"]);
 			break;

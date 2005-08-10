@@ -47,6 +47,10 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 	if ($withtemplate==2)
 		$option=" readonly ";
 
+	if (!ereg("infocoms-show",$_SERVER["PHP_SELF"])&&($device_type==SOFTWARE_TYPE||$device_type==CARTRIDGE_TYPE||$device_type==CONSUMABLE_TYPE)){
+	echo "<div align='center'>".$lang["financial"][84]."</div>";
+	}
+		
 	echo "<br>";
 	if (!$ic->getfromDB($device_type,$dev_ID)){
 		if ($withtemplate!=2){
@@ -62,7 +66,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		echo "<table class='tab_cadre' width='700'>";
 
 		echo "<tr><th colspan='4'><b>".$lang["financial"][3]."</b></th></tr>";
-	
+
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][26].":		</td>";
 		echo "<td align='center'>";
 		if ($withtemplate==2) 
@@ -571,6 +575,11 @@ return " LEFT JOIN glpi_infocoms ON ($table.ID = glpi_infocoms.FK_device AND glp
 
 function getInfocomSearchToViewAllRequest($contains){
 return " OR glpi_infocoms.num_immo LIKE '%".$contains."%' OR glpi_infocoms.num_commande LIKE '%".$contains."%' OR glpi_infocoms.bon_livraison LIKE '%".$contains."%' OR glpi_infocoms.facture LIKE '%".$contains."%' ";
+}
+
+function showDisplayInfocomLink($device_type,$device_id,$update=0){
+global $HTMLRel,$lang;
+echo "<a href='#' onClick=\"window.open('".$HTMLRel."infocoms/infocoms-show.php?device_type=$device_type&amp;device_id=$device_id&update=$update','infocoms','location=infocoms,width=750,height=600,scrollbars=no')\"><img src=\"".$HTMLRel."/pics/dollar.png\" alt=\"".$lang["buttons"][23]."\" title=\"".$lang["buttons"][23]."\"></a>";
 }
 
 ?>

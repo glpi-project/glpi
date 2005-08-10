@@ -62,6 +62,7 @@ function showCartridgeOnglets($target,$withtemplate,$actif){
 
 	echo "<div id='barre_onglets'><ul id='onglet'>";
 	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=1$template'>".$lang["title"][26]."</a></li>";
+	echo "<li "; if ($actif=="4") {echo "class='actif'";} echo "><a href='$target&amp;onglet=4$template'>".$lang["Menu"][26]."</a></li>";
 	echo "<li "; if ($actif=="5") {echo "class='actif'";} echo "><a href='$target&amp;onglet=5$template'>".$lang["title"][25]."</a></li>";
 	
 	if(empty($withtemplate)){
@@ -642,14 +643,14 @@ function showCartridges ($tID,$show_old=0) {
 
 			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre' width='90%'>";
 			if ($show_old==0){
-				echo "<tr><th colspan='6'>";
+				echo "<tr><th colspan='7'>";
 				echo $total;
 				echo "&nbsp;".$lang["cartridges"][16]."&nbsp;-&nbsp;$unused&nbsp;".$lang["cartridges"][13]."&nbsp;-&nbsp;$used&nbsp;".$lang["cartridges"][14]."&nbsp;-&nbsp;$old&nbsp;".$lang["cartridges"][15]."</th>";
 				echo "<th colspan='1'>";
 				echo "&nbsp;</th></tr>";
 			}
 			else { // Old
-				echo "<tr><th colspan='7'>";
+				echo "<tr><th colspan='8'>";
 				echo $lang["cartridges"][35];
 				echo "</th>";
 				echo "<th colspan='1'>";
@@ -661,6 +662,7 @@ function showCartridges ($tID,$show_old=0) {
 			if ($show_old==1)
 				echo "<th>".$lang["cartridges"][39]."</th>";
 			
+			echo "<th>".$lang["financial"][3]."</th>";
 			echo "<th>&nbsp;</th></tr>";
 				} else {
 
@@ -753,6 +755,10 @@ $query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')
 		}
 
 		echo "<td align='center'>";
+		showDisplayInfocomLink(CARTRIDGE_ITEM_TYPE,$data["ID"],1);
+		echo "</td>";
+		
+		echo "<td align='center'>";
 		
 		echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_install["root"]."/cartridges/cartridges-edit.php?delete=delete&amp;ID=".$data["ID"]."'>".$lang["cartridges"][31]."</a>";
 		echo "</td></tr>";
@@ -796,7 +802,19 @@ function addCartridge($tID) {
 			$c->fields[$key] = $input[$key];
 		}
 	}
-	return $c->addToDB();
+	$newID=$c->addToDB();
+	
+	// Add infocoms if exists for the licence
+	$ic=new Infocom();
+	
+	if ($ic->getFromDB(CARTRIDGE_TYPE,$c->fields["FK_glpi_cartridges_type"])){
+		unset($ic->fields["ID"]);
+		$ic->fields["FK_device"]=$newID;
+		$ic->fields["device_type"]=CARTRIDGE_ITEM_TYPE;
+		$ic->addToDB();
+	}
+	return $newID;
+
 }
 /**
 * delete a cartridge in the database.

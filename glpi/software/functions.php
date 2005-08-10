@@ -699,10 +699,15 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		$expirecss="";
 		if ($expire!=NULL&&$today>$expire) {$expirer=1; $expirecss="_2";}
 		// Get installed licences
-		$query_inst = "SELECT glpi_inst_software.ID AS ID, glpi_inst_software.license AS lID, glpi_computers.deleted as deleted, glpi_computers.ID AS cID, glpi_computers.name AS cname FROM glpi_licenses, glpi_inst_software INNER JOIN glpi_computers ON (glpi_computers.deleted='N' AND glpi_computers.is_template='0' AND glpi_inst_software.cID= glpi_computers.ID) WHERE $SEARCH_LICENCE ";
+		$query_inst = "SELECT glpi_inst_software.ID AS ID, glpi_inst_software.license AS lID, glpi_computers.deleted as deleted, ";
+		$query_inst .= " glpi_infocoms.ID as infocoms, ";
+		$query_inst .= " glpi_computers.ID AS cID, glpi_computers.name AS cname FROM glpi_licenses, glpi_inst_software ";
+		$query_inst .= " INNER JOIN glpi_computers ON (glpi_computers.deleted='N' AND glpi_computers.is_template='0' AND glpi_inst_software.cID= glpi_computers.ID) ";
+		$query_inst .= " LEFT JOIN glpi_infocoms ON (glpi_infocoms.device_type='".LICENSE_TYPE."' AND glpi_infocoms.FK_device=glpi_licenses.ID) ";
+		$query_inst .= " WHERE $SEARCH_LICENCE ";
 		
 		$query_inst.= " AND glpi_inst_software.license = glpi_licenses.ID";	
-
+		
 		$result_inst = $db->query($query_inst);
 		$num_inst=$db->numrows($result_inst);
 
@@ -817,8 +822,12 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			echo "</a></strong>";
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=update&amp;lID=".$data_inst["lID"]."&amp;sID=$sID\">";
 				echo "<img src=\"".$HTMLRel."pics/edit.png\" alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'>";
-				
 				echo "</a></strong>";
+
+			// Display infocoms
+			echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>";
+			showDisplayInfocomLink(LICENSE_TYPE,$data_inst["lID"],1);
+			echo "</strong>";
 			
 			echo "</td></tr>";
 		}
@@ -840,14 +849,22 @@ function showLicenseForm($target,$action,$sID,$lID="",$search_computer="") {
 
 	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel;
 
+	$show_infocom=false;
+	
 	switch ($action){
 	case "add" :
-	$title= $lang["software"][15]." ($sID):";
-	$button= $lang["buttons"][8];
+		$title= $lang["software"][15]." ($sID):";
+		$button= $lang["buttons"][8];
+		$ic=new Infocom();
+		
+		if ($ic->getFromDB(SOFTWARE_TYPE,$sID))
+			$show_infocom=true;
+		
 		break;
 	case "update" :
-	$title = $lang["software"][34]." ($lID):";
-	$button= $lang["buttons"][14];
+		$title = $lang["software"][34]." ($lID):";
+		$button= $lang["buttons"][14];
+		break;
 	}
 	
 	// Get previous values or defaults values
@@ -900,7 +917,13 @@ function showLicenseForm($target,$action,$sID,$lID="",$search_computer="") {
 		echo "<option value='$i'>$i</option>";
 	echo "</select></td></tr>";
 	}
-	
+
+	if ($show_infocom){
+		echo "<tr class='tab_bg_1'><td>".$lang["financial"][3].":</td><td>";
+		showDisplayInfocomLink(SOFTWARE_TYPE,$sID);
+		echo "</td></tr>"; 
+	}
+		
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][24].":</td><td>";
 	showCalendarForm("form","expire",$values['expire']);
 	echo "</td></tr>"; 
@@ -948,7 +971,18 @@ function addLicense($input) {
 			$lic->fields[$key] = $input[$key];
 		}
 	}
-	return $lic->addToDB();
+	$newID=$lic->addToDB();
+	
+	// Add infocoms if exists for the licence
+	$ic=new Infocom();
+	if ($ic->getFromDB(SOFTWARE_TYPE,$lic->fields["sID"])){
+		unset($ic->fields["ID"]);
+		$ic->fields["FK_device"]=$newID;
+		$ic->fields["device_type"]=LICENSE_TYPE;
+		$ic->addToDB();
+	}
+	
+	return $newID;
 }
 
 function updateLicense($input) {
