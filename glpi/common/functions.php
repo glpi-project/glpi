@@ -449,6 +449,7 @@ $inventory = array($lang["Menu"][0]=>array("/computers/index.php","c"),
 	              $lang["Menu"][4]=>array("/software/index.php","s"),
 		      $lang["Menu"][16]=>array("/peripherals/index.php","r"),
 		      $lang["Menu"][21]=>array("/cartridges/index.php","c"),
+		      $lang["Menu"][32]=>array("/consumables/index.php","g"),
 		      $lang["Menu"][28]=>array("/state/index.php","s"),
 		      );
 
@@ -523,16 +524,35 @@ $config = array($lang["Menu"][14]=>array("/users/index.php","u"),
 		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/inventaire.png\" alt=\"\" title=\"".$lang["setup"][10]."\"><br>\n";
 		echo "<span class='menu_title'>-&nbsp;".$lang["setup"][10]."&nbsp;-</span><br>\n";
 
-		 echo "<table cellspacing='0' border='0' cellpadding='0'><tr><td>\n";
+		 echo "<table cellspacing='0' border='0' cellpadding='0'>\n";
 		$i=0;
+		$count=count($inventory);
 		 foreach ($inventory as $key => $val) {
-		 			if ($i%2==1) echo "</td><td style='border-left:1px groove #000000; border-right:1px groove #000000'>&nbsp;</td><td style='padding-left:5px; padding-right:5px;' align='center'>\n";
-		 			else echo "</td></tr><tr><td style='padding-left:5px; padding-right:5px;' align='center'>\n";
+		 
+		 	if ($i==0) echo "<tr><td colspan='3'>";
+			
+			// Nombre pair d'element ou tout sauf le dernier
+		 	if ($count%2==0||$i!=$count-1){
+				if ($i%2==1) echo "</td><td style='border-left:1px groove #000000; border-right:1px groove #000000'>&nbsp;</td><td style='padding-left:5px; padding-right:5px;' align='center' width='45%'>\n";
+		 		else echo "</td></tr><tr><td style='padding-left:5px; padding-right:5px;' align='center' width='45%'>\n";
                          
-			 echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span><br>\n";
-                         $i++;
-                   }
+			 	echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span>\n";
+                         	$i++;
+			} else {
+				$lastkey=$key;
+				$lastval=$val;
+			}
+			
+	        }
+		if ($count%2==1&&$i==$count-1){
+			 	echo "</td></tr><tr><td colspan='3' align='center'><span class='menu'><a  href=\"".$cfg_install["root"].$lastval[0]."\" accesskey=\"".$lastval[1]."\">".$lastkey."</a></span>\n";
+				$i++;
+		}
+			
 		echo "</td></tr></table>\n";
+		
+		// Print Last Item Centered
+		
 		echo "</td>\n";
 	}
 	if ($navigation->maintain) {
@@ -1806,6 +1826,7 @@ echo "<select name='$name'>";
 	echo "<option value='".PERIPHERAL_TYPE."' ".(($device_type==PERIPHERAL_TYPE)?" selected":"").">".$lang["help"][29]."</option>";
 	echo "<option value='".SOFTWARE_TYPE."' ".(($device_type==SOFTWARE_TYPE)?" selected":"").">".$lang["help"][31]."</option>";
 	echo "<option value='".CARTRIDGE_TYPE."' ".(($device_type==CARTRIDGE_TYPE)?" selected":"").">".$lang["Menu"][21]."</option>";
+	echo "<option value='".CONSUMABLE_TYPE."' ".(($device_type==CONSUMABLE_TYPE)?" selected":"").">".$lang["Menu"][32]."</option>";
 	echo "<option value='".CONTACT_TYPE."' ".(($device_type==CONTACT_TYPE)?" selected":"").">".$lang["Menu"][22]."</option>";
 	echo "<option value='".ENTERPRISE_TYPE."' ".(($device_type==ENTERPRISE_TYPE)?" selected":"").">".$lang["Menu"][23]."</option>";
 	echo "<option value='".CONTRACT_TYPE."' ".(($device_type==CONTRACT_TYPE)?" selected":"").">".$lang["Menu"][25]."</option>";
@@ -1828,6 +1849,7 @@ switch ($ID){
 	case CONTACT_TYPE : return $lang["Menu"][22];break;
 	case ENTERPRISE_TYPE : return $lang["Menu"][23];break;
 	case CONTRACT_TYPE : return $lang["Menu"][25];break;
+	case CONSUMABLE_TYPE : return $lang["Menu"][32];break;
 	//case USER_TYPE : return $lang["Menu"][14];break;
 
 
@@ -1843,11 +1865,13 @@ switch ($ID){
 *
 * @param $name
 * @param $withenterprise
+* @param $withcartridge
+* @param $withconsumable
 * @param $search
 * @param $value
 * @return nothing (print out an HTML select box)
 */
-function dropdownAllItems($name,$withenterprise=0,$search='',$value='') {
+function dropdownAllItems($name,$withenterprise=0,$withcartridge=0,$withconsumable=0,$search='',$value='') {
 	global $deleted_tables, $template_tables;
 	
 	$db=new DB;
@@ -1862,6 +1886,8 @@ function dropdownAllItems($name,$withenterprise=0,$search='',$value='') {
 	);
 
 	if ($withenterprise==1) $items[ENTERPRISE_TYPE]="glpi_enterprises";
+	if ($withcartridge==1) $items[CARTRIDGE_TYPE]="glpi_cartridges_type";
+	if ($withconsumable==1) $items[CONSUMABLE_TYPE]="glpi_consumables_type";
 	
 	echo "<select name=\"$name\" size='1'>";
 	echo "<option value='0'>-----</option>";
@@ -1899,7 +1925,7 @@ function dropdownAllItems($name,$withenterprise=0,$search='',$value='') {
 		if ($type==COMPUTER_TYPE) $SELECT=",type ";
 		
 		$query = "SELECT ID,name $SELECT FROM $table $where ORDER BY $ORDER name";
-		
+		echo $query;
 		$result = $db->query($query);
 	
 		$i = 0;
@@ -1982,7 +2008,7 @@ function loadLanguage() {
 	if ($cfg_debug["active"]&&$cfg_debug["lang"]){
 		foreach ($lang as $module => $tab)
 		foreach ($tab as $num => $val){
-			$lang[$module][$num].="<span style='font-size:8px; color:red;'>$module/$num</span>";
+			$lang[$module][$num].="<span style='font-size:12px; color:red;'>$module/$num</span>";
 		
 		}
 	}

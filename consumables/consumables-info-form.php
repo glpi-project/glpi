@@ -34,7 +34,7 @@
 
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_cartridges.php");
+include ($phproot . "/glpi/includes_consumables.php");
 include ($phproot . "/glpi/includes_printers.php");
 include ($phproot . "/glpi/includes_enterprises.php");
 include ($phproot . "/glpi/includes_links.php");
@@ -48,48 +48,36 @@ if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
 
-	$newID=addCartridgeType($_POST);
-	logEvent($newID, "cartridges", 4, "inventory", $_SESSION["glpiname"]." added item ".$_POST["name"].".");
+	$newID=addConsumableType($_POST);
+	logEvent($newID, "consumables", 4, "inventory", $_SESSION["glpiname"]." added item ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
-	deleteCartridgeType($_POST);
-	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
-	glpi_header($cfg_install["root"]."/cartridges/");
+	deleteConsumableType($_POST);
+	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
+	glpi_header($cfg_install["root"]."/consumables/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
-	restoreCartridgeType($_POST);
-	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." restored item.");
-	glpi_header($cfg_install["root"]."/cartridges/");
+	restoreConsumableType($_POST);
+	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." restored item.");
+	glpi_header($cfg_install["root"]."/consumables/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
-	deleteCartridgeType($_POST,1);
-	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." purge item.");
-	glpi_header($cfg_install["root"]."/cartridges/");
-}
-else if (isset($_POST["addtype"])){
-	checkAuthentication("admin");
-	addCompatibleType($_POST["tID"],$_POST["type"]);
-	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." associate type.");
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_GET["deletetype"])){
-	checkAuthentication("admin");
-	deleteCompatibleType($_GET["ID"]);
-	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." delete type.");
-	glpi_header($_SERVER['HTTP_REFERER']);
+	deleteConsumableType($_POST,1);
+	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." purge item.");
+	glpi_header($cfg_install["root"]."/consumables/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
-	updateCartridgeType($_POST);
-	logEvent($_POST["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." updated item.");
+	updateConsumableType($_POST);
+	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." updated item.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else
@@ -104,33 +92,32 @@ else
 	//	glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
-	commonHeader($lang["title"][19],$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][36],$_SERVER["PHP_SELF"]);
 	
 	if (!empty($tab['ID']))
-	showCartridgeOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
+	showConsumableOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
-	if (showCartridgeTypeForm($_SERVER["PHP_SELF"],$tab["ID"])) {
+	if (showConsumableTypeForm($_SERVER["PHP_SELF"],$tab["ID"])) {
 		if (!empty($tab['ID']))
 		switch($_SESSION['glpi_onglet']){
 		case -1 :	
-			showCompatiblePrinters($tab["ID"]);
-			showCartridgesAdd($tab["ID"]);
-			showCartridges($tab["ID"]);
-			showCartridges($tab["ID"],1);
-			showDocumentAssociated(CARTRIDGE_TYPE,$tab["ID"]);
-			showLinkOnDevice(CARTRIDGE_TYPE,$tab["ID"]);
+			showConsumableAdd($tab["ID"]);
+			showConsumables($tab["ID"]);
+			showConsumables($tab["ID"],1);
+			showDocumentAssociated(CONSUMABLE_TYPE,$tab["ID"]);
+			showLinkOnDevice(CONSUMABLE_TYPE,$tab["ID"]);
 			break;
 		case 5 :
-			showDocumentAssociated(CARTRIDGE_TYPE,$tab["ID"]);
-			break;			
+			showDocumentAssociated(CONSUMABLE_TYPE,$tab["ID"]);
+			break;
+			
 		case 7 : 
-			showLinkOnDevice(CARTRIDGE_TYPE,$tab["ID"]);
+			showLinkOnDevice(CONSUMABLE_TYPE,$tab["ID"]);
 			break;
 		default :
-			showCompatiblePrinters($tab["ID"]);
-			showCartridgesAdd($tab["ID"]);
-			showCartridges($tab["ID"]);
-			showCartridges($tab["ID"],1);
+			showConsumableAdd($tab["ID"]);
+			showConsumables($tab["ID"]);
+			showConsumables($tab["ID"],1);
 		break;
 		}
 	}

@@ -613,7 +613,7 @@ function showDeviceDocument($instID,$search='') {
 	echo "<form method='post' action=\"".$cfg_install["root"]."/documents/documents-info-form.php\">";
 	
 	echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
-		dropdownAllItems("item",1,$search,'');
+		dropdownAllItems("item",1,1,1,$search,'');
 	echo "</div><input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</form>";
 	echo "</td>";

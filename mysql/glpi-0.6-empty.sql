@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-08-10 12:09
+#GLPI Dump database on 2005-08-10 14:23
 
 ### Dump table glpi_cartridges
 
@@ -99,7 +99,8 @@ CREATE TABLE glpi_computers (
    KEY deleted (deleted),
    KEY is_template (is_template),
    KEY date_mod (date_mod),
-   KEY tech_num (tech_num)
+   KEY tech_num (tech_num),
+   KEY type_2 (type)
 ) TYPE=MyISAM;
 
 INSERT INTO glpi_computers VALUES ('19','','','','','','0','Empty Template',NULL,'0','0','0','0','0',NULL,'1','Blank Template','0','N');
@@ -187,6 +188,42 @@ CREATE TABLE glpi_connect_wire (
    KEY end1 (end1),
    KEY end2 (end2),
    KEY type (type)
+) TYPE=MyISAM;
+
+
+### Dump table glpi_consumables
+
+DROP TABLE IF EXISTS glpi_consumables;
+CREATE TABLE glpi_consumables (
+    ID int(11) NOT NULL auto_increment,
+    FK_glpi_consumables_type int(11),
+    date_in date,
+    date_out date,
+   PRIMARY KEY (ID),
+   KEY FK_glpi_cartridges_type (FK_glpi_consumables_type),
+   KEY date_in (date_in),
+   KEY date_out (date_out)
+) TYPE=MyISAM;
+
+
+### Dump table glpi_consumables_type
+
+DROP TABLE IF EXISTS glpi_consumables_type;
+CREATE TABLE glpi_consumables_type (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+    ref varchar(255) NOT NULL,
+    location int(11) DEFAULT '0' NOT NULL,
+    type tinyint(4) DEFAULT '0' NOT NULL,
+    FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
+    tech_num int(11) DEFAULT '0',
+    deleted enum('Y','N') DEFAULT 'N' NOT NULL,
+    comments text NOT NULL,
+    alarm tinyint(4) DEFAULT '10' NOT NULL,
+   PRIMARY KEY (ID),
+   KEY FK_glpi_enterprise (FK_glpi_enterprise),
+   KEY tech_num (tech_num),
+   KEY deleted (deleted)
 ) TYPE=MyISAM;
 
 
@@ -515,6 +552,16 @@ CREATE TABLE glpi_docs (
 
 DROP TABLE IF EXISTS glpi_dropdown_cartridge_type;
 CREATE TABLE glpi_dropdown_cartridge_type (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
+
+### Dump table glpi_dropdown_consumable_type
+
+DROP TABLE IF EXISTS glpi_dropdown_consumable_type;
+CREATE TABLE glpi_dropdown_consumable_type (
     ID int(11) NOT NULL auto_increment,
     name varchar(255) NOT NULL,
    PRIMARY KEY (ID)

@@ -2765,7 +2765,7 @@ if(!FieldExists("glpi_config","mailing_resa_admin")) {
 }
 
 // Modèle ordinateurs
-if(!TableExists("glpi_dropdown_computer_type")) {
+if(!TableExists("glpi_dropdown_model")) {
 	
 	$query="ALTER TABLE `glpi_type_computers` RENAME `glpi_dropdown_model` ;";
 	$db->query($query) or die("0.6 rename table glpi_type_computers ".$lang["update"][90].$db->error());
@@ -2797,6 +2797,49 @@ if(!TableExists("glpi_dropdown_computer_type")) {
 
 }
 
+if(!TableExists("glpi_consumables_type")) {
+
+$query = "CREATE TABLE `glpi_consumables_type` (
+  `ID` int(11) NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL default '',
+  `ref` varchar(255) NOT NULL default '',
+  `location` int(11) NOT NULL default '0',
+  `type` tinyint(4) NOT NULL default '0',
+  `FK_glpi_enterprise` int(11) NOT NULL default '0',
+  `tech_num` int(11) default '0',
+  `deleted` enum('Y','N') NOT NULL default 'N',
+  `comments` text NOT NULL,
+  `alarm` tinyint(4) NOT NULL default '10',
+  PRIMARY KEY  (`ID`),
+  KEY `FK_glpi_enterprise` (`FK_glpi_enterprise`),
+  KEY `tech_num` (`tech_num`),
+  KEY `deleted` (`deleted`)
+) TYPE=MyISAM;";
+
+	$db->query($query) or die("0.6 add table glpi_consumables_type ".$lang["update"][90].$db->error());
+
+$query = "CREATE TABLE `glpi_consumables` (
+  `ID` int(11) NOT NULL auto_increment,
+  `FK_glpi_consumables_type` int(11) default NULL,
+  `date_in` date default NULL,
+  `date_out` date default NULL,
+  PRIMARY KEY  (`ID`),
+  KEY `FK_glpi_cartridges_type` (`FK_glpi_consumables_type`),
+  KEY `date_in` (`date_in`),
+  KEY `date_out` (`date_out`)
+) TYPE=MyISAM;";
+
+	$db->query($query) or die("0.6 add table glpi_consumables ".$lang["update"][90].$db->error());
+
+	$query = "CREATE TABLE `glpi_dropdown_consumable_type` (
+  	`ID` int(11) NOT NULL auto_increment,
+  	`name` varchar(255) NOT NULL default '',
+  	PRIMARY KEY  (`ID`)
+	) TYPE=MyISAM;";
+
+	$db->query($query) or die("0.6 add table glpi_dropdown_consumable_type ".$lang["update"][90].$db->error());
+		
+}
 
 // Update version number and default langage ---- LEAVE AT THE END
 	$query = "UPDATE `glpi_config` SET `version` = ' 0.6', default_language='".$_SESSION["dict"]."' ;";

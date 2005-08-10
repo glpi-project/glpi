@@ -34,28 +34,19 @@
 
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_cartridges.php");
+include ($phproot . "/glpi/includes_consumables.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["tID"])) $tab["tID"] = "";
 if(!isset($tab["cID"])) $tab["cID"] = "";
 
-if (isset($_POST["update_pages"]))
-{
-	checkAuthentication("admin");
-	updateCartridgePages($_POST["cID"],$_POST['pages']);
-	
-	logEvent(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." update a cartridge.");
-	
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_GET["add"]))
+if (isset($_GET["add"]))
 {
 	
 	checkAuthentication("admin");
-	addCartridge($_GET["tID"]);
-	logEvent($tab["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." added a cartridge.");
+	addConsumable($_GET["tID"]);
+	logEvent($tab["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." added a consumable.");
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -64,31 +55,23 @@ else if (isset($_POST["add_several"]))
 	
 	checkAuthentication("admin");
 	for ($i=0;$i<$_POST["to_add"];$i++)
-		addCartridge($_POST["tID"]);
-	logEvent($tab["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["to_add"]." cartridge.");
+		addConsumable($_POST["tID"]);
+	logEvent($tab["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["to_add"]." consumable.");
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))
 {
 	checkAuthentication("admin");
-	deleteCartridge($tab["ID"]);
-	logEvent(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." deleted a cartridge.");
+	deleteConsumable($tab["ID"]);
+	logEvent(0, "consumables", 4, "inventory", $_SESSION["glpiname"]." deleted a consumable.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
-else if (isset($tab["install"]))
+else if (isset($tab["out"]))
 {
 	checkAuthentication("admin");
-	installCartridge($tab["pID"],$tab["tID"]);
-	logEvent($tab["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." installed cartridge.");
-	//echo $tab["back"];
-	glpi_header($cfg_install["root"]."/printers/printers-info-form.php?ID=".$tab["pID"]);
-}
-else if (isset($tab["uninstall"]))
-{
-	checkAuthentication("admin");
-	uninstallCartridge($tab["ID"]);
-	logEvent(0, "cartridges", 5, "inventory", $_SESSION["glpiname"]." uninstalled cartridge.");
+	outConsumable($tab["ID"]);
+	logEvent($tab["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." take out a consummable.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
 else if (isset($tab["back"]))

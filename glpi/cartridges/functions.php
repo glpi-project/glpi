@@ -62,8 +62,14 @@ function showCartridgeOnglets($target,$withtemplate,$actif){
 
 	echo "<div id='barre_onglets'><ul id='onglet'>";
 	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=1$template'>".$lang["title"][26]."</a></li>";
+	echo "<li "; if ($actif=="5") {echo "class='actif'";} echo "><a href='$target&amp;onglet=5$template'>".$lang["title"][25]."</a></li>";
+	
 	if(empty($withtemplate)){
 	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
+
+	echo "<li class='invisible'>&nbsp;</li>";
+	echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
+	
 	}	
 	echo "<li class='invisible'>&nbsp;</li>";
 	
@@ -752,9 +758,8 @@ $query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')
 		echo "</td></tr>";
 		
 	}	
-	if ($show_old!=0){
+	if ($show_old!=0&&$number>0){
 	echo "<tr class='tab_bg_2'><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
-	
 	echo "<td align='center'>".$lang["cartridges"][40].":<br>".round($stock_time/$number/60/60/24/30.5,1)." ".$lang["financial"][57]."</td>";
 	echo "<td>&nbsp;</td>";
 	echo "<td align='center'>".$lang["cartridges"][41].":<br>".round($use_time/$number/60/60/24/30.5,1)." ".$lang["financial"][57]."</td>";
@@ -1067,13 +1072,14 @@ function showCartridgeInstalled($instID,$old=0) {
 		echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
 		echo "</tr>";
 	} else { // Print average
+	if ($number>0){
 	echo "<tr class='tab_bg_2'><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
 	
 	echo "<td align='center'>".$lang["cartridges"][40].":<br>".round($stock_time/$number/60/60/24/30.5,1)." ".$lang["financial"][57]."</td>";
 	echo "<td align='center'>".$lang["cartridges"][41].":<br>".round($use_time/$number/60/60/24/30.5,1)." ".$lang["financial"][57]."</td>";
 	echo "<td align='center'>".$lang["cartridges"][42].":<br>".round($pages_printed/$nb_pages_printed)."</td>";
 	echo "<td>&nbsp;</td></tr>";
-	
+	}
 		
 	}
         echo "</table></center>";
