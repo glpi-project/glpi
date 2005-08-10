@@ -62,6 +62,7 @@ echo "<form method=\"post\" name=\"form\" action=\"stat_lieux.php\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td rowspan='2'>";
 echo "<select name=\"dropdown\">";
 echo "<option value=\"glpi_type_computers\" ".($_POST["dropdown"]=="glpi_type_computers"?"selected":"").">".$lang["computers"][8]."</option>";
+echo "<option value=\"glpi_dropdown_model\" ".($_POST["dropdown"]=="glpi_dropdown_model"?"selected":"").">".$lang["computers"][50]."</option>";
 echo "<option value=\"glpi_dropdown_os\" ".($_POST["dropdown"]=="glpi_dropdown_os"?"selected":"").">".$lang["computers"][9]."</option>";
 echo "<option value=\"glpi_dropdown_locations\" ".($_POST["dropdown"]=="glpi_dropdown_locations"?"selected":"").">".$lang["stats"][21]."</option>";
 echo "<option value=\"".MOBOARD_DEVICE."\" ".($_POST["dropdown"]==MOBOARD_DEVICE?"selected":"").">".$lang["computers"][35]."</option>";

@@ -2764,6 +2764,40 @@ if(!FieldExists("glpi_config","mailing_resa_admin")) {
 	$db->query($query) or die("0.6 add mailing_resa_all_admin in config".$lang["update"][90].$db->error());
 }
 
+// Modèle ordinateurs
+if(!TableExists("glpi_dropdown_computer_type")) {
+	
+	$query="ALTER TABLE `glpi_type_computers` RENAME `glpi_dropdown_model` ;";
+	$db->query($query) or die("0.6 rename table glpi_type_computers ".$lang["update"][90].$db->error());
+	
+	$query = "CREATE TABLE `glpi_type_computers` (
+  	`ID` int(11) NOT NULL auto_increment,
+  	`name` varchar(255) NOT NULL default '',
+  	PRIMARY KEY  (`ID`)
+	) TYPE=MyISAM;";
+
+	$db->query($query) or die("0.6 add table glpi_type_computers ".$lang["update"][90].$db->error());
+	$query="INSERT INTO `glpi_type_computers` (`name` ) VALUES ('".$lang["computers"][28]."');";
+	$db->query($query) or die("0.6 insert value in glpi_type_computers ".$lang["update"][90].$db->error());
+
+	
+	// Type -> modèle
+	$query="ALTER TABLE `glpi_computers` CHANGE `type` `model` INT( 11 ) DEFAULT NULL ";
+	$db->query($query) or die("0.6 add model in computers".$lang["update"][90].$db->error());
+	
+	$query="ALTER TABLE `glpi_computers` ADD `type` INT(11) DEFAULT NULL AFTER `model` ;";
+	$db->query($query) or die("0.6 add model in computers".$lang["update"][90].$db->error());
+	
+	// Update server values and drop flags_server
+	$query="UPDATE glpi_computers SET type='1' where flags_server='1'";
+	$result=$db->query($query);
+	
+	$query="ALTER TABLE `glpi_computers` DROP `flags_server`;";
+	$db->query($query) or die("0.6 drop type in glpi_dropdown_ram ".$lang["update"][90].$db->error());
+
+}
+
+
 // Update version number and default langage ---- LEAVE AT THE END
 	$query = "UPDATE `glpi_config` SET `version` = ' 0.6', default_language='".$_SESSION["dict"]."' ;";
 	$db->query($query) or die("0.6 ".$lang["update"][90].$db->error());

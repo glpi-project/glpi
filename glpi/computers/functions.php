@@ -131,6 +131,7 @@ function searchFormComputers($field="",$contains="",$sort= "",$deleted= "",$link
 	$option["comp.name"]				= $lang["computers"][7];
 	$option["glpi_dropdown_locations.name"]		= $lang["computers"][10];
 	$option["glpi_type_computers.name"]		= $lang["computers"][8];
+	$option["glpi_dropdown_model.name"]		= $lang["computers"][50];
 	$option["glpi_dropdown_os.name"]		= $lang["computers"][9];
 	$option["processor.designation"]		= $lang["computers"][21];
 	$option["comp.serial"]				= $lang["computers"][17];
@@ -236,7 +237,7 @@ function searchFormComputers($field="",$contains="",$sort= "",$deleted= "",$link
 *
 **/
 function IsDropdown($field) {
-	$dropdown = array("netpoint","os");
+	$dropdown = array("netpoint","os","model");
 	if(in_array($field,$dropdown)) {
 		return true;
 	}
@@ -380,6 +381,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 	$query.= " LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint) ";
 	$query.= " LEFT JOIN glpi_dropdown_os on (glpi_dropdown_os.ID = comp.os) ";
 	$query.= " LEFT JOIN glpi_dropdown_locations on (glpi_dropdown_locations.ID = comp.location) ";
+	$query.= " LEFT JOIN glpi_dropdown_model on (glpi_dropdown_model.ID = comp.model) ";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = comp.FK_glpi_enterprise ) ";
 	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = comp.tech_num ) ";
 	$query.= " LEFT JOIN glpi_type_computers ON (glpi_type_computers.ID = comp.type ) ";
@@ -453,6 +455,15 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 			echo "<a href=\"$target?sort=glpi_type_computers.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["computers"][8]."</a></th>";
 
+						// Type
+			echo "<th>";
+			if ($sort=="glpi_dropdown_model.name") {
+				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
+			}
+			echo "<a href=\"$target?sort=glpi_dropdown_model.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo $lang["computers"][50]."</a></th>";
+
 			// OS
 			echo "<th>";
 			if ($sort=="glpi_dropdown_os.name") {
@@ -507,6 +518,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 				echo "<td>". getDropdownName("glpi_enterprises",$comp->fields["FK_glpi_enterprise"]) ."</td>";
 				echo "<td>".$comp->fields["serial"]."</td>";
                                 echo "<td>". getDropdownName("glpi_type_computers",$comp->fields["type"]) ."</td>";
+				echo "<td>". getDropdownName("glpi_dropdown_model",$comp->fields["model"]) ."</td>";
 				echo "<td>". getDropdownName("glpi_dropdown_os",$comp->fields["os"]) ."</td>";
 				echo "<td>". getDropdownName("glpi_dropdown_locations", $comp->fields["location"]) ."</td>";
 				echo "<td>".$comp->fields["date_mod"]."</td>";
@@ -594,47 +606,52 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		echo "</td></tr>";
 		
 		echo "<tr class='tab_bg_1'>";
+				echo "<td >".$lang["computers"][8].": 	</td>";
+		echo "<td >";
+			dropdownValue("glpi_type_computers", "type", $comp->fields["type"]);
 		
+		echo "</td>";
+
+		
+		
+		echo "<td>".$lang["computers"][15].":		</td><td><input type='text' name='contact_num' value=\"".$comp->fields["contact_num"]."\" size='20'></td></tr>";
+
+		echo "<tr class='tab_bg_1'>";
 		echo "<td >".$lang["computers"][10].": 	</td>";
 		echo "<td >";
 			dropdownValue("glpi_dropdown_locations", "location", $comp->fields["location"]);
 		
 		echo "</td>";
 		
-		echo "<td>".$lang["computers"][15].":		</td><td><input type='text' name='contact_num' value=\"".$comp->fields["contact_num"]."\" size='20'></td></tr>";
-
-				echo "<tr class='tab_bg_1'>";
-		
-		echo "<td >".$lang["computers"][8].": 	</td>";
-		echo "<td >";
-			dropdownValue("glpi_type_computers", "type", $comp->fields["type"]);
-		
-		echo "</td>";
 		
 		echo "<td>".$lang["setup"][88].":</td><td>";
 		dropdownValue("glpi_dropdown_network", "network", $comp->fields["network"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'>";
-		
-		echo "<td >".$lang["common"][10].": 	</td>";
+		echo "<td >".$lang["computers"][50].": 	</td>";
 		echo "<td >";
-			dropdownUsersID( $comp->fields["tech_num"],"tech_num");
+			dropdownValue("glpi_dropdown_model", "model", $comp->fields["model"]);
+		
 		echo "</td>";
+		
 		
 		echo "<td>".$lang["setup"][89].":</td><td>";
 		dropdownValue("glpi_dropdown_domain", "domain", $comp->fields["domain"]);
 		echo "</td></tr>";
 		
 
-		echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td>";
-		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$comp->fields["FK_glpi_enterprise"]);
+		echo "<tr class='tab_bg_1'>";
+		echo "<td >".$lang["common"][10].": 	</td>";
+		echo "<td >";
+			dropdownUsersID( $comp->fields["tech_num"],"tech_num");
 		echo "</td>";
 
 		echo "<td valign='middle' rowspan='3'>".$lang["computers"][19].":</td><td valign='middle' rowspan='3'><textarea  cols='35' rows='4' name='comments' >".$comp->fields["comments"]."</textarea></td></tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$lang["computers"][18].":	</td>";
-		echo "<td><input type='text' size='20' name='otherserial' value=\"".$comp->fields["otherserial"]."\">";
+		echo "<tr class='tab_bg_1'>";
+		echo "<td>".$lang["common"][5].": 	</td><td>";
+		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$comp->fields["FK_glpi_enterprise"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$lang["computers"][17].":	</td>";
@@ -644,29 +661,11 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		
 		echo "<tr class='tab_bg_1'>";
 		
-		
-		
-		echo "<td>".$lang["computers"][27].": </td>";
-		
-		// Is Server?
-		echo "<td>";
-		if (isset($comp->fields["flags_server"]))
-		{
-			if($comp->fields["flags_server"]  == 1)
-			{
-				echo "<input type='checkbox' name='flags_server' value='1' checked>";
-			}
-			else
-			{
-			echo "<input type='checkbox' name='flags_server' value='1'>";
-			}
-		}
-		else
-		{
-			echo "<input type='checkbox' name='flags_server' value='1'>";
-		}
-		echo " &nbsp;".$lang["computers"][28]."</td>";
+		echo "<td>".$lang["computers"][18].":	</td>";
+		echo "<td><input type='text' size='20' name='otherserial' value=\"".$comp->fields["otherserial"]."\">";
+		echo "</td>";
 
+		
 		echo "<td>".$lang["state"][0].":</td><td><b>";
 		$si=new StateItem();
 		$t=0;
