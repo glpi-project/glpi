@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-08-10 00:15
+#GLPI Dump database on 2005-08-10 12:09
 
 ### Dump table glpi_cartridges
 
@@ -74,7 +74,6 @@ DROP TABLE IF EXISTS glpi_computers;
 CREATE TABLE glpi_computers (
     ID int(11) NOT NULL auto_increment,
     name varchar(200) NOT NULL,
-    flags_server tinyint(4) DEFAULT '0' NOT NULL,
     serial varchar(200) NOT NULL,
     otherserial varchar(200) NOT NULL,
     contact varchar(90) NOT NULL,
@@ -86,16 +85,16 @@ CREATE TABLE glpi_computers (
     location int(11),
     domain int(11) DEFAULT '0' NOT NULL,
     network int(11) DEFAULT '0' NOT NULL,
+    model int(11),
     type int(11),
     is_template enum('0','1') DEFAULT '0' NOT NULL,
     tplname varchar(200),
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
    PRIMARY KEY (ID),
-   KEY flags (flags_server),
    KEY location (location),
    KEY os (os),
-   KEY type (type),
+   KEY type (model),
    KEY FK_glpi_enterprise (FK_glpi_enterprise),
    KEY deleted (deleted),
    KEY is_template (is_template),
@@ -103,7 +102,7 @@ CREATE TABLE glpi_computers (
    KEY tech_num (tech_num)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_computers VALUES ('19','','0','','','','','0','Empty Template',NULL,'0','0','0','0','0','1','Blank Template','0','N');
+INSERT INTO glpi_computers VALUES ('19','','','','','','0','Empty Template',NULL,'0','0','0','0','0',NULL,'1','Blank Template','0','N');
 
 ### Dump table glpi_config
 
@@ -614,6 +613,16 @@ CREATE TABLE glpi_dropdown_locations (
    PRIMARY KEY (ID),
    UNIQUE name (name, parentID),
    KEY parentID (parentID)
+) TYPE=MyISAM;
+
+
+### Dump table glpi_dropdown_model
+
+DROP TABLE IF EXISTS glpi_dropdown_model;
+CREATE TABLE glpi_dropdown_model (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255),
+   PRIMARY KEY (ID)
 ) TYPE=MyISAM;
 
 
@@ -1185,10 +1194,11 @@ CREATE TABLE glpi_tracking_planning (
 DROP TABLE IF EXISTS glpi_type_computers;
 CREATE TABLE glpi_type_computers (
     ID int(11) NOT NULL auto_increment,
-    name varchar(255),
+    name varchar(255) NOT NULL,
    PRIMARY KEY (ID)
 ) TYPE=MyISAM;
 
+INSERT INTO glpi_type_computers VALUES ('1','Serveur');
 
 ### Dump table glpi_type_docs
 

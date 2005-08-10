@@ -1623,6 +1623,7 @@ function searchFormTrackingReport() {
 	$option["comp.name"]				= $lang["computers"][7];
 	$option["glpi_dropdown_locations.name"]			= $lang["computers"][10];
 	$option["glpi_type_computers.name"]				= $lang["computers"][8];
+	$option["glpi_dropdown_model.name"]				= $lang["computers"][50];
 	$option["glpi_dropdown_os.name"]				= $lang["computers"][9];
 	//$option["comp.osver"]			= $lang["computers"][20];
 	$option["processor.designation"]			= $lang["computers"][21];
@@ -1781,6 +1782,7 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 			$i++;
 		}
 		foreach($cfg_devices_tables as $key => $val) {
+			if ($val!="drive"&&$val!="control"&&$val!="pci"&&$val!="case"&&$val!="power")
 			$wherecomp .= " OR ".$val.".designation LIKE '%".$contains."%'";
 		}
 		$wherecomp .= " OR glpi_networking_ports.ifaddr LIKE '%".$contains."%'";
@@ -1819,6 +1821,8 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 	$query.= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";
 	$query.= "LEFT JOIN glpi_dropdown_os on (glpi_dropdown_os.ID = comp.os)";
 	$query.= "LEFT JOIN glpi_dropdown_locations on (glpi_dropdown_locations.ID = comp.location)";
+	$query.= "LEFT JOIN glpi_dropdown_model on (glpi_dropdown_model.ID = comp.model)";
+	$query.= "LEFT JOIN glpi_type_computers on (glpi_type_computers.ID = comp.type)";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = comp.FK_glpi_enterprise ) ";
 	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = comp.tech_num ) ";
 	}
@@ -1834,7 +1838,7 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 	if ($category > 0)
 	$query.=" AND glpi_tracking.category = '$category'";
 	
-	if ($computers_search) $query .= "AND $wherecomp";
+	if ($computers_search) $query .= " AND $wherecomp";
 	if ($date1!="") $query.=" AND glpi_tracking.date >= '$date1'";
 	if ($date2!="") $query.=" AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 	if ($enddate1!="") $query.=" AND glpi_tracking.closedate >= '$enddate1'";

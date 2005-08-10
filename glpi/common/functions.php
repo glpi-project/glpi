@@ -1868,6 +1868,15 @@ function dropdownAllItems($name,$withenterprise=0,$search='',$value='') {
 	$ci=new CommonItem;
 
 	foreach ($items as $type => $table){
+	
+	if ($type==COMPUTER_TYPE){
+		$types=array();
+		$query2="SELECT * from glpi_type_computers";
+		$result2 = $db->query($query2);
+		if ($db->numrows($result2)>0)
+			while ($data=$db->fetch_assoc($result2))
+				$types[$data["ID"]] =$data["name"];
+	}
 		$ci->setType($type);
 		$where="WHERE '1' = '1' ";
 		
@@ -1884,8 +1893,13 @@ function dropdownAllItems($name,$withenterprise=0,$search='',$value='') {
 //	if ($table=="glpi_enterprises"||$table=="glpi_cartridge_type")
 //		$where = "WHERE deleted='N' ";
 
-		$query = "SELECT ID,name FROM $table $where ORDER BY name";
-	//echo $query;
+		$ORDER="";
+		if ($type==COMPUTER_TYPE) $ORDER="type, ";
+		$SELECT="";
+		if ($type==COMPUTER_TYPE) $SELECT=",type ";
+		
+		$query = "SELECT ID,name $SELECT FROM $table $where ORDER BY $ORDER name";
+		
 		$result = $db->query($query);
 	
 		$i = 0;
@@ -1895,7 +1909,14 @@ function dropdownAllItems($name,$withenterprise=0,$search='',$value='') {
 			while ($i < $number) {
 				$ID=$db->result($result, $i, "ID");
 				$name=$db->result($result, $i, "name");
-				$output=$ci->getType()." - ".$name;
+				
+				if ($type==COMPUTER_TYPE){
+					$t=$db->result($result, $i, "type");
+
+					if (isset($types[$t])) $output=$types[$t]." - ".$name;
+					else $output=$ci->getType()." - ".$name;
+				} else 	$output=$ci->getType()." - ".$name;
+							
 				if (createAllItemsSelectValue($type,$ID) === $value) {
 					echo "<option value=\"".$type."_".$ID."\" selected>$output</option>";
 				} else {
