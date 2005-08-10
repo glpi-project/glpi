@@ -355,8 +355,12 @@ function getEmpty () {
 		$ci=new ReservationItem();
 		$ci->getFromDB($this->fields["id_item"]);		
 		
+		$u=new User();
+		$u->getFromDbbyID($this->fields["id_user"]);
 		$content="";
 		
+		
+		$content.=$lang["mailing"][2]." ".$u->getName()."\n";
 		$content.=$lang["mailing"][7]." ".$ci->getName()."\n";
 		$content.=$lang["mailing"][20]." ".$this->fields["begin"]."\n";
 		$content.=$lang["mailing"][21]." ".$this->fields["end"]."\n";

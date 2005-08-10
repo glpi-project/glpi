@@ -750,6 +750,7 @@ function addReservation($input,$target,$ok=true){
 				$mail = new MailingResa($resa);
 				$mail->send();
 			}
+			return true;
 		}
 		else return false;
 	else return true;
