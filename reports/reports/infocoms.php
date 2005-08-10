@@ -194,8 +194,9 @@ display_infocoms_report(NETWORKING_TYPE,$_POST["date1"],$_POST["date2"]);
 echo "</td><td valign='top'>";
 display_infocoms_report(PRINTER_TYPE,$_POST["date1"],$_POST["date2"]);
 echo "</td></tr>";
-echo "<tr><td>";
-display_infocoms_report(SOFTWARE_TYPE,$_POST["date1"],$_POST["date2"]);
+echo "<tr><td>&nbsp;";
+
+//display_infocoms_report(SOFTWARE_TYPE,$_POST["date1"],$_POST["date2"]);
 echo "</td><td valign='top'>";
 display_infocoms_report(PERIPHERAL_TYPE,$_POST["date1"],$_POST["date2"]);
 echo "</td></tr>";

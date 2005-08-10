@@ -1000,6 +1000,15 @@ class CommonItem{
 			case CONSUMABLE_TYPE : 
 				$this->obj= new ConsumableType;	
 				break;					
+			case CARTRIDGE_ITEM_TYPE : 
+				$this->obj= new Cartridge;	
+				break;					
+			case CONSUMABLE_ITEM_TYPE : 
+				$this->obj= new Consumable;	
+				break;					
+			case LICENSE_TYPE : 
+				$this->obj= new License;	
+				break;					
 			}
 
 			if ($this->obj!=NULL){
@@ -1052,15 +1061,27 @@ class CommonItem{
 			case CONSUMABLE_TYPE : 
 				return $lang["consumables"][16];
 				break;					
+			case LICENSE_TYPE : 
+				return $lang["software"][11];
+				break;					
+			case CARTRIDGE_ITEM_TYPE : 
+				return $lang["cartridges"][0];
+				break;
+			case CONSUMABLE_ITEM_TYPE : 
+				return $lang["consumables"][0];
+				break;					
 			}
 	
 	}
 	function getName(){
 		global $lang;
-		if ($this->device_type==0)
-		return "";
+		
+		if ($this->device_type==0) return "";
+		
 		if ($this->device_type==KNOWBASE_TYPE&&$this->obj!=NULL&&isset($this->obj->fields["question"])&&$this->obj->fields["question"]!="")
 			return $this->obj->fields["question"];
+		else if ($this->device_type==LICENSE_TYPE&&$this->obj!=NULL&&isset($this->obj->fields["serial"])&&$this->obj->fields["serial"]!="")
+			return $this->obj->fields["serial"];
 		else if ($this->obj!=NULL&&isset($this->obj->fields["name"])&&$this->obj->fields["name"]!="")
 			return $this->obj->fields["name"];
 		else 
@@ -1113,6 +1134,16 @@ class CommonItem{
 			case CONSUMABLE_TYPE : 
 				return "<a href=\"".$cfg_install["root"]."/consumables/consumables-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
 				break;						
+			case LICENSE_TYPE : 
+				return $this->getName();
+				break;						
+			case CARTRIDGE_ITEM_TYPE : 
+				return $this->getName();
+				break;						
+			case CONSUMABLE_ITEM_TYPE : 
+				return $this->getName();
+				break;						
+			
 			}
 
 	

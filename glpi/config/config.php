@@ -88,6 +88,9 @@ define("KNOWBASE_TYPE","14");
 define("USER_TYPE","15");
 define("TRACKING_TYPE","16");
 define("CONSUMABLE_TYPE","17");
+define("CONSUMABLE_ITEM_TYPE","18");
+define("CARTRIDGE_ITEM_TYPE","19");
+define("LICENSE_TYPE","20");
 
 // DEVICE TYPE
 define("MOBOARD_DEVICE","1");

@@ -36,9 +36,9 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_cartridges.php");
 include ($phproot . "/glpi/includes_printers.php");
-include ($phproot . "/glpi/includes_enterprises.php");
 include ($phproot . "/glpi/includes_links.php");
 include ($phproot . "/glpi/includes_documents.php");
+include ($phproot . "/glpi/includes_financial.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -120,6 +120,10 @@ else
 			showDocumentAssociated(CARTRIDGE_TYPE,$tab["ID"]);
 			showLinkOnDevice(CARTRIDGE_TYPE,$tab["ID"]);
 			break;
+		case 4 :
+			showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",CARTRIDGE_TYPE,$tab["ID"],1);
+			break;
+			
 		case 5 :
 			showDocumentAssociated(CARTRIDGE_TYPE,$tab["ID"]);
 			break;			

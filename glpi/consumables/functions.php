@@ -62,6 +62,7 @@ function showConsumableOnglets($target,$withtemplate,$actif){
 
 	echo "<div id='barre_onglets'><ul id='onglet'>";
 	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=1$template'>".$lang["title"][26]."</a></li>";
+	echo "<li "; if ($actif=="4") {echo "class='actif'";} echo "><a href='$target&amp;onglet=4$template'>".$lang["Menu"][26]."</a></li>";
 	echo "<li "; if ($actif=="5") {echo "class='actif'";} echo "><a href='$target&amp;onglet=5$template'>".$lang["title"][25]."</a></li>";
 	
 	if(empty($withtemplate)){
@@ -642,14 +643,14 @@ function showConsumables ($tID,$show_old=0) {
 
 			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre' width='90%'>";
 			if ($show_old==0){
-				echo "<tr><th colspan='5'>";
+				echo "<tr><th colspan='6'>";
 				echo $total;
 				echo "&nbsp;".$lang["consumables"][16]."&nbsp;-&nbsp;$unused&nbsp;".$lang["consumables"][13]."&nbsp;-&nbsp;$old&nbsp;".$lang["consumables"][15]."</th>";
 				echo "<th colspan='1'>";
 				echo "&nbsp;</th></tr>";
 			}
 			else { // Old
-				echo "<tr><th colspan='4'>";
+				echo "<tr><th colspan='5'>";
 				echo $lang["consumables"][35];
 				echo "</th>";
 				echo "<th colspan='1'>";
@@ -658,6 +659,8 @@ function showConsumables ($tID,$show_old=0) {
 			}
 			$i=0;
 			echo "<tr><th>".$lang["consumables"][4]."</th><th>".$lang["consumables"][23]."</th><th>".$lang["consumables"][24]."</th><th>".$lang["consumables"][26]."</th>";
+
+			echo "<th>".$lang["financial"][3]."</th>";
 			
 			if ($show_old==0)
 			echo "<th>&nbsp;</th>";
@@ -696,11 +699,17 @@ $query = "SELECT * FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$tID
 		echo $date_out;		
 		echo "</td>";
 
+		echo "<td align='center'>";
+		showDisplayInfocomLink(CARTRIDGE_ITEM_TYPE,$data["ID"],1);
+		echo "</td>";
+
+				
 		if ($show_old==0){
 			echo "<td align='center'>";
 			echo "<a href='".$cfg_install["root"]."/consumables/consumables-edit.php?out=out&amp;ID=".$data["ID"]."'>".$lang["consumables"][32]."</a>";
 			echo "</td>";
 		}
+
 						
 		echo "<td align='center'>";
 		
@@ -736,7 +745,19 @@ function addConsumable($tID) {
 			$c->fields[$key] = $input[$key];
 		}
 	}
-	return $c->addToDB();
+	$newID=$c->addToDB();
+	
+	// Add infocoms if exists for the licence
+	$ic=new Infocom();
+	print_r($c);
+	exit();
+	if ($ic->getFromDB(CONSUMABLE_TYPE,$c->fields["FK_glpi_consumables_type"])){
+		unset($ic->fields["ID"]);
+		$ic->fields["FK_device"]=$newID;
+		$ic->fields["device_type"]=CONSUMABLE_ITEM_TYPE;
+		$ic->addToDB();
+	}
+	return $newID;
 }
 /**
 * delete a consumable in the database.
