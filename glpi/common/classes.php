@@ -806,6 +806,7 @@ class MailingResa{
 	function MailingResa ($resa,$type="new")
 	{
 	$this->resa=$resa;
+	$this->type=$type;
 
 	}
 
@@ -929,7 +930,7 @@ class MailingResa{
 				$replyto=$this->get_reply_to_address ();
 
 				// Send all mails
-				require $phproot."/glpi/common/MIMEMail.php";
+				require_once $phproot."/glpi/common/MIMEMail.php";
 				for ($i=0;$i<count($users);$i++)
 				{
 				$mmail=new MIMEMail();
