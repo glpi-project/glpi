@@ -541,12 +541,15 @@ $query="DELETE FROM glpi_contact_enterprise WHERE ID= '$ID';";
 $result = $db->query($query);
 }
 
-function getEnterpriseLinks($value){
+function getEnterpriseLinks($value,$withname=0){
 		global $HTMLRel,$lang;
 		$ret="";
 		
 		$ent=new Enterprise();
 		if ($ent->getFromDB($value)){
+		
+		if ($withname==1) $ret.=$ent->fields["name"];
+		
 		if (!empty($ent->fields['website'])){
 			if (!ereg("https*://",$ent->fields['website']))	$website="http://".$ent->fields['website'];
 			else $website=$ent->fields['website'];
