@@ -3094,7 +3094,7 @@ elseif(!empty($_POST["ajout_su"])) {
 		echo "</div>";
 		if (showLocationUpdateForm())
 			showContentUpdateForm();
-		echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
+		//echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
 	}
 	else {
 		echo "<div align='center' color='red'>";
