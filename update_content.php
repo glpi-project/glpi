@@ -120,7 +120,22 @@ function test_content_ok(){
 	return true;		
 	}
 
-
+function seems_utf8($Str) {
+ for ($i=0; $i<strlen($Str); $i++) {
+  if (ord($Str[$i]) < 0x80) continue; # 0bbbbbbb
+  elseif ((ord($Str[$i]) & 0xE0) == 0xC0) $n=1; # 110bbbbb
+  elseif ((ord($Str[$i]) & 0xF0) == 0xE0) $n=2; # 1110bbbb
+  elseif ((ord($Str[$i]) & 0xF8) == 0xF0) $n=3; # 11110bbb
+  elseif ((ord($Str[$i]) & 0xFC) == 0xF8) $n=4; # 111110bb
+  elseif ((ord($Str[$i]) & 0xFE) == 0xFC) $n=5; # 1111110b
+  else return false; # Does not match any model
+  for ($j=0; $j<$n; $j++) { # n bytes matching 10bbbbbb follow ?
+   if ((++$i == strlen($Str)) || ((ord($Str[$i]) & 0xC0) != 0x80))
+   return false;
+  }
+ }
+ return true;
+}
 
 function get_update_content($db, $table,$from,$limit,$conv_utf8)
 {
@@ -139,7 +154,11 @@ function get_update_content($db, $table,$from,$limit,$conv_utf8)
 	         	
             	if(!isset($val)) $insert .= "NULL,";
             	else if($val != "") {
-            		if ($conv_utf8) $val=utf8_encode($val);
+            		if ($conv_utf8) {
+			// Gestion users AD qui sont déjà en UTF8
+			if ($table!="glpi_users"||!seems_utf8($val))
+				$val=utf8_encode($val);
+			}
             		$insert .= "'".addslashes($val)."',";
             		}
             	else $insert .= "'',";
@@ -150,6 +169,7 @@ function get_update_content($db, $table,$from,$limit,$conv_utf8)
          	$content .= $insert;
 		}
      }
+     //if ($table=="glpi_dropdown_locations") echo $content;
      return $content;
 }
 
