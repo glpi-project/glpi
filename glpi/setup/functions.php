@@ -1013,7 +1013,7 @@ echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][170]."</td><td><b
 
 function constructIMAPAuthServer($input){
 
-$out="&nbps;";
+$out="";
 if (isset($input['mail_server'])&&!empty($input['mail_server'])) $out.="{".$input['mail_server'];
 else return $out;
 if (isset($input['server_port'])&&!empty($input['server_port'])) $out.=":".$input['server_port'];
