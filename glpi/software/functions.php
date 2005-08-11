@@ -280,7 +280,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 			printPager($start,$numrows,$target,$parameters);
 
 			// Produce headline
-			echo "<div align='center'><table class='tab_cadre' width='750'><tr>";
+			echo "<div align='center'><table class='tab_cadre' width='800'><tr>";
 
 			// Name
 			echo "<th>";
