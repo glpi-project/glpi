@@ -1501,6 +1501,7 @@ function dropdownValueSearch($table,$myname,$value,$search) {
 *
 *
 */
+// $all =0 -> Nobody $all=1 -> All $all=-1-> nothing
 function dropdownUsers($value, $myname,$all=0) {
 	global $lang;
 	// Make a select box with all glpi users
@@ -1515,7 +1516,7 @@ function dropdownUsers($value, $myname,$all=0) {
 	$number = $db->numrows($result);
 	if ($all==0)
 	echo "<option value=\"0\">[ Nobody ]</option>";
-	else echo "<option value=\"0\">[ ".$lang["search"][7]." ]</option>";
+	else if($all==1) echo "<option value=\"0\">[ ".$lang["search"][7]." ]</option>";
 	if ($number > 0) {
 		while ($i < $number) {
 			$output = unhtmlentities($db->result($result, $i, "name"));
