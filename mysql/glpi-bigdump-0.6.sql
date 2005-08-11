@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-08-10 14:27
+#GLPI Dump database on 2005-08-11 11:01
 
 ### Dump table glpi_cartridges
 
@@ -7759,7 +7759,7 @@ CREATE TABLE glpi_device_hdd (
     ID int(11) NOT NULL auto_increment,
     designation varchar(100) NOT NULL,
     rpm varchar(20) NOT NULL,
-    interface enum('IDE','SATA','SCSI') DEFAULT 'IDE' NOT NULL,
+    interface int(11) DEFAULT '0' NOT NULL,
     cache varchar(20) NOT NULL,
     comment text NOT NULL,
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
@@ -7768,9 +7768,9 @@ CREATE TABLE glpi_device_hdd (
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_device_hdd VALUES ('1','','','IDE','','','0','');
-INSERT INTO glpi_device_hdd VALUES ('2','Seagate','','IDE','','','0','');
-INSERT INTO glpi_device_hdd VALUES ('3','Unknown','','IDE','','','0','');
+INSERT INTO glpi_device_hdd VALUES ('1','','','1','','','0','');
+INSERT INTO glpi_device_hdd VALUES ('2','Seagate','','1','','','0','');
+INSERT INTO glpi_device_hdd VALUES ('3','Unknown','','1','','','0','');
 
 ### Dump table glpi_device_iface
 
@@ -8061,6 +8061,19 @@ CREATE TABLE glpi_dropdown_firmware (
 INSERT INTO glpi_dropdown_firmware VALUES ('1','blaaaaaa');
 INSERT INTO glpi_dropdown_firmware VALUES ('2','blouuuuuuuuuu');
 INSERT INTO glpi_dropdown_firmware VALUES ('3','gkjgkj');
+
+### Dump table glpi_dropdown_hdd_type
+
+DROP TABLE IF EXISTS glpi_dropdown_hdd_type;
+CREATE TABLE glpi_dropdown_hdd_type (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
+INSERT INTO glpi_dropdown_hdd_type VALUES ('1','IDE');
+INSERT INTO glpi_dropdown_hdd_type VALUES ('2','SATA');
+INSERT INTO glpi_dropdown_hdd_type VALUES ('3','SCSI');
 
 ### Dump table glpi_dropdown_iface
 
@@ -10412,6 +10425,7 @@ INSERT INTO glpi_event_log VALUES ('13775','1','cartridges','2005-08-10 14:25:21
 INSERT INTO glpi_event_log VALUES ('13776','1','cartridges','2005-08-10 14:25:31','inventory','4','glpi added 8 cartridge.');
 INSERT INTO glpi_event_log VALUES ('13777','1','consumables','2005-08-10 14:26:39','inventory','4','glpi added item test.');
 INSERT INTO glpi_event_log VALUES ('13778','1','consumables','2005-08-10 14:26:47','inventory','4','glpi added 11 consumable.');
+INSERT INTO glpi_event_log VALUES ('13779','-1','system','2005-08-11 11:01:45','login','3','glpi logged in from 127.0.0.1.');
 
 ### Dump table glpi_followups
 

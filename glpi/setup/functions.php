@@ -385,6 +385,10 @@ function replaceDropDropDown($input) {
 		$query = "update glpi_device_ram set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
+	case "hdd_type":
+		$query = "update glpi_device_hdd set interface = '". $input["newID"] ."'  where interface = '".$input["oldID"]."'";
+		$db->query($query);
+		break;	
 	case "vlan":
 		$query = "update glpi_networking_vlan set FK_vlan = '". $input["newID"] ."'  where FK_vlan = '".$input["oldID"]."'";
 		$db->query($query);
@@ -600,6 +604,11 @@ function dropdownUsed($table, $ID) {
 		break;
 	case "ram_type":
 		$query = "Select count(*) as cpt FROM glpi_device_ram where type = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
+	case "hdd_type":
+		$query = "Select count(*) as cpt FROM glpi_device_hdd where interface = ".$ID."";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;

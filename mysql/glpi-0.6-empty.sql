@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-08-10 14:23
+#GLPI Dump database on 2005-08-11 11:15
 
 ### Dump table glpi_cartridges
 
@@ -395,7 +395,7 @@ CREATE TABLE glpi_device_hdd (
     ID int(11) NOT NULL auto_increment,
     designation varchar(100) NOT NULL,
     rpm varchar(20) NOT NULL,
-    interface enum('IDE','SATA','SCSI') DEFAULT 'IDE' NOT NULL,
+    interface int(11) DEFAULT '0' NOT NULL,
     cache varchar(20) NOT NULL,
     comment text NOT NULL,
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
@@ -625,6 +625,19 @@ CREATE TABLE glpi_dropdown_firmware (
 ) TYPE=MyISAM;
 
 
+### Dump table glpi_dropdown_hdd_type
+
+DROP TABLE IF EXISTS glpi_dropdown_hdd_type;
+CREATE TABLE glpi_dropdown_hdd_type (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
+INSERT INTO glpi_dropdown_hdd_type VALUES ('1','IDE');
+INSERT INTO glpi_dropdown_hdd_type VALUES ('2','SATA');
+INSERT INTO glpi_dropdown_hdd_type VALUES ('3','SCSI');
+
 ### Dump table glpi_dropdown_iface
 
 DROP TABLE IF EXISTS glpi_dropdown_iface;
@@ -796,6 +809,7 @@ CREATE TABLE glpi_event_log (
    KEY itemtype (itemtype)
 ) TYPE=MyISAM;
 
+INSERT INTO glpi_event_log VALUES ('1','-1','system','2005-08-11 11:15:50','login','3','glpi logged in from 127.0.0.1.');
 
 ### Dump table glpi_followups
 

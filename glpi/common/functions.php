@@ -827,11 +827,7 @@ function nullHeader($title,$url) {
 	
 	echo "</tr></table>";
 	
-	// End headline
-
-	echo "</td></tr></form>";	
-	echo "</table>\n";
-				echo "</div>";
+	echo "</div>";
 }
 
 /**

@@ -45,15 +45,15 @@ function header_html($etape)
 		// Send UTF8 Headers
 		header("Content-Type: text/html; charset=UTF-8");
 
-        echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">";
-        echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">";
+	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
+        echo "<html>";
         echo "<head>";
-        echo " <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />";
-        echo "<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\" /> ";
-        echo "<meta http-equiv=\"Content-Style-Type\" content=\"text/css\" /> ";
-        echo "<meta http-equiv=\"Content-Language\" content=\"fr\" /> ";
-        echo "<meta name=\"generator\" content=\"\" />";
-        echo "<meta name=\"DC.Language\" content=\"fr\" scheme=\"RFC1766\" />";
+        echo " <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
+        echo "<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\"> ";
+        echo "<meta http-equiv=\"Content-Style-Type\" content=\"text/css\"> ";
+        echo "<meta http-equiv=\"Content-Language\" content=\"fr\"> ";
+        echo "<meta name=\"generator\" content=\"\">";
+        echo "<meta name=\"DC.Language\" content=\"fr\" scheme=\"RFC1766\">";
         echo "<title>Setup GLPI</title>";
        
         echo "<style type=\"text/css\">";

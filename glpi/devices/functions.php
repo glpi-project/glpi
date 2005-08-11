@@ -128,7 +128,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			$type=$lang["devices"][1];
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["rpm"]))	$entry[$lang["device_hdd"][0]]=$device->fields["rpm"];
-			if (!empty($device->fields["interface"]))	$entry[$lang["device_hdd"][2]]=$device->fields["interface"];
+			if (!empty($device->fields["interface"]))	$entry[$lang["device_hdd"][2]]=getDropdownName("glpi_dropdown_hdd_type",$device->fields["interface"]);
 			if (!empty($device->fields["cache"])) $entry[$lang["device_hdd"][1]]=$device->fields["cache"];
 			
 			$specificity_size = 10;
@@ -618,11 +618,8 @@ function showDevicesForm ($target,$ID,$device_type) {
 
 
 			echo "<tr><td>".$lang["device_hdd"][2].":</td>";
-			echo "<td><select name='interface'>";
-			echo "<option value='IDE' ".($device->fields["interface"]=="IDE"?"selected":"").">IDE</option>";
-			echo "<option value='SATA' ".($device->fields["interface"]=="SATA"?"selected":"").">SATA</option>";
-			echo "<option value='SCSI' ".($device->fields["interface"]=="SCSI"?"selected":"").">SCSI</option>";
-			echo "</select>";
+			echo "<td>";
+			dropdownValue("glpi_dropdown_hdd_type","interface",$device->fields["interface"]);
 			echo "</td>";
 
 			echo "</tr>";
