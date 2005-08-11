@@ -130,7 +130,8 @@ font-size: 13px;
 <li><a href="#inventd">d) Gestion des connections directes</a></li>
 <li><a href="#invente">e) Gestion des ports r&eacute;seaux</a></li>
 <li><a href="#inventf">f) Gestion des logiciels</a></li>
-<li><a href="#inventg">g) Gestion des r&eacute;parations</a></li>
+<li><a href="#inventg">g) Gestion des &eacute;tats</a></li>
+<li><a href="#inventh">h) Gestion des consommables et des cartouches</a></li>
 </ul></li>
 </ul>
 
@@ -138,7 +139,8 @@ font-size: 13px;
 <li><ul>
 <li><a href="#assista">a) Suivi</a></li>
 <li><a href="#assistb">b) Helpdesk</a></li>
-<li><a href="#assistc">c) Statistiques</a></li>
+<li><a href="#assistc">c) Planning</a></li>
+<li><a href="#assistd">d) Statistiques</a></li>
 </ul></li>
 </ul>
 
@@ -170,6 +172,7 @@ font-size: 13px;
 	<li><a href="#adminb4"> iv) Suivis par emails</a></li>
 	<li><a href="#adminb5"> v) Configuration g&eacute;n&eacute;rale</a></li>
 	<li><a href="#adminb6"> vi) Type de document</a></li>
+	<li><a href="#adminb7"> vii) Liens externes protocol&eacute;s</a></li>	
 </ul></li>
 <li><a href="#adminc">c) Pr&eacute;f&eacute;rences</a></li>
 <li><a href="#admind">d) Donn&eacute;es (Sauvegarde/Restauration)</a></li>
@@ -190,7 +193,7 @@ font-size: 13px;
 
 <h3><a name="inventa"></a>a) Consid&eacute;ration g&eacute;n&eacute;rales</h3>
 <p>Dans la partie inventaire vous pouvez lister et consulter l'inventaire mat&eacute;riel et logiciel du parc.</p>
-<p>Vous avez la possibilit&eacute; d'effectuer des recherches param&eacute;tr&eacute;es et tri&eacute;es, sur un des types de l'inventaire (ordinateurs, mat&eacute;riel reseau, imprimantes, cartouches, &eacute;crans, p&eacute;riph&eacute;riques, logiciels et r&eacute;paration).</p>
+<p>Vous avez la possibilit&eacute; d'effectuer des recherches multiples param&eacute;tr&eacute;es et tri&eacute;es, sur un des types de l'inventaire (ordinateurs, mat&eacute;riel reseau, imprimantes, cartouches, &eacute;crans, p&eacute;riph&eacute;riques, logiciels, consommables et &eacute;tats).</p>
 <p>A partir de l&agrave; vous pouvez afficher la fiche contenant les informations pr&eacute;cises de chaque &eacute;l&eacute;ment r&eacute;pertori&eacute;, ou ajouter un &eacute;l&eacute;ment.</p>
 <p>Vous avez ensuite la possibilit&eacute; de modifier ou de supprimer chaque &eacute;l&eacute;ment.</p>
 <p>Dans chaque fiche d'informations, des onglets sont disponibles pour obtenir un affichage plus lisible des diverses infos. Vous pouvez choisir d'afficher toutes les informations en cliquant sur l'onglet "Tous".</p>
@@ -198,7 +201,7 @@ font-size: 13px;
 
 <h3><a name="inventb"></a>b) Gestion des mod&egrave;les</h3>
 
-<p>Pour l'ensemble des &eacute;l&eacute;ments de l'inventaire vous devez cr&eacute;er les nouveaux &eacute;lements via des mod&egrave;les.</p>
+<p>Pour certains &eacute;l&eacute;ments de l'inventaire vous devez cr&eacute;er les nouveaux &eacute;lements via des mod&egrave;les.</p>
 <p>Ces mod&egrave;les vous permettent de d&eacute;finir les configurations standards de votre parc. Il sera ainsi tr&egrave;s simple d'ajouter un grand nombre d'&eacute;lements quasi identiques.</p>
 
 <h3><a name="inventc"></a>c) Gestion des p&eacute;riph&eacute;riques internes aux ordinateurs</h3>
@@ -219,6 +222,7 @@ font-size: 13px;
 <p>Dans la plupart des configurations les connections se feront entre un port pr&eacute;sent sur un ordinateur, un p&eacute;riph&eacute;rique ou une imprimante et un port pr&eacute;sent sur un mat&eacute;riel r&eacute;seau (hub, switch)</p>
 <p>Lors de la connection entre deux mat&eacute;riels, les informations telles que l'adresse IP et la prise reseau sont mises &agrave; jour pour chacun des deux ports concern&eacute;s</p>
 <p>Pour chaque mat&eacute;riel, il est possible &agrave; tout moment d'ajouter un ou plusieurs ports</p>
+<p>Vous pouvez &eacute;galement associer un ou plusieurs VLANs &agrave; un port</p>
 
 <h3><a name="inventf"></a>f) Gestion des logiciels</h3>
 <p>Un logiciel, comporte un certain nombre de licences ayant chacune un num&eacute;ro de s&eacute;rie associ&eacute; et une date d'expiration</p>
@@ -229,11 +233,18 @@ font-size: 13px;
 <p>Il est aussi possible d'indiquer le mot cl&eacute; "global" &agrave; la place du num&eacute;ro de s&eacute;rie si vous avez des logiciels avec des licences global (site) pour votre parc.</p>
 <p>Il est possible d'ajouter plusieurs licences en une seule fois, le num&eacute;ro et de s&eacute;rie et la date d'expiration sera la m&ecirc;me pour chacune d'entre elles.</p>
 <p>Vous pouvez cat&eacute;goriser vos logiciels selon s'ils sont OEM, achet&eacute;s ou m&ecirc;me une mise &agrave; jour d'un logiciel existant.</p>
+<p>La gestion financi&egrave;re est effectu&eacute;e au niveau des licences. La partie informations commerciales du logiciel sert de mod&egrave;le lors de l'ajout des licences.</p>
 
-<h3><a name="inventg"></a>g) Gestion des r&eacute;parations</h3>
-<p>Dans cette section vous pouvez voir le status de votre mat&eacute;riel en r&eacute;paration</p>
-<p>Pour mettre un mat&eacute;riel en r&eacute;paration il s'agit d'aller dans la fiche d'information de ce mat&eacute;riel et cliquer sur "mettre le mat&eacute;riel en r&eacute;paration".</p>
-<p>Pour remettre un mat&eacute;riel en production, il s'agit de cliquer sur "Sortir le mat&eacute;riel de r&eacute;paration" dans la fiche d'information de celle-ci.</p>
+<h3><a name="inventg"></a>g) Gestion des &eacute;tats</h3>
+<p>Dans cette section vous pouvez voir le status de vos mat&eacute;riels</p>
+<p>Pour changer l'&eacute;tat d'un mat&eacute;riel il suffit d'aller dans la fiche d'information de ce mat&eacute;riel et changer son &eacute;tat.</p>
+
+<h3><a name="inventh"></a>h) Gestion des consommables et des cartouches</h3>
+
+<p>Pour ces deux &eacute;l&aacute;ments, il vous faut d'abord cr&eacute;er un type de cartouches ou de consommables.</p>
+<p>Vous pouvez ensuite ajouter autant d'&eacute;l&aacute;ments de ce type dans la fiche du type.</p>
+<p>Pour les cartouches, un type de cartouches doit &ecirc;tre d&eacute;fini comme compatible avec des types d'imprimantes pour pouvoir ajouter les cartouches aux imprimantes de ce type</p>
+<p>La gestion financi&egrave;re est effectu&eacute;e au niveau des &eacute;l&aacute;ments et non du type. La partie informations commerciales du type sert de mod&egrave;le lors de l'ajout des &eacute;l&aacute;ments.</p>
 
 <h2><a name="assist"></a>2 - Partie Assistance</h2>
 
@@ -258,9 +269,10 @@ font-size: 13px;
 <p>Vous pouvez &eacute;galement r&eacute;aliser une recherche sur les interventions &agrave; partir d'une description ou d'un num&eacute;ro d'identification(ID).</p>
 <p>Si des interventions sont trouv&eacute;es, GLPI affiche un tableau pr&eacute;sentant les interventions. Avec pour chaque intervention : son statut (nouveau ou ancien), le num&eacute;ro d'Identification(ID), la date d'ouverture et de cloture, le niveau de priorit&eacute;	l'auteur de la demande d'intervention, la personne &agrave; qui a &eacute;t&eacute; attribu&eacute; l'intervention,	le mat&eacute;riel concern&eacute;, la cat&eacute;gorie de l'intervention, la description de la demande d'intervention et les informations disponibles sur le suivi de l'intervention.</p>
 <p>Un clic sur un de ces &eacute;l&eacute;ments vous permettra d'acc&eacute;der &agrave; des informations compl&eacute;mentaires.</p>
-<p>Pour ajouter des &eacute;l&eacute;ments de suivi &agrave; une intervention, la cloturer ou la reattribuer, il suffit de cliquer sur "infos". Vous obtiendrez alors l'historique complet de l'intervention. Vous pourrez donc ajouter un &eacute;l&eacute;ment de suivi ou cloturer l'intervention en indiquant &eacute;ventuellement le temps r&eacute;el d'intervention.</p>
+<p>Pour ajouter des &eacute;l&eacute;ments de suivi &agrave; une intervention, ou modifier l'intervention, il suffit de cliquer sur "infos". Vous obtiendrez alors l'historique complet de l'intervention. Vous pourrez donc ajouter un &eacute;l&eacute;ment de suivi ou cloturer l'intervention en indiquant &eacute;ventuellement le temps r&eacute;el d'intervention.</p>
 <p>Vous pouvez classer vos interventions par cat&eacute;gories en utilisant la liste d&eacute;roulante pr&eacute;vu &agrave; cet effet. Pour ajouter ou modifier les cat&eacute;gories des suivis, r&eacute;f&eacute;rez vous au modification d'intitul&eacute;s dans la section configuration.</p>
-<p>Il est aussi possible de changer la priorit&eacute; d'une intervention si celle-ci change en cours de route en utilisant la liste d&eacute;roulante des priorit&eacute;s.</p>
+<p>Vous avez aussi la possibilit&eacute; de d&eacute;finir des horaires d'intervention pour une intervention. Vous aurez alors votre planning qui se remplira tout seul.</p>
+
 
 <h4>Cas particulier des interventions termin&eacute;es</h4>
 <p>La restauration d'une intervention termin&eacute;e est possible. Il suffit pour cela de cliquer sur "info" puis "restaurer".</p>
@@ -273,11 +285,34 @@ font-size: 13px;
 <p>Si vous activer les suivis par emails dans les configurations de GLPI, un champ suppl&eacute;mentaire sera disponible afin d'y entrer le courriel du demandeur.</p>
 <p>Vous retrouverez les demandes d'interventions dans la section suivi de GLPI.</p>
 
+<h3><a name="assistc"></a>c) Planning</h3>
 
-<h3><a name="assistc"></a>c) Statistiques</h3>
+<p>Le planning vous permet de voir les interventions pour lesquelles vous avez d&eacute;finies des horaires d'interventions.</p>
 
-<h4>Statistiques globales</h4>
-<p>Ces statistiques regroupent les principales donn&eacute;es sur les interventions sur le mois, l'ann&eacute;e et au total :</p>
+
+<h3><a name="assistd"></a>d) Statistiques</h3>
+
+<p>Vous avez la possibilit&eacute; d'obtenir des statistiques suivant diff&eacute;rents crit&egrave;res. Pour chacun vous disposez d'un tableau r&eacute;capitulatif et/ou de graphiques par &eacute;l&eacute;ments.</p>
+
+<ul>
+<li>Statistiques globales
+<p>Ces statistiques regroupent les principales donn&eacute;es sur les interventions sur le mois, l'ann&eacute;e et au total.</p>
+</li>
+<li>Par technicien
+<p>Ces statistiques fournissent un &eacute;tat de l'activit&eacute; des techniciens pour une p&eacute;riode donn&eacute;e.</p>
+</li>
+<li>Par Intitul&eacute;s
+<p>Statistiques des interventions par Lieu, Type d'ordinateur, OS, CPU, HD-Type, Carte graphique, Carte m&egrave;re  sur une p&eacute;riode donn&eacute;e.</p>
+</li>
+<li>Par utilisateur
+<p>Statistiques des interventions par utilisateurs sur une p&eacute;riode donn&eacute;e.</p>
+</li>
+<li>Par cat&eacute;gorie
+<p>Statistiques des interventions par cat&eacute;gorie sur une p&eacute;riode donn&eacute;e.</p>
+</li>
+</ul>
+
+Pour chacun des &eacute;l&eacute;ments vous avez les informations suivantes :
 <ul>
 <li>Nombre total d'interventions</li>	
 <li>Nombre d'interventions r&eacute;solues</li>
@@ -289,40 +324,8 @@ font-size: 13px;
 <li>D&eacute;lai moyen de prise en compte de l'intervention</li>
 </ul>
 
-<h4>Par technicien</h4>
-<p>Ces statistiques fournissent un &eacute;tat de l'activit&eacute; des techniciens pour une p&eacute;riode donn&eacute;e :</p>
-<ul>
-<li>Nombre d'interventions attribu&eacute;es</li>
-<li>Nombre d'interventions r&eacute;solues	</li>
-<li>Dur&eacute;e moyenne d'ouverture</li>
-<li>Dur&eacute;e r&eacute;elle moyenne de l'intervention</li>
-<li>Dur&eacute;e r&eacute;elle totale des interventions</li>
-<li>D&eacute;lai moyen de prise en compte de l'intervention</li>
-</ul>
 
 
-<h4>Par Intitul&eacute;s</h4>
-<p>Statistiques des interventions par Lieu, Type d'ordinateur, OS, CPU, HD-Type, Carte graphique, Carte m&egrave;re  sur une p&eacute;riode donn&eacute;e :</p>
-<ul>
-<li>Nombre d'interventions demand&eacute;es</li>	
-<li>Nombre d'interventions r&eacute;solues</li>
-<li>dur&eacute;e moyenne d'ouverture</li>
-<li>Dur&eacute;e r&eacute;elle moyenne de l'intervention</li>
-<li>Dur&eacute;e r&eacute;elle totale des interventions</li>
-<li>D&eacute;lai moyen de prise en compte de l'intervention</li>
-</ul>
-
-
-<h4>Par utilisateur</h4>
-<p>Statistiques des interventions par utilisateurs sur une p&eacute;riode donn&eacute;e :</p>
-<ul>
-<li>Nombre d'interventions demand&eacute;es</li>	
-<li>Nombre d'interventions r&eacute;solues</li>
-<li>dur&eacute;e moyenne d'ouverture</li>
-<li>Dur&eacute;e r&eacute;elle moyenne de l'intervention</li>
-<li>Dur&eacute;e r&eacute;elle totale des interventions</li>
-<li>D&eacute;lai moyen de prise en compte de l'intervention</li>
-</ul>
 
 
 <h2><a name="gestion"></a>3 - Partie Gestions</h2>
@@ -405,6 +408,12 @@ Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tan
 <li>Rapport r&eacute;seau
 <p>Ce rapport vous permet d'avoir la liste d'informations de votre r&eacute;seau selon les lieux, les switchs ou une prise r&eacute;seau.</p>
 </li>
+<li>Rapport Informations Commerciales
+<p>Ce rapport vous permet d'avoir un r&eacute;capitulatif des informations commerciales pour les ordinateurs, les imprimantes, les mat&eacute;riels r&eacute;seaux, les moniteurs et les p&eacute;riph&eacute;riques.</p>
+</li>
+<li>Rapport Informations Commerciales 2
+<p>Ce rapport vous permet d'avoir un r&eacute;capitulatif des informations commerciales pour les cartouches, les licences et les consommables.</p>
+</li>
 <li>Excel, OpenOffice (Sylk)
 <p>GLPI peut g&eacute;n&eacute;rer des rapports par type de materiel exploitables par un tableur. Pour cela GLPI g&eacute;n&egrave;re des fichiers de type SYLK. Ce format est exploitable par de nombreux tableurs. </p>
 <p>Si vous utilisez un logiciel qui ne respecte pas totalement les  standards (Excel par exemple), utilisez la version limit&eacute;e pour ne pas avoir de probl&egrave;me avec la taille des champs. Les champs trop longs seront tronqu&eacute;s.</p>
@@ -423,7 +432,7 @@ Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tan
 <p>Vous pouvez dans cette zone modifier enti&egrave;rement les donn&eacute;es pr&eacute;sentes dans les listes de s&eacute;lection propos&eacute;es 
 par exemple pour les lieux et les microprocesseurs.</p>
 <p>Une fois s&eacute;lectionn&eacute; la liste que vous voulez modifier vous pouvez ajouter des &eacute;l&eacute;ments, les modifier et les supprimer.<br />
-<b>Attention !!</b> Si vous supprimez des &eacute;l&egrave;ments utilis&eacute;s vous devrez alors faire un choix entre modifier les entr&eacute;es existantes ou bien les mettre &agrave; NULL.</p>
+<b>Attention !!</b> Si vous supprimez des &eacute;l&aacute;ments utilis&eacute;s vous devrez alors faire un choix entre modifier les entr&eacute;es existantes ou bien les mettre &agrave; NULL.</p>
 <br />
 
 <a name="adminb2"></a><h4>ii) P&eacute;riph&eacute;riques internes</h4>
@@ -457,18 +466,25 @@ Si vous activez cette fonctionnalit&eacute;, des emails seront alors envoy&eacut
 - Les groupes de personnes d&eacute;finis sont : l'administrateur, tous les utilisateurs de type 'admin' ou 'normal', le responsable de la tâche et le demandeur de l'intervention.<br />
 - Le demandeur ne recevra un email que s'il a activ&eacute; le suivi par email lors de sa demande d'intervention.<br />
 </p>
+<p>Vous pouvez &eacute;galement d&eacute;finir des envois de mails pour les r&eacute;servations.</p>
 
 <a name="adminb5"></a><h4>v) Configuration g&eacute;n&eacute;rale</h4>
 <p>
 La configuration g&eacute;n&eacute;rale de l'application permet de r&eacute;gler certains param&egrave;tres :<br />
 - Le chemin d'installation. <b>Attention !!</b> Ce chemin est d&eacute;tect&eacute; automatiquement au moment de l'installation ou de la mise &agrave; jour, vous ne devriez donc pas avoir besoin de le modifier.<br />
+- Langue par d&eacute;faut &agrave; la cr&eacute;ation de nouveaux utilisateurs.<br />
 - Le niveau de log.<br />
 - Le nombre d'&eacute;v&egrave;nements &agrave; afficher correspond au nombre de lignes de log pr&eacute;sentes sur la page d'accueil du central.<br />
 - Le temps de conservation des logs. <b>Attention !!</b> Si vous les gardez trop longtemps votre table peut contenir &eacute;normement de donn&eacute;es.<br />
 - Montrer les interventions au login : voir les interventions actives sur la page d'accueil du central ou non.<br />
-- Nombre d'&eacute;l&eacute;ments &agrave; afficher par page (valable pour toutes les listes d'&eacute;l&egrave;ments affich&eacute;es - suivis, ordinateurs...)<br />
+- Assigner automatiquement les nouvelles interventions au responsable technique s'il existe.<br />
+- Nombre d'&eacute;l&eacute;ments &agrave; afficher par page (valable pour toutes les listes d'&eacute;l&aacute;ments affich&eacute;es - suivis, ordinateurs...)<br />
 - Nombre de caract&egrave;res maximum pour chaque &eacute;l&eacute;ments de la liste : r&eacute;duction de la taille des chaines de caract&egrave;res affich&eacute;es pour obtenir un affichage lisible.<br />
+- Limite d'affichage du planning pour ne pas indiquer les 24h mais restreindre &agrave; la journ&eacute;e de travail effective.<br />
+- Date de d&eacute;but d'exervice fiscale : utilis&eacute; pour toute la gestion des amortissements.<br />
 - Permettre le helpdesk.html : active ou non les demandes d'interventions anonymes via le fichier helpdesk.html.<br />
+- Couleurs des priorit&eacute;s.<br />
+- Seuil d'alerte par d&eacute;faut pour les cartouches et les consommables. Valeur par d&eacute;faut modifiable pour chaque type.<br />
 </p>
 
 <a name="adminb6"></a><h4>vi) Type de document</h4>
@@ -482,6 +498,13 @@ Les informations &agrave; fournir sont :<br />
 - Autorisation de t&eacute;l&eacute;chargement de ce type de fichier (oui ou non).<br />
 </p>
 
+
+<a name="adminb7"></a><h4>vii) Liens externes protocol&eacute;s</h4>
+
+<p>Dans cette section vous pouvez d&eacute;finir des liens divers qui votn pouvoir s'adapter aux &eacute;l&eacute;ments auxquels il vont &ecirc;tre li&eacute;s.</p>
+<p>Vous pouvez utiliser des tags particulier pour qu'ils soient remplac&eacute;s par les valeurs de l'&eacute;l&eacute;ment :
+Les Tags valides sont : [ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK], [DOMAIN]</p>
+<p>Chaque lien peut &ecirc;tre associ&eacute; &agrave; un ou plusieurs types de mat&eacute;riels</p>
 
 <h3><a name="adminc"></a>c) Pr&eacute;f&eacute;rences</h3>
 <p>Cette zone vous permet de changer votre mot de passe, de d&eacute;finir l'ordre par d&eacute;faut utilis&eacute; dans l'affichage 
