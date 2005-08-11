@@ -2618,7 +2618,7 @@ if(!TableExists("glpi_dropdown_ram_type")) {
 	) TYPE=MyISAM;";
 
 	$db->query($query) or die("0.6 add table glpi_dropdown_ram_type ".$lang["update"][90].$db->error());
-	$query="ALTER TABLE `glpi_device_ram` ADD `new_type` INT DEFAULT '0' NOT NULL ;";
+	$query="ALTER TABLE `glpi_device_ram` ADD `new_type` INT(11) DEFAULT '0' NOT NULL ;";
 	$db->query($query) or die("0.6 create new type field for glpi_device_ram ".$lang["update"][90].$db->error());
 	$query="INSERT INTO `glpi_dropdown_ram_type` (`name` ) VALUES ('EDO');";
 	$db->query($query) or die("0.6 insert value in glpi_dropdown_ram ".$lang["update"][90].$db->error());
@@ -2697,11 +2697,11 @@ if(!TableExists("glpi_dropdown_network")) {
   	PRIMARY KEY  (`ID`)
 	) TYPE=MyISAM;";
 	$db->query($query) or die("0.6 add table glpi_dropdown_network ".$lang["update"][90].$db->error());
-	$query="ALTER TABLE `glpi_computers` ADD `network` INT DEFAULT '0' NOT NULL AFTER `location` ;";
+	$query="ALTER TABLE `glpi_computers` ADD `network` INT(11) DEFAULT '0' NOT NULL AFTER `location` ;";
 	$db->query($query) or die("0.6 a network in computers".$lang["update"][90].$db->error());
-	$query="ALTER TABLE `glpi_printers` ADD `network` INT DEFAULT '0' NOT NULL AFTER `location` ;";
+	$query="ALTER TABLE `glpi_printers` ADD `network` INT(11) DEFAULT '0' NOT NULL AFTER `location` ;";
 	$db->query($query) or die("0.6 a network in printers".$lang["update"][90].$db->error());
-	$query="ALTER TABLE `glpi_networking` ADD `network` INT DEFAULT '0' NOT NULL AFTER `location` ;";
+	$query="ALTER TABLE `glpi_networking` ADD `network` INT(11) DEFAULT '0' NOT NULL AFTER `location` ;";
 	$db->query($query) or die("0.6 a network in networking".$lang["update"][90].$db->error());
 }
 
@@ -2713,11 +2713,11 @@ if(!TableExists("glpi_dropdown_domain")) {
   	PRIMARY KEY  (`ID`)
 	) TYPE=MyISAM;";
 	$db->query($query) or die("0.6 add table glpi_dropdown_domain ".$lang["update"][90].$db->error());
-	$query="ALTER TABLE `glpi_computers` ADD `domain` INT DEFAULT '0' NOT NULL AFTER `location` ;";
+	$query="ALTER TABLE `glpi_computers` ADD `domain` INT(11) DEFAULT '0' NOT NULL AFTER `location` ;";
 	$db->query($query) or die("0.6 a domain in computers".$lang["update"][90].$db->error());
-	$query="ALTER TABLE `glpi_printers` ADD `domain` INT DEFAULT '0' NOT NULL AFTER `location` ;";
+	$query="ALTER TABLE `glpi_printers` ADD `domain` INT(11) DEFAULT '0' NOT NULL AFTER `location` ;";
 	$db->query($query) or die("0.6 a domain in printers".$lang["update"][90].$db->error());
-	$query="ALTER TABLE `glpi_networking` ADD `domain` INT DEFAULT '0' NOT NULL AFTER `location` ;";
+	$query="ALTER TABLE `glpi_networking` ADD `domain` INT(11) DEFAULT '0' NOT NULL AFTER `location` ;";
 	$db->query($query) or die("0.6 a domain in networking".$lang["update"][90].$db->error());
 }
 
@@ -2782,7 +2782,7 @@ if(!TableExists("glpi_dropdown_model")) {
 
 	
 	// Type -> modèle
-	$query="ALTER TABLE `glpi_computers` CHANGE `type` `model` INT( 11 ) DEFAULT NULL ";
+	$query="ALTER TABLE `glpi_computers` CHANGE `type` `model` INT(11) DEFAULT NULL ";
 	$db->query($query) or die("0.6 add model in computers".$lang["update"][90].$db->error());
 	
 	$query="ALTER TABLE `glpi_computers` ADD `type` INT(11) DEFAULT NULL AFTER `model` ;";
@@ -2859,7 +2859,7 @@ if(!TableExists("glpi_dropdown_hdd_type")) {
 	$db->query($query) or die("0.6 insert value in glpi_dropdown_hdd_type ".$lang["update"][90].$db->error());
 
 	// Insertion des enum dans l'ordre - le alter garde donc les bonne valeurs
-	$query="ALTER TABLE `glpi_device_hdd` CHANGE `interface` `interface` INT( 11 ) DEFAULT '0' NOT NULL";
+	$query="ALTER TABLE `glpi_device_hdd` CHANGE `interface` `interface` INT(11) DEFAULT '0' NOT NULL";
 	$db->query($query) or die("0.6 alter interface of  glpi_device_hdd".$lang["update"][90].$db->error());
 }
 

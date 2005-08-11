@@ -566,8 +566,8 @@ flush();
 if ($offset!=-1){
 if (restoreMySqlDump($db,$path.$_GET["file"],$duree))
 {
-    echo "<br>Redirection automatique sinon cliquez <a href=\"index.php?file=".$_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt\">ici</a>";
-    echo "<script>window.location=\"index.php?file=".$_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt\";</script>";
+    echo "<br>Redirection automatique sinon cliquez <a href=\"index.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=$offset&amp;cpt=$cpt\">ici</a>";
+    echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"index.php?file=".$_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt\";</script>";
 	flush();
 	exit;
 }
