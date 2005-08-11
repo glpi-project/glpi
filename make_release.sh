@@ -55,6 +55,7 @@ echo "Delete bigdumps and older sql files";
 \rm mysql/glpi-0.4*-*;
 \rm mysql/glpi-0.5*;
 \rm mysql/glpi-*-default*;
+\rm mysql/irm*;
 
 echo "Delete LDAP directories";
 \rm -rf ldap;
