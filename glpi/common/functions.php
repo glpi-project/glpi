@@ -2509,6 +2509,7 @@ function printPager($start,$numrows,$target,$parameters) {
 	echo $lang["pager"][4]."&nbsp;</b>";
 	echo "<select name='list_limit' onChange='submit()'>";
 	for ($i=5;$i<=200;$i+=5) echo "<option value='$i' ".((isset($_SESSION["list_limit"])&&$_SESSION["list_limit"]==$i)?" selected ":"").">$i</option>\n";
+	echo "<option value='9999999' ".((isset($_SESSION["list_limit"])&&$_SESSION["list_limit"]==9999999)?" selected ":"").">9999999</option>\n";	
 	echo "</select><b>&nbsp;";
 	echo $lang["pager"][5];
 	echo "</b></td>\n";
