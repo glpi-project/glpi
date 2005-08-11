@@ -407,8 +407,8 @@ flush();
 if ($offsettable>=0){
 	if (UpdateContent($db,$duree,$rowlimit,$conv_utf8))
 	{
-    echo "<br>Redirection automatique sinon cliquez <a href=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\">ici</a>";
-    echo "<script>window.location=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\";</script>";
+    echo "<br>Redirection automatique sinon cliquez <a href=\"update_content.php?dump=1&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt\">ici</a>";
+    echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\";</script>";
 	flush();    
 	exit;
 	}
