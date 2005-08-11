@@ -409,6 +409,8 @@ if ($offsettable>=0){
 	{
     echo "<br>Redirection automatique sinon cliquez <a href=\"update_content.php?dump=1&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt\">ici</a>";
     echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\";</script>";
+echo "</div>";
+
 	flush();    
 	exit;
 	}
@@ -416,6 +418,8 @@ if ($offsettable>=0){
 else  { 
 //echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt</p></div>";
 	echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
+echo "</div>";
+
 }
 
 if ($conv_utf8){
@@ -423,7 +427,6 @@ $db=new DB;
 $query = "ALTER TABLE `glpi_config` ADD `utf8_conv` INT( 11 ) DEFAULT '0' NOT NULL";
 $db->query($query) or die(" 0.6 add utf8_conv to glpi_config".$lang["update"][90].$db->error());
 }
-echo "</div>";
 //}
 	
 /*if (isset($_POST["non"])){
