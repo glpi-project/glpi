@@ -1233,7 +1233,6 @@ function updateLDAP($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$ldap_condit
 	
 	$db = new DB;
 	//TODO : test the remote LDAP connection
-	if(!empty($ldap_host)) {
 		$query = "update glpi_config set ldap_host = '". $ldap_host ."', ";
 		$query.= "ldap_basedn = '". $ldap_basedn ."', ldap_rootdn = '". $ldap_rootdn ."', ";
 		$query .= "ldap_pass = '". $ldap_pass ."', ldap_condition = '". $ldap_condition ."', ";
@@ -1242,7 +1241,6 @@ function updateLDAP($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$ldap_condit
 		$query .= "ldap_field_realname = '". $field_realname ."', ldap_port = '". $ldap_port ."' ";
 		$query.= " where ID = '1' ";
 		$db->query($query);
-	}
 }
 function updateIMAP($imap_auth_server,$imap_host) {
 	$db = new DB;
