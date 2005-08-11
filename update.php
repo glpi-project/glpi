@@ -279,7 +279,7 @@ function location_create_new($split_char,$add_first){
 
 	$db=new DB;
 	
-	$query_auto_inc= "ALTER TABLE `glpi_dropdown_locations_new` CHANGE `ID` `ID` INT( 11 ) NOT NULL";
+	$query_auto_inc= "ALTER TABLE `glpi_dropdown_locations_new` CHANGE `ID` `ID` INT(11) NOT NULL";
 	$result_auto_inc=$db->query($query_auto_inc);
 	
 	$query="SELECT MAX(ID) AS MAX from glpi_dropdown_locations;";
@@ -341,7 +341,7 @@ function location_create_new($split_char,$add_first){
 
 	}
 	
-	$query_auto_inc= "ALTER TABLE `glpi_dropdown_locations_new` CHANGE `ID` `ID` INT( 11 ) NOT NULL AUTO_INCREMENT";
+	$query_auto_inc= "ALTER TABLE `glpi_dropdown_locations_new` CHANGE `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT";
 	$result_auto_inc=$db->query($query_auto_inc);
 
 }
@@ -839,7 +839,7 @@ if(TableExists("glpi_prefs")&&!FieldExists("glpi_prefs", "ID")) {
 }
 if(!FieldExists("glpi_config", "ID")) {
 
-	$query = "ALTER TABLE `glpi_config` CHANGE `config_id` `ID` INT( 11 ) NOT NULL AUTO_INCREMENT ";
+	$query = "ALTER TABLE `glpi_config` CHANGE `config_id` `ID` INT(11) NOT NULL AUTO_INCREMENT ";
 	$db->query($query) or die("4 ".$lang["update"][90].$db->error());
 }
 
@@ -1313,11 +1313,11 @@ if(!TableExists("glpi_device_power")) {
 
 if(!TableExists("glpi_device_case")) {
 	$query = "CREATE TABLE glpi_device_case(
-	ID int( 11 ) NOT NULL AUTO_INCREMENT ,
+	ID int(11) NOT NULL AUTO_INCREMENT ,
 	designation varchar( 255 ) NOT NULL default '',
 	format enum( 'Grand', 'Moyen', 'Micro' ) NOT NULL default 'Moyen',
 	`comment` text NOT NULL ,
-	FK_glpi_enterprise int( 11 ) NOT NULL default '0',
+	FK_glpi_enterprise int(11) NOT NULL default '0',
 	`specif_default` VARCHAR( 250 ) NOT NULL,
 	PRIMARY KEY ( ID ) ,
 	KEY FK_glpi_enterprise( FK_glpi_enterprise )
@@ -1433,16 +1433,16 @@ $query= "CREATE TABLE glpi_dropdown_tracking_category (
 }
 
 if(!FieldExists("glpi_tracking","category")) {
-	$query= "ALTER TABLE `glpi_tracking` ADD `category` INT( 11 ) ;";
+	$query= "ALTER TABLE `glpi_tracking` ADD `category` INT(11) ;";
 	$db->query($query) or die("0.5 alter tracking add categorie ".$lang["update"][90].$db->error());
 }
 
 // Nouvelle gestion des software et licenses
 if(!FieldExists("glpi_licenses","oem")) {
-$query = "ALTER TABLE `glpi_licenses` ADD `oem` ENUM( 'N', 'Y' ) DEFAULT 'N' NOT NULL , ADD `oem_computer` INT( 11 ) NOT NULL, ADD `buy` ENUM( 'Y', 'N' ) DEFAULT 'Y' NOT NULL;";
+$query = "ALTER TABLE `glpi_licenses` ADD `oem` ENUM( 'N', 'Y' ) DEFAULT 'N' NOT NULL , ADD `oem_computer` INT(11) NOT NULL, ADD `buy` ENUM( 'Y', 'N' ) DEFAULT 'Y' NOT NULL;";
 	$db->query($query) or die("0.5 alter licenses add oem + buy ".$lang["update"][90].$db->error());
 
-$query = "ALTER TABLE `glpi_software` ADD `is_update` ENUM( 'N', 'Y' ) DEFAULT 'N' NOT NULL , ADD `update_software` INT( 11 ) NOT NULL DEFAULT '-1';";
+$query = "ALTER TABLE `glpi_software` ADD `is_update` ENUM( 'N', 'Y' ) DEFAULT 'N' NOT NULL , ADD `update_software` INT(11) NOT NULL DEFAULT '-1';";
 	$db->query($query) or die("0.5 alter software add update ".$lang["update"][90].$db->error());
 }
 
@@ -1763,7 +1763,7 @@ if(FieldExists("glpi_computers","osver")) {
 // Ajout Fabriquant computer
 if(!FieldExists("glpi_computers","FK_glpi_enterprise")) {
 
-	$query = "ALTER TABLE `glpi_computers` ADD `FK_glpi_enterprise` INT( 11 ) DEFAULT '0' NOT NULL ;";
+	$query = "ALTER TABLE `glpi_computers` ADD `FK_glpi_enterprise` INT(11) DEFAULT '0' NOT NULL ;";
 	$db->query($query) or die("0.5 add field manufacturer ".$lang["update"][90].$db->error());
 	
 	
@@ -1775,7 +1775,7 @@ if(!FieldExists("glpi_computers","FK_glpi_enterprise")) {
 // Ajout Fabriquant printer
 if(!FieldExists("glpi_printers","FK_glpi_enterprise")) {
 
-	$query = "ALTER TABLE `glpi_printers` ADD `FK_glpi_enterprise` INT( 11 ) DEFAULT '0' NOT NULL ;";
+	$query = "ALTER TABLE `glpi_printers` ADD `FK_glpi_enterprise` INT(11) DEFAULT '0' NOT NULL ;";
 	$db->query($query) or die("0.5 add field manufacturer ".$lang["update"][90].$db->error());
 	
 	$query="ALTER TABLE `glpi_printers` ADD INDEX ( `FK_glpi_enterprise` )" ;
@@ -1787,7 +1787,7 @@ if(!FieldExists("glpi_printers","FK_glpi_enterprise")) {
 // Ajout Fabriquant networking
 if(!FieldExists("glpi_networking","FK_glpi_enterprise")) {
 
-	$query = "ALTER TABLE `glpi_networking` ADD `FK_glpi_enterprise` INT( 11 ) DEFAULT '0' NOT NULL ;";
+	$query = "ALTER TABLE `glpi_networking` ADD `FK_glpi_enterprise` INT(11) DEFAULT '0' NOT NULL ;";
 	$db->query($query) or die("0.5 add field manufacturer ".$lang["update"][90].$db->error());
 	
 	$query="ALTER TABLE `glpi_networking` ADD INDEX ( `FK_glpi_enterprise` )" ;
@@ -1799,7 +1799,7 @@ if(!FieldExists("glpi_networking","FK_glpi_enterprise")) {
 // Ajout Fabriquant monitor
 if(!FieldExists("glpi_monitors","FK_glpi_enterprise")) {
 
-	$query = "ALTER TABLE `glpi_monitors` ADD `FK_glpi_enterprise` INT( 11 ) DEFAULT '0' NOT NULL ;";
+	$query = "ALTER TABLE `glpi_monitors` ADD `FK_glpi_enterprise` INT(11) DEFAULT '0' NOT NULL ;";
 	$db->query($query) or die("0.5 add field manufacturer ".$lang["update"][90].$db->error());
 	
 	$query="ALTER TABLE `glpi_monitors` ADD INDEX ( `FK_glpi_enterprise` )" ;
@@ -1811,7 +1811,7 @@ if(!FieldExists("glpi_monitors","FK_glpi_enterprise")) {
 // Ajout Fabriquant software
 if(!FieldExists("glpi_software","FK_glpi_enterprise")) {
 
-	$query = "ALTER TABLE `glpi_software` ADD `FK_glpi_enterprise` INT( 11 ) DEFAULT '0' NOT NULL ;";
+	$query = "ALTER TABLE `glpi_software` ADD `FK_glpi_enterprise` INT(11) DEFAULT '0' NOT NULL ;";
 	$db->query($query) or die("0.5 add field manufacturer ".$lang["update"][90].$db->error());
 	
 	$query="ALTER TABLE `glpi_software` ADD INDEX ( `FK_glpi_enterprise` )" ;
@@ -1823,7 +1823,7 @@ if(!FieldExists("glpi_software","FK_glpi_enterprise")) {
 // Ajout Fabriquant peripheral
 if(!FieldExists("glpi_peripherals","FK_glpi_enterprise")) {
 
-	$query = "ALTER TABLE `glpi_peripherals` ADD `FK_glpi_enterprise` INT( 11 ) DEFAULT '0' NOT NULL ;";
+	$query = "ALTER TABLE `glpi_peripherals` ADD `FK_glpi_enterprise` INT(11) DEFAULT '0' NOT NULL ;";
 	$db->query($query) or die("0.5 add field manufacturer ".$lang["update"][90].$db->error());
 	
 	$query="ALTER TABLE `glpi_peripherals` ADD INDEX ( `FK_glpi_enterprise` )" ;
@@ -2362,7 +2362,7 @@ if(!TableExists("glpi_dropdown_state")) {
 
 
 /*******************************GLPI 0.6***********************************************/
-$query= "ALTER TABLE `glpi_tracking` CHANGE `category` `category` INT( 11 ) DEFAULT '0' NOT NULL";
+$query= "ALTER TABLE `glpi_tracking` CHANGE `category` `category` INT(11) DEFAULT '0' NOT NULL";
 $db->query($query) or die("0.6 alter category tracking ".$lang["update"][90].$db->error());	
 
 // state pour les template 
@@ -2490,7 +2490,7 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 	}
 
 	// Update authors tracking
-	$query= "ALTER TABLE `glpi_tracking` CHANGE `author` `author` INT( 11 ) DEFAULT '0' NOT NULL";
+	$query= "ALTER TABLE `glpi_tracking` CHANGE `author` `author` INT(11) DEFAULT '0' NOT NULL";
 	$db->query($query) or die("0.6 alter author in tracking ".$lang["update"][90].$db->error());	
 
 	if (count($authors)>0)
@@ -2512,7 +2512,7 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 
 
 	// Update assign tracking
-	$query= "ALTER TABLE `glpi_tracking` CHANGE `assign` `assign` INT( 11 ) DEFAULT '0' NOT NULL";
+	$query= "ALTER TABLE `glpi_tracking` CHANGE `assign` `assign` INT(11) DEFAULT '0' NOT NULL";
 	$db->query($query) or die("0.6 alter assign in tracking ".$lang["update"][90].$db->error());	
 
 	if (count($assign)>0)
@@ -2533,7 +2533,7 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 	}
 
 	// Update authors tracking
-	$query= "ALTER TABLE `glpi_followups` CHANGE `author` `author` INT( 11 ) DEFAULT '0' NOT NULL";
+	$query= "ALTER TABLE `glpi_followups` CHANGE `author` `author` INT(11) DEFAULT '0' NOT NULL";
 	$db->query($query) or die("0.6 alter author in followups ".$lang["update"][90].$db->error());	
 
 	if (count($authors)>0)
@@ -2647,7 +2647,7 @@ if(!TableExists("glpi_dropdown_ram_type")) {
 	// ALTER glpi_device_ram
 	$query="ALTER TABLE `glpi_device_ram` DROP `type`;";
 	$db->query($query) or die("0.6 drop type in glpi_dropdown_ram ".$lang["update"][90].$db->error());
-	$query="ALTER TABLE `glpi_device_ram` CHANGE `new_type` `type` INT( 11 ) DEFAULT '0' NOT NULL ";
+	$query="ALTER TABLE `glpi_device_ram` CHANGE `new_type` `type` INT(11) DEFAULT '0' NOT NULL ";
 	$db->query($query) or die("0.6 rename new_type in glpi_dropdown_ram ".$lang["update"][90].$db->error());
 	
 	
