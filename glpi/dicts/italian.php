@@ -839,6 +839,7 @@ $lang["networking"][53]="Nuova apparecchiatura di rete da modello";
 $lang["networking"][54]="ID fisico"; 
 $lang["networking"][55]="Associate a VLAN"; 
 $lang["networking"][56]="VLAN"; 
+$lang["networking"][57]="Choose a MAC address in the list or specify it below"; 
 
 $lang["pager"][1]="a"; 
 $lang["pager"][2]="da"; 
@@ -1132,6 +1133,7 @@ $lang["setup"][89]="Domain";
 $lang["setup"][90]="VLANs"; 
 $lang["setup"][91]="Computer Model"; 
 $lang["setup"][92]="Consumables Type"; 
+$lang["setup"][93]="Hard Disk Interfaces"; 
 $lang["setup"][100]="Configurazioni globali"; 
 $lang["setup"][101]="Installation path"; 
 $lang["setup"][102]="Log Level"; 
