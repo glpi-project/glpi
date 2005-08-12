@@ -120,6 +120,7 @@ class User {
 	
 		// some defaults...
 		$this->fields['password'] = "";
+		$this->fields['name'] = $name;
 
 	  if ( $conn = ldap_connect($host) )
 	  {
@@ -179,7 +180,8 @@ class User {
 	
 		// some defaults...
 		$this->fields['password'] = "";
-
+	    $this->fields['name'] = $name;		
+	    
 	  if ( $conn = ldap_connect($host) )
 	  {
 			// switch to protocol version 3 to make ssl work
@@ -246,7 +248,7 @@ class User {
   	// some defaults...
   	$this->fields['password'] = "";
   	$this->fields['email'] = $name . "@" . $host;
-
+	  $this->fields['name'] = $name;
 		return true;
 
 	} // getFromIMAP()  	    
