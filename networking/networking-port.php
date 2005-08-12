@@ -50,6 +50,8 @@ if (isset($_SERVER["HTTP_REFERER"]))
 $REFERER=$_SERVER["HTTP_REFERER"];
 if (isset($tab["referer"])) $REFERER=$tab["referer"];
 
+$REFERER=preg_replace("/&/","&amp;",$REFERER);
+
 if(isset($_POST["add"]))
 {	
 	

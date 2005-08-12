@@ -2776,7 +2776,9 @@ if(!FieldExists("glpi_config","mailing_resa_admin")) {
 
 // Modèle ordinateurs
 if(!TableExists("glpi_dropdown_model")) {
-	
+	// model=type pour faciliter la gestion en post mise à jour : ya plus qu'a deleter les elements non voulu
+	// cela conviendra a tout le monde en fonction de l'utilisation du champ type
+
 	$query="ALTER TABLE `glpi_type_computers` RENAME `glpi_dropdown_model` ;";
 	$db->query($query) or die("0.6 rename table glpi_type_computers ".$lang["update"][90].$db->error());
 	
@@ -2787,8 +2789,19 @@ if(!TableExists("glpi_dropdown_model")) {
 	) TYPE=MyISAM;";
 
 	$db->query($query) or die("0.6 add table glpi_type_computers ".$lang["update"][90].$db->error());
+
+	// copie model dans type
+	$query="SELECT * FROM glpi_dropdown_model";
+	$result=$db->query($query);	
+	if ($db->numrows($result)>0)
+	while ($data=$db->fetch_array($result)){
+		$query="INSERT INTO `glpi_type_computers` (`ID`,`name`) VALUES ('".$data['ID']."','".$data['name']."');";
+		$db->query($query) or die("0.6 insert value in glpi_type_computers ".$lang["update"][90].$db->error());		
+	}
+
 	$query="INSERT INTO `glpi_type_computers` (`name`) VALUES ('".$lang["computers"][28]."');";
 	$db->query($query) or die("0.6 insert value in glpi_type_computers ".$lang["update"][90].$db->error());
+	$serverid=$db->insert_id();
 
 	
 	// Type -> modèle
@@ -2799,7 +2812,7 @@ if(!TableExists("glpi_dropdown_model")) {
 	$db->query($query) or die("0.6 add model in computers".$lang["update"][90].$db->error());
 	
 	// Update server values and drop flags_server
-	$query="UPDATE glpi_computers SET type='1' where flags_server='1'";
+	$query="UPDATE glpi_computers SET type='$serverid' where flags_server='1'";
 	$result=$db->query($query);
 	
 	$query="ALTER TABLE `glpi_computers` DROP `flags_server`;";
