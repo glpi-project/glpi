@@ -941,7 +941,7 @@ function showFormConfigGen($target){
 	echo "</select></td></tr>";
 	
 		echo "</table>&nbsp;</div>";	
-	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_confgen\" class=\"submit\" value=\"".$lang["buttons"][7]."\" ></p>";
+	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_confgen\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
 
 	
 	echo "</form>";

@@ -2156,10 +2156,12 @@ function showConnectSearch($target,$ID,$type="computer") {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
-	echo "<center><table class='tab_cadre'>";
+	echo "<div align='center'>";
+	echo "<form method='post' action=\"$target\">";
+
+	echo "<table class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$lang["connect"][4]." :</th></tr>";
 	echo "<tr class='tab_bg_1'>";
-	echo "<form method='post' action=\"$target\">";
 	echo "<td>";
 	switch($type){
 	case "computer" :
@@ -2193,9 +2195,9 @@ function showConnectSearch($target,$ID,$type="computer") {
 	echo "<input type='submit' value=\"".$lang["buttons"][11]."\" class='submit'>";
 	echo "</td></tr>";	
 
-	echo "</form>";
 	echo "</table>";	
-	echo "</center>";
+	echo "</form>";
+	echo "</div>";
 }
 
 /**
@@ -2212,15 +2214,16 @@ function listConnectComputers($target,$input) {
 
 	$pID1 = $input["pID1"];
 
-	echo "<center><table  class='tab_cadre'>";
-	echo "<tr><th colspan='2'>".$lang["connect"][9].":</th></tr>";
+	echo "<div align='center'>";
 	echo "<form method='post' action=\"$target\"><tr><td>";
+
+	echo "<table  class='tab_cadre'>";
+	echo "<tr><th colspan='2'>".$lang["connect"][9].":</th></tr>";
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 
 	$db = new DB;
-	
 		
 	$query = "SELECT glpi_computers.ID as ID,glpi_computers.name as name, glpi_dropdown_locations.ID as location from glpi_computers left join glpi_dropdown_locations on glpi_computers.location = glpi_dropdown_locations.id WHERE glpi_computers.deleted = 'N' AND glpi_computers.is_template ='0' AND glpi_computers.".$input["type"]." LIKE '%".$input["search"]."%' order by name ASC";
 	
@@ -2242,7 +2245,7 @@ function listConnectComputers($target,$input) {
 	echo "<input type='hidden' name='connect' value='3'>";
 	echo "<input type='hidden' name='device_type' value='computer'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
-	echo "</td></form></tr></table>";	
+	echo "</td></tr></table></form></div>";	
 
 }
 
@@ -2274,7 +2277,9 @@ function listConnectElement($target,$input) {
 	
 	}
 	
-	echo "<center><table  class='tab_cadre'>";
+	echo "<div align='center'>";
+	echo "<form method='post' action=\"$target\">";
+	echo "<table  class='tab_cadre'>";
 	echo "<tr><th colspan='2'>";
 	switch($device_type){
 	case "printer":
@@ -2287,7 +2292,6 @@ function listConnectElement($target,$input) {
 	
 	
 	echo ":</th></tr>";
-	echo "<form method='post' action=\"$target\"><tr><td>";
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
@@ -2304,6 +2308,7 @@ function listConnectElement($target,$input) {
 	//echo $query;
 	$result = $db->query($query);
 	$number = $db->numrows($result);
+	$i=0;
 	if ($number>0) {
 	echo "<select name=\"ID\">";
 	while ($i < $number) {
@@ -2323,7 +2328,7 @@ function listConnectElement($target,$input) {
 	echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
 	} else echo $lang["connect"][16]."<br><b><a href=\"".$_SERVER["PHP_SELF"]."?ID=".$input["pID1"]."\">".$lang["buttons"][13]."</a></b>";
 	
-	echo "</td></form></tr></table>";	
+	echo "</td></tr></table></form></div>";	
 
 }
 

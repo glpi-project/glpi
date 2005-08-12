@@ -886,11 +886,11 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 	
 	echo "<form method='post' action=\"$target\">";
 
+	echo "<input type='hidden' name='referer' value='$REFERER'>";
 	echo "<table class='tab_cadre'><tr>";
 	
 	echo "<th colspan='4'>".$lang["networking"][20].":</th>";
 	echo "</tr>";
-	echo "<input type='hidden' name='referer' value='$REFERER'>";
 
 	if ($several!="yes"){
 	echo "<tr class='tab_bg_1'><td>".$lang["networking"][21].":</td>";
@@ -922,9 +922,9 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 		dropdownValue("glpi_dropdown_iface","iface", $netport->fields["iface"]);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["networking"][22].":</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["networking"][14].":</td>";
 	echo "<td><input type='text' size='20' name='ifaddr' value=\"".$netport->fields["ifaddr"]."\">";
-	echo "</td></tr>";
+	echo "</td></tr>\n";
 
 	// Show device MAC adresses
 	if ((!empty($netport->device_type)&&$netport->device_type==1)||($several!="yes"&&$devtype==1)){
@@ -944,7 +944,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 					$i++;
 					}
 		if (count($macs)>0){
-			echo "<tr class='tab_bg_1'><td>".$lang["networking"][23].":</td><td>";
+			echo "<tr class='tab_bg_1'><td>".$lang["networking"][15].":</td><td>";
 			echo "<select name='pre_mac'>";
 			echo "<option value=''>------</option>";
 			foreach ($macs as $key => $val){
@@ -952,14 +952,18 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 			}
 			echo "</select>";
 
-			echo "</td></tr>";
+			echo "</td></tr>\n";
+
+			echo "<tr class='tab_bg_2'><td>&nbsp;</td>";
+			echo "<td>".$lang["networking"][57];
+			echo "</td></tr>\n";
+			
 		}
 	}
 	
-
-	echo "<tr class='tab_bg_1'><td>".$lang["networking"][23].":</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["networking"][15].":</td>";
 	echo "<td><input type='text' size='25' name='ifmac' value=\"".$netport->fields["ifmac"]."\">";
-	echo "</td></tr>";
+	echo "</td></tr>\n";
 	
 	if ($several!="yes"){
 	echo "<tr class='tab_bg_1'><td>".$lang["networking"][51].":</td>";
@@ -980,11 +984,12 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 		echo "<td align='center'>";
 		echo "<input type='hidden' name='ID' value=".$netport->fields["ID"].">";
 		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
-		echo "</td></form>";
-
-		echo "<form method='post' action=$target>";
-		echo "<input type='hidden' name='ID' value=$ID>";
-		echo "<input type='hidden' name='referer' value='$REFERER'>";
+		echo "</td>";
+//		echo "</form>";
+		
+//		echo "<form method='post' action=$target>";
+//		echo "<input type='hidden' name='ID' value=$ID>";
+//		echo "<input type='hidden' name='referer' value='$REFERER'>";
 		echo "<td align='center'>";
 		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 		echo "</td></tr></form>";
@@ -996,10 +1001,10 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 		echo "<input type='hidden' name='on_device' value='$ondevice'>";
 		echo "<input type='hidden' name='device_type' value='$devtype'>";
 		echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
-		echo "</td></form>";
+		echo "</td>";
 	}
 
-	echo "</table>";	
+	echo "</table></form></div>";	
 }
 
 function addNetport($input) {
