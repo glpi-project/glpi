@@ -2215,7 +2215,7 @@ function listConnectComputers($target,$input) {
 	$pID1 = $input["pID1"];
 
 	echo "<div align='center'>";
-	echo "<form method='post' action=\"$target\"><tr><td>";
+	echo "<form method='post' action=\"$target\">";
 
 	echo "<table  class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$lang["connect"][9].":</th></tr>";
@@ -2230,14 +2230,15 @@ function listConnectComputers($target,$input) {
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 	echo "<select name=\"cID\">";
+	$i=0;
 	while ($i < $number) {
 		$dID = $db->result($result, $i, "ID");
 		$name = $db->result($result, $i, "name");
 		$location = $db->result($result, $i, "location");
-		echo "<option value=\"$dID\">".$name." (".getTreeValueCompleteName("glpi_dropdown_locations",$location).")</option>";
+		echo "<option value=\"$dID\">".$name." (".getTreeValueCompleteName("glpi_dropdown_locations",$location).")</option>\n";
 		$i++;
 	}
-	echo  "</select>";
+	echo  "</select>\n";
 
 	echo "</td>";
 	echo "<td class='tab_bg_2' align='center'>";
