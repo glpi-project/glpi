@@ -117,6 +117,7 @@ else
 			showCartridgesAdd($tab["ID"]);
 			showCartridges($tab["ID"]);
 			showCartridges($tab["ID"],1);
+			showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",CARTRIDGE_TYPE,$tab["ID"],1);
 			showDocumentAssociated(CARTRIDGE_TYPE,$tab["ID"]);
 			showLinkOnDevice(CARTRIDGE_TYPE,$tab["ID"]);
 			break;
