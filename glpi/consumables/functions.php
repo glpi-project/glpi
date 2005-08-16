@@ -650,10 +650,10 @@ function showConsumables ($tID,$show_old=0) {
 				echo "&nbsp;</th></tr>";
 			}
 			else { // Old
-				echo "<tr><th colspan='5'>";
+				echo "<tr><th colspan='6'>";
 				echo $lang["consumables"][35];
 				echo "</th>";
-				echo "<th colspan='1'>";
+				echo "<th colspan='2'>";
 				echo "&nbsp;</th></tr>";
 				
 			}
@@ -662,14 +662,13 @@ function showConsumables ($tID,$show_old=0) {
 
 			echo "<th>".$lang["financial"][3]."</th>";
 			
-			if ($show_old==0)
-			echo "<th>&nbsp;</th>";
-			echo "<th>&nbsp;</th></tr>";
-				} else {
+				echo "<th>&nbsp;</th>";
+				echo "<th>&nbsp;</th></tr>";
+			} else {
 
-			echo "<br><div align='center'><table border='0' width='50%' cellpadding='2'>";
-			echo "<tr><th>".$lang["consumables"][7]."</th></tr>";
-			echo "</table></div>";
+				echo "<br><div align='center'><table border='0' width='50%' cellpadding='2'>";
+				echo "<tr><th>".$lang["consumables"][7]."</th></tr>";
+				echo "</table></div>";
 		}
 	}
 
@@ -706,14 +705,19 @@ $query = "SELECT * FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$tID
 				
 		if ($show_old==0){
 			echo "<td align='center'>";
-			echo "<a href='".$cfg_install["root"]."/consumables/consumables-edit.php?out=out&amp;ID=".$data["ID"]."'>".$lang["consumables"][32]."</a>";
+			echo "<a href='".$cfg_install["root"]."/consumables/consumables-edit.php?out=out&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["consumables"][32]."</a>";
 			echo "</td>";
 		}
 
-						
+		if ($show_old!=0){
+			echo "<td align='center'>";
+			echo "<a href='".$cfg_install["root"]."/consumables/consumables-edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["consumables"][37]."</a>";
+			echo "</td>";
+		}						
+		
 		echo "<td align='center'>";
 		
-		echo "<a href='".$cfg_install["root"]."/consumables/consumables-edit.php?delete=delete&amp;ID=".$data["ID"]."'>".$lang["consumables"][31]."</a>";
+		echo "<a href='".$cfg_install["root"]."/consumables/consumables-edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["consumables"][31]."</a>";
 		echo "</td></tr>";
 		
 	}	
@@ -791,6 +795,17 @@ function outConsumable($ID) {
 
 	$db = new DB;
 	$query = "UPDATE glpi_consumables SET date_out = '".date("Y-m-d")."' WHERE ID='$ID'";
+//	echo $query;
+	if ($result = $db->query($query)) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function restoreConsumable($ID){
+	$db = new DB;
+	$query = "UPDATE glpi_consumables SET date_out = NULL WHERE ID='$ID'";
 //	echo $query;
 	if ($result = $db->query($query)) {
 		return true;

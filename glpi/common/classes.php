@@ -1082,6 +1082,12 @@ class CommonItem{
 			return $this->obj->fields["question"];
 		else if ($this->device_type==LICENSE_TYPE&&$this->obj!=NULL&&isset($this->obj->fields["serial"])&&$this->obj->fields["serial"]!="")
 			return $this->obj->fields["serial"];
+		else if (($this->device_type==CARTRIDGE_TYPE||$this->device_type==CONSUMABLE_TYPE)&&$this->obj!=NULL&&$this->obj->fields["name"]!=""){
+			$name=$this->obj->fields["name"];
+			if (isset($this->obj->fields["ref"])&&!empty($this->obj->fields["ref"]))			
+				$name.=" - ".$this->obj->fields["ref"];
+			return $name;
+			}
 		else if ($this->obj!=NULL&&isset($this->obj->fields["name"])&&$this->obj->fields["name"]!="")
 			return $this->obj->fields["name"];
 		else 
