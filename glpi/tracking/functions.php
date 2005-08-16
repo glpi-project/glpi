@@ -508,17 +508,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and 
 		echo "<tr><th colspan='9'>".$number." ".$lang["job"][17]."";
 		if ($number > 1) { echo "s"; }
 		echo " ".$lang["job"][16].":</th></tr>";
-		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
-		echo "<th width='5'>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
-		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["common"][1]."</th>";
-		echo "<th>".$lang["tracking"][20]."</th>";
-		echo "<th colspan='2'>".$lang["joblist"][6]."</th></tr>";
-		while ($i < $number)
-		{
-			$ID = $db->result($result, $i, "ID");
-			showJobShort($ID, 0);
-			$i++;
-		}
+
 		if ($item)
 		{
 			echo "<tr><td align='center' class='tab_bg_2' colspan='9'>";
@@ -526,6 +516,20 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and 
 			echo $lang["joblist"][7];
 			echo "</strong></a>";
 			echo "</td></tr>";
+		}
+
+		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
+		echo "<th width='5'>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
+		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["common"][1]."</th>";
+		echo "<th>".$lang["tracking"][20]."</th>";
+		echo "<th colspan='2'>".$lang["joblist"][6]."</th></tr>";
+
+
+		while ($i < $number)
+		{
+			$ID = $db->result($result, $i, "ID");
+			showJobShort($ID, 0);
+			$i++;
 		}
 		echo "</table></div>";
 	} 
