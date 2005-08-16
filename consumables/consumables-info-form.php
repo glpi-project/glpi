@@ -104,6 +104,7 @@ else
 			showConsumableAdd($tab["ID"]);
 			showConsumables($tab["ID"]);
 			showConsumables($tab["ID"],1);
+			showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",CONSUMABLE_TYPE,$tab["ID"],1);
 			showDocumentAssociated(CONSUMABLE_TYPE,$tab["ID"]);
 			showLinkOnDevice(CONSUMABLE_TYPE,$tab["ID"]);
 			break;
