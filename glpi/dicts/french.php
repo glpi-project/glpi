@@ -994,6 +994,8 @@ $lang["reports"][58]="Rapport des matériels par années";
 $lang["reports"][59]="Voir les suivis"; 
 $lang["reports"][60]="Date d'ouverture";
 $lang["reports"][61]="Date de cloture";
+$lang["reports"][62]="Informations Commerciales Hardware";
+$lang["reports"][63]="Informations Commerciales autres (licences, consommables, cartouches)";
 
 $lang["reservation"][0]="Réservations";
 $lang["reservation"][1]="Matériel réservable";
