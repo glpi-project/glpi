@@ -75,6 +75,13 @@ else if (isset($tab["out"]))
 	logEvent($tab["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." take out a consummable.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
+else if (isset($tab["restore"]))
+{
+	checkAuthentication("admin");
+	restoreConsumable($tab["ID"]);
+	logEvent($tab["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." restore a consummable.");
+	glpi_header($_SERVER['HTTP_REFERER']." ");
+}
 else if (isset($tab["back"]))
 {
 	

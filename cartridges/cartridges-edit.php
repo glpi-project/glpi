@@ -85,6 +85,13 @@ else if (isset($tab["install"]))
 	//echo $tab["back"];
 	glpi_header($cfg_install["root"]."/printers/printers-info-form.php?ID=".$tab["pID"]);
 }
+else if (isset($tab["restore"]))
+{
+	checkAuthentication("admin");
+	restoreCartridge($tab["ID"]);
+	logEvent($tab["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." restore cartridge.");
+	glpi_header($_SERVER['HTTP_REFERER']." ");
+}
 else if (isset($tab["uninstall"]))
 {
 	checkAuthentication("admin");

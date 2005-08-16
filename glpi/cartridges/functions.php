@@ -646,24 +646,27 @@ function showCartridges ($tID,$show_old=0) {
 				echo "<tr><th colspan='7'>";
 				echo $total;
 				echo "&nbsp;".$lang["cartridges"][16]."&nbsp;-&nbsp;$unused&nbsp;".$lang["cartridges"][13]."&nbsp;-&nbsp;$used&nbsp;".$lang["cartridges"][14]."&nbsp;-&nbsp;$old&nbsp;".$lang["cartridges"][15]."</th>";
-				echo "<th colspan='1'>";
+				echo "<th colspan='2'>";
 				echo "&nbsp;</th></tr>";
 			}
 			else { // Old
 				echo "<tr><th colspan='8'>";
 				echo $lang["cartridges"][35];
 				echo "</th>";
-				echo "<th colspan='1'>";
+				echo "<th colspan='2'>";
 				echo "&nbsp;</th></tr>";
 				
 			}
 			$i=0;
 			echo "<tr><th>".$lang["cartridges"][4]."</th><th>".$lang["cartridges"][23]."</th><th>".$lang["cartridges"][24]."</th><th>".$lang["cartridges"][25]."</th><th>".$lang["cartridges"][27]."</th><th>".$lang["cartridges"][26]."</th>";
+
 			if ($show_old==1)
 				echo "<th>".$lang["cartridges"][39]."</th>";
 			
 			echo "<th>".$lang["financial"][3]."</th>";
-			echo "<th>&nbsp;</th></tr>";
+			echo "<th colspan='2'>&nbsp;</th>";
+
+			echo "</tr>";
 				} else {
 
 			echo "<br><div align='center'><table border='0' width='50%' cellpadding='2'>";
@@ -759,18 +762,28 @@ $query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')
 		echo "</td>";
 		
 		echo "<td align='center'>";
+		if (!is_null($date_use))
+		echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_install["root"]."/cartridges/cartridges-edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["cartridges"][43]."</a>";		
+		else
+		echo "&nbsp;";
+
+		echo "</td>";
+
+
+		echo "<td align='center'>";
 		
-		echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_install["root"]."/cartridges/cartridges-edit.php?delete=delete&amp;ID=".$data["ID"]."'>".$lang["cartridges"][31]."</a>";
+		echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_install["root"]."/cartridges/cartridges-edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["cartridges"][31]."</a>";
 		echo "</td></tr>";
 		
 	}	
 	if ($show_old!=0&&$number>0){
-	echo "<tr class='tab_bg_2'><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
+		if ($nb_pages_printed==0) $nb_pages_printed=1;
+	echo "<tr class='tab_bg_2'><td colspan='3'>&nbsp;</td>";
 	echo "<td align='center'>".$lang["cartridges"][40].":<br>".round($stock_time/$number/60/60/24/30.5,1)." ".$lang["financial"][57]."</td>";
 	echo "<td>&nbsp;</td>";
 	echo "<td align='center'>".$lang["cartridges"][41].":<br>".round($use_time/$number/60/60/24/30.5,1)." ".$lang["financial"][57]."</td>";
 	echo "<td align='center'>".$lang["cartridges"][42].":<br>".round($pages_printed/$nb_pages_printed)."</td>";
-	echo "<td>&nbsp;</td></tr>";
+	echo "<td colspan='3'>&nbsp;</td></tr>";
 		
 	}
 
@@ -891,6 +904,18 @@ function uninstallCartridge($ID) {
 	}
 }
 
+
+function restoreCartridge($ID) {
+
+	$db = new DB;
+	$query = "UPDATE glpi_cartridges SET date_out = NULL, date_use = NULL , FK_glpi_printers= NULL WHERE ID='$ID'";
+	if ($result = $db->query($query)) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 /**
 * Show the printer types that are compatible with a cartridge type
 *
@@ -989,7 +1014,7 @@ function showCartridgeInstalled($instID,$old=0) {
 
     $db = new DB;
 	
-	$query = "SELECT glpi_cartridges_type.deleted as deleted, glpi_cartridges_type.ref as ref, glpi_cartridges_type.name as type, glpi_cartridges.ID as ID, glpi_cartridges.pages as pages, glpi_cartridges.date_use as date_use, glpi_cartridges.date_out as date_out, glpi_cartridges.date_in as date_in";
+	$query = "SELECT glpi_cartridges_type.ID as tID, glpi_cartridges_type.deleted as deleted, glpi_cartridges_type.ref as ref, glpi_cartridges_type.name as type, glpi_cartridges.ID as ID, glpi_cartridges.pages as pages, glpi_cartridges.date_use as date_use, glpi_cartridges.date_out as date_out, glpi_cartridges.date_in as date_in";
 	if ($old==0)
 	$query.= " FROM glpi_cartridges, glpi_cartridges_type WHERE glpi_cartridges.date_out IS NULL AND glpi_cartridges.FK_glpi_printers= '$instID' AND glpi_cartridges.FK_glpi_cartridges_type  = glpi_cartridges_type.ID ORDER BY glpi_cartridges.date_out ASC, glpi_cartridges.date_use DESC, glpi_cartridges.date_in";
 	else 
@@ -1018,17 +1043,17 @@ function showCartridgeInstalled($instID,$old=0) {
 	$use_time=0;	
 	$pages_printed=0;
 	$nb_pages_printed=0;
-	
+	$ci=new CommonItem();
 	while ($data=$db->fetch_array($result)) {
 		$date_in=$data["date_in"];
 		$date_use=$data["date_use"];
 		$date_out=$data["date_out"];
-						
 		echo "<tr  class='tab_bg_1".($data["deleted"]=='Y'?"_2":"")."'><td align='center'>";
 		echo $data["ID"]; 
-		echo "</td><td align='center'>";
-		echo "<b>".$data["type"]." - ".$data["ref"]."</b>";
-		echo "</td><td align='center'>";
+		echo "</td><td align='center'><b>";
+		$ci->getFromDB(CARTRIDGE_TYPE,$data["tID"]);
+		echo $ci->getLink();
+		echo "</b></td><td align='center'>";
 
 		echo getCartridgeStatus($data["ID"]);
 		echo "</td><td align='center'>";
@@ -1091,6 +1116,9 @@ function showCartridgeInstalled($instID,$old=0) {
 		echo "</tr>";
 	} else { // Print average
 	if ($number>0){
+
+	if ($nb_pages_printed==0) $nb_pages_printed=1;
+
 	echo "<tr class='tab_bg_2'><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
 	
 	echo "<td align='center'>".$lang["cartridges"][40].":<br>".round($stock_time/$number/60/60/24/30.5,1)." ".$lang["financial"][57]."</td>";
