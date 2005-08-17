@@ -148,6 +148,7 @@ $lang["cartridges"][39]="Printer counter";
 $lang["cartridges"][40]="Mean Time in stock"; 
 $lang["cartridges"][41]="Mean Time in use"; 
 $lang["cartridges"][42]="Mean number of printed pages"; 
+$lang["cartridges"][43]="Back to stock"; 
 
 $lang["central"][0]="Benvenuto"; 
 $lang["central"][1]="questa é la pagina principale."; 
@@ -276,6 +277,7 @@ $lang["consumables"][31]="Delete";
 $lang["consumables"][32]="Give"; 
 $lang["consumables"][35]="Old Consumables"; 
 $lang["consumables"][36]="Stock location"; 
+$lang["consumables"][37]="Back to stock"; 
 $lang["consumables"][38]="Alarm threshold"; 
 
 $lang["devices"][0]="Aggiungi un nuovo componente"; 
@@ -378,6 +380,7 @@ $lang["document"][30]="Verify that you have the correct rights";
 $lang["document"][31]="Directory for documents does not exist"; 
 $lang["document"][32]="Tipo di file non consentito"; 
 $lang["document"][33]="Link al web"; 
+$lang["document"][34]="Create the directory"; 
 
 $lang["event"][0]="Item (ID)"; 
 $lang["event"][1]="Data"; 
@@ -469,7 +472,7 @@ $lang["financial"][80]="Scadenza garanzia";
 $lang["financial"][81]="Importo netto contabile"; 
 $lang["financial"][82]="Numero d'ordine"; 
 $lang["financial"][83]="Max number of items (0=unlimited)"; 
-$lang["financial"][84]="For this type of element, commercial informations are only a model for the elements which you will add. "; 
+$lang["financial"][84]="For this type of element, commercial informations are only a model for the elements which you will add."; 
 $lang["financial"][85]="Requested item not founded"; 
 
 $lang["help"][0]="Benvenuto"; 
@@ -588,7 +591,7 @@ $lang["install"][80]="Database vuoto";
 $lang["install"][81]="Beginning of the installation"; 
 $lang["install"][82]="Database created"; 
 $lang["install"][83]="Test on the functions utf8_encode and utf8_decode"; 
-$lang["install"][84]="GLPI cannot work correctly without the utf8_encode and utf8_decode functions ; Try to activate the support of the XML for PHP "; 
+$lang["install"][84]="GLPI cannot work correctly without the utf8_encode and utf8_decode functions ; Try to activate the support of the XML for PHP"; 
 $lang["install"][85]="The functions were found - Perfect!"; 
 
 $lang["job"][0]="Numero di chiamata"; 
@@ -712,7 +715,7 @@ $lang["mailing"][13]="Si è verificato un errore nella costruzione della email d
 $lang["mailing"][14]="Modifica della categoria della chiamata"; 
 $lang["mailing"][15]="Modifica della priorità della chiamata"; 
 $lang["mailing"][16]="Priorità:"; 
-$lang["mailing"][17]="Hardware change of the intervention "; 
+$lang["mailing"][17]="Hardware change of the intervention"; 
 $lang["mailing"][18]="Change of the author of the intervention"; 
 $lang["mailing"][19]="New reservation"; 
 $lang["mailing"][20]="Begin Date:"; 
@@ -877,13 +880,13 @@ $lang["peripherals"][32]="Unit management";
 $lang["peripherals"][33]="Management Type"; 
 
 $lang["planning"][0]="The technician requested has already an intervention planned for this time."; 
-$lang["planning"][1]="Error in the entry of your dates. The date of beginning is surely higher than the ending date "; 
+$lang["planning"][1]="Error in the entry of your dates. The date of beginning is surely higher than the ending date"; 
 $lang["planning"][2]="Back"; 
 $lang["planning"][3]="Planning"; 
 $lang["planning"][4]="Date"; 
 $lang["planning"][5]="Day"; 
 $lang["planning"][6]="Week"; 
-$lang["planning"][7]="Add a schedule of intervention "; 
+$lang["planning"][7]="Add a schedule of intervention"; 
 $lang["planning"][8]="Tracking"; 
 $lang["planning"][9]="By"; 
 $lang["planning"][10]="Hardware"; 
@@ -992,6 +995,8 @@ $lang["reports"][58]="Material report by year";
 $lang["reports"][59]="Mostra i commenti"; 
 $lang["reports"][60]="Opening date"; 
 $lang["reports"][61]="Closing date"; 
+$lang["reports"][62]="Hardware Commercial Informations"; 
+$lang["reports"][63]="Others Commercial Informations (licenses, cartridges, consummables)"; 
 
 $lang["reservation"][0]="Prenotazioni"; 
 $lang["reservation"][1]="Dispositivi prenotabili"; 
@@ -1176,7 +1181,7 @@ $lang["setup"][172]="LDAP Port (default=389)";
 $lang["setup"][173]="If you do not wish to use CAS as source of connection leave the fields empty"; 
 $lang["setup"][174]="CAS Host"; 
 $lang["setup"][175]="Port"; 
-$lang["setup"][176]="Root directory (optional) "; 
+$lang["setup"][176]="Root directory (optional)"; 
 $lang["setup"][177]="CAS configuration"; 
 $lang["setup"][178]="Extension CURL or DOMXML of your parser PHP is not installed"; 
 $lang["setup"][179]="Impossible to use CAS as external source of connection"; 
@@ -1375,7 +1380,7 @@ $lang["tracking"][22]="You are not allowed to modify the tracking priority";
 $lang["tracking"][23]="or the ID is"; 
 $lang["tracking"][24]="Document Tracking"; 
 $lang["tracking"][25]="Associated document"; 
-$lang["tracking"][26]="You are not authorized to modify the item of this intervention "; 
+$lang["tracking"][26]="You are not authorized to modify the item of this intervention"; 
 $lang["tracking"][27]="You are not authorized to modify the author of this intervention"; 
 
 $lang["update"][90]="Error during the database update"; 

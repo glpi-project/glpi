@@ -148,6 +148,7 @@ $lang["cartridges"][39]="Contador de impresora";
 $lang["cartridges"][40]="Mean Time in stock"; 
 $lang["cartridges"][41]="Mean Time in use"; 
 $lang["cartridges"][42]="Mean number of printed pages"; 
+$lang["cartridges"][43]="Back to stock"; 
 
 $lang["central"][0]="Bienvenido"; 
 $lang["central"][1]="Usted se halla en la consola central."; 
@@ -276,6 +277,7 @@ $lang["consumables"][31]="Delete";
 $lang["consumables"][32]="Give"; 
 $lang["consumables"][35]="Old Consumables"; 
 $lang["consumables"][36]="Stock location"; 
+$lang["consumables"][37]="Back to stock"; 
 $lang["consumables"][38]="Alarm threshold"; 
 
 $lang["devices"][0]="Agregar un nuevo periférico interno"; 
@@ -378,6 +380,7 @@ $lang["document"][30]="Verifique que usted tiene los derechos";
 $lang["document"][31]="Directorio de almacenamiento de documentos inexistente:"; 
 $lang["document"][32]="Tipo de archivo no autorizado"; 
 $lang["document"][33]="Enlace web"; 
+$lang["document"][34]="Create the directory"; 
 
 $lang["event"][0]="Item (ID)"; 
 $lang["event"][1]="Fecha"; 
@@ -469,7 +472,7 @@ $lang["financial"][80]="Expiración de garatía";
 $lang["financial"][81]="Valor neto contable"; 
 $lang["financial"][82]="Número de factura"; 
 $lang["financial"][83]="Cantidad máxima de elementos (0=sin límites)"; 
-$lang["financial"][84]="For this type of element, commercial informations are only a model for the elements which you will add. "; 
+$lang["financial"][84]="For this type of element, commercial informations are only a model for the elements which you will add."; 
 $lang["financial"][85]="Requested item not founded"; 
 
 $lang["help"][0]="Bienvenido"; 
@@ -992,6 +995,8 @@ $lang["reports"][58]="Reporte de materiales por años";
 $lang["reports"][59]="Ver los seguimientos"; 
 $lang["reports"][60]="Fecha de apertura"; 
 $lang["reports"][61]="Fecha de cierre"; 
+$lang["reports"][62]="Hardware Commercial Informations"; 
+$lang["reports"][63]="Others Commercial Informations (licenses, cartridges, consummables)"; 
 
 $lang["reservation"][0]="Reservaciones"; 
 $lang["reservation"][1]="Material reservable"; 
@@ -1104,7 +1109,7 @@ $lang["setup"][60]="No";
 $lang["setup"][61]="Sí"; 
 $lang["setup"][62]="Seleccione la categoría a configurar"; 
 $lang["setup"][63]="Atención, está a punto de suprimir un título usado para uno o más elementos."; 
-$lang["setup"][64]=" Si confirma la supresión, a los elementos bajo este título se les asignará un campo NULL"; 
+$lang["setup"][64]="Si confirma la supresión, a los elementos bajo este título se les asignará un campo NULL"; 
 $lang["setup"][65]="También puede reemplazar todas las ocurrencias de este título por otro:"; 
 $lang["setup"][66]="No se hallaron usuarios"; 
 $lang["setup"][67]="Autenticaciones externas"; 
@@ -1161,7 +1166,7 @@ $lang["setup"][156]="Pass (para las conexiones no anónimas)";
 $lang["setup"][157]="La extensión LDAP de su parser PHP no está instalada"; 
 $lang["setup"][158]="Imposible utilizar LDAP como origen de conexión externa"; 
 $lang["setup"][159]="Filtro de conexión"; 
-$lang["setup"][160]="Si no desea utilizar IMAP/POP como origen de conexión deje los campos en blanco. Más información en <a target="_blank" href="http://www.php.net/manual/fr/function.imap-open.php">php.net</a>."; 
+$lang["setup"][160]="Si no desea utilizar IMAP/POP como origen de conexión deje los campos en blanco. Más información en <a target='_blank' href='http://www.php.net/manual/fr/function.imap-open.php'>php.net</a>."; 
 $lang["setup"][162]="Configuración IMAP/POP"; 
 $lang["setup"][163]="Servidor IMAP/POP"; 
 $lang["setup"][164]="Nombre de dominio IMAP/POP <br>(email de tipo login@dominio)"; 
@@ -1384,8 +1389,7 @@ $lang["update"][92]="Usted va a actualizar su base de datos GLPI que tiene por n
 $lang["update"][93]="La conexión a la base de datos ha sido exitosa"; 
 $lang["update"][94]="La actualización ha sido exitosa, su base de datos está actualizada"; 
 $lang["update"][95]="La conexión a la base de datos ha fallado, verifique los parámetros de conexión que figuran en el archivo config_db.php"; 
-$lang["update"][96]="A partir de ahora todos los administradores tendrán derechos de 'super-admin'. Además se ha agregado este nuevo tipo de usuario.
-"; 
+$lang["update"][96]="A partir de ahora todos los administradores tendrán derechos de 'super-admin'. Además se ha agregado este nuevo tipo de usuario."; 
 $lang["update"][97]="La base de datos actualizada no contiene ningún usuario 'super-admin'"; 
 $lang["update"][98]="Debe crear uno necesariamente a fin de poder reconfigurar la aplicación (especialmente los accesos a los orígenes de datos externos)"; 
 $lang["update"][99]="Podrá suprimir este usuario una vez que haya configurado la aplicación"; 
