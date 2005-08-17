@@ -485,8 +485,7 @@ function uploadDocument($FILEDESC,$old_file=''){
 			if (is_dir($phproot.$cfg_install["doc_dir"])){
 			// Test existance sous-repertoire type dans DOCS -> sinon création
 			if (!is_dir($phproot.$cfg_install["doc_dir"]."/".$dir)){
-			$_SESSION["MESSAGE_AFTER_REDIRECT"].= "Création du répertoire ".$phproot.$cfg_install["doc_dir"]."/".$dir."<br>";
-			@mkdir($phproot.$cfg_install["doc_dir"]."/".$dir);
+				@mkdir($phproot.$cfg_install["doc_dir"]."/".$dir);
 			}
 			// Copy du fichier uploadé si répertoire existe
 			if (is_dir($phproot.$cfg_install["doc_dir"]."/".$dir)){
@@ -531,9 +530,9 @@ function uploadDocument($FILEDESC,$old_file=''){
 					}
 				} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][28]."<br>";
 			
-			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][29].$phproot.$cfg_install["doc_dir"]."/".$dir." ".$lang["document"][30]."<br>";
+			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][29]." ".$phproot.$cfg_install["doc_dir"]."/".$dir." ".$lang["document"][30]."<br>";
 			
-			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][31].$phproot.$cfg_install["doc_dir"]."<br>";
+			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][31]." ".$phproot.$cfg_install["doc_dir"]."<br>";
 		
 		} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][32]."<br>";
 	

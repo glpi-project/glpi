@@ -3563,9 +3563,8 @@ function sendFile($file,$filename){
 		if (!$f){
 		echo "Error opening file $file";
 		} else {
-			while (!feof($f)){
-           		echo  fread($f, 1024);
-       			}
+			echo  fread($f, filesize($file));
+       			
 		}
 	
 	}

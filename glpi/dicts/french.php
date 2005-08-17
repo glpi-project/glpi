@@ -381,6 +381,7 @@ $lang["document"][30]="Vérifiez que vous avez les droits";
 $lang["document"][31]="Répertoire de stockage des documents inexistant :"; 
 $lang["document"][32]="Type de fichier non autorisé"; 
 $lang["document"][33]="Lien Web";
+$lang["document"][34]="Création du répertoire";
 
 $lang["event"][0]="Item (ID)"; 
 $lang["event"][1]="Date";
