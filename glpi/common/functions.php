@@ -3553,7 +3553,7 @@ function sendFile($file,$filename){
 			
 		}
 		
-		header("Content-disposition: filename=$filename");
+		header("Content-disposition: filename=\"$filename\"");
 		
      	header("Content-type: ".$mime);
      	header('Pragma: no-cache');
