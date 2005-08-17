@@ -485,6 +485,7 @@ function uploadDocument($FILEDESC,$old_file=''){
 			if (is_dir($phproot.$cfg_install["doc_dir"])){
 			// Test existance sous-repertoire type dans DOCS -> sinon création
 			if (!is_dir($phproot.$cfg_install["doc_dir"]."/".$dir)){
+				$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][34]." ".$phproot.$cfg_install["doc_dir"]."/".$dir."<br>";
 				@mkdir($phproot.$cfg_install["doc_dir"]."/".$dir);
 			}
 			// Copy du fichier uploadé si répertoire existe
