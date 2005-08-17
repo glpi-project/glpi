@@ -3555,16 +3555,21 @@ function sendFile($file,$filename){
 		
 		header("Content-disposition: filename=$filename");
 		
-        	header("Content-type: ".$mime);
-        	header('Pragma: no-cache');
-        	header('Expires: 0');
+     	header("Content-type: ".$mime);
+     	header('Pragma: no-cache');
+     	header('Expires: 0');
 		$f=fopen($file,"r");
 		
 		if (!$f){
 		echo "Error opening file $file";
 		} else {
-			echo  fread($f, filesize($file));
-       			
+			// Pour que les \x00 ne devienne pas \0
+			$mc=get_magic_quotes_runtime();
+			if ($mc) @set_magic_quotes_runtime(0); 
+			
+			echo fread($f, filesize($file));
+
+			if ($mc) @set_magic_quotes_runtime($mc); 
 		}
 	
 	}
