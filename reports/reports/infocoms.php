@@ -133,7 +133,7 @@ function display_infocoms_report($device_type,$begin,$end){
 			
 				$valeurnettesoustot+=str_replace(" ","",$valeurnette);	
 
-				echo "<tr class='tab_bg_1'><td>".$comp->getName()."</td><td>".$line["value"]."</td><td>$valeurnette</td><td>".$line["buy_date"]."</td><td>".$line["use_date"]."</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
+				echo "<tr class='tab_bg_1'><td>".$comp->getName()."</td><td>".number_format($line["value"],2)."</td><td>".number_format($valeurnette,2)."</td><td>".$line["buy_date"]."</td><td>".$line["use_date"]."</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
 	
 			}
 
@@ -204,7 +204,7 @@ echo "</table>";
 
 
 
-	echo "<div align='center'><h1>".$lang["software"][21].": ".$lang["financial"][21]."=$valeurtot - ".$lang["financial"][81]."=$valeurnettetot</h1></div>";
+	echo "<div align='center'><h1>".$lang["software"][21].": ".$lang["financial"][21]."=".number_format($valeurtot,2)." - ".$lang["financial"][81]."=".number_format($valeurnettetot,2)."</h1></div>";
 
 if (count($valeurnettegraphtot)>0){
 	$valeurnettegraphtotdisplay=array_map('round',$valeurnettegraphtot);
