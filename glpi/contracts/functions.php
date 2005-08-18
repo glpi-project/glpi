@@ -442,7 +442,7 @@ function showContractForm ($target,$ID,$search) {
 
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][5].":		</td>";
-	echo "<td><input type='text' name='cost' value=\"".$con->fields["cost"]."\" size='10'></td>";
+	echo "<td><input type='text' name='cost' value=\"".number_format($con->fields["cost"],2)."\" size='10'></td>";
 
 	echo "<td>".$lang["financial"][13].":		</td>";
 	echo "<td><input type='text' name='compta_num' value=\"".$con->fields["compta_num"]."\" size='25'></td>";
