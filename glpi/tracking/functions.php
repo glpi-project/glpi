@@ -315,18 +315,6 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 	$result = $db->query($query);
 	$numrows = $db->numrows($result);
 
-	// Form to delete old item
-	if ($show=="old"&&isAdmin($_SESSION["glpitype"])){
-		echo "<form method='post' action=\"$target\">";
-		echo "<input type='hidden' name='show' value='$show'>";
-		echo "<input type='hidden' name='contains' value='$contains'>";
-		echo "<input type='hidden' name='item' value='$item'>";
-		$newstart=$start;
-		if (isset($_GET["select"])&&$_GET["select"]=="all"&&($numrows<=($start+$cfg_features["list_limit"])))
-			$newstart=max(0,$start-$cfg_features["list_limit"]);
-		echo "<input type='hidden' name='start' value='$newstart'>";
-		}
-
 //	if ($show!="user")	
 		$query .= $lim_query;
 	
@@ -342,6 +330,19 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 			$parameters.="&amp;ID=".$username;
 		printPager($start,$numrows,$target,$parameters);
 
+	// Form to delete old item
+	if ($show=="old"&&isAdmin($_SESSION["glpitype"])){
+		echo "<form method='post' action=\"$target\">";
+		echo "<input type='hidden' name='show' value='$show'>";
+		echo "<input type='hidden' name='contains' value='$contains'>";
+		echo "<input type='hidden' name='item' value='$item'>";
+		$newstart=$start;
+		if (isset($_GET["select"])&&$_GET["select"]=="all"&&($numrows<=($start+$cfg_features["list_limit"])))
+			$newstart=max(0,$start-$cfg_features["list_limit"]);
+		echo "<input type='hidden' name='start' value='$newstart'>";
+		}
+		
+		
 		echo "<div align='center'><table class='tab_cadre' width='90%'>";
 		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
 		echo "<th width=5>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
@@ -376,6 +377,11 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 		}
 		
 			echo "<br>";
+			
+	// End form for delete item
+	if ($show=="old"&&isAdmin($_SESSION["glpitype"]))
+	echo "</form>";
+			
 			printPager($start,$numrows,$target,$parameters);
 	}
 	else
@@ -395,9 +401,6 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 		echo "</table>";
 		echo "</div><br>";
 	}
-	// End form for delete item
-	if ($show=="old"&&isAdmin($_SESSION["glpitype"]))
-	echo "</form>";
 }
 
 function showOldJobListForItem($username,$item_type,$item) {
