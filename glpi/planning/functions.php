@@ -357,12 +357,12 @@ function addPlanningTracking($input,$target){
    $resa->fields["end"] = $input["end_date"]." ".$input["end_hour"].":".$input["end_min"].":00";
 
 	if (!$resa->test_valid_date()){
-		$resa->displayError("date",$input["id_assign"],$target);
+		$resa->displayError("date",$input["id_tracking"],$target);
 		return false;
 	}
 	
 	if ($resa->is_alreadyplanned()){
-		$resa->displayError("is_res",$input["id_assign"],$target);
+		$resa->displayError("is_res",$input["id_tracking"],$target);
 		return false;
 	}
 
