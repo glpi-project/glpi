@@ -59,6 +59,7 @@ echo "Delete bigdumps and older sql files";
 
 echo "Delete LDAP directories";
 \rm -rf ldap;
+\rm -rf plugins/ocs;
 \rm -rf glpi/ldap;
 echo "Delete repair directories";
 \rm -rf repair;
