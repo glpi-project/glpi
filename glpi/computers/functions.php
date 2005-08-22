@@ -537,7 +537,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 
 		} else {
 			echo "<div align='center'><b>".$lang["computers"][32]."</b></div>";
-			echo "<hr noshade>";
+			
 		}
 	}
 }

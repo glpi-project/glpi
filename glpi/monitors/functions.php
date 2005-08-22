@@ -274,7 +274,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			printPager($start,$numrows,$target,$parameters);
 
 			// Produce headline
-			echo "<center><table  class='tab_cadre'><tr>";
+			echo "<div align='center'><table  class='tab_cadre'><tr>";
 
 			// Name
 			echo "<th>";
@@ -357,7 +357,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			}
 
 			// Close Table
-			echo "</table></center>";
+			echo "</table></div>";
 
 			// Pager
 			echo "<br>";
@@ -365,8 +365,8 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<center><b>".$lang["monitors"][17]."</b></center>";
-			echo "<hr noshade>";
+			echo "<div align='center'><b>".$lang["monitors"][17]."</b></div>";
+			
 		}
 	}
 }
