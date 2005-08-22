@@ -983,7 +983,11 @@ function showAddEvents($target,$order,$sort,$user="") {
 
 	// No Events in database
 	if ($number < 1) {
-		echo "<b>".$lang["central"][4]."</b>";
+		echo "<br><div align='center'>";
+		echo "<table class='tab_cadre' width='90%'>";
+		echo "<tr><th>".$lang["central"][4]."</th></tr>";
+		echo "</table>";
+		echo "</div><br>";
 		return;
 	}
 	
