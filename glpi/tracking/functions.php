@@ -215,7 +215,7 @@ function showCentralJobList($target,$start) {
 	else
 	{
 		echo "<br><div align='center'>";
-		echo "<table border='0' width='90%'>";
+		echo "<table class='tab_cadre' width='90%'>";
 		echo "<tr><th>".$lang["joblist"][8]."</th></tr>";
 
 		echo "</table>";
@@ -387,7 +387,7 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 	else
 	{
 		echo "<br><div align='center'>";
-		echo "<table border='0' width='90%'>";
+		echo "<table class='tab_cadre' width='90%'>";
 		echo "<tr><th>".$lang["joblist"][8]."</th></tr>";
 
 		if ($item) 
