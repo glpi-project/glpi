@@ -2392,7 +2392,7 @@ function printHelpDesk ($name,$from_helpdesk) {
 	echo "<form method='post' name=\"helpdeskform\" action=\"".$cfg_install["root"]."/tracking/tracking-injector.php\"  enctype=\"multipart/form-data\">";
 	echo "<input type='hidden' name='from_helpdesk' value='$from_helpdesk'>";
 
-	echo "<center><table  class='tab_cadre'>";
+	echo "<div align='center'><table  class='tab_cadre'>";
 
 	if ($realname!='') $name=$realname;
 
@@ -2451,7 +2451,7 @@ function printHelpDesk ($name,$from_helpdesk) {
 	echo "</td></tr>";
 
 	echo "</table>";
-	echo "</center>";
+	echo "</div>";
 	echo "</form>";
 
 }
