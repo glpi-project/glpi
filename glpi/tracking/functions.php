@@ -1103,7 +1103,7 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 		}
 		
 		// Processing Email
-		if ($aa=0&&$cfg_features["mailing"])
+		if ($aa==0&&$cfg_features["mailing"])
 		{
 			$user=new User;
 			$user->getfromDB($author);
