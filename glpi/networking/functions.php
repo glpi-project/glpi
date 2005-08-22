@@ -288,7 +288,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			printPager($start,$numrows,$target,$parameters);
 
 			// Produce headline
-			echo "<center><table class='tab_cadre'><tr>";
+			echo "<div align='center'><table class='tab_cadre'><tr>";
 
 			// Name
 			echo "<th>";
@@ -374,7 +374,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			}
 
 			// Close Table
-			echo "</table></center>";
+			echo "</table></div>";
 
 			// Pager
 			echo "<br>";
@@ -382,8 +382,8 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<center><b>".$lang["networking"][38]."</b></center>";
-			echo "<hr noshade>";
+			echo "<div align='center'><b>".$lang["networking"][38]."</b></div>";
+			
 		}
 	}
 }
