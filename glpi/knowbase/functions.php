@@ -109,7 +109,7 @@ function showKbItemForm($target,$ID){
 
 	$ki= new kbitem;	
 	
-	
+	echo "<div align='center'>";
 	echo "<div id='contenukb'>";
 	echo "<script type='text/javascript' language='javascript' src='".$HTMLRel."toolbar.js'></script>";
 	echo "<form method='post' name='form_kb' action=\"$target\">";
@@ -182,7 +182,7 @@ function showKbItemForm($target,$ID){
 	}
 	
 	echo "</p>";
-	echo "</form></div>";
+	echo "</form></div></div>";
 } 
 
 /**
