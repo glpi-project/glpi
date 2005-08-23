@@ -529,10 +529,10 @@ ul#onglet li.actif a {
 #contenukb {
 /* a voir je suis pas bien sûr  */
 height: 100%;
-position: relative; /*ou absolute */
-left: 35%;
+/*position: relative; ou absolute */
+/*left: 35%; */
 width: 600px;
-margin-left: -150px;
+/*margin-left: -150px; */
 }
 
 #contenukb legend {
