@@ -65,14 +65,18 @@ if (addPlanningTracking($_POST,$_SERVER["REQUEST_URI"])){
 
 	if (updatePlanningTracking($_POST,$_SERVER["PHP_SELF"],$_POST["ID"])){
 		logEvent(0, "planning", 4, "planning", $_SESSION["glpiname"]." edit a planning.");
-		glpi_header($_SERVER['HTTP_REFERER']);
+		glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=".$_POST["id_tracking"]);
+	
 	}
 	logEvent(0, "planning", 4, "planning", $_SESSION["glpiname"]." edit a planning.");
 	glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset($_GET["delete"])){
-	deletePlanningTracking($_GET["ID"]);
+	
+} else if (isset($_POST["delete"])){
+	
+	deletePlanningTracking($_POST["ID"]);
 	logEvent(0, "planning", 4, "planning", $_SESSION["glpiname"]." delete a planning.");
-	glpi_header($_SERVER['HTTP_REFERER']);
+	glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=".$_POST["id_tracking"]);
+		
 } else if (isset($_GET["edit"])){
 	commonHeader($lang["title"][31],$_SERVER["PHP_SELF"]);
 

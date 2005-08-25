@@ -94,7 +94,7 @@ function showAddPlanningTrackingForm($target,$job,$planID=-1){
 	$begin_min=date("i",$begin);
 	$end_min=date("i",$end);
 
-	echo "<div align='center'><form method='post' name=form action=\"$target\">";
+	echo "<div align='center'><form method='post' name='form' action=\"$target\">";
 	if ($planID!=-1)
 	echo "<input type='hidden' name='ID' value='$planID'>";
 	
@@ -338,11 +338,11 @@ function deletePlanningTracking($ID){
 	// Delete a Planning Tracking
 
 	$resa = new PlanningTracking;
-	if ($resa->getfromDB($ID))
-	if (isset($resa->fields["id_assign"])&&($resa->fields["id_assign"]==$_SESSION["glpiID"]||isAdmin($_SESSION["glpitype"])))
-	return $resa->deleteFromDB($ID);
+	if ($resa->getfromDB($ID)){
+			if (isset($resa->fields["id_assign"])&&($resa->fields["id_assign"]==$_SESSION["glpiID"]||isAdmin($_SESSION["glpitype"])))
+			return $resa->deleteFromDB($ID);
+	} else return false;
 
-	return false;
 }
 
 
