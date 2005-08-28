@@ -150,6 +150,7 @@ function getEmpty () {
 	function deleteFromDB($ID,$force=0) {
 
 		$db = new DB;
+
 		if ($force==1||!$this->isUsed($ID)){
 			$query = "DELETE from glpi_monitors WHERE ID = '$ID'";
 			if ($result = $db->query($query)) {
@@ -157,19 +158,16 @@ function getEmpty () {
 				$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".MONITOR_TYPE."')";
 				$result = $db->query($query);
 
+				$job=new Job;
+
 				$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='".MONITOR_TYPE."')";
 				$result = $db->query($query);
 				$number = $db->numrows($result);
 				$i=0;
 				while ($i < $number) {
-			  		$job = $db->result($result,$i,"ID");
-			    		$query = "DELETE FROM glpi_followups WHERE (tracking = '$job')";
-			      		$db->query($query);
+ 		  		$job->deleteinDB($db->result($result,$i,"ID"));
 					$i++;
 				}
-
-				$query = "DELETE FROM glpi_tracking WHERE (computer = '$ID' AND device_type='".MONITOR_TYPE."')";
-				$result = $db->query($query);
 				
 				$query="select * from glpi_repair_item where (device_type='".MONITOR_TYPE."' and id_device='$ID')";
 				$result = $db->query($query);

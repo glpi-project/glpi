@@ -202,6 +202,8 @@ function showPlanning($who,$when,$type){
 	$date=split("-",$when);
 	$time=mktime(1,0,0,$date[1],$date[2],$date[0]);
 	$dayofweek=date("w",$time);
+	// Cas du dimanche
+	if ($dayofweek==0) $dayofweek=7;
 
 	echo "<div align='center'><table class='tab_cadre' width='800'>";
 	// Print Headers
@@ -251,6 +253,7 @@ function showPlanning($who,$when,$type){
 function displayplanning($who,$when,$type){
 global $cfg_features,$HTMLRel,$lang;
 $db=new DB;
+//echo $when;
 $debut=$when;
 $tmp=split(" ",$when);
 $hour=split(":",$tmp[1]);
@@ -262,7 +265,7 @@ $ASSIGN="id_assign='$who' AND";
 
 
 $query="SELECT * from glpi_tracking_planning WHERE $ASSIGN (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL 59 MINUTE ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL 59 MINUTE ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL 59 MINUTE ) AND end > adddate( '". $debut ."' , INTERVAL 59 MINUTE ))) ORDER BY begin";
-
+//echo $query;
 $result=$db->query($query);
 
 $job=new Job();

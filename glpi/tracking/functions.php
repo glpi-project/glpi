@@ -1079,7 +1079,7 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	if ($tID=$job->putinDB()) {
 		
 		// add Document if exists
-		if (count($_FILES['filename'])>0){
+		if (isset($_FILES['filename'])&&count($_FILES['filename'])>0){
 		$input=array();
 		$input["name"]=$lang["tracking"][24]." $tID";
 		$input["TOCLEAN"]="CLEAN";
@@ -1333,10 +1333,10 @@ function addFormTracking ($device_type,$ID,$author,$assign,$target,$error,$searc
 	}
 	echo "<form method='get' action='$target'>";
 	echo "<input type='hidden' name='referer' value='$REFERER'>";
-	echo "<div align='center'><table class='tab_cadre'>";
+	echo "<div align='center'>";
 	echo "<p><a class='icon_consol' href='$REFERER'>".$lang["buttons"][13]."</a></p>";
 	
-	echo "<tr><th colspan='4'>".$lang["job"][13].": <br>";
+	echo "<table class='tab_cadre'><tr><th colspan='4'>".$lang["job"][13].": <br>";
 	$m=new CommonItem;
 	$m->getfromDB($device_type,$ID);
 	echo $m->getType()." - ".$m->getNameID();
@@ -1361,7 +1361,7 @@ function addFormTracking ($device_type,$ID,$author,$assign,$target,$error,$searc
 			echo "<td align='center' colspan='3' class='tab_bg_2'><select name='hour'>";
 			for ($i=0;$i<100;$i++){
 			$selected="";
-			if ($_GET["hour"]==$i) $selected="selected";
+			if (isset($_GET["hour"])&&$_GET["hour"]==$i) $selected="selected";
 			echo "<option value='$i' $selected>$i</option>";
 			}			
 		
@@ -1369,7 +1369,7 @@ function addFormTracking ($device_type,$ID,$author,$assign,$target,$error,$searc
 			echo "<select name='minute'>";
 			for ($i=0;$i<60;$i++){
 			$selected="";
-			if ($_GET["minute"]==$i) $selected="selected";
+			if (isset($_GET["minute"])&&$_GET["minute"]==$i) $selected="selected";
 			echo "<option value='$i' $selected>$i</option>";
 			}
 			echo "</select>".$lang["job"][22]."&nbsp;&nbsp;";

@@ -167,24 +167,22 @@ class Enterprise {
 	function deleteFromDB($ID,$force=0) {
 
 		$db = new DB;
+
 		$this->getFromDB($ID);		
 		if ($force==1||!$this->isUsed()){
 			$query = "DELETE from glpi_enterprises WHERE ID = '$ID'";
 			if ($result = $db->query($query)) {
+
+				$job=new Job;
 
 				$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='".ENTERPRISE_TYPE."')";
 				$result = $db->query($query);
 				$number = $db->numrows($result);
 				$i=0;
 				while ($i < $number) {
-			  		$job = $db->result($result,$i,"ID");
-			    		$query = "DELETE FROM glpi_followups WHERE (tracking = '$job')";
-			      		$db->query($query);
+ 		  		$job->deleteinDB($db->result($result,$i,"ID"));
 					$i++;
 				}
-
-				$query = "DELETE FROM glpi_tracking WHERE (computer = '$ID' AND device_type='".ENTERPRISE_TYPE."')";
-				$result = $db->query($query);
 
 				
 				// Delete all enterprises associations from infocoms and contract
