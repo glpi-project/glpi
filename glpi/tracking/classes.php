@@ -68,7 +68,9 @@ class Job {
 		$db = new DB;
 		$query = "SELECT * FROM glpi_tracking WHERE (ID = $ID)";
 
-		if ($result = $db->query($query)) {
+		if ($result = $db->query($query)) 
+//		if ($db->numrows($result)>0)
+		{
 			$resultnum = $db->numrows($result);
 			$this->date = $db->result($result,0,"date");
 			$this->closedate = $db->result($result, 0, "closedate");
@@ -288,7 +290,11 @@ class Job {
 			$db=new DB;
 			$query1="delete from glpi_followups where tracking = '$ID'";
 			$query2="delete from glpi_tracking where ID = '$ID'";
+			$query3="delete from glpi_tracking_planning where id_tracking = '$ID'";
+			
 			if (!$db->query($query1))
+			 return false;
+			if(!$db->query($query3));
 			 return false;
 			if(!$db->query($query2));
 			 return false;

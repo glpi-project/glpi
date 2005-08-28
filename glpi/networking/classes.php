@@ -174,19 +174,16 @@ function getEmpty() {
 						$result2 = $db->query($q);				
 				}
 
+				$job=new Job;
+
 				$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='".NETWORKING_TYPE."')";
 				$result = $db->query($query);
 				$number = $db->numrows($result);
 				$i=0;
 				while ($i < $number) {
-			  		$job = $db->result($result,$i,"ID");
-			    		$query = "DELETE FROM glpi_followups WHERE (tracking = '$job')";
-			      		$db->query($query);
+ 		  		$job->deleteinDB($db->result($result,$i,"ID"));
 					$i++;
 				}
-
-				$query = "DELETE FROM glpi_tracking WHERE (computer = '$ID' AND device_type='".NETWORKING_TYPE."')";
-				$result = $db->query($query);
 			
 				$query = "DELETE FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '".NETWORKING_TYPE."')";
 				$result = $db->query($query);

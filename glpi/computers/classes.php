@@ -285,7 +285,7 @@ class Computer {
 		$table = "glpi_computers";
 
 		$db = new DB;
-
+		$job=new Job;
 		if ($force==1||!$this->isUsed($ID)){
 
 			$query = "DELETE from glpi_computers WHERE ID = '$ID'";
@@ -295,13 +295,9 @@ class Computer {
 				$number = $db->numrows($result);
 				$i=0;
 				while ($i < $number) {
-			  		$job = $db->result($result,$i,"ID");
-			    		$query = "DELETE FROM glpi_followups WHERE (tracking = '$job')";
-			      		$db->query($query);
+ 		  		$job->deleteinDB($db->result($result,$i,"ID"));
 					$i++;
 				}
-				$query = "DELETE FROM glpi_tracking WHERE (computer = '$ID' AND device_type='".COMPUTER_TYPE."')";
-				$result = $db->query($query);
 
 				$query = "DELETE FROM glpi_inst_software WHERE (cID = '$ID')";
 				$result = $db->query($query);		
