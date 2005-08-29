@@ -751,7 +751,7 @@ global $HTMLRel,$cfg_install;
 		$result=$db->query($query);
 		if ($db->numrows($result)>0){
 			$icon=$db->result($result,0,'icon');
-			$out="<a href=\"".$HTMLRel."documents/send-document.php?file=$filename\" target=\"_blank\">&nbsp;<img style=\"vertical-align:middle; margin-left:3px; margin-right:6px;\" alt='".$fileout."' title='".$fileout."' src=\"".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/$icon\" ></a>";				
+			$out="<a href=\"".$HTMLRel."documents/send-document.php?file=$filename\" target=\"_blank\">&nbsp;<img style=\"vertical-align:middle; margin-left:3px; margin-right:6px;\" alt='".$fileout."' title='".$fileout."' src=\"./".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/$icon\" ></a>";				
 			}
 	
 	}
