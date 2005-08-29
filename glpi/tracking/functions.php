@@ -1079,7 +1079,7 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	if ($tID=$job->putinDB()) {
 		
 		// add Document if exists
-		if (isset($_FILES['filename'])&&count($_FILES['filename'])>0){
+		if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
 		$input=array();
 		$input["name"]=$lang["tracking"][24]." $tID";
 		$input["TOCLEAN"]="CLEAN";
