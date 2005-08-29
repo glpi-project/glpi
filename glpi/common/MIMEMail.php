@@ -400,7 +400,7 @@ class MIMEMailContent extends MIMEMailCommon
                 break;
             case 'text/html':
             default:
-	    // Force 7bit encoding for GLPI
+	    // Force 8bit UTF8 encoding for GLPI
 	    $encoding = '8bit';
                 //$encoding = 'base64';
                 break;
@@ -497,7 +497,7 @@ class MIMEMailMessage extends MIMEMailContent
     
     
     function MIMEMailMessage($fnameordata, $mode) {
-        $this->charset = 'utf8';
+        $this->charset = 'UTF-8';
         if($this->MIMEMailContent($fnameordata, $mode) === FALSE) { return FALSE; }
         return $this;
     }
