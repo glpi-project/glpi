@@ -1929,7 +1929,7 @@ function dropdownAllItems($name,$withenterprise=0,$withcartridge=0,$withconsumab
 		if ($type==COMPUTER_TYPE) $SELECT=",type ";
 		
 		$query = "SELECT ID,name $SELECT FROM $table $where ORDER BY $ORDER name";
-		echo $query;
+
 		$result = $db->query($query);
 	
 		$i = 0;
