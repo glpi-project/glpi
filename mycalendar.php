@@ -78,6 +78,8 @@ $error01 = "Erreur : date invalide";
 ?>
 <html>
 <head>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
 <style>
  #general
  {
