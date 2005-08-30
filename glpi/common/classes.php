@@ -718,7 +718,7 @@ class Mailing
 			$subject.=$lang["mailing"][10];
 				break;
 			case "finish":
-			$subject.=$lang["mailing"][11].$this->job->closedate;			
+			$subject.=$lang["mailing"][11]." ".$this->job->closedate;			
 				break;
 			default :
 			$subject.=$lang["mailing"][13];
