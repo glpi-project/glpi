@@ -861,7 +861,7 @@ class MailingResa{
 		if ($cfg_mailing["resa"]["user"])
 		{
 			$user = new User;
-			if ($user->getFromDB($this->resa->fields["id_user"]))
+			if ($user->getFromDBbyID($this->resa->fields["id_user"]))
 			if ($this->is_valid_email($user->fields["email"])&&!in_array($user->fields["email"],$emails))
 			{
 				$emails[$nb]=$user->fields["email"];
