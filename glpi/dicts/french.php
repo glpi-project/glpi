@@ -594,6 +594,10 @@ $lang["install"][82]="Base de données créées";
 $lang["install"][83]="Test sur les fonctions utf8_encode et utf8_decode"; 
 $lang["install"][84]="GLPI ne peux pas fonctionner correctement sans les fonctions utf8_encode et utf8_decode ; Essayez d'activer le support du XML pour PHP ";
 $lang["install"][85]="Les fonctions ont été trouvées - Parfait !";
+$lang["install"][86]="Test la mémoire allouée";
+$lang["install"][87]="Mémoire allouée :";
+$lang["install"][88]="Un minimum de 16Mo est généralement nécessaire à GLPI";
+
 
 $lang["job"][0]="Numéro d'intervention"; 
 $lang["job"][1]="Intervention toujours ouverte...";

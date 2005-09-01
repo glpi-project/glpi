@@ -251,6 +251,13 @@ function step1($update)
 
 // ***********
 
+// memory test
+	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][86]."</b></td>";
+
+	$mem=ini_get("memory_limit");
+	echo "<td  class='red'><b>".$lang["install"][87]." $mem</b><br>".$lang["install"][88]."</td></tr>";
+
+
 // session test
 	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][12]."</b></td>";
 
@@ -260,13 +267,14 @@ function step1($update)
 	if (!extension_loaded('session')) {
 		$error = 2;
 		echo "<td  class='red'><b>".$lang["install"][13]."</b></td></tr>";
-	} 
-	if ($_SESSION["Test_session_GLPI"] == 1) {
-		echo "<td><i>".$lang["install"][14]."</i></td></tr>";
-	}
-	else {
-		if($error != 2) $error = 1;
-		echo "<td  class='red'>".$lang["install"][15]."</td></tr>";
+	} else {
+		if ($_SESSION["Test_session_GLPI"] == 1) {
+			echo "<td><i>".$lang["install"][14]."</i></td></tr>";
+		}
+		else {
+			if($error != 2) $error = 1;
+			echo "<td  class='red'>".$lang["install"][15]."</td></tr>";
+		}
 	}
 	
 	//Test for option session use trans_id loaded or not.
