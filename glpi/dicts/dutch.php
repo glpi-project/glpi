@@ -593,6 +593,9 @@ $lang["install"][82]="Databank aangemaakt";
 $lang["install"][83]="Test van de functies utf8_encode en utf8_decode"; 
 $lang["install"][84]="GLPI kan niet correct werken zonder de utf8_encode en utf8_decode funties. Controleer je ondersteuning van XML voor PHP."; 
 $lang["install"][85]="De functies werden gevonden - Perfect!"; 
+$lang["install"][86]="Allocated memory test"; 
+$lang["install"][87]="Allocated memory:"; 
+$lang["install"][88]="A minimum of 16Mo is commonly required for GLPI"; 
 
 $lang["job"][0]="Tussenkomst nummer"; 
 $lang["job"][1]="Tussenkomst nog steeds open..."; 
