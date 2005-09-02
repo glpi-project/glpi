@@ -591,10 +591,10 @@ class Mailing
 	function is_valid_email($email="")
 	{
 		if( !eregi( "^" .
-			"[a-z0-9]+([_\\.-][a-z0-9]+)*" .    //user
+			"[a-zA-Z0-9]+([_\\.-][a-zA-Z0-9]+)*" .    //user
             "@" .
-            "([a-z0-9]+([\.-][a-z0-9]+)*)+" .   //domain
-            "\\.[a-z]{2,}" .                    //sld, tld 
+            "([a-zA-Z0-9]+([\.-][a-zA-Z0-9]+)*)+" .   //domain
+            "\\.[a-zA-Z0-9]{2,}" .                    //sld, tld 
             "$", $email)
                         )
         {
@@ -813,10 +813,10 @@ class MailingResa{
 	function is_valid_email($email="")
 	{
 		if( !eregi( "^" .
-			"[a-z0-9]+([_\\.-][a-z0-9]+)*" .    //user
+			"[a-zA-Z0-9]+([_\\.-][a-zA-Z0-9]+)*" .    //user
             "@" .
-            "([a-z0-9]+([\.-][a-z0-9]+)*)+" .   //domain
-            "\\.[a-z]{2,}" .                    //sld, tld 
+            "([a-zA-Z0-9]+([\.-][a-zA-Z0-9]+)*)+" .   //domain
+            "\\.[a-zA-Z0-9]{2,}" .                    //sld, tld 
             "$", $email)
                         )
         {
