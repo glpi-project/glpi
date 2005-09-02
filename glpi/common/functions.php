@@ -527,32 +527,21 @@ $config = array($lang["Menu"][14]=>array("/users/index.php","u"),
 
 		 echo "<table cellspacing='0' border='0' cellpadding='0'>\n";
 		$i=0;
-		$count=count($inventory);
+		echo "<tr><td colspan='3'>";
 		 foreach ($inventory as $key => $val) {
 		 
-		 	if ($i==0) echo "<tr><td colspan='3'>";
+		 	
 			
 			// Nombre pair d'element ou tout sauf le dernier
-		 	if ($count%2==0||$i!=$count-1){
 				if ($i%2==1) echo "</td><td style='border-left:1px groove #000000; border-right:1px groove #000000'>&nbsp;</td><td style='padding-left:5px; padding-right:5px;' align='center' width='45%'>\n";
 		 		else echo "</td></tr><tr><td style='padding-left:5px; padding-right:5px;' align='center' width='45%'>\n";
                          
 			 	echo "<span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span>\n";
                          	$i++;
-			} else {
-				$lastkey=$key;
-				$lastval=$val;
-			}
-			
 	        }
-		if ($count%2==1&&$i==$count-1){
-			 	echo "</td></tr><tr><td colspan='3' align='center'><span class='menu'><a  href=\"".$cfg_install["root"].$lastval[0]."\" accesskey=\"".$lastval[1]."\">".$lastkey."</a></span>\n";
-				$i++;
-		}
 			
 		echo "</td></tr></table>\n";
 		
-		// Print Last Item Centered
 		
 		echo "</td>\n";
 	}
