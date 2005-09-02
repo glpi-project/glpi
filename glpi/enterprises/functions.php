@@ -114,6 +114,14 @@ function searchFormEnterprise($field="",$phrasetype= "",$contains="",$sort= "",$
 			if(is_array($link)&&isset($link[$i]) && $link[$i] == "OR") echo "selected";
 			echo ">OR</option>";		
 
+			echo "<option value='AND NOT' ";
+			if(is_array($link)&&isset($link[$i]) && $link[$i] == "AND NOT") echo "selected";
+			echo ">AND NOT</option>";		
+			
+			echo "<option value='OR NOT' ";
+			if(is_array($link)&&isset($link[$i]) && $link[$i] == "OR NOT") echo "selected";
+			echo ">OR NOT</option>";
+			
 			echo "</select>";
 		}
 		

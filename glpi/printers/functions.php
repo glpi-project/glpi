@@ -109,7 +109,7 @@ function searchFormPrinters($field="",$phrasetype= "",$contains="",$sort= "",$de
 	$option=addContractOptionFieldsToResearch($option);
 
 	echo "<form method='get' action=\"".$cfg_install["root"]."/printers/printers-search.php\">";
-	echo "<div align='center'><table  width='800' class='tab_cadre'>";
+	echo "<div align='center'><table  width='850' class='tab_cadre'>";
 	echo "<tr><th colspan='4'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
@@ -133,6 +133,15 @@ function searchFormPrinters($field="",$phrasetype= "",$contains="",$sort= "",$de
 			if(is_array($link)&&isset($link[$i]) && $link[$i] == "OR") echo "selected";
 			echo ">OR</option>";		
 
+			echo "<option value='AND NOT' ";
+			if(is_array($link)&&isset($link[$i]) && $link[$i] == "AND NOT") echo "selected";
+			echo ">AND NOT</option>";		
+			
+			echo "<option value='OR NOT' ";
+			if(is_array($link)&&isset($link[$i]) && $link[$i] == "OR NOT") echo "selected";
+			echo ">OR NOT</option>";
+			
+			
 			echo "</select>";
 		}
 		
