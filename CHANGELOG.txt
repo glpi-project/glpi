@@ -1,6 +1,10 @@
 Changelog Complet : http://mantis.indepnet.org/changelog_page.php
 
 *** GLPI  0.6 ***
+- 0000270: [Module Inventaire] Recherche par AND NOT
+- 0000280: [Module Assistance] Suppression d'une intervention impossible
+- 0000282: [Général] Modification username impossible + Problème login et carcatère accentué
+- 0000281: [Module Assistance] Problème regex sur la validité des mails
 - 0000275: [Module Gestion] warning memory_limit=16M 
 - 0000004: [Module Import] Module de récupération automatique des données des postes clients
 - 0000262: [Plugin OCS] Plugin OCS et delete computer
