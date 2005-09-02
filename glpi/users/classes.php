@@ -322,8 +322,8 @@ class User {
 			} else {
 				$query .= "'".$this->fields[$updates[$i]]."'";
 			}
-			$query .= " WHERE name='";
-			$query .= $this->fields["name"];	
+			$query .= " WHERE ID='";
+			$query .= $this->fields["ID"];	
 			$query .= "'";
 			
 			$result=$db->query($query);

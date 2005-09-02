@@ -134,16 +134,24 @@ function showUserform($target,$name) {
 	if ($name=="") {
 		echo "<td><input  name='name' value=\"".$user->fields["name"]."\">";
 		echo "</td></tr>";
+	// si on est dans le cas d'un modif on affiche la modif du login si ce n'est pas une auth externe
 	} else {
-		echo "<td align='center'><b>".$user->fields["name"]."</b>";
+		if (empty($user->fields["password"])){
+			echo "<td align='center'><b>".$user->fields["name"]."</b>";
+			echo "<input type='hidden' name='name' value=\"".$user->fields["name"]."\">";
+			}
+		else echo "<td><input  name='name' value=\"".$user->fields["name"]."\">";
+		
+		
 		echo "<input type='hidden' name='ID' value=\"".$user->fields["ID"]."\">";
-		echo "<input type='hidden' name='name' value=\"".$user->fields["name"]."\">";
+		
 		echo "</td></tr>";
 	}
 	//do some rights verification
 	if(isSuperAdmin($_SESSION["glpitype"])) {
-		if (!empty($user->fields["password"])||$name=="")
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value=\"".$user->fields["password"]."\" size='20' /></td></tr>";
+		if (!empty($user->fields["password"])||$name==""){
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value=\"".$user->fields["password"]."\" size='20' /></td></tr>";
+		}
 		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td><input name='realname' size='20' value=\"".$user->fields["realname"]."\"></td></tr>";
 		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][20]."</td><td>";
 		echo "<select name='type' >";
@@ -512,6 +520,7 @@ function updateUser($input) {
 	$input["email"]=$input["email_form"];
 	unset($input["email_form"]);
 	}
+	
 	//Only super-admin's can set admin or super-admin access.
 	//set to "normal" by default
 	//if user type is already admin or super-admin do not touch it

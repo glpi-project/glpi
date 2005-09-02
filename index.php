@@ -53,7 +53,7 @@ if (!empty($cfg_login['cas']['host'])&&!isset($_GET["noCAS"])) {
 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
 echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">";
 echo "<head><title>GLPI Login</title>\n";
-echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1 \" />\n";
+echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" />\n";
 echo "<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\" />\n";
 echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' />";
 
