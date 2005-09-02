@@ -105,7 +105,7 @@ function searchFormSoftware($field="",$phrasetype= "",$contains="",$sort= "",$de
 	$option=addContractOptionFieldsToResearch($option);
 
 	echo "<form method=get action=\"".$cfg_install["root"]."/software/software-search.php\">";
-	echo "<center><table class='tab_cadre' width='800'>";
+	echo "<center><table class='tab_cadre' width='850'>";
 	echo "<tr><th colspan='4'><strong>".$lang["search"][0].":</strong></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
@@ -130,6 +130,14 @@ function searchFormSoftware($field="",$phrasetype= "",$contains="",$sort= "",$de
 			if(is_array($link)&&isset($link[$i]) && $link[$i] == "OR") echo "selected";
 			echo ">OR</option>";		
 
+			echo "<option value='AND NOT' ";
+			if(is_array($link)&&isset($link[$i]) && $link[$i] == "AND NOT") echo "selected";
+			echo ">AND NOT</option>";		
+			
+			echo "<option value='OR NOT' ";
+			if(is_array($link)&&isset($link[$i]) && $link[$i] == "OR NOT") echo "selected";
+			echo ">OR NOT</option>";
+			
 			echo "</select>";
 		}
 		
