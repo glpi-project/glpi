@@ -101,7 +101,7 @@ $error01 = "Erreur : date invalide";
 
 </style>
 <script language='JavaScript'>
- window.resizeTo(200,270) ;
+ window.resizeTo(300,300) ;
  function modifier (jour)
  {
   window.location.href = "mycalendar.php?form=<?php
