@@ -291,13 +291,9 @@ class Job {
 			$query1="delete from glpi_followups where tracking = '$ID'";
 			$query2="delete from glpi_tracking where ID = '$ID'";
 			$query3="delete from glpi_tracking_planning where id_tracking = '$ID'";
-			
-			if (!$db->query($query1))
-			 return false;
-			if(!$db->query($query3));
-			 return false;
-			if(!$db->query($query2));
-			 return false;
+			$db->query($query1);
+			$db->query($query3);
+			$db->query($query2);
 			 return true;
 			}
 			 return false;		
