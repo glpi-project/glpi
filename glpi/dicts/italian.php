@@ -595,7 +595,9 @@ $lang["install"][84]="GLPI cannot work correctly without the utf8_encode and utf
 $lang["install"][85]="The functions were found - Perfect!"; 
 $lang["install"][86]="Allocated memory test"; 
 $lang["install"][87]="Allocated memory:"; 
-$lang["install"][88]="A minimum of 16Mo is commonly required for GLPI"; 
+$lang["install"][88]="A minimum of 16Mo is commonly required for GLPI."; 
+$lang["install"][89]="Perfect !"; 
+$lang["install"][90]="Try to increase the memory_limit parameter in the php.ini file."; 
 
 $lang["job"][0]="Numero di chiamata"; 
 $lang["job"][1]="Chiamata ancora aperta..."; 
