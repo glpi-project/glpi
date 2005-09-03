@@ -255,8 +255,26 @@ function step1($update)
 	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][86]."</b></td>";
 
 	$mem=ini_get("memory_limit");
-	echo "<td  class='red'><b>".$lang["install"][87]." $mem</b><br>".$lang["install"][88]."</td></tr>";
+	
+	preg_match("/([0-9]+)([KMG]*)/",$mem,$matches);
 
+	// no K M or G 
+	if (!isset($matches[2])){
+		$mem=$matches[1];
+	} else {
+		$mem=$matches[1];
+		switch ($matches[2]){
+			case G : $mem*=1024;
+			case M : $mem*=1024;
+			case K : $mem*=1024;
+			break;
+		}
+	}
+	
+	if ($mem<16*1024*1024)
+	echo "<td  class='red'><b>".$lang["install"][87]." $mem</b><br>".$lang["install"][88]."</td></tr>";
+	else 
+	echo "<td><b>".$lang["install"][87]." $mem octets</b><br>".$lang["install"][88]."</td></tr>";
 
 // session test
 	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][12]."</b></td>";
