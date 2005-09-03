@@ -595,7 +595,9 @@ $lang["install"][84]="GLPI no puede funcionar correctamente ein las funciones ut
 $lang["install"][85]="Se han encontrado las funciones - ¡Perfecto!"; 
 $lang["install"][86]="Allocated memory test"; 
 $lang["install"][87]="Allocated memory:"; 
-$lang["install"][88]="A minimum of 16Mo is commonly required for GLPI"; 
+$lang["install"][88]="A minimum of 16Mo is commonly required for GLPI."; 
+$lang["install"][89]="Perfect !"; 
+$lang["install"][90]="Try to increase the memory_limit parameter in the php.ini file."; 
 
 $lang["job"][0]="Número de servicio"; 
 $lang["job"][1]="Servicio siempre abierto..."; 
