@@ -41,6 +41,8 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 checkauthentication("post-only");
 
+header("Content-Type: text/html; charset=UTF-8");
+
 // Section de configuration
 for ($i=0;$i<10;$i++) {$val[$i]="0".$i;$val["0".$i]="0".$i;}
 for ($i=10;$i<40;$i++) {$val[$i]=$i;$val["0".$i]=$i;}
@@ -76,11 +78,13 @@ for ($i=10;$i<40;$i++) {$val[$i]=$i;$val["0".$i]=$i;}
 $error01 = "Erreur : date invalide";
 
 ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+ <title>GLPI - Calendar</title>
 
-<style>
+<style type="text/css">
  #general
  {
   font-family: Arial;
@@ -100,19 +104,19 @@ $error01 = "Erreur : date invalide";
  }
 
 </style>
-<script language='JavaScript'>
+<script type="text/javascript">
  window.resizeTo(300,300) ;
  function modifier (jour)
  {
   window.location.href = "mycalendar.php?form=<?php
 
-echo $_GET["form"];?>&elem=<?php
-
- 
-
-echo $_GET["elem"];?>&mois=" + document.forms["MyCalendar"].elements['month'].options[document.forms["MyCalendar"].elements['month'].selectedIndex].value + "&jour=" + jour +"&annee=" + document.forms["MyCalendar"].elements['year'].options[document.forms["MyCalendar"].elements['year'].selectedIndex].value
+echo $_GET["form"];?>&elem=<?php echo $_GET["elem"];?>&mois=" + document.forms["MyCalendar"].elements['month'].options[document.forms["MyCalendar"].elements['month'].selectedIndex].value + "&jour=" + jour +"&annee=" + document.forms["MyCalendar"].elements['year'].options[document.forms["MyCalendar"].elements['year'].selectedIndex].value
 
  }
+
+</script>
+</head>
+
 <?php
 
 if (isset($_GET["value"])&&$_GET["value"]!=""&&$_GET["value"]!="0000-00-00"&&!isset($_GET["jour"])&&!isset($_GET["mois"])&&!isset($_GET["annee"])) {
@@ -174,13 +178,11 @@ else $annee=$_GET["annee"];
   $jj = (int)(($jj) % 7)*/
   $jj = (($JD+.5)%7) ;
 ?>
-</script>
-</head>
 <?php
 
 echo "<body bgcolor='#$bgcolor' onUnLoad=''>\n" ;
-  echo "<center><form name='MyCalendar'>\n" ;
-  echo "<table width='170' cellspacing='0' cellspading='0' border='0'><tr>\n" ;
+  echo "<center><form name='MyCalendar' action=get>\n" ;
+  echo "<table width='170' border='0'><tr>\n" ;
 
   // Affichage de la sélection du mois et de l'année
   echo "<td><select name='month' onChange=\"modifier($jour)\">\n" ;
@@ -202,13 +204,13 @@ echo "<body bgcolor='#$bgcolor' onUnLoad=''>\n" ;
 
   echo "</select></td></tr><tr><td colspan='2'>&nbsp;</td></tr>\n" ;
 
-  echo "<tr><td colspan='2'><table width='100%' cellspacing='0' cellspading='0' border='0'>\n" ;
+  echo "<tr><td colspan='2'><table width='100%' cellspacing='0' border='0'>\n" ;
   echo "<tr>\n" ;
 
   // Affichage des jours
   for($i=0;$i<7;$i++)
   {
-   echo "<td width='14%' bgcolor='#$daybgcolor'><font id='general'>".$day[$i]."</font></td>" ;
+   echo "<td width='14%' bgcolor='#$daybgcolor'><span class='general' >".$day[$i]."</span></td>" ;
   }
 
   echo "</tr>\n<tr><td colspan='7'> </td></tr>\n<tr>\n" ;
@@ -220,7 +222,7 @@ echo "<body bgcolor='#$bgcolor' onUnLoad=''>\n" ;
   {
    if ($j<=$i)
    {
-        echo "<td".($dom==$jour?" bgcolor='#$dombgcolor'":"")."><a href='javascript:modifier($dom)'><font id='general'>".$dom++."</font></a></td>\n" ;
+        echo "<td".($dom==$jour?" bgcolor='#$dombgcolor'":"")."><a href='javascript:modifier($dom)'><span class='general'>".$dom++."</span></a></td>\n" ;
    }
    else
        echo "<td>&nbsp;</td>\n" ;
@@ -236,9 +238,9 @@ echo "<body bgcolor='#$bgcolor' onUnLoad=''>\n" ;
 	$j_inac = ($j==0 || $j==6) ;
 	
 	if($dom < $nbjmonth[($mois-1)])
-         echo "<td".($dom==$jour?" bgcolor='#$dombgcolor'":($j_inac ?" bgcolor='#$dayholcolor'":""))."><a href='javascript:modifier($dom)'><font id='general'>".$dom++."</font></a></td>\n" ;
+         echo "<td".($dom==$jour?" bgcolor='#$dombgcolor'":($j_inac ?" bgcolor='#$dayholcolor'":""))."><a href='javascript:modifier($dom)'><span class='general'>".$dom++."</span></a></td>\n" ;
     else if (checkdate($mois,$dom,$annee))
-         echo "<td".($dom==$jour?" bgcolor='#$dombgcolor'":($j_inac ?" bgcolor='#$dayholcolor'":""))."><a href='javascript:modifier($dom)'><font id='general'>".$dom++."</font></a></td>\n" ;
+         echo "<td".($dom==$jour?" bgcolor='#$dombgcolor'":($j_inac ?" bgcolor='#$dayholcolor'":""))."><a href='javascript:modifier($dom)'><span class='general'>".$dom++."</span></a></td>\n" ;
     else
          echo "<td>&nbsp;</td>\n" ;
 
@@ -250,7 +252,7 @@ echo "<body bgcolor='#$bgcolor' onUnLoad=''>\n" ;
 
   echo "\n</tr></table>\n" ;
 
-  echo "</td></tr></table>" ;
+//  echo "</td></tr></table>" ;
   echo "</form></center>" ;
 
   echo "</body>\n" ;
