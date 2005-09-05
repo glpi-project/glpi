@@ -96,6 +96,7 @@ $result=$db->list_tables();
    		$db->query($query);
 		}
   	 }
+mysql_free_result($result);
 }
 
 /* ----------------------------------------------------------------- */
@@ -135,6 +136,7 @@ function compDpd2Device($devtype,$devname,$dpdname,$compDpdName,$specif='') {
 			$db->query($query4) or die("unable to migrate from ".$dpdname." to ".$devname." for item computer:".$lncomp["ID"]."  ".$lang["update"][90].$db->error());
 		}
 	}
+	mysql_free_result($result);
 	//Delete unused elements (dropdown on the computer table, dropdown table and specif)
 	$query = "ALTER TABLE glpi_computers drop `".$compDpdName."`";
 	$db->query($query) or die("Error : ".$query." ".$db->error());
@@ -161,6 +163,7 @@ function superAdminExists() {
 	while($line = $db->fetch_array($result)) {
 		if($line["type"] == "super-admin" && !empty($line["password"])) $var1 = true;
 	}
+	mysql_free_result($result);
 	return $var1;
 }
 
@@ -207,9 +210,9 @@ function showContentUpdateForm() {
 function validate_new_location(){
 	$db=new DB;
 	$query=" DROP TABLE `glpi_dropdown_locations`";	
-	$result=$db->query($query);
+	$db->query($query);
 	$query=" ALTER TABLE `glpi_dropdown_locations_new` RENAME `glpi_dropdown_locations`";	
-	$result=$db->query($query);
+	$db->query($query);
 }
 
 function display_new_locations(){
@@ -262,7 +265,7 @@ function display_new_locations(){
 		echo "</tr>";
 	$data_old=$data;
 	}
-	
+	mysql_free_result($result);
 	echo "</table>";
 }
 
@@ -273,6 +276,8 @@ function display_old_locations(){
 
 	while ($data =  $db->fetch_array($result))
 	echo "<b>".$data['name']."</b> - ";
+	
+	mysql_free_result($result);
 }
 
 function location_create_new($split_char,$add_first){
@@ -340,7 +345,7 @@ function location_create_new($split_char,$add_first){
 		$result_insert=$db->query($query_insert);
 
 	}
-	
+	mysql_free_result($result);
 	$query_auto_inc= "ALTER TABLE `glpi_dropdown_locations_new` CHANGE `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT";
 	$result_auto_inc=$db->query($query_auto_inc);
 
@@ -414,6 +419,7 @@ function TableExists($tablename) {
    for ($i=0;$i<$rcount;$i++) {
        if ($db->table_name($result, $i)==$tablename) return true;
    }
+   mysql_free_result($result);
    return false;
 }
 
@@ -429,6 +435,7 @@ function FieldExists($table, $field) {
 			$var1 = true;
 		}
 	}
+	mysql_free_result($result);
 	return $var1;
 }
 // return true if the field $field of the table $table is a mysql index
@@ -475,8 +482,9 @@ while($line = $db->fetch_array($result)) {
 	$query = "update ". $table1 ." set temp = ". $line["row2"] ." where ID = '". $line["row1"] ."'";
 	$db->query($query) or die($lang["update"][90].$db->error());
 }
+mysql_free_result($result);
 
-$query = "Alter table ". $table1 ." drop ". $chps."";
+$query = "ALTER TABLE ". $table1 ." DROP ". $chps."";
 $db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE ". $table1 ." CHANGE `temp` `". $chps ."` INT";
 $db->query($query) or die($lang["update"][90].$db->error());
@@ -1031,6 +1039,7 @@ while($line = $db->fetch_array($result)) {
 		}
 	else {$curend1=$line['end1'];$curend2=$line['end2'];}
 	}	
+mysql_free_result($result);
 		
 $query = "ALTER TABLE `glpi_networking_wire` ADD UNIQUE end1_1 (`end1`,`end2`) ";
 $db->query($query) or die("477 ".$lang["update"][90].$db->error());
@@ -1058,6 +1067,7 @@ while($line = $db->fetch_array($result)) {
 		}
 	else{ $curend1=$line['end1'];$curend2=$line['end2'];$curtype=$line['type'];}
 	}	
+mysql_free_result($result);	
 $query = "ALTER TABLE `glpi_connect_wire` ADD UNIQUE end1_1 (`end1`,`end2`,`type`) ";
 $db->query($query) or die("478 ".$lang["update"][90].$db->error());
 }
@@ -1167,9 +1177,10 @@ if(!FieldExists("glpi_computers","is_template")) {
 		$query2 = "INSERT INTO glpi_computers (`ID`,`name`, `osver`, `processor_speed`, `serial`, `otherserial`, `ram`, `hdspace`, `contact`, `contact_num`, `comments`, `achat_date`, `date_fin_garantie`, `maintenance`, `os`, `hdtype`, `sndcard`, `moboard`, `gfxcard`, `network`, `ramtype`, `location`, `processor`, `type`, `is_template`, `tplname`)";
 		
 		$query2 .= " VALUES ('','".$line["name"]."', '".$line["osver"]."', '".$line["processor_speed"]."', '".$line["serial"]."', '".$line["otherserial"]."', '".$line["ram"]."', '".$line ["hdspace"]."', '".$line["contact"]."', '".$line["contact_num"]."', '".$line["comments"]."', '".$line["achat_date"]."', '".$line["date_fin_garantie"]."', '".$line["maintenance"]."', '".$line["os"]."', '".$line["hdtype"]."', '".$line["sndcard"]."', '".$line["moboard"]."', '".$line["gfxcard"]."', '".$line["network"]."', '".$line["ramtype"]."', '".$line["location"]."', '".$line["processor"]."', '".$line["type"]."','1','".$line["templname"]."')";	
-		#echo $query2;
+		//echo $query2;
 		$db->query($query2) or die("0.5-convert template 2 computers ".$db->error());
 	}
+	mysql_free_result($result);
 	$query = "DROP TABLE glpi_templates";
 	$db->query($query) or die("0.5 drop table templates ".$db->error());
 	
@@ -1179,7 +1190,7 @@ if(!FieldExists("glpi_computers","is_template")) {
 		$query="INSERT INTO glpi_computers (is_template,tplname) VALUES ('1','Blank Template')";
 		$db->query($query) or die("0.5 add blank template ".$lang["update"][90].$db->error());	
 	}
-
+	mysql_free_result($result);
 	 echo "<br>Version 0.5 <br />";
 }
 
@@ -1651,7 +1662,8 @@ function updateMaintenanceInfos($table,$type,$ID){
 	$query_insert="INSERT INTO glpi_contract_device (FK_contract,FK_device,device_type) VALUES ('$ID','".$data["ID"]."','$type')";	
 	$result_insert=$db->query($query_insert) or die("0.5 insert for update maintenance ".$lang["update"][90].$db->error());
 	}
-
+	mysql_free_result($result);
+	
 	$query_drop =  "ALTER TABLE `$table` DROP `maintenance`";
 	$result_drop=$db->query($query_drop) or die("0.5 drop for update maintenance ".$lang["update"][90].$db->error());
 
@@ -1674,7 +1686,8 @@ function updateWarrantyInfos($table,$type){
 			$result_insert=$db->query($query_insert) or die("0.5 insert for update warranty ".$lang["update"][90].$db->error());
 		}
 	}
-
+	mysql_free_result($result);
+	
 	$query_drop =  "ALTER TABLE `$table` DROP `achat_date`";
 	$result_drop=$db->query($query_drop) or die("0.5 drop1 for update warranty ".$lang["update"][90].$db->error());
 	$query_drop =  "ALTER TABLE `$table` DROP `date_fin_garantie`";
@@ -1766,6 +1779,7 @@ if(FieldExists("glpi_computers","osver")) {
 		
 		}
 	}
+	mysql_free_result($result);
 	$query_alter= "ALTER TABLE `glpi_computers` DROP `osver` ";
 	$db->query($query_alter) or die("0.5 alter for update OS ".$lang["update"][90].$db->error());
 }
@@ -2309,6 +2323,8 @@ if (TableExists("glpi_prefs")){
 			}
 		}
 	}
+	mysql_free_result($result);
+	mysql_free_result($result2);
 }
 
 /*******************************GLPI 0.51***********************************************/
@@ -2490,7 +2506,7 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 	while($line = $db->fetch_array($result)) {
 		$users[$line["name"]]=$line["ID"];
 	}
-
+	mysql_free_result($result);
 	// Load tracking authors tables
 	$authors=array();
 	$query="SELECT ID, author FROM glpi_tracking";
@@ -2498,7 +2514,7 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 	while($line = $db->fetch_array($result)) {
 		$authors[$line["ID"]]=$line["author"];
 	}
-
+	mysql_free_result($result);
 	// Update authors tracking
 	$query= "ALTER TABLE `glpi_tracking` CHANGE `author` `author` INT(11) DEFAULT '0' NOT NULL";
 	$db->query($query) or die("0.6 alter author in tracking ".$lang["update"][90].$db->error());	
@@ -2519,7 +2535,7 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 	while($line = $db->fetch_array($result)) {
 		$assign[$line["ID"]]=$line["assign"];
 	}
-
+	mysql_free_result($result);
 
 	// Update assign tracking
 	$query= "ALTER TABLE `glpi_tracking` CHANGE `assign` `assign` INT(11) DEFAULT '0' NOT NULL";
@@ -2541,7 +2557,8 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 	while($line = $db->fetch_array($result)) {
 		$authors[$line["ID"]]=$line["author"];
 	}
-
+	mysql_free_result($result);
+	
 	// Update authors tracking
 	$query= "ALTER TABLE `glpi_followups` CHANGE `author` `author` INT(11) DEFAULT '0' NOT NULL";
 	$db->query($query) or die("0.6 alter author in followups ".$lang["update"][90].$db->error());	
@@ -2564,6 +2581,7 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 		$query="UPDATE glpi_tracking SET assign='".$line["computer"]."', assign_type='".ENTERPRISE_TYPE."', device_type='0', computer='0' WHERE ID='".$line["ID"]."'";
 		$db->query($query);
 	}
+	mysql_free_result($result);
 }
 
 // Add planning feature 
@@ -2612,6 +2630,7 @@ if(!FieldExists("glpi_users","language")) {
 	$query2="UPDATE glpi_users SET language='".$data['language']."', tracking_order='".$data['tracking_order']."' WHERE name='".$data['username']."';";	
 	$db->query($query2) or die("0.6 move pref to users".$lang["update"][90].$db->error());	
 	}
+	mysql_free_result($result);
 	// Drop glpi_prefs
 	$query="DROP TABLE `glpi_prefs`;";
 	$db->query($query) or die("0.6 drop glpi_prefs".$lang["update"][90].$db->error());
@@ -2646,6 +2665,8 @@ if(!TableExists("glpi_dropdown_ram_type")) {
 	while ($data=$db->fetch_array($result)){
 		$val[$data['name']]=$data['ID'];
 	}	
+	mysql_free_result($result);
+	
 	// Update glpi_device_ram
 	$query="SELECT * from glpi_device_ram";
 	$result=$db->query($query);
@@ -2654,6 +2675,7 @@ if(!TableExists("glpi_dropdown_ram_type")) {
 		$query2="UPDATE glpi_device_ram SET new_type='".$val[$data['type']]."' WHERE ID ='".$data['ID']."';";
 		$db->query($query2);
 	}
+	mysql_free_result($result);
 	// ALTER glpi_device_ram
 	$query="ALTER TABLE `glpi_device_ram` DROP `type`;";
 	$db->query($query) or die("0.6 drop type in glpi_dropdown_ram ".$lang["update"][90].$db->error());
@@ -2818,7 +2840,7 @@ if(!TableExists("glpi_dropdown_model")) {
 		$query="INSERT INTO `glpi_type_computers` (`ID`,`name`) VALUES ('".$data['ID']."','".$data['name']."');";
 		$db->query($query) or die("0.6 insert value in glpi_type_computers ".$lang["update"][90].$db->error());		
 	}
-
+	mysql_free_result($result);
 
 	$query="INSERT INTO `glpi_type_computers` (`name`) VALUES ('".$lang["computers"][28]."');";
 	$db->query($query) or die("0.6 insert value in glpi_type_computers ".$lang["update"][90].$db->error());
