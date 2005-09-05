@@ -2824,9 +2824,6 @@ if(!TableExists("glpi_dropdown_model")) {
 	$db->query($query) or die("0.6 insert value in glpi_type_computers ".$lang["update"][90].$db->error());
 	$serverid=$db->insert_id();
 
-}	
-
-if(!FieldExists("glpi_computers","model")) {
 	// Type -> modèle
 	$query="ALTER TABLE `glpi_computers` CHANGE `type` `model` INT(11) DEFAULT NULL ";
 	$db->query($query) or die("0.6 add model in computers".$lang["update"][90].$db->error());
