@@ -2707,10 +2707,16 @@ if(!TableExists("glpi_dropdown_network")) {
   	PRIMARY KEY  (`ID`)
 	) TYPE=MyISAM;";
 	$db->query($query) or die("0.6 add table glpi_dropdown_network ".$lang["update"][90].$db->error());
+}
+if(!FieldExists("glpi_computers","network")) {
 	$query="ALTER TABLE `glpi_computers` ADD `network` INT(11) DEFAULT '0' NOT NULL AFTER `location` ;";
 	$db->query($query) or die("0.6 a network in computers".$lang["update"][90].$db->error());
+}
+if(!FieldExists("glpi_printters","network")) {
 	$query="ALTER TABLE `glpi_printers` ADD `network` INT(11) DEFAULT '0' NOT NULL AFTER `location` ;";
 	$db->query($query) or die("0.6 a network in printers".$lang["update"][90].$db->error());
+}
+if(!FieldExists("glpi_networking","network")) {	
 	$query="ALTER TABLE `glpi_networking` ADD `network` INT(11) DEFAULT '0' NOT NULL AFTER `location` ;";
 	$db->query($query) or die("0.6 a network in networking".$lang["update"][90].$db->error());
 }
@@ -2723,10 +2729,16 @@ if(!TableExists("glpi_dropdown_domain")) {
   	PRIMARY KEY  (`ID`)
 	) TYPE=MyISAM;";
 	$db->query($query) or die("0.6 add table glpi_dropdown_domain ".$lang["update"][90].$db->error());
+}
+if(!FieldExists("glpi_computers","domain")) {
 	$query="ALTER TABLE `glpi_computers` ADD `domain` INT(11) DEFAULT '0' NOT NULL AFTER `location` ;";
 	$db->query($query) or die("0.6 a domain in computers".$lang["update"][90].$db->error());
+}
+if(!FieldExists("glpi_printers","domain")) {
 	$query="ALTER TABLE `glpi_printers` ADD `domain` INT(11) DEFAULT '0' NOT NULL AFTER `location` ;";
 	$db->query($query) or die("0.6 a domain in printers".$lang["update"][90].$db->error());
+}
+if(!FieldExists("glpi_networking","domain")) {
 	$query="ALTER TABLE `glpi_networking` ADD `domain` INT(11) DEFAULT '0' NOT NULL AFTER `location` ;";
 	$db->query($query) or die("0.6 a domain in networking".$lang["update"][90].$db->error());
 }
@@ -2739,7 +2751,9 @@ if(!TableExists("glpi_dropdown_vlan")) {
   	PRIMARY KEY  (`ID`)
 	) TYPE=MyISAM;";
 	$db->query($query) or die("0.6 add table glpi_dropdown_vlan ".$lang["update"][90].$db->error());
+}
 
+if(!TableExists("glpi_networking_vlan")) {
 	$query = "CREATE TABLE `glpi_networking_vlan` (
   	`ID` int(11) NOT NULL auto_increment,
   	`FK_port` int(11) NOT NULL default '0',
@@ -2768,8 +2782,12 @@ if(!FieldExists("glpi_monitors","is_global")) {
 if(!FieldExists("glpi_config","mailing_resa_admin")) {
 	$query="ALTER TABLE `glpi_config` ADD `mailing_resa_admin` VARCHAR(200) NOT NULL DEFAULT '1' AFTER `admin_email` ;";
 	$db->query($query) or die("0.6 add mailing_resa_admin in config".$lang["update"][90].$db->error());
+}
+if(!FieldExists("glpi_config","mailing_resa_user")) {
 	$query="ALTER TABLE `glpi_config` ADD `mailing_resa_user` VARCHAR(200) NOT NULL DEFAULT '1' AFTER `admin_email` ;";
 	$db->query($query) or die("0.6 add mailing_resa_user in config".$lang["update"][90].$db->error());
+}
+if(!FieldExists("glpi_config","mailing_resa_all_admin")) {
 	$query="ALTER TABLE `glpi_config` ADD `mailing_resa_all_admin` VARCHAR(200) NOT NULL DEFAULT '0' AFTER `admin_email` ;";
 	$db->query($query) or die("0.6 add mailing_resa_all_admin in config".$lang["update"][90].$db->error());
 }
@@ -2813,7 +2831,7 @@ if(!TableExists("glpi_dropdown_model")) {
 	
 	// Update server values and drop flags_server
 	$query="UPDATE glpi_computers SET type='$serverid' where flags_server='1'";
-	$result=$db->query($query);
+	$db->query($query) or die("0.6 update type of computers".$lang["update"][90].$db->error());
 	
 	$query="ALTER TABLE `glpi_computers` DROP `flags_server`;";
 	$db->query($query) or die("0.6 drop type in glpi_dropdown_ram ".$lang["update"][90].$db->error());
