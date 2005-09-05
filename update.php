@@ -2672,6 +2672,9 @@ if(!TableExists("glpi_links")) {
 	) TYPE=MyISAM;";
 
 	$db->query($query) or die("0.6 add table glpi_links ".$lang["update"][90].$db->error());
+}
+
+if(!TableExists("glpi_links_device")) {
 
 	$query = "CREATE TABLE `glpi_links_device` (
   	`ID` int(11) NOT NULL auto_increment,
@@ -2684,7 +2687,6 @@ if(!TableExists("glpi_links")) {
 	) TYPE=MyISAM;";
 
 	$db->query($query) or die("0.6 add table glpi_links_device ".$lang["update"][90].$db->error());
-
 }
 
 // Initial count page for printer
@@ -2712,9 +2714,9 @@ if(!FieldExists("glpi_computers","network")) {
 	$query="ALTER TABLE `glpi_computers` ADD `network` INT(11) DEFAULT '0' NOT NULL AFTER `location` ;";
 	$db->query($query) or die("0.6 a network in computers".$lang["update"][90].$db->error());
 }
-if(!FieldExists("glpi_printters","network")) {
+if(!FieldExists("glpi_printers","network")) {
 	$query="ALTER TABLE `glpi_printers` ADD `network` INT(11) DEFAULT '0' NOT NULL AFTER `location` ;";
-	$db->query($query) or die("0.6 a network in printers".$lang["update"][90].$db->error());
+	$db->query($query) or die("0.6 add network in printers".$lang["update"][90].$db->error());
 }
 if(!FieldExists("glpi_networking","network")) {	
 	$query="ALTER TABLE `glpi_networking` ADD `network` INT(11) DEFAULT '0' NOT NULL AFTER `location` ;";
@@ -2817,11 +2819,14 @@ if(!TableExists("glpi_dropdown_model")) {
 		$db->query($query) or die("0.6 insert value in glpi_type_computers ".$lang["update"][90].$db->error());		
 	}
 
+
 	$query="INSERT INTO `glpi_type_computers` (`name`) VALUES ('".$lang["computers"][28]."');";
 	$db->query($query) or die("0.6 insert value in glpi_type_computers ".$lang["update"][90].$db->error());
 	$serverid=$db->insert_id();
 
-	
+}	
+
+if(!FieldExists("glpi_computers","model")) {
 	// Type -> modèle
 	$query="ALTER TABLE `glpi_computers` CHANGE `type` `model` INT(11) DEFAULT NULL ";
 	$db->query($query) or die("0.6 add model in computers".$lang["update"][90].$db->error());
