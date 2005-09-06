@@ -264,9 +264,9 @@ function step1($update)
 	} else {
 		$mem=$matches[1];
 		switch ($matches[2]){
-			case G : $mem*=1024;
-			case M : $mem*=1024;
-			case K : $mem*=1024;
+			case "G" : $mem*=1024;
+			case "M" : $mem*=1024;
+			case "K" : $mem*=1024;
 			break;
 		}
 	}
