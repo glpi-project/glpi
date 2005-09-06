@@ -680,15 +680,51 @@ $query = "CREATE TABLE `glpi_config` (
 ) TYPE=MyISAM AUTO_INCREMENT=2 ";
 $db->query($query) or die($lang["update"][90].$db->error());
 
-$query = "INSERT INTO `glpi_config` VALUES (1, '10', '1', '1', '80', '30', '15', ' 0.4', 'GLPI powered by indepnet', '/glpi', '5', '0', '', '', '', '', '', '', 'admsys@xxxxx.fr', 'SIGNATURE', '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0','1', '1', '1', 'uid', 'mail', 'physicaldeliveryofficename', 'cn', 'telephonenumber')";
+$query = "INSERT INTO `glpi_config` VALUES (1, '10', '1', '1', '80', '30', '15', ' 0.31', 'GLPI powered by indepnet', '/glpi', '5', '0', '', '', '', '', '', '', 'admsys@xxxxx.fr', 'SIGNATURE', '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0','1', '1', '1', 'uid', 'mail', 'physicaldeliveryofficename', 'cn', 'telephonenumber')";
 $db->query($query) or die($lang["update"][90].$db->error());
 
   echo "Version > 0.31  <br />";
 }
 
+// Get current version
+$query="SELECT version FROM glpi_config";
+$result=$db->query($query) or die("get current version".$db->error());
+$current_version=trim($db->result($result,0,0));
 
+switch ($current_version){
+	case "0.31": update031to04();
+	case "0.4": 
+	case "0.41": update04to042();
+	case "0.42": update042to05();
+	case "0.5": update05to051();
+	case "0.51": 
+	case "0.51a": update051to06();
+	case "0.6":
+	break;
+	default:
+	update031to04();
+	update04to042();
+	update042to05();
+	update05to051();
+	update051to06();
+	break;
+}
+
+// Update version number and default langage ---- LEAVE AT THE END
+	$query = "UPDATE `glpi_config` SET `version` = ' 0.6', default_language='".$_SESSION["dict"]."' ;";
+	$db->query($query) or die("0.6 ".$lang["update"][90].$db->error());
+
+optimize_tables();
+
+return $ret;
+}
+
+function update031to04(){
+global $lang;
+$db = new DB;
 
 //0.4 Prefixage des tables : 
+echo "Version 0.4 <br />";
 
 if(!TableExists("glpi_computers")) {
 
@@ -803,7 +839,6 @@ if(!FieldExists("glpi_dropdown_os", "ID")) {
 	changeVarcharToID("glpi_computers", "glpi_type_computers", "type");
 	changeVarcharToID("glpi_templates", "glpi_type_computers", "type");
 	
-echo "Version 0.4 <br />";
 }
 
 if(!TableExists("glpi_type_peripherals")) {
@@ -1112,10 +1147,18 @@ if(!FieldExists("glpi_config","permit_helpdesk")) {
 	$db->query($query) or die("glpi_config_permit_helpdesk ".$lang["update"][90].$db->error());
 }
 
+}
+
+// Update from 0.4 and 0.41 to 0.42
+function update04to042(){
+global $lang;
+$db = new DB;
+
+echo "<br>Version 0.42 <br />";
+
 if(!TableExists("glpi_reservation_item")) {
 
- echo "<br>Version 0.42 <br />";
-
+ 
 	$query = "CREATE TABLE glpi_reservation_item (ID int(11) NOT NULL auto_increment,device_type tinyint(4) NOT NULL default '0', id_device int(11) NOT NULL default '0', comments text NOT NULL, PRIMARY KEY  (ID), KEY device_type (device_type));";
 
 	$db->query($query) or die("4201 ".$lang["update"][90].$db->error());
@@ -1149,6 +1192,16 @@ if(!FieldExists("glpi_config","default_language")) {
 	$db->query($query) or die("4204 ".$lang["update"][90].$db->error());
 
 }
+
+}
+
+// Update from 0.42 to 0.5
+function update042to05(){
+global $lang;
+$db = new DB;
+
+ echo "<br>Version 0.5 <br />";
+
 
 // Augmentation taille itemtype
 	$query = "ALTER TABLE `glpi_event_log` CHANGE `itemtype` `itemtype` VARCHAR(20) NOT NULL ;";
@@ -1191,7 +1244,6 @@ if(!FieldExists("glpi_computers","is_template")) {
 		$db->query($query) or die("0.5 add blank template ".$lang["update"][90].$db->error());	
 	}
 	mysql_free_result($result);
-	 echo "<br>Version 0.5 <br />";
 }
 
 
@@ -2327,6 +2379,15 @@ if (TableExists("glpi_prefs")){
 	mysql_free_result($result2);
 }
 
+
+}
+
+// Update from 0.5 to 0.51
+function update05to051(){
+global $lang;
+$db = new DB;
+	 echo "<br>Version 0.51 <br />";
+
 /*******************************GLPI 0.51***********************************************/
 
 if(!FieldExists("glpi_infocoms","facture")) {
@@ -2386,6 +2447,12 @@ if(!TableExists("glpi_dropdown_state")) {
 	$db->query($query) or die("0.51 add state repair item ".$lang["update"][90].$db->error());	
 }
 
+}
+// Update from 0.51x to 0.6
+function update051to06(){
+global $lang;
+$db = new DB;
+	 echo "<br>Version 0.6 <br />";
 
 /*******************************GLPI 0.6***********************************************/
 $query= "ALTER TABLE `glpi_tracking` CHANGE `category` `category` INT(11) DEFAULT '0' NOT NULL";
@@ -2928,13 +2995,6 @@ if(!TableExists("glpi_dropdown_hdd_type")) {
 	$db->query($query) or die("0.6 alter interface of  glpi_device_hdd".$lang["update"][90].$db->error());
 }
 
-// Update version number and default langage ---- LEAVE AT THE END
-	$query = "UPDATE `glpi_config` SET `version` = ' 0.6', default_language='".$_SESSION["dict"]."' ;";
-	$db->query($query) or die("0.6 ".$lang["update"][90].$db->error());
-
-optimize_tables();
-
-return $ret;
 }
 
 function updateTreeDropdown(){
