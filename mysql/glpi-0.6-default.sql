@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-07-28 17:18
+#GLPI Dump database on 2005-09-06 14:25
 
 ### Dump table glpi_cartridges
 
@@ -123,7 +123,6 @@ DROP TABLE IF EXISTS glpi_computers;
 CREATE TABLE glpi_computers (
     ID int(11) NOT NULL auto_increment,
     name varchar(200) NOT NULL,
-    flags_server tinyint(4) DEFAULT '0' NOT NULL,
     serial varchar(200) NOT NULL,
     otherserial varchar(200) NOT NULL,
     contact varchar(90) NOT NULL,
@@ -133,16 +132,18 @@ CREATE TABLE glpi_computers (
     date_mod datetime,
     os int(11),
     location int(11),
+    domain int(11) DEFAULT '0' NOT NULL,
+    network int(11) DEFAULT '0' NOT NULL,
+    model int(11),
     type int(11),
     is_template enum('0','1') DEFAULT '0' NOT NULL,
     tplname varchar(200),
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
    PRIMARY KEY (ID),
-   KEY flags (flags_server),
    KEY location (location),
    KEY os (os),
-   KEY type (type),
+   KEY type (model),
    KEY FK_glpi_enterprise (FK_glpi_enterprise),
    KEY deleted (deleted),
    KEY is_template (is_template),
@@ -150,13 +151,13 @@ CREATE TABLE glpi_computers (
    KEY tech_num (tech_num)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_computers VALUES ('8','Dell Inspiron 450','0','4586-sd6-fds','','Roger Rabbit','5462','0','','2003-09-18 00:15:44','5','1','1','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('10','Dell Inspiron 450','0','4598-jhd-545','','Peter Pan','8565','0','','2003-09-18 00:07:58','13','1','1','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('15','Dell Inspiron 450','0','4561-hsub-dfsnj','','Poppins Marry','6545','0','','2003-09-18 00:09:47','1','1','1','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('18','IBM 945gx','0','9854-5f-4s4f','','Jeannot Lapin','5465','0','','2003-09-18 00:05:07','2','1','1','0',NULL,'0','N');
-INSERT INTO glpi_computers VALUES ('19','','0','','','','','0','Empty Template',NULL,'2','0','1','1','Blank Template','0','N');
-INSERT INTO glpi_computers VALUES ('20','','0','','','','','0','Standard iMac',NULL,'9','0','3','1','iMac','0','N');
-INSERT INTO glpi_computers VALUES ('21','','0','','','','','0','',NULL,'12','1','1','1','test','0','N');
+INSERT INTO glpi_computers VALUES ('8','Dell Inspiron 450','4586-sd6-fds','','Roger Rabbit','5462','0','','2003-09-18 00:15:44','5','1','0','0','1',NULL,'0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('10','Dell Inspiron 450','4598-jhd-545','','Peter Pan','8565','0','','2003-09-18 00:07:58','13','1','0','0','1',NULL,'0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('15','Dell Inspiron 450','4561-hsub-dfsnj','','Poppins Marry','6545','0','','2003-09-18 00:09:47','1','1','0','0','1',NULL,'0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('18','IBM 945gx','9854-5f-4s4f','','Jeannot Lapin','5465','0','','2003-09-18 00:05:07','2','1','0','0','1',NULL,'0',NULL,'0','N');
+INSERT INTO glpi_computers VALUES ('19','','','','','','0','Empty Template',NULL,'2','0','0','0','1',NULL,'1','Blank Template','0','N');
+INSERT INTO glpi_computers VALUES ('20','','','','','','0','Standard iMac',NULL,'9','0','0','0','3',NULL,'1','iMac','0','N');
+INSERT INTO glpi_computers VALUES ('21','','','','','','0','',NULL,'12','1','0','0','1',NULL,'1','test','0','N');
 
 ### Dump table glpi_config
 
@@ -182,6 +183,9 @@ CREATE TABLE glpi_config (
     ldap_rootdn varchar(200) NOT NULL,
     ldap_pass varchar(200) NOT NULL,
     admin_email varchar(200) NOT NULL,
+    mailing_resa_all_admin varchar(200) DEFAULT '0' NOT NULL,
+    mailing_resa_user varchar(200) DEFAULT '1' NOT NULL,
+    mailing_resa_admin varchar(200) DEFAULT '1' NOT NULL,
     mailing_signature varchar(200) NOT NULL,
     mailing_new_admin varchar(200) NOT NULL,
     mailing_followup_admin varchar(200) NOT NULL,
@@ -218,11 +222,12 @@ CREATE TABLE glpi_config (
     cas_uri varchar(255) NOT NULL,
     planning_begin time DEFAULT '08:00:00' NOT NULL,
     planning_end time DEFAULT '20:00:00' NOT NULL,
+    auto_assign enum('0','1') DEFAULT '0' NOT NULL,
     utf8_conv int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.6','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0');
+INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.6','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0');
 
 ### Dump table glpi_connect_wire
 
@@ -237,6 +242,42 @@ CREATE TABLE glpi_connect_wire (
    KEY end1 (end1),
    KEY end2 (end2),
    KEY type (type)
+) TYPE=MyISAM;
+
+
+### Dump table glpi_consumables
+
+DROP TABLE IF EXISTS glpi_consumables;
+CREATE TABLE glpi_consumables (
+    ID int(11) NOT NULL auto_increment,
+    FK_glpi_consumables_type int(11),
+    date_in date,
+    date_out date,
+   PRIMARY KEY (ID),
+   KEY FK_glpi_cartridges_type (FK_glpi_consumables_type),
+   KEY date_in (date_in),
+   KEY date_out (date_out)
+) TYPE=MyISAM;
+
+
+### Dump table glpi_consumables_type
+
+DROP TABLE IF EXISTS glpi_consumables_type;
+CREATE TABLE glpi_consumables_type (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+    ref varchar(255) NOT NULL,
+    location int(11) DEFAULT '0' NOT NULL,
+    type tinyint(4) DEFAULT '0' NOT NULL,
+    FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
+    tech_num int(11) DEFAULT '0',
+    deleted enum('Y','N') DEFAULT 'N' NOT NULL,
+    comments text NOT NULL,
+    alarm tinyint(4) DEFAULT '10' NOT NULL,
+   PRIMARY KEY (ID),
+   KEY FK_glpi_enterprise (FK_glpi_enterprise),
+   KEY tech_num (tech_num),
+   KEY deleted (deleted)
 ) TYPE=MyISAM;
 
 
@@ -412,7 +453,7 @@ CREATE TABLE glpi_device_hdd (
     ID int(11) NOT NULL auto_increment,
     designation varchar(100) NOT NULL,
     rpm varchar(20) NOT NULL,
-    interface enum('IDE','SATA','SCSI') DEFAULT 'IDE' NOT NULL,
+    interface int(11) DEFAULT '0' NOT NULL,
     cache varchar(20) NOT NULL,
     comment text NOT NULL,
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
@@ -421,8 +462,8 @@ CREATE TABLE glpi_device_hdd (
    KEY FK_glpi_enterprise (FK_glpi_enterprise)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_device_hdd VALUES ('1','IBM DTTA 35101','','IDE','','','0','');
-INSERT INTO glpi_device_hdd VALUES ('2','IBM DCAS 34330','','IDE','','','0','');
+INSERT INTO glpi_device_hdd VALUES ('1','IBM DTTA 35101','','1','','','0','');
+INSERT INTO glpi_device_hdd VALUES ('2','IBM DCAS 34330','','1','','','0','');
 
 ### Dump table glpi_device_iface
 
@@ -632,6 +673,16 @@ INSERT INTO glpi_dropdown_cartridge_type VALUES ('1','Jet-Encre');
 INSERT INTO glpi_dropdown_cartridge_type VALUES ('2','Toner');
 INSERT INTO glpi_dropdown_cartridge_type VALUES ('3','Ruban');
 
+### Dump table glpi_dropdown_consumable_type
+
+DROP TABLE IF EXISTS glpi_dropdown_consumable_type;
+CREATE TABLE glpi_dropdown_consumable_type (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
+
 ### Dump table glpi_dropdown_contact_type
 
 DROP TABLE IF EXISTS glpi_dropdown_contact_type;
@@ -661,6 +712,16 @@ INSERT INTO glpi_dropdown_contract_type VALUES ('5','Maintenance Hardware');
 INSERT INTO glpi_dropdown_contract_type VALUES ('6','Maintenance Software');
 INSERT INTO glpi_dropdown_contract_type VALUES ('7','Prestation');
 
+### Dump table glpi_dropdown_domain
+
+DROP TABLE IF EXISTS glpi_dropdown_domain;
+CREATE TABLE glpi_dropdown_domain (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
+
 ### Dump table glpi_dropdown_enttype
 
 DROP TABLE IF EXISTS glpi_dropdown_enttype;
@@ -680,6 +741,19 @@ CREATE TABLE glpi_dropdown_firmware (
    PRIMARY KEY (ID)
 ) TYPE=MyISAM;
 
+
+### Dump table glpi_dropdown_hdd_type
+
+DROP TABLE IF EXISTS glpi_dropdown_hdd_type;
+CREATE TABLE glpi_dropdown_hdd_type (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
+INSERT INTO glpi_dropdown_hdd_type VALUES ('1','IDE');
+INSERT INTO glpi_dropdown_hdd_type VALUES ('2','SATA');
+INSERT INTO glpi_dropdown_hdd_type VALUES ('3','SCSI');
 
 ### Dump table glpi_dropdown_iface
 
@@ -729,6 +803,20 @@ CREATE TABLE glpi_dropdown_locations (
 INSERT INTO glpi_dropdown_locations VALUES ('1','1 ier etage','0','1 ier etage');
 INSERT INTO glpi_dropdown_locations VALUES ('2','2nd etage','0','2nd etage');
 
+### Dump table glpi_dropdown_model
+
+DROP TABLE IF EXISTS glpi_dropdown_model;
+CREATE TABLE glpi_dropdown_model (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255),
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
+INSERT INTO glpi_dropdown_model VALUES ('1','Generic x86 PC');
+INSERT INTO glpi_dropdown_model VALUES ('2','PowerMac G4');
+INSERT INTO glpi_dropdown_model VALUES ('3','iMac 2nd Generation');
+INSERT INTO glpi_dropdown_model VALUES ('4','PowerMac G3');
+
 ### Dump table glpi_dropdown_netpoint
 
 DROP TABLE IF EXISTS glpi_dropdown_netpoint;
@@ -738,6 +826,16 @@ CREATE TABLE glpi_dropdown_netpoint (
     name varchar(255) NOT NULL,
    PRIMARY KEY (ID),
    KEY location (location)
+) TYPE=MyISAM;
+
+
+### Dump table glpi_dropdown_network
+
+DROP TABLE IF EXISTS glpi_dropdown_network;
+CREATE TABLE glpi_dropdown_network (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
+   PRIMARY KEY (ID)
 ) TYPE=MyISAM;
 
 
@@ -797,6 +895,7 @@ CREATE TABLE glpi_dropdown_state (
    PRIMARY KEY (ID)
 ) TYPE=MyISAM;
 
+INSERT INTO glpi_dropdown_state VALUES ('1','RÃ©paration');
 
 ### Dump table glpi_dropdown_tracking_category
 
@@ -804,6 +903,16 @@ DROP TABLE IF EXISTS glpi_dropdown_tracking_category;
 CREATE TABLE glpi_dropdown_tracking_category (
     ID int(11) NOT NULL auto_increment,
     name varchar(255),
+   PRIMARY KEY (ID)
+) TYPE=MyISAM;
+
+
+### Dump table glpi_dropdown_vlan
+
+DROP TABLE IF EXISTS glpi_dropdown_vlan;
+CREATE TABLE glpi_dropdown_vlan (
+    ID int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL,
    PRIMARY KEY (ID)
 ) TYPE=MyISAM;
 
@@ -845,7 +954,7 @@ CREATE TABLE glpi_event_log (
    KEY itemtype (itemtype)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('381','-1','system','2005-07-28 17:18:46','login','3','glpi logged in from 127.0.0.1.');
+INSERT INTO glpi_event_log VALUES ('380','-1','system','2005-09-06 14:25:36','login','3','glpi logged in from 127.0.0.1.');
 
 ### Dump table glpi_followups
 
@@ -993,6 +1102,7 @@ CREATE TABLE glpi_monitors (
     location int(11),
     type int(11),
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
+    is_global enum('0','1') DEFAULT '0' NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
     is_template enum('0','1') DEFAULT '0' NOT NULL,
     tplname varchar(255),
@@ -1006,9 +1116,9 @@ CREATE TABLE glpi_monitors (
    KEY tech_num (tech_num)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_monitors VALUES ('3','nokia 20\'','2003-09-18 00:14:14','','','0','Ecran infographiste','','','20','1','1','1','0','1','1','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('2','Sony 19\'','2003-09-18 00:14:50','','','0','ecran documentation','','','19','0','0','1','1','1','3','0','N','0',NULL);
-INSERT INTO glpi_monitors VALUES ('4','','0000-00-00 00:00:00','','','0','','','','0','0','0','0','0',NULL,NULL,'0','N','1','Blank Template');
+INSERT INTO glpi_monitors VALUES ('3','nokia 20\'','2003-09-18 00:14:14','','','0','Ecran infographiste','','','20','1','1','1','0','1','1','0','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('2','Sony 19\'','2003-09-18 00:14:50','','','0','ecran documentation','','','19','0','0','1','1','1','3','0','0','N','0',NULL);
+INSERT INTO glpi_monitors VALUES ('4','','0000-00-00 00:00:00','','','0','','','','0','0','0','0','0',NULL,NULL,'0','0','N','1','Blank Template');
 
 ### Dump table glpi_networking
 
@@ -1025,6 +1135,8 @@ CREATE TABLE glpi_networking (
     date_mod datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
     comments text NOT NULL,
     location int(11),
+    domain int(11) DEFAULT '0' NOT NULL,
+    network int(11) DEFAULT '0' NOT NULL,
     type int(11),
     firmware int(11),
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
@@ -1043,8 +1155,8 @@ CREATE TABLE glpi_networking (
    KEY tech_num (tech_num)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_networking VALUES ('9','Dlink 450','','4586-puis-kioe','','','','0','0000-00-00 00:00:00','','1','1',NULL,'0','N','0',NULL,'','');
-INSERT INTO glpi_networking VALUES ('10','','','','','','','0','0000-00-00 00:00:00','',NULL,NULL,NULL,'0','N','1','Blank Template','','');
+INSERT INTO glpi_networking VALUES ('9','Dlink 450','','4586-puis-kioe','','','','0','0000-00-00 00:00:00','','1','0','0','1',NULL,'0','N','0',NULL,'','');
+INSERT INTO glpi_networking VALUES ('10','','','','','','','0','0000-00-00 00:00:00','',NULL,'0','0',NULL,NULL,'0','N','1','Blank Template','','');
 
 ### Dump table glpi_networking_ports
 
@@ -1072,6 +1184,20 @@ INSERT INTO glpi_networking_ports VALUES ('5','9','2','1','Dlink port','10.10.0.
 INSERT INTO glpi_networking_ports VALUES ('6','9','2','2','Dlink port','10.10.0.1','','2',NULL);
 INSERT INTO glpi_networking_ports VALUES ('7','9','2','3','Dlink port','10.10.0.1','','2',NULL);
 INSERT INTO glpi_networking_ports VALUES ('8','10','2','0','','','','5',NULL);
+
+### Dump table glpi_networking_vlan
+
+DROP TABLE IF EXISTS glpi_networking_vlan;
+CREATE TABLE glpi_networking_vlan (
+    ID int(11) NOT NULL auto_increment,
+    FK_port int(11) DEFAULT '0' NOT NULL,
+    FK_vlan int(11) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (ID),
+   UNIQUE FK_port_2 (FK_port, FK_vlan),
+   KEY FK_port (FK_port),
+   KEY FK_vlan (FK_vlan)
+) TYPE=MyISAM;
+
 
 ### Dump table glpi_networking_wire
 
@@ -1107,6 +1233,7 @@ CREATE TABLE glpi_peripherals (
     type int(11) DEFAULT '0' NOT NULL,
     brand varchar(255) NOT NULL,
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
+    is_global enum('0','1') DEFAULT '0' NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
     is_template enum('0','1') DEFAULT '0' NOT NULL,
     tplname varchar(255),
@@ -1119,7 +1246,7 @@ CREATE TABLE glpi_peripherals (
    KEY tech_num (tech_num)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_peripherals VALUES ('1','','0000-00-00 00:00:00','','','0','','','','0','0','','0','N','1','Blank Template');
+INSERT INTO glpi_peripherals VALUES ('1','','0000-00-00 00:00:00','','','0','','','','0','0','','0','0','N','1','Blank Template');
 
 ### Dump table glpi_printers
 
@@ -1139,11 +1266,14 @@ CREATE TABLE glpi_printers (
     comments text NOT NULL,
     ramSize varchar(6) NOT NULL,
     location int(11),
+    domain int(11) DEFAULT '0' NOT NULL,
+    network int(11) DEFAULT '0' NOT NULL,
     type int(11),
     FK_glpi_enterprise int(11) DEFAULT '0' NOT NULL,
     deleted enum('Y','N') DEFAULT 'N' NOT NULL,
     is_template enum('0','1') DEFAULT '0' NOT NULL,
     tplname varchar(255),
+    initial_pages varchar(30) DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID),
    KEY id (ID),
    KEY location (location),
@@ -1154,22 +1284,9 @@ CREATE TABLE glpi_printers (
    KEY tech_num (tech_num)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_printers VALUES ('1','HP laser','2003-09-18 00:12:43','','','0','hp-jsgsj-658','','0','1','0','Imprimante bureau du directeur','','1','1','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('2','HP deskjet','2003-09-18 00:13:11','','','0','45dskjs-ds','','0','1','0','Imprimante documentation','','2','3','0','N','0',NULL);
-INSERT INTO glpi_printers VALUES ('3','','0000-00-00 00:00:00','','','0','','','0','0','0','','',NULL,NULL,'0','N','1','Blank Template');
-
-### Dump table glpi_repair_item
-
-DROP TABLE IF EXISTS glpi_repair_item;
-CREATE TABLE glpi_repair_item (
-    ID int(11) NOT NULL auto_increment,
-    device_type tinyint(4) DEFAULT '0' NOT NULL,
-    id_device int(11) DEFAULT '0' NOT NULL,
-   PRIMARY KEY (ID),
-   KEY device_type (device_type),
-   KEY device_type_2 (device_type, id_device)
-) TYPE=MyISAM;
-
+INSERT INTO glpi_printers VALUES ('1','HP laser','2003-09-18 00:12:43','','','0','hp-jsgsj-658','','0','1','0','Imprimante bureau du directeur','','1','0','0','1','0','N','0',NULL,'0');
+INSERT INTO glpi_printers VALUES ('2','HP deskjet','2003-09-18 00:13:11','','','0','45dskjs-ds','','0','1','0','Imprimante documentation','','2','0','0','3','0','N','0',NULL,'0');
+INSERT INTO glpi_printers VALUES ('3','','0000-00-00 00:00:00','','','0','','','0','0','0','','',NULL,'0','0',NULL,'0','N','1','Blank Template','0');
 
 ### Dump table glpi_reservation_item
 
@@ -1250,7 +1367,6 @@ CREATE TABLE glpi_state_item (
    KEY device_type_2 (device_type, id_device)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_state_item VALUES ('1','1','8','1','0');
 
 ### Dump table glpi_tracking
 
@@ -1308,7 +1424,7 @@ CREATE TABLE glpi_tracking_planning (
 DROP TABLE IF EXISTS glpi_type_computers;
 CREATE TABLE glpi_type_computers (
     ID int(11) NOT NULL auto_increment,
-    name varchar(255),
+    name varchar(255) NOT NULL,
    PRIMARY KEY (ID)
 ) TYPE=MyISAM;
 
@@ -1316,6 +1432,7 @@ INSERT INTO glpi_type_computers VALUES ('1','Generic x86 PC');
 INSERT INTO glpi_type_computers VALUES ('2','PowerMac G4');
 INSERT INTO glpi_type_computers VALUES ('3','iMac 2nd Generation');
 INSERT INTO glpi_type_computers VALUES ('4','PowerMac G3');
+INSERT INTO glpi_type_computers VALUES ('5','Serveur');
 
 ### Dump table glpi_type_docs
 
@@ -1450,7 +1567,7 @@ CREATE TABLE glpi_users (
     can_assign_job enum('yes','no') DEFAULT 'no' NOT NULL,
     location int(11),
     tracking_order enum('yes','no') DEFAULT 'no' NOT NULL,
-    language varchar(255) NOT NULL,
+    language varchar(255) DEFAULT 'english' NOT NULL,
    PRIMARY KEY (ID),
    UNIQUE name (name),
    KEY type (type),
