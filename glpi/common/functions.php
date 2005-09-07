@@ -1747,7 +1747,7 @@ function dropdownUsersTracking($value, $myname,$champ) {
 	// Make a select box with all glpi users in tracking table
 	global $lang;
 	$db = new DB;
-	$query = "SELECT DISTINCT glpi_tracking.$champ AS NAME FROM glpi_tracking WHERE glpi_tracking.$champ <> '' ORDER BY glpi_tracking.$champ";
+	$query = "SELECT DISTINCT glpi_tracking.$champ AS CHAMP, glpi_users.name as NAME FROM glpi_tracking, glpi_users WHERE glpi_users.ID=glpi_tracking.$champ AND glpi_tracking.$champ <> '' ORDER BY glpi_tracking.$champ";
 	$result = $db->query($query);
 
 	echo "<select name=\"$myname\">";
@@ -1757,10 +1757,11 @@ function dropdownUsersTracking($value, $myname,$champ) {
 		echo "<option value=\"all\">".$lang["reports"][16]."\n";
 		while ($i < $number) {
 			$name = $db->result($result, $i, "NAME");
-			if ($name == $value) {
-				echo "<option value=\"$name\" selected>".$name;
+			$val = $db->result($result, $i, "CHAMP");
+			if ($val == $value) {
+				echo "<option value=\"$val\" selected>".$name;
 			} else {
-				echo "<option value=\"$name\">".$name;
+				echo "<option value=\"$val\">".$name;
 			}
 			$i++;
 			echo "</option>";
