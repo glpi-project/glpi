@@ -44,7 +44,6 @@ if(empty($tab["ID"])) $tab["ID"] = "";
 
 if (isset($_POST["add"]))
 {
-	print_r($_POST);
 	checkAuthentication("admin");
 	$newID=addLink($_POST);
 	logEvent($newID, "links", 4, "setup", $_SESSION["glpiname"]." added ".$_POST["name"].".");
