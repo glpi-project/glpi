@@ -182,7 +182,7 @@ if ( ! $auth_succeded ) {
 
 if ($auth_succeded)
 if (!$user_present) {
-	$identificat->user->fields["ID"]=$identificat->user->addToDB();
+	$identificat->user->fields["ID"]=$identificat->user->addToDB($identificat->extauth);
 } else if (!empty($update_list)) {
 	$identificat->user->updateInDB($update_list);
 	// Blank PWD to clean old database for the external auth

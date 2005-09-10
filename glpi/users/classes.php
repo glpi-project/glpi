@@ -254,7 +254,7 @@ class User {
 	} // getFromIMAP()  	    
 
 	
-	function addToDB() {
+	function addToDB($ext_auth=0) {
 		
 		$db = new DB;
 
@@ -280,7 +280,7 @@ class User {
 		$query .= ") VALUES (";
 		for ($i=0; $i < count($values); $i++) {
 			if($i === $indice) {
-				if (!empty($values[$i])) {
+				if (!$ext_auth) {
 					$mdpchiff = md5($values[$i]);
 					$query .= " PASSWORD('".$values[$i]."')";
 					}

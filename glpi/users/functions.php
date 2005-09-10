@@ -136,7 +136,7 @@ function showUserform($target,$name) {
 		echo "</td></tr>";
 	// si on est dans le cas d'un modif on affiche la modif du login si ce n'est pas une auth externe
 	} else {
-		if (empty($user->fields["password"])){
+		if (empty($user->fields["password"])&&empty($user->fields["password_md5"])){
 			echo "<td align='center'><b>".$user->fields["name"]."</b>";
 			echo "<input type='hidden' name='name' value=\"".$user->fields["name"]."\">";
 			}
@@ -149,7 +149,7 @@ function showUserform($target,$name) {
 	}
 	//do some rights verification
 	if(isSuperAdmin($_SESSION["glpitype"])) {
-		if (!empty($user->fields["password"])||$name==""){
+		if (!empty($user->fields["password"])||!empty($user->fields["password_md5"])||$name==""){
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value=\"".$user->fields["password"]."\" size='20' /></td></tr>";
 		}
 		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td><input name='realname' size='20' value=\"".$user->fields["realname"]."\"></td></tr>";
