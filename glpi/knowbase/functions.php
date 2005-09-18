@@ -494,13 +494,13 @@ function ShowKbItemFull($ID)
 	echo "<div align='center'><table class='tab_cadre' cellpadding='10' width='700'><tr><th>";
 	
 	echo $lang["knowbase"][23].": ".$fullcategoryname."</th></tr>";
-	echo "<tr class='tab_bg_3'><td><h2>".$lang["knowbase"][3]."</h2>";
+	echo "<tr class='tab_bg_3'><td style='text-align:left'><h2>".$lang["knowbase"][3]."</h2>";
 	//$question = autop($ki->fields["question"]);
 	$question = rembo($ki->fields["question"]);
 	//echo clicurl($question);
 	echo $question;
 	echo "</td></tr>\n";
-	echo "<tr  class='tab_bg_3'><td><h2>".$lang["knowbase"][4]."</h2>\n";
+	echo "<tr  class='tab_bg_3'><td style='text-align:left'><h2>".$lang["knowbase"][4]."</h2>\n";
 	//$answer = autop($ki->fields["answer"]);
 	$answer = rembo($ki->fields["answer"]);
 	//echo clicurl(bbcode($answer));
