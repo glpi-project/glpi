@@ -24,7 +24,7 @@ $max['iface']=50;
 $max['model']=50;
 $max['network']=20;
 $max['os']=50;
-$max['ram_type']=500;
+$max['ram_type']=50;
 $max['rubdocs']=10;
 $max['state']=10;
 $max['tracking_category']=10;
@@ -332,6 +332,8 @@ for ($i=0;$i<$max['computers'];$i++){
 
 }
 
+	// Modif de X% des etats des elements
+
 	// Ajout imprimantes reseaux : 1 par loc + connexion à un matos reseau + ajout de cartouches
 	
 	// Ajout periph externes globaux et unitaires + connexion aux ordis
@@ -344,8 +346,16 @@ for ($i=0;$i<$max['computers'];$i++){
 	
 	// Ajout d'entrées dans le planning
 	
-	// Ajout cartcouhes en stock
+	// Ajout cartouches en stock
 	
 	// Ajout consommables en stock + utilisé
+
+	// Ajout de documents + link aux elements
+	
+	// Ajout contacts
+	
+	// Ajout contrats 
+
+	// Ajout d'infocoms aux elements
 
 ?>
