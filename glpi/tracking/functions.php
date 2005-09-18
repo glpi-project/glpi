@@ -1157,7 +1157,10 @@ function assignJob ($ID,$type,$user,$admin) {
 	// Add a Followup for a assignment change
 	if ($newuser!=$olduser||$newuser_type!=$olduser_type){
 	$content=$lang["mailing"][12].": ".$oldname." -> ".$newname;
-	postFollowups ($ID,$_SESSION["glpiID"],addslashes($content));
+	$sendmail=1;
+	if ($type!=USER_TYPE) $sendmail=0;
+
+	postFollowups ($ID,$_SESSION["glpiID"],addslashes($content),$sendmail);
 	}
 }
 
@@ -1294,7 +1297,7 @@ function showFollowups($ID) {
 
 }
 
-function postFollowups ($ID,$author,$contents) {
+function postFollowups ($ID,$author,$contents,$sendmail=1) {
 
 	GLOBAL $cfg_install, $cfg_features, $cfg_layout;
 	
@@ -1309,7 +1312,7 @@ function postFollowups ($ID,$author,$contents) {
 		// Log this event
 		$fup->logFupUpdate();
 		// Processing Email
-		if ($cfg_features["mailing"])
+		if ($cfg_features["mailing"]&&$sendmail)
 		{
 			$job= new Job;
 			$job->getfromDB($ID,0);
