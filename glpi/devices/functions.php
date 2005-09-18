@@ -258,7 +258,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 //			echo "<img class='calendrier' src='".$HTMLRel."pics/delete2.png'  onclick='form_unlink_device_$compDevID.submit()' title ='".$lang["devices"][11]."' alt='".$lang["devices"][11]."'";
 //			echo "<input type=\"hidden\" name=\"unlink_device\" value=\"".$compDevID."\" >";
 
-			echo "<input type='image' name='unlink_device' value='$compDevID' src='".$HTMLRel."pics/delete2.png' class='calendrier'>";
+			echo "<input type='image' name='unlink_device_$compDevID' value='$compDevID' src='".$HTMLRel."pics/delete2.png' class='calendrier'>";
 			echo "</td>";
 
 //			echo "</form>";
@@ -274,7 +274,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 //  		echo "<img class='calendrier' src='".$HTMLRel."pics/delete2.png'  onclick='form_unlink_device_$compDevID.submit()' title ='".$lang["devices"][11]."' alt='".$lang["devices"][11]."'";
 //  		 echo "<input type=\"hidden\" name=\"unlink_device\" value=\"".$compDevID."\" >";
 
-			echo "<input type='image' name='unlink_device' value='$compDevID' src='".$HTMLRel."pics/delete2.png' class='calendrier'>";
+			echo "<input type='image' name='unlink_device_$compDevID' value='$compDevID' src='".$HTMLRel."pics/delete2.png' class='calendrier'>";
 
   		echo "</td>";
 //  		 echo "</form>";

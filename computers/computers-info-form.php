@@ -57,6 +57,7 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 
+
 //Add a new computer
 if (isset($tab["add"])) {
 	checkAuthentication("admin");
@@ -129,7 +130,7 @@ else if(isset($tab["connect"])&&isset($tab["device_type"])) {
 	}
 }
 //Update a device specification
-elseif(isset($_POST["update_device"])) {
+elseif(isset($_POST["update_device_x"])||isset($_POST["update_device"])) {
 	checkAuthentication("admin");
 	foreach ($_POST as $key => $val){
 		$tab=split("_",$key);
@@ -137,7 +138,7 @@ elseif(isset($_POST["update_device"])) {
 		update_device_specif($val,$tab[1]);
 		}
 	}
-	logEvent($_POST["update_device"],"computers",4,"inventory",$_SESSION["glpiname"] ." modified a computer device specificity.");
+	logEvent($_POST["ID"],"computers",4,"inventory",$_SESSION["glpiname"] ." modified a computer device specificity.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 //add a new device
@@ -155,10 +156,22 @@ elseif (isset($_POST["connect_device"])) {
 	}
 }
 // Unlink a device 
-elseif(isset($_POST["unlink_device"])) {
-	checkAuthentication("admin");
-	unlink_device_computer($_POST["unlink_device"]);
-	logEvent($_POST["unlink_device"],"computers",4,"inventory",$_SESSION["glpiname"] ." Unlinked a device from computer ".$tab["ID"].".");
+// Problem avec IE donc test sur le hidden action_device - MERCI IE :(
+//elseif(isset($_POST["unlink_device"])||isset($_POST["unlink_device_x"])) {
+elseif(isset($_POST["device_action"])) {
+	
+	$devtodel=-1;
+	foreach ($_POST as $key => $val)
+	if (preg_match("/unlink_device_([0-9]+)_x/",$key,$match))
+	{
+	$devtodel=$match[1];	
+	}
+
+	if ($devtodel>0){
+		checkAuthentication("admin");
+		unlink_device_computer($devtodel);
+		logEvent($_POST["ID"],"computers",4,"inventory",$_SESSION["glpiname"] ." Unlinked a device from computer ".$tab["ID"].".");
+	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 //print computer informations
