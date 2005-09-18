@@ -299,11 +299,11 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			
 			// Location			
 			echo "<th>";
-			if ($sort=="glpi_dropdown_locations.name") {
+			if ($sort=="glpi_dropdown_locations.completename") {
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
-			echo "<a href=\"$target?sort=glpi_dropdown_locations.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+			echo "<a href=\"$target?sort=glpi_dropdown_locations.completename&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 			echo $lang["peripherals"][6]."</a></th>";
 
 			// Type
