@@ -385,7 +385,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 	$query.= " LEFT JOIN glpi_device_pci as pci ON (pci.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".PCI_DEVICE."') ";
 	$query.= " LEFT JOIN glpi_device_case as Tcase ON (Tcase.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".CASE_DEVICE."') ";
 	$query.= " LEFT JOIN glpi_device_power as power ON (power.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".POWER_DEVICE."') ";
-	$query.= " LEFT JOIN glpi_networking_ports on (comp.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='1') ";
+	$query.= " LEFT JOIN glpi_networking_ports on (comp.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='".COMPUTER_TYPE."') ";
 	$query.= " LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint) ";
 	$query.= " LEFT JOIN glpi_dropdown_os on (glpi_dropdown_os.ID = comp.os) ";
 	$query.= " LEFT JOIN glpi_dropdown_locations on (glpi_dropdown_locations.ID = comp.location) ";
@@ -395,6 +395,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 	$query.= " LEFT JOIN glpi_type_computers ON (glpi_type_computers.ID = comp.type ) ";
 	$query.= getInfocomSearchToRequest("comp",COMPUTER_TYPE);
 	$query.= getContractSearchToRequest("comp",COMPUTER_TYPE);
+
 	$query.= " where ";
 	if (!empty($where)) $query .= " $where AND ";
 	$query .= " comp.deleted='$deleted' AND comp.is_template = '0'  ORDER BY $sort $order";
