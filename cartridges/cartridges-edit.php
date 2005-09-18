@@ -42,7 +42,9 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["tID"])) $tab["tID"] = "";
 if(!isset($tab["cID"])) $tab["cID"] = "";
 
-if (isset($_POST["update_pages"]))
+//print_r($_POST);
+
+if (isset($_POST["update_pages"])||isset($_POST["update_pages_x"]))
 {
 	checkAuthentication("admin");
 	updateCartridgePages($_POST["cID"],$_POST['pages']);

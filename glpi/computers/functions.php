@@ -775,6 +775,8 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 			//print devices.
 		echo "<div align='center'>";
 		echo "<form name='form_device_action' action=\"$target\" method=\"post\" >";
+		echo "<input type='hidden' name='ID' value='$ID'>";	
+		echo "<input type='hidden' name='device_action' value='$ID'>";			
 		echo "<table width='700' class='tab_cadre' >";
 		echo "<tr><th colspan='66'>".$lang["devices"][10]."</th></tr>";
 		foreach($comp->devices as $key => $val) {

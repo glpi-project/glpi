@@ -373,10 +373,11 @@ class Identification
 
   		if (ldap_bind($conn, $dn, $pass) ) {
 			$findcn=explode(",O",$dn);
-			// Cas ou pas de ,OU
-			if ($dn==$findcn[0]) {
-               			$findcn=explode(",C",$dn);
-            		}
+              // Cas ou pas de ,OU
+             if ($dn==$findcn[0]) {
+              $findcn=explode(",C",$dn);
+             }
+
  			$findcn=explode("=",$findcn[0]);
  			$findcn[1]=str_replace('\,', ',', $findcn[1]);
  			$filter="(CN=".$findcn[1].")";
@@ -777,7 +778,7 @@ class Mailing
 				// get reply-to address : user->email ou job_email if not set OK
 				$replyto=$this->get_reply_to_address ();
 				// Send all mails
-				require $phproot."/glpi/common/MIMEMail.php";
+				require_once($phproot."/glpi/common/MIMEMail.php");
 				for ($i=0;$i<count($users);$i++)
 				{
 				$mmail=new MIMEMail();
@@ -934,7 +935,7 @@ class MailingResa{
 				$replyto=$this->get_reply_to_address ();
 
 				// Send all mails
-				require_once $phproot."/glpi/common/MIMEMail.php";
+				require_once($phproot."/glpi/common/MIMEMail.php");
 				for ($i=0;$i<count($users);$i++)
 				{
 				$mmail=new MIMEMail();
