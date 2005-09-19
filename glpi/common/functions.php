@@ -2369,15 +2369,15 @@ function printHelpDesk ($name,$from_helpdesk) {
 		$contents="";
 		
 		if (isset($_SESSION["helpdeskSaved"]["emailupdates"]))
-               $emailupdates = $_SESSION["helpdeskSaved"]["emailupdates"];
+               $emailupdates = stripslashes($_SESSION["helpdeskSaved"]["emailupdates"]);
 		if (isset($_SESSION["helpdeskSaved"]["email"]))
-                $email = $_SESSION["helpdeskSaved"]["uemail"];
+                $email = stripslashes($_SESSION["helpdeskSaved"]["uemail"]);
 		if (isset($_SESSION["helpdeskSaved"]["computer"]))
-                $computer = $_SESSION["helpdeskSaved"]["computer"];
+                $computer = stripslashes($_SESSION["helpdeskSaved"]["computer"]);
 		if (isset($_SESSION["helpdeskSaved"]["device_type"]))
-                $device_type = $_SESSION["helpdeskSaved"]["device_type"];
+                $device_type = stripslashes($_SESSION["helpdeskSaved"]["device_type"]);
 		if (isset($_SESSION["helpdeskSaved"]["contents"]))
-                $contents = $_SESSION["helpdeskSaved"]["contents"];
+                $contents = stripslashes($_SESSION["helpdeskSaved"]["contents"]);
 
 
 	echo "<form method='post' name=\"helpdeskform\" action=\"".$cfg_install["root"]."/tracking/tracking-injector.php\"  enctype=\"multipart/form-data\">";
