@@ -6,34 +6,34 @@ include ("_relpos.php");
 include ($phproot."/glpi/includes.php");
 $db=new DB();
 
-$multiplicator=1;
+$multiplicator=100;
 
 $max['locations']=200;
 $max['kbcategories']=10;
 
 // DROPDOWNS
-$max['consumable_type']=100;
-$max['cartridge_type']=100;
+$max['consumable_type']=10;
+$max['cartridge_type']=10;
 $max['contact_type']=10;
 $max['contract_type']=10;
 $max['domain']=20;
 $max['enttype']=10;
-$max['firmware']=50;
-$max['hdd_type']=50;
-$max['iface']=50;
-$max['model']=50;
-$max['network']=20;
-$max['os']=50;
-$max['ram_type']=50;
+$max['firmware']=10;
+$max['hdd_type']=10;
+$max['iface']=10;
+$max['model']=10;
+$max['network']=10;
+$max['os']=10;
+$max['ram_type']=10;
 $max['rubdocs']=10;
 $max['state']=10;
 $max['tracking_category']=10;
-$max['vlan']=50;
-$max['type_computers']=100;
-$max['type_printers']=100;
-$max['type_monitors']=100;
-$max['type_peripherals']=100;
-$max['type_networking']=100;
+$max['vlan']=10;
+$max['type_computers']=10;
+$max['type_printers']=10;
+$max['type_monitors']=10;
+$max['type_peripherals']=10;
+$max['type_networking']=10;
 $max['netpoint']=1000;
 
 // USERS
