@@ -1,6 +1,10 @@
 Changelog Complet : http://mantis.indepnet.org/changelog_page.php
 
 *** GLPI  0.6 ***
+
+- 0000202: [Package] Release GLPI 0.6 
+- 0000231: [Général] Computers internel devices in IE
+- 0000288: [Général] problème d'affichage lors de la resaisie d'une intervention (bouton retour)
 - 0000298: [Module Assistance] Affectation d'un ticket + catégorie => "Pas d'intervention" 
 - 0000301: [Module Outils] Affichage centré de la faq sous IE
 - 0000292: [Module Configuration] Ajout d'un utilisateur sans mot de passe
