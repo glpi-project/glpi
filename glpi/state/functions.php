@@ -60,11 +60,12 @@ function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= ""){
 //	$option["glpi_software.version"]			= $lang["software"][5];
 //      $option["glpi_state.comments"]			= $lang["state"][5];
 	
-	echo "<form method=get action=\"".$cfg_install["root"]."/state/index.php\">";
+	echo "<form method=\"get\" action=\"".$cfg_install["root"]."/state/index.php\">";
 	echo "<center><table class='tab_cadre' width='750'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
+	echo $lang["state"][0]." : &nbsp; &nbsp;".dropdownValue("glpi_dropdown_state","state","")." &nbsp; ".$lang["printers"][2];
 	echo "<select name=\"field\" size='1'>";
         echo "<option value='all' ";
 	if($field == "all") echo "selected";
@@ -101,7 +102,7 @@ function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= ""){
 	echo "</td></tr></table></center></form>";
 }
 
-function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start){
+function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$state){
 	// Lists Reservation Items
 
 	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
@@ -124,6 +125,10 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 			$where = "($field LIKE '".$contains."')";
 		}
 	}
+	if(!empty($state)) {
+		$where .= " AND (glpi_state_item.state = '".$state."')";
+	}
+	
 
 	if (!$start) {
 		$start = 0;
