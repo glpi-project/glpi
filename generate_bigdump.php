@@ -6,7 +6,7 @@ include ("_relpos.php");
 include ($phproot."/glpi/includes.php");
 $db=new DB();
 
-$multiplicator=25;
+$multiplicator=1;
 
 $max['locations']=50;
 $max['kbcategories']=10;
@@ -278,6 +278,10 @@ while ($data=$db->fetch_array($result)){
 		$db->query($query);
 	}
 	
+	// AJOUT INFOCOMS
+	$date=mt_rand(1995,2005)."-".mt_rand(1,12)."-".mt_rand(1,28);
+	$query="INSERT INTO glpi_infocoms VALUES ('','$netwID','".NETWORKING_TYPE."','$date','$date','".mt_rand(12,36)."','infowar netw $netwID','".mt_rand(0,$max['enterprises'])."','commande netw $netwID','BL netw $netwID','immo netw $netwID','".mt_rand(0,5000)."','".mt_rand(0,500)."','".mt_rand(1,7)."','".mt_rand(1,2)."','".mt_rand(2,5)."','comments netw $netwID','facture netw $netwID')";
+	$db->query($query);
 	
 	// Link with father 
 	if ($data['parentID']>0){
@@ -310,6 +314,12 @@ while ($data=$db->fetch_array($result)){
 	$query="INSERT INTO glpi_printers VALUES ('','printer of loc ".$data['ID']."',NOW(),'contact ".$data['ID']."','num ".$data['ID']."','$techID','serial ".$data['ID']."','serial2 ".$data['ID']."','0','0','1','comments $i','".mt_rand(0,64)."','".$data['ID']."','$domainID','$networkID','$typeID','".mt_rand(0,$max['enterprises'])."','N','0','','0')";
 	$db->query($query);
 	$printID=$db->insert_id();
+
+	// AJOUT INFOCOMS
+	$date=mt_rand(1995,2005)."-".mt_rand(1,12)."-".mt_rand(1,28);
+	$query="INSERT INTO glpi_infocoms VALUES ('','$printID','".PRINTER_TYPE."','$date','$date','".mt_rand(12,36)."','infowar print $printID','".mt_rand(0,$max['enterprises'])."','commande print $printID','BL print $printID','immo print $printID','".mt_rand(0,5000)."','".mt_rand(0,500)."','".mt_rand(1,7)."','".mt_rand(1,2)."','".mt_rand(2,5)."','comments print $printID','facture print $printID')";
+	$db->query($query);
+
 
 	// ITEMS IN SPECIAL STATES
 	if (mt_rand(0,100)<$percent['state']){
@@ -379,10 +389,23 @@ for ($i=0;$i<$max['type_of_cartridges'];$i++){
 	$db->query($query);
 	$cartID=$db->insert_id();
 
+	// AJOUT INFOCOMS
+	$date=mt_rand(1995,2005)."-".mt_rand(1,12)."-".mt_rand(1,28);
+	$query="INSERT INTO glpi_infocoms VALUES ('','$cartID','".CARTRIDGE_TYPE."','$date','$date','".mt_rand(12,36)."','infowar cartype $cartID','".mt_rand(0,$max['enterprises'])."','commande cartype $cartID','BL cartype $cartID','immo cartype $cartID','".mt_rand(0,5000)."','".mt_rand(0,500)."','".mt_rand(1,7)."','".mt_rand(1,2)."','".mt_rand(2,5)."','comments cartype $cartID','facture cartype $cartID')";
+	$db->query($query);
+
+
 	// Ajout cartouche en stock
 	for ($j=0;$j<mt_rand(0,$max['cartridges_stock']);$j++){
 	$query="INSERT INTO glpi_cartridges VALUES('','$cartID','0',NOW(),NULL,NULL,'0')";
 	$db->query($query);
+	$ID=$db->insert_id();
+	
+	// AJOUT INFOCOMS
+	$date=mt_rand(1995,2005)."-".mt_rand(1,12)."-".mt_rand(1,28);
+	$query="INSERT INTO glpi_infocoms VALUES ('','$ID','".CARTRIDGE_ITEM_TYPE."','$date','$date','".mt_rand(12,36)."','infowar cart $ID','".mt_rand(0,$max['enterprises'])."','commande cart $ID','BL cart $ID','immo cart $ID','".mt_rand(0,5000)."','".mt_rand(0,500)."','".mt_rand(1,7)."','".mt_rand(1,2)."','".mt_rand(2,5)."','comments cart $ID','facture cart $ID')";
+	$db->query($query);
+
 	}
 }
 
@@ -405,6 +428,12 @@ for ($i=0;$i<$max['computers'];$i++){
 	$query="INSERT INTO glpi_computers VALUES ('','computers $i','serial $i','serial2 $i','contact $i','num $i','$techID','',NOW(),'".mt_rand(0,$max['os'])."','".$loc."','$domainID','$networkID','".mt_rand(0,$max['model'])."','".mt_rand(0,$max['type_computers'])."','0','','".mt_rand(0,$max['enterprises'])."','N')";
 	$db->query($query);
 	$compID=$db->insert_id();
+
+
+	// AJOUT INFOCOMS
+	$date=mt_rand(1995,2005)."-".mt_rand(1,12)."-".mt_rand(1,28);
+	$query="INSERT INTO glpi_infocoms VALUES ('','$printID','".COMPUTER_TYPE."','$date','$date','".mt_rand(12,36)."','infowar comp $compID','".mt_rand(0,$max['enterprises'])."','commande comp $compID','BL comp $compID','immo comp $compID','".mt_rand(0,5000)."','".mt_rand(0,500)."','".mt_rand(1,7)."','".mt_rand(1,2)."','".mt_rand(2,5)."','comments comp $compID','facture comp $compID')";
+	$db->query($query);
 
 	// ADD DEVICE
 	$query="INSERT INTO glpi_computer_device VALUES ('','','".MOBOARD_DEVICE."','".mt_rand(1,$max['device'])."','$compID')";
@@ -471,6 +500,12 @@ for ($i=0;$i<$max['computers'];$i++){
 	$db->query($query);	
 	$monID=$db->insert_id();
 	
+	// AJOUT INFOCOMS
+	$date=mt_rand(1995,2005)."-".mt_rand(1,12)."-".mt_rand(1,28);
+	$query="INSERT INTO glpi_infocoms VALUES ('','$monID','".MONITOR_TYPE."','$date','$date','".mt_rand(12,36)."','infowar mon $monID','".mt_rand(0,$max['enterprises'])."','commande mon $monID','BL mon $monID','immo mon $monID','".mt_rand(0,5000)."','".mt_rand(0,500)."','".mt_rand(1,7)."','".mt_rand(1,2)."','".mt_rand(2,5)."','comments mon $monID','facture mon $monID')";
+	$db->query($query);
+
+
 	// ITEMS IN SPECIAL STATES
 	if (mt_rand(0,100)<$percent['state']){
 		$query="INSERT INTO glpi_state_item VALUES ('','".MONITOR_TYPE."','$monID','".mt_rand(0,$max['state'])."','0')";
@@ -488,6 +523,12 @@ for ($i=0;$i<$max['computers'];$i++){
 		$query="INSERT INTO glpi_printers VALUES ('','printer of comp $i',NOW(),'contact $i','num $i','$techID','serial $i','serial2 $i','0','0','1','comments $i','".mt_rand(0,64)."','$loc','$domainID','$networkID','$typeID','".mt_rand(0,$max['enterprises'])."','N','0','','0')";
 		$db->query($query);
 		$printID=$db->insert_id();
+
+
+		// AJOUT INFOCOMS
+		$date=mt_rand(1995,2005)."-".mt_rand(1,12)."-".mt_rand(1,28);
+		$query="INSERT INTO glpi_infocoms VALUES ('','$printID','".PRINTER_TYPE."','$date','$date','".mt_rand(12,36)."','infowar print $printID','".mt_rand(0,$max['enterprises'])."','commande print $printID','BL print $printID','immo print $printID','".mt_rand(0,5000)."','".mt_rand(0,500)."','".mt_rand(1,7)."','".mt_rand(1,2)."','".mt_rand(2,5)."','comments print $printID','facture print $printID')";
+		$db->query($query);
 
 		// ITEMS IN SPECIAL STATES
 		if (mt_rand(0,100)<$percent['state']){
@@ -517,8 +558,6 @@ for ($i=0;$i<$max['computers'];$i++){
 	
 	// Ajout d'entrées dans le planning
 	
-	// Ajout cartouches en stock
-	
 	// Ajout consommables en stock + utilisé
 
 	// Ajout de documents + link aux elements
@@ -527,8 +566,6 @@ for ($i=0;$i<$max['computers'];$i++){
 	
 	// Ajout contrats 
 
-	// Ajout d'infocoms aux elements
-	
 	// Ajout des periphs internes
 	
 	// Ajout logiciels + licences associés a divers PCs
