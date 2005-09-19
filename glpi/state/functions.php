@@ -65,7 +65,9 @@ function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= ""){
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
-	echo $lang["state"][0]." : &nbsp; &nbsp;".dropdownValue("glpi_dropdown_state","state","")." &nbsp; ".$lang["printers"][2];
+	echo $lang["state"][0]." : &nbsp; &nbsp;";
+	dropdownValue("glpi_dropdown_state","state","");
+	echo " &nbsp; ".$lang["printers"][2];
 	echo "<select name=\"field\" size='1'>";
         echo "<option value='all' ";
 	if($field == "all") echo "selected";
