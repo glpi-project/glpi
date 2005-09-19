@@ -190,6 +190,10 @@ class User {
 	  	{
 				 $dn = $basedn;
  				$findcn=explode(",O",$dn);
+				  // Cas ou pas de ,OU
+				if ($dn==$findcn[0]) {
+					$findcn=explode(",C",$dn);
+				}
                  $findcn=explode("=",$findcn[0]);
                  $findcn[1]=str_replace('\,', ',', $findcn[1]);
                  $filter="(CN=".$findcn[1].")";
