@@ -274,7 +274,7 @@ while ($data=$db->fetch_array($result)){
 	
 	// ITEMS IN SPECIAL STATES
 	if (mt_rand(0,100)<$percent['state']){
-		$query="INSERT INTO glpi_state_item VALUES ('','".NETWORKING_TYPE."','$netwID','".mt_rand(0,$max['state'])."','0')";
+		$query="INSERT INTO glpi_state_item VALUES ('','".NETWORKING_TYPE."','$netwID','".mt_rand(1,$max['state'])."','0')";
 		$db->query($query);
 	}
 	
@@ -323,7 +323,7 @@ while ($data=$db->fetch_array($result)){
 
 	// ITEMS IN SPECIAL STATES
 	if (mt_rand(0,100)<$percent['state']){
-		$query="INSERT INTO glpi_state_item VALUES ('','".PRINTER_TYPE."','$printID','".mt_rand(0,$max['state'])."','0')";
+		$query="INSERT INTO glpi_state_item VALUES ('','".PRINTER_TYPE."','$printID','".mt_rand(1,$max['state'])."','0')";
 		$db->query($query);
 	}
 	
@@ -464,7 +464,7 @@ for ($i=0;$i<$max['computers'];$i++){
 	
 	// ITEMS IN SPECIAL STATES
 	if (mt_rand(0,100)<$percent['state']){
-		$query="INSERT INTO glpi_state_item VALUES ('','".COMPUTER_TYPE."','$compID','".mt_rand(0,$max['state'])."','0')";
+		$query="INSERT INTO glpi_state_item VALUES ('','".COMPUTER_TYPE."','$compID','".mt_rand(1,$max['state'])."','0')";
 		$db->query($query);
 	}
 	
@@ -508,7 +508,7 @@ for ($i=0;$i<$max['computers'];$i++){
 
 	// ITEMS IN SPECIAL STATES
 	if (mt_rand(0,100)<$percent['state']){
-		$query="INSERT INTO glpi_state_item VALUES ('','".MONITOR_TYPE."','$monID','".mt_rand(0,$max['state'])."','0')";
+		$query="INSERT INTO glpi_state_item VALUES ('','".MONITOR_TYPE."','$monID','".mt_rand(1,$max['state'])."','0')";
 		$db->query($query);
 	}
 	
@@ -532,7 +532,7 @@ for ($i=0;$i<$max['computers'];$i++){
 
 		// ITEMS IN SPECIAL STATES
 		if (mt_rand(0,100)<$percent['state']){
-			$query="INSERT INTO glpi_state_item VALUES ('','".PRINTER_TYPE."','$printID','".mt_rand(0,$max['state'])."','0')";
+			$query="INSERT INTO glpi_state_item VALUES ('','".PRINTER_TYPE."','$printID','".mt_rand(1,$max['state'])."','0')";
 			$db->query($query);
 		}
 		
