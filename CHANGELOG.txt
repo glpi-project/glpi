@@ -1,6 +1,10 @@
 Changelog Complet : http://mantis.indepnet.org/changelog_page.php
 
 *** GLPI  0.6 ***
+- 0000298: [Module Assistance] Affectation d'un ticket + catégorie => "Pas d'intervention" 
+- 0000301: [Module Outils] Affichage centré de la faq sous IE
+- 0000292: [Module Configuration] Ajout d'un utilisateur sans mot de passe
+- 0000290: [Général] Probleme de print pour les liens externes
 - 0000270: [Module Inventaire] Recherche par AND NOT
 - 0000280: [Module Assistance] Suppression d'une intervention impossible
 - 0000282: [Général] Modification username impossible + Problème login et carcatère accentué
