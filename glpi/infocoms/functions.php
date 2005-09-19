@@ -490,7 +490,9 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 			
 			$tab['annuite'][$duree]=$tab['vcnetdeb'][$duree];
 			
+			if (isset($tab['vcnetfin'][$duree-1]))
 			$tab['vcnetfin'][$duree]=$tab['vcnetfin'][$duree-1]- $tab['annuite'][$duree];
+			else $tab['vcnetfin'][$duree]=0;
 			
 			}
 		
