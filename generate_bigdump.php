@@ -6,7 +6,7 @@ include ("_relpos.php");
 include ($phproot."/glpi/includes.php");
 $db=new DB();
 
-$multiplicator=50;
+$multiplicator=25;
 
 $max['locations']=50;
 $max['kbcategories']=10;
@@ -51,7 +51,7 @@ $max['monitors']=$max['computers'];
 $max['type_of_cartridges']=5;
 $max['cartridges_by_printer']=2;
 $max['cartridges_stock']=2;
-
+$max['device']=10;
 
 // DIRECT CONNECTED PRINTERS
 $percent['printer']=10;
@@ -341,6 +341,38 @@ unset($net_loc);
 
 //////////// INVENTORY
 
+// DEVICE
+
+for ($i=0;$i<$max['device'];$i++){
+
+$query="INSERT INTO glpi_device_case VALUES ('','case $i','".mt_rand(0,2)."','comment $i','".mt_rand(0,$max['enterprises'])."','".mt_rand(0,10)."')";
+$db->query($query);
+$query="INSERT INTO glpi_device_control VALUES ('','control $i','".mt_rand(0,3)."','N','comment $i','".mt_rand(0,$max['enterprises'])."','".mt_rand(0,1000)."')";
+$db->query($query);
+$query="INSERT INTO glpi_device_drive VALUES ('','drive $i','N','".mt_rand(0,60)."','".mt_rand(0,2)."','comment $i','".mt_rand(0,$max['enterprises'])."','".mt_rand(0,100)."')";
+$db->query($query);
+$query="INSERT INTO glpi_device_gfxcard VALUES ('','gfxcard $i','".mt_rand(0,128)."','".mt_rand(0,3)."','comment $i','".mt_rand(0,$max['enterprises'])."','".mt_rand(0,128)."')";
+$db->query($query);
+$query="INSERT INTO glpi_device_hdd VALUES ('','hdd $i','".mt_rand(0,10500)."','".mt_rand(0,$max['hdd_type'])."','".mt_rand(0,8000)."','comment $i','".mt_rand(0,$max['enterprises'])."','".mt_rand(0,128)."')";
+$db->query($query);
+$query="INSERT INTO glpi_device_iface VALUES ('','iface $i','".mt_rand(0,1000)."','comment $i','".mt_rand(0,$max['enterprises'])."','".mt_rand(0,10)."')";
+$db->query($query);
+$query="INSERT INTO glpi_device_moboard VALUES ('','moboard $i','chipset ".mt_rand(0,1000)."','comment $i','".mt_rand(0,$max['enterprises'])."','".mt_rand(0,10)."')";
+$db->query($query);
+$query="INSERT INTO glpi_device_pci VALUES ('','pci $i','comment $i','".mt_rand(0,$max['enterprises'])."','".mt_rand(0,10)."')";
+$db->query($query);
+$query="INSERT INTO glpi_device_power VALUES ('','power $i','".mt_rand(0,500)."W','Y','comment $i','".mt_rand(0,$max['enterprises'])."','".mt_rand(0,10)."')";
+$db->query($query);
+$query="INSERT INTO glpi_device_processor VALUES ('','processor $i','".mt_rand(1000,3000)."','comment $i','".mt_rand(0,$max['enterprises'])."','".mt_rand(1000,3000)."')";
+$db->query($query);
+$query="INSERT INTO glpi_device_ram VALUES ('','ram $i','".mt_rand(0,400)."','comment $i','".mt_rand(0,$max['enterprises'])."','".mt_rand(0,10)."','".mt_rand(0,$max['ram_type'])."')";
+$db->query($query);
+$query="INSERT INTO glpi_device_sndcard VALUES ('','sndcard $i','type ".mt_rand(0,100)."','comment $i','".mt_rand(0,$max['enterprises'])."','".mt_rand(0,100)."')";
+$db->query($query);
+}
+
+
+
 // TYPE DE CARTOUCHES
 for ($i=0;$i<$max['type_of_cartridges'];$i++){
 	$query="INSERT INTO glpi_cartridges_type VALUES ('','cartridge type $i','ref $i','".mt_rand(0,$max['locations'])."','".mt_rand(0,$max['cartridge_type'])."','".mt_rand(0,$max['enterprises'])."','".mt_rand(0,$max['users_sadmin']+$max['users_admin'])."','N','comments $i','".mt_rand(0,10)."')";
@@ -374,6 +406,33 @@ for ($i=0;$i<$max['computers'];$i++){
 	$db->query($query);
 	$compID=$db->insert_id();
 
+	// ADD DEVICE
+	$query="INSERT INTO glpi_computer_device VALUES ('','','".MOBOARD_DEVICE."','".mt_rand(1,$max['device'])."','$compID')";
+	$db->query($query);
+	$query="INSERT INTO glpi_computer_device VALUES ('','".mt_rand(0,3000)."','".PROCESSOR_DEVICE."','".mt_rand(1,$max['device'])."','$compID')";
+	$db->query($query);
+	$query="INSERT INTO glpi_computer_device VALUES ('','".mt_rand(0,1024)."','".RAM_DEVICE."','".mt_rand(1,$max['device'])."','$compID')";
+	$db->query($query);
+	$query="INSERT INTO glpi_computer_device VALUES ('','".mt_rand(0,100000)."','".HDD_DEVICE."','".mt_rand(1,$max['device'])."','$compID')";
+	$db->query($query);
+	$query="INSERT INTO glpi_computer_device VALUES ('','MAC $compID','".NETWORK_DEVICE."','".mt_rand(1,$max['device'])."','$compID')";
+	$db->query($query);
+	$query="INSERT INTO glpi_computer_device VALUES ('','','".DRIVE_DEVICE."','".mt_rand(1,$max['device'])."','$compID')";
+	$db->query($query);
+	$query="INSERT INTO glpi_computer_device VALUES ('','','".CONTROL_DEVICE."','".mt_rand(1,$max['device'])."','$compID')";
+	$db->query($query);
+	$query="INSERT INTO glpi_computer_device VALUES ('','','".GFX_DEVICE."','".mt_rand(1,$max['device'])."','$compID')";
+	$db->query($query);
+	$query="INSERT INTO glpi_computer_device VALUES ('','','".SND_DEVICE."','".mt_rand(1,$max['device'])."','$compID')";
+	$db->query($query);
+	$query="INSERT INTO glpi_computer_device VALUES ('','','".PCI_DEVICE."','".mt_rand(1,$max['device'])."','$compID')";
+	$db->query($query);
+	$query="INSERT INTO glpi_computer_device VALUES ('','','".CASE_DEVICE."','".mt_rand(1,$max['device'])."','$compID')";
+	$db->query($query);
+	$query="INSERT INTO glpi_computer_device VALUES ('','','".POWER_DEVICE."','".mt_rand(1,$max['device'])."','$compID')";
+	$db->query($query);
+	
+	
 	// ITEMS IN SPECIAL STATES
 	if (mt_rand(0,100)<$percent['state']){
 		$query="INSERT INTO glpi_state_item VALUES ('','".COMPUTER_TYPE."','$compID','".mt_rand(0,$max['state'])."','0')";
