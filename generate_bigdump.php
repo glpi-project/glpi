@@ -6,9 +6,9 @@ include ("_relpos.php");
 include ($phproot."/glpi/includes.php");
 $db=new DB();
 
-$multiplicator=1;
+$multiplicator=50;
 
-$max['locations']=200;
+$max['locations']=50;
 $max['kbcategories']=10;
 
 // DROPDOWNS
@@ -54,9 +54,9 @@ $max['cartridges_stock']=2;
 
 
 // DIRECT CONNECTED PRINTERS
-$max['percent_printer']=10;
+$percent['printer']=10;
 // PERCENT ELEMENTIN SPECIAL STATE
-$max['percent_state']=10;
+$percent['state']=10;
 
 foreach ($max as $key => $val)
 	$max[$key]=$multiplicator*$val;
@@ -174,11 +174,11 @@ for ($i=0;$i<pow($max['kbcategories'],1/3);$i++){
 	$query="INSERT INTO glpi_dropdown_kbcategories VALUES ('','0','categorie $i','')";
 	$db->query($query);
 	$newID=$db->insert_id();
-	for ($j=0;$j<rand(0,pow($max['kbcategories'],1/2));$j++){
+	for ($j=0;$j<mt_rand(0,pow($max['kbcategories'],1/2));$j++){
 		$query="INSERT INTO glpi_dropdown_kbcategories VALUES ('','$newID','s-categorie $j','')";
 		$db->query($query);
 		$newID2=$db->insert_id();
-		for ($k=0;$k<rand(0,pow($max['kbcategories'],1/2));$k++){
+		for ($k=0;$k<mt_rand(0,pow($max['kbcategories'],1/2));$k++){
 			$query="INSERT INTO glpi_dropdown_kbcategories VALUES ('','$newID2','ss-categorie $k','')";
 			$db->query($query);
 		}	
@@ -200,19 +200,19 @@ for ($i=0;$i<pow($max['locations'],1/5);$i++){
 	$query="INSERT INTO glpi_dropdown_locations VALUES ('','lieu $i','0','')";
 	$db->query($query);
 	$newID=$db->insert_id();
-	for ($j=0;$j<rand(0,pow($max['locations'],1/4));$j++){
+	for ($j=0;$j<mt_rand(0,pow($max['locations'],1/4));$j++){
 		$query="INSERT INTO glpi_dropdown_locations VALUES ('','s-lieu $j','$newID','')";
 		$db->query($query);
 		$newID2=$db->insert_id();
-		for ($k=0;$k<rand(0,pow($max['locations'],1/4));$k++){
+		for ($k=0;$k<mt_rand(0,pow($max['locations'],1/4));$k++){
 			$query="INSERT INTO glpi_dropdown_locations VALUES ('','ss-lieu $k','$newID2','')";
 			$db->query($query);
 			$newID3=$db->insert_id();
-			for ($l=0;$l<rand(0,pow($max['locations'],1/4));$l++){
+			for ($l=0;$l<mt_rand(0,pow($max['locations'],1/4));$l++){
 				$query="INSERT INTO glpi_dropdown_locations VALUES ('','sss-lieu $l','$newID3','')";
 				$db->query($query);
 				$newID4=$db->insert_id();
-				for ($m=0;$m<rand(0,pow($max['locations'],1/4));$m++){
+				for ($m=0;$m<mt_rand(0,pow($max['locations'],1/4));$m++){
 					$query="INSERT INTO glpi_dropdown_locations VALUES ('','ssss-lieu $m','$newID4','')";
 					$db->query($query);
 				}	
@@ -234,25 +234,25 @@ $max['locations']=$db->result($result,0,0);
 
 // glpi_users
 for ($i=0;$i<$max['users_sadmin'];$i++){
-	$query="INSERT INTO glpi_users VALUES ('','sadmin$i','',MD5('sadmin$i'),'sadmin$i@tutu.com','tel $i','super-admin','','no','".rand(0,$max['locations'])."','no','french')";
+	$query="INSERT INTO glpi_users VALUES ('','sadmin$i','',MD5('sadmin$i'),'sadmin$i@tutu.com','tel $i','super-admin','','no','".mt_rand(0,$max['locations'])."','no','french')";
 	$db->query($query);
 }
 for ($i=0;$i<$max['users_admin'];$i++){
-	$query="INSERT INTO glpi_users VALUES ('','admin$i','',MD5('admin$i'),'admin$i@tutu.com','tel $i','admin','','no','".rand(0,$max['locations'])."','no','french')";
+	$query="INSERT INTO glpi_users VALUES ('','admin$i','',MD5('admin$i'),'admin$i@tutu.com','tel $i','admin','','no','".mt_rand(0,$max['locations'])."','no','french')";
 	$db->query($query);
 }
 for ($i=0;$i<$max['users_normal'];$i++){
-	$query="INSERT INTO glpi_users VALUES ('','normal$i','',MD5('normal$i'),'normal$i@tutu.com','tel $i','normal','','no','".rand(0,$max['locations'])."','no','french')";
+	$query="INSERT INTO glpi_users VALUES ('','normal$i','',MD5('normal$i'),'normal$i@tutu.com','tel $i','normal','','no','".mt_rand(0,$max['locations'])."','no','french')";
 	$db->query($query);
 }
 for ($i=0;$i<$max['users_postonly'];$i++){
-	$query="INSERT INTO glpi_users VALUES ('','postonly$i','',MD5('postonly$i'),'postonly$i@tutu.com','tel $i','normal','','no','".rand(0,$max['locations'])."','no','french')";
+	$query="INSERT INTO glpi_users VALUES ('','postonly$i','',MD5('postonly$i'),'postonly$i@tutu.com','tel $i','normal','','no','".mt_rand(0,$max['locations'])."','no','french')";
 	$db->query($query);
 }
 
 // glpi_enterprises
 for ($i=0;$i<$max['enterprises'];$i++){
-	$query="INSERT INTO glpi_enterprises VALUES ('','enterprise $i','".rand(0,$max['enttype'])."','address $i','http://ent$i.com/','phone $i','comment $i','N','fax $i','info@ent$i.com')";
+	$query="INSERT INTO glpi_enterprises VALUES ('','enterprise $i','".mt_rand(0,$max['enttype'])."','address $i','http://ent$i.com/','phone $i','comment $i','N','fax $i','info@ent$i.com')";
 	$db->query($query);
 }
 
@@ -264,17 +264,17 @@ $net_loc=array();
 
 while ($data=$db->fetch_array($result)){
 	// insert networking
-	$techID=rand(0,$max['users_sadmin']+$max['users_admin']);
-	$domainID=rand(0,$max['domain']);
-	$networkID=rand(0,$max['network']);
-	$query="INSERT INTO glpi_networking VALUES ('','networking $i','ram $i','serial $i','serial2 $i','contact $i','num $i','$techID',NOW(),'comment $i','".$data['ID']."','$domainID','$networkID','".rand(0,$max['type_networking'])."','".rand(0,$max['firmware'])."','".rand(0,$max['enterprises'])."','N','0','','MAC networking $i','IP networking $i')";
+	$techID=mt_rand(0,$max['users_sadmin']+$max['users_admin']);
+	$domainID=mt_rand(0,$max['domain']);
+	$networkID=mt_rand(0,$max['network']);
+	$query="INSERT INTO glpi_networking VALUES ('','networking $i','ram $i','serial $i','serial2 $i','contact $i','num $i','$techID',NOW(),'comment $i','".$data['ID']."','$domainID','$networkID','".mt_rand(0,$max['type_networking'])."','".mt_rand(0,$max['firmware'])."','".mt_rand(0,$max['enterprises'])."','N','0','','MAC networking $i','IP networking $i')";
 	$db->query($query);
 	$netwID=$db->insert_id();
 	$net_loc[$data['ID']]=$netwID;
 	
 	// ITEMS IN SPECIAL STATES
-	if (rand(0,100)<$max['percent_state']){
-		$query="INSERT INTO glpi_state_item VALUES ('','".NETWORKING_TYPE."','$netwID','".rand(0,$max['state'])."','0')";
+	if (mt_rand(0,100)<$percent['state']){
+		$query="INSERT INTO glpi_state_item VALUES ('','".NETWORKING_TYPE."','$netwID','".mt_rand(0,$max['state'])."','0')";
 		$db->query($query);
 	}
 	
@@ -286,13 +286,13 @@ while ($data=$db->fetch_array($result)){
 		$db->query($query);
 		$netpointID=$db->insert_id();
 	
-		$iface=rand(0,$max['iface']);
+		$iface=mt_rand(0,$max['iface']);
 
 		// Add networking ports 
-		$query="INSERT INTO glpi_networking_ports VALUES ('','$netwID','".NETWORKING_TYPE."','".rand(0,100)."','link port to netw ".$net_loc[$data['parentID']]."','IP networking $netwID','MAC networking $netwID','$iface','$netpointID')";
+		$query="INSERT INTO glpi_networking_ports VALUES ('','$netwID','".NETWORKING_TYPE."','".mt_rand(0,100)."','link port to netw ".$net_loc[$data['parentID']]."','IP networking $netwID','MAC networking $netwID','$iface','$netpointID')";
 		$db->query($query);
 		$port1ID=$db->insert_id();
-		$query="INSERT INTO glpi_networking_ports VALUES ('','".$net_loc[$data['parentID']]."','".NETWORKING_TYPE."','".rand(0,100)."','link port to netw $netwID','IP networking ".$net_loc[$data['parentID']]."','MAC networking ".$net_loc[$data['parentID']]."','$iface','$netpointID')";
+		$query="INSERT INTO glpi_networking_ports VALUES ('','".$net_loc[$data['parentID']]."','".NETWORKING_TYPE."','".mt_rand(0,100)."','link port to netw $netwID','IP networking ".$net_loc[$data['parentID']]."','MAC networking ".$net_loc[$data['parentID']]."','$iface','$netpointID')";
 		$db->query($query);
 		$port2ID=$db->insert_id();
 	
@@ -306,25 +306,25 @@ while ($data=$db->fetch_array($result)){
 	$db->query($query);
 	$netpointID=$db->insert_id();
 	
-	$typeID=rand(0,$max['type_printers']);
-	$query="INSERT INTO glpi_printers VALUES ('','printer of loc ".$data['ID']."',NOW(),'contact ".$data['ID']."','num ".$data['ID']."','$techID','serial ".$data['ID']."','serial2 ".$data['ID']."','0','0','1','comments $i','".rand(0,64)."','".$data['ID']."','$domainID','$networkID','$typeID','".rand(0,$max['enterprises'])."','N','0','','0')";
+	$typeID=mt_rand(0,$max['type_printers']);
+	$query="INSERT INTO glpi_printers VALUES ('','printer of loc ".$data['ID']."',NOW(),'contact ".$data['ID']."','num ".$data['ID']."','$techID','serial ".$data['ID']."','serial2 ".$data['ID']."','0','0','1','comments $i','".mt_rand(0,64)."','".$data['ID']."','$domainID','$networkID','$typeID','".mt_rand(0,$max['enterprises'])."','N','0','','0')";
 	$db->query($query);
 	$printID=$db->insert_id();
 
 	// ITEMS IN SPECIAL STATES
-	if (rand(0,100)<$max['percent_state']){
-		$query="INSERT INTO glpi_state_item VALUES ('','".PRINTER_TYPE."','$printID','".rand(0,$max['state'])."','0')";
+	if (mt_rand(0,100)<$percent['state']){
+		$query="INSERT INTO glpi_state_item VALUES ('','".PRINTER_TYPE."','$printID','".mt_rand(0,$max['state'])."','0')";
 		$db->query($query);
 	}
 	
 		
-	$iface=rand(0,$max['iface']);
+	$iface=mt_rand(0,$max['iface']);
 
 	// Add networking ports 
-	$query="INSERT INTO glpi_networking_ports VALUES ('','$netwID','".NETWORKING_TYPE."','".rand(0,100)."','link port to printer $printID','IP printer $printID','MAC printer $printID','$iface','$netpointID')";
+	$query="INSERT INTO glpi_networking_ports VALUES ('','$netwID','".NETWORKING_TYPE."','".mt_rand(0,100)."','link port to printer $printID','IP printer $printID','MAC printer $printID','$iface','$netpointID')";
 	$db->query($query);
 	$port1ID=$db->insert_id();
-	$query="INSERT INTO glpi_networking_ports VALUES ('','$printID','".PRINTER_TYPE."','".rand(0,100)."','link port to netw $netwID','IP networking $netwID','MAC networking $netwID','$iface','$netpointID')";
+	$query="INSERT INTO glpi_networking_ports VALUES ('','$printID','".PRINTER_TYPE."','".mt_rand(0,100)."','link port to netw $netwID','IP networking $netwID','MAC networking $netwID','$iface','$netpointID')";
 	$db->query($query);
 	$port2ID=$db->insert_id();
 	$query="INSERT INTO glpi_networking_wire VALUES ('','$port1ID','$port2ID')";
@@ -343,12 +343,12 @@ unset($net_loc);
 
 // TYPE DE CARTOUCHES
 for ($i=0;$i<$max['type_of_cartridges'];$i++){
-	$query="INSERT INTO glpi_cartridges_type VALUES ('','cartridge type $i','ref $i','".rand(0,$max['locations'])."','".rand(0,$max['cartridge_type'])."','".rand(0,$max['enterprises'])."','".rand(0,$max['users_sadmin']+$max['users_admin'])."','N','comments $i','".rand(0,10)."')";
+	$query="INSERT INTO glpi_cartridges_type VALUES ('','cartridge type $i','ref $i','".mt_rand(0,$max['locations'])."','".mt_rand(0,$max['cartridge_type'])."','".mt_rand(0,$max['enterprises'])."','".mt_rand(0,$max['users_sadmin']+$max['users_admin'])."','N','comments $i','".mt_rand(0,10)."')";
 	$db->query($query);
 	$cartID=$db->insert_id();
 
 	// Ajout cartouche en stock
-	for ($j=0;$j<rand(0,$max['cartridges_stock']);$j++){
+	for ($j=0;$j<mt_rand(0,$max['cartridges_stock']);$j++){
 	$query="INSERT INTO glpi_cartridges VALUES('','$cartID','0',NOW(),NULL,NULL,'0')";
 	$db->query($query);
 	}
@@ -356,7 +356,7 @@ for ($i=0;$i<$max['type_of_cartridges'];$i++){
 
 // Assoc printer type to cartridge type
 for ($i=0;$i<$max['type_printers'];$i++){
-	$query="INSERT INTO glpi_cartridges_assoc VALUES ('','".rand(1,$max['type_of_cartridges'])."','$i')";
+	$query="INSERT INTO glpi_cartridges_assoc VALUES ('','".mt_rand(1,$max['type_of_cartridges'])."','$i')";
 	$db->query($query);
 }
 
@@ -366,17 +366,17 @@ for ($i=0;$i<$max['type_printers'];$i++){
 
 // glpi_computers
 for ($i=0;$i<$max['computers'];$i++){
-	$loc=rand(0,$max['locations']);
-	$techID=rand(0,$max['users_sadmin']+$max['users_admin']);
-	$domainID=rand(0,$max['domain']);
-	$networkID=rand(0,$max['network']);
-	$query="INSERT INTO glpi_computers VALUES ('','computers $i','serial $i','serial2 $i','contact $i','num $i','$techID','',NOW(),'".rand(0,$max['os'])."','".$loc."','$domainID','$networkID','".rand(0,$max['model'])."','".rand(0,$max['type_computers'])."','0','','".rand(0,$max['enterprises'])."','N')";
+	$loc=mt_rand(0,$max['locations']);
+	$techID=mt_rand(0,$max['users_sadmin']+$max['users_admin']);
+	$domainID=mt_rand(0,$max['domain']);
+	$networkID=mt_rand(0,$max['network']);
+	$query="INSERT INTO glpi_computers VALUES ('','computers $i','serial $i','serial2 $i','contact $i','num $i','$techID','',NOW(),'".mt_rand(0,$max['os'])."','".$loc."','$domainID','$networkID','".mt_rand(0,$max['model'])."','".mt_rand(0,$max['type_computers'])."','0','','".mt_rand(0,$max['enterprises'])."','N')";
 	$db->query($query);
 	$compID=$db->insert_id();
 
 	// ITEMS IN SPECIAL STATES
-	if (rand(0,100)<$max['percent_state']){
-		$query="INSERT INTO glpi_state_item VALUES ('','".COMPUTER_TYPE."','$compID','".rand(0,$max['state'])."','0')";
+	if (mt_rand(0,100)<$percent['state']){
+		$query="INSERT INTO glpi_state_item VALUES ('','".COMPUTER_TYPE."','$compID','".mt_rand(0,$max['state'])."','0')";
 		$db->query($query);
 	}
 	
@@ -392,13 +392,13 @@ for ($i=0;$i<$max['computers'];$i++){
 	if ($db->numrows($result)>0){
 		$netwID=$db->result($result,0,0);
 
-		$iface=rand(0,$max['iface']);
+		$iface=mt_rand(0,$max['iface']);
 
 		// Add networking ports 
-		$query="INSERT INTO glpi_networking_ports VALUES ('','$compID','".COMPUTER_TYPE."','".rand(0,100)."','link port to netw $netwID','IP networking $compID','MAC networking $compID','$iface','$netpointID')";
+		$query="INSERT INTO glpi_networking_ports VALUES ('','$compID','".COMPUTER_TYPE."','".mt_rand(0,100)."','link port to netw $netwID','IP networking $compID','MAC networking $compID','$iface','$netpointID')";
 		$db->query($query);
 		$port1ID=$db->insert_id();
-		$query="INSERT INTO glpi_networking_ports VALUES ('','$netwID','".NETWORKING_TYPE."','".rand(0,100)."','link port to computer $compID','IP networking $netwID','MAC networking $netwID','$iface','$netpointID')";
+		$query="INSERT INTO glpi_networking_ports VALUES ('','$netwID','".NETWORKING_TYPE."','".mt_rand(0,100)."','link port to computer $compID','IP networking $netwID','MAC networking $netwID','$iface','$netpointID')";
 		$db->query($query);
 		$port2ID=$db->insert_id();
 	
@@ -408,13 +408,13 @@ for ($i=0;$i<$max['computers'];$i++){
 
 	// Ajout d'un ecran sur l'ordi
 	
-	$query="INSERT INTO glpi_monitors VALUES ('','monitor $i',NOW(),'contact $i','num $i','$techID','comment $i','serial $i','serial2 $i','".rand(14,22)."','".rand(0,1)."','".rand(0,1)."','".rand(0,1)."','".rand(0,1)."','$loc','".rand(0,$max['type_monitors'])."','".rand(0,$max['enterprises'])."','0','N','0','')";
+	$query="INSERT INTO glpi_monitors VALUES ('','monitor $i',NOW(),'contact $i','num $i','$techID','comment $i','serial $i','serial2 $i','".mt_rand(14,22)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','$loc','".mt_rand(0,$max['type_monitors'])."','".mt_rand(0,$max['enterprises'])."','0','N','0','')";
 	$db->query($query);	
 	$monID=$db->insert_id();
 	
 	// ITEMS IN SPECIAL STATES
-	if (rand(0,100)<$max['percent_state']){
-		$query="INSERT INTO glpi_state_item VALUES ('','".MONITOR_TYPE."','$monID','".rand(0,$max['state'])."','0')";
+	if (mt_rand(0,100)<$percent['state']){
+		$query="INSERT INTO glpi_state_item VALUES ('','".MONITOR_TYPE."','$monID','".mt_rand(0,$max['state'])."','0')";
 		$db->query($query);
 	}
 	
@@ -423,17 +423,16 @@ for ($i=0;$i<$max['computers'];$i++){
 	$db->query($query);	
 	
 	// Ajout d'une imprimante connection directe pour X% des computers + ajout de cartouches
-	
-	if (rand(0,100)<=$max['percent_printer']){
+	if (mt_rand(0,100)<=$percent['printer']){
 		// Add printer 
-		$typeID=rand(0,$max['type_printers']);
-		$query="INSERT INTO glpi_printers VALUES ('','printer of comp $i',NOW(),'contact $i','num $i','$techID','serial $i','serial2 $i','0','0','1','comments $i','".rand(0,64)."','$loc','$domainID','$networkID','$typeID','".rand(0,$max['enterprises'])."','N','0','','0')";
+		$typeID=mt_rand(0,$max['type_printers']);
+		$query="INSERT INTO glpi_printers VALUES ('','printer of comp $i',NOW(),'contact $i','num $i','$techID','serial $i','serial2 $i','0','0','1','comments $i','".mt_rand(0,64)."','$loc','$domainID','$networkID','$typeID','".mt_rand(0,$max['enterprises'])."','N','0','','0')";
 		$db->query($query);
 		$printID=$db->insert_id();
 
 		// ITEMS IN SPECIAL STATES
-		if (rand(0,100)<$max['percent_state']){
-			$query="INSERT INTO glpi_state_item VALUES ('','".PRINTER_TYPE."','$printID','".rand(0,$max['state'])."','0')";
+		if (mt_rand(0,100)<$percent['state']){
+			$query="INSERT INTO glpi_state_item VALUES ('','".PRINTER_TYPE."','$printID','".mt_rand(0,$max['state'])."','0')";
 			$db->query($query);
 		}
 		
