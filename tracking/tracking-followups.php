@@ -59,7 +59,7 @@ if (isset($_POST["contents"])&&!empty($_POST["contents"])&&isAdmin($_SESSION["gl
 commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 
 if (isset($_POST["ID"]))
-showJobDetails($_POST["ID"]);
+glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=".$_POST["ID"]);
 else 
 showJobDetails($_GET["ID"]);
 commonFooter();
