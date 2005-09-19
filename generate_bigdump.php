@@ -6,14 +6,14 @@ include ("_relpos.php");
 include ($phproot."/glpi/includes.php");
 $db=new DB();
 
-$multiplicator=100;
+$multiplicator=1;
 
 $max['locations']=200;
 $max['kbcategories']=10;
 
 // DROPDOWNS
 $max['consumable_type']=10;
-$max['cartridge_type']=10;
+$max['cartridge_type']=1;
 $max['contact_type']=10;
 $max['contract_type']=10;
 $max['domain']=20;
@@ -48,7 +48,15 @@ $max['computers']=1000;
 $max['printers']=100;
 $max['networking']=$max['locations'];
 $max['monitors']=$max['computers'];
+$max['type_of_cartridges']=5;
+$max['cartridges_by_printer']=2;
+$max['cartridges_stock']=2;
 
+
+// DIRECT CONNECTED PRINTERS
+$max['percent_printer']=10;
+// PERCENT ELEMENTIN SPECIAL STATE
+$max['percent_state']=10;
 
 foreach ($max as $key => $val)
 	$max[$key]=$multiplicator*$val;
@@ -256,10 +264,21 @@ $net_loc=array();
 
 while ($data=$db->fetch_array($result)){
 	// insert networking
-	$query="INSERT INTO glpi_networking VALUES ('','networking $i','ram $i','serial $i','serial2 $i','contact $i','num $i','".rand(0,$max['users_sadmin']+$max['users_admin'])."',NOW(),'comment $i','".$data['ID']."','".rand(0,$max['domain'])."','".rand(0,$max['network'])."','".rand(0,$max['type_networking'])."','".rand(0,$max['firmware'])."','".rand(0,$max['enterprises'])."','N','0','','MAC networking $i','IP networking $i')";
+	$techID=rand(0,$max['users_sadmin']+$max['users_admin']);
+	$domainID=rand(0,$max['domain']);
+	$networkID=rand(0,$max['network']);
+	$query="INSERT INTO glpi_networking VALUES ('','networking $i','ram $i','serial $i','serial2 $i','contact $i','num $i','$techID',NOW(),'comment $i','".$data['ID']."','$domainID','$networkID','".rand(0,$max['type_networking'])."','".rand(0,$max['firmware'])."','".rand(0,$max['enterprises'])."','N','0','','MAC networking $i','IP networking $i')";
 	$db->query($query);
 	$netwID=$db->insert_id();
 	$net_loc[$data['ID']]=$netwID;
+	
+	// ITEMS IN SPECIAL STATES
+	if (rand(0,100)<$max['percent_state']){
+		$query="INSERT INTO glpi_state_item VALUES ('','".NETWORKING_TYPE."','$netwID','".rand(0,$max['state'])."','0')";
+		$db->query($query);
+	}
+	
+	
 	// Link with father 
 	if ($data['parentID']>0){
 		//insert netpoint
@@ -280,6 +299,41 @@ while ($data=$db->fetch_array($result)){
 		$query="INSERT INTO glpi_networking_wire VALUES ('','$port1ID','$port2ID')";
 		$db->query($query);	
 	}
+	
+	// Ajout imprimantes reseaux : 1 par loc + connexion à un matos reseau + ajout de cartouches
+	//insert netpoint
+	$query="INSERT INTO glpi_dropdown_netpoint VALUES ('','".$data['ID']."','netpoint networking $i')";
+	$db->query($query);
+	$netpointID=$db->insert_id();
+	
+	$typeID=rand(0,$max['type_printers']);
+	$query="INSERT INTO glpi_printers VALUES ('','printer of loc ".$data['ID']."',NOW(),'contact ".$data['ID']."','num ".$data['ID']."','$techID','serial ".$data['ID']."','serial2 ".$data['ID']."','0','0','1','comments $i','".rand(0,64)."','".$data['ID']."','$domainID','$networkID','$typeID','".rand(0,$max['enterprises'])."','N','0','','0')";
+	$db->query($query);
+	$printID=$db->insert_id();
+
+	// ITEMS IN SPECIAL STATES
+	if (rand(0,100)<$max['percent_state']){
+		$query="INSERT INTO glpi_state_item VALUES ('','".PRINTER_TYPE."','$printID','".rand(0,$max['state'])."','0')";
+		$db->query($query);
+	}
+	
+		
+	$iface=rand(0,$max['iface']);
+
+	// Add networking ports 
+	$query="INSERT INTO glpi_networking_ports VALUES ('','$netwID','".NETWORKING_TYPE."','".rand(0,100)."','link port to printer $printID','IP printer $printID','MAC printer $printID','$iface','$netpointID')";
+	$db->query($query);
+	$port1ID=$db->insert_id();
+	$query="INSERT INTO glpi_networking_ports VALUES ('','$printID','".PRINTER_TYPE."','".rand(0,100)."','link port to netw $netwID','IP networking $netwID','MAC networking $netwID','$iface','$netpointID')";
+	$db->query($query);
+	$port2ID=$db->insert_id();
+	$query="INSERT INTO glpi_networking_wire VALUES ('','$port1ID','$port2ID')";
+	$db->query($query);	
+
+	// Add Cartouches 
+	// OLD
+	// NEW	
+
 $i++;
 }	
 unset($net_loc);
@@ -287,13 +341,46 @@ unset($net_loc);
 
 //////////// INVENTORY
 
+// TYPE DE CARTOUCHES
+for ($i=0;$i<$max['type_of_cartridges'];$i++){
+	$query="INSERT INTO glpi_cartridges_type VALUES ('','cartridge type $i','ref $i','".rand(0,$max['locations'])."','".rand(0,$max['cartridge_type'])."','".rand(0,$max['enterprises'])."','".rand(0,$max['users_sadmin']+$max['users_admin'])."','N','comments $i','".rand(0,10)."')";
+	$db->query($query);
+	$cartID=$db->insert_id();
+
+	// Ajout cartouche en stock
+	for ($j=0;$j<rand(0,$max['cartridges_stock']);$j++){
+	$query="INSERT INTO glpi_cartridges VALUES('','$cartID','0',NOW(),NULL,NULL,'0')";
+	$db->query($query);
+	}
+}
+
+// Assoc printer type to cartridge type
+for ($i=0;$i<$max['type_printers'];$i++){
+	$query="INSERT INTO glpi_cartridges_assoc VALUES ('','".rand(1,$max['type_of_cartridges'])."','$i')";
+	$db->query($query);
+}
+
+
+
+
+
 // glpi_computers
 for ($i=0;$i<$max['computers'];$i++){
 	$loc=rand(0,$max['locations']);
-	$query="INSERT INTO glpi_computers VALUES ('','computers $i','serial $i','serial2 $i','contact $i','num $i','".rand(0,$max['users_sadmin']+$max['users_admin'])."','',NOW(),'".rand(0,$max['os'])."','".$loc."','".rand(0,$max['domain'])."','".rand(0,$max['network'])."','".rand(0,$max['model'])."','".rand(0,$max['type_computers'])."','0','','".rand(0,$max['enterprises'])."','N')";
+	$techID=rand(0,$max['users_sadmin']+$max['users_admin']);
+	$domainID=rand(0,$max['domain']);
+	$networkID=rand(0,$max['network']);
+	$query="INSERT INTO glpi_computers VALUES ('','computers $i','serial $i','serial2 $i','contact $i','num $i','$techID','',NOW(),'".rand(0,$max['os'])."','".$loc."','$domainID','$networkID','".rand(0,$max['model'])."','".rand(0,$max['type_computers'])."','0','','".rand(0,$max['enterprises'])."','N')";
 	$db->query($query);
 	$compID=$db->insert_id();
+
+	// ITEMS IN SPECIAL STATES
+	if (rand(0,100)<$max['percent_state']){
+		$query="INSERT INTO glpi_state_item VALUES ('','".COMPUTER_TYPE."','$compID','".rand(0,$max['state'])."','0')";
+		$db->query($query);
+	}
 	
+		
 	//insert netpoint
 	$query="INSERT INTO glpi_dropdown_netpoint VALUES ('','$loc','netpoint computer $i')";
 	$db->query($query);
@@ -321,21 +408,47 @@ for ($i=0;$i<$max['computers'];$i++){
 
 	// Ajout d'un ecran sur l'ordi
 	
-	$query="INSERT INTO glpi_monitors VALUES ('','monitor $i',NOW(),'contact $i','num $i','".rand(0,$max['users_sadmin']+$max['users_admin'])."','comment $i','serial $i','serial2 $i','".rand(14,22)."','".rand(0,1)."','".rand(0,1)."','".rand(0,1)."','".rand(0,1)."','$loc','".rand(0,$max['type_monitors'])."','".rand(0,$max['enterprises'])."','0','N','0','')";
+	$query="INSERT INTO glpi_monitors VALUES ('','monitor $i',NOW(),'contact $i','num $i','$techID','comment $i','serial $i','serial2 $i','".rand(14,22)."','".rand(0,1)."','".rand(0,1)."','".rand(0,1)."','".rand(0,1)."','$loc','".rand(0,$max['type_monitors'])."','".rand(0,$max['enterprises'])."','0','N','0','')";
 	$db->query($query);	
 	$monID=$db->insert_id();
+	
+	// ITEMS IN SPECIAL STATES
+	if (rand(0,100)<$max['percent_state']){
+		$query="INSERT INTO glpi_state_item VALUES ('','".MONITOR_TYPE."','$monID','".rand(0,$max['state'])."','0')";
+		$db->query($query);
+	}
+	
 	
 	$query="INSERT INTO glpi_connect_wire VALUES ('','$monID','$compID','".MONITOR_TYPE."')";
 	$db->query($query);	
 	
 	// Ajout d'une imprimante connection directe pour X% des computers + ajout de cartouches
+	
+	if (rand(0,100)<=$max['percent_printer']){
+		// Add printer 
+		$typeID=rand(0,$max['type_printers']);
+		$query="INSERT INTO glpi_printers VALUES ('','printer of comp $i',NOW(),'contact $i','num $i','$techID','serial $i','serial2 $i','0','0','1','comments $i','".rand(0,64)."','$loc','$domainID','$networkID','$typeID','".rand(0,$max['enterprises'])."','N','0','','0')";
+		$db->query($query);
+		$printID=$db->insert_id();
+
+		// ITEMS IN SPECIAL STATES
+		if (rand(0,100)<$max['percent_state']){
+			$query="INSERT INTO glpi_state_item VALUES ('','".PRINTER_TYPE."','$printID','".rand(0,$max['state'])."','0')";
+			$db->query($query);
+		}
+		
+			
+		// Add connection
+		$query="INSERT INTO glpi_connect_wire VALUES ('','$printID','$compID','".PRINTER_TYPE."')";
+		$db->query($query);	
+	
+		// Add Cartouches 
+		// OLD
+		// NEW	
+	}
 
 }
 
-	// Modif de X% des etats des elements
-
-	// Ajout imprimantes reseaux : 1 par loc + connexion à un matos reseau + ajout de cartouches
-	
 	// Ajout periph externes globaux et unitaires + connexion aux ordis
 	
 	// Ajout d'interventions + followups
@@ -357,5 +470,11 @@ for ($i=0;$i<$max['computers'];$i++){
 	// Ajout contrats 
 
 	// Ajout d'infocoms aux elements
+	
+	// Ajout des periphs internes
+	
+	// Ajout logiciels + licences associés a divers PCs
+	
+	// Assoc des VLAN par regroupement de lieux
 
 ?>
