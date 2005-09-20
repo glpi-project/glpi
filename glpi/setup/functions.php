@@ -45,7 +45,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 	echo "<div align='center'>&nbsp;\n";
 	echo "<form method='post' action=\"$target\">";
 
-	echo "<table class='tab_cadre' width='700'  cellpadding='1'>\n";
+	echo "<table class='tab_cadre' width='800'  cellpadding='1'>\n";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
 	if (countElementsInTable("glpi_dropdown_".$name)>0){
 	echo "<tr><td  align='center'  class='tab_bg_1'>";
@@ -73,7 +73,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 	echo "<form method='post' action=\"$target\">";
 
 	echo "<input type='hidden' name='which' value='$name'>";
-	echo "<table class='tab_cadre' width='700' cellpadding='1'>\n";
+	echo "<table class='tab_cadre' width='800' cellpadding='1'>\n";
 	
 	echo "<tr><td align='center' class='tab_bg_1'>";
 
@@ -92,7 +92,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 	echo "<form action=\"$target\" method='post'>";
 	echo "<input type='hidden' name='which' value='$name'>";
 
-	echo "<table class='tab_cadre' width='700' cellpadding='1'>\n";
+	echo "<table class='tab_cadre' width='800' cellpadding='1'>\n";
 	echo "<tr><td  align='center'  class='tab_bg_1'>";
 		echo "<input type='text' maxlength='100' size='15' name='value'>&nbsp;&nbsp;&nbsp;";
 
@@ -124,7 +124,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 	echo "<div align='center'>&nbsp;";
 	echo "<form method='post' action=\"$target\">";
 
-	echo "<table class='tab_cadre' width='700' cellpadding='1'>";
+	echo "<table class='tab_cadre' width='800' cellpadding='1'>";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
 	if (countElementsInTable("glpi_dropdown_".$name)>0){
 	echo "<tr><td align='center' class='tab_bg_1'>";
@@ -172,7 +172,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 	}
 	echo "<form action=\"$target\" method='post'>";
 	echo "<input type='hidden' name='which' value='$name'>";
-	echo "<table class='tab_cadre' width='700' cellpadding='1'>";
+	echo "<table class='tab_cadre' width='800' cellpadding='1'>";
 	echo "<tr><td align='center'  class='tab_bg_1'>";
 	if($name == "netpoint") {
 		echo $lang["networking"][1].": ";		
@@ -194,7 +194,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 
 		echo "<form action=\"$target\" method='post'>";
 		echo "<input type='hidden' name='which' value='$name'>";
-		echo "<table class='tab_cadre' width='700' cellpadding='1'>";
+		echo "<table class='tab_cadre' width='800' cellpadding='1'>";
 		echo "<tr><td align='center'  class='tab_bg_1'>";
 
 		echo $lang["networking"][1].": ";		
