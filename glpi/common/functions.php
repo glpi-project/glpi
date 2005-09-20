@@ -1191,7 +1191,7 @@ function dropdown($table,$myname) {
 
 	$rand=mt_rand();
 echo "<input id='____search_$myname$rand' name='____data_$myname$rand' size='4'>";
-echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
+//echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 echo "<script type='text/javascript' >";
 echo "   new Form.Element.Observer('____search_$myname$rand', 1, ";
@@ -1204,6 +1204,10 @@ echo "            {Element.show('search_spinner_$myname$rand');},";
 echo "           method:'post', parameters:'searchText=' + value+'&table=$table&myname=$myname'";
 echo "})})";
 echo "</script>";
+
+
+echo "<div id='search_spinner_$myname$rand' style=' position:absolute; whidth: 50px; background-color:white; border: solid 1px #009966; font-weight:500; font-size:15px; color:#009966; text-align:center; vertical-align:middle; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'>Processing....</div>";
+
 echo "<span id='results_$myname$rand'>";
 if (!empty($value)&&$value>0)
 	echo "<select name='$myname'><option value='$value'>".getDropdownName($table,$value)."</option></select>";
@@ -1284,7 +1288,7 @@ function dropdownValue($table,$myname,$value) {
 
 	$rand=mt_rand();
 echo "<input id='____search_$myname$rand' name='____data_$myname$rand' size='4'>";
-echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
+//echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 echo "<script type='text/javascript' >";
 echo "   new Form.Element.Observer('____search_$myname$rand', 1, ";
@@ -1297,6 +1301,9 @@ echo "            {Element.show('search_spinner_$myname$rand');},";
 echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=$table&myname=$myname'";
 echo "})})";
 echo "</script>";
+
+echo "<div id='search_spinner_$myname$rand' style=' position:absolute; whidth: 50px; background-color:white; border: solid 1px #009966; font-weight:500; font-size:15px; color:#009966; text-align:center; vertical-align:middle; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'>Processing....</div>";
+
 echo "<span id='results_$myname$rand'>";
 if (!empty($value)&&$value>0)
 	echo "<select name='$myname'><option value='$value'>".getDropdownName($table,$value)."</option></select>";
@@ -1560,7 +1567,7 @@ function dropdownUsers($value, $myname,$all=0) {
 
 	$rand=mt_rand();
 	echo "<input id='____search_$myname$rand' name='____data_$myname$rand' size='4'>";
-	echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
+	//echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 	echo "<script type='text/javascript' >";
 	echo "   new Form.Element.Observer('____search_$myname$rand', 1, ";
@@ -1573,6 +1580,9 @@ function dropdownUsers($value, $myname,$all=0) {
 	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=glpi_users&myname=$myname'";
 	echo "})})";
 	echo "</script>";
+
+echo "<div id='search_spinner_$myname$rand' style=' position:absolute; whidth: 50px; background-color:white; border: solid 1px #009966; font-weight:500; font-size:15px; color:#009966; text-align:center; vertical-align:middle; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'>Processing....</div>";
+
 	echo "<span id='results_$myname$rand'>";
 	if (!empty($value)&&$value>0)
 		echo "<select name='$myname'><option value='$value'>".getDropdownName("glpi_users",$value)."</option></select>";
