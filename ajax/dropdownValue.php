@@ -35,16 +35,6 @@
 
 include ("_relpos.php");
 include ($phproot."/glpi/includes.php");
-include ($phproot . "/glpi/includes_tracking.php");
-include ($phproot . "/glpi/includes_computers.php");
-include ($phproot . "/glpi/includes_printers.php");
-include ($phproot . "/glpi/includes_monitors.php");
-include ($phproot . "/glpi/includes_peripherals.php");
-include ($phproot . "/glpi/includes_networking.php");
-include ($phproot . "/glpi/includes_software.php");
-include ($phproot . "/glpi/includes_enterprises.php");
-include ($phproot . "/glpi/includes_users.php");
-
 
 	// Make a select box with preselected values
 	$db = new DB;
@@ -116,7 +106,7 @@ $where.=")";
 	echo "<select name=\"".$_POST['myname']."\" size='1'>";
 
 	if ($_POST['searchText']!="?"&&$db->numrows($result)==$NBMAX)
-	echo "<option value=\"0\">--Affichage limite--</option>";
+	echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 
 	if ($table=="glpi_dropdown_kbcategories")
 	echo "<option value=\"0\">--".$lang["knowbase"][12]."--</option>";
