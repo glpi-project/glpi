@@ -1190,11 +1190,11 @@ function dropdown($table,$myname) {
 	global $HTMLRel;
 
 	$rand=mt_rand();
-echo "<input id='____search_$myname$rand' name='____data_$myname$rand' size='4'>";
+echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>";
 //echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 echo "<script type='text/javascript' >";
-echo "   new Form.Element.Observer('____search_$myname$rand', 1, ";
+echo "   new Form.Element.Observer('search_$myname$rand', 1, ";
 echo "      function(element, value) {";
 echo "      	new Ajax.Updater('results_$myname$rand','".$HTMLRel."/ajax/dropdown.php',{asynchronous:true, evalScripts:true, ";
 echo "           onComplete:function(request)";
@@ -1284,11 +1284,11 @@ function dropdownValue($table,$myname,$value) {
 	global $HTMLRel;
 
 	$rand=mt_rand();
-echo "<input id='____search_$myname$rand' name='____data_$myname$rand' size='4'>";
+echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>";
 //echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 echo "<script type='text/javascript' >";
-echo "   new Form.Element.Observer('____search_$myname$rand', 1, ";
+echo "   new Form.Element.Observer('search_$myname$rand', 1, ";
 echo "      function(element, value) {";
 echo "      	new Ajax.Updater('results_$myname$rand','".$HTMLRel."/ajax/dropdownValue.php',{asynchronous:true, evalScripts:true, ";
 echo "           onComplete:function(request)";
@@ -1563,11 +1563,11 @@ function dropdownUsers($value, $myname,$all=0) {
 	global $HTMLRel;
 
 	$rand=mt_rand();
-	echo "<input id='____search_$myname$rand' name='____data_$myname$rand' size='4'>";
+	echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>";
 	//echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 	echo "<script type='text/javascript' >";
-	echo "   new Form.Element.Observer('____search_$myname$rand', 1, ";
+	echo "   new Form.Element.Observer('search_$myname$rand', 1, ";
 	echo "      function(element, value) {";
 	echo "      	new Ajax.Updater('results_$myname$rand','".$HTMLRel."/ajax/dropdownUsers.php',{asynchronous:true, evalScripts:true, ";
 	echo "           onComplete:function(request)";
@@ -1803,8 +1803,8 @@ function getDropdownName($table,$id) {
 	if (in_array($table,$dropdowntree_tables)){
 	$name=getTreeValueCompleteName($table,$id);
 
-	} else if ($table=="glpi_enterprises"){
-		$name=getEnterpriseLinks($id,1);	
+	//} else if ($table=="glpi_enterprises"){
+//		$name=getEnterpriseLinks($id,1);	
 	} else	{
 	
 		$db = new DB;
@@ -1977,7 +1977,7 @@ function dropdownAllItems($myname,$withenterprise=0,$withcartridge=0,$withconsum
 	
 	$rand=mt_rand();
 	
-	echo "<select name='type' id='____item_type$rand'>";
+	echo "<select name='type' id='item_type$rand'>";
 	echo "<option value='0'>-----</option>";
 	echo "<option value='".COMPUTER_TYPE."'>".$lang["Menu"][0]."</option>";
 	echo "<option value='".NETWORKING_TYPE."'>".$lang["Menu"][1]."</option>";
@@ -1992,7 +1992,7 @@ function dropdownAllItems($myname,$withenterprise=0,$withcartridge=0,$withconsum
 	
 	
 	echo "<script type='text/javascript' >";
-	echo "   new Form.Element.Observer('____item_type$rand', 1, ";
+	echo "   new Form.Element.Observer('item_type$rand', 1, ";
 	echo "      function(element, value) {";
 	echo "      	new Ajax.Updater('show_$myname$rand','".$HTMLRel."/ajax/dropdownAllItems.php',{asynchronous:true, evalScripts:true, ";
 	echo "           onComplete:function(request)";
@@ -2005,7 +2005,7 @@ function dropdownAllItems($myname,$withenterprise=0,$withcartridge=0,$withconsum
 	
 	echo "<div id='search_spinner_$myname$rand' style=' position:absolute; whidth: 50px; background-color:white; border: solid 1px #009966; font-weight:500; font-size:15px; color:#009966; text-align:center; vertical-align:middle; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'>Processing....</div>";	
 	
-	echo "<span id='show_$myname$rand'></span>";
+	echo "<span id='show_$myname$rand'>&nbsp;</span>";
 	
 /*	
 	

@@ -675,13 +675,13 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		echo "</td>";
 
 		
-		echo "<td>".$lang["state"][0].":</td><td><b>";
+		echo "<td>".$lang["state"][0].":</td><td>";
 		$si=new StateItem();
 		$t=0;
 		if ($template) $t=1;
 		$si->getfromDB(COMPUTER_TYPE,$comp->fields["ID"],$t);
 		dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
-		echo "</b></td></tr>";
+		echo "</td></tr>";
 
 
 		echo "<tr class='tab_bg_1'>";
