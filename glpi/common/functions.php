@@ -1209,10 +1209,7 @@ echo "</script>";
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute; whidth: 50px; background-color:white; border: solid 1px #009966; font-weight:500; font-size:15px; color:#009966; text-align:center; vertical-align:middle; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'>Processing....</div>";
 
 echo "<span id='results_$myname$rand'>";
-if (!empty($value)&&$value>0)
-	echo "<select name='$myname'><option value='$value'>".getDropdownName($table,$value)."</option></select>";
-else 
-	echo "<select name='$myname'><option value='0'>------</option></select>";
+echo "<select name='$myname'><option value='0'>------</option></select>";
 echo "</span>";	
 
 /*	
@@ -1958,8 +1955,9 @@ switch ($ID){
 * @param $value
 * @return nothing (print out an HTML select box)
 */
-function dropdownAllItems($name,$withenterprise=0,$withcartridge=0,$withconsumable=0,$search='',$value='') {
-	global $deleted_tables, $template_tables;
+function dropdownAllItems($myname,$withenterprise=0,$withcartridge=0,$withconsumable=0,$search='',$value='') {
+//	global $deleted_tables, $template_tables;
+	global $lang,$HTMLRel;
 	
 	$db=new DB;
 	
@@ -1975,6 +1973,41 @@ function dropdownAllItems($name,$withenterprise=0,$withcartridge=0,$withconsumab
 	if ($withenterprise==1) $items[ENTERPRISE_TYPE]="glpi_enterprises";
 	if ($withcartridge==1) $items[CARTRIDGE_TYPE]="glpi_cartridges_type";
 	if ($withconsumable==1) $items[CONSUMABLE_TYPE]="glpi_consumables_type";
+	
+	
+	$rand=mt_rand();
+	
+	echo "<select name='type' id='____item_type$rand'>";
+	echo "<option value='0'>-----</option>";
+	echo "<option value='".COMPUTER_TYPE."'>".$lang["Menu"][0]."</option>";
+	echo "<option value='".NETWORKING_TYPE."'>".$lang["Menu"][1]."</option>";
+	echo "<option value='".PRINTER_TYPE."'>".$lang["Menu"][2]."</option>";
+	echo "<option value='".MONITOR_TYPE."'>".$lang["Menu"][3]."</option>";
+	echo "<option value='".PERIPHERAL_TYPE."'>".$lang["Menu"][16]."</option>";
+	echo "<option value='".SOFTWARE_TYPE."'>".$lang["Menu"][4]."</option>";
+	if ($withenterprise==1) echo "<option value='".ENTERPRISE_TYPE."'>".$lang["Menu"][23]."</option>";
+	if ($withcartridge==1) echo "<option value='".CARTRIDGE_TYPE."'>".$lang["Menu"][21]."</option>";
+	if ($withconsumable==1) echo "<option value='".CONSUMABLE_TYPE."'>".$lang["Menu"][32]."</option>";
+	echo "</select>";
+	
+	
+	echo "<script type='text/javascript' >";
+	echo "   new Form.Element.Observer('____item_type$rand', 1, ";
+	echo "      function(element, value) {";
+	echo "      	new Ajax.Updater('show_$myname$rand','".$HTMLRel."/ajax/dropdownAllItems.php',{asynchronous:true, evalScripts:true, ";
+	echo "           onComplete:function(request)";
+	echo "            {Element.hide('search_spinner_$myname$rand');}, ";
+	echo "           onLoading:function(request)";
+	echo "            {Element.show('search_spinner_$myname$rand');},";
+	echo "           method:'post', parameters:'idtable='+value+'&myname=$myname'";
+	echo "})})";
+	echo "</script>";
+	
+	echo "<div id='search_spinner_$myname$rand' style=' position:absolute; whidth: 50px; background-color:white; border: solid 1px #009966; font-weight:500; font-size:15px; color:#009966; text-align:center; vertical-align:middle; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'>Processing....</div>";	
+	
+	echo "<span id='show_$myname$rand'></span>";
+	
+/*	
 	
 	echo "<select name=\"$name\" size='1'>";
 	echo "<option value='0'>-----</option>";
@@ -2040,7 +2073,7 @@ function dropdownAllItems($name,$withenterprise=0,$withcartridge=0,$withconsumab
 		}
 	}
 	echo "</select>";
-	
+*/	
 }
 
 /**
