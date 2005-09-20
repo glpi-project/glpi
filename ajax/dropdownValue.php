@@ -43,9 +43,8 @@
 
 	if($_POST['table'] == "glpi_dropdown_netpoint") {
 
-		$where="AND '1'='1'";
 		if (!empty($_POST['searchText'])&&$_POST['searchText']!="?")
-			$where.=" AND (t1.name LIKE '%".$_POST['searchText']."%' OR t2.completename LIKE '%".$_POST['searchText']."%')";
+			$where=" WHERE (t1.name LIKE '%".$_POST['searchText']."%' OR t2.completename LIKE '%".$_POST['searchText']."%')";
 
 		$NBMAX=$cfg_layout["dropdown_max"];
 		$LIMIT="LIMIT 0,$NBMAX";
@@ -53,15 +52,22 @@
 			
 			
 		$query = "select t1.ID as ID, t1.name as netpname, t2.completename as loc from glpi_dropdown_netpoint as t1";
-		$query .= " left join glpi_dropdown_locations as t2 on (t1.location = t2.ID $where)";
+		$query .= " left join glpi_dropdown_locations as t2 on (t1.location = t2.ID)";
+		$query.=$where;
 		$query .= " order by t1.name,t2.name $LIMIT"; 
+		
 		$result = $db->query($query);
 
-		echo "<select name=\"$myname\">";
+		echo "<select name=\"".$_POST['myname']."\">";
 		
 		if ($_POST['searchText']!="?"&&$db->numrows($result)==$NBMAX)
 		echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
+
+		$output=getDropdownName($_POST['table'],$_POST['value']);
+		if (!empty($output)&&$output!="&nbsp;")
+		echo "<option selected value='".$_POST['value']."'>".$output."</option>";
 		
+				
 		$i = 0;
 		$number = $db->numrows($result);
 		if ($number > 0) {
@@ -71,7 +77,7 @@
 				$loc=$db->result($result, $i, "loc");
 				$ID = $db->result($result, $i, "ID");
 				echo "<option value=\"$ID\"";
-				if ($ID==$value) echo " selected ";
+				if ($ID==$_POST['value']) echo " selected ";
 				echo ">$output ($loc)</option>";
 				$i++;
 			}
