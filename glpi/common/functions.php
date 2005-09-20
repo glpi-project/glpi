@@ -498,6 +498,10 @@ $config = array($lang["Menu"][14]=>array("/users/index.php","u"),
 	// Some Javascript-Functions which we may need later
 	
 	echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
+	
+	// AJAX library
+	echo "<script type=\"text/javascript\" src='".$HTMLRel."prototype.js'></script>";
+	
 	// End of Head
 	echo "</head>\n";
 	// Body with configured stuff
@@ -1248,10 +1252,30 @@ function dropdown($table,$myname) {
 */
 function dropdownValue($table,$myname,$value) {
 	
-	global $deleted_tables,$template_tables,$dropdowntree_tables,$lang;
+	//global $deleted_tables,$template_tables,$dropdowntree_tables,$lang;
+	global $HTMLRel;
+
 	
+echo "<input id='search_$myname' name='data_$myname' size='4'>";
+echo "<img alt='Spinner' id='search_spinner_$myname' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
+
+echo "<script type='text/javascript' >";
+echo "   new Form.Element.Observer('search_$myname', 1, ";
+echo "      function(element, value) {";
+echo "      	new Ajax.Updater('results_$myname','".$HTMLRel."/ajax/dropdownValue.php',{asynchronous:true, evalScripts:true, ";
+echo "           onComplete:function(request)";
+echo "            {Element.hide('search_spinner_$myname');}, ";
+echo "           onLoading:function(request)";
+echo "            {Element.show('search_spinner_$myname');},";
+echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=$table&myname=$myname'";
+echo "})})";
+echo "</script>";
+echo "<span id='results_$myname'>";
+echo "<select name='$myname'><option value='$value'>".getDropdownName($table,$value)."</option></select>";
+echo "</span>";	
+		
 	// Make a select box with preselected values
-	$db = new DB;
+/*	$db = new DB;
 
 	if($table == "glpi_dropdown_netpoint") {
 		$query = "select t1.ID as ID, t1.name as netpname, t2.ID as locID from glpi_dropdown_netpoint as t1";
@@ -1326,6 +1350,8 @@ function dropdownValue($table,$myname,$value) {
 	}
 
 	}
+*/
+
 }
 
 
