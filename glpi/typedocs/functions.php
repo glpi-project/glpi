@@ -376,7 +376,7 @@ function addTypedoc($input) {
 	
 	// fill array for udpate
 	foreach ($input as $key => $val) {
-		if (!isset($mon->fields[$key]) || $mon->fields[$key] != $input[$key]) {
+		if ($key[0]!='_'&&(!isset($mon->fields[$key]) || $mon->fields[$key] != $input[$key])) {
 			$mon->fields[$key] = $input[$key];
 		}
 	}

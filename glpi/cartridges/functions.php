@@ -410,7 +410,7 @@ function showCartridgeTypeForm ($target,$ID) {
 	$ct = new CartridgeType;
 
 	echo "<form method='post' action=\"$target\"><div align='center'>\n";
-	echo "<table class='tab_cadre' width='700'>\n";
+	echo "<table class='tab_cadre' width='800'>\n";
 	echo "<tr><th colspan='3'><b>\n";
 	if (!$ID) {
 		echo $lang["cartridges"][6].":";
@@ -546,7 +546,7 @@ function addCartridgeType($input) {
 	
 	// fill array for update
 	foreach ($input as $key => $val) {
-		if (empty($sw->fields[$key]) || $sw->fields[$key] != $input[$key]) {
+		if ($key[0]!='_'&&(empty($sw->fields[$key]) || $sw->fields[$key] != $input[$key])) {
 			$sw->fields[$key] = $input[$key];
 		}
 	}

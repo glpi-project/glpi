@@ -413,7 +413,7 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
 		}
 	
-	echo "<table width='700' class='tab_cadre' cellpadding='2'>";
+	echo "<table width='800' class='tab_cadre' cellpadding='2'>";
 
 		echo "<tr><th align='center' >";
 		if(!$template) {
@@ -675,7 +675,7 @@ function addMonitor($input) {
 
 	// fill array for udpate
 	foreach ($input as $key => $val) {
-		if (!isset($mon->fields[$key]) || $mon->fields[$key] != $input[$key]) {
+		if ($key[0]!='_'&&(!isset($mon->fields[$key]) || $mon->fields[$key] != $input[$key])) {
 			$mon->fields[$key] = $input[$key];
 		}
 	}

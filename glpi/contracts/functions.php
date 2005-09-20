@@ -420,7 +420,7 @@ function showContractForm ($target,$ID,$search) {
 	$con = new Contract;
 
 	echo "<form name='form' method='post' action=\"$target\"><div align='center'>";
-	echo "<table class='tab_cadre' width='700'>";
+	echo "<table class='tab_cadre' width='800'>";
 	echo "<tr><th colspan='4'><b>";
 	if (!$ID) {
 		echo $lang["financial"][36].":";
@@ -614,7 +614,7 @@ function addContract($input) {
 
 	// fill array for update
 	foreach ($input as $key => $val) {
-		if (empty($con->fields[$key]) || $con->fields[$key] != $input[$key]) {
+		if ($key[0]!='_'&&(empty($con->fields[$key]) || $con->fields[$key] != $input[$key])) {
 			$con->fields[$key] = $input[$key];
 		}
 	}

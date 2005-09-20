@@ -319,7 +319,7 @@ function device_selecter($target,$cID,$withtemplate='') {
 	if(!empty($withtemplate) && $withtemplate == 2) {
 	//do nothing
 	} else {
-		echo "<table width='700' class='tab_cadre'>";
+		echo "<table width='800' class='tab_cadre'>";
 		echo "<tr  class='tab_bg_1'><td colspan='2' align='right'>";
 		echo $lang["devices"][0].":";
 		echo "</td>";
@@ -562,7 +562,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 	echo "<a href='$REFERER'>".$lang["buttons"][13]."</a>";
 	echo "<form method='post' name='form' action=\"$target\">";
 	echo "<input type='hidden' name='referer' value='$REFERER'>";
-	echo "<table class='tab_cadre' width='700' cellpadding='2'>";
+	echo "<table class='tab_cadre' width='800' cellpadding='2'>";
 	echo "<tr><th align='center' colspan='1'>";
 	echo getDictDeviceLabel($device_type)."</th><th align='center' colspan='1'> ID : ".$ID;
 	echo "<tr><td class='tab_bg_1' colspan='1'>";
@@ -825,7 +825,7 @@ function addDevice($input) {
  	
 	// fill array for update
 	foreach ($input as $key => $val) {
-		if (empty($device->fields[$key]) || $device->fields[$key] != $input[$key]) {
+		if ($key[0]!='_'&&(empty($device->fields[$key]) || $device->fields[$key] != $input[$key])) {
 			$device->fields[$key] = $input[$key];
 		}
 	}

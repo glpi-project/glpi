@@ -349,7 +349,7 @@ function showDocumentForm ($target,$ID,$search) {
 	$con = new Document;
 
 	echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\"><div align='center'>";
-	echo "<table class='tab_cadre' width='700'>";
+	echo "<table class='tab_cadre' width='800'>";
 	echo "<tr><th colspan='3'><b>";
 	if (!$ID) {
 		echo $lang["document"][16].":";
@@ -564,7 +564,7 @@ function addDocument($input) {
 
 	// fill array for update
 	foreach ($input as $key => $val) {
-		if (empty($con->fields[$key]) || $con->fields[$key] != $input[$key]) {
+		if ($key[0]!='_'&&(empty($con->fields[$key]) || $con->fields[$key] != $input[$key])) {
 			$con->fields[$key] = $input[$key];
 		}
 	}

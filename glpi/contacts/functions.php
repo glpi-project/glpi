@@ -328,7 +328,7 @@ function showContactForm ($target,$ID) {
 	$con = new Contact;
 
 	echo "<form method='post' name=form action=\"$target\"><div align='center'>";
-	echo "<table class='tab_cadre' cellpadding='2' width='700'>";
+	echo "<table class='tab_cadre' cellpadding='2' width='800'>";
 	echo "<tr><th colspan='2'><b>";
 	if (empty($ID)) {
 		echo $lang["financial"][33].":";
@@ -462,7 +462,7 @@ function addContact($input) {
 	
 	// fill array for udpate
 	foreach ($input as $key => $val) {
-		if (!isset($con->fields[$key]) || $con->fields[$key] != $input[$key]) {
+		if ($key[0]!='_'&&(!isset($con->fields[$key]) || $con->fields[$key] != $input[$key])) {
 			$con->fields[$key] = $input[$key];
 		}
 	}

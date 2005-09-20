@@ -541,17 +541,16 @@ function updateConsumableType($input) {
 function addConsumableType($input) {
 	
 	$sw = new ConsumableType;
-
+	
 	// dump status
 	$null = array_pop($input);
 	
 	// fill array for update
 	foreach ($input as $key => $val) {
-		if (empty($sw->fields[$key]) || $sw->fields[$key] != $input[$key]) {
+		if ($key[0]!='_'&&(!isset($sw->fields[$key]) || $sw->fields[$key] != $input[$key])) {
 			$sw->fields[$key] = $input[$key];
 		}
 	}
-
 	return $sw->addToDB();
 }
 

@@ -565,7 +565,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 *
 **/
 function showComputerForm($target,$ID,$withtemplate='') {
-	global $lang,$HTMLRel;;
+	global $lang,$HTMLRel,$cfg_layout;
 	$comp = new Computer;
 	$computer_spotted = false;
 	if(empty($ID) && $withtemplate == 1) {
@@ -778,7 +778,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 		echo "<form name='form_device_action' action=\"$target\" method=\"post\" >";
 		echo "<input type='hidden' name='ID' value='$ID'>";	
 		echo "<input type='hidden' name='device_action' value='$ID'>";			
-		echo "<table width='700' class='tab_cadre' >";
+		echo "<table width='800' class='tab_cadre' >";
 		echo "<tr><th colspan='66'>".$lang["devices"][10]."</th></tr>";
 		foreach($comp->devices as $key => $val) {
 			$devType = $val["devType"];
@@ -878,7 +878,7 @@ function addComputer($input) {
 	
 	// fill array for update
 	foreach ($input as $key => $val){
-	if (!isset($comp->fields[$key]) || $comp->fields[$key] != $input[$key]) {
+	if ($key[0]!='_'&&(!isset($comp->fields[$key]) || $comp->fields[$key] != $input[$key])) {
 			$comp->fields[$key] = $input[$key];
 		}		
 	}
