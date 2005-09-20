@@ -62,12 +62,12 @@ function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= ""){
 	
 	echo "<form method=\"get\" action=\"".$cfg_install["root"]."/state/index.php\">";
 	echo "<center><table class='tab_cadre' width='750'>";
-	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 	echo $lang["state"][0]." : &nbsp; &nbsp;";
 	dropdownValue("glpi_dropdown_state","state","");
-	echo " &nbsp; ".$lang["printers"][2];
+	echo "</td><td align='center'>";
 	echo "<select name=\"field\" size='1'>";
         echo "<option value='all' ";
 	if($field == "all") echo "selected";
