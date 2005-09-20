@@ -590,7 +590,7 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		
 		echo "<form name='form' method='post' action=\"$target\">";
 		echo "<div align='center'>";
-		echo "<table width='700' class='tab_cadre' >";
+		echo "<table width='800' class='tab_cadre' >";
 		
 		if(strcmp($template,"newtemplate") === 0) {
 			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
