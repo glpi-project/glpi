@@ -1255,22 +1255,22 @@ function dropdownValue($table,$myname,$value) {
 	//global $deleted_tables,$template_tables,$dropdowntree_tables,$lang;
 	global $HTMLRel;
 
-	
-echo "<input id='____search_$myname' name='____data_$myname' size='4'>";
-echo "<img alt='Spinner' id='search_spinner_$myname' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
+	$rand=mt_rand();
+echo "<input id='____search_$myname$rand' name='____data_$myname$rand' size='4'>";
+echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 echo "<script type='text/javascript' >";
-echo "   new Form.Element.Observer('____search_$myname', 1, ";
+echo "   new Form.Element.Observer('____search_$myname$rand', 1, ";
 echo "      function(element, value) {";
-echo "      	new Ajax.Updater('results_$myname','".$HTMLRel."/ajax/dropdownValue.php',{asynchronous:true, evalScripts:true, ";
+echo "      	new Ajax.Updater('results_$myname$rand','".$HTMLRel."/ajax/dropdownValue.php',{asynchronous:true, evalScripts:true, ";
 echo "           onComplete:function(request)";
-echo "            {Element.hide('search_spinner_$myname');}, ";
+echo "            {Element.hide('search_spinner_$myname$rand');}, ";
 echo "           onLoading:function(request)";
-echo "            {Element.show('search_spinner_$myname');},";
+echo "            {Element.show('search_spinner_$myname$rand');},";
 echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=$table&myname=$myname'";
 echo "})})";
 echo "</script>";
-echo "<span id='results_$myname'>";
+echo "<span id='results_$myname$rand'>";
 if (!empty($value)&&$value>0)
 	echo "<select name='$myname'><option value='$value'>".getDropdownName($table,$value)."</option></select>";
 else 
@@ -1531,22 +1531,22 @@ function dropdownUsers($value, $myname,$all=0) {
 
 	global $HTMLRel;
 
-	
-	echo "<input id='____search_$myname' name='____data_$myname' size='4'>";
-	echo "<img alt='Spinner' id='search_spinner_$myname' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
+	$rand=mt_rand();
+	echo "<input id='____search_$myname$rand' name='____data_$myname$rand' size='4'>";
+	echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 	echo "<script type='text/javascript' >";
-	echo "   new Form.Element.Observer('____search_$myname', 1, ";
+	echo "   new Form.Element.Observer('____search_$myname$rand', 1, ";
 	echo "      function(element, value) {";
-	echo "      	new Ajax.Updater('results_$myname','".$HTMLRel."/ajax/dropdownUsers.php',{asynchronous:true, evalScripts:true, ";
+	echo "      	new Ajax.Updater('results_$myname$rand','".$HTMLRel."/ajax/dropdownUsers.php',{asynchronous:true, evalScripts:true, ";
 	echo "           onComplete:function(request)";
-	echo "            {Element.hide('search_spinner_$myname');}, ";
+	echo "            {Element.hide('search_spinner_$myname$rand');}, ";
 	echo "           onLoading:function(request)";
-	echo "            {Element.show('search_spinner_$myname');},";
+	echo "            {Element.show('search_spinner_$myname$rand');},";
 	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=glpi_users&myname=$myname'";
 	echo "})})";
 	echo "</script>";
-	echo "<span id='results_$myname'>";
+	echo "<span id='results_$myname$rand'>";
 	if (!empty($value)&&$value>0)
 		echo "<select name='$myname'><option value='$value'>".getDropdownName("glpi_users",$value)."</option></select>";
 	else 

@@ -33,35 +33,42 @@
 // ----------------------------------------------------------------------
 
 
-include ("_relpos.php");
-include ($phproot."/glpi/includes.php");
+	include ("_relpos.php");
+	include ($phproot."/glpi/includes.php");
+
+	checkAuthentication("post-only");
 
 	// Make a select box with preselected values
 	$db = new DB;
 
 	if($_POST['table'] == "glpi_dropdown_netpoint") {
-		$query = "select t1.ID as ID, t1.name as netpname, t2.ID as locID from glpi_dropdown_netpoint as t1";
-		$query .= " left join glpi_dropdown_locations as t2 on t1.location = t2.ID";
-		$query .= $SEARCH;
-		$query .= " order by t1.name,t2.name "; 
+
+		$where="AND '1'='1'";
+		if (!empty($_POST['searchText'])&&$_POST['searchText']!="?")
+			$where.=" AND (t1.name LIKE '%".$_POST['searchText']."%' OR t2.completename LIKE '%".$_POST['searchText']."%')";
+
+		$NBMAX=$cfg_layout["dropdown_max"];
+		$LIMIT="LIMIT 0,$NBMAX";
+		if ($_POST['searchText']=="?") $LIMIT="";
+			
+			
+		$query = "select t1.ID as ID, t1.name as netpname, t2.completename as loc from glpi_dropdown_netpoint as t1";
+		$query .= " left join glpi_dropdown_locations as t2 on (t1.location = t2.ID $where)";
+		$query .= " order by t1.name,t2.name $LIMIT"; 
 		$result = $db->query($query);
-		// Get Location Array
-		$query2="SELECT ID, completename FROM glpi_dropdown_locations";
-		$result2 = $db->query($query2);
-		$locat=array();
-		if ($db->numrows($result2)>0)
-		while ($a=$db->fetch_array($result2)){
-			$locat[$a["ID"]]=$a["completename"];
-		}
 
 		echo "<select name=\"$myname\">";
+		
+		if ($_POST['searchText']!="?"&&$db->numrows($result)==$NBMAX)
+		echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
+		
 		$i = 0;
 		$number = $db->numrows($result);
 		if ($number > 0) {
 			while ($i < $number) {
 				$output = $db->result($result, $i, "netpname");
 				//$loc = getTreeValueCompleteName("glpi_dropdown_locations",$db->result($result, $i, "locID"));
-				$loc=$locat[$db->result($result, $i, "locID")];
+				$loc=$db->result($result, $i, "loc");
 				$ID = $db->result($result, $i, "ID");
 				echo "<option value=\"$ID\"";
 				if ($ID==$value) echo " selected ";
@@ -90,7 +97,7 @@ $where .=" AND  (ID <> '".$_POST['value']."' ";
 $where.=")";
 
 
-	$NBMAX=30;
+	$NBMAX=$cfg_layout["dropdown_max"];
 	$LIMIT="LIMIT 0,$NBMAX";
 	if ($_POST['searchText']=="?") $LIMIT="";
 

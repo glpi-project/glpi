@@ -33,10 +33,10 @@
 // ----------------------------------------------------------------------
 
 
-include ("_relpos.php");
-include ($phproot."/glpi/includes.php");
+	include ("_relpos.php");
+	include ($phproot."/glpi/includes.php");
 
-
+	checkAuthentication("post-only");
 // Make a select box with all glpi users
 	$db = new DB;
 	
@@ -48,7 +48,7 @@ include ($phproot."/glpi/includes.php");
 
 	$where.=")";	
 
-	$NBMAX=30;
+	$NBMAX=$cfg_layout["dropdown_max"];
 	$LIMIT="LIMIT 0,$NBMAX";
 	if ($_POST['searchText']=="?") $LIMIT="";
 	
