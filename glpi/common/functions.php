@@ -1185,7 +1185,33 @@ function showEvents($target,$order,$sort,$start=0) {
 * @return nothing (display the select box)
 **/
 function dropdown($table,$myname) {
-	
+
+
+	global $HTMLRel;
+
+	$rand=mt_rand();
+echo "<input id='____search_$myname$rand' name='____data_$myname$rand' size='4'>";
+echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
+
+echo "<script type='text/javascript' >";
+echo "   new Form.Element.Observer('____search_$myname$rand', 1, ";
+echo "      function(element, value) {";
+echo "      	new Ajax.Updater('results_$myname$rand','".$HTMLRel."/ajax/dropdown.php',{asynchronous:true, evalScripts:true, ";
+echo "           onComplete:function(request)";
+echo "            {Element.hide('search_spinner_$myname$rand');}, ";
+echo "           onLoading:function(request)";
+echo "            {Element.show('search_spinner_$myname$rand');},";
+echo "           method:'post', parameters:'searchText=' + value+'&table=$table&myname=$myname'";
+echo "})})";
+echo "</script>";
+echo "<span id='results_$myname$rand'>";
+if (!empty($value)&&$value>0)
+	echo "<select name='$myname'><option value='$value'>".getDropdownName($table,$value)."</option></select>";
+else 
+	echo "<select name='$myname'><option value='0'>------</option></select>";
+echo "</span>";	
+
+/*	
 	global $deleted_tables,$template_tables,$dropdowntree_tables;	
 	
 	// Make a select box
@@ -1235,6 +1261,7 @@ function dropdown($table,$myname) {
 		}
 		echo "</select>";
 	}
+*/
 }
 
 /**
