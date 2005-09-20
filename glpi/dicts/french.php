@@ -177,6 +177,7 @@ $lang["common"][7]="Choisissez un modèle";
 $lang["common"][8]="Gérer Modèles...";
 $lang["common"][9]="Ajouter modèle..."; 
 $lang["common"][10]="Responsable technique";
+$lang["common"][11]="Affichage limité";
 
 $lang["computers"][0]="Ajouter ordinateur..."; 
 $lang["computers"][1]="Identifiant";

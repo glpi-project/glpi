@@ -1271,7 +1271,7 @@ echo "           method:'post', parameters:'searchText=' + value+'&value=$value&
 echo "})})";
 echo "</script>";
 echo "<span id='results_$myname'>";
-if (!empty($value))
+if (!empty($value)&&$value>0)
 	echo "<select name='$myname'><option value='$value'>".getDropdownName($table,$value)."</option></select>";
 else 
 	echo "<select name='$myname'><option value='0'>------</option></select>";
@@ -1526,10 +1526,36 @@ function dropdownValueSearch($table,$myname,$value,$search) {
 */
 // $all =0 -> Nobody $all=1 -> All $all=-1-> nothing
 function dropdownUsers($value, $myname,$all=0) {
-	global $lang;
+	//global $lang;
 	// Make a select box with all glpi users
 
-	$db = new DB;
+	global $HTMLRel;
+
+	
+	echo "<input id='____search_$myname' name='____data_$myname' size='4'>";
+	echo "<img alt='Spinner' id='search_spinner_$myname' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
+
+	echo "<script type='text/javascript' >";
+	echo "   new Form.Element.Observer('____search_$myname', 1, ";
+	echo "      function(element, value) {";
+	echo "      	new Ajax.Updater('results_$myname','".$HTMLRel."/ajax/dropdownUsers.php',{asynchronous:true, evalScripts:true, ";
+	echo "           onComplete:function(request)";
+	echo "            {Element.hide('search_spinner_$myname');}, ";
+	echo "           onLoading:function(request)";
+	echo "            {Element.show('search_spinner_$myname');},";
+	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=glpi_users&myname=$myname'";
+	echo "})})";
+	echo "</script>";
+	echo "<span id='results_$myname'>";
+	if (!empty($value)&&$value>0)
+		echo "<select name='$myname'><option value='$value'>".getDropdownName("glpi_users",$value)."</option></select>";
+	else 
+		echo "<select name='$myname'><option value='0'>[ Nobody ]</option></select>";
+	echo "</span>";	
+	
+	
+	
+/*	$db = new DB;
 	$query = "SELECT * FROM glpi_users WHERE (".searchUserbyType("normal").") ORDER BY name";
 	$result = $db->query($query);
 
@@ -1554,6 +1580,7 @@ function dropdownUsers($value, $myname,$all=0) {
    		}
 	}
 	echo "</select>";
+*/
 }
 
 function dropdownAllUsers($value, $myname) {
