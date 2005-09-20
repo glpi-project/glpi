@@ -598,6 +598,8 @@ function showDeviceDocument($instID,$search='') {
 	$number = $db->numrows($result);
 	$i = 0;
 	
+	echo "<form method='post' action=\"".$cfg_install["root"]."/documents/documents-info-form.php\">";
+	
 	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
 	echo "<tr><th colspan='3'>".$lang["document"][19].":</th></tr>";
 	echo "<tr><th>".$lang['document'][20]."</th>";
@@ -618,28 +620,28 @@ function showDeviceDocument($instID,$search='') {
 	}
 	
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
-	echo "<form method='post' action=\"".$cfg_install["root"]."/documents/documents-info-form.php\">";
 	
-	echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
+//	echo "<div class='software-instal'>";
+	echo "<input type='hidden' name='conID' value='$instID'>";
 		dropdownAllItems("item",1,1,1,$search,'');
 	echo "</div><input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
-	echo "</form>";
+//	echo "</form>";
 	echo "</td>";
 	echo "<td align='center' class='tab_bg_2'>";
-	echo "<form method='get' action=\"".$cfg_install["root"]."/documents/documents-info-form.php?ID=$instID\">";	
-	echo "<input type='text' name='search' value=\"".$search."\" size='15'>";
-	echo "<input type='hidden' name='ID' value='$instID'>";
-	echo "<input type='submit' name='bsearch' value=\"".$lang["buttons"][0]."\" class='submit'>";
-	echo "</form>";
+//	echo "<form method='get' action=\"".$cfg_install["root"]."/documents/documents-info-form.php?ID=$instID\">";	
+//	echo "<input type='text' name='search' value=\"".$search."\" size='15'>";
+//	echo "<input type='hidden' name='ID' value='$instID'>";
+//	echo "<input type='submit' name='bsearch' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr>";
 	
 	echo "</table></div>"    ;
+	echo "</form>";
 	
 }
 
 function addDeviceDocument($conID,$type,$ID,$template=0){
 
-if ($conID>0&&$ID>0){
+if ($conID>0&&$ID>0&&$type>0){
 	$db = new DB;
 	$query="INSERT INTO glpi_doc_device (FK_doc,FK_device, device_type ,is_template) VALUES ('$conID','$ID','$type','$template');";
 	$result = $db->query($query);

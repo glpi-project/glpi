@@ -41,7 +41,7 @@
 	// Make a select box
 	$db = new DB;
 
-	if($table == "glpi_dropdown_netpoint") {
+	if($_POST['table'] == "glpi_dropdown_netpoint") {
 		
 		if (!empty($_POST['searchText'])&&$_POST['searchText']!="?")
 			$where=" WHERE (t1.name LIKE '%".$_POST['searchText']."%' OR t2.completename LIKE '%".$_POST['searchText']."%')";
@@ -75,9 +75,9 @@
 	}
  else {
 		$where="WHERE '1'='1' ";
-		if (in_array($table,$deleted_tables))
+		if (in_array($_POST['table'],$deleted_tables))
 			$where.="AND deleted='N'";
-		if (in_array($table,$template_tables))
+		if (in_array($_POST['table'],$template_tables))
 			$where.="AND is_template='0'";		
 			
 		if (!empty($_POST['searchText'])&&$_POST['searchText']!="?")
@@ -89,7 +89,7 @@
 		$LIMIT="LIMIT 0,$NBMAX";
 		if ($_POST['searchText']=="?") $LIMIT="";
 						
-		if (in_array($table,$dropdowntree_tables))
+		if (in_array($_POST['table'],$dropdowntree_tables))
 			$query = "SELECT ID, completename as name FROM ".$_POST['table']." $where ORDER BY completename $LIMIT";
 		else $query = "SELECT * FROM ".$_POST['table']." $where ORDER BY name $LIMIT";
 		$result = $db->query($query);

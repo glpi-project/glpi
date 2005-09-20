@@ -82,15 +82,14 @@ else if (isset($_POST["purge"]))
 }
 else if (isset($_POST["additem"])){
 	checkAuthentication("admin");
-	if(isset($_POST["item"]))
-	list($type,$ID)=explodeAllItemsSelectResult($_POST["item"]);
-	else {$type=$_POST["type"];$ID=$_POST["ID"];}
 
 	$template=0;
 	if (isset($_POST["is_template"])) $template=1;
 	
-	addDeviceDocument($_POST["conID"],$type,$ID,$template);
-	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." associate device.");
+	if ($_POST['type']>0&&$_POST['item']>0){
+		addDeviceDocument($_POST["conID"],$_POST['type'],$_POST['item'],$template);
+		logEvent($tab["conID"], "documents", 4, "document", $_SESSION["glpiname"]." associate device.");
+	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deleteitem"])){
