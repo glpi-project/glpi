@@ -352,7 +352,7 @@ function showEnterpriseForm ($target,$ID) {
 	$ent = new Enterprise;
 
 	echo "<form method='post' action=\"$target\"><div align='center'>";
-	echo "<table class='tab_cadre' width='700'>";
+	echo "<table class='tab_cadre' width='800'>";
 	echo "<tr><th colspan='4'><b>";
 	if (!$ID) {
 		echo $lang["financial"][25].":";
@@ -463,7 +463,7 @@ function addEnterprise($input) {
 
 	// fill array for update
 	foreach ($input as $key => $val) {
-		if (empty($ent->fields[$key]) || $ent->fields[$key] != $input[$key]) {
+		if ($key[0]!='_'&&(empty($ent->fields[$key]) || $ent->fields[$key] != $input[$key])) {
 			$ent->fields[$key] = $input[$key];
 		}
 	}

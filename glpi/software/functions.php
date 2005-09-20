@@ -407,7 +407,7 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
 		}
 
-	echo "<table width='700' class='tab_cadre'>";
+	echo "<table width='800' class='tab_cadre'>";
 
 		echo "<tr><th align='center' >";
 		if(!$template) {
@@ -564,7 +564,7 @@ function addSoftware($input) {
 
 	// fill array for update
 	foreach ($input as $key => $val) {
-		if (empty($sw->fields[$key]) || $sw->fields[$key] != $input[$key]) {
+		if ($key[0]!='_'&&(empty($sw->fields[$key]) || $sw->fields[$key] != $input[$key])) {
 			$sw->fields[$key] = $input[$key];
 		}
 	}
@@ -975,7 +975,7 @@ function addLicense($input) {
 
 	// fill array for update
 	foreach ($input as $key => $val) {
-		if (empty($lic->fields[$key]) || $sw->fields[$key] != $input[$key]) {
+		if ($key[0]!='_'&&(empty($lic->fields[$key]) || $sw->fields[$key] != $input[$key])) {
 			$lic->fields[$key] = $input[$key];
 		}
 	}

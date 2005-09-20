@@ -214,7 +214,7 @@ function addInfocom($input) {
 
 	// fill array for update
 	foreach ($input as $key => $val) {
-		if (empty($ic->fields[$key]) || $ic->fields[$key] != $input[$key]) {
+		if ($key[0]!='_'&&(empty($ic->fields[$key]) || $ic->fields[$key] != $input[$key])) {
 			$ic->fields[$key] = $input[$key];
 		}
 	}

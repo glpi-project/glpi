@@ -485,7 +485,7 @@ global $cfg_install;
 	
 			// fill array for update
 			foreach ($input as $key => $val) {
-				if (!isset($user->fields[$key]) || $user->fields[$key] != $input[$key]) {
+				if ($key[0]!='_'&&(!isset($user->fields[$key]) || $user->fields[$key] != $input[$key])) {
 					$user->fields[$key] = $input[$key];
 				}
 			}

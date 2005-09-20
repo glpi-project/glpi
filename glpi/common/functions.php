@@ -1256,11 +1256,11 @@ function dropdownValue($table,$myname,$value) {
 	global $HTMLRel;
 
 	
-echo "<input id='search_$myname' name='data_$myname' size='4'>";
+echo "<input id='____search_$myname' name='____data_$myname' size='4'>";
 echo "<img alt='Spinner' id='search_spinner_$myname' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 echo "<script type='text/javascript' >";
-echo "   new Form.Element.Observer('search_$myname', 1, ";
+echo "   new Form.Element.Observer('____search_$myname', 1, ";
 echo "      function(element, value) {";
 echo "      	new Ajax.Updater('results_$myname','".$HTMLRel."/ajax/dropdownValue.php',{asynchronous:true, evalScripts:true, ";
 echo "           onComplete:function(request)";
@@ -1271,7 +1271,10 @@ echo "           method:'post', parameters:'searchText=' + value+'&value=$value&
 echo "})})";
 echo "</script>";
 echo "<span id='results_$myname'>";
-echo "<select name='$myname'><option value='$value'>".getDropdownName($table,$value)."</option></select>";
+if (!empty($value))
+	echo "<select name='$myname'><option value='$value'>".getDropdownName($table,$value)."</option></select>";
+else 
+	echo "<select name='$myname'><option value='0'>------</option></select>";
 echo "</span>";	
 		
 	// Make a select box with preselected values

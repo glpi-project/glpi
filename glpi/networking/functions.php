@@ -436,7 +436,7 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />\n";
 		}
 
-	echo "<table width='700' class='tab_cadre' cellpadding='2'>\n";
+	echo "<table width='800' class='tab_cadre' cellpadding='2'>\n";
 
 		echo "<tr><th align='center' >\n";
 		if(!$template) {
