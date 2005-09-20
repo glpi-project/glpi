@@ -624,7 +624,7 @@ function showDeviceDocument($instID,$search='') {
 //	echo "<div class='software-instal'>";
 	echo "<input type='hidden' name='conID' value='$instID'>";
 		dropdownAllItems("item",1,1,1,$search,'');
-	echo "</div><input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
+	echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
 //	echo "</form>";
 	echo "</td>";
 	echo "<td align='center' class='tab_bg_2'>";

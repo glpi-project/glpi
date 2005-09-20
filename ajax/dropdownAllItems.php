@@ -58,11 +58,11 @@ if (isset($items[$_POST["idtable"]])){
 	
 	
 	$rand=mt_rand();
-	echo "<input id='____search_".$_POST['myname']."$rand' name='____data_".$_POST['myname']."$rand' size='4'>";	
+	echo "<input id='search_".$_POST['myname']."$rand' name='____data_".$_POST['myname']."$rand' size='4'>";	
 	
 
 	echo "<script type='text/javascript' >";
-	echo "   new Form.Element.Observer('____search_".$_POST['myname']."$rand', 1, ";
+	echo "   new Form.Element.Observer('search_".$_POST['myname']."$rand', 1, ";
 	echo "      function(element, value) {";
 	echo "      	new Ajax.Updater('results_ID$rand','".$HTMLRel."/ajax/dropdown.php',{asynchronous:true, evalScripts:true, ";
 	echo "           onComplete:function(request)";
