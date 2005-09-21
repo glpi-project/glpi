@@ -78,7 +78,9 @@ function searchFormTracking ($show,$contains,$containsID,$device,$category,$desc
 
 	echo "</select>\n";
 	echo "</td>\n";
-	echo "<td align='center'><input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'></td>\n";
+	echo "<td align='center'>&nbsp;";
+	//echo "<input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'>";
+	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr class='tab_bg_1'>\n";
@@ -111,14 +113,18 @@ function searchFormTracking ($show,$contains,$containsID,$device,$category,$desc
 
 	echo "</select>\n";
 	echo "</td>\n";
-	echo "<td align='center'><input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'></td>\n";
+	echo "<td align='center'>&nbsp;";
+	//echo "<input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'>";
+	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr class='tab_bg_1'>\n";
 	echo "<td colspan='2' align='center'>\n";
 	dropdownValue("glpi_dropdown_tracking_category","category",$category);
 	echo "</td>\n";
-	echo "<td align='center'><input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'></td>\n";
+	echo "<td align='center'>&nbsp;";
+	//echo "<input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'>";
+	echo "</td>\n";
 	echo "</tr>\n";
 
 //	echo "</form>";
