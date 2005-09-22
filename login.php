@@ -91,7 +91,7 @@ $identificat->err="Empty Login or Password";
 		if ($auth_succeded) {
 			$identificat->extauth=1;
 			$user_present = $identificat->user->getFromDB($_POST['login_name']);
-			if ($identificat->user->getFromIMAP($cfg_login['imap']['host'],$_POST['login_name'])) {
+			if ($identificat->user->getFromIMAP($cfg_login['imap']['host'],utf8_decode($_POST['login_name']))) {
 				$update_list = array('email');
 			}
 		}
@@ -138,9 +138,9 @@ $identificat->err="Empty Login or Password";
 	   	//echo "AD";
    		$found_dn=false;
 	   	$auth_succeded=0;
-	   	$found_dn=$identificat->ldap_get_dn_active_directory($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$_POST['login_name'],$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass']);
+	   	$found_dn=$identificat->ldap_get_dn_active_directory($cfg_login['ldap']['host'],utf8_decode($cfg_login['ldap']['basedn']),utf8_decode($_POST['login_name']),utf8_decode($cfg_login['ldap']['rootdn']),utf8_decode($cfg_login['ldap']['pass']));
    		//echo $found_dn."---";
-	   	if ($found_dn!=false&&!empty(utf8_decode($_POST['login_password']))){ 
+	   	if ($found_dn!=false&&!empty($_POST['login_password'])){ 
 		    $auth_succeded = $identificat->connection_ldap_active_directory($cfg_login['ldap']['host'],$found_dn,utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),utf8_decode($cfg_login['ldap']['condition']),$cfg_login['ldap']['port']);
 			if ($auth_succeded) {
 				$identificat->extauth=1;
@@ -159,6 +159,8 @@ $identificat->err="Empty Login or Password";
 	// Finally try to connect via le DATABASE
 	if (!$auth_succeded) {
 		$auth_succeded = $identificat->connection_db($_POST['login_name'],$_POST['login_password']);
+		// Pb mot de passe et update en UTF8
+		if (!$auth_succeded) $auth_succeded = $identificat->connection_db(utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']));
 		if ($auth_succeded) $user_present = $identificat->user->getFromDB($_POST['login_name']);
 	}
 
