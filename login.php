@@ -103,14 +103,14 @@ $identificat->err="Empty Login or Password";
 	if (!$auth_succeded&&!empty($cfg_login['ldap']['host'])) {
 	   	$found_dn=false;
    		$auth_succeded=0;
-   		$found_dn=$identificat->ldap_get_dn($cfg_login['ldap']['host'],utf8_decode($cfg_login['ldap']['basedn']),utf8_decode($_POST['login_name']),utf8_decode($cfg_login['ldap']['rootdn']),utf8_decode($cfg_login['ldap']['pass']));
+   		$found_dn=$identificat->ldap_get_dn($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],utf8_decode($_POST['login_name']),$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass']);
 	   	if ($found_dn!=false&&!empty($_POST['login_password'])){ 
-		    $auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$found_dn,utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),utf8_decode($cfg_login['ldap']['condition']),utf8_decode($cfg_login['ldap']['port']));
+		    $auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$found_dn,utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$cfg_login['ldap']['condition'],$cfg_login['ldap']['port']);
 			if ($auth_succeded) {
 				$identificat->extauth=1;
 				$user_present = $identificat->user->getFromDB($_POST['login_name']);
 				$update_list = array();
-				if ($identificat->user->getFromLDAP($cfg_login['ldap']['host'],$found_dn,utf8_decode($cfg_login['ldap']['rootdn']),utf8_decode($cfg_login['ldap']['pass']),$cfg_login['ldap']['fields'],utf8_decode($_POST['login_name']))) {
+				if ($identificat->user->getFromLDAP($cfg_login['ldap']['host'],$found_dn,$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass'],$cfg_login['ldap']['fields'],utf8_decode($_POST['login_name']))) {
 					$update_list = array_keys($cfg_login['ldap']['fields']);
 				}
 			}
@@ -120,12 +120,12 @@ $identificat->err="Empty Login or Password";
 	// Fourth try for flat LDAP 
 	// LDAP : Try now with the first base_dn
 	if (!$auth_succeded&&!empty($cfg_login['ldap']['host'])) {
-		$auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],utf8_decode($cfg_login['ldap']['basedn']),utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),utf8_decode($cfg_login['ldap']['condition']),$cfg_login['ldap']['port']);
+		$auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$cfg_login['ldap']['condition'],$cfg_login['ldap']['port']);
 		if ($auth_succeded) {
 			$identificat->extauth=1;
 			$user_present = $identificat->user->getFromDB($_POST['login_name']);
 			$update_list = array();
-			if ($identificat->user->getFromLDAP($cfg_login['ldap']['host'],utf8_decode($cfg_login['ldap']['basedn']),utf8_decode($cfg_login['ldap']['rootdn']),utf8_decode($cfg_login['ldap']['pass']),$cfg_login['ldap']['fields'],utf8_decode($_POST['login_name']))) {
+			if ($identificat->user->getFromLDAP($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass'],$cfg_login['ldap']['fields'],utf8_decode($_POST['login_name']))) {
 				$update_list = array_keys($cfg_login['ldap']['fields']);
 			}
 		}
@@ -138,15 +138,15 @@ $identificat->err="Empty Login or Password";
 	   	//echo "AD";
    		$found_dn=false;
 	   	$auth_succeded=0;
-	   	$found_dn=$identificat->ldap_get_dn_active_directory($cfg_login['ldap']['host'],utf8_decode($cfg_login['ldap']['basedn']),utf8_decode($_POST['login_name']),utf8_decode($cfg_login['ldap']['rootdn']),utf8_decode($cfg_login['ldap']['pass']));
+	   	$found_dn=$identificat->ldap_get_dn_active_directory($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],utf8_decode($_POST['login_name']),$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass']);
    		//echo $found_dn."---";
 	   	if ($found_dn!=false&&!empty($_POST['login_password'])){ 
-		    $auth_succeded = $identificat->connection_ldap_active_directory($cfg_login['ldap']['host'],$found_dn,utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),utf8_decode($cfg_login['ldap']['condition']),$cfg_login['ldap']['port']);
+		    $auth_succeded = $identificat->connection_ldap_active_directory($cfg_login['ldap']['host'],$found_dn,utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$cfg_login['ldap']['condition'],$cfg_login['ldap']['port']);
 			if ($auth_succeded) {
 				$identificat->extauth=1;
 				$user_present = $identificat->user->getFromDB($_POST['login_name']);
 				$update_list = array();
-				if ($identificat->user->getFromLDAP_active_directory($cfg_login['ldap']['host'],$found_dn,utf8_decode($cfg_login['ldap']['rootdn']),utf8_decode($cfg_login['ldap']['pass']),$cfg_login['ldap']['fields'],utf8_decode($_POST['login_name']),$cfg_login['ldap']['condition'])) {
+				if ($identificat->user->getFromLDAP_active_directory($cfg_login['ldap']['host'],$found_dn,$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass'],$cfg_login['ldap']['fields'],utf8_decode($_POST['login_name']),$cfg_login['ldap']['condition'])) {
 				$update_list = array_keys($cfg_login['ldap']['fields']);
 				}
 			}
