@@ -185,15 +185,15 @@ $cfg_login['imap']['host'] = $db->result($result,0,"imap_host");
 // We can use LDAP both for authentication and for user information
 
 $cfg_login['ldap']['host'] = unhtmlentities($db->result($result,0,"ldap_host"));
-$cfg_login['ldap']['basedn'] = unhtmlentities($db->result($result,0,"ldap_basedn"));
+$cfg_login['ldap']['basedn'] = utf8_decode(unhtmlentities($db->result($result,0,"ldap_basedn")));
 
-$cfg_login['ldap']['rootdn'] = unhtmlentities($db->result($result,0,"ldap_rootdn"));
-$cfg_login['ldap']['pass'] = unhtmlentities($db->result($result,0,"ldap_pass"));
+$cfg_login['ldap']['rootdn'] = utf8_decode(unhtmlentities($db->result($result,0,"ldap_rootdn")));
+$cfg_login['ldap']['pass'] = utf8_decode(unhtmlentities($db->result($result,0,"ldap_pass")));
 
 $cfg_login['ldap']['port'] = unhtmlentities($db->result($result,0,"ldap_port"));
 
 // Log in filter A AJOUTER DANS LA DB
-$cfg_login['ldap']['condition'] = unhtmlentities($db->result($result,0,"ldap_condition"));
+$cfg_login['ldap']['condition'] = utf8_decode(unhtmlentities($db->result($result,0,"ldap_condition")));
 
 // some lDAP server (eg, M$ Active Directory) does not like anonymous
 // bind
