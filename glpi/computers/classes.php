@@ -320,9 +320,6 @@ class Computer {
 				$query = "DELETE FROM glpi_connect_wire WHERE (end2 = '$ID')";
 				$result = $db->query($query);
 				
-				$query="select * from glpi_repair_item where (device_type='".COMPUTER_TYPE."' and id_device='$ID')";
-				$result = $db->query($query);
-				
 				$query="select * from glpi_reservation_item where (device_type='".COMPUTER_TYPE."' and id_device='$ID')";
 				if ($result = $db->query($query)) {
 					if ($db->numrows($result)>0) {
