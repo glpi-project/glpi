@@ -1017,6 +1017,7 @@ function showConnections($ID,$withtemplate='') {
 			echo "<table width='100%'>";
 			for ($i=0; $i < $resultnum; $i++) {
 				$tID = $db->result($result, $i, "end1");
+				$connID = $db->result($result, $i, "ID");
 				$printer = new Printer;
 				$printer->getfromDB($tID);
 				
@@ -1031,7 +1032,7 @@ function showConnections($ID,$withtemplate='') {
 				if(!empty($withtemplate) && $withtemplate == 2) {
 					//do nothing
 				} else {
-					echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&amp;eID=$tID&amp;disconnect=1&amp;device_type=".PRINTER_TYPE."&amp;withtemplate=".$withtemplate."\"><b>";
+					echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1amp;withtemplate=".$withtemplate."\"><b>";
 					echo $lang["buttons"][10];
 					echo "</b></a></td>";
 				}
@@ -1061,6 +1062,7 @@ function showConnections($ID,$withtemplate='') {
 			echo "<table width='100%'>";
 			for ($i=0; $i < $resultnum; $i++) {
 				$tID = $db->result($result, $i, "end1");
+				$connID = $db->result($result, $i, "ID");
 				$monitor = new Monitor;
 				$monitor->getfromDB($tID);
 				echo "<tr ".($monitor->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
@@ -1074,7 +1076,7 @@ function showConnections($ID,$withtemplate='') {
 				if(!empty($withtemplate) && $withtemplate == 2) {
 					//do nothing
 				} else {
-					echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&amp;eID=$tID&amp;disconnect=1&amp;device_type=".MONITOR_TYPE."&amp;withtemplate=".$withtemplate."\"><b>";
+					echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1&amp;withtemplate=".$withtemplate."\"><b>";
 					echo $lang["buttons"][10];
 					echo "</b></a></td>";
 				}
@@ -1104,6 +1106,7 @@ function showConnections($ID,$withtemplate='') {
 			echo "<table width='100%'>";
 			for ($i=0; $i < $resultnum; $i++) {
 				$tID = $db->result($result, $i, "end1");
+				$connID = $db->result($result, $i, "ID");
 				$periph = new Peripheral;
 				$periph->getfromDB($tID);
 				echo "<tr ".($periph->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
@@ -1118,7 +1121,7 @@ function showConnections($ID,$withtemplate='') {
 				if(!empty($withtemplate) && $withtemplate == 2) {
 					//do nothing
 				} else {
-					echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&amp;eID=$tID&amp;disconnect=1&amp;device_type=".PERIPHERAL_TYPE."&amp;withtemplate=".$withtemplate."\"><b>";
+					echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1&amp;withtemplate=".$withtemplate."\"><b>";
 					echo $lang["buttons"][10];
 					echo "</b></a></td>";
 				}

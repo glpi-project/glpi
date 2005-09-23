@@ -104,7 +104,7 @@ else if (isset($tab["update"])) {
 //Disconnect a device 
 else if (isset($tab["disconnect"])) {
 	checkAuthentication("admin");
-	Disconnect($tab["eID"],$tab["device_type"]);
+	Disconnect($tab["ID"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
 	glpi_header($_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
 }
