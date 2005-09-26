@@ -666,7 +666,7 @@ class Mailing
 
 		if ($cfg_mailing[$this->type]["attrib"]&&$this->job->assign)
 		{
-			$query2 = "SELECT email FROM glpi_users WHERE (name = '".$this->job->assign."')";
+			$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$this->job->assign."')";
 			if ($result2 = $db->query($query2)) 
 			{
 				if ($db->numrows($result2)==1)
