@@ -680,7 +680,11 @@ function helpHeader($title,$url,$name) {
 	// Some Javascript-Functions which we may need later
 	
 	echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
+
+	// AJAX library
+	echo "<script type=\"text/javascript\" src='".$HTMLRel."prototype.js'></script>";
 	
+		
 	// Appel CSS
 	
         echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
@@ -1187,7 +1191,7 @@ function showEvents($target,$order,$sort,$start=0) {
 function dropdown($table,$myname) {
 
 
-	global $HTMLRel;
+	global $HTMLRel,$cfg_install;
 
 	$rand=mt_rand();
 echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>";
@@ -1196,7 +1200,7 @@ echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>";
 echo "<script type='text/javascript' >";
 echo "   new Form.Element.Observer('search_$myname$rand', 1, ";
 echo "      function(element, value) {";
-echo "      	new Ajax.Updater('results_$myname$rand','".$HTMLRel."/ajax/dropdown.php',{asynchronous:true, evalScripts:true, ";
+echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdown.php',{asynchronous:true, evalScripts:true, ";
 echo "           onComplete:function(request)";
 echo "            {Element.hide('search_spinner_$myname$rand');}, ";
 echo "           onLoading:function(request)";
@@ -1281,7 +1285,7 @@ echo "</span>";
 function dropdownValue($table,$myname,$value) {
 	
 	//global $deleted_tables,$template_tables,$dropdowntree_tables,$lang;
-	global $HTMLRel;
+	global $HTMLRel,$cfg_install;
 
 	$rand=mt_rand();
 echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>";
@@ -1290,7 +1294,7 @@ echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>";
 echo "<script type='text/javascript' >";
 echo "   new Form.Element.Observer('search_$myname$rand', 1, ";
 echo "      function(element, value) {";
-echo "      	new Ajax.Updater('results_$myname$rand','".$HTMLRel."/ajax/dropdownValue.php',{asynchronous:true, evalScripts:true, ";
+echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdownValue.php',{asynchronous:true, evalScripts:true, ";
 echo "           onComplete:function(request)";
 echo "            {Element.hide('search_spinner_$myname$rand');}, ";
 echo "           onLoading:function(request)";
@@ -1560,7 +1564,7 @@ function dropdownUsers($value, $myname,$all=0) {
 	//global $lang;
 	// Make a select box with all glpi users
 
-	global $HTMLRel;
+	global $HTMLRel,$cfg_install;
 
 	$rand=mt_rand();
 	echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>";
@@ -1569,7 +1573,7 @@ function dropdownUsers($value, $myname,$all=0) {
 	echo "<script type='text/javascript' >";
 	echo "   new Form.Element.Observer('search_$myname$rand', 1, ";
 	echo "      function(element, value) {";
-	echo "      	new Ajax.Updater('results_$myname$rand','".$HTMLRel."/ajax/dropdownUsers.php',{asynchronous:true, evalScripts:true, ";
+	echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdownUsers.php',{asynchronous:true, evalScripts:true, ";
 	echo "           onComplete:function(request)";
 	echo "            {Element.hide('search_spinner_$myname$rand');}, ";
 	echo "           onLoading:function(request)";
@@ -1957,7 +1961,7 @@ switch ($ID){
 */
 function dropdownAllItems($myname,$withenterprise=0,$withcartridge=0,$withconsumable=0,$search='',$value='') {
 //	global $deleted_tables, $template_tables;
-	global $lang,$HTMLRel;
+	global $lang,$HTMLRel,$cfg_install;
 	
 	$db=new DB;
 	
@@ -1994,7 +1998,7 @@ function dropdownAllItems($myname,$withenterprise=0,$withcartridge=0,$withconsum
 	echo "<script type='text/javascript' >";
 	echo "   new Form.Element.Observer('item_type$rand', 1, ";
 	echo "      function(element, value) {";
-	echo "      	new Ajax.Updater('show_$myname$rand','".$HTMLRel."/ajax/dropdownAllItems.php',{asynchronous:true, evalScripts:true, ";
+	echo "      	new Ajax.Updater('show_$myname$rand','".$cfg_install["root"]."/ajax/dropdownAllItems.php',{asynchronous:true, evalScripts:true, ";
 	echo "           onComplete:function(request)";
 	echo "            {Element.hide('search_spinner_$myname$rand');}, ";
 	echo "           onLoading:function(request)";
@@ -2455,11 +2459,14 @@ function listConnectElement($target,$input) {
 
 }
 
-function dropdownTrackingDeviceType($name,$value){
-	global $lang;
-	echo "<select name='$name'>";
+function dropdownTrackingDeviceType($myname,$value){
+	global $lang,$HTMLRel,$cfg_install;
+	
+	$rand=mt_rand();
+	
+	echo "<select id='search_$myname$rand' name='$myname'>";
     //if (isAdmin($_SESSION["glpitype"]))
-    echo "<option value='0' >".$lang["help"][30]."";
+    echo "<option value='0' ".(($value==0)?" selected":"").">".$lang["help"][30]."";
 	echo "<option value='".COMPUTER_TYPE."' ".(($value==COMPUTER_TYPE)?" selected":"").">".$lang["help"][25]."";
 	echo "<option value='".NETWORKING_TYPE."' ".(($value==NETWORKING_TYPE)?" selected":"").">".$lang["help"][26]."";
 	echo "<option value='".PRINTER_TYPE."' ".(($value==PRINTER_TYPE)?" selected":"").">".$lang["help"][27]."";
@@ -2467,7 +2474,37 @@ function dropdownTrackingDeviceType($name,$value){
 	echo "<option value='".PERIPHERAL_TYPE."' ".(($value==PERIPHERAL_TYPE)?" selected":"").">".$lang["help"][29]."";
 	echo "<option value='".SOFTWARE_TYPE."' ".(($value==SOFTWARE_TYPE)?" selected":"").">".$lang["help"][31]."";
 	echo "</select>";
-		
+
+echo "<script type='text/javascript' >";
+echo "   new Form.Element.Observer('search_$myname$rand', 1, ";
+echo "      function(element, value) {";
+echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdownTrackingDeviceType.php',{asynchronous:true, evalScripts:true, ";
+echo "           onComplete:function(request)";
+echo "            {Element.hide('search_spinner_$myname$rand');}, ";
+echo "           onLoading:function(request)";
+echo "            {Element.show('search_spinner_$myname$rand');},";
+echo "           method:'post', parameters:'type=' + value+'&myname=computer'";
+echo "})})";
+echo "</script>";
+
+
+echo "<div id='search_spinner_$myname$rand' style=' position:absolute; background-color:white; border: solid 1px #009966; font-weight:500; font-size:15px; color:#009966; text-align:center; vertical-align:middle; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'>Processing....</div>";
+
+echo "<span id='results_$myname$rand'>";
+
+if (isset($_SESSION["helpdeskSaved"]["computer"])){
+	$ci=new CommonItem();
+	if ($ci->getFromDB($value,$_SESSION["helpdeskSaved"]["computer"])){
+		echo "<select name='computer'>";
+		echo "<option value='".$_SESSION["helpdeskSaved"]["computer"]."'>".$ci->getName()."</option>";
+	
+		echo "</select>";
+	}
+}
+
+echo "</span>";	
+	
+			
 }
 
 /**
@@ -2491,21 +2528,18 @@ function printHelpDesk ($name,$from_helpdesk) {
 
 	// Get saved data from a back system
         $emailupdates = 'yes';
-        $device_type = COMPUTER_TYPE;
-		$computer="";
-		$contents="";
+        $device_type = 0;
+	$computer="";
+	$contents="";
 		
 		if (isset($_SESSION["helpdeskSaved"]["emailupdates"]))
-               $emailupdates = stripslashes($_SESSION["helpdeskSaved"]["emailupdates"]);
+                $emailupdates = stripslashes($_SESSION["helpdeskSaved"]["emailupdates"]);
 		if (isset($_SESSION["helpdeskSaved"]["email"]))
                 $email = stripslashes($_SESSION["helpdeskSaved"]["uemail"]);
-		if (isset($_SESSION["helpdeskSaved"]["computer"]))
-                $computer = stripslashes($_SESSION["helpdeskSaved"]["computer"]);
 		if (isset($_SESSION["helpdeskSaved"]["device_type"]))
                 $device_type = stripslashes($_SESSION["helpdeskSaved"]["device_type"]);
 		if (isset($_SESSION["helpdeskSaved"]["contents"]))
                 $contents = stripslashes($_SESSION["helpdeskSaved"]["contents"]);
-
 
 	echo "<form method='post' name=\"helpdeskform\" action=\"".$cfg_install["root"]."/tracking/tracking-injector.php\"  enctype=\"multipart/form-data\">";
 	echo "<input type='hidden' name='from_helpdesk' value='$from_helpdesk'>";
@@ -2535,12 +2569,12 @@ function printHelpDesk ($name,$from_helpdesk) {
 		echo "</td></tr>";
 	}
 
-	echo "<tr class='tab_bg_1'>";
+/*	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$lang["help"][12]." <img src=\"".$cfg_install["root"]."/pics/aide.png\" style='cursor:pointer;' alt=\"help\"onClick=\"window.open('".$cfg_install["root"]."/find_num.php','Help','scrollbars=1,resizable=1,width=600,height=600')\"></td>";
 	echo "<td><input name='computer' size='10' value='$computer'>";
 	echo "</td>";
 	echo "</tr>";
-
+*/
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$lang["help"][24].": </td>";
 	echo "<td>";

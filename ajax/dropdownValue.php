@@ -71,11 +71,11 @@
 		$i = 0;
 		$number = $db->numrows($result);
 		if ($number > 0) {
-			while ($i < $number) {
-				$output = $db->result($result, $i, "netpname");
+			while ($data =$db->fetch_array($result)) {
+				$output = $data['netpname'];
 				//$loc = getTreeValueCompleteName("glpi_dropdown_locations",$db->result($result, $i, "locID"));
-				$loc=$db->result($result, $i, "loc");
-				$ID = $db->result($result, $i, "ID");
+				$loc=$data['loc'];
+				$ID = $data['ID'];
 				echo "<option value=\"$ID\"";
 				if ($ID==$_POST['value']) echo " selected ";
 				echo ">$output ($loc)</option>";
@@ -87,9 +87,9 @@
 
 	$where="WHERE '1'='1' ";
 	if (in_array($_POST['table'],$deleted_tables))
-		$where.="AND deleted='N'";
+		$where.=" AND deleted='N' ";
 	if (in_array($_POST['table'],$template_tables))
-		$where.="AND is_template='0'";
+		$where.=" AND is_template='0' ";
 		
 //print_r($_POST);
 
@@ -101,7 +101,6 @@ $where .=" AND  (ID <> '".$_POST['value']."' ";
 		else $where.=" AND name LIKE '%".$_POST['searchText']."%' ";
 
 $where.=")";
-
 
 	$NBMAX=$cfg_layout["dropdown_max"];
 	$LIMIT="LIMIT 0,$NBMAX";
@@ -115,7 +114,6 @@ $where.=")";
 //echo $query;
 	$result = $db->query($query);
 
-	
 	echo "<select name=\"".$_POST['myname']."\" size='1'>";
 
 	if ($_POST['searchText']!="?"&&$db->numrows($result)==$NBMAX)
@@ -132,10 +130,10 @@ $where.=")";
 	$i = 0;
 	$number = $db->numrows($result);
 	if ($number > 0) {
-		while ($i < $number) {
-			$output = $db->result($result, $i, "name");
+		while ($data =$db->fetch_array($result)) {
+			$output = $data['name'];
 			if (empty($output)) $output="&nbsp;";
-			$ID = $db->result($result, $i, "ID");
+			$ID = $data['ID'];
 //			if ($ID === $_POST['value']) {
 //				echo "<option value=\"$ID\" selected>$output</option>";
 //			} else {

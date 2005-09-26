@@ -41,21 +41,17 @@
 	// Make a select box
 	$db = new DB;
 
-		$items=array(
+	$items=array(
 	COMPUTER_TYPE=>"glpi_computers",
 	NETWORKING_TYPE=>"glpi_networking",
 	PRINTER_TYPE=>"glpi_printers",
 	MONITOR_TYPE=>"glpi_monitors",
 	PERIPHERAL_TYPE=>"glpi_peripherals",
 	SOFTWARE_TYPE=>"glpi_software",
-	ENTERPRISE_TYPE=>"glpi_enterprises",
-	CARTRIDGE_TYPE=>"glpi_cartridges_type",
-	CONSUMABLE_TYPE=>"glpi_consumables_type",
 	);
 
-if (isset($items[$_POST["idtable"]])){
-	$table=$items[$_POST["idtable"]];
-	
+if (isset($items[$_POST["type"]])&&$_POST["type"]>0){
+	$table=$items[$_POST["type"]];
 	
 	$rand=mt_rand();
 	echo "<input id='search_".$_POST['myname']."$rand' name='____data_".$_POST['myname']."$rand' size='4'>";	
@@ -64,12 +60,12 @@ if (isset($items[$_POST["idtable"]])){
 	echo "<script type='text/javascript' >";
 	echo "   new Form.Element.Observer('search_".$_POST['myname']."$rand', 1, ";
 	echo "      function(element, value) {";
-	echo "      	new Ajax.Updater('results_ID$rand','".$cfg_install["root"]."/ajax/dropdown.php',{asynchronous:true, evalScripts:true, ";
+	echo "      	new Ajax.Updater('results_ID$rand','".$cfg_install["root"]."/ajax/dropdownFindNum.php',{asynchronous:true, evalScripts:true, ";
 	echo "           onComplete:function(request)";
 	echo "            {Element.hide('search_spinner$rand');}, ";
 	echo "           onLoading:function(request)";
 	echo "            {Element.show('search_spinner$rand');},";
-	echo "           method:'post', parameters:'searchText=' + value+'&table=$table&myname=item'";
+	echo "           method:'post', parameters:'searchText=' + value+'&table=$table&myname=".$_POST['myname']."'";
 	echo "})})";
 	echo "</script>";	
 	
