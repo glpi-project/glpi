@@ -43,6 +43,7 @@
 
 	if($_POST['table'] == "glpi_dropdown_netpoint") {
 
+		$where="";
 		if (!empty($_POST['searchText'])&&$_POST['searchText']!="?")
 			$where=" WHERE (t1.name LIKE '%".$_POST['searchText']."%' OR t2.completename LIKE '%".$_POST['searchText']."%')";
 
