@@ -700,7 +700,7 @@ switch ($current_version){
 	case "0.51": 
 	case "0.51a": update051to06();
 	case "0.6":
-	case "0.65":
+	case "0.65": update06to065();
 	break;
 	default:
 	update031to04();
@@ -2449,6 +2449,7 @@ if(!TableExists("glpi_dropdown_state")) {
 }
 
 }
+
 // Update from 0.51x to 0.6
 function update051to06(){
 global $lang;
@@ -2997,6 +2998,26 @@ if(!TableExists("glpi_dropdown_hdd_type")) {
 }
 
 }
+
+// Update from 0.6 to 0.65
+function update06to065(){
+global $lang;
+$db = new DB;
+ echo "<br>Version 0.65 <br />";
+
+if(!isIndex("glpi_networking_ports", "on_device")) {
+	$query = "ALTER TABLE `glpi_networking_ports` ADD INDEX (`on_device`) ";
+	$db->query($query) or die("6 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_networking_ports", "device_type")) {
+	$query = "ALTER TABLE `glpi_networking_ports` ADD INDEX (`device_type`) ";
+	$db->query($query) or die("6 ".$lang["update"][90].$db->error());
+}
+	
+	
+}
+
 
 function updateTreeDropdown(){
 
