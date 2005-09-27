@@ -176,6 +176,7 @@ $lang["common"][7]="Kiezen template";
 $lang["common"][8]="Manage templates..."; 
 $lang["common"][9]="Toevoegen template..."; 
 $lang["common"][10]="Technical responsible"; 
+$lang["common"][11]="Limited view"; 
 
 $lang["computers"][0]="Toevoegen Computer..."; 
 $lang["computers"][1]="Identifier"; 
@@ -896,6 +897,8 @@ $lang["planning"][8]="Tussenkomst";
 $lang["planning"][9]="op"; 
 $lang["planning"][10]="Hardware"; 
 $lang["planning"][11]="Tussenkomst uren"; 
+$lang["planning"][12]="Download the calendar in Ical format"; 
+$lang["planning"][13]="Webcal:// Synchronization"; 
 
 $lang["printers"][0]="Toevoegen Printer..."; 
 $lang["printers"][1]="Tonen ahv. locatie"; 

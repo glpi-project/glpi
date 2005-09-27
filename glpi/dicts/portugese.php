@@ -176,6 +176,7 @@ $lang["common"][7]="Escolha um Padrão";
 $lang["common"][8]="Controle padrões..."; 
 $lang["common"][9]="Adicionar Padrão..."; 
 $lang["common"][10]="Técnico responsável"; 
+$lang["common"][11]="Limited view"; 
 
 $lang["computers"][0]="Adicionar computador"; 
 $lang["computers"][1]="Identificação"; 
@@ -896,6 +897,8 @@ $lang["planning"][8]="Tracking";
 $lang["planning"][9]="By"; 
 $lang["planning"][10]="Hardware"; 
 $lang["planning"][11]="Schedules of intervention"; 
+$lang["planning"][12]="Download the calendar in Ical format"; 
+$lang["planning"][13]="Webcal:// Synchronization"; 
 
 $lang["printers"][0]="Adicionar impressora..."; 
 $lang["printers"][1]="Display by location"; 
