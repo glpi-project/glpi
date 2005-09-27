@@ -699,8 +699,8 @@ switch ($current_version){
 	case "0.5": update05to051();
 	case "0.51": 
 	case "0.51a": update051to06();
-	case "0.6":
-	case "0.65": update06to065();
+	case "0.6": update06to065();
+	case "0.65": 
 	break;
 	default:
 	update031to04();
@@ -3226,8 +3226,28 @@ elseif(empty($_POST["ajout_su"])) {
 			if(!empty($tab) && $tab["adminchange"]) {
 				echo "<div align='center'> <h2>". $lang["update"][96] ."<h2></div>";
 			}
-			if (showLocationUpdateForm())
-				showContentUpdateForm();
+			if (showLocationUpdateForm()){
+				// Get current version
+				$db=new DB();
+				$query="SELECT version FROM glpi_config";
+				$result=$db->query($query) or die("get current version".$db->error());
+				$current_version=trim($db->result($result,0,0));
+
+				switch ($current_version){
+					case "0.31": 
+					case "0.4": 
+					case "0.41": 
+					case "0.42": 
+					case "0.5": 
+					case "0.51": 
+					case "0.51a": 
+						showContentUpdateForm();
+						break;
+					default:
+					echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
+						break;
+				}
+				}
 		}
 	}
 	else {
