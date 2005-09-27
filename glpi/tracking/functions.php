@@ -870,8 +870,8 @@ function showJobDetails($ID) {
 			if ($job->emailupdates=='yes') $suivi=$lang["choice"][0];
 			else $suivi=$lang["choice"][1];
 			echo "<tr><td>".$lang["job"][19].":</td><td>$suivi</td></tr>\n";
-			if ($author->fields["email"]!=$job->uemail)
-				echo "<tr><td align='right'>".$lang["joblist"][3].":</td><td>".$job->uemail."</td></tr>\n";
+			if (!empty($job->uemail))
+				echo "<tr><td align='right'>".$lang["joblist"][3].":</td><td><a href='mailto:".$job->uemail."'>".$job->uemail."</a></td></tr>\n";
 		}
 		// Print planning
 		$planning_realtime=0;		

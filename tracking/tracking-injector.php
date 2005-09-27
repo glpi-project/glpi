@@ -61,6 +61,7 @@ loadLanguage($_SESSION["glpiname"]);
 
 $status = "new";
 
+$ID=0;
 if (isset($_POST["computer"]))
 $ID=$_POST["computer"];
 
