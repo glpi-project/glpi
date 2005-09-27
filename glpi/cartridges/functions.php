@@ -295,7 +295,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 			printPager($start,$numrows,$target,$parameters);
 
 			// Produce headline
-			echo "<div align='center'><table class='tab_cadre' width='750'><tr>";
+			echo "<div align='center'><table class='tab_cadre' width='800'><tr>";
 
 			// Name
 			echo "<th>";
@@ -368,7 +368,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 				if (getUnusedCartridgesNumber($ct->fields["ID"])<=$ct->fields["alarm"])
 				$highlight="class='tab_bg_1_2'";
 				
-				echo "<td $highlight>";
+				echo "<td $highlight width='280'>";
 					countCartridges($ct->fields["ID"]);
 				echo "</td>";
 				echo "</tr>";
