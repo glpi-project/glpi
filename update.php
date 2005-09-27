@@ -3005,13 +3005,18 @@ global $lang;
 $db = new DB;
  echo "<br>Version 0.65 <br />";
 
-if(!isIndex("glpi_networking_ports", "on_device")) {
+if(!isIndex("glpi_networking_ports", "on_device_2")) {
 	$query = "ALTER TABLE `glpi_networking_ports` ADD INDEX (`on_device`) ";
 	$db->query($query) or die("6 ".$lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_networking_ports", "device_type")) {
 	$query = "ALTER TABLE `glpi_networking_ports` ADD INDEX (`device_type`) ";
+	$db->query($query) or die("6 ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_computer_device", "FK_device")) {
+	$query = "ALTER TABLE `glpi_computer_device` ADD INDEX (`FK_device`) ";
 	$db->query($query) or die("6 ".$lang["update"][90].$db->error());
 }
 	
