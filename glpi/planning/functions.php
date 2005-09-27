@@ -419,4 +419,160 @@ global $lang;
 	return true;
 }
 
+
+
+//*******************************************************************************************************************************
+// *********************************** TEST ICAL ***************************************************************************
+//*******************************************************************************************************************************
+
+
+/**
+* Générate URL for ICAL
+*
+*  
+* @param $who 
+* @Return Nothing (display function)
+*
+**/      
+function urlIcal ($who) {
+
+GLOBAL  $cfg_install, $lang;
+
+echo "<a href=\"".$cfg_install["root"]."/planning/ical.php?uID=$who\">".$lang["planning"][12]."</a>";
+echo "<br>";
+
+// Todo récup l'url complete de glpi proprement, ? nouveau champs table config ?
+echo "<a href=\"webcal://".$_SERVER['HTTP_HOST'].$cfg_install["root"]."/planning/ical.php?uID=$who\">".$lang["planning"][13]."</a>";
+
+}
+
+
+/**
+* Convert date mysql to timestamp
+* 
+* @param $date  date in mysql format
+* @Return timestamp
+*
+**/      
+ function date_mysql_to_timestamp($date){
+ if (!preg_match('/(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)/', $date, $r)){
+  return false;
+  }
+ 
+  return mktime($r[4], $r[5], $r[6], $r[2], $r[3], $r[1] );
+}
+
+
+/**
+* Convert timestamp to date in ical format
+* 
+* @param $date  timestamp
+* @Return date in ical format
+*
+**/      
+function date_ical($date) {
+	return date("Ymd\THis", date_mysql_to_timestamp($date));
+}
+
+
+
+/**
+*
+* Generate header for ical file
+* 
+* @param $name 
+* @Return $debut_cal  
+*
+**/      
+function debutIcal($name) {
+
+GLOBAL  $cfg_install, $lang;
+
+ 	$debut_cal = "BEGIN:VCALENDAR\n";
+        $debut_cal .= "VERSION:2.0\n";
+        $debut_cal .= "X-WR-CALNAME ;VALUE=TEXT:$name\n";
+      //  $debut_cal .= "PRODID:\n";
+     //   $debut_cal .= "X-WR-RELCALID:n";
+     //   $debut_cal .= "X-WR-TIMEZONE:US/Pacific\n";
+        $debut_cal .= "CALSCALE:GREGORIAN\n";
+        return (string) $debut_cal;
+    }
+
+
+/**
+*  Generate ical body file
+*  
+* @param $who
+* @Return $debutcal $event $fincal
+**/      
+function generateIcal($who){
+
+GLOBAL  $cfg_install, $cfg_features, $lang;
+
+$db=new DB;
+
+$query="SELECT * from glpi_tracking_planning WHERE id_assign=$who";
+
+$result=$db->query($query);
+
+$job=new Job();
+
+$interv=array();
+$i=0;
+if ($db->numrows($result)>0)
+while ($data=$db->fetch_array($result)){
+	$job->getFromDB($data["id_tracking"],0);
+	
+	
+	$interv[$i]["id_tracking"]=$data["id_tracking"];
+	$interv[$i]["id_assign"]=$data["id_assign"];
+	$interv[$i]["ID"]=$data["ID"];
+	$interv[$i]["begin"]=$data["begin"];
+	$interv[$i]["end"]=$data["end"];
+	$interv[$i]["content"]=substr($job->contents,0,$cfg_features["cut"]);
+	$interv[$i]["device"]=$job->computername;
+	$i++;
+}
+
+$debutcal="";
+$event="";
+$fincal="";
+
+if (count($interv)>0) {
+	
+$debutcal=debutIcal(getUserName($who));
+	
+	foreach ($interv as $key => $val){
+
+		$event .= "BEGIN:VEVENT\n";
+
+		$event.="UID:Job#".$val["id_tracking"];
+
+		$event.="DTSTAMP:".date_ical($val["begin"])."\n";
+
+
+		$event .= "DTSTART:".date_ical($val["begin"])."\n";
+
+		$event .= "DTEND:".date_ical($val["end"])."\n";
+
+ 		$event .= "SUMMARY:".$lang["planning"][8]." # ".$val["id_tracking"]." ".$lang["planning"][10]." # ".$val["device"]."\n";
+
+		$event .= "DESCRIPTION:".$val["content"]."\n";
+		
+		//todo recup la catégorie d'intervention.
+		//$event .= "CATEGORIES:".$val["categorie"]."\n";
+
+		//todo récup proprement l'url complete d'installation pour les liens  nouveau champs table config ?
+		$event .= "URL:http://".$_SERVER['HTTP_HOST'].$cfg_install["root"]."/tracking/tracking-followups.php?ID=".$val["id_tracking"]."\n";
+
+  		$event .= "END:VEVENT\n";
+		}
+$fincal= "END:VCALENDAR\n";	
+}
+
+return $debutcal.$event.$fincal;
+
+}
+
+
 ?>
