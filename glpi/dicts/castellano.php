@@ -176,6 +176,7 @@ $lang["common"][7]="Elija un modelo";
 $lang["common"][8]="Gestión de modelos..."; 
 $lang["common"][9]="Agregar modelo..."; 
 $lang["common"][10]="Responsable técnico"; 
+$lang["common"][11]="Limited view"; 
 
 $lang["computers"][0]="Agregar computador..."; 
 $lang["computers"][1]="Identificador"; 
@@ -896,6 +897,8 @@ $lang["planning"][8]="Servicio";
 $lang["planning"][9]="Por"; 
 $lang["planning"][10]="Material"; 
 $lang["planning"][11]="Horarios de servicio"; 
+$lang["planning"][12]="Download the calendar in Ical format"; 
+$lang["planning"][13]="Webcal:// Synchronization"; 
 
 $lang["printers"][0]="Agregar impresora..."; 
 $lang["printers"][1]="Ver por lugar"; 

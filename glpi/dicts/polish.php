@@ -176,6 +176,7 @@ $lang["common"][7]="Wybierz szablon";
 $lang["common"][8]="Zarządzaj szablonami..."; 
 $lang["common"][9]="Dodaj szablon..."; 
 $lang["common"][10]="Odpowiedzialny techniczny"; 
+$lang["common"][11]="Limited view"; 
 
 $lang["computers"][0]="Dodaj Komputer..."; 
 $lang["computers"][1]="Identyfikator"; 
@@ -896,6 +897,8 @@ $lang["planning"][8]="Tracking";
 $lang["planning"][9]="By"; 
 $lang["planning"][10]="Hardware"; 
 $lang["planning"][11]="Schedules of intervention"; 
+$lang["planning"][12]="Download the calendar in Ical format"; 
+$lang["planning"][13]="Webcal:// Synchronization"; 
 
 $lang["printers"][0]="Add Printer..."; 
 $lang["printers"][1]="Display by location"; 
