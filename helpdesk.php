@@ -47,22 +47,17 @@ include ($phproot . "/glpi/includes_printers.php");
 include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_monitors.php");
-
+include ($phproot . "/glpi/includes_software.php");
 
 checkAuthentication("post-only");
 
-//*******************
-// Affichage Module réservation 
-//******************
 
 if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 {
-	include ($phproot . "/glpi/includes_computers.php");
-	include ($phproot . "/glpi/includes_printers.php");
-	include ($phproot . "/glpi/includes_peripherals.php");
-	include ($phproot . "/glpi/includes_monitors.php");
-	include ($phproot . "/glpi/includes_networking.php");
-	include ($phproot . "/glpi/includes_software.php");
+
+	//*******************
+	// Affichage interventions en cours
+	//******************
 	
 	if (!isset($_GET["start"])) $_GET["start"]=0;
 
@@ -76,11 +71,11 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 	}
 }
 elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"resa") == 0)){
-	include ($phproot . "/glpi/includes_computers.php");
-	include ($phproot . "/glpi/includes_printers.php");
-	include ($phproot . "/glpi/includes_peripherals.php");
-	include ($phproot . "/glpi/includes_monitors.php");
-	include ($phproot . "/glpi/includes_networking.php");
+	
+	//*******************
+	// Affichage Module réservation 
+	//******************
+	
 	if (isset($_POST["edit_resa"])){
 		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
 		list($end_year,$end_month,$end_day)=split("-",$_POST["end_date"]);
