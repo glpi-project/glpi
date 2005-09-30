@@ -673,7 +673,7 @@ function step7() {
 // an fill it with user connections info.
 function create_conn_file($host,$user,$password,$dbname)
 {
-	$db_str = "<?php \n class DB extends DBmysql { \n var \$dbhost	= \"". $host ."\"; \n var \$dbuser 	= \"". $user ."\"; \n var \$dbpassword= \"". $password ."\"; \n var \$dbdefault	= \"". $dbname ."\"; \n } \n ?>";
+	$db_str = "<?php \n class DB extends DBmysql { \n var \$dbhost	= '". $host ."'; \n var \$dbuser 	= '". $user ."'; \n var \$dbpassword= '". $password ."'; \n var \$dbdefault	= '". $dbname ."'; \n } \n ?>";
 	include ("_relpos.php");
 	$fp = fopen($phproot ."/glpi/config/config_db.php",'wt');
 	if($fp) {
