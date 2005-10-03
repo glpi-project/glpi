@@ -1210,7 +1210,7 @@ echo "})})";
 echo "</script>";
 
 
-echo "<div id='search_spinner_$myname$rand' style=' position:absolute; background-color:white; border: solid 1px #009966; font-weight:500; font-size:15px; color:#009966; text-align:center; vertical-align:middle; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'>Processing....</div>";
+echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>";
 
 echo "<span id='results_$myname$rand'>";
 echo "<select name='$myname'><option value='0'>------</option></select>";
@@ -1303,7 +1303,7 @@ echo "           method:'post', parameters:'searchText=' + value+'&value=$value&
 echo "})})";
 echo "</script>";
 
-echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  background-color:white; border: solid 1px #009966; font-weight:500; font-size:15px; color:#009966; text-align:center; vertical-align:middle; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'>Processing....</div>";
+echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>";
 
 echo "<span id='results_$myname$rand'>";
 if (!empty($value)&&$value>0)
@@ -1582,7 +1582,7 @@ function dropdownUsers($value, $myname,$all=0) {
 	echo "})})";
 	echo "</script>";
 
-echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  background-color:white; border: solid 1px #009966; font-weight:500; font-size:15px; color:#009966; text-align:center; vertical-align:middle; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'>Processing....</div>";
+echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>";
 
 	echo "<span id='results_$myname$rand'>";
 	if (!empty($value)&&$value>0)
@@ -2007,7 +2007,7 @@ function dropdownAllItems($myname,$withenterprise=0,$withcartridge=0,$withconsum
 	echo "})})";
 	echo "</script>";
 	
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute; background-color:white; border: solid 1px #009966; font-weight:500; font-size:15px; color:#009966; text-align:center; vertical-align:middle; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'>Processing....</div>";	
+	echo "<div id='search_spinner_$myname$rand' style=' position:absolute; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>";	
 	echo "</td><td>"	;
 	echo "<span id='show_$myname$rand'>&nbsp;</span>";
 	echo "</td></tr></table>";
@@ -2488,7 +2488,7 @@ echo "})})";
 echo "</script>";
 
 
-echo "<div id='search_spinner_$myname$rand' style=' position:absolute; background-color:white; border: solid 1px #009966; font-weight:500; font-size:15px; color:#009966; text-align:center; vertical-align:middle; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'>Processing....</div>";
+echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>";
 
 echo "<span id='results_$myname$rand'>";
 

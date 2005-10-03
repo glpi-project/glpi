@@ -69,7 +69,7 @@ if (isset($items[$_POST["type"]])&&$_POST["type"]>0){
 	echo "})})";
 	echo "</script>";	
 	
-	echo "<div id='search_spinner$rand' style=' position:absolute; background-color:white; border: solid 1px #009966; font-weight:500; font-size:15px; color:#009966; text-align:center; vertical-align:middle; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'>Processing....</div>";	
+	echo "<div id='search_spinner$rand' style=' position:absolute; background-color:white;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>";	
 	
 	echo "<span id='results_ID$rand'>";
 	echo "<select name='ID'><option value='0'>------</option></select>";
