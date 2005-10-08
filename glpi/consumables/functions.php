@@ -411,7 +411,7 @@ function showConsumableTypeForm ($target,$ID) {
 	$ct = new ConsumableType;
 
 	echo "<form method='post' action=\"$target\"><div align='center'>\n";
-	echo "<table class='tab_cadre' width='700'>\n";
+	echo "<table class='tab_cadre' width='800'>\n";
 	echo "<tr><th colspan='3'><b>\n";
 	if (!$ID) {
 		echo $lang["consumables"][6].":";
