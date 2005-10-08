@@ -1241,13 +1241,13 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	if((!empty($withtemplate) && $withtemplate == 2) || $nb==0) {
 		echo "</table></center>";
 	} else {
-		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+		echo "<tr class='tab_bg_1'><td align='center'>";
 		echo "<div class='software-instal'><input type='hidden' name='cID' value='$instID'>";
 		echo "<input type='hidden' name='withtemplate' value='".$withtemplate."'>";
 			dropdownSoftware($withtemplate);
-		echo "</div></td><td align='center' class='tab_bg_2'>";
+		echo "</div></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td align='center' class='tab_bg_2'>";
 		echo "<input type='submit' name='select' value=\"".$lang["buttons"][4]."\" class='submit'>";
-		echo "</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+		echo "</td></tr>";
 		echo "</table></center>";
         	echo "</form>";
 	}
