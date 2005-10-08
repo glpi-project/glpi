@@ -82,6 +82,7 @@ else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
 	deletePeripheral($tab,1);
+	updateState(PERIPHERAL_TYPE,$tab["ID"],0);
 	logEvent($tab["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." purge item.");
 	glpi_header($cfg_install["root"]."/peripherals/");
 }

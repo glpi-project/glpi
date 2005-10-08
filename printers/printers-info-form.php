@@ -85,6 +85,7 @@ else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
 	deletePrinter($tab,1);
+	updateState(PRINTER_TYPE,$tab["ID"],0);
 	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." purge item.");
 	glpi_header($cfg_install["root"]."/printers/");
 }
