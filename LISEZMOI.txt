@@ -240,7 +240,7 @@ Avant de faire quoi que ce soit il convient de faire deux choses :
 2 - Sauvegardez tout le répertoire GLPI (il contiendra la sauvegarde de votre base SQL et vos documents (GLPI >= 0.5))
 
 A partir de là, si la mise à jour se déroule mal ou que les nouvelles implantation de 
-la version 0.5 ne vous conviennent pas, il sera facile de revenir à votre version précédente.
+la version ne vous conviennent pas, il sera facile de revenir à votre version précédente.
 
 Si néanmoins cette procédure se déroulait mal, merci de nous faire parvenir au plus vite sur 
 les mailing listes, ou sur le forum du site du projet, ou sur le bugtrack la procédure utilisée 
@@ -248,7 +248,7 @@ et le message d'erreur que vous obtenez.
 
 II) Récupération et installation des fichiers.
 
-1)Téléchargez le tarball de la version 0.6 disponible dans la rubrique téléchargement du site du 
+1)Téléchargez le tarball de la dernière version  disponible dans la rubrique téléchargement du site du 
 projet glpi (http://glpi.indepnet.org).
 
 2)Décompressez la nouvelle archive de GLPI, à la place de l'ancienne.
@@ -343,12 +343,6 @@ peuvent avoir été stocké de manière non conforme au moteur de GLPI actuel.
 Pour remédier à cela et afin que l'affichage de vos données soit correcte, l'ensemble de votre base données
 est analysée et mise à jour. Cela peut prendre pas mal de temps en fonction du volume d'information
 contenu dans votre base de données.
-
-#### VERSION > 0.5
-Recopiez le répertoire docs sauvegardé à la place du répertoire vide de l'archive.
-####
-
-
 
 12) Fin de la Mise à jour
 
