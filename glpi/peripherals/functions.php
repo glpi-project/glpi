@@ -364,7 +364,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<center><b>".$lang["peripherals"][17]."</b></center>";
+			echo "<div align='center'><b>".$lang["peripherals"][17]."</b></div>";
 			//echo "<hr noshade>";
 			//searchFormperipheral();
 		}
@@ -559,9 +559,9 @@ function showperipheralForm ($target,$ID,$withtemplate='') {
 		return true;	
 	}
 	else {
-                echo "<div align='center'><b>".$lang["printers"][17]."</b></div>";
-                echo "<hr noshade>";
-                searchFormPrinters();
+                echo "<div align='center'><b>".$lang["peripherals"][17]."</b></div>";
+               // echo "<hr noshade>";
+          //      searchFormPrinters();
                 return false;
         }
 
