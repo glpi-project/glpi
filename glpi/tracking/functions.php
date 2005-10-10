@@ -1226,6 +1226,9 @@ function authorJob ($tID,$aID) {
 	$oldname=$u->getName();
 	$job->authorTo($aID);
 	$newauthor=$job->author;
+	$u->getfromDBbyID($job->author);
+	$job->mailAuthorTo($u->fields['email']);
+
 
 	// Add a Followup for a item change
 	if ($newauthor!=$oldauthor){

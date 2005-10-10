@@ -232,6 +232,23 @@ class Job {
 		}
 	}
 
+	function mailAuthorTo($uemail=NULL){
+		//change mail
+
+		$db = new DB;
+		$this->uemail = $uemail;
+
+		$query = "UPDATE glpi_tracking SET uemail = '$uemail' WHERE ID = '$this->ID'";
+		if ($result = $db->query($query)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+
+
+
 	function itemTo($type,$comp) {
 		// change item
 		
