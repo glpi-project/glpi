@@ -37,6 +37,7 @@
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 
+checkauthentication("super-admin");
 
 // full path 
 $path=$phproot."/backups/";
@@ -47,7 +48,7 @@ sendFile($path.$_GET["sendFile"],$_GET["sendFile"]);
 exit();
 }
 
-checkauthentication("super-admin");
+
 
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 
