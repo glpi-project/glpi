@@ -530,6 +530,14 @@ global $lang;
 		}
 
 		if (ereg("\[IP\]",$link)||ereg("\[MAC\]",$link)){
+		// Add IP/MAC internal switch
+		if ($type==NETWORKING_TYPE){
+			$tmplink=$link;
+			$tmplink=ereg_replace("\[IP\]",$ci->obj->fields["ifaddr"],$tmplink);
+			$tmplink=ereg_replace("\[MAC\]",$ci->obj->fields['ifmac'],$tmplink);
+			echo "<tr class='tab_bg_2'><td><a href='$tmplink'>$tmplink</a></td></tr>";
+		}
+		
 		if (count($ipmac)>0){
 			foreach ($ipmac as $key => $val){
 				$tmplink=$link;
@@ -537,7 +545,10 @@ global $lang;
 				$tmplink=ereg_replace("\[MAC\]",$val['ifmac'],$tmplink);
 				echo "<tr class='tab_bg_2'><td><a href='$tmplink'>$tmplink</a></td></tr>";
 			}
-		}} else 
+		}
+		
+		
+		} else 
 		echo "<tr class='tab_bg_2'><td><a href='$link'>$link</a></td></tr>";
 		
 	
