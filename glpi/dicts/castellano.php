@@ -176,7 +176,7 @@ $lang["common"][7]="Elija un modelo";
 $lang["common"][8]="Gestión de modelos..."; 
 $lang["common"][9]="Agregar modelo..."; 
 $lang["common"][10]="Responsable técnico"; 
-$lang["common"][11]="Limited view"; 
+$lang["common"][11]="Vista limitada"; 
 
 $lang["computers"][0]="Agregar computador..."; 
 $lang["computers"][1]="Identificador"; 
@@ -594,11 +594,11 @@ $lang["install"][82]="Bases de datos creadas";
 $lang["install"][83]="Test de las funciones utf8_encode y utf8_decode"; 
 $lang["install"][84]="GLPI no puede funcionar correctamente ein las funciones utf8_encode y utf8_decode; intente activar soporte de XML para PHP"; 
 $lang["install"][85]="Se han encontrado las funciones - ¡Perfecto!"; 
-$lang["install"][86]="Allocated memory test"; 
-$lang["install"][87]="Allocated memory:"; 
-$lang["install"][88]="A minimum of 16Mo is commonly required for GLPI."; 
-$lang["install"][89]="Perfect !"; 
-$lang["install"][90]="Try to increase the memory_limit parameter in the php.ini file."; 
+$lang["install"][86]="Comprobar la memoria asignada"; 
+$lang["install"][87]="Memoria asignada:"; 
+$lang["install"][88]="Generalmente se necesita un mínimo de 16MB para GLPI."; 
+$lang["install"][89]="Perfecto!"; 
+$lang["install"][90]="Intente aumentando el parámetro memory_limit en el archivo php.ini."; 
 
 $lang["job"][0]="Número de servicio"; 
 $lang["job"][1]="Servicio siempre abierto..."; 
@@ -897,8 +897,8 @@ $lang["planning"][8]="Servicio";
 $lang["planning"][9]="Por"; 
 $lang["planning"][10]="Material"; 
 $lang["planning"][11]="Horarios de servicio"; 
-$lang["planning"][12]="Download the calendar in Ical format"; 
-$lang["planning"][13]="Webcal:// Synchronization"; 
+$lang["planning"][12]="Descargar calendario en formato Ical"; 
+$lang["planning"][13]="Sincronización Webcal://"; 
 
 $lang["printers"][0]="Agregar impresora..."; 
 $lang["printers"][1]="Ver por lugar"; 
