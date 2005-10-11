@@ -374,7 +374,7 @@ function showDocumentForm ($target,$ID,$search) {
 	$max_size/=1024*1024;
 	$max_size=round($max_size,1);
 	
-	echo "<tr class='tab_bg_1'><td>".$lang["document"][2]." (".$max_size."Mo max):	</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["document"][2]." (".$max_size." Mb max):	</td>";
 	echo "<td colspan='2'><input type='file' name='filename' value=\"".$con->fields["filename"]."\" size='25'></td>";
 	echo "</tr>";
 
