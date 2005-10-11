@@ -287,6 +287,7 @@ switch($table){
       Array( 'ID',     utf8_decode($lang["computers"][31]),FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'name', utf8_decode($lang["computers"][7]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'type',    utf8_decode($lang["computers"][8]), FORMAT_TEXTE, 'L',    20 ,'0'),
+	Array( 'model',    utf8_decode($lang["computers"][50]), FORMAT_TEXTE, 'L',    20 ,'0'),	  
 	  Array( 'entname',    utf8_decode($lang["common"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),            
 	  Array( 'techname',    utf8_decode($lang["common"][10]), FORMAT_TEXTE, 'L',    20 ,'0'),            
       Array( 'flags_server', utf8_decode($lang["computers"][28]), FORMAT_TEXTE, 'L',    20 ,'0'),
@@ -449,6 +450,9 @@ switch($table){
 				elseif($name == "type") {
 					$value=getDropdownName("glpi_type_".$table,$enr[$champs[$i][0]]);
 				}
+				elseif($name == "model") {
+					$value=getDropdownName("glpi_dropdown_model",$enr[$champs[$i][0]]);
+				}
 				elseif($name == "montype") {
 					$value=getDropdownName("glpi_type_monitors",$enr[$champs[$i][0]]);
 				}
@@ -508,6 +512,9 @@ switch($table){
 				}
 				elseif($name == "type") {
 					$value=getDropdownName("glpi_type_".$table,$enr[$champs[$i][0]]);
+				}
+				elseif($name == "model") {
+					$value=getDropdownName("glpi_dropdown_model",$enr[$champs[$i][0]]);
 				}
 				elseif($name == "montype") {
 					$value=getDropdownName("glpi_type_monitors",$enr[$champs[$i][0]]);
