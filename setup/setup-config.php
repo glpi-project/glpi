@@ -87,7 +87,7 @@ elseif(!empty($_POST["update_ext"])) {
 }
 elseif(!empty($_POST["update_confgen"])) {
 	updateConfigGen($_POST["root_doc"], $_POST["event_loglevel"], $_POST["num_of_events"], $_POST["expire_events"], $_POST["jobs_at_login"],$_POST["list_limit"], $_POST["cut"],$_POST["permit_helpdesk"],$_POST["default_language"],$_POST["priority"],$_POST["date_fiscale"],$_POST["cartridges_alarm"],
-	$_POST["planning_begin"],$_POST["planning_end"],$_POST["auto_assign"]);
+	$_POST["planning_begin"],$_POST["planning_end"],$_POST["auto_assign"],$_POST["public_faq"]);
 	glpi_header($cfg_install["root"]."/setup/setup-config.php?next=confgen");
 }
 

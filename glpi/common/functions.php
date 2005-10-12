@@ -344,7 +344,7 @@ function checkAuthentication($authtype) {
 
 	GLOBAL $cfg_install, $lang, $HTMLRel;
 
-	if(empty($_SESSION["authorisation"]))
+	if(empty($_SESSION["authorisation"])&& $authtype != "anonymous")
 	{
 		nullHeader("Login",$_SERVER["PHP_SELF"]);
 		echo "<div align='center'><b><a href=\"".$cfg_install["root"]."/logout.php\">Relogin</a></b></div>";
@@ -355,9 +355,12 @@ function checkAuthentication($authtype) {
 	
 	// New database object
 	loadLanguage();
-	$type = $_SESSION["glpitype"];	
+	$type="anonymous";
+	if (isset($_SESSION["glpitype"]))
+		$type = $_SESSION["glpitype"];	
+		
 	// Check username and password
-	if (!isset($_SESSION["glpiname"])) {
+	if (!isset($_SESSION["glpiname"])&& $authtype != "anonymous") {
 		header("Vary: User-Agent");
 		nullHeader($lang["login"][3], $_SERVER["PHP_SELF"]);
 		echo "<center><b>".$lang["login"][0]."</b><br><br>";
@@ -411,6 +414,16 @@ function checkAuthentication($authtype) {
 					commonFooter();
 					exit();
 				}
+			
+			case "anonymous";
+    				if ($cfg_features['public_faq'] == 0){
+      					nullHeader("Login",$_SERVER["PHP_SELF"]);
+      					echo "<div align='center'><b><a href=\"".$cfg_install["root"]."/logout.php\">No anonymous authorisation</a></b></div>";
+      					nullFooter();
+      					exit();
+    				}
+			break;
+				
 			break;
 		}
 	}
