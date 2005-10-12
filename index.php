@@ -49,7 +49,8 @@ if (!empty($cfg_login['cas']['host'])&&!isset($_GET["noCAS"])) {
 }
 
 
-
+// Send UTF8 Headers
+	header("Content-Type: text/html; charset=UTF-8");
 // Start the page
 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
 echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">";
