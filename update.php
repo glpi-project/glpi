@@ -3020,7 +3020,18 @@ if(!isIndex("glpi_computer_device", "FK_device")) {
 	$db->query($query) or die("6 ".$lang["update"][90].$db->error());
 }
 	
-	
+// Field for public FAQ
+if(!FieldExists("glpi_config","public_faq")) {
+	$query="ALTER TABLE `glpi_config` ADD `public_faq` ENUM( '0', '1' ) NOT NULL AFTER `auto_assign` ;";
+	$db->query($query) or die("0.6 add public_faq in config".$lang["update"][90].$db->error());
+}
+
+// Optimize amort_type field
+if(FieldExists("glpi_infocoms","amort_type")) {
+	$query="ALTER TABLE `glpi_infocoms` CHANGE `amort_type` `amort_type` SMALLINT( 20 ) NOT NULL DEFAULT '1'";
+	$db->query($query) or die("0.6 alter amort_type in infocoms".$lang["update"][90].$db->error());
+}
+
 }
 
 

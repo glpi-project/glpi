@@ -42,6 +42,7 @@ if(!file_exists($phproot ."/glpi/config/config_db.php")) {
 else
 {
 include ($phproot . "/glpi/includes.php");
+loadLanguage();
 // Using CAS server
 if (!empty($cfg_login['cas']['host'])&&!isset($_GET["noCAS"])) {
 	glpi_header("login.php");
@@ -104,10 +105,13 @@ echo "</form>";
 
  
 echo "<p> <img src='".$HTMLRel."pics/key.png' alt='keys' /> </p>";
+if ($cfg_features['public_faq'])
+	echo "<p><a href='faq.php'>".$lang["knowbase"][24]."</a></p>";
 
 
 echo "</div>";
 echo "</div>";
+
 
 // fin contenu
 
