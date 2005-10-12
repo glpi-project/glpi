@@ -678,7 +678,7 @@ $lang["knowbase"][20]="Base de connaissances vide";
 $lang["knowbase"][21]="Tout déplier"; 
 $lang["knowbase"][22]="Tout replier";
 $lang["knowbase"][23]="Catégorie"; 
-$lang["knowbase"][24]="Accèder à la FAQ"; 
+$lang["knowbase"][24]="Accéder à la FAQ"; 
 
 $lang["ldap"][0]="recherche"; 
 $lang["ldap"][1]="Montrer";
@@ -1222,7 +1222,7 @@ $lang["setup"][222]="Périphériques internes";
 $lang["setup"][223]="Limite des horaires pour le planning";
 $lang["setup"][224]="Configuration pour les réservations";
 $lang["setup"][225]="Pour une nouvelle réservation";
-$lang["setup"][226]="Autoriser la consultation anonyme de la base de connaissance";
+$lang["setup"][226]="Autoriser la consultation anonyme de la base de connaissances";
 
 $lang["software"][0]="Ajouter logiciel...";
 $lang["software"][1]="ID"; 
