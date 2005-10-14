@@ -583,7 +583,7 @@ function showComputerForm($target,$ID,$withtemplate='') {
 			$datestring = $lang["computers"][14].": ";
 			$date = date("Y-m-d H:i:s");
 		} else {
-			$datestring = $lang["computers"][11]." : ";
+			$datestring = $lang["computers"][11].": ";
 			$date = $comp->fields["date_mod"];
 			$template = false;
 		}
@@ -686,12 +686,12 @@ function showComputerForm($target,$ID,$withtemplate='') {
 
 		echo "<tr class='tab_bg_1'>";
 		
-		echo "<td>".$lang["computers"][9]."&nbsp;</td><td>";
+		echo "<td>".$lang["computers"][9].":</td><td>";
 		dropdownValue("glpi_dropdown_os", "os", $comp->fields["os"]);
 		echo "</td>";
 		
 		if (!$template){
-		echo "<td>".$lang["reservation"][24]."&nbsp;:</td><td><b>";
+		echo "<td>".$lang["reservation"][24].":</td><td><b>";
 		showReservationForm(COMPUTER_TYPE,$ID);
 		echo "</b></td>";
 		} else echo "<td>&nbsp;</td><td>&nbsp;</td>";
