@@ -424,7 +424,7 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 			$datestring = $lang["computers"][14].": ";
 			$date = date("Y-m-d H:i:s");
 		} else {
-			$datestring = $lang["computers"][11]." : ";
+			$datestring = $lang["computers"][11].": ";
 			$date = $netdev->fields["date_mod"];
 			$template = false;
 		}
@@ -444,7 +444,7 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 		}elseif (strcmp($template,"newcomp") === 0) {
 			echo $lang["networking"][53].": ".$netdev->fields["tplname"];
 		}elseif (strcmp($template,"newtemplate") === 0) {
-			echo $lang["common"][6]."&nbsp;: <input type='text' name='tplname' value=\"".$netdev->fields["tplname"]."\" size='20'>\n";
+			echo $lang["common"][6].": <input type='text' name='tplname' value=\"".$netdev->fields["tplname"]."\" size='20'>\n";
 		}
 		echo "</th><th  align='center'>".$datestring.$date;
 		echo "</th></tr>\n";
@@ -481,7 +481,7 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 	}
 
 		
-		echo "<tr><td>".$lang["state"][0]."&nbsp;:</td><td>\n";
+		echo "<tr><td>".$lang["state"][0].":</td><td>\n";
 		$si=new StateItem();
 		$t=0;
 		if ($template) $t=1;

@@ -461,7 +461,7 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 		echo "</b></td></tr>";
 	}
 
-	echo "<tr><td>".$lang["state"][0]."&nbsp;:</td><td><b>";
+	echo "<tr><td>".$lang["state"][0].":</td><td><b>";
 	$si=new StateItem();
 	$t=0;
 	if ($template) $t=1;
@@ -469,7 +469,7 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 	dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
 	echo "</b></td></tr>";
 
-	echo "<tr><td>".$lang["peripherals"][33]."</td><td>";
+	echo "<tr><td>".$lang["peripherals"][33].":</td><td>";
 	echo "<select name='is_global'>";
 	echo "<option value='0' ".(!$mon->fields["is_global"]?" selected":"").">".$lang["peripherals"][32]."</option>";
 	echo "<option value='1' ".($mon->fields["is_global"]?" selected":"").">".$lang["peripherals"][31]."</option>";

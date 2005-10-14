@@ -396,7 +396,7 @@ function showperipheralForm ($target,$ID,$withtemplate='') {
 			$datestring = $lang["computers"][14].": ";
 			$date = date("Y-m-d H:i:s");
 		} else {
-			$datestring = $lang["computers"][11]." : ";
+			$datestring = $lang["computers"][11].": ";
 			$date = $mon->fields["date_mod"];
 			$template = false;
 		}
@@ -450,12 +450,12 @@ function showperipheralForm ($target,$ID,$withtemplate='') {
 	echo "</tr>";
 
 		if (!$template){
-		echo "<tr><td>".$lang["reservation"][24]."&nbsp;:</td><td><b>";
+		echo "<tr><td>".$lang["reservation"][24].":</td><td><b>";
 		showReservationForm(PERIPHERAL_TYPE,$ID);
 		echo "</b></td></tr>";
 		}
 		
-	echo "<tr><td>".$lang["peripherals"][33]."</td><td>";
+	echo "<tr><td>".$lang["peripherals"][33].":</td><td>";
 	echo "<select name='is_global'>";
 	echo "<option value='0' ".(!$mon->fields["is_global"]?" selected":"").">".$lang["peripherals"][32]."</option>";
 	echo "<option value='1' ".($mon->fields["is_global"]?" selected":"").">".$lang["peripherals"][31]."</option>";
@@ -490,7 +490,7 @@ function showperipheralForm ($target,$ID,$withtemplate='') {
 	echo "</tr>";
 
 		
-		echo "<tr><td>".$lang["state"][0]."&nbsp;:</td><td><b>";
+		echo "<tr><td>".$lang["state"][0].":</td><td><b>";
 		$si=new StateItem();
 		$t=0;
 		if ($template) $t=1;
