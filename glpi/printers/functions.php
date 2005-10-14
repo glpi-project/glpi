@@ -407,7 +407,7 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 			$datestring = $lang["computers"][14].": ";
 			$date = date("Y-m-d H:i:s");
 		} else {
-			$datestring = $lang["computers"][11]." : ";
+			$datestring = $lang["computers"][11].": ";
 			$date = $printer->fields["date_mod"];
 			$template = false;
 		}
@@ -466,7 +466,7 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 		echo "</b></td></tr>\n";
 	}
 		
-		echo "<tr><td>".$lang["state"][0]."&nbsp;:</td><td><b>\n";
+		echo "<tr><td>".$lang["state"][0].":</td><td><b>\n";
 		$si=new StateItem();
 		$t=0;
 		if ($template) $t=1;
