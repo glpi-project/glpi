@@ -49,7 +49,7 @@ include ($phproot . "/glpi/includes_setup.php");
 
 $db = new DB;
 
-
+$_POST=array_map('stripslashes',$_POST);
 
 //Do login and checks
 //echo "test";
