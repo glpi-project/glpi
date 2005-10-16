@@ -29,6 +29,9 @@ GLPI - Gestionnaire Libre de Parc Informatique
 	//Français
 
 
+
+
+
 $lang["backup"][0]="Sauvegarde SQL";
 $lang["backup"][1]="Sauvegarde XML"; 
 $lang["backup"][2]="Sauvegarde de la base de données"; 
@@ -172,10 +175,10 @@ $lang["common"][2]="ID";
 $lang["common"][3]="Supprimés"; 
 $lang["common"][4]="Web"; 
 $lang["common"][5]="Fabricant"; 
-$lang["common"][6]="Nom du modèle";
-$lang["common"][7]="Choisissez un modèle";
-$lang["common"][8]="Gérer Modèles...";
-$lang["common"][9]="Ajouter modèle..."; 
+$lang["common"][6]="Nom du gabarit";
+$lang["common"][7]="Choisissez un gabarit";
+$lang["common"][8]="Gérer Gabarits...";
+$lang["common"][9]="Ajouter gabarit..."; 
 $lang["common"][10]="Responsable technique";
 $lang["common"][11]="Affichage limité";
 
@@ -705,6 +708,9 @@ $lang["login"][2]="Votre mot de passe n'est plus valide... Si vous venez de le c
 $lang["login"][3]="Non logué";
 $lang["login"][4]="Mauvais mot de passe";
 $lang["login"][5]="Accés refusé";
+$lang["login"][6]="Identifiant";
+$lang["login"][7]="Mot de passe";
+
 
 $lang["mailing"][0]="-----------------------";
 $lang["mailing"][1]="=======================================";
