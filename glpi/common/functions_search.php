@@ -87,7 +87,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 		echo $lang["search"][10]."&nbsp;";
 	
 		echo "<select name=\"field[$i]\" size='1'>";
-        	reset($option);
+        	reset($options);
 		foreach ($options as $key => $val) {
 			$v=$val["table"].".".$val["field"];
 			echo "<option value=\"".$v."\""; 
@@ -110,7 +110,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	echo "<td>";
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
-	reset($option);
+	reset($options);
 	foreach ($options as $key => $val) {
 		$v=$val["table"].".".$val["field"];
 		echo "<option value=\"".$v."\"";
@@ -238,7 +238,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				for ($j=1;$j<$toview_count;$j++){
 				echo "<td>";
 				echo $db->result($result, $i, "ITEM_$j");
-				echo "</b></td>";
+				echo "</td>";
 					
 				}
                  echo "</tr>";
