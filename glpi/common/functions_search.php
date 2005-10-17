@@ -159,7 +159,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	$result=$db->query($query);
 	if ($db->numrows($result)>0){
 		while ($data=$db->fetch_array($result))
-			array_push($toview,$data["option"]);
+			array_push($toview,$data["num"]);
 	}
 	$toview=array_unique($toview);
 	$toview_count=count($toview);
