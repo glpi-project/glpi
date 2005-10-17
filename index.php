@@ -94,18 +94,18 @@ echo "<fieldset>";
 echo "<legend>Identification</legend>";
 
 
-echo "<p><span><label>Login............. :  </label></span><span> <input type='text' name='login_name' id='login_name' maxlength='30' /></span></p>";
+echo "<div class='row'><span class='label'><label>".$lang["login"][6]." :  </label></span><span class='formw'> <input type='text' name='login_name' id='login_name' maxlength='30' /></span></div>";
 
 
-echo "<p><span><label>Password....... : </label></span><span><input type='password' name='login_password' id='login_password' maxlength='30' /> </span></p>";
+echo "<div class='row'><span class='label'><label>".$lang["login"][7]." : </label></span><span class='formw'><input type='password' name='login_password' id='login_password' maxlength='30' /> </span></div>";
 
 echo "</fieldset>";
 
-echo "<p><span> <input type='submit' name='submit' value='Login' class='submit' /></span></p>";
+echo "<p ><span> <input type='submit' name='submit' value='Login' class='submit' /></span></p>";
 echo "</form>";
 
  
-echo "<p> <img src='".$HTMLRel."pics/key.png' alt='keys' /> </p>";
+echo "<p > <img src='".$HTMLRel."pics/key.png' alt='keys' /> </p>";
 if ($cfg_features['public_faq'])
 	echo "<p><a href='faq.php'>".$lang["knowbase"][24]."</a></p>";
 
