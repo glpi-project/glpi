@@ -208,23 +208,29 @@ border:1px dotted #000000;
 /* #################################### */
  /* ###### login ###### */
 /* #################################### */
-#contenulogin {
 
+#contenulogin {
+height: 266px;
+width: 600px;
+margin-top:100px;
+margin-left: auto;
+margin-right: auto;
+background:url(pics/login_glpi.png)  no-repeat;
 font-family : Verdana,Arial,Helvetica,sans-serif;
 font-size : 12px;
-text-align: center;
-color :#009966;
 
+color :#009966;
 }
 
 #boxlogin {
-background-color: #FFFFFF;
-margin-left: auto;
-margin-right: auto;
+position:relative;
+background-color: transparent;
+padding-left: 15px;
+padding-top: 76px;
 text-align: left;  /* Bug IE Grrr */
-height: 200px;
+height: 190px;
 width: 300px;
-margin-top: 10px;
+
 
 }
 
@@ -241,22 +247,21 @@ text-align:center;
 .label {
   float: left;
   margin-left:10px;
-  width: 40%;
-  text-align: left;
+   text-align: left;
   }
 
 .formw {
   float: right;
-  width: 50%;
-  text-align: left;
+  margin-right:10px;
+  text-align: right;
   }
 
 
 
 #boxlogin fieldset {
-background-color: #eeeeee;
+background-color: transparent;
 border: 2px solid #FFC65D;
-padding-bottom:10px;
+padding-bottom:22px;
 }
 
 #boxlogin legend {
@@ -273,8 +278,14 @@ border: 1px solid #009966;
 }
 
 #logo-login {
-text-align: center;
-margin-top: 100px;
+
+float:right;
+height: 160px;
+width: 240px;
+margin-right:px;
+margin-left:;
+margin-top:80px;
+
 
 }
 
@@ -285,7 +296,24 @@ margin-top: 100px;
 	text-decoration: none;
 	}
 
-
+#footer-login
+{
+text-align:right; 
+ position: fixed !important;
+left: 0px;
+right: 10px;
+  bottom: 0px !important;
+  height: 40px;
+ font-size : 10px;
+ color :#757575;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-weight: bold;
+   /* css hack for IE */
+  position: absolute;
+  bottom: auto;
+  top: expression((parseInt(document.documentElement.clientHeight)+parseInt(document.documentElement.scrollTop)-42)+'px');
+  width: expression(parseInt(document.documentElement.clientWidth)+'px');
+}
 
 
 
