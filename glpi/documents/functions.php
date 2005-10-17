@@ -347,15 +347,21 @@ function showDocumentForm ($target,$ID,$search) {
 	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel;
 
 	$con = new Document;
-
+	$con_spotted=false;
+	if (!$ID) {
+		
+		if($con->getEmpty()) $con_spotted = true;
+	} else {
+		if($con->getfromDB($ID)) $con_spotted = true;
+	}
+	
+	if ($con_spotted){
 	echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\"><div align='center'>";
 	echo "<table class='tab_cadre' width='800'>";
 	echo "<tr><th colspan='3'><b>";
 	if (!$ID) {
 		echo $lang["document"][16].":";
-		$con->getEmpty();
 	} else {
-		$con->getfromDB($ID);
 		echo $lang["document"][18]." ID $ID:";
 	}		
 	echo "</b></th></tr>";
@@ -441,6 +447,15 @@ function showDocumentForm ($target,$ID,$search) {
 		
 		showDeviceDocument($ID,$search);
 	}
+	} else {
+	echo "<div align='center'><b>".$lang["document"][23]."</b></div>";
+	echo "<hr noshade>";
+	searchFormDocument();
+	return false;
+	
+	}
+	
+	return true;
 
 }
 

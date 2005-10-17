@@ -133,7 +133,8 @@ else
 	commonHeader($lang["title"][20],$_SERVER["PHP_SELF"]);
 
 	
-	if (!empty($tab['ID']))
+	$ci=new CommonItem();
+	if ($ci->getFromDB(CONTRACT_TYPE,$tab["ID"]))
 	showContractOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
 	if (showContractForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["search"])) {

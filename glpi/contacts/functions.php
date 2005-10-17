@@ -326,15 +326,23 @@ function showContactForm ($target,$ID) {
 	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel;
 
 	$con = new Contact;
-
+	$con_spotted=false;
+	
+	if (empty($ID)) {
+		
+		if($con->getEmpty()) $con_spotted = true;
+	} else {
+		if($con->getfromDB($ID)) $con_spotted = true;
+	}
+	
+	if ($con_spotted){
 	echo "<form method='post' name=form action=\"$target\"><div align='center'>";
 	echo "<table class='tab_cadre' cellpadding='2' width='800'>";
 	echo "<tr><th colspan='2'><b>";
 	if (empty($ID)) {
 		echo $lang["financial"][33].":";
-		$con->getEmpty();
+		
 	} else {
-		$con->getfromDB($ID);
 		echo $lang["financial"][32]." ID $ID:";
 	}		
 	echo "</b></th></tr>";
@@ -406,6 +414,14 @@ function showContactForm ($target,$ID) {
 
 		echo "</table></div></form>";
 
+	}
+	
+	} else {
+	echo "<div align='center'><b>".$lang["financial"][38]."</b></div>";
+	echo "<hr noshade>";
+	searchFormContact();
+	return false;
+	
 	}
 	return true;
 }

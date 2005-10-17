@@ -136,7 +136,11 @@ else
 	
 	
 	commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
-	showPeripheralOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+	
+	$ci=new CommonItem();
+	if ($ci->getFromDB(PERIPHERAL_TYPE,$tab["ID"]))
+		showPeripheralOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+		
 	if (!empty($tab["withtemplate"])) {
 
 		if (showPeripheralForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){

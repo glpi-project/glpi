@@ -285,16 +285,24 @@ function showLinkForm ($target,$ID) {
 	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel;
 
 	$con = new Link;
-
+	$con_spotted=false;
+	if (!$ID) {
+		
+		if($con->getEmpty()) $con_spotted = true;
+	} else {
+		if($con->getfromDB($ID)) $con_spotted = true;
+	}
+	
+	if ($con_spotted){
 	echo "<form method='post' name=form action=\"$target\"><div align='center'>";
 	
 	echo "<table class='tab_cadre' cellpadding='2' width='700'>";
 	echo "<tr><th colspan='2'><b>";
 	if (empty($ID)) {
 		echo $lang["links"][3].":";
-		$con->getEmpty();
+		
 	} else {
-		$con->getfromDB($ID);
+		
 		echo $lang["links"][1]." ID $ID:";
 	}		
 	echo "</b></th></tr>";
@@ -333,6 +341,14 @@ function showLinkForm ($target,$ID) {
 		echo "</table></div></form>";
 
 	}
+	}else {
+	echo "<div align='center'><b>".$lang["links"][8]."</b></div>";
+	echo "<hr noshade>";
+	searchFormLink();
+	return false;
+	
+	}
+	return true;
 }
 
 /**

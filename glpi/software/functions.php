@@ -511,7 +511,7 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 		return true;	
 	}
 	else {
-                echo "<div align='center'><b>".$lang["printers"][17]."</b></div>";
+                echo "<div align='center'><b>".$lang["software"][22]."</b></div>";
                 echo "<hr noshade>";
                 searchFormSoftware();
                 return false;

@@ -91,9 +91,7 @@ else
 	commonHeader($lang["title"][33],$_SERVER["PHP_SELF"]);
 
 //	showLinkOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
-
-	showLinkForm($_SERVER["PHP_SELF"],$tab["ID"]);
-	if (!empty($tab["ID"]))
+	if (showLinkForm($_SERVER["PHP_SELF"],$tab["ID"]))
 		showLinkDevice($tab["ID"]);
 	commonFooter();
 }

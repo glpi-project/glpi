@@ -104,7 +104,11 @@ else
 	}
 
 	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
-	showNetworkingOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+	
+	$ci=new CommonItem();
+	if ($ci->getFromDB(NETWORKING_TYPE,$tab["ID"]))
+		showNetworkingOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+	
 	if (!empty($tab["withtemplate"])) {
 
 		if (showNetworkingForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
