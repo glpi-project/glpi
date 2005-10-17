@@ -43,6 +43,9 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_users.php");
 include ($phproot . "/glpi/includes_setup.php");
 
+// load default dictionnary 
+	loadLanguage();
+
 
 //$database=$cfg_db["database"];
 //SetCookie("cfg_dbdb",$database,0,"/");
@@ -76,7 +79,7 @@ if (isset($_POST["noCAS"])) $_SESSION["noCAS"]=1;
 
 if (!$auth_succeded) // Pas de tests en configuration CAS
 if (empty($_POST['login_name'])||empty($_POST['login_password'])){
-$identificat->err="Empty Login or Password";
+$identificat->err=$lang["login"][8];
 } else {
 
 
@@ -170,8 +173,8 @@ $identificat->err="Empty Login or Password";
 // we have done at least a good login? No, we exit.
 if ( ! $auth_succeded ) {
 	nullHeader("Login",$_SERVER["PHP_SELF"]);
-	echo "<center><b>".$identificat->getErr().".</b><br><br>";
-	echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">Relogin</a></b></center>";
+	echo "<div align='center'><b>".$identificat->getErr().".</b><br><br>";
+	echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">".$lang["login"][1]."</a></b></div>";
 	nullFooter();
 	logevent(-1, "system", 1, "login", "failed login: ".$_POST['login_name']);
 	exit;
