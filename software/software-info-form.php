@@ -107,6 +107,9 @@ else
 	
 	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 	
+	$ci=new CommonItem();
+	if ($ci->getFromDB(SOFTWARE_TYPE,$tab["ID"]))
+	
 	showSoftwareOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 	if (!empty($tab["withtemplate"])) {
 

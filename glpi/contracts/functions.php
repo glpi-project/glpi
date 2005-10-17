@@ -418,16 +418,23 @@ function showContractForm ($target,$ID,$search) {
 	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel;
 
 	$con = new Contract;
-
+	$con_spotted=false;
+	
+	if (!$ID) {
+		
+		if($con->getEmpty()) $con_spotted = true;
+	} else {
+		if($con->getfromDB($ID)) $con_spotted = true;
+	}
+	
+	if ($con_spotted){
 	echo "<form name='form' method='post' action=\"$target\"><div align='center'>";
 	echo "<table class='tab_cadre' width='800'>";
 	echo "<tr><th colspan='4'><b>";
 	if (!$ID) {
 		echo $lang["financial"][36].":";
-		$con->getEmpty();
 	} else {
 		$con->getfromDB($ID);
-		echo $lang["financial"][1]." ID $ID:";
 	}		
 	echo "</b></th></tr>";
 
@@ -559,6 +566,14 @@ function showContractForm ($target,$ID,$search) {
 		echo "</table></div>";
 		echo "</form>";
 	}
+	} else {
+	echo "<div align='center'><b>".$lang["financial"][40]."</b></div>";
+	echo "<hr noshade>";
+	searchFormContract();
+	return false;
+	
+	}
+	
 return true;
 }
 

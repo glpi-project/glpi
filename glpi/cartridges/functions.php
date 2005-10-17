@@ -408,17 +408,25 @@ function showCartridgeTypeForm ($target,$ID) {
 	GLOBAL $cfg_layout,$cfg_install,$lang;
 
 	$ct = new CartridgeType;
+	$ct_spotted = false;
+	
+	if (!$ID) {
+		
+		if($ct->getEmpty()) $ct_spotted = true;
+	} else {
+		if($ct->getfromDB($ID)) $ct_spotted = true;
+	}		
 
+	if ($ct_spotted){
+	
 	echo "<form method='post' action=\"$target\"><div align='center'>\n";
+	
 	echo "<table class='tab_cadre' width='800'>\n";
 	echo "<tr><th colspan='3'><b>\n";
-	if (!$ID) {
+	if (!$ID) 
 		echo $lang["cartridges"][6].":";
-		$ct->getEmpty();
-	} else {
-		$ct->getfromDB($ID);
-		echo $lang["cartridges"][12]." ID $ID:";
-	}		
+	else echo $lang["cartridges"][12]." ID $ID:";
+	
 	echo "</b></th></tr>\n";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][1].":		</td>\n";
@@ -492,6 +500,13 @@ function showCartridgeTypeForm ($target,$ID) {
 
 		echo "</table></div></form>";
 		
+	}
+	}
+	else {
+	echo "<div align='center'><b>".$lang["cartridges"][7]."</b></div>";
+	echo "<hr noshade>";
+	searchFormCartridge();
+	return false;
 	}
 	return true;
 }

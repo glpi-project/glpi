@@ -252,10 +252,11 @@ function showTypedocForm ($target,$ID) {
 	} else {
 		if($mon->getfromDB($ID)) $mon_spotted = true;
 	}
-	$date = $mon->fields["date_mod"];
-	$datestring = $lang["document"][5]." : ";
 	
 	if ($mon_spotted){
+	$date = $mon->fields["date_mod"];
+	$datestring = $lang["document"][5]." : ";
+
 	echo "<div align='center'><form method='post' name=form action=\"$target\">";
 
 	echo "<table class='tab_cadre' cellpadding='2'>";
@@ -320,9 +321,9 @@ function showTypedocForm ($target,$ID) {
 		return true;	
 	}
 	else {
-                echo "<div align='center'><b>".$lang["printers"][17]."</b></div>";
+                echo "<div align='center'><b>".$lang["document"][23]."</b></div>";
                 echo "<hr noshade>";
-                searchFormPrinters();
+                searchFormTypedoc();
                 return false;
         }
 

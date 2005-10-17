@@ -90,7 +90,8 @@ else
 
 	commonHeader($lang["title"][22],$_SERVER["PHP_SELF"]);
 	
-	if (!empty($tab['ID']))
+	$ci=new CommonItem();
+	if ($ci->getFromDB(CONTACT_TYPE,$tab["ID"]))
 	showContactOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
 	if (showContactForm($_SERVER["PHP_SELF"],$tab["ID"])) {

@@ -409,15 +409,23 @@ function showConsumableTypeForm ($target,$ID) {
 	GLOBAL $cfg_layout,$cfg_install,$lang;
 
 	$ct = new ConsumableType;
-
+	$ct_spotted=false;
+	
+	if (!$ID) {
+		
+		if($ct->getEmpty()) $ct_spotted = true;
+	} else {
+		if($ct->getfromDB($ID)) $ct_spotted = true;
+	}
+	
+	if ($ct_spotted){
+	
 	echo "<form method='post' action=\"$target\"><div align='center'>\n";
 	echo "<table class='tab_cadre' width='800'>\n";
 	echo "<tr><th colspan='3'><b>\n";
 	if (!$ID) {
 		echo $lang["consumables"][6].":";
-		$ct->getEmpty();
 	} else {
-		$ct->getfromDB($ID);
 		echo $lang["consumables"][12]." ID $ID:";
 	}		
 	echo "</b></th></tr>\n";
@@ -493,6 +501,14 @@ function showConsumableTypeForm ($target,$ID) {
 
 		echo "</table></div></form>";
 		
+	}
+	
+	} else {
+	
+	echo "<div align='center'><b>".$lang["consumables"][7]."</b></div>";
+	echo "<hr noshade>";
+	searchFormConsumable();
+	return false;
 	}
 	return true;
 }

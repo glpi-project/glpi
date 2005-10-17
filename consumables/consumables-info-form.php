@@ -94,7 +94,8 @@ else
 
 	commonHeader($lang["title"][36],$_SERVER["PHP_SELF"]);
 	
-	if (!empty($tab['ID']))
+	$ci=new CommonItem();
+	if ($ci->getFromDB(CONSUMABLE_TYPE,$tab["ID"]))
 	showConsumableOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
 	if (showConsumableTypeForm($_SERVER["PHP_SELF"],$tab["ID"])) {

@@ -350,15 +350,20 @@ function showEnterpriseForm ($target,$ID) {
 	GLOBAL $cfg_layout,$cfg_install,$lang;
 
 	$ent = new Enterprise;
-
+	$ent_spotted=false;
+	if (!$ID) {
+		
+		if($ent->getEmpty()) $ent_spotted = true;
+	} else {
+		if($ent->getfromDB($ID)) $ent_spotted = true;
+	}
+	if ($ent_spotted){
 	echo "<form method='post' action=\"$target\"><div align='center'>";
 	echo "<table class='tab_cadre' width='800'>";
 	echo "<tr><th colspan='4'><b>";
 	if (!$ID) {
 		echo $lang["financial"][25].":";
-		$ent->getEmpty();
 	} else {
-		$ent->getfromDB($ID);
 		echo $lang["financial"][26]." ID $ID:";
 	}		
 	echo "</b></th></tr>";
@@ -430,6 +435,15 @@ function showEnterpriseForm ($target,$ID) {
 		
 		return true;
 	}
+	
+	} else {
+	echo "<div align='center'><b>".$lang["financial"][39]."</b></div>";
+	echo "<hr noshade>";
+	searchFormEnterprise();
+	return false;
+	}
+	
+	return true;
 
 }
 

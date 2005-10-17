@@ -560,8 +560,8 @@ function showperipheralForm ($target,$ID,$withtemplate='') {
 	}
 	else {
                 echo "<div align='center'><b>".$lang["peripherals"][17]."</b></div>";
-               // echo "<hr noshade>";
-          //      searchFormPrinters();
+                echo "<hr noshade>";
+                searchFormPeripheral();
                 return false;
         }
 
