@@ -703,14 +703,15 @@ $lang["links"][7]="Aucun lien défini";
 $lang["links"][8]="Pas de lien trouvé";
 
 $lang["login"][0]="Login impossible, vérifiez que votre navigateur accepte les cookies.";
-$lang["login"][1]="Se reloguer";
+$lang["login"][1]="Se reconnecter";
 $lang["login"][2]="Votre mot de passe n'est plus valide... Si vous venez de le changer reloguez vous avec le nouveau";
 $lang["login"][3]="Non logué";
 $lang["login"][4]="Mauvais mot de passe";
 $lang["login"][5]="Accés refusé";
 $lang["login"][6]="Identifiant";
 $lang["login"][7]="Mot de passe";
-
+$lang["login"][8]="Indentifiant ou mot de passe vide";
+$lang["login"][10]="Authentification";
 
 $lang["mailing"][0]="-----------------------";
 $lang["mailing"][1]="=======================================";
