@@ -196,7 +196,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	// TODO : add elements recherchés dans la recherche
 
 	//// 4 - ORDER 
-	$ORDER= "ORDER BY $sort $order";
+	$ORDER= " ORDER BY $sort $order LIMIT 0,15";
 
 	$QUERY=$SELECT.$FROM.$WHERE.$ORDER;
 //	echo $QUERY;
@@ -228,8 +228,6 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 			for ($i=$start; $i < $numrows && $i<($start+$cfg_features["list_limit"]); $i++) {
 				$ID = $db->result($result, $i, "ID");
-				$comp = new Computer;
-				$comp->getfromDB($ID,0);
 				
 				echo "<tr class='tab_bg_2'>";
 				// Print first element
