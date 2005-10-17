@@ -41,6 +41,7 @@ include ($phproot . "/glpi/common/functions.php");
 include ($phproot . "/glpi/common/functions_dropdown.php");
 include ($phproot . "/glpi/common/functions_reports.php");
 include ($phproot . "/glpi/common/functions_display.php");
+include ($phproot . "/glpi/common/functions_search.php");
 include ($phproot . "/glpi/config/config.php");
 
 include ($phproot . "/glpi/common/Timer.php");
