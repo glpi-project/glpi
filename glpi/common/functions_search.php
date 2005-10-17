@@ -155,7 +155,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	$toview=array();
 	// Add first element (name)
 	array_push($toview,1);
-	$query="SELECT * FROM glpi_display WHERE type='$type' ORDER by rank";
+	$query="SELECT * FROM glpi_display WHERE type='$type' ORDER by num";
 	$result=$db->query($query);
 	if ($db->numrows($result)>0){
 		while ($data=$db->fetch_array($result))
@@ -193,7 +193,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	$ORDER= "ORDER BY $sort $order";
 
 	$QUERY=$SELECT.$FROM.$WHERE.$ORDER;
-	//echo $QUERY;
+	echo $QUERY;
 	
 	// Get it from database and DISPLAU
 	if ($result = $db->query($QUERY)) {

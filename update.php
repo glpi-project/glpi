@@ -3035,12 +3035,12 @@ if(!TableExists("glpi_display")) {
 	$query="CREATE TABLE glpi_display (
   ID int(11) NOT NULL auto_increment,
   type smallint(6) NOT NULL default '0',
-  option smallint(6) NOT NULL default '0',
+  num smallint(6) NOT NULL default '0',
   rank smallint(6) NOT NULL default '0',
   PRIMARY KEY  (ID),
    KEY type (type),
   KEY rank (rank),
-  KEY option (option)
+  KEY num (num)
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.65 add glpi_display table".$lang["update"][90].$db->error());
 
