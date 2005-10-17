@@ -3007,31 +3007,50 @@ $db = new DB;
 
 if(!isIndex("glpi_networking_ports", "on_device_2")) {
 	$query = "ALTER TABLE `glpi_networking_ports` ADD INDEX (`on_device`) ";
-	$db->query($query) or die("6 ".$lang["update"][90].$db->error());
+	$db->query($query) or die("0.65 ".$lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_networking_ports", "device_type")) {
 	$query = "ALTER TABLE `glpi_networking_ports` ADD INDEX (`device_type`) ";
-	$db->query($query) or die("6 ".$lang["update"][90].$db->error());
+	$db->query($query) or die("0.65 ".$lang["update"][90].$db->error());
 }
 
 if(!isIndex("glpi_computer_device", "FK_device")) {
 	$query = "ALTER TABLE `glpi_computer_device` ADD INDEX (`FK_device`) ";
-	$db->query($query) or die("6 ".$lang["update"][90].$db->error());
+	$db->query($query) or die("0.65 ".$lang["update"][90].$db->error());
 }
 	
 // Field for public FAQ
 if(!FieldExists("glpi_config","public_faq")) {
 	$query="ALTER TABLE `glpi_config` ADD `public_faq` ENUM( '0', '1' ) NOT NULL AFTER `auto_assign` ;";
-	$db->query($query) or die("0.6 add public_faq in config".$lang["update"][90].$db->error());
+	$db->query($query) or die("0.65 add public_faq in config".$lang["update"][90].$db->error());
 }
 
 // Optimize amort_type field
 if(FieldExists("glpi_infocoms","amort_type")) {
 	$query="ALTER TABLE `glpi_infocoms` CHANGE `amort_type` `amort_type` SMALLINT( 20 ) NOT NULL DEFAULT '1'";
-	$db->query($query) or die("0.6 alter amort_type in infocoms".$lang["update"][90].$db->error());
+	$db->query($query) or die("0.65 alter amort_type in infocoms".$lang["update"][90].$db->error());
 }
+if(!TableExists("glpi_display")) {
+	$query="CREATE TABLE glpi_display (
+  ID int(11) NOT NULL auto_increment,
+  type smallint(6) NOT NULL default '0',
+  option smallint(6) NOT NULL default '0',
+  rank smallint(6) NOT NULL default '0',
+  PRIMARY KEY  (ID),
+   KEY type (type),
+  KEY rank (rank),
+  KEY option (option)
+) TYPE=MyISAM;";
+	$db->query($query) or die("0.65 add glpi_display table".$lang["update"][90].$db->error());
 
+// TEMPORARY : ADD ITEMS TO DISPLAY TABLE : TO DEL OR TO 
+
+$query="INSERT INTO glpi_display VALUES (1, 1, 2, 1);";
+$db->query($query);
+$query="INSERT INTO glpi_display VALUES (2, 1, 3, 2);";
+$db->query($query);
+}
 }
 
 
