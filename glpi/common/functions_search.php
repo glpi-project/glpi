@@ -196,7 +196,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	// TODO : add elements recherchés dans la recherche
 
 	//// 4 - ORDER 
-	$ORDER= " ORDER BY $sort $order LIMIT 0,15";
+	$ORDER= " ORDER BY $sort $order";
 
 	$QUERY=$SELECT.$FROM.$WHERE.$ORDER;
 //	echo $QUERY;
