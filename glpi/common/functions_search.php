@@ -155,14 +155,18 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	$toview=array();
 	// Add first element (name)
 	array_push($toview,1);
-	$query="SELECT * FROM glpi_display WHERE type='$type' ORDER by num";
+	$query="SELECT * FROM glpi_display WHERE type='$type' ORDER by rank";
 	$result=$db->query($query);
 	if ($db->numrows($result)>0){
 		while ($data=$db->fetch_array($result))
 			array_push($toview,$data["num"]);
 	}
+
+	// TODO : Voir les elements rechercher
+	
 	$toview=array_unique($toview);
 	$toview_count=count($toview);
+	
 	// Construct the request 
 	//// 1 - SELECT
 	$SELECT ="SELECT ";
@@ -189,13 +193,15 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	if (in_array($LINK_ID_TABLE[$type],$template_tables))
 		$WHERE.= " AND ".$LINK_ID_TABLE[$type].".is_template='0' ";
 
+	// TODO : add elements recherchés dans la recherche
+
 	//// 4 - ORDER 
 	$ORDER= "ORDER BY $sort $order";
 
 	$QUERY=$SELECT.$FROM.$WHERE.$ORDER;
-	echo $QUERY;
+//	echo $QUERY;
 	
-	// Get it from database and DISPLAU
+	// Get it from database and DISPLAY
 	if ($result = $db->query($QUERY)) {
 		$numrows= $db->numrows($result);
 		if ($start<$numrows) {
@@ -244,7 +250,6 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			echo "</table></div>";
 
 			// Pager
-//			$parameters="sort=$sort&amp;order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
 			echo "<br>";
 			printPager($start,$numrows,$target,$parameters);
 
