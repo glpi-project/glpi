@@ -160,13 +160,30 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		while ($data=$db->fetch_array($result))
 			array_push($toview,$data["num"]);
 	}
-
+	$SEARCH_ALL=array();
+	if (in_array("all",$field)){
+		foreach ($field as $key => $val)
+		if ($val=="all"){
+			$templink="AND";
+			if (isset($link[$key])) $templink=$link[$key];
+			array_push($SEARCH_ALL,array("link"=>$templink, "contains"=>$contains[$key]));
+			//unset($link[$key]);
+			//unset($field[$key]);
+			//unset($contains[$key]);
+		
+		}
+	}
 	// Add searched items
 	if (count($field)>0)
 		foreach($field as $key => $val)
-			if (!in_array($val,$toview))
+			if (!in_array($val,$toview)&&$val!="all")
 			array_push($toview,$val);
+	// Add order item
+	if (!in_array($sort,$toview))
+		array_push($toview,$sort);
 	
+			
+			
 	// Clean toview array
 	$toview=array_unique($toview);
 	$toview_count=count($toview);
@@ -174,7 +191,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	// Construct the request 
 	//// 1 - SELECT
 	$SELECT ="SELECT DISTINCT ";
+	
 	for ($i=0;$i<$toview_count;$i++){
+	
 		$SELECT.=addSelect($SEARCH_OPTION[$type][$toview[$i]]["table"].".".$SEARCH_OPTION[$type][$toview[$i]]["field"],$i);
 	}
 	// Add ID
@@ -191,6 +210,14 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			array_push($already_link_tables,$SEARCH_OPTION[$type][$toview[$i]]["table"]);
 		}
 	}	
+	
+	// Search all case :
+	if (count($SEARCH_ALL)>0)
+	foreach ($SEARCH_OPTION[$type] as $key => $val)
+	if (!in_array($SEARCH_OPTION[$type][$key]["table"],$already_link_tables)){
+			$FROM.=addLeftJoin($type,$LINK_ID_TABLE[$type],$already_link_tables,$SEARCH_OPTION[$type][$key]["table"]);
+			array_push($already_link_tables,$SEARCH_OPTION[$type][$key]["table"]);
+	}
 
 	//// 3 - WHERE	
 	$WHERE = " WHERE '1'='1' ";
@@ -200,17 +227,41 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$WHERE.= " AND ".$LINK_ID_TABLE[$type].".is_template='0' ";
 
 	// Add search conditions
-	print_r($contains);
-	if (count($contains)>0)
-	foreach($contains as $key => $val){
-		$WHERE.= " AND ".$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"]." LIKE '%".$val."%' ";	
+	
+	if (count($contains)>0) {
+		$i=0;
+		$ok=false;
+		foreach($contains as $key => $val)
+		if ($field[$key]!="all"){
+			if ($i==0) { $WHERE.= " AND ( "; $ok=true;}
+			$LINK=" ";
+			if ($i>0) $LINK=$link[$key];
+			
+			$WHERE.= " $LINK ".$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"]." LIKE '%".$val."%' ";	
+			$i++;
+		}
+		
+		if ($ok)	$WHERE.= " ) ";
 	}
 	
+	// Search ALL 
+	if (count($SEARCH_ALL)>0)
+	foreach ($SEARCH_ALL as $key => $val){
+		$WHERE.=$val["link"]." ( '1'='0' ";
+		foreach ($SEARCH_OPTION[$type] as $key2 => $val2)
+			$WHERE.= " OR ".$val2["table"].".".$val2["field"]." LIKE '%".$val["contains"]."%' ";	
+		
+		$WHERE.=")";
+	
+	
+	}
+	
+	
 	//// 4 - ORDER 
-	$ORDER= " ORDER BY $sort $order";
+	$ORDER= " ORDER BY ".$SEARCH_OPTION[$type][$sort]["table"].".".$SEARCH_OPTION[$type][$sort]["field"]." $order";
 
 	$QUERY=$SELECT.$FROM.$WHERE.$ORDER;
-	echo $QUERY;
+	//echo $QUERY;
 	
 	// Get it from database and DISPLAY
 	if ($result = $db->query($QUERY)) {
@@ -382,7 +433,7 @@ switch ($new_table){
 		return " LEFT JOIN $new_table ON ($ref_table.tech_num = $new_table.ID) ";
 		break;
 	case "glpi_enterprises":
-		return " LEFT JOIN $new_table ON ($ref_table.FK_glpi_enterprises = $new_table.ID) ";
+		return " LEFT JOIN $new_table ON ($ref_table.FK_glpi_enterprise = $new_table.ID) ";
 		break;
 	case "glpi_infocoms":
 		return " LEFT JOIN $new_table ON ($ref_table.ID = $new_table.FK_device AND $new_table.device_type='$type') ";
