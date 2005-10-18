@@ -40,7 +40,6 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_computers.php");
 include ($phproot . "/glpi/includes_financial.php");
 include ($phproot . "/glpi/includes_state.php");
-include ($phproot . "/glpi/includes_search.php");
 
 checkAuthentication("normal");
 
