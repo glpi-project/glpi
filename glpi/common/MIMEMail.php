@@ -119,16 +119,6 @@ class MIMEMail extends MIMEMailCommon {
     
 
     function MIMEMail($to = FALSE, $from = FALSE, $subject = FALSE, $message = FALSE, $attachments = FALSE) {
-       
-	// Detecte quel linebreak utilisé pour le headers en fonction du système ************* Modification GLPI
-	if (strtoupper(substr(PHP_OS, 0, 3) == 'WIN'))
-		$this->LB = "\r\n";
-	else if (strtoupper(substr(PHP_OS, 0, 3) == 'MAC'))
-		$this->LB = "\r";
-	else
-		$this->LB = "\n";
-	// ***************** Fin modification GLPI  
-
         $this->setHeader('X-Mailer', 'PHP/MIMEMail '.MM_VERSION);
 	$this->setHeader('X-Powered', 'by GLPI');
         $this->Priority('Normal');
@@ -539,15 +529,10 @@ class MIMEMailCommon
     /* define common members and functions */
     var $Headers;
     
- // var $LB = "\n";
-	var $LB ;    // Modification GLPI
-
+    var $LB = "\n";
+    
     function MIMEMailCommonObject() {
-
-
-
-
-    return $this;
+        return $this;
     }
 
     function printHeader($name, $delim = ',', $params = FALSE) {
