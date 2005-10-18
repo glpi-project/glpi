@@ -63,10 +63,21 @@ if (!isset($_GET["contains2"])) $_GET["contains2"] = "";
 if (!isset($_GET["contains3"])) $_GET["contains3"] = "";
 if(!isset($_GET["attrib"])) $_GET["attrib"] = "";
 if(!isset($_GET["author"])) $_GET["author"] = "";
-if(!isset($_GET["date1"])) $_GET["date1"] = "";
-if(!isset($_GET["date2"])) $_GET["date2"] = "";
-if(!isset($_GET["enddate1"])) $_GET["enddate1"] = "";
-if(!isset($_GET["enddate2"])) $_GET["enddate2"] = "";
+
+if(empty($_GET["date1"])&&empty($_GET["date2"])) {
+$year=date("Y")-1;
+$_GET["date1"]=date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
+
+$_GET["date2"]=date("Y-m-d");
+}
+
+if(empty($_GET["enddate1"])&&empty($_GET["enddate2"])) {
+$year=date("Y")-1;
+$_GET["enddate1"]=date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
+
+$_GET["enddate2"]=date("Y-m-d");
+}
+
 if(!isset($_GET["category"])) $_GET["category"] = 0;
 if (!isset($_GET["field"])) $_GET["field"]="";
 if (!isset($_GET["field2"])) $_GET["field2"]="";

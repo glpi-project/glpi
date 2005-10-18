@@ -43,8 +43,14 @@ checkAuthentication("normal");
 commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
 
 echo "<div align ='center'><p><b><span class='icon_nav'>".$lang["stats"][37]."</span></b></p></div>";
-if(empty($_POST["date1"])) $_POST["date1"] = "";
-if(empty($_POST["date2"])) $_POST["date2"] = "";
+
+if(empty($_POST["date1"])&&empty($_POST["date2"])) {
+$year=date("Y")-1;
+$_POST["date1"]=date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
+
+$_POST["date2"]=date("Y-m-d");
+}
+
 if ($_POST["date1"]!=""&&$_POST["date2"]!=""&&strcmp($_POST["date2"],$_POST["date1"])<0){
 $tmp=$_POST["date1"];
 $_POST["date1"]=$_POST["date2"];
@@ -61,8 +67,7 @@ showCalendarForm("form","date2",$_POST["date2"]);
 echo "</td></tr>";
 echo "</table></form></div>";
 
-//On recupere les differents auteurs d'interventions
-//Get the distinct intervention authors
+//Get the distinct intervention categories
 $nomUsr = getNbIntervCategory();
 
 echo "<div align ='center'>";
