@@ -313,7 +313,8 @@ function dropdownNoValue($table,$myname,$value) {
 * @param $value
 * @return nothing (print out an HTML select box)
 */
-function NetpointLocationSearch($search,$myname,$location,$value='') {
+// Plus utilisé
+/*function NetpointLocationSearch($search,$myname,$location,$value='') {
 // Make a select box with preselected values for table dropdown_netpoint
 	$db = new DB;
 	
@@ -352,6 +353,8 @@ function NetpointLocationSearch($search,$myname,$location,$value='') {
 	}
 	echo "</select>";
 }
+*/
+
 /**
 *  Make a select box with preselected values and search option
 *
@@ -365,6 +368,8 @@ function NetpointLocationSearch($search,$myname,$location,$value='') {
 *
 *
 */
+// plus utilisé
+/*
 function dropdownValueSearch($table,$myname,$value,$search) {
 	// Make a select box with preselected values
 	global $deleted_tables,$template_tables;
@@ -408,7 +413,7 @@ function dropdownValueSearch($table,$myname,$value,$search) {
 	}
 	echo "</select>";
 }
-
+*/
 
 /**
 * Make a select box with all glpi users where select key = name

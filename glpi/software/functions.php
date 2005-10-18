@@ -449,7 +449,7 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][29].":</td><td colspan='2'>";
 	echo "<select name='is_update'><option value='Y' ".($ID&&$sw->fields['is_update']=='Y'?"selected":"").">".$lang['choice'][0]."</option><option value='N' ".(!$ID||$sw->fields['is_update']=='N'?"selected":"").">".$lang['choice'][1]."</option></select>";
 	echo "&nbsp;".$lang["pager"][2]."&nbsp;";
-	dropdownValueSearch("glpi_software","update_software",$sw->fields["update_software"],$search_software);
+	dropdownValue("glpi_software","update_software",$sw->fields["update_software"]);
 /*	if (empty($withtemplate)){
         echo "<input type='text' size='10'  name='search_software' value='$search_software'>";
 		echo "<input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
@@ -939,9 +939,9 @@ function showLicenseForm($target,$action,$sID,$lID="",$search_computer="") {
 	// OEM
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][28]."</td><td>";
 	echo "<select name='oem'><option value='Y' ".($values['oem']=='Y'?"selected":"").">".$lang['choice'][0]."</option><option value='N' ".($values['oem']=='N'?"selected":"").">".$lang['choice'][1]."</option></select>";
-	dropdownValueSearch("glpi_computers","oem_computer",$values["oem_computer"],$search_computer);
-        echo "<input type='text' size='10'  name='search_computer' value='$search_computer'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
+	dropdownValue("glpi_computers","oem_computer",$values["oem_computer"]);
+//        echo "<input type='text' size='10'  name='search_computer' value='$search_computer'>";
+//	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
 	
 	echo "</td></tr>";
 	// BUY
