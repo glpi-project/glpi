@@ -169,7 +169,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	
 	// Construct the request 
 	//// 1 - SELECT
-	$SELECT ="SELECT ";
+	$SELECT ="SELECT DISTINCT ";
 	for ($i=0;$i<$toview_count;$i++){
 		$SELECT.=addSelect($SEARCH_OPTION[$type][$toview[$i]]["table"].".".$SEARCH_OPTION[$type][$toview[$i]]["field"],$i);
 	}
@@ -363,7 +363,7 @@ switch ($new_table){
 		$out="";
 		// Link to glpi_networking_ports before
 		if (!in_array("glpi_networking_ports",$already_link_tables)){
-			$out=addLeftJoin($type,$ref_admin,$already_link_tables,"glpi_networking_ports");
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_networking_ports");
 			array_push($already_link_tables,"glpi_networking_ports");
 		}
 		
@@ -385,7 +385,7 @@ switch ($new_table){
 		$out="";
 		// Link to glpi_networking_ports before
 		if (!in_array("glpi_contract_device",$already_link_tables)){
-			$out=addLeftJoin($type,$ref_admin,$already_link_tables,"glpi_contract_device");
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_contract_device");
 			array_push($already_link_tables,"glpi_contract_device");
 		}
 		
@@ -400,6 +400,19 @@ switch ($new_table){
 	case "glpi_licenses":
 		return " LEFT JOIN $new_table ON ($ref_table.ID = $new_table.sID) ";
 		break;	
+	case "glpi_computer_device":
+		return " LEFT JOIN $new_table ON ($ref_table.ID = $new_table.FK_computers) ";
+		break;	
+	case "glpi_device_processor":
+		$out="";
+		// Link to glpi_networking_ports before
+		if (!in_array("glpi_computer_device",$already_link_tables)){
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device");
+			array_push($already_link_tables,"glpi_computer_device");
+		}
+		
+		return $out." LEFT JOIN $new_table ON (glpi_computer_device.FK_device = $new_table.ID AND glpi_computer_device.device_type = '".PROCESSOR_DEVICE."') ";
+		break;		
 	default :
 		return "";
 		break;
