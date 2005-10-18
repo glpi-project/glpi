@@ -977,9 +977,10 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 	echo "<tr class='tab_bg_1'><td>".$lang["networking"][51].":</td>";
 	
 	echo "<td align='center' >";
-		NetpointLocationSearch($search,"netpoint",$location,$netport->fields["netpoint"]);
-        echo "<input type='text' size='10'  name='search'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
+		dropdownValue("glpi_dropdown_netpoint","netpoint", $netport->fields["netpoint"]);		
+//		NetpointLocationSearch($search,"netpoint",$location,$netport->fields["netpoint"]);
+//        echo "<input type='text' size='10'  name='search'>";
+//	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
 	echo "</td></tr>";
 	}
 	if ($ID) {
