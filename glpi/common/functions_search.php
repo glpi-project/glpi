@@ -44,7 +44,7 @@
 *
 **/
 function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",$link=""){
-	global $lang,$HTMLRel,$SEARCH_OPTION;
+	global $lang,$HTMLRel,$SEARCH_OPTION,$cfg_install;
 	$options=$SEARCH_OPTION[$type];
 	
 	echo "<form method=get action=\"$target\">";
@@ -57,9 +57,9 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	for ($i=0;$i<$_SESSION["glpisearchcount"];$i++){
 		echo "<tr><td align='right'>";
 		if ($i==0){
-			echo "<a href='$target?add_search_count=1'><img src=\"".$HTMLRel."pics/plus.png\" alt='+'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?add_search_count=1'><img src=\"".$HTMLRel."pics/plus.png\" alt='+'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 			if ($_SESSION["glpisearchcount"]>1)
-			echo "<a href='$target?delete_search_count=1'><img src=\"".$HTMLRel."pics/moins.png\" alt='-'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?delete_search_count=1'><img src=\"".$HTMLRel."pics/moins.png\" alt='-'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 		}
 		if ($i>0) {
 			echo "<select name='link[$i]'>";
