@@ -78,6 +78,8 @@ $lang["buttons"][20]="Déplacer";
 $lang["buttons"][21]="Restaurer";
 $lang["buttons"][22]="Purger";
 $lang["buttons"][23]="Voir";
+$lang["buttons"][24]="Monter";
+$lang["buttons"][25]="Descendre";
 
 $lang["calendarD"][0]="D";
 $lang["calendarD"][1]="L";
@@ -1157,6 +1159,8 @@ $lang["setup"][90]="VLANs";
 $lang["setup"][91]="Modèle de machines";
 $lang["setup"][92]="Type de consommables";
 $lang["setup"][93]="Interfaces Disque Dur";
+$lang["setup"][94]="Configuration de l'affichage des listes";
+
 $lang["setup"][100]="Configuration générale";
 $lang["setup"][101]="Chemin d'installation";
 $lang["setup"][102]="Niveau de log";

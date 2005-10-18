@@ -69,6 +69,8 @@ echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."typedocs/\">
 
 echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."links/\"><b>".$lang["setup"][87]."</b></a></td> </tr>";
 
+echo "<tr class='tab_bg_1'><td align='center'><a href=\"setup-display.php\"><b>".$lang["setup"][94]."</b></a></td> </tr>";
+
 
 echo "</table></div>";
 

@@ -3038,6 +3038,7 @@ if(!TableExists("glpi_display")) {
   num smallint(6) NOT NULL default '0',
   rank smallint(6) NOT NULL default '0',
   PRIMARY KEY  (ID),
+  UNIQUE KEY `type_2` (`type`,`num`),
    KEY type (type),
   KEY rank (rank),
   KEY num (num)
