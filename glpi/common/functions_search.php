@@ -88,6 +88,10 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 		echo $lang["search"][10]."&nbsp;";
 	
 		echo "<select name=\"field[$i]\" size='1'>";
+    	echo "<option value='view' ";
+		if(is_array($field)&&isset($field[$i]) && $field[$i] == "view") echo "selected";
+		echo ">".$lang["search"][11]."</option>";
+
         	reset($options);
 		foreach ($options as $key => $val) {
 			echo "<option value=\"".$key."\""; 
@@ -149,7 +153,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$link){
 	global $INFOFORM_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$HTMLRel,$cfg_install,$deleted_tables,$template_tables,$lang,$cfg_features;
 	$db=new DB;
-
+	
 	// Get the items to display
 	$toview=array();
 	// Add first element (name)
@@ -160,6 +164,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		while ($data=$db->fetch_array($result))
 			array_push($toview,$data["num"]);
 	}
+
+	// Manage search on all item
 	$SEARCH_ALL=array();
 	if (in_array("all",$field)){
 		foreach ($field as $key => $val)
@@ -167,17 +173,15 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			$templink="AND";
 			if (isset($link[$key])) $templink=$link[$key];
 			array_push($SEARCH_ALL,array("link"=>$templink, "contains"=>$contains[$key]));
-			//unset($link[$key]);
-			//unset($field[$key]);
-			//unset($contains[$key]);
-		
 		}
 	}
+	
 	// Add searched items
 	if (count($field)>0)
 		foreach($field as $key => $val)
-			if (!in_array($val,$toview)&&$val!="all")
+			if (!in_array($val,$toview)&&$val!="all"&&$val!="view")
 			array_push($toview,$val);
+	
 	// Add order item
 	if (!in_array($sort,$toview))
 		array_push($toview,$sort);
@@ -191,9 +195,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	// Construct the request 
 	//// 1 - SELECT
 	$SELECT ="SELECT DISTINCT ";
-	
+
 	for ($i=0;$i<$toview_count;$i++){
-	
 		$SELECT.=addSelect($SEARCH_OPTION[$type][$toview[$i]]["table"].".".$SEARCH_OPTION[$type][$toview[$i]]["field"],$i);
 	}
 	// Add ID
@@ -232,14 +235,25 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$i=0;
 		$ok=false;
 		foreach($contains as $key => $val)
-		if ($field[$key]!="all"){
+		if ($field[$key]!="all"&&$field[$key]!="view"){
 			if ($i==0) { $WHERE.= " AND ( "; $ok=true;}
 			$LINK=" ";
 			if ($i>0) $LINK=$link[$key];
 			
 			$WHERE.= " $LINK ".$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"]." LIKE '%".$val."%' ";	
 			$i++;
+		} else if ($field[$key]=="view"){
+			if ($i!=0)
+				$WHERE.= " ".$link[$key]." ( ";
+			else  $WHERE.= " AND ( '0'='1' ";
+			
+			foreach ($toview as $key2 => $val2){
+				$WHERE.= " OR ".$SEARCH_OPTION[$type][$val2]["table"].".".$SEARCH_OPTION[$type][$val2]["field"]." LIKE '%".$val."%' ";	
+			}
+			$WHERE.=" ) ";
+			$i++;
 		}
+		
 		
 		if ($ok)	$WHERE.= " ) ";
 	}
@@ -278,12 +292,11 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			// TABLE HEADER
 			for ($i=0;$i<$toview_count;$i++){
 				echo "<th>";
-				$field=$SEARCH_OPTION[$type][$toview[$i]]["table"].".".$SEARCH_OPTION[$type][$toview[$i]]["field"];
-				if ($sort==$field) {
+				if ($sort==$toview[$i]) {
 					if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 					else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 				}
-				echo "<a href=\"$target?sort=$field&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+				echo "<a href=\"$target?sort=".$toview[$i]."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 				echo $SEARCH_OPTION[$type][$toview[$i]]["name"]."</a></th>\n";
 			}
 			echo "</tr>\n";
