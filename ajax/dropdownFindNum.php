@@ -44,7 +44,10 @@
 			$where.=" AND is_template='0' ";		
 			
 		if (!empty($_POST['searchText'])&&$_POST['searchText']!="?"){
-		$WWHERE=" OR contact LIKE '%".$_POST['searchText']."%' OR serial LIKE '%".$_POST['searchText']."%' OR otherserial LIKE '%".$_POST['searchText']."%'";
+				$WWHERE="";
+				if ($_POST['table']!="glpi_software"){
+				$WWHERE=" OR contact LIKE '%".$_POST['searchText']."%' OR serial LIKE '%".$_POST['searchText']."%' OR otherserial LIKE '%".$_POST['searchText']."%'";
+				}
 			$where.=" AND (name LIKE '%".$_POST['searchText']."%' OR ID = '".$_POST['searchText']."' $WWHERE)";
 		}
 
