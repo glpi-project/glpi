@@ -98,10 +98,10 @@ else
 	echo "<legend>".$lang["login"][10]."</legend>";
 
 	
-	echo "<div class='row'><span class='label'><label>".$lang["login"][6]." :  </label></span><span class='formw'> <input type='text' name='login_name' id='login_name' size='20' /></span></div>";
+	echo "<div class='row'><span class='label'><label>".$lang["login"][6]." :  </label></span><span class='formw'> <input type='text' name='login_name' id='login_name' size='15' /></span></div>";
 	
 	
-	echo "<div class='row'><span class='label'><label>".$lang["login"][7]." : </label></span><span class='formw'><input type='password' name='login_password' id='login_password' size='20' /> </span></div>";
+	echo "<div class='row'><span class='label'><label>".$lang["login"][7]." : </label></span><span class='formw'><input type='password' name='login_password' id='login_password' size='15' /> </span></div>";
 	
 	
 	
