@@ -171,7 +171,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	//// 1 - SELECT
 	$SELECT ="SELECT ";
 	for ($i=0;$i<$toview_count;$i++){
-		$SELECT.=$SEARCH_OPTION[$type][$toview[$i]]["table"].".".$SEARCH_OPTION[$type][$toview[$i]]["field"]." AS ITEM_$i, ";
+		$SELECT.=addSelect($SEARCH_OPTION[$type][$toview[$i]]["table"].".".$SEARCH_OPTION[$type][$toview[$i]]["field"],$i);
 	}
 	// Add ID
 	$SELECT.=$LINK_ID_TABLE[$type].".ID AS ID ";
@@ -182,8 +182,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	array_push($already_link_tables,$LINK_ID_TABLE[$type]);
 
 	for ($i=1;$i<$toview_count;$i++){
-		if (!in_array($SEARCH_OPTION[$type][$toview[$i]]["table"],$already_link_tables))
-			$FROM.=addLeftJoin($LINK_ID_TABLE[$type],$already_link_tables,$SEARCH_OPTION[$type][$toview[$i]]["table"]);
+		if (!in_array($SEARCH_OPTION[$type][$toview[$i]]["table"],$already_link_tables)){
+			$FROM.=addLeftJoin($type,$LINK_ID_TABLE[$type],$already_link_tables,$SEARCH_OPTION[$type][$toview[$i]]["table"]);
+			array_push($already_link_tables,$SEARCH_OPTION[$type][$toview[$i]]["table"]);
+		}
 	}	
 
 	//// 3 - WHERE	
@@ -199,7 +201,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	$ORDER= " ORDER BY $sort $order";
 
 	$QUERY=$SELECT.$FROM.$WHERE.$ORDER;
-//	echo $QUERY;
+	//echo $QUERY;
 	
 	// Get it from database and DISPLAY
 	if ($result = $db->query($QUERY)) {
@@ -211,7 +213,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			printPager($start,$numrows,$target,$parameters);
 
 			// Produce headline
-			echo "<div align='center'><table border='0' class='tab_cadre'><tr>";
+			echo "<div align='center'><table border='0' class='tab_cadre'><tr>\n";
 
 			// TABLE HEADER
 			for ($i=0;$i<$toview_count;$i++){
@@ -222,37 +224,40 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 				}
 				echo "<a href=\"$target?sort=$field&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
-				echo $SEARCH_OPTION[$type][$toview[$i]]["name"]."</a></th>";
+				echo $SEARCH_OPTION[$type][$toview[$i]]["name"]."</a></th>\n";
 			}
-			echo "</tr>";
-
-			for ($i=$start; $i < $numrows && $i<($start+$cfg_features["list_limit"]); $i++) {
-				$ID = $db->result($result, $i, "ID");
-				
+			echo "</tr>\n";
+			$db->data_seek($result,$start);
+			$i=$start;
+			//for ($i=$start; $i < $numrows && $i<($start+$cfg_features["list_limit"]); $i++) {
+			while ($i < $numrows && $i<($start+$cfg_features["list_limit"])){
+				$data=$db->fetch_assoc($result);
+				$i++;
+			
 				echo "<tr class='tab_bg_2'>";
 				// Print first element
 				echo "<td><b>";
-				echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=$ID\">";
-				echo $db->result($result, $i, "ITEM_0");
+				echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+				displayItem($SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"],$data,0);
 				echo "</a></b></td>";
+				// Print other items
 				for ($j=1;$j<$toview_count;$j++){
-				echo "<td>";
-				echo $db->result($result, $i, "ITEM_$j");
-				echo "</td>";
-					
+					echo "<td>";
+					displayItem($SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"],$data,$j);
+					echo "</td>";
 				}
-                 echo "</tr>";
+		                 echo "</tr>\n";
 			}
 
 			// Close Table
-			echo "</table></div>";
+			echo "</table></div>\n";
 
 			// Pager
 			echo "<br>";
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<div align='center'><b>".$lang["computers"][32]."</b></div>";
+			echo "<div align='center'><b>".$lang["computers"][32]."</b></div>\n";
 			
 		}
 	}
@@ -260,24 +265,141 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 }
 
 /**
+* Generic Function to add select to a request
+*
+*
+*@param $field field to add
+*@param $num item num in the request
+*
+*
+*@return select string
+*
+**/
+function addSelect ($field,$num){
+
+switch ($field){
+case "glpi_users.name" :
+	return $field." AS ITEM_$num, glpi_users.realname AS ITEM_".$num."_2, ";
+	break;
+default:
+	return $field." AS ITEM_$num, ";
+	break;
+}
+
+}
+
+/**
+* Generic Function to display Items
+*
+*
+*@param $field field to add
+*@param $data arrau containing data results
+*@param $num item num in the request
+*
+*
+*@return string to print
+*
+**/
+function displayItem ($field,$data,$num){
+
+
+switch ($field){
+	case "glpi_users.name" :
+		// print realname or login name
+		if (!empty($data["ITEM_".$num."_2"]))
+			echo $data["ITEM_".$num."_2"];
+		else echo $data["ITEM_$num"];
+		break;
+	default:
+		echo $data["ITEM_$num"];
+		break;
+}
+
+}
+
+
+
+/**
 * Generic Function to add left join to a request
 *
 *
+*@param $type reference ID
 *@param $ref_table reference table
 *@param $already_link_tables array of tables already joined
 *@param $new_table new table to join
 *
 *
-*@return Left join strin
+*@return Left join string
 *
 **/
-function addLeftJoin ($ref_table,$already_link_tables,$new_table){
+function addLeftJoin ($type,$ref_table,$already_link_tables,$new_table){
 
 switch ($new_table){
 	case "glpi_dropdown_locations":
 		return " LEFT JOIN $new_table ON ($ref_table.location = $new_table.ID) ";
 		break;
-	
+	case "glpi_type_computers":
+	case "glpi_type_networking":
+	case "glpi_type_printers":
+	case "glpi_type_monitors":
+	case "glpi_dropdown_contact_type":
+	case "glpi_dropdown_contract_type":
+	case "glpi_dropdown_consumable_type":
+	case "glpi_dropdown_cartridge_type":
+	case "glpi_dropdown_enttype":
+	case "glpi_type_peripherals":
+		return " LEFT JOIN $new_table ON ($ref_table.type = $new_table.ID) ";
+		break;
+	case "glpi_dropdown_model":
+		return " LEFT JOIN $new_table ON ($ref_table.model = $new_table.ID) ";
+		break;
+	case "glpi_dropdown_os":
+		return " LEFT JOIN $new_table ON ($ref_table.os = $new_table.ID) ";
+		break;
+	case "glpi_networking_ports":
+		return " LEFT JOIN $new_table ON ($ref_table.ID = $new_table.on_device AND $new_table.device_type='$type') ";
+		break;
+	case "glpi_dropdown_netpoint":
+		$out="";
+		// Link to glpi_networking_ports before
+		if (!in_array("glpi_networking_ports",$already_link_tables)){
+			$out=addLeftJoin($type,$ref_admin,$already_link_tables,"glpi_networking_ports");
+			array_push($already_link_tables,"glpi_networking_ports");
+		}
+		
+		return $out." LEFT JOIN $new_table ON (glpi_networking_ports.netpoint = $new_table.ID) ";
+		break;
+	case "glpi_users":
+		return " LEFT JOIN $new_table ON ($ref_table.tech_num = $new_table.ID) ";
+		break;
+	case "glpi_enterprises":
+		return " LEFT JOIN $new_table ON ($ref_table.FK_glpi_enterprises = $new_table.ID) ";
+		break;
+	case "glpi_infocoms":
+		return " LEFT JOIN $new_table ON ($ref_table.ID = $new_table.FK_device AND $new_table.device_type='$type') ";
+		break;
+	case "glpi_contract_device":
+		return " LEFT JOIN $new_table ON ($ref_table.ID = $new_table.FK_device AND $new_table.device_type='$type') ";
+		break;
+	case "glpi_contracts":
+		$out="";
+		// Link to glpi_networking_ports before
+		if (!in_array("glpi_contract_device",$already_link_tables)){
+			$out=addLeftJoin($type,$ref_admin,$already_link_tables,"glpi_contract_device");
+			array_push($already_link_tables,"glpi_contract_device");
+		}
+		
+		return $out." LEFT JOIN $new_table ON (glpi_contract_device.FK_contract = $new_table.ID) ";
+		break;
+	case "glpi_dropdown_firmware":
+		return " LEFT JOIN $new_table ON ($ref_table.firmware = $new_table.ID) ";
+		break;			
+	case "glpi_dropdown_rubdocs":
+		return " LEFT JOIN $new_table ON ($ref_table.rubrique = $new_table.ID) ";
+		break;	
+	case "glpi_licenses":
+		return " LEFT JOIN $new_table ON ($ref_table.ID = $new_table.sID) ";
+		break;	
 	default :
 		return "";
 		break;

@@ -104,6 +104,9 @@ class DBmysql {
 		return $value;
 //		return htmlentities_deep($value);
 	}
+	function data_seek($result,$num){
+		return mysql_data_seek ($result,$num);
+	}
 	function insert_id() {
  		return mysql_insert_id();
  	}
