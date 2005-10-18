@@ -1391,20 +1391,20 @@ function addFormTracking ($device_type,$ID,$author,$assign,$target,$error,$searc
 	echo "<tr><td class='tab_bg_2' align='center'>".$lang["joblist"][2].":</td>";
 	echo "<td align='center' class='tab_bg_2' colspan='3'><select name='priority'>";
 	echo "<option value='5' ";
-	echo ">".$lang["joblist"][17]."</option>";
+	echo ">".$lang["help"][3]."</option>";
 	if (isset($_GET["priority"])&&$_GET["priority"]==5) echo "selected";
 	echo "<option value='4' ";
 	if (isset($_GET["priority"])&&$_GET["priority"]==4) echo "selected";
-	echo ">".$lang["joblist"][18]."</option>";
+	echo ">".$lang["help"][4]."</option>";
 	echo "<option value='3' ";
 	if (!isset($_GET["priority"])||$_GET["priority"]==3) echo "selected";	
-	echo ">".$lang["joblist"][19]."</option>";
+	echo ">".$lang["help"][5]."</option>";
 	echo "<option value='2'";
 	if (isset($_GET["priority"])&&$_GET["priority"]==2) echo "selected";	
-	echo ">".$lang["joblist"][20]."</option>";
+	echo ">".$lang["help"][6]."</option>";
 	echo "<option value='1'";
 	if (isset($_GET["priority"])&&$_GET["priority"]==1) echo "selected";	
-	echo ">".$lang["joblist"][21]."</option>";
+	echo ">".$lang["help"][7]."</option>";
 	echo "</select></td></tr>";
 
 	echo "<tr class='tab_bg_2' align='center'><td>".$lang["joblist"][3].":</td>";

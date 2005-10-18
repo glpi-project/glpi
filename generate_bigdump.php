@@ -39,7 +39,7 @@ include ("_relpos.php");
 include ($phproot."/glpi/includes.php");
 $db=new DB();
 
-$multiplicator=10;
+$multiplicator=25;
 
 $max['locations']=50;
 $max['kbcategories']=10;
