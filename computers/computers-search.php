@@ -61,7 +61,9 @@ if (!isset($_GET["order"])) $_GET["order"] = "ASC";
 if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
 else $_GET["deleted"] = "Y";
 if (!isset($_GET["link"])) $_GET["link"] = "";
+
 include ($phproot . "/glpi/includes_search.php");
+
 searchForm(COMPUTER_TYPE,$cfg_install["root"]."/computers/computers-search.php",$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"]);
 showList(COMPUTER_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"]);
 
