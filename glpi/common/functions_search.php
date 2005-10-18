@@ -46,6 +46,7 @@
 function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",$link=""){
 	global $lang,$HTMLRel,$SEARCH_OPTION;
 	$options=$SEARCH_OPTION[$type];
+	
 	echo "<form method=get action=\"$target\">";
 	echo "<div align='center'><table border='0' width='850' class='tab_cadre'>";
 	echo "<tr><th colspan='4'><b>".$lang["search"][0].":</b></th></tr>";
@@ -89,9 +90,8 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 		echo "<select name=\"field[$i]\" size='1'>";
         	reset($options);
 		foreach ($options as $key => $val) {
-			$v=$val["table"].".".$val["field"];
-			echo "<option value=\"".$v."\""; 
-			if(is_array($field)&&isset($field[$i]) && $v == $field[$i]) echo "selected";
+			echo "<option value=\"".$key."\""; 
+			if(is_array($field)&&isset($field[$i]) && $key == $field[$i]) echo "selected";
 			echo ">". $val["name"] ."</option>\n";
 		}
 
@@ -112,9 +112,8 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	echo "&nbsp;<select name='sort' size='1'>";
 	reset($options);
 	foreach ($options as $key => $val) {
-		$v=$val["table"].".".$val["field"];
-		echo "<option value=\"".$v."\"";
-		if($v == $sort) echo "selected";
+		echo "<option value=\"".$key."\"";
+		if($key == $sort) echo "selected";
 		echo ">".$val["name"]."</option>\n";
 	}
 	echo "</select> ";
@@ -162,8 +161,13 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			array_push($toview,$data["num"]);
 	}
 
-	// TODO : Voir les elements rechercher
+	// Add searched items
+	if (count($field)>0)
+		foreach($field as $key => $val)
+			if (!in_array($val,$toview))
+			array_push($toview,$val);
 	
+	// Clean toview array
 	$toview=array_unique($toview);
 	$toview_count=count($toview);
 	
@@ -195,13 +199,18 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	if (in_array($LINK_ID_TABLE[$type],$template_tables))
 		$WHERE.= " AND ".$LINK_ID_TABLE[$type].".is_template='0' ";
 
-	// TODO : add elements recherchés dans la recherche
-
+	// Add search conditions
+	print_r($contains);
+	if (count($contains)>0)
+	foreach($contains as $key => $val){
+		$WHERE.= " AND ".$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"]." LIKE '%".$val."%' ";	
+	}
+	
 	//// 4 - ORDER 
 	$ORDER= " ORDER BY $sort $order";
 
 	$QUERY=$SELECT.$FROM.$WHERE.$ORDER;
-	//echo $QUERY;
+	echo $QUERY;
 	
 	// Get it from database and DISPLAY
 	if ($result = $db->query($QUERY)) {
@@ -332,7 +341,7 @@ switch ($field){
 *@return Left join string
 *
 **/
-function addLeftJoin ($type,$ref_table,$already_link_tables,$new_table){
+function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table){
 
 switch ($new_table){
 	case "glpi_dropdown_locations":
@@ -413,6 +422,66 @@ switch ($new_table){
 		
 		return $out." LEFT JOIN $new_table ON (glpi_computer_device.FK_device = $new_table.ID AND glpi_computer_device.device_type = '".PROCESSOR_DEVICE."') ";
 		break;		
+	case "glpi_device_ram":
+		$out="";
+		// Link to glpi_networking_ports before
+		if (!in_array("glpi_computer_device",$already_link_tables)){
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device");
+			array_push($already_link_tables,"glpi_computer_device");
+		}
+		
+		return $out." LEFT JOIN $new_table ON (glpi_computer_device.FK_device = $new_table.ID AND glpi_computer_device.device_type = '".RAM_DEVICE."') ";
+		break;		
+	case "glpi_device_iface":
+		$out="";
+		// Link to glpi_networking_ports before
+		if (!in_array("glpi_computer_device",$already_link_tables)){
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device");
+			array_push($already_link_tables,"glpi_computer_device");
+		}
+		
+		return $out." LEFT JOIN $new_table ON (glpi_computer_device.FK_device = $new_table.ID AND glpi_computer_device.device_type = '".NETWORK_DEVICE."') ";
+		break;	
+	case "glpi_device_sndcard":
+		$out="";
+		// Link to glpi_networking_ports before
+		if (!in_array("glpi_computer_device",$already_link_tables)){
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device");
+			array_push($already_link_tables,"glpi_computer_device");
+		}
+		
+		return $out." LEFT JOIN $new_table ON (glpi_computer_device.FK_device = $new_table.ID AND glpi_computer_device.device_type = '".SND_DEVICE."') ";
+		break;		
+	case "glpi_device_gfxcard":
+		$out="";
+		// Link to glpi_networking_ports before
+		if (!in_array("glpi_computer_device",$already_link_tables)){
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device");
+			array_push($already_link_tables,"glpi_computer_device");
+		}
+		
+		return $out." LEFT JOIN $new_table ON (glpi_computer_device.FK_device = $new_table.ID AND glpi_computer_device.device_type = '".GFX_DEVICE."') ";
+		break;	
+	case "glpi_device_moboard":
+		$out="";
+		// Link to glpi_networking_ports before
+		if (!in_array("glpi_computer_device",$already_link_tables)){
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device");
+			array_push($already_link_tables,"glpi_computer_device");
+		}
+		
+		return $out." LEFT JOIN $new_table ON (glpi_computer_device.FK_device = $new_table.ID AND glpi_computer_device.device_type = '".MOBOARD_DEVICE."') ";
+		break;	
+	case "glpi_device_hdd":
+		$out="";
+		// Link to glpi_networking_ports before
+		if (!in_array("glpi_computer_device",$already_link_tables)){
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device");
+			array_push($already_link_tables,"glpi_computer_device");
+		}
+		
+		return $out." LEFT JOIN $new_table ON (glpi_computer_device.FK_device = $new_table.ID AND glpi_computer_device.device_type = '".HDD_DEVICE."') ";
+		break;
 	default :
 		return "";
 		break;
