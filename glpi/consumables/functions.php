@@ -861,10 +861,10 @@ function countConsumables($tID) {
 	$unused=getUnusedConsumablesNumber($tID);
 	$old=getOldConsumablesNumber($tID);
 
-	echo "<center><b>".$lang["consumables"][30].":&nbsp;$total</b>&nbsp;&nbsp;&nbsp;".$lang["consumables"][13].": $unused&nbsp;&nbsp;&nbsp;".$lang["consumables"][15].": $old</center>";			
+	echo "<b>".$lang["consumables"][30].":&nbsp;$total</b>&nbsp;&nbsp;&nbsp;".$lang["consumables"][13].": $unused&nbsp;&nbsp;&nbsp;".$lang["consumables"][15].": $old";			
 
 	} else {
-			echo "<center><i>".$lang["consumables"][9]."</i></center>";
+			echo "<i>".$lang["consumables"][9]."</i>";
 	}
 }	
 

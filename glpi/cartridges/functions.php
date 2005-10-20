@@ -1223,10 +1223,10 @@ function countCartridges($tID) {
 	$used=getUsedCartridgesNumber($tID);
 	$old=getOldCartridgesNumber($tID);
 
-	echo "<center><b>".$lang["cartridges"][30].":&nbsp;$total</b>&nbsp;&nbsp;&nbsp;".$lang["cartridges"][13].": $unused&nbsp;&nbsp;&nbsp;".$lang["cartridges"][14].": $used&nbsp;&nbsp;&nbsp;".$lang["cartridges"][15].": $old</center>";			
+	echo "<b>".$lang["cartridges"][30].":&nbsp;$total</b>&nbsp;&nbsp;&nbsp;".$lang["cartridges"][13].": $unused&nbsp;&nbsp;&nbsp;".$lang["cartridges"][14].": $used&nbsp;&nbsp;&nbsp;".$lang["cartridges"][15].": $old";			
 
 	} else {
-			echo "<center><i>".$lang["cartridges"][9]."</i></center>";
+			echo "<i>".$lang["cartridges"][9]."</i>";
 	}
 }	
 
