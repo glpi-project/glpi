@@ -714,7 +714,8 @@ class Mailing
 		GLOBAL $lang;
 		
 		// Create the message subject 
-		$subject="[GLPI] ";
+		$subject="[GLPI] [".$this->job->ID."] ";
+		
 		switch ($this->type){
 			case "new":
 			$subject.=$lang["mailing"][9];
@@ -733,7 +734,7 @@ class Mailing
 				break;
 		}
 		
-		if ($this->type!="new") $subject .= " (Ref #".$this->job->ID.")";		
+		
 		
 		return $subject;
 	}
