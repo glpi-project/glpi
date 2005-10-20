@@ -1270,10 +1270,10 @@ function countInstallations($sID) {
 		if (isFreeSoftware($sID)) {
 			// Get installed
 			$installed = getInstalledLicence($sID);
-			echo "<center><i>".$lang["software"][39]."</i>&nbsp;&nbsp;".$lang["software"][19].": <strong>$installed</strong></center>";
+			echo "<i>".$lang["software"][39]."</i>&nbsp;&nbsp;".$lang["software"][19].": <strong>$installed</strong>";
 		} else if (isGlobalSoftware($sID)){
 			$installed = getInstalledLicence($sID);
-			echo "<center><i>".$lang["software"][38]."</i>&nbsp;&nbsp;".$lang["software"][19].": <strong>$installed</strong></center>";
+			echo "<i>".$lang["software"][38]."</i>&nbsp;&nbsp;".$lang["software"][19].": <strong>$installed</strong>";
 			
 		}
 		else {
@@ -1286,7 +1286,7 @@ function countInstallations($sID) {
 			$remaining = $total - $installed;
 
 			// Output
-			echo "<table width='100%' cellpadding='2' cellspacing='0'><tr>";
+			echo "<table cellpadding='2' cellspacing='0'><tr>";
 			echo "<td width='35%'>".$lang["software"][19].": <strong>$installed</strong></td>";
 			if ($remaining < 0) {
 				$remaining = "<span class='red'>$remaining";
