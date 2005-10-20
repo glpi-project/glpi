@@ -413,6 +413,20 @@ switch ($field){
 			echo $data["ITEM_".$num."_2"];
 		else echo $data["ITEM_$num"];
 		break;
+	case "glpi_computers.name" :
+	case "glpi_printers.name" :
+	case "glpi_networking.name" :
+	case "glpi_monitors.name" :
+	case "glpi_software.name" :
+	case "glpi_peripherals.name" :
+	case "glpi_cartridges_type.name" :
+	case "glpi_consumables_type.name" :
+	case "glpi_contacts.name" :
+	case "glpi_contracts.name" :
+	case "glpi_enterprises.name" :
+	case "glpi_docs.name" :		
+		echo $data["ITEM_$num"]." (".$data["ID"].")";
+		break;
 	default:
 		echo $data["ITEM_$num"];
 		break;
