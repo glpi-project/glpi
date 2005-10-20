@@ -49,13 +49,15 @@ if(empty($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
 if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
 else $_GET["deleted"] = "Y";
 if (!isset($_GET["link"])) $_GET["link"] = "";
+if (!isset($_GET["distinct"])) $_GET["distinct"] = "N";
+else $_GET["distinct"] = "Y";
 
 titleSoftware();
 
 include ($phproot . "/glpi/includes_search.php");
 
-searchForm(SOFTWARE_TYPE,$cfg_install["root"]."/software/software-search.php",$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"]);
-showList(SOFTWARE_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"]);
+searchForm(SOFTWARE_TYPE,$cfg_install["root"]."/software/software-search.php",$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+showList(SOFTWARE_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
 
 //searchFormSoftware($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"]);

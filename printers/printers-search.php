@@ -49,14 +49,16 @@ if(empty($_GET["order"])) $_GET["order"] = "ASC";
 if(empty($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
 if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
 else $_GET["deleted"] = "Y";
+if (!isset($_GET["distinct"])) $_GET["distinct"] = "N";
+else $_GET["distinct"] = "Y";
 if (!isset($_GET["link"])) $_GET["link"] = "";
 
 titlePrinters();
 
 include ($phproot . "/glpi/includes_search.php");
 
-searchForm(PRINTER_TYPE,$cfg_install["root"]."/printers/printers-search.php",$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"]);
-showList(PRINTER_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"]);
+searchForm(PRINTER_TYPE,$cfg_install["root"]."/printers/printers-search.php",$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+showList(PRINTER_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
 
 //searchFormPrinters($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"]);

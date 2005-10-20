@@ -43,13 +43,13 @@
 *@return nothing (diplays)
 *
 **/
-function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",$link=""){
+function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",$link="",$distinct="Y"){
 	global $lang,$HTMLRel,$SEARCH_OPTION,$cfg_install;
 	$options=$SEARCH_OPTION[$type];
 	
 	echo "<form method=get action=\"$target\">";
 	echo "<div align='center'><table border='0' width='850' class='tab_cadre'>";
-	echo "<tr><th colspan='4'><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<tr><th colspan='5'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 	echo "<table>";
@@ -125,7 +125,10 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	
 	echo "<td><input type='checkbox' name='deleted' ".($deleted=='Y'?" checked ":"").">";
 	echo "<img src=\"".$HTMLRel."pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
-	echo "</td><td width='80' align='center' class='tab_bg_2'>";
+	echo "</td>";
+	echo "<td><input type='checkbox' name='distinct' ".($distinct=='Y'?" checked ":"").">";
+	echo "</td>";
+	echo "<td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit' >";
 	echo "</td></tr></table></div></form>";
 	
@@ -150,7 +153,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 *@return Nothing (display)
 *
 **/
-function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$link){
+function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$link,$distinct){
 	global $INFOFORM_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$HTMLRel,$cfg_install,$deleted_tables,$template_tables,$lang,$cfg_features;
 	$db=new DB;
 	
@@ -271,7 +274,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	//// 4 - ORDER 
 	$ORDER= " ORDER BY ".$SEARCH_OPTION[$type][$sort]["table"].".".$SEARCH_OPTION[$type][$sort]["field"]." $order";
 
-	$QUERY=$SELECT.$FROM.$WHERE.$ORDER;
+	$GROUPBY=" GROUP BY ID";
+	if ($distinct!='Y') $GROUPBY="";
+	
+	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER;
 	//echo $QUERY;
 	
 	// Get it from database and DISPLAY
@@ -327,7 +333,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<div align='center'><b>".$lang["computers"][32]."</b></div>\n";
+			echo "<div align='center'><b>".$lang["reservation"][33]."</b></div>\n";
 			
 		}
 	}

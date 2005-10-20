@@ -66,6 +66,7 @@ class Enterprise {
 			$name = $db->field_name($fields, $i);
 			$this->fields[$name] = "";
 		}
+	return true;
 	}
 
 	function countContacts() {

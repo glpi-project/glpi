@@ -121,6 +121,7 @@ else
 		showEnterpriseOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
 	if (showEnterpriseForm($_SERVER["PHP_SELF"],$tab["ID"])){
+		if (!empty($tab["ID"]))
 		switch($_SESSION['glpi_onglet']){
 			case -1:
 				showAssociatedContact($tab["ID"]);
