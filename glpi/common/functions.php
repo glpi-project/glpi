@@ -327,7 +327,7 @@ function checkAuthentication($authtype) {
 					commonFooter();
 					exit();
 				}
-			
+			break;
 			case "anonymous";
     				if ($cfg_features['public_faq'] == 0){
       					nullHeader("Login",$_SERVER["PHP_SELF"]);
