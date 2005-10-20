@@ -67,6 +67,7 @@ class Document {
 			$name = $db->field_name($fields, $i);
 			$this->fields[$name] = "";
 		}
+	return true;
 	}
 
 	function restoreInDB($ID) {

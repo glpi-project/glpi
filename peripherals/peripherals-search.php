@@ -47,14 +47,16 @@ if(empty($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
 if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
 else $_GET["deleted"] = "Y";
 if (!isset($_GET["link"])) $_GET["link"] = "";
+if (!isset($_GET["distinct"])) $_GET["distinct"] = "N";
+else $_GET["distinct"] = "Y";
 
 titlePeripherals();
 
 
 include ($phproot . "/glpi/includes_search.php");
 
-searchForm(PERIPHERAL_TYPE,$cfg_install["root"]."/peripherals/peripherals-search.php",$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"]);
-showList(PERIPHERAL_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"]);
+searchForm(PERIPHERAL_TYPE,$cfg_install["root"]."/peripherals/peripherals-search.php",$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+showList(PERIPHERAL_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
 
 

@@ -93,6 +93,7 @@ class ConsumableType {
 		}
 		
 	$this->fields["alarm"]=$cfg_features["cartridges_alarm"];
+	return true;
 	}
 
 	function countConsumables() {

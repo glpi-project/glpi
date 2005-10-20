@@ -67,6 +67,7 @@ function getEmpty () {
 		$name = $db->field_name($fields, $i);
 		$this->fields[$name] = "";
 	}
+	return true;	
 }
 
 	function updateInDB($updates)  {

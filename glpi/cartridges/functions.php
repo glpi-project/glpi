@@ -410,13 +410,13 @@ function showCartridgeTypeForm ($target,$ID) {
 	$ct = new CartridgeType;
 	$ct_spotted = false;
 	
-	if (!$ID) {
+	if (empty($ID)) {
 		
 		if($ct->getEmpty()) $ct_spotted = true;
 	} else {
 		if($ct->getfromDB($ID)) $ct_spotted = true;
 	}		
-
+	
 	if ($ct_spotted){
 	
 	echo "<form method='post' action=\"$target\"><div align='center'>\n";
