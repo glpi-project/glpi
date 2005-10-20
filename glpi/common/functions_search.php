@@ -454,6 +454,20 @@ switch ($new_table){
 	case "glpi_contract_device":
 		return " LEFT JOIN $new_table ON ($ref_table.ID = $new_table.FK_device AND $new_table.device_type='$type') ";
 		break;
+	case "glpi_state_item":
+		return " LEFT JOIN $new_table ON ($ref_table.ID = $new_table.id_device AND $new_table.device_type='$type') ";
+		break;
+	case "glpi_dropdown_state":
+		$out="";
+		// Link to glpi_state_item before
+		if (!in_array("glpi_state_item",$already_link_tables)){
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_state_item");
+			array_push($already_link_tables,"glpi_state_item");
+		}
+		
+		return $out." LEFT JOIN $new_table ON (glpi_state_item.state = $new_table.ID) ";
+		break;
+	
 	case "glpi_contracts":
 		$out="";
 		// Link to glpi_networking_ports before
