@@ -302,8 +302,13 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				echo "<a href=\"$target?sort=".$toview[$i]."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
 				echo $SEARCH_OPTION[$type][$toview[$i]]["name"]."</a></th>\n";
 			}
-			if ($type==SOFTWARE_TYPE||$type==CARTRIDGE_TYPE)
-					echo "<th>&nbsp;</th>";
+			if ($type==SOFTWARE_TYPE)
+					echo "<th>".$lang["software"][11]."</th>";
+			if ($type==CARTRIDGE_TYPE)
+					echo "<th>".$lang["cartridges"][0]."</th>";
+			if ($type==CONSUMABLE_TYPE)
+					echo "<th>".$lang["consumables"][0]."</th>";
+					
 					
 			echo "</tr>\n";
 			$db->data_seek($result,$start);
@@ -336,7 +341,13 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					echo "<td>";					
 		   		countInstallations($data["ID"]);
 					echo "</td>";
-				}		   		
+				}		
+				
+				if ($type==CONSUMABLE_TYPE){
+					echo "<td>";					
+		   		countConsumables($data["ID"]);
+					echo "</td>";
+				}		
 		   		
 		        echo "</tr>\n";
 			}
