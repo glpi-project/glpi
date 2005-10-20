@@ -481,12 +481,18 @@ switch ($new_table){
 		
 		return $out." LEFT JOIN $new_table ON (glpi_contract_device.FK_contract = $new_table.ID) ";
 		break;
+	case "glpi_dropdown_network":
+		return " LEFT JOIN $new_table ON ($ref_table.network = $new_table.ID) ";
+		break;			
+	case "glpi_dropdown_domain":
+		return " LEFT JOIN $new_table ON ($ref_table.domain = $new_table.ID) ";
+		break;			
 	case "glpi_dropdown_firmware":
 		return " LEFT JOIN $new_table ON ($ref_table.firmware = $new_table.ID) ";
 		break;			
 	case "glpi_dropdown_rubdocs":
 		return " LEFT JOIN $new_table ON ($ref_table.rubrique = $new_table.ID) ";
-		break;	
+		break;
 	case "glpi_licenses":
 		return " LEFT JOIN $new_table ON ($ref_table.ID = $new_table.sID) ";
 		break;	
