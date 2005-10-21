@@ -312,7 +312,7 @@ function showLinkForm ($target,$ID) {
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["links"][1].":	</td>";
-	echo "<td><input type='text' name='name' value=\"".$con->fields["name"]."\" size='30'></td>";
+	echo "<td><input type='text' name='name' value=\"".$con->fields["name"]."\" size='80'></td>";
 	echo "</tr>";
 
 	if ($ID=="") {
