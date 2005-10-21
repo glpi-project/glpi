@@ -313,8 +313,13 @@ $cfg_features["cartridges_alarm"] = $db->result($result,0,"cartridges_alarm");
 // Auto Assign tracking
 $cfg_features["auto_assign"] = $db->result($result,0,"auto_assign");
 
-// Autorized anonymous knowledgebase consultation
+// Authorized anonymous knowledgebase consultation
 $cfg_features["public_faq"] = $db->result($result,0,"public_faq");
+
+// Base URL for the URL view in mail
+$cfg_features["url_base"] = $db->result($result,0,"url_base");
+// Enable the URL view in mail
+$cfg_features["url_in_mail"] = $db->result($result,0,"url_in_mail");
 
 // version number
 // numero de version

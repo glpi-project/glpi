@@ -52,6 +52,12 @@ include ($phproot . "/glpi/includes_software.php");
 checkAuthentication("post-only");
 
 
+// Redirect management
+if (isset($_GET['redirect'])){
+	list($type,$ID)=split("_",$_GET["redirect"]);
+	glpi_header($cfg_install["root"]."/helpdesk.php?show=user&ID=$ID");
+}
+
 if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 {
 

@@ -3052,8 +3052,20 @@ $db->query($query);
 $query="INSERT INTO glpi_display VALUES (2, 1, 3, 2);";
 $db->query($query);
 }
+
+
+if(FieldExists("glpi_config","url")) {
+	$query="ALTER TABLE `glpi_config` ADD `url_base` VARCHAR( 255 ) NOT NULL ;";
+	$db->query($query) or die("0.65 add url in config".$lang["update"][90].$db->error());
+
+	$query="ALTER TABLE `glpi_config` ADD `url_in_mail` ENUM( '0', '1' ) NOT NULL ;";
+	$db->query($query) or die("0.65 add url_in_mail in config".$lang["update"][90].$db->error());
+
+	$query="UPDATE glpi_config SET url_base='".ereg_replace("/install.php","",$_SERVER['HTTP_REFERER'])."' WHERE ID='1'";
+	$db->query($query) or die(" url ".$lang["update"][90].$db->error());
 }
 
+}
 
 function updateTreeDropdown(){
 
