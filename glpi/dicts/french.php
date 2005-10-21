@@ -1061,6 +1061,8 @@ $lang["search"][8]="Date début";
 $lang["search"][9]="Date fin";
 $lang["search"][10]="dans";
 $lang["search"][11]="Eléments Visualisés";
+$lang["search"][15]="Pas d'élément trouvé";
+
 
 $lang["setup"][0]="Intitulés";
 $lang["setup"][1]="Modèles";

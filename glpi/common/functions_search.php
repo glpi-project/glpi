@@ -382,7 +382,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<div align='center'><b>".$lang["reservation"][33]."</b></div>\n";
+			echo "<div align='center'><b>".$lang["search"][15]."</b></div>\n";
 			
 		}
 	}
