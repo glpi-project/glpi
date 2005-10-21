@@ -43,12 +43,24 @@ if(empty($_GET["start"])) $_GET["start"] = 0;
 if(empty($_GET["order"])) $_GET["order"] = "ASC";
 if(empty($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
 
+if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
+else $_GET["deleted"] = "Y";
+if (!isset($_GET["distinct"])) $_GET["distinct"] = "N";
+else $_GET["distinct"] = "Y";
+
+if (!isset($_GET["link"])) $_GET["link"] = "";
+
+
 titleLinks();
 
-searchFormLink($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
+//searchFormLink($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
 
-showLinkList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
+//showLinkList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
 
+include ($phproot . "/glpi/includes_search.php");
+
+searchForm(LINK_TYPE,$cfg_install["root"]."/links/links-search.php",$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+showList(LINK_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
 
 commonFooter();
