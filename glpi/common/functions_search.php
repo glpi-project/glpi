@@ -238,7 +238,12 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$i=0;
 		$WHERE.=" AND ( ";
 		foreach($contains as $key => $val)
-		if ($field[$key]!="all"&&$field[$key]!="view"){
+		if (empty($val)){
+			$LINK=" ";
+			if ($i>0) $LINK=" AND ";
+			$WHERE.="'1'='1'";
+		}
+		else if ($field[$key]!="all"&&$field[$key]!="view"){
 			$LINK=" ";
 			if ($i>0) $LINK=$link[$key];
 			
@@ -260,14 +265,13 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	
 	// Search ALL 
 	if (count($SEARCH_ALL)>0)
-	foreach ($SEARCH_ALL as $key => $val){
+	foreach ($SEARCH_ALL as $key => $val)
+	if (!empty($val["contains"])){
 		$WHERE.=$val["link"]." ( '1'='0' ";
 		foreach ($SEARCH_OPTION[$type] as $key2 => $val2)
 			$WHERE.= " OR ".$val2["table"].".".$val2["field"]." LIKE '%".$val["contains"]."%' ";	
 		
 		$WHERE.=")";
-	
-	
 	}
 	
 	
