@@ -528,6 +528,9 @@ switch ($new_table){
 		return " LEFT JOIN $new_table ON ($ref_table.model = $new_table.ID) ";
 		break;
 	case "glpi_dropdown_os":
+	if ($type==SOFTWARE_TYPE)
+		return " LEFT JOIN $new_table ON ($ref_table.platform = $new_table.ID) ";
+	else 
 		return " LEFT JOIN $new_table ON ($ref_table.os = $new_table.ID) ";
 		break;
 	case "glpi_networking_ports":
