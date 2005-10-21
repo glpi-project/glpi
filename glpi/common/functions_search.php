@@ -348,14 +348,17 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				// Print first element
 				echo "<td><b>";
 				if ($SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"]=="glpi_users.name")
-				displayItem("glpi_users.name.brut",$data,0);
+					displayItem("glpi_users.name.brut",$data,0);
 				else 
-				displayItem($SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"],$data,0);
+					displayItem($SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"],$data,0);
 				echo "</b></td>";
 				// Print other items
 				for ($j=1;$j<$toview_count;$j++){
 					echo "<td>";
-					displayItem($SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"],$data,$j);
+					if ($SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"]=="glpi_enterprises.name")
+						displayItem("glpi_enterprises.name.brut",$data,0);
+					else 
+						displayItem($SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"],$data,$j);
 					echo "</td>";
 				}
 				
@@ -513,6 +516,12 @@ switch ($field){
 		echo $data["ITEM_$num"]." (".$data["ID"].")";
 		echo "</a>";
 		break;	
+	case "glpi_enterprises.name.brut" :
+		$type=ENTERPRISE_TYPE;
+		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		echo $data["ITEM_$num"];
+		echo "</a>";
+		break;			
 	case "glpi_docs.name" :		
 		$type=DOCUMENT_TYPE;
 		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
