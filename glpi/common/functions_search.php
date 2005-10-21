@@ -519,6 +519,9 @@ switch ($field){
 		echo $data["ITEM_$num"]." (".$data["ID"].")";
 		echo "</a>";
 		break;
+	case "glpi_docs.filename" :		
+		echo getDocumentLink($data["ITEM_$num"]);
+	break;		
 	default:
 		echo $data["ITEM_$num"];
 		break;
