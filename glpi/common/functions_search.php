@@ -301,7 +301,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	if ($distinct!='Y') $GROUPBY="";
 	
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER;
-	echo $QUERY;
+	//echo $QUERY;
 	
 	// Get it from database and DISPLAY
 	if ($result = $db->query($QUERY)) {
