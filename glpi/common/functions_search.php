@@ -226,51 +226,69 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	}
 
 	//// 3 - WHERE	
-	$WHERE = " WHERE '1'='1' ";
-	if (in_array($LINK_ID_TABLE[$type],$deleted_tables))
-		$WHERE.= " AND ".$LINK_ID_TABLE[$type].".deleted='$deleted' ";
-	if (in_array($LINK_ID_TABLE[$type],$template_tables))
-		$WHERE.= " AND ".$LINK_ID_TABLE[$type].".is_template='0' ";
+	
+	$first=true;
+	$WHERE = " WHERE ";
+	if (in_array($LINK_ID_TABLE[$type],$deleted_tables)){
+		$LINK= " AND " ;
+		if ($first) {$LINK=" ";$first=false;}
+		$WHERE.= $LINK.$LINK_ID_TABLE[$type].".deleted='$deleted' ";
+	}
+	if (in_array($LINK_ID_TABLE[$type],$template_tables)){
+		$LINK= " AND " ;
+		if ($first) {$LINK=" ";$first=false;}
+		$WHERE.= $LINK.$LINK_ID_TABLE[$type].".is_template='0' ";
+	}
 
 	// Add search conditions
 	
 	if (count($contains)>0) {
 		$i=0;
-		$WHERE.=" AND ( ";
+
+		$TOADD="";
 		foreach($contains as $key => $val)
-		if (empty($val)){
-			$LINK=" ";
-			if ($i>0) $LINK=" AND ";
-			$WHERE.=$LINK." '1'='1' ";
-			$i++;
-		}
-		else if ($field[$key]!="all"&&$field[$key]!="view"){
+		if (!empty($val)&&$field[$key]!="all"&&$field[$key]!="view"){
 			$LINK=" ";
 			if ($i>0) $LINK=$link[$key];
 			
-			$WHERE.= " $LINK ".$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"]." LIKE '%".$val."%' ";	
+			$TOADD.= " $LINK ".$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"]." LIKE '%".$val."%' ";	
 			$i++;
-		} else if ($field[$key]=="view"){
+		} else if (!empty($val)&&$field[$key]=="view"){
+						
 			if ($i!=0)
-				$WHERE.= " ".$link[$key]." ( '0'='1' ";
-			else  $WHERE.= " ( '0'='1' ";
-			
+				$TOADD.= " ".$link[$key];
+			 $TOADD.= " ( ";
+			$first2=true;
 			foreach ($toview as $key2 => $val2){
-				$WHERE.= " OR ".$SEARCH_OPTION[$type][$val2]["table"].".".$SEARCH_OPTION[$type][$val2]["field"]." LIKE '%".$val."%' ";	
+				$LINK=" OR ";
+				if ($first2) {$LINK=" ";$first2=false;}
+				$TOADD.= $LINK.$SEARCH_OPTION[$type][$val2]["table"].".".$SEARCH_OPTION[$type][$val2]["field"]." LIKE '%".$val."%' ";	
 			}
-			$WHERE.=" ) ";
+			$TOADD.=" ) ";
 			$i++;
 		}
-		$WHERE.=" ) ";
+		
+		if (!empty($TOADD)){
+			$LINK= " AND " ;
+			if ($first) {$LINK=" ";$first=false;}
+			$WHERE.=$LINK." ( ".$TOADD." ) ";
+		}
 	}
 	
 	// Search ALL 
 	if (count($SEARCH_ALL)>0)
 	foreach ($SEARCH_ALL as $key => $val)
 	if (!empty($val["contains"])){
-		$WHERE.=$val["link"]." ( '1'='0' ";
-		foreach ($SEARCH_OPTION[$type] as $key2 => $val2)
-			$WHERE.= " OR ".$val2["table"].".".$val2["field"]." LIKE '%".$val["contains"]."%' ";	
+		$LINK= " ".$val["link"]." " ;
+		if ($first) {$LINK=" ";$first=false;}
+
+		$WHERE.=$LINK." ( ";
+		$first2=true;
+		foreach ($SEARCH_OPTION[$type] as $key2 => $val2){
+			$LINK=" OR ";
+			if ($first2) {$LINK=" ";$first2=false;}
+			$WHERE.= $LINK.$val2["table"].".".$val2["field"]." LIKE '%".$val["contains"]."%' ";	
+			}
 		
 		$WHERE.=")";
 	}
@@ -283,7 +301,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	if ($distinct!='Y') $GROUPBY="";
 	
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER;
-	//echo $QUERY;
+	echo $QUERY;
 	
 	// Get it from database and DISPLAY
 	if ($result = $db->query($QUERY)) {
