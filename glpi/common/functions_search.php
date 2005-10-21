@@ -525,6 +525,12 @@ switch ($field){
 		echo $data["ITEM_$num"]." (".$data["ID"].")";
 		echo "</a>";
 		break;
+	case "glpi_links.name" :		
+		$type=LINK_TYPE;
+		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		echo $data["ITEM_$num"]." (".$data["ID"].")";
+		echo "</a>";
+		break;		
 	case "glpi_type_docs.icon" :
 		if (!empty($data["ITEM_$num"]))
 			echo "<img style='vertical-align:middle;' alt='' src='".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/".$data["ITEM_$num"]."'>";
