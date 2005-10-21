@@ -189,7 +189,7 @@ $cfg_login['ldap']['basedn'] = utf8_decode(unhtmlentities($db->result($result,0,
 
 $cfg_login['ldap']['rootdn'] = utf8_decode(unhtmlentities($db->result($result,0,"ldap_rootdn")));
 $cfg_login['ldap']['pass'] = utf8_decode(unhtmlentities($db->result($result,0,"ldap_pass")));
-
+$cfg_login['ldap']['login'] = unhtmlentities($db->result($result,0,"ldap_login"));
 $cfg_login['ldap']['port'] = unhtmlentities($db->result($result,0,"ldap_port"));
 
 // Log in filter A AJOUTER DANS LA DB

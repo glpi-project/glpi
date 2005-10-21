@@ -1233,6 +1233,8 @@ $lang["setup"][224]="Configuration pour les réservations";
 $lang["setup"][225]="Pour une nouvelle réservation";
 $lang["setup"][226]="Ajoutez un lien vers GLPI dans les mails";
 $lang["setup"][227]="URL de base utilisée";
+$lang["setup"][228]="Champ de login";
+
 $lang["setup"][250]="Affichage recherche par défaut ";
 $lang["setup"][251]="Sélectionnez une rubrique ";
 $lang["setup"][252]="Sélectionnez les éléments à afficher par défaut ";

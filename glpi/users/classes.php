@@ -113,6 +113,7 @@ class User {
 	//
 	function getFromLDAP($host,$basedn,$adm,$pass,$fields,$name)
 	{
+		global $cfg_login;
 		// we prevent some delay..
 		if (empty($host)) {
 			return false;
@@ -128,7 +129,7 @@ class User {
 			ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3) ;
 	  	if ( $adm != "" )
 	  	{
-			 	$dn = "uid=" . $adm . "," . $basedn;
+			 	$dn = $cfg_login['ldap']['login']."=" . $adm . "," . $basedn;
 	  		$bv = ldap_bind($conn, $dn, $pass);
 	  	}
 	  	else
@@ -139,7 +140,7 @@ class User {
 	  	if ( $bv )
 	  	{
 	  		$f = array_values($fields);
-	  		$sr = ldap_search($conn, $basedn, "uid=".$name, $f);
+	  		$sr = ldap_search($conn, $basedn, $cfg_login['ldap']['login']."=".$name, $f);
 	  		$v = ldap_get_entries($conn, $sr);
 			
 			if ( (empty($v)) || empty($v[0][$fields['name']][0]) ) {
