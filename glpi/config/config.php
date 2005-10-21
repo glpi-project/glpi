@@ -143,7 +143,7 @@ $result = $db->query($query);
 if($result)
 {
 
-$deleted_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_cartridges_type","glpi_contracts");
+$deleted_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_cartridges_type","glpi_contracts","glpi_contacts","glpi_enterprises");
 
 $template_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software");
 
@@ -162,7 +162,7 @@ $cfg_install["doc_dir"] = "/docs";
 // Default language
 $cfg_install["default_language"] = $db->result($result,0,"default_language");
 
-$cfg_debug["active"]=0;
+$cfg_debug["active"]=1;
 $cfg_debug["sql"]=1;
 $cfg_debug["vars"]=1;
 $cfg_debug["profile"]=1;
