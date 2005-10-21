@@ -42,18 +42,27 @@ commonHeader($lang["title"][25],$_SERVER["PHP_SELF"]);
 
 titleDocument();
 
+
+include ($phproot . "/glpi/includes_search.php");
+searchForm(DOCUMENT_TYPE,$cfg_install["root"]."/documents/documents-search.php");
+
+
+
 if(!isset($_GET["start"])) $_GET["start"] = 0;
 if (!isset($_GET["order"])) $_GET["order"] = "ASC";
-if (!isset($_GET["field"])) $_GET["field"] = array(0 => "glpi_docs.name");
+if (!isset($_GET["field"])) $_GET["field"] = array(0 => "view");
 if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
 if (!isset($_GET["contains"])) $_GET["contains"] = array(0=>"");
-if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_docs.name";
+if (!isset($_GET["sort"])) $_GET["sort"] = 1;
 if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
 if (!isset($_GET["link"])) $_GET["link"] = "";
+if (!isset($_GET["distinct"])) $_GET["distinct"] = "Y";
 
-searchFormDocument($_SERVER["PHP_SELF"]);
+//searchFormDocument($_SERVER["PHP_SELF"]);
 
-showDocumentList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"]);
+//showDocumentList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"]);
+
+showList(DOCUMENT_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
 
 commonFooter();

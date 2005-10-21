@@ -44,12 +44,21 @@ if(empty($_GET["order"])) $_GET["order"] = "DESC";
 if (!isset($_GET["deleted"])) $_GET["deleted"] = "N";
 else $_GET["deleted"] = "Y";
 if(empty($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
+if (!isset($_GET["distinct"])) $_GET["distinct"] = "N";
+else $_GET["distinct"] = "Y";
+
 if (!isset($_GET["link"])) $_GET["link"] = "";
 
 titleDocument();
 
-searchFormDocument($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"]);
-showDocumentList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"]);
+//searchFormDocument($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"]);
+//showDocumentList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"]);
+
+include ($phproot . "/glpi/includes_search.php");
+
+searchForm(DOCUMENT_TYPE,$cfg_install["root"]."/documents/documents-search.php",$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+showList(DOCUMENT_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+
 
 commonFooter();
 ?>
