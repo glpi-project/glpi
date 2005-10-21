@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-10-21 16:00
+#GLPI Dump database on 2005-10-22 01:23
 
 ### Dump table glpi_cartridges
 
@@ -531,8 +531,81 @@ CREATE TABLE glpi_display (
    KEY num (num)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_display VALUES ('1','1','2','1');
-INSERT INTO glpi_display VALUES ('2','1','3','2');
+INSERT INTO glpi_display VALUES ('32','1','4','4');
+INSERT INTO glpi_display VALUES ('34','1','6','6');
+INSERT INTO glpi_display VALUES ('33','1','5','5');
+INSERT INTO glpi_display VALUES ('31','1','8','3');
+INSERT INTO glpi_display VALUES ('30','1','23','2');
+INSERT INTO glpi_display VALUES ('86','12','3','1');
+INSERT INTO glpi_display VALUES ('49','4','31','1');
+INSERT INTO glpi_display VALUES ('50','4','23','2');
+INSERT INTO glpi_display VALUES ('51','4','3','3');
+INSERT INTO glpi_display VALUES ('52','4','4','4');
+INSERT INTO glpi_display VALUES ('44','3','31','1');
+INSERT INTO glpi_display VALUES ('38','2','31','1');
+INSERT INTO glpi_display VALUES ('39','2','23','2');
+INSERT INTO glpi_display VALUES ('45','3','23','2');
+INSERT INTO glpi_display VALUES ('46','3','3','3');
+INSERT INTO glpi_display VALUES ('63','6','4','3');
+INSERT INTO glpi_display VALUES ('62','6','5','2');
+INSERT INTO glpi_display VALUES ('61','6','23','1');
+INSERT INTO glpi_display VALUES ('83','11','4','2');
+INSERT INTO glpi_display VALUES ('82','11','3','1');
+INSERT INTO glpi_display VALUES ('57','5','3','3');
+INSERT INTO glpi_display VALUES ('56','5','23','2');
+INSERT INTO glpi_display VALUES ('55','5','31','1');
+INSERT INTO glpi_display VALUES ('29','1','31','1');
+INSERT INTO glpi_display VALUES ('35','1','3','7');
+INSERT INTO glpi_display VALUES ('36','1','19','8');
+INSERT INTO glpi_display VALUES ('37','1','17','9');
+INSERT INTO glpi_display VALUES ('40','2','3','3');
+INSERT INTO glpi_display VALUES ('41','2','4','4');
+INSERT INTO glpi_display VALUES ('42','2','11','5');
+INSERT INTO glpi_display VALUES ('43','2','9','6');
+INSERT INTO glpi_display VALUES ('47','3','4','4');
+INSERT INTO glpi_display VALUES ('48','3','9','5');
+INSERT INTO glpi_display VALUES ('53','4','9','5');
+INSERT INTO glpi_display VALUES ('54','4','7','6');
+INSERT INTO glpi_display VALUES ('58','5','4','4');
+INSERT INTO glpi_display VALUES ('59','5','9','5');
+INSERT INTO glpi_display VALUES ('60','5','7','6');
+INSERT INTO glpi_display VALUES ('64','7','3','1');
+INSERT INTO glpi_display VALUES ('65','7','4','2');
+INSERT INTO glpi_display VALUES ('66','7','5','3');
+INSERT INTO glpi_display VALUES ('67','7','6','4');
+INSERT INTO glpi_display VALUES ('68','7','9','5');
+INSERT INTO glpi_display VALUES ('69','8','9','1');
+INSERT INTO glpi_display VALUES ('70','8','3','2');
+INSERT INTO glpi_display VALUES ('71','8','4','3');
+INSERT INTO glpi_display VALUES ('72','8','5','4');
+INSERT INTO glpi_display VALUES ('73','8','10','5');
+INSERT INTO glpi_display VALUES ('74','8','6','6');
+INSERT INTO glpi_display VALUES ('75','10','4','1');
+INSERT INTO glpi_display VALUES ('76','10','3','2');
+INSERT INTO glpi_display VALUES ('77','10','5','3');
+INSERT INTO glpi_display VALUES ('78','10','6','4');
+INSERT INTO glpi_display VALUES ('79','10','7','5');
+INSERT INTO glpi_display VALUES ('80','10','11','6');
+INSERT INTO glpi_display VALUES ('81','10','9','7');
+INSERT INTO glpi_display VALUES ('84','11','5','3');
+INSERT INTO glpi_display VALUES ('85','11','6','4');
+INSERT INTO glpi_display VALUES ('88','12','6','2');
+INSERT INTO glpi_display VALUES ('89','12','4','3');
+INSERT INTO glpi_display VALUES ('90','12','5','4');
+INSERT INTO glpi_display VALUES ('91','13','3','1');
+INSERT INTO glpi_display VALUES ('92','13','4','2');
+INSERT INTO glpi_display VALUES ('93','13','7','3');
+INSERT INTO glpi_display VALUES ('94','13','5','4');
+INSERT INTO glpi_display VALUES ('95','13','6','5');
+INSERT INTO glpi_display VALUES ('96','15','3','1');
+INSERT INTO glpi_display VALUES ('97','15','4','2');
+INSERT INTO glpi_display VALUES ('98','15','5','3');
+INSERT INTO glpi_display VALUES ('99','15','6','4');
+INSERT INTO glpi_display VALUES ('100','15','7','5');
+INSERT INTO glpi_display VALUES ('101','17','3','1');
+INSERT INTO glpi_display VALUES ('102','17','4','2');
+INSERT INTO glpi_display VALUES ('103','17','5','3');
+INSERT INTO glpi_display VALUES ('104','17','6','4');
 
 ### Dump table glpi_doc_device
 
@@ -832,6 +905,7 @@ CREATE TABLE glpi_event_log (
    KEY itemtype (itemtype)
 ) TYPE=MyISAM;
 
+INSERT INTO glpi_event_log VALUES ('2','-1','system','2005-10-22 01:22:45','login','3','glpi logged in from 127.0.0.1.');
 
 ### Dump table glpi_followups
 
@@ -1036,8 +1110,7 @@ CREATE TABLE glpi_networking_ports (
    KEY on_device (on_device, device_type),
    KEY netpoint (netpoint),
    KEY on_device_2 (on_device),
-   KEY device_type (device_type),
-   KEY on_device_3 (on_device)
+   KEY device_type (device_type)
 ) TYPE=MyISAM;
 
 
