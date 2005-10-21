@@ -254,13 +254,15 @@ class Identification
   // $condition is used to restrict login ($condition is set in glpi/config/config.php 
   function connection_ldap($host,$basedn,$login,$pass,$condition,$port)
   {
-		
+	global $cfg_login;
+	
 		// we prevent some delay...
 		if (empty($host)) {
 			return false;
 		}
   	error_reporting(16);
-  	$dn = "uid=" . $login . "," . $basedn;
+  	
+	$dn = $cfg_login['ldap']['login'] ."=" . $login . "," . $basedn;
   	$rv = false;
   	if ( $conn = ldap_connect($host,$port) )
   	{
@@ -270,7 +272,7 @@ class Identification
 //  			$rv = true;
 
   		if (ldap_bind($conn, $dn, $pass) ) {
-                     $filter="(uid=$login)";
+                     $filter="(".$cfg_login['ldap']['login']."=$login)";
                      if ($condition!="") $filter="(& $filter $condition)";
                      $sr=ldap_search($conn, $basedn, $filter);
                      $info = ldap_get_entries ( $conn, $sr );
@@ -302,13 +304,13 @@ class Identification
 // Gets the dn using anonymous Ldap login
  function ldap_get_dn($host,$ldap_base_dn,$login,$rdn,$rpass)
  {
-
+	global $cfg_login;
   // we prevent some delay...
   if (empty($host)) {
 	return false;
   }
   $ldap_server=$host;
-  $ldap_login_attr = "uid";                          
+  $ldap_login_attr = $cfg_login['ldap']['login'];
   $ldap_dn ="";
   error_reporting(16);
   $ds = ldap_connect ($ldap_server);

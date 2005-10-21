@@ -74,7 +74,7 @@ elseif(!empty($_POST["update_ext"])) {
 	if(empty($_POST["LDAP_Test"]) ) {
 //todo test remote connection
 	
-		updateLDAP($_POST["ldap_host"],$_POST["ldap_basedn"],$_POST["ldap_rootdn"],$_POST["ldap_pass"],$_POST["ldap_condition"],$_POST["ldap_field_name"],$_POST["ldap_field_email"],$_POST["ldap_field_location"],$_POST["ldap_field_phone"],$_POST["ldap_field_realname"],$_POST["ldap_port"]);
+		updateLDAP($_POST["ldap_host"],$_POST["ldap_basedn"],$_POST["ldap_rootdn"],$_POST["ldap_pass"],$_POST["ldap_condition"],$_POST["ldap_login"],$_POST["ldap_field_name"],$_POST["ldap_field_email"],$_POST["ldap_field_location"],$_POST["ldap_field_phone"],$_POST["ldap_field_realname"],$_POST["ldap_port"]);
 	}
 	if(empty($_POST["IMAP_Test"])) {
 		$auth_server=constructIMAPAuthServer($_POST);
