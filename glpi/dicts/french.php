@@ -1156,7 +1156,7 @@ $lang["setup"][90]="VLANs";
 $lang["setup"][91]="Modèle de machines";
 $lang["setup"][92]="Type de consommables";
 $lang["setup"][93]="Interfaces Disque Dur";
-$lang["setup"][94]="Configuration de l'affichage des listes";
+
 
 $lang["setup"][100]="Configuration générale";
 $lang["setup"][101]="Chemin d'installation";
@@ -1175,6 +1175,7 @@ $lang["setup"][113]="Langue par défaut";
 $lang["setup"][114]="Couleurs des priorités";
 $lang["setup"][115]="Seuil d'alerte par défaut pour les cartouches et les consommables";
 $lang["setup"][116]="Assigner automatique les interventions au responsable technique";
+$lang["setup"][117]="Autoriser la consultation anonyme de la base de connaissances";
 $lang["setup"][150]="Sources d'authentification externes";
 $lang["setup"][151]="Si vous ne souhaitez pas utiliser LDAP comme source(s) de connexion laissez les champs vides";
 $lang["setup"][152]="LDAP configuration";
@@ -1230,7 +1231,9 @@ $lang["setup"][222]="Périphériques internes";
 $lang["setup"][223]="Limite des horaires pour le planning";
 $lang["setup"][224]="Configuration pour les réservations";
 $lang["setup"][225]="Pour une nouvelle réservation";
-$lang["setup"][226]="Autoriser la consultation anonyme de la base de connaissances";
+$lang["setup"][250]="Affichage recherche par défaut ";
+$lang["setup"][251]="Sélectionnez une rubrique ";
+$lang["setup"][252]="Sélectionnez les éléments à afficher par défaut ";
 
 $lang["software"][0]="Ajouter logiciel...";
 $lang["software"][1]="ID"; 

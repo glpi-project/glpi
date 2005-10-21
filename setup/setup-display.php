@@ -121,7 +121,7 @@ $db->query($query);
 	
 	echo "<div align='center'><form method='post' action=\"".$cfg_install["root"]."/setup/setup-display.php\">";
 	echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
-	echo $lang["setup"][72].": </th></tr><tr class='tab_bg_1'><td><select name='which'>";
+	echo $lang["setup"][251].": </th></tr><tr class='tab_bg_1'><td><select name='which'>";
 
 foreach ($dp as $key => $val){
 $sel="";
@@ -133,7 +133,8 @@ echo "<option value='$key' $sel>".$val."</option>";
 	echo "</table></form></div>";
 
 	echo "<div align='center'>";
-	echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='4'>";
+	echo "<table class='tab_cadre' cellpadding='2' width='50%' ><tr><th colspan='4'>";
+	echo $lang["setup"][252].": </th></tr><tr class='tab_bg_1'><td colspan='4' align='center'>";
 	echo "<form method='post' action=\"".$cfg_install["root"]."/setup/setup-display.php\">";
 	echo "<input type='hidden' name='which' value='$which'>";
 	echo "<select name='to_add'>";
@@ -143,49 +144,49 @@ echo "<option value='$key' $sel>".$val."</option>";
 	
 	echo "</select>";
 	
-	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit' >";
+	echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit' >";
 	echo "</form>";
-	echo "</th></tr>";
+	echo "</td></tr>";
 	
 	// Defined items
 	$query="SELECT * from glpi_display WHERE type='$which' order by rank";
 	$result=$db->query($query);
 	
 	// print first element 
-	echo "<tr class='tab_bg_2'><td>";
+	echo "<tr class='tab_bg_2'><td  align='center' width='50%'>";
 	echo $SEARCH_OPTION[$which][1]["name"];
-	echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+	echo "</td><td colspan='3'>&nbsp;</td></tr>";
 	$i=0;
 	$numrows=0;
 	if (($numrows=$db->numrows($result))>0)
 	while ($data=$db->fetch_array($result))
 	if ($data["num"]!=1){
-		echo "<tr class='tab_bg_2'><td>";
+		echo "<tr class='tab_bg_2'><td align='center' width='50%' >";
 		echo $SEARCH_OPTION[$which][$data["num"]]["name"];
 		echo "</td>";
 		if ($i!=0){
-			echo "<td align='center'>";
+			echo "<td align='center' valign='middle'>";
 			echo "<form method='post' action=\"".$cfg_install["root"]."/setup/setup-display.php\">";
 			echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
 			echo "<input type='hidden' name='which' value='$which'>";
-			echo "<input type='submit' name='up' value=\"".$lang["buttons"][24]."\" class='submit' >";	
+			echo "<input type='image' name='up'  value=\"".$lang["buttons"][24]."\"  src=\"".$HTMLRel."pics/puce-up2.png\" alt=\"".$lang["buttons"][24]."\"  title=\"".$lang["buttons"][24]."\" >";	
 			echo "</form>";
 			echo "</td>";
 		} else echo "<td>&nbsp;</td>";
 		if ($i!=$numrows-1){
-			echo "<td align='center'>";
+			echo "<td align='center' valign='middle'>";
 			echo "<form method='post' action=\"".$cfg_install["root"]."/setup/setup-display.php\">";
 			echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
 			echo "<input type='hidden' name='which' value='$which'>";
-			echo "<input type='submit' name='down' value=\"".$lang["buttons"][25]."\" class='submit' >";	
+			echo "<input type='image' name='down' value=\"".$lang["buttons"][25]."\" src=\"".$HTMLRel."pics/puce-down2.png\" alt=\"".$lang["buttons"][25]."\"  title=\"".$lang["buttons"][25]."\" >";	
 			echo "</form>";
 			echo "</td>";
 		} else echo "<td>&nbsp;</td>";
-		echo "<td align='center'>";
+		echo "<td align='center' valign='middle'>";
 		echo "<form method='post' action=\"".$cfg_install["root"]."/setup/setup-display.php\">";
 		echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
 		echo "<input type='hidden' name='which' value='$which'>";
-		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' >";	
+		echo "<input type='image' name='delete' value=\"".$lang["buttons"][6]."\"src=\"".$HTMLRel."pics/puce-delete2.png\" alt=\"".$lang["buttons"][6]."\"  title=\"".$lang["buttons"][6]."\" >";	
 		echo "</form>";
 		echo "</td>";
 		echo "</tr>";

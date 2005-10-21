@@ -940,7 +940,7 @@ function showFormConfigGen($target){
 		echo "<option value='$i' ".($i==$db->result($result,0,"cartridges_alarm")?" selected ":"").">$i</option>";
 	echo "</select></td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][226]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"public_faq\" value=\"1\" "; if($db->result($result,0,"public_faq") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"public_faq\" value=\"0\" "; if($db->result($result,0,"public_faq") == 0) echo "checked";
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][117]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"public_faq\" value=\"1\" "; if($db->result($result,0,"public_faq") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"public_faq\" value=\"0\" "; if($db->result($result,0,"public_faq") == 0) echo "checked";
 	echo " ></td></tr>";
 	
 	
