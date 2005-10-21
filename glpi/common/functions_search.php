@@ -44,7 +44,7 @@
 *
 **/
 function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",$link="",$distinct="Y"){
-	global $lang,$HTMLRel,$SEARCH_OPTION,$cfg_install;
+	global $lang,$HTMLRel,$SEARCH_OPTION,$cfg_install,$LINK_ID_TABLE,$deleted_tables;
 	$options=$SEARCH_OPTION[$type];
 	
 	echo "<form method=get action=\"$target\">";
@@ -123,9 +123,11 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	echo "</select> ";
 	echo "</td>";
 	
-	echo "<td><input type='checkbox' name='deleted' ".($deleted=='Y'?" checked ":"").">";
-	echo "<img src=\"".$HTMLRel."pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
-	echo "</td>";
+	if (in_array($LINK_ID_TABLE[$type],$deleted_tables)){
+		echo "<td><input type='checkbox' name='deleted' ".($deleted=='Y'?" checked ":"").">";
+		echo "<img src=\"".$HTMLRel."pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
+		echo "</td>";
+	}
 	echo "<td><input type='checkbox' name='distinct' ".($distinct=='Y'?" checked ":"").">";
 	echo "</td>";
 	echo "<td width='80' align='center' class='tab_bg_2'>";
