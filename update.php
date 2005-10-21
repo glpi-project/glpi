@@ -3054,7 +3054,7 @@ $db->query($query);
 }
 
 
-if(FieldExists("glpi_config","url")) {
+if(!FieldExists("glpi_config","url_base")) {
 	$query="ALTER TABLE `glpi_config` ADD `url_base` VARCHAR( 255 ) NOT NULL ;";
 	$db->query($query) or die("0.65 add url in config".$lang["update"][90].$db->error());
 

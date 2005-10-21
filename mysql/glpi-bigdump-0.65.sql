@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-10-12 12:07
+#GLPI Dump database on 2005-10-21 15:44
 
 ### Dump table glpi_cartridges
 
@@ -6439,10 +6439,12 @@ CREATE TABLE glpi_config (
     utf8_conv int(11) DEFAULT '0' NOT NULL,
     auto_assign enum('0','1') DEFAULT '0' NOT NULL,
     public_faq enum('0','1') DEFAULT '0' NOT NULL,
+    url_base varchar(255) NOT NULL,
+    url_in_mail enum('0','1') DEFAULT '0' NOT NULL,
    PRIMARY KEY (ID)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','0','0','0','0','0','0','1','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','0','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','1');
+INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','0','0','0','0','0','0','1','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','0','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi','0');
 
 ### Dump table glpi_connect_wire
 
@@ -7939,6 +7941,24 @@ INSERT INTO glpi_device_sndcard VALUES ('1','Soundblaster 128 PCI','','','0','')
 INSERT INTO glpi_device_sndcard VALUES ('2','Soundblaster 16 PnP','','','0','');
 INSERT INTO glpi_device_sndcard VALUES ('3','integrated','','','0','');
 INSERT INTO glpi_device_sndcard VALUES ('4','','','','0','');
+
+### Dump table glpi_display
+
+DROP TABLE IF EXISTS glpi_display;
+CREATE TABLE glpi_display (
+    ID int(11) NOT NULL auto_increment,
+    type smallint(6) DEFAULT '0' NOT NULL,
+    num smallint(6) DEFAULT '0' NOT NULL,
+    rank smallint(6) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (ID),
+   UNIQUE type_2 (type, num),
+   KEY type (type),
+   KEY rank (rank),
+   KEY num (num)
+) TYPE=MyISAM;
+
+INSERT INTO glpi_display VALUES ('1','1','2','1');
+INSERT INTO glpi_display VALUES ('2','1','3','2');
 
 ### Dump table glpi_doc_device
 
@@ -10414,10 +10434,7 @@ CREATE TABLE glpi_event_log (
    KEY itemtype (itemtype)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('13783','-1','system','2005-10-12 12:07:46','login','3','glpi logged in from 127.0.0.1.');
-INSERT INTO glpi_event_log VALUES ('13782','-1','system','2005-10-12 12:07:26','login','3','glpi logged in from 127.0.0.1.');
-INSERT INTO glpi_event_log VALUES ('13781','-1','system','2005-10-12 12:05:18','login','3','glpi logged in from 127.0.0.1.');
-INSERT INTO glpi_event_log VALUES ('13780','-1','system','2005-10-12 11:57:29','login','3','glpi logged in from 127.0.0.1.');
+INSERT INTO glpi_event_log VALUES ('13780','-1','system','2005-10-21 15:44:37','login','3','glpi logged in from 127.0.0.1.');
 
 ### Dump table glpi_followups
 
