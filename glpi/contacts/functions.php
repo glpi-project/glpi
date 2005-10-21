@@ -407,8 +407,14 @@ function showContactForm ($target,$ID) {
 		echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' ></div>";
 		echo "</td>\n\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
-		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' ></div>";
+//		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+		if ($con->fields["deleted"]=='N')
+		echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
+		else {
+		echo "<div align='center'><input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+		
+		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'></div>";
+		}
 		echo "</td>";
 		echo "</tr>";
 
@@ -497,12 +503,29 @@ function addContact($input) {
 *@return Nothing ()
 *
 **/
-function deleteContact($input) {
+function deleteContact($input,$force=0) {
 	// Delete Contact
 	
 	$con = new Contact;
-	$con->deleteFromDB($input["ID"]);
+	$con->deleteFromDB($input["ID"],$force);
 	
+} 
+
+/**
+* Restore a contact trashed in the database.
+*
+* Restore a contact trashed in the database.
+*
+*@param $input array : the _POST vars returned bye the contact form when press restore(see showcontactform())
+*
+*@return Nothing ()
+*
+**/
+function restoreContact($input) {
+	// Restore Contact
+	
+	$con = new Contact;
+	$con->restoreInDB($input["ID"]);
 } 
 
 /**

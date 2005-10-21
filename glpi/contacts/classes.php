@@ -119,16 +119,33 @@ function getEmpty () {
 		$result=$db->query($query);
 		return $db->insert_id();
 	}
-
-	function deleteFromDB($ID) {
-
+	
+	function restoreInDB($ID) {
 		$db = new DB;
-
-		$query = "DELETE from glpi_contacts WHERE ID = '$ID'";
+		$query = "UPDATE glpi_contacts SET deleted='N' WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
-				return true;
+			return true;
 		} else {
 			return false;
+		}
+	}
+	function deleteFromDB($ID,$force=0) {
+
+		$db = new DB;
+		if ($force==1){
+			$query = "DELETE from glpi_contacts WHERE ID = '$ID'";
+			$db->query($query);
+			
+			$query = "DELETE from glpi_contact_enterprise WHERE FK_contact = '$ID'";
+			
+			if ($result = $db->query($query)) {
+					return true;
+			} else {
+				return false;
+			}
+		}else {
+		$query = "UPDATE glpi_contacts SET deleted='Y' WHERE ID = '$ID'";		
+		return ($result = $db->query($query));
 		}
 	}
 

@@ -56,6 +56,20 @@ else if (isset($_POST["delete"]))
 	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." deleted item.");
 	glpi_header($cfg_install["root"]."/contacts/");
 }
+else if (isset($_POST["restore"]))
+{
+	checkAuthentication("admin");
+	restoreContact($_POST);
+	logEvent($tab["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." restored item.");
+	glpi_header($cfg_install["root"]."/contacts/");
+}
+else if (isset($_POST["purge"]))
+{
+	checkAuthentication("admin");
+	deleteContact($_POST,1);
+	logEvent($tab["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." purge item.");
+	glpi_header($cfg_install["root"]."/contacts/");
+}
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
