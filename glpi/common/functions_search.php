@@ -241,7 +241,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		if (empty($val)){
 			$LINK=" ";
 			if ($i>0) $LINK=" AND ";
-			$WHERE.="'1'='1'";
+			$WHERE.=$LINK." '1'='1' ";
+			$i++;
 		}
 		else if ($field[$key]!="all"&&$field[$key]!="view"){
 			$LINK=" ";
