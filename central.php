@@ -54,8 +54,8 @@ commonHeader($lang["title"][0],$_SERVER["PHP_SELF"]);
 
 // Redirect management
 if (isset($_GET['redirect'])){
-list($type,$ID)=split("_",$_GET["redirect"]);
-glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=$ID");
+	list($type,$ID)=split("_",$_GET["redirect"]);
+	glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=$ID");
 }
 
 
