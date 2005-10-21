@@ -53,6 +53,7 @@ $LINK_ID_TABLE=array(
 		CONSUMABLE_ITEM_TYPE => "glpi_consumables",
 		CARTRIDGE_ITEM_TYPE => "glpi_cartridges",
 		LICENSE_TYPE => "glpi_licenses",
+		LINK_TYPE => "glpi_links",
 );
 
 $INFOFORM_PAGES=array( 
@@ -76,6 +77,7 @@ $INFOFORM_PAGES=array(
 		CONSUMABLE_ITEM_TYPE => "??",
 		CARTRIDGE_ITEM_TYPE => "??",
 		LICENSE_TYPE => "??",
+		LINK_TYPE => "links/links-info-form.php",
 );
 
 $SEARCH_OPTION=array(
@@ -317,7 +319,7 @@ PRINTER_TYPE => array(
 				),
 			3 => array(	"table" => "glpi_dropdown_locations", 
 					"field" => "completename",
-					"name" => $lang["printers"][10],
+					"name" => $lang["printers"][6],
 				),
 			4 => array(	"table" => "glpi_type_printers", 
 					"field" => "name",
@@ -677,7 +679,7 @@ ENTERPRISE_TYPE => array(
 					"field" => "phonenumber",
 					"name" => $lang["financial"][29],
 				),
-			6 => array(	"table" => "glpi_enterprises", 
+			10 => array(	"table" => "glpi_enterprises", 
 					"field" => "fax",
 					"name" => $lang["financial"][30],
 				),
@@ -732,6 +734,10 @@ CONTRACT_TYPE => array(
 					"field" => "compta_num",
 					"name" => $lang["financial"][13],
 				),
+			11 => array(	"table" => "glpi_contracts", 
+					"field" => "cost",
+					"name" => $lang["financial"][5],
+				),
 		),
 CARTRIDGE_TYPE => array(
 			1 => array(	"table" => "glpi_cartridges_type", 
@@ -776,6 +782,10 @@ TYPEDOC_TYPE => array(
 					"field" => "ext",
 					"name" => $lang["document"][9],
 				),
+			6 => array(	"table" => "glpi_type_docs", 
+					"field" => "icon",
+					"name" => $lang["document"][10],
+				),				
 			4 => array(	"table" => "glpi_type_docs", 
 					"field" => "mime",
 					"name" => $lang["document"][4],
@@ -880,6 +890,18 @@ CONSUMABLE_TYPE => array(
 //CONSUMABLE_ITEM_TYPE => "glpi_consumables",
 //CARTRIDGE_ITEM_TYPE => "glpi_cartridges",
 //LICENSE_TYPE => "glpi_licenses",
+CONSUMABLE_TYPE => array(
+			1 => array(	"table" => "glpi_links", 
+					"field" => "name",
+					"name" => $lang["links"][0],
+				),
+			2 => array(	"table" => "glpi_links", 
+					"field" => "ID",
+					"name" => $lang["links"][1],
+				),
+	$option["glpi_links.name"]				= $lang["links"][0];
+	$option["glpi_links.ID"]				= $lang["links"][1];
+		),
 
 );
 /*

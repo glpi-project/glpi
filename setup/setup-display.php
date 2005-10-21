@@ -102,7 +102,7 @@ $db->query($query);
 		SOFTWARE_TYPE => $lang["Menu"][4],
 		CONTACT_TYPE => $lang["Menu"][22],
 		ENTERPRISE_TYPE => $lang["Menu"][23],
-		INFOCOM_TYPE => $lang["Menu"][24],
+		//INFOCOM_TYPE => $lang["Menu"][24],
 		CONTRACT_TYPE => $lang["Menu"][25],
 		CARTRIDGE_TYPE => $lang["Menu"][21],
 		TYPEDOC_TYPE => $lang["document"][7],
