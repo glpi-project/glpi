@@ -890,14 +890,14 @@ CONSUMABLE_TYPE => array(
 //CONSUMABLE_ITEM_TYPE => "glpi_consumables",
 //CARTRIDGE_ITEM_TYPE => "glpi_cartridges",
 //LICENSE_TYPE => "glpi_licenses",
-CONSUMABLE_TYPE => array(
+LINK_TYPE => array(
 			1 => array(	"table" => "glpi_links", 
 					"field" => "name",
-					"name" => $lang["links"][0],
+					"name" => $lang["links"][1],
 				),
 			2 => array(	"table" => "glpi_links", 
 					"field" => "ID",
-					"name" => $lang["links"][1],
+					"name" => $lang["links"][0],
 				),
 		),
 

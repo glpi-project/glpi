@@ -432,7 +432,7 @@ default:
 *
 **/
 function displayItem ($field,$data,$num){
-global $cfg_install,$INFOFORM_PAGES;
+global $cfg_install,$INFOFORM_PAGES,$HTMLRel;
 
 switch ($field){
 	case "glpi_users.name" :
@@ -519,6 +519,18 @@ switch ($field){
 		echo $data["ITEM_$num"]." (".$data["ID"].")";
 		echo "</a>";
 		break;
+	case "glpi_type_docs.name" :		
+		$type=TYPEDOC_TYPE;
+		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		echo $data["ITEM_$num"]." (".$data["ID"].")";
+		echo "</a>";
+		break;
+	case "glpi_type_docs.icon" :
+		if (!empty($data["ITEM_$num"]))
+			echo "<img style='vertical-align:middle;' alt='' src='".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/".$data["ITEM_$num"]."'>";
+		else echo "&nbsp;";
+	break;	
+
 	case "glpi_docs.filename" :		
 		echo getDocumentLink($data["ITEM_$num"]);
 	break;		
