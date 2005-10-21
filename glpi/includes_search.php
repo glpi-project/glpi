@@ -899,8 +899,6 @@ CONSUMABLE_TYPE => array(
 					"field" => "ID",
 					"name" => $lang["links"][1],
 				),
-	$option["glpi_links.name"]				= $lang["links"][0];
-	$option["glpi_links.ID"]				= $lang["links"][1];
 		),
 
 );
