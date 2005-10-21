@@ -347,6 +347,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				echo "<tr class='tab_bg_2'>";
 				// Print first element
 				echo "<td><b>";
+				if ($SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"]=="glpi_users.name")
+				displayItem("glpi_users.name.brut",$data,0);
+				else 
 				displayItem($SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"],$data,0);
 				echo "</b></td>";
 				// Print other items
@@ -437,6 +440,12 @@ switch ($field){
 		if (!empty($data["ITEM_".$num."_2"]))
 			echo $data["ITEM_".$num."_2"];
 		else echo $data["ITEM_$num"];
+		break;
+	case "glpi_users.name.brut" :		
+		$type=USER_TYPE;
+		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		echo $data["ITEM_$num"]." (".$data["ID"].")";
+		echo "</a>";
 		break;
 	case "glpi_computers.name" :
 		$type=COMPUTER_TYPE;
