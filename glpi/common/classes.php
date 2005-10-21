@@ -698,8 +698,14 @@ class Mailing
 	// Format the mail body to send
 	function get_mail_body()
 	{
+		global $cfg_features;
+		
 		// Create message body from Job and type
 		$body="";
+		
+		if ($cfg_features['url_in_mail']&&!empty($cfg_features['url_base']))
+			$body.=$cfg_features['url_base']."/index.php?redirect=tracking_".$this->job->ID."\n\n";
+		
 		
 		$body.=$this->job->textDescription();
 		if ($this->type!="new") $body.=$this->job->textFollowups();

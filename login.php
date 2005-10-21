@@ -213,14 +213,19 @@ $db_exp = new DB;
 $query_exp = "DELETE FROM glpi_event_log WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
 $result_exp = $db_exp->query($query_exp);
 
+// Redirect management
+$REDIRECT="";
+if (isset($_POST['redirect']))
+$REDIRECT="?redirect=".$_POST['redirect'];
+
 // Redirect to Command Central if not post-only
 if ($identificat->user->fields['type'] == "post-only")
 {
-	glpi_header("helpdesk.php");
+	glpi_header("helpdesk.php$REDIRECT");
 }
 else
 {
-	glpi_header("central.php");
+	glpi_header("central.php$REDIRECT");
 }
 
 ?>

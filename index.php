@@ -94,6 +94,29 @@ else
 	// authentification CAS 
 	if (isset($_GET["noCAS"])) echo "<input type='hidden' name='noCAS' value='1' />";
 
+	// redirect to tracking
+	if (isset($_GET["redirect"])){
+		list($type,$ID)=split("_",$_GET["redirect"]);
+		// Déjà connecté
+		
+		if (isset($_SESSION["glpitype"])&&!empty($_SESSION["glpitype"])){
+		 switch ($_SESSION["glpitype"]){
+		 case "post-only" :
+		 	glpi_header($cfg_install["root"]."/helpdesk.php?show=user&ID=$ID");
+		 	break;
+		 default :
+		 	glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=$ID");
+		 	break;
+		 
+		 }
+		}
+		// Non connecté : connection puis redirection 
+		else {
+		echo "<input type='hidden' name='redirect' value='".$_GET['redirect']."'>";
+		
+		}
+	}
+	
 	echo "<fieldset>";
 	echo "<legend>".$lang["login"][10]."</legend>";
 
