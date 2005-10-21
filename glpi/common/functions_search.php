@@ -302,6 +302,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	$GROUPBY=" GROUP BY ID";
 	if ($distinct!='Y') $GROUPBY="";
 	
+	if ($WHERE == " WHERE ") $WHERE="";
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER;
 	//echo $QUERY;
 	
