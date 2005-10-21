@@ -522,6 +522,19 @@ switch ($field){
 	case "glpi_docs.filename" :		
 		echo getDocumentLink($data["ITEM_$num"]);
 	break;		
+	case "glpi_docs.link" :
+	case "glpi_enterprises.website" :
+		if (!empty($data["ITEM_$num"]))
+			echo "<a href=\"".$data["ITEM_$num"]."\">".$data["ITEM_$num"]."</a>";
+		else echo "&nbsp;";
+	break;	
+	case "glpi_enterprises.email" :
+	case "glpi_contacts.email" :
+	case "glpi_users.email" :
+		if (!empty($data["ITEM_$num"]))
+			echo "<a href='mailto:".$data["ITEM_$num"]."'>".$data["ITEM_$num"]."</a>";
+		else echo "&nbsp;";
+	break;	
 	default:
 		echo $data["ITEM_$num"];
 		break;
