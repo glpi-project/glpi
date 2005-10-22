@@ -722,7 +722,8 @@ class Mailing
 		GLOBAL $lang;
 		
 		// Create the message subject 
-		$subject="[GLPI] [".$this->job->ID."] ";
+		$subject=sprintf("%s%07d%s","[GLPI #",$this->job->ID,"] ");
+		//$subject="[GLPI] [".$this->job->ID."] ";
 		
 		switch ($this->type){
 			case "new":
