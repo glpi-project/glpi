@@ -85,11 +85,25 @@ $max['type_of_cartridges']=5;
 $max['cartridges_by_printer']=4;
 $max['cartridges_stock']=2;
 $max['device']=10;
+$max['software']=10;
+$max['global_peripherals']=10;
+// DIRECT PERIPHERALS CONNECTED
+$percent['peripherals']=5;
 
 // DIRECT CONNECTED PRINTERS
 $percent['printer']=5;
 // PERCENT ELEMENTIN SPECIAL STATE
-$percent['state']=10;
+$percent['state']=2;
+// LICENSES
+$percent['free_software']='20';
+$percent['global_software']='20';
+$percent['normal_software']='60';
+$max['normal_licenses_per_software']='10';
+$max['free_licenses_per_software']='10';
+$max['global_licenses_per_software']='10';
+$max['more_licenses']='1';
+//PERIPHERALS
+$max['connect_for_peripherals']='30';
 
 foreach ($max as $key => $val)
 	$max[$key]=$multiplicator*$val;
@@ -549,6 +563,20 @@ for ($i=0;$i<$max['computers'];$i++){
 	$db->query($query);	
 	$monID=$db->insert_id();
 	
+	$query="INSERT INTO glpi_connect_wire VALUES ('','$monID','$compID','".MONITOR_TYPE."')";
+	$db->query($query);	
+	
+	// Ajout des periphs externes en connection directe
+	while (mt_rand(0,100)<$percent['peripherals']){
+		$query="INSERT INTO glpi_peripherals VALUES ('','periph of comp $i',NOW(),'contact $i','num $i','$techID','comments $i','serial $i','serial2 $i','$loc','".mt_rand(1,$max['type_peripherals'])."','brand $i','".mt_rand(1,$max['enterprises'])."','0','N','0','')";
+		$db->query($query);
+		$periphID=$db->insert_id();
+
+		// Add connection
+		$query="INSERT INTO glpi_connect_wire VALUES ('','$periphID','$compID','".PERIPHERAL_TYPE."')";
+		$db->query($query);	
+	}
+
 	// AJOUT INFOCOMS
 	$date=mt_rand(1995,2005)."-".mt_rand(1,12)."-".mt_rand(1,28);
 	$query="INSERT INTO glpi_infocoms VALUES ('','$monID','".MONITOR_TYPE."','$date','$date','".mt_rand(12,36)."','infowar mon $monID','".mt_rand(1,$max['enterprises'])."','commande mon $monID','BL mon $monID','immo mon $monID','".mt_rand(0,5000)."','".mt_rand(0,500)."','".mt_rand(1,7)."','".mt_rand(1,2)."','".mt_rand(2,5)."','comments mon $monID','facture mon $monID')";
@@ -561,10 +589,6 @@ for ($i=0;$i<$max['computers'];$i++){
 		$db->query($query);
 	}
 	
-	
-	$query="INSERT INTO glpi_connect_wire VALUES ('','$monID','$compID','".MONITOR_TYPE."')";
-	$db->query($query);	
-	
 	// Ajout d'une imprimante connection directe pour X% des computers + ajout de cartouches
 	if (mt_rand(0,100)<=$percent['printer']){
 		// Add printer 
@@ -572,6 +596,10 @@ for ($i=0;$i<$max['computers'];$i++){
 		$query="INSERT INTO glpi_printers VALUES ('','printer of comp $i',NOW(),'contact $i','num $i','$techID','serial $i','serial2 $i','0','0','1','comments $i','".mt_rand(0,64)."','$loc','$domainID','$networkID','$typeID','".mt_rand(1,$max['enterprises'])."','N','0','','0')";
 		$db->query($query);
 		$printID=$db->insert_id();
+
+		// Add connection
+		$query="INSERT INTO glpi_connect_wire VALUES ('','$printID','$compID','".PRINTER_TYPE."')";
+		$db->query($query);	
 
 
 		// AJOUT INFOCOMS
@@ -586,9 +614,6 @@ for ($i=0;$i<$max['computers'];$i++){
 		}
 		
 			
-		// Add connection
-		$query="INSERT INTO glpi_connect_wire VALUES ('','$printID','$compID','".PRINTER_TYPE."')";
-		$db->query($query);	
 	
 		// Add Cartouches 
 		// Get compatible cartridge
@@ -616,7 +641,79 @@ for ($i=0;$i<$max['computers'];$i++){
 
 }
 
-	// Ajout periph externes globaux et unitaires + connexion aux ordis
+// Ajout logiciels + licences associés a divers PCs
+for ($i=0;$i<$max['software'];$i++){
+	$loc=mt_rand(1,$max['locations']);
+	$techID=mt_rand(1,$max['users_sadmin']+$max['users_admin']);
+	$os=mt_rand(1,$max['os']);
+	$query="INSERT INTO glpi_software VALUES ('','software $i','version $i','comments $i','$loc','$techID','$os','N','-1','".mt_rand(1,$max['enterprises'])."','N','0','',NOW())";
+	$db->query($query);
+	$softID=$db->insert_id();
+
+	// Add licenses depending of license type
+	$percent['free_software']='20';
+	$percent['global_software']='20';
+	$percent['normal_software']='60';
+	$max['normal_licenses_per_software']='5';
+	$max['free_licenses_per_software']='5';
+	$max['global_licenses_per_software']='5';
+	$val=mt_rand(0,100);
+	// Free software
+	if ($val<$percent['free_software']){
+		$query="INSERT INTO glpi_licenses VALUES ('','$softID','free',NULL,'N','0','Y');";
+		$db->query($query);
+		$licID=$db->insert_id();
+		$val2=mt_rand(0,$max['free_licenses_per_software']);
+		for ($j=0;$j<$val2;$j++){
+			$query="INSERT INTO glpi_inst_software VALUES ('','".mt_rand(1,$max['computers'])."','$licID')";
+			$db->query($query);
+		}
+	} // Global software
+	else if ($val<$percent['global_software']+$percent['free_software']){
+		$query="INSERT INTO glpi_licenses VALUES ('','$softID','global',NULL,'N','0','Y');";
+		$db->query($query);
+		$licID=$db->insert_id();
+		$val2=mt_rand(0,$max['global_licenses_per_software']);
+		for ($j=0;$j<$val2;$j++){
+			$query="INSERT INTO glpi_inst_software VALUES ('','".mt_rand(1,$max['computers'])."','$licID')";
+			$db->query($query);
+		}
+	} // Normal software
+	else {
+		$val2=mt_rand(0,$max['normal_licenses_per_software']);
+		for ($j=0;$j<$val2;$j++){
+			$query="INSERT INTO glpi_licenses VALUES ('','$softID','serial $j',NULL,'N','0','Y');";
+			$db->query($query);
+			$licID=$db->insert_id();
+			$query="INSERT INTO glpi_inst_software VALUES ('','".mt_rand(1,$max['computers'])."','$licID')";
+			$db->query($query);
+		}
+		// Add more licenses
+		$val2=mt_rand(0,$max['more_licenses']);
+		for ($j=0;$j<$val2;$j++){
+			$query="INSERT INTO glpi_licenses VALUES ('','$softID','more serial $j',NULL,'N','0','Y');";
+			$db->query($query);
+		}
+	}
+}
+
+
+// Add global peripherals
+for ($i=0;$i<$max['global_peripherals'];$i++){
+	$techID=mt_rand(1,$max['users_sadmin']+$max['users_admin']);
+	$query="INSERT INTO glpi_peripherals VALUES ('','periph $i',NOW(),'contact $i','num $i','$techID','comments $i','serial $i','serial2 $i','0','".mt_rand(1,$max['type_peripherals'])."','brand $i','".mt_rand(1,$max['enterprises'])."','1','N','0','')";
+	$db->query($query);
+	$periphID=$db->insert_id();
+
+
+	// Add connections
+	$val=mt_rand(0,$max['connect_for_peripherals']);
+	for ($j=0;$j<$val;$j++){
+		$query="INSERT INTO glpi_connect_wire VALUES ('','$periphID','".mt_rand(1,$max['computers'])."','".PERIPHERAL_TYPE."')";
+		$db->query($query);	
+	}
+}
+
 	
 	// Ajout d'interventions + followups
 	
@@ -634,10 +731,6 @@ for ($i=0;$i<$max['computers'];$i++){
 	
 	// Ajout contrats 
 
-	// Ajout des periphs internes
-	
-	// Ajout logiciels + licences associés a divers PCs
-	
 	// Assoc des VLAN par regroupement de lieux
 
 ?>
