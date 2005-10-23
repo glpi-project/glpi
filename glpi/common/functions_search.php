@@ -356,7 +356,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				for ($j=1;$j<$toview_count;$j++){
 					echo "<td>";
 					if ($SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"]=="glpi_enterprises.name")
-						displayItem("glpi_enterprises.name.brut",$data,0);
+						displayItem("glpi_enterprises.name.brut",$data,$j);
 					else 
 						displayItem($SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"],$data,$j);
 					echo "</td>";
