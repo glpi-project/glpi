@@ -44,12 +44,12 @@
 	if($_POST['table'] == "glpi_dropdown_netpoint") {
 
 		$where="";
-		if (!empty($_POST['searchText'])&&$_POST['searchText']!="?")
+		if (!empty($_POST['searchText'])&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
 			$where=" WHERE (t1.name LIKE '%".$_POST['searchText']."%' OR t2.completename LIKE '%".$_POST['searchText']."%')";
 
 		$NBMAX=$cfg_layout["dropdown_max"];
 		$LIMIT="LIMIT 0,$NBMAX";
-		if ($_POST['searchText']=="?") $LIMIT="";
+		if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
 			
 			
 		$query = "select t1.ID as ID, t1.name as netpname, t2.completename as loc from glpi_dropdown_netpoint as t1";
@@ -61,7 +61,7 @@
 
 		echo "<select name=\"".$_POST['myname']."\">";
 		
-		if ($_POST['searchText']!="?"&&$db->numrows($result)==$NBMAX)
+		if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 		echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 
 		$output=getDropdownName($_POST['table'],$_POST['value']);
@@ -96,7 +96,7 @@
 
 $where .=" AND  (ID <> '".$_POST['value']."' ";
 
-	if (!empty($_POST['searchText'])&&$_POST['searchText']!="?")
+	if (!empty($_POST['searchText'])&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
 		if (in_array($_POST['table'],$dropdowntree_tables))
 		$where.=" AND completename LIKE '%".$_POST['searchText']."%' ";
 		else $where.=" AND name LIKE '%".$_POST['searchText']."%' ";
@@ -105,7 +105,7 @@ $where.=")";
 
 	$NBMAX=$cfg_layout["dropdown_max"];
 	$LIMIT="LIMIT 0,$NBMAX";
-	if ($_POST['searchText']=="?") $LIMIT="";
+	if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
 
 
 	if (in_array($_POST['table'],$dropdowntree_tables))
@@ -117,7 +117,7 @@ $where.=")";
 
 	echo "<select name=\"".$_POST['myname']."\" size='1'>";
 
-	if ($_POST['searchText']!="?"&&$db->numrows($result)==$NBMAX)
+	if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 	echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 
 	if ($table=="glpi_dropdown_kbcategories")

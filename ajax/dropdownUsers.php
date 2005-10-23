@@ -43,14 +43,14 @@
 
 	$where =" AND  (ID <> '".$_POST['value']."' ";
 
-	if (!empty($_POST['searchText'])&&$_POST['searchText']!="?")
+	if (!empty($_POST['searchText'])&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
 		$where.=" AND name LIKE '%".$_POST['searchText']."%' ";
 
 	$where.=")";	
 
 	$NBMAX=$cfg_layout["dropdown_max"];
 	$LIMIT="LIMIT 0,$NBMAX";
-	if ($_POST['searchText']=="?") $LIMIT="";
+	if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
 	
 			
 	$query = "SELECT * FROM glpi_users WHERE (".searchUserbyType("normal").") $where ORDER BY name $LIMIT";
@@ -59,7 +59,7 @@
 	echo "<select name=\"".$_POST['myname']."\">";
 	$i = 0;
 
-	if ($_POST['searchText']!="?"&&$db->numrows($result)==$NBMAX)
+	if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 	echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 	
 		

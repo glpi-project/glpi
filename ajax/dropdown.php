@@ -43,12 +43,12 @@
 
 	if($_POST['table'] == "glpi_dropdown_netpoint") {
 		
-		if (!empty($_POST['searchText'])&&$_POST['searchText']!="?")
+		if (!empty($_POST['searchText'])&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
 			$where=" WHERE (t1.name LIKE '%".$_POST['searchText']."%' OR t2.completename LIKE '%".$_POST['searchText']."%')";
 			
 		$NBMAX=$cfg_layout["dropdown_max"];
 		$LIMIT="LIMIT 0,$NBMAX";
-		if ($_POST['searchText']=="?") $LIMIT="";
+		if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
 	
 		$query = "select t1.ID as ID, t1.name as netpname, t2.name as locname from glpi_dropdown_netpoint as t1";
 		$query .= " left join glpi_dropdown_locations as t2 on t1.location = t2.ID";
@@ -57,7 +57,7 @@
 		$result = $db->query($query);
 		echo "<select name=\"".$_POST['myname']."\">";
 		
-		if ($_POST['searchText']!="?"&&$db->numrows($result)==$NBMAX)
+		if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 		echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 		
 		$i = 0;
@@ -80,14 +80,14 @@
 		if (in_array($_POST['table'],$template_tables))
 			$where.=" AND is_template='0' ";		
 			
-		if (!empty($_POST['searchText'])&&$_POST['searchText']!="?")
+		if (!empty($_POST['searchText'])&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
 		if (in_array($_POST['table'],$dropdowntree_tables))
 		$where.=" AND completename LIKE '%".$_POST['searchText']."%' ";
 		else $where.=" AND name LIKE '%".$_POST['searchText']."%' ";
 
 		$NBMAX=$cfg_layout["dropdown_max"];
 		$LIMIT="LIMIT 0,$NBMAX";
-		if ($_POST['searchText']=="?") $LIMIT="";
+		if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
 						
 		if (in_array($_POST['table'],$dropdowntree_tables))
 			$query = "SELECT ID, completename as name FROM ".$_POST['table']." $where ORDER BY completename $LIMIT";
@@ -95,7 +95,7 @@
 		$result = $db->query($query);
 		echo "<select name=\"".$_POST['myname']."\" size='1'>";
 		
-		if ($_POST['searchText']!="?"&&$db->numrows($result)==$NBMAX)
+		if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 			echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 	
 		echo "<option value=\"0\">-----</option>";

@@ -345,6 +345,9 @@ $cfg_layout["dropdown_max"] = 100;
 // Planning being and end
 $cfg_features["planning_begin"] = $db->result($result,0,"planning_begin");
 $cfg_features["planning_end"] = $db->result($result,0,"planning_end");
+
+// Wildcard for AJAX
+$cfg_features["ajax_wildcard"] = "*";
 }
 
 
