@@ -70,7 +70,6 @@ $max['type_networking']=10;
 $max['netpoint']=1000;
 
 // USERS
-
 $max['users_sadmin']=1;
 $max['users_admin']=10;
 $max['users_normal']=10;
@@ -104,6 +103,11 @@ $max['global_licenses_per_software']='10';
 $max['more_licenses']='1';
 //PERIPHERALS
 $max['connect_for_peripherals']='30';
+// TRACKING :
+$percent['tracking_on_item']='10';
+$max['general_tracking']='100';
+$percent['closed_tracking']='90';
+$percent['followups']='50';
 
 foreach ($max as $key => $val)
 	$max[$key]=$multiplicator*$val;
@@ -122,6 +126,52 @@ $result=$db->list_tables();
 		}
   	 }
 mysql_free_result($result);
+}
+
+// you could repeat the alphabet to get more randomness
+$alphabet = "1234567890abcdefghijklmnopqrstuvwxyz";
+
+
+function GetRandomString($length) {
+
+       global $alphabet;
+       $rndstring="";
+       for ($a = 0; $a <= $length; $a++) {
+               $b = rand(0, strlen($alphabet) - 1);
+               $rndstring .= $alphabet[$b];
+       }
+       return $rndstring;
+}
+
+function add_tracking($type,$ID){
+	global $percent,$db,$max;
+	while (mt_rand(0,100)<$percent['tracking_on_item']){
+		// tracking closed ?
+		$status="old";
+		if (mt_rand(0,100)<$percent['closed_tracking']){
+			$date1=strtotime(mt_rand(1995,2005)."-".mt_rand(1,12)."-".mt_rand(1,28)." ".mt_rand(0,23)."-".mt_rand(0,59)."-".mt_rand(0,59));
+			$date2=$date1+mt_rand(10800,7776000); // + entre 3 heures et 3 mois
+			$status="old";
+		} else {
+			$date1=strtotime("2005-".mt_rand(1,12)."-".mt_rand(1,28));	
+			$date2="";
+			$status="new";
+		}
+		// Author
+		$users[0]=mt_rand(1,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly']);
+		// Assign user
+		$users[1]=mt_rand(1,$max['users_sadmin']+$max['users_admin']+$max['users_normal']);
+		$query="INSERT INTO glpi_tracking VALUES ('','".date("Y-m-d H:i:s",$date1)."','".date("Y-m-d H:i:s",$date2)."','$status','".$users[0]."','".$users[1]."','".USER_TYPE."','$type','$ID','tracking ".GetRandomString(15)."','".mt_rand(1,5)."','no','','N','".(mt_rand(0,3)+mt_rand(0,100)/100)."','".mt_rand(1,$max['tracking_category'])."')";
+		$db->query($query);
+		$tID=$db->insert_id();
+		// Add followups
+		$i=0;
+		while (mt_rand(0,100)<$percent['followups']){
+			$query="INSERT INTO glpi_followups VALUES ('','$tID','".date("Y-m-d H:i:s",$date1+mt_rand(3600,7776000))."','".$users[mt_rand(0,1)]."','followup $i ".GetRandomString(15)."');";
+			$db->query($query);
+			$i++;
+			}
+	}
 }
 
 // DROPDOWNS
@@ -351,7 +401,7 @@ while ($data=$db->fetch_array($result)){
 	$db->query($query);
 	$netwID=$db->insert_id();
 	$net_loc[$data['ID']]=$netwID;
-	
+
 	// ITEMS IN SPECIAL STATES
 	if (mt_rand(0,100)<$percent['state']){
 		$query="INSERT INTO glpi_state_item VALUES ('','".NETWORKING_TYPE."','$netwID','".mt_rand(1,$max['state'])."','0')";
@@ -389,11 +439,18 @@ while ($data=$db->fetch_array($result)){
 	$query="INSERT INTO glpi_dropdown_netpoint VALUES ('','".$data['ID']."','netpoint networking $i')";
 	$db->query($query);
 	$netpointID=$db->insert_id();
+
+	// Add trackings
+	add_tracking(NETWORKING_TYPE,$netwID);
+
 	
 	$typeID=mt_rand(1,$max['type_printers']);
 	$query="INSERT INTO glpi_printers VALUES ('','printer of loc ".$data['ID']."',NOW(),'contact ".$data['ID']."','num ".$data['ID']."','$techID','serial ".$data['ID']."','serial2 ".$data['ID']."','0','0','1','comments $i','".mt_rand(0,64)."','".$data['ID']."','$domainID','$networkID','$typeID','".mt_rand(1,$max['enterprises'])."','N','0','','0')";
 	$db->query($query);
 	$printID=$db->insert_id();
+
+	// Add trackings
+	add_tracking(PRINTER_TYPE,$printID);
 
 	// AJOUT INFOCOMS
 	$date=mt_rand(1995,2005)."-".mt_rand(1,12)."-".mt_rand(1,28);
@@ -492,6 +549,8 @@ for ($i=0;$i<$max['computers'];$i++){
 	$db->query($query);
 	$compID=$db->insert_id();
 
+	// Add trackings
+	add_tracking(COMPUTER_TYPE,$compID);
 
 	// AJOUT INFOCOMS
 	$date=mt_rand(1995,2005)."-".mt_rand(1,12)."-".mt_rand(1,28);
@@ -563,6 +622,9 @@ for ($i=0;$i<$max['computers'];$i++){
 	$db->query($query);	
 	$monID=$db->insert_id();
 	
+	// Add trackings
+	add_tracking(MONITOR_TYPE,$monID);
+
 	$query="INSERT INTO glpi_connect_wire VALUES ('','$monID','$compID','".MONITOR_TYPE."')";
 	$db->query($query);	
 	
@@ -571,6 +633,10 @@ for ($i=0;$i<$max['computers'];$i++){
 		$query="INSERT INTO glpi_peripherals VALUES ('','periph of comp $i',NOW(),'contact $i','num $i','$techID','comments $i','serial $i','serial2 $i','$loc','".mt_rand(1,$max['type_peripherals'])."','brand $i','".mt_rand(1,$max['enterprises'])."','0','N','0','')";
 		$db->query($query);
 		$periphID=$db->insert_id();
+	
+		// Add trackings
+		add_tracking(PERIPHERAL_TYPE,$periphID);
+
 
 		// Add connection
 		$query="INSERT INTO glpi_connect_wire VALUES ('','$periphID','$compID','".PERIPHERAL_TYPE."')";
@@ -596,6 +662,9 @@ for ($i=0;$i<$max['computers'];$i++){
 		$query="INSERT INTO glpi_printers VALUES ('','printer of comp $i',NOW(),'contact $i','num $i','$techID','serial $i','serial2 $i','0','0','1','comments $i','".mt_rand(0,64)."','$loc','$domainID','$networkID','$typeID','".mt_rand(1,$max['enterprises'])."','N','0','','0')";
 		$db->query($query);
 		$printID=$db->insert_id();
+
+		// Add trackings
+		add_tracking(PRINTER_TYPE,$printID);
 
 		// Add connection
 		$query="INSERT INTO glpi_connect_wire VALUES ('','$printID','$compID','".PRINTER_TYPE."')";
@@ -650,13 +719,10 @@ for ($i=0;$i<$max['software'];$i++){
 	$db->query($query);
 	$softID=$db->insert_id();
 
+	// Add trackings
+	add_tracking(SOFTWARE_TYPE,$softID);
+
 	// Add licenses depending of license type
-	$percent['free_software']='20';
-	$percent['global_software']='20';
-	$percent['normal_software']='60';
-	$max['normal_licenses_per_software']='5';
-	$max['free_licenses_per_software']='5';
-	$max['global_licenses_per_software']='5';
 	$val=mt_rand(0,100);
 	// Free software
 	if ($val<$percent['free_software']){
@@ -706,6 +772,9 @@ for ($i=0;$i<$max['global_peripherals'];$i++){
 	$periphID=$db->insert_id();
 
 
+	// Add trackings
+	add_tracking(PERIPHERAL_TYPE,$periphID);
+
 	// Add connections
 	$val=mt_rand(0,$max['connect_for_peripherals']);
 	for ($j=0;$j<$val;$j++){
@@ -714,8 +783,6 @@ for ($i=0;$i<$max['global_peripherals'];$i++){
 	}
 }
 
-	
-	// Ajout d'interventions + followups
 	
 	// Def du matériel réservable : x% du parc
 	
