@@ -45,10 +45,10 @@ $max['locations']=50;
 $max['kbcategories']=10;
 
 // DROPDOWNS
-$max['consumable_type']=10;
+$max['consumable_type']=1;
 $max['cartridge_type']=1;
-$max['contact_type']=10;
-$max['contract_type']=10;
+$max['contact_type']=1;
+$max['contract_type']=1;
 $max['domain']=20;
 $max['enttype']=10;
 $max['firmware']=10;
@@ -65,7 +65,7 @@ $max['vlan']=10;
 $max['type_computers']=10;
 $max['type_printers']=10;
 $max['type_monitors']=10;
-$max['type_peripherals']=10;
+$max['type_peripherals']=5;
 $max['type_networking']=10;
 $max['netpoint']=1000;
 
@@ -75,6 +75,7 @@ $max['users_admin']=10;
 $max['users_normal']=10;
 $max['users_postonly']=100;
 $max['enterprises']=10;
+$max['contacts']=10;
 // INVENTORY ITEMS
 $max['computers']=1000;
 $max['printers']=100;
@@ -94,20 +95,22 @@ $percent['printer']=5;
 // PERCENT ELEMENTIN SPECIAL STATE
 $percent['state']=2;
 // LICENSES
-$percent['free_software']='20';
-$percent['global_software']='20';
-$percent['normal_software']='60';
-$max['normal_licenses_per_software']='10';
-$max['free_licenses_per_software']='10';
-$max['global_licenses_per_software']='10';
-$max['more_licenses']='1';
+$percent['free_software']=20;
+$percent['global_software']=20;
+$percent['normal_software']=60;
+$max['normal_licenses_per_software']=10;
+$max['free_licenses_per_software']=10;
+$max['global_licenses_per_software']=10;
+$max['more_licenses']=1;
 //PERIPHERALS
-$max['connect_for_peripherals']='30';
+$max['connect_for_peripherals']=30;
 // TRACKING :
-$percent['tracking_on_item']='10';
-$max['general_tracking']='100';
-$percent['closed_tracking']='90';
-$percent['followups']='50';
+$percent['tracking_on_item']=10;
+$max['general_tracking']=100;
+$percent['closed_tracking']=90;
+$percent['followups']=50;
+// RESERVATION
+$percent['reservation']=1;
 
 foreach ($max as $key => $val)
 	$max[$key]=$multiplicator*$val;
@@ -141,6 +144,16 @@ function GetRandomString($length) {
                $rndstring .= $alphabet[$b];
        }
        return $rndstring;
+}
+
+function add_reservation($type,$ID){
+	global $percent,$db;
+	if (mt_rand(0,100)<$percent['reservation']){
+		$query="INSERT INTO glpi_reservation_item VALUES ('','$type','$ID','')";
+		$db->query($query);
+		// TODO add elements in reservation planning
+	}
+	
 }
 
 function add_tracking($type,$ID){
@@ -353,6 +366,22 @@ for ($i=0;$i<$max['enterprises'];$i++){
 	$db->query($query);
 }
 
+// Ajout contacts
+
+for ($i=0;$i<$max['contacts'];$i++){
+	$query="INSERT INTO glpi_contacts VALUES ('','contact $i','phone $i','phone2 $i','fax $i','email $i','".mt_rand(1,$max['contact_type'])."','comment $i','N')";
+//	echo $query."<br>";
+	$db->query($query);
+	$conID=$db->insert_id();
+	
+	// Link with enterprise
+	$query="INSERT INTO glpi_contact_enterprise VALUES ('','".mt_rand(1,$max['enterprises'])."','$conID')";
+//	echo $query."<br>";
+	$db->query($query);
+
+}
+
+
 // TYPE DE CARTOUCHES
 for ($i=0;$i<$max['type_of_cartridges'];$i++){
 	$query="INSERT INTO glpi_cartridges_type VALUES ('','cartridge type $i','ref $i','".mt_rand(1,$max['locations'])."','".mt_rand(1,$max['cartridge_type'])."','".mt_rand(1,$max['enterprises'])."','".mt_rand(1,$max['users_sadmin']+$max['users_admin'])."','N','comments $i','".mt_rand(0,10)."')";
@@ -387,7 +416,7 @@ for ($i=0;$i<$max['type_printers'];$i++){
 
 
 // Networking
-$query="SELECT * from glpi_dropdown_locations order by completename";
+$query="SELECT * from glpi_dropdown_locations order by completename;";
 $result=$db->query($query);
 $i=0;
 $net_loc=array();	
@@ -551,6 +580,8 @@ for ($i=0;$i<$max['computers'];$i++){
 
 	// Add trackings
 	add_tracking(COMPUTER_TYPE,$compID);
+	// Add reservation
+	add_reservation(COMPUTER_TYPE,$compID);
 
 	// AJOUT INFOCOMS
 	$date=mt_rand(1995,2005)."-".mt_rand(1,12)."-".mt_rand(1,28);
@@ -636,7 +667,6 @@ for ($i=0;$i<$max['computers'];$i++){
 	
 		// Add trackings
 		add_tracking(PERIPHERAL_TYPE,$periphID);
-
 
 		// Add connection
 		$query="INSERT INTO glpi_connect_wire VALUES ('','$periphID','$compID','".PERIPHERAL_TYPE."')";
@@ -774,6 +804,8 @@ for ($i=0;$i<$max['global_peripherals'];$i++){
 
 	// Add trackings
 	add_tracking(PERIPHERAL_TYPE,$periphID);
+	// Add reservation
+	add_reservation(PERIPHERAL_TYPE,$periphID);
 
 	// Add connections
 	$val=mt_rand(0,$max['connect_for_peripherals']);
@@ -784,8 +816,6 @@ for ($i=0;$i<$max['global_peripherals'];$i++){
 }
 
 	
-	// Def du matériel réservable : x% du parc
-	
 	// Ajout element dans la FAQ
 	
 	// Ajout d'entrées dans le planning
@@ -793,8 +823,6 @@ for ($i=0;$i<$max['global_peripherals'];$i++){
 	// Ajout consommables en stock + utilisé
 
 	// Ajout de documents + link aux elements
-	
-	// Ajout contacts
 	
 	// Ajout contrats 
 
