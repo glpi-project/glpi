@@ -39,7 +39,7 @@ include ("_relpos.php");
 include ($phproot."/glpi/includes.php");
 $db=new DB();
 
-$multiplicator=25;
+$multiplicator=1;
 
 $max['locations']=50;
 $max['kbcategories']=10;
@@ -82,12 +82,12 @@ $max['printers']=100;
 $max['networking']=$max['locations'];
 $max['monitors']=$max['computers'];
 $max['type_of_cartridges']=5;
-$max['cartridges_by_printer']=2;
+$max['cartridges_by_printer']=4;
 $max['cartridges_stock']=2;
 $max['device']=10;
 
 // DIRECT CONNECTED PRINTERS
-$percent['printer']=10;
+$percent['printer']=5;
 // PERCENT ELEMENTIN SPECIAL STATE
 $percent['state']=10;
 
@@ -289,6 +289,39 @@ for ($i=0;$i<$max['enterprises'];$i++){
 	$db->query($query);
 }
 
+// TYPE DE CARTOUCHES
+for ($i=0;$i<$max['type_of_cartridges'];$i++){
+	$query="INSERT INTO glpi_cartridges_type VALUES ('','cartridge type $i','ref $i','".mt_rand(1,$max['locations'])."','".mt_rand(1,$max['cartridge_type'])."','".mt_rand(1,$max['enterprises'])."','".mt_rand(1,$max['users_sadmin']+$max['users_admin'])."','N','comments $i','".mt_rand(0,10)."')";
+	$db->query($query);
+	$cartID=$db->insert_id();
+
+	// AJOUT INFOCOMS
+	$date=mt_rand(1995,2005)."-".mt_rand(1,12)."-".mt_rand(1,28);
+	$query="INSERT INTO glpi_infocoms VALUES ('','$cartID','".CARTRIDGE_TYPE."','$date','$date','".mt_rand(12,36)."','infowar cartype $cartID','".mt_rand(1,$max['enterprises'])."','commande cartype $cartID','BL cartype $cartID','immo cartype $cartID','".mt_rand(0,5000)."','".mt_rand(0,500)."','".mt_rand(1,7)."','".mt_rand(1,2)."','".mt_rand(2,5)."','comments cartype $cartID','facture cartype $cartID')";
+	$db->query($query);
+
+
+	// Ajout cartouche en stock
+	for ($j=0;$j<mt_rand(0,$max['cartridges_stock']);$j++){
+	$query="INSERT INTO glpi_cartridges VALUES('','$cartID','0',NOW(),NULL,NULL,'0')";
+	$db->query($query);
+	$ID=$db->insert_id();
+	
+	// AJOUT INFOCOMS
+	$date=mt_rand(1995,2005)."-".mt_rand(1,12)."-".mt_rand(1,28);
+	$query="INSERT INTO glpi_infocoms VALUES ('','$ID','".CARTRIDGE_ITEM_TYPE."','$date','$date','".mt_rand(12,36)."','infowar cart $ID','".mt_rand(1,$max['enterprises'])."','commande cart $ID','BL cart $ID','immo cart $ID','".mt_rand(0,5000)."','".mt_rand(0,500)."','".mt_rand(1,7)."','".mt_rand(1,2)."','".mt_rand(2,5)."','comments cart $ID','facture cart $ID')";
+	$db->query($query);
+
+	}
+}
+
+// Assoc printer type to cartridge type
+for ($i=0;$i<$max['type_printers'];$i++){
+	$query="INSERT INTO glpi_cartridges_assoc VALUES ('','".mt_rand(1,$max['type_of_cartridges'])."','$i')";
+	$db->query($query);
+}
+
+
 // Networking
 $query="SELECT * from glpi_dropdown_locations order by completename";
 $result=$db->query($query);
@@ -374,8 +407,27 @@ while ($data=$db->fetch_array($result)){
 	$db->query($query);	
 
 	// Add Cartouches 
-	// OLD
-	// NEW	
+	// Get compatible cartridge
+	$query="SELECT FK_glpi_cartridges_type FROM glpi_cartridges_assoc WHERE FK_glpi_type_printer='$typeID'";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		$ctypeID=$db->result($result,0,0);
+		$printed=0;
+		$oldnb=mt_rand(1,$max['cartridges_by_printer']);
+		$date1=strtotime(mt_rand(1995,2004)."-".mt_rand(1,12)."-".mt_rand(1,28));
+		$date2=mktime();
+		$inter=round(($date2-$date1)/$oldnb);
+	
+		// Add old cartridges
+		for ($j=0;$j<$oldnb;$j++){
+			$printed+=mt_rand(0,5000);
+			$query="INSERT INTO glpi_cartridges VALUES ('','$ctypeID','$printID','".date("Y-m-d",$date1)."','".date("Y-m-d",$date1+$j*$inter)."','".date("Y-m-d",$date1+($j+1)*$inter)."','$printed')";
+			$db->query($query);	
+		}
+		// Add current cartridges
+		$query="INSERT INTO glpi_cartridges VALUES ('','$ctypeID','$printID','".date("Y-m-d",$date1)."','".date("Y-m-d",$date2)."',NULL,'0')";	
+		$db->query($query);	
+	}
 
 $i++;
 }	
@@ -413,42 +465,6 @@ $db->query($query);
 $query="INSERT INTO glpi_device_sndcard VALUES ('','sndcard $i','type ".mt_rand(0,100)."','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,100)."')";
 $db->query($query);
 }
-
-
-
-// TYPE DE CARTOUCHES
-for ($i=0;$i<$max['type_of_cartridges'];$i++){
-	$query="INSERT INTO glpi_cartridges_type VALUES ('','cartridge type $i','ref $i','".mt_rand(1,$max['locations'])."','".mt_rand(1,$max['cartridge_type'])."','".mt_rand(1,$max['enterprises'])."','".mt_rand(1,$max['users_sadmin']+$max['users_admin'])."','N','comments $i','".mt_rand(0,10)."')";
-	$db->query($query);
-	$cartID=$db->insert_id();
-
-	// AJOUT INFOCOMS
-	$date=mt_rand(1995,2005)."-".mt_rand(1,12)."-".mt_rand(1,28);
-	$query="INSERT INTO glpi_infocoms VALUES ('','$cartID','".CARTRIDGE_TYPE."','$date','$date','".mt_rand(12,36)."','infowar cartype $cartID','".mt_rand(1,$max['enterprises'])."','commande cartype $cartID','BL cartype $cartID','immo cartype $cartID','".mt_rand(0,5000)."','".mt_rand(0,500)."','".mt_rand(1,7)."','".mt_rand(1,2)."','".mt_rand(2,5)."','comments cartype $cartID','facture cartype $cartID')";
-	$db->query($query);
-
-
-	// Ajout cartouche en stock
-	for ($j=0;$j<mt_rand(0,$max['cartridges_stock']);$j++){
-	$query="INSERT INTO glpi_cartridges VALUES('','$cartID','0',NOW(),NULL,NULL,'0')";
-	$db->query($query);
-	$ID=$db->insert_id();
-	
-	// AJOUT INFOCOMS
-	$date=mt_rand(1995,2005)."-".mt_rand(1,12)."-".mt_rand(1,28);
-	$query="INSERT INTO glpi_infocoms VALUES ('','$ID','".CARTRIDGE_ITEM_TYPE."','$date','$date','".mt_rand(12,36)."','infowar cart $ID','".mt_rand(1,$max['enterprises'])."','commande cart $ID','BL cart $ID','immo cart $ID','".mt_rand(0,5000)."','".mt_rand(0,500)."','".mt_rand(1,7)."','".mt_rand(1,2)."','".mt_rand(2,5)."','comments cart $ID','facture cart $ID')";
-	$db->query($query);
-
-	}
-}
-
-// Assoc printer type to cartridge type
-for ($i=0;$i<$max['type_printers'];$i++){
-	$query="INSERT INTO glpi_cartridges_assoc VALUES ('','".mt_rand(1,$max['type_of_cartridges'])."','$i')";
-	$db->query($query);
-}
-
-
 
 
 
@@ -575,8 +591,27 @@ for ($i=0;$i<$max['computers'];$i++){
 		$db->query($query);	
 	
 		// Add Cartouches 
-		// OLD
-		// NEW	
+		// Get compatible cartridge
+		$query="SELECT FK_glpi_cartridges_type FROM glpi_cartridges_assoc WHERE FK_glpi_type_printer='$typeID'";
+		$result=$db->query($query);
+		if ($db->numrows($result)>0){
+			$ctypeID=$db->result($result,0,0);
+			$printed=0;
+			$oldnb=mt_rand(1,$max['cartridges_by_printer']);
+			$date1=strtotime(mt_rand(1995,2004)."-".mt_rand(1,12)."-".mt_rand(1,28));
+			$date2=mktime();
+			$inter=round(($date2-$date1)/$oldnb);
+			// Add old cartridges
+			for ($j=0;$j<$oldnb;$j++){
+				$printed+=mt_rand(0,5000);
+			
+				$query="INSERT INTO glpi_cartridges VALUES ('','$ctypeID','$printID','".date("Y-m-d",$date1)."','".date("Y-m-d",$date1+$j*$inter)."','".date("Y-m-d",$date1+($j+1)*$inter)."','$printed')";
+				$db->query($query);	
+			}
+			// Add current cartridges
+			$query="INSERT INTO glpi_cartridges VALUES ('','$ctypeID','$printID','".date("Y-m-d",$date1)."','".date("Y-m-d",$date2)."',NULL,'0')";	
+			$db->query($query);	
+		}
 	}
 
 }
