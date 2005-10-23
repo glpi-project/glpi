@@ -39,7 +39,7 @@ include ("_relpos.php");
 include ($phproot."/glpi/includes.php");
 $db=new DB();
 
-$multiplicator=1;
+$multiplicator=10;
 
 $max['locations']=50;
 $max['kbcategories']=10;
@@ -105,7 +105,7 @@ $max['more_licenses']=1;
 //PERIPHERALS
 $max['connect_for_peripherals']=30;
 // TRACKING :
-$percent['tracking_on_item']=10;
+$percent['tracking_on_item']=30;
 $max['general_tracking']=100;
 $percent['closed_tracking']=90;
 $percent['followups']=50;
