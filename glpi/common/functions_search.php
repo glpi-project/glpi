@@ -304,7 +304,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	
 	if ($WHERE == " WHERE ") $WHERE="";
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER;
-	//echo $QUERY;
+//	echo $QUERY;
 	
 	// Get it from database and DISPLAY
 	if ($result = $db->query($QUERY)) {
@@ -590,12 +590,14 @@ switch ($new_table){
 	case "glpi_dropdown_locations":
 		return " LEFT JOIN $new_table ON ($ref_table.location = $new_table.ID) ";
 		break;
+	case "glpi_dropdown_contract_type":
+		return " LEFT JOIN $new_table ON ($ref_table.contract_type = $new_table.ID) ";
+		break;
 	case "glpi_type_computers":
 	case "glpi_type_networking":
 	case "glpi_type_printers":
 	case "glpi_type_monitors":
 	case "glpi_dropdown_contact_type":
-	case "glpi_dropdown_contract_type":
 	case "glpi_dropdown_consumable_type":
 	case "glpi_dropdown_cartridge_type":
 	case "glpi_dropdown_enttype":
