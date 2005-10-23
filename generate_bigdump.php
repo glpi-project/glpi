@@ -162,7 +162,7 @@ function add_tracking($type,$ID){
 		// tracking closed ?
 		$status="old";
 		if (mt_rand(0,100)<$percent['closed_tracking']){
-			$date1=strtotime(mt_rand(1995,2005)."-".mt_rand(1,12)."-".mt_rand(1,28)." ".mt_rand(0,23)."-".mt_rand(0,59)."-".mt_rand(0,59));
+			$date1=strtotime(mt_rand(1995,2005)."-".mt_rand(1,12)."-".mt_rand(1,28)." ".mt_rand(0,23).":".mt_rand(0,59).":".mt_rand(0,59));
 			$date2=$date1+mt_rand(10800,7776000); // + entre 3 heures et 3 mois
 			$status="old";
 		} else {
