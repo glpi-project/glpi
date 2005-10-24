@@ -291,28 +291,28 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 	
 	if ($show == "individual")
 	{
-		$query = "SELECT glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.assign = '".$username."') ORDER BY glpi_tracking.date ".$prefs["order"]."";
+		$query = "SELECT DISTINCT glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.assign = '".$username."') ORDER BY glpi_tracking.date ".$prefs["order"]."";
 	}
 	else if ($show == "user")
 	{
-		$query = "SELECT glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.author = '".$username."') ORDER BY glpi_tracking.date ".$prefs["order"]."";
+		$query = "SELECT DISTINCT  glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.author = '".$username."') ORDER BY glpi_tracking.date ".$prefs["order"]."";
 	}
 	else if ($show == "enterprise")
 	{
-		$query = "SELECT glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.assign = '".$username."' AND glpi_tracking.assign_type='".ENTERPRISE_TYPE."') ORDER BY glpi_tracking.date ".$prefs["order"]."";
+		$query = "SELECT DISTINCT  glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.assign = '".$username."' AND glpi_tracking.assign_type='".ENTERPRISE_TYPE."') ORDER BY glpi_tracking.date ".$prefs["order"]."";
 	}
 	else if ($show == "unassigned")
 	{
-		$query = "SELECT glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.assign ='' OR glpi_tracking.assign is null) ORDER BY glpi_tracking.date ".$prefs["order"]."";
+		$query = "SELECT DISTINCT  glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.assign ='' OR glpi_tracking.assign is null) ORDER BY glpi_tracking.date ".$prefs["order"]."";
 	}
 	else
 	{
-		$query = "SELECT glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." ORDER BY glpi_tracking.date ".$prefs["order"]."";
+		$query = "SELECT DISTINCT  glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." ORDER BY glpi_tracking.date ".$prefs["order"]."";
 	}
 
 	if ($item&&$item_type)
 	{
-		$query = "SELECT glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.device_type = '".$item_type."' and glpi_tracking.computer = '".$item."') ORDER BY glpi_tracking.date ".$prefs["order"]."";
+		$query = "SELECT DISTINCT  glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.device_type = '".$item_type."' and glpi_tracking.computer = '".$item."') ORDER BY glpi_tracking.date ".$prefs["order"]."";
 	}	
 	
 	$lim_query = " LIMIT ".$start.",".$cfg_features["list_limit"]."";	
@@ -1411,10 +1411,10 @@ function addFormTracking ($device_type,$ID,$author,$assign,$target,$error,$searc
 	
 	echo "<td align='center'>";
 
-	dropdownAllUsersSearch($assign,"user",$searchauthor);
+	dropdownAllUsers($assign,"user");
 	echo "</td>";
-        echo "<td><input type='text' size='10'  name='search'></td>";
-	echo "<td><input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
+//      echo "<td><input type='text' size='10'  name='search'></td>";
+//	echo "<td><input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
 	echo "</td></tr>";
 	
 
