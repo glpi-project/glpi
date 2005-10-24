@@ -178,10 +178,10 @@ function searchUserbyType($authtype) {
 			return " 1=1 ";
 			break;
 		case "normal" :
-			return " type ='super-admin' || type ='admin' || type ='normal'";
+			return " type ='super-admin' OR type ='admin' OR type ='normal'";
 			break;
 		case "admin":
-			return " type ='super-admin' || type ='admin' ";
+			return " type ='super-admin' OR type ='admin' ";
 			break;
 		case "super-admin":
 			return " type ='super-admin' ";

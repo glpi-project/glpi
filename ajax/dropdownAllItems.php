@@ -64,7 +64,8 @@ if (isset($items[$_POST["idtable"]])){
 	
 	$rand=mt_rand();
 	echo "<input id='search_".$_POST['myname']."$rand' name='____data_".$_POST['myname']."$rand' size='4'>";	
-	
+	$moreparam="";
+	if(isset($_POST['value'])) $moreparam="&value=".$_POST['value'];
 
 	echo "<script type='text/javascript' >";
 	echo "   new Form.Element.Observer('search_".$_POST['myname']."$rand', 1, ";
@@ -74,7 +75,7 @@ if (isset($items[$_POST["idtable"]])){
 	echo "            {Element.hide('search_spinner$rand');}, ";
 	echo "           onLoading:function(request)";
 	echo "            {Element.show('search_spinner$rand');},";
-	echo "           method:'post', parameters:'searchText=' + value+'&table=$table&myname=item'";
+	echo "           method:'post', parameters:'searchText=' + value+'&table=$table&myname=item$moreparam'";
 	echo "})})";
 	echo "</script>";	
 	

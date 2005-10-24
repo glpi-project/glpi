@@ -65,9 +65,8 @@
 	
 		
 	$number = $db->numrows($result);
-	if ($all==0)
-	echo "<option value=\"0\">[ Nobody ]</option>";
-	else if($all==1) echo "<option value=\"0\">[ ".$lang["search"][7]." ]</option>";
+	
+	echo "<option value=\"0\">[ ".$lang["search"][7]." ]</option>";
 	
 	if (isset($_POST['value'])){
 		$output=getUserName($_POST['value']);
