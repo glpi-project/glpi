@@ -1092,7 +1092,34 @@ echo "</span>\n";
 			
 }
 
+function dropdownConnect($type,$myname) {
 
+
+	global $HTMLRel,$cfg_install;
+
+	$rand=mt_rand();
+echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
+//echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
+
+echo "<script type='text/javascript' >\n";
+echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
+echo "      function(element, value) {\n";
+echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdownConnect.php',{asynchronous:true, evalScripts:true, \n";
+echo "           onComplete:function(request)\n";
+echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
+echo "           onLoading:function(request)\n";
+echo "            {Element.show('search_spinner_$myname$rand');},\n";
+echo "           method:'post', parameters:'searchText=' + value+'&idtable=$type&myname=$myname'\n";
+echo "})})\n";
+echo "</script>\n";
+
+
+echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>\n";
+
+echo "<span id='results_$myname$rand'>\n";
+echo "<select name='$myname'><option value='0'>------</option></select>\n";
+echo "</span>\n";	
+}
 
 
 
