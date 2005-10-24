@@ -793,7 +793,7 @@ function dropdownUsersTracking($value, $myname,$champ) {
 	echo "})})\n";
 	echo "</script>\n";
 
-echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
 	echo "<span id='results_$myname$rand'>\n";
 	if (!empty($value)&&$value>0)
@@ -952,7 +952,7 @@ function dropdownAllItems($myname,$withenterprise=0,$withcartridge=0,$withconsum
 	echo "})})\n";
 	echo "</script>\n";
 	
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";	
+	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 	echo "</td><td>\n"	;
 	echo "<span id='show_$myname$rand'>&nbsp;</span>\n";
 	echo "</td></tr></table>\n";
