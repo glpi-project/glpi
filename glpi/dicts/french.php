@@ -166,7 +166,7 @@ $lang["central"][6]="Déconnexion";
 $lang["central"][7]="Aide";
 $lang["central"][8]="Ajouts";
 $lang["central"][9]="Vos interventions en cours";
-$lang["central"][10]="Les interventions non attribuées"; 
+$lang["central"][10]="Les nouvelles interventions"; 
 
 $lang["choice"][0]="Oui";
 $lang["choice"][1]="Non"; 

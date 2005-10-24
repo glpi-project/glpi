@@ -64,7 +64,7 @@ if (!isset($tab['reset'])){
 		$_SESSION['tracking'][$key]=$val;
 }
 
-if (is_array($_SESSION['tracking']))
+if (isset($_SESSION['tracking'])&&is_array($_SESSION['tracking']))
 foreach ($_SESSION['tracking'] as $key => $val)
 if (!isset($tab[$key])) $tab[$key]=$val;
 
@@ -95,9 +95,9 @@ if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete"])&&!empty($_POST["tode
 	}
 
 
-searchFormTracking(0,$_SERVER["PHP_SELF"],$_SESSION["glpiname"],$tab["field"],$tab["phrasetype"],$tab["contains"],$tab["start"],$tab["date1"],$tab["date2"],$tab["only_computers"],$tab["field2"],$tab["phrasetype2"],$tab["contains2"],$tab["author"],$tab["attrib"],$tab["category"],$tab["status"],$tab["showfollowups"],$tab["enddate1"],$tab["enddate2"]);
+searchFormTracking(0,$_SERVER["PHP_SELF"],$tab["start"],$tab["status"],$tab["author"],$tab["attrib"],$tab["category"],$tab["showfollowups"],$tab["field2"],$tab["phrasetype2"],$tab["contains2"],$tab["field"],$tab["phrasetype"],$tab["contains"],$tab["date1"],$tab["date2"],$tab["only_computers"],$tab["enddate1"],$tab["enddate2"]);
 
-    showTrackingList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$tab["field"],$tab["phrasetype"],$tab["contains"],$tab["start"],$tab["date1"],$tab["date2"],$tab["only_computers"],$tab["field2"],$tab["phrasetype2"],$tab["contains2"],$tab["author"],$tab["attrib"],$tab["category"],$tab["status"],$tab["showfollowups"],$tab["enddate1"],$tab["enddate2"]);
+showTrackingList($_SERVER["PHP_SELF"],$tab["start"],$tab["status"],$tab["author"],$tab["attrib"],$tab["category"],$tab["showfollowups"],$tab["field2"],$tab["phrasetype2"],$tab["contains2"],$tab["field"],$tab["phrasetype"],$tab["contains"],$tab["date1"],$tab["date2"],$tab["only_computers"],$tab["enddate1"],$tab["enddate2"]);
 
 //showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiID"],$_SESSION["tracking_show"],$_SESSION["tracking_contains"],"","",$_SESSION["tracking_start"],$_SESSION["tracking_device"],$_SESSION["tracking_category"],$_SESSION["tracking_containsID"],$_SESSION["tracking_desc"]);
 
