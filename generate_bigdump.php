@@ -39,7 +39,7 @@ include ("_relpos.php");
 include ($phproot."/glpi/includes.php");
 $db=new DB();
 
-$multiplicator=10;
+$multiplicator=50;
 
 $max['locations']=50;
 $max['kbcategories']=10;
@@ -356,7 +356,7 @@ for ($i=0;$i<$max['users_normal'];$i++){
 	$db->query($query);
 }
 for ($i=0;$i<$max['users_postonly'];$i++){
-	$query="INSERT INTO glpi_users VALUES ('','postonly$i','',MD5('postonly$i'),'postonly$i@tutu.com','tel $i','normal','','no','".mt_rand(1,$max['locations'])."','no','french')";
+	$query="INSERT INTO glpi_users VALUES ('','postonly$i','',MD5('postonly$i'),'postonly$i@tutu.com','tel $i','post-only','','no','".mt_rand(1,$max['locations'])."','no','french')";
 	$db->query($query);
 }
 

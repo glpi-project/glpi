@@ -40,8 +40,8 @@
 // Make a select box with all glpi users
 	$db = new DB;
 	
-
-	$where =" AND  (ID <> '".$_POST['value']."' ";
+	if (isset($_POST['value']))
+		$where =" AND  (ID <> '".$_POST['value']."' ";
 
 	if (!empty($_POST['searchText'])&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
 		$where.=" AND name LIKE '%".$_POST['searchText']."%' ";
@@ -54,6 +54,7 @@
 	
 			
 	$query = "SELECT * FROM glpi_users WHERE (".searchUserbyType("normal").") $where ORDER BY name $LIMIT";
+	//echo $query;
 	$result = $db->query($query);
 
 	echo "<select name=\"".$_POST['myname']."\">";
