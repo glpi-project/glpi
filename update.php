@@ -3142,8 +3142,16 @@ if(!FieldExists("glpi_config","url_base")) {
 	$query="UPDATE glpi_config SET url_base='".ereg_replace("/install.php","",$_SERVER['HTTP_REFERER'])."' WHERE ID='1'";
 	$db->query($query) or die(" url ".$lang["update"][90].$db->error());
 }
-
+if(FieldExists("glpi_licenses","serial")) {
+	$query="ALTER TABLE `glpi_licenses` ADD INDEX ( `serial` ) ";
+	$db->query($query) or die(" add index on serial of licenses ".$lang["update"][90].$db->error());
 }
+if(FieldExists("glpi_licenses","buy")) {
+	$query="ALTER TABLE `glpi_licenses` ADD INDEX ( `buy` ) ";
+	$db->query($query) or die(" add index on buy of licenses ".$lang["update"][90].$db->error());
+}
+
+
 
 function updateTreeDropdown(){
 
