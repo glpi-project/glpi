@@ -52,9 +52,6 @@ checkAuthentication("normal");
 
 commonHeader($lang["title"][16],$_SERVER["PHP_SELF"]);
 
-
-
-
 if(!isset($_GET["start"])) $_GET["start"] = 0;
 if (!isset($_GET["order"])) $_GET["order"] = "ASC";
 if (!isset($_GET["contains"])) $_GET["contains"] = "";
@@ -67,7 +64,10 @@ if (!isset($_GET["enddate2"])) $_GET["enddate2"]="0000-00-00";
 if (!isset($_GET["date1"])) $_GET["date1"]="0000-00-00";
 if (!isset($_GET["date2"])) $_GET["date2"]="0000-00-00";
 
+if(!isset($_GET["type"])) $_GET["type"] = 0;
+if(!isset($_GET["item"])) $_GET["item"] = 0;
 if(!isset($_GET["category"])) $_GET["category"] = 0;
+if(!isset($_GET["priority"])) $_GET["priority"] = 0;
 if (!isset($_GET["field"])) $_GET["field"]="";
 if (!isset($_GET["field2"])) $_GET["field2"]="";
 if (!isset($_GET["status"])) $_GET["status"]="all";
@@ -90,10 +90,10 @@ if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete"])&&!empty($_POST["tode
 		}
 	}
 
-searchFormTracking(1,$_SERVER["PHP_SELF"],$_GET["start"],$_GET["status"],$_GET["author"],$_GET["attrib"],$_GET["category"],$_GET["priority"],$_GET["showfollowups"],$_GET["field2"],$_GET["contains2"],$_GET["field"],$_GET["contains"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["enddate1"],$_GET["enddate2"]);
+searchFormTracking(1,$_SERVER["PHP_SELF"],$_GET["start"],$_GET["status"],$_GET["author"],$_GET["attrib"],$_GET["category"],$_GET["priority"],$_GET["item"],$_GET["type"],$_GET["showfollowups"],$_GET["field2"],$_GET["contains2"],$_GET["field"],$_GET["contains"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["enddate1"],$_GET["enddate2"]);
 
 if (!empty($_GET["field"]))
-showTrackingList($_SERVER["PHP_SELF"],$_GET["start"],$_GET["status"],$_GET["author"],$_GET["attrib"],$_GET["category"],$_GET["priority"],$_GET["showfollowups"],$_GET["field2"],$_GET["contains2"],$_GET["field"],$_GET["contains"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["enddate1"],$_GET["enddate2"]);
+showTrackingList($_SERVER["PHP_SELF"],$_GET["start"],$_GET["status"],$_GET["author"],$_GET["attrib"],$_GET["category"],$_GET["priority"],$_GET["item"],$_GET["type"],$_GET["showfollowups"],$_GET["field2"],$_GET["contains2"],$_GET["field"],$_GET["contains"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["enddate1"],$_GET["enddate2"]);
 
 
 commonFooter();

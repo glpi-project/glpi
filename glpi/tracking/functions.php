@@ -1639,7 +1639,7 @@ function getRealtime($realtime){
 		return $output;
 		}
 
-function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,$assign=0,$category=0,$priority=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,$assign=0,$category=0,$priority=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Print Search Form
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel,$phproot;
@@ -1736,11 +1736,16 @@ function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,
 
 	if ($report){
 		echo "<tr class='tab_bg_1'>";
-		echo "<td align='center' colspan='2'>";
+		echo "<td align='center' colspan='3'>";
+		echo "<table border='0'><tr><td>".$lang["common"][1].":</td><td>";
+		
+		dropdownAllItems("item");
+		echo "</td></tr></table>";
+		echo "</td>";
+		echo "<td align='center' colspan='3'>";
 		$selected="";
 		if ($_GET["only_computers"]) $selected="checked";
-		echo "<input type='checkbox' name='only_computers' value='1' $selected>".$lang["reports"][24].":</td>";
-		echo "<td align='left' colspan='4'>";
+		echo "<input type='checkbox' name='only_computers' value='1' $selected>".$lang["reports"][24].":&nbsp;";
 
 		echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
 		echo "&nbsp;";
@@ -1776,7 +1781,13 @@ if($report)	{
 	echo "</td><td align='center'><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'></td></tr>";
 }
 else {
-	echo "<tr  class='tab_bg_1'><td align='center' colspan='5'><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'></td>";
+	echo "<tr  class='tab_bg_1'>";
+	echo "<td align='center' colspan='3'>";
+	echo "<table border='0'><tr><td>".$lang["common"][1].":</td><td>";
+	dropdownAllItems("item");
+	echo "</td></tr></table>";
+	echo "</td>";
+	echo "<td align='center' colspan='2'><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'></td>";
 	echo "<td align='center'  colspan='1'><input type='submit' name='reset' value=\"".$lang["buttons"][16]."\" class='submit'></td></tr>";
 }
 	echo "</table></div></form>";
@@ -1785,7 +1796,7 @@ else {
 }
 
 
-function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$category=0,$priority=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$category=0,$priority=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -1881,6 +1892,9 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$c
 	if (!empty($date2)&&$date2!="0000-00-00") $query.=" AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 	if (!empty($enddate1)&&$enddate1!="0000-00-00") $query.=" AND glpi_tracking.closedate >= '$enddate1'";
 	if (!empty($enddate2)&&$enddate2!="0000-00-00") $query.=" AND glpi_tracking.closedate <= adddate( '". $enddate2 ."' , INTERVAL 1 DAY ) ";
+
+	if ($item!=0&&$type!=0)
+		$query.=" AND glpi_tracking.computer = '$item' AND glpi_tracking.device_type='$type'";	
 	
 	if ($contains2!=""){
 		switch ($field2){
