@@ -1480,7 +1480,13 @@ function assignFormTracking ($ID,$admin,$target) {
 //	echo "<input type='hidden' name='update' value=\"1\">";
 //	echo "<input type='hidden' name='ID' value='$job->ID'>";
 	echo "</td><td><input type='submit' name='update' value=\"".$lang["job"][6]."\" class='submit'></td>";
-	echo "</tr></table>";
+	echo "</tr>";
+	echo "<tr><td colspan='3'>";
+	echo $lang["job"][5]." ";
+	echo getAssignName($job->assign,$job->assign_type,1);
+	echo "</td></tr>";
+
+	echo "</td></table>";
 
 	echo "</td>";
 //	echo "</form>";

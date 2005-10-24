@@ -51,6 +51,7 @@
 	ENTERPRISE_TYPE=>"glpi_enterprises",
 	CARTRIDGE_TYPE=>"glpi_cartridges_type",
 	CONSUMABLE_TYPE=>"glpi_consumables_type",
+	USER_TYPE=>"glpi_users",
 	);
 
 if (isset($items[$_POST["idtable"]])){

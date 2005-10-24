@@ -83,6 +83,8 @@
 		if (!empty($_POST['searchText'])&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
 		if (in_array($_POST['table'],$dropdowntree_tables))
 		$where.=" AND completename LIKE '%".$_POST['searchText']."%' ";
+		else if ($_POST['table']=="glpi_users")
+			$where.=" AND (name LIKE '%".$_POST['searchText']."%'  OR realname LIKE '%".$_POST['searchText']."%')";
 		else $where.=" AND name LIKE '%".$_POST['searchText']."%' ";
 
 		$NBMAX=$cfg_layout["dropdown_max"];
@@ -104,6 +106,7 @@
 		if ($number > 0) {
 			while ($data = $db->fetch_array($result)) {
 				$output = $data['name'];
+				if ($_POST["table"]=="glpi_users"&&!empty($data["realname"])) $output = $data['realname'];
 				if (empty($output)) $output="&nbsp;";
 				$ID = $data['ID'];
 				echo "<option value=\"$ID\">$output</option>";
