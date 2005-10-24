@@ -1031,9 +1031,6 @@ class CommonItem{
 
 			if ($this->obj!=NULL){
 				// Do not load devices
-				if ($device_type==COMPUTER_TYPE)
-					return $this->obj->getfromDB($id_device,0);
-				else 
 					return $this->obj->getfromDB($id_device);
 			}
 			else return false;
