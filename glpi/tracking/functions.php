@@ -1681,7 +1681,7 @@ function searchFormTracking($report=0,$target,$username,$field,$phrasetype,$cont
 	echo "<div align='center'><p><strong>".$lang["reports"][25]."</strong></p></div>";
 	echo "<div align='center'>";
 				
-	echo "<table border='0' width='800' class='tab_cadre'>";
+	echo "<table border='0' width='900' class='tab_cadre'>";
 
 	
 	echo "<tr><th colspan='6'><strong>".$lang["search"][0].":</strong></th></tr>";
@@ -1782,7 +1782,7 @@ function showTrackingList($target,$username,$field,$phrasetype,$contains,$start,
 	// If $item is given, only jobs for a particular machine
 	// are listed.
 
-	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang,$cfg_devices_tables;
+	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang,$cfg_devices_tables,$HTMLRel;
 		
 	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
 	
@@ -1893,7 +1893,7 @@ function showTrackingList($target,$username,$field,$phrasetype,$contains,$start,
 	if ($assign!="0") $query.=" AND glpi_tracking.assign = '$assign'";
 	if ($author!="0") $query.=" AND glpi_tracking.author = '$author'";
 	
-   $query.=" ORDER BY ID";
+   $query.=" ORDER BY glpi_tracking.date ".$prefs["order"];
 	//echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
@@ -1916,7 +1916,13 @@ function showTrackingList($target,$username,$field,$phrasetype,$contains,$start,
 			printPager($start,$numrows,$target,$parameters);
 			
 			// Produce headline
-						
+
+			// Form to delete old item
+			if (isAdmin($_SESSION["glpitype"])){
+			echo "<form method='post' action=\"$target\">";
+			}
+			
+									
 			echo "<div align='center'><table border='0' class='tab_cadre' width='90%'><tr>";
 
 echo "<th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
@@ -1934,6 +1940,25 @@ echo "<th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
 			// Close Table
 			echo "</table></div>";
 
+		// Delete selected item
+			if (isAdmin($_SESSION["glpitype"])){
+				echo "<br><div align='center'>";
+				echo "<table cellpadding='5' width='90%'>";
+				echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=all&amp;start=$start'>".$lang["buttons"][18]."</a></td>";
+			
+				echo "<td>/</td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=none&amp;start=$start'>".$lang["buttons"][19]."</a>";
+				echo "</td><td>";
+				echo "<input type='submit' value=\"".$lang["buttons"][17]."\" name='delete' class='submit'></td>";
+				echo "<td width='75%'>&nbsp;</td></table></div>";
+			}
+		
+			echo "<br>";
+			
+			// End form for delete item
+			if (isAdmin($_SESSION["glpitype"]))
+				echo "</form>";
+			
+			
 			// Pager
 			echo "<br>";
 			printPager($start,$numrows,$target,$parameters);

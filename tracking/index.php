@@ -56,13 +56,17 @@ commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 
  
 if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
+//if(empty($tab) && isset($_POST)) $tab = $_POST;
 
 if (!isset($tab['reset'])){
 	if (is_array($tab))
 	foreach ($tab as $key => $val)
 		$_SESSION['tracking'][$key]=$val;
 }
+
+if (is_array($_SESSION['tracking']))
+foreach ($_SESSION['tracking'] as $key => $val)
+if (!isset($tab[$key])) $tab[$key]=$val;
 
 if (!isset($tab["start"])||isset($tab['reset'])) $tab["start"]=0;
 if (!isset($tab["field"])||isset($tab['reset'])) $tab["field"]="";
@@ -83,9 +87,9 @@ if (!isset($tab["status"])||isset($tab['reset'])) $tab["status"]="new";
 if (!isset($tab["showfollowups"])||isset($tab['reset'])) $tab["showfollowups"]=0;
 
 
-if (isAdmin($_SESSION["glpitype"])&&isset($tab["delete"])&&!empty($tab["todel"])){
+if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete"])&&!empty($_POST["todel"])){
 	$j=new Job;
-	foreach ($tab["todel"] as $key => $val){
+	foreach ($_POST["todel"] as $key => $val){
 		if ($val==1) $j->deleteInDB($key);
 		}
 	}

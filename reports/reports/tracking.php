@@ -84,6 +84,14 @@ $_GET["date2"]=$tmp;
 
 if(!isset($_GET["only_computers"])) $_GET["only_computers"] = "";
 
+
+if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete"])&&!empty($_POST["todel"])){
+	$j=new Job;
+	foreach ($_POST["todel"] as $key => $val){
+		if ($val==1) $j->deleteInDB($key);
+		}
+	}
+
 searchFormTracking(1,$_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["start"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["field2"],$_GET["phrasetype2"],$_GET["contains2"],$_GET["author"],$_GET["attrib"],$_GET["category"],$_GET["status"],$_GET["showfollowups"],$_GET["enddate1"],$_GET["enddate2"]);
 
 if (!empty($_GET["field"]))
