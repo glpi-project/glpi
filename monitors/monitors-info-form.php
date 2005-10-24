@@ -102,7 +102,7 @@ else if (isset($tab["disconnect"]))
 	logEvent(0, "monitors", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if(isset($tab["connect"]))
+else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 {
 	checkAuthentication("admin");
 	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["item"],MONITOR_TYPE);
