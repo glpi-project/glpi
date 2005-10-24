@@ -848,7 +848,7 @@ function restoreConsumable($ID){
 *@return nothing (display)
 *
 **/
-function countConsumables($tID) {
+function countConsumables($tID,$alarm) {
 	
 	GLOBAL $cfg_layout, $lang;
 	
@@ -861,10 +861,14 @@ function countConsumables($tID) {
 	$unused=getUnusedConsumablesNumber($tID);
 	$old=getOldConsumablesNumber($tID);
 
-	echo "<b>".$lang["consumables"][30].":&nbsp;$total</b>&nbsp;&nbsp;&nbsp;".$lang["consumables"][13].": $unused&nbsp;&nbsp;&nbsp;".$lang["consumables"][15].": $old";			
+	$highlight="";
+	if ($unused<=$alarm)
+		$highlight="class='tab_bg_1_2'";
+
+	echo "<span $highlight><b>".$lang["consumables"][30].":&nbsp;$total</b>&nbsp;&nbsp;&nbsp;".$lang["consumables"][13].": $unused&nbsp;&nbsp;&nbsp;".$lang["consumables"][15].": $old</span>";			
 
 	} else {
-			echo "<i>".$lang["consumables"][9]."</i>";
+			echo "<span class='tab_bg_1_2'><i>".$lang["consumables"][9]."</i></span>";
 	}
 }	
 
