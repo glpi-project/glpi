@@ -732,7 +732,7 @@ function showConnect($target,$ID,$type) {
 			echo "<i>".$lang["connect"][1]."</i>";
 			echo "</td>";
 			echo "<td class='tab_bg_2' align='center'><b>";
-			echo "<a href=\"$target?connect=1&amp;ID=$ID\">".$lang["connect"][2]."</a>";
+//			echo "<a href=\"$target?connect=1&amp;ID=$ID\">".$lang["connect"][2]."</a>";
 		}
 
 		if ($global&&$computers&&count($computers)>0){
@@ -819,6 +819,8 @@ function Connect($target,$sID,$cID,$type) {
 * @param $ID connection source ID.
 * @param $type connection type.
 */
+// Plus utilisé
+/*
 function showConnectSearch($target,$ID,$type="computer") {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
@@ -866,7 +868,7 @@ function showConnectSearch($target,$ID,$type="computer") {
 	echo "</form>";
 	echo "</div>";
 }
-
+*/
 /**
 * To be commented
 * 
@@ -928,6 +930,8 @@ function listConnectComputers($target,$input) {
 *
 * @return nothing
 */
+// Plus utilisé
+/*
 function listConnectElement($target,$input) {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
@@ -999,7 +1003,7 @@ function listConnectElement($target,$input) {
 	echo "</td></tr></table></form></div>";	
 
 }
-
+*/
 
 /**
 * Count the number of elements in a table.

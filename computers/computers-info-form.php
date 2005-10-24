@@ -110,7 +110,7 @@ else if (isset($tab["disconnect"])) {
 	glpi_header($_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
 }
 //Connect a peripheral
-else if(isset($tab["connect"])&&isset($tab["device_type"])) {
+/*else if(isset($tab["connect"])&&isset($tab["device_type"])) {
 	if($tab["connect"]==1) {
 		checkAuthentication("admin");
 		commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
@@ -129,6 +129,12 @@ else if(isset($tab["connect"])&&isset($tab["device_type"])) {
 		logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
 		glpi_header($_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
 	}
+}
+*/
+else if (isset($tab["connect"])&&isset($tab["item"])){
+	Connect($_SERVER["PHP_SELF"],$tab["item"],$tab["cID"],$tab["device_type"],$tab["withtemplate"]);
+	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
+	glpi_header($_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
 }
 //Update a device specification
 elseif(isset($_POST["update_device_x"])||isset($_POST["update_device"])) {
@@ -232,7 +238,7 @@ if (isset($_GET['onglet'])) {
 			case -1 :
 				showDeviceComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);			
 				showSoftwareInstalled($tab["ID"]);
-				showConnections($tab["ID"]);
+				showConnections($_SERVER["PHP_SELF"],$tab["ID"]);
 				showPorts($tab["ID"], COMPUTER_TYPE);
 				showPortsAdd($tab["ID"],COMPUTER_TYPE);
 				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",COMPUTER_TYPE,$tab["ID"]);
@@ -246,7 +252,7 @@ if (isset($_GET['onglet'])) {
 				showSoftwareInstalled($tab["ID"]);
 				break;
 			case 3 :
-				showConnections($tab["ID"]);
+				showConnections($_SERVER["PHP_SELF"],$tab["ID"]);
 				showPorts($tab["ID"], COMPUTER_TYPE);
 				showPortsAdd($tab["ID"],COMPUTER_TYPE);
 				break;

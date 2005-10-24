@@ -994,7 +994,7 @@ function restoreComputer($input) {
 *@return Nothing (call to classes members)
 *
 **/
-function showConnections($ID,$withtemplate='') {
+function showConnections($target,$ID,$withtemplate='') {
 
 	GLOBAL $cfg_layout, $cfg_install, $lang;
 
@@ -1045,9 +1045,17 @@ function showConnections($ID,$withtemplate='') {
 		if(!empty($withtemplate) && $withtemplate == 2) {
 			//do nothing
 		} else {
-			echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&amp;connect=1&amp;device_type=printer&amp;withtemplate=".$withtemplate."\"><b>";
-			echo $lang["buttons"][9];
-			echo "</b></a>";
+			echo "<form method='post' action=\"$target\">";
+			echo "<input type='hidden' name='connect' value='connect'>";
+			echo "<input type='hidden' name='cID' value='$ID'>";
+			echo "<input type='hidden' name='device_type' value='".PRINTER_TYPE."'>";
+			dropdownConnect(PRINTER_TYPE,"item");
+			echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
+
+			echo "</form>";
+//			echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&amp;connect=1&amp;device_type=printer&amp;withtemplate=".$withtemplate."\"><b>";
+//			echo $lang["buttons"][9];
+//			echo "</b></a>";
 		}
 
 	}
@@ -1089,9 +1097,18 @@ function showConnections($ID,$withtemplate='') {
 		if(!empty($withtemplate) && $withtemplate == 2) {
 			//do nothing
 		} else {
-			echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&amp;connect=1&amp;device_type=monitor&amp;withtemplate=".$withtemplate."\"><b>";
-			echo $lang["buttons"][9];
-			echo "</b></a>";
+			echo "<form method='post' action=\"$target\">";
+			echo "<input type='hidden' name='connect' value='connect'>";
+			echo "<input type='hidden' name='cID' value='$ID'>";
+			echo "<input type='hidden' name='device_type' value='".MONITOR_TYPE."'>";
+			dropdownConnect(MONITOR_TYPE,"item");
+			echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
+
+			echo "</form>";
+
+//			echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&amp;connect=1&amp;device_type=monitor&amp;withtemplate=".$withtemplate."\"><b>";
+//			echo $lang["buttons"][9];
+//			echo "</b></a>";
 		}
 
 	}
@@ -1134,9 +1151,18 @@ function showConnections($ID,$withtemplate='') {
 		if(!empty($withtemplate) && $withtemplate == 2) {
 			//do nothing
 		} else {
-			echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&amp;connect=1&amp;device_type=peripheral&amp;withtemplate=".$withtemplate."\"><b>";
-			echo $lang["buttons"][9];
-			echo "</b></a>";
+			echo "<form method='post' action=\"$target\">";
+			echo "<input type='hidden' name='connect' value='connect'>";
+			echo "<input type='hidden' name='cID' value='$ID'>";
+			echo "<input type='hidden' name='device_type' value='".PERIPHERAL_TYPE."'>";
+			dropdownConnect(PERIPHERAL_TYPE,"item");
+			echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
+
+			echo "</form>";
+
+//			echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$ID&amp;connect=1&amp;device_type=peripheral&amp;withtemplate=".$withtemplate."\"><b>";
+//			echo $lang["buttons"][9];
+//			echo "</b></a>";
 		}
 
 	}
