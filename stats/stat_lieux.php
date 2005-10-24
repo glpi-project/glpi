@@ -91,6 +91,7 @@ showCalendarForm("form","date2",$_POST["date2"]);
 echo "</td></tr>";
 echo "</table></form></div>";
 
+echo "<div align ='center'>";
 
 if(is_dropdown_stat($_POST["dropdown"])) {
 	//recuperation des differents lieux d'interventions
@@ -99,9 +100,8 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 	sort($type);
 	
 	$numrows=count($type);
-	printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"dropdown=".$_POST["dropdown"]."&date1=".$_POST["date1"]."&date2=".$_POST["date2"]);
+	printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"dropdown=".$_POST["dropdown"]."&amp;date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]);
 
-	echo "<div align ='center'>";
 
 	if (is_array($type))
 	{
@@ -167,7 +167,7 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 	}
 	sort($tab);
 	$numrows=count($tab);
-	printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"dropdown=".$_POST["dropdown"]."&date1=".$_POST["date1"]."&date2=".$_POST["date2"]);
+	printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"dropdown=".$_POST["dropdown"]."&amp;date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]);
 
 	echo "<table class='tab_cadre2' cellpadding='5' >";
 	echo "<tr><th>&nbsp;</th><th>&nbsp;</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
@@ -243,7 +243,7 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 		echo "<tr class='tab_bg_1'>";
 		//first column name of the device
 		echo "<td>".$tab[$i]["designation"]."</td>";
-		echo "<td><a href='graph_item.php?ID=".$tab[$i]["ID"]."&device=".$device_type."&amp;type=device'>Graph</a>";
+		echo "<td><a href='graph_item.php?ID=".$tab[$i]["ID"]."&amp;device=".$device_type."&amp;type=device'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a>";
 		//second column count nb interv
 		echo "<td>".$nbinterv."</td>";
 		//third column nb resolved interventions
