@@ -1639,7 +1639,7 @@ function getRealtime($realtime){
 		return $output;
 		}
 
-function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,$assign=0,$category=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,$assign=0,$category=0,$priority=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Print Search Form
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel,$phproot;
@@ -1687,7 +1687,7 @@ function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,
 
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>";
+	echo "<td align='center' colspan='3'>";
  $elts=array("both"=>$lang["joblist"][6]." / ".$lang["job"][7],"contents"=>$lang["joblist"][6],"followup" => $lang["job"][7]);
  echo "<select name='field2'>";
  foreach ($elts as $key => $val){
@@ -1697,12 +1697,12 @@ function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,
  
  }
  echo "</select>";
- echo " </td><td align='center'>";
+ //echo " </td><td align='center'>";
  
  
  
-	 echo $lang["search"][2];
-	echo "</td><td align='center'>";
+	 echo "&nbsp;".$lang["search"][2]."&nbsp;";
+//	echo "</td><td align='center'>";
 	echo "<input type='text' size='15' name=\"contains2\" value=\"".$contains2."\">";
 	echo "</td><td  colspan='2' align='center'>".$lang["job"][5]."&nbsp;:&nbsp;";
 	dropdownUsersTracking($assign,"attrib","assign");
@@ -1723,10 +1723,16 @@ function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,
 	echo "<option value='old' ".($status=="old"?"selected":"").">".$lang["joblist"][10]."</option>";	
 	echo "</select></td>";
 	
-	echo "<td align='center' colspan='3'>".$lang["reports"][59].":<select name='showfollowups'>";
+	echo "<td align='center' colspan='2'>".$lang["reports"][59].":<select name='showfollowups'>";
 	echo "<option value='1' ".($showfollowups=="1"?"selected":"").">".$lang["choice"][0]."</option>";
 	echo "<option value='0' ".($showfollowups=="0"?"selected":"").">".$lang["choice"][1]."</option>";	
-	echo "</select></td></tr>";
+	echo "</select></td>";
+
+	echo "<td align='center'>".$lang["joblist"][2].":&nbsp;";
+	dropdownPriority("priority",$priority,1);
+	echo "</td>";
+	
+	echo "</tr>";
 
 	if ($report){
 		echo "<tr class='tab_bg_1'>";
@@ -1779,7 +1785,7 @@ else {
 }
 
 
-function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$category=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$category=0,$priority=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -1895,6 +1901,9 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$c
 	
 	if ($assign!="0") $query.=" AND glpi_tracking.assign = '$assign'";
 	if ($author!="0") $query.=" AND glpi_tracking.author = '$author'";
+
+	if ($priority>0) $query.=" AND glpi_tracking.priority = '$priority'";
+	if ($priority<0) $query.=" AND glpi_tracking.priority >= '".abs($priority)."'";
 	
    $query.=" ORDER BY glpi_tracking.date ".$prefs["order"];
 //	echo $query;
@@ -1999,15 +2008,24 @@ function showFollowupsShort($ID) {
 	}
 }
 
-function dropdownPriority($name,$value=0){
+function dropdownPriority($name,$value=0,$complete=0){
 	global $lang;
 	
 	echo "<select name='$name'>";
+	if ($complete){
+	echo "<option value='0' ".($value==1?" selected ":"").">".$lang["search"][7]."";
+	echo "<option value='-5' ".($value==-5?" selected ":"").">".$lang["search"][16]." ".$lang["help"][3]."";
+	echo "<option value='-4' ".($value==-4?" selected ":"").">".$lang["search"][16]." ".$lang["help"][4]."";
+	echo "<option value='-3' ".($value==-3?" selected ":"").">".$lang["search"][16]." ".$lang["help"][5]."";
+	echo "<option value='-2' ".($value==-2?" selected ":"").">".$lang["search"][16]." ".$lang["help"][6]."";
+	echo "<option value='-1' ".($value==-1?" selected ":"").">".$lang["search"][16]." ".$lang["help"][7]."";
+	}
 	echo "<option value='5' ".($value==5?" selected ":"").">".$lang["help"][3]."";
 	echo "<option value='4' ".($value==4?" selected ":"").">".$lang["help"][4]."";
 	echo "<option value='3' ".($value==3?" selected ":"").">".$lang["help"][5]."";
 	echo "<option value='2' ".($value==2?" selected ":"").">".$lang["help"][6]."";
 	echo "<option value='1' ".($value==1?" selected ":"").">".$lang["help"][7]."";
+
 	echo "</select>";	
 }
 
