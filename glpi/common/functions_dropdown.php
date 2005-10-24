@@ -493,7 +493,35 @@ function dropdownAllUsers($value, $myname) {
 	global $lang;
 	// Make a select box with all glpi users
 
-	$db = new DB;
+	global $HTMLRel,$cfg_install;
+
+	$rand=mt_rand();
+	echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>";
+	//echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
+
+	echo "<script type='text/javascript' >";
+	echo "   new Form.Element.Observer('search_$myname$rand', 1, ";
+	echo "      function(element, value) {";
+	echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdownAllUsers.php',{asynchronous:true, evalScripts:true, ";
+	echo "           onComplete:function(request)";
+	echo "            {Element.hide('search_spinner_$myname$rand');}, ";
+	echo "           onLoading:function(request)";
+	echo "            {Element.show('search_spinner_$myname$rand');},";
+	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=glpi_users&myname=$myname'";
+	echo "})})";
+	echo "</script>";
+
+echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>";
+
+	echo "<span id='results_$myname$rand'>";
+	if (!empty($value)&&$value>0)
+		echo "<select name='$myname'><option value='$value'>".getDropdownName("glpi_users",$value)."</option></select>";
+	else 
+		echo "<select name='$myname'><option value='0'>[ Nobody ]</option></select>";
+	echo "</span>";	
+	
+	
+/*	$db = new DB;
 	$query = "SELECT * FROM glpi_users ORDER BY name";
 	$result = $db->query($query);
 
@@ -516,6 +544,7 @@ function dropdownAllUsers($value, $myname) {
    		}
 	}
 	echo "</select>";
+*/
 }
 
 
@@ -629,6 +658,8 @@ function dropdownAssign($value, $value_type,$myname) {
 *
 *
 */
+// Plus utilisé
+/*
 function dropdownAllUsersSearch($value, $myname,$search) {
 	// Make a select box with all glpi users
 
@@ -655,8 +686,9 @@ function dropdownAllUsersSearch($value, $myname,$search) {
    		}
 	}
 	echo "</select>";
-}
 
+}
+*/
 /**
 * Make a select box with all glpi users where select key = ID
 *
