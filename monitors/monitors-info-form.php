@@ -104,6 +104,12 @@ else if (isset($tab["disconnect"]))
 }
 else if(isset($tab["connect"]))
 {
+	checkAuthentication("admin");
+	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["item"],MONITOR_TYPE);
+	logEvent($tab["sID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." connected item.");
+	glpi_header($cfg_install["root"]."/monitors/monitors-info-form.php?ID=".$tab["sID"]);
+
+/*
  	if($tab["connect"]==1)
 	{
 		checkAuthentication("admin");
@@ -125,6 +131,7 @@ else if(isset($tab["connect"]))
 		logEvent($tab["sID"], "monitors", 5, "inventory", $_SESSION["glpiname"]." connected item.");
 		glpi_header($cfg_install["root"]."/monitors/monitors-info-form.php?ID=".$tab["sID"]);
 	}
+*/
 }
 else
 {

@@ -67,7 +67,13 @@
 	if ($_POST["idtable"]==MONITOR_TYPE||$_POST["idtable"]==PERIPHERAL_TYPE)
 		$CONNECT_SEARCH.=" OR $table.is_global='1' ";
 	$CONNECT_SEARCH.=")";
-	$query = "SELECT DISTINCT $table.ID as ID,$table.name as name, glpi_dropdown_locations.completename as location from $table left join glpi_dropdown_locations on $table.location = glpi_dropdown_locations.id left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = '".$_POST['idtable']."') WHERE $CONNECT_SEARCH $where order by name ASC";
+	if ($_POST["idtable"]==COMPUTER_TYPE)
+		$CONNECT_SEARCH=" '1' = '1' ";
+		
+	$LEFTJOINCONNECT="";
+	if ($_POST["idtable"]!=COMPUTER_TYPE)		
+		$LEFTJOINCONNECT="left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = '".$_POST['idtable']."')";
+	$query = "SELECT DISTINCT $table.ID as ID,$table.name as name from $table $LEFTJOINCONNECT WHERE $CONNECT_SEARCH $where order by name ASC";
 
 //echo $query;
 		

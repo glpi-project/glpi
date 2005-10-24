@@ -131,7 +131,7 @@ else if (isset($tab["disconnect"])) {
 	}
 }
 */
-else if (isset($tab["connect"])&&isset($tab["item"])){
+else if (isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0){
 	Connect($_SERVER["PHP_SELF"],$tab["item"],$tab["cID"],$tab["device_type"],$tab["withtemplate"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
 	glpi_header($_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);

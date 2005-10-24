@@ -732,6 +732,15 @@ function showConnect($target,$ID,$type) {
 			echo "<i>".$lang["connect"][1]."</i>";
 			echo "</td>";
 			echo "<td class='tab_bg_2' align='center'><b>";
+			echo "<form method='post' action=\"$target\">";
+			echo "<input type='hidden' name='connect' value='connect'>";
+			echo "<input type='hidden' name='sID' value='$ID'>";
+			echo "<input type='hidden' name='device_type' value='$type'>";
+			dropdownConnect(COMPUTER_TYPE,"item");
+			echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
+
+			echo "</form>";
+
 //			echo "<a href=\"$target?connect=1&amp;ID=$ID\">".$lang["connect"][2]."</a>";
 		}
 
@@ -741,7 +750,16 @@ function showConnect($target,$ID,$type) {
 			echo "<tr><td class='tab_bg_1'>&nbsp;";
 			echo "</td>";
 			echo "<td class='tab_bg_2' align='center'><b>";
-			echo "<a href=\"$target?connect=1&amp;ID=$ID\">".$lang["connect"][2]."</a>";
+			echo "<form method='post' action=\"$target\">";
+			echo "<input type='hidden' name='connect' value='connect'>";
+			echo "<input type='hidden' name='sID' value='$ID'>";
+			echo "<input type='hidden' name='device_type' value='$type'>";
+			dropdownConnect(COMPUTER_TYPE,"item");
+			echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
+
+			echo "</form>";
+
+//			echo "<a href=\"$target?connect=1&amp;ID=$ID\">".$lang["connect"][2]."</a>";
 		}
 
 		echo "</b></td>";
@@ -877,6 +895,8 @@ function showConnectSearch($target,$ID,$type="computer") {
 * @param $input 
 * @return nothing
 */
+// Plus utilisé
+/*
 function listConnectComputers($target,$input) {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
@@ -918,7 +938,7 @@ function listConnectComputers($target,$input) {
 	echo "</td></tr></table></form></div>";	
 
 }
-
+*/
 /**
 *
 * To be commented
