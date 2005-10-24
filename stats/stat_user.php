@@ -75,7 +75,6 @@ echo "</table></form></div>";
 //Get the distinct intervention authors
 $nomUsr = getNbIntervAuthor($_POST["date1"],$_POST["date2"]);
 
-echo "<div align ='center'>";
 
 if (is_array($nomUsr))
 {
@@ -90,6 +89,8 @@ $val[$key["ID"]]["name"]=empty($key["realname"])?$key["name"]:$key["realname"];
 sort($val);
 $numrows=count($val);
 printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"");
+
+echo "<div align ='center'>";
 
 //affichage du tableau
 //table display

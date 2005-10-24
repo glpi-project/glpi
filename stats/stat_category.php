@@ -57,6 +57,8 @@ $_POST["date1"]=$_POST["date2"];
 $_POST["date2"]=$tmp;
 }
 
+if(!isset($_GET["start"])) $_GET["start"] = 0;
+
 echo "<div align='center'><form method=\"post\" name=\"form\" action=\"stat_category.php\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
 echo $lang["search"][8]." :</td><td>";
@@ -69,6 +71,9 @@ echo "</table></form></div>";
 
 //Get the distinct intervention categories
 $nomUsr = getNbIntervCategory();
+sort($nomUsr);
+$numrows=count($nomUsr);
+printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"");
 
 echo "<div align ='center'>";
 
@@ -80,17 +85,17 @@ echo "<table class='tab_cadre2' cellpadding='5' >";
 echo "<tr><th>".$lang["stats"][38]."</th><th>&nbsp;</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
 //Pour chacun de ces auteurs on affiche
 //foreach these authors display
-   foreach($nomUsr as $key => $val)
+   for ($i=$_GET['start'];$i< $numrows && $i<($_GET['start']+$cfg_features["list_limit"]);$i++)
    {
 	echo "<tr class='tab_bg_1'>";
-	echo "<td>".$val."</td><td><a href='graph_item.php?ID=".$key."&amp;type=category'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
+	echo "<td>".$nomUsr[$i]['category']."</td><td><a href='graph_item.php?ID=".$nomUsr[$i]['ID']."&amp;type=category'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
 
-		echo "<td>".getNbinter(4,'glpi_tracking.category',$key, $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getNbresol(4,'glpi_tracking.category',$key, $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getResolAvg(4, 'glpi_tracking.category',$key, $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getRealAvg(4, 'glpi_tracking.category',$key, $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getRealTotal(4, 'glpi_tracking.category',$key, $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getFirstActionAvg(4, 'glpi_tracking.category',$key, $_POST["date1"], $_POST["date2"])."</td>";
+		echo "<td>".getNbinter(4,'glpi_tracking.category',$nomUsr[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
+		echo "<td>".getNbresol(4,'glpi_tracking.category',$nomUsr[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
+		echo "<td>".getResolAvg(4, 'glpi_tracking.category',$nomUsr[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
+		echo "<td>".getRealAvg(4, 'glpi_tracking.category',$nomUsr[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
+		echo "<td>".getRealTotal(4, 'glpi_tracking.category',$nomUsr[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
+		echo "<td>".getFirstActionAvg(4, 'glpi_tracking.category',$nomUsr[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
 
 	echo "</tr>";
   }
