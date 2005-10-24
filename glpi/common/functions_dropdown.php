@@ -154,26 +154,26 @@ function dropdownValue($table,$myname,$value) {
 echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>";
 //echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
-echo "<script type='text/javascript' >";
-echo "   new Form.Element.Observer('search_$myname$rand', 1, ";
-echo "      function(element, value) {";
-echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdownValue.php',{asynchronous:true, evalScripts:true, ";
-echo "           onComplete:function(request)";
-echo "            {Element.hide('search_spinner_$myname$rand');}, ";
-echo "           onLoading:function(request)";
-echo "            {Element.show('search_spinner_$myname$rand');},";
-echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=$table&myname=$myname'";
-echo "})})";
-echo "</script>";
+echo "<script type='text/javascript' >\n";
+echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
+echo "      function(element, value) {\n";
+echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdownValue.php',{asynchronous:true, evalScripts:true, \n";
+echo "           onComplete:function(request)\n";
+echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
+echo "           onLoading:function(request)\n";
+echo "            {Element.show('search_spinner_$myname$rand');},\n";
+echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=$table&myname=$myname'\n";
+echo "})})\n";
+echo "</script>\n";
 
-echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>";
+echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
-echo "<span id='results_$myname$rand'>";
+echo "<span id='results_$myname$rand'>\n";
 if (!empty($value)&&$value>0)
-	echo "<select name='$myname'><option value='$value'>".getDropdownName($table,$value)."</option></select>";
+	echo "<select name='$myname'><option value='$value'>".getDropdownName($table,$value)."</option></select>\n";
 else 
-	echo "<select name='$myname'><option value='0'>------</option></select>";
-echo "</span>";	
+	echo "<select name='$myname'><option value='0'>------</option></select>\n";
+echo "</span>\n";	
 		
 	// Make a select box with preselected values
 /*	$db = new DB;
@@ -742,7 +742,7 @@ function getDropdownName($table,$id) {
 	global $cfg_install,$dropdowntree_tables;
 	
 	if (in_array($table,$dropdowntree_tables)){
-	$name=getTreeValueCompleteName($table,$id);
+		$name=getTreeValueCompleteName($table,$id);
 
 	//} else if ($table=="glpi_enterprises"){
 //		$name=getEnterpriseLinks($id,1);	

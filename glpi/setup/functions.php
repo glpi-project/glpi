@@ -224,12 +224,14 @@ function showFormTypeDown ($target,$name,$human,$ID) {
 
 	GLOBAL $cfg_layout, $lang, $HTMLRel;
 	
-	echo "<div align='center'>&nbsp;<table class='tab_cadre' width=70%>";
-	echo "<a name=\"$name\"></a>";
+	echo "<div align='center'>&nbsp;";
+	
+	echo "<form action=\"$target\" method='post'>";
+	
+	echo "<table class='tab_cadre' width='800'>";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
+	
 	if (countElementsInTable("glpi_type_".$name)>0){
-	echo "<form method='post' action=\"$target\">";
-	echo "<input type='hidden' name='which' value='$name'>";
 	echo "<tr><td align='center' class='tab_bg_1'>";
 
 	dropdownValue("glpi_type_".$name, "ID",$ID);
@@ -244,22 +246,27 @@ function showFormTypeDown ($target,$name,$human,$ID) {
 
 
 	echo "</td><td align='center' class='tab_bg_2'>";
-	echo "<input type='hidden' name='tablename' value=\"glpi_type_".$name."\"/>";
+	echo "<input type='hidden' name='tablename' value='glpi_type_".$name."'>";
+	echo "<input type='hidden' name='which' value='$name'>";
+	
 	//  on ajoute un bouton modifier
         echo "<input type='submit' name='update' value='".$lang["buttons"][14]."' class='submit'>";
 	echo "</td><td align='center' class='tab_bg_2'>";
         echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-	echo "</td></form></tr>";
+	echo "</td></tr>";
 	}
+	echo "</table></form>";
+	
 	echo "<form action=\"$target\" method='post'>";
-	echo "<input type='hidden' name='which' value='$name'>";
+	echo "<table class='tab_cadre' width='800'>";
 	echo "<tr><td align='center' class='tab_bg_1'>";
 	echo "<input type='text' maxlength='100' size='20' name='value'>";
 	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
 	echo "<input type='hidden' name='tablename' value='glpi_type_".$name."'>";
+	echo "<input type='hidden' name='which' value='$name'>";
 	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
-	echo "</td></form></tr>";
-	echo "</table></div>";
+	echo "</td></tr>";
+	echo "</table></form></div>";
 }
 function moveTreeUnder($table,$to_move,$where){
 	$db=new DB();
