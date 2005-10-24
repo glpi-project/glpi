@@ -57,27 +57,27 @@ function dropdown($table,$myname) {
 	global $HTMLRel,$cfg_install;
 
 	$rand=mt_rand();
-echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>";
+echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
 //echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
-echo "<script type='text/javascript' >";
-echo "   new Form.Element.Observer('search_$myname$rand', 1, ";
-echo "      function(element, value) {";
-echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdown.php',{asynchronous:true, evalScripts:true, ";
-echo "           onComplete:function(request)";
-echo "            {Element.hide('search_spinner_$myname$rand');}, ";
-echo "           onLoading:function(request)";
-echo "            {Element.show('search_spinner_$myname$rand');},";
-echo "           method:'post', parameters:'searchText=' + value+'&table=$table&myname=$myname'";
-echo "})})";
-echo "</script>";
+echo "<script type='text/javascript' >\n";
+echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
+echo "      function(element, value) {\n";
+echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdown.php',{asynchronous:true, evalScripts:true, \n";
+echo "           onComplete:function(request)\n";
+echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
+echo "           onLoading:function(request)\n";
+echo "            {Element.show('search_spinner_$myname$rand');},\n";
+echo "           method:'post', parameters:'searchText=' + value+'&table=$table&myname=$myname'\n";
+echo "})})\n";
+echo "</script>\n";
 
 
-echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>";
+echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>\n";
 
-echo "<span id='results_$myname$rand'>";
-echo "<select name='$myname'><option value='0'>------</option></select>";
-echo "</span>";	
+echo "<span id='results_$myname$rand'>\n";
+echo "<select name='$myname'><option value='0'>------</option></select>\n";
+echo "</span>\n";	
 
 /*	
 	global $deleted_tables,$template_tables,$dropdowntree_tables;	
@@ -151,7 +151,7 @@ function dropdownValue($table,$myname,$value) {
 	global $HTMLRel,$cfg_install;
 
 	$rand=mt_rand();
-echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>";
+echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
 //echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 echo "<script type='text/javascript' >\n";
@@ -435,29 +435,29 @@ function dropdownUsers($value, $myname,$all=0) {
 	global $HTMLRel,$cfg_install;
 
 	$rand=mt_rand();
-	echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>";
+	echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
 	//echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
-	echo "<script type='text/javascript' >";
-	echo "   new Form.Element.Observer('search_$myname$rand', 1, ";
-	echo "      function(element, value) {";
-	echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdownUsers.php',{asynchronous:true, evalScripts:true, ";
-	echo "           onComplete:function(request)";
-	echo "            {Element.hide('search_spinner_$myname$rand');}, ";
-	echo "           onLoading:function(request)";
-	echo "            {Element.show('search_spinner_$myname$rand');},";
-	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=glpi_users&myname=$myname'";
-	echo "})})";
-	echo "</script>";
+	echo "<script type='text/javascript' >\n";
+	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
+	echo "      function(element, value) {\n";
+	echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdownUsers.php',{asynchronous:true, evalScripts:true, \n";
+	echo "           onComplete:function(request)\n";
+	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
+	echo "           onLoading:function(request)\n";
+	echo "            {Element.show('search_spinner_$myname$rand');},\n";
+	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=glpi_users&myname=$myname'\n";
+	echo "})})\n";
+	echo "</script>\n";
 
-echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>";
+echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
-	echo "<span id='results_$myname$rand'>";
+	echo "<span id='results_$myname$rand'>\n";
 	if (!empty($value)&&$value>0)
-		echo "<select name='$myname'><option value='$value'>".getDropdownName("glpi_users",$value)."</option></select>";
+		echo "<select name='$myname'><option value='$value'>".getDropdownName("glpi_users",$value)."</option></select>\n";
 	else 
-		echo "<select name='$myname'><option value='0'>[ Nobody ]</option></select>";
-	echo "</span>";	
+		echo "<select name='$myname'><option value='0'>[ Nobody ]</option></select>\n";
+	echo "</span>\n";	
 	
 	
 	
@@ -496,29 +496,29 @@ function dropdownAllUsers($value, $myname) {
 	global $HTMLRel,$cfg_install;
 
 	$rand=mt_rand();
-	echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>";
+	echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
 	//echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
-	echo "<script type='text/javascript' >";
-	echo "   new Form.Element.Observer('search_$myname$rand', 1, ";
-	echo "      function(element, value) {";
-	echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdownAllUsers.php',{asynchronous:true, evalScripts:true, ";
-	echo "           onComplete:function(request)";
-	echo "            {Element.hide('search_spinner_$myname$rand');}, ";
-	echo "           onLoading:function(request)";
-	echo "            {Element.show('search_spinner_$myname$rand');},";
-	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=glpi_users&myname=$myname'";
-	echo "})})";
-	echo "</script>";
+	echo "<script type='text/javascript' >\n";
+	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
+	echo "      function(element, value) {\n";
+	echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdownAllUsers.php',{asynchronous:true, evalScripts:true, \n";
+	echo "           onComplete:function(request)\n";
+	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
+	echo "           onLoading:function(request)\n";
+	echo "            {Element.show('search_spinner_$myname$rand');},\n";
+	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=glpi_users&myname=$myname'\n";
+	echo "})})\n";
+	echo "</script>\n";
 
-echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>";
+echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
-	echo "<span id='results_$myname$rand'>";
+	echo "<span id='results_$myname$rand'>\n";
 	if (!empty($value)&&$value>0)
-		echo "<select name='$myname'><option value='$value'>".getDropdownName("glpi_users",$value)."</option></select>";
+		echo "<select name='$myname'><option value='$value'>".getDropdownName("glpi_users",$value)."</option></select>\n";
 	else 
-		echo "<select name='$myname'><option value='0'>[ Nobody ]</option></select>";
-	echo "</span>";	
+		echo "<select name='$myname'><option value='0'>[ Nobody ]</option></select>\n";
+	echo "</span>\n";	
 	
 	
 /*	$db = new DB;
@@ -572,31 +572,31 @@ function dropdownAssign($value, $value_type,$myname) {
 	);
 
 	$rand=mt_rand();
-	echo "<table border='0'><tr><td>";
-	echo "<select name='type' id='item_type$rand'>";
-	echo "<option value='0'>-----</option>";
-	echo "<option value='".USER_TYPE."'>".$lang["Menu"][14]."</option>";
-	echo "<option value='".ENTERPRISE_TYPE."'>".$lang["Menu"][23]."</option>";
-	echo "</select>";
+	echo "<table border='0'><tr><td>\n";
+	echo "<select name='type' id='item_type$rand'>\n";
+	echo "<option value='0'>-----</option>\n";
+	echo "<option value='".USER_TYPE."'>".$lang["Menu"][14]."</option>\n";
+	echo "<option value='".ENTERPRISE_TYPE."'>".$lang["Menu"][23]."</option>\n";
+	echo "</select>\n";
 	
 	
-	echo "<script type='text/javascript' >";
-	echo "   new Form.Element.Observer('item_type$rand', 1, ";
-	echo "      function(element, value) {";
-	echo "      	new Ajax.Updater('show_$myname$rand','".$cfg_install["root"]."/ajax/dropdownAllItems.php',{asynchronous:true, evalScripts:true, ";
-	echo "           onComplete:function(request)";
-	echo "            {Element.hide('search_spinner_$myname$rand');}, ";
-	echo "           onLoading:function(request)";
-	echo "            {Element.show('search_spinner_$myname$rand');},";
-	echo "           method:'post', parameters:'idtable='+value+'&myname=$myname'";
-	echo "})})";
-	echo "</script>";
+	echo "<script type='text/javascript' >\n";
+	echo "   new Form.Element.Observer('item_type$rand', 1, \n";
+	echo "      function(element, value) {\n";
+	echo "      	new Ajax.Updater('show_$myname$rand','".$cfg_install["root"]."/ajax/dropdownAllItems.php',{asynchronous:true, evalScripts:true, \n";
+	echo "           onComplete:function(request)\n";
+	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
+	echo "           onLoading:function(request)\n";
+	echo "            {Element.show('search_spinner_$myname$rand');},\n";
+	echo "           method:'post', parameters:'idtable='+value+'&myname=$myname'\n";
+	echo "})})\n";
+	echo "</script>\n";
 	
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>";	
-	echo "</td><td>"	;
-	echo "<span id='show_$myname$rand'></span>";
-	echo "</td></tr>";
-	echo "</table>";
+	echo "<div id='search_spinner_$myname$rand' style=' position:absolute; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+	echo "</td><td>\n"	;
+	echo "<span id='show_$myname$rand'></span>\n";
+	echo "</td></tr>\n";
+	echo "</table>\n";
 	
 	
 /*	$db = new DB;
@@ -795,10 +795,10 @@ function dropdownUsersTracking($value, $myname,$champ) {
 				echo "<option value=\"$val\">".$name;
 			}
 			$i++;
-			echo "</option>";
+			echo "</option>\n";
    		}
 	}
-	echo "</select>";
+	echo "</select>\n";
 }
 
 /**
@@ -842,21 +842,21 @@ if ($dh = opendir($store_path)) {
 
 function dropdownDeviceType($name,$device_type){
 global $lang;
-echo "<select name='$name'>";
-	echo "<option value='0'>-----</option>";
-    	echo "<option value='".COMPUTER_TYPE."' ".(($device_type==COMPUTER_TYPE)?" selected":"").">".$lang["help"][25]."</option>";
-	echo "<option value='".NETWORKING_TYPE."' ".(($device_type==NETWORKING_TYPE)?" selected":"").">".$lang["help"][26]."</option>";
-	echo "<option value='".PRINTER_TYPE."' ".(($device_type==PRINTER_TYPE)?" selected":"").">".$lang["help"][27]."</option>";
-	echo "<option value='".MONITOR_TYPE."' ".(($device_type==MONITOR_TYPE)?" selected":"").">".$lang["help"][28]."</option>";
-	echo "<option value='".PERIPHERAL_TYPE."' ".(($device_type==PERIPHERAL_TYPE)?" selected":"").">".$lang["help"][29]."</option>";
-	echo "<option value='".SOFTWARE_TYPE."' ".(($device_type==SOFTWARE_TYPE)?" selected":"").">".$lang["help"][31]."</option>";
-	echo "<option value='".CARTRIDGE_TYPE."' ".(($device_type==CARTRIDGE_TYPE)?" selected":"").">".$lang["Menu"][21]."</option>";
-	echo "<option value='".CONSUMABLE_TYPE."' ".(($device_type==CONSUMABLE_TYPE)?" selected":"").">".$lang["Menu"][32]."</option>";
-	echo "<option value='".CONTACT_TYPE."' ".(($device_type==CONTACT_TYPE)?" selected":"").">".$lang["Menu"][22]."</option>";
-	echo "<option value='".ENTERPRISE_TYPE."' ".(($device_type==ENTERPRISE_TYPE)?" selected":"").">".$lang["Menu"][23]."</option>";
-	echo "<option value='".CONTRACT_TYPE."' ".(($device_type==CONTRACT_TYPE)?" selected":"").">".$lang["Menu"][25]."</option>";
+echo "<select name='$name'>\n";
+	echo "<option value='0'>-----</option>\n";
+    	echo "<option value='".COMPUTER_TYPE."' ".(($device_type==COMPUTER_TYPE)?" selected":"").">".$lang["help"][25]."</option>\n";
+	echo "<option value='".NETWORKING_TYPE."' ".(($device_type==NETWORKING_TYPE)?" selected":"").">".$lang["help"][26]."</option>\n";
+	echo "<option value='".PRINTER_TYPE."' ".(($device_type==PRINTER_TYPE)?" selected":"").">".$lang["help"][27]."</option>\n";
+	echo "<option value='".MONITOR_TYPE."' ".(($device_type==MONITOR_TYPE)?" selected":"").">".$lang["help"][28]."</option>\n";
+	echo "<option value='".PERIPHERAL_TYPE."' ".(($device_type==PERIPHERAL_TYPE)?" selected":"").">".$lang["help"][29]."</option>\n";
+	echo "<option value='".SOFTWARE_TYPE."' ".(($device_type==SOFTWARE_TYPE)?" selected":"").">".$lang["help"][31]."</option>\n";
+	echo "<option value='".CARTRIDGE_TYPE."' ".(($device_type==CARTRIDGE_TYPE)?" selected":"").">".$lang["Menu"][21]."</option>\n";
+	echo "<option value='".CONSUMABLE_TYPE."' ".(($device_type==CONSUMABLE_TYPE)?" selected":"").">".$lang["Menu"][32]."</option>\n";
+	echo "<option value='".CONTACT_TYPE."' ".(($device_type==CONTACT_TYPE)?" selected":"").">".$lang["Menu"][22]."</option>\n";
+	echo "<option value='".ENTERPRISE_TYPE."' ".(($device_type==ENTERPRISE_TYPE)?" selected":"").">".$lang["Menu"][23]."</option>\n";
+	echo "<option value='".CONTRACT_TYPE."' ".(($device_type==CONTRACT_TYPE)?" selected":"").">".$lang["Menu"][25]."</option>\n";
 	//echo "<option value='".USER_TYPE."' ".(($device_type==USER_TYPE)?" selected":"").">".$lang["Menu"][14]."</option>";
-	echo "</select>";
+	echo "</select>\n";
 
 
 }
@@ -897,37 +897,36 @@ function dropdownAllItems($myname,$withenterprise=0,$withcartridge=0,$withconsum
 	
 	
 	$rand=mt_rand();
-	echo "<table border='0'><tr><td>";
-	echo "<select name='type' id='item_type$rand'>";
-	echo "<option value='0'>-----</option>";
-	echo "<option value='".COMPUTER_TYPE."'>".$lang["Menu"][0]."</option>";
-	echo "<option value='".NETWORKING_TYPE."'>".$lang["Menu"][1]."</option>";
-	echo "<option value='".PRINTER_TYPE."'>".$lang["Menu"][2]."</option>";
-	echo "<option value='".MONITOR_TYPE."'>".$lang["Menu"][3]."</option>";
-	echo "<option value='".PERIPHERAL_TYPE."'>".$lang["Menu"][16]."</option>";
-	echo "<option value='".SOFTWARE_TYPE."'>".$lang["Menu"][4]."</option>";
-	if ($withenterprise==1) echo "<option value='".ENTERPRISE_TYPE."'>".$lang["Menu"][23]."</option>";
-	if ($withcartridge==1) echo "<option value='".CARTRIDGE_TYPE."'>".$lang["Menu"][21]."</option>";
-	if ($withconsumable==1) echo "<option value='".CONSUMABLE_TYPE."'>".$lang["Menu"][32]."</option>";
-	echo "</select>";
+	echo "<table border='0'><tr><td>\n";
+	echo "<select name='type' id='item_type$rand'>\n";
+	echo "<option value='0'>-----</option>\n";
+	echo "<option value='".COMPUTER_TYPE."'>".$lang["Menu"][0]."</option>\n";
+	echo "<option value='".NETWORKING_TYPE."'>".$lang["Menu"][1]."</option>\n";
+	echo "<option value='".PRINTER_TYPE."'>".$lang["Menu"][2]."</option>\n";
+	echo "<option value='".MONITOR_TYPE."'>".$lang["Menu"][3]."</option>\n";
+	echo "<option value='".PERIPHERAL_TYPE."'>".$lang["Menu"][16]."</option>\n";
+	echo "<option value='".SOFTWARE_TYPE."'>".$lang["Menu"][4]."</option>\n";
+	if ($withenterprise==1) echo "<option value='".ENTERPRISE_TYPE."'>".$lang["Menu"][23]."</option>\n";
+	if ($withcartridge==1) echo "<option value='".CARTRIDGE_TYPE."'>".$lang["Menu"][21]."</option>\n";
+	if ($withconsumable==1) echo "<option value='".CONSUMABLE_TYPE."'>".$lang["Menu"][32]."</option>\n";
+	echo "</select>\n";
 	
 	
-	echo "<script type='text/javascript' >";
-	echo "   new Form.Element.Observer('item_type$rand', 1, ";
-	echo "      function(element, value) {";
-	echo "      	new Ajax.Updater('show_$myname$rand','".$cfg_install["root"]."/ajax/dropdownAllItems.php',{asynchronous:true, evalScripts:true, ";
-	echo "           onComplete:function(request)";
-	echo "            {Element.hide('search_spinner_$myname$rand');}, ";
-	echo "           onLoading:function(request)";
-	echo "            {Element.show('search_spinner_$myname$rand');},";
-	echo "           method:'post', parameters:'idtable='+value+'&myname=$myname'";
-	echo "})})";
-	echo "</script>";
+	echo "<script type='text/javascript' >\n";
+	echo "   new Form.Element.Observer('item_type$rand', 1, \n";
+	echo "      function(element, value) {\n";
+	echo "      	new Ajax.Updater('show_$myname$rand','".$cfg_install["root"]."/ajax/dropdownAllItems.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
+	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
+	echo "           onLoading:function(request)\n";
+	echo "            {Element.show('search_spinner_$myname$rand');},\n";
+	echo "           method:'post', parameters:'idtable='+value+'&myname=$myname'\n";
+	echo "})})\n";
+	echo "</script>\n";
 	
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>";	
-	echo "</td><td>"	;
-	echo "<span id='show_$myname$rand'>&nbsp;</span>";
-	echo "</td></tr></table>";
+	echo "<div id='search_spinner_$myname$rand' style=' position:absolute; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";	
+	echo "</td><td>\n"	;
+	echo "<span id='show_$myname$rand'>&nbsp;</span>\n";
+	echo "</td></tr></table>\n";
 	
 /*	
 	
@@ -1009,10 +1008,10 @@ function dropdownAllItems($myname,$withenterprise=0,$withcartridge=0,$withconsum
 */
 function dropdownYesNo($name,$value){
 	global $lang;
-	echo "<select name='$name'>";
-	echo "<option value='N' ".($value=='N'?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "<option value='Y' ".($value=='Y'?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "</select>";	
+	echo "<select name='$name'>\n";
+	echo "<option value='N' ".($value=='N'?" selected ":"").">".$lang["choice"][1]."</option>\n";
+	echo "<option value='Y' ".($value=='Y'?" selected ":"").">".$lang["choice"][0]."</option>\n";
+	echo "</select>\n";	
 }	
 
 
@@ -1021,45 +1020,45 @@ function dropdownTrackingDeviceType($myname,$value){
 	
 	$rand=mt_rand();
 	
-	echo "<select id='search_$myname$rand' name='$myname'>";
+	echo "<select id='search_$myname$rand' name='$myname'>\n";
     //if (isAdmin($_SESSION["glpitype"]))
-    echo "<option value='0' ".(($value==0)?" selected":"").">".$lang["help"][30]."";
-	echo "<option value='".COMPUTER_TYPE."' ".(($value==COMPUTER_TYPE)?" selected":"").">".$lang["help"][25]."";
-	echo "<option value='".NETWORKING_TYPE."' ".(($value==NETWORKING_TYPE)?" selected":"").">".$lang["help"][26]."";
-	echo "<option value='".PRINTER_TYPE."' ".(($value==PRINTER_TYPE)?" selected":"").">".$lang["help"][27]."";
-	echo "<option value='".MONITOR_TYPE."' ".(($value==MONITOR_TYPE)?" selected":"").">".$lang["help"][28]."";
-	echo "<option value='".PERIPHERAL_TYPE."' ".(($value==PERIPHERAL_TYPE)?" selected":"").">".$lang["help"][29]."";
-	echo "<option value='".SOFTWARE_TYPE."' ".(($value==SOFTWARE_TYPE)?" selected":"").">".$lang["help"][31]."";
-	echo "</select>";
+    echo "<option value='0' ".(($value==0)?" selected":"").">".$lang["help"][30]."</option>\n";
+	echo "<option value='".COMPUTER_TYPE."' ".(($value==COMPUTER_TYPE)?" selected":"").">".$lang["help"][25]."</option>\n";
+	echo "<option value='".NETWORKING_TYPE."' ".(($value==NETWORKING_TYPE)?" selected":"").">".$lang["help"][26]."</option>\n";
+	echo "<option value='".PRINTER_TYPE."' ".(($value==PRINTER_TYPE)?" selected":"").">".$lang["help"][27]."</option>\n";
+	echo "<option value='".MONITOR_TYPE."' ".(($value==MONITOR_TYPE)?" selected":"").">".$lang["help"][28]."</option>\n";
+	echo "<option value='".PERIPHERAL_TYPE."' ".(($value==PERIPHERAL_TYPE)?" selected":"").">".$lang["help"][29]."</option>\n";
+	echo "<option value='".SOFTWARE_TYPE."' ".(($value==SOFTWARE_TYPE)?" selected":"").">".$lang["help"][31]."</option>\n";
+	echo "</select>\n";
 
-echo "<script type='text/javascript' >";
-echo "   new Form.Element.Observer('search_$myname$rand', 1, ";
-echo "      function(element, value) {";
-echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdownTrackingDeviceType.php',{asynchronous:true, evalScripts:true, ";
-echo "           onComplete:function(request)";
-echo "            {Element.hide('search_spinner_$myname$rand');}, ";
-echo "           onLoading:function(request)";
-echo "            {Element.show('search_spinner_$myname$rand');},";
-echo "           method:'post', parameters:'type=' + value+'&myname=computer'";
-echo "})})";
-echo "</script>";
+echo "<script type='text/javascript' >\n";
+echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
+echo "      function(element, value) {\n";
+echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdownTrackingDeviceType.php',{asynchronous:true, evalScripts:true, \n";
+echo "           onComplete:function(request)\n";
+echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
+echo "           onLoading:function(request)\n";
+echo "            {Element.show('search_spinner_$myname$rand');},\n";
+echo "           method:'post', parameters:'type=' + value+'&myname=computer'\n";
+echo "})})\n";
+echo "</script>\n";
 
 
-echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>";
+echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
-echo "<span id='results_$myname$rand'>";
+echo "<span id='results_$myname$rand'>\n";
 
 if (isset($_SESSION["helpdeskSaved"]["computer"])){
 	$ci=new CommonItem();
 	if ($ci->getFromDB($value,$_SESSION["helpdeskSaved"]["computer"])){
-		echo "<select name='computer'>";
-		echo "<option value='".$_SESSION["helpdeskSaved"]["computer"]."'>".$ci->getName()."</option>";
+		echo "<select name='computer'>\n";
+		echo "<option value='".$_SESSION["helpdeskSaved"]["computer"]."'>".$ci->getName()."</option>\n";
 	
-		echo "</select>";
+		echo "</select>\n";
 	}
 }
 
-echo "</span>";	
+echo "</span>\n";	
 	
 			
 }
