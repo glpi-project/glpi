@@ -1315,10 +1315,14 @@ function countInstallations($sID) {
 
 function getInstalledLicence($sID){
 	$db=new DB;
-	$query = "SELECT ID FROM glpi_licenses WHERE (sID = '$sID')";
+	$query = "SELECT count(*) FROM glpi_licenses INNER JOIN glpi_inst_software ON (glpi_licenses.sID = '$sID' AND glpi_licenses.ID = glpi_inst_software.license ) 
+						INNER JOIN glpi_computers ON ( glpi_inst_software.cID=glpi_computers.ID AND glpi_computers.deleted='N' AND glpi_computers.is_template='0' )";
+	
 	$result = $db->query($query);
+	
 	if ($db->numrows($result)!=0){
-		$installed=0;
+		return $db->result($result,0,0);
+/*		$installed=0;
 		while ($data =  $db->fetch_array($result))
 			{
 			$query2 = "SELECT glpi_inst_software.license FROM glpi_inst_software ";
@@ -1328,6 +1332,7 @@ function getInstalledLicence($sID){
 			$installed += $db->numrows($result2);
 			}
 		return $installed;
+*/	
 	} else return 0;
 	
 }
