@@ -39,12 +39,13 @@
 	checkAuthentication("post-only");
 // Make a select box with all glpi users
 	$db = new DB;
-	
-	if (isset($_POST['value']))
-		$where =" AND  (ID <> '".$_POST['value']."' ";
+		$where="'1'='1'";
 
+	if (isset($_POST['value']))
+		$where.=" AND  (glpi_users.ID <> '".$_POST['value']."' ";
+				
 	if (!empty($_POST['searchText'])&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
-		$where.=" AND (name LIKE '%".$_POST['searchText']."%' OR realname LIKE '%".$_POST['searchText']."%')";
+		$where.=" AND (glpi_users.name LIKE '%".$_POST['searchText']."%' OR glpi_users.realname LIKE '%".$_POST['searchText']."%')";
 
 	$where.=")";	
 
@@ -52,10 +53,10 @@
 	$LIMIT="LIMIT 0,$NBMAX";
 	if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
 	
-			
-	$query = "SELECT * FROM glpi_users WHERE (".searchUserbyType("normal").") $where ORDER BY realname,name $LIMIT";
+	$query = "SELECT DISTINCT glpi_users.ID, glpi_users.name, glpi_users.realname FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.".$_POST['champ']." AND glpi_tracking.".$_POST['champ']." <> '') WHERE $where ORDER BY glpi_users.realname,glpi_users.name $LIMIT";
 	//echo $query;
 	$result = $db->query($query);
+
 	echo "<select name=\"".$_POST['myname']."\">";
 	$i = 0;
 
@@ -64,15 +65,15 @@
 	
 		
 	$number = $db->numrows($result);
-	if ($_POST['all']==0)
+	if ($all==0)
 	echo "<option value=\"0\">[ Nobody ]</option>";
-	else if($_POST['all']==1) echo "<option value=\"0\">[ ".$lang["search"][7]." ]</option>";
+	else if($all==1) echo "<option value=\"0\">[ ".$lang["search"][7]." ]</option>";
 	
 	if (isset($_POST['value'])){
 		$output=getUserName($_POST['value']);
 		if (!empty($output)&&$output!="&nbsp;")
 		echo "<option selected value='".$_POST['value']."'>".$output."</option>";
-	}		
+	}	
 	
 	if ($number > 0) {
 		while ($i < $number) {
@@ -80,11 +81,11 @@
 			$realname=unhtmlentities($db->result($result, $i, "realname"));
 			if (!empty($realname)) $output = $realname;
 			$ID = unhtmlentities($db->result($result, $i, "ID"));
-//			if ($ID == $value) {
-//				echo "<option value=\"$ID\" selected>".$output;
-//			} else {				
+			if ($ID == $value) {
+				echo "<option value=\"$ID\" selected>".$output;
+			} else {
 				echo "<option value=\"$ID\">".$output;
-//			}
+			}
 			$i++;
 			echo "</option>";
    		}

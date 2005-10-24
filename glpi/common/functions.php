@@ -1763,15 +1763,21 @@ function getMultiSearchItemForLink($name,$array){
 
 function getUserName($ID,$link=0){
 	global $cfg_install;
-	$user=new User();
-	$user->getFromDBbyID($ID);
-	$before="";
-	$after="";
-	if ($link){
-		$before="<a href=\"".$cfg_install["root"]."/users/users-info.php?ID=".$ID."\">";
-		$after="</a>";
+	$db=new DB;
+	$query="SELECT * from glpi_users WHERE ID='$ID'";
+	$result=$db->query($query);
+//	echo $query;
+	if ($db->numrows($result)==1){
+		$before="";
+		$after="";
+		if ($link){
+			$before="<a href=\"".$cfg_install["root"]."/users/users-info.php?ID=".$ID."\">";
+			$after="</a>";
+		}
+		if (strlen($db->result($result,0,"realname"))>0) return $before.$db->result($result,0,"realname").$after;
+		else return $before.$db->result($result,0,"name").$after;
 	}
-	return $before.$user->getName().$after;
+	else return "";		
 }
 
 function get_hour_from_sql($time){

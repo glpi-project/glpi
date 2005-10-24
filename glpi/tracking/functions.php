@@ -1890,11 +1890,11 @@ function showTrackingList($target,$username,$field,$phrasetype,$contains,$start,
 
 	if ($status!="all") $query.=" AND glpi_tracking.status = '$status'";
 	
-	if ($assign!="all") $query.=" AND glpi_tracking.assign = '$assign'";
-	if ($author!="all") $query.=" AND glpi_tracking.author = '$author'";
+	if ($assign!="0") $query.=" AND glpi_tracking.assign = '$assign'";
+	if ($author!="0") $query.=" AND glpi_tracking.author = '$author'";
 	
    $query.=" ORDER BY ID";
-	echo $query;
+	//echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);
