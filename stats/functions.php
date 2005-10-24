@@ -85,10 +85,15 @@ function getNbIntervDropdown($dropdown)
 
 //return an array from tracking
 //it contains the distinct authors of interventions.
-function getNbIntervAuthor()
+function getNbIntervAuthor($date1,$date2)
 {	
 	$db = new DB;
-	$query = "SELECT distinct(glpi_tracking.author) as author FROM glpi_tracking order by author";
+	$query = "SELECT DISTINCT glpi_tracking.author as ID, glpi_users.name as name, glpi_users.realname as realname FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.author)";
+	$query.= " WHERE '1'='1' ";
+	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
+	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+
+	$query.= " order by realname, name";
 	$result = $db->query($query);
 	if($db->numrows($result) >=1) {
 		$i = 0;

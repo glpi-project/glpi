@@ -58,6 +58,9 @@ $_POST["date1"]=$_POST["date2"];
 $_POST["date2"]=$tmp;
 }
 
+if(!isset($_GET["start"])) $_GET["start"] = 0;
+
+
 echo "<div align='center'><form method=\"post\" name=\"form\" action=\"stat_user.php\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
 echo $lang["search"][8]." :</td><td>";
@@ -70,36 +73,41 @@ echo "</table></form></div>";
 
 //On recupere les differents auteurs d'interventions
 //Get the distinct intervention authors
-$nomUsr = getNbIntervAuthor();
+$nomUsr = getNbIntervAuthor($_POST["date1"],$_POST["date2"]);
 
 echo "<div align ='center'>";
 
 if (is_array($nomUsr))
 {
+
+//Pour chacun de ces auteurs on affiche
+//foreach these authors display
+foreach($nomUsr as $key){
+$val[$key["ID"]]["ID"]=$key["ID"];
+$val[$key["ID"]]["name"]=empty($key["realname"])?$key["name"]:$key["realname"];
+}
+
+sort($val);
+$numrows=count($val);
+printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"");
+
 //affichage du tableau
 //table display
 echo "<table class='tab_cadre2' cellpadding='5' >";
 echo "<tr><th>".$lang["stats"][20]."</th><th>&nbsp;</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
-//Pour chacun de ces auteurs on affiche
-//foreach these authors display
-foreach($nomUsr as $key){
-$name=getUserName($key["author"]);
-$val[$name]["author"]=$key["author"];
-}
-ksort($val);
 
 
-   foreach($val as $k=>$key)
+   for ($i=$_GET['start'];$i< $numrows && $i<($_GET['start']+$cfg_features["list_limit"]);$i++)
    {
 	echo "<tr class='tab_bg_1'>";
-	echo "<td>".getUserName($key["author"],1)."</td><td><a href='graph_item.php?ID=".$key["author"]."&amp;type=user'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
+	echo "<td><a href=".$HTMLRel."users/users-info.php?ID=".$val[$i]['ID'].">".$val[$i]['name']."</a></td><td><a href='graph_item.php?ID=".$val[$i]['ID']."&amp;type=user'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
 
-		echo "<td>".getNbinter(4,'glpi_tracking.author',unhtmlentities($key["author"]), $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getNbresol(4,'glpi_tracking.author',unhtmlentities($key["author"]), $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getResolAvg(4, 'glpi_tracking.author',unhtmlentities($key["author"]), $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getRealAvg(4, 'glpi_tracking.author',unhtmlentities($key["author"]), $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getRealTotal(4, 'glpi_tracking.author',unhtmlentities($key["author"]), $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getFirstActionAvg(4, 'glpi_tracking.author',unhtmlentities($key["author"]), $_POST["date1"], $_POST["date2"])."</td>";
+		echo "<td>".getNbinter(4,'glpi_tracking.author',$val[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
+		echo "<td>".getNbresol(4,'glpi_tracking.author',$val[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
+		echo "<td>".getResolAvg(4, 'glpi_tracking.author',$val[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
+		echo "<td>".getRealAvg(4, 'glpi_tracking.author',$val[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
+		echo "<td>".getRealTotal(4, 'glpi_tracking.author',$val[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
+		echo "<td>".getFirstActionAvg(4, 'glpi_tracking.author',$val[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
 
 	echo "</tr>";
   }
