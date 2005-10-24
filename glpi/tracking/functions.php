@@ -1639,7 +1639,7 @@ function getRealtime($realtime){
 		return $output;
 		}
 
-function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,$assign=0,$category=0,$showfollowups="",$field2="",$phrasetype2="",$contains2="",$field="",$phrasetype="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,$assign=0,$category=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Print Search Form
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel,$phproot;
@@ -1779,7 +1779,7 @@ else {
 }
 
 
-function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$category=0,$showfollowups="",$field2="",$phrasetype2="",$contains2="",$field="",$phrasetype="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$category=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -1915,7 +1915,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$c
 		
 		if ($numrows_limit>0) {
 			// Pager
-			$parameters="field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;phrasetype2=$phrasetype2&amp;contains2=$contains2&amp;attrib=$assign&amp;author=$author";
+			$parameters="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;contains2=$contains2&amp;attrib=$assign&amp;author=$author";
 			printPager($start,$numrows,$target,$parameters);
 			
 			// Produce headline
