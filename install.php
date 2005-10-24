@@ -524,7 +524,7 @@ function step3($host,$user,$password,$update)
 
 
 //Step 4 Create and fill database.
-function step4 ($host,$user,$password,$databasename,$newdatabasename,$selecteddump)
+function step4 ($host,$user,$password,$databasename,$newdatabasename)
 {
 	global $lang;
 	//display the form to return to the previous step.
