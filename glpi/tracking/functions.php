@@ -48,6 +48,14 @@ function titleTracking(){
 
 }
 
+function commonTrackingListHeader(){
+global $lang;
+		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
+		echo "<th width=5>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
+		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["common"][1]."</th>";
+		echo "<th>".$lang["tracking"][20]."</th>";
+		echo "<th colspan='2'>".$lang["joblist"][6]."</th></tr>";
+}
 
 // Plus utilisé
 /*
@@ -445,11 +453,6 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (device_type = '$item_ty
 		echo "<tr><th colspan=9>".$number." ".$lang["job"][18]."  ".$lang["job"][17]."";
 		if ($number > 1) { echo "s"; }
 		echo " ".$lang["job"][16].":</th></tr>";
-		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
-		echo "<th width=5>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
-		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["common"][1]."</th>";
-		echo "<th>".$lang["tracking"][20]."</th>";
-		echo "<th colspan='2'>".$lang["joblist"][6]."</th></tr>";
 		while ($i < $number)
 		{
 			$ID = $db->result($result, $i, "ID");
@@ -530,12 +533,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and 
 			echo "</td></tr>";
 		}
 
-		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
-		echo "<th width='5'>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
-		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["common"][1]."</th>";
-		echo "<th>".$lang["tracking"][20]."</th>";
-		echo "<th colspan='2'>".$lang["joblist"][6]."</th></tr>";
-
+		commonTrackingListHeader();
 
 		while ($i < $number)
 		{
@@ -1928,14 +1926,10 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$c
 			}
 			
 									
-			echo "<div align='center'><table border='0' class='tab_cadre' width='90%'><tr>";
+			echo "<div align='center'><table border='0' class='tab_cadre' width='90%'>";
 
-echo "<th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
-		echo "<th width=5>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
-		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["joblist"][5]."</th>";
-		echo "<th>".$lang["tracking"][20]."</th>";
-		echo "<th colspan='2'>".$lang["joblist"][6]."</th>";
-			echo "</tr>";
+			commonTrackingListHeader();
+
 			for ($i=0; $i < $numrows_limit; $i++) {
 				
 				$ID = $db->result($result_limit, $i, "ID");
