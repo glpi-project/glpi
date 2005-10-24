@@ -588,7 +588,7 @@ function dropdownAssign($value, $value_type,$myname) {
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'idtable='+value+'&myname=$myname'\n";
+	echo "           method:'post', parameters:'idtable='+value+'&myname=$myname&value=$value'\n";
 	echo "})})\n";
 	echo "</script>\n";
 	
@@ -775,7 +775,7 @@ function getDropdownName($table,$id) {
 */
 
 function dropdownUsersTracking($value, $myname,$champ) {
-	global $HTMLRel,$cfg_install;
+	global $HTMLRel,$cfg_install,$lang;
 
 	$rand=mt_rand();
 	echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
@@ -799,7 +799,7 @@ echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:
 	if (!empty($value)&&$value>0)
 		echo "<select name='$myname'><option value='$value'>".getDropdownName("glpi_users",$value)."</option></select>\n";
 	else 
-		echo "<select name='$myname'><option value='0'>[ Nobody ]</option></select>\n";
+		echo "<select name='$myname'><option value='0'>[ ".$lang["search"][7]." ]</option></select>\n";
 	echo "</span>\n";	
 	
 /*	

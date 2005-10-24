@@ -39,14 +39,13 @@
 	checkAuthentication("post-only");
 // Make a select box with all glpi users
 	$db = new DB;
-	
+	$where=" AND '1'='1' ";
 	if (isset($_POST['value']))
-		$where =" AND  (ID <> '".$_POST['value']."' ";
+		$where.=" AND  (ID <> '".$_POST['value']."') ";
 
 	if (!empty($_POST['searchText'])&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
 		$where.=" AND (name LIKE '%".$_POST['searchText']."%' OR realname LIKE '%".$_POST['searchText']."%')";
 
-	$where.=")";	
 
 	$NBMAX=$cfg_layout["dropdown_max"];
 	$LIMIT="LIMIT 0,$NBMAX";
@@ -54,7 +53,7 @@
 	
 			
 	$query = "SELECT * FROM glpi_users WHERE (".searchUserbyType("normal").") $where ORDER BY realname,name $LIMIT";
-	//echo $query;
+//	echo $query;
 	$result = $db->query($query);
 	echo "<select name=\"".$_POST['myname']."\">";
 	$i = 0;
