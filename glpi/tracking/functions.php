@@ -1473,7 +1473,7 @@ function assignFormTracking ($ID,$admin,$target) {
 	echo getAssignName($job->assign,$job->assign_type,1);
 	echo "</td></tr>";
 
-	echo "</td></table>";
+	echo "</table>";
 
 	echo "</td>";
 //	echo "</form>";
