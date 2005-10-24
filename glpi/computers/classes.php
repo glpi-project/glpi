@@ -46,7 +46,7 @@ class Computer {
 	//format $device = array(ID,"ID type periph","ID dans la table device","valeur de specificity")
 	var $devices	= array();
 	
-	function getfromDB ($ID) {
+	function getfromDB ($ID,$load_device=1) {
 
 		$table = "glpi_computers";
 		
@@ -60,19 +60,19 @@ class Computer {
 				foreach ($data as $key => $val) {
 					$this->fields[$key] = $val;
 				}
-				$query = "SELECT ID, device_type, FK_device, specificity FROM glpi_computer_device WHERE (FK_computers = '$ID') ORDER BY device_type";
-				if ($result = $db->query($query)) {
-					if ($db->numrows($result)>0) {
-						$i = 0;
-						while($data = $db->fetch_array($result)) {
-							$this->devices[$i] = array("compDevID"=>$data["ID"],"devType"=>$data["device_type"],"devID"=>$data["FK_device"],"specificity"=>$data["specificity"]);
-							$i++;
-						}
-						return true;
+				if ($load_device){
+					$query = "SELECT ID, device_type, FK_device, specificity FROM glpi_computer_device WHERE (FK_computers = '$ID') ORDER BY device_type";
+					if ($result = $db->query($query)) {
+						if ($db->numrows($result)>0) {
+							$i = 0;
+							while($data = $db->fetch_array($result)) {
+								$this->devices[$i] = array("compDevID"=>$data["ID"],"devType"=>$data["device_type"],"devID"=>$data["FK_device"],"specificity"=>$data["specificity"]);
+								$i++;
+							}
 					}
-					
-				} 
-				
+				}
+			}
+			return true;
 			}
 			else return false;
 		}

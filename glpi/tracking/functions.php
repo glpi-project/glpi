@@ -1925,18 +1925,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$c
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);
 
-		// Limit the result, if no limit applies, use prior result
-		if ($numrows>$cfg_features["list_limit"]) {
-			$query_limit = $query. " LIMIT $start,".$cfg_features["list_limit"]." ";
-			$result_limit = $db->query($query_limit);
-			$numrows_limit = $db->numrows($result_limit);
-		} else {
-			$numrows_limit = $numrows;
-			$result_limit = $result;
-		}
-//	echo $query;
-		
-		if ($numrows_limit>0) {
+		if ($start<$numrows) {
 			// Pager
 			$parameters="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;contains2=$contains2&amp;attrib=$assign&amp;author=$author";
 			printPager($start,$numrows,$target,$parameters);
@@ -1953,10 +1942,11 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$c
 
 			commonTrackingListHeader();
 
-			for ($i=0; $i < $numrows_limit; $i++) {
-				
-				$ID = $db->result($result_limit, $i, "ID");
+			$i=$start;
+			while ($i < $numrows && $i<($start+$cfg_features["list_limit"])){
+				$ID = $db->result($result, $i, "ID");
 				showJobShort($ID, $showfollowups);
+				$i++;
 			}
 
 			// Close Table
