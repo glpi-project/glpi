@@ -103,9 +103,14 @@ else if (isset($tab["disconnect"]))
 	logEvent(0, "printers", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if(isset($tab["connect"]))
+else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 {
-	if($tab["connect"]==1)
+
+	checkAuthentication("admin");
+	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["item"],PRINTER_TYPE);
+	logEvent($tab["sID"], "printers", 4, "inventory", $_SESSION["glpiname"]." connected item.");
+	glpi_header($cfg_install["root"]."/printers/printers-info-form.php?ID=".$tab["sID"]);
+/*	if($tab["connect"]==1)
 	{
 		checkAuthentication("admin");
 		commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
@@ -127,6 +132,7 @@ else if(isset($tab["connect"]))
 		
 		glpi_header($cfg_install["root"]."/printers/printers-info-form.php?ID=".$tab["sID"]);
 	}
+*/	
 }
 else
 {
