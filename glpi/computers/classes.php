@@ -46,7 +46,7 @@ class Computer {
 	//format $device = array(ID,"ID type periph","ID dans la table device","valeur de specificity")
 	var $devices	= array();
 	
-	function getfromDB ($ID,$load_device=1) {
+	function getfromDB ($ID,$load_device=0) {
 
 		$table = "glpi_computers";
 		
