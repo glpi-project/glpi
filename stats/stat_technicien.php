@@ -58,6 +58,7 @@ $tmp=$_POST["date1"];
 $_POST["date1"]=$_POST["date2"];
 $_POST["date2"]=$tmp;
 }
+if(!isset($_GET["start"])) $_GET["start"] = 0;
 
 echo "<div align='center'><form method=\"post\" name=\"form\" action=\"stat_technicien.php\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
@@ -72,7 +73,24 @@ echo "</table></form></div>";
 
 //recuperation des different utilisateurs ayant eu des interventions attribuées
 //get distinct user who has intervention assigned to
-$nomTech = getNbIntervTech();
+$nomTech = getNbIntervTech($_POST["date1"],$_POST["date2"]);
+
+$i=0;
+if (is_array($nomTech))
+foreach($nomTech as $key){
+	$val[$i]["assign_type"]=$key["assign_type"];
+	$val[$i]["assign"]=$key["assign"];
+	if ($key["assign_type"]==USER_TYPE){
+		$val[$i]["link"]="<a href='".$HTMLRel."users/users-info.php?ID=".$key["assign"]."'>";
+		$val[$i]["link"].=empty($key["realname"])?$key["name"]:$key["realname"];
+		$val[$i]["link"].="</a>";
+	} else $val[$i]["link"]="<a href='".$HTMLRel."enterprises/enterprises-info-form.php?ID=".$key["assign"]."'>".$key["entname"]."</a>";
+$i++;
+}
+
+$numrows=count($val);
+printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"");
+
 
 echo "<div align ='center'>";
 if (is_array($nomTech))
@@ -84,35 +102,28 @@ echo "<tr><th>".$lang["stats"][16]."</th><th>&nbsp;</th><th>".$lang["stats"][13]
 //Pour chacun de ces utilisateurs on affiche
 //foreach these users display
 
-foreach($nomTech as $key){
-$name=getAssignName($key["assign"],$key["assign_type"]);
-$val[$name]["assign"]=$key["assign"];
-$val[$name]["assign_type"]=$key["assign_type"];
-}
-ksort($val);
-  
-  foreach($val as $k=>$key)
+  for ($i=$_GET['start'];$i< $numrows && $i<($_GET['start']+$cfg_features["list_limit"]);$i++)
   {
 	echo "<tr class='tab_bg_2'>";
-	echo "<td>".getAssignName($key["assign"],$key["assign_type"],1)."</td><td><a href='graph_item.php?ID=".$key["assign"]."&amp;assign_type=".$key["assign_type"]."&amp;type=technicien'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
+	echo "<td>".$val[$i]['link']."</td><td><a href='graph_item.php?ID=".$val[$i]['assign']."&amp;assign_type=".$val[$i]["assign_type"]."&amp;type=technicien'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
 	//le nombre d'intervention
 	//the number of intervention
-		echo "<td>".getNbinter(4,'assign',unhtmlentities($key["assign"]),$_POST["date1"],$_POST["date2"])."</td>";
+		echo "<td>".getNbinter(4,'assign',$val[$i]["assign"],$_POST["date1"],$_POST["date2"],$val[$i]["assign_type"])."</td>";
 	//le nombre d'intervention resolues
 	//the number of resolved intervention
-		echo "<td>".getNbresol(4,'assign',unhtmlentities($key["assign"]),$_POST["date1"],$_POST["date2"])."</td>";
+		echo "<td>".getNbresol(4,'assign',$val[$i]["assign"],$_POST["date1"],$_POST["date2"],$val[$i]["assign_type"])."</td>";
 	//Le temps moyen de resolution
 	//The average time to resolv
-		echo "<td>".getResolAvg(4, 'assign',unhtmlentities($key["assign"]),$_POST["date1"],$_POST["date2"])."</td>";
+		echo "<td>".getResolAvg(4, 'assign',$val[$i]["assign"],$_POST["date1"],$_POST["date2"],$val[$i]["assign_type"])."</td>";
 	//Le temps moyen de l'intervention réelle
 	//The average realtime to resolv
-		echo "<td>".getRealAvg(4, 'assign',unhtmlentities($key["assign"]),$_POST["date1"],$_POST["date2"])."</td>";
+		echo "<td>".getRealAvg(4, 'assign',$val[$i]["assign"],$_POST["date1"],$_POST["date2"],$val[$i]["assign_type"])."</td>";
 	//Le temps total de l'intervention réelle
 	//The total realtime to resolv
-		echo "<td>".getRealTotal(4, 'assign',unhtmlentities($key["assign"]),$_POST["date1"],$_POST["date2"])."</td>";
+		echo "<td>".getRealTotal(4, 'assign',$val[$i]["assign"],$_POST["date1"],$_POST["date2"],$val[$i]["assign_type"])."</td>";
 	//Le temps total de l'intervention réelle
 	//The total realtime to resolv
-		echo "<td>".getFirstActionAvg(4, 'assign',unhtmlentities($key["assign"]),$_POST["date1"],$_POST["date2"])."</td>";
+		echo "<td>".getFirstActionAvg(4, 'assign',$val[$i]["assign"],$_POST["date1"],$_POST["date2"],$val[$i]["assign_type"])."</td>";
 
 	echo "</tr>";
   }

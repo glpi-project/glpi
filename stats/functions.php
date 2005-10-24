@@ -46,10 +46,19 @@ function is_dropdown_stat($postfromselect) {
 
 //return an array from tracking
 //it contains the distinct users witch have any intervention assigned to.
-function getNbIntervTech()
+function getNbIntervTech($date1,$date2)
 {
 	$db = new DB;
-	$query = "SELECT distinct glpi_tracking.assign as assign, glpi_tracking.assign_type as assign_type FROM glpi_tracking where glpi_tracking.assign != 0 order by assign_type, assign";
+	$query = "SELECT distinct glpi_tracking.assign as assign, glpi_tracking.assign_type as assign_type, glpi_users.name as name, glpi_users.realname as realname, glpi_enterprises.name as entname";
+	$query.= " FROM glpi_tracking ";
+	$query.= " LEFT JOIN glpi_users  ON (glpi_users.ID=glpi_tracking.assign AND glpi_tracking.assign_type='".USER_TYPE."') ";
+	$query.= " LEFT JOIN glpi_enterprises  ON (glpi_enterprises.ID=glpi_tracking.assign AND glpi_tracking.assign_type='".ENTERPRISE_TYPE."') ";
+	
+	$query.= " WHERE glpi_tracking.assign != 0 ";
+	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
+	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	
+	$query.= " order by assign_type DESC ,realname, name, entname";
 	$result = $db->query($query);
 	if($db->numrows($result) >=1) {
 		$i = 0;
@@ -138,7 +147,7 @@ function getNbIntervCategory()
 //$chps contains the table where we apply the where clause
 //$value contains the value to parse in the table
 //common usage in query  "where $chps = '$value'";
-function getNbInter($quoi, $chps, $value, $date1 = '', $date2 = '')
+function getNbInter($quoi, $chps, $value, $date1 = '', $date2 = '',$assign_type='')
 {
 	$dropdowns = array ("location", "type", "os","model");
 	$db = new DB;
@@ -169,6 +178,7 @@ function getNbInter($quoi, $chps, $value, $date1 = '', $date2 = '')
 			}
 			else {
 				$query .= " where $chps = '$value'";
+				if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
 			}
 		} else {
 			$query .= " where '1'= '1' ";
@@ -190,7 +200,7 @@ function getNbInter($quoi, $chps, $value, $date1 = '', $date2 = '')
 //$chps contains the table where we apply the where clause
 //$value contains the value to parse in the table
 //common usage in query  "where $chps = '$value'";
-function getNbResol($quoi, $chps, $value, $date1 = '', $date2= '')
+function getNbResol($quoi, $chps, $value, $date1 = '', $date2= '',$assign_type='')
 {
 	$db = new DB;
 	$dropdowns = array ("location", "type", "os","model");
@@ -219,9 +229,13 @@ function getNbResol($quoi, $chps, $value, $date1 = '', $date2= '')
 		if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query .= ", glpi_computers where glpi_tracking.status = 'old' and glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and $chps = '$value'";
+				if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
+
 			}
 			else {
 				$query .= " where $chps = '$value' and glpi_tracking.status = 'old'";
+				if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
+
 			}
 		}
 		else {
@@ -245,7 +259,7 @@ function getNbResol($quoi, $chps, $value, $date1 = '', $date2= '')
 //$chps contains the table where we apply the where clause
 //$value contains the value to parse in the table
 //common usage in query  "where $chps = '$value'";
-function getResolAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
+function getResolAvg($quoi, $chps, $value, $date1 = '', $date2 = '',$assign_type='')
 {
 	$dropdowns = array ("location", "type", "os","model");
 	$db = new DB;
@@ -276,16 +290,19 @@ function getResolAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))";
 				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
-				
+				if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
 			}
 			else {
 				$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))";
 				$query .= " as total from glpi_tracking where $chps = '$value' and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
+				if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
+
 			}
 		}
 		else {
 			$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking";
 			$query .= " where glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
+			if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
 		}
 		if ($date1!="") $query.= " and date >= '". $date1 ."' ";
 		if ($date2!="") $query.= " and date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
@@ -311,7 +328,7 @@ function getResolAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 //$chps contains the table where we apply the where clause
 //$value contains the value to parse in the table
 //common usage in query  "where $chps = '$value'";
-function getRealAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
+function getRealAvg($quoi, $chps, $value, $date1 = '', $date2 = '',$assign_type='')
 {
 	$db = new DB;
 	$dropdowns = array ("location", "type", "os","model");
@@ -343,16 +360,20 @@ function getRealAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select AVG(glpi_tracking.realtime)";
 				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value' and glpi_tracking.realtime > 0";
-				
+				if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
+
 			}
 			else {
 				$query = "select AVG(glpi_tracking.realtime)";
 				$query .= " as total from glpi_tracking where $chps = '$value' and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
+				if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
+
 			}
 		}
 		else {
 			$query = "select AVG(glpi_tracking.realtime) as total from glpi_tracking";
 			$query .= " where glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and glpi_tracking.realtime > 0";
+			if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
 		}
 		if ($date1!="") $query.= " and date >= '". $date1 ."' ";
 		if ($date2!="") $query.= " and date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
@@ -378,7 +399,7 @@ function getRealAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 //$chps contains the table where we apply the where clause
 //$value contains the value to parse in the table
 //common usage in query  "where $chps = '$value'";
-function getRealTotal($quoi, $chps, $value, $date1 = '', $date2 = '')
+function getRealTotal($quoi, $chps, $value, $date1 = '', $date2 = '',$assign_type='')
 {
 	$db = new DB;
 	$dropdowns = array ("location", "type", "os","model");
@@ -410,11 +431,14 @@ function getRealTotal($quoi, $chps, $value, $date1 = '', $date2 = '')
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select SUM(glpi_tracking.realtime)";
 				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value' and glpi_tracking.realtime > 0";
+				if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
 				
 			}
 			else {
 				$query = "select SUM(glpi_tracking.realtime)";
 				$query .= " as total from glpi_tracking where $chps = '$value' and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
+				if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
+
 			}
 		}
 		else {
@@ -546,7 +570,7 @@ function getFirstActionMin($quoi)
 //$chps contains the table where we apply the where clause
 //$value contains the value to parse in the table
 //common usage in query  "where $chps = '$value'";
-function getFirstActionAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
+function getFirstActionAvg($quoi, $chps, $value, $date1 = '', $date2 = '',$assign_type='')
 {
 	$db = new DB;
 	$dropdowns = array ("location", "type", "os","model");
@@ -578,11 +602,13 @@ function getFirstActionAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select glpi_tracking.ID AS ID, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first";
 				$query .= " from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID), glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
+				if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
 				
 			}
 			else {
 				$query = "select glpi_tracking.ID AS ID, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first";
 				$query .= " from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where $chps = '$value' and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
+				if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
 			}
 		}
 		else {
@@ -621,7 +647,11 @@ if (empty($begin)) $begin=date("Y-m-d",mktime(0,0,0,date("m"),date("d"),date("Y"
 $begin.=" 00:00:00";
 
 	$query="";
-	$WHERE="WHERE assign_type<>'".ENTERPRISE_TYPE."' ";
+	
+	
+	if ($param!="technicien")
+		$WHERE=" WHERE assign_type<>'".ENTERPRISE_TYPE."' ";
+	else $WHERE=" WHERE '1'='1' ";
 	
 	switch ($param){
 	case "technicien":

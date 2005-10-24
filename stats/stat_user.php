@@ -76,21 +76,24 @@ echo "</table></form></div>";
 $nomUsr = getNbIntervAuthor($_POST["date1"],$_POST["date2"]);
 
 
-if (is_array($nomUsr))
-{
-
 //Pour chacun de ces auteurs on affiche
 //foreach these authors display
+$i=0;
+if (is_array($nomUsr))
 foreach($nomUsr as $key){
-$val[$key["ID"]]["ID"]=$key["ID"];
-$val[$key["ID"]]["name"]=empty($key["realname"])?$key["name"]:$key["realname"];
+	$val[$i]["ID"]=$key["ID"];
+	$val[$i]["name"]=empty($key["realname"])?$key["name"]:$key["realname"];
+	$i++;
 }
 
-sort($val);
+//sort($val);
 $numrows=count($val);
 printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"");
 
 echo "<div align ='center'>";
+
+if (is_array($nomUsr))
+{
 
 //affichage du tableau
 //table display
