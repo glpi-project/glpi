@@ -533,8 +533,44 @@ function dropdownAllUsers($value, $myname) {
 */
 function dropdownAssign($value, $value_type,$myname) {
 	// Make a select box with all glpi users
+	global $HTMLRel,$cfg_install,$lang;
+	
+	$db=new DB;
+	
+	$items=array(
+	USER_TYPE=>"glpi_users",
+	ENTERPRISE_TYPE=>"glpi_enterprises",
+	);
 
-	$db = new DB;
+	$rand=mt_rand();
+	echo "<table border='0'><tr><td>";
+	echo "<select name='type' id='item_type$rand'>";
+	echo "<option value='0'>-----</option>";
+	echo "<option value='".USER_TYPE."'>".$lang["Menu"][14]."</option>";
+	echo "<option value='".ENTERPRISE_TYPE."'>".$lang["Menu"][23]."</option>";
+	echo "</select>";
+	
+	
+	echo "<script type='text/javascript' >";
+	echo "   new Form.Element.Observer('item_type$rand', 1, ";
+	echo "      function(element, value) {";
+	echo "      	new Ajax.Updater('show_$myname$rand','".$cfg_install["root"]."/ajax/dropdownAllItems.php',{asynchronous:true, evalScripts:true, ";
+	echo "           onComplete:function(request)";
+	echo "            {Element.hide('search_spinner_$myname$rand');}, ";
+	echo "           onLoading:function(request)";
+	echo "            {Element.show('search_spinner_$myname$rand');},";
+	echo "           method:'post', parameters:'idtable='+value+'&myname=$myname'";
+	echo "})})";
+	echo "</script>";
+	
+	echo "<div id='search_spinner_$myname$rand' style=' position:absolute; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>";	
+	echo "</td><td>"	;
+	echo "<span id='show_$myname$rand'></span>";
+	echo "</td></tr>";
+	echo "</table>";
+	
+	
+/*	$db = new DB;
 	$query = "SELECT * FROM glpi_users WHERE (".searchUserbyType("normal").") ORDER BY name";
 	$result = $db->query($query);
 
@@ -579,6 +615,7 @@ function dropdownAssign($value, $value_type,$myname) {
 	}
 	
 	echo "</select>";
+*/
 }
 /**
 * Make a select box with all glpi users where select key = name
