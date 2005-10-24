@@ -45,6 +45,9 @@ commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
 
 echo "<div align ='center'><p><b><span class='icon_nav'>".$lang["stats"][18]."</span></b></p></div>";
 
+if (isset($_GET["date1"])) $_POST["date1"] = $_GET["date1"];
+if (isset($_GET["date2"])) $_POST["date2"] = $_GET["date2"];
+
 if(empty($_POST["date1"])&&empty($_POST["date2"])) {
 $year=date("Y")-1;
 $_POST["date1"]=date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
@@ -88,7 +91,7 @@ foreach($nomUsr as $key){
 
 //sort($val);
 $numrows=count($val);
-printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"");
+printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]);
 
 echo "<div align ='center'>";
 
