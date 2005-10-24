@@ -49,8 +49,9 @@ function titleTracking(){
 }
 
 
-
-function searchFormTracking ($show,$contains,$containsID,$device,$category,$desc) {
+// Plus utilisé
+/*
+function searchFormTrackingOLD ($show,$contains,$containsID,$device,$category,$desc) {
 	// Tracking Search Block
 	
 	GLOBAL $cfg_layout, $cfg_install,$lang;
@@ -152,7 +153,7 @@ function searchFormTracking ($show,$contains,$containsID,$device,$category,$desc
 	echo "</form>\n";
 	echo "</div><br>\n";
 }       
-
+*/
 function getTrackingPrefs ($ID) {
 	// Returns users preference settings for job tracking
 	// Currently only supports sort order
@@ -229,7 +230,8 @@ function showCentralJobList($target,$start) {
 	}
 }
 
-
+// Plus utilisé
+/*
 function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$device='-1',$category='NULL',$containsID='',$desc="both") {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
@@ -408,6 +410,7 @@ function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$
 		echo "</div><br>";
 	}
 }
+*/
 
 function showOldJobListForItem($username,$item_type,$item) {
 	// $item is required
@@ -1638,47 +1641,47 @@ function getRealtime($realtime){
 		return $output;
 		}
 
-function searchFormTrackingReport() {
+function searchFormTracking($report=0,$target,$username,$field,$phrasetype,$contains,$start,$date1,$date2,$computers_search,$field2,$phrasetype2,$contains2,$author,$assign,$category,$status,$showfollowups,$enddate1,$enddate2) {
 	// Print Search Form
 	
-	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel;
+	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel,$phproot;
 
-	
-	$option["comp.ID"]				= $lang["computers"][31];
-	$option["comp.name"]				= $lang["computers"][7];
-	$option["glpi_dropdown_locations.name"]			= $lang["computers"][10];
-	$option["glpi_type_computers.name"]				= $lang["computers"][8];
-	$option["glpi_dropdown_model.name"]				= $lang["computers"][50];
-	$option["glpi_dropdown_os.name"]				= $lang["computers"][9];
-	//$option["comp.osver"]			= $lang["computers"][20];
-	$option["processor.designation"]			= $lang["computers"][21];
-	//$option["processorspeed"]		= $lang["computers"][22];
-	$option["comp.serial"]			= $lang["computers"][17];
-	$option["comp.otherserial"]			= $lang["computers"][18];
-	$option["ram.designation"]			= $lang["computers"][23];
-	//$option["comp.ram"]				= $lang["computers"][24];
-	$option["iface.designation"]			= $lang["computers"][26];
-	//$option["comp.hdspace"]			= $lang["computers"][25];
-	$option["sndcard.designation"]			= $lang["computers"][33];
-	$option["gfxcard.designation"]			= $lang["computers"][34];
-	$option["moboard.designation"]			= $lang["computers"][35];
-	$option["hdd.designation"]			= $lang["computers"][36];
-	$option["comp.comments"]			= $lang["computers"][19];
-	$option["comp.contact"]			= $lang["computers"][16];
-	$option["comp.contact_num"]		        = $lang["computers"][15];
-	$option["comp.date_mod"]			= $lang["computers"][11];
-	$option["glpi_networking_ports.ifaddr"] = $lang["networking"][14];
-	$option["glpi_networking_ports.ifmac"] = $lang["networking"][15];
-	$option["glpi_dropdown_netpoint.name"]			= $lang["networking"][51];
-	$option["glpi_enterprises.name"]			= $lang["common"][5];
-	$option["resptech.name"]			=$lang["common"][10];
-
+	if ($report==1){
+		$option["comp.ID"]				= $lang["computers"][31];
+		$option["comp.name"]				= $lang["computers"][7];
+		$option["glpi_dropdown_locations.name"]			= $lang["computers"][10];
+		$option["glpi_type_computers.name"]				= $lang["computers"][8];
+		$option["glpi_dropdown_model.name"]				= $lang["computers"][50];
+		$option["glpi_dropdown_os.name"]				= $lang["computers"][9];
+		//$option["comp.osver"]			= $lang["computers"][20];
+		$option["processor.designation"]			= $lang["computers"][21];
+		//$option["processorspeed"]		= $lang["computers"][22];
+		$option["comp.serial"]			= $lang["computers"][17];
+		$option["comp.otherserial"]			= $lang["computers"][18];
+		$option["ram.designation"]			= $lang["computers"][23];
+		//$option["comp.ram"]				= $lang["computers"][24];
+		$option["iface.designation"]			= $lang["computers"][26];
+		//$option["comp.hdspace"]			= $lang["computers"][25];
+		$option["sndcard.designation"]			= $lang["computers"][33];
+		$option["gfxcard.designation"]			= $lang["computers"][34];
+		$option["moboard.designation"]			= $lang["computers"][35];
+		$option["hdd.designation"]			= $lang["computers"][36];
+		$option["comp.comments"]			= $lang["computers"][19];
+		$option["comp.contact"]			= $lang["computers"][16];
+		$option["comp.contact_num"]		        = $lang["computers"][15];
+		$option["comp.date_mod"]			= $lang["computers"][11];
+		$option["glpi_networking_ports.ifaddr"] = $lang["networking"][14];
+		$option["glpi_networking_ports.ifmac"] = $lang["networking"][15];
+		$option["glpi_dropdown_netpoint.name"]			= $lang["networking"][51];
+		$option["glpi_enterprises.name"]			= $lang["common"][5];
+		$option["resptech.name"]			=$lang["common"][10];
+	}
 	echo "<form method=get name=\"form\" action=\"".$_SERVER["PHP_SELF"]."\">";
 	
 	echo "<div align='center'><p><strong>".$lang["reports"][25]."</strong></p></div>";
 	echo "<div align='center'>";
 				
-	echo "<table border='0' width='760' class='tab_cadre'>";
+	echo "<table border='0' width='800' class='tab_cadre'>";
 
 	
 	echo "<tr><th colspan='6'><strong>".$lang["search"][0].":</strong></th></tr>";
@@ -1691,7 +1694,7 @@ function searchFormTrackingReport() {
  echo "<select name='field2'>";
  foreach ($elts as $key => $val){
  $selected="";
- if ($_GET["field2"]==$key) $selected="selected";
+ if ($field2==$key) $selected="selected";
  echo "<option value=\"$key\" $selected>$val</option>";
  
  }
@@ -1702,77 +1705,78 @@ function searchFormTrackingReport() {
  
 	 echo $lang["search"][2];
 	echo "</td><td align='center'>";
-	echo "<input type='text' size='15' name=\"contains2\" value=\"".$_GET["contains2"]."\">";
+	echo "<input type='text' size='15' name=\"contains2\" value=\"".$contains2."\">";
 	echo "</td><td  colspan='2' align='center'>".$lang["job"][5]."&nbsp;:&nbsp;";
-	dropdownUsersTracking($_GET["attrib"],"attrib","assign");
+	dropdownUsersTracking($assign,"attrib","assign");
 	echo "</td>";
 	echo "<td  colspan='1' align='center'>".$lang["joblist"][3]."&nbsp;:&nbsp;";
-	dropdownUsersTracking($_GET["author"],"author","author");
+	dropdownUsersTracking($author,"author","author");
 	echo "</td></tr>";
 
 
 	echo "<tr  class='tab_bg_1'>";
 	echo "<td align='center'>".$lang["tracking"][20]."&nbsp;:&nbsp;";
-	dropdownValue("glpi_dropdown_tracking_category","category",$_GET["category"]);
+	dropdownValue("glpi_dropdown_tracking_category","category",$category);
 	echo "</td>";
 	echo "<td colspan='2' align='center'>".$lang["joblist"][0].":";
 	echo "<select name='status'>";
-	echo "<option value='all' ".($_GET["status"]=="all"?"selected":"").">".$lang["joblist"][9]." / ".$lang["joblist"][10]."</option>";
-	echo "<option value='new' ".($_GET["status"]=="new"?"selected":"").">".$lang["joblist"][9]."</option>";
-	echo "<option value='old' ".($_GET["status"]=="old"?"selected":"").">".$lang["joblist"][10]."</option>";	
+	echo "<option value='all' ".($status=="all"?"selected":"").">".$lang["joblist"][9]." / ".$lang["joblist"][10]."</option>";
+	echo "<option value='new' ".($status=="new"?"selected":"").">".$lang["joblist"][9]."</option>";
+	echo "<option value='old' ".($status=="old"?"selected":"").">".$lang["joblist"][10]."</option>";	
 	echo "</select></td>";
 	
 	echo "<td align='center' colspan='3'>".$lang["reports"][59].":<select name='showfollowups'>";
-	echo "<option value='1' ".($_GET["showfollowups"]=="1"?"selected":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='0' ".($_GET["showfollowups"]=="0"?"selected":"").">".$lang["choice"][1]."</option>";	
+	echo "<option value='1' ".($showfollowups=="1"?"selected":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".($showfollowups=="0"?"selected":"").">".$lang["choice"][1]."</option>";	
 	echo "</select></td></tr>";
 
+	if ($report){
+		echo "<tr class='tab_bg_1'>";
+		echo "<td align='center' colspan='2'>";
+		$selected="";
+		if ($_GET["only_computers"]) $selected="checked";
+		echo "<input type='checkbox' name='only_computers' value='1' $selected>".$lang["reports"][24].":</td>";
+		echo "<td align='left' colspan='4'>";
 
-	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center' colspan='2'>";
-	$selected="";
-	if ($_GET["only_computers"]) $selected="checked";
-	echo "<input type='checkbox' name='only_computers' value='1' $selected>".$lang["reports"][24].":</td>";
-	echo "<td align='left' colspan='4'>";
-
-	echo "<input type='text' size='15' name=\"contains\" value=\"". $_GET['contains'] ."\" >";
-	echo "&nbsp;";
-	echo $lang["search"][10]."&nbsp;";
+		echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
+		echo "&nbsp;";
+		echo $lang["search"][10]."&nbsp;";
 	
-	echo "<select name='field' size='1'>";
-        echo "<option value='all' ";
-	if($_GET["field"] == "all") echo "selected";
-	echo ">".$lang["search"][7]."</option>";
-        reset($option);
-	foreach ($option as $key => $val) {
-		echo "<option value=\"".$key."\""; 
-		if($key == $_GET["field"]) echo "selected";
-		echo ">". $val ."</option>\n";
-	}
-	echo "</select>&nbsp;";
+		echo "<select name='field' size='1'>";
+        	echo "<option value='all' ";
+		if($field == "all") echo "selected";
+		echo ">".$lang["search"][7]."</option>";
+        	reset($option);
+		foreach ($option as $key => $val) {
+			echo "<option value=\"".$key."\""; 
+			if($key == $field) echo "selected";
+			echo ">". $val ."</option>\n";
+		}
+		echo "</select>&nbsp;";
 
-	echo "</td></tr>";
+		echo "</td></tr>";
+	}
 	
 	echo "<tr class='tab_bg_1'><td>".$lang["reports"][60].":</td><td align='center' colspan='2'>".$lang["search"][8].":&nbsp;";
-showCalendarForm("form","date1",$_GET["date1"]);
-echo "</td><td align='center' colspan='2'>";
-echo $lang["search"][9].":&nbsp;";
-showCalendarForm("form","date2",$_GET["date2"]);
-echo "</td><td align='center'>&nbsp;</td></tr>";
+	showCalendarForm("form","date1",$date1);
+	echo "</td><td align='center' colspan='2'>";
+	echo $lang["search"][9].":&nbsp;";
+	showCalendarForm("form","date2",$date2);
+	echo "</td><td align='center'><input type='submit' name='reset' value=\"".$lang["buttons"][16]."\" class='submit'></td></tr>";
 
-echo "<tr class='tab_bg_1'><td>".$lang["reports"][61].":</td><td align='center' colspan='2'>".$lang["search"][8].":&nbsp;";
-showCalendarForm("form","enddate1",$_GET["enddate1"]);
-echo "</td><td align='center' colspan='2'>";
-echo $lang["search"][9].":&nbsp;";
-showCalendarForm("form","enddate2",$_GET["enddate2"]);
-echo "</td><td align='center'><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'></td></tr>";
-echo "</table></div></form>";
+	echo "<tr class='tab_bg_1'><td>".$lang["reports"][61].":</td><td align='center' colspan='2'>".$lang["search"][8].":&nbsp;";
+	showCalendarForm("form","enddate1",$enddate1);
+	echo "</td><td align='center' colspan='2'>";
+	echo $lang["search"][9].":&nbsp;";
+	showCalendarForm("form","enddate2",$enddate2);
+	echo "</td><td align='center'><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'></td></tr>";
+	echo "</table></div></form>";
 
 
 }
 
 
-function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$start,$date1,$date2,$computers_search,$field2,$phrasetype2,$contains2,$author,$assign,$category,$status,$showfollowups,$enddate1,$enddate2) {
+function showTrackingList($target,$username,$field,$phrasetype,$contains,$start,$date1,$date2,$computers_search,$field2,$phrasetype2,$contains2,$author,$assign,$category,$status,$showfollowups,$enddate1,$enddate2) {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -1864,10 +1868,10 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 	$query.=" AND glpi_tracking.category = '$category'";
 	
 	if ($computers_search) $query .= " AND $wherecomp";
-	if ($date1!="") $query.=" AND glpi_tracking.date >= '$date1'";
-	if ($date2!="") $query.=" AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
-	if ($enddate1!="") $query.=" AND glpi_tracking.closedate >= '$enddate1'";
-	if ($enddate2!="") $query.=" AND glpi_tracking.closedate <= adddate( '". $enddate2 ."' , INTERVAL 1 DAY ) ";
+	if ($date1!="0000-00-00") $query.=" AND glpi_tracking.date >= '$date1'";
+	if ($date2!="0000-00-00") $query.=" AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	if ($enddate1!="0000-00-00") $query.=" AND glpi_tracking.closedate >= '$enddate1'";
+	if ($enddate2!="0000-00-00") $query.=" AND glpi_tracking.closedate <= adddate( '". $enddate2 ."' , INTERVAL 1 DAY ) ";
 	
 	if ($contains2!=""){
 		switch ($field2){
@@ -1890,7 +1894,7 @@ function showTrackingListReport($target,$username,$field,$phrasetype,$contains,$
 	if ($author!="all") $query.=" AND glpi_tracking.author = '$author'";
 	
    $query.=" ORDER BY ID";
-
+	echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);

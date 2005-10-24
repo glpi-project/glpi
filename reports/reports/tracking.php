@@ -63,20 +63,10 @@ if (!isset($_GET["contains2"])) $_GET["contains2"] = "";
 if (!isset($_GET["contains3"])) $_GET["contains3"] = "";
 if(!isset($_GET["attrib"])) $_GET["attrib"] = "";
 if(!isset($_GET["author"])) $_GET["author"] = "";
-
-if(empty($_GET["date1"])&&empty($_GET["date2"])) {
-$year=date("Y")-1;
-$_GET["date1"]=date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
-
-$_GET["date2"]=date("Y-m-d");
-}
-
-if(empty($_GET["enddate1"])&&empty($_GET["enddate2"])) {
-$year=date("Y")-1;
-$_GET["enddate1"]=date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
-
-$_GET["enddate2"]=date("Y-m-d");
-}
+if (!isset($_GET["enddate1"])) $_GET["enddate1"]="0000-00-00";
+if (!isset($_GET["enddate2"])) $_GET["enddate2"]="0000-00-00";
+if (!isset($_GET["date1"])) $_GET["date1"]="0000-00-00";
+if (!isset($_GET["date2"])) $_GET["date2"]="0000-00-00";
 
 if(!isset($_GET["category"])) $_GET["category"] = 0;
 if (!isset($_GET["field"])) $_GET["field"]="";
@@ -94,10 +84,10 @@ $_GET["date2"]=$tmp;
 
 if(!isset($_GET["only_computers"])) $_GET["only_computers"] = "";
 
-searchFormTrackingReport();
+searchFormTracking(1,$_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["start"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["field2"],$_GET["phrasetype2"],$_GET["contains2"],$_GET["author"],$_GET["attrib"],$_GET["category"],$_GET["status"],$_GET["showfollowups"],$_GET["enddate1"],$_GET["enddate2"]);
 
 if (!empty($_GET["field"]))
-showTrackingListReport($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["start"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["field2"],$_GET["phrasetype2"],$_GET["contains2"],$_GET["author"],$_GET["attrib"],$_GET["category"],$_GET["status"],$_GET["showfollowups"],$_GET["enddate1"],$_GET["enddate2"]);
+showTrackingList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["start"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["field2"],$_GET["phrasetype2"],$_GET["contains2"],$_GET["author"],$_GET["attrib"],$_GET["category"],$_GET["status"],$_GET["showfollowups"],$_GET["enddate1"],$_GET["enddate2"]);
 
 
 commonFooter();
