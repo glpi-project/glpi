@@ -47,6 +47,9 @@ commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
 
 echo "<div align='center'><p><b><span class='icon_nav'>".$lang["stats"][19]."</span></b></p>";
 
+if (isset($_GET["date1"])) $_POST["date1"] = $_GET["date1"];
+if (isset($_GET["date2"])) $_POST["date2"] = $_GET["date2"];
+
 if(empty($_POST["date1"])&&empty($_POST["date2"])) {
 $year=date("Y")-1;
 $_POST["date1"]=date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
@@ -60,6 +63,9 @@ $_POST["date1"]=$_POST["date2"];
 $_POST["date2"]=$tmp;
 }
 
+if(!isset($_GET["start"])) $_GET["start"] = 0;
+
+if (isset($_GET["dropdown"])) $_POST["dropdown"] = $_GET["dropdown"];
 if(empty($_POST["dropdown"])) $_POST["dropdown"] = "glpi_type_computers";
 
 echo "<form method=\"post\" name=\"form\" action=\"stat_lieux.php\">";
@@ -90,6 +96,10 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 	//recuperation des differents lieux d'interventions
 	//Get the distincts intervention location
 	$type = getNbIntervDropdown($_POST["dropdown"]);
+	sort($type);
+	
+	$numrows=count($type);
+	printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"dropdown=".$_POST["dropdown"]."&date1=".$_POST["date1"]."&date2=".$_POST["date2"]);
 
 	echo "<div align ='center'>";
 
@@ -102,33 +112,33 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 
 		//Pour chaque lieu on affiche
 		//for each location displays
-		foreach($type as $key) {
-			$query="SELECT count(*) FROM glpi_computers WHERE $champ='".$key["ID"]."'";
+		for ($i=$_GET['start'];$i< $numrows && $i<($_GET['start']+$cfg_features["list_limit"]);$i++){
+			$query="SELECT count(*) FROM glpi_computers WHERE $champ='".$type[$i]["ID"]."'";
 			$db=new DB;
 			if ($result=$db->query($query))
 				$count=$db->result($result,0,0);
 			else $count=0; 
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".getDropdownName($_POST["dropdown"],$key["ID"]) ."&nbsp;($count)</td><td><a href='graph_item.php?ID=".$key["ID"]."&amp;champ=".$champ."&amp;type=comp_champ'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
+			echo "<td>".getDropdownName($_POST["dropdown"],$type[$i]["ID"]) ."&nbsp;($count)</td><td><a href='graph_item.php?ID=".$type[$i]["ID"]."&amp;champ=".$champ."&amp;type=comp_champ'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
 			//le nombre d'intervention
 			//the number of intervention
-			echo "<td>".getNbinter(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$key["ID"],$_POST["date1"],$_POST["date2"] )."</td>";
+			echo "<td>".getNbinter(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$type[$i]["ID"],$_POST["date1"],$_POST["date2"] )."</td>";
 			//le nombre d'intervention resolues
 			//the number of resolved intervention
-			echo "<td>".getNbresol(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$key["ID"],$_POST["date1"],$_POST["date2"])."</td>";
+			echo "<td>".getNbresol(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$type[$i]["ID"],$_POST["date1"],$_POST["date2"])."</td>";
 			//Le temps moyen de resolution
 			//The average time to resolv
-			echo "<td>".getResolAvg(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$key["ID"],$_POST["date1"],$_POST["date2"])."</td>";
+			echo "<td>".getResolAvg(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$type[$i]["ID"],$_POST["date1"],$_POST["date2"])."</td>";
 			//Le temps moyen de l'intervention réelle
 			//The average realtime to resolv
-			echo "<td>".getRealAvg(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$key["ID"],$_POST["date1"],$_POST["date2"])."</td>";
+			echo "<td>".getRealAvg(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$type[$i]["ID"],$_POST["date1"],$_POST["date2"])."</td>";
 			//Le temps total de l'intervention réelle
 			//The total realtime to resolv
-			echo "<td>".getRealTotal(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$key["ID"],$_POST["date1"],$_POST["date2"])."</td>";
+			echo "<td>".getRealTotal(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$type[$i]["ID"],$_POST["date1"],$_POST["date2"])."</td>";
 			//
 			//
-			echo "<td>".getFirstActionAvg(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$key["ID"],$_POST["date1"],$_POST["date2"])."</td>";
+			echo "<td>".getFirstActionAvg(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$type[$i]["ID"],$_POST["date1"],$_POST["date2"])."</td>";
 
 			echo "</tr>";
 		}
@@ -139,8 +149,6 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 } else {
 
 //---------------------- DEVICE ------------------------------------------------------
-	echo "<table class='tab_cadre2' cellpadding='5' >";
-	echo "<tr><th>&nbsp;</th><th>&nbsp;</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
 	$device_table = getDeviceTable($_POST["dropdown"]);
 	
 	//print_r($_POST["dropdown"]);
@@ -148,15 +156,29 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 	//select devices IDs (table row)
 	$query = "select ID, designation from ".$device_table." order by designation";
 	$result = $db->query($query);
-	while($line = $db->fetch_array($result)) {
+	
+	if($db->numrows($result) >=1) {
+		$i = 0;
+		while($line = $db->fetch_assoc($result)) {
+		$tab[$i]['ID'] = $line['ID'];
+		$tab[$i]['designation'] = $line['designation'];
+		$i++;
+		}
+	}
+	sort($tab);
+	$numrows=count($tab);
+	printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"dropdown=".$_POST["dropdown"]."&date1=".$_POST["date1"]."&date2=".$_POST["date2"]);
+
+	echo "<table class='tab_cadre2' cellpadding='5' >";
+	echo "<tr><th>&nbsp;</th><th>&nbsp;</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
+	
+	for ($i=$_GET['start'];$i< $numrows && $i<($_GET['start']+$cfg_features["list_limit"]);$i++) {
 		
 		//select computers IDs that are using this device;
-		$query2 = "SELECT distinct(glpi_computers.ID) as compid FROM glpi_computers INNER JOIN glpi_computer_device ON ( glpi_computers.ID = glpi_computer_device.FK_computers AND glpi_computer_device.device_type = '".$device_type."' AND glpi_computer_device.FK_device = '".$line["ID"]."') WHERE glpi_computers.is_template <> '1'";
+		$query2 = "SELECT distinct(glpi_computers.ID) as compid FROM glpi_computers INNER JOIN glpi_computer_device ON ( glpi_computers.ID = glpi_computer_device.FK_computers AND glpi_computer_device.device_type = '".$device_type."' AND glpi_computer_device.FK_device = '".$tab[$i]["ID"]."') WHERE glpi_computers.is_template <> '1'";
 		
 		$result2 = $db->query($query2);
-		$designation = $line["designation"];
-		$i = 0;
-		$j = 0;
+		$designation = $tab[$i]["designation"];
 		$resolvavg = 0;
 		$realavg = 0;
 		$realtotal = 0;
@@ -220,8 +242,8 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 		//print row
 		echo "<tr class='tab_bg_1'>";
 		//first column name of the device
-		echo "<td>".$designation."</td>";
-		echo "<td><a href='graph_item.php?ID=".$line["ID"]."&device=".$device_type."&amp;type=device'>Graph</a>";
+		echo "<td>".$tab[$i]["designation"]."</td>";
+		echo "<td><a href='graph_item.php?ID=".$tab[$i]["ID"]."&device=".$device_type."&amp;type=device'>Graph</a>";
 		//second column count nb interv
 		echo "<td>".$nbinterv."</td>";
 		//third column nb resolved interventions

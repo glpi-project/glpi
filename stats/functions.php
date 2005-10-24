@@ -77,13 +77,14 @@ function getNbIntervTech($date1,$date2)
 function getNbIntervDropdown($dropdown)
 {
 	$db = new DB;
-	$query = "SELECT ID from ". $dropdown ." order by name";
+	$query = "SELECT * from ". $dropdown ." order by name";
 	
 	$result = $db->query($query);
 	if($db->numrows($result) >=1) {
 		$i = 0;
 		while($line = $db->fetch_assoc($result)) {
-		$tab[$i] = $line;
+		$tab[$i]['ID'] = $line['ID'];
+		$tab[$i]['name'] = $line['name'];
 		$i++;
 		}
 		return $tab;
