@@ -1021,13 +1021,14 @@ function addNetport($input) {
 
 	$netport = new Netport;
 	
+
 	// dump status
 	unset($input['search']);
 	$null = array_pop($input);
-	
+
 	// fill array for update 
 	foreach ($input as $key => $val) {
-		if (!isset($netport->fields[$key]) || $netport->fields[$key] != $input[$key]) {
+		if ($key[0]!='_'&&(!isset($netport->fields[$key]) || $netport->fields[$key] != $input[$key])) {
 			$netport->fields[$key] = $input[$key];
 		}
 	}
@@ -1154,6 +1155,7 @@ function showConnection ($ID,$withtemplate='') {
 
 ///// Wire the Ports /////
 
+// Plus utilisé
 
 function showConnectorSearch($target,$ID) {
 
@@ -1208,6 +1210,7 @@ function showConnectorSearch($target,$ID) {
 	echo "</form>";	
 }
 
+// Plus utilisé
 function listConnectorComputers($target,$input) {
 	
 	GLOBAL $cfg_layout,$cfg_install, $lang;
@@ -1264,6 +1267,8 @@ function listConnectorComputers($target,$input) {
 	echo "</td></tr></table></form>";	
 
 }
+
+//Plus utilisé
 
 function listConnectorPorts($target,$input) {
 
@@ -1343,6 +1348,7 @@ function listConnectorPorts($target,$input) {
 		echo "</table>";
 	}
 }
+
 
 function makeConnector($sport,$dport) {
 
