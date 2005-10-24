@@ -1641,7 +1641,7 @@ function getRealtime($realtime){
 		return $output;
 		}
 
-function searchFormTracking($report=0,$target,$username,$field,$phrasetype,$contains,$start,$date1,$date2,$computers_search,$field2,$phrasetype2,$contains2,$author,$assign,$category,$status,$showfollowups,$enddate1,$enddate2) {
+function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,$assign=0,$category=0,$showfollowups="",$field2="",$phrasetype2="",$contains2="",$field="",$phrasetype="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Print Search Form
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel,$phproot;
@@ -1756,13 +1756,13 @@ function searchFormTracking($report=0,$target,$username,$field,$phrasetype,$cont
 
 		echo "</td></tr>";
 	}
-	
+if($report)	{
 	echo "<tr class='tab_bg_1'><td>".$lang["reports"][60].":</td><td align='center' colspan='2'>".$lang["search"][8].":&nbsp;";
 	showCalendarForm("form","date1",$date1);
 	echo "</td><td align='center' colspan='2'>";
 	echo $lang["search"][9].":&nbsp;";
 	showCalendarForm("form","date2",$date2);
-	echo "</td><td align='center'><input type='submit' name='reset' value=\"".$lang["buttons"][16]."\" class='submit'></td></tr>";
+	echo "</td><td align='center'>&nbsp;</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["reports"][61].":</td><td align='center' colspan='2'>".$lang["search"][8].":&nbsp;";
 	showCalendarForm("form","enddate1",$enddate1);
@@ -1770,13 +1770,18 @@ function searchFormTracking($report=0,$target,$username,$field,$phrasetype,$cont
 	echo $lang["search"][9].":&nbsp;";
 	showCalendarForm("form","enddate2",$enddate2);
 	echo "</td><td align='center'><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'></td></tr>";
+}
+else {
+	echo "<tr  class='tab_bg_1'><td align='center' colspan='5'><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'></td>";
+	echo "<td align='center'  colspan='1'><input type='submit' name='reset' value=\"".$lang["buttons"][16]."\" class='submit'></td></tr>";
+}
 	echo "</table></div></form>";
 
 
 }
 
 
-function showTrackingList($target,$username,$field,$phrasetype,$contains,$start,$date1,$date2,$computers_search,$field2,$phrasetype2,$contains2,$author,$assign,$category,$status,$showfollowups,$enddate1,$enddate2) {
+function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$category=0,$showfollowups="",$field2="",$phrasetype2="",$contains2="",$field="",$phrasetype="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -1868,10 +1873,10 @@ function showTrackingList($target,$username,$field,$phrasetype,$contains,$start,
 	$query.=" AND glpi_tracking.category = '$category'";
 	
 	if ($computers_search) $query .= " AND $wherecomp";
-	if ($date1!="0000-00-00") $query.=" AND glpi_tracking.date >= '$date1'";
-	if ($date2!="0000-00-00") $query.=" AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
-	if ($enddate1!="0000-00-00") $query.=" AND glpi_tracking.closedate >= '$enddate1'";
-	if ($enddate2!="0000-00-00") $query.=" AND glpi_tracking.closedate <= adddate( '". $enddate2 ."' , INTERVAL 1 DAY ) ";
+	if (!empty($date1)&&$date1!="0000-00-00") $query.=" AND glpi_tracking.date >= '$date1'";
+	if (!empty($date2)&&$date2!="0000-00-00") $query.=" AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	if (!empty($enddate1)&&$enddate1!="0000-00-00") $query.=" AND glpi_tracking.closedate >= '$enddate1'";
+	if (!empty($enddate2)&&$enddate2!="0000-00-00") $query.=" AND glpi_tracking.closedate <= adddate( '". $enddate2 ."' , INTERVAL 1 DAY ) ";
 	
 	if ($contains2!=""){
 		switch ($field2){
@@ -1894,7 +1899,7 @@ function showTrackingList($target,$username,$field,$phrasetype,$contains,$start,
 	if ($author!="0") $query.=" AND glpi_tracking.author = '$author'";
 	
    $query.=" ORDER BY glpi_tracking.date ".$prefs["order"];
-	//echo $query;
+//	echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);

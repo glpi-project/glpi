@@ -78,11 +78,13 @@ echo "</div>";
 if(empty($_GET["start"])) $_GET["start"] = 0;
 if ($cfg_features["jobs_at_login"]){
 echo "<br>";
+
 echo "<div align='center'><b>";
 echo $lang["central"][10];
 echo "</b></div>";
 
-showJobList($_SERVER["PHP_SELF"],"","unassigned","","","",$_GET["start"]);
+showTrackingList($_SERVER["PHP_SELF"],$_GET["start"],"new");
+//showJobList($_SERVER["PHP_SELF"],"","unassigned","","","",$_GET["start"]);
 }
 commonFooter();
 
