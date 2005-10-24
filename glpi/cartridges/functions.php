@@ -1209,12 +1209,12 @@ function dropdownCompatibleCartridges($pID) {
 *@return nothing (display)
 *
 **/
-function countCartridges($tID) {
+function countCartridges($tID,$alarm) {
 	
 	GLOBAL $cfg_layout, $lang;
 	
 	$db = new DB;
-	
+
 	// Get total
 	$total = getCartridgesNumber($tID);
 
@@ -1223,10 +1223,14 @@ function countCartridges($tID) {
 	$used=getUsedCartridgesNumber($tID);
 	$old=getOldCartridgesNumber($tID);
 
-	echo "<b>".$lang["cartridges"][30].":&nbsp;$total</b>&nbsp;&nbsp;&nbsp;".$lang["cartridges"][13].": $unused&nbsp;&nbsp;&nbsp;".$lang["cartridges"][14].": $used&nbsp;&nbsp;&nbsp;".$lang["cartridges"][15].": $old";			
+	$highlight="";
+	if ($unused<=$alarm)
+		$highlight="class='tab_bg_1_2'";
+
+	echo "<span $highlight><b>".$lang["cartridges"][30].":&nbsp;$total</b>&nbsp;&nbsp;&nbsp;".$lang["cartridges"][13].": $unused&nbsp;&nbsp;&nbsp;".$lang["cartridges"][14].": $used&nbsp;&nbsp;&nbsp;".$lang["cartridges"][15].": $old</span>";			
 
 	} else {
-			echo "<i>".$lang["cartridges"][9]."</i>";
+			echo "<span class='tab_bg_1_2'><i>".$lang["cartridges"][9]."</i></span>";
 	}
 }	
 

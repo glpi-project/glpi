@@ -206,6 +206,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	}
 	// Add ID
 	$SELECT.=$LINK_ID_TABLE[$type].".ID AS ID ";
+	// Get specific item
+	if ($LINK_ID_TABLE[$type]=="glpi_cartridges_type"||$LINK_ID_TABLE[$type]=="glpi_consumables_type")
+		$SELECT.=", ".$LINK_ID_TABLE[$type].".alarm as ALARM";
 
 	//// 2 - FROM AND LEFT JOIN 
 	$FROM = " FROM ".$LINK_ID_TABLE[$type];
@@ -364,7 +367,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				
 				if ($type==CARTRIDGE_TYPE){
 					echo "<td>";
-					countCartridges($data["ID"]);
+					countCartridges($data["ID"],$data["ALARM"]);
 					echo "</td>";
 				}
 				
@@ -376,7 +379,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				
 				if ($type==CONSUMABLE_TYPE){
 					echo "<td>";					
-		   		countConsumables($data["ID"]);
+		   		countConsumables($data["ID"],$data["ALARM"]);
 					echo "</td>";
 				}		
 		   		
