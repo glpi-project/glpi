@@ -118,7 +118,8 @@ function getNbIntervCategory()
 	if($db->numrows($result) >=1) {
 		$i = 0;
 		while($line = $db->fetch_assoc($result)) {
-		$tab[$line["ID"]] = $line["category"];
+		$tab[$i]["ID"] = $line["ID"];
+		$tab[$i]["category"] = $line["category"];
 		$i++;
 		}
 		
