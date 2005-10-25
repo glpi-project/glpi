@@ -490,13 +490,13 @@ function showperipheralForm ($target,$ID,$withtemplate='') {
 	echo "</tr>";
 
 		
-		echo "<tr><td>".$lang["state"][0].":</td><td><b>";
+		echo "<tr><td>".$lang["state"][0].":</td><td>";
 		$si=new StateItem();
 		$t=0;
 		if ($template) $t=1;
 		$si->getfromDB(PERIPHERAL_TYPE,$mon->fields["ID"],$t);
 		dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
-		echo "</b></td></tr>";
+		echo "</td></tr>";
 		
 
 	
