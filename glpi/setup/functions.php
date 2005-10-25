@@ -1154,7 +1154,7 @@ function showFormMailing($target) {
 		
 		echo "<p><b>".$lang["setup"][205]."</b></p>";
 		
-		echo "<table class='tab_cadre' width='600'><tr><th colspan='3'>".$lang["setup"][206]."<th></tr>";
+		echo "<table class='tab_cadre' width='600'><tr><th colspan='2'>".$lang["setup"][206]."<th></tr>";
 		echo "<tr class='tab_bg_2'><td>".$lang["setup"][211]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_new_admin\" value=\"1\" "; if($db->result($result,0,"mailing_new_admin") == 1) echo "checked"; echo " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_new_admin\" value=\"0\" "; if($db->result($result,0,"mailing_new_admin") == 0) echo "checked"; echo " ></td></tr>";
 		
 		//echo "<tr class='tab_bg_2'><td >A chaque changement de responsable</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_attrib_admin\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_admin") == 1) echo "checked"; echo " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_attrib_admin\" value=\"0\" "; if($db->result($result,0,"mailing_attrib_admin") == 0) echo "checked"; echo " ></td></tr>";
@@ -1189,7 +1189,7 @@ function showFormMailing($target) {
 		//echo "<tr class='tab_bg_2'><td>A chaque changement de responsable</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"0\"  "; if($db->result($result,0,"mailing_attrib_attrib") == 0) echo "checked"; echo  " ></td></tr>";
 		
 		echo "<tr class='tab_bg_2'><td>".$lang["setup"][212]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_followup_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_followup_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_followup_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_followup_attrib") == 0) echo "checked"; echo  " ></td></tr>";
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][213]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_finish_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_finish_attrib") == 0) echo "checked"; echo  " ><td></td></tr>";
+		echo "<tr class='tab_bg_2'><td>".$lang["setup"][213]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_finish_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_finish_attrib") == 0) echo "checked"; echo  " ></td></tr>";
 		
 		echo "<tr><th colspan='3'>".$lang["setup"][210]."</th></tr>";
 		
@@ -1204,7 +1204,7 @@ function showFormMailing($target) {
 
 		echo "<p><b>".$lang["setup"][224]."</b></p>";
 		
-		echo "<table class='tab_cadre' width='600'><tr><th colspan='3'>".$lang["setup"][225]."<th></tr>";
+		echo "<table class='tab_cadre' width='600'><tr><th colspan='2'>".$lang["setup"][225]."<th></tr>";
 
 		echo "<tr class='tab_bg_2'><td>".$lang["setup"][206]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_resa_admin\" value=\"1\" "; if($db->result($result,0,"mailing_resa_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_resa_admin\" value=\"0\" "; if($db->result($result,0,"mailing_resa_admin") == 0) echo "checked"; echo  " ></td></tr>";
 		echo "<tr class='tab_bg_2'><td>".$lang["setup"][207]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_resa_all_admin\" value=\"1\" "; if($db->result($result,0,"mailing_resa_all_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_resa_all_admin\" value=\"0\" "; if($db->result($result,0,"mailing_resa_all_admin") == 0) echo "checked"; echo  " ></td></tr>";
