@@ -466,13 +466,13 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 		echo "</b></td></tr>\n";
 	}
 		
-		echo "<tr><td>".$lang["state"][0].":</td><td><b>\n";
+		echo "<tr><td>".$lang["state"][0].":</td><td>\n";
 		$si=new StateItem();
 		$t=0;
 		if ($template) $t=1;
 		$si->getfromDB(PRINTER_TYPE,$printer->fields["ID"],$t);
 		dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
-		echo "</b></td></tr>\n";
+		echo "</td></tr>\n";
 
 	echo "<tr><td>".$lang["setup"][88].": 	</td><td>\n";
 		dropdownValue("glpi_dropdown_network", "network", $printer->fields["network"]);
