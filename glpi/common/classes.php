@@ -938,7 +938,6 @@ class MailingResa{
 				$body=$this->get_mail_body()."\n-- \n".$cfg_mailing["signature"];
 				$body=ereg_replace("<br />","",$body);
 				$body=ereg_replace("<br>","",$body);
-				$body=stripslashes($body);
 				$body=unhtmlentities($body);
 				// get subject OK
 				$subject=$this->get_mail_subject();
