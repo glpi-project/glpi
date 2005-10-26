@@ -1227,10 +1227,10 @@ function countCartridges($tID,$alarm) {
 	if ($unused<=$alarm)
 		$highlight="class='tab_bg_1_2'";
 
-	echo "<span $highlight><b>".$lang["cartridges"][30].":&nbsp;$total</b>&nbsp;&nbsp;&nbsp;".$lang["cartridges"][13].": $unused&nbsp;&nbsp;&nbsp;".$lang["cartridges"][14].": $used&nbsp;&nbsp;&nbsp;".$lang["cartridges"][15].": $old</span>";			
+	echo "<div $highlight><b>".$lang["cartridges"][30].":&nbsp;$total</b>&nbsp;&nbsp;&nbsp;".$lang["cartridges"][13].": $unused&nbsp;&nbsp;&nbsp;".$lang["cartridges"][14].": $used&nbsp;&nbsp;&nbsp;".$lang["cartridges"][15].": $old</div>";			
 
 	} else {
-			echo "<span class='tab_bg_1_2'><i>".$lang["cartridges"][9]."</i></span>";
+			echo "<div class='tab_bg_1_2'><i>".$lang["cartridges"][9]."</i></div>";
 	}
 }	
 

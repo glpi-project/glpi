@@ -865,10 +865,10 @@ function countConsumables($tID,$alarm) {
 	if ($unused<=$alarm)
 		$highlight="class='tab_bg_1_2'";
 
-	echo "<span $highlight><b>".$lang["consumables"][30].":&nbsp;$total</b>&nbsp;&nbsp;&nbsp;".$lang["consumables"][13].": $unused&nbsp;&nbsp;&nbsp;".$lang["consumables"][15].": $old</span>";			
+	echo "<div $highlight><b>".$lang["consumables"][30].":&nbsp;$total</b>&nbsp;&nbsp;&nbsp;".$lang["consumables"][13].": $unused&nbsp;&nbsp;&nbsp;".$lang["consumables"][15].": $old</div>";			
 
 	} else {
-			echo "<span class='tab_bg_1_2'><i>".$lang["consumables"][9]."</i></span>";
+			echo "<div class='tab_bg_1_2'><i>".$lang["consumables"][9]."</i></div>";
 	}
 }	
 
