@@ -553,7 +553,7 @@ ul#onglet li.actif a {
     display: block;
     color: #666;
     text-decoration: none;
-    padding: 4px;
+    padding: 3px;
 }
 
 #onglet a:hover {
