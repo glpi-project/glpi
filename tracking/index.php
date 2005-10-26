@@ -62,6 +62,9 @@ if (!isset($tab['reset'])){
 	if (is_array($tab))
 	foreach ($tab as $key => $val)
 		$_SESSION['tracking'][$key]=$val;
+
+// Gestion temporaire de la merdouille
+if (!isset($tab["attrib"])) $_SESSION['tracking']["attrib"]=0;
 }
 
 if (isset($_SESSION['tracking'])&&is_array($_SESSION['tracking']))
@@ -74,6 +77,7 @@ if (!isset($tab["field2"])||isset($tab['reset'])) $tab["field2"]="";
 if (!isset($tab["contains2"])||isset($tab['reset'])) $tab["contains2"]="";
 if (!isset($tab["author"])||isset($tab['reset'])) $tab["author"]=0;
 if (!isset($tab["attrib"])||isset($tab['reset'])) $tab["attrib"]=0;
+if (!isset($tab["assign_type"])||isset($tab['reset'])) $tab["assign_type"]=0;
 if (!isset($tab["category"])||isset($tab['reset'])) $tab["category"]="";
 if (!isset($tab["status"])||isset($tab['reset'])) $tab["status"]="new";
 if (!isset($tab["showfollowups"])||isset($tab['reset'])) $tab["showfollowups"]=0;
@@ -89,9 +93,9 @@ if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete"])&&!empty($_POST["tode
 	}
 
 
-searchFormTracking(0,$_SERVER["PHP_SELF"],$tab["start"],$tab["status"],$tab["author"],$tab["attrib"],$tab["category"],$tab["priority"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"]);
+searchFormTracking(0,$_SERVER["PHP_SELF"],$tab["start"],$tab["status"],$tab["author"],$tab["attrib"],$tab["assign_type"],$tab["category"],$tab["priority"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"]);
 
-showTrackingList($_SERVER["PHP_SELF"],$tab["start"],$tab["status"],$tab["author"],$tab["attrib"],USER_TYPE,$tab["category"],$tab["priority"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"]);
+showTrackingList($_SERVER["PHP_SELF"],$tab["start"],$tab["status"],$tab["author"],$tab["attrib"],$tab["assign_type"],$tab["category"],$tab["priority"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"]);
 
 //showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiID"],$_SESSION["tracking_show"],$_SESSION["tracking_contains"],"","",$_SESSION["tracking_start"],$_SESSION["tracking_device"],$_SESSION["tracking_category"],$_SESSION["tracking_containsID"],$_SESSION["tracking_desc"]);
 

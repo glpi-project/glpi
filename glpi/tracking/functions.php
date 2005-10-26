@@ -1463,7 +1463,7 @@ function assignFormTracking ($ID,$admin,$target) {
 	echo "<table border='0'>";
 	echo "<tr>";
 	echo "<td colspan='2'>";//.$lang["job"][5].":</td><td>";
-		dropdownAssign($job->assign,$job->assign_type, "user");
+		dropdownAssign($job->assign,$job->assign_type, "assign_id");
 //	echo "<input type='hidden' name='update' value=\"1\">";
 //	echo "<input type='hidden' name='ID' value='$job->ID'>";
 	echo "</td><td><input type='submit' name='update' value=\"".$lang["job"][6]."\" class='submit'></td>";
@@ -1625,7 +1625,7 @@ function getRealtime($realtime){
 		return $output;
 		}
 
-function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,$assign=0,$category=0,$priority=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,$assign=0,$assign_type=0,$category=0,$priority=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Print Search Form
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel,$phproot;
@@ -1697,7 +1697,7 @@ function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,
 	echo "</td></tr></table>";
 	echo "</td>";
 	echo "<td  colspan='1' align='center'>".$lang["job"][5]."&nbsp;:&nbsp;";
-	dropdownUsersTracking($assign,"attrib","assign");
+	dropdownAssign($assign,$assign_type,"attrib");
 	echo "</td>";
 	echo "<td  colspan='1' align='center'>".$lang["joblist"][3]."&nbsp;:&nbsp;";
 	dropdownUsersTracking($author,"author","author");
@@ -1900,14 +1900,15 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 
 	if ($status!="all") $query.=" AND glpi_tracking.status = '$status'";
 	
-	if ($assign!="0"&&$assign_type!="0") $query.=" AND glpi_tracking.assign = '$assign' AND glpi_tracking.assign_type = '$assign_type'";
-	if ($author!="0") $query.=" AND glpi_tracking.author = '$author'";
+	if ($assign_type!=0) $query.=" AND glpi_tracking.assign_type = '$assign_type'";
+	if ($assign!=0&&$assign_type!=0) $query.=" AND glpi_tracking.assign = '$assign'";
+	if ($author!=0) $query.=" AND glpi_tracking.author = '$author'";
 
 	if ($priority>0) $query.=" AND glpi_tracking.priority = '$priority'";
 	if ($priority<0) $query.=" AND glpi_tracking.priority >= '".abs($priority)."'";
 	
    $query.=" ORDER BY glpi_tracking.date ".$prefs["order"];
-//	echo $query;
+	echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);

@@ -573,7 +573,7 @@ function dropdownAssign($value, $value_type,$myname) {
 
 	$rand=mt_rand();
 	echo "<table border='0'><tr><td>\n";
-	echo "<select name='type' id='item_type$rand'>\n";
+	echo "<select name='assign_type' id='item_type$rand'>\n";
 	echo "<option value='0'>-----</option>\n";
 	echo "<option value='".USER_TYPE."'>".$lang["Menu"][14]."</option>\n";
 	echo "<option value='".ENTERPRISE_TYPE."'>".$lang["Menu"][23]."</option>\n";
