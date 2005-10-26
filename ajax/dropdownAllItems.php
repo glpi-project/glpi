@@ -75,7 +75,7 @@ if (isset($items[$_POST["idtable"]])){
 	echo "            {Element.hide('search_spinner$rand');}, ";
 	echo "           onLoading:function(request)";
 	echo "            {Element.show('search_spinner$rand');},";
-	echo "           method:'post', parameters:'searchText=' + value+'&table=$table&myname=item$moreparam'";
+	echo "           method:'post', parameters:'searchText=' + value+'&table=$table&myname=".$_POST["myname"]."$moreparam'";
 	echo "})})";
 	echo "</script>";	
 	
