@@ -348,7 +348,10 @@ $cfg_features["planning_end"] = $db->result($result,0,"planning_end");
 
 // Wildcard for AJAX
 $cfg_features["ajax_wildcard"] = "*";
+$cfg_features["use_ajax"] = 1;
+
 }
+
 
 
 }

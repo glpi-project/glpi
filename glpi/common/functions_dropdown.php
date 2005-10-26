@@ -54,7 +54,7 @@
 function dropdown($table,$myname) {
 
 
-	global $HTMLRel,$cfg_install;
+	global $HTMLRel,$cfg_install,$cfg_features;
 
 	$rand=mt_rand();
 echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
@@ -74,6 +74,15 @@ echo "</script>\n";
 
 
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>\n";
+
+if ($cfg_features["use_ajax"]){
+	echo "<script type='text/javascript' >\n";
+	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
+	echo "Element.hide('search_$myname$rand');";
+	echo "document.getElementById('search_$myname$rand').value='".$cfg_features["ajax_wildcard"]."';";
+	echo "</script>\n";
+}
+
 
 echo "<span id='results_$myname$rand'>\n";
 echo "<select name='$myname'><option value='0'>------</option></select>\n";
@@ -148,7 +157,7 @@ echo "</span>\n";
 function dropdownValue($table,$myname,$value) {
 	
 	//global $deleted_tables,$template_tables,$dropdowntree_tables,$lang;
-	global $HTMLRel,$cfg_install;
+	global $HTMLRel,$cfg_install,$cfg_features;
 
 	$rand=mt_rand();
 echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
@@ -167,6 +176,16 @@ echo "})})\n";
 echo "</script>\n";
 
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+
+if ($cfg_features["use_ajax"]){
+	echo "<script type='text/javascript' >\n";
+	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
+	echo "Element.hide('search_$myname$rand');";
+	echo "document.getElementById('search_$myname$rand').value='".$cfg_features["ajax_wildcard"]."';";
+	echo "</script>\n";
+}
+
+
 
 echo "<span id='results_$myname$rand'>\n";
 if (!empty($value)&&$value>0)
@@ -432,7 +451,7 @@ function dropdownUsers($value, $myname,$all=0) {
 	//global $lang;
 	// Make a select box with all glpi users
 
-	global $HTMLRel,$cfg_install;
+	global $HTMLRel,$cfg_install,$cfg_features;
 
 	$rand=mt_rand();
 	echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
@@ -451,6 +470,15 @@ function dropdownUsers($value, $myname,$all=0) {
 	echo "</script>\n";
 
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+
+if ($cfg_features["use_ajax"]){
+	echo "<script type='text/javascript' >\n";
+	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
+	echo "Element.hide('search_$myname$rand');";
+	echo "document.getElementById('search_$myname$rand').value='".$cfg_features["ajax_wildcard"]."';";
+	echo "</script>\n";
+}
+
 
 	echo "<span id='results_$myname$rand'>\n";
 	if (!empty($value)&&$value>0)
@@ -493,7 +521,7 @@ function dropdownAllUsers($value, $myname) {
 	global $lang;
 	// Make a select box with all glpi users
 
-	global $HTMLRel,$cfg_install;
+	global $HTMLRel,$cfg_install,$cfg_features;
 
 	$rand=mt_rand();
 	echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
@@ -512,6 +540,14 @@ function dropdownAllUsers($value, $myname) {
 	echo "</script>\n";
 
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+
+if ($cfg_features["use_ajax"]){
+	echo "<script type='text/javascript' >\n";
+	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
+	echo "Element.hide('search_$myname$rand');";
+	echo "document.getElementById('search_$myname$rand').value='".$cfg_features["ajax_wildcard"]."';";
+	echo "</script>\n";
+}
 
 	echo "<span id='results_$myname$rand'>\n";
 	if (!empty($value)&&$value>0)
@@ -775,7 +811,7 @@ function getDropdownName($table,$id) {
 */
 
 function dropdownUsersTracking($value, $myname,$champ) {
-	global $HTMLRel,$cfg_install,$lang;
+	global $HTMLRel,$cfg_install,$lang,$cfg_features;
 
 	$rand=mt_rand();
 	echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
@@ -794,6 +830,14 @@ function dropdownUsersTracking($value, $myname,$champ) {
 	echo "</script>\n";
 
 	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+
+if ($cfg_features["use_ajax"]){
+	echo "<script type='text/javascript' >\n";
+	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
+	echo "Element.hide('search_$myname$rand');";
+	echo "document.getElementById('search_$myname$rand').value='".$cfg_features["ajax_wildcard"]."';";
+	echo "</script>\n";
+}
 
 	echo "<span id='results_$myname$rand'>\n";
 	if (!empty($value)&&$value>0)
@@ -1095,7 +1139,7 @@ echo "</span>\n";
 function dropdownConnect($type,$myname) {
 
 
-	global $HTMLRel,$cfg_install;
+	global $HTMLRel,$cfg_install,$cfg_features;
 
 	$rand=mt_rand();
 echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
@@ -1113,8 +1157,16 @@ echo "           method:'post', parameters:'searchText=' + value+'&idtable=$type
 echo "})})\n";
 echo "</script>\n";
 
-
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>\n";
+
+if ($cfg_features["use_ajax"]){
+	echo "<script type='text/javascript' >\n";
+	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
+	echo "Element.hide('search_$myname$rand');";
+	echo "document.getElementById('search_$myname$rand').value='".$cfg_features["ajax_wildcard"]."';";
+	echo "</script>\n";
+}
+
 
 echo "<span id='results_$myname$rand'>\n";
 echo "<select name='$myname'><option value='0'>------</option></select>\n";
