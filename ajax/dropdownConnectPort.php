@@ -40,15 +40,15 @@
 
 	// Make a select box
 	$db = new DB;
+	$items=array(
+	COMPUTER_TYPE=>"glpi_computers",
+	NETWORKING_TYPE=>"glpi_networking",
+	PRINTER_TYPE=>"glpi_printers",
+	PERIPHERAL_TYPE=>"glpi_peripherals",
+	);
 
-		$items=array(
-			COMPUTER_TYPE=>"glpi_computers",
-			PRINTER_TYPE=>"glpi_printers",
-			MONITOR_TYPE=>"glpi_monitors",
-			PERIPHERAL_TYPE=>"glpi_peripherals",
-		);
 
-		$table=$items[$_POST["idtable"]];
+		$table=$items[$_POST["type"]];
 		$where="";		
 		if (in_array($table,$deleted_tables))
 			$where.=" AND $table.deleted='N' ";
@@ -56,29 +56,24 @@
 			$where.=" AND $table.is_template='0' ";		
 			
 		if (!empty($_POST['searchText'])&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
-			$where.=" AND $table.name LIKE '%".$_POST['searchText']."%' ";
+			$where.=" AND ($table.name LIKE '%".$_POST['searchText']."%' OR glpi_networking_ports.ifmac LIKE '%".$_POST['searchText']."%' OR glpi_networking_ports.ifaddr LIKE '%".$_POST['searchText']."%' OR glpi_networking_ports.name LIKE '%".$_POST['searchText']."%') ";
 
 		$NBMAX=$cfg_layout["dropdown_max"];
 		$LIMIT="LIMIT 0,$NBMAX";
 
 		if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
 						
-	$CONNECT_SEARCH="(glpi_connect_wire.ID IS NULL";	
-	if ($_POST["idtable"]==MONITOR_TYPE||$_POST["idtable"]==PERIPHERAL_TYPE)
-		$CONNECT_SEARCH.=" OR $table.is_global='1' ";
-	$CONNECT_SEARCH.=")";
-	if ($_POST["idtable"]==COMPUTER_TYPE)
-		$CONNECT_SEARCH=" '1' = '1' ";
-		
-	$LEFTJOINCONNECT="";
-	if ($_POST["idtable"]!=COMPUTER_TYPE)		
-		$LEFTJOINCONNECT="left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = '".$_POST['idtable']."')";
-	$query = "SELECT DISTINCT $table.ID as ID,$table.name as name from $table $LEFTJOINCONNECT WHERE $CONNECT_SEARCH $where order by name ASC";
 
-//echo $query;
-		
-		$result = $db->query($query);
-		echo "<select name=\"".$_POST['myname']."\" size='1'>";
+	$query =  "SELECT DISTINCT glpi_networking_wire.ID as WID, glpi_networking_ports.ID as DID, glpi_computers.name as CNAME, glpi_networking_ports.name  as NNAME, glpi_networking_ports.ifaddr as IP, glpi_networking_ports.ifmac as MAC";
+	$query.= " FROM glpi_computers ";
+	$query.= " LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type='".$_POST['type']."' AND glpi_networking_ports.on_device=glpi_computers.ID) "; 
+	$query.= " LEFT JOIN glpi_networking_wire ON (glpi_networking_wire.end1=glpi_networking_ports.ID OR glpi_networking_wire.end2=glpi_networking_ports.ID)";
+	$query.= " WHERE glpi_networking_wire.ID IS NULL AND glpi_networking_ports.ID IS NOT NULL AND glpi_networking_ports.ID <> '".$_POST['current']."' ";
+	$query.= $where;
+	$query.= " ORDER BY glpi_networking_ports.ID";
+//		echo $query;
+	$result = $db->query($query);
+	echo "<select name=\"".$_POST['myname']."\" size='1'>";
 		
 		if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 			echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
@@ -88,9 +83,12 @@
 		$number = $db->numrows($result);
 		if ($number > 0) {
 			while ($data = $db->fetch_array($result)) {
-				$output = $data['name'];
+				$output = $data['CNAME'];
+				if (!empty($data['NNAME'])) $output.= " - ".$data['NNAME'];
+				if (!empty($data['IP'])) $output.= " - ".$data['IP'];
+				if (!empty($data['MAC'])) $output.= " - ".$data['MAC'];
 				if (empty($output)) $output="&nbsp;";
-				$ID = $data['ID'];
+				$ID = $data['DID'];
 				echo "<option value=\"$ID\">$output</option>";
 				$i++;
 			}

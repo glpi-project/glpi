@@ -764,8 +764,8 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			
 			$colspan=8;
 			if ($withtemplate!=2){
-			echo "<form method=post action=\"".$cfg_install["root"]."/networking/networking-port.php\">";
-			$colspan=4;
+//			echo "<form method=post action=\"".$cfg_install["root"]."/networking/networking-port.php\">";
+//			$colspan=4;
 			}
 			
 			echo "<br><div align='center'><table class='tab_cadre' width='90%'>";
@@ -779,7 +779,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			echo ":</th>";
 
 			if ($withtemplate!=2){
-				echo "<th  colspan='$colspan'>";
+/*				echo "<th  colspan='$colspan'>";
 				echo $lang["networking"][55].":&nbsp;";
 				dropdown("glpi_dropdown_vlan","vlan");
 				echo "<input type='submit' name='assign_vlan' value='".$lang["buttons"][3]."' class='submit'>";
@@ -787,6 +787,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 				echo "&nbsp;/&nbsp;";
 				echo "<a href='".$_SERVER["PHP_SELF"]."?ID=$device&amp;select=none'>".$lang["buttons"][19]."</a>";
 				echo "</th>";
+*/
 			}
 			echo "</tr>";        
 			echo "<tr><th>#</th><th>".$lang["networking"][0]."</th><th>".$lang["networking"][51]."</th>";
@@ -813,7 +814,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 				echo "</td>";
 				echo "<td>".getDropdownName("glpi_dropdown_iface",$netport->fields["iface"])."</td>";
 				echo "<td>";
-					showConnection($netport->fields["ID"],$withtemplate);
+					showConnection($netport->fields["ID"],$withtemplate,$device_type);
 				echo "</td>";
 				echo "</tr>";
 			}
@@ -821,7 +822,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			echo "</div>\n\n";
 			// Assign VLAN form
 			if ($withtemplate!=2){
-			echo "</form>";
+//			echo "</form>";
 			}
 
 			
@@ -984,11 +985,11 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 	echo "</td></tr>";
 	}
 	if ($ID) {
-		echo "<tr class='tab_bg_1'><td>".$lang["networking"][24].":</td>";
+/*		echo "<tr class='tab_bg_1'><td>".$lang["networking"][24].":</td>";
 		echo "<td>";
 			showConnection($netport->fields["ID"]);
 		echo "</td></tr>";
-
+*/
 		echo "<tr class='tab_bg_2'>";
 		echo "<td align='center'>";
 		echo "<input type='hidden' name='ID' value=".$netport->fields["ID"].">";
@@ -1001,7 +1002,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 //		echo "<input type='hidden' name='referer' value='$REFERER'>";
 		echo "<td align='center'>";
 		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-		echo "</td></tr></form>";
+		echo "</td></tr>";
 	} else 
 	{
 
@@ -1010,7 +1011,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 		echo "<input type='hidden' name='on_device' value='$ondevice'>";
 		echo "<input type='hidden' name='device_type' value='$devtype'>";
 		echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
-		echo "</td>";
+		echo "</td></tr>";
 	}
 
 	echo "</table></form></div>";	
@@ -1104,7 +1105,7 @@ function showPortsAdd($ID,$devtype) {
 	echo "</table></div><br>";
 }
 
-function showConnection ($ID,$withtemplate='') {
+function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 
 	GLOBAL $cfg_layout, $cfg_install, $lang;
 
@@ -1143,11 +1144,18 @@ function showConnection ($ID,$withtemplate='') {
 	} else {
 		echo "<table border='0' cellspacing='0' width='100%'><tr>";
 		echo "<td>".$lang["networking"][26]."</td>";
-		echo "<td align='right'><b>";
-		if ($withtemplate!=2&&$withtemplate!=1)
-		echo "<a href=\"".$cfg_install["root"]."/networking/networking-port-connect.php?ID=$ID\">".$lang["buttons"][9]."</a>";
+		echo "<td align='right'>";
+		if ($withtemplate!=2&&$withtemplate!=1){
+			echo "<form method='post' action=\"".$cfg_install["root"]."/networking/networking-port-connect.php\">";
+			echo "<input type='hidden' name='connect' value='connect'>";
+			echo "<input type='hidden' name='sport' value='$ID'>";
+			dropdownConnectPort($ID,$type,"dport");
+			echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
+			echo "</form>";
+			}
+//		echo "<a href=\"".$cfg_install["root"]."/networking/networking-port-connect.php?ID=$ID\">".$lang["buttons"][9]."</a>";
 		else echo "&nbsp;";
-		echo "</b></td>";
+		echo "</td>";
 		echo "</tr></table>";
 	}
 }	
@@ -1156,7 +1164,7 @@ function showConnection ($ID,$withtemplate='') {
 ///// Wire the Ports /////
 
 // Plus utilisé
-
+/*
 function showConnectorSearch($target,$ID) {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
@@ -1209,8 +1217,9 @@ function showConnectorSearch($target,$ID) {
 	echo "</table>";
 	echo "</form>";	
 }
-
+*/
 // Plus utilisé
+/*
 function listConnectorComputers($target,$input) {
 	
 	GLOBAL $cfg_layout,$cfg_install, $lang;
@@ -1267,9 +1276,9 @@ function listConnectorComputers($target,$input) {
 	echo "</td></tr></table></form>";	
 
 }
-
+*/
 //Plus utilisé
-
+/*
 function listConnectorPorts($target,$input) {
 
 	GLOBAL $cfg_layout,$cfg_install,$lang;
@@ -1348,7 +1357,7 @@ function listConnectorPorts($target,$input) {
 		echo "</table>";
 	}
 }
-
+*/
 
 function makeConnector($sport,$dport) {
 

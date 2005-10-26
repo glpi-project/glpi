@@ -51,13 +51,18 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 if(isset($_GET["sport"])) $tab["ID"] = $_GET["sport"];
 
-if(!(isset($tab["next"])))
+if(!isset($tab["connect"])&&!isset($tab["sport"])&&!isset($tab["dport"]))
 {
-	showConnectorSearch($_SERVER["PHP_SELF"],$tab["ID"]);
+	glpi_header($_SERVER['HTTP_REFERER']);	
+//	showConnectorSearch($_SERVER["PHP_SELF"],$tab["ID"]);
 }
 else
 {
-	switch ($tab["next"]) 
+	if ($tab["dport"]!=0&&$tab["sport"]!=0)
+		makeConnector($tab["sport"],$tab["dport"]);
+	glpi_header($_SERVER['HTTP_REFERER']);	
+
+/*	switch ($tab["next"]) 
 	{
 		case "";
 			showConnectorSearch($_SERVER["PHP_SELF"],$tab["ID"]);
@@ -75,6 +80,8 @@ else
 			makeConnector($tab["sport"],$tab["dport"]);
 		break;		
 	}
+
+*/
 }
 
 commonFooter();
