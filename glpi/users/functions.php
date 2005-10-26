@@ -479,7 +479,8 @@ global $cfg_install;
 			$user = new User($input["name"]);
 			if(empty($input["password"]))  $input["password"] = "";
 			// dump status
-			$null = array_pop($input);
+			unset($input["add"]);
+			
 			// change email_form to email (not to have a problem with preselected email)
 			if (isset($input["email_form"])){
 				$input["email"]=$input["email_form"];
