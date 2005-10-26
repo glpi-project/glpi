@@ -75,7 +75,7 @@ echo "</script>\n";
 
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>\n";
 
-if ($cfg_features["use_ajax"]){
+if (!$cfg_features["use_ajax"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
@@ -177,7 +177,7 @@ echo "</script>\n";
 
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
-if ($cfg_features["use_ajax"]){
+if (!$cfg_features["use_ajax"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
@@ -471,7 +471,7 @@ function dropdownUsers($value, $myname,$all=0) {
 
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
-if ($cfg_features["use_ajax"]){
+if (!$cfg_features["use_ajax"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
@@ -541,7 +541,7 @@ function dropdownAllUsers($value, $myname) {
 
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
-if ($cfg_features["use_ajax"]){
+if (!$cfg_features["use_ajax"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
@@ -831,7 +831,7 @@ function dropdownUsersTracking($value, $myname,$champ) {
 
 	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
-if ($cfg_features["use_ajax"]){
+if (!$cfg_features["use_ajax"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
@@ -1159,7 +1159,7 @@ echo "</script>\n";
 
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>\n";
 
-if ($cfg_features["use_ajax"]){
+if (!$cfg_features["use_ajax"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
