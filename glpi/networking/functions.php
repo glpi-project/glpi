@@ -830,24 +830,24 @@ function showPorts ($device,$device_type,$withtemplate='') {
 	}
 }
 
-function showPortVLAN($ID,$withtemplate){
+function showPortVLAN($ID,$withtemplate,$referer=''){
 global $HTMLRel,$lang;
 $db=new DB;
 
 echo "<table cellpadding='0' cellspacing='0'>";
-if ($withtemplate!=2){
+/*if ($withtemplate!=2){
 	$sel="";
 	if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
 		echo "<tr><td colspan='2'><input type='checkbox' name='toassign[$ID]' value='1' $sel></td></tr>";
 }
-
+*/
 $query="SELECT * from glpi_networking_vlan WHERE FK_port='$ID'";
 $result=$db->query($query);
 if ($db->numrows($result)>0)
 while ($line=$db->fetch_array($result)){
 	echo "<tr><td>".getDropdownName("glpi_dropdown_vlan",$line["FK_vlan"]);
 	echo "</td><td>";
-	echo "<a href='".$HTMLRel."networking/networking-port.php?unassign_vlan=unassigned&amp;ID=".$line["ID"]."'>";
+	echo "<a href='".$HTMLRel."networking/networking-port.php?unassign_vlan=unassigned&amp;ID=".$line["ID"]."&referer=$referer'>";
     echo "<img src=\"".$HTMLRel."/pics/delete2.png\" alt='".$lang["buttons"][6]."' title='".$lang["buttons"][6]."'>";
     echo "</a></td></tr>";
 }
@@ -1015,6 +1015,34 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 	}
 
 	echo "</table></form></div>";	
+	// SHOW VLAN 
+	if ($ID){
+	echo "<div align='center'>";
+	echo "<form method='post' action=\"$target\">";
+	echo "<input type='hidden' name='referer' value='$REFERER'>";
+	echo "<input type='hidden' name='ID' value='$ID'>";
+
+	echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
+	showPortVLAN($netport->fields["ID"],0,$REFERER);
+	echo "</td></tr>";
+	
+	echo "<tr  class='tab_bg_2'><td>";
+	echo $lang["networking"][55].":&nbsp;";
+	dropdown("glpi_dropdown_vlan","vlan");
+	echo "<input type='submit' name='assign_vlan' value='".$lang["buttons"][3]."' class='submit'>";
+	echo "</td></tr>";
+	
+	echo "</table>";
+	
+	echo "</form>";
+	
+
+
+	
+	echo "</div>";	
+
+		
+	}
 }
 
 function addNetport($input) {

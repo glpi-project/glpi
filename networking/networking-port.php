@@ -118,18 +118,21 @@ else if(isset($_POST["update"]))
 	commonFooter();
 }
 else if (isset($_POST['assign_vlan'])){
-	if ($_POST["vlan"]!=0&&count($_POST['toassign'])>0){
+/*	if ($_POST["vlan"]!=0&&count($_POST['toassign'])>0){
 		foreach ($_POST['toassign'] as $key => $val){
 			assignVlan($key,$_POST["vlan"]);
 			}
-	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." assign vlan to ports.");
+*/		
+	if (isset($_POST["vlan"])&&$_POST["vlan"]>0){
+		assignVlan($_POST["ID"],$_POST["vlan"]);	
+		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." assign vlan to ports.");
 	}
-	glpi_header($_SERVER['HTTP_REFERER']);
+	glpi_header($_SERVER['HTTP_REFERER']."&referer=".$tab['referer']);
 }
 else if (isset($_GET['unassign_vlan'])){
 	unassignVlan($_GET['ID']);
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." unassign a vlan to a port.");
-	glpi_header($_SERVER['HTTP_REFERER']);
+	glpi_header($_SERVER['HTTP_REFERER']."&referer=".$tab['referer']);
 }
 else 
 {
