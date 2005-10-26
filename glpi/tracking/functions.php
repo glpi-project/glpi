@@ -1908,7 +1908,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 	if ($priority<0) $query.=" AND glpi_tracking.priority >= '".abs($priority)."'";
 	
    $query.=" ORDER BY glpi_tracking.date ".$prefs["order"];
-	echo $query;
+//	echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows= $db->numrows($result);
