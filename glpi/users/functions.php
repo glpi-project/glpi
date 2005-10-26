@@ -233,7 +233,8 @@ function showUserform($target,$name) {
 }
 
 
-
+// Plus utilisé
+/*
 function searchFormUsers() {
 	// Users Search Form
 	
@@ -289,7 +290,9 @@ function searchFormUsers() {
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
-
+*/
+// Plus utilisé
+/*
 function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start) {
 
 	// Lists Users
@@ -453,7 +456,7 @@ function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$ord
 		}
 	}
 }
-
+*/
 
 
 

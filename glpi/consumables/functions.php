@@ -99,6 +99,8 @@ function showConsumableOnglets($target,$withtemplate,$actif){
 *@return nothing (diplays)
 *
 **/
+// Plus utilisé
+/*
 function searchFormConsumable($field="",$phrasetype= "",$contains="",$sort= "",$deleted="",$link="") {
 	// Print Search Form
 	
@@ -187,6 +189,7 @@ function searchFormConsumable($field="",$phrasetype= "",$contains="",$sort= "",$
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
+*/
 /**
 * Search and list consumables
 *
@@ -207,6 +210,8 @@ function searchFormConsumable($field="",$phrasetype= "",$contains="",$sort= "",$
 *@return Nothing (display)
 *
 **/
+// Plus utilisé
+/*
 function showConsumableList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted,$link) {
 
 	// Lists ConsumableType
@@ -388,7 +393,7 @@ function showConsumableList($target,$username,$field,$phrasetype,$contains,$sort
 		}
 	}
 }
-
+*/
 
 /**
 * Print the consumable type form

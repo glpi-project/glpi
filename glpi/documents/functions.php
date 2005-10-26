@@ -71,7 +71,8 @@ function showDocumentOnglets($target,$withtemplate,$actif){
 	
 }
 
-
+// Plus utilisé
+/*
 function searchFormDocument($field="",$phrasetype= "",$contains="",$sort= "",$deleted="",$link="") {
 	// Print Search Form
 	
@@ -161,7 +162,9 @@ function searchFormDocument($field="",$phrasetype= "",$contains="",$sort= "",$de
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
-
+*/
+// Plus utilisé
+/*
 function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted,$link) {
 
 	// Lists Document
@@ -339,7 +342,7 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 		}
 	}
 }
-
+*/
 
 function showDocumentForm ($target,$ID,$search) {
 	// Show Document or blank form

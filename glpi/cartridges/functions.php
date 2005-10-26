@@ -99,6 +99,8 @@ function showCartridgeOnglets($target,$withtemplate,$actif){
 *@return nothing (diplays)
 *
 **/
+// Plus utilisé
+/*
 function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "",$deleted="",$link="") {
 	// Print Search Form
 	
@@ -187,6 +189,7 @@ function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "",$d
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
+*/
 /**
 * Search and list computers
 *
@@ -207,6 +210,8 @@ function searchFormCartridge($field="",$phrasetype= "",$contains="",$sort= "",$d
 *@return Nothing (display)
 *
 **/
+// Plus utilisé
+/*
 function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted,$link) {
 
 	// Lists CartridgeType
@@ -387,7 +392,7 @@ function showCartridgeList($target,$username,$field,$phrasetype,$contains,$sort,
 		}
 	}
 }
-
+*/
 
 /**
 * Print the cartridge type form

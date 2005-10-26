@@ -81,7 +81,8 @@ function showMonitorOnglets($target,$withtemplate,$actif){
 	echo "</ul></div>";
 	
 }
-
+// Plus utilisé
+/*
 function searchFormMonitors($field="",$phrasetype= "",$contains="",$sort= "",$deleted="",$link="") {
 	// Print Search Form
 	
@@ -179,8 +180,9 @@ function searchFormMonitors($field="",$phrasetype= "",$contains="",$sort= "",$de
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
-
-
+*/
+// Plus utilisé
+/*
 function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted,$link) {
 
 	// Lists Monitors
@@ -378,7 +380,7 @@ function showMonitorList($target,$username,$field,$phrasetype,$contains,$sort,$o
 		}
 	}
 }
-
+*/
 
 function showMonitorsForm ($target,$ID,$withtemplate='') {
 

@@ -81,6 +81,8 @@ function showPeripheralOnglets($target,$withtemplate,$actif){
 	
 }
 
+// Plus utilisé
+/*
 function searchFormperipheral($field="",$phrasetype= "",$contains="",$sort= "",$deleted="",$link="") {
 	// Print Search Form
 	
@@ -176,8 +178,9 @@ function searchFormperipheral($field="",$phrasetype= "",$contains="",$sort= "",$
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
-
-
+*/
+// Plus utilisé
+/*
 function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted,$link) {
 
 	// Lists peripheral
@@ -370,7 +373,7 @@ function showPeripheralList($target,$username,$field,$phrasetype,$contains,$sort
 		}
 	}
 }
-
+*/
 
 function showperipheralForm ($target,$ID,$withtemplate='') {
 

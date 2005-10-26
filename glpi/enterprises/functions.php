@@ -74,7 +74,8 @@ function showEnterpriseOnglets($target,$withtemplate,$actif){
 }
 
 
-
+// Plus utilisé
+/*
 function searchFormEnterprise($field="",$phrasetype= "",$contains="",$sort= "",$deleted="",$link="") {
 	// Print Search Form
 	
@@ -164,7 +165,9 @@ function searchFormEnterprise($field="",$phrasetype= "",$contains="",$sort= "",$
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
-
+*/
+// Plus utilisé
+/*
 function showEnterpriseList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted,$link) {
 
 	// Lists Enterprise
@@ -341,7 +344,7 @@ function showEnterpriseList($target,$username,$field,$phrasetype,$contains,$sort
 		}
 	}
 }
-
+*/
 
 
 function showEnterpriseForm ($target,$ID) {

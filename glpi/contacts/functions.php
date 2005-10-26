@@ -92,6 +92,8 @@ function showContactOnglets($target,$withtemplate,$actif){
 *@return nothing (diplays)
 *
 **/
+// Plus utilisé
+/*
 function searchFormContact($field="",$phrasetype= "",$contains="",$sort= "") {
 	// Print Search Form
 	
@@ -138,7 +140,7 @@ function searchFormContact($field="",$phrasetype= "",$contains="",$sort= "") {
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
-
+*/
 /**
 * Search and list contacts
 *
@@ -158,6 +160,8 @@ function searchFormContact($field="",$phrasetype= "",$contains="",$sort= "") {
 *@return Nothing (display)
 *
 **/
+// Plus utilisé
+/*
 function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start) {
 
 	// Lists contact
@@ -307,7 +311,7 @@ function showContactList($target,$username,$field,$phrasetype,$contains,$sort,$o
 		}
 	}
 }
-
+*/
 /**
 * Print the contact form
 *

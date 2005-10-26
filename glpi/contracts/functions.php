@@ -95,6 +95,8 @@ function showContractOnglets($target,$withtemplate,$actif){
 *@return nothing (diplays)
 *
 **/
+// Plus utilisé
+/*
 function searchFormContract($field="",$phrasetype= "",$contains="",$sort= "",$deleted="",$link="") {
 	// Print Search Form
 	
@@ -186,7 +188,7 @@ function searchFormContract($field="",$phrasetype= "",$contains="",$sort= "",$de
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
-
+*/
 
 /**
 * Search and list contacts
@@ -208,6 +210,8 @@ function searchFormContract($field="",$phrasetype= "",$contains="",$sort= "",$de
 *@return Nothing (display)
 *
 **/
+// Plus utilisé
+/*
 function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted,$link) {
 
 	// Lists Contract
@@ -398,7 +402,7 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 		}
 	}
 }
-
+*/
 /**
 * Print the contract form
 *
