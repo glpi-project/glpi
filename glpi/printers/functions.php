@@ -85,6 +85,8 @@ function showPrinterOnglets($target,$withtemplate,$actif){
 	
 }
 
+// Plus utilisé
+/*
 function searchFormPrinters($field="",$phrasetype= "",$contains="",$sort= "",$deleted="",$link="") {
 	// Print Search Form
 	
@@ -184,8 +186,10 @@ function searchFormPrinters($field="",$phrasetype= "",$contains="",$sort= "",$de
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
+*/
 
-
+// Plus utilisé
+/*
 function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted,$link) {
 
 	// Lists Printers
@@ -381,7 +385,7 @@ function showPrintersList($target,$username,$field,$phrasetype,$contains,$sort,$
 		}
 	}
 }
-
+*/
 
 function showPrintersForm ($target,$ID,$withtemplate='') {
 

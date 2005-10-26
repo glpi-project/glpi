@@ -95,6 +95,8 @@ function searchFormTypedoc($field="",$phrasetype= "",$contains="",$sort= "") {
 }
 
 
+// Plus utilisé
+/*
 function showTypedocList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start) {
 
 	// Lists peripheral
@@ -237,8 +239,10 @@ function showTypedocList($target,$username,$field,$phrasetype,$contains,$sort,$o
 		}
 	}
 }
+*/
 
-
+// Plus utilisé
+/*
 function showTypedocForm ($target,$ID) {
 
 	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel,$phproot;
@@ -328,7 +332,7 @@ function showTypedocForm ($target,$ID) {
         }
 
 }
-
+*/
 
 function updateTypedoc($input) {
 	// Update a Peripheral in the database

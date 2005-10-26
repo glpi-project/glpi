@@ -85,6 +85,8 @@ function showNetworkingOnglets($target,$withtemplate,$actif){
 	
 }
 
+// Plus utilisé
+/*
 function searchFormNetworking($field="",$phrasetype= "",$contains="",$sort= "",$deleted= "",$link="") {
 	// Netwokirng Search Form
 	
@@ -183,7 +185,9 @@ function searchFormNetworking($field="",$phrasetype= "",$contains="",$sort= "",$
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
-
+*/
+// Plus utilisé
+/*
 
 function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted,$link) {
 
@@ -395,7 +399,7 @@ function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort
 		}
 	}
 }
-
+*/
 
 
 

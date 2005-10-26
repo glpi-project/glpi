@@ -92,6 +92,8 @@ function showLinkOnglets($target,$withtemplate,$actif){
 *@return nothing (diplays)
 *
 **/
+// Plus utilisé
+/*
 function searchFormLink($field="",$phrasetype= "",$contains="",$sort= "") {
 	// Print Search Form
 	
@@ -132,7 +134,7 @@ function searchFormLink($field="",$phrasetype= "",$contains="",$sort= "") {
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
-
+*/
 /**
 * Search and list links
 *
@@ -152,6 +154,8 @@ function searchFormLink($field="",$phrasetype= "",$contains="",$sort= "") {
 *@return Nothing (display)
 *
 **/
+// Plus utilisé
+/*
 function showLinkList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start) {
 
 	// Lists links
@@ -266,7 +270,7 @@ function showLinkList($target,$username,$field,$phrasetype,$contains,$sort,$orde
 		}
 	}
 }
-
+*/
 /**
 * Print the link form
 *

@@ -122,6 +122,8 @@ function showComputerOnglets($target,$withtemplate,$actif){
 *@return nothing (diplays)
 *
 **/
+// Plus utilisé
+/*
 function searchFormComputers($field="",$contains="",$sort= "",$deleted= "",$link="") {
 	// Print Search Form
 	
@@ -231,7 +233,7 @@ function searchFormComputers($field="",$contains="",$sort= "",$deleted= "",$link
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit' >";
 	echo "</td></tr></table></div></form>";
 }
-
+*/
 /**
 * Test if a field is a dropdown
 *
@@ -294,6 +296,8 @@ function IsDevice($field) {
 *@return Nothing (display)
 *
 **/
+// Plus utilisé
+/*
 function showComputerList($target,$username,$field,$contains,$sort,$order,$start,$deleted,$link) {
 
 	$db = new DB;
@@ -550,6 +554,7 @@ function showComputerList($target,$username,$field,$contains,$sort,$order,$start
 		}
 	}
 }
+*/
 /**
 * Print the computer form
 *

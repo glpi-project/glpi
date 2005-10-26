@@ -85,6 +85,8 @@ function showSoftwareOnglets($target,$withtemplate,$actif){
 }
 
 
+// Plus utilisé
+/*
 function searchFormSoftware($field="",$phrasetype= "",$contains="",$sort= "",$deleted="",$link="") {
 	global $HTMLRel;
 	// Print Search Form
@@ -181,7 +183,10 @@ function searchFormSoftware($field="",$phrasetype= "",$contains="",$sort= "",$de
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></center></form>";
 }
+*/
 
+// Plus utilisé
+/*
 function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted,$link) {
 
 	// Lists Software
@@ -367,7 +372,7 @@ function showSoftwareList($target,$username,$field,$phrasetype,$contains,$sort,$
 		}
 	}
 }
-
+*/
 
 
 function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {

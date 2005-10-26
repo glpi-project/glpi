@@ -1783,7 +1783,7 @@ else {
 }
 
 
-function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$category=0,$priority=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$assign_type=0,$category=0,$priority=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -1900,7 +1900,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$c
 
 	if ($status!="all") $query.=" AND glpi_tracking.status = '$status'";
 	
-	if ($assign!="0") $query.=" AND glpi_tracking.assign = '$assign'";
+	if ($assign!="0"&&$assign_type!="0") $query.=" AND glpi_tracking.assign = '$assign' AND glpi_tracking.assign_type = '$assign_type'";
 	if ($author!="0") $query.=" AND glpi_tracking.author = '$author'";
 
 	if ($priority>0) $query.=" AND glpi_tracking.priority = '$priority'";
