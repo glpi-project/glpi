@@ -220,11 +220,9 @@ class Computer {
 		$query = "INSERT INTO glpi_computers (";
 		$i=0;
 		foreach ($this->fields as $key => $val) {
-			if(!(strcmp($key,'withtemplate') === 0 || strcmp($key,'add') === 0)) { 
 				$fields[$i] = $key;
 				$values[$i] = $val;
 				$i++;
-			}
 		}		
 		for ($i=0; $i < count($fields); $i++) {
 			$query .= $fields[$i];

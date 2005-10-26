@@ -250,11 +250,11 @@ function addKbItem($input){
 	$ki = new kbitem;
 
 	// dump status
-	$null = array_pop($input);
+	unset($input['add']);
 	
 	// fill array for udpate
 	foreach ($input as $key => $val) {
-		if (!isset($ki->fields[$key]) || $ki->fields[$key] != $input[$key]) {
+		if ($key[0]!='_'&&(!isset($ki->fields[$key]) || $ki->fields[$key] != $input[$key])) {
 			$ki->fields[$key] = $input[$key];
 		}
 	}

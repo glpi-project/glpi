@@ -572,7 +572,7 @@ function addDocument($input) {
 	$con = new Document;
 
 	// dump status
-	$null = array_pop($input);
+	unset($input['add']);
 	
 	
 	if (isset($_FILES['filename']['type'])&&!empty($_FILES['filename']['type']))

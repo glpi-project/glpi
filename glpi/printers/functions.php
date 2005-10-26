@@ -668,8 +668,9 @@ function addPrinter($input) {
 	// dump status
 	$oldID=$input["ID"];
 
-	$null = array_pop($input);
-	$null = array_pop($input);
+	unset($input['add']);
+	unset($input['withtemplate']);
+	unset($input['ID']);
 	
 	// Manage state
 	$state=$input["state"];

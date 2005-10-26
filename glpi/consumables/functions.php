@@ -564,7 +564,7 @@ function addConsumableType($input) {
 	$sw = new ConsumableType;
 	
 	// dump status
-	$null = array_pop($input);
+	unset($input['add']);
 	
 	// fill array for update
 	foreach ($input as $key => $val) {
