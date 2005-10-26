@@ -1122,7 +1122,47 @@ echo "</span>\n";
 }
 
 
+function dropdownConnectPort($ID,$type,$myname) {
 
+
+	global $lang,$HTMLRel,$cfg_install;
+	
+	$db=new DB;
+	
+	$items=array(
+	COMPUTER_TYPE=>"glpi_computers",
+	NETWORKING_TYPE=>"glpi_networking",
+	PRINTER_TYPE=>"glpi_printers",
+	PERIPHERAL_TYPE=>"glpi_peripherals",
+	);
+
+	
+	$rand=mt_rand();
+	echo "<select name='type' id='item_type$rand'>\n";
+	echo "<option value='0'>-----</option>\n";
+	echo "<option value='".COMPUTER_TYPE."'>".$lang["Menu"][0]."</option>\n";
+	echo "<option value='".NETWORKING_TYPE."'>".$lang["Menu"][1]."</option>\n";
+	echo "<option value='".PRINTER_TYPE."'>".$lang["Menu"][2]."</option>\n";
+	echo "<option value='".PERIPHERAL_TYPE."'>".$lang["Menu"][16]."</option>\n";
+	echo "</select>\n";
+	
+	
+	echo "<script type='text/javascript' >\n";
+	echo "   new Form.Element.Observer('item_type$rand', 1, \n";
+	echo "      function(element, value) {\n";
+	echo "      	new Ajax.Updater('show_$myname$rand','".$cfg_install["root"]."/ajax/dropdownConnectPortDeviceType.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
+	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
+	echo "           onLoading:function(request)\n";
+	echo "            {Element.show('search_spinner_$myname$rand');},\n";
+	echo "           method:'post', parameters:'current=$ID&type='+value+'&myname=$myname'\n";
+	echo "})})\n";
+	echo "</script>\n";
+	
+	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+	echo "<span id='show_$myname$rand'>&nbsp;</span>\n";
+
+
+}
 
 
 ?>
