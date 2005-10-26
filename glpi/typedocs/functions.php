@@ -47,7 +47,8 @@ function titleTypedocs(){
                 echo "</tr></table></div>";
 }
 
-
+// Plus utilisé
+/*
 function searchFormTypedoc($field="",$phrasetype= "",$contains="",$sort= "") {
 	// Print Search Form
 	
@@ -93,7 +94,7 @@ function searchFormTypedoc($field="",$phrasetype= "",$contains="",$sort= "") {
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
-
+*/
 
 // Plus utilisé
 /*
@@ -241,8 +242,8 @@ function showTypedocList($target,$username,$field,$phrasetype,$contains,$sort,$o
 }
 */
 
-// Plus utilisé
-/*
+
+
 function showTypedocForm ($target,$ID) {
 
 	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel,$phproot;
@@ -332,7 +333,7 @@ function showTypedocForm ($target,$ID) {
         }
 
 }
-*/
+
 
 function updateTypedoc($input) {
 	// Update a Peripheral in the database
@@ -374,8 +375,8 @@ function addTypedoc($input) {
 	$mon = new Typedoc;
 
 	// dump status
-	$null = array_pop($input);
-
+	unset($input["add"]);
+	
  	// set new date.
  	$mon->fields["date_mod"] = date("Y-m-d H:i:s");
 	

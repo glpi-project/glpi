@@ -662,11 +662,13 @@ function addMonitor($input) {
 
 	$mon = new Monitor;
 
+
+
 	// dump status
 	$oldID=$input["ID"];
-
-	$null = array_pop($input);
-	$null = array_pop($input);
+	unset($input["ID"]);
+	unset($input["add"]);
+	
 	
 	// Manage state
 	$state=$input["state"];
