@@ -401,9 +401,9 @@ function addLink($input) {
 	// Add Link, nasty hack until we get PHP4-array-functions
 
 	$con = new Link;
-	unset($input['referer']);
+
 	// dump status
-	$null = array_pop($input);
+	unset($input['add']);
 	
 	// fill array for udpate
 	foreach ($input as $key => $val) {

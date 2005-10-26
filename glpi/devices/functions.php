@@ -816,11 +816,10 @@ function addDevice($input) {
 	
 	// dump status
 	$oldID=$input["ID"];
-
 	// Pop off the last Three attributes, no longer needed
-	$null = array_pop($input);
-	$null = array_pop($input);
-	$null = array_pop($input);
+	unset($input['add']);
+	unset($input['ID']);
+	unset($input['device_type']);
 
  	
 	// fill array for update

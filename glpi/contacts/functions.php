@@ -484,8 +484,8 @@ function addContact($input) {
 	$con = new Contact;
 
 	// dump status
-	$null = array_pop($input);
-	
+	unset($input['add']);
+
 	// fill array for udpate
 	foreach ($input as $key => $val) {
 		if ($key[0]!='_'&&(!isset($con->fields[$key]) || $con->fields[$key] != $input[$key])) {

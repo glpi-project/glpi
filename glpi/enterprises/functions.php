@@ -476,7 +476,7 @@ function addEnterprise($input) {
 	$ent = new Enterprise;
 
 	// dump status
-	$null = array_pop($input);
+	unset($input['add']);
 
 	// fill array for update
 	foreach ($input as $key => $val) {
@@ -588,5 +588,4 @@ function getEnterpriseLinks($value,$withname=0){
 return $ret;
 
 }
-
 ?>

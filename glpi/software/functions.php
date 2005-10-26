@@ -559,8 +559,8 @@ function addSoftware($input) {
 	$oldID=$input["ID"];
 
 	// dump status
-	$null = array_pop($input);
-	$null = array_pop($input);
+	unset($input['add']);
+	unset($input['ID']);
 
 	if ($input['is_update']=='N') $input['update_software']=-1;
 
@@ -970,10 +970,10 @@ function addLicense($input) {
 	$lic = new License;
 	
 	// dump status
-	$null = array_pop($input);
-	$null = array_pop($input);
-	$null = array_pop($input);
-	$null = array_pop($input);
+	unset($input["lID"]);
+	unset($input["form"]);
+	unset($input["add"]);
+	unset($input["withtemplate"]);
 	
 	if (empty($input['expire'])) unset($input['expire']);
 	if ($input['oem']=='N') $input['oem_computer']=-1;

@@ -615,8 +615,9 @@ function addNetdevice($input) {
 	// dump the status
 	$oldID=$input["ID"];
 
-	$null = array_pop($input);
-	$null = array_pop($input);
+	unset($input['add']);
+	unset($input['withtemplate']);
+	unset($input['ID']);
 	
 	// Manage state
 	$state=$input["state"];
@@ -1054,10 +1055,8 @@ function addNetport($input) {
 
 	$netport = new Netport;
 	
-
 	// dump status
-	unset($input['search']);
-	$null = array_pop($input);
+	unset($input['add']);
 
 	// fill array for update 
 	foreach ($input as $key => $val) {

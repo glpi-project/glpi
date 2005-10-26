@@ -562,8 +562,8 @@ function addCartridgeType($input) {
 	$sw = new CartridgeType;
 
 	// dump status
-	$null = array_pop($input);
-	
+	unset($input['add']);
+
 	// fill array for update
 	foreach ($input as $key => $val) {
 		if ($key[0]!='_'&&(empty($sw->fields[$key]) || $sw->fields[$key] != $input[$key])) {
