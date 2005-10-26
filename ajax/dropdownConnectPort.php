@@ -64,9 +64,9 @@
 		if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
 						
 
-	$query =  "SELECT DISTINCT glpi_networking_wire.ID as WID, glpi_networking_ports.ID as DID, glpi_computers.name as CNAME, glpi_networking_ports.name  as NNAME, glpi_networking_ports.ifaddr as IP, glpi_networking_ports.ifmac as MAC";
-	$query.= " FROM glpi_computers ";
-	$query.= " LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type='".$_POST['type']."' AND glpi_networking_ports.on_device=glpi_computers.ID) "; 
+	$query =  "SELECT DISTINCT glpi_networking_wire.ID as WID, glpi_networking_ports.ID as DID, $table.name as CNAME, glpi_networking_ports.name  as NNAME, glpi_networking_ports.ifaddr as IP, glpi_networking_ports.ifmac as MAC";
+	$query.= " FROM $table ";
+	$query.= " LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type='".$_POST['type']."' AND glpi_networking_ports.on_device=$table.ID) "; 
 	$query.= " LEFT JOIN glpi_networking_wire ON (glpi_networking_wire.end1=glpi_networking_ports.ID OR glpi_networking_wire.end2=glpi_networking_ports.ID)";
 	$query.= " WHERE glpi_networking_wire.ID IS NULL AND glpi_networking_ports.ID IS NOT NULL AND glpi_networking_ports.ID <> '".$_POST['current']."' ";
 	$query.= $where;
