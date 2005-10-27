@@ -422,7 +422,7 @@ global $lang;
 
 
 //*******************************************************************************************************************************
-// *********************************** TEST ICAL ***************************************************************************
+// *********************************** Implémentation ICAL ***************************************************************
 //*******************************************************************************************************************************
 
 
@@ -438,11 +438,11 @@ function urlIcal ($who) {
 
 GLOBAL  $cfg_install, $lang;
 
-echo "<a href=\"".$cfg_install["root"]."/planning/ical.php?uID=$who\">".$lang["planning"][12]."</a>";
+echo "<a href=\"".$cfg_install["root"]."/planning/ical.php?uID=$who\"><span style='font-size:10px'>-".$lang["planning"][12]."</span></a>";
 echo "<br>";
 
 // Todo récup l'url complete de glpi proprement, ? nouveau champs table config ?
-echo "<a href=\"webcal://".$_SERVER['HTTP_HOST'].$cfg_install["root"]."/planning/ical.php?uID=$who\">".$lang["planning"][13]."</a>";
+echo "<a href=\"webcal://".$_SERVER['HTTP_HOST'].$cfg_install["root"]."/planning/ical.php?uID=$who\"><span style='font-size:10px'>-".$lang["planning"][13]."</span></a>";
 
 }
 
@@ -562,8 +562,7 @@ $debutcal=debutIcal(getUserName($who));
 		//todo recup la catégorie d'intervention.
 		//$event .= "CATEGORIES:".$val["categorie"]."\n";
 
-		//todo récup proprement l'url complete d'installation pour les liens  nouveau champs table config ?
-		$event .= "URL:http://".$_SERVER['HTTP_HOST'].$cfg_install["root"]."/tracking/tracking-followups.php?ID=".$val["id_tracking"]."\n";
+		$event .= "URL:".$cfg_features["url_base"]."/index.php?redirect=tracking_".$val["id_tracking"]."\n";
 
   		$event .= "END:VEVENT\n";
 		}
