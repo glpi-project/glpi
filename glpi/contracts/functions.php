@@ -416,7 +416,7 @@ function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$
 *@return Nothing (display)
 *
 **/
-function showContractForm ($target,$ID,$search) {
+function showContractForm ($target,$ID) {
 	// Show Contract or blank form
 	
 	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel;
@@ -682,12 +682,11 @@ function restoreContract($input) {
 * Print the HTML array for contract on devices $instID
 *
 *@param $instID array : Contract identifier.
-*@param $search='' not used (to be deleted)
 *
 *@return Nothing (display)
 *
 **/
-function showDeviceContract($instID,$search='') {
+function showDeviceContract($instID) {
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
     $db = new DB;
@@ -719,7 +718,7 @@ function showDeviceContract($instID,$search='') {
 	}
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 	echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
-		dropdownAllItems("item",0,0,0,$search);
+		dropdownAllItems("item");
 	echo "&nbsp;<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
 	//echo "</form>";
 	echo "</td>";
@@ -727,7 +726,6 @@ function showDeviceContract($instID,$search='') {
 	
 	echo "<td align='center' class='tab_bg_2'>";
 	//echo "<form method='get' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php?ID=$instID\">";	
-	//echo "<input type='text' name='search' value=\"".$search."\" size='15'>";
 	echo "<input type='hidden' name='ID' value='$instID'>";
 	//echo "&nbsp;<input type='submit' name='bsearch' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr>";

@@ -949,7 +949,7 @@ echo "<select name='$name'>\n";
 * @param $value
 * @return nothing (print out an HTML select box)
 */
-function dropdownAllItems($myname,$withenterprise=0,$withcartridge=0,$withconsumable=0,$search='',$value='') {
+function dropdownAllItems($myname,$value_type=0,$withenterprise=0,$withcartridge=0,$withconsumable=0,$search='',$value='') {
 //	global $deleted_tables, $template_tables;
 	global $lang,$HTMLRel,$cfg_install;
 	
