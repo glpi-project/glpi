@@ -21,7 +21,6 @@ checkAuthentication("normal");
 
 if (!isset($_GET["uID"])) $_GET["uID"]=$_SESSION["glpiID"];
 
-//@header ("content-type:text/calendar");
 
 echo generateIcal($_GET["uID"]);
 
