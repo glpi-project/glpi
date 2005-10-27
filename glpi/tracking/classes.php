@@ -398,7 +398,16 @@ class Followup {
 		
 		if ($result = $db->query($query)) {
 			$cID = $db->result($result, 0, "computer");
-			logEvent($cID, "computers", 4, "tracking", "$this->author added followup to job $this->tracking.");
+			$type="";
+			switch ($db->result($result, 0, "device_type")){
+				case COMPUTER_TYPE :$type="computers";break;
+				case NETWORKING_TYPE :$type="networking";break;
+				case PRINTER_TYPE :$type="printers";break;
+				case MONITOR_TYPE :$type="monitors";break;
+				case SOFTWARE_TYPE :$type="software";break;
+				case PERIPHERAL_TYPE :$type="peripherals";break;
+			}
+			logEvent($cID, $type, 4, "tracking", "$this->author added followup to job $this->tracking.");
 			return true;
 		} else {
 			return false;
