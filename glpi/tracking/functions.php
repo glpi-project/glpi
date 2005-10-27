@@ -44,7 +44,7 @@ function titleTracking(){
 	// titre
         echo "<div align='center'><table border='0'><tr><td>\n";
         echo "<img src=\"".$HTMLRel."pics/suivi-intervention.png\" alt=''></td><td><span class='icon_nav'>".$lang["tracking"][0]."</span>\n";
-        echo "</td></tr></table></div>\n";
+        echo "</td></tr></table>&nbsp;</div>\n";
 
 }
 
@@ -1662,7 +1662,7 @@ function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,
 	}
 	echo "<form method=get name=\"form\" action=\"".$_SERVER["PHP_SELF"]."\">";
 	
-	echo "<div align='center'><p><strong>".$lang["reports"][25]."</strong></p></div>";
+	
 	echo "<div align='center'>";
 				
 	echo "<table border='0' width='900' class='tab_cadre'>";
