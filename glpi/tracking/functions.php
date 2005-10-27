@@ -1693,7 +1693,7 @@ function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,
 
 	echo "<td align='center' colspan='2'>";
 	echo "<table border='0'><tr><td>".$lang["common"][1].":</td><td>";
-	dropdownAllItems("item");
+	dropdownAllItems("item",$type);
 	echo "</td></tr></table>";
 	echo "</td>";
 	echo "<td  colspan='2' align='center'>".$lang["job"][5]."&nbsp;:&nbsp;";

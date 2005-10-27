@@ -49,7 +49,6 @@ include ($phproot . "/glpi/includes_consumables.php");
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
-if(!isset($tab["search"])) $tab["search"] = "";
 
 if (isset($_POST["add"]))
 {
@@ -135,7 +134,7 @@ else
 	if ($ci->getFromDB(DOCUMENT_TYPE,$tab["ID"]))
 	showDocumentOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
-	showDocumentForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["search"]);
+	showDocumentForm($_SERVER["PHP_SELF"],$tab["ID"]);
 
 	commonFooter();
 }

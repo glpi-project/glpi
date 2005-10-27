@@ -344,7 +344,7 @@ function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$
 }
 */
 
-function showDocumentForm ($target,$ID,$search) {
+function showDocumentForm ($target,$ID) {
 	// Show Document or blank form
 	
 	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel;
@@ -448,7 +448,7 @@ function showDocumentForm ($target,$ID,$search) {
 		echo "</table></div>";
 		echo "</form>";
 		
-		showDeviceDocument($ID,$search);
+		showDeviceDocument($ID);
 	}
 	} else {
 	echo "<div align='center'><b>".$lang["document"][23]."</b></div>";
@@ -641,7 +641,7 @@ function showDeviceDocument($instID,$search='') {
 	
 //	echo "<div class='software-instal'>";
 	echo "<input type='hidden' name='conID' value='$instID'>";
-		dropdownAllItems("item",1,1,1,$search,'');
+		dropdownAllItems("item",0,1,1,1);
 	echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
 //	echo "</form>";
 	echo "</td>";

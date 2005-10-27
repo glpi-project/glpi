@@ -47,7 +47,6 @@ include ($phproot . "/glpi/includes_links.php");
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
-if(!isset($tab["search"])) $tab["search"] = "";
 
 if (isset($_POST["add"]))
 {
@@ -137,24 +136,24 @@ else
 	if ($ci->getFromDB(CONTRACT_TYPE,$tab["ID"]))
 	showContractOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
-	if (showContractForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["search"])) {
+	if (showContractForm($_SERVER["PHP_SELF"],$tab["ID"])) {
 		if (!empty($tab['ID']))
 		switch($_SESSION['glpi_onglet']){
 		case -1 :	
 			showEnterpriseContract($tab["ID"]);
-			showDeviceContract($tab["ID"],$tab["search"]);
-			showDocumentAssociated(CONTRACT_TYPE,$tab["ID"],$tab["search"]);
+			showDeviceContract($tab["ID"]);
+			showDocumentAssociated(CONTRACT_TYPE,$tab["ID"]);
 			showLinkOnDevice(CONTACT_TYPE,$tab["ID"]);
 			break;
 		case 5 : 
-			showDocumentAssociated(CONTRACT_TYPE,$tab["ID"],$tab["search"]);
+			showDocumentAssociated(CONTRACT_TYPE,$tab["ID"]);
 			break;
 		case 7 : 
 			showLinkOnDevice(CONTRACT_TYPE,$tab["ID"]);
 			break;
 		default :
 			showEnterpriseContract($tab["ID"]);
-			showDeviceContract($tab["ID"],$tab["search"]);
+			showDeviceContract($tab["ID"]);
 		break;
 		}
 	}	
