@@ -96,16 +96,34 @@ else
 
 	// redirect to tracking
 	if (isset($_GET["redirect"])){
+		if(!session_id()){@session_start();}
+
 		list($type,$ID)=split("_",$_GET["redirect"]);
 		// Déjà connecté
-		
 		if (isset($_SESSION["glpitype"])&&!empty($_SESSION["glpitype"])){
 		 switch ($_SESSION["glpitype"]){
 		 case "post-only" :
-		 	glpi_header($cfg_install["root"]."/helpdesk.php?show=user&ID=$ID");
+		 	switch ($type){
+		 		case "tracking":
+				 	glpi_header($cfg_install["root"]."/helpdesk.php?show=user&ID=$ID");
+					 break;
+				 default:
+					 glpi_header($cfg_install["root"]."/helpdesk.php");
+					 break;
+			 	}
 		 	break;
 		 default :
-		 	glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=$ID");
+		 	switch ($type){
+		 		case "tracking":
+				 	glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=$ID");
+					 break;
+		 		case "computers":
+				 	glpi_header($cfg_install["root"]."/computers/computers-info-form.php?ID=$ID");
+					 break;
+				 default:
+					 glpi_header($cfg_install["root"]."/central.php");
+					 break;
+			 	}
 		 	break;
 		 
 		 }
@@ -131,7 +149,7 @@ else
 	
 	
 	echo "</fieldset>";
-echo "<p ><span> <input type='submit' name='submit' value='Login' class='submit' /></span></p>";
+	echo "<p ><span> <input type='submit' name='submit' value='Login' class='submit' /></span></p>";
 	echo "</form>";
 	
 

@@ -616,8 +616,6 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 	}
 	else {
                 echo "<div align='center'><b>".$lang["printers"][17]."</b></div>";
-                echo "<hr noshade>";
-                searchFormPrinters();
                 return false;
         }
 

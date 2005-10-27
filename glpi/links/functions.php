@@ -347,8 +347,6 @@ function showLinkForm ($target,$ID) {
 	}
 	}else {
 	echo "<div align='center'><b>".$lang["links"][8]."</b></div>";
-	echo "<hr noshade>";
-	searchFormLink();
 	return false;
 	
 	}

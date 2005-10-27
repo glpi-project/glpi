@@ -441,8 +441,6 @@ function showEnterpriseForm ($target,$ID) {
 	
 	} else {
 	echo "<div align='center'><b>".$lang["financial"][39]."</b></div>";
-	echo "<hr noshade>";
-	searchFormEnterprise();
 	return false;
 	}
 	

@@ -511,8 +511,6 @@ function showConsumableTypeForm ($target,$ID) {
 	} else {
 	
 	echo "<div align='center'><b>".$lang["consumables"][7]."</b></div>";
-	echo "<hr noshade>";
-	searchFormConsumable();
 	return false;
 	}
 	return true;

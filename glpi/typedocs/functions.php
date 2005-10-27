@@ -327,8 +327,6 @@ function showTypedocForm ($target,$ID) {
 	}
 	else {
                 echo "<div align='center'><b>".$lang["document"][23]."</b></div>";
-                echo "<hr noshade>";
-                searchFormTypedoc();
                 return false;
         }
 
