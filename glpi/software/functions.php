@@ -447,7 +447,7 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][5].":		</td>";
-	echo "<td colspan='2'><input type='text' name='version' value=\"".$sw->fields["version"]."\" size='5'></td>";
+	echo "<td colspan='2'><input type='text' name='version' value=\"".$sw->fields["version"]."\" size='20'></td>";
 	echo "</tr>";
 
 	// UPDATE
