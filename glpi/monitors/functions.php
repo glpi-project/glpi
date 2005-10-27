@@ -610,8 +610,6 @@ echo "</td></tr>";
 		}
 	else {
                 echo "<div align='center'><b>".$lang["monitors"][17]."</b></div>";
-                echo "<hr noshade>";
-                searchFormMonitors();
                 return false;
         }
 

@@ -517,8 +517,7 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 	}
 	else {
                 echo "<div align='center'><b>".$lang["software"][22]."</b></div>";
-                echo "<hr noshade>";
-                searchFormSoftware();
+
                 return false;
         }
 

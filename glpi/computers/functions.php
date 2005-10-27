@@ -749,8 +749,6 @@ function showComputerForm($target,$ID,$withtemplate='') {
 	}
 	else {
          echo "<div align='center'><b>".$lang["computers"][32]."</b></div>";
-         echo "<hr noshade>";
-         searchFormComputers();
          return false;
         }
 }

@@ -600,8 +600,6 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 		}
 	else {
                 echo "<div align='center'><b>".$lang["networking"][38]."</b></div>";
-                echo "<hr noshade>";
-                searchFormNetworking();
                 return false;
         }
 

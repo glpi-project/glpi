@@ -428,8 +428,6 @@ function showContactForm ($target,$ID) {
 	
 	} else {
 	echo "<div align='center'><b>".$lang["financial"][38]."</b></div>";
-	echo "<hr noshade>";
-	searchFormContact();
 	return false;
 	
 	}

@@ -509,8 +509,6 @@ function showCartridgeTypeForm ($target,$ID) {
 	}
 	else {
 	echo "<div align='center'><b>".$lang["cartridges"][7]."</b></div>";
-	echo "<hr noshade>";
-	searchFormCartridge();
 	return false;
 	}
 	return true;
