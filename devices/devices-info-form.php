@@ -53,6 +53,8 @@ if (isset($_SERVER["HTTP_REFERER"])) $REFERER=$_SERVER["HTTP_REFERER"];
 if (isset($tab["referer"])) $REFERER=$tab["referer"];
 if (isset($_POST["referer"])) $REFERER=$_POST["referer"];
 
+$REFERER=preg_replace("/&/","&amp;",$REFERER);
+
 unset($_POST["referer"]);
 unset($tab["referer"]);
 

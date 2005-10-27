@@ -1399,7 +1399,6 @@ function addFormTracking ($device_type,$ID,$author,$assign,$target,$error,$searc
 	echo "<td align='center'>";
 
 	dropdownAllUsers($assign,"user");
-	echo "</td>";
 //      echo "<td><input type='text' size='10'  name='search'></td>";
 //	echo "<td><input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
 	echo "</td></tr>";
