@@ -1691,12 +1691,12 @@ function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,
 	echo "</tr>";
 	echo "<tr class='tab_bg_1'>";
 
-	echo "<td align='center' colspan='3'>";
+	echo "<td align='center' colspan='2'>";
 	echo "<table border='0'><tr><td>".$lang["common"][1].":</td><td>";
 	dropdownAllItems("item");
 	echo "</td></tr></table>";
 	echo "</td>";
-	echo "<td  colspan='1' align='center'>".$lang["job"][5]."&nbsp;:&nbsp;";
+	echo "<td  colspan='2' align='center'>".$lang["job"][5]."&nbsp;:&nbsp;";
 	dropdownAssign($assign,$assign_type,"attrib");
 	echo "</td>";
 	echo "<td  colspan='1' align='center'>".$lang["joblist"][3]."&nbsp;:&nbsp;";
@@ -1880,8 +1880,12 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 	if (!empty($enddate1)&&$enddate1!="0000-00-00") $query.=" AND glpi_tracking.closedate >= '$enddate1'";
 	if (!empty($enddate2)&&$enddate2!="0000-00-00") $query.=" AND glpi_tracking.closedate <= adddate( '". $enddate2 ."' , INTERVAL 1 DAY ) ";
 
+
+	if ($type!=0)
+		$query.=" AND glpi_tracking.device_type='$type'";	
+	
 	if ($item!=0&&$type!=0)
-		$query.=" AND glpi_tracking.computer = '$item' AND glpi_tracking.device_type='$type'";	
+		$query.=" AND glpi_tracking.computer = '$item'";	
 	
 	if ($contains2!=""){
 		switch ($field2){
