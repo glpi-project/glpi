@@ -67,6 +67,9 @@ class ReservationItem{
 			case PERIPHERAL_TYPE : 
 				$this->obj= new Peripheral;	
 				break;				
+			case SOFTWARE_TYPE : 
+				$this->obj= new Software;	
+				break;					
 			}
 			if ($this->obj!=NULL)
 			return $this->obj->getfromDB($this->fields["id_device"]);
@@ -99,6 +102,10 @@ class ReservationItem{
 
 				return $lang["peripherals"][4];
 				break;				
+			case SOFTWARE_TYPE : 
+				return $lang["software"][10];
+				break;
+			
 			}
 	
 	}
@@ -133,7 +140,10 @@ class ReservationItem{
 				break;
 			case PERIPHERAL_TYPE : 
 				return "<a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName()." (".$this->fields["id_device"].")</a>";
-				break;				
+				break;	
+			case SOFTWARE_TYPE : 
+				return "<a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName()." (".$this->fields["id_device"].")</a>";
+				break;								
 			}
 
 	

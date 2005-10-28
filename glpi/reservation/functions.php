@@ -617,32 +617,32 @@ function printReservation($target,$ID,$date){
 if (!empty($ID))
 	printReservationItem($target,$ID,$date);
 else  {
-$db=new DB();
-$query="SELECT ID FROM glpi_reservation_item";
-$result=$db->query($query);
-if ($db->numrows($result)>0)
-while ($data=$db->fetch_array($result)){
-	$m=new ReservationItem;
-	$m->getfromDB($data['ID']);
+
+	$db=new DB();
+	
 	$debut=$date." 00:00:00";
 	$fin=$date." 23:59:59";
-	$query2 = "SELECT * FROM glpi_reservation_resa".
-	" WHERE (('".$debut."' < begin AND '".$fin."' > begin) OR ('".$debut."' < end AND '".$fin."' > end) OR (begin < '".$debut."' AND end > '".$debut."') OR (begin < '".$fin."' AND end > '".$fin."')) AND id_item=".$data['ID']." ORDER BY begin";
-	$result2=$db->query($query2);
-	if ($db->numrows($result2)>0){
-		list($annee,$mois,$jour)=split("-",$date);
-		echo "<tr class='tab_bg_1'><td><a href='$target?show=resa&amp;ID=".$data['ID']."&amp;mois_courant=$mois&amp;annee_courante=$annee'>".$m->getType()." - ".$m->getName()."</a></td></tr>";
-		echo "<tr><td>";
-		printReservationItem($target,$data['ID'],$date);
-		echo "</td></tr>";
+
+	$query = "SELECT DISTINCT glpi_reservation_item.ID FROM glpi_reservation_item INNER JOIN glpi_reservation_resa ON (glpi_reservation_item.ID = glpi_reservation_resa.id_item )".
+	" WHERE (('".$debut."' < begin AND '".$fin."' > begin) OR ('".$debut."' < end AND '".$fin."' > end) OR (begin < '".$debut."' AND end > '".$debut."') OR (begin < '".$fin."' AND end > '".$fin."')) ORDER BY begin";
+	//echo $query;
+	$result=$db->query($query);
+	
+	if ($db->numrows($result)>0){
+		$m=new ReservationItem;
+
+		while ($data=$db->fetch_array($result)){
+
+			$m->getfromDB($data['ID']);
+
+			list($annee,$mois,$jour)=split("-",$date);
+			echo "<tr class='tab_bg_1'><td><a href='$target?show=resa&amp;ID=".$data['ID']."&amp;mois_courant=$mois&amp;annee_courante=$annee'>".$m->getType()." - ".$m->getName()."</a></td></tr>";
+			echo "<tr><td>";
+			printReservationItem($target,$data['ID'],$date);
+			echo "</td></tr>";
+		}
 	}
-
-
 }
-
-
-}
-
 
 }
 
