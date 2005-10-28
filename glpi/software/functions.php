@@ -460,8 +460,13 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 		echo "<input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
 		}
 */
-	echo "</td></tr>";
-
+		if (!$template){
+		echo "<tr class='tab_bg_1'><td>".$lang["reservation"][24].":</td><td colspan='2'><b>";
+		showReservationForm(SOFTWARE_TYPE,$ID);
+		echo "</b></td></tr>";
+		}
+	
+	
 
 	echo "<tr class='tab_bg_1'><td valign='top'>";
 	echo $lang["software"][6].":	</td>";
