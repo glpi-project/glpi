@@ -75,6 +75,8 @@ $lang["buttons"][20]="Przenieś";
 $lang["buttons"][21]="Przywróć"; 
 $lang["buttons"][22]="Czyść"; 
 $lang["buttons"][23]="Pokaż"; 
+$lang["buttons"][24]="Go up"; 
+$lang["buttons"][25]="Go down"; 
 
 $lang["calendarD"][0]="Niedz."; 
 $lang["calendarD"][1]="Pon."; 
@@ -645,11 +647,6 @@ $lang["joblist"][13]="Infos";
 $lang["joblist"][14]="Close"; 
 $lang["joblist"][15]="Assign"; 
 $lang["joblist"][16]="No intervention in progress."; 
-$lang["joblist"][17]="Very High"; 
-$lang["joblist"][18]="High"; 
-$lang["joblist"][19]="Normal"; 
-$lang["joblist"][20]="Low"; 
-$lang["joblist"][21]="Very Low"; 
 $lang["joblist"][22]="No old intervention found"; 
 $lang["joblist"][23]="Add an old intervention to the history"; 
 
@@ -677,6 +674,7 @@ $lang["knowbase"][20]="Pusta baza wiedzy";
 $lang["knowbase"][21]="Pokaż wszystkie"; 
 $lang["knowbase"][22]="Ukryj wszystkie"; 
 $lang["knowbase"][23]="Kategoria"; 
+$lang["knowbase"][24]="Access to the FAQ"; 
 
 $lang["ldap"][0]="Search"; 
 $lang["ldap"][1]="Show"; 
@@ -703,6 +701,10 @@ $lang["login"][2]="Your password is no longer valid, if you've just changed it, 
 $lang["login"][3]="Not Logged in"; 
 $lang["login"][4]="Bad Password"; 
 $lang["login"][5]="Access Denied"; 
+$lang["login"][6]="Login"; 
+$lang["login"][7]="Password"; 
+$lang["login"][8]="Empty login or password"; 
+$lang["login"][10]="Authentification"; 
 
 $lang["mailing"][0]="-----------------------"; 
 $lang["mailing"][1]="======================================="; 
@@ -1052,6 +1054,9 @@ $lang["search"][7]="Global search";
 $lang["search"][8]="Begin date"; 
 $lang["search"][9]="End date"; 
 $lang["search"][10]="in"; 
+$lang["search"][11]="Items Seen"; 
+$lang["search"][15]="No item founded"; 
+$lang["search"][16]="A least"; 
 
 $lang["setup"][0]="Dropdowns"; 
 $lang["setup"][1]="Templates"; 
@@ -1164,6 +1169,8 @@ $lang["setup"][113]="Default language";
 $lang["setup"][114]="Priority colors"; 
 $lang["setup"][115]="Default threslhold for cartridge and consumable count"; 
 $lang["setup"][116]="Automatic assign the interventions to the technical person in charge"; 
+$lang["setup"][117]="Authorize the anonymous view of the knowledge base"; 
+$lang["setup"][118]="Text of the login page"; 
 $lang["setup"][150]="External sources of authentification"; 
 $lang["setup"][151]="If you do not wish to use LDAP as source of connection leave the empty fields"; 
 $lang["setup"][152]="LDAP configuration"; 
@@ -1219,6 +1226,12 @@ $lang["setup"][222]="Internal devices";
 $lang["setup"][223]="Limit of the schedules for planning"; 
 $lang["setup"][224]="Configuration for the reservations"; 
 $lang["setup"][225]="For a new reservation"; 
+$lang["setup"][226]="Add a link to GLPI in mails"; 
+$lang["setup"][227]="Base URL used"; 
+$lang["setup"][228]="Login Field"; 
+$lang["setup"][250]="Default search fields list"; 
+$lang["setup"][251]="Select a heading"; 
+$lang["setup"][252]="Select default items to show"; 
 
 $lang["software"][0]="Add Software..."; 
 $lang["software"][1]="ID"; 
@@ -1263,6 +1276,7 @@ $lang["software"][39]="Free Software";
 $lang["software"][40]="No licence"; 
 $lang["software"][41]="Software ID"; 
 $lang["software"][42]="New software based on a template"; 
+$lang["software"][43]="Add a license to buy"; 
 
 $lang["state"][0]="State"; 
 $lang["state"][1]="Item States"; 

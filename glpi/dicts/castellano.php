@@ -75,6 +75,8 @@ $lang["buttons"][20]="Mover";
 $lang["buttons"][21]="Restaurar"; 
 $lang["buttons"][22]="Purgar"; 
 $lang["buttons"][23]="Ver"; 
+$lang["buttons"][24]="Go up"; 
+$lang["buttons"][25]="Go down"; 
 
 $lang["calendarD"][0]="D"; 
 $lang["calendarD"][1]="L"; 
@@ -645,11 +647,6 @@ $lang["joblist"][13]="Infos";
 $lang["joblist"][14]="Terminar"; 
 $lang["joblist"][15]="Asignar"; 
 $lang["joblist"][16]="No hay servicios pendientes."; 
-$lang["joblist"][17]="Muy alta"; 
-$lang["joblist"][18]="Alta"; 
-$lang["joblist"][19]="Normal"; 
-$lang["joblist"][20]="Baja"; 
-$lang["joblist"][21]="Muy baja"; 
 $lang["joblist"][22]="No se han hallado servicios archivados"; 
 $lang["joblist"][23]="Devolver un servicio archivado al histórico"; 
 
@@ -677,6 +674,7 @@ $lang["knowbase"][20]="Base de conocimientos vacía";
 $lang["knowbase"][21]="Desplegar todo"; 
 $lang["knowbase"][22]="Replegar todo"; 
 $lang["knowbase"][23]="Categoría"; 
+$lang["knowbase"][24]="Acceder a la FAQ"; 
 
 $lang["ldap"][0]="búsqueda"; 
 $lang["ldap"][1]="Mostrar"; 
@@ -703,6 +701,10 @@ $lang["login"][2]="Su clave ya no es válida... si acaba de cambiarla, vuelva a 
 $lang["login"][3]="No ingresado"; 
 $lang["login"][4]="Clave incorrecta"; 
 $lang["login"][5]="Acceso denegado"; 
+$lang["login"][6]="Login"; 
+$lang["login"][7]="Password"; 
+$lang["login"][8]="Empty login or password"; 
+$lang["login"][10]="Authentification"; 
 
 $lang["mailing"][0]="-----------------------"; 
 $lang["mailing"][1]="======================================="; 
@@ -1052,6 +1054,9 @@ $lang["search"][7]="Todos";
 $lang["search"][8]="Fecha inicial"; 
 $lang["search"][9]="Fecha final"; 
 $lang["search"][10]="en"; 
+$lang["search"][11]="Items Seen"; 
+$lang["search"][15]="No item founded"; 
+$lang["search"][16]="A least"; 
 
 $lang["setup"][0]="Títulos"; 
 $lang["setup"][1]="Modelos"; 
@@ -1164,6 +1169,8 @@ $lang["setup"][113]="Idioma por defecto";
 $lang["setup"][114]="Colores de las prioridades"; 
 $lang["setup"][115]="Umbral de alarma por defecto para los cartuchos e insumos"; 
 $lang["setup"][116]="Asignar automáticamente los servicios al responsable técnico"; 
+$lang["setup"][117]="Authorize the anonymous view of the knowledge base"; 
+$lang["setup"][118]="Text of the login page"; 
 $lang["setup"][150]="Fuentes de autenticación externas"; 
 $lang["setup"][151]="Si no desea utilizar LDAP como origen de conexión deje los campos vacíos"; 
 $lang["setup"][152]="Configuración LDAP"; 
@@ -1219,6 +1226,12 @@ $lang["setup"][222]="Periféricos internos";
 $lang["setup"][223]="Límite de horarios para la planificación"; 
 $lang["setup"][224]="Configuración para las reservas"; 
 $lang["setup"][225]="Para una nueva reserva"; 
+$lang["setup"][226]="Autorizar la consulta anónima de la base de conocimiento"; 
+$lang["setup"][227]="Base URL used"; 
+$lang["setup"][228]="Login Field"; 
+$lang["setup"][250]="Default search fields list"; 
+$lang["setup"][251]="Select a heading"; 
+$lang["setup"][252]="Select default items to show"; 
 
 $lang["software"][0]="Agregar software..."; 
 $lang["software"][1]="ID"; 
@@ -1263,6 +1276,7 @@ $lang["software"][39]="Software libre";
 $lang["software"][40]="Ninguna licencia"; 
 $lang["software"][41]="Software ID"; 
 $lang["software"][42]="Nuevo software a partir de un modelo"; 
+$lang["software"][43]="Add a license to buy"; 
 
 $lang["state"][0]="Estado"; 
 $lang["state"][1]="Estados de materiales"; 
