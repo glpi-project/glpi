@@ -75,6 +75,8 @@ $lang["buttons"][20]="Verplaats";
 $lang["buttons"][21]="Herstellen"; 
 $lang["buttons"][22]="Purge"; 
 $lang["buttons"][23]="Toon"; 
+$lang["buttons"][24]="Go up"; 
+$lang["buttons"][25]="Go down"; 
 
 $lang["calendarD"][0]="Z"; 
 $lang["calendarD"][1]="M"; 
@@ -645,11 +647,6 @@ $lang["joblist"][13]="Info's";
 $lang["joblist"][14]="Sluiten"; 
 $lang["joblist"][15]="Toewijzen"; 
 $lang["joblist"][16]="Geen tussenkomst in werking."; 
-$lang["joblist"][17]="Zeer hoog"; 
-$lang["joblist"][18]="Hoog"; 
-$lang["joblist"][19]="Normaal"; 
-$lang["joblist"][20]="Laag"; 
-$lang["joblist"][21]="Zeer laag"; 
 $lang["joblist"][22]="Geen oude tussenkomst gevonden"; 
 $lang["joblist"][23]="Een oude tussenkomst toevoegen aan de geschiedenis"; 
 
@@ -677,6 +674,7 @@ $lang["knowbase"][20]="Ledig de kennis databank";
 $lang["knowbase"][21]="Toon alles"; 
 $lang["knowbase"][22]="Verberg alles"; 
 $lang["knowbase"][23]="Categorie"; 
+$lang["knowbase"][24]="Access to the FAQ"; 
 
 $lang["ldap"][0]="Zoek"; 
 $lang["ldap"][1]="Tonen"; 
@@ -703,6 +701,10 @@ $lang["login"][2]="Je paswoord is niet langer geldig. Indien je het hebt gewijzi
 $lang["login"][3]="Niet ingelogd"; 
 $lang["login"][4]="Verkeerd paswoord"; 
 $lang["login"][5]="Toegang geweigerd"; 
+$lang["login"][6]="Login"; 
+$lang["login"][7]="Password"; 
+$lang["login"][8]="Empty login or password"; 
+$lang["login"][10]="Authentification"; 
 
 $lang["mailing"][0]="-----------------------"; 
 $lang["mailing"][1]="======================================="; 
@@ -1052,6 +1054,9 @@ $lang["search"][7]="Globaal zoeken";
 $lang["search"][8]="Begindatum"; 
 $lang["search"][9]="Einddatum"; 
 $lang["search"][10]="in"; 
+$lang["search"][11]="Items Seen"; 
+$lang["search"][15]="No item founded"; 
+$lang["search"][16]="A least"; 
 
 $lang["setup"][0]="Dropdowns"; 
 $lang["setup"][1]="Templates"; 
@@ -1164,6 +1169,8 @@ $lang["setup"][113]="Standaard taal";
 $lang["setup"][114]="Voorkeur kleuren"; 
 $lang["setup"][115]="Standaard drempel voor inktpatronen en verbruikersartikelen"; 
 $lang["setup"][116]="Wijs de tussenkomsten automatisch toe aan de technische persoon in dienst"; 
+$lang["setup"][117]="Authorize the anonymous view of the knowledge base"; 
+$lang["setup"][118]="Text of the login page"; 
 $lang["setup"][150]="External sources of authentification"; 
 $lang["setup"][151]="If you do not wish to use LDAP as source of connection leave the empty fields"; 
 $lang["setup"][152]="LDAP configuratie"; 
@@ -1219,6 +1226,12 @@ $lang["setup"][222]="Interne toestellen";
 $lang["setup"][223]="Limit of the schedules for planning"; 
 $lang["setup"][224]="Configuratie voor de reservaties"; 
 $lang["setup"][225]="Voor een nieuwe reservatie"; 
+$lang["setup"][226]="Add a link to GLPI in mails"; 
+$lang["setup"][227]="Base URL used"; 
+$lang["setup"][228]="Login Field"; 
+$lang["setup"][250]="Default search fields list"; 
+$lang["setup"][251]="Select a heading"; 
+$lang["setup"][252]="Select default items to show"; 
 
 $lang["software"][0]="Toevoegen Software..."; 
 $lang["software"][1]="ID"; 
@@ -1263,6 +1276,7 @@ $lang["software"][39]="Gratis software";
 $lang["software"][40]="Geen licentie"; 
 $lang["software"][41]="Software ID"; 
 $lang["software"][42]="Toevoegen Software ahv. template"; 
+$lang["software"][43]="Add a license to buy"; 
 
 $lang["state"][0]="Staat"; 
 $lang["state"][1]="Item Staat"; 
