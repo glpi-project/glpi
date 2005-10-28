@@ -55,7 +55,7 @@
 		if (in_array($table,$template_tables))
 			$where.=" AND $table.is_template='0' ";		
 			
-		if (!empty($_POST['searchText'])&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
+		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
 			$where.=" AND ($table.name LIKE '%".$_POST['searchText']."%' OR glpi_networking_ports.ifmac LIKE '%".$_POST['searchText']."%' OR glpi_networking_ports.ifaddr LIKE '%".$_POST['searchText']."%' OR glpi_networking_ports.name LIKE '%".$_POST['searchText']."%') ";
 
 		$NBMAX=$cfg_layout["dropdown_max"];

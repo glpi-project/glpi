@@ -48,14 +48,17 @@ if(!isset($tab["sID"])) $tab["sID"] = "";
 if(!isset($tab["search_computer"])) $tab["search_computer"] = "";
 if(!isset($tab["withtemplate"])) $tab["withtemplate"] = 0;
 
-if (isset($tab["Modif_Interne"])){
+/*if (isset($tab["Modif_Interne"])){
 	checkAuthentication("admin");
 	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 	showLicenseForm($_SERVER["PHP_SELF"],$tab['form'],$tab["sID"],$tab["lID"],$tab['search_computer']);
 	commonFooter();
 
 }
-else if (isset($_POST["add"]))
+else 
+*/
+
+if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
 	//print_r($_POST);
@@ -112,6 +115,7 @@ else if (isset($tab["delete"]))
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." deleted a license.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
+/*
 else if (isset($tab["select"]))
 {
 	if ($tab["sID"]==-1)
@@ -122,12 +126,13 @@ else if (isset($tab["select"]))
 	showLicenseSelect($_SERVER['HTTP_REFERER']."&withtemplate=".$tab["withtemplate"],$_SERVER["PHP_SELF"],$tab["cID"],$tab["sID"],$tab["withtemplate"]);
 	commonFooter();
 }
+*/
 else if (isset($tab["install"]))
 {
 	checkAuthentication("admin");
-	installSoftware($tab["cID"],$tab["lID"]);
+	installSoftware($tab["cID"],$tab["licenseID"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed software.");
-	glpi_header($tab['back']." ");
+	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
 else if (isset($tab["uninstall"]))
 {

@@ -620,6 +620,8 @@ function deleteSoftware($input,$force=0) {
 	
 } 
 
+// Plus utilisé
+/*
 function dropdownSoftware($withtemplate='') {
 	$db = new DB;
 	$query = "SELECT * FROM glpi_software WHERE deleted='N' and is_template='0' order by name";
@@ -640,7 +642,7 @@ function dropdownSoftware($withtemplate='') {
 	}
 	echo "</select>";
 }
-
+*/
 
 function showLicensesAdd($ID) {
 	
@@ -1031,6 +1033,8 @@ function deleteLicense($ID) {
 	
 } 
 
+// PLus utilisé
+/*
 function showLicenseSelect($back,$target,$cID,$sID) {
 
 	GLOBAL $cfg_layout,$cfg_install, $lang;
@@ -1133,6 +1137,7 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 		}
 	}
 }
+*/
 
 function installSoftware($cID,$lID) {
 
@@ -1168,8 +1173,6 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	$number = $db->numrows($result);
 	$i = 0;
 		
-	echo "<form method='post' action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
-        
 	echo "<br><br><center><table class='tab_cadre' width='90%'>";
 	echo "<tr><th colspan='5'>".$lang["software"][17].":</th></tr>";
 			echo "<tr><th>".$lang['software'][2]."</th><th>".$lang['software'][32]."</th><th>".$lang['software'][33]."</th><th>".$lang['software'][35]."</th><th>&nbsp;</th></tr>";
@@ -1245,15 +1248,18 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	if((!empty($withtemplate) && $withtemplate == 2) || $nb==0) {
 		echo "</table></center>";
 	} else {
-		echo "<tr class='tab_bg_1'><td align='center'>";
-		echo "<div class='software-instal'><input type='hidden' name='cID' value='$instID'>";
-		echo "<input type='hidden' name='withtemplate' value='".$withtemplate."'>";
-			dropdownSoftware($withtemplate);
-		echo "</div></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td align='center' class='tab_bg_2'>";
-		echo "<input type='submit' name='select' value=\"".$lang["buttons"][4]."\" class='submit'>";
+		echo "<tr class='tab_bg_1'><td align='center' colspan='5'>";
+		echo "<form method='post' action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
+
+		echo "<div class='software-instal'>";
+		echo "<input type='hidden' name='cID' value='$instID'>";
+		//echo "<input type='hidden' name='withtemplate' value='".$withtemplate."'>";
+			dropdownSoftwareToInstall("licenseID",$withtemplate);
+		echo "<input type='submit' name='install' value=\"".$lang["buttons"][4]."\" class='submit'>";
+		echo "</div>";
+        	echo "</form>";
 		echo "</td></tr>";
 		echo "</table></center>";
-        	echo "</form>";
 	}
 	
 		
