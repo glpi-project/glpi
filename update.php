@@ -3143,6 +3143,13 @@ if(!FieldExists("glpi_config","url_base")) {
 	$db->query($query) or die(" url ".$lang["update"][90].$db->error());
 }
 
+if(!FieldExists("glpi_config","text_login")) {
+
+	$query="ALTER TABLE `glpi_config` ADD `text_login` TEXT NOT NULL ;";
+	$db->query($query) or die("0.65 add text_login in config".$lang["update"][90].$db->error());
+
+}
+
 }
 
 function updateTreeDropdown(){

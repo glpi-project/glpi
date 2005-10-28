@@ -950,6 +950,12 @@ function showFormConfigGen($target){
 	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][117]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"public_faq\" value=\"1\" "; if($db->result($result,0,"public_faq") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"public_faq\" value=\"0\" "; if($db->result($result,0,"public_faq") == 0) echo "checked";
 	echo " ></td></tr>";
 	
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][118]." </td><td>";
+	echo "<textarea cols='35' rows='4' name='text_login' >";
+	echo $db->result($result,0,"text_login");
+	echo "</textarea>";
+	echo "</td></tr>";
+		
 	
 		echo "</table>&nbsp;</div>";	
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_confgen\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
@@ -1227,7 +1233,7 @@ function showFormMailing($target) {
 
 }
 
-function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events,$jobs_at_login,$list_limit,$cut, $permit_helpdesk,$default_language,$priority,$date_fiscale,$cartridges_alarm,$planning_begin,$planning_end,$auto_assign,$public_faq) {
+function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events,$jobs_at_login,$list_limit,$cut, $permit_helpdesk,$default_language,$priority,$date_fiscale,$cartridges_alarm,$planning_begin,$planning_end,$auto_assign,$public_faq,$text_login) {
 	
 	$db = new DB;
 	
@@ -1237,7 +1243,7 @@ function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events
 		$query.= "priority_1 = '". $priority[1] ."', priority_2 = '". $priority[2] ."', priority_3 = '". $priority[3] ."', priority_4 = '". $priority[4] ."', priority_5 = '". $priority[5] ."', ";
 		$query.= " date_fiscale = '". $date_fiscale ."', cartridges_alarm='".$cartridges_alarm."', ";
 		$query.= " planning_begin = '". $planning_begin .":00:00', planning_end='".$planning_end.":00:00', ";
-		$query.= " auto_assign = '". $auto_assign ."', public_faq = '". $public_faq ."' where ID = '1' ";
+		$query.= " auto_assign = '". $auto_assign ."', public_faq = '". $public_faq ."', text_login = '". $text_login ."' where ID = '1' ";
 		$db->query($query);
 	
 }
