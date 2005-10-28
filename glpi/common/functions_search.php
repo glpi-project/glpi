@@ -256,7 +256,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			$LINK=" ";
 			if ($i>0) $LINK=$link[$key];
 			
-			$TOADD.= " $LINK ".$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"]." LIKE '%".$val."%' ";	
+			$TOADD.= $LINK.addWhere($SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"],$val);	
 			$i++;
 		} else if (!empty($val)&&$field[$key]=="view"){
 						
@@ -267,7 +267,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			foreach ($toview as $key2 => $val2){
 				$LINK=" OR ";
 				if ($first2) {$LINK=" ";$first2=false;}
-				$TOADD.= $LINK.$SEARCH_OPTION[$type][$val2]["table"].".".$SEARCH_OPTION[$type][$val2]["field"]." LIKE '%".$val."%' ";	
+				$TOADD.= $LINK.addWhere($SEARCH_OPTION[$type][$val2]["table"].".".$SEARCH_OPTION[$type][$val2]["field"],$val);	
 			}
 			$TOADD.=" ) ";
 			$i++;
@@ -292,7 +292,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		foreach ($SEARCH_OPTION[$type] as $key2 => $val2){
 			$LINK=" OR ";
 			if ($first2) {$LINK=" ";$first2=false;}
-			$WHERE.= $LINK.$val2["table"].".".$val2["field"]." LIKE '%".$val["contains"]."%' ";	
+			$WHERE.= $LINK.addWhere($val2["table"].".".$val2["field"],$val["contains"]);	
 			}
 		
 		$WHERE.=")";
@@ -300,14 +300,14 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	
 	
 	//// 4 - ORDER 
-	$ORDER= " ORDER BY ".$SEARCH_OPTION[$type][$sort]["table"].".".$SEARCH_OPTION[$type][$sort]["field"]." $order";
+	$ORDER= addOrderBy($SEARCH_OPTION[$type][$sort]["table"].".".$SEARCH_OPTION[$type][$sort]["field"],$order);
 
 	$GROUPBY=" GROUP BY ID";
 	if ($distinct!='Y') $GROUPBY="";
 	
 	if ($WHERE == " WHERE ") $WHERE="";
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER;
-//	echo $QUERY;
+	//echo $QUERY;
 	
 	// Get it from database and DISPLAY
 	if ($result = $db->query($QUERY)) {
@@ -402,6 +402,30 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 }
 
 /**
+* Generic Function to add ORDER BY to a request
+*
+*
+*@param $field field to add
+*@param $order order define
+*
+*
+*@return select string
+*
+**/
+function addOrderBy($field,$order){
+	switch($field){
+	case "glpi_device_hdd.specif_default" :
+	case "glpi_device_ram.specif_default" :
+		return " ORDER BY glpi_computer_device.specificity $order ";
+		break;
+	default:
+		return " ORDER BY $field $order ";
+		break;
+	}
+
+}
+
+/**
 * Generic Function to add select to a request
 *
 *
@@ -418,8 +442,45 @@ switch ($field){
 case "glpi_users.name" :
 	return $field." AS ITEM_$num, glpi_users.realname AS ITEM_".$num."_2, ";
 	break;
+case "glpi_device_hdd.specif_default" :
+case "glpi_device_ram.specif_default" :
+	return $field." AS ITEM_$num, glpi_computer_device.specificity AS ITEM_".$num."_2, ";
+	break;
 default:
 	return $field." AS ITEM_$num, ";
+	break;
+}
+
+}
+
+/**
+* Generic Function to add where to a request
+*
+*
+*@param $field field to add
+*@param $val item num in the request
+*
+*
+*@return select string
+*
+**/
+function addWhere ($field,$val){
+
+switch ($field){
+case "glpi_users.name" :
+	return " ( $field LIKE '%".$val."%' OR glpi_users.realname LIKE '%".$val."%' ) ";
+	break;
+case "glpi_device_hdd.specif_default" :
+	$larg=500;
+	return " ( glpi_computer_device.specificity < ".($val+$larg)." AND glpi_computer_device.specificity > ".($val-$larg)." AND glpi_device_hdd.ID IS NOT NULL) ";
+	break;
+
+case "glpi_device_ram.specif_default" :
+	$larg=50;
+	return " ( glpi_computer_device.specificity < ".($val+$larg)." AND glpi_computer_device.specificity > ".($val-$larg)." AND glpi_device_ram.ID IS NOT NULL) ";
+	break;
+default:
+	return " $field LIKE '%".$val."%' ";
 	break;
 }
 
@@ -565,6 +626,13 @@ switch ($field){
 			echo "<a href='mailto:".$data["ITEM_$num"]."'>".$data["ITEM_$num"]."</a>";
 		else echo "&nbsp;";
 	break;	
+	case "glpi_device_hdd.specif_default" :
+	case "glpi_device_ram.specif_default" :
+		if (empty($data["ITEM_".$num."_2"]))
+			echo $data["ITEM_".$num];
+		else echo $data["ITEM_".$num."_2"];
+	break;	
+	
 	default:
 		echo $data["ITEM_$num"];
 		break;
