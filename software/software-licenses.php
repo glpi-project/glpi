@@ -130,7 +130,7 @@ else if (isset($tab["select"]))
 else if (isset($tab["install"]))
 {
 	checkAuthentication("admin");
-	installSoftware($tab["cID"],$tab["licenseID"]);
+	installSoftware($tab["cID"],$tab["licenseID"],$tab["sID"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed software.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");
 }

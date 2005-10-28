@@ -1288,6 +1288,7 @@ $lang["software"][39]="Logiciel libre";
 $lang["software"][40]="Aucune licence";
 $lang["software"][41]="Logiciel ID";
 $lang["software"][42]="Nouveau logiciel à partir d'un modèle"; 
+$lang["software"][43]="Ajouter une licence à acheter"; 
 
 $lang["state"][0]="Etat"; 
 $lang["state"][1]="Etats des matériels"; 
