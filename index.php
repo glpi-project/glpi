@@ -77,7 +77,9 @@ else
 	echo "<div id='logo-login'>";
 	//echo "<a href=\"http://GLPI.indepnet.org/\" class='sous_logo'><img src=\"".$HTMLRel."pics/logo-glpi-login.png\"  alt=\"Logo GLPI Powered By Indepnet\" title=\"Powered By Indepnet\" /><br />";
 	//echo "</a>";
-	
+
+	echo $cfg_layout['text_login'];
+		
 	echo "<ul>";
 	// Affichage autorisé FAQ
 	if ($cfg_features['public_faq']){

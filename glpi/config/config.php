@@ -350,6 +350,9 @@ $cfg_features["planning_end"] = $db->result($result,0,"planning_end");
 $cfg_features["ajax_wildcard"] = "*";
 $cfg_features["use_ajax"] = 1;
 
+//Login text
+$cfg_layout["text_login"] = $db->result($result,0,"text_login");
+
 }
 
 
