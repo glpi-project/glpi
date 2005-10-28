@@ -1216,5 +1216,77 @@ function dropdownConnectPort($ID,$type,$myname) {
 
 }
 
+function dropdownSoftwareToInstall($myname,$withtemplate) {
+	global $lang,$HTMLRel,$cfg_install;
+	
+	$db=new DB;
+	
+	$items=array(
+	COMPUTER_TYPE=>"glpi_computers",
+	NETWORKING_TYPE=>"glpi_networking",
+	PRINTER_TYPE=>"glpi_printers",
+	PERIPHERAL_TYPE=>"glpi_peripherals",
+	);
+
+	
+	$rand=mt_rand();
+	
+	$query = "SELECT * FROM glpi_software WHERE deleted='N' and is_template='0' order by name";
+	$result = $db->query($query);
+	$number = $db->numrows($result);
+	
+
+	echo "<select name='sID' id='item_type$rand'>\n";
+	echo "<option value='0'>-----</option>\n";
+	while ($i < $number) {
+		$version = $db->result($result, $i, "version");
+		$name = $db->result($result, $i, "name");
+		$sID = $db->result($result, $i, "ID");
+		
+		if (empty($withtemplate)||isGlobalSoftware($sID)||isFreeSoftware($sID))
+		echo  "<option value='$sID'>$name (v. $version)</option>";
+		$i++;
+	}	
+	echo "</select>\n";
+	
+	
+	echo "<script type='text/javascript' >\n";
+	echo "   new Form.Element.Observer('item_type$rand', 1, \n";
+	echo "      function(element, value) {\n";
+	echo "      	new Ajax.Updater('show_$myname$rand','".$cfg_install["root"]."/ajax/dropdownInstallSoftware.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
+	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
+	echo "           onLoading:function(request)\n";
+	echo "            {Element.show('search_spinner_$myname$rand');},\n";
+	echo "           method:'post', parameters:'sID='+value+'&myname=$myname'\n";
+	echo "})})\n";
+	echo "</script>\n";
+	
+	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+	echo "<span id='show_$myname$rand'>&nbsp;</span>\n";
+	
+	
+	/*
+	$db = new DB;
+	$query = "SELECT * FROM glpi_software WHERE deleted='N' and is_template='0' order by name";
+	$result = $db->query($query);
+	$number = $db->numrows($result);
+
+	$i = 0;
+	echo "<select name=sID size=1>";
+	echo "<option value='-1'>------</option>";
+	while ($i < $number) {
+		$version = $db->result($result, $i, "version");
+		$name = $db->result($result, $i, "name");
+		$sID = $db->result($result, $i, "ID");
+		
+		if (empty($withtemplate)||isGlobalSoftware($sID)||isFreeSoftware($sID))
+		echo  "<option value=$sID>$name (v. $version)</option>";
+		$i++;
+	}
+	echo "</select>";
+
+*/
+}
+
 
 ?>

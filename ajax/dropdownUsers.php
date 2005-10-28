@@ -43,7 +43,7 @@
 	if (isset($_POST['value']))
 		$where.=" AND  (ID <> '".$_POST['value']."') ";
 
-	if (!empty($_POST['searchText'])&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
+	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
 		$where.=" AND (name LIKE '%".$_POST['searchText']."%' OR realname LIKE '%".$_POST['searchText']."%')";
 
 

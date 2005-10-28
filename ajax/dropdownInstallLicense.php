@@ -41,39 +41,19 @@
 	// Make a select box
 	$db = new DB;
 
-		$items=array(
-			COMPUTER_TYPE=>"glpi_computers",
-			PRINTER_TYPE=>"glpi_printers",
-			MONITOR_TYPE=>"glpi_monitors",
-			PERIPHERAL_TYPE=>"glpi_peripherals",
-		);
-
-		$table=$items[$_POST["idtable"]];
-		$where="";		
-		if (in_array($table,$deleted_tables))
-			$where.=" AND $table.deleted='N' ";
-		if (in_array($table,$template_tables))
-			$where.=" AND $table.is_template='0' ";		
-			
-		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
-			$where.=" AND $table.name LIKE '%".$_POST['searchText']."%' ";
-
-		$NBMAX=$cfg_layout["dropdown_max"];
-		$LIMIT="LIMIT 0,$NBMAX";
-
-		if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
-						
-	$CONNECT_SEARCH="(glpi_connect_wire.ID IS NULL";	
-	if ($_POST["idtable"]==MONITOR_TYPE||$_POST["idtable"]==PERIPHERAL_TYPE)
-		$CONNECT_SEARCH.=" OR $table.is_global='1' ";
-	$CONNECT_SEARCH.=")";
-	if ($_POST["idtable"]==COMPUTER_TYPE)
-		$CONNECT_SEARCH=" '1' = '1' ";
+	$where="";		
+	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
+		$where.=" AND glpi_licenses.serial LIKE '%".$_POST['searchText']."%' ";
 		
-	$LEFTJOINCONNECT="";
-	if ($_POST["idtable"]!=COMPUTER_TYPE)		
-		$LEFTJOINCONNECT="left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = '".$_POST['idtable']."')";
-	$query = "SELECT DISTINCT $table.ID as ID,$table.name as name from $table $LEFTJOINCONNECT WHERE $CONNECT_SEARCH $where order by name ASC";
+	$NBMAX=$cfg_layout["dropdown_max"];
+	$LIMIT="LIMIT 0,$NBMAX";
+
+	if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
+						
+	$query = "SELECT DISTINCT glpi_licenses.* from glpi_licenses ";
+	$query.= " LEFT JOIN glpi_inst_software on (glpi_licenses.ID=glpi_inst_software.license)";
+	$query.= " WHERE glpi_licenses.sID='".$_POST['sID']."' AND (glpi_inst_software.cID IS NULL OR glpi_licenses.serial='free' OR glpi_licenses.serial='global' ) ";
+	$query.= " $where order by serial ASC";
 
 //echo $query;
 		
@@ -86,15 +66,39 @@
 		echo "<option value=\"0\">-----</option>";
 		$i = 0;
 		$number = $db->numrows($result);
+		$today=date("Y-m-d"); 
 		if ($number > 0) {
-			while ($data = $db->fetch_array($result)) {
-				$output = $data['name'];
+			while ($data = $db->fetch_assoc($result)) {
+				$output = $data['serial']." - ";
+				
+				$expirer=0;
+				if ($data['expire']!=NULL&&$today>$data['expire']) $expirer=1; 
+
+				if ($data['expire']==NULL)
+					$output.= $lang["software"][26];
+				else {
+					if ($expirer) $output.= $lang["software"][27];
+					else $output.= $lang["software"][25]."&nbsp;".$data['expire'];
+				}
+				
+				if ($data['buy']=='Y')
+					$output.=" - ".$lang["software"][35];
+				else 
+					$output.=" - ".$lang["software"][37];
+											
+				if ($data['oem']=='Y'){
+					$comp=new Computer();
+					$comp->getFromDB($data["oem_computer"]);
+					$output.=" - ".$lang['software'][33]. " ".$comp->fields['name']."(".$comp->fields['ID'].")";
+				}
+				
+				
 				if (empty($output)) $output="&nbsp;";
 				$ID = $data['ID'];
 				echo "<option value=\"$ID\">$output</option>";
 				$i++;
 			}
-		}
+		} 
 		echo "</select>";
 
 

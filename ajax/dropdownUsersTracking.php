@@ -44,7 +44,7 @@
 	if (isset($_POST['value']))
 		$where.=" AND  (glpi_users.ID <> '".$_POST['value']."' ";
 				
-	if (!empty($_POST['searchText'])&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
+	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
 		$where.=" AND (glpi_users.name LIKE '%".$_POST['searchText']."%' OR glpi_users.realname LIKE '%".$_POST['searchText']."%')";
 
 	$where.=")";	

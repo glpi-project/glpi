@@ -44,7 +44,7 @@
 	if($_POST['table'] == "glpi_dropdown_netpoint") {
 
 		$where="";
-		if (!empty($_POST['searchText'])&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
+		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
 			$where=" WHERE (t1.name LIKE '%".$_POST['searchText']."%' OR t2.completename LIKE '%".$_POST['searchText']."%')";
 
 		$NBMAX=$cfg_layout["dropdown_max"];
@@ -96,7 +96,7 @@
 
 $where .=" AND  (ID <> '".$_POST['value']."' ";
 
-	if (!empty($_POST['searchText'])&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
+	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
 		if (in_array($_POST['table'],$dropdowntree_tables))
 		$where.=" AND completename LIKE '%".$_POST['searchText']."%' ";
 		else $where.=" AND name LIKE '%".$_POST['searchText']."%' ";
