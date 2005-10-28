@@ -35,6 +35,7 @@
 
 	include ("_relpos.php");
 	include ($phproot."/glpi/includes.php");
+	include ($phproot."/glpi/includes_software.php");
 
 	checkAuthentication("post-only");
 
@@ -55,17 +56,19 @@
 	$query.= " WHERE glpi_licenses.sID='".$_POST['sID']."' AND (glpi_inst_software.cID IS NULL OR glpi_licenses.serial='free' OR glpi_licenses.serial='global' ) ";
 	$query.= " $where order by serial ASC";
 
-//echo $query;
-		
 		$result = $db->query($query);
+		$number = $db->numrows($result);
 		echo "<select name=\"".$_POST['myname']."\" size='1'>";
 		
 		if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 			echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 	
 		echo "<option value=\"0\">-----</option>";
+		
+		if ($number==0&&!isGlobalSoftware($_POST["sID"])&&!isFreeSoftware($_POST["sID"]))
+			echo "<option value=\"-1\">--".$lang["software"][43]."--</option>";
 		$i = 0;
-		$number = $db->numrows($result);
+		
 		$today=date("Y-m-d"); 
 		if ($number > 0) {
 			while ($data = $db->fetch_assoc($result)) {

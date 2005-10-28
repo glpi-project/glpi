@@ -1139,14 +1139,32 @@ function showLicenseSelect($back,$target,$cID,$sID) {
 }
 */
 
-function installSoftware($cID,$lID) {
+function installSoftware($cID,$lID,$sID='') {
 
 	$db = new DB;
-	$query = "INSERT INTO glpi_inst_software VALUES (NULL,$cID,$lID)";
-	if ($result = $db->query($query)) {
-		return true;
-	} else {
-		return false;
+	
+	
+	if (!empty($lID)&&$lID>0){
+		$query = "INSERT INTO glpi_inst_software VALUES (NULL,$cID,$lID)";
+		if ($result = $db->query($query)) {
+			return true;
+		} else {
+			return false;
+		}
+	} else if ($lID<0&&!empty($sID)){ // Auto Add a license
+	$lic=new License();
+	$lic->fields['buy']='N';
+	$lic->fields['sID']=$sID;
+	$lic->fields['serial']='Automatic Add';
+	$lID=$lic->addToDB();
+		
+		$query = "INSERT INTO glpi_inst_software VALUES (NULL,$cID,$lID)";
+		if ($result = $db->query($query)) {
+			return true;
+		} else {
+			return false;
+		}
+	
 	}
 }
 
