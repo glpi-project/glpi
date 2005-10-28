@@ -696,7 +696,7 @@ function printReservationItem($target,$ID,$date){
 		
 		echo "<td   align='center' class='tab_resa'>". $modif."<span>".$display."<br><b>".$user->fields["name"]."</b></span>";
 
-			echo "</td>".$modif_end."</tr>";
+			echo $modif_end."</td></tr>";
 				
 			}
 
