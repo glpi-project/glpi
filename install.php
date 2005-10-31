@@ -37,7 +37,6 @@
 //Pas besoin des warnings de PHP
 error_reporting(0);   // Baaz si tu touches à cette ligne  pour tes tests merci de la remettre en état quand tu commits.
 
-
 //Print a correct  Html header for application
 function header_html($etape)
 {
@@ -572,6 +571,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		// Mise a jour de la langue par defaut
 		$query = "UPDATE `glpi_config` SET default_language='".$_SESSION["dict"]."' ;";
 		$db->query($query) or die("4203 ".$lang["update"][90].$db->error());
+		optimize_tables();
 	}
 	
 	$link = mysql_connect($host,$user,$password);

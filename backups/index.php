@@ -573,6 +573,7 @@ if (restoreMySqlDump($db,$path.$_GET["file"],$duree))
 	exit;
 }
 } else   { //echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt<p></div>";
+optimize_tables();
 }
 
 
