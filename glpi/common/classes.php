@@ -220,13 +220,32 @@ class Identification
 	var $extauth=0;
 
 	//constructor for class Identification
-	function Identification($name)
+	function Identification()
 	{
 		$this->err = "";
-		$this->user = new User($name);
+		$this->user = new User();
 	}
 
+	
+	// Is the user exists in the DB with ?
+	// return 0 -> Not in the DB -> check external auth
+	// return 1 -> Exist in the DB with a password -> check first local connection and external after
+	// return 2 -> Exist in the DB with no password -> check only external auth
+	function userExists($name){
+		$db = new DB;
 
+		$query = "SELECT * from glpi_users WHERE name='$name'";
+		$result=$db->query($query);
+		if ($db->numrows($result)==0) return 0;
+		else {
+			$pwd=$db->result($result,0,"password");
+			$pwdmd5=$db->result($result,0,"password_md5");
+			if (empty($pwd)&&empty($pwdmd5))
+				return 2;
+			else return 1;
+		}
+
+	}
 	//return 1 if the (IMAP/pop) connection to host $host, using login $login and pass $pass
 	// is successfull
 	//else return 0

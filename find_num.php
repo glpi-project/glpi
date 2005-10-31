@@ -39,7 +39,7 @@
 
 if(isset($_GET["name"]) && ($_GET["name"] == "Helpdesk") && ($cfg_features["permit_helpdesk"] == "1"))
 {
-	$id = new Identification("Helpdesk");
+	$id = new Identification();
 	$id->setCookies();
 }
 checkAuthentication("post-only");
