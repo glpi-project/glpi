@@ -50,7 +50,7 @@ include ($phproot . "/glpi/includes_documents.php");
 
 if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk") && ($cfg_features["permit_helpdesk"] == "1"))
 {
-	$id = new Identification("Helpdesk");
+	$id = new Identification();
 	$id->setCookies();
 }
 checkAuthentication("post-only");

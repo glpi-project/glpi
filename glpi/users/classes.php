@@ -121,6 +121,7 @@ class User {
 	
 		// some defaults...
 		$this->fields['password'] = "";
+		$this->fields['password_md5'] = "";
 		$this->fields['name'] = $name;
 
 	  if ( $conn = ldap_connect($host) )
@@ -176,12 +177,15 @@ class User {
 	function getFromLDAP_active_directory($host,$basedn,$adm,$pass,$fields,$name)
 	{
 		// we prevent some delay..
-		if (empty($host)) {unset($user->fields["password"]);
+		if (empty($host)) {
+			unset($user->fields["password"]);
+			unset($user->fields["password_md5"]);
 			return false;
 		}
 	
 		// some defaults...
 		$this->fields['password'] = "";
+		$this->fields['password_md5'] = "";
 	    $this->fields['name'] = $name;		
 	    
 	  if ( $conn = ldap_connect($host) )
@@ -246,16 +250,22 @@ class User {
   // a fake one, as you can see...
   function getFromIMAP($host, $name)
   {
-		// we prevent some delay..
-		if (empty($host)) {
-			return false;
-		}
+	// we prevent some delay..
+	if (empty($host)) {
+		return false;
+	}
 
   	// some defaults...
   	$this->fields['password'] = "";
-  	$this->fields['email'] = $name . "@" . $host;
-	  $this->fields['name'] = $name;
-		return true;
+	$this->fields['password_md5'] = "";
+	if (ereg("@",$name))
+		$this->fields['email'] = $name;
+	else 
+  		$this->fields['email'] = $name . "@" . $host;
+	
+	$this->fields['name'] = $name;
+		
+	return true;
 
 	} // getFromIMAP()  	    
 

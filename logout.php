@@ -54,9 +54,8 @@ if (isset($_SESSION["noCAS"])) $noCAS="?noCAS=1";
 
 
 
-$id = new Identification('bogus');
+$id = new Identification();
 $id->eraseCookies();
-
 
 // Redirect to the login-page
 

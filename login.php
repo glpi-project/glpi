@@ -59,7 +59,7 @@ $_POST=array_map('stripslashes',$_POST);
 $update_list = array();
 $user_present=1;
 if (!isset($_POST['login_name'])) $_POST['login_name']="";
-$identificat = new Identification($_POST['login_name']);
+$identificat = new Identification();
 
 $auth_succeded=false;
 
@@ -82,11 +82,23 @@ if (empty($_POST['login_name'])||empty($_POST['login_password'])){
 $identificat->err=$lang["login"][8];
 } else {
 
+	// exists=0 -> no exist
+	// exists=1 -> exist with password
+	// exists=2 -> exist without password
+	$exists=$identificat->userExists($_POST['login_name']);
 
 	// Pas en premier car sinon on ne fait pas le blankpassword
 	// First try to connect via le DATABASE
-	//$auth_succeded = $identificat->connection_db($_POST['login_name'],$_POST['login_password']);
-	//if ($auth_succeded) $user_present = $identificat->user->getFromDB($_POST['login_name']);
+	if ($exists==1){
+		// Without UTF8 decoding
+		if (!$auth_succeded) $auth_succeded = $identificat->connection_db($_POST['login_name'],$_POST['login_password']);
+		if ($auth_succeded) $user_present = $identificat->user->getFromDB($_POST['login_name']);
+		
+		// With UTF8 decoding
+		//if (!$auth_succeded) $auth_succeded = $identificat->connection_db(utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']));
+		//if ($auth_succeded) $user_present = $identificat->user->getFromDB(utf8_decode($_POST['login_name']));
+	
+	}
 
 	// Second try IMAP/POP
 	if (!$auth_succeded&&!empty($cfg_login['imap']['auth_server'])) {
@@ -154,17 +166,6 @@ $identificat->err=$lang["login"][8];
 				}
 			}
    		}
-	}
-
-
-
-
-	// Finally try to connect via le DATABASE
-	if (!$auth_succeded) {
-		$auth_succeded = $identificat->connection_db($_POST['login_name'],$_POST['login_password']);
-		// Pb mot de passe et update en UTF8
-		if (!$auth_succeded) $auth_succeded = $identificat->connection_db(utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']));
-		if ($auth_succeded) $user_present = $identificat->user->getFromDB($_POST['login_name']);
 	}
 
 } // Fin des tests de connexion
