@@ -654,7 +654,7 @@ function showJobShort($ID, $followups) {
 		
 		$stripped_content=$job->contents;
 		if (!$followups) $stripped_content =substr($job->contents,0,$cfg_features["cut"]);
-		echo "<td ><strong>".htmlentities($stripped_content)."</strong>";
+		echo "<td ><strong>".$stripped_content."</strong>";
 		if ($followups)
 		{
 			showFollowupsShort($job->ID);
@@ -743,7 +743,7 @@ function showJobVeryShort($ID) {
 		echo "<td  align='center' ><strong>$job->computername ($job->computer)</strong></td>";
 
 		$stripped_content =substr($job->contents,0,$cfg_features["cut"]);
-		echo "<td ><strong>".htmlentities($stripped_content)."</strong>";
+		echo "<td ><strong>".$stripped_content."</strong>";
 		echo "</td>";
 
 		// Job Controls
@@ -944,7 +944,7 @@ function showJobDetails($ID) {
 		echo "<table><tr><td width='90'>\n";
 		echo $lang["joblist"][6].":";
 		echo "</td><td>\n";
-		echo "<strong>".htmlentities($job->contents)."</strong>";		
+		echo "<strong>".$job->contents."</strong>";		
 		echo "</td></tr>";
 		
 		// File associated ?
@@ -1279,7 +1279,7 @@ function showFollowups($ID) {
 			echo "<tr class='tab_bg_2'>\n";
 			echo "<td align='center'>$fup->date</td>\n";
 			echo "<td align='center'>".$fup->getAuthorName(1)."</td>\n";
-			echo "<td width='70%'><strong>".htmlentities($fup->contents)."</strong></td>\n";
+			echo "<td width='70%'><strong>".$fup->contents."</strong></td>\n";
 			echo "</tr>";
 		}		
 
@@ -1994,7 +1994,7 @@ function showFollowupsShort($ID) {
 			echo "<tr class='tab_bg_2'>";
 			echo "<td align='center'>$fup->date</td>";
 			echo "<td align='center'>$fup->author</td>";
-			echo "<td width=70%><strong>".htmlentities($fup->contents)."</strong></td>";
+			echo "<td width=70%><strong>".$fup->contents."</strong></td>";
 			echo "</tr>";
 		}		
 

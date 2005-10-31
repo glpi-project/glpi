@@ -1810,4 +1810,21 @@ $p=explode(":",$t[1]);
 return $p[0].":".$p[1];
 }
 
+function optimize_tables (){
+	
+$db = new DB;
+$result=$db->list_tables();
+	while ($line = $db->fetch_array($result))
+   	{
+   		if (ereg("glpi_",$line[0])){
+			$table = $line[0];
+   		$query = "OPTIMIZE TABLE ".$table." ;";
+//   		echo $query;
+   		$db->query($query);
+		}
+  	 }
+mysql_free_result($result);
+}
+
+
 ?>
