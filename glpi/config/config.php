@@ -163,7 +163,7 @@ $cfg_install["doc_dir"] = "/docs";
 // Default language
 $cfg_install["default_language"] = $db->result($result,0,"default_language");
 
-$cfg_debug["active"]=1;
+$cfg_debug["active"]=0;
 $cfg_debug["sql"]=1;
 $cfg_debug["vars"]=1;
 $cfg_debug["profile"]=1;
@@ -347,8 +347,10 @@ $cfg_features["planning_begin"] = $db->result($result,0,"planning_begin");
 $cfg_features["planning_end"] = $db->result($result,0,"planning_end");
 
 // Wildcard for AJAX
+// TODO : Add in glpi_config
 $cfg_features["ajax_wildcard"] = "*";
 $cfg_features["use_ajax"] = 1;
+$cfg_features["ajax_limit_count"] = 50;
 
 //Login text
 $cfg_layout["text_login"] = $db->result($result,0,"text_login");

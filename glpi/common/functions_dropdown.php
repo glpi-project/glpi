@@ -75,7 +75,11 @@ echo "</script>\n";
 
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>\n";
 
-if (!$cfg_features["use_ajax"]){
+$nb=0;
+if ($cfg_features["use_ajax"])
+	$nb=countElementsInTable($table);
+
+if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
@@ -177,7 +181,11 @@ echo "</script>\n";
 
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
-if (!$cfg_features["use_ajax"]){
+$nb=0;
+if ($cfg_features["use_ajax"])
+	$nb=countElementsInTable($table);
+
+if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
@@ -471,7 +479,11 @@ function dropdownUsers($value, $myname,$all=0) {
 
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
-if (!$cfg_features["use_ajax"]){
+$nb=0;
+if ($cfg_features["use_ajax"])
+	$nb=countElementsInTable("glpi_users");
+
+if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
@@ -541,7 +553,11 @@ function dropdownAllUsers($value, $myname) {
 
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
-if (!$cfg_features["use_ajax"]){
+$nb=0;
+if ($cfg_features["use_ajax"])
+	$nb=countElementsInTable("glpi_users");
+
+if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
@@ -831,7 +847,11 @@ function dropdownUsersTracking($value, $myname,$champ) {
 
 	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
-if (!$cfg_features["use_ajax"]){
+$nb=0;
+if ($cfg_features["use_ajax"])
+	$nb=countElementsInTable("glpi_users");
+
+if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
@@ -1141,6 +1161,13 @@ function dropdownConnect($type,$myname) {
 
 	global $HTMLRel,$cfg_install,$cfg_features;
 
+		$items=array(
+			COMPUTER_TYPE=>"glpi_computers",
+			PRINTER_TYPE=>"glpi_printers",
+			MONITOR_TYPE=>"glpi_monitors",
+			PERIPHERAL_TYPE=>"glpi_peripherals",
+		);
+
 	$rand=mt_rand();
 echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
 //echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
@@ -1159,7 +1186,11 @@ echo "</script>\n";
 
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>\n";
 
-if (!$cfg_features["use_ajax"]){
+$nb=0;
+if ($cfg_features["use_ajax"])
+	$nb=countElementsInTable($items[$type]);
+
+if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
