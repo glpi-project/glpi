@@ -55,7 +55,11 @@ commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
 showUserInfo($_SERVER["PHP_SELF"],$_GET["ID"]);
 if (isset($_GET["start"])) $start=$_GET["start"];
 else $start=0;
-showJobList($_SERVER["PHP_SELF"],$_GET["ID"],"user","","","",$start);
+
+
+showTrackingList($_SERVER["PHP_SELF"],$start,"all",$_GET["ID"]);
+
+//showJobList($_SERVER["PHP_SELF"],$_GET["ID"],"user","","","",$start);
 
 commonFooter();
 
