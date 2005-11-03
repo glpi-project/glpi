@@ -1919,6 +1919,9 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 		if ($start<$numrows) {
 			// Pager
 			$parameters="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;contains2=$contains2&amp;attrib=$assign&amp;author=$author";
+			// Manage helpdesk
+			if (ereg("helpdesk",$target)) 
+				$parameters.="&show=user";
 			printPager($start,$numrows,$target,$parameters);
 			
 			// Produce headline

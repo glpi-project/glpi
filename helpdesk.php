@@ -70,7 +70,8 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 
 	if (!isset($_GET["ID"])) {
-		showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiID"],$_GET["show"],"","","",$_GET["start"]);
+		showTrackingList($_SERVER["PHP_SELF"],0,"all",$_SESSION["glpiID"]);
+		//showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiID"],$_GET["show"],"","","",$_GET["start"]);
 	}
 	else {
 		 showJobDetails($_GET["ID"]);
