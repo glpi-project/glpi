@@ -73,7 +73,7 @@ glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=".$_GET["I
 	
 }else if (isset($_GET["update"])) {
 
-	if (can_assign_job($_SESSION["glpiname"])){
+	if (can_assign_job($_SESSION["glpiname"])&&isset($_GET['assign_id'])){
 		assignJob ($_GET["ID"],$_GET['assign_type'],$_GET['assign_id'],$_SESSION["glpiname"]);	
 	}
 	

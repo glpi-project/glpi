@@ -1462,7 +1462,7 @@ function assignFormTracking ($ID,$admin,$target) {
 	echo "<table border='0'>";
 	echo "<tr>";
 	echo "<td colspan='2'>";//.$lang["job"][5].":</td><td>";
-		dropdownAssign($job->assign,$job->assign_type, "assign_id");
+		dropdownAssign('','', "assign_id");
 //	echo "<input type='hidden' name='update' value=\"1\">";
 //	echo "<input type='hidden' name='ID' value='$job->ID'>";
 	echo "</td><td><input type='submit' name='update' value=\"".$lang["job"][6]."\" class='submit'></td>";
