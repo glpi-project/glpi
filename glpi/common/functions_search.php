@@ -594,9 +594,7 @@ switch ($field){
 		break;	
 	case "glpi_enterprises.name.brut" :
 		$type=ENTERPRISE_TYPE;
-		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 		echo $data["ITEM_$num"];
-		echo "</a>";
 		break;			
 	case "glpi_docs.name" :		
 		$type=DOCUMENT_TYPE;
