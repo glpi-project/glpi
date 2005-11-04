@@ -1055,6 +1055,7 @@ function addNetport($input) {
 	
 	// dump status
 	unset($input['add']);
+	unset($input['search']);
 
 	// fill array for update 
 	foreach ($input as $key => $val) {
