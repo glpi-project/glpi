@@ -269,11 +269,13 @@ function step1($update)
 			break;
 		}
 	}
-	
-	if ($mem<16*1024*1024)
+
+		
+
+	if ($mem != ' ' && $mem<16*1024*1024)
 	echo "<td  class='red'><b>".$lang["install"][87]." $mem octets</b><br>".$lang["install"][88]."<br>".$lang["install"][90]."</td></tr>";
 	else 
-	echo "<td>".$lang["install"][87]." $mem octets - ".$lang["install"][89]."</td></tr>";
+	echo "<td>".$lang["install"][91]." - ".$lang["install"][89]."</td></tr>";
 
 // session test
 	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][12]."</b></td>";
