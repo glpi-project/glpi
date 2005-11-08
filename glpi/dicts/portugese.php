@@ -601,6 +601,7 @@ $lang["install"][87]="Allocated memory:";
 $lang["install"][88]="A minimum of 16Mo is commonly required for GLPI."; 
 $lang["install"][89]="Perfect !"; 
 $lang["install"][90]="Try to increase the memory_limit parameter in the php.ini file."; 
+$lang["install"][91]="Allocated memory > 16M"; 
 
 $lang["job"][0]="Intervention Number"; 
 $lang["job"][1]="Intervention still open..."; 

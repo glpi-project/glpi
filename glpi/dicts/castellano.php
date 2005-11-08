@@ -601,6 +601,7 @@ $lang["install"][87]="Memoria asignada:";
 $lang["install"][88]="Generalmente se necesita un mínimo de 16MB para GLPI."; 
 $lang["install"][89]="Perfecto!"; 
 $lang["install"][90]="Intente aumentando el parámetro memory_limit en el archivo php.ini."; 
+$lang["install"][91]="Allocated memory > 16M"; 
 
 $lang["job"][0]="Número de servicio"; 
 $lang["job"][1]="Servicio siempre abierto..."; 

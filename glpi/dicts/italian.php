@@ -601,6 +601,7 @@ $lang["install"][87]="Memoria utilizzata:";
 $lang["install"][88]="Un minimo di 16MB di memoria sono normalmente necessari per GLPI."; 
 $lang["install"][89]="Perfetto!"; 
 $lang["install"][90]="Prova ad aumentare il parametro memory_limit nel file di configurazione di PHP (php.ini)"; 
+$lang["install"][91]="Allocated memory > 16M"; 
 
 $lang["job"][0]="Numero di chiamata"; 
 $lang["job"][1]="Chiamata ancora aperta..."; 
