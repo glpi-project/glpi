@@ -27,6 +27,53 @@
  ------------------------------------------------------------------------
 */
 
+function manageGetValuesInSearch($type=0){
+global $_GET;
+$tab=array();
+
+if (is_array($_GET))
+foreach ($_GET as $key => $val)
+		$_SESSION['search'][$type][$key]=$val;
+
+//if (isset($_SESSION['search'][$type])&&is_array($_SESSION['search'][$type]))
+//foreach ($_SESSION['search'][$type] as $key => $val)
+//if (!isset($tab[$key])) $tab[$key]=$val;
+
+if (!isset($_GET["start"]))
+	if (isset($_SESSION['search'][$type]["start"])) $_GET["start"]=$_SESSION['search'][$type]["start"];
+	else $_GET["start"] = 0;
+
+if (!isset($_GET["order"]))
+	if (isset($_SESSION['search'][$type]["order"])) $_GET["order"]=$_SESSION['search'][$type]["order"];
+	else $_GET["order"] = "ASC";
+
+if (!isset($_GET["deleted"]))
+if (isset($_SESSION['search'][$type]["deleted"])) $_GET["deleted"]=$_SESSION['search'][$type]["deleted"];
+else $_GET["deleted"] = "N";
+
+if (!isset($_GET["distinct"]))
+if (isset($_SESSION['search'][$type]["distinct"])) $_GET["distinct"]=$_SESSION['search'][$type]["distinct"];
+else $_GET["distinct"] = "Y";
+	
+
+if (!isset($_GET["link"]))
+	if (isset($_SESSION['search'][$type]["link"])) $_GET["link"]=$_SESSION['search'][$type]["link"];
+	else $_GET["link"] = "";
+
+if (!isset($_GET["field"]))
+	if (isset($_SESSION['search'][$type]["field"])) $_GET["field"]=$_SESSION['search'][$type]["field"];
+	else $_GET["field"] = array(0 => "view");
+
+if (!isset($_GET["contains"]))
+	if (isset($_SESSION['search'][$type]["contains"])) $_GET["contains"]=$_SESSION['search'][$type]["contains"];
+	else $_GET["contains"] = array(0 => "");
+
+if (!isset($_GET["sort"]))
+	if (isset($_SESSION['search'][$type]["sort"])) $_GET["sort"]=$_SESSION['search'][$type]["sort"];
+	else $_GET["sort"] = 1;
+
+}
+
 /**
 * Print generic search form
 *
@@ -57,9 +104,9 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	for ($i=0;$i<$_SESSION["glpisearchcount"];$i++){
 		echo "<tr><td align='right'>";
 		if ($i==0){
-			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?add_search_count=1'><img src=\"".$HTMLRel."pics/plus.png\" alt='+'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$cfg_install["root"]."/computers/index.php?add_search_count=1'><img src=\"".$HTMLRel."pics/plus.png\" alt='+'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 			if ($_SESSION["glpisearchcount"]>1)
-			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?delete_search_count=1'><img src=\"".$HTMLRel."pics/moins.png\" alt='-'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$cfg_install["root"]."/computers/index.php?delete_search_count=1'><img src=\"".$HTMLRel."pics/moins.png\" alt='-'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 		}
 		if ($i>0) {
 			echo "<select name='link[$i]'>";
@@ -123,12 +170,22 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	echo "</select> ";
 	echo "</td>";
 	
+	echo "<td>";
+	echo "<table>";
 	if (in_array($LINK_ID_TABLE[$type],$deleted_tables)){
-		echo "<td><input type='checkbox' name='deleted' ".($deleted=='Y'?" checked ":"").">";
+		echo "<tr><td><select name='deleted'>";
+		echo "<option value='Y' ".($deleted=='Y'?" selected ":"").">Y</option>";
+		echo "<option value='N' ".($deleted=='N'?" selected ":"").">N</option>";
+		echo "</select>";
 		echo "<img src=\"".$HTMLRel."pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
-		echo "</td>";
+		echo "</td></tr>";
 	}
-	echo "<td><input type='checkbox' name='distinct' ".($distinct=='Y'?" checked ":"").">";
+	
+	echo "<tr><td><select name='distinct'>";
+	echo "<option value='Y' ".($distinct=='Y'?" selected ":"").">Y</option>";
+	echo "<option value='N' ".($distinct=='N'?" selected ":"").">N</option>";
+	echo "</select>&nbsp;x2";
+	echo "</td></tr></table>";
 	echo "</td>";
 	echo "<td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit' >";
