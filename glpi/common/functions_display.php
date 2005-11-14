@@ -463,12 +463,18 @@ function nullHeader($title,$url) {
 function commonFooter() {
 	// Print foot for every page
 
-GLOBAL $cfg_install,$cfg_debug,$DEBUG_SQL_STRING,$TIMER_DEBUG,$SQL_TOTAL_TIMER,$SQL_TOTAL_REQUEST;
+GLOBAL $lang,$cfg_features,$cfg_install,$cfg_debug,$DEBUG_SQL_STRING,$TIMER_DEBUG,$SQL_TOTAL_TIMER,$SQL_TOTAL_REQUEST;
 
 echo "<div id='footer' >";
 echo "<table width='100%'><tr><td align='left'><span class='copyright'>";
 echo $TIMER_DEBUG->Get_Time()."s</span>";
-echo "</td><td align='right'>";
+echo "</td>";
+
+if (!empty($cfg_features["founded_new_version"]))
+	echo "<td alilgn='center'>".$lang["setup"][301]." ".$cfg_features["founded_new_version"]."<br>".$lang["setup"][302]."</td>";
+
+
+echo "<td align='right'>";
 echo "<a href=\"http://GLPI.indepnet.org/\">";
 echo "<span class='copyright'>GLPI ".$cfg_install["version"]." Copyright (C) 2003-2005 by the INDEPNET Development Team.</span>";
 echo "</a>";

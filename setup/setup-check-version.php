@@ -43,7 +43,7 @@ checkauthentication("super-admin");
 
 
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
-checkNewVersionAvailable();
+checkNewVersionAvailable(0);
 
 commonFooter();
 ?>

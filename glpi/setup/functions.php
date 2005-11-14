@@ -956,6 +956,12 @@ function showFormConfigGen($target){
 	echo "</textarea>";
 	echo "</td></tr>";
 		
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][306]." </td><td><select name=\"auto_update_check\">";
+	$check=$db->result($result,0,"auto_update_check");
+	echo "<option value=\"0\"";  if($check==0){ echo " selected";} echo ">".$lang["setup"][307]." </option>";
+	echo "<option value=\"7\"";  if($check==7){ echo " selected";} echo ">".$lang["setup"][308]."</option>";
+	echo "<option value=\"30\"";  if($check==30){ echo " selected";} echo ">".$lang["setup"][309]."</option>";
+	echo "</select></td></tr>";
 	
 		echo "</table>&nbsp;</div>";	
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_confgen\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
@@ -1233,7 +1239,7 @@ function showFormMailing($target) {
 
 }
 
-function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events,$jobs_at_login,$list_limit,$cut, $permit_helpdesk,$default_language,$priority,$date_fiscale,$cartridges_alarm,$planning_begin,$planning_end,$auto_assign,$public_faq,$text_login) {
+function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events,$jobs_at_login,$list_limit,$cut, $permit_helpdesk,$default_language,$priority,$date_fiscale,$cartridges_alarm,$planning_begin,$planning_end,$auto_assign,$public_faq,$text_login,$auto_update_check) {
 	
 	$db = new DB;
 	
@@ -1243,7 +1249,8 @@ function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events
 		$query.= "priority_1 = '". $priority[1] ."', priority_2 = '". $priority[2] ."', priority_3 = '". $priority[3] ."', priority_4 = '". $priority[4] ."', priority_5 = '". $priority[5] ."', ";
 		$query.= " date_fiscale = '". $date_fiscale ."', cartridges_alarm='".$cartridges_alarm."', ";
 		$query.= " planning_begin = '". $planning_begin .":00:00', planning_end='".$planning_end.":00:00', ";
-		$query.= " auto_assign = '". $auto_assign ."', public_faq = '". $public_faq ."', text_login = '". $text_login ."' where ID = '1' ";
+		$query.= " auto_assign = '". $auto_assign ."', public_faq = '". $public_faq ."', text_login = '". $text_login ."', ";
+		$query.= " auto_update_check = '".$auto_update_check."' where ID = '1' ";
 		$db->query($query);
 	
 }
@@ -1311,9 +1318,26 @@ function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_ad
 	else return false;
 }
 
-function checkNewVersionAvailable(){
-	global $lang,$cfg_install;
+function checkNewVersionAvailable($auto=1){
+	global $lang,$cfg_install,$cfg_features;
+
+	$do_check=1;
+	
+	if ($auto&&$cfg_features["auto_update_check"]==0) return;
+	else {
+		$last_check=split("-",$cfg_features["last_update_check"]);
+		$dateDiff = mktime() 
+				  - mktime(0,0,0,$last_check[1],$last_check[2],$last_check[0]);		
+		$dayDiff=$dateDiff/60/60/24;
+		if ($dayDiff<$cfg_features["auto_update_check"]){
+			$do_check=0;
+		}
+				
+	}
+	 if ($do_check)
 	 if (ini_get('allow_url_fopen')){
+	 	echo "<br>";
+	 	if ($auto) echo "<div align='center'><strong>".$lang["setup"][310]."</strong></div>";
 		 $fp = fopen("http://glpi.indepnet.org/latest_version", 'r');
 	     $latest_version = trim(@fread($fp, 16));
 		 fclose($fp);
@@ -1329,9 +1353,23 @@ function checkNewVersionAvailable(){
 			if ($cur_version < $lat_version){
 				echo "<div align='center'>".$lang["setup"][301]." ".$latest_version."</div>";
 				echo "<div align='center'>".$lang["setup"][302]."</div>";
+				
+				// Auto store new relase
+				if ($auto){
+					$db=new DB;
+					$query="UPDATE glpi_config SET founded_new_version='".$latest_version."' WHERE ID='1'";
+					$db->query($query);
+					}
 				}
             else
 				echo "<div align='center'>".$lang["setup"][303]."</div>";
+				
+				// Update last check
+				if ($auto){
+					$db=new DB;
+					$query="UPDATE glpi_config SET last_update_check='".date("Y-m-d")."' WHERE ID='1'";
+					$db->query($query);
+					}
 			}
  	} else 
  	echo "<div align='center'>".$lang["setup"][305]."</div>";           
