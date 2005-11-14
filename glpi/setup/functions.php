@@ -1311,4 +1311,30 @@ function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_ad
 	else return false;
 }
 
+function checkNewVersionAvailable(){
+	global $lang,$cfg_install;
+	 if (ini_get('allow_url_fopen')){
+		 $fp = fopen("http://glpi.indepnet.org/latest_version", 'r');
+	     $latest_version = trim(@fread($fp, 16));
+		 fclose($fp);
+		 if ($latest_version == '')
+			echo "<div align='center'>".$lang["setup"][304]."</div>";
+		 else {			
+	        $cur_version = str_replace(array('.', ' '), '', strtolower($cfg_install["version"]));
+            $cur_version = (strlen($cur_version) == 2) ? intval($cur_version) * 10 : intval($cur_version);
+
+            $lat_version = str_replace('.', '', strtolower($latest_version));
+            $lat_version = (strlen($lat_version) == 2) ? intval($lat_version) * 10 : intval($lat_version);
+
+			if ($cur_version < $lat_version){
+				echo "<div align='center'>".$lang["setup"][301]." ".$latest_version."</div>";
+				echo "<div align='center'>".$lang["setup"][302]."</div>";
+				}
+            else
+				echo "<div align='center'>".$lang["setup"][303]."</div>";
+			}
+ 	} else 
+ 	echo "<div align='center'>".$lang["setup"][305]."</div>";           
+}
+
 ?>

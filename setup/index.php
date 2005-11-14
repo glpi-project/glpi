@@ -75,6 +75,7 @@ echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-config.php?next=e
 
 echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."links/\"><b>".$lang["setup"][87]."</b></a></td> </tr>";
 
+echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-check-version.php\"><b>".$lang["setup"][300]."</b></a></td></tr>";
 
 
 
