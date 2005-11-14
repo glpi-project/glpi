@@ -1255,6 +1255,12 @@ $lang["setup"][302]="Elle est disponible sur le site de GLPI : <a href='http://g
 $lang["setup"][303]="Vous disposez de la dernière version disponible";
 $lang["setup"][304]="Echec du test de présence d'une mise à jour pour une raison inconnue";
 $lang["setup"][305]="Cette fonctionnalité n'est pas disponible car allow_url_fopen n'est pas activé dans votre configuration PHP.";
+$lang["setup"][306]="Vérifier la présence de mises à jour";
+$lang["setup"][307]="Jamais";
+$lang["setup"][308]="Toutes les semaines";
+$lang["setup"][309]="Tous les mois";
+$lang["setup"][310]="Vérification automatique de la présence d'une mise à jour";
+
 
 
 $lang["software"][0]="Ajouter logiciel...";

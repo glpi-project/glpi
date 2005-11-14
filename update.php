@@ -695,8 +695,8 @@ switch ($current_version){
 	break;
 }
 
-// Update version number and default langage ---- LEAVE AT THE END
-	$query = "UPDATE `glpi_config` SET `version` = ' 0.65', default_language='".$_SESSION["dict"]."' ;";
+// Update version number and default langage and new version_founded ---- LEAVE AT THE END
+	$query = "UPDATE `glpi_config` SET `version` = ' 0.65', default_language='".$_SESSION["dict"]."',founded_new_version='' ;";
 	$db->query($query) or die("0.6 ".$lang["update"][90].$db->error());
 
 optimize_tables();
@@ -3128,15 +3128,19 @@ if(!FieldExists("glpi_config","url_base")) {
 }
 
 if(!FieldExists("glpi_config","text_login")) {
-
 	$query="ALTER TABLE `glpi_config` ADD `text_login` TEXT NOT NULL ;";
 	$db->query($query) or die("0.65 add text_login in config".$lang["update"][90].$db->error());
-
 }
 
 if (FieldExists("glpi_tracking","status")){
 	$query="ALTER TABLE `glpi_tracking` CHANGE `status` `status` ENUM( 'new', 'old' ) DEFAULT 'new' NOT NULL;";
 	$db->query($query) or die("0.65 alter status in glpi_tracking".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_config","auto_update_check")) {
+	$query="ALTER TABLE `glpi_config` ADD `auto_update_check` SMALLINT DEFAULT '0' NOT NULL ,
+			ADD `last_update_check` DATE DEFAULT '".date("Y-m-d")."' NOT NULL, ADD `founded_new_version` VARCHAR( 10 ) NOT NULL ;";
+	$db->query($query) or die("0.65 add auto_login_check in config".$lang["update"][90].$db->error());
 }
 
 }

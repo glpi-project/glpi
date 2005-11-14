@@ -46,6 +46,7 @@ include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_enterprises.php");
 include ($phproot . "/glpi/includes_users.php");
+include ($phproot . "/glpi/includes_setup.php");
 
 
 checkAuthentication("normal");
@@ -63,6 +64,8 @@ if (isset($_GET['redirect'])){
 
 echo "<center><b>".$lang["central"][0]." ".(empty($_SESSION["glpirealname"])?$_SESSION["glpiname"]:$_SESSION["glpirealname"]).", ".$lang["central"][1]."</b></center>";
 //echo "<hr noshade>";
+
+checkNewVersionAvailable();
 
 if (!isset($_GET['start'])) $_GET['start']=0;
 

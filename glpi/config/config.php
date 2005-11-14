@@ -355,6 +355,11 @@ $cfg_features["ajax_limit_count"] = 50;
 //Login text
 $cfg_layout["text_login"] = $db->result($result,0,"text_login");
 
+// Auto update
+$cfg_features["auto_update_check"] = $db->result($result,0,"auto_update_check");
+$cfg_features["last_update_check"] = $db->result($result,0,"last_update_check");
+$cfg_features["founded_new_version"] = $db->result($result,0,"founded_new_version");
+
 }
 
 
