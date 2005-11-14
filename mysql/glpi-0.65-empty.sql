@@ -1309,7 +1309,7 @@ CREATE TABLE glpi_tracking (
     ID int(11) NOT NULL auto_increment,
     date datetime,
     closedate datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-    status enum('new','old'),
+    status enum('new','old')  NOT NULL,
     author int(11) DEFAULT '0' NOT NULL,
     assign int(11) DEFAULT '0' NOT NULL,
     assign_type tinyint(4) DEFAULT '0' NOT NULL,
