@@ -3134,6 +3134,11 @@ if(!FieldExists("glpi_config","text_login")) {
 
 }
 
+if (FieldExists("glpi_tracking","status")){
+	$query="ALTER TABLE `glpi_tracking` CHANGE `status` `status` ENUM( 'new', 'old' ) DEFAULT 'new' NOT NULL;";
+	$db->query($query) or die("0.65 alter status in glpi_tracking".$lang["update"][90].$db->error());
+}
+
 }
 
 function updateTreeDropdown(){
