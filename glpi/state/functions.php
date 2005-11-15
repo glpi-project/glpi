@@ -276,4 +276,79 @@ if ($state!=0){
 	
 }
 
+function showStateSummary($target){
+global $lang;
+$db=new DB;
+
+$query = "select glpi_dropdown_state.name as state, glpi_dropdown_state.ID as id_state, glpi_state_item.device_type as d_type, count(*) as cmp from glpi_state_item ";
+$query.= " LEFT JOIN glpi_dropdown_state ON (glpi_dropdown_state.ID = glpi_state_item.state) ";
+$query .= " WHERE glpi_state_item.is_template='0' GROUP BY glpi_state_item.device_type,glpi_dropdown_state.ID,glpi_dropdown_state.name ORDER BY glpi_dropdown_state.name,glpi_state_item.device_type";
+
+$state_type=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE);
+
+$db->query($query);
+	if ($result = $db->query($query)) {
+		$numrows =  $db->numrows($result);
+		if ($numrows>0){
+
+			// Produce headline
+			echo "<div align='center'><table  class='tab_cadre'><tr>";
+
+			// Type			
+			echo "<th>";
+			echo $lang["state"][0]."</th>";
+
+			$ci=new CommonItem;
+			foreach ($state_type as $type){
+				$ci->setType($type);
+				echo "<th>".$ci->getType()."</th>";
+				$total[$type]=0;
+			}
+			echo "<th>".$lang["state"][10]."</th>";
+			echo "</tr>";
+				$current_state=-1;
+				$states=array();
+			while ($data=$db->fetch_array($result)){
+			$states[$data["id_state"]]["name"]=$data["state"];
+			$states[$data["id_state"]][$data["d_type"]]=$data["cmp"];
+			}
+			
+			foreach ($states as $key => $val)
+			{
+				$tot=0;
+				echo "<tr class='tab_bg_2'><td align='center'><strong><a href='$target?state=$key'>".$val["name"]."</a></strong></td>";
+				
+				foreach ($state_type as $type){
+					echo "<td align='center'>";
+				
+					if (isset($val[$type])) {
+						echo $val[$type];
+						$total[$type]+=$val[$type];
+						$tot+=$val[$type];
+					}
+					else echo "&nbsp;";
+					echo "</td>";
+				}
+				echo "<td align='center'><strong>$tot</strong></td>";
+				echo "</tr>";
+			}
+			echo "<tr class='tab_bg_2'><td align='center'><strong><a href='$target?state=0'>".$lang["state"][10]."</a></strong></td>";
+			$tot=0;
+			foreach ($state_type as $type){
+			echo "<td align='center'><strong>".$total[$type]."</strong></td>";
+			$tot+=$total[$type];
+			}
+			echo "<td align='center'><strong>".$tot."</strong></td>";
+			echo "</tr>";
+			echo "</table></div>";
+
+		}
+		else {
+			echo "<div align='center'><b>".$lang["state"][7]."</b></div>";
+		}
+	}
+
+
+}
+
 ?>

@@ -1317,6 +1317,7 @@ $lang["state"][6]="Type de matériel";
 $lang["state"][7]="Pas de matériel trouvé";
 $lang["state"][8]="Lieu"; 
 $lang["state"][9]="Type"; 
+$lang["state"][10]="Total"; 
 
 $lang["stats"][0]="Sélectionnez les statistiques à visualiser";
 $lang["stats"][1]="Globales";
