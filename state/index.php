@@ -52,7 +52,7 @@ if(!isset($tab["ID"])) $tab["ID"] = "";
 	if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
 	if (!isset($_GET["contains"])) $_GET["contains"] = "";
 	if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_dropdown_state.name";
-	if (!isset($_GET["state"])) $_GET["state"] = "";
+//	if (!isset($_GET["state"])) $_GET["state"] = "";
 
 if (isset($tab["deletestate"])) {
 	checkAuthentication("admin");
@@ -66,11 +66,13 @@ if (isset($tab["deletestate"])) {
 	commonHeader($lang["title"][9],$_SERVER["PHP_SELF"]);
 	
 	titleState();
-	searchFormStateItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
-	showStateItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["state"]);
-
+	
+	if (!isset($_GET["state"]))
+		showStateSummary($_SERVER["PHP_SELF"]);
+	else {
+		searchFormStateItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
+		showStateItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["state"]);
+	}
 
 commonFooter();
-
-
 ?>
