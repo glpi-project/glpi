@@ -631,7 +631,7 @@ function showJobShort($ID, $followups) {
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0){
 			echo "<td align='center' ";
 			$m= new CommonItem;
-			$m->getfromDB($job->device_type,$job->computer);
+			if ($m->getfromDB($job->device_type,$job->computer))
 			if (isset($m->obj->fields["deleted"])&&$m->obj->fields["deleted"]=='Y')
 			echo "class='tab_bg_1_2'";
 			echo ">";
