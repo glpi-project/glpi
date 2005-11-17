@@ -602,6 +602,9 @@ $lang["install"][88]="Generalmente se necesita un mínimo de 16MB para GLPI.";
 $lang["install"][89]="Perfecto!"; 
 $lang["install"][90]="Intente aumentando el parámetro memory_limit en el archivo php.ini."; 
 $lang["install"][91]="Allocated memory > 16M"; 
+$lang["install"][92]="License"; 
+$lang["install"][93]="I have read and ACCEPT the terms of the license written above."; 
+$lang["install"][94]="I have read and NOT ACCEPT the terms of the license written above"; 
 
 $lang["job"][0]="Número de servicio"; 
 $lang["job"][1]="Servicio siempre abierto..."; 
@@ -1233,6 +1236,17 @@ $lang["setup"][228]="Login Field";
 $lang["setup"][250]="Default search fields list"; 
 $lang["setup"][251]="Select a heading"; 
 $lang["setup"][252]="Select default items to show"; 
+$lang["setup"][300]="Check if a new version is available"; 
+$lang["setup"][301]="A new version is available:"; 
+$lang["setup"][302]="It is available from the GLPI website: <a href='http://glpi.indepnet.org' target='_blank'>http://glpi.indepnet.org</a>"; 
+$lang["setup"][303]="You have the latest available version"; 
+$lang["setup"][304]="Check for upgrade failed for unknown reasons"; 
+$lang["setup"][305]="Feature not available because the allow_url_fopen is not activated in your PHP configuration."; 
+$lang["setup"][306]="Check for upgrade"; 
+$lang["setup"][307]="Never"; 
+$lang["setup"][308]="Each week"; 
+$lang["setup"][309]="Each month"; 
+$lang["setup"][310]="Automatic check for upgrade"; 
 
 $lang["software"][0]="Agregar software..."; 
 $lang["software"][1]="ID"; 
@@ -1288,6 +1302,7 @@ $lang["state"][6]="Tipo de material";
 $lang["state"][7]="No se encontraron materiales"; 
 $lang["state"][8]="Lugar"; 
 $lang["state"][9]="Tipo"; 
+$lang["state"][10]="Total"; 
 
 $lang["stats"][0]="Seleccione las estadísticas a visualizar"; 
 $lang["stats"][1]="Globales"; 
