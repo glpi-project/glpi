@@ -47,7 +47,7 @@ class Contact {
 		$query = "SELECT * FROM glpi_contacts WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			if ($db->numrows($result)==1){
-			$data = $db->fetch_array($result);
+			$data = $db->fetch_assoc($result);
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}

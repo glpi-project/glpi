@@ -3143,6 +3143,79 @@ if(!FieldExists("glpi_config","auto_update_check")) {
 	$db->query($query) or die("0.65 add auto_login_check in config".$lang["update"][90].$db->error());
 }
 
+//// Tracking 
+if(FieldExists("glpi_tracking","status")) {
+	$query="ALTER TABLE `glpi_tracking` CHANGE `status` `status` ENUM( 'new', 'old_done', 'assign', 'plan', 'old_notdone' ) DEFAULT 'new' NOT NULL ;";
+	$db->query($query) or die("0.65 alter status in tracking".$lang["update"][90].$db->error());
+}
+
+if(FieldExists("glpi_tracking_planning","id_assign")) {
+	$query="ALTER TABLE `glpi_tracking_planning` ADD INDEX ( `id_assign` ) ;";
+	$db->query($query) or die("0.65 add index for id_assign in tracking_planning".$lang["update"][90].$db->error());
+}
+if(FieldExists("glpi_tracking","emailupdates")) {
+	$query="ALTER TABLE `glpi_tracking` CHANGE `emailupdates` `emailupdates` ENUM( 'yes', 'no' ) DEFAULT 'no' NOT NULL;";
+	$db->query($query) or die("0.65 alter emailupdates in tracking".$lang["update"][90].$db->error());
+}
+
+if(FieldExists("glpi_followups","private")) {
+	$query="ALTER TABLE `glpi_followups` ADD `private` INT( 1 ) DEFAULT '0' NOT NULL;";
+	$db->query($query) or die("0.65 add private in followups".$lang["update"][90].$db->error());
+}
+
+ 
+if(!FieldExists("glpi_tracking_planning","id_followup")) {
+	$query="ALTER TABLE `glpi_tracking_planning` ADD `id_followup` INT NOT NULL AFTER `id_tracking` ;";
+	$db->query($query) or die("0.65 add id_followup in tracking_planning".$lang["update"][90].$db->error());
+	$query=" ALTER TABLE `glpi_tracking_planning` ADD INDEX ( `id_followup` );";
+	$db->query($query) or die("0.65 add index for id_followup in tracking_planning".$lang["update"][90].$db->error());
+
+	//// Move Planned item to followup
+	// Get super-admin ID
+	$suid=0;
+	$query0="SELECT ID from glpi_users WHERE type='super-admin'";
+	echo $query0."<br>";
+	$result0=$db->query($query0);
+	if ($db->numrows($result0)>0){
+		$suid=$db->result($result0,0,0);
+	}
+	mysql_free_result($result0);
+	$query="SELECT * FROM glpi_tracking_planning order by id_tracking";
+	echo $query."<br>";
+	$result = $db->query($query);
+	$used_followups=array();
+	if ($db->numrows($result)>0)
+	while ($data=$db->fetch_array($result)){
+		$found=-1;
+		// Is a followup existing ?
+		$query2="SELECT * FROM glpi_followups WHERE tracking='".$data["id_tracking"]."'";
+		echo $query2."<br>";
+		$result2=$db->query($query2);
+		if ($db->numrows($result2)>0)
+		while ($found<0&&$data2=$db->fetch_array($result2))
+		if (!in_array($data2['ID'],$used_followups)){
+				$found=$data2['ID'];
+		}
+		mysql_free_result($result2);
+		// Followup not founded
+		if ($found<0){
+			$query3="INSERT INTO glpi_followups (tracking,date,author,contents) VALUES ('".$data["id_tracking"]."','".date("Y-m-d")."','$suid','Automatic Added followup for compatibility problem in update')";
+			echo $query3."<br>";
+			$db->query($query3);
+			$found=$db->insert_id();
+		} 
+		array_push($used_followups,$found);
+		$query4="UPDATE glpi_tracking_planning SET id_followup='$found' WHERE ID ='".$data['ID']."';";
+		echo $query4."<br>";
+		$db->query($query4);
+	}
+	unset($used_followups);
+	mysql_free_result($result);
+	$query=" ALTER TABLE `glpi_tracking_planning` DROP `id_tracking` ;";
+	echo $query."<br>";
+	$db->query($query) or die("0.65 add index for id_followup in tracking_planning".$lang["update"][90].$db->error());
+}
+ 
 }
 
 function updateTreeDropdown(){

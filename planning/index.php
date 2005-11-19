@@ -59,7 +59,7 @@ titleTrackingPlanning();
 	echo "<div align='center'><form method=\"get\" name=\"form\" action=\"index.php\">";
 	echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 	echo "<td>";
-	dropdownUsers($_GET['uID'], "uID",1);
+	dropdownUsers("uID",$_GET['uID'],1);
 	echo "</td>";
 	echo "<td align='right'>";
 	echo $lang["planning"][4].":</td><td>";

@@ -53,7 +53,7 @@
 	if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
 	
 			
-	$query = "SELECT * FROM glpi_users WHERE '1'='1' $where ORDER BY realname,name $LIMIT";
+	$query = "SELECT * FROM glpi_users WHERE ID >'1' $where ORDER BY realname,name $LIMIT";
 	//echo $query;
 	$result = $db->query($query);
 

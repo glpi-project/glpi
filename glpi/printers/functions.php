@@ -454,7 +454,7 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 	echo "</td></tr>\n";
 	
 	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>\n";
-		dropdownUsersID( $printer->fields["tech_num"],"tech_num");
+		dropdownUsersID("tech_num", $printer->fields["tech_num"]);
 	echo "</td></tr>\n";
 	
 	echo "<tr><td>".$lang["printers"][7].":	</td>\n";
@@ -650,6 +650,7 @@ function updatePrinter($input) {
 			$x++;
 		}
 	}
+
 	if (isset($input["is_template"])&&$input["is_template"]==1)
 	updateState(PRINTER_TYPE,$input["ID"],$input["state"],1);
 	else updateState(PRINTER_TYPE,$input["ID"],$input["state"]);

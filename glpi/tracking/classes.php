@@ -40,26 +40,12 @@ include ("_relpos.php");
 
 class Job {
 
-	var $ID			= 0;
-	var $date		= "";
-	var $closedate		= "";
-	var $status		= "";
-	var $author		= "";
-	var $assign		= "";
-	var $assign_type	= "";
-	var $computer		= 0;
+	var $fields	= array();
+	var $updates	= array();
 	var $computername	= "";
 	var $computerfound	= 0;
-	var $contents		= "";
-	var $priority		= 0;
-	var $isgroup		= "";
-	var $uemail		= "";
-	var $emailupdates	= "";
-	var $num_of_followups	= 0;
-	var $realtime	= 0;
-	var $category	= 0;
 	
-	
+
 	function getfromDB ($ID,$purecontent) {
 
 		$this->ID = $ID;
@@ -69,44 +55,16 @@ class Job {
 		$query = "SELECT * FROM glpi_tracking WHERE (ID = $ID)";
 
 		if ($result = $db->query($query)) 
-//		if ($db->numrows($result)>0)
-		{
-			$resultnum = $db->numrows($result);
-			$this->date = $db->result($result,0,"date");
-			$this->closedate = $db->result($result, 0, "closedate");
-			$this->status = $db->result($result, 0, "status");
-			$this->author = $db->result($result, 0, "author");
-			$this->assign = $db->result($result, 0, "assign");
-			$this->assign_type = $db->result($result, 0, "assign_type");
-			$this->device_type = $db->result($result, 0, "device_type");
-			$this->computer = $db->result($result, 0, "computer");
+			if ($db->numrows($result)==1){
+			$data = $db->fetch_assoc($result);
+			foreach ($data as $key => $val) {
+				$this->fields[$key] = $val;
+			}
 			if (!$purecontent) {
-				$this->contents = nl2br($db->result($result, 0, "contents"));
+				$this->contents = nl2br($this->fields["contents"]);
 			}
-			else	$this->contents = $db->result($result, 0, "contents");
-			$this->priority = $db->result($result, 0, "priority");
-			$this->is_group = $db->result($result,0, "is_group");
-			$this->uemail = $db->result($result, 0, "uemail");
-			$this->emailupdates = $db->result($result, 0, "emailupdates");
-			$this->realtime = $db->result($result, 0, "realtime");
-			$this->category = $db->result($result, 0, "category");
-			// Set computername
-/*			if ($this->is_group == "yes") {
-				$scndquery = "SELECT name FROM glpi_groups WHERE (ID = $this->computer)";
-			} else {
-				$scndquery = "SELECT name FROM glpi_computers WHERE (ID = $this->computer)";
-			}
-			$scndresult = $db->query($scndquery);
-			if ($db->numrows($scndresult)) {
-				$this->computername = $db->result($scndresult, 0, "name");
-				$this->computerfound=1;
-			} else {
-				$this->computername = "N/A";
-				$this->computerfound=0;				
-			}		
-*/
 			$m= new CommonItem;
-			if ($m->getfromDB($this->device_type,$this->computer)){
+			if ($m->getfromDB($this->fields["device_type"],$this->fields["computer"])){
 				$this->computername=$m->getName();
 			}
 			if ($this->computername==""){
@@ -114,40 +72,72 @@ class Job {
 				$this->computerfound=0;				
 			} else 	$this->computerfound=1;	
 
-			// Set number of followups
-			$thrdquery = "SELECT * FROM glpi_followups WHERE (tracking = $this->ID)";
-			$thrdresult = $db->query($thrdquery);
-			$this->num_of_followups = $db->numrows($thrdresult);
-			
 			return true;
-
 		} else {
 			return false;
 		}
+		return false;
 	}
 
-	function putinDB () {	
-		// prepare variables
+	function numberOfFollowups(){
+		$db=new DB();
 
-		$this->date = date("Y-m-d H:i:s");
+		// Set number of followups
+		$query = "SELECT count(*) FROM glpi_followups WHERE (tracking = $this->ID)";
+		$result = $db->query($query);
+		return $db->result($result,0,0);
 
-		if ($this->status=="old") {
-			$this->closedate = date("Y-m-d H:i:s");
-		}
-		
-		// dump into database
+	}
+
+	function updateInDB($updates)  {
+
 		$db = new DB;
-		$query = "INSERT INTO glpi_tracking VALUES (NULL, '$this->date', '$this->closedate', '$this->status','$this->author', '$this->assign', '$this->assign_type', $this->device_type, $this->computer, '$this->contents', '$this->priority', '$this->isgroup','$this->uemail', '$this->emailupdates','$this->realtime','$this->category')";
 
-		if ($result = $db->query($query)) {
-			$this->ID= $db->insert_id();
-			return $this->ID;
-		} else {
-			return false;
+		for ($i=0; $i < count($updates); $i++) {
+			$query  = "UPDATE glpi_tracking SET ";
+			$query .= $updates[$i];
+			$query .= "='";
+			$query .= $this->fields[$updates[$i]];
+			$query .= "' WHERE ID='";
+			$query .= $this->fields["ID"];	
+			$query .= "'";
+//			echo $query;
+			$result=$db->query($query);
 		}
 	}
-	
 
+	function addToDB() {
+		
+		$db = new DB;
+
+		// Build query
+		$query = "INSERT INTO glpi_tracking (";
+		$i=0;
+		
+		foreach ($this->fields as $key => $val) {
+			$fields[$i] = $key;
+			$values[$i] = $val;
+			$i++;
+		}		
+		for ($i=0; $i < count($fields); $i++) {
+			$query .= $fields[$i];
+			if ($i!=count($fields)-1) {
+				$query .= ",";
+			}
+		}
+		$query .= ") VALUES (";
+		for ($i=0; $i < count($values); $i++) {
+			$query .= "'".$values[$i]."'";
+			if ($i!=count($values)-1) {
+				$query .= ",";
+			}
+		}
+		$query .= ")";
+
+		$result=$db->query($query);
+		return $db->insert_id();
+	}	
+/*
 	function updateStatus($status) {
 		// update Status of Job
 		
@@ -223,7 +213,7 @@ class Job {
 		// change item
 		
 		$db = new DB;
-		$this->author = $author;
+		$this->fields["author"] = $author;
 
 		$query = "UPDATE glpi_tracking SET author = '$author' WHERE ID = '$this->ID'";
 		if ($result = $db->query($query)) {
@@ -264,14 +254,14 @@ class Job {
 			return false;
 		}
 	}
-
+*/
 	function textFollowups() {
 		// get the last followup for this job and give its contents as
 		GLOBAL $lang;
-	
-		$message = $lang["mailing"][1]."\n".$lang["mailing"][4]." : ".$this->num_of_followups."\n".$lang["mailing"][1]."\n";
+		$nbfollow=$job->numberOfFollowups();
+		$message = $lang["mailing"][1]."\n".$lang["mailing"][4]." : $nbfollow\n".$lang["mailing"][1]."\n";
 		
-		for ($i=0; $i < $this->num_of_followups; $i++) {
+		for ($i=0; $i < $nbfollow; $i++) {
 			$fup = new Followup;
 			$fup->getFromDB($this->ID,$i);
 			$message .= "[ ".$fup->date." ]\n";
@@ -298,7 +288,7 @@ class Job {
 		$message.= $lang["mailing"][7]." ".$name."\n";
 		$message.= $lang["mailing"][8]." ".$this->getAssignName()."\n";
 		$message.= $lang["mailing"][16]." ".getPriorityName($this->priority)."\n";
-		$message.= $lang["mailing"][3]."\n".$this->contents."\n";	
+		$message.= $lang["mailing"][3]."\n".$this->fields["contents"]."\n";	
 		$message.="\n\n";
 		return $message;
 	}
@@ -306,11 +296,18 @@ class Job {
 	function deleteInDB ($ID) {
 		if ($ID!=""){
 			$db=new DB;
-			$query1="delete from glpi_followups where tracking = '$ID'";
 			$query2="delete from glpi_tracking where ID = '$ID'";
-			$query3="delete from glpi_tracking_planning where id_tracking = '$ID'";
+			$query1="delete from glpi_followups where tracking = '$ID'";
+
+			$query="SELECT ID FROM glpi_followups WHERE tracking = '$ID'";
+			$result=$db->query($query);
+			if ($db->numrows($result)>0)
+			while ($data=$db->fetch_array($result)){
+				$querydel="DELETE FROM glpi_tracking_planning WHERE id_followup = '".$data['ID']."'";
+				$db->query($querydel);				
+			}
+
 			$db->query($query1);
-			$db->query($query3);
 			$db->query($query2);
 			 return true;
 			}
@@ -320,16 +317,16 @@ class Job {
 	function getAssignName($link=0){
 	global $cfg_install;
 	
-	if ($this->assign_type==USER_TYPE){
-		return getUserName($this->assign,$link);
+	if ($this->fields["assign_type"]==USER_TYPE){
+		return getUserName($this->fields["assign"],$link);
 		
-	} else if ($this->assign_type==ENTERPRISE_TYPE){
+	} else if ($this->fields["assign_type"]==ENTERPRISE_TYPE){
 		$ent=new Enterprise();
-		$ent->getFromDB($this->assign);
+		$ent->getFromDB($this->fields["assign"]);
 		$before="";
 		$after="";
 		if ($link){
-			$before="<a href=\"".$cfg_install["root"]."/enterprises/enterprises-info-form.php?ID=".$this->assign."\">";
+			$before="<a href=\"".$cfg_install["root"]."/enterprises/enterprises-info-form.php?ID=".$this->fields["assign"]."\">";
 			$after="</a>";
 		}
 		
@@ -340,7 +337,7 @@ class Job {
 	
 	function getAuthorName($link=0){
 	
-	return getUserName($this->author,$link);
+	return getUserName($this->fields["author"],$link);
 	}
 	
 }
@@ -348,24 +345,21 @@ class Job {
 
 class Followup {
 	
-	var $ID		= 0;
-	var $tracking	= 0;
-	var $date	= "";
-	var $author	= "";
-	var $contents	= "";
+	var $fields	= array();
+	var $updates	= array();
 
 	function getfromDB ($ID,$iteration) {
 
-		$this->ID = $ID;
+		$this->fields["ID"] = $ID;
 
 		// Make new database object and fill variables
 		$db = new DB;
 		$query = "SELECT * FROM glpi_followups WHERE (tracking = $ID) ORDER BY date ASC";
 	
 		if ($result = $db->query($query)) {
-			$this->date = $db->result($result,$iteration,"date");
-			$this->author = $db->result($result, $iteration, "author");
-			$this->contents = nl2br($db->result($result, $iteration, "contents"));
+			$this->fields["date"] = $db->result($result,$iteration,"date");
+			$this->fields["author"] = $db->result($result, $iteration, "author");
+			$this->fields["contents"] = nl2br($db->result($result, $iteration, "contents"));
 
 			return true;
 
@@ -381,7 +375,7 @@ class Followup {
 	
 		// dump into database
 		$db = new DB;
-		$query = "INSERT INTO glpi_followups VALUES (NULL, $this->tracking, '$this->date','$this->author', '$this->contents')";
+		$query = "INSERT INTO glpi_followups VALUES (NULL, $this->tracking, '$this->date','".$this->fields["author"]."', '$this->contents')";
 
 		if ($result = $db->query($query)) {
 			return true;
@@ -407,7 +401,7 @@ class Followup {
 				case SOFTWARE_TYPE :$type="software";break;
 				case PERIPHERAL_TYPE :$type="peripherals";break;
 			}
-			logEvent($cID, $type, 4, "tracking", "$this->author added followup to job $this->tracking.");
+			logEvent($cID, $type, 4, "tracking", $this->fields["author"]." added followup to job $this->tracking.");
 			return true;
 		} else {
 			return false;
@@ -416,8 +410,21 @@ class Followup {
 	}
 
 	function getAuthorName($link=0){
-	return getUserName($this->author,$link);
+	return getUserName($this->fields["author"],$link);
 	}	
+	
+	function deleteInDB ($ID) {
+		if ($ID!=""){
+			$db=new DB;
+			$query="delete from glpi_followups where ID = '$ID'";
+			$db->query($query);
+			$querydel="DELETE FROM glpi_tracking_planning WHERE id_followup = '$ID'";
+			$db->query($querydel);				
+			 return true;
+
+		}
+		return false;		
+	}
 
 }
 

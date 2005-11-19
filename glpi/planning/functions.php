@@ -122,8 +122,8 @@ function showAddPlanningTrackingForm($target,$job,$planID=-1){
 	echo "<tr class='tab_bg_2'><td>".$lang["planning"][9].":	</td>";
 	echo "<td>";
 	if ($planID==-1)
-	dropdownUsers($_SESSION["glpiID"],"id_assign",-1);
-	else dropdownUsers($planning->fields["id_assign"],"id_assign",-1);
+	dropdownUsers("id_assign",$_SESSION["glpiID"],-1);
+	else dropdownUsers("id_assign",$planning->fields["id_assign"],-1);
 
 	echo "</td></tr>";
 	
