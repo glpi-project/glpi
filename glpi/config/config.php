@@ -350,7 +350,7 @@ $cfg_features["planning_end"] = $db->result($result,0,"planning_end");
 // TODO : Add in glpi_config
 $cfg_features["ajax_wildcard"] = "*";
 $cfg_features["use_ajax"] = 1;
-$cfg_features["ajax_limit_count"] = 50;
+$cfg_features["ajax_limit_count"] = 0;
 
 //Login text
 $cfg_layout["text_login"] = $db->result($result,0,"text_login");

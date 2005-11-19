@@ -455,7 +455,7 @@ function dropdownValueSearch($table,$myname,$value,$search) {
 *
 */
 // $all =0 -> Nobody $all=1 -> All $all=-1-> nothing
-function dropdownUsers($value, $myname,$all=0) {
+function dropdownUsers($myname,$value,$all=0) {
 	//global $lang;
 	// Make a select box with all glpi users
 
@@ -529,7 +529,7 @@ if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 */
 }
 
-function dropdownAllUsers($value, $myname) {
+function dropdownAllUsers($myname,$value) {
 	global $lang;
 	// Make a select box with all glpi users
 
@@ -750,10 +750,10 @@ function dropdownAllUsersSearch($value, $myname,$search) {
 * @param $myname
 * @return nothing (print out an HTML select box)
 */
-function dropdownUsersID($value, $myname) {
+function dropdownUsersID($myname,$value) {
 	// Make a select box with all glpi users
 
-	dropdownUsers($value, $myname);
+	dropdownUsers($myname,$value);
 /*	$db = new DB;
 	$query = "SELECT * FROM glpi_users WHERE (".searchUserbyType("normal").") ORDER BY name";
 	$result = $db->query($query);
@@ -826,7 +826,7 @@ function getDropdownName($table,$id) {
 * @return nothing (print out an HTML select box)
 */
 
-function dropdownUsersTracking($value, $myname,$champ) {
+function dropdownUsersTracking($myname,$value,$champ) {
 	global $HTMLRel,$cfg_install,$lang,$cfg_features;
 
 	$rand=mt_rand();

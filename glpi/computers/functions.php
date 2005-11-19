@@ -658,7 +658,7 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		echo "<tr class='tab_bg_1'>";
 		echo "<td >".$lang["common"][10].": 	</td>";
 		echo "<td >";
-			dropdownUsersID( $comp->fields["tech_num"],"tech_num");
+			dropdownUsersID("tech_num",$comp->fields["tech_num"]);
 		echo "</td>";
 
 		echo "<td valign='middle' rowspan='3'>".$lang["computers"][19].":</td><td valign='middle' rowspan='3'><textarea  cols='35' rows='4' name='comments' >".$comp->fields["comments"]."</textarea></td></tr>";

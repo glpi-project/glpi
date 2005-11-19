@@ -50,17 +50,19 @@ include ($phproot . "/glpi/includes_documents.php");
 
 checkAuthentication("normal");
 
-if (isset($_POST["contents"])&&!empty($_POST["contents"])&&isAdmin($_SESSION["glpitype"]))
+/*if (isset($_POST["contents"])&&!empty($_POST["contents"])&&isAdmin($_SESSION["glpitype"]))
 {
 	postFollowups ($_POST["ID"],$_SESSION["glpiID"],$_POST["contents"]);
 	glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=".$_POST["ID"]);
 }
+*/
 
 commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
-
-if (isset($_POST["ID"]))
-glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=".$_POST["ID"]);
-else 
+if (isset($_POST['update'])){
+	updateTracking($_POST);
+	
+	glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=".$_POST["ID"]);
+}
 showJobDetails($_GET["ID"]);
 commonFooter();
 ?>

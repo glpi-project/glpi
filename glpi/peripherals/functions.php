@@ -441,7 +441,7 @@ function showperipheralForm ($target,$ID,$withtemplate='') {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>";
-		dropdownUsersID( $mon->fields["tech_num"],"tech_num");
+		dropdownUsersID("tech_num", $mon->fields["tech_num"]);
 	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["peripherals"][7].":	</td>";

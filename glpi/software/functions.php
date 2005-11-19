@@ -435,7 +435,7 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>";
-		dropdownUsersID( $sw->fields["tech_num"],"tech_num");
+		dropdownUsersID("tech_num", $sw->fields["tech_num"]);
 	echo "</td></tr>";
 	
 	echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>";

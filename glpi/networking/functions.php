@@ -467,7 +467,7 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 	echo "</td></tr>\n";
 	
 	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>\n";
-		dropdownUsersID( $netdev->fields["tech_num"],"tech_num");
+		dropdownUsersID("tech_num", $netdev->fields["tech_num"]);
 	echo "</td></tr>\n";
 		
 	echo "<tr><td>".$lang["networking"][4].":	</td>\n";
