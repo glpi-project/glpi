@@ -573,6 +573,7 @@ function showJobShort($ID, $followups) {
 
 	// Make new job object and fill it from database, if success, print it
 	$job = new Job;
+	$isadmin=isAdmin($_SESSION['glpitype']);
 
 	if ($job->getfromDB($ID,0))
 	{
@@ -588,7 +589,7 @@ function showJobShort($ID, $followups) {
 		}
 		else
 		{
-			if (isAdmin($_SESSION["glpitype"])){
+			if ($isadmin){
 				$sel="";
 				if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
 			echo "<br><input type='checkbox' name='todel[".$job->ID."]' value='1' $sel>";
@@ -668,7 +669,7 @@ function showJobShort($ID, $followups) {
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-info-form.php?ID=$job->ID\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
 		else
-		echo "<a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&amp;ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
+		echo "<a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&amp;ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups($isadmin).")&nbsp;<br>";
 //		if ($job->fields["status"] == "new"&&strcmp($_SESSION["glpitype"],"post-only")!=0)
 //		{
 //			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-mark.php?ID=$job->ID\">".$lang["joblist"][14]."</a><br>";
@@ -1802,6 +1803,8 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang,$cfg_devices_tables,$HTMLRel;
 		
 	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
+
+	$isadmin=isAdmin($_SESSION['glpitype']);
 	
 	$db=new DB;
 	// Reduce computer list
@@ -1945,7 +1948,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 			// Produce headline
 
 			// Form to delete old item
-			if (isAdmin($_SESSION["glpitype"])){
+			if ($isadmin){
 			echo "<form method='post' action=\"$target\">";
 			}
 			
@@ -1965,7 +1968,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 			echo "</table></div>";
 
 		// Delete selected item
-			if (isAdmin($_SESSION["glpitype"])){
+			if ($isadmin){
 				echo "<br><div align='center'>";
 				echo "<table cellpadding='5' width='90%'>";
 				echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=all&amp;start=$start'>".$lang["buttons"][18]."</a></td>";
@@ -1979,7 +1982,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 			echo "<br>";
 			
 			// End form for delete item
-			if (isAdmin($_SESSION["glpitype"]))
+			if ($isadmin)
 				echo "</form>";
 			
 			
@@ -2263,6 +2266,8 @@ function showJobDetails ($ID){
 	global $cfg_install,$cfg_features,$lang,$HTMLRel;
 	$job=new Job();
 	$db=new DB();
+	$isadmin=isAdmin($_SESSION['glpitype']);
+	
 	if ($job->getfromDB($ID,0)) {
 
 		$author=new User();
@@ -2287,28 +2292,30 @@ function showJobDetails ($ID){
 		echo "<table cellpadding='3'>";
 		echo "<tr class='tab_bg_2'><td align='right'>";
 		echo $lang["joblist"][0].":</td><td>";
-		if (isAdmin($_SESSION['glpitype']))
+		if ($isadmin)
 			dropdownStatus("status",$job->fields["status"]);
-		else getStatusName($job->fields["status"]);
+		else echo getStatusName($job->fields["status"]);
 		echo "</td></tr>";
 
 		echo "<tr><td align='right'>";
 		echo $lang["joblist"][3].":</td><td>";
-		if (isAdmin($_SESSION['glpitype']))
+		if ($isadmin)
 			dropdownAllUsers("author",$job->fields["author"]);
-		else $author->getName();
+		else echo $author->getName();
 		echo "</td></tr>";
 
 		echo "<tr><td align='right'>";
 		echo $lang["joblist"][2].":</td><td>";
-		if (isAdmin($_SESSION['glpitype']))
+		if ($isadmin)
 			dropdownPriority("priority",$job->fields["priority"]);
 		else echo getPriorityName($job->fields["priority"]);
 		echo "</td></tr>";
 
 		echo "<tr><td>";
 		echo $lang["tracking"][20].":</td><td>";
-		dropdownValue("glpi_dropdown_tracking_category","category",$job->fields["category"]);
+		if ($isadmin)
+			dropdownValue("glpi_dropdown_tracking_category","category",$job->fields["category"]);
+		else getDropdownName("glpi_dropdown_tracking_category",$job->fields["category"]);
 		echo "</td></tr>";
 
 		echo "</table></td>";
@@ -2341,7 +2348,7 @@ function showJobDetails ($ID){
 		if ($cfg_features["mailing"]==1){
 			echo "<tr><td align='right'>";
 			echo $lang["job"][19].":</td><td>";
-			if (isAdmin($_SESSION['glpitype'])){
+			if ($isadmin){
 				echo "<select name='emailupdates'>";
 				echo "<option value='no'>".$lang["choice"][1]."</option>";
 				echo "<option value='yes' ".($job->fields["emailupdates"]=="yes"?" selected ":"").">".$lang["choice"][0]."</option>";
@@ -2355,7 +2362,7 @@ function showJobDetails ($ID){
 				echo "<tr><td align='right'>";
 				echo $lang["joblist"][3].":";
 				echo "</td><td>";
-				if (isAdmin($_SESSION['glpitype'])){
+				if ($isadmin){
 					echo "<input type='text' name='uemail' size='15' value='".$job->fields["uemail"]."'>";
 						if (!empty($job->fields["uemail"]))
 					echo "<a href='mailto:".$job->fields["uemail"]."'><img src='".$HTMLRel."pics/edit.png' alt='Mail'></a>";
@@ -2375,7 +2382,7 @@ function showJobDetails ($ID){
 
 		echo "<tr><td align='right'>";
 		echo $lang["common"][1].":</td><td>";
-		if (isAdmin($_SESSION['glpitype'])){
+		if ($isadmin){
 			echo $item->getType()." - ".$item->getLink()."<br>";
 			dropdownAllItems("item",0);
 			}
@@ -2393,7 +2400,7 @@ function showJobDetails ($ID){
 
 		echo "</td></tr>";
 		
-		if (can_assign_job($_SESSION["glpiname"])){
+		if ($isadmin&&can_assign_job($_SESSION["glpiname"])){
 			echo "<tr><td align='right'>";
 			echo $lang["job"][27].":</td><td>";
 			$val=0;
@@ -2453,18 +2460,23 @@ function showJobDetails ($ID){
 			echo "</tr>";
 		}
 		echo "<tr><td colspan='2'>";
-		echo "<input type='file' name='filename' size='25'>";
+		if ($isadmin)
+			echo "<input type='file' name='filename' size='25'>";
+		else echo "&nbsp;";
 		echo "</td></tr></table>";
 		echo "</td></tr>";
 		
 		// Troisième Ligne
-		echo "<tr class='tab_bg_1'><td colspan='3' align='center'>";
-		echo "<input type='submit' name='update' value='".$lang["buttons"][14]."'></td></tr>";
+		if ($isadmin){
+			echo "<tr class='tab_bg_1'><td colspan='3' align='center'>";
+			echo "<input type='submit' name='update' value='".$lang["buttons"][14]."'></td></tr>";
+		}
 		
 //		echo "</table></td></tr>";
 echo "</table>";
 echo "<input type='hidden' name='ID' value='$ID'>";
-echo "</form></div>";
+echo "</form>";
+echo "</div>";
 
 showFollowups($ID);
 	}
@@ -2477,83 +2489,89 @@ function showFollowups($tID){
 	global $lang,$cfg_install,$HTMLRel;
 	$db=new DB();
 
+	$isadmin=isAdmin($_SESSION['glpitype']);
+
 	// Display Add Table
-	echo "<div align='center'>";
-	echo "<form method='post' action=\"".$cfg_install["root"]."/tracking/tracking-info-form.php\">\n";
-	echo "<table class='tab_cadre' width='90%'>";
-	echo "<tr><th colspan='2'>";
-	echo $lang["job"][29];
-	echo "</th></tr>";
+	if ($isadmin){
+		echo "<div align='center'>";
+		echo "<form method='post' action=\"".$cfg_install["root"]."/tracking/tracking-info-form.php\">\n";
+		echo "<table class='tab_cadre' width='90%'>";
+		echo "<tr><th colspan='2'>";
+		echo $lang["job"][29];
+		echo "</th></tr>";
 
-	echo "<tr class='tab_bg_2'><td width='60%'>";
-	echo "<table width='100%'>";
-	echo "<tr><td>".$lang["joblist"][6]."</td>";
-	echo "<td><textarea name='contents' rows=8 cols=60></textarea>";
-	echo "</td></tr>";
-	echo "</table>";
-	echo "</td>";
+		echo "<tr class='tab_bg_2'><td width='60%'>";
+		echo "<table width='100%'>";
+		echo "<tr><td>".$lang["joblist"][6]."</td>";
+		echo "<td><textarea name='contents' rows=8 cols=60></textarea>";
+		echo "</td></tr>";
+		echo "</table>";
+		echo "</td>";
 
-	echo "<td width='40%' valign='top'>";
-	echo "<table width='100%'>";
+		echo "<td width='40%' valign='top'>";
+		echo "<table width='100%'>";
 
-	echo "<tr>";
-	echo "<td>".$lang["joblist"][3].":</td>";
-	echo "<td>";
-	dropdownUsers("author",$_SESSION["glpiID"]);
-	echo "</td>";
-	echo "</tr>";
+		echo "<tr>";
+		echo "<td>".$lang["joblist"][3].":</td>";
+		echo "<td>";
+		dropdownUsers("author",$_SESSION["glpiID"]);
+		echo "</td>";
+		echo "</tr>";
 
-	echo "<tr>";
-	echo "<td>".$lang["job"][30].":</td>";
-	echo "<td>";
-	echo "<select name='private'>";
-	echo "<option value='0'>".$lang["choice"][1]."</option>";
-	echo "<option value='1'>".$lang["choice"][0]."</option>";
-	echo "</select>";
-	echo "</td>";
-	echo "</tr>";
+		echo "<tr>";
+		echo "<td>".$lang["job"][30].":</td>";
+		echo "<td>";
+		echo "<select name='private'>";
+		echo "<option value='0'>".$lang["choice"][1]."</option>";
+		echo "<option value='1'>".$lang["choice"][0]."</option>";
+		echo "</select>";
+		echo "</td>";
+		echo "</tr>";
 
-	echo "<tr><td>".$lang["job"][31].":</td><td>";
+		echo "<tr><td>".$lang["job"][31].":</td><td>";
 	
-	echo "<select name='hour'>";
-	for ($i=0;$i<100;$i++){
-		echo "<option value='$i' ";
-		echo " >$i</option>";
-	}
-	echo "</select>".$lang["job"][21]."&nbsp;&nbsp;";
-	echo "<select name='minute'>";
-	for ($i=0;$i<60;$i++){
-		echo "<option value='$i' ";
-		echo " >$i</option>";
-	}
-	echo "</select>".$lang["job"][22];
-	echo "</tr>";
+		echo "<select name='hour'>";
+		for ($i=0;$i<100;$i++){
+			echo "<option value='$i' ";
+			echo " >$i</option>";
+		}
+		echo "</select>".$lang["job"][21]."&nbsp;&nbsp;";
+		echo "<select name='minute'>";
+		for ($i=0;$i<60;$i++){
+			echo "<option value='$i' ";
+			echo " >$i</option>";
+		}
+		echo "</select>".$lang["job"][22];
+		echo "</tr>";
 
-/*	echo "<tr>";
-	echo "<td>Plannification</td>";
-	echo "<td>Formulaire de plannification</td>";
-	echo "</tr>";
+/*		echo "<tr>";
+		echo "<td>Plannification</td>";
+		echo "<td>Formulaire de plannification</td>";
+		echo "</tr>";
 */
 
-	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>";
-	echo "<input type='submit' name='add' value='".$lang["buttons"][8]."'>";
-	echo "</td>";
-	echo "<td align='center'>";
-	echo "<input type='submit' name='add_close' value='".$lang["buttons"][26]."'>";
-	echo "</td>";
-	echo "</tr>";
+		echo "<tr class='tab_bg_1'>";
+		echo "<td align='center'>";
+		echo "<input type='submit' name='add' value='".$lang["buttons"][8]."'>";
+		echo "</td>";
+		echo "<td align='center'>";
+		echo "<input type='submit' name='add_close' value='".$lang["buttons"][26]."'>";
+		echo "</td>";
+		echo "</tr>";
 
 
-	echo "</table>";
-	echo "</td></tr>";
-	echo "</table>";
-	echo "<input type='hidden' name='tracking' value='$tID'>";
-	echo "</form></div>";
-
+		echo "</table>";
+		echo "</td></tr>";
+		echo "</table>";
+		echo "<input type='hidden' name='tracking' value='$tID'>";
+		echo "</form></div>";
+	}
 	// Display existing Followups
 
-	$query = "SELECT * FROM glpi_followups WHERE (tracking = $tID) ORDER BY date ASC";
+	$RESTRICT="";
+	if (!$isadmin)  $RESTRICT=" AND private='0' ";
+
+	$query = "SELECT * FROM glpi_followups WHERE (tracking = $tID) $RESTRICT ORDER BY date ASC";
 	$result=$db->query($query);
 	
 	echo "<div align='center'>";
@@ -2585,40 +2603,51 @@ function showFollowups($tID){
 			echo "<tr>";
 			echo "<td>".$lang["joblist"][3].":</td>";
 			echo "<td>";
-			dropdownUsers("author",$data["author"]);
+			if ($isadmin)
+				dropdownUsers("author",$data["author"]);
+			else echo getUserName($data["author"]);
 			echo "</td>";
 			echo "</tr>";
 
-			echo "<tr>";
-			echo "<td>".$lang["job"][30].":</td>";
-			echo "<td>";
-			echo "<select name='private'>";
-			echo "<option value='0' ".(!$data["private"]?" selected":"").">".$lang["choice"][1]."</option>";
-			echo "<option value='1' ".($data["private"]?" selected":"").">".$lang["choice"][0]."</option>";
-			echo "</select>";
-			echo "</td>";
-			echo "</tr>";
+			if ($isadmin){
+				echo "<tr>";
+				echo "<td>".$lang["job"][30].":</td>";
+				echo "<td>";
+				echo "<select name='private'>";
+				echo "<option value='0' ".(!$data["private"]?" selected":"").">".$lang["choice"][1]."</option>";
+				echo "<option value='1' ".($data["private"]?" selected":"").">".$lang["choice"][0]."</option>";
+				echo "</select>";
+				echo "</td>";
+				echo "</tr>";
+			} 
 
 
 
 			echo "<tr><td>".$lang["job"][31].":</td><td>";
 			$hour=floor($data["realtime"]);
 			$minute=round(($data["realtime"]-$hour)*60,0);
+			
+			if ($isadmin){
 	
-			echo "<select name='hour'>";
-			for ($i=0;$i<100;$i++){
-				echo "<option value='$i' ";
-				if ($hour==$i) echo "selected";
-				echo " >$i</option>";
+				echo "<select name='hour'>";
+				for ($i=0;$i<100;$i++){
+					echo "<option value='$i' ";
+					if ($hour==$i) echo "selected";
+					echo " >$i</option>";
+				}
+				echo "</select>".$lang["job"][21]."&nbsp;&nbsp;";
+				echo "<select name='minute'>";
+				for ($i=0;$i<60;$i++){
+					echo "<option value='$i' ";
+					if ($minute==$i) echo "selected";
+					echo " >$i</option>";
+				}
+				echo "</select>".$lang["job"][22];
+			} else {
+				echo $hour." ".$lang["job"][21]." ".$minute." ".$lang["job"][22];
+				
 			}
-			echo "</select>".$lang["job"][21]."&nbsp;&nbsp;";
-			echo "<select name='minute'>";
-			for ($i=0;$i<60;$i++){
-				echo "<option value='$i' ";
-				if ($minute==$i) echo "selected";
-				echo " >$i</option>";
-			}
-			echo "</select>".$lang["job"][22];
+			
 			echo "</tr>";
 
 			echo "<tr>";
@@ -2627,31 +2656,38 @@ function showFollowups($tID){
 			$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
 			$result2=$db->query($query2);
 			if ($db->numrows($result2)==0)
-				echo "<a href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=-1'>".$lang["buttons"][8]."</a>";
+				if ($isadmin)
+					echo "<a href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=-1'>".$lang["buttons"][8]."</a>";
+				else echo $lang["job"][32];	
 			else {
 				$data2=$db->fetch_array($result2);
 				echo $data2["begin"]." -> ".$data2["end"];
-				echo "<a href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=".$data2["ID"]."'><img src='".$HTMLRel."pics/edit.png'></a>";
+				if ($isadmin)
+					echo "<a href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=".$data2["ID"]."'><img src='".$HTMLRel."pics/edit.png'></a>";
+					
 			}
 			
 			echo "</td>";
 			echo "</tr>";
 
-
-			echo "<tr class='tab_bg_1'>";
-			echo "<td align='center' colspan='2'>";
-			echo "<input type='submit' name='update_followup' value='".$lang["buttons"][14]."'>";
-			echo "</td>";
-			echo "</tr>";
+			if ($isadmin){
+				echo "<tr class='tab_bg_1'>";
+				echo "<td align='center' colspan='2'>";
+				echo "<input type='submit' name='update_followup' value='".$lang["buttons"][14]."'>";
+				echo "</td>";
+				echo "</tr>";
+			}
 
 
 			echo "</table>";
 			echo "</td></tr>";
 	
 			echo "</table>";
-			echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
-			echo "<input type='hidden' name='tracking' value='".$data["tracking"]."'>";
-			echo "</form>";
+			if ($isadmin){
+				echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
+				echo "<input type='hidden' name='tracking' value='".$data["tracking"]."'>";
+				echo "</form>";
+			}
 			echo "</td></tr>";
 			
 		}

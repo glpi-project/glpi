@@ -79,11 +79,12 @@ class Job {
 		return false;
 	}
 
-	function numberOfFollowups(){
+	function numberOfFollowups($with_private=1){
 		$db=new DB();
-
+		$RESTRICT="";
+		if ($with_private!=1) $RESTRICT = " AND private='0'";
 		// Set number of followups
-		$query = "SELECT count(*) FROM glpi_followups WHERE (tracking = $this->ID)";
+		$query = "SELECT count(*) FROM glpi_followups WHERE (tracking = $this->ID) $RESTRICT";
 		$result = $db->query($query);
 		return $db->result($result,0,0);
 
