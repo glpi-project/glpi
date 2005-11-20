@@ -1198,7 +1198,7 @@ function showFormMailing($target) {
 		echo "<tr><th colspan='3'>".$lang["setup"][209]."</th></tr>";
 		echo "<tr class='tab_bg_2'><td>".$lang["setup"][211]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_new_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_new_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_new_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_new_attrib") == 0) echo "checked"; echo  " ></td></tr>";
 		
-		//echo "<tr class='tab_bg_2'><td>A chaque changement de responsable</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"0\"  "; if($db->result($result,0,"mailing_attrib_attrib") == 0) echo "checked"; echo  " ></td></tr>";
+		echo "<tr class='tab_bg_2'><td>".$lang["setup"][229]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"0\"  "; if($db->result($result,0,"mailing_attrib_attrib") == 0) echo "checked"; echo  " ></td></tr>";
 		
 		echo "<tr class='tab_bg_2'><td>".$lang["setup"][212]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_followup_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_followup_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_followup_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_followup_attrib") == 0) echo "checked"; echo  " ></td></tr>";
 		echo "<tr class='tab_bg_2'><td>".$lang["setup"][213]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_finish_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_finish_attrib") == 0) echo "checked"; echo  " ></td></tr>";
@@ -1286,7 +1286,7 @@ function updateCAS($cas_host,$cas_port,$cas_uri) {
 		$db->query($query);
 }
 
-function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_admin,$mailing_followup_admin,$mailing_finish_admin,$mailing_new_all_admin,$mailing_followup_all_admin,$mailing_finish_all_admin,$mailing_new_all_normal,$mailing_followup_all_normal,$mailing_finish_all_normal,$mailing_followup_attrib,$mailing_finish_attrib,$mailing_new_user,$mailing_followup_user,$mailing_finish_user,$mailing_new_attrib,$mailing_resa_admin,$mailing_resa_all_admin,$mailing_resa_user,$url,$url_in_mail) {
+function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_admin,$mailing_followup_admin,$mailing_finish_admin,$mailing_new_all_admin,$mailing_followup_all_admin,$mailing_finish_all_admin,$mailing_new_all_normal,$mailing_followup_all_normal,$mailing_finish_all_normal,$mailing_followup_attrib,$mailing_finish_attrib,$mailing_new_user,$mailing_followup_user,$mailing_finish_user,$mailing_new_attrib,$mailing_resa_admin,$mailing_resa_all_admin,$mailing_resa_user,$url,$url_in_mail,$mailing_attrib_attrib) {
 
 	$db = new DB;
 	$query = "update glpi_config set mailing = '". $mailing ."', ";
@@ -1307,6 +1307,7 @@ function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_ad
 	$query .= "mailing_followup_user = '". $mailing_followup_user ."', ";
 	$query .= "mailing_finish_user = '". $mailing_finish_user ."', ";
 	$query .= "mailing_new_attrib = '". $mailing_new_attrib ."', ";
+	$query .= "mailing_attrib_attrib = '". $mailing_attrib_attrib ."', ";
 	$query .= "mailing_resa_admin = '". $mailing_resa_admin ."', ";
 	$query .= "mailing_resa_all_admin = '". $mailing_resa_all_admin ."', ";
 	$query .= "mailing_resa_user = '". $mailing_resa_user ."', ";

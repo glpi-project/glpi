@@ -700,7 +700,7 @@ $lang["knowbase"][24]="Accéder à la FAQ";
 $lang["ldap"][0]="recherche";
 $lang["ldap"][1]="Montrer";
 $lang["ldap"][2]="et"; 
-$lang["ldap"][3]="ou l'attribut"; 
+$lang["ldap"][3]="ou l'attribut";
 $lang["ldap"][4]="Ajouter nouvelle entrée...";
 $lang["ldap"][5]="requis";
 $lang["ldap"][6]="permis";
@@ -1256,6 +1256,7 @@ $lang["setup"][225]="Pour une nouvelle réservation";
 $lang["setup"][226]="Ajoutez un lien vers GLPI dans les mails";
 $lang["setup"][227]="URL de base utilisée";
 $lang["setup"][228]="Champ de login";
+$lang["setup"][229]="A chaque changement de responsable";
 
 $lang["setup"][250]="Affichage recherche par défaut ";
 $lang["setup"][251]="Sélectionnez une rubrique ";

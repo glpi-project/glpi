@@ -2177,6 +2177,14 @@ function updateTracking($input){
 	}
 	if(isset($updates))
 		$job->updateInDB($updates);
+		
+	// Send mail to attrib if attrib change	
+	if (in_array("assign",$updates)&&$job->fields["assign_type"]==USER_TYPE&&$job->fields["assign"]>0){
+			$user=new User;
+			$user->getfromDB($_SESSION["glpiname"]);
+			$mail = new Mailing("attrib",$job,$user);
+			$mail->send();
+	}
 }
 
 function updateFollowup($input){
