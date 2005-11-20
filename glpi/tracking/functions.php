@@ -1087,7 +1087,7 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	
 	
 	if ($tID=$job->addToDB()) {
-		
+		$job->fields["ID"]=$tID;
 		// add Document if exists
 		if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
 		$input=array();
@@ -2206,6 +2206,7 @@ function updateFollowup($input){
 }
 
 function addFollowup($input){
+	global $cfg_features;
 	$fup = new Followup;
 
 	$close=0;
@@ -2225,16 +2226,27 @@ function addFollowup($input){
 			$fup->fields[$key] = $input[$key];
 		}
 	}
-	$newID=$fup->addToDB();	
+	if (!$close||$input["realtime"]>0||strlen($input["contents"])>0)
+		$newID=$fup->addToDB();	
+
+	$job=new Job;
+	$job->getFromDB($input["tracking"],0);
 
 	if ($close){
-		$job=new Job;
-		$job->getFromDB($input["tracking"],0);
 		$updates[]="status";
 		$job->fields["status"]="old_done";
 		$job->updateInDB($updates);
-		
 	}
+
+	if ($cfg_features["mailing"])
+		{
+			$type="followup";
+			if ($close) $type="finish";
+			$user=new User;
+			$user->getfromDB($_SESSION["glpiname"]);
+			$mail = new Mailing($type,$job,$user);
+			$mail->send();
+		}
 	
 	return $newID;
 }

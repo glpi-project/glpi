@@ -688,9 +688,9 @@ class Mailing
 			}
 		}	
 
-		if ($cfg_mailing[$this->type]["attrib"]&&$this->job->assign)
+		if ($cfg_mailing[$this->type]["attrib"]&&$this->job->fields["assign"])
 		{
-			$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$this->job->assign."')";
+			$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$this->job->fields["assign"]."')";
 			if ($result2 = $db->query($query2)) 
 			{
 				if ($db->numrows($result2)==1)
@@ -705,11 +705,11 @@ class Mailing
 			}
 		}
 
-		if ($cfg_mailing[$this->type]["user"]&&$this->job->emailupdates=="yes")
+		if ($cfg_mailing[$this->type]["user"]&&$this->job->fields["emailupdates"]=="yes")
 		{
-			if ($this->is_valid_email($this->job->uemail)&&!in_array($this->job->uemail,$emails))
+			if ($this->is_valid_email($this->job->fields["uemail"])&&!in_array($this->job->fields["uemail"],$emails))
 			{
-				$emails[$nb]=$this->job->uemail;
+				$emails[$nb]=$this->job->fields["uemail"];
 				$nb++;
 			}
 		}
@@ -725,7 +725,7 @@ class Mailing
 		$body="";
 		
 		if ($cfg_features['url_in_mail']&&!empty($cfg_features['url_base']))
-			$body.=$cfg_features['url_base']."/index.php?redirect=tracking_".$this->job->ID."\n\n";
+			$body.=$cfg_features['url_base']."/index.php?redirect=tracking_".$this->job->fields["ID"]."\n\n";
 		
 		
 		$body.=$this->job->textDescription();
@@ -741,8 +741,7 @@ class Mailing
 		GLOBAL $lang;
 		
 		// Create the message subject 
-		$subject=sprintf("%s%07d%s","[GLPI #",$this->job->ID,"] ");
-		//$subject="[GLPI] [".$this->job->ID."] ";
+		$subject=sprintf("%s%07d%s","[GLPI #",$this->job->fields["ID"],"] ");
 		
 		switch ($this->type){
 			case "new":
@@ -755,7 +754,7 @@ class Mailing
 			$subject.=$lang["mailing"][10];
 				break;
 			case "finish":
-			$subject.=$lang["mailing"][11]." ".$this->job->closedate;			
+			$subject.=$lang["mailing"][11]." ".$this->job->fields["closedate"];			
 				break;
 			default :
 			$subject.=$lang["mailing"][13];
@@ -774,7 +773,7 @@ class Mailing
 
 	switch ($this->type){
 			case "new":
-				if ($this->is_valid_email($this->job->uemail)) $replyto=$this->job->uemail;
+				if ($this->is_valid_email($this->job->fields["uemail"])) $replyto=$this->job->fields["uemail"];
 				else $replyto=$cfg_mailing["admin_email"];
 				break;
 			case "followup":
@@ -791,10 +790,11 @@ class Mailing
 	function send()
 	{
 		GLOBAL $cfg_features,$cfg_mailing,$phproot;
-		if ($cfg_features["mailing"]&&$this->is_valid_email($cfg_mailing["admin_email"]))
+		if ($cfg_features["mailing"])
 		{
 			if (!is_null($this->job)&&!is_null($this->user)&&(strcmp($this->type,"new")||strcmp($this->type,"attrib")||strcmp($this->type,"followup")||strcmp($this->type,"finish")))
 			{
+
 				// get users to send mail
 				$users=$this->get_users_to_send_mail();
 				// get body + signature OK
@@ -811,6 +811,7 @@ class Mailing
 				$replyto=$this->get_reply_to_address ();
 				// Send all mails
 				require_once($phproot."/glpi/common/MIMEMail.php");
+
 				for ($i=0;$i<count($users);$i++)
 				{
 				$mmail=new MIMEMail();

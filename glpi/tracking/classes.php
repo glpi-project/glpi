@@ -133,7 +133,6 @@ class Job {
 			}
 		}
 		$query .= ")";
-
 		$result=$db->query($query);
 		return $db->insert_id();
 	}	
@@ -258,18 +257,24 @@ class Job {
 		}
 	}
 */
+
 	function textFollowups() {
 		// get the last followup for this job and give its contents as
 		GLOBAL $lang;
-		$nbfollow=$job->numberOfFollowups();
+		$db=new DB();
+		$query = "SELECT * FROM glpi_followups WHERE tracking = '".$this->ID."' AND private = '0' ORDER by date ASC";
+		$result=$db->query($query);
+		$nbfollow=$db->numrows($result);
 		$message = $lang["mailing"][1]."\n".$lang["mailing"][4]." : $nbfollow\n".$lang["mailing"][1]."\n";
 		
-		for ($i=0; $i < $nbfollow; $i++) {
-			$fup = new Followup;
-			$fup->getFromDB($this->ID,$i);
-			$message .= "[ ".$fup->date." ]\n";
-			$message .= $lang["mailing"][2]." ".$fup->getAuthorName()."\n";
-			$message .= $lang["mailing"][3]."\n".$fup->contents."\n".$lang["mailing"][0]."\n";
+		if ($nbfollow>0){
+			$fup=new Followup();
+			while ($data=$db->fetch_array($result)){
+				$fup->getfromDB($data['ID']);
+					$message .= "[ ".$fup->fields["date"]." ]\n";
+					$message .= $lang["mailing"][2]." ".$fup->getAuthorName()."\n";
+					$message .= $lang["mailing"][3]."\n".$fup->fields["contents"]."\n".$lang["mailing"][0]."\n";
+			}	
 		}
 		return $message;
 	}
@@ -280,17 +285,17 @@ class Job {
 		$db=new DB;
 		$m= new CommonItem;
 		$name="N/A";
-		if ($m->getfromDB($this->device_type,$this->computer)){
+		if ($m->getfromDB($this->fields["device_type"],$this->fields["computer"])){
 			$name=$m->getType()." ".$m->getName();
 		}
 		
 		
 		$message = $lang["mailing"][1]."\n*".$lang["mailing"][5]."*\n".$lang["mailing"][1]."\n";
 		$message.= $lang["mailing"][2]." ".$this->getAuthorName()."\n";
-		$message.= $lang["mailing"][6]." ".$this->date."\n";
+		$message.= $lang["mailing"][6]." ".$this->fields["date"]."\n";
 		$message.= $lang["mailing"][7]." ".$name."\n";
 		$message.= $lang["mailing"][8]." ".$this->getAssignName()."\n";
-		$message.= $lang["mailing"][16]." ".getPriorityName($this->priority)."\n";
+		$message.= $lang["mailing"][16]." ".getPriorityName($this->fields["priority"])."\n";
 		$message.= $lang["mailing"][3]."\n".$this->fields["contents"]."\n";	
 		$message.="\n\n";
 		return $message;
@@ -475,6 +480,8 @@ class Followup {
 	}
 
 	
+	// Plus utilisé
+	/*
 	function logFupUpdate () {
 		// log event
 		
@@ -499,7 +506,8 @@ class Followup {
 		}
 		
 	}
-
+	*/
+	
 	function getAuthorName($link=0){
 	return getUserName($this->fields["author"],$link);
 	}	
