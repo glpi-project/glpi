@@ -39,7 +39,7 @@ include ("_relpos.php");
 include ($phproot."/glpi/includes.php");
 $db=new DB();
 
-$multiplicator=1;
+$multiplicator=10;
 
 $max['locations']=50;
 $max['kbcategories']=10;
@@ -164,7 +164,7 @@ function add_tracking($type,$ID){
 		// Add followups
 		$i=0;
 		while (mt_rand(0,100)<$percent['followups']){
-			$query="INSERT INTO glpi_followups VALUES ('','$tID','".date("Y-m-d H:i:s",$date1+mt_rand(3600,7776000))."','".$users[mt_rand(0,1)]."','followup $i ".GetRandomString(15)."');";
+			$query="INSERT INTO glpi_followups VALUES ('','$tID','".date("Y-m-d H:i:s",$date1+mt_rand(3600,7776000))."','".$users[mt_rand(0,1)]."','followup $i ".GetRandomString(15)."','0','".mt_rand(0,3)."');";
 			$db->query($query) or die("PB REQUETE ".$query);
 			$i++;
 			}
