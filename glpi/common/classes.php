@@ -648,13 +648,13 @@ class Mailing
 		$nb=0;
 		$db = new DB;
 		
-		if ($cfg_mailing[$this->type]["admin"]&&$this->is_valid_email($cfg_mailing["admin_email"])&&!in_array($cfg_mailing["admin_email"],$emails))
+		if (isset($cfg_mailing[$this->type]["admin"])&&$cfg_mailing[$this->type]["admin"]&&$this->is_valid_email($cfg_mailing["admin_email"])&&!in_array($cfg_mailing["admin_email"],$emails))
 		{
 			$emails[$nb]=$cfg_mailing["admin_email"];
 			$nb++;
 		}
 
-		if ($cfg_mailing[$this->type]["all_admin"])
+		if (isset($cfg_mailing[$this->type]["all_admin"])&&$cfg_mailing[$this->type]["all_admin"])
 		{
 			$query = "SELECT email FROM glpi_users WHERE (".searchUserbyType("admin").")";
 			if ($result = $db->query($query)) 
@@ -671,7 +671,7 @@ class Mailing
 			}
 		}	
 
-		if ($cfg_mailing[$this->type]["all_normal"])
+		if (isset($cfg_mailing[$this->type]["all_normal"])&&$cfg_mailing[$this->type]["all_normal"])
 		{
 			$query = "SELECT email FROM glpi_users WHERE (".searchUserbyType("normal").")";
 			if ($result = $db->query($query)) 
@@ -688,7 +688,7 @@ class Mailing
 			}
 		}	
 
-		if ($cfg_mailing[$this->type]["attrib"]&&$this->job->fields["assign"])
+		if (isset($cfg_mailing[$this->type]["attrib"])&&$cfg_mailing[$this->type]["attrib"]&&$this->job->fields["assign_type"]==USER_TYPE&&$this->job->fields["assign"])
 		{
 			$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$this->job->fields["assign"]."')";
 			if ($result2 = $db->query($query2)) 
@@ -705,7 +705,7 @@ class Mailing
 			}
 		}
 
-		if ($cfg_mailing[$this->type]["user"]&&$this->job->fields["emailupdates"]=="yes")
+		if (isset($cfg_mailing[$this->type]["user"])&&$cfg_mailing[$this->type]["user"]&&$this->job->fields["emailupdates"]=="yes")
 		{
 			if ($this->is_valid_email($this->job->fields["uemail"])&&!in_array($this->job->fields["uemail"],$emails))
 			{
@@ -794,7 +794,6 @@ class Mailing
 		{
 			if (!is_null($this->job)&&!is_null($this->user)&&(strcmp($this->type,"new")||strcmp($this->type,"attrib")||strcmp($this->type,"followup")||strcmp($this->type,"finish")))
 			{
-
 				// get users to send mail
 				$users=$this->get_users_to_send_mail();
 				// get body + signature OK
@@ -811,7 +810,6 @@ class Mailing
 				$replyto=$this->get_reply_to_address ();
 				// Send all mails
 				require_once($phproot."/glpi/common/MIMEMail.php");
-
 				for ($i=0;$i<count($users);$i++)
 				{
 				$mmail=new MIMEMail();

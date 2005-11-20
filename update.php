@@ -3167,6 +3167,10 @@ if(!FieldExists("glpi_followups","realtime")) {
 	$query="ALTER TABLE `glpi_followups` ADD `realtime` FLOAT DEFAULT '0' NOT NULL ;";
 	$db->query($query) or die("0.65 add realtime in followups".$lang["update"][90].$db->error());
 }
+if(!FieldExists("glpi_config","mailing_attrib_attrib")) {
+	$query="ALTER TABLE `glpi_config` ADD `mailing_attrib_attrib` VARCHAR( 200 ) DEFAULT '1' NOT NULL AFTER `mailing_finish_user` ;";
+	$db->query($query) or die("0.65 add mailing_attrib_attrib in config".$lang["update"][90].$db->error());
+}
 
 
  
