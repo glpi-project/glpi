@@ -3180,14 +3180,12 @@ if(!FieldExists("glpi_tracking_planning","id_followup")) {
 	// Get super-admin ID
 	$suid=0;
 	$query0="SELECT ID from glpi_users WHERE type='super-admin'";
-	echo $query0."<br>";
 	$result0=$db->query($query0);
 	if ($db->numrows($result0)>0){
 		$suid=$db->result($result0,0,0);
 	}
 	mysql_free_result($result0);
 	$query="SELECT * FROM glpi_tracking_planning order by id_tracking";
-	echo $query."<br>";
 	$result = $db->query($query);
 	$used_followups=array();
 	if ($db->numrows($result)>0)
@@ -3195,7 +3193,6 @@ if(!FieldExists("glpi_tracking_planning","id_followup")) {
 		$found=-1;
 		// Is a followup existing ?
 		$query2="SELECT * FROM glpi_followups WHERE tracking='".$data["id_tracking"]."'";
-		echo $query2."<br>";
 		$result2=$db->query($query2);
 		if ($db->numrows($result2)>0)
 		while ($found<0&&$data2=$db->fetch_array($result2))
@@ -3206,19 +3203,16 @@ if(!FieldExists("glpi_tracking_planning","id_followup")) {
 		// Followup not founded
 		if ($found<0){
 			$query3="INSERT INTO glpi_followups (tracking,date,author,contents) VALUES ('".$data["id_tracking"]."','".date("Y-m-d")."','$suid','Automatic Added followup for compatibility problem in update')";
-			echo $query3."<br>";
 			$db->query($query3);
 			$found=$db->insert_id();
 		} 
 		array_push($used_followups,$found);
 		$query4="UPDATE glpi_tracking_planning SET id_followup='$found' WHERE ID ='".$data['ID']."';";
-		echo $query4."<br>";
 		$db->query($query4);
 	}
 	unset($used_followups);
 	mysql_free_result($result);
 	$query=" ALTER TABLE `glpi_tracking_planning` DROP `id_tracking` ;";
-	echo $query."<br>";
 	$db->query($query) or die("0.65 add index for id_followup in tracking_planning".$lang["update"][90].$db->error());
 }
  

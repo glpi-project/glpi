@@ -1057,6 +1057,7 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	$job->fields["assign"] = $assign;
 	$job->fields["assign_type"] = $assign_type;
 	$job->fields["realtime"] = $realtime;
+	$job->fields["date"] = date("Y-m-d H:i:s");
 
 	// ajout suite  à tracking sur tous les items 
 
@@ -1085,7 +1086,7 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	}
 	
 	
-	if ($tID=$job->putinDB()) {
+	if ($tID=$job->addToDB()) {
 		
 		// add Document if exists
 		if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
