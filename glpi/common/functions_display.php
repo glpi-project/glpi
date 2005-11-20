@@ -385,7 +385,15 @@ function helpHeader($title,$url,$name) {
 
 	echo "</td></tr>";	
 	echo "</table>\n";
-				echo "</div>";
+	echo "</div>";
+
+	// Affichage du message apres redirection
+	if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])&&!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])){
+		echo "<center><b>".$_SESSION["MESSAGE_AFTER_REDIRECT"]."</b></center>";
+		$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
+		unset($_SESSION["MESSAGE_AFTER_REDIRECT"]);
+	}
+
 }
 
 /**
@@ -400,7 +408,6 @@ function nullHeader($title,$url) {
 	// Print a nice HTML-head with no controls
 
 	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel,$phproot ;
-
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
 
