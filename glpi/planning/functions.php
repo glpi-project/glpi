@@ -69,8 +69,7 @@ echo "ID=".$db->result($result,0,"ID")."&amp;delete=delete\">".$lang["reservatio
 }
 
 
-
-function showAddPlanningTrackingForm($target,$job,$planID=-1){
+function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 	global $lang,$HTMLRel;
 	
 	$planning= new PlanningTracking;
@@ -97,16 +96,20 @@ function showAddPlanningTrackingForm($target,$job,$planID=-1){
 	echo "<div align='center'><form method='post' name='form' action=\"$target\">";
 	if ($planID!=-1)
 	echo "<input type='hidden' name='ID' value='$planID'>";
+
+	// Ajouter le job
+	$followup=new Followup;
+	$followup->getfromDB($fup);
+	$j=new Job();
+	$j->getFromDB($followup->fields['tracking'],0);
 	
-	echo "<input type='hidden' name='id_tracking' value='$job'>";
+	echo "<input type='hidden' name='id_followup' value='$fup'>";
+	echo "<input type='hidden' name='id_tracking' value='".$followup->fields['tracking']."'>";
 
 	echo "<table class='tab_cadre' cellpadding='2'>";
 	echo "<tr><th colspan='2'><b>";
 	echo $lang["planning"][7];
 	echo "</b></th></tr>";
-	// Ajouter le job
-	$j=new Job;
-	$j->getfromDB($job,0);
 	echo "<tr class='tab_bg_1'><td>".$lang["planning"][8].":	</td>";
 	echo "<td>";
 	echo "<b>".$j->contents."</b>";
@@ -268,21 +271,23 @@ $query="SELECT * from glpi_tracking_planning WHERE $ASSIGN (('".$debut."' <= beg
 //echo $query;
 $result=$db->query($query);
 
+$fup=new Followup();
 $job=new Job();
 
 $interv=array();
 $i=0;
 if ($db->numrows($result)>0)
 while ($data=$db->fetch_array($result)){
-	$job->getFromDB($data["id_tracking"],0);
+	$fup->getFromDB($data["id_followup"]);
+	$job->getFromDB($fup->fields["tracking"],0);
 	
-	
-	$interv[$i]["id_tracking"]=$data["id_tracking"];
+	$interv[$i]["id_followup"]=$data["id_followup"];
+	$interv[$i]["id_tracking"]=$fup->fields["tracking"];
 	$interv[$i]["id_assign"]=$data["id_assign"];
 	$interv[$i]["ID"]=$data["ID"];
 	$interv[$i]["begin"]=$data["begin"];
 	$interv[$i]["end"]=$data["end"];
-	$interv[$i]["content"]=substr($job->contents,0,$cfg_features["cut"]);
+	$interv[$i]["content"]=substr($job->fields["contents"],0,$cfg_features["cut"]);
 	$interv[$i]["device"]=$job->computername;
 	$i++;
 }
@@ -296,7 +301,7 @@ foreach ($interv as $key => $val){
 if($type=='day'){
 echo "<div style=' margin:auto; text-align:center; border:1px dashed #cccccc; background-color: #d7d7d2; font-size:9px; width:80%;'>";
 echo "<a  href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;job=".$val["id_tracking"]."&amp;ID=".$val["ID"]."'><img src='$HTMLRel/pics/edit.png' alt='edit'></a>";
-echo "<a  href='".$HTMLRel."tracking/tracking-followups.php?ID=".$val["id_tracking"]."'>";
+echo "<a  href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
 echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"];
 if ($who==0){
 echo "<br>";
@@ -311,7 +316,7 @@ echo "</div><br>";
 
 }else{
 echo "<div class='planning' >";
-echo "<a  href='".$HTMLRel."tracking/tracking-followups.php?ID=".$val["id_tracking"]."'>";
+echo "<a  href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
 echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["device"];
 if ($who==0){
 echo "<br>";
@@ -354,7 +359,7 @@ function addPlanningTracking($input,$target){
 	$resa = new PlanningTracking;
 	
   // set new date.
-   $resa->fields["id_tracking"] = $input["id_tracking"];
+   $resa->fields["id_followup"] = $input["id_followup"];
    $resa->fields["id_assign"] = $input["id_assign"];
    $resa->fields["begin"] = $input["begin_date"]." ".$input["begin_hour"].":".$input["begin_min"].":00";
    $resa->fields["end"] = $input["end_date"]." ".$input["end_hour"].":".$input["end_min"].":00";
@@ -367,6 +372,33 @@ function addPlanningTracking($input,$target){
 	if ($resa->is_alreadyplanned()){
 		$resa->displayError("is_res",$input["id_tracking"],$target);
 		return false;
+	}
+
+	// Auto update Status
+	$job=new Job();
+	$job->getFromDB($input["id_tracking"],0);
+	if ($job->fields["status"]=="new"||$job->fields["status"]=="assign"){
+		$job->fields["status"]="plan";
+		$updates[]="status";
+		$job->updateInDB($updates);		
+	}
+
+	// Auto update realtime
+	$fup=new Followup();
+	$fup->getFromDB($input["id_followup"]);
+	if ($fup->fields["realtime"]==0){
+		$tmp_beg=split(" ",$resa->fields["begin"]);
+		$tmp_end=split(" ",$resa->fields["end"]);
+		$tmp_dbeg=split("-",$tmp_beg[0]);
+		$tmp_dend=split("-",$tmp_end[0]);
+		$tmp_hbeg=split(":",$tmp_beg[1]);
+		$tmp_hend=split(":",$tmp_end[1]);
+				
+		$dateDiff = mktime($tmp_hend[0],$tmp_hend[1],$tmp_hend[2],$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
+				  - mktime($tmp_hbeg[0],$tmp_hbeg[1],$tmp_hbeg[2],$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
+		$updates2[]="realtime";
+		$fup->fields["realtime"]=$dateDiff/60/60;
+		$fup->updateInDB($updates2);
 	}
 
 	if ($input["id_tracking"]>0)
@@ -412,6 +444,33 @@ global $lang;
 	if ($ri->is_alreadyplanned()){
 		$ri->displayError("is_res",$item,$target);
 		return false;
+	}
+
+	// Auto update Status
+	$job=new Job();
+	$job->getFromDB($input["id_tracking"],0);
+	if ($job->fields["status"]=="new"||$job->fields["status"]=="assign"){
+		$job->fields["status"]="plan";
+		$updates[]="status";
+		$job->updateInDB($updates);		
+	}
+	
+	// Auto update realtime
+	$fup=new Followup();
+	$fup->getFromDB($input["id_followup"]);
+	if ($fup->fields["realtime"]==0){
+		$tmp_beg=split(" ",$input["begin"]);
+		$tmp_end=split(" ",$input["end"]);
+		$tmp_dbeg=split("-",$tmp_beg[0]);
+		$tmp_dend=split("-",$tmp_end[0]);
+		$tmp_hbeg=split(":",$tmp_beg[1]);
+		$tmp_hend=split(":",$tmp_end[1]);
+				
+		$dateDiff = mktime($tmp_hend[0],$tmp_hend[1],$tmp_hend[2],$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
+				  - mktime($tmp_hbeg[0],$tmp_hbeg[1],$tmp_hbeg[2],$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
+		$updates2[]="realtime";
+		$fup->fields["realtime"]=$dateDiff/60/60;
+		$fup->updateInDB($updates2);
 	}
 
 	if (isset($updates))

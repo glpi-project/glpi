@@ -137,6 +137,7 @@ class Job {
 		$result=$db->query($query);
 		return $db->insert_id();
 	}	
+
 /*
 	function updateStatus($status) {
 		// update Status of Job
@@ -155,20 +156,22 @@ class Job {
 			return false;
 		}
 	}
-
-	function updateRealtime($realtime) {
+*/
+	function updateRealtime() {
 		// update Status of Job
 		
 		$db = new DB;
-		$query = "UPDATE glpi_tracking SET realtime = '$realtime' WHERE ID = $this->ID";
+		$query = "SELECT SUM(realtime) FROM glpi_followups WHERE tracking = '".$this->ID."'";
 		if ($result = $db->query($query)) {
+				$query2="UPDATE glpi_tracking SET realtime='".$db->result($result,0,0)."' WHERE ID='".$this->ID."'";
+				$db->query($query2);
 				return true;
 		} else {
 			return false;
 		}
 	}
 	
-
+/*
 	function assignTo($user,$type) {
 		// assign Job to user
 		
@@ -347,7 +350,7 @@ class Followup {
 	
 	var $fields	= array();
 	var $updates	= array();
-
+/*
 	function getfromDB ($ID,$iteration) {
 
 		$this->fields["ID"] = $ID;
@@ -357,8 +360,10 @@ class Followup {
 		$query = "SELECT * FROM glpi_followups WHERE (tracking = $ID) ORDER BY date ASC";
 	
 		if ($result = $db->query($query)) {
+			$this->fields["tracking"] = $ID;
 			$this->fields["date"] = $db->result($result,$iteration,"date");
 			$this->fields["author"] = $db->result($result, $iteration, "author");
+			$this->fields["private"] = $db->result($result, $iteration, "private");
 			$this->fields["contents"] = nl2br($db->result($result, $iteration, "contents"));
 
 			return true;
@@ -367,15 +372,38 @@ class Followup {
 			return false;
 		}
 	}
+*/
+
+	function getfromDB ($ID) {
+
+		$this->ID = $ID;
+
+		// Make new database object and fill variables
+		$db = new DB;
+		$query = "SELECT * FROM glpi_followups WHERE (ID = $ID)";
+
+		if ($result = $db->query($query)) 
+			if ($db->numrows($result)==1){
+			$data = $db->fetch_assoc($result);
+			foreach ($data as $key => $val) {
+				$this->fields[$key] = $val;
+			}
+			return true;
+		} else {
+			return false;
+		}
+		return false;
+	}
+
 
 	function putInDB () {	
 		// prepare variables
 
-		$this->date = date("Y-m-d H:i:s");
+		$this->fields["date"] = date("Y-m-d H:i:s");
 	
 		// dump into database
 		$db = new DB;
-		$query = "INSERT INTO glpi_followups VALUES (NULL, $this->tracking, '$this->date','".$this->fields["author"]."', '$this->contents')";
+		$query = "INSERT INTO glpi_followups VALUES (NULL, ".$this->fields["tracking"].", '".$this->fields["date"]."','".$this->fields["author"]."', '".$this->contents."')";
 
 		if ($result = $db->query($query)) {
 			return true;
@@ -383,6 +411,69 @@ class Followup {
 			return false;
 		}
 	}
+
+
+	function addToDB() {
+		
+		$db = new DB;
+
+		// Build query
+		$query = "INSERT INTO glpi_followups (";
+		$i=0;
+		
+		foreach ($this->fields as $key => $val) {
+			$fields[$i] = $key;
+			$values[$i] = $val;
+			$i++;
+		}		
+		for ($i=0; $i < count($fields); $i++) {
+			$query .= $fields[$i];
+			if ($i!=count($fields)-1) {
+				$query .= ",";
+			}
+		}
+		$query .= ") VALUES (";
+		for ($i=0; $i < count($values); $i++) {
+			$query .= "'".$values[$i]."'";
+			if ($i!=count($values)-1) {
+				$query .= ",";
+			}
+		}
+		$query .= ")";
+
+		$result=$db->query($query);
+
+		if (isset($this->fields["realtime"])&&$this->fields["realtime"]>0) {
+			$job=new Job();
+			$job->getfromDB($this->fields["tracking"],0);
+			$job->updateRealTime();
+		}
+
+		return $db->insert_id();
+	}	
+
+	function updateInDB($updates)  {
+
+		$db = new DB;
+				
+		for ($i=0; $i < count($updates); $i++) {
+			$query  = "UPDATE glpi_followups SET ";
+			$query .= $updates[$i];
+			$query .= "='";
+			$query .= $this->fields[$updates[$i]];
+			$query .= "' WHERE ID='";
+			$query .= $this->fields["ID"];	
+			$query .= "'";
+//			echo $query;
+			$result=$db->query($query);
+			if ($updates[$i]=="realtime") {
+				$job=new Job();
+				$job->getfromDB($this->fields["tracking"],0);
+				$job->updateRealTime();
+			}
+		}
+	}
+
 	
 	function logFupUpdate () {
 		// log event

@@ -3158,10 +3158,16 @@ if(FieldExists("glpi_tracking","emailupdates")) {
 	$db->query($query) or die("0.65 alter emailupdates in tracking".$lang["update"][90].$db->error());
 }
 
-if(FieldExists("glpi_followups","private")) {
+if(!FieldExists("glpi_followups","private")) {
 	$query="ALTER TABLE `glpi_followups` ADD `private` INT( 1 ) DEFAULT '0' NOT NULL;";
 	$db->query($query) or die("0.65 add private in followups".$lang["update"][90].$db->error());
 }
+
+if(!FieldExists("glpi_followups","realtime")) {
+	$query="ALTER TABLE `glpi_followups` ADD `realtime` FLOAT DEFAULT '0' NOT NULL ;";
+	$db->query($query) or die("0.65 add realtime in followups".$lang["update"][90].$db->error());
+}
+
 
  
 if(!FieldExists("glpi_tracking_planning","id_followup")) {

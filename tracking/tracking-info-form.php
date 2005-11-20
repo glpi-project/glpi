@@ -53,16 +53,28 @@ checkAuthentication("normal");
 /*if (isset($_POST["contents"])&&!empty($_POST["contents"])&&isAdmin($_SESSION["glpitype"]))
 {
 	postFollowups ($_POST["ID"],$_SESSION["glpiID"],$_POST["contents"]);
-	glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=".$_POST["ID"]);
+	glpi_header($cfg_install["root"]."/tracking/tracking-info-form.php?ID=".$_POST["ID"]);
 }
 */
 
 commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 if (isset($_POST['update'])){
 	updateTracking($_POST);
-	
-	glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=".$_POST["ID"]);
+	logEvent($_POST["ID"], "tracking", 4, "tracking", $_SESSION["glpiname"]." update tracking.");
+
+	glpi_header($cfg_install["root"]."/tracking/tracking-info-form.php?ID=".$_POST["ID"]);
+}else if (isset($_POST['add'])||isset($_POST['add_close'])) {
+	$newID=addFollowup($_POST);
+	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." add followup $newID.");
+	glpi_header($cfg_install["root"]."/tracking/tracking-info-form.php?ID=".$_POST["tracking"]);
+		
+} else if (isset($_POST["update_followup"])){
+	updateFollowup($_POST);
+	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." update followups ".$_POST["ID"].".");
+	glpi_header($cfg_install["root"]."/tracking/tracking-info-form.php?ID=".$_POST["tracking"]);
 }
+
+
 showJobDetails($_GET["ID"]);
 commonFooter();
 ?>
