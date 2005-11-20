@@ -2362,10 +2362,11 @@ function showJobDetails ($ID){
 				echo "<td>";
 				$con->getFromDB($data["FK_doc"]);
 				echo getDocumentLink($con->fields["filename"]);
+				echo "<a href='".$HTMLRel."documents/documents-info-form.php?deleteitem=delete&ID=".$data["ID"]."'><img src='".$HTMLRel."pics/delete.png'></a>";
 				echo "</td>";
 				$i++;
 			}
-			if ($i%2==1) echo "<td>&nbsp;></td>";
+			if ($i%2==1) echo "<td>&nbsp;</td>";
 			echo "</tr>";
 		}
 		echo "<tr><td colspan='2'>";
