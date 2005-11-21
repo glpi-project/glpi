@@ -2445,7 +2445,10 @@ function showJobDetails ($ID){
 			echo "}";
 			echo "</script>\n";
 			echo "<div id='desc$rand' onClick='showDesc$rand()'>\n";
-			echo nl2br($job->fields["contents"]);
+				if (!empty($job->fields["contents"]))
+					echo nl2br($job->fields["contents"]);
+				else echo $lang["job"][33];
+
 			echo "</div>\n";	
 		
 			echo "<div id='viewdesc$rand'>\n";
@@ -2628,7 +2631,9 @@ function showFollowups($tID){
 				echo "</script>\n";
 
 				echo "<div id='desc$rand'  onClick='showDesc$rand()'>\n";
-				echo nl2br($data["contents"]);
+				if (!empty($data["contents"]))
+					echo nl2br($data["contents"]);
+				else echo $lang["job"][33];
 				echo "</div>\n";	
 
 				echo "<div id='viewdesc$rand'>\n";

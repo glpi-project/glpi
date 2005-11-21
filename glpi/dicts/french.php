@@ -644,6 +644,7 @@ $lang["job"][29]="Ajouter un nouveau suivi";
 $lang["job"][30]="Privé";
 $lang["job"][31]="Durée";
 $lang["job"][32]="Pas plannifié";
+$lang["job"][33]="Description vide";
 
 $lang["joblist"][0]="Statut";
 $lang["joblist"][1]="Date";
