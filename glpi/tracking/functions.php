@@ -2180,7 +2180,8 @@ function updateTracking($input){
 	}
 	if(isset($updates))
 		$job->updateInDB($updates);
-		
+
+	$job->updateRealtime();		
 	// Send mail to attrib if attrib change	
 	if (in_array("assign",$updates)&&$job->fields["assign_type"]==USER_TYPE&&$job->fields["assign"]>0){
 			$user=new User;
@@ -2209,11 +2210,6 @@ function updateFollowup($input){
 
 	if(isset($updates))
 		$fup->updateInDB($updates);
-
-
-
-
-	
 }
 
 function addFollowup($input){
@@ -2249,6 +2245,8 @@ function addFollowup($input){
 		$job->updateInDB($updates);
 	}
 
+	$job->updateRealtime();		
+
 	if ($cfg_features["mailing"])
 		{
 			$type="followup";
@@ -2266,8 +2264,12 @@ function deleteFollowup($input) {
 	// Delete Contact
 	
 	$con = new Followup;
-	$con->deleteInDB($input["ID"],$force);
-	
+	$con->deleteInDB($input["ID"]);
+
+	$job=new Job();
+	$job->getFromDB($input['tracking'],0);
+	$job->updateRealtime();		
+
 } 
 
 
