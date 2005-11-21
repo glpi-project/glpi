@@ -2427,21 +2427,21 @@ function showJobDetails ($ID){
 		echo "<tr><td width='15%'>".$lang["joblist"][6]."</td>";
 		echo "<td  width='85%'>";
 
-		$rand=mt_rand();
-		echo "<script type='text/javascript' >\n";
-		echo "function showDesc$rand(){\n";
-		echo "Element.hide('desc$rand');";
-		echo "var a=new Ajax.Updater('viewdesc$rand','".$cfg_install["root"]."/ajax/textarea.php' , {method: 'get',parameters: 'rows=6&cols=60&name=contents&data=".urlencode(addslashes($job->fields["contents"]))."'});";
-		echo "}";
-		echo "</script>\n";
-
-		echo "<div id='desc$rand' onClick='showDesc$rand()'>\n";
-		echo nl2br($job->fields["contents"]);
-//		echo "<br><input type='button' value='Modifier' onClick='showDesc$rand()'>\n";
-		echo "</div>\n";	
-		echo "<div id='viewdesc$rand'>\n";
-		echo "</div>\n";	
-
+		if ($isadmin){
+			$rand=mt_rand();
+			echo "<script type='text/javascript' >\n";
+			echo "function showDesc$rand(){\n";
+			echo "Element.hide('desc$rand');";
+			echo "var a=new Ajax.Updater('viewdesc$rand','".$cfg_install["root"]."/ajax/textarea.php' , {method: 'get',parameters: 'rows=6&cols=60&name=contents&data=".urlencode(addslashes($job->fields["contents"]))."'});";
+			echo "}";
+			echo "</script>\n";
+			echo "<div id='desc$rand' onClick='showDesc$rand()'>\n";
+			echo nl2br($job->fields["contents"]);
+			echo "</div>\n";	
+		
+			echo "<div id='viewdesc$rand'>\n";
+			echo "</div>\n";	
+		} else echo nl2br($job->fields["contents"]);
 
 		echo "</td>";
 		echo "</tr>";
@@ -2609,21 +2609,22 @@ function showFollowups($tID){
 			echo "<tr class='tab_bg_1'><td align='center' width='10%'>".$lang["joblist"][6]."<br><br>".$lang["joblist"][1].":<br><strong>".$data["date"]."</strong></td>";
 			echo "<td width='90%'>";
 			
-			$rand=mt_rand();
-			echo "<script type='text/javascript' >\n";
-			echo "function showDesc$rand(){\n";
-			echo "Element.hide('desc$rand');";
-			echo "var a=new Ajax.Updater('viewdesc$rand','".$cfg_install["root"]."/ajax/textarea.php' , {method: 'get',parameters: 'rows=6&cols=60&name=contents&data=".urlencode(addslashes($data["contents"]))."'});";
-			echo "}";
-			echo "</script>\n";
+			if ($isadmin){
+				$rand=mt_rand();
+				echo "<script type='text/javascript' >\n";
+				echo "function showDesc$rand(){\n";
+				echo "Element.hide('desc$rand');";
+				echo "var a=new Ajax.Updater('viewdesc$rand','".$cfg_install["root"]."/ajax/textarea.php' , {method: 'get',parameters: 'rows=6&cols=60&name=contents&data=".urlencode(addslashes($data["contents"]))."'});";
+				echo "}";
+				echo "</script>\n";
 
-			echo "<div id='desc$rand'  onClick='showDesc$rand()'>\n";
-			echo nl2br($data["contents"]);
-//			echo "<br><input type='button' value='Modifier' onClick='showDesc$rand()'>\n";
-			echo "</div>\n";	
+				echo "<div id='desc$rand'  onClick='showDesc$rand()'>\n";
+				echo nl2br($data["contents"]);
+				echo "</div>\n";	
 
-			echo "<div id='viewdesc$rand'>\n";
-			echo "</div>\n";	
+				echo "<div id='viewdesc$rand'>\n";
+				echo "</div>\n";	
+			} else echo nl2br($data["contents"]);
 			
 			
 			echo "</td></tr>";
