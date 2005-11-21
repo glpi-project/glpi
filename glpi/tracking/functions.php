@@ -2430,13 +2430,13 @@ function showJobDetails ($ID){
 		$rand=mt_rand();
 		echo "<script type='text/javascript' >\n";
 		echo "function showDesc$rand(){\n";
-		echo "var a=new Ajax.Updater('desc$rand','".$cfg_install["root"]."/ajax/textarea.php' , {method: 'get',parameters: 'rows=6&cols=60&name=contents&data=".addslashes($job->fields["contents"])."'});";
+		echo "var a=new Ajax.Updater('desc$rand','".$cfg_install["root"]."/ajax/textarea.php' , {method: 'get',parameters: 'rows=6&cols=60&name=contents&data=".urlencode(addslashes($job->fields["contents"]))."'});";
 		echo "}";
 		echo "</script>\n";
 
 		echo "<span id='desc$rand'>\n";
-		echo $job->fields["contents"];
-		echo "<input type='button' value='Modifier' onClick='showDesc$rand()'>\n";
+		echo nl2br($job->fields["contents"]);
+		echo "<br><input type='button' value='Modifier' onClick='showDesc$rand()'>\n";
 		echo "</span>\n";	
 
 
@@ -2600,29 +2600,29 @@ function showFollowups($tID){
 			echo "<tr class='tab_bg_2'><td>";
 			echo "<form method='post' action=\"".$cfg_install["root"]."/tracking/tracking-info-form.php\">\n";
 
-			echo "<table>";
-			echo "<tr class='tab_bg_2'><td width='60%'>";
 			echo "<table width='100%'>";
-			echo "<tr><td align='center'>".$lang["joblist"][6]."<br><br>".$lang["joblist"][1].":<br><strong>".$data["date"]."</strong></td>";
-			echo "<td>";
+			echo "<tr class='tab_bg_2'><td width='65%'>";
+			echo "<table width='100%' bgcolor='#FFFFFF'>";
+			echo "<tr class='tab_bg_1'><td align='center' width='10%'>".$lang["joblist"][6]."<br><br>".$lang["joblist"][1].":<br><strong>".$data["date"]."</strong></td>";
+			echo "<td width='90%'>";
 			
 			$rand=mt_rand();
 			echo "<script type='text/javascript' >\n";
 			echo "function showDesc$rand(){\n";
-			echo "var a=new Ajax.Updater('desc$rand','".$cfg_install["root"]."/ajax/textarea.php' , {method: 'get',parameters: 'rows=6&cols=60&name=contents&data=".addslashes($data["contents"])."'});";
+			echo "var a=new Ajax.Updater('desc$rand','".$cfg_install["root"]."/ajax/textarea.php' , {method: 'get',parameters: 'rows=6&cols=60&name=contents&data=".urlencode(addslashes($data["contents"]))."'});";
 			echo "}";
 			echo "</script>\n";
 
 			echo "<span id='desc$rand'>\n";
-			echo $data["contents"];
-			echo "<input type='button' value='Modifier' onClick='showDesc$rand()'>\n";
+			echo nl2br($data["contents"]);
+			echo "<br><input type='button' value='Modifier' onClick='showDesc$rand()'>\n";
 			echo "</span>\n";	
 			
 			echo "</td></tr>";
 			echo "</table>";
 			echo "</td>";
 	
-			echo "<td width='40%' valign='top'>";
+			echo "<td width='35%' valign='top'>";
 			echo "<table width='100%'>";
 
 			echo "<tr>";
