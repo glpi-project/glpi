@@ -2430,13 +2430,16 @@ function showJobDetails ($ID){
 		$rand=mt_rand();
 		echo "<script type='text/javascript' >\n";
 		echo "function showDesc$rand(){\n";
-		echo "var a=new Ajax.Updater('desc$rand','".$cfg_install["root"]."/ajax/textarea.php' , {method: 'get',parameters: 'rows=6&cols=60&name=contents&data=".urlencode(addslashes($job->fields["contents"]))."'});";
+		echo "Element.hide('desc$rand');";
+		echo "var a=new Ajax.Updater('viewdesc$rand','".$cfg_install["root"]."/ajax/textarea.php' , {method: 'get',parameters: 'rows=6&cols=60&name=contents&data=".urlencode(addslashes($job->fields["contents"]))."'});";
 		echo "}";
 		echo "</script>\n";
 
 		echo "<div id='desc$rand' onClick='showDesc$rand()'>\n";
 		echo nl2br($job->fields["contents"]);
 //		echo "<br><input type='button' value='Modifier' onClick='showDesc$rand()'>\n";
+		echo "</div>\n";	
+		echo "<div id='viewdesc$rand'>\n";
 		echo "</div>\n";	
 
 
@@ -2609,7 +2612,8 @@ function showFollowups($tID){
 			$rand=mt_rand();
 			echo "<script type='text/javascript' >\n";
 			echo "function showDesc$rand(){\n";
-			echo "var a=new Ajax.Updater('desc$rand','".$cfg_install["root"]."/ajax/textarea.php' , {method: 'get',parameters: 'rows=6&cols=60&name=contents&data=".urlencode(addslashes($data["contents"]))."'});";
+			echo "Element.hide('desc$rand');";
+			echo "var a=new Ajax.Updater('viewdesc$rand','".$cfg_install["root"]."/ajax/textarea.php' , {method: 'get',parameters: 'rows=6&cols=60&name=contents&data=".urlencode(addslashes($data["contents"]))."'});";
 			echo "}";
 			echo "</script>\n";
 
@@ -2617,6 +2621,10 @@ function showFollowups($tID){
 			echo nl2br($data["contents"]);
 //			echo "<br><input type='button' value='Modifier' onClick='showDesc$rand()'>\n";
 			echo "</div>\n";	
+
+			echo "<div id='viewdesc$rand'>\n";
+			echo "</div>\n";	
+			
 			
 			echo "</td></tr>";
 			echo "</table>";
