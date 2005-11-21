@@ -34,7 +34,7 @@
 
 //print_r($_GET);
 		echo "<textarea rows='".$_GET['rows']."' cols='".$_GET['cols']."' name='".$_GET['name']."'>";
-		echo stripslashes($_GET["data"]);
+		echo stripslashes(urldecode($_GET["data"]));
 		echo "</textarea>";
 
 ?>
