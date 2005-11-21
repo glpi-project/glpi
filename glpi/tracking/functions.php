@@ -2262,6 +2262,15 @@ function addFollowup($input){
 	return $newID;
 }
 
+function deleteFollowup($input) {
+	// Delete Contact
+	
+	$con = new Followup;
+	$con->deleteInDB($input["ID"],$force);
+	
+} 
+
+
 function showJobDetails ($ID){
 	global $cfg_install,$cfg_features,$lang,$HTMLRel;
 	$job=new Job();
@@ -2604,7 +2613,7 @@ function showFollowups($tID){
 			echo "<form method='post' action=\"".$cfg_install["root"]."/tracking/tracking-info-form.php\">\n";
 
 			echo "<table width='100%'>";
-			echo "<tr class='tab_bg_2'><td width='65%'>";
+			echo "<tr class='tab_bg_2'><td width='60%'>";
 			echo "<table width='100%' bgcolor='#FFFFFF'>";
 			echo "<tr class='tab_bg_1'><td align='center' width='10%'>".$lang["joblist"][6]."<br><br>".$lang["joblist"][1].":<br><strong>".$data["date"]."</strong></td>";
 			echo "<td width='90%'>";
@@ -2631,7 +2640,7 @@ function showFollowups($tID){
 			echo "</table>";
 			echo "</td>";
 	
-			echo "<td width='35%' valign='top'>";
+			echo "<td width='40%' valign='top'>";
 			echo "<table width='100%'>";
 
 			echo "<tr>";
@@ -2707,7 +2716,11 @@ function showFollowups($tID){
 			if ($isadmin){
 				echo "<tr class='tab_bg_1'>";
 				echo "<td align='center' colspan='2'>";
+				echo "<table width='100%'><tr><td align='center'>";
 				echo "<input type='submit' name='update_followup' value='".$lang["buttons"][14]."'>";
+				echo "</td><td align='center'>";
+				echo "<input type='submit' name='delete_followup' value='".$lang["buttons"][6]."'>";
+				echo "</td></tr></table>";
 				echo "</td>";
 				echo "</tr>";
 			}

@@ -72,6 +72,10 @@ if (isset($_POST['update'])){
 	updateFollowup($_POST);
 	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." update followups ".$_POST["ID"].".");
 	glpi_header($cfg_install["root"]."/tracking/tracking-info-form.php?ID=".$_POST["tracking"]);
+} else if (isset($_POST["delete_followup"])){
+	deleteFollowup($_POST);
+	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." delete followup ".$_POST["ID"].".");
+	glpi_header($cfg_install["root"]."/tracking/tracking-info-form.php?ID=".$_POST["tracking"]);
 }
 
 
