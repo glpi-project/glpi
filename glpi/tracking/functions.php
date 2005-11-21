@@ -2425,9 +2425,21 @@ function showJobDetails ($ID){
 		echo "<tr class='tab_bg_2'><td colspan='2'>";
 		echo "<table width='100%'>";
 		echo "<tr><td>".$lang["joblist"][6]."</td>";
-		echo "<td><textarea rows='6' cols='60' name='contents'>";
+		echo "<td>";
+
+		$rand=mt_rand();
+		echo "<script type='text/javascript' >\n";
+		echo "function showDesc$rand(){\n";
+		echo "var a=new Ajax.Updater('desc$rand','".$cfg_install["root"]."/ajax/textarea.php' , {method: 'get',parameters: 'rows=6&cols=60&name=contents&data=".addslashes($job->fields["contents"])."'});";
+		echo "}";
+		echo "</script>\n";
+
+		echo "<span id='desc$rand'>\n";
 		echo $job->fields["contents"];
-		echo "</textarea>";
+		echo "<input type='button' value='Modifier' onClick='showDesc$rand()'>\n";
+		echo "</span>\n";	
+
+
 		echo "</td>";
 		echo "</tr>";
 		echo "</table>";
@@ -2592,7 +2604,20 @@ function showFollowups($tID){
 			echo "<tr class='tab_bg_2'><td width='60%'>";
 			echo "<table width='100%'>";
 			echo "<tr><td align='center'>".$lang["joblist"][6]."<br><br>".$lang["joblist"][1].":<br><strong>".$data["date"]."</strong></td>";
-			echo "<td><textarea name='contents' rows=6 cols=60>".$data['contents']."</textarea>";
+			echo "<td>";
+			
+			$rand=mt_rand();
+			echo "<script type='text/javascript' >\n";
+			echo "function showDesc$rand(){\n";
+			echo "var a=new Ajax.Updater('desc$rand','".$cfg_install["root"]."/ajax/textarea.php' , {method: 'get',parameters: 'rows=6&cols=60&name=contents&data=".addslashes($data["contents"])."'});";
+			echo "}";
+			echo "</script>\n";
+
+			echo "<span id='desc$rand'>\n";
+			echo $data["contents"];
+			echo "<input type='button' value='Modifier' onClick='showDesc$rand()'>\n";
+			echo "</span>\n";	
+			
 			echo "</td></tr>";
 			echo "</table>";
 			echo "</td>";

@@ -57,7 +57,7 @@ function dropdown($table,$myname) {
 	global $HTMLRel,$cfg_install,$cfg_features;
 
 	$rand=mt_rand();
-echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
+echo "<input type='text' id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
 //echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 echo "<script type='text/javascript' >\n";
@@ -164,7 +164,7 @@ function dropdownValue($table,$myname,$value) {
 	global $HTMLRel,$cfg_install,$cfg_features;
 
 	$rand=mt_rand();
-echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
+echo "<input type='text' id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
 //echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 echo "<script type='text/javascript' >\n";
@@ -462,7 +462,7 @@ function dropdownUsers($myname,$value,$all=0) {
 	global $HTMLRel,$cfg_install,$cfg_features;
 
 	$rand=mt_rand();
-	echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
+	echo "<input type='text' id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
 	//echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 	echo "<script type='text/javascript' >\n";
@@ -536,7 +536,7 @@ function dropdownAllUsers($myname,$value) {
 	global $HTMLRel,$cfg_install,$cfg_features;
 
 	$rand=mt_rand();
-	echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
+	echo "<input type='text' id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
 	//echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 	echo "<script type='text/javascript' >\n";
@@ -830,7 +830,7 @@ function dropdownUsersTracking($myname,$value,$champ) {
 	global $HTMLRel,$cfg_install,$lang,$cfg_features;
 
 	$rand=mt_rand();
-	echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
+	echo "<input type='text' id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
 	//echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 	echo "<script type='text/javascript' >\n";
@@ -1169,7 +1169,7 @@ function dropdownConnect($type,$myname) {
 		);
 
 	$rand=mt_rand();
-echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
+echo "<input type='text' id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
 //echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 echo "<script type='text/javascript' >\n";
@@ -1255,7 +1255,7 @@ function dropdownSoftwareToInstall($myname,$withtemplate) {
 	$rand=mt_rand();
 
 	
-	echo "<input id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
+	echo "<input type='text' id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
 
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
