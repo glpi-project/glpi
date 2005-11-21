@@ -2424,8 +2424,8 @@ function showJobDetails ($ID){
 		// Colonnes 1 et 2
 		echo "<tr class='tab_bg_2'><td colspan='2'>";
 		echo "<table width='100%'>";
-		echo "<tr><td>".$lang["joblist"][6]."</td>";
-		echo "<td>";
+		echo "<tr><td width='15%'>".$lang["joblist"][6]."</td>";
+		echo "<td  width='85%'>";
 
 		$rand=mt_rand();
 		echo "<script type='text/javascript' >\n";
@@ -2434,10 +2434,10 @@ function showJobDetails ($ID){
 		echo "}";
 		echo "</script>\n";
 
-		echo "<span id='desc$rand'>\n";
+		echo "<div id='desc$rand' onClick='showDesc$rand()'>\n";
 		echo nl2br($job->fields["contents"]);
-		echo "<br><input type='button' value='Modifier' onClick='showDesc$rand()'>\n";
-		echo "</span>\n";	
+//		echo "<br><input type='button' value='Modifier' onClick='showDesc$rand()'>\n";
+		echo "</div>\n";	
 
 
 		echo "</td>";
@@ -2613,10 +2613,10 @@ function showFollowups($tID){
 			echo "}";
 			echo "</script>\n";
 
-			echo "<span id='desc$rand'>\n";
+			echo "<div id='desc$rand'  onClick='showDesc$rand()'>\n";
 			echo nl2br($data["contents"]);
-			echo "<br><input type='button' value='Modifier' onClick='showDesc$rand()'>\n";
-			echo "</span>\n";	
+//			echo "<br><input type='button' value='Modifier' onClick='showDesc$rand()'>\n";
+			echo "</div>\n";	
 			
 			echo "</td></tr>";
 			echo "</table>";
