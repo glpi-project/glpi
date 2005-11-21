@@ -347,8 +347,17 @@ function deletePlanningTracking($ID){
 
 	$resa = new PlanningTracking;
 	if ($resa->getfromDB($ID)){
-			if (isset($resa->fields["id_assign"])&&($resa->fields["id_assign"]==$_SESSION["glpiID"]||isAdmin($_SESSION["glpitype"])))
-			return $resa->deleteFromDB($ID);
+
+
+			if (isset($resa->fields["id_assign"])&&($resa->fields["id_assign"]==$_SESSION["glpiID"]||isAdmin($_SESSION["glpitype"]))){
+				// Auto update realtime
+				$fup=new Followup();
+				$fup->getFromDB($resa->fields["id_followup"]);
+				$updates2[]="realtime";
+				$fup->fields["realtime"]=0;
+				$fup->updateInDB($updates2);
+				 return $resa->deleteFromDB($ID);
+			}
 	} else return false;
 
 }
