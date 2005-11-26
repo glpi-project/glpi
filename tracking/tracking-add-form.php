@@ -70,10 +70,7 @@ $REFERER=$_SERVER["HTTP_REFERER"];
 if (isset($_GET["referer"])) $REFERER=$_GET["referer"];
 $REFERER=preg_replace("/&/","&amp;",$REFERER);
  
-if (isset($_GET["Modif_Interne"])){
-addFormTracking($_GET["device_type"],$_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error,$_GET["search"]);
-}
-elseif (isset($_GET["priority"]) && empty($_GET["contents"]))
+if (isset($_GET["priority"]) && empty($_GET["contents"]))
 {
 	$error=$lang["tracking"][8] ;
 	addFormTracking($_GET["device_type"],$_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error);
@@ -89,7 +86,6 @@ elseif (isset($_GET["priority"]) && !empty($_GET["contents"]))
 		
 	if (isset($_GET["hour"])&&isset($_GET["minute"]))
 	$realtime=$_GET["hour"]+$_GET["minute"]/60;
-
 
 	if (postJob($_GET["device_type"],$_GET["ID"],$_GET["user"],$_GET["status"],$_GET["priority"],$_GET["isgroup"],$uemail,$_GET["emailupdates"],$_GET["contents"],$_GET["assign"],$realtime))
 	{

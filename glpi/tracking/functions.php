@@ -1343,7 +1343,7 @@ function postFollowups ($ID,$author,$contents,$private,$sendmail=1) {
 	}
 }
 */
-function addFormTracking ($device_type,$ID,$author,$assign,$target,$error,$searchauthor='') {
+function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$searchauthor='') {
 	// Prints a nice form to add jobs
 
 	GLOBAL $cfg_layout, $lang,$cfg_features,$REFERER;
@@ -1352,25 +1352,38 @@ function addFormTracking ($device_type,$ID,$author,$assign,$target,$error,$searc
 		echo "<div align='center'><strong>$error</strong></div>";
 	}
 	echo "<form method='get' action='$target'>";
-	echo "<input type='hidden' name='referer' value='$REFERER'>";
 	echo "<div align='center'>";
-	echo "<p><a class='icon_consol' href='$REFERER'>".$lang["buttons"][13]."</a></p>";
-	
+
+	if ($device_type!=0){
+		echo "<input type='hidden' name='referer' value='$REFERER'>";
+		echo "<p><a class='icon_consol' href='$REFERER'>".$lang["buttons"][13]."</a></p>";
+	}	
 	echo "<table class='tab_cadre'><tr><th colspan='4'>".$lang["job"][13].": <br>";
-	$m=new CommonItem;
-	$m->getfromDB($device_type,$ID);
-	echo $m->getType()." - ".$m->getNameID();
+	if ($device_type!=0){
+		$m=new CommonItem;
+		$m->getfromDB($device_type,$ID);
+		echo $m->getType()." - ".$m->getNameID();
+	}
 	echo "</th></tr>";
 
 	echo "<tr class='tab_bg_1' align='center'><td>".$lang["joblist"][1].":</td>";
 	echo "<td align='center' colspan='3'>".date("Y-m-d H:i:s")."</td></tr>";
+
+	if ($device_type==0){
+		echo "<tr class='tab_bg_2'>";
+		echo "<td>".$lang["help"][24].": </td>";
+		echo "<td>";
+		dropdownTrackingDeviceType("device_type",$device_type);
+		echo "</td></tr>";
+	}
+
 
 	echo "<tr><td class='tab_bg_2' align='center'>".$lang["joblist"][0].":</td>";
 	echo "<td align='center' class='tab_bg_2' colspan='3'><select name='status'>";
 	echo "<option value='new' ";
 	if ($_GET["status"]=="new") echo "selected";
 	echo ">".$lang["job"][14]."</option>";
-	echo "<option value='old' ";
+	echo "<option value='old_done' ";
 	if ($_GET["status"]=="old") echo "selected";	
 	echo ">".$lang["job"][15]."</option>";
 	echo "</select></td></tr>";
@@ -1405,7 +1418,7 @@ function addFormTracking ($device_type,$ID,$author,$assign,$target,$error,$searc
 	
 	echo "<td align='center'>";
 
-	dropdownAllUsers("user",$assign);
+	dropdownAllUsers("user",$author);
 //      echo "<td><input type='text' size='10'  name='search'></td>";
 //	echo "<td><input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
 	echo "</td></tr>";
@@ -1422,8 +1435,8 @@ function addFormTracking ($device_type,$ID,$author,$assign,$target,$error,$searc
 		echo "<tr class='tab_bg_1'>";
 		echo "<td align='center'>".$lang["help"][8].":</td>";
 		echo "<td align='center' colspan='3'>	<select name='emailupdates'>";
-		echo "<option value='no' selected>".$lang["help"][9]."";
-		echo "<option value='yes'>".$lang["help"][10]."";
+		echo "<option value='no'>".$lang["help"][9]."";
+		echo "<option value='yes' selected>".$lang["help"][10]."";
 		echo "</select>";
 		echo "</td></tr>";
 	}
@@ -1431,14 +1444,16 @@ function addFormTracking ($device_type,$ID,$author,$assign,$target,$error,$searc
 
 	echo "<tr class='tab_bg_1' align='center'><td></td>";
 	echo "<td align='center' colspan='3'>";
+	if ($device_type!=0){
 	echo "<input type='hidden' name='ID' value=\"$ID\">";
 	echo "<input type='hidden' name='device_type' value=\"$device_type\">";
+	}
 	echo "</td></tr>";
 
 	echo "<tr><td colspan='4' height='5'></td></tr>";
 	echo "<tr><th colspan='4' align='center'>".$lang["job"][11].":</th></tr>";
 
-	echo "<tr><td colspan='4'><textarea cols='60' rows='14'  name='contents'></textarea></td></tr>";
+	echo "<tr><td colspan='4' align='center'><textarea cols='60' rows='14'  name='contents'></textarea></td></tr>";
 
 	echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][2]."\" class='submit'>";
