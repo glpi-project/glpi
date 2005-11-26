@@ -2216,6 +2216,11 @@ function addFollowup($input){
 	global $cfg_features;
 	$fup = new Followup;
 
+	if (isset($input['plan'])){
+	$plan=$input['plan'];
+	unset($input['plan']);
+	}	
+
 	$close=0;
 	if (isset($input["add_close"])) $close=1;
 	unset($input["add"]);
@@ -2233,8 +2238,14 @@ function addFollowup($input){
 			$fup->fields[$key] = $input[$key];
 		}
 	}
-	if (!$close||$input["realtime"]>0||strlen($input["contents"])>0)
-		$newID=$fup->addToDB();	
+//	if (!$close||$input["realtime"]>0||strlen($input["contents"])>0)
+	$newID=$fup->addToDB();	
+
+	if (isset($plan)){
+		$plan['id_followup']=$newID;
+		$plan['id_tracking']=$_POST['tracking'];
+		addPlanningTracking($plan,"");
+	}
 
 	$job=new Job;
 	$job->getFromDB($input["tracking"],0);
@@ -2573,11 +2584,51 @@ function showFollowups($tID){
 		echo "</select>".$lang["job"][22];
 		echo "</tr>";
 
-/*		echo "<tr>";
-		echo "<td>Plannification</td>";
-		echo "<td>Formulaire de plannification</td>";
+		echo "<tr>";
+		echo "<td>".$lang["job"][35]."</td>";
+		echo "<td>";
+
+		$rand=mt_rand();
+		echo "<script type='text/javascript' >\n";
+		echo "function showPlan$rand(){\n";
+		echo "Element.hide('plan$rand');";
+		echo "var a=new Ajax.Updater('viewplan$rand','".$cfg_install["root"]."/ajax/planning.php' , {method: 'get',parameters: ''});";
+		echo "}";
+		echo "</script>\n";
+
+
+		echo "<div id='plan$rand'  onClick='showPlan$rand()'>\n";
+		echo "<a>".$lang["job"][34]."</a>";
+		echo "</div>\n";	
+
+		echo "<div id='viewplan$rand'>\n";
+		echo "</div>\n";	
+		
+		
+		echo "</td>";
 		echo "</tr>";
+
+/*
+
+
+				$rand=mt_rand();
+				echo "<script type='text/javascript' >\n";
+				echo "function showDesc$rand(){\n";
+				echo "Element.hide('desc$rand');";
+				echo "var a=new Ajax.Updater('viewdesc$rand','".$cfg_install["root"]."/ajax/textarea.php' , {method: 'get',parameters: 'rows=6&cols=60&name=contents&data=".urlencode(addslashes($data["contents"]))."'});";
+				echo "}";
+				echo "</script>\n";
+
+				echo "<div id='desc$rand'  onClick='showDesc$rand()'>\n";
+				if (!empty($data["contents"]))
+					echo nl2br($data["contents"]);
+				else echo $lang["job"][33];
+				echo "</div>\n";	
+
+				echo "<div id='viewdesc$rand'>\n";
+				echo "</div>\n";	
 */
+
 
 		echo "<tr class='tab_bg_1'>";
 		echo "<td align='center'>";
@@ -2701,7 +2752,7 @@ function showFollowups($tID){
 			echo "</tr>";
 
 			echo "<tr>";
-			echo "<td>Plannification</td>";
+			echo "<td>".$lang["job"][35]."</td>";
 			echo "<td>";
 			$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
 			$result2=$db->query($query2);
