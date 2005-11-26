@@ -31,10 +31,12 @@
 // Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
+	include ("_relpos.php");
 
-//print_r($_GET);
-		echo "<textarea rows='".$_GET['rows']."' cols='".$_GET['cols']."' name='".$_GET['name']."'>";
-		echo stripslashes(urldecode($_GET["data"]));
-		echo "</textarea>";
+	checkAuthentication("post-only");
+
+	echo "<textarea rows='".$_GET['rows']."' cols='".$_GET['cols']."' name='".$_GET['name']."'>";
+	echo stripslashes(urldecode($_GET["data"]));
+	echo "</textarea>";
 
 ?>

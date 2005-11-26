@@ -364,22 +364,28 @@ function deletePlanningTracking($ID){
 
 
 function addPlanningTracking($input,$target){
+	global $lang;
 	// Add a Planning
 	$resa = new PlanningTracking;
-	
+
   // set new date.
    $resa->fields["id_followup"] = $input["id_followup"];
    $resa->fields["id_assign"] = $input["id_assign"];
    $resa->fields["begin"] = $input["begin_date"]." ".$input["begin_hour"].":".$input["begin_min"].":00";
    $resa->fields["end"] = $input["end_date"]." ".$input["end_hour"].":".$input["end_min"].":00";
 
-	if (!$resa->test_valid_date()){
-		$resa->displayError("date",$input["id_tracking"],$target);
-		return false;
-	}
+	if (!empty($target)){
+		if (!$resa->test_valid_date()){
+			$resa->displayError("date",$input["id_tracking"],$target);
+			return false;
+		}
 	
-	if ($resa->is_alreadyplanned()){
-		$resa->displayError("is_res",$input["id_tracking"],$target);
+		if ($resa->is_alreadyplanned()){
+			$resa->displayError("is_res",$input["id_tracking"],$target);
+			return false;
+		}
+	} else if ($resa->is_alreadyplanned()||!$resa->test_valid_date()) {
+		$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["job"][36];
 		return false;
 	}
 

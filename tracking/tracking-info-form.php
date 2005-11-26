@@ -47,6 +47,7 @@ include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_enterprises.php");
 include ($phproot . "/glpi/includes_documents.php");
+include ($phproot . "/glpi/includes_planning.php");
 
 checkAuthentication("normal");
 
@@ -65,6 +66,7 @@ if (isset($_POST['update'])){
 	glpi_header($cfg_install["root"]."/tracking/tracking-info-form.php?ID=".$_POST["ID"]);
 }else if (isset($_POST['add'])||isset($_POST['add_close'])) {
 	$newID=addFollowup($_POST);
+
 	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." add followup $newID.");
 	glpi_header($cfg_install["root"]."/tracking/tracking-info-form.php?ID=".$_POST["tracking"]);
 		
