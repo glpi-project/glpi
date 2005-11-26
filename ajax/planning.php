@@ -50,12 +50,12 @@
 
 	echo "<table class='tab_cadre' cellpadding='2'>";
 	echo "<tr class='tab_bg_2'><td>".$lang["planning"][9].":	</td>";
-	echo "<td>";
-	dropdownUsers("plan[id_assign]",$_SESSION["glpiID"],-1);
-	echo "</td></tr>";
+//	echo "<td>";
+//	dropdownUsers("plan['id_assign']",$_SESSION["glpiID"],-1);
+//	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][10].":	</td><td>";
-	showCalendarForm("form","plan[begin_date]",$begin_date);
+	showCalendarForm($_GET['form'],"plan[begin_date]",$begin_date);
     echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][12].":	</td>";
@@ -78,7 +78,7 @@
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][11].":	</td><td>";
-	showCalendarForm("form","plan[end_date]",$end_date);
+	showCalendarForm($_GET['form'],"plan[end_date]",$end_date);
     echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][13].":	</td>";
