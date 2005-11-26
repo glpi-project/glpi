@@ -31,9 +31,6 @@
 // Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
-	include ("_relpos.php");
-
-	checkAuthentication("post-only");
 
 	echo "<textarea rows='".$_GET['rows']."' cols='".$_GET['cols']."' name='".$_GET['name']."'>";
 	echo stripslashes(urldecode($_GET["data"]));
