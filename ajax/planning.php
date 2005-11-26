@@ -49,7 +49,7 @@
 	$end_min=date("i",$end);
 
 	echo "<table class='tab_cadre' cellpadding='2'>";
-	echo "<tr class='tab_bg_2'><td>".$lang["planning"][9].":	</td>";
+//	echo "<tr class='tab_bg_2'><td>".$lang["planning"][9].":	</td>";
 //	echo "<td>";
 //	dropdownUsers("plan['id_assign']",$_SESSION["glpiID"],-1);
 //	echo "</td></tr>";
