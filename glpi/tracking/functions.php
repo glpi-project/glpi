@@ -2239,11 +2239,12 @@ function addFollowup($input){
 		}
 	}
 //	if (!$close||$input["realtime"]>0||strlen($input["contents"])>0)
-	$newID=$fup->addToDB();	
 
+	$newID=$fup->addToDB();	
 	if (isset($plan)){
 		$plan['id_followup']=$newID;
-		$plan['id_tracking']=$_POST['tracking'];
+		$plan['id_tracking']=$input['tracking'];
+		$plan['id_assign']=$input['author'];
 		addPlanningTracking($plan,"");
 	}
 
@@ -2534,7 +2535,7 @@ function showFollowups($tID){
 	// Display Add Table
 	if ($isadmin){
 		echo "<div align='center'>";
-		echo "<form method='post' action=\"".$cfg_install["root"]."/tracking/tracking-info-form.php\">\n";
+		echo "<form name='followups' method='post' action=\"".$cfg_install["root"]."/tracking/tracking-info-form.php\">\n";
 		echo "<table class='tab_cadre' width='90%'>";
 		echo "<tr><th colspan='2'>";
 		echo $lang["job"][29];
@@ -2587,12 +2588,11 @@ function showFollowups($tID){
 		echo "<tr>";
 		echo "<td>".$lang["job"][35]."</td>";
 		echo "<td>";
-
 		$rand=mt_rand();
 		echo "<script type='text/javascript' >\n";
 		echo "function showPlan$rand(){\n";
 		echo "Element.hide('plan$rand');";
-		echo "var a=new Ajax.Updater('viewplan$rand','".$cfg_install["root"]."/ajax/planning.php' , {method: 'get',parameters: ''});";
+		echo "var a=new Ajax.Updater('viewplan$rand','".$cfg_install["root"]."/ajax/planning.php' , {method: 'get',parameters: 'form=followups'});";
 		echo "}";
 		echo "</script>\n";
 
