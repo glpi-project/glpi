@@ -36,6 +36,9 @@
 	include ("_relpos.php");
 	include ($phproot."/glpi/includes.php");
 
+	// Send UTF8 Headers
+	header("Content-Type: text/html; charset=UTF-8");
+
 	checkAuthentication("post-only");
 
 	$begin=strtotime(date("Y-m-d")." 12:00:00");
