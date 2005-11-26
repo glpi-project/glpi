@@ -2510,7 +2510,7 @@ function showJobDetails ($ID){
 		// Troisième Ligne
 		if ($isadmin){
 			echo "<tr class='tab_bg_1'><td colspan='3' align='center'>";
-			echo "<input type='submit' name='update' value='".$lang["buttons"][14]."'></td></tr>";
+			echo "<input type='submit' class='submit' name='update' value='".$lang["buttons"][14]."'></td></tr>";
 		}
 		
 //		echo "</table></td></tr>";
@@ -2632,10 +2632,10 @@ function showFollowups($tID){
 
 		echo "<tr class='tab_bg_1'>";
 		echo "<td align='center'>";
-		echo "<input type='submit' name='add' value='".$lang["buttons"][8]."'>";
+		echo "<input type='submit' name='add' value='".$lang["buttons"][8]."' class='submit'>";
 		echo "</td>";
 		echo "<td align='center'>";
-		echo "<input type='submit' name='add_close' value='".$lang["buttons"][26]."'>";
+		echo "<input type='submit' name='add_close' value='".$lang["buttons"][26]."' class='submit'>";
 		echo "</td>";
 		echo "</tr>";
 
@@ -2775,9 +2775,9 @@ function showFollowups($tID){
 				echo "<tr class='tab_bg_1'>";
 				echo "<td align='center' colspan='2'>";
 				echo "<table width='100%'><tr><td align='center'>";
-				echo "<input type='submit' name='update_followup' value='".$lang["buttons"][14]."'>";
+				echo "<input type='submit' name='update_followup' value='".$lang["buttons"][14]."' class='submit'>";
 				echo "</td><td align='center'>";
-				echo "<input type='submit' name='delete_followup' value='".$lang["buttons"][6]."'>";
+				echo "<input type='submit' name='delete_followup' value='".$lang["buttons"][6]."' class='submit'>";
 				echo "</td></tr></table>";
 				echo "</td>";
 				echo "</tr>";

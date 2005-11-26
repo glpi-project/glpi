@@ -461,7 +461,9 @@ function showKbItem($ID)
 	if ($result=$db->query($query)){
 	$data = $db->fetch_array($result);
 	$question = $data["question"];
-	echo "<li><a href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=$ID\">&nbsp;".$question."&nbsp;</a>\n";
+	$class="";
+	if ($data["faq"]=="no") $class=" class='pubfaq' ";
+	echo "<li><a $class href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=$ID\">&nbsp;".$question."&nbsp;</a>\n";
 	}
 }
 
