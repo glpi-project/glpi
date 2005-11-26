@@ -610,6 +610,12 @@ width: 95%;
 
 	}
 
+a.pubfaq {
+color: #c9993C;
+}
+a.pubfaq:hover {
+color: black;
+}
 
 /* #################################### */
 /* Toolbar */
