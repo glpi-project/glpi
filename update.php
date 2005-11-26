@@ -3147,6 +3147,9 @@ if(!FieldExists("glpi_config","auto_update_check")) {
 if(FieldExists("glpi_tracking","status")) {
 	$query="ALTER TABLE `glpi_tracking` CHANGE `status` `status` ENUM( 'new', 'old_done', 'assign', 'plan', 'old_notdone' ) DEFAULT 'new' NOT NULL ;";
 	$db->query($query) or die("0.65 alter status in tracking".$lang["update"][90].$db->error());
+
+	$query2=" UPDATE `glpi_tracking` SET status='old_done' WHERE status='';";
+	$db->query($query2) or die("0.65 update status=old in tracking".$lang["update"][90].$db->error());	
 }
 
 if(FieldExists("glpi_tracking_planning","id_assign")) {
