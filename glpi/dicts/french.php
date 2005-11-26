@@ -81,6 +81,8 @@ $lang["buttons"][23]="Voir";
 $lang["buttons"][24]="Monter";
 $lang["buttons"][25]="Descendre";
 $lang["buttons"][26]="Ajouter et Fermer";
+$lang["buttons"][27]="Oui";
+$lang["buttons"][28]="Non";
 
 $lang["calendarD"][0]="D";
 $lang["calendarD"][1]="L";
@@ -184,6 +186,7 @@ $lang["common"][8]="Gérer Gabarits...";
 $lang["common"][9]="Ajouter gabarit..."; 
 $lang["common"][10]="Responsable technique";
 $lang["common"][11]="Affichage limité";
+$lang["common"][12]="Afficher les doublons"; 
 
 $lang["computers"][0]="Ajouter ordinateur..."; 
 $lang["computers"][1]="Identifiant";
