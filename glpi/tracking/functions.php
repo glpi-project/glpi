@@ -2157,7 +2157,7 @@ function getStatusName($value){
 }
 
 function updateTracking($input){
-	global $lang;
+	global $lang,$cfg_features;
 	$job = new Job;
 	$job->getFromDB($input["ID"],0);
 
@@ -2209,17 +2209,27 @@ function updateTracking($input){
 		$job->updateInDB($updates);
 
 	$job->updateRealtime();		
+	
 	// Send mail to attrib if attrib change	
-	if (in_array("assign",$updates)&&$job->fields["assign_type"]==USER_TYPE&&$job->fields["assign"]>0){
+	if ($cfg_features["mailing"]&&in_array("assign",$updates)&&$job->fields["assign_type"]==USER_TYPE&&$job->fields["assign"]>0){
 			$user=new User;
 			$user->getfromDB($_SESSION["glpiname"]);
 			$mail = new Mailing("attrib",$job,$user);
 			$mail->send();
 	}
+
+	if (count($updates)>0&&$cfg_features["mailing"])
+		{
+			$user=new User;
+			$user->getfromDB($_SESSION["glpiname"]);
+			$mail = new Mailing("followup",$job,$user);
+			$mail->send();
+		}
+	
 }
 
 function updateFollowup($input){
-	global $lang;
+	global $lang,$cfg_features;
 	$fup = new Followup;
 	$fup->getFromDB($input["ID"]);
 
@@ -2237,6 +2247,18 @@ function updateFollowup($input){
 
 	if(isset($updates))
 		$fup->updateInDB($updates);
+
+	$job=new Job;
+	$job->getFromDB($input["tracking"],0);
+
+	if (in_array("contents",$updates)&&$cfg_features["mailing"])
+		{
+			$user=new User;
+			$user->getfromDB($_SESSION["glpiname"]);
+			$mail = new Mailing("followup",$job,$user);
+			$mail->send();
+		}
+
 }
 
 function addFollowup($input){
@@ -2272,7 +2294,7 @@ function addFollowup($input){
 		$plan['id_followup']=$newID;
 		$plan['id_tracking']=$input['tracking'];
 		$plan['id_assign']=$input['author'];
-		addPlanningTracking($plan,"");
+		addPlanningTracking($plan,"",1);
 	}
 
 	$job=new Job;
