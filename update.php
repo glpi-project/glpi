@@ -3253,6 +3253,7 @@ function showFormSu() {
 	echo "<p>".$lang["update"][101]." <input type=\"password\" name=\"pass_su1\" /></p>";
 	echo "<p>".$lang["update"][102]." <input type=\"password\" name=\"pass_su2\" /></p>";
 	echo "<input type=\"submit\" class='submit' name=\"ajout_su\" value=\"".$lang["install"][25] ."\" />";
+	echo "</form>";
 	echo "</div>";
 }
 
@@ -3402,7 +3403,7 @@ if(empty($_POST["continuer"]) && empty($_POST["ajout_su"]) && empty($_POST["from
 	
 		echo "<form action=\"update.php\" method=\"post\">";
 		echo "<input type=\"submit\" class='submit' name=\"continuer\" value=\"".$lang["install"][25] ."\" />";
-		echo "</div></form>";
+		echo "</form></div>";
 	}
 }
 // Step 2  
@@ -3445,10 +3446,11 @@ elseif(empty($_POST["ajout_su"])) {
 						showContentUpdateForm();
 						break;
 					default:
-					echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
+					echo "<a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a>";
 						break;
 				}
 				}
+		echo "</div>";
 		}
 	}
 	else {

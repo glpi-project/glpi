@@ -481,6 +481,7 @@ function step2($update)
 		echo "<p ><label>".$lang["install"][32]." : <input type=\"password\" name=\"db_pass\" /></label></p></fieldset>";
 		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_2\" />";
 		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][26]."\" /></p>";
+		echo "</form>";
 	
 }
 
