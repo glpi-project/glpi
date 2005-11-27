@@ -147,7 +147,7 @@ $i = 0;
 //le nom du fichier a generer...
 //Si fichier existe deja il sera remplacé par le nouveau
 
-$chemin = $cfg_install['dump_dir']."backup.xml";
+$chemin = $cfg_install['dump_dir']."/backup.xml";
 
 // Creation d'une nouvelle instance de la classe
 // et initialisation des variables
