@@ -356,15 +356,18 @@ function deletePlanningTracking($ID){
 				$updates2[]="realtime";
 				$fup->fields["realtime"]=0;
 				$fup->updateInDB($updates2);
-				 return $resa->deleteFromDB($ID);
+				
+				$return=$resa->deleteFromDB($ID);
 			}
-	} else return false;
+	} else $return = false;
+	
+	return $return;
 
 }
 
 
-function addPlanningTracking($input,$target){
-	global $lang;
+function addPlanningTracking($input,$target,$nomail=0){
+	global $lang,$cfg_features;
 	// Add a Planning
 	$resa = new PlanningTracking;
 
@@ -417,14 +420,25 @@ function addPlanningTracking($input,$target){
 	}
 
 	if ($input["id_tracking"]>0)
-		return $resa->addToDB();
-	else return true;
+		$return=$resa->addToDB();
+	else $return = true;
+	
+	if ($nomail==0&&$cfg_features["mailing"])
+		{
+			$user=new User;
+			$user->getfromDB($_SESSION["glpiname"]);
+			$mail = new Mailing("followup",$job,$user);
+			$mail->send();
+		}
+
+	
+	return $return;
 }
 
 
 
 function updatePlanningTracking($input,$target,$item){
-global $lang;
+	global $lang,$cfg_features;
 	// Update a Planning Tracking
 
 	$ri = new PlanningTracking;
@@ -490,6 +504,15 @@ global $lang;
 
 	if (isset($updates))
 		$ri->updateInDB($updates);
+	
+	if (count($updates)>0&&$cfg_features["mailing"])
+		{
+			$user=new User;
+			$user->getfromDB($_SESSION["glpiname"]);
+			$mail = new Mailing("followup",$job,$user);
+			$mail->send();
+		}
+
 	return true;
 }
 
