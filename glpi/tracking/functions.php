@@ -1055,8 +1055,20 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	$job->fields["priority"] = $priority;
 	$job->fields["uemail"] = $uemail;
 	$job->fields["emailupdates"] = $emailupdates;
+
+
 	$job->fields["assign"] = $assign;
 	$job->fields["assign_type"] = $assign_type;
+
+	if ($cfg_features['auto_assign']&&$assign==0){
+		$ci=new CommonItem;
+		$ci->getFromDB($device_type,$ID);
+		if (isset($ci->obj->fields['tech_num'])&&$ci->obj->fields['tech_num']!=0){
+			$job->fields["assign"] = $ci->obj->fields['tech_num'];
+			$job->fields["assign_type"] = USER_TYPE;
+		}
+	}
+
 	$job->fields["realtime"] = $realtime;
 	$job->fields["date"] = date("Y-m-d H:i:s");
 
@@ -1101,20 +1113,10 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 		
 		
 		// Log this event
-		logEvent($ID,$item,4,"tracking","$author added new job.");
-		
-		$aa=0;
-		if ($cfg_features['auto_assign']){
-			$ci=new CommonItem;
-			$ci->getFromDB($device_type,$ID);
-			if (isset($ci->obj->fields['tech_num'])&&$ci->obj->fields['tech_num']!=0){
-				assignJob ($tID,USER_TYPE,$ci->obj->fields['tech_num'],$_SESSION["glpiname"]);
-				$aa=1;
-			}
-		}
+		logEvent($tID,"tracking",4,"tracking",getUserName($author)." added new job.");
 		
 		// Processing Email
-		if ($aa==0&&$cfg_features["mailing"])
+		if ($cfg_features["mailing"])
 		{
 			$user=new User;
 			$user->getfromDB($author);
