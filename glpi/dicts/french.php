@@ -1339,6 +1339,7 @@ $lang["state"][7]="Pas de matériel trouvé";
 $lang["state"][8]="Lieu"; 
 $lang["state"][9]="Type"; 
 $lang["state"][10]="Total"; 
+$lang["state"][11]="Synthèse"; 
 
 $lang["stats"][0]="Sélectionnez les statistiques à visualiser";
 $lang["stats"][1]="Globales";
