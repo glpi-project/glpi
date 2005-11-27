@@ -50,7 +50,7 @@ function titleState(){
 	   
 }
 
-function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= ""){
+function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= "",$state=""){
 	// Print Search Form
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
@@ -67,7 +67,7 @@ function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= ""){
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 	echo $lang["state"][0]." : &nbsp; &nbsp;";
-	dropdownValue("glpi_dropdown_state","state","");
+	dropdownValue("glpi_dropdown_state","state",$state);
 	echo "</td><td align='center'>";
 	echo "<select name=\"field\" size='1'>";
         echo "<option value='all' ";
