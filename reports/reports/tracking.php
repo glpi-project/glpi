@@ -57,6 +57,7 @@ if (!isset($_GET["order"])) $_GET["order"] = "ASC";
 if (!isset($_GET["contains"])) $_GET["contains"] = "";
 if (!isset($_GET["contains2"])) $_GET["contains2"] = "";
 if (!isset($_GET["contains3"])) $_GET["contains3"] = "";
+if(!isset($_GET["assign_type"])) $_GET["assign_type"] = "";
 if(!isset($_GET["attrib"])) $_GET["attrib"] = "";
 if(!isset($_GET["author"])) $_GET["author"] = "";
 if (!isset($_GET["enddate1"])) $_GET["enddate1"]="0000-00-00";

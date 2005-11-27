@@ -3132,10 +3132,12 @@ if(!FieldExists("glpi_config","text_login")) {
 	$db->query($query) or die("0.65 add text_login in config".$lang["update"][90].$db->error());
 }
 
+
 if (FieldExists("glpi_tracking","status")){
 	$query="ALTER TABLE `glpi_tracking` CHANGE `status` `status` ENUM( 'new', 'old' ) DEFAULT 'new' NOT NULL;";
 	$db->query($query) or die("0.65 alter status in glpi_tracking".$lang["update"][90].$db->error());
 }
+
 
 if(!FieldExists("glpi_config","auto_update_check")) {
 	$query="ALTER TABLE `glpi_config` ADD `auto_update_check` SMALLINT DEFAULT '0' NOT NULL ,
@@ -3145,7 +3147,7 @@ if(!FieldExists("glpi_config","auto_update_check")) {
 
 //// Tracking 
 if(FieldExists("glpi_tracking","status")) {
-	$query="ALTER TABLE `glpi_tracking` CHANGE `status` `status` ENUM( 'new', 'old_done', 'assign', 'plan', 'old_notdone' ) DEFAULT 'new' NOT NULL ;";
+	$query="ALTER TABLE `glpi_tracking` CHANGE `status` `status` ENUM( 'new', 'old_done', 'assign', 'plan', 'old_notdone', 'waiting' ) DEFAULT 'new' NOT NULL ;";
 	$db->query($query) or die("0.65 alter status in tracking".$lang["update"][90].$db->error());
 
 	$query2=" UPDATE `glpi_tracking` SET status='old_done' WHERE status='';";

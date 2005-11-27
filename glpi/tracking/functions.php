@@ -1699,8 +1699,13 @@ function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,
 	echo "<tr class='tab_bg_1'>";
 	echo "<td colspan='2' align='center'>".$lang["joblist"][0].":";
 	echo "<select name='status'>";
+	echo "<option value='new' ".($status=="new"?" selected ":"").">".$lang["joblist"][9]."</option>";
+	echo "<option value='assign' ".($status=="assign"?" selected ":"").">".$lang["joblist"][18]."</option>";
+	echo "<option value='plan' ".($status=="plan"?" selected ":"").">".$lang["joblist"][19]."</option>";
+	echo "<option value='waiting' ".($status=="waiting"?" selected ":"").">".$lang["joblist"][26]."</option>";
+	echo "<option value='old_done' ".($status=="old_done"?" selected ":"").">".$lang["joblist"][10]."</option>";
+	echo "<option value='old_notdone' ".($status=="old_notdone"?" selected ":"").">".$lang["joblist"][17]."</option>";
 	echo "<option value='notold' ".($status=="notold"?"selected":"").">".$lang["joblist"][24]."</option>";	
-	echo "<option value='new' ".($status=="new"?"selected":"").">".$lang["joblist"][9]."</option>";
 	echo "<option value='process' ".($status=="process"?"selected":"").">".$lang["joblist"][21]."</option>";
 	echo "<option value='old' ".($status=="old"?"selected":"").">".$lang["joblist"][25]."</option>";	
 	echo "<option value='all' ".($status=="all"?"selected":"").">".$lang["joblist"][20]."</option>";
@@ -1935,7 +1940,11 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 	case "notold": $query.=" AND (glpi_tracking.status = 'new' OR glpi_tracking.status = 'plan' OR glpi_tracking.status = 'assign')"; break;
 	case "old": $query.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone')"; break;
 	case "process": $query.=" AND ( glpi_tracking.status = 'plan' OR glpi_tracking.status = 'assign' )"; break;
-
+	case "waiting": $query.=" AND ( glpi_tracking.status = 'waiting' )"; break;
+	case "old_done": $query.=" AND ( glpi_tracking.status = 'old_done' )"; break;
+	case "old_notdone": $query.=" AND ( glpi_tracking.status = 'old_notdone' )"; break;
+	case "assign": $query.=" AND ( glpi_tracking.status = 'assign' )"; break;
+	case "plan": $query.=" AND ( glpi_tracking.status = 'plan' )"; break;
 		
 	}
 	
@@ -2114,11 +2123,12 @@ function dropdownStatus($name,$value=0){
 	global $lang;
 	
 	echo "<select name='$name'>";
-	echo "<option value='new' ".($value=="new"?" selected ":"").">".$lang["joblist"][9]."";
-	echo "<option value='assign' ".($value=="assign"?" selected ":"").">".$lang["joblist"][18]."";
-	echo "<option value='plan' ".($value=="plan"?" selected ":"").">".$lang["joblist"][19]."";
-	echo "<option value='old_done' ".($value=="old_done"?" selected ":"").">".$lang["joblist"][10]."";
-	echo "<option value='old_notdone' ".($value=="old_notdone"?" selected ":"").">".$lang["joblist"][17]."";
+	echo "<option value='new' ".($value=="new"?" selected ":"").">".$lang["joblist"][9]."</option>";
+	echo "<option value='assign' ".($value=="assign"?" selected ":"").">".$lang["joblist"][18]."</option>";
+	echo "<option value='plan' ".($value=="plan"?" selected ":"").">".$lang["joblist"][19]."</option>";
+	echo "<option value='waiting' ".($value=="waiting"?" selected ":"").">".$lang["joblist"][26]."</option>";
+	echo "<option value='old_done' ".($value=="old_done"?" selected ":"").">".$lang["joblist"][10]."</option>";
+	echo "<option value='old_notdone' ".($value=="old_notdone"?" selected ":"").">".$lang["joblist"][17]."</option>";
 	echo "</select>";	
 }
 
