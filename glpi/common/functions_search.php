@@ -174,16 +174,16 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	echo "<table>";
 	if (in_array($LINK_ID_TABLE[$type],$deleted_tables)){
 		echo "<tr><td><select name='deleted'>";
-		echo "<option value='Y' ".($deleted=='Y'?" selected ":"").">".$lang["buttons"][27]."</option>";
-		echo "<option value='N' ".($deleted=='N'?" selected ":"").">".$lang["buttons"][28]."</option>";
+		echo "<option value='Y' ".($deleted=='Y'?" selected ":"").">".$lang["choice"][0]."</option>";
+		echo "<option value='N' ".($deleted=='N'?" selected ":"").">".$lang["choice"][1]."</option>";
 		echo "</select>";
 		echo "<img src=\"".$HTMLRel."pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
 		echo "</td></tr>";
 	}
 	
 	echo "<tr><td><select name='distinct'>";
-	echo "<option value='Y' ".($distinct=='Y'?" selected ":"").">".$lang["buttons"][27]."</option>";
-	echo "<option value='N' ".($distinct=='N'?" selected ":"").">".$lang["buttons"][28]."</option>";
+	echo "<option value='Y' ".($distinct=='Y'?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='N' ".($distinct=='N'?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "</select>";
 	echo "<img src=\"".$HTMLRel."pics/doublons.png\" alt='".$lang["common"][12]."' title='".$lang["common"][12]."'>";
 	echo "</td></tr></table>";
