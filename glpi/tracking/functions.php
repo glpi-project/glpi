@@ -1371,8 +1371,8 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 
 	if ($device_type==0){
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>".$lang["help"][24].": </td>";
-		echo "<td>";
+		echo "<td align='center'>".$lang["help"][24].": </td>";
+		echo "<td align='center'>";
 		dropdownTrackingDeviceType("device_type",$device_type);
 		echo "</td></tr>";
 	}
