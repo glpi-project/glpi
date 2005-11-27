@@ -36,7 +36,8 @@
 include ("_relpos.php");
 include ($phproot . "/glpi/common/classes.php");
 include ($phproot . "/glpi/common/functions.php");
-include ($phproot . "/glpi/config/config_db.php");
+include ($phproot . "/glpi/config/based_config.php");
+include ($cfg_install['config_dir'] . "/config_db.php");
 
 // ITEMS TYPE
 define("GENERAL_TYPE","0");

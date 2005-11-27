@@ -39,16 +39,16 @@
 
  
 include ("_relpos.php");
+include ($phproot . '/glpi/config/based_config.php');
 
-
-if(!file_exists($phproot ."/glpi/config/config_db.php")) {
-	echo "<p>Error : GLPI seems to not be installed properly.</p><p> Config_db.php file is missing.</p><p>Please restart the install process.</p>";
+if(!file_exists($cfg_install['config_dir'] . "/config_db.php")) {
+	echo "<p>Error : GLPI seems to not be installed properly.</p><p> config_db.php file is missing.</p><p>Please restart the install process.</p>";
 	die();
 }
 else
 {
 
-require_once ($phproot ."/glpi/config/config_db.php");
+require_once ($cfg_install["config_dir"] . "/config_db.php");
 
 
 // *************************** Statics config options **********************
@@ -156,9 +156,6 @@ $cfg_install["root"] = $db->result($result,0,"root_doc");
 
 // Path for icon of document type
 $cfg_install["typedoc_icon_dir"] = "/pics/icones";
-
-// Path for documents storage
-$cfg_install["doc_dir"] = "/docs";
 
 // Default language
 $cfg_install["default_language"] = $db->result($result,0,"default_language");

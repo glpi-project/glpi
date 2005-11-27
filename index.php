@@ -35,7 +35,8 @@
 // Test si config_db n'existe pas on lance l'installation
 
 include ("_relpos.php");
-if(!file_exists($phproot ."/glpi/config/config_db.php")) {
+include ($phproot . "/glpi/config/based_config.php");
+if(!file_exists($cfg_install['config_dir'] . "/config_db.php")) {
 	include($phproot ."/install.php");
 	die();
 }
