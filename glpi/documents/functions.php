@@ -508,19 +508,19 @@ function uploadDocument($FILEDESC,$old_file=''){
 		
 		if (!empty($dir)){
 			// Test existance repertoire DOCS
-			if (is_dir($phproot.$cfg_install["doc_dir"])){
+			if (is_dir($cfg_install["doc_dir"])){
 			// Test existance sous-repertoire type dans DOCS -> sinon création
-			if (!is_dir($phproot.$cfg_install["doc_dir"]."/".$dir)){
-				$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][34]." ".$phproot.$cfg_install["doc_dir"]."/".$dir."<br>";
-				@mkdir($phproot.$cfg_install["doc_dir"]."/".$dir);
+			if (!is_dir($cfg_install["doc_dir"]."/".$dir)){
+				$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][34]." ".$cfg_install["doc_dir"]."/".$dir."<br>";
+				@mkdir($cfg_install["doc_dir"]."/".$dir);
 			}
 			// Copy du fichier uploadé si répertoire existe
-			if (is_dir($phproot.$cfg_install["doc_dir"]."/".$dir)){
+			if (is_dir($cfg_install["doc_dir"]."/".$dir)){
 				// Rename file if exists
 				$NB_CHAR_MORE=10;
 				$i=0;
 				$tmpfilename=$filename;
-				while ($i<$NB_CHAR_MORE&&!$force&&is_file($phproot.$cfg_install["doc_dir"]."/".$dir."/".$filename)){
+				while ($i<$NB_CHAR_MORE&&!$force&&is_file($cfg_install["doc_dir"]."/".$dir."/".$filename)){
 					$filename="_".$filename;
 					$i++;
 				}
@@ -528,28 +528,28 @@ function uploadDocument($FILEDESC,$old_file=''){
 				if ($i==$NB_CHAR_MORE){
 					$i=0;
 					$filename=$tmpfilename;
-					while ($i<$NB_CHAR_MORE&&!$force&&is_file($phproot.$cfg_install["doc_dir"]."/".$dir."/".$filename)){
+					while ($i<$NB_CHAR_MORE&&!$force&&is_file($cfg_install["doc_dir"]."/".$dir."/".$filename)){
 						$filename="-".$filename;
 						$i++;
 					}
 					if ($i==$NB_CHAR_MORE){
 						$i=0;
 						$filename=$tmpfilename;
-						while ($i<$NB_CHAR_MORE&&!$force&&is_file($phproot.$cfg_install["doc_dir"]."/".$dir."/".$filename)){
+						while ($i<$NB_CHAR_MORE&&!$force&&is_file($cfg_install["doc_dir"]."/".$dir."/".$filename)){
 							$filename="0".$filename;
 							$i++;
 						}
 					}
 				}
-				if ($force||!is_file($phproot.$cfg_install["doc_dir"]."/".$dir."/".$filename)){
+				if ($force||!is_file($cfg_install["doc_dir"]."/".$dir."/".$filename)){
 					// Delete old file
-					if(!empty($old_file)&& is_file($phproot.$cfg_install["doc_dir"]."/".$old_file)&& !is_dir($phproot.$cfg_install["doc_dir"]."/".$old_file)) {
-						if (unlink($phproot.$cfg_install["doc_dir"]."/".$old_file))
-						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][24].$phproot.$cfg_install["doc_dir"]."/".$old_file."<br>";
-						else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][25].$phproot.$cfg_install["doc_dir"]."/".$old_file."<br>";
+					if(!empty($old_file)&& is_file($cfg_install["doc_dir"]."/".$old_file)&& !is_dir($cfg_install["doc_dir"]."/".$old_file)) {
+						if (unlink($cfg_install["doc_dir"]."/".$old_file))
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][24].$cfg_install["doc_dir"]."/".$old_file."<br>";
+						else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][25].$cfg_install["doc_dir"]."/".$old_file."<br>";
 						}
 					
-					if (move_uploaded_file($FILEDESC['tmp_name'],$phproot.$cfg_install["doc_dir"]."/".$dir."/".$filename )) {
+					if (move_uploaded_file($FILEDESC['tmp_name'],$cfg_install["doc_dir"]."/".$dir."/".$filename )) {
    						$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][26]."<br>";
 						return $dir."/".$filename;
 					} else {
@@ -557,9 +557,9 @@ function uploadDocument($FILEDESC,$old_file=''){
 					}
 				} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][28]."<br>";
 			
-			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][29]." ".$phproot.$cfg_install["doc_dir"]."/".$dir." ".$lang["document"][30]."<br>";
+			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][29]." ".$cfg_install["doc_dir"]."/".$dir." ".$lang["document"][30]."<br>";
 			
-			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][31]." ".$phproot.$cfg_install["doc_dir"]."<br>";
+			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][31]." ".$cfg_install["doc_dir"]."<br>";
 		
 		} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][32]."<br>";
 	

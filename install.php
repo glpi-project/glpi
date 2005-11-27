@@ -241,7 +241,8 @@ echo "</form>";
 //Step 1 checking some compatibilty issue and some write tests.
 function step1($update)
 {
-	global $lang;
+	global $lang,$cfg_install;
+
 	$error = 0;
 	echo "<h3>".$lang["install"][5]."</h3>";
 	echo "<table class='tab_cadre'>";
@@ -368,7 +369,7 @@ function step1($update)
 
 	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][16]."</b></td>";
 	
-	$fp = fopen("backups/dump/test_glpi.txt",'w');
+	$fp = fopen($cfg_install["dump_dir"] . "/test_glpi.txt",'w');
 	if (empty($fp)) {
 		echo "<td><p class='red'>".$lang["install"][17]."</p> ".$lang["install"][18]."</td></tr>";
 		$error = 2;
@@ -376,7 +377,7 @@ function step1($update)
 	else {
 		$fw = fwrite($fp,"This file was created for testing reasons. ");
 		fclose($fp);
-		$delete = unlink("backups/dump/test_glpi.txt");
+		$delete = unlink($cfg_install["dump_dir"] . "/test_glpi.txt");
 		if (!$delete) {
 			echo "<td  class='red'>".$lang["install"][19]."</td></tr>";
 			if($error != 2) $error = 1;
@@ -389,7 +390,7 @@ function step1($update)
 	
 		
 	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][21]."</b></td>";	
-		$fp = fopen("docs/test_glpi.txt",'w');
+	$fp = fopen($cfg_install['doc_dir'] . "/test_glpi.txt",'w');
 	if (empty($fp)) {
 		echo "<td><p class='red'>".$lang["install"][17]."</p> ".$lang["install"][22]."</td></tr>";
 		$error = 2;
@@ -397,7 +398,7 @@ function step1($update)
 	else {
 		$fw = fwrite($fp,"This file was created for testing reasons. ");
 		fclose($fp);
-		$delete = unlink("docs/test_glpi.txt");
+		$delete = unlink($cfg_install['doc_dir'] . "/test_glpi.txt");
 		if (!$delete) {
 			echo "<td  class='red'>".$lang["install"][19]."</td></tr>";
 			if($error != 2) $error = 1;
@@ -409,21 +410,16 @@ function step1($update)
 	}
 	
 	
-	
-	
-	
-	
-	
 	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][23]."</b></td>";
-	$fp = fopen("glpi/config/test_glpi.txt",'w');
+	$fp = fopen($cfg_install['config_dir'] . "/test_glpi.txt",'w');
 	if (empty($fp)) {
-		echo "<td><p class='red'>".$lang["install"][17]."</p>". $lang["install"][24]."</td></tr>";
+		echo "<td><p class='red'>".$lang["install"][17]. " " . $cfg_install['config_dir'] . "/test_glpi.txt" ."</p>". $lang["install"][24]."</td></tr>";
 		$error = 2;
 	}
 	else {
 		$fw = fwrite($fp,"This file was created for testing reasons. ");
 		fclose($fp);
-		$delete = unlink("glpi/config/test_glpi.txt");
+		$delete = unlink($cfg_install['config_dir'] . "/test_glpi.txt");
 		if (!$delete) {
 			echo "<td>".$lang["install"][19]."</td></tr>";
 			if($error != 2) $error = 1;
@@ -579,12 +575,12 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	//Fill the database
 	function fill_db()
 	{
-		global $lang;
+		global $lang, $cfg_install;		
 		
 		include ("_relpos.php");
 		include ($phproot . "/glpi/common/classes.php");
 		include ($phproot . "/glpi/common/functions.php");
-		include ($phproot . "/glpi/config/config_db.php");
+		include ($cfg_install['config_dir'] . "/config_db.php");
 		
 		$db = new DB;
 		$db_file = $phproot ."/mysql/glpi-0.65-empty.sql";
@@ -669,11 +665,11 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 
 function step7() {
 
-	global $lang;
+	global $lang,$cfg_install;
 	include ("_relpos.php");
 	require_once ($phproot . "/glpi/common/classes.php");
 	require_once ($phproot . "/glpi/common/functions.php");
-	require_once ($phproot . "/glpi/config/config_db.php");
+	require_once ($cfg_install['config_dir'] . "/config_db.php");
 	$db = new DB;
 	
 	// hack pour IIS qui ne connait pas $_SERVER['REQUEST_URI']  grrrr
@@ -701,13 +697,14 @@ function step7() {
 	echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
 	}
 
-//Create the file glpi/config/config_db.php
+//Create the file config_db.php
 // an fill it with user connections info.
 function create_conn_file($host,$user,$password,$dbname)
 {
+	global $cfg_install;
 	$db_str = "<?php \n class DB extends DBmysql { \n var \$dbhost	= '". $host ."'; \n var \$dbuser 	= '". $user ."'; \n var \$dbpassword= '". $password ."'; \n var \$dbdefault	= '". $dbname ."'; \n } \n ?>";
 	include ("_relpos.php");
-	$fp = fopen($phproot ."/glpi/config/config_db.php",'wt');
+	$fp = fopen($cfg_install['config_dir'] . "/config_db.php",'wt');
 	if($fp) {
 		$fw = fwrite($fp,$db_str);
 		fclose($fp);
@@ -746,10 +743,20 @@ if(!session_id()) session_start();
 include ("_relpos.php");
 if(empty($_SESSION["dict"])) $_SESSION["dict"] = "french";
 if(isset($_POST["language"])) $_SESSION["dict"] = $_POST["language"];
+
+
+include("glpi/config/based_config.php");
+
+// If this file exists, it is load, allow to set configdir/dumpdir elsewhere
+if(file_exists($cfg_install['config_dir'] . "/config_path.php")) {
+	include($cfg_install['config_dir'] . "/config_path.php");
+}
+
+
 loadLang($_SESSION["dict"]);
 	if(!isset($_POST["install"])) {
 		$_SESSION = array();
-		if(file_exists($phproot ."/glpi/config/config_db.php")) {
+		if(file_exists($cfg_install["config_dir"] . "/config_db.php")) {
 			include($phproot ."/index.php");
 			die();
 		}

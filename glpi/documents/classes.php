@@ -151,10 +151,10 @@ class Document {
 				
 				// UNLINK DU FICHIER
 				if (!empty($this->fields["filename"]))
-				if(is_file($phproot.$cfg_install["doc_dir"]."/".$this->fields["filename"])&& !is_dir($phproot.$cfg_install["doc_dir"]."/".$this->fields["filename"])) {
-						if (unlink($phproot.$cfg_install["doc_dir"]."/".$this->fields["filename"]))
-						$_SESSION["MESSAGE_AFTER_REDIRECT"]= $lang["document"][24].$phproot.$cfg_install["doc_dir"]."/".$this->fields["filename"]."<br>";
-						else $_SESSION["MESSAGE_AFTER_REDIRECT"]= $lang["document"][25].$phproot.$cfg_install["doc_dir"]."/".$this->fields["filename"]."<br>";
+				if(is_file($cfg_install["doc_dir"]."/".$this->fields["filename"])&& !is_dir($cfg_install["doc_dir"]."/".$this->fields["filename"])) {
+						if (unlink($cfg_install["doc_dir"]."/".$this->fields["filename"]))
+						$_SESSION["MESSAGE_AFTER_REDIRECT"]= $lang["document"][24].$cfg_install["doc_dir"]."/".$this->fields["filename"]."<br>";
+						else $_SESSION["MESSAGE_AFTER_REDIRECT"]= $lang["document"][25].$cfg_install["doc_dir"]."/".$this->fields["filename"]."<br>";
 						}
 
 				
