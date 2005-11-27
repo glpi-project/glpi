@@ -43,8 +43,9 @@ function titleState(){
 	     
 	     echo "<div align='center'><table border='0'><tr><td>";
                 echo "<img src=\"".$HTMLRel."pics/status.png\" alt='' title=''></td><td><b><span class='icon_nav'>".$lang["state"][1]."</span>";
-		 echo "</b></td></tr></table>&nbsp;</div>";
-	   
+		 echo "</b></td>";
+	   echo "<td><a class='icon_consol' href='".$HTMLRel."state/index.php?synthese=yes'>".$lang["state"][11]."</a></td>";
+         echo "</tr></table></div>";
 	   
 	   
 }

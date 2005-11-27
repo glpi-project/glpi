@@ -52,7 +52,8 @@ if(!isset($tab["ID"])) $tab["ID"] = "";
 	if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
 	if (!isset($_GET["contains"])) $_GET["contains"] = "";
 	if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_dropdown_state.name";
-//	if (!isset($_GET["state"])) $_GET["state"] = "";
+	if (!isset($_GET["state"])) $_GET["state"] = "";
+	if (!isset($_GET["synthese"])) $_GET["synthese"] = "no";
 
 if (isset($tab["deletestate"])) {
 	checkAuthentication("admin");
@@ -67,7 +68,7 @@ if (isset($tab["deletestate"])) {
 	
 	titleState();
 	
-	if (!isset($_GET["state"]))
+	if ($_GET["synthese"]=="yes")
 		showStateSummary($_SERVER["PHP_SELF"]);
 	else {
 		searchFormStateItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
