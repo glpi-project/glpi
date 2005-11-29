@@ -48,34 +48,35 @@ commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
  // titre
         echo "<div align='center'><table border='0'><tr><td>";
         echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='".$lang["Menu"][10]."' title='".$lang["Menu"][10]."' ></td><td><span class='icon_nav'><b>".$lang["Menu"][10]."</b></span>";
+
         echo "</td></tr></table></div>";
 
+
+
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-echo "<tr><th>".$lang["setup"][62]."</th></tr>";
+echo "<tr><th colspan='2'>".$lang["setup"][62]."</th></tr>";
 
-echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-dropdowns.php\"><b>".$lang["setup"][0]."</b></a></td></tr>";
+//echo "<tr><th align='center'>Donnees</th><th align='center'>Configuration</th></tr>";
 
-echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."devices/\"><b>".$lang["setup"][222]."</b></a></td> </tr>";
+echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-dropdowns.php\"><b>".$lang["setup"][0]."</b></a></td>";
+echo "<td align='center'><a href=\"setup-config.php?next=confgen\"><b>".$lang["setup"][70]."</b></a></td>";
+echo "</tr>";
 
-//echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-templates.php\"><b>".$lang["setup"][1]."</b></a></td></tr>";
-echo "<tr class='tab_bg_1'><td align='center'><a href=\"setup-display.php\"><b>".$lang["setup"][250]."</b></a></td> </tr>";
+echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."devices/\"><b>".$lang["setup"][222]."</b></a></td>";
+echo "<td align='center'><a href=\"setup-display.php\"><b>".$lang["setup"][250]."</b></a></td>";
+echo " </tr>";
 
-echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."typedocs/\"><b>".$lang["document"][7]."</b></a></td> </tr>";
+echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."typedocs/\"><b>".$lang["document"][7]."</b></a></td>";
+echo "<td  align='center'><a href=\"setup-config.php?next=extsources\"><b>".$lang["setup"][67]."</b></a></td>";
+echo " </tr>";
 
+echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."links/\"><b>".$lang["setup"][87]."</b></a></td>";
+echo "<td  align='center'><a href=\"setup-config.php?next=mailing\"><b>".$lang["setup"][68]."</b></a></td>";
+echo " </tr>";
 
+echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'><a href=\"setup-check-version.php\"><b>-----------</b></a></td></tr>";
 
-
-
-echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-config.php?next=mailing\"><b>".$lang["setup"][68]."</b></a></td></tr>";
-
-echo "<tr class='tab_bg_1'><td align='center'><a href=\"setup-config.php?next=confgen\"><b>".$lang["setup"][70]."</b></a></td> </tr>";
-
-echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-config.php?next=extsources\"><b>".$lang["setup"][67]."</b></a></td></tr>";
-
-
-echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."links/\"><b>".$lang["setup"][87]."</b></a></td> </tr>";
-
-echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-check-version.php\"><b>".$lang["setup"][300]."</b></a></td></tr>";
+echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup-check-version.php\"><b>".$lang["setup"][300]."</b></a></td></tr>";
 
 
 

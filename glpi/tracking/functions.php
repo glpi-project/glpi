@@ -1782,7 +1782,7 @@ else {
 	echo "<tr  class='tab_bg_1'>";
 
 	echo "<td align='center' colspan='2'>";
- $elts=array("both"=>$lang["joblist"][6]." / ".$lang["job"][7],"contents"=>$lang["joblist"][6],"followup" => $lang["job"][7]);
+ $elts=array("both"=>$lang["joblist"][6]." / ".$lang["job"][7],"contents"=>$lang["joblist"][6],"followup" => $lang["job"][7],"ID"=>"ID");
  echo "<select name='field2'>";
  foreach ($elts as $key => $val){
  $selected="";
@@ -1817,6 +1817,7 @@ else {
 
 
 function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$assign_type=0,$category=0,$priority=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+//	echo $start;
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -1873,6 +1874,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 		}
 	}
 	}
+//	echo $start;
 	if (!$start) {
 		$start = 0;
 	}
@@ -1898,71 +1900,74 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = comp.tech_num ) ";
 	}
 
-	if ($contains2!=""&&$field2!="contents") {
+	if ($contains2!=""&&$field2!="contents"&&$field2!="ID") {
 		$query.= " LEFT JOIN glpi_followups ON ( glpi_followups.tracking = glpi_tracking.ID)";
 	}
 
-	$query.=" WHERE '1' = '1'";
+	$where=" WHERE '1' = '1'";
 
 	if ($computers_search)
-	$query.=" AND glpi_tracking.device_type= '1'";
+	$where.=" AND glpi_tracking.device_type= '1'";
 	if ($category > 0)
-	$query.=" AND glpi_tracking.category = '$category'";
+	$where.=" AND glpi_tracking.category = '$category'";
 	
-	if ($computers_search) $query .= " AND $wherecomp";
-	if (!empty($date1)&&$date1!="0000-00-00") $query.=" AND glpi_tracking.date >= '$date1'";
-	if (!empty($date2)&&$date2!="0000-00-00") $query.=" AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
-	if (!empty($enddate1)&&$enddate1!="0000-00-00") $query.=" AND glpi_tracking.closedate >= '$enddate1'";
-	if (!empty($enddate2)&&$enddate2!="0000-00-00") $query.=" AND glpi_tracking.closedate <= adddate( '". $enddate2 ."' , INTERVAL 1 DAY ) ";
+	if ($computers_search) $where .= " AND $wherecomp";
+	if (!empty($date1)&&$date1!="0000-00-00") $where.=" AND glpi_tracking.date >= '$date1'";
+	if (!empty($date2)&&$date2!="0000-00-00") $here.=" AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	if (!empty($enddate1)&&$enddate1!="0000-00-00") $where.=" AND glpi_tracking.closedate >= '$enddate1'";
+	if (!empty($enddate2)&&$enddate2!="0000-00-00") $where.=" AND glpi_tracking.closedate <= adddate( '". $enddate2 ."' , INTERVAL 1 DAY ) ";
 
 
 	if ($type!=0)
-		$query.=" AND glpi_tracking.device_type='$type'";	
+		$where.=" AND glpi_tracking.device_type='$type'";	
 	
 	if ($item!=0&&$type!=0)
-		$query.=" AND glpi_tracking.computer = '$item'";	
+		$where.=" AND glpi_tracking.computer = '$item'";	
 	
-	if ($contains2!=""){
-		switch ($field2){
-			case "both" :
-			$query.= " AND (glpi_followups.contents LIKE '%".$contains2."%' OR glpi_tracking.contents LIKE '%".$contains2."%')";
-			break;
-			case "followup" :
-			$query.= " AND (glpi_followups.contents LIKE '%".$contains2."%')";
-			break;
-			case "contents" :
-			$query.= " AND (glpi_tracking.contents LIKE '%".$contains2."%')";
-			break;
-		}
-	}
-
-
 	switch ($status){
-	case "new": $query.=" AND glpi_tracking.status = 'new'"; break;
-	case "notold": $query.=" AND (glpi_tracking.status = 'new' OR glpi_tracking.status = 'plan' OR glpi_tracking.status = 'assign')"; break;
-	case "old": $query.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone')"; break;
-	case "process": $query.=" AND ( glpi_tracking.status = 'plan' OR glpi_tracking.status = 'assign' )"; break;
-	case "waiting": $query.=" AND ( glpi_tracking.status = 'waiting' )"; break;
-	case "old_done": $query.=" AND ( glpi_tracking.status = 'old_done' )"; break;
-	case "old_notdone": $query.=" AND ( glpi_tracking.status = 'old_notdone' )"; break;
-	case "assign": $query.=" AND ( glpi_tracking.status = 'assign' )"; break;
-	case "plan": $query.=" AND ( glpi_tracking.status = 'plan' )"; break;
+	case "new": $where.=" AND glpi_tracking.status = 'new'"; break;
+	case "notold": $where.=" AND (glpi_tracking.status = 'new' OR glpi_tracking.status = 'plan' OR glpi_tracking.status = 'assign')"; break;
+	case "old": $where.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone')"; break;
+	case "process": $where.=" AND ( glpi_tracking.status = 'plan' OR glpi_tracking.status = 'assign' )"; break;
+	case "waiting": $where.=" AND ( glpi_tracking.status = 'waiting' )"; break;
+	case "old_done": $where.=" AND ( glpi_tracking.status = 'old_done' )"; break;
+	case "old_notdone": $where.=" AND ( glpi_tracking.status = 'old_notdone' )"; break;
+	case "assign": $where.=" AND ( glpi_tracking.status = 'assign' )"; break;
+	case "plan": $where.=" AND ( glpi_tracking.status = 'plan' )"; break;
 		
 	}
 	
-	if ($assign_type!=0) $query.=" AND glpi_tracking.assign_type = '$assign_type'";
-	if ($assign!=0&&$assign_type!=0) $query.=" AND glpi_tracking.assign = '$assign'";
-	if ($author!=0) $query.=" AND glpi_tracking.author = '$author'";
+	if ($assign_type!=0) $where.=" AND glpi_tracking.assign_type = '$assign_type'";
+	if ($assign!=0&&$assign_type!=0) $where.=" AND glpi_tracking.assign = '$assign'";
+	if ($author!=0) $where.=" AND glpi_tracking.author = '$author'";
 
-	if ($priority>0) $query.=" AND glpi_tracking.priority = '$priority'";
-	if ($priority<0) $query.=" AND glpi_tracking.priority >= '".abs($priority)."'";
-	
-   $query.=" ORDER BY glpi_tracking.date ".$prefs["order"];
-//	echo $query;
+	if ($priority>0) $where.=" AND glpi_tracking.priority = '$priority'";
+	if ($priority<0) $where.=" AND glpi_tracking.priority >= '".abs($priority)."'";
+
+	if ($contains2!=""){
+		switch ($field2){
+			case "both" :
+			$where.= " AND (glpi_followups.contents LIKE '%".$contains2."%' OR glpi_tracking.contents LIKE '%".$contains2."%')";
+			break;
+			case "followup" :
+			$where.= " AND (glpi_followups.contents LIKE '%".$contains2."%')";
+			break;
+			case "contents" :
+			$where.= " AND (glpi_tracking.contents LIKE '%".$contains2."%')";
+			break;
+			case "ID" :
+			$where= " WHERE (glpi_tracking.ID = '".$contains2."')";
+			break;
+			
+		}
+	}
+
+   $query.=$where." ORDER BY glpi_tracking.date ".$prefs["order"];
+
 	// Get it from database	
 	if ($result = $db->query($query)) {
+		
 		$numrows= $db->numrows($result);
-
 		if ($start<$numrows) {
 			// Pager
 			$parameters="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;contains2=$contains2&amp;attrib=$assign&amp;author=$author";
@@ -2523,39 +2528,40 @@ function showJobDetails ($ID){
 		echo "</table>";
 		echo "</td>";
 		// Colonne 3
+
 		echo "<td>";
 
 		// File associated ?
+		if ($isadmin){
 
-		$query2 = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '".$job->ID."' AND glpi_doc_device.device_type = '".TRACKING_TYPE."' ";
-		$result2 = $db->query($query2);
-		$numfiles=$db->numrows($result2);
-		$colspan=1;
-		if ($numfiles>1) $colspan=2;
-		echo "<table width='100%'><tr><th colspan='$colspan'>".$lang["tracking"][25]."</th></tr>";			
+			$query2 = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '".$job->ID."' AND glpi_doc_device.device_type = '".TRACKING_TYPE."' ";
+			$result2 = $db->query($query2);
+			$numfiles=$db->numrows($result2);
+			$colspan=1;
+			if ($numfiles>1) $colspan=2;
+			echo "<table width='100%'><tr><th colspan='$colspan'>".$lang["tracking"][25]."</th></tr>";			
 
-		if ($numfiles>0){
-			$i=0;
-			$con=new Document;
-			while ($data=$db->fetch_array($result2)){
-				if ($i%2==0&&$i>0) echo "</tr><tr>";
-				echo "<td>";
-				$con->getFromDB($data["FK_doc"]);
-				echo getDocumentLink($con->fields["filename"]);
-				echo "<a href='".$HTMLRel."documents/documents-info-form.php?deleteitem=delete&ID=".$data["ID"]."'><img src='".$HTMLRel."pics/delete.png'></a>";
-				echo "</td>";
-				$i++;
+			if ($numfiles>0){
+				$i=0;
+				$con=new Document;
+				while ($data=$db->fetch_array($result2)){
+					if ($i%2==0&&$i>0) echo "</tr><tr>";
+					echo "<td>";
+					$con->getFromDB($data["FK_doc"]);
+					echo getDocumentLink($con->fields["filename"]);
+					echo "<a href='".$HTMLRel."documents/documents-info-form.php?deleteitem=delete&ID=".$data["ID"]."'><img src='".$HTMLRel."pics/delete.png'></a>";
+					echo "</td>";
+					$i++;
+				}
+				if ($i%2==1) echo "<td>&nbsp;</td>";
+				echo "</tr>";
 			}
-			if ($i%2==1) echo "<td>&nbsp;</td>";
-			echo "</tr>";
-		}
-		echo "<tr><td colspan='2'>";
-		if ($isadmin)
+			echo "<tr><td colspan='2'>";
 			echo "<input type='file' name='filename' size='25'>";
-		else echo "&nbsp;";
-		echo "</td></tr></table>";
-		echo "</td></tr>";
-		
+			echo "</td></tr></table>";
+		} else echo "&nbsp;";
+
+			echo "</td></tr>";
 		// Troisième Ligne
 		if ($isadmin){
 			echo "<tr class='tab_bg_1'><td colspan='3' align='center'>";

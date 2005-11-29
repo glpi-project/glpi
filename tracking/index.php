@@ -61,11 +61,13 @@ if(isset($_GET)) $tab = $_GET;
 if (!isset($tab['reset'])){
 	if (is_array($tab))
 	foreach ($tab as $key => $val)
-		$_SESSION['tracking'][$key]=$val;
+		if ($key[0]!='_')
+			$_SESSION['tracking'][$key]=$val;
 
 // Gestion temporaire de la merdouille
 if (!isset($tab["attrib"])) $_SESSION['tracking']["attrib"]=0;
 }
+if (isset($tab['reset'])) unset($_SESSION['tracking']);
 
 if (isset($_SESSION['tracking'])&&is_array($_SESSION['tracking']))
 foreach ($_SESSION['tracking'] as $key => $val)
@@ -73,7 +75,7 @@ if (!isset($tab[$key])) $tab[$key]=$val;
 
 if (!isset($tab["start"])||isset($tab['reset'])) $tab["start"]=0;
 if (!isset($tab["priority"])||isset($tab['reset'])) $tab["priority"]=0;
-if (!isset($tab["field2"])||isset($tab['reset'])) $tab["field2"]="";
+if (!isset($tab["field2"])||isset($tab['reset'])) $tab["field2"]="both";
 if (!isset($tab["contains2"])||isset($tab['reset'])) $tab["contains2"]="";
 if (!isset($tab["author"])||isset($tab['reset'])) $tab["author"]=0;
 if (!isset($tab["attrib"])||isset($tab['reset'])) $tab["attrib"]=0;
@@ -91,7 +93,6 @@ if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete"])&&!empty($_POST["tode
 		if ($val==1) $j->deleteInDB($key);
 		}
 	}
-
 
 searchFormTracking(0,$_SERVER["PHP_SELF"],$tab["start"],$tab["status"],$tab["author"],$tab["attrib"],$tab["assign_type"],$tab["category"],$tab["priority"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"]);
 
