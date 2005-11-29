@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-11-27 02:49
+#GLPI Dump database on 2005-11-30 00:42
 
 ### Dump table glpi_cartridges
 
@@ -178,12 +178,16 @@ CREATE TABLE glpi_config (
     url_in_mail enum('0','1') DEFAULT '0' NOT NULL,
     text_login text NOT NULL,
     auto_update_check smallint(6) DEFAULT '0' NOT NULL,
-    last_update_check date DEFAULT '2005-11-27' NOT NULL,
+    last_update_check date DEFAULT '2005-11-30' NOT NULL,
     founded_new_version varchar(10) NOT NULL,
+    dropdown_max int(11) DEFAULT '100' NOT NULL,
+    ajax_wildcard char(1) DEFAULT '*' NOT NULL,
+    use_ajax smallint(6) DEFAULT '1' NOT NULL,
+    ajax_limit_count int(11) DEFAULT '50' NOT NULL,
    PRIMARY KEY (ID)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi','0','','0','2005-11-27','');
+INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi','0','','0','2005-11-30','','100','*','1','50');
 
 ### Dump table glpi_connect_wire
 
