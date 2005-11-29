@@ -41,25 +41,24 @@ checkAuthentication("super-admin");
 if(!empty($_GET["next"])) {
 
 	if($_GET["next"] == "extsources") {
-	
 		commonHeader($lang["title"][14],$_SERVER["PHP_SELF"]);
 		titleExtSources();
 		showFormExtSources($_SERVER["PHP_SELF"]);
 	}
 	elseif($_GET["next"] == "mailing") {
-	
 		commonHeader($lang["title"][15],$_SERVER["PHP_SELF"]);
 		titleMailing();
 		showFormMailing($_SERVER["PHP_SELF"]);
 	}
 	elseif($_GET["next"] == "confgen") {
-	
-	
-	
 		commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 		titleConfigGen();
 		showFormConfigGen($_SERVER["PHP_SELF"]);
-		
+	}
+	elseif($_GET["next"] == "confdisplay") {
+		commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
+		titleConfigDisplay();
+		showFormConfigDisplay($_SERVER["PHP_SELF"]);
 	}
 	
 	
@@ -86,9 +85,15 @@ elseif(!empty($_POST["update_ext"])) {
 	glpi_header($cfg_install["root"]."/setup/setup-config.php?next=extsources");
 }
 elseif(!empty($_POST["update_confgen"])) {
-	updateConfigGen($_POST["root_doc"], $_POST["event_loglevel"], $_POST["num_of_events"], $_POST["expire_events"], $_POST["jobs_at_login"],$_POST["list_limit"], $_POST["cut"],$_POST["permit_helpdesk"],$_POST["default_language"],$_POST["priority"],$_POST["date_fiscale"],$_POST["cartridges_alarm"],
-	$_POST["planning_begin"],$_POST["planning_end"],$_POST["auto_assign"],$_POST["public_faq"],$_POST["text_login"],$_POST["auto_update_check"]);
+	updateConfigGen($_POST["root_doc"], $_POST["event_loglevel"], $_POST["expire_events"],$_POST["permit_helpdesk"],$_POST["default_language"],$_POST["date_fiscale"],$_POST["cartridges_alarm"],
+	$_POST["auto_assign"],$_POST["auto_update_check"]);
 	glpi_header($cfg_install["root"]."/setup/setup-config.php?next=confgen");
+}
+elseif(!empty($_POST["update_confdisplay"])) {
+	updateConfigDisplay($_POST["num_of_events"], $_POST["jobs_at_login"],$_POST["list_limit"], $_POST["cut"],$_POST["priority"],
+	$_POST["planning_begin"],$_POST["planning_end"],$_POST["public_faq"],$_POST["text_login"],
+	$_POST["use_ajax"],$_POST["ajax_wildcard"],$_POST["ajax_limit_count"],$_POST["dropdown_max"]);
+	glpi_header($cfg_install["root"]."/setup/setup-config.php?next=confdisplay");
 }
 
 commonFooter();

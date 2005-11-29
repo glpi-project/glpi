@@ -3225,7 +3225,15 @@ if(!FieldExists("glpi_tracking_planning","id_followup")) {
 	$query=" ALTER TABLE `glpi_tracking_planning` DROP `id_tracking` ;";
 	$db->query($query) or die("0.65 add index for id_followup in tracking_planning".$lang["update"][90].$db->error());
 }
- 
+
+if(!FieldExists("glpi_config","use_ajax")) {
+	$query="ALTER TABLE `glpi_config` ADD `dropdown_max` INT DEFAULT '100' NOT NULL ,
+	ADD `ajax_wildcard` CHAR( 1 ) DEFAULT '*' NOT NULL ,
+	ADD `use_ajax` SMALLINT DEFAULT '1' NOT NULL ,
+	ADD `ajax_limit_count` INT DEFAULT '50' NOT NULL ; ";
+	$db->query($query) or die("0.65 add ajax fields in config".$lang["update"][90].$db->error());
+}
+
 }
 
 function updateTreeDropdown(){

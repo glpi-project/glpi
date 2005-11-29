@@ -63,18 +63,20 @@ echo "<td align='center'><a href=\"setup-config.php?next=confgen\"><b>".$lang["s
 echo "</tr>";
 
 echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."devices/\"><b>".$lang["setup"][222]."</b></a></td>";
-echo "<td align='center'><a href=\"setup-display.php\"><b>".$lang["setup"][250]."</b></a></td>";
+echo "<td align='center'><a href=\"setup-config.php?next=confdisplay\"><b>".$lang["setup"][119]."</b></a></td>";
 echo " </tr>";
 
 echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."typedocs/\"><b>".$lang["document"][7]."</b></a></td>";
-echo "<td  align='center'><a href=\"setup-config.php?next=extsources\"><b>".$lang["setup"][67]."</b></a></td>";
+echo "<td align='center'><a href=\"setup-display.php\"><b>".$lang["setup"][250]."</b></a></td>";
 echo " </tr>";
 
 echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."links/\"><b>".$lang["setup"][87]."</b></a></td>";
 echo "<td  align='center'><a href=\"setup-config.php?next=mailing\"><b>".$lang["setup"][68]."</b></a></td>";
 echo " </tr>";
 
-echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'><a href=\"setup-check-version.php\"><b>-----------</b></a></td></tr>";
+echo "<tr class='tab_bg_1'><td>&nbsp;</td>";
+echo "<td  align='center'><a href=\"setup-config.php?next=extsources\"><b>".$lang["setup"][67]."</b></a></td>";
+echo "</tr>";
 
 echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup-check-version.php\"><b>".$lang["setup"][300]."</b></a></td></tr>";
 

@@ -869,6 +869,16 @@ GLOBAL  $lang,$HTMLRel;
 
 }
 
+function titleConfigDisplay(){
+
+GLOBAL  $lang,$HTMLRel;
+
+                echo "<div align='center'><table border='0'><tr><td>";
+                echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_nav'>".$lang["setup"][119]."</span>";
+		 echo "</b></td></tr></table>&nbsp;</div>";
+
+
+}
 
 function showFormConfigGen($target){
 	
@@ -884,9 +894,6 @@ function showFormConfigGen($target){
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][101]." </td><td> <input type=\"text\" name=\"root_doc\" value=\"". $db->result($result,0,"root_doc") ."\"></td></tr>";
 	$default_language=$db->result($result,0,"default_language");
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][113]." </td><td><select name=\"default_language\">";
-	//foreach ($cfg_install["languages"] as $key => $val){
-	//echo "<option value=\"$val\"";  if($default_language==$val){ echo " selected";} echo ">".$val." </option>";
-	//}
 		while (list($val)=each($cfg_install["languages"])){
 		echo "<option value=\"".$val."\"";
 			if($default_language==$val){ echo " selected";}
@@ -903,59 +910,21 @@ function showFormConfigGen($target){
 	echo "<option value=\"4\"";  if($level==4){ echo " selected";} echo ">".$lang["setup"][106]." </option>";
 	echo "<option value=\"5\"";  if($level==5){ echo " selected";} echo ">".$lang["setup"][107]."</option>";
 	echo "</select></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][108]."</td><td> <input type=\"text\" name=\"num_of_events\" value=\"". $db->result($result,0,"num_of_events") ."\"></td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][109]." </td><td><input type=\"text\" name=\"expire_events\" value=\"". $db->result($result,0,"expire_events") ."\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][110]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"jobs_at_login\" value=\"1\" "; if($db->result($result,0,"jobs_at_login") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"jobs_at_login\" value=\"0\" "; if($db->result($result,0,"jobs_at_login") == 0) echo "checked"; 
-	echo " ></td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][116]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"auto_assign\" value=\"1\" "; if($db->result($result,0,"auto_assign") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"auto_assign\" value=\"0\" "; if($db->result($result,0,"auto_assign") == 0) echo "checked"; 
 	echo " ></td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][111]."</td><td> <input type=\"text\" name=\"list_limit\" value=\"". $db->result($result,0,"list_limit") ."\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][112]."</td><td><input type=\"text\" name=\"cut\" value=\"". $db->result($result,0,"cut") ."\"></td></tr>";
-
-	
-	$plan_begin=split(":",$db->result($result,0,"planning_begin"));
-	$plan_end=split(":",$db->result($result,0,"planning_end"));
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][223]."</td><td>";
-	echo "<select name='planning_begin'>";
-	for ($i=0;$i<=24;$i++) echo "<option value='$i'".($plan_begin[0]==$i?" selected ":"").">$i</option>";
-	echo "</select>-->";
-	
-	echo "<select name='planning_end'>";
-	for ($i=0;$i<=24;$i++) echo "<option value='$i' ".($plan_end[0]==$i?" selected ":"").">$i</option>";
-	echo "</select>";
-	
-	echo "</td></tr>";
-	
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][221]."</td><td>";
 	showCalendarForm("form","date_fiscale",$db->result($result,0,"date_fiscale"),0);	
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][219]."</td><td>&nbsp;".$lang["choice"][0]."<input type=\"radio\" name=\"permit_helpdesk\" value=\"1\""; if($db->result($result,0,"permit_helpdesk") == 1) echo "checked=\"checked\""; echo " />&nbsp;".$lang["choice"][1]."<input type=\"radio\" name=\"permit_helpdesk\" value=\"0\""; if($db->result($result,0,"permit_helpdesk") == 0) echo "checked=\"checked\""; echo" /></td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][114]."</td><td>";
-	echo "<table><tr>";
-	echo "<td bgcolor='".$db->result($result,0,"priority_1")."'>1:<input type=\"text\" name=\"priority[1]\" size='7' value=\"".$db->result($result,0,"priority_1")."\"></td>";
-	echo "<td bgcolor='".$db->result($result,0,"priority_2")."'>2:<input type=\"text\" name=\"priority[2]\" size='7' value=\"".$db->result($result,0,"priority_2")."\"></td>";
-	echo "<td bgcolor='".$db->result($result,0,"priority_3")."'>3:<input type=\"text\" name=\"priority[3]\" size='7' value=\"".$db->result($result,0,"priority_3")."\"></td>";
-	echo "<td bgcolor='".$db->result($result,0,"priority_4")."'>4:<input type=\"text\" name=\"priority[4]\" size='7' value=\"".$db->result($result,0,"priority_4")."\"></td>";
-	echo "<td bgcolor='".$db->result($result,0,"priority_5")."'>5:<input type=\"text\" name=\"priority[5]\" size='7' value=\"".$db->result($result,0,"priority_5")."\"></td>";
-	echo "</tr></table>";
-	echo "</td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][115]."</td><td><select name='cartridges_alarm'>";
 	for ($i=0;$i<=100;$i++)
 		echo "<option value='$i' ".($i==$db->result($result,0,"cartridges_alarm")?" selected ":"").">$i</option>";
 	echo "</select></td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][117]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"public_faq\" value=\"1\" "; if($db->result($result,0,"public_faq") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"public_faq\" value=\"0\" "; if($db->result($result,0,"public_faq") == 0) echo "checked";
-	echo " ></td></tr>";
-	
-	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][118]." </td><td>";
-	echo "<textarea cols='35' rows='4' name='text_login' >";
-	echo $db->result($result,0,"text_login");
-	echo "</textarea>";
-	echo "</td></tr>";
-		
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][306]." </td><td><select name=\"auto_update_check\">";
 	$check=$db->result($result,0,"auto_update_check");
 	echo "<option value=\"0\"";  if($check==0){ echo " selected";} echo ">".$lang["setup"][307]." </option>";
@@ -970,6 +939,84 @@ function showFormConfigGen($target){
 	echo "</form>";
 }
 
+function showFormConfigDisplay($target){
+	
+	GLOBAL  $lang,$HTMLRel,$cfg_install;
+	
+	$db = new DB;
+	$query = "select * from glpi_config where ID = 1";
+	$result = $db->query($query);
+	
+	echo "<form name='form' action=\"$target\" method=\"post\">";
+	echo "<div align='center'><table class='tab_cadre'>";
+	echo "<tr><th colspan='2'>".$lang["setup"][100]."</th></tr>";
+	
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][108]."</td><td> <input type=\"text\" name=\"num_of_events\" value=\"". $db->result($result,0,"num_of_events") ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][110]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"jobs_at_login\" value=\"1\" "; if($db->result($result,0,"jobs_at_login") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"jobs_at_login\" value=\"0\" "; if($db->result($result,0,"jobs_at_login") == 0) echo "checked"; 
+	echo " ></td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][111]."</td><td> <input type=\"text\" name=\"list_limit\" value=\"". $db->result($result,0,"list_limit") ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][112]."</td><td><input type=\"text\" name=\"cut\" value=\"". $db->result($result,0,"cut") ."\"></td></tr>";
+
+	
+	$plan_begin=split(":",$db->result($result,0,"planning_begin"));
+	$plan_end=split(":",$db->result($result,0,"planning_end"));
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][223]."</td><td>";
+	echo "<select name='planning_begin'>";
+	for ($i=0;$i<=24;$i++) echo "<option value='$i'".($plan_begin[0]==$i?" selected ":"").">$i</option>";
+	echo "</select>";
+	
+	echo "<select name='planning_end'>";
+	for ($i=0;$i<=24;$i++) echo "<option value='$i' ".($plan_end[0]==$i?" selected ":"").">$i</option>";
+	echo "</select>";
+	
+	echo "</td></tr>";
+	
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][114]."</td><td>";
+	echo "<table><tr>";
+	echo "<td bgcolor='".$db->result($result,0,"priority_1")."'>1:<input type=\"text\" name=\"priority[1]\" size='7' value=\"".$db->result($result,0,"priority_1")."\"></td>";
+	echo "<td bgcolor='".$db->result($result,0,"priority_2")."'>2:<input type=\"text\" name=\"priority[2]\" size='7' value=\"".$db->result($result,0,"priority_2")."\"></td>";
+	echo "<td bgcolor='".$db->result($result,0,"priority_3")."'>3:<input type=\"text\" name=\"priority[3]\" size='7' value=\"".$db->result($result,0,"priority_3")."\"></td>";
+	echo "<td bgcolor='".$db->result($result,0,"priority_4")."'>4:<input type=\"text\" name=\"priority[4]\" size='7' value=\"".$db->result($result,0,"priority_4")."\"></td>";
+	echo "<td bgcolor='".$db->result($result,0,"priority_5")."'>5:<input type=\"text\" name=\"priority[5]\" size='7' value=\"".$db->result($result,0,"priority_5")."\"></td>";
+	echo "</tr></table>";
+	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][117]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"public_faq\" value=\"1\" "; if($db->result($result,0,"public_faq") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"public_faq\" value=\"0\" "; if($db->result($result,0,"public_faq") == 0) echo "checked";
+	echo " ></td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][120]." </td><td><select name=\"use_ajax\">";
+	$use_ajax=$db->result($result,0,"use_ajax");
+	echo "<option value=\"1\"";  if($use_ajax==1){ echo " selected";} echo ">".$lang["choice"][0]." </option>";
+	echo "<option value=\"0\"";  if($use_ajax==0){ echo " selected";} echo ">".$lang["choice"][1]."</option>";
+	echo "</select></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][121]."</td><td><input type=\"text\" size='1' name=\"ajax_wildcard\" value=\"". $db->result($result,0,"ajax_wildcard") ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][122]."</td><td>";
+	echo "<select name='dropdown_max'>";
+	$dropdown_max=$db->result($result,0,"dropdown_max");
+	for ($i=1;$i<=200;$i++) echo "<option value='$i'".($dropdown_max==$i?" selected ":"").">$i</option>";
+	echo "</select>";
+	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][123]."</td><td>";
+	echo "<select name='ajax_limit_count'>";
+	$ajax_limit_count=$db->result($result,0,"ajax_limit_count");
+	for ($i=0;$i<=200;$i++) echo "<option value='$i'".($ajax_limit_count==$i?" selected ":"").">$i</option>";
+	echo "</select>";
+	echo "</td></tr>";
+	
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][118]." </td><td>";
+	echo "<textarea cols='35' rows='4' name='text_login' >";
+	echo $db->result($result,0,"text_login");
+	echo "</textarea>";
+	echo "</td></tr>";
+		
+	echo "</table>&nbsp;</div>";	
+	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_confdisplay\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
+
+	
+	echo "</form>";
+}
 
 
 
@@ -1239,22 +1286,36 @@ function showFormMailing($target) {
 
 }
 
-function updateConfigGen($root_doc,$event_loglevel,$num_of_events,$expire_events,$jobs_at_login,$list_limit,$cut, $permit_helpdesk,$default_language,$priority,$date_fiscale,$cartridges_alarm,$planning_begin,$planning_end,$auto_assign,$public_faq,$text_login,$auto_update_check) {
+function updateConfigGen($root_doc,$event_loglevel,$expire_events, $permit_helpdesk,$default_language,$date_fiscale,$cartridges_alarm,$auto_assign,$auto_update_check) {
 	
 	$db = new DB;
 	
 		$query = "update glpi_config set root_doc = '". $root_doc ."', ";
-		$query.= "event_loglevel = '". $event_loglevel ."', num_of_events = '". $num_of_events ."', default_language = '". $default_language ."',";
-		$query.= "expire_events = '". $expire_events ."', jobs_at_login = '". $jobs_at_login ."' , list_limit = '". $list_limit ."' , cut = '". $cut ."', permit_helpdesk='". $permit_helpdesk ."',";
-		$query.= "priority_1 = '". $priority[1] ."', priority_2 = '". $priority[2] ."', priority_3 = '". $priority[3] ."', priority_4 = '". $priority[4] ."', priority_5 = '". $priority[5] ."', ";
+		$query.= "event_loglevel = '". $event_loglevel ."', default_language = '". $default_language ."',";
+		$query.= "expire_events = '". $expire_events ."', permit_helpdesk='". $permit_helpdesk ."',";
 		$query.= " date_fiscale = '". $date_fiscale ."', cartridges_alarm='".$cartridges_alarm."', ";
-		$query.= " planning_begin = '". $planning_begin .":00:00', planning_end='".$planning_end.":00:00', ";
-		$query.= " auto_assign = '". $auto_assign ."', public_faq = '". $public_faq ."', text_login = '". $text_login ."', ";
+		$query.= " auto_assign = '". $auto_assign ."', ";
 		$query.= " auto_update_check = '".$auto_update_check."' where ID = '1' ";
 		$db->query($query);
 	
 }
 
+function updateConfigDisplay($num_of_events,$jobs_at_login,$list_limit,$cut,$priority,$planning_begin,$planning_end,$public_faq,$text_login,$use_ajax,$ajax_wildcard,$ajax_limit_count,$dropdown_max) {
+	
+	$db = new DB;
+	
+		$query = "update glpi_config SET ";
+		$query.= " num_of_events = '". $num_of_events ."',";
+		$query.= " jobs_at_login = '". $jobs_at_login ."' , list_limit = '". $list_limit ."' , cut = '". $cut ."', ";
+		$query.= " priority_1 = '". $priority[1] ."', priority_2 = '". $priority[2] ."', priority_3 = '". $priority[3] ."', priority_4 = '". $priority[4] ."', priority_5 = '". $priority[5] ."', ";
+		$query.= " planning_begin = '". $planning_begin .":00:00', planning_end='".$planning_end.":00:00', ";
+		$query.= " public_faq = '". $public_faq ."', text_login = '". $text_login ."', ";
+		$query.= " use_ajax = '". $use_ajax ."', ajax_wildcard = '". $ajax_wildcard ."', ";
+		$query.= " ajax_limit_count = '". $ajax_limit_count ."', dropdown_max = '". $dropdown_max ."' ";		
+		$query.= " where ID = '1' ";
+		$db->query($query);
+	
+}
 
 function updateLDAP($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$ldap_condition,$ldap_login,$field_name,$field_email,$field_location,$field_phone,$field_realname,$ldap_port) {
 	

@@ -337,8 +337,6 @@ $cfg_layout["priority_3"] = $db->result($result,0,"priority_3");
 $cfg_layout["priority_4"] = $db->result($result,0,"priority_4");
 $cfg_layout["priority_5"] = $db->result($result,0,"priority_5");
 
-// Sizes
-$cfg_layout["dropdown_max"] = 100;
 
 // Planning being and end
 $cfg_features["planning_begin"] = $db->result($result,0,"planning_begin");
@@ -346,9 +344,12 @@ $cfg_features["planning_end"] = $db->result($result,0,"planning_end");
 
 // Wildcard for AJAX
 // TODO : Add in glpi_config
-$cfg_features["ajax_wildcard"] = "*";
-$cfg_features["use_ajax"] = 1;
-$cfg_features["ajax_limit_count"] = 0;
+$cfg_features["use_ajax"] = $db->result($result,0,"use_ajax");
+$cfg_features["ajax_wildcard"] = $db->result($result,0,"ajax_wildcard");
+$cfg_features["ajax_limit_count"] = $db->result($result,0,"ajax_limit_count");
+
+// Sizes
+$cfg_layout["dropdown_max"] = $db->result($result,0,"dropdown_max");
 
 //Login text
 $cfg_layout["text_login"] = $db->result($result,0,"text_login");
