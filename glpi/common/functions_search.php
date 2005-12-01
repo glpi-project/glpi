@@ -698,6 +698,7 @@ switch ($field){
 			if (empty($data["ITEM_".$num."_2"]))
 				echo $data["ITEM_".$num];
 			else echo $data["ITEM_".$num."_2"];
+	break;
 	case "glpi_device_ram.specif_default" :
 			if (empty($data["ITEM_".$num."_2"]))
 				echo $data["ITEM_".$num];
