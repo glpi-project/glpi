@@ -1390,7 +1390,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	if ($_GET["status"]=="new") echo "selected";
 	echo ">".$lang["job"][14]."</option>";
 	echo "<option value='old_done' ";
-	if ($_GET["status"]=="old") echo "selected";	
+	if ($_GET["status"]=="old_done") echo "selected";	
 	echo ">".$lang["job"][15]."</option>";
 	echo "</select></td></tr>";
 
