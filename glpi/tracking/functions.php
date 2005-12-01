@@ -1056,6 +1056,12 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	$job->fields["uemail"] = $uemail;
 	$job->fields["emailupdates"] = $emailupdates;
 
+	$user=new User;
+	$user->getfromDBbyID($author);
+
+	if ($emailupdates=="yes"&&empty($uemail)){
+		$job->fields["uemail"]=$user->fields["email"];
+	}
 
 	$job->fields["assign"] = $assign;
 	$job->fields["assign_type"] = $assign_type;
@@ -1118,8 +1124,6 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 		// Processing Email
 		if ($cfg_features["mailing"])
 		{
-			$user=new User;
-			$user->getfromDB($author);
 			$mail = new Mailing("new",$job,$user);
 			$mail->send();
 		}
