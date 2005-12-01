@@ -391,7 +391,7 @@ if(!$fileHandle)
 }
 
 if ($offsettable==0&&$offsetrow==-1){
- 	$time_file=date("Y-m-d-h-i");
+ 	$time_file=date("Y-m-d-H-i");
 	$cur_time=date("Y-m-d H:i");
 	$todump="#GLPI Dump database on $cur_time\n";
 	fwrite ($fileHandle,$todump);
@@ -457,7 +457,7 @@ return TRUE;
 
 if (isset($_GET["dump"]) && $_GET["dump"] != ""){
 
-    $time_file=date("Y-m-d-h-i");
+    $time_file=date("Y-m-d-H-i");
 	$cur_time=date("Y-m-d H:i");
 	$filename=$path."$time_file.$filetype";
 
