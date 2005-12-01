@@ -209,32 +209,32 @@ function getNbResol($quoi, $chps, $value, $date1 = '', $date2= '',$assign_type='
 		$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
 		if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
-				$query .= ", glpi_computers where glpi_tracking.status = 'old' and glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and $chps = '$value'";
+				$query .= ", glpi_computers where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and $chps = '$value'";
 			}
 			else {
-				$query .= " where $chps = '$value' and glpi_tracking.status = 'old'";
+				$query .= " where $chps = '$value' and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone')";
 			}
 		}
 		else {
-			$query.= " where glpi_tracking.status = 'old'";
+			$query.= " where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone')";
 		}	
 	}
 	elseif($quoi == 2) {
-		$query = "select count(ID) as total from glpi_tracking where glpi_tracking.status = 'old' and YEAR(glpi_tracking.date) = YEAR(NOW())";
+		$query = "select count(ID) as total from glpi_tracking where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and YEAR(glpi_tracking.date) = YEAR(NOW())";
 	}
 	elseif($quoi == 3) {
-		$query = "select count(ID) as total from glpi_tracking where glpi_tracking.status = 'old' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
+		$query = "select count(ID) as total from glpi_tracking where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
 	}
 	elseif($quoi == 4) {
 		$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
 		if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
-				$query .= ", glpi_computers where glpi_tracking.status = 'old' and glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and $chps = '$value'";
+				$query .= ", glpi_computers where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and $chps = '$value'";
 				if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
 
 			}
 			else {
-				$query .= " where $chps = '$value' and glpi_tracking.status = 'old'";
+				$query .= " where $chps = '$value' and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone')";
 				if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
 
 			}
@@ -268,41 +268,41 @@ function getResolAvg($quoi, $chps, $value, $date1 = '', $date2 = '',$assign_type
 	if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))";
-				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
+				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
 			}
 			else {
 				$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))";
-				$query .= " as total from glpi_tracking where $chps = '$value' and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
+				$query .= " as total from glpi_tracking where $chps = '$value' and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'";
 			}
 		}
 		else {
 			$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking";
-			$query .= " where glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
+			$query .= " where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'";
 		}
 	}
 	elseif($quoi == 2) {
-		$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking where glpi_tracking.status ='old'  and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW())";
+		$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone')  and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW())";
 	}
 	elseif($quoi == 3) {
-		$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking where glpi_tracking.status = 'old' and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
+		$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
 	}
 	elseif($quoi == 4) {
 		if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))";
-				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
+				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
 				if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
 			}
 			else {
 				$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))";
-				$query .= " as total from glpi_tracking where $chps = '$value' and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
+				$query .= " as total from glpi_tracking where $chps = '$value' and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'";
 				if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
 
 			}
 		}
 		else {
 			$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking";
-			$query .= " where glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
+			$query .= " where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'";
 			if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
 		}
 		if ($date1!="") $query.= " and date >= '". $date1 ."' ";
@@ -338,42 +338,42 @@ function getRealAvg($quoi, $chps, $value, $date1 = '', $date2 = '',$assign_type=
 		if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select AVG(glpi_tracking.realtime)";
-				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value' and glpi_tracking.realtime > 0";
+				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value' and glpi_tracking.realtime > 0";
 			}
 			else {
 				$query = "select AVG(glpi_tracking.realtime)";
-				$query .= " as total from glpi_tracking where $chps = '$value' and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
+				$query .= " as total from glpi_tracking where $chps = '$value' and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
 			}
 		}
 		else {
 			$query = "select AVG(glpi_tracking.realtime) as total from glpi_tracking";
-			$query .= " where glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
+			$query .= " where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
 		}
 	}
 	elseif($quoi == 2) {
-		$query = "select AVG(glpi_tracking.realtime) as total from glpi_tracking where glpi_tracking.status ='old'  and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and glpi_tracking.realtime > 0";
+		$query = "select AVG(glpi_tracking.realtime) as total from glpi_tracking where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone')  and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and glpi_tracking.realtime > 0";
 	}
 	elseif($quoi == 3) {
-		$query = "select AVG(glpi_tracking.realtime) as total from glpi_tracking where glpi_tracking.status = 'old' and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW()) and glpi_tracking.realtime > 0";
+		$query = "select AVG(glpi_tracking.realtime) as total from glpi_tracking where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW()) and glpi_tracking.realtime > 0";
 	}
 	elseif($quoi == 4) {
 		if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select AVG(glpi_tracking.realtime)";
-				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value' and glpi_tracking.realtime > 0";
+				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value' and glpi_tracking.realtime > 0";
 				if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
 
 			}
 			else {
 				$query = "select AVG(glpi_tracking.realtime)";
-				$query .= " as total from glpi_tracking where $chps = '$value' and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
+				$query .= " as total from glpi_tracking where $chps = '$value' and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
 				if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
 
 			}
 		}
 		else {
 			$query = "select AVG(glpi_tracking.realtime) as total from glpi_tracking";
-			$query .= " where glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and glpi_tracking.realtime > 0";
+			$query .= " where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'  and glpi_tracking.realtime > 0";
 			if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
 		}
 		if ($date1!="") $query.= " and date >= '". $date1 ."' ";
@@ -409,42 +409,42 @@ function getRealTotal($quoi, $chps, $value, $date1 = '', $date2 = '',$assign_typ
 		if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select SUM(glpi_tracking.realtime)";
-				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value' and glpi_tracking.realtime > 0";
+				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value' and glpi_tracking.realtime > 0";
 			}
 			else {
 				$query = "select SUM(glpi_tracking.realtime)";
-				$query .= " as total from glpi_tracking where $chps = '$value' and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
+				$query .= " as total from glpi_tracking where $chps = '$value' and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
 			}
 		}
 		else {
 			$query = "select SUM(glpi_tracking.realtime) as total from glpi_tracking";
-			$query .= " where glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
+			$query .= " where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
 		}
 	}
 	elseif($quoi == 2) {
-		$query = "select SUM(glpi_tracking.realtime) as total from glpi_tracking where glpi_tracking.status ='old'  and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and glpi_tracking.realtime > 0";
+		$query = "select SUM(glpi_tracking.realtime) as total from glpi_tracking where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone')  and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and glpi_tracking.realtime > 0";
 	}
 	elseif($quoi == 3) {
-		$query = "select SUM(glpi_tracking.realtime) as total from glpi_tracking where glpi_tracking.status = 'old' and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW()) and glpi_tracking.realtime > 0";
+		$query = "select SUM(glpi_tracking.realtime) as total from glpi_tracking where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW()) and glpi_tracking.realtime > 0";
 	}
 	elseif($quoi == 4) {
 		if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select SUM(glpi_tracking.realtime)";
-				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value' and glpi_tracking.realtime > 0";
+				$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value' and glpi_tracking.realtime > 0";
 				if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
 				
 			}
 			else {
 				$query = "select SUM(glpi_tracking.realtime)";
-				$query .= " as total from glpi_tracking where $chps = '$value' and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
+				$query .= " as total from glpi_tracking where $chps = '$value' and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
 				if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
 
 			}
 		}
 		else {
 			$query = "select SUM(glpi_tracking.realtime) as total from glpi_tracking";
-			$query .= " where glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
+			$query .= " where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
 		}
 		if ($date1!="") $query.= " and date >= '". $date1 ."' ";
 		if ($date2!="") $query.= " and date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
@@ -470,24 +470,26 @@ function toTimeStr($sec)
 {
 	global $lang;
 	$sec=floor($sec);
+	if ($sec<0) $sec=0;
+
 	if($sec < 60) {
 		return $sec." ".$lang["stats"][34];
 	}
 	elseif($sec < 3600) {
-		$min = (int)($sec/60);
+		$min = floor($sec/60);
 		$sec = $sec%60;
 		return $min." ".$lang["stats"][33]." ".$sec." ".$lang["stats"][34];
 	}
 	elseif($sec <  86400) {
-		$heure = (int)($sec/3600);
-		$min = (int)(($sec%60)/(60));
-		$sec = (int)$sec%60;
+		$heure = floor($sec/3600);
+		$min = floor(($sec%3600)/(60));
+		$sec = $sec%60;
 		return $heure." ".$lang["stats"][32]." ".$min." ".$lang["stats"][33]." ".$sec." ".$lang["stats"][34];
 	}
 	else {
-		$jour = (int)($sec/86400);
-		$heure = (int)(($sec%60)/(3600));
-		$min = (int)(($sec%60)/(60));
+		$jour = floor($sec/86400);
+		$heure = floor(($sec%86400)/(3600));
+		$min = floor(($sec%3600)/(60));
 		$sec = $sec%60;
 		return $jour." ".$lang["stats"][31]." ".$heure." ".$lang["stats"][32]." ".$min." ".$lang["stats"][33]." ".$sec." ".$lang["stats"][34];
 	}
@@ -501,13 +503,13 @@ function getResolMax($quoi)
 {
 	$db = new DB;
 	if($quoi == 1) {
-		$query = "select MAX(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking where glpi_tracking.status = 'old'";	
+		$query = "select MAX(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone')";	
 	}
 	elseif($quoi == 2) {
-		$query = "select MAX(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking where glpi_tracking.status ='old' and YEAR(glpi_tracking.date) = YEAR(NOW())";
+		$query = "select MAX(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and YEAR(glpi_tracking.date) = YEAR(NOW())";
 	}
 	elseif($quoi == 3) {
-		$query = "select MAX(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking where glpi_tracking.status = 'old' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
+		$query = "select MAX(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
 	}
 	$result = $db->query($query);
 	$sec = $db->result($result,0,"total");
@@ -523,13 +525,13 @@ function getRealResolMax($quoi)
 {
 	$db = new DB;
 	if($quoi == 1) {
-		$query = "select MAX(glpi_tracking.realtime) as total from glpi_tracking where glpi_tracking.status = 'old'";	
+		$query = "select MAX(glpi_tracking.realtime) as total from glpi_tracking where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone')";	
 	}
 	elseif($quoi == 2) {
-		$query = "select MAX(glpi_tracking.realtime) as total from glpi_tracking where glpi_tracking.status ='old' and YEAR(glpi_tracking.date) = YEAR(NOW())";
+		$query = "select MAX(glpi_tracking.realtime) as total from glpi_tracking where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and YEAR(glpi_tracking.date) = YEAR(NOW())";
 	}
 	elseif($quoi == 3) {
-		$query = "select MAX(glpi_tracking.realtime) as total from glpi_tracking where glpi_tracking.status = 'old' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
+		$query = "select MAX(glpi_tracking.realtime) as total from glpi_tracking where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
 	}
 //	echo $query;
 	$result = $db->query($query);
@@ -546,13 +548,13 @@ function getFirstActionMin($quoi)
 {
 	$db = new DB;
 	if($quoi == 1) {
-		$query = "select MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where glpi_tracking.status = 'old' AND glpi_tracking.closedate <> '0000-00-00 00:00:00'";	
+		$query = "select MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') AND glpi_tracking.closedate <> '0000-00-00 00:00:00'";	
 	}
 	elseif($quoi == 2) {
-		$query = "select MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where glpi_tracking.status ='old' and YEAR(glpi_tracking.date) = YEAR(NOW()) AND glpi_tracking.closedate <> '0000-00-00 00:00:00'";
+		$query = "select MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and YEAR(glpi_tracking.date) = YEAR(NOW()) AND glpi_tracking.closedate <> '0000-00-00 00:00:00'";
 	}
 	elseif($quoi == 3) {
-		$query = "select MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where glpi_tracking.status = 'old' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW()) AND glpi_tracking.closedate <> '0000-00-00 00:00:00'";
+		$query = "select MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW()) AND glpi_tracking.closedate <> '0000-00-00 00:00:00'";
 	}
 	$result = $db->query($query);
 	$total = $db->result($result,0,"total");
@@ -580,41 +582,41 @@ function getFirstActionAvg($quoi, $chps, $value, $date1 = '', $date2 = '',$assig
 		if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select glpi_tracking.ID AS ID, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first";
-				$query .= " from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID), glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
+				$query .= " from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID), glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
 			}
 			else {
 				$query = "select glpi_tracking.ID AS ID, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first";
-				$query .= " from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where $chps = '$value' and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
+				$query .= " from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where $chps = '$value' and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'";
 			}
 		}
 		else {
 			$query = "select glpi_tracking.ID AS ID, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID)";
-			$query .= " where glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
+			$query .= " where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'";
 		}
 	}
 	elseif($quoi == 2) {
-		$query = "select glpi_tracking.ID AS ID, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where glpi_tracking.status ='old'  and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW())";
+		$query = "select glpi_tracking.ID AS ID, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone')  and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW())";
 	}
 	elseif($quoi == 3) {
-		$query = "select glpi_tracking.ID AS ID, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where glpi_tracking.status = 'old' and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
+		$query = "select glpi_tracking.ID AS ID, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW()) and MONTH(glpi_tracking.date) = MONTH(NOW())";
 	}
 	elseif($quoi == 4) {
 		if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
 				$query = "select glpi_tracking.ID AS ID, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first";
-				$query .= " from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID), glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
+				$query .= " from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID), glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
 				if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
 				
 			}
 			else {
 				$query = "select glpi_tracking.ID AS ID, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first";
-				$query .= " from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where $chps = '$value' and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
+				$query .= " from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where $chps = '$value' and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'";
 				if (!empty($assign_type)) $query.=" AND assign_type='$assign_type' ";
 			}
 		}
 		else {
 			$query = "select glpi_tracking.ID AS ID, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID)";
-			$query .= " where glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00'";
+			$query .= " where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'";
 		}
 		if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
 		if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
@@ -701,7 +703,7 @@ $begin.=" 00:00:00";
 				" GROUP BY date_unix ORDER BY date";
 				break;
 		case "inter_solved": 
-			$WHERE.=" AND status = 'old' AND closedate <> '0000-00-00 00:00:00' ";
+			$WHERE.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') AND closedate <> '0000-00-00 00:00:00' ";
 			if (!empty($begin)) $WHERE.= " AND closedate >= '$begin' ";
 			 if (!empty($end)) $WHERE.= " AND closedate <= '$end' ";
 
@@ -710,7 +712,7 @@ $begin.=" 00:00:00";
 				" GROUP BY date_unix ORDER BY closedate";
 				break;
 	case "inter_avgsolvedtime" :
-			$WHERE.=" AND status = 'old' AND closedate <> '0000-00-00 00:00:00' ";
+			$WHERE.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') AND closedate <> '0000-00-00 00:00:00' ";
 			if (!empty($begin)) $WHERE.= " AND closedate >= '$begin' ";
 			 if (!empty($end)) $WHERE.= " AND closedate <= '$end' ";
 
@@ -728,7 +730,7 @@ $begin.=" 00:00:00";
 				" GROUP BY date_unix ORDER BY closedate";
 				break;
 	case "inter_avgtakeaccount" :
-			$WHERE.=" AND glpi_tracking.status = 'old' AND closedate <> '0000-00-00 00:00:00' ";
+			$WHERE.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') AND closedate <> '0000-00-00 00:00:00' ";
 			if (!empty($begin)) $WHERE.= " AND glpi_tracking.date >= '$begin' ";
 			 if (!empty($end)) $WHERE.= " AND glpi_tracking.date <= '$end' ";
 
