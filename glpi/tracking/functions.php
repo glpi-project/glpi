@@ -2307,7 +2307,9 @@ function addFollowup($input){
 
 	if ($close){
 		$updates[]="status";
+		$updates[]="closedate";
 		$job->fields["status"]="old_done";
+		$job->fields["closedate"] = date("Y-m-d H:i:s");
 		$job->updateInDB($updates);
 	}
 
@@ -2574,7 +2576,7 @@ echo "<input type='hidden' name='ID' value='$ID'>";
 echo "</form>";
 echo "</div>";
 
-showFollowups($ID);
+	showFollowups($ID);
 	}
 	
 	
@@ -2663,32 +2665,11 @@ function showFollowups($tID){
 		echo "</td>";
 		echo "</tr>";
 
-/*
-
-
-				$rand=mt_rand();
-				echo "<script type='text/javascript' >\n";
-				echo "function showDesc$rand(){\n";
-				echo "Element.hide('desc$rand');";
-				echo "var a=new Ajax.Updater('viewdesc$rand','".$cfg_install["root"]."/ajax/textarea.php' , {method: 'get',parameters: 'rows=6&cols=60&name=contents&data=".urlencode(addslashes($data["contents"]))."'});";
-				echo "}";
-				echo "</script>\n";
-
-				echo "<div id='desc$rand'  onClick='showDesc$rand()'>\n";
-				if (!empty($data["contents"]))
-					echo nl2br($data["contents"]);
-				else echo $lang["job"][33];
-				echo "</div>\n";	
-
-				echo "<div id='viewdesc$rand'>\n";
-				echo "</div>\n";	
-*/
-
-
 		echo "<tr class='tab_bg_1'>";
 		echo "<td align='center'>";
 		echo "<input type='submit' name='add' value='".$lang["buttons"][8]."' class='submit'>";
 		echo "</td>";
+		
 		echo "<td align='center'>";
 		echo "<input type='submit' name='add_close' value='".$lang["buttons"][26]."' class='submit'>";
 		echo "</td>";
