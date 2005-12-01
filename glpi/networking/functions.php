@@ -862,6 +862,14 @@ function assignVlan($port,$vlan){
 $db=new DB;
 $query="INSERT INTO glpi_networking_vlan (FK_port,FK_vlan) VALUES ('$port','$vlan')";
 $db->query($query);
+
+$np=new NetPort();
+$np->getContact($port) ;
+$query="INSERT INTO glpi_networking_vlan (FK_port,FK_vlan) VALUES ('".$np->contact_id."','$vlan')";
+$db->query($query);
+
+
+
 }
 
 function unassignVlan($ID){
