@@ -864,11 +864,10 @@ $query="INSERT INTO glpi_networking_vlan (FK_port,FK_vlan) VALUES ('$port','$vla
 $db->query($query);
 
 $np=new NetPort();
-$np->getContact($port) ;
-$query="INSERT INTO glpi_networking_vlan (FK_port,FK_vlan) VALUES ('".$np->contact_id."','$vlan')";
-$db->query($query);
-
-
+if ($np->getContact($port)){
+	$query="INSERT INTO glpi_networking_vlan (FK_port,FK_vlan) VALUES ('".$np->contact_id."','$vlan')";
+	$db->query($query);
+}
 
 }
 
