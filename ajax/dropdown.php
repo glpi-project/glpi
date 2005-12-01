@@ -96,7 +96,8 @@
 			$query = "SELECT ID, completename as name FROM ".$_POST['table']." $where ORDER BY completename $LIMIT";
 		else $query = "SELECT * FROM ".$_POST['table']." $where ORDER BY name $LIMIT";
 		$result = $db->query($query);
-		echo "<select name=\"".$_POST['myname']."\" size='1'>";
+
+		echo "<select id=\"".$_POST['myname']."\" name=\"".$_POST['myname']."\" size='1'>";
 		
 		if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 			echo "<option value=\"0\">--".$lang["common"][11]."--</option>";

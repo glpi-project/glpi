@@ -1140,8 +1140,9 @@ function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 	GLOBAL $cfg_layout, $cfg_install, $lang;
 
 	$contact = new Netport;
+	$netport = new Netport;
+
 	if ($contact->getContact($ID)) {
-		$netport = new Netport;
 		$netport->getfromDB($contact->contact_id);
 		$netport->getDeviceData($netport->fields["on_device"],$netport->fields["device_type"]);
 		echo "\n\n<table border='0' cellspacing='0' width='100%'><tr ".($netport->deleted=='Y'?"class='tab_bg_2_2'":"").">";
