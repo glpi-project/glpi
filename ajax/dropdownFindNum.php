@@ -35,6 +35,7 @@
 	include ("_relpos.php");
 	include ($phproot . "/glpi/includes.php");
 	checkAuthentication("post-only");
+	header("Content-Type: text/html; charset=UTF-8");
 
 	
 		$where="WHERE '1'='1' ";

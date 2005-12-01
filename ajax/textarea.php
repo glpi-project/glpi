@@ -31,6 +31,7 @@
 // Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
+	header("Content-Type: text/html; charset=UTF-8");
 
 	echo "<textarea rows='".$_GET['rows']."' cols='".$_GET['cols']."' name='".$_GET['name']."'>";
 	echo stripslashes(urldecode($_GET["data"]));
