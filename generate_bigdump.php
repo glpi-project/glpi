@@ -39,7 +39,7 @@ include ("_relpos.php");
 include ($phproot."/glpi/includes.php");
 $db=new DB();
 
-$multiplicator=10;
+$multiplicator=1;
 
 $max['locations']=50;
 $max['kbcategories']=10;
@@ -264,7 +264,7 @@ $db->query($query) or die("PB REQUETE ".$query);
 
 optimize_tables ();
 
-for ($i=0;$i<pow($max['kbcategories'],1/3);$i++){
+for ($i=0;$i<max(1,pow($max['kbcategories'],1/3));$i++){
 	$query="INSERT INTO glpi_dropdown_kbcategories VALUES ('','0','categorie $i','')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$newID=$db->insert_id();

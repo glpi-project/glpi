@@ -247,13 +247,13 @@ function get_content($db, $table,$from,$limit)
 
 function get_def($db, $table) {
     $def = "### Dump table $table\n\n";
-    $def .= "DROP TABLE IF EXISTS $table;\n";
-    $def .= "CREATE TABLE $table (\n";
+    $def .= "DROP TABLE IF EXISTS `$table`;\n";
+    $def .= "CREATE TABLE `$table` (\n";
     $result = $db->query("SHOW FIELDS FROM $table");
     while($line = $db->fetch_array($result)) {
     	$line=unhtmlentities_deep($line);
     	$line=stripslashes_deep($line);
-        $def .= "    $line[Field] $line[Type]";
+        $def .= "    `$line[Field]` $line[Type]";
         if (isset($line["Default"]) && $line["Default"] != "") $def .= " DEFAULT '$line[Default]'";
         if (isset($line["Null"]) && $line["Null"] != "YES") $def .= " NOT NULL";
        	if (isset($line["Extra"]) && $line["Extra"] != "") $def .= " $line[Extra]";
@@ -271,9 +271,9 @@ function get_def($db, $table) {
      }
      while(list($x, $columns) = @each($index)) {
           $def .= ",\n";
-          if($x == "PRIMARY") $def .= "   PRIMARY KEY (" . implode($columns, ", ") . ")";
-          else if (substr($x,0,6) == "UNIQUE") $def .= "   UNIQUE ".substr($x,7)." (" . implode($columns, ", ") . ")";
-          else $def .= "   KEY $x (" . implode($columns, ", ") . ")";
+          if($x == "PRIMARY") $def .= "   PRIMARY KEY (`" . implode($columns, ", ") . "`)";
+          else if (substr($x,0,6) == "UNIQUE") $def .= "   UNIQUE ".substr($x,7)." (`" . implode($columns, "`, `") . "`)";
+          else $def .= "   KEY $x (`" . implode($columns, "`, `") . "`)";
      }
 
      $def .= "\n) TYPE=MyISAM;\n\n";
