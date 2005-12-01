@@ -39,9 +39,6 @@
 
 	checkAuthentication("post-only");
 
-	// Make a select box
-	$db = new DB;
-
 	$items=array(
 	COMPUTER_TYPE=>"glpi_computers",
 	NETWORKING_TYPE=>"glpi_networking",
@@ -51,31 +48,62 @@
 
 if (isset($items[$_POST["type"]])&&$_POST["type"]>0){
 	$table=$items[$_POST["type"]];
+
+		$rand=mt_rand();
+		if (!isset($_POST['searchText']))$_POST['searchText']="";
+		
+		$where="WHERE '1'='1' ";
+		$where.=" AND deleted='N' ";
+		$where.=" AND is_template='0' ";		
+		
+		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
+			$where.=" AND name LIKE '%".$_POST['searchText']."%' ";
+
+		$NBMAX=$cfg_layout["dropdown_max"];
+		
+		$LIMIT="LIMIT 0,$NBMAX";
+		if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
+						
+		$query = "SELECT * FROM ".$table." $where ORDER BY name $LIMIT";
+
+		$result = $db->query($query);
+
+		echo "<select id='item$rand' name=\"item\" size='1'>";
+		
+		if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
+			echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 	
-	$rand=mt_rand();
-	
-	echo "<input type='text' id='search_$rand' name='____data_$rand' size='4'>\n";
+		echo "<option value=\"0\">-----</option>";
+		$i = 0;
+		$number = $db->numrows($result);
+		if ($number > 0) {
+			while ($data = $db->fetch_array($result)) {
+				$output = $data['name'];
+				if (empty($output)) $output="&nbsp;";
+				$ID = $data['ID'];
+				echo "<option value=\"$ID\">$output</option>";
+				$i++;
+			}
+		}
+		echo "</select>";
 
 	echo "<script type='text/javascript' >\n";
-	echo " new Form.Element.Observer('search_$rand', 1, \n";
+	echo " new Form.Element.Observer('item$rand', 1, \n";
 	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('results_$rand','".$cfg_install["root"]."/ajax/dropdownConnectPortDevice.php',{asynchronous:true, evalScripts:true, \n";
+	echo "      	new Ajax.Updater('results_item_$rand','".$cfg_install["root"]."/ajax/dropdownConnectPort.php',{asynchronous:true, evalScripts:true, \n";
 	echo "           onComplete:function(request)\n";
 	echo "            {Element.hide('search_spinner_$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_$rand');},\n";
-	echo "           method:'post', parameters:'searchText=' + value+'&type=".$_POST['type']."&myname=".$_POST['myname']."&current=".$_POST['current']."'\n";
+	echo "           method:'post', parameters:'item=' + value+'&type=".$_POST['type']."&myname=".$_POST['myname']."&current=".$_POST['current']."'\n";
 	echo "})});\n";
-
 	echo "</script>\n";
 
-	echo "<div id='search_spinner_$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>\n";
 
-	echo "<span id='results_$rand'>\n";
-	echo "<select name='item$rand'><option value='0'>------</option></select>\n";
+	echo "<span id='results_item_$rand'>\n";
 	echo "</span>\n";	
 
 
-}		
 
+}		
 ?>

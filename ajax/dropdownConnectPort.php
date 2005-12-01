@@ -32,7 +32,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 	include ("_relpos.php");
 	include ($phproot."/glpi/includes.php");
 	header("Content-Type: text/html; charset=UTF-8");
@@ -50,35 +49,22 @@
 
 
 		$table=$items[$_POST["type"]];
+
 		$where="";		
-		if (in_array($table,$deleted_tables))
-			$where.=" AND $table.deleted='N' ";
-		if (in_array($table,$template_tables))
-			$where.=" AND $table.is_template='0' ";		
+		$where.=" AND $table.deleted='N' ";
+		$where.=" AND $table.is_template='0' ";		
 			
-		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
-			$where.=" AND ($table.name LIKE '%".$_POST['searchText']."%' OR glpi_networking_ports.ifmac LIKE '%".$_POST['searchText']."%' OR glpi_networking_ports.ifaddr LIKE '%".$_POST['searchText']."%' OR glpi_networking_ports.name LIKE '%".$_POST['searchText']."%') ";
-
-		$NBMAX=$cfg_layout["dropdown_max"];
-		$LIMIT="LIMIT 0,$NBMAX";
-
-		if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
-						
-
-	$query =  "SELECT DISTINCT glpi_networking_wire.ID as WID, glpi_networking_ports.ID as DID, $table.name as CNAME, glpi_networking_ports.name  as NNAME, glpi_networking_ports.ifaddr as IP, glpi_networking_ports.ifmac as MAC";
-	$query.= " FROM $table ";
-	$query.= " LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type='".$_POST['type']."' AND glpi_networking_ports.on_device=$table.ID) "; 
-	$query.= " LEFT JOIN glpi_networking_wire ON (glpi_networking_wire.end1=glpi_networking_ports.ID OR glpi_networking_wire.end2=glpi_networking_ports.ID)";
-	$query.= " WHERE glpi_networking_wire.ID IS NULL AND glpi_networking_ports.ID IS NOT NULL AND glpi_networking_ports.ID <> '".$_POST['current']."' ";
-	$query.= $where;
-	$query.= " ORDER BY glpi_networking_ports.ID";
+		$query =  "SELECT DISTINCT glpi_networking_wire.ID as WID, glpi_networking_ports.ID as DID, $table.name as CNAME, glpi_networking_ports.name  as NNAME, glpi_networking_ports.ifaddr as IP, glpi_networking_ports.ifmac as MAC";
+		$query.= " FROM $table ";
+		$query.= " LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.on_device='".$_POST['item']."' AND glpi_networking_ports.device_type='".$_POST['type']."' AND glpi_networking_ports.on_device=$table.ID) "; 
+		$query.= " LEFT JOIN glpi_networking_wire ON (glpi_networking_wire.end1=glpi_networking_ports.ID OR glpi_networking_wire.end2=glpi_networking_ports.ID)";
+		$query.= " WHERE glpi_networking_wire.ID IS NULL AND glpi_networking_ports.ID IS NOT NULL AND glpi_networking_ports.ID <> '".$_POST['current']."' ";
+		$query.= $where;
+		$query.= " ORDER BY glpi_networking_ports.ID";
 //		echo $query;
 	$result = $db->query($query);
 	echo "<select name=\"".$_POST['myname']."\" size='1'>";
 		
-		if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
-			echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
-	
 		echo "<option value=\"0\">-----</option>";
 		$i = 0;
 		$number = $db->numrows($result);
@@ -95,6 +81,5 @@
 			}
 		}
 		echo "</select>";
-
 
 ?>
