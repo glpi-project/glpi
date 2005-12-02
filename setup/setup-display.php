@@ -56,11 +56,11 @@ $newrank=$db->result($result,0,0)+1;
 $query="INSERT INTO glpi_display (type,num,rank) VALUES ('$which','".$_POST['to_add']."','$newrank')";
 $db->query($query);
 
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["delete"])||isset($_POST["delete_x"])) {
 
 $query="DELETE FROM glpi_display WHERE ID='".$_POST['ID']."';";
 $db->query($query);
-} else if (isset($_POST["up"])) {
+} else if (isset($_POST["up"])||isset($_POST["up_x"])) {
 // Get current item
 $query="SELECT rank FROM glpi_display WHERE ID='".$_POST['ID']."';";
 $result=$db->query($query);
@@ -76,7 +76,7 @@ $db->query($query);
 $query="UPDATE glpi_display SET rank='$rank1' WHERE ID ='$ID2'";
 $db->query($query);
 
-} else if (isset($_POST["down"])) {
+} else if (isset($_POST["down"])||isset($_POST["down_x"])) {
 // Get current item
 $query="SELECT rank FROM glpi_display WHERE ID='".$_POST['ID']."';";
 $result=$db->query($query);
