@@ -106,6 +106,7 @@ $identificat->err=$lang["login"][8];
 		if ($auth_succeded) {
 			$identificat->extauth=1;
 			$user_present = $identificat->user->getFromDB($_POST['login_name']);
+
 			if ($identificat->user->getFromIMAP($cfg_login['imap']['host'],utf8_decode($_POST['login_name']))) {
 				$update_list = array('email');
 			}
@@ -170,6 +171,24 @@ $identificat->err=$lang["login"][8];
 
 } // Fin des tests de connexion
 
+// Ok, we have gathered sufficient data, if the first return false the user
+// are not present on the DB, so we add it.
+// if not, we update it.
+
+
+if ($auth_succeded)
+if (!$user_present&&$cfg_features["auto_add_users"]) {
+	$identificat->user->fields["ID"]=$identificat->user->addToDB($identificat->extauth);
+} else if (!$user_present){ // Auto add not enable so auth failed
+	$identificat->err.="User not allowed to login";
+	$auth_succeded=false;	
+}else if (!empty($update_list)) {
+	$identificat->user->updateInDB($update_list);
+	// Blank PWD to clean old database for the external auth
+	if ($identificat->extauth)
+	$identificat->user->blankPassword();
+}
+
 
 // we have done at least a good login? No, we exit.
 if ( ! $auth_succeded ) {
@@ -179,21 +198,6 @@ if ( ! $auth_succeded ) {
 	nullFooter();
 	logevent(-1, "system", 1, "login", "failed login: ".$_POST['login_name']);
 	exit;
-}
-
-// Ok, we have gathered sufficient data, if the first return false the user
-// are not present on the DB, so we add it.
-// if not, we update it.
-
-
-if ($auth_succeded)
-if (!$user_present) {
-	$identificat->user->fields["ID"]=$identificat->user->addToDB($identificat->extauth);
-} else if (!empty($update_list)) {
-	$identificat->user->updateInDB($update_list);
-	// Blank PWD to clean old database for the external auth
-	if ($identificat->extauth)
-	$identificat->user->blankPassword();
 }
 
 // now we can continue with the process...

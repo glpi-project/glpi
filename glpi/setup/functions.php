@@ -931,6 +931,9 @@ function showFormConfigGen($target){
 	echo "<option value=\"7\"";  if($check==7){ echo " selected";} echo ">".$lang["setup"][308]."</option>";
 	echo "<option value=\"30\"";  if($check==30){ echo " selected";} echo ">".$lang["setup"][309]."</option>";
 	echo "</select></td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][124]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"auto_add_users\" value=\"1\" "; if($db->result($result,0,"auto_add_users") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"auto_add_users\" value=\"0\" "; if($db->result($result,0,"auto_add_users") == 0) echo "checked"; 
+	echo " ></td></tr>";
 	
 		echo "</table>&nbsp;</div>";	
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_confgen\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
@@ -1286,7 +1289,7 @@ function showFormMailing($target) {
 
 }
 
-function updateConfigGen($root_doc,$event_loglevel,$expire_events, $permit_helpdesk,$default_language,$date_fiscale,$cartridges_alarm,$auto_assign,$auto_update_check) {
+function updateConfigGen($root_doc,$event_loglevel,$expire_events, $permit_helpdesk,$default_language,$date_fiscale,$cartridges_alarm,$auto_assign,$auto_update_check,$auto_add_users) {
 	
 	$db = new DB;
 	
@@ -1294,8 +1297,8 @@ function updateConfigGen($root_doc,$event_loglevel,$expire_events, $permit_helpd
 		$query.= "event_loglevel = '". $event_loglevel ."', default_language = '". $default_language ."',";
 		$query.= "expire_events = '". $expire_events ."', permit_helpdesk='". $permit_helpdesk ."',";
 		$query.= " date_fiscale = '". $date_fiscale ."', cartridges_alarm='".$cartridges_alarm."', ";
-		$query.= " auto_assign = '". $auto_assign ."', ";
-		$query.= " auto_update_check = '".$auto_update_check."' where ID = '1' ";
+		$query.= " auto_assign = '". $auto_assign ."', auto_update_check = '".$auto_update_check."', ";
+		$query.= " auto_add_users = '".$auto_add_users."' where ID = '1' ";
 		$db->query($query);
 	
 }
