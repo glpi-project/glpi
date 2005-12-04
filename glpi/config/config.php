@@ -359,6 +359,9 @@ $cfg_features["auto_update_check"] = $db->result($result,0,"auto_update_check");
 $cfg_features["last_update_check"] = $db->result($result,0,"last_update_check");
 $cfg_features["founded_new_version"] = $db->result($result,0,"founded_new_version");
 
+// Auto add users from auth ext
+$cfg_features["auto_add_users"] = $db->result($result,0,"auto_add_users");
+
 }
 
 

@@ -66,10 +66,25 @@ if (isset($_POST["add"])) {
 	logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]." updated user ".$_POST["name"].".");
 	showUserform($_SERVER["PHP_SELF"],$_POST["name"]);
 } else {
-
-checkAuthentication("admin");
-commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
-showUserform($_SERVER["PHP_SELF"],$_GET["name"]);
+	
+	if (!isset($_GET["ext_auth"])){
+		checkAuthentication("admin");
+		commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
+		showUserform($_SERVER["PHP_SELF"],$_GET["name"]);
+	} else {
+		if (isset($_GET['add_ext_auth'])){
+			if (isset($_GET['login'])&&!empty($_GET['login'])){
+				$user=new User();
+				$user->fields["name"]=$_GET['login'];
+				$user->fields["type"]=$_GET['type'];
+				$user->addToDB(1);
+			}
+			glpi_header($_SERVER['HTTP_REFERER']);
+		}
+		checkAuthentication("admin");
+		commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
+		showAddExtAuthUserForm($_SERVER["PHP_SELF"]);
+	}
 }
 	
 

@@ -41,8 +41,10 @@ function titleUsers(){
 		
 		GLOBAL  $lang,$HTMLRel;
                 echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/users.png\" alt='".$lang["setup"][2]."' title='".$lang["setup"][2]."'></td><td><a  class='icon_consol' href=\"users-info-form.php?new=1\"><b>".$lang["setup"][2]."</b></a>";
-                echo "</td></tr></table></div>";
+                echo "<img src=\"".$HTMLRel."pics/users.png\" alt='".$lang["setup"][2]."' title='".$lang["setup"][2]."'></td>";
+                echo "<td><a  class='icon_consol' href=\"users-info-form.php?new=1\"><b>".$lang["setup"][2]."</b></a></td>";
+                echo "<td><a  class='icon_consol' href=\"users-info-form.php?new=1&ext_auth=1\"><b>".$lang["setup"][125]."</b></a></td>";
+                echo "</tr></table></div>";
 }
 function showPasswordForm($target,$ID) {
 
@@ -154,20 +156,8 @@ function showUserform($target,$name) {
 		}
 		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td><input name='realname' size='20' value=\"".$user->fields["realname"]."\"></td></tr>";
 		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][20]."</td><td>";
-		echo "<select name='type' >";
-		echo "<option value='super-admin'";
-		if ($user->fields["type"]=="super-admin") { echo " selected"; }
-		echo ">Super-Admin";
-		echo "<option value='admin'";
-		if ($user->fields["type"]=="admin") { echo " selected"; }
-		echo ">Admin";
-		echo "<option value=normal";
-		if (empty($name)||$user->fields["type"]=="normal") { echo " selected"; }
-		echo ">Normal";
-		echo "<option value=\"post-only\"";
-		if ($user->fields["type"]=="post-only") { echo " selected"; }
-		echo ">Post Only";
-		echo "</select>";
+		
+		dropdownUserType("type",$user->fields["type"]);
 	} else {
 		if (($user->fields["type"]!="super-admin"&&!empty($user->fields["password"]))||$name=="")
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value=\"".$user->fields["password"]."\" size='20' /></td></tr>";
@@ -690,5 +680,51 @@ function showSortForm($target) {
 	echo "</form>\n";
 
 	echo "</div>\n";
+}
+
+function showAddExtAuthUserForm($target){
+	global $lang;
+	
+	echo "<div align='center'>\n";
+	echo "<form method='get' action=\"$target\">\n";
+
+	echo "<table class='tab_cadre' cellpadding='5'>\n";
+	echo "<tr><th colspan='3'>".$lang["setup"][126]."</th></tr>\n";
+	echo "<tr class='tab_bg_1'><td>".$lang["login"][6]."</td>\n";
+	echo "<td>";
+	echo "<input type='text' name='login'>";
+	echo "</td>";
+	echo "<td align='center' class='tab_bg_2' rowspan='2'>\n";
+	echo "<input type='hidden' name='ext_auth' value='1'>\n";
+	echo "<input type='submit' name='add_ext_auth' value=\"".$lang["buttons"][8]."\" class='submit'>\n";
+	echo "</td></tr>\n";
+	echo "<tr class='tab_bg_1'><td>".$lang["setup"][20]."</td>\n";
+	echo "<td>";
+	dropdownUserType("type");
+	echo "</td></tr>";
+	
+	echo "</table>";
+	echo "</form>\n";
+
+	echo "</div>\n";
+	
+}
+
+function dropdownUserType($myname,$value="post-only"){
+		echo "<select name='$myname' >";
+		echo "<option value=\"post-only\"";
+		if ($value=="post-only") { echo " selected"; }
+		echo ">Post Only</option>";
+		echo "<option value=normal";
+		if ($value=="normal") { echo " selected"; }
+		echo ">Normal</option>";
+		echo "<option value='admin'";
+		if ($value=="admin") { echo " selected"; }
+		echo ">Admin</option>";
+		echo "<option value='super-admin'";
+		if ($value=="super-admin") { echo " selected"; }
+		echo ">Super-Admin</option>";
+		echo "</select>";
+	
 }
 ?>
