@@ -626,7 +626,7 @@ function addNetdevice($input) {
 	
 	// fill array for update
 	foreach ($input as $key => $val) {
-		if (empty($netdev->fields[$key]) || $netdev->fields[$key]  != $input[$key]) {
+		if ($key[0]!='_'&&(empty($netdev->fields[$key]) || $netdev->fields[$key]  != $input[$key])) {
 			$netdev->fields[$key] = $input[$key];
 		}
 	}
