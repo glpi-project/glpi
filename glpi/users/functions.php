@@ -43,7 +43,7 @@ function titleUsers(){
                 echo "<div align='center'><table border='0'><tr><td>";
                 echo "<img src=\"".$HTMLRel."pics/users.png\" alt='".$lang["setup"][2]."' title='".$lang["setup"][2]."'></td>";
                 echo "<td><a  class='icon_consol' href=\"users-info-form.php?new=1\"><b>".$lang["setup"][2]."</b></a></td>";
-                if (!empty($cfg_login['imap']['auth_server'])||!empty($cfg_login['ldap']['host'])||!empty($cfg_login["cas"]["host"]))
+                if (useAuthExt())
 	                echo "<td><a  class='icon_consol' href=\"users-info-form.php?new=1&ext_auth=1\"><b>".$lang["setup"][125]."</b></a></td>";
                 echo "</tr></table></div>";
 }
@@ -727,5 +727,10 @@ function dropdownUserType($myname,$value="post-only"){
 		echo ">Super-Admin</option>";
 		echo "</select>";
 	
+}
+
+function useAuthExt(){
+	
+return (!empty($cfg_login['imap']['auth_server'])||!empty($cfg_login['ldap']['host'])||!empty($cfg_login["cas"]["host"]));
 }
 ?>
