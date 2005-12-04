@@ -49,7 +49,7 @@ function titleUsers(){
 }
 function showPasswordForm($target,$ID) {
 
-	GLOBAL $cfg_layout, $lang,$cfg_login;
+	GLOBAL $cfg_layout, $lang;
 	
 	$user = new User($ID);
 	$user->getFromDB($ID);
@@ -730,7 +730,7 @@ function dropdownUserType($myname,$value="post-only"){
 }
 
 function useAuthExt(){
-	
+global $cfg_login;	
 return (!empty($cfg_login['imap']['auth_server'])||!empty($cfg_login['ldap']['host'])||!empty($cfg_login["cas"]["host"]));
 }
 ?>
