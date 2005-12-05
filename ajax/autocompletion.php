@@ -41,9 +41,9 @@
 	$query="SELECT DISTINCT ".$_POST['field']." AS VAL FROM ".$_POST['table']." WHERE ".$_POST['field']." LIKE '".$_POST[$_POST['myname']]."%' LIMIT 0,20";
 	if ($result=$db->query($query))
 	if ($db->numrows($result)>0){
-		echo "<ul>";
+		echo "<ul class='autocomp'>";
 		while ($data=$db->fetch_array($result))
-		echo "<li>".$data["VAL"]."</li>";
+		echo "<li class='autocomp'>".$data["VAL"]."</li>";
 		echo "</ul>";
 	}
 
