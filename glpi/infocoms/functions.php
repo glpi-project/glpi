@@ -581,7 +581,13 @@ return " OR glpi_infocoms.num_immo LIKE '%".$contains."%' OR glpi_infocoms.num_c
 
 function showDisplayInfocomLink($device_type,$device_id,$update=0){
 global $HTMLRel,$lang;
-echo "<a href='#' onClick=\"window.open('".$HTMLRel."infocoms/infocoms-show.php?device_type=$device_type&amp;device_id=$device_id&amp;update=$update','infocoms','location=infocoms,width=750,height=600,scrollbars=no')\"><img src=\"".$HTMLRel."/pics/dollar.png\" alt=\"".$lang["buttons"][23]."\" title=\"".$lang["buttons"][23]."\"></a>";
+$db=new DB;
+$query="SELECT COUNT(ID) FROM glpi_infocoms WHERE FK_device='$device_id' AND device_type='$device_type'";
+$add="add";
+$result=$db->query($query);
+if ($db->result($result,0,0)>0) $add="";
+
+echo "<a href='#' onClick=\"window.open('".$HTMLRel."infocoms/infocoms-show.php?device_type=$device_type&amp;device_id=$device_id&amp;update=$update','infocoms','location=infocoms,width=750,height=600,scrollbars=no')\"><img src=\"".$HTMLRel."/pics/dollar$add.png\" alt=\"".$lang["buttons"][23]."\" title=\"".$lang["buttons"][23]."\"></a>";
 }
 
 ?>
