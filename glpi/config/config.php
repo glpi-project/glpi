@@ -347,6 +347,7 @@ $cfg_features["planning_end"] = $db->result($result,0,"planning_end");
 $cfg_features["use_ajax"] = $db->result($result,0,"use_ajax");
 $cfg_features["ajax_wildcard"] = $db->result($result,0,"ajax_wildcard");
 $cfg_features["ajax_limit_count"] = $db->result($result,0,"ajax_limit_count");
+$cfg_features["ajax_autocompletion"] = $db->result($result,0,"ajax_autocompletion");
 
 // Sizes
 $cfg_layout["dropdown_max"] = $db->result($result,0,"dropdown_max");

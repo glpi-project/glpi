@@ -1303,7 +1303,7 @@ function dropdownSoftwareToInstall($myname,$withtemplate) {
 function autocompletionTextField($myname,$table,$field,$value='',$size=20){
 	global $HTMLRel,$cfg_features;
 
-	if ($cfg_features["use_ajax"]){
+	if ($cfg_features["use_ajax"]&&$cfg_features["ajax_autocompletion"]){
 		$rand=mt_rand();
 		echo "<input id='textfield_$myname$rand' type='text' name='$myname' value='$value' size='$size'>\n";
 		echo "<div id='textfieldupdate_$myname$rand' style='display:none;border:1px solid black;background-color:white;'></div>\n";

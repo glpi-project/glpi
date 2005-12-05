@@ -993,6 +993,13 @@ function showFormConfigDisplay($target){
 	echo "<option value=\"1\"";  if($use_ajax==1){ echo " selected";} echo ">".$lang["choice"][0]." </option>";
 	echo "<option value=\"0\"";  if($use_ajax==0){ echo " selected";} echo ">".$lang["choice"][1]."</option>";
 	echo "</select></td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][127]." </td><td><select name=\"ajax_autocompletion\">";
+	$ajax_autocompletion=$db->result($result,0,"ajax_autocompletion");
+	echo "<option value=\"1\"";  if($ajax_autocompletion==1){ echo " selected";} echo ">".$lang["choice"][0]." </option>";
+	echo "<option value=\"0\"";  if($ajax_autocompletion==0){ echo " selected";} echo ">".$lang["choice"][1]."</option>";
+	echo "</select></td></tr>";
+
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][121]."</td><td><input type=\"text\" size='1' name=\"ajax_wildcard\" value=\"". $db->result($result,0,"ajax_wildcard") ."\"></td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][122]."</td><td>";
 	echo "<select name='dropdown_max'>";
@@ -1303,7 +1310,7 @@ function updateConfigGen($root_doc,$event_loglevel,$expire_events, $permit_helpd
 	
 }
 
-function updateConfigDisplay($num_of_events,$jobs_at_login,$list_limit,$cut,$priority,$planning_begin,$planning_end,$public_faq,$text_login,$use_ajax,$ajax_wildcard,$ajax_limit_count,$dropdown_max) {
+function updateConfigDisplay($num_of_events,$jobs_at_login,$list_limit,$cut,$priority,$planning_begin,$planning_end,$public_faq,$text_login,$use_ajax,$ajax_wildcard,$ajax_limit_count,$dropdown_max,$ajax_autocompletion) {
 	
 	$db = new DB;
 	
@@ -1314,7 +1321,8 @@ function updateConfigDisplay($num_of_events,$jobs_at_login,$list_limit,$cut,$pri
 		$query.= " planning_begin = '". $planning_begin .":00:00', planning_end='".$planning_end.":00:00', ";
 		$query.= " public_faq = '". $public_faq ."', text_login = '". $text_login ."', ";
 		$query.= " use_ajax = '". $use_ajax ."', ajax_wildcard = '". $ajax_wildcard ."', ";
-		$query.= " ajax_limit_count = '". $ajax_limit_count ."', dropdown_max = '". $dropdown_max ."' ";		
+		$query.= " ajax_limit_count = '". $ajax_limit_count ."', dropdown_max = '". $dropdown_max ."', ";		
+		$query.= " ajax_autocompletion = '". $ajax_autocompletion ."' ";				
 		$query.= " where ID = '1' ";
 		$db->query($query);
 	
