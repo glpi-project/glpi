@@ -147,19 +147,21 @@ class User {
 			if ( (empty($v)) || empty($v[0][$fields['name']][0]) ) {
 	  			return false;
 	  		}
-			
+
+  		$fields=array_filter($fields);
 			foreach ($fields as $k => $e)	{
+				
 					if (!empty($v[0][$e][0]))
 						$this->fields[$k] = $v[0][$e][0];
 			}
 			
 			// Is location get from LDAP ?
-			if (!empty($v[0][$fields["location"]][0])){
+			if (!empty($v[0][$fields["location"]][0])&&!empty($fields['location'])){
 				$db=new DB;
-				$query="SELECT ID FROM glpi_dropdown_locations WHERE name='".$this->fields['location']."'";
+				$query="SELECT ID FROM glpi_dropdown_locations WHERE completename='".$this->fields['location']."'";
 				$result=$db->query($query);
 				if ($db->numrows($result)==0){
-					$db->query("INSERT INTO glpi_dropdown_locations (name) VALUES ('".$this->fields['location']."')");
+					$db->query("INSERT INTO glpi_dropdown_locations (name,completename) VALUES ('".$this->fields['location']."','".$this->fields['location']."')");
 					}
 					$this->fields['location']=$db->insert_id();
 			}
@@ -167,7 +169,6 @@ class User {
 			return true;
   		}
   	}
-  	
   	return false;
 
 	} // getFromLDAP()
@@ -224,20 +225,21 @@ class User {
 	  		$fields=array_filter($fields);
 				foreach ($fields as $k => $e)
 				{
-					$this->fields[$k] = $v[0][$e][0];
+					if (!empty($v[0][$e][0]))
+						$this->fields[$k] = $v[0][$e][0];
 				}
 
-				if (!empty($this->fields['location'])){
+				// Is location get from LDAP ?
+				if (!empty($v[0][$fields["location"]][0])&&!empty($fields['location'])){
 					$db=new DB;
-					$query="SELECT ID FROM glpi_dropdown_locations WHERE name='".$this->fields['location']."'";
+					$query="SELECT ID FROM glpi_dropdown_locations WHERE completename='".$this->fields['location']."'";
 					$result=$db->query($query);
 					if ($db->numrows($result)==0){
-						$db->query("INSERT INTO glpi_dropdown_locations (name) VALUES ('".$this->fields['location']."')");
+						$db->query("INSERT INTO glpi_dropdown_locations (name,completename) VALUES ('".$this->fields['location']."','".$this->fields['location']."')");
 						}
-						$result=$db->query($query);
-						$data = $db->fetch_row($result);
-						$this->fields['location']=$data[0];
-					}
+						$this->fields['location']=$db->insert_id();
+				}
+
 				return true;
   		}
   	}
