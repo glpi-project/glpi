@@ -794,9 +794,9 @@ for ($i=0;$i<$max['global_peripherals'];$i++){
 	add_reservation(PERIPHERAL_TYPE,$periphID);
 
 	// Add connections
-	$val=mt_rand(0,$max['connect_for_peripherals']);
-	for ($j=0;$j<$val;$j++){
-		$query="INSERT INTO glpi_connect_wire VALUES ('','$periphID','".(1+$j)."','".PERIPHERAL_TYPE."')";
+	$val=mt_rand(1,$max['connect_for_peripherals']);
+	for ($j=1;$j<$val;$j++){
+		$query="INSERT INTO glpi_connect_wire VALUES ('','$periphID','".($j)."','".PERIPHERAL_TYPE."')";
 		$db->query($query) or die("PB REQUETE ".$query);	
 	}
 }

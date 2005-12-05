@@ -108,7 +108,8 @@ class Computer {
 			
 		// Mise a jour du contact des éléments rattachés
 		if ($updates[$i]=="contact" ||$updates[$i]=="contact_num"){
-			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][49];
+			
+			$update_done=false;
 			$updates3[0]="contact";
 			$updates3[1]="contact_num";
 			//printers
@@ -123,6 +124,8 @@ class Computer {
 					$printer->fields['contact']=$this->fields['contact'];
 					$printer->fields['contact_num']=$this->fields['contact_num'];
 					$printer->updateInDB($updates3);
+					$update_done=true;
+
 					}
 				}
 			}
@@ -137,7 +140,11 @@ class Computer {
 					$monitor->getfromDB($tID);
 					$monitor->fields['contact']=$this->fields['contact'];
 					$monitor->fields['contact_num']=$this->fields['contact_num'];
-					$monitor->updateInDB($updates3);
+					if (!$monitor->fields['is_global']){
+						$monitor->updateInDB($updates3);
+						$update_done=true;
+					}
+
 					}
 				}
 			}
@@ -152,17 +159,20 @@ class Computer {
 					$peri->getfromDB($tID);
 					$peri->fields['contact']=$this->fields['contact'];
 					$peri->fields['contact_num']=$this->fields['contact_num'];
-					$peri->updateInDB($updates3);
+					if (!$peri->fields['is_global']){
+						$peri->updateInDB($updates3);
+						$update_done=true;
+						}
 					}
 				}
 			}
-		
+		if ($update_done) $_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][49];
 		
 		}
 		
 		// Mise a jour du lieu des éléments rattachés
 		if ($updates[$i]=="location" && $this->fields[$updates[$i]]!=0){
-			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][48];
+			$update_done=false;
 			$updates2[0]="location";
 			//printers
 			$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".PRINTER_TYPE."'";
@@ -175,6 +185,7 @@ class Computer {
 					$printer->getfromDB($tID);
 					$printer->fields['location']=$this->fields['location'];
 					$printer->updateInDB($updates2);
+					$update_done=true;
 					}
 				}
 			}
@@ -188,7 +199,10 @@ class Computer {
 					$monitor = new Monitor;
 					$monitor->getfromDB($tID);
 					$monitor->fields['location']=$this->fields['location'];
-					$monitor->updateInDB($updates2);
+					if (!$monitor->fields['is_global']){
+						$monitor->updateInDB($updates2);
+						$update_done=true;
+					}
 					}
 				}
 			}
@@ -202,11 +216,17 @@ class Computer {
 					$peri = new Peripheral;
 					$peri->getfromDB($tID);
 					$peri->fields['location']=$this->fields['location'];
-					$peri->updateInDB($updates2);
+					if (!$peri->fields['is_global']){
+						$peri->updateInDB($updates2);
+						$update_done=true;
+					}
 					}
 				}
 			}
+		if ($update_done) $_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][48];
+
 		}
+	
 		}
 		
 		
