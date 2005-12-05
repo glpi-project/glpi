@@ -62,11 +62,13 @@ function header_html($etape)
 
         body {
         background-color:#C5DAC8;
-        color:#000000; }
+        font-family: Verdana;
+	 color:#000000; }
         
        .principal {
         background-color: #ffffff;
-        font-family: Verdana;font-size:12px;
+        font-family: Verdana;
+	font-size:12px;
         text-align: justify ; 
         -moz-border-radius: 4px;
 	border: 1px solid #FFC65D;
@@ -265,7 +267,7 @@ function step1($update)
 
 // Check for mysql extension ni php
 	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][71]."</b></td>";
-	if(!function_exists("mysql_connect")) {
+	if(!function_exists("mysql_query")) {
 		echo "<td  class='red'>".$lang["install"][72]."</td></tr>";
 		$error = 2;
 	} else {
