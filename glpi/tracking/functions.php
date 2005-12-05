@@ -2039,22 +2039,21 @@ function showFollowupsShort($ID) {
 	GLOBAL $cfg_install, $cfg_layout, $lang;
 
 	// Get Number of Followups
-
-	$job = new Job;
-	$job->getFromDB($ID,0);
-	$nbfollow=$job->numberOfFollowups();
-	if ($nbfollow) {
+	$db=new DB;
+	$query="SELECT * FROM glpi_followups WHERE tracking='$ID' ORDER BY date";
+	$result=$db->query($query);
+	
+	
+	if ($db->numrows($result)>0) {
 		echo "<center><table class='tab_cadre' width='100%' cellpadding='2'>\n";
 		echo "<tr><th>".$lang["joblist"][1]."</th><th>".$lang["joblist"][3]."</th><th>".$lang["joblist"][6]."</th></tr>\n";
 
-		for ($i=0; $i < $nbfollow; $i++) {
-			$fup = new Followup;
-			$fup->getFromDB($ID,$i);
+		while ($data=$db->fetch_array($result)) {
 			
 			echo "<tr class='tab_bg_2'>";
-			echo "<td align='center'>".$fup->fields["date"]."</td>";
-			echo "<td align='center'>".$fup->fields["author"]."</td>";
-			echo "<td width='70%'><strong>".$fup->fields["contents"]."</strong></td>";
+			echo "<td align='center'>".$data["date"]."</td>";
+			echo "<td align='center'>".getUserName($data["author"],1)."</td>";
+			echo "<td width='70%'><strong>".$data["contents"]."</strong></td>";
 			echo "</tr>";
 		}		
 
