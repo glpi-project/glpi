@@ -128,6 +128,7 @@ $config = array($lang["Menu"][14]=>array("/users/index.php","u"),
 	
 	// AJAX library
 	echo "<script type=\"text/javascript\" src='".$HTMLRel."prototype.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$HTMLRel."scriptaculous/scriptaculous.js'></script>";
 	
 	// End of Head
 	echo "</head>\n";
