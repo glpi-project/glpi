@@ -1311,7 +1311,6 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=20){
 	    echo "new Ajax.Autocompleter('textfield_$myname$rand','textfieldupdate_$myname$rand','".$HTMLRel."/ajax/autocompletion.php',{parameters:'table=$table&field=$field&myname=$myname'});";
 		echo "</script>";
 	}	else {
-		echo "---";
 		echo "<input type='text' name='$myname' value='$value' size='$size'>\n";
 	}
 }
