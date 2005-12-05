@@ -3233,6 +3233,12 @@ if(!FieldExists("glpi_config","use_ajax")) {
 	ADD `ajax_limit_count` INT DEFAULT '50' NOT NULL ; ";
 	$db->query($query) or die("0.65 add ajax fields in config".$lang["update"][90].$db->error());
 }
+
+if(!FieldExists("glpi_config","ajax_autocompletion")) {
+	$query="ALTER TABLE `glpi_config` ADD `ajax_autocompletion` SMALLINT DEFAULT '1' NOT NULL ;";
+	$db->query($query) or die("0.65 add ajax_autocompletion field in config".$lang["update"][90].$db->error());
+}
+
 if(!FieldExists("glpi_config","auto_add_users")) {
 	$query="ALTER TABLE `glpi_config` ADD `auto_add_users` SMALLINT DEFAULT '1' NOT NULL ;";
 	$db->query($query) or die("0.65 add auto_add_users field in config".$lang["update"][90].$db->error());
