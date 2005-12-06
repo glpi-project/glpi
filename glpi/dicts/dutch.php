@@ -180,6 +180,7 @@ $lang["common"][8]="Manage templates...";
 $lang["common"][9]="Toevoegen template..."; 
 $lang["common"][10]="Technical responsible"; 
 $lang["common"][11]="Limited view"; 
+$lang["common"][12]="Print doubloons"; 
 
 $lang["computers"][0]="Toevoegen Computer..."; 
 $lang["computers"][1]="Identifier"; 
@@ -640,6 +641,10 @@ $lang["job"][29]="Add a new Followup";
 $lang["job"][30]="Private"; 
 $lang["job"][31]="Duration"; 
 $lang["job"][32]="Not planned"; 
+$lang["job"][33]="Empty Description"; 
+$lang["job"][34]="Plan this followup"; 
+$lang["job"][35]="Planning"; 
+$lang["job"][36]="Impossible planning. Mistake in the date or technician unavailable to this schedule"; 
 
 $lang["joblist"][0]="Status"; 
 $lang["joblist"][1]="Datum"; 
@@ -667,6 +672,7 @@ $lang["joblist"][22]="Geen oude tussenkomst gevonden";
 $lang["joblist"][23]="Een oude tussenkomst toevoegen aan de geschiedenis"; 
 $lang["joblist"][24]="Not closed"; 
 $lang["joblist"][25]="Old"; 
+$lang["joblist"][26]="Waiting"; 
 
 $lang["knowbase"][0]="Kennis databank"; 
 $lang["knowbase"][1]="FAQ"; 
@@ -748,6 +754,8 @@ $lang["mailing"][20]="Begindatum:";
 $lang["mailing"][21]="Einddatum"; 
 $lang["mailing"][22]="Commentaar:"; 
 $lang["mailing"][23]="Reservatie aanpassing"; 
+$lang["mailing"][24]="Status:"; 
+$lang["mailing"][25]="Planning:"; 
 
 $lang["Menu"][0]="Computers"; 
 $lang["Menu"][1]="Netwerken"; 
@@ -1189,6 +1197,15 @@ $lang["setup"][115]="Standaard drempel voor inktpatronen en verbruikersartikelen
 $lang["setup"][116]="Wijs de tussenkomsten automatisch toe aan de technische persoon in dienst"; 
 $lang["setup"][117]="Authorize the anonymous view of the knowledge base"; 
 $lang["setup"][118]="Text of the login page"; 
+$lang["setup"][119]="Display Configuration"; 
+$lang["setup"][120]="Use Ajax"; 
+$lang["setup"][121]="Ajax Wildcard"; 
+$lang["setup"][122]="Ajax - Maximum number of items viewed"; 
+$lang["setup"][123]="Do not use Ajax if the number of items is less than (0=never)"; 
+$lang["setup"][124]="Automatically add a user of an external authentification source"; 
+$lang["setup"][125]="... From an external source"; 
+$lang["setup"][126]="Automatically add a user of an external source"; 
+$lang["setup"][127]="Autocompletion of text fields with Ajax"; 
 $lang["setup"][150]="External sources of authentification"; 
 $lang["setup"][151]="If you do not wish to use LDAP as source of connection leave the empty fields"; 
 $lang["setup"][152]="LDAP configuratie"; 
@@ -1318,6 +1335,7 @@ $lang["state"][7]="Geen item gevonden";
 $lang["state"][8]="Locatie"; 
 $lang["state"][9]="Type"; 
 $lang["state"][10]="Total"; 
+$lang["state"][11]="Synthesis"; 
 
 $lang["stats"][0]="Selecteer statistieken die getoond moeten worden"; 
 $lang["stats"][1]="Globaal"; 
