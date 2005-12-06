@@ -555,6 +555,8 @@ class Identification
 	// Set Cookie for this user
 	function setCookies()
 	{
+		global $cfg_install;
+
 		$ID = $this->user->fields['ID'];
 		$name = $this->user->fields['name'];
 		$realname = $this->user->fields['realname'];
@@ -574,6 +576,7 @@ class Identification
 		$_SESSION["authorisation"] = true;
 		$_SESSION["extauth"] = $this->extauth;
 		$_SESSION["glpisearchcount"] = 1;
+		$_SESSION["root"] = $cfg_install["root"];
 	}
 
 	function eraseCookies()

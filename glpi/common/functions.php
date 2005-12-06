@@ -219,7 +219,7 @@ return $lang[$a[0]][$a[1]];
 **/      
 function checkAuthentication($authtype) {
 	// Universal method to have a magic-quote-gpc system
-	global $_POST, $_GET,$_COOKIE,$tab,$cfg_features;
+	global $_POST, $_GET,$_COOKIE,$tab,$cfg_features,$cfg_install;
 	// Clean array and addslashes
 	
 	if (get_magic_quotes_gpc()) {
@@ -251,6 +251,11 @@ function checkAuthentication($authtype) {
 	
 	
 	if(!session_id()){@session_start();}
+
+	if ($cfg_install["root"]!=$_SESSION["root"]) {
+		glpi_header($_SESSION["root"]);
+	}
+	
 	// Override cfg_features by session value
 	if (isset($_SESSION['list_limit'])) $cfg_features["list_limit"]=$_SESSION['list_limit'];
 
