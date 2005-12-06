@@ -430,7 +430,8 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 		}elseif (strcmp($template,"newcomp") === 0) {
 			echo $lang["printers"][28].": ".$printer->fields["tplname"];
 		}elseif (strcmp($template,"newtemplate") === 0) {
-			echo $lang["common"][6]."&nbsp;: <input type='text' name='tplname' value=\"".$printer->fields["tplname"]."\" size='20'>";
+			echo $lang["common"][6]."&nbsp;: ";
+				autocompletionTextField("tplname","glpi_printers","tplname",$printer->fields["tplname"],20);		
 		}
 		
 		echo "</th><th  align='center'>".$datestring.$date;
@@ -442,8 +443,9 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 	// table identification
 	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 	echo "<tr><td>".$lang["printers"][5].":	</td>\n";
-	echo "<td><input type='text' name='name' value=\"".$printer->fields["name"]."\" size='20'></td>\n";
-	echo "</tr>\n";
+	echo "<td>";
+	autocompletionTextField("name","glpi_printers","name",$printer->fields["name"],20);		
+	echo "</td></tr>\n";
 
 	echo "<tr><td>".$lang["printers"][6].": 	</td><td>\n";
 		dropdownValue("glpi_dropdown_locations", "location", $printer->fields["location"]);
@@ -457,13 +459,13 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 		dropdownUsersID("tech_num", $printer->fields["tech_num"]);
 	echo "</td></tr>\n";
 	
-	echo "<tr><td>".$lang["printers"][7].":	</td>\n";
-	echo "<td><input type='text' name='contact_num' value=\"".$printer->fields["contact_num"]."\" size='20'></td>";
-	echo "</tr>\n";
+	echo "<tr><td>".$lang["printers"][7].":	</td><td>\n";
+	autocompletionTextField("contact_num","glpi_printers","contact_num",$printer->fields["contact_num"],20);			
+	echo "</td></tr>\n";
 
-	echo "<tr><td>".$lang["printers"][8].":	</td>\n";
-	echo "<td><input type='text' name='contact' size='20' value=\"".$printer->fields["contact"]."\"></td>";
-	echo "</tr>\n";
+	echo "<tr><td>".$lang["printers"][8].":	</td><td>\n";
+	autocompletionTextField("contact","glpi_printers","contact",$printer->fields["contact"],20);			
+	echo "</td></tr>\n";
 	if (!$template){
 		echo "<tr><td>".$lang["reservation"][24].":</td><td><b>\n";
 		showReservationForm(PRINTER_TYPE,$ID);
@@ -499,13 +501,12 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 		dropdownValue("glpi_type_printers", "type", $printer->fields["type"]);
 	echo "</td></tr>\n";
 		
-	echo "<tr><td>".$lang["printers"][10].":	</td>\n";
-	echo "<td><input type='text' name='serial' size='20' value=\"".$printer->fields["serial"]."\"></td>";
-	echo "</tr>\n";
+	echo "<tr><td>".$lang["printers"][10].":	</td><td>\n";
+	autocompletionTextField("serial","glpi_printers","serial",$printer->fields["serial"],20);	echo "</td></tr>\n";
 
-	echo "<tr><td>".$lang["printers"][11].":</td>\n";
-	echo "<td><input type='text' size='20' name='otherserial' value=\"".$printer->fields["otherserial"]."\"></td>";
-	echo "</tr>\n";
+	echo "<tr><td>".$lang["printers"][11].":</td><td>\n";
+	autocompletionTextField("otherserial","glpi_printers","otherserial",$printer->fields["otherserial"],20);
+	echo "</td></tr>\n";
 
 		echo "<tr><td>".$lang["printers"][18].": </td><td>\n";
 
@@ -543,15 +544,13 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 		echo "</tr></table>\n";
 		
 		// Ram ?
-		echo "<tr><td>".$lang["printers"][23].":</td>\n";
-		echo "<td><input type='text' size='12' name='ramSize' value=\"".$printer->fields["ramSize"]."\"></td>";
-		echo "</tr>\n";
+		echo "<tr><td>".$lang["printers"][23].":</td><td>\n";
+		autocompletionTextField("ramSize","glpi_printers","ramSize",$printer->fields["ramSize"],20);
+		echo "</td></tr>\n";
 		// Initial count pages ?
-		echo "<tr><td>".$lang["printers"][30].":</td>\n";
-		echo "<td><input type='text' size='12' name='initial_pages' value=\"".$printer->fields["initial_pages"]."\"></td>";
-		echo "</tr>\n";
-
-//		echo "</td></tr>\n";
+		echo "<tr><td>".$lang["printers"][30].":</td><td>\n";
+		autocompletionTextField("initial_pages","glpi_printers","initial_pages",$printer->fields["initial_pages"],20);		echo "</td></tr>\n";
+		echo "</td></tr>\n";
 
 	echo "</table>\n";
 	echo "</td>\n";	

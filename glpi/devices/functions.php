@@ -558,6 +558,8 @@ function showDevicesForm ($target,$ID,$device_type) {
 		if($device->getfromDB($ID)) $device_spotted = true;
 	}
 
+		$table=getDeviceTable($device_type);
+
 	echo "<div align='center'>";
 	echo "<a href='$REFERER'>".$lang["buttons"][13]."</a>";
 	echo "<form method='post' name='form' action=\"$target\">";
@@ -569,8 +571,10 @@ function showDevicesForm ($target,$ID,$device_type) {
 	// table commune
 	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 	echo "<tr><td>".$lang["printers"][5].":	</td>";
-	echo "<td><input type='text' name='designation' value=\"".$device->fields["designation"]."\" size='20'></td>";
-	echo "</tr>";
+	echo "<td>";
+	autocompletionTextField("designation",$table,"designation",$device->fields["designation"],20);
+
+	echo "</td></tr>";
 	echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>";
 	dropdownValue("glpi_enterprises","FK_glpi_enterprise",$device->fields["FK_glpi_enterprise"]);
 	echo "</td></tr>";
@@ -586,17 +590,18 @@ function showDevicesForm ($target,$ID,$device_type) {
 
 	// table particuliere
 	echo "<table cellpadding='1' cellspacing='0' border='0'>";
-		
-	switch(getDeviceTable($device_type)) {
+	switch($table) {
 		case "glpi_device_moboard" : 
 			echo "<tr><td>".$lang["device_moboard"][0].":</td>";
-			echo "<td><input type='text' size='12' name='chipset' value=\"".$device->fields["chipset"]."\"></td>";
-			echo "</tr>";
+			echo "<td>";
+			autocompletionTextField("chipset",$table,"chipset",$device->fields["chipset"],20);
+
+			echo "</td></tr>";
 		break;
 		case "glpi_device_processor" :
-			echo "<tr><td>".$lang["device_processor"][0].":</td>";
-			echo "<td><input type='text' size='12' name='frequence' value=\"".$device->fields["frequence"]."\"></td>";
-			echo "</tr>";
+			echo "<tr><td>".$lang["device_processor"][0].":</td><td>";
+				autocompletionTextField("frequence",$table,"frequence",$device->fields["frequence"],20);
+			echo "</td></tr>";
 		break;
 		case "glpi_device_ram" :
 			echo "<tr><td>".$lang["device_ram"][0].":</td>";
@@ -604,17 +609,18 @@ function showDevicesForm ($target,$ID,$device_type) {
 			dropdownValue("glpi_dropdown_ram_type","type",$device->fields["type"]);
 			echo "</td>";
 			echo "</tr>";
-			echo "<tr><td>".$lang["device_ram"][1].":</td>";
-			echo "<td><input type='text' size='12' name='frequence' value=\"".$device->fields["frequence"]."\"></td>";
-			echo "</tr>";
+			echo "<tr><td>".$lang["device_ram"][1].":</td><td>";
+				autocompletionTextField("frequence",$table,"frequence",$device->fields["frequence"],20);
+			echo "</td></tr>";
 		break;
 		case "glpi_device_hdd" :
-			echo "<tr><td>".$lang["device_hdd"][0].":</td>";
-			echo "<td><input type='text' size='12' name='rpm' value=\"".$device->fields["rpm"]."\"></td>";
-			echo "</tr>";
-			echo "<tr><td>".$lang["device_hdd"][1].":</td>";
-			echo "<td><input type='text' size='12' name='cache' value=\"".$device->fields["cache"]."\"></td>";
-			echo "</tr>";
+			echo "<tr><td>".$lang["device_hdd"][0].":</td><td>";
+			autocompletionTextField("rpm",$table,"rpm",$device->fields["rpm"],20);
+
+			echo "</td></tr>";
+			echo "<tr><td>".$lang["device_hdd"][1].":</td><td>";
+				autocompletionTextField("cache",$table,"cache",$device->fields["cache"],20);
+			echo "</td></tr>";
 
 
 			echo "<tr><td>".$lang["device_hdd"][2].":</td>";
@@ -625,9 +631,9 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</tr>";
 		break;
 		case "glpi_device_iface" :
-			echo "<tr><td>".$lang["device_iface"][0].":</td>";
-			echo "<td><input type='text' size='12' name='bandwidth' value=\"".$device->fields["bandwidth"]."\"></td>";
-			echo "</tr>";
+			echo "<tr><td>".$lang["device_iface"][0].":</td><td>";
+			autocompletionTextField("bandwidth",$table,"bandwidth",$device->fields["bandwidth"],20);
+			echo "</td></tr>";
 		break;
 		case "glpi_device_drive" :
 			echo "</tr>";
@@ -653,9 +659,9 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</select>";
 			echo "</td>";
 			echo "</tr>";
-			echo "<tr><td>".$lang["device_drive"][1].":</td>";
-			echo "<td><input type='text' size='12' name='speed' value=\"".$device->fields["speed"]."\"></td>";
-			echo "</tr>";
+			echo "<tr><td>".$lang["device_drive"][1].":</td><td>";
+			autocompletionTextField("speed",$table,"speed",$device->fields["speed"],20);
+			echo "</td></tr>";
 			
 			
 		break;
@@ -689,9 +695,9 @@ function showDevicesForm ($target,$ID,$device_type) {
 		
 		break;
 		case "glpi_device_gfxcard" :
-			echo "<tr><td>".$lang["device_gfxcard"][0].":</td>";
-			echo "<td><input type='text' size='12' name='ram' value=\"".$device->fields["ram"]."\"></td>";
-			echo "</tr>";
+			echo "<tr><td>".$lang["device_gfxcard"][0].":</td><td>";
+			autocompletionTextField("ram",$table,"ram",$device->fields["ram"],20);
+			echo "</td></tr>";
 			echo "<tr><td>".$lang["device_gfxcard"][2].":</td>";
 			echo "<td><select name='interface'>";
 			echo "<option value='AGP' ".($device->fields["interface"]=="AGP"?"selected":"").">AGP</option>";
@@ -703,9 +709,9 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</tr>";
 		break;
 		case "glpi_device_sndcard" :
-			echo "<tr><td>".$lang["device_sndcard"][0].":</td>";
-			echo "<td><input type='text' size='12' name='type' value=\"".$device->fields["type"]."\"></td>";
-			echo "</tr>";
+			echo "<tr><td>".$lang["device_sndcard"][0].":</td><td>";
+			autocompletionTextField("type",$table,"type",$device->fields["type"],20);
+			echo "</td></tr>";
 		break;
 		case "glpi_device_pci" :
 		break;
@@ -727,9 +733,9 @@ function showDevicesForm ($target,$ID,$device_type) {
 
 		break;
 		case "glpi_device_power" :
-			echo "<tr><td>".$lang["device_power"][0].":</td>";
-			echo "<td><input type='text' size='12' name='power' value=\"".$device->fields["power"]."\"></td>";
-			echo "</tr>";
+			echo "<tr><td>".$lang["device_power"][0].":</td><td>";
+			autocompletionTextField("power",$table,"power",$device->fields["power"],20);
+			echo "</td></tr>";
 			echo "<tr><td>".$lang["device_power"][1].":</td>";
 			echo "<td>".$lang["choice"][0]."<input type='radio' name='atx' value=\"Y\" ";
 			if(strcmp($device->fields["atx"],"Y") == 0) echo "checked='checked'";

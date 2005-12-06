@@ -372,26 +372,30 @@ function showEnterpriseForm ($target,$ID) {
 	echo "</b></th></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][27].":		</td>";
-	echo "<td><input type='text' name='name' value=\"".$ent->fields["name"]."\" size='25'></td>";
+	echo "<td>";
+		autocompletionTextField("name","glpi_enterprises","name",$ent->fields["name"],25);
+	echo "</td>";
 
 	echo "<td>".$lang["financial"][79].":		</td><td colspan='2'>";
 	dropdownValue("glpi_dropdown_enttype", "type", $ent->fields["type"]);
 	echo "</td></tr>";
-
 	
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][29].":		</td>";
-	echo "<td><input type='text' name='phonenumber' value=\"".$ent->fields["phonenumber"]."\" size='25'></td>";
+	echo "<td>";
+		autocompletionTextField("phonenumber","glpi_enterprises","phonenumber",$ent->fields["phonenumber"],25);	
+	echo "</td>";
 
-	echo "<td>".$lang["financial"][30].":		</td>";
-	echo "<td><input type='text' name='fax' value=\"".$ent->fields["fax"]."\" size='25'></td>";
-	echo "</tr>";
+	echo "<td>".$lang["financial"][30].":		</td><td>";
+		autocompletionTextField("fax","glpi_enterprises","fax",$ent->fields["fax"],25);	
+	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][45].":		</td>";
-	echo "<td><input type='text' name='website' value=\"".$ent->fields["website"]."\" size='25'>";
+	echo "<td>";
+		autocompletionTextField("website","glpi_enterprises","website",$ent->fields["website"],25);	
 	echo "</td>";
-	echo "<td>".$lang["financial"][31].":		</td>";
-	echo "<td><input type='text' name='email' value=\"".$ent->fields["email"]."\" size='25'></td>";
-	echo "</tr>";
+	echo "<td>".$lang["financial"][31].":		</td><td>";
+		autocompletionTextField("email","glpi_enterprises","email",$ent->fields["email"],25);		
+	echo "</td></tr>";
 	
 
 	echo "<tr class='tab_bg_1'><td >".$lang["financial"][44].":		</td>";

@@ -2445,7 +2445,8 @@ function showJobDetails ($ID){
 				echo $lang["joblist"][3].":";
 				echo "</td><td>";
 				if ($isadmin){
-					echo "<input type='text' name='uemail' size='15' value='".$job->fields["uemail"]."'>";
+					autocompletionTextField("uemail","glpi_tracking","uemail",$job->fields["uemail"],15);
+
 						if (!empty($job->fields["uemail"]))
 					echo "<a href='mailto:".$job->fields["uemail"]."'><img src='".$HTMLRel."pics/edit.png' alt='Mail'></a>";
 				} else if (!empty($job->fields["uemail"]))

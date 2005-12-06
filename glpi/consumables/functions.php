@@ -436,12 +436,14 @@ function showConsumableTypeForm ($target,$ID) {
 	echo "</b></th></tr>\n";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["consumables"][1].":		</td>\n";
-	echo "<td colspan='2'><input type='text' name='name' value=\"".$ct->fields["name"]."\" size='25'></td>";
-	echo "</tr>\n";
+	echo "<td colspan='2'>";
+	autocompletionTextField("name","glpi_consumables_type","name",$ct->fields["name"],25);	
+	echo "</td></tr>\n";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["consumables"][2].":		</td>\n";
-	echo "<td colspan='2'><input type='text' name='ref' value=\"".$ct->fields["ref"]."\" size='25'></td>";
-	echo "</tr>\n";
+	echo "<td colspan='2'>";
+	autocompletionTextField("ref","glpi_consumables_type","ref",$ct->fields["ref"],25);	
+	echo "</td></tr>\n";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["consumables"][3].": 	</td><td colspan='2'>\n";
 		dropdownValue("glpi_dropdown_consumable_type","type",$ct->fields["type"]);

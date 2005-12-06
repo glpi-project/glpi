@@ -420,15 +420,17 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 		}elseif (strcmp($template,"newcomp") === 0) {
 			echo $lang["software"][42].": ".$sw->fields["tplname"];
 		}elseif (strcmp($template,"newtemplate") === 0) {
-			echo $lang["common"][6]."&nbsp;: <input type='text' name='tplname' value=\"".$sw->fields["tplname"]."\" size='20'>";
+			echo $lang["common"][6]."&nbsp;: ";
+			autocompletionTextField("tplname","glpi_software","tplname",$sw->fields["tplname"],20);
 		}
 		
 		echo "</th><th  colspan='2' align='center'>".$datestring.$date;
 		echo "</th></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][2].":		</td>";
-	echo "<td colspan='2'><input type='text' name='name' value=\"".$sw->fields["name"]."\" size='25'></td>";
-	echo "</tr>";
+	echo "<td colspan='2'>";
+	autocompletionTextField("name","glpi_software","name",$sw->fields["name"],25);
+	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][4].": 	</td><td colspan='2'>";
 		dropdownValue("glpi_dropdown_locations", "location", $sw->fields["location"]);
@@ -447,8 +449,9 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][5].":		</td>";
-	echo "<td colspan='2'><input type='text' name='version' value=\"".$sw->fields["version"]."\" size='20'></td>";
-	echo "</tr>";
+	echo "<td colspan='2'>";
+	autocompletionTextField("version","glpi_software","version",$sw->fields["version"],20);
+	echo "</td></tr>";
 
 	// UPDATE
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][29].":</td><td colspan='2'>";
@@ -925,7 +928,8 @@ function showLicenseForm($target,$action,$sID,$lID="",$search_computer="") {
 	
 
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][16]."</td>";
-	echo "<td><input type='text' size='20' name='serial' value='".$values['serial']."'>";
+	echo "<td>";
+	autocompletionTextField("serial","glpi_licenses","serial",$values["serial"],20);
 	echo "</td></tr>";
 	
 	if ($action!="update"){
@@ -951,8 +955,6 @@ function showLicenseForm($target,$action,$sID,$lID="",$search_computer="") {
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][28]."</td><td>";
 	echo "<select name='oem'><option value='Y' ".($values['oem']=='Y'?"selected":"").">".$lang['choice'][0]."</option><option value='N' ".($values['oem']=='N'?"selected":"").">".$lang['choice'][1]."</option></select>";
 	dropdownValue("glpi_computers","oem_computer",$values["oem_computer"]);
-//        echo "<input type='text' size='10'  name='search_computer' value='$search_computer'>";
-//	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
 	
 	echo "</td></tr>";
 	// BUY
