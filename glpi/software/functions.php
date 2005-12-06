@@ -170,11 +170,7 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 	echo "<select name='is_update'><option value='Y' ".($ID&&$sw->fields['is_update']=='Y'?"selected":"").">".$lang['choice'][0]."</option><option value='N' ".(!$ID||$sw->fields['is_update']=='N'?"selected":"").">".$lang['choice'][1]."</option></select>";
 	echo "&nbsp;".$lang["pager"][2]."&nbsp;";
 	dropdownValue("glpi_software","update_software",$sw->fields["update_software"]);
-/*	if (empty($withtemplate)){
-        echo "<input type='text' size='10'  name='search_software' value='$search_software'>";
-		echo "<input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
-		}
-*/
+
 		if (!$template){
 		echo "<tr class='tab_bg_1'><td>".$lang["reservation"][24].":</td><td colspan='2'><b>";
 		showReservationForm(SOFTWARE_TYPE,$ID);

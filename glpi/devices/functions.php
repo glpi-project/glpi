@@ -242,7 +242,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 		}
 		else {
 
-			echo "<td align='right' colspan='$colspan'>".$specificity_label.":&nbsp;<input type='text' name='devicevalue_$compDevID' value=\"".$specif."\" size='$specificity_size' ></td>";
+			echo "<td align='right' colspan='$colspan'>".$specificity_label.":&nbsp;<input type='text' name='devicevalue_$compDevID' value=\"".htmlentities($specif)."\" size='$specificity_size' ></td>";
 			echo "<td align='center'>";
 
 			echo "<input type='image' name='update_device' value='$compDevID' src='".$HTMLRel."pics/actualiser.png' class='calendrier'>";
@@ -410,7 +410,7 @@ function searchFormDevices($device_type,$field="",$phrasetype= "",$contains="",$
 	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
-	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
+	echo "<input type='text' size='15' name=\"contains\" value=\"". htmlentities($contains) ."\" >";
 	echo "&nbsp;";
 	echo $lang["search"][10]."&nbsp;";
 	
@@ -566,7 +566,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 	echo "</td></tr>";
 	if (getDeviceSpecifityLabel($device_type)!=""){
 		echo "<tr><td>".getDeviceSpecifityLabel($device_type)." ".$lang["devices"][24]."</td>";
-		echo "<td><input type='text' name='specif_default' value=\"".$device->fields["specif_default"]."\" size='20'></td>";
+		echo "<td><input type='text' name='specif_default' value=\"".htmlentities($device->fields["specif_default"])."\" size='20'></td>";
 		echo "</tr>";
 	}
 	echo "</table>";

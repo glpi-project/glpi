@@ -115,7 +115,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		
 		
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][78].":		</td>";
-		echo "<td ><input type='text' $option name='warranty_value' value=\"".number_format($ic->fields["warranty_value"],2,'.','')."\" size='10'></td>";
+		echo "<td ><input type='text' $option name='warranty_value' value=\"".htmlentities(number_format($ic->fields["warranty_value"],2,'.',''))."\" size='10'></td>";
 		
 
 		echo "<td>".$lang["financial"][16].":		</td>";
@@ -125,7 +125,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		echo "</td></tr>";
 		}
 		
-		echo "<tr class='tab_bg_1'><td>".$lang["financial"][21].":		</td><td  ".($show_immo==1?"":" colspan='3'")."><input type='text' name='value' $option value=\"".number_format($ic->fields["value"],2,'.','')."\" size='10'></td>";
+		echo "<tr class='tab_bg_1'><td>".$lang["financial"][21].":		</td><td  ".($show_immo==1?"":" colspan='3'")."><input type='text' name='value' $option value=\"".htmlentities(number_format($ic->fields["value"],2,'.',''))."\" size='10'></td>";
 		if ($show_immo==1){
 		echo "<td>".$lang["financial"][81]." :</td><td>";
 				

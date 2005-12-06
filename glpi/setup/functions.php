@@ -59,7 +59,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 		echo "<input type='image' src=\"".$HTMLRel."pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>";
 
 
- 	echo "<input type='text' maxlength='100' size='20' name='value' value='$value'>";
+ 	echo "<input type='text' maxlength='100' size='20' name='value' value=\"".htmlentities($value)."\">";
 
 	echo "</td><td align='center' class='tab_bg_2' width='99'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."'>";
@@ -136,8 +136,9 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 
 //        echo "<img src=\"".$HTMLRel."pics/puce.gif\" alt='' title=''>";
 	if ($name != "netpoint"){
-		if (!empty($ID))
+		if (!empty($ID)){
 			$value=getDropdownName("glpi_dropdown_".$name,$ID);
+		}
 		else $value="";
 	} else {$value="";$loc="";}
 
@@ -152,12 +153,13 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 		}
 		echo "<br>";
 		echo $lang["networking"][1].": ";		
+
 		dropdownValue("glpi_dropdown_locations", "value2",$loc);
 		echo $lang["networking"][52].": ";
-		echo "<input type='text' maxlength='100' size='10' name='value' value='$value'>";
+		echo "<input type='text' maxlength='100' size='10' name='value' value=\"".htmlentities($value)."\">";
 	} 
 	else {
-        	echo "<input type='text' maxlength='100' size='20' name='value' value='$value'>";
+        	echo "<input type='text' maxlength='100' size='20' name='value' value=\"".htmlentities($value)."\">";
         }
 	//
 	echo "</td><td align='center' class='tab_bg_2' width='99'>";
@@ -242,7 +244,7 @@ function showFormTypeDown ($target,$name,$human,$ID) {
 		$value=getDropdownName("glpi_type_".$name,$ID);
 	else $value="";
 
-    echo "<input type='text' maxlength='100' size='20' name='value'  value='$value'>";
+    echo "<input type='text' maxlength='100' size='20' name='value'  value=\"".$value."\">";
 
 
 	echo "</td><td align='center' class='tab_bg_2'>";
@@ -891,7 +893,7 @@ function showFormConfigGen($target){
 	echo "<form name='form' action=\"$target\" method=\"post\">";
 	echo "<div align='center'><table class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$lang["setup"][100]."</th></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][101]." </td><td> <input type=\"text\" name=\"root_doc\" value=\"". $db->result($result,0,"root_doc") ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][101]." </td><td> <input type=\"text\" name=\"root_doc\" value=\"". htmlentities($db->result($result,0,"root_doc")) ."\"></td></tr>";
 	$default_language=$db->result($result,0,"default_language");
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][113]." </td><td><select name=\"default_language\">";
 		while (list($val)=each($cfg_install["languages"])){
@@ -910,7 +912,7 @@ function showFormConfigGen($target){
 	echo "<option value=\"4\"";  if($level==4){ echo " selected";} echo ">".$lang["setup"][106]." </option>";
 	echo "<option value=\"5\"";  if($level==5){ echo " selected";} echo ">".$lang["setup"][107]."</option>";
 	echo "</select></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][109]." </td><td><input type=\"text\" name=\"expire_events\" value=\"". $db->result($result,0,"expire_events") ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][109]." </td><td><input type=\"text\" name=\"expire_events\" value=\"". htmlentities($db->result($result,0,"expire_events")) ."\"></td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][116]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"auto_assign\" value=\"1\" "; if($db->result($result,0,"auto_assign") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"auto_assign\" value=\"0\" "; if($db->result($result,0,"auto_assign") == 0) echo "checked"; 
 	echo " ></td></tr>";
@@ -954,12 +956,12 @@ function showFormConfigDisplay($target){
 	echo "<div align='center'><table class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$lang["setup"][100]."</th></tr>";
 	
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][108]."</td><td> <input type=\"text\" name=\"num_of_events\" value=\"". $db->result($result,0,"num_of_events") ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][108]."</td><td> <input type=\"text\" name=\"num_of_events\" value=\"". htmlentities($db->result($result,0,"num_of_events")) ."\"></td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][110]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"jobs_at_login\" value=\"1\" "; if($db->result($result,0,"jobs_at_login") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"jobs_at_login\" value=\"0\" "; if($db->result($result,0,"jobs_at_login") == 0) echo "checked"; 
 	echo " ></td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][111]."</td><td> <input type=\"text\" name=\"list_limit\" value=\"". $db->result($result,0,"list_limit") ."\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][112]."</td><td><input type=\"text\" name=\"cut\" value=\"". $db->result($result,0,"cut") ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][111]."</td><td> <input type=\"text\" name=\"list_limit\" value=\"". htmlentities($db->result($result,0,"list_limit")) ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][112]."</td><td><input type=\"text\" name=\"cut\" value=\"". htmlentities($db->result($result,0,"cut")) ."\"></td></tr>";
 
 	
 	$plan_begin=split(":",$db->result($result,0,"planning_begin"));
@@ -977,11 +979,11 @@ function showFormConfigDisplay($target){
 	
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][114]."</td><td>";
 	echo "<table><tr>";
-	echo "<td bgcolor='".$db->result($result,0,"priority_1")."'>1:<input type=\"text\" name=\"priority[1]\" size='7' value=\"".$db->result($result,0,"priority_1")."\"></td>";
-	echo "<td bgcolor='".$db->result($result,0,"priority_2")."'>2:<input type=\"text\" name=\"priority[2]\" size='7' value=\"".$db->result($result,0,"priority_2")."\"></td>";
-	echo "<td bgcolor='".$db->result($result,0,"priority_3")."'>3:<input type=\"text\" name=\"priority[3]\" size='7' value=\"".$db->result($result,0,"priority_3")."\"></td>";
-	echo "<td bgcolor='".$db->result($result,0,"priority_4")."'>4:<input type=\"text\" name=\"priority[4]\" size='7' value=\"".$db->result($result,0,"priority_4")."\"></td>";
-	echo "<td bgcolor='".$db->result($result,0,"priority_5")."'>5:<input type=\"text\" name=\"priority[5]\" size='7' value=\"".$db->result($result,0,"priority_5")."\"></td>";
+	echo "<td bgcolor='".$db->result($result,0,"priority_1")."'>1:<input type=\"text\" name=\"priority[1]\" size='7' value=\"".htmlentities($db->result($result,0,"priority_1"))."\"></td>";
+	echo "<td bgcolor='".$db->result($result,0,"priority_2")."'>2:<input type=\"text\" name=\"priority[2]\" size='7' value=\"".htmlentities($db->result($result,0,"priority_2"))."\"></td>";
+	echo "<td bgcolor='".$db->result($result,0,"priority_3")."'>3:<input type=\"text\" name=\"priority[3]\" size='7' value=\"".htmlentities($db->result($result,0,"priority_3"))."\"></td>";
+	echo "<td bgcolor='".$db->result($result,0,"priority_4")."'>4:<input type=\"text\" name=\"priority[4]\" size='7' value=\"".htmlentities($db->result($result,0,"priority_4"))."\"></td>";
+	echo "<td bgcolor='".$db->result($result,0,"priority_5")."'>5:<input type=\"text\" name=\"priority[5]\" size='7' value=\"".htmlentities($db->result($result,0,"priority_5"))."\"></td>";
 	echo "</tr></table>";
 	echo "</td></tr>";
 
@@ -1000,7 +1002,7 @@ function showFormConfigDisplay($target){
 	echo "<option value=\"0\"";  if($ajax_autocompletion==0){ echo " selected";} echo ">".$lang["choice"][1]."</option>";
 	echo "</select></td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][121]."</td><td><input type=\"text\" size='1' name=\"ajax_wildcard\" value=\"". $db->result($result,0,"ajax_wildcard") ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][121]."</td><td><input type=\"text\" size='1' name=\"ajax_wildcard\" value=\"". htmlentities($db->result($result,0,"ajax_wildcard")) ."\"></td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][122]."</td><td>";
 	echo "<select name='dropdown_max'>";
 	$dropdown_max=$db->result($result,0,"dropdown_max");
@@ -1060,7 +1062,7 @@ else {
 }
 $mailbox=preg_replace("/.*}/","",$value);
 
-echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][163]."</td><td><input size='30' type=\"text\" name=\"mail_server\" value=\"". $addr."\" ></td></tr>";	
+echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][163]."</td><td><input size='30' type=\"text\" name=\"mail_server\" value=\"". htmlentities($addr)."\" ></td></tr>";	
 echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][168]."</td><td>";
 echo "<select name='server_type'>";
 echo "<option value=''>&nbsp;</option>";
@@ -1084,8 +1086,8 @@ echo "</select>";
 
 echo "</td></tr>";	
 
-echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][169]."</td><td><input size='30' type=\"text\" name=\"server_mailbox\" value=\"". $mailbox."\" ></td></tr>";	
-echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][171]."</td><td><input size='10' type=\"text\" name=\"server_port\" value=\"". $port."\" ></td></tr>";	
+echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][169]."</td><td><input size='30' type=\"text\" name=\"server_mailbox\" value=\"". htmlentities($mailbox)."\" ></td></tr>";	
+echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][171]."</td><td><input size='10' type=\"text\" name=\"server_port\" value=\"". htmlentities($port)."\" ></td></tr>";	
 if (empty($value)) $value="&nbsp;";
 echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][170]."</td><td><b>$value</b></td></tr>";	
 
@@ -1126,10 +1128,9 @@ function showFormExtSources($target) {
 //		echo "<p>".$lang["setup"][161]."</p>";
 		echo "<table class='tab_cadre'>";
 		echo "<tr><th colspan='2'>".$lang["setup"][162]."</th></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][164]."</td><td><input size='30' type=\"text\" name=\"imap_host\" value=\"". $db->result($result,0,"imap_host") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][164]."</td><td><input size='30' type=\"text\" name=\"imap_host\" value=\"". htmlentities($db->result($result,0,"imap_host")) ."\" ></td></tr>";
 
 		showMailServerConfig($db->result($result,0,"imap_auth_server"));
-//		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][163]."</td><td><input type=\"text\" name=\"imap_auth_server\" value=\"". $db->result($result,0,"imap_auth_server") ."\" ></td></tr>";
 		echo "</table>&nbsp;</div>";
 	}
 	else {
@@ -1145,19 +1146,19 @@ function showFormExtSources($target) {
 
 		echo "<table class='tab_cadre'>";
 		echo "<tr><th colspan='2'>".$lang["setup"][152]."</th></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][153]."</td><td><input type=\"text\" name=\"ldap_host\" value=\"". $db->result($result,0,"ldap_host") ."\"></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][172]."</td><td><input type=\"text\" name=\"ldap_port\" value=\"". $db->result($result,0,"ldap_port") ."\"></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][154]."</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"". $db->result($result,0,"ldap_basedn") ."\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][155]."</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"". $db->result($result,0,"ldap_rootdn") ."\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][156]."</td><td><input type=\"password\" name=\"ldap_pass\" value=\"". $db->result($result,0,"ldap_pass") ."\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][159]."</td><td><input type=\"text\" name=\"ldap_condition\" value=\"". $db->result($result,0,"ldap_condition") ."\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][228]."</td><td><input type=\"text\" name=\"ldap_login\" value=\"". $db->result($result,0,"ldap_login") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][153]."</td><td><input type=\"text\" name=\"ldap_host\" value=\"". htmlentities($db->result($result,0,"ldap_host")) ."\"></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][172]."</td><td><input type=\"text\" name=\"ldap_port\" value=\"". htmlentities($db->result($result,0,"ldap_port")) ."\"></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][154]."</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"". htmlentities($db->result($result,0,"ldap_basedn")) ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][155]."</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"". htmlentities($db->result($result,0,"ldap_rootdn")) ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][156]."</td><td><input type=\"password\" name=\"ldap_pass\" value=\"". htmlentities($db->result($result,0,"ldap_pass")) ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][159]."</td><td><input type=\"text\" name=\"ldap_condition\" value=\"". htmlentities($db->result($result,0,"ldap_condition")) ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][228]."</td><td><input type=\"text\" name=\"ldap_login\" value=\"". htmlentities($db->result($result,0,"ldap_login")) ."\" ></td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][167]."</td><td>&nbsp;</td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>name</td><td><input type=\"text\" name=\"ldap_field_name\" value=\"". $db->result($result,0,"ldap_field_name") ."\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>email</td><td><input type=\"text\" name=\"ldap_field_email\" value=\"". $db->result($result,0,"ldap_field_email") ."\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>location</td><td><input type=\"text\" name=\"ldap_field_location\" value=\"". $db->result($result,0,"ldap_field_location") ."\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>phone</td><td><input type=\"text\" name=\"ldap_field_phone\" value=\"". $db->result($result,0,"ldap_field_phone") ."\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>realname</td><td><input type=\"text\" name=\"ldap_field_realname\" value=\"". $db->result($result,0,"ldap_field_realname") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>name</td><td><input type=\"text\" name=\"ldap_field_name\" value=\"". htmlentities($db->result($result,0,"ldap_field_name")) ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>email</td><td><input type=\"text\" name=\"ldap_field_email\" value=\"". htmlentities($db->result($result,0,"ldap_field_email")) ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>location</td><td><input type=\"text\" name=\"ldap_field_location\" value=\"". htmlentities($db->result($result,0,"ldap_field_location")) ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>phone</td><td><input type=\"text\" name=\"ldap_field_phone\" value=\"". htmlentities($db->result($result,0,"ldap_field_phone")) ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>realname</td><td><input type=\"text\" name=\"ldap_field_realname\" value=\"". htmlentities($db->result($result,0,"ldap_field_realname")) ."\" ></td></tr>";
 		
 		echo "</table>&nbsp;</div>";
 	}
@@ -1174,9 +1175,9 @@ function showFormExtSources($target) {
 
 		echo "<table class='tab_cadre'>";
 		echo "<tr><th colspan='2'>".$lang["setup"][177]."</th></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][174]."</td><td><input type=\"text\" name=\"cas_host\" value=\"". $db->result($result,0,"cas_host") ."\"></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][175]."</td><td><input type=\"text\" name=\"cas_port\" value=\"". $db->result($result,0,"cas_port") ."\"></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][176]."</td><td><input type=\"text\" name=\"cas_uri\" value=\"". $db->result($result,0,"cas_uri") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][174]."</td><td><input type=\"text\" name=\"cas_host\" value=\"". htmlentities($db->result($result,0,"cas_host")) ."\"></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][175]."</td><td><input type=\"text\" name=\"cas_port\" value=\"". htmlentities($db->result($result,0,"cas_port")) ."\"></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][176]."</td><td><input type=\"text\" name=\"cas_uri\" value=\"". htmlentities($db->result($result,0,"cas_uri")) ."\" ></td></tr>";
 		
 		echo "</table>&nbsp;</div>";
 	}
@@ -1215,10 +1216,10 @@ function showFormMailing($target) {
 		
 			if (function_exists('mail')) {
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][202]."</td><td align='center'>&nbsp; ".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"mailing\" value=\"1\" "; if($db->result($result,0,"mailing") == 1) echo "checked"; echo " > &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"mailing\" value=\"0\" "; if($db->result($result,0,"mailing") == 0) echo "checked"; echo " ></td></tr>";
-		echo "<tr class='tab_bg_2'><td >".$lang["setup"][203]."</td><td> <input type=\"text\" name=\"admin_email\" size='40' value=\"".$db->result($result,0,"admin_email")."\"> </td></tr>";
-		echo "<tr class='tab_bg_2'><td >".$lang["setup"][204]."</td><td><input type=\"text\" name=\"mailing_signature\" size='40' value=\"".$db->result($result,0,"mailing_signature")."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][203]."</td><td> <input type=\"text\" name=\"admin_email\" size='40' value=\"".htmlentities($db->result($result,0,"admin_email"))."\"> </td></tr>";
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][204]."</td><td><input type=\"text\" name=\"mailing_signature\" size='40' value=\"".htmlentities($db->result($result,0,"mailing_signature"))."\" ></td></tr>";
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][226]."</td><td align='center'>&nbsp; ".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"url_in_mail\" value=\"1\" "; if($db->result($result,0,"url_in_mail") == 1) echo "checked"; echo " > &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"url_in_mail\" value=\"0\" "; if($db->result($result,0,"url_in_mail") == 0) echo "checked"; echo " ></td></tr>";
-		echo "<tr class='tab_bg_2'><td >".$lang["setup"][227]."</td><td> <input type=\"text\" name=\"url_base\" size='40' value=\"".$db->result($result,0,"url_base")."\"> </td></tr>";
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][227]."</td><td> <input type=\"text\" name=\"url_base\" size='40' value=\"".htmlentities($db->result($result,0,"url_base"))."\"> </td></tr>";
 		echo "</table>";
 		
 		echo "<p><b>".$lang["setup"][205]."</b></p>";

@@ -131,7 +131,7 @@ function showContractForm ($target,$ID) {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][4].":		</td>";
-	echo "<td><input type='text' name='num' value=\"".$con->fields["num"]."\" size='25'></td>";
+	echo "<td><input type='text' name='num' value=\"".htmlentities($con->fields["num"])."\" size='25'></td>";
 
 	echo "<td>".$lang["financial"][7].":	</td>";
 	echo "<td>";
@@ -141,7 +141,7 @@ function showContractForm ($target,$ID) {
 
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][5].":		</td><td>";
-	echo "<input type='text' name='cost' value=\"".number_format($con->fields["cost"],2,'.','')."\" size='10'>";
+	echo "<input type='text' name='cost' value=\"".htmlentities(number_format($con->fields["cost"],2,'.',''))."\" size='10'>";
 	echo "</td>";
 
 	echo "<td>".$lang["financial"][13].":		</td><td>";

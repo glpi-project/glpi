@@ -1350,7 +1350,7 @@ function regenerateTreeCompleteNameUnderID($table,$ID){
 */
 function showCalendarForm($form,$element,$value='',$withtemplate=''){
 		global $HTMLRel,$lang;
-		echo "<input type='text' name='$element' readonly size='10' value='$value'>";
+		echo "<input type='text' name='$element' readonly size='10' value=\"".htmlentities($value)."\">";
 		
 		if ($withtemplate!=2){
 			echo "&nbsp;<img src='".$HTMLRel."pics/calendar.png' class='calendrier' alt='".$lang["buttons"][15]."' title='".$lang["buttons"][15]."'
