@@ -93,7 +93,7 @@ function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort=
 	if($phrasetype == "exact") echo "selected";
 	echo ">".$lang["search"][3]."</option>";
 	echo "</select>";
-	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" />";
+	echo "<input type='text' size='15' name=\"contains\" value=\"". htmlentities($contains) ."\" />";
 	echo "&nbsp;";
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
@@ -592,7 +592,7 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 	}
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][23].":	</td>";
-	echo "<td><input type='text' name='comment' size='30' value='".$resa->fields["comment"]."'>";
+	echo "<td><input type='text' name='comment' size='30' value='".htmlentities($resa->fields["comment"])."'>";
     echo "</td></tr>";
 
 	if ($resaID==-1){

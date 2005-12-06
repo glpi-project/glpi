@@ -801,7 +801,7 @@ function showCartridgeInstalled($instID,$old=0) {
 			
 			echo "<form method='post' action=\"".$cfg_install["root"]."/cartridges/cartridges-edit.php\">";
 			echo "<input type='hidden' name='cID' value='".$data['ID']."'>";
-			echo "<input type='text' name='pages' value='".$data['pages']."' size='10'>";
+			echo "<input type='text' name='pages' value=\"".htmlentities($data['pages'])."\" size='10'>";
 			echo "<input type='image' name='update_pages' value='update_pages' src='".$HTMLRel."pics/actualiser.png' class='calendrier'>";
 			echo "</form>";
 			

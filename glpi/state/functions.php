@@ -89,7 +89,7 @@ function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= "",$s
 	if($phrasetype == "exact") echo "selected";
 	echo ">".$lang["search"][3]."</option>";
 	echo "</select>";
-	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" />";
+	echo "<input type='text' size='15' name=\"contains\" value=\"". htmlentities($contains) ."\" />";
 	echo "&nbsp;";
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
