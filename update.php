@@ -3152,6 +3152,10 @@ if(FieldExists("glpi_tracking","status")) {
 
 	$query2=" UPDATE `glpi_tracking` SET status='old_done' WHERE status='';";
 	$db->query($query2) or die("0.65 update status=old in tracking".$lang["update"][90].$db->error());	
+
+	$query2=" UPDATE `glpi_tracking` SET status='assign' WHERE status='new' AND assign <> 0;";
+	$db->query($query2) or die("0.65 update status=assign in tracking".$lang["update"][90].$db->error());	
+
 }
 
 if(FieldExists("glpi_tracking_planning","id_assign")) {
