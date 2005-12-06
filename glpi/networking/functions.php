@@ -617,13 +617,14 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 	echo "</td></tr>\n";
 
 	// Show device MAC adresses
-	if ((!empty($netport->device_type)&&$netport->device_type==1)||($several!="yes"&&$devtype==1)){
+	if ((!empty($netport->device_type)&&$netport->device_type==COMPUTER_TYPE)||($several!="yes"&&$devtype==COMPUTER_TYPE)){
 		$comp=new Computer();
 
 		if (!empty($netport->device_type))
-		$comp->getFromDB($netport->device_ID);
+		$comp->getFromDB($netport->device_ID,1);
 		else 
-		$comp->getFromDB($ondevice);
+		$comp->getFromDB($ondevice,1);
+
 		$macs=array();
 		$i=0;
 		// Get MAC adresses :
