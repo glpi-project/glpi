@@ -55,7 +55,6 @@
 	
 			
 	$query = "SELECT * FROM glpi_users WHERE ID >'1' $where ORDER BY realname,name $LIMIT";
-	//echo $query;
 	$result = $db->query($query);
 
 	echo "<select name=\"".$_POST['myname']."\">";
@@ -78,15 +77,11 @@
 		
 	if ($number > 0) {
 		while ($i < $number) {
-			$output = unhtmlentities($db->result($result, $i, "name"));
-			$realname=unhtmlentities($db->result($result, $i, "realname"));
+			$output = $db->result($result, $i, "name");
+			$realname=$db->result($result, $i, "realname");
 			if (!empty($realname)) $output = $realname;
-			$ID = unhtmlentities($db->result($result, $i, "ID"));
-//			if ($ID == $value) {
-//				echo "<option value=\"$ID\" selected>".$output;
-//			} else {
+			$ID = $db->result($result, $i, "ID");
 				echo "<option value=\"$ID\">".$output;
-//			}
 			$i++;
 			echo "</option>";
    		}

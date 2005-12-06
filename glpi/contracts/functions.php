@@ -81,328 +81,7 @@ function showContractOnglets($target,$withtemplate,$actif){
 	
 }
 
-/**
-* Print search form for contracts
-*
-* 
-*
-*@param $field='' field selected in the search form
-*@param $contains='' the search string
-*@param $sort='' the "sort by" field value
-*@param $phrasetype=''  not used (to be deleted)
-*@param $deleted='' boolean : display deleted items or not.
 
-*@return nothing (diplays)
-*
-**/
-// Plus utilisé
-/*
-function searchFormContract($field="",$phrasetype= "",$contains="",$sort= "",$deleted="",$link="") {
-	// Print Search Form
-	
-	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel;
-
-	$option["glpi_contracts.ID"]				= $lang["financial"][28];
-	$option["glpi_contracts.name"]			= $lang["financial"][27];
-	$option["glpi_contracts.num"]			= $lang["financial"][4];
-	$option["glpi_contracts.contract_type"]				= $lang["financial"][37];
-	$option["glpi_contracts.begin_date"]			= $lang["financial"][7];	
-	$option["glpi_contracts.duration"]			= $lang["financial"][8];
-	$option["glpi_contracts.notice"]			= $lang["financial"][10];
-	$option["glpi_contracts.bill_type"]			= $lang["financial"][58];
-	$option["glpi_contracts.compta_num"]			= $lang["financial"][13];
-
-	echo "<form method=get action=\"".$cfg_install["root"]."/contracts/contracts-search.php\">";
-	echo "<div align='center'><table class='tab_cadre' width='800'>";
-	echo "<tr><th colspan='4'><b>".$lang["search"][0].":</b></th></tr>";
-	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>";
-
-	echo "<table>";
-	
-	for ($i=0;$i<$_SESSION["glpisearchcount"];$i++){
-		echo "<tr><td align='right'>";
-		if ($i==0){
-			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?add_search_count=1'><img src=\"".$HTMLRel."pics/plus.png\" alt='+'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
-			if ($_SESSION["glpisearchcount"]>1)
-			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?delete_search_count=1'><img src=\"".$HTMLRel."pics/moins.png\" alt='-'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
-		}
-		if ($i>0) {
-			echo "<select name='link[$i]'>";
-			
-			echo "<option value='AND' ";
-			if(is_array($link)&&isset($link[$i]) && $link[$i] == "AND") echo "selected";
-			echo ">AND</option>";
-			
-			echo "<option value='OR' ";
-			if(is_array($link)&&isset($link[$i]) && $link[$i] == "OR") echo "selected";
-			echo ">OR</option>";		
-
-			echo "<option value='AND NOT' ";
-			if(is_array($link)&&isset($link[$i]) && $link[$i] == "AND NOT") echo "selected";
-			echo ">AND NOT</option>";		
-			
-			echo "<option value='OR NOT' ";
-			if(is_array($link)&&isset($link[$i]) && $link[$i] == "OR NOT") echo "selected";
-			echo ">OR NOT</option>";
-			
-			echo "</select>";
-		}
-		
-		echo "<input type='text' size='15' name=\"contains[$i]\" value=\"". (is_array($contains)&&isset($contains[$i])?stripslashes($contains[$i]):"" )."\" >";
-		echo "&nbsp;";
-		echo $lang["search"][10]."&nbsp;";
-	
-		echo "<select name=\"field[$i]\" size='1'>";
-        	echo "<option value='all' ";
-		if(is_array($field)&&isset($field[$i]) && $field[$i] == "all") echo "selected";
-		echo ">".$lang["search"][7]."</option>";
-        	reset($option);
-		foreach ($option as $key => $val) {
-			echo "<option value=\"".$key."\""; 
-			if(is_array($field)&&isset($field[$i]) && $key == $field[$i]) echo "selected";
-			echo ">". $val ."</option>\n";
-		}
-		echo "</select>&nbsp;";
-
-		
-		echo "</td></tr>";
-	}
-	echo "</table>";
-	echo "</td>";
-
-	echo "<td>";
-
-	echo $lang["search"][4];
-	echo "&nbsp;<select name='sort' size='1'>";
-	reset($option);
-	foreach ($option as $key => $val) {
-		echo "<option value=\"".$key."\"";
-		if($key == $sort) echo "selected";
-		echo ">".$val."</option>\n";
-	}
-	echo "</select> ";
-	echo "</td><td><input type='checkbox' name='deleted' ".($deleted=='Y'?" checked ":"").">";
-	echo "<img src=\"".$HTMLRel."pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
-	echo "</td><td width='80' align='center' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
-	echo "</td></tr></table></div></form>";
-}
-*/
-
-/**
-* Search and list contacts
-*
-*
-* Build the query, make the search and list contacts after a search.
-*
-*@param $target filename where to go when done.
-*@param $username not used to be deleted.
-*@param $field the field in witch the search would be done
-*@param $contains the search string
-*@param $sort the "sort by" field value
-*@param $order ASC or DSC (for mysql query)
-*@param $start row number from witch we start the query (limit $start,xxx)
-*@param $deleted Query on deleted items or not.
-*@param $phrasetype='' not used (to be deleted)
-*@param $deleted='' boolean : display deleted items or not
-*
-*@return Nothing (display)
-*
-**/
-// Plus utilisé
-/*
-function showContractList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted,$link) {
-
-	// Lists Contract
-
-	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
-
-	$db = new DB;
-
-	$where ="";
-	
-	foreach ($field as $k => $f)
-	if ($k<$_SESSION["glpisearchcount"])
-	if ($contains[$k]==""){
-		if ($k>0) $where.=" ".$link[$k]." ";
-		$where.=" ('1'='1') ";
-		}
-	else {
-		if ($k>0) $where.=" ".$link[$k]." ";
-		$where.="( ";
-		// Build query
-		if($f == "all") {
-			$fields = $db->list_fields("glpi_contracts");
-			$columns = $db->num_fields($fields);
-		
-			for ($i = 0; $i < $columns; $i++) {
-				if($i != 0) {
-					$where .= " OR ";
-				}
-				$coco = $db->field_name($fields, $i);
-				$where .= "glpi_contracts.".$coco . " LIKE '%".$contains[$k]."%'";
-			}
-		}
-		else {
-			if ($phrasetype == "contains") {
-				$where .= "($f LIKE '%".$contains[$k]."%')";
-			}
-			else {
-				$where .= "($f LIKE '".$contains[$k]."')";
-			}
-		}
-	$where.=" )";
-	}
-
-
-	if (!$start) {
-		$start = 0;
-	}
-	if (!$order) {
-		$order = "ASC";
-	}
-	
-	$query = "SELECT glpi_contracts.ID as ID FROM glpi_contracts ";
-	
-	$query.= " where ";
-	if (!empty($where)) $query .= " $where AND ";
-	$query .= " glpi_contracts.deleted='$deleted'  ORDER BY $sort $order";
-//	echo $query;
-	// Get it from database	
-	if ($result = $db->query($query)) {
-		$numrows = $db->numrows($result);
-
-		// Limit the result, if no limit applies, use prior result
-		if ($numrows>$cfg_features["list_limit"]) {
-			$query_limit = $query." LIMIT $start,".$cfg_features["list_limit"]." ";
-			$result_limit = $db->query($query_limit);
-			$numrows_limit = $db->numrows($result_limit);
-		} else {
-			$numrows_limit = $numrows;
-			$result_limit = $result;
-		}
-
-		if ($numrows_limit>0) {
-			// Pager
-			$parameters="sort=$sort&amp;order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
-			printPager($start,$numrows,$target,$parameters);
-
-			// Produce headline
-			echo "<div align='center'><table class='tab_cadre' width='750'><tr>";
-
-			// Type
-			echo "<th>";
-			if ($sort=="glpi_contracts.contract_type") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?sort=glpi_contracts.contract_type&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
-			echo $lang["financial"][37]."</a></th>";
-
-			
-			// nom
-			echo "<th>";
-			if ($sort=="glpi_contracts.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?sort=glpi_contracts.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
-			echo $lang["financial"][27]."</a></th>";
-			
-			// num
-			echo "<th>";
-			if ($sort=="glpi_contracts.num") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?sort=glpi_contracts.num&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
-			echo $lang["financial"][4]."</a></th>";
-
-			// Begin date
-			echo "<th>";
-			if ($sort=="glpi_contracts.begin_date") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?sort=glpi_contracts.begin_date&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
-			echo $lang["financial"][7]."</a></th>";
-
-			// Duration		
-			echo "<th>";
-			if ($sort=="glpi_contracts.duration") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?sort=glpi_contracts.duration&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
-			echo $lang["financial"][8]."</a></th>";
-
-			// notice
-			echo "<th>";
-			if ($sort=="glpi_contracts.notice") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?sort=glpi_contracts.notice&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
-			echo $lang["financial"][10]."</a></th>";
-
-			// Cost
-			echo "<th>";
-			if ($sort=="glpi_contracts.cost") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?sort=glpi_contracts.cost&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
-			echo $lang["financial"][5]."</a></th>";
-
-			// Bill type
-			echo "<th>";
-			if ($sort=="glpi_contracts.bill_type") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?sort=glpi_contracts.bill_type&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
-			echo $lang["financial"][58]."</a></th>";
-
-			echo "</tr>";
-
-			for ($i=0; $i < $numrows_limit; $i++) {
-				$ID = $db->result($result_limit, $i, "ID");
-
-				$ct = new Contract;
-				$ct->getfromDB($ID);
-
-				echo "<tr class='tab_bg_2' align='center'>";
-				echo "<td>".getDropdownName("glpi_dropdown_contract_type",$ct->fields["contract_type"])."</td>";
-				echo "<td><b>";
-				echo "<a href=\"".$cfg_install["root"]."/contracts/contracts-info-form.php?ID=$ID\">";
-				echo $ct->fields["name"]." (".$ct->fields["ID"].")";
-				echo "</a></b></td>";
-				echo "<td>".$ct->fields["num"]."</td>";
-				echo "<td>".$ct->fields["begin_date"]."</td>";
-				echo "<td>".$ct->fields["duration"]." ".$lang["financial"][57]."</td>";
-				echo "<td>".$ct->fields["notice"]." ".$lang["financial"][57]."</td>";				
-				echo "<td>".$ct->fields["cost"]."</td>";				
-				echo "<td>".$ct->fields["bill_type"]."</td>";				
-				
-				echo "</tr>";
-			}
-
-			// Close Table
-			echo "</table></div>";
-
-			// Pager
-			echo "<br>";
-//			$parameters="sort=$sort&amp;order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
-			printPager($start,$numrows,$target,$parameters);
-
-		} else {
-			echo "<div align='center'><b>".$lang["financial"][40]."</b></div>";
-			
-		}
-	}
-}
-*/
 /**
 * Print the contract form
 *
@@ -558,7 +237,6 @@ function showContractForm ($target,$ID) {
 		echo "</td>\n\n";
 		
 		echo "<td class='tab_bg_2' valign='top'  colspan='2'>\n";
-//		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		if ($con->fields["deleted"]=='N')
 		echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
 		else {
@@ -694,7 +372,7 @@ function showDeviceContract($instID) {
 
     $db = new DB;
 	$query = "SELECT * FROM glpi_contract_device WHERE glpi_contract_device.FK_contract = '$instID' AND glpi_contract_device.is_template='0' order by device_type, FK_device";
-//echo $query;	
+
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 	$i = 0;
@@ -723,14 +401,11 @@ function showDeviceContract($instID) {
 	echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 		dropdownAllItems("item");
 	echo "&nbsp;<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
-	//echo "</form>";
 	echo "</td>";
 	
 	
 	echo "<td align='center' class='tab_bg_2'>";
-	//echo "<form method='get' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php?ID=$instID\">";	
 	echo "<input type='hidden' name='ID' value='$instID'>";
-	//echo "&nbsp;<input type='submit' name='bsearch' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr>";
 	
 	echo "</table></div>"    ;
@@ -773,7 +448,6 @@ function deleteDeviceContract($ID){
 
 $db = new DB;
 $query="DELETE FROM glpi_contract_device WHERE ID= '$ID';";
-//echo $query;
 $result = $db->query($query);
 }
 

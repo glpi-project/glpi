@@ -102,7 +102,6 @@ class Job {
 			$query .= "' WHERE ID='";
 			$query .= $this->fields["ID"];	
 			$query .= "'";
-//			echo $query;
 			$result=$db->query($query);
 		}
 	}
@@ -138,25 +137,6 @@ class Job {
 		return $db->insert_id();
 	}	
 
-/*
-	function updateStatus($status) {
-		// update Status of Job
-		
-		$db = new DB;
-		$query = "UPDATE glpi_tracking SET status = '$status' WHERE ID = $this->ID";
-		if ($result = $db->query($query)) {
-			$this->closedate=date("Y-m-d G:i:s");
-			$query = "UPDATE glpi_tracking SET closedate = NOW() WHERE ID = $this->ID";
-			if ($result = $db->query($query)) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			return false;
-		}
-	}
-*/
 	function updateRealtime() {
 		// update Status of Job
 		
@@ -171,93 +151,6 @@ class Job {
 		}
 	}
 	
-/*
-	function assignTo($user,$type) {
-		// assign Job to user
-		
-		$db = new DB;
-		$this->assign=$user;
-		$this->assign_type=$type;
-		$query = "UPDATE glpi_tracking SET assign = '$user',assign_type = '$type' WHERE ID = '$this->ID'";
-		if ($result = $db->query($query)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	function categoryTo($category) {
-		// change category
-		
-		$db = new DB;
-		$this->category=$category;
-		$query = "UPDATE glpi_tracking SET category = '$category' WHERE ID = '$this->ID'";
-		if ($result = $db->query($query)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	function priorityTo($priority) {
-		// change priority
-		
-		$db = new DB;
-		$this->priority=$priority;
-		$query = "UPDATE glpi_tracking SET priority = '$priority' WHERE ID = '$this->ID'";
-//		echo $query;
-		if ($result = $db->query($query)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	function authorTo($author) {
-		// change item
-		
-		$db = new DB;
-		$this->fields["author"] = $author;
-
-		$query = "UPDATE glpi_tracking SET author = '$author' WHERE ID = '$this->ID'";
-		if ($result = $db->query($query)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	function mailAuthorTo($uemail=NULL){
-		//change mail
-
-		$db = new DB;
-		$this->uemail = $uemail;
-
-		$query = "UPDATE glpi_tracking SET uemail = '$uemail' WHERE ID = '$this->ID'";
-		if ($result = $db->query($query)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-
-
-
-	function itemTo($type,$comp) {
-		// change item
-		
-		$db = new DB;
-		$this->device_type = $type;
-		$this->computer = $comp;
-
-		$query = "UPDATE glpi_tracking SET computer = '$comp', device_type='$type' WHERE ID = '$this->ID'";
-		if ($result = $db->query($query)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-*/
 
 	function textFollowups() {
 		// get the last followup for this job and give its contents as
@@ -368,29 +261,6 @@ class Followup {
 	
 	var $fields	= array();
 	var $updates	= array();
-/*
-	function getfromDB ($ID,$iteration) {
-
-		$this->fields["ID"] = $ID;
-
-		// Make new database object and fill variables
-		$db = new DB;
-		$query = "SELECT * FROM glpi_followups WHERE (tracking = $ID) ORDER BY date ASC";
-	
-		if ($result = $db->query($query)) {
-			$this->fields["tracking"] = $ID;
-			$this->fields["date"] = $db->result($result,$iteration,"date");
-			$this->fields["author"] = $db->result($result, $iteration, "author");
-			$this->fields["private"] = $db->result($result, $iteration, "private");
-			$this->fields["contents"] = nl2br($db->result($result, $iteration, "contents"));
-
-			return true;
-
-		} else {
-			return false;
-		}
-	}
-*/
 
 	function getfromDB ($ID) {
 
@@ -482,7 +352,6 @@ class Followup {
 			$query .= "' WHERE ID='";
 			$query .= $this->fields["ID"];	
 			$query .= "'";
-//			echo $query;
 			$result=$db->query($query);
 			if ($updates[$i]=="realtime") {
 				$job=new Job();
@@ -493,33 +362,6 @@ class Followup {
 	}
 
 	
-	// Plus utilisé
-	/*
-	function logFupUpdate () {
-		// log event
-		
-		$db = new DB;
-		$query = "SELECT * FROM glpi_tracking WHERE (ID = $this->tracking)";
-		
-		if ($result = $db->query($query)) {
-			$cID = $db->result($result, 0, "computer");
-			$type="";
-			switch ($db->result($result, 0, "device_type")){
-				case COMPUTER_TYPE :$type="computers";break;
-				case NETWORKING_TYPE :$type="networking";break;
-				case PRINTER_TYPE :$type="printers";break;
-				case MONITOR_TYPE :$type="monitors";break;
-				case SOFTWARE_TYPE :$type="software";break;
-				case PERIPHERAL_TYPE :$type="peripherals";break;
-			}
-			logEvent($cID, $type, 4, "tracking", $this->fields["author"]." added followup to job $this->tracking.");
-			return true;
-		} else {
-			return false;
-		}
-		
-	}
-	*/
 	
 	function getAuthorName($link=0){
 	return getUserName($this->fields["author"],$link);

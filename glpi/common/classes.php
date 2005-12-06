@@ -84,7 +84,6 @@ class DBmysql {
 	function result($result, $i, $field) {
 		$value=get_magic_quotes_runtime()?stripslashes_deep(mysql_result($result, $i, $field)):mysql_result($result, $i, $field);
 		return $value;
-//		return htmlentities_deep($value);
 	}
 	function numrows($result) {
 		return mysql_num_rows($result);
@@ -92,17 +91,14 @@ class DBmysql {
 	function fetch_array($result) {
 		$value=get_magic_quotes_runtime()?stripslashes_deep(mysql_fetch_array($result)):mysql_fetch_array($result);
 		return $value;
-//		return htmlentities_deep($value);
 	}
 	function fetch_row($result) {
 		$value=get_magic_quotes_runtime()?stripslashes_deep(mysql_fetch_row($result)):mysql_fetch_row($result);
 		return $value;
-//		return htmlentities_deep($value);	
 	}
 	function fetch_assoc($result) {
 		$value=get_magic_quotes_runtime()?stripslashes_deep(mysql_fetch_assoc($result)):mysql_fetch_assoc($result);
 		return $value;
-//		return htmlentities_deep($value);
 	}
 	function data_seek($result,$num){
 		return mysql_data_seek ($result,$num);
@@ -287,8 +283,6 @@ class Identification
   	{
   		// switch to protocol version 3 to make ssl work
   		ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3) ;
-//  		if ( ldap_bind($conn, $dn, $pass) ) {
-//  			$rv = true;
 
   		if (ldap_bind($conn, $dn, $pass) ) {
                      $filter="(".$cfg_login['ldap']['login']."=$login)";
@@ -392,8 +386,6 @@ class Identification
   	{
   		// switch to protocol version 3 to make ssl work
   		ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3) ;
-//  		if ( ldap_bind($conn, $dn, $pass) ) {
-//  			$rv = true;
 
   		if (ldap_bind($conn, $dn, $pass) ) {
 			$findcn=explode(",O",$dn);
@@ -452,31 +444,28 @@ class Identification
  	$this->err .= ldap_error($ds)."<br>";
      return false;
     }
-    //echo "CONNECT";
+    
   ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
   ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
   
-  if ($rdn=="") {$r = ldap_bind ( $ds);//echo "sans";
+  if ($rdn=="") {$r = ldap_bind ( $ds);
   }
-  else {$r = ldap_bind ( $ds,$rdn,$rpass);//echo "avec";
+  else {$r = ldap_bind ( $ds,$rdn,$rpass);
   }
-  //echo $rdn."---".$rpass."---".$ds;
   if (!$r)
       {
 		$this->err .= ldap_error($ds)."<br>";
        ldap_close ( $ds );
        return false;
       }
-      //echo "BIND";
     $sr = ldap_search ($ds, $ldap_base_dn, "($ldap_login_attr=$login)");
-//echo " SEARCH";
     if (!$sr)
        {
 		$this->err .= ldap_error($ds)."<br>";
        ldap_close ( $ds );
        return false;
        }
-       
+  
     $info = ldap_get_entries ( $ds, $sr );
 
     if ( $info["count"] != 1 )
@@ -489,7 +478,7 @@ class Identification
    ldap_free_result ( $sr );
    ldap_close ( $ds );
    $thedn=explode(",", $info[0]["dn"]);
-   //unset($thedn[0]);
+
    return implode(",",$thedn);
   }  		 // ldap_get_dn_active_directory()
  		
@@ -573,7 +562,7 @@ class Identification
 		$type = $this->user->fields['type'];
 		$language = $this->user->fields['language'];
 		$tracking_order = $this->user->fields['tracking_order'];
-		//echo $tracking_order;
+
 		if(!session_id()) session_start();
 		$_SESSION["glpiID"] = $ID;
 		$_SESSION["glpipass"] = $password;
@@ -800,7 +789,6 @@ class Mailing
 				$body=$this->get_mail_body()."\n-- \n".$cfg_mailing["signature"];
 				$body=ereg_replace("<br />","",$body);
 				$body=ereg_replace("<br>","",$body);
-				$body=unhtmlentities($body);
 
 				// get subject OK
 				$subject=$this->get_mail_subject();
@@ -856,7 +844,6 @@ class MailingResa{
             "$", $email)
                         )
         {
-        //echo "Erreur: '$email' n'est pas une adresse mail valide!<br>";
         return false;
         }
 		else return true;
@@ -956,7 +943,7 @@ class MailingResa{
 				$body=$this->get_mail_body()."\n-- \n".$cfg_mailing["signature"];
 				$body=ereg_replace("<br />","",$body);
 				$body=ereg_replace("<br>","",$body);
-				$body=unhtmlentities($body);
+
 				// get subject OK
 				$subject=$this->get_mail_subject();
 				// get sender :  OK

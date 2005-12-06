@@ -85,322 +85,6 @@ function showNetworkingOnglets($target,$withtemplate,$actif){
 	
 }
 
-// Plus utilisé
-/*
-function searchFormNetworking($field="",$phrasetype= "",$contains="",$sort= "",$deleted= "",$link="") {
-	// Netwokirng Search Form
-	
-	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel;
-
-	$option["glpi_networking.name"]				= $lang["networking"][0];
-	$option["glpi_networking.ID"]				= $lang["networking"][50];
-	$option["glpi_dropdown_locations.name"]			= $lang["networking"][1];
-	$option["glpi_type_networking.name"]				= $lang["networking"][2];
-	$option["glpi_networking.serial"]			= $lang["networking"][6];
-	$option["glpi_networking.otherserial"]		= $lang["networking"][7]	;
-	$option["glpi_dropdown_firmware.name"]		= $lang["networking"][49]	;
-	$option["glpi_networking.comments"]			= $lang["networking"][8];
-	$option["glpi_networking.contact"]			= $lang["networking"][3];
-	$option["glpi_networking.contact_num"]		= $lang["networking"][4];
-	$option["glpi_networking.date_mod"]			= $lang["networking"][9];
-	$option["glpi_networking_ports.ifaddr"] = $lang["networking"][14];
-	$option["glpi_networking_ports.ifmac"] = $lang["networking"][15];
-	$option["glpi_dropdown_netpoint.name"]			= $lang["networking"][51];
-	$option["glpi_enterprises.name"]			= $lang["common"][5];
-	$option["resptech.name"]			=$lang["common"][10];
-	$option=addInfocomOptionFieldsToResearch($option);
-	$option=addContractOptionFieldsToResearch($option);
-
-	echo "<form method='get' action=\"".$cfg_install["root"]."/networking/networking-search.php\">";
-	echo "<div align='center'><table  width='850' class='tab_cadre'>";
-	echo "<tr><th colspan='4'><b>".$lang["search"][0].":</b></th></tr>";
-	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>";
-
-	echo "<table>";
-	
-	for ($i=0;$i<$_SESSION["glpisearchcount"];$i++){
-		echo "<tr><td align='right'>";
-		if ($i==0){
-			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?add_search_count=1'><img src=\"".$HTMLRel."pics/plus.png\" alt='+'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
-			if ($_SESSION["glpisearchcount"]>1)
-			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?delete_search_count=1'><img src=\"".$HTMLRel."pics/moins.png\" alt='-'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
-		}
-		if ($i>0) {
-			echo "<select name='link[$i]'>";
-			
-			echo "<option value='AND' ";
-			if(is_array($link)&&isset($link[$i]) && $link[$i] == "AND") echo "selected";
-			echo ">AND</option>";
-			
-			echo "<option value='OR' ";
-			if(is_array($link)&&isset($link[$i]) && $link[$i] == "OR") echo "selected";
-			echo ">OR</option>";		
-
-			echo "<option value='AND NOT' ";
-			if(is_array($link)&&isset($link[$i]) && $link[$i] == "AND NOT") echo "selected";
-			echo ">AND NOT</option>";		
-			
-			echo "<option value='OR NOT' ";
-			if(is_array($link)&&isset($link[$i]) && $link[$i] == "OR NOT") echo "selected";
-			echo ">OR NOT</option>";
-			
-			echo "</select>";
-		}
-		
-		echo "<input type='text' size='15' name=\"contains[$i]\" value=\"". (is_array($contains)&&isset($contains[$i])?stripslashes($contains[$i]):"" )."\" >";
-		echo "&nbsp;";
-		echo $lang["search"][10]."&nbsp;";
-	
-		echo "<select name=\"field[$i]\" size='1'>";
-        	echo "<option value='all' ";
-		if(is_array($field)&&isset($field[$i]) && $field[$i] == "all") echo "selected";
-		echo ">".$lang["search"][7]."</option>";
-        	reset($option);
-		foreach ($option as $key => $val) {
-			echo "<option value=\"".$key."\""; 
-			if(is_array($field)&&isset($field[$i]) && $key == $field[$i]) echo "selected";
-			echo ">". $val ."</option>\n";
-		}
-		echo "</select>&nbsp;";
-
-		
-		echo "</td></tr>";
-	}
-	echo "</table>";
-	echo "</td><td>";
-	
-	echo $lang["search"][4];
-	echo "&nbsp;<select name='sort' size='1'>";
-	reset($option);
-	foreach ($option as $key => $val) {
-		echo "<option value=\"".$key."\"";
-		if($key == $sort) echo "selected";
-		echo ">".$val."</option>\n";
-	}
-	echo "</select>";
-	echo "</td><td><input type='checkbox' name='deleted' ".($deleted=='Y'?" checked ":"").">";
-	echo "<img src=\"".$HTMLRel."pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
-	echo "</td><td width='80' align='center' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
-	echo "</td></tr></table></div></form>";
-}
-*/
-// Plus utilisé
-/*
-
-function showNetworkingList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted,$link) {
-
-	// Lists networking
-
-	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;;
-
-	$db = new DB;
-
-	$where ="";
-
-	foreach ($field as $k => $f)
-	if ($k<$_SESSION["glpisearchcount"])
-	if ($contains[$k]==""){
-		if ($k>0) $where.=" ".$link[$k]." ";
-		$where.=" ('1'='1') ";
-		}
-	else {
-		if ($k>0) $where.=" ".$link[$k]." ";
-		$where.="( ";
-
-		// Build query
-		if($f=="all") {
-			$fields = $db->list_fields("glpi_networking");
-			$columns = $db->num_fields($fields);
-		
-			for ($i = 0; $i < $columns; $i++) {
-				if($i != 0) {
-					$where .= " OR ";
-				}
-				$coco = $db->field_name($fields, $i);
-
-				if($coco == "firmware") {
-					$where .= " glpi_dropdown_firmware.name LIKE '%".$contains[$k]."%'";
-				}
-				elseif($coco == "location") {
-					$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains[$k]);
-				}
-				elseif($coco == "FK_glpi_enterprise") {
-					$where .= "glpi_enterprises.name LIKE '%".$contains[$k]."%'";
-				}
-				elseif ($coco=="tech_num"){
-					$where .= " resptech.name LIKE '%".$contains[$k]."%'";
-				} 
-				elseif($coco == "type") {
-					$where .= " glpi_type_networking.name LIKE '%".$contains[$k]."%'";
-				}
-				else {
- 	  				$where .= "glpi_networking.".$coco . " LIKE '%".$contains[$k]."%'";
-				}
-			}
-			$where .= " OR glpi_networking_ports.ifaddr LIKE '%".$contains[$k]."%'";
-			$where .= " OR glpi_networking_ports.ifmac LIKE '%".$contains[$k]."%'";
-			$where .= " OR glpi_dropdown_netpoint.name LIKE '%".$contains[$k]."%'";
-			$where .= getInfocomSearchToViewAllRequest($contains[$k]);
-			$where .= getContractSearchToViewAllRequest($contains[$k]);
-		}
-		else {
-			if ($f=="glpi_dropdown_locations.name"){
-				$where .= getRealSearchForTreeItem("glpi_dropdown_locations",$contains[$k]);
-			}		
-			else if ($phrasetype == "contains") {
-				$where .= "($f LIKE '%".$contains[$k]."%')";
-			}
-			else {
-				$where .= "($f LIKE '".$contains[$k]."')";
-			}
-		}
-	$where.=" )";
-	}
-
-	if (!$start) {
-		$start = 0;
-	}
-	if (!$order) {
-		$order = "ASC";
-	}
-	$query = "select DISTINCT glpi_networking.ID from glpi_networking LEFT JOIN glpi_dropdown_locations on glpi_networking.location=glpi_dropdown_locations.ID ";
-	$query .= " LEFT JOIN glpi_type_networking on glpi_networking.type = glpi_type_networking.ID ";
-	$query .= " LEFT JOIN glpi_dropdown_firmware on glpi_networking.firmware = glpi_dropdown_firmware.ID ";
-	$query .= " LEFT JOIN glpi_networking_ports on (glpi_networking.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='2')";	
-	$query .= " LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";
-	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = glpi_networking.FK_glpi_enterprise ) ";
-	$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = glpi_networking.tech_num ) ";
-	$query.= getInfocomSearchToRequest("glpi_networking",NETWORKING_TYPE);
-	$query.= getContractSearchToRequest("glpi_networking",NETWORKING_TYPE);
-	$query.= " where ";
-	if (!empty($where)) $query .= " $where AND ";
-	$query .= " glpi_networking.deleted='$deleted' AND glpi_networking.is_template = '0'  ORDER BY $sort $order";
-
-	// Get it from database	
-	if ($result = $db->query($query)) {
-		$numrows = $db->numrows($result);
-
-		// Limit the result, if no limit applies, use prior result
-		if ($numrows>$cfg_features["list_limit"]) {
-			$query_limit = $query ." LIMIT $start,".$cfg_features["list_limit"]." ";
-			$result_limit = $db->query($query_limit);
-			$numrows_limit = $db->numrows($result_limit);
-
-		} else {
-			$numrows_limit = $numrows;
-			$result_limit = $result;
-		}
-
-
-		if ($numrows_limit>0) {
-			// Pager
-			$parameters="sort=$sort&amp;order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
-			printPager($start,$numrows,$target,$parameters);
-
-			// Produce headline
-			echo "<div align='center'><table class='tab_cadre'><tr>";
-
-			// Name
-			echo "<th>";
-			if ($sort=="glpi_networking.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?sort=glpi_networking.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
-			echo $lang["networking"][0]."</a></th>";
-
-			// State		
-			echo "<th>".$lang["state"][0]."</th>";
-			
-			// Manufacturer		
-			echo "<th>";
-			if ($sort=="glpi_enterprises.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?sort=glpi_enterprises.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
-			echo $lang["common"][5]."</a></th>";
-			
-			// Location			
-			echo "<th>";
-			if ($sort=="glpi_dropdown_locations.completename") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?sort=glpi_dropdown_locations.completename&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
-			echo $lang["networking"][1]."</a></th>";
-
-			// Type
-			echo "<th>";
-			if ($sort=="glpi_type_networking.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?sort=glpi_type_networking.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
-			echo $lang["networking"][2]."</a></th>";
-
-			
-			// Firmware
-			echo "<th>";
-			if ($sort=="glpi_dropdown_firmware.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?sort=glpi_dropdown_firmware.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
-			echo $lang["networking"][49]."</a></th>";
-
-			
-			
-			// Last modified		
-			echo "<th>";
-			if ($sort=="glpi_networking.date_mod") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?sort=glpi_networking.date_mod&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
-			echo $lang["networking"][9]."</a></th>";
-	
-			echo "</tr>";
-
-			for ($i=0; $i < $numrows_limit; $i++) {
-				$ID = $db->result($result_limit, $i, "ID");
-				$networking = new Netdevice;
-				$networking->getfromDB($ID);
-				$state=new StateItem;
-				$state->getfromDB(NETWORKING_TYPE,$ID);
-				
-				echo "<tr class='tab_bg_2'>";
-				echo "<td><b>";
-				echo "<a href=\"".$cfg_install["root"]."/networking/networking-info-form.php?ID=$ID\">";
-				echo $networking->fields["name"]." (".$networking->fields["ID"].")";
-				echo "</a></b></td>";
-				echo "<td>".getDropdownName("glpi_dropdown_state",$state->fields["state"])."</td>";
-				echo "<td>". getDropdownName("glpi_enterprises",$networking->fields["FK_glpi_enterprise"]) ."</td>";
-				echo "<td>". getDropdownName("glpi_dropdown_locations",$networking->fields["location"]) ."</td>";
-				echo "<td>". getDropdownName("glpi_type_networking",$networking->fields["type"]) ."</td>";
-				echo "<td>". getDropdownName("glpi_dropdown_firmware",$networking->fields["firmware"]) ."</td>";
-				echo "<td>".$networking->fields["date_mod"]."</td>";
-				echo "</tr>";
-			}
-
-			// Close Table
-			echo "</table></div>";
-
-			// Pager
-			echo "<br>";
-			//$parameters="sort=$sort&amp;order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
-			printPager($start,$numrows,$target,$parameters);
-
-		} else {
-			echo "<div align='center'><b>".$lang["networking"][38]."</b></div>";
-			
-		}
-	}
-}
-*/
-
 
 
 function showNetworkingForm ($target,$ID,$withtemplate='') {
@@ -578,11 +262,8 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 		echo "<td class='tab_bg_2' valign='top'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
-//		echo "</form></td>\n\n";
 		echo "<td class='tab_bg_2' valign='top'>\n";
-//		echo "<form action=\"$target\" method='post'>\n";
 
-//		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<div align='center'>\n";
 		if ($netdev->fields["deleted"]=='N')
 		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>\n";
@@ -769,8 +450,6 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			
 			$colspan=8;
 			if ($withtemplate!=2){
-//			echo "<form method=post action=\"".$cfg_install["root"]."/networking/networking-port.php\">";
-//			$colspan=4;
 			}
 			
 			echo "<br><div align='center'><table class='tab_cadre' width='90%'>";
@@ -783,17 +462,6 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			}
 			echo ":</th>";
 
-			if ($withtemplate!=2){
-/*				echo "<th  colspan='$colspan'>";
-				echo $lang["networking"][55].":&nbsp;";
-				dropdown("glpi_dropdown_vlan","vlan");
-				echo "<input type='submit' name='assign_vlan' value='".$lang["buttons"][3]."' class='submit'>";
-				echo "<a href='".$_SERVER["PHP_SELF"]."?ID=$device&amp;select=all'>".$lang["buttons"][18]."</a>";
-				echo "&nbsp;/&nbsp;";
-				echo "<a href='".$_SERVER["PHP_SELF"]."?ID=$device&amp;select=none'>".$lang["buttons"][19]."</a>";
-				echo "</th>";
-*/
-			}
 			echo "</tr>";        
 			echo "<tr><th>#</th><th>".$lang["networking"][0]."</th><th>".$lang["networking"][51]."</th>";
 			echo "<th>".$lang["networking"][14]."</th><th>".$lang["networking"][15]."</th>";
@@ -827,7 +495,6 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			echo "</div>\n\n";
 			// Assign VLAN form
 			if ($withtemplate!=2){
-//			echo "</form>";
 			}
 
 			
@@ -994,27 +661,15 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 	
 	echo "<td align='center' >";
 		dropdownValue("glpi_dropdown_netpoint","netpoint", $netport->fields["netpoint"]);		
-//		NetpointLocationSearch($search,"netpoint",$location,$netport->fields["netpoint"]);
-//        echo "<input type='text' size='10'  name='search'>";
-//	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
 	echo "</td></tr>";
 	}
 	if ($ID) {
-/*		echo "<tr class='tab_bg_1'><td>".$lang["networking"][24].":</td>";
-		echo "<td>";
-			showConnection($netport->fields["ID"]);
-		echo "</td></tr>";
-*/
 		echo "<tr class='tab_bg_2'>";
 		echo "<td align='center'>";
 		echo "<input type='hidden' name='ID' value=".$netport->fields["ID"].">";
 		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
 		echo "</td>";
-//		echo "</form>";
-		
-//		echo "<form method='post' action=$target>";
-//		echo "<input type='hidden' name='ID' value=$ID>";
-//		echo "<input type='hidden' name='referer' value='$REFERER'>";
+
 		echo "<td align='center'>";
 		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 		echo "</td></tr>";
@@ -1196,7 +851,6 @@ function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 			echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
 			echo "</form>";
 			}
-//		echo "<a href=\"".$cfg_install["root"]."/networking/networking-port-connect.php?ID=$ID\">".$lang["buttons"][9]."</a>";
 		else echo "&nbsp;";
 		echo "</td>";
 		echo "</tr></table>";
@@ -1206,201 +860,6 @@ function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 
 ///// Wire the Ports /////
 
-// Plus utilisé
-/*
-function showConnectorSearch($target,$ID) {
-
-	GLOBAL $cfg_layout,$cfg_install, $lang;
-
-	$np=New NetPort();
-	$np->getFromDB($ID);
-	$ci=new CommonItem;
-	$ci->getFromDB($np->fields['device_type'],$np->fields['on_device']);
-	echo "<div align='center'><form method='post' action=\"$target\"><table border='0' class='tab_cadre'>";
-	echo "<tr><th colspan='2'>".$lang["networking"][27]." ".$ci->getName()." - ".$np->fields["logical_number"]." ".$lang["networking"][28].":</th></tr>";
-
-	echo "<tr class='tab_bg_1'>";
-	
-	echo "<td>".$lang["networking"][29]." <select name='type'>";
-	echo "<option value='name'>".$lang["networking"][0]."</option>";
-	echo "<option value='id'>ID</option>";
-	echo "</select>";
-	echo $lang["networking"][30]." <input type='text' size='10' name='comp'>";
-	echo "<input type='hidden' name='pID1' value=\"$ID\">";
-	echo "<input type='hidden' name='next' value=\"compsearch\">";
-	echo "</td><td class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][11]."\" class='submit'>";
-	echo "</td></tr>";	
-	echo "</form>";
-	
-	echo "<tr class='tab_bg_1'>";
-	echo "<form method='get' action=\"$target\">";
-	echo "<td>".$lang["networking"][31].":";
-	$db = new DB;
-	$query = "SELECT glpi_networking.ID AS ID, glpi_networking.name AS name, glpi_dropdown_locations.ID as location from glpi_networking LEFT JOIN glpi_dropdown_locations ON glpi_networking.location = glpi_dropdown_locations.id WHERE glpi_networking.is_template='0' AND glpi_networking.deleted='N' ORDER BY name";
-	$result = $db->query($query);
-	$number = $db->numrows($result);
-	echo "<select name='dID'>";
-	$i=0;
-	while ($i < $number)
-	{
-		$dID = $db->result($result, $i, "ID");
-		$name = $db->result($result, $i, "name");
-		$location = $db->result($result, $i, "location");
-		echo "<option value=\"$dID\">$name (".getTreeValueCompleteName("glpi_dropdown_locations",$location).")</option>";
-		$i++;
-	}
-	echo "</select>";
-	echo "<input type='hidden' name='pID1' value=\"$ID\">";
-	echo "<input type='hidden' name='next' value=\"showports\">";
-	echo "<input type='hidden' name='device_type' value='2'>";
-	echo "</td><td class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][11]."\" class='submit'>";
-	echo "</td></tr>";
-	echo "</table>";
-	echo "</form>";	
-}
-*/
-// Plus utilisé
-/*
-function listConnectorComputers($target,$input) {
-	
-	GLOBAL $cfg_layout,$cfg_install, $lang;
-
-	$pID1 = $input["pID1"];
-
-
-	$db = new DB;
-	if ($input["type"] == "name") {
-		$query = "SELECT glpi_computers.ID as ID, glpi_computers.name as name, glpi_dropdown_locations.ID as location from glpi_computers LEFT JOIN glpi_dropdown_locations ON  glpi_computers.location = glpi_dropdown_locations.id WHERE glpi_computers.name LIKE '%".$input["comp"]."%'";
-	} else {
-		$query = "SELECT glpi_computers.ID as ID, glpi_computers.name as name, glpi_dropdown_locations.ID as location from glpi_computers LEFT JOIN glpi_dropdown_locations ON glpi_computers.location = glpi_dropdown_locations.id WHERE glpi_computers.ID LIKE '%".$input["comp"]."%'";
-	} 
-	
-	$query.=" AND glpi_computers.is_template='0' and glpi_computers.deleted='N' ";
-//echo $query;
-	$query.= " ORDER BY glpi_computers.name";
-	$result = $db->query($query);
-	$number = $db->numrows($result);
-	if ($number==0){
-		echo "<div align=\"center\"><strong>";
-		echo $lang["computers"][32]."<br>";
-		echo "<a href=\"javascript:history.back()\">".$lang["buttons"][13]."</a>";
-		echo "</strong></div>";
-		return;
-	}
-
-	echo "<div align='center'><form method='get' action=\"$target\"><table border='0' class='tab_cadre'>";
-	echo "<tr><th colspan='2'>".$lang["networking"][27]." $pID1 ".$lang["networking"][32].". ".$lang["networking"][33].":</th></tr>";
-	echo "<tr><td>";
-
-	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>";
-	
-		
-	echo "<select name='dID'>";
-	$i=0;
-	while ($i < $number)
-	{
-		$dID = $db->result($result, $i, "ID");
-		$name = $db->result($result, $i, "name");
-		$location = $db->result($result, $i, "location");
-		echo "<option value=\"$dID\">$dID - $name (".getTreeValueCompleteName("glpi_dropdown_locations",$location).")</option>";
-		$i++;
-	}
-	echo  "</select>";
-
-	echo "</td>";
-	echo "<td class='tab_bg_2' align='center'>";
-	echo "<input type='hidden' name='device_type' value='1'>";
-	echo "<input type='hidden' name='pID1' value=\"".$pID1."\">";
-	echo "<input type='hidden' name='next' value=\"showports\">";
-	echo "<input type='submit' value=\"".$lang["buttons"][11]."\">";
-	echo "</td></tr></table></form>";	
-
-}
-*/
-//Plus utilisé
-/*
-function listConnectorPorts($target,$input) {
-
-	GLOBAL $cfg_layout,$cfg_install,$lang;
-	
-	$pID1 = $input["pID1"];
-
-	$db = new DB;
-	$query = "SELECT * FROM glpi_networking_ports WHERE (on_device = ".$input["dID"]." AND device_type = ".$input["device_type"].") ORDER BY logical_number";
-	$result = $db->query($query);
-	$number = $db->numrows($result);
-
-	if ($number < 1) {
-		echo "<div align='center'><b>".$lang["networking"][34]."</b></div>";
-	} else {
-
-		echo "<div align='center'><table border='0' cellspacing=2 width='90%' class='tab_cadre'>";
-		echo "<tr><th>".$lang["networking"][27]." $pID1 ".$lang["networking"][35].". ".$lang["networking"][36]." ".$input["dID"].":</th></tr>";
-		echo "</table></div>";
-
-		echo "\n\n<br><div align='center'><table border='0' cellpadding='2' width='90%' class='tab_cadre'>";
-		echo "<tr><th>#</th><th>".$lang["networking"][0]."</th><th>".$lang["networking"][51]."</th>";
-		echo "<th>".$lang["networking"][14]."</th><th>".$lang["networking"][15]."</th>";
-		echo "<th>".$lang["networking"][16]."</th><th>".$lang["networking"][17].":</th></tr>\n";
-
-		while ($data = $db->fetch_array($result)) {
-			$pID2 = $data["ID"];
-		
-			$contact = new Netport;
-			
-			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$data["logical_number"]."</td>";
-			echo "<td>";
-			echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ID=".$data["ID"]."\">";
-			echo $data["name"];
-			echo "</a>";
-			echo "</td>";
-			echo "<td>".getDropdownName("glpi_dropdown_netpoint",$data["netpoint"])."</td>";			
-			echo "<td>".$data["ifaddr"]."</td>";
-			echo "<td>".$data["ifmac"]."</td>";
-			echo "<td>".getDropdownName("glpi_dropdown_iface",$data["iface"])."</td>";
-			echo "<td>";
-
-			if ($contact->getContact($pID2)) {
-				$netport = new Netport;
-				$netport->getfromDB($contact->contact_id);
-				$netport->getDeviceData($netport->fields["on_device"],$netport->fields["device_type"]);
-				echo "\n\n<table border='0' cellspacing='0' width='100%'><tr>";
-				echo "<td>";
-				echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ID=".$netport->fields["ID"]."\">";
-				echo $netport->fields["name"];
-				echo "</a> ";
-				echo $lang["networking"][25];
-				echo " <a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$netport->device_ID."\">";
-				echo $netport->device_name." (".$netport->device_ID.")";
-				echo "</a>";
-				echo "</td>";
-				echo "<td align='right'><b>";
-				echo "<a href=\"".$cfg_install["root"]."/networking/networking-port-disconnect.php?ID=".$netport->fields["ID"];
-				if (!empty($pID1)) echo "&amp;sport=$pID1";
-				echo "\">".$lang["buttons"][10]."</a>";
-				echo "</b></td>";
-				echo "</tr></table>";
-		
-			} else {
-				echo "<table border='0' cellspacing='0' width='100%'><tr>";
-				echo "<td>".$lang["networking"][26]."</td>";
-				echo "<td align='right'><b>";
-				echo "<a href=\"$target?next=connect&amp;sport=$pID1&amp;dport=$pID2\">".$lang["buttons"][9]."</a>";
-				echo "</b></td>";
-				echo "</tr></table>";
-			}
-			
-			echo "</td>";
-			echo "</tr>";
-		}
-		echo "</table>";
-	}
-}
-*/
 
 function makeConnector($sport,$dport) {
 

@@ -182,16 +182,16 @@ $cfg_login['imap']['host'] = $db->result($result,0,"imap_host");
 // LDAP setup.
 // We can use LDAP both for authentication and for user information
 
-$cfg_login['ldap']['host'] = unhtmlentities($db->result($result,0,"ldap_host"));
-$cfg_login['ldap']['basedn'] = utf8_decode(unhtmlentities($db->result($result,0,"ldap_basedn")));
+$cfg_login['ldap']['host'] = $db->result($result,0,"ldap_host");
+$cfg_login['ldap']['basedn'] = utf8_decode($db->result($result,0,"ldap_basedn"));
 
-$cfg_login['ldap']['rootdn'] = utf8_decode(unhtmlentities($db->result($result,0,"ldap_rootdn")));
-$cfg_login['ldap']['pass'] = utf8_decode(unhtmlentities($db->result($result,0,"ldap_pass")));
-$cfg_login['ldap']['login'] = unhtmlentities($db->result($result,0,"ldap_login"));
-$cfg_login['ldap']['port'] = unhtmlentities($db->result($result,0,"ldap_port"));
+$cfg_login['ldap']['rootdn'] = utf8_decode($db->result($result,0,"ldap_rootdn"));
+$cfg_login['ldap']['pass'] = utf8_decode($db->result($result,0,"ldap_pass"));
+$cfg_login['ldap']['login'] = $db->result($result,0,"ldap_login");
+$cfg_login['ldap']['port'] = $db->result($result,0,"ldap_port");
 
 // Log in filter A AJOUTER DANS LA DB
-$cfg_login['ldap']['condition'] = utf8_decode(unhtmlentities($db->result($result,0,"ldap_condition")));
+$cfg_login['ldap']['condition'] = utf8_decode($db->result($result,0,"ldap_condition"));
 
 // some lDAP server (eg, M$ Active Directory) does not like anonymous
 // bind
@@ -200,15 +200,15 @@ $cfg_login['ldap']['condition'] = utf8_decode(unhtmlentities($db->result($result
 // relation between the GLPI users table field and the LDAP field
 
 //// AJOUTER CA DANS LA CONFIG POST INSTALL
-$cfg_login['ldap']['fields'] = array( "name" => unhtmlentities($db->result($result,0,"ldap_field_name")), 
-									"email" => unhtmlentities($db->result($result,0,"ldap_field_email")), 
-									"location" => unhtmlentities($db->result($result,0,"ldap_field_location")), 
-									"phone" => unhtmlentities($db->result($result,0,"ldap_field_phone")), 
-									"realname" => unhtmlentities($db->result($result,0,"ldap_field_realname")));
+$cfg_login['ldap']['fields'] = array( "name" => $db->result($result,0,"ldap_field_name"), 
+									"email" => $db->result($result,0,"ldap_field_email"), 
+									"location" => $db->result($result,0,"ldap_field_location"), 
+									"phone" => $db->result($result,0,"ldap_field_phone"), 
+									"realname" => $db->result($result,0,"ldap_field_realname"));
 // CAS authentification method
-$cfg_login["cas"]["host"]=unhtmlentities($db->result($result,0,"cas_host"));
-$cfg_login["cas"]["port"]=unhtmlentities($db->result($result,0,"cas_port"));
-$cfg_login["cas"]["uri"]=unhtmlentities($db->result($result,0,"cas_uri"));
+$cfg_login["cas"]["host"]=$db->result($result,0,"cas_host");
+$cfg_login["cas"]["port"]=$db->result($result,0,"cas_port");
+$cfg_login["cas"]["uri"]=$db->result($result,0,"cas_uri");
 
 //other sources
 //$cfg_login['other_source']...

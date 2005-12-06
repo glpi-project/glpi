@@ -226,7 +226,7 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 				echo "<td><b>". $ri->getLink() ."</b></td>";
 				echo "<td>". $ri->getLocation() ."</td>";
 
-				echo "<td>". nl2br(substr(unhtmlentities_deep($ri->fields["comments"]),0,$cfg_features["cut"]))."</td>";
+				echo "<td>". nl2br(substr($ri->fields["comments"],0,$cfg_features["cut"]))."</td>";
 				echo "<td>";
 				echo "<a href='".$target."?comment=$ID'>".$lang["reservation"][22]."</a>";
 				echo "</td>";

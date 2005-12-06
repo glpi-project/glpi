@@ -57,111 +57,6 @@ global $lang;
 		echo "<th colspan='2'>".$lang["joblist"][6]."</th></tr>";
 }
 
-// Plus utilisé
-/*
-function searchFormTrackingOLD ($show,$contains,$containsID,$device,$category,$desc) {
-	// Tracking Search Block
-	
-	GLOBAL $cfg_layout, $cfg_install,$lang;
-	
-	echo "\n<div align='center'>";
-	echo "<form method=\"get\" action=\"".$cfg_install["root"]."/tracking/index.php\">\n";
-	echo "<table class='tab_cadre'>\n";
-	echo "<tr><th align='center' colspan='3'>".$lang["tracking"][7]."</th></tr>\n";
-
-	echo "<tr class='tab_bg_1'>\n";
-	echo "<td colspan='2' align='center'>\n";
-	echo "<select name=\"show\" size='1'>\n";
-
-	echo "<option "; if ($show == "all") { echo "selected"; }
-	echo " value=\"all\">".$lang["tracking"][1]."</option>\n";
-
-	echo "<option "; if ($show == "individual") { echo "selected"; }
-	echo " value=\"individual\">".$lang["tracking"][2]."</option>\n";
-
-	echo "<option "; if ($show == "unassigned") { echo "selected"; }
-	echo " value=\"unassigned\">".$lang["tracking"][3]."</option>\n";
-
-	echo "<option "; if ($show == "old") { echo "selected"; }
-	echo " value=\"old\">".$lang["tracking"][4]."</option>\n";
-
-	echo "</select>\n";
-	echo "</td>\n";
-	echo "<td align='center'>&nbsp;";
-	//echo "<input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'>";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr class='tab_bg_1'>\n";
-	echo "<td colspan='2' align='center'>\n";
-	echo "<select name=\"device\" size='1'>\n";
-
-	echo "<option "; if ($device == "-1") { echo "selected"; }
-	echo " value=\"-1\">".$lang["tracking"][12]."</option>\n";
-
-	echo "<option "; if ($device == '0') { echo "selected"; }
-	echo " value='0'>".$lang["tracking"][19]."</option>\n";
-
-	echo "<option "; if ($device == COMPUTER_TYPE) { echo "selected"; }
-	echo " value=\"".COMPUTER_TYPE."\">".$lang["tracking"][13]."</option>\n";
-
-	echo "<option "; if ($device == NETWORKING_TYPE) { echo "selected"; }
-	echo " value=\"".NETWORKING_TYPE."\">".$lang["tracking"][14]."</option>\n";
-
-	echo "<option "; if ($device == PRINTER_TYPE) { echo "selected"; }
-	echo " value=\"".PRINTER_TYPE."\">".$lang["tracking"][15]."</option>\n";
-	
-	echo "<option "; if ($device == MONITOR_TYPE) { echo "selected"; }
-	echo " value=\"".MONITOR_TYPE."\">".$lang["tracking"][16]."</option>\n";
-	
-	echo "<option "; if ($device == PERIPHERAL_TYPE) { echo "selected"; }
-	echo " value=\"".PERIPHERAL_TYPE."\">".$lang["tracking"][17]."</option>\n";
-
-	echo "<option "; if ($device == SOFTWARE_TYPE) { echo "selected"; }
-	echo " value=\"".SOFTWARE_TYPE."\">".$lang["tracking"][18]."</option>\n";
-
-	echo "</select>\n";
-	echo "</td>\n";
-	echo "<td align='center'>&nbsp;";
-	//echo "<input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'>";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr class='tab_bg_1'>\n";
-	echo "<td colspan='2' align='center'>\n";
-	dropdownValue("glpi_dropdown_tracking_category","category",$category);
-	echo "</td>\n";
-	echo "<td align='center'>&nbsp;";
-	//echo "<input type='submit' value=\"".$lang["buttons"][1]."\" class='submit'>";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-//	echo "</form>";
-	//echo "<form method=\"get\" action=\"".$cfg_install["root"]."/tracking/index.php\">";
-	echo "<tr class='tab_bg_1'>\n";
-	echo "<td class='tab_bg_2'>\n";
-
- $elts=array("both"=>$lang["joblist"][6]." / ".$lang["job"][7],"contents"=>$lang["joblist"][6],"followup" => $lang["job"][7]);
- echo "<select name='desc'>\n";
- foreach ($elts as $key => $val){
- $selected="";
- if ($desc==$key) $selected="selected";
- echo "<option value=\"$key\" $selected>$val</option>\n";
- 
- }
- echo "</select>\n";
-
-
-	echo "<strong> ".$lang["search"][2].":</strong> <input type='text' name='contains' value=\"$contains\" size='15'></td>\n<td>";
-	echo "<strong>".$lang["tracking"][23].":</strong> <input type='text' name='containsID' value=\"$containsID\" size='5'>";	echo "</td><td>";
-	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
-	echo "</td></tr>\n";
-
-	echo "</table>\n";
-	echo "</form>\n";
-	echo "</div><br>\n";
-}       
-*/
 function getTrackingPrefs ($ID) {
 	// Returns users preference settings for job tracking
 	// Currently only supports sort order
@@ -238,187 +133,6 @@ function showCentralJobList($target,$start) {
 	}
 }
 
-// Plus utilisé
-/*
-function showJobList($target,$username,$show,$contains,$item_type,$item,$start,$device='-1',$category='NULL',$containsID='',$desc="both") {
-	// Lists all Jobs, needs $show which can have keywords 
-	// (individual, unassigned) and $contains with search terms.
-	// If $item is given, only jobs for a particular machine
-	// are listed.
-
-	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
-		
-	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
-
-	// Build where-clause
-	if ($contains||$containsID)
-	{
-		$where= "  ( '0'='1' ";
-		if ($contains){
-			switch ($desc){
-			case "both" :
-			$where.= " OR (glpi_followups.contents LIKE '%".$contains."%' OR glpi_tracking.contents LIKE '%".$contains."%')";
-			break;
-			case "followup" :
-			$where.= " OR (glpi_followups.contents LIKE '%".$contains."%')";
-			break;
-			case "contents" :
-			$where.= " OR (glpi_tracking.contents LIKE '%".$contains."%')";
-			break;
-		}
-		}
-
-		if ($containsID)
-			$where .= " OR (glpi_tracking.ID = '$containsID')";
-			
-		$where.=" ) ";
-	}
-	else  if ($show == "old")
-	{
-		$where = " (glpi_tracking.status = 'old')";
-	}
-	else if ($show !="user")
-	{
-		$where = " (glpi_tracking.status = 'new')";
-	} else $where= " ('1'='1') ";
-	
-	
-	if($device != -1) {
-		$where .= " AND (glpi_tracking.device_type = '".$device."')";
-	} 
-
-	if($category!=0) {
-		$where .= " AND (glpi_tracking.category = '".$category."')";
-	} 
-
-	// Build query, two completely different things here, need to be fixed
-	// and made into a more featured query-parser
-
-	$joinfollowups="";
-	if ($contains!=""&&$desc!="contents") {
-		$joinfollowups.= " LEFT JOIN glpi_followups ON ( glpi_followups.tracking = glpi_tracking.ID)";
-	}
-	
-	if ($show == "individual")
-	{
-		$query = "SELECT DISTINCT glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.assign = '".$username."') ORDER BY glpi_tracking.date ".$prefs["order"]."";
-	}
-	else if ($show == "user")
-	{
-		$query = "SELECT DISTINCT  glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.author = '".$username."') ORDER BY glpi_tracking.date ".$prefs["order"]."";
-	}
-	else if ($show == "enterprise")
-	{
-		$query = "SELECT DISTINCT  glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.assign = '".$username."' AND glpi_tracking.assign_type='".ENTERPRISE_TYPE."') ORDER BY glpi_tracking.date ".$prefs["order"]."";
-	}
-	else if ($show == "unassigned")
-	{
-		$query = "SELECT DISTINCT  glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.assign ='' OR glpi_tracking.assign is null) ORDER BY glpi_tracking.date ".$prefs["order"]."";
-	}
-	else
-	{
-		$query = "SELECT DISTINCT  glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." ORDER BY glpi_tracking.date ".$prefs["order"]."";
-	}
-
-	if ($item&&$item_type)
-	{
-		$query = "SELECT DISTINCT  glpi_tracking.ID FROM glpi_tracking ".$joinfollowups." WHERE ".$where." and (glpi_tracking.device_type = '".$item_type."' and glpi_tracking.computer = '".$item."') ORDER BY glpi_tracking.date ".$prefs["order"]."";
-	}	
-	
-	$lim_query = " LIMIT ".$start.",".$cfg_features["list_limit"]."";	
-
-	$db = new DB;
-	$result = $db->query($query);
-	$numrows = $db->numrows($result);
-
-//	if ($show!="user")	
-		$query .= $lim_query;
-	
-	$result = $db->query($query);
-	$i = 0;
-	$number = $db->numrows($result);
-
-	if ($number > 0) {
-		// Pager
-		if(empty($sort)) $sort = "";
-		$parameters="show=".$show."&amp;contains=".$contains."&amp;sort=".$sort;
-		if ($show!="user")
-			$parameters.="&amp;ID=".$username;
-		printPager($start,$numrows,$target,$parameters);
-
-	// Form to delete old item
-	if ($show=="old"&&isAdmin($_SESSION["glpitype"])){
-		echo "<form method='post' action=\"$target\">";
-		echo "<input type='hidden' name='show' value='$show'>";
-		echo "<input type='hidden' name='contains' value='$contains'>";
-		echo "<input type='hidden' name='item' value='$item'>";
-		$newstart=$start;
-		if (isset($_GET["select"])&&$_GET["select"]=="all"&&($numrows<=($start+$cfg_features["list_limit"])))
-			$newstart=max(0,$start-$cfg_features["list_limit"]);
-		echo "<input type='hidden' name='start' value='$newstart'>";
-		}
-		
-		
-		echo "<div align='center'><table class='tab_cadre' width='90%'>";
-		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
-		echo "<th width=5>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
-		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["common"][1]."</th>";
-		echo "<th>".$lang["tracking"][20]."</th>";
-		echo "<th colspan='2'>".$lang["joblist"][6]."</th></tr>";
-		while ($i < $number) {
-			$ID = $db->result($result, $i, "ID");
-			showJobShort($ID, 0);
-			$i++;
-		}
-		if ($item)
-		{
-			echo "<tr class='tab_bg_2'>";
-			echo "<td align='center' colspan='8' class='tab_bg_1'>";
-			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&amp;device_type=$item_type\"><strong>";
-			echo $lang["joblist"][7];
-			echo "</strong></a>";
-			echo "</td></tr>";
-		}
-		echo "</table></div>";
-		// Delete selected item
-		if (isAdmin($_SESSION["glpitype"])&&$show == "old"){
-			echo "<br><div align='center'>";
-			echo "<table cellpadding='5' width='90%'>";
-			echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=all&amp;start=$start'>".$lang["buttons"][18]."</a></td>";
-			
-			echo "<td>/</td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=none&amp;start=$start'>".$lang["buttons"][19]."</a>";
-			echo "</td><td>";
-			echo "<input type='submit' value=\"".$lang["buttons"][17]."\" name='delete' class='submit'></td>";
-			echo "<td width='75%'>&nbsp;</td></table></div>";
-		}
-		
-			echo "<br>";
-			
-	// End form for delete item
-	if ($show=="old"&&isAdmin($_SESSION["glpitype"]))
-	echo "</form>";
-			
-			printPager($start,$numrows,$target,$parameters);
-	}
-	else
-	{
-		echo "<br><div align='center'>";
-		echo "<table class='tab_cadre' width='90%'>";
-		echo "<tr><th>".$lang["joblist"][8]."</th></tr>";
-
-		if ($item) 
-		{
-			echo "<tr><td align='center' class='tab_bg_1'>";
-			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-add-form.php?ID=$item&amp;device_type=$item_type\"><strong>";
-			echo $lang["joblist"][7];
-			echo "</strong></a>";
-			echo "</td></tr>";
-		}
-		echo "</table>";
-		echo "</div><br>";
-	}
-}
-*/
 
 function showOldJobListForItem($username,$item_type,$item) {
 	// $item is required
@@ -459,13 +173,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (device_type = '$item_ty
 			showJobShort($ID, 0);
 			$i++;
 		}
-/*		if ($item)
-		{
-			echo "<tr class='tab_bg_2'>";
-		        echo "<td align='center' colspan='8' class='tab_bg_1'>";
 
-		}
-		*/
 		echo "</table></div>";
 
 		if (isAdmin($_SESSION["glpitype"])){
@@ -624,8 +332,6 @@ function showJobShort($ID, $followups) {
 			else
 			echo "<strong>".$job->getAssignName()."</strong>";
 
-//			$job->fields["assign"]
-			
 			echo "</td>";
 		}    
 		
@@ -641,10 +347,7 @@ function showJobShort($ID, $followups) {
 			if ($job->computerfound) echo $m->getLink();
 			else echo $m->getNameID();
 			echo "</strong>";
-/*			if ($job->computerfound)	echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$job->fields["computer"]\">";
-			echo "<strong>$job->computername ($job->fields["computer"])</strong>";
-			if ($job->computerfound) echo "</a>";
-*/			
+
 			echo "</td>";
 		}
 		else
@@ -670,12 +373,6 @@ function showJobShort($ID, $followups) {
 		echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-info-form.php?ID=$job->ID\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
 		else
 		echo "<a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&amp;ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups($isadmin).")&nbsp;<br>";
-//		if ($job->fields["status"] == "new"&&strcmp($_SESSION["glpitype"],"post-only")!=0)
-//		{
-//			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-mark.php?ID=$job->ID\">".$lang["joblist"][14]."</a><br>";
-//		}
-//		if(strcmp($_SESSION["glpitype"],"post-only")!=0)
-//		echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-assign-form.php?ID=$job->ID\">".$lang["joblist"][15]."</a></strong></td>";
 
 		// Finish Line
 		echo "</tr>";
@@ -734,10 +431,7 @@ function showJobVeryShort($ID) {
 			if ($job->computerfound) echo $m->getLink();
 			else echo $m->getNameID();
 			echo "</strong>";
-/*			if ($job->computerfound)	echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=$job->fields["computer"]\">";
-			echo "<strong>$job->computername ($job->fields["computer"])</strong>";
-			if ($job->computerfound) echo "</a>";
-*/			
+
 			echo "</td>";
 		}
 		else
@@ -754,12 +448,6 @@ function showJobVeryShort($ID) {
 		echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-info-form.php?ID=$job->ID\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
 		else
 		echo "<a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&amp;ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
-//		if ($job->fields["status"] == "new"&&strcmp($_SESSION["glpitype"],"post-only")!=0)
-//		{
-//			echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-mark.php?ID=$job->ID\">".$lang["joblist"][14]."</a><br>";
-//		}
-//		if(strcmp($_SESSION["glpitype"],"post-only")!=0)
-//		echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-assign-form.php?ID=$job->ID\">".$lang["joblist"][15]."</a></strong></td>";
 
 		// Finish Line
 		echo "</tr>";
@@ -770,268 +458,6 @@ function showJobVeryShort($ID) {
 	}
 }
 
-/*
-// Plus utilisé - remplacé par nouvelle fonctione
-function showJobDetails($ID) {
-	// Prints a job in long form with all followups and stuff
-
-	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang,$HTMLRel;
-	
-	// Make new job object and fill it from database, if success, print it
-
-	$job = new Job;
-	$db=new DB();
-	if ($job->getfromDB($ID,0)) {
-
-		$author=new User();
-		$author->getFromDBbyID($job->fields["author"]);
-		$assign=new User();
-		$assign->getFromDBbyID($job->fields["assign"]);
-
-		// test if the user if authorized to view this job
-		if (strcmp($_SESSION["glpitype"],"post-only")==0&&$_SESSION["glpiID"]!=$job->fields["author"])
-		   { echo "Warning !! ";return;}
-		
-		echo "<div align='center'>";
-		echo "<form method='get' action=\"".$cfg_install["root"]."/tracking/tracking-edit-form.php\">\n";
-		echo "<input type='hidden' name='ID' value='$ID'>";
-		echo "<table class='tab_cadre' width='90%' cellpadding='5'>\n";
-		echo "<tr><th colspan='3'>".$lang["job"][0]." $job->ID:</th></tr>\n";
-
-		echo "<tr class='tab_bg_2'>\n";
-		echo "<td width='33%' rowspan='1'>\n";
-
-		echo "<table cellpadding='2' cellspacing='0' border='0' >\n";
-
-		echo "<tr><td>".$lang["joblist"][0].":</td><td>";
-		if ($job->fields["status"] == "new") { 
-			echo "<font color=\"green\"><strong>".$lang["joblist"][9]."</strong></font>"; }
-		else {
-			echo "<strong>".$lang["joblist"][10]."</strong>";
-		}
-		echo "</td><td>&nbsp;</td></tr>\n";
-
-
-		echo "<tr><td>".$lang["joblist"][3].":</td><td>\n";
-		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
-		echo "<strong><a href=\"".$cfg_install["root"]."/users/users-info.php?ID=$job->fields["author"]\">".$author->getName()."</a></strong>";
-		else 
-		echo "<strong>".$author->getName()."</strong>";
-		echo "</td><td>";
-		if (isAdmin($_SESSION['glpitype']))
-		echo "<input type='submit' name='update_author' value=\"".$lang["buttons"][14]."\" class='submit'>";
-		else "&nbsp;";
-
-		echo "</td></tr>\n";
-
-		$m= new CommonItem;
-		$m->getfromDB($job->fields["device_type"],$job->fields["computer"]);
-
-		echo "<tr><td>".$m->getType().":</td><td>\n";
-		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
-		{
-			echo "<strong>";
-			if ($job->computerfound) echo $m->getLink();
-			else echo $m->getNameID();
-			echo "</strong>";
-		}
-		else
-		echo "<strong>".$m->getNameID()."</strong>&nbsp;&nbsp;";
-		echo "</td><td>";
-
-		if (isAdmin($_SESSION['glpitype']))
-		echo "<input type='submit' name='update_item' value=\"".$lang["buttons"][14]."\" class='submit'>";
-		else "&nbsp;";
-		echo "</td></tr>\n";
-
-		echo "<tr><td>".$lang["joblist"][2].":</td><td>";
-		if (isAdmin($_SESSION["glpitype"]))
-		  priorityFormTracking($job->ID,$cfg_install["root"]."/tracking/tracking-priority-form.php");	
-		else echo getPriorityName($job->fields["priority"])."</td><td>&nbsp;";	
-		echo "</td></tr>\n";
-
-		echo "</table>\n";
-
-		echo "</td>\n";
-
-		echo "<td>";
-		echo "<table cellpadding='2' cellspacing='0' border='0'>\n";
-		echo "<tr><td align='right'>".$lang["joblist"][11].":</td>\n";
-		echo "<td><strong>".$job->fields["date"]."</strong></td></tr>\n";
-		echo "<tr><td align='right'>".$lang["joblist"][12].":</td>\n";
-//		if ($job->fields["closedate"] == "0000-00-00 00:00:00" || $job->fields["closedate"] == "")
-		if ($job->fields["status"]=="new")
-		{
-			echo "<td><i>".$lang["job"][1]."</i></td></tr>\n";
-		}
-		else
-		{
-			echo "<td><strong>$job->fields["closedate"]</strong></tr>\n";
-			if ($job->fields["realtime"]>0)
-			echo "<tr><td align='right'>".$lang["job"][20].":</td><td><strong>".getRealtime($job->fields["realtime"])."</strong></td></tr>\n";
-		}
-		if ($cfg_features["mailing"]==1){
-			if ($job->fields["emailupdates"]=='yes') $suivi=$lang["choice"][0];
-			else $suivi=$lang["choice"][1];
-			echo "<tr><td>".$lang["job"][19].":</td><td>$suivi</td></tr>\n";
-			if (!empty($job->fields["uemail"]))
-				echo "<tr><td align='right'>".$lang["joblist"][3].":</td><td><a href='mailto:".$job->fields["uemail"]."'>".$job->fields["uemail"]."</a></td></tr>\n";
-		}
-		// Print planning
-		$planning_realtime=0;		
-
-			echo "<tr><td colspan='2' align='center'>&nbsp;</td></tr>\n";
-			if (isAdmin($_SESSION['glpitype'])){
-				echo "<tr><td colspan='2' align='center'><b>\n";
-				echo "<a href=\"".$cfg_install["root"]."/planning/planning-add-form.php?job=".$job->ID."\">".$lang["planning"][7]."</a></b>\n";
-				echo "</td></tr>\n";
-			} else if ($_SESSION["glpiID"]==$job->fields["author"]){
-				echo "<tr><td colspan='2' align='center'><b>\n";
-				echo $lang["planning"][11];
-				echo "</td></tr>\n";
-			}
-			
-
-			$query2="SELECT * from glpi_tracking_planning WHERE id_tracking='".$job->ID."'";
-			$result2=$db->query($query2);
-			if ($db->numrows($result2)>0)
-			while ($data=$db->fetch_array($result2)){
-				echo "<tr><td colspan='2' align='left'>\n";
-				echo date("Y-m-d H:i",strtotime($data["begin"]))." -> ".date("Y-m-d H:i",strtotime($data["end"]))." - ".getUserName($data['id_assign']);
-				if (isAdmin($_SESSION['glpitype']))
-					echo "<a href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;job=".$job->ID."&amp;ID=".$data["ID"]."'><img src='$HTMLRel/pics/edit.png' alt='Edit'></a>\n";
-
-				echo "<br>";
-				$tmp_beg=split(" ",$data["begin"]);
-				$tmp_end=split(" ",$data["end"]);
-				$tmp_dbeg=split("-",$tmp_beg[0]);
-				$tmp_dend=split("-",$tmp_end[0]);
-				$tmp_hbeg=split(":",$tmp_beg[1]);
-				$tmp_hend=split(":",$tmp_end[1]);
-				
-				$dateDiff = mktime($tmp_hend[0],$tmp_hend[1],$tmp_hend[2],$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
-						  - mktime($tmp_hbeg[0],$tmp_hbeg[1],$tmp_hbeg[2],$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
-
-				$planning_realtime+=$dateDiff/60/60;
-				echo "</td></tr>";
-			}
-		
-		echo "</table>\n";
-		echo "</td>\n";
-		if ($job->fields["realtime"]==0) $job->fields["realtime"]=$planning_realtime;
-	
-		//echo "</tr><tr class='tab_bg_2'>";
-		
-		echo "<td align='center'>";	
-		if (can_assign_job($_SESSION["glpiname"]))
-			assignFormTracking($ID,$_SESSION["glpiname"],$cfg_install["root"]."/tracking/tracking-assign-form.php");
-		else echo $lang["job"][5]." <strong>".($job->fields["assign"]==0?"[Nobody]":$assign->getName())."</strong>";
-		echo "<br />";
-		if (isAdmin($_SESSION["glpitype"]))
-			categoryFormTracking($ID,$cfg_install["root"]."/tracking/tracking-category-form.php");
-		else echo $lang["tracking"][20].": <strong>".getDropdownName("glpi_dropdown_tracking_category",$job->fields["category"])."</strong>";
-		
-		
-		echo "</td>";
-		
-		echo "</tr>";
-		
-		echo "</table></form>";
-		echo "</div>";
-		echo "<div align='center'>";
-
-		echo "<table  class='tab_cadre' width='90%' cellpadding='5'>";
-		echo "<tr class='tab_bg_2'>\n";
-		
-		echo "<td>\n";
-		echo "<table><tr><td width='90'>\n";
-		echo $lang["joblist"][6].":";
-		echo "</td><td>\n";
-		echo "<strong>".$job->fields["contents"]."</strong>";		
-		echo "</td></tr>";
-		
-		// File associated ?
-		$query2 = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '".$job->ID."' AND glpi_doc_device.device_type = '".TRACKING_TYPE."' ";
-		$result2 = $db->query($query2);
-		if ($db->numrows($result2)>0){
-			echo "<tr><td>".$lang["tracking"][25].":</td>";
-			echo "<td>";
-			$con=new Document;
-			$con->getFromDB($db->result($result2, 0, "FK_doc"));
-			echo getDocumentLink($con->fields["filename"]);
-
-			echo "</td></tr>";
-		}
-
-		
-
-		echo "</table>\n";
-
-		echo "</td>\n";
-	
-		echo "</tr>";
-		
-		
-		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
-		if ($job->fields["status"] == "new") {
-			$hour=floor($job->fields["realtime"]);
-			$minute=round(($job->fields["realtime"]-$hour)*60,0);
-			echo "<tr class='tab_bg_1'>";
-			echo "<td align='center'>";
-			echo "<form method=post action=\"".$cfg_install["root"]."/tracking/tracking-mark.php\">";
-
-			echo "<input type='hidden' name='ID' value=$job->ID>";			
-			echo $lang["job"][20].":&nbsp;";
-			echo "<select name='hour'>";
-			for ($i=0;$i<100;$i++){
-			echo "<option value='$i' ";
-			if ($hour==$i) echo "selected";
-			echo " >$i</option>";
-			}
-			echo "</select>".$lang["job"][21]."&nbsp;&nbsp;";
-			echo "<select name='minute'>";
-			for ($i=0;$i<60;$i++){
-			echo "<option value='$i' ";
-			if ($minute==$i) echo "selected";
-			echo " >$i</option>";
-			}
-			echo "</select>".$lang["job"][22]."&nbsp;&nbsp;";
-
-			echo "<input type='submit' name='close' value=\"".$lang["job"][3]."\" class='submit'>";
-			echo "</form>";
-
-			echo "</td></tr>";
-
-		}
-		else if ($job->fields["status"] == "old") {
-			echo "<tr class='tab_bg_1'>";
-			echo "<td colspan='3' align='center'>";
-			echo "<form method=post action=\"".$cfg_install["root"]."/tracking/tracking-mark.php\">";
-			echo "<input type='hidden' name='ID' value=$job->ID>";			
-			echo "<input type='hidden' name='status' value='new'>";			
-			echo "<input type='submit' name='restore' value=\"".$lang["job"][23]."\" class='submit'>";
-			echo "</form>";
-
-			echo "</td></tr>";
-
-
-			}
-		echo "</table>";
-//		showDocumentAssociated(TRACKING_TYPE,$job->ID,2);
-
-		echo "<br><br><table width='90%' class='tab_cadre'><tr><th>".$lang["job"][7].":</th></tr>";
-		echo "</table></div>";
-
-		showFollowups($job->ID);  
-                
-
-	} 
-	else
-	{
-    		echo "<tr class='tab_bg_2'><td colspan=6><i>".$lang["joblist"][16]."</i></td></tr>";
-	}
-}
-*/
 function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$contents,$assign=0,$realtime=0,$assign_type=USER_TYPE) {
 	// Put Job in database
 
@@ -1111,7 +537,7 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 		if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
 		$input=array();
 		$input["name"]=$lang["tracking"][24]." $tID";
-		//$input["TOCLEAN"]="CLEAN";
+		
 		$docID=addDocument($input);
 		addDeviceDocument($docID,TRACKING_TYPE,$tID);
 		}
@@ -1129,226 +555,11 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 		}
 		return true;	
 	} else {
-		//echo "Couldn't post followup.";
 		return false;
 	}
 }
 
-/*
-// Plus utilisé
-function markJob ($ID,$status,$opt='') {
-	// Mark Job with status
-	GLOBAL $cfg_features;
 
-	$job = new Job;
-	$job->getFromDB($ID,1);
-	$job->updateStatus($status);
-
-	// Realtime intervention
-	if ($status=="old"&&$opt!='')
-		$job->updateRealtime($opt);	
-	// Processing Email
-	if ($status=="old"&&$cfg_features["mailing"])
-		{
-			$user=new User;
-			$user->getfromDB($_SESSION["glpiname"]);
-			$mail = new Mailing("finish",$job,$user);
-			$mail->send();
-		}
-
-}
-// Plus utilisé
-function assignJob ($ID,$type,$user,$admin) {
-	// Assign a job to someone
-
-	GLOBAL $cfg_features, $cfg_layout,$lang;	
-	$job = new Job;
-	$job->getFromDB($ID,0);
-
-	$newuser=$user;
-	$olduser=$job->fields["assign"];
-	$newuser_type=$type;
-	$olduser_type=$job->fields["assign"]_type;
-	$oldname=$job->getAssignName();
-			
-	$job->fields["assign"]To($user,$type);
-	$newname=$job->getAssignName();
-	// Add a Followup for a assignment change
-	if ($newuser!=$olduser||$newuser_type!=$olduser_type){
-	$content=$lang["mailing"][12].": ".$oldname." -> ".$newname;
-	$sendmail=1;
-	if ($type!=USER_TYPE) $sendmail=0;
-
-	postFollowups ($ID,$_SESSION["glpiID"],addslashes($content),$sendmail);
-	}
-}
-// Plus utilisé
-function categoryJob ($ID,$category,$admin) {
-	// Assign a category to a job
-
-	GLOBAL $cfg_features, $cfg_layout,$lang;	
-	$job = new Job;
-	$job->getFromDB($ID,0);
-	$oldcat=$job->fields["category"];
-	$job->fields["category"]To($category);
-	$newcat=$job->fields["category"];
-	// Add a Followup for a category change
-	if ($newcat!=$oldcat){
-	$content=$lang["mailing"][14].": ".getDropdownName("glpi_dropdown_tracking_category",$oldcat)." -> ".getDropdownName("glpi_dropdown_tracking_category",$job->fields["category"]);
-	postFollowups ($ID,$_SESSION["glpiID"],addslashes(unhtmlentities($content)));
-	}
-	
-}
-// Plus utilisé
-function itemJob ($tID,$device_type,$iID) {
-	// Chage the item of a job
-
-	GLOBAL $cfg_features, $cfg_layout,$lang;	
-	$m= new CommonItem;
-
-	$job = new Job;
-	$job->getFromDB($tID,0);
-	$oldtype=$job->fields["device_type"];
-	$oldcomp=$job->fields["computer"];
-	$m->getfromDB($job->fields["device_type"],$job->fields["computer"]);
-	$oldname=$m->getName();
-	$job->itemTo($device_type,$iID);
-	$newtype=$job->fields["device_type"];
-	$newcomp=$job->fields["computer"];
-
-	// Add a Followup for a item change
-	if ($newtype!=$oldtype||$newcomp!=$oldcomp){
-	$m->getfromDB($job->fields["device_type"],$job->fields["computer"]);
-
-	$content=$lang["mailing"][17].": $oldname -> ".$m->getName();
-	postFollowups ($tID,$_SESSION["glpiID"],addslashes(unhtmlentities($content)));
-	}
-	
-}
-// Plus utilisé
-function authorJob ($tID,$aID) {
-	// Change the author of a job
-
-	GLOBAL $cfg_features, $cfg_layout,$lang;	
-	$u= new User;
-
-	$job = new Job;
-	$job->getFromDB($tID,0);
-	$oldauthor=$job->fields["author"];
-	$u->getfromDBbyID($job->fields["author"]);
-	$oldname=$u->getName();
-	$job->fields["author"]To($aID);
-	$newauthor=$job->fields["author"];
-	$u->getfromDBbyID($job->fields["author"]);
-	$job->mailAuthorTo($u->fields['email']);
-
-
-	// Add a Followup for a item change
-	if ($newauthor!=$oldauthor){
-
-	$u->getfromDBbyID($job->fields["author"]);
-
-	$content=$lang["mailing"][18].": $oldname -> ".$u->getName();
-	postFollowups ($tID,$_SESSION["glpiID"],addslashes(unhtmlentities($content)));
-	}
-	
-}
-// Plus utilisé
-function priorityJob ($ID,$priority,$admin) {
-	// Assign a category to a job
-
-	GLOBAL $cfg_features, $cfg_layout,$lang;	
-	$job = new Job;
-	$job->getFromDB($ID,0);
-	$oldprio=$job->fields["priority"];
-	$job->fields["priority"]To($priority);
-	$newprio=$job->fields["priority"];
-	// Add a Followup for a priority change
-	if ($newprio!=$oldprio){
-	$content=$lang["mailing"][14].": ".getPriorityName($oldprio)." -> ".getPriorityName($job->fields["priority"]);
-	postFollowups ($ID,$_SESSION["glpiID"],addslashes(unhtmlentities($content)));
-	}
-	
-}
-// Plus utilisé - remplacé par nouvelle fonction
-function showFollowups($ID) {
-	// Print Followups for a job
-
-	GLOBAL $cfg_install, $cfg_layout, $lang;
-
-	// Get Number of Followups
-
-	$job = new Job;
-	$job->getFromDB($ID,0);
-	$nbfollow=$job->numberOfFollowups();
-	if ($nbfollow) {
-		echo "<div align='center'><table class='tab_cadre' width='90%' cellpadding='2'>\n";
-		echo "<tr><th>".$lang["joblist"][1]."</th><th>".$lang["joblist"][3]."</th><th>".$lang["joblist"][6]."</th></tr>\n";
-
-		for ($i=0; $i < $nbfollow; $i++) {
-			$fup = new Followup;
-			$fup->getFromDB($ID,$i);
-			echo "<tr class='tab_bg_2'>\n";
-			echo "<td align='center'>$fup->date</td>\n";
-			echo "<td align='center'>".$fup->getAuthorName(1)."</td>\n";
-			echo "<td width='70%'><strong>".$fup->contents."</strong></td>\n";
-			echo "</tr>";
-		}		
-
-		echo "</table></div>\n";
-	
-	} else {
-		echo "<div align='center'><strong>".$lang["job"][8]."</strong></div>\n";
-	}
-
-	// Show input field only if job is still open
-	if(strcmp($_SESSION["glpitype"],"post-only")!=0)
-	if ($job->fields["status"]=="new") {
-
-		echo "<div align='center'>&nbsp;\n";
-		echo "<form method=post action=\"".$cfg_install["root"]."/tracking/tracking-info-form.php\">";
-		echo "<table class='tab_cadre' width='90%'>\n";
-		echo "<tr><th>";
-		echo "<input type='hidden' name=ID value=$ID>";
-		echo $lang["job"][9].":</th></tr>\n";
-		echo "<tr class='tab_bg_1'><td width='100%' align='center'><textarea cols='60' rows='5' name='contents' ></textarea></td></tr>\n";
-		echo "<tr><td align='center' class='tab_bg_1'>";
-		echo "<input type='submit' name='add_followup' value=\"".$lang["buttons"][2]."\" class='submit'></td>\n";
-		echo "</tr></table></form></div>\n";
-	}
-
-}
-
-// Plus utilisé
-function postFollowups ($ID,$author,$contents,$private,$sendmail=1) {
-
-	GLOBAL $cfg_install, $cfg_features, $cfg_layout;
-	
-	$fup = new Followup;
-	
-	$fup->tracking = $ID;
-	$fup->author = $author;
-	$fup->contents = $contents;
-
-	if ($fup->putInDB()) {
-
-		// Log this event
-		$fup->logFupUpdate();
-		// Processing Email
-		if ($cfg_features["mailing"]&&$sendmail)
-		{
-			$job= new Job;
-			$job->getfromDB($ID,0);
-			$user=new User;
-			$user->getfromDBbyID($author);
-			$mail = new Mailing("followup",$job,$user);
-			$mail->send();
-		}
-	} else {
-		echo "Couldn't post followup.";
-	}
-}
-*/
 function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$searchauthor='') {
 	// Prints a nice form to add jobs
 
@@ -1425,8 +636,6 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "<td align='center'>";
 
 	dropdownAllUsers("user",$author);
-//      echo "<td><input type='text' size='10'  name='search'></td>";
-//	echo "<td><input type='submit' value=\"".$lang["buttons"][0]."\" name='Modif_Interne' class='submit'>";
 	echo "</td></tr>";
 	
 
@@ -1468,184 +677,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "</table></div></form>";
 
 }
-/* 
-// Plus utilisé
-function assignFormTracking ($ID,$admin,$target) {
-	// Print a nice form to assign jobs if user is allowed
 
-	GLOBAL $cfg_layout, $lang;
-
-
-  if (can_assign_job($admin))
-  {
-
-	$job = new Job;
-	$job->getFromDB($ID,0);
-
-	echo "<table class='tab_cadre'>";
-	echo "<tr><th>".$lang["job"][4]." $ID:</th></tr>";
-//	echo "<form method=get action=\"".$target."\">";
-
-	echo "<tr><td align='center' class='tab_bg_1'>";
-
-	echo "<table border='0'>";
-	echo "<tr>";
-	echo "<td colspan='2'>";//.$lang["job"][5].":</td><td>";
-		dropdownAssign('','', "assign_id");
-//	echo "<input type='hidden' name='update' value=\"1\">";
-//	echo "<input type='hidden' name='ID' value='$job->ID'>";
-	echo "</td><td><input type='submit' name='update' value=\"".$lang["job"][6]."\" class='submit'></td>";
-	echo "</tr>";
-	echo "<tr><td colspan='3'>";
-	echo $lang["job"][5]." ";
-	echo getAssignName($job->fields["assign"],$job->fields["assign"]_type,1);
-	echo "</td></tr>";
-
-	echo "</table>";
-
-	echo "</td>";
-//	echo "</form>";
-	echo "</tr></table>";
-	}
-	else
-	{
-	 echo $lang["tracking"][6];
-	}
-}
-
-// Plus utilisé
-function categoryFormTracking ($ID,$target) {
-	// Print a nice form to assign jobs if user is allowed
-
-	GLOBAL $cfg_layout, $lang;
-
-  if (isAdmin($_SESSION["glpitype"]))
-  {
-
-	$job = new Job;
-	$job->getFromDB($ID,0);
-
-	echo "<table class='tab_cadre'>";
-	echo "<tr><th>".$lang["job"][24]." $ID:</th></tr>";
-//	echo "<form method=get action=\"".$target."\">";
-	echo "<tr><td align='center' class='tab_bg_1'>";
-
-	echo "<table border='0'>";
-	echo "<tr>";
-	echo "<td>".$lang["tracking"][20].":</td><td>";
-		dropdownValue("glpi_dropdown_tracking_category","category",$job->fields["category"]);
-//	echo "<input type='hidden' name='update' value=\"1\">";
-//	echo "<input type='hidden' name='ID' value='$job->ID'>";
-	echo "</td><td><input type='submit' name='update' value=\"".$lang["buttons"][14]."\" class='submit'></td>";
-	echo "</tr></table>";
-
-	echo "</td>";
-//	echo "</form>";
-	echo "</tr></table>";
-	}
-	else
-	{
-	 echo $lang["tracking"][21];
-	}
-}
-// Plus utilisé
-function itemFormTracking ($ID,$target) {
-	GLOBAL $cfg_layout, $lang,$cfg_install;
-
-  if (isAdmin($_SESSION["glpitype"]))
-  {
-
-	$job = new Job;
-	$job->getFromDB($ID,0);
-
-	echo "<form method=get name='helpdeskform' action=\"".$target."\">";
-	echo "<table class='tab_cadre'>";
-	echo "<tr><th colspan='2'>".$lang["job"][25]."</th></tr>";
-	echo "<tr class='tab_bg_1'>";
-	echo "<td>".$lang["help"][12]." <img src=\"".$cfg_install["root"]."/pics/aide.png\" style='cursor:pointer;' alt=\"help\"onClick=\"window.open('".$cfg_install["root"]."/find_num.php','Help','scrollbars=1,resizable=1,width=600,height=600')\"></td>";
-	echo "<td><input name='computer' size='10' value='$job->fields["computer"]'>";
-	echo "</td>";
-	echo "</tr>";
-
-	echo "<tr class='tab_bg_1'>";
-	echo "<td>".$lang["help"][24].": </td>";
-	echo "<td>";
-	dropdownTrackingDeviceType("device_type",$job->fields["device_type"]);
-	
-	echo "</td></tr>";
-	echo "<tr class='tab_bg_1'><td colspan='2' align='center'>";
-	echo "<input type='hidden' name='ID' value='$ID'>";
-	echo "<input type='submit' name='update_item_ok' value=\"".$lang["buttons"][14]."\" class='submit'>";
-	
-	echo "</td></tr>";
-	echo "</table>";
-
-	echo "</form>";
-	}
-	else
-	{
-	 echo $lang["tracking"][26];
-	}
-}
-//Plus utilisé
-function authorFormTracking ($ID,$target) {
-	GLOBAL $cfg_layout, $lang,$cfg_install;
-
-  if (isAdmin($_SESSION["glpitype"]))
-  {
-
-	$job = new Job;
-	$job->getFromDB($ID,0);
-
-	echo "<form method=get name='helpdeskform' action=\"".$target."\">";
-	echo "<table class='tab_cadre'>";
-	echo "<tr><th colspan='2'>".$lang["job"][26]."</th></tr>";
-	echo "<tr class='tab_bg_1'>";
-	echo "<td>".$lang["joblist"][3].":</td>";
-	echo "<td>";
-	dropdownAllUsers("author",$job->fields["author"]);
-	echo "</td>";
-	echo "</tr>";
-
-	echo "<tr class='tab_bg_1'><td colspan='2' align='center'>";
-	echo "<input type='hidden' name='ID' value='$ID'>";
-	echo "<input type='submit' name='update_author_ok' value=\"".$lang["buttons"][14]."\" class='submit'>";
-	
-	echo "</td></tr>";
-	echo "</table>";
-
-	echo "</form>";
-	}
-	else
-	{
-	 echo $lang["tracking"][27];
-	}
-}
-// Plus utilisé
-function priorityFormTracking ($ID,$target) {
-	// Print a nice form to assign jobs if user is allowed
-
-	GLOBAL $cfg_layout, $lang;
-
-  if (isAdmin($_SESSION["glpitype"]))
-  {
-
-	$job = new Job;
-	$job->getFromDB($ID,0);
-
-//	echo "<form method=get action=\"".$target."\">";
-	dropdownPriority("priority",$job->fields["priority"]);
-	echo "</td><td>";
-//	echo "<input type='hidden' name='update' value=\"1\">";
-	echo "<input type='submit' name='update' value=\"".$lang["buttons"][14]."\" class='submit'>";
-//	echo "</form>";
-	}
-	else
-	{
-	 echo $lang["tracking"][21];
-	}
-}
-*/
 function getRealtime($realtime){
 		global $lang;	
 		$output="";
@@ -1667,15 +699,11 @@ function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,
 		$option["glpi_type_computers.name"]				= $lang["computers"][8];
 		$option["glpi_dropdown_model.name"]				= $lang["computers"][50];
 		$option["glpi_dropdown_os.name"]				= $lang["computers"][9];
-		//$option["comp.osver"]			= $lang["computers"][20];
 		$option["processor.designation"]			= $lang["computers"][21];
-		//$option["processorspeed"]		= $lang["computers"][22];
 		$option["comp.serial"]			= $lang["computers"][17];
 		$option["comp.otherserial"]			= $lang["computers"][18];
 		$option["ram.designation"]			= $lang["computers"][23];
-		//$option["comp.ram"]				= $lang["computers"][24];
 		$option["iface.designation"]			= $lang["computers"][26];
-		//$option["comp.hdspace"]			= $lang["computers"][25];
 		$option["sndcard.designation"]			= $lang["computers"][33];
 		$option["gfxcard.designation"]			= $lang["computers"][34];
 		$option["moboard.designation"]			= $lang["computers"][35];
@@ -1795,12 +823,10 @@ else {
  
  }
  echo "</select>";
- //echo " </td><td align='center'>";
  
  
  
 	 echo "&nbsp;".$lang["search"][2]."&nbsp;";
-//	echo "</td><td align='center'>";
 	echo "<input type='text' size='15' name=\"contains2\" value=\"".$contains2."\">";
 	echo "</td>";
 
@@ -1821,7 +847,6 @@ else {
 
 
 function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$assign_type=0,$category=0,$priority=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
-//	echo $start;
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -1878,11 +903,9 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 		}
 	}
 	}
-//	echo $start;
 	if (!$start) {
 		$start = 0;
 	}
-//	$query = "select comp.ID from glpi_computers as comp";
 	$query = "select DISTINCT glpi_tracking.ID as ID from glpi_tracking";
 	if ($computers_search){
 	$query.= " LEFT JOIN glpi_computers as comp on comp.ID=glpi_tracking.computer ";
@@ -2028,7 +1051,6 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 		} else {
 			echo "<div align='center'><strong>".$lang["joblist"][8]."</strong></div>";
 			echo "<hr noshade>";
-		//	searchFormComputers();
 		}
 	}
 }
@@ -2188,7 +1210,6 @@ function updateTracking($input){
 	if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
 		$input2=array();
 		$input2["name"]=$lang["tracking"][24]." ".$input["ID"];
-//		$input2["TOCLEAN"]="CLEAN";
 		$docID=addDocument($input2);
 		addDeviceDocument($docID,TRACKING_TYPE,$input["ID"]);
 	}
@@ -2287,7 +1308,6 @@ function addFollowup($input){
 	$input["realtime"]=$input["hour"]+$input["minute"]/60;
 	unset($input["minute"]);
 	unset($input["hour"]);
-//	$input["author"]=$_SESSION["glpiID"]
 
 	$input["date"] = date("Y-m-d H:i:s");
 	foreach ($input as $key => $val) {
@@ -2295,7 +1315,6 @@ function addFollowup($input){
 			$fup->fields[$key] = $input[$key];
 		}
 	}
-//	if (!$close||$input["realtime"]>0||strlen($input["contents"])>0)
 
 	$newID=$fup->addToDB();	
 	if (isset($plan)){
@@ -2574,7 +1593,6 @@ function showJobDetails ($ID){
 			echo "<input type='submit' class='submit' name='update' value='".$lang["buttons"][14]."'></td></tr>";
 		}
 		
-//		echo "</table></td></tr>";
 echo "</table>";
 echo "<input type='hidden' name='ID' value='$ID'>";
 echo "</form>";

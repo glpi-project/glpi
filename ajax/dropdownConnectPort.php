@@ -61,7 +61,6 @@
 		$query.= " WHERE glpi_networking_wire.ID IS NULL AND glpi_networking_ports.ID IS NOT NULL AND glpi_networking_ports.ID <> '".$_POST['current']."' ";
 		$query.= $where;
 		$query.= " ORDER BY glpi_networking_ports.ID";
-//		echo $query;
 	$result = $db->query($query);
 	echo "<select name=\"".$_POST['myname']."\" size='1'>";
 		
