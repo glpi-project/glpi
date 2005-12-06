@@ -410,7 +410,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					echo "<td>";
 					if ($SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"]=="glpi_enterprises.name")
 						displayItem($type,"glpi_enterprises.name.brut",$data,$j);
-					else 
+					else if ($SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"]=="glpi_contracts.name")
+						displayItem($type,"glpi_contracts.name.brut",$data,$j);
+					else  
 						displayItem($type,$SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"],$data,$j);
 					echo "</td>";
 				}
@@ -640,6 +642,11 @@ switch ($field){
 		echo $data["ITEM_$num"]." (".$data["ID"].")";
 		echo "</a>";
 		break;	
+	case "glpi_contracts.name.brut" :
+		$type=CONTRACT_TYPE;
+		echo $data["ITEM_$num"];
+		break;			
+
 	case "glpi_enterprises.name" :
 		$type=ENTERPRISE_TYPE;
 		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
