@@ -439,6 +439,7 @@ function showContractForm ($target,$ID) {
 		echo $lang["financial"][36].":";
 	} else {
 		$con->getfromDB($ID);
+		echo $lang["financial"][1].": $ID";
 	}		
 	echo "</b></th></tr>";
 
@@ -446,9 +447,9 @@ function showContractForm ($target,$ID) {
 	dropdownValue("glpi_dropdown_contract_type","contract_type",$con->fields["contract_type"]);
 	echo "</td>";
 
-	echo "<td>".$lang["financial"][27].":		</td>";
-	echo "<td><input type='text' name='name' value=\"".$con->fields["name"]."\" size='25'></td>";
-	echo "</tr>";
+	echo "<td>".$lang["financial"][27].":		</td><td>";
+	autocompletionTextField("name","glpi_contracts","name",$con->fields["name"],25);
+	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][4].":		</td>";
 	echo "<td><input type='text' name='num' value=\"".$con->fields["num"]."\" size='25'></td>";
@@ -460,12 +461,14 @@ function showContractForm ($target,$ID) {
 	echo "</tr>";
 
 
-	echo "<tr class='tab_bg_1'><td>".$lang["financial"][5].":		</td>";
-	echo "<td><input type='text' name='cost' value=\"".number_format($con->fields["cost"],2,'.','')."\" size='10'></td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["financial"][5].":		</td><td>";
+	echo "<input type='text' name='cost' value=\"".number_format($con->fields["cost"],2,'.','')."\" size='10'>";
+	echo "</td>";
 
-	echo "<td>".$lang["financial"][13].":		</td>";
-	echo "<td><input type='text' name='compta_num' value=\"".$con->fields["compta_num"]."\" size='25'></td>";
-	echo "</tr>";
+	echo "<td>".$lang["financial"][13].":		</td><td>";
+	autocompletionTextField("compta_num","glpi_contracts","compta_num",$con->fields["compta_num"],25);
+	
+	echo "</td></tr>";
 
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][8].":		</td><td>";

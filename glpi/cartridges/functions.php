@@ -435,12 +435,14 @@ function showCartridgeTypeForm ($target,$ID) {
 	echo "</b></th></tr>\n";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][1].":		</td>\n";
-	echo "<td colspan='2'><input type='text' name='name' value=\"".$ct->fields["name"]."\" size='25'></td>";
-	echo "</tr>\n";
+	echo "<td colspan='2'>";
+	autocompletionTextField("name","glpi_cartridges_type","name",$ct->fields["name"],25);
+	echo "</td></tr>\n";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][2].":		</td>\n";
-	echo "<td colspan='2'><input type='text' name='ref' value=\"".$ct->fields["ref"]."\" size='25'></td>";
-	echo "</tr>\n";
+	echo "<td colspan='2'>";
+	autocompletionTextField("ref","glpi_cartridges_type","ref",$ct->fields["ref"],25);	
+	echo "</td></tr>\n";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][3].": 	</td><td colspan='2'>\n";
 		dropdownValue("glpi_dropdown_cartridge_type","type",$ct->fields["type"]);
@@ -451,7 +453,7 @@ function showCartridgeTypeForm ($target,$ID) {
 	echo "</td></tr>\n";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>\n";
-		dropdownUsersID( $ct->fields["tech_num"],"tech_num");
+		dropdownUsersID("tech_num", $ct->fields["tech_num"]);
 	echo "</td></tr>\n";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][36].": 	</td><td colspan='2'>\n";
@@ -539,6 +541,7 @@ function updateCartridgeType($input) {
 			$x++;
 		}
 	}
+
 	if(!empty($updates)) {
 	
 		$sw->updateInDB($updates);

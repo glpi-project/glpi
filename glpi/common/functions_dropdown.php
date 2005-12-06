@@ -1300,18 +1300,18 @@ function dropdownSoftwareToInstall($myname,$withtemplate) {
 */
 }
 
-function autocompletionTextField($myname,$table,$field,$value='',$size=20){
+function autocompletionTextField($myname,$table,$field,$value='',$size=20,$option=''){
 	global $HTMLRel,$cfg_features;
 
 	if ($cfg_features["use_ajax"]&&$cfg_features["ajax_autocompletion"]){
 		$rand=mt_rand();
-		echo "<input id='textfield_$myname$rand' type='text' name='$myname' value='$value' size='$size'>\n";
+		echo "<input $option id='textfield_$myname$rand' type='text' name='$myname' value='$value' size='$size'>\n";
 		echo "<div id='textfieldupdate_$myname$rand' style='display:none;border:1px solid black;background-color:white;'></div>\n";
 		echo "<script type='text/javascript' language='javascript' charset='utf-8'>";
 	    echo "new Ajax.Autocompleter('textfield_$myname$rand','textfieldupdate_$myname$rand','".$HTMLRel."/ajax/autocompletion.php',{parameters:'table=$table&field=$field&myname=$myname'});";
 		echo "</script>";
 	}	else {
-		echo "<input type='text' name='$myname' value='$value' size='$size'>\n";
+		echo "<input $option type='text' name='$myname' value='$value' size='$size'>\n";
 	}
 }
 

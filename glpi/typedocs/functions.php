@@ -275,22 +275,23 @@ function showTypedocForm ($target,$ID) {
 		echo "</th><th  align='center'>".$datestring.$date;
 		echo "</th></tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["document"][1].":	</td>";
-	echo "<td><input type='text' name='name' value=\"".$mon->fields["name"]."\" size='20'></td>";
-	echo "</tr>";
+	echo "<tr class='tab_bg_1'><td>".$lang["document"][1].":	</td><td>";
+	autocompletionTextField("name","glpi_type_docs","name",$mon->fields["name"],20);
+	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["document"][9].":	</td>";
-	echo "<td><input type='text' name='ext' value=\"".$mon->fields["ext"]."\" size='20'></td>";
-	echo "</tr>";
+	echo "<tr class='tab_bg_1'><td>".$lang["document"][9].":	</td><td>";
+	autocompletionTextField("ext","glpi_type_docs","ext",$mon->fields["ext"],20);
+
+	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][10].":	</td><td>";
 	dropdownIcons("icon",$mon->fields["icon"],$phproot.$cfg_install["typedoc_icon_dir"]);
 	if (!empty($mon->fields["icon"])) echo "&nbsp;<img style='vertical-align:middle;' alt='' src='".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/".$mon->fields["icon"]."'>";
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["document"][4].":	</td>";
-	echo "<td><input type='text' name='mime' value=\"".$mon->fields["mime"]."\" size='20'></td>";
-	echo "</tr>";
+	echo "<tr class='tab_bg_1'><td>".$lang["document"][4].":	</td><td>";
+	autocompletionTextField("mime","glpi_type_docs","mime",$mon->fields["mime"],20);
+	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][11].":	</td><td>";
 	if (empty($mon->fields["upload"])) $mon->fields["upload"]='Y';

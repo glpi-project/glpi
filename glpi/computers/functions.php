@@ -607,7 +607,8 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		}elseif (strcmp($template,"newcomp") === 0) {
 			echo $lang["computers"][12].": ".$comp->fields["tplname"];
 		}elseif (strcmp($template,"newtemplate") === 0) {
-			echo $lang["common"][6]."&nbsp;: <input type='text' name='tplname' value=\"".$comp->fields["tplname"]."\" size='20'>";
+			echo $lang["common"][6]."&nbsp;: ";
+			autocompletionTextField("tplname","glpi_computers","tplname",$comp->fields["tplname"],20);	
 		}
 		
 		echo "</th><th  colspan ='2' align='center'>".$datestring.$date;
@@ -616,12 +617,10 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		echo "<tr class='tab_bg_1'><td>".$lang["computers"][7].":		</td>";
 
 		echo "<td>";
-//		echo "<input type='text' name='name' value=\"".$comp->fields["name"]."\" size='20'>
 		autocompletionTextField("name","glpi_computers","name",$comp->fields["name"],20);
 		echo "</td>";
 						
 		echo "<td>".$lang["computers"][16].":	</td><td>";
-		//echo "<input type='text' name='contact' size='20' value=\"".$comp->fields["contact"]."\">";
 		autocompletionTextField("contact","glpi_computers","contact",$comp->fields["contact"],20);
 		echo "</td>";
 		
@@ -637,7 +636,6 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		
 		
 		echo "<td>".$lang["computers"][15].":		</td><td>";
-//		echo "<input type='text' name='contact_num' value=\"".$comp->fields["contact_num"]."\" size='20'>";
 		autocompletionTextField("contact_num","glpi_computers","contact_num",$comp->fields["contact_num"],20);
 		echo "</td></tr>";
 
@@ -680,7 +678,6 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$lang["computers"][17].":	</td><td>";
-//		echo "<td><input type='text' name='serial' size='20' value=\"".$comp->fields["serial"]."\">";
 		autocompletionTextField("serial","glpi_computers","serial",$comp->fields["serial"],20);
 		echo "</td></tr>";
 
@@ -688,7 +685,6 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		echo "<tr class='tab_bg_1'>";
 		
 		echo "<td>".$lang["computers"][18].":	</td><td>";
-//		echo "<td><input type='text' size='20' name='otherserial' value=\"".$comp->fields["otherserial"]."\">";
 		autocompletionTextField("otherserial","glpi_computers","otherserial",$comp->fields["otherserial"],20);
 		echo "</td>";
 

@@ -448,7 +448,8 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 		}elseif (strcmp($template,"newcomp") === 0) {
 			echo $lang["networking"][53].": ".$netdev->fields["tplname"];
 		}elseif (strcmp($template,"newtemplate") === 0) {
-			echo $lang["common"][6].": <input type='text' name='tplname' value=\"".$netdev->fields["tplname"]."\" size='20'>\n";
+			echo $lang["common"][6].": ";
+			autocompletionTextField("tplname","glpi_networking","tplname",$netdev->fields["tplname"],20);	
 		}
 		echo "</th><th  align='center'>".$datestring.$date;
 		echo "</th></tr>\n";
@@ -459,8 +460,9 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
 	echo "<tr><td>".$lang["networking"][0].":	</td>\n";
-	echo "<td><input type='text' name='name' value=\"".$netdev->fields["name"]."\" size='20'></td>\n";
-	echo "</tr>\n";
+	echo "<td>";
+	autocompletionTextField("name","glpi_networking","name",$netdev->fields["name"],20);	
+	echo "</td></tr>\n";
 
 	echo "<tr><td>".$lang["networking"][1].": 	</td><td>\n";
 		dropdownValue("glpi_dropdown_locations", "location", $netdev->fields["location"]);
@@ -470,13 +472,13 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 		dropdownUsersID("tech_num", $netdev->fields["tech_num"]);
 	echo "</td></tr>\n";
 		
-	echo "<tr><td>".$lang["networking"][4].":	</td>\n";
-	echo "<td><input type='text' name='contact_num' value=\"".$netdev->fields["contact_num"]."\" size='20'></td>";
-	echo "</tr>\n";
+	echo "<tr><td>".$lang["networking"][4].":	</td><td>\n";
+		autocompletionTextField("contact_num","glpi_networking","contact_num",$netdev->fields["contact_num"],20);	
+	echo "</td></tr>\n";
 
-	echo "<tr><td>".$lang["networking"][3].":	</td>\n";
-	echo "<td><input type='text' name='contact' size='20' value=\"".$netdev->fields["contact"]."\"></td>";
-	echo "</tr>\n";
+	echo "<tr><td>".$lang["networking"][3].":	</td><td>\n";
+		autocompletionTextField("contact","glpi_networking","contact",$netdev->fields["contact"],20);	
+	echo "</td></tr>\n";
 	
 	if (!$template){
 	echo "<tr><td>".$lang["reservation"][24].":</td><td><b>";
@@ -520,25 +522,25 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 	dropdownValue("glpi_dropdown_firmware", "firmware", $netdev->fields["firmware"]);
 	echo "</td></tr>\n";
 		
-	echo "<tr><td>".$lang["networking"][5].":	</td>\n";
-	echo "<td><input type='text' name='ram' value=\"".$netdev->fields["ram"]."\" size='10'></td>";
-	echo "</tr>\n";
+	echo "<tr><td>".$lang["networking"][5].":	</td><td>\n";
+	autocompletionTextField("ram","glpi_networking","ram",$netdev->fields["ram"],20);	
+	echo "</td></tr>\n";
 
-	echo "<tr><td>".$lang["networking"][6].":	</td>\n";
-	echo "<td><input type='text' name='serial' size='20' value=\"".$netdev->fields["serial"]."\"></td>";
-	echo "</tr>\n";
+	echo "<tr><td>".$lang["networking"][6].":	</td><td>\n";
+	autocompletionTextField("serial","glpi_networking","serial",$netdev->fields["serial"],20);	
+	echo "</td></tr>\n";
 
-	echo "<tr><td>".$lang["networking"][7].":</td>\n";
-	echo "<td><input type='text' size='20' name='otherserial' value=\"".$netdev->fields["otherserial"]."\"></td>";
-	echo "</tr>\n";
+	echo "<tr><td>".$lang["networking"][7].":</td><td>\n";
+	autocompletionTextField("otherserial","glpi_networking","otherserial",$netdev->fields["otherserial"],20);	
+	echo "</td></tr>\n";
 	
-	echo "<tr><td>".$lang["networking"][14].":</td>\n";
-	echo "<td><input type='text' size='20' name='ifaddr' value=\"".$netdev->fields["ifaddr"]."\"></td>";
-	echo "</tr>\n";
+	echo "<tr><td>".$lang["networking"][14].":</td><td>\n";
+	autocompletionTextField("ifaddr","glpi_networking","ifaddr",$netdev->fields["ifaddr"],20);	
+	echo "</td></tr>\n";
 
-	echo "<tr><td>".$lang["networking"][15].":</td>\n";
-	echo "<td><input type='text' size='20' name='ifmac' value=\"".$netdev->fields["ifmac"]."\"></td>";
-	echo "</tr>\n";
+	echo "<tr><td>".$lang["networking"][15].":</td><td>\n";
+	autocompletionTextField("ifmac","glpi_networking","ifmac",$netdev->fields["ifmac"],20);	
+	echo "</td></tr>\n";
 		
 	echo "</table>\n";
 	
@@ -913,7 +915,8 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 
 	if ($several!="yes"){
 	echo "<tr class='tab_bg_1'><td>".$lang["networking"][21].":</td>";
-	echo "<td><input type='text' size='5' name='logical_number' value=\"".$netport->fields["logical_number"]."\">";
+	echo "<td>";
+	autocompletionTextField("logical_number","glpi_networking_ports","logical_number",$netport->fields["logical_number"],5);	
 	echo "</td></tr>";
 	}
 	else {
@@ -934,15 +937,16 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 	}
 	
 	echo "<tr class='tab_bg_1'><td>".$lang["networking"][0].":</td>";
-	echo "<td><input type='text' size='20' name='name' value=\"".$netport->fields["name"]."\">";
+	echo "<td>";
+	autocompletionTextField("name","glpi_networking_ports","name",$netport->fields["name"],20);	
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["networking"][16].":</td><td>";
 		dropdownValue("glpi_dropdown_iface","iface", $netport->fields["iface"]);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["networking"][14].":</td>";
-	echo "<td><input type='text' size='20' name='ifaddr' value=\"".$netport->fields["ifaddr"]."\">";
+	echo "<tr class='tab_bg_1'><td>".$lang["networking"][14].":</td><td>";
+	autocompletionTextField("ifaddr","glpi_networking_ports","ifaddr",$netport->fields["ifaddr"],20);	
 	echo "</td></tr>\n";
 
 	// Show device MAC adresses
@@ -980,8 +984,9 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 		}
 	}
 	
-	echo "<tr class='tab_bg_1'><td>".$lang["networking"][15].":</td>";
-	echo "<td><input type='text' size='25' name='ifmac' value=\"".$netport->fields["ifmac"]."\">";
+	echo "<tr class='tab_bg_1'><td>".$lang["networking"][15].":</td><td>";
+	autocompletionTextField("ifmac","glpi_networking_ports","ifmac",$netport->fields["ifmac"],25);	
+
 	echo "</td></tr>\n";
 	
 	if ($several!="yes"){

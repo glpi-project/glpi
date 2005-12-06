@@ -143,7 +143,10 @@ function showUserform($target,$name) {
 			echo "<td align='center'><b>".$user->fields["name"]."</b>";
 			echo "<input type='hidden' name='name' value=\"".$user->fields["name"]."\">";
 			}
-		else echo "<td><input  name='name' value=\"".$user->fields["name"]."\">";
+		else {
+			echo "<td>";
+			autocompletionTextField("name","glpi_users","name",$user->fields["name"],20);
+		}
 		
 		
 		echo "<input type='hidden' name='ID' value=\"".$user->fields["ID"]."\">";
@@ -155,14 +158,20 @@ function showUserform($target,$name) {
 		if (!empty($user->fields["password"])||!empty($user->fields["password_md5"])||$name==""){
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value=\"".$user->fields["password"]."\" size='20' /></td></tr>";
 		}
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td><input name='realname' size='20' value=\"".$user->fields["realname"]."\"></td></tr>";
+		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>";
+		autocompletionTextField("realname","glpi_users","realname",$user->fields["realname"],20);
+		echo "</td></tr>";
 		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][20]."</td><td>";
 		
 		dropdownUserType("type",$user->fields["type"]);
 	} else {
 		if (($user->fields["type"]!="super-admin"&&!empty($user->fields["password"]))||$name=="")
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value=\"".$user->fields["password"]."\" size='20' /></td></tr>";
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td><input name='realname' size='20' value=\"".$user->fields["realname"]."\"></td></tr>";
+
+		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>";
+		autocompletionTextField("realname","glpi_users","realname",$user->fields["realname"],20);
+		echo "</td></tr>";
+
 		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][20]."</td>";
 		if($user->fields["type"] != "super-admin" && $user->fields["type"] != "admin") {
 			echo "<td><select name='type' >";
@@ -178,8 +187,12 @@ function showUserform($target,$name) {
 		}
 	}
 	echo "</td></tr>";	
-	echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td><input name='email_form' size='20' value=\"".$user->fields["email"]."\"></td></tr>";
-	echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td><input name='phone' size='20' value=\"".$user->fields["phone"]."\"></td></tr>";
+	echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td>";
+	autocompletionTextField("email_form","glpi_users","email",$user->fields["email"],20);
+	echo "</td></tr>";
+	echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td>";
+	autocompletionTextField("phone","glpi_users","phone",$user->fields["phone"],20);
+	echo "</td></tr>";
 	echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
 	dropdownValue("glpi_dropdown_locations", "location", $user->fields["location"]);
 	echo "</td></tr>";

@@ -75,16 +75,18 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		
 		echo "</td>";
 		echo "<td>".$lang["financial"][82].":		</td>";
-		echo "<td ><input type='text' $option name='facture' value=\"".$ic->fields["facture"]."\" size='25'></td>";
-		
-		echo "</tr>";
+		echo "<td >";
+		autocompletionTextField("facture","glpi_infocoms","facture",$ic->fields["facture"],25);	
+		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][18].":		</td>";
-		echo "<td ><input type='text' $option name='num_commande' value=\"".$ic->fields["num_commande"]."\" size='25'></td>";
+		echo "<td >";
+		autocompletionTextField("num_commande","glpi_infocoms","num_commande",$ic->fields["num_commande"],25);	
+		echo "</td>";
 		
-		echo "<td>".$lang["financial"][19].":		</td>";
-		echo "<td ><input type='text' $option name='bon_livraison' value=\"".$ic->fields["bon_livraison"]."\" size='25'></td>";
-		echo "</tr>";
+		echo "<td>".$lang["financial"][19].":		</td><td>";
+		autocompletionTextField("bon_livraison","glpi_infocoms","bon_livraison",$ic->fields["bon_livraison"],25);	
+		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][14].":	</td><td>";
 		showCalendarForm("form_ic","buy_date",$ic->fields["buy_date"],$withtemplate);	
@@ -117,8 +119,10 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		
 
 		echo "<td>".$lang["financial"][16].":		</td>";
-		echo "<td ><input type='text' $option name='warranty_info' value=\"".$ic->fields["warranty_info"]."\" size='25'></td>";
-		echo "</tr>";
+		echo "<td >";
+		autocompletionTextField("warranty_info","glpi_infocoms","warranty_info",$ic->fields["warranty_info"],25);	
+
+		echo "</td></tr>";
 		}
 		
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][21].":		</td><td  ".($show_immo==1?"":" colspan='3'")."><input type='text' name='value' $option value=\"".number_format($ic->fields["value"],2,'.','')."\" size='10'></td>";
@@ -133,7 +137,10 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		
 		if ($show_immo==1){
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][20].":		</td>";
-		echo "<td ><input type='text' $option name='num_immo' value=\"".$ic->fields["num_immo"]."\" size='25'></td>";
+		echo "<td >";
+		autocompletionTextField("num_immo","glpi_infocoms","num_immo",$ic->fields["num_immo"],25,$option);	
+
+		echo "</td>";
 		
 					
 		
@@ -153,8 +160,9 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		echo "</td>";
 		
 		echo "<td>".$lang["financial"][77].":		</td>";
-		echo "<td ><input type='text' $option name='amort_coeff' value=\"".$ic->fields["amort_coeff"]."\" size='10'></td>";
-		echo "</tr>";
+		echo "<td >";
+		autocompletionTextField("amort_coeff","glpi_infocoms","amort_coeff",$ic->fields["amort_coeff"],10);	
+		echo "</td></tr>";
 		}
 
 		echo "<tr class='tab_bg_1'><td valign='top'>";
@@ -584,10 +592,14 @@ global $HTMLRel,$lang;
 $db=new DB;
 $query="SELECT COUNT(ID) FROM glpi_infocoms WHERE FK_device='$device_id' AND device_type='$device_type'";
 $add="add";
+$text=$lang["buttons"][8];
 $result=$db->query($query);
-if ($db->result($result,0,0)>0) $add="";
+if ($db->result($result,0,0)>0) {
+	$add="";
+	$text=$lang["buttons"][23];
+}
 
-echo "<a href='#' onClick=\"window.open('".$HTMLRel."infocoms/infocoms-show.php?device_type=$device_type&amp;device_id=$device_id&amp;update=$update','infocoms','location=infocoms,width=750,height=600,scrollbars=no')\"><img src=\"".$HTMLRel."/pics/dollar$add.png\" alt=\"".$lang["buttons"][23]."\" title=\"".$lang["buttons"][23]."\"></a>";
+echo "<a href='#' onClick=\"window.open('".$HTMLRel."infocoms/infocoms-show.php?device_type=$device_type&amp;device_id=$device_id&amp;update=$update','infocoms','location=infocoms,width=750,height=600,scrollbars=no')\"><img src=\"".$HTMLRel."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\"></a>";
 }
 
 ?>

@@ -370,8 +370,9 @@ function showDocumentForm ($target,$ID) {
 	echo "</b></th></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][1].":		</td>";
-	echo "<td colspan='2'><input type='text' name='name' value=\"".$con->fields["name"]."\" size='25'></td>";
-	echo "</tr>";
+	echo "<td colspan='2'>";
+	autocompletionTextField("name","glpi_docs","name",$con->fields["name"],25);
+	echo "</td></tr>";
 	
 	if (!empty($ID)){
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][22].":		</td>";
@@ -388,8 +389,9 @@ function showDocumentForm ($target,$ID) {
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][33].":		</td>";
-	echo "<td colspan='2'><input type='text' name='link' value='".$con->fields["link"]."' size='40'></td>";
-	echo "</tr>";
+	echo "<td colspan='2'>";
+	autocompletionTextField("link","glpi_docs","link",$con->fields["link"],40);
+	echo "</td></tr>";
 
 	
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][3].":		</td>";
@@ -400,8 +402,9 @@ function showDocumentForm ($target,$ID) {
 
 		
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][4].":		</td>";
-	echo "<td colspan='2'><input type='text' name='mime' value='".$con->fields["mime"]."' size='25'></td>";
-	echo "</tr>";
+	echo "<td colspan='2'>";
+	autocompletionTextField("mime","glpi_docs","mime",$con->fields["mime"],25);
+	echo "</td></tr>";
 	
 	echo "<tr>";
 	echo "<td class='tab_bg_1' valign='top'>";
@@ -646,10 +649,6 @@ function showDeviceDocument($instID,$search='') {
 //	echo "</form>";
 	echo "</td>";
 	echo "<td align='center' class='tab_bg_2'>";
-//	echo "<form method='get' action=\"".$cfg_install["root"]."/documents/documents-info-form.php?ID=$instID\">";	
-//	echo "<input type='text' name='search' value=\"".$search."\" size='15'>";
-//	echo "<input type='hidden' name='ID' value='$instID'>";
-//	echo "<input type='submit' name='bsearch' value=\"".$lang["buttons"][0]."\" class='submit'>";
 	echo "</td></tr>";
 	
 	echo "</table></div>"    ;

@@ -356,23 +356,26 @@ function showContactForm ($target,$ID) {
 	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
 	echo "<tr><td>".$lang["financial"][27].":	</td>";
-	echo "<td><input type='text' name='name' value=\"".$con->fields["name"]."\" size='30'></td>";
-	echo "</tr>";
+	echo "<td>";
+	autocompletionTextField("name","glpi_contacts","name",$con->fields["name"],30);	
+	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["financial"][29].": 	</td>";
-	echo "<td><input type='text' name='phone' value=\"".$con->fields["phone"]."\" size='20'></td>";
-	echo "</tr>";
+	echo "<td>";
+	autocompletionTextField("phone","glpi_contacts","phone",$con->fields["phone"],30);	
 
-	echo "<tr><td>".$lang["financial"][29]." 2:	</td>";
-	echo "<td><input type='text' name='phone2' value=\"".$con->fields["phone2"]."\" size='20'></td>";
-	echo "</tr>";
+	echo "</td></tr>";
 
-	echo "<tr><td>".$lang["financial"][30].":	</td>";
-	echo "<td><input type='text' name='fax' size='20' value=\"".$con->fields["fax"]."\"></td>";
-	echo "</tr>";
-	echo "<tr><td>".$lang["financial"][31].":	</td>";
-	echo "<td><input type='text' name='email' size='30' value=\"".$con->fields["email"]."\"></td>";
-	echo "</tr>";
+	echo "<tr><td>".$lang["financial"][29]." 2:	</td><td>";
+	autocompletionTextField("phone2","glpi_contacts","phone2",$con->fields["phone2"],30);
+	echo "</td></tr>";
+
+	echo "<tr><td>".$lang["financial"][30].":	</td><td>";
+	autocompletionTextField("fax","glpi_contacts","fax",$con->fields["fax"],30);
+	echo "</td></tr>";
+	echo "<tr><td>".$lang["financial"][31].":	</td><td>";
+	autocompletionTextField("email","glpi_contacts","email",$con->fields["email"],30);
+	echo "</td></tr>";
 	echo "<tr><td>".$lang["financial"][37].":	</td>";
 	echo "<td>";
 	dropdownValue("glpi_dropdown_contact_type","type",$con->fields["type"]);
