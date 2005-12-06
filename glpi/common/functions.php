@@ -250,7 +250,6 @@ function checkAuthentication($authtype) {
 	
 	
 	
-	//if(!isset($_SESSION)) session_start();
 	if(!session_id()){@session_start();}
 	// Override cfg_features by session value
 	if (isset($_SESSION['list_limit'])) $cfg_features["list_limit"]=$_SESSION['list_limit'];
@@ -664,7 +663,6 @@ switch ($ID){
 	case ENTERPRISE_TYPE : return $lang["Menu"][23];break;
 	case CONTRACT_TYPE : return $lang["Menu"][25];break;
 	case CONSUMABLE_TYPE : return $lang["Menu"][32];break;
-	//case USER_TYPE : return $lang["Menu"][14];break;
 
 
 }
@@ -741,7 +739,6 @@ function showConnect($target,$ID,$type) {
 
 			echo "</form>";
 
-//			echo "<a href=\"$target?connect=1&amp;ID=$ID\">".$lang["connect"][2]."</a>";
 		}
 
 		if ($global&&$computers&&count($computers)>0){
@@ -759,7 +756,6 @@ function showConnect($target,$ID,$type) {
 
 			echo "</form>";
 
-//			echo "<a href=\"$target?connect=1&amp;ID=$ID\">".$lang["connect"][2]."</a>";
 		}
 
 		echo "</td>";
@@ -818,212 +814,14 @@ function Connect($target,$sID,$cID,$type) {
 		if ($comp->fields['contact']!=$dev->obj->fields['contact']||$comp->fields['contact_num']!=$dev->obj->fields['contact_num']){
 			$updates[0]="contact";
 			$updates[1]="contact_num";
-			$dev->obj->fields['contact']=unhtmlentities($comp->fields['contact']);
-			$dev->obj->fields['contact_num']=unhtmlentities($comp->fields['contact_num']);
+			$dev->obj->fields['contact']=$comp->fields['contact'];
+			$dev->obj->fields['contact_num']=$comp->fields['contact_num'];
 			$dev->obj->updateInDB($updates);
 			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][49];
 		}
 	}
 	
 }
-
-/**
-* Print a select box for an item to be connected
-* 
-* 
-*
-*
-* @param $target where we go when done.
-* @param $ID connection source ID.
-* @param $type connection type.
-*/
-// Plus utilisé
-/*
-function showConnectSearch($target,$ID,$type="computer") {
-
-	GLOBAL $cfg_layout,$cfg_install, $lang;
-
-	echo "<div align='center'>";
-	echo "<form method='post' action=\"$target\">";
-
-	echo "<table class='tab_cadre'>";
-	echo "<tr><th colspan='2'>".$lang["connect"][4]." :</th></tr>";
-	echo "<tr class='tab_bg_1'>";
-	echo "<td>";
-	switch($type){
-	case "computer" :
-		echo $lang["connect"][5];		
-		break;
-	case "printer" :
-		echo $lang["connect"][13];		
-		break;
-	case "peripheral" :
-		echo $lang["connect"][14];		
-		break;
-	case "monitor" :
-		echo $lang["connect"][15];		
-		break;
-		
-	default : // computer
-		echo "<tr><th colspan='2'>ERROR  :</th></tr>";
-	}
-	
-	echo " <select name=type>";
-	echo "<option value=name>".$lang["connect"][6]."</option>";
-	echo "<option value=id>".$lang["connect"][7]."</option>";
-	echo "<option value=serial>".$lang["connect"][23]."</option>";
-	echo "<option value=otherserial>".$lang["connect"][24]."</option>";
-	echo "</select> ";
-	echo $lang["connect"][8]." <input type='text' size=10 name=search>";
-	echo "<input type='hidden' name='pID1' value=$ID>";
-	echo "<input type='hidden' name='device_type' value=$type>";
-	echo "<input type='hidden' name='connect' value='2'>";
-	echo "</td><td class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][11]."\" class='submit'>";
-	echo "</td></tr>";	
-
-	echo "</table>";	
-	echo "</form>";
-	echo "</div>";
-}
-*/
-/**
-* To be commented
-* 
-*
-* @param $target where we go when done
-* @param $input 
-* @return nothing
-*/
-// Plus utilisé
-/*
-function listConnectComputers($target,$input) {
-
-	GLOBAL $cfg_layout,$cfg_install, $lang;
-
-	$pID1 = $input["pID1"];
-
-	echo "<div align='center'>";
-	echo "<form method='post' action=\"$target\">";
-
-	echo "<table  class='tab_cadre'>";
-	echo "<tr><th colspan='2'>".$lang["connect"][9].":</th></tr>";
-
-	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>";
-
-	$db = new DB;
-		
-	$query = "SELECT glpi_computers.ID as ID,glpi_computers.name as name, glpi_dropdown_locations.ID as location from glpi_computers left join glpi_dropdown_locations on glpi_computers.location = glpi_dropdown_locations.id WHERE glpi_computers.deleted = 'N' AND glpi_computers.is_template ='0' AND glpi_computers.".$input["type"]." LIKE '%".$input["search"]."%' order by name ASC";
-	
-	$result = $db->query($query);
-	$number = $db->numrows($result);
-	echo "<select name=\"cID\">";
-	$i=0;
-	while ($i < $number) {
-		$dID = $db->result($result, $i, "ID");
-		$name = $db->result($result, $i, "name");
-		$location = $db->result($result, $i, "location");
-		echo "<option value=\"$dID\">".$name." (".getTreeValueCompleteName("glpi_dropdown_locations",$location).")</option>\n";
-		$i++;
-	}
-	echo  "</select>\n";
-
-	echo "</td>";
-	echo "<td class='tab_bg_2' align='center'>";
-	echo "<input type='hidden' name='sID' value=\"".$input["pID1"]."\">";
-	echo "<input type='hidden' name='connect' value='3'>";
-	echo "<input type='hidden' name='device_type' value='computer'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
-	echo "</td></tr></table></form></div>";	
-
-}
-*/
-/**
-*
-* To be commented
-*
-*
-*
-* @param $target where we go when done
-* @param $input
-*
-* @return nothing
-*/
-// Plus utilisé
-/*
-function listConnectElement($target,$input) {
-
-	GLOBAL $cfg_layout,$cfg_install, $lang;
-
-	$pID1 = $input["pID1"];
-	$device_type=$input["device_type"];
-	$table="";
-	switch($device_type){
-	case "printer":
-	$table="glpi_printers";$device_id=PRINTER_TYPE;break;
-	case "monitor":
-	$table="glpi_monitors";$device_id=MONITOR_TYPE;break;
-	case "peripheral":
-	$table="glpi_peripherals";$device_id=PERIPHERAL_TYPE;break;
-	
-	}
-	
-	echo "<div align='center'>";
-	echo "<form method='post' action=\"$target\">";
-	echo "<table  class='tab_cadre'>";
-	echo "<tr><th colspan='2'>";
-	switch($device_type){
-	case "printer":
-	echo 	$lang["connect"][10];break;
-	case "monitor":
-	echo 	$lang["connect"][12];break;
-	case "peripheral":
-	echo 	$lang["connect"][11];break;
-	}
-	
-	
-	echo ":</th></tr>";
-
-	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>";
-
-	$db = new DB;
-
-	$CONNECT_SEARCH="(glpi_connect_wire.ID IS NULL";	
-	if ($device_type=="monitor"||$device_type=="peripheral")
-		$CONNECT_SEARCH.=" OR $table.is_global='1' ";
-	$CONNECT_SEARCH.=")";
-	$query = "SELECT $table.ID as ID,$table.name as name, glpi_dropdown_locations.ID as location from $table left join glpi_dropdown_locations on $table.location = glpi_dropdown_locations.id left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = $device_id) WHERE $table.deleted='N' AND $table.is_template='0' AND $table.".$input["type"]." LIKE '%".$input["search"]."%' AND $CONNECT_SEARCH order by name ASC";
-	
-	
-	//echo $query;
-	$result = $db->query($query);
-	$number = $db->numrows($result);
-	$i=0;
-	if ($number>0) {
-	echo "<select name=\"ID\">";
-	while ($i < $number) {
-		$dID = $db->result($result, $i, "ID");
-		$name = $db->result($result, $i, "name");
-		$location = $db->result($result, $i, "location");
-		echo "<option value=\"$dID\">".$name." (".getTreeValueCompleteName("glpi_dropdown_locations",$location).")</option>";
-		$i++;
-	}
-	echo  "</select>";
-
-	echo "</td>";
-	echo "<td class='tab_bg_2' align='center'>";
-	echo "<input type='hidden' name='cID' value=\"".$input["pID1"]."\">";
-	echo "<input type='hidden' name='connect' value='3'>";
-	echo "<input type='hidden' name='device_type' value='$device_id'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
-	} else echo $lang["connect"][16]."<br><b><a href=\"".$_SERVER["PHP_SELF"]."?ID=".$input["pID1"]."\">".$lang["buttons"][13]."</a></b>";
-	
-	echo "</td></tr></table></form></div>";	
-
-}
-*/
 
 /**
 * Count the number of elements in a table.
@@ -1080,62 +878,6 @@ function addslashes_deep($value) {
        return $value;
 }
 
-/**
-* To be commented
-*
-*
-*
-* @param $value
-* @return 
-*
-*/
-function htmlentities_deep($value){
-return $value;
-/*
-       $value = is_array($value) ?
-                   array_map('htmlentities_deep', $value) :
-                   (is_null($value) ? NULL : htmlentities($value,ENT_QUOTES));
-       return $value;
-*/       
-}
-
-/**
-* To be commented
-* Nécessaire pour PHP < 4.3
-*
-*
-* @param $value
-* @return 
-*
-*/
-function unhtmlentities ($string) {
-return $string;
-/*	$trans_tbl = get_html_translation_table (HTML_ENTITIES,ENT_QUOTES);
-	if( $trans_tbl["'"] != '&#039;' ) { # some versions of PHP match single quotes to &#39;
-		$trans_tbl["'"] = '&#039;';
-	}
-	$trans_tbl = array_flip ($trans_tbl);
-	return strtr ($string, $trans_tbl);
-*/	
-}
-
-/**
-* To be commented
-* Nécessaire pour PHP < 4.3
-*
-*
-* @param $value
-* @return 
-*
-*/
-function unhtmlentities_deep($value) {
-return $value;
-/*	$value = is_array($value) ?
-		array_map('unhtmlentities_deep', $value) :
-			(is_null($value) ? NULL : unhtmlentities($value,ENT_QUOTES));
-	return $value;
-*/	
-}
 
 function utf8_decode_deep($value) {
 	$value = is_array($value) ?
@@ -1161,8 +903,6 @@ function utf8_decode_deep($value) {
 */
 function autop($pee, $br=1) {
 
-// 
-
 // Thanks  to Matthew Mullenweg
 
 $pee = preg_replace("/(\r\n|\n|\r)/", "\n", $pee); // cross-platform newlines
@@ -1183,8 +923,6 @@ return $pee;
 * @return $string
 */
 function clicurl($chaine){
-
-// 
 
 $text=preg_replace("`((?:https?|ftp)://\S+)(\s|\z)`", '<a href="$1">$1</a>$2', $chaine); 
 
@@ -1237,8 +975,6 @@ function rembo($string){
 
 // Adapté de PunBB 
 //Copyright (C)  Rickard Andersson (rickard@punbb.org)
-
-  
 
 // If the message contains a code tag we have to split it up (text within [code][/code] shouldn't be touched)
 	if (strpos($string, '[code]') !== false && strpos($string, '[/code]') !== false)
@@ -1374,8 +1110,6 @@ return $name;
 // DO NOT DELETE THIS FUNCTION : USED IN THE UPDATE
 function getTreeValueName($table,$ID, $wholename="")
 {
-	// show name catégory
-	// ok ??
 	
 	global $lang;
 	
@@ -1571,7 +1305,7 @@ function regenerateTreeCompleteName($table){
 	$result=$db->query($query);
 	if ($db->numrows($result)>0){
 		while ($data=$db->fetch_array($result)){
-		$query="UPDATE $table SET completename='".addslashes(unhtmlentities(getTreeValueName("$table",$data['ID'])))."' WHERE ID='".$data['ID']."'";
+		$query="UPDATE $table SET completename='".addslashes(getTreeValueName("$table",$data['ID']))."' WHERE ID='".$data['ID']."'";
 		$db->query($query);
 		}
 	}
@@ -1586,7 +1320,7 @@ function regenerateTreeCompleteName($table){
 */
 function regenerateTreeCompleteNameUnderID($table,$ID){
 	$db=new DB;
-	$query="UPDATE $table SET completename='".addslashes(unhtmlentities(getTreeValueName("$table",$ID)))."' WHERE ID='".$ID."'";
+	$query="UPDATE $table SET completename='".addslashes(getTreeValueName("$table",$ID))."' WHERE ID='".$ID."'";
 	$db->query($query);
 	$query="SELECT ID FROM $table WHERE parentID='$ID'";
 	$result=$db->query($query);
@@ -1790,7 +1524,6 @@ function getUserName($ID,$link=0){
 	$db=new DB;
 	$query="SELECT * from glpi_users WHERE ID='$ID'";
 	$result=$db->query($query);
-//	echo $query;
 	if ($db->numrows($result)==1){
 		$before="";
 		$after="";
@@ -1819,7 +1552,6 @@ $result=$db->list_tables();
    		if (ereg("glpi_",$line[0])){
 			$table = $line[0];
    		$query = "OPTIMIZE TABLE ".$table." ;";
-//   		echo $query;
    		$db->query($query);
 		}
   	 }

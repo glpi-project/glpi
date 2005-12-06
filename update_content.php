@@ -145,7 +145,6 @@ function get_update_content($db, $table,$from,$limit,$conv_utf8)
      
      if($result)
      while($row = $db->fetch_assoc($result)) {
-	      $row=unhtmlentities_deep($row);
          if (isset($row["ID"])) {
      		if (get_magic_quotes_runtime()) $row=stripslashes_deep($row);
      		$row=stripslashes_deep($row);

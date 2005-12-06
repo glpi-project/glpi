@@ -61,24 +61,24 @@ else {$defaulttimeout=1;$defaultrowlimit=2;}
 <script language="JavaScript" type="text/javascript">
 <!--
 function dump(what3){
-   if (confirm("<?php echo unhtmlentities($lang["backup"][15]);?> " + what3 +  "?")) {
+   if (confirm("<?php echo $lang["backup"][15];?> " + what3 +  "?")) {
          window.location = "index.php?dump=" + what3;
    }
 }
 function restore(what) {
-   if (confirm("<?php echo unhtmlentities($lang["backup"][16]);?> " + what +  "?")) {
+   if (confirm("<?php echo $lang["backup"][16];?> " + what +  "?")) {
          window.location = "index.php?file=" + what;
    }
 }
 
 function erase(what2){
-   if (confirm("<?php echo unhtmlentities($lang["backup"][17]);?> " + what2 +  "?")) {
+   if (confirm("<?php echo $lang["backup"][17];?> " + what2 +  "?")) {
          window.location = "index.php?delfile=" + what2;
    }
 }
 
 function xmlnow(what4){
-   if (confirm("<?php echo unhtmlentities($lang["backup"][18]) ;?> " + what4 +  "?")) {
+   if (confirm("<?php echo $lang["backup"][18] ;?> " + what4 +  "?")) {
          window.location = "index.php?xmlnow=" + what4;
    }
 }
@@ -227,7 +227,6 @@ function get_content($db, $table,$from,$limit)
      $result = $db->query("SELECT * FROM $table LIMIT $from,$limit");
      if($result)
      while($row = $db->fetch_row($result)) {
-     	$row=unhtmlentities_deep($row);
      	if (get_magic_quotes_runtime()) $row=addslashes_deep($row);
          $insert = "INSERT INTO $table VALUES (";
          for($j=0; $j<$db->num_fields($result);$j++) {
@@ -249,7 +248,6 @@ function get_def($db, $table) {
     $def .= "CREATE TABLE `$table` (\n";
     $result = $db->query("SHOW FIELDS FROM $table");
     while($line = $db->fetch_array($result)) {
-    	$line=unhtmlentities_deep($line);
     	$line=stripslashes_deep($line);
         $def .= "    `$line[Field]` $line[Type]";
         if (isset($line["Default"]) && $line["Default"] != "") $def .= " DEFAULT '$line[Default]'";
@@ -260,7 +258,6 @@ function get_def($db, $table) {
      $def = ereg_replace(",\n$","", $def);
      $result = $db->query("SHOW KEYS FROM $table");
      while($line = $db->fetch_array($result)) {
-     	 $line=unhtmlentities_deep($line);
      	 $line=stripslashes_deep($line);
           $kname=$line["Key_name"];
           if(($kname != "PRIMARY") && ($line["Non_unique"] == 0)) $kname="UNIQUE|$kname";

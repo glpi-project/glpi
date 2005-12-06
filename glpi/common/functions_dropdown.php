@@ -58,7 +58,6 @@ function dropdown($table,$myname) {
 
 	$rand=mt_rand();
 echo "<input type='text' id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
-//echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 echo "<script type='text/javascript' >\n";
 echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
@@ -92,57 +91,6 @@ echo "<span id='results_$myname$rand'>\n";
 echo "<select name='$myname'><option value='0'>------</option></select>\n";
 echo "</span>\n";	
 
-/*	
-	global $deleted_tables,$template_tables,$dropdowntree_tables;	
-	
-	// Make a select box
-	$db = new DB;
-
-	if($table == "glpi_dropdown_netpoint") {
-		$query = "select t1.ID as ID, t1.name as netpname, t2.name as locname from glpi_dropdown_netpoint as t1";
-		$query .= " left join glpi_dropdown_locations as t2 on t1.location = t2.ID";
-		$query .= " order by t2.name, t1.name"; 
-		$result = $db->query($query);
-		echo "<select name=\"$myname\">";
-		$i = 0;
-		$number = $db->numrows($result);
-		if ($number > 0) {
-			while ($i < $number) {
-				$output = $db->result($result, $i, "netpname");
-				$loc = $db->result($result, $i, "locname");
-				$ID = $db->result($result, $i, "ID");
-				echo "<option value=\"$ID\">$output ($loc)</option>";
-				$i++;
-			}
-		}
-		echo "</select>";
-	}
- else {
-		$where="WHERE '1'='1' ";
-		if (in_array($table,$deleted_tables))
-			$where.="AND deleted='N'";
-		if (in_array($table,$template_tables))
-			$where.="AND is_template='0'";			
-		if (in_array($table,$dropdowntree_tables))
-			$query = "SELECT ID, completename as name FROM $table $where ORDER BY completename";
-		else $query = "SELECT * FROM $table $where ORDER BY name";
-		$result = $db->query($query);
-		echo "<select name=\"$myname\" size='1'>";
-		echo "<option value=\"0\">-----</option>";
-		$i = 0;
-		$number = $db->numrows($result);
-		if ($number > 0) {
-			while ($i < $number) {
-				$output = $db->result($result, $i, "name");
-				if (empty($output)) $output="&nbsp;";
-				$ID = $db->result($result, $i, "ID");
-				echo "<option value=\"$ID\">$output</option>";
-				$i++;
-			}
-		}
-		echo "</select>";
-	}
-*/
 }
 
 /**
@@ -160,12 +108,10 @@ echo "</span>\n";
 */
 function dropdownValue($table,$myname,$value) {
 	
-	//global $deleted_tables,$template_tables,$dropdowntree_tables,$lang;
 	global $HTMLRel,$cfg_install,$cfg_features;
 
 	$rand=mt_rand();
 echo "<input type='text' id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
-//echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 echo "<script type='text/javascript' >\n";
 echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
@@ -201,85 +147,6 @@ if (!empty($value)&&$value>0)
 else 
 	echo "<select name='$myname'><option value='0'>------</option></select>\n";
 echo "</span>\n";	
-		
-	// Make a select box with preselected values
-/*	$db = new DB;
-
-	if($table == "glpi_dropdown_netpoint") {
-		$query = "select t1.ID as ID, t1.name as netpname, t2.ID as locID from glpi_dropdown_netpoint as t1";
-		$query .= " left join glpi_dropdown_locations as t2 on t1.location = t2.ID";
-		$query .= " order by t1.name,t2.name "; 
-		$result = $db->query($query);
-		// Get Location Array
-		$query2="SELECT ID, completename FROM glpi_dropdown_locations";
-		$result2 = $db->query($query2);
-		$locat=array();
-		if ($db->numrows($result2)>0)
-		while ($a=$db->fetch_array($result2)){
-			$locat[$a["ID"]]=$a["completename"];
-		}
-
-		echo "<select name=\"$myname\">";
-		$i = 0;
-		$number = $db->numrows($result);
-		if ($number > 0) {
-			while ($i < $number) {
-				$output = $db->result($result, $i, "netpname");
-				//$loc = getTreeValueCompleteName("glpi_dropdown_locations",$db->result($result, $i, "locID"));
-				$loc=$locat[$db->result($result, $i, "locID")];
-				$ID = $db->result($result, $i, "ID");
-				echo "<option value=\"$ID\"";
-				if ($ID==$value) echo " selected ";
-				echo ">$output ($loc)</option>";
-				$i++;
-			}
-		}
-		echo "</select>";
-	}	else {
-
-	$where="WHERE '1'='1' ";
-	if (in_array($table,$deleted_tables))
-		$where.="AND deleted='N'";
-	if (in_array($table,$template_tables))
-		$where.="AND is_template='0'";
-		
-
-	if (in_array($table,$dropdowntree_tables))
-		$query = "SELECT ID, completename as name FROM $table $where ORDER BY completename";
-	else $query = "SELECT ID, name FROM $table $where ORDER BY name";
-	
-	$result = $db->query($query);
-	
-	echo "<select name=\"$myname\" size='1'>";
-	if ($table=="glpi_dropdown_kbcategories")
-	echo "<option value=\"0\">--".$lang["knowbase"][12]."--</option>";
-	else echo "<option value=\"0\">-----</option>";
-	
-	$i = 0;
-	$number = $db->numrows($result);
-	if ($number > 0) {
-		while ($i < $number) {
-			$output = $db->result($result, $i, "name");
-			if (empty($output)) $output="&nbsp;";
-			$ID = $db->result($result, $i, "ID");
-			if ($ID === $value) {
-				echo "<option value=\"$ID\" selected>$output</option>";
-				
-			} else {
-				echo "<option value=\"$ID\">$output</option>";
-			}
-			$i++;
-		}
-	}
-	echo "</select>";
-	
-	if ($table=="glpi_enterprises")	{
-	echo getEnterpriseLinks($value);
-	}
-
-	}
-*/
-
 }
 
 
@@ -327,120 +194,6 @@ function dropdownNoValue($table,$myname,$value) {
 	echo "</select>";
 }
 
-/**
-* Make a select box with preselected values for table dropdown_netpoint
-*
-*
-*
-*
-*
-* @param $search
-* @param $myname
-* @param $location
-* @param $value
-* @return nothing (print out an HTML select box)
-*/
-// Plus utilisé
-/*function NetpointLocationSearch($search,$myname,$location,$value='') {
-// Make a select box with preselected values for table dropdown_netpoint
-	$db = new DB;
-	
-	$query = "SELECT t1.ID as ID, t1.name as netpointname, t2.name as locname, t2.ID as locID
-	FROM glpi_dropdown_netpoint AS t1
-	LEFT JOIN glpi_dropdown_locations AS t2
-	ON t1.location = t2.ID
-	WHERE (";
-	if ($location!="")
-		$query.= " t2.ID = '". $location ."' AND "; 
-	$query.=" (t2.name LIKE '%". $search ."%'
-	OR t1.name LIKE '%". $search ."%'))";
-	if ($value!="")
-		$query.=" OR t1.ID = '$value' ";
-	$query.=" ORDER BY t1.name, t2.name";
-	$result = $db->query($query);
-
-	if ($db->numrows($result) == 0) {
-		$query = "SELECT t1.ID as ID, t1.name as netpointname, t2.name as locname, t2.ID as locID
-			FROM glpi_dropdown_netpoint AS t1
-			LEFT JOIN glpi_dropdown_locations AS t2 ON t1.location = t2.ID
-			ORDER BY t1.name, t2.name";
-		$result = $db->query($query);
-	}
-	
-	
-	echo "<select name=\"$myname\" size='1'>";
-	echo "<option value=\"0\">---</option>";
-	
-	if($db->numrows($result) > 0) {
-		while($line = $db->fetch_array($result)) {
-			echo "<option value=\"". $line["ID"] ."\" ";
-			if ($value==$line["ID"]) echo " selected ";
-			echo ">". $line["netpointname"]." (".getTreeValueCompleteName("glpi_dropdown_locations",$line["locID"]) .")</option>";
-		}
-	}
-	echo "</select>";
-}
-*/
-
-/**
-*  Make a select box with preselected values and search option
-*
-*
-*
-* @param $table
-* @param $myname
-* @param $value
-* @param $search
-* @return nothing (print out an HTML select box)
-*
-*
-*/
-// plus utilisé
-/*
-function dropdownValueSearch($table,$myname,$value,$search) {
-	// Make a select box with preselected values
-	global $deleted_tables,$template_tables;
-	$db = new DB;
-
-	$where="";
-	if (in_array($table,$deleted_tables))
-		$where.="AND deleted='N'";
-	if (in_array($table,$template_tables))
-		$where.="AND is_template='0'";	
-
-	$query = "SELECT * FROM $table WHERE name LIKE '%$search%' $where ORDER BY name";
-	$result = $db->query($query);
-
-	
-	$number = $db->numrows($result);
-	if ($number == 0) {
-		$query = "SELECT * FROM $table ORDER BY name";		
-		$result = $db->query($query);
-		$number = $db->numrows($result);
-		}
-
-	echo "<select name=\"$myname\" size='1'>";
-
-	if ($number > 0) {
-		$i = 0;		
-		while ($i < $number) {
-			if ($table=="glpi_software")
-			$output = $db->result($result, $i, "name")." ".$db->result($result, $i, "version");
-			else
-			$output = $db->result($result, $i, "name");
-			$ID = $db->result($result, $i, "ID");
-
-			if ($ID == $value) {
-				echo "<option value=\"$ID\" selected>$output</option>";
-			} else {
-				echo "<option value=\"$ID\">$output</option>";
-			}
-			$i++;
-		}
-	}
-	echo "</select>";
-}
-*/
 
 /**
 * Make a select box with all glpi users where select key = name
@@ -456,14 +209,12 @@ function dropdownValueSearch($table,$myname,$value,$search) {
 */
 // $all =0 -> Nobody $all=1 -> All $all=-1-> nothing
 function dropdownUsers($myname,$value,$all=0) {
-	//global $lang;
 	// Make a select box with all glpi users
 
 	global $HTMLRel,$cfg_install,$cfg_features;
 
 	$rand=mt_rand();
 	echo "<input type='text' id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
-	//echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
@@ -498,35 +249,6 @@ if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 	else 
 		echo "<select name='$myname'><option value='0'>[ Nobody ]</option></select>\n";
 	echo "</span>\n";	
-	
-	
-	
-/*	$db = new DB;
-	$query = "SELECT * FROM glpi_users WHERE (".searchUserbyType("normal").") ORDER BY name";
-	$result = $db->query($query);
-
-	echo "<select name=\"$myname\">";
-	$i = 0;
-	
-	$number = $db->numrows($result);
-	if ($all==0)
-	echo "<option value=\"0\">[ Nobody ]</option>";
-	else if($all==1) echo "<option value=\"0\">[ ".$lang["search"][7]." ]</option>";
-	if ($number > 0) {
-		while ($i < $number) {
-			$output = unhtmlentities($db->result($result, $i, "name"));
-			$ID = unhtmlentities($db->result($result, $i, "ID"));
-			if ($ID == $value) {
-				echo "<option value=\"$ID\" selected>".$output;
-			} else {
-				echo "<option value=\"$ID\">".$output;
-			}
-			$i++;
-			echo "</option>";
-   		}
-	}
-	echo "</select>";
-*/
 }
 
 function dropdownAllUsers($myname,$value) {
@@ -537,7 +259,6 @@ function dropdownAllUsers($myname,$value) {
 
 	$rand=mt_rand();
 	echo "<input type='text' id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
-	//echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
@@ -571,32 +292,7 @@ if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 	else 
 		echo "<select name='$myname'><option value='0'>[ Nobody ]</option></select>\n";
 	echo "</span>\n";	
-	
-	
-/*	$db = new DB;
-	$query = "SELECT * FROM glpi_users ORDER BY name";
-	$result = $db->query($query);
 
-	echo "<select name=\"$myname\">";
-	$i = 0;
-	
-	$number = $db->numrows($result);
-	echo "<option value=\"0\">[ Nobody ]</option>";
-	if ($number > 0) {
-		while ($i < $number) {
-			$output = unhtmlentities($db->result($result, $i, "name"));
-			$ID = unhtmlentities($db->result($result, $i, "ID"));
-			if ($ID == $value) {
-				echo "<option value=\"$ID\" selected>".$output;
-			} else {
-				echo "<option value=\"$ID\">".$output;
-			}
-			$i++;
-			echo "</option>";
-   		}
-	}
-	echo "</select>";
-*/
 }
 
 
@@ -651,96 +347,8 @@ function dropdownAssign($value, $value_type,$myname) {
 	echo "</table>\n";
 	
 	
-/*	$db = new DB;
-	$query = "SELECT * FROM glpi_users WHERE (".searchUserbyType("normal").") ORDER BY name";
-	$result = $db->query($query);
-
-	$query2 = "SELECT * FROM glpi_enterprises ORDER BY name";
-	
-	$result2 = $db->query($query2);
-		
-	
-	echo "<select name=\"$myname\">";
-	$i = 0;
-	
-	$number = $db->numrows($result);
-	echo "<option value=\"15_0\">[ Nobody ]</option>";
-	if ($number > 0) {
-		while ($i < $number) {
-			$output = unhtmlentities($db->result($result, $i, "name"));
-			$ID = unhtmlentities($db->result($result, $i, "ID"));
-			if ($value_type==USER_TYPE&&$ID == $value) {
-				echo "<option value=\"".USER_TYPE."_$ID\" selected>".$output;
-			} else {
-				echo "<option value=\"".USER_TYPE."_$ID\">".$output;
-			}
-			$i++;
-			echo "</option>";
-   		}
-	}
-	echo "<option value=\"15_0\">-------</option>";
-	$i=0;
-	$number2 = $db->numrows($result2);
-	if ($number2 > 0) {
-		while ($i < $number2) {
-			$output = unhtmlentities($db->result($result2, $i, "name"));
-			$ID = unhtmlentities($db->result($result2, $i, "ID"));
-			if ($value_type==ENTERPRISE_TYPE&&$ID == $value) {
-				echo "<option value=\"".ENTERPRISE_TYPE."_$ID\" selected>".$output;
-			} else {
-				echo "<option value=\"".ENTERPRISE_TYPE."_$ID\">".$output;
-			}
-			$i++;
-			echo "</option>";
-   		}
-	}
-	
-	echo "</select>";
-*/
 }
-/**
-* Make a select box with all glpi users where select key = name
-*
-* Think it's unused now.
-*
-*
-* @param $value
-* @param $myname
-* @return nothing (print out an HTML select box)
-*
-*
-*/
-// Plus utilisé
-/*
-function dropdownAllUsersSearch($value, $myname,$search) {
-	// Make a select box with all glpi users
 
-	$db = new DB;
-	$query = "SELECT * FROM glpi_users WHERE name LIKE '%$search%' OR realname LIKE '%$search%' ORDER BY name";
-	$result = $db->query($query);
-
-	echo "<select name=\"$myname\">";
-	$i = 0;
-	
-	$number = $db->numrows($result);
-	echo "<option value=\"0\">[ Nobody ]</option>";
-	if ($number > 0) {
-		while ($i < $number) {
-			$output = unhtmlentities($db->result($result, $i, "name"));
-			$ID = unhtmlentities($db->result($result, $i, "ID"));
-			if ($ID == $value) {
-				echo "<option value=\"$ID\" selected>".$output;
-			} else {
-				echo "<option value=\"$ID\">".$output;
-			}
-			$i++;
-			echo "</option>";
-   		}
-	}
-	echo "</select>";
-
-}
-*/
 /**
 * Make a select box with all glpi users where select key = ID
 *
@@ -754,30 +362,6 @@ function dropdownUsersID($myname,$value) {
 	// Make a select box with all glpi users
 
 	dropdownUsers($myname,$value);
-/*	$db = new DB;
-	$query = "SELECT * FROM glpi_users WHERE (".searchUserbyType("normal").") ORDER BY name";
-	$result = $db->query($query);
-
-	echo "<select name=\"$myname\">";
-	$i = 0;
-	
-	$number = $db->numrows($result);
-	echo "<option value=\"\">[ Nobody ]</option>";
-	if ($number > 0) {
-		while ($i < $number) {
-			$ID = $db->result($result, $i, "ID");
-			$output = unhtmlentities($db->result($result, $i, "name"));
-			if ($ID == $value) {
-				echo "<option value=\"$ID\" selected>".$output;
-			} else {
-				echo "<option value=\"$ID\">".$output;
-			}
-			$i++;
-			echo "</option>";
-   		}
-	}
-	echo "</select>";
-*/	
 }
 
 /**
@@ -796,8 +380,6 @@ function getDropdownName($table,$id) {
 	if (in_array($table,$dropdowntree_tables)){
 		$name=getTreeValueCompleteName($table,$id);
 
-	//} else if ($table=="glpi_enterprises"){
-//		$name=getEnterpriseLinks($id,1);	
 	} else	{
 	
 		$db = new DB;
@@ -831,7 +413,6 @@ function dropdownUsersTracking($myname,$value,$champ) {
 
 	$rand=mt_rand();
 	echo "<input type='text' id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
-	//echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
@@ -866,32 +447,6 @@ if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 		echo "<select name='$myname'><option value='0'>[ ".$lang["search"][7]." ]</option></select>\n";
 	echo "</span>\n";	
 	
-/*	
-	// Make a select box with all glpi users in tracking table
-	global $lang;
-	$db = new DB;
-	$query = "SELECT DISTINCT glpi_tracking.$champ AS CHAMP, glpi_users.name as NAME FROM glpi_tracking, glpi_users WHERE glpi_users.ID=glpi_tracking.$champ AND glpi_tracking.$champ <> '' ORDER BY glpi_tracking.$champ";
-	$result = $db->query($query);
-
-	echo "<select name=\"$myname\">";
-	$i = 0;
-	$number = $db->numrows($result);
-	if ($number > 0) {
-		echo "<option value=\"all\">".$lang["reports"][16]."\n";
-		while ($i < $number) {
-			$name = $db->result($result, $i, "NAME");
-			$val = $db->result($result, $i, "CHAMP");
-			if ($val == $value) {
-				echo "<option value=\"$val\" selected>".$name;
-			} else {
-				echo "<option value=\"$val\">".$name;
-			}
-			$i++;
-			echo "</option>\n";
-   		}
-	}
-	echo "</select>\n";
-*/
 }
 
 /**
@@ -948,7 +503,6 @@ echo "<select name='$name'>\n";
 	echo "<option value='".CONTACT_TYPE."' ".(($device_type==CONTACT_TYPE)?" selected":"").">".$lang["Menu"][22]."</option>\n";
 	echo "<option value='".ENTERPRISE_TYPE."' ".(($device_type==ENTERPRISE_TYPE)?" selected":"").">".$lang["Menu"][23]."</option>\n";
 	echo "<option value='".CONTRACT_TYPE."' ".(($device_type==CONTRACT_TYPE)?" selected":"").">".$lang["Menu"][25]."</option>\n";
-	//echo "<option value='".USER_TYPE."' ".(($device_type==USER_TYPE)?" selected":"").">".$lang["Menu"][14]."</option>";
 	echo "</select>\n";
 
 
@@ -970,7 +524,6 @@ echo "<select name='$name'>\n";
 * @return nothing (print out an HTML select box)
 */
 function dropdownAllItems($myname,$value_type=0,$withenterprise=0,$withcartridge=0,$withconsumable=0,$search='',$value='') {
-//	global $deleted_tables, $template_tables;
 	global $lang,$HTMLRel,$cfg_install;
 	
 	$db=new DB;
@@ -1021,73 +574,6 @@ function dropdownAllItems($myname,$value_type=0,$withenterprise=0,$withcartridge
 	echo "<span id='show_$myname$rand'>&nbsp;</span>\n";
 	echo "</td></tr></table>\n";
 	
-/*	
-	
-	echo "<select name=\"$name\" size='1'>";
-	echo "<option value='0'>-----</option>";
-	$ci=new CommonItem;
-
-	foreach ($items as $type => $table){
-	
-	if ($type==COMPUTER_TYPE){
-		$types=array();
-		$query2="SELECT * from glpi_type_computers";
-		$result2 = $db->query($query2);
-		if ($db->numrows($result2)>0)
-			while ($data=$db->fetch_assoc($result2))
-				$types[$data["ID"]] =$data["name"];
-	}
-		$ci->setType($type);
-		$where="WHERE '1' = '1' ";
-		
-		if (in_array($table,$deleted_tables))
-			$where.= " AND deleted='N' ";
-		
-		if (in_array($table,$template_tables))
-			$where.= " AND is_template='0' ";
-		
-		
-		if (!empty($search))
-		$where.="AND name LIKE '%$search%' ";
-		
-//	if ($table=="glpi_enterprises"||$table=="glpi_cartridge_type")
-//		$where = "WHERE deleted='N' ";
-
-		$ORDER="";
-		if ($type==COMPUTER_TYPE) $ORDER="type, ";
-		$SELECT="";
-		if ($type==COMPUTER_TYPE) $SELECT=",type ";
-		
-		$query = "SELECT ID,name $SELECT FROM $table $where ORDER BY $ORDER name";
-
-		$result = $db->query($query);
-	
-		$i = 0;
-		$number = $db->numrows($result);
-	
-		if ($number > 0) {
-			while ($i < $number) {
-				$ID=$db->result($result, $i, "ID");
-				$name=$db->result($result, $i, "name");
-				
-				if ($type==COMPUTER_TYPE){
-					$t=$db->result($result, $i, "type");
-
-					if (isset($types[$t])) $output=$types[$t]." - ".$name;
-					else $output=$ci->getType()." - ".$name;
-				} else 	$output=$ci->getType()." - ".$name;
-							
-				if (createAllItemsSelectValue($type,$ID) === $value) {
-					echo "<option value=\"".$type."_".$ID."\" selected>$output</option>";
-				} else {
-					echo "<option value=\"".$type."_".$ID."\">$output</option>";
-				}
-				$i++;
-			}
-		}
-	}
-	echo "</select>";
-*/	
 }
 
 /**
@@ -1114,8 +600,8 @@ function dropdownTrackingDeviceType($myname,$value){
 	$rand=mt_rand();
 	
 	echo "<select id='search_$myname$rand' name='$myname'>\n";
-    //if (isAdmin($_SESSION["glpitype"]))
-    echo "<option value='0' ".(($value==0)?" selected":"").">".$lang["help"][30]."</option>\n";
+
+	echo "<option value='0' ".(($value==0)?" selected":"").">".$lang["help"][30]."</option>\n";
 	echo "<option value='".COMPUTER_TYPE."' ".(($value==COMPUTER_TYPE)?" selected":"").">".$lang["help"][25]."</option>\n";
 	echo "<option value='".NETWORKING_TYPE."' ".(($value==NETWORKING_TYPE)?" selected":"").">".$lang["help"][26]."</option>\n";
 	echo "<option value='".PRINTER_TYPE."' ".(($value==PRINTER_TYPE)?" selected":"").">".$lang["help"][27]."</option>\n";
@@ -1170,7 +656,6 @@ function dropdownConnect($type,$myname) {
 
 	$rand=mt_rand();
 echo "<input type='text' id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
-//echo "<img alt='Spinner' id='search_spinner_$myname$rand' src='".$HTMLRel."/pics/actualiser.png' style='display:none;' />";
 
 echo "<script type='text/javascript' >\n";
 echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
@@ -1277,27 +762,6 @@ function dropdownSoftwareToInstall($myname,$withtemplate) {
 	
 	
 	
-	/*
-	$db = new DB;
-	$query = "SELECT * FROM glpi_software WHERE deleted='N' and is_template='0' order by name";
-	$result = $db->query($query);
-	$number = $db->numrows($result);
-
-	$i = 0;
-	echo "<select name=sID size=1>";
-	echo "<option value='-1'>------</option>";
-	while ($i < $number) {
-		$version = $db->result($result, $i, "version");
-		$name = $db->result($result, $i, "name");
-		$sID = $db->result($result, $i, "ID");
-		
-		if (empty($withtemplate)||isGlobalSoftware($sID)||isFreeSoftware($sID))
-		echo  "<option value=$sID>$name (v. $version)</option>";
-		$i++;
-	}
-	echo "</select>";
-
-*/
 }
 
 function autocompletionTextField($myname,$table,$field,$value='',$size=20,$option=''){

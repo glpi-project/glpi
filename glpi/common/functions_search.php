@@ -35,10 +35,6 @@ if (is_array($_GET))
 foreach ($_GET as $key => $val)
 		$_SESSION['search'][$type][$key]=$val;
 
-//if (isset($_SESSION['search'][$type])&&is_array($_SESSION['search'][$type]))
-//foreach ($_SESSION['search'][$type] as $key => $val)
-//if (!isset($tab[$key])) $tab[$key]=$val;
-
 if (!isset($_GET["start"]))
 	if (isset($_SESSION['search'][$type]["start"])) $_GET["start"]=$_SESSION['search'][$type]["start"];
 	else $_GET["start"] = 0;

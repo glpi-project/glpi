@@ -621,12 +621,6 @@ function printHelpDesk ($name,$from_helpdesk) {
 		echo "</td></tr>";
 	}
 
-/*	echo "<tr class='tab_bg_1'>";
-	echo "<td>".$lang["help"][12]." <img src=\"".$cfg_install["root"]."/pics/aide.png\" style='cursor:pointer;' alt=\"help\"onClick=\"window.open('".$cfg_install["root"]."/find_num.php','Help','scrollbars=1,resizable=1,width=600,height=600')\"></td>";
-	echo "<td><input name='computer' size='10' value='$computer'>";
-	echo "</td>";
-	echo "</tr>";
-*/
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$lang["help"][24].": </td>";
 	echo "<td>";

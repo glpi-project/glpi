@@ -76,7 +76,6 @@
 		if ($number > 0) {
 			while ($data =$db->fetch_array($result)) {
 				$output = $data['netpname'];
-				//$loc = getTreeValueCompleteName("glpi_dropdown_locations",$db->result($result, $i, "locID"));
 				$loc=$data['loc'];
 				$ID = $data['ID'];
 				echo "<option value=\"$ID\"";
@@ -94,7 +93,6 @@
 	if (in_array($_POST['table'],$template_tables))
 		$where.=" AND is_template='0' ";
 		
-//print_r($_POST);
 
 $where .=" AND  (ID <> '".$_POST['value']."' ";
 
@@ -114,7 +112,6 @@ $where.=")";
 		$query = "SELECT ID, completename as name FROM ".$_POST['table']." $where ORDER BY completename $LIMIT";
 	else $query = "SELECT ID, name FROM ".$_POST['table']." $where ORDER BY name $LIMIT";
 	
-//echo $query;
 	$result = $db->query($query);
 
 	echo "<select name=\"".$_POST['myname']."\" size='1'>";
@@ -137,19 +134,12 @@ $where.=")";
 			$output = $data['name'];
 			if (empty($output)) $output="&nbsp;";
 			$ID = $data['ID'];
-//			if ($ID === $_POST['value']) {
-//				echo "<option value=\"$ID\" selected>$output</option>";
-//			} else {
 				echo "<option value=\"$ID\">$output</option>";
-//			}
 			$i++;
 		}
 	}
 	echo "</select>";
 	
-//	if ($_POST['table']=="glpi_enterprises")	{
-//	echo getEnterpriseLinks($_POST['value']);
-//	}
 
 	}
 

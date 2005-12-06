@@ -71,278 +71,6 @@ function showDocumentOnglets($target,$withtemplate,$actif){
 	
 }
 
-// Plus utilisé
-/*
-function searchFormDocument($field="",$phrasetype= "",$contains="",$sort= "",$deleted="",$link="") {
-	// Print Search Form
-	
-	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel;
-
-	$option["glpi_docs.ID"]				= $lang["document"][14];
-	$option["glpi_docs.name"]			= $lang["document"][1];
-	$option["glpi_docs.filename"]			= $lang["document"][2];
-	$option["glpi_docs.link"]			= $lang["document"][33];
-	$option["glpi_dropdown_rubdocs.name"]		= $lang["document"][3];
-	$option["glpi_docs.mime"]			= $lang["document"][4];	
-	$option["glpi_docs.comment"]			= $lang["document"][6];
-
-	echo "<form method=get action=\"".$cfg_install["root"]."/documents/documents-search.php\">";
-	echo "<div align='center'><table class='tab_cadre' width='800'>";
-	echo "<tr><th colspan='4'><b>".$lang["search"][0].":</b></th></tr>";
-	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>";
-
-	echo "<table>";
-	
-	for ($i=0;$i<$_SESSION["glpisearchcount"];$i++){
-		echo "<tr><td align='right'>";
-		if ($i==0){
-			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?add_search_count=1'><img src=\"".$HTMLRel."pics/plus.png\" alt='+'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
-			if ($_SESSION["glpisearchcount"]>1)
-			echo "<a href='".$cfg_install["root"]."/computers/computers-search.php?delete_search_count=1'><img src=\"".$HTMLRel."pics/moins.png\" alt='-'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
-		}
-		if ($i>0) {
-			echo "<select name='link[$i]'>";
-			
-			echo "<option value='AND' ";
-			if(is_array($link)&&isset($link[$i]) && $link[$i] == "AND") echo "selected";
-			echo ">AND</option>";
-			
-			echo "<option value='OR' ";
-			if(is_array($link)&&isset($link[$i]) && $link[$i] == "OR") echo "selected";
-			echo ">OR</option>";		
-
-			echo "<option value='AND NOT' ";
-			if(is_array($link)&&isset($link[$i]) && $link[$i] == "AND NOT") echo "selected";
-			echo ">AND NOT</option>";		
-			
-			echo "<option value='OR NOT' ";
-			if(is_array($link)&&isset($link[$i]) && $link[$i] == "OR NOT") echo "selected";
-			echo ">OR NOT</option>";
-			
-			echo "</select>";
-		}
-		
-		echo "<input type='text' size='15' name=\"contains[$i]\" value=\"". (is_array($contains)&&isset($contains[$i])?stripslashes($contains[$i]):"" )."\" >";
-		echo "&nbsp;";
-		echo $lang["search"][10]."&nbsp;";
-	
-		echo "<select name=\"field[$i]\" size='1'>";
-        	echo "<option value='all' ";
-		if(is_array($field)&&isset($field[$i]) && $field[$i] == "all") echo "selected";
-		echo ">".$lang["search"][7]."</option>";
-        	reset($option);
-		foreach ($option as $key => $val) {
-			echo "<option value=\"".$key."\""; 
-			if(is_array($field)&&isset($field[$i]) && $key == $field[$i]) echo "selected";
-			echo ">". $val ."</option>\n";
-		}
-		echo "</select>&nbsp;";
-
-		
-		echo "</td></tr>";
-	}
-	echo "</table>";
-	echo "</td>";
-
-	echo "<td>";
-
-	echo $lang["search"][4];
-	echo "&nbsp;<select name='sort' size='1'>";
-	reset($option);
-	foreach ($option as $key => $val) {
-		echo "<option value=\"".$key."\"";
-		if($key == $sort) echo "selected";
-		echo ">".$val."</option>\n";
-	}
-	echo "</select> ";
-	echo "</td><td><input type='checkbox' name='deleted' ".($deleted=='Y'?" checked ":"").">";
-	echo "<img src=\"".$HTMLRel."pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
-	echo "</td><td width='80' align='center' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
-	echo "</td></tr></table></div></form>";
-}
-*/
-// Plus utilisé
-/*
-function showDocumentList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$deleted,$link) {
-
-	// Lists Document
-
-	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
-
-	$db = new DB;
-
-	$where ="";
-	
-	foreach ($field as $k => $f)
-	if ($k<$_SESSION["glpisearchcount"])
-	if ($contains[$k]==""){
-		if ($k>0) $where.=" ".$link[$k]." ";
-		$where.=" ('1'='1') ";
-		}
-	else {
-		if ($k>0) $where.=" ".$link[$k]." ";
-		$where.="( ";
-		// Build query
-		if($f == "all") {
-			$fields = $db->list_fields("glpi_docs");
-			$columns = $db->num_fields($fields);
-			
-			for ($i = 0; $i < $columns; $i++) {
-				if($i != 0) {
-					$where .= " OR ";
-				}
-				$coco = $db->field_name($fields, $i);
-				$where .= "glpi_docs.".$coco . " LIKE '%".$contains[$k]."%'";
-			}
-		}
-		else {
-			if ($phrasetype == "contains") {
-				$where .= "($f LIKE '%".$contains[$k]."%')";
-			}
-			else {
-				$where .= "($f LIKE '".$contains[$k]."')";
-			}
-		}
-	$where.=" )";
-	}
-
-	if (!$start) {
-		$start = 0;
-	}
-	if (!$order) {
-		$order = "ASC";
-	}
-	
-	$query = "SELECT glpi_docs.ID as ID FROM glpi_docs LEFT JOIN glpi_dropdown_rubdocs ON glpi_docs.rubrique=glpi_dropdown_rubdocs.ID ";
-	
-	$query.= " where ";
-	if (!empty($where)) $query .= " $where AND ";
-	$query .= " glpi_docs.deleted='$deleted'  ORDER BY $sort $order";
-	
-	// Get it from database	
-	if ($result = $db->query($query)) {
-		$numrows = $db->numrows($result);
-
-		// Limit the result, if no limit applies, use prior result
-		if ($numrows>$cfg_features["list_limit"]) {
-			$query_limit = $query." LIMIT $start,".$cfg_features["list_limit"]." ";
-			$result_limit = $db->query($query_limit);
-			$numrows_limit = $db->numrows($result_limit);
-		} else {
-			$numrows_limit = $numrows;
-			$result_limit = $result;
-		}
-
-		if ($numrows_limit>0) {
-			// Pager
-			$parameters="sort=$sort&amp;order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
-			printPager($start,$numrows,$target,$parameters);
-
-			// Produce headline
-			echo "<div align='center'><table class='tab_cadre' width='750'><tr>";
-
-			// Name
-			echo "<th>";
-			if ($sort=="glpi_docs.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?sort=glpi_docs.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
-			echo $lang["document"][1]."</a></th>";
-
-			
-			// filename
-			echo "<th>";
-			if ($sort=="glpi_docs.filename") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?sort=glpi_docs.filename&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
-			echo $lang["document"][2]."</a></th>";
-
-			// link
-			echo "<th>";
-			if ($sort=="glpi_docs.link") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?sort=glpi_docs.link&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
-			echo $lang["document"][33]."</a></th>";
-			
-			// num
-			echo "<th>";
-			if ($sort=="glpi_dropdown_rubdocs.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?sort=glpi_dropdown_rubdocs.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
-			echo $lang["document"][3]."</a></th>";
-	
-			// mime
-			echo "<th>";
-			if ($sort=="glpi_docs.mime") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?sort=glpi_docs.mime&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
-			echo $lang["document"][4]."</a></th>";
-
-			// comment		
-			echo "<th>";
-			if ($sort=="glpi_docs.comment") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?sort=glpi_docs.comment&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
-			echo $lang["document"][6]."</a></th>";
-
-
-			echo "</tr>";
-
-			for ($i=0; $i < $numrows_limit; $i++) {
-				$ID = $db->result($result_limit, $i, "ID");
-
-				$ct = new Document;
-				$ct->getfromDB($ID);
-
-				echo "<tr class='tab_bg_2' align='center'>";
-				echo "<td>";
-				echo "<a href=\"".$cfg_install["root"]."/documents/documents-info-form.php?ID=$ID\"><b>";
-				echo $ct->fields["name"]." (".$ct->fields["ID"].")";
-				echo "</b></a></td>";
-
-				echo "<td align='left'>";
-				echo getDocumentLink($ct->fields["filename"]);
-				echo "</td>";
-				echo "<td>";
-				if (!empty($ct->fields["link"]))
-					echo "<a href=\"".$ct->fields["link"]."\">".$ct->fields["link"]."</a>";
-				else echo "&nbsp;";
-				echo "</td>";
-				echo "<td>".getDropdownName("glpi_dropdown_rubdocs",$ct->fields["rubrique"])."</td>";
-				echo "<td>".$ct->fields["mime"]."</td>";
-				echo "<td>".$ct->fields["comment"]."</td>";				
-			
-				echo "</tr>";
-			}
-
-			// Close Table
-			echo "</table></div>";
-
-			// Pager
-			echo "<br>";
-//			$parameters="sort=$sort&amp;order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
-			printPager($start,$numrows,$target,$parameters);
-
-		} else {
-			echo "<div align='center'><b>".$lang["document"][23]."</b></div>";
-			
-		}
-	}
-}
-*/
 
 function showDocumentForm ($target,$ID) {
 	// Show Document or blank form
@@ -589,7 +317,6 @@ function addDocument($input) {
 			$con->fields[$key] = $input[$key];
 		}
 	}
-//	print_r($con);
 	return $con->addToDB();
 }
 
@@ -614,7 +341,7 @@ function showDeviceDocument($instID,$search='') {
 
     $db = new DB;
 	$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by device_type, FK_device";
-//echo $query;	
+
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 	$i = 0;
@@ -642,11 +369,9 @@ function showDeviceDocument($instID,$search='') {
 	
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 	
-//	echo "<div class='software-instal'>";
 	echo "<input type='hidden' name='conID' value='$instID'>";
 		dropdownAllItems("item",0,1,1,1);
 	echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
-//	echo "</form>";
 	echo "</td>";
 	echo "<td align='center' class='tab_bg_2'>";
 	echo "</td></tr>";

@@ -55,7 +55,6 @@
 	if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
 	
 	$query = "SELECT DISTINCT glpi_users.ID, glpi_users.name, glpi_users.realname FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.".$_POST['champ']." AND glpi_tracking.".$_POST['champ']." <> '') WHERE $where ORDER BY glpi_users.realname,glpi_users.name $LIMIT";
-	//echo $query;
 	$result = $db->query($query);
 
 	echo "<select name=\"".$_POST['myname']."\">";
@@ -77,10 +76,10 @@
 	
 	if ($number > 0) {
 		while ($i < $number) {
-			$output = unhtmlentities($db->result($result, $i, "name"));
-			$realname=unhtmlentities($db->result($result, $i, "realname"));
+			$output = $db->result($result, $i, "name");
+			$realname=$db->result($result, $i, "realname");
 			if (!empty($realname)) $output = $realname;
-			$ID = unhtmlentities($db->result($result, $i, "ID"));
+			$ID = $db->result($result, $i, "ID");
 			if ($ID == $value) {
 				echo "<option value=\"$ID\" selected>".$output;
 			} else {

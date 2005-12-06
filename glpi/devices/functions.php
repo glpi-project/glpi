@@ -242,26 +242,17 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 		}
 		else {
 
-//			echo "<form name='form_update_device_$compDevID' action=\"\" method=\"post\" >";
 			echo "<td align='right' colspan='$colspan'>".$specificity_label.":&nbsp;<input type='text' name='devicevalue_$compDevID' value=\"".$specif."\" size='$specificity_size' ></td>";
 			echo "<td align='center'>";
-//			echo "<img src='".$HTMLRel."pics/actualiser.png' class='calendrier' alt='".$lang["buttons"][7]."' title='".$lang["buttons"][7]."'
-//			onclick='form_update_device_$compDevID.submit()'>";
-//			echo "<input type=\"hidden\" name=\"update_device\" value=\"".$compDevID."\" >";
-//			echo "</form>";
 
 			echo "<input type='image' name='update_device' value='$compDevID' src='".$HTMLRel."pics/actualiser.png' class='calendrier'>";
 			echo "</td>";
 
 			echo "<td>";
-//			echo "<form name='form_unlink_device_$compDevID' action=\"\" method=\"post\" >";
-//			echo "<img class='calendrier' src='".$HTMLRel."pics/delete2.png'  onclick='form_unlink_device_$compDevID.submit()' title ='".$lang["devices"][11]."' alt='".$lang["devices"][11]."'";
-//			echo "<input type=\"hidden\" name=\"unlink_device\" value=\"".$compDevID."\" >";
 
 			echo "<input type='image' name='unlink_device_$compDevID' value='$compDevID' src='".$HTMLRel."pics/delete2.png' class='calendrier'>";
 			echo "</td>";
 
-//			echo "</form>";
 		}
 		
 	} else {
@@ -269,15 +260,11 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 		if(!empty($withtemplate) && $withtemplate == 2) {
   		  echo "<td>&nbsp;</td>";
   		 } else {
-//  		 echo "<form name='form_unlink_device_$compDevID' action=\"\" method=\"post\" >";
   		echo "<td>";
-//  		echo "<img class='calendrier' src='".$HTMLRel."pics/delete2.png'  onclick='form_unlink_device_$compDevID.submit()' title ='".$lang["devices"][11]."' alt='".$lang["devices"][11]."'";
-//  		 echo "<input type=\"hidden\" name=\"unlink_device\" value=\"".$compDevID."\" >";
 
 			echo "<input type='image' name='unlink_device_$compDevID' value='$compDevID' src='".$HTMLRel."pics/delete2.png' class='calendrier'>";
 
   		echo "</td>";
-//  		 echo "</form>";
   		 }
   	}
 	echo "</tr>";
@@ -342,7 +329,6 @@ function device_selecter($target,$cID,$withtemplate='') {
 		echo "<option value=\"".CASE_DEVICE."\">".getDictDeviceLabel(CASE_DEVICE)."</option>";
 		echo "<option value=\"".POWER_DEVICE."\">".getDictDeviceLabel(POWER_DEVICE)."</option>";
 		echo "</select>";
-		//echo "<td colspan='2' align='center'>";
 		echo "<input type=\"hidden\" name=\"withtemplate\" value=\"".$withtemplate."\" >";
 		echo "<input type=\"hidden\" name=\"connect_device\" value=\"".true."\" >";
 		echo "<input type=\"hidden\" name=\"cID\" value=\"".$cID."\" >";
@@ -469,7 +455,7 @@ function showDevicesList($device_type,$target) {
 	$query = "select DISTINCT device.ID from ".getDeviceTable($device_type)." as device ";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = device.FK_glpi_enterprise ) ";
 	$query .= " ORDER by device.designation ASC";
-	//echo $query;
+
 // Get it from database	
 	if ($result = $db->query($query)) {
 		$numrows = $db->numrows($result);
@@ -748,7 +734,6 @@ function showDevicesForm ($target,$ID,$device_type) {
 		break;	
 
 	}
-	//echo "</td></tr>";
 	echo "</table>";
 	echo "</td>\n";	
 	echo "</tr>";
@@ -771,16 +756,11 @@ function showDevicesForm ($target,$ID,$device_type) {
 		echo "<input type='hidden' name='device_type' value=\"$device_type\">\n";
 		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
 		echo "</td>";
-		//echo "</form>\n\n";
-		//echo "<form action=\"$target\" method='post'>\n";
 		echo "<td class='tab_bg_2' valign='top' align='center'>\n";
-//		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-//		echo "<input type='hidden' name='device_type' value=\"$device_type\">\n";
 		echo "<div align='center'>";
 		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 		echo "</div>";
 		echo "</td>";
-		//echo "</form>";
 		echo "</tr>";
 	}
 	else {
@@ -789,7 +769,6 @@ function showDevicesForm ($target,$ID,$device_type) {
 		echo "<input type='hidden' name='device_type' value=\"$device_type\">\n";
 		echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 		echo "</td>";
-		//echo "</form>\n\n";	
 	}
 	echo "</table></form></div>";
 }

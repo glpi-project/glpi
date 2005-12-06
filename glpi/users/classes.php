@@ -58,7 +58,7 @@ class User {
 	
 	function getFromDB($name) {
 		$db = new DB;
-		$query = "SELECT * FROM glpi_users WHERE (name = '".unhtmlentities($name)."')";
+		$query = "SELECT * FROM glpi_users WHERE (name = '".$name."')";
 		if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=1) return false;
 		$data = $db->fetch_assoc($result);
@@ -67,7 +67,7 @@ class User {
 			}
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
-				if ($key=="name") $this->fields[$key] = unhtmlentities($val);
+				if ($key=="name") $this->fields[$key] = $val;
 			}
 			return true;
 		}
@@ -91,7 +91,7 @@ class User {
 			}
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
-				if ($key=="name") $this->fields[$key] = unhtmlentities($val);
+				if ($key=="name") $this->fields[$key] = $val;
 			}
 			return true;
 		}

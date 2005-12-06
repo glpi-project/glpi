@@ -104,7 +104,7 @@ function compDpd2Device($devtype,$devname,$dpdname,$compDpdName,$specif='') {
 	$db = new DB;
 	$result = $db->query($query);
 	while($lndropd = $db->fetch_array($result)) {
-		$query2 = "insert into glpi_device_".$devname." (designation) values ('".addslashes(unhtmlentities($lndropd["name"]))."')";
+		$query2 = "insert into glpi_device_".$devname." (designation) values ('".addslashes($lndropd["name"])."')";
 		$db->query($query2) or die("unable to transfer ".$dpdname." to ".$devname."  ".$lang["update"][90].$db->error());
 		$devid = $db->insert_id();
 		$query3 = "select * from glpi_computers where ".$compDpdName." = '".$lndropd["ID"]."'";
@@ -114,7 +114,7 @@ function compDpd2Device($devtype,$devname,$dpdname,$compDpdName,$specif='') {
 			if(!empty($specif)) {
 				$queryspecif = "SELECT ".$specif." FROM glpi_computers WHERE ID = '".$lncomp["ID"]."'";
 				if($resultspecif = $db->query($queryspecif)) {
-					$query4 = "insert into glpi_computer_device (specificity, device_type, FK_device, FK_computers) values ('".unhtmlentities($db->result($resultspecif,0,$specif))."','$devtype','".$devid."','".$lncomp["ID"]."')";
+					$query4 = "insert into glpi_computer_device (specificity, device_type, FK_device, FK_computers) values ('".$db->result($resultspecif,0,$specif)."','$devtype','".$devid."','".$lncomp["ID"]."')";
 				}
 				
 			}
@@ -309,13 +309,13 @@ function location_create_new($split_char,$add_first){
 	
 		for ($i=0;$i<count($splitter)-1;$i++){
 			// Entrée existe deja ??
-			$query_search="select ID from glpi_dropdown_locations_new WHERE name='".addslashes(unhtmlentities($splitter[$i]))."'  AND parentID='".$up_ID."'";
+			$query_search="select ID from glpi_dropdown_locations_new WHERE name='".addslashes($splitter[$i])."'  AND parentID='".$up_ID."'";
 //				echo $query_search."<br>";
 			$result_search=$db->query($query_search);
 			if ($db->numrows($result_search)==1){	// Found
 				$up_ID=$db->result($result_search,0,"ID");
 			} else { // Not FOUND -> INSERT
-				$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$new_ID','".addslashes(unhtmlentities($splitter[$i]))."','$up_ID')";
+				$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$new_ID','".addslashes($splitter[$i])."','$up_ID')";
 //					echo $query_insert."<br>";
 				$result_insert=$db->query($query_insert);
 				$up_ID=$new_ID++;
@@ -324,7 +324,7 @@ function location_create_new($split_char,$add_first){
 		}
 
 		// Ajout du dernier
-		$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('".$data["ID"]."','".addslashes(unhtmlentities($splitter[count($splitter)-1]))."','$up_ID')";
+		$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('".$data["ID"]."','".addslashes($splitter[count($splitter)-1])."','$up_ID')";
 //			echo $query_insert."<br>";
 
 		$result_insert=$db->query($query_insert);
@@ -1211,7 +1211,6 @@ if(!FieldExists("glpi_computers","is_template")) {
 	
 	
 	while($line = $db->fetch_array($result)) {
-		$line=unhtmlentities_deep($line);
 		$line=addslashes_deep($line);
 		$query2 = "INSERT INTO glpi_computers (`ID`,`name`, `osver`, `processor_speed`, `serial`, `otherserial`, `ram`, `hdspace`, `contact`, `contact_num`, `comments`, `achat_date`, `date_fin_garantie`, `maintenance`, `os`, `hdtype`, `sndcard`, `moboard`, `gfxcard`, `network`, `ramtype`, `location`, `processor`, `type`, `is_template`, `tplname`)";
 		
@@ -2351,12 +2350,12 @@ if (TableExists("glpi_prefs")){
 		$users = array();
 		$i = 0;
 		while ($line = $db->fetch_array($result2)) {
-			$prefs[$i] = unhtmlentities($line["username"]);
+			$prefs[$i] = $line["username"];
 			$i++;
 		}
 		while($line = $db->fetch_array($result)) {
-			if(!in_array(unhtmlentities($line["name"]),$prefs)) {
-				$query_insert =  "INSERT INTO `glpi_prefs` (`username` , `tracking_order` , `language`) VALUES ('".unhtmlentities($line["name"])."', 'no', 'french')";
+			if(!in_array($line["name"],$prefs)) {
+				$query_insert =  "INSERT INTO `glpi_prefs` (`username` , `tracking_order` , `language`) VALUES ('".$line["name"]."', 'no', 'french')";
 				$db->query($query_insert) or die("glpi maj prefs ".$lang["update"][90].$db->error()); 
 			}
 		}
@@ -2429,7 +2428,7 @@ if(!TableExists("glpi_dropdown_state")) {
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.51 add state field ".$lang["update"][90].$db->error());
 
-	$query="INSERT INTO `glpi_dropdown_state` (`ID` , `name`) VALUES ('', '".addslashes(unhtmlentities($lang["repair"][0]))."');";
+	$query="INSERT INTO `glpi_dropdown_state` (`ID` , `name`) VALUES ('', '".addslashes($lang["repair"][0])."');";
 	$db->query($query) or die("0.51 add state repair item ".$lang["update"][90].$db->error());	
 }
 

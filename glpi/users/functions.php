@@ -237,230 +237,6 @@ function showUserform($target,$name) {
 }
 
 
-// Plus utilisé
-/*
-function searchFormUsers() {
-	// Users Search Form
-	
-	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
-
-	$option["glpi_users.name"]			= $lang["setup"][18];
-	$option["glpi_users.realname"]			= $lang["setup"][13];
-	$option["glpi_users.type"]			= $lang["setup"][20];
-	$option["glpi_users.email"]			= $lang["setup"][14];
-	$option["glpi_users.phone"]			= $lang["setup"][15];
-	$option["glpi_dropdown_locations.name"]		= $lang["setup"][3];
-	
-
-	echo "<form method='get' action=\"".$cfg_install["root"]."/users/users-search.php\">";
-	echo "<div align='center'><table  width='750' class='tab_cadre'>";
-	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
-	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>";
-	echo "<select name=\"field\" size='1'>";
-	echo "<option value='all' ";
-	if($_GET["field"] == "all") echo "selected";
-	echo ">".$lang["search"][7]."</option>";
-
-	reset($option);
-	foreach ($option as $key => $val) {
-		$selected="";
-		if ($_GET["field"]==$key) $selected="selected";
-		echo "<option value='$key' $selected>$val\n";
-	}
-	echo "</select>&nbsp;";
-	echo $lang["search"][1];
-	echo "&nbsp;<select name='phrasetype' size='1'>";
-	echo "<option value='contains' ";
-	if($_GET["phrasetype"] == "contains") echo "selected";
-	echo ">".$lang["search"][2]."</option>";
-	echo "<option value='exact' ";
-	if($_GET["phrasetype"] == "exact") echo "selected";
-	echo ">".$lang["search"][3]."</option>";
-	echo "</select>";
-	echo "<input type='text' size='12' name=\"contains\" value=\"".$_GET["contains"]."\">";
-	echo "&nbsp;";
-	echo $lang["search"][4];
-	echo "&nbsp;<select name='sort' size='1'>";
-	reset($option);
-	foreach ($option as $key => $val) {
-		$selected="";
-		if ($_GET["sort"]==$key) $selected="selected";
-
-		echo "<option value=$key $selected>$val\n";
-	}
-	echo "</select> ";
-	echo "</td><td width='80' align='center' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
-	echo "</td></tr></table></div></form>";
-}
-*/
-// Plus utilisé
-/*
-function showUsersList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start) {
-
-	// Lists Users
-
-	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
-
-	$db = new DB;
-
-	// Build query
-	if($field=="all") {
-		$where = " (";
-		$fields = $db->list_fields("glpi_users");
-		$columns = $db->num_fields($fields);
-		
-		for ($i = 0; $i < $columns; $i++) {
-			if($i != 0) {
-				$where .= " OR ";
-			}
-			$coco = $db->field_name($fields, $i);
-			if($coco == "location") {
-				$where .= " glpi_dropdown_locations.name LIKE '%".$contains."%' and glpi_users.name != 'Helpdesk'";
-			}
-			else {
-   				$where .= "glpi_users.".$coco . " LIKE '%".$contains."%' and glpi_users.name != 'Helpdesk'";
-			}
-		}
-		$where .= ")";
-	}
-	else {
-		if ($phrasetype == "contains") {
-			$where = "($field LIKE '%".$contains."%' and glpi_users.name != 'Helpdesk')";
-		}
-		else {
-			$where = "($field LIKE '".$contains."' and glpi_users.name != 'Helpdesk')";
-		}
-	}
-	
-	if (!$start) {
-		$start = 0;
-	}
-	if (!$order) {
-		$order = "ASC";
-	}
-	$query = "SELECT * FROM glpi_users  LEFT JOIN glpi_dropdown_locations on glpi_users.location=glpi_dropdown_locations.ID ";
-	$query.=" WHERE $where ORDER BY $sort $order";
-
-		// Get it from database	
-	if ($result = $db->query($query)) {
-		$numrows= $db->numrows($result);
-
-		// Limit the result, if no limit applies, use prior result
-		if ($numrows>$cfg_features["list_limit"]) {
-			$query_limit = $query." LIMIT $start,".$cfg_features["list_limit"]." ";
-			$result_limit = $db->query($query_limit);
-			$numrows_limit = $db->numrows($result_limit);
-		} else {
-			$numrows_limit = $numrows;
-			$result_limit = $result;
-		}
-		
-
-		if ($numrows_limit>0) {
-			// Pager
-			$parameters="field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=$sort&amp;order=$order";
-			printPager($start,$numrows,$target,$parameters);
-
-			// Produce headline
-			echo "<center><table  class='tab_cadre'><tr>";
-
-			// Name
-			echo "<th>";
-			if ($sort=="glpi_users.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_users.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
-			echo $lang["setup"][12]."</a></th>";
-			
-			// realname		
-			echo "<th>";
-			if ($sort=="glpi_users.realname") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_users.realname&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
-			echo $lang["setup"][13]."</a></th>";
-
-			// type
-			echo "<th>";
-			if ($sort=="glpi_users.type") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_users.type&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
-			echo $lang["setup"][17]."</a></th>";			
-			
-			// email
-			echo "<th>";
-			if ($sort=="glpi_users.email") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_users.email&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
-			echo $lang["setup"][14]."</a></th>";
-
-						
-			// Phone
-			echo "<th>";
-			if ($sort=="glpi_users.phone") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_users.phone&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
-			echo $lang["setup"][15]."</a></th>";
-
-			
-						
-			// Location			
-			echo "<th>";
-			if ($sort=="glpi_dropdown_locations.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_dropdown_locations.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
-			echo $lang["setup"][16]."</a></th></tr>";
-
-
-
-			
-
-			for ($i=0; $i < $numrows_limit; $i++) {
-			$name= $db->result($result_limit, $i, "name");
-				
-				$user = new User($name);
-				$user->getFromDB($name);
-							
-				echo "<tr class='tab_bg_2'>";
-				echo "<td><b>";
-				echo "<a href=\"".$cfg_install["root"]."/users/users-info-form.php?name=".$user->fields["name"] ."\">";
-				echo $user->fields["name"]." (".$user->fields["ID"].")";
-				echo "</a></b></td>";
-				echo "<td>".$user->fields["realname"] ."</td>";
-				echo "<td>". $user->fields["type"] ."</td>";
-				echo "<td>".$user->fields["email"]."</td>";
-				echo "<td>".$user->fields["phone"]."</td>";
-				echo "<td>". getDropdownName("glpi_dropdown_locations",$user->fields["location"]) ."</td>";
-				echo "</tr>";
-			}
-
-			// Close Table
-			echo "</table></center>";
-
-			// Pager
-			echo "<br>";
-			printPager($start,$numrows,$target,$parameters);
-
-		} else {
-			echo "<div align='center'><b>".$lang["setup"][66]."</b></div>";
-			echo "<hr noshade>";
-			
-		}
-	}
-}
-*/
 
 
 
@@ -508,10 +284,7 @@ global $cfg_install;
 function updateUser($input) {
 
 	//only admin and superadmin can update some user
-/*	if(!isAdmin($_SESSION["glpitype"])) {
-		return false;
-	}
-*/
+
 	// Update User in the database
 	$user = new User($input["name"]);
 	$user->getFromDB($input["name"]); 
@@ -607,7 +380,7 @@ echo "</table></div>";}
 function updateSort($input) {
 
 	$db = new DB;
-	//print_r($input);
+
 	$query = "UPDATE glpi_users SET tracking_order = '".$input["tracking_order"]."' WHERE (ID = '".$_SESSION["glpiID"]."')";
 	if ($result=$db->query($query)) {
 		$_SESSION["tracking_order"] = $input["tracking_order"];
@@ -628,17 +401,6 @@ function showLangSelect($target) {
 	echo "<tr><th colspan='2'>".$lang["setup"][41].":</th></tr>";
 	echo "<tr><td width='100%' align='center' class='tab_bg_1'>";
 	echo "<select name='language'>";
-	/*
-	$i=0;
-	while ($i < count($cfg_install["languages"])) {
-		echo "<option value=\"".$cfg_install["languages"][$i]."\"";
-		if ($l==$cfg_install["languages"][$i]) { 
-			echo " selected"; 
-		}
-		echo ">".$cfg_install["languages"][$i];
-		$i++;
-	}
-	*/
 
 	while (list($cle)=each($cfg_install["languages"])){
 		echo "<option value=\"".$cle."\"";

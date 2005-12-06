@@ -76,8 +76,6 @@
 		$LEFTJOINCONNECT="left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = '".$_POST['idtable']."')";
 	$query = "SELECT DISTINCT $table.ID as ID,$table.name as name from $table $LEFTJOINCONNECT WHERE $CONNECT_SEARCH $where order by name ASC";
 
-//echo $query;
-		
 		$result = $db->query($query);
 		echo "<select name=\"".$_POST['myname']."\" size='1'>";
 		
