@@ -594,12 +594,13 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		}
 		
 		echo "<form name='form' method='post' action=\"$target\">";
+		if(strcmp($template,"newtemplate") === 0) {
+			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\">";
+		}
+
 		echo "<div align='center'>";
 		echo "<table width='800' class='tab_cadre' >";
 		
-		if(strcmp($template,"newtemplate") === 0) {
-			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
-		}
 		
 		echo "<tr><th colspan ='2' align='center' >";
 		if(!$template) {
@@ -622,7 +623,6 @@ function showComputerForm($target,$ID,$withtemplate='') {
 						
 		echo "<td>".$lang["computers"][16].":	</td><td>";
 		autocompletionTextField("contact","glpi_computers","contact",$comp->fields["contact"],20);
-		echo "</td>";
 		
 		echo "</td></tr>";
 		
