@@ -543,9 +543,9 @@ function showAssociatedContact($instID) {
 	echo "<table width='300' class='tab_cadre'>";
 	
 	echo "<tr class='tab_bg_1'><th colspan='2'>".$lang["financial"][33]."</tr><tr><td class='tab_bg_2' align='center'>";
-	echo "<span class='software-instal'><input type='hidden' name='eID' value='$instID'>";
+	echo "<input type='hidden' name='eID' value='$instID'>";
 		dropdown("glpi_contacts","cID");
-	echo "</span></td><td align='center' class='tab_bg_2'>";
+	echo "</td><td align='center' class='tab_bg_2'>";
 	echo "<input type='submit' name='addcontact' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</td></tr>";
 	

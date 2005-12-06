@@ -549,7 +549,7 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 		echo "</td></tr>\n";
 		// Initial count pages ?
 		echo "<tr><td>".$lang["printers"][30].":</td><td>\n";
-		autocompletionTextField("initial_pages","glpi_printers","initial_pages",$printer->fields["initial_pages"],20);		echo "</td></tr>\n";
+		autocompletionTextField("initial_pages","glpi_printers","initial_pages",$printer->fields["initial_pages"],20);		
 		echo "</td></tr>\n";
 
 	echo "</table>\n";
