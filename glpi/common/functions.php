@@ -399,11 +399,13 @@ function loadLanguage() {
 function logEvent ($item, $itemtype, $level, $service, $event) {
 	// Logs the event if level is above or equal to setting from configuration
 
-	GLOBAL $cfg_features;
+	GLOBAL $cfg_features, $lang;
 	if ($level <= $cfg_features["event_loglevel"]) { 
 		$db = new DB;	
-		$query = "INSERT INTO glpi_event_log VALUES (NULL, $item, '$itemtype', NOW(), '$service', $level, '$event')";
+		 $query = "INSERT INTO glpi_event_log VALUES (NULL, '".addslashes($item)."', '".addslashes($itemtype)."', NOW(), '".addslashes($service)."', '".addslashes($level)."', '".addslashes($event)."')";
+
 		$result = $db->query($query);    
+	
 	}
 }
 

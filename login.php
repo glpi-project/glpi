@@ -196,7 +196,7 @@ if ( ! $auth_succeded ) {
 	echo "<div align='center'><b>".$identificat->getErr().".</b><br><br>";
 	echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">".$lang["login"][1]."</a></b></div>";
 	nullFooter();
-	logevent(-1, "system", 1, "login", "failed login: ".$_POST['login_name']);
+	logevent(-1, $lang["log"][1], 1, $lang["log"][55], $lang["log"][41]." : ".$_POST['login_name']);
 	exit;
 }
 
@@ -210,7 +210,7 @@ $ip = (getenv("HTTP_X_FORWARDED_FOR")
 
 
 // Log Event
-logEvent("-1", "system", 3, "login", $_POST['login_name']." logged in from $ip.");
+logEvent("-1", "system", 3, "login", $_POST['login_name']." ".$lang["log"][40]." : ".$ip);
 
 // Expire Event Log
 if ($cfg_features["expire_events"]>0){
