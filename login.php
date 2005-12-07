@@ -213,10 +213,12 @@ $ip = (getenv("HTTP_X_FORWARDED_FOR")
 logEvent("-1", "system", 3, "login", $_POST['login_name']." logged in from $ip.");
 
 // Expire Event Log
-$secs =  $cfg_features["expire_events"]*86400;
-$db_exp = new DB;
-$query_exp = "DELETE FROM glpi_event_log WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
-$result_exp = $db_exp->query($query_exp);
+if ($cfg_features["expire_events"]>0){
+	$secs =  $cfg_features["expire_events"]*86400;
+	$db_exp = new DB;
+	$query_exp = "DELETE FROM glpi_event_log WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
+	$result_exp = $db_exp->query($query_exp);
+} 
 
 // Redirect management
 $REDIRECT="";
