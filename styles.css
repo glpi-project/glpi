@@ -140,9 +140,6 @@ input.submit:hover {
 	vertical-align:bottom;
 	}
 
-th  a:link {color: #CC6633;}
-
-th  a:hover {color: #999966;}
   
   td { font-size: 11px;}
 
@@ -160,7 +157,7 @@ th  a:hover {color: #999966;}
 
 
 .tab_cadrehov tr:hover {
-	color: #333333;
+
 	background-color: #FFF4DF;
 }
 
