@@ -71,15 +71,15 @@
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('item_type$rand', 1, \n";
 	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('show_$myname$rand','".$cfg_install["root"]."/ajax/dropdownInstallSoftware.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
-	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
+	echo "      	new Ajax.Updater('show_".$_POST["myname"]."$rand','".$cfg_install["root"]."/ajax/dropdownInstallSoftware.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
+	echo "            {Element.hide('search_spinner_".$_POST["myname"]."$rand');}, \n";
 	echo "           onLoading:function(request)\n";
-	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'sID='+value+'&myname=$myname'\n";
+	echo "            {Element.show('search_spinner_".$_POST["myname"]."$rand');},\n";
+	echo "           method:'post', parameters:'sID='+value+'&myname=".$_POST["myname"]."'\n";
 	echo "})})\n";
 	echo "</script>\n";
 	
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
-	echo "<span id='show_$myname$rand'>&nbsp;</span>\n";	
+	echo "<div id='search_spinner_".$_POST["myname"]."$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+	echo "<span id='show_".$_POST["myname"]."$rand'>&nbsp;</span>\n";	
 		
 ?>
