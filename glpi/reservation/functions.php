@@ -163,7 +163,7 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 			printPager($start,$numrows,$target,$parameters);
 
 			// Produce headline
-			echo "<div align='center'><table  class='tab_cadre'><tr>";
+			echo "<div align='center'><table  class='tab_cadrehov'><tr>";
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_reservation_item.ID") {

@@ -164,7 +164,7 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 			printPager($start,$numrows,$target,$parameters);
 
 			// Produce headline
-			echo "<div align='center'><table  class='tab_cadre'><tr>";
+			echo "<div align='center'><table  class='tab_cadrehov'><tr>";
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_state_item.ID") {
@@ -293,7 +293,7 @@ $db->query($query);
 		if ($numrows>0){
 
 			// Produce headline
-			echo "<div align='center'><table  class='tab_cadre'><tr>";
+			echo "<div align='center'><table  class='tab_cadrehov'><tr>";
 
 			// Type			
 			echo "<th>";

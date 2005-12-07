@@ -108,7 +108,7 @@ function showCentralJobList($target,$start) {
 
 	if ($number > 0) {
 
-		echo "<div align='center'><br><table class='tab_cadre' width='400'>";
+		echo "<div align='center'><br><table class='tab_cadrehov' width='400'>";
 		
 		echo "<tr><th colspan='5'><b>".$lang["central"][9]."</b></th>";
 		echo "<tr><th></th>";
@@ -1011,7 +1011,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 			}
 			
 									
-			echo "<div align='center'><table border='0' class='tab_cadre' width='90%'>";
+			echo "<div align='center'><table border='0' class='tab_cadrehov' width='90%'>";
 
 			commonTrackingListHeader();
 
