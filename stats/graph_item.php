@@ -64,8 +64,8 @@ switch($_GET["type"]){
 case "technicien":
 	$val1=$_GET["ID"];
 	$val2=$_GET["assign_type"];
-	$job->assign=$_GET["ID"];
-	$job->assign_type=$_GET["assign_type"];
+	$job->fields["assign"]=$_GET["ID"];
+	$job->fields["assign_type"]=$_GET["assign_type"];
 
 	if ($_GET["assign_type"]==USER_TYPE){
 	$next=getNextItem("glpi_users",$_GET["ID"]);
@@ -90,7 +90,7 @@ case "technicien":
 case "user":
 	$val1=$_GET["ID"];
 	$val2="";
-	$job->author=$_GET["ID"];
+	$job->fields["author"]=$_GET["ID"];
 
 	$next=getNextItem("glpi_users",$_GET["ID"]);
 	$prev=getPreviousItem("glpi_users",$_GET["ID"]);
