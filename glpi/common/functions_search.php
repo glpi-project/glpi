@@ -369,7 +369,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			printPager($start,$numrows,$target,$parameters);
 
 			// Produce headline
-			echo "<div align='center'><table border='0' class='tab_cadre'><tr>\n";
+			echo "<div align='center'><table border='0' class='tab_cadrehov'><tr>\n";
 
 			// TABLE HEADER
 			for ($i=0;$i<$toview_count;$i++){

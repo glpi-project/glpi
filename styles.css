@@ -134,24 +134,50 @@ input.submit:hover {
   th {  
     font-size: 12px;
     font-weight: bold;
-   /* background-color: #FFC65D;*/
-    background-color: #fccc6f;
-	vertical-align:bottom;}
+   /*   background-color: #FFC65D;*/
+  background-color: #fccc6f;
 
-  
+	vertical-align:bottom;
+	}
+
+th  a:link {color: #CC6633;}
+
+th  a:hover {color: #999966;}
   
   td { font-size: 11px;}
+
+
 
 .tab_cadre{
  -moz-border-radius: 4px;
   border: 1px solid #cccccc;
 }
 
+.tab_cadrehov{
+ -moz-border-radius: 4px;
+  border: 1px solid #cccccc;
+}
+
+
+.tab_cadrehov tr:hover {
+	color: #333333;
+	background-color: #FFF4DF;
+}
+
+
+
+
 .tab_cadre2{
 text-align:center;
  -moz-border-radius: 4px;
   border: 1px solid #cccccc;
 }
+
+.tab_cadre2 tr:hover {
+	color: #333333;
+	background-color: #FFF4DF;
+}
+
 
 
 .tab_bg_1 {
