@@ -67,13 +67,13 @@ if (isset($_POST["add"])) {
 else if (isset($tab["delete"])) {
 	checkAuthentication("admin");
 	deleteDevice($tab);
-	logEvent($tab["ID"], "Devices", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
+	logEvent($tab["ID"], "Devices", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_install["root"]."/devices/index.php?device_type=".$tab["device_type"]);
 }
 else if (isset($_POST["update"])) {
 	checkAuthentication("admin");
 	updateDevice($_POST);
-	logEvent($_POST["ID"], "Devices", 4, "inventory", $_SESSION["glpiname"]." updated item.");
+	logEvent($_POST["ID"], "Devices", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']."&referer=$REFERER");
 }
 else {

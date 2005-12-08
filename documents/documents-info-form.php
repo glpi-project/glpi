@@ -55,28 +55,28 @@ if (isset($_POST["add"]))
 	checkAuthentication("admin");
 
 	$newID=addDocument($_POST);
-	logEvent($newID, "documents", 4, "document", $_SESSION["glpiname"]." added item ".$_POST["name"].".");
+	logEvent($newID, "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
 	deleteDocument($_POST);
-	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." deleted item.");
+	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_install["root"]."/documents/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreDocument($_POST);
-	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." restored item.");
+	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_install["root"]."/documents/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
 	deleteDocument($_POST,1);
-	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." purge item.");
+	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_install["root"]."/documents/");
 }
 else if (isset($_POST["additem"])){
@@ -87,34 +87,34 @@ else if (isset($_POST["additem"])){
 	
 	if ($_POST['type']>0&&$_POST['item']>0){
 		addDeviceDocument($_POST["conID"],$_POST['type'],$_POST['item'],$template);
-		logEvent($tab["conID"], "documents", 4, "document", $_SESSION["glpiname"]." associate device.");
+		logEvent($tab["conID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][32]);
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deleteitem"])){
 	checkAuthentication("admin");
 	deleteDeviceDocument($_GET["ID"]);
-	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." delete device.");
+	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["addenterprise"])){
 	checkAuthentication("admin");
 
 	addEnterpriseDocument($_POST["conID"],$_POST["entID"]);
-	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." associate device.");
+	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]."  ".$lang["log"][32]);
 	glpi_header($cfg_install["root"]."/documents/documents-info-form.php?ID=".$_POST["conID"]);
 }
 else if (isset($_GET["deleteenterprise"])){
 	checkAuthentication("admin");
 	deleteEnterpriseDocument($_GET["ID"]);
-	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." delete device.");
+	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]."  ".$lang["log"][33]);
 	glpi_header($cfg_install["root"]."/documents/documents-info-form.php?ID=".$_POST["conID"]);
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateDocument($_POST);
-	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]." updated item.");
+	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else

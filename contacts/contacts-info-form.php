@@ -46,47 +46,47 @@ if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
 	$newID=addContact($_POST);
-	logEvent($newID, "contacts", 4, "financial", $_SESSION["glpiname"]." added ".$_POST["name"].".");
+	logEvent($newID, "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
 	deleteContact($_POST);
-	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." deleted item.");
+	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_install["root"]."/contacts/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreContact($_POST);
-	logEvent($tab["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." restored item.");
+	logEvent($tab["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_install["root"]."/contacts/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
 	deleteContact($_POST,1);
-	logEvent($tab["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." purge item.");
+	logEvent($tab["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_install["root"]."/contacts/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateContact($_POST);
-	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." updated item.");
+	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["addenterprise"])){
 	checkAuthentication("admin");
 	addContactEnterprise($_POST["entID"],$_POST["conID"]);
-	logEvent($tab["conID"], "contacts", 4, "financial", $_SESSION["glpiname"]." associate enterprise.");
+	logEvent($tab["conID"], "contacts", 4, "financial", $_SESSION["glpiname"]."  ".$lang["log"][34]);
 	glpi_header($cfg_install["root"]."/contacts/contacts-info-form.php?ID=".$_POST["conID"]);
 }
 else if (isset($_GET["deleteenterprise"])){
 	checkAuthentication("admin");
 	deleteContactEnterprise($_GET["ID"]);
-	logEvent(0, "contacts", 4, "financial", $_SESSION["glpiname"]." delete associate enterprise.");
+	logEvent(0, "contacts", 4, "financial", $_SESSION["glpiname"]."  ".$lang["log"][35]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 

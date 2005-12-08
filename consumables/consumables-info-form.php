@@ -49,35 +49,35 @@ if (isset($_POST["add"]))
 	checkAuthentication("admin");
 
 	$newID=addConsumableType($_POST);
-	logEvent($newID, "consumables", 4, "inventory", $_SESSION["glpiname"]." added item ".$_POST["name"].".");
+	logEvent($newID, "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
 	deleteConsumableType($_POST);
-	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
+	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_install["root"]."/consumables/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreConsumableType($_POST);
-	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." restored item.");
+	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_install["root"]."/consumables/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
 	deleteConsumableType($_POST,1);
-	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." purge item.");
+	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_install["root"]."/consumables/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateConsumableType($_POST);
-	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." updated item.");
+	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else

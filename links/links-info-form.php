@@ -53,14 +53,14 @@ else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
 	deleteLink($_POST);
-	logEvent($_POST["ID"], "links", 4, "setup", $_SESSION["glpiname"]." deleted item.");
+	logEvent($_POST["ID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_install["root"]."/links/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateLink($_POST);
-	logEvent($_POST["ID"], "links", 4, "setup", $_SESSION["glpiname"]." updated item.");
+	logEvent($_POST["ID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["adddevice"])){

@@ -439,7 +439,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 	$usersearch=$user." ";
 	
 	// Query Database
-	$query = "SELECT * FROM glpi_event_log WHERE message LIKE '".$usersearch."added%' ORDER BY $sort $order LIMIT 0,".$cfg_features["num_of_events"];
+	$query = "SELECT * FROM glpi_event_log WHERE message LIKE '".$usersearch.$lang["log"][20]."%' ORDER BY $sort $order LIMIT 0,".$cfg_features["num_of_events"];
 
 	// Get results
 	$result = $db->query($query);
@@ -539,6 +539,28 @@ function showEvents($target,$order,$sort,$start=0) {
 
 	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
 
+$tableItemtype=array("system"=>$lang["log"][1],
+				"computers"=>$lang["log"][2],
+				"monitors"=>$lang["log"][3],
+		 		"printers"=>$lang["log"][4],
+				"software"=>$lang["log"][5],
+				"networking"=>$lang["log"][6],
+				"cartridges"=>$lang["log"][7],
+				"peripherals"=>$lang["log"][8],
+				"consumables"=>$lang["log"][9],
+				"tracking"=>$lang["log"][10],
+				"contacts"=>$lang["log"][11],
+				"enterprises"=>$lang["log"][12],
+				"documents"=>$lang["log"][13]);
+
+$tableService=array("inventory"=>$lang["log"][50],
+				"tracking"=>$lang["log"][51],
+				"planning"=>$lang["log"][52],
+				"tools"=>$lang["log"][53],
+				"financial"=>$lang["log"][54],
+				"login"=>$lang["log"][55],
+				"document"=>$lang["log"][56]);
+
 	// new database object
 	$db = new DB;
 
@@ -625,7 +647,10 @@ function showEvents($target,$order,$sort,$start=0) {
 		$message = $db->result($result, $i, "message");
 		
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>$itemtype:</td><td align='center'><b>";
+		
+		echo "<td>".$tableItemtype[$itemtype].":</td><td align='center'><b>"; 
+
+		//echo "<td>$itemtype:</td><td align='center'><b>";
 		if ($item=="-1" || $item=="0") {
 			echo $item;
 		} else {
@@ -637,7 +662,7 @@ function showEvents($target,$order,$sort,$start=0) {
 			echo $item;
 			echo "\">$item</a>";
 		}			
-		echo "</b></td><td>$date</td><td align='center'>$service</td><td align='center'>$level</td><td>$message</td>";
+		echo "</b></td><td>$date</td><td align='center'>".$tableService[$service]."</td><td align='center'>$level</td><td>$message</td>";
 		echo "</tr>";
 
 		$i++; 
