@@ -67,7 +67,7 @@ if(!isset($tab["removefromfaq"])) $tab["removefromfaq"] = "";
 	
 	
 	addKbItem($_POST);
-	logEvent(0, "knowledge", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][20]);
+	logEvent(0, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][20]);
 	
 	glpi_header($cfg_install["root"]."/knowbase/");
 	}
@@ -82,6 +82,7 @@ if(!isset($tab["removefromfaq"])) $tab["removefromfaq"] = "";
 
 	showKbItemForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	
+
 	commonFooter();
 
 	}
@@ -93,7 +94,7 @@ if(!isset($tab["removefromfaq"])) $tab["removefromfaq"] = "";
 	checkAuthentication("admin");
 	
 	updateKbItem($_POST);
-	
+	logEvent(0, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][21]);	
 		
 	glpi_header($cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=".$tab["ID"]);
 	}
@@ -107,6 +108,7 @@ if(!isset($tab["removefromfaq"])) $tab["removefromfaq"] = "";
 	checkAuthentication("admin");
 	
 	deleteKbItem($tab["ID"]);
+	logEvent(0, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][22]);	
 	glpi_header($cfg_install["root"]."/knowbase/");
 	}
 	

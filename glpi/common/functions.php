@@ -552,7 +552,7 @@ $tableItemtype=array("system"=>$lang["log"][1],
 				"contacts"=>$lang["log"][11],
 				"enterprises"=>$lang["log"][12],
 				"documents"=>$lang["log"][13],
-				"knowledge"=>$lang["log"][14],
+				"knowbase"=>$lang["log"][14],
 				"infocom"=>$lang["log"][19],
 				"devices"=>$lang["log"][18],
 				"contracts"=>$lang["log"][17],);
