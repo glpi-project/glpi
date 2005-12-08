@@ -67,7 +67,7 @@ if(!isset($tab["removefromfaq"])) $tab["removefromfaq"] = "";
 	
 	
 	addKbItem($_POST);
-	logEvent(0, "knowledge", 5, "tools", $_SESSION["glpiname"]." add an item");	
+	logEvent(0, "knowledge", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][20]);
 	
 	glpi_header($cfg_install["root"]."/knowbase/");
 	}

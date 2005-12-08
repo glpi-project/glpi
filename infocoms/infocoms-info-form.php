@@ -54,7 +54,7 @@ if (isset($_GET["add"]))
 	checkAuthentication("admin");
 
 	addInfocom($_GET);
-	logEvent(0, "infocom", 4, "financial", $_SESSION["glpiname"]." added infocoms.");
+	logEvent(0, "infocom", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][20]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
