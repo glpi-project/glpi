@@ -472,7 +472,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	if ($withtemplate<2&&$nb>0){
 		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 		echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
-		dropdownDocuments("conID");
+		dropdown("glpi_docs","conID");
 		echo "</div></td><td align='center'>";
 		echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
 		echo "</td>";
