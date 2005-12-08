@@ -57,7 +57,7 @@ if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
 	$newID=addMonitor($_POST);
-	logEvent($newID, "monitors", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["name"].".");
+	logEvent($newID, $lang["log"][3], 4, $lang["log"][50], $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))
@@ -67,7 +67,7 @@ else if (isset($tab["delete"]))
 		deleteMonitor($tab,1);
 	else deleteMonitor($tab);
 	
-	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
+	logEvent($tab["ID"], $lang["log"][3], 4, $lang["log"][50], $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
 		glpi_header($cfg_install["root"]."/setup/setup-templates.php");
 	 else 
@@ -77,7 +77,7 @@ else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreMonitor($_POST);
-	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." restored item.");
+	logEvent($tab["ID"], $lang["log"][3], 4, $lang["log"][50], $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_install["root"]."/monitors/");
 }
 else if (isset($tab["purge"]))
@@ -85,28 +85,28 @@ else if (isset($tab["purge"]))
 	checkAuthentication("admin");
 	deleteMonitor($tab,1);
 	updateState(MONITOR_TYPE,$tab["ID"],0);
-	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." purge item.");
+	logEvent($tab["ID"], $lang["log"][3], 4, $lang["log"][50], $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_install["root"]."/monitors/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateMonitor($_POST);
-	logEvent($_POST["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." updated item.");
+	logEvent($_POST["ID"], $lang["log"][3], 4, $lang["log"][50], $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["disconnect"]))
 {
 	checkAuthentication("admin");
 	Disconnect($tab["ID"]);
-	logEvent(0, "monitors", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
+	logEvent(0, $lang["log"][3], 5, $lang["log"][50], $_SESSION["glpiname"]." ".$lang["log"][26]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 {
 	checkAuthentication("admin");
 	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["item"],MONITOR_TYPE);
-	logEvent($tab["sID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." connected item.");
+	logEvent($tab["sID"], $lang["log"][3], 4, $lang["log"][50], $_SESSION["glpiname"]." ".$lang["log"][27]);
 	glpi_header($cfg_install["root"]."/monitors/monitors-info-form.php?ID=".$tab["sID"]);
 
 /*
@@ -128,7 +128,7 @@ else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 	{
 		checkAuthentication("admin");
 		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],MONITOR_TYPE);
-		logEvent($tab["sID"], "monitors", 5, "inventory", $_SESSION["glpiname"]." connected item.");
+		logEvent($tab["sID"], $lang["log"][3], 5, $lang["log"][50], $_SESSION["glpiname"]." connected item.");
 		glpi_header($cfg_install["root"]."/monitors/monitors-info-form.php?ID=".$tab["sID"]);
 	}
 */
