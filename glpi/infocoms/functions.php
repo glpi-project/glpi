@@ -76,16 +76,16 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		echo "</td>";
 		echo "<td>".$lang["financial"][82].":		</td>";
 		echo "<td >";
-		autocompletionTextField("facture","glpi_infocoms","facture",$ic->fields["facture"],25);	
+		autocompletionTextField("facture","glpi_infocoms","facture",$ic->fields["facture"],25,$option);	
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][18].":		</td>";
 		echo "<td >";
-		autocompletionTextField("num_commande","glpi_infocoms","num_commande",$ic->fields["num_commande"],25);	
+		autocompletionTextField("num_commande","glpi_infocoms","num_commande",$ic->fields["num_commande"],25,$option);	
 		echo "</td>";
 		
 		echo "<td>".$lang["financial"][19].":		</td><td>";
-		autocompletionTextField("bon_livraison","glpi_infocoms","bon_livraison",$ic->fields["bon_livraison"],25);	
+		autocompletionTextField("bon_livraison","glpi_infocoms","bon_livraison",$ic->fields["bon_livraison"],25,$option);	
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][14].":	</td><td>";
@@ -115,17 +115,17 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		
 		
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][78].":		</td>";
-		echo "<td ><input type='text' $option name='warranty_value' value=\"".htmlentities(number_format($ic->fields["warranty_value"],2,'.',''))."\" size='10'></td>";
+		echo "<td ><input type='text' $option name='warranty_value' value=\"".number_format($ic->fields["warranty_value"],2,'.','')."\" size='10'></td>";
 		
 
 		echo "<td>".$lang["financial"][16].":		</td>";
 		echo "<td >";
-		autocompletionTextField("warranty_info","glpi_infocoms","warranty_info",$ic->fields["warranty_info"],25);	
+		autocompletionTextField("warranty_info","glpi_infocoms","warranty_info",$ic->fields["warranty_info"],25,$option);	
 
 		echo "</td></tr>";
 		}
 		
-		echo "<tr class='tab_bg_1'><td>".$lang["financial"][21].":		</td><td  ".($show_immo==1?"":" colspan='3'")."><input type='text' name='value' $option value=\"".htmlentities(number_format($ic->fields["value"],2,'.',''))."\" size='10'></td>";
+		echo "<tr class='tab_bg_1'><td>".$lang["financial"][21].":		</td><td  ".($show_immo==1?"":" colspan='3'")."><input type='text' name='value' $option value=\"".number_format($ic->fields["value"],2,'.','')."\" size='10'></td>";
 		if ($show_immo==1){
 		echo "<td>".$lang["financial"][81]." :</td><td>";
 				
@@ -161,7 +161,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		
 		echo "<td>".$lang["financial"][77].":		</td>";
 		echo "<td >";
-		autocompletionTextField("amort_coeff","glpi_infocoms","amort_coeff",$ic->fields["amort_coeff"],10);	
+		autocompletionTextField("amort_coeff","glpi_infocoms","amort_coeff",$ic->fields["amort_coeff"],10,$option);	
 		echo "</td></tr>";
 		}
 

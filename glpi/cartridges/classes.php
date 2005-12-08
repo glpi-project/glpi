@@ -282,6 +282,10 @@ class Cartridge {
 
 		$query = "DELETE from glpi_cartridges WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
+
+			$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".CARTRIDGE_ITEM_TYPE."')";
+			$result = $db->query($query);
+
 				return true;
 		} else {
 			return false;

@@ -286,6 +286,10 @@ class License {
 		$query = "DELETE from glpi_licenses WHERE ID = '$ID'";
 		
 		if ($result = $db->query($query)) {
+
+			$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".LICENSE_TYPE."')";
+			$result = $db->query($query);
+
 			// Delete Installations
 			$query2 = "DELETE FROM glpi_inst_software WHERE (license = '$ID')";
 			
