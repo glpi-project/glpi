@@ -439,7 +439,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 	$usersearch=$user." ";
 	
 	// Query Database
-	$query = "SELECT * FROM glpi_event_log WHERE message LIKE '".$usersearch.$lang["log"][20]."%' ORDER BY $sort $order LIMIT 0,".$cfg_features["num_of_events"];
+	$query = "SELECT * FROM glpi_event_log WHERE message LIKE '".$usersearch.addslashes($lang["log"][20])."%' ORDER BY $sort $order LIMIT 0,".$cfg_features["num_of_events"];
 
 	// Get results
 	$result = $db->query($query);
