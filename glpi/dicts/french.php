@@ -1537,6 +1537,8 @@ $lang["log"][34]="ajout lien avec entreprise";
 $lang["log"][35]="supression lien avec entreprise";
 $lang["log"][36]="ajout lien avec contact";
 $lang["log"][37]="supression lien avec contact";
+$lang["log"][38]="liens";
+$lang["log"][39]="type documents";
 
 
 $lang["log"][40]="connexion de l'IP";
@@ -1550,5 +1552,6 @@ $lang["log"][53]="Outils";
 $lang["log"][54]="Gestion";
 $lang["log"][55]="Connexion";
 $lang["log"][56]="Documents";
+$lang["log"][57]="Configuration";
 
 ?>

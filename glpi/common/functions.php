@@ -555,7 +555,9 @@ $tableItemtype=array("system"=>$lang["log"][1],
 				"knowbase"=>$lang["log"][14],
 				"infocom"=>$lang["log"][19],
 				"devices"=>$lang["log"][18],
-				"contracts"=>$lang["log"][17],);
+				"links"=>$lang["log"][38],
+				"typedocs"=>$lang["log"][39],
+				"contracts"=>$lang["log"][17]);
 
 $tableService=array("inventory"=>$lang["log"][50],
 				"tracking"=>$lang["log"][51],
@@ -563,6 +565,7 @@ $tableService=array("inventory"=>$lang["log"][50],
 				"tools"=>$lang["log"][53],
 				"financial"=>$lang["log"][54],
 				"login"=>$lang["log"][55],
+				"setup"=>$lang["log"][57],
 				"document"=>$lang["log"][56]);
 
 	// new database object

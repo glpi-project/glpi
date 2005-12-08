@@ -61,22 +61,22 @@ checkAuthentication("normal");
 commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 if (isset($_POST['update'])){
 	updateTracking($_POST);
-	logEvent($_POST["ID"], "tracking", 4, "tracking", $_SESSION["glpiname"]." update tracking.");
+	logEvent($_POST["ID"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$lang["log"][21]);
 
 	glpi_header($cfg_install["root"]."/tracking/tracking-info-form.php?ID=".$_POST["ID"]);
 }else if (isset($_POST['add'])||isset($_POST['add_close'])) {
 	$newID=addFollowup($_POST);
 
-	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." add followup $newID.");
+	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$lang["log"][20]." $newID.");
 	glpi_header($cfg_install["root"]."/tracking/tracking-info-form.php?ID=".$_POST["tracking"]);
 		
 } else if (isset($_POST["update_followup"])){
 	updateFollowup($_POST);
-	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." update followups ".$_POST["ID"].".");
+	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]."  ".$lang["log"][21]." ".$_POST["ID"].".");
 	glpi_header($cfg_install["root"]."/tracking/tracking-info-form.php?ID=".$_POST["tracking"]);
 } else if (isset($_POST["delete_followup"])){
 	deleteFollowup($_POST);
-	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." delete followup ".$_POST["ID"].".");
+	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$lang["log"][22]." ".$_POST["ID"].".");
 	glpi_header($cfg_install["root"]."/tracking/tracking-info-form.php?ID=".$_POST["tracking"]);
 }
 

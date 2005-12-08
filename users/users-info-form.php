@@ -51,19 +51,19 @@ if (isset($_POST["add"])) {
 	// Pas de nom pas d'ajout	
 	if (!empty($_POST["name"])){
 		$newID=addUser($_POST);
-		logEvent($newID, "users", 4, "setup", $_SESSION["glpiname"]." added user ".$_POST["name"].".");
+		logEvent($newID, "users", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
 	deleteUser($_POST);
-	logEvent(0,"users", 4, "setup", $_SESSION["glpiname"]." deleted user ".$_POST["ID"].".");
+	logEvent(0,"users", 4, "setup", $_SESSION["glpiname"]."  ".$lang["log"][22]." ".$_POST["ID"].".");
 	glpi_header($cfg_install["root"]."/users/");
 } else if (isset($_POST["update"])) {
 	checkAuthentication("admin");
 	commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
 	updateUser($_POST);
-	logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]." updated user ".$_POST["name"].".");
+	logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]."  ".$lang["log"][21]."  ".$_POST["name"].".");
 	showUserform($_SERVER["PHP_SELF"],$_POST["name"]);
 } else {
 	

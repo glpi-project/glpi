@@ -54,7 +54,7 @@ if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
 	$newID=addPeripheral($_POST);
-	logEvent($newID, "peripherals", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["name"].".");
+	logEvent($newID, "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))
@@ -96,7 +96,7 @@ else if (isset($tab["disconnect"]))
 {
 	checkAuthentication("admin");
 	Disconnect($tab["ID"]);
-	logEvent(0, "peripherals", 5, "inventory", $_SESSION["glpiname"]." disconnected item.");
+	logEvent(0, "peripherals", 5, "inventory", $_SESSION["glpiname"]." ".$lang["log"][27]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
@@ -104,7 +104,7 @@ else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 
 	checkAuthentication("admin");
 	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["item"],PERIPHERAL_TYPE);
-	logEvent($tab["sID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." connected item.");
+	logEvent($tab["sID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][26]);
 	glpi_header($cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=".$tab["sID"]);
 
 

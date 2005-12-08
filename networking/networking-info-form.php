@@ -55,7 +55,7 @@ if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
 	$newID=addNetdevice($_POST);
-	logEvent($newID, "networking", 4, "inventory", $_SESSION["glpiname"]." added item name ".$_POST["name"].".");
+	logEvent($newID, "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." :  ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))
@@ -65,7 +65,7 @@ else if (isset($tab["delete"]))
 		deleteNetdevice($tab,1);
 	else deleteNetdevice($tab);
 
-	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"] ."".$lang["log"][22]);
+	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"] ." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
 		glpi_header($cfg_install["root"]."/setup/setup-templates.php");
 	 else 
