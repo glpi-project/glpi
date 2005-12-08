@@ -1516,7 +1516,7 @@ $lang["log"][13]="document";
 $lang["log"][14]="base connaissances";
 $lang["log"][15]="utilisateur";
 $lang["log"][16]="planning";
-$lang["log"][20]="ajout";
+$lang["log"][20]="ajout de l'item ";
 $lang["log"][21]="mise à jour de l'item";
 $lang["log"][22]="supression de l'item";
 $lang["log"][23]="restauration de l'item";
@@ -1525,8 +1525,16 @@ $lang["log"][26]="déconnexion de l'item";
 $lang["log"][27]="connexion de l'item";
 $lang["log"][28]="modification de la caractéristique d'un périphérique interne";
 $lang["log"][29]="déconnexion d'un périphérique interne sur l'ordinateur ";
+$lang["log"][30]="association d'un type";
+$lang["log"][31]="supression d'un type";
+$lang["log"][32]="ajout lien document / item";
+$lang["log"][33]="supression lien document / item";
+$lang["log"][34]="ajout lien contact / entreprise";
+$lang["log"][35]="supression lien contact / entreprise";
+
 $lang["log"][40]="connexion de l'IP";
 $lang["log"][41]="echec de connexion";
+
 
 $lang["log"][50]="Inventaire";
 $lang["log"][51]="Suivi";
@@ -1534,4 +1542,6 @@ $lang["log"][52]="Planning";
 $lang["log"][53]="Outils";
 $lang["log"][54]="Gestion";
 $lang["log"][55]="Connexion";
+$lang["log"][56]="Documents";
+
 ?>

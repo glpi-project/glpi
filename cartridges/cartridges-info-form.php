@@ -49,47 +49,47 @@ if (isset($_POST["add"]))
 	checkAuthentication("admin");
 
 	$newID=addCartridgeType($_POST);
-	logEvent($newID, "cartridges", 4, "inventory", $_SESSION["glpiname"]." added item ".$_POST["name"].".");
+	logEvent($newID, "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
 	deleteCartridgeType($_POST);
-	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
+	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_install["root"]."/cartridges/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreCartridgeType($_POST);
-	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." restored item.");
+	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_install["root"]."/cartridges/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
 	deleteCartridgeType($_POST,1);
-	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." purge item.");
+	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_install["root"]."/cartridges/");
 }
 else if (isset($_POST["addtype"])){
 	checkAuthentication("admin");
 	addCompatibleType($_POST["tID"],$_POST["type"]);
-	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." associate type.");
+	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][30]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deletetype"])){
 	checkAuthentication("admin");
 	deleteCompatibleType($_GET["ID"]);
-	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." delete type.");
+	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][31]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateCartridgeType($_POST);
-	logEvent($_POST["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." updated item.");
+	logEvent($_POST["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else

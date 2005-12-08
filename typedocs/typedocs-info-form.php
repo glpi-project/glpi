@@ -54,7 +54,7 @@ else if (isset($tab["delete"]))
 	checkAuthentication("super-admin");
 	deleteTypedoc($tab,1);
 
-	logEvent($tab["ID"], "typedocs", 4, "setup", $_SESSION["glpiname"]." deleted item.");
+	logEvent($tab["ID"], "typedocs", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
 		glpi_header($cfg_install["root"]."/setup/setup-templates.php");
 	 else 
@@ -65,7 +65,7 @@ else if (isset($_POST["update"]))
 {
 	checkAuthentication("super-admin");
 	updateTypedoc($_POST);
-	logEvent($_POST["ID"], "typedocs", 4, "setup", $_SESSION["glpiname"]." updated item.");
+	logEvent($_POST["ID"], "typedocs", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else

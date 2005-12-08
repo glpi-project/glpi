@@ -59,28 +59,28 @@ if (isset($_POST["add"]))
 	checkAuthentication("admin");
 
 	$newID=addEnterprise($_POST);
-	logEvent($newID, "enterprises", 4, "financial", $_SESSION["glpiname"]." added item ".$_POST["name"].".");
+	logEvent($newID, "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
 	deleteEnterprise($_POST);
-	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." deleted item.");
+	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_install["root"]."/enterprises/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreEnterprise($_POST);
-	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." restored item.");
+	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_install["root"]."/enterprises/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
 	deleteEnterprise($_POST,1);
-	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." purge item.");
+	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_install["root"]."/enterprises/");
 }
 else if (isset($_POST["addcontact"])){
@@ -99,7 +99,7 @@ else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateEnterprise($_POST);
-	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." updated item.");
+	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else

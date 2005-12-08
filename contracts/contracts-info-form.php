@@ -53,28 +53,28 @@ if (isset($_POST["add"]))
 	checkAuthentication("admin");
 
 	$newID=addContract($_POST);
-	logEvent($newID, "contracts", 4, "financial", $_SESSION["glpiname"]." added item ".$_POST["num"].".");
+	logEvent($newID, "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["num"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
 	deleteContract($_POST);
-	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." deleted item.");
+	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_install["root"]."/contracts/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreContract($_POST);
-	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." restored item.");
+	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_install["root"]."/contracts/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
 	deleteContract($_POST,1);
-	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." purge item.");
+	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_install["root"]."/contracts/");
 }
 else if (isset($_POST["additem"])){
@@ -114,7 +114,7 @@ else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateContract($_POST);
-	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." updated item.");
+	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else

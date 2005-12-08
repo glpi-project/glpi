@@ -61,14 +61,14 @@ else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
 	deleteInfocom($_POST);
-	logEvent($tab["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." deleted item.");
+	logEvent($tab["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateInfocom($_POST);
-	logEvent($_POST["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." updated item.");
+	logEvent($_POST["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else

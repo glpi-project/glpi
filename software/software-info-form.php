@@ -58,7 +58,7 @@ if (isset($_POST["add"]))
 	unset($_POST["search_software"]);
 
 	$newID=addSoftware($_POST);
-	logEvent($newID, "software", 4, "inventory", $_SESSION["glpiname"]." added item ".$_POST["name"].".");
+	logEvent($newID, "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))
@@ -68,7 +68,7 @@ else if (isset($tab["delete"]))
 		deleteSoftware($tab,1);
 	else deleteSoftware($tab);
 
-	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
+	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
 		glpi_header($cfg_install["root"]."/setup/setup-templates.php");
 	 else 
@@ -78,14 +78,14 @@ else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreSoftware($_POST);
-	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." restored item.");
+	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_install["root"]."/software/");
 }
 else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
 	deleteSoftware($tab,1);
-	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." purge item.");
+	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_install["root"]."/software/");
 }
 else if (isset($_POST["update"]))
@@ -93,7 +93,7 @@ else if (isset($_POST["update"]))
 	checkAuthentication("admin");
 	unset($_POST["search_software"]);
 	updateSoftware($_POST);
-	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." updated item.");
+	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else

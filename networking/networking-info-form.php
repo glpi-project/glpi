@@ -65,7 +65,7 @@ else if (isset($tab["delete"]))
 		deleteNetdevice($tab,1);
 	else deleteNetdevice($tab);
 
-	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"] ."deleted item.");
+	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"] ."".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
 		glpi_header($cfg_install["root"]."/setup/setup-templates.php");
 	 else 
@@ -75,7 +75,7 @@ else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreNetdevice($_POST);
-	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." restored item.");
+	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_install["root"]."/networking/");
 }
 else if (isset($tab["purge"]))
@@ -83,14 +83,14 @@ else if (isset($tab["purge"]))
 	checkAuthentication("admin");
 	deleteNetdevice($tab,1);
 	updateState(NETWORKING_TYPE,$tab["ID"],0);
-	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." purge item.");
+	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_install["root"]."/networking/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateNetdevice($_POST);
-	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." updated item.");
+	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else

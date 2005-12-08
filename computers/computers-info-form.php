@@ -62,7 +62,7 @@ if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 if (isset($tab["add"])) {
 	checkAuthentication("admin");
 	$newID=addComputer($tab);
-	logEvent($newID, $lang["log"][2], 4, $lang["log"][50], $_SESSION["glpiname"]." ".$lang["log"][20]." ".$tab["name"].".");
+	logEvent($newID, "computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$tab["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 // delete a computer
@@ -72,7 +72,7 @@ else if (isset($tab["delete"])) {
 	if (!empty($tab["withtemplate"]))
 	deleteComputer($tab,1);
 	else deleteComputer($tab);
-	logEvent($tab["ID"], $lang["log"][2], 4, $lang["log"][50], $_SESSION["glpiname"]." ".$lang["log"][22]);
+	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
 		glpi_header($cfg_install["root"]."/setup/setup-templates.php");
 	 else 
@@ -82,7 +82,7 @@ else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreComputer($_POST);
-	logEvent($tab["ID"],$lang["log"][2], 4, $lang["log"][50], $_SESSION["glpiname"]." ".$lang["log"][23]);
+	logEvent($tab["ID"],"computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_install["root"]."/computers/");
 }
 else if (isset($tab["purge"]))
@@ -90,7 +90,7 @@ else if (isset($tab["purge"]))
 	checkAuthentication("admin");
 	deleteComputer($tab,1);
 	updateState(COMPUTER_TYPE,$tab["ID"],0);
-	logEvent($tab["ID"], $lang["log"][2], 4, $lang["log"][50], $_SESSION["glpiname"]." ".$lang["log"][24]);
+	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_install["root"]."/computers/");
 }
 //update a computer
@@ -99,14 +99,14 @@ else if (isset($tab["update"])) {
 	if(empty($tab["contains"])) $tab["contains"] = "";
 	checkAuthentication("admin");
 	updateComputer($tab);
-	logEvent($tab["ID"], $lang["log"][2], 4, $lang["log"][50], $_SESSION["glpiname"]." ".$lang["log"][21]);
+	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 //Disconnect a device 
 else if (isset($tab["disconnect"])) {
 	checkAuthentication("admin");
 	Disconnect($tab["ID"]);
-	logEvent($tab["cID"], $lang["log"][2], 5, $lang["log"][50], $_SESSION["glpiname"]." ".$lang["log"][26]);
+	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." ".$lang["log"][26]);
 	glpi_header($_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
 }
 //Connect a peripheral
@@ -126,14 +126,14 @@ else if (isset($tab["disconnect"])) {
 	else if($tab["connect"]==3) {
 		checkAuthentication("admin");
 		Connect($_SERVER["PHP_SELF"],$tab["ID"],$tab["cID"],$tab["device_type"],$tab["withtemplate"]);
-		logEvent($tab["cID"], "computers", 5, $lang["log"][50], $_SESSION["glpiname"] ." connected item.");
+		logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
 		glpi_header($_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
 	}
 }
 */
 else if (isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0){
 	Connect($_SERVER["PHP_SELF"],$tab["item"],$tab["cID"],$tab["device_type"],$tab["withtemplate"]);
-	logEvent($tab["cID"], $lang["log"][2], 5, $lang["log"][50], $_SESSION["glpiname"] ." ".$lang["log"][27]);
+	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"] ." ".$lang["log"][27]);
 	glpi_header($_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
 }
 //Update a device specification
@@ -145,7 +145,7 @@ elseif(isset($_POST["update_device_x"])||isset($_POST["update_device"])) {
 		update_device_specif($val,$tab[1]);
 		}
 	}
-	logEvent($_POST["ID"],$lang["log"][2],4,$lang["log"][50],$_SESSION["glpiname"] ." ".$lang["log"][28]);
+	logEvent($_POST["ID"],"computers",4,"inventory",$_SESSION["glpiname"] ." ".$lang["log"][28]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 //add a new device
@@ -177,7 +177,7 @@ elseif(isset($_POST["device_action"])) {
 	if ($devtodel>0){
 		checkAuthentication("admin");
 		unlink_device_computer($devtodel);
-		logEvent($_POST["ID"],$lang["log"][2],4,$lang["log"][50],$_SESSION["glpiname"] ." ".$lang["log"][29]." ".$tab["ID"].".");
+		logEvent($_POST["ID"],"computers",4,"inventory",$_SESSION["glpiname"] ." ".$lang["log"][29]." ".$tab["ID"].".");
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }

@@ -68,7 +68,7 @@ else if (isset($tab["delete"]))
 	if (!empty($tab["withtemplate"]))
 		deletePrinter($tab,1);
 	else deletePrinter($tab);
-	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." deleted item.");
+	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
 		glpi_header($cfg_install["root"]."/setup/setup-templates.php");
 	 else 
@@ -78,7 +78,7 @@ else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restorePrinter($_POST);
-	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." restored item.");
+	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_install["root"]."/printers/");
 }
 else if (isset($tab["purge"]))
@@ -86,14 +86,14 @@ else if (isset($tab["purge"]))
 	checkAuthentication("admin");
 	deletePrinter($tab,1);
 	updateState(PRINTER_TYPE,$tab["ID"],0);
-	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." purge item.");
+	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_install["root"]."/printers/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updatePrinter($_POST);
-	logEvent($_POST["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." updated item.");
+	logEvent($_POST["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["disconnect"]))
