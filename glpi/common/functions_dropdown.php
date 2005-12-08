@@ -523,7 +523,7 @@ echo "<select name='$name'>\n";
 * @param $value
 * @return nothing (print out an HTML select box)
 */
-function dropdownAllItems($myname,$value_type=0,$withenterprise=0,$withcartridge=0,$withconsumable=0,$search='',$value='') {
+function dropdownAllItems($myname,$value_type=0,$withenterprise=0,$withcartridge=0,$withconsumable=0,$withcontracts=0,$search='',$value='') {
 	global $lang,$HTMLRel,$cfg_install;
 	
 	$db=new DB;
@@ -540,6 +540,7 @@ function dropdownAllItems($myname,$value_type=0,$withenterprise=0,$withcartridge
 	if ($withenterprise==1) $items[ENTERPRISE_TYPE]="glpi_enterprises";
 	if ($withcartridge==1) $items[CARTRIDGE_TYPE]="glpi_cartridges_type";
 	if ($withconsumable==1) $items[CONSUMABLE_TYPE]="glpi_consumables_type";
+	if ($withcontracts==1) $items[CONTRACT_TYPE]="glpi_contracts";
 	
 	
 	$rand=mt_rand();
@@ -555,6 +556,7 @@ function dropdownAllItems($myname,$value_type=0,$withenterprise=0,$withcartridge
 	if ($withenterprise==1) echo "<option ".($value_type==ENTERPRISE_TYPE?" selected ":"")." value='".ENTERPRISE_TYPE."'>".$lang["Menu"][23]."</option>\n";
 	if ($withcartridge==1) echo "<option ".($value_type==CARTRIDGE_TYPE?" selected ":"")." value='".CARTRIDGE_TYPE."'>".$lang["Menu"][21]."</option>\n";
 	if ($withconsumable==1) echo "<option ".($value_type==CONSUMBALE_TYPE?" selected ":"")." value='".CONSUMABLE_TYPE."'>".$lang["Menu"][32]."</option>\n";
+	if ($withcontracts==1) echo "<option ".($value_type==CONTRACT_TYPE?" selected ":"")." value='".CONTRACT_TYPE."'>".$lang["Menu"][25]."</option>\n";
 	echo "</select>\n";
 	
 	
