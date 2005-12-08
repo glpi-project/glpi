@@ -311,6 +311,7 @@ function helpHeader($title,$url,$name) {
 
 	// AJAX library
 	echo "<script type=\"text/javascript\" src='".$HTMLRel."prototype.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$HTMLRel."scriptaculous/scriptaculous.js'></script>";
 	
 		
 	// Appel CSS
@@ -432,6 +433,10 @@ function nullHeader($title,$url) {
 	// Some Javascript-Functions which we may need later
 	
 	echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
+
+	// AJAX library
+	echo "<script type=\"text/javascript\" src='".$HTMLRel."prototype.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$HTMLRel."scriptaculous/scriptaculous.js'></script>";
 	
 	// Appel CSS
 	
