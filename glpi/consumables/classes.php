@@ -277,6 +277,10 @@ class Consumable {
 
 		$query = "DELETE from glpi_consumables WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
+
+				$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".CONSUMABLE_ITEM_TYPE."')";
+				$result = $db->query($query);
+
 				return true;
 		} else {
 			return false;

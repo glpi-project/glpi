@@ -126,7 +126,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 			echo "</select>";
 		}
 		
-		echo "<input type='text' size='15' name=\"contains[$i]\" value=\"". (is_array($contains)&&isset($contains[$i])?htmlentities(stripslashes($contains[$i])):"" )."\" >";
+		echo "<input type='text' size='15' name=\"contains[$i]\" value=\"". (is_array($contains)&&isset($contains[$i])?stripslashes($contains[$i]):"" )."\" >";
 		echo "&nbsp;";
 		echo $lang["search"][10]."&nbsp;";
 	
