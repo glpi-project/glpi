@@ -1516,6 +1516,10 @@ $lang["log"][13]="document";
 $lang["log"][14]="base connaissances";
 $lang["log"][15]="utilisateur";
 $lang["log"][16]="planning";
+$lang["log"][17]="contrats";
+$lang["log"][18]="periphériques internes";
+$lang["log"][19]="informations commerciales";
+
 $lang["log"][20]="ajout de l'item ";
 $lang["log"][21]="mise à jour de l'item";
 $lang["log"][22]="supression de l'item";
@@ -1527,10 +1531,13 @@ $lang["log"][28]="modification de la caractéristique d'un périphérique intern
 $lang["log"][29]="déconnexion d'un périphérique interne sur l'ordinateur ";
 $lang["log"][30]="association d'un type";
 $lang["log"][31]="supression d'un type";
-$lang["log"][32]="ajout lien document / item";
-$lang["log"][33]="supression lien document / item";
-$lang["log"][34]="ajout lien contact / entreprise";
-$lang["log"][35]="supression lien contact / entreprise";
+$lang["log"][32]="ajout lien avec un  item";
+$lang["log"][33]="supression lien avec un item";
+$lang["log"][34]="ajout lien avec entreprise";
+$lang["log"][35]="supression lien avec entreprise";
+$lang["log"][36]="ajout lien avec contact";
+$lang["log"][37]="supression lien avec contact";
+
 
 $lang["log"][40]="connexion de l'IP";
 $lang["log"][41]="echec de connexion";

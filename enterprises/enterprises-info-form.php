@@ -86,13 +86,13 @@ else if (isset($_POST["purge"]))
 else if (isset($_POST["addcontact"])){
 	checkAuthentication("admin");
 	addContactEnterprise($_POST["eID"],$_POST["cID"]);
-	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." associate contact.");
+	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][36]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deletecontact"])){
 	checkAuthentication("admin");
 	deleteContactEnterprise($_GET["ID"]);
-	logEvent(0, "enterprises", 4, "financial", $_SESSION["glpiname"]." delete associate contact.");
+	logEvent(0, "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][37]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["update"]))

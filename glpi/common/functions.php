@@ -551,7 +551,11 @@ $tableItemtype=array("system"=>$lang["log"][1],
 				"tracking"=>$lang["log"][10],
 				"contacts"=>$lang["log"][11],
 				"enterprises"=>$lang["log"][12],
-				"documents"=>$lang["log"][13]);
+				"documents"=>$lang["log"][13],
+				"knowledge"=>$lang["log"][14],
+				"infocom"=>$lang["log"][19],
+				"devices"=>$lang["log"][18],
+				"contracts"=>$lang["log"][17],);
 
 $tableService=array("inventory"=>$lang["log"][50],
 				"tracking"=>$lang["log"][51],
