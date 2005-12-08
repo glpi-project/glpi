@@ -662,13 +662,17 @@ $tableService=array("inventory"=>$lang["log"][50],
 		if ($item=="-1" || $item=="0") {
 			echo $item;
 		} else {
+			if ($itemtype=="infocom"){
+				echo "<a href='#' onClick=\"window.open('".$cfg_install["root"]."/infocoms/infocoms-show.php?ID=$item','infocoms','location=infocoms,width=750,height=600,scrollbars=no')\">$item</a>";					
+			} else {
 				if ($itemtype=="reservation"){
-				echo "<a href=\"".$cfg_install["root"]."/$itemtype/index.php?show=resa&amp;ID=";
+					echo "<a href=\"".$cfg_install["root"]."/$itemtype/index.php?show=resa&amp;ID=";
 				} else {
-				echo "<a href=\"".$cfg_install["root"]."/$itemtype/".$itemtype."-info-form.php?ID=";
+					echo "<a href=\"".$cfg_install["root"]."/$itemtype/".$itemtype."-info-form.php?ID=";
 				}
-			echo $item;
-			echo "\">$item</a>";
+				echo $item;
+				echo "\">$item</a>";
+		   }
 		}			
 		echo "</b></td><td>$date</td><td align='center'>".$tableService[$service]."</td><td align='center'>$level</td><td>$message</td>";
 		echo "</tr>";

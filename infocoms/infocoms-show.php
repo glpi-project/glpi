@@ -51,6 +51,13 @@ nullHeader($lang["title"][21],$_SERVER["PHP_SELF"]);
 
 $ci=new CommonItem();
 
+if (isset($_GET["ID"])){
+	$ic=new Infocom();
+	$ic->getFromDBbyID($_GET["ID"]);
+	$_GET["device_type"]=$ic->fields["device_type"];
+	$_GET["device_id"]=$ic->fields["FK_device"];
+}
+
 if(!isset($_GET["device_type"])||!isset($_GET["device_id"])||!$ci->getFromDB($_GET["device_type"],$_GET["device_id"]))
 echo "<div align='center'>".$lang["financial"][85]."</div>";
 else {
