@@ -410,6 +410,49 @@ function logEvent ($item, $itemtype, $level, $service, $event) {
 }
 
 /**
+* Return arrays for function showEvent et lastEvent
+*
+**/
+function logArray(){
+
+	GLOBAL $lang;
+
+	$logItemtype=array("system"=>$lang["log"][1],
+				"computers"=>$lang["log"][2],
+				"monitors"=>$lang["log"][3],
+		 		"printers"=>$lang["log"][4],
+				"software"=>$lang["log"][5],
+				"networking"=>$lang["log"][6],
+				"cartridges"=>$lang["log"][7],
+				"peripherals"=>$lang["log"][8],
+				"consumables"=>$lang["log"][9],
+				"tracking"=>$lang["log"][10],
+				"contacts"=>$lang["log"][11],
+				"enterprises"=>$lang["log"][12],
+				"documents"=>$lang["log"][13],
+				"knowbase"=>$lang["log"][14],
+				"users"=>$lang["log"][15],
+				"infocom"=>$lang["log"][19],
+				"devices"=>$lang["log"][18],
+				"links"=>$lang["log"][38],
+				"typedocs"=>$lang["log"][39],
+				"contracts"=>$lang["log"][17]);
+	
+	$logService=array("inventory"=>$lang["log"][50],
+				"tracking"=>$lang["log"][51],
+				"planning"=>$lang["log"][52],
+				"tools"=>$lang["log"][53],
+				"financial"=>$lang["log"][54],
+				"login"=>$lang["log"][55],
+				"setup"=>$lang["log"][57],
+				"document"=>$lang["log"][56]);
+	
+return array($logItemtype,$logService);
+
+}
+
+
+/**
 * Print a nice tab for last event from inventory section
 *
 * Print a great tab to present lasts events occured on glpi
@@ -423,6 +466,8 @@ function showAddEvents($target,$order,$sort,$user="") {
 	// Show events from $result in table form
 
 	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
+
+	list($logItemtype,$logService)=logArray();
 
 	// new database object
 	$db = new DB;
@@ -503,7 +548,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 		$message = $db->result($result, $i, "message");
 		
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>$itemtype:</td><td align='center'><b>";
+		echo "<td>".$logItemtype[$itemtype].":</td><td align='center'><b>";
 		if ($item=="-1" || $item=="0") {
 			echo $item;
 		} else {
@@ -515,7 +560,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 			echo $item;
 			echo "\">$item</a>";
 		}			
-		echo "</b></td><td><span style='font-size:9px;'>$date</span></td><td align='center'>$service</td><td>$message</td>";
+		echo "</b></td><td><span style='font-size:9px;'>$date</span></td><td align='center'>".$logService[$service]."</td><td>$message</td>";
 		echo "</tr>";
 
 		$i++; 
@@ -539,36 +584,8 @@ function showEvents($target,$order,$sort,$start=0) {
 
 	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
 
-$tableItemtype=array("system"=>$lang["log"][1],
-				"computers"=>$lang["log"][2],
-				"monitors"=>$lang["log"][3],
-		 		"printers"=>$lang["log"][4],
-				"software"=>$lang["log"][5],
-				"networking"=>$lang["log"][6],
-				"cartridges"=>$lang["log"][7],
-				"peripherals"=>$lang["log"][8],
-				"consumables"=>$lang["log"][9],
-				"tracking"=>$lang["log"][10],
-				"contacts"=>$lang["log"][11],
-				"enterprises"=>$lang["log"][12],
-				"documents"=>$lang["log"][13],
-				"knowbase"=>$lang["log"][14],
-				"users"=>$lang["log"][15],
-				"infocom"=>$lang["log"][19],
-				"devices"=>$lang["log"][18],
-				"links"=>$lang["log"][38],
-				"typedocs"=>$lang["log"][39],
-				"contracts"=>$lang["log"][17]);
-
-$tableService=array("inventory"=>$lang["log"][50],
-				"tracking"=>$lang["log"][51],
-				"planning"=>$lang["log"][52],
-				"tools"=>$lang["log"][53],
-				"financial"=>$lang["log"][54],
-				"login"=>$lang["log"][55],
-				"setup"=>$lang["log"][57],
-				"document"=>$lang["log"][56]);
-
+	 list($logItemtype,$logService)=logArray();
+	
 	// new database object
 	$db = new DB;
 
@@ -595,7 +612,7 @@ $tableService=array("inventory"=>$lang["log"][50],
 
 	// No Events in database
 	if ($number < 1) {
-		echo "<b>".$lang["central"][4]."</b>";
+		echo "<div align='center'><b>".$lang["central"][4]."</b></div>";
 		return;
 	}
 	
@@ -656,7 +673,7 @@ $tableService=array("inventory"=>$lang["log"][50],
 		
 		echo "<tr class='tab_bg_2'>";
 		
-		echo "<td>".$tableItemtype[$itemtype].":</td><td align='center'><b>"; 
+		echo "<td>".$logItemtype[$itemtype].":</td><td align='center'><b>"; 
 
 		//echo "<td>$itemtype:</td><td align='center'><b>";
 		if ($item=="-1" || $item=="0") {
@@ -674,7 +691,7 @@ $tableService=array("inventory"=>$lang["log"][50],
 				echo "\">$item</a>";
 		   }
 		}			
-		echo "</b></td><td>$date</td><td align='center'>".$tableService[$service]."</td><td align='center'>$level</td><td>$message</td>";
+		echo "</b></td><td>$date</td><td align='center'>".$logService[$service]."</td><td align='center'>$level</td><td>$message</td>";
 		echo "</tr>";
 
 		$i++; 
