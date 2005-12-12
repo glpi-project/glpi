@@ -1206,6 +1206,7 @@ function updateTracking($input){
 		$input["assign"]=$input["assign_int"];
 		}
 
+	$updates=array();
 	// add Document if exists
 	if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
 		$input2=array();
@@ -1234,7 +1235,7 @@ function updateTracking($input){
 		$updates[]="closedate";
 		$job->fields["closedate"]=date("Y-m-d H:i:s");
 	}
-	if(isset($updates))
+	if(count($updates)>0)
 		$job->updateInDB($updates);
 
 	$job->updateRealtime();		
@@ -1266,6 +1267,7 @@ function updateFollowup($input){
 	// Fill the update-array with changes
 
 	$x=0;
+	$updates=array();
 	foreach ($input as $key => $val) {
 		if (array_key_exists($key,$fup->fields) && $fup->fields[$key] != $input[$key]) {
 			$fup->fields[$key] = $input[$key];
@@ -1274,7 +1276,7 @@ function updateFollowup($input){
 		}
 	}
 
-	if(isset($updates))
+	if(count($updates)>0)
 		$fup->updateInDB($updates);
 
 	$job=new Job;
@@ -1709,7 +1711,7 @@ function showFollowups($tID){
 	$RESTRICT="";
 	if (!$isadmin)  $RESTRICT=" AND private='0' ";
 
-	$query = "SELECT * FROM glpi_followups WHERE (tracking = $tID) $RESTRICT ORDER BY date ASC";
+	$query = "SELECT * FROM glpi_followups WHERE (tracking = $tID) $RESTRICT ORDER BY date DESC";
 	$result=$db->query($query);
 	
 	echo "<div align='center'>";
