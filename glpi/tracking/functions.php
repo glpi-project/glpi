@@ -92,7 +92,7 @@ function showCentralJobList($target,$start) {
 
 
 	
-	$query = "SELECT glpi_tracking.ID FROM glpi_tracking WHERE (glpi_tracking.status = 'new') AND (glpi_tracking.assign = '".$_SESSION["glpiID"]."') ORDER BY glpi_tracking.date ".$prefs["order"]."";
+	$query = "SELECT ID FROM glpi_tracking WHERE (assign = '".$_SESSION["glpiID"]."' AND assign_type='".USER_TYPE."') AND status <> 'old_done' AND status <> 'old_notdone' ORDER BY date ".$prefs["order"]."";
 	
 	$lim_query = " LIMIT ".$start.",".$cfg_features["list_limit"]."";	
 
