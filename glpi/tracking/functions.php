@@ -1525,8 +1525,8 @@ function showJobDetails ($ID){
 		// Deuxième Ligne
 		// Colonnes 1 et 2
 		echo "<tr class='tab_bg_2'><td colspan='2'>";
-		echo "<table width='100%'>";
-		echo "<tr><td width='15%'>".$lang["joblist"][6]."</td>";
+		echo "<table width='100%' bgcolor='#FFFFFF'  cellpadding='5'>";
+		echo "<tr  class='tab_bg_1'><td width='15%'>".$lang["joblist"][6]."</td>";
 		echo "<td  width='85%'>";
 
 		if ($isadmin){
@@ -1537,7 +1537,7 @@ function showJobDetails ($ID){
 			echo "var a=new Ajax.Updater('viewdesc$rand','".$cfg_install["root"]."/ajax/textarea.php' , {method: 'get',parameters: 'rows=6&cols=60&name=contents&data=".urlencode(addslashes($job->fields["contents"]))."'});";
 			echo "}";
 			echo "</script>\n";
-			echo "<div id='desc$rand' style='cursor:pointer;' onClick='showDesc$rand()'>\n";
+			echo "<div id='desc$rand' class='div_tracking' onClick='showDesc$rand()'>\n";
 				if (!empty($job->fields["contents"]))
 					echo nl2br($job->fields["contents"]);
 				else echo $lang["job"][33];
@@ -1741,7 +1741,7 @@ function showFollowups($tID){
 				echo "}";
 				echo "</script>\n";
 
-				echo "<div id='desc$rand'  class='div_tracking' ' onClick='showDesc$rand()'>\n";
+				echo "<div id='desc$rand'  class='div_tracking' onClick='showDesc$rand()'>\n";
 				if (!empty($data["contents"]))
 					echo nl2br($data["contents"]);
 				else echo $lang["job"][33];
