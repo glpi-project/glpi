@@ -678,6 +678,7 @@ $lang["joblist"][23]="Rajouter une ancienne intervention à l'historique";
 $lang["joblist"][24]="Non Terminé";
 $lang["joblist"][25]="Anciens";
 $lang["joblist"][26]="En attente";
+$lang["joblist"][27]="Email pour le suivi";
 
 $lang["knowbase"][0]="Base de connaissances";
 $lang["knowbase"][1]="FAQ";

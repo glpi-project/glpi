@@ -1461,7 +1461,7 @@ function showJobDetails ($ID){
 			echo "</td></tr>";
 
 				echo "<tr><td align='right'>";
-				echo $lang["joblist"][3].":";
+				echo $lang["joblist"][27].":";
 				echo "</td><td>";
 				if ($isadmin){
 					autocompletionTextField("uemail","glpi_tracking","uemail",$job->fields["uemail"],15);
@@ -1537,7 +1537,7 @@ function showJobDetails ($ID){
 			echo "var a=new Ajax.Updater('viewdesc$rand','".$cfg_install["root"]."/ajax/textarea.php' , {method: 'get',parameters: 'rows=6&cols=60&name=contents&data=".urlencode(addslashes($job->fields["contents"]))."'});";
 			echo "}";
 			echo "</script>\n";
-			echo "<div id='desc$rand' onClick='showDesc$rand()'>\n";
+			echo "<div id='desc$rand' style='cursor:pointer;' onClick='showDesc$rand()'>\n";
 				if (!empty($job->fields["contents"]))
 					echo nl2br($job->fields["contents"]);
 				else echo $lang["job"][33];
@@ -1687,7 +1687,7 @@ function showFollowups($tID){
 		echo "</td>";
 		echo "</tr>";
 
-		echo "<tr class='tab_bg_1'>";
+		echo "<tr class='tab_bg_2'>";
 		echo "<td align='center'>";
 		echo "<input type='submit' name='add' value='".$lang["buttons"][8]."' class='submit'>";
 		echo "</td>";
@@ -1741,7 +1741,7 @@ function showFollowups($tID){
 				echo "}";
 				echo "</script>\n";
 
-				echo "<div id='desc$rand'  onClick='showDesc$rand()'>\n";
+				echo "<div id='desc$rand'  class='div_tracking' ' onClick='showDesc$rand()'>\n";
 				if (!empty($data["contents"]))
 					echo nl2br($data["contents"]);
 				else echo $lang["job"][33];
@@ -1830,7 +1830,7 @@ function showFollowups($tID){
 			echo "</tr>";
 
 			if ($isadmin){
-				echo "<tr class='tab_bg_1'>";
+				echo "<tr class='tab_bg_2'>";
 				echo "<td align='center' colspan='2'>";
 				echo "<table width='100%'><tr><td align='center'>";
 				echo "<input type='submit' name='update_followup' value='".$lang["buttons"][14]."' class='submit'>";
