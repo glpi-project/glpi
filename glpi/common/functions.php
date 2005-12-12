@@ -252,7 +252,7 @@ function checkAuthentication($authtype) {
 	
 	if(!session_id()){@session_start();}
 
-	if ($cfg_install["root"]!=$_SESSION["root"]) {
+	if (isset($_SESSION["root"])&&$cfg_install["root"]!=$_SESSION["root"]) {
 		glpi_header($_SESSION["root"]);
 	}
 	
