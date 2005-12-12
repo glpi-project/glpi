@@ -1524,9 +1524,9 @@ function showJobDetails ($ID){
 
 		// Deuxième Ligne
 		// Colonnes 1 et 2
-		echo "<tr class='tab_bg_2'><td colspan='2'>";
-		echo "<table width='100%' bgcolor='#FFFFFF'  cellpadding='5'>";
-		echo "<tr  class='tab_bg_1'><td width='15%'>".$lang["joblist"][6]."</td>";
+		echo "<tr class='tab_bg_1'><td colspan='2'>";
+		echo "<table width='99%' >";
+		echo "<tr  class='tab_bg_2'><td width='15%'>".$lang["joblist"][6]."<br><br></td>";
 		echo "<td  width='85%'>";
 
 		if ($isadmin){
