@@ -401,8 +401,8 @@ $query = "SELECT * FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$tID
 	if ($result = $db->query($query)) {			
 	$number=$db->numrows($result);
 	while ($data=$db->fetch_array($result)) {
-		$date_in=$data["date_in"];
-		$date_out=$data["date_out"];
+		$date_in=convDate($data["date_in"]);
+		$date_out=convDate($data["date_out"]);
 						
 		echo "<tr  class='tab_bg_1'><td align='center'>";
 		echo $data["ID"]; 

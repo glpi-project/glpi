@@ -411,9 +411,9 @@ $query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')
 	if ($result = $db->query($query)) {			
 	$number=$db->numrows($result);
 	while ($data=$db->fetch_array($result)) {
-		$date_in=$data["date_in"];
-		$date_use=$data["date_use"];
-		$date_out=$data["date_out"];
+		$date_in=convDate($data["date_in"]);
+		$date_use=convDate($data["date_use"]);
+		$date_out=convDate($data["date_out"]);
 		$printer=$data["FK_glpi_printers"];
 		$page=$data["pages"];
 						
