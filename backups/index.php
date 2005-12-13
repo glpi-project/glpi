@@ -613,7 +613,7 @@ echo " <div align='center'> <table border='0'><tr><td><img src=\"". $HTMLRel."pi
 		$taille_fic = (int)$taille_fic;
 	        echo "<tr class='tab_bg_2'><td>$file&nbsp;</td>
 	        	<td align=\"right\">&nbsp;" . $taille_fic . " kB&nbsp;</td>
-	        	<td>&nbsp;" . date("Y-m-d H:i",filemtime($path.$file)) . "</td>
+	        	<td>&nbsp;" . convDateTime(date("Y-m-d H:i",filemtime($path.$file))) . "</td>
 	       		<td>&nbsp;<a href=\"javascript:erase('$file')\">".$lang["backup"][20]."</a>&nbsp;</td>
 
 			<td>&nbsp;<a href=\"javascript:restore('$file')\">".$lang["backup"][14]."</a>&nbsp;</td>
@@ -630,7 +630,7 @@ $dir=opendir($path);
 	   	        <tr class='tab_bg_1'><td colspan='6' ><hr noshade></td></tr>
 	   	    	<tr class='tab_bg_2'><td>$file&nbsp;</td>
 	        	<td align=\"right\">&nbsp;" . $taille_fic . " kB&nbsp;</td>
-	        	<td>&nbsp;" . date("Y-m-d H:i",filemtime($path.$file)) . "</td>
+	        	<td>&nbsp;" . convDateTime(date("Y-m-d H:i",filemtime($path.$file))) . "</td>
 	       		<td>&nbsp;<a href=\"javascript:erase('$file')\">".$lang["backup"][20]."</a>&nbsp;</td>
                          	<td>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</td>
 
