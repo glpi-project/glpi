@@ -43,26 +43,15 @@
 	// Make a select box
 	$db = new DB;
 
-	$where="";		
-	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
-		$where.=" AND glpi_licenses.serial LIKE '%".$_POST['searchText']."%' ";
-		
-	$NBMAX=$cfg_layout["dropdown_max"];
-	$LIMIT="LIMIT 0,$NBMAX";
-
-	if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
-						
 	$query = "SELECT DISTINCT glpi_licenses.* from glpi_licenses ";
 	$query.= " LEFT JOIN glpi_inst_software on (glpi_licenses.ID=glpi_inst_software.license)";
 	$query.= " WHERE glpi_licenses.sID='".$_POST['sID']."' AND (glpi_inst_software.cID IS NULL OR glpi_licenses.serial='free' OR glpi_licenses.serial='global' ) ";
-	$query.= " $where order by serial ASC";
+	$query.= " order by serial ASC";
 
 		$result = $db->query($query);
 		$number = $db->numrows($result);
 		echo "<select name=\"".$_POST['myname']."\" size='1'>";
 		
-		if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
-			echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 	
 		echo "<option value=\"0\">-----</option>";
 		

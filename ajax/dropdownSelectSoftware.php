@@ -71,7 +71,7 @@
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('item_type$rand', 1, \n";
 	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('show_".$_POST["myname"]."$rand','".$cfg_install["root"]."/ajax/dropdownInstallSoftware.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
+	echo "      	new Ajax.Updater('show_".$_POST["myname"]."$rand','".$cfg_install["root"]."/ajax/dropdownInstallLicense.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
 	echo "            {Element.hide('search_spinner_".$_POST["myname"]."$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_".$_POST["myname"]."$rand');},\n";
