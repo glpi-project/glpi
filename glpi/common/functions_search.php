@@ -727,6 +727,9 @@ switch ($field){
 	case "glpi_monitors.date_mod":
 		echo convDateTime($data["ITEM_$num"]);
 		break;
+	case "glpi_contracts.begin_date":
+		echo convDate($data["ITEM_$num"]);
+		break;
 	default:
 		echo $data["ITEM_$num"];
 		break;

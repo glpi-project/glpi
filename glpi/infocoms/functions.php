@@ -298,7 +298,7 @@ function dropdownInfocoms($name){
 function getWarrantyExpir($from,$addwarranty){
 if ($from==NULL || $from=='0000-00-00')
 return "";
-else return date("Y-m-d", strtotime("$from + $addwarranty month "));
+else return convDate(date("Y-m-d", strtotime("$from + $addwarranty month ")));
 
 }
 
