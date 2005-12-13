@@ -248,7 +248,7 @@ echo "<body bgcolor='#$bgcolor' onUnLoad=''>\n" ;
    echo "</tr>\n" ;
   }
 
-  echo "\n<tr><td colspan='10' align='center'><input type='button' class='button' onclick='window.opener.document.forms[\"".$_GET["form"]."\"].elements[\"".$_GET["elem"]."\"].value=\"$annee-".$val[$mois]."-".$val[$jour]."\";window.close()' value='Valider'>&nbsp;&nbsp;<input onclick='window.close()' type='button' class='button' value='Annuler'></td></tr></table>\n" ;
+  echo "\n<tr><td colspan='10' align='center'><input type='button' class='button' onclick='window.opener.document.forms[\"".$_GET["form"]."\"].elements[\"____".$_GET["elem"]."_show\"].value=\"".convDate("$annee-".$val[$mois]."-".$val[$jour])."\";window.opener.document.forms[\"".$_GET["form"]."\"].elements[\"".$_GET["elem"]."\"].value=\"$annee-".$val[$mois]."-".$val[$jour]."\";window.close()' value='Valider'>&nbsp;&nbsp;<input onclick='window.close()' type='button' class='button' value='Annuler'></td></tr></table>\n" ;
 
   echo "\n</tr></table>\n" ;
 

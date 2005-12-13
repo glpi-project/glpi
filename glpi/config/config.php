@@ -363,6 +363,9 @@ $cfg_features["founded_new_version"] = $db->result($result,0,"founded_new_versio
 // Auto add users from auth ext
 $cfg_features["auto_add_users"] = $db->result($result,0,"auto_add_users");
 
+// Date Format
+$cfg_layout["dateformat"] = $db->result($result,0,"dateformat");
+
 }
 
 

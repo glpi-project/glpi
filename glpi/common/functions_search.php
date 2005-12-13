@@ -719,6 +719,14 @@ switch ($field){
 		} else echo $data["ITEM_$num"];
 	
 	break;
+	case "glpi_computers.date_mod":
+	case "glpi_printers.date_mod":
+	case "glpi_networking.date_mod":
+	case "glpi_peripherals.date_mod":
+	case "glpi_software.date_mod":
+	case "glpi_monitors.date_mod":
+		echo convDateTime($data["ITEM_$num"]);
+		break;
 	default:
 		echo $data["ITEM_$num"];
 		break;
