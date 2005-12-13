@@ -987,6 +987,13 @@ function showFormConfigDisplay($target){
 	echo "</tr></table>";
 	echo "</td></tr>";
 
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][128]." </td><td><select name=\"dateformat\">";
+	$dateformat=$db->result($result,0,"dateformat");
+	echo "<option value=\"0\"";  if($dateformat==0){ echo " selected";} echo ">YYYY-MM-DD</option>";
+	echo "<option value=\"1\"";  if($dateformat==1){ echo " selected";} echo ">DD-MM-YYYY</option>";
+	echo "</select></td></tr>";
+
+
 	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][117]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"public_faq\" value=\"1\" "; if($db->result($result,0,"public_faq") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"public_faq\" value=\"0\" "; if($db->result($result,0,"public_faq") == 0) echo "checked";
 	echo " ></td></tr>";
 
@@ -1311,7 +1318,7 @@ function updateConfigGen($root_doc,$event_loglevel,$expire_events, $permit_helpd
 	
 }
 
-function updateConfigDisplay($num_of_events,$jobs_at_login,$list_limit,$cut,$priority,$planning_begin,$planning_end,$public_faq,$text_login,$use_ajax,$ajax_wildcard,$ajax_limit_count,$dropdown_max,$ajax_autocompletion) {
+function updateConfigDisplay($num_of_events,$jobs_at_login,$list_limit,$cut,$priority,$planning_begin,$planning_end,$public_faq,$text_login,$use_ajax,$ajax_wildcard,$ajax_limit_count,$dropdown_max,$ajax_autocompletion,$dateformat) {
 	
 	$db = new DB;
 	
@@ -1323,7 +1330,7 @@ function updateConfigDisplay($num_of_events,$jobs_at_login,$list_limit,$cut,$pri
 		$query.= " public_faq = '". $public_faq ."', text_login = '". $text_login ."', ";
 		$query.= " use_ajax = '". $use_ajax ."', ajax_wildcard = '". $ajax_wildcard ."', ";
 		$query.= " ajax_limit_count = '". $ajax_limit_count ."', dropdown_max = '". $dropdown_max ."', ";		
-		$query.= " ajax_autocompletion = '". $ajax_autocompletion ."' ";				
+		$query.= " ajax_autocompletion = '". $ajax_autocompletion ."',dateformat='".$dateformat."' ";				
 		$query.= " where ID = '1' ";
 		$db->query($query);
 	

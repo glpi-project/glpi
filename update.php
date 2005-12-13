@@ -3247,6 +3247,11 @@ if(!FieldExists("glpi_config","auto_add_users")) {
 	$db->query($query) or die("0.65 add auto_add_users field in config".$lang["update"][90].$db->error());
 }
 
+if(!FieldExists("glpi_config","dateformat")) {
+	$query="ALTER TABLE `glpi_config` ADD `dateformat` SMALLINT DEFAULT '0' NOT NULL ;";
+	$db->query($query) or die("0.65 add dateformat field in config".$lang["update"][90].$db->error());
+}
+
 
 
 }

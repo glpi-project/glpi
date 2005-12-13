@@ -1216,6 +1216,7 @@ $lang["setup"][124]="Ajout automatique des utilisateurs à partir des sources ex
 $lang["setup"][125]="... Depuis une source externe";
 $lang["setup"][126]="Ajouter directement un utilisateur d'une source externe";
 $lang["setup"][127]="Autocompletion des champs textes avec AJAX";
+$lang["setup"][128]="Format des dates";
 
 
 $lang["setup"][150]="Sources d'authentification externes";

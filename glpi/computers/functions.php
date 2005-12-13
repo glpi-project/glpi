@@ -179,14 +179,14 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		if(!empty($withtemplate) && $withtemplate == 2) {
 			$template = "newcomp";
 			$datestring = $lang["computers"][14].": ";
-			$date = date("Y-m-d H:i:s");
+			$date = convDateTime(date("Y-m-d H:i:s"));
 		} elseif(!empty($withtemplate) && $withtemplate == 1) { 
 			$template = "newtemplate";
 			$datestring = $lang["computers"][14].": ";
-			$date = date("Y-m-d H:i:s");
+			$date = convDateTime(date("Y-m-d H:i:s"));
 		} else {
 			$datestring = $lang["computers"][11].": ";
-			$date = $comp->fields["date_mod"];
+			$date = convDateTime($comp->fields["date_mod"]);
 			$template = false;
 		}
 		
