@@ -292,7 +292,7 @@ function showJobShort($ID, $followups) {
 
 		if (!ereg("old_",$job->fields["status"]))
 		{
-			echo "<td width='100'  ><small>".$lang["joblist"][11].":<br>&nbsp;".$job->fields["date"]."</small></td>";
+			echo "<td width='100'  ><small>".$lang["joblist"][11].":<br>&nbsp;".convDateTime($job->fields["date"])."</small></td>";
 
 		}
 		else
@@ -303,7 +303,7 @@ function showJobShort($ID, $followups) {
 			echo "<br><input type='checkbox' name='todel[".$job->ID."]' value='1' $sel>";
 			}
 			echo "</td>";
-			echo "<td width='130' ><small>".$lang["joblist"][11].":<br>&nbsp;".$job->fields["date"]."<br>";
+			echo "<td width='130' ><small>".$lang["joblist"][11].":<br>&nbsp;".convDateTime($job->fields["date"])."<br>";
 			echo "<i>".$lang["joblist"][12].":<br>&nbsp;".$job->fields["closedate"]."</i>";
 			if ($job->fields["realtime"]>0) echo "<br>".$lang["job"][20].": <br>".getRealtime($job->fields["realtime"]);
 			echo "</small></td>";
@@ -584,7 +584,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "</th></tr>";
 
 	echo "<tr class='tab_bg_1' align='center'><td>".$lang["joblist"][1].":</td>";
-	echo "<td align='center' colspan='3'>".date("Y-m-d H:i:s")."</td></tr>";
+	echo "<td align='center' colspan='3'>".convDateTime(date("Y-m-d H:i:s"))."</td></tr>";
 
 	if ($device_type==0){
 		echo "<tr class='tab_bg_2'>";
@@ -1073,7 +1073,7 @@ function showFollowupsShort($ID) {
 		while ($data=$db->fetch_array($result)) {
 			
 			echo "<tr class='tab_bg_2'>";
-			echo "<td align='center'>".$data["date"]."</td>";
+			echo "<td align='center'>".convDateTime($data["date"])."</td>";
 			echo "<td align='center'>".getUserName($data["author"],1)."</td>";
 			echo "<td width='70%'><strong>".$data["contents"]."</strong></td>";
 			echo "</tr>";
@@ -1427,7 +1427,7 @@ function showJobDetails ($ID){
 		echo "<td valign='top' width='33%'><table border='0'>";
 
 		echo "<tr><td align='right'>";
-		echo $lang["joblist"][11].":</td><td><strong>".$job->fields["date"]."</strong>";
+		echo $lang["joblist"][11].":</td><td><strong>".convDateTime($job->fields["date"])."</strong>";
 		echo "</td></tr>";
 		echo "<tr><td align='right'>".$lang["joblist"][12].":</td>\n";
 		if (!ereg("old_",$job->fields["status"]))
@@ -1731,7 +1731,7 @@ function showFollowups($tID){
 			echo "<table width='100%'>";
 			echo "<tr class='tab_bg_2'><td width='60%'>";
 			echo "<table width='100%' bgcolor='#FFFFFF'>";
-			echo "<tr class='tab_bg_1'><td align='center' width='10%'>".$lang["joblist"][6]."<br><br>".$lang["joblist"][1].":<br><strong>".$data["date"]."</strong></td>";
+			echo "<tr class='tab_bg_1'><td align='center' width='10%'>".$lang["joblist"][6]."<br><br>".$lang["joblist"][1].":<br><strong>".convDateTime($data["date"])."</strong></td>";
 			echo "<td width='90%'>";
 			
 			if ($isadmin){
