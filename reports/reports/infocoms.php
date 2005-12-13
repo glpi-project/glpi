@@ -137,7 +137,7 @@ function display_infocoms_report($device_type,$begin,$end){
 			
 				$valeurnettesoustot+=str_replace(" ","",$valeurnette);	
 
-				echo "<tr class='tab_bg_1'><td>".$comp->getName()."</td><td>".number_format($line["value"],2)."</td><td>".number_format($valeurnette,2)."</td><td>".$line["buy_date"]."</td><td>".$line["use_date"]."</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
+				echo "<tr class='tab_bg_1'><td>".$comp->getName()."</td><td>".number_format($line["value"],2)."</td><td>".number_format($valeurnette,2)."</td><td>".convDate($line["buy_date"])."</td><td>".convDate($line["use_date"])."</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
 	
 			}
 

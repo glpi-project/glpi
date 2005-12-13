@@ -1419,6 +1419,7 @@ function showCalendarForm($form,$element,$value='',$withtemplate=''){
 
 function convDateTime($time) { 
  global $cfg_layout;
+ if (is_null($time)) return $time;
  if ($cfg_layout["dateformat"]!=0) {
    $date = substr($time,8,2)."-";        // jour 
    $date = $date.substr($time,5,2)."-";  // mois 
@@ -1431,6 +1432,7 @@ function convDateTime($time) {
  }
  function convDate($time) { 
  global $cfg_layout;
+ if (is_null($time)) return $time;
  if ($cfg_layout["dateformat"]!=0) {
    $date = substr($time,8,2)."-";        // jour 
    $date = $date.substr($time,5,2)."-";  // mois 

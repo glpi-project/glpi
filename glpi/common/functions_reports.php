@@ -88,10 +88,10 @@ switch($item_type)
 						$name = $ligne['itemname'];
 						$deleted = $ligne['itemdeleted'];
 						$lieu = $ligne['location'];
-						$achat_date = $ligne['buy_date'];
+						$achat_date = convDate($ligne['buy_date']);
 						$fin_garantie = getWarrantyExpir($ligne["buy_date"],$ligne["warranty_duration"]);
 						$contract_type = getDropdownName("glpi_dropdown_contract_type",$ligne["contract_type"]);
-						$contract_begin = $ligne['begin_date'];
+						$contract_begin = convDate($ligne['begin_date']);
 						$contract_end = getWarrantyExpir($ligne["begin_date"],$ligne["duration"]);
 		
 						//inserer ces valeures dans un tableau
@@ -131,10 +131,10 @@ switch($item_type)
 						$name = $ligne['itemname'];
 						$deleted = $ligne['itemdeleted'];
 						$lieu = $ligne['location'];
-						$achat_date = $ligne['buy_date'];
+						$achat_date = convDate($ligne['buy_date']);
 						$fin_garantie = getWarrantyExpir($ligne["buy_date"],$ligne["warranty_duration"]);
 						$contract_type = getDropdownName("glpi_dropdown_contract_type",$ligne["contract_type"]);
-						$contract_begin = $ligne['begin_date'];
+						$contract_begin = convDate($ligne['begin_date']);
 						$contract_end = getWarrantyExpir($ligne["begin_date"],$ligne["duration"]);
 					
 					//inserer ces valeures dans un tableau
@@ -172,10 +172,10 @@ switch($item_type)
 						$name = $ligne['itemname'];
 						$deleted = $ligne['itemdeleted'];
 						$lieu = $ligne['location'];
-						$achat_date = $ligne['buy_date'];
+						$achat_date = convDate($ligne['buy_date']);
 						$fin_garantie = getWarrantyExpir($ligne["buy_date"],$ligne["warranty_duration"]);
 						$contract_type = getDropdownName("glpi_dropdown_contract_type",$ligne["contract_type"]);
-						$contract_begin = $ligne['begin_date'];
+						$contract_begin = convDate($ligne['begin_date']);
 						$contract_end = getWarrantyExpir($ligne["begin_date"],$ligne["duration"]);
 					//inserer ces valeures dans un tableau
 					
@@ -213,10 +213,10 @@ switch($item_type)
 						$name = $ligne['itemname'];
 						$deleted = $ligne['itemdeleted'];
 						$lieu = $ligne['location'];
-						$achat_date = $ligne['buy_date'];
+						$achat_date = convDate($ligne['buy_date']);
 						$fin_garantie = getWarrantyExpir($ligne["buy_date"],$ligne["warranty_duration"]);
 						$contract_type = getDropdownName("glpi_dropdown_contract_type",$ligne["contract_type"]);
-						$contract_begin = $ligne['begin_date'];
+						$contract_begin = convDate($ligne['begin_date']);
 						$contract_end = getWarrantyExpir($ligne["begin_date"],$ligne["duration"]);
 					//inserer ces valeures dans un tableau
 				
@@ -253,10 +253,10 @@ switch($item_type)
 						$name = $ligne['itemname'];
 						$deleted = $ligne['itemdeleted'];
 						$lieu = $ligne['location'];
-						$achat_date = $ligne['buy_date'];
+						$achat_date = convDate($ligne['buy_date']);
 						$fin_garantie = getWarrantyExpir($ligne["buy_date"],$ligne["warranty_duration"]);
 						$contract_type = getDropdownName("glpi_dropdown_contract_type",$ligne["contract_type"]);
-						$contract_begin = $ligne['begin_date'];
+						$contract_begin = convDate($ligne['begin_date']);
 						$contract_end = getWarrantyExpir($ligne["begin_date"],$ligne["duration"]);
 					//inserer ces valeures dans un tableau
 					
@@ -293,10 +293,10 @@ switch($item_type)
 						$name = $ligne['itemname'];
 						$deleted = $ligne['itemdeleted'];
 						$lieu = $ligne['location'];
-						$achat_date = $ligne['buy_date'];
+						$achat_date = convDate($ligne['buy_date']);
 						$fin_garantie = getWarrantyExpir($ligne["buy_date"],$ligne["warranty_duration"]);
 						$contract_type = getDropdownName("glpi_dropdown_contract_type",$ligne["contract_type"]);
-						$contract_begin = $ligne['begin_date'];
+						$contract_begin = convDate($ligne['begin_date']);
 						$contract_end = getWarrantyExpir($ligne["begin_date"],$ligne["duration"]);
 					//inserer ces valeures dans un tableau
 					
