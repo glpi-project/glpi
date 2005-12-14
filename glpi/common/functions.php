@@ -436,6 +436,8 @@ function logArray(){
 				"devices"=>$lang["log"][18],
 				"links"=>$lang["log"][38],
 				"typedocs"=>$lang["log"][39],
+				"planning"=>$lang["log"][16],
+				"reservation"=>$lang["log"][42],
 				"contracts"=>$lang["log"][17]);
 	
 	$logService=array("inventory"=>$lang["log"][50],
@@ -445,6 +447,7 @@ function logArray(){
 				"financial"=>$lang["log"][54],
 				"login"=>$lang["log"][55],
 				"setup"=>$lang["log"][57],
+				"setup"=>$lang["log"][58],
 				"document"=>$lang["log"][56]);
 	
 return array($logItemtype,$logService);

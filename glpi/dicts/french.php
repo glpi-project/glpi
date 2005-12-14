@@ -1521,7 +1521,6 @@ $lang["log"][16]="planning";
 $lang["log"][17]="contrats";
 $lang["log"][18]="periphériques internes";
 $lang["log"][19]="informations commerciales";
-
 $lang["log"][20]="ajout de l'item ";
 $lang["log"][21]="mise à jour de l'item";
 $lang["log"][22]="supression de l'item";
@@ -1541,10 +1540,9 @@ $lang["log"][36]="ajout lien avec contact";
 $lang["log"][37]="supression lien avec contact";
 $lang["log"][38]="liens";
 $lang["log"][39]="type documents";
-
-
 $lang["log"][40]="connexion de l'IP";
 $lang["log"][41]="echec de connexion";
+$lang["log"][42]="Réservation";
 
 
 $lang["log"][50]="Inventaire";
@@ -1555,5 +1553,5 @@ $lang["log"][54]="Gestion";
 $lang["log"][55]="Connexion";
 $lang["log"][56]="Documents";
 $lang["log"][57]="Configuration";
-
+$lang["log"][58]="Réservation";
 ?>
