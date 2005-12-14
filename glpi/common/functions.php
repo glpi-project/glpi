@@ -563,7 +563,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 			echo $item;
 			echo "\">$item</a>";
 		}			
-		echo "</b></td><td><span style='font-size:9px;'>$date</span></td><td align='center'>".$logService[$service]."</td><td>$message</td>";
+		echo "</b></td><td><span style='font-size:9px;'>".convDateTime($date)."</span></td><td align='center'>".$logService[$service]."</td><td>$message</td>";
 		echo "</tr>";
 
 		$i++; 
@@ -694,7 +694,7 @@ function showEvents($target,$order,$sort,$start=0) {
 				echo "\">$item</a>";
 		   }
 		}			
-		echo "</b></td><td>$date</td><td align='center'>".$logService[$service]."</td><td align='center'>$level</td><td>$message</td>";
+		echo "</b></td><td>".convDateTime($date)."</td><td align='center'>".$logService[$service]."</td><td align='center'>$level</td><td>$message</td>";
 		echo "</tr>";
 
 		$i++; 
