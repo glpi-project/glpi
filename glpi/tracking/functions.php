@@ -1822,7 +1822,7 @@ function showFollowups($tID){
 				else echo $lang["job"][32];	
 			else {
 				$data2=$db->fetch_array($result2);
-				echo $data2["begin"]." -> ".$data2["end"];
+				echo convDateTime($data2["begin"])." -> ".convDateTime($data2["end"]);
 				if ($isadmin)
 					echo "<a href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=".$data2["ID"]."'><img src='".$HTMLRel."pics/edit.png'></a>";
 					
