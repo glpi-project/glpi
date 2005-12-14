@@ -71,7 +71,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 
 	if (isset($_POST["clear_resa"])){
 		if (deleteReservation($_POST["ID"])){
-			logEvent($_POST["ID"], "reservation", 4, "inventory", $_SESSION["glpiname"]." delete a reservation.");
+			logEvent($_POST["ID"], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 		}
 		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
 		$_GET["mois_courant"]=$begin_month;
@@ -109,7 +109,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		$_GET["annee_courant"]=$begin_year;
 		
 		if ($ok){
-			logEvent($_POST["id_item"], "reservation", 4, "inventory", $_SESSION["glpiname"]." add a reservation.");
+			logEvent($_POST["id_item"], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]);
 			printCalendrier($_SERVER["PHP_SELF"],$_POST["id_item"]);
 		}
 	}
@@ -128,13 +128,13 @@ else {
 	if (isset($_GET["add"]))
 	{
 		addReservationItem($_GET);
-		logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." added reservation item ".$_GET["device_type"]."-".$_GET["id_device"].".");
+		logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_GET["device_type"]."-".$_GET["id_device"].".");
 		glpi_header($_SERVER['HTTP_REFERER']);
 	} 
 	else if (isset($_GET["delete"]))
 	{
 		deleteReservationItem($_GET);
-		logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." deleted reservation item.");
+		logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
@@ -142,7 +142,7 @@ else {
 	if (isset($_POST["updatecomment"]))
 	{
 		updateReservationComment($_POST);
-		logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." update reservation comment.");
+		logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	} 
 
 	if(!isset($_GET["start"])) $_GET["start"] = 0;
