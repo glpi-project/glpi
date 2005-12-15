@@ -1206,6 +1206,7 @@ function updateTracking($input){
 		$input["assign"]=$input["assign_int"];
 		}
 
+
 	$updates=array();
 	// add Document if exists
 	if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
@@ -1235,6 +1236,16 @@ function updateTracking($input){
 		$updates[]="closedate";
 		$job->fields["closedate"]=date("Y-m-d H:i:s");
 	}
+
+	if (in_array("author",$updates)){
+		$user=new User;
+		$user->getfromDBbyID($input["author"]);
+		if (!empty($user->fields["email"])){
+			$updates[]="uemail";
+			$job->fields["uemail"]=$user->fields["email"];
+		}
+	}
+
 	if(count($updates)>0)
 		$job->updateInDB($updates);
 
