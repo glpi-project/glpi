@@ -1447,7 +1447,7 @@ function showJobDetails ($ID){
 		}
 		else
 		{
-			echo "<td><strong>".$job->fields["closedate"]."</strong>\n";
+			echo "<td><strong>".convDateTime($job->fields["closedate"])."</strong>\n";
 		}
 
 		echo "</tr>\n";
