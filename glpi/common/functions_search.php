@@ -353,7 +353,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	$ORDER= addOrderBy($SEARCH_OPTION[$type][$sort]["table"].".".$SEARCH_OPTION[$type][$sort]["field"],$order);
 
 	$GROUPBY=" GROUP BY ID";
-	if ($distinct!='Y') $GROUPBY="";
+	if ($distinct!='N') $GROUPBY="";
 	
 	if ($WHERE == " WHERE ") $WHERE="";
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER;
