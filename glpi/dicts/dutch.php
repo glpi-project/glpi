@@ -760,6 +760,7 @@ $lang["log"][38]="links";
 $lang["log"][39]="document types"; 
 $lang["log"][40]="IP connection"; 
 $lang["log"][41]="connection failed"; 
+$lang["log"][42]="Reservation"; 
 $lang["log"][50]="Inventory"; 
 $lang["log"][51]="Tracking"; 
 $lang["log"][52]="Planning"; 
@@ -768,6 +769,7 @@ $lang["log"][54]="Management";
 $lang["log"][55]="Connection"; 
 $lang["log"][56]="Documents"; 
 $lang["log"][57]="Setup"; 
+$lang["log"][58]="Reservation"; 
 
 $lang["login"][0]="Niet mogelijk om in te loggen, zorg ervoor dat uw browser cookies toestaat"; 
 $lang["login"][1]="Opnieuw inloggen"; 
