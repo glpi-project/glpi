@@ -117,7 +117,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 
 			echo "<option value='AND NOT' ";
 			if(is_array($link)&&isset($link[$i]) && $link[$i] == "AND NOT") echo "selected";
-			echo ">AND NOT</option>";		
+			echo ">AND NOT</option>";
 			
 			echo "<option value='OR NOT' ";
 			if(is_array($link)&&isset($link[$i]) && $link[$i] == "OR NOT") echo "selected";
@@ -212,7 +212,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$link,$distinct){
 	global $INFOFORM_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$HTMLRel,$cfg_install,$deleted_tables,$template_tables,$lang,$cfg_features;
 	$db=new DB;
-	
+
 	// Get the items to display
 	$toview=array();
 	// Add first element (name)
@@ -229,22 +229,20 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	if (in_array("all",$field)){
 		foreach ($field as $key => $val)
 		if ($val=="all"){
-			$templink="AND";
-			if (isset($link[$key])) $templink=$link[$key];
-			array_push($SEARCH_ALL,array("link"=>$templink, "contains"=>$contains[$key]));
+			array_push($SEARCH_ALL,array("contains"=>$contains[$key]));
 		}
 	}
-	
+
 	// Add searched items
 	if (count($field)>0)
 		foreach($field as $key => $val)
 			if (!in_array($val,$toview)&&$val!="all"&&$val!="view")
 			array_push($toview,$val);
-	
+
 	// Add order item
 	if (!in_array($sort,$toview))
 		array_push($toview,$sort);
-	
+
 			
 			
 	// Clean toview array
@@ -265,23 +263,23 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	if ($LINK_ID_TABLE[$type]=="glpi_cartridges_type"||$LINK_ID_TABLE[$type]=="glpi_consumables_type")
 		$SELECT.=", ".$LINK_ID_TABLE[$type].".alarm as ALARM";
 
-	//// 2 - FROM AND LEFT JOIN 
+	//// 2 - FROM AND LEFT JOIN
 	$FROM = " FROM ".$LINK_ID_TABLE[$type];
 	$already_link_tables=array();
 	array_push($already_link_tables,$LINK_ID_TABLE[$type]);
 
 	for ($i=1;$i<$toview_count;$i++)
 		$FROM.=addLeftJoin($type,$LINK_ID_TABLE[$type],$already_link_tables,$SEARCH_OPTION[$type][$toview[$i]]["table"]);
-		
-	
+
+
 	// Search all case :
 	if (count($SEARCH_ALL)>0)
 	foreach ($SEARCH_OPTION[$type] as $key => $val)
 			$FROM.=addLeftJoin($type,$LINK_ID_TABLE[$type],$already_link_tables,$SEARCH_OPTION[$type][$key]["table"]);
-	
 
-	//// 3 - WHERE	
-	
+
+	//// 3 - WHERE
+
 	$first=true;
 	$WHERE = " WHERE ";
 	if (in_array($LINK_ID_TABLE[$type],$deleted_tables)){
@@ -296,7 +294,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	}
 
 	// Add search conditions
-	
+
 	if (count($contains)>0) {
 		$i=0;
 
@@ -304,34 +302,49 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		foreach($contains as $key => $val)
 		if (strlen($val)>0&&$field[$key]!="all"&&$field[$key]!="view"){
 			$LINK=" ";
-			if ($i>0) $LINK=$link[$key];
-			
-			$TOADD.= $LINK.addWhere($type,$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"],$val);	
-			$i++;
+			if ($i>0) $LINK=" ".$link[$key];
+
+			$TOADD.= $LINK.addWhere($type,$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"],$val);
+                        $i++;
 		} else if (strlen($val)>0&&$field[$key]=="view"){
-						
-			if ($i!=0)
+
+			if ($i>0)
 				$TOADD.= " ".$link[$key];
 			 $TOADD.= " ( ";
 			$first2=true;
 			foreach ($toview as $key2 => $val2){
 				$LINK=" OR ";
 				if ($first2) {$LINK=" ";$first2=false;}
-				$TOADD.= $LINK.addWhere($type,$SEARCH_OPTION[$type][$val2]["table"].".".$SEARCH_OPTION[$type][$val2]["field"],$val);	
+				$TOADD.= $LINK.addWhere($type,$SEARCH_OPTION[$type][$val2]["table"].".".$SEARCH_OPTION[$type][$val2]["field"],$val);
 			}
 			$TOADD.=" ) ";
 			$i++;
-		}
-		
+		} else if (strlen($val)>0&&$field[$key]=="all"){
+
+			if ($i>0)
+				$TOADD.= " ".$link[$key];
+			 $TOADD.= " ( ";
+			$first2=true;
+
+   		        foreach ($SEARCH_OPTION[$type] as $key2 => $val2){
+                                $LINK=" OR ";
+                                if ($first2) {$LINK=" ";$first2=false;}
+                                $TOADD.= $LINK.addWhere($type,$val2["table"].".".$val2["field"],$val);
+			}
+
+		        $TOADD.=")";
+		        $i++;
+                }
+
 		if (!empty($TOADD)){
 			$LINK= " AND " ;
 			if ($first) {$LINK=" ";$first=false;}
 			$WHERE.=$LINK." ( ".$TOADD." ) ";
 		}
 	}
-	
-	// Search ALL 
-	if (count($SEARCH_ALL)>0)
+
+	// Search ALL
+/*	if (count($SEARCH_ALL)>0)
 	foreach ($SEARCH_ALL as $key => $val)
 	if (!empty($val["contains"])){
 		$LINK= " ".$val["link"]." " ;
@@ -342,23 +355,23 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		foreach ($SEARCH_OPTION[$type] as $key2 => $val2){
 			$LINK=" OR ";
 			if ($first2) {$LINK=" ";$first2=false;}
-			$WHERE.= $LINK.addWhere($type,$val2["table"].".".$val2["field"],$val["contains"]);	
+			$WHERE.= $LINK.addWhere($type,$val2["table"].".".$val2["field"],$val["contains"]);
 			}
-		
+
 		$WHERE.=")";
 	}
-	
-	
-	//// 4 - ORDER 
+*/
+
+	//// 4 - ORDER
 	$ORDER= addOrderBy($SEARCH_OPTION[$type][$sort]["table"].".".$SEARCH_OPTION[$type][$sort]["field"],$order);
 
 	$GROUPBY=" GROUP BY ID";
 	if ($distinct!='N') $GROUPBY="";
-	
+
 	if ($WHERE == " WHERE ") $WHERE="";
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER;
 	//echo $QUERY;
-	
+
 	// Get it from database and DISPLAY
 	if ($result = $db->query($QUERY)) {
 		$numrows= $db->numrows($result);
@@ -388,7 +401,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if ($type==CONSUMABLE_TYPE)
 					echo "<th>".$lang["consumables"][0]."</th>";
 					
-					
+
 			echo "</tr>\n";
 			$db->data_seek($result,$start);
 			$i=$start;
@@ -422,7 +435,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					countCartridges($data["ID"],$data["ALARM"]);
 					echo "</td>";
 				}
-				
+
 				if ($type==SOFTWARE_TYPE){
 					echo "<td>";					
 		   		countInstallations($data["ID"]);
@@ -540,13 +553,13 @@ case "glpi_device_hdd.specif_default" :
 case "glpi_device_ram.specif_default" :
 	$larg=50;
 	return " ( DEVICE_".RAM_DEVICE.".specificity < ".($val+$larg)." AND DEVICE_".RAM_DEVICE.".specificity > ".($val-$larg)." ) ";
-	break;
+       	break;
 case "glpi_networking_ports.ifmac" :
 	if ($type==COMPUTER_TYPE)
 		return " (  DEVICE_".NETWORK_DEVICE.".specificity LIKE '%".$val."%'  OR $field LIKE '%".$val."%' ) ";
 	else return " $field LIKE '%".$val."%' ";
 	break;
-	
+
 default:
 	return " $field LIKE '%".$val."%' ";
 	break;
