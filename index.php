@@ -152,7 +152,7 @@ else
 	
 	
 	echo "</fieldset>";
-	echo "<p ><span> <input type='submit' name='submit' value='Login' class='submit' /></span></p>";
+	echo "<p ><span> <input type='submit' name='submit' value='".$lang["buttons"][2]."' class='submit' /></span></p>";
 	echo "</form>";
 	
 
