@@ -1690,7 +1690,7 @@ function showFollowups($tID){
 
 
 		echo "<div id='plan$rand'  onClick='showPlan$rand()'>\n";
-		echo "<a>".$lang["job"][34]."</a>";
+		echo "<a href='#'>".$lang["job"][34]."</a>";
 		echo "</div>\n";	
 
 		echo "<div id='viewplan$rand'>\n";
