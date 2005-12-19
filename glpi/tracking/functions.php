@@ -304,7 +304,7 @@ function showJobShort($ID, $followups) {
 			}
 			echo "</td>";
 			echo "<td width='130' ><small>".$lang["joblist"][11].":<br>&nbsp;".convDateTime($job->fields["date"])."<br>";
-			echo "<i>".$lang["joblist"][12].":<br>&nbsp;".$job->fields["closedate"]."</i>";
+			echo "<i>".$lang["joblist"][12].":<br>&nbsp;".convDateTime($job->fields["closedate"])."</i>";
 			if ($job->fields["realtime"]>0) echo "<br>".$lang["job"][20].": <br>".getRealtime($job->fields["realtime"]);
 			echo "</small></td>";
 		}
@@ -545,7 +545,7 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 		
 		
 		// Log this event
-		logEvent($tID,"tracking",4,"tracking",getUserName($author)." added new job.");
+		logEvent($tID,"tracking",4,"tracking",getUserName($author)." ".$lang["log"][20]);
 		
 		// Processing Email
 		if ($cfg_features["mailing"])
