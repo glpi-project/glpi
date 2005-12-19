@@ -711,14 +711,15 @@ class Mailing
 	// Format the mail body to send
 	function get_mail_body()
 	{
-		global $cfg_features;
+		global $cfg_features, $lang;
 		
 		// Create message body from Job and type
 		$body="";
 		
-		if ($cfg_features['url_in_mail']&&!empty($cfg_features['url_base']))
-			$body.=$cfg_features['url_base']."/index.php?redirect=tracking_".$this->job->fields["ID"]."\n\n";
-		
+		if ($cfg_features['url_in_mail']&&!empty($cfg_features['url_base'])){
+			$body.=$lang["mailing"][1]."\n"; $body.="URL : ".$cfg_features['url_base']."/index.php?redirect=tracking_".$this->job->fields["ID"]."\n";
+			
+			}
 		
 		$body.=$this->job->textDescription();
 		if ($this->type!="new") $body.=$this->job->textFollowups();
@@ -746,7 +747,7 @@ class Mailing
 			$subject.=$lang["mailing"][10];
 				break;
 			case "finish":
-			$subject.=$lang["mailing"][11]." ".$this->job->fields["closedate"];			
+			$subject.=$lang["mailing"][11]." ".convDateTime($this->job->fields["closedate"]);			
 				break;
 			default :
 			$subject.=$lang["mailing"][13];
