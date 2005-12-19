@@ -49,7 +49,7 @@ else $_GET["deleted"] = "N";
 
 if (!isset($_GET["distinct"]))
 if (isset($_SESSION['search'][$type]["distinct"])) $_GET["distinct"]=$_SESSION['search'][$type]["distinct"];
-else $_GET["distinct"] = "Y";
+else $_GET["distinct"] = "N";
 	
 
 if (!isset($_GET["link"]))
