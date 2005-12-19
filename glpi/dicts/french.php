@@ -736,8 +736,9 @@ $lang["login"][7]="Mot de passe";
 $lang["login"][8]="Indentifiant ou mot de passe vide";
 $lang["login"][10]="Authentification";
 
-$lang["mailing"][0]="-----------------------";
-$lang["mailing"][1]="=======================================";
+
+$lang["mailing"][0]="----------------------------------------------------------";
+$lang["mailing"][1]="======================================================================";
 $lang["mailing"][2]="Auteur :";
 $lang["mailing"][3]="Contenu :";
 $lang["mailing"][4]="Intervention(s) déjà effectuée(s)";

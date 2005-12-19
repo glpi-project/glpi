@@ -165,7 +165,7 @@ class Job {
 			$fup=new Followup();
 			while ($data=$db->fetch_array($result)){
 					$fup->getfromDB($data['ID']);
-					$message .= "[ ".$fup->fields["date"]." ]\n";
+					$message .= "[ ".convDateTime($fup->fields["date"])." ]\n";
 					$message .= $lang["mailing"][2]." ".$fup->getAuthorName()."\n";
 					$message .= $lang["mailing"][3]."\n".$fup->fields["contents"]."\n";
 
@@ -173,10 +173,10 @@ class Job {
 					$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
 					$result2=$db->query($query2);
 					if ($db->numrows($result2)==0)
-				      $message.=$lang["job"][32];	
+				      $message.=$lang["job"][32]."\n";
 					else {
 						$data2=$db->fetch_array($result2);
-						$message.=$data2["begin"]." -> ".$data2["end"];
+						$message.=convDateTime($data2["begin"])." -> ".convDateTime($data2["end"])."\n";
 					}
 					
 					$message.=$lang["mailing"][0]."\n";	
@@ -197,7 +197,7 @@ class Job {
 		
 		$message = $lang["mailing"][1]."\n*".$lang["mailing"][5]."*\n".$lang["mailing"][1]."\n";
 		$message.= $lang["mailing"][2]." ".$this->getAuthorName()."\n";
-		$message.= $lang["mailing"][6]." ".$this->fields["date"]."\n";
+		$message.= $lang["mailing"][6]." ".convDateTime($this->fields["date"])."\n";
 		$message.= $lang["mailing"][7]." ".$name."\n";
 		$message.= $lang["mailing"][24]." ".getStatusName($this->fields["status"])."\n";
 		$message.= $lang["mailing"][8]." ".$this->getAssignName()."\n";

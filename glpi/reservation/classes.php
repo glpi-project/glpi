@@ -369,12 +369,13 @@ function getEmpty () {
 		$u->getFromDbbyID($this->fields["id_user"]);
 		$content="";
 		
-		
+		$content.=$lang["mailing"][1]."\n";	
 		$content.=$lang["mailing"][2]." ".$u->getName()."\n";
 		$content.=$lang["mailing"][7]." ".$ci->getName()."\n";
-		$content.=$lang["mailing"][20]." ".$this->fields["begin"]."\n";
-		$content.=$lang["mailing"][21]." ".$this->fields["end"]."\n";
+		$content.=$lang["mailing"][20]." ".convDateTime($this->fields["begin"])."\n";
+		$content.=$lang["mailing"][21]." ".convDateTime($this->fields["end"])."\n";
 		$content.=$lang["mailing"][22]." ".$this->fields["comment"]."\n";
+		$content.=$lang["mailing"][1]."\n";	
 		return $content;
 		
 	}
