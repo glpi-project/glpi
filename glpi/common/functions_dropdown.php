@@ -555,7 +555,7 @@ function dropdownAllItems($myname,$value_type=0,$withenterprise=0,$withcartridge
 	echo "<option ".($value_type==SOFTWARE_TYPE?" selected ":"")." value='".SOFTWARE_TYPE."'>".$lang["Menu"][4]."</option>\n";
 	if ($withenterprise==1) echo "<option ".($value_type==ENTERPRISE_TYPE?" selected ":"")." value='".ENTERPRISE_TYPE."'>".$lang["Menu"][23]."</option>\n";
 	if ($withcartridge==1) echo "<option ".($value_type==CARTRIDGE_TYPE?" selected ":"")." value='".CARTRIDGE_TYPE."'>".$lang["Menu"][21]."</option>\n";
-	if ($withconsumable==1) echo "<option ".($value_type==CONSUMBALE_TYPE?" selected ":"")." value='".CONSUMABLE_TYPE."'>".$lang["Menu"][32]."</option>\n";
+	if ($withconsumable==1) echo "<option ".($value_type==CONSUMABLE_TYPE?" selected ":"")." value='".CONSUMABLE_TYPE."'>".$lang["Menu"][32]."</option>\n";
 	if ($withcontracts==1) echo "<option ".($value_type==CONTRACT_TYPE?" selected ":"")." value='".CONTRACT_TYPE."'>".$lang["Menu"][25]."</option>\n";
 	echo "</select>\n";
 	
