@@ -1035,6 +1035,9 @@ class CommonItem{
 			case LICENSE_TYPE : 
 				$this->obj= new License;	
 				break;					
+			case DOCUMENT_TYPE : 
+				$this->obj= new Document;	
+				break;					
 			}
 
 			if ($this->obj!=NULL){
@@ -1096,6 +1099,9 @@ class CommonItem{
 				break;
 			case CONSUMABLE_ITEM_TYPE : 
 				return $lang["consumables"][0];
+				break;					
+			case DOCUMENT_TYPE : 
+				return $lang["document"][0];
 				break;					
 			}
 	
@@ -1175,6 +1181,9 @@ class CommonItem{
 				break;						
 			case CONSUMABLE_ITEM_TYPE : 
 				return $this->getName();
+				break;						
+			case DOCUMENT_TYPE : 
+				return "<a href=\"".$cfg_install["root"]."/documents/documents-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
 				break;						
 			
 			}
