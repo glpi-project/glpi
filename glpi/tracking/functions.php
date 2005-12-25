@@ -1508,7 +1508,8 @@ function showJobDetails ($ID){
 
 		echo "<tr><td align='right'>";
 		echo $lang["job"][5].":</td><td>";
-		echo getAssignName($job->fields["assign"],$job->fields["assign_type"],1);
+		echo getAssignName($job->fields["assign"],$job->fields["assign_type"],$isadmin);
+		if ($isadmin)
 		if ($job->fields["assign_type"]==USER_TYPE) 
 			echo " (".$lang["job"][27].")";
 		else echo " (".$lang["job"][28].")";
