@@ -3253,6 +3253,13 @@ if(!FieldExists("glpi_config","dateformat")) {
 }
 
 
+if(FieldExists("glpi_software","version")) {
+	$query=" ALTER TABLE `glpi_software` CHANGE `version` `version` VARCHAR( 200 ) NOT NULL;";
+	$db->query($query) or die("0.65 alter version field in software".$lang["update"][90].$db->error());
+}
+
+
+
 
 }
 
