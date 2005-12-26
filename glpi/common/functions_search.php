@@ -255,7 +255,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	
 
 	for ($i=0;$i<$toview_count;$i++){
-		$SELECT.=addSelect($type,$SEARCH_OPTION[$type][$toview[$i]]["table"].".".$SEARCH_OPTION[$type][$toview[$i]]["field"],$i);
+		$SELECT.=addSelect($type,$SEARCH_OPTION[$type][$toview[$i]]["table"],$SEARCH_OPTION[$type][$toview[$i]]["field"],$i);
 	}
 	// Add ID
 	$SELECT.=$LINK_ID_TABLE[$type].".ID AS ID ";
@@ -304,7 +304,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			$LINK=" ";
 			if ($i>0) $LINK=" ".$link[$key];
 
-			$TOADD.= $LINK.addWhere($type,$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"],$val);
+			$TOADD.= $LINK.addWhere($type,$SEARCH_OPTION[$type][$field[$key]]["table"],$SEARCH_OPTION[$type][$field[$key]]["field"],$val);
                         $i++;
 		} else if (strlen($val)>0&&$field[$key]=="view"){
 
@@ -315,7 +315,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			foreach ($toview as $key2 => $val2){
 				$LINK=" OR ";
 				if ($first2) {$LINK=" ";$first2=false;}
-				$TOADD.= $LINK.addWhere($type,$SEARCH_OPTION[$type][$val2]["table"].".".$SEARCH_OPTION[$type][$val2]["field"],$val);
+				$TOADD.= $LINK.addWhere($type,$SEARCH_OPTION[$type][$val2]["table"],$SEARCH_OPTION[$type][$val2]["field"],$val);
 			}
 			$TOADD.=" ) ";
 			$i++;
@@ -329,7 +329,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
    		        foreach ($SEARCH_OPTION[$type] as $key2 => $val2){
                                 $LINK=" OR ";
                                 if ($first2) {$LINK=" ";$first2=false;}
-                                $TOADD.= $LINK.addWhere($type,$val2["table"].".".$val2["field"],$val);
+                                $TOADD.= $LINK.addWhere($type,$val2["table"],$val2["field"],$val);
 			}
 
 		        $TOADD.=")";
@@ -355,7 +355,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		foreach ($SEARCH_OPTION[$type] as $key2 => $val2){
 			$LINK=" OR ";
 			if ($first2) {$LINK=" ";$first2=false;}
-			$WHERE.= $LINK.addWhere($type,$val2["table"].".".$val2["field"],$val["contains"]);
+			$WHERE.= $LINK.addWhere($type,$val2["table"],$val2["field"],$val["contains"]);
 			}
 
 		$WHERE.=")";
@@ -505,25 +505,28 @@ function addOrderBy($field,$order){
 *@return select string
 *
 **/
-function addSelect ($type,$field,$num){
+function addSelect ($type,$table,$field,$num){
 
-switch ($field){
+switch ($table.".".$field){
 case "glpi_users.name" :
-	return $field." AS ITEM_$num, glpi_users.realname AS ITEM_".$num."_2, ";
+	return $table.".".$field." AS ITEM_$num, glpi_users.realname AS ITEM_".$num."_2, ";
 	break;
 case "glpi_device_hdd.specif_default" :
-	return $field." AS ITEM_$num, DEVICE_".HDD_DEVICE.".specificity AS ITEM_".$num."_2, ";
+	return $table.".".$field." AS ITEM_$num, DEVICE_".HDD_DEVICE.".specificity AS ITEM_".$num."_2, ";
 	break;
 case "glpi_device_ram.specif_default" :
-	return $field." AS ITEM_$num, DEVICE_".RAM_DEVICE.".specificity AS ITEM_".$num."_2, ";
+	return $table.".".$field." AS ITEM_$num, DEVICE_".RAM_DEVICE.".specificity AS ITEM_".$num."_2, ";
 	break;
 case "glpi_networking_ports.ifmac" :
 	if ($type==COMPUTER_TYPE)
-		return $field." AS ITEM_$num, DEVICE_".NETWORK_DEVICE.".specificity AS ITEM_".$num."_2, ";
-	else return $field." AS ITEM_$num, ";
+		return $table.".".$field." AS ITEM_$num, DEVICE_".NETWORK_DEVICE.".specificity AS ITEM_".$num."_2, ";
+	else return $table.".".$field." AS ITEM_$num, ";
+	break;
+case "glpi_connect_wire.end2" :
+	return " ".$table."2.ID AS ITEM_$num, ".$table."2.name AS ITEM_".$num."_2, ";
 	break;
 default:
-	return $field." AS ITEM_$num, ";
+	return $table.".".$field." AS ITEM_$num, ";
 	break;
 }
 
@@ -540,11 +543,10 @@ default:
 *@return select string
 *
 **/
-function addWhere ($type,$field,$val,$device_type=0){
-
-switch ($field){
+function addWhere ($type,$table,$field,$val,$device_type=0){
+switch ($table.".".$field){
 case "glpi_users.name" :
-	return " ( $field LIKE '%".$val."%' OR glpi_users.realname LIKE '%".$val."%' ) ";
+	return " ( $table.$field LIKE '%".$val."%' OR glpi_users.realname LIKE '%".$val."%' ) ";
 	break;
 case "glpi_device_hdd.specif_default" :
 	$larg=500;
@@ -556,12 +558,14 @@ case "glpi_device_ram.specif_default" :
        	break;
 case "glpi_networking_ports.ifmac" :
 	if ($type==COMPUTER_TYPE)
-		return " (  DEVICE_".NETWORK_DEVICE.".specificity LIKE '%".$val."%'  OR $field LIKE '%".$val."%' ) ";
-	else return " $field LIKE '%".$val."%' ";
+		return " (  DEVICE_".NETWORK_DEVICE.".specificity LIKE '%".$val."%'  OR $table.$field LIKE '%".$val."%' ) ";
+	else return " $table.$field LIKE '%".$val."%' ";
 	break;
-
+case "glpi_connect_wire.end2" :
+	return " ( ".$table."2.name LIKE '%$val%' ) ";
+	break;
 default:
-	return " $field LIKE '%".$val."%' ";
+	return " $table.$field LIKE '%".$val."%' ";
 	break;
 }
 
@@ -572,7 +576,7 @@ default:
 *
 *
 *@param $field field to add
-*@param $data arrau containing data results
+*@param $data array containing data results
 *@param $num item num in the request
 *
 *
@@ -742,6 +746,11 @@ switch ($field){
 		break;
 	case "glpi_contracts.begin_date":
 		echo convDate($data["ITEM_$num"]);
+		break;
+	case "glpi_connect_wire.end2":
+		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[COMPUTER_TYPE]."?ID=".$data["ITEM_$num"]."\">";
+		echo $data["ITEM_".$num."_2"]." (".$data["ITEM_$num"].")";
+		echo "</a>";
 		break;
 	default:
 		echo $data["ITEM_$num"];
@@ -929,6 +938,12 @@ switch ($new_table){
 		
 		return $out." LEFT JOIN $new_table ON (DEVICE_".HDD_DEVICE.".FK_device = $new_table.ID) ";
 		break;
+	case "glpi_connect_wire": // Connect_wire with peripherals to display connected to column
+		return " LEFT JOIN $new_table ON ($ref_table.ID = $new_table.end1 AND $new_table.type='".PERIPHERAL_TYPE."') ".
+			   " LEFT JOIN glpi_computers AS ".$new_table."2 ON ($new_table.end2 = ".$new_table."2.ID) ";
+		break;
+
+
 	default :
 		return "";
 		break;
