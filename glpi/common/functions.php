@@ -780,17 +780,18 @@ function showConnect($target,$ID,$type) {
 
 		if ($computers&&count($computers)>0) {
 			foreach ($computers as $key => $computer){
-				$connect->getComputerData($computer);
-				echo "<tr><td class='tab_bg_1".($connect->deleted=='Y'?"_2":"")."'><b>Computer: ";
-				echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$connect->device_ID."\">";
-				echo $connect->device_name." (".$connect->device_ID.")";
-				echo "</a>";
-				echo "</b></td>";
-				echo "<td class='tab_bg_2".($connect->deleted=='Y'?"_2":"")."' align='center'><b>";
-				echo "<a href=\"$target?disconnect=1&amp;ID=".$key."\">".$lang["connect"][3]."</a></b>";
+				if ($connect->getComputerData($computer)){
+					echo "<tr><td class='tab_bg_1".($connect->deleted=='Y'?"_2":"")."'><b>".$lang["help"][25].": ";
+					echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$connect->device_ID."\">";
+					echo $connect->device_name." (".$connect->device_ID.")";
+					echo "</a>";
+					echo "</b></td>";
+					echo "<td class='tab_bg_2".($connect->deleted=='Y'?"_2":"")."' align='center'><b>";
+					echo "<a href=\"$target?disconnect=1&amp;ID=".$key."\">".$lang["connect"][3]."</a></b>";
+					}
 			}
 		} else {
-			echo "<tr><td class='tab_bg_1'><b>Computer: </b>";
+			echo "<tr><td class='tab_bg_1'><b>".$lang["help"][25].": </b>";
 			echo "<i>".$lang["connect"][1]."</i>";
 			echo "</td>";
 			echo "<td class='tab_bg_2' align='center'>";
