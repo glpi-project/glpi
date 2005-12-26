@@ -701,7 +701,7 @@ function dropdownContracts($name){
 	while ($data=$db->fetch_array($result)){
 	if ($data["device_countmax"]==0||$data["device_countmax"]>countDeviceForContract($data['ID'])){
 		echo "<option value='".$data["ID"]."'>";
-		echo $data["begin_date"]." - ".$data["name"];
+		echo "#".$data["num"]." - ".convDateTime($data["begin_date"])." - ".$data["name"];
 		echo "</option>";
 	}
 	}
