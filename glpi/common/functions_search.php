@@ -530,6 +530,9 @@ function addOrderBy($field,$order){
 function addSelect ($type,$table,$field,$num){
 
 switch ($table.".".$field){
+case "glpi_enterprises.name" :
+	return $table.".".$field." AS ITEM_$num, $table.website AS ITEM_".$num."_2, $table.ID AS ITEM_".$num."_3, ";
+	break;
 case "glpi_users.name" :
 	return $table.".".$field." AS ITEM_$num, glpi_users.realname AS ITEM_".$num."_2, ";
 	break;
@@ -704,10 +707,17 @@ switch ($field){
 		echo $data["ITEM_$num"];
 		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
 		echo "</a>";
+		if (!empty($data["ITEM_".$num."_2"]))
+			echo "<a href='".$data["ITEM_".$num."_2"]."'><img src='".$HTMLRel."/pics/web.png'></a>";
 		break;	
 	case "glpi_enterprises.name.brut" :
 		$type=ENTERPRISE_TYPE;
+		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ITEM_".$num."_3"]."\">";
 		echo $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
+		echo "</a>";
+		if (!empty($data["ITEM_".$num."_2"]))
+			echo "<a href='".$data["ITEM_".$num."_2"]."'><img src='".$HTMLRel."/pics/web.png'></a>";
 		break;			
 	case "glpi_docs.name" :		
 		$type=DOCUMENT_TYPE;
