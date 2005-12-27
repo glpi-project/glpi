@@ -1216,8 +1216,17 @@ function updateTracking($input){
 		addDeviceDocument($docID,TRACKING_TYPE,$input["ID"]);
 	}
 		
-	// Fill the update-array with changes
+	// Old values for add followup in change
+	$old_assign_name=$job->getAssignName();
+	$old_category=$job->fields["category"];
+	$old_item=$job->fields["computer"];
+	$old_item_type=$job->fields["device_type"];
+	$old_author=$job->fields["author"];
+	$old_priority=$job->fields["priority"];
+	$old_status=$job->fields["status"];
 
+
+	// Fill the update-array with changes
 	$x=0;
 	foreach ($input as $key => $val) {
 		if (array_key_exists($key,$job->fields) && $job->fields[$key] != $input[$key]) {
@@ -1246,8 +1255,63 @@ function updateTracking($input){
 		}
 	}
 
+
+	// Update Job
 	if(count($updates)>0)
 		$job->updateInDB($updates);
+
+	// New values for add followup in change
+	$change_followup_content="";
+	$global_mail_change_count=0;
+	if (in_array("assign",$updates)||in_array("assign_type",$updates)){
+		$new_assign_name=$job->getAssignName();
+		$change_followup_content.=$lang["mailing"][12].": ".$old_assign_name." -> ".$new_assign_name."\n";
+		if (in_array("assign",$updates)) $global_mail_change_count++;
+		if (in_array("assign_type",$updates)) $global_mail_change_count++;
+	}
+	if (in_array("category",$updates)){
+		$new_category=$job->fields["category"];
+		$change_followup_content.=$lang["mailing"][14].": ".getDropdownName("glpi_dropdown_tracking_category",$old_category)." -> ".getDropdownName("glpi_dropdown_tracking_category",$new_category)."\n";
+		$global_mail_change_count++;
+	}
+	if (in_array("computer",$updates)||in_array("device_type",$updates)){	
+		$ci=new CommonItem;
+		$ci->getfromDB($old_item_type,$old_item);
+		$old_item_name=$ci->getName();
+		$ci->getfromDB($job->fields["device_type"],$job->fields["computer"]);
+		$new_item_name=$ci->getName();
+		
+		$change_followup_content.=$lang["mailing"][17].": $old_item_name -> ".$new_item_name."\n";
+		if (in_array("computer",$updates)) $global_mail_change_count++;
+		if (in_array("device_type",$updates)) $global_mail_change_count++;
+	}
+	if (in_array("author",$updates)){
+		$author=new User;
+		$author->getFromDBbyID($old_author);
+		$old_author_name=$author->getName();
+		$author->getFromDBbyID($job->fields["author"]);
+		$new_author_name=$author->getName();
+		$change_followup_content.=$lang["mailing"][18].": $old_author_name -> ".$new_author_name."\n";
+
+		$global_mail_change_count++;
+	}
+	if (in_array("priority",$updates)){
+		$new_priority=$job->fields["priority"];
+		$change_followup_content.=$lang["mailing"][14].": ".getPriorityName($old_priority)." -> ".getPriorityName($new_priority)."\n";
+		$global_mail_change_count++;		
+	}
+	if (in_array("status",$updates)){
+		$new_status=$job->fields["status"];
+		$change_followup_content.=$lang["mailing"][27].": ".getStatusName($old_status)." -> ".getStatusName($new_status)."\n";
+		$global_mail_change_count++;
+	}
+	if (!empty($change_followup_content)){ // Add followup if not empty
+		$newinput["contents"]=addslashes($change_followup_content);
+		$newinput["author"]=$_SESSION['glpiID'];
+		$newinput["private"]=$newinput["hour"]=$newinput["minute"]=0;
+		$newinput["tracking"]=$job->fields["ID"];
+		addFollowup($newinput);
+	}
 
 	$job->updateRealtime();		
 	
@@ -1259,7 +1323,7 @@ function updateTracking($input){
 			$mail->send();
 	}
 
-	if (count($updates)>0&&$cfg_features["mailing"])
+	if (count($updates)>$global_mail_change_count&&$cfg_features["mailing"])
 		{
 			$user=new User;
 			$user->getfromDB($_SESSION["glpiname"]);
