@@ -742,7 +742,7 @@ switch ($field){
 	case "glpi_docs.link" :
 	case "glpi_enterprises.website" :
 		if (!empty($data["ITEM_$num"]))
-			echo "<a href=\"".$data["ITEM_$num"]."\">".$data["ITEM_$num"]."</a>";
+			echo "<a href=\"".$data["ITEM_$num"]."\" target='_blank'>".$data["ITEM_$num"]."</a>";
 		else echo "&nbsp;";
 	break;	
 	case "glpi_enterprises.email" :
