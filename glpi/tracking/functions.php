@@ -1177,6 +1177,9 @@ function getStatusName($value){
 	case "plan" :
 		return $lang["joblist"][19];
 		break;
+	case "waiting" :
+		return $lang["joblist"][26];
+		break;
 	case "old_done" :
 		return $lang["joblist"][10];
 		break;
