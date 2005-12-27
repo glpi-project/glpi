@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-12-05 23:47
+#GLPI Dump database on 2005-12-27 13:48
 
 ### Dump table glpi_cartridges
 
@@ -178,7 +178,7 @@ CREATE TABLE `glpi_config` (
     `url_in_mail` enum('0','1') DEFAULT '0' NOT NULL,
     `text_login` text NOT NULL,
     `auto_update_check` smallint(6) DEFAULT '0' NOT NULL,
-    `last_update_check` date DEFAULT '2005-12-05' NOT NULL,
+    `last_update_check` date DEFAULT '2005-12-27' NOT NULL,
     `founded_new_version` varchar(10) NOT NULL,
     `dropdown_max` int(11) DEFAULT '100' NOT NULL,
     `ajax_wildcard` char(1) DEFAULT '*' NOT NULL,
@@ -187,10 +187,12 @@ CREATE TABLE `glpi_config` (
     `ajax_autocompletion` smallint(6) DEFAULT '1' NOT NULL,
     `auto_add_users` smallint(6) DEFAULT '1' NOT NULL,
     `dateformat` smallint(6) DEFAULT '0' NOT NULL,
+    `nextprev_item` varchar(200) DEFAULT 'name' NOT NULL,
+    `view_ID` smallint(6) DEFAULT '0' NOT NULL,
    PRIMARY KEY (`ID`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi','0','','0','2005-12-05','','100','*','0','50','1','1','0');
+INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi','0','','0','2005-12-27','','100','*','0','50','1','1','0','name','0');
 
 ### Dump table glpi_connect_wire
 
@@ -917,6 +919,7 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
+INSERT INTO glpi_event_log VALUES ('2','-1','system','2005-12-27 13:48:06','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1275,7 +1278,7 @@ DROP TABLE IF EXISTS `glpi_software`;
 CREATE TABLE `glpi_software` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(200) NOT NULL,
-    `version` varchar(20) NOT NULL,
+    `version` varchar(200) NOT NULL,
     `comments` text,
     `location` int(11),
     `tech_num` int(11) DEFAULT '0' NOT NULL,

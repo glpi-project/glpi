@@ -1029,6 +1029,18 @@ function showFormConfigDisplay($target){
 	echo $db->result($result,0,"text_login");
 	echo "</textarea>";
 	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][129]." </td><td><select name=\"view_ID\">";
+	$view_ID=$db->result($result,0,"view_ID");
+	echo "<option value=\"1\"";  if($view_ID==1){ echo " selected";} echo ">".$lang["choice"][0]." </option>";
+	echo "<option value=\"0\"";  if($view_ID==0){ echo " selected";} echo ">".$lang["choice"][1]."</option>";
+	echo "</select></td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][130]." </td><td><select name=\"nextprev_item\">";
+	$nextprev_item=$db->result($result,0,"nextprev_item");
+	echo "<option value=\"ID\"";  if($nextprev_item=="ID"){ echo " selected";} echo ">".$lang["common"][2]." </option>";
+	echo "<option value=\"name\"";  if($nextprev_item=="name"){ echo " selected";} echo ">".$lang["computers"][7]."</option>";
+	echo "</select></td></tr>";
 		
 	echo "</table>&nbsp;</div>";	
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_confdisplay\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
@@ -1318,7 +1330,7 @@ function updateConfigGen($root_doc,$event_loglevel,$expire_events, $permit_helpd
 	
 }
 
-function updateConfigDisplay($num_of_events,$jobs_at_login,$list_limit,$cut,$priority,$planning_begin,$planning_end,$public_faq,$text_login,$use_ajax,$ajax_wildcard,$ajax_limit_count,$dropdown_max,$ajax_autocompletion,$dateformat) {
+function updateConfigDisplay($num_of_events,$jobs_at_login,$list_limit,$cut,$priority,$planning_begin,$planning_end,$public_faq,$text_login,$use_ajax,$ajax_wildcard,$ajax_limit_count,$dropdown_max,$ajax_autocompletion,$dateformat,$view_id,$nextprev_item) {
 	
 	$db = new DB;
 	
@@ -1330,7 +1342,8 @@ function updateConfigDisplay($num_of_events,$jobs_at_login,$list_limit,$cut,$pri
 		$query.= " public_faq = '". $public_faq ."', text_login = '". $text_login ."', ";
 		$query.= " use_ajax = '". $use_ajax ."', ajax_wildcard = '". $ajax_wildcard ."', ";
 		$query.= " ajax_limit_count = '". $ajax_limit_count ."', dropdown_max = '". $dropdown_max ."', ";		
-		$query.= " ajax_autocompletion = '". $ajax_autocompletion ."',dateformat='".$dateformat."' ";				
+		$query.= " ajax_autocompletion = '". $ajax_autocompletion ."',dateformat='".$dateformat."', ";				
+		$query.= " view_ID = '". $view_id ."',nextprev_item='".$nextprev_item."' ";				
 		$query.= " where ID = '1' ";
 		$db->query($query);
 	

@@ -3258,6 +3258,15 @@ if(FieldExists("glpi_software","version")) {
 	$db->query($query) or die("0.65 alter version field in software".$lang["update"][90].$db->error());
 }
 
+if(!FieldExists("glpi_config","nextprev_item")) {
+	$query="ALTER TABLE `glpi_config` ADD `nextprev_item` VARCHAR( 200 ) DEFAULT 'name' NOT NULL ;";
+	$db->query($query) or die("0.65 add nextprev_item field in config".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_config","view_ID")) {
+	$query="ALTER TABLE `glpi_config` ADD `view_ID` SMALLINT DEFAULT '0' NOT NULL ;";
+	$db->query($query) or die("0.65 add nextprev_item field in config".$lang["update"][90].$db->error());
+}
 
 
 

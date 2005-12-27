@@ -606,7 +606,7 @@ default:
 *
 **/
 function displayItem ($type,$field,$data,$num){
-global $cfg_install,$INFOFORM_PAGES,$HTMLRel;
+global $cfg_install,$INFOFORM_PAGES,$HTMLRel,$cfg_layout;
 
 switch ($field){
 	case "glpi_users.name" :
@@ -618,78 +618,91 @@ switch ($field){
 	case "glpi_users.name.brut" :		
 		$type=USER_TYPE;
 		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"]." (".$data["ID"].")";
+		echo $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
 		echo "</a>";
 		break;
 	case "glpi_computers.name" :
 		$type=COMPUTER_TYPE;
 		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"]." (".$data["ID"].")";
+		echo $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
 		echo "</a>";
 		break;
 	case "glpi_printers.name" :
 		$type=PRINTER_TYPE;
 		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"]." (".$data["ID"].")";
+		echo $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
 		echo "</a>";
 		break;
 	case "glpi_networking.name" :
 		$type=NETWORKING_TYPE;
 		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"]." (".$data["ID"].")";
+		echo $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
 		echo "</a>";
 		break;
 	case "glpi_monitors.name" :
 		$type=MONITOR_TYPE;
 		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"]." (".$data["ID"].")";
+		echo $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
 		echo "</a>";
 		break;
 	case "glpi_software.name" :
 		$type=SOFTWARE_TYPE;
 		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"]." (".$data["ID"].")";
+		echo $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
 		echo "</a>";
 		break;
 	case "glpi_peripherals.name" :
 		$type=PERIPHERAL_TYPE;
 		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"]." (".$data["ID"].")";
+		echo $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
 		echo "</a>";
 		break;	
 	case "glpi_cartridges_type.name" :
 		$type=CARTRIDGE_TYPE;
 		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"]." (".$data["ID"].")";
+		echo $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
 		echo "</a>";
 		break;
 	case "glpi_consumables_type.name" :
 		$type=CONSUMABLE_TYPE;
 		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"]." (".$data["ID"].")";
+		echo $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
 		echo "</a>";
 		break;	
 	case "glpi_contacts.name" :
 		$type=CONTACT_TYPE;
 		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"]." (".$data["ID"].")";
+		echo $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
 		echo "</a>";
 		break;	
 	case "glpi_contracts.name" :
 		$type=CONTRACT_TYPE;
 		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"]." (".$data["ID"].")";
+		echo $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
 		echo "</a>";
 		break;	
 	case "glpi_contracts.name.brut" :
 		$type=CONTRACT_TYPE;
 		echo $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
 		break;			
 
 	case "glpi_enterprises.name" :
 		$type=ENTERPRISE_TYPE;
 		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"]." (".$data["ID"].")";
+		echo $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
 		echo "</a>";
 		break;	
 	case "glpi_enterprises.name.brut" :
@@ -699,19 +712,22 @@ switch ($field){
 	case "glpi_docs.name" :		
 		$type=DOCUMENT_TYPE;
 		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"]." (".$data["ID"].")";
+		echo $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
 		echo "</a>";
 		break;
 	case "glpi_type_docs.name" :		
 		$type=TYPEDOC_TYPE;
 		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"]." (".$data["ID"].")";
+		echo $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
 		echo "</a>";
 		break;
 	case "glpi_links.name" :		
 		$type=LINK_TYPE;
 		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"]." (".$data["ID"].")";
+		echo $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
 		echo "</a>";
 		break;		
 	case "glpi_type_docs.icon" :
@@ -771,7 +787,8 @@ switch ($field){
 		break;
 	case "glpi_connect_wire.end2":
 		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[COMPUTER_TYPE]."?ID=".$data["ITEM_$num"]."\">";
-		echo $data["ITEM_".$num."_2"]." (".$data["ITEM_$num"].")";
+		echo $data["ITEM_".$num."_2"];
+		if ($cfg_layout["view_ID"]) echo " (".$data["ITEM_$num"].")";
 		echo "</a>";
 		break;
 	default:
