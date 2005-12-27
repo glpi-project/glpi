@@ -156,7 +156,7 @@ class Job {
 		// get the last followup for this job and give its contents as
 		GLOBAL $lang;
 		$db=new DB();
-		$query = "SELECT * FROM glpi_followups WHERE tracking = '".$this->ID."' AND private = '0' ORDER by date ASC";
+		$query = "SELECT * FROM glpi_followups WHERE tracking = '".$this->ID."' AND private = '0' ORDER by date DESC";
 		$result=$db->query($query);
 		$nbfollow=$db->numrows($result);
 		$message = $lang["mailing"][1]."\n".$lang["mailing"][4]." : $nbfollow\n".$lang["mailing"][1]."\n";
