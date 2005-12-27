@@ -1334,11 +1334,14 @@ function addFollowup($input){
 	}
 
 	$newID=$fup->addToDB();	
+
 	if (isset($plan)){
 		$plan['id_followup']=$newID;
 		$plan['id_tracking']=$input['tracking'];
 		$plan['id_assign']=$input['author'];
-		addPlanningTracking($plan,"",1);
+		if (!addPlanningTracking($plan,"",1)){
+			return false;
+		}
 	}
 
 	$job=new Job;
