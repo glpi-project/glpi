@@ -1530,18 +1530,27 @@ function sendFile($file,$filename){
 * @return the next ID, -1 if not exist
 */
 function getNextItem($table,$ID){
-global $deleted_tables,$template_tables;
+global $deleted_tables,$template_tables,$cfg_layout;
 
-$query = "select ID from $table where ID > $ID ";
+$db=new DB;
+
+$search=$ID;
+
+if ($cfg_layout["nextprev_item"]!="ID"){
+	$query="select ".$cfg_layout["nextprev_item"]." FROM $table where ID=$ID";
+	$result=$db->query($query);
+	$search=$db->result($result,0,0);
+}
+
+$query = "select ID from $table where ".$cfg_layout["nextprev_item"]." > '$search' ";
 
 if (in_array($table,$deleted_tables))
 	$query.="AND deleted='N'";
 if (in_array($table,$template_tables))
 	$query.="AND is_template='0'";	
 		
-$query.=" order by ID";
+$query.=" order by ".$cfg_layout["nextprev_item"]." ASC";
 
-$db=new DB;
 $result=$db->query($query);
 if ($db->numrows($result)>0)
 	return $db->result($result,0,"ID");
@@ -1557,19 +1566,26 @@ else return -1;
 * @return the previous ID, -1 if not exist
 */
 function getPreviousItem($table,$ID){
-global $deleted_tables,$template_tables;
+global $deleted_tables,$template_tables,$cfg_layout;
 
-$query = "select ID from $table where ID < $ID ";
+$db=new DB;
+
+$search=$ID;
+if ($cfg_layout["nextprev_item"]!="ID"){
+	$query="select ".$cfg_layout["nextprev_item"]." FROM $table where ID=$ID";
+	$result=$db->query($query);
+	$search=$db->result($result,0,0);
+}
+
+$query = "select ID from $table where ".$cfg_layout["nextprev_item"]." < '$search' ";
 
 if (in_array($table,$deleted_tables))
 	$query.="AND deleted='N'";
 if (in_array($table,$template_tables))
 	$query.="AND is_template='0'";	
 		
-$query.=" order by ID DESC";
+$query.=" order by ".$cfg_layout["nextprev_item"]." DESC";
 
-
-$db=new DB;
 $result=$db->query($query);
 if ($db->numrows($result)>0)
 	return $db->result($result,0,"ID");

@@ -366,6 +366,12 @@ $cfg_features["auto_add_users"] = $db->result($result,0,"auto_add_users");
 // Date Format
 $cfg_layout["dateformat"] = $db->result($result,0,"dateformat");
 
+// Affichage ID
+$cfg_layout["view_ID"] = $db->result($result,0,"view_ID");
+
+// Next Prev 
+$cfg_layout["nextprev_item"] = $db->result($result,0,"nextprev_item");
+
 }
 
 
