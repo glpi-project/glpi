@@ -763,6 +763,7 @@ $lang["mailing"][22]="Commentaires :";
 $lang["mailing"][23]="Modification réservation";
 $lang["mailing"][24]="Statut :";
 $lang["mailing"][25]="Planification :";
+$lang["mailing"][26]="Catégorie :";
 
 $lang["Menu"][0]="Ordinateurs";
 $lang["Menu"][1]="Réseaux";

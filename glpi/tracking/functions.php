@@ -1263,7 +1263,11 @@ function updateTracking($input){
 		{
 			$user=new User;
 			$user->getfromDB($_SESSION["glpiname"]);
-			$mail = new Mailing("followup",$job,$user);
+			$mailtype="followup";
+			if (in_array("status",$updates)&&ereg("old_",$input["status"]))
+				$mailtype="finish";
+
+			$mail = new Mailing($mailtype,$job,$user);
 			$mail->send();
 		}
 	
