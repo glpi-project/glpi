@@ -31,6 +31,25 @@ function manageGetValuesInSearch($type=0){
 global $_GET;
 $tab=array();
 
+// Start to 0 when change search
+if (isset($_GET["contains"])&&is_array($_GET["contains"])&&count($_GET["contains"])>0){
+	foreach ($_GET["contains"] as $key => $val)
+		if (isset($_SESSION['search'][$type]["contains"][$key])&&$val!=$_SESSION['search'][$type]["contains"][$key])
+			$_GET["start"] = 0;
+}
+if (isset($_GET["field"])&&is_array($_GET["field"])&&count($_GET["field"])>0){
+	foreach ($_GET["field"] as $key => $val)
+		if (isset($_SESSION['search'][$type]["field"][$key])&&$val!=$_SESSION['search'][$type]["field"][$key])
+			$_GET["start"] = 0;
+}
+
+if (isset($_GET["deleted"])){
+	if (isset($_SESSION['search'][$type]["deleted"])&&$_SESSION['search'][$type]["deleted"]!=$_GET["deleted"])
+		$_GET["start"] = 0;
+}
+
+// End start to 0
+
 if (is_array($_GET))
 foreach ($_GET as $key => $val)
 		$_SESSION['search'][$type][$key]=$val;
@@ -63,6 +82,9 @@ if (!isset($_GET["field"]))
 if (!isset($_GET["contains"]))
 	if (isset($_SESSION['search'][$type]["contains"])) $_GET["contains"]=$_SESSION['search'][$type]["contains"];
 	else $_GET["contains"] = array(0 => "");
+
+
+
 
 if (!isset($_GET["sort"]))
 	if (isset($_SESSION['search'][$type]["sort"])) $_GET["sort"]=$_SESSION['search'][$type]["sort"];
