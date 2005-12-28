@@ -1310,6 +1310,9 @@ function updateTracking($input){
 
 		if (ereg("old_",$new_status))
 			$newinput["add_close"]="add_close";
+		if (in_array("closedate",$updates))	
+			$global_mail_change_count++; // Manage closedate
+			
 			
 			$global_mail_change_count++;
 	}
