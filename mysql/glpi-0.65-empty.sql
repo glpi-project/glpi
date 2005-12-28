@@ -959,7 +959,7 @@ CREATE TABLE `glpi_infocoms` (
     `amort_time` tinyint(4) DEFAULT '0' NOT NULL,
     `amort_type` smallint(20) DEFAULT '1' NOT NULL,
     `amort_coeff` float DEFAULT '0' NOT NULL,
-    `comments` text NOT NULL,
+    `comments` text,
     `facture` varchar(255) NOT NULL,
    PRIMARY KEY (`ID`),
    UNIQUE FK_device (`FK_device`, `device_type`),
