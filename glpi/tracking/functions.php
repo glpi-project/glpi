@@ -1307,10 +1307,14 @@ function updateTracking($input){
 	if (in_array("status",$updates)){
 		$new_status=$job->fields["status"];
 		$change_followup_content.=$lang["mailing"][27].": ".getStatusName($old_status)." -> ".getStatusName($new_status)."\n";
-		if (!ereg("old_",$new_status))
+
+		if (ereg("old_",$new_status))
+			$newinput["add_close"]="add_close";
+			
 			$global_mail_change_count++;
 	}
 	if (!empty($change_followup_content)){ // Add followup if not empty
+
 		$newinput["contents"]=addslashes($change_followup_content);
 		$newinput["author"]=$_SESSION['glpiID'];
 		$newinput["private"]=$newinput["hour"]=$newinput["minute"]=0;
