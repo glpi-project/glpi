@@ -1275,7 +1275,9 @@ function updateTracking($input){
 	}
 	if (in_array("category",$updates)){
 		$new_category=$job->fields["category"];
-		$change_followup_content.=$lang["mailing"][14].": ".getDropdownName("glpi_dropdown_tracking_category",$old_category)." -> ".getDropdownName("glpi_dropdown_tracking_category",$new_category)."\n";
+		$old_category_name=ereg_replace("&nbsp;","N/A",getDropdownName("glpi_dropdown_tracking_category",$old_category));
+		$new_category_name=ereg_replace("&nbsp;","N/A",getDropdownName("glpi_dropdown_tracking_category",$new_category));
+		$change_followup_content.=$lang["mailing"][14].": ".$old_category_name." -> ".$new_category_name."\n";
 		$global_mail_change_count++;
 	}
 	if (in_array("computer",$updates)||in_array("device_type",$updates)){	
@@ -1334,9 +1336,9 @@ function updateTracking($input){
 			$mail = new Mailing("attrib",$job,$user);
 			$mail->send();
 	}
-
 	if (count($updates)>$global_mail_change_count&&$cfg_features["mailing"])
 		{
+
 			$user=new User;
 			$user->getfromDB($_SESSION["glpiname"]);
 			$mailtype="followup";
