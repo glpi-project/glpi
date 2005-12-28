@@ -523,7 +523,7 @@ echo "<select name='$name'>\n";
 * @param $value
 * @return nothing (print out an HTML select box)
 */
-function dropdownAllItems($myname,$value_type=0,$withenterprise=0,$withcartridge=0,$withconsumable=0,$withcontracts=0,$search='',$value='') {
+function dropdownAllItems($myname,$value_type=0,$withenterprise=0,$withcartridge=0,$withconsumable=0,$withcontracts=0) {
 	global $lang,$HTMLRel,$cfg_install;
 	
 	$db=new DB;
@@ -627,6 +627,8 @@ echo "</script>\n";
 
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
+echo "</td></tr><td class='tab_bg_2' colspan='2'>";
+echo "<div align='center'>";
 echo "<span id='results_$myname$rand'>\n";
 
 if (isset($_SESSION["helpdeskSaved"]["computer"])){
@@ -640,7 +642,7 @@ if (isset($_SESSION["helpdeskSaved"]["computer"])){
 }
 
 echo "</span>\n";	
-	
+echo "</div>";
 			
 }
 
