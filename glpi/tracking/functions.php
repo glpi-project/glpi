@@ -1307,7 +1307,8 @@ function updateTracking($input){
 	if (in_array("status",$updates)){
 		$new_status=$job->fields["status"];
 		$change_followup_content.=$lang["mailing"][27].": ".getStatusName($old_status)." -> ".getStatusName($new_status)."\n";
-		$global_mail_change_count++;
+		if (!ereg("old_",$new_status))
+			$global_mail_change_count++;
 	}
 	if (!empty($change_followup_content)){ // Add followup if not empty
 		$newinput["contents"]=addslashes($change_followup_content);
