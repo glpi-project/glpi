@@ -551,6 +551,7 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 		// Processing Email
 		if ($cfg_features["mailing"])
 		{
+			$job->fields=stripslashes_deep($job->fields);
 			$mail = new Mailing("new",$job,$user);
 			$mail->send();
 		}
