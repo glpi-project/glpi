@@ -1455,6 +1455,7 @@ function convDateTime($time) {
 * @return nothing
 */
 function sendFile($file,$filename){
+
         // Test sécurité
 	if (ereg("\.\.",$file)){
 	session_start();
@@ -1504,7 +1505,9 @@ function sendFile($file,$filename){
 		header("Content-disposition: filename=\"$filename\"");
 		
      	header("Content-type: ".$mime);
-     	header('Pragma: no-cache');
+		 // Condition for IE bug
+		 if (!ereg("https://",$_SERVER["SCRIPT_URI"]))
+	     	header('Pragma: no-cache');
      	header('Expires: 0');
 		$f=fopen($file,"r");
 		
