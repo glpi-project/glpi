@@ -54,9 +54,10 @@
 
 if (isset($items[$_POST["type"]])&&$_POST["type"]>0){
 	$table=$items[$_POST["type"]];
-	
+
+	echo "<div align='center'>".$lang["help"][23]."</div><br>";
 	$rand=mt_rand();
-	echo "<input id='search_".$_POST['myname']."$rand' name='____data_".$_POST['myname']."$rand' size='4'>";	
+	echo "<input id='search_".$_POST['myname']."$rand' name='____data_".$_POST['myname']."$rand' size='15'>";	
 	
 
 	echo "<script type='text/javascript' >";
