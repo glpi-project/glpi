@@ -277,7 +277,7 @@ function showJobShort($ID, $followups) {
 	// Should be called in a <table>-segment
 	// Print links or not in case of user view
 
-	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang;
+	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
 
 	// Make new job object and fill it from database, if success, print it
 	$job = new Job;
@@ -288,8 +288,8 @@ function showJobShort($ID, $followups) {
 		$bgcolor=$cfg_layout["priority_".$job->fields["priority"]];
 
 		echo "<tr class='tab_bg_2'>";
-		echo "<td align='center'  >ID: ".$job->ID."<br><strong>".getStatusName($job->fields["status"])."</strong>";
-
+		echo "<td align='center'  >ID: ".$job->ID."<br>";
+		echo "<img src=\"".$HTMLRel."pics/".$job->fields["status"].".png\" alt='".getStatusName($job->fields["status"])."' title='".getStatusName($job->fields["status"])."'>";
 		if (!ereg("old_",$job->fields["status"]))
 		{
 			echo "<td width='100'  ><small>".$lang["joblist"][11].":<br>&nbsp;".convDateTime($job->fields["date"])."</small></td>";
@@ -301,6 +301,7 @@ function showJobShort($ID, $followups) {
 				$sel="";
 				if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
 			echo "<br><input type='checkbox' name='todel[".$job->ID."]' value='1' $sel>";
+			//echo "<img src=\"".$HTMLRel."pics/delete2.png\">";
 			}
 			echo "</td>";
 			echo "<td width='130' ><small>".$lang["joblist"][11].":<br>&nbsp;".convDateTime($job->fields["date"])."<br>";
