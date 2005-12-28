@@ -158,7 +158,7 @@ function add_tracking($type,$ID){
 		$users[0]=mt_rand(1,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly']);
 		// Assign user
 		$users[1]=mt_rand(1,$max['users_sadmin']+$max['users_admin']+$max['users_normal']);
-		$query="INSERT INTO glpi_tracking VALUES ('','".date("Y-m-d H:i:s",$date1)."','".date("Y-m-d H:i:s",$date2)."','$status','".$users[0]."','".$users[1]."','".USER_TYPE."','$type','$ID','tracking ".GetRandomString(15)."','".mt_rand(1,5)."','no','','N','".(mt_rand(0,3)+mt_rand(0,100)/100)."','".mt_rand(1,$max['tracking_category'])."')";
+		$query="INSERT INTO glpi_tracking VALUES ('','".date("Y-m-d H:i:s",$date1)."','".date("Y-m-d H:i:s",$date2)."','$status','".$users[0]."','".$users[1]."','".USER_TYPE."','$type','$ID','tracking ".GetRandomString(15)."','".mt_rand(1,5)."','no','','no','".(mt_rand(0,3)+mt_rand(0,100)/100)."','".mt_rand(1,$max['tracking_category'])."')";
 		$db->query($query) or die("PB REQUETE ".$query);
 		$tID=$db->insert_id();
 		// Add followups
