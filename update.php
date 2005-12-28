@@ -3268,6 +3268,11 @@ if(!FieldExists("glpi_config","view_ID")) {
 	$db->query($query) or die("0.65 add nextprev_item field in config".$lang["update"][90].$db->error());
 }
 
+if(FieldExists("glpi_infocoms","comments")) {
+	$query=" ALTER TABLE `glpi_infocoms` CHANGE `comments` `comments` TEXT";
+	$db->query($query) or die("0.65 alter comments in glpi_infocoms".$lang["update"][90].$db->error());
+}
+
 
 
 }
