@@ -708,7 +708,7 @@ switch ($field){
 		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
 		echo "</a>";
 		if (!empty($data["ITEM_".$num."_2"]))
-			echo "<a href='".$data["ITEM_".$num."_2"]."'><img src='".$HTMLRel."/pics/web.png'></a>";
+			echo "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$HTMLRel."/pics/web.png'></a>";
 		break;	
 	case "glpi_enterprises.name.brut" :
 		$type=ENTERPRISE_TYPE;
@@ -717,7 +717,7 @@ switch ($field){
 		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
 		echo "</a>";
 		if (!empty($data["ITEM_".$num."_2"]))
-			echo "<a href='".$data["ITEM_".$num."_2"]."'><img src='".$HTMLRel."/pics/web.png'></a>";
+			echo "<a href='".$data["ITEM_".$num."_2"]."' target='_blank''><img src='".$HTMLRel."/pics/web.png'></a>";
 		break;			
 	case "glpi_docs.name" :		
 		$type=DOCUMENT_TYPE;
