@@ -1793,10 +1793,12 @@ function showFollowupsSummary($tID){
 	else {	
 
 		echo "<table class='tab_cadrehov2' width='800'>";
-		echo "<tr><th>".$lang["joblist"][1]."</th><th>".$lang["joblist"][6]."</th><th>".$lang["job"][31]."</th><th>".$lang["job"][35]."</th><th>".$lang["joblist"][3]."</th><th>".$lang["job"][30]."</th></tr>";
+		echo "<tr><th>&nbsp;</th><th>".$lang["joblist"][1]."</th><th>".$lang["joblist"][6]."</th><th>".$lang["job"][31]."</th><th>".$lang["job"][35]."</th><th>".$lang["joblist"][3]."</th><th>".$lang["job"][30]."</th></tr>";
 		while ($data=$db->fetch_array($result)){
 
 			echo "<tr class='tab_bg_2' onClick=\"viewEditFollowup".$data["ID"]."$rand();\" id='viewfollowup".$data["ID"]."$rand'>";
+			echo "<td>".$data["ID"]."</td>";
+
 			echo "<td>";
 
 			echo "<script type='text/javascript' >\n";
