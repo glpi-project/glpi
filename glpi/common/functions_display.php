@@ -56,43 +56,39 @@ function commonHeader($title,$url)
 
 	GLOBAL $cfg_install,$lang, $cfg_layout,$cfg_features,$HTMLRel,$phproot ;
 
-// Override list-limit if choosen
- if (isset($_POST['list_limit'])) {
-       $_SESSION['list_limit']=$_POST['list_limit'];
-       $cfg_features["list_limit"]=$_POST['list_limit'];
- }
+	// Override list-limit if choosen
+ 	if (isset($_POST['list_limit'])) {
+ 		$_SESSION['list_limit']=$_POST['list_limit'];
+     		 $cfg_features["list_limit"]=$_POST['list_limit'];
+	 }
 
 	
-	
-$utils = array($lang["Menu"][17]=>array("/reservation/index.php","1"),
-		$lang["Menu"][19]=>array("/knowbase/index.php"," "),
-		$lang["Menu"][6]=>array("/reports/index.php"," "),
-		);
-	
-$inventory = array($lang["Menu"][0]=>array("/computers/index.php","c"),
-		  $lang["Menu"][3]=>array("/monitors/index.php","m"),
-		 $lang["Menu"][4]=>array("/software/index.php","s"),  
+	//  menu list 	
+	$utils = array($lang["Menu"][17]=>array("/reservation/index.php","1"),
+	$lang["Menu"][19]=>array("/knowbase/index.php"," "),
+	$lang["Menu"][6]=>array("/reports/index.php"," "),
+	);
+	$inventory = array($lang["Menu"][0]=>array("/computers/index.php","c"),
+		$lang["Menu"][3]=>array("/monitors/index.php","m"),
+		$lang["Menu"][4]=>array("/software/index.php","s"),  
 		$lang["Menu"][1]=>array("/networking/index.php","n"),
-         $lang["Menu"][16]=>array("/peripherals/index.php","r"),
-          $lang["Menu"][2]=>array("/printers/index.php","p"),
-		 $lang["Menu"][21]=>array("/cartridges/index.php","c"),
+		$lang["Menu"][16]=>array("/peripherals/index.php","r"),
+		$lang["Menu"][2]=>array("/printers/index.php","p"),
+		$lang["Menu"][21]=>array("/cartridges/index.php","c"),
 		$lang["Menu"][32]=>array("/consumables/index.php","g"),     
-		 $lang["Menu"][28]=>array("/state/index.php","s"),
-		    );
-
-$financial = array($lang["Menu"][22]=>array("/contacts/index.php","t"),
+		$lang["Menu"][28]=>array("/state/index.php","s"),
+		);
+	$financial = array($lang["Menu"][22]=>array("/contacts/index.php","t"),
 		$lang["Menu"][23]=>array("/enterprises/index.php","e"),
 		$lang["Menu"][25]=>array("/contracts/index.php","n"),
 		$lang["Menu"][27]=>array("/documents/index.php","d"),
-		);
-
-$maintain =	array($lang["Menu"][5]=>array("/tracking/index.php","t"),
+	);
+	$maintain =	array($lang["Menu"][5]=>array("/tracking/index.php","t"),
 		$lang["Menu"][31]=>array("/helpdesk/index.php","h"),
 		$lang["Menu"][29]=>array("/planning/index.php","l"),
 		$lang["Menu"][13]=>array("/stats/index.php","1"));
-
-				
-$config = array($lang["Menu"][14]=>array("/users/index.php","u"),
+			
+	$config = array($lang["Menu"][14]=>array("/users/index.php","u"),
 		$lang["Menu"][10]=>array("/setup/index.php","2"),
 		$lang["Menu"][11]=>array("/preferences/index.php","p"),
 		$lang["Menu"][12]=>array("/backups/index.php","b"),
@@ -100,7 +96,6 @@ $config = array($lang["Menu"][14]=>array("/users/index.php","u"),
 
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
-
 	// Send extra expires header if configured
 	if ($cfg_features["sendexpire"]) {
 		header("Expires: Fri, Jun 12 1981 08:20:00 GMT\nPragma: no-cache");
@@ -115,8 +110,7 @@ $config = array($lang["Menu"][14]=>array("/users/index.php","u"),
 		echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
 		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
 	}
-	//  Appel  CSS
-	
+	//  CSS link
         echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
 	echo "<link rel='stylesheet' type='text/css' media='print' href='".$HTMLRel."print.css' >";
 	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' >";
@@ -124,43 +118,36 @@ $config = array($lang["Menu"][14]=>array("/users/index.php","u"),
 	echo "<script type=\"text/javascript\" src='".$HTMLRel."prototype.js'></script>";
 	echo "<script type=\"text/javascript\" src='".$HTMLRel."scriptaculous/scriptaculous.js'></script>";
 	// Some Javascript-Functions which we may need later
-	
 	echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
-	
-
-
-
-
 	// End of Head
 	echo "</head>\n";
-	// Body with configured stuff
+	// Body 
 	echo "<body>";
+	
 	// Main Headline
 	echo "<div id='navigation' style='background : url(\"".$HTMLRel."pics/fond.png\") repeat-x top right ;'>";
-	
+
 	// New object from the configured base functions, we check some
 	// object-variables in this object: inventory, maintain, admin
 	// and settings. We build the navigation bar here.
 	$navigation = new baseFunctions;
+	
+	//menu
 	echo "<div id='menu'>";
 	// Logo with link to command center
 	
 	echo "<dl><dt><a class='icon_logo' style='background: transparent' href=\"".$cfg_install["root"]."/central.php\" accesskey=\"0\"><img  src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a></dt></dl>";
-	//echo "<br><br><div style='width:80px; text-align:center;'><p class='nav_horl'><b>".$_SESSION["glpiname"]."</b></p></div>";
-	
-	
+		
 	// Get object-variables and build the navigation-elements
 	
 	if ($navigation->inventory) {
-		
 		echo "<dl><dt onmouseover=\"javascript:montre('smenu1');\"><img class='icon_nav' src=\"".$HTMLRel."pics/inventaire.png\" alt=\"\" title=\"".$lang["setup"][10]."\"><br>\n";
 		echo "<span class='menu_title'>-&nbsp;".$lang["setup"][10]."&nbsp;-</span><dt>\n";
 		echo "<dd id=\"smenu1\"><ul>";
 		$i=0;
-		
+		// list menu item 
 		 foreach ($inventory as $key => $val) {
-		
-			 	echo "<li><span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+		 	echo "<li><span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
                          	$i++;
 	        }
 			
@@ -168,17 +155,16 @@ $config = array($lang["Menu"][14]=>array("/users/index.php","u"),
 		echo "</dl>\n";
 	}
 
-
 	if ($navigation->maintain) {
 		
 		echo "<dl><dt onmouseover=\"javascript:montre('smenu2');\"><img class='icon_nav' src=\"".$HTMLRel."pics/maintenance.png\" alt=\"\" title=\"".$lang["title"][24]."\"><br>\n";
 		echo "<span class='menu_title'>-&nbsp;".$lang["title"][24]."&nbsp;-</span></dt>\n";
 		echo "<dd id=\"smenu2\"><ul>";
-		
+		// list menu item 
 		foreach ($maintain as $key => $val) {
 			echo "<li><span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
 		}
-			echo "</ul></dd>\n";
+		echo "</ul></dd>\n";
 		echo "</dl>\n";
 	}
 	if ($navigation->financial) {
@@ -186,6 +172,7 @@ $config = array($lang["Menu"][14]=>array("/users/index.php","u"),
 		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/gestion.png\" alt=\"\" title=\"".$lang["Menu"][26]."\"><br>\n";
 		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][26]."&nbsp;-</span></dt>\n";
 		echo "<dd id=\"smenu3\"><ul>";
+		// list menu item 
 		foreach ($financial as $key => $val) {
 			echo "<li><span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
 		}
@@ -199,6 +186,7 @@ $config = array($lang["Menu"][14]=>array("/users/index.php","u"),
 		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/outils.png\" alt=\"\" title=\"".$lang["Menu"][18]."\"><br>\n";
 		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][18]."&nbsp;-</span></dt>\n";
 		echo "<dd id=\"smenu4\"><ul>";
+		// list menu item 
 		foreach ($utils as $key => $val) {
 			echo "<li><span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
 		}
@@ -210,15 +198,15 @@ $config = array($lang["Menu"][14]=>array("/users/index.php","u"),
 	$dirplug=$phproot."/plugins";
 	$dh  = opendir($dirplug);
 	while (false !== ($filename = readdir($dh))) {
-   	
-   	if ($filename!="CVS"&&$filename!="."&&$filename!=".."&&is_dir($dirplug."/".$filename))
-   	$plugins[]=$filename;
+   		if ($filename!="CVS"&&$filename!="."&&$filename!=".."&&is_dir($dirplug."/".$filename))
+   		$plugins[]=$filename;
 	}
 	if (isset($plugins)&&count($plugins)>0){
 		echo "<dl><dt onmouseover=\"javascript:montre('smenu5');\">";
 		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/plugins.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>\n";
 		echo "<span class='menu_title'>-&nbsp;Plugins&nbsp;-</span></dt>\n";
 		echo "<dd id=\"smenu5\"><ul>";
+		// list menu item 
 		foreach ($plugins as $key => $val) {
 			echo "<li><span class='menu'><a  href=\"".$cfg_install["root"]."/plugins/".$val."/\" accesskey=\"".$val."\">".$val."</a></span></li>\n";
 		}
@@ -232,26 +220,22 @@ $config = array($lang["Menu"][14]=>array("/users/index.php","u"),
 		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/config.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>\n";
 		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][15]."&nbsp;-</span></dt>\n";
 		echo "<dd id=\"smenu6\"><ul>";
+		// list menu item 
 		foreach ($config as $key => $val) {
 			echo "<li><span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
 		}
-			echo "</ul></dd>\n";
+		echo "</ul></dd>\n";
 		echo "</dl>\n";
 	}
 	
-	
-	
-	
-	// On the right side of the navigation bar, we have a clock with
-	// date, help and a logout-link.
-
-	
+		
+	// Display  clock with date, help and a logout-link.
 	//help
 	echo "<dl><dt><a class='icon_nav_move'  style='background: transparent'   href='#' onClick=\"window.open('".$HTMLRel."help/".$cfg_install["languages"][$_SESSION["glpilanguage"]][2]."','helpdesk','width=750,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a></dt></dl>\n";
 
-	
+	//logout
 	echo "<dl><dt><a  class='icon_nav_move'  style='background: transparent'  href=\"".$cfg_install["root"]."/logout.php\"><img  src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></dt></dl>\n";
-	
+	//clock
 	echo "<div style='float:right; font-size:9px; margin-right:15px;'>";
 	echo "<p style='text-align:center'>".date("H").":".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i></p><p class='nav_horl'><b>".$_SESSION["glpiname"]."</b></p></div>\n";
@@ -260,17 +244,12 @@ $config = array($lang["Menu"][14]=>array("/users/index.php","u"),
 
 
 	// End headline
-
-	//echo "<hr class='separ'>";
-	
-	
-
-			echo "</div></div>\n";
-
+	echo "<hr class='separ'>";
+	echo "</div></div>\n";
 
 	// Affichage du message apres redirection
 	if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])&&!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])){
-		echo "<center><b>".$_SESSION["MESSAGE_AFTER_REDIRECT"]."</b></center>";
+		echo "<div align='center'><b>".$_SESSION["MESSAGE_AFTER_REDIRECT"]."</b></div>";
 		$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
 		unset($_SESSION["MESSAGE_AFTER_REDIRECT"]);
 	}
