@@ -506,6 +506,7 @@ a.icon_nav_move:hover img {
 	padding: 4px;
 	margin:8px;
 	border: 1px solid #aaaaaa;
+	text-align:center;
 	
 	-moz-border-radius: 5px;
        	font-size : 9px;
