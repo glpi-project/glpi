@@ -230,22 +230,29 @@ function commonHeader($title,$url)
 	
 		
 	// Display  clock with date, help and a logout-link.
-	//help
-	echo "<dl><dt><a class='icon_nav_move'  style='background: transparent'   href='#' onClick=\"window.open('".$HTMLRel."help/".$cfg_install["languages"][$_SESSION["glpilanguage"]][2]."','helpdesk','width=750,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a></dt></dl>\n";
-
 	//logout
-	echo "<dl><dt><a  class='icon_nav_move'  style='background: transparent'  href=\"".$cfg_install["root"]."/logout.php\"><img  src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></dt></dl>\n";
-	//clock
-	echo "<div style='float:right; font-size:9px; margin-right:15px;'>";
-	echo "<p style='text-align:center'>".date("H").":".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
-	echo "</i></p><p class='nav_horl'><b>".$_SESSION["glpiname"]."</b></p></div>\n";
+	echo "<div style='float:right; width:5%; margin-right:10px;'><a  class='icon_nav_move'  style='background: transparent'  href=\"".$cfg_install["root"]."/logout.php\"><img  class='icon_nav'  src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div>\n";
+
+	//help
+	echo "<div style='float:right; width:5%;'><a class='icon_nav_move'  style='background: transparent'   href='#' onClick=\"window.open('".$HTMLRel."help/".$cfg_install["languages"][$_SESSION["glpilanguage"]][2]."','helpdesk','width=750,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a></div>\n";
+
+	
+	
 
 	// End navigation bar
 
 
 	// End headline
 	echo "<hr class='separ'>";
-	echo "</div></div>\n";
+	echo "</div>\n";
+
+	//clock
+	echo "<div style='font-size:9px; position:absolute; top:70px; right: 15px; text-align:center;''>";
+	echo date("H").":".date("i")."&nbsp;<i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
+	echo "</i><span class='nav_horl'><b>".$_SESSION["glpiname"]."</b></span></div>\n";
+
+	echo "</div>";
+
 
 	// Affichage du message apres redirection
 	if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])&&!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])){
@@ -306,11 +313,11 @@ function helpHeader($title,$url,$name) {
 	// End of Head
 	echo "</head>\n";
 	
-	// Body with configured stuff
+	// Body 
 	echo "<body>";
 
 	// Main Headline
-				echo "<div id='navigation' style='background : url(\"".$HTMLRel."pics/fond.png\") repeat-x top right ;'>";
+	echo "<div id='navigation-helpdesk' style='background : url(\"".$HTMLRel."pics/fond.png\") repeat-x top right ;'>";
 
 	echo "<table cellspacing='0' border='0' width='98%'>";
 	echo "<tr>";
