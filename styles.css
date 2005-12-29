@@ -155,7 +155,7 @@ input.submit:hover {
 z-index:1;
 }
 
-.tab_cadrehov{
+.tab_cadrehov, .tab_cadrehov2{
  -moz-border-radius: 4px;
   border: 1px solid #cccccc;
 }
@@ -166,6 +166,10 @@ z-index:1;
 	background-color: #FFF4DF;
 }
 
+.tab_cadrehov2 tr:hover {
+	cursor: pointer;
+	background-color: #FFF4DF;
+}
 
 
 
