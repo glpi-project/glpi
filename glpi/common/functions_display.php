@@ -247,7 +247,7 @@ function commonHeader($title,$url)
 	echo "</div>\n";
 
 	//clock
-	echo "<div style='font-size:9px; position:absolute; top:70px; right: 15px; text-align:center;''>";
+	echo "<div style='font-size:9px; position:absolute; top:70px; right: 15px; text-align:center;'>";
 	echo date("H").":".date("i")."&nbsp;<i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i><span class='nav_horl'><b>".$_SESSION["glpiname"]."</b></span></div>\n";
 
