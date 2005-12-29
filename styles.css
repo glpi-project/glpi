@@ -406,7 +406,7 @@ border: 1px solid gray;
 text-align: center;
 padding: 2px;
 background: transparent url("pics/fondTR.png") repeat; 
-
+border-bottom: 1px outset white;
 }
 #menu li a, #menu dt a {
 color: #000;
@@ -456,7 +456,7 @@ background-color: #339966;
 }
 
 
-a.icon_logo img{
+ a.icon_logo img{
 	padding: 7px;
 	margin: 1px;
 	border: 1px solid #aaaaaa;
@@ -466,8 +466,7 @@ a.icon_logo img{
         font-weight: bold;
 }
 
-
-a.icon_logo:hover img {
+ a.icon_logo:hover img {
 	padding: 7px;
 	margin: 1px;
 	border: 1px solid #999999;

@@ -145,7 +145,7 @@ $config = array($lang["Menu"][14]=>array("/users/index.php","u"),
 	echo "<div id='menu'>";
 	// Logo with link to command center
 	
-	echo "<dl><dt onmouseover=\"javascript:montre();\"><a class='icon_logo' href=\"".$cfg_install["root"]."/central.php\" accesskey=\"0\"><img  src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a></dt></dl>";
+	echo "<dl><dt><a class='icon_logo' style='background: transparent' href=\"".$cfg_install["root"]."/central.php\" accesskey=\"0\"><img  src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a></dt></dl>";
 	//echo "<br><br><div style='width:80px; text-align:center;'><p class='nav_horl'><b>".$_SESSION["glpiname"]."</b></p></div>";
 	
 	
@@ -247,10 +247,10 @@ $config = array($lang["Menu"][14]=>array("/users/index.php","u"),
 
 	
 	//help
-	echo "<dl><dt><a class='icon_nav_move'  href='#' onClick=\"window.open('".$HTMLRel."help/".$cfg_install["languages"][$_SESSION["glpilanguage"]][2]."','helpdesk','width=750,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a></dt></dl>\n";
+	echo "<dl><dt><a class='icon_nav_move'  style='background: transparent'   href='#' onClick=\"window.open('".$HTMLRel."help/".$cfg_install["languages"][$_SESSION["glpilanguage"]][2]."','helpdesk','width=750,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a></dt></dl>\n";
 
 	
-	echo "<dl><dt><a  class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img  src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></dt></dl>\n";
+	echo "<dl><dt><a  class='icon_nav_move'  style='background: transparent'  href=\"".$cfg_install["root"]."/logout.php\"><img  src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></dt></dl>\n";
 	
 	echo "<dl><dt>
 	<p>".date("H").":".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
