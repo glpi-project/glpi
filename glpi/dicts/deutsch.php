@@ -808,7 +808,7 @@ $lang["mailing"][23]="Reservation modification";
 $lang["mailing"][24]="Status:"; 
 $lang["mailing"][25]="Planning:"; 
 $lang["mailing"][26]="Category:"; 
-$lang["mailing"][27]="Change of the status of the tracking"; 
+$lang["mailing"][27]="Update of the status of the ticket"; 
 
 $lang["Menu"][0]="Computer"; 
 $lang["Menu"][1]="Netzwerk"; 
