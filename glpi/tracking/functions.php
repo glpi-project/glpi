@@ -1529,7 +1529,6 @@ function showJobDetails ($ID){
 		echo "<form method='post' action=\"".$cfg_install["root"]."/tracking/tracking-info-form.php\"  enctype=\"multipart/form-data\">\n";
 		echo "<table class='tab_cadre' width='800' cellpadding='5'>";
 		// Première ligne
-		echo "<tr><th colspan=3>".$lang["job"][0]." ".$job->ID."</th></tr>";
 		echo "<tr class='tab_bg_2'>";
 		// Premier Colonne
 		echo "<td valign='top' width='27%'>";
