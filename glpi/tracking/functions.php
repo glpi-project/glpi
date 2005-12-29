@@ -615,7 +615,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 		echo "<input type='hidden' name='referer' value='$REFERER'>";
 		echo "<p><a class='icon_consol' href='$REFERER'>".$lang["buttons"][13]."</a></p>";
 	}	
-	echo "<table class='tab_cadre'><tr><th colspan='4'>".$lang["job"][13].": <br>";
+	echo "<table class='tab_cadre'><tr><th colspan='2'>".$lang["job"][13].": <br>";
 	if ($device_type!=0){
 		$m=new CommonItem;
 		$m->getfromDB($device_type,$ID);
@@ -624,7 +624,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "</th></tr>";
 
 	echo "<tr class='tab_bg_1' align='center'><td>".$lang["joblist"][1].":</td>";
-	echo "<td align='center' colspan='3'>".convDateTime(date("Y-m-d H:i:s"))."</td></tr>";
+	echo "<td align='center'>".convDateTime(date("Y-m-d H:i:s"))."</td></tr>";
 
 	if ($device_type==0){
 		echo "<tr class='tab_bg_2'>";
@@ -636,7 +636,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 
 
 	echo "<tr><td class='tab_bg_2' align='center'>".$lang["joblist"][0].":</td>";
-	echo "<td align='center' class='tab_bg_2' colspan='3'><select name='status'>";
+	echo "<td align='center' class='tab_bg_2'><select name='status'>";
 	echo "<option value='new' ";
 	if ($_GET["status"]=="new") echo "selected";
 	echo ">".$lang["job"][14]."</option>";
@@ -648,7 +648,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 			echo "<tr>";
 			echo "<td class='tab_bg_2' align='center'>";
 			echo $lang["job"][20].":</td>";
-			echo "<td align='center' colspan='3' class='tab_bg_2'><select name='hour'>";
+			echo "<td align='center' class='tab_bg_2'><select name='hour'>";
 			for ($i=0;$i<100;$i++){
 			$selected="";
 			if (isset($_GET["hour"])&&$_GET["hour"]==$i) $selected="selected";
@@ -667,7 +667,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 
 
 	echo "<tr><td class='tab_bg_2' align='center'>".$lang["joblist"][2].":</td>";
-	echo "<td align='center' class='tab_bg_2' colspan='3'>";
+	echo "<td align='center' class='tab_bg_2'>";
 	dropdownPriority("priority",3);
 	echo "</td></tr>";
 
@@ -681,7 +681,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 
 	echo "<tr class='tab_bg_2' align='center'><td>".$lang["joblist"][15].":</td>";
 	
-	echo "<td align='center' colspan='3'>";
+	echo "<td align='center'>";
 	dropdownUsers("assign",$assign);
 	echo "</td></tr>";
 
@@ -689,34 +689,30 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	{
 		echo "<tr class='tab_bg_1'>";
 		echo "<td align='center'>".$lang["help"][8].":</td>";
-		echo "<td align='center' colspan='3'>	<select name='emailupdates'>";
+		echo "<td align='center'>	<select name='emailupdates'>";
 		echo "<option value='no'>".$lang["help"][9]."";
 		echo "<option value='yes' selected>".$lang["help"][10]."";
 		echo "</select>";
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_1'>";
 		echo "<td align='center'>".$lang["help"][11].":</td>";
-		echo "<td colspan='3'>	";
+		echo "<td>	";
 		echo "<input type='text' size='30' name='uemail'>";
 		echo "</td></tr>";
 		
 	}
 
-
-	echo "<tr class='tab_bg_1' align='center'><td></td>";
-	echo "<td align='center' colspan='3'>";
+	echo "<tr><th colspan='2' align='center'>".$lang["job"][11].":";
 	if ($device_type!=0){
 	echo "<input type='hidden' name='ID' value=\"$ID\">";
 	echo "<input type='hidden' name='device_type' value=\"$device_type\">";
 	}
-	echo "</td></tr>";
 
-	echo "<tr><td colspan='4' height='5'></td></tr>";
-	echo "<tr><th colspan='4' align='center'>".$lang["job"][11].":</th></tr>";
+	echo "</th></tr>";
 
-	echo "<tr><td colspan='4' align='center'><textarea cols='60' rows='14'  name='contents'></textarea></td></tr>";
+	echo "<tr class='tab_bg_1'><td colspan='2' align='center'><textarea cols='60' rows='14'  name='contents'></textarea></td></tr>";
 
-	echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
+	echo "<tr class='tab_bg_1'><td colspan='2' align='center'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][2]."\" class='submit'>";
 	echo "</td></tr>";
 	
