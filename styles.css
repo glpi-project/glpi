@@ -1,7 +1,6 @@
 /*#########Fichier CSS########*/
 
 
-
 /* #################################### */
 /* ###### general ###### */
 /* #################################### */
@@ -150,6 +149,7 @@ input.submit:hover {
 .tab_cadre{
  -moz-border-radius: 4px;
   border: 1px solid #cccccc;
+z-index:1;
 }
 
 .tab_cadrehov{
@@ -364,15 +364,67 @@ right: 10px;
 	background-color: #efefe7;
 	-moz-border-radius: 8px;
         /*border: 2px outset #009966;*/
-	
-	
+	height:80px;	
 	border: 2px outset #FFC65D;
 	
 	margin-bottom: 10px;
 	padding: 5px;
 	
 	}
+/* #################################### */
 
+dl, dt, dd, ul, li {
+margin: 0;
+padding: 0;
+list-style-type: none;
+}
+#menu {
+position: absolute;
+top: 10px;
+left: 0;
+z-index:100;
+width: 100%; /* precision for Opera */
+}
+#menu dl {
+float: left;
+width: 10%;
+}
+#menu dt {
+cursor: pointer;
+text-align: center;
+font-weight: bold;
+background: transparent;
+/*border: 1px solid gray; */
+margin: 1px;
+}
+#menu dd {
+display: none;
+-moz-border-radius: 4px;
+border: 1px solid gray;
+}
+#menu li {
+text-align: center;
+padding: 2px;
+background: transparent url("pics/fondTR.png") repeat; 
+
+}
+#menu li a, #menu dt a {
+color: #000;
+text-decoration: none;
+display: block;
+/*height: 100%;*/
+border: 0 none;
+}
+#menu li a:hover, #menu dt a:hover {
+background: #fccc6f;
+
+}
+
+.separ {
+clear: both;
+visibility: hidden;}
+
+/* #################################### */
 	
 .menu_title {
 	font-size : 10px;
@@ -456,7 +508,7 @@ a.icon_nav_move:hover img {
 
 .nav_horl {
 	padding: 4px;
-	margin: 1px;
+	margin:8px;
 	border: 1px solid #aaaaaa;
 	
 	-moz-border-radius: 5px;
