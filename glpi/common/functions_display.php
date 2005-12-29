@@ -70,12 +70,12 @@ $utils = array($lang["Menu"][17]=>array("/reservation/index.php","1"),
 		);
 	
 $inventory = array($lang["Menu"][0]=>array("/computers/index.php","c"),
-	           $lang["Menu"][2]=>array("/printers/index.php","p"),
 		  $lang["Menu"][3]=>array("/monitors/index.php","m"),
-		 $lang["Menu"][21]=>array("/cartridges/index.php","c"),
 		 $lang["Menu"][4]=>array("/software/index.php","s"),  
-	         $lang["Menu"][16]=>array("/peripherals/index.php","r"),
 		$lang["Menu"][1]=>array("/networking/index.php","n"),
+         $lang["Menu"][16]=>array("/peripherals/index.php","r"),
+          $lang["Menu"][2]=>array("/printers/index.php","p"),
+		 $lang["Menu"][21]=>array("/cartridges/index.php","c"),
 		$lang["Menu"][32]=>array("/consumables/index.php","g"),     
 		 $lang["Menu"][28]=>array("/state/index.php","s"),
 		    );
