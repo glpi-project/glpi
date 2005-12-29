@@ -1771,6 +1771,11 @@ function showFollowupsSummary($tID){
 		echo "Element.hide('viewfollowup');";
 		echo "var a=new Ajax.Updater('viewfollowup','".$cfg_install["root"]."/ajax/addfollowup.php' , {method: 'get',parameters: 'tID=$tID'});";
 		echo "};";
+
+		echo "function showPlan(){\n";
+		echo "Element.hide('plan');";
+		echo "var a=new Ajax.Updater('viewplan','".$cfg_install["root"]."/ajax/planning.php' , {method: 'get',parameters: 'form=followups'});";
+		echo "}";
 		echo "</script>\n";
 
 		echo "<div id='viewfollowup'>\n";
@@ -1899,20 +1904,12 @@ function showAddFollowupForm($tID){
 		echo "<tr>";
 		echo "<td>".$lang["job"][35]."</td>";
 		echo "<td>";
-		$rand=mt_rand();
-		echo "<script type='text/javascript' >\n";
-		echo "function showPlan$rand(){\n";
-		echo "Element.hide('plan$rand');";
-		echo "var a=new Ajax.Updater('viewplan$rand','".$cfg_install["root"]."/ajax/planning.php' , {method: 'get',parameters: 'form=followups'});";
-		echo "}";
-		echo "</script>\n";
 
-
-		echo "<div id='plan$rand'  onClick='showPlan$rand()'>\n";
+		echo "<div id='plan'  onClick='showPlan()'>\n";
 		echo "<a href='#'>".$lang["job"][34]."</a>";
 		echo "</div>\n";	
 
-		echo "<div id='viewplan$rand'>\n";
+		echo "<div id='viewplan'>\n";
 		echo "</div>\n";	
 		
 		
