@@ -70,6 +70,11 @@ function showTrackingOnglets($target){
 	echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'>".$lang["job"][38]." $ID</span></li>";
 	
 	echo "<li class='invisible'>&nbsp;</li>";
+
+	echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'>".$lang["job"][29]."</span></li>";
+
+	echo "<li class='invisible'>&nbsp;</li>";
+
 	$next=getNextItem("glpi_tracking",$ID);
 	$prev=getPreviousItem("glpi_tracking",$ID);
 	$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
@@ -1760,34 +1765,25 @@ function showFollowupsSummary($tID){
 	$query = "SELECT * FROM glpi_followups WHERE (tracking = $tID) $RESTRICT ORDER BY date DESC";
 	$result=$db->query($query);
 	
-	echo "<div align='center'>";
 
-//	echo "<table width='800'>";
-//	echo "<tr><td align='left'><strong>".$lang["job"][37]."</strong></td><td  align='right'>".$lang["job"][29]."</td></tr>";
-//	echo "</table>";
 
 
 		$rand=mt_rand();
+
 		echo "<script type='text/javascript' >\n";
-		echo "function showAddFollowup$rand(){\n";
-		echo "Element.hide('addfollowup$rand');";
-		echo "var a=new Ajax.Updater('viewfollowup$rand','".$cfg_install["root"]."/ajax/addfollowup.php' , {method: 'get',parameters: 'tID=$tID'});";
-		echo "}";
+		echo "function showAddFollowup(){\n";
+		echo "Element.hide('viewfollowup');";
+		echo "var a=new Ajax.Updater('viewfollowup','".$cfg_install["root"]."/ajax/addfollowup.php' , {method: 'get',parameters: 'tID=$tID'});";
+		echo "};";
 		echo "</script>\n";
 
-
-		echo "<div id='viewfollowup$rand'>\n";
+		echo "<div id='viewfollowup'>\n";
 		echo "</div>\n";	
 
-	echo "<div id='barre_onglets'><ul id='onglet'>";
-	echo "<li class='actif'"; 
-	echo "><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'>".$lang["job"][37]."</span></li>";
-	
-	echo "<li class='invisible'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
-	echo "<li onClick='showAddFollowup$rand()' id='addfollowup$rand'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'>".$lang["job"][29]."</span></li>";
-	
-	echo "</ul></div>";
 
+	echo "<div align='center'>";
+	echo "<h3>".$lang["job"][37]."</h3>";
+	
 	if ($db->numrows($result)==0){
 		echo "<table class='tab_cadre' width='800'><tr class='tab_bg_2'><th>";
 		echo "<strong>".$lang["job"][12]."</strong>";
@@ -1799,13 +1795,15 @@ function showFollowupsSummary($tID){
 		echo "<tr><th>".$lang["joblist"][1]."</th><th>".$lang["joblist"][6]."</th><th>".$lang["job"][31]."</th><th>".$lang["job"][35]."</th><th>".$lang["joblist"][3]."</th><th>".$lang["job"][30]."</th></tr>";
 		while ($data=$db->fetch_array($result)){
 
-			echo "<tr class='tab_bg_2' onClick='viewEditFollowup".$data["ID"]."$rand()' id='viewfollowup".$data["ID"]."$rand'>";
+			echo "<tr class='tab_bg_2' onClick=\"viewEditFollowup".$data["ID"]."$rand();\" id='viewfollowup".$data["ID"]."$rand'>";
 			echo "<td>";
 
 			echo "<script type='text/javascript' >\n";
 			echo "function viewEditFollowup".$data["ID"]."$rand(){\n";
-			echo "var a=new Ajax.Updater('viewfollowup$rand','".$cfg_install["root"]."/ajax/viewfollowup.php' , {method: 'get',parameters: 'ID=".$data["ID"]."'});";
-			echo "}";
+//			echo "Element.hide('viewfollowup');";
+			echo "var a=new Ajax.Updater('viewfollowup','".$cfg_install["root"]."/ajax/viewfollowup.php' , {method: 'get',parameters: 'ID=".$data["ID"]."'});";
+			echo "};";
+			
 			echo "</script>\n";
 
 			
