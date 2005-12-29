@@ -48,6 +48,39 @@ function titleTracking(){
 
 }
 
+/**
+* Print "onglets" (on the top of items forms)
+*
+* Print "onglets" for a better navigation.
+*
+*@param $target filename : The php file to display then
+*@param $withtemplate bool : template or basic computers
+*@param $actif witch of all the "onglets" is selected
+*
+*@return nothing (diplays)
+*
+**/
+function showTrackingOnglets($target){
+	global $lang,$HTMLRel;
+	
+	if (preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
+	$ID=$ereg[1];
+
+	echo "<div id='barre_onglets'><ul id='onglet'>";
+	echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'>".$lang["job"][38]." $ID</span></li>";
+	
+	echo "<li class='invisible'>&nbsp;</li>";
+	$next=getNextItem("glpi_tracking",$ID);
+	$prev=getPreviousItem("glpi_tracking",$ID);
+	$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
+	if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
+	if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
+	}
+	echo "</ul></div>";
+	
+}
+
+
 function commonTrackingListHeader(){
 global $lang;
 		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
@@ -1478,6 +1511,8 @@ function showJobDetails ($ID){
 	
 	if ($job->getfromDB($ID,0)) {
 
+		showTrackingOnglets($_SERVER["PHP_SELF"]."?ID=".$ID);
+
 		$author=new User();
 		$author->getFromDBbyID($job->fields["author"]);
 		$assign=new User();
@@ -1491,7 +1526,7 @@ function showJobDetails ($ID){
 
 		echo "<div align='center'>";
 		echo "<form method='post' action=\"".$cfg_install["root"]."/tracking/tracking-info-form.php\"  enctype=\"multipart/form-data\">\n";
-		echo "<table class='tab_cadre' width='90%' cellpadding='5'>";
+		echo "<table class='tab_cadre' width='800' cellpadding='5'>";
 		// Première ligne
 		echo "<tr><th colspan=3>".$lang["job"][0]." ".$job->ID."</th></tr>";
 		echo "<tr class='tab_bg_2'>";
@@ -1706,14 +1741,109 @@ echo "<input type='hidden' name='ID' value='$ID'>";
 echo "</form>";
 echo "</div>";
 
-	showFollowups($ID);
+	showFollowupsSummary($ID);
 	}
 	
 	
 }
 
-// Voir followup : si ID=0 ajout
-function showFollowups($tID){
+function showFollowupsSummary($tID){
+	global $lang,$cfg_install,$HTMLRel;
+	$db=new DB();
+
+	$isadmin=isAdmin($_SESSION['glpitype']);
+	// Display existing Followups
+
+	$RESTRICT="";
+	if (!$isadmin)  $RESTRICT=" AND private='0' ";
+
+	$query = "SELECT * FROM glpi_followups WHERE (tracking = $tID) $RESTRICT ORDER BY date DESC";
+	$result=$db->query($query);
+	
+	echo "<div align='center'>";
+
+//	echo "<table width='800'>";
+//	echo "<tr><td align='left'><strong>".$lang["job"][37]."</strong></td><td  align='right'>".$lang["job"][29]."</td></tr>";
+//	echo "</table>";
+
+
+		$rand=mt_rand();
+		echo "<script type='text/javascript' >\n";
+		echo "function showAddFollowup$rand(){\n";
+		echo "Element.hide('addfollowup$rand');";
+		echo "var a=new Ajax.Updater('viewfollowup$rand','".$cfg_install["root"]."/ajax/addfollowup.php' , {method: 'get',parameters: 'tID=$tID'});";
+		echo "}";
+		echo "</script>\n";
+
+
+		echo "<div id='viewfollowup$rand'>\n";
+		echo "</div>\n";	
+
+	echo "<div id='barre_onglets'><ul id='onglet'>";
+	echo "<li class='actif'"; 
+	echo "><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'>".$lang["job"][37]."</span></li>";
+	
+	echo "<li class='invisible'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
+	echo "<li onClick='showAddFollowup$rand()' id='addfollowup$rand'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'>".$lang["job"][29]."</span></li>";
+	
+	echo "</ul></div>";
+
+	if ($db->numrows($result)==0){
+		echo "<table class='tab_cadre' width='800'><tr class='tab_bg_2'><th>";
+		echo "<strong>".$lang["job"][12]."</strong>";
+		echo "</th></tr></table>";
+	}
+	else {	
+
+		echo "<table class='tab_cadrehov' width='800'>";
+		echo "<tr><th>".$lang["joblist"][1]."</th><th>".$lang["joblist"][6]."</th><th>".$lang["job"][31]."</th><th>".$lang["job"][35]."</th><th>".$lang["joblist"][3]."</th><th>".$lang["job"][30]."</th></tr>";
+		while ($data=$db->fetch_array($result)){
+
+			echo "<tr class='tab_bg_2' onClick='viewEditFollowup".$data["ID"]."$rand()' id='viewfollowup".$data["ID"]."$rand'>";
+			echo "<td>";
+
+			echo "<script type='text/javascript' >\n";
+			echo "function viewEditFollowup".$data["ID"]."$rand(){\n";
+			echo "var a=new Ajax.Updater('viewfollowup$rand','".$cfg_install["root"]."/ajax/viewfollowup.php' , {method: 'get',parameters: 'ID=".$data["ID"]."'});";
+			echo "}";
+			echo "</script>\n";
+
+			
+			 echo convDateTime($data["date"])."</td>";
+			echo "<td>".$data["contents"]."</td>";
+
+			$hour=floor($data["realtime"]);
+			$minute=round(($data["realtime"]-$hour)*60,0);
+			echo "<td>$hour ".$lang["job"][21]." $minute ".$lang["job"][22]."</td>";
+
+			echo "<td>";
+			$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
+			$result2=$db->query($query2);
+			if ($db->numrows($result2)==0)
+				echo $lang["job"][32];	
+			else {
+				$data2=$db->fetch_array($result2);
+				echo convDateTime($data2["begin"])." -> ".convDateTime($data2["end"]);
+			}
+			echo "</td>";
+			
+			echo "<td>".getUserName($data["author"])."</td>";
+			
+			echo "<td>";
+			if ($data["private"])
+				echo $lang["choice"][0];
+			else echo $lang["choice"][1];
+			echo "</td>";
+					
+			echo "</tr>";
+		}
+		echo "</table>";
+	}	
+	echo "</div>";
+}
+
+// Formulaire d'ajout de followup
+function showAddFollowupForm($tID){
 	global $lang,$cfg_install,$HTMLRel;
 	$db=new DB();
 
@@ -1723,7 +1853,7 @@ function showFollowups($tID){
 	if ($isadmin){
 		echo "<div align='center'>";
 		echo "<form name='followups' method='post' action=\"".$cfg_install["root"]."/tracking/tracking-info-form.php\">\n";
-		echo "<table class='tab_cadre' width='90%'>";
+		echo "<table class='tab_cadre' width='800'>";
 		echo "<tr><th colspan='2'>";
 		echo $lang["job"][29];
 		echo "</th></tr>";
@@ -1812,51 +1942,43 @@ function showFollowups($tID){
 		echo "<input type='hidden' name='tracking' value='$tID'>";
 		echo "</form></div>";
 	}
+}
+
+
+// Formulaire d'ajout de followup
+function showUpdateFollowupForm($ID){
+	global $lang,$cfg_install,$HTMLRel;
+	$db=new DB();
+
+	$isadmin=isAdmin($_SESSION['glpitype']);
+
 	// Display existing Followups
 
 	$RESTRICT="";
 	if (!$isadmin)  $RESTRICT=" AND private='0' ";
 
-	$query = "SELECT * FROM glpi_followups WHERE (tracking = $tID) $RESTRICT ORDER BY date DESC";
+	$query = "SELECT * FROM glpi_followups WHERE (ID = $ID)";
 	$result=$db->query($query);
 	
-	echo "<div align='center'>";
 
-	if ($db->numrows($result)==0)
-		echo "<strong>".$lang["job"][12]."</strong>";
-	else {	
-
-		echo "<table class='tab_cadre' width='90%'>";
-		echo "<tr><th>";
-		echo $lang["job"][7];
-		echo "</th></tr>";
-		while ($data=$db->fetch_array($result)){
+	if ($db->numrows($result)==1){
+			echo "<div align='center'>";
+			$data=$db->fetch_array($result);
+			echo "<table class='tab_cadre' width='800'>";
+			echo "<tr><th>";
+			echo $lang["job"][39];
+			echo "</th></tr>";
 			echo "<tr class='tab_bg_2'><td>";
 			echo "<form method='post' action=\"".$cfg_install["root"]."/tracking/tracking-info-form.php\">\n";
 
 			echo "<table width='100%'>";
-			echo "<tr class='tab_bg_2'><td width='60%'>";
+			echo "<tr class='tab_bg_2'><td width='50%'>";
 			echo "<table width='100%' bgcolor='#FFFFFF'>";
 			echo "<tr class='tab_bg_1'><td align='center' width='10%'>".$lang["joblist"][6]."<br><br>".$lang["joblist"][1].":<br><strong>".convDateTime($data["date"])."</strong></td>";
 			echo "<td width='90%'>";
 			
 			if ($isadmin){
-				$rand=mt_rand();
-				echo "<script type='text/javascript' >\n";
-				echo "function showDesc$rand(){\n";
-				echo "Element.hide('desc$rand');";
-				echo "var a=new Ajax.Updater('viewdesc$rand','".$cfg_install["root"]."/ajax/textarea.php' , {method: 'get',parameters: 'rows=6&cols=60&name=contents&data=".urlencode(addslashes($data["contents"]))."'});";
-				echo "}";
-				echo "</script>\n";
-
-				echo "<div id='desc$rand'  class='div_tracking' onClick='showDesc$rand()'>\n";
-				if (!empty($data["contents"]))
-					echo nl2br($data["contents"]);
-				else echo $lang["job"][33];
-				echo "</div>\n";	
-
-				echo "<div id='viewdesc$rand'>\n";
-				echo "</div>\n";	
+				echo "<textarea name='contents' cols='50' rows='6'>".$data["contents"]."</textarea>";
 			} else echo nl2br($data["contents"]);
 			
 			
@@ -1864,7 +1986,7 @@ function showFollowups($tID){
 			echo "</table>";
 			echo "</td>";
 	
-			echo "<td width='40%' valign='top'>";
+			echo "<td width='50%' valign='top'>";
 			echo "<table width='100%'>";
 
 			echo "<tr>";
@@ -1960,11 +2082,9 @@ function showFollowups($tID){
 				echo "</form>";
 			}
 			echo "</td></tr>";
-			
+			echo "</table>";
+			echo "</div>";
 		}
-		echo "</table>";
-	}
-	echo "</div>";
 }
 
 ?>
