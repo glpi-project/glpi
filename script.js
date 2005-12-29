@@ -1,4 +1,11 @@
 window.onload=montre;
+
+var timeoutglobalvar;
+
+function setdisplay (objet, statut) {
+	if (objet.style.display != statut) objet.style.display = statut;
+}
+
 function montre(id) {
 var d = document.getElementById(id);
 
@@ -20,7 +27,7 @@ var ie=false;
 	for (var i = 1; i<=10; i++) {
 		var e=document.getElementById('smenu'+i);
 		if (e) {
-			e.style.display='block';
+			setdisplay(e,'block');
 			if (ie){
 				 var selx=0; var sely=0; var selp;
 				 if(e.offsetParent){
@@ -37,12 +44,14 @@ var ie=false;
 				 selh=e.offsetHeight;
 				showSelect(selx,sely,selw,selh);
 			}
-		e.style.display='none';
+			setdisplay(e,'none');
 		}
 	}
 if (d) {
-	d.style.display='block'; 
-
+	setdisplay(d,'block'); 
+	clearTimeout(timeoutglobalvar);
+	timeoutglobalvar=setTimeout(function(){setdisplay(d, 'none')},5000);
+	
 	if (ie){
 		 var selx=0; var sely=0; var selp;
 		 if(d.offsetParent){
