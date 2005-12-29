@@ -29,7 +29,7 @@
 
   b
   {
-    font-wheight: bold;
+    font-weight: bold;
   }
 
  .center {
@@ -49,14 +49,14 @@ text-align:center;
 
   a, a:link
   {
-    font-wheight: bold;
+    font-weight: bold;
     text-decoration: none;
   	color : #009966;
   }
 
   /*
  a:visited   {
-    font-wheight: bold;
+    font-weight: bold;
     text-decoration: none;
      color : #009966;
   }
@@ -319,8 +319,8 @@ border: 1px solid #009966;
 float:right;
 height: 160px;
 width: 240px;
-margin-right:px;
-margin-left:;
+margin-right:0px;
+margin-left:0px;
 margin-top:80px;
 
 
@@ -329,7 +329,7 @@ margin-top:80px;
 .sous_logo {
   font-family: arial;
 	font-size: 9px;
-	color: #eeeee;
+	color: #eeeeee;
 	text-decoration: none;
 	}
 
@@ -473,9 +473,6 @@ background-color: #339966;
 	background-color: #e4e4e4;
 	-moz-border-radius: 5px;
 }
-
-
-
 
 .icon_nav {
 	padding: 4px;
