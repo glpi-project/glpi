@@ -40,6 +40,9 @@ text-align:center;
 .blue {color:blue;}
 .green {color:green;}
 
+.separ {
+clear: both;
+visibility: hidden;}
 
 
 /* #################################### */
@@ -371,6 +374,19 @@ right: 10px;
 	padding: 5px;
 	
 	}
+
+#navigation-helpdesk{
+	/* ## background-color: #C5DAC8;*/
+	background-color: #efefe7;
+	-moz-border-radius: 8px;
+        /*border: 2px outset #009966;*/
+	height:150px;	
+	border: 2px outset #FFC65D;
+	
+	margin-bottom: 10px;
+	padding: 5px;
+	
+	}
 /* #################################### */
 
 dl, dt, dd, ul, li {
@@ -387,7 +403,7 @@ width: 100%; /* precision for Opera */
 }
 #menu dl {
 float: left;
-width: 10%;
+width: 12%;
 }
 #menu dt {
 cursor: pointer;
@@ -420,18 +436,14 @@ background: #fccc6f;
 
 }
 
-.separ {
-clear: both;
-visibility: hidden;}
 
 /* #################################### */
 	
 .menu_title {
-	font-size : 10px;
- 	
-	color : #000000;
+	font-size : 9px;
+ 	color : #000000;
 	font-family: Verdana,Arial,Helvetica,sans-serif;
-	font-weight: bold;
+	
 }	
 	
 	
