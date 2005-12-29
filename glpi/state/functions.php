@@ -185,12 +185,14 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 
 			// Item
 			echo "<th>";
-			if ($sort=="glpi_state_item.id_device") {
+/*			if ($sort=="glpi_state_item.id_device") {
 				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_state_item.id_device&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
-			echo $lang["state"][5]."</a></th>";
+*/			echo $lang["state"][5];
+//			 echo "</a>";
+			 echo "</th>";
 
 			
 			// Type			
