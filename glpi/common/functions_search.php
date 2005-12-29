@@ -434,12 +434,12 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			
 				echo "<tr class='tab_bg_2'>";
 				// Print first element
-				echo "<td><b>";
+				echo "<td>";
 				if ($SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"]=="glpi_users.name")
 					displayItem($type,"glpi_users.name.brut",$data,0);
 				else 
 					displayItem($type,$SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"],$data,0);
-				echo "</b></td>";
+				echo "</td>";
 				// Print other items
 				for ($j=1;$j<$toview_count;$j++){
 					echo "<td>";
@@ -708,7 +708,7 @@ switch ($field){
 		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
 		echo "</a>";
 		if (!empty($data["ITEM_".$num."_2"]))
-			echo "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$HTMLRel."/pics/web.png'></a>";
+			echo "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$HTMLRel."/pics/web.png' alt='website'></a>";
 		break;	
 	case "glpi_enterprises.name.brut" :
 		$type=ENTERPRISE_TYPE;
@@ -717,7 +717,7 @@ switch ($field){
 		if ($cfg_layout["view_ID"]) echo " (".$data["ID"].")";
 		echo "</a>";
 		if (!empty($data["ITEM_".$num."_2"]))
-			echo "<a href='".$data["ITEM_".$num."_2"]."' target='_blank''><img src='".$HTMLRel."/pics/web.png'></a>";
+			echo "<a href='".$data["ITEM_".$num."_2"]."' target='_blank''><img src='".$HTMLRel."/pics/web.png' alt='website'></a>";
 		break;			
 	case "glpi_docs.name" :		
 		$type=DOCUMENT_TYPE;
