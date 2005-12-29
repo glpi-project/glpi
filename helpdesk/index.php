@@ -66,12 +66,13 @@ if (isset($_GET["priority"]) && empty($_GET["contents"]))
 }
 elseif (isset($_GET["priority"]) && !empty($_GET["contents"]))
 {
-	$uemail="";
-	if (isset($_GET["emailupdates"])&&$_GET["emailupdates"]=='yes'){
+	$uemail=$_GET["uemail"];
+	if (isset($_GET["emailupdates"])&&$_GET["emailupdates"]=='yes'&&empty($_GET["uemail"])){
 		$u=new User;		
 		$u->getfromDB($_GET["user"]);
 		$uemail=$u->fields['email'];
 		}
+
 		
 	if (isset($_GET["hour"])&&isset($_GET["minute"]))
 	$realtime=$_GET["hour"]+$_GET["minute"]/60;

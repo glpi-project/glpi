@@ -656,6 +656,12 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 		echo "<option value='yes' selected>".$lang["help"][10]."";
 		echo "</select>";
 		echo "</td></tr>";
+		echo "<tr class='tab_bg_1'>";
+		echo "<td align='center'>".$lang["help"][11].":</td>";
+		echo "<td colspan='3'>	";
+		echo "<input type='text' size='30' name='uemail'>";
+		echo "</td></tr>";
+		
 	}
 
 
@@ -842,7 +848,9 @@ else {
 	echo "</tr>";
 
 }
-	echo "</table></div></form>";
+	echo "</table></div>";
+	echo "<input type='hidden' name='start' value='0'>";
+	echo "</form>";
 
 
 }
@@ -992,11 +1000,11 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 	}
 
    $query.=$where." ORDER BY glpi_tracking.date ".$prefs["order"];
-
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		
 		$numrows= $db->numrows($result);
+
 		if ($start<$numrows) {
 			// Pager
 			$parameters="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;contains2=$contains2&amp;attrib=$assign&amp;author=$author";
