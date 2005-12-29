@@ -252,9 +252,9 @@ $config = array($lang["Menu"][14]=>array("/users/index.php","u"),
 	
 	echo "<dl><dt><a  class='icon_nav_move'  style='background: transparent'  href=\"".$cfg_install["root"]."/logout.php\"><img  src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></dt></dl>\n";
 	
-	echo "<dl><dt  >
-	<p style='font-size:9px''>".date("H").":".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
-	echo "</i></p><p class='nav_horl'><b>".$_SESSION["glpiname"]."</b></p></dt></dl>\n";
+	echo "<div style='float:right; font-size:9px; margin-right:15px;'>";
+	echo "<p style='text-align:center'>".date("H").":".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
+	echo "</i></p><p class='nav_horl'><b>".$_SESSION["glpiname"]."</b></p></div>\n";
 
 	// End navigation bar
 
