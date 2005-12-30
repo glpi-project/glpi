@@ -199,6 +199,10 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 	echo "<tr><td>".$lang["printers"][9].": 	</td><td>\n";
 		dropdownValue("glpi_type_printers", "type", $printer->fields["type"]);
 	echo "</td></tr>\n";
+
+	echo "<tr><td>".$lang["printers"][32].": 	</td><td>";
+		dropdownValue("glpi_dropdown_model_printers", "model", $printer->fields["model"]);
+	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["printers"][10].":	</td><td>\n";
 	autocompletionTextField("serial","glpi_printers","serial",$printer->fields["serial"],20);	echo "</td></tr>\n";

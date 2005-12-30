@@ -183,6 +183,10 @@ function showperipheralForm ($target,$ID,$withtemplate='') {
 	echo "<tr><td>".$lang["peripherals"][9].": 	</td><td>";
 		dropdownValue("glpi_type_peripherals", "type", $mon->fields["type"]);
 	echo "</td></tr>";
+
+	echo "<tr><td>".$lang["peripherals"][34].": 	</td><td>";
+		dropdownValue("glpi_dropdown_model_peripherals", "model", $mon->fields["model"]);
+	echo "</td></tr>";
 	
 	echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>";
 		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$mon->fields["FK_glpi_enterprise"]);

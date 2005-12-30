@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-12-27 13:48
+#GLPI Dump database on 2005-12-30 01:24
 
 ### Dump table glpi_cartridges
 
@@ -178,7 +178,7 @@ CREATE TABLE `glpi_config` (
     `url_in_mail` enum('0','1') DEFAULT '0' NOT NULL,
     `text_login` text NOT NULL,
     `auto_update_check` smallint(6) DEFAULT '0' NOT NULL,
-    `last_update_check` date DEFAULT '2005-12-27' NOT NULL,
+    `last_update_check` date DEFAULT '2005-12-30' NOT NULL,
     `founded_new_version` varchar(10) NOT NULL,
     `dropdown_max` int(11) DEFAULT '100' NOT NULL,
     `ajax_wildcard` char(1) DEFAULT '*' NOT NULL,
@@ -192,7 +192,7 @@ CREATE TABLE `glpi_config` (
    PRIMARY KEY (`ID`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi','0','','0','2005-12-27','','100','*','0','50','1','1','0','name','0');
+INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi','0','','0','2005-12-30','','100','*','0','50','1','1','0','name','0');
 
 ### Dump table glpi_connect_wire
 
@@ -574,15 +574,15 @@ INSERT INTO glpi_display VALUES ('36','1','19','8');
 INSERT INTO glpi_display VALUES ('37','1','17','9');
 INSERT INTO glpi_display VALUES ('40','2','3','3');
 INSERT INTO glpi_display VALUES ('41','2','4','4');
-INSERT INTO glpi_display VALUES ('42','2','11','5');
-INSERT INTO glpi_display VALUES ('43','2','9','6');
+INSERT INTO glpi_display VALUES ('42','2','11','6');
+INSERT INTO glpi_display VALUES ('43','2','9','7');
 INSERT INTO glpi_display VALUES ('47','3','4','4');
-INSERT INTO glpi_display VALUES ('48','3','9','5');
-INSERT INTO glpi_display VALUES ('53','4','9','5');
-INSERT INTO glpi_display VALUES ('54','4','7','6');
+INSERT INTO glpi_display VALUES ('48','3','9','6');
+INSERT INTO glpi_display VALUES ('53','4','9','6');
+INSERT INTO glpi_display VALUES ('54','4','7','7');
 INSERT INTO glpi_display VALUES ('58','5','4','4');
-INSERT INTO glpi_display VALUES ('59','5','9','5');
-INSERT INTO glpi_display VALUES ('60','5','7','6');
+INSERT INTO glpi_display VALUES ('59','5','9','6');
+INSERT INTO glpi_display VALUES ('60','5','7','7');
 INSERT INTO glpi_display VALUES ('64','7','3','1');
 INSERT INTO glpi_display VALUES ('65','7','4','2');
 INSERT INTO glpi_display VALUES ('66','7','5','3');
@@ -620,6 +620,10 @@ INSERT INTO glpi_display VALUES ('101','17','3','1');
 INSERT INTO glpi_display VALUES ('102','17','4','2');
 INSERT INTO glpi_display VALUES ('103','17','5','3');
 INSERT INTO glpi_display VALUES ('104','17','6','4');
+INSERT INTO glpi_display VALUES ('105','2','40','5');
+INSERT INTO glpi_display VALUES ('106','3','40','5');
+INSERT INTO glpi_display VALUES ('107','4','40','5');
+INSERT INTO glpi_display VALUES ('108','5','40','5');
 
 ### Dump table glpi_doc_device
 
@@ -796,6 +800,46 @@ CREATE TABLE `glpi_dropdown_model` (
 ) TYPE=MyISAM;
 
 
+### Dump table glpi_dropdown_model_monitors
+
+DROP TABLE IF EXISTS `glpi_dropdown_model_monitors`;
+CREATE TABLE `glpi_dropdown_model_monitors` (
+    `ID` int(11) NOT NULL auto_increment,
+    `name` varchar(255) NOT NULL,
+   PRIMARY KEY (`ID`)
+) TYPE=MyISAM;
+
+
+### Dump table glpi_dropdown_model_networking
+
+DROP TABLE IF EXISTS `glpi_dropdown_model_networking`;
+CREATE TABLE `glpi_dropdown_model_networking` (
+    `ID` int(11) NOT NULL auto_increment,
+    `name` varchar(255) NOT NULL,
+   PRIMARY KEY (`ID`)
+) TYPE=MyISAM;
+
+
+### Dump table glpi_dropdown_model_peripherals
+
+DROP TABLE IF EXISTS `glpi_dropdown_model_peripherals`;
+CREATE TABLE `glpi_dropdown_model_peripherals` (
+    `ID` int(11) NOT NULL auto_increment,
+    `name` varchar(255) NOT NULL,
+   PRIMARY KEY (`ID`)
+) TYPE=MyISAM;
+
+
+### Dump table glpi_dropdown_model_printers
+
+DROP TABLE IF EXISTS `glpi_dropdown_model_printers`;
+CREATE TABLE `glpi_dropdown_model_printers` (
+    `ID` int(11) NOT NULL auto_increment,
+    `name` varchar(255) NOT NULL,
+   PRIMARY KEY (`ID`)
+) TYPE=MyISAM;
+
+
 ### Dump table glpi_dropdown_netpoint
 
 DROP TABLE IF EXISTS `glpi_dropdown_netpoint`;
@@ -919,7 +963,6 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('2','-1','system','2005-12-27 13:48:06','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1055,6 +1098,7 @@ CREATE TABLE `glpi_monitors` (
     `flags_bnc` tinyint(4) DEFAULT '0' NOT NULL,
     `location` int(11),
     `type` int(11),
+    `model` int(11),
     `FK_glpi_enterprise` int(11) DEFAULT '0' NOT NULL,
     `is_global` enum('0','1') DEFAULT '0' NOT NULL,
     `deleted` enum('Y','N') DEFAULT 'N' NOT NULL,
@@ -1070,7 +1114,7 @@ CREATE TABLE `glpi_monitors` (
    KEY tech_num (`tech_num`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_monitors VALUES ('4','','0000-00-00 00:00:00','','','0','','','','0','0','0','0','0',NULL,NULL,'0','0','N','1','Blank Template');
+INSERT INTO glpi_monitors VALUES ('4','','0000-00-00 00:00:00','','','0','','','','0','0','0','0','0',NULL,NULL,NULL,'0','0','N','1','Blank Template');
 
 ### Dump table glpi_networking
 
@@ -1090,6 +1134,7 @@ CREATE TABLE `glpi_networking` (
     `domain` int(11) DEFAULT '0' NOT NULL,
     `network` int(11) DEFAULT '0' NOT NULL,
     `type` int(11),
+    `model` int(11),
     `firmware` int(11),
     `FK_glpi_enterprise` int(11) DEFAULT '0' NOT NULL,
     `deleted` enum('Y','N') DEFAULT 'N' NOT NULL,
@@ -1107,7 +1152,7 @@ CREATE TABLE `glpi_networking` (
    KEY tech_num (`tech_num`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_networking VALUES ('10','','','','','','','0','0000-00-00 00:00:00','',NULL,'0','0',NULL,NULL,'0','N','1','Blank Template','','');
+INSERT INTO glpi_networking VALUES ('10','','','','','','','0','0000-00-00 00:00:00','',NULL,'0','0',NULL,NULL,NULL,'0','N','1','Blank Template','','');
 
 ### Dump table glpi_networking_ports
 
@@ -1173,6 +1218,7 @@ CREATE TABLE `glpi_peripherals` (
     `otherserial` varchar(255) NOT NULL,
     `location` int(11) DEFAULT '0' NOT NULL,
     `type` int(11) DEFAULT '0' NOT NULL,
+    `model` int(11),
     `brand` varchar(255) NOT NULL,
     `FK_glpi_enterprise` int(11) DEFAULT '0' NOT NULL,
     `is_global` enum('0','1') DEFAULT '0' NOT NULL,
@@ -1188,7 +1234,7 @@ CREATE TABLE `glpi_peripherals` (
    KEY tech_num (`tech_num`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_peripherals VALUES ('1','','0000-00-00 00:00:00','','','0','','','','0','0','','0','0','N','1','Blank Template');
+INSERT INTO glpi_peripherals VALUES ('1','','0000-00-00 00:00:00','','','0','','','','0','0','0','','0','0','N','1','Blank Template');
 
 ### Dump table glpi_printers
 
@@ -1211,6 +1257,7 @@ CREATE TABLE `glpi_printers` (
     `domain` int(11) DEFAULT '0' NOT NULL,
     `network` int(11) DEFAULT '0' NOT NULL,
     `type` int(11),
+    `model` int(11),
     `FK_glpi_enterprise` int(11) DEFAULT '0' NOT NULL,
     `deleted` enum('Y','N') DEFAULT 'N' NOT NULL,
     `is_template` enum('0','1') DEFAULT '0' NOT NULL,
@@ -1226,7 +1273,7 @@ CREATE TABLE `glpi_printers` (
    KEY tech_num (`tech_num`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_printers VALUES ('3','','0000-00-00 00:00:00','','','0','','','0','0','0','','',NULL,'0','0',NULL,'0','N','1','Blank Template','0');
+INSERT INTO glpi_printers VALUES ('3','','0000-00-00 00:00:00','','','0','','','0','0','0','','',NULL,'0','0',NULL,NULL,'0','N','1','Blank Template','0');
 
 ### Dump table glpi_repair_item
 

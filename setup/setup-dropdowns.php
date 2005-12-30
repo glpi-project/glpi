@@ -116,20 +116,24 @@ if (isset($_POST["several_add"])) {
 	$dp["computers"]=$lang["setup"][4];
 	$dp["model"]=$lang["setup"][91];		
 	$dp["networking"]=$lang["setup"][42];		
+	$dp["model_networking"]=$lang["setup"][95];		
 	$dp["printers"]=$lang["setup"][43];		
+	$dp["model_printers"]=$lang["setup"][96];		
 	$dp["monitors"]=$lang["setup"][44];		
+	$dp["model_monitors"]=$lang["setup"][94];		
 	$dp["peripherals"]=$lang["setup"][69];		
+	$dp["model_peripherals"]=$lang["setup"][97];		
 	$dp["os"]=$lang["setup"][5];		
 	$dp["iface"]=$lang["setup"][9];		
 	$dp["firmware"]=$lang["setup"][71];
 	$dp["netpoint"]=$lang["setup"][73];		
 	$dp["enttype"]=$lang["setup"][80];
 	$dp["rubdocs"]=$lang["setup"][81];
-	$dp["contact_type"]=$lang["setup"][82];
 	$dp["state"]=$lang["setup"][83];
 	$dp["cartridge_type"]=$lang["setup"][84];
 	$dp["consumable_type"]=$lang["setup"][92];
 	$dp["contract_type"]=$lang["setup"][85];
+	$dp["contact_type"]=$lang["setup"][82];
 	$dp["ram_type"]=$lang["setup"][86];
 	$dp["hdd_type"]=$lang["setup"][93];
 	$dp["domain"]=$lang["setup"][89];
@@ -196,6 +200,18 @@ echo "<option value='$key' $sel>".$val."</option>";
 		break;
 		case "model" : 
 		showFormDropDown($_SERVER["PHP_SELF"],"model",$lang["setup"][91],$ID,$value2);
+		break;
+		case "model_printers" : 
+		showFormDropDown($_SERVER["PHP_SELF"],"model_printers",$lang["setup"][96],$ID,$value2);
+		break;
+		case "model_monitors" : 
+		showFormDropDown($_SERVER["PHP_SELF"],"model_monitors",$lang["setup"][94],$ID,$value2);
+		break;
+		case "model_networking" : 
+		showFormDropDown($_SERVER["PHP_SELF"],"model_networking",$lang["setup"][95],$ID,$value2);
+		break;
+		case "model_peripherals" : 
+		showFormDropDown($_SERVER["PHP_SELF"],"model_peripherals",$lang["setup"][97],$ID,$value2);
 		break;
 		case "rubdocs" : 
 		showFormDropDown($_SERVER["PHP_SELF"],"rubdocs",$lang["setup"][81],$ID,$value2);

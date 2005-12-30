@@ -192,6 +192,10 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 	echo "<tr><td>".$lang["monitors"][9].": 	</td><td>";
 		dropdownValue("glpi_type_monitors", "type", $mon->fields["type"]);
 	echo "</td></tr>";
+
+	echo "<tr><td>".$lang["monitors"][31].": 	</td><td>";
+		dropdownValue("glpi_dropdown_model_monitors", "model", $mon->fields["model"]);
+	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["monitors"][10].":	</td><td>";
 	autocompletionTextField("serial","glpi_monitors","serial",$mon->fields["serial"],20);	

@@ -197,6 +197,10 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 	echo "<tr><td>".$lang["networking"][2].": 	</td><td>\n";
 		dropdownValue("glpi_type_networking", "type", $netdev->fields["type"]);
 	echo "</td></tr>\n";
+
+	echo "<tr><td>".$lang["networking"][58].": 	</td><td>";
+		dropdownValue("glpi_dropdown_model_networking", "model", $netdev->fields["model"]);
+	echo "</td></tr>";
 	
 	echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>\n";
 		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$netdev->fields["FK_glpi_enterprise"]);
