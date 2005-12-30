@@ -787,4 +787,63 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=20,$optio
 	}
 }
 
+//print select form for device type
+function device_selecter($target,$cID,$withtemplate='') {
+	global $lang,$HTMLRel,$cfg_install;
+
+	if(!empty($withtemplate) && $withtemplate == 2) {
+	//do nothing
+	} else {
+		echo "<table width='800' class='tab_cadre'>";
+		echo "<tr  class='tab_bg_1'><td colspan='2' align='right'>";
+		echo $lang["devices"][0].":";
+		echo "</td>";
+		echo "<td colspan='63'>"; 
+		echo "<form action=\"$target\" method=\"post\">";
+
+		$rand=mt_rand();
+
+		echo "<select name=\"new_device_type\" id='device$rand'>";
+		
+		echo "<option value=\"-1\">-----</option>";
+		echo "<option value=\"".MOBOARD_DEVICE."\">".getDictDeviceLabel(MOBOARD_DEVICE)."</option>";
+		echo "<option value=\"".HDD_DEVICE."\">".getDictDeviceLabel(HDD_DEVICE)."</option>";
+		echo "<option value=\"".GFX_DEVICE."\">".getDictDeviceLabel(GFX_DEVICE)."</option>";
+		echo "<option value=\"".NETWORK_DEVICE."\">".getDictDeviceLabel(NETWORK_DEVICE)."</option>";
+		echo "<option value=\"".PROCESSOR_DEVICE."\">".getDictDeviceLabel(PROCESSOR_DEVICE)."</option>";
+		echo "<option value=\"".SND_DEVICE."\">".getDictDeviceLabel(SND_DEVICE)."</option>";
+		echo "<option value=\"".RAM_DEVICE."\">".getDictDeviceLabel(RAM_DEVICE)."</option>";
+		echo "<option value=\"".DRIVE_DEVICE."\">".getDictDeviceLabel(DRIVE_DEVICE)."</option>";
+		echo "<option value=\"".CONTROL_DEVICE."\">".getDictDeviceLabel(CONTROL_DEVICE)."</option>";
+		echo "<option value=\"".PCI_DEVICE."\">".getDictDeviceLabel(PCI_DEVICE)."</option>";
+		echo "<option value=\"".CASE_DEVICE."\">".getDictDeviceLabel(CASE_DEVICE)."</option>";
+		echo "<option value=\"".POWER_DEVICE."\">".getDictDeviceLabel(POWER_DEVICE)."</option>";
+		echo "</select>";
+
+		echo "<script type='text/javascript' >\n";
+		echo "   new Form.Element.Observer('device$rand', 1, \n";
+		echo "      function(element, value) {\n";
+		echo "      	new Ajax.Updater('showdevice$rand','".$cfg_install["root"]."/ajax/dropdownDevice.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
+		echo "            {Element.hide('search_spinner_device$rand');}, \n";
+		echo "           onLoading:function(request)\n";
+		echo "            {Element.show('search_spinner_device$rand');},\n";
+		echo "           method:'post', parameters:'idtable='+value+'&myname=new_device_id'\n";
+		echo "})})\n";
+		echo "</script>\n";
+	
+		echo "<div id='search_spinner_device$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+		echo "<span id='showdevice$rand'>&nbsp;</span>\n";
+
+
+		echo "<input type=\"hidden\" name=\"withtemplate\" value=\"".$withtemplate."\" >";
+		echo "<input type=\"hidden\" name=\"connect_device\" value=\"".true."\" >";
+		echo "<input type=\"hidden\" name=\"cID\" value=\"".$cID."\" >";
+		echo "<input type=\"submit\" class ='submit' value=\"".$lang["buttons"][2]."\" >";
+		echo "</form>";
+		echo "</td>";
+		echo "</tr></table>";
+		}
+}
+
+
 ?>

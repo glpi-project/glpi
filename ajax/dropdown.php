@@ -35,6 +35,7 @@
 
 	include ("_relpos.php");
 	include ($phproot."/glpi/includes.php");
+
 	header("Content-Type: text/html; charset=UTF-8");
 
 	checkAuthentication("post-only");
@@ -42,7 +43,46 @@
 	// Make a select box
 	$db = new DB;
 
-	if($_POST['table'] == "glpi_dropdown_netpoint") {
+	if (ereg("glpi_device",$_POST['table'])){
+
+		$where="WHERE '1'='1' ";
+			
+		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
+			$where.=" AND designation LIKE '%".$_POST['searchText']."%' ";
+
+		$NBMAX=$cfg_layout["dropdown_max"];
+		$LIMIT="LIMIT 0,$NBMAX";
+		if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
+						
+		$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY designation $LIMIT";
+
+		$result = $db->query($query);
+
+		echo "<select id=\"".$_POST['myname']."\" name=\"".$_POST['myname']."\" size='1'>";
+		
+		if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
+			echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
+	
+		echo "<option value=\"0\">-----</option>";
+		$i = 0;
+		$number = $db->numrows($result);
+		if ($number > 0) {
+			while ($data = $db->fetch_array($result)) {
+				$output = $data['designation'];
+
+				if (empty($output)) $output="&nbsp;";
+
+				$ID = $data['ID'];
+				echo "<option value=\"$ID\">$output</option>";
+				$i++;
+			}
+		}
+		echo "</select>";
+		
+		
+
+	
+	} else if($_POST['table'] == "glpi_dropdown_netpoint") {
 		
 		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
 			$where=" WHERE (t1.name LIKE '%".$_POST['searchText']."%' OR t2.completename LIKE '%".$_POST['searchText']."%')";
