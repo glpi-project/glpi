@@ -109,28 +109,6 @@ else if (isset($tab["disconnect"])) {
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." ".$lang["log"][26]);
 	glpi_header($_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
 }
-//Connect a peripheral
-/*else if(isset($tab["connect"])&&isset($tab["device_type"])) {
-	if($tab["connect"]==1) {
-		checkAuthentication("admin");
-		commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
-		showConnectSearch($_SERVER["PHP_SELF"],$tab["ID"],$tab["device_type"],$tab["withtemplate"]);
-		commonFooter();
-	}	 
-	else if($tab["connect"]==2) {
-		checkAuthentication("admin");
-		commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
-		listConnectElement($_SERVER["PHP_SELF"],$tab);
-		commonFooter();
-	} 
-	else if($tab["connect"]==3) {
-		checkAuthentication("admin");
-		Connect($_SERVER["PHP_SELF"],$tab["ID"],$tab["cID"],$tab["device_type"],$tab["withtemplate"]);
-		logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
-		glpi_header($_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
-	}
-}
-*/
 else if (isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0){
 	Connect($_SERVER["PHP_SELF"],$tab["item"],$tab["cID"],$tab["device_type"],$tab["withtemplate"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"] ." ".$lang["log"][27]);
@@ -150,17 +128,9 @@ elseif(isset($_POST["update_device_x"])||isset($_POST["update_device"])) {
 }
 //add a new device
 elseif (isset($_POST["connect_device"])) {
-	if(isset($_POST["new_device_type"])){
-		if ($_POST["new_device_type"]==-1) glpi_header($_SERVER['HTTP_REFERER']." ");
 		checkAuthentication("admin");
-		commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
-		compdevice_form_add($_SERVER["HTTP_REFERER"],$_POST["new_device_type"],$_POST["cID"],$tab["withtemplate"]);
-		commonFooter();
-	}elseif(isset($_POST["new_device_id"])){
-		checkAuthentication("admin");
-		compdevice_add($_POST["cID"],$_POST["device_type"],$_POST["new_device_id"]);
+		compdevice_add($_POST["cID"],$_POST["new_device_type"],$_POST["new_device_id"]);
 		glpi_header($_SERVER["PHP_SELF"]."?ID=".$_POST["cID"]."&withtemplate=".$tab["withtemplate"]);
-	}
 }
 // Unlink a device 
 // Problem avec IE donc test sur le hidden action_device - MERCI IE :(
