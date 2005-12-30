@@ -779,7 +779,7 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=20,$optio
 	    echo "new Ajax.Autocompleter('textfield_$myname$rand','textfieldupdate_$myname$rand','".$HTMLRel."/ajax/autocompletion.php',{parameters:'table=$table&field=$field&myname=$myname'});";
 		echo "</script>";
 	}	else {
-		echo "<input $option type='text' name='$myname' value=\"".$value."\" size=$size'>\n";
+		echo "<input $option type='text' name='$myname' value=\"".$value."\" size='$size'>\n";
 	}
 }
 
