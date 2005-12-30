@@ -127,7 +127,7 @@ else
 				showAssociatedContact($tab["ID"]);
 				showContractAssociatedEnterprise($tab["ID"]);
 				showDocumentAssociated(ENTERPRISE_TYPE,$tab["ID"]);
-				showTrackingList($_SERVER["PHP_SELF"],$start,"",0,0,0,0,$_GET["ID"],ENTERPRISE_TYPE);
+				showTrackingList($_SERVER["PHP_SELF"],$start,"all",0,$_GET["ID"],ENTERPRISE_TYPE);
 //				showJobList($_SERVER["PHP_SELF"],$_GET["ID"],"enterprise","","","",$start);
 				showLinkOnDevice(ENTERPRISE_TYPE,$tab["ID"]);
 				break;
