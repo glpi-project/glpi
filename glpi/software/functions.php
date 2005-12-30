@@ -502,20 +502,23 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			}
 		}
 		// Dupliquer une licence
-		if ($serial!="free"&&$serial!="global"){
 		$query_new="SELECT glpi_licenses.ID as ID FROM glpi_licenses WHERE $SEARCH_LICENCE";		
 		if ($result_new = $db->query($query_new)) {			
-		$IDdup=$db->result($result_new,0,0);
-		echo "</td><td align='center' >";
-		
-		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_install["root"]."/software/software-licenses.php?duplicate=duplicate&amp;lID=$IDdup\">";
-		
-		echo "<img src=\"".$HTMLRel."pics/add.png\" alt='".$lang["buttons"][8]."' title='".$lang["buttons"][8]."'>";
-		
-		echo "</a></strong>";
-		
+			
+			$IDdup=$db->result($result_new,0,0);
+			if ($serial!="free"&&$serial!="global"){
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_install["root"]."/software/software-licenses.php?duplicate=duplicate&amp;lID=$IDdup\">";
+				echo "<img src=\"".$HTMLRel."pics/add.png\" alt='".$lang["buttons"][8]."' title='".$lang["buttons"][8]."'>";
+				echo "</a></strong>";
+			}
+			if ($serial=="free"||$serial=="global"){
+				// Display infocoms
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>";
+				showDisplayInfocomLink(LICENSE_TYPE,$IDdup,1);
+				echo "</strong>";
+			}
 		}
-		}
+		
 		
 		echo "</td></tr>";
 		
@@ -535,11 +538,11 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=update&amp;lID=".$data_inst["lID"]."&amp;sID=$sID\">";
 				echo "<img src=\"".$HTMLRel."pics/edit.png\" alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'>";
 				echo "</a></strong>";
+				// Display infocoms
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>";
+				showDisplayInfocomLink(LICENSE_TYPE,$data_inst["lID"],1);
+				echo "</strong>";
 				}
-			// Display infocoms
-			echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>";
-			showDisplayInfocomLink(LICENSE_TYPE,$data_inst["lID"],1);
-			echo "</strong>";
 			
 			echo "</td></tr>";
 		}
