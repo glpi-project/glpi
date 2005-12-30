@@ -1907,7 +1907,7 @@ function showAddFollowupForm($tID){
 		echo "<td>";
 
 		echo "<div id='plan'  onClick='showPlan()'>\n";
-		echo "<a href='#'>".$lang["job"][34]."</a>";
+		echo "<span style='font-weight: bold;text-decoration: none; color : #009966;'>".$lang["job"][34]."</span>";
 		echo "</div>\n";	
 
 		echo "<div id='viewplan'>\n";
