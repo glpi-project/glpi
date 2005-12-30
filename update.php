@@ -2890,7 +2890,7 @@ if(!TableExists("glpi_dropdown_model")) {
 	$result=$db->query($query);	
 	if ($db->numrows($result)>0)
 	while ($data=$db->fetch_array($result)){
-		$query="INSERT INTO `glpi_type_computers` (`ID`,`name`) VALUES ('".$data['ID']."','".$data['name']."');";
+		$query="INSERT INTO `glpi_type_computers` (`ID`,`name`) VALUES ('".$data['ID']."','".addslashes($data['name'])."');";
 		$db->query($query) or die("0.6 insert value in glpi_type_computers ".$lang["update"][90].$db->error());		
 	}
 	mysql_free_result($result);
@@ -3297,7 +3297,7 @@ if(!TableExists("glpi_dropdown_model_$model")) {
 	$result=$db->query($query);	
 	if ($db->numrows($result)>0)
 	while ($data=$db->fetch_array($result)){
-		$query="INSERT INTO `glpi_dropdown_model_$model` (`ID`,`name`) VALUES ('".$data['ID']."','".$data['name']."');";
+		$query="INSERT INTO `glpi_dropdown_model_$model` (`ID`,`name`) VALUES ('".$data['ID']."','".addslashes($data['name'])."');";
 		$db->query($query) or die("0.6 insert value in glpi_dropdown_model_$model ".$lang["update"][90].$db->error());		
 	}
 	mysql_free_result($result);
@@ -3550,9 +3550,16 @@ elseif(empty($_POST["ajout_su"])) {
 }
 elseif(!empty($_POST["ajout_su"])) {
 	if(!empty($_POST["pass_su1"]) && !empty($_POST["login_su"]) && $_POST["pass_su1"] == $_POST["pass_su2"]) {
-		$db = new DB;
-		$query = "insert into glpi_users (`ID` , `name` , `password` , `email` , `phone` , `type` , `realname` , `can_assign_job` , `location`) VALUES ('', '".$login_su."', PASSWORD('".$pass_su1."') , '', NULL , 'super-admin', '', 'yes', NULL)";
-		$db->query($query) or die(" No SU ".$lang["update"][90].$db->error());
+
+		include ($phproot . "/glpi/users/classes.php");
+
+		$user = new User;
+		$user->fields["name"]=$_POST["login_su"];
+		$user->fields["password"]=$_POST["pass_su1"];
+		$user->fields["type"]="super-admin";
+		$user->fields["language"]=$_SESSION["dict"];
+		$user->addToDB();
+
 		echo "<div align='center'>";
 		echo "<h3>".$lang["update"][104]."</h3>";
 		echo "</div>";
