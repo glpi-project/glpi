@@ -147,6 +147,10 @@ if (!empty($value)&&$value>0)
 else 
 	echo "<select name='$myname'><option value='0'>------</option></select>\n";
 echo "</span>\n";	
+
+if ($table=="glpi_enterprises")
+	echo getEnterpriseLinks($value);	
+
 }
 
 
