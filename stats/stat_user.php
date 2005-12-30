@@ -81,6 +81,7 @@ $nomUsr = getNbIntervAuthor($_POST["date1"],$_POST["date2"]);
 
 //Pour chacun de ces auteurs on affiche
 //foreach these authors display
+$val=array();
 $i=0;
 if (is_array($nomUsr))
 foreach($nomUsr as $key){

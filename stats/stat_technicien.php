@@ -78,6 +78,7 @@ echo "</table></form></div>";
 //get distinct user who has intervention assigned to
 $nomTech = getNbIntervTech($_POST["date1"],$_POST["date2"]);
 
+$val=array();
 $i=0;
 if (is_array($nomTech))
 foreach($nomTech as $key){
