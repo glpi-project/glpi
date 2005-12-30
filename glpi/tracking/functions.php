@@ -1859,15 +1859,15 @@ function showAddFollowupForm($tID){
 		echo $lang["job"][29];
 		echo "</th></tr>";
 
-		echo "<tr class='tab_bg_2'><td width='60%'>";
+		echo "<tr class='tab_bg_2'><td width='50%'>";
 		echo "<table width='100%'>";
 		echo "<tr><td>".$lang["joblist"][6]."</td>";
-		echo "<td><textarea name='contents' rows=8 cols=60></textarea>";
+		echo "<td><textarea name='contents' rows=8 cols=50></textarea>";
 		echo "</td></tr>";
 		echo "</table>";
 		echo "</td>";
 
-		echo "<td width='40%' valign='top'>";
+		echo "<td width='50%' valign='top'>";
 		echo "<table width='100%'>";
 
 		echo "<tr>";
