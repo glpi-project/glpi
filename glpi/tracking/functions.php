@@ -71,7 +71,7 @@ function showTrackingOnglets($target){
 	
 	echo "<li class='invisible'>&nbsp;</li>";
 
-	echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'>".$lang["job"][29]."</span></li>";
+	echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</span></a></li>";
 
 	echo "<li class='invisible'>&nbsp;</li>";
 
