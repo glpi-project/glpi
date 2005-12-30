@@ -53,7 +53,9 @@ class User {
   	$this->fields['realname'] = '';
   	$this->fields['can_assign_job'] = 'no';
 	$this->fields['tracking_order'] = 'no';
-	$this->fields['language'] = $cfg_install["default_language"];
+	if (isset($cfg_install["default_language"]))
+		$this->fields['language'] = $cfg_install["default_language"];
+	else $this->fields['language'] = "english";
 }
 	
 	function getFromDB($name) {
