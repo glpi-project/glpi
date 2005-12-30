@@ -1811,7 +1811,7 @@ function showFollowupsSummary($tID){
 
 			
 			 echo convDateTime($data["date"])."</td>";
-			echo "<td align='left'>".$data["contents"]."</td>";
+			echo "<td align='left'>".nl2br($data["contents"])."</td>";
 
 			$hour=floor($data["realtime"]);
 			$minute=round(($data["realtime"]-$hour)*60,0);
