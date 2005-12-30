@@ -470,6 +470,22 @@ function replaceDropDropDown($input) {
 		$query = "update glpi_computers set model = '". $input["newID"] ."'  where model = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
+	case "model_printers" :
+		$query = "update glpi_printers set model = '". $input["newID"] ."'  where model = '".$input["oldID"]."'";
+		$result = $db->query($query);
+		break;
+	case "model_monitors" :
+		$query = "update glpi_monitors set model = '". $input["newID"] ."'  where model = '".$input["oldID"]."'";
+		$result = $db->query($query);
+		break;
+	case "model_peripherals" :
+		$query = "update glpi_peripherals set model = '". $input["newID"] ."'  where model = '".$input["oldID"]."'";
+		$result = $db->query($query);
+		break;
+	case "model_networking" :
+		$query = "update glpi_networking set model = '". $input["newID"] ."'  where model = '".$input["oldID"]."'";
+		$result = $db->query($query);
+		break;
 	case "printers" :
 		$query = "update glpi_printers set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$result = $db->query($query);
@@ -743,6 +759,26 @@ function dropdownUsed($table, $ID) {
 		break;
 	case "model" :
 		$query = "Select count(*) as cpt FROM glpi_computers where model = '".$ID."'";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
+	case "model_printers" :
+		$query = "Select count(*) as cpt FROM glpi_printers where model = '".$ID."'";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
+	case "model_networking" :
+		$query = "Select count(*) as cpt FROM glpi_networking where model = '".$ID."'";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
+	case "model_monitors" :
+		$query = "Select count(*) as cpt FROM glpi_monitors where model = '".$ID."'";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
+	case "model_peripherals" :
+		$query = "Select count(*) as cpt FROM glpi_peripherals where model = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;

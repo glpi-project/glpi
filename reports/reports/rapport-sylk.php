@@ -69,10 +69,10 @@ switch($table){
 	case "printers" :
 		$query_nb = "select distinct glpi_printers.ID from glpi_printers";
 		
-		$query = "select glpi_printers.*, glpi_users.name as techname, glpi_enterprises.name as entname, glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac, glpi_networking_ports.netpoint ";
-		$query.= "from glpi_printers LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type = ".PRINTER_TYPE." AND glpi_networking_ports.on_device = glpi_printers.ID) ";
-		$query.= "LEFT JOIN glpi_users ON glpi_users.ID = glpi_printers.tech_num ";
-		$query.= "LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_printers.FK_glpi_enterprise ";
+		$query = " select glpi_printers.*, glpi_users.name as techname, glpi_enterprises.name as entname, glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac, glpi_networking_ports.netpoint";
+		$query.= " from glpi_printers LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type = ".PRINTER_TYPE." AND glpi_networking_ports.on_device = glpi_printers.ID) ";
+		$query.= " LEFT JOIN glpi_users ON glpi_users.ID = glpi_printers.tech_num ";
+		$query.= " LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_printers.FK_glpi_enterprise ";
 		$query.= " WHERE glpi_printers.is_template='0' ";
 		$query.=" ORDER by glpi_printers.deleted DESC, glpi_printers.ID ASC";
 //		echo $query;
@@ -82,6 +82,7 @@ switch($table){
       Array( 'ID',     utf8_decode($lang["printers"][19]),FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'name', utf8_decode($lang["printers"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'type',    utf8_decode($lang["printers"][9]), FORMAT_TEXTE, 'L',    20 ,'0'),      
+	  Array( 'model',    utf8_decode($lang["printers"][32]), FORMAT_TEXTE, 'L',    20 ,'0'),	  
 	  Array( 'entname',    utf8_decode($lang["common"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),            
 	  Array( 'techname',    utf8_decode($lang["common"][10]), FORMAT_TEXTE, 'L',    20 ,'0'),            
       Array( 'location',    utf8_decode($lang["printers"][6]), FORMAT_TEXTE, 'L',    20 ,'0'),
@@ -106,10 +107,10 @@ switch($table){
 	case "networking" :
 		$query_nb = "select distinct glpi_networking.ID from glpi_networking";
 		
-		$query = "select glpi_networking.*, glpi_users.name as techname, glpi_enterprises.name as entname, glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac, glpi_networking_ports.netpoint ";
-		$query.= "from glpi_networking LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type = 2 AND glpi_networking_ports.on_device = glpi_networking.ID)";
-		$query.= "LEFT JOIN glpi_users ON glpi_users.ID = glpi_networking.tech_num ";
-		$query.= "LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_networking.FK_glpi_enterprise ";
+		$query = " select glpi_networking.*, glpi_users.name as techname, glpi_enterprises.name as entname, glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac, glpi_networking_ports.netpoint";
+		$query.= " from glpi_networking LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type = 2 AND glpi_networking_ports.on_device = glpi_networking.ID)";
+		$query.= " LEFT JOIN glpi_users ON glpi_users.ID = glpi_networking.tech_num ";
+		$query.= " LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_networking.FK_glpi_enterprise ";
 		$query.= " WHERE glpi_networking.is_template='0' ";
 		$query.=" ORDER by glpi_networking.deleted DESC, glpi_networking.ID ASC";
 
@@ -120,6 +121,7 @@ switch($table){
       Array( 'ID',     utf8_decode($lang["networking"][50]),FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'name', utf8_decode($lang["networking"][0]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'type',    utf8_decode($lang["networking"][2]), FORMAT_TEXTE, 'L',    20 ,'0'),      
+	  Array( 'model',    utf8_decode($lang["networking"][58]), FORMAT_TEXTE, 'L',    20 ,'0'),	  
 	  Array( 'entname',    utf8_decode($lang["common"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),            
 	  Array( 'techname',    utf8_decode($lang["common"][10]), FORMAT_TEXTE, 'L',    20 ,'0'),            
       Array( 'location',    utf8_decode($lang["networking"][1]), FORMAT_TEXTE, 'L',    20 ,'0'),
@@ -141,10 +143,10 @@ switch($table){
 	case "monitors" :
 		$query_nb = "select distinct glpi_monitors.ID from glpi_monitors";
 		
-		$query = "select glpi_monitors.*, glpi_users.name as techname, glpi_enterprises.name as entname ";
-		$query.= "from glpi_monitors ";
-		$query.= "LEFT JOIN glpi_users ON glpi_users.ID = glpi_monitors.tech_num ";
-		$query.= "LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_monitors.FK_glpi_enterprise ";
+		$query = " select glpi_monitors.*, glpi_users.name as techname, glpi_enterprises.name as entname ";
+		$query.= " from glpi_monitors ";
+		$query.= " LEFT JOIN glpi_users ON glpi_users.ID = glpi_monitors.tech_num ";
+		$query.= " LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_monitors.FK_glpi_enterprise ";
 		$query.= " WHERE glpi_monitors.is_template='0' ";
 		$query.=" ORDER by glpi_monitors.deleted DESC, glpi_monitors.ID ASC";
 
@@ -156,6 +158,7 @@ switch($table){
       Array( 'ID',     utf8_decode($lang["monitors"][23]),FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'name', utf8_decode($lang["monitors"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'type',    utf8_decode($lang["monitors"][9]), FORMAT_TEXTE, 'L',    20 ,'0'),      
+  	Array( 'model',    utf8_decode($lang["monitors"][31]), FORMAT_TEXTE, 'L',    20 ,'0'),	  
 	  Array( 'entname',    utf8_decode($lang["common"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),            
 	  Array( 'techname',    utf8_decode($lang["common"][10]), FORMAT_TEXTE, 'L',    20 ,'0'),            
       Array( 'size',    utf8_decode($lang["monitors"][21]), FORMAT_TEXTE, 'L',    20 ,'0'),
@@ -177,18 +180,19 @@ switch($table){
 	case "peripherals" :
 		$query_nb = "select distinct glpi_peripherals.ID from glpi_peripherals";
 		
-		$query = "select glpi_peripherals.*, glpi_users.name as techname, glpi_enterprises.name as entname, glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac , glpi_networking_ports.netpoint";
+		$query = " select glpi_peripherals.*, glpi_users.name as techname, glpi_enterprises.name as entname, glpi_networking_ports.ifaddr, glpi_networking_ports.ifmac , glpi_networking_ports.netpoint";
 		$query.= " from glpi_peripherals LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.device_type = ".PERIPHERAL_TYPE." AND glpi_networking_ports.on_device = glpi_peripherals.ID) ";
-		$query.= "LEFT JOIN glpi_users ON glpi_users.ID = glpi_peripherals.tech_num ";
-		$query.= "LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_peripherals.FK_glpi_enterprise ";
+		$query.= " LEFT JOIN glpi_users ON glpi_users.ID = glpi_peripherals.tech_num ";
+		$query.= " LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_peripherals.FK_glpi_enterprise ";
 		$query.= " WHERE glpi_peripherals.is_template='0' ";
-		$query.=" ORDER by glpi_peripherals.deleted DESC, glpi_peripherals.ID ASC";
+		$query.="  ORDER by glpi_peripherals.deleted DESC, glpi_peripherals.ID ASC";
 
 	    $champs = Array(
       //     champ       en-tête     format         align  width multiple_zone
       Array( 'ID',     utf8_decode($lang["peripherals"][23]),FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'name', utf8_decode($lang["peripherals"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),
       Array( 'type',    utf8_decode($lang["peripherals"][9]), FORMAT_TEXTE, 'L',    20 ,'0'),      
+  	Array( 'model',    utf8_decode($lang["peripherals"][34]), FORMAT_TEXTE, 'L',    20 ,'0'),	  
 	  Array( 'entname',    utf8_decode($lang["common"][5]), FORMAT_TEXTE, 'L',    20 ,'0'),            
 	  Array( 'techname',    utf8_decode($lang["common"][10]), FORMAT_TEXTE, 'L',    20 ,'0'),            
       Array( 'brand',    utf8_decode($lang["peripherals"][18]), FORMAT_TEXTE, 'L',    20 ,'0'),      
@@ -209,7 +213,7 @@ switch($table){
 	case "licenses" :
 		$query_nb = "select distinct glpi_licenses.ID from glpi_licenses";
 		
-		$query = "select glpi_software.name as soft, glpi_software.version as vers, glpi_software.deleted as deleted,";
+		$query = " select glpi_software.name as soft, glpi_software.version as vers, glpi_software.deleted as deleted,";
 		$query.= " glpi_software.comments as comments, glpi_dropdown_os.name as platform, ";
 		$query.= " glpi_software.is_update as is_update, update_soft.name as update_soft, update_soft.version as update_vers, ";
 		$query.= " glpi_licenses.serial as serial, glpi_licenses.expire as expire, ";
@@ -224,8 +228,8 @@ switch($table){
 		$query.= " LEFT JOIN glpi_inst_software ON glpi_inst_software.license = glpi_licenses.ID ";
 		$query.= " LEFT JOIN glpi_computers ON glpi_inst_software.cID = glpi_computers.ID ";
 		$query.= " LEFT JOIN glpi_computers AS oem_comp ON glpi_licenses.oem_computer = oem_comp.ID ";
-		$query.= "LEFT JOIN glpi_users ON glpi_users.ID = glpi_software.tech_num ";
-		$query.= "LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_software.FK_glpi_enterprise ";
+		$query.= " LEFT JOIN glpi_users ON glpi_users.ID = glpi_software.tech_num ";
+		$query.= " LEFT JOIN glpi_enterprises ON glpi_enterprises.ID = glpi_software.FK_glpi_enterprise ";
 		$query.= " WHERE glpi_software.is_template='0' ";
 		$query.=" ORDER by glpi_software.deleted DESC, glpi_software.name ASC";
 
@@ -451,7 +455,24 @@ switch($table){
 					$value=getDropdownName("glpi_type_".$table,$enr[$champs[$i][0]]);
 				}
 				elseif($name == "model") {
-					$value=getDropdownName("glpi_dropdown_model",$enr[$champs[$i][0]]);
+					switch($table){
+						case "computers":					
+							$value=getDropdownName("glpi_dropdown_model",$enr[$champs[$i][0]]);
+							break;
+						case "printers":					
+							$value=getDropdownName("glpi_dropdown_model_printers",$enr[$champs[$i][0]]);
+							break;
+						case "networking":					
+							$value=getDropdownName("glpi_dropdown_model_networking",$enr[$champs[$i][0]]);
+							break;
+						case "peripherals":					
+							$value=getDropdownName("glpi_dropdown_model_peripherals",$enr[$champs[$i][0]]);
+							break;
+						case "monitors":					
+							$value=getDropdownName("glpi_dropdown_model_monitors",$enr[$champs[$i][0]]);
+							break;
+
+					}
 				}
 				elseif($name == "montype") {
 					$value=getDropdownName("glpi_type_monitors",$enr[$champs[$i][0]]);
@@ -514,7 +535,27 @@ switch($table){
 					$value=getDropdownName("glpi_type_".$table,$enr[$champs[$i][0]]);
 				}
 				elseif($name == "model") {
-					$value=getDropdownName("glpi_dropdown_model",$enr[$champs[$i][0]]);
+					switch($table){
+						case "computers":					
+							$value=getDropdownName("glpi_dropdown_model",$enr[$champs[$i][0]]);
+							break;
+						case "printers":					
+							$value=getDropdownName("glpi_dropdown_model_printers",$enr[$champs[$i][0]]);
+							break;
+						case "networking":					
+							$value=getDropdownName("glpi_dropdown_model_networking",$enr[$champs[$i][0]]);
+							break;
+						case "peripherals":					
+							$value=getDropdownName("glpi_dropdown_model_peripherals",$enr[$champs[$i][0]]);
+							break;
+						case "monitors":					
+							$value=getDropdownName("glpi_dropdown_model_monitors",$enr[$champs[$i][0]]);
+							break;
+
+					}
+				}
+				elseif($name == "montype") {
+					$value=getDropdownName("glpi_type_monitors",$enr[$champs[$i][0]]);
 				}
 				elseif($name == "montype") {
 					$value=getDropdownName("glpi_type_monitors",$enr[$champs[$i][0]]);

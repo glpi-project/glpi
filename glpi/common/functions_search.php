@@ -859,6 +859,10 @@ switch ($new_table){
 		return " LEFT JOIN $new_table ON ($ref_table.type = $new_table.ID) ";
 		break;
 	case "glpi_dropdown_model":
+	case "glpi_dropdown_model_printers":
+	case "glpi_dropdown_model_monitors":
+	case "glpi_dropdown_model_peripherals":
+	case "glpi_dropdown_model_networking":
 		return " LEFT JOIN $new_table ON ($ref_table.model = $new_table.ID) ";
 		break;
 	case "glpi_dropdown_os":

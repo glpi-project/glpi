@@ -3060,15 +3060,15 @@ $query="INSERT INTO glpi_display VALUES (32, 1, 4, 4),
 (37, 1, 17, 9),
 (40, 2, 3, 3),
 (41, 2, 4, 4),
-(42, 2, 11, 5),
-(43, 2, 9, 6),
+(42, 2, 11, 6),
+(43, 2, 9, 7),
 (47, 3, 4, 4),
-(48, 3, 9, 5),
-(53, 4, 9, 5),
-(54, 4, 7, 6),
+(48, 3, 9, 6),
+(53, 4, 9, 6),
+(54, 4, 7, 7),
 (58, 5, 4, 4),
-(59, 5, 9, 5),
-(60, 5, 7, 6),
+(59, 5, 9, 6),
+(60, 5, 7, 7),
 (64, 7, 3, 1),
 (65, 7, 4, 2),
 (66, 7, 5, 3),
@@ -3105,7 +3105,11 @@ $query="INSERT INTO glpi_display VALUES (32, 1, 4, 4),
 (101, 17, 3, 1),
 (102, 17, 4, 2),
 (103, 17, 5, 3),
-(104, 17, 6, 4);";
+(104, 17, 6, 4),
+(105, 2, 40, 5),
+(106, 3, 40, 5),
+(107, 4, 40, 5),
+(108, 5, 40, 5);";
 
 $db->query($query);
 }
@@ -3271,6 +3275,39 @@ if(!FieldExists("glpi_config","view_ID")) {
 if(FieldExists("glpi_infocoms","comments")) {
 	$query=" ALTER TABLE `glpi_infocoms` CHANGE `comments` `comments` TEXT";
 	$db->query($query) or die("0.65 alter comments in glpi_infocoms".$lang["update"][90].$db->error());
+}
+
+$new_model=array("monitors","networking","peripherals","printers");
+
+foreach ($new_model as $model)
+if(!TableExists("glpi_dropdown_model_$model")) {
+	// model=type pour faciliter la gestion en post mise à jour : ya plus qu'a deleter les elements non voulu
+	// cela conviendra a tout le monde en fonction de l'utilisation du champ type
+
+	$query = "CREATE TABLE `glpi_dropdown_model_$model` (
+  	`ID` int(11) NOT NULL auto_increment,
+  	`name` varchar(255) NOT NULL default '',
+  	PRIMARY KEY  (`ID`)
+	) TYPE=MyISAM;";
+
+	$db->query($query) or die("0.6 add table glpi_dropdown_model_$model ".$lang["update"][90].$db->error());
+
+	// copie type dans model
+	$query="SELECT * FROM glpi_type_$model";
+	$result=$db->query($query);	
+	if ($db->numrows($result)>0)
+	while ($data=$db->fetch_array($result)){
+		$query="INSERT INTO `glpi_dropdown_model_$model` (`ID`,`name`) VALUES ('".$data['ID']."','".$data['name']."');";
+		$db->query($query) or die("0.6 insert value in glpi_dropdown_model_$model ".$lang["update"][90].$db->error());		
+	}
+	mysql_free_result($result);
+
+	$query="ALTER TABLE `glpi_$model` ADD `model` INT(11) DEFAULT NULL AFTER `type` ;";
+	$db->query($query) or die("0.6 add model in $model".$lang["update"][90].$db->error());
+
+	$query="UPDATE `glpi_$model` SET `model` = `type` ";
+	$db->query($query) or die("0.6 add model in $model".$lang["update"][90].$db->error());
+	 
 }
 
 
