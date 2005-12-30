@@ -1671,7 +1671,7 @@ function showJobDetails ($ID){
 		echo "<tr class='tab_bg_1'><td colspan='2'>";
 		echo "<table width='99%' >";
 		echo "<tr  class='tab_bg_2'><td width='15%'>".$lang["joblist"][6]."<br><br></td>";
-		echo "<td  width='85%'>";
+		echo "<td  width='85%' align='left'>";
 
 		if ($isadmin){
 			$rand=mt_rand();
@@ -1811,7 +1811,7 @@ function showFollowupsSummary($tID){
 
 			
 			 echo convDateTime($data["date"])."</td>";
-			echo "<td>".$data["contents"]."</td>";
+			echo "<td align='left'>".$data["contents"]."</td>";
 
 			$hour=floor($data["realtime"]);
 			$minute=round(($data["realtime"]-$hour)*60,0);
