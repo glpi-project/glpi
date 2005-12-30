@@ -449,12 +449,15 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			echo "<strong>";
 			} 
 			echo "</td>";
-		
+		}
+		else echo "<td>&nbsp;</td>";
+
+		if ($serial!="free"){
 			// BUY
 			echo "<td align='center'>".($data["BUY"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
 			echo "</td>";
 		} else 
-		echo "<td>&nbsp;</td><td>&nbsp;</td>";
+		echo "<td>&nbsp;</td>";
 		
 		echo "<td align='center'>";
 		
