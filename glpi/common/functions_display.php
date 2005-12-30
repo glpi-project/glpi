@@ -253,6 +253,7 @@ function commonHeader($title,$url)
 
 	echo "</div>";
 
+	echo "<div onmouseover=\"javascript:hidemenu();\">";
 
 	// Affichage du message apres redirection
 	if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])&&!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])){
@@ -468,7 +469,7 @@ function commonFooter() {
 	// Print foot for every page
 
 GLOBAL $lang,$cfg_features,$cfg_install,$cfg_debug,$DEBUG_SQL_STRING,$TIMER_DEBUG,$SQL_TOTAL_TIMER,$SQL_TOTAL_REQUEST;
-
+echo "</div>";
 echo "<div id='footer' >";
 echo "<table width='100%'><tr><td align='left'><span class='copyright'>";
 echo $TIMER_DEBUG->Get_Time()."s</span>";
