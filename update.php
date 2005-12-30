@@ -3563,9 +3563,29 @@ elseif(!empty($_POST["ajout_su"])) {
 		echo "<div align='center'>";
 		echo "<h3>".$lang["update"][104]."</h3>";
 		echo "</div>";
-		if (showLocationUpdateForm())
-			showContentUpdateForm();
-		//echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
+		if (showLocationUpdateForm()){
+				// Get current version
+				$db=new DB();
+				$query="SELECT version FROM glpi_config";
+				$result=$db->query($query) or die("get current version".$db->error());
+				$current_version=trim($db->result($result,0,0));
+
+				switch ($current_version){
+					case "0.31": 
+					case "0.4": 
+					case "0.41": 
+					case "0.42": 
+					case "0.5": 
+					case "0.51": 
+					case "0.51a": 
+						showContentUpdateForm();
+						break;
+					default:
+					echo "<center><a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></center>";
+						break;
+				}
+			
+		}
 	}
 	else {
 		echo "<div align='center' color='red'>";
