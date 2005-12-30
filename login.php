@@ -196,7 +196,7 @@ if ( ! $auth_succeded ) {
 	echo "<div align='center'><b>".$identificat->getErr().".</b><br><br>";
 	echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">".$lang["login"][1]."</a></b></div>";
 	nullFooter();
-	logevent(-1, $lang["log"][1], 1, $lang["log"][55], $lang["log"][41]." : ".$_POST['login_name']);
+	logevent(-1, "system", 1, "login", $lang["log"][41]." : ".$_POST['login_name']);
 	exit;
 }
 
