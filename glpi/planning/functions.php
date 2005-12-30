@@ -70,7 +70,12 @@ echo "ID=".$db->result($result,0,"ID")."&amp;delete=delete\">".$lang["reservatio
 
 
 function showAddPlanningTrackingForm($target,$fup,$planID=-1){
-	global $lang,$HTMLRel;
+	global $lang,$HTMLRel,$cfg_features;
+	$split=split(":",$cfg_features["planning_begin"]);
+	$global_begin=intval($split[0]);
+
+	$split=split(":",$cfg_features["planning_end"]);
+	$global_end=intval($split[0]);
 	
 	$planning= new PlanningTracking;
 
@@ -140,7 +145,7 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][12].":	</td>";
 	echo "<td>";
 	echo "<select name='begin_hour'>";
-	for ($i=0;$i<24;$i++){
+	for ($i=$global_begin;$i<$global_end;$i++){
 	echo "<option value='$i'";
 	if ($i==$begin_hour) echo " selected ";
 	echo ">$i</option>";
@@ -163,7 +168,7 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][13].":	</td>";
 	echo "<td>";
 	echo "<select name='end_hour'>";
-	for ($i=0;$i<24;$i++){
+	for ($i=$global_begin;$i<$global_end;$i++){
 	echo "<option value='$i'";
 	if ($i==$end_hour) echo " selected ";
 	echo ">$i</option>";
