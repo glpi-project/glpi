@@ -171,6 +171,10 @@ z-index:1;
 	background-color: #FFF4DF;
 }
 
+/* Ajout pour IE */
+.tab_cadrehov2 tr {
+	cursor: pointer;
+}
 
 
 .tab_cadre2{
