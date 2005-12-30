@@ -599,7 +599,7 @@ if ($db->result($result,0,0)>0) {
 	$text=$lang["buttons"][23];
 }
 
-echo "<a href='#' onClick=\"window.open('".$HTMLRel."infocoms/infocoms-show.php?device_type=$device_type&amp;device_id=$device_id&amp;update=$update','infocoms','location=infocoms,width=750,height=600,scrollbars=no')\"><img src=\"".$HTMLRel."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\"></a>";
+echo "<span onClick=\"window.open('".$HTMLRel."infocoms/infocoms-show.php?device_type=$device_type&amp;device_id=$device_id&amp;update=$update','infocoms','location=infocoms,width=750,height=600,scrollbars=no')\"><img src=\"".$HTMLRel."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\"></span>";
 }
 
 ?>
