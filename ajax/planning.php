@@ -41,6 +41,11 @@
 
 	checkAuthentication("post-only");
 
+	$split=split(":",$cfg_features["planning_begin"]);
+	$global_begin=intval($split[0]);
+	$split=split(":",$cfg_features["planning_end"]);
+	$global_end=intval($split[0]);
+
 	$begin=strtotime(date("Y-m-d")." 12:00:00");
 	$end=strtotime(date("Y-m-d")." 13:00:00");
 	
@@ -64,7 +69,7 @@
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][12].":	</td>";
 	echo "<td>";
 	echo "<select name='plan[begin_hour]'>";
-	for ($i=0;$i<24;$i++){
+	for ($i=$global_begin;$i<$global_end;$i++){
 	echo "<option value='$i'";
 	if ($i==$begin_hour) echo " selected ";
 	echo ">$i</option>";
@@ -87,7 +92,7 @@
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][13].":	</td>";
 	echo "<td>";
 	echo "<select name='plan[end_hour]'>";
-	for ($i=0;$i<24;$i++){
+	for ($i=$global_begin;$i<$global_end;$i++){
 	echo "<option value='$i'";
 	if ($i==$end_hour) echo " selected ";
 	echo ">$i</option>";
