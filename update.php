@@ -3310,6 +3310,13 @@ if(!TableExists("glpi_dropdown_model_$model")) {
 	 
 }
 
+// Update pour les cartouches compatibles : type -> model
+if(FieldExists("glpi_cartridges_assoc","FK_glpi_type_printer")) {
+	$query=" ALTER TABLE `glpi_cartridges_assoc` CHANGE `FK_glpi_type_printer` `FK_glpi_dropdown_model_printers` INT( 11 ) DEFAULT '0' NOT NULL ";
+	$db->query($query) or die("0.65 alter FK_glpi_type_printer field in cartridges_assoc".$lang["update"][90].$db->error());
+}
+
+
 
 
 }

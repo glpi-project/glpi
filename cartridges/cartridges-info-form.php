@@ -75,7 +75,7 @@ else if (isset($_POST["purge"]))
 }
 else if (isset($_POST["addtype"])){
 	checkAuthentication("admin");
-	addCompatibleType($_POST["tID"],$_POST["type"]);
+	addCompatibleType($_POST["tID"],$_POST["model"]);
 	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][30]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
