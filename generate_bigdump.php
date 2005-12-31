@@ -513,7 +513,7 @@ while ($data=$db->fetch_array($result)){
 
 	// Add Cartouches 
 	// Get compatible cartridge
-	$query="SELECT FK_glpi_cartridges_type FROM glpi_cartridges_assoc WHERE FK_glpi_type_printer='$typeID'";
+	$query="SELECT FK_glpi_cartridges_type FROM glpi_cartridges_assoc WHERE FK_glpi_dropdown_model_printers='$typeID'";
 	$result2=$db->query($query) or die("PB REQUETE ".$query);
 	if ($db->numrows($result)>0){
 		$ctypeID=$db->result($result2,0,0);
@@ -724,7 +724,7 @@ for ($i=0;$i<$max['computers'];$i++){
 	
 		// Add Cartouches 
 		// Get compatible cartridge
-		$query="SELECT FK_glpi_cartridges_type FROM glpi_cartridges_assoc WHERE FK_glpi_type_printer='$typeID'";
+		$query="SELECT FK_glpi_cartridges_type FROM glpi_cartridges_assoc WHERE FK_glpi_dropdown_model_printers='$typeID'";
 		$result=$db->query($query) or die("PB REQUETE ".$query);
 		if ($db->numrows($result)>0){
 			$ctypeID=$db->result($result,0,0);

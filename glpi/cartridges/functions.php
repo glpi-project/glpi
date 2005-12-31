@@ -647,7 +647,7 @@ function showCompatiblePrinters($instID) {
 	GLOBAL $cfg_layout,$cfg_install, $lang;
 
     $db = new DB;
-	$query = "SELECT glpi_type_printers.name as type, glpi_cartridges_assoc.ID as ID FROM glpi_cartridges_assoc, glpi_type_printers WHERE glpi_cartridges_assoc.FK_glpi_type_printer=glpi_type_printers.ID AND glpi_cartridges_assoc.FK_glpi_cartridges_type = '$instID' order by glpi_type_printers.name";
+	$query = "SELECT glpi_dropdown_model_printers.name as type, glpi_cartridges_assoc.ID as ID FROM glpi_cartridges_assoc, glpi_dropdown_model_printers WHERE glpi_cartridges_assoc.FK_glpi_dropdown_model_printers=glpi_dropdown_model_printers.ID AND glpi_cartridges_assoc.FK_glpi_cartridges_type = '$instID' order by glpi_dropdown_model_printers.name";
 	
 	$result = $db->query($query);
 	$number = $db->numrows($result);
@@ -656,7 +656,7 @@ function showCompatiblePrinters($instID) {
     echo "<form method='post' action=\"".$cfg_install["root"]."/cartridges/cartridges-info-form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
 	echo "<tr><th colspan='3'>".$lang["cartridges"][32].":</th></tr>";
-	echo "<tr><th>".$lang['cartridges'][4]."</th><th>".$lang["printers"][9]."</th><th>&nbsp;</th></tr>";
+	echo "<tr><th>".$lang['cartridges'][4]."</th><th>".$lang["printers"][32]."</th><th>&nbsp;</th></tr>";
 
 	while ($i < $number) {
 		$ID=$db->result($result, $i, "ID");
@@ -668,7 +668,7 @@ function showCompatiblePrinters($instID) {
 	}
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 	echo "<div class='software-instal'><input type='hidden' name='tID' value='$instID'>";
-		dropdown("glpi_type_printers","type");
+		dropdown("glpi_dropdown_model_printers","model");
 	echo "</div></td><td align='center' class='tab_bg_2'>";
 	echo "<input type='submit' name='addtype' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</td></tr>";
@@ -692,7 +692,7 @@ function addCompatibleType($tID,$type){
 
 if ($tID>0&&$type>0){
 	$db = new DB;
-	$query="INSERT INTO glpi_cartridges_assoc (FK_glpi_cartridges_type,FK_glpi_type_printer ) VALUES ('$tID','$type');";
+	$query="INSERT INTO glpi_cartridges_assoc (FK_glpi_cartridges_type,FK_glpi_dropdown_model_printers ) VALUES ('$tID','$type');";
 	$result = $db->query($query);
 }
 }
@@ -860,7 +860,7 @@ $db->query($query);
 /**
 * Print a select with compatible cartridge
 *
-* Print a select that contains compatibles cartridge for a printer type $pID
+* Print a select that contains compatibles cartridge for a printer model $pID
 *
 *@param $pID integer: printer type identifier.
 *
@@ -875,7 +875,7 @@ function dropdownCompatibleCartridges($pID) {
 	$p=new Printer;
 	$p->getFromDB($pID);
 	
-	$query = "SELECT glpi_cartridges_type.ref as ref, glpi_cartridges_type.name as name, glpi_cartridges_type.ID as tID FROM glpi_cartridges_type, glpi_cartridges_assoc WHERE glpi_cartridges_type.ID = glpi_cartridges_assoc.FK_glpi_cartridges_type AND glpi_cartridges_assoc.FK_glpi_type_printer = '".$p->fields["type"]."' order by glpi_cartridges_type.name, glpi_cartridges_type.ref";
+	$query = "SELECT glpi_cartridges_type.ref as ref, glpi_cartridges_type.name as name, glpi_cartridges_type.ID as tID FROM glpi_cartridges_type, glpi_cartridges_assoc WHERE glpi_cartridges_type.ID = glpi_cartridges_assoc.FK_glpi_cartridges_type AND glpi_cartridges_assoc.FK_glpi_dropdown_model_printers = '".$p->fields["model"]."' order by glpi_cartridges_type.name, glpi_cartridges_type.ref";
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 

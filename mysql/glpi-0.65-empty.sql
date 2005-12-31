@@ -1,4 +1,4 @@
-#GLPI Dump database on 2005-12-30 01:24
+#GLPI Dump database on 2005-12-31 14:51
 
 ### Dump table glpi_cartridges
 
@@ -23,11 +23,11 @@ DROP TABLE IF EXISTS `glpi_cartridges_assoc`;
 CREATE TABLE `glpi_cartridges_assoc` (
     `ID` int(11) NOT NULL auto_increment,
     `FK_glpi_cartridges_type` int(11) DEFAULT '0' NOT NULL,
-    `FK_glpi_type_printer` int(11) DEFAULT '0' NOT NULL,
+    `FK_glpi_dropdown_model_printers` int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (`ID`),
-   UNIQUE FK_glpi_type_printer (`FK_glpi_type_printer`, `FK_glpi_cartridges_type`),
+   UNIQUE FK_glpi_type_printer (`FK_glpi_dropdown_model_printers`, `FK_glpi_cartridges_type`),
    KEY FK_glpi_cartridges_type (`FK_glpi_cartridges_type`),
-   KEY FK_glpi_type_printer_2 (`FK_glpi_type_printer`)
+   KEY FK_glpi_type_printer_2 (`FK_glpi_dropdown_model_printers`)
 ) TYPE=MyISAM;
 
 
@@ -178,7 +178,7 @@ CREATE TABLE `glpi_config` (
     `url_in_mail` enum('0','1') DEFAULT '0' NOT NULL,
     `text_login` text NOT NULL,
     `auto_update_check` smallint(6) DEFAULT '0' NOT NULL,
-    `last_update_check` date DEFAULT '2005-12-30' NOT NULL,
+    `last_update_check` date DEFAULT '2005-12-31' NOT NULL,
     `founded_new_version` varchar(10) NOT NULL,
     `dropdown_max` int(11) DEFAULT '100' NOT NULL,
     `ajax_wildcard` char(1) DEFAULT '*' NOT NULL,
@@ -192,7 +192,7 @@ CREATE TABLE `glpi_config` (
    PRIMARY KEY (`ID`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi','0','','0','2005-12-30','','100','*','0','50','1','1','0','name','0');
+INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi','0','','0','2005-12-31','','100','*','0','50','1','1','0','name','0');
 
 ### Dump table glpi_connect_wire
 
@@ -963,6 +963,7 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
+INSERT INTO glpi_event_log VALUES ('2','-1','system','2005-12-31 14:51:21','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
