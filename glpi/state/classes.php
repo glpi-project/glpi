@@ -138,26 +138,26 @@ class StateItem{
 	
 		global $cfg_install,$cfg_layout;
 		
-		$show_ID="";
+		$show=$this->getName();
 		// show id if it was configure else nothing
-		if ($cfg_layout["view_ID"]) $show_ID=" (".$this->fields["id_device"].")";
+		if ($cfg_layout["view_ID"]||empty($show)) $show.=" (".$this->fields["id_device"].")";
 
 		switch ($this->fields["device_type"]){
 			case COMPUTER_TYPE :
-				return "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName()."$show_ID</a>";
+				return "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$this->fields["id_device"]."\">$show</a>";
 				
 				break;
 			case NETWORKING_TYPE :
-				return "<a href=\"".$cfg_install["root"]."/networking/networking-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName()."$show_ID</a>";
+				return "<a href=\"".$cfg_install["root"]."/networking/networking-info-form.php?ID=".$this->fields["id_device"]."\">$show</a>";
 				break;
 			case PRINTER_TYPE :
-				return "<a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName()."$show_ID</a>";
+				return "<a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=".$this->fields["id_device"]."\">$show</a>";
 				break;
 			case MONITOR_TYPE : 
-				return "<a href=\"".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName()."$show_ID</a>";
+				return "<a href=\"".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=".$this->fields["id_device"]."\">$show</a>";
 				break;
 			case PERIPHERAL_TYPE : 
-				return "<a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName()."$show_ID</a>";
+				return "<a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=".$this->fields["id_device"]."\">$show</a>";
 				break;				
 			}
 

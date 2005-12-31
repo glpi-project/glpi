@@ -88,8 +88,9 @@
 		if ($number > 0) {
 			while ($data = $db->fetch_array($result)) {
 				$output = $data['name'];
-				if (empty($output)) $output="&nbsp;";
 				$ID = $data['ID'];
+				if (empty($output)) $output="($ID)";
+
 				echo "<option value=\"$ID\">$output</option>";
 				$i++;
 			}

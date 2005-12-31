@@ -70,9 +70,9 @@
 			while ($data = $db->fetch_array($result)) {
 				$output = $data['designation'];
 
-				if (empty($output)) $output="&nbsp;";
-
 				$ID = $data['ID'];
+				if (empty($output)) $output="($ID)";
+
 				echo "<option value=\"$ID\">$output</option>";
 				$i++;
 			}
@@ -149,8 +149,9 @@
 			while ($data = $db->fetch_array($result)) {
 				$output = $data['name'];
 				if ($_POST["table"]=="glpi_users"&&!empty($data["realname"])) $output = $data['realname'];
-				if (empty($output)) $output="&nbsp;";
 				$ID = $data['ID'];
+				if (empty($output)) $output="($ID)";
+
 				echo "<option value=\"$ID\">$output</option>";
 				$i++;
 			}
