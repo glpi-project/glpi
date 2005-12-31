@@ -3154,11 +3154,11 @@ if(FieldExists("glpi_tracking","status")) {
 	$query="ALTER TABLE `glpi_tracking` CHANGE `status` `status` ENUM( 'new', 'old_done', 'assign', 'plan', 'old_notdone', 'waiting' ) DEFAULT 'new' NOT NULL ;";
 	$db->query($query) or die("0.65 alter status in tracking".$lang["update"][90].$db->error());
 
-	$query2=" UPDATE `glpi_tracking` SET status='old_done' WHERE status='';";
+	$query2=" UPDATE `glpi_tracking` SET status='old_done' WHERE closedate='0000-00-00 00:00:00' AND status <> 'new';";
 	$db->query($query2) or die("0.65 update status=old in tracking".$lang["update"][90].$db->error());	
 
-	$query2=" UPDATE `glpi_tracking` SET status='assign' WHERE status='new' AND assign <> 0;";
-	$db->query($query2) or die("0.65 update status=assign in tracking".$lang["update"][90].$db->error());	
+	$query3=" UPDATE `glpi_tracking` SET status='assign' WHERE status='new' AND assign <> 0;";
+	$db->query($query3) or die("0.65 update status=assign in tracking".$lang["update"][90].$db->error());	
 
 }
 
