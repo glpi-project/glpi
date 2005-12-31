@@ -397,7 +397,7 @@ function showJobShort($ID, $followups) {
 		
 		$stripped_content=$job->fields["contents"];
 		if (!$followups) $stripped_content =substr($job->contents,0,$cfg_features["cut"]);
-		echo "<td ><strong>".$stripped_content."</strong>";
+		echo "<td align='left'><strong>".$stripped_content."</strong>";
 		if ($followups)
 		{
 			showFollowupsShort($job->ID);
