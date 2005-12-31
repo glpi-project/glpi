@@ -73,8 +73,8 @@
 				if (!empty($data['NNAME'])) $output.= " - ".$data['NNAME'];
 				if (!empty($data['IP'])) $output.= " - ".$data['IP'];
 				if (!empty($data['MAC'])) $output.= " - ".$data['MAC'];
-				if (empty($output)) $output="&nbsp;";
 				$ID = $data['DID'];
+				if (empty($output)) $output="($ID)";
 				echo "<option value=\"$ID\">$output</option>";
 				$i++;
 			}
