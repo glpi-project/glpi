@@ -31,7 +31,14 @@
 // Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
+	
+	include ("_relpos.php");
+	include ($phproot."/glpi/includes.php");
+
+	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
+
+	checkAuthentication("post-only");
 
 	echo "<textarea rows='".$_GET['rows']."' cols='".$_GET['cols']."' name='".$_GET['name']."'>";
 	echo stripslashes(urldecode($_GET["data"]));
