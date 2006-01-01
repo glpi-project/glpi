@@ -45,7 +45,6 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["lID"])) $tab["lID"] = "";
 if(!isset($tab["sID"])) $tab["sID"] = "";
-if(!isset($tab["search_computer"])) $tab["search_computer"] = "";
 if(!isset($tab["withtemplate"])) $tab["withtemplate"] = 0;
 
 /*if (isset($tab["Modif_Interne"])){
@@ -57,6 +56,7 @@ if(!isset($tab["withtemplate"])) $tab["withtemplate"] = 0;
 }
 else 
 */
+
 
 if (isset($_POST["add"]))
 {
@@ -76,7 +76,16 @@ if (isset($_POST["add"]))
 	
 	glpi_header($_SERVER['PHP_SELF']."?form=add&sID=".$tab["sID"]);
 }
-else if (isset($tab["duplicate"]))
+else if (isset($tab["update_stock_licenses"])||isset($tab["update_stock_licenses_x"])){
+	checkAuthentication("admin");
+	foreach ($tab as $key => $val)
+	if (ereg("stock_licenses_([0-9]+)",$key,$regs))
+		if ($val!=$tab["nb_licenses_".$regs[1]])
+			updateNumberLicenses($regs[1],$tab["nb_licenses_".$regs[1]],$val);
+	glpi_header($_SERVER['HTTP_REFERER']);
+
+}	
+/*else if (isset($tab["duplicate"]))
 {
 	checkAuthentication("admin");
 	$lic=new License();
@@ -91,6 +100,7 @@ else if (isset($tab["duplicate"]))
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
+*/
 else if (isset($tab["update"]))
 {
 	checkAuthentication("admin");

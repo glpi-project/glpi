@@ -369,6 +369,8 @@ function showLicenses ($sID) {
 			$pb="";
 			if (($nb_licences-$nb_updates-$installed)<0&&!isFreeSoftware($sID)&&!isGlobalSoftware($sID)) $pb="class='tab_bg_1_2'";
 			
+			echo "<form method='get' action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
+
 			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre' width='90%'>";
 			echo "<tr><th colspan='5' $pb >";
 			echo $nb_licences;
@@ -468,9 +470,30 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		// Restant	
 
 		echo "<tr><td align='center'>";
+		$restant=$num_tot-$num_inst;
+		if ($serial!="free"&&$serial!="global") {
+	 	  $query_new="SELECT glpi_licenses.ID as ID FROM glpi_licenses WHERE $SEARCH_LICENCE";		
+			if ($result_new = $db->query($query_new)) {			
+				$IDdup=$db->result($result_new,0,0);
+			
+				echo $lang["software"][20].":";
+				echo "<select name='stock_licenses_$IDdup'>";
+				for ($i=max(0,$restant-100);$i<=$restant+100;$i++)
+					echo "<option value='$i' ".($i==$restant?" selected ":"").">$i</option>";
+				echo "</select>";
+				echo "<input type='hidden' name='nb_licenses_$IDdup' value='$restant'>";
+				echo "<input type='image' name='update_stock_licenses' value='$IDdup' src='".$HTMLRel."pics/actualiser.png' class='calendrier'>";
 
-		if ($serial!="free"&&$serial!="global") echo $lang["software"][20].": ".($num_tot-$num_inst);
-		if ($num_tot!=$num_inst||$serial=="free"||$serial=="global") {
+			if ($serial=="free"||$serial=="global"){
+				// Display infocoms
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>";
+				showDisplayInfocomLink(LICENSE_TYPE,$IDdup,1);
+				echo "</strong>";
+			}
+
+			}
+		}
+		if ($restant!=0||$serial=="free"||$serial=="global") {
 			// Get first non installed license ID
 			$query_first="SELECT glpi_licenses.ID as ID, glpi_inst_software.license as iID FROM glpi_licenses LEFT JOIN glpi_inst_software ON glpi_inst_software.license = glpi_licenses.ID WHERE $SEARCH_LICENCE";
 			if ($result_first = $db->query($query_first)) {			
@@ -486,23 +509,20 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 				}
 				if (!empty($ID)){
 				echo "</td><td align='center'>";
-				echo "<strong><a href=\"".$cfg_install["root"]."/software/software-licenses.php?delete=delete&amp;ID=$ID\">";
-				
-				echo "<img src=\"".$HTMLRel."pics/delete.png\" alt='".$lang["buttons"][6]."' title='".$lang["buttons"][6]."'>";
-				
-				
-				echo "</a></strong>";
+				if ($serial=="free"||$serial=="global"){
+					echo "<strong><a href=\"".$cfg_install["root"]."/software/software-licenses.php?delete=delete&amp;ID=$ID\">";
+					echo "<img src=\"".$HTMLRel."pics/delete.png\" alt='".$lang["buttons"][6]."' title='".$lang["buttons"][6]."'>";
+					echo "</a></strong>";
+				}
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=update&amp;lID=$ID&amp;sID=$sID\">";
-				
 				echo "<img src=\"".$HTMLRel."pics/edit.png\" alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'>";
-				
 				echo "</a></strong>";
 				}
 				
 			}
 		}
 		// Dupliquer une licence
-		$query_new="SELECT glpi_licenses.ID as ID FROM glpi_licenses WHERE $SEARCH_LICENCE";		
+/* 	  $query_new="SELECT glpi_licenses.ID as ID FROM glpi_licenses WHERE $SEARCH_LICENCE";		
 		if ($result_new = $db->query($query_new)) {			
 			
 			$IDdup=$db->result($result_new,0,0);
@@ -511,13 +531,8 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 				echo "<img src=\"".$HTMLRel."pics/add.png\" alt='".$lang["buttons"][8]."' title='".$lang["buttons"][8]."'>";
 				echo "</a></strong>";
 			}
-			if ($serial=="free"||$serial=="global"){
-				// Display infocoms
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>";
-				showDisplayInfocomLink(LICENSE_TYPE,$IDdup,1);
-				echo "</strong>";
-			}
 		}
+*/
 		
 		
 		echo "</td></tr>";
@@ -556,7 +571,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 	}
 	}	
 echo "</table></div>\n\n";
-	
+echo "</form>";
 }
 
 
@@ -732,6 +747,56 @@ function deleteLicense($ID) {
 	$lic->deleteFromDB($ID);
 	
 } 
+
+function updateNumberLicenses($likeID,$number,$new_number){
+
+	$lic=new License();
+
+// Delete unused licenses
+if ($number>$new_number){
+	if ($lic->getFromDB($likeID)){
+		$SEARCH_LICENCE="(glpi_licenses.sID = ".$lic->fields["sID"]." AND glpi_licenses.serial = '".$lic->fields["serial"]."'  AND glpi_licenses.oem = '".$lic->fields["oem"]."' AND glpi_licenses.oem_computer = '".$lic->fields["oem_computer"]."'  AND glpi_licenses.buy = '".$lic->fields["buy"]."' ";
+		if ($lic->fields["expire"]=="")
+		$SEARCH_LICENCE.=" AND glpi_licenses.expire IS NULL)";
+		else $SEARCH_LICENCE.=" AND glpi_licenses.expire = '".$lic->fields["expire"]."')";
+		
+		$db=new DB();
+
+		for ($i=0;$i<$number-$new_number;$i++){
+			$query_first="SELECT glpi_licenses.ID as ID, glpi_inst_software.license as iID FROM glpi_licenses LEFT JOIN glpi_inst_software ON glpi_inst_software.license = glpi_licenses.ID WHERE $SEARCH_LICENCE";
+			if ($result_first = $db->query($query_first)) {			
+				if ($lic->fields["serial"]=="free"||$lic->fields["serial"]=="global")
+				$ID=$db->result($result_first,0,"ID");
+				else{
+				$fin=0;
+				while (!$fin&&$temp=$db->fetch_array($result_first))
+					if ($temp["iID"]==NULL){
+						$fin=1;
+						$ID=$temp["ID"];
+					}
+				}
+				if (!empty($ID)){
+					deleteLicense($ID);
+				}
+			}
+			
+		}
+	}
+// Create new licenses
+} else if ($number<$new_number){ 
+	$lic->getFromDB($likeID);
+	unset($lic->fields["ID"]);
+
+	if (is_null($lic->fields["expire"]))
+		unset($lic->fields["expire"]);
+
+	for ($i=0;$i<$new_number-$number;$i++)
+		$lic->addToDB();
+	
+
+}
+	
+}
 
 
 function installSoftware($cID,$lID,$sID='') {
@@ -977,4 +1042,6 @@ function isFreeSoftware($sID){
 	$result = $db->query($query);
 	return ($db->numrows($result)>0);
 }
+
+
 ?>
