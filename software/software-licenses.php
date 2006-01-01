@@ -57,7 +57,6 @@ if(!isset($tab["withtemplate"])) $tab["withtemplate"] = 0;
 else 
 */
 
-
 if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
@@ -84,6 +83,32 @@ else if (isset($tab["update_stock_licenses"])||isset($tab["update_stock_licenses
 	glpi_header($_SERVER['HTTP_REFERER']);
 
 }	
+else if (isset($tab["update_expire"])||isset($tab["update_expire_x"])){
+	checkAuthentication("admin");
+	$lic=new License;
+	$input["expire"]=$tab["expire"];
+
+	foreach ($tab as $key => $val)
+	if (ereg("license_([0-9]+)",$key,$ereg)){
+		$input["lID"]=$ereg[1];
+		updateLicense($input);
+	}
+
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (isset($tab["update_buy"])||isset($tab["update_buy_x"])){
+	checkAuthentication("admin");
+	$lic=new License;
+	$input["buy"]=$tab["buy"];	
+
+	foreach ($tab as $key => $val)
+	if (ereg("license_([0-9]+)",$key,$ereg)){
+		$input["lID"]=$ereg[1];
+		updateLicense($input);
+	}
+	
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
 /*else if (isset($tab["duplicate"]))
 {
 	checkAuthentication("admin");

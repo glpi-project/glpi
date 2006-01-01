@@ -235,12 +235,16 @@ class License {
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_licenses SET ";
 			$query .= $updates[$i];
-			$query .= "='";
-			$query .= $this->fields[$updates[$i]];
-			$query .= "' WHERE ID='";
+			if ($updates[$i]=="expire"&&$this->fields[$updates[$i]]=="NULL")
+				$query .= " = NULL";
+			else {
+				$query .= "='";
+				$query .= $this->fields[$updates[$i]]."'";
+			}
+			$query .= " WHERE ID='";
 			$query .= $this->fields["ID"];	
 			$query .= "'";
-			
+
 			$result=$db->query($query);
 		}
 		

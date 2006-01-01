@@ -763,7 +763,7 @@ function showCalendarForm($form,$element,$value='',$withtemplate=''){
 			echo "&nbsp;<img src='".$HTMLRel."pics/calendar.png' class='calendrier' alt='".$lang["buttons"][15]."' title='".$lang["buttons"][15]."'
 			onclick=\"window.open('".$HTMLRel."mycalendar.php?form=$form&amp;elem=$element&amp;value=$value','".$lang["buttons"][15]."','width=300,height=300')\" >";
 		
-			echo "&nbsp;<img src='".$HTMLRel."pics/reset.png' class='calendrier' onClick=\"document.forms['$form'].$element.value='0000-00-00';document.forms['$form'].____".$element."_show.value='".convDate(0000-00-00)."'\" alt='Reset' title='Reset'>";	
+			echo "&nbsp;<img src='".$HTMLRel."pics/reset.png' class='calendrier' onClick=\"document.forms['$form'].$element.value='0000-00-00';document.forms['$form'].____".$element."_show.value='".convDate("0000-00-00")."'\" alt='Reset' title='Reset'>";	
 		}
 }
 

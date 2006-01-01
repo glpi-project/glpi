@@ -126,7 +126,7 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 
 	echo "<table width='800' class='tab_cadre'>";
 
-		echo "<tr><th align='center' >";
+		echo "<tr><th align='center' colspan='2' >";
 		if(!$template) {
 			echo $lang["software"][41].": ".$sw->fields["ID"];
 		}elseif (strcmp($template,"newcomp") === 0) {
@@ -136,52 +136,54 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 			autocompletionTextField("tplname","glpi_software","tplname",$sw->fields["tplname"],20);
 		}
 		
-		echo "</th><th  colspan='2' align='center'>".$datestring.$date;
+		echo "</th><th colspan='2' align='center'>".$datestring.$date;
 		echo "</th></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][2].":		</td>";
-	echo "<td colspan='2'>";
+	echo "<td>";
 	autocompletionTextField("name","glpi_software","name",$sw->fields["name"],25);
-	echo "</td></tr>";
+	echo "</td>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["software"][4].": 	</td><td colspan='2'>";
-		dropdownValue("glpi_dropdown_locations", "location", $sw->fields["location"]);
-	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>";
-		dropdownUsersID("tech_num", $sw->fields["tech_num"]);
-	echo "</td></tr>";
-	
-	echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>";
-		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$sw->fields["FK_glpi_enterprise"]);
-	echo "</td></tr>";
-	
-	echo "<tr class='tab_bg_1'><td>".$lang["software"][3].": 	</td><td colspan='2'>";
-		dropdownValue("glpi_dropdown_os", "platform", $sw->fields["platform"]);
-	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_1'><td>".$lang["software"][5].":		</td>";
-	echo "<td colspan='2'>";
+	echo "<td>".$lang["software"][5].":		</td>";
+	echo "<td>";
 	autocompletionTextField("version","glpi_software","version",$sw->fields["version"],20);
 	echo "</td></tr>";
 
+
+	echo "<tr class='tab_bg_1'><td>".$lang["software"][3].": 	</td><td>";
+		dropdownValue("glpi_dropdown_os", "platform", $sw->fields["platform"]);
+	echo "</td>";
+	
+	echo "<td>".$lang["common"][5].": 	</td><td>";
+		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$sw->fields["FK_glpi_enterprise"]);
+	echo "</td></tr>";
+	
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td>";
+		dropdownUsersID("tech_num", $sw->fields["tech_num"]);
+	echo "</td>";
+
+	echo "<td>".$lang["software"][4].": 	</td><td colspan='2'>";
+		dropdownValue("glpi_dropdown_locations", "location", $sw->fields["location"]);
+	echo "</td></tr>";
+
 	// UPDATE
-	echo "<tr class='tab_bg_1'><td>".$lang["software"][29].":</td><td colspan='2'>";
+	echo "<tr class='tab_bg_1'><td>".$lang["software"][29].":</td><td>";
 	echo "<select name='is_update'><option value='Y' ".($ID&&$sw->fields['is_update']=='Y'?"selected":"").">".$lang['choice'][0]."</option><option value='N' ".(!$ID||$sw->fields['is_update']=='N'?"selected":"").">".$lang['choice'][1]."</option></select>";
 	echo "&nbsp;".$lang["pager"][2]."&nbsp;";
 	dropdownValue("glpi_software","update_software",$sw->fields["update_software"]);
+	echo "</td>";
 
-		if (!$template){
-		echo "<tr class='tab_bg_1'><td>".$lang["reservation"][24].":</td><td colspan='2'><b>";
-		showReservationForm(SOFTWARE_TYPE,$ID);
-		echo "</b></td></tr>";
-		}
+	if (!$template){
+	echo "<td>".$lang["reservation"][24].":</td><td><b>";
+	showReservationForm(SOFTWARE_TYPE,$ID);
+	echo "</b></td></tr>";
+	} else echo "<td colspan='2'>&nbsp;</td></tr>";
 	
 	
 
 	echo "<tr class='tab_bg_1'><td valign='top'>";
 	echo $lang["software"][6].":	</td>";
-	echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$sw->fields["comments"]."</textarea>";
+	echo "<td align='center' colspan='3'><textarea cols='50' rows='4' name='comments' >".$sw->fields["comments"]."</textarea>";
 	echo "</td></tr>";
 	
 	echo "<tr>";
@@ -189,12 +191,12 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 	if ($template) {
 
 			if (empty($ID)||$withtemplate==2){
-			echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
+			echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
 			echo "<input type='hidden' name='ID' value=$ID>";
 			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 			echo "</td>\n";
 			} else {
-			echo "<td class='tab_bg_2' align='center' colspan='3'>\n";
+			echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
 			echo "<input type='hidden' name='ID' value=$ID>";
 			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
 			echo "</td>\n";
@@ -204,14 +206,14 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 	} else {
 
 
-                echo "<td class='tab_bg_2'></td>";
+                echo "<td class='tab_bg_2'>&nbsp;</td>";
                 echo "<td class='tab_bg_2' valign='top'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
 		echo "</td>";
 //		echo "</form>\n\n";
 		//echo "<form action=\"$target\" method='post'>\n";
-		echo "<td class='tab_bg_2' valign='top'>\n";
+		echo "<td class='tab_bg_2' valign='top' colspan='2'>\n";
 //		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<div align='center'>";
 		if ($sw->fields["deleted"]=='N')
@@ -369,7 +371,7 @@ function showLicenses ($sID) {
 			$pb="";
 			if (($nb_licences-$nb_updates-$installed)<0&&!isFreeSoftware($sID)&&!isGlobalSoftware($sID)) $pb="class='tab_bg_1_2'";
 			
-			echo "<form method='get' action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
+			echo "<form name='lic_form' method='get' action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
 
 			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre' width='90%'>";
 			echo "<tr><th colspan='5' $pb >";
@@ -378,7 +380,29 @@ function showLicenses ($sID) {
 			echo "<th colspan='1'>";
 			echo " ".$lang["software"][19]." :</th></tr>";
 			$i=0;
-			echo "<tr><th>".$lang['software'][31]."</th><th>".$lang['software'][21]."</th><th>".$lang['software'][32]."</th><th>".$lang['software'][33]."</th><th>".$lang['software'][35]."</th><th>&nbsp;</th></tr>";
+			echo "<tr><th>".$lang['software'][31]."</th><th>".$lang['software'][21]."</th><th>".$lang['software'][32]."</th><th>".$lang['software'][33]."</th><th>".$lang['software'][35]."</th>";
+			echo "<th>".$lang["buttons"][14]."&nbsp;";
+			echo "<select name='update_licenses' id='update_licenses_choice'>";
+			echo "<option value=''>-----</option>";
+			echo "<option value='update_expire'>".$lang["software"][32]."</option>";
+			echo "<option value='update_buy'>".$lang["software"][35]."</option>";
+			echo "</select>";
+			
+
+			echo "<script type='text/javascript' >\n";
+			echo "   new Form.Element.Observer('update_licenses_choice', 1, \n";
+			echo "      function(element, value) {\n";
+			echo "      	new Ajax.Updater('update_licenses_view','".$cfg_install["root"]."/ajax/updateLicenses.php',{asynchronous:true, evalScripts:true, \n";
+			echo "           method:'post', parameters:'type=' + value\n";
+			echo "})})\n";
+			echo "</script>\n";
+
+			echo "<span id='update_licenses_view'>\n";
+			echo "&nbsp;";
+			echo "</span>\n";	
+
+			
+			echo "</th></tr>";
 				} else {
 
 			echo "<br><div align='center'><table border='0' width='50%' cellpadding='2'>";
@@ -478,6 +502,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			
 				echo $lang["software"][20].":";
 				echo "<select name='stock_licenses_$IDdup'>";
+				if (max(0,$restant-100)>0) echo "<option value='0'>0</option>";
 				for ($i=max(0,$restant-100);$i<=$restant+100;$i++)
 					echo "<option value='$i' ".($i==$restant?" selected ":"").">$i</option>";
 				echo "</select>";
@@ -541,6 +566,8 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		// Logiciels installés
 		while ($data_inst=$db->fetch_array($result_inst)){
 			echo "<tr class='tab_bg_1".(($data["OEM"]=='Y'&&$data["OEM_COMPUTER"]!=$data_inst["cID"])||$data_inst["deleted"]=='Y'?"_2":"")."'><td align='center'>";
+			echo "<input type='checkbox' name='license_".$data_inst["lID"]."'>";
+			
 			echo "<strong><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$data_inst["cID"]."\">";
 			echo $data_inst["cname"];
 			echo "</a></strong></td><td align='center'>";
@@ -575,7 +602,7 @@ echo "</form>";
 }
 
 
-function showLicenseForm($target,$action,$sID,$lID="",$search_computer="") {
+function showLicenseForm($target,$action,$sID,$lID="") {
 
 	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel;
 
@@ -602,7 +629,7 @@ function showLicenseForm($target,$action,$sID,$lID="",$search_computer="") {
 	// defaults values :
 	$values['serial']='';
 	//$values['number']='1';
-	$values['expire']='';
+	$values['expire']="0000-00-00";
 	$values['oem']='N';
 	$values["oem_computer"]='';
 //	$values['is_update']='N';
@@ -691,7 +718,7 @@ function addLicense($input) {
 	unset($input["add"]);
 	unset($input["withtemplate"]);
 	
-	if (empty($input['expire'])) unset($input['expire']);
+	if (empty($input['expire'])||$input['expire']=="0000-00-00") unset($input['expire']);
 	if ($input['oem']=='N') $input['oem_computer']=-1;
 
 	// fill array for update
@@ -721,7 +748,8 @@ function updateLicense($input) {
 	$lic->getFromDB($input["lID"]);
 
 	if (empty($input['expire'])) unset($input['expire']);
-	if ($input['oem']=='N') $input['oem_computer']=-1;
+	if ($input['expire']=="0000-00-00") $input['expire']="NULL";
+	if (isset($input['oem'])&&$input['oem']=='N') $input['oem_computer']=-1;
 
 	
 	// Fill the update-array with changes
@@ -733,7 +761,7 @@ function updateLicense($input) {
 			$x++;
 		}
 	}
-	
+
 	if(!empty($updates)) {
 	
 		$lic->updateInDB($updates);
