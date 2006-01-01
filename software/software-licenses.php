@@ -65,7 +65,6 @@ if (isset($_POST["add"]))
 	if ($_POST["serial"]=="free")$number=1;
 	else $number=$_POST["number"];
 	unset($tab["number"]);
-	unset($tab["search_computer"]);
 	
 	
 	for ($i=1;$i<=$number;$i++){
@@ -104,7 +103,6 @@ else if (isset($tab["update_stock_licenses"])||isset($tab["update_stock_licenses
 else if (isset($tab["update"]))
 {
 	checkAuthentication("admin");
-	unset($tab["search_computer"]);
 	unset($tab["search_software"]);
 
 	updateLicense($tab);
@@ -115,7 +113,7 @@ else if (isset($tab["form"]))
 {
 	checkAuthentication("admin");
 	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
-	showLicenseForm($_SERVER["PHP_SELF"],$tab['form'],$tab["sID"],$tab["lID"],$tab['search_computer']);
+	showLicenseForm($_SERVER["PHP_SELF"],$tab['form'],$tab["sID"],$tab["lID"]);
 	commonFooter();
 }
 else if (isset($tab["delete"]))
