@@ -398,7 +398,7 @@ class Identification
 		$_SESSION["tracking_order"] = $tracking_order;
 		$_SESSION["authorisation"] = true;
 		$_SESSION["extauth"] = $this->extauth;
-		$_SESSION["glpisearchcount"] = 1;
+		$_SESSION["glpisearchcount"] = array();
 		$_SESSION["root"] = $cfg_install["root"];
 		$_SESSION["list_limit"] = $cfg_features["list_limit"];
 	}

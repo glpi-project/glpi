@@ -44,11 +44,11 @@ include ($phproot . "/glpi/includes_state.php");
 checkAuthentication("normal");
 
 if (isset($_GET["add_search_count"])){
-	$_SESSION["glpisearchcount"]++;
+	$_SESSION["glpisearchcount"][$_GET["type"]]++;
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 if (isset($_GET["delete_search_count"])){
-	$_SESSION["glpisearchcount"]--;
+	$_SESSION["glpisearchcount"][$_GET["type"]]--;
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
