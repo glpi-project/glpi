@@ -462,7 +462,7 @@ function showJobVeryShort($ID) {
 			echo "<td align='center' ";
 			$m= new CommonItem;
 			$m->getfromDB($job->fields["device_type"],$job->fields["computer"]);
-			if (isset($m->obj->fields["deleted"])&&$m->obj->fields["deleted"]=='Y')
+			if (isset($m->obj)&&isset($m->obj->fields["deleted"])&&$m->obj->fields["deleted"]=='Y')
 			echo "class='tab_bg_1_2'";
 			echo ">";
 			echo $m->getType()."<br>";
