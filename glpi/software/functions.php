@@ -496,16 +496,6 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 
 		echo "<tr><td align='center'>";
 		
-		// Add select all checkbox
-		if ($num_inst>0&&$serial!="free"&&$serial!="global"){
-			echo "<input type='checkbox' onclick='";
-			while ($data_inst=$db->fetch_array($result_inst)){
-				echo "license_".$data_inst["lID"].".checked = true;";
-			}
-			echo "'>";
-			$db->data_seek($result_inst,0);
-		}
-		
 		$restant=$num_tot-$num_inst;
 		if ($serial!="free"&&$serial!="global") {
 	 	  $query_new="SELECT glpi_licenses.ID as ID FROM glpi_licenses WHERE $SEARCH_LICENCE";		
@@ -570,6 +560,24 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			}
 		}
 */
+
+		// Add select all checkbox
+		if ($num_inst>0&&$serial!="free"&&$serial!="global"){
+			echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$lang["search"][7].":";
+			$rand=mt_rand();
+
+			echo "<input type='checkbox' onclick='toggle$rand();'>";
+			echo "<script type='text/javascript' >\n";
+			echo "function toggle$rand(){\n";
+			while ($data_inst=$db->fetch_array($result_inst)){
+				echo " var lic=document.getElementById('license_".$data_inst["lID"]."');";
+				echo " if (lic.checked) \n";
+				echo "      lic.checked = false;\n";
+				echo " else lic.checked = true;\n";
+			}
+			echo "}</script>\n";
+			$db->data_seek($result_inst,0);
+		}
 		
 		
 		echo "</td></tr>";
@@ -579,7 +587,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		while ($data_inst=$db->fetch_array($result_inst)){
 			echo "<tr class='tab_bg_1".(($data["OEM"]=='Y'&&$data["OEM_COMPUTER"]!=$data_inst["cID"])||$data_inst["deleted"]=='Y'?"_2":"")."'><td align='center'>";
 			if ($serial!="free"&&$serial!="global") 
-			echo "<input type='checkbox' name='license_".$data_inst["lID"]."'>";
+			echo "<input type='checkbox' name='license_".$data_inst["lID"]."' id='license_".$data_inst["lID"]."'>";
 
 			echo "<strong><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$data_inst["cID"]."\">";
 			echo $data_inst["cname"];
