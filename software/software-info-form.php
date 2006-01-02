@@ -152,6 +152,10 @@ else
 					showOldJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
 					showLinkOnDevice(SOFTWARE_TYPE,$tab["ID"]);
 					break;
+				case 2 :
+					showLicensesAdd($tab["ID"]);
+					showLicenses($tab["ID"],1);
+					break;
 				case 4 :
 					showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"]);
 					showContractAssociated(SOFTWARE_TYPE,$tab["ID"]);
