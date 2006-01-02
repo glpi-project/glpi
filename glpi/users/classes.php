@@ -132,8 +132,8 @@ class User {
 			ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3) ;
 	  	if ( $adm != "" )
 	  	{
-			 	$dn = $cfg_login['ldap']['login']."=" . $adm . "," . $basedn;
-	  		$bv = ldap_bind($conn, $dn, $pass);
+		//	 	$dn = $cfg_login['ldap']['login']."=" . $adm . "," . $basedn;
+	  		$bv = ldap_bind($conn, $adm, $pass);
 	  	}
 	  	else
 	  	{
