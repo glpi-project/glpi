@@ -457,7 +457,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			echo $lang["software"][26];
 		else {
 			if ($expirer) echo $lang["software"][27];
-			else echo $lang["software"][25]."&nbsp;".$expire;
+			else echo $lang["software"][25]."&nbsp;".convDate($expire);
 			}
 
 		echo "</strong></td>";
