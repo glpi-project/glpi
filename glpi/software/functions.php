@@ -415,6 +415,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 //echo $query;
 	if ($result = $db->query($query)) {			
 	while ($data=$db->fetch_array($result)) {
+
 		$serial=$data["SERIAL"];
 		$num_tot=$data["COUNT"];
 		$expire=$data["EXPIRE"];
@@ -494,6 +495,17 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		// Restant	
 
 		echo "<tr><td align='center'>";
+		
+		// Add select all checkbox
+		if ($num_inst>0&&$serial!="free"&&$serial!="global"){
+			echo "<input type='checkbox' onclick='";
+			while ($data_inst=$db->fetch_array($result_inst)){
+				echo "license_".$data_inst["lID"].".checked = true;";
+			}
+			echo "'>";
+			$db->data_seek($result_inst,0);
+		}
+		
 		$restant=$num_tot-$num_inst;
 		if ($serial!="free"&&$serial!="global") {
 	 	  $query_new="SELECT glpi_licenses.ID as ID FROM glpi_licenses WHERE $SEARCH_LICENCE";		
@@ -566,8 +578,9 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		// Logiciels installés
 		while ($data_inst=$db->fetch_array($result_inst)){
 			echo "<tr class='tab_bg_1".(($data["OEM"]=='Y'&&$data["OEM_COMPUTER"]!=$data_inst["cID"])||$data_inst["deleted"]=='Y'?"_2":"")."'><td align='center'>";
+			if ($serial!="free"&&$serial!="global") 
 			echo "<input type='checkbox' name='license_".$data_inst["lID"]."'>";
-			
+
 			echo "<strong><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$data_inst["cID"]."\">";
 			echo $data_inst["cname"];
 			echo "</a></strong></td><td align='center'>";
@@ -749,7 +762,7 @@ function updateLicense($input) {
 
 	if (empty($input['expire'])) unset($input['expire']);
 	if ($input['expire']=="0000-00-00") $input['expire']="NULL";
-	if (isset($input['oem'])&&$input['oem']=='N') $input['oem_computer']=-1;
+	if (isset($input['oem'])&&$input['oem']=='N') $input['oem_computer']=0;
 
 	
 	// Fill the update-array with changes
