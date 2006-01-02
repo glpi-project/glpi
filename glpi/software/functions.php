@@ -61,13 +61,16 @@ function showSoftwareOnglets($target,$withtemplate,$actif){
 
 	echo "<div id='barre_onglets'><ul id='onglet'>";
 	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=1$template'>".$lang["title"][26]."</a></li>";
+	if(empty($withtemplate)){
+		echo "<li "; if ($actif=="2") {echo "class='actif'";} echo "><a href='$target&amp;onglet=2$template'>".$lang["software"][19]."</a></li>";
+	}
 	echo "<li "; if ($actif=="4") {echo "class='actif'";} echo "><a href='$target&amp;onglet=4$template'>".$lang["Menu"][26]."</a></li>";
 	echo "<li "; if ($actif=="5") {echo "class='actif'";} echo "><a href='$target&amp;onglet=5$template'>".$lang["title"][25]."</a></li>";
 	if(empty($withtemplate)){
-	echo "<li "; if ($actif=="6") {echo "class='actif'";} echo "><a href='$target&amp;onglet=6$template'>".$lang["title"][28]."</a></li>";
-	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
-	echo "<li class='invisible'>&nbsp;</li>";
-	echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
+		echo "<li "; if ($actif=="6") {echo "class='actif'";} echo "><a href='$target&amp;onglet=6$template'>".$lang["title"][28]."</a></li>";
+		echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
+		echo "<li class='invisible'>&nbsp;</li>";
+		echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
 	}
 	
 	echo "<li class='invisible'>&nbsp;</li>";
@@ -351,7 +354,7 @@ function showLicensesAdd($ID) {
 	echo "</table></div><br>";
 }
 
-function showLicenses ($sID) {
+function showLicenses ($sID,$show_computers=0) {
 
 	GLOBAL $cfg_layout,$cfg_install, $HTMLRel, $lang;
 	
@@ -381,26 +384,28 @@ function showLicenses ($sID) {
 			echo " ".$lang["software"][19]." :</th></tr>";
 			$i=0;
 			echo "<tr><th>".$lang['software'][31]."</th><th>".$lang['software'][21]."</th><th>".$lang['software'][32]."</th><th>".$lang['software'][33]."</th><th>".$lang['software'][35]."</th>";
-			echo "<th>".$lang["buttons"][14]."&nbsp;";
-			echo "<select name='update_licenses' id='update_licenses_choice'>";
-			echo "<option value=''>-----</option>";
-			echo "<option value='update_expire'>".$lang["software"][32]."</option>";
-			echo "<option value='update_buy'>".$lang["software"][35]."</option>";
-			echo "</select>";
+			echo "<th>";
 			
+			if ($show_computers){
+				echo $lang["buttons"][14]."&nbsp;";
+				echo "<select name='update_licenses' id='update_licenses_choice'>";
+				echo "<option value=''>-----</option>";
+				echo "<option value='update_expire'>".$lang["software"][32]."</option>";
+				echo "<option value='update_buy'>".$lang["software"][35]."</option>";
+				echo "</select>";
+			
+				echo "<script type='text/javascript' >\n";
+				echo "   new Form.Element.Observer('update_licenses_choice', 1, \n";
+				echo "      function(element, value) {\n";
+				echo "      	new Ajax.Updater('update_licenses_view','".$cfg_install["root"]."/ajax/updateLicenses.php',{asynchronous:true, evalScripts:true, \n";
+				echo "           method:'post', parameters:'type=' + value\n";
+				echo "})})\n";
+				echo "</script>\n";
 
-			echo "<script type='text/javascript' >\n";
-			echo "   new Form.Element.Observer('update_licenses_choice', 1, \n";
-			echo "      function(element, value) {\n";
-			echo "      	new Ajax.Updater('update_licenses_view','".$cfg_install["root"]."/ajax/updateLicenses.php',{asynchronous:true, evalScripts:true, \n";
-			echo "           method:'post', parameters:'type=' + value\n";
-			echo "})})\n";
-			echo "</script>\n";
-
-			echo "<span id='update_licenses_view'>\n";
-			echo "&nbsp;";
-			echo "</span>\n";	
-
+				echo "<span id='update_licenses_view'>\n";
+				echo "&nbsp;";
+				echo "</span>\n";	
+			} else echo "&nbsp;";
 			
 			echo "</th></tr>";
 				} else {
@@ -433,6 +438,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		$expirecss="";
 		if ($expire!=NULL&&$today>$expire) {$expirer=1; $expirecss="_2";}
 		// Get installed licences
+
 
         $query_inst = "SELECT glpi_inst_software.ID AS ID, glpi_inst_software.license AS lID, glpi_computers.deleted as deleted, ";
         $query_inst .= " glpi_infocoms.ID as infocoms, ";
@@ -495,31 +501,35 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		// Restant	
 
 		echo "<tr><td align='center'>";
+	
+		if (!$show_computers){
+		echo $lang["software"][19].": $num_inst&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		}	
 		
 		$restant=$num_tot-$num_inst;
-		if ($serial!="free"&&$serial!="global") {
 	 	  $query_new="SELECT glpi_licenses.ID as ID FROM glpi_licenses WHERE $SEARCH_LICENCE";		
 			if ($result_new = $db->query($query_new)) {			
 				$IDdup=$db->result($result_new,0,0);
 			
-				echo $lang["software"][20].":";
-				echo "<select name='stock_licenses_$IDdup'>";
-				if (max(0,$restant-100)>0) echo "<option value='0'>0</option>";
-				for ($i=max(0,$restant-100);$i<=$restant+100;$i++)
-					echo "<option value='$i' ".($i==$restant?" selected ":"").">$i</option>";
-				echo "</select>";
-				echo "<input type='hidden' name='nb_licenses_$IDdup' value='$restant'>";
-				echo "<input type='image' name='update_stock_licenses' value='$IDdup' src='".$HTMLRel."pics/actualiser.png' class='calendrier'>";
-
-			if ($serial=="free"||$serial=="global"){
-				// Display infocoms
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>";
-				showDisplayInfocomLink(LICENSE_TYPE,$IDdup,1);
-				echo "</strong>";
+				if ($serial!="free"&&$serial!="global") {
+					echo $lang["software"][20].":";
+					echo "<select name='stock_licenses_$IDdup'>";
+					if (max(0,$restant-100)>0) echo "<option value='0'>0</option>";
+					for ($i=max(0,$restant-100);$i<=$restant+100;$i++)
+						echo "<option value='$i' ".($i==$restant?" selected ":"").">$i</option>";
+					echo "</select>";
+					echo "<input type='hidden' name='nb_licenses_$IDdup' value='$restant'>";
+					echo "<input type='image' name='update_stock_licenses' value='$IDdup' src='".$HTMLRel."pics/actualiser.png' class='calendrier'>";
+				}
+				if ($serial=="free"||$serial=="global"){
+					// Display infocoms
+					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>";
+					showDisplayInfocomLink(LICENSE_TYPE,$IDdup,1);
+					echo "</strong>";
+				}
 			}
 
-			}
-		}
+
 		if ($restant!=0||$serial=="free"||$serial=="global") {
 			// Get first non installed license ID
 			$query_first="SELECT glpi_licenses.ID as ID, glpi_inst_software.license as iID FROM glpi_licenses LEFT JOIN glpi_inst_software ON glpi_inst_software.license = glpi_licenses.ID WHERE $SEARCH_LICENCE";
@@ -562,6 +572,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 */
 
 		// Add select all checkbox
+		if ($show_computers){
 		if ($num_inst>0&&$serial!="free"&&$serial!="global"){
 			echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$lang["search"][7].":";
 			$rand=mt_rand();
@@ -578,12 +589,13 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			echo "}</script>\n";
 			$db->data_seek($result_inst,0);
 		}
-		
+		}		
 		
 		echo "</td></tr>";
 		
 		
 		// Logiciels installés
+		if ($show_computers)
 		while ($data_inst=$db->fetch_array($result_inst)){
 			echo "<tr class='tab_bg_1".(($data["OEM"]=='Y'&&$data["OEM_COMPUTER"]!=$data_inst["cID"])||$data_inst["deleted"]=='Y'?"_2":"")."'><td align='center'>";
 			if ($serial!="free"&&$serial!="global") 
