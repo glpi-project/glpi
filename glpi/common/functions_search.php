@@ -375,7 +375,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	if ($WHERE == " WHERE ") $WHERE="";
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER;
-	//echo $QUERY;
+//	echo $QUERY;
 
 	// Get it from database and DISPLAY
 	if ($result = $db->query($QUERY)) {
@@ -976,7 +976,7 @@ switch ($new_table){
 		break;
 	case "glpi_connect_wire": // Connect_wire with peripherals to display connected to column
 		return " LEFT JOIN $new_table ON ($ref_table.ID = $new_table.end1 AND $new_table.type='".PERIPHERAL_TYPE."') ".
-			   " LEFT JOIN glpi_computers AS ".$new_table."2 ON ($new_table.end2 = ".$new_table."2.ID) ";
+			   " INNER JOIN glpi_computers AS ".$new_table."2 ON ($new_table.end2 = ".$new_table."2.ID ) ";
 		break;
 
 
