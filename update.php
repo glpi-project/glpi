@@ -3314,11 +3314,28 @@ if(!TableExists("glpi_dropdown_model_$model")) {
 // Update pour les cartouches compatibles : type -> model
 if(FieldExists("glpi_cartridges_assoc","FK_glpi_type_printer")) {
 	$query=" ALTER TABLE `glpi_cartridges_assoc` CHANGE `FK_glpi_type_printer` `FK_glpi_dropdown_model_printers` INT( 11 ) DEFAULT '0' NOT NULL ";
-	$db->query($query) or die("0.65 alter FK_glpi_type_printer field in cartridges_assoc".$lang["update"][90].$db->error());
+	$db->query($query) or die("0.65 alter FK_glpi_type_printer field in cartridges_assoc ".$lang["update"][90].$db->error());
 }
 
+if(!FieldExists("glpi_links","data")) {
+	$query=" ALTER TABLE `glpi_links` ADD `data` TEXT NOT NULL ;";
+	$db->query($query) or die("0.65 create data in links ".$lang["update"][90].$db->error());
+}
 
+if(!TableExists("glpi_dropdown_auto_update")) {
+	$query = "CREATE TABLE `glpi_dropdown_auto_update` (
+  	`ID` int(11) NOT NULL auto_increment,
+  	`name` varchar(255) NOT NULL default '',
+  	PRIMARY KEY  (`ID`)
+	) TYPE=MyISAM;";
 
+	$db->query($query) or die("0.65 add table glpi_dropdown_auto_update ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_computers","auto_update")) {
+	$query="ALTER TABLE `glpi_computers` ADD `auto_update` INT DEFAULT '0' NOT NULL AFTER `os` ;";
+	$db->query($query) or die("0.65 alter computers add auto_update ".$lang["update"][90].$db->error());	
+}
 
 }
 

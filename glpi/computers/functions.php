@@ -270,7 +270,7 @@ function showComputerForm($target,$ID,$withtemplate='') {
 			dropdownUsersID("tech_num",$comp->fields["tech_num"]);
 		echo "</td>";
 
-		echo "<td valign='middle' rowspan='3'>".$lang["computers"][19].":</td><td valign='middle' rowspan='3'><textarea  cols='35' rows='4' name='comments' >".$comp->fields["comments"]."</textarea></td></tr>";
+		echo "<td valign='middle' rowspan='4'>".$lang["computers"][19].":</td><td valign='middle' rowspan='4'><textarea  cols='35' rows='5' name='comments' >".$comp->fields["comments"]."</textarea></td></tr>";
 
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$lang["common"][5].": 	</td><td>";
@@ -286,8 +286,14 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		
 		echo "<td>".$lang["computers"][18].":	</td><td>";
 		autocompletionTextField("otherserial","glpi_computers","otherserial",$comp->fields["otherserial"],20);
-		echo "</td>";
+		echo "</td></tr>";
 
+		
+		echo "<tr class='tab_bg_1'>";
+		
+		echo "<td>".$lang["computers"][9].":</td><td>";
+		dropdownValue("glpi_dropdown_os", "os", $comp->fields["os"]);
+		echo "</td>";
 		
 		echo "<td>".$lang["state"][0].":</td><td>";
 		$si=new StateItem();
@@ -296,12 +302,11 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		$si->getfromDB(COMPUTER_TYPE,$comp->fields["ID"],$t);
 		dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
 		echo "</td></tr>";
-
-
+				
 		echo "<tr class='tab_bg_1'>";
 		
-		echo "<td>".$lang["computers"][9].":</td><td>";
-		dropdownValue("glpi_dropdown_os", "os", $comp->fields["os"]);
+		echo "<td>".$lang["computers"][51].":</td><td>";
+		dropdownValue("glpi_dropdown_auto_update", "auto_update", $comp->fields["auto_update"]);
 		echo "</td>";
 		
 		if (!$template){
@@ -309,7 +314,6 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		showReservationForm(COMPUTER_TYPE,$ID);
 		echo "</b></td>";
 		} else echo "<td>&nbsp;</td><td>&nbsp;</td>";
-		
 		
 		
 		
