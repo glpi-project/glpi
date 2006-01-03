@@ -74,14 +74,16 @@ echo "</table></form></div>";
 
 //Get the distinct intervention categories
 $nomUsr = getNbIntervCategory();
-sort($nomUsr);
-$numrows=count($nomUsr);
-printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]);
 
 echo "<div align ='center'>";
 
 if (is_array($nomUsr))
 {
+sort($nomUsr);
+$numrows=count($nomUsr);
+
+printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]);
+
 //affichage du tableau
 //table display
 echo "<table class='tab_cadre2' cellpadding='5' >";

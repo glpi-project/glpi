@@ -499,7 +499,7 @@ function addComputer($input) {
 	else updateState(COMPUTER_TYPE,$newID,$state);
 	
 	// ADD Devices
-	$comp->getFromDB($oldID);
+	$comp->getFromDB($oldID,1);
 	foreach($comp->devices as $key => $val) {
 			compdevice_add($newID,$val["devType"],$val["devID"],$val["specificity"]);
 		}
