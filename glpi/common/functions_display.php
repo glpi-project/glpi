@@ -249,7 +249,10 @@ function commonHeader($title,$url)
 	//clock
 	echo "<div style='font-size:9px; position:absolute; top:70px; right: 15px; text-align:center;'>";
 	echo date("H").":".date("i")."&nbsp;<i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
-	echo "</i><span class='nav_horl'><b>".$_SESSION["glpiname"]."</b></span></div>\n";
+	echo "</i><span class='nav_horl'><b>";
+	if (!empty($_SESSION["glpirealname"])) echo $_SESSION["glpirealname"];
+	else echo $_SESSION["glpiname"];
+	echo "</b></span></div>\n";
 
 	echo "</div>";
 
@@ -327,7 +330,10 @@ function helpHeader($title,$url,$name) {
 	echo "<td align='center' width='25%'>\n";
 	
 	echo "<img src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" >";
-	echo "<div style='width:80px; text-align:center;'><p class='nav_horl'><b>".$_SESSION["glpiname"]."</b></p></div>";
+	echo "<div style='width:80px; text-align:center;'><p class='nav_horl'><b>";
+	if (!empty($_SESSION["glpirealname"])) echo $_SESSION["glpirealname"];
+	else echo $_SESSION["glpiname"];
+	echo "</b></p></div>";
         echo "</td>";
 
 	echo "<td valign='middle'>";
