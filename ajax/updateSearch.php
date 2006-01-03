@@ -26,33 +26,34 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  ------------------------------------------------------------------------
 */
- 
-// Based on:
-// IRMA, Information Resource-Management and Administration
-// Christian Bauer 
+
 // ----------------------------------------------------------------------
-// Original Author of file:
+// Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_monitors.php");
-include ($phproot . "/glpi/includes_financial.php");
-include ($phproot . "/glpi/includes_state.php");
+	include ("_relpos.php");
+	include ($phproot."/glpi/includes.php");
+	checkAuthentication("normal");
+	include ($phproot."/glpi/includes_search.php");
 
-checkAuthentication("normal");
 
-commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
+	header("Content-Type: text/html; charset=UTF-8");
 
-titleMonitors();
-include ($phproot . "/glpi/includes_search.php");
+if ($_POST["type"]>0){
+	echo "<input type='text' size='15' name=\"contains2[".$_POST["num"]."]\" value=\"".$_POST["val"]."\" >";
+	echo "&nbsp;";
+	echo $lang["search"][10]."&nbsp;";
 
-manageGetValuesInSearch(MONITOR_TYPE);
+	echo "<select name=\"field2[".$_POST["num"]."]\" size='1'>";
 
-searchForm(MONITOR_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"]);
-
-showList(MONITOR_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"]);
-
-commonFooter();
+	foreach ($SEARCH_OPTION[$_POST["type"]] as $key => $val) 
+	if ($val["meta"])
+	{
+			echo "<option value=\"".$key."\""; 
+			if($key == $_POST["field"]) echo "selected";
+			echo ">". $val["name"] ."</option>\n";
+	}
+	echo "</select>&nbsp;";
+}
 ?>

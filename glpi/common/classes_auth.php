@@ -399,6 +399,7 @@ class Identification
 		$_SESSION["authorisation"] = true;
 		$_SESSION["extauth"] = $this->extauth;
 		$_SESSION["glpisearchcount"] = array();
+		$_SESSION["glpisearchcount2"] = array();
 		$_SESSION["root"] = $cfg_install["root"];
 		$_SESSION["list_limit"] = $cfg_features["list_limit"];
 	}
