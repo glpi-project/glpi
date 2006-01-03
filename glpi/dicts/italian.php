@@ -181,6 +181,7 @@ $lang["common"][9]="Aggiungi modello...";
 $lang["common"][10]="Responsabile tecnico"; 
 $lang["common"][11]="Vista ridotta"; 
 $lang["common"][12]="Print doubloons"; 
+$lang["common"][13]="Template"; 
 
 $lang["computers"][0]="Aggiungi un computer..."; 
 $lang["computers"][1]="Id"; 
@@ -645,6 +646,9 @@ $lang["job"][33]="Empty Description";
 $lang["job"][34]="Plan this followup"; 
 $lang["job"][35]="Planning"; 
 $lang["job"][36]="Impossible planning. Mistake in the date or technician unavailable to this schedule"; 
+$lang["job"][37]="Summary"; 
+$lang["job"][38]="Ticket"; 
+$lang["job"][39]="Update followup"; 
 
 $lang["joblist"][0]="Stato"; 
 $lang["joblist"][1]="Data"; 
@@ -873,6 +877,7 @@ $lang["monitors"][27]="Identificativo";
 $lang["monitors"][28]="Schermo"; 
 $lang["monitors"][29]="ID dello schermo"; 
 $lang["monitors"][30]="Nuovo schermo da modello"; 
+$lang["monitors"][31]="Model"; 
 
 $lang["networking"][0]="Nome"; 
 $lang["networking"][1]="Posizione"; 
@@ -930,6 +935,7 @@ $lang["networking"][54]="ID";
 $lang["networking"][55]="Associa una VLAN"; 
 $lang["networking"][56]="VLAN"; 
 $lang["networking"][57]="Scegli un indirizzo MAC dalla lista o inseriscilo qui sotto"; 
+$lang["networking"][58]="Model"; 
 
 $lang["pager"][1]="a"; 
 $lang["pager"][2]="da"; 
@@ -965,6 +971,7 @@ $lang["peripherals"][30]="Nuova periferica da modello";
 $lang["peripherals"][31]="Promiscua"; 
 $lang["peripherals"][32]="Individuale"; 
 $lang["peripherals"][33]="Tipologia di gestione"; 
+$lang["peripherals"][34]="Model"; 
 
 $lang["planning"][0]="Il tecnico richiesto ha già un appuntamento nell'orario indicato"; 
 $lang["planning"][1]="Errore di inserimento delle date: la data di inizio è maggiore della data fine"; 
@@ -1013,6 +1020,7 @@ $lang["printers"][28]="Nuova stampante da modello";
 $lang["printers"][29]="ID stampante"; 
 $lang["printers"][30]="Contatore pagine iniziale"; 
 $lang["printers"][31]="Pagine stampate"; 
+$lang["printers"][32]="Model"; 
 
 $lang["repair"][0]="In riparazione"; 
 $lang["repair"][1]="Dispositivi in riparazione"; 
@@ -1136,6 +1144,10 @@ $lang["search"][10]="di";
 $lang["search"][11]="Items Seen"; 
 $lang["search"][15]="No item founded"; 
 $lang["search"][16]="A least"; 
+$lang["search"][17]="Add a search criteria"; 
+$lang["search"][18]="Delete a search criteria"; 
+$lang["search"][19]="Add a global search criteria"; 
+$lang["search"][20]="Add a global search criteria"; 
 
 $lang["setup"][0]="Configurazione elenchi"; 
 $lang["setup"][1]="Modelli"; 
@@ -1231,6 +1243,10 @@ $lang["setup"][90]="VLAN";
 $lang["setup"][91]="Modelli computer"; 
 $lang["setup"][92]="Tipologie consumabili"; 
 $lang["setup"][93]="Tipologie interfacce HD"; 
+$lang["setup"][94]="Monitors Models"; 
+$lang["setup"][95]="Networking Models"; 
+$lang["setup"][96]="Printers Models"; 
+$lang["setup"][97]="Peripherals Models"; 
 $lang["setup"][100]="Configurazioni globali"; 
 $lang["setup"][101]="Installation path"; 
 $lang["setup"][102]="Log Level"; 

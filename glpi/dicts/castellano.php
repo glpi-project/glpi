@@ -181,6 +181,7 @@ $lang["common"][9]="Agregar modelo...";
 $lang["common"][10]="Responsable técnico"; 
 $lang["common"][11]="Vista limitada"; 
 $lang["common"][12]="Mostrar los duplicados"; 
+$lang["common"][13]="Template"; 
 
 $lang["computers"][0]="Agregar computador..."; 
 $lang["computers"][1]="Identificador"; 
@@ -645,6 +646,9 @@ $lang["job"][33]="Descripción vacía";
 $lang["job"][34]="Planificar este seguimiento"; 
 $lang["job"][35]="Planificación"; 
 $lang["job"][36]="Planificación imposible. Error de fechas o técnico no disponible en ese horario"; 
+$lang["job"][37]="Summary"; 
+$lang["job"][38]="Ticket"; 
+$lang["job"][39]="Update followup"; 
 
 $lang["joblist"][0]="Estado"; 
 $lang["joblist"][1]="Fecha"; 
@@ -873,6 +877,7 @@ $lang["monitors"][27]="identificador";
 $lang["monitors"][28]="Monitores"; 
 $lang["monitors"][29]="ID monitor"; 
 $lang["monitors"][30]="Nuevo monitor a partir de un modelo"; 
+$lang["monitors"][31]="Model"; 
 
 $lang["networking"][0]="Nombre"; 
 $lang["networking"][1]="Ubicación"; 
@@ -930,6 +935,7 @@ $lang["networking"][54]="ID de Material";
 $lang["networking"][55]="Asociar una VLAN"; 
 $lang["networking"][56]="VLAN"; 
 $lang["networking"][57]="Elija una dirección MAC en la lista o especifíquela aquí debajo."; 
+$lang["networking"][58]="Model"; 
 
 $lang["pager"][1]="hasta"; 
 $lang["pager"][2]="desde"; 
@@ -965,6 +971,7 @@ $lang["peripherals"][30]="Nuevo periférico a partir de modelo";
 $lang["peripherals"][31]="Gestión global"; 
 $lang["peripherals"][32]="Gestión individual"; 
 $lang["peripherals"][33]="Tipo de gestión"; 
+$lang["peripherals"][34]="Model"; 
 
 $lang["planning"][0]="El técnico solicitado ya tiene un servicio previsto para este horario."; 
 $lang["planning"][1]="Error en el ingreso de sus fechas. La fecha de inicio es posterior a la fecha final"; 
@@ -1013,6 +1020,7 @@ $lang["printers"][28]="Nueva impresora a partir de un modelo";
 $lang["printers"][29]="Imprimante ID"; 
 $lang["printers"][30]="Contador de página inicial"; 
 $lang["printers"][31]="Páginas impresas"; 
+$lang["printers"][32]="Model"; 
 
 $lang["repair"][0]="Reparación"; 
 $lang["repair"][1]="Material en reparación"; 
@@ -1136,6 +1144,10 @@ $lang["search"][10]="en";
 $lang["search"][11]="Elementos visualizados"; 
 $lang["search"][15]="No se encontraron elementos"; 
 $lang["search"][16]="Al menos"; 
+$lang["search"][17]="Add a search criteria"; 
+$lang["search"][18]="Delete a search criteria"; 
+$lang["search"][19]="Add a global search criteria"; 
+$lang["search"][20]="Add a global search criteria"; 
 
 $lang["setup"][0]="Títulos"; 
 $lang["setup"][1]="Modelos"; 
@@ -1231,6 +1243,10 @@ $lang["setup"][90]="VLANs";
 $lang["setup"][91]="Modelo de equipos"; 
 $lang["setup"][92]="Tipo de insumos"; 
 $lang["setup"][93]="Interfaces disco rígido"; 
+$lang["setup"][94]="Monitors Models"; 
+$lang["setup"][95]="Networking Models"; 
+$lang["setup"][96]="Printers Models"; 
+$lang["setup"][97]="Peripherals Models"; 
 $lang["setup"][100]="Configuración general"; 
 $lang["setup"][101]="Camino de instalación"; 
 $lang["setup"][102]="Nivel de logging"; 
