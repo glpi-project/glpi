@@ -122,12 +122,15 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 			echo $lang["monitors"][29].": ".$mon->fields["ID"];
 		}elseif (strcmp($template,"newcomp") === 0) {
 			echo $lang["monitors"][30].": ".$mon->fields["tplname"];
+			echo "<input type='hidden' name='tplname' value='".$mon->fields["tplname"]."'>";
 		}elseif (strcmp($template,"newtemplate") === 0) {
 			echo $lang["common"][6]."&nbsp;: ";
 			autocompletionTextField("tplname","glpi_monitors","tplname",$mon->fields["tplname"],20);	
 		}
 		
 		echo "</th><th  align='center'>".$datestring.$date;
+		if (!$template&&!empty($mon->fields['tplname']))
+			echo "&nbsp;&nbsp;&nbsp;(".$lang["common"][13].": ".$mon->fields['tplname'].")";
 		echo "</th></tr>";
 
 	

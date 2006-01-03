@@ -128,12 +128,15 @@ function showperipheralForm ($target,$ID,$withtemplate='') {
 			echo $lang["peripherals"][29].": ".$mon->fields["ID"];
 		}elseif (strcmp($template,"newcomp") === 0) {
 			echo $lang["peripherals"][30].": ".$mon->fields["tplname"];
+			echo "<input type='hidden' name='tplname' value='".$mon->fields["tplname"]."'>";
 		}elseif (strcmp($template,"newtemplate") === 0) {
 			echo $lang["common"][6]."&nbsp;: ";
 			autocompletionTextField("tplname","glpi_peripherals","tplname",$mon->fields["tplname"],20);	
 		}
 		
 		echo "</th><th  align='center'>".$datestring.$date;
+		if (!$template&&!empty($mon->fields['tplname']))
+			echo "&nbsp;&nbsp;&nbsp;(".$lang["common"][13].": ".$mon->fields['tplname'].")";
 		echo "</th></tr>";
 
 	echo "<tr><td class='tab_bg_1' valign='top'>";

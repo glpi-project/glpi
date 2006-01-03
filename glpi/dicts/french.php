@@ -185,6 +185,7 @@ $lang["common"][9]="Ajouter gabarit...";
 $lang["common"][10]="Responsable technique";
 $lang["common"][11]="Affichage limité";
 $lang["common"][12]="Afficher les doublons";
+$lang["common"][13]="Gabarit";
 
 $lang["computers"][0]="Ajouter ordinateur...";
 $lang["computers"][1]="Identifiant";

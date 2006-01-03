@@ -128,12 +128,15 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 			echo $lang["printers"][29].": ".$printer->fields["ID"];
 		}elseif (strcmp($template,"newcomp") === 0) {
 			echo $lang["printers"][28].": ".$printer->fields["tplname"];
+			echo "<input type='hidden' name='tplname' value='".$printer->fields["tplname"]."'>";
 		}elseif (strcmp($template,"newtemplate") === 0) {
 			echo $lang["common"][6]."&nbsp;: ";
 				autocompletionTextField("tplname","glpi_printers","tplname",$printer->fields["tplname"],20);		
 		}
 		
 		echo "</th><th  align='center'>".$datestring.$date;
+		if (!$template&&!empty($printer->fields['tplname']))
+			echo "&nbsp;&nbsp;&nbsp;(".$lang["common"][13].": ".$printer->fields['tplname'].")";
 		echo "</th></tr>\n";
 
 

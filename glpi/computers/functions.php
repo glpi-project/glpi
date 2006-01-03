@@ -204,12 +204,15 @@ function showComputerForm($target,$ID,$withtemplate='') {
 			echo $lang["computers"][13].": ".$comp->fields["ID"];
 		}elseif (strcmp($template,"newcomp") === 0) {
 			echo $lang["computers"][12].": ".$comp->fields["tplname"];
+			echo "<input type='hidden' name='tplname' value='".$comp->fields["tplname"]."'>";
 		}elseif (strcmp($template,"newtemplate") === 0) {
 			echo $lang["common"][6]."&nbsp;: ";
 			autocompletionTextField("tplname","glpi_computers","tplname",$comp->fields["tplname"],20);	
 		}
 		
 		echo "</th><th  colspan ='2' align='center'>".$datestring.$date;
+		if (!$template&&!empty($comp->fields['tplname']))
+			echo "&nbsp;&nbsp;&nbsp;(".$lang["common"][13].": ".$comp->fields['tplname'].")";
 		echo "</th></tr>";
 		
 		echo "<tr class='tab_bg_1'><td>".$lang["computers"][7].":		</td>";
