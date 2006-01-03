@@ -1176,7 +1176,7 @@ global $LINK_ID_TABLE;
 				case COMPUTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]."_$num");
 					return " INNER JOIN glpi_connect_wire AS META_conn_mon_$num ON (META_conn_mon_$num.end1=glpi_monitors.ID  AND META_conn_mon_$num.type='".MONITOR_TYPE."') ".
-						   " INNER JOIN glpi_computers AS glpi_computer_$num ON (META_conn_mon_$num.end2=glpi_computers_$num.ID) ";
+						   " INNER JOIN glpi_computers AS glpi_computers_$num ON (META_conn_mon_$num.end2=glpi_computers_$num.ID) ";
 				
 				break;
 			}
@@ -1186,7 +1186,7 @@ global $LINK_ID_TABLE;
 				case COMPUTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]."_$num");
 					return " INNER JOIN glpi_connect_wire AS META_conn_mon_$num ON (META_conn_mon_$num.end1=glpi_printers.ID  AND META_conn_mon_$num.type='".PRINTER_TYPE."') ".
-						   " INNER JOIN glpi_computers ON (META_conn_mon_$num.end2=glpi_computers.ID) ";
+						   " INNER JOIN glpi_computers AS glpi_computers_$num ON (META_conn_mon_$num.end2=glpi_computers_$num.ID) ";
 				
 				break;
 			}
@@ -1196,7 +1196,7 @@ global $LINK_ID_TABLE;
 				case COMPUTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]."_$num");
 					return " INNER JOIN glpi_connect_wire AS META_conn_mon_$num ON (META_conn_mon_$num.end1=glpi_peripherals.ID  AND META_conn_mon_$num.type='".PERIPHERAL_TYPE."') ".
-						   " INNER JOIN glpi_computers ON (META_conn_mon_$num.end2=glpi_computers.ID) ";
+						   " INNER JOIN glpi_computers AS glpi_computers_$num ON (META_conn_mon_$num.end2=glpi_computers_$num.ID) ";
 				
 				break;
 			}
@@ -1207,7 +1207,7 @@ global $LINK_ID_TABLE;
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]."_$num");
 				return " INNER JOIN glpi_licenses as META_lic_$num ON ( META_lic_$num.sID = glpi_software.ID ) ".
 					   " INNER JOIN glpi_inst_software as META_inst_$num ON (META_inst_$num.license = META_lic_$num.ID) ".
-					   " INNER JOIN glpi_computers ON (META_inst_$num.cID = glpi_computers.ID) ";
+					   " INNER JOIN glpi_computers AS glpi_computers_$num ON (META_inst_$num.cID = glpi_computers_$num.ID) ";
 					
 				break;
 			}
