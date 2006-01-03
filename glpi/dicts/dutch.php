@@ -181,6 +181,7 @@ $lang["common"][9]="Toevoegen template...";
 $lang["common"][10]="Technical responsible"; 
 $lang["common"][11]="Limited view"; 
 $lang["common"][12]="Print doubloons"; 
+$lang["common"][13]="Template"; 
 
 $lang["computers"][0]="Toevoegen Computer..."; 
 $lang["computers"][1]="Identifier"; 
@@ -645,6 +646,9 @@ $lang["job"][33]="Empty Description";
 $lang["job"][34]="Plan this followup"; 
 $lang["job"][35]="Planning"; 
 $lang["job"][36]="Impossible planning. Mistake in the date or technician unavailable to this schedule"; 
+$lang["job"][37]="Summary"; 
+$lang["job"][38]="Ticket"; 
+$lang["job"][39]="Update followup"; 
 
 $lang["joblist"][0]="Status"; 
 $lang["joblist"][1]="Datum"; 
@@ -873,6 +877,7 @@ $lang["monitors"][27]="identifier";
 $lang["monitors"][28]="Beeldschermen"; 
 $lang["monitors"][29]="Beeldscherm ID"; 
 $lang["monitors"][30]="Nieuw beeldscherm gebaseerd op een template"; 
+$lang["monitors"][31]="Model"; 
 
 $lang["networking"][0]="Naam"; 
 $lang["networking"][1]="Locatie"; 
@@ -930,6 +935,7 @@ $lang["networking"][54]="Hardware ID";
 $lang["networking"][55]="Toevoegen bijhorend VLAN"; 
 $lang["networking"][56]="VLAN"; 
 $lang["networking"][57]="Kies een MAC adres uit de lijst of vul het beneden in."; 
+$lang["networking"][58]="Model"; 
 
 $lang["pager"][1]="naar"; 
 $lang["pager"][2]="van"; 
@@ -965,6 +971,7 @@ $lang["peripherals"][30]="Nieuw toestel ahv. template";
 $lang["peripherals"][31]="Global management"; 
 $lang["peripherals"][32]="Unit management"; 
 $lang["peripherals"][33]="Management Type"; 
+$lang["peripherals"][34]="Model"; 
 
 $lang["planning"][0]="The technician requested has already an intervention planned for this time."; 
 $lang["planning"][1]="Fout bij de datums. De begindatum is later dan de einddatum."; 
@@ -1013,6 +1020,7 @@ $lang["printers"][28]="Nieuwe printer ahv. template";
 $lang["printers"][29]="Printer ID"; 
 $lang["printers"][30]="Paginateller"; 
 $lang["printers"][31]="Afgedrukte pagina's"; 
+$lang["printers"][32]="Model"; 
 
 $lang["repair"][0]="Herstelling"; 
 $lang["repair"][1]="Plaats het item in herstelling"; 
@@ -1136,6 +1144,10 @@ $lang["search"][10]="in";
 $lang["search"][11]="Items Seen"; 
 $lang["search"][15]="No item founded"; 
 $lang["search"][16]="A least"; 
+$lang["search"][17]="Add a search criteria"; 
+$lang["search"][18]="Delete a search criteria"; 
+$lang["search"][19]="Add a global search criteria"; 
+$lang["search"][20]="Add a global search criteria"; 
 
 $lang["setup"][0]="Dropdowns"; 
 $lang["setup"][1]="Templates"; 
@@ -1231,6 +1243,10 @@ $lang["setup"][90]="VLAN's";
 $lang["setup"][91]="Computer model"; 
 $lang["setup"][92]="Verbruiksartikels type"; 
 $lang["setup"][93]="Harde schijf interfaces"; 
+$lang["setup"][94]="Monitors Models"; 
+$lang["setup"][95]="Networking Models"; 
+$lang["setup"][96]="Printers Models"; 
+$lang["setup"][97]="Peripherals Models"; 
 $lang["setup"][100]="Globale setup"; 
 $lang["setup"][101]="Installatie pad"; 
 $lang["setup"][102]="Log Level"; 
