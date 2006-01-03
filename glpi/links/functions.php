@@ -128,6 +128,11 @@ function showLinkForm ($target,$ID) {
 		autocompletionTextField("name","glpi_links","name",$con->fields["name"],80);		
 	echo "</td></tr>";
 
+	echo "<tr class='tab_bg_1'><td>".$lang["links"][9].":	</td>";
+	echo "<td>";
+	echo "<textarea name='data' rows='10' cols='80'>".$con->fields["data"]."</textarea>";
+	echo "</td></tr>";
+
 	if ($ID=="") {
 
 		echo "<tr>";
@@ -188,6 +193,7 @@ function updateLink($input) {
 			$x++;
 		}
 	}
+
 	if(isset($updates))
 		$con->updateInDB($updates);
 
@@ -306,9 +312,9 @@ if ($tID>0&&$lID>0){
 }
 
 function showLinkOnDevice($type,$ID){
-global $lang;
+global $lang,$HTMLRel;
 	$db=new DB;
-	$query="SELECT glpi_links.name as name from glpi_links INNER JOIN glpi_links_device ON glpi_links.ID= glpi_links_device.FK_links WHERE glpi_links_device.device_type='$type' ORDER BY glpi_links.name";
+	$query="SELECT glpi_links.ID as ID, glpi_links.name as name , glpi_links.data as data from glpi_links INNER JOIN glpi_links_device ON glpi_links.ID= glpi_links_device.FK_links WHERE glpi_links_device.device_type='$type' ORDER BY glpi_links.name";
 	$result=$db->query($query);
 
 	echo "<br>";
@@ -319,65 +325,69 @@ global $lang;
 
 		while ($data=$db->fetch_array($result)){
 		$link=$data["name"];
-		$ci->getFromDB($type,$ID);
-		if (ereg("\[NAME\]",$link)){
-			$link=ereg_replace("\[NAME\]",$ci->getName(),$link);
-		}
-		if (ereg("\[ID\]",$link)){
-			$link=ereg_replace("\[ID\]",$ID,$link);
-		}
+		$file=trim($data["data"]);
+		if (empty($file)){
 
-		if (ereg("\[LOCATIONID\]",$link)){
-			if (isset($ci->obj->fields["location"]))
-				$link=ereg_replace("\[LOCATIONID\]",$ci->obj->fields["location"],$link);
-		}
-		if (ereg("\[LOCATION\]",$link)){
-			if (isset($ci->obj->fields["location"]))
-				$link=ereg_replace("\[LOCATION\]",getDropdownName("glpi_dropdown_locations",$ci->obj->fields["location"]),$link);
-		}
-		if (ereg("\[NETWORK\]",$link)){
-			if (isset($ci->obj->fields["network"]))
-				$link=ereg_replace("\[NETWORK\]",getDropdownName("glpi_dropdown_network",$ci->obj->fields["network"]),$link);
-		}
-		if (ereg("\[DOMAIN\]",$link)){
-			if (isset($ci->obj->fields["domain"]))
-				$link=ereg_replace("\[DOMAIN\]",getDropdownName("glpi_dropdown_domain",$ci->obj->fields["domain"]),$link);
-		}
-		$ipmac=array();
-		$i=0;
-		if (ereg("\[IP\]",$link)||ereg("\[MAC\]",$link)){
-			$query2 = "SELECT ifaddr,ifmac FROM glpi_networking_ports WHERE (on_device = $ID AND device_type = $type) ORDER BY logical_number";
-			$result2=$db->query($query2);
-			if ($db->numrows($result2)>0)
-			while ($data2=$db->fetch_array($result2)){
-			$ipmac[$i]['ifaddr']=$data2["ifaddr"];
-			$ipmac[$i]['ifmac']=$data2["ifmac"];
-			$i++;
+			$ci->getFromDB($type,$ID);
+			if (ereg("\[NAME\]",$link)){
+				$link=ereg_replace("\[NAME\]",$ci->getName(),$link);
 			}
-		}
+			if (ereg("\[ID\]",$link)){
+				$link=ereg_replace("\[ID\]",$ID,$link);
+			}
 
-		if (ereg("\[IP\]",$link)||ereg("\[MAC\]",$link)){
-		// Add IP/MAC internal switch
-		if ($type==NETWORKING_TYPE){
-			$tmplink=$link;
-			$tmplink=ereg_replace("\[IP\]",$ci->obj->fields["ifaddr"],$tmplink);
-			$tmplink=ereg_replace("\[MAC\]",$ci->obj->fields['ifmac'],$tmplink);
-			echo "<tr class='tab_bg_2'><td><a href='$tmplink'>$tmplink</a></td></tr>";
-		}
-		
-		if (count($ipmac)>0){
-			foreach ($ipmac as $key => $val){
+			if (ereg("\[LOCATIONID\]",$link)){
+				if (isset($ci->obj->fields["location"]))
+					$link=ereg_replace("\[LOCATIONID\]",$ci->obj->fields["location"],$link);
+			}
+			if (ereg("\[LOCATION\]",$link)){
+				if (isset($ci->obj->fields["location"]))
+					$link=ereg_replace("\[LOCATION\]",getDropdownName("glpi_dropdown_locations",$ci->obj->fields["location"]),$link);
+			}
+			if (ereg("\[NETWORK\]",$link)){
+				if (isset($ci->obj->fields["network"]))
+					$link=ereg_replace("\[NETWORK\]",getDropdownName("glpi_dropdown_network",$ci->obj->fields["network"]),$link);
+			}
+			if (ereg("\[DOMAIN\]",$link)){
+				if (isset($ci->obj->fields["domain"]))
+					$link=ereg_replace("\[DOMAIN\]",getDropdownName("glpi_dropdown_domain",$ci->obj->fields["domain"]),$link);
+			}
+			$ipmac=array();
+			$i=0;
+			if (ereg("\[IP\]",$link)||ereg("\[MAC\]",$link)){
+				$query2 = "SELECT ifaddr,ifmac FROM glpi_networking_ports WHERE (on_device = $ID AND device_type = $type) ORDER BY logical_number";
+				$result2=$db->query($query2);
+				if ($db->numrows($result2)>0)
+				while ($data2=$db->fetch_array($result2)){
+				$ipmac[$i]['ifaddr']=$data2["ifaddr"];
+				$ipmac[$i]['ifmac']=$data2["ifmac"];
+				$i++;
+				}
+			}
+
+			if (ereg("\[IP\]",$link)||ereg("\[MAC\]",$link)){
+			// Add IP/MAC internal switch
+			if ($type==NETWORKING_TYPE){
 				$tmplink=$link;
-				$tmplink=ereg_replace("\[IP\]",$val['ifaddr'],$tmplink);
-				$tmplink=ereg_replace("\[MAC\]",$val['ifmac'],$tmplink);
+				$tmplink=ereg_replace("\[IP\]",$ci->obj->fields["ifaddr"],$tmplink);
+				$tmplink=ereg_replace("\[MAC\]",$ci->obj->fields['ifmac'],$tmplink);
 				echo "<tr class='tab_bg_2'><td><a href='$tmplink'>$tmplink</a></td></tr>";
 			}
-		}
 		
-		
-		} else 
-		echo "<tr class='tab_bg_2'><td><a href='$link'>$link</a></td></tr>";
-		
+			if (count($ipmac)>0){
+				foreach ($ipmac as $key => $val){
+					$tmplink=$link;
+					$tmplink=ereg_replace("\[IP\]",$val['ifaddr'],$tmplink);
+					$tmplink=ereg_replace("\[MAC\]",$val['ifmac'],$tmplink);
+					echo "<tr class='tab_bg_2'><td><a href='$tmplink'>$tmplink</a></td></tr>";
+				}
+			}
+			} else 
+			echo "<tr class='tab_bg_2'><td><a href='$link'>$link</a></td></tr>";
+
+		} else // File Generated Link
+			echo "<tr class='tab_bg_2'><td><a href='".$HTMLRel."/links/send-links.php?lID=".$data['ID']."&type=$type&ID=$ID'>".$data['name']."</a></td></tr>";
+
 	
 
 		}
