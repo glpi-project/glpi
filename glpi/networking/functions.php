@@ -131,11 +131,14 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 			echo $lang["networking"][54].": ".$netdev->fields["ID"];
 		}elseif (strcmp($template,"newcomp") === 0) {
 			echo $lang["networking"][53].": ".$netdev->fields["tplname"];
+			echo "<input type='hidden' name='tplname' value='".$netdev->fields["tplname"]."'>";
 		}elseif (strcmp($template,"newtemplate") === 0) {
 			echo $lang["common"][6].": ";
 			autocompletionTextField("tplname","glpi_networking","tplname",$netdev->fields["tplname"],20);	
 		}
 		echo "</th><th  align='center'>".$datestring.$date;
+		if (!$template&&!empty($netdev->fields['tplname']))
+			echo "&nbsp;&nbsp;&nbsp;(".$lang["common"][13].": ".$netdev->fields['tplname'].")";
 		echo "</th></tr>\n";
 
 	

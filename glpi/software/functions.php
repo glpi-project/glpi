@@ -134,12 +134,15 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 			echo $lang["software"][41].": ".$sw->fields["ID"];
 		}elseif (strcmp($template,"newcomp") === 0) {
 			echo $lang["software"][42].": ".$sw->fields["tplname"];
+			echo "<input type='hidden' name='tplname' value='".$sw->fields["tplname"]."'>";
 		}elseif (strcmp($template,"newtemplate") === 0) {
 			echo $lang["common"][6]."&nbsp;: ";
 			autocompletionTextField("tplname","glpi_software","tplname",$sw->fields["tplname"],20);
 		}
 		
 		echo "</th><th colspan='2' align='center'>".$datestring.$date;
+		if (!$template&&!empty($sw->fields['tplname']))
+			echo "&nbsp;&nbsp;&nbsp;(".$lang["common"][13].": ".$sw->fields['tplname'].")";
 		echo "</th></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][2].":		</td>";

@@ -350,7 +350,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	// Get specific item
 	if ($LINK_ID_TABLE[$type]=="glpi_cartridges_type"||$LINK_ID_TABLE[$type]=="glpi_consumables_type")
-		$SELECT.=", ".$LINK_ID_TABLE[$type].".alarm as ALARM";
+		$SELECT.=$LINK_ID_TABLE[$type].".alarm as ALARM, ";
 
 	//// 2 - FROM AND LEFT JOIN
 	$FROM = " FROM ".$LINK_ID_TABLE[$type];
