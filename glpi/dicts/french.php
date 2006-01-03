@@ -1098,6 +1098,10 @@ $lang["search"][10]="dans";
 $lang["search"][11]="Eléments Visualisés";
 $lang["search"][15]="Pas d'élément trouvé";
 $lang["search"][16]="Au moins";
+$lang["search"][17]="Ajouter un critère de recherche";
+$lang["search"][18]="Supprimer un critère de recherche";
+$lang["search"][19]="Ajouter un critère global de recherche";
+$lang["search"][20]="Supprimer un critère global de recherche";
 
 
 $lang["setup"][0]="Intitulés";
