@@ -72,6 +72,7 @@ $max['model_monitors']=10;
 $max['model_peripherals']=5;
 $max['model_networking']=10;
 $max['netpoint']=1000;
+$max['auto_update']=1;
 
 // USERS
 $max['users_sadmin']=1;
@@ -210,6 +211,10 @@ $db->query($query) or die("PB REQUETE ".$query);
 }
 for ($i=0;$i<$max['iface'];$i++){
 $query="INSERT INTO glpi_dropdown_iface VALUES ('','type d\'interface $i')";
+$db->query($query) or die("PB REQUETE ".$query);
+}
+for ($i=0;$i<$max['auto_update'];$i++){
+$query="INSERT INTO glpi_dropdown_auto_update VALUES ('','mise à jour type $i')";
 $db->query($query) or die("PB REQUETE ".$query);
 }
 for ($i=0;$i<$max['model'];$i++){
@@ -579,7 +584,7 @@ for ($i=0;$i<$max['computers'];$i++){
 	$techID=mt_rand(1,$max['users_sadmin']+$max['users_admin']);
 	$domainID=mt_rand(1,$max['domain']);
 	$networkID=mt_rand(1,$max['network']);
-	$query="INSERT INTO glpi_computers VALUES ('','computers $i','serial $i','serial2 $i','contact $i','num $i','$techID','',NOW(),'".mt_rand(1,$max['os'])."','".$loc."','$domainID','$networkID','".mt_rand(1,$max['model'])."','".mt_rand(1,$max['type_computers'])."','0','','".mt_rand(1,$max['enterprises'])."','N')";
+	$query="INSERT INTO glpi_computers VALUES ('','computers $i','serial $i','serial2 $i','contact $i','num $i','$techID','',NOW(),'".mt_rand(1,$max['os'])."','".mt_rand(1,$max['auto_update'])."','".$loc."','$domainID','$networkID','".mt_rand(1,$max['model'])."','".mt_rand(1,$max['type_computers'])."','0','','".mt_rand(1,$max['enterprises'])."','N')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$compID=$db->insert_id();
 
