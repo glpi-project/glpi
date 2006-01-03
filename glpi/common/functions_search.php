@@ -127,14 +127,14 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	for ($i=0;$i<$_SESSION["glpisearchcount"][$type];$i++){
 		echo "<tr><td align='right'>";
 		if ($i==0){
-			echo "<a href='".$cfg_install["root"]."/computers/index.php?add_search_count=1&type=$type'><img src=\"".$HTMLRel."pics/plus.png\" alt='+'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$cfg_install["root"]."/computers/index.php?add_search_count=1&type=$type'><img src=\"".$HTMLRel."pics/plus.png\" alt='+' title='".$lang["search"][17]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 			if ($_SESSION["glpisearchcount"][$type]>1)
-			echo "<a href='".$cfg_install["root"]."/computers/index.php?delete_search_count=1&type=$type'><img src=\"".$HTMLRel."pics/moins.png\" alt='-'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$cfg_install["root"]."/computers/index.php?delete_search_count=1&type=$type'><img src=\"".$HTMLRel."pics/moins.png\" alt='-' title='".$lang["search"][18]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 
 			if (isset($names[$type])){
-				echo "<a href='".$cfg_install["root"]."/computers/index.php?add_search_count2=1&type=$type'><img src=\"".$HTMLRel."pics/meta_plus.png\" alt='+'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+				echo "<a href='".$cfg_install["root"]."/computers/index.php?add_search_count2=1&type=$type'><img src=\"".$HTMLRel."pics/meta_plus.png\" alt='+' title='".$lang["search"][19]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 				if ($_SESSION["glpisearchcount2"][$type]>0)
-				echo "<a href='".$cfg_install["root"]."/computers/index.php?delete_search_count2=1&type=$type'><img src=\"".$HTMLRel."pics/meta_moins.png\" alt='-'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+				echo "<a href='".$cfg_install["root"]."/computers/index.php?delete_search_count2=1&type=$type'><img src=\"".$HTMLRel."pics/meta_moins.png\" alt='-' title='".$lang["search"][20]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 			}
 		}
 		if ($i>0) {
@@ -841,7 +841,7 @@ switch ($field){
 		if ($cfg_layout["view_ID"]||(empty($data["ITEM_$num"])&&!empty($data["ITEM_".$num."_3"]))) echo " (".$data["ITEM_".$num."_3"].")";
 		echo "</a>";
 		if (!empty($data["ITEM_".$num."_2"]))
-			echo "<a href='".$data["ITEM_".$num."_2"]."' target='_blank''><img src='".$HTMLRel."/pics/web.png' alt='website'></a>";
+			echo "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$HTMLRel."/pics/web.png' alt='website'></a>";
 		break;			
 	case "glpi_docs.name" :		
 		$type=DOCUMENT_TYPE;
