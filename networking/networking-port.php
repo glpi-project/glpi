@@ -54,7 +54,6 @@ $REFERER=preg_replace("/&/","&amp;",$REFERER);
 
 if(isset($_POST["add"]))
 {	
-	
 	checkAuthentication("admin");
 	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
 	
@@ -62,12 +61,15 @@ if(isset($_POST["add"]))
 	unset($tab["referer"]);
 
 	// Is a preselected mac adress selected ?
-	if (isset($_POST['pre_mac'])&&!empty($_POST['pre_mac'])){
-		$_POST['ifmac']=$_POST['pre_mac'];
+	if (isset($_POST['pre_mac'])){
+		if (!empty($_POST['pre_mac']))
+			$_POST['ifmac']=$_POST['pre_mac'];
 		unset($_POST['pre_mac']);
 		unset($tab['pre_mac']);
-		
+
 	}
+
+
 	if (!isset($tab["several"])){
 	addNetport($_POST);
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added networking port.");
