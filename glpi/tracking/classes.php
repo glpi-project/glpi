@@ -61,7 +61,7 @@ class Job {
 				$this->fields[$key] = $val;
 			}
 			if (!$purecontent) {
-				$this->contents = nl2br($this->fields["contents"]);
+				$this->fields["contents"] = nl2br($this->fields["contents"]);
 			}
 			$m= new CommonItem;
 			if ($m->getfromDB($this->fields["device_type"],$this->fields["computer"])){
