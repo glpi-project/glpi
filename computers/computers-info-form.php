@@ -57,7 +57,6 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 
-
 //Add a new computer
 if (isset($tab["add"])) {
 	checkAuthentication("admin");
@@ -129,7 +128,8 @@ elseif(isset($_POST["update_device_x"])||isset($_POST["update_device"])) {
 //add a new device
 elseif (isset($_POST["connect_device"])) {
 		checkAuthentication("admin");
-		compdevice_add($_POST["cID"],$_POST["new_device_type"],$_POST["new_device_id"]);
+		if (isset($_POST["new_device_id"])&&$_POST["new_device_id"]>0)
+			compdevice_add($_POST["cID"],$_POST["new_device_type"],$_POST["new_device_id"]);
 		glpi_header($_SERVER["PHP_SELF"]."?ID=".$_POST["cID"]."&withtemplate=".$tab["withtemplate"]);
 }
 // Unlink a device 
