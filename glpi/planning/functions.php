@@ -117,7 +117,7 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 	echo "</b></th></tr>";
 	echo "<tr class='tab_bg_1'><td>".$lang["planning"][8].":	</td>";
 	echo "<td>";
-	echo "<b>".$j->contents."</b>";
+	echo "<b>".$j->fields['contents']."</b>";
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_1'><td>".$lang["planning"][10].":	</td>";
 	echo "<td>";
@@ -618,20 +618,22 @@ $query="SELECT * from glpi_tracking_planning WHERE id_assign=$who";
 $result=$db->query($query);
 
 $job=new Job();
-
+$fup=new Followup();
 $interv=array();
 $i=0;
 if ($db->numrows($result)>0)
 while ($data=$db->fetch_array($result)){
-	$job->getFromDB($data["id_tracking"],0);
 	
-	
-	$interv[$i]["id_tracking"]=$data["id_tracking"];
-	$interv[$i]["id_assign"]=$data["id_assign"];
-	$interv[$i]["ID"]=$data["ID"];
-	$interv[$i]["begin"]=$data["begin"];
-	$interv[$i]["end"]=$data["end"];
-	$interv[$i]["content"]=substr($job->contents,0,$cfg_features["cut"]);
+	 $fup->getFromDB($data["id_followup"]); 
+	 $job->getFromDB($fup->fields["tracking"],0);
+		
+	$interv[$i]["id_tracking"]=$data['id_followup'];
+	$interv[$i]["id_assign"]=$data['id_assign'];
+	$interv[$i]["ID"]=$data['ID'];
+	$interv[$i]["begin"]=$data['begin'];
+	$interv[$i]["end"]=$data['end'];
+	//$interv[$i]["content"]=substr($job->contents,0,$cfg_features["cut"]);
+	$interv[$i]["content"]=substr($job->fields['contents'],0,$cfg_features["cut"]);
 	$interv[$i]["device"]=$job->computername;
 	$i++;
 }
