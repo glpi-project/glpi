@@ -124,7 +124,7 @@ function getNbIntervCategory()
 	$db = new DB;
 	$query = "SELECT id as ID, name as category FROM glpi_dropdown_tracking_category order by name";
 	$result = $db->query($query);
-	$tab[0]="&nbsp;";
+
 	if($db->numrows($result) >=1) {
 		$i = 0;
 		while($line = $db->fetch_assoc($result)) {

@@ -79,7 +79,7 @@ echo "<div align ='center'>";
 
 if (is_array($nomUsr))
 {
-sort($nomUsr);
+
 $numrows=count($nomUsr);
 
 printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]);
