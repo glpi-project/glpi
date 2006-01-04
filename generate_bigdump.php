@@ -214,7 +214,7 @@ $query="INSERT INTO glpi_dropdown_iface VALUES ('','type d\'interface $i')";
 $db->query($query) or die("PB REQUETE ".$query);
 }
 for ($i=0;$i<$max['auto_update'];$i++){
-$query="INSERT INTO glpi_dropdown_auto_update VALUES ('','mise à jour type $i')";
+$query="INSERT INTO glpi_dropdown_auto_update VALUES ('','mise a jour type $i')";
 $db->query($query) or die("PB REQUETE ".$query);
 }
 for ($i=0;$i<$max['model'];$i++){
