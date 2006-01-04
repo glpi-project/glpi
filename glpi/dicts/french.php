@@ -253,7 +253,7 @@ $lang["connect"][15]="Sur un écran qui";
 $lang["connect"][16]="Aucun élément trouvé";
 $lang["connect"][17]="Mise à jour automatique de la prise réseau qui n'était pas renseignée";
 $lang["connect"][18]="Attention !! Les prises réseaux des deux matériels ne correspondent pas.";
-$lang["connect"][19]="Mise à jour automatique de l'adresse IP qui n'était pas renseignée"; 
+$lang["connect"][19]="Mise à jour automatique de l'adresse IP qui n'était pas renseignée";
 $lang["connect"][20]="Attention !! Les adresses IP des deux matériels ne correspondent pas.";
 $lang["connect"][21]="Mise à jour automatique de l'adresse MAC qui n'était pas renseignée";
 $lang["connect"][22]="Attention !! Les adresses MAC des deux matériels ne correspondent pas.";
@@ -569,7 +569,7 @@ $lang["install"][44]="Des valeurs par défaut ont été entrées, n'hésitez pas
 $lang["install"][45]="Ne supprimez pas l'utilisateur 'helpdesk'";
 $lang["install"][46]="A la première connexion vous pouvez utiliser le login 'glpi' et le mot de passe 'glpi' pour accéder  à l'application avec des droits administrateur";
 $lang["install"][47]="Impossible d'écrire le fichier de configuration de votre base de données";
-$lang["install"][48]="Erreur lors de la création de la base !"; 
+$lang["install"][48]="Erreur lors de la création de la base !";
 $lang["install"][49]="Vous n'avez pas sélectionné de base de données !";
 $lang["install"][51]="Configuration de GLPI :";
 $lang["install"][52]="Les valeurs présélectionnées sont les valeurs par defaut, il est recommandé de laisser ces valeurs";
@@ -1205,6 +1205,7 @@ $lang["setup"][94]="Modèles de moniteurs";
 $lang["setup"][95]="Modèles de matériel réseau";
 $lang["setup"][96]="Modèles d'imprimantes";
 $lang["setup"][97]="Modèles de périphériques";
+$lang["setup"][98]="Mise à jour";
 
 
 $lang["setup"][100]="Configuration générale";
