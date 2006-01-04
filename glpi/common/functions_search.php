@@ -455,7 +455,13 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 */
 
 	//// 4 - ORDER
-	$ORDER= addOrderBy($SEARCH_OPTION[$type][$sort]["table"].".".$SEARCH_OPTION[$type][$sort]["field"],$order);
+	if ($SEARCH_OPTION[$type][$sort]["table"]!="glpi_device_ram"&&$SEARCH_OPTION[$type][$sort]["table"]!="glpi_device_hdd")	
+		$ORDER= addOrderBy($SEARCH_OPTION[$type][$sort]["table"].".".$SEARCH_OPTION[$type][$sort]["field"],$order);
+	else {
+		foreach($toview as $key => $val)
+		if ($sort==$val)
+			$ORDER= addOrderBy($SEARCH_OPTION[$type][$sort]["table"].".".$SEARCH_OPTION[$type][$sort]["field"],$order,$key);	
+	}
 
 	//// 5 - META SEARCH
 	if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($link2)){
@@ -676,14 +682,14 @@ return $GROUPBY;
 *@return select string
 *
 **/
-function addOrderBy($field,$order){
+function addOrderBy($field,$order,$key=0){
 	switch($field){
 	case "glpi_device_hdd.specif_default" :
-		return " ORDER BY DEVICE_".HDD_DEVICE.".specificity $order ";
+		return " ORDER BY ITEM_$key $order ";
 		break;
 
 	case "glpi_device_ram.specif_default" :
-		return " ORDER BY DEVICE_".RAM_DEVICE.".specificity $order ";
+		return " ORDER BY ITEM_$key $order";
 		break;
 	default:
 		return " ORDER BY $field $order ";
