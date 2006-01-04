@@ -784,7 +784,7 @@ function updateLicense($input) {
 	$lic->getFromDB($input["lID"]);
 
 	if (empty($input['expire'])) unset($input['expire']);
-	if ($input['expire']=="0000-00-00") $input['expire']="NULL";
+	if (!isset($input['expire'])||$input['expire']=="0000-00-00") $input['expire']="NULL";
 	if (isset($input['oem'])&&$input['oem']=='N') $input['oem_computer']=0;
 
 	
