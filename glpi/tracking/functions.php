@@ -396,7 +396,7 @@ function showJobShort($ID, $followups) {
 		echo "<td  align='center' ><strong>".getDropdownName("glpi_dropdown_tracking_category",$job->fields["category"])."</strong></td>";
 		
 		$stripped_content=$job->fields["contents"];
-		if (!$followups) $stripped_content =substr($job->contents,0,$cfg_features["cut"]);
+		if (!$followups) $stripped_content =substr($job->fields["contents"],0,$cfg_features["cut"]);
 		echo "<td align='left'><strong>".$stripped_content."</strong>";
 		if ($followups)
 		{
