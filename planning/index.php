@@ -54,10 +54,31 @@ if (!isset($_GET["date"])||$_GET["date"]=="0000-00-00") $_GET["date"]=strftime("
 if (!isset($_GET["type"])) $_GET["type"]="week";
 if (!isset($_GET["uID"])) $_GET["uID"]=$_SESSION["glpiID"];
 
+
+$time=strtotime($_GET["date"]);
+$step=0;
+switch ($_GET["type"]){
+case "week":
+	$step=7*60*60*24;
+	break;
+case "day":
+	$step=60*60*24;
+	break;
+}
+
+$next=$time+$step+10;
+$prev=$time-$step;
+
+$next=strftime("%Y-%m-%d",$next);
+$prev=strftime("%Y-%m-%d",$prev);
+
 titleTrackingPlanning();
 
 	echo "<div align='center'><form method=\"get\" name=\"form\" action=\"index.php\">";
 	echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
+	echo "<td>";
+	echo "<a href=\"".$_SERVER["PHP_SELF"]."?type=".$_GET["type"]."&uID=".$_GET["uID"]."&date=$prev\"><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
+	echo "</td>";
 	echo "<td>";
 	dropdownUsers("uID",$_GET['uID'],1);
 	echo "</td>";
@@ -73,6 +94,9 @@ titleTrackingPlanning();
 	echo "<td>";
 	urlIcal ($_GET['uID']);
 	echo "</td>";	
+	echo "<td>";
+	echo "<a href=\"".$_SERVER["PHP_SELF"]."?type=".$_GET["type"]."&uID=".$_GET["uID"]."&date=$next\"><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
+	echo "</td>";
 
 	echo "</tr>";
 	echo "</table></form></div>";
