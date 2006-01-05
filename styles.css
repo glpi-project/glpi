@@ -73,6 +73,16 @@ visibility: hidden;}
   hr{border: 1px solid #cccccc;
        }
 
+/* Over link div */
+.over_link {
+display: none;
+position: absolute;
+border: 1px solid gray;
+background: transparent url("pics/fondTR.png") repeat; 
+-moz-border-radius: 5px;
+padding: 5px;
+}
+
 
 /* #################################### */
  /* ###### form ###### */

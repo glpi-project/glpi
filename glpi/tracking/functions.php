@@ -1511,7 +1511,7 @@ function showJobDetails ($ID){
 	$db=new DB();
 	$isadmin=isAdmin($_SESSION['glpitype']);
 	
-	if ($job->getfromDB($ID,0)) {
+	if ($job->getfromDB($ID,1)) {
 
 		showTrackingOnglets($_SERVER["PHP_SELF"]."?ID=".$ID);
 

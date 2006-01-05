@@ -1,4 +1,3 @@
-window.onload=montre;
 
 //var timeoutglobalvar;
 function setdisplay (objet, statut) {
@@ -141,4 +140,5 @@ window.opener.document.forms["helpdeskform"].elements["computer"].value = Id;
 window.opener.document.forms["helpdeskform"].elements["device_type"].value = Type;
 window.close();}
 
+window.onload=montre;
 
