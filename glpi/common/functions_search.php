@@ -726,10 +726,10 @@ case "glpi_users.name" :
 	return $table.$addtable.".".$field." AS ".$name."_$num, glpi_users.realname AS ".$name."_".$num."_2, ";
 	break;
 case "glpi_device_hdd.specif_default" :
-	return " SUM(DEVICE_".HDD_DEVICE.".specificity) AS ".$name."_".$num.", ";
+	return " SUM(DEVICE_".HDD_DEVICE.".specificity) / COUNT( DEVICE_".HDD_DEVICE.".ID) * COUNT( DISTINCT DEVICE_".HDD_DEVICE.".ID) AS ".$name."_".$num.", ";
 	break;
 case "glpi_device_ram.specif_default" :
-	return " SUM(DEVICE_".RAM_DEVICE.".specificity) AS ".$name."_".$num.", ";
+	return " SUM(DEVICE_".RAM_DEVICE.".specificity) / COUNT( DEVICE_".HDD_DEVICE.".ID) * COUNT( DISTINCT DEVICE_".RAM_DEVICE.".ID) AS ".$name."_".$num.", ";
 	break;
 case "glpi_networking_ports.ifmac" :
 	if ($type==COMPUTER_TYPE)
