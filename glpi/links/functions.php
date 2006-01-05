@@ -371,7 +371,7 @@ global $lang,$HTMLRel;
 				$tmplink=$link;
 				$tmplink=ereg_replace("\[IP\]",$ci->obj->fields["ifaddr"],$tmplink);
 				$tmplink=ereg_replace("\[MAC\]",$ci->obj->fields['ifmac'],$tmplink);
-				echo "<tr class='tab_bg_2'><td><a href='$tmplink'>$tmplink</a></td></tr>";
+				echo "<tr class='tab_bg_2'><td><a target='_blank' href='$tmplink'>$tmplink</a></td></tr>";
 			}
 		
 			if (count($ipmac)>0){
@@ -379,14 +379,14 @@ global $lang,$HTMLRel;
 					$tmplink=$link;
 					$tmplink=ereg_replace("\[IP\]",$val['ifaddr'],$tmplink);
 					$tmplink=ereg_replace("\[MAC\]",$val['ifmac'],$tmplink);
-					echo "<tr class='tab_bg_2'><td><a href='$tmplink'>$tmplink</a></td></tr>";
+					echo "<tr class='tab_bg_2'><td><a target='_blank' href='$tmplink'>$tmplink</a></td></tr>";
 				}
 			}
 			} else 
-			echo "<tr class='tab_bg_2'><td><a href='$link'>$link</a></td></tr>";
+			echo "<tr class='tab_bg_2'><td><a target='_blank' href='$link'>$link</a></td></tr>";
 
 		} else // File Generated Link
-			echo "<tr class='tab_bg_2'><td><a href='".$HTMLRel."/links/send-links.php?lID=".$data['ID']."&type=$type&ID=$ID'>".$data['name']."</a></td></tr>";
+			echo "<tr class='tab_bg_2'><td><a href='".$HTMLRel."/links/send-links.php?lID=".$data['ID']."&type=$type&ID=$ID' target='_blank'>".$data['name']."</a></td></tr>";
 
 	
 
