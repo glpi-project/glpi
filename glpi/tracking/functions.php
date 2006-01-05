@@ -70,16 +70,17 @@ function showTrackingOnglets($target){
 	echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'>".$lang["job"][38]." $ID</span></li>";
 	
 	echo "<li class='invisible'>&nbsp;</li>";
+	if (isAdmin($_SESSION['glpitype'])){
+		echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</span></a></li>";
 
-	echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</span></a></li>";
+		echo "<li class='invisible'>&nbsp;</li>";
 
-	echo "<li class='invisible'>&nbsp;</li>";
-
-	$next=getNextItem("glpi_tracking",$ID);
-	$prev=getPreviousItem("glpi_tracking",$ID);
-	$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
-	if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
-	if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
+		$next=getNextItem("glpi_tracking",$ID);
+		$prev=getPreviousItem("glpi_tracking",$ID);
+		$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
+		if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
+		if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
+		}
 	}
 	echo "</ul></div>";
 	
