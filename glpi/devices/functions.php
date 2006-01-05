@@ -231,10 +231,6 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 	
 	if(!empty($specificity_label)) {
 		
-	
-		if(empty($specif) && !empty($device->fields["specif_default"])) {
-			$specif = $device->fields["specif_default"];
-		}
 		//Mise a jour des spécificitées
 		if(!empty($withtemplate) && $withtemplate == 2) {
 			if(empty($specif)) $specif = "&nbsp;";
@@ -305,6 +301,7 @@ function unlink_device_computer($compDevID) {
 function compdevice_add($cID,$device_type,$dID,$specificity='') {
 	$device = new Device($device_type);
 	$device->getfromDB($dID);
+	if (empty($specificity)) $specificity=$device->fields['specif_default'];
 	$device->computer_link($cID,$device_type,$specificity);
 }
 

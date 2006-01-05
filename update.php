@@ -3152,6 +3152,7 @@ if(!FieldExists("glpi_config","auto_update_check")) {
 
 //// Tracking 
 if(FieldExists("glpi_tracking","status")) {
+
 	$query="ALTER TABLE `glpi_tracking` CHANGE `status` `status` ENUM( 'new', 'old_done', 'assign', 'plan', 'old_notdone', 'waiting' ) DEFAULT 'new' NOT NULL ;";
 	$db->query($query) or die("0.65 alter status in tracking".$lang["update"][90].$db->error());
 
@@ -3335,6 +3336,47 @@ if(!TableExists("glpi_dropdown_auto_update")) {
 if(!FieldExists("glpi_computers","auto_update")) {
 	$query="ALTER TABLE `glpi_computers` ADD `auto_update` INT DEFAULT '0' NOT NULL AFTER `os` ;";
 	$db->query($query) or die("0.65 alter computers add auto_update ".$lang["update"][90].$db->error());	
+}
+
+// Update specificity of computer_device
+$query="SELECT glpi_computer_device.ID as ID,glpi_device_processor.specif_default as SPECIF FROM glpi_computer_device LEFT JOIN glpi_device_processor ON (glpi_computer_device.FK_device=glpi_device_processor.ID AND glpi_computer_device.device_type='".PROCESSOR_DEVICE."') WHERE glpi_computer_device.specificity =''";
+$result=$db->query($query);
+if ($db->numrows($result)>0)
+while ($data=$db->fetch_assoc($result)){
+	$query2="UPDATE glpi_computer_device SET specificity='".$data["SPECIF"]."' WHERE ID = '".$data["ID"]."'";
+	$db->query($query2);
+}
+
+$query="SELECT glpi_computer_device.ID as ID,glpi_device_processor.specif_default as SPECIF FROM glpi_computer_device LEFT JOIN glpi_device_processor ON (glpi_computer_device.FK_device=glpi_device_processor.ID AND glpi_computer_device.device_type='".PROCESSOR_DEVICE."') WHERE glpi_computer_device.specificity =''";
+$result=$db->query($query);
+if ($db->numrows($result)>0)
+while ($data=$db->fetch_assoc($result)){
+	$query2="UPDATE glpi_computer_device SET specificity='".$data["SPECIF"]."' WHERE ID = '".$data["ID"]."'";
+	$db->query($query2);
+}
+
+$query="SELECT glpi_computer_device.ID as ID,glpi_device_ram.specif_default as SPECIF FROM glpi_computer_device LEFT JOIN glpi_device_ram ON (glpi_computer_device.FK_device=glpi_device_ram.ID AND glpi_computer_device.device_type='".RAM_DEVICE."') WHERE glpi_computer_device.specificity =''";
+$result=$db->query($query);
+if ($db->numrows($result)>0)
+while ($data=$db->fetch_assoc($result)){
+	$query2="UPDATE glpi_computer_device SET specificity='".$data["SPECIF"]."' WHERE ID = '".$data["ID"]."'";
+	$db->query($query2);
+}
+
+$query="SELECT glpi_computer_device.ID as ID,glpi_device_hdd.specif_default as SPECIF FROM glpi_computer_device LEFT JOIN glpi_device_hdd ON (glpi_computer_device.FK_device=glpi_device_hdd.ID AND glpi_computer_device.device_type='".HDD_DEVICE."') WHERE glpi_computer_device.specificity =''";
+$result=$db->query($query);
+if ($db->numrows($result)>0)
+while ($data=$db->fetch_assoc($result)){
+	$query2="UPDATE glpi_computer_device SET specificity='".$data["SPECIF"]."' WHERE ID = '".$data["ID"]."'";
+	$db->query($query2);
+}
+
+$query="SELECT glpi_computer_device.ID as ID,glpi_device_iface.specif_default as SPECIF FROM glpi_computer_device LEFT JOIN glpi_device_iface ON (glpi_computer_device.FK_device=glpi_device_iface.ID AND glpi_computer_device.device_type='".NETWORK_DEVICE."') WHERE glpi_computer_device.specificity =''";
+$result=$db->query($query);
+if ($db->numrows($result)>0)
+while ($data=$db->fetch_assoc($result)){
+	$query2="UPDATE glpi_computer_device SET specificity='".$data["SPECIF"]."' WHERE ID = '".$data["ID"]."'";
+	$db->query($query2);
 }
 
 }
