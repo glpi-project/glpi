@@ -943,7 +943,7 @@ $lang["planning"][10]="Matériel";
 $lang["planning"][11]="Horaires d'intervention";
 $lang["planning"][12]="Télécharger calendrier format Ical";
 $lang["planning"][13]="Synchronisation Webcal://";
-
+$lang["planning"][14]="Mois";
 
 $lang["printers"][0]="Ajouter imprimante...";
 $lang["printers"][1]="Voir par lieu";
