@@ -101,7 +101,7 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 	echo "<div align='center'><form method='post' name='form' action=\"$target\">";
 	if ($planID!=-1)
 	echo "<input type='hidden' name='ID' value='$planID'>";
-
+	echo "<input type='hidden' name='referer' value='".$_SERVER['HTTP_REFERER']."'>";
 	// Ajouter le job
 	$followup=new Followup;
 	$followup->getfromDB($fup);
@@ -303,35 +303,36 @@ echo "<b>".display_time($hour[0]).":00</b><br>";
 
 if (count($interv)>0)
 foreach ($interv as $key => $val){
-if($type=='day'){
-echo "<div style=' margin:auto; text-align:center; border:1px dashed #cccccc; background-color: #d7d7d2; font-size:9px; width:80%;'>";
-echo "<a  href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;job=".$val["id_tracking"]."&amp;ID=".$val["ID"]."'><img src='$HTMLRel/pics/edit.png' alt='edit'></a>";
-echo "<a  href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
-echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"];
-if ($who==0){
-echo "<br>";
-echo $lang["planning"][9]." ".getUserName($val["id_assign"]);
-} 
-echo "</a>";
-echo "<br>";
-echo $val["content"];
-echo "";
+	if($type=='day'){
+		echo "<div style=' margin:auto; text-align:center; border:1px dashed #cccccc; background-color: #d7d7d2; font-size:9px; width:80%;'>";
+		echo "<a  href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;fup=".$val["id_followup"]."&amp;ID=".$val["ID"]."'><img src='$HTMLRel/pics/edit.png' alt='edit'></a>";
+		echo "<a href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
+		echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"];
+		if ($who==0){
+			echo "<br>";
+			echo $lang["planning"][9]." ".getUserName($val["id_assign"]);
+		} 
+		echo "</a>";
+		echo "<br>";
+		echo $val["content"];
+		echo "";
 
-echo "</div><br>";
+		echo "</div><br>";
 
-}else{
-echo "<div class='planning' >";
-echo "<a  href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
-echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["device"];
-if ($who==0){
-echo "<br>";
-echo $lang["planning"][9]." ".getUserName($val["id_assign"]);
-} 
-echo "</a>";
-echo "</div>";
-}
-
-
+	}else{
+		$rand=mt_rand();
+		echo "<div class='planning' >";
+		echo "<a onmouseout=\"setdisplay(getElementById('content_".$val["ID"].$rand."'),'none')\" onmouseover=\"setdisplay(getElementById('content_".$val["ID"].$rand."'),'block')\" href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
+		echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["device"];
+		if ($who==0){
+			echo "<br>";
+			echo $lang["planning"][9]." ".getUserName($val["id_assign"]);
+		} 
+		echo "</a>";
+		echo "</div>";
+		
+		echo "<div class='over_link' id='content_".$val["ID"].$rand."'>".$val["content"]."</div>";
+	}
 }
 
 echo "</td>";
