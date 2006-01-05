@@ -172,7 +172,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 		foreach ($options as $key => $val) {
 			echo "<option value=\"".$key."\""; 
 			if(is_array($field)&&isset($field[$i]) && $key == $field[$i]) echo "selected";
-			echo ">". $val["name"] ."</option>\n";
+			echo ">". substr($val["name"],0,20) ."</option>\n";
 		}
 
     	echo "<option value='all' ";
@@ -218,7 +218,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 		echo "<select name='link2[$i]' id='link2_".$type."_".$i."_$rand'>";
 		echo "<option value='-1'>-----</option>";
 		foreach ($linked as $key)
-			echo "<option value='$key'>".$names[$key]."</option>";
+			echo "<option value='$key'>".substr($names[$key],0,20)."</option>";
 		echo "</select>";
 
 	echo "<script type='text/javascript' >\n";
@@ -250,7 +250,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	foreach ($options as $key => $val) {
 		echo "<option value=\"".$key."\"";
 		if($key == $sort) echo "selected";
-		echo ">".$val["name"]."</option>\n";
+		echo ">".substr($val["name"],0,20)."</option>\n";
 	}
 	echo "</select> ";
 	echo "</td>";
@@ -272,6 +272,9 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	echo "</select>";
 	echo "<img src=\"".$HTMLRel."pics/doublons.png\" alt='".$lang["common"][12]."' title='".$lang["common"][12]."'>";
 	echo "</td></tr></table>";
+	echo "</td>";
+	echo "<td>";
+	echo "<a href='".$HTMLRel."/computers/index.php?reset_search=reset_search&type=$type'><img src='".$HTMLRel."pics/reset.png'</a>";
 	echo "</td>";
 	echo "<td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit' >";
