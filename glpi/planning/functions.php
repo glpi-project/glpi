@@ -213,6 +213,7 @@ function showPlanning($who,$when,$type){
 	// Cas du dimanche
 	if ($dayofweek==0) $dayofweek=7;
 
+if ($type!="month"){
 	echo "<div align='center'><table class='tab_cadre' width='800'>";
 	// Print Headers
 	echo "<tr>";
@@ -252,15 +253,90 @@ function showPlanning($who,$when,$type){
 	echo "</tr>\n";
 	
 	}
-	
-	
 	echo "</table></div>";
+}
+else {// Month planning
+	list($annee_courante,$mois_courant,$jour_mois)=split("-",$when);
+	// on vérifie pour les années bisextiles, on ne sait jamais.
+	if (($annee_courante%4)==0) $fev=29; else $fev=28;
+	$nb_jour= array(31,$fev,31,30,31,30,31,31,30,31,30,31);
 
+	// Ces variables vont nous servir pour mettre les jours dans les bonnes colonnes    
+	$jour_debut_mois=strftime("%w",mktime(0,0,0,$mois_courant,1,$annee_courante));
+	if ($jour_debut_mois==0) $jour_debut_mois=7;
+	$jour_fin_mois=strftime("%w",mktime(0,0,0,$mois_courant,$nb_jour[$mois_courant-1],$annee_courante));
+	// on n'oublie pas de mettre le mois en français et on n'a plus qu'à mettre les en-têtes
+
+	echo "<div align='center'>";
+
+	echo "<table cellpadding='20' ><tr><td><b>".
+		$lang["calendarM"][$mois_courant-1]."&nbsp;".$annee_courante."</b></td></tr></table>";
+
+echo "<table class='tab_cadre' width='700'><tr>";
+echo "<th width='14%'>".$lang["calendarD"][1]."</th>";
+echo "<th width='14%'>".$lang["calendarD"][2]."</th>";
+echo "<th width='14%'>".$lang["calendarD"][3]."</th>";
+echo "<th width='14%'>".$lang["calendarD"][4]."</th>";
+echo "<th width='14%'>".$lang["calendarD"][5]."</th>";
+echo "<th width='14%'>".$lang["calendarD"][6]."</th>";
+echo "<th width='14%'>".$lang["calendarD"][0]."</th>";
+echo "</tr>";
+echo "<tr class='tab_bg_3' >";
+
+$when=$annee_courante."-".$mois_courant."-01";
+$daytime=mktime(0,0,0,0,2,0)-mktime(0,0,0,0,1,0);
+// Il faut insérer des cases vides pour mettre le premier jour du mois
+// en face du jour de la semaine qui lui correspond.
+for ($i=1;$i<$jour_debut_mois;$i++)
+	echo "<td style='background-color:#ffffff'>&nbsp;</td>";
+
+
+// voici le remplissage proprement dit
+if ($mois_courant<10&&strlen($mois_courant)==1) $mois_courant="0".$mois_courant;
+for ($i=1;$i<$nb_jour[$mois_courant-1]+1;$i++){
+	if ($i<10) $ii="0".$i;
+	else $ii=$i;
+	
+	echo "<td  valign='top' height='100'>";
+	
+	echo "<table align='center' ><tr><td align='center' ><span style='font-family: arial,helvetica,sans-serif; font-size: 14px; color: black'>".$i."</span></td></tr>";
+	
+	if (!empty($ID)){
+	echo "<tr><td align='center'><a href=\"".$target."?show=resa&amp;add=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img style='color: blue; font-family: Arial, Sans, sans-serif; font-size: 10px;' src=\"".$HTMLRel."pics/addresa.png\" alt='".$lang["reservation"][8]."' title='".$lang["reservation"][8]."'></a></td></tr>";
+	}
+
+	echo "<tr>";
+	displayplanning($who,date("Y-m-d",strtotime($when)+($i-1)*$daytime)." 00:00:00",$type);
+	
+	echo "</tr>";
+	echo "</table>";
+	echo "</td>";
+
+// il ne faut pas oublié d'aller à la ligne suivante enfin de semaine
+    if (($i+$jour_debut_mois)%7==1)
+        {echo "</tr>";
+       if ($i!=$nb_jour[$mois_courant-1])echo "<tr class='tab_bg_3'>";
+       }
+}
+
+// on recommence pour finir le tableau proprement pour les mêmes raisons
+
+if ($jour_fin_mois!=0)
+for ($i=0;$i<7-$jour_fin_mois;$i++) 	echo "<td style='background-color:#ffffff'>&nbsp;</td>";
+
+echo "</tr></table>";
+
+echo "</div>";
+
+	
+	
+}
 }
 
 function displayplanning($who,$when,$type){
 global $cfg_features,$HTMLRel,$lang;
 $db=new DB;
+
 //echo $when;
 $debut=$when;
 $tmp=split(" ",$when);
@@ -271,8 +347,12 @@ if ($who!=0)
 $ASSIGN="id_assign='$who' AND";
 
 
+if ($type=="month")
+$INTERVAL=" 1 DAY ";
+else $INTERVAL=" 59 MINUTE ";
 
-$query="SELECT * from glpi_tracking_planning WHERE $ASSIGN (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL 59 MINUTE ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL 59 MINUTE ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL 59 MINUTE ) AND end > adddate( '". $debut ."' , INTERVAL 59 MINUTE ))) ORDER BY begin";
+$query="SELECT * from glpi_tracking_planning WHERE $ASSIGN (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
+
 //echo $query;
 $result=$db->query($query);
 
@@ -296,14 +376,16 @@ while ($data=$db->fetch_array($result)){
 	$interv[$i]["device"]=$job->computername;
 	$i++;
 }
-
+//print_r($interv);
 echo "<td class='tab_bg_3' width='12%' valign='top' >";
-echo "<b>".display_time($hour[0]).":00</b><br>";
+if ($type!="month")
+	echo "<b>".display_time($hour[0]).":00</b><br>";
 
 
 if (count($interv)>0)
 foreach ($interv as $key => $val){
-	if($type=='day'){
+	switch ($type){
+	case "day" :
 		echo "<div style=' margin:auto; text-align:center; border:1px dashed #cccccc; background-color: #d7d7d2; font-size:9px; width:80%;'>";
 		echo "<a  href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;fup=".$val["id_followup"]."&amp;ID=".$val["ID"]."'><img src='$HTMLRel/pics/edit.png' alt='edit'></a>";
 		echo "<a href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
@@ -318,8 +400,8 @@ foreach ($interv as $key => $val){
 		echo "";
 
 		echo "</div><br>";
-
-	}else{
+	break;
+	case "week" :
 		$rand=mt_rand();
 		echo "<div class='planning' >";
 		echo "<a onmouseout=\"setdisplay(getElementById('content_".$val["ID"].$rand."'),'none')\" onmouseover=\"setdisplay(getElementById('content_".$val["ID"].$rand."'),'block')\" href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
@@ -332,6 +414,22 @@ foreach ($interv as $key => $val){
 		echo "</div>";
 		
 		echo "<div class='over_link' id='content_".$val["ID"].$rand."'>".$val["content"]."</div>";
+	break;
+	case "month" :
+		$rand=mt_rand();
+		echo "<div class='planning' >";
+		echo "<a onmouseout=\"setdisplay(getElementById('content_".$val["ID"].$rand."'),'none')\" onmouseover=\"setdisplay(getElementById('content_".$val["ID"].$rand."'),'block')\" href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
+		echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["device"];
+		if ($who==0){
+			echo "<br>";
+			echo $lang["planning"][9]." ".getUserName($val["id_assign"]);
+		} 
+		echo "</a>";
+		echo "</div>";
+		
+		echo "<div class='over_link' id='content_".$val["ID"].$rand."'>".$val["content"]."</div>";
+	
+	break;
 	}
 }
 
