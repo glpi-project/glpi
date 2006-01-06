@@ -229,7 +229,7 @@ function uploadDocument($FILEDESC,$old_file=''){
 	// Is a file uploaded ?
 	if (count($FILEDESC)>0&&!empty($FILEDESC['name'])){
 		// Clean is name
-		$filename=preg_replace("/[^a-zA-Z0-9\-_\.]/","",$FILEDESC['name']);
+		$filename=preg_replace("/[^a-zA-Z0-9\-_\.]/","_",$FILEDESC['name']);
 		$force=0;
 		// Is it a valid file ?
 		$dir=isvalidDoc($filename);
