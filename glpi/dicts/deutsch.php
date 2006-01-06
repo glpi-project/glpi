@@ -228,6 +228,7 @@ $lang["computers"][47]="kein verbundenes Gerät";
 $lang["computers"][48]="Standort erneuert . Die verbunden Geräte besitzen den gleichen Standort."; 
 $lang["computers"][49]="Kontakt erneuert. Die mit dem KOntakt verbunden Einträge, sind erneuert worden."; 
 $lang["computers"][50]="Modell"; 
+$lang["computers"][51]="Update"; 
 
 $lang["connect"][0]="direkte Verbindungen"; 
 $lang["connect"][1]="nicht verbunden"; 
@@ -722,6 +723,7 @@ $lang["links"][5]="Typ";
 $lang["links"][6]="Valid tags"; 
 $lang["links"][7]="No link defined"; 
 $lang["links"][8]="No link founded"; 
+$lang["links"][9]="File content"; 
 
 $lang["log"][1]="system"; 
 $lang["log"][2]="computer"; 
@@ -987,6 +989,7 @@ $lang["planning"][10]="Hardware";
 $lang["planning"][11]="Zeitplanung"; 
 $lang["planning"][12]="Download the calendar in Ical format"; 
 $lang["planning"][13]="Webcal:// Synchronization"; 
+$lang["planning"][14]="Month"; 
 
 $lang["printers"][0]="hinzufügen Printer..."; 
 $lang["printers"][1]="Display by location"; 
@@ -1247,6 +1250,7 @@ $lang["setup"][94]="Monitors Models";
 $lang["setup"][95]="Networking Models"; 
 $lang["setup"][96]="Printers Models"; 
 $lang["setup"][97]="Peripherals Models"; 
+$lang["setup"][98]="Update"; 
 $lang["setup"][100]="Grundeinstellungen"; 
 $lang["setup"][101]="Installationspfad"; 
 $lang["setup"][102]="Aufzeichnungsstiefe"; 
