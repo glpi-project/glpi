@@ -228,6 +228,7 @@ $lang["computers"][47]="Geen aangesloten toestellen";
 $lang["computers"][48]="Location Update. The items connected have been moved in the same location."; 
 $lang["computers"][49]="Contact update. The connected items have been updated using this contact."; 
 $lang["computers"][50]="Template"; 
+$lang["computers"][51]="Update"; 
 
 $lang["connect"][0]="Direkte Verbindingen"; 
 $lang["connect"][1]="niet verbonden"; 
@@ -722,6 +723,7 @@ $lang["links"][5]="Type";
 $lang["links"][6]="Valid tags"; 
 $lang["links"][7]="Geen link aanwezig"; 
 $lang["links"][8]="Geen link gevonden"; 
+$lang["links"][9]="File content"; 
 
 $lang["log"][1]="system"; 
 $lang["log"][2]="computer"; 
@@ -987,6 +989,7 @@ $lang["planning"][10]="Hardware";
 $lang["planning"][11]="Tussenkomst uren"; 
 $lang["planning"][12]="Download the calendar in Ical format"; 
 $lang["planning"][13]="Webcal:// Synchronization"; 
+$lang["planning"][14]="Month"; 
 
 $lang["printers"][0]="Toevoegen Printer..."; 
 $lang["printers"][1]="Tonen ahv. locatie"; 
@@ -1247,6 +1250,7 @@ $lang["setup"][94]="Monitors Models";
 $lang["setup"][95]="Networking Models"; 
 $lang["setup"][96]="Printers Models"; 
 $lang["setup"][97]="Peripherals Models"; 
+$lang["setup"][98]="Update"; 
 $lang["setup"][100]="Globale setup"; 
 $lang["setup"][101]="Installatie pad"; 
 $lang["setup"][102]="Log Level"; 

@@ -228,6 +228,7 @@ $lang["computers"][47]="Sin periféricos conectados";
 $lang["computers"][48]="Modificación de lugar. Los elementos conectados han sido desplazados al mismo lugar que el computador."; 
 $lang["computers"][49]="Modificación del contacto. Los elementos conectados han tomado como contacto el del computador."; 
 $lang["computers"][50]="Modelo"; 
+$lang["computers"][51]="Update"; 
 
 $lang["connect"][0]="Conexiones directas"; 
 $lang["connect"][1]="no conectado"; 
@@ -722,6 +723,7 @@ $lang["links"][5]="Tipo";
 $lang["links"][6]="Tags válidos"; 
 $lang["links"][7]="No hay enlaces definidos"; 
 $lang["links"][8]="No se hallaron enlaces"; 
+$lang["links"][9]="File content"; 
 
 $lang["log"][1]="sistema"; 
 $lang["log"][2]="computador"; 
@@ -987,6 +989,7 @@ $lang["planning"][10]="Material";
 $lang["planning"][11]="Horarios de servicio"; 
 $lang["planning"][12]="Descargar calendario en formato Ical"; 
 $lang["planning"][13]="Sincronización Webcal://"; 
+$lang["planning"][14]="Month"; 
 
 $lang["printers"][0]="Agregar impresora..."; 
 $lang["printers"][1]="Ver por lugar"; 
@@ -1247,6 +1250,7 @@ $lang["setup"][94]="Monitors Models";
 $lang["setup"][95]="Networking Models"; 
 $lang["setup"][96]="Printers Models"; 
 $lang["setup"][97]="Peripherals Models"; 
+$lang["setup"][98]="Update"; 
 $lang["setup"][100]="Configuración general"; 
 $lang["setup"][101]="Camino de instalación"; 
 $lang["setup"][102]="Nivel de logging"; 
