@@ -385,9 +385,21 @@ global $lang,$HTMLRel;
 			} else 
 			echo "<tr class='tab_bg_2'><td><a target='_blank' href='$link'>$link</a></td></tr>";
 
-		} else // File Generated Link
-			echo "<tr class='tab_bg_2'><td><a href='".$HTMLRel."/links/send-links.php?lID=".$data['ID']."&type=$type&ID=$ID' target='_blank'>".$data['name']."</a></td></tr>";
+		} else {// File Generated Link
+			$link=$data['name'];		
+			$ci->getFromDB($type,$ID);
 
+			// Manage Filename
+			if (ereg("\[NAME\]",$link)){
+				$link=ereg_replace("\[NAME\]",$ci->getName(),$link);
+			}
+
+			if (ereg("\[ID\]",$link)){
+				$link=ereg_replace("\[ID\]",$_GET["ID"],$link);
+			}
+
+			echo "<tr class='tab_bg_2'><td><a href='".$HTMLRel."/links/send-links.php?lID=".$data['ID']."&type=$type&ID=$ID' target='_blank'>".$link."</a></td></tr>";
+		}
 	
 
 		}

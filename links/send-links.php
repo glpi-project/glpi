@@ -56,6 +56,18 @@ if (isset($_GET["lID"])){
 
 		$ci->getFromDB($_GET["type"],$_GET["ID"]);
 
+			// Manage Filename
+			if (ereg("\[NAME\]",$link)){
+				$link=ereg_replace("\[NAME\]",$ci->getName(),$link);
+			}
+
+			if (ereg("\[ID\]",$link)){
+				$link=ereg_replace("\[ID\]",$_GET["ID"],$link);
+			}
+			
+			
+			// Manage File Content
+
 			if (ereg("\[NAME\]",$file)){
 				$file=ereg_replace("\[NAME\]",$ci->getName(),$file);
 			}
