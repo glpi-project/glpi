@@ -507,14 +507,19 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	// 7 - Manage GROUP BY
 	$GROUPBY=" GROUP BY ID";
 	if ($distinct!='N') $GROUPBY="";
+//	echo $distinct;
 
-	if ($type==COMPUTER_TYPE)
-	foreach($contains as $key => $val)
-	if (strlen($val)>0&&$field[$key]!="all"&&$field[$key]!="view"){
-		foreach ($toview as $key2 => $val2)
-			if ($val2==$field[$key])
-			$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"],$contains[$key],$key2);
-	}
+	if ($type==COMPUTER_TYPE){
+		foreach($contains as $key => $val)
+		if ($field[$key]!="all"){
+			foreach ($toview as $key2 => $val2)
+				if ($field[$key]=="view")
+					$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type][$val2]["table"].".".$SEARCH_OPTION[$type][$val2]["field"],$contains[$key],$key2);
+				else if ($val2==$field[$key])
+					$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"],$contains[$key],$key2);
+		}
+	} 
+		
 
 
 	if ($WHERE == " WHERE ") $WHERE="";
@@ -647,16 +652,17 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 function addGroupByHaving($GROUPBY,$field,$val,$num){
 
+if (!ereg("ITEM_$num",$GROUPBY))
 switch ($field){
 
 case "glpi_device_ram.specif_default" :
-	$larg=50;
-	if (empty($GROUPBY)) $GROUPBY=" GROUP BY ID ";
+		$larg=50;
+		if (empty($GROUPBY)) $GROUPBY=" GROUP BY ID ";
 
-	if (ereg("HAVING",$GROUPBY)) $GROUPBY.=" AND ";
-	else $GROUPBY.=" HAVING ";
+		if (ereg("HAVING",$GROUPBY)) $GROUPBY.=" AND ";
+		else $GROUPBY.=" HAVING ";
 
-	$GROUPBY.=" ( ITEM_$num < ".($val+$larg)." AND ITEM_$num > ".($val-$larg)." ) ";
+		$GROUPBY.=" ( ITEM_$num < ".($val+$larg)." AND ITEM_$num > ".($val-$larg)." ) ";
 	break;
 case "glpi_device_hdd.specif_default" :
 	$larg=500;
