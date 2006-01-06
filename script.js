@@ -1,5 +1,5 @@
 
-//var timeoutglobalvar;
+var timeoutglobalvar;
 function setdisplay (objet, statut) {
 	if (objet.style.display != statut) objet.style.display = statut;
 }
@@ -56,8 +56,8 @@ var ie=false;
 	}
 if (d) {
 	setdisplay(d,'block'); 
-//	clearTimeout(timeoutglobalvar);
-//	timeoutglobalvar=setTimeout(function(){setdisplay(d, 'none')},3000);
+	clearTimeout(timeoutglobalvar);
+	timeoutglobalvar=setTimeout(function(){setdisplay(d, 'none')},5000);
 	
 	if (ie){
 		 var selx=0; var sely=0; var selp;
