@@ -41,7 +41,7 @@
 	header("Content-Type: text/html; charset=UTF-8");
 
 if ($_POST["type"]>0){
-	echo "<input type='text' size='15' name=\"contains2[".$_POST["num"]."]\" value=\"".$_POST["val"]."\" >";
+	echo "<input type='text' size='10' name=\"contains2[".$_POST["num"]."]\" value=\"".$_POST["val"]."\" >";
 	echo "&nbsp;";
 	echo $lang["search"][10]."&nbsp;";
 
@@ -52,7 +52,7 @@ if ($_POST["type"]>0){
 	{
 			echo "<option value=\"".$key."\""; 
 			if($key == $_POST["field"]) echo "selected";
-			echo ">". $val["name"] ."</option>\n";
+			echo ">". substr($val["name"],0,15) ."</option>\n";
 	}
 	echo "</select>&nbsp;";
 }
