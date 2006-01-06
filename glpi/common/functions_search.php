@@ -392,13 +392,13 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 		$TOADD="";
 		foreach($contains as $key => $val)
-		if (strlen($val)>0&&$field[$key]!="all"&&$field[$key]!="view"){
+		if ($field[$key]!="all"&&$field[$key]!="view"){
 			$LINK=" ";
 			if ($i>0) $LINK=" ".$link[$key];
 
 			$TOADD.= $LINK.addWhere($type,$SEARCH_OPTION[$type][$field[$key]]["table"],$SEARCH_OPTION[$type][$field[$key]]["field"],$val);
                         $i++;
-		} else if (strlen($val)>0&&$field[$key]=="view"){
+		} else if ($field[$key]=="view"){
 
 			if ($i>0)
 				$TOADD.= " ".$link[$key];
@@ -412,7 +412,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			}
 			$TOADD.=" ) ";
 			$i++;
-		} else if (strlen($val)>0&&$field[$key]=="all"){
+		} else if ($field[$key]=="all"){
 
 			if ($i>0)
 				$TOADD.= " ".$link[$key];
