@@ -555,6 +555,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		}
 		}
 	} else { // For others item linked to computers
+		if (is_array($type2))
 		foreach($type2 as $key => $val)
 		if ($val==COMPUTER_TYPE){
 			$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$val][$field2[$key]]["table"].".".$SEARCH_OPTION[$val][$field2[$key]]["field"],$contains2[$key],$key,1);
