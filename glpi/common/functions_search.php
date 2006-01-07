@@ -697,7 +697,7 @@ if (!ereg("$NAME$num",$GROUPBY))
 switch ($field){
 
 case "glpi_device_ram.specif_default" :
-		$larg=50;
+		$larg=100;
 		if (empty($GROUPBY)) $GROUPBY=" GROUP BY ID ";
 
 		if (ereg("HAVING",$GROUPBY)) $GROUPBY.=" AND ";
@@ -706,7 +706,7 @@ case "glpi_device_ram.specif_default" :
 		$GROUPBY.=" ( $NAME$num < ".($val+$larg)." AND $NAME$num > ".($val-$larg)." ) ";
 	break;
 case "glpi_device_hdd.specif_default" :
-	$larg=500;
+	$larg=1000;
 	if (empty($GROUPBY)) $GROUPBY=" GROUP BY ID ";
 
 	if (ereg("HAVING",$GROUPBY)) $GROUPBY.=" AND ";
@@ -818,20 +818,23 @@ default:
 function addWhere ($type,$table,$field,$val,$device_type=0,$meta=0,$meta_num=0){
 global $LINK_ID_TABLE;
 
+
+
 switch ($table.".".$field){
 case "glpi_users.name" :
 	return " ( $table.$field LIKE '%".$val."%' OR glpi_users.realname LIKE '%".$val."%' ) ";
 	break;
-case "glpi_device_hdd.specif_default" :
-	$larg=500;
+/*case "glpi_device_hdd.specif_default" :
+//	$larg=500;
 //	return " ( DEVICE_".HDD_DEVICE.".specificity < ".($val+$larg)." AND DEVICE_".HDD_DEVICE.".specificity > ".($val-$larg)." ) ";
 	return " $table.$field LIKE '%%' ";
 	break;
 case "glpi_device_ram.specif_default" :
-	$larg=50;
+//	$larg=50;
 //	return " ( DEVICE_".RAM_DEVICE.".specificity < ".($val+$larg)." AND DEVICE_".RAM_DEVICE.".specificity > ".($val-$larg)." ) ";
 	return " $table.$field LIKE '%%' ";
 	break;
+*/
 case "glpi_networking_ports.ifmac" :
 	if ($type==COMPUTER_TYPE)
 		return " (  DEVICE_".NETWORK_DEVICE.".specificity LIKE '%".$val."%'  OR $table.$field LIKE '%".$val."%' ) ";
