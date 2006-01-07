@@ -544,13 +544,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	// For computer search
 	if ($type==COMPUTER_TYPE){
 		foreach($contains as $key => $val){
-		
-		if (isset($link[$key])) $LINK=" ".$link[$key]." ";
+
 		if ($field[$key]!="all"){
 			foreach ($toview as $key2 => $val2)
-				if ($field[$key]=="view"&&$sort!=$val2)
-					$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type][$val2]["table"].".".$SEARCH_OPTION[$type][$val2]["field"],$contains[$key],$key2);
-				else if ($val2==$field[$key])
+				 if ($val2==$field[$key])
 					$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"],$contains[$key],$key2);
 		}
 		}
