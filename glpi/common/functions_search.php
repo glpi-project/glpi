@@ -521,13 +521,14 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		}
 	
 		// c - ADD WHERE
-		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
+/*		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
 		if (isset($type2[$i])&&$type2[$i]>0) 
 		if ($SEARCH_OPTION[$type2[$i]][$field2[$i]]["table"]!="glpi_device_ram"&&$SEARCH_OPTION[$type2[$i]][$field2[$i]]["table"]!="glpi_device_hdd"){		
 			$LINK=" AND ";
 			if (isset($link2[$i])) $LINK=" ".$link2[$i]." ";
 			$WHERE.=$LINK.addWhere($type2[$i],$SEARCH_OPTION[$type2[$i]][$field2[$i]]["table"],$SEARCH_OPTION[$type2[$i]][$field2[$i]]["field"],$contains2[$i],0,1,$i);
 		}
+*/
 	}
 	
 	
@@ -538,11 +539,12 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	//// 7 - Manage GROUP BY
 	$GROUPBY=" GROUP BY ID";
-	if ($distinct!='N') $GROUPBY="";
+//	if ($distinct!='N') $GROUPBY="";
 	
 
 	// For computer search
 	if ($type==COMPUTER_TYPE){
+	
 		foreach($contains as $key => $val){
 
 		if ($field[$key]!="all"){
@@ -551,18 +553,16 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"],$contains[$key],$key2);
 		}
 		}
-	} else { // For others item linked to computers
+	} 
+
+	 // For others item linked 
 		if (is_array($type2))
 		foreach($type2 as $key => $val)
-		if ($val==COMPUTER_TYPE){
-			$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$val][$field2[$key]]["table"].".".$SEARCH_OPTION[$val][$field2[$key]]["field"],$contains2[$key],$key,1);
-		}
-	}
-
+			$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$val][$field2[$key]]["table"].".".$SEARCH_OPTION[$val][$field2[$key]]["field"],$contains2[$key],$key,1,$link2[$key]);
 
 	if ($WHERE == " WHERE ") $WHERE="";
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER;
-	//echo $QUERY;
+//	echo $QUERY;
 
 	// Get it from database and DISPLAY
 	if ($result = $db->query($QUERY)) {
@@ -688,7 +688,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 *
 **/
 
-function addGroupByHaving($GROUPBY,$field,$val,$num,$meta=0){
+function addGroupByHaving($GROUPBY,$field,$val,$num,$meta=0,$link=""){
+
+if (empty($link)) $link="AND";
 
 $NAME="ITEM_";
 if ($meta) $NAME="META_";
@@ -700,7 +702,7 @@ case "glpi_device_ram.specif_default" :
 		$larg=100;
 		if (empty($GROUPBY)) $GROUPBY=" GROUP BY ID ";
 
-		if (ereg("HAVING",$GROUPBY)) $GROUPBY.=" AND ";
+		if (ereg("HAVING",$GROUPBY)) $GROUPBY.=" ".$link." ";
 		else $GROUPBY.=" HAVING ";
 
 		$GROUPBY.=" ( $NAME$num < ".($val+$larg)." AND $NAME$num > ".($val-$larg)." ) ";
@@ -709,12 +711,18 @@ case "glpi_device_hdd.specif_default" :
 	$larg=1000;
 	if (empty($GROUPBY)) $GROUPBY=" GROUP BY ID ";
 
-	if (ereg("HAVING",$GROUPBY)) $GROUPBY.=" AND ";
+	if (ereg("HAVING",$GROUPBY)) $GROUPBY.=" ".$link." ";
 	else $GROUPBY.=" HAVING ";
 
 	$GROUPBY.=" ( $NAME$num < ".($val+$larg)." AND $NAME$num > ".($val-$larg)." ) ";
 	break;
+default :
+	if (ereg("HAVING",$GROUPBY)) $GROUPBY.=" ".$link." ";
+	else $GROUPBY.=" HAVING ";
 
+	$GROUPBY.=" ( $NAME$num LIKE '%$val%' ) ";
+
+	break;
 }
 
 return $GROUPBY;
@@ -793,8 +801,8 @@ default:
 	if ($meta){
 		
 		if ($table!=$LINK_ID_TABLE[$type])
-			return $pretable.$table.$addtable.".".$field." AS META_$num, ";
-		else return $table.$addtable.".".$field." AS META_$num, ";
+			return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field.") AS META_$num, ";
+		else return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field.") AS META_$num, ";
 
 	}
 	else 
@@ -824,7 +832,7 @@ switch ($table.".".$field){
 case "glpi_users.name" :
 	return " ( $table.$field LIKE '%".$val."%' OR glpi_users.realname LIKE '%".$val."%' ) ";
 	break;
-/*case "glpi_device_hdd.specif_default" :
+case "glpi_device_hdd.specif_default" :
 //	$larg=500;
 //	return " ( DEVICE_".HDD_DEVICE.".specificity < ".($val+$larg)." AND DEVICE_".HDD_DEVICE.".specificity > ".($val-$larg)." ) ";
 	return " $table.$field LIKE '%%' ";
@@ -834,7 +842,7 @@ case "glpi_device_ram.specif_default" :
 //	return " ( DEVICE_".RAM_DEVICE.".specificity < ".($val+$larg)." AND DEVICE_".RAM_DEVICE.".specificity > ".($val-$larg)." ) ";
 	return " $table.$field LIKE '%%' ";
 	break;
-*/
+
 case "glpi_networking_ports.ifmac" :
 	if ($type==COMPUTER_TYPE)
 		return " (  DEVICE_".NETWORK_DEVICE.".specificity LIKE '%".$val."%'  OR $table.$field LIKE '%".$val."%' ) ";
