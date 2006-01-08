@@ -3648,7 +3648,7 @@ elseif(!empty($_POST["ajout_su"])) {
 						showContentUpdateForm();
 						break;
 					default:
-					echo "<center><a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></center>";
+					echo "<div align='center'><a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></div>";
 						break;
 				}
 			

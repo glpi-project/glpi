@@ -111,9 +111,9 @@ function showTypedocForm ($target,$ID) {
 		
 	} else {
 	
-		echo "<td class='tab_bg_2' valign='top'>";
+		echo "<td class='tab_bg_2' valign='top' align='center'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<center><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></center>";
+		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
 		echo "</td>";
 		echo "<td class='tab_bg_2' valign='top'>\n";
 		echo "<div align='center'>";

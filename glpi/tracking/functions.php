@@ -1112,7 +1112,7 @@ function showFollowupsShort($ID) {
 	
 	
 	if ($db->numrows($result)>0) {
-		echo "<center><table class='tab_cadre' width='100%' cellpadding='2'>\n";
+		echo "<div align='center'><table class='tab_cadre' width='100%' cellpadding='2'>\n";
 		echo "<tr><th>".$lang["joblist"][1]."</th><th>".$lang["joblist"][3]."</th><th>".$lang["joblist"][6]."</th></tr>\n";
 
 		while ($data=$db->fetch_array($result)) {
@@ -1124,7 +1124,7 @@ function showFollowupsShort($ID) {
 			echo "</tr>";
 		}		
 
-		echo "</table></center>";
+		echo "</table></div>";
 	
 	}
 }

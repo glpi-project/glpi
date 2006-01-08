@@ -458,7 +458,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != ""){
 
 	
 if (!isset($_GET["duree"])&&is_file($filename)){
-echo "<center>".$lang["backup"][21]."</center>";
+echo "<div align='center'>".$lang["backup"][21]."</div>";
 } else {
 init_time(); //initialise le temps
 //début de fichier

@@ -534,13 +534,13 @@ function showDeleteConfirmForm($target,$table, $ID) {
 		$query = "Select count(*) as cpt FROM $table where parentID = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  {
-		echo "<center><p style='color:red'>".$lang["setup"][74]."</p></center>";
+		echo "<div align='center'><p style='color:red'>".$lang["setup"][74]."</p></div>";
 		return;
 		}
 	}	
 
 	if ($table=="glpi_dropdown_kbcategories"){
-	echo "<center><p style='color:red'>".$lang["setup"][74]."</p></center>";
+	echo "<div align='center'><p style='color:red'>".$lang["setup"][74]."</p></div>";
 	return;
 	}
 		

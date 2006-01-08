@@ -745,7 +745,7 @@ function showCartridgeInstalled($instID,$old=0) {
 	$p->getFromDB($instID);
 	$pages=$p->fields['initial_pages'];
 
-	echo "<br><br><center><table class='tab_cadre' width='90%'>";
+	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
 	if ($old==0)
 	echo "<tr><th colspan='7'>".$lang["cartridges"][33].":</th></tr>";
 	else echo "<tr><th colspan='8'>".$lang["cartridges"][35].":</th></tr>";
@@ -844,7 +844,7 @@ function showCartridgeInstalled($instID,$old=0) {
 	}
 		
 	}
-        echo "</table></center>";
+        echo "</table></div>";
 	
 
 }

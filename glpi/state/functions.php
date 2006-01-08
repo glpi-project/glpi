@@ -62,7 +62,7 @@ function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= "",$s
 //      $option["glpi_state.comments"]			= $lang["state"][5];
 	
 	echo "<form method=\"get\" action=\"".$cfg_install["root"]."/state/index.php\">";
-	echo "<center><table class='tab_cadre' width='750'>";
+	echo "<div align='center'><table class='tab_cadre' width='750'>";
 	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
@@ -102,7 +102,7 @@ function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= "",$s
 	echo "</select> ";
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
-	echo "</td></tr></table></center></form>";
+	echo "</td></tr></table></div></form>";
 }
 
 function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$state){

@@ -344,7 +344,7 @@ function getEmpty () {
 	function displayError($type,$ID,$target){
 		global $HTMLRel,$lang;
 		
-		echo "<br><center>";
+		echo "<br><div align='center'>";
 		switch ($type){
 			case "date":
 			 echo $lang["reservation"][19];
@@ -357,7 +357,7 @@ function getEmpty () {
 			break;
 		}
 		echo "<br><a href='".$target."?show=resa&amp;ID=$ID'>".$lang["reservation"][20]."</a>";
-		echo "</center>";
+		echo "</div>";
 		}
 	function textDescription(){
 		global $lang;

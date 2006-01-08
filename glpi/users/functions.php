@@ -209,25 +209,25 @@ function showUserform($target,$name) {
 	}
 	if ($name=="") {
 		echo "<tr >";
-		echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-		echo "<center><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></center>";
+		echo "<td class='tab_bg_2' valign='top' colspan='2' align='center'>";
+		echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 		echo "</td>";
 		echo "</tr>";	
 	} else {
 		if(isSuperadmin($_SESSION["glpitype"])) {
 			echo "<tr>";
-			echo "<td class='tab_bg_2' valign='top' >";	
-			echo "<center><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' ></center>";
+			echo "<td class='tab_bg_2' valign='top' align='center'>";	
+			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' >";
 			echo "</td>";
-			echo "<td class='tab_bg_2' valign='top' >\n";
-			echo "<center><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' ></center>";
+			echo "<td class='tab_bg_2' valign='top' align='center'>\n";
+			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' >";
 			echo "</td>";
 			echo "</tr>";
 		}
 		else {
 			echo "<tr>";
-			echo "<td class='tab_bg_2' valign='top' colspan='2'>";	
-			echo "<center><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' ></center>";
+			echo "<td class='tab_bg_2' valign='top' colspan='2' align='center'>";	
+			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' >";
 			echo "</td>";
 			echo "</tr>";
 		}
