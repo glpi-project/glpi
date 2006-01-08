@@ -417,7 +417,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 		$TOADD="";
 		foreach($contains as $key => $val)
-		if ($field[$key]!="all"&&$field[$key]!="view"){
+		if (strlen($val)>0&&$field[$key]!="all"&&$field[$key]!="view"){
 			$LINK=" ";
 			$NOT=0;
 			if ($i>0) {
@@ -433,7 +433,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				$TOADD.= $LINK.addWhere($NOT,$type,$SEARCH_OPTION[$type][$field[$key]]["table"],$SEARCH_OPTION[$type][$field[$key]]["field"],$val);
                         	$i++;
 			}
-		} else if ($field[$key]=="view"){
+		} else if (strlen($val)>0&&$field[$key]=="view"){
 
 			$NOT=0;
 			if ($i>0) {
@@ -455,7 +455,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			}
 			$TOADD.=" ) ";
 			$i++;
-		} else if ($field[$key]=="all"){
+		} else if (strlen($val)>0&&$field[$key]=="all"){
 
 			$NOT=0;
 			if ($i>0) {
@@ -570,7 +570,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	// For computer search
 	if ($type==COMPUTER_TYPE){
 	
-		foreach($contains as $key => $val){
+		foreach($contains as $key => $val)
+		if (strlen($val)>0){
 
 		if ($field[$key]!="all"){
 			foreach ($toview as $key2 => $val2)
@@ -585,7 +586,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	 // For others item linked 
 		if (is_array($type2))
 		for ($key=0;$key<$_SESSION["glpisearchcount2"][$type];$key++)
-		if (isset($type2[$key]))
+		if (isset($type2[$key])&&strlen($contains2[$key]))
 		{
 			$LINK="";
 			if (isset($link2[$key])) $LINK=$link2[$key];
@@ -622,7 +623,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			// META HEADER
 			if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 			for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
-			if (isset($type2[$i])&&$type2[$i]>0&&(!isset($link2[$i])||!ereg("NOT",$link2[$i]))) {
+			if (strlen($contains2[$i])>0&&isset($type2[$i])&&$type2[$i]>0&&(!isset($link2[$i])||!ereg("NOT",$link2[$i]))) {
 				echo "<th>".$SEARCH_OPTION[$type2[$i]][$field2[$i]]["name"]."</th>";
 			}
 			
@@ -666,7 +667,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				// Print Meta Item
 				if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 				for ($j=0;$j<$_SESSION["glpisearchcount2"][$type];$j++)
-				if (isset($type2[$j])&&$type2[$j]>0&&(!isset($link2[$j])||!ereg("NOT",$link2[$j]))){
+				if (strlen($contains2[$j])>0&&isset($type2[$j])&&$type2[$j]>0&&(!isset($link2[$j])||!ereg("NOT",$link2[$j]))){
 					echo "<td>";
 					if (!ereg("$$$$",$data["META_$j"]))
 						echo $data["META_$j"];
