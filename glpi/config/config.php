@@ -68,6 +68,7 @@ $cfg_install["languages"]=array("deutsch"=>array("Deutsch","deutsch.php","englis
 				"polish"=>array("Polish","polish.php","english.html","hd-english.html"),
 				"portugese"=>array("PortuguÃªs (brasileiro)","portugese.php","english.html","hd-english.html"),
 				"rumaninian"=>array("Rumanian","rumanian.php","english.html","hd-english.html"),
+				"hungarian"=>array("Hungarian","hungarian.php","english.html","hd-english.html"),
 				);
 
 // ITEMS TYPE
@@ -113,7 +114,7 @@ define("POWER_DEVICE","12");
 $cfg_devices_tables =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
 //$cfg_devices_tables = array("moboard","processor","ram","hdd","iface","gfxcard","sndcard");
 
-// *************************** Eléments optionnels  **********************
+// *************************** Elï¿½ents optionnels  **********************
 // ***********************************************************************
 // ***********************************************************************
 
@@ -135,7 +136,7 @@ class baseFunctions {
 
 }
 
-//Options gérée dynamiquement, ne pas toucher cette partie.
+//Options gï¿½ï¿½ dynamiquement, ne pas toucher cette partie.
 //Options from DB, do not touch this part.
 
 $db = new DB;
@@ -169,13 +170,11 @@ $cfg_debug["lang"]=0;
 // Gestion de source d'information alternatives pour le login
 // telles que des serveurs de mail en imap pop...
 // ports standards : pop 110 , imap 993
-// Dans tous les cas le dernier type de login testé est la base de données
-// Dans le cas où le login est incorrect dans la base mais est correct
-// sur la source alternative, l'utilisateur est ajouté ou son mot de passe
-// est modifié
-// Si plusieurs sources alternatives sont définies, seule la première
-// fournissant un login correct est utilisé
-
+// Dans tous les cas le dernier type de login testï¿½est la base de donnï¿½s
+// Dans le cas o le login est incorrect dans la base mais est correct
+// sur la source alternative, l'utilisateur est ajoutï¿½ou son mot de passe
+// est modifiï¿½// Si plusieurs sources alternatives sont dï¿½inies, seule la premiï¿½e
+// fournissant un login correct est utilisï¿½
 $cfg_login['imap']['auth_server'] = $db->result($result,0,"imap_auth_server");
 $cfg_login['imap']['host'] = $db->result($result,0,"imap_host");
 
@@ -218,7 +217,7 @@ $cfg_login["cas"]["uri"]=$db->result($result,0,"cas_uri");
 //notifications par mail.
 //Necessite que votre fonction mail() fonctionne.
 $cfg_features["mailing"]	= $db->result($result,0,"mailing");	
-// Addresse de l'administrateur (obligatoire si mailing activé)
+// Addresse de l'administrateur (obligatoire si mailing activï¿½
 
 $cfg_mailing["admin_email"]	= $db->result($result,0,"admin_email");
 
@@ -226,7 +225,7 @@ $cfg_mailing["admin_email"]	= $db->result($result,0,"admin_email");
 $cfg_mailing["signature"]	= $db->result($result,0,"mailing_signature");
 
 // A utiliser  uniquement si $cfg_features["mailing"] = 1;
-// Définition des envois des mails d'informations
+// Dï¿½inition des envois des mails d'informations
 // admin : vers le mail $cfg_features["admin_email"]
 // all_admin : tous les utilisateurs en mode admin
 // all_normal : toutes les utilisateurs en mode normal
@@ -267,8 +266,8 @@ $cfg_mailing["resa"]["user"]=$db->result($result,0,"mailing_resa_user");
 // Niveau de log :
 
 // 1 - Critical (login failures) |  (erreur de loging seulement)
-// 2 - Severe - not used  | (non utilisé)
-// 3 - Important - (sucessfull logins)  |  importants (loging réussis)
+// 2 - Severe - not used  | (non utilisï¿½
+// 3 - Important - (sucessfull logins)  |  importants (loging rï¿½ssis)
 // 4 - Notice (updates, adds, deletes, tracking) | classique
 // 5 - Junk (i.e., setup dropdown fields, update users or templates) | log tout (ou presque)
 $cfg_features["event_loglevel"]	= $db->result($result,0,"event_loglevel");

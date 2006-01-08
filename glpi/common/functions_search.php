@@ -299,7 +299,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	echo "</td></tr></table>";
 	echo "</td>";
 	echo "<td>";
-	echo "<a href='".$HTMLRel."/computers/index.php?reset_search=reset_search&amp;type=$type'><img src='".$HTMLRel."pics/reset.png'</a>";
+	echo "<a alt=\"".$lang["buttons"][16]."\" title=\"".$lang["buttons"][16]."\" href='".$HTMLRel."/computers/index.php?reset_search=reset_search&amp;type=$type'><img src='".$HTMLRel."pics/reset.png'</a>";
 	echo "</td>";
 	echo "<td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit' >";
@@ -592,7 +592,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			// META HEADER
 			if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 			for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
-			if (isset($type2[$i])&&$type2[$i]>0) {
+			if (isset($type2[$i])&&$type2[$i]>0&&(!isset($link2[$i])||!ereg("NOT",$link2[$i]))) {
 				echo "<th>".$SEARCH_OPTION[$type2[$i]][$field2[$i]]["name"]."</th>";
 			}
 			
@@ -636,7 +636,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				// Print Meta Item
 				if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 				for ($j=0;$j<$_SESSION["glpisearchcount2"][$type];$j++)
-				if (isset($type2[$j])&&$type2[$j]>0){
+				if (isset($type2[$j])&&$type2[$j]>0&&(!isset($link2[$j])||!ereg("NOT",$link2[$j]))){
 					echo "<td>".$data["META_$j"]."</td>";
 				}
 				
