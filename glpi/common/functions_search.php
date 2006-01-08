@@ -539,7 +539,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	//// 7 - Manage GROUP BY
 	$GROUPBY=" GROUP BY ID";
-//	if ($distinct!='N') $GROUPBY="";
+	if ($distinct!='N') $GROUPBY="";
 	
 
 	// For computer search
@@ -557,15 +557,18 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	 // For others item linked 
 		if (is_array($type2))
-		foreach($type2 as $key => $val){
+		for ($key=0;$key<$_SESSION["glpisearchcount2"][$type];$key++)
+		if (isset($type2[$key]))
+		{
 			$LINK="";
 			if (isset($link2[$key])) $LINK=$link2[$key];
-			$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$val][$field2[$key]]["table"].".".$SEARCH_OPTION[$val][$field2[$key]]["field"],$contains2[$key],$key,1,$LINK);
+			
+			$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type2[$key]][$field2[$key]]["table"].".".$SEARCH_OPTION[$type2[$key]][$field2[$key]]["field"],$contains2[$key],$key,1,$LINK);
 		}
 
 	if ($WHERE == " WHERE ") $WHERE="";
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER;
-//	echo $QUERY;
+	//echo $QUERY;
 
 	// Get it from database and DISPLAY
 	if ($result = $db->query($QUERY)) {
@@ -637,7 +640,23 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 				for ($j=0;$j<$_SESSION["glpisearchcount2"][$type];$j++)
 				if (isset($type2[$j])&&$type2[$j]>0&&(!isset($link2[$j])||!ereg("NOT",$link2[$j]))){
-					echo "<td>".$data["META_$j"]."</td>";
+					echo "<td>";
+					if (!ereg("$$$$",$data["META_$j"]))
+						echo $data["META_$j"];
+					else {
+						$split=explode("$$$$",$data["META_$j"]);
+						$count_display=0;
+						
+						for ($k=0;$k<count($split);$k++)
+						if (ereg($contains2[$j],$split[$k])){
+							if ($count_display) echo "<br>";
+							$count_display++;
+							echo $split[$k];
+						}
+						
+					
+					}
+					echo "</td>";
 				}
 				
 				
@@ -804,8 +823,8 @@ default:
 	if ($meta){
 		
 		if ($table!=$LINK_ID_TABLE[$type])
-			return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field.") AS META_$num, ";
-		else return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field.") AS META_$num, ";
+			return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS META_$num, ";
+		else return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS META_$num, ";
 
 	}
 	else 
