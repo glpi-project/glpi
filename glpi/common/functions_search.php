@@ -299,7 +299,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	echo "</td></tr></table>";
 	echo "</td>";
 	echo "<td>";
-	echo "<a alt=\"".$lang["buttons"][16]."\" title=\"".$lang["buttons"][16]."\" href='".$HTMLRel."/computers/index.php?reset_search=reset_search&amp;type=$type'><img src='".$HTMLRel."pics/reset.png'</a>";
+	echo "<a href='".$HTMLRel."/computers/index.php?reset_search=reset_search&amp;type=$type'><img title=\"".$lang["buttons"][16]."\" alt=\"".$lang["buttons"][16]."\" src='".$HTMLRel."pics/reset.png'</a>";
 	echo "</td>";
 	echo "<td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit' >";
