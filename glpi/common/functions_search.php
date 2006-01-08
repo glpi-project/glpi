@@ -890,7 +890,7 @@ if ($nott) $NOT=" NOT";
 
 switch ($table.".".$field){
 case "glpi_users.name" :
-	return " ( $table.$field $NOT $NOT LIKE '%".$val."%' AND glpi_users.realname $NOT LIKE '%".$val."%' ) ";
+	return " ( $table.$field $NOT LIKE '%".$val."%' AND glpi_users.realname $NOT LIKE '%".$val."%' ) ";
 	break;
 case "glpi_device_hdd.specif_default" :
 //	$larg=500;
