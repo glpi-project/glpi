@@ -45,8 +45,15 @@ class DBmysql {
 
 	function DBmysql()
 	{  // Constructor
-		$this->dbh = mysql_connect($this->dbhost, $this->dbuser, $this->dbpassword) or $this->error = 1;
+		$this->dbh = @mysql_connect($this->dbhost, $this->dbuser, $this->dbpassword) or $this->error = 1;
+		if ($this->dbh)
 		mysql_select_db($this->dbdefault) or $this->error = 1;
+		else {
+			nullHeader("Mysql Error",$_SERVER['PHP_SELF']);
+			echo "<div align='center'><strong>Connection to the mysql server error. Check your configuration.</strong></div>";
+			nullFooter("Mysql Error",$_SERVER['PHP_SELF']);
+			die();
+		}
 	}
 	function query($query) {
 		global $cfg_debug,$DEBUG_SQL_STRING,$SQL_TOTAL_TIMER, $SQL_TOTAL_REQUEST;
