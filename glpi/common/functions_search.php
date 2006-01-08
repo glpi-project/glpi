@@ -419,28 +419,53 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		foreach($contains as $key => $val)
 		if ($field[$key]!="all"&&$field[$key]!="view"){
 			$LINK=" ";
-			if ($i>0) $LINK=" ".$link[$key];
-
-			$TOADD.= $LINK.addWhere($type,$SEARCH_OPTION[$type][$field[$key]]["table"],$SEARCH_OPTION[$type][$field[$key]]["field"],$val);
-                        $i++;
+			$NOT=0;
+			if ($i>0) {
+				if (ereg("NOT",$link[$key])){
+				$LINK=" ".ereg_replace(" NOT","",$link[$key]);
+				$NOT=1;
+				}
+				else 
+				$LINK=" ".$link[$key];
+			}
+			
+			if ($SEARCH_OPTION[$type][$field[$key]]["table"]!="glpi_device_ram"&&$SEARCH_OPTION[$type][$field[$key]]["table"]!="glpi_device_hdd"){
+				$TOADD.= $LINK.addWhere($NOT,$type,$SEARCH_OPTION[$type][$field[$key]]["table"],$SEARCH_OPTION[$type][$field[$key]]["field"],$val);
+                        	$i++;
+			}
 		} else if ($field[$key]=="view"){
 
-			if ($i>0)
-				$TOADD.= " ".$link[$key];
+			$NOT=0;
+			if ($i>0) {
+				if (ereg("NOT",$link[$key])){
+				$TOADD.=" ".ereg_replace(" NOT","",$link[$key]);
+				$NOT=1;
+				}
+				else 
+				$TOADD.=" ".$link[$key];
+			}
+
 			 $TOADD.= " ( ";
 			$first2=true;
 			foreach ($toview as $key2 => $val2)
 	        if ($SEARCH_OPTION[$type][$val2]["table"]!="glpi_device_ram"&&$SEARCH_OPTION[$type][$val2]["table"]!="glpi_device_hdd"){
 				$LINK=" OR ";
 				if ($first2) {$LINK=" ";$first2=false;}
-				$TOADD.= $LINK.addWhere($type,$SEARCH_OPTION[$type][$val2]["table"],$SEARCH_OPTION[$type][$val2]["field"],$val);
+				$TOADD.= $LINK.addWhere($NOT,$type,$SEARCH_OPTION[$type][$val2]["table"],$SEARCH_OPTION[$type][$val2]["field"],$val);
 			}
 			$TOADD.=" ) ";
 			$i++;
 		} else if ($field[$key]=="all"){
 
-			if ($i>0)
-				$TOADD.= " ".$link[$key];
+			$NOT=0;
+			if ($i>0) {
+				if (ereg("NOT",$link[$key])){
+				$TOADD.=" ".ereg_replace(" NOT","",$link[$key]);
+				$NOT=1;
+				}
+				else 
+				$TOADD.=" ".$link[$key];
+			}
 			 $TOADD.= " ( ";
 			$first2=true;
 
@@ -449,7 +474,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
                                 $LINK=" OR ";
                                 if ($first2) {$LINK=" ";$first2=false;}
                                 
-                                $TOADD.= $LINK.addWhere($type,$val2["table"],$val2["field"],$val);
+                                $TOADD.= $LINK.addWhere($NOT,$type,$val2["table"],$val2["field"],$val);
 			}
 
 		        $TOADD.=")";
@@ -549,8 +574,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 		if ($field[$key]!="all"){
 			foreach ($toview as $key2 => $val2)
-				 if ($val2==$field[$key])
-					$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"],$contains[$key],$key2);
+				 if ($val2==$field[$key]&&$field[$key]!="view"&&($SEARCH_OPTION[$type][$val2]["table"]=="glpi_device_ram"||$SEARCH_OPTION[$type][$val2]["table"]=="glpi_device_hdd")){
+				if (!isset($link[$key])) $link[$key]="AND";
+				$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"],$contains[$key],$key2,0,$link[$key]);
+				}
 		}
 		}
 	} 
@@ -648,7 +675,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 						$count_display=0;
 						
 						for ($k=0;$k<count($split);$k++)
-						if (ereg($contains2[$j],$split[$k])){
+						if (strlen($contains2[$j])==0||eregi($contains2[$j],$split[$k])){
+						
 							if ($count_display) echo "<br>";
 							$count_display++;
 							echo $split[$k];
@@ -712,37 +740,46 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 function addGroupByHaving($GROUPBY,$field,$val,$num,$meta=0,$link=""){
 
+$NOT="";
+if (ereg("NOT",$link)) $NOT=" NOT";
+
 if (empty($link)) $link="AND";
 
 $NAME="ITEM_";
 if ($meta) $NAME="META_";
 
+if (!ereg("GROUP BY ID",$GROUPBY)) $GROUPBY=" GROUP BY ID ";
+
+
 if (!ereg("$NAME$num",$GROUPBY))
 switch ($field){
 
 case "glpi_device_ram.specif_default" :
-		$larg=100;
-		if (empty($GROUPBY)) $GROUPBY=" GROUP BY ID ";
-
-		if (ereg("HAVING",$GROUPBY)) $GROUPBY.=" ".$link." ";
-		else $GROUPBY.=" HAVING ";
-
-		$GROUPBY.=" ( $NAME$num < ".($val+$larg)." AND $NAME$num > ".($val-$larg)." ) ";
-	break;
-case "glpi_device_hdd.specif_default" :
-	$larg=1000;
-	if (empty($GROUPBY)) $GROUPBY=" GROUP BY ID ";
-
+	$larg=100;
+		
 	if (ereg("HAVING",$GROUPBY)) $GROUPBY.=" ".$link." ";
 	else $GROUPBY.=" HAVING ";
 
-	$GROUPBY.=" ( $NAME$num < ".($val+$larg)." AND $NAME$num > ".($val-$larg)." ) ";
+	if (empty($NOT))
+		$GROUPBY.=" ( $NAME$num < ".($val+$larg)." AND $NAME$num > ".($val-$larg)." ) ";
+	else 
+		$GROUPBY.=" ( $NAME$num > ".($val+$larg)." OR $NAME$num < ".($val-$larg)." ) ";
+	break;
+case "glpi_device_hdd.specif_default" :
+	$larg=1000;
+
+	if (ereg("HAVING",$GROUPBY)) $GROUPBY.=" ".$link." ";
+	else $GROUPBY.=" HAVING ";
+	if (empty($NOT))
+		$GROUPBY.=" ( $NAME$num < ".($val+$larg)." AND $NAME$num > ".($val-$larg)." ) ";
+	else 
+		$GROUPBY.=" ( $NAME$num > ".($val+$larg)." OR $NAME$num < ".($val-$larg)." ) ";
 	break;
 default :
 	if (ereg("HAVING",$GROUPBY)) $GROUPBY.=" ".$link." ";
 	else $GROUPBY.=" HAVING ";
 
-	$GROUPBY.=" ( $NAME$num LIKE '%$val%' ) ";
+	$GROUPBY.=" ( $NAME$num $NOT LIKE '%$val%' ) ";
 
 	break;
 }
@@ -845,38 +882,39 @@ default:
 *@return select string
 *
 **/
-function addWhere ($type,$table,$field,$val,$device_type=0,$meta=0,$meta_num=0){
+function addWhere ($nott,$type,$table,$field,$val,$device_type=0,$meta=0,$meta_num=0){
 global $LINK_ID_TABLE;
 
-
+$NOT="";
+if ($nott) $NOT=" NOT";
 
 switch ($table.".".$field){
 case "glpi_users.name" :
-	return " ( $table.$field LIKE '%".$val."%' OR glpi_users.realname LIKE '%".$val."%' ) ";
+	return " ( $table.$field $NOT $NOT LIKE '%".$val."%' AND glpi_users.realname $NOT LIKE '%".$val."%' ) ";
 	break;
 case "glpi_device_hdd.specif_default" :
 //	$larg=500;
 //	return " ( DEVICE_".HDD_DEVICE.".specificity < ".($val+$larg)." AND DEVICE_".HDD_DEVICE.".specificity > ".($val-$larg)." ) ";
-	return " $table.$field LIKE '%%' ";
+	return " $table.$field $NOT LIKE '%%' ";
 	break;
 case "glpi_device_ram.specif_default" :
 //	$larg=50;
 //	return " ( DEVICE_".RAM_DEVICE.".specificity < ".($val+$larg)." AND DEVICE_".RAM_DEVICE.".specificity > ".($val-$larg)." ) ";
-	return " $table.$field LIKE '%%' ";
+	return " $table.$field $NOT LIKE '%%' ";
 	break;
 
 case "glpi_networking_ports.ifmac" :
 	if ($type==COMPUTER_TYPE)
-		return " (  DEVICE_".NETWORK_DEVICE.".specificity LIKE '%".$val."%'  OR $table.$field LIKE '%".$val."%' ) ";
-	else return " $table.$field LIKE '%".$val."%' ";
+		return " (  DEVICE_".NETWORK_DEVICE.".specificity $NOT LIKE '%".$val."%' AND $table.$field $NOT LIKE '%".$val."%' ) ";
+	else return " $table.$field $NOT LIKE '%".$val."%' ";
 	break;
 default:
 	if ($meta)
 		if ($table!=$LINK_ID_TABLE[$type])
-			return " META_".$table."_".$meta_num.".$field LIKE '%".$val."%' ";
-		else return " ".$table."_".$meta_num.".$field LIKE '%".$val."%' ";
+			return " META_".$table."_".$meta_num.".$field $NOT LIKE '%".$val."%' ";
+		else return " ".$table."_".$meta_num.".$field $NOT LIKE '%".$val."%' ";
 	else 
-	return " $table.$field LIKE '%".$val."%' ";
+	return " $table.$field $NOT LIKE '%".$val."%' ";
 	break;
 }
 
