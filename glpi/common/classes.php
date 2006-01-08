@@ -188,6 +188,9 @@ class CommonItem{
 			case ENTERPRISE_TYPE : 
 				$this->obj= new Enterprise;	
 				break;	
+			case CONTACT_TYPE : 
+				$this->obj= new Contact;	
+				break;	
 			case KNOWBASE_TYPE : 
 				$this->obj= new kbitem;	
 				break;					
@@ -252,6 +255,9 @@ class CommonItem{
 				break;				
 			case ENTERPRISE_TYPE : 
 				return $lang["financial"][26];
+				break;
+			case CONTACT_TYPE : 
+				return $lang["financial"][32];
 				break;
 			case KNOWBASE_TYPE : 
 				return $lang["knowbase"][0];
@@ -334,6 +340,9 @@ class CommonItem{
 				break;				
 			case ENTERPRISE_TYPE : 
 				return "<a href=\"".$cfg_install["root"]."/enterprises/enterprises-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
+				break;
+			case CONTACT_TYPE : 
+				return "<a href=\"".$cfg_install["root"]."/contacts/contacts-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
 				break;
 			case KNOWBASE_TYPE : 
 				return "<a href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=".$this->id_device."\">".$this->getName()." (".$this->id_device.")</a>";
