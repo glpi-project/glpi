@@ -42,7 +42,12 @@ include ("_relpos.php");
 include ($phproot . '/glpi/config/based_config.php');
 
 if(!file_exists($cfg_install['config_dir'] . "/config_db.php")) {
+	nullHeader("Mysql Error",$_SERVER['PHP_SELF']);
+	echo "<div align='center'>";
 	echo "<p>Error : GLPI seems to not be installed properly.</p><p> config_db.php file is missing.</p><p>Please restart the install process.</p>";
+	echo "</div>";
+	nullFooter("Mysql Error",$_SERVER['PHP_SELF']);
+
 	die();
 }
 else

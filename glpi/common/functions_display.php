@@ -455,7 +455,7 @@ function nullHeader($title,$url) {
 	
 	// Logo with link to index
 	echo "<td align='center' width='100%'>\n";
-	echo "<a href=\"".$cfg_install["root"]."/index.php\"><img src=\"".$HTMLRel."pics/logo-glpi.png\" alt=\"".$cfg_layout["logotxt"]."\" title=\"\" ></a>\n";
+	echo "<a href=\"".$HTMLRel."index.php\"><img src=\"".$HTMLRel."pics/logo-glpi.png\" alt=\"".$cfg_layout["logotxt"]."\" title=\"\" ></a>\n";
 	echo "</td>";
 
 
@@ -554,7 +554,7 @@ function nullFooter() {
 GLOBAL $cfg_install;
 echo "<div id='footer'><div align='right'>";
 	echo "<a href=\"http://GLPI.indepnet.org/\">";
-	echo "<span class='copyright'>GLPI ".$cfg_install["version"]." Copyright (C) 2003-2005 by the INDEPNET Development Team.</span>";
+	echo "<span class='copyright'>GLPI ".(isset($cfg_install["version"])?$cfg_install["version"]:"")." Copyright (C) 2003-2005 by the INDEPNET Development Team.</span>";
 	echo "</a>";
 		echo "</div></div>";
 
