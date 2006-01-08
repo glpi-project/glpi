@@ -557,8 +557,11 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	 // For others item linked 
 		if (is_array($type2))
-		foreach($type2 as $key => $val)
-			$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$val][$field2[$key]]["table"].".".$SEARCH_OPTION[$val][$field2[$key]]["field"],$contains2[$key],$key,1,$link2[$key]);
+		foreach($type2 as $key => $val){
+			$LINK="";
+			if (isset($link2[$key])) $LINK=$link2[$key];
+			$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$val][$field2[$key]]["table"].".".$SEARCH_OPTION[$val][$field2[$key]]["field"],$contains2[$key],$key,1,$LINK);
+		}
 
 	if ($WHERE == " WHERE ") $WHERE="";
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER;
