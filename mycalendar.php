@@ -181,7 +181,7 @@ else $annee=$_GET["annee"];
 <?php
 
 echo "<body bgcolor='#$bgcolor' onUnLoad=''>\n" ;
-  echo "<center><form name='MyCalendar' action=get>\n" ;
+  echo "<div align='center'><form name='MyCalendar' action=get>\n" ;
   echo "<table width='170' border='0'><tr>\n" ;
 
   // Affichage de la sélection du mois et de l'année
@@ -253,7 +253,7 @@ echo "<body bgcolor='#$bgcolor' onUnLoad=''>\n" ;
   echo "\n</tr></table>\n" ;
 
 //  echo "</td></tr></table>" ;
-  echo "</form></center>" ;
+  echo "</form></div>" ;
 
   echo "</body>\n" ;
 ?>

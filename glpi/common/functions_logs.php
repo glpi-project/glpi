@@ -270,7 +270,7 @@ function showEvents($target,$order,$sort,$start=0) {
 	// Output events
 	$i = 0;
 
-	echo "<center>";
+	echo "<div align='center'>";
 	$parameters="sort=$sort&amp;order=$order";
 	printPager($start,$numrows,$target,$parameters);
 
@@ -348,7 +348,7 @@ function showEvents($target,$order,$sort,$start=0) {
 		$i++; 
 	}
 
-	echo "</table></center><br>";
+	echo "</table></div><br>";
 }
 
 ?>

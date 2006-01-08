@@ -376,7 +376,7 @@ function showDevicesList($device_type,$target) {
 		$result_limit = $result;
 		if ($numrows_limit>0) {
 			// Produce headline
-			echo "<center><table class='tab_cadre'><tr>";
+			echo "<div align='center'><table class='tab_cadre'><tr>";
 
 			// designation
 			echo "<th>";
@@ -404,9 +404,9 @@ function showDevicesList($device_type,$target) {
 			}
 
 			// Close Table
-			echo "</table></center>";
+			echo "</table></div>";
 		} else {
-			echo "<center><b>".$lang["devices"][18]."</b></center>";
+			echo "<div align='center'><b>".$lang["devices"][18]."</b></div>";
 			echo "<hr noshade>";
 		}
 	}

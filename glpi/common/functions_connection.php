@@ -63,7 +63,7 @@ function showConnect($target,$ID,$type) {
 		$connect->type=$type;
 		$computers = $connect->getComputerContact($ID);
 
-		echo "<br><center><table width='50%' class='tab_cadre'><tr><th colspan='2'>";
+		echo "<br><div align='center'><table width='50%' class='tab_cadre'><tr><th colspan='2'>";
 		echo $lang["connect"][0].":";
 		echo "</th></tr>";
 
@@ -114,7 +114,7 @@ function showConnect($target,$ID,$type) {
 
 		echo "</td>";
 		echo "</tr>";
-		echo "</table></center><br>";
+		echo "</table></div><br>";
 }
 
 /**

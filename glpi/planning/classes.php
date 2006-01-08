@@ -158,7 +158,7 @@ class PlanningTracking{
 	function displayError($type,$ID,$target){
 		global $HTMLRel,$lang;
 		
-		echo "<br><center>";
+		echo "<br><div align='center'>";
 		switch ($type){
 			case "date":
 			 echo $lang["planning"][1];
@@ -171,7 +171,7 @@ class PlanningTracking{
 			break;
 		}
 		echo "<br><a href='".$target."?job=$ID'>".$lang["planning"][2]."</a>";
-		echo "</center>";
+		echo "</div>";
 		}
 
 }

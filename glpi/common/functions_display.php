@@ -389,7 +389,7 @@ function helpHeader($title,$url,$name) {
 
 	// Affichage du message apres redirection
 	if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])&&!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])){
-		echo "<center><b>".$_SESSION["MESSAGE_AFTER_REDIRECT"]."</b></center>";
+		echo "<div align='center'><b>".$_SESSION["MESSAGE_AFTER_REDIRECT"]."</b></div>";
 		$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
 		unset($_SESSION["MESSAGE_AFTER_REDIRECT"]);
 	}

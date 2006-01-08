@@ -222,8 +222,8 @@ function checkAuthentication($authtype) {
 	if (!isset($_SESSION["glpiname"])&& $authtype != "anonymous") {
 		header("Vary: User-Agent");
 		nullHeader($lang["login"][3], $_SERVER["PHP_SELF"]);
-		echo "<center><b>".$lang["login"][0]."</b><br><br>";
-		echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">".$lang["login"][1]."</a></b></center>";
+		echo "<div align='center'><b>".$lang["login"][0]."</b><br><br>";
+		echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">".$lang["login"][1]."</a></b></div>";
 		nullFooter();
 		exit();
 	} else {
@@ -236,8 +236,8 @@ function checkAuthentication($authtype) {
 				if (!isSuperAdmin($type)) 
 				{
 					commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
-					echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
-					echo "<b>".$lang["login"][5]."</b></center>";
+					echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
+					echo "<b>".$lang["login"][5]."</b></div>";
 					commonFooter();
 					exit();
 				}
@@ -247,8 +247,8 @@ function checkAuthentication($authtype) {
 				if (!isAdmin($type)) 
 				{
 					commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
-					echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
-					echo "<b>".$lang["login"][5]."</b></center>";
+					echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
+					echo "<b>".$lang["login"][5]."</b></div>";
 					commonFooter();
 					exit();
 				}
@@ -258,8 +258,8 @@ function checkAuthentication($authtype) {
 				if (!isNormal($type))
 				{
 					commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
-					echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
-					echo "<b>".$lang["login"][5]."</b></center>";
+					echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
+					echo "<b>".$lang["login"][5]."</b></div>";
 					commonFooter();
 					exit();
 				}
@@ -268,8 +268,8 @@ function checkAuthentication($authtype) {
 			case "post-only";
 				if (!isPostOnly($type)) {
 					commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
-					echo "<center><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
-					echo "<b>".$lang["login"][5]."</b></center>";
+					echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
+					echo "<b>".$lang["login"][5]."</b></div>";
 					commonFooter();
 					exit();
 				}

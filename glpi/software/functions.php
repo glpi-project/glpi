@@ -915,7 +915,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	$number = $db->numrows($result);
 	$i = 0;
 		
-	echo "<br><br><center><table class='tab_cadre' width='90%'>";
+	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
 	echo "<tr><th colspan='5'>".$lang["software"][17].":</th></tr>";
 			echo "<tr><th>".$lang['software'][2]."</th><th>".$lang['software'][32]."</th><th>".$lang['software'][33]."</th><th>".$lang['software'][35]."</th><th>&nbsp;</th></tr>";
 	
@@ -988,7 +988,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	$nb = $db->numrows($result);
 	
 	if((!empty($withtemplate) && $withtemplate == 2) || $nb==0) {
-		echo "</table></center>";
+		echo "</table></div>";
 	} else {
 		echo "<tr class='tab_bg_1'><td align='center' colspan='5'>";
 		echo "<form method='post' action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
@@ -1001,7 +1001,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 		echo "</div>";
         	echo "</form>";
 		echo "</td></tr>";
-		echo "</table></center>";
+		echo "</table></div>";
 	}
 	
 		
@@ -1061,7 +1061,7 @@ function countInstallations($sID) {
 			echo "</tr></table>";
 		} 
 	} else {
-			echo "<center><i>".$lang["software"][40]."</i></center>";
+			echo "<div align='center'><i>".$lang["software"][40]."</i></div>";
 	}
 }	
 
