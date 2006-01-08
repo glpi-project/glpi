@@ -3379,6 +3379,17 @@ while ($data=$db->fetch_assoc($result)){
 	$db->query($query2);
 }
 
+// add field notes in tables
+$new_notes=array("computers","software","monitors","networking","peripherals","printers","cartridges_type","consumables_type","contacts","enterprises","contracts","docs");
+
+foreach ($new_notes as $notes)
+if(!FieldExists("glpi_$notes","notes")) {	
+	$query="ALTER TABLE `glpi_$notes` ADD   `notes` LONGTEXT NULL ;";
+	$db->query($query) or die("0.65 add notes field in table".$lang["update"][90].$db->error());
+
+}
+
+
 }
 
 function updateTreeDropdown(){
