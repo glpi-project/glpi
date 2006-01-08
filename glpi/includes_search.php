@@ -32,53 +32,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
  
-$LINK_ID_TABLE=array(
-		COMPUTER_TYPE=> "glpi_computers",
-		NETWORKING_TYPE => "glpi_networking",
-		PRINTER_TYPE => "glpi_printers",
-		MONITOR_TYPE => "glpi_monitors",
-		PERIPHERAL_TYPE => "glpi_peripherals",
-		SOFTWARE_TYPE => "glpi_software",
-		CONTACT_TYPE => "glpi_contacts",
-		ENTERPRISE_TYPE => "glpi_enterprises",
-		INFOCOM_TYPE => "glpi_infocoms",
-		CONTRACT_TYPE => "glpi_contracts",
-		CARTRIDGE_TYPE => "glpi_cartridges_type",
-		TYPEDOC_TYPE => "glpi_type_docs",
-		DOCUMENT_TYPE => "glpi_docs",
-		KNOWBASE_TYPE => "glpi_kbitems",
-		USER_TYPE => "glpi_users",
-		TRACKING_TYPE => "glpi_tracking",
-		CONSUMABLE_TYPE => "glpi_consumables_type",
-		CONSUMABLE_ITEM_TYPE => "glpi_consumables",
-		CARTRIDGE_ITEM_TYPE => "glpi_cartridges",
-		LICENSE_TYPE => "glpi_licenses",
-		LINK_TYPE => "glpi_links",
-);
-
-$INFOFORM_PAGES=array( 
-		COMPUTER_TYPE=> "computers/computers-info-form.php",
-		NETWORKING_TYPE => "networking/networking-info-form.php",
-		PRINTER_TYPE => "printers/printers-info-form.php",
-		MONITOR_TYPE => "monitors/monitors-info-form.php",
-		PERIPHERAL_TYPE => "peripherals/peripherals-info-form.php",
-		SOFTWARE_TYPE => "software/software-info-form.php",
-		CONTACT_TYPE => "contacts/contacts-info-form.php",
-		ENTERPRISE_TYPE => "enterprises/enterprises-info-form.php",
-		INFOCOM_TYPE => "infocoms/infocoms-info-form.php",
-		CONTRACT_TYPE => "contracts/contracts-info-form.php",
-		CARTRIDGE_TYPE => "cartridges/cartridges-info-form.php",
-		TYPEDOC_TYPE => "typedocs/typedocs-info-form.php",
-		DOCUMENT_TYPE => "documents/documents-info-form.php",
-		KNOWBASE_TYPE => "knowbase/knowbase-info-form.php",
-		USER_TYPE => "users/users-info-form.php",
-		TRACKING_TYPE => "????",
-		CONSUMABLE_TYPE => "consumables/consumables-info-form.php",
-		CONSUMABLE_ITEM_TYPE => "??",
-		CARTRIDGE_ITEM_TYPE => "??",
-		LICENSE_TYPE => "??",
-		LINK_TYPE => "links/links-info-form.php",
-);
 
 $SEARCH_OPTION=array(
 COMPUTER_TYPE => array(	1 => array(	"table" => "glpi_computers", 
