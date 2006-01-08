@@ -281,22 +281,24 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	echo "</td>";
 	
 	echo "<td>";
-	echo "<table>";
+//	echo "<table>";
 	if (in_array($LINK_ID_TABLE[$type],$deleted_tables)){
-		echo "<tr><td><select name='deleted'>";
+		//echo "<tr><td>";
+		echo "<select name='deleted'>";
 		echo "<option value='Y' ".($deleted=='Y'?" selected ":"").">".$lang["choice"][0]."</option>";
 		echo "<option value='N' ".($deleted=='N'?" selected ":"").">".$lang["choice"][1]."</option>";
 		echo "</select>";
 		echo "<img src=\"".$HTMLRel."pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
-		echo "</td></tr>";
+		//echo "</td></tr>";
 	}
 	
-	echo "<tr><td><select name='distinct'>";
+/*	echo "<tr><td><select name='distinct'>";
 	echo "<option value='Y' ".($distinct=='Y'?" selected ":"").">".$lang["choice"][0]."</option>";
 	echo "<option value='N' ".($distinct=='N'?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "</select>";
 	echo "<img src=\"".$HTMLRel."pics/doublons.png\" alt='".$lang["common"][12]."' title='".$lang["common"][12]."'>";
 	echo "</td></tr></table>";
+*/
 	echo "</td>";
 	echo "<td>";
 	echo "<a href='".$HTMLRel."/computers/index.php?reset_search=reset_search&amp;type=$type'><img title=\"".$lang["buttons"][16]."\" alt=\"".$lang["buttons"][16]."\" src='".$HTMLRel."pics/reset.png'</a>";
@@ -563,8 +565,17 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	$SELECT.=$LINK_ID_TABLE[$type].".ID AS ID ";
 
 	//// 7 - Manage GROUP BY
-	$GROUPBY=" GROUP BY ID";
-	if ($distinct!='N') $GROUPBY="";
+	$GROUPBY="";
+	if ($_SESSION["glpisearchcount2"][$type]>0)	
+		$GROUPBY=" GROUP BY ID";
+
+	if (empty($GROUPBY))
+	foreach ($toview as $key2 => $val2)
+	if (empty($GROUPBY)&&(($val2=="all")
+		||($type==COMPUTER_TYPE&&ereg("glpi_device",$SEARCH_OPTION[$type][$val2]["table"]))
+		||(ereg("glpi_contracts",$SEARCH_OPTION[$type][$val2]["table"]))
+	)) 
+		$GROUPBY=" GROUP BY ID ";
 	
 
 	// For computer search
@@ -593,18 +604,48 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			
 			$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type2[$key]][$field2[$key]]["table"].".".$SEARCH_OPTION[$type2[$key]][$field2[$key]]["field"],strtolower($contains2[$key]),$key,1,$LINK);
 		}
+	// If no research limit research
+	$nosearch=true;
+	for ($i=0;$i<$_SESSION["glpisearchcount"][$type];$i++)
+	if (strlen($contains[$i])>0) $nosearch=false;
+	if ($_SESSION["glpisearchcount2"][$type]>0)	
+		$nosearch=false;
+
+	$LIMIT="";
+	$numrows=0;
+	if ($nosearch) {
+		$LIMIT= " LIMIT $start, ".$cfg_features["list_limit"];
+		$query_num="SELECT count(ID) FROM ".$LINK_ID_TABLE[$type];
+	
+		$first=true;
+		if (in_array($LINK_ID_TABLE[$type],$deleted_tables)){
+			$LINK= " AND " ;
+			if ($first) {$LINK=" WHERE ";$first=false;}
+			$query_num.= $LINK.$LINK_ID_TABLE[$type].".deleted='$deleted' ";
+		}
+		if (in_array($LINK_ID_TABLE[$type],$template_tables)){
+			$LINK= " AND " ;
+			if ($first) {$LINK=" WHERE ";$first=false;}
+			$query_num.= $LINK.$LINK_ID_TABLE[$type].".is_template='0' ";
+		}
+		$result_num = $db->query($query_num);
+		$numrows= $db->result($result_num,0,0);
+	}
 
 	if ($WHERE == " WHERE ") $WHERE="";
-	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER;
-	//echo $QUERY;
+
+	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
+
+//	echo $QUERY;
 
 	// Get it from database and DISPLAY
 	if ($result = $db->query($QUERY)) {
-		$numrows= $db->numrows($result);
+		if (!$nosearch) 
+			$numrows= $db->numrows($result);
 		if ($start<$numrows) {
 
 			// Pager
-			$parameters="sort=$sort&amp;order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains);
+			$parameters="sort=$sort&amp;order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains).getMultiSearchItemForLink("field2",$field2).getMultiSearchItemForLink("contains2",$contains2).getMultiSearchItemForLink("type2",$type2).getMultiSearchItemForLink("link2",$link2);
 			printPager($start,$numrows,$target,$parameters);
 
 			// Produce headline
@@ -617,7 +658,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 					else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 				}
-				echo "<a href=\"$target?sort=".$toview[$i]."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains)."\">";
+				echo "<a href=\"$target?sort=".$toview[$i]."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains).getMultiSearchItemForLink("field2",$field2).getMultiSearchItemForLink("contains2",$contains2).getMultiSearchItemForLink("type2",$type2).getMultiSearchItemForLink("link2",$link2)."\">";
 				echo $SEARCH_OPTION[$type][$toview[$i]]["name"]."</a></th>\n";
 			}
 			// META HEADER
@@ -637,10 +678,21 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					
 
 			echo "</tr>\n";
-			$db->data_seek($result,$start);
+			if (!$nosearch)
+				$db->data_seek($result,$start);
+
 			$i=$start;
+			$end_display=$start+$cfg_features["list_limit"];
+
+			if ($nosearch){
+				$i=0;
+				$end_display=$cfg_features["list_limit"];
+				}
+			
 			//for ($i=$start; $i < $numrows && $i<($start+$cfg_features["list_limit"]); $i++) {
-			while ($i < $numrows && $i<($start+$cfg_features["list_limit"])){
+			
+
+			while ($i < $numrows && $i<($end_display)){
 				$data=$db->fetch_assoc($result);
 				$i++;
 			
