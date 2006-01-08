@@ -576,7 +576,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			foreach ($toview as $key2 => $val2)
 				 if ($val2==$field[$key]&&$field[$key]!="view"&&($SEARCH_OPTION[$type][$val2]["table"]=="glpi_device_ram"||$SEARCH_OPTION[$type][$val2]["table"]=="glpi_device_hdd")){
 				if (!isset($link[$key])) $link[$key]="AND";
-				$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"],$contains[$key],$key2,0,$link[$key]);
+				$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"],strtolower($contains[$key]),$key2,0,$link[$key]);
 				}
 		}
 		}
@@ -590,7 +590,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			$LINK="";
 			if (isset($link2[$key])) $LINK=$link2[$key];
 			
-			$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type2[$key]][$field2[$key]]["table"].".".$SEARCH_OPTION[$type2[$key]][$field2[$key]]["field"],$contains2[$key],$key,1,$LINK);
+			$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type2[$key]][$field2[$key]]["table"].".".$SEARCH_OPTION[$type2[$key]][$field2[$key]]["field"],strtolower($contains2[$key]),$key,1,$LINK);
 		}
 
 	if ($WHERE == " WHERE ") $WHERE="";
@@ -860,8 +860,8 @@ default:
 	if ($meta){
 		
 		if ($table!=$LINK_ID_TABLE[$type])
-			return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS META_$num, ";
-		else return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS META_$num, ";
+			return " GROUP_CONCAT( DISTINCT LCASE(".$pretable.$table.$addtable.".".$field.") SEPARATOR '$$$$') AS META_$num, ";
+		else return " GROUP_CONCAT( DISTINCT LCASE(".$table.$addtable.".".$field.") SEPARATOR '$$$$') AS META_$num, ";
 
 	}
 	else 
