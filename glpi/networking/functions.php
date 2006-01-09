@@ -403,8 +403,9 @@ function updateNetdevice($input) {
 			$x++;
 		}
 	}
+	if (isset($input["state"]))
 	if (isset($input["is_template"])&&$input["is_template"]==1)
-	updateState(NETWORKING_TYPE,$input["ID"],$input["state"],1);
+		updateState(NETWORKING_TYPE,$input["ID"],$input["state"],1);
 	else updateState(NETWORKING_TYPE,$input["ID"],$input["state"]);
 
 	$netdev->updateInDB($updates);
