@@ -151,6 +151,9 @@ else
 		case 7 : 
 			showLinkOnDevice(CONTRACT_TYPE,$tab["ID"]);
 			break;
+		case 10 :
+				showNotesForm($_SERVER["PHP_SELF"],CONTRACT_TYPE,$tab["ID"]);
+				break;
 		default :
 			showEnterpriseContract($tab["ID"]);
 			showDeviceContract($tab["ID"]);

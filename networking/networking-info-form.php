@@ -121,6 +121,9 @@ else
 			case 5 :
 				showDocumentAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);		
 				break;
+			case 10 :
+				showNotesForm($_SERVER["PHP_SELF"],NETWORKING_TYPE,$tab["ID"]);
+				break;
 			default :
 				showPorts($tab["ID"], NETWORKING_TYPE,$tab["withtemplate"]);
 				if ($tab["withtemplate"]!=2) showPortsAdd($tab["ID"],NETWORKING_TYPE);

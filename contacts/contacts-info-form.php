@@ -119,6 +119,10 @@ else
 		case 7 : 
 			showLinkOnDevice(CONTACT_TYPE,$tab["ID"]);
 			break;
+
+		case 10 :
+				showNotesForm($_SERVER["PHP_SELF"],CONTACT_TYPE,$tab["ID"]);
+				break;
 		default :
 			showEnterpriseContact($tab["ID"]);
 		break;
