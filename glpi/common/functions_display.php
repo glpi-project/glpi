@@ -773,7 +773,35 @@ function showCalendarForm($form,$element,$value='',$withtemplate=''){
 		}
 }
 
+/**
+*  show notes for item
+*
+* @param $target
+* @param $type
+* @param $id
+* @return nothing
+*/
+function showNotesForm($target,$type,$id){
+global $HTMLRel,$lang;
+
+//new objet
+ $ci =new CommonItem;
+//getfromdb
+$ci->getfromDB ($type,$id);
 
 
+echo "<form name='form' method='post' action=\"".$target."\">";
+echo "<div align='center'>";
+echo "<table width='800' class='tab_cadre' >";
+echo "<tr><th align='center' >";
+echo "Notes";
+echo "</th></tr>";
+echo "<tr><td valign='middle' align='center' ><textarea  cols='100' rows='35' name='notes' >".$ci->obj->fields["notes"]."</textarea></td></tr>";
+echo "<tr><td class='tab_bg_2' align='center' >\n";
+echo "<input type='hidden' name='ID' value=$id>";
+echo "<input type='submit' name='update' value=\"".$lang["buttons"][8]."\" class='submit'>";
+echo "</td></tr>\n";
+echo "</table></div></form>";
+}
 
 ?>

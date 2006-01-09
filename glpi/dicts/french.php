@@ -1452,6 +1452,7 @@ $lang["title"][33]="Liens externes";
 $lang["title"][34]="Liens";
 $lang["title"][35]="Réservations";
 $lang["title"][36]="Consommables";
+$lang["title"][37]="Notes";
 
 $lang["toolbar"][1]="Gras";
 $lang["toolbar"][2]="Italique";
