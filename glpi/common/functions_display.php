@@ -799,7 +799,7 @@ echo "</th></tr>";
 echo "<tr><td valign='middle' align='center' ><textarea  cols='100' rows='35' name='notes' >".$ci->obj->fields["notes"]."</textarea></td></tr>";
 echo "<tr><td class='tab_bg_2' align='center' >\n";
 echo "<input type='hidden' name='ID' value=$id>";
-echo "<input type='submit' name='update' value=\"".$lang["buttons"][8]."\" class='submit'>";
+echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
 echo "</td></tr>\n";
 echo "</table></div></form>";
 }
