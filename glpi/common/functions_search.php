@@ -422,12 +422,13 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			$LINK=" ";
 			$NOT=0;
 			if (!$first||$i>0) {
-				if (ereg("NOT",$link[$key])){
+				if (is_array($link)&&isset($link[$key])&&ereg("NOT",$link[$key])){
 				$LINK=" ".ereg_replace(" NOT","",$link[$key]);
 				$NOT=1;
 				}
-				else 
-				$LINK=" ".$link[$key];
+				else if (is_array($link)&&isset($link[$key]))
+					$LINK=" ".$link[$key];
+				else $LINK=" AND ";
 			}
 			//echo $link[$key].$LINK.$i;
 			if ($SEARCH_OPTION[$type][$field[$key]]["table"]!="glpi_device_ram"&&$SEARCH_OPTION[$type][$field[$key]]["table"]!="glpi_device_hdd"){
