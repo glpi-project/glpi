@@ -135,8 +135,16 @@ else
 	if ($ci->getFromDB(DOCUMENT_TYPE,$tab["ID"]))
 	showDocumentOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
-	showDocumentForm($_SERVER["PHP_SELF"],$tab["ID"]);
-
+	if (showDocumentForm($_SERVER["PHP_SELF"],$tab["ID"])){
+		switch ($_SESSION['glpi_onglet']){
+		case 10 :
+			showNotesForm($_SERVER["PHP_SELF"],DOCUMENT_TYPE,$tab["ID"]);
+			break;
+		default :
+			showDeviceDocument($tab["ID"]);
+			break;
+		}
+	}
 	commonFooter();
 }
 

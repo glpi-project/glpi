@@ -54,6 +54,7 @@ function showDocumentOnglets($target,$withtemplate,$actif){
 	
 	echo "<div id='barre_onglets'><ul id='onglet'>";
 	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=1$template'>".$lang["title"][26]."</a></li>";
+	echo "<li "; if ($actif=="10") {echo "class='actif'";} echo "><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
 	
 	
 	echo "<li class='invisible'>&nbsp;</li>";
@@ -179,7 +180,7 @@ function showDocumentForm ($target,$ID) {
 		echo "</table></div>";
 		echo "</form>";
 		
-		showDeviceDocument($ID);
+		
 	}
 	} else {
 	echo "<div align='center'><b>".$lang["document"][23]."</b></div>";
