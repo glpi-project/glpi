@@ -352,7 +352,8 @@ function updatePrinter($input) {
 			$x++;
 		}
 	}
-
+	
+	if (isset($input["state"]))
 	if (isset($input["is_template"])&&$input["is_template"]==1)
 	updateState(PRINTER_TYPE,$input["ID"],$input["state"],1);
 	else updateState(PRINTER_TYPE,$input["ID"],$input["state"]);

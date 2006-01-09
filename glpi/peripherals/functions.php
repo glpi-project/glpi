@@ -310,6 +310,8 @@ function updatePeripheral($input) {
 			$x++;
 		}
 	}
+	
+	if (isset($input["state"]))
 	if (isset($input["is_template"])&&$input["is_template"]==1)
 	updateState(PERIPHERAL_TYPE,$input["ID"],$input["state"],1);
 	else updateState(PERIPHERAL_TYPE,$input["ID"],$input["state"]);
