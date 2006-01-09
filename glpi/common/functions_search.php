@@ -429,7 +429,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				else 
 				$LINK=" ".$link[$key];
 			}
-			echo $link[$key].$LINK.$i;
+			//echo $link[$key].$LINK.$i;
 			if ($SEARCH_OPTION[$type][$field[$key]]["table"]!="glpi_device_ram"&&$SEARCH_OPTION[$type][$field[$key]]["table"]!="glpi_device_hdd"){
 				$WHERE.= $LINK.addWhere($NOT,$type,$SEARCH_OPTION[$type][$field[$key]]["table"],$SEARCH_OPTION[$type][$field[$key]]["field"],$val);
                         	$i++;
@@ -670,7 +670,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			// META HEADER
 			if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 			for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
-			if (strlen($contains2[$i])>0&&isset($type2[$i])&&$type2[$i]>0&&(!isset($link2[$i])||!ereg("NOT",$link2[$i]))) {
+			if (isset($type2[$i])&&strlen($contains2[$i])>0&&$type2[$i]>0&&(!isset($link2[$i])||!ereg("NOT",$link2[$i]))) {
 				echo "<th>".$SEARCH_OPTION[$type2[$i]][$field2[$i]]["name"]."</th>";
 			}
 			
@@ -725,7 +725,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				// Print Meta Item
 				if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 				for ($j=0;$j<$_SESSION["glpisearchcount2"][$type];$j++)
-				if (strlen($contains2[$j])>0&&isset($type2[$j])&&$type2[$j]>0&&(!isset($link2[$j])||!ereg("NOT",$link2[$j]))){
+				if (isset($type2[$j])&&strlen($contains2[$j])>0&&$type2[$j]>0&&(!isset($link2[$j])||!ereg("NOT",$link2[$j]))){
 					echo "<td>";
 					if (!ereg("$$$$",$data["META_$j"]))
 						echo $data["META_$j"];
@@ -800,7 +800,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 function addGroupByHaving($GROUPBY,$field,$val,$num,$meta=0,$link=""){
 
 $NOT="";
-if (ereg("NOT",$link)) $NOT=" NOT";
+if (ereg("NOT",$link)){
+ $NOT=" NOT";
+ $link=ereg_replace(" NOT","",$link);
+}
 
 if (empty($link)) $link="AND";
 
@@ -973,7 +976,9 @@ default:
 			return " META_".$table."_".$meta_num.".$field $NOT LIKE '%".$val."%' ";
 		else return " ".$table."_".$meta_num.".$field $NOT LIKE '%".$val."%' ";
 	else 
-	return " $table.$field $NOT LIKE '%".$val."%' ";
+	$ADD="";	
+	if ($nott) $ADD=" OR $table.$field IS NULL";
+	return " ($table.$field $NOT LIKE '%".$val."%' ".$ADD." ) ";
 	break;
 }
 
