@@ -146,6 +146,9 @@ else
 				break;
 			case 7 : 
 				showLinkOnDevice(ENTERPRISE_TYPE,$tab["ID"]);
+				break;
+			case 10 :
+				showNotesForm($_SERVER["PHP_SELF"],ENTERPRISE_TYPE,$tab["ID"]);
 				break;			
 			default : 
 				showAssociatedContact($tab["ID"]);

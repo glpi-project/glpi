@@ -169,7 +169,10 @@ else
 					break;
 				case 7 :
 					showLinkOnDevice(SOFTWARE_TYPE,$tab["ID"]);
-					break;					
+					break;	
+				case 10 :
+				showNotesForm($_SERVER["PHP_SELF"],SOFTWARE_TYPE,$tab["ID"]);
+				break;				
 				default :
 					showLicensesAdd($tab["ID"]);
 					showLicenses($tab["ID"]);

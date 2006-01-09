@@ -120,6 +120,10 @@ else
 		case 7 : 
 			showLinkOnDevice(CONSUMABLE_TYPE,$tab["ID"]);
 			break;
+
+		case 10 :
+				showNotesForm($_SERVER["PHP_SELF"],CONSUMABLE_TYPE,$tab["ID"]);
+				break;
 		default :
 			showConsumableAdd($tab["ID"]);
 			showConsumables($tab["ID"]);

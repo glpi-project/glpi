@@ -220,6 +220,10 @@ if (isset($_GET['onglet'])) {
 				case 7 :
 					showLinkOnDevice(PRINTER_TYPE,$tab["ID"]);
 					break;	
+
+				case 10 :
+				showNotesForm($_SERVER["PHP_SELF"],PRINTER_TYPE,$tab["ID"]);
+				break;
 				default :
 
 					showCartridgeInstalled($tab["ID"]);		

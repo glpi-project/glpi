@@ -132,6 +132,9 @@ else
 		case 7 : 
 			showLinkOnDevice(CARTRIDGE_TYPE,$tab["ID"]);
 			break;
+		case 10 :
+				showNotesForm($_SERVER["PHP_SELF"],CARTRIDGE_TYPE,$tab["ID"]);
+				break;
 		default :
 			showCompatiblePrinters($tab["ID"]);
 			showCartridgesAdd($tab["ID"]);
