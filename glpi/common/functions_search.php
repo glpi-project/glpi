@@ -417,12 +417,11 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	if (count($contains)>0) {
 		$i=0;
 
-		$TOADD="";
 		foreach($contains as $key => $val)
 		if (strlen($val)>0&&$field[$key]!="all"&&$field[$key]!="view"){
 			$LINK=" ";
 			$NOT=0;
-			if ($i>0) {
+			if (!$first||$i>0) {
 				if (ereg("NOT",$link[$key])){
 				$LINK=" ".ereg_replace(" NOT","",$link[$key]);
 				$NOT=1;
@@ -430,45 +429,47 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				else 
 				$LINK=" ".$link[$key];
 			}
-			
+			echo $link[$key].$LINK.$i;
 			if ($SEARCH_OPTION[$type][$field[$key]]["table"]!="glpi_device_ram"&&$SEARCH_OPTION[$type][$field[$key]]["table"]!="glpi_device_hdd"){
-				$TOADD.= $LINK.addWhere($NOT,$type,$SEARCH_OPTION[$type][$field[$key]]["table"],$SEARCH_OPTION[$type][$field[$key]]["field"],$val);
+				$WHERE.= $LINK.addWhere($NOT,$type,$SEARCH_OPTION[$type][$field[$key]]["table"],$SEARCH_OPTION[$type][$field[$key]]["field"],$val);
                         	$i++;
 			}
 		} else if (strlen($val)>0&&$field[$key]=="view"){
 
 			$NOT=0;
-			if ($i>0) {
-				if (ereg("NOT",$link[$key])){
-				$TOADD.=" ".ereg_replace(" NOT","",$link[$key]);
+			if (!$first||$i>0) {
+				if (!isset($link[$key]))
+				$WHERE.=" AND ";
+				else if (ereg("NOT",$link[$key])){
+				$WHERE.=" ".ereg_replace(" NOT","",$link[$key]);
 				$NOT=1;
 				}
 				else 
-				$TOADD.=" ".$link[$key];
+				$WHERE.=" ".$link[$key];
 			}
 
-			 $TOADD.= " ( ";
+			 $WHERE.= " ( ";
 			$first2=true;
 			foreach ($toview as $key2 => $val2)
 	        if ($SEARCH_OPTION[$type][$val2]["table"]!="glpi_device_ram"&&$SEARCH_OPTION[$type][$val2]["table"]!="glpi_device_hdd"){
 				$LINK=" OR ";
 				if ($first2) {$LINK=" ";$first2=false;}
-				$TOADD.= $LINK.addWhere($NOT,$type,$SEARCH_OPTION[$type][$val2]["table"],$SEARCH_OPTION[$type][$val2]["field"],$val);
+				$WHERE.= $LINK.addWhere($NOT,$type,$SEARCH_OPTION[$type][$val2]["table"],$SEARCH_OPTION[$type][$val2]["field"],$val);
 			}
-			$TOADD.=" ) ";
+			$WHERE.=" ) ";
 			$i++;
 		} else if (strlen($val)>0&&$field[$key]=="all"){
 
 			$NOT=0;
-			if ($i>0) {
+			if (!$first||$i>0) {
 				if (ereg("NOT",$link[$key])){
-				$TOADD.=" ".ereg_replace(" NOT","",$link[$key]);
+				$WHERE.=" ".ereg_replace(" NOT","",$link[$key]);
 				$NOT=1;
 				}
 				else 
-				$TOADD.=" ".$link[$key];
+				$WHERE.=" ".$link[$key];
 			}
-			 $TOADD.= " ( ";
+			 $WHERE.= " ( ";
 			$first2=true;
 
    		        foreach ($SEARCH_OPTION[$type] as $key2 => $val2)
@@ -476,18 +477,19 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
                                 $LINK=" OR ";
                                 if ($first2) {$LINK=" ";$first2=false;}
                                 
-                                $TOADD.= $LINK.addWhere($NOT,$type,$val2["table"],$val2["field"],$val);
+                                $WHERE.= $LINK.addWhere($NOT,$type,$val2["table"],$val2["field"],$val);
 			}
 
-		        $TOADD.=")";
+		        $WHERE.=")";
 		        $i++;
-                }
+                } 
 
-		if (!empty($TOADD)){
-			$LINK= " AND " ;
+/*		if (!empty($TOADD)){
+			//$LINK= " AND " ;
 			if ($first) {$LINK=" ";$first=false;}
 			$WHERE.=$LINK." ( ".$TOADD." ) ";
 		}
+*/
 	}
 
 	// Search ALL
@@ -584,12 +586,15 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		foreach($contains as $key => $val)
 		if (strlen($val)>0){
 
-		if ($field[$key]!="all"){
-			foreach ($toview as $key2 => $val2)
-				 if ($val2==$field[$key]&&$field[$key]!="view"&&($SEARCH_OPTION[$type][$val2]["table"]=="glpi_device_ram"||$SEARCH_OPTION[$type][$val2]["table"]=="glpi_device_hdd")){
+		if ($field[$key]!="all"&&$field[$key]!="view"){
+			foreach ($toview as $key2 => $val2){
+				//echo $val2."-".$field[$key]."-".$SEARCH_OPTION[$type][$val2]["table"]."<br>";
+				 if (($val2==$field[$key])&&($SEARCH_OPTION[$type][$val2]["table"]=="glpi_device_ram"||$SEARCH_OPTION[$type][$val2]["table"]=="glpi_device_hdd")){
 				if (!isset($link[$key])) $link[$key]="AND";
+				//echo "tttt";
 				$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"],strtolower($contains[$key]),$key2,0,$link[$key]);
 				}
+			}
 		}
 		}
 	} 
@@ -607,7 +612,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	// If no research limit research
 	$nosearch=true;
 	for ($i=0;$i<$_SESSION["glpisearchcount"][$type];$i++)
-	if (strlen($contains[$i])>0) $nosearch=false;
+	if (isset($contains[$i])&&strlen($contains[$i])>0) $nosearch=false;
+	
 	if ($_SESSION["glpisearchcount2"][$type]>0)	
 		$nosearch=false;
 
@@ -636,7 +642,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 
-//	echo $QUERY;
+	//echo $QUERY;
 
 	// Get it from database and DISPLAY
 	if ($result = $db->query($QUERY)) {
@@ -940,7 +946,7 @@ global $LINK_ID_TABLE;
 
 $NOT="";
 if ($nott) $NOT=" NOT";
-
+//echo $table.".".$field."-".$NOT;
 switch ($table.".".$field){
 case "glpi_users.name" :
 	return " ( $table.$field $NOT LIKE '%".$val."%' AND glpi_users.realname $NOT LIKE '%".$val."%' ) ";
