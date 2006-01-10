@@ -1374,12 +1374,13 @@ function updateTracking($input){
 	$job->updateRealtime();		
 	
 	// Send mail to attrib if attrib change	
-	if ($cfg_features["mailing"]&&in_array("assign",$updates)&&$job->fields["assign_type"]==USER_TYPE&&$job->fields["assign"]>0){
+	if ($cfg_features["mailing"]&&!$cfg_mailing["followup"]["attrib"]&&in_array("assign",$updates)&&$job->fields["assign_type"]==USER_TYPE&&$job->fields["assign"]>0){
 			$user=new User;
 			$user->getfromDB($_SESSION["glpiname"]);
 			$mail = new Mailing("attrib",$job,$user);
 			$mail->send();
 	}
+	
 	if (count($updates)>$global_mail_change_count&&$cfg_features["mailing"])
 		{
 
