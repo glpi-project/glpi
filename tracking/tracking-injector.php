@@ -129,7 +129,7 @@ else
 {
 	if(empty($_POST["isgroup"])) $_POST["isgroup"] = "";
 	if(empty($_POST["uemail"])) $_POST["uemail"] = "";
-	if(empty($_POST["emailupdates"])) $_POST["emailupdates"] = "";
+	if(empty($_POST["emailupdates"])) $_POST["emailupdates"] = "no";
 	$db=new DB;
 	$ci=new CommonItem;
 	
