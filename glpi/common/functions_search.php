@@ -414,11 +414,12 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	// Add search conditions
 
-	if (count($contains)>0) {
+	if ($_SESSION["glpisearchcount"][$type]>0&&count($contains)>0) {
 		$i=0;
 
-		foreach($contains as $key => $val)
-		if (strlen($val)>0&&$field[$key]!="all"&&$field[$key]!="view"){
+		//foreach($contains as $key => $val)
+		for ($key=0;$key<$_SESSION["glpisearchcount"][$type];$key++)
+		if (isset($contains[$key])&&strlen($contains[$key])>0&&$field[$key]!="all"&&$field[$key]!="view"){
 			$LINK=" ";
 			$NOT=0;
 			if (!$first||$i>0) {
@@ -432,10 +433,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			}
 			//echo $link[$key].$LINK.$i;
 			if ($SEARCH_OPTION[$type][$field[$key]]["table"]!="glpi_device_ram"&&$SEARCH_OPTION[$type][$field[$key]]["table"]!="glpi_device_hdd"){
-				$WHERE.= $LINK.addWhere($NOT,$type,$SEARCH_OPTION[$type][$field[$key]]["table"],$SEARCH_OPTION[$type][$field[$key]]["field"],$val);
+				$WHERE.= $LINK.addWhere($NOT,$type,$SEARCH_OPTION[$type][$field[$key]]["table"],$SEARCH_OPTION[$type][$field[$key]]["field"],$contains[$key]);
                         	$i++;
 			}
-		} else if (strlen($val)>0&&$field[$key]=="view"){
+		} else if (isset($contains[$key])&&strlen($contains[$key])>0&&$field[$key]=="view"){
 
 			$NOT=0;
 			if (!$first||$i>0) {
@@ -455,11 +456,11 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	        if ($SEARCH_OPTION[$type][$val2]["table"]!="glpi_device_ram"&&$SEARCH_OPTION[$type][$val2]["table"]!="glpi_device_hdd"){
 				$LINK=" OR ";
 				if ($first2) {$LINK=" ";$first2=false;}
-				$WHERE.= $LINK.addWhere($NOT,$type,$SEARCH_OPTION[$type][$val2]["table"],$SEARCH_OPTION[$type][$val2]["field"],$val);
+				$WHERE.= $LINK.addWhere($NOT,$type,$SEARCH_OPTION[$type][$val2]["table"],$SEARCH_OPTION[$type][$val2]["field"],$contains[$key]);
 			}
 			$WHERE.=" ) ";
 			$i++;
-		} else if (strlen($val)>0&&$field[$key]=="all"){
+		} else if (isset($contains[$key])&&strlen($contains[$key])>0&&$field[$key]=="all"){
 
 			$NOT=0;
 			if (!$first||$i>0) {
@@ -478,7 +479,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
                                 $LINK=" OR ";
                                 if ($first2) {$LINK=" ";$first2=false;}
                                 
-                                $WHERE.= $LINK.addWhere($NOT,$type,$val2["table"],$val2["field"],$val);
+                                $WHERE.= $LINK.addWhere($NOT,$type,$val2["table"],$val2["field"],$contains[$key]);
 			}
 
 		        $WHERE.=")";
