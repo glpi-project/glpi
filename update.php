@@ -3389,6 +3389,10 @@ if(!FieldExists("glpi_$notes","notes")) {
 
 }
 
+if(FieldExists("glpi_infocoms","warranty_value")) {	
+	$query="ALTER TABLE `glpi_infocoms` CHANGE `warranty_value` `warranty_value` FLOAT NOT NULL DEFAULT '0';";
+	$db->query($query) or die("0.65 alter warranty value in infocoms ".$lang["update"][90].$db->error());
+}
 
 }
 
