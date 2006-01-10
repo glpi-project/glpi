@@ -440,14 +440,14 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 			$NOT=0;
 			if (!$first||$i>0) {
-				if (!isset($link[$key]))
-				$WHERE.=" AND ";
-				else if (ereg("NOT",$link[$key])){
-				$WHERE.=" ".ereg_replace(" NOT","",$link[$key]);
-				$NOT=1;
-				}
+				if (is_array($link)&&isset($link[$key])&&ereg("NOT",$link[$key])){
+					$WHERE.=" ".ereg_replace(" NOT","",$link[$key]);
+					$NOT=1;
+				} else if (is_array($link)&&isset($link[$key]))
+					$WHERE.=" ".$link[$key];
 				else 
-				$WHERE.=" ".$link[$key];
+					$WHERE.=" AND ";
+				
 			}
 
 			 $WHERE.= " ( ";
