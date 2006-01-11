@@ -1235,7 +1235,7 @@ function getStatusName($value){
 }
 
 function updateTracking($input){
-	global $lang,$cfg_features;
+	global $lang,$cfg_features,$cfg_mailing;
 	$job = new Job;
 	$job->getFromDB($input["ID"],0);
 
@@ -1362,6 +1362,7 @@ function updateTracking($input){
 			
 			$global_mail_change_count++;
 	}
+
 	if (!empty($change_followup_content)){ // Add followup if not empty
 
 		$newinput["contents"]=addslashes($change_followup_content);
@@ -1383,7 +1384,6 @@ function updateTracking($input){
 	
 	if (count($updates)>$global_mail_change_count&&$cfg_features["mailing"])
 		{
-
 			$user=new User;
 			$user->getfromDB($_SESSION["glpiname"]);
 			$mailtype="followup";
@@ -1393,7 +1393,7 @@ function updateTracking($input){
 			$mail = new Mailing($mailtype,$job,$user);
 			$mail->send();
 		}
-	
+
 }
 
 function updateFollowup($input){
@@ -1451,7 +1451,7 @@ function addFollowup($input){
 
 	$input["date"] = date("Y-m-d H:i:s");
 	foreach ($input as $key => $val) {
-		if ($key[0]!='_'&&(empty($printer->fields[$key]) || $printer->fields[$key] != $input[$key])) {
+		if ($key[0]!='_'&&(empty($fup->fields[$key]) || $fup->fields[$key] != $input[$key])) {
 			$fup->fields[$key] = $input[$key];
 		}
 	}
