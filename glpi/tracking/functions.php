@@ -1363,6 +1363,7 @@ function updateTracking($input){
 			$global_mail_change_count++;
 	}
 
+	$mail_send=0;
 	if (!empty($change_followup_content)){ // Add followup if not empty
 
 		$newinput["contents"]=addslashes($change_followup_content);
@@ -1370,17 +1371,11 @@ function updateTracking($input){
 		$newinput["private"]=$newinput["hour"]=$newinput["minute"]=0;
 		$newinput["tracking"]=$job->fields["ID"];
 		addFollowup($newinput);
+		$mail_send++;
 	}
 
 	$job->updateRealtime();		
 	
-	// Send mail to attrib if attrib change	
-	if ($cfg_features["mailing"]&&!$cfg_mailing["followup"]["attrib"]&&in_array("assign",$updates)&&$job->fields["assign_type"]==USER_TYPE&&$job->fields["assign"]>0){
-			$user=new User;
-			$user->getfromDB($_SESSION["glpiname"]);
-			$mail = new Mailing("attrib",$job,$user);
-			$mail->send();
-	}
 	
 	if (count($updates)>$global_mail_change_count&&$cfg_features["mailing"])
 		{
@@ -1389,10 +1384,20 @@ function updateTracking($input){
 			$mailtype="followup";
 			if (in_array("status",$updates)&&ereg("old_",$input["status"]))
 				$mailtype="finish";
+			else $mail_send++;
 
 			$mail = new Mailing($mailtype,$job,$user);
 			$mail->send();
 		}
+
+	// Send mail to attrib if attrib change	
+	if ($mail_send==0&&$cfg_features["mailing"]&&!$cfg_mailing["followup"]["attrib"]&&in_array("assign",$updates)&&$job->fields["assign_type"]==USER_TYPE&&$job->fields["assign"]>0){
+			$user=new User;
+			$user->getfromDB($_SESSION["glpiname"]);
+			$mail = new Mailing("attrib",$job,$user);
+			$mail->send();
+	}
+
 
 }
 
