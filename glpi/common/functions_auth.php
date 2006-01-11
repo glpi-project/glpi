@@ -177,12 +177,15 @@ function checkAuthentication($authtype) {
 	}    
 	if (isset($_POST)){
 		$_POST = array_map('addslashes_deep', $_POST);
+		$_POST = array_map('clean_cross_side_scripting_deep', $_POST);
 	}
 	if (isset($_GET)){
 		$_GET = array_map('addslashes_deep', $_GET);
+		$_GET = array_map('clean_cross_side_scripting_deep', $_GET);
 	}
 	if (isset($tab)){
-		$tab = array_map('addslashes_deep', $tab);    
+		$tab = array_map('addslashes_deep', $tab);
+		$tab = array_map('clean_cross_side_scripting_deep', $tab);
 	}
 
 	// Checks a GLOBAL user and password against the database
@@ -287,6 +290,7 @@ function checkAuthentication($authtype) {
 		}
 	}
 }
+
 
 /**
 * Include the good language dict.

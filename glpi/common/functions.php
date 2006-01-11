@@ -101,6 +101,16 @@ function addslashes_deep($value) {
 }
 
 
+function clean_cross_side_scripting_deep($value) {
+	$in=array("<",">");
+	$out=array("&lt;","&gt;");
+       $value = is_array($value) ?
+                   array_map('clean_cross_side_scripting_deep', $value) :
+                   (is_null($value) ? NULL : str_replace($in,$out,$value));
+       return $value;
+}
+
+
 function utf8_decode_deep($value) {
 	$value = is_array($value) ?
 		array_map('utf8_decode_deep', $value) :
