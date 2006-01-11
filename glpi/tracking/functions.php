@@ -520,11 +520,11 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	$job->fields["contents"] = $contents;
 	$job->fields["priority"] = $priority;
 	$job->fields["uemail"] = $uemail;
+	if (empty($emailupdates)) $emailupdates="no";
 	$job->fields["emailupdates"] = $emailupdates;
 
 	$user=new User;
 	$user->getfromDBbyID($author);
-
 	if ($emailupdates=="yes"&&empty($uemail)){
 		$job->fields["uemail"]=$user->fields["email"];
 	}
@@ -1397,7 +1397,6 @@ function updateTracking($input){
 			$mail = new Mailing("attrib",$job,$user);
 			$mail->send();
 	}
-
 
 }
 
