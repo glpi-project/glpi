@@ -383,7 +383,7 @@ $search=$ID;
 if ($nextprev_item!="ID"){
 	$query="select ".$nextprev_item." FROM $table where ID=$ID";
 	$result=$db->query($query);
-	$search=$db->result($result,0,0);
+	$search=addslashes($db->result($result,0,0));
 }
 
 $query = "select ID from $table where ".$nextprev_item." > '$search' ";
@@ -421,7 +421,7 @@ $search=$ID;
 if ($nextprev_item!="ID"){
 	$query="select ".$nextprev_item." FROM $table where ID=$ID";
 	$result=$db->query($query);
-	$search=$db->result($result,0,0);
+	$search=addslashes($db->result($result,0,0));
 }
 
 $query = "select ID from $table where ".$nextprev_item." < '$search' ";

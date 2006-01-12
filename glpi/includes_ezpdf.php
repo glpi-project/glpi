@@ -27,29 +27,12 @@
  ------------------------------------------------------------------------
 */
  
-// Based on:
-// IRMA, Information Resource-Management and Administration
-// Christian Bauer 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
+include ($phproot . "/glpi/ezpdf/class.ezpdf.php");
 
-checkAuthentication("normal");
-include ($phproot . "/glpi/includes_search.php");
-//print_r($_GET);
-if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
-
-
-	// PDF case
-	if ($_GET["display_type"]==2)
-		include ($phproot . "/glpi/includes_ezpdf.php");
-	manageGetValuesInSearch($_GET["item_type"]);
-
-	showList($_GET["item_type"],$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
-
-}
 ?>

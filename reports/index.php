@@ -76,8 +76,6 @@ $report_list["Infocoms"]["name"]=$lang["reports"][62];
 $report_list["Infocoms"]["file"]="reports/infocoms.php";
 $report_list["Infocoms2"]["name"]=$lang["reports"][63];
 $report_list["Infocoms2"]["file"]="reports/infocoms_conso.php";
-$report_list["excel"]["name"] = "Excel, OpenOffice, gnumeric, mulitplan (Sylk)";
-$report_list["excel"]["file"] = "reports/geneSylk.php";
 
 $i = 0;
 $count = count($report_list);
