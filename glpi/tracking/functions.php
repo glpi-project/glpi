@@ -1273,7 +1273,6 @@ function updateTracking($input){
 	$old_priority=$job->fields["priority"];
 	$old_status=$job->fields["status"];
 
-
 	// Fill the update-array with changes
 	$x=0;
 	foreach ($input as $key => $val) {
@@ -1302,7 +1301,6 @@ function updateTracking($input){
 			$job->fields["uemail"]=$user->fields["email"];
 		}
 	}
-
 
 	// Update Job
 	if(count($updates)>0)
@@ -1359,8 +1357,14 @@ function updateTracking($input){
 		if (in_array("closedate",$updates))	
 			$global_mail_change_count++; // Manage closedate
 			
-			
 			$global_mail_change_count++;
+	}
+	if (in_array("emailupdates",$updates)){
+	        if ($job->fields["emailupdates"]=="yes")
+		        $change_followup_content.=$lang["mailing"][101]."<br>";
+        	else if ($job->fields["emailupdates"]=="no")
+         		$change_followup_content.=$lang["mailing"][102]."<br>";
+	        $global_mail_change_count++;
 	}
 
 	$mail_send=0;
