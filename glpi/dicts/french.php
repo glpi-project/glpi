@@ -769,6 +769,8 @@ $lang["mailing"][24]="Statut :";
 $lang["mailing"][25]="Planification :";
 $lang["mailing"][26]="Catégorie :";
 $lang["mailing"][27]="Changement de statut du ticket";
+$lang["mailing"][101]="Le suivi par email a été activé";
+$lang["mailing"][102]="Le suivi par email a été désactivé";
 
 $lang["Menu"][0]="Ordinateurs";
 $lang["Menu"][1]="Réseaux";
