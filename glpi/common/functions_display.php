@@ -728,7 +728,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 	
 	if ($item_type_output>0){
 	echo "<td class='tab_bg_2'><a target='_blank' href=\"".$HTMLRel."reports/dynamicReport.php?$parameters&amp;display_type=1&amp;item_type=".$item_type_output."\">SYLK</a></td>";
-
+	echo "<td class='tab_bg_2'><a target='_blank' href=\"".$HTMLRel."reports/dynamicReport.php?$parameters&amp;display_type=2&amp;item_type=".$item_type_output."\">PDF</a></td>";
 	}
 	
 	echo "<td  width='50%' align='center' class='tab_bg_2'><b>";
