@@ -670,7 +670,7 @@ function printHelpDesk ($name,$from_helpdesk) {
 * @return nothing (print a pager)
 *
 */
-function printPager($start,$numrows,$target,$parameters) {
+function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 
 	GLOBAL $cfg_layout, $cfg_features, $lang, $HTMLRel;
 	
@@ -725,7 +725,12 @@ function printPager($start,$numrows,$target,$parameters) {
 	echo "</select><b>&nbsp;";
 	echo $lang["pager"][5];
 	echo "</b></td>\n";
+	
+	if ($item_type_output>0){
+	echo "<td class='tab_bg_2'><a target='_blank' href=\"".$HTMLRel."reports/dynamicReport.php?$parameters&amp;display_type=1&amp;item_type=".$item_type_output."\">SYLK</a></td>";
 
+	}
+	
 	echo "<td  width='50%' align='center' class='tab_bg_2'><b>";
 
 	echo $lang["pager"][2]."&nbsp;".$current_start."&nbsp;".$lang["pager"][1]."&nbsp;".$current_end."&nbsp;".$lang["pager"][3]."&nbsp;".$numrows."&nbsp;";

@@ -615,6 +615,11 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	//echo $QUERY;
 
+	if (isset($_GET["display_type"]))
+		$output_type=$_GET["display_type"];
+	else 
+		$output_type=0;
+
 	// Get it from database and DISPLAY
 	if ($result = $db->query($QUERY)) {
 		if (!$nosearch) 
@@ -623,38 +628,50 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 			// Pager
 			$parameters="sort=$sort&amp;order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains).getMultiSearchItemForLink("field2",$field2).getMultiSearchItemForLink("contains2",$contains2).getMultiSearchItemForLink("type2",$type2).getMultiSearchItemForLink("link2",$link2);
-			printPager($start,$numrows,$target,$parameters);
 
-			// Produce headline
-			echo "<div align='center'><table border='0' class='tab_cadrehov'><tr>\n";
+			if ($output_type==0) // In case of HTML display
+				printPager($start,$numrows,$target,$parameters,$type);
+			
+			$nbcols=$toview_count;
+			// META HEADER
+			if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
+			for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
+			if (isset($type2[$i])&&strlen($contains2[$i])>0&&$type2[$i]>0&&(!isset($link2[$i])||!ereg("NOT",$link2[$i]))) {
+				$nbcols++;
+			}
 
+
+			echo displaySearchHeader($output_type,$cfg_features["list_limit"]+1,$nbcols);
+
+			echo displaySearchNewLine($output_type);
+			$header_num=1;
 			// TABLE HEADER
 			for ($i=0;$i<$toview_count;$i++){
-				echo "<th>";
-				if ($sort==$toview[$i]) {
-					if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-					else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-				}
-				echo "<a href=\"$target?sort=".$toview[$i]."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains).getMultiSearchItemForLink("field2",$field2).getMultiSearchItemForLink("contains2",$contains2).getMultiSearchItemForLink("type2",$type2).getMultiSearchItemForLink("link2",$link2)."\">";
-				echo $SEARCH_OPTION[$type][$toview[$i]]["name"]."</a></th>\n";
+
+				$linkto="$target?sort=".$toview[$i]."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains).getMultiSearchItemForLink("field2",$field2).getMultiSearchItemForLink("contains2",$contains2).getMultiSearchItemForLink("type2",$type2).getMultiSearchItemForLink("link2",$link2);
+
+				echo displaySearchHeaderItem($output_type,$SEARCH_OPTION[$type][$toview[$i]]["name"],$header_num,$linkto,$sort==$toview[$i],$order);
 			}
 			// META HEADER
 			if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 			for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
 			if (isset($type2[$i])&&strlen($contains2[$i])>0&&$type2[$i]>0&&(!isset($link2[$i])||!ereg("NOT",$link2[$i]))) {
-				echo "<th>".$SEARCH_OPTION[$type2[$i]][$field2[$i]]["name"]."</th>";
+				echo displaySearchHeaderItem($output_type,$SEARCH_OPTION[$type2[$i]][$field2[$i]]["name"],$header_num);
 			}
 			
-		
-			if ($type==SOFTWARE_TYPE)
-					echo "<th>".$lang["software"][11]."</th>";
-			if ($type==CARTRIDGE_TYPE)
-					echo "<th>".$lang["cartridges"][0]."</th>";
-			if ($type==CONSUMABLE_TYPE)
-					echo "<th>".$lang["consumables"][0]."</th>";
+			if ($output_type==0){ // Only in HTML
+				if ($type==SOFTWARE_TYPE)
+					echo displaySearchHeaderItem($output_type,$lang["software"][11]);
 					
-
-			echo "</tr>\n";
+				if ($type==CARTRIDGE_TYPE)
+					echo displaySearchHeaderItem($output_type,$lang["cartridges"][0]);	
+				
+				if ($type==CONSUMABLE_TYPE)
+					echo displaySearchHeaderItem($output_type,$lang["consumables"][0]);
+			}
+					
+			echo displaySearchEndLine($output_type);
+			
 			if (!$nosearch)
 				$db->data_seek($result,$start);
 
@@ -666,88 +683,83 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				$end_display=$cfg_features["list_limit"];
 				}
 			
-			//for ($i=$start; $i < $numrows && $i<($start+$cfg_features["list_limit"]); $i++) {
-			
 
+			$row_num=1;
 			while ($i < $numrows && $i<($end_display)){
+				$item_num=1;
 				$data=$db->fetch_assoc($result);
 				$i++;
-			
-				echo "<tr class='tab_bg_2'>";
+				$row_num++;
+				echo displaySearchNewLine($output_type);
+				
 				// Print first element
-				echo "<td>";
 				if ($SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"]=="glpi_users.name")
-					displayItem($type,"glpi_users.name.brut",$data,0);
+					echo displaySearchItem($output_type,giveItem($type,"glpi_users.name.brut",$data,0),$item_num,$row_num);
 				else 
-					displayItem($type,$SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"],$data,0);
-				echo "</td>";
+					echo displaySearchItem($output_type,giveItem($type,$SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"],$data,0),$item_num,$row_num);
 				// Print other items
 				for ($j=1;$j<$toview_count;$j++){
-					echo "<td>";
 					if ($SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"]=="glpi_enterprises.name")
-						displayItem($type,"glpi_enterprises.name.brut",$data,$j);
+						echo displaySearchItem($output_type,giveItem($type,"glpi_enterprises.name.brut",$data,$j),$item_num,$row_num);
 					else if ($SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"]=="glpi_contracts.name")
-						displayItem($type,"glpi_contracts.name.brut",$data,$j);
+						echo displaySearchItem($output_type,giveItem($type,"glpi_contracts.name.brut",$data,$j),$item_num,$row_num);
 					else  
-						displayItem($type,$SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"],$data,$j);
-					echo "</td>";
+						echo displaySearchItem($output_type,giveItem($type,$SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"],$data,$j),$item_num,$row_num);
+
 				}
 				
 				// Print Meta Item
 				if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 				for ($j=0;$j<$_SESSION["glpisearchcount2"][$type];$j++)
 				if (isset($type2[$j])&&strlen($contains2[$j])>0&&$type2[$j]>0&&(!isset($link2[$j])||!ereg("NOT",$link2[$j]))){
-					echo "<td>";
 					if (!ereg("$$$$",$data["META_$j"]))
-						echo $data["META_$j"];
+						echo displaySearchItem($output_type,$data["META_$j"],$item_num,$row_num);
 					else {
 						$split=explode("$$$$",$data["META_$j"]);
 						$count_display=0;
-						
+						$out="";
 						for ($k=0;$k<count($split);$k++)
 						if (strlen($contains2[$j])==0||eregi($contains2[$j],$split[$k])){
 						
-							if ($count_display) echo "<br>";
+							if ($count_display) $out.= "<br>";
 							$count_display++;
-							echo $split[$k];
+							$out.= $split[$k];
 						}
-						
+						echo displaySearchItem($output_type,$out,$item_num,$row_num);
 					
 					}
-					echo "</td>";
 				}
 				
-				
-				if ($type==CARTRIDGE_TYPE){
-					echo "<td>";
-					countCartridges($data["ID"],$data["ALARM"]);
-					echo "</td>";
-				}
+				if ($output_type==0){ // Only in HTML
+					if ($type==CARTRIDGE_TYPE){
+						echo "<td>";
+						countCartridges($data["ID"],$data["ALARM"]);
+						echo "</td>";
+					}
 
-				if ($type==SOFTWARE_TYPE){
-					echo "<td>";					
-		   		countInstallations($data["ID"]);
-					echo "</td>";
-				}		
+					if ($type==SOFTWARE_TYPE){
+						echo "<td>";					
+			   			countInstallations($data["ID"]);
+						echo "</td>";
+					}		
 				
-				if ($type==CONSUMABLE_TYPE){
-					echo "<td>";					
-		   		countConsumables($data["ID"],$data["ALARM"]);
-					echo "</td>";
-				}		
+					if ($type==CONSUMABLE_TYPE){
+						echo "<td>";					
+		   				countConsumables($data["ID"],$data["ALARM"]);
+						echo "</td>";
+					}		
+				}
 		   		
-		        echo "</tr>\n";
+		        echo displaySearchEndLine($output_type);
 			}
-
-			// Close Table
-			echo "</table></div>\n";
-
-			// Pager
-			echo "<br>";
-			printPager($start,$numrows,$target,$parameters);
+			
+			echo displaySearchFooter($output_type);
+			
+			if ($output_type==0) // In case of HTML display
+				printPager($start,$numrows,$target,$parameters,$type);
 
 		} else {
-			echo "<div align='center'><b>".$lang["search"][15]."</b></div>\n";
+			echo displaySearchError($output_type);
 			
 		}
 	}
@@ -755,6 +767,173 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 }
 
+
+function displaySearchHeaderItem($type,$value,&$num,$linkto="",$issort=0,$order=""){
+	global $HTMLRel;
+	$out="";
+	switch ($type){
+		case 1 : //sylk
+			$out=displaySearchItem($type,$value,$num,1);
+			$num--;
+			break;
+		default :
+
+		$out="<th>";
+		if ($issort) {
+			if ($order=="DESC") $out.="<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
+			else $out.="<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
+		}
+		
+		if (!empty($linkto))
+			$out.= "<a href=\"$linkto\">";
+		
+		$out.= $value;
+			
+		if (!empty($linkto))
+			$out.="</a>";
+		
+		$out.="</th>\n";
+		break;
+	}
+$num++;
+return $out;
+
+}
+
+function displaySearchItem($type,$value,&$num,$row){
+	$out="";
+	switch ($type){
+		case 1 : //sylk
+			$value=utf8_decode($value);
+	        	if (get_magic_quotes_runtime()) $value=stripslashes($value);
+	            	$value=preg_replace('/\x0A/',' ',$value);
+			$value=preg_replace('/<a[^>]+>/',' ',$value);
+			$value=preg_replace('/<img[^>]+>/',' ',$value);
+			$value=preg_replace('/<\/a>/',' ',$value);
+            		$value=preg_replace('/\x0D/',NULL,$value);
+            		$value=ereg_replace("\"","''",$value);
+			$value=str_replace(';', ';;', $value);
+
+			$out="F;P3;FG0L;".($num == 1 ? "Y".$row.";" : "")."X$num\n";
+			$out.= "C;N;K\"".trim($value)."\"\n"; 
+
+			break;
+		default :
+			$out="<td>".$value."</td>\n";
+			break;
+	}
+$num++;
+return $out;
+
+}
+
+function displaySearchError($type){
+	$out="";
+	switch ($type){
+		case 1 : //sylk
+			break;
+		default :
+			$out= "<div align='center'><b>".$lang["search"][15]."</b></div>\n";
+		break;
+	}
+return $out;
+
+}
+
+function displaySearchFooter($type){
+	$out="";
+	switch ($type){
+		case 1 : //sylk
+			break;
+		default :
+			$out= "</table></div><br>\n";
+		break;
+	}
+return $out;
+
+}
+
+function displaySearchHeader($type,$rows,$cols){
+	$out="";
+	switch ($type){
+		case 1 : // Sylk
+			define("FORMAT_REEL",   1); // #,##0.00
+			define("FORMAT_ENTIER", 2); // #,##0
+			define("FORMAT_TEXTE",  3); // @
+
+			$cfg_formats[FORMAT_ENTIER] = "FF0";
+			$cfg_formats[FORMAT_REEL]   = "FF2";
+			$cfg_formats[FORMAT_TEXTE]  = "FG0";
+			
+			// en-tête HTTP
+        		// --------------------------------------------------------------------
+        		header("Content-disposition: filename=glpi.slk");
+        		header('Content-type: application/octetstream');
+        		header('Pragma: no-cache');
+        		header('Expires: 0');
+
+
+        		// en-tête du fichier
+        		// --------------------------------------------------------------------
+        		echo "ID;PGLPI EXPORT\n"; // ID;Pappli
+        		echo "\n";
+        		// formats
+        		echo "P;PGeneral\n";      
+        		echo "P;P#,##0.00\n";       // P;Pformat_1 (reels)
+        		echo "P;P#,##0\n";          // P;Pformat_2 (entiers)
+        		echo "P;P@\n";              // P;Pformat_3 (textes)
+        		echo "\n";
+        		// polices
+        		echo "P;EArial;M200\n";
+        		echo "P;EArial;M200\n";
+        		echo "P;EArial;M200\n";
+        		echo "P;FArial;M200;SB\n";
+        		echo "\n";
+        		// nb lignes * nb colonnes
+        		echo "B;Y".$rows;
+        		echo ";X".$cols."\n"; // B;Yligmax;Xcolmax
+        		echo "\n";
+
+			// largeurs des colonnes
+			for ($i=1;$i<=$cols;$i++)
+				echo "F;W".$i." ".$i." 20\n";
+			break;
+
+		default :
+			$out="<div align='center'><table border='0' class='tab_cadrehov'>\n";
+			break;
+	}
+return $out;
+
+}
+
+
+function displaySearchNewLine($type){
+	$out="";
+	switch ($type){
+		case 1 : //sylk
+			$out="\n";
+			break;
+
+		default :
+		$out="<tr class='tab_bg_2'>";
+		break;
+	}
+return $out;
+}
+
+function displaySearchEndLine($type){
+	$out="";
+	switch ($type){
+		case 1 : //sylk
+			break;
+
+		default :
+			$out="</tr>";
+			break;
+	}
+return $out;
+}
 
 /**
 * Generic Function to add GROUP BY to a request
@@ -985,176 +1164,194 @@ default:
 *@return string to print
 *
 **/
-function displayItem ($type,$field,$data,$num){
+function giveItem ($type,$field,$data,$num){
 global $cfg_install,$INFOFORM_PAGES,$HTMLRel,$cfg_layout;
 
 switch ($field){
 	case "glpi_users.name" :
 		// print realname or login name
 		if (!empty($data["ITEM_".$num."_2"]))
-			echo $data["ITEM_".$num."_2"];
-		else echo $data["ITEM_$num"];
+			return $data["ITEM_".$num."_2"];
+		else return $data["ITEM_$num"];
 		break;
 	case "glpi_users.name.brut" :		
 		$type=USER_TYPE;
-		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"];
-		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) echo " (".$data["ID"].")";
-		echo "</a>";
+		$out= "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		$out.= $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+		$out.= "</a>";
+		return $out;
 		break;
 	case "glpi_computers.name" :
 		$type=COMPUTER_TYPE;
-		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"];
-		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) echo " (".$data["ID"].")";
-		echo "</a>";
+		$out= "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		$out.= $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+		$out.= "</a>";
+		return $out;
 		break;
 	case "glpi_printers.name" :
 		$type=PRINTER_TYPE;
-		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"];
-		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) echo " (".$data["ID"].")";
-		echo "</a>";
+		$out= "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		$out.= $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+		$out.= "</a>";
+		return $out;
 		break;
 	case "glpi_networking.name" :
 		$type=NETWORKING_TYPE;
-		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"];
-		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) echo " (".$data["ID"].")";
-		echo "</a>";
+		$out= "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		$out.= $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+		$out.= "</a>";
+		return $out;
 		break;
 	case "glpi_monitors.name" :
 		$type=MONITOR_TYPE;
-		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"];
-		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) echo " (".$data["ID"].")";
-		echo "</a>";
+		$out= "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		$out.= $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+		$out.= "</a>";
+		return $out;
 		break;
 	case "glpi_software.name" :
 		$type=SOFTWARE_TYPE;
-		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"];
-		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) echo " (".$data["ID"].")";
-		echo "</a>";
+		$out= "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		$out.= $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+		$out.= "</a>";
+ 		return $out;
 		break;
 	case "glpi_peripherals.name" :
 		$type=PERIPHERAL_TYPE;
-		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"];
-		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) echo " (".$data["ID"].")";
-		echo "</a>";
+		$out= "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		$out.= $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+		$out.= "</a>";
+		return $out;
 		break;	
 	case "glpi_cartridges_type.name" :
 		$type=CARTRIDGE_TYPE;
-		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"];
-		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) echo " (".$data["ID"].")";
-		echo "</a>";
+		$out= "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		$out.= $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+		$out.= "</a>";
+		return $out;
 		break;
 	case "glpi_consumables_type.name" :
 		$type=CONSUMABLE_TYPE;
-		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"];
-		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) echo " (".$data["ID"].")";
-		echo "</a>";
+		$out= "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		$out.= $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+		$out.= "</a>";
+		return $out;
 		break;	
 	case "glpi_contacts.name" :
 		$type=CONTACT_TYPE;
-		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"];
-		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) echo " (".$data["ID"].")";
-		echo "</a>";
+		$out= "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		$out.= $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+		$out.= "</a>";
+		return $out;
 		break;	
 	case "glpi_contracts.name" :
 		$type=CONTRACT_TYPE;
-		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"];
-		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) echo " (".$data["ID"].")";
-		echo "</a>";
+		$out= "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		$out.= $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+		$out.= "</a>";
+		return $out;
 		break;	
 	case "glpi_contracts.name.brut" :
 		$type=CONTRACT_TYPE;
-		echo $data["ITEM_$num"];
-		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) echo " (".$data["ID"].")";
+		$out= $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+		return $out;
 		break;			
 
 	case "glpi_enterprises.name" :
 		$type=ENTERPRISE_TYPE;
-		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"];
-		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) echo " (".$data["ID"].")";
-		echo "</a>";
+		$out= "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		$out.= $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+		$out.= "</a>";
 		if (!empty($data["ITEM_".$num."_2"]))
-			echo "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$HTMLRel."/pics/web.png' alt='website'></a>";
+			$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$HTMLRel."/pics/web.png' alt='website'></a>";
+		return $out;
 		break;	
 	case "glpi_enterprises.name.brut" :
 		$type=ENTERPRISE_TYPE;
-		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ITEM_".$num."_3"]."\">";
-		echo $data["ITEM_$num"];
-		if ($cfg_layout["view_ID"]||(empty($data["ITEM_$num"])&&!empty($data["ITEM_".$num."_3"]))) echo " (".$data["ITEM_".$num."_3"].")";
-		echo "</a>";
+		$out= "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ITEM_".$num."_3"]."\">";
+		$out.= $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]||(empty($data["ITEM_$num"])&&!empty($data["ITEM_".$num."_3"]))) $out.= " (".$data["ITEM_".$num."_3"].")";
+		$out.= "</a>";
 		if (!empty($data["ITEM_".$num."_2"]))
-			echo "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$HTMLRel."/pics/web.png' alt='website'></a>";
+			$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$HTMLRel."/pics/web.png' alt='website'></a>";
+		return $out;
 		break;			
 	case "glpi_docs.name" :		
 		$type=DOCUMENT_TYPE;
-		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"];
-		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) echo " (".$data["ID"].")";
-		echo "</a>";
+		$out= "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		$out.= $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+		$out.= "</a>";
+		return $out;
 		break;
 	case "glpi_type_docs.name" :		
 		$type=TYPEDOC_TYPE;
-		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"];
-		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) echo " (".$data["ID"].")";
-		echo "</a>";
+		$out= "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		$out.= $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+		$out.= "</a>";
+		return $out;
 		break;
 	case "glpi_links.name" :		
 		$type=LINK_TYPE;
-		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		echo $data["ITEM_$num"];
-		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) echo " (".$data["ID"].")";
-		echo "</a>";
+		$out= "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		$out.= $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+		$out.= "</a>";
+		return $out;
 		break;		
 	case "glpi_type_docs.icon" :
 		if (!empty($data["ITEM_$num"]))
-			echo "<img style='vertical-align:middle;' alt='' src='".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/".$data["ITEM_$num"]."'>";
-		else echo "&nbsp;";
+			return "<img style='vertical-align:middle;' alt='' src='".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/".$data["ITEM_$num"]."'>";
+		else return "&nbsp;";
 	break;	
 
 	case "glpi_docs.filename" :		
-		echo getDocumentLink($data["ITEM_$num"]);
+		return getDocumentLink($data["ITEM_$num"]);
 	break;		
 	case "glpi_docs.link" :
 	case "glpi_enterprises.website" :
 		if (!empty($data["ITEM_$num"]))
-			echo "<a href=\"".$data["ITEM_$num"]."\" target='_blank'>".$data["ITEM_$num"]."</a>";
-		else echo "&nbsp;";
+			return "<a href=\"".$data["ITEM_$num"]."\" target='_blank'>".$data["ITEM_$num"]."</a>";
+		else return "&nbsp;";
 	break;	
 	case "glpi_enterprises.email" :
 	case "glpi_contacts.email" :
 	case "glpi_users.email" :
 		if (!empty($data["ITEM_$num"]))
-			echo "<a href='mailto:".$data["ITEM_$num"]."'>".$data["ITEM_$num"]."</a>";
-		else echo "&nbsp;";
+			return "<a href='mailto:".$data["ITEM_$num"]."'>".$data["ITEM_$num"]."</a>";
+		else return "&nbsp;";
 	break;	
 	case "glpi_device_hdd.specif_default" :
 	case "glpi_device_ram.specif_default" :
 	case "glpi_device_processor.specif_default" :
-			echo $data["ITEM_".$num];
+			return $data["ITEM_".$num];
 	break;
 	case "glpi_networking_ports.ifmac" :
+		$out="";
 		if ($type==COMPUTER_TYPE){
 			if (!empty($data["ITEM_".$num."_2"])){
-				echo "hw=".$data["ITEM_".$num."_2"];
-				if (!empty($data["ITEM_".$num])) echo " - ";
+				$out.= "hw=".$data["ITEM_".$num."_2"];
+				if (!empty($data["ITEM_".$num])) $out.= " - ";
 			}
 		
 			if (!empty($data["ITEM_".$num]))
-				echo "port=".$data["ITEM_".$num];
-		} else echo $data["ITEM_$num"];
-	
+				$out.= "port=".$data["ITEM_".$num];
+		} else $out.= $data["ITEM_$num"];
+		return $out;
 	break;
 	case "glpi_computers.date_mod":
 	case "glpi_printers.date_mod":
@@ -1162,13 +1359,13 @@ switch ($field){
 	case "glpi_peripherals.date_mod":
 	case "glpi_software.date_mod":
 	case "glpi_monitors.date_mod":
-		echo convDateTime($data["ITEM_$num"]);
+		return convDateTime($data["ITEM_$num"]);
 		break;
 	case "glpi_contracts.begin_date":
-		echo convDate($data["ITEM_$num"]);
+		return convDate($data["ITEM_$num"]);
 		break;
 	default:
-		echo $data["ITEM_$num"];
+		return $data["ITEM_$num"];
 		break;
 }
 
