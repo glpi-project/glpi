@@ -826,6 +826,7 @@ return $out;
 }
 
 function displaySearchError($type){
+	global $lang;
 	$out="";
 	switch ($type){
 		case 2 : //pdf
