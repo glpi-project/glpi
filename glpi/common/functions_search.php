@@ -773,8 +773,8 @@ function displaySearchHeaderItem($type,$value,&$num,$linkto="",$issort=0,$order=
 	$out="";
 	switch ($type){
 		case 1 : //sylk
-			$out=displaySearchItem($type,$value,$num,1);
-			$num--;
+			$out="F;SDM4;FG0C;".($num == 1 ? "Y1;" : "")."X$num\n";
+			$out.= "C;N;K\"".sylk_clean($value)."\"\n"; 
 			break;
 		default :
 
@@ -800,23 +800,13 @@ return $out;
 
 }
 
+
 function displaySearchItem($type,$value,&$num,$row){
 	$out="";
 	switch ($type){
 		case 1 : //sylk
-			$value=utf8_decode($value);
-	        	if (get_magic_quotes_runtime()) $value=stripslashes($value);
-	            	$value=preg_replace('/\x0A/',' ',$value);
-			$value=preg_replace('/<a[^>]+>/',' ',$value);
-			$value=preg_replace('/<img[^>]+>/',' ',$value);
-			$value=preg_replace('/<\/a>/',' ',$value);
-            		$value=preg_replace('/\x0D/',NULL,$value);
-            		$value=ereg_replace("\"","''",$value);
-			$value=str_replace(';', ';;', $value);
-
 			$out="F;P3;FG0L;".($num == 1 ? "Y".$row.";" : "")."X$num\n";
-			$out.= "C;N;K\"".trim($value)."\"\n"; 
-
+			$out.= "C;N;K\"".sylk_clean($value)."\"\n"; 
 			break;
 		default :
 			$out="<td>".$value."</td>\n";
@@ -1660,4 +1650,19 @@ global $LINK_ID_TABLE;
 		}
 	
 }
+
+function sylk_clean($value){
+
+	$value=utf8_decode($value);
+       	if (get_magic_quotes_runtime()) $value=stripslashes($value);
+        $value=preg_replace('/\x0A/',' ',$value);
+	$value=preg_replace('/<a[^>]+>/',' ',$value);
+	$value=preg_replace('/<img[^>]+>/',' ',$value);
+	$value=preg_replace('/<\/a>/',' ',$value);
+        $value=preg_replace('/\x0D/',NULL,$value);
+        $value=ereg_replace("\"","''",$value);
+	$value=str_replace(';', ';;', $value);
+return trim($value);
+}
+
 ?>
