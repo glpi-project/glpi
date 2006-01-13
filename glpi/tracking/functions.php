@@ -1361,9 +1361,9 @@ function updateTracking($input){
 	}
 	if (in_array("emailupdates",$updates)){
 	        if ($job->fields["emailupdates"]=="yes")
-		        $change_followup_content.=$lang["mailing"][101]."<br>";
+		        $change_followup_content.=$lang["mailing"][101]."\n";
         	else if ($job->fields["emailupdates"]=="no")
-         		$change_followup_content.=$lang["mailing"][102]."<br>";
+         		$change_followup_content.=$lang["mailing"][102]."\n";
 	        $global_mail_change_count++;
 	}
 
