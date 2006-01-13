@@ -773,8 +773,9 @@ function displaySearchHeaderItem($type,$value,&$num,$linkto="",$issort=0,$order=
 	$out="";
 	switch ($type){
 		case 2 : //pdf
-			global $pdf_header;
+			global $pdf_header,$pdf_size;
 			$pdf_header[$num]=html_clean(utf8_decode($value));
+			$pdf_size[$num]=strlen($pdf_header[$num]);
 			break;
 		case 1 : //sylk
 			$out="F;SDM4;FG0C;".($num == 1 ? "Y1;" : "")."X$num\n";
@@ -809,8 +810,9 @@ function displaySearchItem($type,$value,&$num,$row){
 	$out="";
 	switch ($type){
 		case 2 : //pdf
-			global $pdf_array,$pdf_header;
+			global $pdf_array,$pdf_header,$pdf_size;
 			$pdf_array[$row][$num]=html_clean(utf8_decode($value));
+			$pdf_size[$num]=max($pdf_size[$num],strlen($pdf_array[$row][$num]));
 			break;
 		case 1 : //sylk
 			$out="F;P3;FG0L;".($num == 1 ? "Y".$row.";" : "")."X$num\n";
@@ -845,12 +847,29 @@ function displaySearchFooter($type){
 	$out="";
 	switch ($type){
 		case 2 : //pdf
-			global $pdf_header,$pdf_array,$phproot;
+			global $pdf_header,$pdf_array,$pdf_size,$phproot;
 			$pdf=&new Cezpdf('a4','landscape');
 			$pdf->selectFont($phproot."/glpi/ezpdf/fonts/Helvetica.afm");
 			$pdf->ezStartPageNumbers(800,10,10,'left','{PAGENUM}/{TOTALPAGENUM}');
 			$options=array('fontSize'=>8,'colGap'=>2);
-			//$options=array('fontSize'=>8);
+			//print_r($pdf_size);
+			
+			$count=1;
+			$real_pdf_size=$pdf_size;
+			while ($count<count($real_pdf_size)&&array_sum($real_pdf_size)>190){
+				arsort($pdf_size);
+				$item=key($pdf_size);
+				$max=$real_pdf_size[$item];
+			
+				//echo $item."----$max----".array_sum($real_pdf_size)."<br>";
+				pdf_wrap($pdf_array,$item,max(14,floor($max/2)));
+			
+				// Discriminate already cut items
+				$pdf_size[$item]=floor($max/5);
+				$real_pdf_size[$item]=max(14,floor($max/2));
+
+				$count++;
+			}
 			$pdf->ezTable($pdf_array,$pdf_header,"",$options);
 			$pdf->ezStream();
 			
@@ -872,6 +891,7 @@ function displaySearchHeader($type,$rows,$cols){
 			global $pdf_array,$pdf_header;
 			$pdf_array=array();
 			$pdf_header=array();
+			$pdf_size=array();
 			break;
 		case 1 : // Sylk
 			define("FORMAT_REEL",   1); // #,##0.00
@@ -1691,14 +1711,57 @@ function sylk_clean($value){
         $value=ereg_replace("\"","''",$value);
 	$value=str_replace(';', ';;', $value);
 	$value=html_clean($value);
-return trim($value);
+return $value;
 }
 
 function html_clean($value){
 	$value=preg_replace('/<a[^>]+>/',' ',$value);
 	$value=preg_replace('/<img[^>]+>/',' ',$value);
 	$value=preg_replace('/<\/a>/',' ',$value);
- return $value;
+ return trim($value);
+}
+
+function pdf_wrap(&$data,$num,$size){
+	foreach ($data as $a => $b) 
+	foreach ($b as $key => $val)
+	if ($key==$num&&strlen($val)>$size){
+	if (strpos($val,">")){
+		$data[$a][$key]=wordwrapLine($val,$size,">");
+	}
+	else {
+		$data[$a][$key]=wordwrapLine($val,$size," ");
+	}
+	}
+}
+
+
+function wordwrapLine($s, $l,$t) {
+  
+  $split=split("\n",$s);
+  $out="";
+  foreach ($split as $key=>$s){
+  	$line="";
+  	$formatted="";
+  	$tok = strtok($s, $t);
+	
+  	while (strlen($tok) != 0) {
+    		if (strlen($line) + strlen($tok) < ($l + 2) ) {
+      			if (!empty($line)) $line.=$t;
+			$line .= $tok;
+    		}
+    		else {
+			
+      			$formatted .= "$line$t\n";
+      			$line = $tok;
+    		}
+    		$tok = strtok($t);
+  	}
+  	$formatted .= $line;
+  	$out .= trim($formatted);
+	//echo $key."---".count($split)."<br>";
+	if (($key+1)!=count($split)) $out.="\n";
+	}
+  return $out;
 }
 
 ?>
