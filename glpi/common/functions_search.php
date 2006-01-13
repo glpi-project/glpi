@@ -850,7 +850,7 @@ function displaySearchFooter($type){
 			global $pdf_header,$pdf_array,$pdf_size,$phproot;
 			$pdf=&new Cezpdf('a4','landscape');
 			$pdf->selectFont($phproot."/glpi/ezpdf/fonts/Helvetica.afm");
-			$pdf->ezStartPageNumbers(800,10,10,'left','{PAGENUM}/{TOTALPAGENUM}');
+			$pdf->ezStartPageNumbers(750,10,10,'left',"GLPI PDF export - ".convDate(date("Y-m-d"))." - {PAGENUM}/{TOTALPAGENUM}");
 			$options=array('fontSize'=>8,'colGap'=>2);
 			//print_r($pdf_size);
 			
@@ -1739,6 +1739,7 @@ function wordwrapLine($s, $l,$t) {
   
   $split=split("\n",$s);
   $out="";
+  $maxlength=0;
   foreach ($split as $key=>$s){
   	$line="";
   	$formatted="";
@@ -1750,7 +1751,6 @@ function wordwrapLine($s, $l,$t) {
 			$line .= $tok;
     		}
     		else {
-			
       			$formatted .= "$line$t\n";
       			$line = $tok;
     		}
@@ -1758,7 +1758,7 @@ function wordwrapLine($s, $l,$t) {
   	}
   	$formatted .= $line;
   	$out .= trim($formatted);
-	//echo $key."---".count($split)."<br>";
+	
 	if (($key+1)!=count($split)) $out.="\n";
 	}
   return $out;
