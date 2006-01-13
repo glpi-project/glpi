@@ -60,6 +60,17 @@ if (isset($_POST["idtable"])){
 	
 	echo "<div id='search_spinner$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>";	
 
+	$nb=0;
+	$nb=countElementsInTable($table);
+
+	if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
+		echo "<script type='text/javascript' >\n";
+		echo "document.getElementById('search_spinner$rand').style.visibility='hidden';";
+		echo "Element.hide('search_".$_POST['myname']."$rand');";
+		echo "document.getElementById('search_".$_POST['myname']."$rand').value='".$cfg_features["ajax_wildcard"]."';";
+		echo "</script>\n";
+	}
+
 	echo "<span id='results_ID$rand'>";
 	echo "<select name='ID'><option value='0'>------</option></select>";
 	echo "</span>";	
