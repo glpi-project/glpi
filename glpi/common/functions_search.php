@@ -861,9 +861,8 @@ function displaySearchFooter($type){
 				$item=key($pdf_size);
 				$max=$real_pdf_size[$item];
 			
-				//echo $item."----$max----".array_sum($real_pdf_size)."<br>";
 				pdf_wrap($pdf_array,$item,max(14,floor($max/2)));
-			
+				pdf_wrap_item($pdf_header,$item,max(14,floor($max/2)));
 				// Discriminate already cut items
 				$pdf_size[$item]=floor($max/5);
 				$real_pdf_size[$item]=max(14,floor($max/2));
@@ -1403,6 +1402,8 @@ switch ($field){
 		return convDateTime($data["ITEM_$num"]);
 		break;
 	case "glpi_contracts.begin_date":
+	case "glpi_infocoms.buy_date":
+	case "glpi_infocoms.use_date":
 		return convDate($data["ITEM_$num"]);
 		break;
 	default:
@@ -1722,18 +1723,23 @@ function html_clean($value){
 }
 
 function pdf_wrap(&$data,$num,$size){
-	foreach ($data as $a => $b) 
-	foreach ($b as $key => $val)
-	if ($key==$num&&strlen($val)>$size){
-	if (strpos($val,">")){
-		$data[$a][$key]=wordwrapLine($val,$size,">");
-	}
-	else {
-		$data[$a][$key]=wordwrapLine($val,$size," ");
-	}
+	foreach ($data as $a => $b){
+		pdf_wrap_item($b,$num,$size);
+		$data[$a]=$b;
 	}
 }
 
+function pdf_wrap_item(&$data,$num,$size){
+	
+	foreach ($data as $key => $val)
+	if ($key==$num&&strlen($val)>$size)
+	if (strpos($val,">")){
+		$data[$key]=wordwrapLine($val,$size,">");
+	}
+	else {
+		$data[$key]=wordwrapLine($val,$size," ");
+	}
+}
 
 function wordwrapLine($s, $l,$t) {
   
