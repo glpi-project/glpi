@@ -1756,11 +1756,14 @@ function wordwrapLine($s, $l,$t) {
     		}
     		$tok = strtok($t);
   	}
+	
   	$formatted .= $line;
+	if (substr($s,-1,1)==$t) $formatted .=$t;
   	$out .= trim($formatted);
 	
 	if (($key+1)!=count($split)) $out.="\n";
 	}
+
   return $out;
 }
 
