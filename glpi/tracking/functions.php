@@ -510,7 +510,10 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	} else {
 		$job->isgroup = "yes";
 	}
-	$job->fields["status"] = $status;
+	if ($assign>0&&$status=="new")
+		$job->fields["status"] = "plan";
+	else 
+		$job->fields["status"] = $status;
 	$job->fields["author"] = $author;
 	$job->fields["device_type"] = $device_type;
 	if ($device_type==0)
