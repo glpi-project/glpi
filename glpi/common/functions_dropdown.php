@@ -741,7 +741,7 @@ function dropdownConnectPort($ID,$type,$myname) {
 }
 
 function dropdownSoftwareToInstall($myname,$withtemplate) {
-	global $lang,$HTMLRel,$cfg_install;
+	global $lang,$HTMLRel,$cfg_install,$cfg_features;
 	
 	$db=new DB;
 	
@@ -763,6 +763,20 @@ function dropdownSoftwareToInstall($myname,$withtemplate) {
 	echo "</script>\n";
 
 	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>\n";
+
+
+	$nb=0;
+	if ($cfg_features["use_ajax"])
+		$nb=countElementsInTable("glpi_software");
+
+	if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
+		echo "<script type='text/javascript' >\n";
+		echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
+		echo "Element.hide('search_$myname$rand');";
+		echo "document.getElementById('search_$myname$rand').value='".$cfg_features["ajax_wildcard"]."';";
+		echo "</script>\n";
+	}
+
 
 	echo "<span id='results_$myname$rand'>\n";
 	echo "<select name='$myname'><option value='0'>------</option></select>\n";

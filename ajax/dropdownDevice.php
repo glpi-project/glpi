@@ -61,7 +61,8 @@ if (isset($_POST["idtable"])){
 	echo "<div id='search_spinner$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>";	
 
 	$nb=0;
-	$nb=countElementsInTable($table);
+	if ($cfg_features["use_ajax"])
+		$nb=countElementsInTable($table);
 
 	if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 		echo "<script type='text/javascript' >\n";
