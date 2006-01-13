@@ -686,6 +686,9 @@ $begin.=" 00:00:00";
 	case "category":
 		$WHERE.=" AND category='$value'";
 		break;
+	case "priority":
+		$WHERE.=" AND priority='$value'";
+		break;
 		
 	case "device":
 		//select computers IDs that are using this device;
