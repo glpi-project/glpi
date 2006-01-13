@@ -59,6 +59,10 @@ $_POST["date1"]=$_POST["date2"];
 $_POST["date2"]=$tmp;
 }
 
+
+$cleantarget=preg_replace("/[&]*ID=([0-9]+[&]{0,1})/","",$_SERVER['QUERY_STRING']);
+$cleantarget=preg_replace("/&/","&amp;",$cleantarget);
+
 $job=new Job();
 switch($_GET["type"]){
 case "technicien":
@@ -70,8 +74,6 @@ case "technicien":
 	if ($_GET["assign_type"]==USER_TYPE){
 	$next=getNextItem("glpi_users",$_GET["ID"]);
 	$prev=getPreviousItem("glpi_users",$_GET["ID"]);
-	$cleantarget=preg_replace("/ID=([0-9]+[&]{0,1})/","",$_SERVER['QUERY_STRING']);
-	$cleantarget=preg_replace("/&/","&amp;",$cleantarget);
 	} else $next=$prev=-1;
 
 	echo "<div align='center'>";
@@ -94,8 +96,6 @@ case "user":
 
 	$next=getNextItem("glpi_users",$_GET["ID"]);
 	$prev=getPreviousItem("glpi_users",$_GET["ID"]);
-	$cleantarget=preg_replace("/ID=([0-9]+[&]{0,1})/","",$_SERVER['QUERY_STRING']);
-	$cleantarget=preg_replace("/&/","&amp;",$cleantarget);
 
 	echo "<div align='center'>";
 	echo "<table class='icon_nav'>";
@@ -117,8 +117,6 @@ case "category":
 
 	$next=getNextItem("glpi_dropdown_tracking_category",$_GET["ID"]);
 	$prev=getPreviousItem("glpi_dropdown_tracking_category",$_GET["ID"]);
-	$cleantarget=preg_replace("/ID=([0-9]+[&]{0,1})/","",$_SERVER['QUERY_STRING']);
-	$cleantarget=preg_replace("/&/","&amp;",$cleantarget);
 	
 	echo "<div align='center'>";
 	echo "<table class='icon_nav'>";
@@ -134,6 +132,27 @@ case "category":
 	echo "</table></div><br>";
 
 	break;	
+case "priority":
+	$val1=$_GET["ID"];
+	$val2="";
+	$next=$prev=0;
+	if ($val1<5) $next=$val1+1;
+	if ($val1>1) $prev=$val1-1;
+
+	echo "<div align='center'>";
+	echo "<table class='icon_nav'>";
+	echo "<tr>";
+	echo "<td>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
+	echo "</td>";
+	echo "<td width='400' align='center'><b>".$lang["stats"][38].": ".getPriorityName($_GET["ID"])."</b></td>";
+	echo "<td>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
+	echo "</td>";
+	echo "</tr>";
+	echo "</table></div><br>";
+
+	break;	
 case "device":
 	$val1=$_GET["ID"];
 	$val2=$_GET["device"];
@@ -142,8 +161,6 @@ case "device":
 
 	$next=getNextItem($device_table,$_GET["ID"]);
 	$prev=getPreviousItem($device_table,$_GET["ID"]);
-	$cleantarget=preg_replace("/ID=([0-9]+[&]{0,1})/","",$_SERVER['QUERY_STRING']);
-	$cleantarget=preg_replace("/&/","&amp;",$cleantarget);
 	
 	$db=new DB();
 	$query = "select  designation from ".$device_table." WHERE ID='".$_GET['ID']."'";
@@ -169,10 +186,6 @@ case "comp_champ":
 
 	$table=str_replace("dropdown_type","type_computers",str_replace("location","locations","glpi_dropdown_".$_GET["champ"]));
 
-	$next=getNextItem($table,$_GET["ID"]);
-	$prev=getPreviousItem($table,$_GET["ID"]);
-	$cleantarget=preg_replace("/ID=([0-9]+[&]{0,1})/","",$_SERVER['QUERY_STRING']);
-	$cleantarget=preg_replace("/&/","&amp;",$cleantarget);
 	
 	echo "<div align='center'>";
 	echo "<table class='icon_nav'>";

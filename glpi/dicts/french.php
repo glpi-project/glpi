@@ -1418,6 +1418,9 @@ $lang["stats"][35]="Ticket(s)";
 $lang["stats"][36]="Par catégorie";
 $lang["stats"][37]="Statistiques par catégorie";
 $lang["stats"][38]="Catégorie";
+$lang["stats"][39]="Par priorité";
+$lang["stats"][40]="Statistiques par priorité";
+$lang["stats"][41]="Priorité";
 
 $lang["title"][0]="Centre de contrôle";
 $lang["title"][1]="Accès au Helpdesk seulement";

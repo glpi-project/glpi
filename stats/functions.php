@@ -118,6 +118,28 @@ function getNbIntervAuthor($date1,$date2)
 }
 
 //return an array from tracking
+//it contains the distinct priority of interventions.
+function getNbIntervPriority()
+{	
+	$db = new DB;
+	$query = "SELECT DISTINCT priority FROM glpi_tracking order by priority";
+	$result = $db->query($query);
+
+	if($db->numrows($result) >=1) {
+		$i = 0;
+		while($line = $db->fetch_assoc($result)) {
+		$tab[$i]["ID"] = $line["priority"];
+		$tab[$i]["priority"] = getPriorityName($line["priority"]);
+		$i++;
+		}
+		
+		return $tab;
+	}
+	else return 0;	
+	
+}
+
+//return an array from tracking
 //it contains the distinct category of interventions.
 function getNbIntervCategory()
 {	
@@ -138,8 +160,6 @@ function getNbIntervCategory()
 	else return 0;	
 	
 }
-
-
 //Return a counted number of intervention
 //$quoi == 1 it return the number at all
 //$quoi == 2 it return the number for current year
