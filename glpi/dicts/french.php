@@ -81,6 +81,8 @@ $lang["buttons"][23]="Voir";
 $lang["buttons"][24]="Monter";
 $lang["buttons"][25]="Descendre";
 $lang["buttons"][26]="Ajouter et Fermer";
+$lang["buttons"][27]="Export au format PDF";
+$lang["buttons"][28]="Export au format SLK (Tableur)";
 
 $lang["calendarD"][0]="D";
 $lang["calendarD"][1]="L";
