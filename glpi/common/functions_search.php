@@ -661,13 +661,13 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			
 			if ($output_type==0){ // Only in HTML
 				if ($type==SOFTWARE_TYPE)
-					echo displaySearchHeaderItem($output_type,$lang["software"][11]);
+					echo displaySearchHeaderItem($output_type,$lang["software"][11],$header_num);
 					
 				if ($type==CARTRIDGE_TYPE)
-					echo displaySearchHeaderItem($output_type,$lang["cartridges"][0]);	
+					echo displaySearchHeaderItem($output_type,$lang["cartridges"][0],$header_num);	
 				
 				if ($type==CONSUMABLE_TYPE)
-					echo displaySearchHeaderItem($output_type,$lang["consumables"][0]);
+					echo displaySearchHeaderItem($output_type,$lang["consumables"][0],$header_num);
 			}
 					
 			echo displaySearchEndLine($output_type);
