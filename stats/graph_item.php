@@ -124,7 +124,7 @@ case "category":
 	echo "<td>";
 	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
 	echo "</td>";
-	echo "<td width='400' align='center'><b>".$lang["stats"][38].": ".getDropdownName("glpi_dropdown_tracking_category",$_GET["ID"])."</b></td>";
+	echo "<td width='400' align='center'><b>".$lang["stats"][41].": ".getDropdownName("glpi_dropdown_tracking_category",$_GET["ID"])."</b></td>";
 	echo "<td>";
 	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
 	echo "</td>";
@@ -145,7 +145,7 @@ case "priority":
 	echo "<td>";
 	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
 	echo "</td>";
-	echo "<td width='400' align='center'><b>".$lang["stats"][38].": ".getPriorityName($_GET["ID"])."</b></td>";
+	echo "<td width='400' align='center'><b>".$lang["stats"][41].": ".getPriorityName($_GET["ID"])."</b></td>";
 	echo "<td>";
 	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
 	echo "</td>";
