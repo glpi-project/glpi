@@ -3390,8 +3390,17 @@ if(!FieldExists("glpi_$notes","notes")) {
 }
 
 if(FieldExists("glpi_infocoms","warranty_value")) {	
-	$query="ALTER TABLE `glpi_infocoms` CHANGE `warranty_value` `warranty_value` FLOAT NOT NULL DEFAULT '0';";
-	$db->query($query) or die("0.65 alter warranty value in infocoms ".$lang["update"][90].$db->error());
+	$query="ALTER TABLE `glpi_infocoms` CHANGE `warranty_info` `warranty_info` VARCHAR( 255 ) NULL DEFAULT NULL,
+		CHANGE `warranty_value` `warranty_value` FLOAT NOT NULL DEFAULT '0',
+		CHANGE `num_commande` `num_commande` VARCHAR( 200 ) NULL DEFAULT NULL,
+		CHANGE `bon_livraison` `bon_livraison` VARCHAR( 200 ) NULL DEFAULT NULL,
+		CHANGE `num_immo` `num_immo` VARCHAR( 200 ) NULL DEFAULT NULL;";
+	$db->query($query) or die("0.65 alter various fields in infocoms ".$lang["update"][90].$db->error());
+}
+
+if(FieldExists("glpi_reservation_item","comments")) {	
+	$query="ALTER TABLE `glpi_reservation_item` CHANGE `comments` `comments` TEXT NULL ";
+	$db->query($query) or die("0.65 alater comments in glpi_reservation_item ".$lang["update"][90].$db->error());
 }
 
 }
