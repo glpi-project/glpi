@@ -1009,7 +1009,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 
 }
 
-function countInstallations($sID) {
+function countInstallations($sID,$nohtml=0) {
 	
 	GLOBAL $cfg_layout, $lang;
 	
@@ -1017,16 +1017,20 @@ function countInstallations($sID) {
 	
 	// Get total
 	$total = getLicenceNumber($sID);
-
+	$out="";
 	if ($total!=0) {
 
 		if (isFreeSoftware($sID)) {
 			// Get installed
 			$installed = getInstalledLicence($sID);
-			echo "<i>".$lang["software"][39]."</i>&nbsp;&nbsp;".$lang["software"][19].": <strong>$installed</strong>";
+			if (!$nohtml)
+				$out.= "<i>".$lang["software"][39]."</i>&nbsp;&nbsp;".$lang["software"][19].": <strong>$installed</strong>";
+			else $out.= $lang["software"][39]."  ".$lang["software"][19].": $installed";
 		} else if (isGlobalSoftware($sID)){
 			$installed = getInstalledLicence($sID);
-			echo "<i>".$lang["software"][38]."</i>&nbsp;&nbsp;".$lang["software"][19].": <strong>$installed</strong>";
+			if (!$nohtml)
+				$out.= "<i>".$lang["software"][38]."</i>&nbsp;&nbsp;".$lang["software"][19].": <strong>$installed</strong>";
+			else $out.= $lang["software"][38]."  ".$lang["software"][19].": $installed";
 			
 		}
 		else {
@@ -1039,31 +1043,47 @@ function countInstallations($sID) {
 			$remaining = $total - $installed;
 
 			// Output
-			echo "<table cellpadding='2' cellspacing='0'><tr>";
-			echo "<td width='35%'>".$lang["software"][19].": <strong>$installed</strong></td>";
-			if ($remaining < 0) {
-				$remaining = "<span class='red'>$remaining";
-				$remaining .= "</span>";
-			} else if ($remaining == 0) {
-				$remaining = "<span class='green'>$remaining";
-				$remaining .= "</span>";
+			if (!$nohtml){
+				$out.= "<table cellpadding='2' cellspacing='0'><tr>";
+				$out.= "<td width='35%'>".$lang["software"][19].": <strong>$installed</strong></td>";
+			} else $out.= "  ".$lang["software"][19].": $installed";
+			
+			$color="red";
+			
+			if ($remaining == 0) {
+				$color="green";
 			} else {
-				$remaining = "<span class='blue'>$remaining";
-				$remaining .= "</span>";
+				$color="blue";
 			}			
-			echo "<td width='20%'>".$lang["software"][20].": <strong>$remaining</strong></td>";
-			echo "<td width='20%'>".$lang["software"][21].": <strong>".$total."</strong></td>";
+			
+			if (!$nohtml){
+				$remaining = "<span class='$color'>$remaining";
+				$remaining .= "</span>";
+				$out.= "<td width='20%'>".$lang["software"][20].": <strong>$remaining</strong></td>";
+				$out.= "<td width='20%'>".$lang["software"][21].": <strong>".$total."</strong></td>";
+			} else {
+				$out.= "  ".$lang["software"][20].": $remaining";
+				$out.= "  ".$lang["software"][21].": ".$total;
+			}
+
 			$tobuy=getLicenceToBuy($sID);
 			if ($tobuy>0){
-			echo "<td width='25%'>".$lang["software"][37].": <strong><span class='red'>".$tobuy."</span></strong></td>";
+				if (!$nohtml)
+					$out.= "<td width='25%'>".$lang["software"][37].": <strong><span class='red'>".$tobuy."</span></strong></td>";
+				else $out.= "  ".$lang["software"][37].": ".$tobuy;
 			} else {
-			echo "<td width='20%'>&nbsp;</td>";
+				if (!$nohtml)
+					$out.= "<td width='20%'>&nbsp;</td>";
 			}
-			echo "</tr></table>";
+			if (!$nohtml)
+				$out.= "</tr></table>";
 		} 
 	} else {
-			echo "<div align='center'><i>".$lang["software"][40]."</i></div>";
+		if (!$nohtml)
+			$out.= "<div align='center'><i>".$lang["software"][40]."</i></div>";
+		else $out.= $lang["software"][40];
 	}
+return $out;
 }	
 
 function getInstalledLicence($sID){

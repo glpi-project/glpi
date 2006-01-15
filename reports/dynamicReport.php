@@ -37,6 +37,9 @@
 
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
+include ($phproot . "/glpi/includes_software.php");
+include ($phproot . "/glpi/includes_consumables.php");
+include ($phproot . "/glpi/includes_cartridges.php");
 
 checkAuthentication("normal");
 include ($phproot . "/glpi/includes_search.php");

@@ -546,7 +546,8 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 
 	$job->fields["realtime"] = $realtime;
 	$job->fields["date"] = date("Y-m-d H:i:s");
-
+	if (strstr($status,"old_"))
+		$job->fields["closedate"] = date("Y-m-d H:i:s");
 	// ajout suite  à tracking sur tous les items 
 
 	switch ($device_type) {
