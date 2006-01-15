@@ -543,13 +543,15 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$GROUPBY=" GROUP BY ID";
 
 	if (empty($GROUPBY))
-	foreach ($toview as $key2 => $val2)
-	if (empty($GROUPBY)&&(($val2=="all")
-		||($type==COMPUTER_TYPE&&ereg("glpi_device",$SEARCH_OPTION[$type][$val2]["table"]))
-		||(ereg("glpi_contracts",$SEARCH_OPTION[$type][$val2]["table"]))
-	)) 
-		$GROUPBY=" GROUP BY ID ";
+	foreach ($toview as $key2 => $val2){
+		if (empty($GROUPBY)&&(($val2=="all")
+			||($type==COMPUTER_TYPE&&ereg("glpi_device",$SEARCH_OPTION[$type][$val2]["table"]))
+			||(ereg("glpi_contracts",$SEARCH_OPTION[$type][$val2]["table"]))
+			||($SEARCH_OPTION[$type][$val2]["table"].".".$SEARCH_OPTION[$type][$val2]["field"]=="glpi_licenses.serial")
+		)) 
 	
+		$GROUPBY=" GROUP BY ID ";
+	}
 
 	// For computer search
 	if ($type==COMPUTER_TYPE){
@@ -1121,6 +1123,9 @@ case "glpi_networking_ports.ifmac" :
 		return $pretable.$table.$addtable.".".$field." AS ITEM_$num, DEVICE_".NETWORK_DEVICE.".specificity AS ".$NAME."_".$num."_2, ";
 	else return $pretable.$table.$addtable.".".$field." AS ".$NAME."_$num, ";
 	break;
+case "glpi_licenses.serial" :
+		return " GROUP_CONCAT( DISTINCT LCASE(".$table.$addtable.".".$field.") SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
+	break;
 default:
 	if ($meta){
 		
@@ -1208,6 +1213,18 @@ function giveItem ($type,$field,$data,$num){
 global $cfg_install,$INFOFORM_PAGES,$HTMLRel,$cfg_layout;
 
 switch ($field){
+	case "glpi_licenses.serial" :
+		$out="";
+		$split=explode("$$$$",$data["ITEM_$num"]);
+		$count_display=0;
+		for ($k=0;$k<count($split);$k++){
+			if ($count_display) $out.= "<br>";
+			$count_display++;
+			$out.= $split[$k];
+		}
+		return $out;
+	
+		break;
 	case "glpi_users.name" :
 		// print realname or login name
 		if (!empty($data["ITEM_".$num."_2"]))
