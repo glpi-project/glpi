@@ -120,7 +120,7 @@ while ($i < $number) {
 	if (!empty($version))
 		$version =" - ".$version;
 	echo "<tr><td>".$db->result($result,$i,"name").$version."</td><td>";
-	countInstallations($db->result($result,$i,"ID"));
+	echo countInstallations($db->result($result,$i,"ID"));
 	echo "</td></tr>";
 	$i++;
 }
