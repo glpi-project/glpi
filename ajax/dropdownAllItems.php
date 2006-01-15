@@ -60,7 +60,7 @@ if (isset($items[$_POST["idtable"]])){
 	$table=$items[$_POST["idtable"]];
 	
 	// Link to user for search only > normal users
-	$link="dropdown.php";
+	$link="dropdownValue.php";
 	if ($_POST["idtable"]==USER_TYPE)
 		$link="dropdownUsers.php";
 	
@@ -86,5 +86,26 @@ if (isset($items[$_POST["idtable"]])){
 	echo "<span id='results_ID$rand'>";
 	echo "<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
 	echo "</span>";	
+
+$nb=0;
+if ($cfg_features["use_ajax"])
+	$nb=countElementsInTable($table);
+
+if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
+	echo "<script type='text/javascript' >\n";
+	echo "document.getElementById('search_spinner$rand').style.visibility='hidden';";
+	echo "Element.hide('search_".$_POST['myname']."$rand');";
+	echo "document.getElementById('search_".$_POST['myname']."$rand').value='".$cfg_features["ajax_wildcard"]."';";
+	echo "</script>\n";
+}
+
+
+if(isset($_POST['value'])&&$_POST['value']>0){
+	echo "<script type='text/javascript' >\n";
+	echo "document.getElementById('search_spinner$rand').style.visibility='hidden';";
+	echo "document.getElementById('search_".$_POST['myname']."$rand').value='".$cfg_features["ajax_wildcard"]."';";
+	echo "</script>\n";
+}
+
 }		
 ?>

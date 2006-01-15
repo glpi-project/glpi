@@ -369,7 +369,7 @@ function showDeviceDocument($instID,$search='') {
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 	
 	echo "<input type='hidden' name='conID' value='$instID'>";
-		dropdownAllItems("item",0,1,1,1,1);
+		dropdownAllItems("item",0,0,1,1,1,1);
 	echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</td>";
 	echo "<td align='center' class='tab_bg_2'>";
