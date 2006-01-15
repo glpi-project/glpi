@@ -661,16 +661,14 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				echo displaySearchHeaderItem($output_type,$SEARCH_OPTION[$type2[$i]][$field2[$i]]["name"],$header_num);
 			}
 			
-			if ($output_type==0){ // Only in HTML
-				if ($type==SOFTWARE_TYPE)
-					echo displaySearchHeaderItem($output_type,$lang["software"][11],$header_num);
+			if ($type==SOFTWARE_TYPE)
+				echo displaySearchHeaderItem($output_type,$lang["software"][11],$header_num);
 					
-				if ($type==CARTRIDGE_TYPE)
-					echo displaySearchHeaderItem($output_type,$lang["cartridges"][0],$header_num);	
+			if ($type==CARTRIDGE_TYPE)
+				echo displaySearchHeaderItem($output_type,$lang["cartridges"][0],$header_num);	
 				
-				if ($type==CONSUMABLE_TYPE)
-					echo displaySearchHeaderItem($output_type,$lang["consumables"][0],$header_num);
-			}
+			if ($type==CONSUMABLE_TYPE)
+				echo displaySearchHeaderItem($output_type,$lang["consumables"][0],$header_num);
 					
 			echo displaySearchEndLine($output_type);
 			
@@ -732,25 +730,17 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					}
 				}
 				
-				if ($output_type==0){ // Only in HTML
-					if ($type==CARTRIDGE_TYPE){
-						echo "<td>";
-						countCartridges($data["ID"],$data["ALARM"]);
-						echo "</td>";
-					}
+				if ($type==CARTRIDGE_TYPE){
+		   			echo displaySearchItem($output_type,countCartridges($data["ID"],$data["ALARM"],$output_type),$item_num,$row_num);
+				}
 
-					if ($type==SOFTWARE_TYPE){
-						echo "<td>";					
-			   			countInstallations($data["ID"]);
-						echo "</td>";
+				if ($type==SOFTWARE_TYPE){
+		   			echo displaySearchItem($output_type,countInstallations($data["ID"],$output_type),$item_num,$row_num);
 					}		
 				
-					if ($type==CONSUMABLE_TYPE){
-						echo "<td>";					
-		   				countConsumables($data["ID"],$data["ALARM"]);
-						echo "</td>";
-					}		
-				}
+				if ($type==CONSUMABLE_TYPE){
+		   			echo displaySearchItem($output_type,countConsumables($data["ID"],$data["ALARM"],$output_type),$item_num,$row_num);
+				}		
 		   		
 		        echo displaySearchEndLine($output_type);
 			}
@@ -1339,7 +1329,7 @@ switch ($field){
 		$type=ENTERPRISE_TYPE;
 		$out= "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ITEM_".$num."_3"]."\">";
 		$out.= $data["ITEM_$num"];
-		if ($cfg_layout["view_ID"]||(empty($data["ITEM_$num"])&&!empty($data["ITEM_".$num."_3"]))) $out.= " (".$data["ITEM_".$num."_3"].")";
+		if (!empty($data["ITEM_".$num."_3"])&&($cfg_layout["view_ID"]||(empty($data["ITEM_$num"])))) $out.= " (".$data["ITEM_".$num."_3"].")";
 		$out.= "</a>";
 		if (!empty($data["ITEM_".$num."_2"]))
 			$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$HTMLRel."/pics/web.png' alt='website'></a>";

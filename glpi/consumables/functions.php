@@ -541,12 +541,12 @@ function restoreConsumable($ID){
 *@return nothing (display)
 *
 **/
-function countConsumables($tID,$alarm) {
+function countConsumables($tID,$alarm,$nohtml=0) {
 	
 	GLOBAL $cfg_layout, $lang;
 	
 	$db = new DB;
-	
+	$out="";
 	// Get total
 	$total = getConsumablesNumber($tID);
 
@@ -557,12 +557,16 @@ function countConsumables($tID,$alarm) {
 	$highlight="";
 	if ($unused<=$alarm)
 		$highlight="class='tab_bg_1_2'";
-
-	echo "<div $highlight><b>".$lang["consumables"][30].":&nbsp;$total</b>&nbsp;&nbsp;&nbsp;".$lang["consumables"][13].": $unused&nbsp;&nbsp;&nbsp;".$lang["consumables"][15].": $old</div>";			
+	if (!$nohtml)
+		$out.= "<div $highlight><b>".$lang["consumables"][30].":&nbsp;$total</b>&nbsp;&nbsp;&nbsp;".$lang["consumables"][13].": $unused&nbsp;&nbsp;&nbsp;".$lang["consumables"][15].": $old</div>";			
+	else $out.= $lang["consumables"][30].": $total   ".$lang["consumables"][13].": $unused   ".$lang["consumables"][15].": $old";			
 
 	} else {
-			echo "<div class='tab_bg_1_2'><i>".$lang["consumables"][9]."</i></div>";
+		if (!$nohtml)
+			$out.= "<div class='tab_bg_1_2'><i>".$lang["consumables"][9]."</i></div>";
+		else $out.= $lang["consumables"][9];
 	}
+	return $out;
 }	
 
 /**

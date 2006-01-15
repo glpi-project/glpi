@@ -902,7 +902,7 @@ function dropdownCompatibleCartridges($pID) {
 *@return nothing (display)
 *
 **/
-function countCartridges($tID,$alarm) {
+function countCartridges($tID,$alarm,$nohtml=0) {
 	
 	GLOBAL $cfg_layout, $lang;
 	
@@ -910,7 +910,7 @@ function countCartridges($tID,$alarm) {
 
 	// Get total
 	$total = getCartridgesNumber($tID);
-
+	$out="";
 	if ($total!=0) {
 	$unused=getUnusedCartridgesNumber($tID);
 	$used=getUsedCartridgesNumber($tID);
@@ -920,11 +920,16 @@ function countCartridges($tID,$alarm) {
 	if ($unused<=$alarm)
 		$highlight="class='tab_bg_1_2'";
 
-	echo "<div $highlight><b>".$lang["cartridges"][30].":&nbsp;$total</b>&nbsp;&nbsp;&nbsp;".$lang["cartridges"][13].": $unused&nbsp;&nbsp;&nbsp;".$lang["cartridges"][14].": $used&nbsp;&nbsp;&nbsp;".$lang["cartridges"][15].": $old</div>";			
+	if (!$nohtml)
+		$out.= "<div $highlight><b>".$lang["cartridges"][30].":&nbsp;$total</b>&nbsp;&nbsp;&nbsp;".$lang["cartridges"][13].": $unused&nbsp;&nbsp;&nbsp;".$lang["cartridges"][14].": $used&nbsp;&nbsp;&nbsp;".$lang["cartridges"][15].": $old</div>";
+	else 	$out.= $lang["cartridges"][30].": $total   ".$lang["cartridges"][13].": $unused   ".$lang["cartridges"][14].": $used   ".$lang["cartridges"][15].": $old";		
 
 	} else {
-			echo "<div class='tab_bg_1_2'><i>".$lang["cartridges"][9]."</i></div>";
+		if (!$nohtml)
+			$out.= "<div class='tab_bg_1_2'><i>".$lang["cartridges"][9]."</i></div>";
+		else $out.= $lang["cartridges"][9];
 	}
+return $out;
 }	
 
 /**
