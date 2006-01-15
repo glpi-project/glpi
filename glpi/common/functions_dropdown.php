@@ -315,7 +315,7 @@ if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 function dropdownAssign($value, $value_type,$myname) {
 	// Make a select box with all glpi users
 	global $HTMLRel,$cfg_install,$lang;
-	
+
 	$db=new DB;
 	
 	$items=array(
@@ -327,8 +327,8 @@ function dropdownAssign($value, $value_type,$myname) {
 	echo "<table border='0'><tr><td>\n";
 	echo "<select name='assign_type' id='item_type$rand'>\n";
 	echo "<option value='0'>-----</option>\n";
-	echo "<option ".($value_type==USER_TYPE?" selected ":"")." value='".USER_TYPE."'>".$lang["Menu"][14]."</option>\n";
-	echo "<option ".($value_type==ENTERPRISE_TYPE?" selected ":"")." value='".ENTERPRISE_TYPE."'>".$lang["Menu"][23]."</option>\n";
+	echo "<option  value='".USER_TYPE."'>".$lang["Menu"][14]."</option>\n";
+	echo "<option  value='".ENTERPRISE_TYPE."'>".$lang["Menu"][23]."</option>\n";
 	echo "</select>\n";
 	
 	
@@ -343,12 +343,19 @@ function dropdownAssign($value, $value_type,$myname) {
 	echo "           method:'post', parameters:'idtable='+value+'&myname=$myname&value=$value'\n";
 	echo "})})\n";
 	echo "</script>\n";
-	
+
 	echo "<div id='search_spinner_$myname$rand' style=' position:absolute; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 	echo "</td><td>\n"	;
 	echo "<span id='show_$myname$rand'></span>\n";
 	echo "</td></tr>\n";
 	echo "</table>\n";
+
+	if ($value>0){
+		echo "<script type='text/javascript' >\n";
+		echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
+		echo "document.getElementById('item_type$rand').value='".$value_type."';";
+		echo "</script>\n";
+	}
 	
 	
 }
@@ -527,7 +534,7 @@ echo "<select name='$name'>\n";
 * @param $value
 * @return nothing (print out an HTML select box)
 */
-function dropdownAllItems($myname,$value_type=0,$withenterprise=0,$withcartridge=0,$withconsumable=0,$withcontracts=0) {
+function dropdownAllItems($myname,$value_type=0,$value=0,$withenterprise=0,$withcartridge=0,$withconsumable=0,$withcontracts=0) {
 	global $lang,$HTMLRel,$cfg_install;
 	
 	$db=new DB;
@@ -551,16 +558,16 @@ function dropdownAllItems($myname,$value_type=0,$withenterprise=0,$withcartridge
 	echo "<table border='0'><tr><td>\n";
 	echo "<select name='type' id='item_type$rand'>\n";
 	echo "<option value='0'>-----</option>\n";
-	echo "<option ".($value_type==COMPUTER_TYPE?" selected ":"")." value='".COMPUTER_TYPE."'>".$lang["Menu"][0]."</option>\n";
-	echo "<option ".($value_type==NETWORKING_TYPE?" selected ":"")." value='".NETWORKING_TYPE."'>".$lang["Menu"][1]."</option>\n";
-	echo "<option ".($value_type==PRINTER_TYPE?" selected ":"")." value='".PRINTER_TYPE."'>".$lang["Menu"][2]."</option>\n";
-	echo "<option ".($value_type==MONITOR_TYPE?" selected ":"")." value='".MONITOR_TYPE."'>".$lang["Menu"][3]."</option>\n";
-	echo "<option ".($value_type==PERIPHERAL_TYPE?" selected ":"")." value='".PERIPHERAL_TYPE."'>".$lang["Menu"][16]."</option>\n";
-	echo "<option ".($value_type==SOFTWARE_TYPE?" selected ":"")." value='".SOFTWARE_TYPE."'>".$lang["Menu"][4]."</option>\n";
-	if ($withenterprise==1) echo "<option ".($value_type==ENTERPRISE_TYPE?" selected ":"")." value='".ENTERPRISE_TYPE."'>".$lang["Menu"][23]."</option>\n";
-	if ($withcartridge==1) echo "<option ".($value_type==CARTRIDGE_TYPE?" selected ":"")." value='".CARTRIDGE_TYPE."'>".$lang["Menu"][21]."</option>\n";
-	if ($withconsumable==1) echo "<option ".($value_type==CONSUMABLE_TYPE?" selected ":"")." value='".CONSUMABLE_TYPE."'>".$lang["Menu"][32]."</option>\n";
-	if ($withcontracts==1) echo "<option ".($value_type==CONTRACT_TYPE?" selected ":"")." value='".CONTRACT_TYPE."'>".$lang["Menu"][25]."</option>\n";
+	echo "<option value='".COMPUTER_TYPE."'>".$lang["Menu"][0]."</option>\n";
+	echo "<option value='".NETWORKING_TYPE."'>".$lang["Menu"][1]."</option>\n";
+	echo "<option value='".PRINTER_TYPE."'>".$lang["Menu"][2]."</option>\n";
+	echo "<option value='".MONITOR_TYPE."'>".$lang["Menu"][3]."</option>\n";
+	echo "<option value='".PERIPHERAL_TYPE."'>".$lang["Menu"][16]."</option>\n";
+	echo "<option value='".SOFTWARE_TYPE."'>".$lang["Menu"][4]."</option>\n";
+	if ($withenterprise==1) echo "<option value='".ENTERPRISE_TYPE."'>".$lang["Menu"][23]."</option>\n";
+	if ($withcartridge==1) echo "<option value='".CARTRIDGE_TYPE."'>".$lang["Menu"][21]."</option>\n";
+	if ($withconsumable==1) echo "<option value='".CONSUMABLE_TYPE."'>".$lang["Menu"][32]."</option>\n";
+	if ($withcontracts==1) echo "<option value='".CONTRACT_TYPE."'>".$lang["Menu"][25]."</option>\n";
 	echo "</select>\n";
 	
 	
@@ -571,7 +578,7 @@ function dropdownAllItems($myname,$value_type=0,$withenterprise=0,$withcartridge
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'idtable='+value+'&myname=$myname'\n";
+	echo "           method:'post', parameters:'idtable='+value+'&myname=$myname&value=$value'\n";
 	echo "})})\n";
 	echo "</script>\n";
 	
@@ -579,7 +586,14 @@ function dropdownAllItems($myname,$value_type=0,$withenterprise=0,$withcartridge
 	echo "</td><td>\n"	;
 	echo "<span id='show_$myname$rand'>&nbsp;</span>\n";
 	echo "</td></tr></table>\n";
-	
+
+	if ($value>0){
+		echo "<script type='text/javascript' >\n";
+		echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
+		echo "document.getElementById('item_type$rand').value='".$value_type."';";
+		echo "</script>\n";
+	}
+
 }
 
 /**

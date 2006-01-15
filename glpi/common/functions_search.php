@@ -274,7 +274,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	reset($options);
 	foreach ($options as $key => $val) {
 		echo "<option value=\"".$key."\"";
-		if($key == $sort) echo "selected";
+		if($key == $sort) echo " selected";
 		echo ">".substr($val["name"],0,20)."</option>\n";
 	}
 	echo "</select> ";
@@ -657,7 +657,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			// META HEADER
 			if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 			for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
-			if (isset($type2[$i])&&strlen($contains2[$i])>0&&$type2[$i]>0&&(!isset($link2[$i])||!ereg("NOT",$link2[$i]))) {
+			if (isset($type2[$i])&&$type2[$i]>0&&(!isset($link2[$i])||!ereg("NOT",$link2[$i]))) {
 				echo displaySearchHeaderItem($output_type,$SEARCH_OPTION[$type2[$i]][$field2[$i]]["name"],$header_num);
 			}
 			
@@ -711,7 +711,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				// Print Meta Item
 				if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 				for ($j=0;$j<$_SESSION["glpisearchcount2"][$type];$j++)
-				if (isset($type2[$j])&&strlen($contains2[$j])>0&&$type2[$j]>0&&(!isset($link2[$j])||!ereg("NOT",$link2[$j]))){
+				if (isset($type2[$j])&&$type2[$j]>0&&(!isset($link2[$j])||!ereg("NOT",$link2[$j]))){
 					if (!ereg("$$$$",$data["META_$j"]))
 						echo displaySearchItem($output_type,$data["META_$j"],$item_num,$row_num);
 					else {
@@ -1114,7 +1114,7 @@ case "glpi_networking_ports.ifmac" :
 	else return $pretable.$table.$addtable.".".$field." AS ".$NAME."_$num, ";
 	break;
 case "glpi_licenses.serial" :
-		return " GROUP_CONCAT( DISTINCT LCASE(".$table.$addtable.".".$field.") SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
+	return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
 	break;
 default:
 	if ($meta){
@@ -1206,6 +1206,7 @@ switch ($field){
 	case "glpi_licenses.serial" :
 		$out="";
 		$split=explode("$$$$",$data["ITEM_$num"]);
+		
 		$count_display=0;
 		for ($k=0;$k<count($split);$k++){
 			if ($count_display) $out.= "<br>";
@@ -1567,7 +1568,9 @@ switch ($new_table){
 		return " LEFT JOIN $new_table $AS ON ($rt.rubrique = $nt.ID) ";
 		break;
 	case "glpi_licenses":
-		return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.sID) ";
+		if (!$meta)
+			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.sID) ";
+		else return "";
 		break;	
 	case "glpi_computer_device":
 		if ($device_type==0)
@@ -1657,8 +1660,8 @@ global $LINK_ID_TABLE;
 				case SOFTWARE_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[SOFTWARE_TYPE]."_$num");
 					return " INNER JOIN glpi_inst_software as META_inst_$num ON (META_inst_$num.cID = glpi_computers.ID) ".
-						   " INNER JOIN glpi_licenses as META_lic_$num ON ( META_inst_$num.license=META_lic_$num.ID ) ".
-						   " INNER JOIN glpi_software AS glpi_software_$num ON (META_lic_$num.sID = glpi_software_$num.ID) "; 
+						   " INNER JOIN glpi_licenses as META_glpi_licenses_$num ON ( META_inst_$num.license=META_glpi_licenses_$num.ID ) ".
+						   " INNER JOIN glpi_software AS glpi_software_$num ON (META_glpi_licenses_$num.sID = glpi_software_$num.ID) "; 
 				break;
 				}
 			break;
@@ -1696,8 +1699,8 @@ global $LINK_ID_TABLE;
 			switch ($to_type){
 				case COMPUTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]."_$num");
-				return " INNER JOIN glpi_licenses as META_lic_$num ON ( META_lic_$num.sID = glpi_software.ID ) ".
-					   " INNER JOIN glpi_inst_software as META_inst_$num ON (META_inst_$num.license = META_lic_$num.ID) ".
+				return " INNER JOIN glpi_licenses as META_glpi_licenses_$num ON ( META_glpi_licenses_$num.sID = glpi_software.ID ) ".
+					   " INNER JOIN glpi_inst_software as META_inst_$num ON (META_inst_$num.license = META_glpi_licenses_$num.ID) ".
 					   " INNER JOIN glpi_computers AS glpi_computers_$num ON (META_inst_$num.cID = glpi_computers_$num.ID) ";
 					
 				break;
