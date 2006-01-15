@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">     
    <head>
-          <title>AIDE CENTRAL - GLPI </title>
+          <title>AIDE DU CENTRAL - GLPI</title>
           <meta http-equiv="Content-type" content="text/html; charset=iso-8859-15"/>
           <meta http-equiv="Content-Script-Type" content="text/javascript"/>
           <meta http-equiv="Content-Style-Type" content="text/css"/>
@@ -159,25 +159,34 @@ font-size: 13px;
 <li><a href="#outilsb">b) Bases de connaissances</a></li>
 <li><a href="#outilsc">c) Rapports</a></li>
 </ul></li>
-</ul>
-
-<ul><li><a href="#admin">5 - Partie Administration</a></li>
-<li><ul>
-<li><a href="#admina">a) Gestion des utilisateurs</a></li>
-<li><a href="#adminb">b) Configuration</a></li>
-<li><ul>
-	<li><a href="#adminb1"> i) Intitul&eacute;s</a></li>
-	<li><a href="#adminb2"> ii) P&eacute;riph&eacute;riques internes</a></li>
-	<li><a href="#adminb3"> iii) Authentifications externes</a></li>
-	<li><a href="#adminb4"> iv) Suivis par emails</a></li>
-	<li><a href="#adminb5"> v) Configuration g&eacute;n&eacute;rale</a></li>
-	<li><a href="#adminb6"> vi) Type de document</a></li>
-	<li><a href="#adminb7"> vii) Liens externes protocol&eacute;s</a></li>	
-</ul></li>
-<li><a href="#adminc">c) Pr&eacute;f&eacute;rences</a></li>
-<li><a href="#admind">d) Donn&eacute;es (Sauvegarde/Restauration)</a></li>
-</ul></li>
-</ul>
+</ul>    
+    <ul>
+      <li><a href="#admin">5 - Partie Administration</a></li>
+      <li> 
+        <ul>
+          <li><a href="#admina">a) Gestion des utilisateurs</a></li>
+          <li><a href="#adminb">b) Configuration</a></li>
+          <li> 
+            <ul>
+              <li><a href="#adminb1">i) Intitul&eacute;s</a></li>
+              <li><a href="#adminb2">ii) P&eacute;riph&eacute;riques internes</a></li>
+              <li><a href="#adminb3">iii) Type de document</a></li>
+              <li><a href="#adminb4">iv) Liens externes protocol&eacute;s</a></li>
+              <li><a href="#adminb5">v) Configuration g&eacute;n&eacute;rale</a></li>
+              <li><a href="#adminb6">vi) Configuration affichage</a></li>
+              <li><a href="#adminb7">vii) Affichage recherche par d&eacute;faut</a></li>
+              <li><a href="#adminb8">viii) Suivis par emails</a></li>
+              <li><a href="#adminb9">ix) Authentifications externes</a></li>
+              <li><a href="#adminb10">x) V&eacute;rifier si une nouvelle version 
+                est disponible</a></li>
+            </ul>
+          </li>
+          <li><a href="#adminc">c) Pr&eacute;f&eacute;rences</a></li>
+          <li><a href="#admind">d) Donn&eacute;es (Sauvegarde/Restauration)</a></li>
+          <li><a href="#admine">e) Logs</a></li>
+        </ul>
+      </li>
+    </ul>
  
 </div>
 </div>
@@ -187,18 +196,59 @@ font-size: 13px;
 <div id='left'>
 <div class='content'>
 
-<h1>Aide central</h1>   
+    <h1>Aide du central</h1>   
 
 <h2><a name="invent"></a>1 - Partie Inventaire</h2>
 
-<h3><a name="inventa"></a>a) Consid&eacute;ration g&eacute;n&eacute;rales</h3>
-<p>Dans la partie inventaire vous pouvez lister et consulter l'inventaire mat&eacute;riel et logiciel du parc.</p>
-<p>Vous avez la possibilit&eacute; d'effectuer des recherches multiples param&eacute;tr&eacute;es et tri&eacute;es, sur un des types de l'inventaire (ordinateurs, mat&eacute;riel reseau, imprimantes, cartouches, &eacute;crans, p&eacute;riph&eacute;riques, logiciels, consommables et &eacute;tats).</p>
-<p>A partir de l&agrave; vous pouvez afficher la fiche contenant les informations pr&eacute;cises de chaque &eacute;l&eacute;ment r&eacute;pertori&eacute;, ou ajouter un &eacute;l&eacute;ment.</p>
+<h3><a name="inventa"></a>a) Consid&eacute;ration g&eacute;n&eacute;rales</h3>    <p>Dans la partie inventaire vous pouvez lister et consulter l'inventaire mat&eacute;riel 
+      et logiciel du parc.</p>
+    <p>Vous avez la possiblit&eacute; d'afficher et de trier les colonnes li&eacute;es 
+      au mat&eacute;riel ou logiciel qui vous paraissent importantes &agrave; 
+      visualiser depuis la liste compl&egrave;te.<br />
+      Ceci est param&egrave;trable dans le menu Administration / partie Configuration 
+      / Configuration Affichage (voir plus bas dans la partie Administration).</p>
+    <p>Vous avez la possibilit&eacute; d'effectuer des recherches multiples param&eacute;tr&eacute;es 
+      et tri&eacute;es, sur un des types de l'inventaire (ordinateurs, mat&eacute;riel 
+      reseau, imprimantes, cartouches, &eacute;crans, p&eacute;riph&eacute;riques, 
+      logiciels, consommables et &eacute;tats). <br />
+      Vous pouvez aussi effectuer des recherches muticrit&egrave;res qui vous 
+      permettent d'afficher seulement par exemple, un mat&eacute;riel ayant tel 
+      logiciel mais n'ayant pas tel autre logiciel gr&agrave;ce &agrave; l'ajout 
+      de crit&egrave;res globaux de recherche <img src="../pics/meta_plus.png" width="16" height="16" align="absmiddle" />.<br />
+      Vous avez aussi la possiblit&eacute; de n'afficher uniquement que les el&eacute;ments 
+      supprim&eacute;s afin de les restaurer ou de les purger.<br />
+      <br />
+      <b><font color="#990000"><img src="../pics/warning.png" width="20" height="20" align="absmiddle" /> 
+      ATTENTION :</font></b> Pour une recherche par date, veuillez utiliser exclusivement 
+      la syntaxe<br />
+      [Ann&eacute;e]-[Mois]-[Jour]<br />
+      <br />
+      Vous pouvez directement exporter la liste de vos mat&eacute;riels / logiciels 
+      ou le r&eacute;sultat de votre recherche au format SYLK (Tableur) <img src="../pics/slk.png" width="16" height="16" align="absmiddle" /> 
+      ou au format PDF <img src="../pics/pdf.png" width="16" height="16" align="absmiddle" />.<br />
+      <br />
+      Explication :</p>
+    <em>Excel, OpenOffice (Sylk) </em> 
+    <p><em>GLPI peut g&eacute;n&eacute;rer des rapports par type de materiel exploitables 
+      par un tableur. Pour cela GLPI g&eacute;n&egrave;re des fichiers de type 
+      SYLK. Ce format est exploitable par de nombreux tableurs.</em></p>
+    <p><em><font color="#990000">Si vous utilisez un logiciel qui ne respecte 
+      pas totalement les standards (Excel par exemple), les champs trop longs 
+      seront tronqu&eacute;s.</font></em></p>
+    <p>A partir de l&agrave; vous pouvez afficher la fiche contenant les informations pr&eacute;cises de chaque &eacute;l&eacute;ment r&eacute;pertori&eacute;, ou ajouter un &eacute;l&eacute;ment.</p>
 <p>Vous avez ensuite la possibilit&eacute; de modifier ou de supprimer chaque &eacute;l&eacute;ment.</p>
 <p>Dans chaque fiche d'informations, des onglets sont disponibles pour obtenir un affichage plus lisible des diverses infos. Vous pouvez choisir d'afficher toutes les informations en cliquant sur l'onglet "Tous".</p>
-<p>Les onglets <i>&#60;&#60;</i> et <i>&#62;&#62;</i> vous permettent de naviguer au sein des &eacute;l&eacute;ments de l'inventaire en allant respectivement &agrave; l'&eacute;l&eacute;ment pr&eacute;c&eacute;dent et suivant (en fonction de leurs ID) </p>
-<p>Pour les moniteurs et les p&eacute;riph&eacute;riques vous pouvez g&eacute;rer les &eacute;l&eacute;ments de mani&egrave; unitaire ou globale. La gestion unitaire correspond &agrave; une gestion classique alors que la gestion globale vous permet de connecter l'&eacute;l&eacute;ment sur plusieurs ordinateurs.</p>
+    <p>Les onglets <img src="../pics/left.png" width="16" height="16" align="absmiddle" /> 
+      et <img src="../pics/right.png" width="16" height="16" align="absmiddle" /> 
+      vous permettent de naviguer au sein des &eacute;l&eacute;ments de l'inventaire 
+      en allant respectivement &agrave; l'&eacute;l&eacute;ment pr&eacute;c&eacute;dent 
+      et suivant en fonction de leurs ID ou de leurs noms<br />
+      (param&egrave;trable dans le menu Administration / partie Configuration 
+      / Configuration Affichage).</p>
+    <p>Pour les moniteurs et les p&eacute;riph&eacute;riques vous pouvez g&eacute;rer 
+      les &eacute;l&eacute;ments de mani&egrave;re unitaire ou globale. La gestion 
+      unitaire correspond &agrave; une gestion classique alors que la gestion 
+      globale vous permet de connecter l'&eacute;l&eacute;ment sur plusieurs ordinateurs.</p>
 
 <h3><a name="inventb"></a>b) Gestion des gabarits</h3>
 
@@ -207,8 +257,9 @@ font-size: 13px;
 
 <h3><a name="inventc"></a>c) Gestion des p&eacute;riph&eacute;riques internes aux ordinateurs</h3>
 
-<p>Depuis GLPI 0.5, la notion de p&eacute;riph&eacute;rique interne est apparue. Celle-ci vous permet d'ajouter autant d'&eacute;l&eacute;ments que n&eacute;cessaire dans un ordinateur.</p>
-<p>Vous pouvez g&eacute;rer la liste des p&eacute;riph&eacute;riques internes de votre parc dans la partie Configuration/P&eacute;riph&eacute;riques Internes.</p>
+<p>Depuis GLPI 0.5, la notion de p&eacute;riph&eacute;rique interne est apparue. Celle-ci vous permet d'ajouter autant d'&eacute;l&eacute;ments que n&eacute;cessaire dans un ordinateur.</p>    <p>Vous pouvez g&eacute;rer la liste des p&eacute;riph&eacute;riques internes 
+      de votre parc dans le menu Administration / partie Configuration / P&eacute;riph&eacute;riques 
+      Internes.</p>
 <p>Pour certains type de p&eacute;riph&eacute;riques internes vous pouvez sp&eacute;cifier une carat&eacute;ristique sp&eacute;cifique (la capacit&eacute; d'un disque dur par exemple).</p>
 
 <h3><a name="inventd"></a>d) Gestion des connections directes</h3>
@@ -219,111 +270,194 @@ font-size: 13px;
 <h3><a name="invente"></a>e) Gestion des ports r&eacute;seaux</h3>
 <p>Un port r&eacute;seau permet de mod&eacute;liser la sortie d'une interface r&eacute;seau sur un mat&eacute;riel donn&eacute;.</p>
 <p>Chaque port dispose gen&eacute;ralement d'une adresse IP, d'une adresse mac et d'une prise r&eacute;seau &agrave; laquelle il est reli&eacute;.</p>
-<p>Les connections r&eacute;seau se font en reliant deux ports entres eux, pour relier deux mat&eacute;riels ensemble il faut donc qu'il y ait un port libre sur chacun de ces mat&eacute;riels.</p>
-<p>Dans la plupart des configurations les connections se feront entre un port pr&eacute;sent sur un ordinateur, un p&eacute;riph&eacute;rique ou une imprimante et un port pr&eacute;sent sur un mat&eacute;riel r&eacute;seau (hub, switch)</p>
-<p>Lors de la connection entre deux mat&eacute;riels, les informations telles que l'adresse IP et la prise reseau sont mises &agrave; jour pour chacun des deux ports concern&eacute;s</p>
-<p>Pour chaque mat&eacute;riel, il est possible &agrave; tout moment d'ajouter un ou plusieurs ports</p>
+    <p>Les connections r&eacute;seaux se font en reliant deux ports entres eux, pour 
+      relier deux mat&eacute;riels ensemble il faut donc qu'il y ait un port libre 
+      sur chacun de ces mat&eacute;riels.</p>
+    <p>Dans la plupart des configurations les connections se feront entre un port 
+      pr&eacute;sent sur un ordinateur, un p&eacute;riph&eacute;rique ou une imprimante 
+      et un port pr&eacute;sent sur un mat&eacute;riel r&eacute;seau (hub, switch).</p>
+    <p>Lors de la connection entre deux mat&eacute;riels, les informations telles 
+      que l'adresse IP et la prise reseau sont mises &agrave; jour pour chacun 
+      des deux ports concern&eacute;s.</p>
+    <p>Pour chaque mat&eacute;riel, il est possible &agrave; tout moment d'ajouter 
+      un ou plusieurs ports.</p>
 <p>Vous pouvez &eacute;galement associer un ou plusieurs VLANs &agrave; un port. Pour cela cocher les ports auxquels vous voulez associé un VLAN, choississez le VLAN et cliquez sur Attibuer.</p>
 
 <h3><a name="inventf"></a>f) Gestion des logiciels</h3>
-<p>Un logiciel, comporte un certain nombre de licences ayant chacune un num&eacute;ro de s&eacute;rie associ&eacute; et une date d'expiration</p>
+    <p>Un logiciel, comporte un certain nombre de licences ayant chacune un num&eacute;ro 
+      de s&eacute;rie associ&eacute; et une date d'expiration.</p>
 <p>L'installation d'un logiciel se fait depuis la fiche d'un ordinateur.</p>
 <p>A chaque fois qu'un logiciel est install&eacute;, le nombre de licence disponibles pour ce logiciel diminue.</p>
 <p>Il est impossible d'installer un logiciel, lorsqu'aucune licence n'est disponible.</p>
-<p>Il est n&eacute;anmoins possible d'indiquer le mot cl&eacute; "free" &agrave; la place du num&eacute;ro de serie lors de l'ajout d'une licence &agrave; un logiciel, pour que ce dernier soit installable sans se soucier du nombre des licences</p>
+    <p>Il est n&eacute;anmoins possible d'indiquer le mot cl&eacute; "free" &agrave; 
+      la place du num&eacute;ro de serie lors de l'ajout d'une licence &agrave; 
+      un logiciel, pour que ce dernier soit installable sans se soucier du nombre 
+      des licences.</p>
 <p>Il est aussi possible d'indiquer le mot cl&eacute; "global" &agrave; la place du num&eacute;ro de s&eacute;rie si vous avez des logiciels avec des licences global (site) pour votre parc.</p>
 <p>Il est possible d'ajouter plusieurs licences en une seule fois, le num&eacute;ro et de s&eacute;rie et la date d'expiration sera la m&ecirc;me pour chacune d'entre elles.</p>
 <p>Vous pouvez cat&eacute;goriser vos logiciels selon s'ils sont OEM, achet&eacute;s ou m&ecirc;me une mise &agrave; jour d'un logiciel existant.</p>
 <p>La gestion financi&egrave;re est effectu&eacute;e au niveau des licences. La partie informations commerciales du logiciel sert de mod&egrave;le lors de l'ajout des licences.</p>
 
 <h3><a name="inventg"></a>g) Gestion des &eacute;tats</h3>
-<p>Dans cette section vous pouvez voir le status de vos mat&eacute;riels</p>
-<p>Pour changer l'&eacute;tat d'un mat&eacute;riel il suffit d'aller dans la fiche d'information de ce mat&eacute;riel et changer son &eacute;tat.</p>
+    <p>Dans cette section vous pouvez voir le statut de vos mat&eacute;riels.</p>    
+    <p>Pour changer l'&eacute;tat d'un mat&eacute;riel il suffit d'aller dans 
+      la fiche d'information de ce mat&eacute;riel ou d'utiliser le lien pr&eacute;sent 
+      sur la gestion des etats et de changer son &eacute;tat.</p>
 
 <h3><a name="inventh"></a>h) Gestion des consommables et des cartouches</h3>
 
-<p>Pour ces deux &eacute;l&aacute;ments, il vous faut d'abord cr&eacute;er un type de cartouches ou de consommables.</p>
-<p>Vous pouvez ensuite ajouter autant d'&eacute;l&aacute;ments de ce type dans la fiche du type.</p>
-<p>Pour les cartouches, un type de cartouches doit &ecirc;tre d&eacute;fini comme compatible avec des types d'imprimantes pour pouvoir ajouter les cartouches aux imprimantes de ce type</p>
-<p>La gestion financi&egrave;re est effectu&eacute;e au niveau des &eacute;l&aacute;ments et non du type. La partie informations commerciales du type sert de mod&egrave;le lors de l'ajout des &eacute;l&aacute;ments.</p>
+    <p>Pour ces deux &eacute;l&eacute;ments, il vous faut d'abord cr&eacute;er 
+      un type de cartouches ou de consommables.</p>
+    <p>Vous pouvez ensuite ajouter autant d'&eacute;l&eacute;ments de ce type 
+      dans la fiche du type.</p>
+    <p>Pour les cartouches, un type de cartouches doit &ecirc;tre d&eacute;fini comme 
+      compatible avec des types d'imprimantes pour pouvoir ajouter les cartouches 
+      aux imprimantes de ce type.</p>    <p>La gestion financi&egrave;re est effectu&eacute;e au niveau des &eacute;l&aacute;ments 
+      et non du type. La partie informations commerciales du type sert de mod&egrave;le 
+      lors de l'ajout des &eacute;l&eacute;ments.</p>
 
 <h2><a name="assist"></a>2 - Partie Assistance</h2>
 
 <h3><a name="assista"></a>a) Suivi</h3>
-<p>Le module de suivi permet d'afficher la liste des interventions en fonction de certains crit&egrave;res.</p>
+    <p>Le module de suivi permet d'afficher la liste des tickets en fonction de 
+      certains crit&egrave;res.</p>
 <p>Vous pouvez afficher :</p>
-<ul>
-<li>Toutes les interventions actives
-<p>Toutes les interventions qui n'ont pas &eacute;t&eacute; clotur&eacute;es.</p>
-</li>
-<li>Seulement les interventions qui vous sont attribu&eacute;es
-<p>Les interventions qui vous ont &eacute;t&eacute; affect&eacute;es.</p>
-</li>
-<li>Seulement les interventions non attribu&eacute;es
-<p>Les interventions &agrave; affecter &agrave; un technicien.</p>
-</li>
-<li>Seulement les interventions termin&eacute;es
-<p>Les interventions clotur&eacute;es.</p>
-</li>
-</ul>
-
-<p>Vous pouvez &eacute;galement r&eacute;aliser une recherche sur les interventions &agrave; partir d'une description ou d'un num&eacute;ro d'identification(ID).</p>
-<p>Si des interventions sont trouv&eacute;es, GLPI affiche un tableau pr&eacute;sentant les interventions. Avec pour chaque intervention : son statut (nouveau ou ancien), le num&eacute;ro d'Identification(ID), la date d'ouverture et de cloture, le niveau de priorit&eacute;	l'auteur de la demande d'intervention, la personne &agrave; qui a &eacute;t&eacute; attribu&eacute; l'intervention,	le mat&eacute;riel concern&eacute;, la cat&eacute;gorie de l'intervention, la description de la demande d'intervention et les informations disponibles sur le suivi de l'intervention.</p>
+    <ul>
+      <li>Seulement les nouveaux tickets non attribu&eacute;s. 
+      <li>Seulement les tickets qui vous sont attribu&eacute;s. 
+      <li>Seulement les tickets qui sont planifi&eacute;s. 
+      <li>Seulement les tickets qui sont en attente. 
+      <li>Tous les tickets qui n'ont pas &eacute;t&eacute; clotur&eacute;s. 
+      <li>Tous les tickets clotur&eacute;s et r&eacute;solus. 
+      <li>Tous les tickets clotur&eacute;s mais non r&eacute;solus.
+    </ul>
+	Plus g&eacute;n&eacute;ralement : 
+    <ul>
+	  <li>Les tickets en cours (attribu&eacute;s ou planifi&eacute;s). 
+      <li>Les tickets non ferm&eacute;s. 
+	  <li>Les tickets ferm&eacute;s (r&eacute;solus ou pas). 
+      <li>Tous les tickets. 
+    </ul>
+    <p>Vous pouvez &eacute;galement r&eacute;aliser une recherche sur les tickets 
+      &agrave; partir d'une description ou d'un mat&eacute;riel identifi&eacute;.</p>
+    <p>Si des tickets sont trouv&eacute;es, GLPI affiche un tableau pr&eacute;sentant 
+      les tickets.<br />
+      Avec pour chaque ticket : son statut (nouveau, attribu&eacute;, planifi&eacute;, 
+      en attente, ferm&eacute; r&eacute;solu ou non r&eacute;solu), le num&eacute;ro 
+      d'Identification (ID), la date d'ouverture et de cloture, le niveau de priorit&eacute;, 
+      l'auteur du ticket, la personne &agrave; qui a &eacute;t&eacute; attribu&eacute; 
+      le ticket, le mat&eacute;riel concern&eacute;, la cat&eacute;gorie du ticket, 
+      la description du ticket et les informations disponibles sur le suivi des 
+      tickets.</p>
+    <p>Cette l&eacute;gende vous permettra de mieux vous rep&eacute;rer dans les 
+      diff&eacute;rents statuts de tickets :</p>
+    <p><img src="../pics/new.png" width="12" height="12" /> Nouveau ticket<br />
+	<img src="../pics/assign.png" width="12" height="12" /> Ticket assign&eacute;<br />
+      <img src="../pics/plan.png" width="12" height="12" /> Ticket planifi&eacute;<br />
+      <img src="../pics/waiting.png" width="12" height="12" /> Ticket en attente<br />
+      <img src="../pics/old_notdone.png" width="12" height="12" /> Ticket ferm&eacute; 
+      non r&eacute;solu<br />
+      <img src="../pics/old_done.png" width="12" height="12" /> Ticket ferm&eacute;</p>
+    <p>Vous pouvez aussi afficher les suivis de chaque ticket directement dans 
+      le tableau recapitulatif des tickets en utilisant la liste d&eacute;roulante 
+      pr&eacute;vue &agrave; cet effet.</p>
 <p>Un clic sur un de ces &eacute;l&eacute;ments vous permettra d'acc&eacute;der &agrave; des informations compl&eacute;mentaires.</p>
-<p>Pour ajouter des &eacute;l&eacute;ments de suivi &agrave; une intervention, ou modifier l'intervention, il suffit de cliquer sur "infos". Vous obtiendrez alors l'historique complet de l'intervention. Vous pourrez donc ajouter un &eacute;l&eacute;ment de suivi ou cloturer l'intervention en indiquant &eacute;ventuellement le temps r&eacute;el d'intervention.</p>
-<p>Vous pouvez classer vos interventions par cat&eacute;gories en utilisant la liste d&eacute;roulante pr&eacute;vu &agrave; cet effet. Pour ajouter ou modifier les cat&eacute;gories des suivis, r&eacute;f&eacute;rez vous au modification d'intitul&eacute;s dans la section configuration.</p>
-<p>Vous avez aussi la possibilit&eacute; de d&eacute;finir des horaires d'intervention pour une intervention. Vous aurez alors votre planning qui se remplira tout seul.</p>
-
-
-<h4>Cas particulier des interventions termin&eacute;es</h4>
-<p>La restauration d'une intervention termin&eacute;e est possible. Il suffit pour cela de cliquer sur "info" puis "restaurer".</p>
-<p>Il est possible de supprimer des interventions termin&eacute;es si vous ne souhaitez pas les conserver dans la base. Pour cela il suffit de cocher la case statut et de cliquer sur "Supprimer" dans la liste des interventions.</p>
+    <p>Pour ajouter des &eacute;l&eacute;ments de suivi &agrave; un ticket, ou 
+      modifier le ticket, il suffit de cliquer sur "infos". Vous obtiendrez alors 
+      l'historique complet du ticket. <br />
+      Vous pourrez donc ajouter un &eacute;l&eacute;ment de suivi gr&agrave;ce 
+      &agrave; l'onglet &quot;Ajouter un nouveau suivi&quot; ou modifier un suivi 
+      d&eacute;j&agrave; effectu&eacute; en cliquant directement dans la partie 
+      desciption du suivi.<br />
+      Une fois ticket r&eacute;solu, vous pourrez le cloturer en indiquant &eacute;ventuellement 
+      la dur&eacute;e r&eacute;elle de d'intervention en utilisant le bouton &quot;Ajouter 
+      et fermer&quot; via l'onglet &quot;Ajouter un nouveau suivi&quot; ou soit 
+      directement depuis le r&eacute;sum&eacute; du ticket gr&agrave;ce &agrave; 
+      la liste d&eacute;roulante Statut.</p>
+    <p>Vous pouvez classer vos tickets par cat&eacute;gories en utilisant la liste 
+      d&eacute;roulante pr&eacute;vue &agrave; cet effet. Pour ajouter ou modifier 
+      les cat&eacute;gories des suivis, r&eacute;f&eacute;rez vous au modification 
+      d'intitul&eacute;s dans la section configuration.</p>    <p>Vous avez aussi la possibilit&eacute; de d&eacute;finir des horaires d'intervention 
+      pour une intervention sur un ticket. Vous aurez alors votre planning qui 
+      se remplira tout seul.</p>    <h4>Cas particulier des tickets termin&eacute;s</h4>    <p>La restauration d'un ticket termin&eacute; est possible. Il suffit pour 
+      cela de cliquer sur "info" puis "restaurer".</p>
+    <p>Il est possible de supprimer des tickets termin&eacute;s si vous ne souhaitez 
+      pas les conserver dans la base. Pour cela il suffit de cocher la case statut 
+      et de cliquer sur "Supprimer" dans la liste des tickets.<br />
+      <br />
+      <b><font color="#990000"><img src="../pics/warning.png" width="20" height="20" align="absmiddle" /> 
+      ATTENTION :</font></b> Les cases &agrave; cocher de suppression ne s'affichent 
+      que si les tickets sont clotur&eacute;s.</p>
 
 <h3><a name="assistb"></a>b) Helpdesk</h3>
-
-<p>Le helpdesk est utilis&eacute; pour entrer les demandes d'interventions. Pouvant &ecirc;tre utilis&eacute; par tous les types de comptes utilisateurs.</p>
-<p>Il est possible de sp&eacute;cifier la priorit&eacute; des probl&egrave;mes, le num&eacute;ro d'identification(ID) du mat&eacute;riel ou logiciel concern&eacute; et le type d'intervention demand&eacute;.</p>
-<p>Si vous activer les suivis par emails dans les configurations de GLPI, un champ suppl&eacute;mentaire sera disponible afin d'y entrer le courriel du demandeur.</p>
-<p>Vous retrouverez les demandes d'interventions dans la section suivi de GLPI.</p>
+    <p>Le helpdesk est utilis&eacute; pour entrer de nouveaux tickets. Pouvant 
+      &ecirc;tre utilis&eacute; par tous les types de comptes utilisateurs.</p>
+    <p>Il permet de cr&eacute;er des tickets soit en tant que nouveau ticket soit 
+      en tant qu'historique (donc directement ayant un statut Ferm&eacute; (r&eacute;solu).</p>
+    <p>Il est possible de sp&eacute;cifier la priorit&eacute; des probl&egrave;mes, 
+      le mat&eacute;riel ou logiciel concern&eacute;, le type d'intervention demand&eacute; 
+      et la dur&eacute;e totale de l'intervention.</p>
+    <p>Si vous activer les suivis par emails dans les configurations de GLPI, 
+      un champ suppl&eacute;mentaire sera disponible afin d'y entrer le courriel 
+      du demandeur.</p>    <p>Vous retrouverez les tickets dans la section suivi de GLPI.</p>
 
 <h3><a name="assistc"></a>c) Planning</h3>
 
-<p>Le planning vous permet de voir les interventions pour lesquelles vous avez d&eacute;finies des horaires d'interventions.</p>
-
-
-<h3><a name="assistd"></a>d) Statistiques</h3>
+    <p>Le planning vous permet de voir les interventions pour lesquelles vous avez 
+      d&eacute;finies des horaires d'interventions.</p>
+    <p>Vous pouvez soit t&eacute;l&eacute;charger ce planning au format ical soit 
+      effectuer une synchronisation Webcal :</p>
+    <p>&laquo; iCalendar &raquo; est un format d&#8217;&eacute;change d&#8217;agenda, 
+      et permet de transf&eacute;rer des rendez-vous.</p>
+    <p>C&#8217;est &agrave; l&#8217;origine un format d&#8217;import/export de 
+      rendez-vous cr&eacute;&eacute; par un consortium Apple/AT&amp;T/IBM/Siemens 
+      et principalement utilis&eacute; par une application sous Mac (iCal).</p>
+    <p><a href="http://www.mozilla.org/projects/calendar/" target="_blank">http://www.apple.com/macosx/features/ical/</a></p>
+    <p>L&#8217;id&eacute;e de r&eacute;utiliser ce format d&#8217;&eacute;change 
+      a &eacute;t&eacute; adopt&eacute; par quelques logiciels de calendrier comme 
+      Mozilla.</p>
+    <p><a href="http://www.mozilla.org/projects/calendar/" target="_blank">http://www.mozilla.org/projects/calendar/</a><br />
+    </p>
+    <h3><a name="assistd"></a>d) Statistiques</h3>
 
 <p>Vous avez la possibilit&eacute; d'obtenir des statistiques suivant diff&eacute;rents crit&egrave;res. Pour chacun vous disposez d'un tableau r&eacute;capitulatif et/ou de graphiques par &eacute;l&eacute;ments.</p>
-
-<ul>
-<li>Statistiques globales
-<p>Ces statistiques regroupent les principales donn&eacute;es sur les interventions sur le mois, l'ann&eacute;e et au total.</p>
-</li>
-<li>Par technicien
-<p>Ces statistiques fournissent un &eacute;tat de l'activit&eacute; des techniciens pour une p&eacute;riode donn&eacute;e.</p>
-</li>
-<li>Par Intitul&eacute;s
-<p>Statistiques des interventions par Lieu, Type d'ordinateur, OS, CPU, HD-Type, Carte graphique, Carte m&egrave;re  sur une p&eacute;riode donn&eacute;e.</p>
-</li>
-<li>Par utilisateur
-<p>Statistiques des interventions par utilisateurs sur une p&eacute;riode donn&eacute;e.</p>
-</li>
-<li>Par cat&eacute;gorie
-<p>Statistiques des interventions par cat&eacute;gorie sur une p&eacute;riode donn&eacute;e.</p>
-</li>
-</ul>
-
-Pour chacun des &eacute;l&eacute;ments vous avez les informations suivantes :
-<ul>
-<li>Nombre total d'interventions</li>	
-<li>Nombre d'interventions r&eacute;solues</li>
-<li>D&eacute;lai moyen de r&eacute;solution de panne</li>
-<li>D&eacute;lai maximal de r&eacute;solution de panne</li>
-<li>Dur&eacute;e r&eacute;elle moyenne de l'intervention</li>
-<li>Dur&eacute;e maximale de r&eacute;solution r&eacute;elle de panne</li>
-<li>D&eacute;lai minimum de prise en compte de l'intervention</li>
-<li>D&eacute;lai moyen de prise en compte de l'intervention</li>
-</ul>
+    <ul>
+      <li>Statistiques globales 
+        <p>Ces statistiques regroupent les principales donn&eacute;es sur les 
+          tickets sur le mois, l'ann&eacute;e et au total.</p>
+      </li>
+      <li>Par technicien 
+        <p>Ces statistiques fournissent un &eacute;tat de l'activit&eacute; des 
+          techniciens pour une p&eacute;riode donn&eacute;e.</p>
+      </li>
+      <li>Par Intitul&eacute;s 
+        <p>Statistiques des tickets par Lieu, Type d'ordinateur, OS, CPU, HD-Type, 
+          Carte graphique, Carte m&egrave;re sur une p&eacute;riode donn&eacute;e.</p>
+      </li>
+      <li>Par utilisateur 
+        <p>Statistiques des tickets par utilisateurs sur une p&eacute;riode donn&eacute;e.</p>
+      </li>
+      <li>Par cat&eacute;gorie 
+        <p>Statistiques des tickets par cat&eacute;gorie sur une p&eacute;riode 
+          donn&eacute;e.</p>
+      </li>
+      <li>Par priorit&eacute; 
+        <p>Statistiques des tickets par priorit&eacute; sur une p&eacute;riode 
+          donn&eacute;e.</p>
+      </li>
+    </ul>
+    Pour chacun des &eacute;l&eacute;ments vous avez les informations suivantes 
+    : 
+    <ul>
+      <li>Nombre total de tickets</li>
+      <li>Nombre de tickets r&eacute;solues</li>
+      <li>D&eacute;lai moyen de r&eacute;solution de panne</li>
+      <li>D&eacute;lai maximal de r&eacute;solution de panne</li>
+      <li>Dur&eacute;e r&eacute;elle moyenne du ticket</li>
+      <li>Dur&eacute;e maximale de r&eacute;solution r&eacute;elle de panne</li>
+      <li>D&eacute;lai minimum de prise en compte du ticket</li>
+      <li>D&eacute;lai moyen de prise en compte du ticket</li>
+    </ul>
 
 
 
@@ -334,14 +468,28 @@ Pour chacun des &eacute;l&eacute;ments vous avez les informations suivantes :
 <h3><a name="gestiona"></a>a) Contacts</h3>
 <p>Vous pouvez entrer tous vos divers contacts dans cette section et classer vos contacts selon leurs types commercial ou technicien. Par la suite vous pourrez associer des contacts aux entreprises avec qui vous faites des affaires.</p>
 <h3><a name="gestionb"></a>b) Entreprises</h3>
-<p>Dans cette section, Il est possible de r&eacute;pertorier tous les entreprises et leurs tiers qui ont des relations avec votre entreprise et d'y associer les contacts de chacune de ces entreprises. Pour ajouter ou modifier la liste d&eacute;roulante des tiers, allez dans la section configurations de GLPI sous l'option intitul&eacute;s.</p>
-<h3><a name="gestionc"></a>c) Contrats</h3>
-<p>Dans cette section, vous pouvez g&eacute;rer l'ensemble des contrats de type divers qui sont li&eacute;s &agrave; vos mat&eacute;riels ainsi que les informations li&eacute;es &agrave; ces contarts.
-Les type de contrats possibles sont : pr&ecirc;t, location, leasing, assurance, maintenance hardware et software, prestation.</p>
-
-<p>Vous pouvez alors lier les contrats cr&eacute;&eacute;s aux &eacute;l&eacute;ments de l'inventaire depuis la page du contrat ou celles de l'inventaire</p>
-<h3><a name="gestiond"></a>d) Documents</h3>
-<p>Cette section vous permet d'enregistrer des documents sur votre serveur GLPI. Vous pouvez par la suite associer un document &agrave; tous mat&eacute;riels ou logiciels de votre inventaire et les classer selon divers rubriques. Il est aussi possible de sp&eacute;cifier le type MIME d'un document si celui-ci n'est pas d&eacute;j&agrave; existant.</p>
+    <p>Dans cette section, Il est possible de r&eacute;pertorier toutes les entreprises 
+      et leurs tiers qui ont des relations avec votre entreprise et d'y associer 
+      les contacts de chacune de ces entreprises. Pour ajouter ou modifier la 
+      liste d&eacute;roulante du type de tiers, allez dans la section configuration 
+      de GLPI sous l'option intitul&eacute;s.<br />
+      <br />
+      <b><font color="#990000"><img src="../pics/warning.png" width="20" height="20" align="absmiddle" /> 
+      ATTENTION :</font></b> Si vous d&eacute;finissez un site web pour l'entreprise, 
+      n'oubliez pas le http:// au d&eacute;but de l'adresse internet.</p>
+<h3><a name="gestionc"></a>c) Contrats</h3>    <p>Dans cette section, vous pouvez g&eacute;rer l'ensemble des contrats de 
+      type divers qui sont li&eacute;s &agrave; vos mat&eacute;riels ainsi que 
+      les informations li&eacute;es &agrave; ces contrats. Les type de contrats 
+      possibles sont : pr&ecirc;t, location, leasing, assurance, maintenance hardware 
+      et software, prestation.</p>    <p>Vous pouvez alors lier les contrats cr&eacute;&eacute;s aux &eacute;l&eacute;ments 
+      de l'inventaire depuis la page du contrat ou celles de l'inventaire.</p>
+<h3><a name="gestiond"></a>d) Documents</h3>    
+    <p>Cette section vous permet d'enregistrer des documents sur votre serveur 
+      GLPI. Vous pouvez par la suite associer un document &agrave; tout mat&eacute;riel 
+      ou logiciel de votre inventaire et les classer selon divers rubriques ou 
+      les utiliser dans la base de connaissance.<br />
+      Il est aussi possible de sp&eacute;cifier le type MIME d'un document si 
+      celui-ci n'est pas d&eacute;j&agrave; existant.</p>
 <p>Pour ajouter ou modifier la liste des rubriques, allez dans la section Administration et Configuration sous l'option intitul&eacute;s.</p>
 <p>Il est aussi possible d'ajouter des types de documents suppl&eacute;mentaires. Pour se faire, allez dans Administration et Configuration sous l'option Type de document.</p>
 <h2><a name="outils"></a>4 - Partie Outils</h2>
@@ -350,7 +498,9 @@ Les type de contrats possibles sont : pr&ecirc;t, location, leasing, assurance, 
 <p>Cette section sert &agrave; voir le mat&eacute;riel r&eacute;servable et &agrave; faire vos r&eacute;servations</p>
 <p>Vous pouvez ajouter des commentaires au mat&eacute;riel r&eacute;servable. Pour se faire, cliquez sur le bouton "modifier le commentaire".</p>
 <p>Pour rendre un mat&eacute;riel r&eacute;servable, il sufit d'aller dans la fiche d'information de celui-ci et de cliquer sur l'option "Autoriser le pr&ecirc;t".</p>
-<p>Pour les utilisateurs "HelpDesk" une section "mat&eacute;riel r&eacute;servable" est disponible</p>
+    <p>Pour les utilisateurs "HelpDesk" une section "mat&eacute;riel r&eacute;servable" 
+      est disponible. Ils peuvent ainsi r&eacute;server un mat&eacute;riel pour 
+      une dur&eacute;e donn&eacute;e.</p>
 
 <h3><a name="outilsb"></a>b) Base de connaissances</h3>
 <p>La base de connaissances sert &agrave; mettre en place un syst&egrave;me de Foire Aux Questions qui a deux objectifs principaux. 
@@ -358,7 +508,10 @@ Le premier est de centraliser des connaissances internes aux diff&eacute;rents t
 Le second est de mettre &agrave; disposition des utilisateurs des informations leur permettant de r&eacute;soudre seuls leurs probl&egrave;mes.</p>
 <p>Pour dissocier ces deux objectifs, la notion de FAQ publique est disponible. 
 Ainsi seuls les &eacute;l&eacute;ments de la FAQ publique seront visibles par les utilisateurs. Les &eacute;l&eacute;ments non d&eacute;finis comme faisant partie de la FAQ publique seront visibles uniquement au sein du central.</p>
-<p>Vous pouvez cr&eacute;er des cat&eacute;gories et sous-cat&eacute;gories afin d'indexer vos connaissances. Il est donc facile pour quelqu'un de retrouver de l'information n&eacute;cessaire &agrave; ses tâches.</p>
+    <p>Vous pouvez cr&eacute;er des cat&eacute;gories et sous-cat&eacute;gories 
+      afin d'indexer vos connaissances (param&eacute;trable dans le menu Administration 
+      / Configuration / Intitul&eacute;s). Il est donc facile pour quelqu'un de 
+      retrouver de l'information n&eacute;cessaire &agrave; ses demandes.</p>
 <p>Vous pouvez utiliser des raccourcis de mise en forme :</p>
 <p>
 Les marqueurs suivants changent l'apparence du texte:<br /><br />
@@ -389,7 +542,7 @@ Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tan
 				g&eacute;n&egrave;re du code comme ceci:<br /><br />
 				<table style="width: 95%; border: dotted 1px #000000" cellspacing="4" cellpadding="6"><tr><td ><span ><b>Code:</b></span><br /><br /><pre>Voici un bout de code.</pre></td></tr></table><br />
 			
-<h3><a name="outilsc"></a>b) Rapports</h3>
+<h3><a name="outilsc"></a>c) Rapports</h3>
 
 <p>GLPI autorise la g&eacute;n&eacute;ration d'un certain nombre de rapports :</p>
 
@@ -399,9 +552,9 @@ Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tan
 </li>
 <li>Mat&eacute;riel sous contrat de maintenance
 <p>Ce rapport indique le nombre de mat&eacute;riel sous contrat de maintenance aupr&eacute;s d'un tiers. Il est possible d'obtenir un &eacute;tat d&eacute;taill&eacute; par type de mat&eacute;riel et par date d'achat. La s&eacute;lection multiple est autoris&eacute;e.</p>
-</li>
-<li>Rapport par date d'achat ou de fin de garantie
-<p>Ce rapport liste le mat&eacute;riel par date d'achat ou de fin de garantie sur une ou plusieurs ann&eacute;es. La s&eacute;lection multiple est autoris&eacute;e.</p>
+</li>      <li>Rapport par ann&eacute;e 
+        <p>Ce rapport liste le mat&eacute;riel sur une ou plusieurs ann&eacute;es. 
+          La s&eacute;lection multiple est autoris&eacute;e.</p>
 </li>
 <li>Rapport interventions
 <p>Ce rapport permet d'obtenir la liste des interventions ainsi que leur historique  selon de nombreux crit&egrave;res. La recherche peut &ecirc;tre r&eacute;alis&eacute;e sur une p&eacute;riode donn&eacute;e, pour un type de mat&eacute;riel pr&eacute;cis ou une partie de ce mat&eacute;riel et en fonction de son auteur et/ou de son attribution.</p>
@@ -411,13 +564,8 @@ Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tan
 </li>
 <li>Rapport Informations Commerciales
 <p>Ce rapport vous permet d'avoir un r&eacute;capitulatif des informations commerciales pour les ordinateurs, les imprimantes, les mat&eacute;riels r&eacute;seaux, les moniteurs et les p&eacute;riph&eacute;riques.</p>
-</li>
-<li>Rapport Informations Commerciales 2
-<p>Ce rapport vous permet d'avoir un r&eacute;capitulatif des informations commerciales pour les cartouches, les licences et les consommables.</p>
-</li>
-<li>Excel, OpenOffice (Sylk)
-<p>GLPI peut g&eacute;n&eacute;rer des rapports par type de materiel exploitables par un tableur. Pour cela GLPI g&eacute;n&egrave;re des fichiers de type SYLK. Ce format est exploitable par de nombreux tableurs. </p>
-<p>Si vous utilisez un logiciel qui ne respecte pas totalement les  standards (Excel par exemple), utilisez la version limit&eacute;e pour ne pas avoir de probl&egrave;me avec la taille des champs. Les champs trop longs seront tronqu&eacute;s.</p>
+</li>      <li>Rapport Informations Commerciales autres 
+        <p>Ce rapport vous permet d'avoir un r&eacute;capitulatif des informations commerciales pour les cartouches, les licences et les consommables.</p>
 </li>
 </ul>
 
@@ -425,98 +573,261 @@ Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tan
 <h2><a name="admin"></a>4 - Partie Administration</h2>
 
 <h3><a name="admina"></a>a) Gestion des utilisateurs</h3>
-<p>Cette partie fonctionne exactement de la m&ecirc;me façon que les &eacute;l&eacute;ments de l'inventaire. Vous pouvez ajouter, modifier et supprimer des utilisateurs.</p>
+    <p>Cette partie fonctionne exactement de la m&ecirc;me façon que les &eacute;l&eacute;ments 
+      de l'inventaire. Vous pouvez ajouter, modifier, supprimer des utilisateurs 
+      ou rechercher et exporter la liste des utilisateurs.<br />
+      <br />
+      Au niveau des droits : vous avez le choix entre 4 types de droits :<br />
+      - Super-Admin : il a acc&egrave;s &agrave; tout le central d'adminitration 
+      de GLPI et peut tout param&egrave;trer.<br />
+      - Admin : il a acc&egrave;s &agrave; tout le central d'adminitration de 
+      GLPI et peut modifier tous les &eacute;lements<br />
+      mais ne peut rien param&eacute;trer dans la configuration.<br />
+      - Normal : il a acc&egrave;s &agrave; tout le central d'adminitration de 
+      GLPI uniquement en lecture seule.<br />
+      - Post-only : il peut uniquement acc&egrave;der &agrave; la partie Helpdek 
+      de GLPI (Nouveau ticket / Suivi en lecture seule des tickets / R&eacute;servation 
+      et FAQ publique<br />
+      <br />
+      Vous pouvez donner le droit ou pas &agrave; l'utisateur d'attribuer des 
+      tickets.</p>
 
 <h3><a name="adminb"></a>b) Configuration de GLPI</h3>
 
 <a name="adminb1"></a><h4>i) Intitul&eacute;s</h4>
 <p>Vous pouvez dans cette zone modifier enti&egrave;rement les donn&eacute;es pr&eacute;sentes dans les listes de s&eacute;lection propos&eacute;es 
 par exemple pour les lieux et les microprocesseurs.</p>
-<p>Une fois s&eacute;lectionn&eacute; la liste que vous voulez modifier vous pouvez ajouter des &eacute;l&eacute;ments, les modifier et les supprimer.<br />
-<b>Attention !!</b> Si vous supprimez des &eacute;l&aacute;ments utilis&eacute;s vous devrez alors faire un choix entre modifier les entr&eacute;es existantes ou bien les mettre &agrave; NULL.</p>
-<br />
-
-<a name="adminb2"></a><h4>ii) P&eacute;riph&eacute;riques internes</h4>
+    <p>Une fois s&eacute;lectionn&eacute; la liste que vous voulez modifier vous 
+      pouvez ajouter des &eacute;l&eacute;ments, les modifier et les supprimer.<br />
+      <br />
+      <b><font color="#990000"><img src="../pics/warning.png" width="20" height="20" align="absmiddle" /> 
+      ATTENTION :</font></b> Si vous supprimez des &eacute;l&eacute;ments utilis&eacute;s 
+      vous devrez alors faire un choix entre modifier les entr&eacute;es existantes 
+      ou bien les mettre &agrave; NULL.</p>
+    <a name="adminb2"></a>
+<h4>ii) P&eacute;riph&eacute;riques internes</h4>
 
 <p>Vous pouvez dans cette zone modifier enti&egrave;rement les p&eacute;riph&eacute;riques internes que vous pouvez ajouter &agrave; vos ordinateurs.</p>
-
-<a name="adminb3"></a><h4>iii) Authentifications externes</h4>
+    <p><a name="adminb3" id="adminb3"></a></p>
+    <h4>iii) Type de document</h4>
+    <p> Dans cette section, vous pouvez ajouter ou modifier les types de documents 
+      autoris&eacute;s &agrave; &ecirc;tre g&eacute;r&eacute;s par GLPI. Les informations 
+      &agrave; fournir sont :<br />
+      - Le nom du type de document.<br />
+      - L'extension ex: .txt<br />
+      - Le nom du fichier pour l'ic&ocirc;ne du document d&eacute;sir&eacute;. 
+      Placer les fichiers d'ic&ocirc;nes dans le r&eacute;pertoire pics/icones 
+      sous l'arborescence de GLPI.<br />
+      - Le type MIME si n&eacute;cessaire.<br />
+      - Autorisation de t&eacute;l&eacute;chargement de ce type de fichier (oui 
+      ou non).<br />
+      <br />
+      Vous pouvez exporter la liste des types de document au format SYLK ou PDF.</p>
+    <p><a name="adminb4" id="adminb4"></a></p>
+    <h4>iv) Liens externes protocol&eacute;s</h4>
+    <p>Dans cette section vous pouvez d&eacute;finir des liens divers qui vont 
+      pouvoir s'adapter aux &eacute;l&eacute;ments auxquels il vont &ecirc;tre 
+      li&eacute;s.</p>
+    <p>Vous pouvez utiliser des tags particuliers pour qu'ils soient remplac&eacute;s 
+      par les valeurs de l'&eacute;l&eacute;ment : Les Tags valides sont : [ID], 
+      [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK], [DOMAIN]</p>
+    <p>Chaque lien peut &ecirc;tre associ&eacute; &agrave; un ou plusieurs types 
+      de mat&eacute;riels.<br />
+      <br />
+      Exemple : </p>
+    <p>- Un Lien type http:// :<br />
+      <br />
+      Vous cr&eacute;ez un lien externe protocol&eacute; ayant pour nom : http://[IP] 
+      que vous affectez &agrave; votre mat&eacute;riel r&eacute;seau.</p>
+    <p>- Un Lien de type RDP :</p>
+    <p>Pour l'acc&egrave;s &agrave; distance sur vos ordinateurs, vous cr&eacute;ez 
+      un un lien externe protocol&eacute; ayant pour nom Acc&egrave;s distant.rdp 
+      et vous param&egrave;trez le Contenu du fichier en y ins&eacute;rant le 
+      contenu d'un fichier type RDP et en remplacant l'ip / le nom / le domaine 
+      par des TAGS type [IP], [NAME], [DOMAIN]</p>
+    <p><a name="adminb5" id="adminb5"></a></p>
+    <h4>v) Configuration g&eacute;n&eacute;rale</h4>
+    <p> La configuration g&eacute;n&eacute;rale de l'application permet de r&eacute;gler 
+      certains param&egrave;tres :<br />
+      - Le chemin d'installation. <b><br />
+      <br />
+      <font color="#990000"><img src="../pics/warning.png" width="20" height="20" align="absmiddle" /> 
+      ATTENTION :</font></b> Ce chemin est d&eacute;tect&eacute; automatiquement 
+      au moment de l'installation ou de la mise &agrave; jour, vous ne devriez 
+      donc pas avoir besoin de le modifier.<br />
+      <br />
+      - Langue par d&eacute;faut &agrave; la cr&eacute;ation de nouveaux utilisateurs.<br />
+      - Le niveau de log.<br />
+      - Le nombre d'&eacute;v&egrave;nements &agrave; afficher correspond au nombre 
+      de lignes de log pr&eacute;sentes sur la page d'accueil du central.<br />
+      - Le temps de conservation des logs. <b><br />
+      <br />
+      <font color="#990000"><img src="../pics/warning.png" width="20" height="20" align="absmiddle" /> 
+      ATTENTION :</font></b> Si vous les gardez trop longtemps votre table peut 
+      contenir &eacute;normement de donn&eacute;es.<br />
+      <br />
+      - Assigner automatiquement les nouvelles interventions au responsable technique 
+      s'il existe.<br />
+      <br />
+      - Date de d&eacute;but d'exercice fiscal : utilis&eacute; pour toute la 
+      gestion des amortissements.<br />
+      <br />
+      - Permettre le helpdesk.html : active ou non les demandes d'interventions 
+      anonymes via le fichier helpdesk.html.<br />
+      <br />
+      - Montrer les interventions au login : voir les interventions actives sur 
+      la page d'accueil du central ou non.<br />
+      <br />
+      - Seuil d'alerte par d&eacute;faut pour les cartouches et les consommables. 
+      Valeur par d&eacute;faut modifiable pour chaque type.<br />
+      <br />
+      - V&eacute;rifier la pr&eacute;sence de mises &agrave; jour ou non : permet 
+      de param&eacute;trer la v&eacute;rification automatique de mises &agrave; 
+      jours hebdomadaires, mensuelles, ou de d&eacute;sactiver la v&eacute;rification.</p>
+    <p>- Ajout automatique des utilisateurs &agrave; partir des sources externes 
+      d'authentification : permet<br />
+      d'autoriser l'authentification &agrave; partir de source externes ou de 
+      la d&eacute;sactiver.<br />
+    </p>
+    <p><a name="adminb6" id="adminb6"></a></p>
+    <h4>vi) Configuration affichage</h4>
+    <p> La configuration de l'affichage de l'application permet de r&eacute;gler 
+      certains param&egrave;tres d'affichage et de recherche :<br />
+    </p>
+    <p> - Nombre d'&eacute;v&eacute;nements de log &agrave; afficher : nombre 
+      de log &agrave; afficher sur la page d'accueil du central d'administration<br />
+      <br />
+      - Montrer les nouveaux tickets au login : montrer les les nouveaux tickets 
+      non attribu&eacute;s sur la page d'accueil du central d'administration<br />
+      <br />
+      - Nombre d'&eacute;l&eacute;ments &agrave; afficher par page: valable pour 
+      toutes les listes d'&eacute;l&eacute;ments affich&eacute;es - suivis, ordinateurs...<br />
+      <br />
+      - Nombre de caract&egrave;res maximum pour chaque &eacute;l&eacute;ments 
+      de la liste : r&eacute;duction de la taille des chaines de caract&egrave;res 
+      affich&eacute;es pour obtenir un affichage lisible.<br />
+      <br />
+      - Limite d'affichage du planning : pour ne pas indiquer les 24h mais restreindre 
+      &agrave; la journ&eacute;e de travail effective.<br />
+      <br />
+      - Couleurs des priorit&eacute;s.<br />
+      <br />
+      - Le format des dates : permet de param&eacute;trer l'affichage des dates<br />
+      (YYYY-MM-DD ou DD-MM-YYYY)<br />
+      <br />
+      <b><font color="#990000"><img src="../pics/warning.png" width="20" height="20" align="absmiddle" /> 
+      ATTENTION :</font></b> M&ecirc;me si vous param&eacute;trez le format des 
+      dates sous forme JJ-MM-YYYY, lors d'une recherche par date, il faut exclusivement 
+      utiliser la syntaxe [Ann&eacute;e]-[Mois]-[Jour]<br />
+      <br />
+      - Utiliser AJAX : permet d'activer ou non le nouveau syst&egrave;me AJAX 
+      de GLPI (gestion des recherches, des champs textes).<br />
+      <br />
+      - Autocompletion des champs textes avec AJAX : si &quot;Utiliser AJAX&quot; 
+      est activ&eacute;, ceci permet de visualiser au moment de la saisie de caract&egrave;res 
+      dans la zone de texte, les el&eacute;ments deja existants dans la base de 
+      donn&eacute;e gr&agrave;ce &agrave; une liste de r&eacute;sultats pr&eacute;vue 
+      &agrave; cet effet.<br />
+      <br />
+      - Joker Ajax : caract&egrave;re utilis&eacute; pour les recherches de type 
+      AJAX. Permet de lister tous les el&eacute;ments.<br />
+      <br />
+      - Ajax - Nombre d'&eacute;l&egrave;ments maximum affich&eacute;s : limite 
+      le nombre d'el&eacute;ments affich&eacute;s dans les listes de r&eacute;sultats 
+      (sauf en cas d'utlisation du joker)<br />
+      <br />
+      - Ne pas utiliser ajax si le nombre d'el&egrave;ments est inf&eacute;rieur 
+      &agrave; (0=jamais) : d&eacute;sactive AJAX pour les recheches dont le nombre 
+      d'el&eacute;ments affich&eacute; dans la liste de r&eacute;sultat et inf&eacute;rieur 
+      &agrave; cette valeur.<br />
+      <br />
+      - Texte au login : texte affich&eacute; lors du login &agrave; GLPI<br />
+      <br />
+      - Afficher les ID GLPI : permet d'afficher ou non les num&eacute;ros internes 
+      d'identification de chaque mat&eacute;riel / logiciel<br />
+      <br />
+      - Utiliser pour Onglets Suivant/Pr&eacute;c&eacute;dent : permet de param&eacute;trer 
+      les onglets <img src="../pics/left.png" width="16" height="16" align="absmiddle" /> 
+      et <img src="../pics/right.png" width="16" height="16" align="absmiddle" /> 
+      vous permettant de naviguer au sein des &eacute;l&eacute;ments de l'inventaire 
+      en fonction de leur ID ou de leur nom.</p>
+    <p> <a name="adminb7" id="adminb7"></a></p>
+    <h4>vii) Affichage recherche par d&eacute;faut</h4>
+    <p>C'est dans cette rubrique que vous allez pouvoir param&egrave;trer les 
+      colonnes que vous voulez afficher pour chaque type de mat&eacute;riel / 
+      logiciel.<br />
+      Vous avez la possibilit&eacute; d'ajouter, supprimer, ordonner les colonnes 
+      affich&eacute;es.</p>
+    <p> <a name="adminb8" id="adminb8"></a></p>
+    <h4>viii) Suivis par emails</h4>
+    <p>Cette section vous permet d'activer le suivi des interventions par email. 
+      Si vous activez cette fonctionnalit&eacute;, des emails seront alors envoy&eacute;s 
+      au moment de la cr&eacute;ation d'une nouvelle intervention, &agrave; l'ajout 
+      de chaque suivi et &agrave; la fermeture des interventions.<br />
+      <br />
+      - Vous pouvez alors renseigner l'adresse mail de l'administrateur et la 
+      signature ajout&eacute;e &agrave; chaque email.<br />
+      Vous voulez ajouter un lien vers le ticket dans les emails envoy&eacute;s 
+      en sp&eacute;cifiant l'Url de la base qui est utilis&eacute;.<br />
+      <br />
+      - Les autres options vous permettent de limiter les emails envoy&eacute;s. 
+      Pour chaque type d'utilisateurs, vous pouvez activer ou non l'envoi &agrave; 
+      la cr&eacute;ation d'une intervention, &agrave; l'ajout de nouveau suivi 
+      et la cloture d'une intervention.<br />
+      - Les groupes de personnes d&eacute;finis sont : l'administrateur, tous 
+      les utilisateurs de type 'admin' ou 'normal', le responsable de la tâche 
+      et le demandeur de l'intervention.<br />
+      - Le demandeur ne recevra un email que s'il a activ&eacute; le suivi par 
+      email lors de sa demande d'intervention.<br />
+    </p>
+    <p>Vous pouvez &eacute;galement d&eacute;finir des envois de mails pour les 
+      r&eacute;servations.</p>
+    <p><a name="adminb9" id="adminb9"></a></p>
+    <h4>ix) Authentifications externes</h4>
 
 <p>Les authentifications externes vous permettent d'utiliser des sources alternatives d'authentification. Cela vous &eacute;vite ainsi d'avoir &agrave; ajouter manuellement tous les utilisateurs.</p>
-<p>La premi&egrave;re solution est d'utiliser un serveur de mail :<br />
-- Vous devez alors d&eacute;finir dans la premi&egrave;re partie le serveur &agrave; utiliser. Pour le d&eacute;finir correctement reportez vous au lien fournit vers <a href="http://www.php.net/manual/fr/function.imap-open.php">php.net</a> qui fournit de nombreux exemples.
-Les diff&eacute;rents param&egrave;tres que vous allez choisir peuvent vous donner des chaînes de connexion de ce type :<br />
-- {localhost:110/pop3},<br />
-- {localhost:993/imap/ssl},<br /> 
-- {localhost:995/pop3/ssl/novalidate-cert}...
-</p><p>
+    <p>Afin de pouvoir utiliser ces modes d'authentification, vous devez au pr&eacute;alable 
+      activer les extensions correspondantes dans votre configuration de php :<br />
+      Dans php.ini, enlevez le point-virgule devant extension=php_imap.dll ou 
+      extension=php_ldap.dll ou extension=php_domxml.dll / extension=php_curl.dll 
+      et relancez votre serveur web.</p>
+    <p>La premi&egrave;re solution est d'utiliser un serveur de mail :<br />
+      - Vous devez alors d&eacute;finir dans la premi&egrave;re partie le serveur 
+      &agrave; utiliser. Pour le d&eacute;finir correctement reportez vous au 
+      lien fourni vers <a href="http://www.php.net/manual/fr/function.imap-open.php">php.net</a> 
+      qui fournit de nombreux exemples.<br />
+      <br />
+      Les diff&eacute;rents param&egrave;tres que vous allez choisir peuvent vous 
+      donner des chaînes de connexion de ce type :<br />
+      - {localhost:110/pop3},<br />
+      - {localhost:993/imap/ssl},<br />
+      - {localhost:995/pop3/ssl/novalidate-cert}... </p>
+    <p>
 - Le deuxi&egrave;me param&egrave;tre d&eacute;finit le domaine de mail utilis&eacute; qui va servir &agrave; remplir automatiquement les adresses mails des nouveaux utilisateurs. 
 Si l'utilisateur s'appelle <i>toto</i>, sont adresse mail sera alors toto@domaine_mail. 
 </p>
 <p>La deuxi&egrave;me solution est l'utilisation d'un annuaire LDAP ou d'un Active Directory. Pour cette configuration reportez vous &agrave; la documentation correspondante pr&eacute;sente sur le site web de GLPI.</p>
+    <p>La troisi&egrave;me solution est l'utilisation d'un serveur CAS. Une fois 
+      celui-ci configur&eacute;, vous pouvez toujours vous connecter avec un utilisateur 
+      local en ajoutant ?noCAS=1 &agrave; votre URL.</p>
+    <p><a name="adminb9" id="adminb10"></a></p>
+    <h4>x) V&eacute;rifier si une nouvelle version est disponible</h4>
+    <p><font color="#000000">V&eacute;rification de la pr&eacute;sence de mises 
+      &agrave; jours sur le site glpi.indepnet.org et affichage sur le central 
+      en cas de nouvelle mise &agrave; jour disponible.</font></p>
 
-<p>La troisi&egrave;me solution est l'utilisation d'un serveur CAS. Une fois celui-ci configur&eacute;, vous pouvez toujours vous connecter avec un utilisateur local en ajoutant ?noCAS=1 &agrave; votre URL.</p>
-
-
-<a name="adminb4"></a><h4>iv) Suivis par emails</h4>
-
-<p>Cette section vous permet d'activer le suivi des interventions par email.
-Si vous activez cette fonctionnalit&eacute;, des emails seront alors envoy&eacute;s au moment de la cr&eacute;ation d'une nouvelle intervention, &agrave; l'ajout de chaque suivi et &agrave; la fermeture des interventions.<br />
-- Vous pouvez alors renseigner l'adresse mail de l'administrateur et la signature ajout&eacute;e &agrave; chaque email<br />
-- Les autres options vous permettent de limiter les emails envoy&eacute;s. Pour chaque type de personnes vous pouvez activer ou non l'envoi &agrave; la cr&eacute;ation d'une intervention, &agrave; l'ajout de nouveau suivi et la cloture d'une intervention.<br />
-- Les groupes de personnes d&eacute;finis sont : l'administrateur, tous les utilisateurs de type 'admin' ou 'normal', le responsable de la tâche et le demandeur de l'intervention.<br />
-- Le demandeur ne recevra un email que s'il a activ&eacute; le suivi par email lors de sa demande d'intervention.<br />
-</p>
-<p>Vous pouvez &eacute;galement d&eacute;finir des envois de mails pour les r&eacute;servations.</p>
-
-<a name="adminb5"></a><h4>v) Configuration g&eacute;n&eacute;rale</h4>
-<p>
-La configuration g&eacute;n&eacute;rale de l'application permet de r&eacute;gler certains param&egrave;tres :<br />
-- Le chemin d'installation. <b>Attention !!</b> Ce chemin est d&eacute;tect&eacute; automatiquement au moment de l'installation ou de la mise &agrave; jour, vous ne devriez donc pas avoir besoin de le modifier.<br />
-- Langue par d&eacute;faut &agrave; la cr&eacute;ation de nouveaux utilisateurs.<br />
-- Le niveau de log.<br />
-- Le nombre d'&eacute;v&egrave;nements &agrave; afficher correspond au nombre de lignes de log pr&eacute;sentes sur la page d'accueil du central.<br />
-- Le temps de conservation des logs. <b>Attention !!</b> Si vous les gardez trop longtemps votre table peut contenir &eacute;normement de donn&eacute;es.<br />
-- Montrer les interventions au login : voir les interventions actives sur la page d'accueil du central ou non.<br />
-- Assigner automatiquement les nouvelles interventions au responsable technique s'il existe.<br />
-- Nombre d'&eacute;l&eacute;ments &agrave; afficher par page (valable pour toutes les listes d'&eacute;l&aacute;ments affich&eacute;es - suivis, ordinateurs...)<br />
-- Nombre de caract&egrave;res maximum pour chaque &eacute;l&eacute;ments de la liste : r&eacute;duction de la taille des chaines de caract&egrave;res affich&eacute;es pour obtenir un affichage lisible.<br />
-- Limite d'affichage du planning pour ne pas indiquer les 24h mais restreindre &agrave; la journ&eacute;e de travail effective.<br />
-- Date de d&eacute;but d'exervice fiscale : utilis&eacute; pour toute la gestion des amortissements.<br />
-- Permettre le helpdesk.html : active ou non les demandes d'interventions anonymes via le fichier helpdesk.html.<br />
-- Couleurs des priorit&eacute;s.<br />
-- Seuil d'alerte par d&eacute;faut pour les cartouches et les consommables. Valeur par d&eacute;faut modifiable pour chaque type.<br />
-</p>
-
-<a name="adminb6"></a><h4>vi) Type de document</h4>
-<p>
-Dans cette section, vous pouvez ajouter ou modifier les types de documents autoris&eacute;s &agrave; &ecirc;tre g&eacute;r&eacute;s par GLPI.
-Les informations &agrave; fournir sont :<br />
-- Le nom du type de document.<br />
-- L'extension ex: .txt<br />
-- Le nom du fichier pour l'ic&ocirc;ne du document d&eacute;sir&eacute;. Placer les fichiers d'ic&ocirc;nes dans le r&eacute;pertoire pics/icones sous l'arborescence de GLPI.<br />
-- Le type MIME si n&eacute;cessaire.<br />
-- Autorisation de t&eacute;l&eacute;chargement de ce type de fichier (oui ou non).<br />
-</p>
-
-
-<a name="adminb7"></a><h4>vii) Liens externes protocol&eacute;s</h4>
-
-<p>Dans cette section vous pouvez d&eacute;finir des liens divers qui votn pouvoir s'adapter aux &eacute;l&eacute;ments auxquels il vont &ecirc;tre li&eacute;s.</p>
-<p>Vous pouvez utiliser des tags particulier pour qu'ils soient remplac&eacute;s par les valeurs de l'&eacute;l&eacute;ment :
-Les Tags valides sont : [ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK], [DOMAIN]</p>
-<p>Chaque lien peut &ecirc;tre associ&eacute; &agrave; un ou plusieurs types de mat&eacute;riels</p>
-
-<h3><a name="adminc"></a>c) Pr&eacute;f&eacute;rences</h3>
-<p>Cette zone vous permet de changer votre mot de passe, de d&eacute;finir l'ordre par d&eacute;faut utilis&eacute; dans l'affichage 
-des interventions et de d&eacute;finir la langue avec laquelle l'interface est affich&eacute;e.</p>
+<h3><a name="adminc"></a>c) Pr&eacute;f&eacute;rences</h3>    <p>Cette zone vous permet de changer votre mot de passe, de d&eacute;finir 
+      l'ordre par d&eacute;faut utilis&eacute; dans l'affichage des tickets et 
+      de d&eacute;finir la langue avec laquelle l'interface est affich&eacute;e.</p>
 
 <h3><a name="admind"></a>d) Donn&eacute;es (Sauvegarde/Restauration)</h3>
 <p>Cette zone vous permet de cr&eacute;er des sauvegardes de la base de donn&eacute;es ("Sauvegarde SQL").</p>
-<p>Vous pouvez &eacute;galement supprimer les fichiers de sauvegarde, les restaurer ou t&eacute;l&eacute;charger les fichiers SQL.</p>
-<p>Vous pouvez aussi g&eacute;n&eacute;rer une sauvegarde au format XML de la base de donn&eacute;es. ("Sauvegarde XML").</p>
-
-</div>
+<p>Vous pouvez &eacute;galement supprimer les fichiers de sauvegarde, les restaurer ou t&eacute;l&eacute;charger les fichiers SQL.</p>    <p>Vous pouvez aussi g&eacute;n&eacute;rer une sauvegarde au format XML de la 
+      base de donn&eacute;es. ("Sauvegarde XML").</p>
+    <h3><a name="admine" id="admine"></a>d) Logs</h3>
+    <p>Cette zone vous permet de visualiser et de trier l'historique des logs.<br />
+    </p>
+    </div>
 </div>
 
 
