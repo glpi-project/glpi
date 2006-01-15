@@ -1072,7 +1072,7 @@ CONSUMABLE_TYPE => array(
 					"name" => $lang["consumables"][36],
 				),
 			7 => array(	"table" => "glpi_users", 
-					"field" => "completename",
+					"field" => "name",
 					"name" => $lang["common"][10],
 				),
 		),
