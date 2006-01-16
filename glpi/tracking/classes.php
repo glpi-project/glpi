@@ -190,9 +190,12 @@ class Job {
 		
 		$db=new DB;
 		$m= new CommonItem;
-		$name="N/A";
+		$name=$lang["help"][30];
+		$contact="";
 		if ($m->getfromDB($this->fields["device_type"],$this->fields["computer"])){
 			$name=$m->getType()." ".$m->getName();
+			if (isset($m->obj->fields["contact"]))
+				$contact=$m->obj->fields["contact"];
 		}
 		
 		$message = $lang["mailing"][1]."\n*".$lang["mailing"][5]."*\n".$lang["mailing"][1]."\n";
@@ -202,6 +205,7 @@ class Job {
 		$message.= $lang["mailing"][24]." ".getStatusName($this->fields["status"])."\n";
 		$message.= $lang["mailing"][8]." ".$this->getAssignName()."\n";
 		$message.= $lang["mailing"][16]." ".getPriorityName($this->fields["priority"])."\n";
+		$message.= $lang["mailing"][28]." ".$contact."\n";
 		$message.= $lang["mailing"][26]." ";
 		 if (isset($this->fields["category"])){
 			 $message.= getDropdownName("glpi_dropdown_tracking_category",$this->fields["category"]);
