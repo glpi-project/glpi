@@ -330,7 +330,7 @@ function addDropdown($input) {
 	}
 	else if (in_array($input["tablename"],$dropdowntree_tables)){
 		if ($input['type']=="first"){
-		    $query = "INSERT INTO ".$input["tablename"]." (name,parentID) VALUES ('".$input["value"]."', '0')";		
+		    $query = "INSERT INTO ".$input["tablename"]." (name,parentID,completename) VALUES ('".$input["value"]."', '0','')";		
 		} else {
 			$query="SELECT * from ".$input["tablename"]." where ID='".$input["value2"]."'";
 			$result=$db->query($query);
@@ -340,8 +340,8 @@ function addDropdown($input) {
 				if ($input["type"]=="under") {
 					$level_up=$data["ID"];
 				} 
-				$query = "INSERT INTO ".$input["tablename"]." (name,parentID) VALUES ('".$input["value"]."', '$level_up')";		
-			} else $query = "INSERT INTO ".$input["tablename"]." (name,parentID) VALUES ('".$input["value"]."', '0')";				
+				$query = "INSERT INTO ".$input["tablename"]." (name,parentID,completename) VALUES ('".$input["value"]."', '$level_up','')";		
+			} else $query = "INSERT INTO ".$input["tablename"]." (name,parentID,completename) VALUES ('".$input["value"]."', '0','')";				
 		}
 	}
 	else {
