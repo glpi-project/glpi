@@ -592,7 +592,7 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 	}
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][23].":	</td>";
-	echo "<td><input type='text' name='comment' size='30' value='".$resa->fields["comment"]."'>";
+	echo "<td><textarea name='comment'rows='8' cols='30'>".$resa->fields["comment"]."</textarea>";
     echo "</td></tr>";
 
 	if ($resaID==-1){
@@ -687,16 +687,19 @@ function printReservationItem($target,$ID,$date){
 					$delete="";
 					$modif="";
 					$modif_end="";
+					$comment="";
+					$rand=mt_rand();
 					if ($_SESSION["glpiID"]==$user->fields["ID"]||isAdmin($_SESSION["glpitype"])){
-						$modif="<a  href=\"".$target."?show=resa&amp;edit=".$row['ID']."&amp;item=$ID&amp;mois_courant=$month&amp;annee_courante=$year\"  title='".$row['comment']."'>";
+						$modif="<a onmouseout=\"setdisplay(getElementById('content_".$ID.$rand."'),'none')\" onmouseover=\"setdisplay(getElementById('content_".$ID.$rand."'),'block')\" href=\"".$target."?show=resa&amp;edit=".$row['ID']."&amp;item=$ID&amp;mois_courant=$month&amp;annee_courante=$year\"  title='".$row['comment']."'>";
 						$modif_end="</a>";
-						
+						$comment="<div class='over_link' id='content_".$ID.$rand."'>".nl2br($row["comment"])."</div>";
 						}
 
 		
 		echo "<td   align='center' class='tab_resa'>". $modif."<span>".$display."<br><b>".$user->fields["name"]."</b></span>";
-
-			echo $modif_end."</td></tr>";
+			
+			
+			echo $modif_end.$comment."</td></tr>";
 				
 			}
 
