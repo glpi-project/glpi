@@ -3400,7 +3400,12 @@ if(FieldExists("glpi_infocoms","warranty_value")) {
 
 if(FieldExists("glpi_reservation_item","comments")) {	
 	$query="ALTER TABLE `glpi_reservation_item` CHANGE `comments` `comments` TEXT NULL ";
-	$db->query($query) or die("0.65 alater comments in glpi_reservation_item ".$lang["update"][90].$db->error());
+	$db->query($query) or die("0.65 alter comments in glpi_reservation_item ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_users","active")) {	
+	$query="ALTER TABLE `glpi_users` ADD `active` INT( 2 ) DEFAULT '1' NOT NULL ";
+	$db->query($query) or die("0.65 add active in users ".$lang["update"][90].$db->error());
 }
 
 }
