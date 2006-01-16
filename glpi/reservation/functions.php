@@ -711,13 +711,20 @@ function printReservationItem($target,$ID,$date){
 
 function deleteReservation($ID){
 	// Delete a Reservation
-
+	global $cfg_features;
 	$resa = new ReservationResa;
 	
 	
 	if ($resa->getfromDB($ID))
-	if (isset($resa->fields["id_user"])&&($resa->fields["id_user"]==$_SESSION["glpiID"]||isAdmin($_SESSION["glpitype"])))
-	return $resa->deleteFromDB($ID);
+	if (isset($resa->fields["id_user"])&&($resa->fields["id_user"]==$_SESSION["glpiID"]||isAdmin($_SESSION["glpitype"]))){
+		// Processing Email
+		if ($cfg_features["mailing"]){
+			$mail = new MailingResa($resa,"delete");
+			$mail->send();
+		}
+
+		return $resa->deleteFromDB($ID);
+	}
 	
 	return false;
 }
@@ -750,7 +757,7 @@ function addReservation($input,$target,$ok=true){
 			// Processing Email
 			if ($cfg_features["mailing"])
 			{
-				$mail = new MailingResa($resa);
+				$mail = new MailingResa($resa,"new");
 				$mail->send();
 			}
 			return true;
