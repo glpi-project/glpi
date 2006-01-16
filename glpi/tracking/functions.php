@@ -1256,8 +1256,7 @@ function updateTracking($input){
 	} else {
 		$input["assign_type"]=USER_TYPE;
 		$input["assign"]=$input["assign_int"];
-		}
-
+	}
 
 	$updates=array();
 	// add Document if exists
@@ -1289,9 +1288,13 @@ function updateTracking($input){
 	if ((in_array("assign",$updates)||in_array("assign_type",$updates))&&$job->fields["status"]=="new"){
 		$updates[]="status";
 		$job->fields["status"]="assign";
-	
 	}
 
+	if ($input["assign"]==0&&$input["status"]=="assign"){
+		$updates[]="status";
+		$job->fields["status"]="new";
+	}
+	
 	if (in_array("status",$updates)&&ereg("old_",$input["status"])){
 		$updates[]="closedate";
 		$job->fields["closedate"]=date("Y-m-d H:i:s");
