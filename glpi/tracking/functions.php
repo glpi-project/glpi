@@ -1321,8 +1321,8 @@ function updateTracking($input){
 	}
 	if (in_array("category",$updates)){
 		$new_category=$job->fields["category"];
-		$old_category_name=ereg_replace("&nbsp;","N/A",getDropdownName("glpi_dropdown_tracking_category",$old_category));
-		$new_category_name=ereg_replace("&nbsp;","N/A",getDropdownName("glpi_dropdown_tracking_category",$new_category));
+		$old_category_name=ereg_replace("&nbsp;",$lang["mailing"][100],getDropdownName("glpi_dropdown_tracking_category",$old_category));
+		$new_category_name=ereg_replace("&nbsp;",$lang["mailing"][100],getDropdownName("glpi_dropdown_tracking_category",$new_category));
 		$change_followup_content.=$lang["mailing"][14].": ".$old_category_name." -> ".$new_category_name."\n";
 		$global_mail_change_count++;
 	}
