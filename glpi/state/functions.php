@@ -212,7 +212,6 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_dropdown_state.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["state"][0]."</a></th>";
 
-			echo "<th>&nbsp;</th>";
 			echo "</tr>";
 
 			for ($i=0; $i < $numrows_limit; $i++) {
@@ -230,9 +229,6 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 				echo "<td>". $ri->getItemType() ."</td>";
 				echo "<td>". getDropdownName("glpi_dropdown_locations",$ri->obj->fields["location"]) ."</td>";
 				echo "<td><b>". getDropdownName("glpi_dropdown_state",$ri->fields["state"]) ."</b></td>";
-				echo "<td>";
-				echo "<a href='".$HTMLRel."state/index.php?deletestate=deletestate&amp;device_id=$id_device&amp;device_type=$type'>".$lang["state"][2]."</a>";
-				echo "</td>";
 
 				echo "</tr>";
 			}
