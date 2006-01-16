@@ -353,7 +353,8 @@ class MailingResa{
 		// Create the message subject 
 		if ($this->type=="new")
 		$subject="[GLPI] ".$lang["mailing"][19];
-		else $subject="[GLPI] ".$lang["mailing"][23];
+		else if ($this->type=="update") $subject="[GLPI] ".$lang["mailing"][23];
+		else if ($this->type=="delete") $subject="[GLPI] ".$lang["mailing"][29];
 		
 		return $subject;
 	}
