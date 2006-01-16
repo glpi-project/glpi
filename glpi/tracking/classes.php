@@ -206,6 +206,12 @@ class Job {
 		$message.= $lang["mailing"][8]." ".$this->getAssignName()."\n";
 		$message.= $lang["mailing"][16]." ".getPriorityName($this->fields["priority"])."\n";
 		$message.= $lang["mailing"][28]." ".$contact."\n";
+		if ($this->fields["emailupdates"]=="yes"){
+		        $message.=$lang["mailing"][103]." ".$lang["help"][10]."\n";
+	        } else {
+		        $message.=$lang["mailing"][103]." ".$lang["help"][9]."\n";
+		}
+		
 		$message.= $lang["mailing"][26]." ";
 		 if (isset($this->fields["category"])){
 			 $message.= getDropdownName("glpi_dropdown_tracking_category",$this->fields["category"]);
