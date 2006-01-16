@@ -464,19 +464,22 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	if ($withtemplate<2)echo "<td align='center' class='tab_bg_2'><a href='".$HTMLRel."documents/documents-info-form.php?deleteitem=deleteitem&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
 	}
-	$q="SELECT * FROM glpi_docs WHERE deleted='N'";
-	$result = $db->query($q);
-	$nb = $db->numrows($result);
 	
-	if ($withtemplate<2&&$nb>0){
-		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
-		echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
-		dropdown("glpi_docs","conID");
-		echo "</div></td><td align='center'>";
-		echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
-		echo "</td>";
+	if (isAdmin($_SESSION["glpitype"])){
+		$q="SELECT * FROM glpi_docs WHERE deleted='N'";
+		$result = $db->query($q);
+		$nb = $db->numrows($result);
+	
+		if ($withtemplate<2&&$nb>0){
+			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+			echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
+			dropdown("glpi_docs","conID");
+			echo "</div></td><td align='center'>";
+			echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
+			echo "</td>";
 		
-		echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+			echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+		}
 	}
 	if (!empty($withtemplate))
 	echo "<input type='hidden' name='is_template' value='1'>";
