@@ -354,19 +354,19 @@ $max['locations']=$db->result($result,0,0);
 
 // glpi_users
 for ($i=0;$i<$max['users_sadmin'];$i++){
-	$query="INSERT INTO glpi_users VALUES ('','sadmin$i','',MD5('sadmin$i'),'sadmin$i@tutu.com','tel $i','super-admin','','no','".mt_rand(1,$max['locations'])."','no','french')";
+	$query="INSERT INTO glpi_users VALUES ('','sadmin$i','',MD5('sadmin$i'),'sadmin$i@tutu.com','tel $i','super-admin','','no','".mt_rand(1,$max['locations'])."','no','french','1')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 for ($i=0;$i<$max['users_admin'];$i++){
-	$query="INSERT INTO glpi_users VALUES ('','admin$i','',MD5('admin$i'),'admin$i@tutu.com','tel $i','admin','','no','".mt_rand(1,$max['locations'])."','no','french')";
+	$query="INSERT INTO glpi_users VALUES ('','admin$i','',MD5('admin$i'),'admin$i@tutu.com','tel $i','admin','','no','".mt_rand(1,$max['locations'])."','no','french','1')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 for ($i=0;$i<$max['users_normal'];$i++){
-	$query="INSERT INTO glpi_users VALUES ('','normal$i','',MD5('normal$i'),'normal$i@tutu.com','tel $i','normal','','no','".mt_rand(1,$max['locations'])."','no','french')";
+	$query="INSERT INTO glpi_users VALUES ('','normal$i','',MD5('normal$i'),'normal$i@tutu.com','tel $i','normal','','no','".mt_rand(1,$max['locations'])."','no','french','1')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 for ($i=0;$i<$max['users_postonly'];$i++){
-	$query="INSERT INTO glpi_users VALUES ('','postonly$i','',MD5('postonly$i'),'postonly$i@tutu.com','tel $i','post-only','','no','".mt_rand(1,$max['locations'])."','no','french')";
+	$query="INSERT INTO glpi_users VALUES ('','postonly$i','',MD5('postonly$i'),'postonly$i@tutu.com','tel $i','post-only','','no','".mt_rand(1,$max['locations'])."','no','french','1')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
