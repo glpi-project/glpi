@@ -1728,6 +1728,7 @@ function html_clean($value){
 	$value=preg_replace('/<a[^>]+>/',' ',$value);
 	$value=preg_replace('/<img[^>]+>/',' ',$value);
 	$value=preg_replace('/<\/a>/',' ',$value);
+	$value=preg_replace('/<br>/',", ",$value);
  return trim($value);
 }
 
