@@ -180,13 +180,19 @@ if ($auth_succeded)
 if (!$user_present&&$cfg_features["auto_add_users"]) {
 	$identificat->user->fields["ID"]=$identificat->user->addToDB($identificat->extauth);
 } else if (!$user_present){ // Auto add not enable so auth failed
-	$identificat->err.="User not allowed to login";
+	$identificat->err.=$lang["login"][11];
 	$auth_succeded=false;	
-}else if (!empty($update_list)) {
-	$identificat->user->updateInDB($update_list);
-	// Blank PWD to clean old database for the external auth
-	if ($identificat->extauth)
-	$identificat->user->blankPassword();
+} else if ($user_present) {
+	if (!$identificat->user->fields["active"]){
+		$identificat->err.=$lang["login"][11];
+		$auth_succeded=false;	
+	} else {
+		if (!empty($update_list))
+			$identificat->user->updateInDB($update_list);
+		// Blank PWD to clean old database for the external auth
+		if ($identificat->extauth)
+			$identificat->user->blankPassword();
+	}
 }
 
 

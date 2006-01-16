@@ -98,6 +98,7 @@ function showUserinfo($target,$ID) {
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
 				echo getDropdownName("glpi_dropdown_locations",$user->fields["location"]);
 			echo "</td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][400]."</td><td>".($user->fields["active"]?$lang["choice"][0]:$lang["choice"][1])."</td></tr>";
 	echo "</table></div>";
 
 	echo "<div align='center' ><p><b>".$lang["tracking"][11]."</b></p></div>";
@@ -195,6 +196,13 @@ function showUserform($target,$name) {
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
 	dropdownValue("glpi_dropdown_locations", "location", $user->fields["location"]);
+	echo "</td></tr>";
+	echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][400]."</td><td>";
+	echo "<select name='active'>";
+	echo "<option value='1' ".($user->fields["active"]?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".(!$user->fields["active"]?" selected ":"").">".$lang["choice"][1]."</option>";
+	
+	echo "</select>";
 	echo "</td></tr>";
 	if (isSuperAdmin($_SESSION["glpitype"])) {
 		echo "<tr class='tab_bg_1'>";

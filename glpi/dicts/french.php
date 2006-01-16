@@ -741,6 +741,7 @@ $lang["login"][6]="Identifiant";
 $lang["login"][7]="Mot de passe";
 $lang["login"][8]="Indentifiant ou mot de passe vide";
 $lang["login"][10]="Authentification";
+$lang["login"][11]="Utilisateur non autorisé à se connecter";
 
 
 $lang["mailing"][0]="----------------------------------------------------------";
@@ -1320,6 +1321,8 @@ $lang["setup"][307]="Jamais";
 $lang["setup"][308]="Toutes les semaines";
 $lang["setup"][309]="Tous les mois";
 $lang["setup"][310]="Vérification automatique de la présence d'une mise à jour";
+
+$lang["setup"][400]="Actif";
 
 
 
