@@ -154,9 +154,11 @@ if(!isset($tab["removefromfaq"])) $tab["removefromfaq"] = "";
 	commonHeader($lang["title"][5],$_SERVER["PHP_SELF"]);
 	ShowKbItemFull($tab["ID"]);
 	
+		if (isAdmin($_SESSION["glpitype"])){
+			kbItemMenu($tab["ID"]);
+		}
 		if (isNormal($_SESSION["glpitype"])){
-		kbItemMenu($tab["ID"]);
-		showDocumentAssociated(KNOWBASE_TYPE,$tab["ID"]);
+			showDocumentAssociated(KNOWBASE_TYPE,$tab["ID"]);
 		}
 	commonFooter();
 	}
