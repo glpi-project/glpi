@@ -508,24 +508,6 @@ if(!FieldExists("printers", "ramSize")) {
 //Version 0.3
 //Ajout de NOT NULL et des valeurs par defaut.
 
-$query = "ALTER TABLE computers MODIFY name VARCHAR(200) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE computers MODIFY type VARCHAR(100) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE computers MODIFY os VARCHAR(100) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE computers MODIFY osver VARCHAR(20) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE computers MODIFY processor VARCHAR(30) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE computers MODIFY processor_speed VARCHAR(30) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE computers MODIFY hdspace VARCHAR(6) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE computers MODIFY contact VARCHAR(90) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE computers MODIFY contact_num VARCHAR(90) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE computers MODIFY achat_date date NOT NULL default '0000-00-00'";
 $db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE computers MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
@@ -535,12 +517,6 @@ $query = "ALTER TABLE monitors MODIFY achat_date date NOT NULL default '0000-00-
 $db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE monitors MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
 
-$query = "ALTER TABLE networking MODIFY ram varchar(10) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE networking MODIFY serial varchar(50) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE networking MODIFY otherserial varchar(50) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE networking MODIFY achat_date date NOT NULL default '0000-00-00'";
 $db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE networking MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
@@ -550,60 +526,9 @@ $query = "ALTER TABLE printers MODIFY achat_date date NOT NULL default '0000-00-
 $db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE printers MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
 
-$query = "ALTER TABLE software MODIFY name varchar(200) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE software MODIFY platform varchar(200) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE software MODIFY version varchar(20) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE software MODIFY location varchar(200) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE software MODIFY comments text NOT NULL";
-
-
-$query = "ALTER TABLE templates MODIFY templname varchar(200) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE templates MODIFY name varchar(200) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE templates MODIFY os varchar(200) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE templates MODIFY osver varchar(20) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE templates MODIFY processor varchar(200) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE templates MODIFY processor_speed varchar(100) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE templates MODIFY location varchar(200) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE templates MODIFY serial varchar(200) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE templates MODIFY otherserial varchar(200) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE templates MODIFY ramtype varchar(200) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE templates MODIFY ram varchar(20) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE templates MODIFY network varchar(200) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE templates MODIFY hdspace varchar(10) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE templates MODIFY contact varchar(200) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE templates MODIFY contact_num varchar(200) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE templates MODIFY comments text NOT NULL";
-$db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE templates MODIFY achat_date date NOT NULL default '0000-00-00'";
 $db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE templates MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
-
-$query = "ALTER TABLE users MODIFY password varchar(80) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE users MODIFY email varchar(80) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE users MODIFY location varchar(100) NOT NULL default ''";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE users MODIFY phone varchar(100) NOT NULL default ''";
 
  echo "Version 0.3  <br />";
 
@@ -3190,7 +3115,7 @@ if(!FieldExists("glpi_config","mailing_attrib_attrib")) {
 
  
 if(!FieldExists("glpi_tracking_planning","id_followup")) {
-	$query="ALTER TABLE `glpi_tracking_planning` ADD `id_followup` INT NOT NULL AFTER `id_tracking` ;";
+	$query="ALTER TABLE `glpi_tracking_planning` ADD `id_followup` INT DEFAULT '0' NOT NULL AFTER `id_tracking` ;";
 	$db->query($query) or die("0.65 add id_followup in tracking_planning".$lang["update"][90].$db->error());
 	$query=" ALTER TABLE `glpi_tracking_planning` ADD INDEX ( `id_followup` );";
 	$db->query($query) or die("0.65 add index for id_followup in tracking_planning".$lang["update"][90].$db->error());
@@ -3389,11 +3314,18 @@ if(!FieldExists("glpi_$notes","notes")) {
 
 }
 
+if(!FieldExists("glpi_users","active")) {	
+	$query="ALTER TABLE `glpi_users` ADD `active` INT( 2 ) DEFAULT '1' NOT NULL ";
+	$db->query($query) or die("0.65 add active in users ".$lang["update"][90].$db->error());
+}
+
+///// BEGIN  MySQL Compatibility
 if(FieldExists("glpi_infocoms","warranty_value")) {	
 	$query="ALTER TABLE `glpi_infocoms` CHANGE `warranty_info` `warranty_info` VARCHAR( 255 ) NULL DEFAULT NULL,
 		CHANGE `warranty_value` `warranty_value` FLOAT NOT NULL DEFAULT '0',
 		CHANGE `num_commande` `num_commande` VARCHAR( 200 ) NULL DEFAULT NULL,
 		CHANGE `bon_livraison` `bon_livraison` VARCHAR( 200 ) NULL DEFAULT NULL,
+		CHANGE `facture` `facture` VARCHAR( 200 ) NULL DEFAULT NULL,
 		CHANGE `num_immo` `num_immo` VARCHAR( 200 ) NULL DEFAULT NULL;";
 	$db->query($query) or die("0.65 alter various fields in infocoms ".$lang["update"][90].$db->error());
 }
@@ -3403,10 +3335,222 @@ if(FieldExists("glpi_reservation_item","comments")) {
 	$db->query($query) or die("0.65 alter comments in glpi_reservation_item ".$lang["update"][90].$db->error());
 }
 
-if(!FieldExists("glpi_users","active")) {	
-	$query="ALTER TABLE `glpi_users` ADD `active` INT( 2 ) DEFAULT '1' NOT NULL ";
-	$db->query($query) or die("0.65 add active in users ".$lang["update"][90].$db->error());
+
+if(FieldExists("glpi_cartridges_type","comments")) {	
+	$query="ALTER TABLE `glpi_cartridges_type` CHANGE `name` `name` VARCHAR( 255 ) NULL DEFAULT NULL,
+		CHANGE `ref` `ref` VARCHAR( 255 ) NULL DEFAULT NULL ,
+		CHANGE `comments` `comments` TEXT NULL DEFAULT NULL ";
+	$db->query($query) or die("0.65 alter various fields in cartridges_type ".$lang["update"][90].$db->error());
 }
+
+if(FieldExists("glpi_computer_device","specificity")) {	
+	$query="ALTER TABLE `glpi_computer_device` CHANGE `specificity` `specificity` VARCHAR( 250 ) NULL ";
+	$db->query($query) or die("0.65 alter specificity in glpi_computer_device ".$lang["update"][90].$db->error());
+}
+
+$inv_table=array("computers","monitors","networking","peripherals","printers");
+
+foreach ($inv_table as $table)
+if(FieldExists("glpi_$table","comments")) {	
+	$query="ALTER TABLE `glpi_$table` CHANGE `name` `name` VARCHAR( 200 ) NULL ,
+		CHANGE `serial` `serial` VARCHAR( 200 ) NULL ,
+		CHANGE `otherserial` `otherserial` VARCHAR( 200 ) NULL ,
+		CHANGE `contact` `contact` VARCHAR( 200 ) NULL ,
+		CHANGE `contact_num` `contact_num` VARCHAR( 200 ) NULL ,
+		CHANGE `comments` `comments` TEXT NULL ";
+	$db->query($query) or die("0.65 alter various fields in $table ".$lang["update"][90].$db->error());
+}
+
+if(FieldExists("glpi_networking","ram")) {	
+	$query="ALTER TABLE `glpi_networking` CHANGE `ram` `ram` VARCHAR( 200 ) NULL ,
+		CHANGE `ifmac` `ifmac` VARCHAR( 200 ) NULL ,
+		CHANGE `ifaddr` `ifaddr` VARCHAR( 200 ) NULL";
+	$db->query($query) or die("0.65 alter 2 various fields in networking ".$lang["update"][90].$db->error());
+}
+
+if(FieldExists("glpi_peripherals","brand")) {	
+	$query="ALTER TABLE `glpi_peripherals` CHANGE `brand` `brand` VARCHAR( 200 ) NULL ";
+	$db->query($query) or die("0.65 alter 2 various fields in peripherals ".$lang["update"][90].$db->error());
+}
+
+if(FieldExists("glpi_printers","ramSize")) {	
+	$query="ALTER TABLE `glpi_printers` CHANGE `ramSize` `ramSize` VARCHAR( 200 ) NULL ";
+	$db->query($query) or die("0.65 alter 2 various fields in printers ".$lang["update"][90].$db->error());
+}
+if(FieldExists("glpi_consumables_type","comments")) {	
+	$query="ALTER TABLE `glpi_consumables_type` CHANGE `name` `name` VARCHAR( 255 ) NULL ,
+		CHANGE `ref` `ref` VARCHAR( 255 ) NULL ,
+		CHANGE `comments` `comments` TEXT NULL  ";
+	$db->query($query) or die("0.65 alter various fields in consumables_type ".$lang["update"][90].$db->error());
+}
+
+if(FieldExists("glpi_contacts","comments")) {	
+	$query="ALTER TABLE `glpi_contacts` CHANGE `name` `name` VARCHAR( 255 ) NULL ,
+		CHANGE `phone` `phone` VARCHAR( 200 ) NULL ,
+		CHANGE `phone2` `phone2` VARCHAR( 200 ) NULL ,
+		CHANGE `fax` `fax` VARCHAR( 200 ) NULL ,
+		CHANGE `email` `email` VARCHAR( 255 ) NULL ,
+		CHANGE `comments` `comments` TEXT NULL  ";
+	$db->query($query) or die("0.65 alter various fields in contacts ".$lang["update"][90].$db->error());
+}
+
+
+if(FieldExists("glpi_contracts","comments")) {	
+	$query="ALTER TABLE `glpi_contracts` CHANGE `name` `name` VARCHAR( 255 ) NULL ,
+		CHANGE `num` `num` VARCHAR( 255 ) NULL ,
+		CHANGE `comments` `comments` TEXT NULL ,
+		CHANGE `compta_num` `compta_num` VARCHAR( 255 ) NULL ";
+	$db->query($query) or die("0.65 alter various fields in contracts ".$lang["update"][90].$db->error());
+}
+
+$device=array("case","control","drive","gfxcard","hdd","iface","moboard","pci","power","processor","ram","sndcard");
+
+foreach ($device as $dev)
+if(FieldExists("glpi_device_$dev","comment")) {	
+	$query="ALTER TABLE `glpi_device_$dev` CHANGE `designation` `designation` VARCHAR( 255 ) NULL ,
+		CHANGE `comment` `comment` TEXT NULL ,
+		CHANGE `specif_default` `specif_default` VARCHAR( 250 ) NULL ";
+	$db->query($query) or die("0.65 alter various fields in device_$dev ".$lang["update"][90].$db->error());
+
+}
+
+if(FieldExists("glpi_docs","comment")) {	
+	$query="ALTER TABLE `glpi_docs` CHANGE `name` `name` VARCHAR( 255 ) NULL ,
+		CHANGE `filename` `filename` VARCHAR( 255 ) NULL ,
+		CHANGE `mime` `mime` VARCHAR( 30 ) NULL ,
+		CHANGE `comment` `comment` TEXT NULL ,
+		CHANGE `link` `link` VARCHAR( 255 ) NULL  ";
+	$db->query($query) or die("0.65 alter various fields in docs ".$lang["update"][90].$db->error());
+}
+
+if(FieldExists("glpi_enterprises","comments")) {	
+	$query="ALTER TABLE `glpi_enterprises` CHANGE `name` `name` VARCHAR( 200 ) NULL ,
+		CHANGE `address` `address` TEXT NULL ,
+		CHANGE `website` `website` VARCHAR( 200 ) NULL ,
+		CHANGE `phonenumber` `phonenumber` VARCHAR( 200 ) NULL ,
+		CHANGE `comments` `comments` TEXT NULL ,
+		CHANGE `fax` `fax` VARCHAR( 255 ) NULL ,
+		CHANGE `email` `email` VARCHAR( 255 ) NULL  ";
+	$db->query($query) or die("0.65 alter various fields in enterprises ".$lang["update"][90].$db->error());
+}
+
+if(FieldExists("glpi_event_log","message")) {	
+	$query="ALTER TABLE `glpi_event_log` CHANGE `itemtype` `itemtype` VARCHAR( 200 ) NULL ,
+		CHANGE `service` `service` VARCHAR( 200 ) NULL ,
+		CHANGE `message` `message` TEXT NULL   ";
+	$db->query($query) or die("0.65 alter various fields in event_log ".$lang["update"][90].$db->error());
+}
+
+if(FieldExists("glpi_kbitems","question")) {	
+	$query="ALTER TABLE `glpi_kbitems` CHANGE `question` `question` TEXT NULL ,
+		CHANGE `answer` `answer` TEXT NULL ";
+	$db->query($query) or die("0.65 alter various fields in kbitems ".$lang["update"][90].$db->error());
+}
+
+if(FieldExists("glpi_licenses","serial")) {	
+	$query="ALTER TABLE `glpi_licenses` CHANGE `serial` `serial` VARCHAR( 255 ) NULL";
+	$db->query($query) or die("0.65 alter serial in licenses ".$lang["update"][90].$db->error());
+}
+
+if(FieldExists("glpi_links","data")) {	
+	$query="ALTER TABLE `glpi_links` CHANGE `name` `name` VARCHAR( 255 ) NULL ,
+		CHANGE `data` `data` TEXT NULL";
+	$db->query($query) or die("0.65 alter various fields in links ".$lang["update"][90].$db->error());
+}
+ 
+
+if(FieldExists("glpi_networking_ports","ifmac")) {	
+	$query="ALTER TABLE `glpi_networking_ports` CHANGE `name` `name` CHAR( 200 ) NULL ,
+		CHANGE `ifaddr` `ifaddr` CHAR( 200 ) NULL ,
+		CHANGE `ifmac` `ifmac` CHAR( 200 ) NULL";
+	$db->query($query) or die("0.65 alter various fields in networking_ports ".$lang["update"][90].$db->error());
+}
+ 
+if(FieldExists("glpi_reservation_resa","comment")) {	
+	$query="ALTER TABLE `glpi_reservation_resa` CHANGE `comment` `comment` TEXT NULL";
+	$db->query($query) or die("0.65 alter comment in reservation_resa ".$lang["update"][90].$db->error());
+} 
+
+if(FieldExists("glpi_software","version")) {	
+	$query="ALTER TABLE `glpi_software` CHANGE `name` `name` VARCHAR( 200 ) NULL ,
+		CHANGE `version` `version` VARCHAR( 200 ) NULL ";
+	$db->query($query) or die("0.65 alter various fields in software ".$lang["update"][90].$db->error());
+} 
+
+if(FieldExists("glpi_type_docs","name")) {	
+	$query="ALTER TABLE `glpi_type_docs` CHANGE `name` `name` VARCHAR( 255 ) NULL ,
+		CHANGE `ext` `ext` VARCHAR( 10 ) NULL ,
+		CHANGE `icon` `icon` VARCHAR( 255 ) NULL ,
+		CHANGE `mime` `mime` VARCHAR( 100 ) NULL ";
+	$db->query($query) or die("0.65 alter various fields in type_docs ".$lang["update"][90].$db->error());
+} 
+
+if(FieldExists("glpi_users","language")) {	
+	$query="ALTER TABLE `glpi_users` CHANGE `name` `name` VARCHAR( 80 ) NULL ,
+		CHANGE `password` `password` VARCHAR( 80 ) NULL ,
+		CHANGE `password_md5` `password_md5` VARCHAR( 80 ) NULL ,
+		CHANGE `email` `email` VARCHAR( 200 ) NULL ,
+		CHANGE `realname` `realname` VARCHAR( 255 ) NULL ,
+		CHANGE `language` `language` VARCHAR( 255 ) NULL  ";
+	$db->query($query) or die("0.65 alter various fields in users ".$lang["update"][90].$db->error());
+} 
+
+if(FieldExists("glpi_config","cut")) {	
+	$query="ALTER TABLE `glpi_config` CHANGE `num_of_events` `num_of_events` VARCHAR( 200 ) NULL ,
+		CHANGE `jobs_at_login` `jobs_at_login` VARCHAR( 200 ) NULL ,
+		CHANGE `sendexpire` `sendexpire` VARCHAR( 200 ) NULL ,
+		CHANGE `cut` `cut` VARCHAR( 200 ) NULL ,
+		CHANGE `expire_events` `expire_events` VARCHAR( 200 ) NULL ,
+		CHANGE `list_limit` `list_limit` VARCHAR( 200 ) NULL ,
+		CHANGE `version` `version` VARCHAR( 200 ) NULL ,
+		CHANGE `logotxt` `logotxt` VARCHAR( 200 ) NULL ,
+		CHANGE `root_doc` `root_doc` VARCHAR( 200 ) NULL ,
+		CHANGE `event_loglevel` `event_loglevel` VARCHAR( 200 ) NULL ,
+		CHANGE `mailing` `mailing` VARCHAR( 200 ) NULL ,
+		CHANGE `imap_auth_server` `imap_auth_server` VARCHAR( 200 ) NULL ,
+		CHANGE `imap_host` `imap_host` VARCHAR( 200 ) NULL ,
+		CHANGE `ldap_host` `ldap_host` VARCHAR( 200 ) NULL ,
+		CHANGE `ldap_basedn` `ldap_basedn` VARCHAR( 200 ) NULL ,
+		CHANGE `ldap_rootdn` `ldap_rootdn` VARCHAR( 200 ) NULL ,
+		CHANGE `ldap_pass` `ldap_pass` VARCHAR( 200 ) NULL ,
+		CHANGE `admin_email` `admin_email` VARCHAR( 200 ) NULL ,
+		CHANGE `mailing_signature` `mailing_signature` VARCHAR( 200 ) NULL ,
+		CHANGE `mailing_new_admin` `mailing_new_admin` VARCHAR( 200 ) NULL ,
+		CHANGE `mailing_followup_admin` `mailing_followup_admin` VARCHAR( 200 ) NULL ,
+		CHANGE `mailing_finish_admin` `mailing_finish_admin` VARCHAR( 200 ) NULL ,
+		CHANGE `mailing_new_all_admin` `mailing_new_all_admin` VARCHAR( 200 ) NULL ,
+		CHANGE `mailing_followup_all_admin` `mailing_followup_all_admin` VARCHAR( 200 ) NULL ,
+		CHANGE `mailing_finish_all_admin` `mailing_finish_all_admin` VARCHAR( 200 ) NULL ,
+		CHANGE `mailing_new_all_normal` `mailing_new_all_normal` VARCHAR( 200 ) NULL ,
+		CHANGE `mailing_followup_all_normal` `mailing_followup_all_normal` VARCHAR( 200 ) NULL ,
+		CHANGE `mailing_finish_all_normal` `mailing_finish_all_normal` VARCHAR( 200 ) NULL ,
+		CHANGE `mailing_new_attrib` `mailing_new_attrib` VARCHAR( 200 ) NULL ,
+		CHANGE `mailing_followup_attrib` `mailing_followup_attrib` VARCHAR( 200 ) NULL ,
+		CHANGE `mailing_finish_attrib` `mailing_finish_attrib` VARCHAR( 200 ) NULL ,
+		CHANGE `mailing_new_user` `mailing_new_user` VARCHAR( 200 ) NULL ,
+		CHANGE `mailing_followup_user` `mailing_followup_user` VARCHAR( 200 ) NULL ,
+		CHANGE `mailing_finish_user` `mailing_finish_user` VARCHAR( 200 ) NULL ,
+		CHANGE `ldap_field_name` `ldap_field_name` VARCHAR( 200 ) NULL ,
+		CHANGE `ldap_field_email` `ldap_field_email` VARCHAR( 200 ) NULL ,
+		CHANGE `ldap_field_location` `ldap_field_location` VARCHAR( 200 ) NULL ,
+		CHANGE `ldap_field_realname` `ldap_field_realname` VARCHAR( 200 ) NULL ,
+		CHANGE `ldap_field_phone` `ldap_field_phone` VARCHAR( 200 ) NULL ,
+		CHANGE `ldap_condition` `ldap_condition` VARCHAR( 255 ) NULL ,
+		CHANGE `permit_helpdesk` `permit_helpdesk` VARCHAR( 200 ) NULL ,
+		CHANGE `cas_host` `cas_host` VARCHAR( 255 ) NULL ,
+		CHANGE `cas_port` `cas_port` VARCHAR( 255 ) NULL ,
+		CHANGE `cas_uri` `cas_uri` VARCHAR( 255 ) NULL ,
+		CHANGE `url_base` `url_base` VARCHAR( 255 ) NULL ,
+		CHANGE `text_login` `text_login` TEXT NULL ,
+		CHANGE `founded_new_version` `founded_new_version` VARCHAR( 10 ) NULL ";
+	$db->query($query) or die("0.65 alter various fields in config ".$lang["update"][90].$db->error());
+} 
+
+
+///// END  MySQL Compatibility
+
+
+
 
 }
 
