@@ -309,8 +309,11 @@ function addNetdevice($input) {
 	unset($input['ID']);
 	
 	// Manage state
-	$state=$input["state"];
-	unset($input["state"]);
+	$state=-1;
+	if (isset($input["state"])){
+		$state=$input["state"];
+		unset($input["state"]);
+	}
 
  	// set new date.
  	$netdev->fields["date_mod"] = date("Y-m-d H:i:s");
@@ -325,9 +328,11 @@ function addNetdevice($input) {
 	$newID=$netdev->addToDB();
 	
 	// Add state
-	if (isset($input["is_template"])&&$input["is_template"]==1)
-	updateState(NETWORKING_TYPE,$newID,$state,1);
-	else updateState(NETWORKING_TYPE,$newID,$state);
+	if ($state>0){
+		if (isset($input["is_template"])&&$input["is_template"]==1)
+			updateState(NETWORKING_TYPE,$newID,$state,1);
+		else updateState(NETWORKING_TYPE,$newID,$state);	
+	}
 	
 	// ADD Infocoms
 	$ic= new Infocom();

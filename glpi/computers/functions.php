@@ -492,8 +492,12 @@ function addComputer($input) {
 	unset($input['ID']);
 	
 	// Manage state
-	$state=$input["state"];
-	unset($input["state"]);
+	$state=-1;
+	if (isset($input["state"])){
+		$state=$input["state"];
+		unset($input["state"]);
+	}
+
 	$i=0;
 	
 	// fill array for update
@@ -505,9 +509,11 @@ function addComputer($input) {
 	$newID=$comp->addToDB();
 	
 	// Add state
-	if (isset($input["is_template"])&&$input["is_template"]==1)
-	updateState(COMPUTER_TYPE,$newID,$state,1);
-	else updateState(COMPUTER_TYPE,$newID,$state);
+	if ($state>0){
+		if (isset($input["is_template"])&&$input["is_template"]==1)
+			updateState(COMPUTER_TYPE,$newID,$state,1);
+		else updateState(COMPUTER_TYPE,$newID,$state);
+	}
 	
 	// ADD Devices
 	$comp->getFromDB($oldID,1);
