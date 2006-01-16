@@ -81,6 +81,8 @@ border: 1px solid gray;
 background: transparent url("pics/fondTR.png") repeat; 
 -moz-border-radius: 5px;
 padding: 5px;
+font-size: 12px;
+text-align: left;
 }
 
 
