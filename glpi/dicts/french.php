@@ -1375,9 +1375,8 @@ $lang["software"][41]="Logiciel ID";
 $lang["software"][42]="Nouveau logiciel à partir d'un modèle";
 $lang["software"][43]="Ajouter une licence à acheter";
 
-$lang["state"][0]="Etat";
-$lang["state"][1]="Etats des matériels";
-$lang["state"][2]="Sortir le matériel de son état";
+$lang["state"][0]="Statut";
+$lang["state"][1]="Statuts des matériels";
 $lang["state"][4]="ID";
 $lang["state"][5]="Nom";
 $lang["state"][6]="Type de matériel";
