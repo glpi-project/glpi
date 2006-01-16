@@ -380,9 +380,12 @@ function addMonitor($input) {
 	
 	
 	// Manage state
-	$state=$input["state"];
-	unset($input["state"]);
-	
+	$state=-1;
+	if (isset($input["state"])){
+		$state=$input["state"];
+		unset($input["state"]);
+	}
+
  	// set new date.
  	$mon->fields["date_mod"] = date("Y-m-d H:i:s");
 
@@ -396,9 +399,11 @@ function addMonitor($input) {
 	$newID=$mon->addToDB();
 	
 	// Add state
-	if (isset($input["is_template"])&&$input["is_template"]==1)
-	updateState(MONITOR_TYPE,$newID,$state,1);
-	else updateState(MONITOR_TYPE,$newID,$state);
+	if ($state>0){
+		if (isset($input["is_template"])&&$input["is_template"]==1)
+			updateState(MONITOR_TYPE,$newID,$state,1);
+		else updateState(MONITOR_TYPE,$newID,$state);
+	}
 	
 	// ADD Infocoms
 	$ic= new Infocom();
