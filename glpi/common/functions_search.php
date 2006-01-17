@@ -1111,8 +1111,8 @@ case "glpi_device_processor.specif_default" :
 	break;
 case "glpi_networking_ports.ifmac" :
 	if ($type==COMPUTER_TYPE)
-		return $pretable.$table.$addtable.".".$field." AS ITEM_$num, DEVICE_".NETWORK_DEVICE.".specificity AS ".$NAME."_".$num."_2, ";
-	else return $pretable.$table.$addtable.".".$field." AS ".$NAME."_$num, ";
+		return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ITEM_$num, GROUP_CONCAT( DISTINCT DEVICE_".NETWORK_DEVICE.".specificity  SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
+	else return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 	break;
 case "glpi_licenses.serial" :
 	return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
@@ -1174,7 +1174,7 @@ case "glpi_device_processor.specif_default" :
 
 case "glpi_networking_ports.ifmac" :
 	if ($type==COMPUTER_TYPE)
-		return " (  DEVICE_".NETWORK_DEVICE.".specificity $NOT LIKE '%".$val."%' AND $table.$field $NOT LIKE '%".$val."%' ) ";
+		return " (  DEVICE_".NETWORK_DEVICE.".specificity $NOT LIKE '%".$val."%' OR $table.$field $NOT LIKE '%".$val."%' ) ";
 	else return " $table.$field $NOT LIKE '%".$val."%' ";
 	break;
 
@@ -1397,13 +1397,38 @@ switch ($field){
 		$out="";
 		if ($type==COMPUTER_TYPE){
 			if (!empty($data["ITEM_".$num."_2"])){
-				$out.= "hw=".$data["ITEM_".$num."_2"];
-				if (!empty($data["ITEM_".$num])) $out.= " - ";
+				$split=explode("$$$$",$data["ITEM_".$num."_2"]);
+				$count_display=0;
+				for ($k=0;$k<count($split);$k++){	
+					if ($count_display) $out.= "<br>";
+					else $out.= "hw=";
+					$count_display++;
+					$out.= $split[$k];
+				}
+				
+				if (!empty($data["ITEM_".$num])) $out.= "<br>";
 			}
 		
-			if (!empty($data["ITEM_".$num]))
-				$out.= "port=".$data["ITEM_".$num];
-		} else $out.= $data["ITEM_$num"];
+			if (!empty($data["ITEM_".$num])){
+				$split=explode("$$$$",$data["ITEM_".$num]);
+				$count_display=0;
+				for ($k=0;$k<count($split);$k++){	
+					if ($count_display) $out.= "<br>";
+					else $out.= "port=";
+					$count_display++;
+					$out.= $split[$k];
+				}
+
+			}
+		} else {
+			$split=explode("$$$$",$data["ITEM_".$num]);
+			$count_display=0;
+			for ($k=0;$k<count($split);$k++){	
+				if ($count_display) $out.= "<br>";
+				$count_display++;
+				$out.= $split[$k];
+			}
+		}
 		return $out;
 	break;
 	case "glpi_computers.date_mod":
