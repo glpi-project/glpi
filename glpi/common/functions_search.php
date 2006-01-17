@@ -612,6 +612,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$numrows= $db->result($result_num,0,0);
 	}
 
+	if (isset($_GET['export_all'])) $LIMIT="";
+
 	if ($WHERE == " WHERE ") $WHERE="";
 
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
@@ -625,7 +627,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	// Get it from database and DISPLAY
 	if ($result = $db->query($QUERY)) {
-		if (!$nosearch) 
+		if (!$nosearch||isset($_GET['export_all'])) 
 			$numrows= $db->numrows($result);
 		if ($start<$numrows) {
 
@@ -684,6 +686,11 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				$end_display=$cfg_features["list_limit"];
 				}
 			
+			if (isset($_GET['export_all'])) {
+				$i=0;
+				$end_display=$numrows;
+			}
+
 
 			$row_num=1;
 			while ($i < $numrows && $i<($end_display)){
