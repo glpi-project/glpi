@@ -206,6 +206,9 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (device_type = '$item_ty
 		echo "<tr><th colspan=9>".$number." ".$lang["job"][18]."  ".$lang["job"][17]."";
 		if ($number > 1) { echo "s"; }
 		echo " ".$lang["job"][16].":</th></tr>";
+
+		commonTrackingListHeader();
+
 		while ($i < $number)
 		{
 			$ID = $db->result($result, $i, "ID");
