@@ -161,9 +161,7 @@ else
 				case 5 :
 					showDocumentAssociated(PERIPHERAL_TYPE,$tab["ID"],$tab["withtemplate"]);
 					break;
-				case 10 :
-				showNotesForm($_SERVER["PHP_SELF"],PERIPHERAL_TYPE,$tab["ID"]);
-				break;
+				
 				default :
 					showPorts($tab["ID"], PERIPHERAL_TYPE,$tab["withtemplate"]);
 					if ($tab["withtemplate"]!=2)	showPortsAdd($tab["ID"],PERIPHERAL_TYPE);
@@ -208,7 +206,10 @@ else
 					break;
 				case 7 :
 					showLinkOnDevice(PERIPHERAL_TYPE,$tab["ID"]);
-					break;					
+					break;	
+				case 10 :
+					showNotesForm($_SERVER["PHP_SELF"],PERIPHERAL_TYPE,$tab["ID"]);
+					break;				
 				default :
 					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PERIPHERAL_TYPE);
 					showPorts($tab["ID"], PERIPHERAL_TYPE,$tab["withtemplate"]);
