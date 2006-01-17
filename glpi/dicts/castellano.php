@@ -78,6 +78,8 @@ $lang["buttons"][23]="Ver";
 $lang["buttons"][24]="Ascender"; 
 $lang["buttons"][25]="Descender"; 
 $lang["buttons"][26]="Agregar y cerrar"; 
+$lang["buttons"][27]="PDF export"; 
+$lang["buttons"][28]="SLK export (Spreesheets)"; 
 
 $lang["calendarD"][0]="D"; 
 $lang["calendarD"][1]="L"; 
@@ -786,6 +788,7 @@ $lang["login"][6]="Identificador";
 $lang["login"][7]="Password"; 
 $lang["login"][8]="Identificador o contraseña vacíos"; 
 $lang["login"][10]="Autenticación"; 
+$lang["login"][11]="User not authorized to connect in GLPI"; 
 
 $lang["mailing"][0]="-----------------------"; 
 $lang["mailing"][1]="======================================="; 
@@ -815,6 +818,12 @@ $lang["mailing"][24]="Estado:";
 $lang["mailing"][25]="Planificación"; 
 $lang["mailing"][26]="Categoría:"; 
 $lang["mailing"][27]="Update of the status of the ticket"; 
+$lang["mailing"][28]="Contact:"; 
+$lang["mailing"][29]="Reservation Cancelled"; 
+$lang["mailing"][100]="No defined category"; 
+$lang["mailing"][101]="Email followup have been enabled"; 
+$lang["mailing"][102]="Email followup have been disabled"; 
+$lang["mailing"][103]="Email Followup:"; 
 
 $lang["Menu"][0]="Computadores"; 
 $lang["Menu"][1]="Redes"; 
@@ -1355,6 +1364,7 @@ $lang["setup"][307]="Nunca";
 $lang["setup"][308]="Todas las semanas"; 
 $lang["setup"][309]="Todos los meses"; 
 $lang["setup"][310]="Verificación automática de la presencia de una actualización"; 
+$lang["setup"][400]="Active"; 
 
 $lang["software"][0]="Agregar software..."; 
 $lang["software"][1]="ID"; 
@@ -1403,7 +1413,6 @@ $lang["software"][43]="Agregar una licencia de compra";
 
 $lang["state"][0]="Estado"; 
 $lang["state"][1]="Estados de materiales"; 
-$lang["state"][2]="Sacar el material de su estado"; 
 $lang["state"][4]="ID"; 
 $lang["state"][5]="Nombre"; 
 $lang["state"][6]="Tipo de material"; 
@@ -1451,6 +1460,9 @@ $lang["stats"][35]="Servicio(s)";
 $lang["stats"][36]="Por categoría"; 
 $lang["stats"][37]="Estadísticas por categoría"; 
 $lang["stats"][38]="Categoría"; 
+$lang["stats"][39]="By priority"; 
+$lang["stats"][40]="Statistics by priority"; 
+$lang["stats"][41]="Priority"; 
 
 $lang["title"][0]="Centro de control"; 
 $lang["title"][1]="Acceso a Mesa de Ayuda solamente"; 
@@ -1489,6 +1501,7 @@ $lang["title"][33]="Enlaces externos";
 $lang["title"][34]="Enlace"; 
 $lang["title"][35]="Reservas"; 
 $lang["title"][36]="Insumos"; 
+$lang["title"][37]="Notes"; 
 
 $lang["toolbar"][1]="Negrita"; 
 $lang["toolbar"][2]="Cursiva"; 
