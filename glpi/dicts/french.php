@@ -1095,6 +1095,10 @@ $lang["reservation"][30]="fois";
 $lang["reservation"][31]="Par";
 $lang["reservation"][32]="Editer réservation";
 $lang["reservation"][33]="Pas de matériel trouvé.";
+$lang["reservation"][34]="Matériel non réservable";
+$lang["reservation"][35]="Réservations en cours et à venir";
+$lang["reservation"][36]="Réservations passées";
+$lang["reservation"][37]="Pas de réservations";
 
 $lang["search"][0]="Rechercher"; 
 $lang["search"][1]="Où ce champ";

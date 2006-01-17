@@ -172,6 +172,9 @@ else
 			case 10 :
 				showNotesForm($_SERVER["PHP_SELF"],NETWORKING_TYPE,$tab["ID"]);
 				break;			
+			case 11 :
+				printDeviceReservations($_SERVER["PHP_SELF"],NETWORKING_TYPE,$tab["ID"]);
+				break;
 			default :
 				showPorts($tab["ID"],NETWORKING_TYPE);
 				showPortsAdd($tab["ID"],NETWORKING_TYPE);

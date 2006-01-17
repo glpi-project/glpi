@@ -243,6 +243,9 @@ if (isset($_GET['onglet'])) {
 			case 10 :
 				showNotesForm($_SERVER["PHP_SELF"],COMPUTER_TYPE,$tab["ID"]);
 				break;
+			case 11 :
+				printDeviceReservations($_SERVER["PHP_SELF"],COMPUTER_TYPE,$tab["ID"]);
+				break;
 			default :
 				showDeviceComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);			
 				break;

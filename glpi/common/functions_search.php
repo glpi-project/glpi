@@ -1214,7 +1214,8 @@ switch ($field){
 		$split=explode("$$$$",$data["ITEM_$num"]);
 		
 		$count_display=0;
-		for ($k=0;$k<count($split);$k++){
+		for ($k=0;$k<count($split);$k++)
+		if (strlen(trim($split[$k]))>0){
 			if ($count_display) $out.= "<br>";
 			$count_display++;
 			$out.= $split[$k];
@@ -1399,7 +1400,8 @@ switch ($field){
 			if (!empty($data["ITEM_".$num."_2"])){
 				$split=explode("$$$$",$data["ITEM_".$num."_2"]);
 				$count_display=0;
-				for ($k=0;$k<count($split);$k++){	
+				for ($k=0;$k<count($split);$k++)
+				if (strlen(trim($split[$k]))>0){	
 					if ($count_display) $out.= "<br>";
 					else $out.= "hw=";
 					$count_display++;
@@ -1412,7 +1414,8 @@ switch ($field){
 			if (!empty($data["ITEM_".$num])){
 				$split=explode("$$$$",$data["ITEM_".$num]);
 				$count_display=0;
-				for ($k=0;$k<count($split);$k++){	
+				for ($k=0;$k<count($split);$k++)
+				if (strlen(trim($split[$k]))>0){	
 					if ($count_display) $out.= "<br>";
 					else $out.= "port=";
 					$count_display++;
@@ -1423,7 +1426,8 @@ switch ($field){
 		} else {
 			$split=explode("$$$$",$data["ITEM_".$num]);
 			$count_display=0;
-			for ($k=0;$k<count($split);$k++){	
+			for ($k=0;$k<count($split);$k++)
+			if (strlen(trim($split[$k]))>0){	
 				if ($count_display) $out.= "<br>";
 				$count_display++;
 				$out.= $split[$k];
