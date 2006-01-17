@@ -78,6 +78,8 @@ $lang["buttons"][23]="zeige";
 $lang["buttons"][24]="Go up"; 
 $lang["buttons"][25]="Go down"; 
 $lang["buttons"][26]="Add and Close"; 
+$lang["buttons"][27]="PDF export"; 
+$lang["buttons"][28]="SLK export (Spreesheets)"; 
 
 $lang["calendarD"][0]="S"; 
 $lang["calendarD"][1]="M"; 
@@ -642,7 +644,7 @@ $lang["job"][28]="External";
 $lang["job"][29]="Add a new Followup"; 
 $lang["job"][30]="Private"; 
 $lang["job"][31]="Duration"; 
-$lang["job"][32]="Not planned"; 
+$lang["job"][32]="None"; 
 $lang["job"][33]="Empty Description"; 
 $lang["job"][34]="Plan this followup"; 
 $lang["job"][35]="Planning"; 
@@ -786,6 +788,7 @@ $lang["login"][6]="Login";
 $lang["login"][7]="Password"; 
 $lang["login"][8]="Empty login or password"; 
 $lang["login"][10]="Authentification"; 
+$lang["login"][11]="User not authorized to connect in GLPI"; 
 
 $lang["mailing"][0]="-----------------------"; 
 $lang["mailing"][1]="======================================="; 
@@ -815,6 +818,12 @@ $lang["mailing"][24]="Status:";
 $lang["mailing"][25]="Planning:"; 
 $lang["mailing"][26]="Category:"; 
 $lang["mailing"][27]="Update of the status of the ticket"; 
+$lang["mailing"][28]="Contact:"; 
+$lang["mailing"][29]="Reservation Cancelled"; 
+$lang["mailing"][100]="No defined category"; 
+$lang["mailing"][101]="Email followup have been enabled"; 
+$lang["mailing"][102]="Email followup have been disabled"; 
+$lang["mailing"][103]="Email Followup:"; 
 
 $lang["Menu"][0]="Computer"; 
 $lang["Menu"][1]="Netzwerk"; 
@@ -1355,6 +1364,7 @@ $lang["setup"][307]="Never";
 $lang["setup"][308]="Each week"; 
 $lang["setup"][309]="Each month"; 
 $lang["setup"][310]="Automatic check for upgrade"; 
+$lang["setup"][400]="Active"; 
 
 $lang["software"][0]="hinzufügen Software..."; 
 $lang["software"][1]="ID"; 
@@ -1403,7 +1413,6 @@ $lang["software"][43]="Add a license to buy";
 
 $lang["state"][0]="Status"; 
 $lang["state"][1]="Status Eintrag"; 
-$lang["state"][2]="Go back the item bis its normal state"; 
 $lang["state"][4]="ID"; 
 $lang["state"][5]="Name"; 
 $lang["state"][6]="Eintrag Typ"; 
@@ -1451,6 +1460,9 @@ $lang["stats"][35]="Fall-Bearbeitung(en)";
 $lang["stats"][36]="nach Kategorie"; 
 $lang["stats"][37]="Statistics nach Kategorie(n)"; 
 $lang["stats"][38]="Kategorie"; 
+$lang["stats"][39]="By priority"; 
+$lang["stats"][40]="Statistics by priority"; 
+$lang["stats"][41]="Priority"; 
 
 $lang["title"][0]="Befehlscenter"; 
 $lang["title"][1]="nur HelpDesk-Zugriff"; 
@@ -1489,6 +1501,7 @@ $lang["title"][33]="externe Links";
 $lang["title"][34]="Verknüpfungen"; 
 $lang["title"][35]="Reservierungen"; 
 $lang["title"][36]="Verbrauchsmaterial"; 
+$lang["title"][37]="Notes"; 
 
 $lang["toolbar"][1]="Fett"; 
 $lang["toolbar"][2]="Italic"; 
