@@ -672,7 +672,7 @@ function printHelpDesk ($name,$from_helpdesk) {
 */
 function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 
-	GLOBAL $cfg_layout, $cfg_features, $lang, $HTMLRel;
+	GLOBAL $cfg_layout, $cfg_features, $lang, $HTMLRel,$cfg_install;
 	
 	// Forward is the next step forward
 	$forward = $start+$cfg_features["list_limit"];
@@ -697,7 +697,6 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 	}
 
 	// Print it
-	echo "<form method='POST' action=\"$target?$parameters&amp;start=$start\">\n";
 
 	echo "<div align='center'><table class='tab_cadre2' width='800'>\n";
 	echo "<tr>\n";
@@ -717,18 +716,40 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 	}
 
 	// Print the "where am I?" 
-	echo "<td width='50%' align='center' class='tab_bg_2'><b>";
-	echo $lang["pager"][4]."&nbsp;</b>";
+	echo "<td width='50%' align='center' class='tab_bg_2'>";
+	echo "<form method='POST' action=\"$target?$parameters&amp;start=$start\">\n";
+	echo "<b>".$lang["pager"][4]."&nbsp;</b>";
 	echo "<select name='list_limit' onChange='submit()'>";
 	for ($i=5;$i<=200;$i+=5) echo "<option value='$i' ".((isset($_SESSION["list_limit"])&&$_SESSION["list_limit"]==$i)?" selected ":"").">$i</option>\n";
 	echo "<option value='9999999' ".((isset($_SESSION["list_limit"])&&$_SESSION["list_limit"]==9999999)?" selected ":"").">9999999</option>\n";	
 	echo "</select><b>&nbsp;";
 	echo $lang["pager"][5];
-	echo "</b></td>\n";
+	echo "</b>";
+	echo "</form>\n";
+	echo "</td>\n";
 	
 	if ($item_type_output>0){
-	echo "<td class='tab_bg_2'><a target='_blank' href=\"".$HTMLRel."reports/dynamicReport.php?$parameters&amp;display_type=1&amp;item_type=".$item_type_output."\"><img src=\"".$HTMLRel."pics/slk.png\" alt='".$lang["buttons"][28]."' title='".$lang["buttons"][28]."'></a></td>";
-	echo "<td class='tab_bg_2'><a target='_blank' href=\"".$HTMLRel."reports/dynamicReport.php?$parameters&amp;display_type=2&amp;item_type=".$item_type_output."\"><img src=\"".$HTMLRel."pics/pdf.png\" alt='".$lang["buttons"][27]."' title='".$lang["buttons"][27]."'></a></td>";
+	echo "<td class='tab_bg_2' width='30%'>" ;
+	echo "<form method='GET' action=\"".$cfg_install['root']."/reports/dynamicReport.php\" target='_blank'>\n";
+	echo "<input type='hidden' name='item_type' value='$item_type_output'>";
+	$split=split("&amp;",$parameters);
+	//echo $parameters;
+	for ($i=0;$i<count($split);$i++){
+		$pos=strpos($split[$i],'=');
+		echo "<input type='hidden' name=\"".substr($split[$i],0,$pos)."\" value=\"".substr($split[$i],$pos+1)."\">";
+		}
+	echo "<select name='display_type'>";
+	echo "<option value='2'>".$lang["buttons"][27]."</option>";
+	echo "<option value='1'>".$lang["buttons"][28]."</option>";
+	echo "<option value='-2'>".$lang["buttons"][29]."</option>";
+	echo "<option value='-1'>".$lang["buttons"][30]."</option>";
+	echo "</select>";
+	echo "<input type='submit' name='export' value='".$lang["buttons"][31]."'>";
+	echo "</form>";
+	echo "</td>" ;
+	/*echo "<td class='tab_bg_2'><a target='_blank' href=\"".$HTMLRel."reports/dynamicReport.php?$parameters&amp;display_type=1&amp;item_type=".$item_type_output."&amp;export_all=1\"><img src=\"".$HTMLRel."pics/slk.png\" alt='".$lang["buttons"][28]."' title='".$lang["buttons"][28]."'></a></td>";
+	echo "<td class='tab_bg_2'><a target='_blank' href=\"".$HTMLRel."reports/dynamicReport.php?$parameters&amp;display_type=2&amp;item_type=".$item_type_output."&amp;export_all=1\"><img src=\"".$HTMLRel."pics/pdf.png\" alt='".$lang["buttons"][27]."' title='".$lang["buttons"][27]."'></a></td>";
+	*/
 	}
 	
 	echo "<td  width='50%' align='center' class='tab_bg_2'><b>";
@@ -751,7 +772,6 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 	// End pager
 	echo "</tr>\n";
 	echo "</table><br></div>\n";
-	echo "</form>\n";
 
 }
 
