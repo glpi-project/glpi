@@ -78,8 +78,12 @@ function showNetworkingOnglets($target,$withtemplate,$actif){
 	$next=getNextItem("glpi_networking",$ID);
 	$prev=getPreviousItem("glpi_networking",$ID);
 	$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
-		if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
+	if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
 	if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
+	if (isReservable(NETWORKING_TYPE,$ID)){
+		echo "<li class='invisible'>&nbsp;</li>";
+		echo "<li "; if ($actif=="11") {echo "class='actif'";} echo "><a href='$target&amp;onglet=11$template'>".$lang["title"][35]."</a></li>";
+	}
 	}
 
 	echo "</ul></div>";

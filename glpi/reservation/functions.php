@@ -258,21 +258,12 @@ function showReservationForm($device_type,$id_device){
 
 GLOBAL $cfg_install,$lang;
 
-$query="select * from glpi_reservation_item where (device_type='$device_type' and id_device='$id_device')";
-$db=new DB;
-if ($result = $db->query($query)) {
-		$numrows =  $db->numrows($result);
-//echo "<form name='resa_form' method='post' action=".$cfg_install["root"]."/reservation/index.php>";
 echo "<a href=\"".$cfg_install["root"]."/reservation/index.php?";
-// Ajouter le matériel
-if ($numrows==0){
-echo "id_device=$id_device&amp;device_type=$device_type&amp;comments=&amp;add=add\">".$lang["reservation"][7]."</a>";
-}
-// Supprimer le matériel
-else {
-echo "ID=".$db->result($result,0,"ID")."&amp;delete=delete\">".$lang["reservation"][6]."</a>";
-}
-
+if ($resaID=isReservable($device_type,$id_device)) {
+	// Supprimer le matériel
+	echo "ID=".$resaID."&amp;delete=delete\">".$lang["reservation"][6]."</a>";	
+}else {
+	echo "id_device=$id_device&amp;device_type=$device_type&amp;comments=&amp;add=add\">".$lang["reservation"][7]."</a>";      
 }
 }
 
@@ -330,22 +321,21 @@ $str_precedent="?show=resa&amp;ID=$ID&amp;mois_courant=$mois_precedent&amp;annee
 
 
 if (!empty($ID)){
-$m=new ReservationItem;
-$m->getfromDB($ID);
-$type=$m->getType();
-$name=$m->getName();
-$all="<a href='$target?show=resa&amp;ID=&amp;mois_courant=$mois_courant&amp;annee_courante=$annee_courante'>".$lang["reservation"][26]."</a>";
+	$m=new ReservationItem;
+	$m->getfromDB($ID);
+	$type=$m->getType();
+	$name=$m->getName();
+	$all="<a href='$target?show=resa&amp;ID=&amp;mois_courant=$mois_courant&amp;annee_courante=$annee_courante'>".$lang["reservation"][26]."</a>";
 } else {
-$type="";
-$name=$lang["reservation"][25];
-$all="&nbsp;";
+	$type="";
+	$name=$lang["reservation"][25];
+	$all="&nbsp;";
 }
 
 
-
- echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_nav'>".$type." - ".$name."</span>";
-		 echo "</b></td></tr><tr><td colspan='2' align ='center'>$all</td></tr></table></div>";
+echo "<div align='center'><table border='0'><tr><td>";
+echo "<img src=\"".$HTMLRel."pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_nav'>".$type." - ".$name."</span>";
+echo "</b></td></tr><tr><td colspan='2' align ='center'>$all</td></tr></table></div>";
 
 
 	
@@ -911,6 +901,74 @@ global $lang,$cfg_features;
 
 		}
 	return true;
+}
+
+
+function printDeviceReservations($target,$type,$ID){
+	global $lang,$cfg_install;
+	$resaID=0;
+	$db=new DB;
+
+	if ($resaID=isReservable($type,$ID)){
+		echo "<div align='center'>";
+
+		echo "<a href='".$cfg_install["root"]."/reservation/index.php?show=resa&ID=$resaID'>".$lang["reservation"][21]."</a>";
+		$now=date("Y-m-d H:i:s");
+		// Print reservation in progress
+		$query = "SELECT * FROM glpi_reservation_resa WHERE end > '".$now."' AND id_item='$resaID' ORDER BY begin";
+		$result=$db->query($query);
+
+		echo "<table class='tab_cadrehov'><tr><th colspan='4'>".$lang["reservation"][35]."</th></tr>";
+		if ($db->numrows($result)==0){	
+			echo "<tr class='tab_bg_2'><td align='center' colspan='4'>".$lang["reservation"][37]."</td></tr>";
+		} else {
+			echo "<tr><th>".$lang["reservation"][10]."</th><th>".$lang["reservation"][11]."</th><th>".$lang["reservation"][31]."</th><th>".$lang["reservation"][23]."</th></tr>";
+			while ($data=$db->fetch_assoc($result)){
+				echo "<tr class='tab_bg_2'>";
+				echo "<td align='center'>".convDateTime($data["begin"])."</td>";
+				echo "<td align='center'>".convDateTime($data["end"])."</td>";
+				echo "<td align='center'>".getUserName($data["id_user"])."</td>";
+				echo "<td align='center'>".nl2br($data["comment"])."</td>";
+				echo "</tr>";
+			}
+		}
+		echo "</table>";
+		echo "<br>";
+		// Print old reservations
+
+		$query = "SELECT * FROM glpi_reservation_resa WHERE end <= '".$now."' AND id_item='$resaID' ORDER BY begin DESC";
+		$result=$db->query($query);
+
+		echo "<table class='tab_cadrehov'><tr><th colspan='4'>".$lang["reservation"][36]."</th></tr>";
+		if ($db->numrows($result)==0){	
+			echo "<tr class='tab_bg_2'><td align='center' colspan='4'>".$lang["reservation"][37]."</td></tr>";
+		} else {
+			echo "<tr><th>".$lang["reservation"][10]."</th><th>".$lang["reservation"][11]."</th><th>".$lang["reservation"][31]."</th><th>".$lang["reservation"][23]."</th></tr>";
+			while ($data=$db->fetch_assoc($result)){
+				echo "<tr class='tab_bg_2'>";
+				echo "<td align='center'>".convDateTime($data["begin"])."</td>";
+				echo "<td align='center'>".convDateTime($data["end"])."</td>";
+				echo "<td align='center'>".getUserName($data["id_user"])."</td>";
+				echo "<td align='center'>".nl2br($data["comment"])."</td>";
+				echo "</tr>";
+			}
+		}
+		echo "</table>";
+		echo "<br>";
+		
+		echo "</div>";
+		
+	} else echo "<div align='center'><strong>".$lang["reservation"][34]."</strong></div>";
+}
+
+function isReservable($type,$ID){
+
+	$db=new DB;
+	$query="SELECT ID FROM glpi_reservation_item WHERE device_type='$type' AND id_device='$ID'";
+	$result=$db->query($query);
+	if ($db->numrows($result)==0){
+		return false;
+	} else return $db->result($result,0,0);
 }
 
 ?>

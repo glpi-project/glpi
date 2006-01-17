@@ -222,8 +222,11 @@ if (isset($_GET['onglet'])) {
 					break;	
 
 				case 10 :
-				showNotesForm($_SERVER["PHP_SELF"],PRINTER_TYPE,$tab["ID"]);
-				break;
+					showNotesForm($_SERVER["PHP_SELF"],PRINTER_TYPE,$tab["ID"]);
+					break;
+				case 11 :
+					printDeviceReservations($_SERVER["PHP_SELF"],PRINTER_TYPE,$tab["ID"]);
+					break;
 				default :
 
 					showCartridgeInstalled($tab["ID"]);		

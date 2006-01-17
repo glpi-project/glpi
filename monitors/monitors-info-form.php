@@ -201,7 +201,10 @@ else
 				break;	
 			case 10 :
 				showNotesForm($_SERVER["PHP_SELF"],MONITOR_TYPE,$tab["ID"]);
-				break;			
+				break;	
+			case 11 :
+				printDeviceReservations($_SERVER["PHP_SELF"],MONITOR_TYPE,$tab["ID"]);
+				break;		
 			default :
 				showConnect($_SERVER["PHP_SELF"],$tab['ID'],MONITOR_TYPE);
 				break;	
