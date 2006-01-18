@@ -788,14 +788,15 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 */
 function showCalendarForm($form,$element,$value='',$withtemplate=''){
 		global $HTMLRel,$lang;
-		echo "<input type='text' name='____".$element."_show' readonly size='10' value=\"".convDate($value)."\">";
-		echo "<input type='hidden' name='$element' size='10' value=\"".$value."\">";
+		$rand=mt_rand();
+		echo "<input id='show$rand' type='text' name='____".$element."_show' readonly size='10' value=\"".convDate($value)."\">";
+		echo "<input id='view$rand' type='hidden' name='$element' size='10' value=\"".$value."\">";
 		
 		if ($withtemplate!=2){
 			echo "&nbsp;<img src='".$HTMLRel."pics/calendar.png' class='calendrier' alt='".$lang["buttons"][15]."' title='".$lang["buttons"][15]."'
 			onclick=\"window.open('".$HTMLRel."mycalendar.php?form=$form&amp;elem=$element&amp;value=$value','".$lang["buttons"][15]."','width=300,height=300')\" >";
 		
-			echo "&nbsp;<img src='".$HTMLRel."pics/reset.png' class='calendrier' onClick=\"document.forms['$form'].$element.value='0000-00-00';document.forms['$form'].____".$element."_show.value='".convDate("0000-00-00")."'\" alt='Reset' title='Reset'>";	
+			echo "&nbsp;<img src='".$HTMLRel."pics/reset.png' class='calendrier' onClick=\"document.getElementById('show$rand').value='0000-00-00';document.getElementById('view$rand').value='".convDate("0000-00-00")."'\" alt='Reset' title='Reset'>";	
 		}
 }
 
