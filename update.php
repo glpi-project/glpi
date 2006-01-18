@@ -2938,6 +2938,9 @@ if(!FieldExists("glpi_config","public_faq")) {
 
 // Optimize amort_type field
 if(FieldExists("glpi_infocoms","amort_type")) {
+	$query2="UPDATE `glpi_infocoms` SET `amort_type`='0' WHERE `amort_type` = '';";
+	$db->query($query2) or die("0.65 update amort_type='' in tracking".$lang["update"][90].$db->error());
+
 	$query="ALTER TABLE `glpi_infocoms` CHANGE `amort_type` `amort_type` SMALLINT( 20 ) NOT NULL DEFAULT '1'";
 	$db->query($query) or die("0.65 alter amort_type in infocoms".$lang["update"][90].$db->error());
 }
@@ -3063,12 +3066,6 @@ if(!FieldExists("glpi_config","text_login")) {
 }
 
 
-if (FieldExists("glpi_tracking","status")){
-	$query="ALTER TABLE `glpi_tracking` CHANGE `status` `status` ENUM( 'new', 'old' ) DEFAULT 'new' NOT NULL;";
-	$db->query($query) or die("0.65 alter status in glpi_tracking".$lang["update"][90].$db->error());
-}
-
-
 if(!FieldExists("glpi_config","auto_update_check")) {
 	$query="ALTER TABLE `glpi_config` ADD `auto_update_check` SMALLINT DEFAULT '0' NOT NULL ,
 			ADD `last_update_check` DATE DEFAULT '".date("Y-m-d")."' NOT NULL, ADD `founded_new_version` VARCHAR( 10 ) NOT NULL ;";
@@ -3078,7 +3075,7 @@ if(!FieldExists("glpi_config","auto_update_check")) {
 //// Tracking 
 if(FieldExists("glpi_tracking","status")) {
 
-	$query="ALTER TABLE `glpi_tracking` CHANGE `status` `status` ENUM( 'new', 'old_done', 'assign', 'plan', 'old_notdone', 'waiting' ) DEFAULT 'new' NOT NULL ;";
+	$query="ALTER TABLE `glpi_tracking` CHANGE `status` `status` ENUM( 'new', 'old', 'old_done', 'assign', 'plan', 'old_notdone', 'waiting' ) DEFAULT 'new' NOT NULL ;";
 	$db->query($query) or die("0.65 alter status in tracking".$lang["update"][90].$db->error());
 
 	$query2=" UPDATE `glpi_tracking` SET status='old_done' WHERE status <> 'new';";
@@ -3087,6 +3084,8 @@ if(FieldExists("glpi_tracking","status")) {
 	$query3=" UPDATE `glpi_tracking` SET status='assign' WHERE status='new' AND assign <> '0';";
 	$db->query($query3) or die("0.65 update status=assign in tracking".$lang["update"][90].$db->error());	
 
+	$query4="ALTER TABLE `glpi_tracking` CHANGE `status` `status` ENUM( 'new', 'old_done', 'assign', 'plan', 'old_notdone', 'waiting' ) DEFAULT 'new' NOT NULL ;";
+	$db->query($query4) or die("0.65 alter status in tracking".$lang["update"][90].$db->error());
 }
 
 if(FieldExists("glpi_tracking_planning","id_assign")) {
@@ -3094,6 +3093,8 @@ if(FieldExists("glpi_tracking_planning","id_assign")) {
 	$db->query($query) or die("0.65 add index for id_assign in tracking_planning".$lang["update"][90].$db->error());
 }
 if(FieldExists("glpi_tracking","emailupdates")) {
+	$query2=" UPDATE `glpi_tracking` SET `emailupdates`='no' WHERE `emailupdates`='';";
+	$db->query($query2) or die("0.65 update emailupdate='' in tracking".$lang["update"][90].$db->error());
 	$query="ALTER TABLE `glpi_tracking` CHANGE `emailupdates` `emailupdates` ENUM( 'yes', 'no' ) DEFAULT 'no' NOT NULL;";
 	$db->query($query) or die("0.65 alter emailupdates in tracking".$lang["update"][90].$db->error());
 }
@@ -3321,6 +3322,9 @@ if(!FieldExists("glpi_users","active")) {
 
 ///// BEGIN  MySQL Compatibility
 if(FieldExists("glpi_infocoms","warranty_value")) {	
+	$query2=" UPDATE `glpi_infocoms` SET `warranty_value`='0' WHERE `warranty_value` IS NULL;";
+	$db->query($query2) or die("0.65 update warranty_value='' in tracking".$lang["update"][90].$db->error());
+
 	$query="ALTER TABLE `glpi_infocoms` CHANGE `warranty_info` `warranty_info` VARCHAR( 255 ) NULL DEFAULT NULL,
 		CHANGE `warranty_value` `warranty_value` FLOAT NOT NULL DEFAULT '0',
 		CHANGE `num_commande` `num_commande` VARCHAR( 200 ) NULL DEFAULT NULL,
