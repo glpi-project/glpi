@@ -1,5 +1,6 @@
 <?php
 /*
+ * @version $Id$
  ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2005 by the INDEPNET Development Team.
@@ -483,12 +484,12 @@ function addPlanningTracking($input,$target,$nomail=0){
 
 	if (!empty($target)){
 		if (!$resa->test_valid_date()){
-			$resa->displayError("date",$input["id_tracking"],$target);
+			$resa->displayError("date",$input["id_followup"],$target);
 			return false;
 		}
 	
 		if ($resa->is_alreadyplanned()){
-			$resa->displayError("is_res",$input["id_tracking"],$target);
+			$resa->displayError("is_res",$input["id_followup"],$target);
 			return false;
 		}
 	} else if ($resa->is_alreadyplanned()||!$resa->test_valid_date()) {
