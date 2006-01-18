@@ -1,5 +1,6 @@
 <?php
 /*
+ * @version $Id$
  ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2005 by the INDEPNET Development Team.
@@ -84,7 +85,7 @@ if (addPlanningTracking($_POST,$_SERVER["REQUEST_URI"])){
 } else {
 	commonHeader($lang["title"][31],$_SERVER["PHP_SELF"]);
 
-	showAddPlanningTrackingForm($_SERVER["PHP_SELF"],$_GET["job"]);
+	showAddPlanningTrackingForm($_SERVER["PHP_SELF"],$_GET["fup"]);
 	
 	commonFooter();
 }
