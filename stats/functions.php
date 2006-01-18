@@ -672,9 +672,11 @@ $begin.=" 00:00:00";
 	$query="";
 	
 	
-	if ($param!="technicien")
+	/*if ($param!="technicien")
 		$WHERE=" WHERE assign_type<>'".ENTERPRISE_TYPE."' ";
-	else $WHERE=" WHERE '1'='1' ";
+	else 
+	*/
+	$WHERE=" WHERE '1'='1' ";
 	
 	switch ($param){
 	case "technicien":

@@ -376,7 +376,7 @@ global $deleted_tables,$template_tables,$cfg_layout;
 $db=new DB;
 
 $nextprev_item=$cfg_layout["nextprev_item"];
-if ($table=="glpi_tracking") $nextprev_item="ID";
+if ($table=="glpi_tracking"||ereg("glpi_device",$table)) $nextprev_item="ID";
 
 $search=$ID;
 
@@ -415,7 +415,7 @@ global $deleted_tables,$template_tables,$cfg_layout;
 $db=new DB;
 
 $nextprev_item=$cfg_layout["nextprev_item"];
-if ($table=="glpi_tracking") $nextprev_item="ID";
+if ($table=="glpi_tracking"||ereg("glpi_device",$table)) $nextprev_item="ID";
 
 $search=$ID;
 if ($nextprev_item!="ID"){

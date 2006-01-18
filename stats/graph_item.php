@@ -186,6 +186,9 @@ case "comp_champ":
 
 	$table=str_replace("dropdown_type","type_computers",str_replace("location","locations","glpi_dropdown_".$_GET["champ"]));
 
+
+	$next=getNextItem($table,$_GET["ID"]);
+	$prev=getPreviousItem($table,$_GET["ID"]);
 	
 	echo "<div align='center'>";
 	echo "<table class='icon_nav'>";
@@ -193,10 +196,12 @@ case "comp_champ":
 	echo "<td>";
 	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
 	echo "</td>";
+
 	echo "<td width='400' align='center'><b>".$lang["stats"][26].": ".getDropdownName($table,$_GET["ID"])."</b></td>";
 	echo "<td>";
 	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
 	echo "</td>";
+
 	echo "</tr>";
 	echo "</table></div><br>";
 
