@@ -1678,8 +1678,8 @@ function showJobDetails ($ID){
 			echo $lang["job"][28].":</td><td>";
 			$val=0;
 			if ($job->fields["assign_type"]==ENTERPRISE_TYPE) $val=$job->fields["assign"];
-
-			dropdown("glpi_enterprises","assign_ext",$val);
+			
+			dropdownValue("glpi_enterprises","assign_ext",$val);
 			echo "</td></tr>";
 		}
 		echo "</table>";

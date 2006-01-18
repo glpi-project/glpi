@@ -36,10 +36,12 @@
 	include ("_relpos.php");
 	include ($phproot."/glpi/includes.php");
 	include ($phproot."/glpi/includes_software.php");
+	include ($phproot."/glpi/includes_computers.php");
 	header("Content-Type: text/html; charset=UTF-8");
 
 	checkAuthentication("post-only");
-
+	
+if ($_POST['sID']>0){
 	// Make a select box
 	$db = new DB;
 
@@ -48,6 +50,7 @@
 	$query.= " WHERE glpi_licenses.sID='".$_POST['sID']."' AND (glpi_inst_software.cID IS NULL OR glpi_licenses.serial='free' OR glpi_licenses.serial='global' ) ";
 	$query.= " order by serial ASC";
 
+	
 		$result = $db->query($query);
 		$number = $db->numrows($result);
 		echo "<select name=\"".$_POST['myname']."\" size='1'>";
@@ -62,6 +65,7 @@
 		$today=date("Y-m-d"); 
 		if ($number > 0) {
 			while ($data = $db->fetch_assoc($result)) {
+
 				$output = $data['serial']." - ";
 				
 				$expirer=0;
@@ -82,7 +86,8 @@
 				if ($data['oem']=='Y'){
 					$comp=new Computer();
 					$comp->getFromDB($data["oem_computer"]);
-					$output.=" - ".$lang['software'][33]. " ".$comp->fields['name']."(".$comp->fields['ID'].")";
+					$output.=" - ".$lang['software'][33]. " ".$comp->fields['name'];
+					if ($cfg_layout["view_ID"]) $output.=" (".$comp->fields['ID'].")";
 				}
 				
 				
@@ -93,6 +98,6 @@
 			}
 		} 
 		echo "</select>";
-
+}
 
 ?>
