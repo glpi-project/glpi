@@ -487,7 +487,7 @@ if (!empty($cfg_features["founded_new_version"]))
 
 echo "<td align='right'>";
 echo "<a href=\"http://GLPI.indepnet.org/\">";
-echo "<span class='copyright'>GLPI ".$cfg_install["version"]." Copyright (C) 2003-2005 by the INDEPNET Development Team.</span>";
+echo "<span class='copyright'>GLPI ".$cfg_install["version"]." Copyright (C) 2003-".date("Y")." by the INDEPNET Development Team.</span>";
 echo "</a>";
 
 echo "</td></tr>";
@@ -537,7 +537,7 @@ function helpFooter() {
 GLOBAL $cfg_install;
 echo "<div id='footer'><div align='right'>";
 	echo "<a href=\"http://GLPI.indepnet.org/\">";
-	echo "<span class='copyright'>GLPI ".$cfg_install["version"]." Copyright (C) 2003-2005 by the INDEPNET Development Team.</span>";
+	echo "<span class='copyright'>GLPI ".$cfg_install["version"]." Copyright (C) 2003-".date("Y")." by the INDEPNET Development Team.</span>";
 	echo "</a></div>";
 		echo "</div>";
 
@@ -554,7 +554,7 @@ function nullFooter() {
 GLOBAL $cfg_install;
 echo "<div id='footer'><div align='right'>";
 	echo "<a href=\"http://GLPI.indepnet.org/\">";
-	echo "<span class='copyright'>GLPI ".(isset($cfg_install["version"])?$cfg_install["version"]:"")." Copyright (C) 2003-2005 by the INDEPNET Development Team.</span>";
+	echo "<span class='copyright'>GLPI ".(isset($cfg_install["version"])?$cfg_install["version"]:"")." Copyright (C) 2003-".date("Y")." by the INDEPNET Development Team.</span>";
 	echo "</a>";
 		echo "</div></div>";
 
@@ -744,7 +744,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 	echo "<option value='-2'>".$lang["buttons"][29]."</option>";
 	echo "<option value='-1'>".$lang["buttons"][30]."</option>";
 	echo "</select>";
-	echo "<input type='submit' name='export' value='".$lang["buttons"][31]."'>";
+	echo "<input type='submit' name='export' class='button' value='".$lang["buttons"][31]."'>";
 	echo "</form>";
 	echo "</td>" ;
 	/*echo "<td class='tab_bg_2'><a target='_blank' href=\"".$HTMLRel."reports/dynamicReport.php?$parameters&amp;display_type=1&amp;item_type=".$item_type_output."&amp;export_all=1\"><img src=\"".$HTMLRel."pics/slk.png\" alt='".$lang["buttons"][28]."' title='".$lang["buttons"][28]."'></a></td>";

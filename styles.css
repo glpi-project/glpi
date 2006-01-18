@@ -150,10 +150,9 @@ input.submit:hover {
   th {  
     font-size: 12px;
     font-weight: bold;
-   /*   background-color: #FFC65D;*/
-  background-color: #fccc6f;
+   background-color: #fccc6f;
 text-align: center;
-	vertical-align:bottom;
+	
 	}
 
   
@@ -195,7 +194,7 @@ text-align: left;
 text-align:center;
  -moz-border-radius: 4px;
   border: 1px solid #cccccc;
-  text-align: left;
+ 
 }
 
 .tab_cadre2 tr:hover {
