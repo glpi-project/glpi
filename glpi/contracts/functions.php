@@ -758,7 +758,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	echo "<td align='center'>".$con->fields["num"]."</td>";
 	echo "<td align='center'>".getDropdownName("glpi_dropdown_contract_type",$con->fields["contract_type"])."</td>";
 	echo "<td align='center'>".getContractEnterprises($cID)."</td>";	
-	echo "<td align='center'>".$con->fields["begin_date"]."</td>";
+	echo "<td align='center'>".convDate($con->fields["begin_date"])."</td>";
 	echo "<td align='center'>".$con->fields["duration"]." ".$lang["financial"][57];
 	if ($con->fields["begin_date"]!=''&&$con->fields["begin_date"]!="0000-00-00") echo " -> ".getWarrantyExpir($con->fields["begin_date"],$con->fields["duration"]);
 	echo "</td>";
@@ -833,7 +833,7 @@ function showContractAssociatedEnterprise($ID){
 	echo "<td align='center'>".$con->fields["num"]."</td>";
 	echo "<td align='center'>".getDropdownName("glpi_dropdown_contract_type",$con->fields["contract_type"])."</td>";
 	echo "<td align='center'>".getContractEnterprises($cID)."</td>";	
-	echo "<td align='center'>".$con->fields["begin_date"]."</td>";
+	echo "<td align='center'>".convDate($con->fields["begin_date"])."</td>";
 	echo "<td align='center'>".$con->fields["duration"]." ".$lang["financial"][57];
 	if ($con->fields["begin_date"]!=''&&$con->fields["begin_date"]!="0000-00-00") echo " -> ".getWarrantyExpir($con->fields["begin_date"],$con->fields["duration"]);
 	echo "</td>";
