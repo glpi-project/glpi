@@ -620,7 +620,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 
-	//echo $QUERY;
+//	echo $QUERY;
 
 	if (isset($_GET["display_type"]))
 		$output_type=$_GET["display_type"];
@@ -685,14 +685,15 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 			if ($nosearch){
 				$i=0;
-				$end_display=$cfg_features["list_limit"];
+				$end_display=min($numrows-$start,$cfg_features["list_limit"]);
 				}
 			
 			if (isset($_GET['export_all'])) {
 				$i=0;
 				$end_display=$numrows;
 			}
-
+			
+			
 
 			$row_num=1;
 			while ($i < $numrows && $i<($end_display)){
