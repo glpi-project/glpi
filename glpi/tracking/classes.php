@@ -169,6 +169,8 @@ class Job {
 					$message .= "[ ".convDateTime($fup->fields["date"])." ]\n";
 					$message .= $lang["mailing"][2]." ".$fup->getAuthorName()."\n";
 					$message .= $lang["mailing"][3]."\n".$fup->fields["contents"]."\n";
+					if ($fup->fields["realtime"]>0)
+						$message .= $lang["mailing"][104]." ".getRealtime($fup->fields["realtime"])."\n";
 
 					$message.=$lang["mailing"][25]." ";
 					$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
