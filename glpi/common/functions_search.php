@@ -858,7 +858,7 @@ function displaySearchFooter($type){
 			
 			$count=1;
 			$real_pdf_size=$pdf_size;
-			while ($count<count($real_pdf_size)&&array_sum($real_pdf_size)>190){
+			while ($count<count($real_pdf_size)&&array_sum($real_pdf_size)>170){
 				arsort($pdf_size);
 				$item=key($pdf_size);
 				$max=$real_pdf_size[$item];
