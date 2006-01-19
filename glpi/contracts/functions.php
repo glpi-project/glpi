@@ -463,7 +463,7 @@ $result = $db->query($query);
 *
 **/
 function showEnterpriseContract($instID) {
-	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
+	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel,$cfg_features;
 
     $db = new DB;
 	$query = "SELECT glpi_contract_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type";
@@ -489,8 +489,12 @@ function showEnterpriseContract($instID) {
 			if (!ereg("https*://",$website)) $website="http://".$website;
 			$website="<a target=_blank href='$website'>".$db->result($result, $i, "website")."</a>";
 		}
+	$entID=$db->result($result, $i, "entID");
+	$entname=getDropdownName("glpi_enterprises",$entID);
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>".getDropdownName("glpi_enterprises",$db->result($result, $i, "entID"))."</td>";
+	echo "<td align='center'><a href='".$cfg_install["root"]."/enterprises/enterprises-info-form.php?ID=$entID'>".$entname;
+	if ($cfg_layout["view_ID"]||empty($entname)) echo " ($entID)";
+	echo "</a></td>";
 	echo "<td align='center'>".getDropdownName("glpi_dropdown_enttype",$db->result($result, $i, "type"))."</td>";
 	echo "<td align='center'>".$db->result($result, $i, "phone")."</td>";
 	echo "<td align='center'>".$website."</td>";
@@ -754,7 +758,9 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		$con=new Contract;
 		$con->getFromDB($cID);
 	echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
-	echo "<td align='center'><a href='".$HTMLRel."contracts/contracts-info-form.php?ID=$cID'><b>".$con->fields["name"]." (".$con->fields["ID"].")</b></a></td>";
+	echo "<td align='center'><a href='".$HTMLRel."contracts/contracts-info-form.php?ID=$cID'><b>".$con->fields["name"];
+	if ($cfg_layout["view_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
+	echo "</b></a></td>";
 	echo "<td align='center'>".$con->fields["num"]."</td>";
 	echo "<td align='center'>".getDropdownName("glpi_dropdown_contract_type",$con->fields["contract_type"])."</td>";
 	echo "<td align='center'>".getContractEnterprises($cID)."</td>";	
@@ -829,7 +835,9 @@ function showContractAssociatedEnterprise($ID){
 		$con=new Contract;
 		$con->getFromDB($cID);
 	echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
-	echo "<td align='center'><a href='".$HTMLRel."contracts/contracts-info-form.php?ID=$cID'><b>".$con->fields["name"]." (".$con->fields["ID"].")</b></a></td>";
+	echo "<td align='center'><a href='".$HTMLRel."contracts/contracts-info-form.php?ID=$cID'><b>".$con->fields["name"];
+	if ($cfg_layout["view_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
+	echo "</b></a></td>";
 	echo "<td align='center'>".$con->fields["num"]."</td>";
 	echo "<td align='center'>".getDropdownName("glpi_dropdown_contract_type",$con->fields["contract_type"])."</td>";
 	echo "<td align='center'>".getContractEnterprises($cID)."</td>";	
