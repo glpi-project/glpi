@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-01-16 17:26
+#GLPI Dump database on 2006-01-19 23:33
 
 ### Dump table glpi_cartridges
 
@@ -630,6 +630,7 @@ INSERT INTO glpi_display VALUES ('105','2','40','5');
 INSERT INTO glpi_display VALUES ('106','3','40','5');
 INSERT INTO glpi_display VALUES ('107','4','40','5');
 INSERT INTO glpi_display VALUES ('108','5','40','5');
+INSERT INTO glpi_display VALUES ('109','15','8','6');
 
 ### Dump table glpi_doc_device
 
@@ -980,6 +981,7 @@ CREATE TABLE `glpi_event_log` (
    KEY date (`date`),
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
+
 
 ### Dump table glpi_followups
 
