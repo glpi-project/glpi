@@ -98,7 +98,6 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 	//recuperation des differents lieux d'interventions
 	//Get the distincts intervention location
 	$type = getNbIntervDropdown($_POST["dropdown"]);
-	sort($type);
 	
 	$numrows=count($type);
 	printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"dropdown=".$_POST["dropdown"]."&amp;date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]);
@@ -106,6 +105,8 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 
 	if (is_array($type))
 	{
+		sort($type);
+
  //affichage du tableau
 		 echo "<table class='tab_cadre2' cellpadding='5' >";
 		 $champ=str_replace("locations","location",str_replace("glpi_","",str_replace("dropdown_","",str_replace("_computers","",$_POST["dropdown"]))));
@@ -157,7 +158,7 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 	//select devices IDs (table row)
 	$query = "select ID, designation from ".$device_table." order by designation";
 	$result = $db->query($query);
-	
+		
 	if($db->numrows($result) >=1) {
 		$i = 0;
 		while($line = $db->fetch_assoc($result)) {
