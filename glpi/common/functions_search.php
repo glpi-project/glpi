@@ -349,6 +349,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	}
 
 	// Manage search on all item
+
 	$SEARCH_ALL=array();
 	if (in_array("all",$field)){
 		foreach ($field as $key => $val)
@@ -1361,10 +1362,14 @@ switch ($field){
 		break;
 	case "glpi_type_docs.name" :		
 		$type=TYPEDOC_TYPE;
-		$out= "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		$isadmin=isNormal($_SESSION["glpitype"]);
+		if ($isadmin)
+			$out= "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		else $out="";
 		$out.= $data["ITEM_$num"];
-		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
-		$out.= "</a>";
+		if ($isadmin && ($cfg_layout["view_ID"]||empty($data["ITEM_$num"]))) $out.= " (".$data["ID"].")";
+		if ($isadmin)
+			$out.= "</a>";
 		return $out;
 		break;
 	case "glpi_links.name" :		
