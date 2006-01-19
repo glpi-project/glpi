@@ -278,7 +278,13 @@ function commonHeader($title,$url)
 function helpHeader($title,$url,$name) {
 	// Print a nice HTML-head for help page
 
-	GLOBAL $cfg_layout,$cfg_install,$lang,$cfg_features,$HTMLRel,$phproot ;
+	GLOBAL $cfg_layout,$cfg_install,$lang,$cfg_features,$HTMLRel,$phproot, $cfg_features; ;
+
+	// Override list-limit if choosen
+ 	if (isset($_POST['list_limit'])) {
+ 		$_SESSION['list_limit']=$_POST['list_limit'];
+     		 $cfg_features["list_limit"]=$_POST['list_limit'];
+	 }
 
 	// Send extra expires header if configured
 	if ($cfg_features["sendexpire"]) {
@@ -406,11 +412,18 @@ function helpHeader($title,$url,$name) {
 * @param $name 
 **/
 function nullHeader($title,$url) {
+	global $cfg_features;
 	// Print a nice HTML-head with no controls
 
 	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel,$phproot ;
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
+
+	// Override list-limit if choosen
+	if (isset($_POST['list_limit'])) {
+		$_SESSION['list_limit']=$_POST['list_limit'];
+		$cfg_features["list_limit"]=$_POST['list_limit'];
+	 }
 
 	// Send extra expires header if configured
 	if (!empty($cfg_features["sendexpire"])) {
@@ -643,7 +656,9 @@ function printHelpDesk ($name,$from_helpdesk) {
 	$max_size/=1024*1024;
 	$max_size=round($max_size,1);
 	
-	echo "<tr class='tab_bg_1'><td>".$lang["document"][2]." (".$max_size." Mb max):	</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["document"][2]." (".$max_size." Mb max):	";
+	echo "<img src=\"".$cfg_install["root"]."/pics/aide.png\" style='cursor:pointer;' alt=\"aide\"onClick=\"window.open('".$cfg_install["root"]."/typedocs/list.php','Help','scrollbars=1,resizable=1,width=850,height=800')\">";
+	echo "</td>";
 	echo "<td colspan='2'><input type='file' name='filename' value=\"\" size='25'></td>";
 	echo "</tr>";
 
@@ -729,7 +744,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 	echo "</form>\n";
 	echo "</td>\n";
 	
-	if ($item_type_output>0){
+	if ($item_type_output>0&&isNormal($_SESSION["glpitype"])){
 	echo "<td class='tab_bg_2' width='30%'>" ;
 	echo "<form method='GET' action=\"".$cfg_install['root']."/reports/dynamicReport.php\" target='_blank'>\n";
 	echo "<input type='hidden' name='item_type' value='$item_type_output'>";
