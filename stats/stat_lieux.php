@@ -99,12 +99,14 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 	//Get the distincts intervention location
 	$type = getNbIntervDropdown($_POST["dropdown"]);
 	
-	$numrows=count($type);
-	printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"dropdown=".$_POST["dropdown"]."&amp;date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]);
 
 
 	if (is_array($type))
 	{
+
+		$numrows=count($type);
+		printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"dropdown=".$_POST["dropdown"]."&amp;date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]);
+
 		sort($type);
 
  //affichage du tableau
@@ -167,6 +169,7 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 		$i++;
 		}
 	}
+	if (is_array($tab)){
 	sort($tab);
 	$numrows=count($tab);
 	printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"dropdown=".$_POST["dropdown"]."&amp;date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]);
@@ -273,6 +276,10 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 		
 	}
 	echo "</table>";
+	} else {
+		echo $lang["stats"][23];
+	}
+
 }
 
 
