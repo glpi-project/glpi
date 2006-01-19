@@ -1109,6 +1109,9 @@ case "glpi_enterprises.name" :
 case "glpi_users.name" :
 	return $pretable.$table.$addtable.".".$field." AS ITEM_$num, glpi_users.realname AS ".$NAME."_".$num."_2, ";
 	break;
+case "glpi_contracts.end_date" :
+	return $pretable.$table.$addtable.".begin_date AS ITEM_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
+	break;
 case "glpi_device_hdd.specif_default" :
 	return " SUM(DEVICE_".HDD_DEVICE.".specificity) / COUNT( DEVICE_".HDD_DEVICE.".ID) * COUNT( DISTINCT DEVICE_".HDD_DEVICE.".ID) AS ".$NAME."_".$num.", ";
 	break;
@@ -1185,6 +1188,9 @@ case "glpi_networking_ports.ifmac" :
 	if ($type==COMPUTER_TYPE)
 		return " (  DEVICE_".NETWORK_DEVICE.".specificity $NOT LIKE '%".$val."%' OR $table.$field $NOT LIKE '%".$val."%' ) ";
 	else return " $table.$field $NOT LIKE '%".$val."%' ";
+	break;
+case "glpi_contracts.end_date" :
+	return " ADDDATE($table.begin_date, INTERVAL $table.duration MONTH) LIKE '%".$val."%'";
 	break;
 
 default:
@@ -1455,6 +1461,10 @@ switch ($field){
 	case "glpi_software.date_mod":
 	case "glpi_monitors.date_mod":
 		return convDateTime($data["ITEM_$num"]);
+		break;
+	case "glpi_contracts.end_date":
+		if ($data["ITEM_$num"]!=''&&$data["ITEM_$num"]!="0000-00-00")
+			return getWarrantyExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"]);
 		break;
 	case "glpi_contracts.begin_date":
 	case "glpi_infocoms.buy_date":
