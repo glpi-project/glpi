@@ -466,7 +466,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	$i++;
 	}
 	
-	if (isAdmin($_SESSION["glpitype"])){
+	if (isset($_SESSION["glpitype"])&&isAdmin($_SESSION["glpitype"])){
 		$q="SELECT * FROM glpi_docs WHERE deleted='N'";
 		$result = $db->query($q);
 		$nb = $db->numrows($result);

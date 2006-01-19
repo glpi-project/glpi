@@ -50,11 +50,11 @@ include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_monitors.php");
 include ($phproot . "/glpi/includes_software.php");
 
-checkAuthentication("post-only");
 
 
 // Redirect management
 if (isset($_GET['redirect'])){
+	checkAuthentication("post-only");
 	list($type,$ID)=split("_",$_GET["redirect"]);
 	glpi_header($cfg_install["root"]."/helpdesk.php?show=user&ID=$ID");
 }
@@ -62,6 +62,7 @@ if (isset($_GET['redirect'])){
 if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 {
 
+	checkAuthentication("post-only");
 	//*******************
 	// Affichage interventions en cours
 	//******************
@@ -160,7 +161,16 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 
 
 else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
-	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	$name="";
+	checkAuthentication("anonymous");
+	if ($cfg_features["public_faq"]&&!isset($_SESSION["glpiname"])){
+		nullHeader($lang["title"][1],$_SERVER["PHP_SELF"]);
+	}
+	else {
+		checkAuthentication("post-only");
+		helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	}
+
 	
 	if (isset($_GET["ID"])){
 	
@@ -195,6 +205,7 @@ else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
 
 
 else {
+checkAuthentication("post-only");
 helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 printHelpDesk($_SESSION["glpiname"],1);
 }
