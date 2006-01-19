@@ -1045,6 +1045,10 @@ USER_TYPE => array(
 					"field" => "completename",
 					"name" => $lang["setup"][3],
 				),
+			8 => array(	"table" => "glpi_users", 
+					"field" => "active",
+					"name" => $lang["setup"][400],
+				),
 		),
 //TRACKING_TYPE => "glpi_tracking",
 CONSUMABLE_TYPE => array(
