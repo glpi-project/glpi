@@ -782,6 +782,7 @@ $lang["mailing"][100]="Pas de catégorie attribuée";
 $lang["mailing"][101]="Le suivi par email a été activé";
 $lang["mailing"][102]="Le suivi par email a été désactivé";
 $lang["mailing"][103]="Suivi par email :";
+$lang["mailing"][104]="Durée de l'intervention";
 
 $lang["Menu"][0]="Ordinateurs";
 $lang["Menu"][1]="Réseaux";
