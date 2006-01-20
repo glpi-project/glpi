@@ -215,7 +215,6 @@ function checkAuthentication($authtype) {
 		die();	
 	}
 
-	
 	// New database object
 	loadLanguage();
 	$type="anonymous";
@@ -279,7 +278,7 @@ function checkAuthentication($authtype) {
 				}
 			break;
 			case "anonymous";
-    				if ($cfg_features['public_faq'] == 0){
+    				if ($cfg_features['public_faq'] == 0&&!isset($_SESSION["glpiname"])){
       					nullHeader("Login",$_SERVER["PHP_SELF"]);
       					echo "<div align='center'><b><a href=\"".$cfg_install["root"]."/logout.php\">No anonymous authorisation</a></b></div>";
       					nullFooter();
