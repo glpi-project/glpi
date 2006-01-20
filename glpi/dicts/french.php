@@ -87,6 +87,8 @@ $lang["buttons"][28]="Vue format SLK";
 $lang["buttons"][29]="Tout format PDF";
 $lang["buttons"][30]="Tout format SLK";
 $lang["buttons"][31]="Exporter";
+$lang["buttons"][32]="Fin";
+$lang["buttons"][33]="Début";
 
 $lang["calendarD"][0]="D";
 $lang["calendarD"][1]="L";

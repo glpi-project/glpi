@@ -721,7 +721,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 	if (!$start==0) {
 		echo "<th align='left'>";
 		echo "<a href=\"$target?$parameters&amp;start=0\">";
-		echo "<img src=\"".$HTMLRel."pics/first.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'>";
+		echo "<img src=\"".$HTMLRel."pics/first.png\" alt='".$lang["buttons"][33]."' title='".$lang["buttons"][33]."'>";
 		
 		
 		echo "</a></th>\n";
@@ -781,7 +781,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 		echo "</a></th>\n";
 		echo "<th align='right'>";
 		echo "<a href=\"$target?$parameters&amp;start=$end\">";
-		echo "<img src=\"".$HTMLRel."pics/last.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'>";
+		echo "<img src=\"".$HTMLRel."pics/last.png\" alt='".$lang["buttons"][32]."' title='".$lang["buttons"][32]."'>";
 		echo "</a></th>\n";
 	}
 
