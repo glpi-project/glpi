@@ -1517,6 +1517,21 @@ INSERT INTO glpi_type_docs VALUES ('50','OpenOffice Calc','sxc','sxc-dist.png','
 INSERT INTO glpi_type_docs VALUES ('51','LaTeX','tex','tex-dist.png','','Y','2004-12-13 19:47:22');
 INSERT INTO glpi_type_docs VALUES ('52','GIMP multi-layer','xcf','xcf-dist.png','','Y','2004-12-13 19:47:22');
 INSERT INTO glpi_type_docs VALUES ('53','JPEG','jpeg','jpg-dist.png','','Y','2005-03-07 22:23:17');
+INSERT INTO `glpi_type_docs` VALUES ('54', 'Oasis Open Office Writer', 'odt', 'odt-dist.png', NULL, 'Y', '2006-01-21 17:41:13');
+INSERT INTO `glpi_type_docs` VALUES ('55', 'Oasis Open Office Calc', 'ods', 'ods-dist.png', NULL, 'Y', '2006-01-21 17:41:31');
+INSERT INTO `glpi_type_docs` VALUES ('56', 'Oasis Open Office Impress', 'odp', 'odp-dist.png', NULL, 'Y', '2006-01-21 17:42:54');
+INSERT INTO `glpi_type_docs` VALUES ('57', 'Oasis Open Office Impress Template', 'otp', 'odp-dist.png', NULL, 'Y', '2006-01-21 17:43:58');
+INSERT INTO `glpi_type_docs` VALUES ('58', 'Oasis Open Office Writer Template', 'ott', 'odt-dist.png', NULL, 'Y', '2006-01-21 17:44:41');
+INSERT INTO `glpi_type_docs` VALUES ('59', 'Oasis Open Office Calc Template', 'ots', 'ods-dist.png', NULL, 'Y', '2006-01-21 17:45:30');
+INSERT INTO `glpi_type_docs` VALUES ('60', 'Oasis Open Office Math', 'odf', 'odf-dist.png', NULL, 'Y', '2006-01-21 17:48:05');
+INSERT INTO `glpi_type_docs` VALUES ('61', 'Oasis Open Office Draw', 'odg', 'odd-dist.png', NULL, 'Y', '2006-01-21 17:48:31');
+INSERT INTO `glpi_type_docs` VALUES ('62', 'Oasis Open Office Draw Template', 'otg', 'odg-dist.png', NULL, 'Y', '2006-01-21 17:49:46');
+INSERT INTO `glpi_type_docs` VALUES ('63', 'Oasis Open Office Base', 'odb', 'odb-dist.png', NULL, 'Y', '2006-01-21 18:03:34');
+INSERT INTO `glpi_type_docs` VALUES ('64', 'Oasis Open Office HTML', 'oth', 'oth-dist.png', NULL, 'Y', '2006-01-21 18:05:27');
+INSERT INTO `glpi_type_docs` VALUES ('65', 'Oasis Open Office Writer Master', 'odm', 'odm-dist.png', NULL, 'Y', '2006-01-21 18:06:34');
+INSERT INTO `glpi_type_docs` VALUES ('66', 'Oasis Open Office Chart', 'odc', NULL, NULL, 'Y', '2006-01-21 18:07:48');
+INSERT INTO `glpi_type_docs` VALUES ('67', 'Oasis Open Office Image', 'odi', NULL, NULL, 'Y', '2006-01-21 18:08:18');
+
 
 ### Dump table glpi_type_monitors
 
