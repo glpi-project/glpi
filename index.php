@@ -80,7 +80,7 @@ else
 	//echo "<a href=\"http://GLPI.indepnet.org/\" class='sous_logo'><img src=\"".$HTMLRel."pics/logo-glpi-login.png\"  alt=\"Logo GLPI Powered By Indepnet\" title=\"Powered By Indepnet\" /><br />";
 	//echo "</a>";
 
-	echo $cfg_layout['text_login'];
+	echo nl2br(unclean_cross_side_scripting_deep($cfg_layout['text_login']));
 		
 	echo "<ul>";
 	// Affichage autorisé FAQ

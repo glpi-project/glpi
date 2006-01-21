@@ -111,6 +111,14 @@ function clean_cross_side_scripting_deep($value) {
        return $value;
 }
 
+function unclean_cross_side_scripting_deep($value) {
+	$in=array("<",">");
+	$out=array("&lt;","&gt;");
+       $value = is_array($value) ?
+                   array_map('clean_cross_side_scripting_deep', $value) :
+                   (is_null($value) ? NULL : str_replace($out,$in,$value));
+       return $value;
+}
 
 function utf8_decode_deep($value) {
 	$value = is_array($value) ?
