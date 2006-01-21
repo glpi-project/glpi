@@ -3324,7 +3324,7 @@ if(!FieldExists("glpi_users","active")) {
 }
 
 
-if(TableExists("glpi_typedocs")){
+if(TableExists("glpi_type_docs")){
 	$query="INSERT INTO `glpi_type_docs` ( `ID` , `name` , `ext` , `icon` , `mime` , `upload` , `date_mod` ) VALUES (NULL, 'Oasis Open Office Writer', 'odt', 'odt-dist.png', NULL, 'Y', '2006-01-21 17:41:13'),
 	(NULL, 'Oasis Open Office Calc', 'ods', 'ods-dist.png', NULL, 'Y', '2006-01-21 17:41:31'),
 	(NULL, 'Oasis Open Office Impress', 'odp', 'odp-dist.png', NULL, 'Y', '2006-01-21 17:42:54'),
@@ -3332,7 +3332,7 @@ if(TableExists("glpi_typedocs")){
 	(NULL, 'Oasis Open Office Writer Template', 'ott', 'odt-dist.png', NULL, 'Y', '2006-01-21 17:44:41'),
 	(NULL, 'Oasis Open Office Calc Template', 'ots', 'ods-dist.png', NULL, 'Y', '2006-01-21 17:45:30'),
 	(NULL, 'Oasis Open Office Math', 'odf', 'odf-dist.png', NULL, 'Y', '2006-01-21 17:48:05'),
-	(NULL, 'Oasis Open Office Draw', 'odg', 'odd-dist.png', NULL, 'Y', '2006-01-21 17:48:31'),
+	(NULL, 'Oasis Open Office Draw', 'odg', 'odg-dist.png', NULL, 'Y', '2006-01-21 17:48:31'),
 	(NULL, 'Oasis Open Office Draw Template', 'otg', 'odg-dist.png', NULL, 'Y', '2006-01-21 17:49:46'),
 	(NULL, 'Oasis Open Office Base', 'odb', 'odb-dist.png', NULL, 'Y', '2006-01-21 18:03:34'),
 	(NULL, 'Oasis Open Office HTML', 'oth', 'oth-dist.png', NULL, 'Y', '2006-01-21 18:05:27'),
