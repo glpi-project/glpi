@@ -99,7 +99,9 @@ function commonHeader($title,$url)
 	header("Content-Type: text/html; charset=UTF-8");
 	// Send extra expires header if configured
 	if ($cfg_features["sendexpire"]) {
-		header("Expires: Fri, Jun 12 1981 08:20:00 GMT\nPragma: no-cache");
+		header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date du passé
+		//header("Expires: Fri, Jun 12 1981 08:20:00 GMT\nPragma: no-cache");  
 	}
 	// Start the page
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
@@ -288,7 +290,9 @@ function helpHeader($title,$url,$name) {
 
 	// Send extra expires header if configured
 	if ($cfg_features["sendexpire"]) {
-		header("Expires: Fri, Jun 12 1981 08:20:00 GMT\nPragma: no-cache");
+		header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date du passé
+		//header("Expires: Fri, Jun 12 1981 08:20:00 GMT\nPragma: no-cache");
 	}
 
 	// Send UTF8 Headers
@@ -427,7 +431,9 @@ function nullHeader($title,$url) {
 
 	// Send extra expires header if configured
 	if (!empty($cfg_features["sendexpire"])) {
-		header("Expires: Fri, Jun 12 1981 08:20:00 GMT\nPragma: no-cache");
+		header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date du passé
+		//header("Expires: Fri, Jun 12 1981 08:20:00 GMT\nPragma: no-cache");
 	}
 
 	// Start the page
