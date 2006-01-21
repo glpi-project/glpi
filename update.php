@@ -3323,6 +3323,27 @@ if(!FieldExists("glpi_users","active")) {
 	$db->query($query) or die("0.65 add active in users ".$lang["update"][90].$db->error());
 }
 
+
+if(TableExists("glpi_typedocs")){
+	$query="INSERT INTO `glpi_type_docs` ( `ID` , `name` , `ext` , `icon` , `mime` , `upload` , `date_mod` ) VALUES (NULL, 'Oasis Open Office Writer', 'odt', 'odt-dist.png', NULL, 'Y', '2006-01-21 17:41:13'),
+	(NULL, 'Oasis Open Office Calc', 'ods', 'ods-dist.png', NULL, 'Y', '2006-01-21 17:41:31'),
+	(NULL, 'Oasis Open Office Impress', 'odp', 'odp-dist.png', NULL, 'Y', '2006-01-21 17:42:54'),
+	(NULL, 'Oasis Open Office Impress Template', 'otp', 'odp-dist.png', NULL, 'Y', '2006-01-21 17:43:58'),
+	(NULL, 'Oasis Open Office Writer Template', 'ott', 'odt-dist.png', NULL, 'Y', '2006-01-21 17:44:41'),
+	(NULL, 'Oasis Open Office Calc Template', 'ots', 'ods-dist.png', NULL, 'Y', '2006-01-21 17:45:30'),
+	(NULL, 'Oasis Open Office Math', 'odf', 'odf-dist.png', NULL, 'Y', '2006-01-21 17:48:05'),
+	(NULL, 'Oasis Open Office Draw', 'odg', 'odd-dist.png', NULL, 'Y', '2006-01-21 17:48:31'),
+	(NULL, 'Oasis Open Office Draw Template', 'otg', 'odg-dist.png', NULL, 'Y', '2006-01-21 17:49:46'),
+	(NULL, 'Oasis Open Office Base', 'odb', 'odb-dist.png', NULL, 'Y', '2006-01-21 18:03:34'),
+	(NULL, 'Oasis Open Office HTML', 'oth', 'oth-dist.png', NULL, 'Y', '2006-01-21 18:05:27'),
+	(NULL, 'Oasis Open Office Writer Master', 'odm', 'odm-dist.png', NULL, 'Y', '2006-01-21 18:06:34'),
+	(NULL, 'Oasis Open Office Chart', 'odc', NULL, NULL, 'Y', '2006-01-21 18:07:48'),
+	(NULL, 'Oasis Open Office Image', 'odi', NULL, NULL, 'Y', '2006-01-21 18:08:18');";
+	$db->query($query) or die("0.65 add new type docs ".$lang["update"][90].$db->error());
+}
+
+
+
 ///// BEGIN  MySQL Compatibility
 if(FieldExists("glpi_infocoms","warranty_value")) {	
 	$query2=" UPDATE `glpi_infocoms` SET `warranty_value`='0' WHERE `warranty_value` IS NULL;";
