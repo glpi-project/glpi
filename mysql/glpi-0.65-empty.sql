@@ -1524,7 +1524,7 @@ INSERT INTO `glpi_type_docs` VALUES ('57', 'Oasis Open Office Impress Template',
 INSERT INTO `glpi_type_docs` VALUES ('58', 'Oasis Open Office Writer Template', 'ott', 'odt-dist.png', NULL, 'Y', '2006-01-21 17:44:41');
 INSERT INTO `glpi_type_docs` VALUES ('59', 'Oasis Open Office Calc Template', 'ots', 'ods-dist.png', NULL, 'Y', '2006-01-21 17:45:30');
 INSERT INTO `glpi_type_docs` VALUES ('60', 'Oasis Open Office Math', 'odf', 'odf-dist.png', NULL, 'Y', '2006-01-21 17:48:05');
-INSERT INTO `glpi_type_docs` VALUES ('61', 'Oasis Open Office Draw', 'odg', 'odd-dist.png', NULL, 'Y', '2006-01-21 17:48:31');
+INSERT INTO `glpi_type_docs` VALUES ('61', 'Oasis Open Office Draw', 'odg', 'odg-dist.png', NULL, 'Y', '2006-01-21 17:48:31');
 INSERT INTO `glpi_type_docs` VALUES ('62', 'Oasis Open Office Draw Template', 'otg', 'odg-dist.png', NULL, 'Y', '2006-01-21 17:49:46');
 INSERT INTO `glpi_type_docs` VALUES ('63', 'Oasis Open Office Base', 'odb', 'odb-dist.png', NULL, 'Y', '2006-01-21 18:03:34');
 INSERT INTO `glpi_type_docs` VALUES ('64', 'Oasis Open Office HTML', 'oth', 'oth-dist.png', NULL, 'Y', '2006-01-21 18:05:27');
