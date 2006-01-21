@@ -197,7 +197,7 @@ echo "</table>";
 
 
 
-echo "<div align='center'><h1>".$lang["software"][21].": ".$lang["financial"][21]."=".number_format($valeurtot,2)." - ".$lang["financial"][81]."=".number_format($valeurnettetot,2)."</h1></div>";
+echo "<div align='center'><h3>".$lang["software"][21].": ".$lang["financial"][21]."=".number_format($valeurtot,2)." - ".$lang["financial"][81]."=".number_format($valeurnettetot,2)."</h3></div>";
 
 if (count($valeurnettegraphtot)>0){
 	$valeurnettegraphtotdisplay=array_map('round',$valeurnettegraphtot);

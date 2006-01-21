@@ -147,7 +147,7 @@ function display_infocoms_report($device_type,$begin,$end){
 	$valeurtot+=$valeursoustot;
 	$valeurnettetot+=$valeurnettesoustot;
 
-	echo "<tr><td colspan='6' align='center'><h1>".$lang["software"][21].": ".$lang["financial"][21]."=$valeursoustot - ".$lang["financial"][81]."=$valeurnettesoustot</h1></td></tr>";
+	echo "<tr><td colspan='6' align='center'><h3>".$lang["software"][21].": ".$lang["financial"][21]."=$valeursoustot - ".$lang["financial"][81]."=$valeurnettesoustot</h3></td></tr>";
 
 
 	if (count($valeurnettegraph)>0){
@@ -209,7 +209,7 @@ echo "</table>";
 
 
 
-	echo "<div align='center'><h1>".$lang["software"][21].": ".$lang["financial"][21]."=".number_format($valeurtot,2)." - ".$lang["financial"][81]."=".number_format($valeurnettetot,2)."</h1></div>";
+	echo "<div align='center'><h3>".$lang["software"][21].": ".$lang["financial"][21]."=".number_format($valeurtot,2)." - ".$lang["financial"][81]."=".number_format($valeurnettetot,2)."</h3></div>";
 
 if (count($valeurnettegraphtot)>0){
 	$valeurnettegraphtotdisplay=array_map('round',$valeurnettegraphtot);
