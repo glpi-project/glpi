@@ -459,4 +459,45 @@ function getUserName($ID,$link=0){
 	else return "";		
 }
 
+function TableExists($tablename) {
+  
+   $db = new DB;
+   // Get a list of tables contained within the database.
+   $result = $db->list_tables($db);
+   $rcount = $db->numrows($result);
+
+   // Check each in list for a match.
+   for ($i=0;$i<$rcount;$i++) {
+       if ($db->table_name($result, $i)==$tablename) return true;
+   }
+   mysql_free_result($result);
+   return false;
+}
+
+/**
+* Verify if a field exists
+*
+* 
+*
+*@param $table string : Name of the table we want to verify.
+*@param $field string : Name of the field we want to verify.
+*
+*@return bool : true if exists, false elseway.
+*
+**/
+function FieldExists($table, $field) {
+	$db = new DB;
+	$result = $db->query("SELECT * FROM ". $table ."");
+	$fields = $db->num_fields($result);
+	$var1 = false;
+	for ($i=0; $i < $fields; $i++) {
+		$name  = $db->field_name($result, $i);
+		if(strcmp($name,$field)==0) {
+			$var1 = true;
+		}
+	}
+	mysql_free_result($result);
+	return $var1;
+}
+
 ?>

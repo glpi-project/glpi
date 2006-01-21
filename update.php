@@ -395,7 +395,7 @@ function showLocationUpdateForm(){
 }
 
 //Verifie si la table $tablename existe
-function TableExists($tablename) {
+/*function TableExists($tablename) {
   
    $db = new DB;
    // Get a list of tables contained within the database.
@@ -425,6 +425,7 @@ function FieldExists($table, $field) {
 	mysql_free_result($result);
 	return $var1;
 }
+*/
 // return true if the field $field of the table $table is a mysql index
 // else return false
 function isIndex($table, $field) {
