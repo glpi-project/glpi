@@ -854,7 +854,7 @@ function displaySearchFooter($type){
 			$pdf=&new Cezpdf('a4','landscape');
 			$pdf->selectFont($phproot."/glpi/ezpdf/fonts/Helvetica.afm");
 			$pdf->ezStartPageNumbers(750,10,10,'left',"GLPI PDF export - ".convDate(date("Y-m-d"))." - {PAGENUM}/{TOTALPAGENUM}");
-			$options=array('fontSize'=>8,'colGap'=>2);
+			$options=array('fontSize'=>8,'colGap'=>2,'maxWidth'=>800);
 			//print_r($pdf_size);
 			
 			$count=1;
