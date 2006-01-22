@@ -32,12 +32,20 @@
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
-
+/**
+ *  Mailing class for trackings
+ */
 class Mailing
 {
+	//! mailing type (new,attrib,followup,finish)
 	var $type=NULL;
+	/** Job class variable - job to be mailed
+	* @see Job
+	*/
 	var $job=NULL;
-	// User who change the status of the job
+	/** User class variable - user who make changes
+	* @see User
+	*/
 	var $user=NULL;
  
 	function Mailing ($type="",$job=NULL,$user=NULL)
@@ -266,8 +274,15 @@ class Mailing
 	}
 }
 
+/**
+ *  Mailing class for reservations
+ */
 class MailingResa{
+	/** ReservationResa class variable
+	* @see ReservationResa
+	*/
 	var $resa;	
+	//! type of mailing (new, update, delete)
 	var $type;
 	function MailingResa ($resa,$type="new")
 	{

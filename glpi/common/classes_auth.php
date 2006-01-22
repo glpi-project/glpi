@@ -33,13 +33,26 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+/**
+ *  Identification class used to login
+ */
 class Identification
 {
+	//! Error string
 	var $err;
+	/** User class variable
+	* @see User
+	*/
 	var $user;
+	//! External authentification variable : boolean
 	var $extauth=0;
 
-	//constructor for class Identification
+	/**
+	* Constructor
+	*
+	* @return nothing 
+	*
+	*/
 	function Identification()
 	{
 		$this->err = "";
@@ -47,10 +60,12 @@ class Identification
 	}
 
 	
-	// Is the user exists in the DB with ?
-	// return 0 -> Not in the DB -> check external auth
-	// return 1 -> Exist in the DB with a password -> check first local connection and external after
-	// return 2 -> Exist in the DB with no password -> check only external auth
+	/**
+	* Is the user exists in the DB
+	*
+	* @return 0 (Not in the DB -> check external auth), 1 ( Exist in the DB with a password -> check first local connection and external after), 2 (Exist in the DB with no password -> check only external auth)
+	*
+	*/
 	function userExists($name){
 		$db = new DB;
 
