@@ -33,6 +33,9 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+/**
+ *  Connection class used to connect computer to peripherals, printers and monitors
+ */
 class Connection {
 
 	var $ID				= 0;

@@ -32,9 +32,9 @@
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
-// And Julien Dombre for externals identifications
-// And Marco Gaiarin for ldap features
-
+/**
+ *  Database class for Mysql
+ */
 class DBmysql {
 
 	var $dbhost	= ""; 
@@ -153,7 +153,9 @@ class DBmysql {
 
 
 
-
+/**
+ *  Common Item of GLPI : Global simple interface to items - abstraction usage
+ */
 class CommonItem{
 	var $obj = NULL;	
 	var $device_type=0;

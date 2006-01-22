@@ -278,7 +278,7 @@ function commonHeader($title,$url)
 *
 * @param $title title of the page
 * @param $url not used anymore.
-* @param $name 
+* @param $name name of the user who want to display the header
 **/
 function helpHeader($title,$url,$name) {
 	// Print a nice HTML-head for help page
@@ -359,7 +359,7 @@ function helpHeader($title,$url,$name) {
 	// Just give him a language selector
 	echo "<td>";
 		if (!ereg("tracking-injector",$_SERVER["PHP_SELF"]))
-		showLangSelect($cfg_install["root"]."/preferences/index.php",$name);
+		showLangSelect($cfg_install["root"]."/preferences/index.php");
 		else echo "&nbsp;";
 	echo "</td>";
 
@@ -416,7 +416,6 @@ function helpHeader($title,$url,$name) {
 *
 * @param $title title of the page
 * @param $url not used anymore.
-* @param $name 
 **/
 function nullHeader($title,$url) {
 	global $cfg_features;
@@ -588,8 +587,8 @@ echo "<div id='footer'><div align='right'>";
 /**
 * Print the helpdesk 
 *
-* @param $name
-* @param $from_helpdesk
+* @param $name string : name of the user who want to display the Helpdesk
+* @param $from_helpdesk int : is display from the helpdesk.php ?
 * @return nothing (print the helpdesk)
 */
 function printHelpDesk ($name,$from_helpdesk) {
@@ -691,7 +690,8 @@ function printHelpDesk ($name,$from_helpdesk) {
 * @param $start from witch item we start
 * @param $numrows total items
 * @param $target page would be open when click on the option (last,previous etc)
-* @param $parameters paramters would be passed on the URL.S 
+* @param $parameters parameters would be passed on the URL.
+* @param $item_type_output item type display - if >0 display export PDF et Sylk form
 * @return nothing (print a pager)
 *
 */
@@ -804,10 +804,10 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 /**
 * Display calendar form
 *
-* @param $form
-* @param $element
-* @param $value
-* @param $withtemplate
+* @param $form form in which the calendar is display
+* @param $element name of the element
+* @param $value default value to display
+* @param $withtemplate if = 2 only display (add from template) : could not modify element
 * @return nothing
 */
 function showCalendarForm($form,$element,$value='',$withtemplate=''){
@@ -827,9 +827,9 @@ function showCalendarForm($form,$element,$value='',$withtemplate=''){
 /**
 *  show notes for item
 *
-* @param $target
-* @param $type
-* @param $id
+* @param $target target page to update item
+* @param $type item type of the device to display notes
+* @param $id id of the device to display notes
 * @return nothing
 */
 function showNotesForm($target,$type,$id){

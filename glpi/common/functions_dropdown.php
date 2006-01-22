@@ -515,12 +515,14 @@ if ($dh = opendir($store_path)) {
 * Make a select box for device type
 *
 *
-* @param $name
-* @param $device_type
-* @param $store_path
+* @param $name name of the select box
+* @param $device_type default device type
+* @param $soft with softwares ?
+* @param $cart with cartridges ?
+* @param $cons with consumables ?
 * @return nothing (print out an HTML select box)
 */
-function dropdownDeviceType($name,$device_type){
+function dropdownDeviceType($name,$device_type,$soft=1,$cart=1,$cons=1){
 global $lang;
 echo "<select name='$name'>\n";
 	echo "<option value='0'>-----</option>\n";
@@ -529,8 +531,11 @@ echo "<select name='$name'>\n";
 	echo "<option value='".PRINTER_TYPE."' ".(($device_type==PRINTER_TYPE)?" selected":"").">".$lang["help"][27]."</option>\n";
 	echo "<option value='".MONITOR_TYPE."' ".(($device_type==MONITOR_TYPE)?" selected":"").">".$lang["help"][28]."</option>\n";
 	echo "<option value='".PERIPHERAL_TYPE."' ".(($device_type==PERIPHERAL_TYPE)?" selected":"").">".$lang["help"][29]."</option>\n";
-	echo "<option value='".SOFTWARE_TYPE."' ".(($device_type==SOFTWARE_TYPE)?" selected":"").">".$lang["help"][31]."</option>\n";
+	if ($soft)
+		echo "<option value='".SOFTWARE_TYPE."' ".(($device_type==SOFTWARE_TYPE)?" selected":"").">".$lang["help"][31]."</option>\n";
+	if ($cart)
 	echo "<option value='".CARTRIDGE_TYPE."' ".(($device_type==CARTRIDGE_TYPE)?" selected":"").">".$lang["Menu"][21]."</option>\n";
+	if ($cons)
 	echo "<option value='".CONSUMABLE_TYPE."' ".(($device_type==CONSUMABLE_TYPE)?" selected":"").">".$lang["Menu"][32]."</option>\n";
 	echo "<option value='".CONTACT_TYPE."' ".(($device_type==CONTACT_TYPE)?" selected":"").">".$lang["Menu"][22]."</option>\n";
 	echo "<option value='".ENTERPRISE_TYPE."' ".(($device_type==ENTERPRISE_TYPE)?" selected":"").">".$lang["Menu"][23]."</option>\n";

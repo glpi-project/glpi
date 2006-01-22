@@ -66,7 +66,6 @@ function searchUserbyType($authtype) {
 /**
 * Count the number of elements in a table.
 *
-*
 * @param $table table name
 *
 * return int nb of elements in table
@@ -80,21 +79,12 @@ return $ligne['cpt'];
 }
 
 /**
-* To be commented
+* Get the Name of the element of a Dropdown Tree table
 *
-* @param $table
-* @param $current
-* @param $parentID
-* @param $categoryname
-* @return nothing 
-*/
-
-/**
-* To be commented
-*
-* @param $table
-* @param $ID
-* @return nothing 
+* @param $table : Dropdown Tree table
+* @param $ID : ID of the element
+* @return string : name of the element
+* @see getTreeValueCompleteName
 */
 function getTreeLeafValueName($table,$ID)
 {
@@ -111,11 +101,12 @@ return $name;
 }
 
 /**
-* To be commented
+* Get completename of a Dropdown Tree table
 *
-* @param $table
-* @param $ID
-* @return nothing 
+* @param $table : Dropdown Tree table
+* @param $ID : ID of the element
+* @return string : completename of the element
+* @see getTreeLeafValueName
 */
 function getTreeValueCompleteName($table,$ID)
 {
@@ -326,9 +317,9 @@ return -1;
 }
 
 /**
-* To be commented
+* Compute all completenames of Dropdown Tree table
 *
-* @param $table
+* @param $table : dropdown tree table to compute
 * @return nothing
 */
 function regenerateTreeCompleteName($table){
@@ -344,10 +335,10 @@ function regenerateTreeCompleteName($table){
 }
 
 /**
-* To be commented
+* Compute completename of Dropdown Tree table under the element of ID $ID
 *
-* @param $table
-* @param $ID
+* @param $table : dropdown tree table to compute
+* @param $ID : root ID to used : regenerate all under this element
 * @return nothing
 */
 function regenerateTreeCompleteNameUnderID($table,$ID){
@@ -441,6 +432,15 @@ else return -1;
 
 }
 
+/**
+* Get name of the user with ID=$ID (optional with link to users-info.php)
+*
+*@param $ID int : ID of the user.
+*@param $link int : Show link to users-info.php
+*
+*@return string : username string (realname if not empty and name if realname is empty).
+*
+**/
 function getUserName($ID,$link=0){
 	global $cfg_install;
 	$db=new DB;
@@ -459,6 +459,14 @@ function getUserName($ID,$link=0){
 	else return "";		
 }
 
+/**
+* Verify if a DB table exists
+*
+*@param $tablename string : Name of the table we want to verify.
+*
+*@return bool : true if exists, false elseway.
+*
+**/
 function TableExists($tablename) {
   
    $db = new DB;
@@ -475,9 +483,7 @@ function TableExists($tablename) {
 }
 
 /**
-* Verify if a field exists
-*
-* 
+* Verify if a DB field exists
 *
 *@param $table string : Name of the table we want to verify.
 *@param $field string : Name of the field we want to verify.

@@ -48,25 +48,24 @@ function titleUsers(){
 	                echo "<td><a  class='icon_consol' href=\"users-info-form.php?new=1&ext_auth=1\"><b>".$lang["setup"][125]."</b></a></td>";
                 echo "</tr></table></div>";
 }
-function showPasswordForm($target,$ID) {
+function showPasswordForm($target,$name) {
 
 	GLOBAL $cfg_layout, $lang;
 	
-	$user = new User($ID);
-	$user->getFromDB($ID);
-		
-	echo "<form method='post' action=\"$target\">";
-	echo "<div align='center'>&nbsp;<table class='tab_cadre' cellpadding='5' width='30%'>";
-	echo "<tr><th colspan='2'>".$lang["setup"][11]." '".$user->fields["name"]."':</th></tr>";
-	echo "<tr><td width='100%' align='center' class='tab_bg_1'>";
-	echo "<input type='password' name='password' size='10'>";
-	echo "</td><td align='center' class='tab_bg_2'>";
-	echo "<input type='hidden' name='name' value=\"".$user->fields["name"]."\">";
-	echo "<input type='submit' name='changepw' value=\"".$lang["buttons"][14]."\" class='submit'>";
-	echo "</td></tr>";
-	echo "</table></div>";
-	echo "</form>";
-
+	$user = new User();
+	if ($user->getFromDB($name)){
+		echo "<form method='post' action=\"$target\">";
+		echo "<div align='center'>&nbsp;<table class='tab_cadre' cellpadding='5' width='30%'>";
+		echo "<tr><th colspan='2'>".$lang["setup"][11]." '".$user->fields["name"]."':</th></tr>";
+		echo "<tr><td width='100%' align='center' class='tab_bg_1'>";
+		echo "<input type='password' name='password' size='10'>";
+		echo "</td><td align='center' class='tab_bg_2'>";
+		echo "<input type='hidden' name='name' value=\"".$user->fields["name"]."\">";
+		echo "<input type='submit' name='changepw' value=\"".$lang["buttons"][14]."\" class='submit'>";
+		echo "</td></tr>";
+		echo "</table></div>";
+		echo "</form>";
+	}
 }
 
 function showUserinfo($target,$ID) {
