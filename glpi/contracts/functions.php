@@ -91,7 +91,6 @@ function showContractOnglets($target,$withtemplate,$actif){
 *
 *@param $target filename : where to go when done.
 *@param $ID Integer : Id of the contact to print
-*@param $search : not used (to be deleted)
 *
 *@return Nothing (display)
 *
@@ -329,7 +328,7 @@ function addContract($input) {
 * Delete a contract in the database.
 *
 *@param $input array : the _POST vars returned bye the contact form when press delete(see showcontractform())
-*@param $force=0 boolean : int : how far the contract is deleted (moved to trash or purged from db).
+*@param $force boolean : int : how far the contract is deleted (moved to trash or purged from db).
 *
 *@return Nothing ()
 *
@@ -422,6 +421,7 @@ function showDeviceContract($instID) {
 *@param $conID integer : contract identifier.
 *@param $type integer : device type identifier.
 *@param $ID integer : device identifier.
+*@param $template integer : device to link is a template.
 *
 *@return Nothing ()
 *
@@ -556,7 +556,7 @@ $result = $db->query($query);
 * Print a select named $name with contract time options and selected value $value
 *
 *@param $name string : HTML select name
-*@param $value=0 integer : HTML select selected value
+*@param $value integer : HTML select selected value
 *
 *@return Nothing (display)
 *
@@ -576,7 +576,7 @@ function dropdownContractTime($name,$value=0){
 * Print a select named $name with contract priority options and selected value $value
 *
 *@param $name string : HTML select name
-*@param $value=0 integer : HTML select selected value
+*@param $value integer : HTML select selected value
 *
 *@return Nothing (display)
 *
@@ -642,7 +642,7 @@ function getContractPeriodicity($value){
 * Print a select named $name with hours options and selected value $value
 *
 *@param $name string : HTML select name
-*@param $value=0 integer : HTML select selected value
+*@param $value integer : HTML select selected value
 *
 *@return Nothing (display)
 *
@@ -799,9 +799,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 *
 * Print an HTML array with contracts associated to the device identified by $ID from device type $device_type 
 *
-*@param $device_type string : HTML select name
 *@param $ID integer device ID
-*@param $withtemplate='' not used (to be deleted)
 *
 *@return Nothing (display)
 *

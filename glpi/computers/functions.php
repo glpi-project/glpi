@@ -589,7 +589,7 @@ function addComputer($input) {
 * Delete a computer in the database.
 *
 *@param $input array : the _POST vars returned bye the computer form when press delete(see showcomputerform())
-*@param $force=0 int : how far the computer is deleted (moved to trash or purged from db).
+*@param $force int : how far the computer is deleted (moved to trash or purged from db).
 *
 *@return Nothing ()
 *
@@ -622,6 +622,7 @@ function restoreComputer($input) {
 *
 * Print the form for computers or templates connections to printers, screens or peripherals
 *
+*@param $target 
 *@param $ID integer: Computer or template ID
 *@param $withtemplate=''  boolean : Template or basic item.
 *

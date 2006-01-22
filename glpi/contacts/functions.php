@@ -270,6 +270,7 @@ function addContact($input) {
 * Delete a contact in the database.
 *
 *@param $input array : the _POST vars returned bye the contact form when press delete(see showcontactform())
+*@param $force boolean : force deletion
 *
 *
 *@return Nothing ()

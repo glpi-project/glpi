@@ -93,11 +93,11 @@ if(!function_exists('loadLang')) {
 * This function assure to keep clean data and integrity, during the change from 
 * computers-dropdown to computers devices. Then delete the unused old elements.
 *
-* @param integer devtype the devtype number 
-* @param string devname the device table name (end of the name (glpi_device_thisparam))
-* @param string dpdname the dropdown table name (end of the name (glpi_dropdown_thisparam))
-* @param string compdpdname the name of the dropdown foreign key on glpi_computers (eg : hdtype, processor) 
-* @param string specif='' the name of the dropdown value entry on glpi_computer (eg : hdspace, processor_speed) optionnal argument.
+* @param $devtype integer the devtype number 
+* @param $devname string the device table name (end of the name (glpi_device_thisparam))
+* @param $dpdname string the dropdown table name (end of the name (glpi_dropdown_thisparam))
+* @param $compDpdName string the name of the dropdown foreign key on glpi_computers (eg : hdtype, processor) 
+* @param $specif string the name of the dropdown value entry on glpi_computer (eg : hdspace, processor_speed) optionnal argument.
 * @returns nothing if everything is good, else display mysql query and error.
 */
 function compDpd2Device($devtype,$devname,$dpdname,$compDpdName,$specif='') {
@@ -3618,7 +3618,6 @@ function showFormSu() {
 	
 	if(!isset($_SESSION)) session_start();
 	if(empty($_SESSION["dict"])) $_SESSION["dict"] = "french";
-	global $lang;
 	loadLang($_SESSION["dict"]);
 	include ("_relpos.php");
 	

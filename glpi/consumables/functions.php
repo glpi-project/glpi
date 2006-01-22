@@ -271,7 +271,7 @@ function addConsumableType($input) {
 * Delete a consumable type in the database.
 *
 *@param $input array : the _POST vars returned bye the consumable form when press delete (see showconsumabletype())
-*@param $force=0 int : how far the consumable is deleted (moved to trash or purged from db).
+*@param $force int : how far the consumable is deleted (moved to trash or purged from db).
 *
 *@return Nothing (call to the class member)
 *TODO : error reporting.
@@ -340,8 +340,8 @@ function showConsumableAdd($ID) {
 *
 * Print out all the consumables that are issued from the consumable type identified by $ID
 *
-*@param $ID integer : Consumable type identifier.
-*@param $show_old=0 boolean : show old consumables or not. 
+*@param $tID integer : Consumable type identifier.
+*@param $show_old boolean : show old consumables or not. 
 *
 *@return Nothing (displays)
 **/
@@ -483,7 +483,7 @@ function addConsumable($tID) {
 *
 * delete a consumable that is identified by $ID
 *
-*@param $tID : consumable type identifier
+*@param $ID : consumable identifier
 *
 *
 *@return nothing
@@ -538,8 +538,10 @@ function restoreConsumable($ID){
 * Print the consumable count HTML array for the consumable type $tID
 *
 *@param $tID integer: consumable type identifier.
+*@param $alarm integer: threshold alarm value.
+*@param $nohtml integer: Return value without HTML tags.
 *
-*@return nothing (display)
+*@return string to display
 *
 **/
 function countConsumables($tID,$alarm,$nohtml=0) {
