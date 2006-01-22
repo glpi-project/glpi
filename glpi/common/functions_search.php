@@ -1791,7 +1791,7 @@ function html_clean($value){
 	$value=preg_replace('/<br>/',", ",$value);
  return trim($value);
 }
-
+/*
 function pdf_wrap(&$data,$num,$size){
 	foreach ($data as $a => $b){
 		pdf_wrap_item($b,$num,$size);
@@ -1841,6 +1841,28 @@ function wordwrapLine($s, $l,$t) {
 	}
 
   return $out;
+}
+*/
+
+/**
+* Convert an aray to be add in url
+*
+*
+* @param $name
+* @param $array
+* @return $out
+*
+*/
+function getMultiSearchItemForLink($name,$array){
+	
+	$out="";
+	if (is_array($array)&&count($array)>0)
+	foreach($array as $key => $val){
+//		if ($name!="link"||$key!=0)
+			$out.="&amp;".$name."[$key]=".$val;
+	}
+	return $out;
+	
 }
 
 ?>

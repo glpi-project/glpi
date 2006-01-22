@@ -488,27 +488,6 @@ exit();
 
 
 /**
-* Convert an aray to be add in url
-*
-*
-* @param $name
-* @param $array
-* @return $out
-*
-*/
-function getMultiSearchItemForLink($name,$array){
-	
-	$out="";
-	if (is_array($array)&&count($array)>0)
-	foreach($array as $key => $val){
-//		if ($name!="link"||$key!=0)
-			$out.="&amp;".$name."[$key]=".$val;
-	}
-	return $out;
-	
-}
-
-/**
 * Get hour from sql
 *
 *
