@@ -114,7 +114,7 @@ class User {
 
 	// Function that try to load from LDAP the user information...
 	//
-	function getFromLDAP($host,$basedn,$adm,$pass,$fields,$name)
+	function getFromLDAP($host,$port,$basedn,$adm,$pass,$fields,$name)
 	{
 		global $cfg_login;
 		// we prevent some delay..
@@ -127,7 +127,7 @@ class User {
 		$this->fields['password_md5'] = "";
 		$this->fields['name'] = $name;
 
-	  if ( $conn = ldap_connect($host) )
+	  if ( $conn = ldap_connect($host,$port) )
 	  {
 			// switch to protocol version 3 to make ssl work
 			ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3) ;
@@ -178,7 +178,7 @@ class User {
 
 // Function that try to load from LDAP the user information...
 	//
-	function getFromLDAP_active_directory($host,$basedn,$adm,$pass,$fields,$name)
+	function getFromLDAP_active_directory($host,$port,$basedn,$adm,$pass,$fields,$name)
 	{
 		// we prevent some delay..
 		if (empty($host)) {
@@ -192,7 +192,7 @@ class User {
 		$this->fields['password_md5'] = "";
 	    $this->fields['name'] = $name;		
 	    
-	  if ( $conn = ldap_connect($host) )
+	  if ( $conn = ldap_connect($host,$port) )
 	  {
 			// switch to protocol version 3 to make ssl work
 			ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3) ;

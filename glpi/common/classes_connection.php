@@ -38,13 +38,29 @@
  */
 class Connection {
 
+	//! Connection ID
 	var $ID				= 0;
+	//! Computer ID
 	var $end1			= 0;
+	//! Connected Item  ID
 	var $end2			= 0;
+	//! Connected Item Type
 	var $type			= 0;
+	//! Name of the computer
 	var $device_name	= "";
+	//! ID of the computer
 	var $device_ID		= 0;
+	//! Is the computer Deleted
+	var $deleted ='N';
 
+	/**
+	* Get items connected to a computer
+	*
+	* $type must set before
+	*
+	* @param $ID ID of the computer
+	* @return array of ID of connected items
+	*/
 	function getComputerContact ($ID) {
 		$db = new DB;
 		$query = "SELECT * FROM glpi_connect_wire WHERE (end1 = '$ID' AND type = '$this->type')";
@@ -62,6 +78,14 @@ class Connection {
 		}
 	}
 
+	/**
+	* Get computer Data
+	*
+	* Set device_name, device_ID and deleted 
+	*
+	* @param $ID ID of the computer
+	* @return boolean : computer found
+	*/
 	function getComputerData($ID) {
 		$db = new DB;
 		$query = "SELECT * FROM glpi_computers WHERE (ID = '$ID')";
@@ -77,6 +101,12 @@ class Connection {
 		}
 	}
 
+	/**
+	* Delete connection
+	*
+	* @param $ID Connection ID
+	* @return boolean
+	*/
 	function deleteFromDB($ID) {
 
 		$db = new DB;
@@ -89,6 +119,13 @@ class Connection {
 		}
 	}
 
+	/**
+	* Add a connection
+	*
+	* end1, end2 and type must be set
+	*
+	* @return integer : ID of added connection
+	*/
 	function addToDB() {
 		$db = new DB;
 

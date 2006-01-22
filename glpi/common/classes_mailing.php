@@ -48,13 +48,24 @@ class Mailing
 	*/
 	var $user=NULL;
  
+	/**
+	* Constructor
+	* @param $type mailing type (new,attrib,followup,finish)
+	* @param $job Job to mail
+	* @param $user User who made change
+	* @return nothing 
+	*/
 	function Mailing ($type="",$job=NULL,$user=NULL)
 	{
 		$this->type=$type;
 		$this->job=$job;
 		$this->user=$user;
-//		$this->test_type();
 	}
+	/**
+	* Determine if email is valid
+	* @param $email email to check
+	* @return boolean 
+	*/
 	function is_valid_email($email="")
 	{
 		if( !eregi( "^" .
@@ -70,14 +81,14 @@ class Mailing
         }
 		else return true;
 	}
-	function test_type()
-	{
-		if (!(get_class($this->job)=="Job"))
-			$this->job=NULL;
-		if (!(get_class($this->user)=="User"))
-			$this->user=NULL;	
-	}
-	// Return array of emails of people to send mail
+
+	/**
+	* Give mails to send the mail
+	* 
+	* Determine email to send mail using global config and Mailing type
+	*
+	* @return array containing email
+	*/
 	function get_users_to_send_mail()
 	{
 		GLOBAL $cfg_mailing;
@@ -154,7 +165,10 @@ class Mailing
 		return $emails;
 	}
 
-	// Format the mail body to send
+	/**
+	* Format the mail body to send
+	* @return mail body string
+	*/
 	function get_mail_body()
 	{
 		global $cfg_features, $lang;
@@ -174,7 +188,11 @@ class Mailing
 		
 		return $body;
 	}
-	// Format the mail subject to send
+
+	/**
+	* Format the mail subject to send
+	* @return mail subject string
+	*/
 	function get_mail_subject()
 	{
 		GLOBAL $lang;
@@ -205,6 +223,10 @@ class Mailing
 		return $subject;
 	}
 	
+	/**
+	* Get reply to address 
+	* @return return mail
+	*/
 	function get_reply_to_address ()
 	{
 		GLOBAL $cfg_mailing;
@@ -225,7 +247,13 @@ class Mailing
 		}
 	return $replyto;		
 	}
-	// Send email 
+	/**
+	* Send mail function
+	*
+	* Construct email and send it
+	*
+	* @return mail subject string
+	*/
 	function send()
 	{
 		GLOBAL $cfg_features,$cfg_mailing,$phproot;
@@ -284,6 +312,13 @@ class MailingResa{
 	var $resa;	
 	//! type of mailing (new, update, delete)
 	var $type;
+
+	/**
+	* Constructor
+	* @param $type mailing type (new,attrib,followup,finish)
+	* @param $resa ReservationResa to mail
+	* @return nothing 
+	*/
 	function MailingResa ($resa,$type="new")
 	{
 	$this->resa=$resa;
@@ -291,6 +326,11 @@ class MailingResa{
 
 	}
 
+	/**
+	* Determine if email is valid
+	* @param $email email to check
+	* @return boolean 
+	*/
 	function is_valid_email($email="")
 	{
 		if( !eregi( "^" .
@@ -306,7 +346,13 @@ class MailingResa{
 		else return true;
 	}
 
-	// Return array of emails of people to send mail
+	/**
+	* Give mails to send the mail
+	* 
+	* Determine email to send mail using global config and Mailing type
+	*
+	* @return array containing email
+	*/
 	function get_users_to_send_mail()
 	{
 		GLOBAL $cfg_mailing;
@@ -351,7 +397,10 @@ class MailingResa{
 		return $emails;
 	}
 
-	// Format the mail body to send
+	/**
+	* Format the mail body to send
+	* @return mail body string
+	*/
 	function get_mail_body()
 	{
 		// Create message body from Job and type
@@ -361,7 +410,10 @@ class MailingResa{
 		
 		return $body;
 	}
-	// Format the mail subject to send
+	/**
+	* Format the mail subject to send
+	* @return mail subject string
+	*/
 	function get_mail_subject()
 	{
 		GLOBAL $lang;
@@ -375,6 +427,10 @@ class MailingResa{
 		return $subject;
 	}
 	
+	/**
+	* Get reply to address 
+	* @return return mail
+	*/
 	function get_reply_to_address ()
 	{
 		GLOBAL $cfg_mailing;
@@ -389,7 +445,13 @@ class MailingResa{
 		
 	return $replyto;		
 	}
-	// Send email 
+	/**
+	* Send mail function
+	*
+	* Construct email and send it
+	*
+	* @return mail subject string
+	*/
 	function send()
 	{
 		GLOBAL $cfg_features,$cfg_mailing,$phproot;
