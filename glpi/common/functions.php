@@ -48,12 +48,12 @@
 
 
 /**
-* To be commented
+* Give name of the device
 *
 *
 *
 * @param $ID
-* @return 
+* @return array
 *
 */
 function getDeviceTypeName($ID){
@@ -77,12 +77,12 @@ switch ($ID){
 }
 
 /**
-* To be commented
+* Strip slash  for variable & array
 *
 *
 *
 * @param $value
-* @return 
+* @return $value
 *
 */
 function stripslashes_deep($value) {
@@ -94,12 +94,12 @@ function stripslashes_deep($value) {
 }
 
 /**
-* To be commented
+*  Add slash for variable & array 
 *
 *
 *
 * @param $value
-* @return 
+* @return $value
 *
 */
 function addslashes_deep($value) {
@@ -110,12 +110,12 @@ function addslashes_deep($value) {
 }
 
 /**
-* To be commented
-*
+* Prevent from XSS
+* Clean code 
 *
 *
 * @param $value
-* @return 
+* @return $value
 *
 */
 function clean_cross_side_scripting_deep($value) {
@@ -127,12 +127,12 @@ function clean_cross_side_scripting_deep($value) {
        return $value;
 }
 /**
-* To be commented
-*
+*  
+*  Invert fonction from clean_cross_side_scripting_deep
 *
 *
 * @param $value
-* @return 
+* @return $value
 *
 */
 function unclean_cross_side_scripting_deep($value) {
@@ -144,12 +144,12 @@ function unclean_cross_side_scripting_deep($value) {
        return $value;
 }
 /**
-* To be commented
+*  Utf8 decode for variable & array
 *
 *
 *
 * @param $value
-* @return 
+* @return $value
 *
 */
 function utf8_decode_deep($value) {
@@ -473,12 +473,12 @@ function return_bytes_from_ini_vars($val) {
 }
 
 /**
-* To be commented
+* Header redirection hack
 *
 *
 *
 * @param $value
-* @return 
+* @return nothing
 *
 */
 function glpi_header($dest){
@@ -488,12 +488,12 @@ exit();
 
 
 /**
-* To be commented
+* Convert an aray to be add in url
 *
 *
-*
-* @param $value
-* @return 
+* @param $name
+* @param $array
+* @return $out
 *
 */
 function getMultiSearchItemForLink($name,$array){
@@ -502,19 +502,19 @@ function getMultiSearchItemForLink($name,$array){
 	if (is_array($array)&&count($array)>0)
 	foreach($array as $key => $val){
 		if ($name!="link"||$key!=0)
-			$out.="&amp;".$name."[$key]=".$array[$key];
+			$out.="&amp;".$name."[$key]=".$val;
 	}
 	return $out;
 	
 }
 
 /**
-* To be commented
+* Get hour from sql
 *
 *
 *
-* @param $value
-* @return 
+* @param $time
+* @return  array
 *
 */
 function get_hour_from_sql($time){
@@ -524,12 +524,12 @@ return $p[0].":".$p[1];
 }
 
 /**
-* To be commented
+*  Optimize sql table
 *
 *
 *
-* @param $value
-* @return 
+* @param none
+* @return nothing
 *
 */
 function optimize_tables (){
