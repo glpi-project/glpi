@@ -52,8 +52,8 @@
 *
 *
 *
-* @param $ID
-* @return array
+* @param $ID ID of the device type
+* @return string name of the device type in the current lang
 *
 */
 function getDeviceTypeName($ID){
@@ -81,8 +81,8 @@ switch ($ID){
 *
 *
 *
-* @param $value
-* @return $value
+* @param $value item to stripslashes (array or string)
+* @return stripslashes item
 *
 */
 function stripslashes_deep($value) {
@@ -98,8 +98,8 @@ function stripslashes_deep($value) {
 *
 *
 *
-* @param $value
-* @return $value
+* @param $value value to add slashes (array or string)
+* @return addslashes value
 *
 */
 function addslashes_deep($value) {
@@ -114,9 +114,10 @@ function addslashes_deep($value) {
 * Clean code 
 *
 *
-* @param $value
-* @return $value
-*
+* @param $value item to prevent (array or string)
+* @return clean item
+$
+* @see unclean_cross_side_scripting_deep*
 */
 function clean_cross_side_scripting_deep($value) {
 	$in=array("<",">");
@@ -131,8 +132,9 @@ function clean_cross_side_scripting_deep($value) {
 *  Invert fonction from clean_cross_side_scripting_deep
 *
 *
-* @param $value
-* @return $value
+* @param $value item to unclean from clean_cross_side_scripting_deep
+* @return unclean item
+* @see clean_cross_side_scripting_deep
 *
 */
 function unclean_cross_side_scripting_deep($value) {
@@ -148,8 +150,8 @@ function unclean_cross_side_scripting_deep($value) {
 *
 *
 *
-* @param $value
-* @return $value
+* @param $value item to utf8_decode (array or string)
+* @return decoded item
 *
 */
 function utf8_decode_deep($value) {
@@ -170,7 +172,7 @@ function utf8_decode_deep($value) {
 * Remplace trés AVANTAGEUSEMENT nl2br 
 * 
 * @param $pee
-* 
+* @param $br
 * 
 * @return $string
 */
@@ -477,7 +479,7 @@ function return_bytes_from_ini_vars($val) {
 *
 *
 *
-* @param $value
+* @param $dest Redirection destination 
 * @return nothing
 *
 */
@@ -507,7 +509,6 @@ return $p[0].":".$p[1];
 *
 *
 *
-* @param none
 * @return nothing
 *
 */

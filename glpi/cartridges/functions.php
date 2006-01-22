@@ -92,7 +92,7 @@ function showCartridgeOnglets($target,$withtemplate,$actif){
 * Print the cartridge type form
 *
 *
-* Print général cartridge type form
+* Print general cartridge type form
 *
 *@param $target filename : where to go when done.
 *@param $ID Integer : Id of the cartridge type
@@ -272,7 +272,7 @@ function addCartridgeType($input) {
 * Delete a cartridge type in the database.
 *
 *@param $input array : the _POST vars returned bye the cartridge form when press delete (see showcartridgetype())
-*@param $force=0 int : how far the cartridge is deleted (moved to trash or purged from db).
+*@param $force int : how far the cartridge is deleted (moved to trash or purged from db).
 *
 *@return Nothing (call to the class member)
 *TODO : error reporting.
@@ -341,8 +341,8 @@ function showCartridgesAdd($ID) {
 *
 * Print out all the cartridges that are issued from the cartridge type identified by $ID
 *
-*@param $ID integer : Cartridge type identifier.
-*@param $show_old=0 boolean : show old cartridges or not. 
+*@param $tID integer : Cartridge type identifier.
+*@param $show_old boolean : show old cartridges or not. 
 *
 *@return Nothing (displays)
 **/
@@ -553,7 +553,7 @@ function addCartridge($tID) {
 *
 * delete a cartridge that is identified by $ID
 *
-*@param $tID : cartridge type identifier
+*@param $ID : cartridge identifier
 *
 *
 *@return nothing
@@ -722,6 +722,7 @@ $result = $db->query($query);
 * Show installed cartridge for the printer type $instID
 *
 *@param $instID integer: printer type identifier.
+*@param $old boolean : old cartridges or not ?
 *
 *@return nothing (display)
 *
@@ -899,8 +900,10 @@ function dropdownCompatibleCartridges($pID) {
 * Print the cartridge count HTML array for the cartridge type $tID
 *
 *@param $tID integer: cartridge type identifier.
+*@param $alarm integer: threshold alarm value.
+*@param $nohtml integer: Return value without HTML tags.
 *
-*@return nothing (display)
+*@return string to display
 *
 **/
 function countCartridges($tID,$alarm,$nohtml=0) {

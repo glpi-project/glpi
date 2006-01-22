@@ -209,6 +209,7 @@ function dropdownNoValue($table,$myname,$value) {
 *
 * @param $value
 * @param $myname
+* @param $all
 * @return nothing (print out an HTML select box)
 *
 *
@@ -319,6 +320,7 @@ if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 *
 *
 * @param $value
+* @param $value_type
 * @param $myname
 * @return nothing (print out an HTML select box)
 *
@@ -395,7 +397,7 @@ function dropdownUsersID($myname,$value) {
 *
 * @param $table
 * @param $id
-* @return string the value of the dropdown or "" (\0) if not exists
+* @return string the value of the dropdown or &nbsp; if not exists
 */
 function getDropdownName($table,$id) {
 	global $cfg_install,$dropdowntree_tables;
@@ -552,12 +554,13 @@ echo "<select name='$name'>\n";
 *Make a select box for all items
 *
 *
-* @param $name
+* @param $myname
+* @param $value_type
+* @param $value
 * @param $withenterprise
 * @param $withcartridge
 * @param $withconsumable
-* @param $search
-* @param $value
+* @param $withcontracts
 * @return nothing (print out an HTML select box)
 */
 function dropdownAllItems($myname,$value_type=0,$value=0,$withenterprise=0,$withcartridge=0,$withconsumable=0,$withcontracts=0) {
@@ -644,7 +647,7 @@ function dropdownYesNo($name,$value){
 *
 *
 *
-* @param $name select name
+* @param $myname select name
 * @param $value preselected value.
 * @return nothing (print out an HTML select box)
 */

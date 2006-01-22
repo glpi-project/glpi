@@ -515,13 +515,13 @@ function ShowKbItemFull($ID)
 
 
 /**
-* Print out (html) <select> show select category
+* Print out (html) select show select category
 *
 * @param $current integer
 * @param $nullroot string yes or no
 *
 * 
-* @return nothing (display <select>)
+* @return nothing (display select)
 **/
 function kbcategoryList($current=0,$nullroot="yes")
 {

@@ -55,8 +55,6 @@ function titleTracking(){
 * Print "onglets" for a better navigation.
 *
 *@param $target filename : The php file to display then
-*@param $withtemplate bool : template or basic computers
-*@param $actif witch of all the "onglets" is selected
 *
 *@return nothing (diplays)
 *

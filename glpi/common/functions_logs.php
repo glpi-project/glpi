@@ -113,6 +113,7 @@ return array($logItemtype,$logService);
 * @param $target where to go when complete
 * @param $order order by clause occurences (eg: ) 
 * @param $sort order by clause occurences (eg: date) 
+* @param $user
 **/
 function showAddEvents($target,$order,$sort,$user="") {
 	// Show events from $result in table form
@@ -230,6 +231,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 * @param $target where to go when complete
 * @param $order order by clause occurences (eg: ) 
 * @param $sort order by clause occurences (eg: date) 
+* @param $start
 **/
 function showEvents($target,$order,$sort,$start=0) {
 	// Show events from $result in table form

@@ -41,7 +41,7 @@
 * under the glpi_users table, witch return users that have the right $authtype.
 * 
 *
-*@param : $authtype auth type
+*@param $authtype auth type
 *@returns : string (in order to construct a SQL where clause)
 **/
 function searchUserbyType($authtype) {

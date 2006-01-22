@@ -33,20 +33,31 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+/**
+ *  Timer class for debug
+ */
 class Script_Timer {
-	var $timer=0;
+  //! Timer value
+  var $timer=0;
+  //! Constructor
   function Script_Timer ()
   {
     return true;
   }
-
+  //! Start the Timer
   function Start_Timer ()
   {
     $this->timer=microtime ();
 
     return true;
   }
-
+  /**
+* Get the current time of the timer
+*
+* @param $decimals number of decimal of the result
+* @return time past from Start_Timer
+*
+*/
   function Get_Time ($decimals = 3)
   {
     // $decimals will set the number of decimals you want for your milliseconds.

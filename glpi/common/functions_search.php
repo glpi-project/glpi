@@ -28,6 +28,13 @@
  ------------------------------------------------------------------------
 */
 
+/**
+* Completion of the URL $_GET values with the $_SESSION values
+*
+* @param $type item type to manage
+* @return nothing
+*
+*/
 function manageGetValuesInSearch($type=0){
 global $_GET;
 $tab=array();
@@ -96,13 +103,18 @@ if (!isset($_SESSION["glpisearchcount2"][$type])) $_SESSION["glpisearchcount2"][
 *
 * 
 *
-*@param $type='' type to display the form
-*@param $target='' url to post the form
-*@param $field='' array of the fields selected in the search form
-*@param $contains='' array of the search strings
-*@param $sort='' the "sort by" field value
-*@param $deleted='' the deleted value 
-*@param $link='' array of the link between each search.
+*@param $type type to display the form
+*@param $target url to post the form
+*@param $field array of the fields selected in the search form
+*@param $contains array of the search strings
+*@param $sort the "sort by" field value
+*@param $deleted the deleted value 
+*@param $link array of the link between each search.
+*@param $distinct only display distinct items
+*@param $contains2 array of the search strings for meta items
+*@param $field2 array of the fields selected in the search form for meta items
+*@param $type2 type to display the form for meta items
+*@param $link2 array of the link between each search. for meta items
 *
 *@return nothing (diplays)
 *
@@ -326,6 +338,10 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 *@param $start row number from witch we start the query (limit $start,xxx)
 *@param $deleted Query on deleted items or not.
 *@param $link array of the link between each search.
+*@param $contains2 array of the search strings for meta items
+*@param $field2 array of the fields selected in the search form for meta items
+*@param $type2 type to display the form for meta items
+*@param $link2 array of the link between each search. for meta items
 *
 *
 *@return Nothing (display)
@@ -985,6 +1001,11 @@ return $out;
 *
 *@param $field field to add
 *@param $order order define
+*@param $GROUPBY group by strign to complete
+*@param $val value search
+*@param $num item number 
+*@param $meta is it a meta item ?
+*@param $link link to use 
 *
 *
 *@return select string
@@ -1061,6 +1082,7 @@ return $GROUPBY;
 *
 *@param $field field to add
 *@param $order order define
+*@param $key item number
 *
 *
 *@return select string
@@ -1085,8 +1107,11 @@ function addOrderBy($field,$order,$key=0){
 * Generic Function to add select to a request
 *
 *
-*@param $field field to add
+*@param $field field of the item to add
 *@param $num item num in the request
+*@param $type device type
+*@param $table table of the item to add
+*@param $meta is it a meta item ?
 *
 *
 *@return select string
@@ -1153,14 +1178,16 @@ default:
 * Generic Function to add where to a request
 *
 *
-*@param $field field to add
+*@param $field field of the item to add
+*@param $table table of the item to add
 *@param $val item num in the request
-*
+*@param $nott is it a negative serach ?
+*@param $type device type
 *
 *@return select string
 *
 **/
-function addWhere ($nott,$type,$table,$field,$val,$device_type=0,$meta=0,$meta_num=0){
+function addWhere ($nott,$type,$table,$field,$val){
 global $LINK_ID_TABLE;
 
 $NOT="";
@@ -1216,6 +1243,7 @@ default:
 *@param $field field to add
 *@param $data array containing data results
 *@param $num item num in the request
+*@param $type device type
 *
 *
 *@return string to print
@@ -1485,11 +1513,8 @@ switch ($field){
 * Generic Function to get transcript table name
 *
 *
-*@param $type reference ID
-*@param $ref_table reference table
-*@param $already_link_tables array of tables already joined
-*@param $new_table new table to join
-*@param $device_type device_type for search on computer device
+*@param $table reference table
+*@param $device_type device type ID
 *
 *
 *@return Left join string
@@ -1519,6 +1544,8 @@ switch ($table){
 *@param $already_link_tables array of tables already joined
 *@param $new_table new table to join
 *@param $device_type device_type for search on computer device
+*@param $meta is it a meta item ?
+*@param $meta_num meta number
 *
 *
 *@return Left join string
