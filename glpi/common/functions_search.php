@@ -857,7 +857,7 @@ function displaySearchFooter($type){
 			$options=array('fontSize'=>8,'colGap'=>2,'maxWidth'=>800);
 			//print_r($pdf_size);
 			
-			$count=1;
+/*			$count=1;
 			$real_pdf_size=$pdf_size;
 			while ($count<count($real_pdf_size)&&array_sum($real_pdf_size)>170){
 				arsort($pdf_size);
@@ -872,6 +872,7 @@ function displaySearchFooter($type){
 
 				$count++;
 			}
+*/
 			$pdf->ezTable($pdf_array,$pdf_header,"",$options);
 			$pdf->ezStream();
 			
