@@ -29,7 +29,8 @@
 */
 
 /**
-* Completion of the URL $_GET values with the $_SESSION values
+* Completion of the URL $_GET values with the $_SESSION values or define default values
+*
 *
 * @param $type item type to manage
 * @return nothing
@@ -124,14 +125,15 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	$options=$SEARCH_OPTION[$type];
 
 
-		$names=array(
+	// Mete search names
+	$names=array(
 		COMPUTER_TYPE => $lang["Menu"][0],
 //		NETWORKING_TYPE => $lang["Menu"][1],
 		PRINTER_TYPE => $lang["Menu"][2],
 		MONITOR_TYPE => $lang["Menu"][3],
 		PERIPHERAL_TYPE => $lang["Menu"][16],
 		SOFTWARE_TYPE => $lang["Menu"][4],
-		);
+	);
 	
 	echo "<form method=get action=\"$target\">";
 	echo "<div align='center'><table border='0' width='850' class='tab_cadre'>";
@@ -140,8 +142,10 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	echo "<td align='center'>";
 	echo "<table>";
 	
+	// Display normal search parameters
 	for ($i=0;$i<$_SESSION["glpisearchcount"][$type];$i++){
 		echo "<tr><td align='right'>";
+		// First line display add / delete images for normal and meta search items
 		if ($i==0){
 			echo "<a href='".$cfg_install["root"]."/computers/index.php?add_search_count=1&amp;type=$type'><img src=\"".$HTMLRel."pics/plus.png\" alt='+' title='".$lang["search"][17]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 			if ($_SESSION["glpisearchcount"][$type]>1)
@@ -153,6 +157,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 				echo "<a href='".$cfg_install["root"]."/computers/index.php?delete_search_count2=1&amp;type=$type'><img src=\"".$HTMLRel."pics/meta_moins.png\" alt='-' title='".$lang["search"][20]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 			}
 		}
+		// Display link item
 		if ($i>0) {
 			echo "<select name='link[$i]'>";
 			
@@ -174,13 +179,14 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 			
 			echo "</select>";
 		}
-		
+		// display search field
 		echo "<input type='text' size='15' name=\"contains[$i]\" value=\"". (is_array($contains)&&isset($contains[$i])?stripslashes($contains[$i]):"" )."\" >";
 		echo "&nbsp;";
 		echo $lang["search"][10]."&nbsp;";
-	
+		
+		// display select box to define serach item
 		echo "<select name=\"field[$i]\" size='1'>";
-    	echo "<option value='view' ";
+    		echo "<option value='view' ";
 		if(is_array($field)&&isset($field[$i]) && $field[$i] == "view") echo "selected";
 		echo ">".$lang["search"][11]."</option>";
 
@@ -201,9 +207,10 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 		echo "</td></tr>";
 	}
 
+	// Display meta search items
 	$linked=array();
 	if ($_SESSION["glpisearchcount2"][$type]>0){
-		
+		// Define meta search items to linked
 		switch ($type){
 			case COMPUTER_TYPE :
 				$linked=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,SOFTWARE_TYPE);
@@ -231,6 +238,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 		echo "<tr><td align='right'>";
 		$rand=mt_rand();
 		
+		// Display link item (not for the first item)
 		if ($i>0) {
 			echo "<select name='link2[$i]'>";
 			
@@ -252,28 +260,30 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 			
 			echo "</select>";
 		}
-	
+		// Display select of the linked item type available
 		echo "<select name='type2[$i]' id='type2_".$type."_".$i."_$rand'>";
 		echo "<option value='-1'>-----</option>";
 		foreach ($linked as $key)
 			echo "<option value='$key'>".substr($names[$key],0,20)."</option>";
 		echo "</select>";
 
-	echo "<script type='text/javascript' >\n";
-	echo "   new Form.Element.Observer('type2_".$type."_".$i."_$rand', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('show_".$type."_".$i."_$rand','".$cfg_install["root"]."/ajax/updateSearch.php',{asynchronous:true, evalScripts:true, \n";	
-	echo "           method:'post', parameters:'type='+value+'&num=$i&field=".(is_array($field2)&&isset($field2[$i])?$field2[$i]:"")."&val=".(is_array($contains2)&&isset($contains2[$i])?$contains2[$i]:"")."'\n";
-	echo "})})\n";
-	echo "</script>\n";
-		
-	echo "<span id='show_".$type."_".$i."_$rand'>&nbsp;</span>\n";
-
-	if (is_array($type2)&&isset($type2[$i])&&$type2[$i]>0){
+		// Ajax script for display search meat item
 		echo "<script type='text/javascript' >\n";
-		echo "document.getElementById('type2_".$type."_".$i."_$rand').value='".$type2[$i]."';";
+		echo "   new Form.Element.Observer('type2_".$type."_".$i."_$rand', 1, \n";
+		echo "      function(element, value) {\n";
+		echo "      	new Ajax.Updater('show_".$type."_".$i."_$rand','".$cfg_install["root"]."/ajax/updateSearch.php',{asynchronous:true, evalScripts:true, \n";	
+		echo "           method:'post', parameters:'type='+value+'&num=$i&field=".(is_array($field2)&&isset($field2[$i])?$field2[$i]:"")."&val=".(is_array($contains2)&&isset($contains2[$i])?$contains2[$i]:"")."'\n";
+		echo "})})\n";
 		echo "</script>\n";
-	}
+		
+		echo "<span id='show_".$type."_".$i."_$rand'>&nbsp;</span>\n";
+
+		// Display already selected values
+		if (is_array($type2)&&isset($type2[$i])&&$type2[$i]>0){
+			echo "<script type='text/javascript' >\n";
+			echo "document.getElementById('type2_".$type."_".$i."_$rand').value='".$type2[$i]."';";
+			echo "</script>\n";
+		}
 		
 		echo "</td></tr>";
 	}
@@ -281,6 +291,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	echo "</table>";
 	echo "</td>";
 
+	// Display sort selection
 	echo "<td>";
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
@@ -293,6 +304,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	echo "</select> ";
 	echo "</td>";
 	
+	// Display deleted selection
 	echo "<td>";
 //	echo "<table>";
 	if (in_array($LINK_ID_TABLE[$type],$deleted_tables)){
@@ -313,12 +325,15 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	echo "</td></tr></table>";
 */
 	echo "</td>";
+	// Display Reset search
 	echo "<td>";
 	echo "<a href='".$HTMLRel."/computers/index.php?reset_search=reset_search&amp;type=$type'><img title=\"".$lang["buttons"][16]."\" alt=\"".$lang["buttons"][16]."\" src='".$HTMLRel."pics/reset.png'</a>";
 	echo "</td>";
+	// Display submit button
 	echo "<td width='80' align='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit' >";
 	echo "</td></tr></table></div>";
+	// Reset to start when submit new search
 	echo "<input type='hidden' name='start' value='0'>";
 	echo "</form>";
 	
@@ -352,27 +367,20 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	global $INFOFORM_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$HTMLRel,$cfg_install,$deleted_tables,$template_tables,$lang,$cfg_features;
 	$db=new DB;
 
+	// Define meta table where search must be done in HAVING clause
 	$META_SPECIF_TABLE=array("glpi_device_ram","glpi_device_hdd","glpi_device_processor");
+	
 	
 	// Get the items to display
 	$toview=array();
 	// Add first element (name)
 	array_push($toview,1);
+	// Add default items
 	$query="SELECT * FROM glpi_display WHERE type='$type' ORDER by rank";
 	$result=$db->query($query);
 	if ($db->numrows($result)>0){
 		while ($data=$db->fetch_array($result))
 			array_push($toview,$data["num"]);
-	}
-
-	// Manage search on all item
-
-	$SEARCH_ALL=array();
-	if (in_array("all",$field)){
-		foreach ($field as $key => $val)
-		if ($val=="all"){
-			array_push($SEARCH_ALL,array("contains"=>$contains[$key]));
-		}
 	}
 
 	// Add searched items
@@ -385,8 +393,16 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	if (!in_array($sort,$toview))
 		array_push($toview,$sort);
 
-			
-			
+	// Manage search on all item
+	$SEARCH_ALL=array();
+	if (in_array("all",$field)){
+		foreach ($field as $key => $val)
+		if ($val=="all"){
+			array_push($SEARCH_ALL,array("contains"=>$contains[$key]));
+		}
+	}
+
+		
 	// Clean toview array
 	$toview=array_unique($toview);
 	$toview_count=count($toview);
@@ -395,19 +411,24 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	//// 1 - SELECT
 	$SELECT ="SELECT ";
 	
+	// Add select for all toview item
 	for ($i=0;$i<$toview_count;$i++){
 		$SELECT.=addSelect($type,$SEARCH_OPTION[$type][$toview[$i]]["table"],$SEARCH_OPTION[$type][$toview[$i]]["field"],$i,0);
 	}
 
-	// Get specific item
+	// Get specific item for extra column
 	if ($LINK_ID_TABLE[$type]=="glpi_cartridges_type"||$LINK_ID_TABLE[$type]=="glpi_consumables_type")
 		$SELECT.=$LINK_ID_TABLE[$type].".alarm as ALARM, ";
 
 	//// 2 - FROM AND LEFT JOIN
+	// Set reference table
 	$FROM = " FROM ".$LINK_ID_TABLE[$type];
+	// Init already linked tables array in order not to link a table several times
 	$already_link_tables=array();
+	// Put reference table
 	array_push($already_link_tables,$LINK_ID_TABLE[$type]);
 
+	// Add all table for toview items
 	for ($i=1;$i<$toview_count;$i++)
 		$FROM.=addLeftJoin($type,$LINK_ID_TABLE[$type],$already_link_tables,$SEARCH_OPTION[$type][$toview[$i]]["table"]);
 
@@ -421,12 +442,15 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	//// 3 - WHERE
 
 	$first=true;
+	// default string
 	$WHERE = " WHERE ";
+	// Add deleted if item have it
 	if (in_array($LINK_ID_TABLE[$type],$deleted_tables)){
 		$LINK= " AND " ;
 		if ($first) {$LINK=" ";$first=false;}
 		$WHERE.= $LINK.$LINK_ID_TABLE[$type].".deleted='$deleted' ";
 	}
+	// Remove template items
 	if (in_array($LINK_ID_TABLE[$type],$template_tables)){
 		$LINK= " AND " ;
 		if ($first) {$LINK=" ";$first=false;}
@@ -434,15 +458,17 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	}
 
 	// Add search conditions
-
+	// If there is search items
 	if ($_SESSION["glpisearchcount"][$type]>0&&count($contains)>0) {
 		$i=0;
 
 		//foreach($contains as $key => $val)
 		for ($key=0;$key<$_SESSION["glpisearchcount"][$type];$key++)
+		// if real search (strlen >0) and not all and view search
 		if (isset($contains[$key])&&strlen($contains[$key])>0&&$field[$key]!="all"&&$field[$key]!="view"){
 			$LINK=" ";
 			$NOT=0;
+			// Manage Link if not first item
 			if (!$first||$i>0) {
 				if (is_array($link)&&isset($link[$key])&&ereg("NOT",$link[$key])){
 				$LINK=" ".ereg_replace(" NOT","",$link[$key]);
@@ -452,14 +478,16 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					$LINK=" ".$link[$key];
 				else $LINK=" AND ";
 			}
-			//echo $link[$key].$LINK.$i;
+			// Add Where clause if not to be done ine HAVING CLAUSE
 			if (!in_array($SEARCH_OPTION[$type][$field[$key]]["table"],$META_SPECIF_TABLE)){
 				$WHERE.= $LINK.addWhere($NOT,$type,$SEARCH_OPTION[$type][$field[$key]]["table"],$SEARCH_OPTION[$type][$field[$key]]["field"],$contains[$key]);
                         	$i++;
 			}
+		// if real search (strlen >0) and view search
 		} else if (isset($contains[$key])&&strlen($contains[$key])>0&&$field[$key]=="view"){
 
 			$NOT=0;
+			// Manage Link if not first item
 			if (!$first||$i>0) {
 				if (is_array($link)&&isset($link[$key])&&ereg("NOT",$link[$key])){
 					$WHERE.=" ".ereg_replace(" NOT","",$link[$key]);
@@ -474,16 +502,19 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			 $WHERE.= " ( ";
 			$first2=true;
 			foreach ($toview as $key2 => $val2)
-	        if (!in_array($SEARCH_OPTION[$type][$val2]["table"],$META_SPECIF_TABLE)){
+			// Add Where clause if not to be done ine HAVING CLAUSE
+			if (!in_array($SEARCH_OPTION[$type][$val2]["table"],$META_SPECIF_TABLE)){
 				$LINK=" OR ";
 				if ($first2) {$LINK=" ";$first2=false;}
 				$WHERE.= $LINK.addWhere($NOT,$type,$SEARCH_OPTION[$type][$val2]["table"],$SEARCH_OPTION[$type][$val2]["field"],$contains[$key]);
 			}
 			$WHERE.=" ) ";
 			$i++;
+		// if real search (strlen >0) and all search
 		} else if (isset($contains[$key])&&strlen($contains[$key])>0&&$field[$key]=="all"){
 
 			$NOT=0;
+			// Manage Link if not first item
 			if (!$first||$i>0) {
 				if (ereg("NOT",$link[$key])){
 				$WHERE.=" ".ereg_replace(" NOT","",$link[$key]);
@@ -496,7 +527,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			$first2=true;
 
    		        foreach ($SEARCH_OPTION[$type] as $key2 => $val2)
-   		        if (!in_array($val2["table"],$META_SPECIF_TABLE)){
+			// Add Where clause if not to be done ine HAVING CLAUSE
+			if (!in_array($val2["table"],$META_SPECIF_TABLE)){
                                 $LINK=" OR ";
                                 if ($first2) {$LINK=" ";$first2=false;}
                                 
@@ -511,8 +543,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 
 	//// 4 - ORDER
+	// Add order by if order item is a normal item
 	if (!in_array($SEARCH_OPTION[$type][$sort]["table"],$META_SPECIF_TABLE))	
 		$ORDER= addOrderBy($SEARCH_OPTION[$type][$sort]["table"].".".$SEARCH_OPTION[$type][$sort]["field"],$order);
+	// Add order by if order item must to be treated by the GROUP BY HAVING clause
 	else {
 		foreach($toview as $key => $val)
 		if ($sort==$val)
@@ -523,7 +557,6 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	
 	//// 5 - META SEARCH
 	// Preprocessing
-
 	if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2)){
 		
 		// a - SELECT 
@@ -533,13 +566,15 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		}
 
 		// b - ADD LEFT JOIN 
+		// Already link meta table in order not to linked a table several times
 		$already_link_tables2=array();
+		// Link reference tables
 		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
 		if (isset($type2[$i])&&$type2[$i]>0) {
 			if (!in_array($LINK_ID_TABLE[$type2[$i]],$already_link_tables2))
 				$FROM.=addMetaLeftJoin($type,$type2[$i],$already_link_tables2,$i);	
 		}
-
+		// Link items tables
 		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
 		if (isset($type2[$i])&&$type2[$i]>0) {
 			if (!in_array($SEARCH_OPTION[$type2[$i]][$field2[$i]]["table"],$already_link_tables2)){
@@ -553,7 +588,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	
 	//// 6 - Add item ID
 	
-	// Add ID
+	// Add ID to the select
 	$SELECT.=$LINK_ID_TABLE[$type].".ID AS ID ";
 
 	//// 7 - Manage GROUP BY
@@ -561,6 +596,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	if ($_SESSION["glpisearchcount2"][$type]>0)	
 		$GROUPBY=" GROUP BY ID";
 
+	// Specific case of group by : multiple links with the reference table
 	if (empty($GROUPBY))
 	foreach ($toview as $key2 => $val2){
 		if (empty($GROUPBY)&&(($val2=="all")
@@ -573,18 +609,17 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$GROUPBY=" GROUP BY ID ";
 	}
 
-	// For computer search
+	// Specific search define in META_SPECIF_TABLE : only for computer search (not meta search)
 	if ($type==COMPUTER_TYPE){
-	
+		// For each real search item 
 		foreach($contains as $key => $val)
 		if (strlen($val)>0){
-
+		// If not all and view search
 		if ($field[$key]!="all"&&$field[$key]!="view"){
 			foreach ($toview as $key2 => $val2){
-				//echo $val2."-".$field[$key]."-".$SEARCH_OPTION[$type][$val2]["table"]."<br>";
-				 if (($val2==$field[$key])&&in_array($SEARCH_OPTION[$type][$val2]["table"],$META_SPECIF_TABLE)){
+				
+				if (($val2==$field[$key])&&in_array($SEARCH_OPTION[$type][$val2]["table"],$META_SPECIF_TABLE)){
 				if (!isset($link[$key])) $link[$key]="AND";
-				//echo "tttt";
 				$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"],strtolower($contains[$key]),$key2,0,$link[$key]);
 				}
 			}
@@ -592,7 +627,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		}
 	} 
 
-	 // For others item linked 
+	 // Specific search for others item linked  (META search)
 		if (is_array($type2))
 		for ($key=0;$key<$_SESSION["glpisearchcount2"][$type];$key++)
 		if (isset($type2[$key])&&isset($contains2[$key])&&strlen($contains2[$key]))
@@ -602,7 +637,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			
 			$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type2[$key]][$field2[$key]]["table"].".".$SEARCH_OPTION[$type2[$key]][$field2[$key]]["field"],strtolower($contains2[$key]),$key,1,$LINK);
 		}
-	// If no research limit research
+	// If no research limit research to display item and compute number of item using simple request
 	$nosearch=true;
 	for ($i=0;$i<$_SESSION["glpisearchcount"][$type];$i++)
 	if (isset($contains[$i])&&strlen($contains[$i])>0) $nosearch=false;
@@ -612,6 +647,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	$LIMIT="";
 	$numrows=0;
+	//No search : count number of items using a simple count(ID) request and LIMIT search
 	if ($nosearch) {
 		$LIMIT= " LIMIT $start, ".$cfg_features["list_limit"];
 		$query_num="SELECT count(ID) FROM ".$LINK_ID_TABLE[$type];
@@ -631,80 +667,89 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$numrows= $db->result($result_num,0,0);
 	}
 
+	// If export_all reset LIMIT condition
 	if (isset($_GET['export_all'])) $LIMIT="";
 
+	// Reset WHERE if empty
 	if ($WHERE == " WHERE ") $WHERE="";
 
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 
 //	echo $QUERY;
 
+	// Set display type for export if define
+	$output_type=0;
 	if (isset($_GET["display_type"]))
 		$output_type=$_GET["display_type"];
-	else 
-		$output_type=0;
+		
 
 	// Get it from database and DISPLAY
 	if ($result = $db->query($QUERY)) {
+		// if real search or complet eexport : get numrows from request 
 		if (!$nosearch||isset($_GET['export_all'])) 
 			$numrows= $db->numrows($result);
+		// If the begin of the view is before the number of items
 		if ($start<$numrows) {
 
-			// Pager
+			// Contruct Pager parameters
 			$parameters="sort=$sort&amp;order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains).getMultiSearchItemForLink("field2",$field2).getMultiSearchItemForLink("contains2",$contains2).getMultiSearchItemForLink("type2",$type2).getMultiSearchItemForLink("link2",$link2);
-
-			if ($output_type==0) // In case of HTML display
+			
+			// Display pager only for HTML
+			if ($output_type==0) 
 				printPager($start,$numrows,$target,$parameters,$type);
 			
+			// Compute number of columns to display
+			// Add toview elements
 			$nbcols=$toview_count;
-			// META HEADER
+			// Add meta search elements if real search (strlen>0) or only NOT search
 			if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 			for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
 			if (isset($type2[$i])&&isset($contains2[$i])&&strlen($contains2[$i])>0&&$type2[$i]>0&&(!isset($link2[$i])||!ereg("NOT",$link2[$i]))) {
 				$nbcols++;
 			}
 
-
+			// Display List Header
 			echo displaySearchHeader($output_type,$cfg_features["list_limit"]+1,$nbcols);
-
+			// New Line for Header Items Line
 			echo displaySearchNewLine($output_type);
 			$header_num=1;
-			// TABLE HEADER
+			// Display column Headers for toview items
 			for ($i=0;$i<$toview_count;$i++){
 
 				$linkto="$target?sort=".$toview[$i]."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains).getMultiSearchItemForLink("field2",$field2).getMultiSearchItemForLink("contains2",$contains2).getMultiSearchItemForLink("type2",$type2).getMultiSearchItemForLink("link2",$link2);
 
 				echo displaySearchHeaderItem($output_type,$SEARCH_OPTION[$type][$toview[$i]]["name"],$header_num,$linkto,$sort==$toview[$i],$order);
 			}
-			// META HEADER
+			// Display columns Headers for meta items
 			if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 			for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
 			if (isset($type2[$i])&&$type2[$i]>0&&(!isset($link2[$i])||!ereg("NOT",$link2[$i]))) {
 				echo displaySearchHeaderItem($output_type,$SEARCH_OPTION[$type2[$i]][$field2[$i]]["name"],$header_num);
 			}
-			
+			// Add specific column Header
 			if ($type==SOFTWARE_TYPE)
 				echo displaySearchHeaderItem($output_type,$lang["software"][11],$header_num);
-					
 			if ($type==CARTRIDGE_TYPE)
 				echo displaySearchHeaderItem($output_type,$lang["cartridges"][0],$header_num);	
-				
 			if ($type==CONSUMABLE_TYPE)
 				echo displaySearchHeaderItem($output_type,$lang["consumables"][0],$header_num);
-					
+			// End Line for column headers		
 			echo displaySearchEndLine($output_type);
 			
+			// if real search seek to begin of items to display (because of complete search)
 			if (!$nosearch)
 				$db->data_seek($result,$start);
 
+			// Define begin and end var for loop
+			// Search case
 			$i=$start;
 			$end_display=$start+$cfg_features["list_limit"];
-
+			// No search Case
 			if ($nosearch){
 				$i=0;
 				$end_display=min($numrows-$start,$cfg_features["list_limit"]);
 				}
-			
+			// Export All case
 			if (isset($_GET['export_all'])) {
 				$i=0;
 				$end_display=$numrows;
@@ -712,25 +757,34 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			
 			
 
+			// Num of the row (1=header_line)
 			$row_num=1;
+			// Display Loop
 			while ($i < $numrows && $i<($end_display)){
+				// Column num
 				$item_num=1;
+				// Get data and increment loop variables
 				$data=$db->fetch_assoc($result);
 				$i++;
 				$row_num++;
+				// New line
 				echo displaySearchNewLine($output_type);
 				
-				// Print first element
+				// Print first element - specific case for user 
 				if ($SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"]=="glpi_users.name")
 					echo displaySearchItem($output_type,giveItem($type,"glpi_users.name.brut",$data,0),$item_num,$row_num);
 				else 
 					echo displaySearchItem($output_type,giveItem($type,$SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"],$data,0),$item_num,$row_num);
-				// Print other items
+
+				// Print other toview items
 				for ($j=1;$j<$toview_count;$j++){
+					// Specific case of enterprises
 					if ($SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"]=="glpi_enterprises.name")
 						echo displaySearchItem($output_type,giveItem($type,"glpi_enterprises.name.brut",$data,$j),$item_num,$row_num);
+					// Specific case of contracts
 					else if ($SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"]=="glpi_contracts.name")
 						echo  displaySearchItem($output_type,giveItem($type,"glpi_contracts.name.brut",$data,$j),$item_num,$row_num);
+					// General case
 					else  
 						echo displaySearchItem($output_type,giveItem($type,$SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"],$data,$j),$item_num,$row_num);
 
@@ -740,8 +794,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 				for ($j=0;$j<$_SESSION["glpisearchcount2"][$type];$j++)
 				if (isset($type2[$j])&&$type2[$j]>0&&(!isset($link2[$j])||!ereg("NOT",$link2[$j]))){
+					// General case
 					if (!ereg("$$$$",$data["META_$j"]))
 						echo displaySearchItem($output_type,$data["META_$j"],$item_num,$row_num);
+					// Case of GROUP_CONCAT item : split item and multilline display
 					else {
 						$split=explode("$$$$",$data["META_$j"]);
 						$count_display=0;
@@ -757,22 +813,20 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					
 					}
 				}
-				
+				// Specific column display
 				if ($type==CARTRIDGE_TYPE){
 		   			echo displaySearchItem($output_type,countCartridges($data["ID"],$data["ALARM"],$output_type),$item_num,$row_num);
 				}
-
 				if ($type==SOFTWARE_TYPE){
 		   			echo displaySearchItem($output_type,countInstallations($data["ID"],$output_type),$item_num,$row_num);
 					}		
-				
 				if ($type==CONSUMABLE_TYPE){
 		   			echo displaySearchItem($output_type,countConsumables($data["ID"],$data["ALARM"],$output_type),$item_num,$row_num);
 				}		
-		   		
+		   	// End Line
 		        echo displaySearchEndLine($output_type);
 			}
-			
+			// Display footer
 			echo displaySearchFooter($output_type);
 			
 			if ($output_type==0) // In case of HTML display
@@ -787,7 +841,20 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 }
 
-
+/**
+* Print generic Header Column
+*
+*
+*@param $type display type (0=HTML, 1=Sylk,2=PDF)
+*@param $value value to display
+*@param $num column number
+*@param $linkto link display element (HTML specific)
+*@param $issort is the sort column ?
+*@param $order  order type ASC or DESC
+*
+*@return string to display
+*
+**/
 function displaySearchHeaderItem($type,$value,&$num,$linkto="",$issort=0,$order=""){
 	global $HTMLRel;
 	$out="";
@@ -826,6 +893,18 @@ return $out;
 }
 
 
+/**
+* Print generic normal Item Cell
+*
+*
+*@param $type display type (0=HTML, 1=Sylk,2=PDF)
+*@param $value value to display
+*@param $num column number
+*@param $row  row number
+*
+*@return string to display
+*
+**/
 function displaySearchItem($type,$value,&$num,$row){
 	$out="";
 	switch ($type){
@@ -847,6 +926,15 @@ return $out;
 
 }
 
+/**
+* Print generic error
+*
+*
+*@param $type display type (0=HTML, 1=Sylk,2=PDF)
+*
+*@return string to display
+*
+**/
 function displaySearchError($type){
 	global $lang;
 	$out="";
@@ -862,7 +950,15 @@ function displaySearchError($type){
 return $out;
 
 }
-
+/**
+* Print generic footer
+*
+*
+*@param $type display type (0=HTML, 1=Sylk,2=PDF)
+*
+*@return string to display
+*
+**/
 function displaySearchFooter($type){
 	$out="";
 	switch ($type){
@@ -903,7 +999,17 @@ function displaySearchFooter($type){
 return $out;
 
 }
-
+/**
+* Print generic footer
+*
+*
+*@param $type display type (0=HTML, 1=Sylk,2=PDF)
+*@param $cols number of columns
+*@param $rows  number of rows
+*
+*@return string to display
+*
+**/
 function displaySearchHeader($type,$rows,$cols){
 	$out="";
 	switch ($type){
@@ -964,6 +1070,15 @@ return $out;
 
 }
 
+/**
+* Print generic new line
+*
+*
+*@param $type display type (0=HTML, 1=Sylk,2=PDF)
+*
+*@return string to display
+*
+**/
 
 function displaySearchNewLine($type){
 	$out="";
@@ -980,7 +1095,15 @@ function displaySearchNewLine($type){
 	}
 return $out;
 }
-
+/**
+* Print generic end line
+*
+*
+*@param $type display type (0=HTML, 1=Sylk,2=PDF)
+*
+*@return string to display
+*
+**/
 function displaySearchEndLine($type){
 	$out="";
 	switch ($type){
@@ -1011,7 +1134,6 @@ return $out;
 *@return select string
 *
 **/
-
 function addGroupByHaving($GROUPBY,$field,$val,$num,$meta=0,$link=""){
 
 $NOT="";
@@ -1713,6 +1835,20 @@ switch ($new_table){
 }
 }
 
+
+/**
+* Generic Function to add left join for meta items
+*
+*
+*@param $reference_type reference item type ID 
+*@param $to_type item type to add
+*@param $already_link_tables2 array of tables already joined
+*@param $num meta number
+*
+*
+*@return Meta Left join string
+*
+**/
 function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$num){
 global $LINK_ID_TABLE;
 	
@@ -1798,7 +1934,15 @@ global $LINK_ID_TABLE;
 		}
 	
 }
-
+/**
+* Clean display value for sylk export
+*
+*
+*@param $value string value
+*
+*@return clean value
+*
+**/
 function sylk_clean($value){
 
 	$value=utf8_decode($value);
@@ -1811,6 +1955,15 @@ function sylk_clean($value){
 return $value;
 }
 
+/**
+* Clean display value deleting html tags
+*
+*
+*@param $value string value
+*
+*@return clean value
+*
+**/
 function html_clean($value){
 	$value=preg_replace('/<a[^>]+>/',' ',$value);
 	$value=preg_replace('/<img[^>]+>/',' ',$value);
@@ -1872,12 +2025,12 @@ function wordwrapLine($s, $l,$t) {
 */
 
 /**
-* Convert an aray to be add in url
+* Convert an array to be add in url
 *
 *
-* @param $name
-* @param $array
-* @return $out
+* @param $name name of array
+* @param $array array to be added
+* @return string to add
 *
 */
 function getMultiSearchItemForLink($name,$array){
