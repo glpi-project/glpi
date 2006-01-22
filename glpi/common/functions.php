@@ -41,13 +41,21 @@
 
 //******************************************************************************************************
 //******************************************************************************************************
-//********************************  Fonctions de   ????? ************************************
+//********************************  Fonctions diverses ************************************
 //******************************************************************************************************
 //******************************************************************************************************
 
 
 
-
+/**
+* To be commented
+*
+*
+*
+* @param $ID
+* @return 
+*
+*/
 function getDeviceTypeName($ID){
 global $lang;
 switch ($ID){
@@ -73,7 +81,7 @@ switch ($ID){
 *
 *
 *
-* @param $s
+* @param $value
 * @return 
 *
 */
@@ -101,7 +109,15 @@ function addslashes_deep($value) {
        return $value;
 }
 
-
+/**
+* To be commented
+*
+*
+*
+* @param $value
+* @return 
+*
+*/
 function clean_cross_side_scripting_deep($value) {
 	$in=array("<",">");
 	$out=array("&lt;","&gt;");
@@ -110,7 +126,15 @@ function clean_cross_side_scripting_deep($value) {
                    (is_null($value) ? NULL : str_replace($in,$out,$value));
        return $value;
 }
-
+/**
+* To be commented
+*
+*
+*
+* @param $value
+* @return 
+*
+*/
 function unclean_cross_side_scripting_deep($value) {
 	$in=array("<",">");
 	$out=array("&lt;","&gt;");
@@ -119,7 +143,15 @@ function unclean_cross_side_scripting_deep($value) {
                    (is_null($value) ? NULL : str_replace($out,$in,$value));
        return $value;
 }
-
+/**
+* To be commented
+*
+*
+*
+* @param $value
+* @return 
+*
+*/
 function utf8_decode_deep($value) {
 	$value = is_array($value) ?
 		array_map('utf8_decode_deep', $value) :
@@ -291,7 +323,15 @@ function rembo($string){
 
 
 
-
+/**
+* Convert a date YY-MM-DD to DD-MM-YY for display in a html table
+*
+*
+*
+* @param $time
+* @return $time or $date
+*
+*/
 function convDateTime($time) { 
  global $cfg_layout;
  if (is_null($time)) return $time;
@@ -305,6 +345,16 @@ function convDateTime($time) {
  return $time;
  }
  }
+
+/**
+* Convert a date YY-MM-DD to DD-MM-YY for calendar
+*
+*
+*
+* @param $time
+* @return $time or $date
+*
+*/
  function convDate($time) { 
  global $cfg_layout;
  if (is_null($time)) return $time;
@@ -319,7 +369,7 @@ function convDateTime($time) {
  }
  }
 /**
-* To be commented
+*  Send a file to the navigator
 *
 * @param $file
 * @param $filename
@@ -397,7 +447,15 @@ function sendFile($file,$filename){
 	}
 }
 
-
+/**
+* Convert a value in byte, kbyte, mégabyte etc..
+*
+*
+*
+* @param $val
+* @return $val
+*
+*/
 function return_bytes_from_ini_vars($val) {
    $val = trim($val);
    $last = strtolower($val{strlen($val)-1});
@@ -414,11 +472,30 @@ function return_bytes_from_ini_vars($val) {
    return $val;
 }
 
+/**
+* To be commented
+*
+*
+*
+* @param $value
+* @return 
+*
+*/
 function glpi_header($dest){
 echo "<script language=javascript>window.location=\"".$dest."\"</script>";
 exit();
 }
 
+
+/**
+* To be commented
+*
+*
+*
+* @param $value
+* @return 
+*
+*/
 function getMultiSearchItemForLink($name,$array){
 	
 	$out="";
@@ -431,13 +508,30 @@ function getMultiSearchItemForLink($name,$array){
 	
 }
 
-
+/**
+* To be commented
+*
+*
+*
+* @param $value
+* @return 
+*
+*/
 function get_hour_from_sql($time){
 $t=explode(" ",$time);
 $p=explode(":",$t[1]);
 return $p[0].":".$p[1];
 }
 
+/**
+* To be commented
+*
+*
+*
+* @param $value
+* @return 
+*
+*/
 function optimize_tables (){
 	
 $db = new DB;
