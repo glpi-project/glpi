@@ -81,9 +81,16 @@ class Identification
 		}
 
 	}
-	//return 1 if the (IMAP/pop) connection to host $host, using login $login and pass $pass
-	// is successfull
-	//else return 0
+	/**
+	* Try a IMAP/POP connection
+	*
+	* @param $host IMAP/POP host to connect
+	* @param $login Login to try
+	* @param $pass Password to try
+	*
+	* @return boolean : connection success
+	*
+	*/
 	function connection_imap($host,$login,$pass)
 	{
 		// we prevent some delay...
@@ -104,8 +111,19 @@ class Identification
 		return false;
 	}
 
-  // return 1 if the connection to the LDAP host, auth mode, was successful
-  // $condition is used to restrict login ($condition is set in glpi/config/config.php 
+	/**
+	* Try a LDAP connection
+	*
+	* @param $host LDAP host to connect
+	* @param $basedn Basedn to use
+	* @param $login Login to try
+	* @param $pass Password to try
+	* @param $condition Condition used to restrict login
+	* @param $port LDAP port
+	*
+	* @return boolean : connection success
+	*
+	*/
   function connection_ldap($host,$basedn,$login,$pass,$condition,$port)
   {
 	global $cfg_login;
@@ -153,8 +171,20 @@ class Identification
   } // connection_ldap()
  
  
-// Gets the dn using anonymous Ldap login
- function ldap_get_dn($host,$ldap_base_dn,$login,$rdn,$rpass)
+	/**
+	* Find a user in a LDAP and return is BaseDN
+	*
+	* @param $host LDAP host to connect
+	* @param $ldap_base_dn Basedn to use
+	* @param $login Login to search
+	* @param $rdn Root Basedn to connect
+	* @param $rpass Root Password to connect
+	* @param $port LDAP port
+	*
+	* @return String : basedn of the user / false if not founded
+	*
+	*/
+ function ldap_get_dn($host,$ldap_base_dn,$login,$rdn,$rpass,$port)
  {
 	global $cfg_login;
   // we prevent some delay...
@@ -165,7 +195,7 @@ class Identification
   $ldap_login_attr = $cfg_login['ldap']['login'];
   $ldap_dn ="";
   error_reporting(16);
-  $ds = ldap_connect ($ldap_server);
+  $ds = ldap_connect ($ldap_server,$port);
 
   if (!$ds)
     {
@@ -210,9 +240,20 @@ class Identification
    return implode(",",$thedn);
   }  		 // ldap_get_dn()
  		
- // return 1 if the connection to the LDAP host, auth mode, was successful
-  // $condition is used to restrict login ($condition is set in glpi/config/config.php 
-  function connection_ldap_active_directory($host,$basedn,$login,$pass,$condition)
+	/**
+	* Try a Active Directory connection
+	*
+	* @param $host LDAP host to connect
+	* @param $basedn Basedn to use
+	* @param $login Login to try
+	* @param $pass Password to try
+	* @param $condition Condition used to restrict login
+	* @param $port LDAP port
+	*
+	* @return boolean : connection success
+	*
+	*/
+  function connection_ldap_active_directory($host,$basedn,$login,$pass,$condition,$port)
   {
 		// we prevent some delay...
 		if (empty($host)) {
@@ -221,7 +262,7 @@ class Identification
   	error_reporting(16);
   	$dn = $basedn;
   	$rv = false;
-  	if ( $conn = ldap_connect($host) )
+  	if ( $conn = ldap_connect($host,$port) )
   	{
   		// switch to protocol version 3 to make ssl work
   		ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3) ;
@@ -264,8 +305,20 @@ class Identification
   } // connection_ldap_active_directory()
  
  
-// Gets the dn using anonymous Ldap login
- function ldap_get_dn_active_directory($host,$ldap_base_dn,$login,$rdn,$rpass)
+	/**
+	* Find a user in an Active Directory and return is BaseDN
+	*
+	* @param $host LDAP host to connect
+	* @param $ldap_base_dn Basedn to use
+	* @param $login Login to search
+	* @param $rdn Root Basedn to connect
+	* @param $rpass Root Password to connect
+	* @param $port LDAP port
+	*
+	* @return String : basedn of the user / false if not founded
+	*
+	*/
+ function ldap_get_dn_active_directory($host,$ldap_base_dn,$login,$rdn,$rpass,$port)
  {
 
   // we prevent some delay...
@@ -277,7 +330,7 @@ class Identification
   $ldap_login_attr = "sAMAccountName";                          
   $ldap_dn ="";
 	error_reporting(16);
-  $ds = ldap_connect ($ldap_server);
+  $ds = ldap_connect ($ldap_server,$port);
   if (!$ds)
     {
  	$this->err .= ldap_error($ds)."<br>";

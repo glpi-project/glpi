@@ -1349,11 +1349,6 @@ case "glpi_contracts.end_date" :
 	break;
 
 default:
-	if ($meta)
-		if ($table!=$LINK_ID_TABLE[$type])
-			return " META_".$table."_".$meta_num.".$field $NOT LIKE '%".$val."%' ";
-		else return " ".$table."_".$meta_num.".$field $NOT LIKE '%".$val."%' ";
-	else 
 	$ADD="";	
 	if ($nott) $ADD=" OR $table.$field IS NULL";
 	return " ($table.$field $NOT LIKE '%".$val."%' ".$ADD." ) ";
