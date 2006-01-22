@@ -143,6 +143,7 @@ function commonHeader($title,$url)
 		
 	// Get object-variables and build the navigation-elements
 	
+	// Inventory
 	if ($navigation->inventory) {
 		echo "<dl><dt onmouseover=\"javascript:montre('smenu1');\"><img class='icon_nav' src=\"".$HTMLRel."pics/inventaire.png\" alt=\"\" title=\"".$lang["setup"][10]."\"><br>\n";
 		echo "<span class='menu_title'>-&nbsp;".$lang["setup"][10]."&nbsp;-</span><dt>\n";
@@ -158,6 +159,7 @@ function commonHeader($title,$url)
 		echo "</dl>\n";
 	}
 
+	// Maintain / Tracking / ticket
 	if ($navigation->maintain) {
 		
 		echo "<dl><dt onmouseover=\"javascript:montre('smenu2');\"><img class='icon_nav' src=\"".$HTMLRel."pics/maintenance.png\" alt=\"\" title=\"".$lang["title"][24]."\"><br>\n";
@@ -170,6 +172,7 @@ function commonHeader($title,$url)
 		echo "</ul></dd>\n";
 		echo "</dl>\n";
 	}
+	// Financial
 	if ($navigation->financial) {
 		echo "<dl><dt onmouseover=\"javascript:montre('smenu3');\">";
 		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/gestion.png\" alt=\"\" title=\"".$lang["Menu"][26]."\"><br>\n";
@@ -183,7 +186,7 @@ function commonHeader($title,$url)
 		echo "</dl>\n";
 	}
 	
-	
+	// Tools
 	if ($navigation->utils) {
 		echo "<dl><dt onmouseover=\"javascript:montre('smenu4');\">";
 		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/outils.png\" alt=\"\" title=\"".$lang["Menu"][18]."\"><br>\n";
@@ -217,7 +220,7 @@ function commonHeader($title,$url)
 		echo "</dl>\n";
 	}
 	
-	
+	// Administration 
 	if ($navigation->settings) {
 			echo "<dl><dt onmouseover=\"javascript:montre('smenu6');\">";
 		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/config.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>\n";
@@ -799,7 +802,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 
 
 /**
-* To be commented
+* Display calendar form
 *
 * @param $form
 * @param $element
@@ -816,7 +819,7 @@ function showCalendarForm($form,$element,$value='',$withtemplate=''){
 		if ($withtemplate!=2){
 			echo "&nbsp;<img src='".$HTMLRel."pics/calendar.png' class='calendrier' alt='".$lang["buttons"][15]."' title='".$lang["buttons"][15]."'
 			onclick=\"window.open('".$HTMLRel."mycalendar.php?form=$form&amp;elem=$element&amp;value=$value','".$lang["buttons"][15]."','width=300,height=300')\" >";
-		echo convDate("0000-00-00");
+		//echo convDate("0000-00-00");
 			echo "&nbsp;<img src='".$HTMLRel."pics/reset.png' class='calendrier' onClick=\"document.getElementById('data$rand').value='0000-00-00';document.getElementById('show$rand').value='".convDate("0000-00-00")."'\" alt='Reset' title='Reset'>";	
 		}
 }

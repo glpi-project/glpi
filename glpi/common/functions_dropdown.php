@@ -157,12 +157,13 @@ if ($table=="glpi_enterprises")
 
 
 /**
-* To be commented
+* Make a select box without parameters value
 *
 *
-*
-*
-*
+* @param $table
+* @param $myname
+* @param $value
+* @return nothing (print out an HTML select box)
 * 
 */
 function dropdownNoValue($table,$myname,$value) {
@@ -256,6 +257,16 @@ if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 	echo "</span>\n";	
 }
 
+
+/**
+* Make a select box with all glpi users
+*
+*
+* @param $myname
+* @param $value
+* @return nothing (print out an HTML select box)
+* 
+*/
 function dropdownAllUsers($myname,$value) {
 	global $lang;
 	// Make a select box with all glpi users
@@ -463,7 +474,7 @@ if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 
 /**
 * 
-*
+* Make a select box for icons
 *
 *
 * @param $value
@@ -499,7 +510,16 @@ if ($dh = opendir($store_path)) {
 }
 
 
-
+/**
+* 
+* Make a select box for device type
+*
+*
+* @param $name
+* @param $device_type
+* @param $store_path
+* @return nothing (print out an HTML select box)
+*/
 function dropdownDeviceType($name,$device_type){
 global $lang;
 echo "<select name='$name'>\n";
@@ -524,7 +544,7 @@ echo "<select name='$name'>\n";
 
 /**
 * 
-*
+*Make a select box for all items
 *
 *
 * @param $name
@@ -604,7 +624,7 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$withenterprise=0,$with
 *
 * @param $name select name
 * @param $value preselected value.
-*
+* @return nothing (print out an HTML select box)
 */
 function dropdownYesNo($name,$value){
 	global $lang;
@@ -614,7 +634,15 @@ function dropdownYesNo($name,$value){
 	echo "</select>\n";	
 }	
 
-
+/**
+* Make a select box for Tracking device type
+*
+*
+*
+* @param $name select name
+* @param $value preselected value.
+* @return nothing (print out an HTML select box)
+*/
 function dropdownTrackingDeviceType($myname,$value){
 	global $lang,$HTMLRel,$cfg_install;
 	
@@ -665,6 +693,15 @@ echo "</div>";
 			
 }
 
+/**
+* Make a select box for connections
+*
+*
+*
+* @param $type
+* @param $myname
+* @return nothing (print out an HTML select box)
+*/
 function dropdownConnect($type,$myname) {
 
 
@@ -713,6 +750,15 @@ echo "</span>\n";
 }
 
 
+/**
+* Make a select box for  connected port
+*
+*
+* @param $ID
+* @param $type
+* @param $myname
+* @return nothing (print out an HTML select box)
+*/
 function dropdownConnectPort($ID,$type,$myname) {
 
 
@@ -755,6 +801,14 @@ function dropdownConnectPort($ID,$type,$myname) {
 
 }
 
+/**
+* Make a select box for  software to install
+*
+*
+* @param $myname
+* @param $withtemplate
+* @return nothing (print out an HTML select box)
+*/
 function dropdownSoftwareToInstall($myname,$withtemplate) {
 	global $lang,$HTMLRel,$cfg_install,$cfg_features;
 	
@@ -801,6 +855,17 @@ function dropdownSoftwareToInstall($myname,$withtemplate) {
 	
 }
 
+/**
+* Show div with auto complétion
+*
+* @param $myname
+* @param $table
+* @param $field
+* @param $value
+* @param $size
+* @param $option
+* @return nothing (print out an HTML div)
+*/
 function autocompletionTextField($myname,$table,$field,$value='',$size=20,$option=''){
 	global $HTMLRel,$cfg_features;
 
@@ -816,7 +881,16 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=20,$optio
 	}
 }
 
-//print select form for device type
+
+/**
+* Make a select box form  for device type 
+*
+*
+* @param $target
+* @param $cID
+* @param $withtemplate
+* @return nothing (print out an HTML select box)
+*/
 function device_selecter($target,$cID,$withtemplate='') {
 	global $lang,$HTMLRel,$cfg_install;
 
