@@ -37,13 +37,27 @@
  */
 class DBmysql {
 
+	//! Database Host
 	var $dbhost	= ""; 
-	var $dbuser = ""; 
+	//! Database User
+	var $dbuser = "";
+	//! Database Password 
 	var $dbpassword	= "";
+	//! Default Database
 	var $dbdefault	= "";
+	//! Database Handler
 	var $dbh;
+	//! Database Error
 	var $error = 0;
 
+	/**
+	* Constructor / Connect to the MySQL Database
+	*
+	* Use dbhost, dbuser, dbpassword and dbdefault
+	* Die if connection or database selection failed
+	*
+	* @return nothing 
+	*/
 	function DBmysql()
 	{  // Constructor
 		$this->dbh = @mysql_connect($this->dbhost, $this->dbuser, $this->dbpassword) or $this->error = 1;
@@ -56,6 +70,11 @@ class DBmysql {
 			die();
 		}
 	}
+	/**
+	* Execute a MySQL query
+	* @param $query Query to execute
+	* @return Query result handler
+	*/
 	function query($query) {
 		global $cfg_debug,$DEBUG_SQL_STRING,$SQL_TOTAL_TIMER, $SQL_TOTAL_REQUEST;
 		
@@ -86,34 +105,82 @@ class DBmysql {
 		
 		return $res;
 	}
+	/**
+	* Give result from a mysql result
+	* @param $result MySQL result handler
+	* @param $i Row to give
+	* @param $field Field to give
+	* @return Value of the Row $i and the Field $field of the Mysql $result
+	*/
 	function result($result, $i, $field) {
 		$value=get_magic_quotes_runtime()?stripslashes_deep(mysql_result($result, $i, $field)):mysql_result($result, $i, $field);
 		return $value;
 	}
+	/**
+	* Give number of rows of a Mysql result
+	* @param $result MySQL result handler
+	* @return number of rows
+	*/
 	function numrows($result) {
 		return mysql_num_rows($result);
 	}
+	/**
+	* Fetch array of the next row of a Mysql query
+	* @param $result MySQL result handler
+	* @return result array
+	*/
 	function fetch_array($result) {
 		$value=get_magic_quotes_runtime()?stripslashes_deep(mysql_fetch_array($result)):mysql_fetch_array($result);
 		return $value;
 	}
+	/**
+	* Fetch row of the next row of a Mysql query
+	* @param $result MySQL result handler
+	* @return result row
+	*/
 	function fetch_row($result) {
 		$value=get_magic_quotes_runtime()?stripslashes_deep(mysql_fetch_row($result)):mysql_fetch_row($result);
 		return $value;
 	}
+	/**
+	* Fetch assoc of the next row of a Mysql query
+	* @param $result MySQL result handler
+	* @return result associative array
+	*/
 	function fetch_assoc($result) {
 		$value=get_magic_quotes_runtime()?stripslashes_deep(mysql_fetch_assoc($result)):mysql_fetch_assoc($result);
 		return $value;
 	}
+	/**
+	* Move current pointer of a Mysql result to the specific row
+	* @param $result MySQL result handler
+	* @param $seek row to move current pointer
+	* @return boolean
+	*/
 	function data_seek($result,$num){
 		return mysql_data_seek ($result,$num);
 	}
+	/**
+	* Give ID of the last insert item by Mysql
+	* @return item ID
+	*/
 	function insert_id() {
  		return mysql_insert_id();
  	}
+	/**
+	* Give number of fields of a Mysql result
+	* @param $result MySQL result handler
+	* @return number of fields
+	*/
 	function num_fields($result) {
 		return mysql_num_fields($result);
 	}
+	/**
+	* Give name of a field of a Mysql result
+	* @param $result MySQL result handler
+	* @param $nb number of column of the field
+	* @return name of the field
+	*/
 	function field_name($result,$nb)
 	{
 		return mysql_field_name($result,$nb);
@@ -157,10 +224,24 @@ class DBmysql {
  *  Common Item of GLPI : Global simple interface to items - abstraction usage
  */
 class CommonItem{
+	//! Object Type depending of the device_type
 	var $obj = NULL;	
+	//! Device Type ID of the object
 	var $device_type=0;
+	//! Device ID of the object
 	var $id_type=0;
 	
+	
+	/**
+	* Get an Object / General Function
+	*
+	* Create a new Object depending of $device_type and Get the item with the ID $id_device
+	*
+	* @param $device_type Device Type ID of the object
+	* @param $id_device Device ID of the object
+	*
+	* @return boolean : object founded and loaded
+	*/
 	function getfromDB ($device_type,$id_device) {
 		$this->id_device=$id_device;
 		$this->device_type=$device_type;
@@ -224,10 +305,22 @@ class CommonItem{
 			else return false;
 			
 	}
+	
+	/**
+	* Set the device type
+	*
+	* @param $device_type Device Type ID of the object
+	*
+	*/
 	function setType ($device_type){
 		$this->device_type=$device_type;
 	}
 
+	/**
+	* Get The Type Name of the Object
+	*
+	* @return String: name of the object type in the current language
+	*/
 	function getType (){
 		global $lang;
 		
@@ -286,6 +379,13 @@ class CommonItem{
 			}
 	
 	}
+
+
+	/**
+	* Get The Name of the Object
+	*
+	* @return String: name of the object in the current language
+	*/
 	function getName(){
 		global $lang;
 		
@@ -311,7 +411,11 @@ class CommonItem{
 		return $this->getName();
 		else return $this->getName()." (".$this->id_device.")";
 	}
-	
+	/**
+	* Get The link to the Object
+	*
+	* @return String: link to the object type in the current language
+	*/
 	function getLink(){
 	
 		global $cfg_install,$cfg_layout;
