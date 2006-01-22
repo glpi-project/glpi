@@ -501,7 +501,7 @@ function getMultiSearchItemForLink($name,$array){
 	$out="";
 	if (is_array($array)&&count($array)>0)
 	foreach($array as $key => $val){
-		if ($name!="link"||$key!=0)
+//		if ($name!="link"||$key!=0)
 			$out.="&amp;".$name."[$key]=".$val;
 	}
 	return $out;

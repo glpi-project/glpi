@@ -578,7 +578,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	 // For others item linked 
 		if (is_array($type2))
 		for ($key=0;$key<$_SESSION["glpisearchcount2"][$type];$key++)
-		if (isset($type2[$key])&&strlen($contains2[$key]))
+		if (isset($type2[$key])&&isset($contains2[$key])&&strlen($contains2[$key]))
 		{
 			$LINK="";
 			if (isset($link2[$key])) $LINK=$link2[$key];
@@ -643,7 +643,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			// META HEADER
 			if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 			for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
-			if (isset($type2[$i])&&strlen($contains2[$i])>0&&$type2[$i]>0&&(!isset($link2[$i])||!ereg("NOT",$link2[$i]))) {
+			if (isset($type2[$i])&&isset($contains2[$i])&&strlen($contains2[$i])>0&&$type2[$i]>0&&(!isset($link2[$i])||!ereg("NOT",$link2[$i]))) {
 				$nbcols++;
 			}
 
