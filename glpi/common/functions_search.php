@@ -330,9 +330,10 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 * Build the query, make the search and list items after a search.
 *
 *@param $target filename where to go when done.
-*@param $username not used to be deleted.
 *@param $field array of fields in witch the search would be done
+*@param $type type to display the form
 *@param $contains array of the search strings
+*@param $distinct display only distinct items
 *@param $sort the "sort by" field value
 *@param $order ASC or DSC (for mysql query)
 *@param $start row number from witch we start the query (limit $start,xxx)
@@ -1000,7 +1001,6 @@ return $out;
 *
 *
 *@param $field field to add
-*@param $order order define
 *@param $GROUPBY group by strign to complete
 *@param $val value search
 *@param $num item number 
