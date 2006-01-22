@@ -28,6 +28,10 @@
  ------------------------------------------------------------------------
 */
 
+/** \file functions_search.php
+* Generic functions for Search Engine
+*/
+
 /**
 * Completion of the URL $_GET values with the $_SESSION values or define default values
 *
