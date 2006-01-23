@@ -37,7 +37,8 @@
 	include ("_relpos.php");
 	include ($phproot."/glpi/includes.php");
 	header("Content-Type: text/html; charset=UTF-8");
-//print_r($_POST);
+	checkAuthentication("post-only");
+
 	$db=new DB;
 	$query="SELECT DISTINCT ".$_POST['field']." AS VAL FROM ".$_POST['table']." WHERE ".$_POST['field']." LIKE '".$_POST[$_POST['myname']]."%' AND ".$_POST['field']." <> '".$_POST[$_POST['myname']]."' ORDER BY ".$_POST['field']." LIMIT 0,20";
 	if ($result=$db->query($query))
