@@ -426,21 +426,6 @@ function FieldExists($table, $field) {
 	return $var1;
 }
 */
-// return true if the field $field of the table $table is a mysql index
-// else return false
-function isIndex($table, $field) {
-	
-		$db = new DB;
-		$result = $db->query("select ". $field ." from ". $table);
-		if ($result){
-			$flags = $db->field_flags($result,$field);
-			if(eregi("multiple_key",$flags) || eregi("primary_key",$flags) || eregi("unique_key",$flags)) {
-				return true;
-			}
-			else return false;
-		} else return false;
-		
-}
 
 //test la connection a la base de donnée.
 function test_connect() {
