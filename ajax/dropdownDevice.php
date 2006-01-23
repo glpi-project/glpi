@@ -38,7 +38,8 @@
 	include ($phproot."/glpi/includes.php");
 	include ($phproot."/glpi/includes_devices.php");
 	header("Content-Type: text/html; charset=UTF-8");
-
+	
+	checkAuthentication("post-only");
 
 if (isset($_POST["idtable"])){
 	$table=getDeviceTable($_POST["idtable"]);
