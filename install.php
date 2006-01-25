@@ -176,9 +176,14 @@ echo "<form action=\"install.php\" method=\"post\">";
 echo "<p style='text-align:center;'><label>Select your language </label><select name=\"language\">";
 	echo "<option value=\"french\">Fran&ccedil;ais</option>";
 	echo "<option value=\"english\">English</option>";
-	echo "<option value=\"deutch\">Deutch</option>";
+	echo "<option value=\"deutsch\">Deutch</option>";
 	echo "<option value=\"italian\">Italiano</option>";
-	echo "<option value=\"castellano\">Español (castellano)</option>";
+	echo "<option value=\"castellano\">Espanol (castellano)</option>";
+	echo "<option value=\"portugese\">Portugese</option>";
+	echo "<option value=\"dutch\">Dutch</option>";
+	echo "<option value=\"hungarian\">Hungarian</option>";
+	echo "<option value=\"polish\">Polish</option>";
+	echo "<option value=\"rumanian\">Rumanian</option>";
 	echo "</select></p>"; 
 	echo "";
 	echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"lang_select\" /><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"OK\" /></p>";
@@ -283,7 +288,7 @@ function step1($update)
 
 	$mem=ini_get("memory_limit");
 	
-	if(!isset($mem)) {$mem=get_cfg_var("memory_limit");}  // Sous Win l'ini_get ne retourne rien.....
+	if(empty($mem)) {$mem=get_cfg_var("memory_limit");}  // Sous Win l'ini_get ne retourne rien.....
 
 	preg_match("/([0-9]+)([KMG]*)/",$mem,$matches);
 
