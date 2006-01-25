@@ -543,6 +543,7 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 		if (isset($ci->obj->fields['tech_num'])&&$ci->obj->fields['tech_num']!=0){
 			$job->fields["assign"] = $ci->obj->fields['tech_num'];
 			$job->fields["assign_type"] = USER_TYPE;
+			$job->fields["status"] = "assign";
 		}
 	}
 
