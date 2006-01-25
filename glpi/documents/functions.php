@@ -448,9 +448,15 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		$con=new Document;
 		$con->getFromDB($cID);
 	echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
-	if ($withtemplate!=3)
-		echo "<td align='center'><a href='".$HTMLRel."documents/documents-info-form.php?ID=$cID'><b>".$con->fields["name"]." (".$con->fields["ID"].")</b></a></td>";
-	else echo "<td align='center'><b>".$con->fields["name"]." (".$con->fields["ID"].")</b></td>";
+	if ($withtemplate!=3){
+		echo "<td align='center'><a href='".$HTMLRel."documents/documents-info-form.php?ID=$cID'><b>".$con->fields["name"];
+		if ($cfg_layout["view_ID"]) echo " (".$con->fields["ID"].")";
+		echo "</b></a></td>";
+	} else {
+		echo "<td align='center'><b>".$con->fields["name"];
+		if ($cfg_layout["view_ID"]) echo " (".$con->fields["ID"].")";
+		echo "</b></td>";
+	}
 	
 	echo "<td align='center'>".getDocumentLink($con->fields["filename"])."</td>";
 	
