@@ -35,6 +35,10 @@
 
 	include ("_relpos.php");
 	include ($phproot."/glpi/includes.php");
+
+	header("Content-Type: text/html; charset=UTF-8");
+	header_nocache();
+
 	checkAuthentication("post-only");
 	
 	//print_r($_POST);

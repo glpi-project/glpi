@@ -40,6 +40,7 @@
 
 
 	header("Content-Type: text/html; charset=UTF-8");
+	header_nocache();
 
 if ($_POST["type"]>0){
 	echo "<input type='text' size='10' name=\"contains2[".$_POST["num"]."]\" value=\"".$_POST["val"]."\" >";
