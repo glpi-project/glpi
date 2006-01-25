@@ -35,9 +35,10 @@
 
 	include ("_relpos.php");
 	include ($phproot . "/glpi/includes.php");
-	checkAuthentication("post-only");
 	header("Content-Type: text/html; charset=UTF-8");
+	header_nocache();
 
+	checkAuthentication("post-only");
 	
 		$where="WHERE '1'='1' ";
 		if (in_array($_POST['table'],$deleted_tables))

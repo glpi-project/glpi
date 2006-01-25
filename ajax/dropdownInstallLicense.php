@@ -39,6 +39,7 @@
 	include ($phproot."/glpi/includes_software.php");
 	include ($phproot."/glpi/includes_computers.php");
 	header("Content-Type: text/html; charset=UTF-8");
+	header_nocache();
 
 	checkAuthentication("post-only");
 	

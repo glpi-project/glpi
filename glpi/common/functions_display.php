@@ -99,9 +99,7 @@ function commonHeader($title,$url)
 	header("Content-Type: text/html; charset=UTF-8");
 	// Send extra expires header if configured
 	if ($cfg_features["sendexpire"]) {
-		header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date du passé
-		//header("Expires: Fri, Jun 12 1981 08:20:00 GMT\nPragma: no-cache");  
+		header_nocache();
 	}
 	// Start the page
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
@@ -293,9 +291,7 @@ function helpHeader($title,$url,$name) {
 
 	// Send extra expires header if configured
 	if ($cfg_features["sendexpire"]) {
-		header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date du passé
-		//header("Expires: Fri, Jun 12 1981 08:20:00 GMT\nPragma: no-cache");
+		header_nocache(); 
 	}
 
 	// Send UTF8 Headers
@@ -433,9 +429,7 @@ function nullHeader($title,$url) {
 
 	// Send extra expires header if configured
 	if (!empty($cfg_features["sendexpire"])) {
-		header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date du passé
-		//header("Expires: Fri, Jun 12 1981 08:20:00 GMT\nPragma: no-cache");
+		header_nocache();
 	}
 
 	// Start the page
@@ -853,6 +847,11 @@ echo "<input type='hidden' name='ID' value=$id>";
 echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
 echo "</td></tr>\n";
 echo "</table></div></form>";
+}
+
+function header_nocache(){
+	header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+	header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date du passé
 }
 
 ?>
