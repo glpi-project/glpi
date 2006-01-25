@@ -1390,7 +1390,9 @@ function updateTracking($input){
 
 	$job->updateRealtime();		
 	
-	
+	// Clean content to mail
+	$job->fields["contents"]=stripslashes($job->fields["contents"]);
+
 	if ($mail_send==0&&count($updates)>$global_mail_change_count&&$cfg_features["mailing"])
 		{
 			$user=new User;
@@ -1436,7 +1438,7 @@ function updateFollowup($input){
 		$fup->updateInDB($updates);
 
 	$job=new Job;
-	$job->getFromDB($input["tracking"],0);
+	$job->getFromDB($input["tracking"],1);
 
 	if (in_array("contents",$updates)&&$cfg_features["mailing"])
 		{
