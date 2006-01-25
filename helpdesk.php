@@ -84,7 +84,8 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 	//*******************
 	// Affichage Module réservation 
 	//******************
-	
+	checkAuthentication("post-only");
+
 	if (isset($_POST["edit_resa"])){
 		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
 		list($end_year,$end_month,$end_day)=split("-",$_POST["end_date"]);
