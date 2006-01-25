@@ -2928,7 +2928,7 @@ if(FieldExists("glpi_infocoms","amort_type")) {
 	$query2="UPDATE `glpi_infocoms` SET `amort_type`='0' WHERE `amort_type` = '';";
 	$db->query($query2) or die("0.65 update amort_type='' in tracking".$lang["update"][90].$db->error());
 
-	$query="ALTER TABLE `glpi_infocoms` CHANGE `amort_type` `amort_type` SMALLINT( 20 ) NOT NULL DEFAULT '1'";
+	$query="ALTER TABLE `glpi_infocoms` CHANGE `amort_type` `amort_type` tinyint(4) NOT NULL DEFAULT '0'";
 	$db->query($query) or die("0.65 alter amort_type in infocoms".$lang["update"][90].$db->error());
 }
 if(!TableExists("glpi_display")) {
