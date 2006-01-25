@@ -1019,7 +1019,7 @@ CREATE TABLE `glpi_infocoms` (
     `value` float DEFAULT '0' NOT NULL,
     `warranty_value` float DEFAULT '0' NOT NULL,
     `amort_time` tinyint(4) DEFAULT '0' NOT NULL,
-    `amort_type` smallint(20) DEFAULT '1' NOT NULL,
+    `amort_type` tinyint(4) DEFAULT '0' NOT NULL,
     `amort_coeff` float DEFAULT '0' NOT NULL,
     `comments` text,
     `facture` varchar(200),
