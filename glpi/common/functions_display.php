@@ -498,7 +498,7 @@ echo $TIMER_DEBUG->Get_Time()."s</span>";
 echo "</td>";
 
 if (!empty($cfg_features["founded_new_version"]))
-	echo "<td alilgn='center'>".$lang["setup"][301]." ".$cfg_features["founded_new_version"]."<br>".$lang["setup"][302]."</td>";
+	echo "<td align='center'>".$lang["setup"][301]." ".$cfg_features["founded_new_version"]."<br>".$lang["setup"][302]."</td>";
 
 
 echo "<td align='right'>";
