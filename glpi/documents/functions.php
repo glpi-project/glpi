@@ -434,7 +434,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
 	echo "<tr><th colspan='7'>".$lang["document"][21].":</th></tr>";
 	echo "<tr><th>".$lang['document'][1]."</th>";
-	echo "<th>".$lang['document'][2]."</th>";
+	echo "<th width='100px'>".$lang['document'][2]."</th>";
 	echo "<th>".$lang['document'][33]."</th>";
 	echo "<th>".$lang['document'][3]."</th>";
 	echo "<th>".$lang['document'][4]."</th>";
@@ -458,7 +458,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		echo "</b></td>";
 	}
 	
-	echo "<td align='center'>".getDocumentLink($con->fields["filename"])."</td>";
+	echo "<td align='center'  width='100px'>".getDocumentLink($con->fields["filename"])."</td>";
 	
 	echo "<td align='center'>";
 	if (!empty($con->fields["link"]))
@@ -478,14 +478,14 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		$nb = $db->numrows($result);
 	
 		if ($withtemplate<2&&$nb>0){
-			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+			echo "<tr class='tab_bg_1'><td align='right' colspan='5'>";
 			echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
 			dropdown("glpi_docs","conID");
 			echo "</div></td><td align='center'>";
 			echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
 			echo "</td>";
 		
-			echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+			echo "</tr>";
 		}
 	}
 	if (!empty($withtemplate))
