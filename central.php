@@ -74,10 +74,14 @@ echo "<div align='center'>";
 echo "<table><tr><td align='center' valign='top'  width='45%'>";
 
 showCentralJobList($_SERVER["PHP_SELF"],$_GET['start']);
-echo "</td><td  align='center' valign='top' width='45%'>";
-// Show last add events
-showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
-echo "</td></tr></table>";
+echo "</td>";
+if ($cfg_features["num_of_events"]>0){
+	echo "<td  align='center' valign='top' width='45%'>";
+	// Show last add events
+	showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
+	echo "</td>";
+}
+echo "</tr></table>";
 echo "</div>";
 if(empty($_GET["start"])) $_GET["start"] = 0;
 if ($cfg_features["jobs_at_login"]){
