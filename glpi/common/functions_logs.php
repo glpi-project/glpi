@@ -254,7 +254,6 @@ function showEvents($target,$order,$sort,$start=0) {
 	$query = "SELECT * FROM glpi_event_log ORDER BY $sort $order";
 
 	$query_limit = "SELECT * FROM glpi_event_log ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"];
-
 	// Get results
 	$result = $db->query($query);
 	
@@ -278,7 +277,6 @@ function showEvents($target,$order,$sort,$start=0) {
 	printPager($start,$numrows,$target,$parameters);
 
 	echo "<table width='90%' class='tab_cadre'>";
-	echo "<tr><th colspan='6'>".$lang["central"][2]." ".$cfg_features["num_of_events"]." ".$lang["central"][3].":</th></tr>";
 	echo "<tr>";
 
 	echo "<th colspan='2'>";
