@@ -849,7 +849,8 @@ function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 		} else if ($netport->fields["device_type"]==PERIPHERAL_TYPE) {
 			echo "<a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=".$netport->device_ID."\">";
 		}
-		echo $netport->device_name." (".$netport->device_ID.")";
+		echo $netport->device_name;
+		if ($cfg_layout['view_ID']) echo " (".$netport->device_ID.")";
 		echo "</a>";
 		echo "</b></td>";
 		echo "<td align='right'><b>";
