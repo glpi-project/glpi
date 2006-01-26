@@ -110,7 +110,7 @@ $max['free_licenses_per_software']=10;
 $max['global_licenses_per_software']=10;
 $max['more_licenses']=1;
 //PERIPHERALS
-$max['connect_for_peripherals']=30;
+$max['connect_for_peripherals']=2;
 // TRACKING :
 $percent['tracking_on_item']=30;
 $max['general_tracking']=100;
