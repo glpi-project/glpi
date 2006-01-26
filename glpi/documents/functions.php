@@ -505,7 +505,7 @@ global $HTMLRel,$cfg_install;
 	if (count($splitter)==2)
 	$fileout=$splitter[1];
 	else $fileout=$filename;
-	
+	if (strlen($fileout)>20) $fileout=substr($fileout,0,20)."...";
 	if (count($splitter)==2){
 		$db=new DB;
 		$query="SELECT * from glpi_type_docs WHERE ext LIKE '".$splitter[0]."' AND icon <> ''";
