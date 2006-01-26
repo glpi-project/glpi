@@ -89,6 +89,9 @@ $lang["buttons"][30]="Tout format SLK";
 $lang["buttons"][31]="Exporter";
 $lang["buttons"][32]="Fin";
 $lang["buttons"][33]="Début";
+$lang["buttons"][34]="Annuler";
+
+$lang["calendar"][0]="Erreur : date invalide";
 
 $lang["calendarD"][0]="D";
 $lang["calendarD"][1]="L";

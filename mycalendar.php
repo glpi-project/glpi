@@ -76,7 +76,7 @@ for ($i=10;$i<40;$i++) {$val[$i]=$i;$val["0".$i]=$i;}
   $day[4] = $lang["calendarD"][4] ;
   $day[5] = $lang["calendarD"][5] ;
   $day[6] = $lang["calendarD"][6];
-$error01 = "Erreur : date invalide";
+$error01 = $lang["calendar"][0];
 
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -249,7 +249,7 @@ echo "<body bgcolor='#$bgcolor' onUnLoad=''>\n" ;
    echo "</tr>\n" ;
   }
 
-  echo "\n<tr><td colspan='10' align='center'><input type='button' class='button' onclick='window.opener.document.forms[\"".$_GET["form"]."\"].elements[\"____".$_GET["elem"]."_show\"].value=\"".convDate("$annee-".$val[$mois]."-".$val[$jour])."\";window.opener.document.forms[\"".$_GET["form"]."\"].elements[\"".$_GET["elem"]."\"].value=\"$annee-".$val[$mois]."-".$val[$jour]."\";window.close()' value='Valider'>&nbsp;&nbsp;<input onclick='window.close()' type='button' class='button' value='Annuler'></td></tr></table>\n" ;
+  echo "\n<tr><td colspan='10' align='center'><input type='button' class='button' onclick='window.opener.document.forms[\"".$_GET["form"]."\"].elements[\"____".$_GET["elem"]."_show\"].value=\"".convDate("$annee-".$val[$mois]."-".$val[$jour])."\";window.opener.document.forms[\"".$_GET["form"]."\"].elements[\"".$_GET["elem"]."\"].value=\"$annee-".$val[$mois]."-".$val[$jour]."\";window.close()' value='".$lang["buttons"][2]."'>&nbsp;&nbsp;<input onclick='window.close()' type='button' class='button' value='".$lang["buttons"][34]."'></td></tr></table>\n" ;
 
   echo "\n</tr></table>\n" ;
 
