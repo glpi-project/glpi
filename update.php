@@ -3312,7 +3312,7 @@ if(!FieldExists("glpi_users","active")) {
 if(TableExists("glpi_type_docs")){
 	$query="SELECT * from glpi_type_docs WHERE ext='odt' OR ext='ods' OR ext='odp' OR ext='otp' OR ext='ott' OR ext='ots' OR ext='odf' OR ext='odg' OR ext='otg' OR ext='odb' OR ext='oth' OR ext='odm' OR ext='odc' OR ext='odi'";
 	$result=$db->query($query);
-	if ($db->numrows($query)==0){
+	if ($db->numrows($result)==0){
 		$query2="INSERT INTO `glpi_type_docs` ( `ID` , `name` , `ext` , `icon` , `mime` , `upload` , `date_mod` ) VALUES (NULL, 'Oasis Open Office Writer', 'odt', 'odt-dist.png', NULL, 'Y', '2006-01-21 17:41:13'),
 	(NULL, 'Oasis Open Office Calc', 'ods', 'ods-dist.png', NULL, 'Y', '2006-01-21 17:41:31'),
 	(NULL, 'Oasis Open Office Impress', 'odp', 'odp-dist.png', NULL, 'Y', '2006-01-21 17:42:54'),
