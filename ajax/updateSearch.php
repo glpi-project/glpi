@@ -52,7 +52,7 @@ if ($_POST["type"]>0){
 	foreach ($SEARCH_OPTION[$_POST["type"]] as $key => $val) 
 	if ($val["meta"])
 	{
-			echo "<option value=\"".$key."\""; 
+			echo "<option value=\"".$key."\" title=\"".$val["name"]."\""; 
 			if($key == $_POST["field"]) echo "selected";
 			echo ">". substr($val["name"],0,15) ."</option>\n";
 	}

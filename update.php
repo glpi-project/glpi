@@ -3562,9 +3562,13 @@ if(FieldExists("glpi_config","cut")) {
 		CHANGE `founded_new_version` `founded_new_version` VARCHAR( 10 ) NULL ";
 	$db->query($query) or die("0.65 alter various fields in config ".$lang["update"][90].$db->error());
 } 
-
-
 ///// END  MySQL Compatibility
+
+
+if(!FieldExists("glpi_config","dropdown_limit")) {	
+	$query="ALTER TABLE `glpi_config` ADD `dropdown_limit` INT( 11 ) DEFAULT '30' NOT NULL ";
+	$db->query($query) or die("0.65 add dropdown_limit in config ".$lang["update"][90].$db->error());
+}
 
 
 

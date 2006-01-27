@@ -81,9 +81,8 @@
 			$realname=$db->result($result, $i, "realname");
 			if (!empty($realname)) $output = $realname;
 			$ID = $db->result($result, $i, "ID");
-				echo "<option value=\"$ID\">".$output;
+			echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
 			$i++;
-			echo "</option>";
    		}
 	}
 	echo "</select>";

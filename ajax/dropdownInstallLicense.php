@@ -95,7 +95,7 @@ if ($_POST['sID']>0){
 				
 				$ID = $data['ID'];
 				if (empty($output)) $output="($ID)";
-				echo "<option value=\"$ID\">$output</option>";
+				echo "<option value=\"$ID\" title=\"$output\">".$output."</option>";
 				$i++;
 			}
 		} 

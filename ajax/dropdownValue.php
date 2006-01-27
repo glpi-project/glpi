@@ -80,9 +80,9 @@
 				$output = $data['netpname'];
 				$loc=$data['loc'];
 				$ID = $data['ID'];
-				echo "<option value=\"$ID\"";
+				echo "<option value=\"$ID\" title=\"$output\"";
 				if ($ID==$_POST['value']) echo " selected ";
-				echo ">$output ($loc)</option>";
+				echo ">".substr(0,$cfg_layout["dropdown_limit"],$output)." ($loc)</option>";
 				$i++;
 			}
 		}
@@ -136,7 +136,7 @@ $where.=")";
 			$output = $data['name'];
 			$ID = $data['ID'];
 			if (empty($output)) $output="($ID)";
-				echo "<option value=\"$ID\">$output</option>";
+				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
 			$i++;
 		}
 	}

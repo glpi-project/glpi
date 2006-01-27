@@ -64,6 +64,7 @@
 		$query.= $where;
 		$query.= " ORDER BY glpi_networking_ports.ID";
 	$result = $db->query($query);
+ 	echo "<br>";
 	echo "<select name=\"".$_POST['myname']."\" size='1'>";
 		
 		echo "<option value=\"0\">-----</option>";
@@ -72,12 +73,12 @@
 		if ($number > 0) {
 			while ($data = $db->fetch_array($result)) {
 				$output = $data['CNAME'];
-				if (!empty($data['NNAME'])) $output.= " - ".$data['NNAME'];
 				if (!empty($data['IP'])) $output.= " - ".$data['IP'];
 				if (!empty($data['MAC'])) $output.= " - ".$data['MAC'];
+				if (!empty($data['NNAME'])) $output.= substr(" - ".$data['NNAME'],0,$cfg_layout["dropdown_limit"]);
 				$ID = $data['DID'];
 				if (empty($output)) $output="($ID)";
-				echo "<option value=\"$ID\">$output</option>";
+				echo "<option value=\"$ID\" title=\"$output\">".$output."</option>";
 				$i++;
 			}
 		}

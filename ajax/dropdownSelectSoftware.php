@@ -59,12 +59,14 @@
 	echo "<option value='0'>-----</option>\n";
 	$i=0;
 	while ($i < $number) {
-		$version = $db->result($result, $i, "version");
-		$name = $db->result($result, $i, "name");
 		$sID = $db->result($result, $i, "ID");
 		
-		if (empty($withtemplate)||isGlobalSoftware($sID)||isFreeSoftware($sID))
-		echo  "<option value='$sID'>$name (v. $version)</option>";
+		if (empty($withtemplate)||isGlobalSoftware($sID)||isFreeSoftware($sID)){
+			$version = $db->result($result, $i, "version");
+			$name = $db->result($result, $i, "name");
+			$output=$name." (v. $version)";
+			echo  "<option value='$sID' title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
+		}
 		$i++;
 	}	
 	echo "</select>\n";
