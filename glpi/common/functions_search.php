@@ -632,7 +632,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	} 
 
 	 // Specific search for others item linked  (META search)
-		if (is_array($type2))
+	if (is_array($type2))
 		for ($key=0;$key<$_SESSION["glpisearchcount2"][$type];$key++)
 		if (isset($type2[$key])&&isset($contains2[$key])&&strlen($contains2[$key]))
 		{
@@ -641,6 +641,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			
 			$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type2[$key]][$field2[$key]]["table"].".".$SEARCH_OPTION[$type2[$key]][$field2[$key]]["field"],strtolower($contains2[$key]),$key,1,$LINK);
 		}
+
 	// If no research limit research to display item and compute number of item using simple request
 	$nosearch=true;
 	for ($i=0;$i<$_SESSION["glpisearchcount"][$type];$i++)
@@ -677,9 +678,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	// Reset WHERE if empty
 	if ($WHERE == " WHERE ") $WHERE="";
 
+
+	$db->query("SET SESSION group_concat_max_len = 9999999;");
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 
-//	echo $QUERY;
 
 	// Set display type for export if define
 	$output_type=0;
