@@ -565,7 +565,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		
 		// a - SELECT 
 		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
-		if (isset($type2[$i])&&$type2[$i]>0)	{
+		if (isset($type2[$i])&&$type2[$i]>0&&isset($contains2[$i])&&strlen($contains2[$i]))	{
 			$SELECT.=addSelect($type2[$i],$SEARCH_OPTION[$type2[$i]][$field2[$i]]["table"],$SEARCH_OPTION[$type2[$i]][$field2[$i]]["field"],$i,1);		
 		}
 
@@ -574,13 +574,13 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$already_link_tables2=array();
 		// Link reference tables
 		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
-		if (isset($type2[$i])&&$type2[$i]>0) {
+		if (isset($type2[$i])&&$type2[$i]>0&&isset($contains2[$i])&&strlen($contains2[$i])) {
 			if (!in_array($LINK_ID_TABLE[$type2[$i]],$already_link_tables2))
 				$FROM.=addMetaLeftJoin($type,$type2[$i],$already_link_tables2,$i);	
 		}
 		// Link items tables
 		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
-		if (isset($type2[$i])&&$type2[$i]>0) {
+		if (isset($type2[$i])&&$type2[$i]>0&&isset($contains2[$i])&&strlen($contains2[$i])) {
 			if (!in_array($SEARCH_OPTION[$type2[$i]][$field2[$i]]["table"],$already_link_tables2)){
 				$FROM.=addLeftJoin($type2[$i],$LINK_ID_TABLE[$type2[$i]],$already_link_tables2,$SEARCH_OPTION[$type2[$i]][$field2[$i]]["table"],0,1,$i);				
 			}
@@ -682,7 +682,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	$db->query("SET SESSION group_concat_max_len = 9999999;");
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 
-
+	//echo $QUERY;
+	
 	// Set display type for export if define
 	$output_type=0;
 	if (isset($_GET["display_type"]))
@@ -729,7 +730,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			// Display columns Headers for meta items
 			if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 			for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
-			if (isset($type2[$i])&&$type2[$i]>0&&(!isset($link2[$i])||!ereg("NOT",$link2[$i]))) {
+			if (isset($type2[$i])&&$type2[$i]>0&&isset($contains2[$i])&&strlen($contains2[$i])&&(!isset($link2[$i])||!ereg("NOT",$link2[$i]))) {
 				echo displaySearchHeaderItem($output_type,$SEARCH_OPTION[$type2[$i]][$field2[$i]]["name"],$header_num);
 			}
 			// Add specific column Header
@@ -799,7 +800,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				// Print Meta Item
 				if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 				for ($j=0;$j<$_SESSION["glpisearchcount2"][$type];$j++)
-				if (isset($type2[$j])&&$type2[$j]>0&&(!isset($link2[$j])||!ereg("NOT",$link2[$j]))){
+				if (isset($type2[$j])&&$type2[$j]>0&&isset($contains2[$j])&&strlen($contains2[$j])&&(!isset($link2[$j])||!ereg("NOT",$link2[$j]))){
 					// General case
 					if (!ereg("$$$$",$data["META_$j"]))
 						echo displaySearchItem($output_type,$data["META_$j"],$item_num,$row_num);
