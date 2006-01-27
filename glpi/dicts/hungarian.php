@@ -1,31 +1,30 @@
 <?php 
 	/* 
- * @version $Id$
- ----------------------------------------------------------------------
- GLPI - Gestionnaire Libre de Parc Informatique
+  * @version : fonction.php,v 1.15 2006/01/18 23:24:25 moyo Exp $
+  ----------------------------------------------------------------------
+GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
  
  http://indepnet.net/   http://glpi.indepnet.org
+ 
  ----------------------------------------------------------------------
-
  LICENSE
 
-	This file is part of GLPI.
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License (GPL)
+ as published by the Free Software Foundation; either version 2
+ of the License, or (at your option) any later version.
 
-    GLPI is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    GLPI is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with GLPI; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- ------------------------------------------------------------------------
+ To read the license please visit http://www.gnu.org/copyleft/gpl.html
+ ----------------------------------------------------------------------
+ Original Author of file:
+ Purpose of file:
+ ----------------------------------------------------------------------
 */ 
 	//hungarian
 
@@ -79,8 +78,16 @@ $lang["buttons"][23]="Megmutat";
 $lang["buttons"][24]="Mozgás felfelé"; 
 $lang["buttons"][25]="Mozgás lefelé"; 
 $lang["buttons"][26]="Hozzáad és bezár"; 
-$lang["buttons"][27]="PDF export"; 
-$lang["buttons"][28]="SLK export (Spreesheets)"; 
+$lang["buttons"][27]="PDF export megjelenítése"; 
+$lang["buttons"][28]="SLK export megjelenítése"; 
+$lang["buttons"][29]="Mindent PDF-be exportál"; 
+$lang["buttons"][30]="Mindent SLK-ba exportál"; 
+$lang["buttons"][31]="Export"; 
+$lang["buttons"][32]="Vége"; 
+$lang["buttons"][33]="Kezdet"; 
+$lang["buttons"][34]="Cancel"; 
+
+$lang["calendar"][0]="Error: Invalid date"; 
 
 $lang["calendarD"][0]="Szo"; 
 $lang["calendarD"][1]="H"; 
@@ -484,6 +491,7 @@ $lang["financial"][82]="Számlaszám";
 $lang["financial"][83]="Tételek max száma (0=korlátlan)"; 
 $lang["financial"][84]="Ehhez az elemhez az üzleti infók csak minták azokhoz, amiket Te adsz hozzá"; 
 $lang["financial"][85]="A kért tétel nem található"; 
+$lang["financial"][86]="Záró dátum"; 
 
 $lang["help"][0]="Üdvözöllek"; 
 $lang["help"][1]="Írd le a problémádat"; 
@@ -789,7 +797,7 @@ $lang["login"][6]="Belépés";
 $lang["login"][7]="Jelszó"; 
 $lang["login"][8]="Üres azonosító vagy jelszó"; 
 $lang["login"][10]="Bejelentkezés"; 
-$lang["login"][11]="User not authorized to connect in GLPI"; 
+$lang["login"][11]="A felhasználó nem jelentkezhet be"; 
 
 $lang["mailing"][0]="----------------------------------------------------------"; 
 $lang["mailing"][1]="======================================================================"; 
@@ -819,12 +827,13 @@ $lang["mailing"][24]="Állapot:";
 $lang["mailing"][25]="Tervezés:"; 
 $lang["mailing"][26]="Kategória:"; 
 $lang["mailing"][27]="Állapot módosítása"; 
-$lang["mailing"][28]="Contact:"; 
-$lang["mailing"][29]="Reservation Cancelled"; 
-$lang["mailing"][100]="No defined category"; 
-$lang["mailing"][101]="Email followup have been enabled"; 
-$lang["mailing"][102]="Email followup have been disabled"; 
-$lang["mailing"][103]="Email Followup:"; 
+$lang["mailing"][28]="Kapcsolat:"; 
+$lang["mailing"][29]="A foglalás megszakítva"; 
+$lang["mailing"][100]="Nincs definiált kategória"; 
+$lang["mailing"][101]="Az email intézkedés bekapcsolva"; 
+$lang["mailing"][102]="Az email intézkedés kikapcsolva"; 
+$lang["mailing"][103]="Email intézkedés"; 
+$lang["mailing"][104]="Intézkedés időtartama"; 
 
 $lang["Menu"][0]="Számítógépek"; 
 $lang["Menu"][1]="Hálózatok"; 
@@ -1142,6 +1151,10 @@ $lang["reservation"][30]="ennyiszer";
 $lang["reservation"][31]="Rendezze"; 
 $lang["reservation"][32]="Foglalás szerkesztése"; 
 $lang["reservation"][33]="Nincs tétel"; 
+$lang["reservation"][34]="A tétel nem foglalható"; 
+$lang["reservation"][35]="Jövőbeni és jelenlegi foglalások"; 
+$lang["reservation"][36]="Múltbeni foglalások"; 
+$lang["reservation"][37]="Nincs foglalás"; 
 
 $lang["search"][0]="Keresés"; 
 $lang["search"][1]="ahol ez a mező"; 
@@ -1292,6 +1305,7 @@ $lang["setup"][127]="Szövegmezők automatikus kiegészítése Ajax-al";
 $lang["setup"][128]="Dátumformátum"; 
 $lang["setup"][129]="GLPI ID megjelenítése"; 
 $lang["setup"][130]="Használd a következő/előző tételekhez"; 
+$lang["setup"][131]="Maximum number of characters to view in select box"; 
 $lang["setup"][150]="Külső hitelesítési források"; 
 $lang["setup"][151]="Ha nem LDAP kapcsolatot szeretnél, hagyd üresen a mezőket"; 
 $lang["setup"][152]="LDAP konfiguráció"; 
@@ -1346,7 +1360,7 @@ $lang["setup"][221]="Pénzügyi év kezdete (nap és hónap)";
 $lang["setup"][222]="Alkatrészek"; 
 $lang["setup"][223]="Időzítések korlátja a tervezésben"; 
 $lang["setup"][224]="Foglalások beállításai"; 
-$lang["setup"][225]="Új foglalásról"; 
+$lang["setup"][225]="Foglalások (új, módosítás és törlés)"; 
 $lang["setup"][226]="Hivatkozás az emailekben"; 
 $lang["setup"][227]="Használt alap URL"; 
 $lang["setup"][228]="Bejelentkezés mező"; 
@@ -1365,7 +1379,7 @@ $lang["setup"][307]="Soha";
 $lang["setup"][308]="Minden héten"; 
 $lang["setup"][309]="Minden hónapban"; 
 $lang["setup"][310]="Frissítés automatikus ellenőrzése"; 
-$lang["setup"][400]="Active"; 
+$lang["setup"][400]="Aktív"; 
 
 $lang["software"][0]="Új szoftver"; 
 $lang["software"][1]="ID"; 
@@ -1413,7 +1427,7 @@ $lang["software"][42]="Új szoftver sablonból";
 $lang["software"][43]="Új licensz vásárlása"; 
 
 $lang["state"][0]="Állapot"; 
-$lang["state"][1]="Tétel állapota"; 
+$lang["state"][1]="Tétel állapotok"; 
 $lang["state"][4]="ID"; 
 $lang["state"][5]="Név"; 
 $lang["state"][6]="Tétel típus"; 
@@ -1461,9 +1475,9 @@ $lang["stats"][35]="Jegyek";
 $lang["stats"][36]="Kategóriánként"; 
 $lang["stats"][37]="Statisztikák kategóriánként"; 
 $lang["stats"][38]="Kategória"; 
-$lang["stats"][39]="By priority"; 
-$lang["stats"][40]="Statistics by priority"; 
-$lang["stats"][41]="Priority"; 
+$lang["stats"][39]="Prioritás szerint"; 
+$lang["stats"][40]="Statisztikák prioritás szerint"; 
+$lang["stats"][41]="Prioritás"; 
 
 $lang["title"][0]="Parancsközpont"; 
 $lang["title"][1]="Csak HelpDesk hozzáférés"; 
@@ -1502,7 +1516,7 @@ $lang["title"][33]="Külső hivatkozások";
 $lang["title"][34]="Hivatkozások"; 
 $lang["title"][35]="Foglalások"; 
 $lang["title"][36]="Kellékek"; 
-$lang["title"][37]="Notes"; 
+$lang["title"][37]="Megjegyzések"; 
 
 $lang["toolbar"][1]="Félkövér"; 
 $lang["toolbar"][2]="Dőlt"; 

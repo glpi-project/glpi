@@ -1,31 +1,30 @@
 <?php 
 	/* 
- * @version $Id$
- ----------------------------------------------------------------------
- GLPI - Gestionnaire Libre de Parc Informatique
+  * @version : fonction.php,v 1.15 2006/01/18 23:24:25 moyo Exp $
+  ----------------------------------------------------------------------
+GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
  
  http://indepnet.net/   http://glpi.indepnet.org
+ 
  ----------------------------------------------------------------------
-
  LICENSE
 
-	This file is part of GLPI.
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License (GPL)
+ as published by the Free Software Foundation; either version 2
+ of the License, or (at your option) any later version.
 
-    GLPI is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    GLPI is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with GLPI; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- ------------------------------------------------------------------------
+ To read the license please visit http://www.gnu.org/copyleft/gpl.html
+ ----------------------------------------------------------------------
+ Original Author of file:
+ Purpose of file:
+ ----------------------------------------------------------------------
 */ 
 	//rumanian
 
@@ -79,8 +78,16 @@ $lang["buttons"][23]="Afiseaza";
 $lang["buttons"][24]="In sus"; 
 $lang["buttons"][25]="In jos"; 
 $lang["buttons"][26]="Adauga si Inchide"; 
-$lang["buttons"][27]="PDF export"; 
-$lang["buttons"][28]="SLK export (Spreesheets)"; 
+$lang["buttons"][27]="View PDF export"; 
+$lang["buttons"][28]="View SLK export"; 
+$lang["buttons"][29]="All PDF export"; 
+$lang["buttons"][30]="All SLK export"; 
+$lang["buttons"][31]="Export"; 
+$lang["buttons"][32]="End"; 
+$lang["buttons"][33]="Start"; 
+$lang["buttons"][34]="Cancel"; 
+
+$lang["calendar"][0]="Error: Invalid date"; 
 
 $lang["calendarD"][0]="S"; 
 $lang["calendarD"][1]="L"; 
@@ -484,6 +491,7 @@ $lang["financial"][82]="Numar factura";
 $lang["financial"][83]="Numar maxim de obiecte(0=nelimitat)"; 
 $lang["financial"][84]="Pentru acesttip de element informatiile comerciale sunt numai un model pentru elementele pe care le veti adauga."; 
 $lang["financial"][85]="Obiectul nu a fost gasit"; 
+$lang["financial"][86]="End date"; 
 
 $lang["help"][0]="Bine ati venit"; 
 $lang["help"][1]="Va rog descrieti problema"; 
@@ -826,6 +834,7 @@ $lang["mailing"][100]="No defined category";
 $lang["mailing"][101]="Email followup have been enabled"; 
 $lang["mailing"][102]="Email followup have been disabled"; 
 $lang["mailing"][103]="Email Followup:"; 
+$lang["mailing"][104]="Followup duration"; 
 
 $lang["Menu"][0]="Calculatoare"; 
 $lang["Menu"][1]="Retele"; 
@@ -1143,6 +1152,10 @@ $lang["reservation"][30]="timp";
 $lang["reservation"][31]="Cu"; 
 $lang["reservation"][32]="Editeaza rezervarea"; 
 $lang["reservation"][33]="Nici un obiect gasit"; 
+$lang["reservation"][34]="Item not reservable"; 
+$lang["reservation"][35]="Future and in progress Reservations"; 
+$lang["reservation"][36]="Past Reservations"; 
+$lang["reservation"][37]="No Reservations"; 
 
 $lang["search"][0]="Cauta dupa"; 
 $lang["search"][1]="unde acest camp"; 
@@ -1293,6 +1306,7 @@ $lang["setup"][127]="Completarea automata cu Ajax a campurilor de texte";
 $lang["setup"][128]="Format de date/a"; 
 $lang["setup"][129]="Arata ID GLPI"; 
 $lang["setup"][130]="Folosit pentru obiectele Urmator/Anterior:"; 
+$lang["setup"][131]="Maximum number of characters to view in select box"; 
 $lang["setup"][150]="Sursa exterioara a autentificarii"; 
 $lang["setup"][151]="Daca nu vrei sa folosesti LDAP ca sursa de conexiune (conectare) lasa campurile necompletate"; 
 $lang["setup"][152]="Configurare LDAP"; 
