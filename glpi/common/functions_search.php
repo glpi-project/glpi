@@ -243,7 +243,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 		$rand=mt_rand();
 		
 		// Display link item (not for the first item)
-		if ($i>0) {
+		//if ($i>0) {
 			echo "<select name='link2[$i]'>";
 			
 			echo "<option value='AND' ";
@@ -263,7 +263,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 			echo ">OR NOT</option>";
 			
 			echo "</select>";
-		}
+		//}
 		// Display select of the linked item type available
 		echo "<select name='type2[$i]' id='type2_".$type."_".$i."_$rand'>";
 		echo "<option value='-1'>-----</option>";
