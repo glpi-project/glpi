@@ -404,6 +404,9 @@ $cfg_features["ajax_wildcard"] = $db->result($result,0,"ajax_wildcard");
 $cfg_features["ajax_limit_count"] = $db->result($result,0,"ajax_limit_count");
 $cfg_features["ajax_autocompletion"] = $db->result($result,0,"ajax_autocompletion");
 
+// Droprown string limit size
+$cfg_layout["dropdown_limit"]		= $db->result($result,0,"dropdown_limit");	
+
 // Sizes
 $cfg_layout["dropdown_max"] = $db->result($result,0,"dropdown_max");
 

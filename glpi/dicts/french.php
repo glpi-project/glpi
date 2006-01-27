@@ -1263,6 +1263,7 @@ $lang["setup"][127]="Autocompletion des champs textes avec AJAX";
 $lang["setup"][128]="Format des dates";
 $lang["setup"][129]="Afficher les ID GLPI";
 $lang["setup"][130]="Utiliser pour Onglets Suivant/Précédent : ";
+$lang["setup"][131]="Nombre de caractères limite pour les listes déroulantes :";
 
 
 $lang["setup"][150]="Sources d'authentification externes";

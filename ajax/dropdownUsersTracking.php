@@ -73,7 +73,7 @@
 	if (isset($_POST['value'])){
 		$output=getUserName($_POST['value']);
 		if (!empty($output)&&$output!="&nbsp;")
-		echo "<option selected value='".$_POST['value']."'>".$output."</option>";
+		echo "<option selected value='".$_POST['value']."' title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
 	}	
 	
 	if ($number > 0) {
@@ -83,12 +83,11 @@
 			if (!empty($realname)) $output = $realname;
 			$ID = $db->result($result, $i, "ID");
 			if ($ID == $value) {
-				echo "<option value=\"$ID\" selected>".$output;
+				echo "<option value=\"$ID\" selected title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
 			} else {
-				echo "<option value=\"$ID\">".$output;
+				echo "<option value=\"$ID\">".$output title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
 			}
 			$i++;
-			echo "</option>";
    		}
 	}
 	echo "</select>";

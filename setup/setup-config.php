@@ -94,7 +94,7 @@ elseif(!empty($_POST["update_confdisplay"])) {
 	updateConfigDisplay($_POST["num_of_events"], $_POST["jobs_at_login"],$_POST["list_limit"], $_POST["cut"],$_POST["priority"],
 	$_POST["planning_begin"],$_POST["planning_end"],$_POST["public_faq"],$_POST["text_login"],
 	$_POST["use_ajax"],$_POST["ajax_wildcard"],$_POST["ajax_limit_count"],$_POST["dropdown_max"],$_POST["ajax_autocompletion"],$_POST["dateformat"],
-	$_POST["view_ID"],$_POST["nextprev_item"]);
+	$_POST["view_ID"],$_POST["nextprev_item"],$_POST["dropdown_limit"]);
 	glpi_header($cfg_install["root"]."/setup/setup-config.php?next=confdisplay");
 }
 

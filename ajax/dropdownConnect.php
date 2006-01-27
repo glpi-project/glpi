@@ -93,7 +93,7 @@
 				$ID = $data['ID'];
 				if (empty($output)) $output="($ID)";
 
-				echo "<option value=\"$ID\">$output</option>";
+				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
 				$i++;
 			}
 		}
