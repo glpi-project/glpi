@@ -85,7 +85,7 @@
 			if ($ID == $value) {
 				echo "<option value=\"$ID\" selected title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
 			} else {
-				echo "<option value=\"$ID\">".$output title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
+				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
 			}
 			$i++;
    		}
