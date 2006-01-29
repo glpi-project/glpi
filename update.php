@@ -3002,7 +3002,6 @@ $query="INSERT INTO glpi_display VALUES (32, 1, 4, 4),
 (78, 10, 6, 4),
 (79, 10, 7, 5),
 (80, 10, 11, 6),
-(81, 10, 9, 7),
 (84, 11, 5, 3),
 (85, 11, 6, 4),
 (88, 12, 6, 2),
@@ -3570,6 +3569,12 @@ if(!FieldExists("glpi_config","dropdown_limit")) {
 	$db->query($query) or die("0.65 add dropdown_limit in config ".$lang["update"][90].$db->error());
 }
 
+
+if(FieldExists("glpi_consumables_type","type")) {	
+	$query="ALTER TABLE `glpi_consumables_type` CHANGE `type` `type` INT( 11 ) NOT NULL DEFAULT '0',
+			CHANGE `alarm` `alarm` INT( 11 ) NOT NULL DEFAULT '10'";
+	$db->query($query) or die("0.65 alter type and alarm in consumables_type ".$lang["update"][90].$db->error());
+}
 
 
 

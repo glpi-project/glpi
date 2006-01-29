@@ -1196,7 +1196,7 @@ default :
 	if (ereg("HAVING",$GROUPBY)) $GROUPBY.=" ".$link." ";
 	else $GROUPBY.=" HAVING ";
 
-	$GROUPBY.=" ( $NAME$num $NOT LIKE '%$val%' ) ";
+	$GROUPBY.=" ( $NAME$num $NOT LIKE '%$val%') ";
 
 	break;
 }
@@ -1374,7 +1374,7 @@ default:
 *
 **/
 function giveItem ($type,$field,$data,$num){
-global $cfg_install,$INFOFORM_PAGES,$HTMLRel,$cfg_layout;
+global $cfg_install,$INFOFORM_PAGES,$HTMLRel,$cfg_layout,$lang;
 
 switch ($field){
 	case "glpi_licenses.serial" :
@@ -1608,6 +1608,10 @@ switch ($field){
 		}
 		return $out;
 	break;
+	case "glpi_contracts.duration":
+	case "glpi_contracts.notice":
+		return $data["ITEM_$num"]." ".$lang["financial"][57];
+		break;
 	case "glpi_computers.date_mod":
 	case "glpi_printers.date_mod":
 	case "glpi_networking.date_mod":
