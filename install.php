@@ -712,7 +712,7 @@ function step7() {
 function create_conn_file($host,$user,$password,$dbname)
 {
 	global $cfg_install;
-	$db_str = "<?php \n class DB extends DBmysql { \n var \$dbhost	= '". $host ."'; \n var \$dbuser 	= '". $user ."'; \n var \$dbpassword= '". $password ."'; \n var \$dbdefault	= '". $dbname ."'; \n } \n ?>";
+	$db_str = "<?php \n class DB extends DBmysql { \n var \$dbhost	= \"". $host ."\"; \n var \$dbuser 	= \"". $user ."\"; \n var \$dbpassword= \"". $password ."\"; \n var \$dbdefault	= \"". $dbname ."\"; \n } \n ?>";
 	include ("_relpos.php");
 	$fp = fopen($cfg_install['config_dir'] . "/config_db.php",'wt');
 	if($fp) {
