@@ -237,12 +237,12 @@ CREATE TABLE `glpi_consumables_type` (
     `name` varchar(255),
     `ref` varchar(255),
     `location` int(11) DEFAULT '0' NOT NULL,
-    `type` tinyint(4) DEFAULT '0' NOT NULL,
+    `type` int(11) DEFAULT '0' NOT NULL,
     `FK_glpi_enterprise` int(11) DEFAULT '0' NOT NULL,
     `tech_num` int(11) DEFAULT '0',
     `deleted` enum('Y','N') DEFAULT 'N' NOT NULL,
     `comments` text,
-    `alarm` tinyint(4) DEFAULT '10' NOT NULL,
+    `alarm` int(11) DEFAULT '10' NOT NULL,
     `notes` longtext,
    PRIMARY KEY (`ID`),
    KEY FK_glpi_enterprise (`FK_glpi_enterprise`),
@@ -607,7 +607,6 @@ INSERT INTO glpi_display VALUES ('77','10','5','3');
 INSERT INTO glpi_display VALUES ('78','10','6','4');
 INSERT INTO glpi_display VALUES ('79','10','7','5');
 INSERT INTO glpi_display VALUES ('80','10','11','6');
-INSERT INTO glpi_display VALUES ('81','10','9','7');
 INSERT INTO glpi_display VALUES ('84','11','5','3');
 INSERT INTO glpi_display VALUES ('85','11','6','4');
 INSERT INTO glpi_display VALUES ('88','12','6','2');
