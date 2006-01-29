@@ -848,33 +848,89 @@ unset($net_loc);
 //////////// INVENTORY
 
 // DEVICE
-
+$items=array("Textorm 6A19","ARIA","SLK3000B-EU","Sonata II","TA-212","TA-551","TA-581","TAC-T01","CS-512","Li PC-60891","STT-TJ02S");
 for ($i=0;$i<$max['device'];$i++){
-
-$query="INSERT INTO glpi_device_case VALUES ('','case $i','".mt_rand(0,2)."','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,10)."')";
-$db->query($query) or die("PB REQUETE ".$query);
-$query="INSERT INTO glpi_device_control VALUES ('','control $i','".mt_rand(0,3)."','N','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,1000)."')";
-$db->query($query) or die("PB REQUETE ".$query);
-$query="INSERT INTO glpi_device_drive VALUES ('','drive $i','N','".mt_rand(0,60)."','".mt_rand(0,2)."','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,100)."')";
-$db->query($query) or die("PB REQUETE ".$query);
-$query="INSERT INTO glpi_device_gfxcard VALUES ('','gfxcard $i','".mt_rand(0,128)."','".mt_rand(0,3)."','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,128)."')";
-$db->query($query) or die("PB REQUETE ".$query);
-$query="INSERT INTO glpi_device_hdd VALUES ('','hdd $i','".mt_rand(0,10500)."','".mt_rand(1,$max['hdd_type'])."','".mt_rand(0,8000)."','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,128)."')";
-$db->query($query) or die("PB REQUETE ".$query);
-$query="INSERT INTO glpi_device_iface VALUES ('','iface $i','".mt_rand(0,1000)."','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,10)."')";
-$db->query($query) or die("PB REQUETE ".$query);
-$query="INSERT INTO glpi_device_moboard VALUES ('','moboard $i','chipset ".mt_rand(0,1000)."','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,10)."')";
-$db->query($query) or die("PB REQUETE ".$query);
-$query="INSERT INTO glpi_device_pci VALUES ('','pci $i','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,10)."')";
-$db->query($query) or die("PB REQUETE ".$query);
-$query="INSERT INTO glpi_device_power VALUES ('','power $i','".mt_rand(0,500)."W','Y','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,10)."')";
-$db->query($query) or die("PB REQUETE ".$query);
-$query="INSERT INTO glpi_device_processor VALUES ('','processor $i','".mt_rand(1000,3000)."','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(1000,3000)."')";
-$db->query($query) or die("PB REQUETE ".$query);
-$query="INSERT INTO glpi_device_ram VALUES ('','ram $i','".mt_rand(0,400)."','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,10)."','".mt_rand(1,$max['ram_type'])."')";
-$db->query($query) or die("PB REQUETE ".$query);
-$query="INSERT INTO glpi_device_sndcard VALUES ('','sndcard $i','type ".mt_rand(0,100)."','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,100)."')";
-$db->query($query) or die("PB REQUETE ".$query);
+	if (isset($items[$i])) $val=$items[$i];
+	else $val="case $i";
+	$query="INSERT INTO glpi_device_case VALUES ('','$val','".mt_rand(0,2)."','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,10)."')";
+	$db->query($query) or die("PB REQUETE ".$query);
+}
+$items=array("Escalade 8006-2LP","Escalade 8506-4LP","2810SA","1210SA","DuoConnect","DU-420","DUB-A2","FastTrak SX4100B","DC-395U","TFU-H33PI");
+for ($i=0;$i<$max['device'];$i++){
+	if (isset($items[$i])) $val=$items[$i];
+	else $val="control $i";
+	$query="INSERT INTO glpi_device_control VALUES ('','$val','".mt_rand(0,3)."','N','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,1000)."')";
+	$db->query($query) or die("PB REQUETE ".$query);
+}
+$items=array("DUW1616","DRW-1608P","DW1625","GSA-4160B","GSA-4165B","GSA-4167RBB","SHW-16H5S","SOHW-1673SX","DVR-110D","PX-716AL","PX-755A");
+for ($i=0;$i<$max['device'];$i++){
+	if (isset($items[$i])) $val=$items[$i];
+	else $val="drive $i";
+	$query="INSERT INTO glpi_device_drive VALUES ('','$val','Y','".mt_rand(0,60)."','".mt_rand(0,2)."','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,100)."')";
+	$db->query($query) or die("PB REQUETE ".$query);
+}
+$items=array("A9250/TD","AX550/TD","Extreme N5900","V9520-X/TD","All-In-Wonder X800 GT","GV-NX66256D","GV-RX80256DE","Excalibur 9600XT","X1300 IceQ","WinFast PX6200 TD","Millenium 750","NX6600GT");
+for ($i=0;$i<$max['device'];$i++){
+	if (isset($items[$i])) $val=$items[$i];
+	else $val="gfxcard $i";
+	$query="INSERT INTO glpi_device_gfxcard VALUES ('','$val','".mt_rand(0,128)."','".mt_rand(0,3)."','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,128)."')";
+	$db->query($query) or die("PB REQUETE ".$query);
+}
+$items=array("Deskstar 7K500","Deskstar T7K250","Atlas 15K II","DiamondMax Plus","SpinPoint P - SP2514N","Barracuda 7200.9","WD2500JS","WD1600JB","WD1200JD");
+for ($i=0;$i<$max['device'];$i++){
+	if (isset($items[$i])) $val=$items[$i];
+	else $val="hdd  $i";
+	$query="INSERT INTO glpi_device_hdd VALUES ('','$val','".mt_rand(0,10500)."','".mt_rand(1,$max['hdd_type'])."','".mt_rand(0,8000)."','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,128)."')";
+	$db->query($query) or die("PB REQUETE ".$query);
+}
+$items=array("DFE-530TX","DFE-538TX","PWLA8492MF","PWLA8492MT","USBVPN1","GA311","FA511","TEG-PCBUSR","3C996-SX","3C996B-T","3C905C-TX-M");
+for ($i=0;$i<$max['device'];$i++){
+	if (isset($items[$i])) $val=$items[$i];
+	else $val="iface  $i";
+	$query="INSERT INTO glpi_device_iface VALUES ('','$val','".mt_rand(0,1000)."','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,10)."')";
+	$db->query($query) or die("PB REQUETE ".$query);
+}
+$items=array("AW8-MAX","NV8","AK86-L","P4V88","A8N-SLI","A8N-VM","K8V-MX","K8N4-E","P5LD2","GA-K8NE","GA-8I945P Pro","D945PBLL","SE7525GP2","865PE Neo3-F","K8N Neo4-F","Thunder i7520 (S5360G2NR)","Thunder K8SR - S2881UG2NR","Tiger K8QS Pro - S4882UG2NR","Tomcat i875PF (S5105G2NR)");
+for ($i=0;$i<$max['device'];$i++){
+	if (isset($items[$i])) $val=$items[$i];
+	else $val="moboard $i";
+	$query="INSERT INTO glpi_device_moboard VALUES ('','$val','chipset ".mt_rand(0,1000)."','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,10)."')";
+	$db->query($query) or die("PB REQUETE ".$query);
+}
+$items=array("Instant TV Cardbus","WinTV Express","WinTV-NOVA-S-Plus","WinTV-NOVA-T","WinTV-PVR-150");
+for ($i=0;$i<$max['device'];$i++){
+	if (isset($items[$i])) $val=$items[$i];
+	else $val="pci $i";
+	$query="INSERT INTO glpi_device_pci VALUES ('','$val','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,10)."')";
+	$db->query($query) or die("PB REQUETE ".$query);
+}
+$items=array("DB-Killer PW335","DB-Killer PW385","NeoHE 380","NeoHE 450","Phantom 500-PEC","TruePower 2.0 550","Master RS-380","EG375AX-VE-G-SFMA","EG495AX");
+for ($i=0;$i<$max['device'];$i++){
+	if (isset($items[$i])) $val=$items[$i];
+	else $val="power $i";
+	$query="INSERT INTO glpi_device_power VALUES ('','$val','".mt_rand(0,500)."W','Y','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,10)."')";
+	$db->query($query) or die("PB REQUETE ".$query);
+}
+$items=array("Athlon 64 FX-57","Athlon 64 FX-55","Sempron 2400+","Sempron 2600+","Celeron D 325","Celeron D 330J","Pentium 4 530J","Pentium 4 631","Pentium D 830","Pentium D 920");
+for ($i=0;$i<$max['device'];$i++){
+	if (isset($items[$i])) $val=$items[$i];
+	else $val="processor $i";
+	$query="INSERT INTO glpi_device_processor VALUES ('','$val','".mt_rand(1000,3000)."','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(1000,3000)."')";
+	$db->query($query) or die("PB REQUETE ".$query);
+}
+$items=array("CM2X256A-5400C4","CMX1024-3200C2","CMXP512-3200XL","TWIN2X1024-4300C3PRO","KTD-DM8400/1G","KTH8348/1G","KTD4400/256","D6464D30A","KTA-G5400/512","KVR667D2N5/1G","KVR133X64C3/256");
+for ($i=0;$i<$max['device'];$i++){
+	if (isset($items[$i])) $val=$items[$i];
+	else $val="ram $i";
+	$query="INSERT INTO glpi_device_ram VALUES ('','$val','".mt_rand(0,400)."','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,10)."','".mt_rand(1,$max['ram_type'])."')";
+	$db->query($query) or die("PB REQUETE ".$query);
+}
+$items=array("DDTS-100","Audigy 2 ZS Platinum","Audigy SE","DJ Console Mk2","Gamesurround Muse Pocket USB","Phase 22","X-Fi Platinum","Live! 24-bit","X-Fi Elite Pro");
+for ($i=0;$i<$max['device'];$i++){
+	if (isset($items[$i])) $val=$items[$i];
+	else $val="sndcard $i";
+	$query="INSERT INTO glpi_device_sndcard VALUES ('','$val','type ".mt_rand(0,100)."','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,100)."')";
+	$db->query($query) or die("PB REQUETE ".$query);
 }
 
 
@@ -922,8 +978,10 @@ for ($i=0;$i<$max['computers'];$i++){
 	$db->query($query) or die("PB REQUETE ".$query);
 	$query="INSERT INTO glpi_computer_device VALUES ('','','".SND_DEVICE."','".mt_rand(1,$max['device'])."','$compID')";
 	$db->query($query) or die("PB REQUETE ".$query);
-	$query="INSERT INTO glpi_computer_device VALUES ('','','".PCI_DEVICE."','".mt_rand(1,$max['device'])."','$compID')";
-	$db->query($query) or die("PB REQUETE ".$query);
+	if (mt_rand(0,100)<50){
+		$query="INSERT INTO glpi_computer_device VALUES ('','','".PCI_DEVICE."','".mt_rand(1,$max['device'])."','$compID')";
+		$db->query($query) or die("PB REQUETE ".$query);
+	}
 	$query="INSERT INTO glpi_computer_device VALUES ('','','".CASE_DEVICE."','".mt_rand(1,$max['device'])."','$compID')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$query="INSERT INTO glpi_computer_device VALUES ('','','".POWER_DEVICE."','".mt_rand(1,$max['device'])."','$compID')";
