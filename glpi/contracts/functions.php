@@ -397,16 +397,13 @@ function showDeviceContract($instID) {
 	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
 	}
-	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+	echo "<tr class='tab_bg_1'><td colspan='2' align='right'>";
 	echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 		dropdownAllItems("item");
-	echo "&nbsp;<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
-	echo "</td>";
-	
-	
-	echo "<td align='center' class='tab_bg_2'>";
+	echo "</div></td><td><input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "<input type='hidden' name='ID' value='$instID'>";
-	echo "</td></tr>";
+	echo "</td>";
+	echo "</tr>";
 	
 	echo "</table></div>"    ;
 	echo "</form>";
@@ -501,7 +498,7 @@ function showEnterpriseContract($instID) {
 	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteenterprise=deleteenterprise&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 	$i++;
 	}
-	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+ 	echo "<tr class='tab_bg_1'><td align='right' colspan='2'>";
 	echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 		dropdown("glpi_enterprises","entID");
 	echo "</div></td><td align='center'>";
@@ -777,7 +774,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	$nb = $db->numrows($result);
 	
 	if ($withtemplate!=2&&$nb>0){
-		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+		echo "<tr class='tab_bg_1'><td align='right' colspan='2'>";
 		echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
 		dropdownContracts("conID");
 		echo "</div></td><td align='center'>";
