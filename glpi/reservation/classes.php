@@ -124,26 +124,38 @@ class ReservationItem{
 	
 	function getLink(){
 	
-		global $cfg_install;
+		global $cfg_install,$cfg_layout;
 	
 		switch ($this->fields["device_type"]){
 			case COMPUTER_TYPE :
-				return "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName()." (".$this->fields["id_device"].")</a>";
+				return "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				if ($cfg_layout["view_ID"]) echo " (".$this->fields["id_device"].")";
+				echo "</a>";
 				break;
 			case NETWORKING_TYPE :
-				return "<a href=\"".$cfg_install["root"]."/networking/networking-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName()." (".$this->fields["id_device"].")</a>";
+				return "<a href=\"".$cfg_install["root"]."/networking/networking-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				if ($cfg_layout["view_ID"]) echo " (".$this->fields["id_device"].")";
+				echo "</a>";
 				break;
 			case PRINTER_TYPE :
-				return "<a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName()." (".$this->fields["id_device"].")</a>";
+				return "<a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				if ($cfg_layout["view_ID"]) echo " (".$this->fields["id_device"].")";
+				echo "</a>";
 				break;
 			case MONITOR_TYPE : 
-				return "<a href=\"".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName()." (".$this->fields["id_device"].")</a>";
+				return "<a href=\"".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				if ($cfg_layout["view_ID"]) echo " (".$this->fields["id_device"].")";
+				echo "</a>";
 				break;
 			case PERIPHERAL_TYPE : 
-				return "<a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName()." (".$this->fields["id_device"].")</a>";
+				return "<a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				if ($cfg_layout["view_ID"]) echo " (".$this->fields["id_device"].")";
+				echo "</a>";
 				break;	
 			case SOFTWARE_TYPE : 
-				return "<a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName()." (".$this->fields["id_device"].")</a>";
+				return "<a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				if ($cfg_layout["view_ID"]) echo " (".$this->fields["id_device"].")";
+				echo "</a>";
 				break;								
 			}
 
