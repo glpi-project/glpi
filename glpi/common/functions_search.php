@@ -519,14 +519,14 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 			$NOT=0;
 			// Manage Link if not first item
-			if (!$first||$i>0) {
+			if (isset($link[$key])&&(!$first||$i>0)) {
 				if (ereg("NOT",$link[$key])){
 				$WHERE.=" ".ereg_replace(" NOT","",$link[$key]);
 				$NOT=1;
 				}
 				else 
 				$WHERE.=" ".$link[$key];
-			}
+			} else $WHERE.=" AND ";
 			 $WHERE.= " ( ";
 			$first2=true;
 
@@ -597,7 +597,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	//// 7 - Manage GROUP BY
 	$GROUPBY="";
-	if ($_SESSION["glpisearchcount2"][$type]>0)	
+	if ($_SESSION["glpisearchcount2"][$type]>0||count($SEARCH_ALL)>0)	
 		$GROUPBY=" GROUP BY ID";
 
 	// Specific case of group by : multiple links with the reference table
