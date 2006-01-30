@@ -62,20 +62,52 @@ function header_html($etape)
         /*  ... Definition des styles ... */
 
         body {
-        background-color:#C5DAC8;
+        background-color:#ffffff;
         font-family: Verdana;
 	 color:#000000; }
         
-       .principal {
-        background-color: #ffffff;
+       #principal {
+     	width:760px;
         font-family: Verdana;
 	font-size:12px;
         text-align: justify ; 
-        -moz-border-radius: 4px;
-	border: 1px solid #FFC65D;
-         margin: 40px; 
-         padding: 40px 40px 10px 40px;
+        margin: auto;
+       
+         padding: 40px 40px 40px 40px;
        }
+
+
+#bloc .haut{
+height: 53px;
+ background: url(pics/haut_install.png) 0 0 no-repeat; 
+width:760px;
+margin:0;
+padding:0;
+}
+
+#bloc{
+
+background: url(pics/milieu_install.png) 0 0 repeat-y;
+width:760px;
+margin:0;
+
+}
+
+
+#bloc .bas{
+height: 31px;
+background: url(pics/bas_install.png)  0 0  no-repeat; 
+
+width:760px;
+
+margin:0;
+padding:0;
+}
+
+
+p{ padding-left:20px;
+padding-right:20px;
+}
 
        table {
        text-align:center;
@@ -115,8 +147,9 @@ function header_html($etape)
         input {border: 1px solid #ccc;}
 
         fieldset {
-        padding: 20px;
-          border: 1px dotted #ccc;
+	margin:40px;       
+	 padding: 20px;
+          border: 2px solid  #FFC65D;
         font-size: 12px;
         font-weight:200;}
 
@@ -156,7 +189,9 @@ function header_html($etape)
         echo "</style>";
          echo "</head>";
         echo "<body>";
-	echo "<div class=\"principal\">";
+	echo "<div id='principal'>";
+	echo "<div id='bloc'>";
+	echo "<div class='haut'></div>";
         echo "<h2>GLPI SETUP</h2>";
 	echo "<br/><h3>". $etape ."</h3>";
 }
@@ -164,7 +199,7 @@ function header_html($etape)
 //Display a great footer.
 function footer_html()
 {
-		echo "</div></body></html>";
+		echo "<div class='bas'></div></div></div></body></html>";
 }
 
 // choose language
@@ -503,7 +538,7 @@ function step3($host,$user,$password,$update)
 		echo "".$lang["install"][35]." : \n
 		<br />".$lang["install"][36]." : ".mysql_error();
 		if(empty($host) || empty($user)) {
-			echo $lang["install"][37];
+			echo "<p>".$lang["install"][37]."</p>";
 		}
 		echo "<form action=\"install.php\" method=\"post\">";
 		echo "<input type=\"hidden\" name=\"update\" value=\"".$update."\" />";
@@ -513,10 +548,10 @@ function step3($host,$user,$password,$update)
                 
 	}
 	else {
-		echo $lang["update"][93]."<br><br>";
+		echo  "<p>".$lang["update"][93]."</p>";
 		if($update == "no") {
 
-			echo $lang["install"][38];
+			echo "<p>".$lang["install"][38]."</p>";
 			
 			echo "<form action=\"install.php\" method=\"post\">";
 			
