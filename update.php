@@ -3632,113 +3632,15 @@ function showFormSu() {
         echo "<meta name=\"generator\" content=\"\">";
         echo "<meta name=\"DC.Language\" content=\"fr\" scheme=\"RFC1766\">";
         echo "<title>Setup GLPI</title>";
+       // CSS
+	echo "<link rel='stylesheet'  href='style_install.css' type='text/css' media='screen' >";
        
-        echo "<style type=\"text/css\">";
-        echo "<!--
-
-        /*  ... Definition des styles ... */
-
-        body {
-        background-color:#C5DAC8;
-        color:#000000; }
-        
-       .principal {
-        background-color: #ffffff;
-        font-family: Verdana;font-size:12px;
-        text-align: justify ; 
-        -moz-border-radius: 4px;
-	border: 1px solid #FFC65D;
-         margin: 40px; 
-         padding: 40px 40px 10px 40px;
-       }
-
-       table {
-       text-align:center;
-       border: 0;
-       margin: 20px;
-       margin-left: auto;
-       margin-right: auto;
-       width: 90%;}
-
-       .red { color:red;}
-       .green {color:green;}
-
-  th
-  {  
-    font-size: 12px;
-    font-weight: bold;
-   /* background-color: #FFC65D;*/
-    background-color: #fccc6f;
-	vertical-align:bottom;
-}
-
-.tab_cadre{
- -moz-border-radius: 4px;
-  border: 1px solid #cccccc;
-}
-
-.tab_bg_1 {
-background-color: #ccccc7;
-
-}
-       
-       h2 {
-        color:#FFC65D;
-        text-align:center;}
-
-       h3 {
-        text-align:center;}
-
-       h4 {
-        text-align:center;
-        text-decoration: underline;
-        font-size: 16px;
-        }
-
-        input {border: 1px solid #ccc;}
-
-        fieldset {
-        padding: 20px;
-          border: 1px dotted #ccc;
-        font-size: 12px;
-        font-weight:200;}
-
-        .submit { text-align:center;}
-       
-        input.submit {
-        border:1px solid #000000;
-        background-color:#eeeeee;
-        }
-        
-        input.submit:hover {
-        border:1px solid #cccccc;
-       background-color:#ffffff;
-        }
-
-	.button {
-        font-weight:200;
-	color:#000000;
-	padding:5px;
-	text-decoration:none;
-	border:1px solid #009966;
-        background-color:#eeeeee;
-        }
-
-        .button:hover{
-          font-weight:200;
-	  color:#000000;
-	 padding:5px;
-	text-decoration:none;
-	border:1px solid #009966;
-       background-color:#ffffff;
-        }
-	
-        -->  ";
-        echo "</style>";
          echo "</head>";
         echo "<body>";
-	echo "<div class=\"principal\">";
-        echo "<h2>GLPI SETUP</h2>";
+	echo "<div id='principal'>";
+	echo "<div id='bloc'>";
+	echo "<div class='haut'></div>";
+	 echo "<h2>GLPI SETUP</h2>";
 	echo "<br/><h3>Update</h3>";
 
 // step 1    avec bouton de confirmation
@@ -3811,7 +3713,7 @@ elseif(empty($_POST["ajout_su"])) {
 		echo "<h3> ";
 		echo $lang["update"][95] ."</h3>";
         }
-	echo "</div></body></html>";
+	echo "<div class='bas'></div></div></div></body></html>";
 }
 elseif(!empty($_POST["ajout_su"])) {
 	if(!empty($_POST["pass_su1"]) && !empty($_POST["login_su"]) && $_POST["pass_su1"] == $_POST["pass_su2"]) {
