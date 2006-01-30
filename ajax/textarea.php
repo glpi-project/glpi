@@ -42,8 +42,8 @@
 
 	checkAuthentication("post-only");
 
-	echo "<textarea rows='".$_GET['rows']."' cols='".$_GET['cols']."' name='".$_GET['name']."'>";
-	echo stripslashes(urldecode($_GET["data"]));
+	echo "<textarea rows='".$_POST['rows']."' cols='".$_POST['cols']."' name='".$_POST['name']."'>";
+	echo stripslashes(urldecode($_POST["data"]));
 	echo "</textarea>";
 
 ?>
