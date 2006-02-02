@@ -217,9 +217,7 @@ function current_time()
     if (round($TPSFIN-$TPSDEB,1)>=$TPSCOUR+1) //une seconde de plus
     {
     $TPSCOUR=round($TPSFIN-$TPSDEB,1);
-    flush();
     }
-
 }
 
 function get_content($db, $table,$from,$limit)
@@ -319,7 +317,7 @@ if ($offset!=0)
         echo "Impossible de trouver l'octet ".number_format($offset,0,""," ")."<br>";
         return FALSE;
      }
-    flush();
+    glpi_flush();
 }
     
 $formattedQuery = "";
@@ -498,14 +496,14 @@ if ($percent >= 0) {
 
 }
 
-flush();
+glpi_flush();
 
 if ($offsettable>=0){
 if (backupMySql($db,$fichier,$duree,$rowlimit))
 {
     echo "<br>Redirection automatique sinon cliquez <a href=\"index.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">ici</a>";
     echo "<script>window.location=\"index.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\";</script>";
-	flush();    
+	glpi_flush();    
 	exit;
 
 }
@@ -556,17 +554,17 @@ if ($percent >= 0) {
       	
 $percentwitdh=$percent*4;
 
-	echo "<div align='center'><table class='tab_cadre' width='400'><tr><td width='400' align='center'> Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>";
+	echo "<div align='center'><table class='tab_cadre' width='400'><tr><td width='400' align='center'> Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n";
 
 
 }
-flush();
+glpi_flush();
 if ($offset!=-1){
 if (restoreMySqlDump($db,$path.$_GET["file"],$duree))
 {
     echo "<br>Redirection automatique sinon cliquez <a href=\"index.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=$offset&amp;cpt=$cpt\">ici</a>";
     echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"index.php?file=".$_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt\";</script>";
-	flush();
+	glpi_flush();
 	exit;
 }
 } else   { //echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt<p></div>";
