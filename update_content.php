@@ -94,7 +94,6 @@ function current_time()
     if (round($TPSFIN-$TPSDEB,1)>=$TPSCOUR+1) //une seconde de plus
     {
     $TPSCOUR=round($TPSFIN-$TPSDEB,1);
-    flush();
     }
 
 }
@@ -404,7 +403,7 @@ if(!FieldExists("glpi_config","utf8_conv")) {
 $conv_utf8=true;
 }
 
-flush();
+glpi_flush();
 if ($offsettable>=0){
 	if (UpdateContent($db,$duree,$rowlimit,$conv_utf8))
 	{
@@ -412,7 +411,7 @@ if ($offsettable>=0){
     echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\";</script>";
 echo "</div>";
 
-	flush();    
+	glpi_flush();    
 	exit;
 	}
 }
