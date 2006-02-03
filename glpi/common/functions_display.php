@@ -661,7 +661,7 @@ function printHelpDesk ($name,$from_helpdesk) {
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][2]." (".$max_size." Mb max):	";
 	echo "<img src=\"".$cfg_install["root"]."/pics/aide.png\" style='cursor:pointer;' alt=\"aide\"onClick=\"window.open('".$cfg_install["root"]."/typedocs/list.php','Help','scrollbars=1,resizable=1,width=850,height=800')\">";
 	echo "</td>";
-	echo "<td colspan='2'><input type='file' name='filename' value=\"\" size='25'></td>";
+	echo "<td><input type='file' name='filename' value=\"\" size='25'></td>";
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'>";
