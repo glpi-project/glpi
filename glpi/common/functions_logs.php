@@ -78,7 +78,7 @@ function history_log ($id_device,$device_type,$changes) {
 				
 				//echo $query;
 				//echo  "<br>";
-				$result=$db->query($query)
+				$result=$db->query($query);
 				}		
 		}
 }
