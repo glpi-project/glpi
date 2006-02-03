@@ -440,7 +440,7 @@ function updateComputer($input) {
 
 	$comp = new Computer;
 	$comp->getFromDB($input["ID"],0);
-
+	$changes="";
 	// set new date and make sure it gets updated
 	$updates[0]= "date_mod";
 	$comp->fields["date_mod"] = date("Y-m-d H:i:s");
@@ -458,8 +458,22 @@ function updateComputer($input) {
 	$x=1;
 	foreach ($input as $key => $val) {
 		if (array_key_exists($key,$comp->fields) && $comp->fields[$key]  != $input[$key]) {
+			if (!empty( $comp->fields[$key])){
+			// on ne log que les changements pas la définition d'un élément vide
+	
+			// 1er cas $key est un champs normal -> on ne touche pas au valeur 
+			// on récupere dans $SEARCH_OPTION l'id_search_options
+			
+			 $changes[]=array($id_search_options, $comp->fields[$key],$input[$key]);
+
+			//2ème cas $key est un champs lié, il faut récupérer les valeurs à l'aide de la fonction get_dropdown_value
+			//on récupere dans $SEARCH_OPTION l'id_search_options
+			//$changes[]=array($id_search_options, $ancienne_valeur du dropdown,$nouvelle_valeur_du_dropdown);
+		
+			}
 			$comp->fields[$key] = $input[$key];
 			$updates[$x] = $key;
+			
 			$x++;
 		}
 	}
@@ -472,6 +486,10 @@ function updateComputer($input) {
 		}
 	}
 	$comp->updateInDB($updates);
+	
+	// A ACTIVER quand tout sera opérationnel
+	//history_log ($input["ID"],COMPUTER_TYPE,$changes);
+
 	
 }
 /**

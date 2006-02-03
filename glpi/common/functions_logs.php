@@ -33,6 +33,62 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+
+
+/**
+* Log  history 
+*
+* 
+*
+* @param $id_device
+* @param $device_type
+* @param $changes
+**/
+
+/*
+CREATE TABLE glpi_history(
+ID int( 11 ) NOT NULL AUTO_INCREMENT ,
+FK_glpi_device int( 11 ) DEFAULT '0' NOT NULL ,
+device_type tinyint( 4 ) DEFAULT '0' NOT NULL ,
+user_name varchar( 200 ) NOT NULL ,
+date_mod datetime,
+id_search_option int( 11 ) NOT NULL ,
+old_value varchar( 200 ) NOT NULL ,
+new_value varchar( 200 ) NOT NULL ,
+PRIMARY KEY ( ID ) ,
+KEY FK_glpi_device( FK_glpi_device )
+) TYPE = MYISAM ;
+*/
+
+function history_log ($id_device,$device_type,$changes) {
+
+
+		$db = new DB;
+		$date_mod=date("Y-m-d H:i:s");
+		
+		$device_table=$LINK_ID_TABLE[$device_type];
+		
+		if(!empty($changes)){
+			// pour le nombre lignes contenus dans $change
+			// créer un query avec l'insertion des éléments fixes + la ligne correspondant aux changements
+			foreach ($changes as $key => $val) {
+				
+				// Build query
+				$query = "INSERT INTO glpi_history_device($id_device,$device_type,".$_SESSION["glpiname"].",$date_mod,'$val[0]','$val[1]','$val[2]')";
+				
+				//echo $query;
+				//echo  "<br>";
+				$result=$db->query($query)
+				}		
+		}
+}
+
+
+
+
+
+
+
 /**
 * Log an event.
 *
