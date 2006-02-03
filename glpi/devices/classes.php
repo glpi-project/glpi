@@ -140,15 +140,7 @@ class Device {
 		else return false;
 	}
 	
-	function updateSpecif($compID,$newSpecif) {
-		$db = new DB;
-		$query = "UPDATE glpi_computer_device set specification = '".$newSpecif."' where ID = '".$compDevID."'";
-		if($db->query($query)) {
-			return true;
-		} else { 
-			return false;
-		}
-	}
+	
 	
 	function computer_link($compID,$device_type,$specificity='') {
 		$db = new DB;
