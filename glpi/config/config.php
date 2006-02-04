@@ -421,6 +421,9 @@ $cfg_features["founded_new_version"] = $db->result($result,0,"founded_new_versio
 // Auto add users from auth ext
 $cfg_features["auto_add_users"] = $db->result($result,0,"auto_add_users");
 
+// Post-only users can add followups ?
+$cfg_features["post_only_followup"] = $db->result($result,0,"post_only_followup");
+
 // Date Format
 $cfg_layout["dateformat"] = $db->result($result,0,"dateformat");
 

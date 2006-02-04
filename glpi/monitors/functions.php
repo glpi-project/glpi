@@ -231,10 +231,10 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 			echo "<input type='checkbox' name='flags_micro' value='1'>";
 		}
 		echo "</td><td>".$lang["monitors"][14]."</td>";
-		echo "</tr></table>";
+//		echo "</tr></table>";
 
 		// speakers?
-		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
+//		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
 		echo "<td>";
 		if ($mon->fields["flags_speaker"] == 1) {
 			echo "<input type='checkbox' name='flags_speaker' value='1' checked>";
@@ -242,10 +242,11 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 			echo "<input type='checkbox' name='flags_speaker' value='1'>";
 		}
 		echo "</td><td>".$lang["monitors"][15]."</td>";
-		echo "</tr></table>";
+//		echo "</tr></table>";
+		echo "</tr><tr>";
 
 		// sub-d?
-		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
+//		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
 		echo "<td>";
 		if ($mon->fields["flags_subd"] == 1) {
 			echo "<input type='checkbox' name='flags_subd' value='1' checked>";
@@ -253,10 +254,10 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 			echo "<input type='checkbox' name='flags_subd' value='1'>";
 		}
 		echo "</td><td>".$lang["monitors"][19]."</td>";
-		echo "</tr></table>";
+//		echo "</tr></table>";
 
 		// bnc?
-		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
+//		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
 		echo "<td>";
 		if ($mon->fields["flags_bnc"] == 1) {
 			echo "<input type='checkbox' name='flags_bnc' value='1' checked>";
@@ -264,6 +265,19 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 			echo "<input type='checkbox' name='flags_bnc' value='1'>";
 		}
 		echo "</td><td>".$lang["monitors"][20]."</td>";
+//		echo "</tr></table>";
+		echo "</tr><tr>";
+		
+		// dvi?
+//		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
+		echo "<td>";
+		if ($mon->fields["flags_dvi"] == 1) {
+			echo "<input type='checkbox' name='flags_dvi' value='1' checked>";
+		} else {
+			echo "<input type='checkbox' name='flags_dvi' value='1'>";
+		}
+		echo "</td><td>".$lang["monitors"][32]."</td>";
+		echo "<td>&nbsp;</td><td>&nbsp;</td>";
 		echo "</tr></table>";
 
 

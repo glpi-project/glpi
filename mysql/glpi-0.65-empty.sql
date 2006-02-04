@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-01-27 18:29
+#GLPI Dump database on 2006-02-05 00:38
 
 ### Dump table glpi_cartridges
 
@@ -181,7 +181,7 @@ CREATE TABLE `glpi_config` (
     `url_in_mail` enum('0','1') DEFAULT '0' NOT NULL,
     `text_login` text,
     `auto_update_check` smallint(6) DEFAULT '0' NOT NULL,
-    `last_update_check` date DEFAULT '2006-01-27' NOT NULL,
+    `last_update_check` date DEFAULT '2006-02-05' NOT NULL,
     `founded_new_version` varchar(10),
     `dropdown_max` int(11) DEFAULT '100' NOT NULL,
     `ajax_wildcard` char(1) DEFAULT '*' NOT NULL,
@@ -193,10 +193,11 @@ CREATE TABLE `glpi_config` (
     `nextprev_item` varchar(200) DEFAULT 'name' NOT NULL,
     `view_ID` smallint(6) DEFAULT '0' NOT NULL,
     `dropdown_limit` int(11) DEFAULT '30' NOT NULL,
+    `post_only_followup` tinyint(4) DEFAULT '1' NOT NULL,
    PRIMARY KEY (`ID`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi','0','','0','2006-01-27','','100','*','0','50','1','1','0','name','0','30');
+INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi','0','','0','2006-02-05','','100','*','0','50','1','1','0','name','0','30','1');
 
 ### Dump table glpi_connect_wire
 
@@ -982,7 +983,6 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS `glpi_followups`;
@@ -1116,6 +1116,7 @@ CREATE TABLE `glpi_monitors` (
     `flags_speaker` tinyint(4) DEFAULT '0' NOT NULL,
     `flags_subd` tinyint(4) DEFAULT '0' NOT NULL,
     `flags_bnc` tinyint(4) DEFAULT '0' NOT NULL,
+    `flags_dvi` tinyint(4) DEFAULT '0' NOT NULL,
     `location` int(11),
     `type` int(11),
     `model` int(11),
@@ -1135,7 +1136,7 @@ CREATE TABLE `glpi_monitors` (
    KEY tech_num (`tech_num`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_monitors VALUES ('4','','0000-00-00 00:00:00','','','0','','','','0','0','0','0','0',NULL,NULL,NULL,'0','0','N','1','Blank Template',NULL);
+INSERT INTO glpi_monitors VALUES ('4','','0000-00-00 00:00:00','','','0','','','','0','0','0','0','0','0',NULL,NULL,NULL,'0','0','N','1','Blank Template',NULL);
 
 ### Dump table glpi_networking
 
