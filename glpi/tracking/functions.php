@@ -60,7 +60,7 @@ function titleTracking(){
 *
 **/
 function showTrackingOnglets($target){
-	global $lang,$HTMLRel,$cfg_install;
+	global $lang,$HTMLRel,$cfg_install,$cfg_features;
 	
 	if (preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
 	$ID=$ereg[1];
@@ -75,7 +75,13 @@ function showTrackingOnglets($target){
        		 echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</span></a></li>";
 		}else{ // admin no
 			echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'>".$lang["job"][38]." $ID</span></li>";
+			if ($cfg_features["post_only_followup"]){
+				echo "<li class='invisible'>&nbsp;</li>";
+    
+				echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</span></a></li>";
 			}
+
+		}
 		 if (isNormal($_SESSION['glpitype'])){
       		// Post-only could'nt see other item  but other user yes 
 		 echo "<li class='invisible'>&nbsp;</li>";
@@ -1461,20 +1467,25 @@ function addFollowup($input){
 	global $cfg_features;
 	$fup = new Followup;
 
-	if (isset($input['plan'])){
-	$plan=$input['plan'];
-	unset($input['plan']);
-	}	
-
+	$isadmin=isAdmin($_SESSION['glpitype']);
 	$close=0;
-	if (isset($input["add_close"])) $close=1;
 	unset($input["add"]);
-	unset($input["add_close"]);
 	
-	if ($input["hour"]>0||$input["minute"]>0)
-	$input["realtime"]=$input["hour"]+$input["minute"]/60;
-	unset($input["minute"]);
-	unset($input["hour"]);
+	if ($isadmin){
+		if (isset($input['plan'])){
+		$plan=$input['plan'];
+		unset($input['plan']);
+		}	
+
+	
+		if (isset($input["add_close"])) $close=1;
+		unset($input["add_close"]);
+	
+		if ($input["hour"]>0||$input["minute"]>0)
+		$input["realtime"]=$input["hour"]+$input["minute"]/60;
+		unset($input["minute"]);
+		unset($input["hour"]);
+	}
 
 	$input["date"] = date("Y-m-d H:i:s");
 	foreach ($input as $key => $val) {
@@ -1485,27 +1496,30 @@ function addFollowup($input){
 
 	$newID=$fup->addToDB();	
 
-	if (isset($plan)){
-		$plan['id_followup']=$newID;
-		$plan['id_tracking']=$input['tracking'];
-		$plan['id_assign']=$input['author'];
-		if (!addPlanningTracking($plan,"",1)){
-			return false;
-		}
-	}
-
 	$job=new Job;
 	$job->getFromDB($input["tracking"],0);
 
-	if ($close){
-		$updates[]="status";
-		$updates[]="closedate";
-		$job->fields["status"]="old_done";
-		$job->fields["closedate"] = date("Y-m-d H:i:s");
-		$job->updateInDB($updates);
-	}
+	if ($isadmin){
+		if (isset($plan)){
+			$plan['id_followup']=$newID;
+			$plan['id_tracking']=$input['tracking'];
+			$plan['id_assign']=$input['author'];
+			if (!addPlanningTracking($plan,"",1)){
+				return false;
+			}
+		}
 
-	$job->updateRealtime();		
+
+		if ($close){
+			$updates[]="status";
+			$updates[]="closedate";
+			$job->fields["status"]="old_done";
+			$job->fields["closedate"] = date("Y-m-d H:i:s");
+			$job->updateInDB($updates);
+		}
+
+		$job->updateRealtime();		
+	}
 
 	if ($cfg_features["mailing"])
 		{
@@ -1541,8 +1555,6 @@ function showJobDetails ($ID){
 	
 	if ($job->getfromDB($ID,1)) {
 
-		showTrackingOnglets($_SERVER["PHP_SELF"]."?ID=".$ID);
-
 		$author=new User();
 		$author->getFromDBbyID($job->fields["author"]);
 		$assign=new User();
@@ -1553,6 +1565,8 @@ function showJobDetails ($ID){
 		// test if the user if authorized to view this job
 		if (strcmp($_SESSION["glpitype"],"post-only")==0&&$_SESSION["glpiID"]!=$job->fields["author"])
 		   { echo "Warning !! ";return;}
+
+		showTrackingOnglets($_SERVER["PHP_SELF"]."?ID=".$ID);
 
 		echo "<div align='center'>";
 		echo "<form method='post' action=\"".$cfg_install["root"]."/tracking/tracking-info-form.php\"  enctype=\"multipart/form-data\">\n";
@@ -1822,7 +1836,10 @@ function showFollowupsSummary($tID){
 	else {	
 
 		echo "<table class='tab_cadrehov2' width='800'>";
-		echo "<tr><th>&nbsp;</th><th>".$lang["joblist"][1]."</th><th>".$lang["joblist"][6]."</th><th>".$lang["job"][31]."</th><th>".$lang["job"][35]."</th><th>".$lang["joblist"][3]."</th><th>".$lang["job"][30]."</th></tr>";
+		echo "<tr><th>&nbsp;</th><th>".$lang["joblist"][1]."</th><th>".$lang["joblist"][6]."</th><th>".$lang["job"][31]."</th><th>".$lang["job"][35]."</th><th>".$lang["joblist"][3]."</th>";
+		if ($isadmin)
+			echo "<th>".$lang["job"][30]."</th>";
+		echo "</tr>";
 		while ($data=$db->fetch_array($result)){
 
 			echo "<tr class='tab_bg_2' onClick=\"viewEditFollowup".$data["ID"]."$rand();\" id='viewfollowup".$data["ID"]."$rand'>";
@@ -1858,12 +1875,13 @@ function showFollowupsSummary($tID){
 			echo "</td>";
 			
 			echo "<td>".getUserName($data["author"])."</td>";
-			
-			echo "<td>";
-			if ($data["private"])
-				echo $lang["choice"][0];
-			else echo $lang["choice"][1];
-			echo "</td>";
+			if ($isadmin){
+				echo "<td>";
+				if ($data["private"])
+					echo $lang["choice"][0];
+				else echo $lang["choice"][1];
+				echo "</td>";
+			}
 					
 			echo "</tr>";
 		}
@@ -1878,33 +1896,47 @@ function showAddFollowupForm($tID){
 	$db=new DB();
 
 	$isadmin=isAdmin($_SESSION['glpitype']);
-
-	// Display Add Table
 	if ($isadmin){
-		echo "<div align='center'>";
-		echo "<form name='followups' method='post' action=\"".$cfg_install["root"]."/tracking/tracking-info-form.php\">\n";
-		echo "<table class='tab_cadre' width='800'>";
-		echo "<tr><th colspan='2'>";
-		echo $lang["job"][29];
-		echo "</th></tr>";
+		$target=$cfg_install["root"]."/tracking/tracking-info-form.php";
+	} else {
+		$target=$cfg_install["root"]."/helpdesk.php?show=user";
+	}
+	// Display Add Table
+	echo "<div align='center'>";
+	echo "<form name='followups' method='post' action=\"$target\">\n";
+	echo "<table class='tab_cadre' width='800'>";
+	echo "<tr><th colspan='2'>";
+	echo $lang["job"][29];
+	echo "</th></tr>";
+	
+	if ($isadmin){
+		$width_left=$width_right="50%";
+		$cols=50;
+	} else {
+		$width_left="80%";
+		$width_right="20%";
+		$cols=80;
+	}
 
-		echo "<tr class='tab_bg_2'><td width='50%'>";
-		echo "<table width='100%'>";
-		echo "<tr><td>".$lang["joblist"][6]."</td>";
-		echo "<td><textarea name='contents' rows=8 cols=50></textarea>";
-		echo "</td></tr>";
-		echo "</table>";
-		echo "</td>";
+	echo "<tr class='tab_bg_2'><td width='$width_left'>";
+	echo "<table width='100%'>";
+	echo "<tr><td>".$lang["joblist"][6]."</td>";
+	echo "<td><textarea name='contents' rows=8 cols=$cols></textarea>";
+	echo "</td></tr>";
+	echo "</table>";
+	echo "</td>";
 
-		echo "<td width='50%' valign='top'>";
-		echo "<table width='100%'>";
+	echo "<td width='$width_right' valign='top'>";
+	echo "<table width='100%'>";
 
+	if ($isadmin){
 		echo "<tr>";
 		echo "<td>".$lang["joblist"][3].":</td>";
 		echo "<td>";
 		dropdownUsers("author",$_SESSION["glpiID"]);
 		echo "</td>";
 		echo "</tr>";
+	
 
 		echo "<tr>";
 		echo "<td>".$lang["job"][30].":</td>";
@@ -1915,7 +1947,7 @@ function showAddFollowupForm($tID){
 		echo "</select>";
 		echo "</td>";
 		echo "</tr>";
-
+	
 		echo "<tr><td>".$lang["job"][31].":</td><td>";
 	
 		echo "<select name='hour'>";
@@ -1931,7 +1963,7 @@ function showAddFollowupForm($tID){
 		}
 		echo "</select>".$lang["job"][22];
 		echo "</tr>";
-
+	
 		echo "<tr>";
 		echo "<td>".$lang["job"][35]."</td>";
 		echo "<td>";
@@ -1946,15 +1978,16 @@ function showAddFollowupForm($tID){
 		
 		echo "</td>";
 		echo "</tr>";
-
+	}
 		echo "<tr class='tab_bg_2'>";
 		echo "<td align='center'>";
 		echo "<input type='submit' name='add' value='".$lang["buttons"][8]."' class='submit'>";
 		echo "</td>";
-		
+	if ($isadmin){
 		echo "<td align='center'>";
 		echo "<input type='submit' name='add_close' value='".$lang["buttons"][26]."' class='submit'>";
 		echo "</td>";
+	}
 		echo "</tr>";
 
 
@@ -1962,8 +1995,11 @@ function showAddFollowupForm($tID){
 		echo "</td></tr>";
 		echo "</table>";
 		echo "<input type='hidden' name='tracking' value='$tID'>";
+		if (!$isadmin){
+			echo "<input type='hidden' name='author' value='".$_SESSION["glpiID"]."'>";
+		}
 		echo "</form></div>";
-	}
+	
 }
 
 

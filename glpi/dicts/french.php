@@ -854,6 +854,7 @@ $lang["monitors"][28]="Moniteurs";
 $lang["monitors"][29]="Moniteur ID";
 $lang["monitors"][30]="Nouvel écran à partir d'un modèle";
 $lang["monitors"][31]="Modèle";
+$lang["monitors"][32]="DVI";
 
 $lang["networking"][0]="Nom";
 $lang["networking"][1]="Lieu";
@@ -1264,6 +1265,7 @@ $lang["setup"][128]="Format des dates";
 $lang["setup"][129]="Afficher les ID GLPI";
 $lang["setup"][130]="Utiliser pour Onglets Suivant/Précédent";
 $lang["setup"][131]="Nombre de caractères limite pour les listes déroulantes";
+$lang["setup"][132]="Permettre aux utilisateurs post-only d'ajouter des suivis";
 
 
 $lang["setup"][150]="Sources d'authentification externes";

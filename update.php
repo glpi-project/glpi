@@ -3577,6 +3577,15 @@ if(FieldExists("glpi_consumables_type","type")) {
 }
 
 
+if(!FieldExists("glpi_config","post_only_followup")) {	
+	$query="ALTER TABLE `glpi_config` ADD `post_only_followup` tinyint( 4 ) DEFAULT '1' NOT NULL ";
+	$db->query($query) or die("0.65 add dropdown_limit in config ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_monitors","flags_dvi")) {	
+	$query="ALTER TABLE `glpi_monitors` ADD `flags_dvi` tinyint( 4 ) DEFAULT '0' NOT NULL AFTER `flags_bnc`";
+	$db->query($query) or die("0.65 add dropdown_limit in config ".$lang["update"][90].$db->error());
+}
 
 }
 

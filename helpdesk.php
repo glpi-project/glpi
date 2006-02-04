@@ -51,7 +51,6 @@ include ($phproot . "/glpi/includes_monitors.php");
 include ($phproot . "/glpi/includes_software.php");
 
 
-
 // Redirect management
 if (isset($_GET['redirect'])){
 	checkAuthentication("post-only");
@@ -66,7 +65,12 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 	//*******************
 	// Affichage interventions en cours
 	//******************
-	
+	if (isset($_POST['add'])&&$cfg_features["post_only_followup"]) {
+		$newID=addFollowup($_POST);
+
+		logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$lang["log"][20]." $newID.");
+		glpi_header($cfg_install["root"]."/helpdesk.php?show=user&ID=".$_POST["tracking"]);
+	}	
 	if (!isset($_GET["start"])) $_GET["start"]=0;
 
 	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
