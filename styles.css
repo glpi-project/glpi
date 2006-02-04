@@ -451,6 +451,7 @@ width: 100%; /* precision for Opera */
 }
 #menu dl {
 float: left;
+display: block; /* Precision for Safari */
 width: 12%;
 }
 #menu dt {
