@@ -408,8 +408,10 @@ function showJobShort($ID, $followups) {
 			echo ">";
 			echo $m->getType()."<br>";
 			echo "<strong>";
-			if ($job->computerfound) echo $m->getLink();
-			else echo $m->getNameID();
+			if ($job->fields["device_type"]>0){
+				if ($job->computerfound) echo $m->getLink();
+				else echo $m->getNameID();
+			} else echo "&nbsp;";
 			echo "</strong>";
 
 			echo "</td>";
