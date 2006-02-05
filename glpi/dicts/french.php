@@ -1445,6 +1445,9 @@ $lang["stats"][38]="Catégorie";
 $lang["stats"][39]="Par priorité";
 $lang["stats"][40]="Statistiques par priorité";
 $lang["stats"][41]="Priorité";
+$lang["stats"][42]="Par entreprise";
+$lang["stats"][43]="Statistiques entreprises";
+$lang["stats"][44]="Nom de l'entreprise";
 
 $lang["title"][0]="Centre de contrôle";
 $lang["title"][1]="Accès au Helpdesk seulement";

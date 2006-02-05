@@ -3604,6 +3604,24 @@ if(!TableExists("glpi_history")) {
 	$db->query($query) or die("0.65 add glpi_history table".$lang["update"][90].$db->error());
 }
 
+if(FieldExists("glpi_tracking","assign_type")) {	
+
+	$query="ALTER TABLE `glpi_tracking` ADD `assign_ent` INT NOT NULL DEFAULT '0' AFTER `assign` ";
+	$db->query($query) or die("0.65 add assign_ent in tracking ".$lang["update"][90].$db->error());
+
+	$query="UPDATE `glpi_tracking` SET assign_ent=assign WHERE assign_type='".ENTERPRISE_TYPE."'";
+	$db->query($query) or die("0.65 update assign_ent in tracking ".$lang["update"][90].$db->error());
+
+	$query="UPDATE `glpi_tracking` SET assign=0 WHERE assign_type='".ENTERPRISE_TYPE."'";
+	$db->query($query) or die("0.65 update assign_ent in tracking ".$lang["update"][90].$db->error());
+
+	$query="ALTER TABLE `glpi_tracking` DROP `assign_type`";
+	$db->query($query) or die("0.65 drop assign_type in tracking ".$lang["update"][90].$db->error());
+
+
+
+}
+
 
 }
 

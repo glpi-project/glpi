@@ -314,67 +314,6 @@ if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 
 
 /**
-* Make a select box with all glpi users where select key = name
-*
-* Think it's unused now.
-*
-*
-* @param $value
-* @param $value_type
-* @param $myname
-* @return nothing (print out an HTML select box)
-*
-*
-*/
-function dropdownAssign($value, $value_type,$myname) {
-	// Make a select box with all glpi users
-	global $HTMLRel,$cfg_install,$lang;
-
-	$db=new DB;
-	
-	$items=array(
-	USER_TYPE=>"glpi_users",
-	ENTERPRISE_TYPE=>"glpi_enterprises",
-	);
-
-	$rand=mt_rand();
-	echo "<table border='0'><tr><td>\n";
-	echo "<select name='assign_type' id='item_type$rand'>\n";
-	echo "<option value='0'>-----</option>\n";
-	echo "<option  value='".USER_TYPE."'>".$lang["Menu"][14]."</option>\n";
-	echo "<option  value='".ENTERPRISE_TYPE."'>".$lang["Menu"][23]."</option>\n";
-	echo "</select>\n";
-	
-	
-	echo "<script type='text/javascript' >\n";
-	echo "   new Form.Element.Observer('item_type$rand', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('show_$myname$rand','".$cfg_install["root"]."/ajax/dropdownAllItems.php',{asynchronous:true, evalScripts:true, \n";
-	echo "           onComplete:function(request)\n";
-	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
-	echo "           onLoading:function(request)\n";
-	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'idtable='+value+'&myname=$myname&value=$value'\n";
-	echo "})})\n";
-	echo "</script>\n";
-
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute; filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
-	echo "</td><td>\n"	;
-	echo "<span id='show_$myname$rand'></span>\n";
-	echo "</td></tr>\n";
-	echo "</table>\n";
-
-	if ($value>0){
-		echo "<script type='text/javascript' >\n";
-		echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
-		echo "document.getElementById('item_type$rand').value='".$value_type."';";
-		echo "</script>\n";
-	}
-	
-	
-}
-
-/**
 * Make a select box with all glpi users where select key = ID
 *
 *

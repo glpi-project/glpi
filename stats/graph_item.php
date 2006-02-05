@@ -68,14 +68,10 @@ $job=new Job();
 switch($_GET["type"]){
 case "technicien":
 	$val1=$_GET["ID"];
-	$val2=$_GET["assign_type"];
-	$job->fields["assign"]=$_GET["ID"];
-	$job->fields["assign_type"]=$_GET["assign_type"];
+	$val2="";
 
-	if ($_GET["assign_type"]==USER_TYPE){
 	$next=getNextItem("glpi_users",$_GET["ID"]);
 	$prev=getPreviousItem("glpi_users",$_GET["ID"]);
-	} else $next=$prev=-1;
 
 	echo "<div align='center'>";
 	echo "<table class='icon_nav'>";
@@ -83,7 +79,27 @@ case "technicien":
 	echo "<td >";
 	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
 	echo "</td>";
-	echo "<td style='text-align=center; padding:0px 30px 0px 30px;'><b>".$lang["stats"][16].": ".$job->getAssignName(1)."</b></td>";
+	echo "<td style='text-align=center; padding:0px 30px 0px 30px;'><b>".$lang["stats"][16].": ".getAssignName($_GET["ID"],USER_TYPE,1)."</b></td>";
+	echo "<td  >";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
+	echo "</td>";
+	echo "</tr>";
+	echo "</table></div><br>";
+	break;
+case "enterprise":
+	$val1=$_GET["ID"];
+	$val2="";
+
+	$next=getNextItem("glpi_enterprises",$_GET["ID"]);
+	$prev=getPreviousItem("glpi_enterprises",$_GET["ID"]);
+
+	echo "<div align='center'>";
+	echo "<table class='icon_nav'>";
+	echo "<tr>";
+	echo "<td >";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
+	echo "</td>";
+	echo "<td style='text-align=center; padding:0px 30px 0px 30px;'><b>".$lang["stats"][44].": ".getAssignName($_GET["ID"],ENTERPRISE_TYPE,1)."</b></td>";
 	echo "<td  >";
 	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
 	echo "</td>";

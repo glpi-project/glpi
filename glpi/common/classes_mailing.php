@@ -137,7 +137,7 @@ class Mailing
 			}
 		}	
 
-		if (isset($cfg_mailing[$this->type]["attrib"])&&$cfg_mailing[$this->type]["attrib"]&&$this->job->fields["assign_type"]==USER_TYPE&&$this->job->fields["assign"])
+		if (isset($cfg_mailing[$this->type]["attrib"])&&$cfg_mailing[$this->type]["attrib"]&&$this->job->fields["assign"])
 		{
 			$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$this->job->fields["assign"]."')";
 			if ($result2 = $db->query($query2)) 

@@ -45,7 +45,7 @@ checkAuthentication("normal");
 
 commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
 
-echo "<div align ='center' ><p><b><span class='icon_nav'>".$lang["stats"][17]."</span></b></p></div>";
+echo "<div align ='center' ><p><b><span class='icon_nav'>".$lang["stats"][43]."</span></b></p></div>";
 
 if (isset($_GET["date1"])) $_POST["date1"] = $_GET["date1"];
 if (isset($_GET["date2"])) $_POST["date2"] = $_GET["date2"];
@@ -64,7 +64,7 @@ $_POST["date2"]=$tmp;
 }
 if(!isset($_GET["start"])) $_GET["start"] = 0;
 
-echo "<div align='center'><form method=\"post\" name=\"form\" action=\"stat_technicien.php\">";
+echo "<div align='center'><form method=\"post\" name=\"form\" action=\"stat_enterprise.php\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
 echo $lang["search"][8]." :</td><td>";
 showCalendarForm("form","date1",$_POST["date1"]);
@@ -77,15 +77,15 @@ echo "</table></form></div>";
 
 //recuperation des different utilisateurs ayant eu des interventions attribuées
 //get distinct user who has intervention assigned to
-$nomTech = getNbIntervTech($_POST["date1"],$_POST["date2"]);
+$nomEnt = getNbIntervEnterprise($_POST["date1"],$_POST["date2"]);
 
 $val=array();
 $i=0;
-if (is_array($nomTech))
-foreach($nomTech as $key){
-	$val[$i]["assign"]=$key["assign"];
-	$val[$i]["link"]="<a href='".$HTMLRel."users/users-info.php?ID=".$key["assign"]."'>";
-	$val[$i]["link"].=empty($key["realname"])?$key["name"]:$key["realname"];
+if (is_array($nomEnt))
+foreach($nomEnt as $key){
+	$val[$i]["assign_ent"]=$key["assign_ent"];
+	$val[$i]["link"]="<a href='".$HTMLRel."enterprises/enterprises-info.php?ID=".$key["assign_ent"]."'>";
+	$val[$i]["link"].=$key["name"];
 	$val[$i]["link"].="</a>";
 $i++;
 }
@@ -95,7 +95,7 @@ printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"date1=".$_POST["date1"]
 
 
 echo "<div align ='center'>";
-if (is_array($nomTech))
+if (is_array($nomEnt))
  {
 //affichage du tableu
 //table display
@@ -107,25 +107,25 @@ echo "<tr><th>".$lang["stats"][16]."</th><th>&nbsp;</th><th>".$lang["stats"][13]
   for ($i=$_GET['start'];$i< $numrows && $i<($_GET['start']+$cfg_features["list_limit"]);$i++)
   {
 	echo "<tr class='tab_bg_2'>";
-	echo "<td>".$val[$i]['link']."</td><td><a href='graph_item.php?ID=".$val[$i]['assign']."&amp;type=technicien'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
+	echo "<td>".$val[$i]['link']."</td><td><a href='graph_item.php?ID=".$val[$i]['assign_ent']."&amp;type=enterprise'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
 	//le nombre d'intervention
 	//the number of intervention
-		echo "<td>".getNbinter(4,'assign',$val[$i]["assign"],$_POST["date1"],$_POST["date2"])."</td>";
+		echo "<td>".getNbinter(4,'assign_ent',$val[$i]["assign_ent"],$_POST["date1"],$_POST["date2"])."</td>";
 	//le nombre d'intervention resolues
 	//the number of resolved intervention
-		echo "<td>".getNbresol(4,'assign',$val[$i]["assign"],$_POST["date1"],$_POST["date2"])."</td>";
+		echo "<td>".getNbresol(4,'assign_ent',$val[$i]["assign_ent"],$_POST["date1"],$_POST["date2"])."</td>";
 	//Le temps moyen de resolution
 	//The average time to resolv
-		echo "<td>".getResolAvg(4, 'assign',$val[$i]["assign"],$_POST["date1"],$_POST["date2"])."</td>";
+		echo "<td>".getResolAvg(4, 'assign_ent',$val[$i]["assign_ent"],$_POST["date1"],$_POST["date2"])."</td>";
 	//Le temps moyen de l'intervention réelle
 	//The average realtime to resolv
-		echo "<td>".getRealAvg(4, 'assign',$val[$i]["assign"],$_POST["date1"],$_POST["date2"])."</td>";
+		echo "<td>".getRealAvg(4, 'assign_ent',$val[$i]["assign_ent"],$_POST["date1"],$_POST["date2"])."</td>";
 	//Le temps total de l'intervention réelle
 	//The total realtime to resolv
-		echo "<td>".getRealTotal(4, 'assign',$val[$i]["assign"],$_POST["date1"],$_POST["date2"])."</td>";
+		echo "<td>".getRealTotal(4, 'assign_ent',$val[$i]["assign_ent"],$_POST["date1"],$_POST["date2"])."</td>";
 	//Le temps total de l'intervention réelle
 	//The total realtime to resolv
-		echo "<td>".getFirstActionAvg(4, 'assign',$val[$i]["assign"],$_POST["date1"],$_POST["date2"])."</td>";
+		echo "<td>".getFirstActionAvg(4, 'assign_ent',$val[$i]["assign_ent"],$_POST["date1"],$_POST["date2"])."</td>";
 
 	echo "</tr>";
   }

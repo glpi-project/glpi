@@ -206,7 +206,7 @@ class Job {
 		$message.= $lang["mailing"][6]." ".convDateTime($this->fields["date"])."\n";
 		$message.= $lang["mailing"][7]." ".$name."\n";
 		$message.= $lang["mailing"][24]." ".getStatusName($this->fields["status"])."\n";
-		$message.= $lang["mailing"][8]." ".$this->getAssignName()."\n";
+		$message.= $lang["mailing"][8]." ".getAssignName($this->fields["assign"],USER_TYPE)."\n";
 		$message.= $lang["mailing"][16]." ".getPriorityName($this->fields["priority"])."\n";
 		$message.= $lang["mailing"][28]." ".$contact."\n";
 		if ($this->fields["emailupdates"]=="yes"){
@@ -245,27 +245,6 @@ class Job {
 			 return true;
 			}
 			 return false;		
-	}
-	
-	function getAssignName($link=0){
-	global $cfg_install;
-	
-	if ($this->fields["assign_type"]==USER_TYPE){
-		return getUserName($this->fields["assign"],$link);
-		
-	} else if ($this->fields["assign_type"]==ENTERPRISE_TYPE){
-		$ent=new Enterprise();
-		$ent->getFromDB($this->fields["assign"]);
-		$before="";
-		$after="";
-		if ($link){
-			$before="<a href=\"".$cfg_install["root"]."/enterprises/enterprises-info-form.php?ID=".$this->fields["assign"]."\">";
-			$after="</a>";
-		}
-		
-		return $before.$ent->fields["name"].$after;
-	}
-	
 	}
 	
 	function getAuthorName($link=0){
