@@ -53,36 +53,49 @@ checkAuthentication("normal");
 
 commonHeader($lang["title"][16],$_SERVER["PHP_SELF"]);
 
-if(!isset($_GET["start"])) $_GET["start"] = 0;
-if (!isset($_GET["order"])) $_GET["order"] = "ASC";
-if (!isset($_GET["contains"])) $_GET["contains"] = "";
-if (!isset($_GET["contains2"])) $_GET["contains2"] = "";
-if (!isset($_GET["contains3"])) $_GET["contains3"] = "";
-if(!isset($_GET["assign"])) $_GET["assign"] = "";
-if(!isset($_GET["assign_ent"])) $_GET["assign_ent"] = "";
-if(!isset($_GET["author"])) $_GET["author"] = "";
-if (!isset($_GET["enddate1"])) $_GET["enddate1"]="0000-00-00";
-if (!isset($_GET["enddate2"])) $_GET["enddate2"]="0000-00-00";
-if (!isset($_GET["date1"])) $_GET["date1"]="0000-00-00";
-if (!isset($_GET["date2"])) $_GET["date2"]="0000-00-00";
+if(isset($_GET)) $tab = $_GET;
 
-if(!isset($_GET["type"])) $_GET["type"] = 0;
-if(!isset($_GET["item"])) $_GET["item"] = 0;
-if(!isset($_GET["category"])) $_GET["category"] = 0;
-if(!isset($_GET["priority"])) $_GET["priority"] = 0;
-if (!isset($_GET["field"])) $_GET["field"]="";
-if (!isset($_GET["field2"])) $_GET["field2"]="";
-if (!isset($_GET["status"])) $_GET["status"]="all";
-if (!isset($_GET["showfollowups"])) $_GET["showfollowups"]="1";
+if (!isset($tab['reset'])){
+	if (is_array($tab))
+	foreach ($tab as $key => $val)
+		if ($key[0]!='_')
+			$_SESSION['tracking'][$key]=$val;
+}
+if (isset($tab['reset'])) unset($_SESSION['tracking']);
+
+if (isset($_SESSION['tracking'])&&is_array($_SESSION['tracking']))
+foreach ($_SESSION['tracking'] as $key => $val)
+if (!isset($tab[$key])) $tab[$key]=$val;
+
+if (!isset($tab["start"])||isset($tab['reset'])) $tab["start"]=0;
+if (!isset($tab["priority"])||isset($tab['reset'])) $tab["priority"]=0;
+if (!isset($tab["field2"])||isset($tab['reset'])) $tab["field2"]="both";
+if (!isset($tab["contains2"])||isset($tab['reset'])) $tab["contains2"]="";
+if (!isset($tab["author"])||isset($tab['reset'])) $tab["author"]=0;
+if (!isset($tab["assign"])||isset($tab['reset'])) $tab["assign"]=0;
+if (!isset($tab["assign_ent"])||isset($tab['reset'])) $tab["assign_ent"]=0;
+if (!isset($tab["category"])||isset($tab['reset'])) $tab["category"]="";
+if (!isset($tab["status"])||isset($tab['reset'])) $tab["status"]="notold";
+if (!isset($tab["showfollowups"])||isset($tab['reset'])) $tab["showfollowups"]=0;
+if (!isset($tab["item"])||isset($tab['reset'])) $tab["item"]=0;
+if (!isset($tab["type"])||isset($tab['reset'])) $tab["type"]=0;
+
+if (!isset($tab["contains"])||isset($tab['reset'])) $tab["contains"]="";
+if (!isset($tab["contains3"])||isset($tab['reset'])) $tab["contains3"]="";
+if (!isset($tab["date1"])||isset($tab['reset'])) $tab["date1"]="0000-00-00";
+if (!isset($tab["enddate1"])||isset($tab['reset'])) $tab["enddate1"]="0000-00-00";
+if (!isset($tab["date2"])||isset($tab['reset'])) $tab["date2"]="0000-00-00";
+if (!isset($tab["enddate2"])||isset($tab['reset'])) $tab["enddate2"]="0000-00-00";
+if (!isset($tab["field"])||isset($tab['reset'])) $tab["field"]="";
+if(!isset($tab["only_computers"])||isset($tab['reset'])) $tab["only_computers"] = "";
 
 
-if ($_GET["date1"]!=""&&$_GET["date2"]!=""&&strcmp($_GET["date2"],$_GET["date1"])<0){
-$tmp=$_GET["date1"];
-$_GET["date1"]=$_GET["date2"];
-$_GET["date2"]=$tmp;
+if ($tab["date1"]!=""&&$tab["date2"]!=""&&strcmp($tab["date2"],$tab["date1"])<0){
+$tmp=$tab["date1"];
+$tab["date1"]=$tab["date2"];
+$tab["date2"]=$tmp;
 }
 
-if(!isset($_GET["only_computers"])) $_GET["only_computers"] = "";
 
 
 if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete"])&&!empty($_POST["todel"])){
@@ -92,10 +105,10 @@ if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete"])&&!empty($_POST["tode
 		}
 	}
 
-searchFormTracking(1,$_SERVER["PHP_SELF"],$_GET["start"],$_GET["status"],$_GET["author"],$_GET["attrib"],$_GET["assign_ent"],$_GET["category"],$_GET["priority"],$_GET["item"],$_GET["type"],$_GET["showfollowups"],$_GET["field2"],$_GET["contains2"],$_GET["field"],$_GET["contains"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["enddate1"],$_GET["enddate2"]);
+searchFormTracking(1,$_SERVER["PHP_SELF"],$tab["start"],$tab["status"],$tab["author"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"],$tab["field"],$tab["contains"],$tab["date1"],$tab["date2"],$tab["only_computers"],$tab["enddate1"],$tab["enddate2"]);
 
-if (!empty($_GET["field"]))
-showTrackingList($_SERVER["PHP_SELF"],$_GET["start"],$_GET["status"],$_GET["author"],$_GET["attrib"],$_GET["assign_ent"],$_GET["category"],$_GET["priority"],$_GET["item"],$_GET["type"],$_GET["showfollowups"],$_GET["field2"],$_GET["contains2"],$_GET["field"],$_GET["contains"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["enddate1"],$_GET["enddate2"]);
+if (!empty($tab["field"]))
+showTrackingList($_SERVER["PHP_SELF"],$tab["start"],$tab["status"],$tab["author"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"],$tab["field"],$tab["contains"],$tab["date1"],$tab["date2"],$tab["only_computers"],$tab["enddate1"],$tab["enddate2"]);
 
 
 commonFooter();

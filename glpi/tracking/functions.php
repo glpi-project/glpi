@@ -406,13 +406,15 @@ function showJobShort($ID, $followups) {
 			if (isset($m->obj->fields["deleted"])&&$m->obj->fields["deleted"]=='Y')
 			echo "class='tab_bg_1_2'";
 			echo ">";
-			echo $m->getType()."<br>";
-			echo "<strong>";
+			echo $m->getType();
+			
 			if ($job->fields["device_type"]>0){
+				echo "<br><strong>";
 				if ($job->computerfound) echo $m->getLink();
 				else echo $m->getNameID();
-			} else echo "&nbsp;";
-			echo "</strong>";
+				echo "</strong>";
+			} 
+			
 
 			echo "</td>";
 		}
@@ -798,12 +800,12 @@ function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,
 	echo "<table border='0' width='900' class='tab_cadre'>";
 
 	
-	echo "<tr><th colspan='5'><strong>".$lang["search"][0].":</strong></th></tr>";
+	echo "<tr><th colspan='6'><strong>".$lang["search"][0].":</strong></th></tr>";
 
 
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td colspan='2' align='center'>".$lang["joblist"][0].":";
+	echo "<td colspan='1' align='center'>".$lang["joblist"][0].":";
 	echo "<select name='status'>";
 	echo "<option value='new' ".($status=="new"?" selected ":"").">".$lang["joblist"][9]."</option>";
 	echo "<option value='assign' ".($status=="assign"?" selected ":"").">".$lang["joblist"][18]."</option>";
@@ -816,24 +818,27 @@ function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,
 	echo "<option value='old' ".($status=="old"?"selected":"").">".$lang["joblist"][25]."</option>";	
 	echo "<option value='all' ".($status=="all"?"selected":"").">".$lang["joblist"][20]."</option>";
 	echo "</select></td>";
+	echo "<td  colspan='2' align='center'>".$lang["joblist"][3]."&nbsp;:&nbsp;";
+	dropdownUsersTracking("author",$author,"author");
+	echo "</td>";
 
-	echo "<td colspan='2' align='center'>".$lang["joblist"][2].":&nbsp;";
+	echo "<td colspan='1' align='center'>".$lang["joblist"][2].":&nbsp;";
 	dropdownPriority("priority",$priority,1);
 	echo "</td>";
 
-	echo "<td colspan='1' align='center'>".$lang["tracking"][20]."&nbsp;:&nbsp;";
+	echo "<td colspan='2' align='center'>".$lang["tracking"][20]."&nbsp;:&nbsp;";
 	dropdownValue("glpi_dropdown_tracking_category","category",$category);
 	echo "</td>";
 
 	echo "</tr>";
 	echo "<tr class='tab_bg_1'>";
 
-	echo "<td align='center' colspan='2'>";
+	echo "<td align='center' colspan='3'>";
 	echo "<table border='0'><tr><td>".$lang["common"][1].":</td><td>";
 	dropdownAllItems("item",$type,$item);
 	echo "</td></tr></table>";
 	echo "</td>";
-	echo "<td  colspan='2' align='center'>".$lang["job"][5]."&nbsp;:&nbsp;";
+	echo "<td colspan='3' align='center'>".$lang["job"][5]."&nbsp;:&nbsp;";
 
 	echo $lang["job"][27].":&nbsp;";
 	dropdownUsers("assign",$assign);
@@ -841,17 +846,13 @@ function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,
 	dropdownValue("glpi_enterprises","assign_ent",$assign_ent);
 
 	echo "</td>";
-	echo "<td  colspan='1' align='center'>".$lang["joblist"][3]."&nbsp;:&nbsp;";
-	dropdownUsersTracking("author",$author,"author");
-	echo "</td>";
-
 	echo "</tr>";
 
 	if ($report){
 		echo "<tr class='tab_bg_1'>";
-		echo "<td align='center' colspan='5'>";
+		echo "<td align='center' colspan='6'>";
 		$selected="";
-		if ($_GET["only_computers"]) $selected="checked";
+		if ($computers_search) $selected="checked";
 		echo "<input type='checkbox' name='only_computers' value='1' $selected>".$lang["reports"][24].":&nbsp;";
 
 		echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
@@ -873,21 +874,20 @@ function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,
 		echo "</td></tr>";
 	}
 if($report)	{
-	echo "<tr class='tab_bg_1'><td>".$lang["reports"][60].":</td><td align='center' colspan='2'>".$lang["search"][8].":&nbsp;";
+	echo "<tr class='tab_bg_1'><td colspan='2' align='right'>".$lang["reports"][60].":</td><td align='center' colspan='2'>".$lang["search"][8].":&nbsp;";
 	showCalendarForm("form","date1",$date1);
-	echo "</td><td align='center' colspan='1'>";
+	echo "</td><td align='center' colspan='2'>";
 	echo $lang["search"][9].":&nbsp;";
 	showCalendarForm("form","date2",$date2);
-	echo "</td><td align='center'>&nbsp;</td></tr>";
+	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["reports"][61].":</td><td align='center' colspan='2'>".$lang["search"][8].":&nbsp;";
+	echo "<tr class='tab_bg_1'><td colspan='2' align='right'>".$lang["reports"][61].":</td><td align='center' colspan='2'>".$lang["search"][8].":&nbsp;";
 	showCalendarForm("form","enddate1",$enddate1);
-	echo "</td><td align='center' colspan='1'>";
+	echo "</td><td align='center' colspan='2'>";
 	echo $lang["search"][9].":&nbsp;";
 	showCalendarForm("form","enddate2",$enddate2);
-	echo "</td><td align='center'><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'></td></tr>";
+	echo "</td></tr>";
 }
-else {
 	echo "<tr  class='tab_bg_1'>";
 
 	echo "<td align='center' colspan='2'>";
@@ -910,13 +910,12 @@ else {
 	echo "<td align='center' colspan='1'><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'></td>";
 	echo "<td align='center'  colspan='1'><input type='submit' name='reset' value=\"".$lang["buttons"][16]."\" class='submit'></td>";
 
-	echo "<td align='center' colspan='1'>".$lang["reports"][59].":<select name='showfollowups'>";
+	echo "<td align='center' colspan='2'>".$lang["reports"][59].":<select name='showfollowups'>";
 	echo "<option value='1' ".($showfollowups=="1"?"selected":"").">".$lang["choice"][0]."</option>";
 	echo "<option value='0' ".($showfollowups=="0"?"selected":"").">".$lang["choice"][1]."</option>";	
 	echo "</select></td>";
 	echo "</tr>";
 
-}
 	echo "</table></div>";
 	echo "<input type='hidden' name='start' value='0'>";
 	echo "</form>";
@@ -1069,6 +1068,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 	}
 
    $query.=$where." ORDER BY glpi_tracking.date ".$prefs["order"];
+
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		
