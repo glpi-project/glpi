@@ -298,7 +298,7 @@ class Mailing
 				// $mmail->setHeader('Disposition-Notification-To', "\"".$users[0]['name']."\" <".$users[0]['email'].">"); 
 		  
 		  		$mmail->Send();
-				exit();
+				
 				}
 			} else {
 				echo "Type d'envoi invalide";
