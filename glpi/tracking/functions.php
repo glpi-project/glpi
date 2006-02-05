@@ -1213,15 +1213,16 @@ function getAssignName($ID,$type,$link=0){
 		
 	} else if ($type==ENTERPRISE_TYPE){
 		$ent=new Enterprise();
-		$ent->getFromDB($ID);
-		$before="";
-		$after="";
-		if ($link){
-			$before="<a href=\"".$cfg_install["root"]."/enterprises/enterprises-info-form.php?ID=".$ID."\">";
-			$after="</a>";
-		}
+		if ($ent->getFromDB($ID)){
+			$before="";
+			$after="";
+			if ($link){
+				$before="<a href=\"".$cfg_install["root"]."/enterprises/enterprises-info-form.php?ID=".$ID."\">";
+				$after="</a>";
+			}
 		
-		return $before.$ent->fields["name"].$after;
+			return $before.$ent->fields["name"].$after;
+		} else return "";
 	}
 	
 }
