@@ -839,12 +839,12 @@ function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,
 	echo "</tr>";
 	echo "<tr class='tab_bg_1'>";
 
-	echo "<td align='center' colspan='3'>";
+	echo "<td align='center' colspan='2'>";
 	echo "<table border='0'><tr><td>".$lang["common"][1].":</td><td>";
 	dropdownAllItems("item",$type,$item);
 	echo "</td></tr></table>";
 	echo "</td>";
-	echo "<td colspan='3' align='center'>".$lang["job"][5]."&nbsp;:&nbsp;";
+	echo "<td colspan='4' align='center'>".$lang["job"][5]."&nbsp;:&nbsp;";
 
 	echo $lang["job"][27].":&nbsp;";
 	dropdownUsers("assign",$assign);
