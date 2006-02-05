@@ -419,7 +419,7 @@ function step3($host,$user,$password,$update)
                 
 	}
 	else {
-		echo  "<p>".$lang["update"][93]."</p>";
+		echo  "<h3>".$lang["update"][93]."</h3>";
 		if($update == "no") {
 
 			echo "<p>".$lang["install"][38]."</p>";
@@ -441,7 +441,7 @@ function step3($host,$user,$password,$update)
 			echo "</form>";
 		}
 		elseif($update == "yes") {
-			echo $lang["install"][40];
+			echo "<p>".$lang["install"][40]."</p>";
 			echo "<form action=\"install.php\" method=\"post\">";
 			
 			$db_list = mysql_list_dbs($link);
