@@ -258,21 +258,30 @@ $where= " AND is_template='1'";
 $si->getFromDB($device_type,$id_device);
 $db=new DB;
 
-if ($state!=$si->fields["state"])
-if ($si->fields["state"]!=-1){
-if ($state==0)
-	$db->query("DELETE FROM glpi_state_item WHERE device_type='$device_type' and id_device='$id_device' $where;");
-else $db->query("UPDATE glpi_state_item SET state='$state' WHERE device_type='$device_type' and id_device='$id_device' $where;");
+	if ($state!=$si->fields["state"])
+	if ($si->fields["state"]!=-1){
+		if ($state==0){
+			$db->query("DELETE FROM glpi_state_item WHERE device_type='$device_type' and id_device='$id_device' $where;");
+			
+		
+			
+		
+		}else{ $db->query("UPDATE glpi_state_item SET state='$state' WHERE device_type='$device_type' and id_device='$id_device' $where;");
+		
+		}
 
-} else {
-if ($state!=0){
-	if ($template==1)
-	$db->query("INSERT INTO glpi_state_item (device_type,id_device,state,is_template) VALUES ('$device_type','$id_device','$state','1');");
-	else 
-	$db->query("INSERT INTO glpi_state_item (device_type,id_device,state) VALUES ('$device_type','$id_device','$state');");
-	}
+		$changes=array(31,addslashes(getDropdownName("glpi_dropdown_state",$si->fields["state"])), addslashes(getDropdownName( "glpi_dropdown_state",$state)));
+		historyLog ($id_device,$device_type,$changes);
 	
-}
+	} else {
+		if ($state!=0){
+			if ($template==1)
+			$db->query("INSERT INTO glpi_state_item (device_type,id_device,state,is_template) VALUES ('$device_type','$id_device','$state','1');");
+			else 
+			$db->query("INSERT INTO glpi_state_item (device_type,id_device,state) VALUES ('$device_type','$id_device','$state');");
+			}
+	
+	}
 	
 }
 
