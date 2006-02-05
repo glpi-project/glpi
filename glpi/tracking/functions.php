@@ -66,37 +66,43 @@ function showTrackingOnglets($target){
 	$ID=$ereg[1];
 
 	echo "<div id='barre_onglets'><ul id='onglet'>";
-   		 if (isAdmin($_SESSION['glpitype'])){
-   		// admin yes  
-		echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'><a href=\"".$cfg_install["root"]."/tracking/tracking-info-form.php?ID=$ID\">".$lang["job"][38]." $ID</span></a></li>";
-   
-    		echo "<li class='invisible'>&nbsp;</li>";
-    
-       		 echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</span></a></li>";
-		}else{ // admin no
-			echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'>".$lang["job"][38]." $ID</span></li>";
-			if ($cfg_features["post_only_followup"]){
+   		
+		 if (isNormal($_SESSION['glpitype'])){
+				echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'><a href=\"".$cfg_install["root"]."/tracking/tracking-info-form.php?ID=$ID\">".$lang["job"][38]." $ID</span></a></li>";
 				echo "<li class='invisible'>&nbsp;</li>";
-    
+				
+				// admin yes  
+				if (isAdmin($_SESSION['glpitype'])){
+				
 				echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</span></a></li>";
-			}
+				}
+		
+				// Post-only could'nt see other item  but other user yes 
+				echo "<li class='invisible'>&nbsp;</li>";
+		
+				$next=getNextItem("glpi_tracking",$ID);
+				$prev=getPreviousItem("glpi_tracking",$ID);
+				$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
+				if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
+				if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
+		}elseif ($cfg_features["post_only_followup"]){
+		
+			// Postonly could post followup in helpdesk area	
+			echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'><a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&ID=$ID\">".$lang["job"][38]." $ID</span></a></li>";
+
+			echo "<li class='invisible'>&nbsp;</li>";
+
+			echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</span></a></li>";
+		}
 
 		}
-		 if (isNormal($_SESSION['glpitype'])){
-      		// Post-only could'nt see other item  but other user yes 
-		 echo "<li class='invisible'>&nbsp;</li>";
-
-       		 $next=getNextItem("glpi_tracking",$ID);
-     		 $prev=getPreviousItem("glpi_tracking",$ID);
-     		 $cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
-       		 if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
-       		 if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
-     		}
+	
+	echo "</ul></div>";	 
 		
 	}
-	echo "</ul></div>";
 	
-}
+	
+
 
 
 function commonTrackingListHeader(){
