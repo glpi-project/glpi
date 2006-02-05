@@ -336,17 +336,18 @@ function showJobShort($ID, $followups) {
 	// Make new job object and fill it from database, if success, print it
 	$job = new Job;
 	$isadmin=isAdmin($_SESSION['glpitype']);
-
+	$valign="";
+	if ($followups) $valign=" valign='top' ";
 	if ($job->getfromDB($ID,0))
 	{
 		$bgcolor=$cfg_layout["priority_".$job->fields["priority"]];
 
 		echo "<tr class='tab_bg_2'>";
-		echo "<td align='center' valign='top'>ID: ".$job->ID."<br>";
+		echo "<td align='center' $valign>ID: ".$job->ID."<br>";
 		echo "<img src=\"".$HTMLRel."pics/".$job->fields["status"].".png\" alt='".getStatusName($job->fields["status"])."' title='".getStatusName($job->fields["status"])."'>";
 		if (!ereg("old_",$job->fields["status"]))
 		{
-			echo "<td width='100' valign='top' ><small>".$lang["joblist"][11].":<br>&nbsp;".convDateTime($job->fields["date"])."</small></td>";
+			echo "<td width='100' $valign ><small>".$lang["joblist"][11].":<br>&nbsp;".convDateTime($job->fields["date"])."</small></td>";
 
 		}
 		else
@@ -358,15 +359,15 @@ function showJobShort($ID, $followups) {
 			//echo "<img src=\"".$HTMLRel."pics/delete2.png\">";
 			}
 			echo "</td>";
-			echo "<td width='130' valign='top'><small>".$lang["joblist"][11].":<br>&nbsp;".convDateTime($job->fields["date"])."<br>";
+			echo "<td width='130' $valign><small>".$lang["joblist"][11].":<br>&nbsp;".convDateTime($job->fields["date"])."<br>";
 			echo "<i>".$lang["joblist"][12].":<br>&nbsp;".convDateTime($job->fields["closedate"])."</i>";
 			if ($job->fields["realtime"]>0) echo "<br>".$lang["job"][20].": <br>".getRealtime($job->fields["realtime"]);
 			echo "</small></td>";
 		}
 
-		echo "<td align='center' valign='top' bgcolor='$bgcolor'><strong>".getPriorityName($job->fields["priority"])."</strong></td>";
+		echo "<td align='center' $valign bgcolor='$bgcolor'><strong>".getPriorityName($job->fields["priority"])."</strong></td>";
 		
-		echo "<td align='center' valign='top'>";
+		echo "<td align='center' $valign>";
 
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		echo "<strong>".$job->getAuthorName(1)."</strong>";
@@ -377,11 +378,11 @@ function showJobShort($ID, $followups) {
 
 		if ($job->fields["assign"] == 0)
 		{
-			echo "<td align='center' valign='top'>[Nobody]</td>"; 
+			echo "<td align='center' $valign>[Nobody]</td>"; 
 	    	}
 		else
 		{
-			echo "<td align='center' valign='top'>";
+			echo "<td align='center' $valign>";
 			if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 			echo getAssignName($job->fields["assign"],USER_TYPE,1);
 			else
@@ -399,7 +400,7 @@ function showJobShort($ID, $followups) {
 		}    
 		
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0){
-			echo "<td align='center' valign='top' ";
+			echo "<td align='center' $valign ";
 			$m= new CommonItem;
 			if ($m->getfromDB($job->fields["device_type"],$job->fields["computer"]))
 			if (isset($m->obj->fields["deleted"])&&$m->obj->fields["deleted"]=='Y')
@@ -414,10 +415,10 @@ function showJobShort($ID, $followups) {
 			echo "</td>";
 		}
 		else
-		echo "<td  align='center' valign='top'><strong>$job->computername (".$job->fields["computer"].")</strong></td>";
+		echo "<td  align='center' $valign><strong>$job->computername (".$job->fields["computer"].")</strong></td>";
 
 
-		echo "<td  align='center' valign='top' ><strong>".getDropdownName("glpi_dropdown_tracking_category",$job->fields["category"])."</strong></td>";
+		echo "<td  align='center' $valign ><strong>".getDropdownName("glpi_dropdown_tracking_category",$job->fields["category"])."</strong></td>";
 		
 		$stripped_content=$job->fields["contents"];
 		if (!$followups) $stripped_content =substr($job->fields["contents"],0,$cfg_features["cut"]);
@@ -430,7 +431,7 @@ function showJobShort($ID, $followups) {
 		echo "</td>";
 
 		// Job Controls
-		echo "<td width='40' align='center' >";
+		echo "<td width='40' align='center' $valign>";
 		
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 		echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-info-form.php?ID=$job->ID\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
