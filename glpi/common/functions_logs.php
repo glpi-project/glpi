@@ -174,7 +174,7 @@ function showHistory($device_type,$id_device){
 			
 			echo "<tr class='tab_bg_2'>";
 			
-			echo "<td>$ID</td><td>$date_mod</td><td>$user_name</td><td>$field</td><td width='70%'>$change</td>"; 
+			echo "<td>$ID</td><td>$date_mod</td><td>$user_name</td><td>$field</td><td width='60%'>$change</td>"; 
 			echo "</tr>";
 			$i++;
 			}
