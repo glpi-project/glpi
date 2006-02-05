@@ -198,7 +198,7 @@ echo "<body bgcolor='#$bgcolor' onUnLoad=''>\n" ;
   echo "<td align='right'><select name='year' onChange=\"modifier($jour)\">\n" ;
 
   $y = date("Y") ;
-  for ($i=$y-10;$i<$y+10;$i++)
+  for ($i=$y-20;$i<$y+20;$i++)
   {
    echo "<option value='$i'".($annee==($i)?" selected":"").">$i</option>\n" ;
   }

@@ -143,7 +143,7 @@ function showCentralJobList($target,$start) {
 
 
 	
-	$query = "SELECT ID FROM glpi_tracking WHERE (assign = '".$_SESSION["glpiID"]."' AND assign_type='".USER_TYPE."') AND status <> 'old_done' AND status <> 'old_notdone' ORDER BY date ".$prefs["order"]."";
+	$query = "SELECT ID FROM glpi_tracking WHERE (assign = '".$_SESSION["glpiID"]."') AND status <> 'old_done' AND status <> 'old_notdone' ORDER BY date ".$prefs["order"]."";
 	
 	$lim_query = " LIMIT ".$start.",".$cfg_features["list_limit"]."";	
 
@@ -383,10 +383,18 @@ function showJobShort($ID, $followups) {
 		{
 			echo "<td align='center' >";
 			if (strcmp($_SESSION["glpitype"],"post-only")!=0)
-			echo $job->getAssignName(1);
+			echo getAssignName($job->fields["assign"],USER_TYPE,1);
 			else
-			echo "<strong>".$job->getAssignName()."</strong>";
-
+			echo "<strong>".getAssignName($job->fields["assign"],USER_TYPE)."</strong>";
+			
+			if ($job->fields["assign_ent"]>0){
+			echo "<br>";
+			if (strcmp($_SESSION["glpitype"],"post-only")!=0)
+			echo getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE,1);
+			else
+			echo "<strong>".getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE)."</strong>";
+		
+			}
 			echo "</td>";
 		}    
 		
@@ -513,7 +521,7 @@ function showJobVeryShort($ID) {
 	}
 }
 
-function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$contents,$assign=0,$realtime=0,$assign_type=USER_TYPE) {
+function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$contents,$assign=0,$realtime=0) {
 	// Put Job in database
 
 	GLOBAL $cfg_install, $cfg_features, $cfg_layout,$lang;
@@ -548,14 +556,12 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	}
 
 	$job->fields["assign"] = $assign;
-	$job->fields["assign_type"] = $assign_type;
 
 	if ($cfg_features['auto_assign']&&$assign==0){
 		$ci=new CommonItem;
 		$ci->getFromDB($device_type,$ID);
 		if (isset($ci->obj->fields['tech_num'])&&$ci->obj->fields['tech_num']!=0){
 			$job->fields["assign"] = $ci->obj->fields['tech_num'];
-			$job->fields["assign_type"] = USER_TYPE;
 			$job->fields["status"] = "assign";
 		}
 	}
@@ -750,7 +756,7 @@ function getRealtime($realtime){
 		return $output;
 		}
 
-function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,$assign=0,$assign_type=0,$category=0,$priority=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Print Search Form
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel,$phproot;
@@ -825,7 +831,12 @@ function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,
 	echo "</td></tr></table>";
 	echo "</td>";
 	echo "<td  colspan='2' align='center'>".$lang["job"][5]."&nbsp;:&nbsp;";
-	dropdownAssign($assign,$assign_type,"attrib");
+
+	echo $lang["job"][27].":&nbsp;";
+	dropdownUsers("assign",$assign);
+	echo $lang["job"][28].":&nbsp;";
+	dropdownValue("glpi_enterprises","assign_ent",$assign_ent);
+
 	echo "</td>";
 	echo "<td  colspan='1' align='center'>".$lang["joblist"][3]."&nbsp;:&nbsp;";
 	dropdownUsersTracking("author",$author,"author");
@@ -911,7 +922,7 @@ else {
 }
 
 
-function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$assign_type=0,$category=0,$priority=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -1029,8 +1040,8 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 		
 	}
 	
-	if ($assign_type!=0) $where.=" AND glpi_tracking.assign_type = '$assign_type'";
-	if ($assign!=0&&$assign_type!=0) $where.=" AND glpi_tracking.assign = '$assign'";
+	if ($assign_ent!=0) $where.=" AND glpi_tracking.assign_ent = '$assign_ent'";
+	if ($assign!=0) $where.=" AND glpi_tracking.assign = '$assign'";
 	if ($author!=0) $where.=" AND glpi_tracking.author = '$author'";
 
 	if ($priority>0) $where.=" AND glpi_tracking.priority = '$priority'";
@@ -1062,7 +1073,8 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 
 		if ($start<$numrows) {
 			// Pager
-			$parameters="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;contains2=$contains2&amp;attrib=$assign&amp;author=$author";
+			$parameters="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;contains2=$contains2&amp;assign=$assign&amp;assign_ent=$assign_ent&amp;author=$author";
+			if (ereg("users-info.php",$_SERVER["PHP_SELF"])) $parameters.="&amp;ID=$author";
 			// Manage helpdesk
 			if (ereg("helpdesk",$target)) 
 				$parameters.="&show=user";
@@ -1194,21 +1206,18 @@ function getPriorityName($value){
 
 function getAssignName($ID,$type,$link=0){
 	global $cfg_install;
-	$job=new Job;
-	$job->fields["assign"]=$ID;
-	$job->fields["assign_type"]=$type;
 	
-	if ($job->fields["assign_type"]==USER_TYPE){
-		if ($job->fields["assign"]==0) echo "[Nobody]";
-		return getUserName($job->fields["assign"],$link);
+	if ($type==USER_TYPE){
+		if ($ID==0) echo "[Nobody]";
+		return getUserName($ID,$link);
 		
-	} else if ($job->fields["assign_type"]==ENTERPRISE_TYPE){
+	} else if ($type==ENTERPRISE_TYPE){
 		$ent=new Enterprise();
-		$ent->getFromDB($job->fields["assign"]);
+		$ent->getFromDB($ID);
 		$before="";
 		$after="";
 		if ($link){
-			$before="<a href=\"".$cfg_install["root"]."/enterprises/enterprises-info-form.php?ID=".$job->fields["assign"]."\">";
+			$before="<a href=\"".$cfg_install["root"]."/enterprises/enterprises-info-form.php?ID=".$ID."\">";
 			$after="</a>";
 		}
 		
@@ -1266,14 +1275,6 @@ function updateTracking($input){
 	else if ($input["type"]!=0)
 		$input["device_type"]=0;
 
-	if ($input["assign_ext"]>0){
-		$input["assign_type"]=ENTERPRISE_TYPE;
-		$input["assign"]=$input["assign_ext"];
-	} else {
-		$input["assign_type"]=USER_TYPE;
-		$input["assign"]=$input["assign_int"];
-	}
-
 	$updates=array();
 	// add Document if exists
 	if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
@@ -1284,7 +1285,8 @@ function updateTracking($input){
 	}
 		
 	// Old values for add followup in change
-	$old_assign_name=$job->getAssignName();
+	$old_assign_name=getAssignName($job->fields["assign"],USER_TYPE);
+	$old_assign_ent_name=getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE);
 	$old_category=$job->fields["category"];
 	$old_item=$job->fields["computer"];
 	$old_item_type=$job->fields["device_type"];
@@ -1301,12 +1303,12 @@ function updateTracking($input){
 			$x++;
 		}
 	}
-	if ((in_array("assign",$updates)||in_array("assign_type",$updates))&&$job->fields["status"]=="new"){
+	if ((in_array("assign",$updates)||in_array("assign_ent",$updates))&&$job->fields["status"]=="new"){
 		$updates[]="status";
 		$job->fields["status"]="assign";
 	}
 
-	if ($input["assign"]==0&&$input["status"]=="assign"){
+	if ($input["assign_ent"]==0&&$input["assign"]==0&&$input["status"]=="assign"){
 		$updates[]="status";
 		$job->fields["status"]="new";
 	}
@@ -1332,11 +1334,15 @@ function updateTracking($input){
 	// New values for add followup in change
 	$change_followup_content="";
 	$global_mail_change_count=0;
-	if (in_array("assign",$updates)||in_array("assign_type",$updates)){
-		$new_assign_name=$job->getAssignName();
+	if (in_array("assign",$updates)){
+		$new_assign_name=getAssignName($job->fields["assign"],USER_TYPE);
 		$change_followup_content.=$lang["mailing"][12].": ".$old_assign_name." -> ".$new_assign_name."\n";
-		if (in_array("assign",$updates)) $global_mail_change_count++;
-		if (in_array("assign_type",$updates)) $global_mail_change_count++;
+		$global_mail_change_count++;
+	}
+	if (in_array("assign_ent",$updates)){
+		$new_assign_ent_name=getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE);
+		$change_followup_content.=$lang["mailing"][12].": ".$old_assign_ent_name." -> ".$new_assign_ent_name."\n";
+		$global_mail_change_count++;
 	}
 	if (in_array("category",$updates)){
 		$new_category=$job->fields["category"];
@@ -1420,7 +1426,7 @@ function updateTracking($input){
 		}
 
 	// Send mail to attrib if attrib change	
-	if (($mail_send==0||!$cfg_mailing["followup"]["attrib"])&&$cfg_features["mailing"]&&in_array("assign",$updates)&&$job->fields["assign_type"]==USER_TYPE&&$job->fields["assign"]>0){
+	if (($mail_send==0||!$cfg_mailing["followup"]["attrib"])&&$cfg_features["mailing"]&&in_array("assign",$updates)&&$job->fields["assign"]>0){
 			$user=new User;
 			$user->getfromDB($_SESSION["glpiname"]);
 			$mail = new Mailing("attrib",$job,$user);
@@ -1680,29 +1686,17 @@ function showJobDetails ($ID){
 
 
 		echo "<tr><td align='right'>";
-		echo $lang["job"][5].":</td><td>";
-		echo getAssignName($job->fields["assign"],$job->fields["assign_type"],$isadmin);
-		if ($isadmin)
-		if ($job->fields["assign_type"]==USER_TYPE) 
-			echo " (".$lang["job"][27].")";
-		else echo " (".$lang["job"][28].")";
-
-		echo "</td></tr>";
+		echo $lang["job"][5].":</td><td>&nbsp;</td></tr>";
 		
 		if ($isadmin&&can_assign_job($_SESSION["glpiname"])){
 			echo "<tr><td align='right'>";
 			echo $lang["job"][27].":</td><td>";
-			$val=0;
-			if ($job->fields["assign_type"]==USER_TYPE) $val=$job->fields["assign"];
-			dropdownUsers("assign_int",$val);
+			dropdownUsers("assign",$job->fields["assign"]);
 			echo "</td></tr>";
 
 			echo "<tr><td align='right'>";
 			echo $lang["job"][28].":</td><td>";
-			$val=0;
-			if ($job->fields["assign_type"]==ENTERPRISE_TYPE) $val=$job->fields["assign"];
-			
-			dropdownValue("glpi_enterprises","assign_ext",$val);
+			dropdownValue("glpi_enterprises","assign_ent",$job->fields["assign_ent"]);
 			echo "</td></tr>";
 		}
 		echo "</table>";
