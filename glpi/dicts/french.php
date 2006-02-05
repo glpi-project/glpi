@@ -413,7 +413,7 @@ $lang["event"][16]="ID";
 $lang["event"][17]="Utilisateur";
 $lang["event"][18]="Champ";
 $lang["event"][19]="Changement";
-
+$lang["event"][20]="Pas d'historique";
 
 $lang["financial"][0]="Ajouter Contrat...";
 $lang["financial"][1]="Contrat";

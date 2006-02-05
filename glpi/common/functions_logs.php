@@ -124,11 +124,14 @@ function constructHistory($id_device,$device_type,$key,$oldvalues,$newvalues) {
 **/
 function showHistory($device_type,$id_device){
 
-	global $lang;	
+	global $SEARCH_OPTION, $LINK_ID_TABLE,$phproot,$lang;	
+
+	// nécessaire pour avoir les $search_option
+	include_once ($phproot . "/glpi/includes_search.php");
 
 	$db = new DB;
 	
-	$query="SELECT * FROM glpi_history WHERE FK_glpi_device='".$id_device."' AND device_type='".$device_type."';";
+	$query="SELECT * FROM glpi_history WHERE FK_glpi_device='".$id_device."' AND device_type='".$device_type."' ORDER BY  ID DESC;";
 
 	//echo $query;
 
@@ -142,7 +145,7 @@ function showHistory($device_type,$id_device){
 	if ($number < 1) {
 		echo "<br><div align='center'>";
 		echo "<table class='tab_cadre' width='90%'>";
-		echo "<tr><th>Pas d'historique</th></tr>";
+		echo "<tr><th>".$lang["event"][20]."</th></tr>";
 		echo "</table>";
 		echo "</div><br>";
 		return;
@@ -159,7 +162,14 @@ function showHistory($device_type,$id_device){
 			$ID = $db->result($result, $i, "ID");
 			$date_mod = $db->result($result, $i, "date_mod");
 			$user_name = $db->result($result, $i, "user_name");
-			$field = $db->result($result, $i, "id_search_option");
+				
+			foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
+			
+					if($key2==$db->result($result, $i, "id_search_option")){
+					$field= $val2["name"];
+					}
+			}
+			//$field = $db->result($result, $i, "id_search_option");
 			$change = $db->result($result, $i, "old_value")."&nbsp;<strong>-></strong>&nbsp;".$db->result($result, $i, "new_value");
 			
 			echo "<tr class='tab_bg_2'>";
