@@ -290,24 +290,29 @@ $cfg_mailing["signature"]	= $db->result($result,0,"mailing_signature");
 // 1 pour l'envoi et 0 dans le cas contraire 
 
 $cfg_mailing["new"]["admin"]= $db->result($result,0,"mailing_new_admin");
+$cfg_mailing["update"]["admin"]= $db->result($result,0,"mailing_update_admin");
 $cfg_mailing["followup"]["admin"]=$db->result($result,0,"mailing_followup_admin");
 $cfg_mailing["finish"]["admin"]=$db->result($result,0,"mailing_finish_admin");
 
 $cfg_mailing["new"]["all_admin"]=$db->result($result,0,"mailing_new_all_admin");
+$cfg_mailing["update"]["all_admin"]=$db->result($result,0,"mailing_update_all_admin");
 $cfg_mailing["followup"]["all_admin"]=$db->result($result,0,"mailing_followup_all_admin");
 $cfg_mailing["finish"]["all_admin"]=$db->result($result,0,"mailing_finish_all_admin");
 
 
 $cfg_mailing["new"]["all_normal"]=$db->result($result,0,"mailing_new_all_normal");
+$cfg_mailing["update"]["all_normal"]=$db->result($result,0,"mailing_update_all_normal");
 $cfg_mailing["followup"]["all_normal"]=$db->result($result,0,"mailing_followup_all_normal");
 $cfg_mailing["finish"]["all_normal"]=$db->result($result,0,"mailing_finish_all_normal");
 
+$cfg_mailing["new"]["attrib"] = $db->result($result,0,"mailing_new_attrib");
+$cfg_mailing["update"]["attrib"] = $db->result($result,0,"mailing_update_attrib");
 $cfg_mailing["followup"]["attrib"]=$db->result($result,0,"mailing_followup_attrib");
 $cfg_mailing["finish"]["attrib"]=$db->result($result,0,"mailing_finish_attrib");
-$cfg_mailing["new"]["attrib"] = $db->result($result,0,"mailing_new_attrib");
 $cfg_mailing["attrib"]["attrib"] = $db->result($result,0,"mailing_attrib_attrib");
 
 $cfg_mailing["new"]["user"]=$db->result($result,0,"mailing_new_user");
+$cfg_mailing["update"]["user"]=$db->result($result,0,"mailing_update_user");
 $cfg_mailing["followup"]["user"]=$db->result($result,0,"mailing_followup_user");
 $cfg_mailing["finish"]["user"]=$db->result($result,0,"mailing_finish_user");
 

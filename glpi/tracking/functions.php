@@ -1404,7 +1404,7 @@ function updateTracking($input){
 		$newinput["author"]=$_SESSION['glpiID'];
 		$newinput["private"]=$newinput["hour"]=$newinput["minute"]=0;
 		$newinput["tracking"]=$job->fields["ID"];
-		addFollowup($newinput);
+		addFollowup($newinput,"update");
 		$mail_send++;
 	}
 
@@ -1417,7 +1417,7 @@ function updateTracking($input){
 		{
 			$user=new User;
 			$user->getfromDB($_SESSION["glpiname"]);
-			$mailtype="followup";
+			$mailtype="update";
 			if (in_array("status",$updates)&&ereg("old_",$input["status"]))
 				$mailtype="finish";
 			else $mail_send++;
@@ -1470,7 +1470,7 @@ function updateFollowup($input){
 
 }
 
-function addFollowup($input){
+function addFollowup($input,$type="followup"){
 	global $cfg_features;
 	$fup = new Followup;
 
@@ -1530,7 +1530,6 @@ function addFollowup($input){
 
 	if ($cfg_features["mailing"])
 		{
-			$type="followup";
 			if ($close) $type="finish";
 			$user=new User;
 			$user->getfromDB($_SESSION["glpiname"]);
