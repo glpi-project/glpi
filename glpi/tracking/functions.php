@@ -1211,7 +1211,7 @@ function getAssignName($ID,$type,$link=0){
 	global $cfg_install;
 	
 	if ($type==USER_TYPE){
-		if ($ID==0) echo "[Nobody]";
+		if ($ID==0) return "[Nobody]";
 		return getUserName($ID,$link);
 		
 	} else if ($type==ENTERPRISE_TYPE){
