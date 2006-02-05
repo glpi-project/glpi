@@ -480,7 +480,7 @@ $db = new DB;
  $query = "Update users set can_assign_job = 'yes' where type = 'admin'";
  $db->query($query) or die($lang["update"][90].$db->error());
  
- echo "<br>Version 0.2 & < <br />";
+ echo "<p class='center'>Version 0.2 & < </p>";
 
 //Version 0.21 ajout du champ ramSize a la table printers si non existant.
 
@@ -490,7 +490,7 @@ if(!FieldExists("printers", "ramSize")) {
 	$db->query($query) or die($lang["update"][90].$db->error());
 }
 
- echo "Version 0.21  <br/>";
+ echo "<p class='center'>Version 0.21  </p>";
 
 //Version 0.3
 //Ajout de NOT NULL et des valeurs par defaut.
@@ -517,7 +517,7 @@ $query = "ALTER TABLE templates MODIFY achat_date date NOT NULL default '0000-00
 $db->query($query) or die($lang["update"][90].$db->error());
 $query = "ALTER TABLE templates MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
 
- echo "Version 0.3  <br />";
+ echo "<p class='center'>Version 0.3  </p>";
 
  
 }
@@ -581,7 +581,7 @@ $db->query($query) or die($lang["update"][90].$db->error());
 $query = "INSERT INTO `glpi_config` VALUES (1, '10', '1', '1', '80', '30', '15', ' 0.31', 'GLPI powered by indepnet', '/glpi', '5', '0', '', '', '', '', '', '', 'admsys@xxxxx.fr', 'SIGNATURE', '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0','1', '1', '1', 'uid', 'mail', 'physicaldeliveryofficename', 'cn', 'telephonenumber')";
 $db->query($query) or die($lang["update"][90].$db->error());
 
-  echo "Version > 0.31  <br />";
+  echo "<p class='center'>Version > 0.31  </p>";
 }
 
 // Get current version
@@ -623,7 +623,7 @@ global $lang;
 $db = new DB;
 
 //0.4 Prefixage des tables : 
-echo "Version 0.4 <br />";
+echo "<p class='center'>Version 0.4 </p>";
 
 if(!TableExists("glpi_computers")) {
 
@@ -1053,7 +1053,7 @@ function update04to042(){
 global $lang;
 $db = new DB;
 
-echo "<br>Version 0.42 <br />";
+echo "<p class='center'>Version 0.42 </p>";
 
 if(!TableExists("glpi_reservation_item")) {
 
@@ -1099,7 +1099,7 @@ function update042to05(){
 global $lang;
 $db = new DB;
 
- echo "<br>Version 0.5 <br />";
+ echo "<p class='center'>Version 0.5 </p>";
 
 
 // Augmentation taille itemtype
@@ -2284,7 +2284,7 @@ if (TableExists("glpi_prefs")){
 function update05to051(){
 global $lang;
 $db = new DB;
-	 echo "<br>Version 0.51 <br />";
+	 echo "<p class='center'>Version 0.51 </p>";
 
 /*******************************GLPI 0.51***********************************************/
 
@@ -2351,7 +2351,7 @@ if(!TableExists("glpi_dropdown_state")) {
 function update051to06(){
 global $lang;
 $db = new DB;
-	 echo "<br>Version 0.6 <br />";
+	 echo "<p class='center'>Version 0.6 </p>";
 
 /*******************************GLPI 0.6***********************************************/
 $query= "ALTER TABLE `glpi_tracking` CHANGE `category` `category` INT(11) DEFAULT '0' NOT NULL";
@@ -2900,7 +2900,7 @@ if(!TableExists("glpi_dropdown_hdd_type")) {
 function update06to065(){
 global $lang;
 $db = new DB;
- echo "<p>Version 0.65 </p>";
+ echo "<p class='center'>Version 0.65 </p>";
 
 if(!isIndex("glpi_networking_ports", "on_device_2")) {
 	$query = "ALTER TABLE `glpi_networking_ports` ADD INDEX (`on_device`) ";
