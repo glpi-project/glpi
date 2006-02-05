@@ -210,6 +210,9 @@ class Mailing
 			case "followup":
 			$subject.=$lang["mailing"][10];
 				break;
+			case "update":
+			$subject.=$lang["mailing"][30];
+				break;
 			case "finish":
 			$subject.=$lang["mailing"][11]." ".convDateTime($this->job->fields["closedate"]);			
 				break;
@@ -238,6 +241,7 @@ class Mailing
 				else $replyto=$cfg_mailing["admin_email"];
 				break;
 			case "followup":
+			case "update":
 				if ($this->is_valid_email($this->user->fields["email"])) $replyto=$this->user->fields["email"];
 				else $replyto=$cfg_mailing["admin_email"];
 				break;
@@ -294,6 +298,7 @@ class Mailing
 				// $mmail->setHeader('Disposition-Notification-To', "\"".$users[0]['name']."\" <".$users[0]['email'].">"); 
 		  
 		  		$mmail->Send();
+				exit();
 				}
 			} else {
 				echo "Type d'envoi invalide";

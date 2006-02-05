@@ -789,6 +789,7 @@ $lang["mailing"][26]="Catégorie :";
 $lang["mailing"][27]="Changement de statut du ticket";
 $lang["mailing"][28]="Contact :";
 $lang["mailing"][29]="Annulation réservation";
+$lang["mailing"][30]="Modification Ticket";
 $lang["mailing"][100]="Pas de catégorie attribuée";
 $lang["mailing"][101]="Le suivi par email a été activé";
 $lang["mailing"][102]="Le suivi par email a été désactivé";
@@ -1332,6 +1333,7 @@ $lang["setup"][226]="Ajoutez un lien vers GLPI dans les mails";
 $lang["setup"][227]="URL de base utilisée";
 $lang["setup"][228]="Champ de login";
 $lang["setup"][229]="A chaque changement de responsable";
+$lang["setup"][230]="A la mise à jour du ticket";
 
 $lang["setup"][250]="Affichage recherche par défaut ";
 $lang["setup"][251]="Sélectionnez une rubrique ";
