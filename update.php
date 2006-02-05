@@ -2900,7 +2900,7 @@ if(!TableExists("glpi_dropdown_hdd_type")) {
 function update06to065(){
 global $lang;
 $db = new DB;
- echo "<br>Version 0.65 <br />";
+ echo "<p>Version 0.65 </p>";
 
 if(!isIndex("glpi_networking_ports", "on_device_2")) {
 	$query = "ALTER TABLE `glpi_networking_ports` ADD INDEX (`on_device`) ";
@@ -3586,6 +3586,24 @@ if(!FieldExists("glpi_monitors","flags_dvi")) {
 	$query="ALTER TABLE `glpi_monitors` ADD `flags_dvi` tinyint( 4 ) DEFAULT '0' NOT NULL AFTER `flags_bnc`";
 	$db->query($query) or die("0.65 add dropdown_limit in config ".$lang["update"][90].$db->error());
 }
+
+if(!TableExists("glpi_history")) {
+	$query="CREATE TABLE glpi_history (
+	`ID` int( 11 ) NOT NULL AUTO_INCREMENT ,
+	`FK_glpi_device` int( 11 ) DEFAULT '0' NOT NULL ,
+	`device_type` tinyint( 4 ) DEFAULT '0' NOT NULL ,
+	`user_name` varchar( 200 ) NOT NULL ,
+	`date_mod` datetime,
+	`id_search_option` int( 11 ) NOT NULL ,
+	`old_value` varchar( 255 ) NOT NULL ,
+	`new_value` varchar( 255 ) NOT NULL ,
+	PRIMARY KEY (`ID`) ,
+	KEY FK_glpi_device(`FK_glpi_device`)
+	) TYPE = MYISAM ;";
+
+	$db->query($query) or die("0.65 add glpi_history table".$lang["update"][90].$db->error());
+}
+
 
 }
 

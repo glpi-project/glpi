@@ -44,47 +44,74 @@
 * @param $device_type
 * @param $changes
 **/
-
-/*
-CREATE TABLE glpi_history(
-ID int( 11 ) NOT NULL AUTO_INCREMENT ,
-FK_glpi_device int( 11 ) DEFAULT '0' NOT NULL ,
-device_type tinyint( 4 ) DEFAULT '0' NOT NULL ,
-user_name varchar( 200 ) NOT NULL ,
-date_mod datetime,
-id_search_option int( 11 ) NOT NULL ,
-old_value varchar( 200 ) NOT NULL ,
-new_value varchar( 200 ) NOT NULL ,
-PRIMARY KEY ( ID ) ,
-KEY FK_glpi_device( FK_glpi_device )
-) TYPE = MYISAM ;
-*/
-
 function history_log ($id_device,$device_type,$changes) {
 
+		global $SEARCH_OPTION, $LINK_ID_TABLE;
 
 		$db = new DB;
 		$date_mod=date("Y-m-d H:i:s");
-		
-		$device_table=$LINK_ID_TABLE[$device_type];
-		
-		if(!empty($changes)){
-			// pour le nombre lignes contenus dans $change
-			// créer un query avec l'insertion des éléments fixes + la ligne correspondant aux changements
-			foreach ($changes as $key => $val) {
 				
+		if(!empty($changes)){
+			
+			// créer un query avec l'insertion des éléments fixes + changements
+			$id_search_option=$changes[0];
+			$old_value=$changes[1];
+			$new_value=$changes[2];
+
 				// Build query
-				$query = "INSERT INTO glpi_history_device($id_device,$device_type,".$_SESSION["glpiname"].",$date_mod,'$val[0]','$val[1]','$val[2]')";
+				$query = "INSERT INTO glpi_history  VALUES ('','$id_device','$device_type','". addslashes(getUserName($_SESSION["glpiID"],$link=0))."','$date_mod','$id_search_option','$old_value','$new_value');";
 				
 				//echo $query;
 				//echo  "<br>";
-				$result=$db->query($query);
-				}		
+				
+				$db->query($query)  or die($db->error());
+				
 		}
 }
 
+/**
+* Construct  history for device
+*
+* 
+*
+* @param $id_device
+* @param $device_type
+* @param $oldvalues
+* @param $newvalues
+**/
+function construct_history($id_device,$device_type,$key,$oldvalues,$newvalues) {
+			
+			global $SEARCH_OPTION, $LINK_ID_TABLE,$phproot, $lang ;
 
+			// on ne log que les changements pas la définition d'un élément vide
+			if (!empty($oldvalues)){
+			
+			// nécessaire pour avoir les $search_option
+			include_once ($phproot . "/glpi/includes_search.php");
+			
+				// on parse le tableau $search_option, on vérifie qu'il existe une entrée correspondante à $key
+				foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
+			
+					if($val2["linkfield"]==$key){
+					
+					$id_search_option=$key2; // on récupere dans $SEARCH_OPTION l'id_search_options
+			
+						if($val2["table"]==$LINK_ID_TABLE[$device_type]){
+						// 1er cas $key est un champs normal -> on ne touche pas au valeur 
+						$changes=array($id_search_option, $oldvalues,$newvalues);
+						}else {
+						//2ème cas $key est un champs lié, il faut récupérer les valeurs du dropdown
+						$changes=array($id_search_option,  addslashes(getDropdownName( $val2["table"],$oldvalues)), addslashes(getDropdownName( $val2["table"],$newvalues)));
+						}
 
+					}
+				} // fin foreach
+			
+			history_log ($id_device,$device_type,$changes);
+
+			} // Fin if
+
+} // function construct_history
 
 
 
