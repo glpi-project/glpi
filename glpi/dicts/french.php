@@ -409,6 +409,11 @@ $lang["event"][1]="Date";
 $lang["event"][2]="Service";
 $lang["event"][3]="Niveau";
 $lang["event"][4]="Message";
+$lang["event"][16]="ID";
+$lang["event"][17]="Utilisateur";
+$lang["event"][18]="Champ";
+$lang["event"][19]="Changement";
+
 
 $lang["financial"][0]="Ajouter Contrat...";
 $lang["financial"][1]="Contrat";
@@ -1487,6 +1492,7 @@ $lang["title"][34]="Liens";
 $lang["title"][35]="Réservations";
 $lang["title"][36]="Consommables";
 $lang["title"][37]="Notes";
+$lang["title"][38]="Historique";
 
 $lang["toolbar"][1]="Gras";
 $lang["toolbar"][2]="Italique";
