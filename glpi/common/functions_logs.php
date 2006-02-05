@@ -44,7 +44,7 @@
 * @param $device_type
 * @param $changes
 **/
-function history_log ($id_device,$device_type,$changes) {
+function historyLog ($id_device,$device_type,$changes) {
 
 		global $SEARCH_OPTION, $LINK_ID_TABLE;
 
@@ -79,7 +79,7 @@ function history_log ($id_device,$device_type,$changes) {
 * @param $oldvalues
 * @param $newvalues
 **/
-function construct_history($id_device,$device_type,$key,$oldvalues,$newvalues) {
+function constructHistory($id_device,$device_type,$key,$oldvalues,$newvalues) {
 			
 			global $SEARCH_OPTION, $LINK_ID_TABLE,$phproot, $lang ;
 
@@ -107,12 +107,71 @@ function construct_history($id_device,$device_type,$key,$oldvalues,$newvalues) {
 					}
 				} // fin foreach
 			
-			history_log ($id_device,$device_type,$changes);
+			historyLog ($id_device,$device_type,$changes);
 
 			} // Fin if
 
 } // function construct_history
 
+
+
+/**
+* Show History
+** 
+*
+* @param $id_device
+* @param $device_type
+**/
+function showHistory($device_type,$id_device){
+
+	global $lang;	
+
+	$db = new DB;
+	
+	$query="SELECT * FROM glpi_history WHERE FK_glpi_device='".$id_device."' AND device_type='".$device_type."';";
+
+	//echo $query;
+
+	// Get results
+	$result = $db->query($query);
+	
+	// Number of results
+	$number = $db->numrows($result);
+
+	// No Events in database
+	if ($number < 1) {
+		echo "<br><div align='center'>";
+		echo "<table class='tab_cadre' width='90%'>";
+		echo "<tr><th>Pas d'historique</th></tr>";
+		echo "</table>";
+		echo "</div><br>";
+		return;
+	}
+	
+	// Output events
+	$i = 0;
+
+
+	echo "<div align='center'><br><table width='800' class='tab_cadre'>";
+	echo "<tr><th colspan='5'>".$lang["title"][38]."</th></tr>";
+	echo "<tr><th>".$lang["event"][16]."</th><th>".$lang["event"][1]."</th><th>".$lang["event"][17]."</th><th>".$lang["event"][18]."</th><th>".$lang["event"][19]."</th></tr>";
+	while ($i < $number) {
+			$ID = $db->result($result, $i, "ID");
+			$date_mod = $db->result($result, $i, "date_mod");
+			$user_name = $db->result($result, $i, "user_name");
+			$field = $db->result($result, $i, "id_search_option");
+			$change = $db->result($result, $i, "old_value")."&nbsp;<strong>-></strong>&nbsp;".$db->result($result, $i, "new_value");
+			
+			echo "<tr class='tab_bg_2'>";
+			
+			echo "<td>$ID</td><td>$date_mod</td><td>$user_name</td><td>$field</td><td width='70%'>$change</td>"; 
+			echo "</tr>";
+			$i++;
+			}
+
+	echo "</table></div>";
+
+}
 
 
 
