@@ -1032,7 +1032,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 	
 	switch ($status){
 	case "new": $where.=" AND glpi_tracking.status = 'new'"; break;
-	case "notold": $where.=" AND (glpi_tracking.status = 'new' OR glpi_tracking.status = 'plan' OR glpi_tracking.status = 'assign')"; break;
+	case "notold": $where.=" AND (glpi_tracking.status = 'new' OR glpi_tracking.status = 'plan' OR glpi_tracking.status = 'assign' OR glpi_tracking.status = 'waiting')"; break;
 	case "old": $where.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone')"; break;
 	case "process": $where.=" AND ( glpi_tracking.status = 'plan' OR glpi_tracking.status = 'assign' )"; break;
 	case "waiting": $where.=" AND ( glpi_tracking.status = 'waiting' )"; break;
