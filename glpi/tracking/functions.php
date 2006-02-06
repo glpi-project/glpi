@@ -68,13 +68,13 @@ function showTrackingOnglets($target){
 	echo "<div id='barre_onglets'><ul id='onglet'>";
    		
 		 if (isNormal($_SESSION['glpitype'])){
-				echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'><a href=\"".$cfg_install["root"]."/tracking/tracking-info-form.php?ID=$ID\">".$lang["job"][38]." $ID</span></a></li>";
+				echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'><a href=\"".$cfg_install["root"]."/tracking/tracking-info-form.php?ID=$ID\">".$lang["job"][38]." $ID</a></span></li>";
 				echo "<li class='invisible'>&nbsp;</li>";
 				
 				// admin yes  
 				if (isAdmin($_SESSION['glpitype'])){
 				
-				echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</span></a></li>";
+				echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</a></span></li>";
 				}
 		
 				// Post-only could'nt see other item  but other user yes 
@@ -1310,7 +1310,7 @@ function updateTracking($input){
 			$x++;
 		}
 	}
-	if ((in_array("assign",$updates)||in_array("assign_ent",$updates))&&$job->fields["status"]=="new"){
+	if (((in_array("assign",$updates)&&$input["assign"]>0)||(in_array("assign_ent",$updates)&&$input["assign_ent"]>0))&&$job->fields["status"]=="new"){
 		$updates[]="status";
 		$job->fields["status"]="assign";
 	}
