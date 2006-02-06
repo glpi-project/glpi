@@ -82,7 +82,7 @@
 				$ID = $data['ID'];
 				echo "<option value=\"$ID\" title=\"$output\"";
 				if ($ID==$_POST['value']) echo " selected ";
-				echo ">".substr(0,$cfg_layout["dropdown_limit"],$output)." ($loc)</option>";
+				echo ">".$output." ($loc)</option>";
 				$i++;
 			}
 		}
