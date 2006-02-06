@@ -213,7 +213,10 @@ else
 					break;	
 				case 11 :
 					printDeviceReservations($_SERVER["PHP_SELF"],PERIPHERAL_TYPE,$tab["ID"]);
-					break;			
+					break;
+				case 12 :
+					showHistory(PERIPHERAL_TYPE,$tab["ID"]);
+				break;		
 				default :
 					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PERIPHERAL_TYPE);
 					showPorts($tab["ID"], PERIPHERAL_TYPE,$tab["withtemplate"]);

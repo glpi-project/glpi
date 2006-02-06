@@ -170,7 +170,7 @@ function showHistory($device_type,$id_device){
 					}
 			}
 			//$field = $db->result($result, $i, "id_search_option");
-			$change = $db->result($result, $i, "old_value")."&nbsp;<strong>-></strong>&nbsp;".$db->result($result, $i, "new_value");
+			$change = $db->result($result, $i, "old_value")."&nbsp;<strong>--></strong>&nbsp;\"".$db->result($result, $i, "new_value")."\"";
 			
 			echo "<tr class='tab_bg_2'>";
 			

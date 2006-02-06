@@ -177,6 +177,9 @@ else
 				case 11 :
 					printDeviceReservations($_SERVER["PHP_SELF"],SOFTWARE_TYPE,$tab["ID"]);
 					break;
+				case 12 :
+					showHistory(SOFTWARE_TYPE,$tab["ID"]);
+				break;
 				default :
 					showLicensesAdd($tab["ID"]);
 					showLicenses($tab["ID"]);

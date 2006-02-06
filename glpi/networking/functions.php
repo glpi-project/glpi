@@ -68,6 +68,7 @@ function showNetworkingOnglets($target,$withtemplate,$actif){
 	echo "<li "; if ($actif=="6") {echo "class='actif'";} echo "><a href='$target&amp;onglet=6$template'>".$lang["title"][28]."</a></li>";
 	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
 	echo "<li "; if ($actif=="10") {echo "class='actif'";} echo "><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
+	echo "<li "; if ($actif=="12") {echo "class='actif'";} echo "><a href='$target&amp;onglet=12$template'>".$lang["title"][38]."</a></li>";
 	echo "<li class='invisible'>&nbsp;</li>";
 	echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
 	}
@@ -409,6 +410,9 @@ function updateNetdevice($input) {
 	$x=1;
 	foreach ($input as $key => $val) {
 		if (array_key_exists($key,$netdev->fields) && $netdev->fields[$key] != $input[$key]) {
+			// Debut logs
+			constructHistory($input["ID"],NETWORKING_TYPE,$key,$netdev->fields[$key],$input[$key]);
+			// Fin des logs
 			$netdev->fields[$key] = $input[$key];
 			$updates[$x] = $key;
 			$x++;
