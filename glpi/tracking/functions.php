@@ -382,28 +382,21 @@ function showJobShort($ID, $followups) {
 
 		echo "</td>";
 
-		if ($job->fields["assign"] == 0)
-		{
-			echo "<td align='center' $valign>[Nobody]</td>"; 
-	    	}
-		else
-		{
-			echo "<td align='center' $valign>";
-			if (strcmp($_SESSION["glpitype"],"post-only")!=0)
+		echo "<td align='center' $valign>";
+		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
 			echo getAssignName($job->fields["assign"],USER_TYPE,1);
-			else
+		else
 			echo "<strong>".getAssignName($job->fields["assign"],USER_TYPE)."</strong>";
-			
-			if ($job->fields["assign_ent"]>0){
+		
+		if ($job->fields["assign_ent"]>0){
 			echo "<br>";
 			if (strcmp($_SESSION["glpitype"],"post-only")!=0)
-			echo getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE,1);
+				echo getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE,1);
 			else
-			echo "<strong>".getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE)."</strong>";
-		
-			}
-			echo "</td>";
-		}    
+				echo "<strong>".getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE)."</strong>";
+	
+		}
+		echo "</td>";
 		
 		if (strcmp($_SESSION["glpitype"],"post-only")!=0){
 			echo "<td align='center' $valign ";
