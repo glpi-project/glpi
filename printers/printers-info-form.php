@@ -228,6 +228,9 @@ if (isset($_GET['onglet'])) {
 				case 11 :
 					printDeviceReservations($_SERVER["PHP_SELF"],PRINTER_TYPE,$tab["ID"]);
 					break;
+				case 12 :
+					showHistory(PRINTER_TYPE,$tab["ID"]);
+				break;
 				default :
 
 					showCartridgeInstalled($tab["ID"]);		

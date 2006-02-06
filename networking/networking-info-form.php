@@ -176,6 +176,9 @@ else
 			case 11 :
 				printDeviceReservations($_SERVER["PHP_SELF"],NETWORKING_TYPE,$tab["ID"]);
 				break;
+			case 12 :
+				showHistory(NETWORKING_TYPE,$tab["ID"]);
+				break;
 			default :
 				showPorts($tab["ID"],NETWORKING_TYPE);
 				showPortsAdd($tab["ID"],NETWORKING_TYPE);
