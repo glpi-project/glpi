@@ -212,7 +212,7 @@ $dropdowntree_tables=array("glpi_dropdown_locations","glpi_dropdown_kbcategories
 $cfg_install["root"] = $db->result($result,0,"root_doc");
 
 // Path for icon of document type
-$cfg_install["typedoc_icon_dir"] = "/pics/icones";
+$cfg_install["typedoc_icon_dir"] = "pics/icones";
 
 // Default language
 $cfg_install["default_language"] = $db->result($result,0,"default_language");
