@@ -608,6 +608,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			||(ereg("glpi_contracts",$SEARCH_OPTION[$type][$val2]["table"]))
 			||($SEARCH_OPTION[$type][$val2]["table"].".".$SEARCH_OPTION[$type][$val2]["field"]=="glpi_licenses.serial")
 			||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_networking_ports")
+			||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_dropdown_netpoint")
 		)) 
 	
 		$GROUPBY=" GROUP BY ID ";
@@ -1282,9 +1283,8 @@ case "glpi_networking_ports.ifmac" :
 	else return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 	break;
 case "glpi_licenses.serial" :
-	return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
-	break;
 case "glpi_networking_ports.ifaddr" :
+case "glpi_dropdown_netpoint.name" :
 	return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
 	break;
 default:
@@ -1378,6 +1378,7 @@ global $cfg_install,$INFOFORM_PAGES,$HTMLRel,$cfg_layout,$lang;
 switch ($field){
 	case "glpi_licenses.serial" :
 	case "glpi_networking_ports.ifaddr" :
+	case "glpi_dropdown_netpoint.name" :
 		$out="";
 		$split=explode("$$$$",$data["ITEM_$num"]);
 		
