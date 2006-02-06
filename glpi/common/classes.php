@@ -407,9 +407,12 @@ class CommonItem{
 			return "N/A";
 	}
 	function getNameID(){
-		if ($this->device_type==0)
-		return $this->getName();
-		else return $this->getName()." (".$this->id_device.")";
+		global $cfg_layout;
+		if ($cfg_layout["view_ID"]){
+			if ($this->device_type==0)
+				return $this->getName();
+			else return $this->getName()." (".$this->id_device.")";
+		} else return $this->getName();
 	}
 	/**
 	* Get The link to the Object
