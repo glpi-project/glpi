@@ -91,7 +91,7 @@ function showTypedocForm ($target,$ID) {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][10].":	</td><td>";
-	dropdownIcons("icon",$mon->fields["icon"],$phproot.$cfg_install["typedoc_icon_dir"]);
+	dropdownIcons("icon",$mon->fields["icon"],$phproot."/".$cfg_install["typedoc_icon_dir"]);
 	if (!empty($mon->fields["icon"])) echo "&nbsp;<img style='vertical-align:middle;' alt='' src='".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/".$mon->fields["icon"]."'>";
 	echo "</td></tr>";
 
