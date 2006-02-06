@@ -338,10 +338,11 @@ function showJobShort($ID, $followups) {
 	// Print links or not in case of user view
 
 	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
-
+	
 	// Make new job object and fill it from database, if success, print it
 	$job = new Job;
 	$isadmin=isAdmin($_SESSION['glpitype']);
+	$ispostonly=strcmp($_SESSION["glpitype"],"post-only");
 	$valign="";
 	if ($followups) $valign=" valign='top' ";
 	if ($job->getfromDB($ID,0))
@@ -375,7 +376,7 @@ function showJobShort($ID, $followups) {
 		
 		echo "<td align='center' $valign>";
 
-		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
+		if ($ispostonly)
 		echo "<strong>".$job->getAuthorName(1)."</strong>";
 		else
 		echo "<strong>".$job->getAuthorName()."</strong>";
@@ -383,14 +384,14 @@ function showJobShort($ID, $followups) {
 		echo "</td>";
 
 		echo "<td align='center' $valign>";
-		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
+		if ($ispostonly)
 			echo getAssignName($job->fields["assign"],USER_TYPE,1);
 		else
 			echo "<strong>".getAssignName($job->fields["assign"],USER_TYPE)."</strong>";
 		
 		if ($job->fields["assign_ent"]>0){
 			echo "<br>";
-			if (strcmp($_SESSION["glpitype"],"post-only")!=0)
+			if ($ispostonly)
 				echo getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE,1);
 			else
 				echo "<strong>".getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE)."</strong>";
@@ -398,7 +399,7 @@ function showJobShort($ID, $followups) {
 		}
 		echo "</td>";
 		
-		if (strcmp($_SESSION["glpitype"],"post-only")!=0){
+		if ($ispostonly){
 			echo "<td align='center' $valign ";
 			$m= new CommonItem;
 			if ($m->getfromDB($job->fields["device_type"],$job->fields["computer"]))
@@ -440,7 +441,7 @@ function showJobShort($ID, $followups) {
 		// Job Controls
 		echo "<td width='40' align='center' $valign>";
 		
-		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
+		if ($ispostonly)
 		echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-info-form.php?ID=$job->ID\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
 		else
 		echo "<a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&amp;ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups($isadmin).")&nbsp;<br>";
@@ -464,6 +465,8 @@ function showJobVeryShort($ID) {
 	// Make new job object and fill it from database, if success, print it
 	$job = new Job;
 
+	$ispostonly=strcmp($_SESSION["glpitype"],"post-only");
+	
 	if ($job->getfromDB($ID,0))
 	{
 		$bgcolor=$cfg_layout["priority_".$job->fields["priority"]];
@@ -483,14 +486,14 @@ function showJobVeryShort($ID) {
 	
 		echo "<td align='center'  >";
 
-		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
+		if ($ispostonly)
 		echo "<strong>".$job->getAuthorName(1)."</strong>";
 		else
 		echo "<strong>".$job->getAuthorName()."</strong>";
 
 		echo "</td>";
 
-		if (strcmp($_SESSION["glpitype"],"post-only")!=0){
+		if ($ispostonly){
 			echo "<td align='center' ";
 			$m= new CommonItem;
 			$m->getfromDB($job->fields["device_type"],$job->fields["computer"]);
@@ -515,7 +518,7 @@ function showJobVeryShort($ID) {
 		// Job Controls
 		echo "<td width='40' align='center' >";
 		
-		if (strcmp($_SESSION["glpitype"],"post-only")!=0)
+		if ($ispostonly)
 		echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-info-form.php?ID=$job->ID\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
 		else
 		echo "<a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&amp;ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
@@ -1704,6 +1707,17 @@ function showJobDetails ($ID){
 			echo $lang["job"][28].":</td><td>";
 			dropdownValue("glpi_enterprises","assign_ent",$job->fields["assign_ent"]);
 			echo "</td></tr>";
+		} else {
+                       echo "<tr><td align='right'>";
+                       echo $lang["job"][27].":</td><td>";
+                       echo getUserName($job->fields["assign"]);
+                       echo "</td></tr>";
+
+                       echo "<tr><td align='right'>";
+                       echo $lang["job"][28].":</td><td>";
+                       echo getDropdownName("glpi_enterprises",$job->fields["assign_ent"]);
+                       echo "</td></tr>";
+														     
 		}
 		echo "</table>";
 		echo "</td></tr>";
