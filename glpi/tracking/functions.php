@@ -424,8 +424,12 @@ function showJobShort($ID, $followups) {
 
 			echo "</td>";
 		}
-		else
-		echo "<td  align='center' $valign><strong>$job->computername (".$job->fields["computer"].")</strong></td>";
+		else {
+			echo "<td  align='center' $valign><strong>$job->computername";
+			if ($cfg_layout["view_ID"])
+				echo "(".$job->fields["computer"].")";
+			echo "</strong></td>";
+		}
 
 
 		echo "<td  align='center' $valign ><strong>".getDropdownName("glpi_dropdown_tracking_category",$job->fields["category"])."</strong></td>";
