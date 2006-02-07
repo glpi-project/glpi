@@ -67,7 +67,7 @@ else $_GET["distinct"] = "N";
 
 if (!isset($_GET["link"]))
 	if (isset($_SESSION['search'][$type]["link"])) $_GET["link"]=$_SESSION['search'][$type]["link"];
-	else $_GET["link"] = "";
+	else $_GET["link"] = array();
 
 if (!isset($_GET["field"]))
 	if (isset($_SESSION['search'][$type]["field"])) $_GET["field"]=$_SESSION['search'][$type]["field"];
@@ -79,7 +79,7 @@ if (!isset($_GET["contains"]))
 
 if (!isset($_GET["link2"]))
 	if (isset($_SESSION['search'][$type]["link2"])) $_GET["link2"]=$_SESSION['search'][$type]["link2"];
-	else $_GET["link2"] = "";
+	else $_GET["link2"] = array();
 
 if (!isset($_GET["field2"]))
 	if (isset($_SESSION['search'][$type]["field2"])) $_GET["field2"]=$_SESSION['search'][$type]["field2"];
