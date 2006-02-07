@@ -160,7 +160,7 @@ function showHistory($device_type,$id_device){
 	echo "<tr><th>".$lang["event"][16]."</th><th>".$lang["event"][1]."</th><th>".$lang["event"][17]."</th><th>".$lang["event"][18]."</th><th>".$lang["event"][19]."</th></tr>";
 	while ($i < $number) {
 			$ID = $db->result($result, $i, "ID");
-			$date_mod = $db->result($result, $i, "date_mod");
+			$date_mod = convDateTime($db->result($result, $i, "date_mod"));
 			$user_name = $db->result($result, $i, "user_name");
 				
 			foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
@@ -170,7 +170,7 @@ function showHistory($device_type,$id_device){
 					}
 			}
 			//$field = $db->result($result, $i, "id_search_option");
-			$change = $db->result($result, $i, "old_value")."&nbsp;<strong>--></strong>&nbsp;\"".$db->result($result, $i, "new_value")."\"";
+			$change = "\"".$db->result($result, $i, "old_value")."\"&nbsp;<strong>--></strong>&nbsp;\"".$db->result($result, $i, "new_value")."\"";
 			
 			echo "<tr class='tab_bg_2'>";
 			
