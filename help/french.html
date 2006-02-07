@@ -4,7 +4,7 @@
 
    <head>
 
-          <title>AIDE DU CENTRAL - GLPI</title>
+          <title>AIDE DE LA  CONSOLE CENTRALE - GLPI</title>
 
           <meta http-equiv="Content-type" content="text/html; charset=iso-8859-15"/>
 
@@ -244,31 +244,24 @@ font-size: 13px;
 
 <div class='menu'>
 
-<h1>Sommaire</h1>
-
-<ul><li><a href="#invent">1 - Partie Inventaire</a></li>
-
-<li><ul>
-
-<li><a href="#inventa">a) Consid&eacute;ration g&eacute;n&eacute;rales</a></li>
-
-<li><a href="#inventb">b) Gestion des gabarits</a></li>
-
-<li><a href="#inventc">c) Gestion des p&eacute;riph&eacute;riques internes aux ordinateurs</a></li>
-
-<li><a href="#inventd">d) Gestion des connections directes</a></li>
-
-<li><a href="#invente">e) Gestion des ports r&eacute;seaux</a></li>
-
-<li><a href="#inventf">f) Gestion des logiciels</a></li>
-
-<li><a href="#inventg">g) Gestion des &eacute;tats</a></li>
-
-<li><a href="#inventh">h) Gestion des consommables et des cartouches</a></li>
-
-</ul></li>
-
-</ul>
+<h1>Sommaire</h1>    
+    <ul>
+      <li><a href="#invent">1 - Partie Inventaire</a></li>
+      <li> 
+        <ul>
+          <li><a href="#inventa">a) Consid&eacute;ration g&eacute;n&eacute;rales</a></li>
+          <li><a href="#inventb">b) Gestion des gabarits</a></li>
+          <li><a href="#inventc">c) Gestion des p&eacute;riph&eacute;riques internes 
+            aux ordinateurs</a></li>
+          <li><a href="#inventd">d) Gestion des connections directes</a></li>
+          <li><a href="#invente">e) Gestion des ports r&eacute;seaux</a></li>
+          <li><a href="#inventf">f) Gestion des logiciels</a></li>
+          <li><a href="#inventg">g) </a><a href="#inventg">Gestion des consommables 
+            et des cartouches</a></li>
+          <li><a href="#inventh">h) </a><a href="#inventh">Gestion des statuts</a></li>
+        </ul>
+      </li>
+    </ul>
 
 
 
@@ -394,7 +387,7 @@ font-size: 13px;
 
 
 
-    <h1>Aide du central</h1>   
+    <h1>Aide de la console centrale</h1>   
 
 
 
@@ -402,7 +395,17 @@ font-size: 13px;
 
 
 
-<h3><a name="inventa"></a>a) Consid&eacute;ration g&eacute;n&eacute;rales</h3>    <p>Dans la partie inventaire vous pouvez lister et consulter l'inventaire mat&eacute;riel 
+    <p>Sur la page d'accueil de la console centrale, sont affich&eacute;s les 
+      tickets en cours, ainsi que le journal des derniers ajouts. Vous pouvez 
+      sp&eacute;cifier le nombre de logs &agrave; afficher ou choisir de masquer 
+      le journal des derniers ajouts, en sp&eacute;cifiant 0 dans la configuration 
+      (Administration - Configuration - Configuration Affichage - Nombre d'&eacute;v&eacute;nements 
+      de log &agrave; afficher).</p>
+    <p>Vous pouvez aussi visualiser sur la console centrale, les nouveaux tickets 
+      non attribu&eacute;s. Voir la configuration (Administration - Configuration 
+      - Configuration Affichage - Montrer les nouveaux tickets au login).</p>
+    <h3><a name="inventa"></a>a) Consid&eacute;ration g&eacute;n&eacute;rales</h3>
+    <p>Dans la partie inventaire vous pouvez lister et consulter l'inventaire mat&eacute;riel 
 
       et logiciel du parc.</p>
 
@@ -463,6 +466,9 @@ font-size: 13px;
       Un onglet s'appelant &quot;Notes&quot;, permet de consigner par exemple 
       la configuration logicielle ou toute autre information de l'&eacute;quipement 
       en question. </p>
+    <p>Un autre onglet &quot;Historique&quot;, permet de consigner toutes les 
+      modifications apport&eacute;es &agrave; la description du mat&eacute;riel 
+      concern&eacute;. </p>
 
     <p>Les onglets <img src="../pics/left.png" width="16" height="16" align="absmiddle" /> 
       et <img src="../pics/right.png" width="16" height="16" align="absmiddle" /> 
@@ -578,40 +584,23 @@ font-size: 13px;
 
 <p>Vous pouvez cat&eacute;goriser vos logiciels selon s'ils sont OEM, achet&eacute;s ou m&ecirc;me une mise &agrave; jour d'un logiciel existant.</p>
 
-<p>La gestion financi&egrave;re est effectu&eacute;e au niveau des licences. La partie informations commerciales du logiciel sert de mod&egrave;le lors de l'ajout des licences.</p>
-
-
-
-<h3><a name="inventg"></a>g) Gestion des statuts du mat&eacute;riel</h3>
-
-    <p>Dans cette section vous pouvez voir le statut de vos mat&eacute;riels.</p>    
-
-    <p>Pour changer le statut d'un mat&eacute;riel il suffit d'aller dans la fiche 
-      d'information de ce mat&eacute;riel ou d'utiliser le lien pr&eacute;sent 
-      sur la gestion des statuts et de changer son statut.</p>
-
-
-
-<h3><a name="inventh"></a>h) Gestion des consommables et des cartouches</h3>
-
-
-
+<p>La gestion financi&egrave;re est effectu&eacute;e au niveau des licences. La partie informations commerciales du logiciel sert de mod&egrave;le lors de l'ajout des licences.</p>    <h3><a name="inventg"></a>g) Gestion des consommables et des cartouches</h3>
     <p>Pour ces deux &eacute;l&eacute;ments, il vous faut d'abord cr&eacute;er 
-
       un type de cartouche ou de consommable.</p>
-
     <p>Vous pouvez ensuite ajouter autant d'&eacute;l&eacute;ments de ce type 
-
       dans la fiche du type.</p>
-
-    <p>Pour les cartouches, un type de cartouches doit &ecirc;tre d&eacute;fini comme 
-
-      compatible avec des mod&egrave;les d'imprimantes pour pouvoir ajouter les cartouches 
-
-      aux imprimantes de ce mod&egrave;le.</p>    
+    <p>Pour les cartouches, un type de cartouches doit &ecirc;tre d&eacute;fini 
+      comme compatible avec des mod&egrave;les d'imprimantes pour pouvoir ajouter 
+      les cartouches aux imprimantes de ce mod&egrave;le.</p>
     <p>La gestion financi&egrave;re est effectu&eacute;e au niveau des &eacute;l&eacute;ments 
       et non du type. La partie informations commerciales du type sert de mod&egrave;le 
       lors de l'ajout des &eacute;l&eacute;ments.</p>
+    <h3><a name="inventh"></a>h) Gestion des statuts du mat&eacute;riel</h3>
+
+    <p>Dans cette section vous pouvez voir le statut de vos mat&eacute;riels.</p>
+    <p>Pour changer le statut d'un mat&eacute;riel il suffit d'aller dans la fiche 
+      d'information de ce mat&eacute;riel ou d'utiliser le lien pr&eacute;sent 
+      sur la gestion des statuts et de changer son statut.</p>
 
 
 
@@ -648,9 +637,8 @@ font-size: 13px;
 
 	  <li>Les tickets en cours (attribu&eacute;s ou planifi&eacute;s). 
 
-      <li>Les tickets non ferm&eacute;s. 
-
-	  <li>Les tickets ferm&eacute;s (r&eacute;solus ou pas). 
+      <li>Les tickets non ferm&eacute;s (tous sauf ferm&eacute;s). 
+      <li>Les tickets ferm&eacute;s (r&eacute;solus ou pas). 
 
       <li>Tous les tickets. 
 
@@ -812,7 +800,11 @@ font-size: 13px;
           techniciens pour une p&eacute;riode donn&eacute;e.</p>
 
       </li>
+<li>Par entreprise : 
+        <p>Ces statistiques fournissent un &eacute;tat de l'activit&eacute; des 
+          entreprises pour une p&eacute;riode donn&eacute;e.</p>
 
+      </li>
       <li>Par Intitul&eacute;s : 
         <p>Statistiques des tickets par Lieu, Type d'ordinateur, OS, CPU, HD-Type, 
 
@@ -962,11 +954,11 @@ font-size: 13px;
 
 Le premier est de centraliser des connaissances internes aux diff&eacute;rents techniciens. 
 
-Le second est de mettre &agrave; disposition des utilisateurs des informations leur permettant de r&eacute;soudre seuls leurs probl&egrave;mes.</p>
-
-<p>Pour dissocier ces deux objectifs, la notion de FAQ publique est disponible. 
-
-Ainsi seuls les &eacute;l&eacute;ments de la FAQ publique seront visibles par les utilisateurs. Les &eacute;l&eacute;ments non d&eacute;finis comme faisant partie de la FAQ publique seront visibles uniquement au sein du central.</p>
+Le second est de mettre &agrave; disposition des utilisateurs des informations leur permettant de r&eacute;soudre seuls leurs probl&egrave;mes.</p>    <p>Pour dissocier ces deux objectifs, la notion de FAQ publique est disponible. 
+      Ainsi seuls les &eacute;l&eacute;ments de la FAQ publique seront visibles 
+      par les utilisateurs. Les &eacute;l&eacute;ments non d&eacute;finis comme 
+      faisant partie de la FAQ publique seront visibles uniquement au sein de 
+      la console centrale.</p>
 
     <p>Vous pouvez cr&eacute;er des cat&eacute;gories et sous-cat&eacute;gories 
       afin d'indexer vos connaissances (param&eacute;trable dans le menu Administration 
@@ -1096,30 +1088,22 @@ Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tan
 <h3><a name="admina"></a>a) Gestion des utilisateurs</h3>
 
     <p>Cette partie fonctionne exactement de la m&ecirc;me façon que les &eacute;l&eacute;ments 
-
       de l'inventaire. Vous pouvez ajouter, modifier, supprimer des utilisateurs 
-
       ou rechercher et exporter la liste des utilisateurs.<br />
-
       <br />
-
       Au niveau des droits : vous avez le choix entre 4 types de droits :<br />
-      - Super-Admin : il a acc&egrave;s &agrave; tout le central d'administration 
-      de GLPI et peut tout param&eacute;trer.<br />
-      - Admin : il a acc&egrave;s &agrave; tout le central d'administration de 
-      GLPI et peut modifier tous les &eacute;l&eacute;ments<br />
-
+      - Super-Admin : il a acc&egrave;s &agrave; toute la console centrale de 
+      GLPI et peut tout param&eacute;trer.<br />
+      - Admin : il a acc&egrave;s &agrave; toute la console centrale de GLPI et 
+      peut modifier tous les &eacute;l&eacute;ments<br />
       mais ne peut rien param&eacute;trer dans la configuration.<br />
-      - Normal : il a acc&egrave;s &agrave; tout le central d'administration de 
-      GLPI uniquement en lecture seule.<br />
+      - Normal : il a acc&egrave;s &agrave; toute la console centrale de GLPI 
+      uniquement en lecture seule.<br />
       - Post-only : il peut uniquement acc&eacute;der &agrave; la partie Helpdesk 
       de GLPI (Nouveau ticket / Suivi en lecture seule des tickets / R&eacute;servation 
       et FAQ publique.<br />
-
       <br />
-
-      Vous pouvez donner le droit ou pas &agrave;  un utilisateur d'attribuer des 
-
+      Vous pouvez donner le droit ou pas &agrave; un utilisateur d'attribuer des 
       tickets.</p>
 
 
@@ -1239,7 +1223,7 @@ par exemple pour les lieux et les microprocesseurs.</p>
       - Le niveau de log.<br />
       <br />
       - Le nombre d'&eacute;v&egrave;nements &agrave; afficher correspond au nombre 
-      de lignes de log pr&eacute;sentes sur la page d'accueil du central.<br />
+      de lignes de log pr&eacute;sentes sur la page d'accueil de la console centrale.<br />
       <br />
       - Le temps de conservation des logs. <b><br />
       <br />
@@ -1256,8 +1240,8 @@ par exemple pour les lieux et les microprocesseurs.</p>
       - Permettre le helpdesk.html : autorise ou non les demandes d'interventions 
       anonymes via le fichier helpdesk.html.<br />
       <br />
-      - Montrer les interventions au login : voir les interventions actives sur 
-      la page d'accueil du central ou non.<br />
+      - Montrer les nouveaux tickets au login : voir les nouveaux tickets sur 
+      la page d'accueil de la console centrale ou non.<br />
       <br />
       - Seuil d'alerte par d&eacute;faut pour les cartouches et les consommables. 
       Valeur par d&eacute;faut modifiable pour chaque type.<br />
@@ -1267,14 +1251,11 @@ par exemple pour les lieux et les microprocesseurs.</p>
       jour hebdomadaires, mensuelles, ou de d&eacute;sactiver la v&eacute;rification.</p>
 
     <p>- Ajout automatique des utilisateurs &agrave; partir des sources externes 
-
       d'authentification : permet<br />
-
       d'autoriser l'authentification &agrave; partir de source externes ou de 
-
-      la d&eacute;sactiver.<br />
-
-    </p>
+      la d&eacute;sactiver.</p>
+    <p>- Permettre aux utilisateurs post-only d'ajouter des suivis : permet aux 
+      utilisateurs de type post-only d'ajouter des suivis aux tickets.</p>
 
     <p><a name="adminb6" id="adminb6"></a></p>
 
@@ -1287,11 +1268,12 @@ par exemple pour les lieux et les microprocesseurs.</p>
     </p>
 
     <p> - Nombre d'&eacute;v&eacute;nements de log &agrave; afficher : nombre 
-      de log &agrave; afficher sur la page d'accueil du central d'administration.<br />
+      de log &agrave; afficher sur la page d'accueil de la console centrale. (0 
+      = aucun)<br />
 
       <br />
       - Montrer les nouveaux tickets au login : montrer les nouveaux tickets non 
-      attribu&eacute;s sur la page d'accueil du central d'administration.<br />
+      attribu&eacute;s sur la page d'accueil de la console centrale.<br />
 
       <br />
 
@@ -1412,8 +1394,9 @@ par exemple pour les lieux et les microprocesseurs.</p>
       <br />
       - Les autres options vous permettent de limiter les emails envoy&eacute;s. 
       Pour chaque type d'utilisateurs, vous pouvez activer ou non l'envoi &agrave; 
-      la cr&eacute;ation d'une intervention, &agrave; l'ajout de nouveau suivi 
-      et la cl&ocirc;ture d'une intervention.<br />
+      la cr&eacute;ation d'une intervention, &agrave; la mise &agrave; jour du 
+      ticket en lui-m&ecirc;me, &agrave; l'ajout de nouveau suivi et la cl&ocirc;ture 
+      d'une intervention.<br />
 
       - Les groupes de personnes d&eacute;finis sont : l'administrateur, tous 
 
@@ -1492,10 +1475,8 @@ Si l'utilisateur s'appelle <i>toto</i>, sont adresse mail sera alors toto@domain
     <h4>x) V&eacute;rifier si une nouvelle version est disponible</h4>
 
     <p><font color="#000000">V&eacute;rification de la pr&eacute;sence de mises 
-
-      &agrave; jours sur le site glpi.indepnet.org et affichage sur le central 
-
-      en cas de nouvelle mise &agrave; jour disponible.</font></p>
+      &agrave; jours sur le site glpi.indepnet.org et affichage sur la console 
+      centrale en cas de nouvelle mise &agrave; jour disponible.</font></p>
 
 
 
