@@ -205,11 +205,11 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 		echo $lang["networking"][52].": ";
 		echo "<input type='text' maxlength='100' size='5' name='before'>";
 		echo "<select name='from'>";
-		for ($i=0;$i<200;$i++) echo "<option value='$i'>$i</option>";
+		for ($i=0;$i<400;$i++) echo "<option value='$i'>$i</option>";
 		echo "</select>";
 		echo "-->";
 		echo "<select name='to'>";
-		for ($i=0;$i<200;$i++) echo "<option value='$i'>$i</option>";
+		for ($i=0;$i<400;$i++) echo "<option value='$i'>$i</option>";
 		echo "</select>";
 
 		echo "<input type='text' maxlength='100' size='5' name='after'>";	
