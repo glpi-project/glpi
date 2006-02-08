@@ -1849,7 +1849,7 @@ function showFollowupsSummary($tID){
 	}
 	else {	
 
-		echo "<table class='tab_cadrehov2' width='800'>";
+		echo "<table class='tab_cadrehov2' width='850'>";
 		echo "<tr><th>&nbsp;</th><th>".$lang["joblist"][1]."</th><th>".$lang["joblist"][6]."</th><th>".$lang["job"][31]."</th><th>".$lang["job"][35]."</th><th>".$lang["joblist"][3]."</th>";
 		if ($isadmin)
 			echo "<th>".$lang["job"][30]."</th>";
@@ -1875,7 +1875,7 @@ function showFollowupsSummary($tID){
 
 			$hour=floor($data["realtime"]);
 			$minute=round(($data["realtime"]-$hour)*60,0);
-			echo "<td>$hour ".$lang["job"][21]." $minute ".$lang["job"][22]."</td>";
+			echo "<td>$hour ".$lang["job"][21]."<br> $minute ".$lang["job"][22]."</td>";
 
 			echo "<td>";
 			$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
@@ -1884,7 +1884,7 @@ function showFollowupsSummary($tID){
 				echo $lang["job"][32];	
 			else {
 				$data2=$db->fetch_array($result2);
-				echo convDateTime($data2["begin"])." -> ".convDateTime($data2["end"]);
+				echo convDateTime($data2["begin"])." <br> ".convDateTime($data2["end"]);
 			}
 			echo "</td>";
 			
