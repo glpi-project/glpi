@@ -1526,7 +1526,7 @@ function addFollowup($input,$type="followup"){
 		}
 
 
-		if ($close){
+		if ($close&&!ereg("old_",$job->fields["status"])){
 			$updates[]="status";
 			$updates[]="closedate";
 			$job->fields["status"]="old_done";
