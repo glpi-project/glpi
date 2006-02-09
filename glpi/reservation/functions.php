@@ -731,8 +731,8 @@ function addReservation($input,$target,$ok=true){
    $resa->fields["id_item"] = $input["id_item"];
    $resa->fields["comment"] = $input["comment"];
    $resa->fields["id_user"] = $input["id_user"];
-   $resa->fields["begin"] = $input["begin_date"]." ".$input["begin_hour"].":".$input["begin_min"].":00";
-   $resa->fields["end"] = $input["end_date"]." ".$input["end_hour"].":".$input["end_min"].":00";
+   $resa->fields["begin"] = $input["begin_date"]." ".sprintf("%02d",$input["begin_hour"]).":".sprintf("%02d",$input["begin_min"]).":00";
+   $resa->fields["end"] = $input["end_date"]." ".sprintf("%02d",$input["end_hour"]).":".sprintf("%02d",$input["end_min"]).":00";
 
 	if (!$resa->test_valid_date()){
 		$resa->displayError("date",$input["id_item"],$target);
@@ -743,6 +743,7 @@ function addReservation($input,$target,$ok=true){
 		$resa->displayError("is_res",$input["id_item"],$target);
 		return false;
 	}
+
 	if ($input["id_user"]>0)
 		if ($resa->addToDB()){
 			// Processing Email
