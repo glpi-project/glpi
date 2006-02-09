@@ -157,6 +157,7 @@ class Job {
 		// get the last followup for this job and give its contents as
 		GLOBAL $lang;
 		$db=new DB();
+		if (isset($this->ID)){
 		$query = "SELECT * FROM glpi_followups WHERE tracking = '".$this->ID."' AND private = '0' ORDER by date DESC";
 		$result=$db->query($query);
 		$nbfollow=$db->numrows($result);
@@ -186,6 +187,7 @@ class Job {
 			}	
 		}
 		return $message;
+		} else return "";
 	}
 	
 	function textDescription(){
@@ -202,11 +204,16 @@ class Job {
 		}
 		
 		$message = $lang["mailing"][1]."\n*".$lang["mailing"][5]."*\n".$lang["mailing"][1]."\n";
-		$message.= $lang["mailing"][2]." ".$this->getAuthorName()."\n";
+		$author=$this->getAuthorName();
+		if (empty($author)) $author=$lang["mailing"][108];
+		$message.= $lang["mailing"][2]." ".$author."\n";
 		$message.= $lang["mailing"][6]." ".convDateTime($this->fields["date"])."\n";
 		$message.= $lang["mailing"][7]." ".$name."\n";
 		$message.= $lang["mailing"][24]." ".getStatusName($this->fields["status"])."\n";
-		$message.= $lang["mailing"][8]." ".getAssignName($this->fields["assign"],USER_TYPE)."\n";
+		$assign=getAssignName($this->fields["assign"],USER_TYPE);
+		if ($assign=="[Nobody]")
+			$assign=$lang["mailing"][105];
+		$message.= $lang["mailing"][8]." ".$assign."\n";
 		$message.= $lang["mailing"][16]." ".getPriorityName($this->fields["priority"])."\n";
 		$message.= $lang["mailing"][28]." ".$contact."\n";
 		if ($this->fields["emailupdates"]=="yes"){
@@ -216,9 +223,9 @@ class Job {
 		}
 		
 		$message.= $lang["mailing"][26]." ";
-		 if (isset($this->fields["category"])){
+		 if (isset($this->fields["category"])&&$this->fields["category"]){
 			 $message.= getDropdownName("glpi_dropdown_tracking_category",$this->fields["category"]);
-		}
+		} else $message.=$lang["mailing"][100];
 		$message.= "\n";
 		
 		$message.= $lang["mailing"][3]."\n".$this->fields["contents"]."\n";	

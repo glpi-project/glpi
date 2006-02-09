@@ -592,20 +592,18 @@ function updatePlanningTracking($input,$target,$item){
 	// Auto update realtime
 	$fup=new Followup();
 	$fup->getFromDB($input["id_followup"]);
-	if ($fup->fields["realtime"]==0){
-		$tmp_beg=split(" ",$input["begin"]);
-		$tmp_end=split(" ",$input["end"]);
-		$tmp_dbeg=split("-",$tmp_beg[0]);
-		$tmp_dend=split("-",$tmp_end[0]);
-		$tmp_hbeg=split(":",$tmp_beg[1]);
-		$tmp_hend=split(":",$tmp_end[1]);
+	$tmp_beg=split(" ",$input["begin"]);
+	$tmp_end=split(" ",$input["end"]);
+	$tmp_dbeg=split("-",$tmp_beg[0]);
+	$tmp_dend=split("-",$tmp_end[0]);
+	$tmp_hbeg=split(":",$tmp_beg[1]);
+	$tmp_hend=split(":",$tmp_end[1]);
 				
-		$dateDiff = mktime($tmp_hend[0],$tmp_hend[1],$tmp_hend[2],$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
-				  - mktime($tmp_hbeg[0],$tmp_hbeg[1],$tmp_hbeg[2],$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
-		$updates2[]="realtime";
-		$fup->fields["realtime"]=$dateDiff/60/60;
-		$fup->updateInDB($updates2);
-	}
+	$dateDiff = mktime($tmp_hend[0],$tmp_hend[1],$tmp_hend[2],$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
+			  - mktime($tmp_hbeg[0],$tmp_hbeg[1],$tmp_hbeg[2],$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
+	$updates2[]="realtime";
+	$fup->fields["realtime"]=$dateDiff/60/60;
+	$fup->updateInDB($updates2);
 
 	if (isset($updates))
 		$ri->updateInDB($updates);

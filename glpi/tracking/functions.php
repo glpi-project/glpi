@@ -628,7 +628,9 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 		if ($cfg_features["mailing"])
 		{
 			$job->fields=stripslashes_deep($job->fields);
-			$mail = new Mailing("new",$job,$user);
+			$type="new";
+			if (ereg("old_",$job->fields["status"])) $type="finish";
+			$mail = new Mailing($type,$job,$user);
 			$mail->send();
 		}
 		return true;	
@@ -1346,6 +1348,8 @@ function updateTracking($input){
 	$global_mail_change_count=0;
 	if (in_array("assign",$updates)){
 		$new_assign_name=getAssignName($job->fields["assign"],USER_TYPE);
+		if ($old_assign_name="[Nobody]")
+        	       	$old_assign_name=$lang["mailing"][105];
 		$change_followup_content.=$lang["mailing"][12].": ".$old_assign_name." -> ".$new_assign_name."\n";
 		$global_mail_change_count++;
 	}
@@ -1365,8 +1369,12 @@ function updateTracking($input){
 		$ci=new CommonItem;
 		$ci->getfromDB($old_item_type,$old_item);
 		$old_item_name=$ci->getName();
+		if ($old_item_name=="N/A"||empty($old_item_name))
+        	       $old_item_name=$lang["mailing"][107];
 		$ci->getfromDB($job->fields["device_type"],$job->fields["computer"]);
 		$new_item_name=$ci->getName();
+		if ($new_item_name=="N/A"||empty($new_item_name))
+        	     $new_item_name=$lang["mailing"][107];
 		
 		$change_followup_content.=$lang["mailing"][17].": $old_item_name -> ".$new_item_name."\n";
 		if (in_array("computer",$updates)) $global_mail_change_count++;
@@ -1526,7 +1534,7 @@ function addFollowup($input,$type="followup"){
 		}
 
 
-		if ($close&&!ereg("old_",$job->fields["status"])){
+		if ($close){
 			$updates[]="status";
 			$updates[]="closedate";
 			$job->fields["status"]="old_done";
@@ -1545,7 +1553,6 @@ function addFollowup($input,$type="followup"){
 			$mail = new Mailing($type,$job,$user);
 			$mail->send();
 		}
-	
 	return $newID;
 }
 
@@ -1843,13 +1850,13 @@ function showFollowupsSummary($tID){
 	echo "<h3>".$lang["job"][37]."</h3>";
 	
 	if ($db->numrows($result)==0){
-		echo "<table class='tab_cadre' width='800'><tr class='tab_bg_2'><th>";
+		echo "<table class='tab_cadre' width='850'><tr class='tab_bg_2'><th>";
 		echo "<strong>".$lang["job"][12]."</strong>";
 		echo "</th></tr></table>";
 	}
 	else {	
 
-		echo "<table class='tab_cadrehov2' width='850'>";
+		echo "<table class='tab_cadrehov2' width='800'>";
 		echo "<tr><th>&nbsp;</th><th>".$lang["joblist"][1]."</th><th>".$lang["joblist"][6]."</th><th>".$lang["job"][31]."</th><th>".$lang["job"][35]."</th><th>".$lang["joblist"][3]."</th>";
 		if ($isadmin)
 			echo "<th>".$lang["job"][30]."</th>";
@@ -1884,7 +1891,7 @@ function showFollowupsSummary($tID){
 				echo $lang["job"][32];	
 			else {
 				$data2=$db->fetch_array($result2);
-				echo convDateTime($data2["begin"])." <br> ".convDateTime($data2["end"]);
+				echo convDateTime($data2["begin"])."<br>".convDateTime($data2["end"]);
 			}
 			echo "</td>";
 			

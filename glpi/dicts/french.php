@@ -795,6 +795,9 @@ $lang["mailing"][101]="Le suivi par email a été activé";
 $lang["mailing"][102]="Le suivi par email a été désactivé";
 $lang["mailing"][103]="Suivi par email :";
 $lang["mailing"][104]="Durée de l'intervention";
+$lang["mailing"][105]="Non attribué";
+$lang["mailing"][107]="Pas de matériel concerné";
+$lang["mailing"][108]="Pas d'auteur";
 
 $lang["Menu"][0]="Ordinateurs";
 $lang["Menu"][1]="Réseaux";
