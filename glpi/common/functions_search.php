@@ -1225,7 +1225,9 @@ function addOrderBy($field,$order,$key=0){
 	case "glpi_device_processor.specif_default" :
 		return " ORDER BY ITEM_$key $order ";
 		break;
-
+	case "glpi_contracts.end_date":
+		return " ORDER BY ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH) $order ";
+	break;
 	default:
 		return " ORDER BY $field $order ";
 		break;
@@ -1347,8 +1349,42 @@ case "glpi_networking_ports.ifmac" :
 	else return " $table.$field $NOT LIKE '%".$val."%' ";
 	break;
 case "glpi_contracts.end_date" :
-	return " ADDDATE($table.begin_date, INTERVAL $table.duration MONTH) LIKE '%".$val."%'";
+
+		$search=array("/\&lt;/","/\&gt;/");
+		$replace=array("<",">");
+		$val=preg_replace($search,$replace,$val);
+		if (ereg("([<>])(.*)",$val,$regs)){
+			return " NOW() ".$regs[1]." ADDDATE(ADDDATE($table.begin_date, INTERVAL $table.duration MONTH), INTERVAL ".$regs[2]." MONTH) ";	
+		}
+		else {
+			return " ADDDATE($table.begin_date, INTERVAL $table.duration MONTH) LIKE '%".$val."%'";		
+		}
+
+	
 	break;
+
+case "glpi_computers.date_mod":
+case "glpi_printers.date_mod":
+case "glpi_networking.date_mod":
+case "glpi_peripherals.date_mod":
+case "glpi_software.date_mod":
+case "glpi_monitors.date_mod":
+case "glpi_contracts.begin_date":
+case "glpi_infocoms.buy_date":
+case "glpi_infocoms.use_date":
+		$search=array("/\&lt;/","/\&gt;/");
+		$replace=array("<",">");
+		$val=preg_replace($search,$replace,$val);
+		if (ereg("([<>])(.*)",$val,$regs)){
+			return " NOW() ".$regs[1]." ADDDATE($table.$field, INTERVAL ".$regs[2]." MONTH) ";	
+		}
+		else {
+			$ADD="";	
+			if ($nott) $ADD=" OR $table.$field IS NULL";
+			return " ($table.$field $NOT LIKE '%".$val."%' ".$ADD." ) ";
+		}
+	break;
+
 
 default:
 	$ADD="";	
