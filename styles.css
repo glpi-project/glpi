@@ -867,8 +867,40 @@ background-color: white;
 /* DEBUG */
 /* #################################### */
 
+/* Les boutons d'admin survolent la page (sauf #FORMULAIRE_ADMIN) */
+#debug-float {
+	top: 0px;
+	right: 20px;
+	position: absolute;
+	z-index: 100;
+}
+
+#debug-float a{
+	border-top: 1px solid #cecece;
+	border-bottom: 2px solid #4a4a4a;
+	border-left: 1px solid #cecece;
+	border-right: 1px solid #cecece;
+	text-decoration: none;
+	text-align: center;
+	margin: 0;
+	padding: 1px .5em;
+	font-family: helvetica,arial,sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+	background-color: #fff;
+	color:red;
+}
+
+#debug-float a:hover {
+	background-color: #fc3;
+	border-bottom: 2px solid #36f;
+}
+
+
+
 #debug{
 
+background-color:#F0F0F0;
 
 }
 

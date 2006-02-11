@@ -511,29 +511,32 @@ echo "</table></div>";
 
 	if ($cfg_debug["active"]){
 		
+		echo "<div id='debug-float'>";		
+		echo "<a href='#debug'>GLPI MODE DEBUG</a>";
+		echo "</div>";
 		echo "<div id='debug'>";
-		echo "<h1 >GLPI MODE DEBUG</h1>";
+		echo "<h1><a name='#debug'>GLPI MODE DEBUG</a></h1>";
 		if ($cfg_debug["profile"]){
-			echo "<h2 >TIME</h2>";
+			echo "<h2>TIME</h2>";
 			echo $TIMER_DEBUG->Get_Time()."s";
 		}
 		if ($cfg_debug["vars"]){
-			echo "<h2 >POST VARIABLE</h2>";
+			echo "<h2>POST VARIABLE</h2>";
 			foreach($_POST as $key => $val)
 				echo $key." => ".$val."<br>";
-			echo "<h2 >GET VARIABLE</h2>";
+			echo "<h2>GET VARIABLE</h2>";
 			foreach($_GET as $key => $val)
 				echo $key." => ".$val."<br>";
-			echo "<h2 >SESSION VARIABLE</h2>";
+			echo "<h2>SESSION VARIABLE</h2>";
 			foreach($_SESSION as $key => $val)
 				echo $key." => ".$val."<br>";
 		}
 	
 		if ($cfg_debug["sql"]){	
 			echo "<h2>SQL REQUEST</h2>";
-			echo "<p><b> Number of request:</b> ".$SQL_TOTAL_REQUEST."</p>";
+			echo "<p><strong> Number of request:</strong> ".$SQL_TOTAL_REQUEST."</p>";
 			if ($cfg_debug["profile"]){
-				echo "<p><b>Total Time:</b> ".$SQL_TOTAL_TIMER."s</p><hr>";
+				echo "<p><strong>Total Time:</strong> ".$SQL_TOTAL_TIMER."s</p><hr>";
 			}
 			
 			echo eregi_replace("ORDER BY","<br>ORDER BY",eregi_replace("SORT","<br>SORT",eregi_replace("LEFT JOIN","<br>LEFT JOIN",eregi_replace("WHERE","<br>WHERE",eregi_replace("FROM","<br>FROM",$DEBUG_SQL_STRING)))));
