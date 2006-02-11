@@ -3588,18 +3588,20 @@ if(!FieldExists("glpi_monitors","flags_dvi")) {
 }
 
 if(!TableExists("glpi_history")) {
-	$query="CREATE TABLE glpi_history (
-	`ID` int( 11 ) NOT NULL AUTO_INCREMENT ,
-	`FK_glpi_device` int( 11 ) DEFAULT '0' NOT NULL ,
-	`device_type` tinyint( 4 ) DEFAULT '0' NOT NULL ,
-	`user_name` varchar( 200 ) NOT NULL ,
-	`date_mod` datetime,
-	`id_search_option` int( 11 ) NOT NULL ,
-	`old_value` varchar( 255 ) NOT NULL ,
-	`new_value` varchar( 255 ) NOT NULL ,
-	PRIMARY KEY (`ID`) ,
-	KEY FK_glpi_device(`FK_glpi_device`)
-	) TYPE = MYISAM ;";
+	$query="CREATE TABLE `glpi_history` (
+  `ID` int(11) NOT NULL auto_increment,
+  `FK_glpi_device` int(11) NOT NULL default '0',
+  `device_type` tinyint(4) NOT NULL default '0',
+  `device_internal_type` int(11) default '0',
+  `device_internal_action` tinyint(4) default '0',
+  `user_name` varchar(200) default NULL,
+  `date_mod` datetime default NULL,
+  `id_search_option` int(11) NOT NULL default '0',
+  `old_value` varchar(255) default NULL,
+  `new_value` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`),
+  KEY `FK_glpi_device` (`FK_glpi_device`)
+) TYPE=MyISAM;";
 
 	$db->query($query) or die("0.65 add glpi_history table".$lang["update"][90].$db->error());
 }

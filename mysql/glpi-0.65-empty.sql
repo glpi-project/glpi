@@ -1012,18 +1012,19 @@ CREATE TABLE `glpi_followups` (
 
 DROP TABLE IF EXISTS `glpi_history`;
 CREATE TABLE `glpi_history` (
-    `ID` int(11) NOT NULL auto_increment,
-    `FK_glpi_device` int(11) DEFAULT '0' NOT NULL,
-    `device_type` tinyint(4) DEFAULT '0' NOT NULL,
-    `user_name` varchar(200) NOT NULL,
-    `date_mod` datetime,
-    `id_search_option` int(11) DEFAULT '0' NOT NULL,
-    `old_value` varchar(255) NOT NULL,
-    `new_value` varchar(255) NOT NULL,
-   PRIMARY KEY (`ID`),
-   KEY FK_glpi_device (`FK_glpi_device`)
+  `ID` int(11) NOT NULL auto_increment,
+  `FK_glpi_device` int(11) NOT NULL default '0',
+  `device_type` tinyint(4) NOT NULL default '0',
+  `device_internal_type` int(11) default '0',
+  `device_internal_action` tinyint(4) default '0',
+  `user_name` varchar(200) default NULL,
+  `date_mod` datetime default NULL,
+  `id_search_option` int(11) NOT NULL default '0',
+  `old_value` varchar(255) default NULL,
+  `new_value` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`),
+  KEY `FK_glpi_device` (`FK_glpi_device`)
 ) TYPE=MyISAM;
-
 
 ### Dump table glpi_infocoms
 
