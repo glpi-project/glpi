@@ -115,6 +115,11 @@ define("PCI_DEVICE","10");
 define("CASE_DEVICE","11");
 define("POWER_DEVICE","12");
 
+// DEVICE INTERNAL ACTION
+define("ADD_DEVICE","1");
+define("UPDATE_DEVICE","2");
+define("DELETE_DEVICE","3");
+
 
 //DEVICE ARRAY.
 $cfg_devices_tables =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");

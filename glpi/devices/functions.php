@@ -115,6 +115,53 @@ global $lang;
 
 
 }
+
+function getDeviceTypeLabel($dev_type){
+global $lang;
+		switch ($dev_type){
+			case MOBOARD_DEVICE :
+				return $lang["devices"][5];
+				break;
+			case PROCESSOR_DEVICE :
+				return $lang["devices"][4];
+				break;
+			case RAM_DEVICE :
+				return  $lang["devices"][6];
+				break;
+			case HDD_DEVICE :
+				return $lang["devices"][1];
+				break;
+			case NETWORK_DEVICE :
+				return $lang["devices"][3];
+				break;
+			case DRIVE_DEVICE :
+				return $lang["devices"][19];
+				break;
+			case CONTROL_DEVICE :
+				return $lang["devices"][20];
+				break;
+			case GFX_DEVICE :
+				return $lang["devices"][2];
+				break;
+			case SND_DEVICE :
+				return $lang["devices"][7];
+				break;
+			case PCI_DEVICE :
+				return $lang["devices"][21];
+				break;
+			case CASE_DEVICE :
+				return $lang["devices"][22];
+				break;
+			case POWER_DEVICE :
+				return $lang["devices"][23];
+				break;
+				
+		}
+
+
+}
+
+
 //print form/tab for a device linked to a computer
 function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate='') {
 	global $lang,$HTMLRel;
@@ -276,10 +323,29 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 //Update an internal device specificity
 function update_device_specif($newValue,$compDevID) {
 
-	$db = new DB;
-	$query = "UPDATE glpi_computer_device SET specificity = '".$newValue."' WHERE ID = '".$compDevID."'";
-	if($db->query($query)) return true;
-	else return false;
+	// Check old value for history 
+	$db= new DB;
+	$query ="SELECT * FROM glpi_computer_device WHERE ID = '".$compDevID."'";
+		if ($result = $db->query($query)) {
+		$data = $db->fetch_array($result);
+		} 
+
+	// Is it a real change ?
+	if($data["specificity"]!=$newValue){
+		// Update specificity 
+		$db2 = new DB;
+		$query2 = "UPDATE glpi_computer_device SET specificity = '".$newValue."' WHERE ID = '".$compDevID."'";
+			if($db2->query($query2)){
+				$changes[0]='0';
+				$changes[1]=$data["specificity"];
+				$changes[2]=$newValue;
+				// history log
+				historyLog ($data["FK_computers"],COMPUTER_TYPE,$data["device_type"],$device_internal_action='2',$changes);
+	
+				return true;
+			}else{ return false;}
+	}
+
 }
 
 
@@ -291,11 +357,31 @@ function update_device_specif($newValue,$compDevID) {
 * @param $compDevID ID of the computer-device link (table glpi_computer_device)
 * @returns boolean
 **/
-function unlink_device_computer($compDevID) {
-	$db = new DB;
-	$query = "DELETE FROM glpi_computer_device where ID = '".$compDevID."'";
-	if($db->query($query)) return true;
-	else return false;
+function unlink_device_computer($compDevID){
+	
+	// get old value  and id for history 
+	$db= new DB;
+	$query ="SELECT * FROM glpi_computer_device WHERE ID = '".$compDevID."'";
+		if ($result = $db->query($query)) {
+		$data = $db->fetch_array($result);
+		} 
+	$device = new Device($data["device_type"]);
+	$device->getFromDB($data["FK_device"]);
+	echo $query;
+	// unlink 
+	$db2 = new DB;
+	$query2 = "DELETE FROM glpi_computer_device where ID = '".$compDevID."'";
+	if($db2->query($query2)){
+		$changes[0]='0';
+		$changes[1]=$device->fields["designation"];
+		$changes[2]="";
+		// history log
+		historyLog ($data["FK_computers"],COMPUTER_TYPE,$data["device_type"],$device_internal_action='3',$changes);
+
+	 return true;
+	}else{ return false;}
+
+die;
 }
 
 //Link the device to the computer
@@ -304,6 +390,12 @@ function compdevice_add($cID,$device_type,$dID,$specificity='') {
 	$device->getfromDB($dID);
 	if (empty($specificity)) $specificity=$device->fields['specif_default'];
 	$device->computer_link($cID,$device_type,$specificity);
+	$changes[0]='0';
+	$changes[1]="";
+	$changes[2]=$device->fields["designation"];"";
+		// history log
+		historyLog ($cID,COMPUTER_TYPE,$device_type,$device_internal_action='1',$changes);
+
 }
 
 /* --------------- not in use -------------------- but get it for later if needed.
