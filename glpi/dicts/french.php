@@ -327,6 +327,8 @@ $lang["devices"][21]="Autres Périphériques";
 $lang["devices"][22]="Boitiers";
 $lang["devices"][23]="Alimentation";
 $lang["devices"][24]="par défaut";
+$lang["devices"][25]="Ajout d'un periphérique interne";
+$lang["devices"][26]="Supression d'un periphérique interne";
 
 $lang["device_case"][0]="Format"; 
 $lang["device_case"][1]="Grand";

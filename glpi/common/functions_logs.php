@@ -44,9 +44,9 @@
 * @param $device_type
 * @param $changes
 **/
-function historyLog ($id_device,$device_type,$changes) {
+function historyLog ($id_device,$device_type,$device_internal_type='',$device_internal_action='',$changes) {
 
-		global $SEARCH_OPTION, $LINK_ID_TABLE;
+		//global $SEARCH_OPTION, $LINK_ID_TABLE;
 
 		$db = new DB;
 		$date_mod=date("Y-m-d H:i:s");
@@ -59,7 +59,7 @@ function historyLog ($id_device,$device_type,$changes) {
 			$new_value=$changes[2];
 
 				// Build query
-				$query = "INSERT INTO glpi_history  VALUES ('','$id_device','$device_type','". addslashes(getUserName($_SESSION["glpiID"],$link=0))."','$date_mod','$id_search_option','$old_value','$new_value');";
+				$query = "INSERT INTO glpi_history  VALUES ('','$id_device','$device_type','$device_internal_type','$device_internal_action','". addslashes(getUserName($_SESSION["glpiID"],$link=0))."','$date_mod','$id_search_option','$old_value','$new_value');";
 				
 				//echo $query;
 				//echo  "<br>";
@@ -107,7 +107,7 @@ function constructHistory($id_device,$device_type,$key,$oldvalues,$newvalues) {
 					}
 				} // fin foreach
 			
-			historyLog ($id_device,$device_type,$changes);
+			historyLog ($id_device,$device_type,"","",$changes);
 
 			} // Fin if
 
@@ -118,6 +118,7 @@ function constructHistory($id_device,$device_type,$key,$oldvalues,$newvalues) {
 /**
 * Show History
 ** 
+* Show history for a device 
 *
 * @param $id_device
 * @param $device_type
@@ -144,7 +145,7 @@ function showHistory($device_type,$id_device){
 	// No Events in database
 	if ($number < 1) {
 		echo "<br><div align='center'>";
-		echo "<table class='tab_cadre' width='90%'>";
+		echo "<table class='tab_cadre' width='800'>";
 		echo "<tr><th>".$lang["event"][20]."</th></tr>";
 		echo "</table>";
 		echo "</div><br>";
@@ -162,7 +163,33 @@ function showHistory($device_type,$id_device){
 			$ID = $db->result($result, $i, "ID");
 			$date_mod = convDateTime($db->result($result, $i, "date_mod"));
 			$user_name = $db->result($result, $i, "user_name");
+			
+			// This is an internal device ?
+			if($db->result($result, $i, "device_internal_type")!=0){
+			// Yes it is an internal device
+			
+				switch ($db->result($result, $i, "device_internal_action")){
 				
+				case ADD_DEVICE :
+				$field=getDeviceTypeLabel($db->result($result, $i, "device_internal_type"));
+				$change = $lang["devices"][25]."&nbsp;<strong>:</strong>&nbsp;\"".$db->result($result, $i, "new_value")."\"";	
+					break;
+
+				case UPDATE_DEVICE :
+				$field=getDeviceTypeLabel($db->result($result, $i, "device_internal_type"));
+				$change = getDeviceSpecifityLabel($db->result($result, $i, "device_internal_type"))."&nbsp;:&nbsp;\"".$db->result($result, $i, "old_value")."\"&nbsp;<strong>--></strong>&nbsp;\"".$db->result($result, $i, "new_value")."\"";	
+					break;
+
+				case DELETE_DEVICE :
+				$field=getDeviceTypeLabel($db->result($result, $i, "device_internal_type"));
+				$change = $lang["devices"][26]."&nbsp;<strong>:</strong>&nbsp;"."\"".$db->result($result, $i, "old_value")."\"";		
+					break;
+				
+				}
+
+
+			}else{
+			// It's not an internal device
 			foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
 			
 					if($key2==$db->result($result, $i, "id_search_option")){
@@ -171,7 +198,9 @@ function showHistory($device_type,$id_device){
 			}
 			//$field = $db->result($result, $i, "id_search_option");
 			$change = "\"".$db->result($result, $i, "old_value")."\"&nbsp;<strong>--></strong>&nbsp;\"".$db->result($result, $i, "new_value")."\"";
-			
+			}
+
+			// show line 
 			echo "<tr class='tab_bg_2'>";
 			
 			echo "<td>$ID</td><td>$date_mod</td><td>$user_name</td><td>$field</td><td width='60%'>$change</td>"; 
