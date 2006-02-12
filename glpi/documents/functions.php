@@ -118,6 +118,12 @@ function showDocumentForm ($target,$ID) {
 	echo "<td colspan='2'><input type='file' name='filename' value=\"".$con->fields["filename"]."\" size='25'></td>";
 	echo "</tr>";
 
+	echo "<tr class='tab_bg_1'><td>".$lang["document"][36].":		</td>";
+	echo "<td colspan='2'>";
+	showUploadedFilesDropdown("upload_file");
+	echo "</td></tr>";
+
+
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][33].":		</td>";
 	echo "<td colspan='2'>";
 	autocompletionTextField("link","glpi_docs","link",$con->fields["link"],40);
@@ -202,8 +208,10 @@ function updateDocument($input) {
 	if (isset($_FILES['filename']['type'])&&!empty($_FILES['filename']['type']))
 		$input['mime']=$_FILES['filename']['type'];
 		
-
-	$input['filename']= uploadDocument($_FILES['filename'],$input['current_filename']);
+	if (isset($input["upload_file"])&&!empty($input["upload_file"])){
+		$input['filename']=moveUploadedDocument($input["upload_file"],$input['current_filename']);
+	} else 	$input['filename']= uploadDocument($_FILES['filename'],$input['current_filename']);
+	
 	if (empty($input['filename'])) unset($input['filename']);
 	unset($input['current_filename']);	
 
@@ -224,6 +232,48 @@ function updateDocument($input) {
 }
 
 
+function moveUploadedDocument($filename,$old_file=''){
+	global $cfg_install,$phproot,$lang;
+
+	$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
+
+	if (is_dir($cfg_install["doc_dir"]."/UPLOAD")){
+		if (is_file($cfg_install["doc_dir"]."/UPLOAD/".$filename)){
+			$dir=isValidDoc($filename);
+			$new_path=getUploadFileValidLocationName($dir,$filename,0);
+			if (!empty($new_path)){
+
+				// Delete old file
+				if(!empty($old_file)&& is_file($cfg_install["doc_dir"]."/".$old_file)&& !is_dir($cfg_install["doc_dir"]."/".$old_file)) {
+					if (unlink($cfg_install["doc_dir"]."/".$old_file))
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][24].$cfg_install["doc_dir"]."/".$old_file."<br>";
+					else 
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][25].$cfg_install["doc_dir"]."/".$old_file."<br>";
+				}
+				
+				// Déplacement si droit
+				if (is_writable ($cfg_install["doc_dir"]."/UPLOAD/".$filename)){
+					if (rename($cfg_install["doc_dir"]."/UPLOAD/".$filename,$cfg_install["doc_dir"]."/".$new_path)){
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][39]."<br>";
+						return $new_path;
+						}
+					else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][40]."<br>";
+				} else { // Copi sinon
+					if (copy($cfg_install["doc_dir"]."/UPLOAD/".$filename,$cfg_install["doc_dir"]."/".$new_path)){
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][41]."<br>";
+						return $new_path;
+						}
+					else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][40]."<br>";
+				}
+			}
+		
+		} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][38].": ".$cfg_install["doc_dir"]."/UPLOAD/".$filename."<br>";
+
+	} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][35]."<br>";
+
+return "";	
+}
+
 function uploadDocument($FILEDESC,$old_file=''){
 	global $cfg_install,$phproot,$lang;
 
@@ -231,12 +281,42 @@ function uploadDocument($FILEDESC,$old_file=''){
 	// Is a file uploaded ?
 	if (count($FILEDESC)>0&&!empty($FILEDESC['name'])){
 		// Clean is name
-		$filename=preg_replace("/[^a-zA-Z0-9\-_\.]/","_",$FILEDESC['name']);
+		$filename=cleanFilenameFocument($FILEDESC['name']);
 		$force=0;
 		// Is it a valid file ?
-		$dir=isvalidDoc($filename);
+		$dir=isValidDoc($filename);
 		if (!empty($old_file)&&$dir."/".$filename==$old_file) $force=1;
 		
+		$new_path=getUploadFileValidLocationName($dir,$filename,$force);
+
+		if (!empty($new_path)){
+			// Delete old file
+			if(!empty($old_file)&& is_file($cfg_install["doc_dir"]."/".$old_file)&& !is_dir($cfg_install["doc_dir"]."/".$old_file)) {
+				if (unlink($cfg_install["doc_dir"]."/".$old_file))
+					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][24].$cfg_install["doc_dir"]."/".$old_file."<br>";
+				else 
+					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][25].$cfg_install["doc_dir"]."/".$old_file."<br>";
+			}
+					
+			// Move uploaded file
+			if (move_uploaded_file($FILEDESC['tmp_name'],$cfg_install["doc_dir"]."/".$new_path)) {
+	   			$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][26]."<br>";
+				return $new_path;
+			} else {
+				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][27]."<br>";
+			}
+		}
+
+	
+	}	
+return "";	
+}
+
+
+function getUploadFileValidLocationName($dir,$filename,$force){
+
+	global $cfg_install,$lang;
+
 		if (!empty($dir)){
 			// Test existance repertoire DOCS
 			if (is_dir($cfg_install["doc_dir"])){
@@ -247,45 +327,35 @@ function uploadDocument($FILEDESC,$old_file=''){
 			}
 			// Copy du fichier uploadé si répertoire existe
 			if (is_dir($cfg_install["doc_dir"]."/".$dir)){
-				// Rename file if exists
-				$NB_CHAR_MORE=10;
-				$i=0;
-				$tmpfilename=$filename;
-				while ($i<$NB_CHAR_MORE&&!$force&&is_file($cfg_install["doc_dir"]."/".$dir."/".$filename)){
-					$filename="_".$filename;
-					$i++;
-				}
-				
-				if ($i==$NB_CHAR_MORE){
+				if (!$force){
+					// Rename file if exists
+					$NB_CHAR_MORE=10;
 					$i=0;
-					$filename=$tmpfilename;
-					while ($i<$NB_CHAR_MORE&&!$force&&is_file($cfg_install["doc_dir"]."/".$dir."/".$filename)){
-						$filename="-".$filename;
+					$tmpfilename=$filename;
+					while ($i<$NB_CHAR_MORE&&is_file($cfg_install["doc_dir"]."/".$dir."/".$filename)){
+						$filename="_".$filename;
 						$i++;
 					}
+				
 					if ($i==$NB_CHAR_MORE){
 						$i=0;
 						$filename=$tmpfilename;
-						while ($i<$NB_CHAR_MORE&&!$force&&is_file($cfg_install["doc_dir"]."/".$dir."/".$filename)){
-							$filename="0".$filename;
+						while ($i<$NB_CHAR_MORE&&is_file($cfg_install["doc_dir"]."/".$dir."/".$filename)){
+							$filename="-".$filename;
 							$i++;
+						}
+						if ($i==$NB_CHAR_MORE){
+							$i=0;
+							$filename=$tmpfilename;
+							while ($i<$NB_CHAR_MORE&&is_file($cfg_install["doc_dir"]."/".$dir."/".$filename)){
+								$filename="0".$filename;
+								$i++;
+							}
 						}
 					}
 				}
 				if ($force||!is_file($cfg_install["doc_dir"]."/".$dir."/".$filename)){
-					// Delete old file
-					if(!empty($old_file)&& is_file($cfg_install["doc_dir"]."/".$old_file)&& !is_dir($cfg_install["doc_dir"]."/".$old_file)) {
-						if (unlink($cfg_install["doc_dir"]."/".$old_file))
-						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][24].$cfg_install["doc_dir"]."/".$old_file."<br>";
-						else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][25].$cfg_install["doc_dir"]."/".$old_file."<br>";
-						}
-					
-					if (move_uploaded_file($FILEDESC['tmp_name'],$cfg_install["doc_dir"]."/".$dir."/".$filename )) {
-   						$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][26]."<br>";
-						return $dir."/".$filename;
-					} else {
-	   					$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][27]."<br>";
-					}
+					return $dir."/".$filename;
 				} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][28]."<br>";
 			
 			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][29]." ".$cfg_install["doc_dir"]."/".$dir." ".$lang["document"][30]."<br>";
@@ -293,9 +363,8 @@ function uploadDocument($FILEDESC,$old_file=''){
 			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][31]." ".$cfg_install["doc_dir"]."<br>";
 		
 		} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][32]."<br>";
-	
-	}	
-return "";	
+
+return "";
 }
 
 function addDocument($input) {
@@ -309,7 +378,14 @@ function addDocument($input) {
 	if (isset($_FILES['filename']['type'])&&!empty($_FILES['filename']['type']))
 		$input['mime']=$_FILES['filename']['type'];
 		
-	$input['filename']= uploadDocument($_FILES['filename']);		
+
+	if (isset($input["upload_file"])&&!empty($input["upload_file"])){
+		$input['filename']=moveUploadedDocument($input["upload_file"]);
+		
+	} else 	$input['filename']= uploadDocument($_FILES['filename']);
+	
+	unset($input["upload_file"]);
+
 
 	// fill array for update
 	foreach ($input as $key => $val) {
@@ -398,25 +474,6 @@ $result = $db->query($query);
 }
 
 
-function dropdownDocuments($name){
-
-	$db=new DB;
-	$query="SELECT * from glpi_docs WHERE deleted = 'N' order by name";
-	$result=$db->query($query);
-	echo "<select name='$name'>";
-	echo "<option value='-1'>-----</option>";
-	while ($data=$db->fetch_array($result)){
-		
-	echo "<option value='".$data["ID"]."'>";
-	echo $data["name"];
-	echo "</option>";
-	}
-
-	echo "</select>";	
-	
-	
-	
-}
 // $withtemplate==3 -> visu via le helpdesk -> plus aucun lien
 function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
@@ -521,6 +578,37 @@ global $HTMLRel,$cfg_install;
 	
 	
 	return $out;
+}
+
+function cleanFilenameFocument($name){
+return preg_replace("/[^a-zA-Z0-9\-_\.]/","_",$name);
+}
+
+function showUploadedFilesDropdown($myname){
+	global $cfg_install,$lang;
+
+
+	if (is_dir($cfg_install["doc_dir"]."/UPLOAD")){
+		$uploaded_files=array();
+		if ($handle = opendir($cfg_install["doc_dir"]."/UPLOAD")) {
+   			while (false !== ($file = readdir($handle))) {
+       				if ($file != "." && $file != "..") {
+					$dir=isValidDoc($file);
+					if (!empty($dir))
+           					$uploaded_files[]=$file;
+       				}
+   			}
+   			closedir($handle);
+		}
+
+		if (count($uploaded_files)){
+			echo "<select name='$myname'>";
+			echo "<option value=''>-----</option>";
+			foreach ($uploaded_files as $key => $val)
+				echo "<option value=\"$val\">$val</option>";
+			echo "</select>";
+		} else echo $lang["document"][37];
+	} else echo $lang["document"][35];
 }
 
 ?>
