@@ -278,6 +278,7 @@ function updateSoftware($input) {
 			$x++;
 		}
 	}
+
 	if(!empty($updates)) {
 	
 		$sw->updateInDB($updates);
@@ -775,6 +776,9 @@ function addLicense($input) {
 	}
 	$newID=$lic->addToDB();
 	
+	if ($input['oem']=='Y')
+		installSoftware($input['oem_computer'],$newID);
+
 	// Add infocoms if exists for the licence
 	$ic=new Infocom();
 	if ($ic->getFromDB(SOFTWARE_TYPE,$lic->fields["sID"])){
@@ -795,7 +799,7 @@ function updateLicense($input) {
 
 	if (empty($input['expire'])) unset($input['expire']);
 	if (!isset($input['expire'])||$input['expire']=="0000-00-00") $input['expire']="NULL";
-	if (isset($input['oem'])&&$input['oem']=='N') $input['oem_computer']=0;
+	if (isset($input['oem'])&&$input['oem']=='N') $input['oem_computer']=-1;
 
 	
 	// Fill the update-array with changes
