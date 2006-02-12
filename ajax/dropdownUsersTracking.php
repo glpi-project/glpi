@@ -60,13 +60,9 @@
 	$result = $db->query($query);
 
 	echo "<select name=\"".$_POST['myname']."\">";
-	$i = 0;
 
 	if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 	echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
-	
-		
-	$number = $db->numrows($result);
 	
 	echo "<option value=\"0\">[ ".$lang["search"][7]." ]</option>";
 	
@@ -76,18 +72,16 @@
 		echo "<option selected value='".$_POST['value']."' title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
 	}	
 	
-	if ($number > 0) {
-		while ($i < $number) {
-			$output = $db->result($result, $i, "name");
-			$realname=$db->result($result, $i, "realname");
-			if (!empty($realname)) $output = $realname;
-			$ID = $db->result($result, $i, "ID");
-			if ($ID == $value) {
-				echo "<option value=\"$ID\" selected title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
+	if ($db->numrows($result)) {
+		while ($data=$db->fetch_array($result)) {
+			if (!empty($data["realname"])) $output = $data["realname"];
+			else $output = $data["name"];
+			
+			if ($data["ID"] == $value) {
+				echo "<option value=\"".$data["ID"]."\" selected title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
 			} else {
-				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
+				echo "<option value=\"".$data["ID"]."\" title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
 			}
-			$i++;
    		}
 	}
 	echo "</select>";

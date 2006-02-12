@@ -66,9 +66,8 @@
 			echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 	
 		echo "<option value=\"0\">-----</option>";
-		$i = 0;
-		$number = $db->numrows($result);
-		if ($number > 0) {
+
+		if ($db->numrows($result)) {
 			while ($data = $db->fetch_array($result)) {
 				$output = $data['designation'];
 
@@ -76,7 +75,6 @@
 				if (empty($output)) $output="($ID)";
 
 				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
-				$i++;
 			}
 		}
 		echo "</select>";
@@ -103,15 +101,10 @@
 		if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 		echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 		
-		$i = 0;
-		$number = $db->numrows($result);
-		if ($number > 0) {
-			while ($i < $number) {
-				$output = $db->result($result, $i, "netpname");
-				$loc = $db->result($result, $i, "locname");
-				$ID = $db->result($result, $i, "ID");
-				echo "<option value=\"$ID\">$output ($loc)</option>";
-				$i++;
+		if ($db->numrows($result)) {
+			while ($data = $db->fetch_array($result)) {
+				$output = $data["netpname"];
+				echo "<option value=\"".$data["ID"]."\">$output (".$data["locname"].")</option>";
 			}
 		}
 		echo "</select>";
@@ -145,9 +138,7 @@
 			echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 	
 		echo "<option value=\"0\">-----</option>";
-		$i = 0;
-		$number = $db->numrows($result);
-		if ($number > 0) {
+		if ($db->numrows($result)) {
 			while ($data = $db->fetch_array($result)) {
 				$output = $data['name'];
 				if ($_POST["table"]=="glpi_users"&&!empty($data["realname"])) $output = $data['realname'];
@@ -155,7 +146,6 @@
 				if (empty($output)) $output="($ID)";
 
 				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
-				$i++;
 			}
 		}
 		echo "</select>";

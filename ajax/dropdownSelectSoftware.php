@@ -53,21 +53,17 @@
 	
 	$query = "SELECT * FROM glpi_software WHERE deleted='N' AND is_template='0' $where order by name";
 	$result = $db->query($query);
-	$number = $db->numrows($result);
 
 	echo "<select name='sID' id='item_type$rand'>\n";
 	echo "<option value='0'>-----</option>\n";
-	$i=0;
-	while ($i < $number) {
-		$sID = $db->result($result, $i, "ID");
+	if ($db->numrows($result))
+	while ($data=$db->fetch_array($result)) {
+		$sID = $data["ID"];
 		
 		if (empty($withtemplate)||isGlobalSoftware($sID)||isFreeSoftware($sID)){
-			$version = $db->result($result, $i, "version");
-			$name = $db->result($result, $i, "name");
-			$output=$name." (v. $version)";
+			$output=$data["name"]." (v. ".$data["version"].")";
 			echo  "<option value='$sID' title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
 		}
-		$i++;
 	}	
 	echo "</select>\n";
 	
