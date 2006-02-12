@@ -1,65 +1,62 @@
 /*
- * @version $Id$
- ----------------------------------------------------------------------
- GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2006 by the INDEPNET Development Team.
- 
- http://indepnet.net/   http://glpi.indepnet.org
- ----------------------------------------------------------------------
+* @version $Id$
+----------------------------------------------------------------------
+GLPI - Gestionnaire Libre de Parc Informatique
+Copyright (C) 2003-2006 by the INDEPNET Development Team.
 
- LICENSE
+http://indepnet.net/   http://glpi.indepnet.org
+----------------------------------------------------------------------
+
+LICENSE
 
 	This file is part of GLPI.
 
-    GLPI is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+GLPI is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
-    GLPI is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+GLPI is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with GLPI; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- ------------------------------------------------------------------------
+You should have received a copy of the GNU General Public License
+along with GLPI; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+------------------------------------------------------------------------
 */
 
 /* ########################Fichier CSS############################# */
 /* ###### general ###### */
 /* #################################### */
-  body 
-  {  
-    padding :5px;
+
+body{  
+	padding :5px;
 	margin :0;
 	font-size : 12px;
- 	background-color : #FFFFFF;
+	background-color : #FFFFFF;
 	color : #000000;
 	font-family: Verdana,Arial,Helvetica,sans-serif;
+}
 
-  }
+img{
+	border: 0;
+}
 
-  img {
-  border: 0;
- 
-  }
- 
- small
-  {  
-    font-family: verdana;
+small{  
+	font-family: verdana;
 	font-size: 10px;
 	text-decoration: underline;
-  } 
+} 
 
-  b
-  {
-    font-weight: bold;
-  }
 
- .center {
-text-align:center;
+b{
+	font-weight: bold;
+}
+
+.center {
+	text-align:center;
 }
 
 .red { color:red;}
@@ -67,139 +64,141 @@ text-align:center;
 .green {color:green;}
 
 .separ {
-clear: both;
-visibility: hidden;}
-
-
-/* #################################### */
- /* ###### liens ###### */
-/* #################################### */
-
-
-  a, a:link
-  {
-    font-weight: bold;
-    text-decoration: none;
-  	color : #009966;
-  }
-
-  /*
- a:visited   {
-    font-weight: bold;
-    text-decoration: none;
-     color : #009966;
-  }
-*/
-
-  a:hover
-  {
-    color: black;
-  }
-
-  hr{border: 1px solid #cccccc;
-       }
-
-/* Over link div */
-.over_link {
-display: none;
-position: absolute;
-border: 1px solid gray;
-background: transparent url("pics/fondTR.png") repeat; 
--moz-border-radius: 5px;
-padding: 5px;
-font-size: 12px;
-text-align: left;
+	clear: both;
+	visibility: hidden;
 }
 
 
 /* #################################### */
- /* ###### form ###### */
- /* #################################### */
- 
- form  {font-size: 12px;
-  margin:0;
-margin-bottom:10px;
-  padding:0; 
-   
-   }
+/* ###### liens ###### */
+/* #################################### */
 
- option {border:1px solid #ccc;
-        background-color:#ffffff;}
 
- .submit { text-align:center;}
-  
+a, a:link
+{
+	font-weight: bold;
+	text-decoration: none;
+	color : #009966;
+}
+
+/*
+a:visited   {
+font-weight: bold;
+text-decoration: none;
+color : #009966;
+}
+*/
+
+a:hover
+{
+	color: black;
+}
+
+hr{
+	border: 1px solid #cccccc;
+}
+
+/* Over link div */
+.over_link {
+	display: none;
+	position: absolute;
+	border: 1px solid gray;
+	background: transparent url("pics/fondTR.png") repeat; 
+	-moz-border-radius: 5px;
+	padding: 5px;
+	font-size: 12px;
+	text-align: left;
+}
+
+
+/* #################################### */
+/* ###### form ###### */
+/* #################################### */
+
+form  {font-size: 12px;
+	margin:0;
+	margin-bottom:10px;
+	padding:0; 
+
+}
+
+option {border:1px solid #ccc;
+	background-color:#ffffff;}
+
+.submit { text-align:center;}
+
 select { font-size: 11px;
 }
 
 
 input.submit {
-        border:1px solid #009966;
-        background-color:#eeeeee;
-       cursor:pointer;
-	  }
-        
+	border:1px solid #009966;
+	background-color:#eeeeee;
+	cursor:pointer;
+	}
+	
 input.submit:hover {
-        border:1px solid #009966;
-       background-color:#ffffff;
-        }
+	border:1px solid #009966;
+	background-color:#ffffff;
+	}
 
 .button {
-        border:1px solid #009966;
-        background-color:#eeeeee;
-        cursor:pointer;
+	border:1px solid #009966;
+	background-color:#eeeeee;
+	cursor:pointer;
 	}
 
 .button:hover{
-        border:1px solid #009966;
-       background-color:#ffffff;
-        }
+	border:1px solid #009966;
+	background-color:#ffffff;
+	}
 
 
 .calendrier{
-       border:1px solid #009966;
-        background-color:#eeeeee;
+	border:1px solid #009966;
+	background-color:#eeeeee;
 	vertical-align:middle;
-        }
+	}
 	
 .calendrier:hover{
-        border:1px solid #009966;
-       background-color:#ffffff;
-        }
+	border:1px solid #009966;
+	background-color:#ffffff;
+	}
 
 
 
 /* #################################### */
- /* ###### table ###### */
+/* ###### table ###### */
 /* #################################### */
- table {   }
+table {   }
 
-  th {  }
+th {  }
 
-  
-  td { }
+
+td { }
 
 
 
 .tab_cadre{
- -moz-border-radius: 4px;
-  border: 1px solid #cccccc;
-z-index:1;
-text-align: left;
-font-size: 11px;
+	-moz-border-radius: 4px;
+	border: 1px solid #cccccc;
+	z-index:1;
+	text-align: left;
+	font-size: 11px;
 }
 
 .tab_cadrehov, .tab_cadrehov2{
- -moz-border-radius: 4px;
-  border: 1px solid #cccccc;
-  text-align: left;
-font-size: 11px;
+	-moz-border-radius: 4px;
+	border: 1px solid #cccccc;
+	text-align: left;
+	font-size: 11px;
 }
 
 .tab_cadre th, .tab_cadrehov th, .tab_cadrehov2 th {
-font-size: 12px;
-    font-weight: bold;
-   background-color: #fccc6f;
-text-align: center;
+	font-size: 12px;
+	font-weight: bold;
+	background-color: #fccc6f;
+	text-align: center;
 }
 
 
@@ -221,10 +220,10 @@ text-align: center;
 
 
 .tab_cadre2{
-text-align:center;
- -moz-border-radius: 4px;
-  border: 1px solid #cccccc;
- font-size: 11px;
+	text-align:center;
+	-moz-border-radius: 4px;
+	border: 1px solid #cccccc;
+	font-size: 11px;
 }
 
 .tab_cadre2 tr:hover {
@@ -234,182 +233,180 @@ text-align:center;
 
 
 .tab_cadre_pager{
-text-align:center;
- -moz-border-radius: 4px;
-  border: 1px solid #cccccc;
- font-size:10px;
+	text-align:center;
+	-moz-border-radius: 4px;
+	border: 1px solid #cccccc;
+	font-size:10px;
 }
 
 
 .tab_cadre_pager select, .tab_cadre_pager span, .tab_cadre_pager form {
-font-size:10px;
-margin:0;
+	font-size:10px;
+	margin:0;
 }
 
 .tab_cadre_pager input {
-vertical-align:middle;
+	vertical-align:middle;
 }
 
 
 .tab_cadre_pager th {
-font-size: 10px;
-    font-weight: bold;
-   background-color: #fccc6f;
-text-align: center;
+	font-size: 10px;
+	font-weight: bold;
+	background-color: #fccc6f;
+	text-align: center;
 
 }
 
 
 
 .tab_bg_1 {
-background-color: #ccccc7;
+	background-color: #ccccc7;
 
 }
 .tab_bg_1_2 {
-background-color: #cf9b9b;
+	background-color: #cf9b9b;
 
 }
 
 .tab_bg_2 {
-background-color: #d7d7d2;
+	background-color: #d7d7d2;
 
 }
 
 .tab_bg_2_2 {
-background-color: #cf9b9b;
+	background-color: #cf9b9b;
 
 }
 
 .tab_bg_3 {
-  /*background-color: #eeeeee;*/
-background-color: #e7e7e2;
+/*background-color: #eeeeee;*/
+	background-color: #e7e7e2;
 
 }  
 
 .tab_find {
-background-color: #ccccc7;
+	background-color: #ccccc7;
 
 }
 
 
 .tab_find:hover {
-background-color:#FFF2C2;
-cursor:pointer;
+	background-color:#FFF2C2;
+	cursor:pointer;
 }
 
 .tab_resa {
-border:1px dashed #cccccc;
-background-color: #d7d7d2;
-font-size:8px
+	border:1px dashed #cccccc;
+	background-color: #d7d7d2;
+	font-size:8px
 }
 
 .tab_resa:hover {
 
-background-color: #ffffff;
-border:1px dotted #000000;
+	background-color: #ffffff;
+	border:1px dotted #000000;
 
 
 }
- 
+
 
 .div_tracking {
-width:100%;
- height:100%;
- 
-cursor:pointer;
+	width:100%;
+	height:100%;
+	cursor:pointer;
 }
 
 .div_tracking:hover {
-background-color: #FFF4DF; 
+	background-color: #FFF4DF; 
 
 }
 
 /* #################################### */
- /* ###### login ###### */
+/* ###### login ###### */
 /* #################################### */
 
 #contenulogin {
-height: 266px;
-width: 600px;
-margin-top:100px;
-margin-left: auto;
-margin-right: auto;
-background:url(pics/login_glpi.png)  no-repeat;
-font-family : Verdana,Arial,Helvetica,sans-serif;
-font-size : 12px;
-
-color :#009966;
+	height: 266px;
+	width: 600px;
+	margin-top:100px;
+	margin-left: auto;
+	margin-right: auto;
+	background:url(pics/login_glpi.png)  no-repeat;
+	font-family : Verdana,Arial,Helvetica,sans-serif;
+	font-size : 12px;
+	color :#009966;
 }
 
 #boxlogin {
-position:relative;
-background-color: transparent;
-padding-left: 15px;
-padding-top: 76px;
-text-align: left;  /* Bug IE Grrr */
-height: 190px;
-width: 300px;
+	position:relative;
+	background-color: transparent;
+	padding-left: 15px;
+	padding-top: 76px;
+	text-align: left;  /* Bug IE Grrr */
+	height: 190px;
+	width: 300px;
 
 
 }
 
 #boxlogin p {
 
-text-align:center;
+	text-align:center;
 }
 
 .row {
-  clear: both;
-  padding-top: 5px;
-  }
+	clear: both;
+	padding-top: 5px;
+}
 
 .label {
-  float: left;
-  margin-left:10px;
-   text-align: left;
-  }
+	float: left;
+	margin-left:10px;
+	text-align: left;
+}
 
 .formw {
-  float: right;
-  margin-right:10px;
-  text-align: right;
-  }
+	float: right;
+	margin-right:10px;
+	text-align: right;
+}
 
 
 
 #boxlogin fieldset {
-background-color: transparent;
-border: 2px solid #FFC65D;
-padding-bottom:22px;
+	background-color: transparent;
+	border: 2px solid #FFC65D;
+	padding-bottom:22px;
 }
 
 #boxlogin legend {
-font-family:"Trebuchet MS",Verdana,Geneva,Arial,Helvetica,sans-serif;
-font-size: 16px;
-font-weight: 700;
-background-color: transparent;
+	font-family:"Trebuchet MS",Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 16px;
+	font-weight: 700;
+	background-color: transparent;
 }
 
 
 #boxlogin input {
 
-border: 1px solid #009966;
+	border: 1px solid #009966;
 }
 
 #logo-login {
 
-float:right;
-height: 160px;
-width: 240px;
-margin-right:0px;
-margin-left:0px;
-margin-top:80px;
+	float:right;
+	height: 160px;
+	width: 240px;
+	margin-right:0px;
+	margin-left:0px;
+	margin-top:80px;
 
 
 }
 
 .sous_logo {
-  font-family: arial;
+	font-family: arial;
 	font-size: 9px;
 	color: #eeeeee;
 	text-decoration: none;
@@ -417,21 +414,21 @@ margin-top:80px;
 
 #footer-login
 {
-text-align:right; 
- position: fixed !important;
-left: 0px;
-right: 10px;
-  bottom: 0px !important;
-  height: 40px;
- font-size : 10px;
- color :#757575;
+	text-align:right; 
+	position: fixed !important;
+	left: 0px;
+	right: 10px;
+	bottom: 0px !important;
+	height: 40px;
+	font-size : 10px;
+	color :#757575;
 	font-family: Verdana,Arial,Helvetica,sans-serif;
 	font-weight: bold;
-   /* css hack for IE */
-  position: absolute;
-  bottom: auto;
-  top: expression((parseInt(document.documentElement.clientHeight)+parseInt(document.documentElement.scrollTop)-42)+'px');
-  width: expression(parseInt(document.documentElement.clientWidth)+'px');
+	/* css hack for IE */
+	position: absolute;
+	bottom: auto;
+	top: expression((parseInt(document.documentElement.clientHeight)+parseInt(document.documentElement.scrollTop)-42)+'px');
+	width: expression(parseInt(document.documentElement.clientWidth)+'px');
 }
 
 
@@ -445,7 +442,7 @@ right: 10px;
 	/* ## background-color: #C5DAC8;*/
 	background-color: #efefe7;
 	-moz-border-radius: 8px;
-        /*border: 2px outset #009966;*/
+	/*border: 2px outset #009966;*/
 	height:80px;	
 	border: 2px outset #FFC65D;
 	
@@ -458,7 +455,7 @@ right: 10px;
 	/* ## background-color: #C5DAC8;*/
 	background-color: #efefe7;
 	-moz-border-radius: 8px;
-        /*border: 2px outset #009966;*/
+	/*border: 2px outset #009966;*/
 	height:150px;	
 	border: 2px outset #FFC65D;
 	
@@ -469,50 +466,50 @@ right: 10px;
 /* #################################### */
 
 #menu  dl, #menu dt, #menu dd, #menu ul, #menu li {
-margin: 0;
-padding: 0;
-list-style-type: none;
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
 }
 #menu {
-position: absolute;
-top: 10px;
-left: 0;
-z-index:100;
-width: 100%; /* precision for Opera */
+	position: absolute;
+	top: 10px;
+	left: 0;
+	z-index:100;
+	width: 100%; /* precision for Opera */
 }
 #menu dl {
-float: left;
-display: block; /* Precision for Safari */
-width: 12%;
+	float: left;
+	display: block; /* Precision for Safari */
+	width: 12%;
 }
 #menu dt {
-cursor: pointer;
-text-align: center;
-font-weight: bold;
-background: transparent;
-/*border: 1px solid gray; */
-margin: 1px;
+	cursor: pointer;
+	text-align: center;
+	font-weight: bold;
+	background: transparent;
+	/*border: 1px solid gray; */
+	margin: 1px;
 }
 #menu dd {
-display: none;
--moz-border-radius: 4px;
-border: 1px solid gray;
+	display: none;
+	-moz-border-radius: 4px;
+	border: 1px solid gray;
 }
 #menu li {
-text-align: center;
-padding: 2px;
-background: transparent url("pics/fondTR.png") repeat; 
-border-bottom: 1px outset white;
+	text-align: center;
+	padding: 2px;
+	background: transparent url("pics/fondTR.png") repeat; 
+	border-bottom: 1px outset white;
 }
 #menu li a, #menu dt a {
-color: #000;
-text-decoration: none;
-display: block;
-/*height: 100%;*/
-border: 0 none;
+	color: #000;
+	text-decoration: none;
+	display: block;
+	/*height: 100%;*/
+	border: 0 none;
 }
 #menu li a:hover, #menu dt a:hover {
-background: #fccc6f;
+	background: #fccc6f;
 
 }
 
@@ -521,7 +518,7 @@ background: #fccc6f;
 	
 .menu_title {
 	font-size : 9px;
- 	color : #000000;
+	color : #000000;
 	font-family: Verdana,Arial,Helvetica,sans-serif;
 	
 }	
@@ -538,27 +535,27 @@ background: #fccc6f;
 }
 
 .menu a:hover {
-font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
+	font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
 	font-size : 11px;
 	color : #FFFFFF;
 	text-decoration: none;
 	border: none;
 	font-weight:bold;
-background-color: #339966;
+	background-color: #339966;
 }
 
 
- a.icon_logo img{
+a.icon_logo img{
 	padding: 7px;
 	margin: 1px;
 	border: 1px solid #aaaaaa;
 	background-color: #ffffff;
 	-moz-border-radius: 5px;
-       	font-size : 12px;
-        font-weight: bold;
+	font-size : 12px;
+	font-weight: bold;
 }
 
- a.icon_logo:hover img {
+a.icon_logo:hover img {
 	padding: 7px;
 	margin: 1px;
 	border: 1px solid #999999;
@@ -572,8 +569,8 @@ background-color: #339966;
 	border: 1px solid #aaaaaa;
 	background-color: #ffffff;
 	-moz-border-radius: 5px;
-       	font-size : 12px;
-        font-weight: bold;
+	font-size : 12px;
+	font-weight: bold;
 }
 
 
@@ -601,8 +598,8 @@ a.icon_nav_move:hover img {
 	text-align:center;
 	
 	-moz-border-radius: 5px;
-       	font-size : 9px;
-        
+	font-size : 9px;
+	
 }
 
 
@@ -611,18 +608,18 @@ ul.autocomp  {
 	list-style-type: none;
 	margin:0;
 	margin-left:3px;
-      padding:3px;
-    }
+	padding:3px;
+}
 
 ul.autocomp   li.selected { background-color: #FFF6CF; }
-  
-li.auto_comp  {
-      list-style-type: none;
-      display:block;
-      margin:0;
-      padding:2px;
-      height:16px;
-    }
+
+	li.auto_comp  {
+	list-style-type: none;
+	display:block;
+	margin:0;
+	padding:2px;
+	height:16px;
+}
 
 
 
@@ -637,10 +634,10 @@ li.auto_comp  {
 .icon_consol {
 	font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
 	font-size : 12px;
-        font-weight: bold;
-        padding: 4px;
+	font-weight: bold;
+	padding: 4px;
 	padding-right: 8px;
-        margin: 1px;
+	margin: 1px;
 	border: 1px solid #aaaaaa;
 	background-color: #e4e4e4;
 	-moz-border-radius: 5px;
@@ -648,13 +645,13 @@ li.auto_comp  {
 }
 
 .icon_consol img{
-padding-bottom: 10px;
+	padding-bottom: 10px;
 }
 
 .icon_consol:hover {
 	padding: 4px;
 	padding-right: 8px;
-        margin: 1px;
+	margin: 1px;
 	border: 1px solid #999999;
 	background-color: white;
 	-moz-border-radius: 5px;
@@ -669,19 +666,19 @@ padding-bottom: 10px;
 	/* ## background-color: #C5DAC8;*/
 	background-color: #efefe7;
 	-moz-border-radius: 8px;
-        /*border: 2px outset #009966;*/
+	/*border: 2px outset #009966;*/
 
 	border: 2px outset #FFC65D;
 	padding: 5px;
 	margin-top: 200px;
-	 clear:both;
+	clear:both;
 	}
 
 	
 	
 .copyright {
 	font-size : 10px;
- 	
+	
 	color :#757575;
 	font-family: Verdana,Arial,Helvetica,sans-serif;
 	font-weight: bold;
@@ -698,64 +695,64 @@ padding-bottom: 10px;
 
 #barre_onglets {
 
-width:800px;
-margin-left: auto;
-margin-right: auto;
-margin-bottom:0;
-padding-bottom:0;
+	width:800px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom:0;
+	padding-bottom:0;
 
 
 }
 
 
 ul#onglet {
-    font: bold 10px verdana, arial, sans-serif;
-    list-style-type: none;
-   padding-bottom: 24px;
-   border-bottom: 1px solid #ffffff;
-    margin: 0;
-padding-left:0;
+	font: bold 10px verdana, arial, sans-serif;
+	list-style-type: none;
+	padding-bottom: 24px;
+	border-bottom: 1px solid #ffffff;
+	margin: 0;
+	padding-left:0;
 
 }
 
 ul#onglet li {
-    
-    float: left;
-    height: 21px;
-    background-color: #eeeeee;
-    margin: 2px 2px 0 2px;
-    border: 1px solid #009966;
-   border-bottom: 1px solid #fff;
- -moz-border-radius: 4px;	
+
+	float: left;
+	height: 21px;
+	background-color: #eeeeee;
+	margin: 2px 2px 0 2px;
+	border: 1px solid #009966;
+	border-bottom: 1px solid #fff;
+	-moz-border-radius: 4px;	
 }
 
 ul#onglet li.actif {
-    border-bottom: 1px ridge #009966;
-    background-color: #fff;
+	border-bottom: 1px ridge #009966;
+	background-color: #fff;
 }
 
 ul#onglet li.invisible {
-    border-bottom: 1px solid #fff;
-    border: 1px solid #fff;
-    background-color: #ffffff;
-    width: 20px;
+	border-bottom: 1px solid #fff;
+	border: 1px solid #fff;
+	background-color: #ffffff;
+	width: 20px;
 }
 
 ul#onglet li.actif a {
-    color: #000;
+	color: #000;
 }
 
 #onglet a {
-    float: left;
-    display: block;
-    color: #666;
-    text-decoration: none;
-    padding: 3px;
+	float: left;
+	display: block;
+	color: #666;
+	text-decoration: none;
+	padding: 3px;
 }
 
 #onglet a:hover {
-   color : #009966;
-  
+	color : #009966;
+
 }
 
 
@@ -774,47 +771,47 @@ ul#onglet li.actif a {
 
 
 #contenukb {
-/* a voir je suis pas bien sûr  */
-height: 100%;
-/*position: relative; ou absolute */
-/*left: 35%; */
-width: 600px;
-/*margin-left: -150px; */
+	/* a voir je suis pas bien sûr  */
+	height: 100%;
+	/*position: relative; ou absolute */
+	/*left: 35%; */
+	width: 600px;
+	/*margin-left: -150px; */
 }
 
 #contenukb legend {
 
-font-weight: bold;
+	font-weight: bold;
 
 }
 
 #contenukb fieldset {
-background-color: #eeeeee;
-border: 1px solid #FFC65D;
--moz-border-radius: 8px;
-padding-bottom:10px;
-width: 600px;
+	background-color: #eeeeee;
+	border: 1px solid #FFC65D;
+	-moz-border-radius: 8px;
+	padding-bottom:10px;
+	width: 600px;
 
 }	
 
 #contenukb textarea {
 
-width:550px;
+	width:550px;
 
 }
 
 
 .code {	
-width: 95%;
- border: dotted 2px #ccc;
+	width: 95%;
+	border: dotted 2px #ccc;
 
 	}
 
 a.pubfaq {
-color: #c9993C;
+	color: #c9993C;
 }
 a.pubfaq:hover {
-color: black;
+	color: black;
 }
 
 /* #################################### */
@@ -874,17 +871,17 @@ p.toolbar a:hover
 
 
 .planning {
-text-align:center;
-border:1px dashed #cccccc;
-background-color: #d7d7d2;
-font-size:9px;
+	text-align:center;
+	border:1px dashed #cccccc;
+	background-color: #d7d7d2;
+	font-size:9px;
 
 }
 
 .planing:hover {
-border: 1px solid #999999;
-background-color: white;
-	
+	border: 1px solid #999999;
+	background-color: white;
+		
 }
 
 
@@ -898,7 +895,6 @@ background-color: white;
 /* DEBUG */
 /* #################################### */
 
-/* Les boutons d'admin survolent la page (sauf #FORMULAIRE_ADMIN) */
 #debug-float {
 	top: 0px;
 	right: 20px;
@@ -930,25 +926,24 @@ background-color: white;
 
 
 #debug{
-
-background-color:#F0F0F0;
+	background-color:#F0F0F0;
 
 }
 
 
 #debug h1{
-font-size:14px; text-align:center; background-color:#efefe7;
--moz-border-radius: 8px;
-  /*border: 2px outset #009966;*/
-border: 2px outset #FFC65D;
-padding: 5px;
+	font-size:14px; text-align:center; background-color:#efefe7;
+	-moz-border-radius: 8px;
+	/*border: 2px outset #009966;*/
+	border: 2px outset #FFC65D;
+	padding: 5px;
 
 }
 
 #debug h2{
-font-size:14px; 
-padding-left: 10px;
-border-left: 4px solid #FFC65D;
-border-bottom: 2px solid #FFC65D;
+	font-size:14px; 
+	padding-left: 10px;
+	border-left: 4px solid #FFC65D;
+	border-bottom: 2px solid #FFC65D;
 }
 
