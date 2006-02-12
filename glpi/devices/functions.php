@@ -340,7 +340,7 @@ function update_device_specif($newValue,$compDevID) {
 				$changes[1]=$data["specificity"];
 				$changes[2]=$newValue;
 				// history log
-				historyLog ($data["FK_computers"],COMPUTER_TYPE,$data["device_type"],$device_internal_action='2',$changes);
+				historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["device_type"],$device_internal_action='2');
 	
 				return true;
 			}else{ return false;}
@@ -376,7 +376,7 @@ function unlink_device_computer($compDevID){
 		$changes[1]=$device->fields["designation"];
 		$changes[2]="";
 		// history log
-		historyLog ($data["FK_computers"],COMPUTER_TYPE,$data["device_type"],$device_internal_action='3',$changes);
+		historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["device_type"],$device_internal_action='3');
 
 	 return true;
 	}else{ return false;}
@@ -394,7 +394,7 @@ function compdevice_add($cID,$device_type,$dID,$specificity='') {
 	$changes[1]="";
 	$changes[2]=$device->fields["designation"];"";
 		// history log
-		historyLog ($cID,COMPUTER_TYPE,$device_type,$device_internal_action='1',$changes);
+		historyLog ($cID,COMPUTER_TYPE,$changes,$device_type,$device_internal_action='1');
 
 }
 
