@@ -58,13 +58,11 @@
 	$query = "SELECT * FROM glpi_users WHERE (".searchUserbyType("normal").") $where ORDER BY realname,name $LIMIT";
 	$result = $db->query($query);
 	echo "<select name=\"".$_POST['myname']."\">";
-	$i = 0;
 
 	if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 	echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 	
 		
-	$number = $db->numrows($result);
 	if ($_POST['all']==0)
 	echo "<option value=\"0\">[ Nobody ]</option>";
 	else if($_POST['all']==1) echo "<option value=\"0\">[ ".$lang["search"][7]." ]</option>";
@@ -75,14 +73,11 @@
 		echo "<option selected value='".$_POST['value']."'>".$output."</option>";
 	}		
 	
-	if ($number > 0) {
-		while ($i < $number) {
-			$output = $db->result($result, $i, "name");
-			$realname=$db->result($result, $i, "realname");
-			if (!empty($realname)) $output = $realname;
-			$ID = $db->result($result, $i, "ID");
-			echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
-			$i++;
+	if ($db->numrows($result)) {
+		while ($data=$db->fetch_array($result)) {
+			if (!empty($data["realname"])) $output = $data["realname"];
+			else $output = $data["name"];
+			echo "<option value=\"".$data["ID"]."\" title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
    		}
 	}
 	echo "</select>";

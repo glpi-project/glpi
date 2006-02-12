@@ -54,7 +54,6 @@ if ($_POST['sID']>0){
 
 	
 		$result = $db->query($query);
-		$number = $db->numrows($result);
 		echo "<select name=\"".$_POST['myname']."\" size='1'>";
 		
 	
@@ -62,10 +61,9 @@ if ($_POST['sID']>0){
 		
 		if ($number==0&&!isGlobalSoftware($_POST["sID"])&&!isFreeSoftware($_POST["sID"]))
 			echo "<option value=\"-1\">--".$lang["software"][43]."--</option>";
-		$i = 0;
 		
 		$today=date("Y-m-d"); 
-		if ($number > 0) {
+		if ($db->numrows($result)) {
 			while ($data = $db->fetch_assoc($result)) {
 
 				$output = $data['serial']." - ";
@@ -96,7 +94,6 @@ if ($_POST['sID']>0){
 				$ID = $data['ID'];
 				if (empty($output)) $output="($ID)";
 				echo "<option value=\"$ID\" title=\"$output\">".$output."</option>";
-				$i++;
 			}
 		} 
 		echo "</select>";

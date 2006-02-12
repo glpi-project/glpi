@@ -68,9 +68,7 @@
 			echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 	
 		echo "<option value=\"0\">-----</option>";
-		$i = 0;
-		$number = $db->numrows($result);
-		if ($number > 0) {
+		if ($db->numrows($result)) {
 			while ($data = $db->fetch_array($result)) {
 			
 				$output = $data['name']." (".$data['ID'].")";
@@ -81,7 +79,6 @@
 				$ID = $data['ID'];
 				if (empty($output)) $output="($ID)";
 				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
-				$i++;
 			}
 		}
 		echo "</select>";
