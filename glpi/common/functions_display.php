@@ -720,7 +720,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 
 	// Print it
 
-	echo "<div align='center'><table class='tab_cadre2' width='800'>\n";
+	echo "<div align='center' style='font-size:6px;'><table class='tab_cadre_pager'  width='800'>\n";
 	echo "<tr>\n";
 	
 	// Back and fast backward button
@@ -740,13 +740,13 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 	// Print the "where am I?" 
 	echo "<td width='50%' align='center' class='tab_bg_2'>";
 	echo "<form method='POST' action=\"$target?$parameters&amp;start=$start\">\n";
-	echo "<b>".$lang["pager"][4]."&nbsp;</b>";
+	echo "<span>".$lang["pager"][4]."&nbsp;</span>";
 	echo "<select name='list_limit' onChange='submit()'>";
 	for ($i=5;$i<=200;$i+=5) echo "<option value='$i' ".((isset($_SESSION["list_limit"])&&$_SESSION["list_limit"]==$i)?" selected ":"").">$i</option>\n";
 	echo "<option value='9999999' ".((isset($_SESSION["list_limit"])&&$_SESSION["list_limit"]==9999999)?" selected ":"").">9999999</option>\n";	
-	echo "</select><b>&nbsp;";
+	echo "</select><span>&nbsp;";
 	echo $lang["pager"][5];
-	echo "</b>";
+	echo "</span>";
 	echo "</form>\n";
 	echo "</td>\n";
 	
@@ -766,7 +766,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 	echo "<option value='-2'>".$lang["buttons"][29]."</option>";
 	echo "<option value='-1'>".$lang["buttons"][30]."</option>";
 	echo "</select>";
-	echo "<input type='image' name='export'  src='".$HTMLRel."pics/export.png' class='calendrier' title='".$lang["buttons"][31]."' value='".$lang["buttons"][31]."'>";
+	echo "&nbsp;<input type='image' name='export'  src='".$HTMLRel."pics/export.png' title='".$lang["buttons"][31]."' value='".$lang["buttons"][31]."'>";
 	echo "</form>";
 	echo "</td>" ;
 	/*echo "<td class='tab_bg_2'><a target='_blank' href=\"".$HTMLRel."reports/dynamicReport.php?$parameters&amp;display_type=1&amp;item_type=".$item_type_output."&amp;export_all=1\"><img src=\"".$HTMLRel."pics/slk.png\" alt='".$lang["buttons"][28]."' title='".$lang["buttons"][28]."'></a></td>";
