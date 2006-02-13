@@ -200,7 +200,7 @@ td { }
 	border: 1px solid #cccccc;
 	text-align: left;
 	font-size: 11px;
-	width: 90%;
+	width: 80%;
 }
 
 .tab_cadre th, .tab_cadre_fixe th, .tab_cadrehov th, .tab_cadrehov_pointer th {
@@ -693,7 +693,7 @@ ul.autocomp   li.selected { background-color: #FFF6CF; }
 
 #barre_onglets {
 
-	width:900px;
+	width:950px;
 	margin-left: auto;
 	margin-right: auto;
 	margin-bottom:0;
