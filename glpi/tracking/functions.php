@@ -182,7 +182,7 @@ function showCentralJobList($target,$start) {
 	else
 	{
 		echo "<br><div align='center'>";
-		echo "<table class='tab_cadre' width='90%'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th>".$lang["joblist"][8]."</th></tr>";
 
 		echo "</table>";
@@ -220,7 +220,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (device_type = '$item_ty
 
 	if ($number > 0)
 	{
-		echo "<div align='center'>&nbsp;<table class='tab_cadre' width='90%'>";
+		echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan=9>".$number." ".$lang["job"][18]."  ".$lang["job"][17]."";
 		if ($number > 1) { echo "s"; }
 		echo " ".$lang["job"][16].":</th></tr>";
@@ -251,7 +251,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (device_type = '$item_ty
 	else
 	{
 		echo "<br><div align='center'>";
-		echo "<table border='0' width='90%' class='tab_cadre'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th>".$lang["joblist"][22]."</th></tr>";
 
 		if ($item)
@@ -287,7 +287,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and 
 
 	if ($number > 0)
 	{
-		echo "<div align='center'>&nbsp;<table class='tab_cadre' width='90%'>";
+		echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='9'>".$number." ".$lang["job"][17]."";
 		if ($number > 1) { echo "s"; }
 		echo " ".$lang["job"][16].":</th></tr>";
@@ -314,7 +314,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and 
 	else
 	{
 		echo "<br><div align='center'>";
-		echo "<table border='0' width='90%' class='tab_cadre'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th>".$lang["joblist"][8]."</th></tr>";
 
 		if ($item)
@@ -805,7 +805,7 @@ function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,
 	
 	echo "<div align='center'>";
 				
-	echo "<table border='0' width='900' class='tab_cadre'>";
+	echo "<table class='tab_cadre_fixe'>";
 
 	
 	echo "<tr><th colspan='6'><strong>".$lang["search"][0].":</strong></th></tr>";
@@ -1592,7 +1592,7 @@ function showJobDetails ($ID){
 
 		echo "<div align='center'>";
 		echo "<form method='post' action=\"".$cfg_install["root"]."/tracking/tracking-info-form.php\"  enctype=\"multipart/form-data\">\n";
-		echo "<table class='tab_cadre' width='800' cellpadding='5'>";
+		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		// Première ligne
 		echo"<tr><th colspan='3'><span style='font-size:1px'>&nbsp;</span></th></tr>";
 		echo "<tr class='tab_bg_2'>";
@@ -1850,7 +1850,7 @@ function showFollowupsSummary($tID){
 	echo "<h3>".$lang["job"][37]."</h3>";
 	
 	if ($db->numrows($result)==0){
-		echo "<table class='tab_cadre' width='850'><tr class='tab_bg_2'><th>";
+		echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'><th>";
 		echo "<strong>".$lang["job"][12]."</strong>";
 		echo "</th></tr></table>";
 	}
@@ -1925,7 +1925,7 @@ function showAddFollowupForm($tID){
 	// Display Add Table
 	echo "<div align='center'>";
 	echo "<form name='followups' method='post' action=\"$target\">\n";
-	echo "<table class='tab_cadre' width='800'>";
+	echo "<table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='2'>";
 	echo $lang["job"][29];
 	echo "</th></tr>";
@@ -2043,7 +2043,7 @@ function showUpdateFollowupForm($ID){
 	if ($db->numrows($result)==1){
 			echo "<div align='center'>";
 			$data=$db->fetch_array($result);
-			echo "<table class='tab_cadre' width='800'>";
+			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th>";
 			echo $lang["job"][39];
 			echo "</th></tr>";
