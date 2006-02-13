@@ -50,7 +50,7 @@ include ("_relpos.php");
 function searchFormKnowbase($target,$contains){
 global $lang;
 	echo "<form method=post action=\"$target\">";
-	echo "<div align='center'><table border='0' width='500' class='tab_cadre'>";
+	echo "<div align='center'><table border='0' class='tab_cadre_fixe'>";
 
 	echo "<tr ><th colspan='4'><b>".$lang["search"][0].":</b></th></tr>";
     echo "<tr class='tab_bg_2' align='center'><td><input type='text' size='30' name=\"contains\" value=\"". $contains ."\" ></td><td><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit' ></td>";
@@ -207,7 +207,7 @@ function kbItemMenu($ID)
 	
 	$isFAQ = $ki->fields["faq"];
 	
-	echo "<div align='center'><table class='tab_cadre' cellpadding='10' width='500'><tr><th colspan='3'>";
+	echo "<div align='center'><table class='tab_cadre_fixe' cellpadding='10' ><tr><th colspan='3'>";
 	
 	if($isFAQ == "yes")
 	{
@@ -341,8 +341,8 @@ function showKbCategoriesall()
 	global $lang;	
 
 	
-	echo "<div align='center'><table border='0' class='tab_cadre' >";
-	echo "<tr><th align='center' width='700'>".$lang["knowbase"][0]."</th></tr><tr><td align='left'>";	
+	echo "<div align='center'><table border='0' class='tab_cadre_fixe' >";
+	echo "<tr><th align='center' >".$lang["knowbase"][0]."</th></tr><tr><td align='left'>";	
 	
 	showKbCategories();
 	
@@ -494,7 +494,7 @@ function ShowKbItemFull($ID)
 	$categoryID = $ki->fields["categoryID"];
 	$fullcategoryname = getTreeValueCompleteName("glpi_dropdown_kbcategories",$categoryID);
 	
-	echo "<div align='center'><table class='tab_cadre' cellpadding='10' width='700'><tr><th>";
+	echo "<div align='center'><table class='tab_cadre_fixe' cellpadding='10' ><tr><th>";
 	
 	echo $lang["knowbase"][23].": ".$fullcategoryname."</th></tr>";
 	echo "<tr class='tab_bg_3'><td style='text-align:left'><h2>".$lang["knowbase"][3]."</h2>";
@@ -668,8 +668,8 @@ function faqShowCategoriesall($target,$contains)
 
 	searchFormKnowbase($target,$contains);
 	
-	echo "<div align='center'><table border='0' class='tab_cadre' >";
-	echo "<tr><th align='center' width='700'>".$lang["knowbase"][1]."</th></tr><tr><td  align='left'>";	
+	echo "<div align='center'><table border='0' class='tab_cadre_fixe' >";
+	echo "<tr><th align='center' >".$lang["knowbase"][1]."</th></tr><tr><td  align='left'>";	
 	
 	
 	faqShowCategories();

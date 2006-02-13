@@ -90,7 +90,7 @@ function showDocumentForm ($target,$ID) {
 	
 	if ($con_spotted){
 	echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\"><div align='center'>";
-	echo "<table class='tab_cadre' width='800'>";
+	echo "<table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='3'><b>";
 	if (!$ID) {
 		echo $lang["document"][16].":";
@@ -424,7 +424,7 @@ function showDeviceDocument($instID,$search='') {
 	
 	echo "<form method='post' action=\"".$cfg_install["root"]."/documents/documents-info-form.php\">";
 	
-	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
+	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='3'>".$lang["document"][19].":</th></tr>";
 	echo "<tr><th>".$lang['document'][20]."</th>";
 	echo "<th>".$lang['document'][1]."</th>";
@@ -488,7 +488,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	$i = 0;
 	
     if ($withtemplate!=2) echo "<form method='post' action=\"".$cfg_install["root"]."/documents/documents-info-form.php\">";
-	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
+	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='7'>".$lang["document"][21].":</th></tr>";
 	echo "<tr><th>".$lang['document'][1]."</th>";
 	echo "<th width='100px'>".$lang['document'][2]."</th>";

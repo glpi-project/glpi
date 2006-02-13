@@ -205,7 +205,7 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		}
 
 		echo "<div align='center'>";
-		echo "<table width='800' class='tab_cadre' >";
+		echo "<table class='tab_cadre_fixe' >";
 		
 		
 		echo "<tr><th colspan ='2' align='center' >";
@@ -403,7 +403,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 		echo "<form name='form_device_action' action=\"$target\" method=\"post\" >";
 		echo "<input type='hidden' name='ID' value='$ID'>";	
 		echo "<input type='hidden' name='device_action' value='$ID'>";			
-		echo "<table width='800' class='tab_cadre' >";
+		echo "<table class='tab_cadre_fixe' >";
 		echo "<tr><th colspan='66'>".$lang["devices"][10]."</th></tr>";
 		foreach($comp->devices as $key => $val) {
 			$devType = $val["devType"];
@@ -645,7 +645,7 @@ function showConnections($target,$ID,$withtemplate='') {
 	
 	$state=new StateItem();
 
-	echo "&nbsp;<div align='center'><table border='0' width='90%' class='tab_cadre'>";
+	echo "&nbsp;<div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='3'>".$lang["connect"][0].":</th></tr>";
 	echo "<tr><th>".$lang["computers"][39].":</th><th>".$lang["computers"][40].":</th><th>".$lang["computers"][46].":</th></tr>";
 
