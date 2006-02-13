@@ -1,3 +1,4 @@
+
 <?php
 /*
  * @version $Id$
@@ -56,7 +57,8 @@ if (isset($items[$_POST["type"]])&&$_POST["type"]>0){
 	
 	$rand=mt_rand();
 	
-	echo "<input type='text' ondblclick=\"document.getElementById('search_$rand').value='".$cfg_features["ajax_wildcard"]."';\" id='search_$rand' name='____data_$rand' size='4'>\n";
+
+	displaySearchTextAjaxDropdown($rand);
 
 	echo "<script type='text/javascript' >\n";
 	echo " new Form.Element.Observer('search_$rand', 1, \n";
