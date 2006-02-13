@@ -109,7 +109,7 @@ function showContactForm ($target,$ID) {
 	
 	if ($con_spotted){
 	echo "<form method='post' name=form action=\"$target\"><div align='center'>";
-	echo "<table class='tab_cadre' cellpadding='2' width='800'>";
+	echo "<table class='tab_cadre_fixe' cellpadding='2' >";
 	echo "<tr><th colspan='2'><b>";
 	if (empty($ID)) {
 		echo $lang["financial"][33].":";
@@ -322,7 +322,7 @@ function showEnterpriseContact($instID) {
 	$i = 0;
 	
     echo "<form method='post' action=\"".$cfg_install["root"]."/contacts/contacts-info-form.php\">";
-	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
+	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='6'>".$lang["financial"][65].":</th></tr>";
 	echo "<tr><th>".$lang['financial'][26]."</th>";
 	echo "<th>".$lang['financial'][79]."</th>";

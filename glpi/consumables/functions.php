@@ -119,7 +119,7 @@ function showConsumableTypeForm ($target,$ID) {
 	if ($ct_spotted){
 	
 	echo "<form method='post' action=\"$target\"><div align='center'>\n";
-	echo "<table class='tab_cadre' width='800'>\n";
+	echo "<table class='tab_cadre_fixe'>\n";
 	echo "<tr><th colspan='3'><b>\n";
 	if (!$ID) {
 		echo $lang["consumables"][6].":";
@@ -359,7 +359,7 @@ function showConsumables ($tID,$show_old=0) {
 			$unused=getUnusedConsumablesNumber($tID);
 			$old=getOldConsumablesNumber($tID);
 
-			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre' width='90%'>";
+			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre_fixe'>";
 			if ($show_old==0){
 				echo "<tr><th colspan='6'>";
 				echo $total;

@@ -109,7 +109,7 @@ function showLinkForm ($target,$ID) {
 	if ($con_spotted){
 	echo "<form method='post' name=form action=\"$target\"><div align='center'>";
 	
-	echo "<table class='tab_cadre' cellpadding='2' width='700'>";
+	echo "<table class='tab_cadre_fixe' cellpadding='2' >";
 	echo "<tr><th colspan='2'><b>";
 	if (empty($ID)) {
 		echo $lang["links"][3].":";
@@ -268,7 +268,7 @@ function showLinkDevice($instID) {
 	$i = 0;
 	
     echo "<form method='post' action=\"".$cfg_install["root"]."/links/links-info-form.php\">";
-	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
+	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='2'>".$lang["links"][4].":</th></tr>";
 	echo "<tr><th>".$lang['links'][5]."</th>";
 	echo "<th>&nbsp;</th></tr>";

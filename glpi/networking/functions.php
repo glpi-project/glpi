@@ -131,7 +131,7 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />\n";
 		}
 
-	echo "<table width='800' class='tab_cadre' cellpadding='2'>\n";
+	echo "<table  class='tab_cadre_fixe' cellpadding='2'>\n";
 
 		echo "<tr><th align='center' >\n";
 		if(!$template) {
@@ -475,7 +475,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			if ($withtemplate!=2){
 			}
 			
-			echo "<br><div align='center'><table class='tab_cadre' width='90%'>";
+			echo "<br><div align='center'><table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='$colspan'>";
 			echo $db->numrows($result)." ";
 			if ($db->numrows($result)<2) {
@@ -811,7 +811,7 @@ function showPortsAdd($ID,$devtype) {
 	$query = "SELECT location from ".$device_real_table_name." where ID = ".$ID."";
 	$location = $db->result($db->query($query),0,"location");
 
-	echo "<div align='center'><table class='tab_cadre' width='90%' cellpadding='2'>";
+	echo "<div align='center'><table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr>";
 	echo "<td align='center' class='tab_bg_2'  >";
 	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?on_device=$ID&amp;device_type=$devtype&amp;location=$location\"><b>";

@@ -97,7 +97,7 @@ function showEnterpriseForm ($target,$ID) {
 	}
 	if ($ent_spotted){
 	echo "<form method='post' action=\"$target\"><div align='center'>";
-	echo "<table class='tab_cadre' width='800'>";
+	echo "<table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='4'><b>";
 	if (!$ID) {
 		echo $lang["financial"][25].":";
@@ -252,7 +252,7 @@ function showAssociatedContact($instID) {
 	$i = 0;
 	
    
-	echo "<br><div align='center'><table class='tab_cadre' width='750'>";
+	echo "<br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='7'>".$lang["financial"][46].":</th></tr>";
 	echo "<tr><th>".$lang['financial'][27]."</th><th>".$lang["financial"][29]."</th>";
 	echo "<th>".$lang['financial'][29]." 2</th><th>".$lang["financial"][30]."</th>";
@@ -275,7 +275,7 @@ function showAssociatedContact($instID) {
 	echo "</table><br>"    ;
 	
 	 echo "<form method='post' action=\"".$cfg_install["root"]."/enterprises/enterprises-info-form.php\">";
-	echo "<table width='300' class='tab_cadre'>";
+	echo "<table  class='tab_cadre_fixe'>";
 	
 	echo "<tr class='tab_bg_1'><th colspan='2'>".$lang["financial"][33]."</tr><tr><td class='tab_bg_2' align='center'>";
 	echo "<input type='hidden' name='eID' value='$instID'>";

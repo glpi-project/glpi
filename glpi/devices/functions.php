@@ -556,7 +556,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 	echo "<a href='$REFERER'>".$lang["buttons"][13]."</a>";
 	echo "<form method='post' name='form' action=\"$target\">";
 	echo "<input type='hidden' name='referer' value='$REFERER'>";
-	echo "<table class='tab_cadre' width='800' cellpadding='2'>";
+	echo "<table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr><th align='center' colspan='1'>";
 	echo getDictDeviceLabel($device_type)."</th><th align='center' colspan='1'> ID : ".$ID;
 	echo "<tr><td class='tab_bg_1' colspan='1'>";

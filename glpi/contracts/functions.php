@@ -112,7 +112,7 @@ function showContractForm ($target,$ID) {
 	
 	if ($con_spotted){
 	echo "<form name='form' method='post' action=\"$target\"><div align='center'>";
-	echo "<table class='tab_cadre' width='800'>";
+	echo "<table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='4'><b>";
 	if (!$ID) {
 		echo $lang["financial"][36].":";
@@ -379,7 +379,7 @@ function showDeviceContract($instID) {
 	
 	echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
 	
-	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
+	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='3'>".$lang["financial"][49].":</th></tr>";
 	echo "<tr><th>".$lang['financial'][37]."</th>";
 	echo "<th>".$lang['financial'][27]."</th>";
@@ -470,7 +470,7 @@ function showEnterpriseContract($instID) {
 	$i = 0;
 	
     echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
-	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
+	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='5'>".$lang["financial"][65].":</th></tr>";
 	echo "<tr><th>".$lang['financial'][26]."</th>";
 	echo "<th>".$lang['financial'][79]."</th>";
@@ -738,7 +738,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	$i = 0;
 	
     if ($withtemplate!=2) echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
-	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
+	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='7'>".$lang["financial"][66].":</th></tr>";
 	echo "<tr><th>".$lang['financial'][27]."</th>";
 	echo "<th>".$lang['financial'][4]."</th>";
@@ -813,7 +813,7 @@ function showContractAssociatedEnterprise($ID){
 	$i = 0;
 	
     echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
-	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
+	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='7'>".$lang["financial"][66].":</th></tr>";
 	echo "<tr><th>".$lang['financial'][27]."</th>";
 	echo "<th>".$lang['financial'][4]."</th>";
