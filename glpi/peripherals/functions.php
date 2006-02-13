@@ -125,7 +125,7 @@ function showperipheralForm ($target,$ID,$withtemplate='') {
 		echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
 	}
 
-	echo "<table width='800' class='tab_cadre' cellpadding='2'>";
+	echo "<table  class='tab_cadre_fixe' cellpadding='2'>";
 
 		echo "<tr><th align='center' >";
 

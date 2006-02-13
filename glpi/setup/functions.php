@@ -46,7 +46,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 	echo "<div align='center'>&nbsp;\n";
 	echo "<form method='post' action=\"$target\">";
 
-	echo "<table class='tab_cadre' width='800'  cellpadding='1'>\n";
+	echo "<table class='tab_cadre_fixe'  cellpadding='1'>\n";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
 	if (countElementsInTable("glpi_dropdown_".$name)>0){
 	echo "<tr><td  align='center'  class='tab_bg_1'>";
@@ -74,7 +74,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 	echo "<form method='post' action=\"$target\">";
 
 	echo "<input type='hidden' name='which' value='$name'>";
-	echo "<table class='tab_cadre' width='800' cellpadding='1'>\n";
+	echo "<table class='tab_cadre_fixe' cellpadding='1'>\n";
 	
 	echo "<tr><td align='center' class='tab_bg_1'>";
 
@@ -93,7 +93,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 	echo "<form action=\"$target\" method='post'>";
 	echo "<input type='hidden' name='which' value='$name'>";
 
-	echo "<table class='tab_cadre' width='800' cellpadding='1'>\n";
+	echo "<table class='tab_cadre_fixe' cellpadding='1'>\n";
 	echo "<tr><td  align='center'  class='tab_bg_1'>";
 		echo "<input type='text' maxlength='100' size='15' name='value'>&nbsp;&nbsp;&nbsp;";
 
@@ -125,7 +125,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 	echo "<div align='center'>&nbsp;";
 	echo "<form method='post' action=\"$target\">";
 
-	echo "<table class='tab_cadre' width='800' cellpadding='1'>";
+	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
 	if (countElementsInTable("glpi_dropdown_".$name)>0){
 	echo "<tr><td align='center' class='tab_bg_1'>";
@@ -175,7 +175,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 	}
 	echo "<form action=\"$target\" method='post'>";
 	echo "<input type='hidden' name='which' value='$name'>";
-	echo "<table class='tab_cadre' width='800' cellpadding='1'>";
+	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 	echo "<tr><td align='center'  class='tab_bg_1'>";
 	if($name == "netpoint") {
 		echo $lang["networking"][1].": ";		
@@ -197,7 +197,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 
 		echo "<form action=\"$target\" method='post'>";
 		echo "<input type='hidden' name='which' value='$name'>";
-		echo "<table class='tab_cadre' width='800' cellpadding='1'>";
+		echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 		echo "<tr><td align='center'  class='tab_bg_1'>";
 
 		echo $lang["networking"][1].": ";		
@@ -231,7 +231,7 @@ function showFormTypeDown ($target,$name,$human,$ID) {
 	
 	echo "<form action=\"$target\" method='post'>";
 	
-	echo "<table class='tab_cadre' width='800'>";
+	echo "<table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
 	
 	if (countElementsInTable("glpi_type_".$name)>0){
@@ -261,7 +261,7 @@ function showFormTypeDown ($target,$name,$human,$ID) {
 	echo "</table></form>";
 	
 	echo "<form action=\"$target\" method='post'>";
-	echo "<table class='tab_cadre' width='800'>";
+	echo "<table class='tab_cadre_fixe'>";
 	echo "<tr><td align='center' class='tab_bg_1'>";
 	echo "<input type='text' maxlength='100' size='20' name='value'>";
 	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
@@ -1203,7 +1203,7 @@ function showFormExtSources($target) {
 		echo "<div align='center'>";
 		echo "<p >".$lang["setup"][160]."</p>";
 //		echo "<p>".$lang["setup"][161]."</p>";
-		echo "<table class='tab_cadre'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='2'>".$lang["setup"][162]."</th></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][164]."</td><td><input size='30' type=\"text\" name=\"imap_host\" value=\"". $db->result($result,0,"imap_host") ."\" ></td></tr>";
 
@@ -1213,7 +1213,7 @@ function showFormExtSources($target) {
 	else {
 		echo "<input type=\"hidden\" name=\"IMAP_Test\" value=\"1\" >";
 		
-		echo "<div align='center'>&nbsp;<table class='tab_cadre' width='400'>";
+		echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='2'>".$lang["setup"][162]."</th></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>".$lang["setup"][165]."</p><p>".$lang["setup"][166]."</p></td></tr></table></div>";
 	}
@@ -1221,7 +1221,7 @@ function showFormExtSources($target) {
 	{
 		echo "<div align='center'><p > ".$lang["setup"][151]."</p>";
 
-		echo "<table class='tab_cadre'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='4'>".$lang["setup"][152]."</th></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][153]."</td><td><input type=\"text\" name=\"ldap_host\" value=\"". $db->result($result,0,"ldap_host") ."\"></td>";
@@ -1263,7 +1263,7 @@ function showFormExtSources($target) {
 	}
 	else {
 		echo "<input type=\"hidden\" name=\"LDAP_Test\" value=\"1\" >";
-		echo "<div align='center'><table class='tab_cadre' width='400'>";
+		echo "<div align='center'><table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='2'>".$lang["setup"][152]."</th></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>".$lang["setup"][157]."</p><p>".$lang["setup"][158]."</p></td></th></table></div>";
 	}
@@ -1282,7 +1282,7 @@ function showFormExtSources($target) {
 	}
 	else {
 		echo "<input type=\"hidden\" name=\"CAS_Test\" value=\"1\" >";
-		echo "<div align='center'><table class='tab_cadre' width='400'>";
+		echo "<div align='center'><table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='2'>".$lang["setup"][177]."</th></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>".$lang["setup"][178]."</p><p>".$lang["setup"][179]."</p></td></th></table></div>";
 	}
@@ -1311,7 +1311,7 @@ function showFormMailing($target) {
 		echo "<form action=\"$target\" method=\"post\">";
 		
 		
-		echo "<div align='center'><table class='tab_cadre' width='800'><tr><th colspan='2'>".$lang["setup"][201]."</th></tr>";
+		echo "<div align='center'><table class='tab_cadre_fixe'><tr><th colspan='2'>".$lang["setup"][201]."</th></tr>";
 		
 			if (function_exists('mail')) {
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][202]."</td><td align='center'>&nbsp; ".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"mailing\" value=\"1\" "; if($db->result($result,0,"mailing") == 1) echo "checked"; echo " > &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"mailing\" value=\"0\" "; if($db->result($result,0,"mailing") == 0) echo "checked"; echo " ></td></tr>";
@@ -1328,7 +1328,7 @@ function showFormMailing($target) {
 		echo "<p><b>".$lang["setup"][205]."</b></p>";
 		
 		// ADMIN
-		echo "<table class='tab_cadre' width='800'><tr><th colspan='6'>".$lang["setup"][206]."</th></tr>";
+		echo "<table class='tab_cadre_fixe'><tr><th colspan='6'>".$lang["setup"][206]."</th></tr>";
 		echo "<tr class='tab_bg_2'><td>".$lang["setup"][211]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_new_admin\" value=\"1\" "; if($db->result($result,0,"mailing_new_admin") == 1) echo "checked"; echo " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_new_admin\" value=\"0\" "; if($db->result($result,0,"mailing_new_admin") == 0) echo "checked"; echo " ></td>";
 		
 		echo "<td >".$lang["setup"][230]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_update_admin\" value=\"1\" "; if($db->result($result,0,"mailing_update_admin") == 1) echo "checked"; echo "></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_update_admin\" value=\"0\" "; if($db->result($result,0,"mailing_update_admin") == 0) echo "checked"; echo " ></td></tr>";
@@ -1387,7 +1387,7 @@ function showFormMailing($target) {
 
 		echo "<p><b>".$lang["setup"][224]."</b></p>";
 		
-		echo "<table class='tab_cadre' width='600'><tr><th colspan='2'>".$lang["setup"][225]."<th></tr>";
+		echo "<table class='tab_cadre_fixe'><tr><th colspan='2'>".$lang["setup"][225]."<th></tr>";
 
 		echo "<tr class='tab_bg_2'><td>".$lang["setup"][206]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_resa_admin\" value=\"1\" "; if($db->result($result,0,"mailing_resa_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_resa_admin\" value=\"0\" "; if($db->result($result,0,"mailing_resa_admin") == 0) echo "checked"; echo  " ></td></tr>";
 		echo "<tr class='tab_bg_2'><td>".$lang["setup"][207]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_resa_all_admin\" value=\"1\" "; if($db->result($result,0,"mailing_resa_all_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_resa_all_admin\" value=\"0\" "; if($db->result($result,0,"mailing_resa_all_admin") == 0) echo "checked"; echo  " ></td></tr>";

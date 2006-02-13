@@ -215,7 +215,7 @@ function showPlanning($who,$when,$type){
 	if ($dayofweek==0) $dayofweek=7;
 
 if ($type!="month"){
-	echo "<div align='center'><table class='tab_cadre' width='800'>";
+	echo "<div align='center'><table class='tab_cadre_fixe'>";
 	// Print Headers
 	echo "<tr>";
 	switch ($type){
@@ -273,7 +273,7 @@ else {// Month planning
 	echo "<table cellpadding='20' ><tr><td><b>".
 		$lang["calendarM"][$mois_courant-1]."&nbsp;".$annee_courante."</b></td></tr></table>";
 
-echo "<table class='tab_cadre' width='700'><tr>";
+echo "<table class='tab_cadre_fixe'><tr>";
 echo "<th width='14%'>".$lang["calendarD"][1]."</th>";
 echo "<th width='14%'>".$lang["calendarD"][2]."</th>";
 echo "<th width='14%'>".$lang["calendarD"][3]."</th>";

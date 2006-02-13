@@ -134,7 +134,7 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
 		}
 
-	echo "<table width='800' class='tab_cadre'>";
+	echo "<table class='tab_cadre_fixe'>";
 
 		echo "<tr><th align='center' colspan='2' >";
 		if(!$template) {
@@ -360,7 +360,7 @@ function showLicensesAdd($ID) {
 	
 	GLOBAL $cfg_layout,$cfg_install,$lang;
 	
-	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='90%' cellpadding='2'>";
+	echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><strong>";
 	echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=add&amp;sID=$ID\">";
 	echo $lang["software"][12];
@@ -390,7 +390,7 @@ function showLicenses ($sID,$show_computers=0) {
 			
 			echo "<form name='lic_form' method='get' action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
 
-			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre' width='90%'>";
+			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='5' $pb >";
 			echo $nb_licences;
 			echo "&nbsp;".$lang["software"][13]."&nbsp;-&nbsp;$nb_updates&nbsp;".$lang["software"][36]."&nbsp;-&nbsp;$installed&nbsp;".$lang["software"][19]."</th>";
@@ -929,7 +929,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	$number = $db->numrows($result);
 	$i = 0;
 		
-	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
+	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='5'>".$lang["software"][17].":</th></tr>";
 			echo "<tr><th>".$lang['software'][2]."</th><th>".$lang['software'][32]."</th><th>".$lang['software'][33]."</th><th>".$lang['software'][35]."</th><th>&nbsp;</th></tr>";
 	
