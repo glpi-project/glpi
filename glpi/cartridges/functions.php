@@ -120,7 +120,7 @@ function showCartridgeTypeForm ($target,$ID) {
 	
 	echo "<form method='post' action=\"$target\"><div align='center'>\n";
 	
-	echo "<table class='tab_cadre' width='800'>\n";
+	echo "<table class='tab_cadre_fixe'>\n";
 	echo "<tr><th colspan='3'><b>\n";
 	if (!$ID) 
 		echo $lang["cartridges"][6].":";
@@ -318,7 +318,7 @@ function showCartridgesAdd($ID) {
 	
 	
 	echo "<form method='post'  action=\"".$HTMLRel."cartridges/cartridges-edit.php\">";
-	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='90%' cellpadding='2'>";
+	echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><b>";
 	echo "<a href=\"".$cfg_install["root"]."/cartridges/cartridges-edit.php?add=add&amp;tID=$ID\">";
 	echo $lang["cartridges"][17];
@@ -361,7 +361,7 @@ function showCartridges ($tID,$show_old=0) {
 			$used=getUsedCartridgesNumber($tID);
 			$old=getOldCartridgesNumber($tID);
 
-			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre' width='90%'>";
+			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre_fixe>";
 			if ($show_old==0){
 				echo "<tr><th colspan='7'>";
 				echo $total;
@@ -655,7 +655,7 @@ function showCompatiblePrinters($instID) {
 	$i = 0;
 	
     echo "<form method='post' action=\"".$cfg_install["root"]."/cartridges/cartridges-info-form.php\">";
-	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
+	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='3'>".$lang["cartridges"][32].":</th></tr>";
 	echo "<tr><th>".$lang['cartridges'][4]."</th><th>".$lang["printers"][32]."</th><th>&nbsp;</th></tr>";
 
@@ -747,7 +747,7 @@ function showCartridgeInstalled($instID,$old=0) {
 	$p->getFromDB($instID);
 	$pages=$p->fields['initial_pages'];
 
-	echo "<br><br><div align='center'><table class='tab_cadre' width='90%'>";
+	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	if ($old==0)
 	echo "<tr><th colspan='7'>".$lang["cartridges"][33].":</th></tr>";
 	else echo "<tr><th colspan='8'>".$lang["cartridges"][35].":</th></tr>";

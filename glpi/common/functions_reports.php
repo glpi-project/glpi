@@ -72,7 +72,7 @@ switch($item_type)
 		
 		
 		echo " <strong>".$lang["reports"][6]."</strong>";
-		echo "<table width='100%' class='tab_cadre'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr>";
 		echo "<th><div align='center'><b>".$lang["computers"][7]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["common"][3]."</b></div></th>";
@@ -115,7 +115,7 @@ switch($item_type)
 		case 'glpi_printers' :
 		
 		echo "<b><strong>".$lang["reports"][7]."</strong></b>";
-		echo "<table width='100%' class='tab_cadre'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr> ";
 		echo "<th><div align='center'><b>".$lang["computers"][7]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["common"][3]."</b></div></th>";
@@ -156,7 +156,7 @@ switch($item_type)
 		case 'glpi_monitors' :
 		
 		echo " <b><strong>".$lang["reports"][9]."</strong></b>";
-		echo "<table width='100%' class='tab_cadre'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr> ";
 		echo "<th><div align='center'><b>".$lang["computers"][7]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["common"][3]."</b></div></th>";
@@ -197,7 +197,7 @@ switch($item_type)
 		case 'glpi_networking' :
 		
 		echo " <b><strong>".$lang["reports"][8]."</strong></b>";
-		echo "<table width='100%' class='tab_cadre'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr> ";
 		echo "<th><div align='center'><b>".$lang["computers"][7]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["common"][3]."</b></div></th>";
@@ -237,7 +237,7 @@ switch($item_type)
 		case 'glpi_peripherals' :
 		
 		echo " <b><strong>".$lang["reports"][29]."</strong></b>";
-		echo "<table width='100%' class='tab_cadre'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr> ";
 		echo "<th><div align='center'><b>".$lang["computers"][7]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["common"][3]."</b></div></th>";
@@ -277,7 +277,7 @@ switch($item_type)
 		case 'glpi_software' :
 		
 		echo " <b><strong>".$lang["reports"][55]."</strong></b>";
-		echo "<table width='100%' class='tab_cadre'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr> ";
 		echo "<th><div align='center'><b>".$lang["computers"][7]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["common"][3]."</b></div></th>";
@@ -316,7 +316,7 @@ switch($item_type)
 		break;
 		// Rapport réseau par lieu
 		case 'glpi_networking_lieu' :
-		echo "<table width='100%' class='tab_cadre'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr> ";
 		echo "<th><div align='center'><b>".$lang["reports"][20]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][37]."</b></div></th>";
@@ -384,7 +384,7 @@ switch($item_type)
 		break;
 	//rapport reseau par switch	
 	case 'glpi_networking_switch' :
-		echo "<table width='100%' class='tab_cadre'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr> ";
 		echo "<th><div align='center'>&nbsp;</div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][46]."</b></div></th>";
@@ -439,7 +439,7 @@ switch($item_type)
 		
 		//rapport reseau par prise
 		case 'glpi_networking_prise' :
-		echo "<table width='100%' class='tab_cadre'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr> ";
 		echo "<th><div align='center'><b>".$lang["reports"][20]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["reports"][52]."</b></div></th>";

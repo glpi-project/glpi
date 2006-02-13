@@ -844,7 +844,7 @@ function device_selecter($target,$cID,$withtemplate='') {
 	if(!empty($withtemplate) && $withtemplate == 2) {
 	//do nothing
 	} else {
-		echo "<table width='800' class='tab_cadre'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr  class='tab_bg_1'><td colspan='2' align='right'>";
 		echo $lang["devices"][0].":";
 		echo "</td>";

@@ -140,7 +140,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	);
 	
 	echo "<form method=get action=\"$target\">";
-	echo "<div align='center'><table border='0' width='850' class='tab_cadre'>";
+	echo "<div align='center'><table border='0'  class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='5'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";

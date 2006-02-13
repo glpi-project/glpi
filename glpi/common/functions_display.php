@@ -720,7 +720,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 
 	// Print it
 
-	echo "<div align='center' style='font-size:6px;'><table class='tab_cadre_pager'  width='800'>\n";
+	echo "<div align='center' style='font-size:6px;'><table class='tab_cadre_pager'>\n";
 	echo "<tr>\n";
 	
 	// Back and fast backward button
@@ -840,7 +840,7 @@ $ci->getfromDB ($type,$id);
 
 echo "<form name='form' method='post' action=\"".$target."\">";
 echo "<div align='center'>";
-echo "<table width='800' class='tab_cadre' >";
+echo "<table class='tab_cadre_fixe' >";
 echo "<tr><th align='center' >";
 echo "Notes";
 echo "</th></tr>";
