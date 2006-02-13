@@ -225,7 +225,7 @@ function display_new_locations(){
 	//echo "<hr>";
 	$result=$db->query($query);
 	$data_old=array();
-	echo "<table class='tab_cadre'><tr>";
+	echo "<table><tr>";
 	for ($i=0;$i<=$MAX_LEVEL;$i++){
 		echo "<th>$i</th><th>&nbsp;</th>";
 	}

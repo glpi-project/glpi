@@ -145,7 +145,7 @@ function showHistory($device_type,$id_device){
 	// No Events in database
 	if ($number < 1) {
 		echo "<br><div align='center'>";
-		echo "<table class='tab_cadre' width='800'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th>".$lang["event"][20]."</th></tr>";
 		echo "</table>";
 		echo "</div><br>";
@@ -156,7 +156,7 @@ function showHistory($device_type,$id_device){
 
 
 
-	echo "<div align='center'><br><table width='800' class='tab_cadre'>";
+	echo "<div align='center'><br><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='5'>".$lang["title"][38]."</th></tr>";
 	echo "<tr><th>".$lang["event"][16]."</th><th>".$lang["event"][1]."</th><th>".$lang["event"][17]."</th><th>".$lang["event"][18]."</th><th>".$lang["event"][19]."</th></tr>";
 	while ($data =$db->fetch_array($result)){ 
@@ -330,7 +330,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 	// No Events in database
 	if ($number < 1) {
 		echo "<br><div align='center'>";
-		echo "<table class='tab_cadre' width='90%'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th>".$lang["central"][4]."</th></tr>";
 		echo "</table>";
 		echo "</div><br>";
@@ -457,7 +457,7 @@ function showEvents($target,$order,$sort,$start=0) {
 	$parameters="sort=$sort&amp;order=$order";
 	printPager($start,$numrows,$target,$parameters);
 
-	echo "<table width='90%' class='tab_cadre'>";
+	echo "<table class='tab_cadre_fixe'>";
 	echo "<tr>";
 
 	echo "<th colspan='2'>";
