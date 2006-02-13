@@ -253,6 +253,9 @@ $cfg_login['ldap']['port'] = $db->result($result,0,"ldap_port");
 // Log in filter A AJOUTER DANS LA DB
 $cfg_login['ldap']['condition'] = utf8_decode($db->result($result,0,"ldap_condition"));
 
+// Use LDAP TLS
+$cfg_login['ldap']['use_tls'] = utf8_decode($db->result($result,0,"ldap_use_tls"));
+
 // some lDAP server (eg, M$ Active Directory) does not like anonymous
 // bind
 //$cfg_login['ldap']['rootdn'] = "cn=admin,ou=People,dc=sv,dc=lnf,dc=it";

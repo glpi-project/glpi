@@ -3645,6 +3645,11 @@ if(!FieldExists("glpi_config","mailing_update_user")) {
 	$db->query($query) or die("0.65 add mailing_update_user in config".$lang["update"][90].$db->error());
 }
 
+if(!FieldExists("glpi_config","ldap_use_tls")) {
+	$query="ALTER TABLE `glpi_config` ADD `ldap_use_tls` VARCHAR( 200 ) NOT NULL DEFAULT '0' AFTER `ldap_login` ";
+	$db->query($query) or die("0.65 add ldap_use_tls in config".$lang["update"][90].$db->error());
+}
+
 
 }
 
