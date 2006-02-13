@@ -1856,7 +1856,7 @@ function showFollowupsSummary($tID){
 	}
 	else {	
 
-		echo "<table class='tab_cadrehov2' width='800'>";
+		echo "<table class='tab_cadrehov_pointer'>";
 		echo "<tr><th>&nbsp;</th><th>".$lang["joblist"][1]."</th><th>".$lang["joblist"][6]."</th><th>".$lang["job"][31]."</th><th>".$lang["job"][35]."</th><th>".$lang["joblist"][3]."</th>";
 		if ($isadmin)
 			echo "<th>".$lang["job"][30]."</th>";
