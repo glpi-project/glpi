@@ -1317,6 +1317,9 @@ $lang["setup"][176]="Répertoire de base (optionnel)";
 $lang["setup"][177]="CAS configuration";
 $lang["setup"][178]="L'extension CURL ou DOMXML de votre parser PHP n'est pas installé";
 $lang["setup"][179]="Impossible d'utiliser CAS comme source de connexion externe";
+$lang["setup"][180]="Utiliser TLS";
+$lang["setup"][181]="Fonction ldap_start_tls inexistante";
+
 $lang["setup"][200]="Suivis par emails";
 $lang["setup"][201]="Configuration de la fonction";
 $lang["setup"][202]="Utiliser le suivi par mail";

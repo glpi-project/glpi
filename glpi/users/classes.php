@@ -127,25 +127,32 @@ class User {
 		$this->fields['password_md5'] = "";
 		$this->fields['name'] = $name;
 
-	  if ( $conn = ldap_connect($host,$port) )
+	  if ( $ds = ldap_connect($host,$port) )
 	  {
 			// switch to protocol version 3 to make ssl work
-			ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+			ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+
+			if ($cfg_login['ldap']['use_tls']){
+				if (!ldap_start_tls($ds)) {
+       					return false;
+   				} 
+			}
+
 	  	if ( $adm != "" )
 	  	{
 		//	 	$dn = $cfg_login['ldap']['login']."=" . $adm . "," . $basedn;
-	  		$bv = ldap_bind($conn, $adm, $pass);
+	  		$bv = ldap_bind($ds, $adm, $pass);
 	  	}
 	  	else
 	  	{
-	  		$bv = ldap_bind($conn);
+	  		$bv = ldap_bind($ds);
 	  	}
 
 	  	if ( $bv )
 	  	{
 	  		$f = array_values($fields);
-	  		$sr = ldap_search($conn, $basedn, $cfg_login['ldap']['login']."=".$name, $f);
-	  		$v = ldap_get_entries($conn, $sr);
+	  		$sr = ldap_search($ds, $basedn, $cfg_login['ldap']['login']."=".$name, $f);
+	  		$v = ldap_get_entries($ds, $sr);
 			
 			if ( (empty($v)) || empty($v[0][$fields['name']][0]) ) {
 	  			return false;
@@ -192,10 +199,17 @@ class User {
 		$this->fields['password_md5'] = "";
 	    $this->fields['name'] = $name;		
 	    
-	  if ( $conn = ldap_connect($host,$port) )
+	  if ( $ds = ldap_connect($host,$port) )
 	  {
 			// switch to protocol version 3 to make ssl work
-			ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+			ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+
+			if ($cfg_login['ldap']['use_tls']){
+				if (!ldap_start_tls($ds)) {
+       					return false;
+   				} 
+			}
+
 	  	if ( $adm != "" )
 	  	{
 				 $dn = $basedn;
@@ -209,18 +223,18 @@ class User {
                  $filter="(CN=".$findcn[1].")";
 
                  if ($condition!="") $filter="(& $filter $condition)";
-	  		$bv = ldap_bind($conn, $adm, $pass);
+	  		$bv = ldap_bind($ds, $adm, $pass);
 	  	}
 	  	else
 	  	{
-	  		$bv = ldap_bind($conn);
+	  		$bv = ldap_bind($ds);
 	  	}
 
 	  	if ( $bv )
 	  	{
 	  		$f = array_values(array_filter($fields));
-	  		$sr = ldap_search($conn, $basedn, $filter, $f);
-	  		$v = ldap_get_entries($conn, $sr);
+	  		$sr = ldap_search($ds, $basedn, $filter, $f);
+	  		$v = ldap_get_entries($ds, $sr);
 //	  		print_r($v);
 	  		if (count($v)==0){
 	  			return false;

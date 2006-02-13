@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-02-05 18:14
+#GLPI Dump database on 2006-02-13 22:30
 
 ### Dump table glpi_cartridges
 
@@ -165,6 +165,7 @@ CREATE TABLE `glpi_config` (
     `ldap_field_phone` varchar(200),
     `ldap_condition` varchar(255),
     `ldap_login` varchar(200) DEFAULT 'uid' NOT NULL,
+    `ldap_use_tls` varchar(200) DEFAULT '0' NOT NULL,
     `permit_helpdesk` varchar(200),
     `default_language` varchar(255) DEFAULT 'french' NOT NULL,
     `priority_1` varchar(200) DEFAULT '#fff2f2' NOT NULL,
@@ -186,7 +187,7 @@ CREATE TABLE `glpi_config` (
     `url_in_mail` enum('0','1') DEFAULT '0' NOT NULL,
     `text_login` text,
     `auto_update_check` smallint(6) DEFAULT '0' NOT NULL,
-    `last_update_check` date DEFAULT '2006-02-05' NOT NULL,
+    `last_update_check` date DEFAULT '2006-02-13' NOT NULL,
     `founded_new_version` varchar(10),
     `dropdown_max` int(11) DEFAULT '100' NOT NULL,
     `ajax_wildcard` char(1) DEFAULT '*' NOT NULL,
@@ -202,7 +203,7 @@ CREATE TABLE `glpi_config` (
    PRIMARY KEY (`ID`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','0','0','0','0','0','0','0','0','0','1','0','0','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi','0','','0','2006-02-05','','100','*','0','50','1','1','0','name','0','30','1');
+INSERT INTO glpi_config VALUES ('1','389','10','1','1','80','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','1','0','0','0','0','0','0','0','0','1','0','0','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','0','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi','0','','0','2006-02-13','','100','*','0','50','1','1','0','name','0','30','1');
 
 ### Dump table glpi_connect_wire
 
@@ -988,7 +989,6 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('2','-1','system','2006-02-05 18:13:15','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1012,19 +1012,20 @@ CREATE TABLE `glpi_followups` (
 
 DROP TABLE IF EXISTS `glpi_history`;
 CREATE TABLE `glpi_history` (
-  `ID` int(11) NOT NULL auto_increment,
-  `FK_glpi_device` int(11) NOT NULL default '0',
-  `device_type` tinyint(4) NOT NULL default '0',
-  `device_internal_type` int(11) default '0',
-  `device_internal_action` tinyint(4) default '0',
-  `user_name` varchar(200) default NULL,
-  `date_mod` datetime default NULL,
-  `id_search_option` int(11) NOT NULL default '0',
-  `old_value` varchar(255) default NULL,
-  `new_value` varchar(255) default NULL,
-  PRIMARY KEY  (`ID`),
-  KEY `FK_glpi_device` (`FK_glpi_device`)
+    `ID` int(11) NOT NULL auto_increment,
+    `FK_glpi_device` int(11) DEFAULT '0' NOT NULL,
+    `device_type` tinyint(4) DEFAULT '0' NOT NULL,
+    `device_internal_type` int(11) DEFAULT '0',
+    `device_internal_action` tinyint(4) DEFAULT '0',
+    `user_name` varchar(200),
+    `date_mod` datetime,
+    `id_search_option` int(11) DEFAULT '0' NOT NULL,
+    `old_value` varchar(255),
+    `new_value` varchar(255),
+   PRIMARY KEY (`ID`),
+   KEY FK_glpi_device (`FK_glpi_device`)
 ) TYPE=MyISAM;
+
 
 ### Dump table glpi_infocoms
 

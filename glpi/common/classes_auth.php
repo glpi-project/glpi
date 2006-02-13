@@ -136,16 +136,23 @@ class Identification
   	
 	$dn = $cfg_login['ldap']['login'] ."=" . $login . "," . $basedn;
   	$rv = false;
-  	if ( $conn = ldap_connect($host,$port) )
+  	if ( $ds = ldap_connect($host,$port) )
   	{
   		// switch to protocol version 3 to make ssl work
-  		ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+  		ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
 
-  		if (ldap_bind($conn, $dn, $pass) ) {
+		if ($cfg_login['ldap']['use_tls']){
+			if (!ldap_start_tls($ds)) {
+				$this->err .= ldap_error($ds)."<br>";
+				return false,
+			} 
+		}
+
+  		if (ldap_bind($ds, $dn, $pass) ) {
                      $filter="(".$cfg_login['ldap']['login']."=$login)";
                      if ($condition!="") $filter="(& $filter $condition)";
-                     $sr=ldap_search($conn, $basedn, $filter);
-                     $info = ldap_get_entries ( $conn, $sr );
+                     $sr=ldap_search($ds, $basedn, $filter);
+                     $info = ldap_get_entries ( $ds, $sr );
                      if ( $info["count"] == 1 )
                      {
                         $rv=true;
@@ -159,7 +166,7 @@ class Identification
   		{
   			$this->err .= ldap_error($ds)."<br>";
   		}
-  		ldap_close($conn);
+  		ldap_close($ds);
   	}
   	else
   	{
@@ -204,6 +211,13 @@ class Identification
      
     }
   ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+
+if ($cfg_login['ldap']['use_tls']){
+	if (!ldap_start_tls($ds)) {
+		$this->err.=ldap_error($ds)."<br>";
+		return false;
+	} 
+}
 
   if ($rdn=="") $r = ldap_bind ( $ds);
   else $r = ldap_bind ( $ds,$rdn,$rpass);
@@ -255,19 +269,29 @@ class Identification
 	*/
   function connection_ldap_active_directory($host,$basedn,$login,$pass,$condition,$port)
   {
-		// we prevent some delay...
-		if (empty($host)) {
-			return false;
-		}
+	global $cfg_login;
+
+	// we prevent some delay...
+	if (empty($host)) {
+		return false;
+	}
+
   	error_reporting(16);
   	$dn = $basedn;
   	$rv = false;
-  	if ( $conn = ldap_connect($host,$port) )
+  	if ( $ds = ldap_connect($host,$port) )
   	{
   		// switch to protocol version 3 to make ssl work
-  		ldap_set_option($conn, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+  		ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
 
-  		if (ldap_bind($conn, $dn, $pass) ) {
+		if ($cfg_login['ldap']['use_tls']){
+			if (!ldap_start_tls($ds)) {
+       				$this->err .= ldap_error($ds)."<br>";
+				return false,
+   			} 
+		}
+
+  		if (ldap_bind($ds, $dn, $pass) ) {
 			$findcn=explode(",O",$dn);
               // Cas ou pas de ,OU
              if ($dn==$findcn[0]) {
@@ -278,8 +302,8 @@ class Identification
  			$findcn[1]=str_replace('\,', ',', $findcn[1]);
  			$filter="(CN=".$findcn[1].")";
                      if ($condition!="") $filter="(& $filter $condition)";
-                     $sr=ldap_search($conn, $basedn, $filter);
-                     $info = ldap_get_entries ( $conn, $sr );
+                     $sr=ldap_search($ds, $basedn, $filter);
+                     $info = ldap_get_entries ( $ds, $sr );
                      if ( $info["count"] == 1 )
                      {
                         $rv=true;
@@ -293,7 +317,7 @@ class Identification
   		{
   			$this->err .= ldap_error($ds)."<br>";
   		}
-  		ldap_close($conn);
+  		ldap_close($ds);
   	}
   	else
   	{
@@ -320,6 +344,7 @@ class Identification
 	*/
  function ldap_get_dn_active_directory($host,$ldap_base_dn,$login,$rdn,$rpass,$port)
  {
+global $cfg_login;
 
   // we prevent some delay...
   if (empty($host)) {
@@ -339,6 +364,13 @@ class Identification
     
   ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
   ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+
+	if ($cfg_login['ldap']['use_tls']){
+		if (!ldap_start_tls($ds)) {
+			$this->err .= ldap_error($ds)."<br>";
+			return false;
+		} 
+	}
   
   if ($rdn=="") {$r = ldap_bind ( $ds);
   }
