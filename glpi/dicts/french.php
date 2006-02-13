@@ -617,7 +617,7 @@ $lang["install"][67]="L'option magic_quotes_sybase n'est pas utilisée par votre
 $lang["install"][70]="Impossible de créer le fichier de connexion  à la base de données, vérifiez les droits sur les fichiers";
 $lang["install"][71]="Test de l'extension mysql.";
 $lang["install"][72]="Vous devez compiler votre php avec l'extension Mysql.";
-$lang["install"][73]="Ok - la fonction mysql_connect() existe - Parfait !";
+$lang["install"][73]="Ok - la fonction mysql_query() existe - Parfait !";
 $lang["install"][74]="Test de l'utilisation de Session_use_trans_sid"; 
 $lang["install"][75]="Vous devez desactiver l'option Session_use_trans_id dans votre PHP.ini";
 $lang["install"][76]="Ok - Les sessions fonctionnent (pas de problèmes de trans_id) - Parfait !";
@@ -639,6 +639,8 @@ $lang["install"][91]="Mémoire allouée > 16 Mo";
 $lang["install"][92]="Licence";
 $lang["install"][93]="J'ai lu et ACCEPTE les termes de la licence ennoncés ci-dessus.";
 $lang["install"][94]="J'ai lu et  N'ACCEPTE  PAS les termes de la licence ennoncés ci-dessus";
+$lang["install"][95]="Mémoire non limitée";
+$lang["install"][96]="Mémoire illimitée";
 
 $lang["job"][0]="Numéro de ticket";
 $lang["job"][1]="Ticket toujours ouvert...";

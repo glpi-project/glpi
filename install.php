@@ -194,7 +194,8 @@ function step1($update)
 
 	$mem=ini_get("memory_limit");
 	
-	if(empty($mem)) {$mem=get_cfg_var("memory_limit");}  // Sous Win l'ini_get ne retourne rien.....
+	// Cette bidouille me plait pas
+	//if(empty($mem)) {$mem=get_cfg_var("memory_limit");}  // Sous Win l'ini_get ne retourne rien.....
 
 	preg_match("/([0-9]+)([KMG]*)/",$mem,$matches);
 
@@ -211,13 +212,20 @@ function step1($update)
 		}
 	}
 
-		
-
-	if ($mem != ' ' && $mem<16*1024*1024)
-	echo "<td  class='red'><b>".$lang["install"][87]." $mem octets</b><br>".$lang["install"][88]."<br>".$lang["install"][90]."</td></tr>";
-	else 
-	echo "<td>".$lang["install"][91]." - ".$lang["install"][89]."</td></tr>";
-
+	 if( $mem == "" ){          // memory_limit non compilé -> no memory limit
+	echo "<td>".$lang["install"][95]." - ".$lang["install"][89]."</td></tr>";
+    }
+    else if( $mem == "-1" ){   // memory_limit compilé  mais illimité 
+	echo "<td>".$lang["install"][96]." - ".$lang["install"][89]."</td></tr>";
+    }
+    else{	
+		if ($mem<16*1024*1024){ // memoire insuffisante
+		echo "<td  class='red'><b>".$lang["install"][87]." $mem octets</b><br>".$lang["install"][88]."<br>".$lang["install"][90]."</td></tr>";
+		}
+		else{ // on a sufisament de mémoire on passe à la suite
+		echo "<td>".$lang["install"][91]." - ".$lang["install"][89]."</td></tr>";
+		}
+	}
 // session test
 	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][12]."</b></td>";
 
