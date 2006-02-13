@@ -144,7 +144,7 @@ class Identification
 		if ($cfg_login['ldap']['use_tls']){
 			if (!ldap_start_tls($ds)) {
 				$this->err .= ldap_error($ds)."<br>";
-				return false,
+				return false;
 			} 
 		}
 
@@ -287,7 +287,7 @@ if ($cfg_login['ldap']['use_tls']){
 		if ($cfg_login['ldap']['use_tls']){
 			if (!ldap_start_tls($ds)) {
        				$this->err .= ldap_error($ds)."<br>";
-				return false,
+				return false;
    			} 
 		}
 
