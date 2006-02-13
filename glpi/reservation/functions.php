@@ -70,7 +70,7 @@ function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort=
 	$option["glpi_reservation.comments"]			= $lang["reservation"][23];
 	
 	echo "<form method=get action=\"".$cfg_install["root"]."/reservation/index.php\">";
-	echo "<div align='center'><table class='tab_cadre' width='750'>";
+	echo "<div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
@@ -404,7 +404,7 @@ echo "</td><td valign='top'>";
 // test 
 	
 	
-echo "<table class='tab_cadre' width='700'><tr>";
+echo "<table class='tab_cadre_fixe'><tr>";
 echo "<th width='14%'>".$lang["calendarD"][1]."</th>";
 echo "<th width='14%'>".$lang["calendarD"][2]."</th>";
 echo "<th width='14%'>".$lang["calendarD"][3]."</th>";

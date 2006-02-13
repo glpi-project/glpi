@@ -129,7 +129,7 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />\n";
 		}
 
-	echo "<table class='tab_cadre' width='800' cellpadding='2'>\n";
+	echo "<table class='tab_cadre_fixe' cellpadding='2'>\n";
 
 		echo "<tr><th align='center' >\n";
 		if(!$template) {
