@@ -110,7 +110,7 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 		sort($type);
 
  //affichage du tableau
-		 echo "<table class='tab_cadre2' cellpadding='5' >";
+		 echo "<table class='tab_cadre_fixe' cellpadding='5' >";
 		 $champ=str_replace("locations","location",str_replace("glpi_","",str_replace("dropdown_","",str_replace("_computers","",$_POST["dropdown"]))));
 		 echo "<tr><th>&nbsp;</th><th>&nbsp;</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
 
@@ -174,7 +174,7 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 	$numrows=count($tab);
 	printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"dropdown=".$_POST["dropdown"]."&amp;date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]);
 
-	echo "<table class='tab_cadre2' cellpadding='5' >";
+	echo "<table class='tab_cadre_fixe' cellpadding='5' >";
 	echo "<tr><th>&nbsp;</th><th>&nbsp;</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
 	
 	for ($i=$_GET['start'];$i< $numrows && $i<($_GET['start']+$cfg_features["list_limit"]);$i++) {

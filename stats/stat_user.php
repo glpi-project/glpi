@@ -102,7 +102,7 @@ if (is_array($nomUsr))
 
 //affichage du tableau
 //table display
-echo "<table class='tab_cadre2' cellpadding='5' >";
+echo "<table class='tab_cadre_fixe' cellpadding='5' >";
 echo "<tr><th>".$lang["stats"][20]."</th><th>&nbsp;</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
 
 
