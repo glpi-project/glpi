@@ -58,7 +58,7 @@ function dropdown($table,$myname) {
 	global $HTMLRel,$cfg_install,$cfg_features;
 
 	$rand=mt_rand();
-echo "<input type='text' id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
+echo "<input type='text' ondblclick=\"document.getElementById('search_$myname$rand').value='".$cfg_features["ajax_wildcard"]."';\" id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
 
 echo "<script type='text/javascript' >\n";
 echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
@@ -112,7 +112,7 @@ function dropdownValue($table,$myname,$value) {
 	global $HTMLRel,$cfg_install,$cfg_features;
 
 	$rand=mt_rand();
-echo "<input type='text' id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
+echo "<input type='text' ondblclick=\"document.getElementById('search_$myname$rand').value='".$cfg_features["ajax_wildcard"]."';\" id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
 
 echo "<script type='text/javascript' >\n";
 echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
@@ -221,7 +221,7 @@ function dropdownUsers($myname,$value,$all=0) {
 	global $HTMLRel,$cfg_install,$cfg_features;
 
 	$rand=mt_rand();
-	echo "<input type='text' id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
+	echo "<input type='text' ondblclick=\"document.getElementById('search_$myname$rand').value='".$cfg_features["ajax_wildcard"]."';\" id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
 
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
@@ -275,7 +275,7 @@ function dropdownAllUsers($myname,$value) {
 	global $HTMLRel,$cfg_install,$cfg_features;
 
 	$rand=mt_rand();
-	echo "<input type='text' id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
+	echo "<input type='text' ondblclick=\"document.getElementById('search_$myname$rand').value='".$cfg_features["ajax_wildcard"]."';\" id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
 
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
@@ -376,7 +376,7 @@ function dropdownUsersTracking($myname,$value,$champ) {
 	global $HTMLRel,$cfg_install,$lang,$cfg_features;
 
 	$rand=mt_rand();
-	echo "<input type='text' id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
+	echo "<input type='text' ondblclick=\"document.getElementById('search_$myname$rand').value='".$cfg_features["ajax_wildcard"]."';\" id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
 
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
@@ -662,7 +662,7 @@ function dropdownConnect($type,$myname) {
 		);
 
 	$rand=mt_rand();
-echo "<input type='text' id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
+echo "<input type='text' ondblclick=\"document.getElementById('search_$myname$rand').value='".$cfg_features["ajax_wildcard"]."';\" id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
 
 echo "<script type='text/javascript' >\n";
 echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
@@ -764,7 +764,7 @@ function dropdownSoftwareToInstall($myname,$withtemplate) {
 	$rand=mt_rand();
 
 	
-	echo "<input type='text' id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
+	echo "<input type='text' ondblclick=\"document.getElementById('search_$myname$rand').value='".$cfg_features["ajax_wildcard"]."';\" id='search_$myname$rand' name='____data_$myname$rand' size='4'>\n";
 
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";

@@ -67,7 +67,7 @@ if (isset($items[$_POST["idtable"]])){
 		$link="dropdownUsers.php";
 	
 	$rand=mt_rand();
-	echo "<input id='search_".$_POST['myname']."$rand' name='____data_".$_POST['myname']."$rand' size='4'>";	
+	echo "<input type='text' ondblclick=\"document.getElementById('search_".$_POST['myname']."$rand').value='".$cfg_features["ajax_wildcard"]."';\" id='search_".$_POST['myname']."$rand' name='____data_".$_POST['myname']."$rand' size='4'>";	
 	$moreparam="";
 	if(isset($_POST['value'])) $moreparam="&value=".$_POST['value'];
 
