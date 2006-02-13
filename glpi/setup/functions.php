@@ -1071,7 +1071,7 @@ function showFormConfigDisplay($target){
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][122]."</td><td>";
 	echo "<select name='dropdown_max'>";
 	$dropdown_max=$db->result($result,0,"dropdown_max");
-	for ($i=1;$i<=200;$i++) echo "<option value='$i'".($dropdown_max==$i?" selected ":"").">$i</option>";
+	for ($i=0;$i<=200;$i++) echo "<option value='$i'".($dropdown_max==$i?" selected ":"").">$i</option>";
 	echo "</select>";
 	echo "</td></tr>";
 
