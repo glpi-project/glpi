@@ -455,7 +455,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 
 
         $query_inst = "SELECT glpi_inst_software.ID AS ID, glpi_inst_software.license AS lID, glpi_computers.deleted as deleted, ";
-        $query_inst .= " glpi_infocoms.ID as infocoms, ";
+        $query_inst .= " glpi_infocoms.ID as infocoms, glpi_licenses.comments AS COMMENT, ";
         $query_inst .= " glpi_computers.ID AS cID, glpi_computers.name AS cname FROM glpi_licenses";
                 $query_inst .= " INNER JOIN glpi_inst_software ";
         $query_inst .= " ON ( glpi_inst_software.license = glpi_licenses.ID )";
@@ -612,17 +612,24 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		if ($show_computers)
 		while ($data_inst=$db->fetch_array($result_inst)){
 			echo "<tr class='tab_bg_1".(($data["OEM"]=='Y'&&$data["OEM_COMPUTER"]!=$data_inst["cID"])||$data_inst["deleted"]=='Y'?"_2":"")."'><td align='center'>";
+
 			if ($serial!="free"&&$serial!="global") 
 			echo "<input type='checkbox' name='license_".$data_inst["lID"]."' id='license_".$data_inst["lID"]."'>";
 
 			echo "<strong><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$data_inst["cID"]."\">";
 			echo $data_inst["cname"];
 			echo "</a></strong></td><td align='center'>";
-			echo "<strong><a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&amp;ID=".$data_inst["ID"]."&amp;cID=".$data_inst["cID"]."\">";
 			
+			// Comment
+			if (!empty($data_inst["COMMENT"])) {
+			echo "<img onmouseout=\"setdisplay(getElementById('comment_".$data_inst["ID"]."'),'none')\" onmouseover=\"setdisplay(getElementById('comment_".$data_inst["ID"]."'),'block')\" src=\"".$HTMLRel."pics/aide.png\" alt='".$lang["software"][6]."' title='".$lang["software"][6]."'>";
+			echo "<div class='over_link' id='comment_".$data_inst["ID"]."'>".nl2br($data_inst["COMMENT"])."</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+			}
+			// delete
+			echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&amp;ID=".$data_inst["ID"]."&amp;cID=".$data_inst["cID"]."\">";
 			echo "<img src=\"".$HTMLRel."pics/remove.png\" alt='".$lang["buttons"][5]."' title='".$lang["buttons"][5]."'>";
-			
-			echo "</a></strong>";
+			echo "</a>";
+
 			if ($serial!="free"&&$serial!="global"){
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=update&amp;lID=".$data_inst["lID"]."&amp;sID=$sID\">";
 				echo "<img src=\"".$HTMLRel."pics/edit.png\" alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'>";
@@ -742,6 +749,10 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 	// BUY
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][35]."</td><td>";
 	echo "<select name='buy'><option value='Y' ".($values['buy']=='Y'?"selected":"").">".$lang['choice'][0]."</option><option value='N' ".($values['buy']=='N'?"selected":"").">".$lang['choice'][1]."</option></select>";
+	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_1'><td>".$lang["software"][6]."</td><td>";
+	echo "<textarea name='comments' rows='6' cols='40'>".$values['comments']."</textarea>";
 	echo "</td></tr>";
 	
 	echo "<tr class='tab_bg_2'>";
