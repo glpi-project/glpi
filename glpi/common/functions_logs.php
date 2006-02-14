@@ -330,7 +330,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 	// No Events in database
 	if ($number < 1) {
 		echo "<br><div align='center'>";
-		echo "<table class='tab_cadre_fixe'>";
+		echo "<table class='tab_cadre'>";
 		echo "<tr><th>".$lang["central"][4]."</th></tr>";
 		echo "</table>";
 		echo "</div><br>";
@@ -341,7 +341,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 	$i = 0;
 
 	echo "<div align='center'><br><table width='400' class='tab_cadre'>";
-	echo "<tr><th colspan='5'>".$lang["central"][2]." ".$cfg_features["num_of_events"]." ".$lang["central"][8].":</th></tr>";
+	echo "<tr><th colspan='5'><a href=\"".$cfg_install["root"]."/logs.php\">".$lang["central"][2]." ".$cfg_features["num_of_events"]." ".$lang["central"][8]."</a></th></tr>";
 	echo "<tr>";
 
 	echo "<th colspan='2'>";
