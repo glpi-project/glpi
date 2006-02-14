@@ -342,7 +342,7 @@ function showKbCategoriesall()
 
 	
 	echo "<div align='center'><table border='0' class='tab_cadre_fixe' >";
-	echo "<tr><th align='center' >".$lang["knowbase"][0]."</th></tr><tr><td align='left'>";	
+	echo "<tr><th align='center' >".$lang["knowbase"][0]."</th></tr><tr><td align='left' class='tab_bg_3'>";	
 	
 	showKbCategories();
 	

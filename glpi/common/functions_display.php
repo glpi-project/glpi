@@ -103,7 +103,7 @@ function commonHeader($title,$url)
 	}
 	// Start the page
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
-	echo "<html><head><title>GLPI - ".$title."</title>";
+	echo "\n<html><head><title>GLPI - ".$title."</title>";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" >";
 	// Send extra expires header if configured
 	if ($cfg_features["sendexpire"]) {
@@ -844,7 +844,7 @@ echo "<table class='tab_cadre_fixe' >";
 echo "<tr><th align='center' >";
 echo "Notes";
 echo "</th></tr>";
-echo "<tr><td valign='middle' align='center' ><textarea  cols='100' rows='35' name='notes' >".$ci->obj->fields["notes"]."</textarea></td></tr>";
+echo "<tr><td valign='middle' align='center' class='tab_bg_1' ><textarea class='textarea_notes' cols='100' rows='35' name='notes' >".$ci->obj->fields["notes"]."</textarea></td></tr>";
 echo "<tr><td class='tab_bg_2' align='center' >\n";
 echo "<input type='hidden' name='ID' value=$id>";
 echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
