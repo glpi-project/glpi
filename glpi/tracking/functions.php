@@ -167,7 +167,7 @@ function showCentralJobList($target,$start) {
 
 		echo "<table class='tab_cadrehov'>";
 		
-		echo "<tr><th colspan='5'><b><a href=\"".$cfg_install["root"]."/tracking/index.php?assign=".$_SESSION["glpiID"]."&amp;status=process\">".$lang["central"][9]."</a></b></th></tr>";
+		echo "<tr><th colspan='5'><b><a href=\"".$cfg_install["root"]."/tracking/index.php?assign=".$_SESSION["glpiID"]."&amp;status=process&reset=reset_before\">".$lang["central"][9]."</a></b></th></tr>";
 		echo "<tr><th></th>";
 		echo "<th>".$lang["joblist"][3]."</th>";
 		echo "<th>".$lang["tracking"][20]."</th>";
