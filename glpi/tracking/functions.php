@@ -428,8 +428,9 @@ function showJobShort($ID, $followups) {
 
 		echo "<td  align='center' $valign ><strong>".getDropdownName("glpi_dropdown_tracking_category",$job->fields["category"])."</strong></td>";
 		
-		$stripped_content=$job->fields["contents"];
-		if (!$followups) $stripped_content =substr($job->fields["contents"],0,$cfg_features["cut"]);
+		//$stripped_content=$job->fields["contents"];
+		$stripped_content=resume_text($job->fields["contents"],400);
+		if ($followups){$stripped_content=resume_text($job->fields["contents"],$cfg_features["cut"]);}
 		echo "<td align='left'><strong>".$stripped_content."</strong>";
 		if ($followups)
 		{
@@ -511,7 +512,7 @@ function showJobVeryShort($ID) {
 		else
 		echo "<td  align='center' ><strong>$job->computername (".$job->fields["computer"].")</strong></td>";
 
-		$stripped_content =substr($job->fields["contents"],0,$cfg_features["cut"]);
+		$stripped_content =resume_text($job->fields["contents"],100);
 		echo "<td ><strong>".$stripped_content."</strong>";
 		echo "</td>";
 
@@ -1098,8 +1099,9 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 			echo "<form method='post' action=\"$target\">";
 			}
 			
-									
-			echo "<div align='center'><table border='0' class='tab_cadrehov' width='90%'>";
+			$cssclass="tab_cadrehov"; // default css class
+			if($showfollowups) $cssclass="tab_cadre"; // if showfollowup use an other class css						
+			echo "<div align='center'><table border='0'class='$cssclass' width='90%'>";
 
 			commonTrackingListHeader();
 
@@ -1146,7 +1148,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 function showFollowupsShort($ID) {
 	// Print Followups for a job
 
-	GLOBAL $cfg_install, $cfg_layout, $lang;
+	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
 
 	// Get Number of Followups
 	$db=new DB;
@@ -1160,10 +1162,10 @@ function showFollowupsShort($ID) {
 
 		while ($data=$db->fetch_array($result)) {
 			
-			echo "<tr class='tab_bg_2'>";
+			echo "<tr class='tab_bg_3'>";
 			echo "<td align='center'>".convDateTime($data["date"])."</td>";
 			echo "<td align='center'>".getUserName($data["author"],1)."</td>";
-			echo "<td width='70%'><strong>".$data["contents"]."</strong></td>";
+			echo "<td width='70%'><strong>".resume_text($data["contents"],$cfg_features["cut"])."</strong></td>";
 			echo "</tr>";
 		}		
 
