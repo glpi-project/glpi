@@ -1556,6 +1556,9 @@ $lang["tracking"][24]="Document Ticket ";
 $lang["tracking"][25]="Document(s) associé(s)";
 $lang["tracking"][26]="Vous n'êtes pas autorisé à modifier le matériel affecté par ce ticket";
 $lang["tracking"][27]="Vous n'êtes pas autorisé à modifier l'auteur de ce ticket";
+$lang["tracking"][28]="Tickets";
+$lang["tracking"][29]="Nombre";
+
 
 $lang["update"][90]="Erreur durant la mise  à jour de la base de données";
 $lang["update"][91]="Attention !  ";
