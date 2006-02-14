@@ -112,7 +112,7 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 	echo "<input type='hidden' name='id_followup' value='$fup'>";
 	echo "<input type='hidden' name='id_tracking' value='".$followup->fields['tracking']."'>";
 
-	echo "<table class='tab_cadre' cellpadding='2'>";
+	echo "<table class='tab_cadre' cellpadding='2' width='600'>";
 	echo "<tr><th colspan='2'><b>";
 	echo $lang["planning"][7];
 	echo "</b></th></tr>";
@@ -618,6 +618,88 @@ function updatePlanningTracking($input,$target,$item){
 
 	return true;
 }
+
+//
+
+function ShowPlanningCentral($who){
+global $cfg_features,$HTMLRel,$lang;
+$db=new DB;
+
+$when=strftime("%Y-%m-%d");
+$debut=$when;
+
+// $tmp=split(" ",$when);
+
+// $hour=split(":",$tmp[1]);
+
+$ASSIGN="";
+if ($who!=0)
+$ASSIGN="id_assign='$who' AND";
+
+
+$INTERVAL=" 1 DAY ";
+
+$query="SELECT * from glpi_tracking_planning WHERE $ASSIGN (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
+
+
+$result=$db->query($query);
+
+$fup=new Followup();
+$job=new Job();
+
+$interv=array();
+$i=0;
+if ($db->numrows($result)>0)
+while ($data=$db->fetch_array($result)){
+	$fup->getFromDB($data["id_followup"]);
+	$job->getFromDB($fup->fields["tracking"],0);
+	
+	$interv[$i]["id_followup"]=$data["id_followup"];
+	$interv[$i]["id_tracking"]=$fup->fields["tracking"];
+	$interv[$i]["id_assign"]=$data["id_assign"];
+	$interv[$i]["ID"]=$data["ID"];
+	$interv[$i]["begin"]=$data["begin"];
+	$interv[$i]["end"]=$data["end"];
+	$interv[$i]["content"]=substr($job->fields["contents"],0,$cfg_features["cut"]);
+	$interv[$i]["device"]=$job->computername;
+	$i++;
+}
+//print_r($interv);
+echo "<table class='tab_cadre'><tr><th colspan='3'><a href='".$HTMLRel."planning/index.php'>".$lang["planning"][15]."</a></th></tr><tr><th>".$lang["planning"][16]."</th><th>".$lang["planning"][17]."</th><th>".$lang["joblist"][6]."</th></tr>";
+	if (count($interv)>0){
+		foreach ($interv as $key => $val){
+					
+		echo "<tr class='tab_bg_1'>";
+		echo "<td>";		
+		echo date("H:i",strtotime($val["begin"]));
+		echo "</td>";
+		echo "<td>";
+		echo date("H:i",strtotime($val["end"]));
+		echo "</td>";
+		echo "<td><a href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
+		echo $val["device"].": ".resume_text($val["content"]);
+		echo "</a></td></tr>";
+				
+					
+		}
+	
+	}
+echo "</table>";
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

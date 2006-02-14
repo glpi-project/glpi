@@ -48,7 +48,7 @@ include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_enterprises.php");
 include ($phproot . "/glpi/includes_users.php");
 include ($phproot . "/glpi/includes_setup.php");
-
+include ($phproot . "/glpi/includes_planning.php");
 
 checkAuthentication("normal");
 
@@ -71,18 +71,34 @@ checkNewVersionAvailable();
 if (!isset($_GET['start'])) $_GET['start']=0;
 
 echo "<div align='center'>";
-echo "<table><tr><td align='center' valign='top'  width='45%'>";
+echo "<table><tr><td align='center' valign='top'  width='450'>";
 
 showCentralJobList($_SERVER["PHP_SELF"],$_GET['start']);
 echo "</td>";
+echo "<td align='center' valign='top'  width='450'>";
+ShowPlanningCentral($_SESSION["glpiID"]);
+echo "</td></tr>";
+
+echo "<tr>";
 if ($cfg_features["num_of_events"]>0){
-	echo "<td  align='center' valign='top' width='45%'>";
+echo "<tr>";
+	echo "<td  align='center' valign='top' width='450'>";
 	// Show last add events
 	showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
 	echo "</td>";
+echo "<td  align='center' valign='top' width='450'>";
+	// nothing for the moment
+
+
+echo "</td></tr>";
 }
-echo "</tr></table>";
+
+
+
+
+echo "</table>";
 echo "</div>";
+
 if(empty($_GET["start"])) $_GET["start"] = 0;
 if ($cfg_features["jobs_at_login"]){
 echo "<br>";
@@ -94,6 +110,9 @@ echo "</b></div>";
 showTrackingList($_SERVER["PHP_SELF"],$_GET["start"],"new");
 //showJobList($_SERVER["PHP_SELF"],"","unassigned","","","",$_GET["start"]);
 }
+
+
+
 commonFooter();
 
 ?>
