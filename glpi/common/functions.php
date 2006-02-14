@@ -162,6 +162,24 @@ function utf8_decode_deep($value) {
 	
 }
 
+/**
+*  Resume test for followup
+*
+* @param $string
+* @param $length
+* @return cut string
+*
+*/
+function resume_text($string,$length=255){
+
+	if (strlen($string)>$length){
+
+	$string=substr($string,0,$length)."&nbsp;(...)";
+	}
+
+	return $string;
+}
+
 
 //****************
 // De jolies fonctions pour améliorer l'affichage du texte de la FAQ/knowledgbase

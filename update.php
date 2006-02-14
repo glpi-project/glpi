@@ -3650,6 +3650,11 @@ if(!FieldExists("glpi_config","ldap_use_tls")) {
 	$db->query($query) or die("0.65 add ldap_use_tls in config".$lang["update"][90].$db->error());
 }
 
+if(FieldExists("glpi_config","cut")) { // juste pour affichage identique sur toutes les versions.
+$query="UPDATE `glpi_config` SET `cut` = '255' WHERE `ID` =1";
+$db->query($query) or die("0.65 update Cut in config".$lang["update"][90].$db->error());
+}
+
 
 }
 
