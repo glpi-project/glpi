@@ -665,7 +665,7 @@ while ($data=$db->fetch_array($result)){
 	$i++;
 }
 //print_r($interv);
-echo "<table class='tab_cadre'><tr><th colspan='3'><a href='".$HTMLRel."planning/index.php'>".$lang["planning"][15]."</a></th></tr><tr><th>".$lang["planning"][16]."</th><th>".$lang["planning"][17]."</th><th>".$lang["joblist"][6]."</th></tr>";
+echo "<table class='tab_cadre' width='80%'><tr><th colspan='3'><a href='".$HTMLRel."planning/index.php'>".$lang["planning"][15]."</a></th></tr><tr><th>".$lang["planning"][16]."</th><th>".$lang["planning"][17]."</th><th>".$lang["joblist"][6]."</th></tr>";
 	if (count($interv)>0){
 		foreach ($interv as $key => $val){
 					
@@ -676,8 +676,8 @@ echo "<table class='tab_cadre'><tr><th colspan='3'><a href='".$HTMLRel."planning
 		echo "<td>";
 		echo date("H:i",strtotime($val["end"]));
 		echo "</td>";
-		echo "<td><a href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
-		echo $val["device"].": ".resume_text($val["content"]);
+		echo "<td>".$val["device"]."<a href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
+		echo ": ".resume_text($val["content"],125);
 		echo "</a></td></tr>";
 				
 					
