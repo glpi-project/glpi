@@ -216,16 +216,16 @@ function showCentralJobCount(){
 	echo "<tr><th colspan='2'><b><a href=\"".$cfg_install["root"]."/tracking/index.php?status=process&reset=reset_before\">".$lang["tracking"][0]."</a></b></th></tr>";
 	echo "<tr><th ><b>".$lang["tracking"][28]."</b></th><th>".$lang["tracking"][29]."</th></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_install["root"]."/tracking/index.php?status=new&reset=reset_before\">Tickets nouveaux</a> </td>";
+	echo "<td><a href=\"".$cfg_install["root"]."/tracking/index.php?status=new&reset=reset_before\">".$lang["tracking"][30]."</a> </td>";
 	echo "<td>".$status["new"]."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_install["root"]."/tracking/index.php?status=assign&reset=reset_before\">Tickets Attribués </a></td>";
+	echo "<td><a href=\"".$cfg_install["root"]."/tracking/index.php?status=assign&reset=reset_before\">".$lang["tracking"][31]."</a></td>";
 	echo "<td>".$status["assign"]."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_install["root"]."/tracking/index.php?status=plan&reset=reset_before\">Tickets planifiés</a></td>";
+	echo "<td><a href=\"".$cfg_install["root"]."/tracking/index.php?status=plan&reset=reset_before\">".$lang["tracking"][32]."</a></td>";
 	echo "<td>".$status["plan"]."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_install["root"]."/tracking/index.php?status=waiting&reset=reset_before\">Tickets en attente</a></td>";
+	echo "<td><a href=\"".$cfg_install["root"]."/tracking/index.php?status=waiting&reset=reset_before\">".$lang["tracking"][33]."</a></td>";
 	echo "<td>".$status["waiting"]."</td></tr>";
 
 	
