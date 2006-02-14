@@ -3655,6 +3655,11 @@ $query="UPDATE `glpi_config` SET `cut` = '255' WHERE `ID` =1";
 $db->query($query) or die("0.65 update Cut in config".$lang["update"][90].$db->error());
 }
 
+if(!FieldExists("glpi_licenses","comments")) {
+	$query="ALTER TABLE `glpi_licenses` ADD `comments` TEXT NULL ";
+	$db->query($query) or die("0.65 add comments in licenses".$lang["update"][90].$db->error());
+}
+
 
 }
 

@@ -1154,7 +1154,7 @@ for ($i=0;$i<$max['software'];$i++){
 	$val=mt_rand(0,100);
 	// Free software
 	if ($val<$percent['free_software']){
-		$query="INSERT INTO glpi_licenses VALUES ('','$softID','free',NULL,'N','0','Y');";
+		$query="INSERT INTO glpi_licenses VALUES ('','$softID','free',NULL,'N','0','Y','');";
 		$db->query($query) or die("PB REQUETE ".$query);
 		$licID=$db->insert_id();
 		$val2=mt_rand(0,$max['free_licenses_per_software']);
@@ -1164,7 +1164,7 @@ for ($i=0;$i<$max['software'];$i++){
 		}
 	} // Global software
 	else if ($val<$percent['global_software']+$percent['free_software']){
-		$query="INSERT INTO glpi_licenses VALUES ('','$softID','global',NULL,'N','0','Y');";
+		$query="INSERT INTO glpi_licenses VALUES ('','$softID','global',NULL,'N','0','Y','');";
 		$db->query($query) or die("PB REQUETE ".$query);
 		$licID=$db->insert_id();
 		$val2=mt_rand(0,$max['global_licenses_per_software']);
@@ -1176,7 +1176,7 @@ for ($i=0;$i<$max['software'];$i++){
 	else {
 		$val2=mt_rand(0,$max['normal_licenses_per_software']);
 		for ($j=0;$j<$val2;$j++){
-			$query="INSERT INTO glpi_licenses VALUES ('','$softID','".GetRandomString(10)."',NULL,'N','0','Y');";
+			$query="INSERT INTO glpi_licenses VALUES ('','$softID','".GetRandomString(10)."',NULL,'N','0','Y','');";
 			$db->query($query) or die("PB REQUETE ".$query);
 			$licID=$db->insert_id();
 			$query="INSERT INTO glpi_inst_software VALUES ('','".mt_rand(1,$max['computers'])."','$licID')";
@@ -1185,7 +1185,7 @@ for ($i=0;$i<$max['software'];$i++){
 		// Add more licenses
 		$val2=mt_rand(0,$max['more_licenses']);
 		for ($j=0;$j<$val2;$j++){
-			$query="INSERT INTO glpi_licenses VALUES ('','$softID','".GetRandomString(10)."',NULL,'N','0','Y');";
+			$query="INSERT INTO glpi_licenses VALUES ('','$softID','".GetRandomString(10)."',NULL,'N','0','Y','');";
 			$db->query($query) or die("PB REQUETE ".$query);
 		}
 	}
