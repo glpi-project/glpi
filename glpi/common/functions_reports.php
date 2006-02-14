@@ -71,17 +71,17 @@ switch($item_type)
 		case 'glpi_computers' :
 		
 		
-		echo " <strong>".$lang["reports"][6]."</strong>";
-		echo "<table class='tab_cadre_fixe'>";
+		echo " <div align='center'><strong>".$lang["reports"][6]."</strong>";
+		echo "<table class='tab_cadre_report'>";
 		echo "<tr>";
-		echo "<th><div align='center'><b>".$lang["computers"][7]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["common"][3]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["computers"][10]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["computers"][41]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["computers"][42]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["financial"][6]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["financial"][7]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["search"][9]."</b></div></th>";
+		echo "<th>".$lang["computers"][7]."</th>";
+		echo "<th>".$lang["common"][3]."</th>";
+		echo "<th>".$lang["computers"][10]."</th>";
+		echo "<th>".$lang["computers"][41]."</th>";
+		echo "<th>".$lang["computers"][42]."</th>";
+		echo "<th>".$lang["financial"][6]."</th>";
+		echo "<th>".$lang["financial"][7]."</th>";
+		echo "<th>".$lang["search"][9]."</th>";
 		echo "</tr>";
 	 	while( $ligne = $db->fetch_array($result))
 					{
@@ -98,33 +98,33 @@ switch($item_type)
 						//inserer ces valeures dans un tableau
 
 						echo "<tr>";
-						if($name) echo "<td><div align='center'> $name </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($deleted) echo "<td><div align='center'> $deleted </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($lieu) echo "<td><div align='center'> ".getDropdownName("glpi_dropdown_locations",$lieu)." </div></td>"; else echo "<td><div align='center'> N/A </div></td>";	
-						if($achat_date) echo "<td><div align='center'> $achat_date </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($fin_garantie) echo "<td><div align='center'> $fin_garantie </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($contract_type) echo "<td><div align='center'> $contract_type </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($contract_begin) echo "<td><div align='center'> $contract_begin </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($contract_end) echo "<td><div align='center'> $contract_end </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+						if($name) echo "<td> $name </td>"; else echo "<td> N/A </td>";
+						if($deleted) echo "<td> $deleted </td>"; else echo "<td> N/A </td>";
+						if($lieu) echo "<td> ".getDropdownName("glpi_dropdown_locations",$lieu)." </td>"; else echo "<td> N/A </td>";	
+						if($achat_date) echo "<td> $achat_date </td>"; else echo "<td> N/A </td>";
+						if($fin_garantie) echo "<td> $fin_garantie </td>"; else echo "<td> N/A </td>";
+						if($contract_type) echo "<td> $contract_type </td>"; else echo "<td> N/A </td>";
+						if($contract_begin) echo "<td> $contract_begin </td>"; else echo "<td> N/A </td>";
+						if($contract_end) echo "<td> $contract_end </td>"; else echo "<td> N/A </td>";
 						
-						echo "</tr>";
+						echo "</tr>\n";
 					}
-		echo "</table><br><hr><br> ";
+		echo "</table></div><br><hr><br> ";
 		break;
 		
 		case 'glpi_printers' :
 		
-		echo "<b><strong>".$lang["reports"][7]."</strong></b>";
-		echo "<table class='tab_cadre_fixe'>";
+		echo "<div align='center'><strong>".$lang["reports"][7]."</strong>";
+		echo "<table class='tab_cadre_report'>";
 		echo "<tr> ";
-		echo "<th><div align='center'><b>".$lang["computers"][7]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["common"][3]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["computers"][10]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["computers"][41]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["computers"][42]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["financial"][6]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["financial"][7]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["search"][9]."</b></div></th>";
+		echo "<th>".$lang["computers"][7]."</th>";
+		echo "<th>".$lang["common"][3]."</th>";
+		echo "<th>".$lang["computers"][10]."</th>";
+		echo "<th>".$lang["computers"][41]."</th>";
+		echo "<th>".$lang["computers"][42]."</th>";
+		echo "<th>".$lang["financial"][6]."</th>";
+		echo "<th>".$lang["financial"][7]."</th>";
+		echo "<th>".$lang["search"][9]."</th>";
 		echo "</tr>";
 		
 		while( $ligne = $db->fetch_array($result))
@@ -140,32 +140,32 @@ switch($item_type)
 					
 					//inserer ces valeures dans un tableau
 					echo "<tr>";	
-						if($name) echo "<td><div align='center'> $name </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($deleted) echo "<td><div align='center'> $deleted </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($lieu) echo "<td><div align='center'> ".getDropdownName("glpi_dropdown_locations",$lieu)." </div></td>"; else echo "<td><div align='center'> N/A </div></td>";	
-						if($achat_date) echo "<td><div align='center'> $achat_date </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($fin_garantie) echo "<td><div align='center'> $fin_garantie </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($contract_type) echo "<td><div align='center'> $contract_type </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($contract_begin) echo "<td><div align='center'> $contract_begin </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($contract_end) echo "<td><div align='center'> $contract_end </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					echo "</tr>";
+						if($name) echo "<td> $name </td>"; else echo "<td> N/A </td>";
+						if($deleted) echo "<td> $deleted </td>"; else echo "<td> N/A </td>";
+						if($lieu) echo "<td> ".getDropdownName("glpi_dropdown_locations",$lieu)." </td>"; else echo "<td> N/A </td>";	
+						if($achat_date) echo "<td> $achat_date </td>"; else echo "<td> N/A </td>";
+						if($fin_garantie) echo "<td> $fin_garantie </td>"; else echo "<td> N/A </td>";
+						if($contract_type) echo "<td> $contract_type </td>"; else echo "<td> N/A </td>";
+						if($contract_begin) echo "<td> $contract_begin </td>"; else echo "<td> N/A </td>";
+						if($contract_end) echo "<td> $contract_end </td>"; else echo "<td> N/A </td>";
+					echo "</tr>\n";
 					}	
-		echo "</table><br><hr><br>";
+		echo "</table></div><br><hr><br>";
 		break;
 		
 		case 'glpi_monitors' :
 		
-		echo " <b><strong>".$lang["reports"][9]."</strong></b>";
-		echo "<table class='tab_cadre_fixe'>";
+		echo " <div align='center'><strong>".$lang["reports"][9]."</strong>";
+		echo "<table class='tab_cadre_report'>";
 		echo "<tr> ";
-		echo "<th><div align='center'><b>".$lang["computers"][7]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["common"][3]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["computers"][10]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["computers"][41]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["computers"][42]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["financial"][6]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["financial"][7]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["search"][9]."</b></div></th>";
+		echo "<th>".$lang["computers"][7]."</th>";
+		echo "<th>".$lang["common"][3]."</th>";
+		echo "<th>".$lang["computers"][10]."</th>";
+		echo "<th>".$lang["computers"][41]."</th>";
+		echo "<th>".$lang["computers"][42]."</th>";
+		echo "<th>".$lang["financial"][6]."</th>";
+		echo "<th>".$lang["financial"][7]."</th>";
+		echo "<th>".$lang["search"][9]."</th>";
 		echo "</tr>";
 		
 		while( $ligne = $db->fetch_array($result))
@@ -181,32 +181,32 @@ switch($item_type)
 					//inserer ces valeures dans un tableau
 					
 					echo "<tr>";	
-						if($name) echo "<td><div align='center'> $name </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($deleted) echo "<td><div align='center'> $deleted </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($lieu) echo "<td><div align='center'> ".getDropdownName("glpi_dropdown_locations",$lieu)." </div></td>"; else echo "<td><div align='center'> N/A </div></td>";	
-						if($achat_date) echo "<td><div align='center'> $achat_date </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($fin_garantie) echo "<td><div align='center'> $fin_garantie </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($contract_type) echo "<td><div align='center'> $contract_type </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($contract_begin) echo "<td><div align='center'> $contract_begin </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($contract_end) echo "<td><div align='center'> $contract_end </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					echo "</tr>";
+						if($name) echo "<td> $name </td>"; else echo "<td> N/A </td>";
+						if($deleted) echo "<td> $deleted </td>"; else echo "<td> N/A </td>";
+						if($lieu) echo "<td> ".getDropdownName("glpi_dropdown_locations",$lieu)." </td>"; else echo "<td> N/A </td>";	
+						if($achat_date) echo "<td> $achat_date </td>"; else echo "<td> N/A </td>";
+						if($fin_garantie) echo "<td> $fin_garantie </td>"; else echo "<td> N/A </td>";
+						if($contract_type) echo "<td> $contract_type </td>"; else echo "<td> N/A </td>";
+						if($contract_begin) echo "<td> $contract_begin </td>"; else echo "<td> N/A </td>";
+						if($contract_end) echo "<td> $contract_end </td>"; else echo "<td> N/A </td>";
+					echo "</tr>\n";
 					}	
-		echo "</table><br><hr><br>";
+		echo "</table></div><br><hr><br>";
 		break;
 		
 		case 'glpi_networking' :
 		
-		echo " <b><strong>".$lang["reports"][8]."</strong></b>";
-		echo "<table class='tab_cadre_fixe'>";
+		echo "<div align='center'> <strong>".$lang["reports"][8]."</strong>";
+		echo "<table class='tab_cadre_report'>";
 		echo "<tr> ";
-		echo "<th><div align='center'><b>".$lang["computers"][7]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["common"][3]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["computers"][10]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["computers"][41]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["computers"][42]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["financial"][6]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["financial"][7]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["search"][9]."</b></div></th>";
+		echo "<th>".$lang["computers"][7]."</th>";
+		echo "<th>".$lang["common"][3]."</th>";
+		echo "<th>".$lang["computers"][10]."</th>";
+		echo "<th>".$lang["computers"][41]."</th>";
+		echo "<th>".$lang["computers"][42]."</th>";
+		echo "<th>".$lang["financial"][6]."</th>";
+		echo "<th>".$lang["financial"][7]."</th>";
+		echo "<th>".$lang["search"][9]."</th>";
 		echo "</tr>";
 		
 		while( $ligne = $db->fetch_array($result))
@@ -222,31 +222,31 @@ switch($item_type)
 					//inserer ces valeures dans un tableau
 				
 					echo "<tr> ";	
-						if($name) echo "<td><div align='center'> $name </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($deleted) echo "<td><div align='center'> $deleted </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($lieu) echo "<td><div align='center'> ".getDropdownName("glpi_dropdown_locations",$lieu)." </div></td>"; else echo "<td><div align='center'> N/A </div></td>";	
-						if($achat_date) echo "<td><div align='center'> $achat_date </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($fin_garantie) echo "<td><div align='center'> $fin_garantie </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($contract_type) echo "<td><div align='center'> $contract_type </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($contract_begin) echo "<td><div align='center'> $contract_begin </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($contract_end) echo "<td><div align='center'> $contract_end </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					echo "</tr>";
+						if($name) echo "<td> $name </td>"; else echo "<td> N/A </td>";
+						if($deleted) echo "<td> $deleted </td>"; else echo "<td> N/A </td>";
+						if($lieu) echo "<td> ".getDropdownName("glpi_dropdown_locations",$lieu)." </td>"; else echo "<td> N/A </td>";	
+						if($achat_date) echo "<td> $achat_date </td>"; else echo "<td> N/A </td>";
+						if($fin_garantie) echo "<td> $fin_garantie </td>"; else echo "<td> N/A </td>";
+						if($contract_type) echo "<td> $contract_type </td>"; else echo "<td> N/A </td>";
+						if($contract_begin) echo "<td> $contract_begin </td>"; else echo "<td> N/A </td>";
+						if($contract_end) echo "<td> $contract_end </td>"; else echo "<td> N/A </td>";
+					echo "</tr>\n";
 					}	
-		echo "</table><br><hr><br>";
+		echo "</table></div><br><hr><br>";
 		break;
 		case 'glpi_peripherals' :
 		
-		echo " <b><strong>".$lang["reports"][29]."</strong></b>";
-		echo "<table class='tab_cadre_fixe'>";
+		echo " <div align='center'><strong>".$lang["reports"][29]."</strong>";
+		echo "<table class='tab_cadre_report'>";
 		echo "<tr> ";
-		echo "<th><div align='center'><b>".$lang["computers"][7]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["common"][3]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["computers"][10]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["computers"][41]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["computers"][42]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["financial"][6]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["financial"][7]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["search"][9]."</b></div></th>";
+		echo "<th>".$lang["computers"][7]."</th>";
+		echo "<th>".$lang["common"][3]."</th>";
+		echo "<th>".$lang["computers"][10]."</th>";
+		echo "<th>".$lang["computers"][41]."</th>";
+		echo "<th>".$lang["computers"][42]."</th>";
+		echo "<th>".$lang["financial"][6]."</th>";
+		echo "<th>".$lang["financial"][7]."</th>";
+		echo "<th>".$lang["search"][9]."</th>";
 		echo "</tr>";
 		
 		while( $ligne = $db->fetch_array($result))
@@ -262,31 +262,31 @@ switch($item_type)
 					//inserer ces valeures dans un tableau
 					
 					echo "<tr>";	
-						if($name) echo "<td><div align='center'> $name </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($deleted) echo "<td><div align='center'> $deleted </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($lieu) echo "<td><div align='center'> ".getDropdownName("glpi_dropdown_locations",$lieu)." </div></td>"; else echo "<td><div align='center'> N/A </div></td>";	
-						if($achat_date) echo "<td><div align='center'> $achat_date </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($fin_garantie) echo "<td><div align='center'> $fin_garantie </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($contract_type) echo "<td><div align='center'> $contract_type </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($contract_begin) echo "<td><div align='center'> $contract_begin </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($contract_end) echo "<td><div align='center'> $contract_end </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					echo "</tr>";
+						if($name) echo "<td> $name </td>"; else echo "<td> N/A </td>";
+						if($deleted) echo "<td> $deleted </td>"; else echo "<td> N/A </td>";
+						if($lieu) echo "<td> ".getDropdownName("glpi_dropdown_locations",$lieu)." </td>"; else echo "<td> N/A </td>";	
+						if($achat_date) echo "<td> $achat_date </td>"; else echo "<td> N/A </td>";
+						if($fin_garantie) echo "<td> $fin_garantie </td>"; else echo "<td> N/A </td>";
+						if($contract_type) echo "<td> $contract_type </td>"; else echo "<td> N/A </td>";
+						if($contract_begin) echo "<td> $contract_begin </td>"; else echo "<td> N/A </td>";
+						if($contract_end) echo "<td> $contract_end </td>"; else echo "<td> N/A </td>";
+					echo "</tr>\n";
 					}	
-		echo "</table><br><hr><br>";
+		echo "</table></div><br><hr><br>";
 		break;
 		case 'glpi_software' :
 		
-		echo " <b><strong>".$lang["reports"][55]."</strong></b>";
-		echo "<table class='tab_cadre_fixe'>";
+		echo "<div align='center'> <strong>".$lang["reports"][55]."</strong>";
+		echo "<table class='tab_cadre_report'>";
 		echo "<tr> ";
-		echo "<th><div align='center'><b>".$lang["computers"][7]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["common"][3]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["computers"][10]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["computers"][41]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["computers"][42]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["financial"][6]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["financial"][7]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["search"][9]."</b></div></th>";
+		echo "<th>".$lang["computers"][7]."</th>";
+		echo "<th>".$lang["common"][3]."</th>";
+		echo "<th>".$lang["computers"][10]."</th>";
+		echo "<th>".$lang["computers"][41]."</th>";
+		echo "<th>".$lang["computers"][42]."</th>";
+		echo "<th>".$lang["financial"][6]."</th>";
+		echo "<th>".$lang["financial"][7]."</th>";
+		echo "<th>".$lang["search"][9]."</th>";
 		echo "</tr>";
 		
 		while( $ligne = $db->fetch_array($result))
@@ -302,32 +302,32 @@ switch($item_type)
 					//inserer ces valeures dans un tableau
 					
 					echo "<tr>";	
-						if($name) echo "<td><div align='center'> $name </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($deleted) echo "<td><div align='center'> $deleted </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($lieu) echo "<td><div align='center'> ".getDropdownName("glpi_dropdown_locations",$lieu)." </div></td>"; else echo "<td><div align='center'> N/A </div></td>";	
-						if($achat_date) echo "<td><div align='center'> $achat_date </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($fin_garantie) echo "<td><div align='center'> $fin_garantie </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($contract_type) echo "<td><div align='center'> $contract_type </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($contract_begin) echo "<td><div align='center'> $contract_begin </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-						if($contract_end) echo "<td><div align='center'> $contract_end </div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					echo "</tr>";
+						if($name) echo "<td> $name </td>"; else echo "<td> N/A </td>";
+						if($deleted) echo "<td> $deleted </td>"; else echo "<td> N/A </td>";
+						if($lieu) echo "<td> ".getDropdownName("glpi_dropdown_locations",$lieu)." </td>"; else echo "<td> N/A </td>";	
+						if($achat_date) echo "<td> $achat_date </td>"; else echo "<td> N/A </td>";
+						if($fin_garantie) echo "<td> $fin_garantie </td>"; else echo "<td> N/A </td>";
+						if($contract_type) echo "<td> $contract_type </td>"; else echo "<td> N/A </td>";
+						if($contract_begin) echo "<td> $contract_begin </td>"; else echo "<td> N/A </td>";
+						if($contract_end) echo "<td> $contract_end </td>"; else echo "<td> N/A </td>";
+					echo "</tr>\n";
 					}	
-		echo "</table><br><hr><br>";
+		echo "</table></div><br><hr><br>";
 		break;
 		// Rapport réseau par lieu
 		case 'glpi_networking_lieu' :
-		echo "<table class='tab_cadre_fixe'>";
+		echo "<div align='center'><table class='tab_cadre_report'>";
 		echo "<tr> ";
-		echo "<th><div align='center'><b>".$lang["reports"][20]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][37]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][52]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][38]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][46]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][53]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][47]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][38]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][53]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][36]."</b></div></th>";
+		echo "<th>".$lang["reports"][20]."</th>";
+		echo "<th>".$lang["reports"][37]."</th>";
+		echo "<th>".$lang["reports"][52]."</th>";
+		echo "<th>".$lang["reports"][38]."</th>";
+		echo "<th>".$lang["reports"][46]."</th>";
+		echo "<th>".$lang["reports"][53]."</th>";
+		echo "<th>".$lang["reports"][47]."</th>";
+		echo "<th>".$lang["reports"][38]."</th>";
+		echo "<th>".$lang["reports"][53]."</th>";
+		echo "<th>".$lang["reports"][36]."</th>";
 		echo "</tr>";
 		
 		while( $ligne = $db->fetch_array($result))
@@ -369,32 +369,33 @@ switch($item_type)
 					//inserer ces valeures dans un tableau
 					
 					echo "<tr>";	
-					if($lieu) echo "<td><div align='center'>$lieu</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($prise) echo "<td><div align='center'>$prise</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($switch) echo "<td><div align='center'>$switch</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($ip) echo "<td><div align='center'>$ip</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($port) echo "<td><div align='center'>$port</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($mac) echo "<td><div align='center'>$mac</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($portordi) echo "<td><div align='center'>$portordi</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($ip2) echo "<td><div align='center'>$ip2</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($mac2) echo "<td><div align='center'>$mac2</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($ordi) echo "<td><div align='center'>$ordi</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($lieu) echo "<td>$lieu</td>"; else echo "<td> N/A </td>";
+					if($prise) echo "<td>$prise</td>"; else echo "<td> N/A </td>";
+					if($switch) echo "<td>$switch</td>"; else echo "<td> N/A </td>";
+					if($ip) echo "<td>$ip</td>"; else echo "<td> N/A </td>";
+					if($port) echo "<td>$port</td>"; else echo "<td> N/A </td>";
+					if($mac) echo "<td>$mac</td>"; else echo "<td> N/A </td>";
+					if($portordi) echo "<td>$portordi</td>"; else echo "<td> N/A </td>";
+					if($ip2) echo "<td>$ip2</td>"; else echo "<td> N/A </td>";
+					if($mac2) echo "<td>$mac2</td>"; else echo "<td> N/A </td>";
+					if($ordi) echo "<td>$ordi</td>"; else echo "<td> N/A </td>";
+					echo "</tr>\n";
 					}	
-		echo "</table><br><hr><br>";
+		echo "</table></div><br><hr><br>";
 		break;
 	//rapport reseau par switch	
 	case 'glpi_networking_switch' :
-		echo "<table class='tab_cadre_fixe'>";
+		echo "<div align='center'><table class='tab_cadre_report'>";
 		echo "<tr> ";
-		echo "<th><div align='center'>&nbsp;</div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][46]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][38]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][53]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][47]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][38]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][53]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][36]."</b></div></th>";
-		echo "</tr>";
+		echo "<th>&nbsp;</th>";
+		echo "<th>".$lang["reports"][46]."</th>";
+		echo "<th>".$lang["reports"][38]."</th>";
+		echo "<th>".$lang["reports"][53]."</th>";
+		echo "<th>".$lang["reports"][47]."</th>";
+		echo "<th>".$lang["reports"][38]."</th>";
+		echo "<th>".$lang["reports"][53]."</th>";
+		echo "<th>".$lang["reports"][36]."</th>";
+		echo "</tr>\n";
 		
 		while( $ligne = $db->fetch_array($result))
 					{
@@ -425,31 +426,32 @@ switch($item_type)
 					//inserer ces valeures dans un tableau
 					
 					echo "<tr>";	
-					if($switch) echo "<td><div align='center'>$switch</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($port) echo "<td><div align='center'>$port</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($ip) echo "<td><div align='center'>$ip</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($mac) echo "<td><div align='center'>$mac</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($portordi) echo "<td><div align='center'>$portordi</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($ip2) echo "<td><div align='center'>$ip2</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($mac2) echo "<td><div align='center'>$mac2</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($ordi) echo "<td><div align='center'>$ordi</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($switch) echo "<td>$switch</td>"; else echo "<td> N/A </td>";
+					if($port) echo "<td>$port</td>"; else echo "<td> N/A </td>";
+					if($ip) echo "<td>$ip</td>"; else echo "<td> N/A </td>";
+					if($mac) echo "<td>$mac</td>"; else echo "<td> N/A </td>";
+					if($portordi) echo "<td>$portordi</td>"; else echo "<td> N/A </td>";
+					if($ip2) echo "<td>$ip2</td>"; else echo "<td> N/A </td>";
+					if($mac2) echo "<td>$mac2</td>"; else echo "<td> N/A </td>";
+					if($ordi) echo "<td>$ordi</td>"; else echo "<td> N/A </td>";
+					echo "</tr>\n";
 					}	
-		echo "</table><br><hr><br>";
+		echo "</table></div><br><hr><br>";
 		break;
 		
 		//rapport reseau par prise
 		case 'glpi_networking_prise' :
-		echo "<table class='tab_cadre_fixe'>";
+		echo "<div align='center'><table class='tab_cadre_report'>";
 		echo "<tr> ";
-		echo "<th><div align='center'><b>".$lang["reports"][20]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][52]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][38]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][46]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][53]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][47]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][38]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][53]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["reports"][36]."</b></div></th>";
+		echo "<th>".$lang["reports"][20]."</th>";
+		echo "<th>".$lang["reports"][52]."</th>";
+		echo "<th>".$lang["reports"][38]."</th>";
+		echo "<th>".$lang["reports"][46]."</th>";
+		echo "<th>".$lang["reports"][53]."</th>";
+		echo "<th>".$lang["reports"][47]."</th>";
+		echo "<th>".$lang["reports"][38]."</th>";
+		echo "<th>".$lang["reports"][53]."</th>";
+		echo "<th>".$lang["reports"][36]."</th>";
 		echo "</tr>";
 		
 		while( $ligne = $db->fetch_array($result))
@@ -490,17 +492,18 @@ switch($item_type)
 					//inserer ces valeures dans un tableau
 					
 					echo "<tr>";
-					if($lieu) echo "<td><div align='center'>$lieu</div></td>"; else echo "<td><div align='center'> N/A </div></td>";	
-					if($switch) echo "<td><div align='center'>$switch</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($ip) echo "<td><div align='center'>$ip</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($port) echo "<td><div align='center'>$port</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($mac) echo "<td><div align='center'>$mac</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($portordi) echo "<td><div align='center'>$portordi</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($ip2) echo "<td><div align='center'>$ip2</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($mac2) echo "<td><div align='center'>$mac2</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
-					if($ordi) echo "<td><div align='center'>$ordi</div></td>"; else echo "<td><div align='center'> N/A </div></td>";
+					if($lieu) echo "<td>$lieu</td>"; else echo "<td> N/A </td>";	
+					if($switch) echo "<td>$switch</td>"; else echo "<td> N/A </td>";
+					if($ip) echo "<td>$ip</td>"; else echo "<td> N/A </td>";
+					if($port) echo "<td>$port</td>"; else echo "<td> N/A </td>";
+					if($mac) echo "<td>$mac</td>"; else echo "<td> N/A </td>";
+					if($portordi) echo "<td>$portordi</td>"; else echo "<td> N/A </td>";
+					if($ip2) echo "<td>$ip2</td>"; else echo "<td> N/A </td>";
+					if($mac2) echo "<td>$mac2</td>"; else echo "<td> N/A </td>";
+					if($ordi) echo "<td>$ordi</td>"; else echo "<td> N/A </td>";
+					echo "</tr>\n";
 					}	
-		echo "</table><br><hr><br>";
+		echo "</table></div><br><hr><br>";
 		break;	
 		
 	}	

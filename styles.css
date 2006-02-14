@@ -131,6 +131,11 @@ select { font-size: 11px;
 }
 
 
+textarea, input {
+background-color:#FAFAFA;
+
+}
+
 input.submit {
 	border:1px solid #009966;
 	background-color:#eeeeee;
@@ -203,7 +208,7 @@ td { }
 	width: 80%;
 }
 
-.tab_cadre th, .tab_cadre_fixe th, .tab_cadrehov th, .tab_cadrehov_pointer th {
+.tab_cadre th, .tab_cadre_fixe th, .tab_cadrehov th, .tab_cadrehov_pointer th , .tab_cadre_report th{
 	font-size: 12px;
 	font-weight: bold;
 	background-color: #fccc6f;
@@ -227,7 +232,19 @@ td { }
 	cursor: pointer;
 }
 
+.tab_cadre_report {
 
+-moz-border-radius: 4px;
+	border: 1px solid #cccccc;
+	z-index:1;
+	text-align: left;
+	font-size: 11px;
+	text-align: center;
+	width:80%;
+}
+}
+
+/********************* Pager ******************/
 
 .tab_cadre_pager{
 	text-align:center;
