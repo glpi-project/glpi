@@ -1558,7 +1558,10 @@ $lang["tracking"][26]="Vous n'êtes pas autorisé à modifier le matériel affec
 $lang["tracking"][27]="Vous n'êtes pas autorisé à modifier l'auteur de ce ticket";
 $lang["tracking"][28]="Tickets";
 $lang["tracking"][29]="Nombre";
-
+$lang["tracking"][30]="Nouveaux";
+$lang["tracking"][31]="En cours (attribués)";
+$lang["tracking"][32]="En cours (planifiés)";
+$lang["tracking"][33]="En attente";
 
 $lang["update"][90]="Erreur durant la mise  à jour de la base de données";
 $lang["update"][91]="Attention !  ";
