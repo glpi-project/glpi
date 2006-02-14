@@ -59,6 +59,12 @@ commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 if(isset($_GET)) $tab = $_GET;
 //if(empty($tab) && isset($_POST)) $tab = $_POST;
 
+
+if (isset($tab['reset'])&&$tab['reset']=="reset_before") {
+	unset($_SESSION['tracking']);
+	unset($tab['reset']);
+}
+
 if (!isset($tab['reset'])){
 	if (is_array($tab))
 	foreach ($tab as $key => $val)
