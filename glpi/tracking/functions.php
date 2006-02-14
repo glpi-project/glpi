@@ -182,7 +182,7 @@ function showCentralJobList($target,$start) {
 	else
 	{
 		echo "<br><div align='center'>";
-		echo "<table class='tab_cadre_fixe'>";
+		echo "<table class='tab_cadre'>";
 		echo "<tr><th>".$lang["joblist"][8]."</th></tr>";
 
 		echo "</table>";
@@ -1118,7 +1118,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 		// Delete selected item
 			if ($isadmin){
 				echo "<br><div align='center'>";
-				echo "<table cellpadding='5' width='90%'>";
+				echo "<table cellpadding='5' width='80%'>";
 				echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=all&amp;start=$start'>".$lang["buttons"][18]."</a></td>";
 			
 				echo "<td>/</td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=none&amp;start=$start'>".$lang["buttons"][19]."</a>";
