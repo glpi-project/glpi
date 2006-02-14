@@ -165,9 +165,9 @@ function showCentralJobList($target,$start) {
 
 	if ($number > 0) {
 
-		echo "<div align='center'><br><table class='tab_cadrehov'>";
+		echo "<table class='tab_cadrehov'>";
 		
-		echo "<tr><th colspan='5'><b><a href=\"".$cfg_install["root"]."/tracking/index.php?assign=".$_SESSION["glpiID"]."&amp;status=process\">".$lang["central"][9]."</a></b></th>";
+		echo "<tr><th colspan='5'><b><a href=\"".$cfg_install["root"]."/tracking/index.php?assign=".$_SESSION["glpiID"]."&amp;status=process\">".$lang["central"][9]."</a></b></th></tr>";
 		echo "<tr><th></th>";
 		echo "<th>".$lang["joblist"][3]."</th>";
 		echo "<th>".$lang["tracking"][20]."</th>";
@@ -177,7 +177,7 @@ function showCentralJobList($target,$start) {
 			showJobVeryShort($ID);
 			$i++;
 		}
-		echo "</table></div>";
+		echo "</table>";
 	}
 	else
 	{
@@ -485,7 +485,7 @@ function showJobVeryShort($ID) {
 		}
 
 	
-		echo "<td align='center'  >";
+		echo "<td align='center'>";
 
 		if ($ispostonly)
 		echo "<strong>".$job->getAuthorName(1)."</strong>";
@@ -517,7 +517,7 @@ function showJobVeryShort($ID) {
 		echo "</td>";
 
 		// Job Controls
-		echo "<td width='40' align='center' >";
+		echo "<td width='40' align='center'>";
 		
 		if ($ispostonly)
 		echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-info-form.php?ID=$job->ID\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
