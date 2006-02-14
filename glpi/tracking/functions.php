@@ -191,12 +191,10 @@ function showCentralJobList($target,$start) {
 }
 
 function showCentralJobCount(){
-	
+// show a tab with count of jobs in the central and give link	
 
 	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
 		
-		
-	//$query = "SELECT ID FROM glpi_tracking WHERE (assign = '".$_SESSION["glpiID"]."') AND (status ='plan' OR status = 'assign') ";
 	
 	$query="SELECT status, COUNT(*) AS COUNT FROM glpi_tracking GROUP BY status";
 	
@@ -215,8 +213,8 @@ function showCentralJobCount(){
 
 	echo "<br><div align='center'><table class='tab_cadrehov' style='text-align:center'>";
 	
-	echo "<tr><th colspan='2'><b><a href=\"".$cfg_install["root"]."/tracking/index.php?status=process&reset=reset_before\">A suivre</a></b></th></tr>";
-	echo "<tr><th ><b>Tickets</b></th><th>Nb</th></tr>";
+	echo "<tr><th colspan='2'><b><a href=\"".$cfg_install["root"]."/tracking/index.php?status=process&reset=reset_before\">".$lang["tracking"][0]."</a></b></th></tr>";
+	echo "<tr><th ><b>".$lang["tracking"][28]."</b></th><th>".$lang["tracking"][29]."</th></tr>";
 	echo "<tr class='tab_bg_2'>";
 	echo "<td><a href=\"".$cfg_install["root"]."/tracking/index.php?status=new&reset=reset_before\">Tickets nouveaux</a> </td>";
 	echo "<td>".$status["new"]."</td></tr>";
