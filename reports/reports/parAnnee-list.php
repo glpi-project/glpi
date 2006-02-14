@@ -52,7 +52,7 @@ $db = new DB;
 
 
 # Titre
-echo "<big><b><strong>".$lang["reports"][57]."</strong></b></big><br><br>";
+echo "<div align='center'><big><strong>".$lang["reports"][57]."</strong></big><br><br>";
 
 # Construction  la requete, et appel de la fonction affichant les valeurs.
 if(isset($_POST["item_type"][0])&&$_POST["item_type"][0] != '0')
@@ -105,5 +105,6 @@ else
 		report_perso($item_db_name[$key],$query[$key]);
 		 }		
 }
+echo "</div>";
 commonFooter();
 ?>
