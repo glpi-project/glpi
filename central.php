@@ -70,7 +70,7 @@ checkNewVersionAvailable();
 
 if (!isset($_GET['start'])) $_GET['start']=0;
 
-echo "<div align='center'>";
+echo "<br><br><div align='center'>";
 echo "<table><tr><td align='center' valign='top'  width='450'>";
 
 showCentralJobList($_SERVER["PHP_SELF"],$_GET['start']);
@@ -88,7 +88,7 @@ echo "<tr>";
 	echo "</td>";
 echo "<td  align='center' valign='top' width='450'>";
 	// nothing for the moment
-
+showCentralJobCount();
 
 echo "</td></tr>";
 }

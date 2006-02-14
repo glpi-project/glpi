@@ -160,7 +160,7 @@ function showHistory($device_type,$id_device){
 	echo "<tr><th colspan='5'>".$lang["title"][38]."</th></tr>";
 	echo "<tr><th>".$lang["event"][16]."</th><th>".$lang["event"][1]."</th><th>".$lang["event"][17]."</th><th>".$lang["event"][18]."</th><th>".$lang["event"][19]."</th></tr>";
 	while ($data =$db->fetch_array($result)){ 
-			$ID = $ID=$data["ID"];
+			$ID = $data["ID"];
 			$date_mod = $date_mod=convDateTime($data["date_mod"]);
 			$user_name = $data["user_name"];
 			

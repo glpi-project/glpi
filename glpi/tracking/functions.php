@@ -190,6 +190,54 @@ function showCentralJobList($target,$start) {
 	}
 }
 
+function showCentralJobCount(){
+	
+
+	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
+		
+		
+	//$query = "SELECT ID FROM glpi_tracking WHERE (assign = '".$_SESSION["glpiID"]."') AND (status ='plan' OR status = 'assign') ";
+	
+	$query="SELECT status, COUNT(*) AS COUNT FROM glpi_tracking GROUP BY status";
+	
+
+	$db = new DB;
+	$result = $db->query($query);
+	
+	
+	$status=array("new"=>0, "assign"=>0, "plan"=>0, "waiting"=>0);
+
+	if ($db->numrows($result)>0)
+	while ($data=$db->fetch_assoc($result)){
+
+ 	$status[$data["status"]]=$data["COUNT"];
+ 	}
+
+	echo "<br><div align='center'><table class='tab_cadrehov' style='text-align:center'>";
+	
+	echo "<tr><th colspan='2'><b><a href=\"".$cfg_install["root"]."/tracking/index.php?status=process&reset=reset_before\">A suivre</a></b></th></tr>";
+	echo "<tr><th ><b>Tickets</b></th><th>Nb</th></tr>";
+	echo "<tr class='tab_bg_2'>";
+	echo "<td><a href=\"".$cfg_install["root"]."/tracking/index.php?status=new&reset=reset_before\">Tickets nouveaux</a> </td>";
+	echo "<td>".$status["new"]."</td></tr>";
+	echo "<tr class='tab_bg_2'>";
+	echo "<td><a href=\"".$cfg_install["root"]."/tracking/index.php?status=assign&reset=reset_before\">Tickets Attribués </a></td>";
+	echo "<td>".$status["assign"]."</td></tr>";
+	echo "<tr class='tab_bg_2'>";
+	echo "<td><a href=\"".$cfg_install["root"]."/tracking/index.php?status=plan&reset=reset_before\">Tickets planifiés</a></td>";
+	echo "<td>".$status["plan"]."</td></tr>";
+	echo "<tr class='tab_bg_2'>";
+	echo "<td><a href=\"".$cfg_install["root"]."/tracking/index.php?status=waiting&reset=reset_before\">Tickets en attente</a></td>";
+	echo "<td>".$status["waiting"]."</td></tr>";
+
+	
+	echo "</table></div>";
+
+	
+}
+
+
+
 
 function showOldJobListForItem($username,$item_type,$item) {
 	// $item is required
@@ -1140,7 +1188,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 
 		} else {
 			echo "<div align='center'><strong>".$lang["joblist"][8]."</strong></div>";
-			echo "<hr noshade>";
+			
 		}
 	}
 }
