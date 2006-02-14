@@ -208,7 +208,7 @@ td { }
 	width: 80%;
 }
 
-.tab_cadre th, .tab_cadre_fixe th, .tab_cadrehov th, .tab_cadrehov_pointer th , .tab_cadre_report th{
+.tab_cadre th, .tab_cadre_fixe th, .tab_cadrehov th, .tab_cadrehov_pointer th , .tab_cadre_report th {
 	font-size: 12px;
 	font-weight: bold;
 	background-color: #fccc6f;
@@ -242,9 +242,9 @@ td { }
 	text-align: center;
 	width:80%;
 }
-}
 
-/********************* Pager ******************/
+
+/* ******************** Pager ***************** */
 
 .tab_cadre_pager{
 	text-align:center;
