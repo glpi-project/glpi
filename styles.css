@@ -148,7 +148,7 @@ input.submit {
 	}
 	
 input.submit:hover {
-	border: 1px solid #888888;
+	border: 1px inset #888888;
 	background-color:#ffffff;
 	background:  url("pics/fond_form_on.png") repeat-x; 
 	}
@@ -161,7 +161,7 @@ input.submit:hover {
 	}
 
 .button:hover{
-	border: 1px solid #888888;
+	border: 1px inset #888888;
 	background-color:#ffffff;
 	background:  url("pics/fond_form_on.png") repeat-x; 
 	}
@@ -175,7 +175,7 @@ input.submit:hover {
 	}
 	
 .calendrier:hover{
-	border: 1px solid #888888;
+	border: 1px inset #888888;
 	background-color:#ffffff;
 	cursor:pointer;
 	}
@@ -697,7 +697,7 @@ ul.autocomp   li.selected { background-color: #FFF6CF; }
 	padding: 4px;
 	padding-right: 8px;
 	margin: 1px;
-	border: 1px solid #999999;
+	border: 1px inset #888888;
 	background-color: white;
 	background:  url("pics/fond_ico_cons_on.png") repeat-x; 
 	-moz-border-radius: 5px;
