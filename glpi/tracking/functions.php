@@ -1440,7 +1440,7 @@ function updateTracking($input){
 	}
 	if (in_array("priority",$updates)){
 		$new_priority=$job->fields["priority"];
-		$change_followup_content.=$lang["mailing"][14].": ".getPriorityName($old_priority)." -> ".getPriorityName($new_priority)."\n";
+		$change_followup_content.=$lang["mailing"][15].": ".getPriorityName($old_priority)." -> ".getPriorityName($new_priority)."\n";
 		$global_mail_change_count++;		
 	}
 	if (in_array("status",$updates)){
