@@ -44,7 +44,7 @@ checkAuthentication("normal");
 
 commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
 
-echo "<div align ='center'><p><b><span class='icon_nav'>".$lang["stats"][18]."</span></b></p></div>";
+echo "<div align ='center'><p><b><span class='icon_sous_nav'>".$lang["stats"][18]."</span></b></p></div>";
 
 if (isset($_GET["date1"])) $_POST["date1"] = $_GET["date1"];
 if (isset($_GET["date2"])) $_POST["date2"] = $_GET["date2"];

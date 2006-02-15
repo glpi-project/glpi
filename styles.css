@@ -128,46 +128,56 @@ option {border:1px solid #ccc;
 .submit { text-align:center;}
 
 select { font-size: 11px;
+border: 1px solid #888888;
+
 }
 
 
 textarea, input {
 background-color:#FAFAFA;
-
+border: 1px solid #888888;
+font-size: 11px;
 }
 
 input.submit {
-	border:1px solid #009966;
+	font-size: 11px;
+	border: 1px solid #888888;
 	background-color:#eeeeee;
 	cursor:pointer;
+	background:  url("pics/fond_form.png") repeat-x; 
 	}
 	
 input.submit:hover {
-	border:1px solid #009966;
+	border: 1px solid #888888;
 	background-color:#ffffff;
+	background:  url("pics/fond_form_on.png") repeat-x; 
 	}
 
 .button {
-	border:1px solid #009966;
+	border: 1px solid #888888;
 	background-color:#eeeeee;
 	cursor:pointer;
+	background:  url("pics/fond_form.png") repeat-x; 
 	}
 
 .button:hover{
-	border:1px solid #009966;
+	border: 1px solid #888888;
 	background-color:#ffffff;
+	background:  url("pics/fond_form_on.png") repeat-x; 
 	}
 
 
 .calendrier{
-	border:1px solid #009966;
+	border: 1px solid #888888;
 	background-color:#eeeeee;
 	vertical-align:middle;
+	background:  url("pics/fond_ico_sous_nav.png") repeat-x; 
 	}
 	
 .calendrier:hover{
-	border:1px solid #009966;
+	border: 1px solid #888888;
 	background-color:#ffffff;
+	
 	}
 
 
@@ -213,6 +223,8 @@ td { }
 	font-weight: bold;
 	background-color: #fccc6f;
 	text-align: center;
+	background:  url("pics/fond_th.png") repeat-x; 
+	border-bottom:1px solid #cccccc;
 }
 
 
@@ -270,7 +282,7 @@ td { }
 	font-weight: bold;
 	background-color: #fccc6f;
 	text-align: center;
-
+	background:  url("pics/fond_th.png") repeat-x; 
 }
 
 
@@ -586,6 +598,23 @@ a.icon_logo:hover img {
 	-moz-border-radius: 5px;
 	font-size : 12px;
 	font-weight: bold;
+	
+}
+
+
+.icon_sous_nav {
+padding: 4px;
+	margin: 1px;
+	border: 1px solid #aaaaaa;
+	background-color: #ffffff;
+	-moz-border-radius: 5px;
+	font-size : 12px;
+	font-weight: bold;
+	background:  url("pics/fond_ico_sous_nav.png") repeat-x; 
+
+
+
+
 }
 
 
@@ -655,6 +684,7 @@ ul.autocomp   li.selected { background-color: #FFF6CF; }
 	margin: 1px;
 	border: 1px solid #aaaaaa;
 	background-color: #e4e4e4;
+	background:  url("pics/fond_ico_cons.png") repeat-x; 
 	-moz-border-radius: 5px;
 
 }
@@ -669,6 +699,7 @@ ul.autocomp   li.selected { background-color: #FFF6CF; }
 	margin: 1px;
 	border: 1px solid #999999;
 	background-color: white;
+	background:  url("pics/fond_ico_cons_on.png") repeat-x; 
 	-moz-border-radius: 5px;
 }
 
@@ -727,7 +758,7 @@ ul#onglet {
 	border-bottom: 1px solid #ffffff;
 	margin: 0;
 	padding-left:0;
-
+	
 }
 
 ul#onglet li {
@@ -738,7 +769,8 @@ ul#onglet li {
 	margin: 2px 2px 0 2px;
 	border: 1px solid #009966;
 	border-bottom: 1px solid #fff;
-	-moz-border-radius: 4px;	
+	-moz-border-radius: 4px;
+	background:  url("pics/fond_test6.png") repeat-x; 	
 }
 
 ul#onglet li.actif {
@@ -751,6 +783,7 @@ ul#onglet li.invisible {
 	border: 1px solid #fff;
 	background-color: #ffffff;
 	width: 20px;
+	background:  transparent; 
 }
 
 ul#onglet li.actif a {

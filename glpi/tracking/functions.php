@@ -44,7 +44,7 @@ function titleTracking(){
            GLOBAL  $lang,$HTMLRel;
 	// titre
         echo "<div align='center'><table border='0'><tr><td>\n";
-        echo "<img src=\"".$HTMLRel."pics/suivi-intervention.png\" alt=''></td><td><span class='icon_nav'>".$lang["tracking"][0]."</span>\n";
+        echo "<img src=\"".$HTMLRel."pics/suivi-intervention.png\" alt=''></td><td><span class='icon_sous_nav'>".$lang["tracking"][0]."</span>\n";
         echo "</td></tr></table>&nbsp;</div>\n";
 
 }
