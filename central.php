@@ -80,21 +80,23 @@ ShowPlanningCentral($_SESSION["glpiID"]);
 echo "</td></tr>";
 
 echo "<tr>";
-if ($cfg_features["num_of_events"]>0){
+
 echo "<tr>";
-	echo "<td  align='center' valign='top' width='450'>";
-	// Show last add events
-	showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
-	echo "</td>";
+	if ($cfg_features["num_of_events"]>0){
+	
+		echo "<td  align='center' valign='top' width='450'>";
+		// Show last add events
+		showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
+		echo "</td>";
+	}
+	else {echo "<td  align='center' valign='top' width='450'>&nbsp;</td>";}
+
 echo "<td  align='center' valign='top' width='450'>";
-	// nothing for the moment
+	// Show Job count with links
 showCentralJobCount();
 
-echo "</td></tr>";
-}
-
-
-
+echo "</td>";
+echo "</tr>";
 
 echo "</table>";
 echo "</div>";
