@@ -177,7 +177,7 @@ input.submit:hover {
 .calendrier:hover{
 	border: 1px solid #888888;
 	background-color:#ffffff;
-	
+	cursor:pointer;
 	}
 
 
