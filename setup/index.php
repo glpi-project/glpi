@@ -48,7 +48,7 @@ commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 
  // titre
         echo "<div align='center'><table border='0'><tr><td>";
-        echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='".$lang["Menu"][10]."' title='".$lang["Menu"][10]."' ></td><td><span class='icon_nav'><b>".$lang["Menu"][10]."</b></span>";
+        echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='".$lang["Menu"][10]."' title='".$lang["Menu"][10]."' ></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][10]."</b></span>";
 
         echo "</td></tr></table></div>";
 

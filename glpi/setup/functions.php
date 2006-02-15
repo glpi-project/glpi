@@ -911,7 +911,7 @@ function titleConfigGen(){
 GLOBAL  $lang,$HTMLRel;
 
                 echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_nav'>".$lang["setup"][100]."</span>";
+                echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["setup"][100]."</span>";
 		 echo "</b></td></tr></table>&nbsp;</div>";
 
 
@@ -922,7 +922,7 @@ function titleConfigDisplay(){
 GLOBAL  $lang,$HTMLRel;
 
                 echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_nav'>".$lang["setup"][119]."</span>";
+                echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["setup"][119]."</span>";
 		 echo "</b></td></tr></table>&nbsp;</div>";
 
 
@@ -1115,7 +1115,7 @@ function titleExtSources(){
 		
 		GLOBAL  $lang,$HTMLRel;
                 echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/authentification.png\" alt='' title=''></td><td><span class='icon_nav'>".$lang["setup"][150]."</span>";
+                echo "<img src=\"".$HTMLRel."pics/authentification.png\" alt='' title=''></td><td><span class='icon_sous_nav'>".$lang["setup"][150]."</span>";
 		 echo "</td></tr></table>&nbsp;</div>";
 
 }
@@ -1297,7 +1297,7 @@ function titleMailing(){
 		
 		GLOBAL  $lang,$HTMLRel;
                 echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/mail.png\" alt='' title=''></td><td><span class='icon_nav'>".$lang["setup"][200]."</span>";
+                echo "<img src=\"".$HTMLRel."pics/mail.png\" alt='' title=''></td><td><span class='icon_sous_nav'>".$lang["setup"][200]."</span>";
 		 echo "</td></tr></table></div>";
 }
 

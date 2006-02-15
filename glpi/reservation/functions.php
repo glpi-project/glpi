@@ -51,7 +51,7 @@ function titleReservation(){
               
 	     
 	     echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_nav'>".$lang["reservation"][1]."</span>";
+                echo "<img src=\"".$HTMLRel."pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["reservation"][1]."</span>";
 		 echo "</b></td></tr></table>&nbsp;</div>";
 	   
 	   
@@ -335,7 +335,7 @@ if (!empty($ID)){
 
 
 echo "<div align='center'><table border='0'><tr><td>";
-echo "<img src=\"".$HTMLRel."pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_nav'>".$type." - ".$name."</span>";
+echo "<img src=\"".$HTMLRel."pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$type." - ".$name."</span>";
 echo "</b></td></tr><tr><td colspan='2' align ='center'>$all</td></tr></table></div>";
 
 
