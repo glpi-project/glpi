@@ -199,8 +199,8 @@ function showUserform($target,$name) {
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][400]."</td><td>";
 	echo "<select name='active'>";
-	echo "<option value='1' ".($user->fields["active"]?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='0' ".(!$user->fields["active"]?" selected ":"").">".$lang["choice"][1]."</option>";
+	echo "<option value='1' ".(empty($user->fields["active"])||$user->fields["active"]?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".(!empty($user->fields["active"])&&!$user->fields["active"]?" selected ":"").">".$lang["choice"][1]."</option>";
 	
 	echo "</select>";
 	echo "</td></tr>";
