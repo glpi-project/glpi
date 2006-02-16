@@ -63,7 +63,7 @@ if (isset($_GET['redirect'])){
 
 // Greet the user
 
-echo "<div align='center'><b>".$lang["central"][0]." ".(empty($_SESSION["glpirealname"])?$_SESSION["glpiname"]:$_SESSION["glpirealname"]).", ".$lang["central"][1]."</b></div>";
+echo "<br><div align='center' ><b><span class='icon_sous_nav'>".$lang["central"][0]." ".(empty($_SESSION["glpirealname"])?$_SESSION["glpiname"]:$_SESSION["glpirealname"]).", ".$lang["central"][1]."</span></b></div>";
 //echo "<hr noshade>";
 
 checkNewVersionAvailable();
