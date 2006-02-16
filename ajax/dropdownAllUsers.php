@@ -80,8 +80,7 @@
 			
 			if (!empty($data["realname"])) $output = $data["realname"];
 			else $output = $data["name"];
-			$ID = $db->result($result, $i, "ID");
-			echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
+			echo "<option value=\"".$data["ID"]."\" title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
    		}
 	}
 	echo "</select>";
