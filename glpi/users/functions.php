@@ -198,9 +198,11 @@ function showUserform($target,$name) {
 	dropdownValue("glpi_dropdown_locations", "location", $user->fields["location"]);
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][400]."</td><td>";
+	$active=0;
+	if ($user->fields["active"]==""||$user->fields["active"]) $active=1;
 	echo "<select name='active'>";
-	echo "<option value='1' ".(empty($user->fields["active"])||$user->fields["active"]?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='0' ".(!empty($user->fields["active"])&&!$user->fields["active"]?" selected ":"").">".$lang["choice"][1]."</option>";
+	echo "<option value='1' ".($active?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".(!$active?" selected ":"").">".$lang["choice"][1]."</option>";
 	
 	echo "</select>";
 	echo "</td></tr>";
