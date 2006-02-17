@@ -92,7 +92,7 @@ return $out;
 *@return string to display
 *
 **/
-function displaySearchItem($type,$value,&$num,$row,$deleted=0){
+function displaySearchItem($type,$value,&$num,$row,$deleted=0,$extraparam=''){
 	$out="";
 	switch ($type){
 		case 2 : //pdf
@@ -105,9 +105,9 @@ function displaySearchItem($type,$value,&$num,$row,$deleted=0){
 			$out.= "C;N;K\"".sylk_clean($value)."\"\n"; 
 			break;
 		default :
-			$class=" class='tab_bg_2' ";
+			$class="";
 			if ($deleted) $class=" class='tab_bg_2_2' ";
-			$out="<td $class>".$value."</td>\n";
+			$out="<td $class $extraparam>".$value."</td>\n";
 			break;
 	}
 $num++;
@@ -339,14 +339,32 @@ return $value;
 *
 **/
 function html_clean($value){
-	$value=preg_replace('/<a[^>]+>/',' ',$value);
-	$value=preg_replace('/<img[^>]+>/',' ',$value);
-	$value=preg_replace('/<\/a>/',' ',$value);
-	$value=preg_replace('/<strong>/',' ',$value);
-	$value=preg_replace('/<\/strong>/',' ',$value);
-	$value=preg_replace('/<br>/',", ",$value);
-	$value=preg_replace("/^&nbsp;;$/","",$value);
-	$value=preg_replace("/^&nbsp;$/","",$value);
+
+$search=array(
+	"/<a[^>]+>/",
+	"/<img[^>]+>/",
+	"/<\/a>/",
+	"/<strong>/",
+	"/<\/strong>/",
+	"/<small>/",
+	"/<\/small>/",
+	"/<br>/",
+	"/&nbsp;;/",
+	"/&nbsp;/",
+	);
+$replace=array(
+	" ",
+	" ",
+	" ",
+	" ",
+	" ",
+	" ",
+	" ",
+	", ",
+	" ",
+	" ",
+);
+	$value=preg_replace($search,$replace,$value);
  return trim($value);
 }
 /*

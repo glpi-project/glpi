@@ -105,13 +105,27 @@ function showTrackingOnglets($target){
 
 
 
-function commonTrackingListHeader(){
-global $lang;
-		echo "<tr><th>".$lang["joblist"][0]."</th><th>".$lang["joblist"][1]."</th>";
-		echo "<th>".$lang["joblist"][2]."</th><th>".$lang["joblist"][3]."</th>";
-		echo "<th>".$lang["joblist"][4]."</th><th>".$lang["common"][1]."</th>";
-		echo "<th>".$lang["tracking"][20]."</th>";
-		echo "<th colspan='2'>".$lang["joblist"][6]."</th></tr>";
+function commonTrackingListHeader($output_type=0){
+	global $lang,$cfg_features;
+
+	// New Line for Header Items Line
+	echo displaySearchNewLine($output_type);
+		
+	$header_num=1;
+	$order="ASC";
+	
+	echo displaySearchHeaderItem($output_type,$lang["joblist"][0],$header_num,"",0,$order);
+	echo displaySearchHeaderItem($output_type,$lang["joblist"][1],$header_num,"",0,$order);
+	echo displaySearchHeaderItem($output_type,$lang["joblist"][2],$header_num,"",0,$order);
+	echo displaySearchHeaderItem($output_type,$lang["joblist"][3],$header_num,"",0,$order);
+	echo displaySearchHeaderItem($output_type,$lang["joblist"][4],$header_num,"",0,$order);
+	echo displaySearchHeaderItem($output_type,$lang["common"][1],$header_num,"",0,$order);
+	echo displaySearchHeaderItem($output_type,$lang["tracking"][20],$header_num,"",0,$order);
+	echo displaySearchHeaderItem($output_type,$lang["joblist"][6],$header_num,"",0,$order);
+	echo displaySearchHeaderItem($output_type,"",$header_num,"",0,$order);
+		
+	// End Line for column headers		
+	echo displaySearchEndLine($output_type);
 }
 
 function getTrackingPrefs ($ID) {
@@ -378,7 +392,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and 
 }
 
 
-function showJobShort($ID, $followups) {
+function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 	// Prints a job in short form
 	// Should be called in a <table>-segment
 	// Print links or not in case of user view
@@ -393,108 +407,128 @@ function showJobShort($ID, $followups) {
 	if ($followups) $valign=" valign='top' ";
 	if ($job->getfromDB($ID,0))
 	{
+		$item_num=1;
 		$bgcolor=$cfg_layout["priority_".$job->fields["priority"]];
 
-		echo "<tr class='tab_bg_2'>";
-		echo "<td align='center' $valign>ID: ".$job->ID."<br>";
-		echo "<img src=\"".$HTMLRel."pics/".$job->fields["status"].".png\" alt='".getStatusName($job->fields["status"])."' title='".getStatusName($job->fields["status"])."'>";
+		echo displaySearchNewLine($output_type);
+
+		// First column
+		$first_col= "ID: ".$job->ID;
+		if ($output_type==0)
+		$first_col.="<br><img src=\"".$HTMLRel."pics/".$job->fields["status"].".png\" alt='".getStatusName($job->fields["status"])."' title='".getStatusName($job->fields["status"])."'>";
+
+		if ($isadmin&&$output_type==0){
+			$sel="";
+			if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
+			$first_col.="<br><input type='checkbox' name='todel[".$job->ID."]' value='1' $sel>";
+		}
+
+		echo displaySearchItem($output_type,$first_col,$item_num,$row_num,0,$valign);
+		
+		// Second column
+		$second_col="";	
 		if (!ereg("old_",$job->fields["status"]))
 		{
-			echo "<td width='100' $valign ><small>".$lang["joblist"][11].":<br>&nbsp;".convDateTime($job->fields["date"])."</small></td>";
-
+			$second_col.="<small>".$lang["joblist"][11].":<br>&nbsp;".convDateTime($job->fields["date"])."</small>";
 		}
 		else
 		{
-			if ($isadmin){
-				$sel="";
-				if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-			echo "<br><input type='checkbox' name='todel[".$job->ID."]' value='1' $sel>";
-			//echo "<img src=\"".$HTMLRel."pics/delete2.png\">";
-			}
-			echo "</td>";
-			echo "<td width='130' $valign><small>".$lang["joblist"][11].":<br>&nbsp;".convDateTime($job->fields["date"])."<br>";
-			echo "<i>".$lang["joblist"][12].":<br>&nbsp;".convDateTime($job->fields["closedate"])."</i>";
-			if ($job->fields["realtime"]>0) echo "<br>".$lang["job"][20].": <br>".getRealtime($job->fields["realtime"]);
-			echo "</small></td>";
+			$second_col.="<small>".$lang["joblist"][11].":<br>&nbsp;".convDateTime($job->fields["date"])."<br>";
+			$second_col.="<i>".$lang["joblist"][12].":<br>&nbsp;".convDateTime($job->fields["closedate"])."</i>";
+			if ($job->fields["realtime"]>0) $second_col.="<br>".$lang["job"][20].": <br>".getRealtime($job->fields["realtime"]);
+			$second_col.="</small>";
 		}
 
-		echo "<td align='center' $valign bgcolor='$bgcolor'><strong>".getPriorityName($job->fields["priority"])."</strong></td>";
+		echo displaySearchItem($output_type,$second_col,$item_num,$row_num,0,$valign);
 		
-		echo "<td align='center' $valign>";
+		// Third Column
+		echo displaySearchItem($output_type,"<strong>".getPriorityName($job->fields["priority"])."</strong>",$item_num,$row_num,0,"$valign bgcolor='$bgcolor'");
 
+		// Fourth Column
+	
 		if ($ispostonly)
-		echo "<strong>".$job->getAuthorName(1)."</strong>";
+		$fourth_col="<strong>".$job->getAuthorName(1)."</strong>";
 		else
-		echo "<strong>".$job->getAuthorName()."</strong>";
+		$fourth_col="<strong>".$job->getAuthorName()."</strong>";
 
-		echo "</td>";
+		echo displaySearchItem($output_type,$fourth_col,$item_num,$row_num,0,$valign);
 
-		echo "<td align='center' $valign>";
+		// Fifth column
+		$fifth_col="";
 		if ($ispostonly)
-			echo getAssignName($job->fields["assign"],USER_TYPE,1);
+			$fifth_col.=getAssignName($job->fields["assign"],USER_TYPE,1);
 		else
-			echo "<strong>".getAssignName($job->fields["assign"],USER_TYPE)."</strong>";
+			$fifth_col.="<strong>".getAssignName($job->fields["assign"],USER_TYPE)."</strong>";
 		
 		if ($job->fields["assign_ent"]>0){
-			echo "<br>";
+			$fifth_col.="<br>";
 			if ($ispostonly)
-				echo getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE,1);
+				$fifth_col.=getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE,1);
 			else
-				echo "<strong>".getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE)."</strong>";
+				$fifth_col.="<strong>".getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE)."</strong>";
 	
 		}
-		echo "</td>";
+		echo displaySearchItem($output_type,$fifth_col,$item_num,$row_num,0,$valign);
 		
+
+		// Sixth Colum
+		$sixth_col="";
+		$deleted=0;
 		if ($ispostonly){
-			echo "<td align='center' $valign ";
+			
 			$m= new CommonItem;
 			if ($m->getfromDB($job->fields["device_type"],$job->fields["computer"]))
 			if (isset($m->obj->fields["deleted"])&&$m->obj->fields["deleted"]=='Y')
-			echo "class='tab_bg_1_2'";
-			echo ">";
-			echo $m->getType();
+				$deleted=1;
+			$sixth_col.=$m->getType();
 			
 			if ($job->fields["device_type"]>0){
-				echo "<br><strong>";
-				if ($job->computerfound) echo $m->getLink();
-				else echo $m->getNameID();
-				echo "</strong>";
+				$sixth_col.="<br><strong>";
+				if ($job->computerfound) $sixth_col.=$m->getLink();
+				else $sixth_col.=$m->getNameID();
+				$sixth_col.="</strong>";
 			} 
 			
-
-			echo "</td>";
 		}
 		else {
-			echo "<td  align='center' $valign><strong>$job->computername";
+			$fifth_col.="<strong>$job->computername";
 			if ($cfg_layout["view_ID"])
-				echo "(".$job->fields["computer"].")";
-			echo "</strong></td>";
+				$fifth_col.="(".$job->fields["computer"].")";
+			$fifth_col.="</strong>";
 		}
+		echo displaySearchItem($output_type,$sixth_col,$item_num,$row_num,$deleted,$valign);
 
-
-		echo "<td  align='center' $valign ><strong>".getDropdownName("glpi_dropdown_tracking_category",$job->fields["category"])."</strong></td>";
+		// Seventh column
+		echo displaySearchItem($output_type,"<strong>".getDropdownName("glpi_dropdown_tracking_category",$job->fields["category"])."</strong>",$item_num,$row_num,0,$valign);
 		
-		//$stripped_content=$job->fields["contents"];
+		// Eigth column
+		
 		$stripped_content=resume_text($job->fields["contents"],400);
 		if ($followups){$stripped_content=resume_text($job->fields["contents"],$cfg_features["cut"]);}
-		echo "<td align='left'><strong>".$stripped_content."</strong>";
-		if ($followups)
+
+		$eigth_column="<strong>".$stripped_content."</strong>";
+		if ($followups&&$output_type==0)
 		{
-			showFollowupsShort($job->ID);
+			$eigth_column.=showFollowupsShort($job->ID);
 		}
 
-		echo "</td>";
 
+		echo displaySearchItem($output_type,$eigth_column,$item_num,$row_num,0,$valign);
+		
+
+		// Nineth column
+		$nineth_column="";
 		// Job Controls
-		echo "<td width='40' align='center' $valign>";
 		
 		if ($ispostonly)
-		echo "<a href=\"".$cfg_install["root"]."/tracking/tracking-info-form.php?ID=$job->ID\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
+		$nineth_column.="<a href=\"".$cfg_install["root"]."/tracking/tracking-info-form.php?ID=$job->ID\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")";
 		else
-		echo "<a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&amp;ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups($isadmin).")&nbsp;<br>";
+		$nineth_column.="<a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&amp;ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups($isadmin).")";
+
+		echo displaySearchItem($output_type,$nineth_column,$item_num,$row_num,0,$valign);
 
 		// Finish Line
-		echo "</tr>";
+		echo displaySearchEndLine($output_type);
 	}
 	else
 	{
@@ -1134,40 +1168,53 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 		$numrows= $db->numrows($result);
 
 		if ($start<$numrows) {
+
+			// Set display type for export if define
+			$output_type=0;
+			if (isset($_GET["display_type"]))
+				$output_type=$_GET["display_type"];
+
+
 			// Pager
-			$parameters="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;contains2=$contains2&amp;assign=$assign&amp;assign_ent=$assign_ent&amp;author=$author";
+			$parameters="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;contains2=$contains2&amp;assign=$assign&amp;assign_ent=$assign_ent&amp;author=$author&amp;start=$start&amp;status=$status&amp;category=$category&amp;priority=$priority&amp;type=$type&amp;showfollowups=$showfollowups&amp;enddate1=$enddate1&amp;enddate2=$enddate2&amp;item=$item";
 			if (ereg("users-info.php",$_SERVER["PHP_SELF"])) $parameters.="&amp;ID=$author";
 			// Manage helpdesk
 			if (ereg("helpdesk",$target)) 
 				$parameters.="&show=user";
-			printPager($start,$numrows,$target,$parameters);
-			
-			// Produce headline
-
-			// Form to delete old item
-			if ($isadmin){
-			echo "<form method='post' action=\"$target\">";
+			if ($output_type==0){
+				if (!ereg("helpdesk",$target)) 
+					printPager($start,$numrows,$target,$parameters,TRACKING_TYPE);
+				else printPager($start,$numrows,$target,$parameters);
 			}
 			
-			$cssclass="tab_cadrehov"; // default css class
-			if($showfollowups) $cssclass="tab_cadre"; // if showfollowup use an other class css						
-			echo "<div align='center'><table border='0'class='$cssclass' width='90%'>";
+			$nbcols=9;
 
-			commonTrackingListHeader();
+			// Form to delete old item
+			if ($isadmin&&$output_type==0){
+			echo "<form method='post' action=\"$target\">";
+			}
+
+			// Display List Header
+			echo displaySearchHeader($output_type,$cfg_features["list_limit"]+1,$nbcols);
+
+			commonTrackingListHeader($output_type);
 
 			$i=$start;
-			while ($i < $numrows && $i<($start+$cfg_features["list_limit"])){
+			if (isset($_GET['export_all']))
+				$i=0;
+			
+			while ($i < $numrows && ($i<($start+$cfg_features["list_limit"])||isset($_GET['export_all']))){
 				$ID = $db->result($result, $i, "ID");
-				showJobShort($ID, $showfollowups);
+				showJobShort($ID, $showfollowups,$output_type,$i-$start+1);
 				$i++;
 			}
 
-			// Close Table
-			echo "</table></div>";
+			// Display footer
+			echo displaySearchFooter($output_type);
 
 		// Delete selected item
-			if ($isadmin){
-				echo "<br><div align='center'>";
+			if ($isadmin&&$output_type==0){
+				echo "<div align='center'>";
 				echo "<table cellpadding='5' width='80%'>";
 				echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=all&amp;start=$start'>".$lang["buttons"][18]."</a></td>";
 			
@@ -1177,16 +1224,14 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 				echo "<td width='75%'>&nbsp;</td></table></div>";
 			}
 		
-			echo "<br>";
-			
 			// End form for delete item
-			if ($isadmin)
+			if ($isadmin&&$output_type==0)
 				echo "</form>";
 			
 			
 			// Pager
-			echo "<br>";
-			printPager($start,$numrows,$target,$parameters);
+			if ($output_type==0) // In case of HTML display
+				printPager($start,$numrows,$target,$parameters);
 
 		} else {
 			echo "<div align='center'><strong>".$lang["joblist"][8]."</strong></div>";
@@ -1205,23 +1250,24 @@ function showFollowupsShort($ID) {
 	$query="SELECT * FROM glpi_followups WHERE tracking='$ID' ORDER BY date";
 	$result=$db->query($query);
 	
-	
+	$out="";
 	if ($db->numrows($result)>0) {
-		echo "<div align='center'><table class='tab_cadre' width='100%' cellpadding='2'>\n";
-		echo "<tr><th>".$lang["joblist"][1]."</th><th>".$lang["joblist"][3]."</th><th>".$lang["joblist"][6]."</th></tr>\n";
+		$out.="<div align='center'><table class='tab_cadre' width='100%' cellpadding='2'>\n";
+		$out.="<tr><th>".$lang["joblist"][1]."</th><th>".$lang["joblist"][3]."</th><th>".$lang["joblist"][6]."</th></tr>\n";
 
 		while ($data=$db->fetch_array($result)) {
 			
-			echo "<tr class='tab_bg_3'>";
-			echo "<td align='center'>".convDateTime($data["date"])."</td>";
-			echo "<td align='center'>".getUserName($data["author"],1)."</td>";
-			echo "<td width='70%'><strong>".resume_text($data["contents"],$cfg_features["cut"])."</strong></td>";
-			echo "</tr>";
+			$out.="<tr class='tab_bg_3'>";
+			$out.="<td align='center'>".convDateTime($data["date"])."</td>";
+			$out.="<td align='center'>".getUserName($data["author"],1)."</td>";
+			$out.="<td width='70%'><strong>".resume_text($data["contents"],$cfg_features["cut"])."</strong></td>";
+			$out.="</tr>";
 		}		
 
-		echo "</table></div>";
+		$out.="</table></div>";
 	
 	}
+return $out;
 }
 
 function dropdownPriority($name,$value=0,$complete=0){
