@@ -416,11 +416,12 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		$first_col= "ID: ".$job->ID;
 		if ($output_type==0)
 		$first_col.="<br><img src=\"".$HTMLRel."pics/".$job->fields["status"].".png\" alt='".getStatusName($job->fields["status"])."' title='".getStatusName($job->fields["status"])."'>";
+		else $first_col.=" - ".getStatusName($job->fields["status"]);
 
 		if ($isadmin&&$output_type==0){
 			$sel="";
 			if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-			$first_col.="<br><input type='checkbox' name='todel[".$job->ID."]' value='1' $sel>";
+			$first_col.="<input type='checkbox' name='todel[".$job->ID."]' value='1' $sel>";
 		}
 
 		echo displaySearchItem($output_type,$first_col,$item_num,$row_num,0,$valign);
@@ -433,9 +434,17 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		}
 		else
 		{
-			$second_col.="<small>".$lang["joblist"][11].":<br>&nbsp;".convDateTime($job->fields["date"])."<br>";
-			$second_col.="<i>".$lang["joblist"][12].":<br>&nbsp;".convDateTime($job->fields["closedate"])."</i>";
-			if ($job->fields["realtime"]>0) $second_col.="<br>".$lang["job"][20].": <br>".getRealtime($job->fields["realtime"]);
+			$second_col.="<small>".$lang["joblist"][11].":";
+			if ($output_type==0) $second_col.="<br>";
+			$second_col.="&nbsp;".convDateTime($job->fields["date"]);
+			$second_col.="<br>";
+			$second_col.="<i>".$lang["joblist"][12].":";
+			if ($output_type==0) $second_col.="<br>";
+			$second_col.="&nbsp;".convDateTime($job->fields["closedate"])."</i>";
+			$second_col.="<br>";
+			if ($job->fields["realtime"]>0) $second_col.=$lang["job"][20].": ";
+			if ($output_type==0) $second_col.="<br>";
+			$second_col.="&nbsp;".getRealtime($job->fields["realtime"]);
 			$second_col.="</small>";
 		}
 
