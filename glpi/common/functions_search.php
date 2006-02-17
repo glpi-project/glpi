@@ -566,7 +566,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		// a - SELECT 
 		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
 		if (isset($type2[$i])&&$type2[$i]>0&&isset($contains2[$i])&&strlen($contains2[$i]))	{
-			$SELECT.=addSelect($type2[$i],$SEARCH_OPTION[$type2[$i]][$field2[$i]]["table"],$SEARCH_OPTION[$type2[$i]][$field2[$i]]["field"],$i,1);		
+			$SELECT.=addSelect($type2[$i],$SEARCH_OPTION[$type2[$i]][$field2[$i]]["table"],$SEARCH_OPTION[$type2[$i]][$field2[$i]]["field"],$i,1,$type2[$i]);		
 		}
 
 		// b - ADD LEFT JOIN 
@@ -581,8 +581,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		// Link items tables
 		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
 		if (isset($type2[$i])&&$type2[$i]>0&&isset($contains2[$i])&&strlen($contains2[$i])) {
-			if (!in_array($SEARCH_OPTION[$type2[$i]][$field2[$i]]["table"],$already_link_tables2)){
-				$FROM.=addLeftJoin($type2[$i],$LINK_ID_TABLE[$type2[$i]],$already_link_tables2,$SEARCH_OPTION[$type2[$i]][$field2[$i]]["table"],0,1,$i);				
+			if (!in_array($SEARCH_OPTION[$type2[$i]][$field2[$i]]["table"]."_".$type2[$i],$already_link_tables2)){
+				$FROM.=addLeftJoin($type2[$i],$LINK_ID_TABLE[$type2[$i]],$already_link_tables2,$SEARCH_OPTION[$type2[$i]][$field2[$i]]["table"],0,1,$type2[$i]);				
 			}
 			
 		}
@@ -683,7 +683,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	$db->query("SET SESSION group_concat_max_len = 9999999;");
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 
-	//echo $QUERY."<br>\n";
+//	echo $QUERY."<br>\n";
 	
 	// Set display type for export if define
 	$output_type=0;
@@ -728,6 +728,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 				echo displaySearchHeaderItem($output_type,$SEARCH_OPTION[$type][$toview[$i]]["name"],$header_num,$linkto,$sort==$toview[$i],$order);
 			}
+		
 			// Display columns Headers for meta items
 			if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 			for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
@@ -1244,12 +1245,13 @@ function addOrderBy($field,$order,$key=0){
 *@param $type device type
 *@param $table table of the item to add
 *@param $meta is it a meta item ?
+*@param $meta_type meta type table ID
 *
 *
 *@return select string
 *
 **/
-function addSelect ($type,$table,$field,$num,$meta=0){
+function addSelect ($type,$table,$field,$num,$meta=0,$meta_type=0){
 global $LINK_ID_TABLE;
 
 $addtable="";
@@ -1258,6 +1260,7 @@ $NAME="ITEM";
 if ($meta) {
 	//$pretable="META_";
 	$NAME="META";
+	$addtable="_".$meta_type;
 }
 
 switch ($table.".".$field){
@@ -1679,21 +1682,24 @@ switch ($field){
 *
 *@param $table reference table
 *@param $device_type device type ID
-*
+*@param $meta_type meta table type ID
 *
 *@return Left join string
 *
 **/
-function translate_table($table,$device_type=0){
+function translate_table($table,$device_type=0,$meta_type=0){
+
+$ADD="";
+if ($meta_type) $ADD="_".$meta_type;
 
 switch ($table){
 	case "glpi_computer_device":
 		if ($device_type==0)
-			return $table;
-		else return "DEVICE_".$device_type;
+			return $table.$ADD;
+		else return "DEVICE_".$device_type.$ADD;
 		break;
 	default :
-		return $table;
+		return $table.$ADD;
 		break;
 }
 
@@ -1709,29 +1715,28 @@ switch ($table){
 *@param $new_table new table to join
 *@param $device_type device_type for search on computer device
 *@param $meta is it a meta item ?
-*@param $meta_num meta number
+*@param $meta_type meta type table
 *
 *
 *@return Left join string
 *
 **/
-function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$device_type=0,$meta=0,$meta_num=0){
+function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$device_type=0,$meta=0,$meta_type=0){
 
-
-if (in_array(translate_table($new_table,$device_type),$already_link_tables)) return "";
-else array_push($already_link_tables,translate_table($new_table,$device_type));
 
 // Rename table for meta left join
 $AS="";
 $nt=$new_table;
 $addmetanum="";
 $rt=$ref_table;
-/*if ($meta) {
-	//$AS= " AS META_".$new_table."_".$meta_num;
-	//$nt="META_".$new_table."_".$meta_num;
-	//$rt.="_".$meta_num;
+if ($meta) {
+	$AS= " AS ".$new_table."_".$meta_type;
+	$nt=$new_table."_".$meta_type;
+//	$rt.="_".$meta_type;
 }
-*/
+
+if (in_array(translate_table($new_table,$device_type,$meta_type),$already_link_tables)) return "";
+else array_push($already_link_tables,translate_table($new_table,$device_type,$meta_type));
 
 switch ($new_table){
 	case "glpi_dropdown_locations":
@@ -1768,7 +1773,7 @@ switch ($new_table){
 		$out="";
 		// Add networking device for computers
 		if ($type==COMPUTER_TYPE)
-			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",NETWORK_DEVICE,$meta,$meta_num);
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",NETWORK_DEVICE,$meta,$meta_type);
 		
 		return $out." LEFT JOIN $new_table $AS ON ($rt.ID = $nt.on_device AND $nt.device_type='$type') ";
 		break;
@@ -1831,42 +1836,42 @@ switch ($new_table){
 	case "glpi_device_processor":
 
 		// Link to glpi_networking_ports before
-		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",PROCESSOR_DEVICE,$meta,$meta_num);
+		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",PROCESSOR_DEVICE,$meta,$meta_type);
 		
 		return $out." LEFT JOIN $new_table $AS ON (DEVICE_".PROCESSOR_DEVICE.".FK_device = $nt.ID) ";
 		break;		
 	case "glpi_device_ram":
-		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",RAM_DEVICE,$meta,$meta_num);
+		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",RAM_DEVICE,$meta,$meta_type);
 		
 		return $out." LEFT JOIN $new_table $AS ON (DEVICE_".RAM_DEVICE.".FK_device = $nt.ID) ";
 		break;		
 	case "glpi_device_iface":
 		// Link to glpi_networking_ports before
-		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",NETWORK_DEVICE,$meta,$meta_num);
+		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",NETWORK_DEVICE,$meta,$meta_type);
 		
 		return $out." LEFT JOIN $new_table $AS ON (DEVICE_".NETWORK_DEVICE.".FK_device = $nt.ID) ";
 		break;	
 	case "glpi_device_sndcard":
 		// Link to glpi_networking_ports before
-		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",SND_DEVICE,$meta,$meta_num);
+		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",SND_DEVICE,$meta,$meta_type);
 		
 		return $out." LEFT JOIN $new_table $AS ON (DEVICE_".SND_DEVICE.".FK_device = $nt.ID) ";
 		break;		
 	case "glpi_device_gfxcard":
 		// Link to glpi_networking_ports before
-		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",GFX_DEVICE,$meta,$meta_num);
+		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",GFX_DEVICE,$meta,$meta_type);
 		
 		return $out." LEFT JOIN $new_table $AS ON (DEVICE_".GFX_DEVICE.".FK_device = $nt.ID) ";
 		break;	
 	case "glpi_device_moboard":
 		// Link to glpi_networking_ports before
-		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",MOBOARD_DEVICE,$meta,$meta_num);
+		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",MOBOARD_DEVICE,$meta,$meta_type);
 		
 		return $out." LEFT JOIN $new_table $AS ON (DEVICE_".MOBOARD_DEVICE.".FK_device = $nt.ID) ";
 		break;	
 	case "glpi_device_hdd":
 		// Link to glpi_networking_ports before
-		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",HDD_DEVICE,$meta,$meta_num);
+		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",HDD_DEVICE,$meta,$meta_type);
 		
 		return $out." LEFT JOIN $new_table $AS ON (DEVICE_".HDD_DEVICE.".FK_device = $nt.ID) ";
 		break;
