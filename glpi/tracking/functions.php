@@ -448,7 +448,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 			$second_col.="</small>";
 		}
 
-		echo displaySearchItem($output_type,$second_col,$item_num,$row_num,0,$valign);
+		echo displaySearchItem($output_type,$second_col,$item_num,$row_num,0,$valign." width=130");
 		
 		// Third Column
 		echo displaySearchItem($output_type,"<strong>".getPriorityName($job->fields["priority"])."</strong>",$item_num,$row_num,0,"$valign bgcolor='$bgcolor'");
@@ -534,7 +534,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		else
 		$nineth_column.="<a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&amp;ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups($isadmin).")";
 
-		echo displaySearchItem($output_type,$nineth_column,$item_num,$row_num,0,$valign);
+		echo displaySearchItem($output_type,$nineth_column,$item_num,$row_num,0,$valign." width='40'");
 
 		// Finish Line
 		echo displaySearchEndLine($output_type);
