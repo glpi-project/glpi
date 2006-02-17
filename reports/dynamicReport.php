@@ -41,6 +41,13 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_consumables.php");
 include ($phproot . "/glpi/includes_cartridges.php");
+include ($phproot . "/glpi/includes_state.php");
+include ($phproot . "/glpi/includes_users.php");
+include ($phproot . "/glpi/includes_computers.php");
+include ($phproot . "/glpi/includes_printers.php");
+include ($phproot . "/glpi/includes_monitors.php");
+include ($phproot . "/glpi/includes_peripherals.php");
+include ($phproot . "/glpi/includes_networking.php");
 
 checkAuthentication("normal");
 include ($phproot . "/glpi/includes_search.php");
@@ -56,9 +63,14 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 	// PDF case
 	if ($_GET["display_type"]==2)
 		include ($phproot . "/glpi/includes_ezpdf.php");
-	manageGetValuesInSearch($_GET["item_type"]);
 
-	showList($_GET["item_type"],$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
+	if ($_GET["item_type"]==STATE_TYPE){
 
+		showStateItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["state"]);
+	} else {
+		manageGetValuesInSearch($_GET["item_type"]);
+
+		showList($_GET["item_type"],$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
+	}
 }
 ?>

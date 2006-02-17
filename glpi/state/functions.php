@@ -150,7 +150,7 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 		$numrows =  $db->numrows($result);
 
 		// Limit the result, if no limit applies, use prior result
-		if ($numrows > $cfg_features["list_limit"]) {
+		if ($numrows > $cfg_features["list_limit"]&&!isset($_GET['export_all'])) {
 			$query_limit = $query ." LIMIT $start,".$cfg_features["list_limit"]." ";
 			$result_limit = $db->query($query_limit);
 			$numrows_limit = $db->numrows($result_limit);
@@ -160,86 +160,82 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 		}
 		
 		if ($numrows_limit>0) {
+
+
+			// Set display type for export if define
+			$output_type=0;
+			if (isset($_GET["display_type"]))
+				$output_type=$_GET["display_type"];
+
 			// Pager
-			$parameters="field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=$sort&amp;order=$order";
-			printPager($start,$numrows,$target,$parameters);
+			$parameters="start=$start&amp;state=$state&amp;field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=$sort&amp;order=$order";
+			if ($output_type==0)
+				printPager($start,$numrows,$target,$parameters,STATE_TYPE);
 
-			// Produce headline
-			echo "<div align='center'><table  class='tab_cadrehov'><tr>";
-			// Name
-			echo "<th>";
-			if ($sort=="glpi_state_item.ID") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_state_item.ID&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
-			echo $lang["state"][4]."</a></th>";
-
-			// Type			
-			echo "<th>";
-			if ($sort=="glpi_state_item.device_type") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_state_item.device_type&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
-			echo $lang["state"][6]."</a></th>";
-
-			// Item
-			echo "<th>";
-/*			if ($sort=="glpi_state_item.id_device") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_state_item.id_device&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
-*/			echo $lang["state"][5];
-//			 echo "</a>";
-			 echo "</th>";
-
+			$nbcols=6;
+			// Display List Header
+			echo displaySearchHeader($output_type,$cfg_features["list_limit"]+1,$nbcols);
+			// New Line for Header Items Line
+			echo displaySearchNewLine($output_type);
 			
-			// Type			
-			echo "<th>";
-			echo $lang["state"][9]."</th>";
+			$header_num=1;
 
-			// Location			
-			echo "<th>";
-			echo $lang["state"][8]."</th>";
+			$linkto="$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_state_item.ID&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start&amp;state=$state";
+			echo displaySearchHeaderItem($output_type,$lang["state"][4],$header_num,$linkto,$sort=="glpi_state_item.ID",$order);
+
+			$linkto="$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_state_item.device_type&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start&amp;state=$state";
+			echo displaySearchHeaderItem($output_type,$lang["state"][6],$header_num,$linkto,$sort=="glpi_state_item.device_type",$order);
+
+
+			echo displaySearchHeaderItem($output_type,$lang["state"][5],$header_num,"",0,$order);
+
+			echo displaySearchHeaderItem($output_type,$lang["state"][9],$header_num,"",0,$order);
+
+			echo displaySearchHeaderItem($output_type,$lang["state"][8],$header_num,"",0,$order);
+
+			$linkto="$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_dropdown_state.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start&amp;state=$state";
+			echo displaySearchHeaderItem($output_type,$lang["state"][0],$header_num,$linkto,$sort=="glpi_dropdown_state.name",$order);
 			
-			// State			
-			echo "<th>";
-			if ($sort=="glpi_dropdown_state.name") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
-			}
-			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_dropdown_state.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
-			echo $lang["state"][0]."</a></th>";
+			// End Line for column headers		
+			echo displaySearchEndLine($output_type);
 
-			echo "</tr>";
-
+			// Num of the row (1=header_line)
+			$row_num=1;
 			for ($i=0; $i < $numrows_limit; $i++) {
-				$id_device = $db->result($result_limit, $i, "id_device");
-				$type = $db->result($result_limit, $i, "d_type");
+				$data=$db->fetch_array($result_limit);
 				$ri = new StateItem;
-				$ri->getfromDB($type,$id_device);
-				echo "<tr class='tab_bg_2".(isset($ri->obj->fields["deleted"])&&$ri->obj->fields["deleted"]=='Y'?"_2":"")."' align='center'>";
-				echo "<td>";
-				echo $ri->fields["ID"];
-				echo "</td>";
-				
-				echo "<td>". $ri->getType()."</td>";
-				echo "<td><b>". $ri->getLink() ."</b></td>";
-				echo "<td>". $ri->getItemType() ."</td>";
-				echo "<td>". getDropdownName("glpi_dropdown_locations",$ri->obj->fields["location"]) ."</td>";
-				echo "<td><b>". getDropdownName("glpi_dropdown_state",$ri->fields["state"]) ."</b></td>";
+				$ri->getfromDB($data["d_type"],$data["id_device"]);
 
-				echo "</tr>";
+
+				// Column num
+				$item_num=1;
+				$row_num++;
+
+				echo displaySearchNewLine($output_type);
+				
+				$deleted=isset($ri->obj->fields["deleted"])&&$ri->obj->fields["deleted"]=='Y';
+
+				echo displaySearchItem($output_type,$ri->fields["ID"],$item_num,$row_num,$deleted);
+
+				echo displaySearchItem($output_type,$ri->getType(),$item_num,$row_num,$deleted);
+
+				echo displaySearchItem($output_type,"<strong>".$ri->getLink()."</strong>",$item_num,$row_num,$deleted);
+				
+				echo displaySearchItem($output_type,$ri->getItemType(),$item_num,$row_num,$deleted);
+
+				echo displaySearchItem($output_type,getDropdownName("glpi_dropdown_locations",$ri->obj->fields["location"]),$item_num,$row_num,$deleted);
+
+				echo displaySearchItem($output_type,getDropdownName("glpi_dropdown_state",$ri->fields["state"]),$item_num,$row_num,$deleted);
+
+				// End Line
+		        	echo displaySearchEndLine($output_type);
 			}
 
-			// Close Table
-			echo "</table></div>";
+			// Display footer
+			echo displaySearchFooter($output_type);
 
-			// Pager
-			echo "<br>";
-			printPager($start,$numrows,$target,$parameters);
+			if ($output_type==0) // In case of HTML display
+				printPager($start,$numrows,$target,$parameters);
 
 		} else {
 			echo "<div align='center'><b>".$lang["state"][7]."</b></div>";
