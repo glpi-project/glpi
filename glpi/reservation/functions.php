@@ -52,7 +52,7 @@ function titleReservation(){
 	     
 	     echo "<div align='center'><table border='0'><tr><td>";
                 echo "<img src=\"".$HTMLRel."pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["reservation"][1]."</span>";
-		 echo "</b></td></tr></table>&nbsp;</div>";
+		 echo "</b></td><td><a class='icon_consol' href='".$HTMLRel."reservation/index.php?show=resa&amp;ID'>".$lang["reservation"][26]."</a></td></tr></table>&nbsp;</div>";
 	   
 	   
 	   
