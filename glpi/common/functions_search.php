@@ -373,7 +373,14 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	// Define meta table where search must be done in HAVING clause
 	$META_SPECIF_TABLE=array("glpi_device_ram","glpi_device_hdd","glpi_device_processor");
-	
+	$names=array(
+		COMPUTER_TYPE => $lang["Menu"][0],
+//		NETWORKING_TYPE => $lang["Menu"][1],
+		PRINTER_TYPE => $lang["Menu"][2],
+		MONITOR_TYPE => $lang["Menu"][3],
+		PERIPHERAL_TYPE => $lang["Menu"][16],
+		SOFTWARE_TYPE => $lang["Menu"][4],
+	);	
 	
 	// Get the items to display
 	$toview=array();
@@ -750,7 +757,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 			for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
 			if (isset($type2[$i])&&$type2[$i]>0&&isset($contains2[$i])&&strlen($contains2[$i])&&(!isset($link2[$i])||!ereg("NOT",$link2[$i]))) {
-				echo displaySearchHeaderItem($output_type,$SEARCH_OPTION[$type2[$i]][$field2[$i]]["name"],$header_num);
+				echo displaySearchHeaderItem($output_type,$names[$type2[$i]]." - ".$SEARCH_OPTION[$type2[$i]][$field2[$i]]["name"],$header_num);
 			}
 			// Add specific column Header
 			if ($type==SOFTWARE_TYPE)
