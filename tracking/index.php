@@ -102,10 +102,16 @@ if (!isset($tab["field"])||isset($tab['reset'])) $tab["field"]="";
 if (!isset($tab["only_computers"])||isset($tab['reset'])) $tab["only_computers"] = "";
 
 
-if ($tab["date1"]!=""&&$tab["date2"]!=""&&strcmp($tab["date2"],$tab["date1"])<0){
+if ($tab["date1"]!="0000-00-00"&&$tab["date2"]!="0000-00-00"&&strcmp($tab["date2"],$tab["date1"])<0){
 	$tmp=$tab["date1"];
 	$tab["date1"]=$tab["date2"];
 	$tab["date2"]=$tmp;
+}
+
+if ($tab["enddate1"]!="0000-00-00"&&$tab["enddate2"]!="0000-00-00"&&strcmp($tab["enddate2"],$tab["enddate1"])<0){
+	$tmp=$tab["enddate1"];
+	$tab["enddate1"]=$tab["enddate2"];
+	$tab["enddate2"]=$tmp;
 }
 
 if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete"])&&!empty($_POST["todel"])){
