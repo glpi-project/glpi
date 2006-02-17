@@ -48,6 +48,8 @@ include ($phproot . "/glpi/includes_printers.php");
 include ($phproot . "/glpi/includes_monitors.php");
 include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_networking.php");
+include ($phproot . "/glpi/includes_tracking.php");
+include ($phproot . "/glpi/includes_financial.php");
 
 checkAuthentication("normal");
 include ($phproot . "/glpi/includes_search.php");
@@ -64,13 +66,19 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 	if ($_GET["display_type"]==2)
 		include ($phproot . "/glpi/includes_ezpdf.php");
 
-	if ($_GET["item_type"]==STATE_TYPE){
-
+	switch ($_GET["item_type"]){
+	case STATE_TYPE :
 		showStateItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["state"]);
-	} else {
+		break;
+	case TRACKING_TYPE :
+		showTrackingList($_SERVER["PHP_SELF"],$_GET["start"],$_GET["status"],$_GET["author"],$_GET["assign"],$_GET["assign_ent"],$_GET["category"],$_GET["priority"],$_GET["item"],$_GET["type"],$_GET["showfollowups"],$_GET["field2"],$_GET["contains2"],$_GET["field"],$_GET["contains"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["enddate1"],$_GET["enddate2"]);		
+		break;
+
+	default :
 		manageGetValuesInSearch($_GET["item_type"]);
 
 		showList($_GET["item_type"],$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
+		break;
 	}
 }
 ?>
