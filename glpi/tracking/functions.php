@@ -816,12 +816,12 @@ function getRealtime($realtime){
 		return $output;
 		}
 
-function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function searchFormTracking($extended=0,$target,$start="",$status="new",$author=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Print Search Form
 	
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel,$phproot;
 
-	if ($report==1){
+	if ($extended==1){
 		$option["comp.ID"]				= $lang["computers"][31];
 		$option["comp.name"]				= $lang["computers"][7];
 		$option["glpi_dropdown_locations.name"]			= $lang["computers"][10];
@@ -855,7 +855,11 @@ function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,
 	echo "<table class='tab_cadre_fixe'>";
 
 	
-	echo "<tr><th colspan='6'><strong>".$lang["search"][0].":</strong></th></tr>";
+	echo "<tr><th colspan='6'><strong>".$lang["search"][0].":&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+	if ($extended)
+		echo "<a href='$target?extended=0'>".$lang["buttons"][36]."</a>";
+	else echo "<a href='$target?extended=1'>".$lang["buttons"][35]."</a>";
+	echo "</strong></th></tr>";
 
 
 
@@ -903,7 +907,7 @@ function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,
 	echo "</td>";
 	echo "</tr>";
 
-	if ($report){
+	if ($extended){
 		echo "<tr class='tab_bg_1'>";
 		echo "<td align='center' colspan='6'>";
 		$selected="";
@@ -928,7 +932,7 @@ function searchFormTracking($report=0,$target,$start="",$status="new",$author=0,
 
 		echo "</td></tr>";
 	}
-if($report)	{
+if($extended)	{
 	echo "<tr class='tab_bg_1'><td colspan='2' align='right'>".$lang["reports"][60].":</td><td align='center' colspan='2'>".$lang["search"][8].":&nbsp;";
 	showCalendarForm("form","date1",$date1);
 	echo "</td><td align='center' colspan='2'>";
