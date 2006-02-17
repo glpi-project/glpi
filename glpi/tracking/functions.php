@@ -418,7 +418,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		$first_col.="<br><img src=\"".$HTMLRel."pics/".$job->fields["status"].".png\" alt='".getStatusName($job->fields["status"])."' title='".getStatusName($job->fields["status"])."'>";
 		else $first_col.=" - ".getStatusName($job->fields["status"]);
 
-		if ($isadmin&&$output_type==0){
+		if ($isadmin&&$output_type==0&&ereg("old_",$job->fields["status"])){
 			$sel="";
 			if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
 			$first_col.="<input type='checkbox' name='todel[".$job->ID."]' value='1' $sel>";
