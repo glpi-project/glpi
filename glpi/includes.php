@@ -46,6 +46,7 @@ include ($phproot . "/glpi/common/functions_dropdown.php");
 include ($phproot . "/glpi/common/functions_reports.php");
 include ($phproot . "/glpi/common/functions_display.php");
 include ($phproot . "/glpi/common/functions_search.php");
+include ($phproot . "/glpi/common/functions_export.php");
 include ($phproot . "/glpi/common/functions_logs.php");
 include ($phproot . "/glpi/common/functions_auth.php");
 include ($phproot . "/glpi/common/functions_connection.php");
