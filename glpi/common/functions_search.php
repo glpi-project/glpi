@@ -625,7 +625,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				
 				if (($val2==$field[$key])&&in_array($SEARCH_OPTION[$type][$val2]["table"],$META_SPECIF_TABLE)){
 				if (!isset($link[$key])) $link[$key]="AND";
-				$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"],strtolower($contains[$key]),$key2,0,$link[$key]);
+				
+					$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"],strtolower($contains[$key]),$key2,0,$link[$key]);
 				}
 			}
 		}
@@ -639,8 +640,24 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		{
 			$LINK="";
 			if (isset($link2[$key])) $LINK=$link2[$key];
-			
-			$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type2[$key]][$field2[$key]]["table"].".".$SEARCH_OPTION[$type2[$key]][$field2[$key]]["field"],strtolower($contains2[$key]),$key,1,$LINK);
+			if ($SEARCH_OPTION[$type2[$key]][$field2[$key]]["table"]==1)			
+				$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type2[$key]][$field2[$key]]["table"].".".$SEARCH_OPTION[$type2[$key]][$field2[$key]]["field"],strtolower($contains2[$key]),$key,1,$LINK);
+			else { // Meta Where Search
+				$LINK=" ";
+				$NOT=0;
+				// Manage Link if not first item
+				if (!$first) {
+					if (is_array($link2)&&isset($link2[$key])&&ereg("NOT",$link2[$key])){
+						$LINK=" ".ereg_replace(" NOT","",$link2[$key]);
+						$NOT=1;
+						}
+					else if (is_array($link2)&&isset($link2[$key]))
+						$LINK=" ".$link2[$key];
+					else $LINK=" AND ";
+				}
+
+				$WHERE.= $LINK.addWhere($NOT,$type2[$key],$SEARCH_OPTION[$type2[$key]][$field2[$key]]["table"],$SEARCH_OPTION[$type2[$key]][$field2[$key]]["field"],$contains2[$key],1);
+			}
 		}
 
 	// If no research limit research to display item and compute number of item using simple request
@@ -683,7 +700,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	$db->query("SET SESSION group_concat_max_len = 9999999;");
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 
-//	echo $QUERY."<br>\n";
+	//echo $QUERY."<br>\n";
 	
 	// Set display type for export if define
 	$output_type=0;
@@ -1316,15 +1333,18 @@ default:
 *@param $val item num in the request
 *@param $nott is it a negative serach ?
 *@param $type device type
+*@param $meta is a meta search (meta=2 in includes_search.php)
 *
 *@return select string
 *
 **/
-function addWhere ($nott,$type,$table,$field,$val){
+function addWhere ($nott,$type,$table,$field,$val,$meta=0){
 global $LINK_ID_TABLE;
 
 $NOT="";
 if ($nott) $NOT=" NOT";
+
+if ($meta) $table.="_".$type;
 
 switch ($table.".".$field){
 case "glpi_users.name" :
@@ -1732,7 +1752,7 @@ $rt=$ref_table;
 if ($meta) {
 	$AS= " AS ".$new_table."_".$meta_type;
 	$nt=$new_table."_".$meta_type;
-//	$rt.="_".$meta_type;
+	//$rt.="_".$meta_type;
 }
 
 if (in_array(translate_table($new_table,$device_type,$meta_type),$already_link_tables)) return "";
@@ -1800,7 +1820,7 @@ switch ($new_table){
 		break;
 	case "glpi_dropdown_state":
 		// Link to glpi_state_item before
-		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_state_item");
+		$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_state_item");
 		
 		return $out." LEFT JOIN $new_table $AS ON (glpi_state_item.state = $nt.ID) ";
 		break;
