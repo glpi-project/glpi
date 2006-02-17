@@ -1277,7 +1277,8 @@ $NAME="ITEM";
 if ($meta) {
 	//$pretable="META_";
 	$NAME="META";
-	$addtable="_".$meta_type;
+	if ($LINK_ID_TABLE[$meta_type]!=$table)
+		$addtable="_".$meta_type;
 }
 
 switch ($table.".".$field){
@@ -1344,7 +1345,7 @@ global $LINK_ID_TABLE;
 $NOT="";
 if ($nott) $NOT=" NOT";
 
-if ($meta) $table.="_".$type;
+if ($meta&&$LINK_ID_TABLE[$type]!=$table) $table.="_".$type;
 
 switch ($table.".".$field){
 case "glpi_users.name" :
