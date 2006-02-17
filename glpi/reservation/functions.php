@@ -355,7 +355,7 @@ echo "<div align='center'>";
 echo "<table cellpadding='20' ><tr><td><a href=\"".$target.$str_precedent."\"><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></td><td><b>".
 	$lang["calendarM"][$mois_courant-1]."&nbsp;".$annee_courante."</b></td><td><a href=\"".$target.$str_suivant."\"><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></td></tr></table>";
 // test
-echo "<table><tr><td valign='top'>";
+echo "<table width='90%'><tr><td valign='top'  width='100'>";
 
 echo "<table><tr><td width='100' valign='top'>";
 
@@ -370,13 +370,13 @@ echo "<table><tr><td width='100' valign='top'>";
 		
 		
 		echo "<div class='verdana1'>";
-			echo "<div><b>$annee_avant</b></div>";
+			echo "<div style='text-align:center'><b>$annee_avant</b></div>";
 			for ($i=$mois_courant; $i < 13; $i++) {
 				echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #cccccc; background-color: #eeeeee;'><a href=\"".$target."?show=resa&amp;ID=$ID&amp;mois_courant=$i&amp;annee_courante=$annee_avant\">".
 	$lang["calendarM"][$i-1]."</a></div>";
 			}
 		
-		echo "<div><b>$annee_courante</b></div>";
+		echo "<div style='text-align:center'><b>$annee_courante</b></div>";
 		for ($i=1; $i < 13; $i++) {
 			if ($i == $mois_courant) {
 				echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #666666; background-color: white;'><b>".
@@ -388,7 +388,7 @@ echo "<table><tr><td width='100' valign='top'>";
 			}
 		}
 
-			echo "<div><b>$annee_apres</b></div>";
+			echo "<div style='text-align:center'><b>$annee_apres</b></div>";
 			for ($i=1; $i < $mois_courant+1; $i++) {
 				echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #cccccc; background-color: #eeeeee;'><a href=\"".$target."?show=resa&amp;ID=$ID&amp;mois_courant=$i&amp;annee_courante=$annee_apres\">".
 	$lang["calendarM"][$i-1]."</a></div>";
@@ -397,14 +397,14 @@ echo "<table><tr><td width='100' valign='top'>";
 	
 	echo "</td></tr></table>";
 
-echo "</td><td valign='top'>";
+echo "</td><td valign='top' width='100%'>";
 
 
 
 // test 
 	
 	
-echo "<table class='tab_cadre_fixe'><tr>";
+echo "<table class='tab_cadre' width='100%'><tr>";
 echo "<th width='14%'>".$lang["calendarD"][1]."</th>";
 echo "<th width='14%'>".$lang["calendarD"][2]."</th>";
 echo "<th width='14%'>".$lang["calendarD"][3]."</th>";
