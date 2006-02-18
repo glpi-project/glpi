@@ -90,8 +90,8 @@ $lang["buttons"][31]="Exporter";
 $lang["buttons"][32]="Fin";
 $lang["buttons"][33]="Début";
 $lang["buttons"][34]="Annuler";
-$lang["buttons"][35]="Formulaire Détaillé";
-$lang["buttons"][36]="Formulaire Restreint";
+$lang["buttons"][35]="Avancée";
+$lang["buttons"][36]="Basique";
 
 $lang["calendar"][0]="Erreur : date invalide";
 
@@ -1138,7 +1138,7 @@ $lang["reservation"][35]="Réservations en cours et à venir";
 $lang["reservation"][36]="Réservations passées";
 $lang["reservation"][37]="Pas de réservations";
 
-$lang["search"][0]="Rechercher"; 
+$lang["search"][0]="Recherche"; 
 $lang["search"][1]="Où ce champ";
 $lang["search"][2]="contient";
 $lang["search"][3]="phrase exacte";

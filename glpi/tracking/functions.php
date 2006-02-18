@@ -893,16 +893,16 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	echo "<form method=get name=\"form\" action=\"".$_SERVER["PHP_SELF"]."\">";
 	
 	
-	echo "<div align='center'>";
+	echo "<div align='center' >";
 				
 	echo "<table class='tab_cadre_fixe'>";
 
 	
-	echo "<tr><th colspan='6'><strong>".$lang["search"][0].":&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+	echo "<tr><th colspan='6' style:'vertical-align:middle' ><div style='position: relative'><span><strong>".$lang["search"][0]."</strong></span>";
 	if ($extended)
-		echo "<a href='$target?extended=0'>".$lang["buttons"][36]."</a>";
-	else echo "<a href='$target?extended=1'>".$lang["buttons"][35]."</a>";
-	echo "</strong></th></tr>";
+		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href='$target?extended=0'><img src=\"".$HTMLRel."pics/deplier_up.png\" alt=''>".$lang["buttons"][36]."</a></span>";
+	else echo "<span  style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href='$target?extended=1'><img src=\"".$HTMLRel."pics/deplier_down.png\" alt=''>".$lang["buttons"][35]."</a></span>";
+	echo "</div></th></tr>";
 
 
 
