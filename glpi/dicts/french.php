@@ -937,6 +937,13 @@ $lang["networking"][56]="VLAN";
 $lang["networking"][57]="Choissisez une adresse MAC dans la liste ou spécifiez la ci-dessous.";
 $lang["networking"][58]="Modèle";
 
+$lang["ocsng"][0]="OCS Inventory NG";
+$lang["ocsng"][1] = "Synchronisation des ordinateurs déjà  importés";
+$lang["ocsng"][2] = "Importation de nouveaux ordinateurs";
+$lang["ocsng"][3] = "Configuration";
+$lang["ocsng"][4] = "Lier de nouveaux ordinateurs à des ordinateurs existants";
+
+
 $lang["pager"][1]="à";
 $lang["pager"][2]="de";
 $lang["pager"][3]="sur";
