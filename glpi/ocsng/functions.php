@@ -204,10 +204,14 @@ function ocsUpdateComputer($ID,$dohistory=1){
 
 		// Is an update to do ?
 		if ($mixed_checksum){
+
+			// Get updates on computers :
+			$computer_updates=importArrayFromDB($line["computer_update"]);
+			
 			if ($mixed_checksum&pow(2,HARDWARE_FL))
-				ocsUpdateHardware($line['glpi_id'],$line['ocs_id'],$cfg_ocs,$dohistory);
+				ocsUpdateHardware($line['glpi_id'],$line['ocs_id'],$cfg_ocs,$computer_updates,$dohistory);
 			if ($mixed_checksum&pow(2,BIOS_FL))
-				ocsUpdateBios($line['glpi_id'],$line['ocs_id'],$cfg_ocs,$dohistory);
+				ocsUpdateBios($line['glpi_id'],$line['ocs_id'],$cfg_ocs,$computer_updates,$dohistory);
 
 
 		// Update OCS Cheksum
@@ -298,7 +302,7 @@ function getOcsConf($id) {
 *@return nothing.
 *
 **/
-function ocsUpdateHardware($glpi_id,$ocs_id,$cfg_ocs,$dohistory=1) {
+function ocsUpdateHardware($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistory=1) {
  	global $lang;
 	$dbocs = new DBocs();
 	$query = "select * from hardware WHERE DEVICEID='".$ocs_id."'";
@@ -306,28 +310,29 @@ function ocsUpdateHardware($glpi_id,$ocs_id,$cfg_ocs,$dohistory=1) {
 	$result = $dbocs->query($query) or die($dbocs->error());
 	if ($dbocs->numrows($result)==1) {
 		$line=$dbocs->fetch_assoc($result);
-
-		$compupdate["ID"] = $glpi_id;
-		if($cfg_ocs["import_general_os"]) {
+		$line=addslashes_deep($line);
+		$compudate=array();
+		
+		if($cfg_ocs["import_general_os"]&&!in_array("os",$computer_updates)) {
 			$compupdate["os"] = ocsImportDropdown('glpi_dropdown_os','name',$line["OSNAME"]." ".$dbocs->result($result,0,"OSVERSION"));
 		}
 		
-		if($cfg_ocs["import_general_domain"]) {
+		if($cfg_ocs["import_general_domain"]&&!in_array("domain",$computer_updates)) {
 			$compupdate["domain"] = ocsImportDropdown('glpi_dropdown_domain','name',$line["WORKGROUP"]);
 		}
 		
-		if($cfg_ocs["import_general_contact"]) {
+		if($cfg_ocs["import_general_contact"]&&!in_array("contact",$computer_updates)) {
 			$compupdate["contact"] = $line["USERID"];
 		}
 			
-		$compupdate["date_mod"] = date("Y-m-d H:i:s");
-		
-		if($cfg_ocs["import_general_comments"]) {
-			$compupdate["comments"] = $line["OSCOMMENTS"]."\n"."Swap: ".$line["SWAP"]."\n".addslashes($lang["ocsng"][7]);
+		if($cfg_ocs["import_general_comments"]&&!in_array("comments",$computer_updates)) {
+			$compupdate["comments"] = $line["OSCOMMENTS"]."\r\n"."Swap: ".$line["SWAP"]."\r\n".addslashes($lang["ocsng"][7]);
 		}
 
-		//better to use a GLPI api fonction (see it at glpi/glpi/computers/functions.php)
-		updateComputer($compupdate,$dohistory);
+		if (count($compupdate)){
+			$compupdate["ID"] = $glpi_id;
+			updateComputer($compupdate,$dohistory);
+		}
 		
 	}
 }
@@ -344,35 +349,36 @@ function ocsUpdateHardware($glpi_id,$ocs_id,$cfg_ocs,$dohistory=1) {
 *@return nothing.
 *
 **/
-function ocsUpdateBios($glpi_id,$ocs_id,$cfg_ocs,$dohistory=1) {
+function ocsUpdateBios($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistory=1) {
 	$dbocs = new DBocs();
 	$query = "select * from bios WHERE DEVICEID='".$ocs_id."'";
 //	echo $query;
 	$result = $dbocs->query($query) or die($dbocs->error().$query);
 	if ($dbocs->numrows($result)==1) {
-		$compupdate["ID"] = $glpi_id;
 		$line=$dbocs->fetch_assoc($result);
-		
-		if($cfg_ocs["import_general_serial"]) {
+		$line=addslashes_deep($line);
+		$compudate=array();
+
+		if($cfg_ocs["import_general_serial"]&&!in_array("serial",$computer_updates)) {
 			$compupdate["serial"] = $line["SSN"];
 		}
 		
-		if($cfg_ocs["import_general_model"]) {
+		if($cfg_ocs["import_general_model"]&&!in_array("model",$computer_updates)) {
 			$compupdate["model"] = ocsImportDropdown('glpi_dropdown_model','name',$line["SMODEL"]);
 		}	
 		
-		if($cfg_ocs["import_general_enterprise"]) {
+		if($cfg_ocs["import_general_enterprise"]&&!in_array("FK_glpi_enterprise",$computer_updates)) {
 			$compupdate["FK_glpi_enterprise"] = ocsImportEnterprise($line["SMANUFACTURER"]);
 		}
 		
-		if($cfg_ocs["import_general_type"]) {
+		if($cfg_ocs["import_general_type"]&&!empty($line["TYPE"])&&!in_array("type",$computer_updates)) {
 			$compupdate["type"] = ocsImportDropdown('glpi_type_computers','name',$line["TYPE"]);
 		}
 		
-		$compupdate["date_mod"] = date("Y-m-d H:i:s");
-		
-		//better to use a GLPI api fonction (see it at glpi/glpi/computers/functions.php)
-		updateComputer($compupdate,$dohistory);
+		if (count($compupdate)){
+			$compupdate["ID"] = $glpi_id;
+			updateComputer($compupdate,$dohistory);
+		}
 		
 	}
 }
@@ -528,4 +534,16 @@ if ($dbocs->numrows($result_ocs)>0){
 } else echo "<div align='center'><strong>".$lang["ocsng"][12]."</strong></div>";
 }
 
+
+function mergeOcsArray($glpi_id,$tomerge,$field){
+	$db=new DB();
+	$query="SELECT $field FROM glpi_ocs_link WHERE glpi_id='$glpi_id'";
+	if ($result=$db->query($query)){
+		$tab=importArrayFromDB($db->result($result,0,0));
+		$newtab=array_merge($tomerge,$tab);
+		$query="UPDATE glpi_ocs_link SET $field='".exportArrayToDB($newtab)."' WHERE glpi_id='$glpi_id'";
+		$db->query($query);
+	}
+
+}
 ?>
