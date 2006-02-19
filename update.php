@@ -3763,6 +3763,12 @@ if(!FieldExists("glpi_tracking","cost_time")) {
 	$db->query($query) or die("0.65 add cost fields in tracking ".$lang["update"][90].$db->error());
 }
 
+// Global Printers
+if(!FieldExists("glpi_printers","is_global")) {
+	$query="ALTER TABLE `glpi_printers` ADD `is_global` ENUM('0', '1') DEFAULT '0' NOT NULL AFTER `FK_glpi_enterprise` ;";
+	$db->query($query) or die("0.6 add is_global in printers ".$lang["update"][90].$db->error());
+}
+
 
 }
 
