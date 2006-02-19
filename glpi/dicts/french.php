@@ -1076,6 +1076,9 @@ $lang["printers"][29]="Imprimante ID";
 $lang["printers"][30]="Compteur de page initial"; 
 $lang["printers"][31]="Pages imprimées";
 $lang["printers"][32]="Modèle";
+$lang["printers"][33]="Gestion globale";
+$lang["printers"][34]="Gestion unitaire";
+$lang["printers"][35]="Type de gestion";
 
 $lang["repair"][0]="Réparation";
 $lang["repair"][1]="Matériel en réparation";

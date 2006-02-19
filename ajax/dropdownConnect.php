@@ -66,17 +66,17 @@
 
 		if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
 						
-	$CONNECT_SEARCH="(glpi_connect_wire.ID IS NULL";	
-	if ($_POST["idtable"]==MONITOR_TYPE||$_POST["idtable"]==PERIPHERAL_TYPE)
-		$CONNECT_SEARCH.=" OR $table.is_global='1' ";
-	$CONNECT_SEARCH.=")";
+	
 	if ($_POST["idtable"]==COMPUTER_TYPE)
-		$CONNECT_SEARCH=" '1' = '1' ";
+		$CONNECT_SEARCH=" WHERE ";
+	else {
+		$CONNECT_SEARCH=" WHERE (glpi_connect_wire.ID IS NULL OR $table.is_global='1' )";	
+	}
 		
 	$LEFTJOINCONNECT="";
 	if ($_POST["idtable"]!=COMPUTER_TYPE)		
 		$LEFTJOINCONNECT="left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = '".$_POST['idtable']."')";
-	$query = "SELECT DISTINCT $table.ID as ID,$table.name as name from $table $LEFTJOINCONNECT WHERE $CONNECT_SEARCH $where order by name ASC";
+	$query = "SELECT DISTINCT $table.ID as ID,$table.name as name from $table $LEFTJOINCONNECT $CONNECT_SEARCH $where order by name ASC";
 
 		$result = $db->query($query);
 		echo "<select name=\"".$_POST['myname']."\" size='1'>";
