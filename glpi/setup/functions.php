@@ -958,6 +958,10 @@ function showFormConfigGen($target){
 		}
 	
 	echo "</select></td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][133]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"ocs_mode\" value=\"1\" "; if($db->result($result,0,"ocs_mode") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"ocs_mode\" value=\"0\" "; if($db->result($result,0,"ocs_mode") == 0) echo "checked"; 
+	echo " ></td></tr>";
+
 	
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][102]." </td><td><select name=\"event_loglevel\">";
 	$level=$db->result($result,0,"event_loglevel");
@@ -1419,7 +1423,7 @@ function showFormMailing($target) {
 
 }
 
-function updateConfigGen($root_doc,$event_loglevel,$expire_events, $permit_helpdesk,$default_language,$date_fiscale,$cartridges_alarm,$auto_assign,$auto_update_check,$auto_add_users,$post_only_followup) {
+function updateConfigGen($root_doc,$event_loglevel,$expire_events, $permit_helpdesk,$default_language,$date_fiscale,$cartridges_alarm,$auto_assign,$auto_update_check,$auto_add_users,$post_only_followup,$ocs_mode) {
 	
 	$db = new DB;
 	
@@ -1428,7 +1432,8 @@ function updateConfigGen($root_doc,$event_loglevel,$expire_events, $permit_helpd
 		$query.= "expire_events = '". $expire_events ."', permit_helpdesk='". $permit_helpdesk ."',";
 		$query.= " date_fiscale = '". $date_fiscale ."', cartridges_alarm='".$cartridges_alarm."', ";
 		$query.= " auto_assign = '". $auto_assign ."', auto_update_check = '".$auto_update_check."', ";
-		$query.= " auto_add_users = '".$auto_add_users."', post_only_followup = '".$post_only_followup."' where ID = '1' ";
+		$query.= " auto_add_users = '".$auto_add_users."', post_only_followup = '".$post_only_followup."', ";
+		$query.= " ocs_mode = '".$ocs_mode."' where ID = '1' ";
 		$db->query($query);
 	
 }
