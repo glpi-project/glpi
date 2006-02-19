@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-02-19 03:30
+#GLPI Dump database on 2006-02-19 04:46
 
 ### Dump table glpi_cartridges
 
@@ -1001,7 +1001,7 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('2','-1','system','2006-02-19 03:29:51','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('2','-1','system','2006-02-19 04:46:13','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1385,6 +1385,7 @@ CREATE TABLE `glpi_printers` (
     `type` int(11),
     `model` int(11),
     `FK_glpi_enterprise` int(11) DEFAULT '0' NOT NULL,
+    `is_global` enum('0','1') DEFAULT '0' NOT NULL,
     `deleted` enum('Y','N') DEFAULT 'N' NOT NULL,
     `is_template` enum('0','1') DEFAULT '0' NOT NULL,
     `tplname` varchar(255),
@@ -1400,7 +1401,7 @@ CREATE TABLE `glpi_printers` (
    KEY tech_num (`tech_num`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_printers VALUES ('3','','0000-00-00 00:00:00','','','0','','','0','0','0','','',NULL,'0','0',NULL,NULL,'0','N','1','Blank Template','0',NULL);
+INSERT INTO glpi_printers VALUES ('3','','0000-00-00 00:00:00','','','0','','','0','0','0','','',NULL,'0','0',NULL,NULL,'0','0','N','1','Blank Template','0',NULL);
 
 ### Dump table glpi_repair_item
 

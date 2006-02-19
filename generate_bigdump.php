@@ -787,7 +787,7 @@ while ($data=$db->fetch_array($result)){
 	
 	$typeID=mt_rand(1,$max['type_printers']);
 	$modelID=mt_rand(1,$max['model_printers']);
-	$query="INSERT INTO glpi_printers VALUES ('','printer of loc ".$data['ID']."',NOW(),'contact ".$data['ID']."','num ".$data['ID']."','$techID','".GetRandomString(10)."','".GetRandomString(10)."','0','0','1','comments $i','".mt_rand(0,64)."','".$data['ID']."','$domainID','$networkID','$modelID','$typeID','".mt_rand(1,$max['enterprises'])."','N','0','','0','notes printers ".$data['ID']."')";
+	$query="INSERT INTO glpi_printers VALUES ('','printer of loc ".$data['ID']."',NOW(),'contact ".$data['ID']."','num ".$data['ID']."','$techID','".GetRandomString(10)."','".GetRandomString(10)."','0','0','1','comments $i','".mt_rand(0,64)."','".$data['ID']."','$domainID','$networkID','$modelID','$typeID','".mt_rand(1,$max['enterprises'])."','0','N','0','','0','notes printers ".$data['ID']."')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$printID=$db->insert_id();
 	add_documents(PRINTER_TYPE,$printID);
@@ -1087,7 +1087,7 @@ for ($i=0;$i<$max['computers'];$i++){
 		// Add printer 
 		$typeID=mt_rand(1,$max['type_printers']);
 		$modelID=mt_rand(1,$max['model_printers']);
-		$query="INSERT INTO glpi_printers VALUES ('','printer of comp $i',NOW(),'contact $i','num $i','$techID','".GetRandomString(10)."','".GetRandomString(10)."','0','0','1','comments $i','".mt_rand(0,64)."','$loc','$domainID','$networkID','$modelID','$typeID','".mt_rand(1,$max['enterprises'])."','N','0','','0','notes printers $i')";
+		$query="INSERT INTO glpi_printers VALUES ('','printer of comp $i',NOW(),'contact $i','num $i','$techID','".GetRandomString(10)."','".GetRandomString(10)."','0','0','1','comments $i','".mt_rand(0,64)."','$loc','$domainID','$networkID','$modelID','$typeID','".mt_rand(1,$max['enterprises'])."','0','N','0','','0','notes printers $i')";
 		$db->query($query) or die("PB REQUETE ".$query);
 		$printID=$db->insert_id();
 		add_documents(PRINTER_TYPE,$printID);
