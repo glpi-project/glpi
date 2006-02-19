@@ -459,7 +459,7 @@ $dbglpi = new DB();
 $query_glpi = "select glpi_ocs_link.last_update as last_update,  glpi_ocs_link.glpi_id as glpi_id, glpi_ocs_link.ocs_id as ocs_id, glpi_computers.name as name, glpi_ocs_link.auto_update as auto_update, glpi_ocs_link.ID as ID";
 $query_glpi.= " from glpi_ocs_link LEFT JOIN glpi_computers ON (glpi_computers.ID = glpi_ocs_link.glpi_id) ";
 $query_glpi.= " ORDER by glpi_ocs_link.last_update, glpi_computers.name";
-echo $query_glpi;
+
 $result_glpi = $dbglpi->query($query_glpi) or die($dbglpi->error());
 if ($dbocs->numrows($result_ocs)>0){
 	
@@ -469,15 +469,18 @@ if ($dbocs->numrows($result_ocs)>0){
 	$hardware[$data["DEVICEID"]]["date"]=$data["LASTDATE"];
 	$hardware[$data["DEVICEID"]]["name"]=addslashes($data["NAME"]);
 	}
+
 	// Get all links between glpi and OCS
 	$already_linked=array();
 	if ($dbglpi->numrows($result_glpi)>0){
-		while($data=$dbocs->fetch_array($result_glpi)){
+		while($data=$dbocs->fetch_assoc($result_glpi)){
 			$data=addslashes_deep($data);
-			$already_linked[$data["ocs_id"]]["date"]=$data["last_update"];
-			$already_linked[$data["ocs_id"]]["name"]=$data["name"];
-			$already_linked[$data["ocs_id"]]["ID"]=$data["ID"];
-			$already_linked[$data["ocs_id"]]["glpi_id"]=$data["glpi_id"];
+			if (isset($hardware[$data["ocs_id"]])){ 
+				$already_linked[$data["ocs_id"]]["date"]=$data["last_update"];
+				$already_linked[$data["ocs_id"]]["name"]=$data["name"];
+				$already_linked[$data["ocs_id"]]["ID"]=$data["ID"];
+				$already_linked[$data["ocs_id"]]["glpi_id"]=$data["glpi_id"];
+			}
 		}
 	}
 	echo "<div align='center'>";
@@ -505,11 +508,11 @@ if ($dbocs->numrows($result_ocs)>0){
 		echo "</td></tr>";
 
 		foreach ($already_linked as $ID => $tab){
+
 			echo "<tr align='center' class='tab_bg_2'><td><a href='".$HTMLRel."computers/computers-info-form.php?ID=".$tab["glpi_id"]."'>".$tab["name"]."</a></td><td>".$tab["date"]."</td><td>".$hardware[$ID]["date"]."</td><td>";
 			
 			echo "<input type='checkbox' name='toupdate[".$tab["ID"]."]' ".($check=="all"?"checked":"").">";
 			echo "</td></tr>";
-		
 		}
 		echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
 		echo "<input type='submit' name='update_ok' value='".$lang["buttons"][7]."'>";
