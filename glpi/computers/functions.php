@@ -219,9 +219,13 @@ function showComputerForm($target,$ID,$withtemplate='') {
 			autocompletionTextField("tplname","glpi_computers","tplname",$comp->fields["tplname"],20);	
 		}
 		
+		
 		echo "</th><th  colspan ='2' align='center'>".$datestring.$date;
 		if (!$template&&!empty($comp->fields['tplname']))
 			echo "&nbsp;&nbsp;&nbsp;(".$lang["common"][13].": ".$comp->fields['tplname'].")";
+		if ($comp->fields["ocs_import"])
+			echo "&nbsp;&nbsp;&nbsp;(".$lang["ocsng"][7].")";
+
 		echo "</th></tr>";
 		
 		echo "<tr class='tab_bg_1'><td>".$lang["computers"][7].":		</td>";
