@@ -68,8 +68,10 @@ function commonHeader($title,$url)
 	$utils = array($lang["Menu"][17]=>array("/reservation/index.php","1"),
 	$lang["Menu"][19]=>array("/knowbase/index.php"," "),
 	$lang["Menu"][6]=>array("/reports/index.php"," "),
-	$lang["Menu"][33]=>array("/ocsng/index.php"," "),
+	//$lang["Menu"][33]=>array("/ocsng/index.php"," "),
 	);
+	if ($cfg_features["ocs_mode"]) $utils[$lang["Menu"][33]]=array("/ocsng/index.php"," ");
+
 	$inventory = array($lang["Menu"][0]=>array("/computers/index.php","c"),
 		$lang["Menu"][3]=>array("/monitors/index.php","m"),
 		$lang["Menu"][4]=>array("/software/index.php","s"),  

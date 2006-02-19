@@ -436,14 +436,14 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 *@return Nothing (call to the class member Computers->updateInDB )
 *
 **/
-function updateComputer($input) {
+function updateComputer($input,$dohistory=1) {
 	// Update a computer in the database
 
 	global $SEARCH_OPTION, $LINK_ID_TABLE,$phproot, $lang ;
 
 	$comp = new Computer;
 	$comp->getFromDB($input["ID"],0);
-	$changes="";
+	
 	// set new date and make sure it gets updated
 	$updates[0]= "date_mod";
 	$comp->fields["date_mod"] = date("Y-m-d H:i:s");
@@ -462,7 +462,8 @@ function updateComputer($input) {
 	foreach ($input as $key => $val) {
 		if (array_key_exists($key,$comp->fields) && $comp->fields[$key]  != $input[$key]) {
 			// Debut logs
-			constructHistory($input["ID"],COMPUTER_TYPE,$key,$comp->fields[$key],$input[$key]);
+			if ($dohistory)
+				constructHistory($input["ID"],COMPUTER_TYPE,$key,$comp->fields[$key],$input[$key]);
 			// Fin des logs
 			
 			$comp->fields[$key] = $input[$key];

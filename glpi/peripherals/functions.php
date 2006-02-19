@@ -289,7 +289,7 @@ function showperipheralForm ($target,$ID,$withtemplate='') {
 }
 
 
-function updatePeripheral($input) {
+function updatePeripheral($input,$dohistory) {
 	// Update a Peripheral in the database
 
 	$mon = new Peripheral;
@@ -313,7 +313,8 @@ function updatePeripheral($input) {
 	foreach ($input as $key => $val) {
 		if (array_key_exists($key,$mon->fields) && $mon->fields[$key] != $input[$key]) {
 			// Debut logs
-			constructHistory($input["ID"],PERIPHERAL_TYPE,$key,$mon->fields[$key],$input[$key]);
+			if ($dohistory)
+				constructHistory($input["ID"],PERIPHERAL_TYPE,$key,$mon->fields[$key],$input[$key]);
 			// Fin des logs
 			$mon->fields[$key] = $input[$key];
 			$updates[$x] = $key;
