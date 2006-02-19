@@ -513,6 +513,8 @@ $lang["financial"][83]="Nombre max d'éléments (0=illimté)";
 $lang["financial"][84]="Pour ce type d'élément, les informations commerciales ne sont qu'un modèle pour les élèments que vous ajouterez ensuite.";
 $lang["financial"][85]="Elément demandé introuvable"; 
 $lang["financial"][86]="Date fin"; 
+$lang["financial"][87]="Budget"; 
+$lang["financial"][88]="Expire le : "; 
 
 $lang["help"][0]="Bienvenue";
 $lang["help"][1]="Veuillez décrire votre problème";
