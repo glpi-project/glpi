@@ -68,7 +68,7 @@ function showTrackingOnglets($target){
 	echo "<div id='barre_onglets'><ul id='onglet'>";
    		
 		 if (isNormal($_SESSION['glpitype'])){
-				echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'><a href=\"".$cfg_install["root"]."/tracking/tracking-info-form.php?ID=$ID\">".$lang["job"][38]." $ID</a></span></li>";
+				echo "<li class='actif'><a href=\"".$cfg_install["root"]."/tracking/tracking-info-form.php?ID=$ID\">".$lang["job"][38]." $ID</a></li>";
 				echo "<li class='invisible'>&nbsp;</li>";
 				
 				// admin yes  
