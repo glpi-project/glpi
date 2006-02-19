@@ -62,7 +62,6 @@ if(!empty($_GET["next"])) {
 		showFormConfigDisplay($_SERVER["PHP_SELF"]);
 	}
 	elseif($_GET["next"] == "ocsng") {
-		include ($phproot . "/glpi/includes_ocsng.php");
 		commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
 		ocsFormConfig($_SERVER["PHP_SELF"], 1);
 	}

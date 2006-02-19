@@ -121,6 +121,26 @@ define("ADD_DEVICE","1");
 define("UPDATE_DEVICE","2");
 define("DELETE_DEVICE","3");
 
+// OCSNG TYPES
+define("HARDWARE_FL","0");
+define("BIOS_FL","1");
+define("MEMORIES_FL","2");
+define("SLOTS_FL","3");
+define("REGISTRY_FL","4");
+define("CONTROLLERS_FL","5");
+define("MONITORS_FL","6");
+define("PORTS_FL","7");
+define("STORAGES_FL","8");
+define("DRIVES_FL","9");
+define("INPUTS_FL","10");
+define("MODEMS_FL","11");
+define("NETWORKS_FL","12");
+define("PRINTERS_FL","13");
+define("SOUNDS_FL","14");
+define("VIDEOS_FL","15");
+define("SOFTWARES_FL","16");
+
+
 //DEVICE ARRAY.
 $cfg_devices_tables =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
 //$cfg_devices_tables = array("moboard","processor","ram","hdd","iface","gfxcard","sndcard");
