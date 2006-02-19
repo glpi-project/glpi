@@ -61,6 +61,11 @@ if(!empty($_GET["next"])) {
 		titleConfigDisplay();
 		showFormConfigDisplay($_SERVER["PHP_SELF"]);
 	}
+	elseif($_GET["next"] == "ocsng") {
+		include ($phproot . "/glpi/includes_ocsng.php");
+		commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
+		ocsFormConfig($_SERVER["PHP_SELF"], 1);
+	}
 	
 	
 }
@@ -96,6 +101,9 @@ elseif(!empty($_POST["update_confdisplay"])) {
 	$_POST["use_ajax"],$_POST["ajax_wildcard"],$_POST["ajax_limit_count"],$_POST["dropdown_max"],$_POST["ajax_autocompletion"],$_POST["dateformat"],
 	$_POST["view_ID"],$_POST["nextprev_item"],$_POST["dropdown_limit"]);
 	glpi_header($cfg_install["root"]."/setup/setup-config.php?next=confdisplay");
+} elseif(!empty($_POST["update_ocs_config"])) {
+	ocsUpdateConfig($_POST, 1);
+	glpi_header($cfg_install["root"]."/setup/setup-config.php?next=ocsng");
 }
 
 commonFooter();
