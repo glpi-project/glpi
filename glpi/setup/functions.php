@@ -57,10 +57,10 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 
 	dropdownValue("glpi_dropdown_".$name, "ID",$ID);
         // on ajoute un input text pour entrer la valeur modifier
-		echo "<input type='image' src=\"".$HTMLRel."pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>";
+		echo "<input class='calendrier' type='image' src=\"".$HTMLRel."pics/puce.gif\" alt='' title='' name='fillright' value='fillright' >";
 
 
- 	echo "<input type='text' maxlength='100' size='20' name='value' value=\"".$value."\">";
+ 	echo "&nbsp;&nbsp;<input type='text' maxlength='100' size='20' name='value' value=\"".$value."\">";
 
 	echo "</td><td align='center' class='tab_bg_2' width='99'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."'>";
