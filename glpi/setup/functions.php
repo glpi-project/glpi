@@ -1598,8 +1598,35 @@ function ocsUpdateConfig($input, $id) {
 	global $phproot, $langOcs;
 	if(!empty($input["ocs_db_user"]) && !empty($input["ocs_db_host"])) {
 		$db = new DB;
+
+		$checksum=0;
+
+		if ($input["import_ip"]) $checksum|= pow(2,NETWORKS_FL);
+		if ($input["import_device_ports"]) $checksum|= pow(2,PORTS_FL);
+		if ($input["import_device_modems"]) $checksum|= pow(2,MODEMS_FL);
+		if ($input["import_device_drives"]) $checksum|= pow(2,STORAGES_FL);
+		if ($input["import_device_sound"]) $checksum|= pow(2,SOUNDS_FL);
+		if ($input["import_device_gfxcard"]) $checksum|= pow(2,VIDEOS_FL);
+		if ($input["import_device_iface"]) $checksum|= pow(2,NETWORKS_FL);
+		if ($input["import_device_hdd"]) $checksum|= pow(2,STORAGES_FL);
+		if ($input["import_device_memory"]) $checksum|= pow(2,MEMORIES_FL);
+		if (	$input["import_device_processor"]
+			||$input["import_general_contact"]
+			||$input["import_general_comments"]
+			||$input["import_general_domain"]
+			||$input["import_general_os"]) $checksum|= pow(2,HARDWARE_FL);
+		if (	$input["import_general_enterprise"]
+			||$input["import_general_type"]
+			||$input["import_general_model"]
+			||$input["import_general_serial"]) $checksum|= pow(2,BIOS_FL);
+		if ($input["import_printer"]) $checksum|= pow(2,PRINTERS_FL);
+		if ($input["import_software"]) $checksum|= pow(2,SOFTWARES_FL);
+		if ($input["import_monitor"]) $checksum|= pow(2,MONITORS_FL);
+		if ($input["import_periph"]) $checksum|= pow(2,INPUTS_FL);
+
+		
 		if(empty($input["ocs_db_passwd"])) $input["ocs_db_passwd"] = "";
-		$query = "update glpi_ocs_config set ocs_db_user = '".$input["ocs_db_user"]."', ocs_db_host = '".$input["ocs_db_host"]."', ocs_db_passwd = '".$input["ocs_db_passwd"]."', ocs_db_name = '".$input["ocs_db_name"]."',import_periph = '".$input["import_periph"]."'  ,import_monitor = '".$input["import_monitor"]."',import_software =  '".$input["import_software"]."', import_printer = '".$input["import_printer"]."',`import_general_os` = '".$input["import_general_os"]."',`import_general_serial` = '".$input["import_general_serial"]."',`import_general_model` = '".$input["import_general_model"]."',`import_general_enterprise` = '".$input["import_general_enterprise"]."',`import_general_type` = '".$input["import_general_type"]."',`import_general_domain` = '".$input["import_general_domain"]."',`import_general_contact` = '".$input["import_general_contact"]."',`import_general_comments` = '".$input["import_general_comments"]."',`import_device_processor` = '".$input["import_device_processor"]."',`import_device_memory` = '".$input["import_device_memory"]."',`import_device_hdd` = '".$input["import_device_hdd"]."',`import_device_iface` = '".$input["import_device_iface"]."',`import_device_gfxcard` = '".$input["import_device_gfxcard"]."',`import_device_sound` = '".$input["import_device_sound"]."',`import_device_drives` = '".$input["import_device_drives"]."',`import_device_modems` = '".$input["import_device_modems"]."',`import_device_ports` = '".$input["import_device_ports"]."',`import_ip` = '".$input["import_ip"]."'  where ID = '".$id."'";
+		$query = "update glpi_ocs_config set ocs_db_user = '".$input["ocs_db_user"]."', ocs_db_host = '".$input["ocs_db_host"]."', ocs_db_passwd = '".$input["ocs_db_passwd"]."', ocs_db_name = '".$input["ocs_db_name"]."',import_periph = '".$input["import_periph"]."'  ,import_monitor = '".$input["import_monitor"]."',import_software =  '".$input["import_software"]."', import_printer = '".$input["import_printer"]."',`import_general_os` = '".$input["import_general_os"]."',`import_general_serial` = '".$input["import_general_serial"]."',`import_general_model` = '".$input["import_general_model"]."',`import_general_enterprise` = '".$input["import_general_enterprise"]."',`import_general_type` = '".$input["import_general_type"]."',`import_general_domain` = '".$input["import_general_domain"]."',`import_general_contact` = '".$input["import_general_contact"]."',`import_general_comments` = '".$input["import_general_comments"]."',`import_device_processor` = '".$input["import_device_processor"]."',`import_device_memory` = '".$input["import_device_memory"]."',`import_device_hdd` = '".$input["import_device_hdd"]."',`import_device_iface` = '".$input["import_device_iface"]."',`import_device_gfxcard` = '".$input["import_device_gfxcard"]."',`import_device_sound` = '".$input["import_device_sound"]."',`import_device_drives` = '".$input["import_device_drives"]."',`import_device_modems` = '".$input["import_device_modems"]."',`import_device_ports` = '".$input["import_device_ports"]."',`import_ip` = '".$input["import_ip"]."',`checksum` = '".$checksum."'  where ID = '".$id."'";
 
 		if($db->query($query)) {
 			glpi_header($_SERVER["HTTP_REFERER"]); 
@@ -1617,11 +1644,13 @@ function ocsUpdateConfig($input, $id) {
 
 function ocsFormConfig($target, $id) {
 
+
 	GLOBAL  $lang;
 	$db = new DB;
 	$query = "select * from glpi_ocs_config where ID = '".$id."'";
 	$result = $db->query($query);
 	$data=$db->fetch_array($result);
+
 	echo "<form name='formconfig' action=\"$target\" method=\"post\">";
 	echo "<input type='hidden' name='update_ocs_config' value='1'>";
 	echo "<div align='center'><table class='tab_cadre'>";
