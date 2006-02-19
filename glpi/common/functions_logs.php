@@ -85,7 +85,7 @@ function constructHistory($id_device,$device_type,$key,$oldvalues,$newvalues) {
 
 			// on ne log que les changements pas la définition d'un élément vide
 			if (!empty($oldvalues)){
-			
+			$changes=array();
 			// nécessaire pour avoir les $search_option
 			include_once ($phproot . "/glpi/includes_search.php");
 			
@@ -106,8 +106,8 @@ function constructHistory($id_device,$device_type,$key,$oldvalues,$newvalues) {
 
 					}
 				} // fin foreach
-			
-			historyLog ($id_device,$device_type,$changes);
+			if (count($changes))
+				historyLog ($id_device,$device_type,$changes);
 
 			} // Fin if
 

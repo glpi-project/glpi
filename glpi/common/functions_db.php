@@ -522,4 +522,24 @@ function isIndex($table, $field) {
 		
 }
 
+
+ function exportArrayToDB($TAB) {
+  $EXPORT = "";
+  while (list($KEY,$VALUE) = each($TAB)) {
+   $EXPORT .= urlencode($KEY)."=>".urlencode($VALUE)." ";
+  }
+  return $EXPORT;
+ }
+
+ function importArrayFromDB($DATA) {
+  $TAB = array();
+ 
+  foreach(explode(" ", $DATA) as $ITEM) {
+   $A = explode("=>", $ITEM);
+	if (!empty($A[0])&&isset($A[1]))
+   $TAB[urldecode($A[0])] = urldecode($A[1]);
+  }
+  return $TAB;
+ }
+
 ?>
