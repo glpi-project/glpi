@@ -74,7 +74,7 @@ function showTrackingOnglets($target){
 				// admin yes  
 				if (isAdmin($_SESSION['glpitype'])){
 				
-				echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</a></span></li>";
+				echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</a></li>";
 				}
 		
 				// Post-only could'nt see other item  but other user yes 
@@ -898,7 +898,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	echo "<table class='tab_cadre_fixe'>";
 
 	
-	echo "<tr><th colspan='6' style:'vertical-align:middle' ><div style='position: relative'><span><strong>".$lang["search"][0]."</strong></span>";
+	echo "<tr><th colspan='6' style='vertical-align:middle' ><div style='position: relative'><span><strong>".$lang["search"][0]."</strong></span>";
 	if ($extended)
 		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href='$target?extended=0'><img src=\"".$HTMLRel."pics/deplier_up.png\" alt=''>".$lang["buttons"][36]."</a></span>";
 	else echo "<span  style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href='$target?extended=1'><img src=\"".$HTMLRel."pics/deplier_down.png\" alt=''>".$lang["buttons"][35]."</a></span>";

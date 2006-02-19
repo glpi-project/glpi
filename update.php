@@ -3666,6 +3666,98 @@ if(!FieldExists("glpi_licenses","comments")) {
 	$db->query($query) or die("0.65 add comments in licenses".$lang["update"][90].$db->error());
 }
 
+///////////// MODE OCS
+if(!TableExists("glpi_ocs_link")) {
+	$query = "CREATE TABLE `glpi_ocs_link` (
+  `ID` int(11) NOT NULL auto_increment,
+  `glpi_id` int(11) NOT NULL default '0',
+  `ocs_id` varchar(255) NOT NULL default '',
+  `auto_update` int(2) NOT NULL default '1',
+  `last_update` datetime NOT NULL default '0000-00-00 00:00:00',
+  `computer_update` TEXT NULL,
+  `import_device` TEXT NULL,
+  `import_software` TEXT NULL,
+  `import_monitor` TEXT NULL,
+  `import_peripheral` TEXT NULL,
+  `import_printers` TEXT NULL,
+  PRIMARY KEY  (`ID`),
+  UNIQUE KEY `ocs_id_2` (`ocs_id`),
+  KEY `ocs_id` (`ocs_id`),
+  KEY `glpi_id` (`glpi_id`),
+  KEY `auto_update` (`auto_update`),
+  KEY `last_update` (`last_update`)
+) TYPE=MyISAM";
+	$db->query($query) or die("0.65 MODE OCS creation ocs_link ".$lang["update"][90].$db->error());
+}
+
+if(!TableExists("glpi_ocs_config")) {
+	$query = "CREATE TABLE `glpi_ocs_config` (
+  `ID` int(11) NOT NULL auto_increment,
+  `ocs_db_user` varchar(255) NOT NULL default '',
+  `ocs_db_passwd` varchar(255) NOT NULL default '',
+  `ocs_db_host` varchar(255) NOT NULL default '',
+  `ocs_db_name` varchar(255) NOT NULL default '',
+  `checksum` int(11) NOT NULL default '0',
+  `import_periph` int(2) NOT NULL default '0',
+  `import_monitor` int(2) NOT NULL default '0',
+  `import_software` int(2) NOT NULL default '0',
+  `import_printer` int(2) NOT NULL default '0',
+  `import_general_os` int(2) NOT NULL default '0',
+  `import_general_serial` int(2) NOT NULL default '0',
+  `import_general_model` int(2) NOT NULL default '0',
+  `import_general_enterprise` int(2) NOT NULL default '0',
+  `import_general_type` int(2) NOT NULL default '0',
+  `import_general_domain` int(2) NOT NULL default '0',
+  `import_general_contact` int(2) NOT NULL default '0',
+  `import_general_comments` int(2) NOT NULL default '0',
+  `import_device_processor` int(2) NOT NULL default '0',
+  `import_device_memory` int(2) NOT NULL default '0',
+  `import_device_hdd` int(2) NOT NULL default '0',
+  `import_device_iface` int(2) NOT NULL default '0',
+  `import_device_gfxcard` int(2) NOT NULL default '0',
+  `import_device_sound` int(2) NOT NULL default '0',
+  `import_device_drives` int(2) NOT NULL default '0',
+  `import_device_ports` int(2) NOT NULL default '0',
+  `import_device_modems` int(2) NOT NULL default '0',
+  `import_ip` int(2) NOT NULL default '0',
+
+  PRIMARY KEY  (`ID`)
+) ENGINE=MyISAM";
+
+	$db->query($query) or die("0.65 MODE OCS creation ocs_config ".$lang["update"][90].$db->error());
+	$query = "INSERT INTO `glpi_ocs_config` VALUES (1, 'ocs', 'ocs', 'localhost', 'ocsweb', 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);";
+	$db->query($query) or die("0.65 MODE OCS add default config ".$lang["update"][90].$db->error());
+
+}
+
+if(!FieldExists("glpi_computers","ocs_import")) {
+	$query = "ALTER TABLE `glpi_computers` ADD `ocs_import` TINYINT NOT NULL DEFAULT '0'";
+	$db->query($query) or die("0.65 MODE OCS add default config ".$lang["update"][90].$db->error());
+}
+///////////// FIN MODE OCS
+
+
+if(!TableExists("glpi_dropdown_budget")) {
+	$query = "CREATE TABLE `glpi_dropdown_budget` (
+  `ID` int(11) NOT NULL auto_increment,
+  `name` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=MyISAM;";
+	$db->query($query) or die("0.65 add dropdown_budget ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_infocoms","budget")) {
+	$query = "ALTER TABLE `glpi_infocoms` ADD `budget` INT NULL DEFAULT '0';";
+	$db->query($query) or die("0.65 add budget in infocoms ".$lang["update"][90].$db->error());
+}
+ 
+if(!FieldExists("glpi_tracking","cost_time")) {
+	$query = "ALTER TABLE `glpi_tracking` ADD `cost_time` FLOAT NOT NULL DEFAULT '0',
+		ADD `cost_fixed` FLOAT NOT NULL DEFAULT '0',
+		ADD `cost_material` FLOAT NOT NULL DEFAULT '0'";
+	$db->query($query) or die("0.65 add cost fields in tracking ".$lang["update"][90].$db->error());
+}
+
 
 }
 
