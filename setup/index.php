@@ -75,7 +75,11 @@ echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."links/\"><b>
 echo "<td  align='center'><a href=\"setup-config.php?next=mailing\"><b>".$lang["setup"][68]."</b></a></td>";
 echo " </tr>";
 
-echo "<tr class='tab_bg_1'><td>&nbsp;</td>";
+echo "<tr class='tab_bg_1'><td align='center'>";
+if ($cfg_features["ocs_mode"])
+	echo "<a href=\"setup-config.php?next=ocsng\"><b>".$lang["setup"][134]."</b></a>";
+else echo "&nbsp;";
+echo "</td>";
 echo "<td  align='center'><a href=\"setup-config.php?next=extsources\"><b>".$lang["setup"][67]."</b></a></td>";
 echo "</tr>";
 

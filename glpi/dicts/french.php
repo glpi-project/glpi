@@ -938,10 +938,51 @@ $lang["networking"][57]="Choissisez une adresse MAC dans la liste ou spécifiez 
 $lang["networking"][58]="Modèle";
 
 $lang["ocsng"][0]="OCS Inventory NG";
-$lang["ocsng"][1] = "Synchronisation des ordinateurs déjà  importés";
-$lang["ocsng"][2] = "Importation de nouveaux ordinateurs";
-$lang["ocsng"][3] = "Configuration";
-$lang["ocsng"][4] = "Lier de nouveaux ordinateurs à des ordinateurs existants";
+$lang["ocsng"][1]="Synchronisation des ordinateurs déjà  importés";
+$lang["ocsng"][2]="Importation de nouveaux ordinateurs";
+$lang["ocsng"][3]="Configuration";
+$lang["ocsng"][4]="Lier de nouveaux ordinateurs à des ordinateurs existants";
+
+
+$lang["ocsconfig"][0] = "Configuration du modules d'import OCS NG -> GLPI";
+$lang["ocsconfig"][1] = "Utilisateur de la base de données OCSweb";
+$lang["ocsconfig"][2] = "Hote OCSweb";
+$lang["ocsconfig"][3] = "Mot de passe de l'utilisateur OCSweb";
+$lang["ocsconfig"][4] = "Nom de la base de données OCS";
+$lang["ocsconfig"][5] = "Options d'importation";
+$lang["ocsconfig"][6] = "Logiciels";
+$lang["ocsconfig"][7] = "Ecrans";
+$lang["ocsconfig"][8] = "Périphériques";
+$lang["ocsconfig"][9] = "Imprimantes";
+$lang["ocsconfig"][10] = "Import global";
+$lang["ocsconfig"][11] = "Pas d'import";
+$lang["ocsconfig"][12] = "Import unique";
+$lang["ocsconfig"][13] = "Import unique : tout est importé tel quel";
+$lang["ocsconfig"][14] = "Import global : tout est importé mais le matériel est géré de manière globale (sans doublons)";
+$lang["ocsconfig"][15] = "Pas d'import : le plugin n'importera pas ces éléments";
+$lang["ocsconfig"][16] = "Attention utiliser la synchronisation risque de vous faire perdre des données : au moment de la mise à jour tous vos élements (meme non importé pas le plugin) seront effacés";
+$lang["ocsconfig"][17] = "Oui";
+$lang["ocsconfig"][18] = "Non";
+$lang["ocsconfig"][19] = "OS";
+$lang["ocsconfig"][20] = "Numero de serie";
+$lang["ocsconfig"][21] = "Modele";
+$lang["ocsconfig"][22] = "Fabricant";
+$lang["ocsconfig"][23] = "Type";
+$lang["ocsconfig"][24] = "Domaine";
+$lang["ocsconfig"][25] = "Contact";
+$lang["ocsconfig"][26] = "Commentaire";
+$lang["ocsconfig"][27] = "Informations générales Ordinateurs";
+$lang["ocsconfig"][28] = "Périphériques";
+$lang["ocsconfig"][29] = "Processeurs";
+$lang["ocsconfig"][30] = "Mémoires";
+$lang["ocsconfig"][31] = "Disques Durs";
+$lang["ocsconfig"][32] = "Cartes Réseau";
+$lang["ocsconfig"][33] = "Cartes Graphique";
+$lang["ocsconfig"][34] = "Cartes Son";
+$lang["ocsconfig"][35] = "Lecteurs";
+$lang["ocsconfig"][36] = "Modems";
+$lang["ocsconfig"][37] = "Ports";
+$lang["ocsconfig"][38] = "IP";
 
 
 $lang["pager"][1]="à";
@@ -1302,6 +1343,7 @@ $lang["setup"][130]="Utiliser pour Onglets Suivant/Précédent";
 $lang["setup"][131]="Nombre de caractères limite pour les listes déroulantes";
 $lang["setup"][132]="Permettre aux utilisateurs post-only d'ajouter des suivis";
 $lang["setup"][133]="Activer le mode OCSNG";
+$lang["setup"][134]="Mode OCSNG";
 
 $lang["setup"][150]="Sources d'authentification externes";
 $lang["setup"][151]="Si vous ne souhaitez pas utiliser LDAP comme source(s) de connexion laissez les champs vides";
@@ -1527,6 +1569,7 @@ $lang["title"][35]="Réservations";
 $lang["title"][36]="Consommables";
 $lang["title"][37]="Notes";
 $lang["title"][38]="Historique";
+$lang["title"][39]="OCS Inventory NG";
 
 $lang["toolbar"][1]="Gras";
 $lang["toolbar"][2]="Italique";

@@ -380,6 +380,9 @@ $cfg_features["cartridges_alarm"] = $db->result($result,0,"cartridges_alarm");
 // Auto Assign tracking
 $cfg_features["auto_assign"] = $db->result($result,0,"auto_assign");
 
+// OCS MODE
+$cfg_features["ocs_mode"] = $db->result($result,0,"ocs_mode");
+
 // Authorized anonymous knowledgebase consultation
 $cfg_features["public_faq"] = $db->result($result,0,"public_faq");
 

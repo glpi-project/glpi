@@ -38,7 +38,7 @@ include ($phproot."/glpi/includes.php");
 
 	checkAuthentication("admin");
 
-	commonHeader($lang["Menu"][33],$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
 
 	echo "<div align='center'><table border='0'><tr><td>";
 	echo "<img src=\"".$HTMLRel."/pics/logoOcs.png\" alt='".$lang["ocsng"][0]."' title='".$lang["ocsng"][0]."' ></td>";

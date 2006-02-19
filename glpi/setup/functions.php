@@ -57,10 +57,10 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 
 	dropdownValue("glpi_dropdown_".$name, "ID",$ID);
         // on ajoute un input text pour entrer la valeur modifier
-		echo "<input class='calendrier' type='image' src=\"".$HTMLRel."pics/puce.gif\" alt='' title='' name='fillright' value='fillright' >";
+		echo "<input type='image' src=\"".$HTMLRel."pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>";
 
 
- 	echo "&nbsp;&nbsp;<input type='text' maxlength='100' size='20' name='value' value=\"".$value."\">";
+ 	echo "<input type='text' maxlength='100' size='20' name='value' value=\"".$value."\">";
 
 	echo "</td><td align='center' class='tab_bg_2' width='99'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."'>";
@@ -1580,6 +1580,251 @@ function checkNewVersionAvailable($auto=1){
 			}
  	} else 
  	echo "<div align='center'>".$lang["setup"][305]."</div>";           
+}
+
+/**
+* Update the configuration
+*
+* Update this plugin config from the form, do the query and go back to the form.
+*
+*@param $input array : The _POST values from the config form
+*@param $id int : template or basic computers
+*
+*@return nothing (displays or error)
+*
+**/
+function ocsUpdateConfig($input, $id) {
+	
+	global $phproot, $langOcs;
+	if(!empty($input["ocs_db_user"]) && !empty($input["ocs_db_host"])) {
+		$db = new DB;
+		if(empty($input["ocs_db_passwd"])) $input["ocs_db_passwd"] = "";
+		$query = "update glpi_ocs_config set ocs_db_user = '".$input["ocs_db_user"]."', ocs_db_host = '".$input["ocs_db_host"]."', ocs_db_passwd = '".$input["ocs_db_passwd"]."', ocs_db_name = '".$input["ocs_db_name"]."',import_periph = '".$input["import_periph"]."'  ,import_monitor = '".$input["import_monitor"]."',import_software =  '".$input["import_software"]."', import_printer = '".$input["import_printer"]."',`import_general_os` = '".$input["import_general_os"]."',`import_general_serial` = '".$input["import_general_serial"]."',`import_general_model` = '".$input["import_general_model"]."',`import_general_enterprise` = '".$input["import_general_enterprise"]."',`import_general_type` = '".$input["import_general_type"]."',`import_general_domain` = '".$input["import_general_domain"]."',`import_general_contact` = '".$input["import_general_contact"]."',`import_general_comments` = '".$input["import_general_comments"]."',`import_device_processor` = '".$input["import_device_processor"]."',`import_device_memory` = '".$input["import_device_memory"]."',`import_device_hdd` = '".$input["import_device_hdd"]."',`import_device_iface` = '".$input["import_device_iface"]."',`import_device_gfxcard` = '".$input["import_device_gfxcard"]."',`import_device_sound` = '".$input["import_device_sound"]."',`import_device_drives` = '".$input["import_device_drives"]."',`import_device_modems` = '".$input["import_device_modems"]."',`import_device_ports` = '".$input["import_device_ports"]."',`import_ip` = '".$input["import_ip"]."'  where ID = '".$id."'";
+
+		if($db->query($query)) {
+			glpi_header($_SERVER["HTTP_REFERER"]); 
+		} else {
+			glpi_header($_SERVER["HTTP_REFERER"]);	
+		}
+	} else {
+		print_r($input);
+		echo $langOcs["error"][0];
+	}
+	
+}
+
+
+
+function ocsFormConfig($target, $id) {
+
+	GLOBAL  $lang;
+	$db = new DB;
+	$query = "select * from glpi_ocs_config where ID = '".$id."'";
+	$result = $db->query($query);
+	$data=$db->fetch_array($result);
+	echo "<form name='formconfig' action=\"$target\" method=\"post\">";
+	echo "<input type='hidden' name='update_ocs_config' value='1'>";
+	echo "<div align='center'><table class='tab_cadre'>";
+	echo "<tr><th colspan='2'>".$lang["ocsconfig"][0]."</th></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][2]." </td><td> <input type=\"text\" name=\"ocs_db_host\" value=\"".$data["ocs_db_host"]."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][4]." </td><td> <input type=\"text\" name=\"ocs_db_name\" value=\"".$data["ocs_db_name"]."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][1]." </td><td> <input type=\"text\" name=\"ocs_db_user\" value=\"".$data["ocs_db_user"]."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][3]." </td><td> <input type=\"password\" name=\"ocs_db_passwd\" value=\"".$data["ocs_db_passwd"]."\"></td></tr>";
+	echo "</table></div>";
+	echo "<br />";
+	echo "<div align='center'><table class='tab_cadre'>";
+	echo "<tr><th colspan='2'>".$lang["ocsconfig"][5]."</th></tr>";
+	$periph=$data["import_periph"];
+	$monitor=$data["import_monitor"];
+	$printer=$data["import_printer"];
+	$software=$data["import_software"];
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][8]." </td><td>";
+	echo "<select name='import_periph'>";
+	echo "<option value='0' ".($periph==0?" selected ":"").">".$lang["ocsconfig"][11]."</option>";
+	echo "<option value='1' ".($periph==1?" selected ":"").">".$lang["ocsconfig"][10]."</option>";
+	echo "<option value='2' ".($periph==2?" selected ":"").">".$lang["ocsconfig"][12]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][7]." </td><td>";
+	echo "<select name='import_monitor'>";
+	echo "<option value='0' ".($monitor==0?" selected ":"").">".$lang["ocsconfig"][11]."</option>";
+	echo "<option value='1' ".($monitor==1?" selected ":"").">".$lang["ocsconfig"][10]."</option>";
+	echo "<option value='2' ".($monitor==2?" selected ":"").">".$lang["ocsconfig"][12]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][9]." </td><td>";
+
+	echo "<select name='import_printer'>";
+	echo "<option value='0' ".($printer==0?" selected ":"").">".$lang["ocsconfig"][11]."</option>";
+	echo "<option value='1' ".($printer==1?" selected ":"").">".$lang["ocsconfig"][10]."</option>";
+	echo "<option value='2' ".($printer==2?" selected ":"").">".$lang["ocsconfig"][12]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][6]." </td><td>";
+	echo "<select name='import_software'>";
+	echo "<option value='0' ".($software==0?" selected ":"").">".$lang["ocsconfig"][11]."</option>";
+	echo "<option value='1' ".($software==1?" selected ":"").">".$lang["ocsconfig"][12]."</option>";
+	echo "</select>";
+
+	echo "</td></tr>";
+	echo "</table></div>";
+
+	echo "<div align='center'>".$lang["ocsconfig"][15]."</div>";
+	echo "<div align='center'>".$lang["ocsconfig"][14]."</div>";
+	echo "<div align='center'>".$lang["ocsconfig"][13]."</div>";
+
+	echo "<br />";
+
+	echo "<div align='center'><table class='tab_cadre'>";
+	echo "<tr><th>".$lang["ocsconfig"][27]."</th><th>".$lang["ocsconfig"][28]."</th></tr>";
+	$os=$data["import_general_os"];
+	$serial=$data["import_general_serial"];
+	$model=$data["import_general_model"];
+	$enterprise=$data["import_general_enterprise"];
+	$type=$data["import_general_type"];
+	$domain=$data["import_general_domain"];
+	$contact=$data["import_general_contact"];
+	$comments=$data["import_general_comments"];
+	echo "<tr><td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][19]." </td><td>";
+	echo "<select name='import_general_os'>";
+	echo "<option value='0' ".($os==0?" selected ":"").">".$lang["ocsconfig"][18]."</option>";
+	echo "<option value='1' ".($os==1?" selected ":"").">".$lang["ocsconfig"][17]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][20]." </td><td>";
+	echo "<select name='import_general_serial'>";
+	echo "<option value='0' ".($serial==0?" selected ":"").">".$lang["ocsconfig"][18]."</option>";
+	echo "<option value='1' ".($serial==1?" selected ":"").">".$lang["ocsconfig"][17]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][21]." </td><td>";
+	echo "<select name='import_general_model'>";
+	echo "<option value='0' ".($model==0?" selected ":"").">".$lang["ocsconfig"][18]."</option>";
+	echo "<option value='1' ".($model==1?" selected ":"").">".$lang["ocsconfig"][17]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][22]." </td><td>";
+	echo "<select name='import_general_enterprise'>";
+	echo "<option value='0' ".($enterprise==0?" selected ":"").">".$lang["ocsconfig"][18]."</option>";
+	echo "<option value='1' ".($enterprise==1?" selected ":"").">".$lang["ocsconfig"][17]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][23]." </td><td>";
+	echo "<select name='import_general_type'>";
+	echo "<option value='0' ".($type==0?" selected ":"").">".$lang["ocsconfig"][18]."</option>";
+	echo "<option value='1' ".($type==1?" selected ":"").">".$lang["ocsconfig"][17]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][24]." </td><td>";
+	echo "<select name='import_general_domain'>";
+	echo "<option value='0' ".($domain==0?" selected ":"").">".$lang["ocsconfig"][18]."</option>";
+	echo "<option value='1' ".($domain==1?" selected ":"").">".$lang["ocsconfig"][17]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][25]." </td><td>";
+	echo "<select name='import_general_contact'>";
+	echo "<option value='0' ".($contact==0?" selected ":"").">".$lang["ocsconfig"][18]."</option>";
+	echo "<option value='1' ".($contact==1?" selected ":"").">".$lang["ocsconfig"][17]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][26]." </td><td>";
+	echo "<select name='import_general_comments'>";
+	echo "<option value='0' ".($comments==0?" selected ":"").">".$lang["ocsconfig"][18]."</option>";
+	echo "<option value='1' ".($comments==1?" selected ":"").">".$lang["ocsconfig"][17]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_2'><td colspan='2'>&nbsp;";
+	echo "</td></tr>";
+	$ip=$data["import_ip"];
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][38]." </td><td>";
+	echo "<select name='import_ip'>";
+	echo "<option value='0' ".($ip==0?" selected ":"").">".$lang["ocsconfig"][18]."</option>";
+	echo "<option value='1' ".($ip==1?" selected ":"").">".$lang["ocsconfig"][17]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+
+	echo "</table></td>";
+	echo "<td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
+	$processor=$data["import_device_processor"];
+	$memory=$data["import_device_memory"];
+	$hdd=$data["import_device_hdd"];
+	$iface=$data["import_device_iface"];
+	$gfxcard=$data["import_device_gfxcard"];
+	$sound=$data["import_device_sound"];
+	$drives=$data["import_device_drives"];
+	$modems=$data["import_device_modems"];
+	$ports=$data["import_device_ports"];
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][29]." </td><td>";
+	echo "<select name='import_device_processor'>";
+	echo "<option value='0' ".($processor==0?" selected ":"").">".$lang["ocsconfig"][18]."</option>";
+	echo "<option value='1' ".($processor==1?" selected ":"").">".$lang["ocsconfig"][17]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][30]." </td><td>";
+	echo "<select name='import_device_memory'>";
+	echo "<option value='0' ".($memory==0?" selected ":"").">".$lang["ocsconfig"][18]."</option>";
+	echo "<option value='1' ".($memory==1?" selected ":"").">".$lang["ocsconfig"][17]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][31]." </td><td>";
+	echo "<select name='import_device_hdd'>";
+	echo "<option value='0' ".($hdd==0?" selected ":"").">".$lang["ocsconfig"][18]."</option>";
+	echo "<option value='1' ".($hdd==1?" selected ":"").">".$lang["ocsconfig"][17]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][32]." </td><td>";
+	echo "<select name='import_device_iface'>";
+	echo "<option value='0' ".($iface==0?" selected ":"").">".$lang["ocsconfig"][18]."</option>";
+	echo "<option value='1' ".($iface==1?" selected ":"").">".$lang["ocsconfig"][17]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][33]." </td><td>";
+	echo "<select name='import_device_gfxcard'>";
+	echo "<option value='0' ".($gfxcard==0?" selected ":"").">".$lang["ocsconfig"][18]."</option>";
+	echo "<option value='1' ".($gfxcard==1?" selected ":"").">".$lang["ocsconfig"][17]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][34]." </td><td>";
+	echo "<select name='import_device_sound'>";
+	echo "<option value='0' ".($sound==0?" selected ":"").">".$lang["ocsconfig"][18]."</option>";
+	echo "<option value='1' ".($sound==1?" selected ":"").">".$lang["ocsconfig"][17]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][35]." </td><td>";
+	echo "<select name='import_device_drives'>";
+	echo "<option value='0' ".($drives==0?" selected ":"").">".$lang["ocsconfig"][18]."</option>";
+	echo "<option value='1' ".($drives==1?" selected ":"").">".$lang["ocsconfig"][17]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][36]." </td><td>";
+	echo "<select name='import_device_modems'>";
+	echo "<option value='0' ".($modems==0?" selected ":"").">".$lang["ocsconfig"][18]."</option>";
+	echo "<option value='1' ".($modems==1?" selected ":"").">".$lang["ocsconfig"][17]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][37]." </td><td>";
+	echo "<select name='import_device_ports'>";
+	echo "<option value='0' ".($ports==0?" selected ":"").">".$lang["ocsconfig"][18]."</option>";
+	echo "<option value='1' ".($ports==1?" selected ":"").">".$lang["ocsconfig"][17]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+
+	echo "</table></td></tr>";
+	echo "</table></div>";
+	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_conf_ocs\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
+	echo "</form>";
+	
 }
 
 ?>
