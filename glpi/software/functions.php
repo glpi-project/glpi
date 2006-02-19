@@ -686,6 +686,7 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 	$values['expire']="0000-00-00";
 	$values['oem']='N';
 	$values["oem_computer"]='';
+	$values["comments"]='';
 //	$values['is_update']='N';
 //	$values["update_software"]='';
 	$values['buy']='Y';

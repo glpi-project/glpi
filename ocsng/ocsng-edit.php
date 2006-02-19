@@ -36,35 +36,23 @@
 include ("_relpos.php");
 include ($phproot."/glpi/includes.php");
 include ($phproot."/glpi/includes_ocsng.php");
-include ($phproot."/glpi/includes_computers.php");
-include ($phproot."/glpi/includes_financial.php");
 
 checkAuthentication("admin");
+include ($phproot."/glpi/includes_search.php");
 
-commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
+nullHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
 
-if (!isset($_POST["update_ok"])){
-if (!isset($_GET['check'])) $_GET['check']='all';
-if (!isset($_GET['start'])) $_GET['start']=0;
-
-ocsCleanLinks();
-ocsShowUpdateComputer($_GET['check'],$_GET['start']);
-
-} else {
-	if (count($_POST['toupdate'])>0){
-		foreach ($_POST['toupdate'] as $key => $val){
-			if ($val=="on")	ocsUpdateComputer($key,2);
-		}
+if (isset($_POST["ID"])){
+	$_GET["ID"]=$_POST["ID"];
+	if (isset($_POST["lockfield"])&&count($_POST["lockfield"])){
+		foreach ($_POST["lockfield"] as $key => $val)
+			deleteInOcsArray($_POST["ID"],$key,"computer_update");
 	}
-
-echo "<div align='center'><strong>".$lang["ocsng"][8]."<br>";
-echo "<a href='".$_SERVER['PHP_SELF']."'>".$lang["buttons"][13]."</a>";
-echo "</strong></div>";
-	
-//glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 
-commonFooter();
+ocsEditLock($_SERVER["PHP_SELF"],$_GET["ID"]);
+
+nullFooter();
 
 ?>

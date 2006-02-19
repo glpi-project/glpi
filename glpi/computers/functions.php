@@ -73,7 +73,7 @@ function titleComputers(){
 *
 **/
 function showComputerOnglets($target,$withtemplate,$actif){
-	global $lang,$HTMLRel;
+	global $lang,$HTMLRel,$cfg_features;
 	
 	$template="";
 	if(!empty($withtemplate)){
@@ -90,6 +90,7 @@ function showComputerOnglets($target,$withtemplate,$actif){
 	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
 	echo "<li "; if ($actif=="10") {echo "class='actif'";} echo "><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
 	echo "<li "; if ($actif=="12") {echo "class='actif'";} echo "><a href='$target&amp;onglet=12$template'>".$lang["title"][38]."</a></li>";
+
 	echo "<li class='invisible'>&nbsp;</li>";
 	echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
 	}
@@ -224,7 +225,7 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		if (!$template&&!empty($comp->fields['tplname']))
 			echo "&nbsp;&nbsp;&nbsp;(".$lang["common"][13].": ".$comp->fields['tplname'].")";
 		if ($comp->fields["ocs_import"])
-			echo "&nbsp;&nbsp;&nbsp;(".$lang["ocsng"][7].")";
+			echo "&nbsp;&nbsp;&nbsp;(".$lang["ocsng"][7]." <span onClick=\"window.open('".$HTMLRel."/ocsng/ocsng-edit.php?ID=$ID','ocsng','location=infocoms,width=750,height=600,scrollbars=no')\">EDIT</span>)";
 
 		echo "</th></tr>";
 		
@@ -477,8 +478,8 @@ function updateComputer($input,$dohistory=1) {
 		}
 	}
 	
-	// Manage changes for OCS
-	if ($comp->fields["ocs_import"]&&$dohistory){
+	// Manage changes for OCS if more than 1 element (date_mod)
+	if ($comp->fields["ocs_import"]&&$dohistory==1&&count($updates)>1){
 		mergeOcsArray($comp->fields["ID"],$updates,"computer_update");
 	}
 
