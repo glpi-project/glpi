@@ -52,6 +52,7 @@ include ($phproot . "/glpi/includes_financial.php");
 include ($phproot . "/glpi/includes_documents.php");
 include ($phproot . "/glpi/includes_users.php");
 include ($phproot . "/glpi/includes_links.php");
+include ($phproot . "/glpi/includes_ocsng.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;

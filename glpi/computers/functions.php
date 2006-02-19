@@ -477,10 +477,9 @@ function updateComputer($input,$dohistory=1) {
 		}
 	}
 	
-
 	// Manage changes for OCS
-	if ($comp->fields["ocs_import"]){
-	
+	if ($comp->fields["ocs_import"]&&$dohistory){
+		mergeOcsArray($comp->fields["ID"],$updates,"computer_update");
 	}
 
 	if(isset($input["state"])){
