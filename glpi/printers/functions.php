@@ -340,7 +340,7 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 }
 
 
-function updatePrinter($input) {
+function updatePrinter($input,$dohistory=1) {
 	// Update a printer in the database
 
 	$printer = new Printer;
@@ -365,7 +365,8 @@ function updatePrinter($input) {
 		if (array_key_exists($key,$printer->fields) && $printer->fields[$key] != $input[$key]) {
 			
 			// Debut logs
-			constructHistory($input["ID"],PRINTER_TYPE,$key,$printer->fields[$key],$input[$key]);
+			if ($dohistory)
+				constructHistory($input["ID"],PRINTER_TYPE,$key,$printer->fields[$key],$input[$key]);
 			// Fin des logs
 			$printer->fields[$key] = $input[$key];
 			$updates[$x] = $key;

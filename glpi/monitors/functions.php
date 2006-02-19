@@ -349,7 +349,7 @@ echo "</td></tr>";
 }
 
 
-function updateMonitor($input) {
+function updateMonitor($input,$dohistory) {
 	// Update a monitor in the database
 
 	$mon = new Monitor;
@@ -373,7 +373,8 @@ function updateMonitor($input) {
 	foreach ($input as $key => $val) {
 		if (array_key_exists($key,$mon->fields)&&$mon->fields[$key] != $input[$key]) {
 			// Debut logs
-			constructHistory($input["ID"],MONITOR_TYPE,$key,$mon->fields[$key],$input[$key]);
+			if ($dohistory)
+				constructHistory($input["ID"],MONITOR_TYPE,$key,$mon->fields[$key],$input[$key]);
 			// Fin des logs
 			
 			$mon->fields[$key] = $input[$key];
