@@ -53,11 +53,11 @@ ocsShowUpdateComputer($_GET['check'],$_GET['start']);
 } else {
 	if (count($_POST['toupdate'])>0){
 		foreach ($_POST['toupdate'] as $key => $val){
-			if ($val=="on")	ocsUpdateComputer($key);
+			if ($val=="on")	ocsUpdateComputer($key,1);
 		}
 	}
 
-echo "<div align='center'><strong>".$langOcs["import"][10]."<br>";
+echo "<div align='center'><strong>".$lang["ocsng"][8]."<br>";
 echo "<a href='".$_SERVER['PHP_SELF']."'>".$lang["buttons"][13]."</a>";
 echo "</strong></div>";
 	
