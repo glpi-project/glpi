@@ -1701,9 +1701,9 @@ function showJobDetails ($ID){
 		echo "<form method='post' action=\"".$cfg_install["root"]."/tracking/tracking-info-form.php\"  enctype=\"multipart/form-data\">\n";
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		// Premi�e ligne
-		echo "<tr><th colspan='2'>";
+		echo "<tr ><th colspan='2' style='font-size:10px'>";
 		echo $lang["joblist"][11].":<strong>".convDateTime($job->fields["date"])."</strong>";"</th>";
-		echo "<th>".$lang["joblist"][12].":\n";
+		echo "<th style='font-size:10px'>".$lang["joblist"][12].":\n";
 		if (!ereg("old_",$job->fields["status"]))
 		{
 			echo "<i>".$lang["job"][1]."</i>\n";
@@ -1748,59 +1748,9 @@ function showJobDetails ($ID){
 		echo "</table></td>";
 
 		// Deuxi�e colonne
-		echo "<td valign='top' width='33%'><table border='0'>";
+		echo "<td valign='top' width='33%'>";
 
-		echo "<tr><td align='right'>";
-		// cout
-		echo "</td></tr>";
-		echo "<tr><td align='right'>";
-		//coup
-		echo "</td></tr>\n";
-
-		if ($job->fields["realtime"]>0){
-			echo "<tr><td align='right'>";
-			echo $lang["job"][20].":</td><td>";
-			echo "<strong>".getRealtime($job->fields["realtime"])."</strong>";
-			echo "</td></tr>";
-		}
-
-		if ($cfg_features["mailing"]==1){
-			echo "<tr><td align='right'>";
-			echo $lang["job"][19].":</td><td>";
-			if ($isadmin){
-				echo "<select name='emailupdates'>";
-				echo "<option value='no'>".$lang["choice"][1]."</option>";
-				echo "<option value='yes' ".($job->fields["emailupdates"]=="yes"?" selected ":"").">".$lang["choice"][0]."</option>";
-				echo "</select>";
-			} else {
-				if ($job->fields["emailupdates"]=="yes") echo $lang["choice"][0];
-				else $lang["choice"][1];
-			}
-			echo "</td></tr>";
-
-				echo "<tr><td align='right'>";
-				echo $lang["joblist"][27].":";
-				echo "</td><td>";
-				if ($isadmin){
-					autocompletionTextField("uemail","glpi_tracking","uemail",$job->fields["uemail"],15);
-
-						if (!empty($job->fields["uemail"]))
-					echo "<a href='mailto:".$job->fields["uemail"]."'><img src='".$HTMLRel."pics/edit.png' alt='Mail'></a>";
-				} else if (!empty($job->fields["uemail"]))
-					echo "<a href='mailto:".$job->fields["uemail"]."'>".$job->fields["uemail"]."</a>";
-				else echo "&nbsp;";
-				echo "</td></tr>";
-			
-
-		}
-
-
-		echo "</table></td>";
-
-		// Troisi�e Colonne
-		echo "<td valign='top' width='40%'><table border='0'>";
-
-		echo "<tr><td align='right'>";
+		echo "<table border='0'><tr><td align='right'>";
 		echo $lang["common"][1].":</td><td>";
 		if ($isadmin){
 			echo $item->getType()." - ".$item->getLink()."<br>";
@@ -1837,6 +1787,55 @@ function showJobDetails ($ID){
 														     
 		}
 		echo "</table>";
+			
+
+
+
+
+
+		
+
+
+		echo "</td>";
+
+		// Troisi�e Colonne
+		echo "<td valign='top' width='20%'>";
+
+
+		echo "<table border='0'>";
+		if ($job->fields["realtime"]>0){
+					echo "<tr><td align='right'>";
+					echo $lang["job"][20].":</td><td>";
+					echo "<strong>".getRealtime($job->fields["realtime"])."</strong>";
+					echo "</td></tr>";
+				}
+		echo "<tr><td align='right'>";
+		// cout
+		echo $lang["job"][40].": ";
+		echo "</td><td><input type='text' maxlength='100' size='15' name='cost_time' value=\"".$job->fields["cost_time"]."\"></td></tr>";
+		
+		echo "<tr><td align='right'>";
+		
+		echo $lang["job"][41].": ";
+		echo "</td><td><input type='text' maxlength='100' size='15' name='cost_fixed' value=\"".$job->fields["cost_fixed"]."\">";
+
+		echo "</td></tr>\n";
+
+		echo "<tr><td align='right'>";
+		
+		echo $lang["job"][42].": ";
+		echo "</td><td><input type='text' maxlength='100' size='15' name='cost_material' value=\"".$job->fields["cost_material"]."\">";
+
+		echo "</td></tr>\n";
+		
+		echo "<tr><td align='right'>";
+		
+		echo $lang["job"][43].": ";
+		echo "</td><td><strong>";
+		echo trackingTotalCost($job->fields["realtime"],$job->fields["cost_time"],$job->fields["cost_fixed"],$job->fields["cost_material"]);
+		echo "<strong></td></tr>\n</table>";
+
+		
 		echo "</td></tr>";
 		
 
@@ -1872,35 +1871,70 @@ function showJobDetails ($ID){
 		echo "</td>";
 		// Colonne 3
 
-		echo "<td>";
+		echo "<td valign='top'>";
+		
+		// Mailing ? Y or no ?
 
+		if ($cfg_features["mailing"]==1){
+			echo "<table><tr><td align='right'>";
+			echo $lang["job"][19].":</td><td>";
+			if ($isadmin){
+				echo "<select name='emailupdates'>";
+				echo "<option value='no'>".$lang["choice"][1]."</option>";
+				echo "<option value='yes' ".($job->fields["emailupdates"]=="yes"?" selected ":"").">".$lang["choice"][0]."</option>";
+				echo "</select>";
+			} else {
+				if ($job->fields["emailupdates"]=="yes") echo $lang["choice"][0];
+				else $lang["choice"][1];
+			}
+			echo "</td></tr>";
+
+				echo "<tr><td align='right'>";
+				echo $lang["joblist"][27].":";
+				echo "</td><td>";
+				if ($isadmin){
+					autocompletionTextField("uemail","glpi_tracking","uemail",$job->fields["uemail"],15);
+
+						if (!empty($job->fields["uemail"]))
+					echo "<a href='mailto:".$job->fields["uemail"]."'><img src='".$HTMLRel."pics/edit.png' alt='Mail'></a>";
+				} else if (!empty($job->fields["uemail"]))
+					echo "<a href='mailto:".$job->fields["uemail"]."'>".$job->fields["uemail"]."</a>";
+				else echo "&nbsp;";
+				echo "</td></tr></table>";
+			
+
+		}
+
+
+
+		
 		// File associated ?
 		if ($isadmin){
 
 			$query2 = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '".$job->ID."' AND glpi_doc_device.device_type = '".TRACKING_TYPE."' ";
 			$result2 = $db->query($query2);
 			$numfiles=$db->numrows($result2);
-			$colspan=1;
-			if ($numfiles>1) $colspan=2;
-			echo "<table width='100%'><tr><th colspan='$colspan'>".$lang["tracking"][25]."</th></tr>";			
+			//$colspan=1;
+			//if ($numfiles>1) $colspan=2;
+			echo "<table width='100%'><tr><th colspan='2'>".$lang["tracking"][25]."</th></tr>";			
 
 			if ($numfiles>0){
-				$i=0;
+				//$i=0;
 				$con=new Document;
 				while ($data=$db->fetch_array($result2)){
-					if ($i%2==0&&$i>0) echo "</tr><tr>";
-					echo "<td>";
+					//if ($i%2==0&&$i>0) echo "</tr><tr>";
+					echo "<tr><td>";
 					$con->getFromDB($data["FK_doc"]);
 					echo getDocumentLink($con->fields["filename"]);
-					echo "<a href='".$HTMLRel."documents/documents-info-form.php?deleteitem=delete&amp;ID=".$data["ID"]."'><img src='".$HTMLRel."pics/delete.png'></a>";
-					echo "</td>";
-					$i++;
+					echo "<a href='".$HTMLRel."documents/documents-info-form.php?deleteitem=delete&amp;ID=".$data["ID"]."'></td><td><img src='".$HTMLRel."pics/delete.png'></a>";
+					echo "</td></tr>";
+					//$i++;
 				}
-				if ($i%2==1) echo "<td>&nbsp;</td>";
-				echo "</tr>";
+				//if ($i%2==1) echo "<td>&nbsp;</td>";
+				//echo "</tr>";
 			}
 			echo "<tr><td colspan='2'>";
-			echo "<input type='file' name='filename' size='25'>";
+			echo "<input type='file' name='filename' size='20'>";
 			echo "</td></tr></table>";
 		} else echo "&nbsp;";
 
@@ -2275,5 +2309,11 @@ function showUpdateFollowupForm($ID){
 			echo "</div>";
 		}
 }
+
+// fonction calcul de cout total d'un ticket
+function trackingTotalCost($realtime,$cost_time,$cost_fixed,$cost_material){
+			$totalcost=($realtime*$cost_time)+$cost_fixed+$cost_material;
+			return $totalcost;
+		}
 
 ?>

@@ -686,6 +686,11 @@ $lang["job"][36]="Planification impossible. Erreur de dates ou technicien non di
 $lang["job"][37]="Résumé";
 $lang["job"][38]="Ticket";
 $lang["job"][39]="Modifier un suivi";
+$lang["job"][40]="Coût horaire";
+$lang["job"][41]="Côut fixe";
+$lang["job"][42]="Coût matériel";
+$lang["job"][43]="Coût total";
+
 
 $lang["joblist"][0]="Statut";
 $lang["joblist"][1]="Date";
