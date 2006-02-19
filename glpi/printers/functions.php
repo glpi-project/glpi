@@ -266,6 +266,14 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 		autocompletionTextField("initial_pages","glpi_printers","initial_pages",$printer->fields["initial_pages"],20);		
 		echo "</td></tr>\n";
 
+
+	echo "<tr><td>".$lang["printers"][35].":</td><td>";
+	echo "<select name='is_global'>";
+	echo "<option value='0' ".(!$printer->fields["is_global"]?" selected":"").">".$lang["printers"][34]."</option>";
+	echo "<option value='1' ".($printer->fields["is_global"]?" selected":"").">".$lang["printers"][33]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+
 	echo "</table>\n";
 	echo "</td>\n";	
 	echo "</tr>\n";

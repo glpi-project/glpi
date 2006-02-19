@@ -51,15 +51,9 @@ function showConnect($target,$ID,$type) {
 
 		// Is global connection ?
 		$global=0;
-		if ($type==PERIPHERAL_TYPE){
-			$periph=new Peripheral;
-			$periph->getFromDB($ID);
-			$global=$periph->fields['is_global'];
-		} else if ($type==MONITOR_TYPE){
-			$mon=new Monitor;
-			$mon->getFromDB($ID);
-			$global=$mon->fields['is_global'];
-		}
+		$ci=new CommonItem();
+		$ci->getFromDB($type,$ID);
+		$global=$ci->obj->fields['is_global'];
 		
 		$connect->type=$type;
 		$computers = $connect->getComputerContact($ID);
