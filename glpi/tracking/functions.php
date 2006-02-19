@@ -88,7 +88,7 @@ function showTrackingOnglets($target){
 		}elseif ($cfg_features["post_only_followup"]){
 		
 			// Postonly could post followup in helpdesk area	
-			echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'><a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&ID=$ID\">".$lang["job"][38]." $ID</span></a></li>";
+			echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'><a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&amp;ID=$ID\">".$lang["job"][38]." $ID</span></a></li>";
 
 			echo "<li class='invisible'>&nbsp;</li>";
 
@@ -181,7 +181,7 @@ function showCentralJobList($target,$start) {
 
 		echo "<table class='tab_cadrehov'>";
 		
-		echo "<tr><th colspan='5'><b><a href=\"".$cfg_install["root"]."/tracking/index.php?assign=".$_SESSION["glpiID"]."&amp;status=process&reset=reset_before\">".$lang["central"][9]."</a></b></th></tr>";
+		echo "<tr><th colspan='5'><b><a href=\"".$cfg_install["root"]."/tracking/index.php?assign=".$_SESSION["glpiID"]."&amp;status=process&amp;reset=reset_before\">".$lang["central"][9]."</a></b></th></tr>";
 		echo "<tr><th></th>";
 		echo "<th>".$lang["joblist"][3]."</th>";
 		echo "<th>".$lang["tracking"][20]."</th>";
@@ -227,19 +227,19 @@ function showCentralJobCount(){
 
 	echo "<br><div align='center'><table class='tab_cadrehov' style='text-align:center'>";
 	
-	echo "<tr><th colspan='2'><b><a href=\"".$cfg_install["root"]."/tracking/index.php?status=process&reset=reset_before\">".$lang["tracking"][0]."</a></b></th></tr>";
+	echo "<tr><th colspan='2'><b><a href=\"".$cfg_install["root"]."/tracking/index.php?status=process&amp;reset=reset_before\">".$lang["tracking"][0]."</a></b></th></tr>";
 	echo "<tr><th ><b>".$lang["tracking"][28]."</b></th><th>".$lang["tracking"][29]."</th></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_install["root"]."/tracking/index.php?status=new&reset=reset_before\">".$lang["tracking"][30]."</a> </td>";
+	echo "<td><a href=\"".$cfg_install["root"]."/tracking/index.php?status=new&amp;reset=reset_before\">".$lang["tracking"][30]."</a> </td>";
 	echo "<td>".$status["new"]."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_install["root"]."/tracking/index.php?status=assign&reset=reset_before\">".$lang["tracking"][31]."</a></td>";
+	echo "<td><a href=\"".$cfg_install["root"]."/tracking/index.php?status=assign&amp;reset=reset_before\">".$lang["tracking"][31]."</a></td>";
 	echo "<td>".$status["assign"]."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_install["root"]."/tracking/index.php?status=plan&reset=reset_before\">".$lang["tracking"][32]."</a></td>";
+	echo "<td><a href=\"".$cfg_install["root"]."/tracking/index.php?status=plan&amp;reset=reset_before\">".$lang["tracking"][32]."</a></td>";
 	echo "<td>".$status["plan"]."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_install["root"]."/tracking/index.php?status=waiting&reset=reset_before\">".$lang["tracking"][33]."</a></td>";
+	echo "<td><a href=\"".$cfg_install["root"]."/tracking/index.php?status=waiting&amp;reset=reset_before\">".$lang["tracking"][33]."</a></td>";
 	echo "<td>".$status["waiting"]."</td></tr>";
 
 	
@@ -1701,7 +1701,18 @@ function showJobDetails ($ID){
 		echo "<form method='post' action=\"".$cfg_install["root"]."/tracking/tracking-info-form.php\"  enctype=\"multipart/form-data\">\n";
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		// Premi�e ligne
-		echo"<tr><th colspan='3'><span style='font-size:1px'>&nbsp;</span></th></tr>";
+		echo "<tr><th colspan='2'>";
+		echo $lang["joblist"][11].":<strong>".convDateTime($job->fields["date"])."</strong>";"</th>";
+		echo "<th>".$lang["joblist"][12].":\n";
+		if (!ereg("old_",$job->fields["status"]))
+		{
+			echo "<i>".$lang["job"][1]."</i>\n";
+		}
+		else
+		{
+			echo "<strong>".convDateTime($job->fields["closedate"])."</strong>\n";
+		}
+		echo "</th></tr>";
 		echo "<tr class='tab_bg_2'>";
 		// Premier Colonne
 		echo "<td valign='top' width='27%'>";
@@ -1740,19 +1751,11 @@ function showJobDetails ($ID){
 		echo "<td valign='top' width='33%'><table border='0'>";
 
 		echo "<tr><td align='right'>";
-		echo $lang["joblist"][11].":</td><td><strong>".convDateTime($job->fields["date"])."</strong>";
+		// cout
 		echo "</td></tr>";
-		echo "<tr><td align='right'>".$lang["joblist"][12].":</td>\n";
-		if (!ereg("old_",$job->fields["status"]))
-		{
-			echo "<td><i>".$lang["job"][1]."</i></td>\n";
-		}
-		else
-		{
-			echo "<td><strong>".convDateTime($job->fields["closedate"])."</strong>\n";
-		}
-
-		echo "</tr>\n";
+		echo "<tr><td align='right'>";
+		//coup
+		echo "</td></tr>\n";
 
 		if ($job->fields["realtime"]>0){
 			echo "<tr><td align='right'>";
@@ -1889,7 +1892,7 @@ function showJobDetails ($ID){
 					echo "<td>";
 					$con->getFromDB($data["FK_doc"]);
 					echo getDocumentLink($con->fields["filename"]);
-					echo "<a href='".$HTMLRel."documents/documents-info-form.php?deleteitem=delete&ID=".$data["ID"]."'><img src='".$HTMLRel."pics/delete.png'></a>";
+					echo "<a href='".$HTMLRel."documents/documents-info-form.php?deleteitem=delete&amp;ID=".$data["ID"]."'><img src='".$HTMLRel."pics/delete.png'></a>";
 					echo "</td>";
 					$i++;
 				}
