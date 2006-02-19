@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-02-19 04:46
+#GLPI Dump database on 2006-02-19 20:47
 
 ### Dump table glpi_cartridges
 
@@ -83,13 +83,13 @@ CREATE TABLE `glpi_computers` (
     `tech_num` int(11) DEFAULT '0' NOT NULL,
     `comments` text,
     `date_mod` datetime,
-    `os` int(11),
+    `os` int(11) DEFAULT '0' NOT NULL,
     `auto_update` int(11) DEFAULT '0' NOT NULL,
-    `location` int(11),
+    `location` int(11) DEFAULT '0' NOT NULL,
     `domain` int(11) DEFAULT '0' NOT NULL,
     `network` int(11) DEFAULT '0' NOT NULL,
-    `model` int(11),
-    `type` int(11),
+    `model` int(11) DEFAULT '0' NOT NULL,
+    `type` int(11) DEFAULT '0' NOT NULL,
     `is_template` enum('0','1') DEFAULT '0' NOT NULL,
     `tplname` varchar(200),
     `FK_glpi_enterprise` int(11) DEFAULT '0' NOT NULL,
@@ -108,7 +108,7 @@ CREATE TABLE `glpi_computers` (
    KEY type_2 (`type`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_computers VALUES ('19','','','','','','0','Empty Template',NULL,'0','0','0','0','0','0',NULL,'1','Blank Template','0','N',NULL,'0');
+INSERT INTO glpi_computers VALUES ('19','','','','','','0','Empty Template',NULL,'0','0','0','0','0','0','0','1','Blank Template','0','N',NULL,'0');
 
 ### Dump table glpi_config
 
@@ -1001,7 +1001,7 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('2','-1','system','2006-02-19 04:46:13','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('2','-1','system','2006-02-19 20:47:17','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1158,7 +1158,7 @@ CREATE TABLE `glpi_monitors` (
     `flags_subd` tinyint(4) DEFAULT '0' NOT NULL,
     `flags_bnc` tinyint(4) DEFAULT '0' NOT NULL,
     `flags_dvi` tinyint(4) DEFAULT '0' NOT NULL,
-    `location` int(11),
+    `location` int(11) DEFAULT '0' NOT NULL,
     `type` int(11),
     `model` int(11),
     `FK_glpi_enterprise` int(11) DEFAULT '0' NOT NULL,
@@ -1177,7 +1177,7 @@ CREATE TABLE `glpi_monitors` (
    KEY tech_num (`tech_num`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_monitors VALUES ('4','','0000-00-00 00:00:00','','','0','','','','0','0','0','0','0','0',NULL,NULL,NULL,'0','0','N','1','Blank Template',NULL);
+INSERT INTO glpi_monitors VALUES ('4','','0000-00-00 00:00:00','','','0','','','','0','0','0','0','0','0','0',NULL,NULL,'0','0','N','1','Blank Template',NULL);
 
 ### Dump table glpi_networking
 
@@ -1193,7 +1193,7 @@ CREATE TABLE `glpi_networking` (
     `tech_num` int(11) DEFAULT '0' NOT NULL,
     `date_mod` datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
     `comments` text,
-    `location` int(11),
+    `location` int(11) DEFAULT '0' NOT NULL,
     `domain` int(11) DEFAULT '0' NOT NULL,
     `network` int(11) DEFAULT '0' NOT NULL,
     `type` int(11),
@@ -1216,7 +1216,7 @@ CREATE TABLE `glpi_networking` (
    KEY tech_num (`tech_num`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_networking VALUES ('10','','','','','','','0','0000-00-00 00:00:00','',NULL,'0','0',NULL,NULL,NULL,'0','N','1','Blank Template','','',NULL);
+INSERT INTO glpi_networking VALUES ('10','','','','','','','0','0000-00-00 00:00:00','','0','0','0',NULL,NULL,NULL,'0','N','1','Blank Template','','',NULL);
 
 ### Dump table glpi_networking_ports
 
@@ -1379,7 +1379,7 @@ CREATE TABLE `glpi_printers` (
     `flags_usb` tinyint(4) DEFAULT '0' NOT NULL,
     `comments` text,
     `ramSize` varchar(200),
-    `location` int(11),
+    `location` int(11) DEFAULT '0' NOT NULL,
     `domain` int(11) DEFAULT '0' NOT NULL,
     `network` int(11) DEFAULT '0' NOT NULL,
     `type` int(11),
@@ -1401,7 +1401,7 @@ CREATE TABLE `glpi_printers` (
    KEY tech_num (`tech_num`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_printers VALUES ('3','','0000-00-00 00:00:00','','','0','','','0','0','0','','',NULL,'0','0',NULL,NULL,'0','0','N','1','Blank Template','0',NULL);
+INSERT INTO glpi_printers VALUES ('3','','0000-00-00 00:00:00','','','0','','','0','0','0','','','0','0','0',NULL,NULL,'0','0','N','1','Blank Template','0',NULL);
 
 ### Dump table glpi_repair_item
 

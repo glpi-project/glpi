@@ -477,6 +477,12 @@ function updateComputer($input,$dohistory=1) {
 		}
 	}
 	
+
+	// Manage changes for OCS
+	if ($comp->fields["ocs_import"]){
+	
+	}
+
 	if(isset($input["state"])){
 		if (isset($input["is_template"])&&$input["is_template"]==1){
 			updateState(COMPUTER_TYPE,$input["ID"],$input["state"],1);

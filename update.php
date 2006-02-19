@@ -3067,7 +3067,7 @@ if(!FieldExists("glpi_config","auto_update_check")) {
 
 //// Tracking 
 if(FieldExists("glpi_tracking","status")) {
-	$aleready_done=false;
+	$already_done=false;
 	if ($result = $db->query("show fields from glpi_tracking"))
 	while ($data=$db->fetch_array($result)){
 	if ($data["Field"]=="status"&&ereg("done",$data["Type"]))
@@ -3387,10 +3387,19 @@ if(FieldExists("glpi_$table","comments")) {
 		CHANGE `otherserial` `otherserial` VARCHAR( 200 ) NULL ,
 		CHANGE `contact` `contact` VARCHAR( 200 ) NULL ,
 		CHANGE `contact_num` `contact_num` VARCHAR( 200 ) NULL ,
+		CHANGE `location` `location` INT( 11 ) NOT NULL DEFAULT '0',
 		CHANGE `comments` `comments` TEXT NULL ";
 	$db->query($query) or die("0.65 alter various fields in $table ".$lang["update"][90].$db->error());
 }
 
+if(FieldExists("glpi_computers","os")) {	
+	$db->query($query) or die("0.65 alter various fields in $table ".$lang["update"][90].$db->error());
+	$query="ALTER TABLE `glpi_computers` CHANGE `os` `os` INT( 11 ) NOT NULL DEFAULT '0',
+		CHANGE `model` `model` INT( 11 ) NOT NULL DEFAULT '0',
+		CHANGE `type` `type` INT( 11 ) NOT NULL DEFAULT '0'";
+	$db->query($query) or die("0.65 alter various fields in computers ".$lang["update"][90].$db->error());
+
+}
 if(FieldExists("glpi_networking","ram")) {	
 	$query="ALTER TABLE `glpi_networking` CHANGE `ram` `ram` VARCHAR( 200 ) NULL ,
 		CHANGE `ifmac` `ifmac` VARCHAR( 200 ) NULL ,
