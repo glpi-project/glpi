@@ -289,7 +289,7 @@ function showperipheralForm ($target,$ID,$withtemplate='') {
 }
 
 
-function updatePeripheral($input,$dohistory) {
+function updatePeripheral($input,$dohistory=1) {
 	// Update a Peripheral in the database
 
 	$mon = new Peripheral;
