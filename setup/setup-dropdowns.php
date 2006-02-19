@@ -141,6 +141,7 @@ if (isset($_POST["several_add"])) {
 	$dp["network"]=$lang["setup"][88];
 	$dp["vlan"]=$lang["setup"][90];
 	$dp["auto_update"]=$lang["setup"][98];
+	$dp["budget"]=$lang["setup"][99];
 	
 	
 //	asort($dp);
@@ -251,6 +252,10 @@ echo "<option value='$key' $sel>".$val."</option>";
 		case "auto_update" : 
 		showFormDropDown($_SERVER["PHP_SELF"],"auto_update",$lang["setup"][98],$ID,$value2);
 		break;
+		case "budget" : 
+		showFormDropDown($_SERVER["PHP_SELF"],"budget",$lang["setup"][99],$ID,$value2);
+		break;
+
 	default : break;
 	}
 	commonFooter();
