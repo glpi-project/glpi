@@ -3067,18 +3067,26 @@ if(!FieldExists("glpi_config","auto_update_check")) {
 
 //// Tracking 
 if(FieldExists("glpi_tracking","status")) {
+	$aleready_done=false;
+	if ($result = $db->query("show fields from glpi_tracking"))
+	while ($data=$db->fetch_array($result)){
+	if ($data["Field"]=="status"&&ereg("done",$data["Type"]))
+		$already_done=true;
+	}
+	
+	if (!$already_done)	{
+		$query="ALTER TABLE `glpi_tracking` CHANGE `status` `status` ENUM( 'new', 'old', 'old_done', 'assign', 'plan', 'old_notdone', 'waiting' ) DEFAULT 'new' NOT NULL ;";
+		$db->query($query) or die("0.65 alter status in tracking".$lang["update"][90].$db->error());
 
-	$query="ALTER TABLE `glpi_tracking` CHANGE `status` `status` ENUM( 'new', 'old', 'old_done', 'assign', 'plan', 'old_notdone', 'waiting' ) DEFAULT 'new' NOT NULL ;";
-	$db->query($query) or die("0.65 alter status in tracking".$lang["update"][90].$db->error());
+		$query2=" UPDATE `glpi_tracking` SET status='old_done' WHERE status <> 'new';";
+		$db->query($query2) or die("0.65 update status=old in tracking".$lang["update"][90].$db->error());	
 
-	$query2=" UPDATE `glpi_tracking` SET status='old_done' WHERE status <> 'new';";
-	$db->query($query2) or die("0.65 update status=old in tracking".$lang["update"][90].$db->error());	
+		$query3=" UPDATE `glpi_tracking` SET status='assign' WHERE status='new' AND assign <> '0';";
+		$db->query($query3) or die("0.65 update status=assign in tracking".$lang["update"][90].$db->error());	
 
-	$query3=" UPDATE `glpi_tracking` SET status='assign' WHERE status='new' AND assign <> '0';";
-	$db->query($query3) or die("0.65 update status=assign in tracking".$lang["update"][90].$db->error());	
-
-	$query4="ALTER TABLE `glpi_tracking` CHANGE `status` `status` ENUM( 'new', 'old_done', 'assign', 'plan', 'old_notdone', 'waiting' ) DEFAULT 'new' NOT NULL ;";
-	$db->query($query4) or die("0.65 alter status in tracking".$lang["update"][90].$db->error());
+		$query4="ALTER TABLE `glpi_tracking` CHANGE `status` `status` ENUM( 'new', 'old_done', 'assign', 'plan', 'old_notdone', 'waiting' ) DEFAULT 'new' NOT NULL ;";
+		$db->query($query4) or die("0.65 alter status in tracking".$lang["update"][90].$db->error());
+	}
 }
 
 if(FieldExists("glpi_tracking_planning","id_assign")) {
