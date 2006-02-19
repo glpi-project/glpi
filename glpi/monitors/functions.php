@@ -349,7 +349,7 @@ echo "</td></tr>";
 }
 
 
-function updateMonitor($input,$dohistory) {
+function updateMonitor($input,$dohistory=1) {
 	// Update a monitor in the database
 
 	$mon = new Monitor;
