@@ -93,6 +93,7 @@ $lang["buttons"][34]="Annuler";
 $lang["buttons"][35]="Avancée";
 $lang["buttons"][36]="Basique";
 $lang["buttons"][37]="Importer";
+$lang["buttons"][38]="Déverouiller";
 
 $lang["calendar"][0]="Erreur : date invalide";
 
@@ -960,6 +961,8 @@ $lang["ocsng"][11] = "Mise à jour des ordinateurs";
 $lang["ocsng"][12] = "Pas de nouvelle machine à mettre à jour";
 $lang["ocsng"][13] = "Date d'import dans GLPI";
 $lang["ocsng"][14] = "Date dernière mise à jour OCS";
+$lang["ocsng"][15] = "Aucun champ verrouillé";
+$lang["ocsng"][16] = "Champs verrouillés";
 
 $lang["ocsconfig"][0] = "Configuration du modules d'import OCS NG -> GLPI";
 $lang["ocsconfig"][1] = "Utilisateur de la base de données OCSweb";

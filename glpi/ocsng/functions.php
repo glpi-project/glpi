@@ -179,7 +179,7 @@ function ocsImportComputer($DEVICEID){
 }
 
 
-function ocsUpdateComputer($ID,$dohistory=1){
+function ocsUpdateComputer($ID,$dohistory){
 
     $dbglpi = new DB();
 
@@ -544,6 +544,55 @@ function mergeOcsArray($glpi_id,$tomerge,$field){
 		$query="UPDATE glpi_ocs_link SET $field='".exportArrayToDB($newtab)."' WHERE glpi_id='$glpi_id'";
 		$db->query($query);
 	}
+
+}
+
+function deleteInOcsArray($glpi_id,$todel,$field){
+	$db=new DB();
+	$query="SELECT $field FROM glpi_ocs_link WHERE glpi_id='$glpi_id'";
+	if ($result=$db->query($query)){
+		$tab=importArrayFromDB($db->result($result,0,0));
+		unset($tab[$todel]);
+		$query="UPDATE glpi_ocs_link SET $field='".exportArrayToDB($tab)."' WHERE glpi_id='$glpi_id'";
+		$db->query($query);
+	}
+
+}
+
+
+function ocsEditLock($target,$ID){
+	global $lang,$SEARCH_OPTION;
+
+	$db=new DB();
+	$query="SELECT * FROM glpi_ocs_link WHERE glpi_id='$ID'";
+	$result=$db->query($query);
+	if ($db->numrows($result)==1){
+		$data=$db->fetch_assoc($result);
+		echo "<div align='center'>";
+		// Print lock fields for OCSNG
+		$lockable_fields=array("type","FK_glpi_enterprise","model","serial","comments","contact","domain","os");
+		$locked=array_intersect(importArrayFromDB($data["computer_update"]),$lockable_fields);
+		if (count($locked)){
+			echo "<form method='post' action=\"$target\">";
+			echo "<input type='hidden' name='ID' value='$ID'>";
+			echo "<table class='tab_cadre'>";
+			echo "<tr><th colspan='2'>".$lang["ocsng"][16]."</th></tr>";
+			foreach ($locked as $key => $val){
+				foreach ($SEARCH_OPTION[COMPUTER_TYPE] as $key2 => $val2)
+				if ($val2["linkfield"]==$val)
+				echo "<tr class='tab_bg_1'><td>".$val2["name"]."</td><td><input type='checkbox' name='lockfield[".$key."]'></td></tr>";
+			}
+			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input type='submit' name='unlock_field' value='".$lang["buttons"][38]."'></td></tr>";
+			echo "</table>";
+			echo "</form>";
+		} else echo "<strong>".$lang["ocsng"][15]."</strong>";
+		echo "</div>";
+	}
+
+}
+
+function unlockOcsFields($ID,$fields){
+
 
 }
 ?>
