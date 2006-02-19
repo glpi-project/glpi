@@ -3734,6 +3734,11 @@ if(!FieldExists("glpi_computers","ocs_import")) {
 	$query = "ALTER TABLE `glpi_computers` ADD `ocs_import` TINYINT NOT NULL DEFAULT '0'";
 	$db->query($query) or die("0.65 MODE OCS add default config ".$lang["update"][90].$db->error());
 }
+
+if(!FieldExists("glpi_config","ocs_mode")) {
+	$query = "ALTER TABLE `glpi_config` ADD `ocs_mode` TINYINT NOT NULL DEFAULT '0' ";
+	$db->query($query) or die("0.65 MODE OCS add ocs_mode in config ".$lang["update"][90].$db->error());
+}
 ///////////// FIN MODE OCS
 
 
