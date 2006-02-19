@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-02-14 22:38
+#GLPI Dump database on 2006-02-19 02:13
 
 ### Dump table glpi_cartridges
 
@@ -95,6 +95,7 @@ CREATE TABLE `glpi_computers` (
     `FK_glpi_enterprise` int(11) DEFAULT '0' NOT NULL,
     `deleted` enum('Y','N') DEFAULT 'N' NOT NULL,
     `notes` longtext,
+    `ocs_import` tinyint(4) DEFAULT '0' NOT NULL,
    PRIMARY KEY (`ID`),
    KEY location (`location`),
    KEY os (`os`),
@@ -107,7 +108,7 @@ CREATE TABLE `glpi_computers` (
    KEY type_2 (`type`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_computers VALUES ('19','','','','','','0','Empty Template',NULL,'0','0','0','0','0','0',NULL,'1','Blank Template','0','N',NULL);
+INSERT INTO glpi_computers VALUES ('19','','','','','','0','Empty Template',NULL,'0','0','0','0','0','0',NULL,'1','Blank Template','0','N',NULL,'0');
 
 ### Dump table glpi_config
 
@@ -187,7 +188,7 @@ CREATE TABLE `glpi_config` (
     `url_in_mail` enum('0','1') DEFAULT '0' NOT NULL,
     `text_login` text,
     `auto_update_check` smallint(6) DEFAULT '0' NOT NULL,
-    `last_update_check` date DEFAULT '2006-02-14' NOT NULL,
+    `last_update_check` date DEFAULT '2006-02-19' NOT NULL,
     `founded_new_version` varchar(10),
     `dropdown_max` int(11) DEFAULT '100' NOT NULL,
     `ajax_wildcard` char(1) DEFAULT '*' NOT NULL,
@@ -203,7 +204,7 @@ CREATE TABLE `glpi_config` (
    PRIMARY KEY (`ID`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','1','1','255','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','1','0','0','0','0','0','0','0','0','1','0','0','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','0','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi','0','','0','2006-02-14','','100','*','0','50','1','1','0','name','0','30','1');
+INSERT INTO glpi_config VALUES ('1','389','10','1','1','255','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','1','0','0','0','0','0','0','0','0','1','0','0','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','0','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi','0','','0','2006-02-19','','100','*','0','50','1','1','0','name','0','30','1');
 
 ### Dump table glpi_connect_wire
 
@@ -687,6 +688,16 @@ CREATE TABLE `glpi_dropdown_auto_update` (
 ) TYPE=MyISAM;
 
 
+### Dump table glpi_dropdown_budget
+
+DROP TABLE IF EXISTS `glpi_dropdown_budget`;
+CREATE TABLE `glpi_dropdown_budget` (
+    `ID` int(11) NOT NULL auto_increment,
+    `name` varchar(255),
+   PRIMARY KEY (`ID`)
+) TYPE=MyISAM;
+
+
 ### Dump table glpi_dropdown_cartridge_type
 
 DROP TABLE IF EXISTS `glpi_dropdown_cartridge_type`;
@@ -989,7 +1000,7 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('2','-1','system','2006-02-14 22:38:18','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('2','-1','system','2006-02-19 02:13:10','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1050,6 +1061,7 @@ CREATE TABLE `glpi_infocoms` (
     `amort_coeff` float DEFAULT '0' NOT NULL,
     `comments` text,
     `facture` varchar(200),
+    `budget` int(11) DEFAULT '0',
    PRIMARY KEY (`ID`),
    UNIQUE FK_device (`FK_device`, `device_type`),
    KEY FK_enterprise (`FK_enterprise`),
@@ -1254,6 +1266,67 @@ CREATE TABLE `glpi_networking_wire` (
 ) TYPE=MyISAM;
 
 
+### Dump table glpi_ocs_config
+
+DROP TABLE IF EXISTS `glpi_ocs_config`;
+CREATE TABLE `glpi_ocs_config` (
+    `ID` int(11) NOT NULL auto_increment,
+    `ocs_db_user` varchar(255) NOT NULL,
+    `ocs_db_passwd` varchar(255) NOT NULL,
+    `ocs_db_host` varchar(255) NOT NULL,
+    `ocs_db_name` varchar(255) NOT NULL,
+    `checksum` int(11) DEFAULT '0' NOT NULL,
+    `import_periph` int(2) DEFAULT '0' NOT NULL,
+    `import_monitor` int(2) DEFAULT '0' NOT NULL,
+    `import_software` int(2) DEFAULT '0' NOT NULL,
+    `import_printer` int(2) DEFAULT '0' NOT NULL,
+    `import_general_os` int(2) DEFAULT '0' NOT NULL,
+    `import_general_serial` int(2) DEFAULT '0' NOT NULL,
+    `import_general_model` int(2) DEFAULT '0' NOT NULL,
+    `import_general_enterprise` int(2) DEFAULT '0' NOT NULL,
+    `import_general_type` int(2) DEFAULT '0' NOT NULL,
+    `import_general_domain` int(2) DEFAULT '0' NOT NULL,
+    `import_general_contact` int(2) DEFAULT '0' NOT NULL,
+    `import_general_comments` int(2) DEFAULT '0' NOT NULL,
+    `import_device_processor` int(2) DEFAULT '0' NOT NULL,
+    `import_device_memory` int(2) DEFAULT '0' NOT NULL,
+    `import_device_hdd` int(2) DEFAULT '0' NOT NULL,
+    `import_device_iface` int(2) DEFAULT '0' NOT NULL,
+    `import_device_gfxcard` int(2) DEFAULT '0' NOT NULL,
+    `import_device_sound` int(2) DEFAULT '0' NOT NULL,
+    `import_device_drives` int(2) DEFAULT '0' NOT NULL,
+    `import_device_ports` int(2) DEFAULT '0' NOT NULL,
+    `import_device_modems` int(2) DEFAULT '0' NOT NULL,
+    `import_ip` int(2) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (`ID`)
+) TYPE=MyISAM;
+
+INSERT INTO glpi_ocs_config VALUES ('1','ocs','ocs','localhost','ocsweb','0','2','2','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
+
+### Dump table glpi_ocs_link
+
+DROP TABLE IF EXISTS `glpi_ocs_link`;
+CREATE TABLE `glpi_ocs_link` (
+    `ID` int(11) NOT NULL auto_increment,
+    `glpi_id` int(11) DEFAULT '0' NOT NULL,
+    `ocs_id` varchar(255) NOT NULL,
+    `auto_update` int(2) DEFAULT '1' NOT NULL,
+    `last_update` datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+    `computer_update` text,
+    `import_device` text,
+    `import_software` text,
+    `import_monitor` text,
+    `import_peripheral` text,
+    `import_printers` text,
+   PRIMARY KEY (`ID`),
+   UNIQUE ocs_id_2 (`ocs_id`),
+   KEY ocs_id (`ocs_id`),
+   KEY glpi_id (`glpi_id`),
+   KEY auto_update (`auto_update`),
+   KEY last_update (`last_update`)
+) TYPE=MyISAM;
+
+
 ### Dump table glpi_peripherals
 
 DROP TABLE IF EXISTS `glpi_peripherals`;
@@ -1438,6 +1511,9 @@ CREATE TABLE `glpi_tracking` (
     `emailupdates` enum('yes','no') DEFAULT 'no' NOT NULL,
     `realtime` float DEFAULT '0' NOT NULL,
     `category` int(11) DEFAULT '0' NOT NULL,
+    `cost_time` float DEFAULT '0' NOT NULL,
+    `cost_fixed` float DEFAULT '0' NOT NULL,
+    `cost_material` float DEFAULT '0' NOT NULL,
    PRIMARY KEY (`ID`),
    KEY computer (`computer`),
    KEY author (`author`),
