@@ -140,6 +140,8 @@ define("SOUNDS_FL","14");
 define("VIDEOS_FL","15");
 define("SOFTWARES_FL","16");
 
+define("MAX_OCS_CHECKSUM","131071");
+
 
 //DEVICE ARRAY.
 $cfg_devices_tables =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");

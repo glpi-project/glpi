@@ -92,6 +92,7 @@ $lang["buttons"][33]="Début";
 $lang["buttons"][34]="Annuler";
 $lang["buttons"][35]="Avancée";
 $lang["buttons"][36]="Basique";
+$lang["buttons"][37]="Importer";
 
 $lang["calendar"][0]="Erreur : date invalide";
 
@@ -949,7 +950,16 @@ $lang["ocsng"][1]="Synchronisation des ordinateurs déjà  importés";
 $lang["ocsng"][2]="Importation de nouveaux ordinateurs";
 $lang["ocsng"][3]="Configuration";
 $lang["ocsng"][4]="Lier de nouveaux ordinateurs à des ordinateurs existants";
-
+$lang["ocsng"][5]="Importer nouveaux ordinateurs";
+$lang["ocsng"][6]="Date";
+$lang["ocsng"][7]="Importé depuis OCSNG";
+$lang["ocsng"][8]="Importation réussie";
+$lang["ocsng"][9] = "Pas de nouvelle machine à importer";
+$lang["ocsng"][10] = "Ordinateurs mis à jour dans OCS";
+$lang["ocsng"][11] = "Mise à jour des ordinateurs";
+$lang["ocsng"][12] = "Pas de nouvelle machine à mettre à jour";
+$lang["ocsng"][13] = "Date d'import dans GLPI";
+$lang["ocsng"][14] = "Date dernière mise à jour OCS";
 
 $lang["ocsconfig"][0] = "Configuration du modules d'import OCS NG -> GLPI";
 $lang["ocsconfig"][1] = "Utilisateur de la base de données OCSweb";
