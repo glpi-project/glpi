@@ -253,7 +253,7 @@ function showCentralJobCount(){
 
 function showOldJobListForItem($username,$item_type,$item) {
 	// $item is required
-	// affiche toutes les vielles intervention pour un $item donné. 
+	// affiche toutes les vielles intervention pour un $item donnï¿½ 
 
 
 	GLOBAL $cfg_layout, $cfg_install, $lang,$HTMLRel;
@@ -330,7 +330,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (device_type = '$item_ty
 
 function showJobListForItem($username,$item_type,$item) {
 	// $item is required
-	//affiche toutes les vielles intervention pour un $item donné. 
+	//affiche toutes les vielles intervention pour un $item donnï¿½ 
 
 	GLOBAL $cfg_layout, $cfg_install, $lang;
 		
@@ -403,8 +403,8 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 	$job = new Job;
 	$isadmin=isAdmin($_SESSION['glpitype']);
 	$ispostonly=strcmp($_SESSION["glpitype"],"post-only");
-	$valign="";
-	if ($followups) $valign=" valign='top' ";
+	$align="align='center'";
+	if ($followups) $align.=" valign='top' ";
 	if ($job->getfromDB($ID,0))
 	{
 		$item_num=1;
@@ -424,7 +424,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 			$first_col.="<input type='checkbox' name='todel[".$job->ID."]' value='1' $sel>";
 		}
 
-		echo displaySearchItem($output_type,$first_col,$item_num,$row_num,0,$valign);
+		echo displaySearchItem($output_type,$first_col,$item_num,$row_num,0,$align);
 		
 		// Second column
 		$second_col="";	
@@ -448,10 +448,10 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 			$second_col.="</small>";
 		}
 
-		echo displaySearchItem($output_type,$second_col,$item_num,$row_num,0,$valign." width=130");
+		echo displaySearchItem($output_type,$second_col,$item_num,$row_num,0,$align." width=130");
 		
 		// Third Column
-		echo displaySearchItem($output_type,"<strong>".getPriorityName($job->fields["priority"])."</strong>",$item_num,$row_num,0,"$valign bgcolor='$bgcolor'");
+		echo displaySearchItem($output_type,"<strong>".getPriorityName($job->fields["priority"])."</strong>",$item_num,$row_num,0,"$align bgcolor='$bgcolor'");
 
 		// Fourth Column
 	
@@ -460,7 +460,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		else
 		$fourth_col="<strong>".$job->getAuthorName()."</strong>";
 
-		echo displaySearchItem($output_type,$fourth_col,$item_num,$row_num,0,$valign);
+		echo displaySearchItem($output_type,$fourth_col,$item_num,$row_num,0,$align);
 
 		// Fifth column
 		$fifth_col="";
@@ -477,7 +477,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 				$fifth_col.="<strong>".getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE)."</strong>";
 	
 		}
-		echo displaySearchItem($output_type,$fifth_col,$item_num,$row_num,0,$valign);
+		echo displaySearchItem($output_type,$fifth_col,$item_num,$row_num,0,$align);
 		
 
 		// Sixth Colum
@@ -505,10 +505,10 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 				$fifth_col.="(".$job->fields["computer"].")";
 			$fifth_col.="</strong>";
 		}
-		echo displaySearchItem($output_type,$sixth_col,$item_num,$row_num,$deleted,$valign);
+		echo displaySearchItem($output_type,$sixth_col,$item_num,$row_num,$deleted,$align);
 
 		// Seventh column
-		echo displaySearchItem($output_type,"<strong>".getDropdownName("glpi_dropdown_tracking_category",$job->fields["category"])."</strong>",$item_num,$row_num,0,$valign);
+		echo displaySearchItem($output_type,"<strong>".getDropdownName("glpi_dropdown_tracking_category",$job->fields["category"])."</strong>",$item_num,$row_num,0,$align);
 		
 		// Eigth column
 		
@@ -522,7 +522,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		}
 
 
-		echo displaySearchItem($output_type,$eigth_column,$item_num,$row_num,0,$valign);
+		echo displaySearchItem($output_type,$eigth_column,$item_num,$row_num,0,$align);
 		
 
 		// Nineth column
@@ -534,7 +534,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		else
 		$nineth_column.="<a href=\"".$cfg_install["root"]."/helpdesk.php?show=user&amp;ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups($isadmin).")";
 
-		echo displaySearchItem($output_type,$nineth_column,$item_num,$row_num,0,$valign." width='40'");
+		echo displaySearchItem($output_type,$nineth_column,$item_num,$row_num,0,$align." width='40'");
 
 		// Finish Line
 		echo displaySearchEndLine($output_type);
@@ -671,7 +671,7 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	$job->fields["date"] = date("Y-m-d H:i:s");
 	if (strstr($status,"old_"))
 		$job->fields["closedate"] = date("Y-m-d H:i:s");
-	// ajout suite  à tracking sur tous les items 
+	// ajout suite  ï¿½tracking sur tous les items 
 
 	switch ($device_type) {
 	case GENERAL_TYPE :
@@ -1700,7 +1700,7 @@ function showJobDetails ($ID){
 		echo "<div align='center'>";
 		echo "<form method='post' action=\"".$cfg_install["root"]."/tracking/tracking-info-form.php\"  enctype=\"multipart/form-data\">\n";
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
-		// Première ligne
+		// Premiï¿½e ligne
 		echo"<tr><th colspan='3'><span style='font-size:1px'>&nbsp;</span></th></tr>";
 		echo "<tr class='tab_bg_2'>";
 		// Premier Colonne
@@ -1736,7 +1736,7 @@ function showJobDetails ($ID){
 
 		echo "</table></td>";
 
-		// Deuxième colonne
+		// Deuxiï¿½e colonne
 		echo "<td valign='top' width='33%'><table border='0'>";
 
 		echo "<tr><td align='right'>";
@@ -1794,7 +1794,7 @@ function showJobDetails ($ID){
 
 		echo "</table></td>";
 
-		// Troisième Colonne
+		// Troisiï¿½e Colonne
 		echo "<td valign='top' width='40%'><table border='0'>";
 
 		echo "<tr><td align='right'>";
@@ -1837,7 +1837,7 @@ function showJobDetails ($ID){
 		echo "</td></tr>";
 		
 
-		// Deuxième Ligne
+		// Deuxiï¿½e Ligne
 		// Colonnes 1 et 2
 		echo "<tr class='tab_bg_1'><td colspan='2'>";
 		echo "<table width='99%' >";
@@ -1902,7 +1902,7 @@ function showJobDetails ($ID){
 		} else echo "&nbsp;";
 
 			echo "</td></tr>";
-		// Troisième Ligne
+		// Troisiï¿½e Ligne
 		if ($isadmin){
 			echo "<tr class='tab_bg_1'><td colspan='3' align='center'>";
 			echo "<input type='submit' class='submit' name='update' value='".$lang["buttons"][14]."'></td></tr>";

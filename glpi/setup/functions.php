@@ -521,6 +521,10 @@ function replaceDropDropDown($input) {
 		$query = "update glpi_computers set auto_update = '". $input["newID"] ."'  where auto_update = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
+	case "budget" :
+		$query = "update glpi_infocoms set budget = '". $input["newID"] ."'  where budget = '".$input["oldID"]."'";
+		$db->query($query);
+		break;
 	}
 
 	$query = "delete from ". $input["tablename"] ." where ID = '". $input["oldID"] ."'";
@@ -813,6 +817,11 @@ function dropdownUsed($table, $ID) {
 		break;
 	case "auto_update" :
 		$query = "Select count(*) as cpt FROM glpi_computers where auto_update = '".$ID."'";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
+	case "budget" :
+		$query = "Select count(*) as cpt FROM glpi_infocoms where budget = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;

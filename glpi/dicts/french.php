@@ -845,6 +845,7 @@ $lang["Menu"][29]="Planning";
 $lang["Menu"][30]="Logs";
 $lang["Menu"][31]="Helpdesk";
 $lang["Menu"][32]="Consommables";
+$lang["Menu"][33]="OCSNG";
 
 $lang["monitors"][0]="Ajouter moniteur...";
 $lang["monitors"][3]="Ajouter moniteur"; 
@@ -1257,6 +1258,7 @@ $lang["setup"][95]="Modèles de matériel réseau";
 $lang["setup"][96]="Modèles d'imprimantes";
 $lang["setup"][97]="Modèles de périphériques";
 $lang["setup"][98]="Mise à jour";
+$lang["setup"][99]="Budget";
 
 
 $lang["setup"][100]="Configuration générale";
