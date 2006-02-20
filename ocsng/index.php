@@ -39,7 +39,9 @@ include ($phproot."/glpi/includes.php");
 	checkAuthentication("admin");
 
 	commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
-
+	if (isset($_SESSION["ocs_import"])) unset($_SESSION["ocs_import"]);
+	if (isset($_SESSION["ocs_link"])) unset($_SESSION["ocs_link"]);
+	if (isset($_SESSION["ocs_update"])) unset($_SESSION["ocs_update"]);
 	echo "<div align='center'><table border='0'><tr><td>";
 	echo "<img src=\"".$HTMLRel."/pics/logoOcs.png\" alt='".$lang["ocsng"][0]."' title='".$lang["ocsng"][0]."' ></td>";
 	echo "</tr></table></div>";

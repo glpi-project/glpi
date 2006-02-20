@@ -50,6 +50,33 @@ checkAuthentication("admin");
 
 commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
 
+if (isset($_SESSION["ocs_update"])){
+	if ($count=count($_SESSION["ocs_update"])){
+		$percent=min(100,round(100*($_SESSION["ocs_update_count"]-$count)/$_SESSION["ocs_update_count"],0));
+		$percentwitdh=$percent*4;
+		
+		echo str_pad("<div align='center'><table class='tab_cadre' width='400'><tr><td width='400' align='center'> Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n",4096);
+
+  		glpi_flush();
+
+		$key=array_pop($_SESSION["ocs_update"]);
+		ocsUpdateComputer($key,2);
+		glpi_header($_SERVER['PHP_SELF']);
+	} else {
+		unset($_SESSION["ocs_update"]);
+
+		$percent=100;
+		$percentwitdh=$percent*4;
+
+		echo str_pad("<div align='center'><table class='tab_cadre' width='400'><tr><td width='400' align='center'> Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n",4096);
+
+		echo "<div align='center'><strong>".$lang["ocsng"][8]."<br>";
+		echo "<a href='".$_SERVER['PHP_SELF']."'>".$lang["buttons"][13]."</a>";
+		echo "</strong></div>";
+	}
+}
+
+
 if (!isset($_POST["update_ok"])){
 if (!isset($_GET['check'])) $_GET['check']='all';
 if (!isset($_GET['start'])) $_GET['start']=0;
@@ -60,16 +87,17 @@ ocsShowUpdateComputer($_GET['check'],$_GET['start']);
 
 } else {
 	if (count($_POST['toupdate'])>0){
+		$_SESSION["ocs_update_count"]=0;
 		foreach ($_POST['toupdate'] as $key => $val){
-			if ($val=="on")	ocsUpdateComputer($key,2);
+			if ($val=="on")	{
+				$_SESSION["ocs_update"][]=$key;
+				$_SESSION["ocs_update_count"]++;
+			}
+			
 		}
 	}
 
-echo "<div align='center'><strong>".$lang["ocsng"][8]."<br>";
-echo "<a href='".$_SERVER['PHP_SELF']."'>".$lang["buttons"][13]."</a>";
-echo "</strong></div>";
-	
-//glpi_header($_SERVER['HTTP_REFERER']);
+glpi_header($_SERVER['PHP_SELF']);
 }
 
 

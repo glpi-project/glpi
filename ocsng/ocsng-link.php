@@ -47,8 +47,34 @@ include ($phproot."/glpi/includes_software.php");
 include ($phproot."/glpi/includes_tracking.php");
 
 checkAuthentication("admin");
-
 commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
+
+if (isset($_SESSION["ocs_link"])){
+	if ($count=count($_SESSION["ocs_link"])){
+		$percent=min(100,round(100*($_SESSION["ocs_link_count"]-$count)/$_SESSION["ocs_link_count"],0));
+		$percentwitdh=$percent*4;
+		
+		echo str_pad("<div align='center'><table class='tab_cadre' width='400'><tr><td width='400' align='center'> Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n",4096);
+
+  		glpi_flush();
+
+		$key=array_pop($_SESSION["ocs_link"]);
+		ocsLinkComputer($key["ocs_id"],$key["glpi_id"]);
+		glpi_header($_SERVER['PHP_SELF']);
+	} else {
+		$percent=100;
+		$percentwitdh=$percent*4;
+
+		echo str_pad("<div align='center'><table class='tab_cadre' width='400'><tr><td width='400' align='center'> Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n",4096);
+
+		unset($_SESSION["ocs_link"]);
+		echo "<div align='center'><strong>".$lang["ocsng"][8]."<br>";
+		echo "<a href='".$_SERVER['PHP_SELF']."'>".$lang["buttons"][13]."</a>";
+		echo "</strong></div>";
+	}
+}
+
+
 
 if (!isset($_POST["import_ok"])){
 if (!isset($_GET['check'])) $_GET['check']='all';
@@ -60,17 +86,16 @@ ocsShowNewComputer($_GET['check'],$_GET['start'],1);
 
 } else {
 	if (count($_POST['tolink'])>0){
+		$_SESSION["ocs_link_count"]=0;
 		foreach ($_POST['tolink'] as $ocs_id => $glpi_id){
 			if ($glpi_id>0){
-				ocsLinkComputer($ocs_id,$glpi_id);
+				$_SESSION["ocs_link"][]=array("ocs_id"=>$ocs_id,
+							      "glpi_id"=>$glpi_id);
+				$_SESSION["ocs_link_count"]++;
 			}
 		}
 	}
-echo "<div align='center'><strong>".$lang["ocsng"][8]."<br>";
-echo "<a href='".$_SERVER['PHP_SELF']."'>".$lang["buttons"][13]."</a>";
-echo "</strong></div>";
-
-//glpi_header($_SERVER['HTTP_REFERER']);
+glpi_header($_SERVER['PHP_SELF']);
 }
 
 
