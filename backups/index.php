@@ -370,6 +370,7 @@ function backupMySql($db,$dumpFile, $duree,$rowlimit)
 // $duree=timeout pour changement de page (-1 = aucun)
 
 global $TPSCOUR,$offsettable,$offsetrow,$cpt;
+
 if ($db->error)
 {
      echo "Connexion impossible à $hostMySql pour $mysqlUser";
@@ -405,42 +406,42 @@ $numtab++;
 
 
 for (;$offsettable<$numtab;$offsettable++){
-// Dump de la strucutre table
-if ($offsetrow==-1){
-	
-	$todump="\n".get_def($db,$tables[$offsettable]);
-	fwrite ($fileHandle,$todump);
-	$offsetrow++;
-	$cpt++;
+
+// Dump de la structure table
+	if ($offsetrow==-1){
+		$todump="\n".get_def($db,$tables[$offsettable]);
+		fwrite ($fileHandle,$todump);
+		$offsetrow++;
+		$cpt++;
 	}
-    current_time();
-    if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
-        return TRUE;
+	current_time();
+	if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
+        	return TRUE;
 
 	$fin=0;
 	while (!$fin){
-	$todump=get_content($db,$tables[$offsettable],$offsetrow,$rowlimit);
-	$rowtodump=substr_count($todump, "INSERT INTO");
-	if ($rowtodump>0){
-	fwrite ($fileHandle,$todump);
-	$cpt+=$rowtodump;
-	$offsetrow+=$rowlimit;
-	if ($rowtodump<$rowlimit) $fin=1;
-    current_time();
-    if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
-        return TRUE;
-
-	}
-	else {$fin=1;$offsetrow=-1;}
+		$todump=get_content($db,$tables[$offsettable],$offsetrow,$rowlimit);
+		$rowtodump=substr_count($todump, "INSERT INTO");
+		if ($rowtodump>0){
+			fwrite ($fileHandle,$todump);
+			$cpt+=$rowtodump;
+			$offsetrow+=$rowlimit;
+			if ($rowtodump<$rowlimit) $fin=1;
+    			current_time();
+    			if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
+        		return TRUE;
+		} else {
+			$fin=1;
+			$offsetrow=-1;
+		}
 	}
 	if ($fin) $offsetrow=-1;
-    current_time();
-    if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
-        return TRUE;
-	
+	current_time();
+	if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
+		return TRUE;
 }
 if ($db->error())
-     echo "<hr>ERREUR à partir de [$formattedQuery]<br>".$db->error()."<hr>";
+	echo "<hr>ERREUR à partir de [$formattedQuery]<br>".$db->error()."<hr>";
 $offsettable=-1;
 fclose($fileHandle);
 return TRUE;
@@ -488,15 +489,8 @@ else $percent=100;
 else $percent=0;
 
 if ($percent >= 0) {
- 
- $percentwitdh=$percent*4;
-
-	echo str_pad("<div align='center'><table class='tab_cadre' width='400'><tr><td width='400' align='center'> Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>",4096);
-
-
+	displayProgressBar(400,$percent);
 }
-
-glpi_flush();
 
 if ($offsettable>=0){
 if (backupMySql($db,$fichier,$duree,$rowlimit))
@@ -552,13 +546,10 @@ else $percent=0;
 
 if ($percent >= 0) {
       	
-$percentwitdh=$percent*4;
-
-	echo str_pad("<div align='center'><table class='tab_cadre' width='400'><tr><td width='400' align='center'> Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n",4096);
-
+displayProgressBar(400,$percent);
 
 }
-glpi_flush();
+
 if ($offset!=-1){
 if (restoreMySqlDump($db,$path.$_GET["file"],$duree))
 {

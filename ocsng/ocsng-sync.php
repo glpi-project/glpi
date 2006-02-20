@@ -53,11 +53,8 @@ commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
 if (isset($_SESSION["ocs_update"])){
 	if ($count=count($_SESSION["ocs_update"])){
 		$percent=min(100,round(100*($_SESSION["ocs_update_count"]-$count)/$_SESSION["ocs_update_count"],0));
-		$percentwitdh=$percent*4;
 		
-		echo str_pad("<div align='center'><table class='tab_cadre' width='400'><tr><td width='400' align='center'> Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n",4096);
-
-  		glpi_flush();
+		displayProgressBar(400,$percent);
 
 		$key=array_pop($_SESSION["ocs_update"]);
 		ocsUpdateComputer($key,2);
@@ -65,10 +62,7 @@ if (isset($_SESSION["ocs_update"])){
 	} else {
 		unset($_SESSION["ocs_update"]);
 
-		$percent=100;
-		$percentwitdh=$percent*4;
-
-		echo str_pad("<div align='center'><table class='tab_cadre' width='400'><tr><td width='400' align='center'> Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n",4096);
+		displayProgressBar(400,100);
 
 		echo "<div align='center'><strong>".$lang["ocsng"][8]."<br>";
 		echo "<a href='".$_SERVER['PHP_SELF']."'>".$lang["buttons"][13]."</a>";

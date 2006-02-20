@@ -393,9 +393,7 @@ else $percent=100;
 else $percent=0;
 if ($percent >= 0) {
  
- $percentwitdh=$percent*4;
-
-	echo "<div align='center'><table class='tab_cadre' width='400'><tr><td width='400' align='center'> Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwitdh' height='20'>&nbsp;</td></tr></table></td></tr></table></div>";
+displayProgressBar(400,$percent);
 
 }
 $conv_utf8=false;
@@ -403,7 +401,6 @@ if(!FieldExists("glpi_config","utf8_conv")) {
 $conv_utf8=true;
 }
 
-glpi_flush();
 if ($offsettable>=0){
 	if (UpdateContent($db,$duree,$rowlimit,$conv_utf8))
 	{
