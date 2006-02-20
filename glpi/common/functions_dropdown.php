@@ -110,7 +110,7 @@ echo "</span>\n";
 */
 function dropdownValue($table,$myname,$value) {
 	
-	global $HTMLRel,$cfg_install,$cfg_features;
+	global $HTMLRel,$cfg_install,$cfg_features,$cfg_layout;
 
 	$rand=mt_rand();
 	
@@ -146,7 +146,7 @@ if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 
 echo "<span id='results_$myname$rand'>\n";
 if (!empty($value)&&$value>0)
-	echo "<select name='$myname'><option value='$value'>".getDropdownName($table,$value)."</option></select>\n";
+	echo "<select name='$myname'><option value='$value'>".substr(getDropdownName($table,$value),0,$cfg_layout["dropdown_limit"])."</option></select>\n";
 else 
 	echo "<select name='$myname'><option value='0'>------</option></select>\n";
 echo "</span>\n";	
@@ -220,7 +220,7 @@ function dropdownNoValue($table,$myname,$value) {
 function dropdownUsers($myname,$value,$all=0) {
 	// Make a select box with all glpi users
 
-	global $HTMLRel,$cfg_install,$cfg_features;
+	global $HTMLRel,$cfg_install,$cfg_features,$cfg_layout;
 
 	$rand=mt_rand();
 	
@@ -255,7 +255,7 @@ if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 
 	echo "<span id='results_$myname$rand'>\n";
 	if (!empty($value)&&$value>0)
-		echo "<select name='$myname'><option value='$value'>".getDropdownName("glpi_users",$value)."</option></select>\n";
+		echo "<select name='$myname'><option value='$value'>".substr(getDropdownName("glpi_users",$value),0,$cfg_layout["dropdown_limit"])."</option></select>\n";
 	else 
 		echo "<select name='$myname'><option value='0'>[ Nobody ]</option></select>\n";
 	echo "</span>\n";	
@@ -309,7 +309,7 @@ if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 
 	echo "<span id='results_$myname$rand'>\n";
 	if (!empty($value)&&$value>0)
-		echo "<select name='$myname'><option value='$value'>".getDropdownName("glpi_users",$value)."</option></select>\n";
+		echo "<select name='$myname'><option value='$value'>".substr(getDropdownName("glpi_users",$value),0,$cfg_layout["dropdown_limit"])."</option></select>\n";
 	else 
 		echo "<select name='$myname'><option value='0'>[ Nobody ]</option></select>\n";
 	echo "</span>\n";	
@@ -411,7 +411,7 @@ if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 
 	echo "<span id='results_$myname$rand'>\n";
 	if (!empty($value)&&$value>0)
-		echo "<select name='$myname'><option value='$value'>".getDropdownName("glpi_users",$value)."</option></select>\n";
+		echo "<select name='$myname'><option value='$value'>".substr(getDropdownName("glpi_users",$value),0,$cfg_layout["dropdown_limit"])."</option></select>\n";
 	else 
 		echo "<select name='$myname'><option value='0'>[ ".$lang["search"][7]." ]</option></select>\n";
 	echo "</span>\n";	
