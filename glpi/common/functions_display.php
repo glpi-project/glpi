@@ -512,11 +512,23 @@ echo "</a>";
 echo "</td></tr>";
 echo "</table></div>";
 
-	if ($cfg_debug["active"]){
+	
+
+	if ($cfg_debug["active"]==1){ // debug mode traduction
+
+		echo "<div id='debug-float'>";		
+		echo "<a href='#debug'>GLPI MODE TRANSLATION</a>";
+		echo "</div>";
+	}
+
+	if ($cfg_debug["active"]==2){ // mode debug 
 		
 		echo "<div id='debug-float'>";		
 		echo "<a href='#debug'>GLPI MODE DEBUG</a>";
 		echo "</div>";
+
+
+
 		echo "<div id='debug'>";
 		echo "<h1><a name='#debug'>GLPI MODE DEBUG</a></h1>";
 		if ($cfg_debug["profile"]){

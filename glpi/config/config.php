@@ -57,6 +57,7 @@ else
 require_once ($cfg_install["config_dir"] . "/config_db.php");
 
 
+
 // *************************** Statics config options **********************
 // ********************options d'installation statiques*********************
 // ***********************************************************************
@@ -244,11 +245,29 @@ $cfg_install["typedoc_icon_dir"] = "pics/icones";
 // Default language
 $cfg_install["default_language"] = $db->result($result,0,"default_language");
 
-$cfg_debug["active"]=0;
-$cfg_debug["sql"]=1;
-$cfg_debug["vars"]=1;
-$cfg_debug["profile"]=1;
-$cfg_debug["lang"]=0;
+// *************************** Mode NORMAL / TRALATION /DEBUG  **********************
+// *********************************************************************************
+
+
+// Mode debug ou traduction
+$cfg_debug["active"]=$db->result($result,0,"debug"); // 0 inactif , 1 traduction , 2 debug complet
+$cfg_debug["sql"]=($cfg_debug["active"]==2); // affiche les requetes
+$cfg_debug["vars"]=($cfg_debug["active"]==2); // affiche les variables
+$cfg_debug["profile"]=($cfg_debug["active"]==2); // Profile les requetes
+$cfg_debug["lang"]=($cfg_debug["active"]==1); // affiche les variables de trads
+
+// Mode debug activé on affiche un certains nombres d'informations
+	if ($cfg_debug["active"]==2){
+	ini_set('display_errors','On');
+	error_reporting(E_ALL);
+	ini_set('error_prepend_string','<div style="position:absolute; top:5px; left:5px; background-color:red; z-index:10000"> POUET');
+	ini_set('error_append_string','</div>');
+}else{
+//Pas besoin des warnings de PHP en mode normal : on va eviter de faire peur ;)
+error_reporting(0); 
+}
+
+
 
 // Gestion de source d'information alternatives pour le login
 // telles que des serveurs de mail en imap pop...
