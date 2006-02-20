@@ -1261,6 +1261,7 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software) {
 		
 		$dbocs = new DBocs;
 		$query2 = "SELECT softwares.NAME AS INITNAME, dico_soft.FORMATTED AS NAME, softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER FROM softwares INNER JOIN dico_soft ON (softwares.NAME = dico_soft.EXTRACTED) WHERE softwares.DEVICEID='$ocs_id'";
+		$already_imported=array();
 		$result2 = $dbocs->query($query2) or die($dbocs->error());
 		if ($dbocs->numrows($result2)>0)
 		while ($data2 = $dbocs->fetch_array($result2)){
@@ -1270,8 +1271,10 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software) {
 			$name= $data2["NAME"];
 			$version = $data2["VERSION"];
 			$publisher = $data2["PUBLISHER"];
-
+			
 			// Import Software
+			if (!in_array($name,$already_imported)){ // Manage multiple software with the same name = only one install
+				$already_imported[]=$name;
 			if (!in_array($initname,$import_software)){
 	        		$db = new DB;
 				$query_search = "SELECT ID FROM glpi_software WHERE name = '".$name."' ";
@@ -1313,6 +1316,7 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software) {
 						updateSoftware($updates);
 					}
 				}
+			}
 			}
 		} 
 
