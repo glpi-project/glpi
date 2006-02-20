@@ -340,7 +340,7 @@ function update_device_specif($newValue,$compDevID) {
 				$changes[1]=$data["specificity"];
 				$changes[2]=$newValue;
 				// history log
-				historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["device_type"],$device_internal_action='2');
+				historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["device_type"],UPDATE_DEVICE);
 	
 				return true;
 			}else{ return false;}
@@ -357,7 +357,7 @@ function update_device_specif($newValue,$compDevID) {
 * @param $compDevID ID of the computer-device link (table glpi_computer_device)
 * @returns boolean
 **/
-function unlink_device_computer($compDevID){
+function unlink_device_computer($compDevID,$dohistory=1){
 	
 	// get old value  and id for history 
 	$db= new DB;
@@ -372,11 +372,13 @@ function unlink_device_computer($compDevID){
 	$db2 = new DB;
 	$query2 = "DELETE FROM glpi_computer_device where ID = '".$compDevID."'";
 	if($db2->query($query2)){
-		$changes[0]='0';
-		$changes[1]=$device->fields["designation"];
-		$changes[2]="";
-		// history log
-		historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["device_type"],$device_internal_action='3');
+		if ($dohistory==1){
+			$changes[0]='0';
+			$changes[1]=$device->fields["designation"];
+			$changes[2]="";
+			// history log
+			historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["device_type"],DELETE_DEVICE);
+		}
 
 	 return true;
 	}else{ return false;}
@@ -385,17 +387,19 @@ die;
 }
 
 //Link the device to the computer
-function compdevice_add($cID,$device_type,$dID,$specificity='') {
+function compdevice_add($cID,$device_type,$dID,$specificity='',$dohistory=1) {
 	$device = new Device($device_type);
 	$device->getfromDB($dID);
 	if (empty($specificity)) $specificity=$device->fields['specif_default'];
-	$device->computer_link($cID,$device_type,$specificity);
-	$changes[0]='0';
-	$changes[1]="";
-	$changes[2]=$device->fields["designation"];"";
+	$newID=$device->computer_link($cID,$device_type,$specificity);
+	if ($dohistory==1){
+		$changes[0]='0';
+		$changes[1]="";
+		$changes[2]=$device->fields["designation"];
 		// history log
-		historyLog ($cID,COMPUTER_TYPE,$changes,$device_type,$device_internal_action='1');
-
+		historyLog ($cID,COMPUTER_TYPE,$changes,$device_type,ADD_DEVICE);
+	}
+	return $newID;
 }
 
 /* --------------- not in use -------------------- but get it for later if needed.

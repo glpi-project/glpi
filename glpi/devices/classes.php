@@ -146,7 +146,7 @@ class Device {
 		$db = new DB;
 		$query = "INSERT INTO glpi_computer_device (device_type,FK_device,FK_computers,specificity) values ('".$device_type."','".$this->fields["ID"]."','".$compID."','".$specificity."')";
 		if($db->query($query)) {
-			return true;
+			return $db->insert_id();
 		} else { 
 			return false;
 		}
