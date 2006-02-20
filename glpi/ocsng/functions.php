@@ -319,36 +319,6 @@ function ocsUpdateComputer($ID,$dohistory){
 			$dbocs->query($query_ocs) or die($dbocs->error().$query_ocs);
 		}
 	}
-/*
-	if(getOcsConfVar("import_device_processor") == 1) 
-		ocsResetDevices($line['glpi_id'],PROCESSOR_DEVICE);
-	if(getOcsConfVar("import_device_iface") == 1) 
-		ocsResetDevices($line['glpi_id'],NETWORK_DEVICE);
-	if(getOcsConfVar("import_device_memory") == 1) 
-		ocsResetDevices($line['glpi_id'],RAM_DEVICE);
-	if(getOcsConfVar("import_device_hdd") == 1) 
-		ocsResetDevices($line['glpi_id'],HDD_DEVICE);
-	if(getOcsConfVar("import_device_sound") == 1) 
-		ocsResetDevices($line['glpi_id'],SND_DEVICE);
-	if(getOcsConfVar("import_device_gfxcard") == 1) 
-		ocsResetDevices($line['glpi_id'],GFX_DEVICE);
-	if(getOcsConfVar("import_device_drives") == 1) 
-		ocsResetDevices($line['glpi_id'],DRIVE_DEVICE);
-	if(getOcsConfVar("import_device_modems") == 1 || getOcsConfVar("import_device_ports") == 1) 
-		ocsResetDevices($line['glpi_id'],PCI_DEVICE);
-	ocsResetLicenses($line['glpi_id']);
-	ocsResetPeriphs($line['glpi_id']);
-	ocsResetMonitors($line['glpi_id']);
-	ocsResetPrinters($line['glpi_id']);
-
-	ocsUpdateGeneral($line['glpi_id'],$line['ocs_id']);
-	ocsAddComputerDevices($line['glpi_id'],$line['ocs_id']);
-	ocsImportPeripherals($line['glpi_id'],$line['ocs_id']);
-	ocsImportSoftware($line['glpi_id'],$line['ocs_id']);
-
-        $query="UPDATE glpi_ocs_link SET last_update=NOW() WHERE ID='$ID'";
-        $dbglpi->query($query);
-*/
     }
 }
 
@@ -1375,7 +1345,6 @@ function ocsImportLicense($software) {
 *
 **/
 function ocsResetLicenses($glpi_computer_id) {
-	if(getOcsConfVar("import_software") == 0) return;
 
     $db = new DB;
 
@@ -1433,7 +1402,6 @@ function ocsResetDevices($glpi_computer_id, $device_type) {
 *
 **/
 function ocsResetPeriphs($glpi_computer_id) {
-	if(getOcsConfVar("import_periph") == 0) return;
 
 	$db = new DB;
 
@@ -1464,7 +1432,6 @@ function ocsResetPeriphs($glpi_computer_id) {
 *
 **/
 function ocsResetMonitors($glpi_computer_id) {
-	if(getOcsConfVar("import_monitor") == 0) return;
 
 	$db = new DB;
 	$query = "SELECT * FROM glpi_connect_wire where end2 = '".$glpi_computer_id."' and type = '".MONITOR_TYPE."'";
@@ -1494,7 +1461,6 @@ function ocsResetMonitors($glpi_computer_id) {
 *
 **/
 function ocsResetPrinters($glpi_computer_id) {
-	if(getOcsConfVar("import_printer") == 0) return;
 
 	$db = new DB;
 
