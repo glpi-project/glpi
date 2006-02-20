@@ -90,6 +90,8 @@ function showComputerOnglets($target,$withtemplate,$actif){
 	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
 	echo "<li "; if ($actif=="10") {echo "class='actif'";} echo "><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
 	echo "<li "; if ($actif=="12") {echo "class='actif'";} echo "><a href='$target&amp;onglet=12$template'>".$lang["title"][38]."</a></li>";
+	if ($cfg_features["ocs_mode"])
+		echo "<li "; if ($actif=="13") {echo "class='actif'";} echo "><a href='$target&amp;onglet=13$template'>".$lang["Menu"][33]."</a></li>";
 
 	echo "<li class='invisible'>&nbsp;</li>";
 	echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
@@ -225,7 +227,7 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		if (!$template&&!empty($comp->fields['tplname']))
 			echo "&nbsp;&nbsp;&nbsp;(".$lang["common"][13].": ".$comp->fields['tplname'].")";
 		if ($comp->fields["ocs_import"])
-			echo "&nbsp;&nbsp;&nbsp;(".$lang["ocsng"][7]." <span onClick=\"window.open('".$HTMLRel."/ocsng/ocsng-edit.php?ID=$ID','ocsng','location=infocoms,width=750,height=600,scrollbars=no')\">EDIT</span>)";
+			echo "&nbsp;&nbsp;&nbsp;(".$lang["ocsng"][7].")";
 
 		echo "</th></tr>";
 		
@@ -436,6 +438,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 * Update some elements of a computer in the database.
 *
 *@param $input array : the _POST vars returned bye the computer form when press update (see showcomputerform())
+*@param $dohistory do the history or not : 0 - no history, 1 - complete history, 2 - history but no update OCS link
 *
 *
 *@return Nothing (call to the class member Computers->updateInDB )

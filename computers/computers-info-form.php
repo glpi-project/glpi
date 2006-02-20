@@ -153,6 +153,13 @@ elseif(isset($_POST["device_action"])) {
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
+elseif(isset($tab["unlock_field"])){
+	if (isset($tab["lockfield"])&&count($tab["lockfield"])){
+		foreach ($tab["lockfield"] as $key => $val)
+			deleteInOcsArray($tab["ID"],$key,"computer_update");
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
 //print computer informations
 else {
 
@@ -250,6 +257,10 @@ if (isset($_GET['onglet'])) {
 				break;
 			case 12 :
 				showHistory(COMPUTER_TYPE,$tab["ID"]);
+				break;
+			case 13 :
+				include ($phproot."/glpi/includes_search.php");
+				ocsEditLock($_SERVER["PHP_SELF"],$tab["ID"]);
 				break;
 			default :
 				showDeviceComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);			

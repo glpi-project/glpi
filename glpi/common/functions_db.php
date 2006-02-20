@@ -536,8 +536,8 @@ function isIndex($table, $field) {
  
   foreach(explode(" ", $DATA) as $ITEM) {
    $A = explode("=>", $ITEM);
-	if (!empty($A[0])&&isset($A[1]))
-   $TAB[urldecode($A[0])] = urldecode($A[1]);
+	if (strlen($A[0])&&isset($A[1]))
+   		$TAB[urldecode($A[0])] = urldecode($A[1]);
   }
   return $TAB;
  }

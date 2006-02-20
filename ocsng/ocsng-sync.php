@@ -38,6 +38,8 @@ include ($phproot."/glpi/includes.php");
 include ($phproot."/glpi/includes_ocsng.php");
 include ($phproot."/glpi/includes_computers.php");
 include ($phproot."/glpi/includes_financial.php");
+include ($phproot."/glpi/includes_devices.php");
+include ($phproot."/glpi/includes_networking.php");
 
 checkAuthentication("admin");
 
