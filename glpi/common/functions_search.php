@@ -1521,6 +1521,12 @@ switch ($new_table){
 	else 
 		return " LEFT JOIN $new_table $AS ON ($rt.os = $nt.ID) ";
 		break;
+	case "glpi_dropdown_os_version":
+		return " LEFT JOIN $new_table $AS ON ($rt.os_version = $nt.ID) ";
+		break;
+	case "glpi_dropdown_os_sp":
+		return " LEFT JOIN $new_table $AS ON ($rt.os_sp = $nt.ID) ";
+		break;
 	case "glpi_networking_ports":
 		$out="";
 		// Add networking device for computers

@@ -247,7 +247,9 @@ $lang["computers"][47]="Pas de périphérique connecté";
 $lang["computers"][48]="Modification de lieu. Les éléments connectés ont été déplacés dans le même lieu que l'ordinateur.";
 $lang["computers"][49]="Modification du contact. Les éléments connectés ont pris comme contact celui de l'ordinateur.";
 $lang["computers"][50]="Modèle";
-$lang["computers"][51]="Mise à jour";
+$lang["computers"][51]="Source de mise à jour";
+$lang["computers"][52]="OS Version";
+$lang["computers"][53]="Service Pack";
 
 $lang["connect"][0]="Connexion(s) directe(s)";
 $lang["connect"][1]="non connecté";
@@ -1339,7 +1341,7 @@ $lang["setup"][94]="Modèles de moniteurs";
 $lang["setup"][95]="Modèles de matériel réseau";
 $lang["setup"][96]="Modèles d'imprimantes";
 $lang["setup"][97]="Modèles de périphériques";
-$lang["setup"][98]="Mise à jour";
+$lang["setup"][98]="Source de mise à jour";
 $lang["setup"][99]="Budget";
 
 
@@ -1466,6 +1468,8 @@ $lang["setup"][310]="Vérification automatique de la présence d'une mise à jou
 
 $lang["setup"][400]="Actif";
 
+$lang["setup"][500]="OS Version";
+$lang["setup"][501]="Service Pack";
 
 
 $lang["software"][0]="Ajouter logiciel...";

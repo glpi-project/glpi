@@ -3773,7 +3773,7 @@ if(!FieldExists("glpi_config","ocs_mode")) {
 if(!TableExists("glpi_dropdown_budget")) {
 	$query = "CREATE TABLE `glpi_dropdown_budget` (
   `ID` int(11) NOT NULL auto_increment,
-  `name` varchar(255) default NULL,
+  `name` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM;";
 	$db->query($query) or die("0.65 add dropdown_budget ".$lang["update"][90].$db->error());
@@ -3801,6 +3801,31 @@ if(!FieldExists("glpi_config","debug")) {
 	$query="ALTER TABLE `glpi_config` ADD `debug` int(2) NOT NULL default '0' ";
 	$db->query($query) or die("0.65 add debug in config ".$lang["update"][90].$db->error());
 }
+
+if(!TableExists("glpi_dropdown_os_version")) {
+	$query = "CREATE TABLE `glpi_dropdown_os_version` (
+  `ID` int(11) NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`ID`)
+) ENGINE=MyISAM;";
+	$db->query($query) or die("0.65 add dropdown_os_version ".$lang["update"][90].$db->error());
+}
+
+if(!TableExists("glpi_dropdown_os_sp")) {
+	$query = "CREATE TABLE `glpi_dropdown_os_sp` (
+  `ID` int(11) NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`ID`)
+) ENGINE=MyISAM;";
+	$db->query($query) or die("0.65 add dropdown_os_sp ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_computers","os_version")) {
+	$query="ALTER TABLE `glpi_computers` ADD `os_version` INT NOT NULL DEFAULT '0' AFTER `os` ,
+		ADD `os_sp` INT NOT NULL DEFAULT '0' AFTER `os_version` ";
+	$db->query($query) or die("0.65 add os_version os_sp in computers ".$lang["update"][90].$db->error());
+}
+
 
 }
 

@@ -124,7 +124,9 @@ if (isset($_POST["several_add"])) {
 	$dp["model_monitors"]=$lang["setup"][94];		
 	$dp["peripherals"]=$lang["setup"][69];		
 	$dp["model_peripherals"]=$lang["setup"][97];		
-	$dp["os"]=$lang["setup"][5];		
+	$dp["os"]=$lang["setup"][5];	
+	$dp["os_version"]=$lang["setup"][500];
+	$dp["os_sp"]=$lang["setup"][501];			
 	$dp["iface"]=$lang["setup"][9];		
 	$dp["firmware"]=$lang["setup"][71];
 	$dp["netpoint"]=$lang["setup"][73];		
@@ -187,6 +189,12 @@ echo "<option value='$key' $sel>".$val."</option>";
 		break;
 		case "os" :
 		showFormDropDown($_SERVER["PHP_SELF"],"os",$lang["setup"][5],$ID);
+		break;
+		case "os_version" :
+		showFormDropDown($_SERVER["PHP_SELF"],"os_version",$lang["setup"][500],$ID);
+		break;
+		case "os_sp" :
+		showFormDropDown($_SERVER["PHP_SELF"],"os_sp",$lang["setup"][501],$ID);
 		break;
 		case "enttype" :
 		showFormDropDown($_SERVER["PHP_SELF"],"enttype",$lang["setup"][80],$ID);
