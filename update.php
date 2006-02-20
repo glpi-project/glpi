@@ -3588,7 +3588,7 @@ if(FieldExists("glpi_config","cut")) {
 
 
 if(!FieldExists("glpi_config","dropdown_limit")) {	
-	$query="ALTER TABLE `glpi_config` ADD `dropdown_limit` INT( 11 ) DEFAULT '30' NOT NULL ";
+	$query="ALTER TABLE `glpi_config` ADD `dropdown_limit` INT( 11 ) DEFAULT '50' NOT NULL ";
 	$db->query($query) or die("0.65 add dropdown_limit in config ".$lang["update"][90].$db->error());
 }
 

@@ -201,14 +201,14 @@ CREATE TABLE `glpi_config` (
     `dateformat` smallint(6) DEFAULT '0' NOT NULL,
     `nextprev_item` varchar(200) DEFAULT 'name' NOT NULL,
     `view_ID` smallint(6) DEFAULT '0' NOT NULL,
-    `dropdown_limit` int(11) DEFAULT '30' NOT NULL,
+    `dropdown_limit` int(11) DEFAULT '50' NOT NULL,
     `post_only_followup` tinyint(4) DEFAULT '1' NOT NULL,
     `ocs_mode` tinyint(4) DEFAULT '0' NOT NULL,
     `debug` int(2) DEFAULT '0' NOT NULL,
    PRIMARY KEY (`ID`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','1','1','255','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','1','0','0','0','0','0','0','0','0','1','0','0','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','0','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi','0','','0','2006-02-20','','100','*','0','50','1','1','0','name','0','30','1','0','0');
+INSERT INTO glpi_config VALUES ('1','389','10','1','1','255','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','1','0','0','0','0','0','0','0','0','1','0','0','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','0','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi','0','','0','2006-02-20','','100','*','0','50','1','1','0','name','0','50','1','0','0');
 
 ### Dump table glpi_connect_wire
 
