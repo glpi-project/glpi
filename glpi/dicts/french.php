@@ -965,6 +965,11 @@ $lang["ocsng"][13] = "Date d'import dans GLPI";
 $lang["ocsng"][14] = "Date dernière mise à jour OCS";
 $lang["ocsng"][15] = "Aucun champ verrouillé";
 $lang["ocsng"][16] = "Champs verrouillés";
+$lang["ocsng"][17] = "Veuillez remplir tous les champs obligatoires";
+$lang["ocsng"][18] = "Connexion à la base de données OCS réussie";
+$lang["ocsng"][19] = "Version OCS NG valide";
+$lang["ocsng"][20] = "Version d'OCS NR non valide : nécessite RC2";
+$lang["ocsng"][21] = "Echec de connexion à la base de données OCS NG";
 
 $lang["ocsconfig"][0] = "Configuration du modules d'import OCS NG -> GLPI";
 $lang["ocsconfig"][1] = "Utilisateur de la base de données OCSweb";
