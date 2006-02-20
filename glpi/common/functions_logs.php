@@ -53,7 +53,7 @@ function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',
 				
 		if(!empty($changes)){
 			
-			// créer un query avec l'insertion des éléments fixes + changements
+			// crï¿½r un query avec l'insertion des ï¿½ï¿½ents fixes + changements
 			$id_search_option=$changes[0];
 			$old_value=$changes[1];
 			$new_value=$changes[2];
@@ -83,24 +83,24 @@ function constructHistory($id_device,$device_type,$key,$oldvalues,$newvalues) {
 			
 			global $SEARCH_OPTION, $LINK_ID_TABLE,$phproot, $lang ;
 
-			// on ne log que les changements pas la définition d'un élément vide
+			// on ne log que les changements pas la dï¿½inition d'un ï¿½ï¿½ent vide
 			if (!empty($oldvalues)){
 			$changes=array();
-			// nécessaire pour avoir les $search_option
+			// nï¿½essaire pour avoir les $search_option
 			include_once ($phproot . "/glpi/includes_search.php");
 			
-				// on parse le tableau $search_option, on vérifie qu'il existe une entrée correspondante à $key
+				// on parse le tableau $search_option, on vï¿½ifie qu'il existe une entrï¿½ correspondante ï¿½$key
 				foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
 			
 					if($val2["linkfield"]==$key){
 					
-					$id_search_option=$key2; // on récupere dans $SEARCH_OPTION l'id_search_options
+					$id_search_option=$key2; // on rï¿½upere dans $SEARCH_OPTION l'id_search_options
 			
 						if($val2["table"]==$LINK_ID_TABLE[$device_type]){
 						// 1er cas $key est un champs normal -> on ne touche pas au valeur 
 						$changes=array($id_search_option, $oldvalues,$newvalues);
 						}else {
-						//2ème cas $key est un champs lié, il faut récupérer les valeurs du dropdown
+						//2ï¿½e cas $key est un champs liï¿½ il faut rï¿½upï¿½er les valeurs du dropdown
 						$changes=array($id_search_option,  addslashes(getDropdownName( $val2["table"],$oldvalues)), addslashes(getDropdownName( $val2["table"],$newvalues)));
 						}
 
@@ -127,7 +127,7 @@ function showHistory($device_type,$id_device){
 
 	global $SEARCH_OPTION, $LINK_ID_TABLE,$phproot,$lang;	
 
-	// nécessaire pour avoir les $search_option
+	// nï¿½essaire pour avoir les $search_option
 	include_once ($phproot . "/glpi/includes_search.php");
 
 	$db = new DB;
@@ -330,7 +330,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 	// No Events in database
 	if ($number < 1) {
 		echo "<br><div align='center'>";
-		echo "<table class='tab_cadre'>";
+		echo "<table class='tab_cadrehov'>";
 		echo "<tr><th>".$lang["central"][4]."</th></tr>";
 		echo "</table>";
 		echo "</div><br>";
@@ -340,7 +340,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 	// Output events
 	$i = 0;
 
-	echo "<div align='center'><br><table width='400' class='tab_cadre'>";
+	echo "<div align='center'><br><table  class='tab_cadrehov'>";
 	echo "<tr><th colspan='5'><a href=\"".$cfg_install["root"]."/logs.php\">".$lang["central"][2]." ".$cfg_features["num_of_events"]." ".$lang["central"][8]."</a></th></tr>";
 	echo "<tr>";
 

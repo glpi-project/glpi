@@ -129,7 +129,7 @@ function commonHeader($title,$url)
 	echo "<body>";
 	
 	// Main Headline
-	echo "<div id='navigation' style='background : url(\"".$HTMLRel."pics/fond.png\") repeat-x top right ;'>";
+	echo "<div id='navigation'>";
 
 	// New object from the configured base functions, we check some
 	// object-variables in this object: inventory, maintain, admin
@@ -857,7 +857,7 @@ echo "</table></div></form>";
 
 function header_nocache(){
 	header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-	header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date du passé
+	header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date du passe
 }
 
 function glpi_flush(){
