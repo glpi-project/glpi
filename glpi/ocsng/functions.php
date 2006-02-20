@@ -1198,65 +1198,56 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software) {
 
 	if($cfg_ocs["import_software"]){
+		
 		$dbocs = new DBocs;
-		$query2 = "select * from softwares WHERE DEVICEID='$ocs_id'";
+		$query2 = "SELECT softwares.NAME AS INITNAME, dico_soft.FORMATTED AS NAME, softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER FROM softwares INNER JOIN dico_soft ON (softwares.NAME = dico_soft.EXTRACTED) WHERE softwares.DEVICEID='$ocs_id'";
 		$result2 = $dbocs->query($query2) or die($dbocs->error());
 		if ($dbocs->numrows($result2)>0)
 		while ($data2 = $dbocs->fetch_array($result2)){
 			$dbocs = new DBocs;
 			$data2=addslashes_deep($data2);
-			$initname = $name= $data2["NAME"];
+			$initname =  $data2["INITNAME"];
+			$name= $data2["NAME"];
 			$version = $data2["VERSION"];
 			$publisher = $data2["PUBLISHER"];
 
-			$query_ignored="SELECT * FROM dico_ignored WHERE EXTRACTED='$name'";
-			$result_ignored=$dbocs->query($query_ignored) or die ("OCS IGNORED PB");
-			// Software non ignoré
-			if ($dbocs->numrows($result_ignored)==0){
-				$query_rename="SELECT * FROM dico_soft WHERE EXTRACTED='$name' LIMIT 0,1";
-				$result_rename=$dbocs->query($query_rename)  or die ("OCS RENAME");
-				// Software Rename
-				if ($dbocs->numrows($result_rename)==1){
-					$rename=$dbocs->fetch_assoc($result_rename);
-					$name=$rename["FORMATTED"];
-				
-					// Import Software
-					if (!in_array($initname." ".$version,$import_software)){
-			        		$db = new DB;
-        					$query_search = "SELECT ID FROM glpi_software WHERE name = '".$name."' and 	version='".$version."'";
-        					$result_search = $db->query($query_search) or die("Verification existence logiciel :".$name." v:"." - ".$version.$db->error());
-	        				if ($db->numrows($result_search)>0){
-        	    					$data = $db->fetch_array($result_search);
-            						$isNewSoft = $data["ID"];
-        					} else {
-            						$isNewSoft = 0;
-        					}
+			// Import Software
+			if (!in_array($initname." ".$version,$import_software)){
+	        		$db = new DB;
+				$query_search = "SELECT ID FROM glpi_software WHERE name = '".$name."' and 	version='".$version."'";
+				$result_search = $db->query($query_search) or die("Verification existence logiciel :".$name." v:"." - ".$version.$db->error());
+				if ($db->numrows($result_search)>0){
+					$data = $db->fetch_array($result_search);
+					$isNewSoft = $data["ID"];
+				} else {
+					$isNewSoft = 0;
+				}
 	
-						if (!$isNewSoft) {
-            						$soft = new Software;
-	            					$soft->fields["name"] = $name;
-        	    					$soft->fields["version"] = $version;
-            						$soft->fields["FK_glpi_enterprise"] = ocsImportEnterprise($publisher);
-            						$isNewSoft = $soft->addToDB();
-        					}
-        					if ($isNewSoft){
-							$instID=installSoftware($glpi_id,ocsImportLicense($isNewSoft));
-							addToOcsArray($glpi_id,array($instID=>$initname." ".$version),"import_software");
-						}
+				if (!$isNewSoft) {
+					$soft = new Software;
+					$soft->fields["name"] = $name;
+					$soft->fields["version"] = $version;
+					if (!empty($publisher))
+						$soft->fields["FK_glpi_enterprise"] = ocsImportEnterprise($publisher);
+					$isNewSoft = $soft->addToDB();
+				}
+				if ($isNewSoft){
+					$instID=installSoftware($glpi_id,ocsImportLicense($isNewSoft));
+					addToOcsArray($glpi_id,array($instID=>$initname." ".$version),"import_software");
+				}
 						
-    					} else { // Check if software always exists with is real name
-						$id=array_search($initname." ".$version,$import_software);
-						unset($import_software[$id]);
-						$db = new DB;
-						$query_name="SELECT glpi_software.ID as ID , glpi_software.name AS NAME FROM glpi_inst_software LEFT JOIN glpi_licenses ON (glpi_inst_software.license=glpi_licenses.ID) LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID) WHERE glpi_inst_software.ID='$id'";
-						$result_name=$db->query($query_name)  or die ("QUERY ERROR : ".$query_name);
-						if ($db->numrows($result_name)==1){
-							if ($db->result($result_name,0,"NAME")!=$name){
-								$updates["name"]=$name;
-								$updates["ID"]=$db->result($result_name,0,"ID");
-								updateSoftware($updates);
-							}
-						}
+			} else { // Check if software always exists with is real name
+				
+				$id=array_search($initname." ".$version,$import_software);
+				unset($import_software[$id]);
+				$db = new DB;
+				$query_name="SELECT glpi_software.ID as ID , glpi_software.name AS NAME FROM glpi_inst_software LEFT JOIN glpi_licenses ON (glpi_inst_software.license=glpi_licenses.ID) LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID) WHERE glpi_inst_software.ID='$id'";
+				$result_name=$db->query($query_name);
+				if ($db->numrows($result_name)==1){
+					if ($db->result($result_name,0,"NAME")!=$name){
+						$updates["name"]=$name;
+						$updates["ID"]=$db->result($result_name,0,"ID");
+						updateSoftware($updates);
 					}
 				}
 			}
