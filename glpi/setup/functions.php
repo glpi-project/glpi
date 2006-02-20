@@ -49,7 +49,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 	echo "<table class='tab_cadre_fixe'  cellpadding='1'>\n";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
 	if (countElementsInTable("glpi_dropdown_".$name)>0){
-	echo "<tr><td  align='center'  class='tab_bg_1'>";
+	echo "<tr><td  align='center' valign='middle' class='tab_bg_1'>";
 	echo "<input type='hidden' name='which' value='$name'>";
 
 
@@ -57,7 +57,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 
 	dropdownValue("glpi_dropdown_".$name, "ID",$ID);
         // on ajoute un input text pour entrer la valeur modifier
-		echo "<input type='image' src=\"".$HTMLRel."pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>";
+		echo "&nbsp;&nbsp<input type='image' class='calendrier' src=\"".$HTMLRel."pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp";
 
 
  	echo "<input type='text' maxlength='100' size='20' name='value' value=\"".$value."\">";
@@ -128,12 +128,12 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
 	if (countElementsInTable("glpi_dropdown_".$name)>0){
-	echo "<tr><td align='center' class='tab_bg_1'>";
+	echo "<tr><td align='center' valign='middle' class='tab_bg_1'>";
 	echo "<input type='hidden' name='which' value='$name'>";
 
 	dropdownValue("glpi_dropdown_".$name, "ID",$ID);
         // on ajoute un input text pour entrer la valeur modifier
-		echo "<input type='image' src=\"".$HTMLRel."pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>";
+		echo "&nbsp;&nbsp;<input type='image' class='calendrier'  src=\"".$HTMLRel."pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
 
 //        echo "<img src=\"".$HTMLRel."pics/puce.gif\" alt='' title=''>";
 	if ($name != "netpoint"){
@@ -235,11 +235,11 @@ function showFormTypeDown ($target,$name,$human,$ID) {
 	echo "<tr><th colspan='3'>$human:</th></tr>";
 	
 	if (countElementsInTable("glpi_type_".$name)>0){
-	echo "<tr><td align='center' class='tab_bg_1'>";
+	echo "<tr><td align='center' valign='center' class='tab_bg_1'>";
 
 	dropdownValue("glpi_type_".$name, "ID",$ID);
 	// on ajoute un input text pour entrer la valeur modifier
-		echo "<input type='image' src=\"".$HTMLRel."pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>";
+		echo "&nbsp;&nbsp;<input type='image' class='calendrier' src=\"".$HTMLRel."pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
 
 	if (!empty($ID))
 		$value=getDropdownName("glpi_type_".$name,$ID);
