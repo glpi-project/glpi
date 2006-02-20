@@ -162,12 +162,49 @@ function ocs_link($ocs_item_id, $glpi_computer_id) {
 }
 
 
+function ocsManageDeleted(){
+	$dbocs = new DBocs();
+	$query="SELECT * FROM deleted_equiv";
+	$result = $dbocs->query($query) or die($dbocs->error().$query);
+	if ($dbocs->numrows($result)){
+		$deleted=array();
+		while ($data=$dbocs->fetch_array($result)){
+			$deleted[$data["DELETED"]]=$data["EQUIVALENT"];
+		}
+
+		$query="TRUNCATE TABLE deleted_equiv";
+		$result = $dbocs->query($query) or die($dbocs->error().$query);
+		$db=new DB();
+		if (count($deleted))
+		foreach ($deleted as $del => $equiv){
+			if (!empty($equiv)){ // New name
+				$query="UPDATE glpi_ocs_link SET ocs_id='$equiv' WHERE ocs_id='$del'";
+				$db->query($query) or die($db->error().$query);
+			} else { // Deleted
+				$query="SELECT * FROM glpi_ocs_link WHERE ocs_id='$del'";
+				$result=$db->query($query) or die($db->error().$query);
+				if ($db->numrows($result)){
+					$del=$db->fetch_array($result);
+					deleteComputer(array("ID"=>$del["glpi_id"]),0);
+				}
+			
+			}
+		}
+	}
+
+
+}
+
+
 function ocsImportComputer($DEVICEID){
 	$dbocs = new DBocs();
 
 	// Set OCS checksum to max value
 	$query = "UPDATE hardware SET CHECKSUM='".MAX_OCS_CHECKSUM."' WHERE DEVICEID='$DEVICEID'";
-	$result = $dbocs->query($query) or die($dbocs->error().$query);
+	$dbocs->query($query) or die($dbocs->error().$query);
+
+	$query = "UPDATE config SET IVALUE='1' WHERE NAME='TRACE_DELETED'";
+	$dbocs->query($query) or die($dbocs->error().$query);
 
 
 	$query = "SELECT * FROM hardware WHERE DEVICEID='$DEVICEID'";
@@ -198,7 +235,10 @@ function ocsLinkComputer($ocs_id,$glpi_id){
 
 		// Set OCS checksum to max value
 		$query = "UPDATE hardware SET CHECKSUM='".MAX_OCS_CHECKSUM."' WHERE DEVICEID='$ocs_id'";
-		$result = $dbocs->query($query) or die($dbocs->error().$query);
+		$dbocs->query($query) or die($dbocs->error().$query);
+
+		$query = "UPDATE config SET IVALUE='1' WHERE NAME='TRACE_DELETED'";
+		$dbocs->query($query) or die($dbocs->error().$query);
 
 		if ($idlink = ocs_link($ocs_id, $glpi_id)){
 			// Reset using GLPI Config

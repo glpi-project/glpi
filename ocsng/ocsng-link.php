@@ -54,6 +54,8 @@ if (!isset($_POST["import_ok"])){
 if (!isset($_GET['check'])) $_GET['check']='all';
 if (!isset($_GET['start'])) $_GET['start']=0;
 
+ocsCleanLinks();
+ocsManageDeleted();
 ocsShowNewComputer($_GET['check'],$_GET['start'],1);
 
 } else {
