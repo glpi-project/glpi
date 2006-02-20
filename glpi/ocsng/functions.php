@@ -1272,9 +1272,9 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software) {
 			$publisher = $data2["PUBLISHER"];
 
 			// Import Software
-			if (!in_array($initname." ".$version,$import_software)){
+			if (!in_array($initname,$import_software)){
 	        		$db = new DB;
-				$query_search = "SELECT ID FROM glpi_software WHERE name = '".$name."' and 	version='".$version."'";
+				$query_search = "SELECT ID FROM glpi_software WHERE name = '".$name."' ";
 				$result_search = $db->query($query_search) or die("Verification existence logiciel :".$name." v:"." - ".$version.$db->error());
 				if ($db->numrows($result_search)>0){
 					$data = $db->fetch_array($result_search);
@@ -1293,12 +1293,12 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software) {
 				}
 				if ($isNewSoft){
 					$instID=installSoftware($glpi_id,ocsImportLicense($isNewSoft));
-					addToOcsArray($glpi_id,array($instID=>$initname." ".$version),"import_software");
+					addToOcsArray($glpi_id,array($instID=>$initname),"import_software");
 				}
 						
 			} else { // Check if software always exists with is real name
 				
-				$id=array_search($initname." ".$version,$import_software);
+				$id=array_search($initname,$import_software);
 				unset($import_software[$id]);
 				$db = new DB;
 				$query_name="SELECT glpi_software.ID as ID , glpi_software.name AS NAME FROM glpi_inst_software LEFT JOIN glpi_licenses ON (glpi_inst_software.license=glpi_licenses.ID) LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID) WHERE glpi_inst_software.ID='$id'";
@@ -1306,6 +1306,9 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software) {
 				if ($db->numrows($result_name)==1){
 					if ($db->result($result_name,0,"NAME")!=$name){
 						$updates["name"]=$name;
+						$updates["version"]=$version;
+						if (!empty($publisher))
+							$updates["FK_glpi_enterprise"] = ocsImportEnterprise($publisher);
 						$updates["ID"]=$db->result($result_name,0,"ID");
 						updateSoftware($updates);
 					}
