@@ -517,6 +517,8 @@ $lang["financial"][85]="Elément demandé introuvable";
 $lang["financial"][86]="Date fin"; 
 $lang["financial"][87]="Budget"; 
 $lang["financial"][88]="Expire le : "; 
+$lang["financial"][89]="TCO (valeur+montant des interventions) ";
+$lang["financial"][90]="TCO mensuel  ";
 
 $lang["help"][0]="Bienvenue";
 $lang["help"][1]="Veuillez décrire votre problème";
