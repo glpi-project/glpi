@@ -877,4 +877,10 @@ flush();
 if (function_exists("ob_flush")) ob_flush();
 }
 
+function displayProgressBar($width,$percent){
+		$percentwidth=floor($percent*$width/100);
+		echo str_pad("<div align='center'><table class='tab_cadre' width='$width'><tr><td width='$width' align='center'> Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwidth' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n",4096);
+		glpi_flush();
+}
+
 ?>
