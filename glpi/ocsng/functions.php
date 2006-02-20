@@ -403,7 +403,10 @@ function ocsUpdateHardware($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistor
 		$compudate=array();
 		
 		if($cfg_ocs["import_general_os"]&&!in_array("os",$computer_updates)) {
-			$compupdate["os"] = ocsImportDropdown('glpi_dropdown_os','name',$line["OSNAME"]." ".$dbocs->result($result,0,"OSVERSION"));
+			$compupdate["os"] = ocsImportDropdown('glpi_dropdown_os','name',$line["OSNAME"]);
+			$compupdate["os_version"] = ocsImportDropdown('glpi_dropdown_os_version','name',$line["OSVERSION"]);
+			if (!ereg("CEST",$line["OSCOMMENTS"])) // Not linux comment
+				$compupdate["os_sp"] = ocsImportDropdown('glpi_dropdown_os_sp','name',$line["OSCOMMENTS"]);
 		}
 		
 		if($cfg_ocs["import_general_domain"]&&!in_array("domain",$computer_updates)) {
@@ -415,7 +418,7 @@ function ocsUpdateHardware($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistor
 		}
 			
 		if($cfg_ocs["import_general_comments"]&&!in_array("comments",$computer_updates)) {
-			$compupdate["comments"] = $line["OSCOMMENTS"]."\r\n"."Swap: ".$line["SWAP"]."\r\n".addslashes($lang["ocsng"][7]);
+			$compupdate["comments"] = "Swap: ".$line["SWAP"];
 		}
 
 		if (count($compupdate)){

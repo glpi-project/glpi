@@ -434,6 +434,14 @@ function replaceDropDropDown($input) {
 		$query = "update glpi_software set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
+	case "os_version" :
+		$query = "update glpi_computers set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		$db->query($query);
+		break;
+	case "os_sp" :
+		$query = "update glpi_computers set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		$db->query($query);
+		break;
 	case "iface" :
 		$query = "update glpi_networking_ports set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$db->query($query);
@@ -743,6 +751,16 @@ function dropdownUsed($table, $ID) {
 		$query = "Select count(*) as cpt FROM glpi_software where platform = ".$ID."";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;	
+		break;
+	case "os_version" :
+		$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
+	case "os_sp" :
+		$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = ".$ID."";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
 	case "rubdocs":
 		$query = "Select count(*) as cpt FROM glpi_docs where rubrique = ".$ID."";
