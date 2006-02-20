@@ -972,6 +972,8 @@ $lang["ocsng"][18] = "Connexion à la base de données OCS réussie";
 $lang["ocsng"][19] = "Version OCS NG valide";
 $lang["ocsng"][20] = "Version d'OCS NR non valide : nécessite RC2";
 $lang["ocsng"][21] = "Echec de connexion à la base de données OCS NG";
+$lang["ocsng"][22] = "Attention ! Les données importées (voir votre configuration) écraseront les données existantes";
+$lang["ocsng"][23] = "Importation impossible, ordinateur de destination de GLPI déjà lié à un élément d'OCS NG";
 
 $lang["ocsconfig"][0] = "Configuration du modules d'import OCS NG -> GLPI";
 $lang["ocsconfig"][1] = "Utilisateur de la base de données OCSweb";

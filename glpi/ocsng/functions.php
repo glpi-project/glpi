@@ -82,6 +82,10 @@ if ($dbocs->numrows($result_ocs)>0){
 		}
 	}
 	
+	if ($tolinked){
+	echo "<div align='center'><strong>".$lang["ocsng"][22]."</strong></div>";
+	}
+
 	echo "<div align='center'>";
 	if (($numrows=count($hardware))>0){
 	
@@ -181,6 +185,52 @@ function ocsImportComputer($DEVICEID){
 			ocsUpdateComputer($idlink,0);
 		}
 	}
+}
+
+function ocsLinkComputer($ocs_id,$glpi_id){
+	global $lang;
+	$db=new DB();
+	$query="SELECT * FROM glpi_ocs_link WHERE glpi_id='$glpi_id'";
+	$result=$db->query($query);
+	if ($db->numrows($result)==0){
+	
+		$dbocs = new DBocs();
+
+		// Set OCS checksum to max value
+		$query = "UPDATE hardware SET CHECKSUM='".MAX_OCS_CHECKSUM."' WHERE DEVICEID='$ocs_id'";
+		$result = $dbocs->query($query) or die($dbocs->error().$query);
+
+		if ($idlink = ocs_link($ocs_id, $glpi_id)){
+			// Reset using GLPI Config
+			$cfg_ocs=getOcsConf(1);
+			if($cfg_ocs["import_device_processor"]) 
+				ocsResetDevices($glpi_id,PROCESSOR_DEVICE);
+			if($cfg_ocs["import_device_iface"]) 
+				ocsResetDevices($glpi_id,NETWORK_DEVICE);
+			if($cfg_ocs["import_device_memory"]) 
+				ocsResetDevices($glpi_id,RAM_DEVICE);
+			if($cfg_ocs["import_device_hdd"]) 
+				ocsResetDevices($glpi_id,HDD_DEVICE);
+			if($cfg_ocs["import_device_sound"]) 
+				ocsResetDevices($glpi_id,SND_DEVICE);
+			if($cfg_ocs["import_device_gfxcard"]) 
+				ocsResetDevices($glpi_id,GFX_DEVICE);
+			if($cfg_ocs["import_device_drives"]) 
+				ocsResetDevices($glpi_id,DRIVE_DEVICE);
+			if($cfg_ocs["import_device_modems"] || $cfg_ocs["import_device_ports"]) 
+				ocsResetDevices($glpi_id,PCI_DEVICE);
+			if($cfg_ocs["import_software"]) 
+				ocsResetLicenses($glpi_id);
+			if($cfg_ocs["import_periph"]) 
+				ocsResetPeriphs($glpi_id);
+			if($cfg_ocs["import_monitor"]) 
+				ocsResetMonitors($glpi_id);
+			if($cfg_ocs["import_printer"]) 
+				ocsResetPrinters($glpi_id);
+
+			ocsUpdateComputer($idlink,0);
+		}
+	} else echo $ocs_id." - ".$lang["ocsng"][23];
 }
 
 
@@ -1311,6 +1361,157 @@ function ocsImportLicense($software) {
         $isNewLicc = $licc->addToDB();
     }
     return($isNewLicc);
+}
+
+
+/**
+* Delete old licenses
+*
+* Delete all old licenses of a computer.
+*
+*@param $glpi_computer_id integer : glpi computer id.
+*
+*@return nothing.
+*
+**/
+function ocsResetLicenses($glpi_computer_id) {
+	if(getOcsConfVar("import_software") == 0) return;
+
+    $db = new DB;
+
+
+	$query = "SELECT * from glpi_inst_software where cid = '".$glpi_computer_id."'";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		while ($data=$db->fetch_assoc($result)){
+			$query2="SELECT COUNT(*) from glpi_inst_software where license = '".$data['license']."'";
+			$result2=$db->query($query2);
+			if ($db->result($result2,0,0)==1){
+				$lic=new License;
+				$lic->getfromDB($data['license']);
+				$query3="SELECT COUNT(*) FROM glpi_licenses where sID='".$lic->fields['sID']."'";
+				$result3=$db->query($query3);
+				if ($db->result($result3,0,0)==1){
+					deleteSoftware(array('ID'=>$lic->fields['sID']),1);
+				}
+				deleteLicense($data['license']);
+				
+			}
+		}
+
+		$query = "delete from glpi_inst_software where cid = '".$glpi_computer_id."'";
+		$db->query($query) or die("Impossible d'effacer les anciennes licences.".$db->error());
+	}
+
+}
+
+/**
+* Delete old devices settings
+*
+* Delete Old device settings.
+*
+*@param $device_type integer : device type identifier.
+*@param $glpi_computer_id integer : glpi computer id.
+*
+*@return nothing.
+*
+**/
+function ocsResetDevices($glpi_computer_id, $device_type) {
+	$db = new DB;
+	$query = "delete from glpi_computer_device where device_type = '".$device_type."' AND FK_computers = '".$glpi_computer_id."'";
+	$db->query($query) or die("unable to delete old devices settings ".$db->error());
+}
+
+/**
+* Delete old periphs
+*
+* Delete all old periphs for a computer.
+*
+*@param $glpi_computer_id integer : glpi computer id.
+*
+*@return nothing.
+*
+**/
+function ocsResetPeriphs($glpi_computer_id) {
+	if(getOcsConfVar("import_periph") == 0) return;
+
+	$db = new DB;
+
+	$query = "SELECT * FROM glpi_connect_wire where end2 = '".$glpi_computer_id."' and type = '".PERIPHERAL_TYPE."'";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		while ($data=$db->fetch_assoc($result)){
+			$query2="SELECT COUNT(*) FROM glpi_connect_wire WHERE end1 = '".$data['end1']."' and type = '".PERIPHERAL_TYPE."'";
+			$result2=$db->query($query2);
+			if ($db->result($result2,0,0)==1){
+				deletePeripheral(array('ID'=>$data['end1']),1);
+			}
+		}
+		
+		$query2 = "delete from glpi_connect_wire where end2 = '".$glpi_computer_id."' and type = '".PERIPHERAL_TYPE."'";
+		$db->query($query2) or die("Impossible d'effacer les anciens monitors.".$db->error());
+	}
+
+}
+/**
+* Delete old monitors
+*
+* Delete all old licenses of a computer.
+*
+*@param $glpi_computer_id integer : glpi computer id.
+*
+*@return nothing.
+*
+**/
+function ocsResetMonitors($glpi_computer_id) {
+	if(getOcsConfVar("import_monitor") == 0) return;
+
+	$db = new DB;
+	$query = "SELECT * FROM glpi_connect_wire where end2 = '".$glpi_computer_id."' and type = '".MONITOR_TYPE."'";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		while ($data=$db->fetch_assoc($result)){
+			$query2="SELECT COUNT(*) FROM glpi_connect_wire WHERE end1 = '".$data['end1']."' and type = '".MONITOR_TYPE."'";
+			$result2=$db->query($query2);
+			if ($db->result($result2,0,0)==1){
+				deleteMonitor(array('ID'=>$data['end1']),1);
+			}
+		}
+		
+		$query2 = "delete from glpi_connect_wire where end2 = '".$glpi_computer_id."' and type = '".MONITOR_TYPE."'";
+		$db->query($query2) or die("Impossible d'effacer les anciens monitors.".$db->error());
+	}
+
+}
+/**
+* Delete old printers
+*
+* Delete all old printers of a computer.
+*
+*@param $glpi_computer_id integer : glpi computer id.
+*
+*@return nothing.
+*
+**/
+function ocsResetPrinters($glpi_computer_id) {
+	if(getOcsConfVar("import_printer") == 0) return;
+
+	$db = new DB;
+
+	$query = "SELECT * FROM glpi_connect_wire where end2 = '".$glpi_computer_id."' and type = '".PRINTER_TYPE."'";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		while ($data=$db->fetch_assoc($result)){
+			$query2="SELECT COUNT(*) FROM glpi_connect_wire WHERE end1 = '".$data['end1']."' and type = '".PRINTER_TYPE."'";
+			$result2=$db->query($query2);
+			if ($db->result($result2,0,0)==1){
+				deletePrinter(array('ID'=>$data['end1']),1);
+			}
+		}
+		
+		$query2 = "delete from glpi_connect_wire where end2 = '".$glpi_computer_id."' and type = '".PRINTER_TYPE."'";
+		$db->query($query2) or die("Impossible d'effacer les anciens monitors.".$db->error());
+	}
 }
 
 ?>
