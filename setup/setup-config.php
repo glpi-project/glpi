@@ -63,7 +63,8 @@ if(!empty($_GET["next"])) {
 	}
 	elseif($_GET["next"] == "ocsng") {
 		commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
-		ocsFormConfig($_SERVER["PHP_SELF"], 1);
+		include ($phproot . "/glpi/includes_ocsng.php");
+		ocsFormDBConfig($_SERVER["PHP_SELF"], 1);
 	}
 	
 	
@@ -92,7 +93,10 @@ elseif(!empty($_POST["update_ext"])) {
 elseif(!empty($_POST["update_confgen"])) {
 	updateConfigGen($_POST["root_doc"], $_POST["event_loglevel"], $_POST["expire_events"],$_POST["permit_helpdesk"],$_POST["default_language"],$_POST["date_fiscale"],$_POST["cartridges_alarm"],
 	$_POST["auto_assign"],$_POST["auto_update_check"],$_POST["auto_add_users"],$_POST["post_only_followup"],$_POST["ocs_mode"]);
-	glpi_header($cfg_install["root"]."/setup/setup-config.php?next=confgen");
+	if ($_POST["ocs_mode"])
+		glpi_header($cfg_install["root"]."/setup/setup-config.php?next=ocsng");
+	else 
+		glpi_header($cfg_install["root"]."/setup/setup-config.php?next=confgen");
 }
 elseif(!empty($_POST["update_confdisplay"])) {
 	updateConfigDisplay($_POST["num_of_events"], $_POST["jobs_at_login"],$_POST["list_limit"], $_POST["cut"],$_POST["priority"],
@@ -102,6 +106,9 @@ elseif(!empty($_POST["update_confdisplay"])) {
 	glpi_header($cfg_install["root"]."/setup/setup-config.php?next=confdisplay");
 } elseif(!empty($_POST["update_ocs_config"])) {
 	ocsUpdateConfig($_POST, 1);
+	glpi_header($cfg_install["root"]."/setup/setup-config.php?next=ocsng");
+} elseif(!empty($_POST["update_ocs_dbconfig"])) {
+	ocsUpdateDBConfig($_POST, 1);
 	glpi_header($cfg_install["root"]."/setup/setup-config.php?next=ocsng");
 }
 
