@@ -221,7 +221,7 @@ td { }
 }
 
 .tab_cadre th, .tab_cadre_fixe th, .tab_cadrehov th, .tab_cadrehov_pointer th , .tab_cadre_report th {
-	font-size: 12px;
+	font-size: 11px;
 	font-weight: bold;
 	background-color: #fccc6f;
 	text-align: center;
@@ -821,7 +821,7 @@ ul#onglet li.actif a {
 
 
 #contenukb {
-	/* a voir je suis pas bien sûr  */
+	/* a voir je suis pas bien sr  */
 	height: 100%;
 	/*position: relative; ou absolute */
 	/*left: 35%; */
