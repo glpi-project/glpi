@@ -260,7 +260,7 @@ $cfg_debug["lang"]=($cfg_debug["active"]==1); // affiche les variables de trads
 	if ($cfg_debug["active"]==2){
 	ini_set('display_errors','On');
 	error_reporting(E_ALL);
-	ini_set('error_prepend_string','<div style="position:absolute; top:5px; left:5px; background-color:red; z-index:10000"> POUET');
+	ini_set('error_prepend_string','<div style="position:absolute; top:5px; left:5px; background-color:red; z-index:10000">PHP ERROR : ');
 	ini_set('error_append_string','</div>');
 }else{
 //Pas besoin des warnings de PHP en mode normal : on va eviter de faire peur ;)
