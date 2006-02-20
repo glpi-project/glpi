@@ -167,7 +167,17 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		autocompletionTextField("amort_coeff","glpi_infocoms","amort_coeff",$ic->fields["amort_coeff"],10,$option);	
 		echo "</td></tr>";
 		}
-
+		//TCO
+		if ($device_type!=SOFTWARE_TYPE&&$device_type!=CARTRIDGE_TYPE&&$device_type!=CONSUMABLE_TYPE){
+			
+			echo "<tr class='tab_bg_1'><td>";
+			echo $lang["financial"][89]." : </td><td>";
+			echo showTco($device_type,$dev_ID,$ic->fields["value"]);
+			echo "</td><td>".$lang["financial"][90]." : 	</td><td>";
+			echo  showTco($device_type,$dev_ID,$ic->fields["value"],$ic->fields["buy_date"]);
+			echo "</td></tr>";
+		}
+		// commment
 		echo "<tr class='tab_bg_1'><td valign='top'>";
 		echo $lang["financial"][12].":	</td>";
 		echo "<td align='center' colspan='3'><textarea cols='80' $option rows='2' name='comments' >".$ic->fields["comments"]."</textarea>";
@@ -306,6 +316,23 @@ else return convDate(date("Y-m-d", strtotime("$from + $addwarranty month ")));
 }
 
 
+/**
+* Calculate amortissement for an item
+*
+* 
+*
+*@param $type_amort
+*@param $va
+*@param $duree
+*@param $coef
+*@param $date_achat
+*@param $date_use
+*@param $date_fiscale
+*@param $view
+*
+*@return float or array
+*
+**/
 
 function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_fiscale,$view="n") {
 	// By Jean-Mathieu Dol�ns qui s'est un peu pris le chou :p
@@ -570,6 +597,73 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 
 
 }
+
+
+/**
+* Calculate TCO and TCO by month for an item
+*
+* 
+*
+*@param $item_type
+*@param $item
+*@param $value 
+*@param $date_achat
+*
+*@return float
+*
+**/
+
+
+function showTco($item_type,$item,$value,$date_achat=""){
+	// Affiche le TCO ou le TCO mensuel pour un matériel 
+	//		
+			$totalcost=0;
+		
+			$query="SELECT * FROM glpi_tracking WHERE (status = 'old_done') and (device_type = '$item_type' and computer = '$item')";
+	
+			$db = new DB;
+			$result = $db->query($query);
+	
+			$i = 0;
+			$number = $db->numrows($result);
+			
+			if ($number > 0){
+					
+				while ($i < $number)
+				{
+					$ID = $db->result($result, $i, "ID");
+					
+					$totalcost=$totalcost+($db->result($result, $i, "realtime")*$db->result($result, $i, "cost_time"))+$db->result($result, $i, "cost_fixed")+$db->result($result, $i, "cost_material");
+			
+					$i++;
+				}
+	
+			}
+			
+			if ($date_achat){ // on veut donc le TCO mensuel
+								
+				sscanf($date_achat, "%4s-%2s-%2s",$date_Y, $date_m, $date_d);
+		
+				$timestamp2 = mktime(0,0,0, $date_m, $date_d, $date_Y);
+				$timestamp = mktime(0,0,0, date("m"), date("d"), date("Y"));
+		
+				 $diff = floor(($timestamp - $timestamp2) / (3600 * 24 * 30)); // Mois d'utilisation
+				
+								
+				return number_format((($totalcost+$value)/$diff),2,".",""); // TCO mensuel
+	
+			}else {
+				return number_format(($totalcost+$value),2,".",""); // TCO
+				}
+		
+		}// fin showTCO	
+
+
+
+
+
+
+
 
 function addInfocomOptionFieldsToResearch($option){
 global $lang;
