@@ -82,7 +82,7 @@ if ($dbocs->numrows($result_ocs)>0){
 		}
 	}
 	
-	if ($tolinked){
+	if ($tolinked&&count($hardware)){
 	echo "<div align='center'><strong>".$lang["ocsng"][22]."</strong></div>";
 	}
 
