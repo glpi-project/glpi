@@ -146,7 +146,7 @@ function Connect($target,$sID,$cID,$type) {
 	$connect->end1=$sID;
 	$connect->end2=$cID;
 	$connect->type=$type;
-	$connect->addtoDB();
+	$newID=$connect->addtoDB();
 	// Mise a jour lieu du periph si nécessaire
 	$dev=new CommonItem();
 	$dev->getFromDB($type,$sID);
@@ -169,7 +169,7 @@ function Connect($target,$sID,$cID,$type) {
 			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][49];
 		}
 	}
-	
+	return $newID;	
 }
 
 ?>

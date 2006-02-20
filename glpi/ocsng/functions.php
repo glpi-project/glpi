@@ -171,7 +171,12 @@ function ocsImportComputer($DEVICEID){
 	if ($dbocs->numrows($result)==1){
 		$line=$dbocs->fetch_array($result);
 		$dbocs->close();
-		$glpi_id=ocsImportNewComputer($line["NAME"]);
+
+		$comp = new Computer;
+		$comp->fields["name"] = $line["NAME"];
+		$comp->fields["ocs_import"] = 1;
+		$glpi_id=$comp->addToDB();
+
 		if ($idlink = ocs_link($line['DEVICEID'], $glpi_id)){
 			ocsUpdateComputer($idlink,0);
 		}
@@ -213,7 +218,7 @@ function ocsUpdateComputer($ID,$dohistory){
 			if ($mixed_checksum&pow(2,BIOS_FL))
 				ocsUpdateBios($line['glpi_id'],$line['ocs_id'],$cfg_ocs,$computer_updates,$dohistory);
 
-			// Get impot devices
+			// Get import devices
 			$import_device=importArrayFromDB($line["import_device"]);
 			if ($mixed_checksum&pow(2,MEMORIES_FL))
 				ocsUpdateDevices(RAM_DEVICE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_device,$dohistory);
@@ -232,10 +237,29 @@ function ocsUpdateComputer($ID,$dohistory){
 			if ($mixed_checksum&pow(2,MODEMS_FL)||$mixed_checksum&pow(2,PORTS_FL))
 				ocsUpdateDevices(PCI_DEVICE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_device,$dohistory);
 
-		// Update OCS Cheksum
-		$dbocs = new DBocs();
-		$query_ocs="UPDATE hardware SET CHECKSUM= (CHECKSUM - $mixed_checksum) WHERE DEVICEID='".$line['ocs_id']."'";
-		$dbocs->query($query_ocs) or die($dbocs->error().$query_ocs);
+			if ($mixed_checksum&pow(2,MONITORS_FL)){
+				// Get import monitors
+				$import_monitor=importArrayFromDB($line["import_monitor"]);
+				ocsUpdatePeripherals(MONITOR_TYPE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_monitor,$dohistory);
+			}
+
+			if ($mixed_checksum&pow(2,PRINTERS_FL)){
+				// Get import printers
+				$import_printer=importArrayFromDB($line["import_printers"]);
+				ocsUpdatePeripherals(PRINTER_TYPE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_printer,$dohistory);
+			}
+
+			if ($mixed_checksum&pow(2,INPUTS_FL)){
+				// Get import monitors
+				$import_peripheral=importArrayFromDB($line["import_peripheral"]);
+				ocsUpdatePeripherals(PERIPHERAL_TYPE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_peripheral,$dohistory);
+			}
+
+
+			// Update OCS Cheksum
+			$dbocs = new DBocs();
+			$query_ocs="UPDATE hardware SET CHECKSUM= (CHECKSUM - $mixed_checksum) WHERE DEVICEID='".$line['ocs_id']."'";
+			$dbocs->query($query_ocs) or die($dbocs->error().$query_ocs);
 		}
 	}
 /*
@@ -269,26 +293,6 @@ function ocsUpdateComputer($ID,$dohistory){
         $dbglpi->query($query);
 */
     }
-}
-
-/**
-* Import general config of a new computer
-*
-* This function create a new computer in GLPI with some general datas.
-*
-*@param $name : name of the computer.
-*@param $ssn : serial number of the computer.
-*@param $model : id for a computer model.
-*@param $manuf : id for a enterprise.
-*
-*@return integer : inserted computer id.
-*
-**/
-function ocsImportNewComputer($name) {
-	$comp = new Computer;
-	$comp->fields["name"] = $name;
-	$comp->fields["ocs_import"] = 1;
-	return($comp->addToDB());
 }
 
 /**
@@ -934,6 +938,224 @@ function ocsAddDevice($device_type,$dev_array) {
 	} else {
 	$line = $db->fetch_array($result);
 	return $line["ID"];
+	}
+
+}
+
+/**
+* Import the devices for a computer
+*
+* 
+*
+*@param $glpi_id integer : glpi computer id.
+*@param $ocs_id integer : ocs computer id (DEVICEID).
+*
+*@return Nothing (void).
+*
+**/
+function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_periph,$dohistory){
+
+	switch ($device_type){
+		case MONITOR_TYPE:
+		if ($cfg_ocs["import_monitor"]){
+			$dbocs = new DBocs();
+			$query = "select DISTINCT CAPTION, MANUFACTURER, DESCRIPTION, SERIAL from monitors where DEVICEID = '".$ocs_id."' and CAPTION <> 'NULL'";
+			$result = $dbocs->query($query) or die($dbocs->error());
+		
+			if($dbocs->numrows($result) > 0) 
+			while($line = $dbocs->fetch_array($result)) {
+				$line=addslashes_deep($line);
+				
+				$mon["name"] = $line["CAPTION"];
+				if (!in_array($mon["name"],$import_periph)){
+					$mon["FK_glpi_enterprise"] = ocsImportEnterprise($line["MANUFACTURER"]);
+					$mon["comments"] = $line["DESCRIPTION"];
+					$mon["serial"] = $line["SERIAL"];
+					$mon["date_mod"] = date("Y-m-d H:i:s");
+					$id_monitor=0;
+
+					if($cfg_ocs["import_monitor"] == 1) {
+						//Config says : manage monitors as global
+						//check if monitors already exists in GLPI
+						$mon["is_global"]=1;
+						$db = new db;
+						$query = "select ID from glpi_monitors where name = '".$line["CAPTION"]."' AND is_global = '1'";
+						$result_search = $db->query($query);
+						if($db->numrows($result_search) > 0) {
+							//Periph is already in GLPI
+							//Do not import anything just get periph ID for link
+							$id_monitor = $db->result($result_search,0,"ID");
+						} else {
+							$m=new Monitor;
+							$m->fields=$mon;
+							$id_monitor=$m->addToDB();
+						}
+					} else if($cfg_ocs["import_monitor"] == 2) {
+						//COnfig says : manage monitors as single units
+						//Import all monitors as non global.
+						$mon["is_global"]=0;
+						$m=new Monitor;
+						$m->fields=$mon;
+						$id_monitor=$m->addToDB();
+					}	
+					if ($id_monitor){
+						$connID=Connect("",$id_monitor,$glpi_id,MONITOR_TYPE);
+						addToOcsArray($glpi_id,array($connID=>$mon["name"]),"import_monitor");
+					}
+				} else {
+					$id=array_search($mon["name"],$import_periph);
+					unset($import_periph[$id]);
+				}
+			}
+		}
+		break;
+		case PRINTER_TYPE:
+		if ($cfg_ocs["import_printer"]){
+			$dbocs = new DBocs();
+			$query = "select * from printers where DEVICEID = '".$ocs_id."' AND DRIVER <> ''";
+			$result = $dbocs->query($query) or die($dbocs->error());
+		
+			if($dbocs->numrows($result) > 0) 
+			while($line = $dbocs->fetch_array($result)) {
+				$line=addslashes_deep($line);
+				
+				$print["name"] = $line["DRIVER"];
+				if (!in_array($print["name"],$import_periph)){
+					$print["comments"] = $line["PORT"]."\r\n".$line["NAME"];
+					$print["date_mod"] = date("Y-m-d H:i:s");
+					$id_printer=0;
+
+					if($cfg_ocs["import_printer"] == 1) {
+						//Config says : manage printers as global
+						//check if printers already exists in GLPI
+						$print["is_global"]=1;
+						$db = new db;
+						$query = "select ID from glpi_printers where name = '".$line["DRIVER"]."' AND is_global = '1'";
+						$result_search = $db->query($query);
+						if($db->numrows($result_search) > 0) {
+							//Periph is already in GLPI
+							//Do not import anything just get periph ID for link
+							$id_printer = $db->result($result_search,0,"ID");
+						} else {
+							$p=new Printer;
+							$p->fields=$print;
+							$id_printer=$p->addToDB();
+						}
+					} else if($cfg_ocs["import_printer"] == 2) {
+						//COnfig says : manage printers as single units
+						//Import all printers as non global.
+						$print["is_global"]=0;
+						$p=new Printer;
+						$p->fields=$print;
+						$id_printer=$p->addToDB();
+					}	
+					if ($id_printer){
+						$connID=Connect("",$id_printer,$glpi_id,PRINTER_TYPE);
+						addToOcsArray($glpi_id,array($connID=>$print["name"]),"import_printers");
+					}
+				} else {
+					$id=array_search($print["name"],$import_periph);
+					unset($import_periph[$id]);
+				}
+			}
+		}
+		break;
+		case PERIPHERAL_TYPE:
+		if ($cfg_ocs["import_periph"]){
+			$dbocs = new DBocs();
+			$query = "select DISTINCT CAPTION, MANUFACTURER, INTERFACE, TYPE from inputs where DEVICEID = '".$ocs_id."' and CAPTION <> ''";
+			$result = $dbocs->query($query) or die($dbocs->error());
+			if($dbocs->numrows($result) > 0) 
+			while($line = $dbocs->fetch_array($result)) {
+				$line=addslashes_deep($line);
+
+				$periph["name"] = $line["CAPTION"];
+				if (!in_array($periph["name"],$import_periph)){
+					if ($line["MANUFACTURER"]!="NULL") $periph["brand"] = $line["MANUFACTURER"];
+					if ($line["INTERFACE"]!="NULL") $periph["comments"] = $line["INTERFACE"];
+					$periph["type"] = ocsImportDropdown("glpi_type_peripherals","name",$line["TYPE"]);
+					$periph["date_mod"] = date("Y-m-d H:i:s");
+					
+					$id_periph=0;
+
+					if($cfg_ocs["import_periph"] == 1) {
+						//Config says : manage peripherals as global
+						//check if peripherals already exists in GLPI
+						$periph["is_global"]=1;
+						$db = new db;
+						$query = "select ID from glpi_peripherals where name = '".$line["CAPTION"]."' AND is_global = '1'";
+						$result_search = $db->query($query);
+						if($db->numrows($result_search) > 0) {
+							//Periph is already in GLPI
+							//Do not import anything just get periph ID for link
+							$id_periph = $db->result($result_search,0,"ID");
+						} else {
+							$p=new Peripheral;
+							$p->fields=$periph;
+							$id_periph=$p->addToDB();
+						}
+					} else if($cfg_ocs["import_periph"] == 2) {
+						//COnfig says : manage peripherals as single units
+						//Import all peripherals as non global.
+						$periph["is_global"]=0;
+						$p=new Peripheral;
+						$p->fields=$periph;
+						$id_periph=$p->addToDB();
+					}	
+					if ($id_periph){
+						$connID=Connect("",$id_periph,$glpi_id,PERIPHERAL_TYPE);
+						addToOcsArray($glpi_id,array($connID=>$periph["name"]),"import_periph");
+					}
+				} else {
+					$id=array_search($periph["name"],$import_periph);
+					unset($import_periph[$id]);
+				}
+			}
+		}
+		break;
+	}
+	
+
+	// Disconnect Unexisting Items not found in OCS
+	if (count($import_periph)){
+		foreach ($import_periph as $key => $val){
+			
+
+			$query = "SELECT * FROM glpi_connect_wire where ID = '".$key."'";
+			$result=$db->query($query);
+			if ($db->numrows($result)>0){
+				while ($data=$db->fetch_assoc($result)){
+					$query2="SELECT COUNT(*) FROM glpi_connect_wire WHERE end1 = '".$data['end1']."' and type = '".$device_type."'";
+					$result2=$db->query($query2);
+					if ($db->result($result2,0,0)==1){
+						switch ($device_type){
+							case MONITOR_TYPE:
+							deleteMonitor(array('ID'=>$data['end1']),1);
+							break;
+							case PRINTER_TYPE:
+							deletePrinter(array('ID'=>$data['end1']),1);
+							break;
+							case PERIPHERAL_TYPE:
+							deletePeripheral(array('ID'=>$data['end1']),1);
+							break;
+						}
+					}
+				}
+			}
+			Disconnect($key);
+			
+			switch ($device_type){
+				case MONITOR_TYPE:
+				deleteInOcsArray($glpi_id,$key,"import_monitor");
+				break;
+				case PRINTER_TYPE:
+				deleteInOcsArray($glpi_id,$key,"import_printer");
+				break;
+				case PERIPHERAL_TYPE:
+				deleteInOcsArray($glpi_id,$key,"import_peripheral");
+				break;
+			}
+		}
 	}
 
 }
