@@ -1668,7 +1668,7 @@ function ocsFormDBConfig($target, $id) {
 	$result = $db->query($query);
 	$data=$db->fetch_array($result);
 
-	echo "<form name='formconfig' action=\"$target\" method=\"post\">";
+	echo "<form name='formdbconfig' action=\"$target\" method=\"post\">";
 	echo "<input type='hidden' name='update_ocs_dbconfig' value='1'>";
 	echo "<div align='center'><table class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$lang["ocsconfig"][0]."</th></tr>";
@@ -1682,7 +1682,7 @@ function ocsFormDBConfig($target, $id) {
 
 	$dbocs=new DBocs();
 	
-	echo "<div align='center'><table class='tab_cadre'>";
+	echo "<div align='center'>";
 	if (!$dbocs->error){
 		echo $lang["ocsng"][18]."<br>";
 		if ($dbocs->query("SELECT CHECKSUM FROM hardware")) {
