@@ -367,7 +367,7 @@ function unlink_device_computer($compDevID,$dohistory=1){
 		} 
 	$device = new Device($data["device_type"]);
 	$device->getFromDB($data["FK_device"]);
-	echo $query;
+	//echo $query;
 	// unlink 
 	$db2 = new DB;
 	$query2 = "DELETE FROM glpi_computer_device where ID = '".$compDevID."'";
