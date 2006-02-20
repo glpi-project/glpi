@@ -260,7 +260,7 @@ function updateSoftware($input) {
 	$sw = new Software;
 	$sw->getFromDB($input["ID"]);
  
-	if ($input['is_update']=='N') $input['update_software']=-1;
+	if (isset($input['is_update'])&&$input['is_update']=='N') $input['update_software']=-1;
 
 	// set new date and make sure it gets updated
 	$updates[0]= "date_mod";
@@ -897,7 +897,7 @@ function installSoftware($cID,$lID,$sID='') {
 	if (!empty($lID)&&$lID>0){
 		$query = "INSERT INTO glpi_inst_software VALUES (NULL,$cID,$lID)";
 		if ($result = $db->query($query)) {
-			return true;
+			return $db->insert_id();
 		} else {
 			return false;
 		}
@@ -910,7 +910,7 @@ function installSoftware($cID,$lID,$sID='') {
 		
 		$query = "INSERT INTO glpi_inst_software VALUES (NULL,$cID,$lID)";
 		if ($result = $db->query($query)) {
-			return true;
+			return $db->insert_id();
 		} else {
 			return false;
 		}
