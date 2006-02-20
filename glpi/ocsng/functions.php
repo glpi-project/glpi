@@ -900,8 +900,10 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 	// Delete Unexisting Items not found in OCS
 	if (count($import_device)){
 		foreach ($import_device as $key => $val)
-		if (ereg($device_type."$$$$$",$val))
+		if (ereg($device_type."$$$$$",$val)){
 			unlink_device_computer($key,$dohistory);
+			deleteInOcsArray($glpi_id,$key,"import_device");
+			}
 	}
 		//Alimentation
 		//Carte mere
