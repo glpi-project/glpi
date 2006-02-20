@@ -80,22 +80,23 @@ function showComputerOnglets($target,$withtemplate,$actif){
 		$template="&amp;withtemplate=$withtemplate";
 	}
 	echo "<div id='barre_onglets'><ul id='onglet'>";
-	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=1$template'>".$lang["title"][26]."</a></li>";
-	echo "<li "; if ($actif=="2") {echo "class='actif'";} echo "><a href='$target&amp;onglet=2$template'>".$lang["title"][12]."</a></li>";
-	echo "<li "; if ($actif=="3") {echo "class='actif'";} echo "><a href='$target&amp;onglet=3$template'>".$lang["title"][27]."</a></li>";
-	echo "<li "; if ($actif=="4") {echo "class='actif'";} echo "><a href='$target&amp;onglet=4$template'>".$lang["Menu"][26]."</a></li>";
-	echo "<li "; if ($actif=="5") {echo "class='actif'";} echo "><a href='$target&amp;onglet=5$template'>".$lang["title"][25]."</a></li>";
+	echo "<li".(($actif==1)?" class='actif'":"")."><a href='$target&amp;onglet=1$template'>".$lang["title"][26]."</a></li>";
+	echo "<li".(($actif==2)?" class='actif'":"")."><a href='$target&amp;onglet=2$template'>".$lang["title"][12]."</a></li>";
+	echo "<li".(($actif==3)?" class='actif'":"")."><a href='$target&amp;onglet=3$template'>".$lang["title"][27]."</a></li>";
+	echo "<li".(($actif==4)?" class='actif'":"")."><a href='$target&amp;onglet=4$template'>".$lang["Menu"][26]."</a></li>";
+	echo "<li".(($actif==5)?" class='actif'":"")."><a href='$target&amp;onglet=5$template'>".$lang["title"][25]."</a></li>";
 	if(empty($withtemplate)){
-	echo "<li "; if ($actif=="6") {echo "class='actif'";} echo "><a href='$target&amp;onglet=6$template'>".$lang["title"][28]."</a></li>";
-	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
-	echo "<li "; if ($actif=="10") {echo "class='actif'";} echo "><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
-	echo "<li "; if ($actif=="12") {echo "class='actif'";} echo "><a href='$target&amp;onglet=12$template'>".$lang["title"][38]."</a></li>";
-	if ($cfg_features["ocs_mode"]){
-		echo "<li "; if ($actif=="13") {echo "class='actif'";} echo "><a href='$target&amp;onglet=13$template'>".$lang["Menu"][33]."</a></li>";
-	}
+	echo "<li".(($actif==6)?" class='actif'":"")."><a href='$target&amp;onglet=6$template'>".$lang["title"][28]."</a></li>";
+	echo "<li".(($actif==7)?" class='actif'":"")."><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
+	echo "<li".(($actif==10)?" class='actif'":"")."><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
+	echo "<li".(($actif==12)?" class='actif'":"")."><a href='$target&amp;onglet=12$template'>".$lang["title"][38]."</a></li>";
+
+	if ($cfg_features["ocs_mode"])
+		echo "<li".(($actif==13)?" class='actif'":"")."><a href='$target&amp;onglet=13$template'>".$lang["Menu"][33]."</a></li>";
+	
 
 	echo "<li class='invisible'>&nbsp;</li>";
-	echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
+	echo "<li".(($actif==-1)?" class='actif'":"")."><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
 	}
 	echo "<li class='invisible'>&nbsp;</li>";
 	
@@ -110,7 +111,7 @@ function showComputerOnglets($target,$withtemplate,$actif){
 
 	if (isReservable(COMPUTER_TYPE,$ID)){
 		echo "<li class='invisible'>&nbsp;</li>";
-		echo "<li "; if ($actif=="11") {echo "class='actif'";} echo "><a href='$target&amp;onglet=11$template'>".$lang["title"][35]."</a></li>";
+		echo "<li".(($actif==11)?" class='actif'":"")."><a href='$target&amp;onglet=11$template'>".$lang["title"][35]."</a></li>";
 	}
 
 	}
