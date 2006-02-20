@@ -519,6 +519,8 @@ $lang["financial"][87]="Budget";
 $lang["financial"][88]="Expire le : "; 
 $lang["financial"][89]="TCO (valeur+montant des interventions) ";
 $lang["financial"][90]="TCO mensuel  ";
+$lang["financial"][91]="TCO";
+$lang["financial"][92]="VNC";
 
 $lang["help"][0]="Bienvenue";
 $lang["help"][1]="Veuillez décrire votre problème";

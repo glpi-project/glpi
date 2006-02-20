@@ -650,10 +650,10 @@ function showTco($item_type,$item,$value,$date_achat=""){
 				 $diff = floor(($timestamp - $timestamp2) / (3600 * 24 * 30)); // Mois d'utilisation
 				
 								
-				return number_format((($totalcost+$value)/$diff),2,".",""); // TCO mensuel
+				return number_format((($totalcost+$value)/$diff),2,"."," "); // TCO mensuel
 	
 			}else {
-				return number_format(($totalcost+$value),2,".",""); // TCO
+				return number_format(($totalcost+$value),2,"."," "); // TCO
 				}
 		
 		}// fin showTCO	

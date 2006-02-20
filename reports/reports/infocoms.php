@@ -101,7 +101,7 @@ function display_infocoms_report($device_type,$begin,$end){
 		
 		echo "<h2>".$comp->getType()."</h2>";
 		
-		echo "<table class='tab_cadre'><tr><th>".$lang["computers"][7]."</th><th>".$lang["financial"][21]."</th><th>".$lang["financial"][81]."</th><th>".$lang["financial"][14]."</th><th>".$lang["financial"][76]."</th><th>".$lang["financial"][80]."</th></tr>";
+		echo "<table class='tab_cadre'><tr><th>".$lang["computers"][7]."</th><th>".$lang["financial"][21]."</th><th>".$lang["financial"][92]."</th><th>".$lang["financial"][91]."</th><th>".$lang["financial"][14]."</th><th>".$lang["financial"][76]."</th><th>".$lang["financial"][80]."</th></tr>";
 	
 	
 		$valeursoustot=0;
@@ -138,7 +138,7 @@ function display_infocoms_report($device_type,$begin,$end){
 			
 				$valeurnettesoustot+=str_replace(" ","",$valeurnette);	
 
-				echo "<tr class='tab_bg_1'><td>".$comp->getName()."</td><td>".number_format($line["value"],2)."</td><td>".number_format($valeurnette,2)."</td><td>".convDate($line["buy_date"])."</td><td>".convDate($line["use_date"])."</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
+				echo "<tr class='tab_bg_1'><td>".$comp->getName()."</td><td style='text-align:right'>".number_format($line["value"],2,"."," ")."</td><td style='text-align:right'>".number_format($valeurnette,2,"."," ")."</td><td style='text-align:right'>".showTco($device_type,$line["FK_device"],$line["value"])."</td><td>".convDate($line["buy_date"])."</td><td>".convDate($line["use_date"])."</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
 	
 			}
 
