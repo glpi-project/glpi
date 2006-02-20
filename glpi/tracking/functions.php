@@ -196,7 +196,7 @@ function showCentralJobList($target,$start) {
 	else
 	{
 		echo "<br><div align='center'>";
-		echo "<table class='tab_cadre'>";
+		echo "<table class='tab_cadrehov'>";
 		echo "<tr><th>".$lang["joblist"][8]."</th></tr>";
 
 		echo "</table>";
