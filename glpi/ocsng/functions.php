@@ -255,6 +255,13 @@ function ocsUpdateComputer($ID,$dohistory){
 				ocsUpdatePeripherals(PERIPHERAL_TYPE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_peripheral,$dohistory);
 			}
 
+			if ($mixed_checksum&pow(2,SOFTWARES_FL)){
+				// Get import monitors
+				$import_software=importArrayFromDB($line["import_software"]);
+				ocsUpdateSoftware($line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_software);
+			} 
+
+			
 
 			// Update OCS Cheksum
 			$dbocs = new DBocs();
@@ -641,10 +648,13 @@ function ocsEditLock($target,$ID){
 **/
 function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,$dohistory){
 
+
+	$do_clean=false;
 	switch ($device_type){
 		case RAM_DEVICE:
 		//Memoire
 		if ($cfg_ocs["import_device_memory"]){
+			$do_clean=true;
 			$dbocs = new DBocs;
 			$query2 = "select * from memories where DEVICEID = '".$ocs_id."' ORDER BY ID";
 			$result2 = $dbocs->query($query2);
@@ -672,6 +682,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 		case HDD_DEVICE:
 		//Disque Dur
 		if ($cfg_ocs["import_device_hdd"]){
+			$do_clean=true;
 			$dbocs = new DBocs;
 			$query2 = "select * from storages where DEVICEID = '".$ocs_id."' ORDER BY ID";
 			$result2 = $dbocs->query($query2);
@@ -700,6 +711,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 		case DRIVE_DEVICE:
 		//lecteurs
 		if ($cfg_ocs["import_device_drives"]){
+			$do_clean=true;
 			$dbocs = new DBocs;
 			$query2 = "select * from storages where DEVICEID = '".$ocs_id."'";
 			$result2 = $dbocs->query($query2);
@@ -728,6 +740,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 		case PCI_DEVICE:
 		//Modems
 		if ($cfg_ocs["import_device_modems"]){	
+			$do_clean=true;
 			$dbocs = new DBocs;
 			$query2 = "select * from modems where DEVICEID = '".$ocs_id."' ORDER BY ID";
 			$result2 = $dbocs->query($query2);
@@ -777,6 +790,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 		case PROCESSOR_DEVICE:
 		//Processeurs : 
 		if ($cfg_ocs["import_device_processor"]){
+			$do_clean=true;
 			$dbocs = new DBocs;
 			$query = "select * from hardware WHERE DEVICEID='$ocs_id'";
 			$result = $dbocs->query($query) or die($dbocs->error());
@@ -810,6 +824,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 				while($line2 = $dbocs->fetch_array($result2)) {
 					$line2=addslashes_deep($line2);				
 					if ($cfg_ocs["import_device_iface"]){
+						$do_clean=true;
 						$network["designation"] = $line2["DESCRIPTION"];
 						if (!in_array(NETWORK_DEVICE."$$$$$".$network["designation"],$import_device)){
 							if(!empty($line2["SPEED"])) $network["bandwidth"] =  $line2["SPEED"];
@@ -855,6 +870,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 		case GFX_DEVICE:
 		//carte graphique
 		if ($cfg_ocs["import_device_gfxcard"]){
+			$do_clean=true;
 			$dbocs = new DBocs;
 			$query2 = "select distinct(NAME) as NAME, MEMORY from videos where DEVICEID = '".$ocs_id."'and NAME != '' ORDER BY ID";
 			$result2 = $dbocs->query($query2);
@@ -879,6 +895,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 		case SND_DEVICE:
 		//carte son
 		if ($cfg_ocs["import_device_sound"]){
+			$do_clean=true;
 			$dbocs = new DBocs;
 			$query2 = "select distinct(NAME) as NAME, DESCRIPTION from sounds where DEVICEID = '".$ocs_id."' AND NAME != '' ORDER BY ID";
 			$result2 = $dbocs->query($query2);
@@ -902,7 +919,8 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 	}
 
 	// Delete Unexisting Items not found in OCS
-	if (count($import_device)){
+	if ($do_clean&&count($import_device)){
+		$db=new DB();
 		foreach ($import_device as $key => $val)
 		if (ereg($device_type."$$$$$",$val)){
 			unlink_device_computer($key,$dohistory);
@@ -954,10 +972,11 @@ function ocsAddDevice($device_type,$dev_array) {
 *
 **/
 function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_periph,$dohistory){
-
+	$do_clean=false;
 	switch ($device_type){
 		case MONITOR_TYPE:
 		if ($cfg_ocs["import_monitor"]){
+			$do_clean=true;
 			$dbocs = new DBocs();
 			$query = "select DISTINCT CAPTION, MANUFACTURER, DESCRIPTION, SERIAL from monitors where DEVICEID = '".$ocs_id."' and CAPTION <> 'NULL'";
 			$result = $dbocs->query($query) or die($dbocs->error());
@@ -1011,6 +1030,7 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 		break;
 		case PRINTER_TYPE:
 		if ($cfg_ocs["import_printer"]){
+			$do_clean=true;
 			$dbocs = new DBocs();
 			$query = "select * from printers where DEVICEID = '".$ocs_id."' AND DRIVER <> ''";
 			$result = $dbocs->query($query) or die($dbocs->error());
@@ -1062,6 +1082,7 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 		break;
 		case PERIPHERAL_TYPE:
 		if ($cfg_ocs["import_periph"]){
+			$do_clean=true;
 			$dbocs = new DBocs();
 			$query = "select DISTINCT CAPTION, MANUFACTURER, INTERFACE, TYPE from inputs where DEVICEID = '".$ocs_id."' and CAPTION <> ''";
 			$result = $dbocs->query($query) or die($dbocs->error());
@@ -1115,9 +1136,10 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 		break;
 	}
 	
-
+	
 	// Disconnect Unexisting Items not found in OCS
-	if (count($import_periph)){
+	if ($do_clean&&count($import_periph)){
+		$db=new DB();
 		foreach ($import_periph as $key => $val){
 			
 
@@ -1158,6 +1180,146 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 		}
 	}
 
+}
+
+/**
+* Update config of a new software
+*
+* This function create a new software in GLPI with some general datas.
+*
+*@param $computer : id of a computer.
+*@param $name : name of the software.
+*@param $version : version of the software.
+*@param $publisher : id for a enterprise.
+*
+*@return integer : inserted software id.
+*
+**/
+function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software) {
+
+	if($cfg_ocs["import_software"]){
+		$dbocs = new DBocs;
+		$query2 = "select * from softwares WHERE DEVICEID='$ocs_id'";
+		$result2 = $dbocs->query($query2) or die($dbocs->error());
+		if ($dbocs->numrows($result2)>0)
+		while ($data2 = $dbocs->fetch_array($result2)){
+			$dbocs = new DBocs;
+			$data2=addslashes_deep($data2);
+			$initname = $name= $data2["NAME"];
+			$version = $data2["VERSION"];
+			$publisher = $data2["PUBLISHER"];
+
+			$query_ignored="SELECT * FROM dico_ignored WHERE EXTRACTED='$name'";
+			$result_ignored=$dbocs->query($query_ignored) or die ("OCS IGNORED PB");
+			// Software non ignoré
+			if ($dbocs->numrows($result_ignored)==0){
+				$query_rename="SELECT * FROM dico_soft WHERE EXTRACTED='$name' LIMIT 0,1";
+				$result_rename=$dbocs->query($query_rename)  or die ("OCS RENAME");
+				// Software Rename
+				if ($dbocs->numrows($result_rename)==1){
+					$rename=$dbocs->fetch_assoc($result_rename);
+					$name=$rename["FORMATTED"];
+				
+					// Import Software
+					if (!in_array($initname." ".$version,$import_software)){
+			        		$db = new DB;
+        					$query_search = "SELECT ID FROM glpi_software WHERE name = '".$name."' and 	version='".$version."'";
+        					$result_search = $db->query($query_search) or die("Verification existence logiciel :".$name." v:"." - ".$version.$db->error());
+	        				if ($db->numrows($result_search)>0){
+        	    					$data = $db->fetch_array($result_search);
+            						$isNewSoft = $data["ID"];
+        					} else {
+            						$isNewSoft = 0;
+        					}
+	
+						if (!$isNewSoft) {
+            						$soft = new Software;
+	            					$soft->fields["name"] = $name;
+        	    					$soft->fields["version"] = $version;
+            						$soft->fields["FK_glpi_enterprise"] = ocsImportEnterprise($publisher);
+            						$isNewSoft = $soft->addToDB();
+        					}
+        					if ($isNewSoft){
+							$instID=installSoftware($glpi_id,ocsImportLicense($isNewSoft));
+							addToOcsArray($glpi_id,array($instID=>$initname." ".$version),"import_software");
+						}
+						
+    					} else { // Check if software always exists with is real name
+						$id=array_search($initname." ".$version,$import_software);
+						unset($import_software[$id]);
+						$db = new DB;
+						$query_name="SELECT glpi_software.ID as ID , glpi_software.name AS NAME FROM glpi_inst_software LEFT JOIN glpi_licenses ON (glpi_inst_software.license=glpi_licenses.ID) LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID) WHERE glpi_inst_software.ID='$id'";
+						$result_name=$db->query($query_name)  or die ("QUERY ERROR : ".$query_name);
+						if ($db->numrows($result_name)==1){
+							if ($db->result($result_name,0,"NAME")!=$name){
+								$updates["name"]=$name;
+								$updates["ID"]=$db->result($result_name,0,"ID");
+								updateSoftware($updates);
+							}
+						}
+					}
+				}
+			}
+		} 
+
+		// Disconnect Unexisting Items not found in OCS
+		if (count($import_software)){
+			$db=new DB();
+			foreach ($import_software as $key => $val){
+			
+				$query = "SELECT * from glpi_inst_software where ID = '".$key."'";
+				$result=$db->query($query);
+				if ($db->numrows($result)>0)
+				while ($data=$db->fetch_assoc($result)){
+					$query2="SELECT COUNT(*) from glpi_inst_software where license = '".$data['license']."'";
+					$result2=$db->query($query2);
+					if ($db->result($result2,0,0)==1){
+						$lic=new License;
+						$lic->getfromDB($data['license']);
+						$query3="SELECT COUNT(*) FROM glpi_licenses where sID='".$lic->fields['sID']."'";
+						$result3=$db->query($query3);
+						if ($db->result($result3,0,0)==1){
+							deleteSoftware(array('ID'=>$lic->fields['sID']),1);
+						}
+						deleteLicense($data['license']);
+					}
+				}
+		
+				uninstallSoftware($key);
+				deleteInOcsArray($glpi_id,$key,"import_software");
+			}
+		}
+	}
+}
+
+/**
+* Import config of a new license
+*
+* This function create a new license in GLPI with some general datas.
+*
+*@param $software : id of a software.
+*
+*@return integer : inserted license id.
+*
+**/
+function ocsImportLicense($software) {
+    global $langOcs;
+    $db = new DB;
+    $query = "SELECT ID FROM glpi_licenses WHERE sid = '".$software."'";
+    $result = $db->query($query) or die("Verification existence License du soft-id :".$software." - ".$db->error());
+    if ($db->numrows($result)>0){
+        $data = $db->fetch_array($result);
+        $isNewLicc = $data["ID"];
+    } else {
+        $isNewLicc = 0;
+    }
+    if (!$isNewLicc) {
+        $licc = new License;
+        $licc->fields["sid"] = $software;
+        $licc->fields["serial"] = "global";
+        $isNewLicc = $licc->addToDB();
+    }
+    return($isNewLicc);
 }
 
 ?>
