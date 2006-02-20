@@ -3684,6 +3684,17 @@ if(!FieldExists("glpi_licenses","comments")) {
 }
 
 ///////////// MODE OCS
+
+if(TableExists("glpi_ocs_link")) {
+	$query = "DROP TABLE `glpi_ocs_link`";
+	$db->query($query) or die("0.65 MODE OCS drop plugin ocs_link ".$lang["update"][90].$db->error());
+}
+
+if(TableExists("glpi_ocs_config")) {
+	$query = "DROP TABLE `glpi_ocs_config`";
+	$db->query($query) or die("0.65 MODE OCS drop plugin ocs_config ".$lang["update"][90].$db->error());
+}
+
 if(!TableExists("glpi_ocs_link")) {
 	$query = "CREATE TABLE `glpi_ocs_link` (
   `ID` int(11) NOT NULL auto_increment,
@@ -3691,12 +3702,12 @@ if(!TableExists("glpi_ocs_link")) {
   `ocs_id` varchar(255) NOT NULL default '',
   `auto_update` int(2) NOT NULL default '1',
   `last_update` datetime NOT NULL default '0000-00-00 00:00:00',
-  `computer_update` TEXT NULL,
-  `import_device` TEXT NULL,
-  `import_software` TEXT NULL,
-  `import_monitor` TEXT NULL,
-  `import_peripheral` TEXT NULL,
-  `import_printers` TEXT NULL,
+  `computer_update` LONGTEXT NULL,
+  `import_device` LONGTEXT NULL,
+  `import_software` LONGTEXT NULL,
+  `import_monitor` LONGTEXT NULL,
+  `import_peripheral` LONGTEXT NULL,
+  `import_printers` LONGTEXT NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `ocs_id_2` (`ocs_id`),
   KEY `ocs_id` (`ocs_id`),
@@ -3786,6 +3797,10 @@ if(!FieldExists("glpi_printers","is_global")) {
 	$db->query($query) or die("0.6 add is_global in printers ".$lang["update"][90].$db->error());
 }
 
+if(!FieldExists("glpi_config","debug")) {
+	$query="ALTER TABLE `glpi_config` ADD `debug` int(2) NOT NULL default '0' ";
+	$db->query($query) or die("0.65 add debug in config ".$lang["update"][90].$db->error());
+}
 
 }
 
