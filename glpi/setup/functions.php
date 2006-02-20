@@ -998,6 +998,15 @@ function showFormConfigGen($target){
 
 	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][132]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"post_only_followup\" value=\"1\" "; if($db->result($result,0,"post_only_followup") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"post_only_followup\" value=\"0\" "; if($db->result($result,0,"post_only_followup") == 0) echo "checked"; 
 	echo " ></td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][138]." </td><td><select name=\"debug\">";
+	$check=$db->result($result,0,"auto_update_check");
+	echo "<option value=\"0\"";  if($check==0){ echo " selected";} echo ">".$lang["setup"][135]." </option>";
+	echo "<option value=\"1\"";  if($check==1){ echo " selected";} echo ">".$lang["setup"][136]."</option>";
+	echo "<option value=\"2\"";  if($check==2){ echo " selected";} echo ">".$lang["setup"][137]."</option>";
+	echo "</select></td></tr>";
+
+
 	
 		echo "</table>&nbsp;</div>";	
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_confgen\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
@@ -1423,7 +1432,7 @@ function showFormMailing($target) {
 
 }
 
-function updateConfigGen($root_doc,$event_loglevel,$expire_events, $permit_helpdesk,$default_language,$date_fiscale,$cartridges_alarm,$auto_assign,$auto_update_check,$auto_add_users,$post_only_followup,$ocs_mode) {
+function updateConfigGen($root_doc,$event_loglevel,$expire_events, $permit_helpdesk,$default_language,$date_fiscale,$cartridges_alarm,$auto_assign,$auto_update_check,$auto_add_users,$post_only_followup,$ocs_mode,$debug) {
 	
 	$db = new DB;
 	
@@ -1433,7 +1442,9 @@ function updateConfigGen($root_doc,$event_loglevel,$expire_events, $permit_helpd
 		$query.= " date_fiscale = '". $date_fiscale ."', cartridges_alarm='".$cartridges_alarm."', ";
 		$query.= " auto_assign = '". $auto_assign ."', auto_update_check = '".$auto_update_check."', ";
 		$query.= " auto_add_users = '".$auto_add_users."', post_only_followup = '".$post_only_followup."', ";
-		$query.= " ocs_mode = '".$ocs_mode."' where ID = '1' ";
+		$query.= " ocs_mode = '".$ocs_mode."', ";
+		$query.= " debug = '".$debug."' where ID = '1' ";
+		
 		$db->query($query);
 	
 }

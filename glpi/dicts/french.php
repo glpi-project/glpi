@@ -1378,6 +1378,11 @@ $lang["setup"][131]="Nombre de caractères limite pour les listes déroulantes";
 $lang["setup"][132]="Permettre aux utilisateurs post-only d'ajouter des suivis";
 $lang["setup"][133]="Activer le mode OCSNG";
 $lang["setup"][134]="Mode OCSNG";
+$lang["setup"][135]="Normal";
+$lang["setup"][136]="Traduction";
+$lang["setup"][137]="Debug";
+$lang["setup"][138]="Utiliser GLPI en Mode";
+
 
 $lang["setup"][150]="Sources d'authentification externes";
 $lang["setup"][151]="Si vous ne souhaitez pas utiliser LDAP comme source(s) de connexion laissez les champs vides";

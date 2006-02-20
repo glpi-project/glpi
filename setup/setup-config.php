@@ -92,7 +92,7 @@ elseif(!empty($_POST["update_ext"])) {
 }
 elseif(!empty($_POST["update_confgen"])) {
 	updateConfigGen($_POST["root_doc"], $_POST["event_loglevel"], $_POST["expire_events"],$_POST["permit_helpdesk"],$_POST["default_language"],$_POST["date_fiscale"],$_POST["cartridges_alarm"],
-	$_POST["auto_assign"],$_POST["auto_update_check"],$_POST["auto_add_users"],$_POST["post_only_followup"],$_POST["ocs_mode"]);
+	$_POST["auto_assign"],$_POST["auto_update_check"],$_POST["auto_add_users"],$_POST["post_only_followup"],$_POST["ocs_mode"], $_POST["debug"]);
 	if ($_POST["ocs_mode"])
 		glpi_header($cfg_install["root"]."/setup/setup-config.php?next=ocsng");
 	else 
