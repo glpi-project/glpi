@@ -729,6 +729,12 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			// Display pager only for HTML
 			if ($output_type==0) 
 				printPager($start,$numrows,$target,$parameters,$type);
+
+			// Form to delete old item
+			$isadmin=isAdmin($_SESSION['glpitype']);
+			if ($isadmin&&$output_type==0){
+				echo "<form method='post' action=\"$target\">";
+			}
 			
 			// Compute number of columns to display
 			// Add toview elements
@@ -739,12 +745,19 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if (isset($type2[$i])&&isset($contains2[$i])&&strlen($contains2[$i])>0&&$type2[$i]>0&&(!isset($link2[$i])||!ereg("NOT",$link2[$i]))) {
 				$nbcols++;
 			}
+			
+			if ($output_type==0)// HTML display - massive modif
+				$nbcols++;
 
 			// Display List Header
 			echo displaySearchHeader($output_type,$cfg_features["list_limit"]+1,$nbcols);
 			// New Line for Header Items Line
 			echo displaySearchNewLine($output_type);
 			$header_num=1;
+			
+			if ($output_type==0)// HTML display - massive modif
+				echo displaySearchHeaderItem($output_type,"",$header_num,"",0,$order);
+
 			// Display column Headers for toview items
 			for ($i=0;$i<$toview_count;$i++){
 
@@ -803,7 +816,14 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				$row_num++;
 				// New line
 				echo displaySearchNewLine($output_type);
-				
+					
+
+				if ($output_type==0){// HTML display - massive modif
+					$sel="";
+					if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
+					echo displaySearchItem($output_type,"<input type='checkbox' name='item[".$data["ID"]."]' value='1' $sel>",$item_num,$row_num,0,"width='10'");
+				}
+
 				// Print first element - specific case for user 
 				if ($SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"]=="glpi_users.name")
 					echo displaySearchItem($output_type,giveItem($type,"glpi_users.name.brut",$data,0),$item_num,$row_num);
@@ -863,6 +883,21 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			}
 			// Display footer
 			echo displaySearchFooter($output_type);
+
+
+			// Delete selected item
+			if ($isadmin&&$output_type==0){
+				echo "<div align='center'>";
+				echo "<table cellpadding='5' width='80%'>";
+				echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a href='".$_SERVER["PHP_SELF"]."?select=all'>".$lang["buttons"][18]."</a></td>";
+			
+				echo "<td>/</td><td><a href='".$_SERVER["PHP_SELF"]."?select=none'>".$lang["buttons"][19]."</a>";
+				echo "</td><td>";
+				echo "<input type='submit' value=\"".$lang["buttons"][6]."\" name='delete' class='submit'></td>";
+				echo "<td width='75%'>&nbsp;</td></table></div>";
+				// End form for delete item
+				echo "</form>";
+			}
 			
 			if ($output_type==0) // In case of HTML display
 				printPager($start,$numrows,$target,$parameters);

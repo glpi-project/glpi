@@ -1221,7 +1221,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 			// Display footer
 			echo displaySearchFooter($output_type);
 
-		// Delete selected item
+			// Delete selected item
 			if ($isadmin&&$output_type==0){
 				echo "<div align='center'>";
 				echo "<table cellpadding='5' width='80%'>";
@@ -1231,11 +1231,9 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 				echo "</td><td>";
 				echo "<input type='submit' value=\"".$lang["buttons"][6]."\" name='delete' class='submit'></td>";
 				echo "<td width='75%'>&nbsp;</td></table></div>";
-			}
-		
-			// End form for delete item
-			if ($isadmin&&$output_type==0)
+				// End form for delete item
 				echo "</form>";
+			}
 			
 			
 			// Pager
