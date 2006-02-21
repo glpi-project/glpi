@@ -686,7 +686,8 @@ function showConnections($target,$ID,$withtemplate='') {
 				
 				echo "<tr ".($printer->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
 				echo "<td align='center'><a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=$tID\"><b>";
-				echo $printer->fields["name"]." (".$printer->fields["ID"].")";
+				echo $printer->fields["name"];
+				if ($cfg_layout["view_ID"]||empty($printer->fields["name"])) echo " (".$printer->fields["ID"].")";
 				echo "</b></a>";
 				if ($state->getfromDB(PRINTER_TYPE,$tID))
 				echo " - ".getDropdownName("glpi_dropdown_state",$state->fields['state']);
@@ -735,7 +736,8 @@ function showConnections($target,$ID,$withtemplate='') {
 				$monitor->getfromDB($tID);
 				echo "<tr ".($monitor->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
 				echo "<td align='center'><a href=\"".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=$tID\"><b>";
-				echo $monitor->fields["name"]." (".$monitor->fields["ID"].")";
+				echo $monitor->fields["name"];
+				if ($cfg_layout["view_ID"]||empty($monitor->fields["name"])) echo " (".$monitor->fields["ID"].")";
 				echo "</b></a>";
 				if ($state->getfromDB(MONITOR_TYPE,$tID))
 				echo " - ".getDropdownName("glpi_dropdown_state",$state->fields['state']);
@@ -785,7 +787,8 @@ function showConnections($target,$ID,$withtemplate='') {
 				$periph->getfromDB($tID);
 				echo "<tr ".($periph->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
 				echo "<td align='center'><a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=$tID\"><b>";
-				echo $periph->fields["name"]." (".$periph->fields["ID"].")";
+				echo $periph->fields["name"];
+				if ($cfg_layout["view_ID"]||empty($periph->fields["name"])) echo " (".$periph->fields["ID"].")";
 				echo "</b></a>";
 
 				if ($state->getfromDB(PERIPHERAL_TYPE,$tID))
