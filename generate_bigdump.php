@@ -61,6 +61,8 @@ $max['iface']=5;
 $max['model']=5;
 $max['network']=5;
 $max['os']=5;
+$max['os_version']=5;
+$max['os_sp']=5;
 $max['ram_type']=5;
 $max['rubdocs']=5;
 $max['state']=5;
@@ -413,6 +415,22 @@ for ($i=0;$i<$max['os'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="os $i";
 	$query="INSERT INTO glpi_dropdown_os VALUES ('','$val')";
+	$db->query($query) or die("PB REQUETE ".$query);
+}
+
+$items=array("XP Pro","XP Home","10.0","10.1","10.2","2006","Sarge");
+for ($i=0;$i<$max['os_version'];$i++){
+	if (isset($items[$i])) $val=$items[$i];
+	else $val="osversion $i";
+	$query="INSERT INTO glpi_dropdown_os_version VALUES ('','$val')";
+	$db->query($query) or die("PB REQUETE ".$query);
+}
+
+$items=array("Service Pack 1","Service Pack 2","Service Pack 3","Service Pack 4");
+for ($i=0;$i<$max['os_sp'];$i++){
+	if (isset($items[$i])) $val=$items[$i];
+	else $val="ossp $i";
+	$query="INSERT INTO glpi_dropdown_os_sp VALUES ('','$val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -953,7 +971,7 @@ for ($i=0;$i<$max['computers'];$i++){
 	$techID=mt_rand(1,$max['users_sadmin']+$max['users_admin']);
 	$domainID=mt_rand(1,$max['domain']);
 	$networkID=mt_rand(1,$max['network']);
-	$query="INSERT INTO glpi_computers VALUES ('','computers $i','".GetRandomString(10)."','".GetRandomString(10)."','contact $i','num $i','$techID','',NOW(),'".mt_rand(1,$max['os'])."','".mt_rand(1,$max['auto_update'])."','".$loc."','$domainID','$networkID','".mt_rand(1,$max['model'])."','".mt_rand(1,$max['type_computers'])."','0','','".mt_rand(1,$max['enterprises'])."','N','note computer $i','0')";
+	$query="INSERT INTO glpi_computers VALUES ('','computers $i','".GetRandomString(10)."','".GetRandomString(10)."','contact $i','num $i','$techID','',NOW(),'".mt_rand(1,$max['os'])."','".mt_rand(1,$max['os_version'])."','".mt_rand(1,$max['os_sp'])."','".mt_rand(1,$max['auto_update'])."','".$loc."','$domainID','$networkID','".mt_rand(1,$max['model'])."','".mt_rand(1,$max['type_computers'])."','0','','".mt_rand(1,$max['enterprises'])."','N','note computer $i','0')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$compID=$db->insert_id();
 	add_documents(COMPUTER_TYPE,$compID);

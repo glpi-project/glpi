@@ -62,7 +62,7 @@ class Computer {
 					$this->fields[$key] = $val;
 				}
 				if ($load_device){
-					$query = "SELECT ID, device_type, FK_device, specificity FROM glpi_computer_device WHERE (FK_computers = '$ID') ORDER BY device_type, ID";
+					$query = "SELECT ID, device_type, FK_device, specificity FROM glpi_computer_device WHERE FK_computers = '$ID' ORDER BY device_type, ID";
 					if ($result = $db->query($query)) {
 						if ($db->numrows($result)>0) {
 							$i = 0;
