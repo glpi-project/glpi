@@ -73,8 +73,10 @@ echo "<form method=\"post\" name=\"form\" action=\"stat_lieux.php\">";
 
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td rowspan='2'>";
 echo "<select name=\"dropdown\">";
+
 echo "<option value=\"glpi_type_computers\" ".($_POST["dropdown"]=="glpi_type_computers"?"selected":"").">".$lang["common"][17]."</option>";
-echo "<option value=\"glpi_dropdown_model\" ".($_POST["dropdown"]=="glpi_dropdown_model"?"selected":"").">".$lang["computers"][50]."</option>";
+echo "<option value=\"glpi_dropdown_model\" ".($_POST["dropdown"]=="glpi_dropdown_model"?"selected":"").">".$lang["common"][22]."</option>";
+
 echo "<option value=\"glpi_dropdown_os\" ".($_POST["dropdown"]=="glpi_dropdown_os"?"selected":"").">".$lang["computers"][9]."</option>";
 echo "<option value=\"glpi_dropdown_locations\" ".($_POST["dropdown"]=="glpi_dropdown_locations"?"selected":"").">".$lang["common"][15]."</option>";
 echo "<option value=\"".MOBOARD_DEVICE."\" ".($_POST["dropdown"]==MOBOARD_DEVICE?"selected":"").">".$lang["computers"][35]."</option>";
@@ -134,10 +136,10 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 			//Le temps moyen de resolution
 			//The average time to resolv
 			echo "<td>".getResolAvg(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$type[$i]["ID"],$_POST["date1"],$_POST["date2"])."</td>";
-			//Le temps moyen de l'intervention réelle
+			//Le temps moyen de l'intervention rï¿½lle
 			//The average realtime to resolv
 			echo "<td>".getRealAvg(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$type[$i]["ID"],$_POST["date1"],$_POST["date2"])."</td>";
-			//Le temps total de l'intervention réelle
+			//Le temps total de l'intervention rï¿½lle
 			//The total realtime to resolv
 			echo "<td>".getRealTotal(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$type[$i]["ID"],$_POST["date1"],$_POST["date2"])."</td>";
 			//
