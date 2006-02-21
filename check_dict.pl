@@ -27,25 +27,36 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 # ------------------------------------------------------------------------
 
-if (@ARGV!=2){
-print "USAGE script.pl module max_number \n Must to be launch in GLPI root dir\n\n";
+if (@ARGV!=1){
+print "USAGE check_dict.pl dico_file\n Must to be launch in GLPI root dir\n\n";
 
 exit();
 }
-$module=@ARGV[0];
-print "MODULE : $module\n";
-$max=@ARGV[1];
-print "MAX : $max\n";
 
-$a=`grep wc -l update.php`;
-print $a;
+$badwritten=`grep -r "\\\$lang\\\['" * | wc -l`;
+if ($badwritten!=0){
+	print "WRONG dict uses:\n";
+	$badwritten=`grep -r -n "\\\$lang\\\['" *`;
+	print $badwritten;
+	print "\n\n";
+}
 
-for ($i=0;$i<=$max;$i++){
-print "SEARCH \$lang\[\"$module\"\]\[$i\] : ";
-$count=0;
-do_dir(".",$module,$i);
-print $count;
-print "\n";
+open(INFO,$ARGV[0]) or die("Fichier ".$ARGV[0]." absent");
+@lines=<INFO>;
+close(INFO);
+
+foreach (@lines)
+{
+	if ($_=~m/\$lang\[\"([a-zA-Z]+)\"\]\[([a-zA-Z0-9]+)\]/){
+		print "SEARCH \$lang\[\"$1\"\]\[$2\] : ";
+		$count=0;
+		do_dir(".",$1,$2);
+		print $count;
+		if ($1=~m/calendarDay/) {print " <- not found but OK - used with key computation";}
+ 		elsif ($count==0) {print " <<<<--------------- NOT FOUND";}
+		print "\n";
+	}
+
 }
 
 
