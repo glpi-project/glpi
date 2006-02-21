@@ -1793,7 +1793,7 @@ function ocsFormConfig($target, $id) {
 	echo "<option value='1' ".($os==1?" selected ":"").">".$lang["choice"][0]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][20]." </td><td>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][19]." </td><td>";
 	echo "<select name='import_general_serial'>";
 	echo "<option value='0' ".($serial==0?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "<option value='1' ".($serial==1?" selected ":"").">".$lang["choice"][0]."</option>";

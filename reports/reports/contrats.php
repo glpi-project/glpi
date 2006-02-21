@@ -119,19 +119,6 @@ echo " <option value='toutes' selected>".$lang["reports"][16]."</option>";
   }
 echo "</select></p></td></tr>";
 
-/*echo "<tr  class='tab_bg_1'><td colspan='2' align='center'>";
-
-echo "<p><b>".$lang["reports"][14]." :</b> ";
-echo "<select name='tri_par' >";
-echo "<option value='date'>".$lang["reports"][17]."</option>";
-echo "<option value='serial'>".$lang["reports"][18]."</option>";
-echo "<option value='contact'>".$lang["reports"][19]."</option>";
-echo "<option value='location'>".$lang["common"][15]."</option>";
-echo "</select></p>  ";
-echo "</td>";
-
-echo "</tr>";
-*/
 echo "<tr><td class='tab_bg_1' colspan='2' align='center'><p><input type='submit' value='".$lang["reports"][15]."' class='submit'></p></td></tr>";
 
 
