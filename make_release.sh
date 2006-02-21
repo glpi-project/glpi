@@ -80,6 +80,7 @@ echo "Delete bigdumps and older sql files";
 \rm mysql/glpi-0.3*-*;
 \rm mysql/glpi-0.4*-*;
 \rm mysql/glpi-0.5*;
+\rm mysql/glpi-0.6-*;
 \rm mysql/glpi-*-default*;
 \rm mysql/irm*;
 
