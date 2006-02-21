@@ -537,14 +537,11 @@ echo "</table></div>";
 		}
 		if ($cfg_debug["vars"]){
 			echo "<h2>POST VARIABLE</h2>";
-			foreach($_POST as $key => $val)
-				echo $key." => ".$val."<br>";
+			printCleanArray($_POST);
 			echo "<h2>GET VARIABLE</h2>";
-			foreach($_GET as $key => $val)
-				echo $key." => ".$val."<br>";
+			printCleanArray($_GET);
 			echo "<h2>SESSION VARIABLE</h2>";
-			foreach($_SESSION as $key => $val)
-				echo $key." => ".$val."<br>";
+			printCleanArray($_SESSION);
 		}
 	
 		if ($cfg_debug["sql"]){	
@@ -881,6 +878,19 @@ function displayProgressBar($width,$percent){
 		$percentwidth=floor($percent*$width/100);
 		echo str_pad("<div align='center'><table class='tab_cadre' width='$width'><tr><td width='$width' align='center'> Progression ".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwidth' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n",4096);
 		glpi_flush();
+}
+
+function printCleanArray($tab,$pad=0){
+	foreach($tab as $key => $val){
+		for ($i=0;$i<$pad*20;$i++)
+			echo "&nbsp;";
+		echo $key." => ";
+		if (is_array($val)){
+			echo "Array<br>";
+			printCleanArray($val,$pad+1);
+			}
+		else echo $val."<br>";
+		}
 }
 
 ?>
