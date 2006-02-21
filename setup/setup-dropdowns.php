@@ -110,40 +110,76 @@ if (isset($_POST["several_add"])) {
 	checkAuthentication("normal");
 	commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 
-	$dp=array();
-	$dp["locations"]=$lang["setup"][3];	
-	$dp["kbcategories"]=$lang["setup"][78];	
-	$dp["tracking_category"]=$lang["setup"][79];	
-	$dp["computers"]=$lang["setup"][4];
-	$dp["model"]=$lang["setup"][91];		
-	$dp["networking"]=$lang["setup"][42];		
-	$dp["model_networking"]=$lang["setup"][95];		
-	$dp["printers"]=$lang["setup"][43];		
-	$dp["model_printers"]=$lang["setup"][96];		
-	$dp["monitors"]=$lang["setup"][44];		
-	$dp["model_monitors"]=$lang["setup"][94];		
-	$dp["peripherals"]=$lang["setup"][69];		
-	$dp["model_peripherals"]=$lang["setup"][97];		
-	$dp["os"]=$lang["setup"][5];	
-	$dp["os_version"]=$lang["setup"][500];
-	$dp["os_sp"]=$lang["setup"][501];			
-	$dp["iface"]=$lang["setup"][9];		
-	$dp["firmware"]=$lang["setup"][71];
-	$dp["netpoint"]=$lang["setup"][73];		
-	$dp["enttype"]=$lang["setup"][80];
-	$dp["rubdocs"]=$lang["setup"][81];
-	$dp["state"]=$lang["setup"][83];
-	$dp["cartridge_type"]=$lang["setup"][84];
-	$dp["consumable_type"]=$lang["setup"][92];
-	$dp["contract_type"]=$lang["setup"][85];
-	$dp["contact_type"]=$lang["setup"][82];
-	$dp["ram_type"]=$lang["setup"][86];
-	$dp["hdd_type"]=$lang["setup"][93];
-	$dp["domain"]=$lang["setup"][89];
-	$dp["network"]=$lang["setup"][88];
-	$dp["vlan"]=$lang["setup"][90];
-	$dp["auto_update"]=$lang["setup"][98];
-	$dp["budget"]=$lang["setup"][99];
+	$optgroup=array(
+		$lang["setup"][139]=>array(
+			"locations"=>$lang["setup"][3],		
+			"state"=>$lang["setup"][83],
+			),
+		
+		$lang["setup"][140]=>array(
+			"computers"=>$lang["setup"][4],
+			"networking"=>$lang["setup"][42],		
+			"printers"=>$lang["setup"][43],		
+			"monitors"=>$lang["setup"][44],		
+			"peripherals"=>$lang["setup"][69],
+			"cartridge_type"=>$lang["setup"][84],
+			"consumable_type"=>$lang["setup"][92],
+			"contract_type"=>$lang["setup"][85],
+			"contact_type"=>$lang["setup"][82],	
+			"ram_type"=>$lang["setup"][86],	
+			"enttype"=>$lang["setup"][80],
+			"hdd_type"=>$lang["setup"][93],
+			),
+
+		$lang["setup"][141]=>array(
+			"model"=>$lang["setup"][91],
+			"model_networking"=>$lang["setup"][95],
+			"model_printers"=>$lang["setup"][96],	
+			"model_monitors"=>$lang["setup"][94],
+			"model_peripherals"=>$lang["setup"][97],			
+			),
+	
+		$lang["setup"][142]=>array(
+			"budget"=>$lang["setup"][99],
+			"rubdocs"=>$lang["setup"][81],	
+			),
+	
+		$lang["setup"][143]=>array(
+			"tracking_category"=>$lang["setup"][79],		
+			),
+	
+		$lang["setup"][144]=>array(
+			"kbcategories"=>$lang["setup"][78],	
+			),
+	
+		$lang["setup"][145]=>array(
+			"os"=>$lang["setup"][5],	
+			"os_version"=>$lang["setup"][500],
+			"os_sp"=>$lang["setup"][501],			
+			"auto_update"=>$lang["setup"][98],			
+			),
+				
+		$lang["setup"][146]=>array(
+			"iface"=>$lang["setup"][9],		
+			"firmware"=>$lang["setup"][71],
+			"netpoint"=>$lang["setup"][73],
+			"domain"=>$lang["setup"][89],
+			"network"=>$lang["setup"][88],
+			"vlan"=>$lang["setup"][90],			
+			),
+
+	); //end $opt
+	
+	
+			
+		
+	
+	
+	
+	
+	
+	
+	
 	
 	
 //	asort($dp);
@@ -151,12 +187,18 @@ if (isset($_POST["several_add"])) {
 	echo "<div align='center'><form method='post' action=\"".$cfg_install["root"]."/setup/setup-dropdowns.php\">";
 	echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
 	echo $lang["setup"][72].": </th></tr><tr class='tab_bg_1'><td><select name='which'>";
+	
+	foreach($optgroup as $label=>$dp){
 
-foreach ($dp as $key => $val){
-$sel="";
-if ($which==$key) $sel="selected";
-echo "<option value='$key' $sel>".$val."</option>";
-}
+	echo "<optgroup label=\"$label\">";
+
+		foreach ($dp as $key => $val){
+		$sel="";
+		if ($which==$key) $sel="selected";
+		echo "<option value='$key' $sel>".$val."</option>";	
+		}
+	echo "</optgroup>";
+	}
 	echo "</select></td>";
 	echo "<td><input type='submit' value=\"".$lang["buttons"][2]."\" class='submit' ></td></tr>";
 	echo "</table></form></div>";

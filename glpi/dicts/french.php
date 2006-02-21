@@ -1384,6 +1384,17 @@ $lang["setup"][135]="Normal";
 $lang["setup"][136]="Traduction";
 $lang["setup"][137]="Debug";
 $lang["setup"][138]="Utiliser GLPI en Mode";
+$lang["setup"][139]="Général";
+$lang["setup"][140]="Types";
+$lang["setup"][141]="Modèles";
+$lang["setup"][142]="Gestion";
+$lang["setup"][143]="Assistance";
+$lang["setup"][144]="Outils";
+$lang["setup"][145]="Os";
+$lang["setup"][146]="Réseau";
+
+
+
 
 
 $lang["setup"][150]="Sources d'authentification externes";
