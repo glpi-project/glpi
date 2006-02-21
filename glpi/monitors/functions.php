@@ -163,7 +163,7 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$mon->fields["FK_glpi_enterprise"]);
 	echo "</td></tr>";
 
-	echo "<tr><td>".$lang["monitors"][7].":	</td>";
+	echo "<tr><td>".$lang["common"][21].":	</td>";
 	echo "<td>";
 	autocompletionTextField("contact_num","glpi_monitors","contact_num",$mon->fields["contact_num"],20);	
 	echo "</td></tr>";
@@ -204,15 +204,15 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 		dropdownValue("glpi_type_monitors", "type", $mon->fields["type"]);
 	echo "</td></tr>";
 
-	echo "<tr><td>".$lang["monitors"][31].": 	</td><td>";
+	echo "<tr><td>".$lang["common"][22].": 	</td><td>";
 		dropdownValue("glpi_dropdown_model_monitors", "model", $mon->fields["model"]);
 	echo "</td></tr>";
 		
-	echo "<tr><td>".$lang["monitors"][10].":	</td><td>";
+	echo "<tr><td>".$lang["common"][19].":	</td><td>";
 	autocompletionTextField("serial","glpi_monitors","serial",$mon->fields["serial"],20);	
 	echo "</td></tr>";
 
-	echo "<tr><td>".$lang["monitors"][11].":</td><td>";
+	echo "<tr><td>".$lang["common"][20].":</td><td>";
 	autocompletionTextField("otherserial","glpi_monitors","otherserial",$mon->fields["otherserial"],20);	
 	echo "</td></tr>";
 

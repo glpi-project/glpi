@@ -163,7 +163,7 @@ function showperipheralForm ($target,$ID,$withtemplate='') {
 		dropdownUsersID("tech_num", $mon->fields["tech_num"]);
 	echo "</td></tr>";
 		
-	echo "<tr><td>".$lang["peripherals"][7].":	</td><td>";
+	echo "<tr><td>".$lang["common"][21].":	</td><td>";
 	autocompletionTextField("contact_num","glpi_peripherals","contact_num",$mon->fields["contact_num"],20);		
 	echo "</td></tr>";
 
@@ -194,7 +194,7 @@ function showperipheralForm ($target,$ID,$withtemplate='') {
 		dropdownValue("glpi_type_peripherals", "type", $mon->fields["type"]);
 	echo "</td></tr>";
 
-	echo "<tr><td>".$lang["peripherals"][34].": 	</td><td>";
+	echo "<tr><td>".$lang["common"][22].": 	</td><td>";
 		dropdownValue("glpi_dropdown_model_peripherals", "model", $mon->fields["model"]);
 	echo "</td></tr>";
 	
@@ -207,11 +207,11 @@ function showperipheralForm ($target,$ID,$withtemplate='') {
 	echo "</td></tr>";
 
 	
-	echo "<tr><td>".$lang["peripherals"][10].":	</td><td>";
+	echo "<tr><td>".$lang["common"][19].":	</td><td>";
 	autocompletionTextField("serial","glpi_peripherals","serial",$mon->fields["serial"],20);		
 	echo "</td></tr>";
 
-	echo "<tr><td>".$lang["peripherals"][11].":</td><td>";
+	echo "<tr><td>".$lang["common"][20].":</td><td>";
 	autocompletionTextField("otherserial","glpi_peripherals","otherserial",$mon->fields["otherserial"],20);		
 	echo "</td></tr>";
 

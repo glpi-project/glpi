@@ -166,7 +166,7 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 		dropdownUsersID("tech_num", $netdev->fields["tech_num"]);
 	echo "</td></tr>\n";
 		
-	echo "<tr><td>".$lang["networking"][4].":	</td><td>\n";
+	echo "<tr><td>".$lang["common"][21].":	</td><td>\n";
 		autocompletionTextField("contact_num","glpi_networking","contact_num",$netdev->fields["contact_num"],20);	
 	echo "</td></tr>\n";
 
@@ -208,7 +208,7 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 		dropdownValue("glpi_type_networking", "type", $netdev->fields["type"]);
 	echo "</td></tr>\n";
 
-	echo "<tr><td>".$lang["networking"][58].": 	</td><td>";
+	echo "<tr><td>".$lang["common"][22].": 	</td><td>";
 		dropdownValue("glpi_dropdown_model_networking", "model", $netdev->fields["model"]);
 	echo "</td></tr>";
 	
@@ -224,11 +224,11 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 	autocompletionTextField("ram","glpi_networking","ram",$netdev->fields["ram"],20);	
 	echo "</td></tr>\n";
 
-	echo "<tr><td>".$lang["networking"][6].":	</td><td>\n";
+	echo "<tr><td>".$lang["common"][19].":	</td><td>\n";
 	autocompletionTextField("serial","glpi_networking","serial",$netdev->fields["serial"],20);	
 	echo "</td></tr>\n";
 
-	echo "<tr><td>".$lang["networking"][7].":</td><td>\n";
+	echo "<tr><td>".$lang["common"][20].":</td><td>\n";
 	autocompletionTextField("otherserial","glpi_networking","otherserial",$netdev->fields["otherserial"],20);	
 	echo "</td></tr>\n";
 	
