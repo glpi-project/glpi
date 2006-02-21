@@ -859,7 +859,6 @@ $lang["ocsconfig"][14]="Import global : tout est importé mais le matériel est 
 $lang["ocsconfig"][15]="Pas d'import : le plugin n'importera pas ces éléments";
 $lang["ocsconfig"][19]="OS";
 $lang["ocsconfig"][20]="Numero de serie";
-$lang["ocsconfig"][21]="Modele";
 $lang["ocsconfig"][23]="Type";
 $lang["ocsconfig"][24]="Domaine";
 $lang["ocsconfig"][25]="Contact";
