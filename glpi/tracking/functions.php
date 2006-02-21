@@ -867,13 +867,13 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	if ($extended==1){
 		$option["comp.ID"]				= $lang["common"][2];
 		$option["comp.name"]				= $lang["common"][16];
-		$option["glpi_dropdown_locations.name"]			= $lang["common"][15];
-		$option["glpi_type_computers.name"]				= $lang["common"][17];
-		$option["glpi_dropdown_model.name"]				= $lang["computers"][50];
-		$option["glpi_dropdown_os.name"]				= $lang["computers"][9];
-		$option["processor.designation"]			= $lang["computers"][21];
-		$option["comp.serial"]			= $lang["computers"][17];
-		$option["comp.otherserial"]			= $lang["computers"][18];
+		$option["glpi_dropdown_locations.name"]		= $lang["common"][15];
+		$option["glpi_type_computers.name"]		= $lang["common"][17];
+		$option["glpi_dropdown_model.name"]		= $lang["common"][22];
+		$option["glpi_dropdown_os.name"]		= $lang["computers"][9];
+		$option["processor.designation"]		= $lang["computers"][21];
+		$option["comp.serial"]				= $lang["common"][19];
+		$option["comp.otherserial"]			= $lang["common"][20];
 		$option["ram.designation"]			= $lang["computers"][23];
 		$option["iface.designation"]			= $lang["computers"][26];
 		$option["sndcard.designation"]			= $lang["computers"][33];
@@ -881,13 +881,13 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 		$option["moboard.designation"]			= $lang["computers"][35];
 		$option["hdd.designation"]			= $lang["computers"][36];
 		$option["comp.comments"]			= $lang["computers"][19];
-		$option["comp.contact"]			= $lang["common"][18];
-		$option["comp.contact_num"]		        = $lang["computers"][15];
+		$option["comp.contact"]				= $lang["common"][18];
+		$option["comp.contact_num"]		        = $lang["common"][21];
 		$option["comp.date_mod"]			= $lang["computers"][11];
-		$option["glpi_networking_ports.ifaddr"] = $lang["networking"][14];
-		$option["glpi_networking_ports.ifmac"] = $lang["networking"][15];
-		$option["glpi_dropdown_netpoint.name"]			= $lang["networking"][51];
-		$option["glpi_enterprises.name"]			= $lang["common"][5];
+		$option["glpi_networking_ports.ifaddr"] 	= $lang["networking"][14];
+		$option["glpi_networking_ports.ifmac"] 		= $lang["networking"][15];
+		$option["glpi_dropdown_netpoint.name"]		= $lang["networking"][51];
+		$option["glpi_enterprises.name"]		= $lang["common"][5];
 		$option["resptech.name"]			=$lang["common"][10];
 	}
 	echo "<form method=get name=\"form\" action=\"".$_SERVER["PHP_SELF"]."\">";
