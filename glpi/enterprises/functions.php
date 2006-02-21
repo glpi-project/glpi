@@ -107,7 +107,7 @@ function showEnterpriseForm ($target,$ID) {
 	}		
 	echo "</b></th></tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["financial"][27].":		</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][16].":		</td>";
 	echo "<td>";
 		autocompletionTextField("name","glpi_enterprises","name",$ent->fields["name"],25);
 	echo "</td>";
@@ -257,7 +257,7 @@ function showAssociatedContact($instID) {
 	echo "<tr><th colspan='7'>".$lang["financial"][46].":</th></tr>";
 	echo "<tr><th>".$lang['financial'][27]."</th><th>".$lang["financial"][29]."</th>";
 	echo "<th>".$lang['financial'][29]." 2</th><th>".$lang["financial"][30]."</th>";
-	echo "<th>".$lang['financial'][31]."</th><th>".$lang["financial"][37]."</th>";
+	echo "<th>".$lang['financial'][31]."</th><th>".$lang["common"][17]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
 	while ($i < $number) {

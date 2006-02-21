@@ -126,7 +126,7 @@ echo "<select name='tri_par' >";
 echo "<option value='date'>".$lang["reports"][17]."</option>";
 echo "<option value='serial'>".$lang["reports"][18]."</option>";
 echo "<option value='contact'>".$lang["reports"][19]."</option>";
-echo "<option value='location'>".$lang["reports"][20]."</option>";
+echo "<option value='location'>".$lang["common"][15]."</option>";
 echo "</select></p>  ";
 echo "</td>";
 

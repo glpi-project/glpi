@@ -152,7 +152,7 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 			echo "&nbsp;&nbsp;&nbsp;(".$lang["common"][13].": ".$sw->fields['tplname'].")";
 		echo "</th></tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["software"][2].":		</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][16].":		</td>";
 	echo "<td>";
 	autocompletionTextField("name","glpi_software","name",$sw->fields["name"],25);
 	echo "</td>";
@@ -175,7 +175,7 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 		dropdownUsersID("tech_num", $sw->fields["tech_num"]);
 	echo "</td>";
 
-	echo "<td>".$lang["software"][4].": 	</td><td colspan='2'>";
+	echo "<td>".$lang["common"][15].": 	</td><td colspan='2'>";
 		dropdownValue("glpi_dropdown_locations", "location", $sw->fields["location"]);
 	echo "</td></tr>";
 

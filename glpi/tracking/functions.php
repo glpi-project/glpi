@@ -866,9 +866,9 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 
 	if ($extended==1){
 		$option["comp.ID"]				= $lang["common"][2];
-		$option["comp.name"]				= $lang["computers"][7];
-		$option["glpi_dropdown_locations.name"]			= $lang["computers"][10];
-		$option["glpi_type_computers.name"]				= $lang["computers"][8];
+		$option["comp.name"]				= $lang["common"][16];
+		$option["glpi_dropdown_locations.name"]			= $lang["common"][15];
+		$option["glpi_type_computers.name"]				= $lang["common"][17];
 		$option["glpi_dropdown_model.name"]				= $lang["computers"][50];
 		$option["glpi_dropdown_os.name"]				= $lang["computers"][9];
 		$option["processor.designation"]			= $lang["computers"][21];
@@ -881,7 +881,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 		$option["moboard.designation"]			= $lang["computers"][35];
 		$option["hdd.designation"]			= $lang["computers"][36];
 		$option["comp.comments"]			= $lang["computers"][19];
-		$option["comp.contact"]			= $lang["computers"][16];
+		$option["comp.contact"]			= $lang["common"][18];
 		$option["comp.contact_num"]		        = $lang["computers"][15];
 		$option["comp.date_mod"]			= $lang["computers"][11];
 		$option["glpi_networking_ports.ifaddr"] = $lang["networking"][14];

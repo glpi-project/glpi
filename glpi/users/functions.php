@@ -92,7 +92,7 @@ function showUserinfo($target,$ID) {
 									
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>".$user->fields["realname"]."</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][20]."</td><td>".$user->fields["type"]."</td></tr>";	
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][17]."</td><td>".$user->fields["type"]."</td></tr>";	
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td>".$user->fields["email"]."</td></tr>";
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td>".$user->fields["phone"]."</td></tr>";
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
@@ -162,7 +162,7 @@ function showUserform($target,$name) {
 		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>";
 		autocompletionTextField("realname","glpi_users","realname",$user->fields["realname"],20);
 		echo "</td></tr>";
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][20]."</td><td>";
+		echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][17]."</td><td>";
 		
 		dropdownUserType("type",$user->fields["type"]);
 	} else {
@@ -173,7 +173,7 @@ function showUserform($target,$name) {
 		autocompletionTextField("realname","glpi_users","realname",$user->fields["realname"],20);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][20]."</td>";
+		echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][17]."</td>";
 		if($user->fields["type"] != "super-admin" && $user->fields["type"] != "admin") {
 			echo "<td><select name='type' >";
 			echo "<option value='normal'";
@@ -484,7 +484,7 @@ function showAddExtAuthUserForm($target){
 	echo "<input type='hidden' name='ext_auth' value='1'>\n";
 	echo "<input type='submit' name='add_ext_auth' value=\"".$lang["buttons"][8]."\" class='submit'>\n";
 	echo "</td></tr>\n";
-	echo "<tr class='tab_bg_1'><td>".$lang["setup"][20]."</td>\n";
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][17]."</td>\n";
 	echo "<td>";
 	dropdownUserType("type");
 	echo "</td></tr>";

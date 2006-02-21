@@ -74,9 +74,9 @@ switch($item_type)
 		echo " <div align='center'><strong>".$lang["reports"][6]."</strong>";
 		echo "<table class='tab_cadre_report'>";
 		echo "<tr>";
-		echo "<th>".$lang["computers"][7]."</th>";
+		echo "<th>".$lang["common"][16]."</th>";
 		echo "<th>".$lang["common"][3]."</th>";
-		echo "<th>".$lang["computers"][10]."</th>";
+		echo "<th>".$lang["common"][15]."</th>";
 		echo "<th>".$lang["computers"][41]."</th>";
 		echo "<th>".$lang["computers"][42]."</th>";
 		echo "<th>".$lang["financial"][6]."</th>";
@@ -117,9 +117,9 @@ switch($item_type)
 		echo "<div align='center'><strong>".$lang["reports"][7]."</strong>";
 		echo "<table class='tab_cadre_report'>";
 		echo "<tr> ";
-		echo "<th>".$lang["computers"][7]."</th>";
+		echo "<th>".$lang["common"][16]."</th>";
 		echo "<th>".$lang["common"][3]."</th>";
-		echo "<th>".$lang["computers"][10]."</th>";
+		echo "<th>".$lang["common"][15]."</th>";
 		echo "<th>".$lang["computers"][41]."</th>";
 		echo "<th>".$lang["computers"][42]."</th>";
 		echo "<th>".$lang["financial"][6]."</th>";
@@ -158,9 +158,9 @@ switch($item_type)
 		echo " <div align='center'><strong>".$lang["reports"][9]."</strong>";
 		echo "<table class='tab_cadre_report'>";
 		echo "<tr> ";
-		echo "<th>".$lang["computers"][7]."</th>";
+		echo "<th>".$lang["common"][16]."</th>";
 		echo "<th>".$lang["common"][3]."</th>";
-		echo "<th>".$lang["computers"][10]."</th>";
+		echo "<th>".$lang["common"][15]."</th>";
 		echo "<th>".$lang["computers"][41]."</th>";
 		echo "<th>".$lang["computers"][42]."</th>";
 		echo "<th>".$lang["financial"][6]."</th>";
@@ -199,9 +199,9 @@ switch($item_type)
 		echo "<div align='center'> <strong>".$lang["reports"][8]."</strong>";
 		echo "<table class='tab_cadre_report'>";
 		echo "<tr> ";
-		echo "<th>".$lang["computers"][7]."</th>";
+		echo "<th>".$lang["common"][16]."</th>";
 		echo "<th>".$lang["common"][3]."</th>";
-		echo "<th>".$lang["computers"][10]."</th>";
+		echo "<th>".$lang["common"][15]."</th>";
 		echo "<th>".$lang["computers"][41]."</th>";
 		echo "<th>".$lang["computers"][42]."</th>";
 		echo "<th>".$lang["financial"][6]."</th>";
@@ -239,9 +239,9 @@ switch($item_type)
 		echo " <div align='center'><strong>".$lang["reports"][29]."</strong>";
 		echo "<table class='tab_cadre_report'>";
 		echo "<tr> ";
-		echo "<th>".$lang["computers"][7]."</th>";
+		echo "<th>".$lang["common"][16]."</th>";
 		echo "<th>".$lang["common"][3]."</th>";
-		echo "<th>".$lang["computers"][10]."</th>";
+		echo "<th>".$lang["common"][15]."</th>";
 		echo "<th>".$lang["computers"][41]."</th>";
 		echo "<th>".$lang["computers"][42]."</th>";
 		echo "<th>".$lang["financial"][6]."</th>";
@@ -279,9 +279,9 @@ switch($item_type)
 		echo "<div align='center'> <strong>".$lang["reports"][55]."</strong>";
 		echo "<table class='tab_cadre_report'>";
 		echo "<tr> ";
-		echo "<th>".$lang["computers"][7]."</th>";
+		echo "<th>".$lang["common"][16]."</th>";
 		echo "<th>".$lang["common"][3]."</th>";
-		echo "<th>".$lang["computers"][10]."</th>";
+		echo "<th>".$lang["common"][15]."</th>";
 		echo "<th>".$lang["computers"][41]."</th>";
 		echo "<th>".$lang["computers"][42]."</th>";
 		echo "<th>".$lang["financial"][6]."</th>";
@@ -318,7 +318,7 @@ switch($item_type)
 		case 'glpi_networking_lieu' :
 		echo "<div align='center'><table class='tab_cadre_report'>";
 		echo "<tr> ";
-		echo "<th>".$lang["reports"][20]."</th>";
+		echo "<th>".$lang["common"][15]."</th>";
 		echo "<th>".$lang["reports"][37]."</th>";
 		echo "<th>".$lang["reports"][52]."</th>";
 		echo "<th>".$lang["reports"][38]."</th>";
@@ -443,7 +443,7 @@ switch($item_type)
 		case 'glpi_networking_prise' :
 		echo "<div align='center'><table class='tab_cadre_report'>";
 		echo "<tr> ";
-		echo "<th>".$lang["reports"][20]."</th>";
+		echo "<th>".$lang["common"][15]."</th>";
 		echo "<th>".$lang["reports"][52]."</th>";
 		echo "<th>".$lang["reports"][38]."</th>";
 		echo "<th>".$lang["reports"][46]."</th>";

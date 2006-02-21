@@ -115,7 +115,7 @@ function showContactForm ($target,$ID) {
 		echo $lang["financial"][33].":";
 		
 	} else {
-		echo $lang["financial"][32]." ID $ID:";
+		echo $lang["common"][18]." ID $ID:";
 	}		
 	echo "</b></th></tr>";
 	
@@ -123,7 +123,7 @@ function showContactForm ($target,$ID) {
 
 	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
-	echo "<tr><td>".$lang["financial"][27].":	</td>";
+	echo "<tr><td>".$lang["common"][16].":	</td>";
 	echo "<td>";
 	autocompletionTextField("name","glpi_contacts","name",$con->fields["name"],30);	
 	echo "</td></tr>";
@@ -144,7 +144,7 @@ function showContactForm ($target,$ID) {
 	echo "<tr><td>".$lang["financial"][31].":	</td><td>";
 	autocompletionTextField("email","glpi_contacts","email",$con->fields["email"],30);
 	echo "</td></tr>";
-	echo "<tr><td>".$lang["financial"][37].":	</td>";
+	echo "<tr><td>".$lang["common"][17].":	</td>";
 	echo "<td>";
 	dropdownValue("glpi_dropdown_contact_type","type",$con->fields["type"]);
 	echo "</td>";

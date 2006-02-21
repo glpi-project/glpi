@@ -152,12 +152,12 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 
 	// table identification
 	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
-	echo "<tr><td>".$lang["printers"][5].":	</td>\n";
+	echo "<tr><td>".$lang["common"][16].":	</td>\n";
 	echo "<td>";
 	autocompletionTextField("name","glpi_printers","name",$printer->fields["name"],20);		
 	echo "</td></tr>\n";
 
-	echo "<tr><td>".$lang["printers"][6].": 	</td><td>\n";
+	echo "<tr><td>".$lang["common"][15].": 	</td><td>\n";
 		dropdownValue("glpi_dropdown_locations", "location", $printer->fields["location"]);
 	echo "</td></tr>\n";
 
@@ -207,7 +207,7 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 	// table type,serial..
 	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
-	echo "<tr><td>".$lang["printers"][9].": 	</td><td>\n";
+	echo "<tr><td>".$lang["common"][17].": 	</td><td>\n";
 		dropdownValue("glpi_type_printers", "type", $printer->fields["type"]);
 	echo "</td></tr>\n";
 

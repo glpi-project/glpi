@@ -58,9 +58,9 @@ function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= "",$s
 
 	$option["glpi_state_item.ID"]				= $lang["common"][2];
 //	$option["glpi_reservation_item.device_type"]			= $lang["reservation"][3];
-//	$option["glpi_dropdown_locations.name"]			= $lang["software"][4];
+//	$option["glpi_dropdown_locations.name"]			= $lang["common"][15];
 //	$option["glpi_software.version"]			= $lang["software"][5];
-//      $option["glpi_state.comments"]			= $lang["state"][5];
+//      $option["glpi_state.comments"]			= $lang["common"][16];
 	
 	echo "<form method=\"get\" action=\"".$cfg_install["root"]."/state/index.php\">";
 	echo "<div align='center'><table class='tab_cadre' width='750'>";
@@ -187,11 +187,11 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 			echo displaySearchHeaderItem($output_type,$lang["state"][6],$header_num,$linkto,$sort=="glpi_state_item.device_type",$order);
 
 
-			echo displaySearchHeaderItem($output_type,$lang["state"][5],$header_num,"",0,$order);
+			echo displaySearchHeaderItem($output_type,$lang["common"][16],$header_num,"",0,$order);
 
-			echo displaySearchHeaderItem($output_type,$lang["state"][9],$header_num,"",0,$order);
+			echo displaySearchHeaderItem($output_type,$lang["common"][17],$header_num,"",0,$order);
 
-			echo displaySearchHeaderItem($output_type,$lang["state"][8],$header_num,"",0,$order);
+			echo displaySearchHeaderItem($output_type,$lang["common"][15],$header_num,"",0,$order);
 
 			$linkto="$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_dropdown_state.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start&amp;state=$state";
 			echo displaySearchHeaderItem($output_type,$lang["state"][0],$header_num,$linkto,$sort=="glpi_dropdown_state.name",$order);

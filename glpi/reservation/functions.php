@@ -65,7 +65,7 @@ function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort=
 
 	$option["glpi_reservation_item.ID"]				= $lang["common"][2];
 //	$option["glpi_reservation_item.device_type"]			= $lang["reservation"][3];
-//	$option["glpi_dropdown_locations.name"]			= $lang["software"][4];
+//	$option["glpi_dropdown_locations.name"]			= $lang["common"][15];
 //	$option["glpi_software.version"]			= $lang["software"][5];
 	$option["glpi_reservation.comments"]			= $lang["reservation"][23];
 	
@@ -194,7 +194,7 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 
 			// Lieu
 			echo "<th>";
-			echo $lang["computers"][10]."</th>";
+			echo $lang["common"][15]."</th>";
 
 			// Comments
 			echo "<th>";

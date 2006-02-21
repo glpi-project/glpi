@@ -213,7 +213,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 		case RAM_DEVICE :
 			$type=$lang["devices"][6];
 			$name=$device->fields["designation"];
-			if (!empty($device->fields["type"])) $entry[$lang["device_ram"][0]]=getDropdownName("glpi_dropdown_ram_type",$device->fields["type"]);
+			if (!empty($device->fields["type"])) $entry[$lang["common"][17]]=getDropdownName("glpi_dropdown_ram_type",$device->fields["type"]);
 			if (!empty($device->fields["frequence"])) $entry[$lang["device_ram"][1]]=$device->fields["frequence"];
 			
 			$specificity_size = 10;
@@ -222,7 +222,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 			
 			$type=$lang["devices"][7];
 			$name=$device->fields["designation"];
-			if (!empty($device->fields["type"])) $entry[$lang["device_sndcard"][0]]=$device->fields["type"];
+			if (!empty($device->fields["type"])) $entry[$lang["common"][17]]=$device->fields["type"];
 			
 			$specificity_size = 10;
 		break;
@@ -255,7 +255,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 		case CASE_DEVICE :
 			$type=$lang["devices"][22];
 			$name=$device->fields["designation"];
-			if (!empty($device->fields["format"])) $entry[$lang["device_sndcard"][0]]=$device->fields["format"];
+			if (!empty($device->fields["format"])) $entry[$lang["common"][17]]=$device->fields["format"];
 		
 		break;
 	}
@@ -478,7 +478,7 @@ function showDevicesList($device_type,$target) {
 			// designation
 			echo "<th>";
 			echo "<a href=\"$target?device_type=$device_type\">";
-			echo $lang["printers"][5]."</a></th>";
+			echo $lang["common"][16]."</a></th>";
 
 			// Manufacturer		
 			echo "<th>";
@@ -566,7 +566,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 	echo "<tr><td class='tab_bg_1' colspan='1'>";
 	// table commune
 	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
-	echo "<tr><td>".$lang["printers"][5].":	</td>";
+	echo "<tr><td>".$lang["common"][16].":	</td>";
 	echo "<td>";
 	autocompletionTextField("designation",$table,"designation",$device->fields["designation"],20);
 
@@ -600,7 +600,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</td></tr>";
 		break;
 		case "glpi_device_ram" :
-			echo "<tr><td>".$lang["device_ram"][0].":</td>";
+			echo "<tr><td>".$lang["common"][17].":</td>";
 			echo "<td>";
 			dropdownValue("glpi_dropdown_ram_type","type",$device->fields["type"]);
 			echo "</td>";
@@ -705,7 +705,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</tr>";
 		break;
 		case "glpi_device_sndcard" :
-			echo "<tr><td>".$lang["device_sndcard"][0].":</td><td>";
+			echo "<tr><td>".$lang["common"][17].":</td><td>";
 			autocompletionTextField("type",$table,"type",$device->fields["type"],20);
 			echo "</td></tr>";
 		break;

@@ -99,7 +99,7 @@ function showDocumentForm ($target,$ID) {
 	}		
 	echo "</b></th></tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["document"][1].":		</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][16].":		</td>";
 	echo "<td colspan='2'>";
 	autocompletionTextField("name","glpi_docs","name",$con->fields["name"],25);
 	echo "</td></tr>";
