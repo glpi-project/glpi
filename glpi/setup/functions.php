@@ -153,7 +153,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 		$loc = $db->result($result,0,"location");
 		}
 		echo "<br>";
-		echo $lang["networking"][1].": ";		
+		echo $lang["common"][15].": ";		
 
 		dropdownValue("glpi_dropdown_locations", "value2",$loc);
 		echo $lang["networking"][52].": ";
@@ -178,7 +178,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 	echo "<tr><td align='center'  class='tab_bg_1'>";
 	if($name == "netpoint") {
-		echo $lang["networking"][1].": ";		
+		echo $lang["common"][15].": ";		
 		dropdownValue("glpi_dropdown_locations", "value2",$value2);
 		echo $lang["networking"][52].": ";
 		echo "<input type='text' maxlength='100' size='10' name='value'>";
@@ -200,7 +200,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 		echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 		echo "<tr><td align='center'  class='tab_bg_1'>";
 
-		echo $lang["networking"][1].": ";		
+		echo $lang["common"][15].": ";		
 		dropdownValue("glpi_dropdown_locations", "value2",$value2);
 		echo $lang["networking"][52].": ";
 		echo "<input type='text' maxlength='100' size='5' name='before'>";
@@ -1136,7 +1136,7 @@ function showFormConfigDisplay($target){
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][130]." </td><td><select name=\"nextprev_item\">";
 	$nextprev_item=$db->result($result,0,"nextprev_item");
 	echo "<option value=\"ID\"";  if($nextprev_item=="ID"){ echo " selected";} echo ">".$lang["common"][2]." </option>";
-	echo "<option value=\"name\"";  if($nextprev_item=="name"){ echo " selected";} echo ">".$lang["computers"][7]."</option>";
+	echo "<option value=\"name\"";  if($nextprev_item=="name"){ echo " selected";} echo ">".$lang["common"][16]."</option>";
 	echo "</select></td></tr>";
 		
 	echo "</table>&nbsp;</div>";	
@@ -1805,13 +1805,13 @@ function ocsFormConfig($target, $id) {
 	echo "<option value='1' ".($model==1?" selected ":"").">".$lang["choice"][0]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][22]." </td><td>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][5]." </td><td>";
 	echo "<select name='import_general_enterprise'>";
 	echo "<option value='0' ".($enterprise==0?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "<option value='1' ".($enterprise==1?" selected ":"").">".$lang["choice"][0]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][23]." </td><td>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][17]." </td><td>";
 	echo "<select name='import_general_type'>";
 	echo "<option value='0' ".($type==0?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "<option value='1' ".($type==1?" selected ":"").">".$lang["choice"][0]."</option>";
@@ -1823,7 +1823,7 @@ function ocsFormConfig($target, $id) {
 	echo "<option value='1' ".($domain==1?" selected ":"").">".$lang["choice"][0]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][25]." </td><td>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][18]." </td><td>";
 	echo "<select name='import_general_contact'>";
 	echo "<option value='0' ".($contact==0?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "<option value='1' ".($contact==1?" selected ":"").">".$lang["choice"][0]."</option>";

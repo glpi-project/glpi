@@ -233,19 +233,19 @@ function showComputerForm($target,$ID,$withtemplate='') {
 
 		echo "</th></tr>";
 		
-		echo "<tr class='tab_bg_1'><td>".$lang["computers"][7].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$lang["common"][16].":		</td>";
 
 		echo "<td>";
 		autocompletionTextField("name","glpi_computers","name",$comp->fields["name"],20);
 		echo "</td>";
 						
-		echo "<td>".$lang["computers"][16].":	</td><td>";
+		echo "<td>".$lang["common"][18].":	</td><td>";
 		autocompletionTextField("contact","glpi_computers","contact",$comp->fields["contact"],20);
 		
 		echo "</td></tr>";
 		
 		echo "<tr class='tab_bg_1'>";
-				echo "<td >".$lang["computers"][8].": 	</td>";
+				echo "<td >".$lang["common"][17].": 	</td>";
 		echo "<td >";
 			dropdownValue("glpi_type_computers", "type", $comp->fields["type"]);
 		
@@ -270,7 +270,7 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'>";
-		echo "<td >".$lang["computers"][10].": 	</td>";
+		echo "<td >".$lang["common"][15].": 	</td>";
 		echo "<td >";
 			dropdownValue("glpi_dropdown_locations", "location", $comp->fields["location"]);
 		

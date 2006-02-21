@@ -153,12 +153,12 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 
 	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
-	echo "<tr><td>".$lang["networking"][0].":	</td>\n";
+	echo "<tr><td>".$lang["common"][16].":	</td>\n";
 	echo "<td>";
 	autocompletionTextField("name","glpi_networking","name",$netdev->fields["name"],20);	
 	echo "</td></tr>\n";
 
-	echo "<tr><td>".$lang["networking"][1].": 	</td><td>\n";
+	echo "<tr><td>".$lang["common"][15].": 	</td><td>\n";
 		dropdownValue("glpi_dropdown_locations", "location", $netdev->fields["location"]);
 	echo "</td></tr>\n";
 	
@@ -170,7 +170,7 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 		autocompletionTextField("contact_num","glpi_networking","contact_num",$netdev->fields["contact_num"],20);	
 	echo "</td></tr>\n";
 
-	echo "<tr><td>".$lang["networking"][3].":	</td><td>\n";
+	echo "<tr><td>".$lang["common"][18].":	</td><td>\n";
 		autocompletionTextField("contact","glpi_networking","contact",$netdev->fields["contact"],20);	
 	echo "</td></tr>\n";
 	
@@ -204,7 +204,7 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 
 	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
-	echo "<tr><td>".$lang["networking"][2].": 	</td><td>\n";
+	echo "<tr><td>".$lang["common"][17].": 	</td><td>\n";
 		dropdownValue("glpi_type_networking", "type", $netdev->fields["type"]);
 	echo "</td></tr>\n";
 
@@ -486,7 +486,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			echo ":</th>";
 
 			echo "</tr>";        
-			echo "<tr><th>#</th><th>".$lang["networking"][0]."</th><th>".$lang["networking"][51]."</th>";
+			echo "<tr><th>#</th><th>".$lang["common"][16]."</th><th>".$lang["networking"][51]."</th>";
 			echo "<th>".$lang["networking"][14]."</th><th>".$lang["networking"][15]."</th>";
 			echo "<th>".$lang["networking"][56]."</th>";
 			echo "<th>".$lang["networking"][16]."</th><th>".$lang["networking"][17].":</th></tr>\n";
@@ -626,7 +626,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 	echo "</td></tr>";
 	}
 	
-	echo "<tr class='tab_bg_1'><td>".$lang["networking"][0].":</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][16].":</td>";
 	echo "<td>";
 	autocompletionTextField("name","glpi_networking_ports","name",$netport->fields["name"],20);	
 	echo "</td></tr>";

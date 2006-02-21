@@ -126,7 +126,7 @@ function showContractForm ($target,$ID) {
 	dropdownValue("glpi_dropdown_contract_type","contract_type",$con->fields["contract_type"]);
 	echo "</td>";
 
-	echo "<td>".$lang["financial"][27].":		</td><td>";
+	echo "<td>".$lang["common"][16].":		</td><td>";
 	autocompletionTextField("name","glpi_contracts","name",$con->fields["name"],25);
 	echo "</td></tr>";
 
@@ -865,7 +865,7 @@ function showContractAssociatedEnterprise($ID){
 
 function addContractOptionFieldsToResearch($option){
 global $lang;
-$option["glpi_contracts.name"]=$lang["financial"][27]." ".$lang["financial"][1];
+$option["glpi_contracts.name"]=$lang["common"][16]." ".$lang["financial"][1];
 $option["glpi_contracts.num"]=$lang["financial"][4]." ".$lang["financial"][1];
 return $option;
 

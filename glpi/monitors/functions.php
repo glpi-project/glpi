@@ -146,12 +146,12 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 
 	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
-	echo "<tr><td>".$lang["monitors"][5].":	</td>";
+	echo "<tr><td>".$lang["common"][16].":	</td>";
 	echo "<td>";
 	autocompletionTextField("name","glpi_monitors","name",$mon->fields["name"],20);	
 	echo "</td></tr>";
 
-	echo "<tr><td>".$lang["monitors"][6].": 	</td><td>";
+	echo "<tr><td>".$lang["common"][15].": 	</td><td>";
 		dropdownValue("glpi_dropdown_locations", "location", $mon->fields["location"]);
 	echo "</td></tr>";
 
@@ -168,7 +168,7 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 	autocompletionTextField("contact_num","glpi_monitors","contact_num",$mon->fields["contact_num"],20);	
 	echo "</td></tr>";
 
-	echo "<tr><td>".$lang["monitors"][8].":	</td><td>";
+	echo "<tr><td>".$lang["common"][18].":	</td><td>";
 	autocompletionTextField("contact","glpi_monitors","contact",$mon->fields["contact"],20);	
 
 	echo "</td></tr>";
@@ -200,7 +200,7 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 
 	echo "<table cellpadding='1' cellspacing='0' border='0'";
 
-	echo "<tr><td>".$lang["monitors"][9].": 	</td><td>";
+	echo "<tr><td>".$lang["common"][17].": 	</td><td>";
 		dropdownValue("glpi_type_monitors", "type", $mon->fields["type"]);
 	echo "</td></tr>";
 

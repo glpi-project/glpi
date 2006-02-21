@@ -128,7 +128,7 @@ function showCartridgeTypeForm ($target,$ID) {
 	
 	echo "</b></th></tr>\n";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][1].":		</td>\n";
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][16].":		</td>\n";
 	echo "<td colspan='2'>";
 	autocompletionTextField("name","glpi_cartridges_type","name",$ct->fields["name"],25);
 	echo "</td></tr>\n";
@@ -138,11 +138,11 @@ function showCartridgeTypeForm ($target,$ID) {
 	autocompletionTextField("ref","glpi_cartridges_type","ref",$ct->fields["ref"],25);	
 	echo "</td></tr>\n";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][3].": 	</td><td colspan='2'>\n";
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][17].": 	</td><td colspan='2'>\n";
 		dropdownValue("glpi_dropdown_cartridge_type","type",$ct->fields["type"]);
 	echo "</td></tr>\n";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["cartridges"][8].": 	</td><td colspan='2'>\n";
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>\n";
 		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$ct->fields["FK_glpi_enterprise"]);
 	echo "</td></tr>\n";
 

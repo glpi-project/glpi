@@ -112,7 +112,7 @@ if (isset($_POST["several_add"])) {
 
 	$optgroup=array(
 		$lang["setup"][139]=>array(
-			"locations"=>$lang["setup"][3],		
+			"locations"=>$lang["common"][15],		
 			"state"=>$lang["setup"][83],
 			),
 		
@@ -212,7 +212,7 @@ if (isset($_POST["several_add"])) {
 		showFormTreeDown($_SERVER["PHP_SELF"],"kbcategories",$lang["setup"][78],$ID,$value2,$where,$tomove,$type);
 		break;
 		case "locations" :
-		showFormTreeDown($_SERVER["PHP_SELF"],"locations",$lang["setup"][3],$ID,$value2,$where,$tomove,$type);
+		showFormTreeDown($_SERVER["PHP_SELF"],"locations",$lang["common"][15],$ID,$value2,$where,$tomove,$type);
 		break;
 		case "computers" :
 		showFormTypeDown($_SERVER["PHP_SELF"],"computers",$lang["setup"][4],$ID);

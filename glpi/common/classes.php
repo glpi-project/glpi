@@ -353,7 +353,7 @@ class CommonItem{
 				return $lang["financial"][26];
 				break;
 			case CONTACT_TYPE : 
-				return $lang["financial"][32];
+				return $lang["common"][18];
 				break;
 			case KNOWBASE_TYPE : 
 				return $lang["knowbase"][0];

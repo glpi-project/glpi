@@ -81,7 +81,7 @@ function showTypedocForm ($target,$ID) {
 		echo "</th><th  align='center'>".$datestring.$date;
 		echo "</th></tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["document"][1].":	</td><td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][16].":	</td><td>";
 	autocompletionTextField("name","glpi_type_docs","name",$mon->fields["name"],20);
 	echo "</td></tr>";
 
