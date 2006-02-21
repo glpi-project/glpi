@@ -809,7 +809,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "</td></tr>";
 	
 
-	echo "<tr class='tab_bg_2' align='center'><td>".$lang["button"][3].":</td>";
+	echo "<tr class='tab_bg_2' align='center'><td>".$lang["buttons"][3].":</td>";
 	
 	echo "<td align='center'>";
 	dropdownUsers("assign",$assign);

@@ -255,9 +255,9 @@ function showAssociatedContact($instID) {
    
 	echo "<br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='7'>".$lang["financial"][46].":</th></tr>";
-	echo "<tr><th>".$lang['financial'][27]."</th><th>".$lang["financial"][29]."</th>";
-	echo "<th>".$lang['financial'][29]." 2</th><th>".$lang["financial"][30]."</th>";
-	echo "<th>".$lang['financial'][31]."</th><th>".$lang["common"][17]."</th>";
+	echo "<tr><th>".$lang["common"][16]."</th><th>".$lang["financial"][29]."</th>";
+	echo "<th>".$lang["financial"][29]." 2</th><th>".$lang["financial"][30]."</th>";
+	echo "<th>".$lang["financial"][31]."</th><th>".$lang["common"][17]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
 	while ($i < $number) {

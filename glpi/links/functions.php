@@ -270,7 +270,7 @@ function showLinkDevice($instID) {
     echo "<form method='post' action=\"".$cfg_install["root"]."/links/links-info-form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='2'>".$lang["links"][4].":</th></tr>";
-	echo "<tr><th>".$lang['links'][5]."</th>";
+	echo "<tr><th>".$lang["common"][17]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
 	while ($i < $number) {
