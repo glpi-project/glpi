@@ -131,7 +131,7 @@ if (isset($_POST["several_add"])) {
 			"hdd_type"=>$lang["setup"][93],
 			),
 
-		$lang["setup"][141]=>array(
+		$lang["common"][22]=>array(
 			"model"=>$lang["setup"][91],
 			"model_networking"=>$lang["setup"][95],
 			"model_printers"=>$lang["setup"][96],	

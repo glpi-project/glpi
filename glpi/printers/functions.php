@@ -169,7 +169,7 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 		dropdownUsersID("tech_num", $printer->fields["tech_num"]);
 	echo "</td></tr>\n";
 	
-	echo "<tr><td>".$lang["printers"][7].":	</td><td>\n";
+	echo "<tr><td>".$lang["common"][21].":	</td><td>\n";
 	autocompletionTextField("contact_num","glpi_printers","contact_num",$printer->fields["contact_num"],20);			
 	echo "</td></tr>\n";
 
@@ -211,14 +211,14 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 		dropdownValue("glpi_type_printers", "type", $printer->fields["type"]);
 	echo "</td></tr>\n";
 
-	echo "<tr><td>".$lang["printers"][32].": 	</td><td>";
+	echo "<tr><td>".$lang["common"][22].": 	</td><td>";
 		dropdownValue("glpi_dropdown_model_printers", "model", $printer->fields["model"]);
 	echo "</td></tr>";
 		
-	echo "<tr><td>".$lang["printers"][10].":	</td><td>\n";
+	echo "<tr><td>".$lang["common"][19].":	</td><td>\n";
 	autocompletionTextField("serial","glpi_printers","serial",$printer->fields["serial"],20);	echo "</td></tr>\n";
 
-	echo "<tr><td>".$lang["printers"][11].":</td><td>\n";
+	echo "<tr><td>".$lang["common"][20].":</td><td>\n";
 	autocompletionTextField("otherserial","glpi_printers","otherserial",$printer->fields["otherserial"],20);
 	echo "</td></tr>\n";
 

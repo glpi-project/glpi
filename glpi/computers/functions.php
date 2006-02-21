@@ -253,12 +253,12 @@ function showComputerForm($target,$ID,$withtemplate='') {
 
 		
 		
-		echo "<td>".$lang["computers"][15].":		</td><td>";
+		echo "<td>".$lang["common"][21].":		</td><td>";
 		autocompletionTextField("contact_num","glpi_computers","contact_num",$comp->fields["contact_num"],20);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'>";
-		echo "<td >".$lang["computers"][50].": 	</td>";
+		echo "<td >".$lang["common"][22].": 	</td>";
 		echo "<td >";
 			dropdownValue("glpi_dropdown_model", "model", $comp->fields["model"]);
 		
@@ -288,7 +288,7 @@ function showComputerForm($target,$ID,$withtemplate='') {
 			dropdownUsersID("tech_num",$comp->fields["tech_num"]);
 		echo "</td>";
 
-		echo "<td>".$lang["computers"][17].":	</td><td>";
+		echo "<td>".$lang["common"][19].":	</td><td>";
 		autocompletionTextField("serial","glpi_computers","serial",$comp->fields["serial"],20);
 		echo "</td></tr>";
 
@@ -297,7 +297,7 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$comp->fields["FK_glpi_enterprise"]);
 		echo "</td>";
 
-		echo "<td>".$lang["computers"][18].":	</td><td>";
+		echo "<td>".$lang["common"][20].":	</td><td>";
 		autocompletionTextField("otherserial","glpi_computers","otherserial",$comp->fields["otherserial"],20);
 		echo "</td></tr>";
 	

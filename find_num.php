@@ -97,7 +97,7 @@ if(isset($_POST["send"]))
 	echo " <td align='center' width='20%'><b>".$lang["help"][24]."</b></td>";
 	echo " <td align='center' width='30%'><b>".$lang["common"][1]."</b></td>";
 	echo " <td align='center' width='5%'><b>".$lang["common"][2]."</b></td>";
-	echo " <td align='center' width='20%'><b>".$lang["computers"][17]."&nbsp;/&nbsp;".$lang["computers"][18]."</b></td>";
+	echo " <td align='center' width='20%'><b>".$lang["common"][19]."&nbsp;/&nbsp;".$lang["common"][20]."</b></td>";
 	echo " </tr>";
 	
 
