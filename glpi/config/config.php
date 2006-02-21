@@ -250,7 +250,7 @@ $cfg_install["default_language"] = $db->result($result,0,"default_language");
 
 
 // Mode debug ou traduction
-$cfg_debug["active"]=2;//$db->result($result,0,"debug"); // 0 inactif , 1 traduction , 2 debug complet
+$cfg_debug["active"]=$db->result($result,0,"debug"); // 0 inactif , 1 traduction , 2 debug complet
 $cfg_debug["sql"]=($cfg_debug["active"]==2); // affiche les requetes
 $cfg_debug["vars"]=($cfg_debug["active"]==2); // affiche les variables
 $cfg_debug["profile"]=($cfg_debug["active"]==2); // Profile les requetes
