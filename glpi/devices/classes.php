@@ -44,7 +44,7 @@ class Device {
 	
 	function getFromDB($ID) {
 		$db = new DB;
-		$query = "SELECT * FROM ".$this->table." WHERE (ID = '$ID') limit 0,1";
+		$query = "SELECT * FROM ".$this->table." WHERE ID = '$ID' LIMIT 0,1";
 		//echo $query;
 		if ($result = $db->query($query)) {
 			if ($db->numrows($result)==1) {

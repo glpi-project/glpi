@@ -3448,7 +3448,8 @@ foreach ($device as $dev)
 if(FieldExists("glpi_device_$dev","comment")) {	
 	$query="ALTER TABLE `glpi_device_$dev` CHANGE `designation` `designation` VARCHAR( 255 ) NULL ,
 		CHANGE `comment` `comment` TEXT NULL ,
-		CHANGE `specif_default` `specif_default` VARCHAR( 250 ) NULL ";
+		CHANGE `specif_default` `specif_default` VARCHAR( 250 ) NULL,
+		ADD INDEX ( `designation` ); ";
 	$db->query($query) or die("0.65 alter various fields in device_$dev ".$lang["update"][90].$db->error());
 
 }
@@ -3826,8 +3827,31 @@ if(!FieldExists("glpi_computers","os_version")) {
 	$db->query($query) or die("0.65 add os_version os_sp in computers ".$lang["update"][90].$db->error());
 }
 
+// ADD INDEX
+$tbl=array("cartridges_type","computers","consumables_type","contacts","contracts","docs","enterprises","monitors","networking","peripherals","printers","software","users");
+
+foreach ($tbl as $t)
+if(!isIndex("glpi_$t","name")) {	
+	$query="ALTER TABLE `glpi_$t` ADD INDEX ( `name` ) ";
+	$db->query($query) or die("0.65 add index in name field $t ".$lang["update"][90].$db->error());
+}
+
+$result=$db->list_tables();
+while ($line = $db->fetch_array($result))
+if (ereg("glpi_dropdown",$line[0])||ereg("glpi_type",$line[0]))
+if(!isIndex($line[0],"name")) {	
+	$query="ALTER TABLE `".$line[0]."` ADD INDEX ( `name` ) ";
+	$db->query($query) or die("0.65 add index in name field ".$line[0]." ".$lang["update"][90].$db->error());
+}
+
+if(!isIndex("glpi_reservation_item","device_type_2")) {	
+	$query="ALTER TABLE `glpi_reservation_item` ADD INDEX  `device_type_2` ( `device_type`,`id_device` ) ";
+	$db->query($query) or die("0.65 add index in reservation_item ".$line[0]." ".$lang["update"][90].$db->error());
+}
+
 
 }
+
 
 function updateTreeDropdown(){
 
