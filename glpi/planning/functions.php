@@ -57,11 +57,11 @@ if ($result = $db->query($query)) {
 		$numrows =  $db->numrows($result);
 //echo "<form name='resa_form' method='post' action=".$cfg_install["root"]."/reservation/index.php>";
 echo "<a href=\"".$cfg_install["root"]."/reservation/index.php?";
-// Ajouter le matériel
+// Ajouter le matï¿½iel
 if ($numrows==0){
 echo "id_device=$id_device&amp;device_type=$device_type&amp;add=add\">".$lang["reservation"][7]."</a>";
 }
-// Supprimer le matériel
+// Supprimer le matï¿½iel
 else {
 echo "ID=".$db->result($result,0,"ID")."&amp;delete=delete\">".$lang["reservation"][6]."</a>";
 }
@@ -258,7 +258,7 @@ if ($type!="month"){
 }
 else {// Month planning
 	list($annee_courante,$mois_courant,$jour_mois)=split("-",$when);
-	// on vérifie pour les années bisextiles, on ne sait jamais.
+	// on vï¿½ifie pour les annï¿½s bisextiles, on ne sait jamais.
 	if (($annee_courante%4)==0) $fev=29; else $fev=28;
 	$nb_jour= array(31,$fev,31,30,31,30,31,31,30,31,30,31);
 
@@ -266,7 +266,7 @@ else {// Month planning
 	$jour_debut_mois=strftime("%w",mktime(0,0,0,$mois_courant,1,$annee_courante));
 	if ($jour_debut_mois==0) $jour_debut_mois=7;
 	$jour_fin_mois=strftime("%w",mktime(0,0,0,$mois_courant,$nb_jour[$mois_courant-1],$annee_courante));
-	// on n'oublie pas de mettre le mois en français et on n'a plus qu'à mettre les en-têtes
+	// on n'oublie pas de mettre le mois en franï¿½is et on n'a plus qu'ï¿½mettre les en-tï¿½es
 
 	echo "<div align='center'>";
 
@@ -286,7 +286,7 @@ echo "<tr class='tab_bg_3' >";
 
 $when=$annee_courante."-".$mois_courant."-01";
 $daytime=mktime(0,0,0,0,2,0)-mktime(0,0,0,0,1,0);
-// Il faut insérer des cases vides pour mettre le premier jour du mois
+// Il faut insï¿½er des cases vides pour mettre le premier jour du mois
 // en face du jour de la semaine qui lui correspond.
 for ($i=1;$i<$jour_debut_mois;$i++)
 	echo "<td style='background-color:#ffffff'>&nbsp;</td>";
@@ -313,14 +313,14 @@ for ($i=1;$i<$nb_jour[$mois_courant-1]+1;$i++){
 	echo "</table>";
 	echo "</td>";
 
-// il ne faut pas oublié d'aller à la ligne suivante enfin de semaine
+// il ne faut pas oubliï¿½d'aller ï¿½la ligne suivante enfin de semaine
     if (($i+$jour_debut_mois)%7==1)
         {echo "</tr>";
        if ($i!=$nb_jour[$mois_courant-1])echo "<tr class='tab_bg_3'>";
        }
 }
 
-// on recommence pour finir le tableau proprement pour les mêmes raisons
+// on recommence pour finir le tableau proprement pour les mï¿½es raisons
 
 if ($jour_fin_mois!=0)
 for ($i=0;$i<7-$jour_fin_mois;$i++) 	echo "<td style='background-color:#ffffff'>&nbsp;</td>";
@@ -665,7 +665,7 @@ while ($data=$db->fetch_array($result)){
 	$i++;
 }
 //print_r($interv);
-echo "<table class='tab_cadre' width='80%'><tr><th colspan='3'><a href='".$HTMLRel."planning/index.php'>".$lang["planning"][15]."</a></th></tr><tr><th>".$lang["planning"][16]."</th><th>".$lang["planning"][17]."</th><th>".$lang["joblist"][6]."</th></tr>";
+echo "<table class='tab_cadre' width='80%'><tr><th colspan='3'><a href='".$HTMLRel."planning/index.php'>".$lang["planning"][15]."</a></th></tr><tr><th>".$lang["buttons"][33]."</th><th>".$lang["buttons"][32]."</th><th>".$lang["joblist"][6]."</th></tr>";
 	if (count($interv)>0){
 		foreach ($interv as $key => $val){
 					
@@ -704,12 +704,12 @@ echo "</table>";
 
 
 //*******************************************************************************************************************************
-// *********************************** Implémentation ICAL ***************************************************************
+// *********************************** Implï¿½entation ICAL ***************************************************************
 //*******************************************************************************************************************************
 
 
 /**
-* Générate URL for ICAL
+* Gï¿½ï¿½ate URL for ICAL
 *
 *  
 * @param $who 
@@ -723,7 +723,7 @@ GLOBAL  $cfg_install, $lang;
 echo "<a href=\"".$cfg_install["root"]."/planning/ical.php?uID=$who\"><span style='font-size:10px'>-".$lang["planning"][12]."</span></a>";
 echo "<br>";
 
-// Todo récup l'url complete de glpi proprement, ? nouveau champs table config ?
+// Todo rï¿½up l'url complete de glpi proprement, ? nouveau champs table config ?
 echo "<a href=\"webcal://".$_SERVER['HTTP_HOST'].$cfg_install["root"]."/planning/ical.php?uID=$who\"><span style='font-size:10px'>-".$lang["planning"][13]."</span></a>";
 
 }
@@ -843,7 +843,7 @@ $debutcal=debutIcal(getUserName($who));
 
 		$event .= "DESCRIPTION:".$val["content"]."\n";
 		
-		//todo recup la catégorie d'intervention.
+		//todo recup la catï¿½orie d'intervention.
 		//$event .= "CATEGORIES:".$val["categorie"]."\n";
 
 		$event .= "URL:".$cfg_features["url_base"]."/index.php?redirect=tracking_".$val["id_tracking"]."\n";

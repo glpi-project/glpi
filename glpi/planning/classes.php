@@ -171,7 +171,7 @@ class PlanningTracking{
 				echo "Erreur Inconnue";
 			break;
 		}
-		echo "<br><a href='".$target."?job=$ID'>".$lang["planning"][2]."</a>";
+		echo "<br><a href='".$target."?job=$ID'>".$lang["buttons"][13]."</a>";
 		echo "</div>";
 		}
 

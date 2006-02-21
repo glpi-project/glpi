@@ -378,7 +378,7 @@ function showCartridges ($tID,$show_old=0) {
 				
 			}
 			$i=0;
-			echo "<tr><th>".$lang["cartridges"][4]."</th><th>".$lang["cartridges"][23]."</th><th>".$lang["cartridges"][24]."</th><th>".$lang["cartridges"][25]."</th><th>".$lang["cartridges"][27]."</th><th>".$lang["cartridges"][26]."</th>";
+			echo "<tr><th>".$lang["common"][2]."</th><th>".$lang["cartridges"][23]."</th><th>".$lang["cartridges"][24]."</th><th>".$lang["cartridges"][25]."</th><th>".$lang["cartridges"][27]."</th><th>".$lang["cartridges"][26]."</th>";
 
 			if ($show_old==1)
 				echo "<th>".$lang["cartridges"][39]."</th>";
@@ -491,7 +491,7 @@ $query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')
 
 		echo "<td align='center'>";
 		
-		echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_install["root"]."/cartridges/cartridges-edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["cartridges"][31]."</a>";
+		echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_install["root"]."/cartridges/cartridges-edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["buttons"][6]."</a>";
 		echo "</td></tr>";
 		
 	}	
@@ -751,7 +751,7 @@ function showCartridgeInstalled($instID,$old=0) {
 	if ($old==0)
 	echo "<tr><th colspan='7'>".$lang["cartridges"][33].":</th></tr>";
 	else echo "<tr><th colspan='8'>".$lang["cartridges"][35].":</th></tr>";
-	echo "<tr><th>".$lang["cartridges"][4]."</th><th>".$lang["cartridges"][12]."</th><th>".$lang["cartridges"][23]."</th><th>".$lang["cartridges"][24]."</th><th>".$lang["cartridges"][25]."</th><th>".$lang["cartridges"][26]."</th>";
+	echo "<tr><th>".$lang["common"][2]."</th><th>".$lang["cartridges"][12]."</th><th>".$lang["cartridges"][23]."</th><th>".$lang["cartridges"][24]."</th><th>".$lang["cartridges"][25]."</th><th>".$lang["cartridges"][26]."</th>";
 	if ($old!=0)
 	echo "<th>".$lang["cartridges"][39]."</th>";
 	
@@ -817,7 +817,7 @@ function showCartridgeInstalled($instID,$old=0) {
 		}
 		if (is_null($date_out))
 		echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_install["root"]."/cartridges/cartridges-edit.php?uninstall=uninstall&amp;ID=".$data["ID"]."'>".$lang["cartridges"][29]."</a>";
-		else echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_install["root"]."/cartridges/cartridges-edit.php?delete=delete&amp;ID=".$data["ID"]."'>".$lang["cartridges"][31]."</a>";
+		else echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_install["root"]."/cartridges/cartridges-edit.php?delete=delete&amp;ID=".$data["ID"]."'>".$lang["buttons"][6]."</a>";
 		echo "</td></tr>";
 		
 	}	

@@ -34,9 +34,9 @@
 // ----------------------------------------------------------------------
 
 
-//Ce script génère ses propres messages d'erreur 
+//Ce script gï¿½ï¿½e ses propres messages d'erreur 
 //Pas besoin des warnings de PHP
-error_reporting(0);   // Baaz si tu touches à cette ligne  pour tes tests merci de la remettre en état quand tu commits.
+error_reporting(0);   // Baaz si tu touches ï¿½cette ligne  pour tes tests merci de la remettre en ï¿½at quand tu commits.
 
 //Print a correct  Html header for application
 function header_html($etape)
@@ -212,17 +212,17 @@ function step1($update)
 		}
 	}
 
-	 if( $mem == "" ){          // memory_limit non compilé -> no memory limit
+	 if( $mem == "" ){          // memory_limit non compilï¿½-> no memory limit
 	echo "<td>".$lang["install"][95]." - ".$lang["install"][89]."</td></tr>";
     }
-    else if( $mem == "-1" ){   // memory_limit compilé  mais illimité 
+    else if( $mem == "-1" ){   // memory_limit compilï¿½ mais illimitï¿½
 	echo "<td>".$lang["install"][96]." - ".$lang["install"][89]."</td></tr>";
     }
     else{	
 		if ($mem<16*1024*1024){ // memoire insuffisante
 		echo "<td  class='red'><b>".$lang["install"][87]." $mem octets</b><br>".$lang["install"][88]."<br>".$lang["install"][90]."</td></tr>";
 		}
-		else{ // on a sufisament de mémoire on passe à la suite
+		else{ // on a sufisament de mï¿½oire on passe ï¿½la suite
 		echo "<td>".$lang["install"][91]." - ".$lang["install"][89]."</td></tr>";
 		}
 	}
@@ -422,7 +422,7 @@ function step3($host,$user,$password,$update)
 		echo "<form action=\"install.php\" method=\"post\">";
 		echo "<input type=\"hidden\" name=\"update\" value=\"".$update."\" />";
 		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_1\" />";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\"  value=\"".$lang["install"][33]."\" /></p>";
+		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\"  value=\"".$lang["buttons"][13]."\" /></p>";
 		echo "</form>";
                 
 	}
@@ -482,7 +482,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		echo $lang["install"][31] ." : <input type=\"hidden\" name=\"db_user\" value=\"". $user ."\"/>";
 		echo $lang["install"][32] .": <input type=\"hidden\" name=\"db_pass\" value=\"". $password ."\" />";
 		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_2\" />";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][33]."\" /></p>";
+		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["buttons"][13]."\" /></p>";
 		echo "</form>";
 	}
 	//Display the form to go to the next page
@@ -549,7 +549,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		mysql_close($link);
 	}
 	elseif(!empty($newdatabasename)) {
-		// BUG cette fonction est obsolète je l'ai remplacé par la nouvelle
+		// BUG cette fonction est obsolï¿½e je l'ai remplacï¿½par la nouvelle
                 //if (mysql_create_db($newdatabasename)) {
 		// END BUG
 		if (mysql_query("CREATE DATABASE IF NOT EXISTS `".$newdatabasename."`")){

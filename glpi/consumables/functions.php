@@ -376,7 +376,7 @@ function showConsumables ($tID,$show_old=0) {
 				
 			}
 			$i=0;
-			echo "<tr><th>".$lang["consumables"][4]."</th><th>".$lang["consumables"][23]."</th><th>".$lang["consumables"][24]."</th><th>".$lang["consumables"][26]."</th>";
+			echo "<tr><th>".$lang["common"][2]."</th><th>".$lang["consumables"][23]."</th><th>".$lang["consumables"][24]."</th><th>".$lang["consumables"][26]."</th>";
 
 			echo "<th>".$lang["financial"][3]."</th>";
 			
@@ -434,7 +434,7 @@ $query = "SELECT * FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$tID
 		
 		echo "<td align='center'>";
 		
-		echo "<a href='".$cfg_install["root"]."/consumables/consumables-edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["buttons"][17]."</a>";
+		echo "<a href='".$cfg_install["root"]."/consumables/consumables-edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["buttons"][6]."</a>";
 		echo "</td></tr>";
 		
 	}	

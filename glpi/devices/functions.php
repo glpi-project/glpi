@@ -410,7 +410,7 @@ function searchFormDevices($device_type,$field="",$phrasetype= "",$contains="",$
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel;
 
 	$option[$device_type.".designation"]			= $lang["devices"][14];
-	$option[$device_type.".ID"]				= $lang["devices"][13];
+	$option[$device_type.".ID"]				= $lang["common"][2];
 	$option[$device_type.".comment"]			= $lang["devices"][15];
 	$option["glpi_enterprises.name"]			= $lang["common"][5];
 
