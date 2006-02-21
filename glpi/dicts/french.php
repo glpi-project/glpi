@@ -120,7 +120,9 @@ $lang["calendarM"][10]="Novembre";
 $lang["calendarM"][11]="Décembre";
 
 $lang["cartridges"][0]="Cartouche"; 
+$lang["cartridges"][1]="Nom";
 $lang["cartridges"][2]="Référence";
+$lang["cartridges"][3]="Type";
 $lang["cartridges"][5]="Commentaire"; 
 $lang["cartridges"][6]="Ajouter Type de Cartouche...";
 $lang["cartridges"][7]="Pas de cartouche trouvée"; 
@@ -196,14 +198,18 @@ $lang["common"][22]="Modèle";
 
 
 $lang["computers"][0]="Ajouter ordinateur...";
+$lang["computers"][7]="Nom";
+$lang["computers"][8]="Type";
 $lang["computers"][9]="OS";
+$lang["computers"][10]="Lieu";
 $lang["computers"][11]="Dernière modif";
 $lang["computers"][12]="Nouvel ordinateur à partir d'un modèle";
 $lang["computers"][13]="Ordinateur ID";
 $lang["computers"][14]="Inseré";
-$lang["computers"][15]="Contact numéro";
-$lang["computers"][17]="N° de série";
-$lang["computers"][18]="N° d'inventaire";
+
+$lang["computers"][16]="Contact";
+
+
 $lang["computers"][19]="Commentaires";
 $lang["computers"][21]="CPU";
 $lang["computers"][23]="RAM Type";
@@ -228,7 +234,7 @@ $lang["computers"][46]="Périphérique(s)";
 $lang["computers"][47]="Pas de périphérique connecté";
 $lang["computers"][48]="Modification de lieu. Les éléments connectés ont été déplacés dans le même lieu que l'ordinateur.";
 $lang["computers"][49]="Modification du contact. Les éléments connectés ont pris comme contact celui de l'ordinateur.";
-$lang["computers"][50]="Modèle";
+
 $lang["computers"][51]="Source de mise à jour";
 $lang["computers"][52]="OS Version";
 $lang["computers"][53]="Service Pack";
@@ -243,7 +249,9 @@ $lang["connect"][21]="Mise à jour automatique de l'adresse MAC qui n'était pas
 $lang["connect"][22]="Attention !! Les adresses MAC des deux matériels ne correspondent pas.";
 
 $lang["consumables"][0]="Consommable";
+$lang["consumables"][1]="Nom";
 $lang["consumables"][2]="Référence";
+$lang["consumables"][3]="Type";
 $lang["consumables"][5]="Commentaire"; 
 $lang["consumables"][6]="Ajouter Type de Consommable...";
 $lang["consumables"][7]="Pas de consommable trouvé";
@@ -322,10 +330,14 @@ $lang["device_power"][1]="ATX";
 
 $lang["device_processor"][0]="Fréquence";
 
+$lang["device_ram"][0]="Type";
 $lang["device_ram"][1]="Fréquence";
 $lang["device_ram"][2]="Taille";
 
+$lang["device_sndcard"][0]="Type";
+
 $lang["document"][0]="Documents";
+$lang["document"][1]="Nom"; 
 $lang["document"][2]="Fichier";
 $lang["document"][3]="Rubrique"; 
 $lang["document"][4]="Type MIME"; 
@@ -399,11 +411,14 @@ $lang["financial"][23]="Durée d'amortissement";
 $lang["financial"][24]="Ajouter Contact...";
 $lang["financial"][25]="Ajouter Entreprise...";
 $lang["financial"][26]="Entreprise";
+$lang["financial"][27]="Nom";
 $lang["financial"][29]="Téléphone";
 $lang["financial"][30]="Fax";
 $lang["financial"][31]="Email";
+$lang["financial"][32]="Contact";
 $lang["financial"][33]="Ajouter un Contact";
 $lang["financial"][36]="Ajouter un Contrat";
+$lang["financial"][37]="Type";
 $lang["financial"][38]="Pas de contact trouvé";
 $lang["financial"][39]="Pas d'entreprise trouvée"; 
 $lang["financial"][40]="Pas de contrat trouvé"; 
@@ -743,9 +758,13 @@ $lang["Menu"][33]="OCSNG";
 
 $lang["monitors"][0]="Ajouter moniteur...";
 $lang["monitors"][4]="Moniteur";
-$lang["monitors"][7]="Contact numéro";
-$lang["monitors"][10]="Numéro de série";
-$lang["monitors"][11]="Numéro d'inventaire";
+$lang["monitors"][5]="Nom";
+$lang["monitors"][6]="Lieu";
+
+$lang["monitors"][8]="Contact";
+$lang["monitors"][9]="Type";
+
+
 $lang["monitors"][12]="Commentaire";
 $lang["monitors"][14]="Microphone";
 $lang["monitors"][15]="Enceintes";
@@ -757,13 +776,17 @@ $lang["monitors"][20]="BNC";
 $lang["monitors"][21]="Taille";
 $lang["monitors"][29]="Moniteur ID";
 $lang["monitors"][30]="Nouvel écran à partir d'un modèle";
-$lang["monitors"][31]="Modèle";
+
 $lang["monitors"][32]="DVI";
 
-$lang["networking"][4]="Contact numéro";
+$lang["networking"][0]="Nom";
+$lang["networking"][1]="Lieu";
+$lang["networking"][2]="Type";
+$lang["networking"][3]="Contact";
+
 $lang["networking"][5]="RAM (MB)";
-$lang["networking"][6]="Numéro série";
-$lang["networking"][7]="Numéro d'inventaire";
+
+
 $lang["networking"][8]="Commentaire";
 $lang["networking"][9]="Dernière modification";
 $lang["networking"][11]="Ajouter Materiel réseau...";
@@ -792,7 +815,7 @@ $lang["networking"][54]="Matériel ID";
 $lang["networking"][55]="Associer un VLAN";
 $lang["networking"][56]="VLAN";
 $lang["networking"][57]="Choissisez une adresse MAC dans la liste ou spécifiez la ci-dessous.";
-$lang["networking"][58]="Modèle";
+
 
 $lang["ocsng"][0]="OCS Inventory NG";
 $lang["ocsng"][1]="Synchronisation des ordinateurs déjà  importés";
@@ -837,7 +860,9 @@ $lang["ocsconfig"][15]="Pas d'import : le plugin n'importera pas ces éléments"
 $lang["ocsconfig"][19]="OS";
 $lang["ocsconfig"][20]="Numero de serie";
 $lang["ocsconfig"][21]="Modele";
+$lang["ocsconfig"][23]="Type";
 $lang["ocsconfig"][24]="Domaine";
+$lang["ocsconfig"][25]="Contact";
 $lang["ocsconfig"][26]="Commentaire";
 $lang["ocsconfig"][27]="Informations générales Ordinateurs";
 $lang["ocsconfig"][28]="Périphériques";
@@ -861,9 +886,13 @@ $lang["pager"][5]="éléments";
 
 $lang["peripherals"][0]="Ajouter périphérique...";
 $lang["peripherals"][4]="Périphérique";
-$lang["peripherals"][7]="Contact numéro";
-$lang["peripherals"][10]="Numéro de série";
-$lang["peripherals"][11]="Numéro d'inventaire";
+$lang["peripherals"][5]="Nom";
+$lang["peripherals"][6]="Lieu";
+
+$lang["peripherals"][8]="Contact";
+$lang["peripherals"][9]="Type";
+
+
 $lang["peripherals"][12]="Commentaire";
 $lang["peripherals"][16]="Dernière modification";
 $lang["peripherals"][17]="Pas de péripherique trouvé.";
@@ -873,7 +902,7 @@ $lang["peripherals"][30]="Nouveau périphérique à partir d'un modèle";
 $lang["peripherals"][31]="Gestion globale";
 $lang["peripherals"][32]="Gestion unitaire";
 $lang["peripherals"][33]="Type de gestion";
-$lang["peripherals"][34]="Modèle";
+
 
 $lang["planning"][0]="Le technicien demandé a déjà une intervention prévue pour cette plage.";
 $lang["planning"][1]="Erreur dans l'entrée de vos dates. La date de début est surement supérieure à la date de fin";
@@ -893,10 +922,13 @@ $lang["planning"][15]="Votre planning";
 
 $lang["printers"][0]="Ajouter imprimante...";
 $lang["printers"][4]="Imprimante";
-$lang["printers"][7]="Contact numéro";
+$lang["printers"][5]="Nom";
+$lang["printers"][6]="Lieu";
+
 $lang["printers"][8]="Contact Personne";
-$lang["printers"][10]="Numéro de série";
-$lang["printers"][11]="Numéro d'inventaire";
+$lang["printers"][9]="Type";
+
+
 $lang["printers"][12]="Commentaire";
 $lang["printers"][14]="Port série";
 $lang["printers"][15]="Port parallèle";
@@ -910,7 +942,7 @@ $lang["printers"][28]="Nouvelle imprimante à partir d'un modèle";
 $lang["printers"][29]="Imprimante ID";
 $lang["printers"][30]="Compteur de page initial"; 
 $lang["printers"][31]="Pages imprimées";
-$lang["printers"][32]="Modèle";
+
 $lang["printers"][33]="Gestion globale";
 $lang["printers"][34]="Gestion unitaire";
 $lang["printers"][35]="Type de gestion";
@@ -930,6 +962,7 @@ $lang["reports"][16]="Tous";
 $lang["reports"][17]="Date";
 $lang["reports"][18]="N° serie";
 $lang["reports"][19]="Nom contact";
+$lang["reports"][20]="Lieu"; 
 $lang["reports"][23]="Date(s)";
 $lang["reports"][24]="Restreindre aux ordinateurs";
 $lang["reports"][25]="Rapport interventions"; 
@@ -1015,6 +1048,7 @@ $lang["search"][20]="Supprimer un critère global de recherche";
 
 $lang["setup"][0]="Intitulés";
 $lang["setup"][2]="Ajouter un utilisateur GLPI";
+$lang["setup"][3]="Lieu";
 $lang["setup"][4]="Types d'ordinateurs";
 $lang["setup"][5]="Système d'exploitation";
 $lang["setup"][7]="Microprocesseur";
@@ -1027,6 +1061,7 @@ $lang["setup"][15]="Numéro de téléphone";
 $lang["setup"][16]="Lieux";
 $lang["setup"][18]="Login";
 $lang["setup"][19]="Password";
+$lang["setup"][20]="Type";
 $lang["setup"][35]="MHZ";
 $lang["setup"][40]="Montrer les nouveaux tickets d'abord ?";
 $lang["setup"][41]="Sélectionnez une Langue";
@@ -1116,7 +1151,7 @@ $lang["setup"][137]="Debug";
 $lang["setup"][138]="Utiliser GLPI en Mode";
 $lang["setup"][139]="Général";
 $lang["setup"][140]="Types";
-$lang["setup"][141]="Modèles";
+
 $lang["setup"][142]="Gestion";
 $lang["setup"][143]="Assistance";
 $lang["setup"][144]="Outils";
@@ -1214,7 +1249,9 @@ $lang["setup"][501]="Service Pack";
 
 
 $lang["software"][0]="Ajouter logiciel...";
+$lang["software"][2]="Nom";
 $lang["software"][3]="Plateforme";
+$lang["software"][4]="Lieu";
 $lang["software"][5]="Version";
 $lang["software"][6]="Commentaires";
 $lang["software"][10]="Logiciel";
@@ -1249,8 +1286,11 @@ $lang["software"][43]="Ajouter une licence à acheter";
 
 $lang["state"][0]="Statut";
 $lang["state"][1]="Statuts des matériels";
+$lang["state"][5]="Nom";
 $lang["state"][6]="Type de matériel";
 $lang["state"][7]="Pas de matériel trouvé";
+$lang["state"][8]="Lieu"; 
+$lang["state"][9]="Type"; 
 $lang["state"][10]="Total"; 
 $lang["state"][11]="Synthèse"; 
 
@@ -1270,6 +1310,7 @@ $lang["stats"][17]="Statistiques techniciens";
 $lang["stats"][18]="Statistiques utilisateurs";
 $lang["stats"][19]="Statistiques";
 $lang["stats"][20]="Nom d'utilisateur";
+$lang["stats"][21]="Lieu";
 $lang["stats"][22]="Nombre de tickets ouverts";
 $lang["stats"][23]="Pas de statistiques disponibles";
 $lang["stats"][25]="Durée réelle moyenne de traitement du ticket";
