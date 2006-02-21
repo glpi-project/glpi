@@ -657,7 +657,7 @@ function showCompatiblePrinters($instID) {
     echo "<form method='post' action=\"".$cfg_install["root"]."/cartridges/cartridges-info-form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='3'>".$lang["cartridges"][32].":</th></tr>";
-	echo "<tr><th>".$lang['cartridges'][4]."</th><th>".$lang["common"][22]."</th><th>&nbsp;</th></tr>";
+	echo "<tr><th>".$lang["common"][2]."</th><th>".$lang["common"][22]."</th><th>&nbsp;</th></tr>";
 
 	while ($i < $number) {
 		$ID=$db->result($result, $i, "ID");

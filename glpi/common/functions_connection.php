@@ -71,7 +71,7 @@ function showConnect($target,$ID,$type) {
 					echo "</a>";
 					echo "</b></td>";
 					echo "<td class='tab_bg_2".($connect->deleted=='Y'?"_2":"")."' align='center'><b>";
-					echo "<a href=\"$target?disconnect=1&amp;ID=".$key."\">".$lang["button"][10]."</a></b>";
+					echo "<a href=\"$target?disconnect=1&amp;ID=".$key."\">".$lang["buttons"][10]."</a></b>";
 					}
 			}
 		} else {

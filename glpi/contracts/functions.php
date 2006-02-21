@@ -381,8 +381,8 @@ function showDeviceContract($instID) {
 	
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='3'>".$lang["financial"][49].":</th></tr>";
-	echo "<tr><th>".$lang['financial'][37]."</th>";
-	echo "<th>".$lang['financial'][27]."</th>";
+	echo "<tr><th>".$lang["common"][17]."</th>";
+	echo "<th>".$lang["common"][16]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
 	while ($i < $number) {
@@ -472,10 +472,10 @@ function showEnterpriseContract($instID) {
     echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='5'>".$lang["financial"][65].":</th></tr>";
-	echo "<tr><th>".$lang['financial'][26]."</th>";
-	echo "<th>".$lang['financial'][79]."</th>";
-	echo "<th>".$lang['financial'][29]."</th>";
-	echo "<th>".$lang['financial'][45]."</th>";
+	echo "<tr><th>".$lang["financial"][26]."</th>";
+	echo "<th>".$lang["financial"][79]."</th>";
+	echo "<th>".$lang["financial"][29]."</th>";
+	echo "<th>".$lang["financial"][45]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
 	while ($i < $number) {
@@ -740,12 +740,12 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
     if ($withtemplate!=2) echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='7'>".$lang["financial"][66].":</th></tr>";
-	echo "<tr><th>".$lang['financial'][27]."</th>";
-	echo "<th>".$lang['financial'][4]."</th>";
-	echo "<th>".$lang['financial'][6]."</th>";
-	echo "<th>".$lang['financial'][26]."</th>";
-	echo "<th>".$lang['financial'][7]."</th>";	
-	echo "<th>".$lang['financial'][8]."</th>";	
+	echo "<tr><th>".$lang["common"][16]."</th>";
+	echo "<th>".$lang["financial"][4]."</th>";
+	echo "<th>".$lang["financial"][6]."</th>";
+	echo "<th>".$lang["financial"][26]."</th>";
+	echo "<th>".$lang["financial"][7]."</th>";	
+	echo "<th>".$lang["financial"][8]."</th>";	
 	if ($withtemplate!=2)echo "<th>&nbsp;</th>";
 	echo "</tr>";
 
@@ -815,12 +815,12 @@ function showContractAssociatedEnterprise($ID){
     echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='7'>".$lang["financial"][66].":</th></tr>";
-	echo "<tr><th>".$lang['financial'][27]."</th>";
-	echo "<th>".$lang['financial'][4]."</th>";
-	echo "<th>".$lang['financial'][6]."</th>";
-	echo "<th>".$lang['financial'][26]."</th>";
-	echo "<th>".$lang['financial'][7]."</th>";	
-	echo "<th>".$lang['financial'][8]."</th>";	
+	echo "<tr><th>".$lang["common"][16]."</th>";
+	echo "<th>".$lang["financial"][4]."</th>";
+	echo "<th>".$lang["financial"][6]."</th>";
+	echo "<th>".$lang["financial"][26]."</th>";
+	echo "<th>".$lang["financial"][7]."</th>";	
+	echo "<th>".$lang["financial"][8]."</th>";	
 	echo "<th>&nbsp;</th>";
 	echo "</tr>";
 

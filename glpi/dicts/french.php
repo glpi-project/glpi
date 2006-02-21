@@ -553,6 +553,7 @@ $lang["install"][73]="Ok - la fonction mysql_query() existe - Parfait !";
 $lang["install"][74]="Test de l'utilisation de Session_use_trans_sid"; 
 $lang["install"][75]="Vous devez desactiver l'option Session_use_trans_id dans votre PHP.ini";
 $lang["install"][76]="Ok - Les sessions fonctionnent (pas de problèmes de trans_id) - Parfait !";
+$lang["install"][77]="Etape";
 $lang["install"][81]="Début de l'installation";
 $lang["install"][82]="Base de données créées";
 $lang["install"][83]="Test sur les fonctions utf8_encode et utf8_decode";

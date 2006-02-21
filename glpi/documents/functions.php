@@ -426,8 +426,8 @@ function showDeviceDocument($instID,$search='') {
 	
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='3'>".$lang["document"][19].":</th></tr>";
-	echo "<tr><th>".$lang['document'][20]."</th>";
-	echo "<th>".$lang['document'][1]."</th>";
+	echo "<tr><th>".$lang["common"][17]."</th>";
+	echo "<th>".$lang["common"][16]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
 	while ($i < $number) {
@@ -490,11 +490,11 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
     if ($withtemplate!=2) echo "<form method='post' action=\"".$cfg_install["root"]."/documents/documents-info-form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='7'>".$lang["document"][21].":</th></tr>";
-	echo "<tr><th>".$lang['document'][1]."</th>";
-	echo "<th width='100px'>".$lang['document'][2]."</th>";
-	echo "<th>".$lang['document'][33]."</th>";
-	echo "<th>".$lang['document'][3]."</th>";
-	echo "<th>".$lang['document'][4]."</th>";
+	echo "<tr><th>".$lang["common"][16]."</th>";
+	echo "<th width='100px'>".$lang["document"][2]."</th>";
+	echo "<th>".$lang["document"][33]."</th>";
+	echo "<th>".$lang["document"][3]."</th>";
+	echo "<th>".$lang["document"][4]."</th>";
 	if ($withtemplate<2)echo "<th>&nbsp;</th>";
 	echo "</tr>";
 

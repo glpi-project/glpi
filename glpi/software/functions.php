@@ -181,7 +181,7 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 
 	// UPDATE
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][29].":</td><td>";
-	echo "<select name='is_update'><option value='Y' ".($ID&&$sw->fields['is_update']=='Y'?"selected":"").">".$lang['choice'][0]."</option><option value='N' ".(!$ID||$sw->fields['is_update']=='N'?"selected":"").">".$lang['choice'][1]."</option></select>";
+	echo "<select name='is_update'><option value='Y' ".($ID&&$sw->fields['is_update']=='Y'?"selected":"").">".$lang["choice"][0]."</option><option value='N' ".(!$ID||$sw->fields['is_update']=='N'?"selected":"").">".$lang["choice"][1]."</option></select>";
 	echo "&nbsp;".$lang["pager"][2]."&nbsp;";
 	dropdownValue("glpi_software","update_software",$sw->fields["update_software"]);
 	echo "</td>";
@@ -397,7 +397,7 @@ function showLicenses ($sID,$show_computers=0) {
 			echo "<th colspan='1'>";
 			echo " ".$lang["software"][19]." :</th></tr>";
 			$i=0;
-			echo "<tr><th>".$lang['software'][31]."</th><th>".$lang['software'][21]."</th><th>".$lang['software'][32]."</th><th>".$lang['software'][33]."</th><th>".$lang['software'][35]."</th>";
+			echo "<tr><th>".$lang["common"][19]."</th><th>".$lang["software"][21]."</th><th>".$lang["software"][32]."</th><th>".$lang[software][28]."</th><th>".$lang["software"][35]."</th>";
 			echo "<th>";
 			
 			if ($show_computers){
@@ -743,13 +743,13 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 	
 	// OEM
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][28]."</td><td>";
-	echo "<select name='oem'><option value='Y' ".($values['oem']=='Y'?"selected":"").">".$lang['choice'][0]."</option><option value='N' ".($values['oem']=='N'?"selected":"").">".$lang['choice'][1]."</option></select>";
+	echo "<select name='oem'><option value='Y' ".($values['oem']=='Y'?"selected":"").">".$lang["choice"][0]."</option><option value='N' ".($values['oem']=='N'?"selected":"").">".$lang["choice"][1]."</option></select>";
 	dropdownValue("glpi_computers","oem_computer",$values["oem_computer"]);
 	
 	echo "</td></tr>";
 	// BUY
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][35]."</td><td>";
-	echo "<select name='buy'><option value='Y' ".($values['buy']=='Y'?"selected":"").">".$lang['choice'][0]."</option><option value='N' ".($values['buy']=='N'?"selected":"").">".$lang['choice'][1]."</option></select>";
+	echo "<select name='buy'><option value='Y' ".($values['buy']=='Y'?"selected":"").">".$lang["choice"][0]."</option><option value='N' ".($values['buy']=='N'?"selected":"").">".$lang["choice"][1]."</option></select>";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][6]."</td><td>";
@@ -943,7 +943,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 		
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='5'>".$lang["software"][17].":</th></tr>";
-			echo "<tr><th>".$lang['software'][2]."</th><th>".$lang['software'][32]."</th><th>".$lang['software'][33]."</th><th>".$lang['software'][35]."</th><th>&nbsp;</th></tr>";
+			echo "<tr><th>".$lang["common"][16]."</th><th>".$lang["software"][32]."</th><th>".$lang["software"][28]."</th><th>".$lang["software"][35]."</th><th>&nbsp;</th></tr>";
 	
 	while ($i < $number) {
 		$lID = $db->result($result, $i, "license");

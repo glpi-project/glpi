@@ -324,11 +324,11 @@ function showEnterpriseContact($instID) {
     echo "<form method='post' action=\"".$cfg_install["root"]."/contacts/contacts-info-form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='6'>".$lang["financial"][65].":</th></tr>";
-	echo "<tr><th>".$lang['financial'][26]."</th>";
-	echo "<th>".$lang['financial'][79]."</th>";
-	echo "<th>".$lang['financial'][29]."</th>";
-	echo "<th>".$lang['financial'][30]."</th>";
-	echo "<th>".$lang['financial'][45]."</th>";
+	echo "<tr><th>".$lang["financial"][26]."</th>";
+	echo "<th>".$lang["financial"][79]."</th>";
+	echo "<th>".$lang["financial"][29]."</th>";
+	echo "<th>".$lang["financial"][30]."</th>";
+	echo "<th>".$lang["financial"][45]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
 	while ($i < $number) {

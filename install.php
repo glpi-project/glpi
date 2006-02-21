@@ -702,28 +702,28 @@ loadLang($_SESSION["dict"]);
 			step0();
 			break;
 			case "Etape_0" :
-			header_html($lang['install'][77]." 0");
+			header_html($lang["install"][77]." 0");
 			$_SESSION["Test_session_GLPI"] = 1;
 			step1($_POST["update"]);
 			break;
 			case "Etape_1" :
-				header_html($lang['install'][77]." 1");
+				header_html($lang["install"][77]." 1");
 				step2($_POST["update"]);
 				break;
 			case "Etape_2" :
-				header_html($lang['install'][77]." 2");
+				header_html($lang["install"][77]." 2");
 				step3($_POST["db_host"],$_POST["db_user"],$_POST["db_pass"],$_POST["update"]);
 				break;
 			case "Etape_3" :
 			
-				header_html($lang['install'][77]." 3");
+				header_html($lang["install"][77]." 3");
 				if(empty($_POST["databasename"])) $_POST["databasename"] ="";
 				if(empty($_POST["newdatabasename"])) $_POST["newdatabasename"] ="";
 				
 				step4($_POST["db_host"],$_POST["db_user"],$_POST["db_pass"],$_POST["databasename"],$_POST["newdatabasename"]);
 				break;
 			case "Etape_4" :
-				header_html($lang['install'][77]." 4");
+				header_html($lang["install"][77]." 4");
 				step7();
 				break;
 		

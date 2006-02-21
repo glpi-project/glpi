@@ -86,7 +86,7 @@ if ($_POST['sID']>0){
 				if ($data['oem']=='Y'){
 					$comp=new Computer();
 					$comp->getFromDB($data["oem_computer"]);
-					$output.=" - ".$lang['software'][33]. " ".$comp->fields['name'];
+					$output.=" - ".$lang["software"][28]. " ".$comp->fields['name'];
 					if ($cfg_layout["view_ID"]) $output.=" (".$comp->fields['ID'].")";
 				}
 				
