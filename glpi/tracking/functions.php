@@ -304,7 +304,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (device_type = '$item_ty
 			
 		echo "<td>/</td><td><a href='".$_SERVER["PHP_SELF"]."?select=none&amp;ID=$item'>".$lang["buttons"][19]."</a>";
 		echo "</td><td>";
-		echo "<input type='submit' value=\"".$lang["buttons"][17]."\" name='delete_inter' class='submit'></td>";
+		echo "<input type='submit' value=\"".$lang["buttons"][6]."\" name='delete_inter' class='submit'></td>";
 		echo "<td width='75%'>&nbsp;</td></table></div>";
 		}
 	} 
@@ -809,7 +809,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "</td></tr>";
 	
 
-	echo "<tr class='tab_bg_2' align='center'><td>".$lang["joblist"][15].":</td>";
+	echo "<tr class='tab_bg_2' align='center'><td>".$lang["button"][3].":</td>";
 	
 	echo "<td align='center'>";
 	dropdownUsers("assign",$assign);
@@ -865,7 +865,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel,$phproot;
 
 	if ($extended==1){
-		$option["comp.ID"]				= $lang["computers"][31];
+		$option["comp.ID"]				= $lang["common"][2];
 		$option["comp.name"]				= $lang["computers"][7];
 		$option["glpi_dropdown_locations.name"]			= $lang["computers"][10];
 		$option["glpi_type_computers.name"]				= $lang["computers"][8];
@@ -1229,7 +1229,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 			
 				echo "<td>/</td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=none&amp;start=$start'>".$lang["buttons"][19]."</a>";
 				echo "</td><td>";
-				echo "<input type='submit' value=\"".$lang["buttons"][17]."\" name='delete' class='submit'></td>";
+				echo "<input type='submit' value=\"".$lang["buttons"][6]."\" name='delete' class='submit'></td>";
 				echo "<td width='75%'>&nbsp;</td></table></div>";
 			}
 		

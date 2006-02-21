@@ -87,7 +87,7 @@ function showContractOnglets($target,$withtemplate,$actif){
 * Print the contract form
 *
 *
-* Print général contract form
+* Print gï¿½ï¿½al contract form
 *
 *@param $target filename : where to go when done.
 *@param $ID Integer : Id of the contact to print
@@ -195,25 +195,25 @@ function showContractForm ($target,$ID) {
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][60].":		</td><td colspan='3'>";
-	echo $lang["financial"][63].":";
+	echo $lang["buttons"][33].":";
 	dropdownHours("week_begin_hour",$con->fields["week_begin_hour"]);	
-	echo $lang["financial"][64].":";
+	echo $lang["buttons"][32].":";
 	dropdownHours("week_end_hour",$con->fields["week_end_hour"]);	
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][61].":		</td><td colspan='3'>";
 	dropdownYesNo("saturday",$con->fields["saturday"]);
-	echo $lang["financial"][63].":";
+	echo $lang["buttons"][33].":";
 	dropdownHours("saturday_begin_hour",$con->fields["saturday_begin_hour"]);	
-	echo $lang["financial"][64].":";
+	echo $lang["buttons"][32].":";
 	dropdownHours("saturday_end_hour",$con->fields["saturday_end_hour"]);	
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][62].":		</td><td colspan='3'>";
 	dropdownYesNo("monday",$con->fields["monday"]);
-	echo $lang["financial"][63].":";
+	echo $lang["buttons"][33].":";
 	dropdownHours("monday_begin_hour",$con->fields["monday_begin_hour"]);	
-	echo $lang["financial"][64].":";
+	echo $lang["buttons"][32].":";
 	dropdownHours("monday_end_hour",$con->fields["monday_end_hour"]);	
 	echo "</td></tr>";
 	
