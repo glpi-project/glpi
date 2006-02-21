@@ -124,14 +124,14 @@ $where.=")";
 
 	$output=getDropdownName($_POST['table'],$_POST['value']);
 	if (!empty($output)&&$output!="&nbsp;")
-	echo "<option selected value='".$_POST['value']."'>".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
+	echo "<option selected value='".$_POST['value']."'>".$output."</option>";
 	
 	if ($db->numrows($result)) {
 		while ($data =$db->fetch_array($result)) {
 			$output = $data['name'];
 			$ID = $data['ID'];
 			if (empty($output)) $output="($ID)";
-				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
+				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$_POST["limit"])."</option>";
 		}
 	}
 	echo "</select>";

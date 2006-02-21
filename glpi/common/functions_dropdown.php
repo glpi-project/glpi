@@ -115,6 +115,16 @@ function dropdownValue($table,$myname,$value) {
 	$rand=mt_rand();
 	
 	displaySearchTextAjaxDropdown($myname.$rand);
+$name="------";
+$limit_length=$cfg_layout["dropdown_limit"];
+if (empty($value)) $value=0;
+if ($value>0){
+	$tmpname=getDropdownName($table,$value);
+	if ($tmpname!="&nbsp;"){
+		$name=$tmpname;
+		$limit_length=strlen($name);
+	}
+}
 
 echo "<script type='text/javascript' >\n";
 echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
@@ -124,7 +134,7 @@ echo "           onComplete:function(request)\n";
 echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 echo "           onLoading:function(request)\n";
 echo "            {Element.show('search_spinner_$myname$rand');},\n";
-echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=$table&myname=$myname'\n";
+echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=$table&myname=$myname&limit=$limit_length'\n";
 echo "})})\n";
 echo "</script>\n";
 
@@ -145,10 +155,7 @@ if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 
 
 echo "<span id='results_$myname$rand'>\n";
-if (!empty($value)&&$value>0)
-	echo "<select name='$myname'><option value='$value'>".substr(getDropdownName($table,$value),0,$cfg_layout["dropdown_limit"])."</option></select>\n";
-else 
-	echo "<select name='$myname'><option value='0'>------</option></select>\n";
+echo "<select name='$myname'><option value='$value'>$name</option></select>\n";
 echo "</span>\n";	
 
 if ($table=="glpi_enterprises")
