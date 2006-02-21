@@ -1017,7 +1017,7 @@ function showFormConfigGen($target){
 	echo " ></td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][138]." </td><td><select name=\"debug\">";
-	$check=$db->result($result,0,"auto_update_check");
+	$check=$db->result($result,0,"debug");
 	echo "<option value=\"0\"";  if($check==0){ echo " selected";} echo ">".$lang["setup"][135]." </option>";
 	echo "<option value=\"1\"";  if($check==1){ echo " selected";} echo ">".$lang["setup"][136]."</option>";
 	echo "<option value=\"2\"";  if($check==2){ echo " selected";} echo ">".$lang["setup"][137]."</option>";
