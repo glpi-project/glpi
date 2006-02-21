@@ -71,7 +71,7 @@ function showConnect($target,$ID,$type) {
 					echo "</a>";
 					echo "</b></td>";
 					echo "<td class='tab_bg_2".($connect->deleted=='Y'?"_2":"")."' align='center'><b>";
-					echo "<a href=\"$target?disconnect=1&amp;ID=".$key."\">".$lang["connect"][3]."</a></b>";
+					echo "<a href=\"$target?disconnect=1&amp;ID=".$key."\">".$lang["button"][10]."</a></b>";
 					}
 			}
 		} else {
@@ -147,7 +147,7 @@ function Connect($target,$sID,$cID,$type) {
 	$connect->end2=$cID;
 	$connect->type=$type;
 	$newID=$connect->addtoDB();
-	// Mise a jour lieu du periph si nécessaire
+	// Mise a jour lieu du periph si nï¿½essaire
 	$dev=new CommonItem();
 	$dev->getFromDB($type,$sID);
 

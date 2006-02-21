@@ -92,7 +92,7 @@ function showConsumableOnglets($target,$withtemplate,$actif){
 * Print the consumable type form
 *
 *
-* Print général consumable type form
+* Print gï¿½ï¿½al consumable type form
 *
 *@param $target filename : where to go when done.
 *@param $ID Integer : Id of the consumable type
@@ -434,7 +434,7 @@ $query = "SELECT * FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$tID
 		
 		echo "<td align='center'>";
 		
-		echo "<a href='".$cfg_install["root"]."/consumables/consumables-edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["consumables"][31]."</a>";
+		echo "<a href='".$cfg_install["root"]."/consumables/consumables-edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["buttons"][17]."</a>";
 		echo "</td></tr>";
 		
 	}	

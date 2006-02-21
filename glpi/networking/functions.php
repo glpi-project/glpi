@@ -584,7 +584,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 		$netport->getFromNull();
 	}
 	
-	// Ajout des infos déjà remplies
+	// Ajout des infos dï¿½ï¿½remplies
 	if (isset($_POST)&&!empty($_POST)){
 	foreach ($netport->fields as $key => $val)
 		if ($key!='ID'&&isset($_POST[$key]))
@@ -866,7 +866,7 @@ function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 		
 	} else {
 		echo "<table border='0' cellspacing='0' width='100%'><tr>";
-		echo "<td>".$lang["networking"][26]."</td>";
+		echo "<td>".$lang["conncet"][1]."</td>";
 		echo "<td align='right'>";
 		if ($withtemplate!=2&&$withtemplate!=1){
 			echo "<form method='post' action=\"".$cfg_install["root"]."/networking/networking-port-connect.php\">";
