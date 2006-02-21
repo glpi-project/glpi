@@ -2347,8 +2347,6 @@ if(!TableExists("glpi_dropdown_state")) {
 ) TYPE=MyISAM;";
 	$db->query($query) or die("0.51 add state field ".$lang["update"][90].$db->error());
 
-	$query="INSERT INTO `glpi_dropdown_state` (`ID` , `name`) VALUES ('', '".addslashes($lang["repair"][0])."');";
-	$db->query($query) or die("0.51 add state repair item ".$lang["update"][90].$db->error());	
 }
 
 }
