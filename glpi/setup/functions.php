@@ -1799,7 +1799,7 @@ function ocsFormConfig($target, $id) {
 	echo "<option value='1' ".($serial==1?" selected ":"").">".$lang["choice"][0]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][21]." </td><td>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][22]." </td><td>";
 	echo "<select name='import_general_model'>";
 	echo "<option value='0' ".($model==0?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "<option value='1' ".($model==1?" selected ":"").">".$lang["choice"][0]."</option>";
