@@ -583,7 +583,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
 		if (isset($type2[$i])&&$type2[$i]>0&&isset($contains2[$i])&&strlen($contains2[$i])) {
 			if (!in_array($LINK_ID_TABLE[$type2[$i]],$already_link_tables2))
-				$FROM.=addMetaLeftJoin($type,$type2[$i],$already_link_tables2,$i);	
+				$FROM.=addMetaLeftJoin($type,$type2[$i],$already_link_tables2,$i,($contains2[$i]=="NULL"));	
 		}
 		// Link items tables
 		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
@@ -756,7 +756,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			// Display columns Headers for meta items
 			if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 			for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
-			if (isset($type2[$i])&&$type2[$i]>0&&isset($contains2[$i])&&strlen($contains2[$i])&&(!isset($link2[$i])||!ereg("NOT",$link2[$i]))) {
+			if (isset($type2[$i])&&$type2[$i]>0&&isset($contains2[$i])&&strlen($contains2[$i])&&(!isset($link2[$i])
+				||(!ereg("NOT",$link2[$i]) xor $contains2[$i]=="NULL"))) {
 				echo displaySearchHeaderItem($output_type,$names[$type2[$i]]." - ".$SEARCH_OPTION[$type2[$i]][$field2[$i]]["name"],$header_num);
 			}
 			// Add specific column Header
@@ -826,9 +827,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				// Print Meta Item
 				if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 				for ($j=0;$j<$_SESSION["glpisearchcount2"][$type];$j++)
-				if (isset($type2[$j])&&$type2[$j]>0&&isset($contains2[$j])&&strlen($contains2[$j])&&(!isset($link2[$j])||!ereg("NOT",$link2[$j]))){
+				if (isset($type2[$j])&&$type2[$j]>0&&isset($contains2[$j])&&strlen($contains2[$j])&&(!isset($link2[$j])
+					||(!ereg("NOT",$link2[$j]) xor $contains2[$j]=="NULL"))){
 					// General case
-					if (!ereg("$$$$",$data["META_$j"]))
+					if (!strpos("$$$$",$data["META_$j"]))
 						echo displaySearchItem($output_type,$data["META_$j"],$item_num,$row_num);
 					// Case of GROUP_CONCAT item : split item and multilline display
 					else {
@@ -907,52 +909,41 @@ if ($meta) $NAME="META_";
 if (!ereg("GROUP BY ID",$GROUPBY)) $GROUPBY=" GROUP BY ID ";
 
 
-if (!ereg("$NAME$num",$GROUPBY))
-switch ($field){
-
-case "glpi_device_ram.specif_default" :
-	$larg=100;
-		
+if (!ereg("$NAME$num",$GROUPBY)) {
 	if (ereg("HAVING",$GROUPBY)) $GROUPBY.=" ".$link." ";
 	else $GROUPBY.=" HAVING ";
 
-	if (empty($NOT))
-		$GROUPBY.=" ( $NAME$num < ".($val+$larg)." AND $NAME$num > ".($val-$larg)." ) ";
-	else 
-		$GROUPBY.=" ( $NAME$num > ".($val+$larg)." OR $NAME$num < ".($val-$larg)." ) ";
-	break;
-case "glpi_device_processor.specif_default" :
-	$larg=100;
-		
-	if (ereg("HAVING",$GROUPBY)) $GROUPBY.=" ".$link." ";
-	else $GROUPBY.=" HAVING ";
+	switch ($field){
 
-	if (empty($NOT))
-		$GROUPBY.=" ( $NAME$num < ".($val+$larg)." AND $NAME$num > ".($val-$larg)." ) ";
-	else 
-		$GROUPBY.=" ( $NAME$num > ".($val+$larg)." OR $NAME$num < ".($val-$larg)." ) ";
-	break;
-case "glpi_device_hdd.specif_default" :
-	$larg=1000;
-
-	if (ereg("HAVING",$GROUPBY)) $GROUPBY.=" ".$link." ";
-	else $GROUPBY.=" HAVING ";
-	if (empty($NOT))
-		$GROUPBY.=" ( $NAME$num < ".($val+$larg)." AND $NAME$num > ".($val-$larg)." ) ";
-	else 
-		$GROUPBY.=" ( $NAME$num > ".($val+$larg)." OR $NAME$num < ".($val-$larg)." ) ";
-	break;
-default :
-	if (ereg("HAVING",$GROUPBY)) $GROUPBY.=" ".$link." ";
-	else $GROUPBY.=" HAVING ";
-
-	$GROUPBY.=" ( $NAME$num $NOT LIKE '%$val%') ";
-
-	break;
+		case "glpi_device_ram.specif_default" :
+			$larg=100;
+			if (empty($NOT))
+				$GROUPBY.=" ( $NAME$num < ".($val+$larg)." AND $NAME$num > ".($val-$larg)." ) ";
+			else 
+				$GROUPBY.=" ( $NAME$num > ".($val+$larg)." OR $NAME$num < ".($val-$larg)." ) ";
+		break;
+		case "glpi_device_processor.specif_default" :
+			$larg=100;
+			if (empty($NOT))
+				$GROUPBY.=" ( $NAME$num < ".($val+$larg)." AND $NAME$num > ".($val-$larg)." ) ";
+			else 
+				$GROUPBY.=" ( $NAME$num > ".($val+$larg)." OR $NAME$num < ".($val-$larg)." ) ";
+		break;
+		case "glpi_device_hdd.specif_default" :
+			$larg=1000;
+			if (empty($NOT))
+				$GROUPBY.=" ( $NAME$num < ".($val+$larg)." AND $NAME$num > ".($val-$larg)." ) ";
+			else 
+				$GROUPBY.=" ( $NAME$num > ".($val+$larg)." OR $NAME$num < ".($val-$larg)." ) ";
+		break;
+		default :
+			if ($val!="NULL")
+				$GROUPBY.=" ( $NAME$num $NOT LIKE '%$val%') ";
+			else $GROUPBY.=" ( $NAME$num IS $NOT NULL) ";
+		break;
+	}
 }
-
 return $GROUPBY;
-
 }
 
 /**
@@ -1078,9 +1069,12 @@ if ($nott) $NOT=" NOT";
 
 if ($meta&&$LINK_ID_TABLE[$type]!=$table) $table.="_".$type;
 
+$SEARCH=" $NOT LIKE '%".$val."%' ";
+if ($val=="NULL") $SEARCH=" IS $NOT NULL ";
+
 switch ($table.".".$field){
 case "glpi_users.name" :
-	return " ( $table.$field $NOT LIKE '%".$val."%' AND glpi_users.realname $NOT LIKE '%".$val."%' ) ";
+	return " ( $table.$field $SEARCH AND glpi_users.realname $SEARCH ) ";
 	break;
 case "glpi_device_hdd.specif_default" :
 //	$larg=500;
@@ -1100,8 +1094,8 @@ case "glpi_device_processor.specif_default" :
 
 case "glpi_networking_ports.ifmac" :
 	if ($type==COMPUTER_TYPE)
-		return " (  DEVICE_".NETWORK_DEVICE.".specificity $NOT LIKE '%".$val."%' OR $table.$field $NOT LIKE '%".$val."%' ) ";
-	else return " $table.$field $NOT LIKE '%".$val."%' ";
+		return " (  DEVICE_".NETWORK_DEVICE.".specificity $SEARCH OR $table.$field $SEARCH ) ";
+	else return " $table.$field $SEARCH ";
 	break;
 case "glpi_contracts.end_date" :
 
@@ -1136,15 +1130,15 @@ case "glpi_infocoms.use_date":
 		else {
 			$ADD="";	
 			if ($nott) $ADD=" OR $table.$field IS NULL";
-			return " ($table.$field $NOT LIKE '%".$val."%' ".$ADD." ) ";
+			return " ($table.$field $SEARCH ".$ADD." ) ";
 		}
 	break;
 
 
 default:
 	$ADD="";	
-	if ($nott) $ADD=" OR $table.$field IS NULL";
-	return " ($table.$field $NOT LIKE '%".$val."%' ".$ADD." ) ";
+	if ($nott&&$val!="NULL") $ADD=" OR $table.$field IS NULL";
+	return " ($table.$field $SEARCH ".$ADD." ) ";
 	break;
 }
 
@@ -1654,42 +1648,46 @@ switch ($new_table){
 *@return Meta Left join string
 *
 **/
-function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$num){
+function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$num,$null){
 global $LINK_ID_TABLE;
 	
+$LINK=" INNER JOIN ";
+if ($null)
+	$LINK=" LEFT JOIN ";
+
 	switch ($from_type){
 		case COMPUTER_TYPE :
 			switch ($to_type){
 /*				case NETWORKING_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[NETWORKING_TYPE]."_$num");
-					return " INNER JOIN glpi_networking_ports as META_ports ON (glpi_computers.ID = META_ports.on_device AND META_ports.device_type='".COMPUTER_TYPE."') ".
-						   " INNER JOIN glpi_networking_wire as META_wire1 ON (META_ports.ID = META_wire1.end1) ".
-						   " INNER JOIN glpi_networking_ports as META_ports21 ON (META_ports21.device_type='".NETWORKING_TYPE."' AND META_wire1.end2 = META_ports21.ID ) ".
-						   " INNER JOIN glpi_networking_wire as META_wire2 ON (META_ports.ID = META_wire2.end2) ".
-						   " INNER JOIN glpi_networking_ports as META_ports22 ON (META_ports22.device_type='".NETWORKING_TYPE."' AND META_wire2.end1 = META_ports22.ID ) ".
-						   " INNER JOIN glpi_networking$num ON (glpi_networking$num.ID = META_ports22.on_device OR glpi_networking.ID = META_ports21.on_device)";
+					return " $LINK glpi_networking_ports as META_ports ON (glpi_computers.ID = META_ports.on_device AND META_ports.device_type='".COMPUTER_TYPE."') ".
+						   " $LINK glpi_networking_wire as META_wire1 ON (META_ports.ID = META_wire1.end1) ".
+						   " $LINK glpi_networking_ports as META_ports21 ON (META_ports21.device_type='".NETWORKING_TYPE."' AND META_wire1.end2 = META_ports21.ID ) ".
+						   " $LINK glpi_networking_wire as META_wire2 ON (META_ports.ID = META_wire2.end2) ".
+						   " $LINK glpi_networking_ports as META_ports22 ON (META_ports22.device_type='".NETWORKING_TYPE."' AND META_wire2.end1 = META_ports22.ID ) ".
+						   " $LINK glpi_networking$num ON (glpi_networking$num.ID = META_ports22.on_device OR glpi_networking.ID = META_ports21.on_device)";
 				break;
 */				
 				case PRINTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[PRINTER_TYPE]);
-					return " INNER JOIN glpi_connect_wire AS META_conn_print_$num ON (META_conn_print_$num.end2=glpi_computers.ID  AND META_conn_print_$num.type='".PRINTER_TYPE."') ".
-						   " INNER JOIN glpi_printers ON (META_conn_print_$num.end1=glpi_printers.ID) ";
+					return " $LINK glpi_connect_wire AS META_conn_print_$num ON (META_conn_print_$num.end2=glpi_computers.ID  AND META_conn_print_$num.type='".PRINTER_TYPE."') ".
+						   " $LINK glpi_printers ON (META_conn_print_$num.end1=glpi_printers.ID) ";
 				break;				
 				case MONITOR_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[MONITOR_TYPE]);
-					return " INNER JOIN glpi_connect_wire AS META_conn_mon_$num ON (META_conn_mon_$num.end2=glpi_computers.ID  AND META_conn_mon_$num.type='".MONITOR_TYPE."') ".
-						   " INNER JOIN glpi_monitors ON (META_conn_mon_$num.end1=glpi_monitors.ID) ";
+					return " $LINK glpi_connect_wire AS META_conn_mon_$num ON (META_conn_mon_$num.end2=glpi_computers.ID  AND META_conn_mon_$num.type='".MONITOR_TYPE."') ".
+						   " $LINK glpi_monitors ON (META_conn_mon_$num.end1=glpi_monitors.ID) ";
 				break;				
 				case PERIPHERAL_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[PERIPHERAL_TYPE]);
-					return " INNER JOIN glpi_connect_wire AS META_conn_periph_$num ON (META_conn_periph_$num.end2=glpi_computers.ID  AND META_conn_periph_$num.type='".PERIPHERAL_TYPE."') ".
-						   " INNER JOIN glpi_peripherals ON (META_conn_periph_$num.end1=glpi_peripherals.ID) ";
+					return " $LINK glpi_connect_wire AS META_conn_periph_$num ON (META_conn_periph_$num.end2=glpi_computers.ID  AND META_conn_periph_$num.type='".PERIPHERAL_TYPE."') ".
+						   " $LINK glpi_peripherals ON (META_conn_periph_$num.end1=glpi_peripherals.ID) ";
 				break;				
 				case SOFTWARE_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[SOFTWARE_TYPE]);
-					return " INNER JOIN glpi_inst_software as META_inst_$num ON (META_inst_$num.cID = glpi_computers.ID) ".
-						   " INNER JOIN glpi_licenses as META_glpi_licenses_$num ON ( META_inst_$num.license=META_glpi_licenses_$num.ID ) ".
-						   " INNER JOIN glpi_software ON (META_glpi_licenses_$num.sID = glpi_software.ID) "; 
+					return " $LINK glpi_inst_software as META_inst_$num ON (META_inst_$num.cID = glpi_computers.ID) ".
+						   " $LINK glpi_licenses as META_glpi_licenses_$num ON ( META_inst_$num.license=META_glpi_licenses_$num.ID ) ".
+						   " $LINK glpi_software ON (META_glpi_licenses_$num.sID = glpi_software.ID) "; 
 				break;
 				}
 			break;
@@ -1697,8 +1695,8 @@ global $LINK_ID_TABLE;
 			switch ($to_type){
 				case COMPUTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
-					return " INNER JOIN glpi_connect_wire AS META_conn_mon_$num ON (META_conn_mon_$num.end1=glpi_monitors.ID  AND META_conn_mon_$num.type='".MONITOR_TYPE."') ".
-						   " INNER JOIN glpi_computers ON (META_conn_mon_$num.end2=glpi_computers.ID) ";
+					return " $LINK glpi_connect_wire AS META_conn_mon_$num ON (META_conn_mon_$num.end1=glpi_monitors.ID  AND META_conn_mon_$num.type='".MONITOR_TYPE."') ".
+						   " $LINK glpi_computers ON (META_conn_mon_$num.end2=glpi_computers.ID) ";
 				
 				break;
 			}
@@ -1707,8 +1705,8 @@ global $LINK_ID_TABLE;
 			switch ($to_type){
 				case COMPUTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
-					return " INNER JOIN glpi_connect_wire AS META_conn_mon_$num ON (META_conn_mon_$num.end1=glpi_printers.ID  AND META_conn_mon_$num.type='".PRINTER_TYPE."') ".
-						   " INNER JOIN glpi_computers ON (META_conn_mon_$num.end2=glpi_computers.ID) ";
+					return " $LINK glpi_connect_wire AS META_conn_mon_$num ON (META_conn_mon_$num.end1=glpi_printers.ID  AND META_conn_mon_$num.type='".PRINTER_TYPE."') ".
+						   " $LINK glpi_computers ON (META_conn_mon_$num.end2=glpi_computers.ID) ";
 				
 				break;
 			}
@@ -1717,8 +1715,8 @@ global $LINK_ID_TABLE;
 			switch ($to_type){
 				case COMPUTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
-					return " INNER JOIN glpi_connect_wire AS META_conn_mon_$num ON (META_conn_mon_$num.end1=glpi_peripherals.ID  AND META_conn_mon_$num.type='".PERIPHERAL_TYPE."') ".
-						   " INNER JOIN glpi_computers ON (META_conn_mon_$num.end2=glpi_computers.ID) ";
+					return " $LINK glpi_connect_wire AS META_conn_mon_$num ON (META_conn_mon_$num.end1=glpi_peripherals.ID  AND META_conn_mon_$num.type='".PERIPHERAL_TYPE."') ".
+						   " $LINK glpi_computers ON (META_conn_mon_$num.end2=glpi_computers.ID) ";
 				
 				break;
 			}
@@ -1727,9 +1725,9 @@ global $LINK_ID_TABLE;
 			switch ($to_type){
 				case COMPUTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
-				return " INNER JOIN glpi_licenses as META_glpi_licenses_$num ON ( META_glpi_licenses_$num.sID = glpi_software.ID ) ".
-					   " INNER JOIN glpi_inst_software as META_inst_$num ON (META_inst_$num.license = META_glpi_licenses_$num.ID) ".
-					   " INNER JOIN glpi_computers ON (META_inst_$num.cID = glpi_computers.ID) ";
+				return " $LINK glpi_licenses as META_glpi_licenses_$num ON ( META_glpi_licenses_$num.sID = glpi_software.ID ) ".
+					   " $LINK glpi_inst_software as META_inst_$num ON (META_inst_$num.license = META_glpi_licenses_$num.ID) ".
+					   " $LINK glpi_computers ON (META_inst_$num.cID = glpi_computers.ID) ";
 					
 				break;
 			}

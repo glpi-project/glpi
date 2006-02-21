@@ -866,7 +866,7 @@ function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 		
 	} else {
 		echo "<table border='0' cellspacing='0' width='100%'><tr>";
-		echo "<td>".$lang["conncet"][1]."</td>";
+		echo "<td>".$lang["connect"][1]."</td>";
 		echo "<td align='right'>";
 		if ($withtemplate!=2&&$withtemplate!=1){
 			echo "<form method='post' action=\"".$cfg_install["root"]."/networking/networking-port-connect.php\">";
