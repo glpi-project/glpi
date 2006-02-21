@@ -896,7 +896,7 @@ function listTemplates($type,$target) {
 	if ($result = $db->query($query)) {
 		
 		echo "<div align='center'><table class='tab_cadre' width='50%'>";
-		echo "<tr><th colspan='2'>".$lang["setup"][1]." - $title:</th></tr>";
+		echo "<tr><th colspan='2'>".$lang["common"][14]." - $title:</th></tr>";
 		$i=0;
 		while ($i < $db->numrows($result)) {
 			$ID = $db->result($result,$i,"ID");
@@ -918,10 +918,9 @@ function listTemplates($type,$target) {
 
 		echo "<tr>";
 		echo "<td colspan='2' align='center' class='tab_bg_2'>";
-		echo "<b><a href=\"$target?withtemplate=1\">".$lang["setup"][22]."</a></b>";
+		echo "<b><a href=\"$target?withtemplate=1\">".$lang["common"][9]."</a></b>";
 		echo "</td>";
 		echo "</tr>";
-		echo "</form>";
 				
 		echo "</table></div>";
 	}
