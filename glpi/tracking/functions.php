@@ -1386,7 +1386,6 @@ function updateTracking($input){
 	global $lang,$cfg_features,$cfg_mailing;
 	$job = new Job;
 	$job->getFromDB($input["ID"],0);
-
 	if (isset($input["item"])&& $input["item"]!=0){
 		$input["computer"]=$input["item"];
 		$input["device_type"]=$input["type"];
@@ -1601,7 +1600,7 @@ function addFollowup($input,$type="followup"){
 	$isadmin=isAdmin($_SESSION['glpitype']);
 	$close=0;
 	unset($input["add"]);
-	
+
 	if ($isadmin){
 		if (isset($input['plan'])){
 		$plan=$input['plan'];
@@ -1641,7 +1640,7 @@ function addFollowup($input,$type="followup"){
 		}
 
 
-		if ($close){
+		if ($close&&$type!="update"){
 			$updates[]="status";
 			$updates[]="closedate";
 			$job->fields["status"]="old_done";
