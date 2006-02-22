@@ -1808,7 +1808,7 @@ function showJobDetails ($ID){
 		// Troisi�e Colonne
 		echo "<td valign='top' width='20%'>";
 
-		if($isadmin);{  // admin = oui on affiche les couts liés à l'interventions
+		if($isadmin){  // admin = oui on affiche les couts liés à l'interventions
 			echo "<table border='0'>";
 			if ($job->fields["realtime"]>0){
 						echo "<tr><td align='right'>";
