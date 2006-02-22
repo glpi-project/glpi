@@ -770,7 +770,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 			for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
 			if (isset($type2[$i])&&$type2[$i]>0&&isset($contains2[$i])&&strlen($contains2[$i])&&(!isset($link2[$i])
-				||(!ereg("NOT",$link2[$i]) xor $contains2[$i]=="NULL"))) {
+				||(!ereg("NOT",$link2[$i]) || $contains2[$i]=="NULL"))) {
 				echo displaySearchHeaderItem($output_type,$names[$type2[$i]]." - ".$SEARCH_OPTION[$type2[$i]][$field2[$i]]["name"],$header_num);
 			}
 			// Add specific column Header
@@ -848,9 +848,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 				for ($j=0;$j<$_SESSION["glpisearchcount2"][$type];$j++)
 				if (isset($type2[$j])&&$type2[$j]>0&&isset($contains2[$j])&&strlen($contains2[$j])&&(!isset($link2[$j])
-					||(!ereg("NOT",$link2[$j]) xor $contains2[$j]=="NULL"))){
+					||(!ereg("NOT",$link2[$j]) || $contains2[$j]=="NULL"))){
+					
 					// General case
-					if (!strpos("$$$$",$data["META_$j"]))
+					if (!strpos($data["META_$j"],"$$$$"))
 						echo displaySearchItem($output_type,$data["META_$j"],$item_num,$row_num);
 					// Case of GROUP_CONCAT item : split item and multilline display
 					else {
@@ -858,7 +859,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 						$count_display=0;
 						$out="";
 						for ($k=0;$k<count($split);$k++)
-						if (strlen($contains2[$j])==0||eregi($contains2[$j],$split[$k])){
+						if ($contains2[$j]=="NULL"||(strlen($contains2[$j])==0||eregi($contains2[$j],$split[$k]))){
 						
 							if ($count_display) $out.= "<br>";
 							$count_display++;
