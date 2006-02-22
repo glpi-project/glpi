@@ -397,7 +397,7 @@ function showLicenses ($sID,$show_computers=0) {
 			echo "<th colspan='1'>";
 			echo " ".$lang["software"][19]." :</th></tr>";
 			$i=0;
-			echo "<tr><th>".$lang["common"][19]."</th><th>".$lang["software"][21]."</th><th>".$lang["software"][32]."</th><th>".$lang[software][28]."</th><th>".$lang["software"][35]."</th>";
+			echo "<tr><th>".$lang["common"][19]."</th><th>".$lang["software"][21]."</th><th>".$lang["software"][32]."</th><th>".$lang["software"][28]."</th><th>".$lang["software"][35]."</th>";
 			echo "<th>";
 			
 			if ($show_computers){
