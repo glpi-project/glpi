@@ -973,7 +973,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 				while($line2 = $dbocs->fetch_array($result2)) {
 						$line2=addslashes_deep($line2);				
 						$snd["designation"] = $line2["NAME"];
-						if (!in_array(GFX_DEVICE."$$$$$".$snd["designation"],$import_device)){
+						if (!in_array(SND_DEVICE."$$$$$".$snd["designation"],$import_device)){
 							if(!empty($line2["DESCRIPTION"])) $snd[" comment"] =  $line2["DESCRIPTION"];
 							$snd_id = ocsAddDevice(SND_DEVICE,$snd);
 							$devID=compdevice_add($glpi_id,SND_DEVICE,$snd_id,"",$dohistory);
