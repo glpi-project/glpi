@@ -49,6 +49,7 @@ include ($phproot . "/glpi/includes_financial.php");
 include ($phproot . "/glpi/includes_documents.php");
 include ($phproot . "/glpi/includes_users.php");
 include ($phproot . "/glpi/includes_links.php");
+include ($phproot . "/glpi/includes_ocsng.php");
 
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();

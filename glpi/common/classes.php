@@ -278,6 +278,9 @@ class CommonItem{
 			case KNOWBASE_TYPE : 
 				$this->obj= new kbitem;	
 				break;					
+			case USER_TYPE : 
+				$this->obj= new User;	
+				break;					
 			case CARTRIDGE_TYPE : 
 				$this->obj= new CartridgeType;	
 				break;					
@@ -357,6 +360,9 @@ class CommonItem{
 				break;
 			case KNOWBASE_TYPE : 
 				return $lang["knowbase"][0];
+				break;	
+			case USER_TYPE : 
+				return $lang["setup"][57];
 				break;	
 			case CARTRIDGE_TYPE : 
 				return $lang["cartridges"][16];
@@ -466,6 +472,10 @@ class CommonItem{
 			case KNOWBASE_TYPE : 
 				if($cfg_layout["view_ID"]) $ID= " (".$this->id_device.")";
 				return "<a href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
+				break;						
+			case USER_TYPE : 
+				if($cfg_layout["view_ID"]) $ID= " (".$this->id_device.")";
+				return "<a href=\"".$cfg_install["root"]."/users/users-info-form.php?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
 				break;						
 			case CARTRIDGE_TYPE : 
 				if($cfg_layout["view_ID"]) $ID= " (".$this->id_device.")";

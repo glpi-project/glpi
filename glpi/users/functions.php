@@ -296,8 +296,13 @@ function updateUser($input) {
 	//only admin and superadmin can update some user
 
 	// Update User in the database
-	$user = new User($input["name"]);
-	$user->getFromDB($input["name"]); 
+	if (isset($input["name"])){
+		$user = new User($input["name"]);
+		$user->getFromDB($input["name"]); 
+	} else if (isset($input["ID"])){
+		$user = new User("");
+		$user->getFromDBbyID($input["ID"]); 
+	} else return;
 
 	// password updated by admin user or own password for user
 	if(empty($input["password"]) || (!isAdmin($_SESSION["glpitype"])&&$_SESSION["glpiname"]!=$input['name'])) {
