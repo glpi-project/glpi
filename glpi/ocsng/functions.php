@@ -639,7 +639,7 @@ function mergeOcsArray($glpi_id,$tomerge,$field){
 	$query="SELECT $field FROM glpi_ocs_link WHERE glpi_id='$glpi_id'";
 	if ($result=$db->query($query)){
 		$tab=importArrayFromDB($db->result($result,0,0));
-		$newtab=array_merge($tomerge,$tab);
+		$newtab=array_unique(array_merge($tomerge,$tab));
 		$query="UPDATE glpi_ocs_link SET $field='".exportArrayToDB($newtab)."' WHERE glpi_id='$glpi_id'";
 		$db->query($query);
 	}
