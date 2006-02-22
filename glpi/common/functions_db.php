@@ -511,15 +511,16 @@ function FieldExists($table, $field) {
 function isIndex($table, $field) {
 	
 		$db = new DB;
-		$result = $db->query("select ". $field ." from ". $table);
-		if ($result){
-			$flags = $db->field_flags($result,$field);
-			if(eregi("multiple_key",$flags) || eregi("primary_key",$flags) || eregi("unique_key",$flags)) {
+		$result = $db->query("SHOW INDEX from ". $table);
+		if ($result&&$db->numrows($result)){
+			while ($data=$db->fetch_assoc($result))
+			if ($data["Key_name"]==$field){
+				echo $table.".".$field."-> INDEX<br>";
 				return true;
 			}
-			else return false;
-		} else return false;
-		
+		}
+	echo $table.".".$field."-> NOT INDEX<br>";
+	return false;		
 }
 
 
