@@ -647,10 +647,11 @@ function showTco($item_type,$item,$value,$date_achat=""){
 				$timestamp2 = mktime(0,0,0, $date_m, $date_d, $date_Y);
 				$timestamp = mktime(0,0,0, date("m"), date("d"), date("Y"));
 		
-				 $diff = ceil(($timestamp - $timestamp2) / (3600 * 24 * 30)); // Mois d'utilisation
+				 $diff = floor(($timestamp - $timestamp2) / (3600 * 24 * 30)); // Mois d'utilisation
 				
-								
-				return number_format((($totalcost+$value)/$diff),2,"."," "); // TCO mensuel
+				if ($diff)
+					return number_format((($totalcost+$value)/$diff),2,"."," "); // TCO mensuel
+				else return "";
 	
 			}else {
 				return number_format(($totalcost+$value),2,"."," "); // TCO
