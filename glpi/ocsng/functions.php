@@ -248,6 +248,8 @@ function ocsLinkComputer($ocs_id,$glpi_id){
 
 			// Reset using GLPI Config
 			$cfg_ocs=getOcsConf(1);
+			if($cfg_ocs["import_general_os"]) 
+				ocsResetDropdown($glpi_id,"os","glpi_dropdown_os");
 			if($cfg_ocs["import_device_processor"]) 
 				ocsResetDevices($glpi_id,PROCESSOR_DEVICE);
 			if($cfg_ocs["import_device_iface"]) 
@@ -840,7 +842,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 						$port["designation"]="";	
 						if ($line2["TYPE"]!="Other") $port["designation"] .= $line2["TYPE"];
 						if ($line2["NAME"]!="Not Specified") $port["designation"] .= " ".$line2["NAME"];
-						if ($line2["CAPTION"]!="None") $port["designation"] .= " ".$line2["CAPTION"];
+						else if ($line2["CAPTION"]!="None") $port["designation"] .= " ".$line2["CAPTION"];
 						if (!empty($port["designation"]))
 						if (!in_array(PCI_DEVICE."$$$$$".$port["designation"],$import_device)){
 							if(!empty($line2["DESCRIPTION"])&&$line2["DESCRIPTION"]!="None") $port["comment"] = $line2["DESCRIPTION"];
@@ -1424,7 +1426,7 @@ function ocsResetLicenses($glpi_computer_id) {
 		}
 
 		$query = "delete from glpi_inst_software where cid = '".$glpi_computer_id."'";
-		$db->query($query) or die("Impossible d'effacer les anciennes licences.".$db->error());
+		$db->query($query);
 	}
 
 }
@@ -1443,7 +1445,7 @@ function ocsResetLicenses($glpi_computer_id) {
 function ocsResetDevices($glpi_computer_id, $device_type) {
 	$db = new DB;
 	$query = "delete from glpi_computer_device where device_type = '".$device_type."' AND FK_computers = '".$glpi_computer_id."'";
-	$db->query($query) or die("unable to delete old devices settings ".$db->error());
+	$db->query($query);
 }
 
 /**
@@ -1472,7 +1474,7 @@ function ocsResetPeriphs($glpi_computer_id) {
 		}
 		
 		$query2 = "delete from glpi_connect_wire where end2 = '".$glpi_computer_id."' and type = '".PERIPHERAL_TYPE."'";
-		$db->query($query2) or die("Impossible d'effacer les anciens monitors.".$db->error());
+		$db->query($query2);
 	}
 
 }
@@ -1534,5 +1536,34 @@ function ocsResetPrinters($glpi_computer_id) {
 		$db->query($query2) or die("Impossible d'effacer les anciens monitors.".$db->error());
 	}
 }
+
+/**
+* Delete old dropdown value
+*
+* Delete all old dropdown value of a computer.
+*
+*@param $glpi_computer_id integer : glpi computer id.
+*@param $field string : string of the computer table
+*@param $table string : dropdown table name
+*
+*@return nothing.
+*
+**/
+function ocsResetDropdown($glpi_computer_id,$field,$table) {
+
+	$db = new DB;
+	$query = "SELECT $field AS VAL FROM glpi_computers where ID = '".$glpi_computer_id."'";
+	$result=$db->query($query);
+	if ($db->numrows($result)==1){
+		$value=$db->result($result,0,"VAL");
+		$query = "SELECT COUNT(*) AS CPT FROM glpi_computers where $field = '$value'";
+		$result=$db->query($query);
+		if ($db->result($result,0,"CPT")==1){
+			$query2 = "delete from $table where ID = '$value'";
+			$db->query($query2);
+		}
+	}
+}
+
 
 ?>
