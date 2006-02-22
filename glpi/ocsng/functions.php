@@ -37,7 +37,7 @@ function ocsShowNewComputer($check,$start,$tolinked=0){
 global $lang,$HTMLRel,$cfg_features;
 
 $dbocs = new DBocs();
-$query_ocs = "select * from hardware order by lastdate";
+$query_ocs = "select * from hardware order by LASTDATE";
 $result_ocs = $dbocs->query($query_ocs) or die($dbocs->error());
 
 // Existing OCS - GLPI link
