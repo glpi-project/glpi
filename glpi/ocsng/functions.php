@@ -209,11 +209,11 @@ function ocsImportComputer($DEVICEID){
 
 	$query = "SELECT * FROM hardware WHERE DEVICEID='$DEVICEID'";
 	$result = $dbocs->query($query) or die($dbocs->error().$query);
+	$comp = new Computer;
 	if ($dbocs->numrows($result)==1){
 		$line=$dbocs->fetch_array($result);
 		$dbocs->close();
 
-		$comp = new Computer;
 		$comp->fields["name"] = $line["NAME"];
 		$comp->fields["ocs_import"] = 1;
 		$glpi_id=$comp->addToDB();
@@ -239,8 +239,13 @@ function ocsLinkComputer($ocs_id,$glpi_id){
 
 		$query = "UPDATE config SET IVALUE='1' WHERE NAME='TRACE_DELETED'";
 		$dbocs->query($query) or die($dbocs->error().$query);
-
+		$comp = new Computer;
 		if ($idlink = ocs_link($ocs_id, $glpi_id)){
+
+			$input["ID"] = $glpi_id;
+			$input["ocs_import"] = 1;
+			updateComputer($input);
+
 			// Reset using GLPI Config
 			$cfg_ocs=getOcsConf(1);
 			if($cfg_ocs["import_device_processor"]) 

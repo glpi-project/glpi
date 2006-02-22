@@ -49,6 +49,8 @@ include ($phproot."/glpi/includes_tracking.php");
 checkAuthentication("admin");
 commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
 
+$cfg_features["use_ajax"] = 1; 
+
 if (isset($_SESSION["ocs_link"])){
 	if ($count=count($_SESSION["ocs_link"])){
 		$percent=min(100,round(100*($_SESSION["ocs_link_count"]-$count)/$_SESSION["ocs_link_count"],0));
