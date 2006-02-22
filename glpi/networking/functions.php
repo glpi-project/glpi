@@ -509,7 +509,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 					showPortVLAN($netport->fields["ID"],$withtemplate);
 				echo "</td>";
 				echo "<td>".getDropdownName("glpi_dropdown_iface",$netport->fields["iface"])."</td>";
-				echo "<td>";
+				echo "<td width='300'>";
 					showConnection($netport->fields["ID"],$withtemplate,$device_type);
 				echo "</td>";
 				echo "</tr>";
@@ -866,18 +866,18 @@ function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 		
 	} else {
 		echo "<table border='0' cellspacing='0' width='100%'><tr>";
-		echo "<td>".$lang["connect"][1]."</td>";
-		echo "<td align='right'>";
+		echo "<td align='left'>";
 		if ($withtemplate!=2&&$withtemplate!=1){
 			echo "<form method='post' action=\"".$cfg_install["root"]."/networking/networking-port-connect.php\">";
 			echo "<input type='hidden' name='connect' value='connect'>";
 			echo "<input type='hidden' name='sport' value='$ID'>";
 			dropdownConnectPort($ID,$type,"dport");
-			echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
 			echo "</form>";
 			}
 		else echo "&nbsp;";
 		echo "</td>";
+		echo "<td><div id='not_connected_display$ID'>".$lang["connect"][1]."</div></td>";
+
 		echo "</tr></table>";
 	}
 }	

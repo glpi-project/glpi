@@ -750,7 +750,7 @@ function dropdownConnectPort($ID,$type,$myname) {
 	echo "      	new Ajax.Updater('show_$myname$rand','".$cfg_install["root"]."/ajax/dropdownConnectPortDeviceType.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
-	echo "            {Element.show('search_spinner_$myname$rand');},\n";
+	echo "            {Element.show('search_spinner_$myname$rand');Element.hide('not_connected_display$ID');},\n";
 	echo "           method:'post', parameters:'current=$ID&type='+value+'&myname=$myname'\n";
 	echo "})})\n";
 	echo "</script>\n";
