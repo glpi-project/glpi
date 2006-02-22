@@ -122,7 +122,7 @@ if ($value>0){
 	$tmpname=getDropdownName($table,$value);
 	if ($tmpname!="&nbsp;"){
 		$name=$tmpname;
-		$limit_length=strlen($name);
+		$limit_length=max(strlen($name),$cfg_layout["dropdown_limit"]);
 	}
 }
 
