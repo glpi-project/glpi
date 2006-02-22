@@ -166,6 +166,7 @@ $lang["central"][7]="Aide";
 $lang["central"][8]="Ajouts";
 $lang["central"][9]="Vos tickets en cours";
 $lang["central"][10]="Les nouveaux tickets";
+$lang["central"][11]="Vos tickets en attente";
 
 $lang["choice"][0]="Oui";
 $lang["choice"][1]="Non";

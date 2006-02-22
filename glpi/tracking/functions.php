@@ -151,7 +151,7 @@ function getTrackingPrefs ($ID) {
 	return $prefs;
 }
 
-function showCentralJobList($target,$start) {
+function showCentralJobList($target,$start,$status="process") {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -162,9 +162,18 @@ function showCentralJobList($target,$start) {
 	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
 
 
+	if($status=="waiting"){ // on affiche les tickets en attente
+		$query = "SELECT ID FROM glpi_tracking WHERE (assign = '".$_SESSION["glpiID"]."') AND (status ='waiting' ) ORDER BY date ".$prefs["order"]."";
+		
+		$title=$lang["central"][11];
+		
+	}else{ // on affiche les tickets planifiés ou assignés à glpiID
 	
-	$query = "SELECT ID FROM glpi_tracking WHERE (assign = '".$_SESSION["glpiID"]."') AND (status ='plan' OR status = 'assign') ORDER BY date ".$prefs["order"]."";
-	
+		$query = "SELECT ID FROM glpi_tracking WHERE (assign = '".$_SESSION["glpiID"]."') AND (status ='plan' OR status = 'assign') ORDER BY date ".$prefs["order"]."";
+		
+		$title=$lang["central"][9];
+	}
+
 	$lim_query = " LIMIT ".$start.",".$cfg_features["list_limit"]."";	
 
 	$db = new DB;
@@ -178,10 +187,10 @@ function showCentralJobList($target,$start) {
 	$number = $db->numrows($result);
 
 	if ($number > 0) {
-
+		echo "<div align='center'>";
 		echo "<table class='tab_cadrehov'>";
 		
-		echo "<tr><th colspan='5'><b><a href=\"".$cfg_install["root"]."/tracking/index.php?assign=".$_SESSION["glpiID"]."&amp;status=process&amp;reset=reset_before\">".$lang["central"][9]."</a></b></th></tr>";
+		echo "<tr><th colspan='5'><b><a href=\"".$cfg_install["root"]."/tracking/index.php?assign=".$_SESSION["glpiID"]."&amp;status=$status&amp;reset=reset_before\">".$title."</a></b></th></tr>";
 		echo "<tr><th></th>";
 		echo "<th>".$lang["joblist"][3]."</th>";
 		echo "<th>".$lang["tracking"][20]."</th>";
@@ -192,6 +201,7 @@ function showCentralJobList($target,$start) {
 			$i++;
 		}
 		echo "</table>";
+		echo "<br><div align='center'>";
 	}
 	else
 	{
@@ -225,7 +235,7 @@ function showCentralJobCount(){
  	$status[$data["status"]]=$data["COUNT"];
  	}
 
-	echo "<br><div align='center'><table class='tab_cadrehov' style='text-align:center'>";
+	echo "<div align='center'><table class='tab_cadrehov' style='text-align:center'>";
 	
 	echo "<tr><th colspan='2'><b><a href=\"".$cfg_install["root"]."/tracking/index.php?status=process&amp;reset=reset_before\">".$lang["tracking"][0]."</a></b></th></tr>";
 	echo "<tr><th ><b>".$lang["tracking"][28]."</b></th><th>".$lang["tracking"][29]."</th></tr>";
@@ -243,7 +253,7 @@ function showCentralJobCount(){
 	echo "<td>".$status["waiting"]."</td></tr>";
 
 	
-	echo "</table></div>";
+	echo "</table></div><br>";
 
 	
 }
