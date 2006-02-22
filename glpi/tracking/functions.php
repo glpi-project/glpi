@@ -414,7 +414,11 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 	$isadmin=isAdmin($_SESSION['glpitype']);
 	$ispostonly=strcmp($_SESSION["glpitype"],"post-only");
 	$align="align='center'";
-	if ($followups) $align.=" valign='top' ";
+	$align_desc="align='left'";
+	if ($followups) { 
+				$align.=" valign='top' ";
+				$align_desc.=" valign='top' ";
+			}
 	if ($job->getfromDB($ID,0))
 	{
 		$item_num=1;
@@ -532,7 +536,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		}
 
 
-		echo displaySearchItem($output_type,$eigth_column,$item_num,$row_num,0,$align);
+		echo displaySearchItem($output_type,$eigth_column,$item_num,$row_num,0,$align_desc);
 		
 
 		// Nineth column
