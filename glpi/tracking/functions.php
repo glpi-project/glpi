@@ -1798,40 +1798,40 @@ function showJobDetails ($ID){
 		// Troisi�e Colonne
 		echo "<td valign='top' width='20%'>";
 
-
-		echo "<table border='0'>";
-		if ($job->fields["realtime"]>0){
-					echo "<tr><td align='right'>";
-					echo $lang["job"][20].":</td><td>";
-					echo "<strong>".getRealtime($job->fields["realtime"])."</strong>";
-					echo "</td></tr>";
-				}
-		echo "<tr><td align='right'>";
-		// cout
-		echo $lang["job"][40].": ";
-		echo "</td><td><input type='text' maxlength='100' size='15' name='cost_time' value=\"".$job->fields["cost_time"]."\"></td></tr>";
-		
-		echo "<tr><td align='right'>";
-		
-		echo $lang["job"][41].": ";
-		echo "</td><td><input type='text' maxlength='100' size='15' name='cost_fixed' value=\"".$job->fields["cost_fixed"]."\">";
-
-		echo "</td></tr>\n";
-
-		echo "<tr><td align='right'>";
-		
-		echo $lang["job"][42].": ";
-		echo "</td><td><input type='text' maxlength='100' size='15' name='cost_material' value=\"".$job->fields["cost_material"]."\">";
-
-		echo "</td></tr>\n";
-		
-		echo "<tr><td align='right'>";
-		
-		echo $lang["job"][43].": ";
-		echo "</td><td><strong>";
-		echo trackingTotalCost($job->fields["realtime"],$job->fields["cost_time"],$job->fields["cost_fixed"],$job->fields["cost_material"]);
-		echo "<strong></td></tr>\n</table>";
-
+		if($isadmin);{  // admin = oui on affiche les couts liés à l'interventions
+			echo "<table border='0'>";
+			if ($job->fields["realtime"]>0){
+						echo "<tr><td align='right'>";
+						echo $lang["job"][20].":</td><td>";
+						echo "<strong>".getRealtime($job->fields["realtime"])."</strong>";
+						echo "</td></tr>";
+					}
+			echo "<tr><td align='right'>";
+			// cout
+			echo $lang["job"][40].": ";
+			echo "</td><td><input type='text' maxlength='100' size='15' name='cost_time' value=\"".$job->fields["cost_time"]."\"></td></tr>";
+			
+			echo "<tr><td align='right'>";
+			
+			echo $lang["job"][41].": ";
+			echo "</td><td><input type='text' maxlength='100' size='15' name='cost_fixed' value=\"".$job->fields["cost_fixed"]."\">";
+	
+			echo "</td></tr>\n";
+	
+			echo "<tr><td align='right'>";
+			
+			echo $lang["job"][42].": ";
+			echo "</td><td><input type='text' maxlength='100' size='15' name='cost_material' value=\"".$job->fields["cost_material"]."\">";
+	
+			echo "</td></tr>\n";
+			
+			echo "<tr><td align='right'>";
+			
+			echo $lang["job"][43].": ";
+			echo "</td><td><strong>";
+			echo trackingTotalCost($job->fields["realtime"],$job->fields["cost_time"],$job->fields["cost_fixed"],$job->fields["cost_material"]);
+			echo "<strong></td></tr>\n</table>";
+		}
 		
 		echo "</td></tr>";
 		
@@ -1843,7 +1843,7 @@ function showJobDetails ($ID){
 		echo "<tr  class='tab_bg_2'><td width='15%'>".$lang["joblist"][6]."<br><br></td>";
 		echo "<td  width='85%' align='left'>";
 
-		if ($isadmin){
+		if ($isadmin){ // Admin =oui on autorise la modification de la description
 			$rand=mt_rand();
 			echo "<script type='text/javascript' >\n";
 			echo "function showDesc$rand(){\n";
