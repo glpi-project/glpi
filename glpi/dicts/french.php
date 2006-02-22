@@ -193,6 +193,8 @@ $lang["common"][19]="Numéro de série";
 $lang["common"][20]="Numéro d'inventaire";
 $lang["common"][21]="Contact numéro";
 $lang["common"][22]="Modèle";
+$lang["common"][23]="Opération réalisée avec succés";
+$lang["common"][24]="Aucun élément sélectionné ou opération mal définie ";
 
 
 $lang["computers"][0]="Ajouter ordinateur...";
@@ -804,12 +806,12 @@ $lang["ocsng"][16]="Champs verrouillés";
 $lang["ocsng"][17]="Veuillez remplir tous les champs obligatoires";
 $lang["ocsng"][18]="Connexion à la base de données OCS réussie";
 $lang["ocsng"][19]="Version OCS NG valide";
-$lang["ocsng"][20]="Version d'OCS NR non valide : nécessite RC2";
+$lang["ocsng"][20]="Version d'OCS NG non valide : nécessite RC2";
 $lang["ocsng"][21]="Echec de connexion à la base de données OCS NG";
 $lang["ocsng"][22]="Attention ! Les données importées (voir votre configuration) écraseront les données existantes";
 $lang["ocsng"][23]="Importation impossible, ordinateur de destination de GLPI déjà lié à un élément d'OCS NG";
 
-$lang["ocsconfig"][0]="Configuration du modules d'import OCS NG -> GLPI";
+$lang["ocsconfig"][0]="Configuration du module d'import OCS NG -> GLPI";
 $lang["ocsconfig"][1]="Utilisateur de la base de données OCSweb";
 $lang["ocsconfig"][2]="Hote OCSweb";
 $lang["ocsconfig"][3]="Mot de passe de l'utilisateur OCSweb";
@@ -824,7 +826,7 @@ $lang["ocsconfig"][11]="Pas d'import";
 $lang["ocsconfig"][12]="Import unique";
 $lang["ocsconfig"][13]="Import unique : tout est importé tel quel";
 $lang["ocsconfig"][14]="Import global : tout est importé mais le matériel est géré de manière globale (sans doublons)";
-$lang["ocsconfig"][15]="Pas d'import : le plugin n'importera pas ces éléments";
+$lang["ocsconfig"][15]="Pas d'import : GLPI n'importera pas ces éléments";
 $lang["ocsconfig"][19]="OS";
 $lang["ocsconfig"][24]="Domaine";
 $lang["ocsconfig"][26]="Commentaire";
@@ -897,6 +899,15 @@ $lang["printers"][31]="Pages imprimées";
 $lang["printers"][33]="Gestion globale";
 $lang["printers"][34]="Gestion unitaire";
 $lang["printers"][35]="Type de gestion";
+
+
+
+$lang["reminder"][0]="Notes personnelles";
+$lang["reminder"][1]="Notes publiques";
+$lang["reminder"][2]="Rdv personnel";
+$lang["reminder"][3]="Rdv publique";
+$lang["reminder"][4]="Note personnelle";
+$lang["reminder"][5]="Note publique";
 
 $lang["reports"][0]="Sélectionner un rapport à générer";
 $lang["reports"][4]="Liste du materiel sous contrat";
@@ -1312,6 +1323,7 @@ $lang["title"][36]="Consommables";
 $lang["title"][37]="Notes";
 $lang["title"][38]="Historique";
 $lang["title"][39]="OCS Inventory NG";
+$lang["title"][40]="Notes";
 
 $lang["toolbar"][1]="Gras";
 $lang["toolbar"][2]="Italique";

@@ -136,13 +136,13 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 		break;
 	}
 
-	echo "<div align='center'><strong>Action réalisée avec succès<br>";
+	echo "<div align='center'><strong>".$lang["common"][23]."<br>";
 	echo "<a href='".$_SERVER['HTTP_REFERER']."'>".$lang["buttons"][13]."</a>";
 	echo "</strong></div>";
 
 
 
-} else echo "Action définie incorrectement ou aucun élément sélectionné";
+} else echo $lang["common"][24];
 
 commonFooter();
 
