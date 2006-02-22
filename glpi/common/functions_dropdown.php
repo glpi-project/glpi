@@ -914,4 +914,37 @@ function displaySearchTextAjaxDropdown($id){
 
 }
 
+function dropdownMassiveAction($device_type,$deleted){
+	global $lang,$HTMLRel,$cfg_install;
+
+		echo "<select name=\"massiveaction\" id='massiveaction'>";
+		
+		echo "<option value=\"-1\" selected>-----</option>";
+		if ($deleted=="Y"){
+			echo "<option value=\"purge\">".$lang["buttons"][22]."</option>";
+			echo "<option value=\"restore\">".$lang["buttons"][21]."</option>";
+		} else {
+			echo "<option value=\"delete\">".$lang["buttons"][6]."</option>";
+			echo "<option value=\"update\">".$lang["buttons"][14]."</option>";
+		}
+		echo "</select>";
+
+	echo "<script type='text/javascript' >\n";
+	echo "   new Form.Element.Observer('massiveaction', 1, \n";
+	echo "      function(element, value) {\n";
+	echo "      	new Ajax.Updater('show_massiveaction','".$cfg_install["root"]."/ajax/dropdownMassiveAction.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
+	echo "            {Element.hide('search_spinner_massiveaction');}, \n";
+	echo "           onLoading:function(request)\n";
+	echo "            {Element.show('search_spinner_massiveaction');},\n";
+	echo "           method:'post', parameters:'deleted=$deleted&action='+value+'&type=$device_type'\n";
+	echo "})})\n";
+	echo "</script>\n";
+	
+	echo "<div id='search_spinner_massiveaction' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+	echo "<span id='show_massiveaction'>&nbsp;</span>\n";
+	
+
+
+}
+
 ?>

@@ -1,0 +1,82 @@
+<?php
+/*
+ * @version $Id$
+ ----------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2006 by the INDEPNET Development Team.
+ 
+ http://indepnet.net/   http://glpi.indepnet.org
+ ----------------------------------------------------------------------
+
+ LICENSE
+
+	This file is part of GLPI.
+
+    GLPI is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    GLPI is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with GLPI; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ ------------------------------------------------------------------------
+*/
+
+// ----------------------------------------------------------------------
+// Original Author of file: Julien Dombre
+// Purpose of file:
+// ----------------------------------------------------------------------
+
+
+include ("_relpos.php");
+include ($phproot."/glpi/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
+
+checkAuthentication("admin");
+
+	if (isset($_POST["action"])){
+		echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
+		echo "<input type='hidden' name='device_type' value='".$_POST["type"]."'>";
+		switch($_POST["action"]){
+
+			case "delete":
+			case "purge":
+			case "restore":
+				echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
+			break;
+			case "update":
+				include ($phproot."/glpi/includes_search.php");
+				echo "<select name='id_field' id='massiveaction_field'>";
+				echo "<option value='0' selected>------</option>";
+				foreach ($SEARCH_OPTION[$_POST["type"]] as $key => $val)
+					if (!empty($val["linkfield"])&&$key>1)
+						echo "<option value='$key'>".$val["name"]."</option>";
+				echo "</select>";
+
+				echo "<script type='text/javascript' >\n";
+				echo "   new Form.Element.Observer('massiveaction_field', 1, \n";
+				echo "      function(element, value) {\n";
+				echo "      	new Ajax.Updater('show_massiveaction_field','".$cfg_install["root"]."/ajax/dropdownMassiveActionField.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
+				echo "            {Element.hide('search_spinner_massiveaction_field');}, \n";
+				echo "           onLoading:function(request)\n";
+				echo "            {Element.show('search_spinner_massiveaction_field');},\n";
+				echo "           method:'post', parameters:'id_field='+value+'&device_type=".$_POST["type"]."'\n";
+				echo "})})\n";
+				echo "</script>\n";
+
+				echo "<div id='search_spinner_massiveaction_field' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+				echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
+
+			break;
+
+		}
+	}
+	
+?>

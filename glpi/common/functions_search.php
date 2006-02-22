@@ -733,7 +733,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			// Form to delete old item
 			$isadmin=isAdmin($_SESSION['glpitype']);
 			if ($isadmin&&$output_type==0){
-				echo "<form method='post' action=\"$target\">";
+				echo "<form method='post' name='massiveaction' action=\"".$cfg_install["root"]."/common/massiveaction.php\">";
 			}
 			
 			// Compute number of columns to display
@@ -892,9 +892,12 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a href='".$_SERVER["PHP_SELF"]."?select=all'>".$lang["buttons"][18]."</a></td>";
 			
 				echo "<td>/</td><td><a href='".$_SERVER["PHP_SELF"]."?select=none'>".$lang["buttons"][19]."</a>";
-				echo "</td><td>";
-				echo "<input type='submit' value=\"".$lang["buttons"][6]."\" name='delete' class='submit'></td>";
-				echo "<td width='75%'>&nbsp;</td></table></div>";
+				echo "</td><td align='left' width='80%'>";
+				dropdownMassiveAction($type,$deleted);
+				echo "</td>";
+				echo "</table>";
+				
+				echo "</div>";
 				// End form for delete item
 				echo "</form>";
 			}
