@@ -733,7 +733,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			// Form to delete old item
 			$isadmin=isAdmin($_SESSION['glpitype']);
 			if ($isadmin&&$output_type==0){
-				echo "<form method='post' name='massiveaction' action=\"".$cfg_install["root"]."/common/massiveaction.php\">";
+				echo "<form method='post' name='massiveaction_form' action=\"".$cfg_install["root"]."/common/massiveaction.php\">";
 			}
 			
 			// Compute number of columns to display
