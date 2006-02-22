@@ -48,8 +48,13 @@
 	$split=split(":",$cfg_features["planning_end"]);
 	$global_end=intval($split[0]);
 
-	$begin=strtotime(date("Y-m-d")." 12:00:00");
-	$end=strtotime(date("Y-m-d")." 13:00:00");
+
+	if (isset($_GET["begin_date"])&&!empty($_GET["begin_date"]))
+		$begin=strtotime($_GET["begin_date"]);
+	else $begin=strtotime(date("Y-m-d")." 12:00:00");
+	if (isset($_GET["end_date"])&&!empty($_GET["end_date"]))
+		$end=strtotime($_GET["end_date"]);
+	else $end=strtotime(date("Y-m-d")." 13:00:00");
 	
 	$begin_date=date("Y-m-d",$begin);
 	$end_date=date("Y-m-d",$end);
@@ -66,7 +71,7 @@
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][10].":	</td><td>";
 	showCalendarForm($_GET['form'],"plan[begin_date]",$begin_date);
-    echo "</td></tr>";
+    	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][12].":	</td>";
 	echo "<td>";
