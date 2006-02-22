@@ -515,11 +515,11 @@ function isIndex($table, $field) {
 		if ($result&&$db->numrows($result)){
 			while ($data=$db->fetch_assoc($result))
 			if ($data["Key_name"]==$field){
-				echo $table.".".$field."-> INDEX<br>";
+	//			echo $table.".".$field."-> INDEX<br>";
 				return true;
 			}
 		}
-	echo $table.".".$field."-> NOT INDEX<br>";
+	//echo $table.".".$field."-> NOT INDEX<br>";
 	return false;		
 }
 
