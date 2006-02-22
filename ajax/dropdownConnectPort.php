@@ -71,14 +71,18 @@
 		if ($db->numrows($result)) {
 			while ($data = $db->fetch_array($result)) {
 				$output = $data['CNAME'];
+				$output_long="";
 				if (!empty($data['IP'])) $output.= " - ".$data['IP'];
-				if (!empty($data['MAC'])) $output.= " - ".$data['MAC'];
-				if (!empty($data['NNAME'])) $output.= substr(" - ".$data['NNAME'],0,$cfg_layout["dropdown_limit"]);
+				if (!empty($data['MAC'])) $output_long.= " - ".$data['MAC'];
+				if (!empty($data['NNAME'])) $output_long.= substr(" - ".$data['NNAME'],0,$cfg_layout["dropdown_limit"]);
 				$ID = $data['DID'];
 				if (empty($output)) $output="($ID)";
-				echo "<option value=\"$ID\" title=\"$output\">".$output."</option>";
+				echo "<option value=\"$ID\" title=\"$output$output_long\">".$output."</option>";
 			}
 		}
 		echo "</select>";
+
+		echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
+
 
 ?>
