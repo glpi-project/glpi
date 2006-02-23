@@ -622,69 +622,101 @@ function updatePlanningTracking($input,$target,$item){
 //
 
 function ShowPlanningCentral($who){
-global $cfg_features,$HTMLRel,$lang;
-$db=new DB;
-
-$when=strftime("%Y-%m-%d");
-$debut=$when;
-
-// $tmp=split(" ",$when);
-
-// $hour=split(":",$tmp[1]);
-
-$ASSIGN="";
-if ($who!=0)
-$ASSIGN="id_assign='$who' AND";
 
 
-$INTERVAL=" 1 DAY ";
-
-$query="SELECT * from glpi_tracking_planning WHERE $ASSIGN (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
-
-
-$result=$db->query($query);
-
-$fup=new Followup();
-$job=new Job();
-
-$interv=array();
-$i=0;
-if ($db->numrows($result)>0)
-while ($data=$db->fetch_array($result)){
-	$fup->getFromDB($data["id_followup"]);
-	$job->getFromDB($fup->fields["tracking"],0);
+	global $cfg_features,$HTMLRel,$lang;
+	$db=new DB;
 	
-	$interv[$i]["id_followup"]=$data["id_followup"];
-	$interv[$i]["id_tracking"]=$fup->fields["tracking"];
-	$interv[$i]["id_assign"]=$data["id_assign"];
-	$interv[$i]["ID"]=$data["ID"];
-	$interv[$i]["begin"]=$data["begin"];
-	$interv[$i]["end"]=$data["end"];
-	$interv[$i]["content"]=substr($job->fields["contents"],0,$cfg_features["cut"]);
-	$interv[$i]["device"]=$job->computername;
-	$i++;
-}
-//print_r($interv);
-echo "<table class='tab_cadre' width='80%'><tr><th colspan='3'><a href='".$HTMLRel."planning/index.php'>".$lang["planning"][15]."</a></th></tr><tr><th>".$lang["buttons"][33]."</th><th>".$lang["buttons"][32]."</th><th>".$lang["joblist"][6]."</th></tr>";
-	if (count($interv)>0){
-		foreach ($interv as $key => $val){
-					
-		echo "<tr class='tab_bg_1'>";
-		echo "<td>";		
-		echo date("H:i",strtotime($val["begin"]));
-		echo "</td>";
-		echo "<td>";
-		echo date("H:i",strtotime($val["end"]));
-		echo "</td>";
-		echo "<td>".$val["device"]."<a href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
-		echo ": ".resume_text($val["content"],125);
-		echo "</a></td></tr>";
-				
-					
-		}
+	$when=strftime("%Y-%m-%d");
+	$debut=$when;
 	
+	
+	// followup
+	$ASSIGN="";
+	if ($who!=0)
+	$ASSIGN="id_assign='$who' AND";
+	
+	
+	$INTERVAL=" 1 DAY "; // we want to show planning of the day
+	
+	$query="SELECT * from glpi_tracking_planning WHERE $ASSIGN (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
+	
+	
+	$result=$db->query($query);
+	
+	$fup=new Followup();
+	$job=new Job();
+	
+	$interv=array();
+	$i=0;
+	if ($db->numrows($result)>0)
+	while ($data=$db->fetch_array($result)){
+		$fup->getFromDB($data["id_followup"]);
+		$job->getFromDB($fup->fields["tracking"],0);
+		
+		$interv[$data["begin"]."$$".$i]["id_tracking"]=$fup->fields["tracking"];
+		$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
+		$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
+		$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$cfg_features["cut"]);
+		$interv[$data["begin"]."$$".$i]["device"]=$job->computername;
+		$i++;
 	}
-echo "</table>";
+	
+	
+	// reminder 
+	$db2=new DB;
+		
+	$query2="SELECT * from glpi_reminder WHERE rv='1' AND (author='$who' OR type='public')    AND (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
+	
+	$result2=$db2->query($query2);
+	
+	
+	$remind=new Reminder();
+	
+	$i=0;
+	if ($db2->numrows($result2)>0)
+	while ($data=$db2->fetch_array($result2)){
+		$remind->getFromDB($data["ID"]);
+		
+		
+		$interv[$data["begin"]."$$".$i]["id_reminder"]=$remind->fields["ID"];
+		$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
+		$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
+		$interv[$data["begin"]."$$".$i]["title"]=resume_text($remind->fields["title"],$cfg_features["cut"]);
+		$interv[$data["begin"]."$$".$i]["text"]=resume_text($remind->fields["text"],$cfg_features["cut"]);
+		
+		$i++;
+	}
+	
+	
+	
+	ksort($interv);
+	
+	echo "<table class='tab_cadre' width='80%'><tr><th colspan='3'><a href='".$HTMLRel."planning/index.php'>".$lang["planning"][15]."</a></th></tr><tr><th>".$lang["buttons"][33]."</th><th>".$lang["buttons"][32]."</th><th>".$lang["joblist"][6]."</th></tr>";
+		if (count($interv)>0){
+			foreach ($interv as $key => $val){
+						
+			echo "<tr class='tab_bg_1'>";
+			echo "<td>";		
+			echo date("H:i",strtotime($val["begin"]));
+			echo "</td>";
+			echo "<td>";
+			echo date("H:i",strtotime($val["end"]));
+			echo "</td>";
+			if(isset($val["id_tracking"])){
+				echo "<td>".$val["device"]."<a href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
+				echo ": ".resume_text($val["content"],125);
+			}else{
+				echo "<td>".$val["title"]."<a href='".$HTMLRel."reminder/reminder-info-form.php?ID=".$val["id_reminder"]."'>";
+				echo ": ".resume_text($val["text"],125);
+			}
+	
+			echo "</a></td></tr>";
+							
+			}
+		
+		}
+	echo "</table>";
 
 }
 
@@ -704,12 +736,12 @@ echo "</table>";
 
 
 //*******************************************************************************************************************************
-// *********************************** Impl�entation ICAL ***************************************************************
+// *********************************** Implementation ICAL ***************************************************************
 //*******************************************************************************************************************************
 
 
 /**
-* G��ate URL for ICAL
+* Generate URL for ICAL
 *
 *  
 * @param $who 
@@ -723,7 +755,7 @@ GLOBAL  $cfg_install, $lang;
 echo "<a href=\"".$cfg_install["root"]."/planning/ical.php?uID=$who\"><span style='font-size:10px'>-".$lang["planning"][12]."</span></a>";
 echo "<br>";
 
-// Todo r�up l'url complete de glpi proprement, ? nouveau champs table config ?
+// Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
 echo "<a href=\"webcal://".$_SERVER['HTTP_HOST'].$cfg_install["root"]."/planning/ical.php?uID=$who\"><span style='font-size:10px'>-".$lang["planning"][13]."</span></a>";
 
 }
