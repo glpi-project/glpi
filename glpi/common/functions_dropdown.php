@@ -282,7 +282,7 @@ function dropdownAllUsers($myname,$value) {
 	global $lang;
 	// Make a select box with all glpi users
 
-	global $HTMLRel,$cfg_install,$cfg_features;
+	global $HTMLRel,$cfg_install,$cfg_features,$cfg_layout;
 
 	$rand=mt_rand();
 	
@@ -815,7 +815,7 @@ function dropdownSoftwareToInstall($myname,$withtemplate) {
 }
 
 /**
-* Show div with auto complétion
+* Show div with auto completion
 *
 * @param $myname
 * @param $table
