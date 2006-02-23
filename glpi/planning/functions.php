@@ -336,12 +336,16 @@ echo "</div>";
 
 function displayplanning($who,$when,$type){
 global $cfg_features,$HTMLRel,$lang;
-$db=new DB;
+
 
 //echo $when;
 $debut=$when;
 $tmp=split(" ",$when);
 $hour=split(":",$tmp[1]);
+
+$author="";  // variable pour l'affichage de l'auteur ou non
+$img="rdv_private.png"; // variable par defaut pour l'affichage de l'icone du reminder
+
 
 $ASSIGN="";
 if ($who!=0)
@@ -351,6 +355,10 @@ $ASSIGN="id_assign='$who' AND";
 if ($type=="month")
 $INTERVAL=" 1 DAY ";
 else $INTERVAL=" 59 MINUTE ";
+
+
+// ---------------Tracking
+$db=new DB;
 
 $query="SELECT * from glpi_tracking_planning WHERE $ASSIGN (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
 
@@ -367,16 +375,53 @@ while ($data=$db->fetch_array($result)){
 	$fup->getFromDB($data["id_followup"]);
 	$job->getFromDB($fup->fields["tracking"],0);
 	
-	$interv[$i]["id_followup"]=$data["id_followup"];
-	$interv[$i]["id_tracking"]=$fup->fields["tracking"];
-	$interv[$i]["id_assign"]=$data["id_assign"];
-	$interv[$i]["ID"]=$data["ID"];
-	$interv[$i]["begin"]=$data["begin"];
-	$interv[$i]["end"]=$data["end"];
-	$interv[$i]["content"]=substr($job->fields["contents"],0,$cfg_features["cut"]);
-	$interv[$i]["device"]=$job->computername;
+	$interv[$data["begin"]."$$".$i]["id_followup"]=$data["id_followup"];
+	$interv[$data["begin"]."$$".$i]["id_tracking"]=$fup->fields["tracking"];
+	$interv[$data["begin"]."$$".$i]["id_assign"]=$data["id_assign"];
+	$interv[$data["begin"]."$$".$i]["ID"]=$data["ID"];
+	$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
+	$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
+	$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$cfg_features["cut"]);
+	$interv[$data["begin"]."$$".$i]["device"]=$job->computername;
+
 	$i++;
 }
+
+
+
+// ---------------reminder 
+	$db2=new DB;
+		
+	$query2="SELECT * from glpi_reminder WHERE rv='1' AND (author='$who' OR type='public')    AND (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
+	
+	$result2=$db2->query($query2);
+	
+	
+	$remind=new Reminder();
+	
+	$i=0;
+	if ($db2->numrows($result2)>0)
+	while ($data=$db2->fetch_array($result2)){
+		$remind->getFromDB($data["ID"]);
+		
+		
+		$interv[$data["begin"]."$$".$i]["id_reminder"]=$remind->fields["ID"];
+		$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
+		$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
+		$interv[$data["begin"]."$$".$i]["title"]=resume_text($remind->fields["title"],$cfg_features["cut"]);
+		$interv[$data["begin"]."$$".$i]["text"]=resume_text($remind->fields["text"],$cfg_features["cut"]);
+		$interv[$data["begin"]."$$".$i]["author"]=$data["author"];
+		$interv[$data["begin"]."$$".$i]["type"]=$data["type"];
+
+		$i++;
+	}
+	
+	
+	
+	ksort($interv);
+
+
+
 //print_r($interv);
 echo "<td class='tab_bg_3' width='12%' valign='top' >";
 if ($type!="month")
@@ -388,37 +433,90 @@ foreach ($interv as $key => $val){
 	switch ($type){
 	case "day" :
 		echo "<div style=' margin:auto; text-align:center; border:1px dashed #cccccc; background-color: #d7d7d2; font-size:9px; width:80%;'>";
-		echo "<a  href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;fup=".$val["id_followup"]."&amp;ID=".$val["ID"]."'><img src='$HTMLRel/pics/edit.png' alt='edit'></a>";
-		echo "<a href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
-		echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"];
-		if ($who==0){
+
+		if(isset($val["id_tracking"])){  // show tracking
+
+			echo "<div style=' margin:auto; text-align:center; border:1px dashed #cccccc; background-color: #d7d7d2; font-size:9px; width:80%;'><img src='$HTMLRel/pics/rdv_interv.png' alt=''>&nbsp;";
+			
+			
+			echo "<a href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
+			echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"];
+			if ($who==0){
+				echo "<br>";
+				echo $lang["planning"][9]." ".getUserName($val["id_assign"]);
+			} 
+			echo "</a>";
+			echo "<a  href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;fup=".$val["id_followup"]."&amp;ID=".$val["ID"]."'><img src='$HTMLRel/pics/edit.png' alt='edit'></a>";
 			echo "<br>";
-			echo $lang["planning"][9]." ".getUserName($val["id_assign"]);
-		} 
-		echo "</a>";
-		echo "<br>";
-		echo $val["content"];
-		echo "";
+			echo $val["content"];
+			echo "";
+		}else{  // show Reminder
+			
+				if ($val["type"]=="public"){
+					$author="<br>Par ".getUserName($val["author"]);
+					$img="rdv_public.png";
+				} 
+			echo "<div style=' margin:auto; text-align:center; border:1px dashed #cccccc; background-color: #d7d7d2; font-size:9px; width:80%;'><img src='$HTMLRel/pics/".$img."' alt=''>&nbsp;";
+			echo "<a href='".$HTMLRel."reminder/reminder-info-form.php?ID=".$val["id_reminder"]."'>";
+			echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["title"];
+			echo $author;
+			echo "</a>";
+			echo "<br>";
+			echo $val["text"];
+			echo "";
+
+		
+
+		}
+
+	
 
 		echo "</div><br>";
 	break;
 	case "week" :
-		$rand=mt_rand();
-		echo "<div class='planning' >";
-		echo "<a onmouseout=\"setdisplay(getElementById('content_".$val["ID"].$rand."'),'none')\" onmouseover=\"setdisplay(getElementById('content_".$val["ID"].$rand."'),'block')\" href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
-		echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["device"];
-		if ($who==0){
-			echo "<br>";
-			echo $lang["planning"][9]." ".getUserName($val["id_assign"]);
-		} 
-		echo "</a>";
-		echo "</div>";
-		
-		echo "<div class='over_link' id='content_".$val["ID"].$rand."'>".$val["content"]."</div>";
+
+		if(isset($val["id_tracking"])){  // show tracking
+			$rand=mt_rand();
+			echo "<div class='planning' ><img src='$HTMLRel/pics/rdv_interv.png' alt=''>";
+			echo "<a onmouseout=\"setdisplay(getElementById('content_".$val["ID"].$rand."'),'none')\" onmouseover=\"setdisplay(getElementById('content_".$val["ID"].$rand."'),'block')\" href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
+			echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["device"];
+				if ($who==0){
+					echo "<br>";
+					echo $lang["planning"][9]." ".getUserName($val["id_assign"]);
+				} 
+			echo "</a>";
+			echo "</div>";
+			
+			echo "<div class='over_link' id='content_".$val["ID"].$rand."'>".$val["content"]."</div>";
+		}else{ // show reminder
+			if ($val["type"]=="public"){
+					$author="<br>Par ".getUserName($val["author"]);
+					$img="rdv_public.png";
+				} 
+			
+			$rand=mt_rand();
+			echo "<div class='planning' ><img src='$HTMLRel/pics/".$img."' alt=''>&nbsp;";
+			echo "<a onmouseout=\"setdisplay(getElementById('content_".$val["id_reminder"].$rand."'),'none')\" onmouseover=\"setdisplay(getElementById('content_".$val["id_reminder"].$rand."'),'block')\" href='".$HTMLRel."reminder/reminder-info-form.php?ID=".$val["id_reminder"]."'>";
+			echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["title"];
+				if ($who!=$val["author"]){
+					$author="<br>Par ".getUserName($val["author"]);
+					$img="rdv_public.png";
+				} 
+			echo "</a>";
+			echo "</div>";
+			
+			echo "<div class='over_link' id='content_".$val["id_reminder"].$rand."'>".$val["text"]."</div>";
+			
+
+		}
+
+
 	break;
 	case "month" :
+
+		if(isset($val["id_tracking"])){  // show tracking
 		$rand=mt_rand();
-		echo "<div class='planning' >";
+		echo "<div class='planning' ><img src='$HTMLRel/pics/rdv_interv.png' alt=''>";
 		echo "<a onmouseout=\"setdisplay(getElementById('content_".$val["ID"].$rand."'),'none')\" onmouseover=\"setdisplay(getElementById('content_".$val["ID"].$rand."'),'block')\" href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
 		echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["device"];
 		if ($who==0){
@@ -429,6 +527,28 @@ foreach ($interv as $key => $val){
 		echo "</div>";
 		
 		echo "<div class='over_link' id='content_".$val["ID"].$rand."'>".$val["content"]."</div>";
+
+		}else{ // show reminder
+			if ($val["type"]=="public"){
+					$author="<br>Par ".getUserName($val["author"]);
+					$img="rdv_public.png";
+				} 
+		$rand=mt_rand();
+		echo "<div class='planning' ><img src='$HTMLRel/pics/".$img."' alt=''>&nbsp;";
+		echo "<a onmouseout=\"setdisplay(getElementById('content_".$val["id_reminder"].$rand."'),'none')\" onmouseover=\"setdisplay(getElementById('content_".$val["id_reminder"].$rand."'),'block')\" href='".$HTMLRel."reminder/reminder-info-form.php?ID=".$val["id_reminder"]."'>";
+		echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["title"];
+			if ($who!=$val["author"]){
+					$author="<br>Par ".getUserName($val["author"]);
+					$img="rdv_public.png";
+				} 
+		echo "</a>";
+		echo "</div>";
+		
+		echo "<div class='over_link' id='content_".$val["id_reminder"].$rand."'>".$val["text"]."</div>";
+
+
+		}
+		
 	
 	break;
 	}

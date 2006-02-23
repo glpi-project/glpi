@@ -1543,6 +1543,30 @@ CREATE TABLE `glpi_printers` (
 
 INSERT INTO glpi_printers VALUES ('3','','0000-00-00 00:00:00','','','0','','','0','0','0','','','0','0','0',NULL,NULL,'0','0','N','1','Blank Template','0',NULL);
 
+
+### Dump table glpi_reminder
+
+DROP TABLE IF EXISTS `glpi_reminder`;
+CREATE TABLE `glpi_reminder` (
+  `ID` int(11) NOT NULL auto_increment,
+  `date` datetime default NULL,
+  `author` int(11) NOT NULL default '0',
+  `title` text,
+  `text` text,
+  `type` varchar(50) NOT NULL default 'private',
+  `begin` datetime default NULL,
+  `end` datetime default NULL,
+  `rv` enum('0','1') NOT NULL default '0',
+  `date_mod` datetime default NULL,
+  PRIMARY KEY  (`ID`),
+  KEY `date` (`date`),
+  KEY `author` (`author`),
+  KEY `rv` (`rv`),
+  KEY `type` (`type`)
+) ENGINE=MyISAM ;
+
+
+
 ### Dump table glpi_repair_item
 
 DROP TABLE IF EXISTS `glpi_repair_item`;

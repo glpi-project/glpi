@@ -316,7 +316,7 @@ function location_create_new($split_char,$add_first){
 		$up_ID=$root_ID;
 	
 		for ($i=0;$i<count($splitter)-1;$i++){
-			// Entrée existe deja ??
+			// Entrï¿½ existe deja ??
 			$query_search="select ID from glpi_dropdown_locations_new WHERE name='".addslashes($splitter[$i])."'  AND parentID='".$up_ID."'";
 //				echo $query_search."<br>";
 			$result_search=$db->query($query_search);
@@ -433,7 +433,7 @@ function FieldExists($table, $field) {
 }
 */
 
-//test la connection a la base de donnée.
+//test la connection a la base de donnï¿½.
 function test_connect() {
 $db = new DB;
 if($db->error == 0) return true;
@@ -710,7 +710,7 @@ if(!FieldExists("glpi_users", "ID")) {
 	$db->query($query) or die($lang["update"][90].$db->error());
 
 }
-//Mise a jour des ID pour les tables dropdown et type. clés primaires sur les tables dropdown et type, et mise a jour des champs liés
+//Mise a jour des ID pour les tables dropdown et type. clï¿½ primaires sur les tables dropdown et type, et mise a jour des champs liï¿½
 if(!FieldExists("glpi_dropdown_os", "ID")) {
 	changeVarcharToID("glpi_computers", "glpi_dropdown_os", "os");
 	changeVarcharToID("glpi_computers", "glpi_dropdown_hdtype", "hdtype");
@@ -1112,7 +1112,7 @@ $db = new DB;
 	$query = "ALTER TABLE `glpi_event_log` CHANGE `itemtype` `itemtype` VARCHAR(20) NOT NULL ;";
 	$db->query($query) or die("4204 ".$lang["update"][90].$db->error());
 
-	// Correction des itemtype tronqués
+	// Correction des itemtype tronquï¿½
 	$query = "UPDATE `glpi_event_log` SET `itemtype` = 'reservation' WHERE `itemtype` = 'reservatio' ;";
 	$db->query($query) or die("4204 ".$lang["update"][90].$db->error());
 
@@ -1423,7 +1423,7 @@ $query = "ALTER TABLE `glpi_software` ADD `is_update` ENUM('N', 'Y') DEFAULT 'N'
 	$db->query($query) or die("0.5 alter software add update ".$lang["update"][90].$db->error());
 }
 
-// Couleur pour les priorités
+// Couleur pour les prioritï¿½
 if(!FieldExists("glpi_config","priority_1")) {
 $query= "ALTER TABLE `glpi_config` ADD `priority_1` VARCHAR(200) DEFAULT '#fff2f2' NOT NULL, ADD `priority_2` VARCHAR(200) DEFAULT '#ffe0e0' NOT NULL, ADD `priority_3` VARCHAR(200) DEFAULT '#ffcece' NOT NULL, ADD `priority_4` VARCHAR(200) DEFAULT '#ffbfbf' NOT NULL, ADD `priority_5` VARCHAR(200) DEFAULT '#ffadad' NOT NULL ;";
 	$db->query($query) or die("0.5 alter config add priority_X ".$lang["update"][90].$db->error());
@@ -1705,7 +1705,7 @@ if (isMaintenanceUsed()){
 
 // Merge de l'OS et de la version
 if(FieldExists("glpi_computers","osver")) {
-	// Récupération des couples existants
+	// Rï¿½upï¿½ation des couples existants
 	$query="SELECT DISTINCT glpi_computers.os AS ID , glpi_computers.osver AS VERS, glpi_dropdown_os.name as NAME FROM glpi_computers 
 		LEFT JOIN glpi_dropdown_os ON glpi_dropdown_os.ID=glpi_computers.os ORDER BY glpi_computers.os, glpi_computers.osver";
 	$result=$db->query($query) or die("0.5 select for update OS ".$lang["update"][90].$db->error());
@@ -2786,9 +2786,9 @@ if(!FieldExists("glpi_config","mailing_resa_all_admin")) {
 	$db->query($query) or die("0.6 add mailing_resa_all_admin in config".$lang["update"][90].$db->error());
 }
 
-// Modèle ordinateurs
+// Modï¿½e ordinateurs
 if(!TableExists("glpi_dropdown_model")) {
-	// model=type pour faciliter la gestion en post mise à jour : ya plus qu'a deleter les elements non voulu
+	// model=type pour faciliter la gestion en post mise ï¿½jour : ya plus qu'a deleter les elements non voulu
 	// cela conviendra a tout le monde en fonction de l'utilisation du champ type
 
 	$query="ALTER TABLE `glpi_type_computers` RENAME `glpi_dropdown_model` ;";
@@ -2816,7 +2816,7 @@ if(!TableExists("glpi_dropdown_model")) {
 	$db->query($query) or die("0.6 insert value in glpi_type_computers ".$lang["update"][90].$db->error());
 	$serverid=$db->insert_id();
 
-	// Type -> modèle
+	// Type -> modï¿½e
 	$query="ALTER TABLE `glpi_computers` CHANGE `type` `model` INT(11) DEFAULT NULL ";
 	$db->query($query) or die("0.6 add model in computers".$lang["update"][90].$db->error());
 	
@@ -3215,7 +3215,7 @@ $new_model=array("monitors","networking","peripherals","printers");
 
 foreach ($new_model as $model)
 if(!TableExists("glpi_dropdown_model_$model")) {
-	// model=type pour faciliter la gestion en post mise à jour : ya plus qu'a deleter les elements non voulu
+	// model=type pour faciliter la gestion en post mise ï¿½jour : ya plus qu'a deleter les elements non voulu
 	// cela conviendra a tout le monde en fonction de l'utilisation du champ type
 
 	$query = "CREATE TABLE `glpi_dropdown_model_$model` (
@@ -3931,7 +3931,32 @@ $db->query($query) or die("0.65 blank template in phones ".$lang["update"][90].$
 
 
 
+if(!TableExists("glpi_reminder")) {
+$query="CREATE TABLE `glpi_reminder` (
+  `ID` int(11) NOT NULL auto_increment,
+  `date` datetime default NULL,
+  `author` int(11) NOT NULL default '0',
+  `title` text,
+  `text` text,
+  `type` varchar(50) NOT NULL default 'private',
+  `begin` datetime default NULL,
+  `end` datetime default NULL,
+  `rv` enum('0','1') NOT NULL default '0',
+  `date_mod` datetime default NULL,
+  PRIMARY KEY  (`ID`),
+  KEY `date` (`date`),
+  KEY `author` (`author`),
+  KEY `rv` (`rv`),
+  KEY `type` (`type`)
+) ENGINE=MyISAM ;";
+
+$db->query($query) or die("0.65 add reminder ".$lang["update"][90].$db->error());
+
+
 }
+
+
+} // fin 0.65
 
 
 function updateTreeDropdown(){
