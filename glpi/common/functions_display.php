@@ -646,8 +646,8 @@ function printHelpDesk ($name,$from_helpdesk) {
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$lang["help"][8].":</td>";
 		echo "<td>	<select name='emailupdates'>";
-		echo "<option value='no' ".(($emailupdates=="no")?" selected":"").">".$lang["choice"][1]."";
-		echo "<option value='yes' ".(($emailupdates=="yes")?" selected":"").">".$lang["choice"][0]."";
+		echo "<option value='no' ".(($emailupdates=="no")?" selected":"").">".$lang["choice"][0]."";
+		echo "<option value='yes' ".(($emailupdates=="yes")?" selected":"").">".$lang["choice"][1]."";
 		echo "</select>";
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_1'>";

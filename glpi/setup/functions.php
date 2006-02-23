@@ -1007,7 +1007,7 @@ function showFormConfigGen($target){
 	
 	echo "</select></td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][133]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"ocs_mode\" value=\"1\" "; if($db->result($result,0,"ocs_mode") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"ocs_mode\" value=\"0\" "; if($db->result($result,0,"ocs_mode") == 0) echo "checked"; 
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][133]." </td><td>   &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"ocs_mode\" value=\"1\" "; if($db->result($result,0,"ocs_mode") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"ocs_mode\" value=\"0\" "; if($db->result($result,0,"ocs_mode") == 0) echo "checked"; 
 	echo " ></td></tr>";
 
 	
@@ -1021,13 +1021,13 @@ function showFormConfigGen($target){
 	echo "</select></td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][109]." </td><td><input type=\"text\" name=\"expire_events\" value=\"". $db->result($result,0,"expire_events") ."\"></td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][116]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"auto_assign\" value=\"1\" "; if($db->result($result,0,"auto_assign") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"auto_assign\" value=\"0\" "; if($db->result($result,0,"auto_assign") == 0) echo "checked"; 
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][116]." </td><td>   &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"auto_assign\" value=\"1\" "; if($db->result($result,0,"auto_assign") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"auto_assign\" value=\"0\" "; if($db->result($result,0,"auto_assign") == 0) echo "checked"; 
 	echo " ></td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][221]."</td><td>";
 	showCalendarForm("form","date_fiscale",$db->result($result,0,"date_fiscale"),0);	
 	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][219]."</td><td>&nbsp;".$lang["choice"][0]."<input type=\"radio\" name=\"permit_helpdesk\" value=\"1\""; if($db->result($result,0,"permit_helpdesk") == 1) echo "checked=\"checked\""; echo " />&nbsp;".$lang["choice"][1]."<input type=\"radio\" name=\"permit_helpdesk\" value=\"0\""; if($db->result($result,0,"permit_helpdesk") == 0) echo "checked=\"checked\""; echo" /></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][219]."</td><td>&nbsp;".$lang["choice"][1]."<input type=\"radio\" name=\"permit_helpdesk\" value=\"1\""; if($db->result($result,0,"permit_helpdesk") == 1) echo "checked=\"checked\""; echo " />&nbsp;".$lang["choice"][0]."<input type=\"radio\" name=\"permit_helpdesk\" value=\"0\""; if($db->result($result,0,"permit_helpdesk") == 0) echo "checked=\"checked\""; echo" /></td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][115]."</td><td><select name='cartridges_alarm'>";
 	for ($i=0;$i<=100;$i++)
@@ -1041,10 +1041,10 @@ function showFormConfigGen($target){
 	echo "<option value=\"30\"";  if($check==30){ echo " selected";} echo ">".$lang["setup"][309]."</option>";
 	echo "</select></td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][124]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"auto_add_users\" value=\"1\" "; if($db->result($result,0,"auto_add_users") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"auto_add_users\" value=\"0\" "; if($db->result($result,0,"auto_add_users") == 0) echo "checked"; 
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][124]." </td><td>   &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"auto_add_users\" value=\"1\" "; if($db->result($result,0,"auto_add_users") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"auto_add_users\" value=\"0\" "; if($db->result($result,0,"auto_add_users") == 0) echo "checked"; 
 	echo " ></td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][132]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"post_only_followup\" value=\"1\" "; if($db->result($result,0,"post_only_followup") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"post_only_followup\" value=\"0\" "; if($db->result($result,0,"post_only_followup") == 0) echo "checked"; 
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][132]." </td><td>   &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"post_only_followup\" value=\"1\" "; if($db->result($result,0,"post_only_followup") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"post_only_followup\" value=\"0\" "; if($db->result($result,0,"post_only_followup") == 0) echo "checked"; 
 	echo " ></td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][138]." </td><td><select name=\"debug\">";
@@ -1076,7 +1076,7 @@ function showFormConfigDisplay($target){
 	echo "<tr><th colspan='2'>".$lang["setup"][100]."</th></tr>";
 	
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][108]."</td><td> <input type=\"text\" name=\"num_of_events\" value=\"". $db->result($result,0,"num_of_events") ."\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][110]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"jobs_at_login\" value=\"1\" "; if($db->result($result,0,"jobs_at_login") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"jobs_at_login\" value=\"0\" "; if($db->result($result,0,"jobs_at_login") == 0) echo "checked"; 
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][110]." </td><td>   &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"jobs_at_login\" value=\"1\" "; if($db->result($result,0,"jobs_at_login") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"jobs_at_login\" value=\"0\" "; if($db->result($result,0,"jobs_at_login") == 0) echo "checked"; 
 	echo " ></td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][111]."</td><td> <input type=\"text\" name=\"list_limit\" value=\"". $db->result($result,0,"list_limit") ."\"></td></tr>";
@@ -1113,7 +1113,7 @@ function showFormConfigDisplay($target){
 	echo "</select></td></tr>";
 
 
-	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][117]." </td><td>   &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"public_faq\" value=\"1\" "; if($db->result($result,0,"public_faq") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"public_faq\" value=\"0\" "; if($db->result($result,0,"public_faq") == 0) echo "checked";
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][117]." </td><td>   &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"public_faq\" value=\"1\" "; if($db->result($result,0,"public_faq") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"public_faq\" value=\"0\" "; if($db->result($result,0,"public_faq") == 0) echo "checked";
 	echo " ></td></tr>";
 
 	$dp_limit=$db->result($result,0,"dropdown_limit");
@@ -1127,14 +1127,14 @@ function showFormConfigDisplay($target){
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][120]." </td><td><select name=\"use_ajax\">";
 	$use_ajax=$db->result($result,0,"use_ajax");
-	echo "<option value=\"1\"";  if($use_ajax==1){ echo " selected";} echo ">".$lang["choice"][0]." </option>";
-	echo "<option value=\"0\"";  if($use_ajax==0){ echo " selected";} echo ">".$lang["choice"][1]."</option>";
+	echo "<option value=\"1\"";  if($use_ajax==1){ echo " selected";} echo ">".$lang["choice"][1]." </option>";
+	echo "<option value=\"0\"";  if($use_ajax==0){ echo " selected";} echo ">".$lang["choice"][0]."</option>";
 	echo "</select></td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][127]." </td><td><select name=\"ajax_autocompletion\">";
 	$ajax_autocompletion=$db->result($result,0,"ajax_autocompletion");
-	echo "<option value=\"1\"";  if($ajax_autocompletion==1){ echo " selected";} echo ">".$lang["choice"][0]." </option>";
-	echo "<option value=\"0\"";  if($ajax_autocompletion==0){ echo " selected";} echo ">".$lang["choice"][1]."</option>";
+	echo "<option value=\"1\"";  if($ajax_autocompletion==1){ echo " selected";} echo ">".$lang["choice"][1]." </option>";
+	echo "<option value=\"0\"";  if($ajax_autocompletion==0){ echo " selected";} echo ">".$lang["choice"][0]."</option>";
 	echo "</select></td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][121]."</td><td><input type=\"text\" size='1' name=\"ajax_wildcard\" value=\"". $db->result($result,0,"ajax_wildcard") ."\"></td></tr>";
@@ -1160,8 +1160,8 @@ function showFormConfigDisplay($target){
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][129]." </td><td><select name=\"view_ID\">";
 	$view_ID=$db->result($result,0,"view_ID");
-	echo "<option value=\"1\"";  if($view_ID==1){ echo " selected";} echo ">".$lang["choice"][0]." </option>";
-	echo "<option value=\"0\"";  if($view_ID==0){ echo " selected";} echo ">".$lang["choice"][1]."</option>";
+	echo "<option value=\"1\"";  if($view_ID==1){ echo " selected";} echo ">".$lang["choice"][1]." </option>";
+	echo "<option value=\"0\"";  if($view_ID==0){ echo " selected";} echo ">".$lang["choice"][0]."</option>";
 	echo "</select></td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][130]." </td><td><select name=\"nextprev_item\">";
@@ -1308,8 +1308,8 @@ function showFormExtSources($target) {
 		if (function_exists("ldap_start_tls")){
 			$ldap_use_tls=$db->result($result,0,"ldap_use_tls");
 			echo "<select name='ldap_use_tls'>\n";
-			echo "<option value='0' ".(!$ldap_use_tls?" selected ":"").">".$lang["choice"][1]."</option>\n";
-			echo "<option value='1' ".($ldap_use_tls?" selected ":"").">".$lang["choice"][0]."</option>\n";
+			echo "<option value='0' ".(!$ldap_use_tls?" selected ":"").">".$lang["choice"][0]."</option>\n";
+			echo "<option value='1' ".($ldap_use_tls?" selected ":"").">".$lang["choice"][1]."</option>\n";
 			echo "</select>\n";	
 		} else {
 			echo "<input type='hidden' name='ldap_use_tls' value='0'>";
@@ -1384,13 +1384,13 @@ function showFormMailing($target) {
 		echo "<div align='center'><table class='tab_cadre_fixe'><tr><th colspan='2'>".$lang["setup"][201]."</th></tr>";
 		
 			if (function_exists('mail')) {
-		echo "<tr class='tab_bg_2'><td >".$lang["setup"][202]."</td><td align='center'>&nbsp; ".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"mailing\" value=\"1\" "; if($db->result($result,0,"mailing") == 1) echo "checked"; echo " > &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"mailing\" value=\"0\" "; if($db->result($result,0,"mailing") == 0) echo "checked"; echo " ></td></tr>";
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][202]."</td><td align='center'>&nbsp; ".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"mailing\" value=\"1\" "; if($db->result($result,0,"mailing") == 1) echo "checked"; echo " > &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"mailing\" value=\"0\" "; if($db->result($result,0,"mailing") == 0) echo "checked"; echo " ></td></tr>";
 		
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][203]."</td><td> <input type=\"text\" name=\"admin_email\" size='40' value=\"".$db->result($result,0,"admin_email")."\"> </td></tr>";
 		
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][204]."</td><td><input type=\"text\" name=\"mailing_signature\" size='40' value=\"".$db->result($result,0,"mailing_signature")."\" ></td></tr>";
 		
-		echo "<tr class='tab_bg_2'><td >".$lang["setup"][226]."</td><td align='center'>&nbsp; ".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"url_in_mail\" value=\"1\" "; if($db->result($result,0,"url_in_mail") == 1) echo "checked"; echo " > &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"url_in_mail\" value=\"0\" "; if($db->result($result,0,"url_in_mail") == 0) echo "checked"; echo " ></td></tr>";
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][226]."</td><td align='center'>&nbsp; ".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"url_in_mail\" value=\"1\" "; if($db->result($result,0,"url_in_mail") == 1) echo "checked"; echo " > &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"url_in_mail\" value=\"0\" "; if($db->result($result,0,"url_in_mail") == 0) echo "checked"; echo " ></td></tr>";
 		
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][227]."</td><td> <input type=\"text\" name=\"url_base\" size='40' value=\"".$db->result($result,0,"url_base")."\"> </td></tr>";
 		echo "</table>";
@@ -1399,69 +1399,69 @@ function showFormMailing($target) {
 		
 		// ADMIN
 		echo "<table class='tab_cadre_fixe'><tr><th colspan='6'>".$lang["setup"][206]."</th></tr>";
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][211]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_new_admin\" value=\"1\" "; if($db->result($result,0,"mailing_new_admin") == 1) echo "checked"; echo " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_new_admin\" value=\"0\" "; if($db->result($result,0,"mailing_new_admin") == 0) echo "checked"; echo " ></td>";
+		echo "<tr class='tab_bg_2'><td>".$lang["setup"][211]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_new_admin\" value=\"1\" "; if($db->result($result,0,"mailing_new_admin") == 1) echo "checked"; echo " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_new_admin\" value=\"0\" "; if($db->result($result,0,"mailing_new_admin") == 0) echo "checked"; echo " ></td>";
 		
-		echo "<td >".$lang["setup"][230]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_update_admin\" value=\"1\" "; if($db->result($result,0,"mailing_update_admin") == 1) echo "checked"; echo "></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_update_admin\" value=\"0\" "; if($db->result($result,0,"mailing_update_admin") == 0) echo "checked"; echo " ></td></tr>";
+		echo "<td >".$lang["setup"][230]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_update_admin\" value=\"1\" "; if($db->result($result,0,"mailing_update_admin") == 1) echo "checked"; echo "></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_update_admin\" value=\"0\" "; if($db->result($result,0,"mailing_update_admin") == 0) echo "checked"; echo " ></td></tr>";
 		
-		echo "<tr class='tab_bg_2'><td >".$lang["setup"][212]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_followup_admin\" value=\"1\" "; if($db->result($result,0,"mailing_followup_admin") == 1) echo "checked"; echo "></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_followup_admin\" value=\"0\" "; if($db->result($result,0,"mailing_followup_admin") == 0) echo "checked"; echo " ></td>";
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][212]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_followup_admin\" value=\"1\" "; if($db->result($result,0,"mailing_followup_admin") == 1) echo "checked"; echo "></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_followup_admin\" value=\"0\" "; if($db->result($result,0,"mailing_followup_admin") == 0) echo "checked"; echo " ></td>";
 		
-		echo "<td>".$lang["setup"][213]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_finish_admin\" value=\"1\" "; if($db->result($result,0,"mailing_finish_admin") == 1) echo "checked"; echo " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_finish_admin\" value=\"0\" "; if($db->result($result,0,"mailing_finish_admin") == 0) echo "checked"; echo " ></td></tr>";
+		echo "<td>".$lang["setup"][213]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_finish_admin\" value=\"1\" "; if($db->result($result,0,"mailing_finish_admin") == 1) echo "checked"; echo " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_finish_admin\" value=\"0\" "; if($db->result($result,0,"mailing_finish_admin") == 0) echo "checked"; echo " ></td></tr>";
 		
 		// ALL ADMIN
 		echo "<tr class='tab_bg_2'><th colspan='6'>".$lang["setup"][207]."</th></tr>";
 		
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][211]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_new_all_admin\" value=\"1\" "; if($db->result($result,0,"mailing_new_all_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_new_all_admin\" value=\"0\" "; if($db->result($result,0,"mailing_new_all_admin") == 0) echo "checked"; echo  " ></td>";
+		echo "<tr class='tab_bg_2'><td>".$lang["setup"][211]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_new_all_admin\" value=\"1\" "; if($db->result($result,0,"mailing_new_all_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_new_all_admin\" value=\"0\" "; if($db->result($result,0,"mailing_new_all_admin") == 0) echo "checked"; echo  " ></td>";
 		
-		echo "<td>".$lang["setup"][230]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_update_all_admin\" value=\"1\"  "; if($db->result($result,0,"mailing_update_all_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_update_all_admin\" value=\"0\"  "; if($db->result($result,0,"mailing_update_all_admin") == 0) echo "checked"; echo  " ></td></tr>";
+		echo "<td>".$lang["setup"][230]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_update_all_admin\" value=\"1\"  "; if($db->result($result,0,"mailing_update_all_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_update_all_admin\" value=\"0\"  "; if($db->result($result,0,"mailing_update_all_admin") == 0) echo "checked"; echo  " ></td></tr>";
 
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][212]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_followup_all_admin\" value=\"1\"  "; if($db->result($result,0,"mailing_followup_all_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_followup_all_admin\" value=\"0\"  "; if($db->result($result,0,"mailing_followup_all_admin") == 0) echo "checked"; echo  " ></td>";
+		echo "<tr class='tab_bg_2'><td>".$lang["setup"][212]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_followup_all_admin\" value=\"1\"  "; if($db->result($result,0,"mailing_followup_all_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_followup_all_admin\" value=\"0\"  "; if($db->result($result,0,"mailing_followup_all_admin") == 0) echo "checked"; echo  " ></td>";
 		
-		echo "<td>".$lang["setup"][213]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_finish_all_admin\" value=\"1\"  "; if($db->result($result,0,"mailing_finish_all_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_finish_all_admin\" value=\"0\"  "; if($db->result($result,0,"mailing_finish_all_admin") == 0) echo "checked"; echo  " ></td></tr>";
+		echo "<td>".$lang["setup"][213]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_finish_all_admin\" value=\"1\"  "; if($db->result($result,0,"mailing_finish_all_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_finish_all_admin\" value=\"0\"  "; if($db->result($result,0,"mailing_finish_all_admin") == 0) echo "checked"; echo  " ></td></tr>";
 		
 		// ALL NORMAL
 		echo "<tr><th colspan='6'>".$lang["setup"][208]."</th></tr>";
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][211]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_new_all_normal\" value=\"1\"  "; if($db->result($result,0,"mailing_new_all_normal") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_new_all_normal\" value=\"0\"  "; if($db->result($result,0,"mailing_new_all_normal") == 0) echo "checked"; echo  " ></td>";
+		echo "<tr class='tab_bg_2'><td>".$lang["setup"][211]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_new_all_normal\" value=\"1\"  "; if($db->result($result,0,"mailing_new_all_normal") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_new_all_normal\" value=\"0\"  "; if($db->result($result,0,"mailing_new_all_normal") == 0) echo "checked"; echo  " ></td>";
 
-		echo "<td>".$lang["setup"][230]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_update_all_normal\" value=\"1\" "; if($db->result($result,0,"mailing_update_all_normal") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_update_all_normal\" value=\"0\" "; if($db->result($result,0,"mailing_update_all_normal") == 0) echo "checked"; echo  " ></td></tr>";
+		echo "<td>".$lang["setup"][230]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_update_all_normal\" value=\"1\" "; if($db->result($result,0,"mailing_update_all_normal") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_update_all_normal\" value=\"0\" "; if($db->result($result,0,"mailing_update_all_normal") == 0) echo "checked"; echo  " ></td></tr>";
 
 		
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][212]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_followup_all_normal\" value=\"1\" "; if($db->result($result,0,"mailing_followup_all_normal") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_followup_all_normal\" value=\"0\" "; if($db->result($result,0,"mailing_followup_all_normal") == 0) echo "checked"; echo  " ></td>";
+		echo "<tr class='tab_bg_2'><td>".$lang["setup"][212]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_followup_all_normal\" value=\"1\" "; if($db->result($result,0,"mailing_followup_all_normal") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_followup_all_normal\" value=\"0\" "; if($db->result($result,0,"mailing_followup_all_normal") == 0) echo "checked"; echo  " ></td>";
 		
-		echo "<td>".$lang["setup"][213]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_finish_all_normal\" value=\"1\" "; if($db->result($result,0,"mailing_finish_all_normal") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_finish_all_normal\" value=\"0\" "; if($db->result($result,0,"mailing_finish_all_normal") == 0) echo "checked"; echo  " ></td></tr>";
+		echo "<td>".$lang["setup"][213]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_finish_all_normal\" value=\"1\" "; if($db->result($result,0,"mailing_finish_all_normal") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_finish_all_normal\" value=\"0\" "; if($db->result($result,0,"mailing_finish_all_normal") == 0) echo "checked"; echo  " ></td></tr>";
 		
 		// ASSIGN
 		echo "<tr><th colspan='6'>".$lang["setup"][209]."</th></tr>";
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][211]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_new_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_new_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_new_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_new_attrib") == 0) echo "checked"; echo  " ></td>";
+		echo "<tr class='tab_bg_2'><td>".$lang["setup"][211]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_new_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_new_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_new_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_new_attrib") == 0) echo "checked"; echo  " ></td>";
 		
-		echo "<td>".$lang["setup"][230]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_update_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_update_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_update_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_update_attrib") == 0) echo "checked"; echo  " ></td></tr>";
+		echo "<td>".$lang["setup"][230]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_update_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_update_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_update_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_update_attrib") == 0) echo "checked"; echo  " ></td></tr>";
 
 
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][212]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_followup_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_followup_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_followup_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_followup_attrib") == 0) echo "checked"; echo  " ></td>";
+		echo "<tr class='tab_bg_2'><td>".$lang["setup"][212]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_followup_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_followup_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_followup_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_followup_attrib") == 0) echo "checked"; echo  " ></td>";
 
-		echo "<td>".$lang["setup"][213]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_finish_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_finish_attrib") == 0) echo "checked"; echo  " ></td></tr>";
+		echo "<td>".$lang["setup"][213]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_finish_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_finish_attrib") == 0) echo "checked"; echo  " ></td></tr>";
 
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][229]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"0\"  "; if($db->result($result,0,"mailing_attrib_attrib") == 0) echo "checked"; echo  " ></td>";
+		echo "<tr class='tab_bg_2'><td>".$lang["setup"][229]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"0\"  "; if($db->result($result,0,"mailing_attrib_attrib") == 0) echo "checked"; echo  " ></td>";
 		echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
 
 		// USER
 		echo "<tr><th colspan='6'>".$lang["setup"][210]."</th></tr>";
 		
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][214]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_new_user\" value=\"1\" "; if($db->result($result,0,"mailing_new_user") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_new_user\" value=\"0\" "; if($db->result($result,0,"mailing_new_user") == 0) echo "checked"; echo  " ></td>";
+		echo "<tr class='tab_bg_2'><td>".$lang["setup"][214]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_new_user\" value=\"1\" "; if($db->result($result,0,"mailing_new_user") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_new_user\" value=\"0\" "; if($db->result($result,0,"mailing_new_user") == 0) echo "checked"; echo  " ></td>";
 
-		echo "<td>".$lang["setup"][230]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_update_user\" value=\"1\" "; if($db->result($result,0,"mailing_update_user") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_update_user\" value=\"0\" "; if($db->result($result,0,"mailing_update_user") == 0) echo "checked"; echo  " ></td></tr>";
+		echo "<td>".$lang["setup"][230]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_update_user\" value=\"1\" "; if($db->result($result,0,"mailing_update_user") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_update_user\" value=\"0\" "; if($db->result($result,0,"mailing_update_user") == 0) echo "checked"; echo  " ></td></tr>";
 		
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][215]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_followup_user\" value=\"1\" "; if($db->result($result,0,"mailing_followup_user") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_followup_user\" value=\"0\" "; if($db->result($result,0,"mailing_followup_user") == 0) echo "checked"; echo  " ></td>";
+		echo "<tr class='tab_bg_2'><td>".$lang["setup"][215]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_followup_user\" value=\"1\" "; if($db->result($result,0,"mailing_followup_user") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_followup_user\" value=\"0\" "; if($db->result($result,0,"mailing_followup_user") == 0) echo "checked"; echo  " ></td>";
 		
-		echo "<td>".$lang["setup"][216]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_finish_user\" value=\"1\"  "; if($db->result($result,0,"mailing_finish_user") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_finish_user\" value=\"0\" "; if($db->result($result,0,"mailing_finish_user") == 0) echo "checked"; echo  " ></td></tr>";
+		echo "<td>".$lang["setup"][216]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_finish_user\" value=\"1\"  "; if($db->result($result,0,"mailing_finish_user") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_finish_user\" value=\"0\" "; if($db->result($result,0,"mailing_finish_user") == 0) echo "checked"; echo  " ></td></tr>";
 		echo "</table>";
 
 		echo "<p><b>".$lang["setup"][224]."</b></p>";
 		
 		echo "<table class='tab_cadre_fixe'><tr><th colspan='2'>".$lang["setup"][225]."<th></tr>";
 
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][206]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_resa_admin\" value=\"1\" "; if($db->result($result,0,"mailing_resa_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_resa_admin\" value=\"0\" "; if($db->result($result,0,"mailing_resa_admin") == 0) echo "checked"; echo  " ></td></tr>";
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][207]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_resa_all_admin\" value=\"1\" "; if($db->result($result,0,"mailing_resa_all_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_resa_all_admin\" value=\"0\" "; if($db->result($result,0,"mailing_resa_all_admin") == 0) echo "checked"; echo  " ></td></tr>";
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][210]."</td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_resa_user\" value=\"1\" "; if($db->result($result,0,"mailing_resa_user") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_resa_user\" value=\"0\" "; if($db->result($result,0,"mailing_resa_user") == 0) echo "checked"; echo  " ></td></tr>";
+		echo "<tr class='tab_bg_2'><td>".$lang["setup"][206]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_resa_admin\" value=\"1\" "; if($db->result($result,0,"mailing_resa_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_resa_admin\" value=\"0\" "; if($db->result($result,0,"mailing_resa_admin") == 0) echo "checked"; echo  " ></td></tr>";
+		echo "<tr class='tab_bg_2'><td>".$lang["setup"][207]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_resa_all_admin\" value=\"1\" "; if($db->result($result,0,"mailing_resa_all_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_resa_all_admin\" value=\"0\" "; if($db->result($result,0,"mailing_resa_all_admin") == 0) echo "checked"; echo  " ></td></tr>";
+		echo "<tr class='tab_bg_2'><td>".$lang["setup"][210]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_resa_user\" value=\"1\" "; if($db->result($result,0,"mailing_resa_user") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_resa_user\" value=\"0\" "; if($db->result($result,0,"mailing_resa_user") == 0) echo "checked"; echo  " ></td></tr>";
 
 		echo "</table>";
 
@@ -1820,50 +1820,50 @@ function ocsFormConfig($target, $id) {
 	echo "<tr><td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][19]." </td><td>";
 	echo "<select name='import_general_os'>";
-	echo "<option value='0' ".($os==0?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "<option value='1' ".($os==1?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".($os==0?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='1' ".($os==1?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][19]." </td><td>";
 	echo "<select name='import_general_serial'>";
-	echo "<option value='0' ".($serial==0?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "<option value='1' ".($serial==1?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".($serial==0?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='1' ".($serial==1?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][22]." </td><td>";
 	echo "<select name='import_general_model'>";
-	echo "<option value='0' ".($model==0?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "<option value='1' ".($model==1?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".($model==0?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='1' ".($model==1?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][5]." </td><td>";
 	echo "<select name='import_general_enterprise'>";
-	echo "<option value='0' ".($enterprise==0?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "<option value='1' ".($enterprise==1?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".($enterprise==0?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='1' ".($enterprise==1?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][17]." </td><td>";
 	echo "<select name='import_general_type'>";
-	echo "<option value='0' ".($type==0?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "<option value='1' ".($type==1?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".($type==0?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='1' ".($type==1?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][24]." </td><td>";
 	echo "<select name='import_general_domain'>";
-	echo "<option value='0' ".($domain==0?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "<option value='1' ".($domain==1?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".($domain==0?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='1' ".($domain==1?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][18]." </td><td>";
 	echo "<select name='import_general_contact'>";
-	echo "<option value='0' ".($contact==0?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "<option value='1' ".($contact==1?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".($contact==0?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='1' ".($contact==1?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][25]." </td><td>";
 	echo "<select name='import_general_comments'>";
-	echo "<option value='0' ".($comments==0?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "<option value='1' ".($comments==1?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".($comments==0?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='1' ".($comments==1?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
 
@@ -1872,8 +1872,8 @@ function ocsFormConfig($target, $id) {
 	$ip=$data["import_ip"];
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][38]." </td><td>";
 	echo "<select name='import_ip'>";
-	echo "<option value='0' ".($ip==0?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "<option value='1' ".($ip==1?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".($ip==0?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='1' ".($ip==1?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
 
@@ -1891,64 +1891,64 @@ function ocsFormConfig($target, $id) {
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][29]." </td><td>";
 	echo "<select name='import_device_processor'>";
-	echo "<option value='0' ".($processor==0?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "<option value='1' ".($processor==1?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".($processor==0?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='1' ".($processor==1?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][30]." </td><td>";
 	echo "<select name='import_device_memory'>";
-	echo "<option value='0' ".($memory==0?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "<option value='1' ".($memory==1?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".($memory==0?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='1' ".($memory==1?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][31]." </td><td>";
 	echo "<select name='import_device_hdd'>";
-	echo "<option value='0' ".($hdd==0?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "<option value='1' ".($hdd==1?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".($hdd==0?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='1' ".($hdd==1?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][32]." </td><td>";
 	echo "<select name='import_device_iface'>";
-	echo "<option value='0' ".($iface==0?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "<option value='1' ".($iface==1?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".($iface==0?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='1' ".($iface==1?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][33]." </td><td>";
 	echo "<select name='import_device_gfxcard'>";
-	echo "<option value='0' ".($gfxcard==0?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "<option value='1' ".($gfxcard==1?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".($gfxcard==0?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='1' ".($gfxcard==1?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][34]." </td><td>";
 	echo "<select name='import_device_sound'>";
-	echo "<option value='0' ".($sound==0?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "<option value='1' ".($sound==1?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".($sound==0?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='1' ".($sound==1?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][35]." </td><td>";
 	echo "<select name='import_device_drives'>";
-	echo "<option value='0' ".($drives==0?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "<option value='1' ".($drives==1?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".($drives==0?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='1' ".($drives==1?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][36]." </td><td>";
 	echo "<select name='import_device_modems'>";
-	echo "<option value='0' ".($modems==0?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "<option value='1' ".($modems==1?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".($modems==0?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='1' ".($modems==1?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][37]." </td><td>";
 	echo "<select name='import_device_ports'>";
-	echo "<option value='0' ".($ports==0?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "<option value='1' ".($ports==1?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='0' ".($ports==0?" selected ":"").">".$lang["choice"][0]."</option>";
+	echo "<option value='1' ".($ports==1?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
 

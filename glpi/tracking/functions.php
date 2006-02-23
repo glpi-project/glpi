@@ -809,8 +809,8 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 		echo "<tr class='tab_bg_1'>";
 		echo "<td align='center'>".$lang["help"][8].":</td>";
 		echo "<td align='center'>	<select name='emailupdates'>";
-		echo "<option value='no'>".$lang["choice"][1]."";
-		echo "<option value='yes' selected>".$lang["choice"][0]."";
+		echo "<option value='no'>".$lang["choice"][0]."";
+		echo "<option value='yes' selected>".$lang["choice"][1]."";
 		echo "</select>";
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_1'>";
@@ -1002,8 +1002,8 @@ if($extended)	{
 	echo "<td align='center'  colspan='1'><input type='submit' name='reset' value=\"".$lang["buttons"][16]."\" class='submit'></td>";
 
 	echo "<td align='center' colspan='2'>".$lang["reports"][59].":<select name='showfollowups'>";
-	echo "<option value='1' ".($showfollowups=="1"?"selected":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='0' ".($showfollowups=="0"?"selected":"").">".$lang["choice"][1]."</option>";	
+	echo "<option value='1' ".($showfollowups=="1"?"selected":"").">".$lang["choice"][1]."</option>";
+	echo "<option value='0' ".($showfollowups=="0"?"selected":"").">".$lang["choice"][0]."</option>";	
 	echo "</select></td>";
 	echo "</tr>";
 
@@ -1866,12 +1866,12 @@ function showJobDetails ($ID){
 			echo $lang["job"][19].":</td><td>";
 			if ($isadmin){
 				echo "<select name='emailupdates'>";
-				echo "<option value='no'>".$lang["choice"][1]."</option>";
-				echo "<option value='yes' ".($job->fields["emailupdates"]=="yes"?" selected ":"").">".$lang["choice"][0]."</option>";
+				echo "<option value='no'>".$lang["choice"][0]."</option>";
+				echo "<option value='yes' ".($job->fields["emailupdates"]=="yes"?" selected ":"").">".$lang["choice"][1]."</option>";
 				echo "</select>";
 			} else {
-				if ($job->fields["emailupdates"]=="yes") echo $lang["choice"][0];
-				else $lang["choice"][1];
+				if ($job->fields["emailupdates"]=="yes") echo $lang["choice"][1];
+				else $lang["choice"][0];
 			}
 			echo "</td></tr>";
 
@@ -2029,8 +2029,8 @@ function showFollowupsSummary($tID){
 			if ($isadmin){
 				echo "<td>";
 				if ($data["private"])
-					echo $lang["choice"][0];
-				else echo $lang["choice"][1];
+					echo $lang["choice"][1];
+				else echo $lang["choice"][0];
 				echo "</td>";
 			}
 					
@@ -2093,8 +2093,8 @@ function showAddFollowupForm($tID){
 		echo "<td>".$lang["job"][30].":</td>";
 		echo "<td>";
 		echo "<select name='private'>";
-		echo "<option value='0'>".$lang["choice"][1]."</option>";
-		echo "<option value='1'>".$lang["choice"][0]."</option>";
+		echo "<option value='0'>".$lang["choice"][0]."</option>";
+		echo "<option value='1'>".$lang["choice"][1]."</option>";
 		echo "</select>";
 		echo "</td>";
 		echo "</tr>";
@@ -2212,8 +2212,8 @@ function showUpdateFollowupForm($ID){
 				echo "<td>".$lang["job"][30].":</td>";
 				echo "<td>";
 				echo "<select name='private'>";
-				echo "<option value='0' ".(!$data["private"]?" selected":"").">".$lang["choice"][1]."</option>";
-				echo "<option value='1' ".($data["private"]?" selected":"").">".$lang["choice"][0]."</option>";
+				echo "<option value='0' ".(!$data["private"]?" selected":"").">".$lang["choice"][0]."</option>";
+				echo "<option value='1' ".($data["private"]?" selected":"").">".$lang["choice"][1]."</option>";
 				echo "</select>";
 				echo "</td>";
 				echo "</tr>";

@@ -592,8 +592,8 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$withenterprise=0,$with
 function dropdownYesNo($name,$value){
 	global $lang;
 	echo "<select name='$name'>\n";
-	echo "<option value='N' ".($value=='N'?" selected ":"").">".$lang["choice"][1]."</option>\n";
-	echo "<option value='Y' ".($value=='Y'?" selected ":"").">".$lang["choice"][0]."</option>\n";
+	echo "<option value='N' ".($value=='N'?" selected ":"").">".$lang["choice"][0]."</option>\n";
+	echo "<option value='Y' ".($value=='Y'?" selected ":"").">".$lang["choice"][1]."</option>\n";
 	echo "</select>\n";	
 }	
 
