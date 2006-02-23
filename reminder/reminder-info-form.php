@@ -53,21 +53,21 @@ if (isset($_POST["add"]))
 	checkAuthentication("admin");
 
 	$newID=addReminder($_POST);
-	logEvent($newID, "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
+	
 	glpi_header($cfg_install["root"]."/reminder/");
 } 
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
 	deleteReminder($_POST);
-	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
+	
 	glpi_header($cfg_install["root"]."/reminder/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	updateReminder($_POST);
-	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
+	
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
