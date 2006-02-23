@@ -215,6 +215,9 @@ function updateReminder($input) {
 	if (isset($input['plan'])){
 		$plan=$input['plan'];
 		unset($input['plan']);
+		$input["begin"] = $plan["begin_date"]." ".$plan["begin_hour"].":".$plan["begin_min"].":00";
+  		$input["end"] = $plan["end_date"]." ".$plan["end_hour"].":".$plan["end_min"].":00";
+		$input["rv"]=1;
 		}	
 
 
@@ -222,12 +225,6 @@ function updateReminder($input) {
 	$updates[0]= "date_mod";
 	$reminder->fields["date_mod"] = date("Y-m-d H:i:s");
 	
-	if (isset($plan)){
-		$input["begin"] = $plan["begin_date"]." ".$plan["begin_hour"].":".$plan["begin_min"].":00";
-  		$input["end"] = $plan["end_date"]." ".$plan["end_hour"].":".$plan["end_min"].":00";
-		$input["rv"]=1;
-	}
-
 
 	// Fill the update-array with changes
 	$x=0;
@@ -249,17 +246,19 @@ function addReminder($input) {
 	
 	$remind = new Reminder;
 	
+	$input["begin"] = $input["end"] = "0000-00-00 00:00:00";
+
 	if (isset($input['plan'])){
 		$plan=$input['plan'];
 		unset($input['plan']);
 		$input['rv']="1";
+		$input["begin"] = $plan["begin_date"]." ".$plan["begin_hour"].":".$plan["begin_min"].":00";
+  		$input["end"] = $plan["end_date"]." ".$plan["end_hour"].":".$plan["end_min"].":00";
 		}	
 
 		
 	// set new date.
    	$input["date"] = date("Y-m-d H:i:s");
-	$input["begin"] = $plan["begin_date"]." ".$plan["begin_hour"].":".$plan["begin_min"].":00";
-  	$input["end"] = $plan["end_date"]." ".$plan["end_hour"].":".$plan["end_min"].":00";
 
 	// dump status
 	unset($input['add']);
