@@ -50,6 +50,7 @@ include ($phproot . "/glpi/includes_documents.php");
 include ($phproot . "/glpi/includes_users.php");
 include ($phproot . "/glpi/includes_links.php");
 include ($phproot . "/glpi/includes_ocsng.php");
+include ($phproot . "/glpi/includes_phones.php");
 
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
@@ -130,6 +131,9 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 						break;
 					case LINK_TYPE:
 						updateLink($input);
+						break;
+					case PHONE_TYPE:
+						updatePhone($input);
 						break;
 					
 				}

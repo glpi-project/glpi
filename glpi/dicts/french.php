@@ -222,7 +222,7 @@ $lang["computers"][49]="Modification du contact. Les éléments connectés ont p
 $lang["computers"][51]="Source de mise à jour";
 $lang["computers"][52]="OS Version";
 $lang["computers"][53]="Service Pack";
-$lang["computers"][54]="Pas de téléphone connectée";
+$lang["computers"][54]="Pas de téléphone connecté";
 $lang["computers"][55]="Téléphone(s)";
 
 $lang["connect"][0]="Connexion(s) directe(s)";

@@ -122,7 +122,7 @@ if (isset($_POST["several_add"])) {
 			"printers"=>$lang["setup"][43],		
 			"monitors"=>$lang["setup"][44],		
 			"peripherals"=>$lang["setup"][69],
-			"phones"=$lang["setup"][504];
+			"phones"=>$lang["setup"][504],
 			"cartridge_type"=>$lang["setup"][84],
 			"consumable_type"=>$lang["setup"][92],
 			"contract_type"=>$lang["setup"][85],
@@ -138,7 +138,7 @@ if (isset($_POST["several_add"])) {
 			"model_printers"=>$lang["setup"][96],	
 			"model_monitors"=>$lang["setup"][94],
 			"model_peripherals"=>$lang["setup"][97],			
-			 "model_phones"=$lang["setup"][503];
+			 "model_phones"=>$lang["setup"][503],
 
 			),
 	
@@ -169,7 +169,7 @@ if (isset($_POST["several_add"])) {
 			"domain"=>$lang["setup"][89],
 			"network"=>$lang["setup"][88],
 			"vlan"=>$lang["setup"][90],	
-			"phone_power"=$lang["setup"][505];
+			"phone_power"=>$lang["setup"][505],
 			),
 
 	); //end $opt
