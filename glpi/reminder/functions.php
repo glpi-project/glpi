@@ -130,7 +130,7 @@ function showReminderForm ($target,$ID) {
 		echo "<script type='text/javascript' >\n";
 		echo "function showPlan(){\n";
 		echo "Element.hide('plan');";
-		echo "var a=new Ajax.Updater('viewplan','".$cfg_install["root"]."/ajax/planning.php' , {method: 'get',parameters: 'form=remind".(($ID)?"&begin_date=".$remind->fields["begin"]."&end_date=".$remind->fields["end"]."":"")."'});";
+		echo "var a=new Ajax.Updater('viewplan','".$cfg_install["root"]."/ajax/planning.php' , {method: 'get',parameters: 'form=remind".(($ID&&$rv)?"&begin_date=".$remind->fields["begin"]."&end_date=".$remind->fields["end"]."":"")."'});";
 		echo "}";
 		echo "</script>\n";
 		
@@ -138,7 +138,7 @@ function showReminderForm ($target,$ID) {
 		
 	
 
-		if(!$ID){
+		if(!$ID||$rv==0){
 			echo "<div id='plan'  onClick='showPlan()'>\n";
 			echo "<span style='font-weight: bold;text-decoration: none; color : #009966;'>".$lang["reminder"][12]."</span>";
 		}else{
