@@ -55,9 +55,12 @@ checkAuthentication("admin");
 				include ($phproot."/glpi/includes_search.php");
 				echo "<select name='id_field' id='massiveaction_field'>";
 				echo "<option value='0' selected>------</option>";
-				foreach ($SEARCH_OPTION[$_POST["type"]] as $key => $val)
-					if (!empty($val["linkfield"])&&$key>1)
-						echo "<option value='$key'>".$val["name"]."</option>";
+				foreach ($SEARCH_OPTION[$_POST["type"]] as $key => $val){
+					if ($key>1){ // No ID
+						if (!empty($val["linkfield"])||$val["table"]=="glpi_dropdown_state")
+							echo "<option value='$key'>".$val["name"]."</option>";
+					}
+				}
 				echo "</select>";
 
 				echo "<script type='text/javascript' >\n";
