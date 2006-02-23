@@ -41,7 +41,7 @@ include ($phproot . "/glpi/includes_state.php");
 
 checkAuthentication("normal");
 
-commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][41],$_SERVER["PHP_SELF"]);
 
 titlePhones();
 

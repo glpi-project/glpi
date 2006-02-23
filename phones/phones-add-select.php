@@ -38,7 +38,7 @@ include ($phproot . "/glpi/includes.php");
 
 checkAuthentication("admin");
 
-commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][41],$_SERVER["PHP_SELF"]);
 
       GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
 

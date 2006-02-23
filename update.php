@@ -3923,6 +3923,9 @@ $query = "CREATE TABLE `glpi_phones` (
   KEY `tech_num` (`tech_num`)
 ) ENGINE=MyISAM;";
 	$db->query($query) or die("0.65 add phones ".$lang["update"][90].$db->error());
+
+$query="INSERT INTO `glpi_phones` VALUES (1, NULL, '0000-00-00 00:00:00', NULL, NULL, 0, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, 0, '', 0, 0, 0, '0', 'N', '1', 'Blank Template', NULL);";
+$db->query($query) or die("0.65 blank template in phones ".$lang["update"][90].$db->error());
 }
 
 

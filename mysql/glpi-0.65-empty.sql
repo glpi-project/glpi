@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-02-23 04:12
+#GLPI Dump database on 2006-02-23 04:38
 
 ### Dump table glpi_cartridges
 
@@ -1499,6 +1499,7 @@ CREATE TABLE `glpi_phones` (
    KEY tech_num (`tech_num`)
 ) TYPE=MyISAM;
 
+INSERT INTO glpi_phones VALUES ('1',NULL,'0000-00-00 00:00:00',NULL,NULL,'0',NULL,NULL,NULL,NULL,'0','0',NULL,NULL,'0','','0','0','0','0','N','1','Blank Template',NULL);
 
 ### Dump table glpi_printers
 
