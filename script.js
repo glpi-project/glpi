@@ -1,4 +1,9 @@
 
+/**
+ * This array is used to remember mark status of rows in browse mode
+ */
+var marked_row = new Array;
+
 var timeoutglobalvar;
 function setdisplay (objet, statut) {
 	if (objet.style.display != statut) objet.style.display = statut;
@@ -138,7 +143,65 @@ function historyforward() { history.forward(); }
 function fillidfield(Type,Id){
 window.opener.document.forms["helpdeskform"].elements["computer"].value = Id;
 window.opener.document.forms["helpdeskform"].elements["device_type"].value = Type;
-window.close();}
+window.close();
+}
 
-window.onload=montre;
+/**
+ * marks all rows and selects its first checkbox inside the given element
+ * the given element is usaly a table or a div containing the table or tables
+ * From phpMyAdmin
+ *
+ * @param    container    DOM element
+ */
+function markAllRows( container_id ) {
+    var rows = document.getElementById(container_id).getElementsByTagName('tr');
+    var unique_id;
+    var checkbox;
+
+        for ( var i = 0; i < rows.length; i++ ) {
+
+        checkbox = rows[i].getElementsByTagName( 'input' )[0];
+
+        if ( checkbox && checkbox.type == 'checkbox' ) {
+            unique_id = checkbox.name + checkbox.value;
+            if ( checkbox.disabled == false ) {
+                checkbox.checked = true;
+                if ( typeof(marked_row[unique_id]) == 'undefined' || !marked_row[unique_id] ) {
+                    rows[i].className += ' marked';
+                    marked_row[unique_id] = true;
+                }
+            }
+            }
+        }
+
+        return true;
+}
+
+
+/**
+ * marks all rows and selects its first checkbox inside the given element
+ * the given element is usaly a table or a div containing the table or tables
+ * From phpMyAdmin 
+ *
+ * @param    container    DOM element
+ */
+function unMarkAllRows( container_id ) {
+        var rows = document.getElementById(container_id).getElementsByTagName('tr');
+    var unique_id;
+    var checkbox;
+
+        for ( var i = 0; i < rows.length; i++ ) {
+
+        checkbox = rows[i].getElementsByTagName( 'input' )[0];
+
+        if ( checkbox && checkbox.type == 'checkbox' ) {
+            unique_id = checkbox.name + checkbox.value;
+            checkbox.checked = false;
+            rows[i].className = rows[i].className.replace(' marked', '');
+            marked_row[unique_id] = false;
+        }
+        }
+
+        return true;
+}
 
