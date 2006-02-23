@@ -50,6 +50,7 @@ include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_financial.php");
+include ($phproot . "/glpi/includes_phones.php");
 
 checkAuthentication("normal");
 include ($phproot . "/glpi/includes_search.php");
