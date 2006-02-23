@@ -1189,7 +1189,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 			
 			// Form to delete old item
 			if ($isadmin&&$output_type==0&&($status=="old"||$status=="all"||ereg("old_",$status))){
-			echo "<form method='post' action=\"$target\">";
+			echo "<form method='post' id='TrackingForm' name='TrackingForm' action=\"$target\">";
 			}
 
 			// Display List Header
@@ -1213,10 +1213,10 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 			// Delete selected item
 			if ($isadmin&&$output_type==0&&($status=="old"||$status=="all"||ereg("old_",$status))){
 				echo "<div align='center'>";
-				echo "<table cellpadding='5' width='80%'>";
-				echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=all&amp;start=$start'>".$lang["buttons"][18]."</a></td>";
+				echo "<table cellpadding='5' width='900'>";
+				echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('TrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=all&amp;start=$start'>".$lang["buttons"][18]."</a></td>";
 			
-				echo "<td>/</td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=none&amp;start=$start'>".$lang["buttons"][19]."</a>";
+				echo "<td>/</td><td><a onclick=\"if ( unMarkAllRows('TrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=none&amp;start=$start'>".$lang["buttons"][19]."</a>";
 				echo "</td><td>";
 				echo "<input type='submit' value=\"".$lang["buttons"][6]."\" name='delete' class='submit'></td>";
 				echo "<td width='75%'>&nbsp;</td></table></div>";
