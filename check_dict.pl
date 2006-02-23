@@ -27,8 +27,8 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 # ------------------------------------------------------------------------
 
-if (@ARGV!=1){
-print "USAGE check_dict.pl dico_file\n Must to be launch in GLPI root dir\n\n";
+if (@ARGV==0){
+print "USAGE check_dict.pl dico_file [1=count_all_entries]\n Must to be launch in GLPI root dir\n\n";
 
 exit();
 }
@@ -40,6 +40,15 @@ if ($badwritten!=0){
 	print $badwritten;
 	print "\n\n";
 }
+
+
+$count_all=0;
+if (length($ARGV[1])>0){
+$count_all=1;
+print "EXACT ENTRY COUNT\n";
+} else {
+print "NOT EXACT ENTRY COUNT - JUST FIRST FIND FILE\n";
+}	
 
 open(INFO,$ARGV[0]) or die("Fichier ".$ARGV[0]." absent");
 @lines=<INFO>;
@@ -70,15 +79,19 @@ foreach (readdir(DIRHANDLE)){
 if ($_ ne '..' && $_ ne '.'){
 	
 	if (-d "$dir/$_" && $_!~m/dicts/ && $_!~m/CVS/){
-		do_dir("$dir/$_",$module,$i);
+		if ($count_all==1 || $count==0){
+			do_dir("$dir/$_",$module,$i);
+		}
 	} else {
- 		if (!-d "$dir/$_" && (index($_,".php",0)==length($_)-4)){
-		$found_php=1;
-	}
+		if ($count_all==1 || $count==0){
+ 			if (!-d "$dir/$_" && (index($_,".php",0)==length($_)-4)){
+			$found_php=1;
+			}
+		}
 	}
 }
 }
-if ($found_php==1){
+if ($found_php==1 && ($count_all==1 || $count==0) ){
 	open COUNT, "cat $dir/*.php | grep \'\\\$lang\\\[\\\"$module\\\"\\\]\\\[$i\\\]\' | wc -l |";
 	while(<COUNT>) {
            	$count+=$_;
