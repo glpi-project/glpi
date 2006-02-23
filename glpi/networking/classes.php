@@ -188,6 +188,9 @@ function getEmpty() {
 			
 				$query = "DELETE FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '".NETWORKING_TYPE."')";
 				$result = $db->query($query);
+
+				$query = "DELETE FROM glpi_state_item WHERE (id_device = '$ID' AND device_type='".NETWORKING_TYPE."')";
+				$result = $db->query($query);
 			
 				$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".NETWORKING_TYPE."')";
 				$result = $db->query($query);

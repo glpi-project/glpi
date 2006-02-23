@@ -173,6 +173,9 @@ function getEmpty () {
 					$i++;
 				}
 
+				$query = "DELETE FROM glpi_state_item WHERE (id_device = '$ID' AND device_type='".PERIPHERAL_TYPE."')";
+				$result = $db->query($query);
+
 				
 				$query2 = "DELETE from glpi_connect_wire WHERE (end1 = '$ID' AND type = '".PERIPHERAL_TYPE."')";
 				$result2 = $db->query($query2);
