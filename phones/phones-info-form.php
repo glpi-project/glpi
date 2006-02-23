@@ -109,28 +109,6 @@ else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 	glpi_header($cfg_install["root"]."/phones/phones-info-form.php?ID=".$tab["sID"]);
 
 
-/* 	if($tab["connect"]==1)
-	{
-		checkAuthentication("admin");
-		commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
-		showConnectSearch($_SERVER["PHP_SELF"],$tab["ID"]);
-		commonFooter();
-	}
-	else if ($tab["connect"]==2)
-	{
-		checkAuthentication("admin");
-		commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
-		listConnectComputers($_SERVER["PHP_SELF"],$tab);
-		commonFooter();
-	}
-	else if ($tab["connect"]==3)
-	{
-		checkAuthentication("admin");
-		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],PHONE_TYPE);
-		logEvent($tab["sID"], "phones", 4, "inventory", $_SESSION["glpiname"]." connected item.");
-		glpi_header($cfg_install["root"]."/phones/phones-info-form.php?ID=".$tab["sID"]);
-	}
-*/	
 }
 else
 {
@@ -143,7 +121,7 @@ else
 	}
 	
 	
-	commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][41],$_SERVER["PHP_SELF"]);
 	
 	$ci=new CommonItem();
 	if ($ci->getFromDB(PHONE_TYPE,$tab["ID"]))
