@@ -98,7 +98,7 @@ function showUserinfo($target,$ID) {
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
 				echo getDropdownName("glpi_dropdown_locations",$user->fields["location"]);
 			echo "</td></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][400]."</td><td>".($user->fields["active"]?$lang["choice"][0]:$lang["choice"][1])."</td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][400]."</td><td>".($user->fields["active"]?$lang["choice"][1]:$lang["choice"][0])."</td></tr>";
 	echo "</table></div>";
 
 	echo "<div align='center' ><p><b>".$lang["tracking"][11]."</b></p></div>";
@@ -201,18 +201,18 @@ function showUserform($target,$name) {
 	$active=0;
 	if ($user->fields["active"]==""||$user->fields["active"]) $active=1;
 	echo "<select name='active'>";
-	echo "<option value='1' ".($active?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='0' ".(!$active?" selected ":"").">".$lang["choice"][1]."</option>";
+	echo "<option value='1' ".($active?" selected ":"").">".$lang["choice"][1]."</option>";
+	echo "<option value='0' ".(!$active?" selected ":"").">".$lang["choice"][0]."</option>";
 	
 	echo "</select>";
 	echo "</td></tr>";
 	if (isSuperAdmin($_SESSION["glpitype"])) {
 		echo "<tr class='tab_bg_1'>";
 		echo "<td align='center' >".$lang["setup"][58]."</td>
-		<td align='center' ><p><strong>".$lang["choice"][1]."</strong><input type='radio' value='no' name='can_assign_job' ";
+		<td align='center' ><p><strong>".$lang["choice"][0]."</strong><input type='radio' value='no' name='can_assign_job' ";
 		if (empty($name)||$user->fields["can_assign_job"] == 'no') echo "checked ";
 		echo "></p>";
-		echo "<p><strong>".$lang["choice"][0]."</strong><input type='radio' value='yes' name='can_assign_job' ";
+		echo "<p><strong>".$lang["choice"][1]."</strong><input type='radio' value='yes' name='can_assign_job' ";
 		if ($user->fields["can_assign_job"] == 'yes') echo "checked";
 		echo "></p>";
 		echo "</td></tr>";
@@ -377,10 +377,10 @@ function showFormAssign($target)
 			echo "<td align='center'><b>".$user->fields["name"]."</b>";
 			echo "<input type='hidden' name='name' value=\"".$user->fields["name"]."\">";
 			echo "</td>";
-			echo "<td align='center'><strong>".$lang["choice"][1]."</strong><input type='radio' value='no' name='can_assign_job' ";
+			echo "<td align='center'><strong>".$lang["choice"][0]."</strong><input type='radio' value='no' name='can_assign_job' ";
 			if ($user->fields["can_assign_job"] == 'no') echo "checked ";
       echo ">";
-      echo "<td align='center'><strong>".$lang["choice"][0]."</strong><input type='radio' value='yes' name='can_assign_job' ";
+      echo "<td align='center'><strong>".$lang["choice"][1]."</strong><input type='radio' value='yes' name='can_assign_job' ";
 			if ($user->fields["can_assign_job"] == 'yes') echo "checked";
       echo ">";
 			echo "</td>";
@@ -458,10 +458,10 @@ function showSortForm($target) {
 	echo "<select name='tracking_order'>\n";
 	echo "<option value=\"yes\"";
 	if ($order=="yes") { echo " selected"; }	
-	echo ">".$lang["choice"][1];
+	echo ">".$lang["choice"][0];
 	echo "<option value=\"no\"";
 	if ($order=="no") { echo " selected"; }
-	echo ">".$lang["choice"][0];
+	echo ">".$lang["choice"][1];
 	echo "</select>\n";
 	echo "</td>\n";
 	echo "<td align='center' class='tab_bg_2'>\n";

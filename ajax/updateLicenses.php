@@ -44,7 +44,7 @@
 	//print_r($_POST);
 	switch ($_POST["type"]){
 	case "update_buy"	:
-		echo "<select name='buy'><option value='Y'>".$lang["choice"][0]."</option><option value='N'>".$lang["choice"][1]."</option></select>";
+		echo "<select name='buy'><option value='Y'>".$lang["choice"][1]."</option><option value='N'>".$lang["choice"][0]."</option></select>";
 		echo "&nbsp;&nbsp;<input type='image' name='update_buy' value='update_buy' src='".$HTMLRel."pics/actualiser.png' class='calendrier'>";
 		break;
 	case "update_expire" :

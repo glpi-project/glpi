@@ -181,7 +181,7 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 
 	// UPDATE
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][29].":</td><td>";
-	echo "<select name='is_update'><option value='Y' ".($ID&&$sw->fields['is_update']=='Y'?"selected":"").">".$lang["choice"][0]."</option><option value='N' ".(!$ID||$sw->fields['is_update']=='N'?"selected":"").">".$lang["choice"][1]."</option></select>";
+	echo "<select name='is_update'><option value='Y' ".($ID&&$sw->fields['is_update']=='Y'?"selected":"").">".$lang["choice"][1]."</option><option value='N' ".(!$ID||$sw->fields['is_update']=='N'?"selected":"").">".$lang["choice"][0]."</option></select>";
 	echo "&nbsp;".$lang["pager"][2]."&nbsp;";
 	dropdownValue("glpi_software","update_software",$sw->fields["update_software"]);
 	echo "</td>";
@@ -487,7 +487,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			$comp=new Computer();
 			$comp->getFromDB($data["OEM_COMPUTER"]);
 			}
-			echo "<td align='center' class='tab_bg_1".($data["OEM"]=='Y'&&!isset($comp->fields['ID'])?"_2":"")."'>".($data["OEM"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
+			echo "<td align='center' class='tab_bg_1".($data["OEM"]=='Y'&&!isset($comp->fields['ID'])?"_2":"")."'>".($data["OEM"]=='Y'?$lang["choice"][1]:$lang["choice"][0]);
 			if ($data["OEM"]=='Y') {
 			echo "<br><strong>";
 			if (isset($comp->fields['ID']))
@@ -501,7 +501,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 
 		if ($serial!="free"){
 			// BUY
-			echo "<td align='center'>".($data["BUY"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
+			echo "<td align='center'>".($data["BUY"]=='Y'?$lang["choice"][1]:$lang["choice"][0]);
 			echo "</td>";
 		} else 
 		echo "<td>&nbsp;</td>";
@@ -743,13 +743,13 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 	
 	// OEM
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][28]."</td><td>";
-	echo "<select name='oem'><option value='Y' ".($values['oem']=='Y'?"selected":"").">".$lang["choice"][0]."</option><option value='N' ".($values['oem']=='N'?"selected":"").">".$lang["choice"][1]."</option></select>";
+	echo "<select name='oem'><option value='Y' ".($values['oem']=='Y'?"selected":"").">".$lang["choice"][1]."</option><option value='N' ".($values['oem']=='N'?"selected":"").">".$lang["choice"][0]."</option></select>";
 	dropdownValue("glpi_computers","oem_computer",$values["oem_computer"]);
 	
 	echo "</td></tr>";
 	// BUY
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][35]."</td><td>";
-	echo "<select name='buy'><option value='Y' ".($values['buy']=='Y'?"selected":"").">".$lang["choice"][0]."</option><option value='N' ".($values['buy']=='N'?"selected":"").">".$lang["choice"][1]."</option></select>";
+	echo "<select name='buy'><option value='Y' ".($values['buy']=='Y'?"selected":"").">".$lang["choice"][1]."</option><option value='N' ".($values['buy']=='N'?"selected":"").">".$lang["choice"][0]."</option></select>";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["common"][25]."</td><td>";
@@ -982,7 +982,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 			$comp=new Computer();
 			$comp->getFromDB($data["oem_computer"]);
 			}
-			echo "<td align='center' class='tab_bg_1".($expirer||($data["oem"]=='Y'&&$comp->fields['ID']!=$instID)?"_2":"")."'>".($data["oem"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
+			echo "<td align='center' class='tab_bg_1".($expirer||($data["oem"]=='Y'&&$comp->fields['ID']!=$instID)?"_2":"")."'>".($data["oem"]=='Y'?$lang["choice"][1]:$lang["choice"][0]);
 			if ($data["oem"]=='Y') {
 			echo "<br><strong>";
 			if (isset($comp->fields['ID']))
@@ -993,7 +993,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 			echo "</td>";
 		
 			// BUY
-			echo "<td align='center'>".($data["buy"]=='Y'?$lang["choice"][0]:$lang["choice"][1]);
+			echo "<td align='center'>".($data["buy"]=='Y'?$lang["choice"][1]:$lang["choice"][0]);
 			echo "</td>";								
 		}
 		else echo "<td>&nbsp;</td><td>&nbsp;</td>";

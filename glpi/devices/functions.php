@@ -634,10 +634,10 @@ function showDevicesForm ($target,$ID,$device_type) {
 		case "glpi_device_drive" :
 			echo "</tr>";
 			echo "<tr><td>".$lang["device_drive"][0].":</td>";
-			echo "<td>".$lang["choice"][0]."<input type='radio' name='is_writer' value=\"Y\" ";
+			echo "<td>".$lang["choice"][1]."<input type='radio' name='is_writer' value=\"Y\" ";
 			if(strcmp($device->fields["is_writer"],"Y") == 0) echo "checked='checked'";
 			echo "></td>";
-			echo "<td>".$lang["choice"][1]."<input type='radio' name='is_writer' value=\"N\" ";
+			echo "<td>".$lang["choice"][0]."<input type='radio' name='is_writer' value=\"N\" ";
 			if(strcmp($device->fields["is_writer"],"N") == 0) echo "checked='checked'";
 			echo "></td>";
 			echo "</tr>";
@@ -664,10 +664,10 @@ function showDevicesForm ($target,$ID,$device_type) {
 		case  "glpi_device_control" :
 			echo "</tr>";
 			echo "<tr><td>".$lang["device_control"][0].":</td>";
-			echo "<td>".$lang["choice"][0]."<input type='radio' name='raid' value=\"Y\" ";
+			echo "<td>".$lang["choice"][1]."<input type='radio' name='raid' value=\"Y\" ";
 			if(strcmp($device->fields["raid"],"Y") == 0) echo "checked='checked'";
 			echo "></td>";
-			echo "<td>".$lang["choice"][1]."<input type='radio' name='raid' value=\"N\" ";
+			echo "<td>".$lang["choice"][0]."<input type='radio' name='raid' value=\"N\" ";
 			if(strcmp($device->fields["raid"],"N") == 0) echo "checked='checked'";
 			echo "></td>";
 			echo "</tr>";
@@ -733,10 +733,10 @@ function showDevicesForm ($target,$ID,$device_type) {
 			autocompletionTextField("power",$table,"power",$device->fields["power"],20);
 			echo "</td></tr>";
 			echo "<tr><td>".$lang["device_power"][1].":</td>";
-			echo "<td>".$lang["choice"][0]."<input type='radio' name='atx' value=\"Y\" ";
+			echo "<td>".$lang["choice"][1]."<input type='radio' name='atx' value=\"Y\" ";
 			if(strcmp($device->fields["atx"],"Y") == 0) echo "checked='checked'";
 			echo "></td>";
-			echo "<td>".$lang["choice"][1]."<input type='radio' name='atx' value=\"N\" ";
+			echo "<td>".$lang["choice"][0]."<input type='radio' name='atx' value=\"N\" ";
 			if(strcmp($device->fields["atx"],"N") == 0) echo "checked='checked'";
 			echo "></td>";
 			echo "</tr>";
