@@ -196,6 +196,7 @@ $lang["common"][24]="Aucun élément sélectionné ou opération mal définie ";
 $lang["common"][25]="Commentaires";
 $lang["common"][26]="Dernière modification";
 $lang["common"][27]="Date";
+$lang["common"][28]="Supprimé";
 
 
 $lang["computers"][0]="Ajouter ordinateur...";
