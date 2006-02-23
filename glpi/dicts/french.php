@@ -1240,7 +1240,6 @@ $lang["setup"][400]="Actif";
 
 $lang["setup"][500]="OS Version";
 $lang["setup"][501]="Service Pack";
-$lang["setup"][502]="Téléphones";
 $lang["setup"][503]="Modèles de téléphones";
 $lang["setup"][504]="Types de téléphones";
 $lang["setup"][505]="Types d'alimentation téléphone";
