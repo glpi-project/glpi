@@ -1243,7 +1243,7 @@ function showFollowupsShort($ID) {
 
 	// Get Number of Followups
 	$db=new DB;
-	$query="SELECT * FROM glpi_followups WHERE tracking='$ID' ORDER BY date";
+	$query="SELECT * FROM glpi_followups WHERE tracking='$ID' ORDER BY date DESC";
 	$result=$db->query($query);
 	
 	$out="";
