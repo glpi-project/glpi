@@ -153,7 +153,6 @@ function showReminderForm ($target,$ID) {
 	
 		
 		echo "</tr>";
-		echo "</tr>";
 		
 		echo "<tr class='tab_bg_2'><td>".$lang["reminder"][9].":		</td><td>";
 		if($remind_edit) { 
@@ -212,7 +211,7 @@ function updateReminder($input) {
 
 	$remind = new Reminder;
 	$remind->getFromDB($input["ID"]);
-	
+
 	if (isset($input['plan'])){
 		$plan=$input['plan'];
 		unset($input['plan']);
@@ -223,8 +222,12 @@ function updateReminder($input) {
 	$updates[0]= "date_mod";
 	$reminder->fields["date_mod"] = date("Y-m-d H:i:s");
 	
-	$input["begin"] = $plan["begin_date"]." ".$plan["begin_hour"].":".$plan["begin_min"].":00";
-  	$input["end"] = $plan["end_date"]." ".$plan["end_hour"].":".$plan["end_min"].":00";
+	if (isset($plan)){
+		$input["begin"] = $plan["begin_date"]." ".$plan["begin_hour"].":".$plan["begin_min"].":00";
+  		$input["end"] = $plan["end_date"]." ".$plan["end_hour"].":".$plan["end_min"].":00";
+		$input["rv"]=1;
+	}
+
 
 	// Fill the update-array with changes
 	$x=0;
@@ -235,6 +238,7 @@ function updateReminder($input) {
 			$x++;
 		}
 	}
+
 	if(!empty($updates)) {
 	
 		$remind->updateInDB($updates);
@@ -304,7 +308,7 @@ function showCentralReminder($type="private"){
 		echo "<div align='center'><br><table class='tab_cadrehov'>";
 		
 		echo "<tr><th><div style='position: relative'><span><strong>"."$titre"."</strong></span>";
-		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$HTMLRel."reminder/reminder-info-form.php\"><img src=\"".$HTMLRel."pics/plus.png\" alt='+' title='".$lang["buttons"][8]."'></a></span>";
+		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$HTMLRel."reminder/reminder-info-form.php\"><img src=\"".$HTMLRel."pics/plus.png\" alt='+' title='".$lang["buttons"][8]."'></a></span></div>";
 		echo "</th></tr>";
 	if($db->numrows($result)>0){
 		while ($data =$db->fetch_array($result)){ 
@@ -365,26 +369,26 @@ function showListReminder($type="private"){
 	ksort($tabremind);
 
 
-	echo "<div align='center' ><br><table class='tab_cadrehov'style='width:600px'";
-	echo "<tr><th>"."$titre"."</th><th></th><th>Date</th></tr>";
+	echo "<div align='center' ><br><table class='tab_cadrehov' style='width:600px'>";
+	echo "<tr><th>"."$titre"."</th><th>&nbsp;</th><th>".$lang["common"][27]."</th></tr>";
 	
 		if (count($tabremind)>0){
 			foreach ($tabremind as $key => $val){
 
-			echo "<tr class='tab_bg_2'><td width='80%'><a href=\"".$cfg_install["root"]."/reminder/reminder-info-form.php?ID=".$val["id_reminder"]."\">".$val["title"]."</a></td>";
+			echo "<tr class='tab_bg_2'><td width='70%'><a href=\"".$cfg_install["root"]."/reminder/reminder-info-form.php?ID=".$val["id_reminder"]."\">".$val["title"]."</a></td>";
 			
 				if($val["end"]!=""){	
 				echo "<td>";
 
 				$tab=split(" ",$val["begin"]);
 				$date_url=$tab[0];
-				echo "<a href=\"".$cfg_install["root"]."/planning/index.php?date=".$date_url."&type=day\"><img src=\"".$HTMLRel."pics/rdv.png\" alt='".$lang["planning"][3]."' title='".$lang["planning"][3]."'></a>";
+				echo "<a href=\"".$cfg_install["root"]."/planning/index.php?date=".$date_url."&amp;type=day\"><img src=\"".$HTMLRel."pics/rdv.png\" alt='".$lang["planning"][3]."' title='".$lang["planning"][3]."'></a>";
 				echo "</td>";
-				echo "<td><trong>".convDateTime($val["begin"]);
+				echo "<td><strong>".convDateTime($val["begin"]);
 				echo "<br>".convDateTime($val["end"])."</strong>";
 
 				}else{
-				echo "<td>";
+				echo "<td>&nbsp;";
 				echo "</td>";
 				echo "<td><span style='color:#aaaaaa;'>".convDateTime($val["begin"])."</span>";
 				
@@ -392,10 +396,6 @@ function showListReminder($type="private"){
 			echo "</td></tr>";
 			}
 
-		}else{
-
-			echo "<div align='center'><br><table class='tab_cadrehov'>";
-			echo "<tr><th>".$titre."</th></tr>";
 		}
 
 	echo "</table></div>";

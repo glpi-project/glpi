@@ -87,6 +87,7 @@ class Reminder {
 			$query .= "' WHERE ID='";
 			$query .= $this->fields["ID"];	
 			$query .= "'";
+
 			$result=$db->query($query);
 		}
 		
