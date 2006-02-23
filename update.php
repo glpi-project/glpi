@@ -3691,12 +3691,13 @@ if(!FieldExists("glpi_licenses","comments")) {
 
 ///////////// MODE OCS
 
-if(TableExists("glpi_ocs_link")) {
+// Delete plugin table
+if(TableExists("glpi_ocs_link")&&!FieldExists("glpi_ocs_link","import_device")) {
 	$query = "DROP TABLE `glpi_ocs_link`";
 	$db->query($query) or die("0.65 MODE OCS drop plugin ocs_link ".$lang["update"][90].$db->error());
 }
 
-if(TableExists("glpi_ocs_config")) {
+if(TableExists("glpi_ocs_config")&&!FieldExists("glpi_ocs_config","checksum")) {
 	$query = "DROP TABLE `glpi_ocs_config`";
 	$db->query($query) or die("0.65 MODE OCS drop plugin ocs_config ".$lang["update"][90].$db->error());
 }
