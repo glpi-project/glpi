@@ -47,8 +47,8 @@
 	$global_begin=intval($split[0]);
 	$split=split(":",$cfg_features["planning_end"]);
 	$global_end=intval($split[0]);
-
-
+	
+	
 	if (isset($_GET["begin_date"])&&!empty($_GET["begin_date"]))
 		$begin=strtotime($_GET["begin_date"]);
 	else $begin=strtotime(date("Y-m-d")." 12:00:00");

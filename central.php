@@ -84,29 +84,39 @@ echo "</td></tr>";
 
 echo "<tr>";
 
-	if ($cfg_features["num_of_events"]>0){
-	
-		echo "<td  align='center' valign='top' width='450px'>";
-		
-		showCentralJobList($_SERVER["PHP_SELF"],$_GET['start'],"waiting");
-		// Show last add events
-		//showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
-		echo "</td>";
-	}
-	else {echo "<td  align='center' valign='top' width='450px'>&nbsp;</td>";}
+
+echo "<td  align='center' valign='top' width='450px'>";
+
+showCentralJobList($_SERVER["PHP_SELF"],$_GET['start'],"waiting");
+
+echo "</td>";
+
 
 echo "<td  align='center' valign='top' width='450'>";
 	// Show Job count with links
-showCentralJobCount();
 
+showCentralReminder();
 echo "</td>";
 echo "</tr><tr><td align='center' valign='top'  width='450px'>";
-showCentralReminder();
+showCentralJobCount();
 echo "</td>";
 
 echo "<td align='center' valign='top'  width='450px'>";
 showCentralReminder("public");
 echo "</td></tr>";
+
+echo "<tr>";
+echo "<td  align='center' valign='top' width='450px'>";
+	if ($cfg_features["num_of_events"]>0){
+	
+	 //Show last add events
+	showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
+		
+	}
+	else {echo "&nbsp";}
+
+echo "</td><td  align='center' valign='top' width='450px'>&nbsp;</td>";
+echo "</tr>";
 echo "</table>";
 echo "</div>";
 
