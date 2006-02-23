@@ -1186,9 +1186,9 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 			}
 			
 			$nbcols=9;
-
+			
 			// Form to delete old item
-			if ($isadmin&&$output_type==0){
+			if ($isadmin&&$output_type==0&&($status=="old"||$status=="all"||ereg("old_",$status))){
 			echo "<form method='post' action=\"$target\">";
 			}
 
@@ -1211,7 +1211,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 			echo displaySearchFooter($output_type);
 
 			// Delete selected item
-			if ($isadmin&&$output_type==0){
+			if ($isadmin&&$output_type==0&&($status=="old"||$status=="all"||ereg("old_",$status))){
 				echo "<div align='center'>";
 				echo "<table cellpadding='5' width='80%'>";
 				echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=all&amp;start=$start'>".$lang["buttons"][18]."</a></td>";
