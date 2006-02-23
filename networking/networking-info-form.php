@@ -84,7 +84,6 @@ else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
 	deleteNetdevice($tab,1);
-	updateState(NETWORKING_TYPE,$tab["ID"],0);
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_install["root"]."/networking/");
 }

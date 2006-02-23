@@ -264,6 +264,9 @@ class Computer {
 				$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".COMPUTER_TYPE."')";
 				$result = $db->query($query);
 
+				$query = "DELETE FROM glpi_state_item WHERE (id_device = '$ID' AND device_type='".COMPUTER_TYPE."')";
+				$result = $db->query($query);
+
 				$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".COMPUTER_TYPE."')";
 				$result = $db->query($query);
 

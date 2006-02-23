@@ -85,7 +85,6 @@ else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
 	deleteMonitor($tab,1);
-	updateState(MONITOR_TYPE,$tab["ID"],0);
 	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_install["root"]."/monitors/");
 }

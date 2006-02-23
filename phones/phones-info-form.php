@@ -82,7 +82,6 @@ else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
 	deletePhone($tab,1);
-	updateState(PHONE_TYPE,$tab["ID"],0);
 	logEvent($tab["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_install["root"]."/phones/");
 }

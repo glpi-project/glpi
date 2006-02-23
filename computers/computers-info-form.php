@@ -91,7 +91,6 @@ else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
 	deleteComputer($tab,1);
-	updateState(COMPUTER_TYPE,$tab["ID"],0);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_install["root"]."/computers/");
 }

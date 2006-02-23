@@ -199,6 +199,9 @@ function getEmpty () {
 					$i++;
 				}
 
+				$query = "DELETE FROM glpi_state_item WHERE (id_device = '$ID' AND device_type='".PRINTER_TYPE."')";
+				$result = $db->query($query);
+
 				$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".PRINTER_TYPE."')";
 				$result = $db->query($query);
 

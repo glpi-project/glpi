@@ -872,7 +872,7 @@ function header_nocache(){
 
 function glpi_flush(){
 flush();
-if (function_exists("ob_flush")) ob_flush();
+if (function_exists("ob_flush") && ob_get_length () !== FALSE) ob_flush();
 }
 
 function displayProgressBar($width,$percent){

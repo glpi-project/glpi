@@ -176,6 +176,9 @@ function getEmpty () {
 						deleteReservationItem(array("ID"=>$db->result($result,0,"ID")));
 					}
 				}
+
+				$query = "DELETE FROM glpi_state_item WHERE (id_device = '$ID' AND device_type='".MONITOR_TYPE."')";
+				$result = $db->query($query);
 		
 				$query2 = "DELETE from glpi_connect_wire WHERE (end1 = '$ID' AND type = '".MONITOR_TYPE."')";
 				$result2 = $db->query($query2);
