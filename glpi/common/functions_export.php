@@ -199,7 +199,7 @@ return $out;
 *@return string to display
 *
 **/
-function displaySearchHeader($type,$rows,$cols){
+function displaySearchHeader($type,$rows,$cols,$fixed=0){
 	$out="";
 	switch ($type){
 		case 2 : //pdf
@@ -252,7 +252,9 @@ function displaySearchHeader($type,$rows,$cols){
 			break;
 
 		default :
-			$out="<div align='center'><table border='0' class='tab_cadrehov'>\n";
+			if ($fixed)
+				$out="<div align='center'><table border='0' class='tab_cadre_fixe'>\n";
+			else $out="<div align='center'><table border='0' class='tab_cadrehov'>\n";
 			break;
 	}
 return $out;
@@ -351,6 +353,7 @@ $search=array(
 	"/<i>/",
 	"/<\/i>/",
 	"/<br>/",
+	"/<br \/>/",
 	"/&nbsp;;/",
 	"/&nbsp;/",
 	);
@@ -365,6 +368,7 @@ $replace=array(
 	"",
 	"",
 	", ",
+	"\n",
 	" ",
 	" ",
 );

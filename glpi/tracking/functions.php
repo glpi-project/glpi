@@ -536,7 +536,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		}
 
 
-		echo displaySearchItem($output_type,$eigth_column,$item_num,$row_num,0,$align_desc);
+		echo displaySearchItem($output_type,$eigth_column,$item_num,$row_num,0,$align_desc."width='300'");
 		
 
 		// Nineth column
@@ -1193,7 +1193,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 			}
 
 			// Display List Header
-			echo displaySearchHeader($output_type,$cfg_features["list_limit"]+1,$nbcols);
+			echo displaySearchHeader($output_type,$cfg_features["list_limit"]+1,$nbcols,1);
 
 			commonTrackingListHeader($output_type);
 
