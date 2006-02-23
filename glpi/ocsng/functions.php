@@ -104,7 +104,7 @@ if ($dbocs->numrows($result_ocs)>0){
 
 		
 		echo "<table class='tab_cadre'>";
-		echo "<tr><th>".$lang["ocsng"][5]."</th><th>".$lang["ocsng"][6]."</th><th>&nbsp;</th></tr>";
+		echo "<tr><th>".$lang["ocsng"][5]."</th><th>".$lang["common"][27]."</th><th>&nbsp;</th></tr>";
 		
 		echo "<tr class='tab_bg_1'><td colspan='3' align='center'>";
 		echo "<input type='submit' name='import_ok' value='".$lang["buttons"][37]."'>";

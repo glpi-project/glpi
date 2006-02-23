@@ -106,7 +106,7 @@ titleTrackingPlanning();
 	dropdownUsers("uID",$_GET['uID'],1);
 	echo "</td>";
 	echo "<td align='right'>";
-	echo $lang["planning"][4].":</td><td>";
+	echo $lang["common"][27].":</td><td>";
 	echo showCalendarForm("form","date",$_GET["date"]);
 	echo "</td>";
 	echo "<td><select name='type'>";

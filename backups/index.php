@@ -592,7 +592,7 @@ echo " <div align='center'> <table border='0'><tr><td><img src=\"". $HTMLRel."pi
     <tr align="center"> 
       <th><u><i><?php echo $lang["backup"][10]; ?></i></u></th>
       <th><u><i><?php echo $lang["backup"][11]; ?></i></u></th>
-      <th><u><i><?php echo $lang["backup"][12]; ?></i></u></th>
+      <th><u><i><?php echo $lang["common"][27]; ?></i></u></th>
     <th colspan='3'>&nbsp;</th>
     </tr>
     <?php

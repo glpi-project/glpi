@@ -77,10 +77,10 @@ switch($item_type)
 		echo "<th>".$lang["common"][16]."</th>";
 		echo "<th>".$lang["common"][3]."</th>";
 		echo "<th>".$lang["common"][15]."</th>";
-		echo "<th>".$lang["computers"][41]."</th>";
-		echo "<th>".$lang["computers"][42]."</th>";
+		echo "<th>".$lang["financial"][14]."</th>";
+		echo "<th>".$lang["financial"][80]."</th>";
 		echo "<th>".$lang["financial"][6]."</th>";
-		echo "<th>".$lang["financial"][7]."</th>";
+		echo "<th>".$lang["search"][8]."</th>";
 		echo "<th>".$lang["search"][9]."</th>";
 		echo "</tr>";
 	 	while( $ligne = $db->fetch_array($result))
@@ -120,10 +120,10 @@ switch($item_type)
 		echo "<th>".$lang["common"][16]."</th>";
 		echo "<th>".$lang["common"][3]."</th>";
 		echo "<th>".$lang["common"][15]."</th>";
-		echo "<th>".$lang["computers"][41]."</th>";
-		echo "<th>".$lang["computers"][42]."</th>";
+		echo "<th>".$lang["financial"][14]."</th>";
+		echo "<th>".$lang["financial"][80]."</th>";
 		echo "<th>".$lang["financial"][6]."</th>";
-		echo "<th>".$lang["financial"][7]."</th>";
+		echo "<th>".$lang["search"][8]."</th>";
 		echo "<th>".$lang["search"][9]."</th>";
 		echo "</tr>";
 		
@@ -161,10 +161,10 @@ switch($item_type)
 		echo "<th>".$lang["common"][16]."</th>";
 		echo "<th>".$lang["common"][3]."</th>";
 		echo "<th>".$lang["common"][15]."</th>";
-		echo "<th>".$lang["computers"][41]."</th>";
-		echo "<th>".$lang["computers"][42]."</th>";
+		echo "<th>".$lang["financial"][14]."</th>";
+		echo "<th>".$lang["financial"][80]."</th>";
 		echo "<th>".$lang["financial"][6]."</th>";
-		echo "<th>".$lang["financial"][7]."</th>";
+		echo "<th>".$lang["search"][8]."</th>";
 		echo "<th>".$lang["search"][9]."</th>";
 		echo "</tr>";
 		
@@ -202,10 +202,10 @@ switch($item_type)
 		echo "<th>".$lang["common"][16]."</th>";
 		echo "<th>".$lang["common"][3]."</th>";
 		echo "<th>".$lang["common"][15]."</th>";
-		echo "<th>".$lang["computers"][41]."</th>";
-		echo "<th>".$lang["computers"][42]."</th>";
+		echo "<th>".$lang["financial"][14]."</th>";
+		echo "<th>".$lang["financial"][80]."</th>";
 		echo "<th>".$lang["financial"][6]."</th>";
-		echo "<th>".$lang["financial"][7]."</th>";
+		echo "<th>".$lang["search"][8]."</th>";
 		echo "<th>".$lang["search"][9]."</th>";
 		echo "</tr>";
 		
@@ -242,10 +242,10 @@ switch($item_type)
 		echo "<th>".$lang["common"][16]."</th>";
 		echo "<th>".$lang["common"][3]."</th>";
 		echo "<th>".$lang["common"][15]."</th>";
-		echo "<th>".$lang["computers"][41]."</th>";
-		echo "<th>".$lang["computers"][42]."</th>";
+		echo "<th>".$lang["financial"][14]."</th>";
+		echo "<th>".$lang["financial"][80]."</th>";
 		echo "<th>".$lang["financial"][6]."</th>";
-		echo "<th>".$lang["financial"][7]."</th>";
+		echo "<th>".$lang["search"][8]."</th>";
 		echo "<th>".$lang["search"][9]."</th>";
 		echo "</tr>";
 		
@@ -282,10 +282,10 @@ switch($item_type)
 		echo "<th><div align='center'><b>".$lang["computers"][7]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["common"][3]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["computers"][10]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["computers"][41]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["computers"][42]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["financial"][14]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["financial"][80]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["financial"][6]."</b></div></th>";
-		echo "<th><div align='center'><b>".$lang["financial"][7]."</b></div></th>";
+		echo "<th><div align='center'><b>".$lang["search"][8]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["search"][9]."</b></div></th>";
 		echo "</tr>";
 		
@@ -323,10 +323,10 @@ switch($item_type)
 		echo "<th>".$lang["common"][16]."</th>";
 		echo "<th>".$lang["common"][3]."</th>";
 		echo "<th>".$lang["common"][15]."</th>";
-		echo "<th>".$lang["computers"][41]."</th>";
-		echo "<th>".$lang["computers"][42]."</th>";
+		echo "<th>".$lang["financial"][14]."</th>";
+		echo "<th>".$lang["financial"][80]."</th>";
 		echo "<th>".$lang["financial"][6]."</th>";
-		echo "<th>".$lang["financial"][7]."</th>";
+		echo "<th>".$lang["search"][8]."</th>";
 		echo "<th>".$lang["search"][9]."</th>";
 		echo "</tr>";
 		

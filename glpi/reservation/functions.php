@@ -518,7 +518,7 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 	}
 
 
-	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][10].":	</td><td>";
+	echo "<tr class='tab_bg_2'><td>".$lang["search"][8].":	</td><td>";
 	showCalendarForm("form","begin_date",$begin_date);
     echo "</td></tr>";
 
@@ -541,7 +541,7 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 	echo "</select>";
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][11].":	</td><td>";
+	echo "<tr class='tab_bg_2'><td>".$lang["search"][9].":	</td><td>";
 	showCalendarForm("form","end_date",$end_date);
     echo "</td></tr>";
 
@@ -924,7 +924,7 @@ function printDeviceReservations($target,$type,$ID){
 		if ($db->numrows($result)==0){	
 			echo "<tr class='tab_bg_2'><td align='center' colspan='4'>".$lang["reservation"][37]."</td></tr>";
 		} else {
-			echo "<tr><th>".$lang["reservation"][10]."</th><th>".$lang["reservation"][11]."</th><th>".$lang["reservation"][31]."</th><th>".$lang["common"][25]."</th></tr>";
+			echo "<tr><th>".$lang["search"][8]."</th><th>".$lang["search"][9]."</th><th>".$lang["reservation"][31]."</th><th>".$lang["common"][25]."</th></tr>";
 			while ($data=$db->fetch_assoc($result)){
 				echo "<tr class='tab_bg_2'>";
 				echo "<td align='center'>".convDateTime($data["begin"])."</td>";
@@ -945,7 +945,7 @@ function printDeviceReservations($target,$type,$ID){
 		if ($db->numrows($result)==0){	
 			echo "<tr class='tab_bg_2'><td align='center' colspan='4'>".$lang["reservation"][37]."</td></tr>";
 		} else {
-			echo "<tr><th>".$lang["reservation"][10]."</th><th>".$lang["reservation"][11]."</th><th>".$lang["reservation"][31]."</th><th>".$lang["common"][25]."</th></tr>";
+			echo "<tr><th>".$lang["search"][8]."</th><th>".$lang["search"][9]."</th><th>".$lang["reservation"][31]."</th><th>".$lang["common"][25]."</th></tr>";
 			while ($data=$db->fetch_assoc($result)){
 				echo "<tr class='tab_bg_2'>";
 				echo "<td align='center'>".convDateTime($data["begin"])."</td>";

@@ -209,10 +209,10 @@ function showUserform($target,$name) {
 	if (isSuperAdmin($_SESSION["glpitype"])) {
 		echo "<tr class='tab_bg_1'>";
 		echo "<td align='center' >".$lang["setup"][58]."</td>
-		<td align='center' ><p><strong>".$lang["setup"][60]."</strong><input type='radio' value='no' name='can_assign_job' ";
+		<td align='center' ><p><strong>".$lang["choice"][1]."</strong><input type='radio' value='no' name='can_assign_job' ";
 		if (empty($name)||$user->fields["can_assign_job"] == 'no') echo "checked ";
 		echo "></p>";
-		echo "<p><strong>".$lang["setup"][61]."</strong><input type='radio' value='yes' name='can_assign_job' ";
+		echo "<p><strong>".$lang["choice"][0]."</strong><input type='radio' value='yes' name='can_assign_job' ";
 		if ($user->fields["can_assign_job"] == 'yes') echo "checked";
 		echo "></p>";
 		echo "</td></tr>";
@@ -377,10 +377,10 @@ function showFormAssign($target)
 			echo "<td align='center'><b>".$user->fields["name"]."</b>";
 			echo "<input type='hidden' name='name' value=\"".$user->fields["name"]."\">";
 			echo "</td>";
-			echo "<td align='center'><strong>".$lang["setup"][60]."</strong><input type='radio' value='no' name='can_assign_job' ";
+			echo "<td align='center'><strong>".$lang["choice"][1]."</strong><input type='radio' value='no' name='can_assign_job' ";
 			if ($user->fields["can_assign_job"] == 'no') echo "checked ";
       echo ">";
-      echo "<td align='center'><strong>".$lang["setup"][61]."</strong><input type='radio' value='yes' name='can_assign_job' ";
+      echo "<td align='center'><strong>".$lang["choice"][0]."</strong><input type='radio' value='yes' name='can_assign_job' ";
 			if ($user->fields["can_assign_job"] == 'yes') echo "checked";
       echo ">";
 			echo "</td>";

@@ -139,7 +139,7 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 	}
 
 
-	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][10].":	</td><td>";
+	echo "<tr class='tab_bg_2'><td>".$lang["search"][8].":	</td><td>";
 	showCalendarForm("form","begin_date",$begin_date);
     echo "</td></tr>";
 
@@ -162,7 +162,7 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 	echo "</select>";
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][11].":	</td><td>";
+	echo "<tr class='tab_bg_2'><td>".$lang["search"][9].":	</td><td>";
 	showCalendarForm("form","end_date",$end_date);
     echo "</td></tr>";
 

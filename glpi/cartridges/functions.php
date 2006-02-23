@@ -378,7 +378,7 @@ function showCartridges ($tID,$show_old=0) {
 				
 			}
 			$i=0;
-			echo "<tr><th>".$lang["common"][2]."</th><th>".$lang["cartridges"][23]."</th><th>".$lang["cartridges"][24]."</th><th>".$lang["cartridges"][25]."</th><th>".$lang["cartridges"][27]."</th><th>".$lang["cartridges"][26]."</th>";
+			echo "<tr><th>".$lang["common"][2]."</th><th>".$lang["cartridges"][23]."</th><th>".$lang["cartridges"][24]."</th><th>".$lang["cartridges"][25]."</th><th>".$lang["cartridges"][27]."</th><th>".$lang["search"][9]."</th>";
 
 			if ($show_old==1)
 				echo "<th>".$lang["cartridges"][39]."</th>";
@@ -751,7 +751,7 @@ function showCartridgeInstalled($instID,$old=0) {
 	if ($old==0)
 	echo "<tr><th colspan='7'>".$lang["cartridges"][33].":</th></tr>";
 	else echo "<tr><th colspan='8'>".$lang["cartridges"][35].":</th></tr>";
-	echo "<tr><th>".$lang["common"][2]."</th><th>".$lang["cartridges"][12]."</th><th>".$lang["cartridges"][23]."</th><th>".$lang["cartridges"][24]."</th><th>".$lang["cartridges"][25]."</th><th>".$lang["cartridges"][26]."</th>";
+	echo "<tr><th>".$lang["common"][2]."</th><th>".$lang["cartridges"][12]."</th><th>".$lang["cartridges"][23]."</th><th>".$lang["cartridges"][24]."</th><th>".$lang["cartridges"][25]."</th><th>".$lang["search"][9]."</th>";
 	if ($old!=0)
 	echo "<th>".$lang["cartridges"][39]."</th>";
 	
