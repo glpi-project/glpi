@@ -43,11 +43,15 @@ checkAuthentication("admin");
 
 if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"]){
 	include ($phproot."/glpi/includes_search.php");
-	echo "<input type='hidden' name='field' value='".$SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]]["linkfield"]."'>";
-	if ($SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]]["table"]==$LINK_ID_TABLE[$_POST["device_type"]]){ // field type
-		autocompletionTextField($SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]]["linkfield"],$SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]]["table"],$SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]]["field"]);
+	$search=$SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]];	
+	// Specific state case
+	if ($_POST["id_field"]==31) $search["linkfield"]="state";
+
+	echo "<input type='hidden' name='field' value='".$search["linkfield"]."'>";
+	if ($search["table"]==$LINK_ID_TABLE[$_POST["device_type"]]){ // field type
+		autocompletionTextField($search["linkfield"],$search["table"],$search["field"]);
 	} else { // dropdown case
-		dropdown($SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]]["table"],$SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]]["linkfield"]);
+		dropdown($search["table"],$search["linkfield"]);
 	}
 	echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
 }
