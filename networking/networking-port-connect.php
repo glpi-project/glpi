@@ -42,6 +42,7 @@ include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_computers.php");
 include ($phproot . "/glpi/includes_printers.php");
 include ($phproot . "/glpi/includes_peripherals.php");
+include ($phproot . "/glpi/includes_phones.php");
 
 checkAuthentication("admin");
 

@@ -44,6 +44,7 @@ include ($phproot . "/glpi/includes_monitors.php");
 include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_peripherals.php");
+include ($phproot . "/glpi/includes_phones.php");
 include ($phproot . "/stats/functions.php");
 
 
@@ -199,11 +200,10 @@ display_infocoms_report(NETWORKING_TYPE,$_POST["date1"],$_POST["date2"]);
 echo "</td><td valign='top'>";
 display_infocoms_report(PRINTER_TYPE,$_POST["date1"],$_POST["date2"]);
 echo "</td></tr>";
-echo "<tr><td>&nbsp;";
-
-//display_infocoms_report(SOFTWARE_TYPE,$_POST["date1"],$_POST["date2"]);
-echo "</td><td valign='top'>";
+echo "<tr><td>";
 display_infocoms_report(PERIPHERAL_TYPE,$_POST["date1"],$_POST["date2"]);
+echo "</td><td valign='top'>";
+display_infocoms_report(PHONE_TYPE,$_POST["date1"],$_POST["date2"]);
 echo "</td></tr>";
 echo "</table>";
 

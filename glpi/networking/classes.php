@@ -262,22 +262,10 @@ class Netport {
 
 	function getDeviceData($ID,$type)
 	{
+		global $LINK_ID_TABLE;
 		$db = new DB;
 
-		switch ($type){
-			case NETWORKING_TYPE :
-				$table = "glpi_networking";
-				break;
-			case COMPUTER_TYPE :
-				$table = "glpi_computers";
-				break;
-			case PRINTER_TYPE :
-				$table = "glpi_printers";
-				break;
-			case PERIPHERAL_TYPE :
-				$table = "glpi_peripherals";
-				break;
-		}
+		$table = $LINK_ID_TABLE[$type];
 		
 		$query = "SELECT * FROM $table WHERE (ID = '$ID')";
 		if ($result=$db->query($query))

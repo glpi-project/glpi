@@ -49,6 +49,7 @@ include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_enterprises.php");
 include ($phproot . "/glpi/includes_documents.php");
 include ($phproot . "/glpi/includes_planning.php");
+include ($phproot . "/glpi/includes_phones.php");
 
 checkAuthentication("normal");
 

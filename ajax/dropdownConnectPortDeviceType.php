@@ -44,15 +44,8 @@
 	// Make a select box
 	$db = new DB;
 
-	$items=array(
-	COMPUTER_TYPE=>"glpi_computers",
-	NETWORKING_TYPE=>"glpi_networking",
-	PRINTER_TYPE=>"glpi_printers",
-	PERIPHERAL_TYPE=>"glpi_peripherals",
-	);
-
-if (isset($items[$_POST["type"]])&&$_POST["type"]>0){
-	$table=$items[$_POST["type"]];
+if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
+	$table=$LINK_ID_TABLE[$_POST["type"]];
 	
 	$rand=mt_rand();
 	

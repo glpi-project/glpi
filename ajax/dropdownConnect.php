@@ -44,14 +44,8 @@
 	// Make a select box
 	$db = new DB;
 
-		$items=array(
-			COMPUTER_TYPE=>"glpi_computers",
-			PRINTER_TYPE=>"glpi_printers",
-			MONITOR_TYPE=>"glpi_monitors",
-			PERIPHERAL_TYPE=>"glpi_peripherals",
-		);
+		$table=$LINK_ID_TABLE[$_POST["idtable"]];
 
-		$table=$items[$_POST["idtable"]];
 		$where="";		
 		if (in_array($table,$deleted_tables))
 			$where.=" AND $table.deleted='N' ";

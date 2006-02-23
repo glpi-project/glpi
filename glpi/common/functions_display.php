@@ -80,6 +80,7 @@ function commonHeader($title,$url)
 		$lang["Menu"][2]=>array("/printers/index.php","p"),
 		$lang["Menu"][21]=>array("/cartridges/index.php","c"),
 		$lang["Menu"][32]=>array("/consumables/index.php","g"),     
+		$lang["Menu"][34]=>array("/phones/index.php","n"),
 		$lang["Menu"][28]=>array("/state/index.php","s"),
 		);
 	$financial = array($lang["Menu"][22]=>array("/contacts/index.php","t"),

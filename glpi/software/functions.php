@@ -123,7 +123,7 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 			$datestring = $lang["computers"][14].": ";
 			$date = convDateTime(date("Y-m-d H:i:s"));
 		} else {
-			$datestring = $lang["computers"][11]." : ";
+			$datestring = $lang["common"][26]." : ";
 			$date = convDateTime($sw->fields["date_mod"]);
 			$template = false;
 		}
@@ -195,7 +195,7 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 	
 
 	echo "<tr class='tab_bg_1'><td valign='top'>";
-	echo $lang["software"][6].":	</td>";
+	echo $lang["common"][25].":	</td>";
 	echo "<td align='center' colspan='3'><textarea cols='50' rows='4' name='comments' >".$sw->fields["comments"]."</textarea>";
 	echo "</td></tr>";
 	
@@ -622,7 +622,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			
 			// Comment
 			if (!empty($data_inst["COMMENT"])) {
-			echo "<img onmouseout=\"setdisplay(getElementById('comment_".$data_inst["ID"]."'),'none')\" onmouseover=\"setdisplay(getElementById('comment_".$data_inst["ID"]."'),'block')\" src=\"".$HTMLRel."pics/aide.png\" alt='".$lang["software"][6]."' title='".$lang["software"][6]."'>";
+			echo "<img onmouseout=\"setdisplay(getElementById('comment_".$data_inst["ID"]."'),'none')\" onmouseover=\"setdisplay(getElementById('comment_".$data_inst["ID"]."'),'block')\" src=\"".$HTMLRel."pics/aide.png\" alt='".$lang["common"][25]."' title='".$lang["common"][25]."'>";
 			echo "<div class='over_link' id='comment_".$data_inst["ID"]."'>".nl2br($data_inst["COMMENT"])."</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			}
 			// delete
@@ -752,7 +752,7 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 	echo "<select name='buy'><option value='Y' ".($values['buy']=='Y'?"selected":"").">".$lang["choice"][0]."</option><option value='N' ".($values['buy']=='N'?"selected":"").">".$lang["choice"][1]."</option></select>";
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["software"][6]."</td><td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][25]."</td><td>";
 	echo "<textarea name='comments' rows='6' cols='40'>".$values['comments']."</textarea>";
 	echo "</td></tr>";
 	

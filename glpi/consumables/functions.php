@@ -161,7 +161,7 @@ function showConsumableTypeForm ($target,$ID) {
 	
 	
 	echo "<tr class='tab_bg_1'><td valign='top'>\n";
-	echo $lang["consumables"][5].":	</td>";
+	echo $lang["common"][25].":	</td>";
 	echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$ct->fields["comments"]."</textarea>";
 	echo "</td></tr>\n";
 	

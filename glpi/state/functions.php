@@ -289,7 +289,7 @@ $query = "select glpi_dropdown_state.name as state, glpi_dropdown_state.ID as id
 $query.= " LEFT JOIN glpi_dropdown_state ON (glpi_dropdown_state.ID = glpi_state_item.state) ";
 $query .= " WHERE glpi_state_item.is_template='0' GROUP BY glpi_state_item.device_type,glpi_dropdown_state.ID,glpi_dropdown_state.name ORDER BY glpi_dropdown_state.name,glpi_state_item.device_type";
 
-$state_type=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE);
+$state_type=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE);
 
 $db->query($query);
 	if ($result = $db->query($query)) {

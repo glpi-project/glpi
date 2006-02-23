@@ -102,6 +102,7 @@ define("CARTRIDGE_ITEM_TYPE","19");
 define("LICENSE_TYPE","20");
 define("LINK_TYPE","21");
 define("STATE_TYPE","22");
+define("PHONE_TYPE","23");
 
 // DEVICE TYPE
 define("MOBOARD_DEVICE","1");
@@ -170,6 +171,8 @@ $LINK_ID_TABLE=array(
 		CARTRIDGE_ITEM_TYPE => "glpi_cartridges",
 		LICENSE_TYPE => "glpi_licenses",
 		LINK_TYPE => "glpi_links",
+		STATE_TYPE => "glpi_state_item",
+		PHONE_TYPE => "glpi_phones",
 );
 
 $INFOFORM_PAGES=array( 
@@ -194,6 +197,8 @@ $INFOFORM_PAGES=array(
 		CARTRIDGE_ITEM_TYPE => "??",
 		LICENSE_TYPE => "??",
 		LINK_TYPE => "links/links-info-form.php",
+		STATE_TYPE => "??",
+		PHONE_TYPE => "phones/phones-info-form.php",
 );
 
 
@@ -229,9 +234,9 @@ $result = $db->query($query);
 if($result)
 {
 
-$deleted_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_cartridges_type","glpi_contracts","glpi_contacts","glpi_enterprises","glpi_docs");
+$deleted_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_cartridges_type","glpi_contracts","glpi_contacts","glpi_enterprises","glpi_docs","glpi_phones");
 
-$template_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software");
+$template_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_phones");
 
 $dropdowntree_tables=array("glpi_dropdown_locations","glpi_dropdown_kbcategories");
 

@@ -113,7 +113,7 @@ function showMonitorsForm ($target,$ID,$withtemplate='') {
 			$datestring = $lang["computers"][14].": ";
 			$date = convDateTime(date("Y-m-d H:i:s"));
 		} else {
-			$datestring = $lang["computers"][11]." : ";
+			$datestring = $lang["common"][26]." : ";
 			$date = convDateTime($mon->fields["date_mod"]);
 			$template = false;
 		}
@@ -291,7 +291,7 @@ echo "</td></tr>";
 	echo "<td class='tab_bg_1' valign='top' colspan='2'>";
 
 	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
-	echo $lang["monitors"][12].":	</td>";
+	echo $lang["common"][25].":	</td>";
 	echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$mon->fields["comments"]."</textarea>";
 	echo "</td></tr></table>";
 

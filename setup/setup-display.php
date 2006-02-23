@@ -115,7 +115,9 @@ $db->query($query);
 		//CONSUMABLE_ITEM_TYPE => "??",
 		//CARTRIDGE_ITEM_TYPE => "??",
 		//LICENSE_TYPE => "??",
-		LINK_TYPE => $lang["setup"][87],		
+		LINK_TYPE => $lang["setup"][87],	
+		//STATE_TYPE => "??",			
+		PHONE_TYPE => $lang["Menu"][34],		
 	);
 	
 	

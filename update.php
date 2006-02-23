@@ -2951,7 +2951,7 @@ if(!TableExists("glpi_display")) {
 
 // TEMPORARY : ADD ITEMS TO DISPLAY TABLE : TO DEL OR TO 
 
-$query="INSERT INTO glpi_display VALUES (32, 1, 4, 4),
+$query="INSERT INTO `glpi_display` VALUES (32, 1, 4, 4),
 (34, 1, 6, 6),
 (33, 1, 5, 5),
 (31, 1, 8, 3),
@@ -3029,7 +3029,14 @@ $query="INSERT INTO glpi_display VALUES (32, 1, 4, 4),
 (106, 3, 40, 5),
 (107, 4, 40, 5),
 (108, 5, 40, 5),
-(109, 15, 8, 6);";
+(109, 15, 8, 6),
+(110, 23, 31, 1),
+(111, 23, 23, 2),
+(112, 23, 3, 3),
+(113, 23, 4, 4),
+(114, 23, 40, 5),
+(115, 23, 9, 6),
+(116, 23, 7, 7);";
 
 $db->query($query);
 }
@@ -3846,6 +3853,78 @@ if(!isIndex("glpi_reservation_item","device_type_2")) {
 	$query="ALTER TABLE `glpi_reservation_item` ADD INDEX  `device_type_2` ( `device_type`,`id_device` ) ";
 	$db->query($query) or die("0.65 add index in reservation_item ".$line[0]." ".$lang["update"][90].$db->error());
 }
+
+
+if(!TableExists("glpi_dropdown_model_phones")) {
+
+$query = "CREATE TABLE `glpi_dropdown_model_phones` (
+  `ID` int(11) NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`ID`)
+) ENGINE=MyISAM;";
+	$db->query($query) or die("0.65 add dropdown_model_phones ".$lang["update"][90].$db->error());
+}
+
+if(!TableExists("glpi_type_phones")) {
+
+$query = "CREATE TABLE `glpi_type_phones` (
+  `ID` int(11) NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`ID`)
+) ENGINE=MyISAM;";
+	$db->query($query) or die("0.65 add type_phones ".$lang["update"][90].$db->error());
+}
+
+
+if(!TableExists("glpi_dropdown_phone_power")) {
+
+$query = "CREATE TABLE `glpi_dropdown_phone_power` (
+  `ID` int(11) NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`ID`)
+) ENGINE=MyISAM;";
+	$db->query($query) or die("0.65 add dropdown_phone_power ".$lang["update"][90].$db->error());
+}
+
+if(!TableExists("glpi_phones")) {
+
+$query = "CREATE TABLE `glpi_phones` (
+  `ID` int(11) NOT NULL auto_increment,
+  `name` varchar(255) default NULL,
+  `date_mod` datetime NOT NULL default '0000-00-00 00:00:00',
+  `contact` varchar(255) default NULL,
+  `contact_num` varchar(255) default NULL,
+  `tech_num` int(11) NOT NULL default '0',
+  `comments` text,
+  `serial` varchar(255) default NULL,
+  `otherserial` varchar(255) default NULL,
+  `firmware` varchar(255) default NULL,
+  `location` int(11) NOT NULL default '0',
+  `type` int(11) NOT NULL default '0',
+  `model` int(11) default NULL,
+  `brand` varchar(255) default NULL,
+  `power` tinyint(4) NOT NULL default '0',
+  `number_line` varchar(255) NOT NULL default '',
+  `flags_casque` tinyint(4) NOT NULL default '0',
+  `flags_hp` tinyint(4) NOT NULL default '0',
+  `FK_glpi_enterprise` int(11) NOT NULL default '0',
+  `is_global` enum('0','1') NOT NULL default '0',
+  `deleted` enum('Y','N') NOT NULL default 'N',
+  `is_template` enum('0','1') NOT NULL default '0',
+  `tplname` varchar(255) default NULL,
+  `notes` longtext,
+  PRIMARY KEY  (`ID`),
+  KEY `type` (`type`),
+  KEY `name` (`name`),
+  KEY `location` (`location`),
+  KEY `FK_glpi_enterprise` (`FK_glpi_enterprise`),
+  KEY `deleted` (`deleted`),
+  KEY `is_template` (`is_template`),
+  KEY `tech_num` (`tech_num`)
+) ENGINE=MyISAM;";
+	$db->query($query) or die("0.65 add phones ".$lang["update"][90].$db->error());
+}
+
 
 
 }

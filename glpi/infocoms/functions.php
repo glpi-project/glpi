@@ -179,7 +179,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		}
 		// commment
 		echo "<tr class='tab_bg_1'><td valign='top'>";
-		echo $lang["financial"][12].":	</td>";
+		echo $lang["common"][25].":	</td>";
 		echo "<td align='center' colspan='3'><textarea cols='80' $option rows='2' name='comments' >".$ic->fields["comments"]."</textarea>";
 		echo "</td></tr>";
 		if ($withtemplate!=2){

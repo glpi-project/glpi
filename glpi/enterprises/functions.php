@@ -138,7 +138,7 @@ function showEnterpriseForm ($target,$ID) {
 	echo "<td align='center'><textarea cols='35' rows='4' name='address' >".$ent->fields["address"]."</textarea>";
 
 	echo "<td valign='top'>";
-	echo $lang["financial"][12].":	</td>";
+	echo $lang["common"][25].":	</td>";
 	echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$ent->fields["comments"]."</textarea>";
 	echo "</td></tr>";
 	

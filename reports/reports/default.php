@@ -76,6 +76,10 @@ $query = "SELECT count(ID) FROM glpi_peripherals where deleted ='N'  AND is_temp
 $result = $db->query($query);
 $number_of_peripherals = $db->result($result,0,0);
 
+$query = "SELECT count(ID) FROM glpi_phones where deleted ='N'  AND is_template = '0' ";
+$result = $db->query($query);
+$number_of_phones = $db->result($result,0,0);
+
 # 2. Spew out the data in a table
 
 echo "<table class='tab_cadre' width='80%'>";
@@ -85,6 +89,7 @@ echo "<tr class='tab_bg_2'><td>".$lang["Menu"][1].":</td><td>$number_of_networki
 echo "<tr class='tab_bg_2'><td>".$lang["Menu"][4].":</td><td>$number_of_software</td></tr>";
 echo "<tr class='tab_bg_2'><td>".$lang["Menu"][3].":</td><td>$number_of_monitors</td></tr>";
 echo "<tr class='tab_bg_2'><td>".$lang["Menu"][16].":</td><td>$number_of_peripherals</td></tr>";
+echo "<tr class='tab_bg_2'><td>".$lang["Menu"][34].":</td><td>$number_of_phones</td></tr>";
 
 echo "<tr><td colspan='2' height=10></td></tr>";
 echo  "<tr class='tab_bg_1'><td colspan='2'><b>".$lang["setup"][5].":</b></td></tr>";
@@ -201,6 +206,26 @@ while ($i < $number) {
 	echo "<tr class='tab_bg_2'><td>$net</td><td>$counter</td></tr>";
 	$i++;
 }
+
+echo "<tr><td colspan='2' height=10></td></tr>";
+echo  "<tr class='tab_bg_1'><td colspan='2'><b>".$lang["Menu"][34].":</b></td></tr>";
+
+# 4. Get some more number data (Peripherals)
+
+$query = "SELECT * FROM glpi_type_phones ORDER BY name";
+$result = $db->query($query);
+$i = 0;
+$number = $db->numrows($result);
+while ($i < $number) {
+	$type = $db->result($result, $i, "ID");
+	$net = $db->result($result, $i, "name");
+	$query = "SELECT count(*) FROM glpi_phones WHERE (type = '$type' AND deleted ='N'  AND is_template = '0')";
+	$result3 = $db->query($query);
+	$counter = $db->result($result3,0,0);
+	echo "<tr class='tab_bg_2'><td>$net</td><td>$counter</td></tr>";
+	$i++;
+}
+
 
 echo "</table></div>";
 

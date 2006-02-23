@@ -66,7 +66,7 @@ function showTypedocForm ($target,$ID) {
 	
 	if ($mon_spotted){
 	$date = $mon->fields["date_mod"];
-	$datestring = $lang["document"][5]." : ";
+	$datestring = $lang["common"][26]." : ";
 
 	echo "<div align='center'><form method='post' name=form action=\"$target\">";
 

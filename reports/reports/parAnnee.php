@@ -56,9 +56,9 @@ echo "<tr><th align='center' colspan='2' ><big><b>".$lang["reports"][58]."</b></
 # 3. Selection d'affichage pour generer la liste
 
 echo "<tr class='tab_bg_2'>";
-echo "<td  align='center'>";
+echo "<td width='150'  align='center'>";
 echo "<p><b>".$lang["reports"][12]."</b></p> ";
-echo "<p><select name='item_type[]' size='6'  multiple>";
+echo "<p><select name='item_type[]' size='8'  multiple>";
 echo "<option value='0' selected>".$lang["reports"][16]."</option>";
 echo "<option value='".COMPUTER_TYPE."'>".$lang["reports"][6]."</option>";
 echo "<option value='".PRINTER_TYPE."'>".$lang["reports"][7]."</option>";
@@ -66,10 +66,11 @@ echo "<option value='".NETWORKING_TYPE."'>".$lang["reports"][8]."</option>";
 echo "<option value='".MONITOR_TYPE."'>".$lang["reports"][9]."</option>";
 echo "<option value='".PERIPHERAL_TYPE."'>".$lang["reports"][29]."</option>";
 echo "<option value='".SOFTWARE_TYPE."'>".$lang["reports"][55]."</option>";
-echo "</select> </p></td></tr>";
+echo "<option value='".PHONE_TYPE."'>".$lang["reports"][64]."</option>";
+echo "</select> </p></td>";
 
-echo "<tr class='tab_bg_2'><td align='center'><p><b>".$lang["reports"][23]."</b></p> ";
-echo "<p> <select name='annee[]'  size='5' multiple>";
+echo "<td width='150' align='center'><p><b>".$lang["reports"][23]."</b></p> ";
+echo "<p> <select name='annee[]'  size='8' multiple>";
 echo " <option value='toutes' selected>".$lang["reports"][16]."</option>";
   $y = date("Y");
   for ($i=$y-10;$i<$y+10;$i++)

@@ -107,62 +107,30 @@ class Computer {
 			$query .= "'";
 			$result=$db->query($query);
 			
+
+		
 		// Mise a jour du contact des éléments rattachés
 		if ($updates[$i]=="contact" ||$updates[$i]=="contact_num"){
-			
+			$items=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE);
+			$ci=new CommonItem();
 			$update_done=false;
 			$updates3[0]="contact";
 			$updates3[1]="contact_num";
-			//printers
-			$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".PRINTER_TYPE."'";
-			if ($result=$db->query($query)) {
-				$resultnum = $db->numrows($result);
-				if ($resultnum>0) {
-				for ($j=0; $j < $resultnum; $j++) {
-					$tID = $db->result($result, $j, "end1");
-					$printer = new Printer;
-					$printer->getfromDB($tID);
-					$printer->fields['contact']=$this->fields['contact'];
-					$printer->fields['contact_num']=$this->fields['contact_num'];
-					$printer->updateInDB($updates3);
-					$update_done=true;
-
-					}
-				}
-			}
-			//monitors
-			$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".MONITOR_TYPE."'";
-			if ($result=$db->query($query)) {
-				$resultnum = $db->numrows($result);
-				if ($resultnum>0) {
-				for ($j=0; $j < $resultnum; $j++) {
-					$tID = $db->result($result, $j, "end1");
-					$monitor = new Monitor;
-					$monitor->getfromDB($tID);
-					$monitor->fields['contact']=$this->fields['contact'];
-					$monitor->fields['contact_num']=$this->fields['contact_num'];
-					if (!$monitor->fields['is_global']){
-						$monitor->updateInDB($updates3);
-						$update_done=true;
-					}
-
-					}
-				}
-			}
-			//Peripherals
-			$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".PERIPHERAL_TYPE."'";
-			if ($result=$db->query($query)) {
-				$resultnum = $db->numrows($result);
-				if ($resultnum>0) {
-				for ($j=0; $j < $resultnum; $j++) {
-					$tID = $db->result($result, $j, "end1");
-					$peri = new Peripheral;
-					$peri->getfromDB($tID);
-					$peri->fields['contact']=$this->fields['contact'];
-					$peri->fields['contact_num']=$this->fields['contact_num'];
-					if (!$peri->fields['is_global']){
-						$peri->updateInDB($updates3);
-						$update_done=true;
+			
+			foreach ($items as $type){
+				$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".$type."'";
+				if ($result=$db->query($query)) {
+					$resultnum = $db->numrows($result);
+					if ($resultnum>0) {
+						for ($j=0; $j < $resultnum; $j++) {
+							$tID = $db->result($result, $j, "end1");
+							$ci->obj->getfromDB($type,$tID);
+							if (!$ci->obj->fields['is_global']){
+								$ci->obj->fields['contact']=$this->fields['contact'];
+								$ci->obj->fields['contact_num']=$this->fields['contact_num'];
+								$ci->obj->updateInDB($updates3);
+								$update_done=true;
+							}
 						}
 					}
 				}
@@ -173,54 +141,26 @@ class Computer {
 		
 		// Mise a jour du lieu des éléments rattachés
 		if ($updates[$i]=="location" && $this->fields[$updates[$i]]!=0){
+			$items=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE);
+			$ci=new CommonItem();
 			$update_done=false;
 			$updates2[0]="location";
-			//printers
-			$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".PRINTER_TYPE."'";
-			if ($result=$db->query($query)) {
-				$resultnum = $db->numrows($result);
-				if ($resultnum>0) {
-				for ($j=0; $j < $resultnum; $j++) {
-					$tID = $db->result($result, $j, "end1");
-					$printer = new Printer;
-					$printer->getfromDB($tID);
-					$printer->fields['location']=$this->fields['location'];
-					$printer->updateInDB($updates2);
-					$update_done=true;
-					}
-				}
-			}
-			//monitors
-			$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".MONITOR_TYPE."'";
-			if ($result=$db->query($query)) {
-				$resultnum = $db->numrows($result);
-				if ($resultnum>0) {
-				for ($j=0; $j < $resultnum; $j++) {
-					$tID = $db->result($result, $j, "end1");
-					$monitor = new Monitor;
-					$monitor->getfromDB($tID);
-					$monitor->fields['location']=$this->fields['location'];
-					if (!$monitor->fields['is_global']){
-						$monitor->updateInDB($updates2);
-						$update_done=true;
-					}
-					}
-				}
-			}
-			//Peripherals
-			$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".PERIPHERAL_TYPE."'";
-			if ($result=$db->query($query)) {
-				$resultnum = $db->numrows($result);
-				if ($resultnum>0) {
-				for ($j=0; $j < $resultnum; $j++) {
-					$tID = $db->result($result, $j, "end1");
-					$peri = new Peripheral;
-					$peri->getfromDB($tID);
-					$peri->fields['location']=$this->fields['location'];
-					if (!$peri->fields['is_global']){
-						$peri->updateInDB($updates2);
-						$update_done=true;
-					}
+			
+			foreach ($items as $type){
+				$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".$type."'";
+				if ($result=$db->query($query)) {
+					$resultnum = $db->numrows($result);
+					if ($resultnum>0) {
+						for ($j=0; $j < $resultnum; $j++) {
+							$tID = $db->result($result, $j, "end1");
+
+							$ci->obj->getfromDB($type,$tID);
+							if (!$ci->obj->fields['is_global']){
+								$ci->obj->fields['location']=$this->fields['location'];
+								$ci->obj->updateInDB($updates2);
+								$update_done=true;
+							}
+						}
 					}
 				}
 			}

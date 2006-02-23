@@ -268,7 +268,8 @@ function logArray(){
 				"typedocs"=>$lang["log"][39],
 				"planning"=>$lang["log"][16],
 				"reservation"=>$lang["log"][42],
-				"contracts"=>$lang["log"][17]);
+				"contracts"=>$lang["log"][17],
+				"phones"=>$lang["log"][43]);
 	
 	$logService=array("inventory"=>$lang["log"][50],
 				"tracking"=>$lang["log"][51],

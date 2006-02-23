@@ -44,22 +44,9 @@
 	// Make a select box
 	$db = new DB;
 
-		$items=array(
-	COMPUTER_TYPE=>"glpi_computers",
-	NETWORKING_TYPE=>"glpi_networking",
-	PRINTER_TYPE=>"glpi_printers",
-	MONITOR_TYPE=>"glpi_monitors",
-	PERIPHERAL_TYPE=>"glpi_peripherals",
-	SOFTWARE_TYPE=>"glpi_software",
-	ENTERPRISE_TYPE=>"glpi_enterprises",
-	CARTRIDGE_TYPE=>"glpi_cartridges_type",
-	CONSUMABLE_TYPE=>"glpi_consumables_type",
-	USER_TYPE=>"glpi_users",
-	CONTRACT_TYPE=>"glpi_contracts",
-	);
 
-if (isset($items[$_POST["idtable"]])){
-	$table=$items[$_POST["idtable"]];
+if (isset($LINK_ID_TABLE[$_POST["idtable"]])){
+	$table=$LINK_ID_TABLE[$_POST["idtable"]];
 	
 	// Link to user for search only > normal users
 	$link="dropdownValue.php";

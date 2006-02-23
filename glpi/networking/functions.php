@@ -119,7 +119,7 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 			$datestring = $lang["computers"][14].": ";
 			$date = convDateTime(date("Y-m-d H:i:s"));
 		} else {
-			$datestring = $lang["computers"][11].": ";
+			$datestring = $lang["common"][26].": ";
 			$date = convDateTime($netdev->fields["date_mod"]);
 			$template = false;
 		}
@@ -248,7 +248,7 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 	echo "<td class='tab_bg_1' valign='top' colspan='2'>\n";
 
 	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>\n";
-	echo $lang["networking"][8].":	</td>\n";
+	echo $lang["common"][25].":	</td>\n";
 	echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$netdev->fields["comments"]."</textarea>\n";
 	echo "</td></tr></table>\n";
 
@@ -447,23 +447,12 @@ function restoreNetdevice($input) {
 
 function showPorts ($device,$device_type,$withtemplate='') {
 	
-	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
+	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel,$LINK_ID_TABLE;
 	
 	$db = new DB;
-	switch($device_type) {
-		case COMPUTER_TYPE :
-			$device_real_table_name = "glpi_computers";
-			break;
-		case NETWORKING_TYPE :
-			$device_real_table_name = "glpi_networking";
-			break;
-		case PRINTER_TYPE :
-			$device_real_table_name = "glpi_printers";
-			break;
-		case PERIPHERAL_TYPE :
-			$device_real_table_name = "glpi_peripherals";
-			break;
-	}
+	
+	$device_real_table_name = $LINK_ID_TABLE[$device_type];
+
 	$query = "SELECT location from ".$device_real_table_name." where ID = ".$device."";
 	$location = $db->result($db->query($query),0,"location");
 
@@ -792,22 +781,11 @@ function deleteNetport($input) {
 
 function showPortsAdd($ID,$devtype) {
 	
-	GLOBAL $cfg_layout, $cfg_install, $lang;
+	GLOBAL $cfg_layout, $cfg_install, $lang,$LINK_ID_TABLE;
 	$db = new DB;
-	switch($devtype) {
-		case COMPUTER_TYPE :
-			$device_real_table_name = "glpi_computers";
-			break;
-		case NETWORKING_TYPE :
-			$device_real_table_name = "glpi_networking";
-			break;
-		case PRINTER_TYPE :
-			$device_real_table_name = "glpi_printers";
-			break;
-		case PERIPHERAL_TYPE :
-			$device_real_table_name = "glpi_peripherals";
-			break;
-	}
+
+	$device_real_table_name = $LINK_ID_TABLE[$devtype];
+
 	$query = "SELECT location from ".$device_real_table_name." where ID = ".$ID."";
 	$location = $db->result($db->query($query),0,"location");
 
@@ -828,7 +806,7 @@ function showPortsAdd($ID,$devtype) {
 
 function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 
-	GLOBAL $cfg_layout, $cfg_install, $lang;
+	GLOBAL $cfg_layout, $cfg_install, $lang,$INFOFORM_PAGES;
 
 	$contact = new Netport;
 	$netport = new Netport;
@@ -844,15 +822,9 @@ function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 		else echo $lang["common"][0];
 		echo "</a></b>";
 		echo " ".$lang["networking"][25]." <b>";
-		if ($netport->fields["device_type"]==COMPUTER_TYPE) {
-			echo "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$netport->device_ID."\">";
-		} else if ($netport->fields["device_type"]==NETWORKING_TYPE) {
-			echo "<a href=\"".$cfg_install["root"]."/networking/networking-info-form.php?ID=".$netport->device_ID."\">";
-		} else if ($netport->fields["device_type"]==PRINTER_TYPE) {
-			echo "<a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=".$netport->device_ID."\">";
-		} else if ($netport->fields["device_type"]==PERIPHERAL_TYPE) {
-			echo "<a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=".$netport->device_ID."\">";
-		}
+
+		echo "<a href=\"".$cfg_install["root"]."/".$INFORM_PAGES[$netport->fields["device_type"]]."?ID=".$netport->device_ID."\">";
+
 		echo $netport->device_name;
 		if ($cfg_layout['view_ID']) echo " (".$netport->device_ID.")";
 		echo "</a>";

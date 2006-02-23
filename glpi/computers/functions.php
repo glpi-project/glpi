@@ -199,7 +199,7 @@ function showComputerForm($target,$ID,$withtemplate='') {
 			$datestring = $lang["computers"][14].": ";
 			$date = convDateTime(date("Y-m-d H:i:s"));
 		} else {
-			$datestring = $lang["computers"][11].": ";
+			$datestring = $lang["common"][26].": ";
 			$date = convDateTime($comp->fields["date_mod"]);
 			$template = false;
 		}
@@ -333,7 +333,7 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		dropdownValue("glpi_dropdown_os_sp", "os_sp", $comp->fields["os_sp"]);
 		echo "</td>";
 		
-		echo "<td valign='middle' rowspan='2'>".$lang["computers"][19].":</td><td valign='middle' rowspan='2'><textarea  cols='60' rows='3' name='comments' >".$comp->fields["comments"]."</textarea></td>";
+		echo "<td valign='middle' rowspan='2'>".$lang["common"][25].":</td><td valign='middle' rowspan='2'><textarea  cols='60' rows='3' name='comments' >".$comp->fields["comments"]."</textarea></td>";
 		echo "</tr>";
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$lang["computers"][51].":</td><td>";
@@ -659,169 +659,77 @@ function restoreComputer($input) {
 **/
 function showConnections($target,$ID,$withtemplate='') {
 
-	GLOBAL $cfg_layout, $cfg_install, $lang;
+	GLOBAL $cfg_layout, $cfg_install, $lang,$INFOFORM_PAGES;
 
 	$db = new DB;
 	
 	$state=new StateItem();
 
 	echo "&nbsp;<div align='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='3'>".$lang["connect"][0].":</th></tr>";
-	echo "<tr><th>".$lang["computers"][39].":</th><th>".$lang["computers"][40].":</th><th>".$lang["computers"][46].":</th></tr>";
+	echo "<tr><th colspan='4'>".$lang["connect"][0].":</th></tr>";
+	echo "<tr><th>".$lang["computers"][39].":</th><th>".$lang["computers"][40].":</th><th>".$lang["computers"][46].":</th><th>".$lang["computers"][55].":</th></tr>";
 
 	echo "<tr class='tab_bg_1'>";
-
-	// Printers
-	echo "<td align='center'>";
-	$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='".PRINTER_TYPE."'";
-	if ($result=$db->query($query)) {
-		$resultnum = $db->numrows($result);
-		if ($resultnum>0) {
-			echo "<table width='100%'>";
-			for ($i=0; $i < $resultnum; $i++) {
-				$tID = $db->result($result, $i, "end1");
-				$connID = $db->result($result, $i, "ID");
-				$printer = new Printer;
-				$printer->getfromDB($tID);
+	$items=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE);
+	$ci=new CommonItem;
+	foreach ($items as $type){
+		echo "<td align='center'>";
+		$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='".$type."'";
+		if ($result=$db->query($query)) {
+			$resultnum = $db->numrows($result);
+			if ($resultnum>0) {
+				echo "<table width='100%'>";
+				for ($i=0; $i < $resultnum; $i++) {
+					$tID = $db->result($result, $i, "end1");
+					$connID = $db->result($result, $i, "ID");
+					$ci->getFromDB($type,$tID);
 				
-				echo "<tr ".($printer->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
-				echo "<td align='center'><a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=$tID\"><b>";
-				echo $printer->fields["name"];
-				if ($cfg_layout["view_ID"]||empty($printer->fields["name"])) echo " (".$printer->fields["ID"].")";
-				echo "</b></a>";
-				if ($state->getfromDB(PRINTER_TYPE,$tID))
-				echo " - ".getDropdownName("glpi_dropdown_state",$state->fields['state']);
+					echo "<tr ".($printer->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
+					echo "<td align='center'><b>";
+					echo $ci->getLink();
+					echo "</b>";
+					if ($state->getfromDB($type,$tID))
+						echo " - ".getDropdownName("glpi_dropdown_state",$state->fields['state']);
 
-				echo "</td>";
-				if(!empty($withtemplate) && $withtemplate == 2) {
-					//do nothing
-				} else {
-					echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1amp;withtemplate=".$withtemplate."\"><b>";
-					echo $lang["buttons"][10];
-					echo "</b></a></td>";
+					echo "</td>";
+					if(empty($withtemplate) || $withtemplate != 2) {
+						echo "<td align='center'><a 	href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1amp;withtemplate=".$withtemplate."\"><b>";
+						echo $lang["buttons"][10];
+						echo "</b></a></td>";
+					}
+					echo "</tr>";
 				}
-				echo "</tr>";
-			}
-			echo "</table>";
-		} else {
-			echo $lang["computers"][38]."<br>";
-		}
-		if(!empty($withtemplate) && $withtemplate == 2) {
-			//do nothing
-		} else {
-			echo "<form method='post' action=\"$target\">";
-			echo "<input type='hidden' name='connect' value='connect'>";
-			echo "<input type='hidden' name='cID' value='$ID'>";
-			echo "<input type='hidden' name='device_type' value='".PRINTER_TYPE."'>";
-			dropdownConnect(PRINTER_TYPE,"item");
-			echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
-
-			echo "</form>";
-		}
-
-	}
-	echo "</td>";
-
-	// Monitors
-	echo "<td align='center'>";
-	$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='".MONITOR_TYPE."'";
-	if ($result=$db->query($query)) {
-		$resultnum = $db->numrows($result);
-		if ($resultnum>0) {
-			echo "<table width='100%'>";
-			for ($i=0; $i < $resultnum; $i++) {
-				$tID = $db->result($result, $i, "end1");
-				$connID = $db->result($result, $i, "ID");
-				$monitor = new Monitor;
-				$monitor->getfromDB($tID);
-				echo "<tr ".($monitor->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
-				echo "<td align='center'><a href=\"".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=$tID\"><b>";
-				echo $monitor->fields["name"];
-				if ($cfg_layout["view_ID"]||empty($monitor->fields["name"])) echo " (".$monitor->fields["ID"].")";
-				echo "</b></a>";
-				if ($state->getfromDB(MONITOR_TYPE,$tID))
-				echo " - ".getDropdownName("glpi_dropdown_state",$state->fields['state']);
-				
-				echo "</td>";
-				if(!empty($withtemplate) && $withtemplate == 2) {
-					//do nothing
-				} else {
-					echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1&amp;withtemplate=".$withtemplate."\"><b>";
-					echo $lang["buttons"][10];
-					echo "</b></a></td>";
+				echo "</table>";
+			} else {
+				switch ($type){
+					case PRINTER_TYPE:
+						echo $lang["computers"][38];
+						break;
+					case MONITOR_TYPE:
+						echo $lang["computers"][37];
+						break;
+					case PERIPHERAL_TYPE:
+						echo $lang["computers"][47];
+						break;
+					case PHONE_TYPE:
+						echo $lang["computers"][54];
+						break;
 				}
-				echo "</tr>";
+				echo "<br>";
 			}
-			echo "</table>";			
-		} else {
-			echo $lang["computers"][37]."<br>";
-		}
-		if(!empty($withtemplate) && $withtemplate == 2) {
-			//do nothing
-		} else {
-			echo "<form method='post' action=\"$target\">";
-			echo "<input type='hidden' name='connect' value='connect'>";
-			echo "<input type='hidden' name='cID' value='$ID'>";
-			echo "<input type='hidden' name='device_type' value='".MONITOR_TYPE."'>";
-			dropdownConnect(MONITOR_TYPE,"item");
-			echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
+			if(empty($withtemplate) || $withtemplate != 2) {
+				echo "<form method='post' action=\"$target\">";
+				echo "<input type='hidden' name='connect' value='connect'>";
+				echo "<input type='hidden' name='cID' value='$ID'>";
+				echo "<input type='hidden' name='device_type' value='".$type."'>";
+				dropdownConnect($type,"item");
+				echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
 
-			echo "</form>";
-
-		}
-
-	}
-	echo "</td>";
-	
-	//Peripherals
-	echo "<td align='center'>";
-	$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='".PERIPHERAL_TYPE."'";
-	if ($result=$db->query($query)) {
-		$resultnum = $db->numrows($result);
-		if ($resultnum>0) {
-			echo "<table width='100%'>";
-			for ($i=0; $i < $resultnum; $i++) {
-				$tID = $db->result($result, $i, "end1");
-				$connID = $db->result($result, $i, "ID");
-				$periph = new Peripheral;
-				$periph->getfromDB($tID);
-				echo "<tr ".($periph->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
-				echo "<td align='center'><a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=$tID\"><b>";
-				echo $periph->fields["name"];
-				if ($cfg_layout["view_ID"]||empty($periph->fields["name"])) echo " (".$periph->fields["ID"].")";
-				echo "</b></a>";
-
-				if ($state->getfromDB(PERIPHERAL_TYPE,$tID))
-				echo " - ".getDropdownName("glpi_dropdown_state",$state->fields['state']);
-				
-				echo "</td>";
-				if(!empty($withtemplate) && $withtemplate == 2) {
-					//do nothing
-				} else {
-					echo "<td align='center'><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1&amp;withtemplate=".$withtemplate."\"><b>";
-					echo $lang["buttons"][10];
-					echo "</b></a></td>";
-				}
-				echo "</tr>";
+				echo "</form>";
 			}
-			echo "</table>";			
-		} else {
-			echo $lang["computers"][47]."<br>";
-		}
-		if(!empty($withtemplate) && $withtemplate == 2) {
-			//do nothing
-		} else {
-			echo "<form method='post' action=\"$target\">";
-			echo "<input type='hidden' name='connect' value='connect'>";
-			echo "<input type='hidden' name='cID' value='$ID'>";
-			echo "<input type='hidden' name='device_type' value='".PERIPHERAL_TYPE."'>";
-			dropdownConnect(PERIPHERAL_TYPE,"item");
-			echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
-
-			echo "</form>";
 
 		}
-
+		echo "</td>";
 	}
 
 	echo "</tr>";

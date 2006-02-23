@@ -122,6 +122,7 @@ if (isset($_POST["several_add"])) {
 			"printers"=>$lang["setup"][43],		
 			"monitors"=>$lang["setup"][44],		
 			"peripherals"=>$lang["setup"][69],
+			"phones"=$lang["setup"][504];
 			"cartridge_type"=>$lang["setup"][84],
 			"consumable_type"=>$lang["setup"][92],
 			"contract_type"=>$lang["setup"][85],
@@ -137,6 +138,8 @@ if (isset($_POST["several_add"])) {
 			"model_printers"=>$lang["setup"][96],	
 			"model_monitors"=>$lang["setup"][94],
 			"model_peripherals"=>$lang["setup"][97],			
+			 "model_phones"=$lang["setup"][503];
+
 			),
 	
 		$lang["setup"][142]=>array(
@@ -165,7 +168,8 @@ if (isset($_POST["several_add"])) {
 			"netpoint"=>$lang["setup"][73],
 			"domain"=>$lang["setup"][89],
 			"network"=>$lang["setup"][88],
-			"vlan"=>$lang["setup"][90],			
+			"vlan"=>$lang["setup"][90],	
+			"phone_power"=$lang["setup"][505];
 			),
 
 	); //end $opt
@@ -229,6 +233,9 @@ if (isset($_POST["several_add"])) {
 		case "peripherals" :
 		showFormTypeDown($_SERVER["PHP_SELF"],"peripherals",$lang["setup"][69],$ID);
 		break;
+		case "phones" :
+		showFormTypeDown($_SERVER["PHP_SELF"],"phones",$lang["setup"][504],$ID);
+		break;
 		case "os" :
 		showFormDropDown($_SERVER["PHP_SELF"],"os",$lang["setup"][5],$ID);
 		break;
@@ -265,6 +272,9 @@ if (isset($_POST["several_add"])) {
 		break;
 		case "model_peripherals" : 
 		showFormDropDown($_SERVER["PHP_SELF"],"model_peripherals",$lang["setup"][97],$ID,$value2);
+		break;
+		case "model_phones" : 
+		showFormDropDown($_SERVER["PHP_SELF"],"model_phones",$lang["setup"][503],$ID,$value2);
 		break;
 		case "rubdocs" : 
 		showFormDropDown($_SERVER["PHP_SELF"],"rubdocs",$lang["setup"][81],$ID,$value2);
@@ -304,6 +314,9 @@ if (isset($_POST["several_add"])) {
 		break;
 		case "budget" : 
 		showFormDropDown($_SERVER["PHP_SELF"],"budget",$lang["setup"][99],$ID,$value2);
+		break;
+		case "phone_power" : 
+		showFormDropDown($_SERVER["PHP_SELF"],"phone_power",$lang["setup"][505],$ID,$value2);
 		break;
 
 	default : break;

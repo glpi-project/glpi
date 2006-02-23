@@ -263,6 +263,9 @@ class CommonItem{
 			case PERIPHERAL_TYPE : 
 				$this->obj= new Peripheral;	
 				break;				
+			case PHONE_TYPE : 
+				$this->obj= new Phone;	
+				break;		
 			case SOFTWARE_TYPE : 
 				$this->obj= new Software;	
 				break;				
@@ -346,6 +349,9 @@ class CommonItem{
 			case PERIPHERAL_TYPE : 
 				return $lang["peripherals"][4];
 				break;				
+			case PHONE_TYPE : 
+				return $lang["phones"][4];
+				break;				
 			case SOFTWARE_TYPE : 
 				return $lang["software"][10];
 				break;				
@@ -427,64 +433,30 @@ class CommonItem{
 	*/
 	function getLink(){
 	
-		global $cfg_install,$cfg_layout;
+		global $cfg_install,$cfg_layout,$INFOFORM_PAGES;
 		$ID="";
 		switch ($this->device_type){
 			case GENERAL_TYPE :
 				return $this->getName();
 				break;
 			case COMPUTER_TYPE :
-				if($cfg_layout["view_ID"]) $ID= " (".$this->id_device.")";
-				return "<a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
-				break;
 			case NETWORKING_TYPE :
-				if($cfg_layout["view_ID"]) $ID= " (".$this->id_device.")";
-				return "<a href=\"".$cfg_install["root"]."/networking/networking-info-form.php?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
-				break;
 			case PRINTER_TYPE :
-				if($cfg_layout["view_ID"]) $ID= " (".$this->id_device.")";
-				return "<a href=\"".$cfg_install["root"]."/printers/printers-info-form.php?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
-				break;
 			case MONITOR_TYPE : 
-				if($cfg_layout["view_ID"]) $ID= " (".$this->id_device.")";
-				return "<a href=\"".$cfg_install["root"]."/monitors/monitors-info-form.php?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
-				break;
 			case PERIPHERAL_TYPE : 
-				if($cfg_layout["view_ID"]) $ID= " (".$this->id_device.")";
-				return "<a href=\"".$cfg_install["root"]."/peripherals/peripherals-info-form.php?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
-				break;				
+			case PHONE_TYPE : 
 			case SOFTWARE_TYPE : 
-				if($cfg_layout["view_ID"]) $ID= " (".$this->id_device.")";
-				return "<a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
-				break;				
 			case CONTRACT_TYPE : 
-				if($cfg_layout["view_ID"]) $ID= " (".$this->id_device.")";
-				return "<a href=\"".$cfg_install["root"]."/contracts/contracts-info-form.php?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
-				break;				
 			case ENTERPRISE_TYPE : 
-				if($cfg_layout["view_ID"]) $ID= " (".$this->id_device.")";
-				return "<a href=\"".$cfg_install["root"]."/enterprises/enterprises-info-form.php?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
-				break;
 			case CONTACT_TYPE : 
-				if($cfg_layout["view_ID"]) $ID= " (".$this->id_device.")";
-				return "<a href=\"".$cfg_install["root"]."/contacts/contacts-info-form.php?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
-				break;
 			case KNOWBASE_TYPE : 
-				if($cfg_layout["view_ID"]) $ID= " (".$this->id_device.")";
-				return "<a href=\"".$cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
-				break;						
 			case USER_TYPE : 
-				if($cfg_layout["view_ID"]) $ID= " (".$this->id_device.")";
-				return "<a href=\"".$cfg_install["root"]."/users/users-info-form.php?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
-				break;						
 			case CARTRIDGE_TYPE : 
-				if($cfg_layout["view_ID"]) $ID= " (".$this->id_device.")";
-				return "<a href=\"".$cfg_install["root"]."/cartridges/cartridges-info-form.php?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
-				break;						
 			case CONSUMABLE_TYPE : 
+			case DOCUMENT_TYPE : 
 				if($cfg_layout["view_ID"]) $ID= " (".$this->id_device.")";
-				return "<a href=\"".$cfg_install["root"]."/consumables/consumables-info-form.php?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
-				break;						
+				return "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$this->device_type]."?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
+				break;
 			case LICENSE_TYPE : 
 				return $this->getName();
 				break;						
@@ -494,11 +466,6 @@ class CommonItem{
 			case CONSUMABLE_ITEM_TYPE : 
 				return $this->getName();
 				break;						
-			case DOCUMENT_TYPE : 
-				if($cfg_layout["view_ID"]) $ID= " (".$this->id_device.")";
-				return "<a href=\"".$cfg_install["root"]."/documents/documents-info-form.php?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
-				break;						
-			
 			}
 
 	

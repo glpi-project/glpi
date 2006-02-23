@@ -74,6 +74,10 @@ $query = "SELECT ID FROM glpi_contract_device where device_type=".SOFTWARE_TYPE;
 $result = $db->query($query);
 $number_of_soft = $db->numrows($result);
 
+$query = "SELECT ID FROM glpi_contract_device where device_type=".PHONE_TYPE;
+$result = $db->query($query);
+$number_of_phone = $db->numrows($result);
+
 
 # 2. afficher les données dans un tableau
 
@@ -92,13 +96,14 @@ echo "<tr><td class='tab_bg_2'  align='center'>".$lang["reports"][9].":&nbsp; &n
 echo "<tr><td class='tab_bg_2'  align='center'>".$lang["reports"][8]." : &nbsp; &nbsp; </td><td class='tab_bg_2' align='center'>$number_of_networking</td></tr>";
 echo "<tr><td class='tab_bg_2'  align='center'>".$lang["reports"][29]." : &nbsp; &nbsp; </td><td class='tab_bg_2' align='center'>$number_of_periph</td></tr>";
 echo "<tr><td class='tab_bg_2'  align='center'>".$lang["reports"][55]." : &nbsp; &nbsp; </td><td class='tab_bg_2' align='center'>$number_of_soft</td></tr>";
+echo "<tr><td class='tab_bg_2'  align='center'>".$lang["reports"][64]." : &nbsp; &nbsp; </td><td class='tab_bg_2' align='center'>$number_of_phone</td></tr>";
 
 # 3. Selection d'affichage pour generer la liste
 echo "<tr class='tab_bg_1'>";
 echo "<td  align='center' width='200' >";
 
 echo "<p><b>".$lang["reports"][12]."</b></p> ";
-echo "<p><select name='item_type[]' size='7' multiple>";
+echo "<p><select name='item_type[]' size='8' multiple>";
 echo "<option value='0' selected>".$lang["reports"][16]."</option>";
 echo "<option value='".COMPUTER_TYPE."'>".$lang["reports"][6]."</option>";
 echo "<option value='".PRINTER_TYPE."'>".$lang["reports"][7]."</option>";
@@ -106,11 +111,12 @@ echo "<option value='".NETWORKING_TYPE."'>".$lang["reports"][8]."</option>";
 echo "<option value='".MONITOR_TYPE."'>".$lang["reports"][9]."</option>";
 echo "<option value='".PERIPHERAL_TYPE."'>".$lang["reports"][29]."</option>";
 echo "<option value='".SOFTWARE_TYPE."'>".$lang["reports"][55]."</option>";
+echo "<option value='".PHONE_TYPE."'>".$lang["reports"][64]."</option>";
 echo "</select></p> </td> ";
 
 echo "<td  align='center'  width='200'>";
 echo "<p><b>".$lang["reports"][13]."</b></p> ";
-echo " <p><select name='annee[]' size='7' multiple>";
+echo " <p><select name='annee[]' size='8' multiple>";
 echo " <option value='toutes' selected>".$lang["reports"][16]."</option>";
   $y = date("Y");
   for ($i=$y-10;$i<=$y;$i++)
