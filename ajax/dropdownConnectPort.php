@@ -70,6 +70,10 @@
 				if (!empty($data['MAC'])) $output_long.= " - ".$data['MAC'];
 				if (!empty($data['NNAME'])) $output_long.= substr(" - ".$data['NNAME'],0,$cfg_layout["dropdown_limit"]);
 				$ID = $data['DID'];
+				if (empty($data["IP"])) {
+					$output.=$output_long;
+					$output_long="";
+				}
 				if (empty($output)) $output="($ID)";
 				echo "<option value=\"$ID\" title=\"$output$output_long\">".$output."</option>";
 			}

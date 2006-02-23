@@ -531,7 +531,7 @@ if ($db->numrows($result)>0)
 while ($line=$db->fetch_array($result)){
 	echo "<tr><td>".getDropdownName("glpi_dropdown_vlan",$line["FK_vlan"]);
 	echo "</td><td>";
-	echo "<a href='".$HTMLRel."networking/networking-port.php?unassign_vlan=unassigned&amp;ID=".$line["ID"]."&referer=$referer'>";
+	echo "<a href='".$HTMLRel."networking/networking-port.php?unassign_vlan=unassigned&amp;ID=".$line["ID"]."&amp;referer=$referer'>";
     echo "<img src=\"".$HTMLRel."/pics/delete2.png\" alt='".$lang["buttons"][6]."' title='".$lang["buttons"][6]."'>";
     echo "</a></td></tr>";
 }
@@ -823,7 +823,7 @@ function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 		echo "</a></b>";
 		echo " ".$lang["networking"][25]." <b>";
 
-		echo "<a href=\"".$cfg_install["root"]."/".$INFORM_PAGES[$netport->fields["device_type"]]."?ID=".$netport->device_ID."\">";
+		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$netport->fields["device_type"]]."?ID=".$netport->device_ID."\">";
 
 		echo $netport->device_name;
 		if ($cfg_layout['view_ID']) echo " (".$netport->device_ID.")";
