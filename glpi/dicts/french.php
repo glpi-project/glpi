@@ -953,6 +953,14 @@ $lang["reminder"][2]="Rdv personnel";
 $lang["reminder"][3]="Rdv publique";
 $lang["reminder"][4]="Note personnelle";
 $lang["reminder"][5]="Note publique";
+$lang["reminder"][6]="Nouvelle note";
+$lang["reminder"][7]="Note";
+$lang["reminder"][8]="Titre";
+$lang["reminder"][9]="Texte";
+$lang["reminder"][10]="Type";
+$lang["reminder"][11]="Calendrier";
+$lang["reminder"][12]="Ajouter au calendrier";
+$lang["reminder"][13]="Pas de note trouvée";
 
 $lang["reports"][0]="Sélectionner un rapport à générer";
 $lang["reports"][4]="Liste du materiel sous contrat";
@@ -1360,7 +1368,7 @@ $lang["title"][36]="Consommables";
 $lang["title"][37]="Notes";
 $lang["title"][38]="Historique";
 $lang["title"][39]="OCS Inventory NG";
-$lang["title"][40]="Notes";
+$lang["title"][40]="Notes personnelles et publiques";
 $lang["title"][41]="Téléphone";
 
 $lang["toolbar"][1]="Gras";
