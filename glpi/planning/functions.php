@@ -342,6 +342,22 @@ global $cfg_features,$HTMLRel,$lang;
 $debut=$when;
 $tmp=split(" ",$when);
 $hour=split(":",$tmp[1]);
+$day=split("-",$tmp[0]);
+
+$more_day=0;
+$more_hour=0;
+
+if ($type=="month"){
+	$INTERVAL=" 1 DAY ";
+	$more_day=1;
+	}
+else {
+	$INTERVAL=" 59 MINUTE ";
+	$more_hour=1;
+}
+
+
+$fin=mktime($hour[0]+$more_hour,$hour[1],$hour[2],$day[1],$day[2]+$more_day,$day[0]);
 
 $author="";  // variable pour l'affichage de l'auteur ou non
 $img="rdv_private.png"; // variable par defaut pour l'affichage de l'icone du reminder
@@ -352,9 +368,6 @@ if ($who!=0)
 $ASSIGN="id_assign='$who' AND";
 
 
-if ($type=="month")
-$INTERVAL=" 1 DAY ";
-else $INTERVAL=" 59 MINUTE ";
 
 
 // ---------------Tracking
@@ -379,8 +392,8 @@ while ($data=$db->fetch_array($result)){
 	$interv[$data["begin"]."$$".$i]["id_tracking"]=$fup->fields["tracking"];
 	$interv[$data["begin"]."$$".$i]["id_assign"]=$data["id_assign"];
 	$interv[$data["begin"]."$$".$i]["ID"]=$data["ID"];
-	$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
-	$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
+	$interv[$data["begin"]."$$".$i]["begin"]=max($debut,$data["begin"]);
+	$interv[$data["begin"]."$$".$i]["end"]=min($fin,$data["end"]);
 	$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$cfg_features["cut"]);
 	$interv[$data["begin"]."$$".$i]["device"]=$job->computername;
 
@@ -406,8 +419,8 @@ while ($data=$db->fetch_array($result)){
 		
 		
 		$interv[$data["begin"]."$$".$i]["id_reminder"]=$remind->fields["ID"];
-		$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
-		$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
+		$interv[$data["begin"]."$$".$i]["begin"]=max($debut,$data["begin"]);
+		$interv[$data["begin"]."$$".$i]["end"]=min(date("Y-m-d H:i:s",$fin),$data["end"]);
 		$interv[$data["begin"]."$$".$i]["title"]=resume_text($remind->fields["title"],$cfg_features["cut"]);
 		$interv[$data["begin"]."$$".$i]["text"]=resume_text($remind->fields["text"],$cfg_features["cut"]);
 		$interv[$data["begin"]."$$".$i]["author"]=$data["author"];
