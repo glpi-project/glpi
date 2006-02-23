@@ -68,6 +68,9 @@ class ReservationItem{
 			case PERIPHERAL_TYPE : 
 				$this->obj= new Peripheral;	
 				break;				
+			case PHONE_TYPE : 
+				$this->obj= new Phone;	
+				break;					
 			case SOFTWARE_TYPE : 
 				$this->obj= new Software;	
 				break;					
@@ -132,6 +135,12 @@ class ReservationItem{
 				if ($cfg_layout["view_ID"]) echo " (".$this->fields["id_device"].")";
 				echo "</a>";
 				break;
+			case PHONE_TYPE : 
+				if (isset($this->obj->fields["type"])&&$this->obj->fields["type"]!=0)
+					return getDropdownName("glpi_type_phones",$this->obj->fields["type"]);
+				else	return $lang["phones"][4];
+				return $lang["phones"][4];
+				break;				
 			case NETWORKING_TYPE :
 				return "<a href=\"".$cfg_install["root"]."/networking/networking-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
 				if ($cfg_layout["view_ID"]) echo " (".$this->fields["id_device"].")";
@@ -157,6 +166,11 @@ class ReservationItem{
 				if ($cfg_layout["view_ID"]) echo " (".$this->fields["id_device"].")";
 				echo "</a>";
 				break;								
+			case PHONE_TYPE : 
+				return "<a href=\"".$cfg_install["root"]."/phones/phones-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				if ($cfg_layout["view_ID"]) echo " (".$this->fields["id_device"].")";
+				echo "</a>";
+				break;	
 			}
 
 	

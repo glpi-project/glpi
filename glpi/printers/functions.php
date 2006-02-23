@@ -118,7 +118,7 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 			$datestring = $lang["computers"][14].": ";
 			$date = convDateTime(date("Y-m-d H:i:s"));
 		} else {
-			$datestring = $lang["computers"][11].": ";
+			$datestring = $lang["common"][26].": ";
 			$date = convDateTime($printer->fields["date_mod"]);
 			$template = false;
 		}
@@ -283,7 +283,7 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 
 	// table commentaires
 	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>\n";
-	echo $lang["printers"][12].":	</td>\n";
+	echo $lang["common"][25].":	</td>\n";
 	echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$printer->fields["comments"]."</textarea>\n";
 	echo "</td></tr></table>\n";
 

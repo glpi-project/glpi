@@ -73,12 +73,15 @@ $max['type_printers']=3;
 $max['type_monitors']=3;
 $max['type_peripherals']=5;
 $max['type_networking']=3;
+$max['type_phones']=3;
 $max['model_printers']=10;
 $max['model_monitors']=10;
 $max['model_peripherals']=10;
+$max['model_phones']=10;
 $max['model_networking']=10;
 $max['netpoint']=1000;
 $max['auto_update']=3;
+$max['phone_power']=3;
 
 // USERS
 $max['users_sadmin']=1;
@@ -297,6 +300,13 @@ for ($i=0;$i<$max['budget'];$i++){
 	$query="INSERT INTO glpi_dropdown_budget VALUES ('','$val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
+$items=array();
+for ($i=0;$i<$max['phone_power'];$i++){
+	if (isset($items[$i])) $val=$items[$i];
+	else $val="power $i";
+	$query="INSERT INTO glpi_dropdown_phone_power VALUES ('','$val')";
+	$db->query($query) or die("PB REQUETE ".$query);
+}
 
 $items=array("Laser","Jet-Encre","Encre Solide");
 for ($i=0;$i<$max['cartridge_type'];$i++){
@@ -402,6 +412,13 @@ for ($i=0;$i<$max['model_peripherals'];$i++){
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
+$items=array();
+for ($i=0;$i<$max['model_phones'];$i++){
+	if (isset($items[$i])) $val=$items[$i];
+	else $val="modele phone $i";
+	$query="INSERT INTO glpi_dropdown_model_phones VALUES ('','$val')";
+	$db->query($query) or die("PB REQUETE ".$query);
+}
 $items=array("SIC","LMS","LMP","LEA","SP2MI","STIC","MATH","ENS-MECA","POUBELLE","WIFI");
 for ($i=0;$i<$max['network'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
@@ -511,6 +528,14 @@ for ($i=0;$i<$max['type_peripherals'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="type de peripheriques $i";
 	$query="INSERT INTO glpi_type_peripherals VALUES ('','$val')";
+	$db->query($query) or die("PB REQUETE ".$query);
+}
+
+$items=array();
+for ($i=0;$i<$max['type_phones'];$i++){
+	if (isset($items[$i])) $val=$items[$i];
+	else $val="type de phone $i";
+	$query="INSERT INTO glpi_type_phones VALUES ('','$val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -1070,6 +1095,33 @@ for ($i=0;$i<$max['computers'];$i++){
 
 	$query="INSERT INTO glpi_connect_wire VALUES ('','$monID','$compID','".MONITOR_TYPE."')";
 	$db->query($query) or die("PB REQUETE ".$query);	
+
+	// ITEMS IN SPECIAL STATES
+	if (mt_rand(0,100)<$percent['state']){
+		$query="INSERT INTO glpi_state_item VALUES ('','".MONITOR_TYPE."','$monID','".mt_rand(1,$max['state'])."','0')";
+		$db->query($query) or die("PB REQUETE ".$query);
+	}
+
+	// Ajout d'un téléphone avec l'ordi
+
+	$query="INSERT INTO glpi_phones VALUES ('','phone $i',NOW(),'contact $i','num $i','$techID','comment $i','".GetRandomString(10)."','".GetRandomString(10)."','".GetRandomString(10)."','$loc','".mt_rand(1,$max['type_phones'])."','".mt_rand(1,$max['model_phones'])."','".GetRandomString(10)."','".mt_rand(1,$max['phone_power'])."','".GetRandomString(10)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(1,$max['enterprises'])."','0','N','0','','notes monitor $i')";
+	$db->query($query) or die("PB REQUETE ".$query);	
+	$telID=$db->insert_id();
+	add_documents(PHONE_TYPE,$monID);	
+	add_contracts(PHONE_TYPE,$monID);	
+
+	// Add trackings
+	add_tracking(PHONE_TYPE,$monID);
+
+	$query="INSERT INTO glpi_connect_wire VALUES ('','$telID','$compID','".PHONE_TYPE."')";
+	$db->query($query) or die("PB REQUETE ".$query);	
+
+	// ITEMS IN SPECIAL STATES
+	if (mt_rand(0,100)<$percent['state']){
+		$query="INSERT INTO glpi_state_item VALUES ('','".PHONE_TYPE."','$telID','".mt_rand(1,$max['state'])."','0')";
+		$db->query($query) or die("PB REQUETE ".$query);
+	}
+
 	
 	// Ajout des periphs externes en connection directe
 	while (mt_rand(0,100)<$percent['peripherals']){
@@ -1094,12 +1146,6 @@ for ($i=0;$i<$max['computers'];$i++){
 	$db->query($query) or die("PB REQUETE ".$query);
 
 
-	// ITEMS IN SPECIAL STATES
-	if (mt_rand(0,100)<$percent['state']){
-		$query="INSERT INTO glpi_state_item VALUES ('','".MONITOR_TYPE."','$monID','".mt_rand(1,$max['state'])."','0')";
-		$db->query($query) or die("PB REQUETE ".$query);
-	}
-	
 	// Ajout d'une imprimante connection directe pour X% des computers + ajout de cartouches
 	if (mt_rand(0,100)<=$percent['printer']){
 		// Add printer 

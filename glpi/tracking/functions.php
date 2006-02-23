@@ -687,31 +687,6 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 		$job->fields["closedate"] = date("Y-m-d H:i:s");
 	// ajout suite  �tracking sur tous les items 
 
-	switch ($device_type) {
-	case GENERAL_TYPE :
-	$item = "";
-	break;
-	case COMPUTER_TYPE :
-	$item = "computers";
-	break;
-	case NETWORKING_TYPE :
-	$item = "networking";
-	break;
-	case PRINTER_TYPE :
-	$item = "printers";
-	break;
-	case MONITOR_TYPE :
-	$item = "monitors";
-	break;
-	case PERIPHERAL_TYPE :
-	$item = "peripherals";
-	break;
-	case SOFTWARE_TYPE :
-	$item = "software";
-	break;
-	}
-	
-	
 	if ($tID=$job->addToDB()) {
 		$job->fields["ID"]=$tID;
 		// add Document if exists
@@ -894,10 +869,10 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 		$option["gfxcard.designation"]			= $lang["computers"][34];
 		$option["moboard.designation"]			= $lang["computers"][35];
 		$option["hdd.designation"]			= $lang["computers"][36];
-		$option["comp.comments"]			= $lang["computers"][19];
+		$option["comp.comments"]			= $lang["common"][25];
 		$option["comp.contact"]				= $lang["common"][18];
 		$option["comp.contact_num"]		        = $lang["common"][21];
-		$option["comp.date_mod"]			= $lang["computers"][11];
+		$option["comp.date_mod"]			= $lang["common"][26];
 		$option["glpi_networking_ports.ifaddr"] 	= $lang["networking"][14];
 		$option["glpi_networking_ports.ifmac"] 		= $lang["networking"][15];
 		$option["glpi_dropdown_netpoint.name"]		= $lang["networking"][51];

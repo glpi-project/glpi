@@ -411,7 +411,7 @@ function searchFormDevices($device_type,$field="",$phrasetype= "",$contains="",$
 
 	$option[$device_type.".designation"]			= $lang["devices"][14];
 	$option[$device_type.".ID"]				= $lang["common"][2];
-	$option[$device_type.".comment"]			= $lang["devices"][15];
+	$option[$device_type.".comment"]			= $lang["common"][25];
 	$option["glpi_enterprises.name"]			= $lang["common"][5];
 
 
@@ -753,7 +753,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 
 	// table commentaires
 	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
-	echo $lang["devices"][15].":	</td>";
+	echo $lang["common"][25].":	</td>";
 	echo "<td align='center'><textarea cols='35' rows='4' name='comment' >".$device->fields["comment"]."</textarea>";
 	echo "</td></tr></table>";
 

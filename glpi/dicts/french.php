@@ -121,7 +121,6 @@ $lang["calendarM"][11]="Décembre";
 
 $lang["cartridges"][0]="Cartouche"; 
 $lang["cartridges"][2]="Référence";
-$lang["cartridges"][5]="Commentaire"; 
 $lang["cartridges"][6]="Ajouter Type de Cartouche...";
 $lang["cartridges"][7]="Pas de cartouche trouvée"; 
 $lang["cartridges"][9]="Aucune cartouche"; 
@@ -196,15 +195,15 @@ $lang["common"][21]="Contact numéro";
 $lang["common"][22]="Modèle";
 $lang["common"][23]="Opération réalisée avec succés";
 $lang["common"][24]="Aucun élément sélectionné ou opération mal définie ";
+$lang["common"][25]="Commentaires";
+$lang["common"][26]="Dernière modification";
 
 
 $lang["computers"][0]="Ajouter ordinateur...";
 $lang["computers"][9]="OS";
-$lang["computers"][11]="Dernière modif";
 $lang["computers"][12]="Nouvel ordinateur à partir d'un modèle";
 $lang["computers"][13]="Ordinateur ID";
 $lang["computers"][14]="Inseré";
-$lang["computers"][19]="Commentaires";
 $lang["computers"][21]="CPU";
 $lang["computers"][23]="RAM Type";
 $lang["computers"][24]="Quantité RAM";
@@ -232,6 +231,8 @@ $lang["computers"][49]="Modification du contact. Les éléments connectés ont p
 $lang["computers"][51]="Source de mise à jour";
 $lang["computers"][52]="OS Version";
 $lang["computers"][53]="Service Pack";
+$lang["computers"][54]="Pas de téléphone connectée";
+$lang["computers"][55]="Téléphone(s)";
 
 $lang["connect"][0]="Connexion(s) directe(s)";
 $lang["connect"][1]="Non connecté.";
@@ -244,7 +245,6 @@ $lang["connect"][22]="Attention !! Les adresses MAC des deux matériels ne corre
 
 $lang["consumables"][0]="Consommable";
 $lang["consumables"][2]="Référence";
-$lang["consumables"][5]="Commentaire"; 
 $lang["consumables"][6]="Ajouter Type de Consommable...";
 $lang["consumables"][7]="Pas de consommable trouvé";
 $lang["consumables"][9]="Aucun consommable";
@@ -276,7 +276,6 @@ $lang["devices"][8]="Désignation";
 $lang["devices"][10]="Périphériques Internes";
 $lang["devices"][12]="Ajouter Périphérique ...";
 $lang["devices"][14]="Désignation";
-$lang["devices"][15]="Commentaire"; 
 $lang["devices"][17]="Selectionnez un type de périphérique interne"; 
 $lang["devices"][18]="Pas de périphérique trouvé"; 
 $lang["devices"][19]="Lecteurs"; 
@@ -329,8 +328,6 @@ $lang["document"][0]="Documents";
 $lang["document"][2]="Fichier";
 $lang["document"][3]="Rubrique"; 
 $lang["document"][4]="Type MIME"; 
-$lang["document"][5]="Date de modification";
-$lang["document"][6]="Commentaires"; 
 $lang["document"][7]="Type de document";
 $lang["document"][9]="Extension";
 $lang["document"][10]="Icône";
@@ -385,7 +382,6 @@ $lang["financial"][8]="Durée";
 $lang["financial"][9]="an(s)";
 $lang["financial"][10]="Préavis";
 $lang["financial"][11]="Type de Facturation";
-$lang["financial"][12]="Commentaires"; 
 $lang["financial"][13]="Numéro comptable"; 
 $lang["financial"][14]="Date d'achat";
 $lang["financial"][15]="Durée garantie";
@@ -488,6 +484,7 @@ $lang["help"][30]="Général";
 $lang["help"][31]="Logiciel";
 $lang["help"][32]="Vous n'avez pas spécifié de numéro de matériel pour une catégorie de matériel précis.";
 $lang["help"][33]="Si vous ne trouvez pas votre matériel, vous pouvez utiliser le type Général";
+$lang["help"][35]="Téléphones";
 
 $lang["install"][0]="Installation ou mise à jour de GLPI";
 $lang["install"][1]="Choisissez 'Installation' pour  une nouvelle installation complète de GLPI ( les données importées par GLPI seront les données par défaut).";
@@ -661,6 +658,61 @@ $lang["links"][7]="Aucun lien défini";
 $lang["links"][8]="Pas de lien trouvé";
 $lang["links"][9]="Contenu du fichier";
 
+
+$lang["log"][1]="système";
+$lang["log"][2]="ordinateur";
+$lang["log"][3]="écran";
+$lang["log"][4]="imprimante";
+$lang["log"][5]="logiciel";
+$lang["log"][6]="réseau";
+$lang["log"][7]="cartouches";
+$lang["log"][8]="périphériques";
+$lang["log"][9]="consommables";
+$lang["log"][10]="suivi";
+$lang["log"][11]="contact";
+$lang["log"][12]="entreprise";
+$lang["log"][13]="document";
+$lang["log"][14]="base connaissances";
+$lang["log"][15]="utilisateur";
+$lang["log"][16]="planning";
+$lang["log"][17]="contrats";
+$lang["log"][18]="periphériques internes";
+$lang["log"][19]="informations financières";
+$lang["log"][20]="ajout de l'item ";
+$lang["log"][21]="mise à jour de l'item";
+$lang["log"][22]="supression de l'item";
+$lang["log"][23]="restauration de l'item";
+$lang["log"][24]="purge de l'item";
+$lang["log"][26]="déconnexion de l'item";
+$lang["log"][27]="connexion de l'item";
+$lang["log"][28]="modification de la caractéristique d'un périphérique interne";
+$lang["log"][29]="déconnexion d'un périphérique interne sur l'ordinateur ";
+$lang["log"][30]="association d'un type";
+$lang["log"][31]="supression d'un type";
+$lang["log"][32]="ajout lien avec un  item";
+$lang["log"][33]="supression lien avec un item";
+$lang["log"][34]="ajout lien avec entreprise";
+$lang["log"][35]="supression lien avec entreprise";
+$lang["log"][36]="ajout lien avec contact";
+$lang["log"][37]="supression lien avec contact";
+$lang["log"][38]="liens";
+$lang["log"][39]="type documents";
+$lang["log"][40]="connexion de l'IP";
+$lang["log"][41]="echec de connexion";
+$lang["log"][42]="Réservation";
+$lang["log"][43]="téléphone";
+
+$lang["log"][50]="Inventaire";
+$lang["log"][51]="Suivi";
+$lang["log"][52]="Planning";
+$lang["log"][53]="Outils";
+$lang["log"][54]="Gestion";
+$lang["log"][55]="Connexion";
+$lang["log"][56]="Documents";
+$lang["log"][57]="Configuration";
+$lang["log"][58]="Réservation";
+
+
 $lang["login"][0]="Login impossible, vérifiez que votre navigateur accepte les cookies.";
 $lang["login"][1]="Se reconnecter";
 $lang["login"][3]="Non logué";
@@ -670,6 +722,8 @@ $lang["login"][7]="Mot de passe";
 $lang["login"][8]="Indentifiant ou mot de passe vide";
 $lang["login"][10]="Authentification";
 $lang["login"][11]="Utilisateur non autorisé à se connecter";
+
+
 
 $lang["mailing"][0]="----------------------------------------------------------";
 $lang["mailing"][1]="======================================================================";
@@ -741,13 +795,12 @@ $lang["Menu"][30]="Logs";
 $lang["Menu"][31]="Helpdesk";
 $lang["Menu"][32]="Consommables";
 $lang["Menu"][33]="OCSNG";
+$lang["Menu"][34]="Téléphones";
 
 $lang["monitors"][0]="Ajouter moniteur...";
 $lang["monitors"][4]="Moniteur";
-$lang["monitors"][12]="Commentaire";
 $lang["monitors"][14]="Microphone";
 $lang["monitors"][15]="Enceintes";
-$lang["monitors"][16]="Dernière modification";
 $lang["monitors"][17]="Pas de moniteur trouvé.";
 $lang["monitors"][18]="Options";
 $lang["monitors"][19]="Sub-D";
@@ -758,8 +811,6 @@ $lang["monitors"][30]="Nouvel écran à partir d'un modèle";
 $lang["monitors"][32]="DVI";
 
 $lang["networking"][5]="RAM (MB)";
-$lang["networking"][8]="Commentaire";
-$lang["networking"][9]="Dernière modification";
 $lang["networking"][11]="Ajouter Materiel réseau...";
 $lang["networking"][12]="Materiel réseau";
 $lang["networking"][13]="port(s) réseau trouvé(s)";
@@ -830,7 +881,6 @@ $lang["ocsconfig"][14]="Import global : tout est importé mais le matériel est 
 $lang["ocsconfig"][15]="Pas d'import : GLPI n'importera pas ces éléments";
 $lang["ocsconfig"][19]="OS";
 $lang["ocsconfig"][24]="Domaine";
-$lang["ocsconfig"][26]="Commentaire";
 $lang["ocsconfig"][27]="Informations générales Ordinateurs";
 $lang["ocsconfig"][28]="Périphériques";
 $lang["ocsconfig"][29]="Processeurs";
@@ -853,8 +903,6 @@ $lang["pager"][5]="éléments";
 
 $lang["peripherals"][0]="Ajouter périphérique...";
 $lang["peripherals"][4]="Périphérique";
-$lang["peripherals"][12]="Commentaire";
-$lang["peripherals"][16]="Dernière modification";
 $lang["peripherals"][17]="Pas de péripherique trouvé.";
 $lang["peripherals"][18]="Marque";
 $lang["peripherals"][29]="Périphérique ID";
@@ -862,6 +910,22 @@ $lang["peripherals"][30]="Nouveau périphérique à partir d'un modèle";
 $lang["peripherals"][31]="Gestion globale";
 $lang["peripherals"][32]="Gestion unitaire";
 $lang["peripherals"][33]="Type de gestion";
+
+$lang["phones"][0]="Ajouter téléphone...";
+$lang["phones"][4]="Téléphone";
+$lang["phones"][17]="Pas de téléphone trouvé.";
+$lang["phones"][18]="Marque";
+$lang["phones"][29]="Téléphone ID";
+$lang["phones"][30]="Nouveau téléphone à partir d'un modèle";
+$lang["phones"][31]="Gestion globale";
+$lang["phones"][32]="Gestion unitaire";
+$lang["phones"][33]="Type de gestion";
+$lang["phones"][35]="Firmware";
+$lang["phones"][36]="Alimentation";
+$lang["phones"][37]="Options";
+$lang["phones"][38]="Casque";
+$lang["phones"][39]="Haut parleur";
+$lang["phones"][40]="Nombre de lignes";
 
 
 $lang["planning"][0]="Le technicien demandé a déjà une intervention prévue pour cette plage.";
@@ -883,10 +947,8 @@ $lang["planning"][15]="Votre planning";
 $lang["printers"][0]="Ajouter imprimante...";
 $lang["printers"][4]="Imprimante";
 $lang["printers"][8]="Contact Personne";
-$lang["printers"][12]="Commentaire";
 $lang["printers"][14]="Port série";
 $lang["printers"][15]="Port parallèle";
-$lang["printers"][16]="Dernière modification";
 $lang["printers"][17]="Pas d'imprimante trouvée.";
 $lang["printers"][18]="Flags";
 $lang["printers"][23]="Mémoire vive";
@@ -954,6 +1016,7 @@ $lang["reports"][60]="Date d'ouverture";
 $lang["reports"][61]="Date de fermeture";
 $lang["reports"][62]="Informations financières Hardware";
 $lang["reports"][63]="Informations financières autres (licences, consommables, cartouches)";
+$lang["reports"][64]="Téléphones";
 
 $lang["reservation"][1]="Matériel réservable";
 $lang["reservation"][3]="Type matériel";
@@ -974,7 +1037,6 @@ $lang["reservation"][19]="Erreur dans l'entrée de vos dates. La date de début 
 $lang["reservation"][20]="Retour au calendrier";
 $lang["reservation"][21]="Voir les réservations";
 $lang["reservation"][22]="Modifier le commentaire";
-$lang["reservation"][23]="Commentaire";
 $lang["reservation"][24]="Prêt"; 
 $lang["reservation"][25]="Tous les matériels en prêt";
 $lang["reservation"][26]="Voir tous";
@@ -1118,9 +1180,6 @@ $lang["setup"][145]="Os";
 $lang["setup"][146]="Réseau";
 
 
-
-
-
 $lang["setup"][150]="Sources d'authentification externes";
 $lang["setup"][151]="Si vous ne souhaitez pas utiliser LDAP comme source(s) de connexion laissez les champs vides";
 $lang["setup"][152]="LDAP configuration";
@@ -1205,12 +1264,15 @@ $lang["setup"][400]="Actif";
 
 $lang["setup"][500]="OS Version";
 $lang["setup"][501]="Service Pack";
+$lang["setup"][502]="Téléphones";
+$lang["setup"][503]="Modèles de téléphones";
+$lang["setup"][504]="Types de téléphones";
+$lang["setup"][505]="Types d'alimentation téléphone";
 
 
 $lang["software"][0]="Ajouter logiciel...";
 $lang["software"][3]="Plateforme";
 $lang["software"][5]="Version";
-$lang["software"][6]="Commentaires";
 $lang["software"][10]="Logiciel";
 $lang["software"][11]="Licences";
 $lang["software"][12]="Ajouter licence...";
@@ -1325,6 +1387,7 @@ $lang["title"][37]="Notes";
 $lang["title"][38]="Historique";
 $lang["title"][39]="OCS Inventory NG";
 $lang["title"][40]="Notes";
+$lang["title"][41]="Téléphone";
 
 $lang["toolbar"][1]="Gras";
 $lang["toolbar"][2]="Italique";
@@ -1380,56 +1443,4 @@ $lang["update"][136]="Voici la nouvelle hiérarchie générée. Si elle vous con
 $lang["update"][137]="Nouvelle hierarchie";
 $lang["update"][138]="Lieux actuels"; 
 
-$lang["log"][1]="système";
-$lang["log"][2]="ordinateur";
-$lang["log"][3]="écran";
-$lang["log"][4]="imprimante";
-$lang["log"][5]="logiciel";
-$lang["log"][6]="réseau";
-$lang["log"][7]="cartouches";
-$lang["log"][8]="périphériques";
-$lang["log"][9]="consommables";
-$lang["log"][10]="suivi";
-$lang["log"][11]="contact";
-$lang["log"][12]="entreprise";
-$lang["log"][13]="document";
-$lang["log"][14]="base connaissances";
-$lang["log"][15]="utilisateur";
-$lang["log"][16]="planning";
-$lang["log"][17]="contrats";
-$lang["log"][18]="periphériques internes";
-$lang["log"][19]="informations financières";
-$lang["log"][20]="ajout de l'item ";
-$lang["log"][21]="mise à jour de l'item";
-$lang["log"][22]="supression de l'item";
-$lang["log"][23]="restauration de l'item";
-$lang["log"][24]="purge de l'item";
-$lang["log"][26]="déconnexion de l'item";
-$lang["log"][27]="connexion de l'item";
-$lang["log"][28]="modification de la caractéristique d'un périphérique interne";
-$lang["log"][29]="déconnexion d'un périphérique interne sur l'ordinateur ";
-$lang["log"][30]="association d'un type";
-$lang["log"][31]="supression d'un type";
-$lang["log"][32]="ajout lien avec un  item";
-$lang["log"][33]="supression lien avec un item";
-$lang["log"][34]="ajout lien avec entreprise";
-$lang["log"][35]="supression lien avec entreprise";
-$lang["log"][36]="ajout lien avec contact";
-$lang["log"][37]="supression lien avec contact";
-$lang["log"][38]="liens";
-$lang["log"][39]="type documents";
-$lang["log"][40]="connexion de l'IP";
-$lang["log"][41]="echec de connexion";
-$lang["log"][42]="Réservation";
-
-
-$lang["log"][50]="Inventaire";
-$lang["log"][51]="Suivi";
-$lang["log"][52]="Planning";
-$lang["log"][53]="Outils";
-$lang["log"][54]="Gestion";
-$lang["log"][55]="Connexion";
-$lang["log"][56]="Documents";
-$lang["log"][57]="Configuration";
-$lang["log"][58]="Réservation";
 ?>

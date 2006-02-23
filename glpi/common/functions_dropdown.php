@@ -484,6 +484,8 @@ echo "<select name='$name'>\n";
 	echo "<option value='".PRINTER_TYPE."' ".(($device_type==PRINTER_TYPE)?" selected":"").">".$lang["help"][27]."</option>\n";
 	echo "<option value='".MONITOR_TYPE."' ".(($device_type==MONITOR_TYPE)?" selected":"").">".$lang["help"][28]."</option>\n";
 	echo "<option value='".PERIPHERAL_TYPE."' ".(($device_type==PERIPHERAL_TYPE)?" selected":"").">".$lang["help"][29]."</option>\n";
+	echo "<option value='".PHONE_TYPE."' ".(($device_type==PHONE_TYPE)?" selected":"").">".$lang["help"][35]."</option>\n";
+
 	if ($soft)
 		echo "<option value='".SOFTWARE_TYPE."' ".(($device_type==SOFTWARE_TYPE)?" selected":"").">".$lang["help"][31]."</option>\n";
 	if ($cart)
@@ -526,6 +528,7 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$withenterprise=0,$with
 	MONITOR_TYPE=>"glpi_monitors",
 	PERIPHERAL_TYPE=>"glpi_peripherals",
 	SOFTWARE_TYPE=>"glpi_software",
+	PHONE_TYPE=>"glpi_phones",
 	);
 
 	if ($withenterprise==1) $items[ENTERPRISE_TYPE]="glpi_enterprises";
@@ -544,6 +547,7 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$withenterprise=0,$with
 	echo "<option value='".MONITOR_TYPE."'>".$lang["Menu"][3]."</option>\n";
 	echo "<option value='".PERIPHERAL_TYPE."'>".$lang["Menu"][16]."</option>\n";
 	echo "<option value='".SOFTWARE_TYPE."'>".$lang["Menu"][4]."</option>\n";
+	echo "<option value='".PHONE_TYPE."'>".$lang["Menu"][34]."</option>\n";
 	if ($withenterprise==1) echo "<option value='".ENTERPRISE_TYPE."'>".$lang["Menu"][23]."</option>\n";
 	if ($withcartridge==1) echo "<option value='".CARTRIDGE_TYPE."'>".$lang["Menu"][21]."</option>\n";
 	if ($withconsumable==1) echo "<option value='".CONSUMABLE_TYPE."'>".$lang["Menu"][32]."</option>\n";
@@ -616,6 +620,7 @@ function dropdownTrackingDeviceType($myname,$value){
 	echo "<option value='".MONITOR_TYPE."' ".(($value==MONITOR_TYPE)?" selected":"").">".$lang["help"][28]."</option>\n";
 	echo "<option value='".PERIPHERAL_TYPE."' ".(($value==PERIPHERAL_TYPE)?" selected":"").">".$lang["help"][29]."</option>\n";
 	echo "<option value='".SOFTWARE_TYPE."' ".(($value==SOFTWARE_TYPE)?" selected":"").">".$lang["help"][31]."</option>\n";
+	echo "<option value='".PHONE_TYPE."' ".(($value==PHONE_TYPE)?" selected":"").">".$lang["help"][35]."</option>\n";
 	echo "</select>\n";
 
 echo "<script type='text/javascript' >\n";
@@ -671,6 +676,7 @@ function dropdownConnect($type,$myname) {
 			PRINTER_TYPE=>"glpi_printers",
 			MONITOR_TYPE=>"glpi_monitors",
 			PERIPHERAL_TYPE=>"glpi_peripherals",
+			PHONE_TYPE=>"glpi_phones",
 		);
 
 	$rand=mt_rand();
@@ -731,6 +737,7 @@ function dropdownConnectPort($ID,$type,$myname) {
 	NETWORKING_TYPE=>"glpi_networking",
 	PRINTER_TYPE=>"glpi_printers",
 	PERIPHERAL_TYPE=>"glpi_peripherals",
+	PHONE_TYPE=>"glpi_phones",
 	);
 
 	
@@ -741,6 +748,7 @@ function dropdownConnectPort($ID,$type,$myname) {
 	echo "<option value='".NETWORKING_TYPE."'>".$lang["Menu"][1]."</option>\n";
 	echo "<option value='".PRINTER_TYPE."'>".$lang["Menu"][2]."</option>\n";
 	echo "<option value='".PERIPHERAL_TYPE."'>".$lang["Menu"][16]."</option>\n";
+	echo "<option value='".PHONE_TYPE."'>".$lang["Menu"][34]."</option>\n";
 	echo "</select>\n";
 	
 	

@@ -491,6 +491,10 @@ function replaceDropDropDown($input) {
 		$query = "update glpi_peripherals set model = '". $input["newID"] ."'  where model = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
+	case "model_phones" :
+		$query = "update glpi_phones set model = '". $input["newID"] ."'  where model = '".$input["oldID"]."'";
+		$result = $db->query($query);
+		break;
 	case "model_networking" :
 		$query = "update glpi_networking set model = '". $input["newID"] ."'  where model = '".$input["oldID"]."'";
 		$result = $db->query($query);
@@ -521,6 +525,10 @@ function replaceDropDropDown($input) {
 		$query = "update glpi_peripherals set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
+	case "phones" :
+		$query = "update glpi_phones set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		$result = $db->query($query);
+		break;
 	case "state" :
 		$query = "update glpi_state_item set state = '". $input["newID"] ."'  where state = '".$input["oldID"]."'";
 		$result = $db->query($query);
@@ -531,6 +539,10 @@ function replaceDropDropDown($input) {
 		break;
 	case "budget" :
 		$query = "update glpi_infocoms set budget = '". $input["newID"] ."'  where budget = '".$input["oldID"]."'";
+		$db->query($query);
+		break;
+	case "phone_power" :
+		$query = "update glpi_phones set power = '". $input["newID"] ."'  where power = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
 	}
@@ -809,6 +821,11 @@ function dropdownUsed($table, $ID) {
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
+	case "model_phones" :
+		$query = "Select count(*) as cpt FROM glpi_phones where model = '".$ID."'";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
 	case "monitors" :
 		$query = "Select count(*) as cpt FROM glpi_monitors where type = '".$ID."'";
 		$result = $db->query($query);
@@ -821,6 +838,11 @@ function dropdownUsed($table, $ID) {
 		break;
 	case "peripherals":
 		$query = "Select count(*) as cpt FROM glpi_peripherals where type = '".$ID."'";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
+	case "phones":
+		$query = "Select count(*) as cpt FROM glpi_phones where type = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
@@ -840,6 +862,11 @@ function dropdownUsed($table, $ID) {
 		break;
 	case "budget" :
 		$query = "Select count(*) as cpt FROM glpi_infocoms where budget = '".$ID."'";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
+	case "phone_power" :
+		$query = "Select count(*) as cpt FROM glpi_phones where power = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
@@ -891,7 +918,11 @@ function listTemplates($type,$target) {
 		$title=$lang["Menu"][4];
 		$query = "SELECT * FROM glpi_software where is_template = '1' ORDER by tplname";
 		break;
-	
+	case PHONE_TYPE :
+		$title=$lang["Menu"][34];
+		$query = "SELECT * FROM glpi_phones where is_template = '1' ORDER by tplname";
+		break;
+
 	}
 	if ($result = $db->query($query)) {
 		
@@ -1829,7 +1860,7 @@ function ocsFormConfig($target, $id) {
 	echo "<option value='1' ".($contact==1?" selected ":"").">".$lang["choice"][0]."</option>";
 	echo "</select>";
 	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][26]." </td><td>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][25]." </td><td>";
 	echo "<select name='import_general_comments'>";
 	echo "<option value='0' ".($comments==0?" selected ":"").">".$lang["choice"][1]."</option>";
 	echo "<option value='1' ".($comments==1?" selected ":"").">".$lang["choice"][0]."</option>";

@@ -146,7 +146,7 @@ function showDocumentForm ($target,$ID) {
 	echo "<td class='tab_bg_1' valign='top'>";
 
 	// table commentaires
-	echo $lang["document"][6].":	</td>";
+	echo $lang["common"][25].":	</td>";
 	echo "<td align='center' colspan='2'  class='tab_bg_1'><textarea cols='35' rows='4' name='comment' >".$con->fields["comment"]."</textarea>";
 
 	echo "</td>";

@@ -157,7 +157,7 @@ function showContactForm ($target,$ID) {
 	echo "<td class='tab_bg_1' valign='top'>";
 
 	echo "<table cellpadding='1' cellspacing='0' border='0'><tr><td>";
-	echo $lang["financial"][12].":	</td></tr>";
+	echo $lang["common"][25].":	</td></tr>";
 	echo "<tr><td align='center'><textarea cols='45' rows='4' name='comments' >".$con->fields["comments"]."</textarea>";
 	echo "</td></tr></table>";
 

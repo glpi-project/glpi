@@ -42,15 +42,9 @@
 
 	// Make a select box
 	$db = new DB;
-	$items=array(
-	COMPUTER_TYPE=>"glpi_computers",
-	NETWORKING_TYPE=>"glpi_networking",
-	PRINTER_TYPE=>"glpi_printers",
-	PERIPHERAL_TYPE=>"glpi_peripherals",
-	);
 
 
-		$table=$items[$_POST["type"]];
+		$table=$LINK_ID_TABLE[$_POST["type"]];
 
 		$where="";		
 		$where.=" AND $table.deleted='N' ";

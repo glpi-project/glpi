@@ -47,6 +47,7 @@ $item_db_name[MONITOR_TYPE] = "glpi_monitors";
 $item_db_name[NETWORKING_TYPE] = "glpi_networking";
 $item_db_name[PERIPHERAL_TYPE] = "glpi_peripherals";
 $item_db_name[SOFTWARE_TYPE] = "glpi_software";
+$item_db_name[PHONE_TYPE] = "glpi_phones";
 
 $db = new DB;
 

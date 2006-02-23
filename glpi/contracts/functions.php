@@ -186,7 +186,7 @@ function showContractForm ($target,$ID) {
 
 
 	echo "<tr class='tab_bg_1'><td valign='top'>";
-	echo $lang["financial"][12].":	</td>";
+	echo $lang["common"][25].":	</td>";
 	echo "<td align='center' colspan='3'><textarea cols='50' rows='4' name='comments' >".$con->fields["comments"]."</textarea>";
 	echo "</td></tr>";
 

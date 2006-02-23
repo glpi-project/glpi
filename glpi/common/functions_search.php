@@ -137,6 +137,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 		MONITOR_TYPE => $lang["Menu"][3],
 		PERIPHERAL_TYPE => $lang["Menu"][16],
 		SOFTWARE_TYPE => $lang["Menu"][4],
+		PHONE_TYPE => $lang["Menu"][34],	
 	);
 	
 	echo "<form method=get action=\"$target\">";
@@ -217,7 +218,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 		// Define meta search items to linked
 		switch ($type){
 			case COMPUTER_TYPE :
-				$linked=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,SOFTWARE_TYPE);
+				$linked=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,SOFTWARE_TYPE,PHONE_TYPE);
 				break;
 /*			case NETWORKING_TYPE :
 				$linked=array(COMPUTER_TYPE,PRINTER_TYPE,PERIPHERAL_TYPE);
@@ -232,6 +233,9 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 				$linked=array(COMPUTER_TYPE);
 				break;
 			case SOFTWARE_TYPE :
+				$linked=array(COMPUTER_TYPE);
+				break;
+			case PHONE_TYPE :
 				$linked=array(COMPUTER_TYPE);
 				break;
 		}
@@ -1254,6 +1258,14 @@ switch ($field){
 		$out.= "</a>";
 		return $out;
 		break;
+	case "glpi_phones.name" :
+		$type=PHONE_TYPE;
+		$out= "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+		$out.= $data["ITEM_$num"];
+		if ($cfg_layout["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+		$out.= "</a>";
+		return $out;
+		break;
 	case "glpi_monitors.name" :
 		$type=MONITOR_TYPE;
 		$out= "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
@@ -1440,6 +1452,7 @@ switch ($field){
 	case "glpi_printers.date_mod":
 	case "glpi_networking.date_mod":
 	case "glpi_peripherals.date_mod":
+	case "glpi_phones.date_mod":
 	case "glpi_software.date_mod":
 	case "glpi_monitors.date_mod":
 		return convDateTime($data["ITEM_$num"]);
@@ -1534,6 +1547,7 @@ switch ($new_table){
 	case "glpi_type_networking":
 	case "glpi_type_printers":
 	case "glpi_type_monitors":
+	case "glpi_type_phones":
 	case "glpi_dropdown_contact_type":
 	case "glpi_dropdown_consumable_type":
 	case "glpi_dropdown_cartridge_type":
@@ -1541,10 +1555,14 @@ switch ($new_table){
 	case "glpi_type_peripherals":
 		return " LEFT JOIN $new_table $AS ON ($rt.type = $nt.ID) ";
 		break;
+	case "glpi_dropdown_phone_power":
+		return " LEFT JOIN $new_table $AS ON ($rt.power = $nt.ID) ";
+		break;
 	case "glpi_dropdown_model":
 	case "glpi_dropdown_model_printers":
 	case "glpi_dropdown_model_monitors":
 	case "glpi_dropdown_model_peripherals":
+	case "glpi_dropdown_model_phones":
 	case "glpi_dropdown_model_networking":
 		return " LEFT JOIN $new_table $AS ON ($rt.model = $nt.ID) ";
 		break;
@@ -1722,6 +1740,12 @@ if ($null)
 					return " $LINK glpi_connect_wire AS META_conn_periph_$num ON (META_conn_periph_$num.end2=glpi_computers.ID  AND META_conn_periph_$num.type='".PERIPHERAL_TYPE."') ".
 						   " $LINK glpi_peripherals ON (META_conn_periph_$num.end1=glpi_peripherals.ID) ";
 				break;				
+				case PHONE_TYPE :
+					array_push($already_link_tables2,$LINK_ID_TABLE[PHONE_TYPE]);
+					return " $LINK glpi_connect_wire AS META_conn_phones_$num ON (META_conn_phones_$num.end2=glpi_computers.ID  AND META_conn_phones_$num.type='".PHONE_TYPE."') ".
+						   " $LINK glpi_phones ON (META_conn_phones_$num.end1=glpi_phones.ID) ";
+				break;			
+
 				case SOFTWARE_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[SOFTWARE_TYPE]);
 					return " $LINK glpi_inst_software as META_inst_$num ON (META_inst_$num.cID = glpi_computers.ID) ".
@@ -1760,6 +1784,16 @@ if ($null)
 				break;
 			}
 			break;		
+		case PHONE_TYPE :
+			switch ($to_type){
+				case COMPUTER_TYPE :
+					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
+					return " $LINK glpi_connect_wire AS META_conn_mon_$num ON (META_conn_mon_$num.end1=glpi_phones.ID  AND META_conn_mon_$num.type='".PHONE_TYPE."') ".
+						   " $LINK glpi_computers ON (META_conn_mon_$num.end2=glpi_computers.ID) ";
+				
+				break;
+			}
+			break;
 		case SOFTWARE_TYPE :
 			switch ($to_type){
 				case COMPUTER_TYPE :

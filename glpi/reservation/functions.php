@@ -67,7 +67,7 @@ function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort=
 //	$option["glpi_reservation_item.device_type"]			= $lang["reservation"][3];
 //	$option["glpi_dropdown_locations.name"]			= $lang["common"][15];
 //	$option["glpi_software.version"]			= $lang["software"][5];
-	$option["glpi_reservation.comments"]			= $lang["reservation"][23];
+	$option["glpi_reservation.comments"]			= $lang["common"][25];
 	
 	echo "<form method=get action=\"".$cfg_install["root"]."/reservation/index.php\">";
 	echo "<div align='center'><table class='tab_cadre_fixe'>";
@@ -203,7 +203,7 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_reservation_item.comments&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
-			echo $lang["reservation"][23]."</a></th>";
+			echo $lang["common"][25]."</a></th>";
 			
 			
 			
@@ -582,7 +582,7 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 		echo "</td></tr>";
 	}
 
-	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][23].":	</td>";
+	echo "<tr class='tab_bg_2'><td>".$lang["common"][25].":	</td>";
 	echo "<td><textarea name='comment'rows='8' cols='30'>".$resa->fields["comment"]."</textarea>";
     echo "</td></tr>";
 
@@ -807,7 +807,7 @@ function showReservationCommentForm($target,$ID){
 	echo "<b>".$r->getType()." - ".$r->getName()."</b>";
     echo "</td></tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$lang["reservation"][23].":	</td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][25].":	</td>";
 	echo "<td>";
 	echo "<textarea name='comments' cols='30' rows='10' >".$r->fields["comments"]."</textarea>";
     echo "</td></tr>";
@@ -924,7 +924,7 @@ function printDeviceReservations($target,$type,$ID){
 		if ($db->numrows($result)==0){	
 			echo "<tr class='tab_bg_2'><td align='center' colspan='4'>".$lang["reservation"][37]."</td></tr>";
 		} else {
-			echo "<tr><th>".$lang["reservation"][10]."</th><th>".$lang["reservation"][11]."</th><th>".$lang["reservation"][31]."</th><th>".$lang["reservation"][23]."</th></tr>";
+			echo "<tr><th>".$lang["reservation"][10]."</th><th>".$lang["reservation"][11]."</th><th>".$lang["reservation"][31]."</th><th>".$lang["common"][25]."</th></tr>";
 			while ($data=$db->fetch_assoc($result)){
 				echo "<tr class='tab_bg_2'>";
 				echo "<td align='center'>".convDateTime($data["begin"])."</td>";
@@ -945,7 +945,7 @@ function printDeviceReservations($target,$type,$ID){
 		if ($db->numrows($result)==0){	
 			echo "<tr class='tab_bg_2'><td align='center' colspan='4'>".$lang["reservation"][37]."</td></tr>";
 		} else {
-			echo "<tr><th>".$lang["reservation"][10]."</th><th>".$lang["reservation"][11]."</th><th>".$lang["reservation"][31]."</th><th>".$lang["reservation"][23]."</th></tr>";
+			echo "<tr><th>".$lang["reservation"][10]."</th><th>".$lang["reservation"][11]."</th><th>".$lang["reservation"][31]."</th><th>".$lang["common"][25]."</th></tr>";
 			while ($data=$db->fetch_assoc($result)){
 				echo "<tr class='tab_bg_2'>";
 				echo "<td align='center'>".convDateTime($data["begin"])."</td>";
