@@ -684,7 +684,7 @@ function showConnections($target,$ID,$withtemplate='') {
 					$connID = $db->result($result, $i, "ID");
 					$ci->getFromDB($type,$tID);
 				
-					echo "<tr ".($printer->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
+					echo "<tr ".($ci->obj->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
 					echo "<td align='center'><b>";
 					echo $ci->getLink();
 					echo "</b>";
