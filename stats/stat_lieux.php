@@ -79,9 +79,9 @@ echo "<option value=\"glpi_dropdown_model\" ".($_POST["dropdown"]=="glpi_dropdow
 
 echo "<option value=\"glpi_dropdown_os\" ".($_POST["dropdown"]=="glpi_dropdown_os"?"selected":"").">".$lang["computers"][9]."</option>";
 echo "<option value=\"glpi_dropdown_locations\" ".($_POST["dropdown"]=="glpi_dropdown_locations"?"selected":"").">".$lang["common"][15]."</option>";
-echo "<option value=\"".MOBOARD_DEVICE."\" ".($_POST["dropdown"]==MOBOARD_DEVICE?"selected":"").">".$lang["computers"][35]."</option>";
+echo "<option value=\"".MOBOARD_DEVICE."\" ".($_POST["dropdown"]==MOBOARD_DEVICE?"selected":"").">".$lang["devices"][5]."</option>";
 echo "<option value=\"".PROCESSOR_DEVICE."\" ".($_POST["dropdown"]==PROCESSOR_DEVICE?"selected":"").">".$lang["setup"][7]."</option>";
-echo "<option value=\"".GFX_DEVICE."\" ".($_POST["dropdown"]==GFX_DEVICE?"selected":"").">".$lang["computers"][34]."</option>";
+echo "<option value=\"".GFX_DEVICE."\" ".($_POST["dropdown"]==GFX_DEVICE?"selected":"").">".$lang["devices"][2]."</option>";
 echo "<option value=\"".HDD_DEVICE."\" ".($_POST["dropdown"]==HDD_DEVICE?"selected":"").">".$lang["computers"][36]."</option>";
 echo "</select></td>";
 

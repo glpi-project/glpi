@@ -158,7 +158,7 @@ function showHistory($device_type,$id_device){
 
 	echo "<div align='center'><br><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='5'>".$lang["title"][38]."</th></tr>";
-	echo "<tr><th>".$lang["common"][2]."</th><th>".$lang["event"][1]."</th><th>".$lang["event"][17]."</th><th>".$lang["event"][18]."</th><th>".$lang["event"][19]."</th></tr>";
+	echo "<tr><th>".$lang["common"][2]."</th><th>".$lang["common"][27]."</th><th>".$lang["event"][17]."</th><th>".$lang["event"][18]."</th><th>".$lang["event"][19]."</th></tr>";
 	while ($data =$db->fetch_array($result)){ 
 			$ID = $data["ID"];
 			$date_mod = $date_mod=convDateTime($data["date_mod"]);
@@ -357,7 +357,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=date&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][1]."</a></th>";
+	echo "<a href=\"$target?sort=date&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["common"][27]."</a></th>";
 
 	echo "<th width='8%'>";
 	if ($sort=="service") {
@@ -473,7 +473,7 @@ function showEvents($target,$order,$sort,$start=0) {
 		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
 		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=date&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][1]."</a></th>";
+	echo "<a href=\"$target?sort=date&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["common"][27]."</a></th>";
 
 	echo "<th width='8%'>";
 	if ($sort=="service") {

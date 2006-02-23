@@ -737,7 +737,7 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 		echo "</td></tr>"; 
 	}
 		
-	echo "<tr class='tab_bg_1'><td>".$lang["software"][24].":</td><td>";
+	echo "<tr class='tab_bg_1'><td>".$lang["search"][9].":</td><td>";
 	showCalendarForm("form","expire",$values['expire']);
 	echo "</td></tr>"; 
 	

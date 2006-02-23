@@ -115,7 +115,7 @@ function commonTrackingListHeader($output_type=0){
 	$order="ASC";
 	
 	echo displaySearchHeaderItem($output_type,$lang["joblist"][0],$header_num,"",0,$order);
-	echo displaySearchHeaderItem($output_type,$lang["joblist"][1],$header_num,"",0,$order);
+	echo displaySearchHeaderItem($output_type,$lang["common"][27],$header_num,"",0,$order);
 	echo displaySearchHeaderItem($output_type,$lang["joblist"][2],$header_num,"",0,$order);
 	echo displaySearchHeaderItem($output_type,$lang["joblist"][3],$header_num,"",0,$order);
 	echo displaySearchHeaderItem($output_type,$lang["joblist"][4],$header_num,"",0,$order);
@@ -742,7 +742,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	}
 	echo "</th></tr>";
 
-	echo "<tr class='tab_bg_1' align='center'><td>".$lang["joblist"][1].":</td>";
+	echo "<tr class='tab_bg_1' align='center'><td>".$lang["common"][27].":</td>";
 	echo "<td align='center'>".convDateTime(date("Y-m-d H:i:s"))."</td></tr>";
 
 	if ($device_type==0){
@@ -809,8 +809,8 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 		echo "<tr class='tab_bg_1'>";
 		echo "<td align='center'>".$lang["help"][8].":</td>";
 		echo "<td align='center'>	<select name='emailupdates'>";
-		echo "<option value='no'>".$lang["help"][9]."";
-		echo "<option value='yes' selected>".$lang["help"][10]."";
+		echo "<option value='no'>".$lang["choice"][1]."";
+		echo "<option value='yes' selected>".$lang["choice"][0]."";
 		echo "</select>";
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_1'>";
@@ -864,10 +864,10 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 		$option["comp.serial"]				= $lang["common"][19];
 		$option["comp.otherserial"]			= $lang["common"][20];
 		$option["ram.designation"]			= $lang["computers"][23];
-		$option["iface.designation"]			= $lang["computers"][26];
-		$option["sndcard.designation"]			= $lang["computers"][33];
-		$option["gfxcard.designation"]			= $lang["computers"][34];
-		$option["moboard.designation"]			= $lang["computers"][35];
+		$option["iface.designation"]			= $lang["setup"][9];
+		$option["sndcard.designation"]			= $lang["devices"][7];
+		$option["gfxcard.designation"]			= $lang["devices"][2];
+		$option["moboard.designation"]			= $lang["devices"][5];
 		$option["hdd.designation"]			= $lang["computers"][36];
 		$option["comp.comments"]			= $lang["common"][25];
 		$option["comp.contact"]				= $lang["common"][18];
@@ -1249,7 +1249,7 @@ function showFollowupsShort($ID) {
 	$out="";
 	if ($db->numrows($result)>0) {
 		$out.="<div align='center'><table class='tab_cadre' width='100%' cellpadding='2'>\n";
-		$out.="<tr><th>".$lang["joblist"][1]."</th><th>".$lang["joblist"][3]."</th><th>".$lang["joblist"][6]."</th></tr>\n";
+		$out.="<tr><th>".$lang["common"][27]."</th><th>".$lang["joblist"][3]."</th><th>".$lang["joblist"][6]."</th></tr>\n";
 
 		while ($data=$db->fetch_array($result)) {
 			
@@ -1987,7 +1987,7 @@ function showFollowupsSummary($tID){
 	else {	
 
 		echo "<table class='tab_cadrehov_pointer'>";
-		echo "<tr><th>&nbsp;</th><th>".$lang["joblist"][1]."</th><th>".$lang["joblist"][6]."</th><th>".$lang["job"][31]."</th><th>".$lang["job"][35]."</th><th>".$lang["joblist"][3]."</th>";
+		echo "<tr><th>&nbsp;</th><th>".$lang["common"][27]."</th><th>".$lang["joblist"][6]."</th><th>".$lang["job"][31]."</th><th>".$lang["job"][35]."</th><th>".$lang["joblist"][3]."</th>";
 		if ($isadmin)
 			echo "<th>".$lang["job"][30]."</th>";
 		echo "</tr>";
@@ -2183,7 +2183,7 @@ function showUpdateFollowupForm($ID){
 			echo "<table width='100%'>";
 			echo "<tr class='tab_bg_2'><td width='50%'>";
 			echo "<table width='100%' bgcolor='#FFFFFF'>";
-			echo "<tr class='tab_bg_1'><td align='center' width='10%'>".$lang["joblist"][6]."<br><br>".$lang["joblist"][1].":<br><strong>".convDateTime($data["date"])."</strong></td>";
+			echo "<tr class='tab_bg_1'><td align='center' width='10%'>".$lang["joblist"][6]."<br><br>".$lang["common"][27].":<br><strong>".convDateTime($data["date"])."</strong></td>";
 			echo "<td width='90%'>";
 			
 			if ($isadmin){

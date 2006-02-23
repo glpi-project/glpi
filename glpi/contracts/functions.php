@@ -133,7 +133,7 @@ function showContractForm ($target,$ID) {
 	echo "<tr class='tab_bg_1'><td>".$lang["financial"][4].":		</td>";
 	echo "<td><input type='text' name='num' value=\"".$con->fields["num"]."\" size='25'></td>";
 
-	echo "<td>".$lang["financial"][7].":	</td>";
+	echo "<td>".$lang["search"][8].":	</td>";
 	echo "<td>";
 	showCalendarForm("form","begin_date",$con->fields["begin_date"]);	
     	echo "</td>";
@@ -744,7 +744,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	echo "<th>".$lang["financial"][4]."</th>";
 	echo "<th>".$lang["financial"][6]."</th>";
 	echo "<th>".$lang["financial"][26]."</th>";
-	echo "<th>".$lang["financial"][7]."</th>";	
+	echo "<th>".$lang["search"][8]."</th>";	
 	echo "<th>".$lang["financial"][8]."</th>";	
 	if ($withtemplate!=2)echo "<th>&nbsp;</th>";
 	echo "</tr>";
@@ -819,7 +819,7 @@ function showContractAssociatedEnterprise($ID){
 	echo "<th>".$lang["financial"][4]."</th>";
 	echo "<th>".$lang["financial"][6]."</th>";
 	echo "<th>".$lang["financial"][26]."</th>";
-	echo "<th>".$lang["financial"][7]."</th>";	
+	echo "<th>".$lang["search"][8]."</th>";	
 	echo "<th>".$lang["financial"][8]."</th>";	
 	echo "<th>&nbsp;</th>";
 	echo "</tr>";

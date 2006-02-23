@@ -69,7 +69,7 @@
 //	dropdownUsers("plan['id_assign']",$_SESSION["glpiID"],-1);
 //	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][10].":	</td><td>";
+	echo "<tr class='tab_bg_2'><td>".$lang["search"][8].":	</td><td>";
 	showCalendarForm($_GET['form'],"plan[begin_date]",$begin_date);
     	echo "</td></tr>";
 
@@ -92,7 +92,7 @@
 	echo "</select>";
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][11].":	</td><td>";
+	echo "<tr class='tab_bg_2'><td>".$lang["search"][9].":	</td><td>";
 	showCalendarForm($_GET['form'],"plan[end_date]",$end_date);
     echo "</td></tr>";
 
