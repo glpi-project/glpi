@@ -45,7 +45,6 @@
 	
 if ($_POST['sID']>0){
 	// Make a select box
-	$db = new DB;
 
 	$query = "SELECT DISTINCT glpi_licenses.* from glpi_licenses ";
 	$query.= " LEFT JOIN glpi_inst_software on (glpi_licenses.ID=glpi_inst_software.license)";

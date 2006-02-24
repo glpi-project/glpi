@@ -51,8 +51,6 @@ include ($phproot . "/glpi/includes_setup.php");
 //$database=$cfg_db["database"];
 //SetCookie("cfg_dbdb",$database,0,"/");
 
-$db = new DB;
-
 $_POST=array_map('stripslashes',$_POST);
 
 //Do login and checks
@@ -222,9 +220,8 @@ logEvent("-1", "system", 3, "login", $_POST['login_name']." ".$lang["log"][40]."
 // Expire Event Log
 if ($cfg_features["expire_events"]>0){
 	$secs =  $cfg_features["expire_events"]*86400;
-	$db_exp = new DB;
 	$query_exp = "DELETE FROM glpi_event_log WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
-	$result_exp = $db_exp->query($query_exp);
+	$result_exp = $db->query($query_exp);
 } 
 
 // Redirect management

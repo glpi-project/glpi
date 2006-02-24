@@ -45,8 +45,6 @@ checkAuthentication("normal");
 //$item_db_name[2] = "glpi_peripherals";
 $item_db_name[0]="glpi_dropdow_location";
 
-
-$db = new DB;
 $query2="SELECT glpi_networking.name as switch
 FROM glpi_networking
 WHERE glpi_networking.id=".$_POST["switch"]."";

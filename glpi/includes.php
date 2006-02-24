@@ -37,7 +37,6 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/common/classes.php");
 include ($phproot . "/glpi/common/classes_auth.php");
 include ($phproot . "/glpi/common/classes_connection.php");
 include ($phproot . "/glpi/common/classes_mailing.php");
@@ -51,7 +50,10 @@ include ($phproot . "/glpi/common/functions_logs.php");
 include ($phproot . "/glpi/common/functions_auth.php");
 include ($phproot . "/glpi/common/functions_connection.php");
 include ($phproot . "/glpi/common/functions_db.php");
+include ($phproot . "/glpi/common/classes.php");
 include ($phproot . "/glpi/config/config.php");
+
+$db=new DB();
 
 include ($phproot . "/glpi/common/Timer.php");
 $TIMER_DEBUG=new Script_Timer;

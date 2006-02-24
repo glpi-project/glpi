@@ -48,7 +48,7 @@ class Typedoc {
 	function getfromDB ($ID) {
 
 		// Make new database object and fill variables
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_type_docs WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			if ($db->numrows($result)==1){
@@ -65,7 +65,7 @@ class Typedoc {
 		
 function getEmpty () {
 	//make an empty database object
-	$db = new DB;
+	global $db;
 	$fields = $db->list_fields("glpi_type_docs");
 	$columns = $db->num_fields($fields);
 	for ($i = 0; $i < $columns; $i++) {
@@ -77,7 +77,7 @@ function getEmpty () {
 
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_type_docs SET ";
@@ -95,7 +95,7 @@ function getEmpty () {
 	
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		// Build query
 		$query = "INSERT INTO glpi_type_docs (";
@@ -127,7 +127,7 @@ function getEmpty () {
 
 	function deleteFromDB($ID) {
 
-		$db = new DB;
+		global $db;
 			$query = "DELETE from glpi_type_docs WHERE ID = '$ID'";
 			return  $db->query($query);
 

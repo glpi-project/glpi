@@ -372,8 +372,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 *
 **/
 function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$link,$distinct,$link2="",$contains2="",$field2="",$type2=""){
-	global $INFOFORM_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$HTMLRel,$cfg_install,$deleted_tables,$template_tables,$lang,$cfg_features;
-	$db=new DB;
+	global $db,$INFOFORM_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$HTMLRel,$cfg_install,$deleted_tables,$template_tables,$lang,$cfg_features;
 
 	// Define meta table where search must be done in HAVING clause
 	$META_SPECIF_TABLE=array("glpi_device_ram","glpi_device_hdd","glpi_device_processor");

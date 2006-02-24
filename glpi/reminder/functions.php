@@ -287,7 +287,7 @@ function deleteReminder($input) {
 function showCentralReminder($type="private"){
 	// show reminder that are not planned 
 
-	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
+	GLOBAL $db,$cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
 	
 	$author=$_SESSION['glpiID'];	
 	
@@ -299,7 +299,7 @@ function showCentralReminder($type="private"){
 	$titre="<a href=\"".$HTMLRel."reminder/index.php\">".$lang["reminder"][0]."</a>";
 	}
 
-	$db = new DB;
+	
 	$result = $db->query($query);
 
 	
@@ -324,7 +324,7 @@ function showCentralReminder($type="private"){
 function showListReminder($type="private"){
 	// show reminder that are not planned 
 
-	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
+	GLOBAL $db,$cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
 	
 	$author=$_SESSION['glpiID'];	
 	
@@ -336,7 +336,7 @@ function showListReminder($type="private"){
 	$titre="Notes persos";
 	}
 
-	$db = new DB;
+	
 	$result = $db->query($query);
 
 	$tabremind=array();

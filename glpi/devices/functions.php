@@ -324,7 +324,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 function update_device_specif($newValue,$compDevID) {
 
 	// Check old value for history 
-	$db= new DB;
+	global $db;
 	$query ="SELECT * FROM glpi_computer_device WHERE ID = '".$compDevID."'";
 		if ($result = $db->query($query)) {
 		$data = $db->fetch_array($result);
@@ -333,9 +333,8 @@ function update_device_specif($newValue,$compDevID) {
 	// Is it a real change ?
 	if($data["specificity"]!=$newValue){
 		// Update specificity 
-		$db2 = new DB;
 		$query2 = "UPDATE glpi_computer_device SET specificity = '".$newValue."' WHERE ID = '".$compDevID."'";
-			if($db2->query($query2)){
+			if($db->query($query2)){
 				$changes[0]='0';
 				$changes[1]=$data["specificity"];
 				$changes[2]=$newValue;
@@ -360,7 +359,7 @@ function update_device_specif($newValue,$compDevID) {
 function unlink_device_computer($compDevID,$dohistory=1){
 	
 	// get old value  and id for history 
-	$db= new DB;
+	global $db;
 	$query ="SELECT * FROM glpi_computer_device WHERE ID = '".$compDevID."'";
 		if ($result = $db->query($query)) {
 		$data = $db->fetch_array($result);
@@ -369,9 +368,9 @@ function unlink_device_computer($compDevID,$dohistory=1){
 	$device->getFromDB($data["FK_device"]);
 	//echo $query;
 	// unlink 
-	$db2 = new DB;
+	
 	$query2 = "DELETE FROM glpi_computer_device where ID = '".$compDevID."'";
-	if($db2->query($query2)){
+	if($db->query($query2)){
 		if ($dohistory==1){
 			$changes[0]='0';
 			$changes[1]=$device->fields["designation"];
@@ -455,9 +454,9 @@ function showDevicesList($device_type,$target) {
 
 	// Lists Device from a device_type
 
-	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
+	GLOBAL $db,$cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
 
-	$db = new DB;
+	
 	// Build query
 		$fields = $db->list_fields(getDeviceTable($device_type));
 		$columns = $db->num_fields($fields);
@@ -805,7 +804,7 @@ function updateDevice($input) {
 
 function addDevice($input) {
 	// Add device
-	$db=new DB;
+	global $db;
 	$device = new Device($input["device_type"]);
 
 	

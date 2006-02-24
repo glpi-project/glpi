@@ -49,10 +49,10 @@ function titleTrackingPlanning(){
 
 function showTrackingPlanningForm($device_type,$id_device){
 
-GLOBAL $cfg_install,$lang;
+GLOBAL $db,$cfg_install,$lang;
 
 $query="select * from glpi_reservation_item where (device_type='$device_type' and id_device='$id_device')";
-$db=new DB;
+
 if ($result = $db->query($query)) {
 		$numrows =  $db->numrows($result);
 //echo "<form name='resa_form' method='post' action=".$cfg_install["root"]."/reservation/index.php>";
@@ -335,7 +335,7 @@ echo "</div>";
 }
 
 function displayplanning($who,$when,$type){
-global $cfg_features,$HTMLRel,$lang;
+global $db,$cfg_features,$HTMLRel,$lang;
 
 
 //echo $when;
@@ -371,7 +371,6 @@ $ASSIGN="id_assign='$who' AND";
 
 
 // ---------------Tracking
-$db=new DB;
 
 $query="SELECT * from glpi_tracking_planning WHERE $ASSIGN (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
 
@@ -403,18 +402,17 @@ while ($data=$db->fetch_array($result)){
 
 
 // ---------------reminder 
-	$db2=new DB;
 		
 	$query2="SELECT * from glpi_reminder WHERE rv='1' AND (author='$who' OR type='public')    AND (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
 	
-	$result2=$db2->query($query2);
+	$result2=$db->query($query2);
 	
 	
 	$remind=new Reminder();
 	
 	$i=0;
-	if ($db2->numrows($result2)>0)
-	while ($data=$db2->fetch_array($result2)){
+	if ($db->numrows($result2)>0)
+	while ($data=$db->fetch_array($result2)){
 		$remind->getFromDB($data["ID"]);
 		
 		
@@ -757,8 +755,7 @@ function updatePlanningTracking($input,$target,$item){
 function ShowPlanningCentral($who){
 
 
-	global $cfg_features,$HTMLRel,$lang;
-	$db=new DB;
+	global $db,$cfg_features,$HTMLRel,$lang;
 	
 	$when=strftime("%Y-%m-%d");
 	$debut=$when;
@@ -797,18 +794,17 @@ function ShowPlanningCentral($who){
 	
 	
 	// reminder 
-	$db2=new DB;
 		
 	$query2="SELECT * from glpi_reminder WHERE rv='1' AND (author='$who' OR type='public')    AND (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
 	
-	$result2=$db2->query($query2);
+	$result2=$db->query($query2);
 	
 	
 	$remind=new Reminder();
 	
 	$i=0;
-	if ($db2->numrows($result2)>0)
-	while ($data=$db2->fetch_array($result2)){
+	if ($db->numrows($result2)>0)
+	while ($data=$db->fetch_array($result2)){
 		$remind->getFromDB($data["ID"]);
 		
 		
@@ -954,9 +950,8 @@ GLOBAL  $cfg_install, $lang;
 **/      
 function generateIcal($who){
 
-GLOBAL  $cfg_install, $cfg_features, $lang;
+GLOBAL  $db,$cfg_install, $cfg_features, $lang;
 
-$db=new DB;
 
 $query="SELECT * from glpi_tracking_planning WHERE id_assign=$who";
 

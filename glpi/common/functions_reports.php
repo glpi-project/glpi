@@ -59,9 +59,8 @@ function report_perso($item_type,$query)
 //pour un type de materiel ($item_type) 
 {
 
-GLOBAL $cfg_layout, $cfg_features, $lang;
+GLOBAL $db,$cfg_layout, $cfg_features, $lang;
 
-$db = new DB;
 $result = $db->query($query);
 include ("_relpos.php");
 

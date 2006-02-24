@@ -52,8 +52,6 @@ $item_db_name[PERIPHERAL_TYPE] = "glpi_peripherals";
 $item_db_name[SOFTWARE_TYPE] = "glpi_software";
 $item_db_name[PHONE_TYPE] = "glpi_phones";
 
-$db = new DB;
-
 
 # Titre
 echo "<div align='center'><big><strong>".$lang["reports"][4]."</strong></big><br><br>";

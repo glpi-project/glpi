@@ -243,9 +243,9 @@ function restoreEnterprise($input) {
 
 
 function showAssociatedContact($instID) {
-	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
+	GLOBAL $db,$cfg_layout,$cfg_install, $lang,$HTMLRel;
 
-    $db = new DB;
+    
 	$query = "SELECT glpi_contacts.*, glpi_contact_enterprise.ID as ID_ent FROM glpi_contact_enterprise, glpi_contacts WHERE glpi_contact_enterprise.FK_contact=glpi_contacts.ID AND glpi_contact_enterprise.FK_enterprise = '$instID' order by glpi_contacts.name";
 
 	$result = $db->query($query);
@@ -290,8 +290,9 @@ function showAssociatedContact($instID) {
 }
 
 function addContactEnterprise($eID,$cID){
+	global $db;
 if ($eID>0&&$cID>0){
-	$db = new DB;
+	
 	$query="INSERT INTO glpi_contact_enterprise (FK_enterprise,FK_contact ) VALUES ('$eID','$cID');";
 	$result = $db->query($query);
 }
@@ -299,7 +300,7 @@ if ($eID>0&&$cID>0){
 
 function deleteContactEnterprise($ID){
 
-$db = new DB;
+global $db;
 $query="DELETE FROM glpi_contact_enterprise WHERE ID= '$ID';";
 $result = $db->query($query);
 }

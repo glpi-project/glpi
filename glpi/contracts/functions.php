@@ -368,9 +368,9 @@ function restoreContract($input) {
 *
 **/
 function showDeviceContract($instID) {
-	GLOBAL $cfg_layout,$cfg_install, $lang;
+	GLOBAL $db,$cfg_layout,$cfg_install, $lang;
 
-    $db = new DB;
+    
 	$query = "SELECT * FROM glpi_contract_device WHERE glpi_contract_device.FK_contract = '$instID' AND glpi_contract_device.is_template='0' order by device_type, FK_device";
 
 	$result = $db->query($query);
@@ -424,9 +424,9 @@ function showDeviceContract($instID) {
 *
 **/
 function addDeviceContract($conID,$type,$ID,$template=0){
-
+	global $db;
 if ($ID>0&&$conID>0){
-	$db = new DB;
+	
 	$query="INSERT INTO glpi_contract_device (FK_contract,FK_device, device_type, is_template ) VALUES ('$conID','$ID','$type','$template');";
 	$result = $db->query($query);
 }
@@ -444,7 +444,7 @@ if ($ID>0&&$conID>0){
 **/
 function deleteDeviceContract($ID){
 
-$db = new DB;
+global $db;
 $query="DELETE FROM glpi_contract_device WHERE ID= '$ID';";
 $result = $db->query($query);
 }
@@ -460,9 +460,9 @@ $result = $db->query($query);
 *
 **/
 function showEnterpriseContract($instID) {
-	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel,$cfg_features;
+	GLOBAL $db,$cfg_layout,$cfg_install, $lang,$HTMLRel,$cfg_features;
 
-    $db = new DB;
+    
 	$query = "SELECT glpi_contract_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type";
 	$query.= " FROM glpi_enterprises,glpi_contract_enterprise WHERE glpi_contract_enterprise.FK_contract = '$instID' AND glpi_contract_enterprise.FK_enterprise = glpi_enterprises.ID";
 	$result = $db->query($query);
@@ -523,8 +523,9 @@ function showEnterpriseContract($instID) {
 *
 **/
 function addEnterpriseContract($conID,$ID){
+	global $db;
 if ($conID>0&&$ID>0){
-	$db = new DB;
+	
 	$query="INSERT INTO glpi_contract_enterprise (FK_contract,FK_enterprise ) VALUES ('$conID','$ID');";
 	$result = $db->query($query);
 }
@@ -542,7 +543,7 @@ if ($conID>0&&$ID>0){
 **/
 function deleteEnterpriseContract($ID){
 
-$db = new DB;
+global $db;
 $query="DELETE FROM glpi_contract_enterprise WHERE ID= '$ID';";
 $result = $db->query($query);
 }
@@ -671,8 +672,8 @@ function dropdownHours($name,$value){
 *
 **/
 function getContractEnterprises($ID){
-	global $HTMLRel;
-    $db = new DB;
+	global $db,$HTMLRel;
+    
 	$query = "SELECT glpi_enterprises.* FROM glpi_contract_enterprise, glpi_enterprises WHERE glpi_contract_enterprise.FK_enterprise = glpi_enterprises.ID AND glpi_contract_enterprise.FK_contract = '$ID'";
 	$result = $db->query($query);
 	$out="";
@@ -695,7 +696,7 @@ function getContractEnterprises($ID){
 **/
 function dropdownContracts($name){
 
-	$db=new DB;
+	global $db;
 	$query="SELECT * from glpi_contracts WHERE deleted = 'N' order by begin_date DESC";
 	$result=$db->query($query);
 	echo "<select name='$name'>";
@@ -728,9 +729,9 @@ function dropdownContracts($name){
 **/
 function showContractAssociated($device_type,$ID,$withtemplate=''){
 
-	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
+	GLOBAL $db,$cfg_layout,$cfg_install, $lang,$HTMLRel;
 
-    $db = new DB;
+    
 	$query = "SELECT * FROM glpi_contract_device WHERE glpi_contract_device.FK_device = '$ID' AND glpi_contract_device.device_type = '$device_type' ";
 
 	$result = $db->query($query);
@@ -803,9 +804,9 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 **/
 function showContractAssociatedEnterprise($ID){
 
-	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
+	GLOBAL $db,$cfg_layout,$cfg_install, $lang,$HTMLRel;
 
-    $db = new DB;
+    
 	$query = "SELECT * FROM glpi_contract_enterprise WHERE glpi_contract_enterprise.FK_enterprise = '$ID'";
 
 	$result = $db->query($query);
@@ -881,7 +882,7 @@ return " OR glpi_contracts.name LIKE '%".$contains."%' OR glpi_contracts.num LIK
 }
 
 function countDeviceForContract($ID){
-    $db = new DB;
+    global $db;
 	$query = "SELECT * FROM glpi_contract_device WHERE FK_contract = '$ID' AND is_template='0'";
 
 	$result = $db->query($query);

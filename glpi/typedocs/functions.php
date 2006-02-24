@@ -173,7 +173,7 @@ function updateTypedoc($input) {
 
 function addTypedoc($input) {
 	// Add Peripheral, nasty hack until we get PHP4-array-functions
-	$db=new DB;
+	global $db;
 	$mon = new Typedoc;
 
 	// dump status
@@ -201,9 +201,10 @@ function deleteTypedoc($input,$force=0) {
 }
 
 function isValidDoc($filename){
+	global $db;
 	$splitter=split("\.",$filename);
 	$ext=end($splitter);
-	$db=new DB();
+	
 	$query="SELECT * from glpi_type_docs where ext LIKE '$ext' AND upload='Y'";
 	if ($result = $db->query($query))
 	if ($db->numrows($result)>0)

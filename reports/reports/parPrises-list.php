@@ -40,7 +40,6 @@ include ($phproot . "/glpi/includes_networking.php");
 checkAuthentication("normal");
 
 
-$db = new DB;
 if (isset($_POST["prise"])){
 
 $query2="SELECT a.name as office,b.name as stage,glpi_dropdown_netpoint.name as prise

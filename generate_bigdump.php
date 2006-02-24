@@ -38,7 +38,6 @@
 
 include ("_relpos.php");
 include ($phproot."/glpi/includes.php");
-$db=new DB();
 
 
 $multiplicator=1;

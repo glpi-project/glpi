@@ -43,7 +43,6 @@
 	checkAuthentication("post-only");
 
 	// Make a select box
-	$db = new DB;
 
 	if (ereg("glpi_device",$_POST['table'])){
 

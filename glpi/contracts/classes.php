@@ -43,7 +43,7 @@ class Contract {
 	
 	function getfromDB ($ID) {
 
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_contracts WHERE (ID = '$ID')";
 		
 		if ($result = $db->query($query)) {
@@ -61,7 +61,7 @@ class Contract {
 	}
 	
 	function getEmpty () {
-	$db = new DB;
+	global $db;
 	$fields = $db->list_fields("glpi_contracts");
 	$columns = $db->num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
@@ -72,7 +72,7 @@ class Contract {
 	}
 
 	function restoreInDB($ID) {
-		$db = new DB;
+		global $db;
 		$query = "UPDATE glpi_contracts SET deleted='N' WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			return true;
@@ -83,7 +83,7 @@ class Contract {
 	
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_contracts SET ";
@@ -100,7 +100,7 @@ class Contract {
 	
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		// Build query
 		$query = "INSERT INTO glpi_contracts (";
@@ -132,7 +132,7 @@ class Contract {
 
 	function isUsed($ID){
 	return true;
-	$db = new DB;		
+	global $db;
 	$query="SELECT * from glpi_contract_device where FK_contract = '$ID'";
 	$result = $db->query($query);
 	return ($db->numrows($result)>0);
@@ -140,7 +140,7 @@ class Contract {
 	
 	function deleteFromDB($ID,$force=0) {
 
-		$db = new DB;
+		global $db;
 		$this->getFromDB($ID);		
 		if ($force==1||!$this->isUsed($ID)){
 			$query = "DELETE from glpi_contracts WHERE ID = '$ID'";

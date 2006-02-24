@@ -43,7 +43,7 @@ class Reminder {
 	
 	function getfromDB ($ID) {
 
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_reminder WHERE (ID = '$ID')";
 		
 		if ($result = $db->query($query)) {
@@ -60,7 +60,7 @@ class Reminder {
 	}
 	
 	function getEmpty () {
-	$db = new DB;
+	global $db;
 	$fields = $db->list_fields("glpi_reminder");
 	$columns = $db->num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
@@ -77,7 +77,7 @@ class Reminder {
 	
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_reminder SET ";
@@ -95,7 +95,7 @@ class Reminder {
 	
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		// Build query
 		$query = "INSERT INTO glpi_reminder (";
@@ -127,7 +127,7 @@ class Reminder {
 
 	function deleteFromDB($ID) {
 
-		$db = new DB;
+		global $db;
 
 		$this->getFromDB($ID);		
 		

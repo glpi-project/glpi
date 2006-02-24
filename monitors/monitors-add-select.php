@@ -48,7 +48,6 @@ echo "<tr><th>";
 echo $lang["common"][7];
 echo "</th></tr>";
 
-$db = new DB;
 $query = "SELECT * FROM glpi_monitors where is_template = '1' ORDER BY tplname";
 $result = $db->query($query);
 $i = 0;

@@ -41,6 +41,8 @@ include ($phproot . "/glpi/common/functions_db.php");
 include ($phproot . "/glpi/config/based_config.php");
 include ($cfg_install['config_dir'] . "/config_db.php");
 
+$db=new DB();
+
 // ITEMS TYPE
 define("GENERAL_TYPE","0");
 define("COMPUTER_TYPE","1");
@@ -107,9 +109,9 @@ if(!function_exists('loadLang')) {
 * @returns nothing if everything is good, else display mysql query and error.
 */
 function compDpd2Device($devtype,$devname,$dpdname,$compDpdName,$specif='') {
-	global $lang;
+	global $db,$lang;
 	$query = "select * from glpi_dropdown_".$dpdname."";
-	$db = new DB;
+
 	$result = $db->query($query);
 	while($lndropd = $db->fetch_array($result)) {
 		$query2 = "insert into glpi_device_".$devname." (designation) values ('".addslashes($lndropd["name"])."')";
@@ -149,7 +151,7 @@ function compDpd2Device($devtype,$devname,$dpdname,$compDpdName,$specif='') {
 * @returns boolean true if its ok, elsewhere false.
 */
 function superAdminExists() {
-	$db = new DB;
+	global $db;
 	$query = "select type, password from glpi_users";
 	$result = $db->query($query);
 	$var1 = false;
@@ -168,14 +170,13 @@ function superAdminExists() {
 * @returns nothing if everything is right, display query and mysql error if bad.
 */
 function updaterootdoc() {
-	
+	global $db;
 	// hack pour IIS qui ne connait pas $_SERVER['REQUEST_URI']  grrrr
 	if ( !isset($_SERVER['REQUEST_URI']) ) {
 	    $_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
 	}
 	
 	$root_doc = ereg_replace("/update.php","",$_SERVER['REQUEST_URI']);
-	$db = new DB;
 	$query = "update glpi_config set root_doc = '".$root_doc."' where ID = '1'";
 	$db->query($query) or die(" root_doc ".$lang["update"][90].$db->error());
 }
@@ -201,7 +202,7 @@ function showContentUpdateForm() {
 ///// FONCTION POUR UPDATE LOCATION
 
 function validate_new_location(){
-	$db=new DB;
+	global $db;
 	$query=" DROP TABLE `glpi_dropdown_locations`";	
 	$db->query($query);
 	$query=" ALTER TABLE `glpi_dropdown_locations_new` RENAME `glpi_dropdown_locations`";	
@@ -209,8 +210,7 @@ function validate_new_location(){
 }
 
 function display_new_locations(){
-	
-	$db=new DB;
+	global $db;
 
 	$MAX_LEVEL=10;
 
@@ -263,7 +263,7 @@ function display_new_locations(){
 }
 
 function display_old_locations(){
-	$db=new DB;
+	global $db;
 	$query="SELECT * from glpi_dropdown_locations order by name;";
 	$result=$db->query($query);
 
@@ -275,7 +275,7 @@ function display_old_locations(){
 
 function location_create_new($split_char,$add_first){
 
-	$db=new DB;
+	global $db;
 	
 	$query_auto_inc= "ALTER TABLE `glpi_dropdown_locations_new` CHANGE `ID` `ID` INT(11) NOT NULL";
 	$result_auto_inc=$db->query($query_auto_inc);
@@ -299,9 +299,8 @@ function location_create_new($split_char,$add_first){
 	if (!empty($add_first)){
 		$root_ID=$new_ID;
 		$new_ID++;
-		$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$root_ID','".addslashes($add_first)."',0)";
+		$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$root_ID','".addslashes($add_first)."',0,'')";
 		
-		echo $query_insert."<br>";
 		$result_insert=$db->query($query_insert);
 		
 	} else {
@@ -309,6 +308,7 @@ function location_create_new($split_char,$add_first){
 	}
 
 	while ($data =  $db->fetch_array($result)){
+		
 		if (!empty($split_char))
 			$splitter=split($split_char,$data['name']);
 		else $splitter=array($data['name']);
@@ -323,7 +323,7 @@ function location_create_new($split_char,$add_first){
 			if ($db->numrows($result_search)==1){	// Found
 				$up_ID=$db->result($result_search,0,"ID");
 			} else { // Not FOUND -> INSERT
-				$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$new_ID','".addslashes($splitter[$i])."','$up_ID')";
+				$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$new_ID','".addslashes($splitter[$i])."','$up_ID','')";
 //					echo $query_insert."<br>";
 				$result_insert=$db->query($query_insert);
 				$up_ID=$new_ID++;
@@ -332,7 +332,7 @@ function location_create_new($split_char,$add_first){
 		}
 
 		// Ajout du dernier
-		$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('".$data["ID"]."','".addslashes($splitter[count($splitter)-1])."','$up_ID')";
+		$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('".$data["ID"]."','".addslashes($splitter[count($splitter)-1])."','$up_ID','')";
 //			echo $query_insert."<br>";
 
 		$result_insert=$db->query($query_insert);
@@ -347,8 +347,8 @@ function location_create_new($split_char,$add_first){
 ///// FIN FONCTIONS POUR UPDATE LOCATION
 
 function showLocationUpdateForm(){
-	global $lang;
-	$db=new DB;
+	global $db,$lang;
+	
 	
 	if (FieldExists("glpi_dropdown_locations", "parentID")) {
 		updateTreeDropdown();
@@ -359,7 +359,14 @@ function showLocationUpdateForm(){
 	if (!isset($_POST['car_sep'])) $_POST['car_sep']='';
 
 	if(!TableExists("glpi_dropdown_locations_new")) {
-		$query = " CREATE TABLE `glpi_dropdown_locations_new` (`ID` INT NOT NULL auto_increment,`name` VARCHAR(255) NOT NULL ,`parentID` INT NOT NULL ,PRIMARY KEY (`ID`),UNIQUE KEY (`name`,`parentID`), KEY(`parentID`)) TYPE=MyISAM;";
+		$query = " CREATE TABLE `glpi_dropdown_locations_new` (
+				`ID` INT NOT NULL auto_increment,
+				`name` VARCHAR(255) NOT NULL ,
+				`parentID` INT NOT NULL ,
+				`comments` TEXT NULL ,
+				PRIMARY KEY (`ID`),
+				UNIQUE KEY (`name`,`parentID`), 
+				KEY(`parentID`)) TYPE=MyISAM;";
 		$db->query($query) or die("LOCATION ".$db->error());
 	}
 
@@ -400,42 +407,10 @@ function showLocationUpdateForm(){
 	}
 }
 
-//Verifie si la table $tablename existe
-/*function TableExists($tablename) {
-  
-   $db = new DB;
-   // Get a list of tables contained within the database.
-   $result = $db->list_tables($db);
-   $rcount = $db->numrows($result);
-
-   // Check each in list for a match.
-   for ($i=0;$i<$rcount;$i++) {
-       if ($db->table_name($result, $i)==$tablename) return true;
-   }
-   mysql_free_result($result);
-   return false;
-}
-
-//Verifie que le champs $field existe bien dans la table $table
-function FieldExists($table, $field) {
-	$db = new DB;
-	$result = $db->query("SELECT * FROM ". $table ."");
-	$fields = $db->num_fields($result);
-	$var1 = false;
-	for ($i=0; $i < $fields; $i++) {
-		$name  = $db->field_name($result, $i);
-		if(strcmp($name,$field)==0) {
-			$var1 = true;
-		}
-	}
-	mysql_free_result($result);
-	return $var1;
-}
-*/
 
 //test la connection a la base de donn�.
 function test_connect() {
-$db = new DB;
+global $db;
 if($db->error == 0) return true;
 else return false;
 }
@@ -444,9 +419,7 @@ else return false;
 function changeVarcharToID($table1, $table2, $chps)
 {
 
-global $lang;
-
-$db = new DB;
+global $db,$lang;
 
 if(!FieldExists($table2, "ID")) {
 	$query = " ALTER TABLE `". $table2 ."` ADD `ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST";
@@ -473,9 +446,7 @@ $db->query($query) or die($lang["update"][90].$db->error());
 function updateDbTo031()
 {
 
-global $lang;
-
-$db = new DB;
+global $db,$lang;
 
 
 //amSize ramSize
@@ -533,10 +504,9 @@ $query = "ALTER TABLE templates MODIFY date_fin_garantie date NOT NULL default '
 function updatedbUpTo031()
 {
 
-global $lang;
+global $db,$lang;
 $ret = array();
 
-$db = new DB;
 if(!TableExists("glpi_config"))
 {
 $query = "CREATE TABLE `glpi_config` (
@@ -625,8 +595,7 @@ return $ret;
 }
 
 function update031to04(){
-global $lang;
-$db = new DB;
+global $db,$lang;
 
 //0.4 Prefixage des tables : 
 echo "<p class='center'>Version 0.4 </p>";
@@ -1056,8 +1025,7 @@ if(!FieldExists("glpi_config","permit_helpdesk")) {
 
 // Update from 0.4 and 0.41 to 0.42
 function update04to042(){
-global $lang;
-$db = new DB;
+global $db,$lang;
 
 echo "<p class='center'>Version 0.42 </p>";
 
@@ -1102,8 +1070,7 @@ if(!FieldExists("glpi_config","default_language")) {
 
 // Update from 0.42 to 0.5
 function update042to05(){
-global $lang;
-$db = new DB;
+global $db,$lang;
 
  echo "<p class='center'>Version 0.5 </p>";
 
@@ -1610,7 +1577,7 @@ function date_diff($from, $to) {
 }
 
 function updateMaintenanceInfos($table,$type,$ID){
-	$db=new DB;
+	global $db;
 	$elements=array();
 	$query="SELECT ID from $table WHERE maintenance='1'";
 	$result=$db->query($query);
@@ -1626,7 +1593,7 @@ function updateMaintenanceInfos($table,$type,$ID){
 }
 
 function updateWarrantyInfos($table,$type){
-	$db=new DB;
+	global $db;
 	$elements=array();
 	$query="SELECT ID,achat_date,date_fin_garantie from $table ORDER BY achat_date,date_fin_garantie";
 	$result=$db->query($query) or die("0.5 select for update warranty ".$lang["update"][90].$db->error());
@@ -1651,7 +1618,7 @@ function updateWarrantyInfos($table,$type){
 
 }
 function isMaintenanceUsed(){
-	$db = new DB;
+	global $db;
 	$tables=array("glpi_computers","glpi_printers","glpi_monitors","glpi_peripherals","glpi_networking");
 	foreach ($tables as $key => $table){
 		$query="SELECT ID from $table WHERE maintenance='1';";
@@ -1663,7 +1630,7 @@ function isMaintenanceUsed(){
 }
 
 function dropMaintenanceField(){
-	$db = new DB;
+	global $db;
 	$tables=array("glpi_computers","glpi_printers","glpi_monitors","glpi_peripherals","glpi_networking");
 	foreach ($tables as $key => $table){
 		$query="ALTER TABLE `$table` DROP `maintenance`";
@@ -2288,8 +2255,8 @@ if (TableExists("glpi_prefs")){
 
 // Update from 0.5 to 0.51
 function update05to051(){
-global $lang;
-$db = new DB;
+global $db,$lang;
+
 	 echo "<p class='center'>Version 0.51 </p>";
 
 /*******************************GLPI 0.51***********************************************/
@@ -2353,8 +2320,8 @@ if(!TableExists("glpi_dropdown_state")) {
 
 // Update from 0.51x to 0.6
 function update051to06(){
-global $lang;
-$db = new DB;
+global $db,$lang;
+
 	 echo "<p class='center'>Version 0.6 </p>";
 
 /*******************************GLPI 0.6***********************************************/
@@ -2902,8 +2869,8 @@ if(!TableExists("glpi_dropdown_hdd_type")) {
 
 // Update from 0.6 to 0.65
 function update06to065(){
-global $lang;
-$db = new DB;
+global $db,$lang;
+
  echo "<p class='center'>Version 0.65 </p>";
 
 if(!isIndex("glpi_networking_ports", "on_device_2")) {
@@ -3971,8 +3938,8 @@ if (ereg("glpi_dropdown",$line[0])||ereg("glpi_type",$line[0])){
 
 
 function updateTreeDropdown(){
+global $db;
 
-$db=new DB();
 // Update Tree dropdown
 if(!FieldExists("glpi_dropdown_locations","completename")) {
 $query= "ALTER TABLE `glpi_dropdown_locations` ADD `completename` TEXT NOT NULL ;";
@@ -3988,7 +3955,7 @@ regenerateTreeCompleteName("glpi_dropdown_kbcategories");
 
 function showFormSu() {
 	include ("_relpos.php");
-	global $lang;
+	global $db,$lang;
 	echo "<div align='center'>";
 	echo "<h3>".$lang["update"][97]."</h3>";
 	echo "<p>".$lang["update"][98]."</p>";
@@ -4036,7 +4003,7 @@ function showFormSu() {
 // step 1    avec bouton de confirmation
 
 if(empty($_POST["continuer"]) && empty($_POST["ajout_su"]) && empty($_POST["from_update"])) {
-	$db = new DB;
+	
 	if(empty($from_install)&&!isset($_POST["from_update"])) {
 		echo "<div align='center'>";
 		echo "<h3><span class='red'>".$lang["update"][105]."</span>";
@@ -4076,7 +4043,6 @@ elseif(empty($_POST["ajout_su"])) {
 			}
 			if (showLocationUpdateForm()){
 				// Get current version
-				$db=new DB();
 				$query="SELECT version FROM glpi_config";
 				$result=$db->query($query) or die("get current version".$db->error());
 				$current_version=trim($db->result($result,0,0));
@@ -4122,7 +4088,6 @@ elseif(!empty($_POST["ajout_su"])) {
 		echo "</div>";
 		if (showLocationUpdateForm()){
 				// Get current version
-				$db=new DB();
 				$query="SELECT version FROM glpi_config";
 				$result=$db->query($query) or die("get current version".$db->error());
 				$current_version=trim($db->result($result,0,0));

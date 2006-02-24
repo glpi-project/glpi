@@ -43,10 +43,11 @@ class StateItem{
 	var $obj = NULL;	
 
 	function getfromDB ($device_type,$id_device,$template=0) {
-		
+		global $db;
+
 		$this->fields["state"]=-1;
 		// Make new database object and fill variables
-		$db = new DB;
+		
 		$query = "SELECT * FROM glpi_state_item WHERE (device_type='$device_type' AND id_device = '$id_device' AND is_template='$template' )";
 
 		if ($result = $db->query($query)) 
@@ -159,7 +160,7 @@ class StateItem{
 	
 	function getEmpty () {
 		//make an empty database object
-		$db = new DB;
+		global $db;
 		$fields = $db->list_fields("glpi_state_item");
 		$columns = $db->num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
@@ -170,7 +171,7 @@ class StateItem{
 
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_state_item SET ";
@@ -187,7 +188,7 @@ class StateItem{
 	
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		// Build query
 		$query = "INSERT INTO glpi_state_item (";
@@ -218,7 +219,7 @@ class StateItem{
 
 	function deleteFromDB($ID) {
 
-		$db = new DB;
+		global $db;
 
 		$query = "DELETE from glpi_state_item WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {

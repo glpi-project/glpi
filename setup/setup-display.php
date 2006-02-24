@@ -47,7 +47,6 @@ checkAuthentication("normal");
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 include ($phproot . "/glpi/includes_search.php");
 
-$db=new DB();
 
 if (isset($_POST["add"])) {
 

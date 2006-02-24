@@ -48,7 +48,7 @@ class Monitor {
 	function getfromDB ($ID) {
 
 		// Make new database object and fill variables
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_monitors WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			if ($db->numrows($result)==1){
@@ -65,7 +65,7 @@ class Monitor {
 		
 function getEmpty () {
 	//make an empty database object
-	$db = new DB;
+	global $db;
 	$fields = $db->list_fields("glpi_monitors");
 	$columns = $db->num_fields($fields);
 	for ($i = 0; $i < $columns; $i++) {
@@ -77,7 +77,7 @@ function getEmpty () {
 
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_monitors SET ";
@@ -94,7 +94,7 @@ function getEmpty () {
 	
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		// Build query
 		$query = "INSERT INTO glpi_monitors (";
@@ -125,7 +125,7 @@ function getEmpty () {
 
 
 	function restoreInDB($ID) {
-		$db = new DB;
+		global $db;
 		$query = "UPDATE glpi_monitors SET deleted='N' WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			return true;
@@ -136,7 +136,7 @@ function getEmpty () {
 
 	function isUsed($ID){
 	return true;
-	$db = new DB;		
+	global $db;
 	$query="SELECT * from glpi_connect_wire where end1 = '$ID' AND type='".MONITOR_TYPE."'";
 	$result = $db->query($query);
 	if ($db->numrows($result)>0) return true;
@@ -150,7 +150,7 @@ function getEmpty () {
 
 	function deleteFromDB($ID,$force=0) {
 
-		$db = new DB;
+		global $db;
 
 		if ($force==1||!$this->isUsed($ID)){
 			$query = "DELETE from glpi_monitors WHERE ID = '$ID'";

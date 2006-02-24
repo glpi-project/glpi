@@ -43,10 +43,6 @@ checkAuthentication("normal");
 commonHeader($lang["title"][16],$_SERVER["PHP_SELF"]);
 
 
-$db = new DB;
-
-
-
 
 # 1. Recupere le nombre d'ordinateurs, d'imprimantes/scanners, de materiel reseau, et d'ecrans.
 

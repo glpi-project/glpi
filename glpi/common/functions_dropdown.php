@@ -184,9 +184,7 @@ if ($table=="glpi_enterprises")
 function dropdownNoValue($table,$myname,$value) {
 	// Make a select box without parameters value
 
-	global $deleted_tables,$template_tables,$dropdowntree_tables;
-
-	$db = new DB;
+	global $db,$deleted_tables,$template_tables,$dropdowntree_tables;
 
 	$where="";
 	if (in_array($table,$deleted_tables))
@@ -382,14 +380,13 @@ function dropdownUsersID($myname,$value) {
 * @return string the value of the dropdown or &nbsp; if not exists
 */
 function getDropdownName($table,$id,$withcomments=0) {
-	global $cfg_install,$dropdowntree_tables;
+	global $db,$cfg_install,$dropdowntree_tables;
 	
 	if (in_array($table,$dropdowntree_tables)){
 		return getTreeValueCompleteName($table,$id,$withcomments);
 
 	} else	{
 	
-		$db = new DB;
 		$name = "";
 		$comments = "";
 		$query = "select * from ". $table ." where ID = '". $id ."'";
@@ -566,9 +563,7 @@ echo "<select name='$name'>\n";
 * @return nothing (print out an HTML select box)
 */
 function dropdownAllItems($myname,$value_type=0,$value=0,$withenterprise=0,$withcartridge=0,$withconsumable=0,$withcontracts=0) {
-	global $lang,$HTMLRel,$cfg_install;
-	
-	$db=new DB;
+	global $db,$lang,$HTMLRel,$cfg_install;
 	
 	$items=array(
 	COMPUTER_TYPE=>"glpi_computers",
@@ -777,9 +772,7 @@ echo "</span>\n";
 function dropdownConnectPort($ID,$type,$myname) {
 
 
-	global $lang,$HTMLRel,$cfg_install;
-	
-	$db=new DB;
+	global $db,$lang,$HTMLRel,$cfg_install;
 	
 	$items=array(
 	COMPUTER_TYPE=>"glpi_computers",
@@ -827,9 +820,7 @@ function dropdownConnectPort($ID,$type,$myname) {
 * @return nothing (print out an HTML select box)
 */
 function dropdownSoftwareToInstall($myname,$withtemplate) {
-	global $lang,$HTMLRel,$cfg_install,$cfg_features;
-	
-	$db=new DB;
+	global $db,$lang,$HTMLRel,$cfg_install,$cfg_features;
 	
 	$rand=mt_rand();
 

@@ -41,7 +41,6 @@
 	checkAuthentication("post-only");
 
 	// Make a select box
-	$db = new DB;
 
 
 		$table=$LINK_ID_TABLE[$_POST["type"]];

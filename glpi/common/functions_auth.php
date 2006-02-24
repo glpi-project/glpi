@@ -44,7 +44,7 @@
 */
 function can_assign_job($name)
 {
-  $db = new DB;
+  global $db;
   $query = "SELECT * FROM glpi_users WHERE (name = '".$name."')";
 	$result = $db->query($query);
 	if (!$result&&$db->numrows()==0) return false;

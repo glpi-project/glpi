@@ -393,7 +393,7 @@ function updateMonitor($input,$dohistory=1) {
 
 function addMonitor($input) {
 	// Add Monitor, nasty hack until we get PHP4-array-functions
-	$db=new DB;
+	global $db;
 
 	$mon = new Monitor;
 

@@ -67,7 +67,7 @@ class CartridgeType {
 	function getfromDB ($ID) {
 
 		// Make new database object and fill variables
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_cartridges_type WHERE (ID = '$ID')";
 		
 		if ($result = $db->query($query)) {
@@ -84,8 +84,8 @@ class CartridgeType {
 	}
 	
 	function getEmpty () {
-	global $cfg_features;
-	$db = new DB;
+	global $db,$cfg_features;
+	
 	$fields = $db->list_fields("glpi_cartridges_type");
 	$columns = $db->num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
@@ -98,7 +98,7 @@ class CartridgeType {
 	}
 
 	function countCartridges() {
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '".$this->fields["ID"]."')";
 		if ($result = $db->query($query)) {
 			$number = $db->numrows($result);
@@ -108,7 +108,7 @@ class CartridgeType {
 		}
 	}
 	function restoreInDB($ID) {
-		$db = new DB;
+		global $db;
 		$query = "UPDATE glpi_cartridges_type SET deleted='N' WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			return true;
@@ -119,7 +119,7 @@ class CartridgeType {
 	
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_cartridges_type SET ";
@@ -136,7 +136,7 @@ class CartridgeType {
 	
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		// Build query
 		$query = "INSERT INTO glpi_cartridges_type (";
@@ -168,7 +168,7 @@ class CartridgeType {
 
 	function deleteFromDB($ID,$force=0) {
 
-		$db = new DB;
+		global $db;
 		$this->getFromDB($ID);		
 		if ($force==1/*||$this->countCartridges()==0*/){
 			$query = "DELETE from glpi_cartridges_type WHERE ID = '$ID'";
@@ -209,7 +209,7 @@ class Cartridge {
 	function getfromDB ($ID) {
 
 		// Make new database object and fill variables
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_cartridges WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 		if ($db->numrows($result)==1){
@@ -227,7 +227,7 @@ class Cartridge {
 
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_cartridges SET ";
@@ -245,7 +245,7 @@ class Cartridge {
 	
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		// Build query
 		$query = "INSERT INTO glpi_cartridges (";
@@ -279,7 +279,7 @@ class Cartridge {
 
 	function deleteFromDB($ID) {
 
-		$db = new DB;
+		global $db;
 
 		$query = "DELETE from glpi_cartridges WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {

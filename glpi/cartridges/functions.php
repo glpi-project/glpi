@@ -348,10 +348,9 @@ function showCartridgesAdd($ID) {
 **/
 function showCartridges ($tID,$show_old=0) {
 
-	GLOBAL $cfg_layout, $cfg_install,$lang,$HTMLRel;
+	GLOBAL $db,$cfg_layout, $cfg_install,$lang,$HTMLRel;
 	
-	$db = new DB;
-
+	
 	$query = "SELECT count(ID) AS COUNT  FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')";
 
 	if ($result = $db->query($query)) {
@@ -580,8 +579,8 @@ function deleteCartridge($ID) {
 *
 **/
 function installCartridge($pID,$tID) {
-	global $lang;
-	$db = new DB;
+	global $db,$lang;
+	
 	// Get first unused cartridge
 	$query = "SELECT ID FROM glpi_cartridges WHERE FK_glpi_cartridges_type = '$tID' AND date_use IS NULL";
 	$result = $db->query($query);
@@ -613,7 +612,7 @@ function installCartridge($pID,$tID) {
 **/
 function uninstallCartridge($ID) {
 
-	$db = new DB;
+	global $db;
 	$query = "UPDATE glpi_cartridges SET date_out = '".date("Y-m-d")."' WHERE ID='$ID'";
 	if ($result = $db->query($query)) {
 		return true;
@@ -625,7 +624,7 @@ function uninstallCartridge($ID) {
 
 function restoreCartridge($ID) {
 
-	$db = new DB;
+	global $db;
 	$query = "UPDATE glpi_cartridges SET date_out = NULL, date_use = NULL , FK_glpi_printers= NULL WHERE ID='$ID'";
 	if ($result = $db->query($query)) {
 		return true;
@@ -645,9 +644,9 @@ function restoreCartridge($ID) {
 *
 **/
 function showCompatiblePrinters($instID) {
-	GLOBAL $cfg_layout,$cfg_install, $lang;
+	GLOBAL $db,$cfg_layout,$cfg_install, $lang;
 
-    $db = new DB;
+    
 	$query = "SELECT glpi_dropdown_model_printers.name as type, glpi_cartridges_assoc.ID as ID FROM glpi_cartridges_assoc, glpi_dropdown_model_printers WHERE glpi_cartridges_assoc.FK_glpi_dropdown_model_printers=glpi_dropdown_model_printers.ID AND glpi_cartridges_assoc.FK_glpi_cartridges_type = '$instID' order by glpi_dropdown_model_printers.name";
 	
 	$result = $db->query($query);
@@ -690,9 +689,9 @@ function showCompatiblePrinters($instID) {
 *
 **/
 function addCompatibleType($tID,$type){
-
+	global $db;
 if ($tID>0&&$type>0){
-	$db = new DB;
+	
 	$query="INSERT INTO glpi_cartridges_assoc (FK_glpi_cartridges_type,FK_glpi_dropdown_model_printers ) VALUES ('$tID','$type');";
 	$result = $db->query($query);
 }
@@ -711,7 +710,7 @@ if ($tID>0&&$type>0){
 **/
 function deleteCompatibleType($ID){
 
-$db = new DB;
+global $db;
 $query="DELETE FROM glpi_cartridges_assoc WHERE ID= '$ID';";
 $result = $db->query($query);
 }
@@ -729,10 +728,9 @@ $result = $db->query($query);
 **/
 function showCartridgeInstalled($instID,$old=0) {
 
-	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
+	GLOBAL $db,$cfg_layout,$cfg_install, $lang,$HTMLRel;
 
-    $db = new DB;
-	
+    	
 	$query = "SELECT glpi_cartridges_type.ID as tID, glpi_cartridges_type.deleted as deleted, glpi_cartridges_type.ref as ref, glpi_cartridges_type.name as type, glpi_cartridges.ID as ID, glpi_cartridges.pages as pages, glpi_cartridges.date_use as date_use, glpi_cartridges.date_out as date_out, glpi_cartridges.date_in as date_in";
 	if ($old==0)
 	$query.= " FROM glpi_cartridges, glpi_cartridges_type WHERE glpi_cartridges.date_out IS NULL AND glpi_cartridges.FK_glpi_printers= '$instID' AND glpi_cartridges.FK_glpi_cartridges_type  = glpi_cartridges_type.ID ORDER BY glpi_cartridges.date_out ASC, glpi_cartridges.date_use DESC, glpi_cartridges.date_in";
@@ -853,7 +851,7 @@ function showCartridgeInstalled($instID,$old=0) {
 
 function updateCartridgePages($ID,$pages){
 
-$db=new DB;
+global $db;
 $query="UPDATE glpi_cartridges SET pages='$pages' WHERE ID='$ID'";
 $db->query($query);
 
@@ -871,9 +869,8 @@ $db->query($query);
 **/
 function dropdownCompatibleCartridges($pID) {
 	
-	global $lang;
+	global $db,$lang;
 	
-	$db = new DB;
 	$p=new Printer;
 	$p->getFromDB($pID);
 	
@@ -908,10 +905,9 @@ function dropdownCompatibleCartridges($pID) {
 **/
 function countCartridges($tID,$alarm,$nohtml=0) {
 	
-	GLOBAL $cfg_layout, $lang;
+	GLOBAL $db,$cfg_layout, $lang;
 	
-	$db = new DB;
-
+	
 	// Get total
 	$total = getCartridgesNumber($tID);
 	$out="";
@@ -947,7 +943,7 @@ return $out;
 *
 **/
 function getCartridgesNumber($tID){
-	$db=new DB;
+	global $db;
 	$query = "SELECT ID FROM glpi_cartridges WHERE ( FK_glpi_cartridges_type = '$tID')";
 	$result = $db->query($query);
 	return $db->numrows($result);
@@ -964,7 +960,7 @@ function getCartridgesNumber($tID){
 *
 **/
 function getUsedCartridgesNumber($tID){
-	$db=new DB;
+	global $db;
 	$query = "SELECT ID FROM glpi_cartridges WHERE ( FK_glpi_cartridges_type = '$tID' AND date_use IS NOT NULL AND date_out IS NULL)";
 	$result = $db->query($query);
 	return $db->numrows($result);
@@ -981,7 +977,7 @@ function getUsedCartridgesNumber($tID){
 *
 **/
 function getOldCartridgesNumber($tID){
-	$db=new DB;
+	global $db;
 	$query = "SELECT ID FROM glpi_cartridges WHERE ( FK_glpi_cartridges_type = '$tID'  AND date_out IS NOT NULL)";
 	$result = $db->query($query);
 	return $db->numrows($result);
@@ -997,7 +993,7 @@ function getOldCartridgesNumber($tID){
 *
 **/
 function getUnusedCartridgesNumber($tID){
-	$db=new DB;
+	global $db;
 	$query = "SELECT ID FROM glpi_cartridges WHERE ( FK_glpi_cartridges_type = '$tID'  AND date_use IS NULL)";
 	$result = $db->query($query);
 	return $db->numrows($result);
@@ -1015,7 +1011,7 @@ function getUnusedCartridgesNumber($tID){
 *
 **/
 function isNewCartridge($cID){
-$db=new DB;
+global $db;
 $query = "SELECT ID FROM glpi_cartridges WHERE ( ID= '$cID' AND date_use IS NULL)";
 $result = $db->query($query);
 return ($db->numrows($result)==1);
@@ -1032,7 +1028,7 @@ return ($db->numrows($result)==1);
 *
 **/
 function isUsedCartridge($cID){
-$db=new DB;
+global $db;
 $query = "SELECT ID FROM glpi_cartridges WHERE ( ID= '$cID' AND date_use IS NOT NULL AND date_out IS NULL)";
 $result = $db->query($query);
 return ($db->numrows($result)==1);
@@ -1049,7 +1045,7 @@ return ($db->numrows($result)==1);
 *
 **/
 function isOldCartridge($cID){
-$db=new DB;
+global $db;
 $query = "SELECT ID FROM glpi_cartridges WHERE ( ID= '$cID' AND date_out IS NOT NULL)";
 $result = $db->query($query);
 return ($db->numrows($result)==1);

@@ -71,11 +71,11 @@ function searchUserbyType($authtype) {
 * return int nb of elements in table
 */
 function countElementsInTable($table){
-$db=new DB;
-$query="SELECT count(*) as cpt from $table";
-$result=$db->query($query);
-$ligne = $db->fetch_array($result);
-return $ligne['cpt'];
+	global $db;
+	$query="SELECT count(*) as cpt from $table";
+	$result=$db->query($query);
+	$ligne = $db->fetch_array($result);
+	return $ligne['cpt'];
 }
 
 /**
@@ -89,8 +89,8 @@ return $ligne['cpt'];
 */
 function getTreeLeafValueName($table,$ID,$withcomments=0)
 {
+	global $db;
 	$query = "select * from $table where (ID = $ID)";
-	$db=new DB;
 	$name="";
 	$comments="";
 	if ($result=$db->query($query)){
@@ -116,8 +116,8 @@ else return $name;
 */
 function getTreeValueCompleteName($table,$ID,$withcomments=0)
 {
+	global $db;
 	$query = "select * from $table where (ID = $ID)";
-	$db=new DB;
 	$name="";
 	if ($result=$db->query($query)){
 		if ($db->numrows($result)==1){
@@ -143,11 +143,9 @@ else return $name;
 // DO NOT DELETE THIS FUNCTION : USED IN THE UPDATE
 function getTreeValueName($table,$ID, $wholename="")
 {
-	
-	global $lang;
+	global $db,$lang;
 	
 	$query = "select * from $table where (ID = $ID)";
-	$db=new DB;
 	
 	if ($result=$db->query($query)){
 		if ($db->numrows($result)>0){
@@ -182,7 +180,7 @@ return " ( $table.completename LIKE '%$search%' ) ";
 
 /*if (empty($search)) return " ( $table.name LIKE '%$search%' ) ";
 
-$db=new DB();
+global $db;
 
 // IDs to be present in the final query
 $id_found=array();
@@ -244,9 +242,10 @@ if (count($id_found)>0){
 */
 function getRealQueryForTreeItem($table,$IDf){
 
+global $db;
+
 if (empty($IDf)) return "";
 
-$db=new DB();
 
 // IDs to be present in the final query
 $id_found=array();
@@ -304,10 +303,9 @@ if (count($id_found)>0){
 * @return int level
 */
 function getTreeItemLevel($table,$ID){
-
+global $db;
 $level=0;
 
-$db=new DB();
 $query="select parentID from $table where ID='$ID'";
 while (1)
 {
@@ -333,7 +331,7 @@ return -1;
 * @return nothing
 */
 function regenerateTreeCompleteName($table){
-	$db=new DB;
+	global $db;
 	$query="SELECT ID from $table";
 	$result=$db->query($query);
 	if ($db->numrows($result)>0){
@@ -352,7 +350,7 @@ function regenerateTreeCompleteName($table){
 * @return nothing
 */
 function regenerateTreeCompleteNameUnderID($table,$ID){
-	$db=new DB;
+	global $db;
 	$query="UPDATE $table SET completename='".addslashes(getTreeValueName("$table",$ID))."' WHERE ID='".$ID."'";
 	$db->query($query);
 	$query="SELECT ID FROM $table WHERE parentID='$ID'";
@@ -373,9 +371,7 @@ function regenerateTreeCompleteNameUnderID($table,$ID){
 * @return the next ID, -1 if not exist
 */
 function getNextItem($table,$ID){
-global $deleted_tables,$template_tables,$cfg_layout;
-
-$db=new DB;
+global $db,$deleted_tables,$template_tables,$cfg_layout;
 
 $nextprev_item=$cfg_layout["nextprev_item"];
 if ($table=="glpi_tracking"||ereg("glpi_device",$table)) $nextprev_item="ID";
@@ -412,9 +408,7 @@ else return -1;
 * @return the previous ID, -1 if not exist
 */
 function getPreviousItem($table,$ID){
-global $deleted_tables,$template_tables,$cfg_layout;
-
-$db=new DB;
+global $db,$deleted_tables,$template_tables,$cfg_layout;
 
 $nextprev_item=$cfg_layout["nextprev_item"];
 if ($table=="glpi_tracking"||ereg("glpi_device",$table)) $nextprev_item="ID";
@@ -452,8 +446,8 @@ else return -1;
 *
 **/
 function getUserName($ID,$link=0){
-	global $cfg_install,$lang;
-	$db=new DB;
+	global $db,$cfg_install,$lang;
+
 	$query="SELECT * from glpi_users WHERE ID='$ID'";
 	$result=$db->query($query);
 	$user="";
@@ -492,7 +486,7 @@ function getUserName($ID,$link=0){
 **/
 function TableExists($tablename) {
   
-   $db = new DB;
+   global $db;
    // Get a list of tables contained within the database.
    $result = $db->list_tables($db);
    $rcount = $db->numrows($result);
@@ -515,7 +509,7 @@ function TableExists($tablename) {
 *
 **/
 function FieldExists($table, $field) {
-	$db = new DB;
+	global $db;
 	$result = $db->query("SELECT * FROM ". $table ."");
 	$fields = $db->num_fields($result);
 	$var1 = false;
@@ -533,7 +527,7 @@ function FieldExists($table, $field) {
 // else return false
 function isIndex($table, $field) {
 	
-		$db = new DB;
+		global $db;
 		$result = $db->query("SHOW INDEX from ". $table);
 		if ($result&&$db->numrows($result)){
 			while ($data=$db->fetch_assoc($result))

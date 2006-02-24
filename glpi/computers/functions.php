@@ -515,7 +515,7 @@ function updateComputer($input,$dohistory=1) {
 **/
 function addComputer($input) {
 	// Add Computer
-	$db=new DB;
+	global $db;
 	$comp = new Computer;
 	
   	// set new date.
@@ -659,9 +659,8 @@ function restoreComputer($input) {
 **/
 function showConnections($target,$ID,$withtemplate='') {
 
-	GLOBAL $cfg_layout, $cfg_install, $lang,$INFOFORM_PAGES;
+	GLOBAL $db,$cfg_layout, $cfg_install, $lang,$INFOFORM_PAGES;
 
-	$db = new DB;
 	
 	$state=new StateItem();
 

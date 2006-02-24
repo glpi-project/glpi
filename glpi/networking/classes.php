@@ -49,7 +49,7 @@ class Netdevice {
 	function getfromDB ($ID) {
 
 		// Make new database object and fill variables
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_networking WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			if ($db->numrows($result)==1){
@@ -66,7 +66,7 @@ class Netdevice {
 	
 function getEmpty() {
 		//make an empty database object
-		$db = new DB;
+		global $db;
 		
 		$fields = $db->list_fields("glpi_networking");
 		$columns = $db->num_fields($fields);
@@ -78,7 +78,7 @@ function getEmpty() {
 }
 
 	function updateInDB($updates)  {
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_networking SET ";
@@ -95,7 +95,7 @@ function getEmpty() {
 	
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		$this->fields["comments"] = addslashes($this->fields["comments"]);
 		
@@ -128,7 +128,7 @@ function getEmpty() {
 	}
 
 	function restoreInDB($ID) {
-		$db = new DB;
+		global $db;
 		$query = "UPDATE glpi_networking SET deleted='N' WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			return true;
@@ -139,7 +139,7 @@ function getEmpty() {
 
 	function isUsed($ID){
 	return true;
-	$db = new DB;		
+	global $db;
 	
 	$query="SELECT * from glpi_tracking where computer = '$ID' AND device_type='".NETWORKING_TYPE."'";
 	$result = $db->query($query);
@@ -161,7 +161,7 @@ function getEmpty() {
 
 	function deleteFromDB($ID,$force=0) {
 
-		$db = new DB;
+		global $db;
 
 		if ($force==1||!$this->isUsed($ID)){
 			$query = "DELETE from glpi_networking WHERE ID = '$ID'";
@@ -233,7 +233,7 @@ class Netport {
 	{
 
 		// Make new database object and fill variables
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_networking_ports WHERE (ID = '$ID')";
 		if ($result = $db->query($query))
 		{
@@ -252,7 +252,7 @@ class Netport {
 	
 	function getFromNull()
 	{
-		$db = new DB;
+		global $db;
 		$query = "select * from glpi_networking_ports";
 		$result = $db->query($query);
 		$num_flds = $db->num_fields($result);
@@ -265,9 +265,8 @@ class Netport {
 
 	function getDeviceData($ID,$type)
 	{
-		global $LINK_ID_TABLE;
-		$db = new DB;
-
+		global $db,$LINK_ID_TABLE;
+		
 		$table = $LINK_ID_TABLE[$type];
 		
 		$query = "SELECT * FROM $table WHERE (ID = '$ID')";
@@ -304,7 +303,7 @@ class Netport {
 	function updateInDB($updates)
 	{
 
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++)
 		{
@@ -329,7 +328,7 @@ class Netport {
 	
 	function addToDB()
 	{
-		$db = new DB;
+		global $db;
 		
 		// Build query
 		$query = "INSERT INTO glpi_networking_ports (";
@@ -367,7 +366,7 @@ class Netport {
 	function deleteFromDB($ID)
 	{
 
-		$db = new DB;
+		global $db;
 
 		$query = "DELETE from glpi_networking_ports WHERE ID = '$ID'";
 		if ($result = $db->query($query))
@@ -391,7 +390,7 @@ class Netwire {
 
 	function getOppositeContact ($ID)
 	{
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_networking_wire WHERE (end1 = '$ID' OR end2 = '$ID')";
 		if ($result=$db->query($query))
 		{

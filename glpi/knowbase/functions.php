@@ -365,12 +365,11 @@ function showKbCategories($parentID=0)
 	// show kb catégories
 	// ok
 	
-	global $lang,$HTMLRel;
+	global $db,$lang,$HTMLRel;
 	
 	$query = "select * from glpi_dropdown_kbcategories where (parentID = $parentID) order by name asc";
 
-	$db=new DB;
-	
+		
 	if ($parentID==0) showKbItemAll($parentID);
 	
 	/// Show category
@@ -418,10 +417,10 @@ function showKbItemAll($parentID)
 {
 	// show kb item in each categories
 	//ok 
-	
-	$query = "select * from glpi_kbitems where (categoryID = $parentID) order by question asc";
+	global $db;	
 
-	$db=new DB;
+	$query = "select * from glpi_kbitems where (categoryID = $parentID) order by question asc";
+	
 	
 	if ($result=$db->query($query)){
 
@@ -454,11 +453,11 @@ function showKbItem($ID)
 	// show each kb items
 	//ok 
 	
-	global $cfg_install, $cfg_layout, $layout, $lang;
+	global $db,$cfg_install, $cfg_layout, $layout, $lang;
 
 	$query = "select * from glpi_kbitems where (ID=$ID)";
 
-	$db=new DB;
+	
 	if ($result=$db->query($query)){
 	$data = $db->fetch_array($result);
 	$question = $data["question"];
@@ -556,10 +555,7 @@ function kbcategoryList($current=0,$nullroot="yes")
 **/
 function KbItemaddtofaq($ID)
 {
-	
-	
-	
-	$db=new DB;
+	global $db;
 	$db->query("UPDATE glpi_kbitems SET faq='yes' WHERE ID=$ID");
 }
 
@@ -574,12 +570,8 @@ function KbItemaddtofaq($ID)
 **/
 function KbItemremovefromfaq($ID)
 {
-	
-	
-	$db=new DB;
-	
+	global $db;
 	$db->query("UPDATE glpi_kbitems SET faq='no' WHERE ID=$ID");
-	
 }
  
 
@@ -595,12 +587,10 @@ function KbItemremovefromfaq($ID)
 function getFAQCategories()
 {
 	
-	
+	global $db;	
 	
 	$query = "select * from glpi_kbitems where (faq = 'yes')";
 
-	$db=new DB;
-	
 	$catNumbers = array();
 
 	if ($result=$db->query($query)){
@@ -627,11 +617,10 @@ function getFAQCategories()
 **/
 function getFAQParentCategories($ID, $catNumbers)
 {
-	
+	global $db;
 		
 	$query = "select * from glpi_dropdown_kbcategories where (ID = '$ID')";
-
-	$db=new DB;
+	
 	if ($result=$db->query($query)){
 			if ($db->numrows($result)>0){
 	
@@ -688,14 +677,13 @@ function faqShowCategoriesall($target,$contains)
 **/
 function faqShowCategories($parentID=0)
 {
-	global $HTMLRel;
+	global $db,$HTMLRel;
 		
 	$catNumbers = getFAQCategories();
 	
 	$query = "select * from glpi_dropdown_kbcategories where (parentID = $parentID) order by name asc";
 
-	$db=new DB;
-
+	
 	if ($parentID==0) faqShowItems($parentID);
 
 	if ($result=$db->query($query)){
@@ -748,12 +736,12 @@ function faqShowCategories($parentID=0)
 **/
 function faqShowItems($parentID)
 {
-	
+	global $db;
 	// ok	
 
 	$query = "select * from glpi_kbitems where (categoryID = $parentID) and (faq = 'yes') order by question asc";
 
-	$db=new DB;
+	
 	if ($result=$db->query($query)){
 	if ($db->numrows($result)>0){
 		echo "<ul>\n";
@@ -780,11 +768,11 @@ function faqShowItem($ID)
 {
 	// ok
 	
-	global $cfg_install, $cfg_layout, $layout;
+	global $db,$cfg_install, $cfg_layout, $layout;
 	
 	$query = "select * from glpi_kbitems where (ID=$ID)";
 
-	$db=new DB;
+	
 	if ($result=$db->query($query)){
 	$data = $db->fetch_array($result);
 	$question = $data["question"];
@@ -803,10 +791,11 @@ function faqShowItem($ID)
 * @return 
 **/
 function initExpandSessionVar(){
+	global $db;
 	if (!isset($_SESSION["kb_show"])){
 	$query = "select ID from glpi_dropdown_kbcategories";
 
-	$db=new DB;
+	
 	if ($result=$db->query($query)){
 		while ($data=$db->fetch_array($result))
 		$_SESSION["kb_show"][$data["ID"]]='Y';
@@ -838,9 +827,10 @@ function ExpandSessionVarHide($ID){
 * @return 
 **/
 function ExpandSessionVarShow($ID,$recurse=0){
+	global $db;
 	$_SESSION["kb_show"][$ID]='Y';
 	if ($recurse!=0){
-		$db=new DB();
+		
 		$query="select parentID from glpi_dropdown_kbcategories where ID=$ID";
 		$result=$db->query($query);
 		$data=$db->fetch_array($result);
@@ -860,9 +850,9 @@ function ExpandSessionVarShow($ID,$recurse=0){
 * @return 
 **/
 function ExpandSessionVarHideAll(){
+	global $db;
 	$query = "select ID from glpi_dropdown_kbcategories";
-
-	$db=new DB;
+	
 	if ($result=$db->query($query)){
 		while ($data=$db->fetch_array($result))
 		$_SESSION["kb_show"][$data["ID"]]='N';
@@ -879,9 +869,9 @@ function ExpandSessionVarHideAll(){
 * @return 
 **/
 function ExpandSessionVarShowAll(){
+	global $db;
 	$query = "select ID from glpi_dropdown_kbcategories";
 
-	$db=new DB;
 	if ($result=$db->query($query)){
 		while ($data=$db->fetch_array($result))
 		$_SESSION["kb_show"][$data["ID"]]='Y';
@@ -898,8 +888,9 @@ function ExpandSessionVarShowAll(){
 * @return 
 **/
 function searchLimitSessionVarKnowbase($contains){
+	global $db;
 	ExpandSessionVarHideAll();	
-	$db=new DB;
+	
 
 // Recherche categories
 	$query = "select ID from glpi_dropdown_kbcategories WHERE name LIKE '%$contains%'";

@@ -370,7 +370,7 @@ function updatePhone($input) {
 
 function addPhone($input) {
 	// Add Phone, nasty hack until we get PHP4-array-functions
-	$db=new DB;
+	global $db;
 	$mon = new Phone;
 
 	$oldID=$input["ID"];

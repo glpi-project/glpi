@@ -35,13 +35,8 @@ require_once ($phproot."/glpi/includes.php");
 
 class DBocs extends DBmysql { 
 
- var $dbhost	= ""; 
- var $dbuser 	= ""; 
- var $dbpassword= ""; 
- var $dbdefault	= ""; 
- 
 	function DBocs() {
-		$db = new DB;
+		global $db;
 		$query = "select * from glpi_ocs_config";
 		$result = $db->query($query);
 		$this->dbhost = $db->result($result,0,"ocs_db_host");

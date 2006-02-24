@@ -49,11 +49,11 @@ class Computer {
 	
 	function getfromDB ($ID,$load_device=0) {
 
-		$table = "glpi_computers";
-		
+		global $db;
+
 		// Make new database object and fill variables
-		$db = new DB;
-		$query = "SELECT * FROM $table WHERE (ID = '$ID') limit 0,1";
+		
+		$query = "SELECT * FROM glpi_computers WHERE (ID = '$ID') limit 0,1";
 //		echo $query;
 		if ($result = $db->query($query)) {
 			if ($db->numrows($result)==1) {
@@ -83,7 +83,7 @@ class Computer {
 	
 	function getEmpty() {
 	//make an empty database object
-		$db = new DB;
+		global $db;
 		$fields = $db->list_fields("glpi_computers");
 		$columns = $db->num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
@@ -94,8 +94,8 @@ class Computer {
 	}
 
 	function updateInDB($updates)  {
-		global $lang;
-		$db = new DB;
+		global $db,$lang;
+		
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_computers SET ";
@@ -175,7 +175,7 @@ class Computer {
 	
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		// Build query
 		$query = "INSERT INTO glpi_computers (";
@@ -205,7 +205,7 @@ class Computer {
 	}
 
 	function restoreInDB($ID) {
-		$db = new DB;
+		global $db;
 		$query = "UPDATE glpi_computers SET deleted='N' WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			return true;
@@ -216,7 +216,7 @@ class Computer {
 
 	function isUsed($ID){
 	return true;
-	$db = new DB;		
+	global $db;
 	$query="SELECT * from glpi_connect_wire where end2 = '$ID'";
 	$result = $db->query($query);
 	if ($db->numrows($result)>0) return true;
@@ -240,10 +240,8 @@ class Computer {
 
 
 	function deleteFromDB($ID,$force=0) {
+		global $db;
 
-		$table = "glpi_computers";
-
-		$db = new DB;
 		$job=new Job;
 		if ($force==1||!$this->isUsed($ID)){
 

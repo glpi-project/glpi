@@ -259,9 +259,9 @@ function deleteLink($input) {
 *
 **/
 function showLinkDevice($instID) {
-	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
+	GLOBAL $db,$cfg_layout,$cfg_install, $lang,$HTMLRel;
 
-    $db = new DB;
+    
 	$query = "SELECT * from glpi_links_device WHERE FK_links='$instID' ORDER BY device_type";
 	$result = $db->query($query);
 	$number = $db->numrows($result);
@@ -299,22 +299,23 @@ function showLinkDevice($instID) {
 
 function deleteLinkDevice($ID){
 
-$db = new DB;
+global $db;
 $query="DELETE FROM glpi_links_device WHERE ID= '$ID';";
 $result = $db->query($query);
 }
 
 function addLinkDevice($tID,$lID){
+	global $db;
 if ($tID>0&&$lID>0){
-	$db = new DB;
+	
 	$query="INSERT INTO glpi_links_device (device_type,FK_links ) VALUES ('$tID','$lID');";
 	$result = $db->query($query);
 }
 }
 
 function showLinkOnDevice($type,$ID){
-global $lang,$HTMLRel;
-	$db=new DB;
+global $db,$lang,$HTMLRel;
+	
 	$query="SELECT glpi_links.ID as ID, glpi_links.name as name , glpi_links.data as data from glpi_links INNER JOIN glpi_links_device ON glpi_links.ID= glpi_links_device.FK_links WHERE glpi_links_device.device_type='$type' ORDER BY glpi_links.name";
 	$result=$db->query($query);
 

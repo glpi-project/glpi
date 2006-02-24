@@ -37,6 +37,7 @@
 include ("_relpos.php");
 include ($phproot . "/glpi/common/classes.php");
 include ($phproot . "/glpi/common/functions.php");
+include ($phproot . "/glpi/common/functions_db.php");
 include ($phproot . "/glpi/config/based_config.php");
 include($cfg_install["config_dir"] . "/config_db.php");
 
@@ -45,21 +46,6 @@ if(!session_id()){@session_start();}
 
 
 //################################ Functions ################################
-
-function FieldExists($table, $field) {
-	$db = new DB;
-	$result = $db->query("SELECT * FROM ". $table ."");
-	$fields = $db->num_fields($result);
-	$var1 = false;
-	for ($i=0; $i < $fields; $i++) {
-		$name  = $db->field_name($result, $i);
-		if(strcmp($name,$field)==0) {
-			$var1 = true;
-		}
-	}
-	return $var1;
-}
-
 
 function loadLang() {
 			unset($lang);
@@ -99,7 +85,7 @@ function current_time()
 }
 
 function test_content_ok(){
-	$db = new DB;
+	global $db;
 	
 	$query1="SELECT ID FROM glpi_computers WHERE  comments LIKE '%\\\\\\%';";
 	$query2="SELECT ID FROM glpi_printers WHERE  comments LIKE '%\\\\\\%';";	
@@ -420,16 +406,8 @@ echo "</div>";
 }
 
 if ($conv_utf8){
-$db=new DB;
-$query = "ALTER TABLE `glpi_config` ADD `utf8_conv` INT( 11 ) DEFAULT '0' NOT NULL";
-$db->query($query) or die(" 0.6 add utf8_conv to glpi_config".$lang["update"][90].$db->error());
+	$query = "ALTER TABLE `glpi_config` ADD `utf8_conv` INT( 11 ) DEFAULT '0' NOT NULL";
+	$db->query($query) or die(" 0.6 add utf8_conv to glpi_config".$lang["update"][90].$db->error());
 }
-//}
-	
-/*if (isset($_POST["non"])){
-	// Redirection à faire
-	
-	echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
-}
-*/
+
 ?>

@@ -286,7 +286,7 @@ function updateSoftware($input) {
 }
 
 function addSoftware($input) {
-	$db=new DB;
+	global $db;
 		
 	$sw = new Software;
 
@@ -370,9 +370,9 @@ function showLicensesAdd($ID) {
 
 function showLicenses ($sID,$show_computers=0) {
 
-	GLOBAL $cfg_layout,$cfg_install, $HTMLRel, $lang;
+	GLOBAL $db,$cfg_layout,$cfg_install, $HTMLRel, $lang;
 	
-	$db = new DB;
+	
 
 	$query = "SELECT count(ID) AS COUNT  FROM glpi_licenses WHERE (sID = '$sID')";
 	$query_update = "SELECT count(glpi_licenses.ID) AS COUNT  FROM glpi_licenses, glpi_software WHERE (glpi_software.ID = glpi_licenses.sID AND glpi_software.update_software = '$sID' and glpi_software.is_update='Y')";
@@ -839,6 +839,7 @@ function deleteLicense($ID) {
 } 
 
 function updateNumberLicenses($likeID,$number,$new_number){
+	global $db;
 
 	$lic=new License();
 
@@ -850,7 +851,7 @@ if ($number>$new_number){
 		$SEARCH_LICENCE.=" AND glpi_licenses.expire IS NULL)";
 		else $SEARCH_LICENCE.=" AND glpi_licenses.expire = '".$lic->fields["expire"]."')";
 		
-		$db=new DB();
+		
 
 		for ($i=0;$i<$number-$new_number;$i++){
 			$query_first="SELECT glpi_licenses.ID as ID, glpi_inst_software.license as iID FROM glpi_licenses LEFT JOIN glpi_inst_software ON glpi_inst_software.license = glpi_licenses.ID WHERE $SEARCH_LICENCE";
@@ -891,7 +892,7 @@ if ($number>$new_number){
 
 function installSoftware($cID,$lID,$sID='') {
 
-	$db = new DB;
+	global $db;
 	
 	
 	if (!empty($lID)&&$lID>0){
@@ -920,7 +921,7 @@ function installSoftware($cID,$lID,$sID='') {
 
 function uninstallSoftware($ID) {
 
-	$db = new DB;
+	global $db;
 	$query = "DELETE FROM glpi_inst_software WHERE(ID = '$ID')";
 //	echo $query;
 	if ($result = $db->query($query)) {
@@ -932,8 +933,8 @@ function uninstallSoftware($ID) {
 
 function showSoftwareInstalled($instID,$withtemplate='') {
 
-	GLOBAL $cfg_layout,$cfg_install, $lang;
-        $db = new DB;
+	GLOBAL $db,$cfg_layout,$cfg_install, $lang;
+        
 	$query = "SELECT glpi_inst_software.license as license, glpi_inst_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_licenses ";
 	$query.= "WHERE glpi_inst_software.license = glpi_licenses.ID AND glpi_licenses.sID = glpi_software.ID AND (glpi_inst_software.cID = '$instID') order by glpi_software.name";
 	
@@ -1036,9 +1037,8 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 
 function countInstallations($sID,$nohtml=0) {
 	
-	GLOBAL $cfg_layout, $lang;
+	GLOBAL $db,$cfg_layout, $lang;
 	
-	$db = new DB;
 	
 	// Get total
 	$total = getLicenceNumber($sID);
@@ -1112,7 +1112,7 @@ return $out;
 }	
 
 function getInstalledLicence($sID){
-	$db=new DB;
+	global $db;
 	$query = "SELECT count(*) FROM glpi_licenses INNER JOIN glpi_inst_software ON (glpi_licenses.sID = '$sID' AND glpi_licenses.ID = glpi_inst_software.license ) 
 						INNER JOIN glpi_computers ON ( glpi_inst_software.cID=glpi_computers.ID AND glpi_computers.deleted='N' AND glpi_computers.is_template='0' )";
 	
@@ -1125,21 +1125,21 @@ function getInstalledLicence($sID){
 }
 
 function getLicenceToBuy($sID){
-	$db=new DB;
+	global $db;
 	$query = "SELECT ID FROM glpi_licenses WHERE (sID = '$sID' AND buy ='N')";
 	$result = $db->query($query);
 	return $db->numrows($result);
 }
 
 function getLicenceNumber($sID){
-	$db=new DB;
+	global $db;
 	$query = "SELECT ID,serial FROM glpi_licenses WHERE (sID = '$sID')";
 	$result = $db->query($query);
 	return $db->numrows($result);
 }
 
 function isGlobalSoftware($sID){
-	$db=new DB;
+	global $db;
 	$query = "SELECT ID,serial FROM glpi_licenses WHERE (sID = '$sID' and serial='global')";
 	$result = $db->query($query);
 	
@@ -1147,7 +1147,7 @@ function isGlobalSoftware($sID){
 }
 
 function isFreeSoftware($sID){
-	$db=new DB;
+	global $db;
 	$query = "SELECT ID,serial FROM glpi_licenses WHERE (sID = '$sID'  and serial='free')";
 	$result = $db->query($query);
 	return ($db->numrows($result)>0);

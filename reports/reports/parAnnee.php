@@ -42,8 +42,6 @@ commonHeader($lang["title"][16],$_SERVER["PHP_SELF"]);
 
 
 
-$db = new DB;
-
 # Titre
 
 
