@@ -58,21 +58,21 @@ else if (isset($_POST["delete"]))
 	checkAuthentication("admin");
 	deleteCartridgeType($_POST);
 	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
-	glpi_header($cfg_install["root"]."/cartridges/");
+	glpi_header($cfg_glpi["root_doc"]."/cartridges/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreCartridgeType($_POST);
 	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_install["root"]."/cartridges/");
+	glpi_header($cfg_glpi["root_doc"]."/cartridges/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
 	deleteCartridgeType($_POST,1);
 	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_install["root"]."/cartridges/");
+	glpi_header($cfg_glpi["root_doc"]."/cartridges/");
 }
 else if (isset($_POST["addtype"])){
 	checkAuthentication("admin");
@@ -119,12 +119,12 @@ else
 			showCartridgesAdd($tab["ID"]);
 			showCartridges($tab["ID"]);
 			showCartridges($tab["ID"],1);
-			showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",CARTRIDGE_TYPE,$tab["ID"],1);
+			showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",CARTRIDGE_TYPE,$tab["ID"],1);
 			showDocumentAssociated(CARTRIDGE_TYPE,$tab["ID"]);
 			showLinkOnDevice(CARTRIDGE_TYPE,$tab["ID"]);
 			break;
 		case 4 :
-			showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",CARTRIDGE_TYPE,$tab["ID"],1);
+			showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",CARTRIDGE_TYPE,$tab["ID"],1);
 			break;
 			
 		case 5 :

@@ -406,7 +406,7 @@ function compdevice_add($cID,$device_type,$dID,$specificity='',$dohistory=1) {
 function searchFormDevices($device_type,$field="",$phrasetype= "",$contains="",$sort= "") {
 
 	
-	GLOBAL $cfg_install, $cfg_layout, $layout, $lang,$HTMLRel;
+	GLOBAL $cfg_glpi,  $lang,$HTMLRel;
 
 	$option[$device_type.".designation"]			= $lang["devices"][14];
 	$option[$device_type.".ID"]				= $lang["common"][2];
@@ -414,7 +414,7 @@ function searchFormDevices($device_type,$field="",$phrasetype= "",$contains="",$
 	$option["glpi_enterprises.name"]			= $lang["common"][5];
 
 
-	echo "<form method='get' action=\"".$cfg_install["root"]."/devices/index.php\">";
+	echo "<form method='get' action=\"".$cfg_glpi["root_doc"]."/devices/index.php\">";
 	echo "<div align='center'><table  width='750' class='tab_cadre'>";
 	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
@@ -454,7 +454,7 @@ function showDevicesList($device_type,$target) {
 
 	// Lists Device from a device_type
 
-	GLOBAL $db,$cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
+	GLOBAL $db,$cfg_glpi, $lang, $HTMLRel;
 
 	
 	// Build query
@@ -492,7 +492,7 @@ function showDevicesList($device_type,$target) {
 				$device->getFromDB($ID);
 				echo "<tr class='tab_bg_2'>";
 				echo "<td><b>";
-				echo "<a href=\"".$cfg_install["root"]."/devices/devices-info-form.php?ID=$ID&amp;device_type=$device_type\">";
+				echo "<a href=\"".$cfg_glpi["root_doc"]."/devices/devices-info-form.php?ID=$ID&amp;device_type=$device_type\">";
 				echo $device->fields["designation"]." (".$device->fields["ID"].")";
 				echo "</a></b></td>";
 				echo "<td>". getDropdownName("glpi_enterprises",$device->fields["FK_glpi_enterprise"]) ."</td>";
@@ -541,7 +541,7 @@ function getDictDeviceLabel($device_num=-1) {
 
 function showDevicesForm ($target,$ID,$device_type) {
 
-	GLOBAL $cfg_install,$cfg_layout,$lang,$HTMLRel,$REFERER;
+	GLOBAL $cfg_glpi,$lang,$HTMLRel,$REFERER;
 
 	$device = new Device($device_type);
 

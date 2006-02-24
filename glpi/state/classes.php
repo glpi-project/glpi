@@ -147,14 +147,14 @@ class StateItem{
 	
 	function getLink(){
 	
-		global $cfg_install,$cfg_layout,$INFOFORM_PAGES;
+		global $cfg_glpi,$INFOFORM_PAGES;
 		
 		$show=$this->getName();
 		// show id if it was configure else nothing
-		if ($cfg_layout["view_ID"]||empty($show)) $show.=" (".$this->fields["id_device"].")";
+		if ($cfg_glpi["view_ID"]||empty($show)) $show.=" (".$this->fields["id_device"].")";
 
 
-		return "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$this->fields["device_type"]]."?ID=".$this->fields["id_device"]."\">$show</a>";
+		return "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$this->fields["device_type"]]."?ID=".$this->fields["id_device"]."\">$show</a>";
 	}
 	
 	

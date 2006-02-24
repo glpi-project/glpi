@@ -70,7 +70,7 @@ if(!isset($tab["removefromfaq"])) $tab["removefromfaq"] = "";
 	addKbItem($_POST);
 	logEvent(0, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][20]);
 	
-	glpi_header($cfg_install["root"]."/knowbase/");
+	glpi_header($cfg_glpi["root_doc"]."/knowbase/");
 	}
 	
 	else if (isset($tab["ID"])  && strcmp($tab["modify"],"yes") == 0){
@@ -97,7 +97,7 @@ if(!isset($tab["removefromfaq"])) $tab["removefromfaq"] = "";
 	updateKbItem($_POST);
 	logEvent(0, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][21]);	
 		
-	glpi_header($cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=".$tab["ID"]);
+	glpi_header($cfg_glpi["root_doc"]."/knowbase/knowbase-info-form.php?ID=".$tab["ID"]);
 	}
 	
 	else if (isset($tab["ID"])  && strcmp($tab["delete"],"yes") == 0){
@@ -110,7 +110,7 @@ if(!isset($tab["removefromfaq"])) $tab["removefromfaq"] = "";
 	
 	deleteKbItem($tab["ID"]);
 	logEvent(0, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][22]);	
-	glpi_header($cfg_install["root"]."/knowbase/");
+	glpi_header($cfg_glpi["root_doc"]."/knowbase/");
 	}
 	
 	
@@ -125,7 +125,7 @@ if(!isset($tab["removefromfaq"])) $tab["removefromfaq"] = "";
 	
 	
 		
-	glpi_header($cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=".$tab["ID"]);
+	glpi_header($cfg_glpi["root_doc"]."/knowbase/knowbase-info-form.php?ID=".$tab["ID"]);
 	}
 	
 	
@@ -141,11 +141,11 @@ if(!isset($tab["removefromfaq"])) $tab["removefromfaq"] = "";
 	
 	
 		
-	glpi_header($cfg_install["root"]."/knowbase/knowbase-info-form.php?ID=".$tab["ID"]);
+	glpi_header($cfg_glpi["root_doc"]."/knowbase/knowbase-info-form.php?ID=".$tab["ID"]);
 	}
 	
 	else if (empty($tab["ID"])) {
-	glpi_header($cfg_install["root"]."/knowbase/");
+	glpi_header($cfg_glpi["root_doc"]."/knowbase/");
 	}		
 
 	else  {

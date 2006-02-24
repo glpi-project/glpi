@@ -100,7 +100,7 @@ function showSoftwareOnglets($target,$withtemplate,$actif){
 function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 	// Show Software or blank form
 	
-	GLOBAL $cfg_layout,$cfg_install,$lang;
+	GLOBAL $cfg_glpi,$lang;
 	
 	
 	$sw = new Software;
@@ -358,11 +358,11 @@ function deleteSoftware($input,$force=0) {
 
 function showLicensesAdd($ID) {
 	
-	GLOBAL $cfg_layout,$cfg_install,$lang;
+	GLOBAL $cfg_glpi,$lang;
 	
 	echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><strong>";
-	echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=add&amp;sID=$ID\">";
+	echo "<a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?form=add&amp;sID=$ID\">";
 	echo $lang["software"][12];
 	echo "</a></strong></td></tr>";
 	echo "</table></div><br>";
@@ -370,7 +370,7 @@ function showLicensesAdd($ID) {
 
 function showLicenses ($sID,$show_computers=0) {
 
-	GLOBAL $db,$cfg_layout,$cfg_install, $HTMLRel, $lang;
+	GLOBAL $db,$cfg_glpi, $HTMLRel, $lang;
 	
 	
 
@@ -388,7 +388,7 @@ function showLicenses ($sID,$show_computers=0) {
 			$pb="";
 			if (($nb_licences-$nb_updates-$installed)<0&&!isFreeSoftware($sID)&&!isGlobalSoftware($sID)) $pb="class='tab_bg_1_2'";
 			
-			echo "<form name='lic_form' method='get' action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
+			echo "<form name='lic_form' method='get' action=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php\">";
 
 			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='5' $pb >";
@@ -411,7 +411,7 @@ function showLicenses ($sID,$show_computers=0) {
 				echo "<script type='text/javascript' >\n";
 				echo "   new Form.Element.Observer('update_licenses_choice', 1, \n";
 				echo "      function(element, value) {\n";
-				echo "      	new Ajax.Updater('update_licenses_view','".$cfg_install["root"]."/ajax/updateLicenses.php',{asynchronous:true, evalScripts:true, \n";
+				echo "      	new Ajax.Updater('update_licenses_view','".$cfg_glpi["root_doc"]."/ajax/updateLicenses.php',{asynchronous:true, evalScripts:true, \n";
 				echo "           method:'post', parameters:'type=' + value\n";
 				echo "})})\n";
 				echo "</script>\n";
@@ -491,7 +491,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			if ($data["OEM"]=='Y') {
 			echo "<br><strong>";
 			if (isset($comp->fields['ID']))
-			echo "<a href='".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
+			echo "<a href='".$cfg_glpi["root_doc"]."/computers/computers-info-form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
 			else echo "N/A";
 			echo "<strong>";
 			} 
@@ -561,11 +561,11 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 				if (!empty($ID)){
 				echo "</td><td align='center'>";
 				if ($serial=="free"||$serial=="global"){
-					echo "<strong><a href=\"".$cfg_install["root"]."/software/software-licenses.php?delete=delete&amp;ID=$ID\">";
+					echo "<strong><a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?delete=delete&amp;ID=$ID\">";
 					echo "<img src=\"".$HTMLRel."pics/delete.png\" alt='".$lang["buttons"][6]."' title='".$lang["buttons"][6]."'>";
 					echo "</a></strong>";
 				}
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=update&amp;lID=$ID&amp;sID=$sID\">";
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?form=update&amp;lID=$ID&amp;sID=$sID\">";
 				echo "<img src=\"".$HTMLRel."pics/edit.png\" alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'>";
 				echo "</a></strong>";
 				}
@@ -578,7 +578,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			
 			$IDdup=$db->result($result_new,0,0);
 			if ($serial!="free"&&$serial!="global"){
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_install["root"]."/software/software-licenses.php?duplicate=duplicate&amp;lID=$IDdup\">";
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?duplicate=duplicate&amp;lID=$IDdup\">";
 				echo "<img src=\"".$HTMLRel."pics/add.png\" alt='".$lang["buttons"][8]."' title='".$lang["buttons"][8]."'>";
 				echo "</a></strong>";
 			}
@@ -616,7 +616,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			if ($serial!="free"&&$serial!="global") 
 			echo "<input type='checkbox' name='license_".$data_inst["lID"]."' id='license_".$data_inst["lID"]."'>";
 
-			echo "<strong><a href=\"".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$data_inst["cID"]."\">";
+			echo "<strong><a href=\"".$cfg_glpi["root_doc"]."/computers/computers-info-form.php?ID=".$data_inst["cID"]."\">";
 			echo $data_inst["cname"];
 			echo "</a></strong></td><td align='center'>";
 			
@@ -626,12 +626,12 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			echo "<div class='over_link' id='comment_".$data_inst["ID"]."'>".nl2br($data_inst["COMMENT"])."</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			}
 			// delete
-			echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&amp;ID=".$data_inst["ID"]."&amp;cID=".$data_inst["cID"]."\">";
+			echo "<a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?uninstall=uninstall&amp;ID=".$data_inst["ID"]."&amp;cID=".$data_inst["cID"]."\">";
 			echo "<img src=\"".$HTMLRel."pics/remove.png\" alt='".$lang["buttons"][5]."' title='".$lang["buttons"][5]."'>";
 			echo "</a>";
 
 			if ($serial!="free"&&$serial!="global"){
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_install["root"]."/software/software-licenses.php?form=update&amp;lID=".$data_inst["lID"]."&amp;sID=$sID\">";
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?form=update&amp;lID=".$data_inst["lID"]."&amp;sID=$sID\">";
 				echo "<img src=\"".$HTMLRel."pics/edit.png\" alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'>";
 				echo "</a></strong>";
 				// Display infocoms
@@ -658,7 +658,7 @@ echo "</form>";
 
 function showLicenseForm($target,$action,$sID,$lID="") {
 
-	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel;
+	GLOBAL $cfg_glpi, $lang,$HTMLRel;
 
 	$show_infocom=false;
 	
@@ -708,7 +708,7 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 	
 	
 	echo "<div align='center'><strong>";
-	echo "<a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=$sID\">";
+	echo "<a href=\"".$cfg_glpi["root_doc"]."/software/software-info-form.php?ID=$sID\">";
 	echo $lang["buttons"][13]."</strong>";
 	echo "</a><br>";
 	
@@ -933,7 +933,7 @@ function uninstallSoftware($ID) {
 
 function showSoftwareInstalled($instID,$withtemplate='') {
 
-	GLOBAL $db,$cfg_layout,$cfg_install, $lang;
+	GLOBAL $db,$cfg_glpi, $lang;
         
 	$query = "SELECT glpi_inst_software.license as license, glpi_inst_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_licenses ";
 	$query.= "WHERE glpi_inst_software.license = glpi_licenses.ID AND glpi_licenses.sID = glpi_software.ID AND (glpi_inst_software.cID = '$instID') order by glpi_software.name";
@@ -964,7 +964,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 
 		echo "<tr class='tab_bg_1$expirecss'>";
 	
-		echo "<td align='center'><strong><a href=\"".$cfg_install["root"]."/software/software-info-form.php?ID=".$data['sID']."\">";
+		echo "<td align='center'><strong><a href=\"".$cfg_glpi["root_doc"]."/software/software-info-form.php?ID=".$data['sID']."\">";
 		echo $sw->fields["name"]." (v. ".$sw->fields["version"].")</a>";
 		echo "</strong>";
 		echo " - ".$data['serial']."</td>";
@@ -987,7 +987,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 			if ($data["oem"]=='Y') {
 			echo "<br><strong>";
 			if (isset($comp->fields['ID']))
-			echo "<a href='".$cfg_install["root"]."/computers/computers-info-form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
+			echo "<a href='".$cfg_glpi["root_doc"]."/computers/computers-info-form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
 			else echo "N/A";
 			echo "<strong>";
 			} 
@@ -1003,7 +1003,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 			//do nothing
 			echo "&nbsp;";
 		} else {
-			echo "<a href=\"".$cfg_install["root"]."/software/software-licenses.php?uninstall=uninstall&amp;ID=$ID&amp;cID=$instID\">";
+			echo "<a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?uninstall=uninstall&amp;ID=$ID&amp;cID=$instID\">";
 			echo "<strong>".$lang["buttons"][5]."</strong></a>";
 		}
 		echo "</td></tr>";
@@ -1018,7 +1018,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 		echo "</table></div>";
 	} else {
 		echo "<tr class='tab_bg_1'><td align='center' colspan='5'>";
-		echo "<form method='post' action=\"".$cfg_install["root"]."/software/software-licenses.php\">";
+		echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php\">";
 
 		echo "<div class='software-instal'>";
 		echo "<input type='hidden' name='cID' value='$instID'>";
@@ -1037,7 +1037,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 
 function countInstallations($sID,$nohtml=0) {
 	
-	GLOBAL $db,$cfg_layout, $lang;
+	GLOBAL $db,$cfg_glpi, $lang;
 	
 	
 	// Get total

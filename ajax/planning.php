@@ -43,9 +43,9 @@
 
 	checkAuthentication("post-only");
 
-	$split=split(":",$cfg_features["planning_begin"]);
+	$split=split(":",$cfg_glpi["planning_begin"]);
 	$global_begin=intval($split[0]);
-	$split=split(":",$cfg_features["planning_end"]);
+	$split=split(":",$cfg_glpi["planning_end"]);
 	$global_end=intval($split[0]);
 	
 	

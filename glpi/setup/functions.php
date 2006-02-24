@@ -41,7 +41,7 @@ include ("_relpos.php");
 
 function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove='',$type='') {
 
-	GLOBAL $cfg_layout, $lang, $HTMLRel;
+	GLOBAL $cfg_glpi, $lang, $HTMLRel;
 
 	echo "<div align='center'>&nbsp;\n";
 	echo "<form method='post' action=\"$target\">";
@@ -124,7 +124,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 
 function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 
-	GLOBAL $db,$cfg_layout, $lang, $HTMLRel;
+	GLOBAL $db,$cfg_glpi, $lang, $HTMLRel;
 
 	echo "<div align='center'>&nbsp;";
 	echo "<form method='post' action=\"$target\">";
@@ -235,7 +235,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 
 function showFormTypeDown ($target,$name,$human,$ID) {
 
-	GLOBAL $cfg_layout, $lang, $HTMLRel;
+	GLOBAL $cfg_glpi, $lang, $HTMLRel;
 	
 	echo "<div align='center'>&nbsp;";
 	
@@ -899,7 +899,7 @@ function dropdownUsed($table, $ID) {
 
 function listTemplates($type,$target) {
 
-	GLOBAL $db,$cfg_layout, $lang;
+	GLOBAL $db,$cfg_glpi, $lang;
 
 		
 	switch ($type){
@@ -996,7 +996,7 @@ GLOBAL  $lang,$HTMLRel;
 
 function showFormConfigGen($target){
 	
-	GLOBAL  $db,$lang,$HTMLRel,$cfg_install;
+	GLOBAL  $db,$lang,$HTMLRel,$cfg_glpi;
 	
 	
 	$query = "select * from glpi_config where ID = 1";
@@ -1008,10 +1008,10 @@ function showFormConfigGen($target){
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][101]." </td><td> <input type=\"text\" name=\"root_doc\" value=\"". $db->result($result,0,"root_doc") ."\"></td></tr>";
 	$default_language=$db->result($result,0,"default_language");
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][113]." </td><td><select name=\"default_language\">";
-		while (list($val)=each($cfg_install["languages"])){
+		while (list($val)=each($cfg_glpi["languages"])){
 		echo "<option value=\"".$val."\"";
 			if($default_language==$val){ echo " selected";}
-		echo ">".$cfg_install["languages"][$val][0];
+		echo ">".$cfg_glpi["languages"][$val][0];
 		}
 	
 	echo "</select></td></tr>";
@@ -1074,7 +1074,7 @@ function showFormConfigGen($target){
 
 function showFormConfigDisplay($target){
 	
-	GLOBAL $db, $lang,$HTMLRel,$cfg_install;
+	GLOBAL $db, $lang,$HTMLRel,$cfg_glpi;
 	
 	$query = "select * from glpi_config where ID = 1";
 	$result = $db->query($query);
@@ -1591,17 +1591,17 @@ function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_ad
 }
 
 function checkNewVersionAvailable($auto=1){
-	global $db,$lang,$cfg_install,$cfg_features;
+	global $db,$lang,$cfg_glpi;
 
 	$do_check=1;
 	
-	if ($auto&&$cfg_features["auto_update_check"]==0) return;
+	if ($auto&&$cfg_glpi["auto_update_check"]==0) return;
 	else {
-		$last_check=split("-",$cfg_features["last_update_check"]);
+		$last_check=split("-",$cfg_glpi["last_update_check"]);
 		$dateDiff = mktime() 
 				  - mktime(0,0,0,$last_check[1],$last_check[2],$last_check[0]);		
 		$dayDiff=$dateDiff/60/60/24;
-		if ($dayDiff<$cfg_features["auto_update_check"]){
+		if ($dayDiff<$cfg_glpi["auto_update_check"]){
 			$do_check=0;
 		}
 				
@@ -1616,7 +1616,7 @@ function checkNewVersionAvailable($auto=1){
 		 if ($latest_version == '')
 			echo "<div align='center'>".$lang["setup"][304]."</div>";
 		 else {			
-	        $cur_version = str_replace(array('.', ' '), '', strtolower($cfg_install["version"]));
+	        $cur_version = str_replace(array('.', ' '), '', strtolower($cfg_glpi["version"]));
             $cur_version = (strlen($cur_version) == 2) ? intval($cur_version) * 10 : intval($cur_version);
 
             $lat_version = str_replace('.', '', strtolower($latest_version));

@@ -73,7 +73,7 @@ function titleComputers(){
 *
 **/
 function showComputerOnglets($target,$withtemplate,$actif){
-	global $lang,$HTMLRel,$cfg_features;
+	global $lang,$HTMLRel,$cfg_glpi;
 	
 	$template="";
 	if(!empty($withtemplate)){
@@ -91,7 +91,7 @@ function showComputerOnglets($target,$withtemplate,$actif){
 	echo "<li".(($actif==10)?" class='actif'":"")."><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
 	echo "<li".(($actif==12)?" class='actif'":"")."><a href='$target&amp;onglet=12$template'>".$lang["title"][38]."</a></li>";
 
-	if ($cfg_features["ocs_mode"])
+	if ($cfg_glpi["ocs_mode"])
 		echo "<li".(($actif==13)?" class='actif'":"")."><a href='$target&amp;onglet=13$template'>".$lang["Menu"][33]."</a></li>";
 	
 
@@ -157,8 +157,8 @@ function IsDropdown($field) {
 *
 **/
 function IsDevice($field) {
-	global $cfg_devices_tables;
-	if(in_array($field,$cfg_devices_tables)) {
+	global $cfg_glpi;
+	if(in_array($field,$cfg_glpi["devices_tables"])) {
 		return true;
 	}
 	else  {
@@ -181,7 +181,7 @@ function IsDevice($field) {
 *
 **/
 function showComputerForm($target,$ID,$withtemplate='') {
-	global $lang,$HTMLRel,$cfg_layout;
+	global $lang,$HTMLRel,$cfg_glpi;
 	$comp = new Computer;
 	$computer_spotted = false;
 	if(empty($ID) && $withtemplate == 1) {
@@ -659,7 +659,7 @@ function restoreComputer($input) {
 **/
 function showConnections($target,$ID,$withtemplate='') {
 
-	GLOBAL $db,$cfg_layout, $cfg_install, $lang,$INFOFORM_PAGES;
+	GLOBAL $db,$cfg_glpi, $lang,$INFOFORM_PAGES;
 
 	
 	$state=new StateItem();
@@ -692,7 +692,7 @@ function showConnections($target,$ID,$withtemplate='') {
 
 					echo "</td>";
 					if(empty($withtemplate) || $withtemplate != 2) {
-						echo "<td align='center'><a 	href=\"".$cfg_install["root"]."/computers/computers-info-form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1amp;withtemplate=".$withtemplate."\"><b>";
+						echo "<td align='center'><a 	href=\"".$cfg_glpi["root_doc"]."/computers/computers-info-form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1amp;withtemplate=".$withtemplate."\"><b>";
 						echo $lang["buttons"][10];
 						echo "</b></a></td>";
 					}

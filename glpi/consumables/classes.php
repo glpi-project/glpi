@@ -84,7 +84,7 @@ class ConsumableType {
 	}
 	
 	function getEmpty () {
-	global $db,$cfg_features;
+	global $db,$cfg_glpi;
 	
 	$fields = $db->list_fields("glpi_consumables_type");
 	$columns = $db->num_fields($fields);
@@ -93,7 +93,7 @@ class ConsumableType {
 			$this->fields[$name] = "";
 		}
 		
-	$this->fields["alarm"]=$cfg_features["cartridges_alarm"];
+	$this->fields["alarm"]=$cfg_glpi["cartridges_alarm"];
 	return true;
 	}
 

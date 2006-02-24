@@ -63,21 +63,21 @@ else if (isset($_POST["delete"]))
 	checkAuthentication("admin");
 	deleteContract($_POST);
 	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
-	glpi_header($cfg_install["root"]."/contracts/");
+	glpi_header($cfg_glpi["root_doc"]."/contracts/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreContract($_POST);
 	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_install["root"]."/contracts/");
+	glpi_header($cfg_glpi["root_doc"]."/contracts/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
 	deleteContract($_POST,1);
 	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_install["root"]."/contracts/");
+	glpi_header($cfg_glpi["root_doc"]."/contracts/");
 }
 else if (isset($_POST["additem"])){
 	checkAuthentication("admin");

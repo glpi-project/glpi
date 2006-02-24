@@ -49,14 +49,14 @@ function titleTrackingPlanning(){
 
 function showTrackingPlanningForm($device_type,$id_device){
 
-GLOBAL $db,$cfg_install,$lang;
+GLOBAL $db,$cfg_glpi,$lang;
 
 $query="select * from glpi_reservation_item where (device_type='$device_type' and id_device='$id_device')";
 
 if ($result = $db->query($query)) {
 		$numrows =  $db->numrows($result);
-//echo "<form name='resa_form' method='post' action=".$cfg_install["root"]."/reservation/index.php>";
-echo "<a href=\"".$cfg_install["root"]."/reservation/index.php?";
+//echo "<form name='resa_form' method='post' action=".$cfg_glpi["root_doc"]."/reservation/index.php>";
+echo "<a href=\"".$cfg_glpi["root_doc"]."/reservation/index.php?";
 // Ajouter le mat�iel
 if ($numrows==0){
 echo "id_device=$id_device&amp;device_type=$device_type&amp;add=add\">".$lang["reservation"][7]."</a>";
@@ -71,11 +71,11 @@ echo "ID=".$db->result($result,0,"ID")."&amp;delete=delete\">".$lang["reservatio
 
 
 function showAddPlanningTrackingForm($target,$fup,$planID=-1){
-	global $lang,$HTMLRel,$cfg_features;
-	$split=split(":",$cfg_features["planning_begin"]);
+	global $lang,$HTMLRel,$cfg_glpi;
+	$split=split(":",$cfg_glpi["planning_begin"]);
 	$global_begin=intval($split[0]);
 
-	$split=split(":",$cfg_features["planning_end"]);
+	$split=split(":",$cfg_glpi["planning_end"]);
 	$global_end=intval($split[0]);
 	
 	$planning= new PlanningTracking;
@@ -206,7 +206,7 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 }
 
 function showPlanning($who,$when,$type){
-	global $lang,$cfg_features;
+	global $lang,$cfg_glpi;
 	
 	$date=split("-",$when);
 	$time=mktime(1,0,0,$date[1],$date[2],$date[0]);
@@ -233,9 +233,9 @@ if ($type!="month"){
 	echo "</tr>";
 	
 	// Print Calendar by 15 mns
-	$tmp=split(":",$cfg_features["planning_begin"]);
+	$tmp=split(":",$cfg_glpi["planning_begin"]);
 	$hour_begin=$tmp[0];
-	$tmp=split(":",$cfg_features["planning_end"]);
+	$tmp=split(":",$cfg_glpi["planning_end"]);
 	$hour_end=$tmp[0];
 	for ($hour=$hour_begin;$hour<=$hour_end;$hour++){
 		echo "<tr>";
@@ -335,7 +335,7 @@ echo "</div>";
 }
 
 function displayplanning($who,$when,$type){
-global $db,$cfg_features,$HTMLRel,$lang;
+global $db,$cfg_glpi,$HTMLRel,$lang;
 
 
 //echo $when;
@@ -393,7 +393,7 @@ while ($data=$db->fetch_array($result)){
 	$interv[$data["begin"]."$$".$i]["ID"]=$data["ID"];
 	$interv[$data["begin"]."$$".$i]["begin"]=max($debut,$data["begin"]);
 	$interv[$data["begin"]."$$".$i]["end"]=min($fin,$data["end"]);
-	$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$cfg_features["cut"]);
+	$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$cfg_glpi["cut"]);
 	$interv[$data["begin"]."$$".$i]["device"]=$job->computername;
 
 	$i++;
@@ -419,8 +419,8 @@ while ($data=$db->fetch_array($result)){
 		$interv[$data["begin"]."$$".$i]["id_reminder"]=$remind->fields["ID"];
 		$interv[$data["begin"]."$$".$i]["begin"]=max($debut,$data["begin"]);
 		$interv[$data["begin"]."$$".$i]["end"]=min(date("Y-m-d H:i:s",$fin),$data["end"]);
-		$interv[$data["begin"]."$$".$i]["title"]=resume_text($remind->fields["title"],$cfg_features["cut"]);
-		$interv[$data["begin"]."$$".$i]["text"]=resume_text($remind->fields["text"],$cfg_features["cut"]);
+		$interv[$data["begin"]."$$".$i]["title"]=resume_text($remind->fields["title"],$cfg_glpi["cut"]);
+		$interv[$data["begin"]."$$".$i]["text"]=resume_text($remind->fields["text"],$cfg_glpi["cut"]);
 		$interv[$data["begin"]."$$".$i]["author"]=$data["author"];
 		$interv[$data["begin"]."$$".$i]["type"]=$data["type"];
 
@@ -603,7 +603,7 @@ function deletePlanningTracking($ID){
 
 
 function addPlanningTracking($input,$target,$nomail=0){
-	global $lang,$cfg_features;
+	global $lang,$cfg_glpi;
 	// Add a Planning
 	$resa = new PlanningTracking;
 
@@ -659,7 +659,7 @@ function addPlanningTracking($input,$target,$nomail=0){
 		$return=$resa->addToDB();
 	else $return = true;
 	
-	if ($nomail==0&&$cfg_features["mailing"])
+	if ($nomail==0&&$cfg_glpi["mailing"])
 		{
 			$user=new User;
 			$user->getfromDB($_SESSION["glpiname"]);
@@ -674,7 +674,7 @@ function addPlanningTracking($input,$target,$nomail=0){
 
 
 function updatePlanningTracking($input,$target,$item){
-	global $lang,$cfg_features;
+	global $lang,$cfg_glpi;
 	// Update a Planning Tracking
 
 	$ri = new PlanningTracking;
@@ -739,7 +739,7 @@ function updatePlanningTracking($input,$target,$item){
 	if (isset($updates))
 		$ri->updateInDB($updates);
 	
-	if (count($updates)>0&&$cfg_features["mailing"])
+	if (count($updates)>0&&$cfg_glpi["mailing"])
 		{
 			$user=new User;
 			$user->getfromDB($_SESSION["glpiname"]);
@@ -755,7 +755,7 @@ function updatePlanningTracking($input,$target,$item){
 function ShowPlanningCentral($who){
 
 
-	global $db,$cfg_features,$HTMLRel,$lang;
+	global $db,$cfg_glpi,$HTMLRel,$lang;
 	
 	$when=strftime("%Y-%m-%d");
 	$debut=$when;
@@ -787,7 +787,7 @@ function ShowPlanningCentral($who){
 		$interv[$data["begin"]."$$".$i]["id_tracking"]=$fup->fields["tracking"];
 		$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
 		$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
-		$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$cfg_features["cut"]);
+		$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$cfg_glpi["cut"]);
 		$interv[$data["begin"]."$$".$i]["device"]=$job->computername;
 		$i++;
 	}
@@ -811,8 +811,8 @@ function ShowPlanningCentral($who){
 		$interv[$data["begin"]."$$".$i]["id_reminder"]=$remind->fields["ID"];
 		$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
 		$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
-		$interv[$data["begin"]."$$".$i]["title"]=resume_text($remind->fields["title"],$cfg_features["cut"]);
-		$interv[$data["begin"]."$$".$i]["text"]=resume_text($remind->fields["text"],$cfg_features["cut"]);
+		$interv[$data["begin"]."$$".$i]["title"]=resume_text($remind->fields["title"],$cfg_glpi["cut"]);
+		$interv[$data["begin"]."$$".$i]["text"]=resume_text($remind->fields["text"],$cfg_glpi["cut"]);
 		
 		$i++;
 	}
@@ -879,13 +879,13 @@ function ShowPlanningCentral($who){
 **/      
 function urlIcal ($who) {
 
-GLOBAL  $cfg_install, $lang;
+GLOBAL  $cfg_glpi, $lang;
 
-echo "<a href=\"".$cfg_install["root"]."/planning/ical.php?uID=$who\"><span style='font-size:10px'>-".$lang["planning"][12]."</span></a>";
+echo "<a href=\"".$cfg_glpi["root_doc"]."/planning/ical.php?uID=$who\"><span style='font-size:10px'>-".$lang["planning"][12]."</span></a>";
 echo "<br>";
 
 // Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
-echo "<a href=\"webcal://".$_SERVER['HTTP_HOST'].$cfg_install["root"]."/planning/ical.php?uID=$who\"><span style='font-size:10px'>-".$lang["planning"][13]."</span></a>";
+echo "<a href=\"webcal://".$_SERVER['HTTP_HOST'].$cfg_glpi["root_doc"]."/planning/ical.php?uID=$who\"><span style='font-size:10px'>-".$lang["planning"][13]."</span></a>";
 
 }
 
@@ -929,7 +929,7 @@ function date_ical($date) {
 **/      
 function debutIcal($name) {
 
-GLOBAL  $cfg_install, $lang;
+GLOBAL  $cfg_glpi, $lang;
 
  	$debut_cal = "BEGIN:VCALENDAR\n";
         $debut_cal .= "VERSION:2.0\n";
@@ -950,7 +950,7 @@ GLOBAL  $cfg_install, $lang;
 **/      
 function generateIcal($who){
 
-GLOBAL  $db,$cfg_install, $cfg_features, $lang;
+GLOBAL  $db,$cfg_glpi, $lang;
 
 
 $query="SELECT * from glpi_tracking_planning WHERE id_assign=$who";
@@ -972,8 +972,8 @@ while ($data=$db->fetch_array($result)){
 	$interv[$i]["ID"]=$data['ID'];
 	$interv[$i]["begin"]=$data['begin'];
 	$interv[$i]["end"]=$data['end'];
-	//$interv[$i]["content"]=substr($job->contents,0,$cfg_features["cut"]);
-	$interv[$i]["content"]=substr($job->fields['contents'],0,$cfg_features["cut"]);
+	//$interv[$i]["content"]=substr($job->contents,0,$cfg_glpi["cut"]);
+	$interv[$i]["content"]=substr($job->fields['contents'],0,$cfg_glpi["cut"]);
 	$interv[$i]["device"]=$job->computername;
 	$i++;
 }
@@ -1006,7 +1006,7 @@ $debutcal=debutIcal(getUserName($who));
 		//todo recup la cat�orie d'intervention.
 		//$event .= "CATEGORIES:".$val["categorie"]."\n";
 
-		$event .= "URL:".$cfg_features["url_base"]."/index.php?redirect=tracking_".$val["id_tracking"]."\n";
+		$event .= "URL:".$cfg_glpi["url_base"]."/index.php?redirect=tracking_".$val["id_tracking"]."\n";
 
   		$event .= "END:VEVENT\n";
 		}

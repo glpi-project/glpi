@@ -54,7 +54,7 @@ function titleState(){
 function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= "",$state=""){
 	// Print Search Form
 	
-	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
+	GLOBAL $cfg_glpi,  $lang;
 
 	$option["glpi_state_item.ID"]				= $lang["common"][2];
 //	$option["glpi_reservation_item.device_type"]			= $lang["reservation"][3];
@@ -62,7 +62,7 @@ function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= "",$s
 //	$option["glpi_software.version"]			= $lang["software"][5];
 //      $option["glpi_state.comments"]			= $lang["common"][16];
 	
-	echo "<form method=\"get\" action=\"".$cfg_install["root"]."/state/index.php\">";
+	echo "<form method=\"get\" action=\"".$cfg_glpi["root_doc"]."/state/index.php\">";
 	echo "<div align='center'><table class='tab_cadre' width='750'>";
 	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
@@ -109,7 +109,7 @@ function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= "",$s
 function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$state){
 	// Lists Reservation Items
 
-	GLOBAL $db,$cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
+	GLOBAL $db,$cfg_glpi, $lang, $HTMLRel;
 
 		
 
@@ -150,8 +150,8 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 		$numrows =  $db->numrows($result);
 
 		// Limit the result, if no limit applies, use prior result
-		if ($numrows > $cfg_features["list_limit"]&&!isset($_GET['export_all'])) {
-			$query_limit = $query ." LIMIT $start,".$cfg_features["list_limit"]." ";
+		if ($numrows > $cfg_glpi["list_limit"]&&!isset($_GET['export_all'])) {
+			$query_limit = $query ." LIMIT $start,".$cfg_glpi["list_limit"]." ";
 			$result_limit = $db->query($query_limit);
 			$numrows_limit = $db->numrows($result_limit);
 		} else {
@@ -174,7 +174,7 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 
 			$nbcols=6;
 			// Display List Header
-			echo displaySearchHeader($output_type,$cfg_features["list_limit"]+1,$nbcols);
+			echo displaySearchHeader($output_type,$cfg_glpi["list_limit"]+1,$nbcols);
 			// New Line for Header Items Line
 			echo displaySearchNewLine($output_type);
 			

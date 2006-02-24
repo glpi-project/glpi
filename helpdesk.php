@@ -56,7 +56,7 @@ include ($phproot . "/glpi/includes_financial.php");
 if (isset($_GET['redirect'])){
 	checkAuthentication("post-only");
 	list($type,$ID)=split("_",$_GET["redirect"]);
-	glpi_header($cfg_install["root"]."/helpdesk.php?show=user&ID=$ID");
+	glpi_header($cfg_glpi["root_doc"]."/helpdesk.php?show=user&ID=$ID");
 }
 
 if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
@@ -66,11 +66,11 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 	//*******************
 	// Affichage interventions en cours
 	//******************
-	if (isset($_POST['add'])&&$cfg_features["post_only_followup"]) {
+	if (isset($_POST['add'])&&$cfg_glpi["post_only_followup"]) {
 		$newID=addFollowup($_POST);
 
 		logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$lang["log"][20]." $newID.");
-		glpi_header($cfg_install["root"]."/helpdesk.php?show=user&ID=".$_POST["tracking"]);
+		glpi_header($cfg_glpi["root_doc"]."/helpdesk.php?show=user&ID=".$_POST["tracking"]);
 	}	
 	if (!isset($_GET["start"])) $_GET["start"]=0;
 
@@ -102,7 +102,7 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 		unset($_POST["edit_resa"]);unset($_POST["id_item"]);
 		if ($_SESSION["glpiID"]==$_POST["id_user"]) // test Sécurité
 		if (updateReservationResa($_POST,$_SERVER["PHP_SELF"],$item))
-			glpi_header($cfg_install["root"]."/helpdesk.php?show=resa&ID=$item&mois_courant=$begin_month&annee_courante=$begin_year");
+			glpi_header($cfg_glpi["root_doc"]."/helpdesk.php?show=resa&ID=$item&mois_courant=$begin_month&annee_courante=$begin_year");
 		else exit();			
 	}
 
@@ -169,7 +169,7 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
 	$name="";
 	checkAuthentication("anonymous");
-	if ($cfg_features["public_faq"]&&!isset($_SESSION["glpiname"])){
+	if ($cfg_glpi["public_faq"]&&!isset($_SESSION["glpiname"])){
 		nullHeader($lang["title"][1],$_SERVER["PHP_SELF"]);
 	}
 	else {

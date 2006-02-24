@@ -188,7 +188,7 @@ if (isset($_POST["several_add"])) {
 	
 //	asort($dp);
 	
-	echo "<div align='center'><form method='post' action=\"".$cfg_install["root"]."/setup/setup-dropdowns.php\">";
+	echo "<div align='center'><form method='post' action=\"".$cfg_glpi["root_doc"]."/setup/setup-dropdowns.php\">";
 	echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
 	echo $lang["setup"][72].": </th></tr><tr class='tab_bg_1'><td><select name='which'>";
 	

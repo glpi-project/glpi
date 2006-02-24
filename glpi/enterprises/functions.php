@@ -86,7 +86,7 @@ function showEnterpriseOnglets($target,$withtemplate,$actif){
 function showEnterpriseForm ($target,$ID) {
 	// Show Enterprise or blank form
 	
-	GLOBAL $cfg_layout,$cfg_install,$lang;
+	GLOBAL $cfg_glpi,$lang;
 
 	$ent = new Enterprise;
 	$ent_spotted=false;
@@ -243,7 +243,7 @@ function restoreEnterprise($input) {
 
 
 function showAssociatedContact($instID) {
-	GLOBAL $db,$cfg_layout,$cfg_install, $lang,$HTMLRel;
+	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel;
 
     
 	$query = "SELECT glpi_contacts.*, glpi_contact_enterprise.ID as ID_ent FROM glpi_contact_enterprise, glpi_contacts WHERE glpi_contact_enterprise.FK_contact=glpi_contacts.ID AND glpi_contact_enterprise.FK_enterprise = '$instID' order by glpi_contacts.name";
@@ -275,7 +275,7 @@ function showAssociatedContact($instID) {
 	
 	echo "</table><br>"    ;
 	
-	 echo "<form method='post' action=\"".$cfg_install["root"]."/enterprises/enterprises-info-form.php\">";
+	 echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/enterprises/enterprises-info-form.php\">";
 	echo "<table  class='tab_cadre_fixe'>";
 	
 	echo "<tr class='tab_bg_1'><th colspan='2'>".$lang["financial"][33]."</tr><tr><td class='tab_bg_2' align='center'>";

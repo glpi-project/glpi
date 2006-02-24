@@ -47,7 +47,7 @@
 	$rand=mt_rand();
 
 	$where="";	
-	if (strlen($_POST['searchSoft'])>0&&$_POST['searchSoft']!=$cfg_features["ajax_wildcard"])
+	if (strlen($_POST['searchSoft'])>0&&$_POST['searchSoft']!=$cfg_glpi["ajax_wildcard"])
 		$where.=" AND name LIKE '%".$_POST['searchSoft']."%' ";
 	
 	$query = "SELECT * FROM glpi_software WHERE deleted='N' AND is_template='0' $where order by name";
@@ -61,7 +61,7 @@
 		
 		if (empty($withtemplate)||isGlobalSoftware($sID)||isFreeSoftware($sID)){
 			$output=$data["name"]." (v. ".$data["version"].")";
-			echo  "<option value='$sID' title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
+			echo  "<option value='$sID' title=\"$output\">".substr($output,0,$cfg_glpi["dropdown_limit"])."</option>";
 		}
 	}	
 	echo "</select>\n";
@@ -70,7 +70,7 @@
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('item_type$rand', 1, \n";
 	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('show_".$_POST["myname"]."$rand','".$cfg_install["root"]."/ajax/dropdownInstallLicense.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
+	echo "      	new Ajax.Updater('show_".$_POST["myname"]."$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownInstallLicense.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
 	echo "            {Element.hide('search_spinner_".$_POST["myname"]."$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_".$_POST["myname"]."$rand');},\n";

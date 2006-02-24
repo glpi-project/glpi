@@ -98,7 +98,7 @@ function showContractOnglets($target,$withtemplate,$actif){
 function showContractForm ($target,$ID) {
 	// Show Contract or blank form
 	
-	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel;
+	GLOBAL $cfg_glpi,$lang,$HTMLRel;
 
 	$con = new Contract;
 	$con_spotted=false;
@@ -368,7 +368,7 @@ function restoreContract($input) {
 *
 **/
 function showDeviceContract($instID) {
-	GLOBAL $db,$cfg_layout,$cfg_install, $lang;
+	GLOBAL $db,$cfg_glpi, $lang;
 
     
 	$query = "SELECT * FROM glpi_contract_device WHERE glpi_contract_device.FK_contract = '$instID' AND glpi_contract_device.is_template='0' order by device_type, FK_device";
@@ -377,7 +377,7 @@ function showDeviceContract($instID) {
 	$number = $db->numrows($result);
 	$i = 0;
 	
-	echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
+	echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/contracts/contracts-info-form.php\">";
 	
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='3'>".$lang["financial"][49].":</th></tr>";
@@ -460,7 +460,7 @@ $result = $db->query($query);
 *
 **/
 function showEnterpriseContract($instID) {
-	GLOBAL $db,$cfg_layout,$cfg_install, $lang,$HTMLRel,$cfg_features;
+	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel,$cfg_glpi;
 
     
 	$query = "SELECT glpi_contract_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type";
@@ -469,7 +469,7 @@ function showEnterpriseContract($instID) {
 	$number = $db->numrows($result);
 	$i = 0;
 	
-    echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
+    echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/contracts/contracts-info-form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='5'>".$lang["financial"][65].":</th></tr>";
 	echo "<tr><th>".$lang["financial"][26]."</th>";
@@ -489,8 +489,8 @@ function showEnterpriseContract($instID) {
 	$entID=$db->result($result, $i, "entID");
 	$entname=getDropdownName("glpi_enterprises",$entID);
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'><a href='".$cfg_install["root"]."/enterprises/enterprises-info-form.php?ID=$entID'>".$entname;
-	if ($cfg_layout["view_ID"]||empty($entname)) echo " ($entID)";
+	echo "<td align='center'><a href='".$cfg_glpi["root_doc"]."/enterprises/enterprises-info-form.php?ID=$entID'>".$entname;
+	if ($cfg_glpi["view_ID"]||empty($entname)) echo " ($entID)";
 	echo "</a></td>";
 	echo "<td align='center'>".getDropdownName("glpi_dropdown_enttype",$db->result($result, $i, "type"))."</td>";
 	echo "<td align='center'>".$db->result($result, $i, "phone")."</td>";
@@ -729,7 +729,7 @@ function dropdownContracts($name){
 **/
 function showContractAssociated($device_type,$ID,$withtemplate=''){
 
-	GLOBAL $db,$cfg_layout,$cfg_install, $lang,$HTMLRel;
+	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel;
 
     
 	$query = "SELECT * FROM glpi_contract_device WHERE glpi_contract_device.FK_device = '$ID' AND glpi_contract_device.device_type = '$device_type' ";
@@ -738,7 +738,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	$number = $db->numrows($result);
 	$i = 0;
 	
-    if ($withtemplate!=2) echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
+    if ($withtemplate!=2) echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/contracts/contracts-info-form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='7'>".$lang["financial"][66].":</th></tr>";
 	echo "<tr><th>".$lang["common"][16]."</th>";
@@ -757,7 +757,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		$con->getFromDB($cID);
 	echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
 	echo "<td align='center'><a href='".$HTMLRel."contracts/contracts-info-form.php?ID=$cID'><b>".$con->fields["name"];
-	if ($cfg_layout["view_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
+	if ($cfg_glpi["view_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
 	echo "</b></a></td>";
 	echo "<td align='center'>".$con->fields["num"]."</td>";
 	echo "<td align='center'>".getDropdownName("glpi_dropdown_contract_type",$con->fields["contract_type"])."</td>";
@@ -804,7 +804,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 **/
 function showContractAssociatedEnterprise($ID){
 
-	GLOBAL $db,$cfg_layout,$cfg_install, $lang,$HTMLRel;
+	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel;
 
     
 	$query = "SELECT * FROM glpi_contract_enterprise WHERE glpi_contract_enterprise.FK_enterprise = '$ID'";
@@ -813,7 +813,7 @@ function showContractAssociatedEnterprise($ID){
 	$number = $db->numrows($result);
 	$i = 0;
 	
-    echo "<form method='post' action=\"".$cfg_install["root"]."/contracts/contracts-info-form.php\">";
+    echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/contracts/contracts-info-form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='7'>".$lang["financial"][66].":</th></tr>";
 	echo "<tr><th>".$lang["common"][16]."</th>";
@@ -832,7 +832,7 @@ function showContractAssociatedEnterprise($ID){
 		$con->getFromDB($cID);
 	echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
 	echo "<td align='center'><a href='".$HTMLRel."contracts/contracts-info-form.php?ID=$cID'><b>".$con->fields["name"];
-	if ($cfg_layout["view_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
+	if ($cfg_glpi["view_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
 	echo "</b></a></td>";
 	echo "<td align='center'>".$con->fields["num"]."</td>";
 	echo "<td align='center'>".getDropdownName("glpi_dropdown_contract_type",$con->fields["contract_type"])."</td>";

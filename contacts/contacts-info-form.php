@@ -55,21 +55,21 @@ else if (isset($_POST["delete"]))
 	checkAuthentication("admin");
 	deleteContact($_POST);
 	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
-	glpi_header($cfg_install["root"]."/contacts/");
+	glpi_header($cfg_glpi["root_doc"]."/contacts/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreContact($_POST);
 	logEvent($tab["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_install["root"]."/contacts/");
+	glpi_header($cfg_glpi["root_doc"]."/contacts/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
 	deleteContact($_POST,1);
 	logEvent($tab["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_install["root"]."/contacts/");
+	glpi_header($cfg_glpi["root_doc"]."/contacts/");
 }
 else if (isset($_POST["update"]))
 {
@@ -82,7 +82,7 @@ else if (isset($_POST["addenterprise"])){
 	checkAuthentication("admin");
 	addContactEnterprise($_POST["entID"],$_POST["conID"]);
 	logEvent($tab["conID"], "contacts", 4, "financial", $_SESSION["glpiname"]."  ".$lang["log"][34]);
-	glpi_header($cfg_install["root"]."/contacts/contacts-info-form.php?ID=".$_POST["conID"]);
+	glpi_header($cfg_glpi["root_doc"]."/contacts/contacts-info-form.php?ID=".$_POST["conID"]);
 }
 else if (isset($_GET["deleteenterprise"])){
 	checkAuthentication("admin");

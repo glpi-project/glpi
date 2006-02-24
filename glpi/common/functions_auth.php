@@ -162,7 +162,7 @@ function isSuperAdmin($authtype) {
 **/      
 function checkAuthentication($authtype) {
 	// Universal method to have a magic-quote-gpc system
-	global $_POST, $_GET,$_COOKIE,$tab,$cfg_features,$cfg_install;
+	global $_POST, $_GET,$_COOKIE,$tab,$cfg_glpi;
 	// Clean array and addslashes
 	
 	if (get_magic_quotes_gpc()) {
@@ -198,19 +198,19 @@ function checkAuthentication($authtype) {
 	
 	if(!session_id()){@session_start();}
 
-	if (isset($_SESSION["root"])&&$cfg_install["root"]!=$_SESSION["root"]) {
+	if (isset($_SESSION["root"])&&$cfg_glpi["root_doc"]!=$_SESSION["root"]) {
 		glpi_header($_SESSION["root"]);
 	}
 	
 	// Override cfg_features by session value
-	if (isset($_SESSION['list_limit'])) $cfg_features["list_limit"]=$_SESSION['list_limit'];
+	if (isset($_SESSION['list_limit'])) $cfg_glpi["list_limit"]=$_SESSION['list_limit'];
 
-	GLOBAL $cfg_install, $lang, $HTMLRel;
+	GLOBAL $cfg_glpi, $lang, $HTMLRel;
 
 	if(empty($_SESSION["authorisation"])&& $authtype != "anonymous")
 	{
 		nullHeader("Login",$_SERVER["PHP_SELF"]);
-		echo "<div align='center'><b><a href=\"".$cfg_install["root"]."/logout.php\">Relogin</a></b></div>";
+		echo "<div align='center'><b><a href=\"".$cfg_glpi["root_doc"]."/logout.php\">Relogin</a></b></div>";
 		nullFooter();
 		die();	
 	}
@@ -226,7 +226,7 @@ function checkAuthentication($authtype) {
 		header("Vary: User-Agent");
 		nullHeader($lang["login"][3], $_SERVER["PHP_SELF"]);
 		echo "<div align='center'><b>".$lang["login"][0]."</b><br><br>";
-		echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">".$lang["login"][1]."</a></b></div>";
+		echo "<b><a href=\"".$cfg_glpi["root_doc"]."/logout.php\">".$lang["login"][1]."</a></b></div>";
 		nullFooter();
 		exit();
 	} else {
@@ -278,9 +278,9 @@ function checkAuthentication($authtype) {
 				}
 			break;
 			case "anonymous";
-    				if ($cfg_features['public_faq'] == 0&&!isset($_SESSION["glpiname"])){
+    				if ($cfg_glpi["public_faq"] == 0&&!isset($_SESSION["glpiname"])){
       					nullHeader("Login",$_SERVER["PHP_SELF"]);
-      					echo "<div align='center'><b><a href=\"".$cfg_install["root"]."/logout.php\">No anonymous authorisation</a></b></div>";
+      					echo "<div align='center'><b><a href=\"".$cfg_glpi["root_doc"]."/logout.php\">No anonymous authorisation</a></b></div>";
       					nullFooter();
       					exit();
     				}
@@ -303,18 +303,18 @@ function checkAuthentication($authtype) {
 */
 function loadLanguage() {
 
-	GLOBAL $lang,$cfg_install,$cfg_debug;
+	GLOBAL $lang,$cfg_glpi;
 
 	if(empty($_SESSION["glpilanguage"])) {
-		$file= "/glpi/dicts/".$cfg_install["languages"][$cfg_install["default_language"]][1];
+		$file= "/glpi/dicts/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1];
 	} else {
-		$file = "/glpi/dicts/".$cfg_install["languages"][$_SESSION["glpilanguage"]][1];
+		$file = "/glpi/dicts/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1];
 	}
 		include ("_relpos.php");
 		include ($phproot . $file);
 		
 	// Debug display lang element with item
-	if ($cfg_debug["active"]&&$cfg_debug["lang"]){
+	if ($cfg_glpi["debug"]&&$cfg_glpi["debug_lang"]){
 		foreach ($lang as $module => $tab)
 		foreach ($tab as $num => $val){
 			$lang[$module][$num].="<span style='font-size:12px; color:red;'>$module/$num</span>";

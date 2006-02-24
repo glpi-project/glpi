@@ -59,7 +59,7 @@ commonHeader($lang["title"][0],$_SERVER["PHP_SELF"]);
 // Redirect management
 if (isset($_GET['redirect'])){
 	list($type,$ID)=split("_",$_GET["redirect"]);
-	glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=$ID");
+	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-followups.php?ID=$ID");
 }
 
 
@@ -108,7 +108,7 @@ echo "</td></tr>";
 
 echo "<tr>";
 echo "<td  align='center' valign='top' width='450px'>";
-	if ($cfg_features["num_of_events"]>0){
+	if ($cfg_glpi["num_of_events"]>0){
 	
 	 //Show last add events
 	showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
@@ -122,7 +122,7 @@ echo "</table>";
 echo "</div>";
 
 if(empty($_GET["start"])) $_GET["start"] = 0;
-if ($cfg_features["jobs_at_login"]){
+if ($cfg_glpi["jobs_at_login"]){
 echo "<br>";
 
 echo "<div align='center'><b>";

@@ -62,9 +62,9 @@ $identificat = new Identification();
 
 $auth_succeded=false;
 
-if (!isset($_POST["noCAS"])&&!empty($cfg_login['cas']['host'])) {
+if (!isset($_POST["noCAS"])&&!empty($cfg_glpi["cas_host"])) {
 	include ($phproot . "/glpi/CAS/CAS.php");
-	phpCAS::client(CAS_VERSION_2_0,$cfg_login['cas']['host'],intval($cfg_login['cas']['port']),$cfg_login['cas']['uri']);
+	phpCAS::client(CAS_VERSION_2_0,$cfg_glpi["cas_host"],intval($cfg_glpi["cas_port"]),$cfg_glpi["cas_uri"]);
 
 	// force CAS authentication
 	phpCAS::forceAuthentication();
@@ -100,13 +100,13 @@ $identificat->err=$lang["login"][8];
 	}
 
 	// Second try IMAP/POP
-	if (!$auth_succeded&&!empty($cfg_login['imap']['auth_server'])) {
-		$auth_succeded = $identificat->connection_imap($cfg_login['imap']['auth_server'],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']));
+	if (!$auth_succeded&&!empty($cfg_glpi["imap_auth_server"])) {
+		$auth_succeded = $identificat->connection_imap($cfg_glpi["imap_auth_server"],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']));
 		if ($auth_succeded) {
 			$identificat->extauth=1;
 			$user_present = $identificat->user->getFromDB($_POST['login_name']);
 
-			if ($identificat->user->getFromIMAP($cfg_login['imap']['host'],utf8_decode($_POST['login_name']))) {
+			if ($identificat->user->getFromIMAP($cfg_glpi["imap_host"],utf8_decode($_POST['login_name']))) {
 				$update_list = array('email');
 			}
 		}
@@ -115,18 +115,18 @@ $identificat->err=$lang["login"][8];
 	// Third try LDAP in depth search
 	// we check all the auth sources in turn...
 	// First, we get the dn and then, we try to log in
-	if (!$auth_succeded&&!empty($cfg_login['ldap']['host'])) {
+	if (!$auth_succeded&&!empty($cfg_glpi["ldap_host"])) {
 	   	$found_dn=false;
    		$auth_succeded=0;
-   		$found_dn=$identificat->ldap_get_dn($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],utf8_decode($_POST['login_name']),$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass'],$cfg_login['ldap']['port']);
+   		$found_dn=$identificat->ldap_get_dn($cfg_glpi["ldap_host"],$cfg_glpi["ldap_basedn"],utf8_decode($_POST['login_name']),$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi["ldap_port"]);
 	   	if ($found_dn!=false&&!empty($_POST['login_password'])){ 
-		    $auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$found_dn,utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$cfg_login['ldap']['condition'],$cfg_login['ldap']['port']);
+		    $auth_succeded = $identificat->connection_ldap($cfg_glpi["ldap_host"],$found_dn,utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$cfg_glpi["ldap_condition"],$cfg_glpi["ldap_port"]);
 			if ($auth_succeded) {
 				$identificat->extauth=1;
 				$user_present = $identificat->user->getFromDB($_POST['login_name']);
 				$update_list = array();
-				if ($identificat->user->getFromLDAP($cfg_login['ldap']['host'],$cfg_login['ldap']['port'],$found_dn,$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass'],$cfg_login['ldap']['fields'],utf8_decode($_POST['login_name']))) {
-					$update_list = array_keys($cfg_login['ldap']['fields']);
+				if ($identificat->user->getFromLDAP($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_login["ldap"]["fields"],utf8_decode($_POST['login_name']))) {
+					$update_list = array_keys($cfg_login["ldap"]["fields"]);
 				}
 			}
 	   	}
@@ -134,14 +134,14 @@ $identificat->err=$lang["login"][8];
 
 	// Fourth try for flat LDAP 
 	// LDAP : Try now with the first base_dn
-	if (!$auth_succeded&&!empty($cfg_login['ldap']['host'])) {
-		$auth_succeded = $identificat->connection_ldap($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$cfg_login['ldap']['condition'],$cfg_login['ldap']['port']);
+	if (!$auth_succeded&&!empty($cfg_glpi["ldap_host"])) {
+		$auth_succeded = $identificat->connection_ldap($cfg_glpi["ldap_host"],$cfg_glpi["ldap_basedn"],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$cfg_glpi["ldap_condition"],$cfg_glpi["ldap_port"]);
 		if ($auth_succeded) {
 			$identificat->extauth=1;
 			$user_present = $identificat->user->getFromDB($_POST['login_name']);
 			$update_list = array();
-			if ($identificat->user->getFromLDAP($cfg_login['ldap']['host'],$cfg_login['ldap']['port'],$cfg_login['ldap']['basedn'],$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass'],$cfg_login['ldap']['fields'],utf8_decode($_POST['login_name']))) {
-				$update_list = array_keys($cfg_login['ldap']['fields']);
+			if ($identificat->user->getFromLDAP($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$cfg_glpi["ldap_basedn"],$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_login["ldap"]["fields"],utf8_decode($_POST['login_name']))) {
+				$update_list = array_keys($cfg_login["ldap"]["fields"]);
 			}
 		}
 	}
@@ -149,20 +149,20 @@ $identificat->err=$lang["login"][8];
 	// Fifth try Active directory LDAP in depth search
 	// we check all the auth sources in turn...
 	// First, we get the dn and then, we try to log in
-	if (!$auth_succeded&&!empty($cfg_login['ldap']['host'])) {
+	if (!$auth_succeded&&!empty($cfg_glpi["ldap_host"])) {
 	   	//echo "AD";
    		$found_dn=false;
 	   	$auth_succeded=0;
-	   	$found_dn=$identificat->ldap_get_dn_active_directory($cfg_login['ldap']['host'],$cfg_login['ldap']['basedn'],utf8_decode($_POST['login_name']),$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass'],$cfg_login['ldap']['port']);
+	   	$found_dn=$identificat->ldap_get_dn_active_directory($cfg_glpi["ldap_host"],$cfg_glpi["ldap_basedn"],utf8_decode($_POST['login_name']),$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi["ldap_port"]);
    		//echo $found_dn."---";
 	   	if ($found_dn!=false&&!empty($_POST['login_password'])){ 
-		    $auth_succeded = $identificat->connection_ldap_active_directory($cfg_login['ldap']['host'],$found_dn,utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$cfg_login['ldap']['condition'],$cfg_login['ldap']['port']);
+		    $auth_succeded = $identificat->connection_ldap_active_directory($cfg_glpi["ldap_host"],$found_dn,utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$cfg_glpi["ldap_condition"],$cfg_glpi["ldap_port"]);
 			if ($auth_succeded) {
 				$identificat->extauth=1;
 				$user_present = $identificat->user->getFromDB($_POST['login_name']);
 				$update_list = array();
-				if ($identificat->user->getFromLDAP_active_directory($cfg_login['ldap']['host'],$cfg_login['ldap']['port'],$found_dn,$cfg_login['ldap']['rootdn'],$cfg_login['ldap']['pass'],$cfg_login['ldap']['fields'],utf8_decode($_POST['login_name']),$cfg_login['ldap']['condition'])) {
-				$update_list = array_keys($cfg_login['ldap']['fields']);
+				if ($identificat->user->getFromLDAP_active_directory($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_login["ldap"]["fields"],utf8_decode($_POST['login_name']),$cfg_glpi["ldap_condition"])) {
+				$update_list = array_keys($cfg_login["ldap"]["fields"]);
 				}
 			}
    		}
@@ -176,7 +176,7 @@ $identificat->err=$lang["login"][8];
 
 
 if ($auth_succeded)
-if (!$user_present&&$cfg_features["auto_add_users"]) {
+if (!$user_present&&$cfg_glpi["auto_add_users"]) {
 	$identificat->user->fields["ID"]=$identificat->user->addToDB($identificat->extauth);
 } else if (!$user_present){ // Auto add not enable so auth failed
 	$identificat->err.=$lang["login"][11];
@@ -199,7 +199,7 @@ if (!$user_present&&$cfg_features["auto_add_users"]) {
 if ( ! $auth_succeded ) {
 	nullHeader("Login",$_SERVER["PHP_SELF"]);
 	echo "<div align='center'><b>".$identificat->getErr().".</b><br><br>";
-	echo "<b><a href=\"".$cfg_install["root"]."/logout.php\">".$lang["login"][1]."</a></b></div>";
+	echo "<b><a href=\"".$cfg_glpi["root_doc"]."/logout.php\">".$lang["login"][1]."</a></b></div>";
 	nullFooter();
 	logevent(-1, "system", 1, "login", $lang["log"][41]." : ".$_POST['login_name']);
 	exit;
@@ -218,8 +218,8 @@ $ip = (getenv("HTTP_X_FORWARDED_FOR")
 logEvent("-1", "system", 3, "login", $_POST['login_name']." ".$lang["log"][40]." : ".$ip);
 
 // Expire Event Log
-if ($cfg_features["expire_events"]>0){
-	$secs =  $cfg_features["expire_events"]*86400;
+if ($cfg_glpi["expire_events"]>0){
+	$secs =  $cfg_glpi["expire_events"]*86400;
 	$query_exp = "DELETE FROM glpi_event_log WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
 	$result_exp = $db->query($query_exp);
 } 

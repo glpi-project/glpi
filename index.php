@@ -37,7 +37,7 @@
 
 include ("_relpos.php");
 include ($phproot . "/glpi/config/based_config.php");
-if(!file_exists($cfg_install['config_dir'] . "/config_db.php")) {
+if(!file_exists($cfg_glpi["config_dir"] . "/config_db.php")) {
 	include($phproot ."/install.php");
 	die();
 }
@@ -47,7 +47,7 @@ else
 	// load default dictionnary 
 	loadLanguage();
 	// Using CAS server
-	if (!empty($cfg_login['cas']['host'])&&!isset($_GET["noCAS"])) {
+	if (!empty($cfg_glpi["cas_host"])&&!isset($_GET["noCAS"])) {
 		glpi_header("login.php");
 		}
 
@@ -80,11 +80,11 @@ else
 	//echo "<a href=\"http://GLPI.indepnet.org/\" class='sous_logo'><img src=\"".$HTMLRel."pics/logo-glpi-login.png\"  alt=\"Logo GLPI Powered By Indepnet\" title=\"Powered By Indepnet\" /><br />";
 	//echo "</a>";
 
-	echo nl2br(unclean_cross_side_scripting_deep($cfg_layout['text_login']));
+	echo nl2br(unclean_cross_side_scripting_deep($cfg_glpi['text_login']));
 		
 	echo "<ul>";
 	// Affichage autorisé FAQ
-	if ($cfg_features['public_faq']){
+	if ($cfg_glpi["public_faq"]){
 		echo "<li><a href='faq.php'>".$lang["knowbase"][24]."</a></li>";}
 	echo "</ul>";
 	echo "</div>";
@@ -109,23 +109,23 @@ else
 		 case "post-only" :
 		 	switch ($type){
 		 		case "tracking":
-				 	glpi_header($cfg_install["root"]."/helpdesk.php?show=user&ID=$ID");
+				 	glpi_header($cfg_glpi["root_doc"]."/helpdesk.php?show=user&ID=$ID");
 					 break;
 				 default:
-					 glpi_header($cfg_install["root"]."/helpdesk.php");
+					 glpi_header($cfg_glpi["root_doc"]."/helpdesk.php");
 					 break;
 			 	}
 		 	break;
 		 default :
 		 	switch ($type){
 		 		case "tracking":
-				 	glpi_header($cfg_install["root"]."/tracking/tracking-followups.php?ID=$ID");
+				 	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-followups.php?ID=$ID");
 					 break;
 		 		case "computers":
-				 	glpi_header($cfg_install["root"]."/computers/computers-info-form.php?ID=$ID");
+				 	glpi_header($cfg_glpi["root_doc"]."/computers/computers-info-form.php?ID=$ID");
 					 break;
 				 default:
-					 glpi_header($cfg_install["root"]."/central.php");
+					 glpi_header($cfg_glpi["root_doc"]."/central.php");
 					 break;
 			 	}
 		 	break;
@@ -169,7 +169,7 @@ else
 
 	echo "<div id='footer-login'>";
 	echo "<a href=\"http://GLPI.indepnet.org/\" title=\"Powered By Indepnet\"  >";
-	echo "GLPI version ".$cfg_install["version"]." Copyright (C) 2003-2005 INDEPNET Development Team.";
+	echo "GLPI version ".$cfg_glpi["version"]." Copyright (C) 2003-2005 INDEPNET Development Team.";
 	echo "</a>";
 	echo "</div>";
 	

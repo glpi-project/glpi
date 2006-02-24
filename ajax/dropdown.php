@@ -48,12 +48,12 @@
 
 		$where="WHERE '1'='1' ";
 			
-		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
+		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
 			$where.=" AND designation LIKE '%".$_POST['searchText']."%' ";
 
-		$NBMAX=$cfg_layout["dropdown_max"];
+		$NBMAX=$cfg_glpi["dropdown_max"];
 		$LIMIT="LIMIT 0,$NBMAX";
-		if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
+		if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
 						
 		$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY designation $LIMIT";
 
@@ -61,7 +61,7 @@
 
 		echo "<select id=\"".$_POST['myname']."\" name=\"".$_POST['myname']."\" size='1'>";
 		
-		if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
+		if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 			echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 	
 		echo "<option value=\"0\">-----</option>";
@@ -73,7 +73,7 @@
 				$ID = $data['ID'];
 				if (empty($output)) $output="($ID)";
 
-				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
+				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_glpi["dropdown_limit"])."</option>";
 			}
 		}
 		echo "</select>";
@@ -83,12 +83,12 @@
 	
 	} else if($_POST['table'] == "glpi_dropdown_netpoint") {
 		
-		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
+		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
 			$where=" WHERE (t1.name LIKE '%".$_POST['searchText']."%' OR t2.completename LIKE '%".$_POST['searchText']."%')";
 			
-		$NBMAX=$cfg_layout["dropdown_max"];
+		$NBMAX=$cfg_glpi["dropdown_max"];
 		$LIMIT="LIMIT 0,$NBMAX";
-		if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
+		if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
 	
 		$query = "select t1.ID as ID, t1.name as netpname, t2.name as locname from glpi_dropdown_netpoint as t1";
 		$query .= " left join glpi_dropdown_locations as t2 on t1.location = t2.ID";
@@ -97,7 +97,7 @@
 		$result = $db->query($query);
 		echo "<select name=\"".$_POST['myname']."\">";
 		
-		if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
+		if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 		echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 		
 		if ($db->numrows($result)) {
@@ -115,16 +115,16 @@
 		if (in_array($_POST['table'],$template_tables))
 			$where.=" AND is_template='0' ";		
 			
-		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
+		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
 		if (in_array($_POST['table'],$dropdowntree_tables))
 		$where.=" AND completename LIKE '%".$_POST['searchText']."%' ";
 		else if ($_POST['table']=="glpi_users")
 			$where.=" AND (name LIKE '%".$_POST['searchText']."%'  OR realname LIKE '%".$_POST['searchText']."%')";
 		else $where.=" AND name LIKE '%".$_POST['searchText']."%' ";
 
-		$NBMAX=$cfg_layout["dropdown_max"];
+		$NBMAX=$cfg_glpi["dropdown_max"];
 		$LIMIT="LIMIT 0,$NBMAX";
-		if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
+		if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
 						
 		if (in_array($_POST['table'],$dropdowntree_tables))
 			$query = "SELECT ID, completename as name FROM ".$_POST['table']." $where ORDER BY completename $LIMIT";
@@ -133,7 +133,7 @@
 
 		echo "<select id=\"".$_POST['myname']."\" name=\"".$_POST['myname']."\" size='1'>";
 		
-		if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
+		if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 			echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 	
 		echo "<option value=\"0\">-----</option>";
@@ -144,7 +144,7 @@
 				$ID = $data['ID'];
 				if (empty($output)) $output="($ID)";
 
-				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
+				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_glpi["dropdown_limit"])."</option>";
 			}
 		}
 		echo "</select>";

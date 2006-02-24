@@ -51,7 +51,7 @@ function titleReminder(){
 function showReminderForm ($target,$ID) {
 	// Show Reminder or blank form
 	
-	GLOBAL $cfg_layout,$cfg_install,$lang;
+	GLOBAL $cfg_glpi,$lang;
 	
 	$issuperadmin=isSuperAdmin($_SESSION['glpitype']);
 	$author=$_SESSION['glpiID'];
@@ -130,7 +130,7 @@ function showReminderForm ($target,$ID) {
 		echo "<script type='text/javascript' >\n";
 		echo "function showPlan(){\n";
 		echo "Element.hide('plan');";
-		echo "var a=new Ajax.Updater('viewplan','".$cfg_install["root"]."/ajax/planning.php' , {method: 'get',parameters: 'form=remind".(($ID&&$remind->fields["rv"])?"&begin_date=".$remind->fields["begin"]."&end_date=".$remind->fields["end"]."":"")."'});";
+		echo "var a=new Ajax.Updater('viewplan','".$cfg_glpi["root_doc"]."/ajax/planning.php' , {method: 'get',parameters: 'form=remind".(($ID&&$remind->fields["rv"])?"&begin_date=".$remind->fields["begin"]."&end_date=".$remind->fields["end"]."":"")."'});";
 		echo "}";
 		echo "</script>\n";
 		
@@ -287,7 +287,7 @@ function deleteReminder($input) {
 function showCentralReminder($type="private"){
 	// show reminder that are not planned 
 
-	GLOBAL $db,$cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
+	GLOBAL $db,$cfg_glpi, $lang, $HTMLRel;
 	
 	$author=$_SESSION['glpiID'];	
 	
@@ -311,7 +311,7 @@ function showCentralReminder($type="private"){
 		echo "</th></tr>";
 	if($db->numrows($result)>0){
 		while ($data =$db->fetch_array($result)){ 
-			echo "<tr class='tab_bg_2'><td><a style='margin-left:8px' href=\"".$cfg_install["root"]."/reminder/reminder-info-form.php?ID=".$data["ID"]."\">".$data["title"]."</a></td></tr>";
+			echo "<tr class='tab_bg_2'><td><a style='margin-left:8px' href=\"".$cfg_glpi["root_doc"]."/reminder/reminder-info-form.php?ID=".$data["ID"]."\">".$data["title"]."</a></td></tr>";
 		
 		}
 	}
@@ -324,7 +324,7 @@ function showCentralReminder($type="private"){
 function showListReminder($type="private"){
 	// show reminder that are not planned 
 
-	GLOBAL $db,$cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
+	GLOBAL $db,$cfg_glpi, $lang, $HTMLRel;
 	
 	$author=$_SESSION['glpiID'];	
 	
@@ -358,8 +358,8 @@ function showListReminder($type="private"){
 		$tabremind[$sort."$$".$i]["id_reminder"]=$remind->fields["ID"];
 		$tabremind[$sort."$$".$i]["begin"]=($data["rv"]==1?"".$data["begin"]."":"".$data["date"]."");
 		$tabremind[$sort."$$".$i]["end"]=($data["rv"]==1?"".$data["end"]."":"");
-		$tabremind[$sort."$$".$i]["title"]=resume_text($remind->fields["title"],$cfg_features["cut"]);
-		$tabremind[$sort."$$".$i]["text"]=resume_text($remind->fields["text"],$cfg_features["cut"]);
+		$tabremind[$sort."$$".$i]["title"]=resume_text($remind->fields["title"],$cfg_glpi["cut"]);
+		$tabremind[$sort."$$".$i]["text"]=resume_text($remind->fields["text"],$cfg_glpi["cut"]);
 		$i++;
 	}
 	
@@ -374,14 +374,14 @@ function showListReminder($type="private"){
 		if (count($tabremind)>0){
 			foreach ($tabremind as $key => $val){
 
-			echo "<tr class='tab_bg_2'><td width='70%'><a href=\"".$cfg_install["root"]."/reminder/reminder-info-form.php?ID=".$val["id_reminder"]."\">".$val["title"]."</a></td>";
+			echo "<tr class='tab_bg_2'><td width='70%'><a href=\"".$cfg_glpi["root_doc"]."/reminder/reminder-info-form.php?ID=".$val["id_reminder"]."\">".$val["title"]."</a></td>";
 			
 				if($val["end"]!=""){	
 				echo "<td>";
 
 				$tab=split(" ",$val["begin"]);
 				$date_url=$tab[0];
-				echo "<a href=\"".$cfg_install["root"]."/planning/index.php?date=".$date_url."&amp;type=day\"><img src=\"".$HTMLRel."pics/rdv.png\" alt='".$lang["planning"][3]."' title='".$lang["planning"][3]."'></a>";
+				echo "<a href=\"".$cfg_glpi["root_doc"]."/planning/index.php?date=".$date_url."&amp;type=day\"><img src=\"".$HTMLRel."pics/rdv.png\" alt='".$lang["planning"][3]."' title='".$lang["planning"][3]."'></a>";
 				echo "</td>";
 				echo "<td><strong>".convDateTime($val["begin"]);
 				echo "<br>".convDateTime($val["end"])."</strong>";

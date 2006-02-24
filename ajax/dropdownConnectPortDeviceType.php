@@ -54,7 +54,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	echo "<script type='text/javascript' >\n";
 	echo " new Form.Element.Observer('search_$rand', 1, \n";
 	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('results_$rand','".$cfg_install["root"]."/ajax/dropdownConnectPortDevice.php',{asynchronous:true, evalScripts:true, \n";
+	echo "      	new Ajax.Updater('results_$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownConnectPortDevice.php',{asynchronous:true, evalScripts:true, \n";
 	echo "           onComplete:function(request)\n";
 	echo "            {Element.hide('search_spinner_$rand');}, \n";
 	echo "           onLoading:function(request)\n";

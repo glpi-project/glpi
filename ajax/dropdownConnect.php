@@ -51,13 +51,13 @@
 		if (in_array($table,$template_tables))
 			$where.=" AND $table.is_template='0' ";		
 			
-		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
+		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
 			$where.=" AND $table.name LIKE '%".$_POST['searchText']."%' ";
 
-		$NBMAX=$cfg_layout["dropdown_max"];
+		$NBMAX=$cfg_glpi["dropdown_max"];
 		$LIMIT="LIMIT 0,$NBMAX";
 
-		if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
+		if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
 						
 	
 	if ($_POST["idtable"]==COMPUTER_TYPE)
@@ -74,7 +74,7 @@
 		$result = $db->query($query);
 		echo "<select name=\"".$_POST['myname']."\" size='1'>";
 		
-		if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
+		if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 			echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 	
 		echo "<option value=\"0\">-----</option>";
@@ -84,7 +84,7 @@
 				$ID = $data['ID'];
 				if (empty($output)) $output="($ID)";
 
-				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
+				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_glpi["dropdown_limit"])."</option>";
 			}
 		}
 		echo "</select>";

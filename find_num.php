@@ -38,7 +38,7 @@
 	include ($phproot . "/glpi/includes_users.php");
 
 
-if(isset($_GET["name"]) && ($_GET["name"] == "Helpdesk") && ($cfg_features["permit_helpdesk"] == "1"))
+if(isset($_GET["name"]) && ($_GET["name"] == "Helpdesk") && ($cfg_glpi["permit_helpdesk"] == "1"))
 {
 	$id = new Identification();
 	$id->setCookies();

@@ -95,7 +95,7 @@ function showContactOnglets($target,$withtemplate,$actif){
 **/
 function showContactForm ($target,$ID) {
 
-	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel;
+	GLOBAL $cfg_glpi, $lang,$HTMLRel;
 
 	$con = new Contact;
 	$con_spotted=false;
@@ -312,7 +312,7 @@ function restoreContact($input) {
 *
 **/
 function showEnterpriseContact($instID) {
-	GLOBAL $db,$cfg_layout,$cfg_install, $lang,$HTMLRel;
+	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel;
 
     
 	$query = "SELECT glpi_contact_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.fax as fax,glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type";
@@ -321,7 +321,7 @@ function showEnterpriseContact($instID) {
 	$number = $db->numrows($result);
 	$i = 0;
 	
-    echo "<form method='post' action=\"".$cfg_install["root"]."/contacts/contacts-info-form.php\">";
+    echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/contacts/contacts-info-form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='6'>".$lang["financial"][65].":</th></tr>";
 	echo "<tr><th>".$lang["financial"][26]."</th>";

@@ -92,7 +92,7 @@ function showMonitorOnglets($target,$withtemplate,$actif){
 
 function showMonitorsForm ($target,$ID,$withtemplate='') {
 
-	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel;
+	GLOBAL $cfg_glpi, $lang,$HTMLRel;
 
 	$mon = new Monitor;
 	$mon_spotted = false;

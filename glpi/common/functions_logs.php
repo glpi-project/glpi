@@ -226,8 +226,8 @@ function showHistory($device_type,$id_device){
 function logEvent ($item, $itemtype, $level, $service, $event) {
 	// Logs the event if level is above or equal to setting from configuration
 
-	GLOBAL $db,$cfg_features, $lang;
-	if ($level <= $cfg_features["event_loglevel"]) { 
+	GLOBAL $db,$cfg_glpi, $lang;
+	if ($level <= $cfg_glpi["event_loglevel"]) { 
 		 $query = "INSERT INTO glpi_event_log VALUES (NULL, '".addslashes($item)."', '".addslashes($itemtype)."', NOW(), '".addslashes($service)."', '".addslashes($level)."', '".addslashes($event)."')";
 
 		$result = $db->query($query);    
@@ -296,7 +296,7 @@ return array($logItemtype,$logService);
 function showAddEvents($target,$order,$sort,$user="") {
 	// Show events from $result in table form
 
-	GLOBAL $db,$cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
+	GLOBAL $db,$cfg_glpi, $lang, $HTMLRel;
 
 	list($logItemtype,$logService)=logArray();
 
@@ -312,7 +312,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 	$usersearch=$user." ";
 	
 	// Query Database
-	$query = "SELECT * FROM glpi_event_log WHERE message LIKE '".$usersearch.addslashes($lang["log"][20])."%' ORDER BY $sort $order LIMIT 0,".$cfg_features["num_of_events"];
+	$query = "SELECT * FROM glpi_event_log WHERE message LIKE '".$usersearch.addslashes($lang["log"][20])."%' ORDER BY $sort $order LIMIT 0,".$cfg_glpi["num_of_events"];
 
 	// Get results
 	$result = $db->query($query);
@@ -335,7 +335,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 	$i = 0;
 
 	echo "<div align='center'><br><table  class='tab_cadrehov'>";
-	echo "<tr><th colspan='5'><a href=\"".$cfg_install["root"]."/logs.php\">".$lang["central"][2]." ".$cfg_features["num_of_events"]." ".$lang["central"][8]."</a></th></tr>";
+	echo "<tr><th colspan='5'><a href=\"".$cfg_glpi["root_doc"]."/logs.php\">".$lang["central"][2]." ".$cfg_glpi["num_of_events"]." ".$lang["central"][8]."</a></th></tr>";
 	echo "<tr>";
 
 	echo "<th colspan='2'>";
@@ -381,9 +381,9 @@ function showAddEvents($target,$order,$sort,$user="") {
 			echo $item;
 		} else {
 				if ($itemtype=="reservation"){
-				echo "<a href=\"".$cfg_install["root"]."/$itemtype/index.php?show=resa&amp;ID=";
+				echo "<a href=\"".$cfg_glpi["root_doc"]."/$itemtype/index.php?show=resa&amp;ID=";
 				} else {
-				echo "<a href=\"".$cfg_install["root"]."/$itemtype/".$itemtype."-info-form.php?ID=";
+				echo "<a href=\"".$cfg_glpi["root_doc"]."/$itemtype/".$itemtype."-info-form.php?ID=";
 				}
 			echo $item;
 			echo "\">$item</a>";
@@ -411,7 +411,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 function showEvents($target,$order,$sort,$start=0) {
 	// Show events from $result in table form
 
-	GLOBAL $db,$cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
+	GLOBAL $db,$cfg_glpi, $lang, $HTMLRel;
 
 	 list($logItemtype,$logService)=logArray();
 	
@@ -426,7 +426,7 @@ function showEvents($target,$order,$sort,$start=0) {
 	// Query Database
 	$query = "SELECT * FROM glpi_event_log ORDER BY $sort $order";
 
-	$query_limit = "SELECT * FROM glpi_event_log ORDER BY $sort $order LIMIT $start,".$cfg_features["list_limit"];
+	$query_limit = "SELECT * FROM glpi_event_log ORDER BY $sort $order LIMIT $start,".$cfg_glpi["list_limit"];
 	// Get results
 	$result = $db->query($query);
 	
@@ -505,12 +505,12 @@ function showEvents($target,$order,$sort,$start=0) {
 			echo $item;
 		} else {
 			if ($itemtype=="infocom"){
-				echo "<a href='#' onClick=\"window.open('".$cfg_install["root"]."/infocoms/infocoms-show.php?ID=$item','infocoms','location=infocoms,width=750,height=600,scrollbars=no')\">$item</a>";					
+				echo "<a href='#' onClick=\"window.open('".$cfg_glpi["root_doc"]."/infocoms/infocoms-show.php?ID=$item','infocoms','location=infocoms,width=750,height=600,scrollbars=no')\">$item</a>";					
 			} else {
 				if ($itemtype=="reservation"){
-					echo "<a href=\"".$cfg_install["root"]."/$itemtype/index.php?show=resa&amp;ID=";
+					echo "<a href=\"".$cfg_glpi["root_doc"]."/$itemtype/index.php?show=resa&amp;ID=";
 				} else {
-					echo "<a href=\"".$cfg_install["root"]."/$itemtype/".$itemtype."-info-form.php?ID=";
+					echo "<a href=\"".$cfg_glpi["root_doc"]."/$itemtype/".$itemtype."-info-form.php?ID=";
 				}
 				echo $item;
 				echo "\">$item</a>";
