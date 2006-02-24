@@ -962,6 +962,7 @@ $lang["reminder"][10]="Type";
 $lang["reminder"][11]="Calendrier";
 $lang["reminder"][12]="Ajouter au calendrier";
 $lang["reminder"][13]="Pas de note trouvée";
+$lang["reminder"][14]="Par";
 
 $lang["reports"][0]="Sélectionner un rapport à générer";
 $lang["reports"][4]="Liste du materiel sous contrat";

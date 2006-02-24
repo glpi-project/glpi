@@ -50,7 +50,12 @@ else $start=0;
 
 if (isset($_POST["add"]))
 {
-	checkAuthentication("admin");
+	if (isset($_POST["add"])&&isset($_POST["public"])){
+		checkAuthentication("superadmin"); // seuls superadmin peuvent poster des notes publiques
+	}else {
+		checkAuthentication("normal"); //
+	}
+	
 
 	$newID=addReminder($_POST);
 	
@@ -58,23 +63,29 @@ if (isset($_POST["add"]))
 } 
 else if (isset($_POST["delete"]))
 {
-	checkAuthentication("admin");
+	if (isset($_POST["add"])&&isset($_POST["public"])){
+		checkAuthentication("superadmin"); // seuls superadmin peuvent poster des notes publiques
+	}else {
+		checkAuthentication("normal"); //
+	}
 	deleteReminder($_POST);
 	
 	glpi_header($cfg_glpi["root_doc"]."/reminder/");
 }
 else if (isset($_POST["update"]))
 {
-	checkAuthentication("admin");
+	if (isset($_POST["add"])&&isset($_POST["public"])){
+		checkAuthentication("superadmin"); // seuls superadmin peuvent poster des notes publiques
+	}else {
+		checkAuthentication("normal"); //
+	}
 	updateReminder($_POST);
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
 {
-	if (empty($tab["ID"]))
-	checkAuthentication("admin");
-	else checkAuthentication("normal");
+	 checkAuthentication("normal");
 
 	
 	commonHeader($lang["title"][40],$_SERVER["PHP_SELF"]);
