@@ -45,20 +45,20 @@
 	if (isset($_POST['value']))
 		$where.=" AND  (ID <> '".$_POST['value']."') ";
 
-	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
+	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
 		$where.=" AND (name LIKE '%".$_POST['searchText']."%' OR realname LIKE '%".$_POST['searchText']."%')";
 
 
-	$NBMAX=$cfg_layout["dropdown_max"];
+	$NBMAX=$cfg_glpi["dropdown_max"];
 	$LIMIT="LIMIT 0,$NBMAX";
-	if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
+	if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
 	
 			
 	$query = "SELECT * FROM glpi_users WHERE (".searchUserbyType("normal").") $where ORDER BY realname,name $LIMIT";
 	$result = $db->query($query);
 	echo "<select name=\"".$_POST['myname']."\">";
 
-	if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
+	if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 	echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 	
 		
@@ -76,7 +76,7 @@
 		while ($data=$db->fetch_array($result)) {
 			if (!empty($data["realname"])) $display = $data["realname"];
 			else $display = $data["name"];
-			echo "<option value=\"".$data["ID"]."\" title=\"$display\">".substr($display,0,$cfg_layout["dropdown_limit"])."</option>";
+			echo "<option value=\"".$data["ID"]."\" title=\"$display\">".substr($display,0,$cfg_glpi["dropdown_limit"])."</option>";
    		}
 	}
 	echo "</select>";

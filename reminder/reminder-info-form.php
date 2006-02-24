@@ -54,14 +54,14 @@ if (isset($_POST["add"]))
 
 	$newID=addReminder($_POST);
 	
-	glpi_header($cfg_install["root"]."/reminder/");
+	glpi_header($cfg_glpi["root_doc"]."/reminder/");
 } 
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
 	deleteReminder($_POST);
 	
-	glpi_header($cfg_install["root"]."/reminder/");
+	glpi_header($cfg_glpi["root_doc"]."/reminder/");
 }
 else if (isset($_POST["update"]))
 {

@@ -97,7 +97,7 @@ function showNetworkingOnglets($target,$withtemplate,$actif){
 function showNetworkingForm ($target,$ID,$withtemplate='') {
 	// Show device or blank form
 	
-	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
+	GLOBAL $cfg_glpi, $lang,$HTMLRel;
 
 	$netdev = new Netdevice;
 
@@ -447,7 +447,7 @@ function restoreNetdevice($input) {
 
 function showPorts ($device,$device_type,$withtemplate='') {
 	
-	GLOBAL $db,$cfg_layout,$cfg_install, $lang,$HTMLRel,$LINK_ID_TABLE;
+	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel,$LINK_ID_TABLE;
 	
 		
 	$device_real_table_name = $LINK_ID_TABLE[$device_type];
@@ -484,7 +484,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 				$netport->getfromDB(current($devid));
 				echo "<tr class='tab_bg_1'>";
 				echo "<td align='center'><b>";
-				if ($withtemplate!=2) echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ID=".$netport->fields["ID"]."&amp;location=".$location."\">";
+				if ($withtemplate!=2) echo "<a href=\"".$cfg_glpi["root_doc"]."/networking/networking-port.php?ID=".$netport->fields["ID"]."&amp;location=".$location."\">";
 				echo $netport->fields["logical_number"];
 				if ($withtemplate!=2) echo "</a>";
 				echo "</b></td>";
@@ -559,7 +559,7 @@ $db->query($query);
 
 function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $location = '') {
 
-	GLOBAL $cfg_install, $cfg_layout, $lang, $REFERER;
+	GLOBAL $cfg_glpi, $lang, $REFERER;
 
 	$netport = new Netport;
 	if($ID)
@@ -780,7 +780,7 @@ function deleteNetport($input) {
 
 function showPortsAdd($ID,$devtype) {
 	
-	GLOBAL $db,$cfg_layout, $cfg_install, $lang,$LINK_ID_TABLE;
+	GLOBAL $db,$cfg_glpi, $lang,$LINK_ID_TABLE;
 	
 	$device_real_table_name = $LINK_ID_TABLE[$devtype];
 
@@ -790,11 +790,11 @@ function showPortsAdd($ID,$devtype) {
 	echo "<div align='center'><table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr>";
 	echo "<td align='center' class='tab_bg_2'  >";
-	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?on_device=$ID&amp;device_type=$devtype&amp;location=$location\"><b>";
+	echo "<a href=\"".$cfg_glpi["root_doc"]."/networking/networking-port.php?on_device=$ID&amp;device_type=$devtype&amp;location=$location\"><b>";
 	echo $lang["networking"][19];
 	echo "</b></a></td>";
 	echo "<td align='center' class='tab_bg_2' width='50%'>";
-	echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?on_device=$ID&amp;device_type=$devtype&amp;several=yes&amp;location=$location\"><b>";
+	echo "<a href=\"".$cfg_glpi["root_doc"]."/networking/networking-port.php?on_device=$ID&amp;device_type=$devtype&amp;several=yes&amp;location=$location\"><b>";
 	echo $lang["networking"][46];
 	echo "</b></a></td>";
 
@@ -804,7 +804,7 @@ function showPortsAdd($ID,$devtype) {
 
 function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 
-	GLOBAL $cfg_layout, $cfg_install, $lang,$INFOFORM_PAGES;
+	GLOBAL $cfg_glpi, $lang,$INFOFORM_PAGES;
 
 	$contact = new Netport;
 	$netport = new Netport;
@@ -814,22 +814,22 @@ function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 		$netport->getDeviceData($netport->fields["on_device"],$netport->fields["device_type"]);
 		echo "\n\n<table border='0' cellspacing='0' width='100%'><tr ".($netport->deleted=='Y'?"class='tab_bg_2_2'":"").">";
 		echo "<td><b>";
-		echo "<a href=\"".$cfg_install["root"]."/networking/networking-port.php?ID=".$netport->fields["ID"]."\">";
+		echo "<a href=\"".$cfg_glpi["root_doc"]."/networking/networking-port.php?ID=".$netport->fields["ID"]."\">";
 		if (rtrim($netport->fields["name"])!="")
 			echo $netport->fields["name"];
 		else echo $lang["common"][0];
 		echo "</a></b>";
 		echo " ".$lang["networking"][25]." <b>";
 
-		echo "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$netport->fields["device_type"]]."?ID=".$netport->device_ID."\">";
+		echo "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$netport->fields["device_type"]]."?ID=".$netport->device_ID."\">";
 
 		echo $netport->device_name;
-		if ($cfg_layout['view_ID']) echo " (".$netport->device_ID.")";
+		if ($cfg_glpi["view_ID"]) echo " (".$netport->device_ID.")";
 		echo "</a>";
 		echo "</b></td>";
 		echo "<td align='right'><b>";
 		if ($withtemplate!=2)
-		echo "<a href=\"".$cfg_install["root"]."/networking/networking-port-disconnect.php?ID=$ID\">".$lang["buttons"][10]."</a>";
+		echo "<a href=\"".$cfg_glpi["root_doc"]."/networking/networking-port-disconnect.php?ID=$ID\">".$lang["buttons"][10]."</a>";
 		else "&nbsp;";
 		echo "</b></td>";
 		echo "</tr></table>";
@@ -838,7 +838,7 @@ function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 		echo "<table border='0' cellspacing='0' width='100%'><tr>";
 		echo "<td align='left'>";
 		if ($withtemplate!=2&&$withtemplate!=1){
-			echo "<form method='post' action=\"".$cfg_install["root"]."/networking/networking-port-connect.php\">";
+			echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/networking/networking-port-connect.php\">";
 			echo "<input type='hidden' name='connect' value='connect'>";
 			echo "<input type='hidden' name='sport' value='$ID'>";
 			dropdownConnectPort($ID,$type,"dport");
@@ -858,7 +858,7 @@ function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 
 function makeConnector($sport,$dport) {
 
-	GLOBAL $db,$cfg_layout, $cfg_install, $lang;
+	GLOBAL $db,$cfg_glpi, $lang;
 	
 	// Get netpoint for $sport and $dport
 	$ps=new Netport;
@@ -948,7 +948,7 @@ function makeConnector($sport,$dport) {
 
 function removeConnector($ID) {
 
-	GLOBAL $db,$cfg_layout, $cfg_install;
+	GLOBAL $db,$cfg_glpi;
 	
 	// Update to blank networking item
 	$nw=new Netwire;

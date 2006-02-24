@@ -371,9 +371,9 @@ function regenerateTreeCompleteNameUnderID($table,$ID){
 * @return the next ID, -1 if not exist
 */
 function getNextItem($table,$ID){
-global $db,$deleted_tables,$template_tables,$cfg_layout;
+global $db,$deleted_tables,$template_tables,$cfg_glpi;
 
-$nextprev_item=$cfg_layout["nextprev_item"];
+$nextprev_item=$cfg_glpi["nextprev_item"];
 if ($table=="glpi_tracking"||ereg("glpi_device",$table)) $nextprev_item="ID";
 
 $search=$ID;
@@ -408,9 +408,9 @@ else return -1;
 * @return the previous ID, -1 if not exist
 */
 function getPreviousItem($table,$ID){
-global $db,$deleted_tables,$template_tables,$cfg_layout;
+global $db,$deleted_tables,$template_tables,$cfg_glpi;
 
-$nextprev_item=$cfg_layout["nextprev_item"];
+$nextprev_item=$cfg_glpi["nextprev_item"];
 if ($table=="glpi_tracking"||ereg("glpi_device",$table)) $nextprev_item="ID";
 
 $search=$ID;
@@ -446,7 +446,7 @@ else return -1;
 *
 **/
 function getUserName($ID,$link=0){
-	global $db,$cfg_install,$lang;
+	global $db,$cfg_glpi,$lang;
 
 	$query="SELECT * from glpi_users WHERE ID='$ID'";
 	$result=$db->query($query);
@@ -457,7 +457,7 @@ function getUserName($ID,$link=0){
 		$before="";
 		$after="";
 		if ($link==1){
-			$before="<a href=\"".$cfg_install["root"]."/users/users-info.php?ID=".$ID."\">";
+			$before="<a href=\"".$cfg_glpi["root_doc"]."/users/users-info.php?ID=".$ID."\">";
 			$after="</a>";
 		}
 		if (strlen($data["realname"])>0) $username=$before.$data["realname"].$after;
@@ -465,7 +465,7 @@ function getUserName($ID,$link=0){
 
 		if ($link==2){
 			$user["name"]=$username;
-			$user["link"]=$cfg_install["root"]."/users/users-info.php?ID=".$ID;
+			$user["link"]=$cfg_glpi["root_doc"]."/users/users-info.php?ID=".$ID;
 			$user["comments"]=$lang["common"][16].": ".$username."<br>";
 			$user["comments"].=$lang["setup"][14].": ".$data["email"]."<br>";
 			$user["comments"].=$lang["setup"][15].": ".$data["phone"]."<br>";

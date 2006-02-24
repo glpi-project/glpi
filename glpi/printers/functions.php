@@ -96,7 +96,7 @@ function showPrinterOnglets($target,$withtemplate,$actif){
 
 function showPrintersForm ($target,$ID,$withtemplate='') {
 
-	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel;
+	GLOBAL $cfg_glpi, $lang,$HTMLRel;
 
 	$printer = new Printer;
 

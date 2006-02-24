@@ -104,7 +104,7 @@ function showCartridgeOnglets($target,$withtemplate,$actif){
 function showCartridgeTypeForm ($target,$ID) {
 	// Show CartridgeType or blank form
 	
-	GLOBAL $cfg_layout,$cfg_install,$lang;
+	GLOBAL $cfg_glpi,$lang;
 
 	$ct = new CartridgeType;
 	$ct_spotted = false;
@@ -314,13 +314,13 @@ function restoreCartridgeType($input) {
 **/
 function showCartridgesAdd($ID) {
 	
-	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel;
+	GLOBAL $cfg_glpi,$lang,$HTMLRel;
 	
 	
 	echo "<form method='post'  action=\"".$HTMLRel."cartridges/cartridges-edit.php\">";
 	echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><b>";
-	echo "<a href=\"".$cfg_install["root"]."/cartridges/cartridges-edit.php?add=add&amp;tID=$ID\">";
+	echo "<a href=\"".$cfg_glpi["root_doc"]."/cartridges/cartridges-edit.php?add=add&amp;tID=$ID\">";
 	echo $lang["cartridges"][17];
 	echo "</a></b></td>";
 	echo "<td align='center' class='tab_bg_2'>";
@@ -348,7 +348,7 @@ function showCartridgesAdd($ID) {
 **/
 function showCartridges ($tID,$show_old=0) {
 
-	GLOBAL $db,$cfg_layout, $cfg_install,$lang,$HTMLRel;
+	GLOBAL $db,$cfg_glpi,$lang,$HTMLRel;
 	
 	
 	$query = "SELECT count(ID) AS COUNT  FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')";
@@ -430,7 +430,7 @@ $query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')
 		if (!is_null($date_use)){
 			$p=new Printer;
 			if ($p->getFromDB($data["FK_glpi_printers"]))
-				echo "<a href='".$cfg_install["root"]."/printers/printers-info-form.php?ID=".$p->fields["ID"]."'><b>".$p->fields["name"]." (".$p->fields["ID"].")</b></a>";
+				echo "<a href='".$cfg_glpi["root_doc"]."/printers/printers-info-form.php?ID=".$p->fields["ID"]."'><b>".$p->fields["name"]." (".$p->fields["ID"].")</b></a>";
 			else echo "N/A";
 
 		$tmp_dbeg=split("-",$date_in);
@@ -481,7 +481,7 @@ $query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')
 		
 		echo "<td align='center'>";
 		if (!is_null($date_use))
-		echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_install["root"]."/cartridges/cartridges-edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["cartridges"][43]."</a>";		
+		echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_glpi["root_doc"]."/cartridges/cartridges-edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["cartridges"][43]."</a>";		
 		else
 		echo "&nbsp;";
 
@@ -490,7 +490,7 @@ $query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')
 
 		echo "<td align='center'>";
 		
-		echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_install["root"]."/cartridges/cartridges-edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["buttons"][6]."</a>";
+		echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_glpi["root_doc"]."/cartridges/cartridges-edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["buttons"][6]."</a>";
 		echo "</td></tr>";
 		
 	}	
@@ -644,7 +644,7 @@ function restoreCartridge($ID) {
 *
 **/
 function showCompatiblePrinters($instID) {
-	GLOBAL $db,$cfg_layout,$cfg_install, $lang;
+	GLOBAL $db,$cfg_glpi, $lang;
 
     
 	$query = "SELECT glpi_dropdown_model_printers.name as type, glpi_cartridges_assoc.ID as ID FROM glpi_cartridges_assoc, glpi_dropdown_model_printers WHERE glpi_cartridges_assoc.FK_glpi_dropdown_model_printers=glpi_dropdown_model_printers.ID AND glpi_cartridges_assoc.FK_glpi_cartridges_type = '$instID' order by glpi_dropdown_model_printers.name";
@@ -653,7 +653,7 @@ function showCompatiblePrinters($instID) {
 	$number = $db->numrows($result);
 	$i = 0;
 	
-    echo "<form method='post' action=\"".$cfg_install["root"]."/cartridges/cartridges-info-form.php\">";
+    echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/cartridges/cartridges-info-form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='3'>".$lang["cartridges"][32].":</th></tr>";
 	echo "<tr><th>".$lang["common"][2]."</th><th>".$lang["common"][22]."</th><th>&nbsp;</th></tr>";
@@ -728,7 +728,7 @@ $result = $db->query($query);
 **/
 function showCartridgeInstalled($instID,$old=0) {
 
-	GLOBAL $db,$cfg_layout,$cfg_install, $lang,$HTMLRel;
+	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel;
 
     	
 	$query = "SELECT glpi_cartridges_type.ID as tID, glpi_cartridges_type.deleted as deleted, glpi_cartridges_type.ref as ref, glpi_cartridges_type.name as type, glpi_cartridges.ID as ID, glpi_cartridges.pages as pages, glpi_cartridges.date_use as date_use, glpi_cartridges.date_out as date_out, glpi_cartridges.date_in as date_in";
@@ -799,7 +799,7 @@ function showCartridgeInstalled($instID,$old=0) {
 		echo "</td><td align='center'>";
 		if ($old!=0){
 			
-			echo "<form method='post' action=\"".$cfg_install["root"]."/cartridges/cartridges-edit.php\">";
+			echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/cartridges/cartridges-edit.php\">";
 			echo "<input type='hidden' name='cID' value='".$data['ID']."'>";
 			echo "<input type='text' name='pages' value=\"".$data['pages']."\" size='10'>";
 			echo "<input type='image' name='update_pages' value='update_pages' src='".$HTMLRel."pics/actualiser.png' class='calendrier'>";
@@ -814,14 +814,14 @@ function showCartridgeInstalled($instID,$old=0) {
 			echo "</td><td align='center'>";
 		}
 		if (is_null($date_out))
-		echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_install["root"]."/cartridges/cartridges-edit.php?uninstall=uninstall&amp;ID=".$data["ID"]."'>".$lang["cartridges"][29]."</a>";
-		else echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_install["root"]."/cartridges/cartridges-edit.php?delete=delete&amp;ID=".$data["ID"]."'>".$lang["buttons"][6]."</a>";
+		echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_glpi["root_doc"]."/cartridges/cartridges-edit.php?uninstall=uninstall&amp;ID=".$data["ID"]."'>".$lang["cartridges"][29]."</a>";
+		else echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_glpi["root_doc"]."/cartridges/cartridges-edit.php?delete=delete&amp;ID=".$data["ID"]."'>".$lang["buttons"][6]."</a>";
 		echo "</td></tr>";
 		
 	}	
 	if ($old==0){
 		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
-		echo "<form method='post' action=\"".$cfg_install["root"]."/cartridges/cartridges-edit.php\">";
+		echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/cartridges/cartridges-edit.php\">";
 	
 		echo "<div class='software-instal'><input type='hidden' name='pID' value='$instID'>";
 			dropdownCompatibleCartridges($instID);
@@ -905,7 +905,7 @@ function dropdownCompatibleCartridges($pID) {
 **/
 function countCartridges($tID,$alarm,$nohtml=0) {
 	
-	GLOBAL $db,$cfg_layout, $lang;
+	GLOBAL $db,$cfg_glpi, $lang;
 	
 	
 	// Get total

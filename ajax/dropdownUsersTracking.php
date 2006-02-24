@@ -46,21 +46,21 @@
 	if (isset($_POST['value']))
 		$where.=" AND  (glpi_users.ID <> '".$_POST['value']."' ";
 				
-	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
+	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
 		$where.=" AND (glpi_users.name LIKE '%".$_POST['searchText']."%' OR glpi_users.realname LIKE '%".$_POST['searchText']."%')";
 
 	$where.=")";	
 
-	$NBMAX=$cfg_layout["dropdown_max"];
+	$NBMAX=$cfg_glpi["dropdown_max"];
 	$LIMIT="LIMIT 0,$NBMAX";
-	if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
+	if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
 	
 	$query = "SELECT DISTINCT glpi_users.ID, glpi_users.name, glpi_users.realname FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.".$_POST['champ']." AND glpi_tracking.".$_POST['champ']." <> '') WHERE $where ORDER BY glpi_users.realname,glpi_users.name $LIMIT";
 	$result = $db->query($query);
 
 	echo "<select name=\"".$_POST['myname']."\">";
 
-	if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
+	if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 	echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 	
 	echo "<option value=\"0\">[ ".$lang["search"][7]." ]</option>";
@@ -68,7 +68,7 @@
 	if (isset($_POST['value'])){
 		$output=getUserName($_POST['value'],2);
 		if (!empty($output["name"])&&$output["name"]!="&nbsp;")
-		echo "<option selected value='".$_POST['value']."' title=\"".$output["name"]."\">".substr($output["name"],0,$cfg_layout["dropdown_limit"])."</option>";
+		echo "<option selected value='".$_POST['value']."' title=\"".$output["name"]."\">".substr($output["name"],0,$cfg_glpi["dropdown_limit"])."</option>";
 	}	
 	
 	if ($db->numrows($result)) {
@@ -77,9 +77,9 @@
 			else $display = $data["name"];
 			
 			if ($data["ID"] == $value) {
-				echo "<option value=\"".$data["ID"]."\" selected title=\"$display\">".substr($display,0,$cfg_layout["dropdown_limit"])."</option>";
+				echo "<option value=\"".$data["ID"]."\" selected title=\"$display\">".substr($display,0,$cfg_glpi["dropdown_limit"])."</option>";
 			} else {
-				echo "<option value=\"".$data["ID"]."\" title=\"$display\">".substr($display,0,$cfg_layout["dropdown_limit"])."</option>";
+				echo "<option value=\"".$data["ID"]."\" title=\"$display\">".substr($display,0,$cfg_glpi["dropdown_limit"])."</option>";
 			}
    		}
 	}

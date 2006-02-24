@@ -41,7 +41,7 @@ class User {
 	var $fields = array();
 
   function User($ID = '') {
-  	global $cfg_install;
+  	global $cfg_glpi;
   	
 	  $this->fields['ID'] = $ID;
   	$this->fields['name'] = '';
@@ -54,8 +54,8 @@ class User {
   	$this->fields['realname'] = '';
   	$this->fields['can_assign_job'] = 'no';
 	$this->fields['tracking_order'] = 'no';
-	if (isset($cfg_install["default_language"]))
-		$this->fields['language'] = $cfg_install["default_language"];
+	if (isset($cfg_glpi["default_language"]))
+		$this->fields['language'] = $cfg_glpi["default_language"];
 	else $this->fields['language'] = "english";
 }
 	
@@ -116,7 +116,7 @@ class User {
 	//
 	function getFromLDAP($host,$port,$basedn,$adm,$pass,$fields,$name)
 	{
-		global $db,$cfg_login;
+		global $db,$cfg_glpi;
 		// we prevent some delay..
 		if (empty($host)) {
 			return false;
@@ -132,7 +132,7 @@ class User {
 			// switch to protocol version 3 to make ssl work
 			ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
 
-			if ($cfg_login['ldap']['use_tls']){
+			if ($cfg_glpi["ldap_use_tls"]){
 				if (!ldap_start_tls($ds)) {
        					return false;
    				} 
@@ -140,7 +140,7 @@ class User {
 
 	  	if ( $adm != "" )
 	  	{
-		//	 	$dn = $cfg_login['ldap']['login']."=" . $adm . "," . $basedn;
+		//	 	$dn = $cfg_glpi["ldap_login"]."=" . $adm . "," . $basedn;
 	  		$bv = ldap_bind($ds, $adm, $pass);
 	  	}
 	  	else
@@ -151,7 +151,7 @@ class User {
 	  	if ( $bv )
 	  	{
 	  		$f = array_values($fields);
-	  		$sr = ldap_search($ds, $basedn, $cfg_login['ldap']['login']."=".$name, $f);
+	  		$sr = ldap_search($ds, $basedn, $cfg_glpi["ldap_login"]."=".$name, $f);
 	  		$v = ldap_get_entries($ds, $sr);
 			
 			if ( (empty($v)) || empty($v[0][$fields['name']][0]) ) {
@@ -205,7 +205,7 @@ class User {
 			// switch to protocol version 3 to make ssl work
 			ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
 
-			if ($cfg_login['ldap']['use_tls']){
+			if ($cfg_glpi["ldap_use_tls"]){
 				if (!ldap_start_tls($ds)) {
        					return false;
    				} 

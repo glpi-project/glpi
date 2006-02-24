@@ -76,15 +76,14 @@ class DBmysql {
 	* @return Query result handler
 	*/
 	function query($query) {
-		global $cfg_debug,$DEBUG_SQL_STRING,$SQL_TOTAL_TIMER, $SQL_TOTAL_REQUEST;
+		global $cfg_glpi,$DEBUG_SQL_STRING,$SQL_TOTAL_TIMER, $SQL_TOTAL_REQUEST;
 		
-		
-		if ($cfg_debug["active"]) {
-			if ($cfg_debug["sql"]){		
+		if ($cfg_glpi["debug"]) {
+			if ($cfg_glpi["debug_sql"]){		
 				$SQL_TOTAL_REQUEST++;
 				$DEBUG_SQL_STRING.="N&#176; ".$SQL_TOTAL_REQUEST." : <br>".$query;
 				
-				if ($cfg_debug["profile"]){		
+				if ($cfg_glpi["debug_profile"]){		
 					$TIMER=new Script_Timer;
 					$TIMER->Start_Timer();
 				}
@@ -97,13 +96,13 @@ class DBmysql {
 			$res=mysql_query($query,$this->dbh);
 		}
 
-		if ($cfg_debug["active"]) {
-			if ($cfg_debug["profile"]&&$cfg_debug["sql"]){		
+		if ($cfg_glpi["debug"]) {
+			if ($cfg_glpi["debug_profile"]&&$cfg_glpi["debug_sql"]){		
 				$TIME=$TIMER->Get_Time();
 				$DEBUG_SQL_STRING.="<br><b>Time: </b>".$TIME."s";
 				$SQL_TOTAL_TIMER+=$TIME;
 			}
-			if ($cfg_debug["sql"]){
+			if ($cfg_glpi["debug_sql"]){
 				$DEBUG_SQL_STRING.="<hr>";
 			}
 		}
@@ -424,8 +423,8 @@ class CommonItem{
 			return "N/A";
 	}
 	function getNameID(){
-		global $cfg_layout;
-		if ($cfg_layout["view_ID"]){
+		global $cfg_glpi;
+		if ($cfg_glpi["view_ID"]){
 			if ($this->device_type==0)
 				return $this->getName();
 			else return $this->getName()." (".$this->id_device.")";
@@ -438,7 +437,7 @@ class CommonItem{
 	*/
 	function getLink(){
 	
-		global $cfg_install,$cfg_layout,$INFOFORM_PAGES;
+		global $cfg_glpi,$INFOFORM_PAGES;
 		$ID="";
 		switch ($this->device_type){
 			case GENERAL_TYPE :
@@ -459,8 +458,8 @@ class CommonItem{
 			case CARTRIDGE_TYPE : 
 			case CONSUMABLE_TYPE : 
 			case DOCUMENT_TYPE : 
-				if($cfg_layout["view_ID"]) $ID= " (".$this->id_device.")";
-				return "<a href=\"".$cfg_install["root"]."/".$INFOFORM_PAGES[$this->device_type]."?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
+				if($cfg_glpi["view_ID"]) $ID= " (".$this->id_device.")";
+				return "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$this->device_type]."?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
 				break;
 			case LICENSE_TYPE : 
 				return $this->getName();

@@ -46,7 +46,7 @@
 		if (in_array($_POST['table'],$template_tables))
 			$where.=" AND is_template='0' ";		
 			
-		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_features["ajax_wildcard"]){
+		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"]){
 				$WWHERE="";
 				if ($_POST['table']!="glpi_software"){
 				$WWHERE=" OR contact LIKE '%".$_POST['searchText']."%' OR serial LIKE '%".$_POST['searchText']."%' OR otherserial LIKE '%".$_POST['searchText']."%'";
@@ -55,16 +55,16 @@
 		}
 
 		
-		$NBMAX=$cfg_layout["dropdown_max"];
+		$NBMAX=$cfg_glpi["dropdown_max"];
 		$LIMIT="LIMIT 0,$NBMAX";
-		if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
+		if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
 						
 		$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY name $LIMIT";
 		$result = $db->query($query);
 		
 		echo "<select name=\"".$_POST['myname']."\" size='1'>";
 		
-		if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
+		if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 			echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 	
 		echo "<option value=\"0\">-----</option>";
@@ -78,7 +78,7 @@
 				}
 				$ID = $data['ID'];
 				if (empty($output)) $output="($ID)";
-				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
+				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_glpi["dropdown_limit"])."</option>";
 			}
 		}
 		echo "</select>";

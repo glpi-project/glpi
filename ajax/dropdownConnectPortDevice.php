@@ -52,13 +52,13 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 		$where.=" AND deleted='N' ";
 		$where.=" AND is_template='0' ";		
 		
-		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_features["ajax_wildcard"])
+		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
 			$where.=" AND name LIKE '%".$_POST['searchText']."%' ";
 
-		$NBMAX=$cfg_layout["dropdown_max"];
+		$NBMAX=$cfg_glpi["dropdown_max"];
 		
 		$LIMIT="LIMIT 0,$NBMAX";
-		if ($_POST['searchText']==$cfg_features["ajax_wildcard"]) $LIMIT="";
+		if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
 						
 		$query = "SELECT * FROM ".$table." $where ORDER BY name $LIMIT";
 
@@ -66,7 +66,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 
 		echo "<select id='item$rand' name=\"item\" size='1'>";
 		
-		if ($_POST['searchText']!=$cfg_features["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
+		if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 			echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 	
 		echo "<option value=\"0\">-----</option>";
@@ -75,7 +75,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 				$output = $data['name'];
 				$ID = $data['ID'];
 				if (empty($output)) $output="($ID)";
-				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
+				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_glpi["dropdown_limit"])."</option>";
 			}
 		}
 		echo "</select>";
@@ -83,7 +83,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	echo "<script type='text/javascript' >\n";
 	echo " new Form.Element.Observer('item$rand', 1, \n";
 	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('results_item_$rand','".$cfg_install["root"]."/ajax/dropdownConnectPort.php',{asynchronous:true, evalScripts:true, \n";
+	echo "      	new Ajax.Updater('results_item_$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownConnectPort.php',{asynchronous:true, evalScripts:true, \n";
 	echo "           onComplete:function(request)\n";
 	echo "            {Element.hide('search_spinner_$rand');}, \n";
 	echo "           onLoading:function(request)\n";

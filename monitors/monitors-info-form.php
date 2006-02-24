@@ -70,23 +70,23 @@ else if (isset($tab["delete"]))
 	
 	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
-		glpi_header($cfg_install["root"]."/setup/setup-templates.php");
+		glpi_header($cfg_glpi["root_doc"]."/setup/setup-templates.php");
 	 else 
-	glpi_header($cfg_install["root"]."/monitors/");
+	glpi_header($cfg_glpi["root_doc"]."/monitors/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreMonitor($_POST);
 	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_install["root"]."/monitors/");
+	glpi_header($cfg_glpi["root_doc"]."/monitors/");
 }
 else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
 	deleteMonitor($tab,1);
 	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_install["root"]."/monitors/");
+	glpi_header($cfg_glpi["root_doc"]."/monitors/");
 }
 else if (isset($_POST["update"]))
 {
@@ -107,7 +107,7 @@ else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 	checkAuthentication("admin");
 	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["item"],MONITOR_TYPE);
 	logEvent($tab["sID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][27]);
-	glpi_header($cfg_install["root"]."/monitors/monitors-info-form.php?ID=".$tab["sID"]);
+	glpi_header($cfg_glpi["root_doc"]."/monitors/monitors-info-form.php?ID=".$tab["sID"]);
 
 /*
  	if($tab["connect"]==1)
@@ -129,7 +129,7 @@ else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 		checkAuthentication("admin");
 		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],MONITOR_TYPE);
 		logEvent($tab["sID"], "monitors", 5, "inventory", $_SESSION["glpiname"]." connected item.");
-		glpi_header($cfg_install["root"]."/monitors/monitors-info-form.php?ID=".$tab["sID"]);
+		glpi_header($cfg_glpi["root_doc"]."/monitors/monitors-info-form.php?ID=".$tab["sID"]);
 	}
 */
 }
@@ -153,7 +153,7 @@ else
 		if (!empty($tab["ID"])){
 		switch($_SESSION['glpi_onglet']){
 			case 4 :
-				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",MONITOR_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+				showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",MONITOR_TYPE,$tab["ID"],1,$tab["withtemplate"]);
 				showContractAssociated(MONITOR_TYPE,$tab["ID"],$tab["withtemplate"]);
 				break;
 			case 5 :			
@@ -178,7 +178,7 @@ else
 		switch($_SESSION['glpi_onglet']){
 			case -1:
 				showConnect($_SERVER["PHP_SELF"],$tab['ID'],MONITOR_TYPE);
-				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",MONITOR_TYPE,$tab["ID"]);
+				showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",MONITOR_TYPE,$tab["ID"]);
 				showContractAssociated(MONITOR_TYPE,$tab["ID"]);			
 				showDocumentAssociated(COMPUTER_TYPE,$tab["ID"]);	
 				showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
@@ -186,7 +186,7 @@ else
 				showLinkOnDevice(MONITOR_TYPE,$tab["ID"]);
 				break;
 			case 4 :			
-				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",MONITOR_TYPE,$tab["ID"]);
+				showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",MONITOR_TYPE,$tab["ID"]);
 				showContractAssociated(MONITOR_TYPE,$tab["ID"]);			
 				break;
 			case 5 :			

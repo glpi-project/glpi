@@ -91,7 +91,7 @@ echo "<table class='tab_cadre_fixe' cellpadding='5' >";
 echo "<tr><th>".$lang["stats"][38]."</th><th>&nbsp;</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
 //Pour chacun de ces auteurs on affiche
 //foreach these authors display
-   for ($i=$_GET['start'];$i< $numrows && $i<($_GET['start']+$cfg_features["list_limit"]);$i++)
+   for ($i=$_GET['start'];$i< $numrows && $i<($_GET['start']+$cfg_glpi["list_limit"]);$i++)
    {
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$nomUsr[$i]['category']."</td><td><a href='graph_item.php?ID=".$nomUsr[$i]['ID']."&amp;type=category'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";

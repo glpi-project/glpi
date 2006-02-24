@@ -40,7 +40,7 @@ include ($phproot . "/glpi/includes_documents.php");
 if (isset($_GET["file"])){
 $splitter=split("/",$_GET["file"]);
 if (count($splitter)==2)
-	sendFile($cfg_install["doc_dir"]."/".$_GET["file"],$splitter[1]);
+	sendFile($cfg_glpi["doc_dir"]."/".$_GET["file"],$splitter[1]);
 }
 
 

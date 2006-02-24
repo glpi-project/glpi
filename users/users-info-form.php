@@ -41,7 +41,7 @@ include ($phproot . "/glpi/includes_users.php");
 if (empty($_GET["name"])&&isset($_GET["ID"])){
 $u=new User;
 $u->getFromDBbyID($_GET["ID"]);
-glpi_header($cfg_install["root"]."/users/users-info-form.php?name=".$u->fields['name']);
+glpi_header($cfg_glpi["root_doc"]."/users/users-info-form.php?name=".$u->fields['name']);
 }
 
 if(empty($_GET["name"])) $_GET["name"] = "";
@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
 	checkAuthentication("admin");
 	deleteUser($_POST);
 	logEvent(0,"users", 4, "setup", $_SESSION["glpiname"]."  ".$lang["log"][22]." ".$_POST["ID"].".");
-	glpi_header($cfg_install["root"]."/users/");
+	glpi_header($cfg_glpi["root_doc"]."/users/");
 } else if (isset($_POST["update"])) {
 	checkAuthentication("admin");
 	commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);

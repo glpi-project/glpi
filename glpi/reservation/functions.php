@@ -61,7 +61,7 @@ function titleReservation(){
 function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort= ""){
 	// Print Search Form
 	
-	GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
+	GLOBAL $cfg_glpi,  $lang;
 
 	$option["glpi_reservation_item.ID"]				= $lang["common"][2];
 //	$option["glpi_reservation_item.device_type"]			= $lang["reservation"][3];
@@ -69,7 +69,7 @@ function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort=
 //	$option["glpi_software.version"]			= $lang["software"][5];
 	$option["glpi_reservation.comments"]			= $lang["common"][25];
 	
-	echo "<form method=get action=\"".$cfg_install["root"]."/reservation/index.php\">";
+	echo "<form method=get action=\"".$cfg_glpi["root_doc"]."/reservation/index.php\">";
 	echo "<div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
@@ -113,7 +113,7 @@ function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort=
 function showReservationItemList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start){
 	// Lists Reservation Items
 
-	GLOBAL $db,$cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
+	GLOBAL $db,$cfg_glpi, $lang, $HTMLRel;
 
 	// Build query
 	if($field=="all") {
@@ -147,8 +147,8 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 		$numrows =  $db->numrows($result);
 
 		// Limit the result, if no limit applies, use prior result
-		if ($numrows > $cfg_features["list_limit"]) {
-			$query_limit = $query ." LIMIT $start,".$cfg_features["list_limit"]." ";
+		if ($numrows > $cfg_glpi["list_limit"]) {
+			$query_limit = $query ." LIMIT $start,".$cfg_glpi["list_limit"]." ";
 			$result_limit = $db->query($query_limit);
 			$numrows_limit = $db->numrows($result_limit);
 		} else {
@@ -225,7 +225,7 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 				echo "<td><b>". $ri->getLink() ."</b></td>";
 				echo "<td>". $ri->getLocation() ."</td>";
 
-				echo "<td>". nl2br(substr($ri->fields["comments"],0,$cfg_features["cut"]))."</td>";
+				echo "<td>". nl2br(substr($ri->fields["comments"],0,$cfg_glpi["cut"]))."</td>";
 				echo "<td>";
 				echo "<a href='".$target."?comment=$ID'>".$lang["reservation"][22]."</a>";
 				echo "</td>";
@@ -255,9 +255,9 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 
 function showReservationForm($device_type,$id_device){
 
-GLOBAL $cfg_install,$lang;
+GLOBAL $cfg_glpi,$lang;
 
-echo "<a href=\"".$cfg_install["root"]."/reservation/index.php?";
+echo "<a href=\"".$cfg_glpi["root_doc"]."/reservation/index.php?";
 if ($resaID=isReservable($device_type,$id_device)) {
 	// Supprimer le matériel
 	echo "ID=".$resaID."&amp;delete=delete\">".$lang["reservation"][6]."</a>";	
@@ -697,14 +697,14 @@ function printReservationItem($target,$ID,$date){
 
 function deleteReservation($ID){
 	// Delete a Reservation
-	global $cfg_features;
+	global $cfg_glpi;
 	$resa = new ReservationResa;
 	
 	
 	if ($resa->getfromDB($ID))
 	if (isset($resa->fields["id_user"])&&($resa->fields["id_user"]==$_SESSION["glpiID"]||isAdmin($_SESSION["glpitype"]))){
 		// Processing Email
-		if ($cfg_features["mailing"]){
+		if ($cfg_glpi["mailing"]){
 			$mail = new MailingResa($resa,"delete");
 			$mail->send();
 		}
@@ -717,7 +717,7 @@ function deleteReservation($ID){
 
 
 function addReservation($input,$target,$ok=true){
-	global $cfg_features;
+	global $cfg_glpi;
 	// Add a Reservation
 	if ($ok){
 	$resa = new ReservationResa;
@@ -742,7 +742,7 @@ function addReservation($input,$target,$ok=true){
 	if ($input["id_user"]>0)
 		if ($resa->addToDB()){
 			// Processing Email
-			if ($cfg_features["mailing"])
+			if ($cfg_glpi["mailing"])
 			{
 				$mail = new MailingResa($resa,"new");
 				$mail->send();
@@ -849,7 +849,7 @@ function updateReservationComment($input){
 }
 
 function updateReservationResa($input,$target,$item){
-global $lang,$cfg_features;
+global $lang,$cfg_glpi;
 	// Update a printer in the database
 
 	$ri = new ReservationResa;
@@ -889,7 +889,7 @@ global $lang,$cfg_features;
 	if (isset($updates)){
 		$ri->updateInDB($updates);
 		// Processing Email
-		if ($cfg_features["mailing"])
+		if ($cfg_glpi["mailing"])
 		{
 			$mail = new MailingResa($ri,"update");
 			$mail->send();
@@ -901,13 +901,13 @@ global $lang,$cfg_features;
 
 
 function printDeviceReservations($target,$type,$ID){
-	global $db,$lang,$cfg_install;
+	global $db,$lang,$cfg_glpi;
 	$resaID=0;
 	
 	if ($resaID=isReservable($type,$ID)){
 		echo "<div align='center'>";
 
-		echo "<a href='".$cfg_install["root"]."/reservation/index.php?show=resa&ID=$resaID'>".$lang["reservation"][21]."</a>";
+		echo "<a href='".$cfg_glpi["root_doc"]."/reservation/index.php?show=resa&ID=$resaID'>".$lang["reservation"][21]."</a>";
 		$now=date("Y-m-d H:i:s");
 		// Print reservation in progress
 		$query = "SELECT * FROM glpi_reservation_resa WHERE end > '".$now."' AND id_item='$resaID' ORDER BY begin";

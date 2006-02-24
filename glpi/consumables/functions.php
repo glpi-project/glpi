@@ -104,7 +104,7 @@ function showConsumableOnglets($target,$withtemplate,$actif){
 function showConsumableTypeForm ($target,$ID) {
 	// Show ConsumableType or blank form
 	
-	GLOBAL $cfg_layout,$cfg_install,$lang;
+	GLOBAL $cfg_glpi,$lang;
 
 	$ct = new ConsumableType;
 	$ct_spotted=false;
@@ -313,13 +313,13 @@ function restoreConsumableType($input) {
 **/
 function showConsumableAdd($ID) {
 	
-	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel;
+	GLOBAL $cfg_glpi,$lang,$HTMLRel;
 	
 	
 	echo "<form method='post'  action=\"".$HTMLRel."consumables/consumables-edit.php\">";
 	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='90%' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><b>";
-	echo "<a href=\"".$cfg_install["root"]."/consumables/consumables-edit.php?add=add&amp;tID=$ID\">";
+	echo "<a href=\"".$cfg_glpi["root_doc"]."/consumables/consumables-edit.php?add=add&amp;tID=$ID\">";
 	echo $lang["consumables"][17];
 	echo "</a></b></td>";
 	echo "<td align='center' class='tab_bg_2'>";
@@ -347,7 +347,7 @@ function showConsumableAdd($ID) {
 **/
 function showConsumables ($tID,$show_old=0) {
 
-	GLOBAL $db,$cfg_layout, $cfg_install,$lang,$HTMLRel;
+	GLOBAL $db,$cfg_glpi,$lang,$HTMLRel;
 	
 	
 
@@ -422,19 +422,19 @@ $query = "SELECT * FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$tID
 				
 		if ($show_old==0){
 			echo "<td align='center'>";
-			echo "<a href='".$cfg_install["root"]."/consumables/consumables-edit.php?out=out&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["consumables"][32]."</a>";
+			echo "<a href='".$cfg_glpi["root_doc"]."/consumables/consumables-edit.php?out=out&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["consumables"][32]."</a>";
 			echo "</td>";
 		}
 
 		if ($show_old!=0){
 			echo "<td align='center'>";
-			echo "<a href='".$cfg_install["root"]."/consumables/consumables-edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["consumables"][37]."</a>";
+			echo "<a href='".$cfg_glpi["root_doc"]."/consumables/consumables-edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["consumables"][37]."</a>";
 			echo "</td>";
 		}						
 		
 		echo "<td align='center'>";
 		
-		echo "<a href='".$cfg_install["root"]."/consumables/consumables-edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["buttons"][6]."</a>";
+		echo "<a href='".$cfg_glpi["root_doc"]."/consumables/consumables-edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["buttons"][6]."</a>";
 		echo "</td></tr>";
 		
 	}	
@@ -546,7 +546,7 @@ function restoreConsumable($ID){
 **/
 function countConsumables($tID,$alarm,$nohtml=0) {
 	
-	GLOBAL $db,$cfg_layout, $lang;
+	GLOBAL $db,$cfg_glpi, $lang;
 	
 	
 	$out="";

@@ -64,7 +64,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		unset($_POST["edit_resa"]);unset($_POST["id_item"]);
 		if (isAdmin($_SESSION["glpitype"])||$_SESSION["glpiID"]==$_POST["id_user"]) 
 		if (updateReservationResa($_POST,$_SERVER["PHP_SELF"],$item))
-			glpi_header($cfg_install["root"]."/reservation/index.php?show=resa&ID=$item&mois_courant=$begin_month&annee_courante=$begin_year");
+			glpi_header($cfg_glpi["root_doc"]."/reservation/index.php?show=resa&ID=$item&mois_courant=$begin_month&annee_courante=$begin_year");
 	}
 
 

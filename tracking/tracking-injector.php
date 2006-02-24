@@ -50,7 +50,7 @@ include ($phproot . "/glpi/includes_enterprises.php");
 include ($phproot . "/glpi/includes_documents.php");
 include ($phproot . "/glpi/includes_phones.php");
 
-if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk") && ($cfg_features["permit_helpdesk"] == "1"))
+if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk") && ($cfg_glpi["permit_helpdesk"] == "1"))
 {
 	$id = new Identification();
 	$id->setCookies();
@@ -85,7 +85,7 @@ if (!empty($_POST["priority"]) && empty($_POST["contents"]))
 		helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	}
 	else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
-	echo "<div align='center'><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
+	echo "<div align='center'><img src=\"".$cfg_glpi["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 	echo $lang["help"][15]."<br><br>";
 	echo "<a href=\"javascript:history.back()\">".$lang["buttons"][13]."</a>";
 	echo "</b></div>";
@@ -102,7 +102,7 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] == "yes" && isse
 	}
 	else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	
-	echo "<div align='center'><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
+	echo "<div align='center'><img src=\"".$cfg_glpi["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
 	echo $lang["help"][16]."<br><br>";
 	echo "<a href=\"javascript:history.back()\">".$lang["buttons"][13]."</a>";
@@ -119,7 +119,7 @@ elseif (empty($ID)&&$_POST["device_type"]!=0)
 		helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	}
 	else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
-	echo "<div align='center'><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
+	echo "<div align='center'><img src=\"".$cfg_glpi["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
 	echo $lang["help"][17]."<br><br>";
 	echo "<a href=\"javascript:history.back()\">".$lang["buttons"][13]."</a>";
@@ -144,7 +144,7 @@ else
 		}
 		else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 
-		echo "<div align='center'><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
+		echo "<div align='center'><img src=\"".$cfg_glpi["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 		echo $lang["help"][32]."<br>";
 		echo $lang["help"][33];
 		echo "</b><br><br>";
@@ -161,7 +161,7 @@ else
 		}
 		else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 
-		echo "<div align='center'><img src=\"".$cfg_install["root"]."/pics/ok.png\" alt=\"OK\"><br><br><b>";
+		echo "<div align='center'><img src=\"".$cfg_glpi["root_doc"]."/pics/ok.png\" alt=\"OK\"><br><br><b>";
 		echo $lang["help"][18]."<br>";
 		echo $lang["help"][19];
 		echo "</b></div>";
@@ -179,7 +179,7 @@ else
 		}
 		else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 
-		echo "<div align='center'><img src=\"".$cfg_install["root"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
+		echo "<div align='center'><img src=\"".$cfg_glpi["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 		echo $lang["help"][20]."<br>";
 		echo $lang["help"][21];
 		echo "</b></div>";

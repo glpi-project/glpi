@@ -67,23 +67,23 @@ else if (isset($tab["delete"]))
 
 	logEvent($tab["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
-		glpi_header($cfg_install["root"]."/setup/setup-templates.php");
+		glpi_header($cfg_glpi["root_doc"]."/setup/setup-templates.php");
 	 else 
-	glpi_header($cfg_install["root"]."/phones/");
+	glpi_header($cfg_glpi["root_doc"]."/phones/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restorePhone($_POST);
 	logEvent($tab["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_install["root"]."/phones/");
+	glpi_header($cfg_glpi["root_doc"]."/phones/");
 }
 else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
 	deletePhone($tab,1);
 	logEvent($tab["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_install["root"]."/phones/");
+	glpi_header($cfg_glpi["root_doc"]."/phones/");
 }
 else if (isset($_POST["update"]))
 {
@@ -105,7 +105,7 @@ else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 	checkAuthentication("admin");
 	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["item"],PHONE_TYPE);
 	logEvent($tab["sID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][26]);
-	glpi_header($cfg_install["root"]."/phones/phones-info-form.php?ID=".$tab["sID"]);
+	glpi_header($cfg_glpi["root_doc"]."/phones/phones-info-form.php?ID=".$tab["sID"]);
 
 
 }
@@ -133,7 +133,7 @@ else
 
 			switch($_SESSION['glpi_onglet']){
 				case 4 :
-					showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",PHONE_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+					showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",PHONE_TYPE,$tab["ID"],1,$tab["withtemplate"]);
 					showContractAssociated(PHONE_TYPE,$tab["ID"],$tab["withtemplate"]);
 					break;
 				case 5 :
@@ -164,7 +164,7 @@ else
 					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PHONE_TYPE);
 					showPorts($tab["ID"], PHONE_TYPE,$tab["withtemplate"]);
 					showPortsAdd($tab["ID"],PHONE_TYPE);
-					showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",PHONE_TYPE,$tab["ID"]);
+					showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",PHONE_TYPE,$tab["ID"]);
 					showContractAssociated(PHONE_TYPE,$tab["ID"]);
 					showDocumentAssociated(PHONE_TYPE,$tab["ID"]);
 					showJobListForItem($_SESSION["glpiname"],PHONE_TYPE,$tab["ID"]);
@@ -172,7 +172,7 @@ else
 					showLinkOnDevice(PHONE_TYPE,$tab["ID"]);
 					break;
 				case 4 :
-					showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",PHONE_TYPE,$tab["ID"]);
+					showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",PHONE_TYPE,$tab["ID"]);
 					showContractAssociated(PHONE_TYPE,$tab["ID"]);
 					break;
 				case 5 :

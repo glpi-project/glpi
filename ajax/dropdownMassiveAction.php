@@ -66,7 +66,7 @@ checkAuthentication("admin");
 				echo "<script type='text/javascript' >\n";
 				echo "   new Form.Element.Observer('massiveaction_field', 1, \n";
 				echo "      function(element, value) {\n";
-				echo "      	new Ajax.Updater('show_massiveaction_field','".$cfg_install["root"]."/ajax/dropdownMassiveActionField.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
+				echo "      	new Ajax.Updater('show_massiveaction_field','".$cfg_glpi["root_doc"]."/ajax/dropdownMassiveActionField.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
 				echo "            {Element.hide('search_spinner_massiveaction_field');}, \n";
 				echo "           onLoading:function(request)\n";
 				echo "            {Element.show('search_spinner_massiveaction_field');},\n";

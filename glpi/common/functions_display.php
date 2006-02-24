@@ -55,12 +55,12 @@ function commonHeader($title,$url)
 {
 	// Print a nice HTML-head for every page
 
-	GLOBAL $cfg_install,$lang, $cfg_layout,$cfg_features,$HTMLRel,$phproot ;
+	GLOBAL $cfg_glpi,$lang,$HTMLRel,$phproot ;
 
 	// Override list-limit if choosen
  	if (isset($_POST['list_limit'])) {
  		$_SESSION['list_limit']=$_POST['list_limit'];
-     		 $cfg_features["list_limit"]=$_POST['list_limit'];
+     		 $cfg_glpi["list_limit"]=$_POST['list_limit'];
 	 }
 
 	
@@ -70,7 +70,7 @@ function commonHeader($title,$url)
 	$lang["Menu"][6]=>array("/reports/index.php"," "),
 	//$lang["Menu"][33]=>array("/ocsng/index.php"," "),
 	);
-	if ($cfg_features["ocs_mode"]) $utils[$lang["Menu"][33]]=array("/ocsng/index.php"," ");
+	if ($cfg_glpi["ocs_mode"]) $utils[$lang["Menu"][33]]=array("/ocsng/index.php"," ");
 
 	$inventory = array($lang["Menu"][0]=>array("/computers/index.php","c"),
 		$lang["Menu"][3]=>array("/monitors/index.php","m"),
@@ -102,7 +102,7 @@ function commonHeader($title,$url)
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
 	// Send extra expires header if configured
-	if ($cfg_features["sendexpire"]) {
+	if ($cfg_glpi["sendexpire"]) {
 		header_nocache();
 	}
 	// Start the page
@@ -110,7 +110,7 @@ function commonHeader($title,$url)
 	echo "\n<html><head><title>GLPI - ".$title."</title>";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" >";
 	// Send extra expires header if configured
-	if ($cfg_features["sendexpire"]) {
+	if ($cfg_glpi["sendexpire"]) {
 		echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
 		echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
 		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
@@ -141,7 +141,7 @@ function commonHeader($title,$url)
 	echo "<div id='menu'>";
 	// Logo with link to command center
 	
-	echo "<dl><dt onmouseover=\"javascript:hidemenu();\"><a class='icon_logo' style='background: transparent' href=\"".$cfg_install["root"]."/central.php\" accesskey=\"0\"><img  src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\"></a></dt></dl>";
+	echo "<dl><dt onmouseover=\"javascript:hidemenu();\"><a class='icon_logo' style='background: transparent' href=\"".$cfg_glpi["root_doc"]."/central.php\" accesskey=\"0\"><img  src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_glpi["logotxt"]."\" title=\"".$lang["central"][5]."\"></a></dt></dl>";
 		
 	// Get object-variables and build the navigation-elements
 	
@@ -153,7 +153,7 @@ function commonHeader($title,$url)
 		$i=0;
 		// list menu item 
 		 foreach ($inventory as $key => $val) {
-		 	echo "<li><span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+		 	echo "<li><span class='menu'><a  href=\"".$cfg_glpi["root_doc"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
                          	$i++;
 	        }
 			
@@ -169,7 +169,7 @@ function commonHeader($title,$url)
 		echo "<dd id=\"smenu2\"><ul>";
 		// list menu item 
 		foreach ($maintain as $key => $val) {
-			echo "<li><span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+			echo "<li><span class='menu'><a  href=\"".$cfg_glpi["root_doc"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
 		}
 		echo "</ul></dd>\n";
 		echo "</dl>\n";
@@ -182,7 +182,7 @@ function commonHeader($title,$url)
 		echo "<dd id=\"smenu3\"><ul>";
 		// list menu item 
 		foreach ($financial as $key => $val) {
-			echo "<li><span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+			echo "<li><span class='menu'><a  href=\"".$cfg_glpi["root_doc"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
 		}
 			echo "</ul></dd>\n";
 		echo "</dl>\n";
@@ -196,7 +196,7 @@ function commonHeader($title,$url)
 		echo "<dd id=\"smenu4\"><ul>";
 		// list menu item 
 		foreach ($utils as $key => $val) {
-			echo "<li><span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+			echo "<li><span class='menu'><a  href=\"".$cfg_glpi["root_doc"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
 		}
 		echo "</ul></dd>\n";
 		echo "</dl>\n";
@@ -216,7 +216,7 @@ function commonHeader($title,$url)
 		echo "<dd id=\"smenu5\"><ul>";
 		// list menu item 
 		foreach ($plugins as $key => $val) {
-			echo "<li><span class='menu'><a  href=\"".$cfg_install["root"]."/plugins/".$val."/\" accesskey=\"".$val."\">".$val."</a></span></li>\n";
+			echo "<li><span class='menu'><a  href=\"".$cfg_glpi["root_doc"]."/plugins/".$val."/\" accesskey=\"".$val."\">".$val."</a></span></li>\n";
 		}
 			echo "</ul></dd>\n";
 		echo "</dl>\n";
@@ -230,7 +230,7 @@ function commonHeader($title,$url)
 		echo "<dd id=\"smenu6\"><ul>";
 		// list menu item 
 		foreach ($config as $key => $val) {
-			echo "<li><span class='menu'><a  href=\"".$cfg_install["root"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+			echo "<li><span class='menu'><a  href=\"".$cfg_glpi["root_doc"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
 		}
 		echo "</ul></dd>\n";
 		echo "</dl>\n";
@@ -239,10 +239,10 @@ function commonHeader($title,$url)
 		
 	// Display  clock with date, help and a logout-link.
 	//logout
-	echo "<div  onmouseover=\"javascript:hidemenu();\" style='float:right; width:5%; margin-right:10px;'><a  class='icon_nav_move'  style='background: transparent'  href=\"".$cfg_install["root"]."/logout.php\"><img  class='icon_nav'  src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div>\n";
+	echo "<div  onmouseover=\"javascript:hidemenu();\" style='float:right; width:5%; margin-right:10px;'><a  class='icon_nav_move'  style='background: transparent'  href=\"".$cfg_glpi["root_doc"]."/logout.php\"><img  class='icon_nav'  src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div>\n";
 
 	//help
-	echo "<div  onmouseover=\"javascript:hidemenu();\" style='float:right; width:5%;'><a class='icon_nav_move'  style='background: transparent'   href='#' onClick=\"window.open('".$HTMLRel."help/".$cfg_install["languages"][$_SESSION["glpilanguage"]][2]."','helpdesk','width=750,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a></div>\n";
+	echo "<div  onmouseover=\"javascript:hidemenu();\" style='float:right; width:5%;'><a class='icon_nav_move'  style='background: transparent'   href='#' onClick=\"window.open('".$HTMLRel."help/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][2]."','helpdesk','width=750,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a></div>\n";
 
 	
 	
@@ -285,16 +285,16 @@ function commonHeader($title,$url)
 function helpHeader($title,$url,$name) {
 	// Print a nice HTML-head for help page
 
-	GLOBAL $cfg_layout,$cfg_install,$lang,$cfg_features,$HTMLRel,$phproot, $cfg_features; ;
+	GLOBAL $cfg_glpi,$lang,$HTMLRel,$phproot, $cfg_glpi; ;
 
 	// Override list-limit if choosen
  	if (isset($_POST['list_limit'])) {
  		$_SESSION['list_limit']=$_POST['list_limit'];
-     		 $cfg_features["list_limit"]=$_POST['list_limit'];
+     		 $cfg_glpi["list_limit"]=$_POST['list_limit'];
 	 }
 
 	// Send extra expires header if configured
-	if ($cfg_features["sendexpire"]) {
+	if ($cfg_glpi["sendexpire"]) {
 		header_nocache(); 
 	}
 
@@ -308,7 +308,7 @@ function helpHeader($title,$url,$name) {
 	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' >";
 	// Send extra expires header if configured
 
-	if ($cfg_features["sendexpire"]) {
+	if ($cfg_glpi["sendexpire"]) {
 	        echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
 		echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
 		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
@@ -343,7 +343,7 @@ function helpHeader($title,$url,$name) {
 	// Logo with link to command center
 	echo "<td align='center' width='25%'>\n";
 	
-	echo "<img src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_layout["logotxt"]."\" title=\"".$lang["central"][5]."\" >";
+	echo "<img src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_glpi["logotxt"]."\" title=\"".$lang["central"][5]."\" >";
 	echo "<div style='width:80px; text-align:center;'><p class='nav_horl'><b>";
 	if (!empty($_SESSION["glpirealname"])) echo $_SESSION["glpirealname"];
 	else echo $_SESSION["glpiname"];
@@ -359,26 +359,26 @@ function helpHeader($title,$url,$name) {
 	// Just give him a language selector
 	echo "<td>";
 		if (!ereg("tracking-injector",$_SERVER["PHP_SELF"]))
-		showLangSelect($cfg_install["root"]."/preferences/index.php");
+		showLangSelect($cfg_glpi["root_doc"]."/preferences/index.php");
 		else echo "&nbsp;";
 	echo "</td>";
 
 	// And he can change his password, thats it
 	echo "<td>";
 	if ($_SESSION["extauth"]!=1&&!ereg("tracking-injector",$_SERVER["PHP_SELF"]))
-		showPasswordForm($cfg_install["root"]."/preferences/index.php",$name);
+		showPasswordForm($cfg_glpi["root_doc"]."/preferences/index.php",$name);
 		else echo "&nbsp;";
 	echo "</td>";
 	// We tracking or post a new one
 	echo "<td>";
-        echo "<a class='icon_nav_move' href=\"".$cfg_install["root"]."/helpdesk.php\"><img  src=\"".$HTMLRel."pics/ajoutinterv.png\" alt=\"".$lang["job"][13]."\" title=\"".$lang["job"][13]."\"></a><br><br>";
-        echo "<a class='icon_nav_move' href=\"".$cfg_install["root"]."/helpdesk.php?show=user\"><img  src=\"".$HTMLRel."pics/suivi.png\" alt=\"".$lang["tracking"][0]."\" title=\"".$lang["tracking"][0]."\"></a>";
+        echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/helpdesk.php\"><img  src=\"".$HTMLRel."pics/ajoutinterv.png\" alt=\"".$lang["job"][13]."\" title=\"".$lang["job"][13]."\"></a><br><br>";
+        echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user\"><img  src=\"".$HTMLRel."pics/suivi.png\" alt=\"".$lang["tracking"][0]."\" title=\"".$lang["tracking"][0]."\"></a>";
 	echo "</td>";
 	//reservation
 	
 	echo "<td>";
-        echo "<a  class='icon_nav_move' href=\"".$cfg_install["root"]."/helpdesk.php?show=resa\"><img  src=\"".$HTMLRel."pics/reservation-2.png\" alt=\"".$lang["Menu"][17]."\" title=\"".$lang["Menu"][17]."\"></a><br><br>";
-        echo "<a class='icon_nav_move' href=\"".$cfg_install["root"]."/helpdesk.php?show=faq\"><img  src=\"".$HTMLRel."pics/faq-24.png\" alt=\"".$lang["knowbase"][1]."\" title=\"".$lang["knowbase"][1]."\"></a>";
+        echo "<a  class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=resa\"><img  src=\"".$HTMLRel."pics/reservation-2.png\" alt=\"".$lang["Menu"][17]."\" title=\"".$lang["Menu"][17]."\"></a><br><br>";
+        echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=faq\"><img  src=\"".$HTMLRel."pics/faq-24.png\" alt=\"".$lang["knowbase"][1]."\" title=\"".$lang["knowbase"][1]."\"></a>";
 	
 	echo "</td>";
 	// On the right side of the navigation bar, we have a clock with
@@ -386,10 +386,10 @@ function helpHeader($title,$url,$name) {
 	echo "<td align='right' width='100'><div align='right'>";
 	// HELP	
 	echo "<a class='icon_nav_move'  href='#'
-	 onClick=\"window.open('".$HTMLRel."help/".$cfg_install["languages"][$_SESSION["glpilanguage"]][3]."','helpdesk','width=400,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a>";
+	 onClick=\"window.open('".$HTMLRel."help/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][3]."','helpdesk','width=400,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a>";
 				
 	echo "<p>".date("H").":".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
-	echo "</i></p><a class='icon_nav_move' href=\"".$cfg_install["root"]."/logout.php\"><img class='icon_nav' src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
+	echo "</i></p><a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/logout.php\"><img class='icon_nav' src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
 
 	// End navigation bar
 	
@@ -418,21 +418,21 @@ function helpHeader($title,$url,$name) {
 * @param $url not used anymore.
 **/
 function nullHeader($title,$url) {
-	global $cfg_features;
+	global $cfg_glpi;
 	// Print a nice HTML-head with no controls
 
-	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel,$phproot ;
+	GLOBAL $cfg_glpi,$lang,$HTMLRel,$phproot ;
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
 
 	// Override list-limit if choosen
 	if (isset($_POST['list_limit'])) {
 		$_SESSION['list_limit']=$_POST['list_limit'];
-		$cfg_features["list_limit"]=$_POST['list_limit'];
+		$cfg_glpi["list_limit"]=$_POST['list_limit'];
 	 }
 
 	// Send extra expires header if configured
-	if (!empty($cfg_features["sendexpire"])) {
+	if (!empty($cfg_glpi["sendexpire"])) {
 		header_nocache();
 	}
 
@@ -475,7 +475,7 @@ function nullHeader($title,$url) {
 	
 	// Logo with link to index
 	echo "<td align='center' width='100%'>\n";
-	echo "<a href=\"".$HTMLRel."index.php\"><img src=\"".$HTMLRel."pics/logo-glpi.png\" alt=\"".$cfg_layout["logotxt"]."\" title=\"\" ></a>\n";
+	echo "<a href=\"".$HTMLRel."index.php\"><img src=\"".$HTMLRel."pics/logo-glpi.png\" alt=\"".$cfg_glpi["logotxt"]."\" title=\"\" ></a>\n";
 	echo "</td>";
 
 
@@ -494,20 +494,20 @@ function nullHeader($title,$url) {
 function commonFooter() {
 	// Print foot for every page
 
-GLOBAL $lang,$cfg_features,$cfg_install,$cfg_debug,$DEBUG_SQL_STRING,$TIMER_DEBUG,$SQL_TOTAL_TIMER,$SQL_TOTAL_REQUEST;
+GLOBAL $lang,$cfg_glpi,$DEBUG_SQL_STRING,$TIMER_DEBUG,$SQL_TOTAL_TIMER,$SQL_TOTAL_REQUEST;
 echo "</div>";
 echo "<div id='footer' >";
 echo "<table width='100%'><tr><td align='left'><span class='copyright'>";
 echo $TIMER_DEBUG->Get_Time()."s</span>";
 echo "</td>";
 
-if (!empty($cfg_features["founded_new_version"]))
-	echo "<td align='center'>".$lang["setup"][301]." ".$cfg_features["founded_new_version"]."<br>".$lang["setup"][302]."</td>";
+if (!empty($cfg_glpi["founded_new_version"]))
+	echo "<td align='center'>".$lang["setup"][301]." ".$cfg_glpi["founded_new_version"]."<br>".$lang["setup"][302]."</td>";
 
 
 echo "<td align='right'>";
 echo "<a href=\"http://GLPI.indepnet.org/\">";
-echo "<span class='copyright'>GLPI ".$cfg_install["version"]." Copyright (C) 2003-".date("Y")." by the INDEPNET Development Team.</span>";
+echo "<span class='copyright'>GLPI ".$cfg_glpi["version"]." Copyright (C) 2003-".date("Y")." by the INDEPNET Development Team.</span>";
 echo "</a>";
 
 echo "</td></tr>";
@@ -515,14 +515,14 @@ echo "</table></div>";
 
 	
 
-	if ($cfg_debug["active"]==1){ // debug mode traduction
+	if ($cfg_glpi["debug"]==1){ // debug mode traduction
 
 		echo "<div id='debug-float'>";		
 		echo "<a href='#debug'>GLPI MODE TRANSLATION</a>";
 		echo "</div>";
 	}
 
-	if ($cfg_debug["active"]==2){ // mode debug 
+	if ($cfg_glpi["debug"]==2){ // mode debug 
 		
 		echo "<div id='debug-float'>";		
 		echo "<a href='#debug'>GLPI MODE DEBUG</a>";
@@ -532,11 +532,11 @@ echo "</table></div>";
 
 		echo "<div id='debug'>";
 		echo "<h1><a name='#debug'>GLPI MODE DEBUG</a></h1>";
-		if ($cfg_debug["profile"]){
+		if ($cfg_glpi["debug_profile"]){
 			echo "<h2>TIME</h2>";
 			echo $TIMER_DEBUG->Get_Time()."s";
 		}
-		if ($cfg_debug["vars"]){
+		if ($cfg_glpi["debug_vars"]){
 			echo "<h2>POST VARIABLE</h2>";
 			printCleanArray($_POST);
 			echo "<h2>GET VARIABLE</h2>";
@@ -545,10 +545,10 @@ echo "</table></div>";
 			printCleanArray($_SESSION);
 		}
 	
-		if ($cfg_debug["sql"]){	
+		if ($cfg_glpi["debug_sql"]){	
 			echo "<h2>SQL REQUEST</h2>";
 			echo "<p><strong> Number of request:</strong> ".$SQL_TOTAL_REQUEST."</p>";
-			if ($cfg_debug["profile"]){
+			if ($cfg_glpi["debug_profile"]){
 				echo "<p><strong>Total Time:</strong> ".$SQL_TOTAL_TIMER."s</p><hr>";
 			}
 			
@@ -566,10 +566,10 @@ echo "</table></div>";
 **/
 function helpFooter() {
 	// Print foot for help page
-GLOBAL $cfg_install;
+GLOBAL $cfg_glpi;
 echo "<div id='footer'><div align='right'>";
 	echo "<a href=\"http://GLPI.indepnet.org/\">";
-	echo "<span class='copyright'>GLPI ".$cfg_install["version"]." Copyright (C) 2003-".date("Y")." by the INDEPNET Development Team.</span>";
+	echo "<span class='copyright'>GLPI ".$cfg_glpi["version"]." Copyright (C) 2003-".date("Y")." by the INDEPNET Development Team.</span>";
 	echo "</a></div>";
 		echo "</div>";
 
@@ -583,10 +583,10 @@ echo "<div id='footer'><div align='right'>";
 **/
 function nullFooter() {
 	// Print foot for null page
-GLOBAL $cfg_install;
+GLOBAL $cfg_glpi;
 echo "<div id='footer'><div align='right'>";
 	echo "<a href=\"http://GLPI.indepnet.org/\">";
-	echo "<span class='copyright'>GLPI ".(isset($cfg_install["version"])?$cfg_install["version"]:"")." Copyright (C) 2003-".date("Y")." by the INDEPNET Development Team.</span>";
+	echo "<span class='copyright'>GLPI ".(isset($cfg_glpi["version"])?$cfg_glpi["version"]:"")." Copyright (C) 2003-".date("Y")." by the INDEPNET Development Team.</span>";
 	echo "</a>";
 		echo "</div></div>";
 
@@ -603,7 +603,7 @@ echo "<div id='footer'><div align='right'>";
 */
 function printHelpDesk ($name,$from_helpdesk) {
 
-	GLOBAL $db,$cfg_layout,$cfg_install,$lang,$cfg_features;
+	GLOBAL $db,$cfg_glpi,$lang;
 
 	$query = "SELECT email,realname,name FROM glpi_users WHERE (name = '$name')";
 	$result=$db->query($query);
@@ -626,7 +626,7 @@ function printHelpDesk ($name,$from_helpdesk) {
 		if (isset($_SESSION["helpdeskSaved"]["contents"]))
                 $contents = stripslashes($_SESSION["helpdeskSaved"]["contents"]);
 
-	echo "<form method='post' name=\"helpdeskform\" action=\"".$cfg_install["root"]."/tracking/tracking-injector.php\"  enctype=\"multipart/form-data\">";
+	echo "<form method='post' name=\"helpdeskform\" action=\"".$cfg_glpi["root_doc"]."/tracking/tracking-injector.php\"  enctype=\"multipart/form-data\">";
 	echo "<input type='hidden' name='from_helpdesk' value='$from_helpdesk'>";
 
 	echo "<div align='center'><table  class='tab_cadre'>";
@@ -639,7 +639,7 @@ function printHelpDesk ($name,$from_helpdesk) {
 	echo "<td>";
 	dropdownPriority("priority",3);
 	echo "</td></tr>";
-	if($cfg_features["mailing"] != 0)
+	if($cfg_glpi["mailing"] != 0)
 	{
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$lang["help"][8].":</td>";
@@ -673,7 +673,7 @@ function printHelpDesk ($name,$from_helpdesk) {
 	$max_size=round($max_size,1);
 	
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][2]." (".$max_size." Mb max):	";
-	echo "<img src=\"".$cfg_install["root"]."/pics/aide.png\" style='cursor:pointer;' alt=\"aide\"onClick=\"window.open('".$cfg_install["root"]."/typedocs/list.php','Help','scrollbars=1,resizable=1,width=850,height=800')\">";
+	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/aide.png\" style='cursor:pointer;' alt=\"aide\"onClick=\"window.open('".$cfg_glpi["root_doc"]."/typedocs/list.php','Help','scrollbars=1,resizable=1,width=850,height=800')\">";
 	echo "</td>";
 	echo "<td><input type='file' name='filename' value=\"\" size='25'></td>";
 	echo "</tr>";
@@ -705,28 +705,28 @@ function printHelpDesk ($name,$from_helpdesk) {
 */
 function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 
-	GLOBAL $cfg_layout, $cfg_features, $lang, $HTMLRel,$cfg_install;
+	GLOBAL $cfg_glpi, $lang, $HTMLRel,$cfg_glpi;
 	
 	// Forward is the next step forward
-	$forward = $start+$cfg_features["list_limit"];
+	$forward = $start+$cfg_glpi["list_limit"];
 	
 	// This is the end, my friend	
-	$end = $numrows-$cfg_features["list_limit"];
+	$end = $numrows-$cfg_glpi["list_limit"];
 
 	// Human readable count starts here
 	$current_start=$start+1;
 			
 	// And the human is viewing from start to end
-	$current_end = $current_start+$cfg_features["list_limit"]-1;
+	$current_end = $current_start+$cfg_glpi["list_limit"]-1;
 	if ($current_end>$numrows) {
 		$current_end = $numrows;
 	}
 
 	// Backward browsing 
-	if ($current_start-$cfg_features["list_limit"]<=0) {
+	if ($current_start-$cfg_glpi["list_limit"]<=0) {
 		$back=0;
 	} else {
-		$back=$start-$cfg_features["list_limit"];
+		$back=$start-$cfg_glpi["list_limit"];
 	}
 
 	// Print it
@@ -763,7 +763,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 	
 	if ($item_type_output>0&&isNormal($_SESSION["glpitype"])){
 	echo "<td class='tab_bg_2' width='30%'>" ;
-	echo "<form method='GET' action=\"".$cfg_install['root']."/reports/dynamicReport.php\" target='_blank'>\n";
+	echo "<form method='GET' action=\"".$cfg_glpi["root_doc"]."/reports/dynamicReport.php\" target='_blank'>\n";
 	echo "<input type='hidden' name='item_type' value='$item_type_output'>";
 	$split=split("&amp;",$parameters);
 	//echo $parameters;

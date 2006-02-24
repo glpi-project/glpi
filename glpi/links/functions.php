@@ -95,7 +95,7 @@ function showLinkOnglets($target,$withtemplate,$actif){
 **/
 function showLinkForm ($target,$ID) {
 
-	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel;
+	GLOBAL $cfg_glpi, $lang,$HTMLRel;
 
 	$con = new Link;
 	$con_spotted=false;
@@ -259,7 +259,7 @@ function deleteLink($input) {
 *
 **/
 function showLinkDevice($instID) {
-	GLOBAL $db,$cfg_layout,$cfg_install, $lang,$HTMLRel;
+	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel;
 
     
 	$query = "SELECT * from glpi_links_device WHERE FK_links='$instID' ORDER BY device_type";
@@ -267,7 +267,7 @@ function showLinkDevice($instID) {
 	$number = $db->numrows($result);
 	$i = 0;
 	
-    echo "<form method='post' action=\"".$cfg_install["root"]."/links/links-info-form.php\">";
+    echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/links/links-info-form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='2'>".$lang["links"][4].":</th></tr>";
 	echo "<tr><th>".$lang["common"][17]."</th>";

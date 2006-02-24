@@ -65,21 +65,21 @@ else if (isset($_POST["delete"]))
 	checkAuthentication("admin");
 	deleteDocument($_POST);
 	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][22]);
-	glpi_header($cfg_install["root"]."/documents/");
+	glpi_header($cfg_glpi["root_doc"]."/documents/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreDocument($_POST);
 	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_install["root"]."/documents/");
+	glpi_header($cfg_glpi["root_doc"]."/documents/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
 	deleteDocument($_POST,1);
 	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_install["root"]."/documents/");
+	glpi_header($cfg_glpi["root_doc"]."/documents/");
 }
 else if (isset($_POST["additem"])){
 	checkAuthentication("admin");
@@ -104,13 +104,13 @@ else if (isset($_POST["addenterprise"])){
 
 	addEnterpriseDocument($_POST["conID"],$_POST["entID"]);
 	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]."  ".$lang["log"][32]);
-	glpi_header($cfg_install["root"]."/documents/documents-info-form.php?ID=".$_POST["conID"]);
+	glpi_header($cfg_glpi["root_doc"]."/documents/documents-info-form.php?ID=".$_POST["conID"]);
 }
 else if (isset($_GET["deleteenterprise"])){
 	checkAuthentication("admin");
 	deleteEnterpriseDocument($_GET["ID"]);
 	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]."  ".$lang["log"][33]);
-	glpi_header($cfg_install["root"]."/documents/documents-info-form.php?ID=".$_POST["conID"]);
+	glpi_header($cfg_glpi["root_doc"]."/documents/documents-info-form.php?ID=".$_POST["conID"]);
 }
 else if (isset($_POST["update"]))
 {

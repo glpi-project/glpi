@@ -50,7 +50,7 @@ function titleUsers(){
 }
 function showPasswordForm($target,$name) {
 
-	GLOBAL $cfg_layout, $lang;
+	GLOBAL $cfg_glpi, $lang;
 	
 	$user = new User();
 	if ($user->getFromDB($name)){
@@ -72,7 +72,7 @@ function showUserinfo($target,$ID) {
 	
 	// Affiche les infos User
 	
-	GLOBAL $cfg_layout, $lang;
+	GLOBAL $cfg_glpi, $lang;
 	
 	$user = new User();
 	
@@ -111,7 +111,7 @@ function showUserinfo($target,$ID) {
 function showUserform($target,$name) {
 	
 	// Affiche un formulaire User
-	GLOBAL $cfg_layout, $lang;
+	GLOBAL $cfg_glpi, $lang;
 	
 	$user = new User();
 	if($name == 'Helpdesk') {
@@ -254,7 +254,7 @@ function showUserform($target,$name) {
 
 
 function addUser($input) {
-global $cfg_install;
+global $cfg_glpi;
 	
 	//only admin and superadmin can add some user
 	if(isAdmin($_SESSION["glpitype"])) {
@@ -354,7 +354,7 @@ function deleteUser($input) {
 function showFormAssign($target)
 {
 
-	GLOBAL $db,$cfg_layout,$cfg_install, $lang, $IRMName;
+	GLOBAL $db,$cfg_glpi, $lang, $IRMName;
 	
 	$query = "SELECT name FROM glpi_users where name <> 'Helpdesk' and name <> '".$_SESSION["glpiname"]."' ORDER BY type DESC";
 	
@@ -405,7 +405,7 @@ function updateSort($input) {
 
 function showLangSelect($target) {
 
-	GLOBAL $cfg_layout, $cfg_install, $lang;
+	GLOBAL $cfg_glpi, $lang;
 	
 	$l = $_SESSION["glpilanguage"]; 
 	
@@ -415,10 +415,10 @@ function showLangSelect($target) {
 	echo "<tr><td width='100%' align='center' class='tab_bg_1'>";
 	echo "<select name='language'>";
 
-	while (list($cle)=each($cfg_install["languages"])){
+	while (list($cle)=each($cfg_glpi["languages"])){
 		echo "<option value=\"".$cle."\"";
 			if ($l==$cle) { echo " selected"; }
-		echo ">".$cfg_install["languages"][$cle][0];
+		echo ">".$cfg_glpi["languages"][$cle][0];
 	}
 	echo "</select>";
 	echo "</td>";
@@ -443,7 +443,7 @@ function updateLanguage($input) {
 
 function showSortForm($target) {
 
-	GLOBAL $cfg_layout, $lang;
+	GLOBAL $cfg_glpi, $lang;
 	
 	$order = $_SESSION["tracking_order"];
 	
@@ -518,7 +518,7 @@ function dropdownUserType($myname,$value="post-only"){
 }
 
 function useAuthExt(){
-global $cfg_login;	
-return (!empty($cfg_login['imap']['auth_server'])||!empty($cfg_login['ldap']['host'])||!empty($cfg_login["cas"]["host"]));
+global $cfg_glpi;	
+return (!empty($cfg_glpi["imap_auth_server"])||!empty($cfg_glpi["ldap_host"])||!empty($cfg_glpi["cas_host"]));
 }
 ?>

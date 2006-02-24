@@ -72,7 +72,7 @@ if(!empty($_GET["next"])) {
 elseif(!empty($_POST["update_mailing"])) {
 
 	updateMailing($_POST["mailing"],$_POST["admin_email"],$_POST["mailing_signature"],$_POST["mailing_new_admin"],$_POST["mailing_followup_admin"],$_POST["mailing_finish_admin"],$_POST["mailing_new_all_admin"],$_POST["mailing_followup_all_admin"],$_POST["mailing_finish_all_admin"],$_POST["mailing_new_all_normal"],$_POST["mailing_followup_all_normal"],$_POST["mailing_finish_all_normal"],$_POST["mailing_followup_attrib"],$_POST["mailing_finish_attrib"],$_POST["mailing_new_user"],$_POST["mailing_followup_user"],$_POST["mailing_finish_user"],$_POST["mailing_new_attrib"],$_POST["mailing_resa_admin"],$_POST["mailing_resa_all_admin"],$_POST["mailing_resa_user"],$_POST["url_base"],$_POST["url_in_mail"],$_POST["mailing_attrib_attrib"],$_POST["mailing_update_admin"],$_POST["mailing_update_all_admin"],$_POST["mailing_update_all_normal"],$_POST["mailing_update_attrib"],$_POST["mailing_update_user"]);
-	glpi_header($cfg_install["root"]."/setup/index.php");
+	glpi_header($cfg_glpi["root_doc"]."/setup/index.php");
 }
 elseif(!empty($_POST["update_ext"])) {
 
@@ -88,28 +88,28 @@ elseif(!empty($_POST["update_ext"])) {
 	if(empty($_POST["CA_Test"])) {
 		updateCAS($_POST["cas_host"],$_POST["cas_port"],$_POST["cas_uri"]);
 	}
-	glpi_header($cfg_install["root"]."/setup/setup-config.php?next=extsources");
+	glpi_header($cfg_glpi["root_doc"]."/setup/setup-config.php?next=extsources");
 }
 elseif(!empty($_POST["update_confgen"])) {
 	updateConfigGen($_POST["root_doc"], $_POST["event_loglevel"], $_POST["expire_events"],$_POST["permit_helpdesk"],$_POST["default_language"],$_POST["date_fiscale"],$_POST["cartridges_alarm"],
 	$_POST["auto_assign"],$_POST["auto_update_check"],$_POST["auto_add_users"],$_POST["post_only_followup"],$_POST["ocs_mode"], $_POST["debug"]);
-	if ($_POST["ocs_mode"]&&!$cfg_features["ocs_mode"])
-		glpi_header($cfg_install["root"]."/setup/setup-config.php?next=ocsng");
+	if ($_POST["ocs_mode"]&&!$cfg_glpi["ocs_mode"])
+		glpi_header($cfg_glpi["root_doc"]."/setup/setup-config.php?next=ocsng");
 	else 
-		glpi_header($cfg_install["root"]."/setup/setup-config.php?next=confgen");
+		glpi_header($cfg_glpi["root_doc"]."/setup/setup-config.php?next=confgen");
 }
 elseif(!empty($_POST["update_confdisplay"])) {
 	updateConfigDisplay($_POST["num_of_events"], $_POST["jobs_at_login"],$_POST["list_limit"], $_POST["cut"],$_POST["priority"],
 	$_POST["planning_begin"],$_POST["planning_end"],$_POST["public_faq"],$_POST["text_login"],
 	$_POST["use_ajax"],$_POST["ajax_wildcard"],$_POST["ajax_limit_count"],$_POST["dropdown_max"],$_POST["ajax_autocompletion"],$_POST["dateformat"],
 	$_POST["view_ID"],$_POST["nextprev_item"],$_POST["dropdown_limit"]);
-	glpi_header($cfg_install["root"]."/setup/setup-config.php?next=confdisplay");
+	glpi_header($cfg_glpi["root_doc"]."/setup/setup-config.php?next=confdisplay");
 } elseif(!empty($_POST["update_ocs_config"])) {
 	ocsUpdateConfig($_POST, 1);
-	glpi_header($cfg_install["root"]."/setup/setup-config.php?next=ocsng");
+	glpi_header($cfg_glpi["root_doc"]."/setup/setup-config.php?next=ocsng");
 } elseif(!empty($_POST["update_ocs_dbconfig"])) {
 	ocsUpdateDBConfig($_POST, 1);
-	glpi_header($cfg_install["root"]."/setup/setup-config.php?next=ocsng");
+	glpi_header($cfg_glpi["root_doc"]."/setup/setup-config.php?next=ocsng");
 }
 
 commonFooter();

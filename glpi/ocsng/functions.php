@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 function ocsShowNewComputer($check,$start,$tolinked=0){
-global $db,$dbocs,$lang,$HTMLRel,$cfg_features;
+global $db,$dbocs,$lang,$HTMLRel,$cfg_glpi;
 
 $query_ocs = "select * from hardware order by LASTDATE";
 $result_ocs = $dbocs->query($query_ocs) or die($dbocs->error());
@@ -91,7 +91,7 @@ if ($dbocs->numrows($result_ocs)>0){
    	 	printPager($start,$numrows,$_SERVER["PHP_SELF"],$parameters);
 
 		// delete end 
-		array_splice($hardware,$start+$cfg_features["list_limit"]);
+		array_splice($hardware,$start+$cfg_glpi["list_limit"]);
 		// delete begin
 		if ($start>0)
 		array_splice($hardware,0,$start);
@@ -545,7 +545,7 @@ function ocsCleanLinks(){
 
 
 function ocsShowUpdateComputer($check,$start){
-global $db,$dbocs,$lang,$HTMLRel,$cfg_features;
+global $db,$dbocs,$lang,$HTMLRel,$cfg_glpi;
 
 $cfg_ocs=getOcsConf(1);
 
@@ -588,7 +588,7 @@ if ($dbocs->numrows($result_ocs)>0){
    		printPager($start,$numrows,$_SERVER["PHP_SELF"],$parameters);
 
 		// delete end 
-		array_splice($already_linked,$start+$cfg_features["list_limit"]);
+		array_splice($already_linked,$start+$cfg_glpi["list_limit"]);
 		// delete begin
 		if ($start>0)
 		array_splice($already_linked,0,$start);

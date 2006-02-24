@@ -40,7 +40,7 @@ include ($phproot . "/glpi/config/based_config.php");
 checkauthentication("super-admin");
 
 // full path 
-$path = $cfg_install['dump_dir'] ;
+$path = $cfg_glpi["dump_dir"] ;
 if (!is_dir($path)) mkdir($path, 0777);
 if (isset($_GET["sendFile"])){
 sendFile($path.$_GET["sendFile"],$_GET["sendFile"]);
@@ -113,7 +113,7 @@ else $filetype = "sql";
 //dbpassword sur le serveur dbdefault
 function xmlbackup($dbdefault,$dbhost,$dbuser,$dbpassword)
 {
-global $cfg_install,$db;
+global $cfg_glpi,$db;
 //on inclue le fichier contenant la classe XML.
 require('genxml.php');
 
@@ -144,7 +144,7 @@ $i = 0;
 //le nom du fichier a generer...
 //Si fichier existe deja il sera remplacé par le nouveau
 
-$chemin = $cfg_install['dump_dir']."/backup.xml";
+$chemin = $cfg_glpi["dump_dir"]."/backup.xml";
 
 // Creation d'une nouvelle instance de la classe
 // et initialisation des variables

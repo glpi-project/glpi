@@ -91,7 +91,7 @@ function showPhoneOnglets($target,$withtemplate,$actif){
 
 function showPhoneForm ($target,$ID,$withtemplate='') {
 
-	GLOBAL $cfg_install, $cfg_layout, $lang,$HTMLRel;
+	GLOBAL $cfg_glpi, $lang,$HTMLRel;
 
 	$mon = new Phone;
 

@@ -38,9 +38,9 @@ include ("_relpos.php");
 function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplate='') {
 	// Show Infocom or blank form
 	
-	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel;
+	GLOBAL $cfg_glpi,$lang,$HTMLRel;
 
-	$date_fiscale=$cfg_install["date_fiscale"];
+	$date_fiscale=$cfg_glpi["date_fiscale"];
 	
 	$ic = new Infocom;
 

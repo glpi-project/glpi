@@ -28,21 +28,16 @@
  ------------------------------------------------------------------------
 */
 
-// Based on:
-// IRMA, Information Resource-Management and Administration
-// Christian Bauer 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
-// And Julien Dombre for externals identifications
-// And Marco Gaiarin for ldap features
 
  
 include ("_relpos.php");
 include ($phproot . '/glpi/config/based_config.php');
 
-if(!file_exists($cfg_install['config_dir'] . "/config_db.php")) {
+if(!file_exists($cfg_glpi["config_dir"] . "/config_db.php")) {
 	nullHeader("Mysql Error",$_SERVER['PHP_SELF']);
 	echo "<div align='center'>";
 	echo "<p>Error : GLPI seems to not be installed properly.</p><p> config_db.php file is missing.</p><p>Please restart the install process.</p>";
@@ -54,7 +49,7 @@ if(!file_exists($cfg_install['config_dir'] . "/config_db.php")) {
 else
 {
 
-require_once ($cfg_install["config_dir"] . "/config_db.php");
+require_once ($cfg_glpi["config_dir"] . "/config_db.php");
 
 
 
@@ -66,7 +61,7 @@ require_once ($cfg_install["config_dir"] . "/config_db.php");
 // dictionnaires
 
 
-$cfg_install["languages"]=array("deutsch"=>array("Deutsch","deutsch.php","english.html","hd-english.html"),
+$cfg_glpi["languages"]=array("deutsch"=>array("Deutsch","deutsch.php","english.html","hd-english.html"),
 				"dutch"=>array("Dutch","dutch.php","english.html","hd-english.html"),
 				"english"=>array("English","english.php","english.html","hd-english.html"),
 				"castellano"=>array("Español (castellano)","castellano.php","castellano.html","hd-castellano.html"),
@@ -146,8 +141,8 @@ define("MAX_OCS_CHECKSUM","131071");
 
 
 //DEVICE ARRAY.
-$cfg_devices_tables =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
-//$cfg_devices_tables = array("moboard","processor","ram","hdd","iface","gfxcard","sndcard");
+$cfg_glpi["devices_tables"] =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
+//$cfg_glpi["devices_tables"] = array("moboard","processor","ram","hdd","iface","gfxcard","sndcard");
 
 $LINK_ID_TABLE=array(
 		COMPUTER_TYPE=> "glpi_computers",
@@ -234,37 +229,30 @@ $dropdowntree_tables=array("glpi_dropdown_locations","glpi_dropdown_kbcategories
 
 //Options g�� dynamiquement, ne pas toucher cette partie.
 //Options from DB, do not touch this part.
+$cfg_glpi["debug"]=$cfg_glpi["debug_sql"]=$cfg_glpi["debug_vars"]=$cfg_glpi["debug_profile"]=$cfg_glpi["debug_lang"]=0;
 
 $db = new DB;
 $query = "select * from glpi_config";
 $result = $db->query($query);
 if($result)
 {
-$data=$db->fetch_assoc($result);
-
-//root document
-//document root
-$cfg_install["root"] = $data["root_doc"];
+$cfg_glpi=array_merge($cfg_glpi,$data=$db->fetch_assoc($result));
 
 // Path for icon of document type
-$cfg_install["typedoc_icon_dir"] = "pics/icones";
-
-// Default language
-$cfg_install["default_language"] = $data["default_language"];
+$cfg_glpi["typedoc_icon_dir"] = "pics/icones";
 
 // *************************** Mode NORMAL / TRALATION /DEBUG  **********************
 // *********************************************************************************
 
-
 // Mode debug ou traduction
-$cfg_debug["active"]=$data["debug"]; // 0 inactif , 1 traduction , 2 debug complet
-$cfg_debug["sql"]=($cfg_debug["active"]==2); // affiche les requetes
-$cfg_debug["vars"]=($cfg_debug["active"]==2); // affiche les variables
-$cfg_debug["profile"]=($cfg_debug["active"]==2); // Profile les requetes
-$cfg_debug["lang"]=($cfg_debug["active"]==1); // affiche les variables de trads
+$cfg_glpi["debug"]=2;
+$cfg_glpi["debug_sql"]=($cfg_glpi["debug"]==2?1:0); // affiche les requetes
+$cfg_glpi["debug_vars"]=($cfg_glpi["debug"]==2?1:0); // affiche les variables
+$cfg_glpi["debug_profile"]=($cfg_glpi["debug"]==2?1:0); // Profile les requetes
+$cfg_glpi["debug_lang"]=($cfg_glpi["debug"]==1?1:0); // affiche les variables de trads
 
 // Mode debug activé on affiche un certains nombres d'informations
-	if ($cfg_debug["active"]==2){
+	if ($cfg_glpi["debug"]==2){
 	ini_set('display_errors','On');
 	error_reporting(E_ALL);
 	ini_set('error_prepend_string','<div style="position:absolute; top:5px; left:5px; background-color:red; z-index:10000">PHP ERROR : ');
@@ -275,227 +263,19 @@ error_reporting(0);
 }
 
 
+if(!empty($cfg_glpi["ldap_host"])){
+	$cfg_glpi["ldap_basedn"] = utf8_decode($cfg_glpi["ldap_basedn"]);
+	$cfg_glpi["ldap_rootdn"] = utf8_decode($cfg_glpi["ldap_rootdn"]);
+	$cfg_glpi["ldap_pass"] = utf8_decode($cfg_glpi["ldap_pass"]);
 
-// Gestion de source d'information alternatives pour le login
-// telles que des serveurs de mail en imap pop...
-// ports standards : pop 110 , imap 993
-// Dans tous les cas le dernier type de login test�est la base de donn�s
-// Dans le cas o le login est incorrect dans la base mais est correct
-// sur la source alternative, l'utilisateur est ajout�ou son mot de passe
-// est modifi�// Si plusieurs sources alternatives sont d�inies, seule la premi�e
-// fournissant un login correct est utilis�
-$cfg_login['imap']['auth_server'] = $data["imap_auth_server"];
-$cfg_login['imap']['host'] = $data["imap_host"];
-
-// LDAP setup.
-// We can use LDAP both for authentication and for user information
-
-$cfg_login['ldap']['host'] = $data["ldap_host"];
-$cfg_login['ldap']['basedn'] = utf8_decode($data["ldap_basedn"]);
-
-$cfg_login['ldap']['rootdn'] = utf8_decode($data["ldap_rootdn"]);
-$cfg_login['ldap']['pass'] = utf8_decode($data["ldap_pass"]);
-$cfg_login['ldap']['login'] = $data["ldap_login"];
-$cfg_login['ldap']['port'] = $data["ldap_port"];
-
-// Log in filter A AJOUTER DANS LA DB
-$cfg_login['ldap']['condition'] = utf8_decode($data["ldap_condition"]);
-
-// Use LDAP TLS
-$cfg_login['ldap']['use_tls'] = utf8_decode($data["ldap_use_tls"]);
-
-// some lDAP server (eg, M$ Active Directory) does not like anonymous
-// bind
-//$cfg_login['ldap']['rootdn'] = "cn=admin,ou=People,dc=sv,dc=lnf,dc=it";
-//$cfg_login['ldap']['pass'] = "secret";
-// relation between the GLPI users table field and the LDAP field
-
-//// AJOUTER CA DANS LA CONFIG POST INSTALL
-$cfg_login['ldap']['fields'] = array( "name" => $data["ldap_field_name"], 
-					"email" => $data["ldap_field_email"], 
-					"location" => $data["ldap_field_location"], 
-					"phone" => $data["ldap_field_phone"], 
-					"realname" => $data["ldap_field_realname"]);
-// CAS authentification method
-$cfg_login["cas"]["host"]=$data["cas_host"];
-$cfg_login["cas"]["port"]=$data["cas_port"];
-$cfg_login["cas"]["uri"]=$data["cas_uri"];
-
-//other sources
-//$cfg_login['other_source']...
-
-
-// Utilisation des fonctions mailing ou non, mettez 1 si vous voulez utiliser les 
-//notifications par mail.
-//Necessite que votre fonction mail() fonctionne.
-$cfg_features["mailing"]	= $data["mailing"];	
-// Addresse de l'administrateur (obligatoire si mailing activ�
-
-$cfg_mailing["admin_email"]	= $data["admin_email"];
-
-// Signature for automatic generated E-Mails
-$cfg_mailing["signature"]	= $data["mailing_signature"];
-
-// A utiliser  uniquement si $cfg_features["mailing"] = 1;
-// D�inition des envois des mails d'informations
-// admin : vers le mail $cfg_features["admin_email"]
-// all_admin : tous les utilisateurs en mode admin
-// all_normal : toutes les utilisateurs en mode normal
-// attrib : personne responsable de la tache
-// user : utilisateur demandeur
-// 1 pour l'envoi et 0 dans le cas contraire 
-
-$cfg_mailing["new"]["admin"]= $data["mailing_new_admin"];
-$cfg_mailing["update"]["admin"]= $data["mailing_update_admin"];
-$cfg_mailing["followup"]["admin"]=$data["mailing_followup_admin"];
-$cfg_mailing["finish"]["admin"]=$data["mailing_finish_admin"];
-
-$cfg_mailing["new"]["all_admin"]=$data["mailing_new_all_admin"];
-$cfg_mailing["update"]["all_admin"]=$data["mailing_update_all_admin"];
-$cfg_mailing["followup"]["all_admin"]=$data["mailing_followup_all_admin"];
-$cfg_mailing["finish"]["all_admin"]=$data["mailing_finish_all_admin"];
-
-
-$cfg_mailing["new"]["all_normal"]=$data["mailing_new_all_normal"];
-$cfg_mailing["update"]["all_normal"]=$data["mailing_update_all_normal"];
-$cfg_mailing["followup"]["all_normal"]=$data["mailing_followup_all_normal"];
-$cfg_mailing["finish"]["all_normal"]=$data["mailing_finish_all_normal"];
-
-$cfg_mailing["new"]["attrib"] = $data["mailing_new_attrib"];
-$cfg_mailing["update"]["attrib"] = $data["mailing_update_attrib"];
-$cfg_mailing["followup"]["attrib"]=$data["mailing_followup_attrib"];
-$cfg_mailing["finish"]["attrib"]=$data["mailing_finish_attrib"];
-$cfg_mailing["attrib"]["attrib"] = $data["mailing_attrib_attrib"];
-
-$cfg_mailing["new"]["user"]=$data["mailing_new_user"];
-$cfg_mailing["update"]["user"]=$data["mailing_update_user"];
-$cfg_mailing["followup"]["user"]=$data["mailing_followup_user"];
-$cfg_mailing["finish"]["user"]=$data["mailing_finish_user"];
-
-$cfg_mailing["resa"]["admin"]=$data["mailing_resa_admin"];
-$cfg_mailing["resa"]["all_admin"]=$data["mailing_resa_all_admin"];
-$cfg_mailing["resa"]["user"]=$data["mailing_resa_user"];
-
-
-// Features configuration
-
-// Log level :
-// Niveau de log :
-
-// 1 - Critical (login failures) |  (erreur de loging seulement)
-// 2 - Severe - not used  | (non utilis�
-// 3 - Important - (sucessfull logins)  |  importants (loging r�ssis)
-// 4 - Notice (updates, adds, deletes, tracking) | classique
-// 5 - Junk (i.e., setup dropdown fields, update users or templates) | log tout (ou presque)
-$cfg_features["event_loglevel"]	= $data["event_loglevel"];
-
-// Show jobs at login.
-// Montrer les interventions au loging (1 = oui | 0 = non)
-$cfg_features["jobs_at_login"]	= $data["jobs_at_login"];
-
-// Show last num_of_events on login.
-// Nombre des derniers evenements presents dans le tableau au loging
-$cfg_features["num_of_events"]	= $data["num_of_events"];
-
-//++ not on the config
-// Send Expire Headers and set Meta-Tags for proper content expiration.
-$cfg_features["sendexpire"]		= $data["sendexpire"];
-
-// In listings, cut long text fields after cut characters.
-$cfg_features["cut"]			= $data["cut"];	
-
-// Expire events older than this days at every login
-// (only admin-level login, set to 0 to disable expiration).
-// Temps en jours durant lequel on log les actions ayant eu lieu
-// mettez cette variable a 0 pour conserver tous les logs (prend beaucoup de place dans la bdd)
-$cfg_features["expire_events"]	= $data["expire_events"];
-
-// Threshold for long listings, activates pager.
-//Nombre d'occurence (ordinateurs, imprimantes etc etc...) qui apparaitrons dans
-//la liste de recherche par page.
-
-$cfg_features["list_limit"]		= $data["list_limit"];	
-
-//use helpdesk.html or not
-//utilisation du helpdesk.html ou pas
-$cfg_features["permit_helpdesk"] = $data["permit_helpdesk"];
-
-
-//show alarm when number of unused cartridges if under the threshold 
-$cfg_features["cartridges_alarm"] = $data["cartridges_alarm"];
-
-
-// Auto Assign tracking
-$cfg_features["auto_assign"] = $data["auto_assign"];
-
-// OCS MODE
-$cfg_features["ocs_mode"] = $data["ocs_mode"];
-
-// Authorized anonymous knowledgebase consultation
-$cfg_features["public_faq"] = $data["public_faq"];
-
-// Base URL for the URL view in mail
-$cfg_features["url_base"] = $data["url_base"];
-// Enable the URL view in mail
-$cfg_features["url_in_mail"] = $data["url_in_mail"];
-
-// version number
-// numero de version
-
-$cfg_install["version"]		= $data["version"];
-
-//Date fiscale
-$cfg_install["date_fiscale"]		= $data["date_fiscale"];
-
-$cfg_layout["logotxt"]		= $data["logotxt"];
-
-// Priority colors
-$cfg_layout["priority_1"] = $data["priority_1"];
-$cfg_layout["priority_2"] = $data["priority_2"];
-$cfg_layout["priority_3"] = $data["priority_3"];
-$cfg_layout["priority_4"] = $data["priority_4"];
-$cfg_layout["priority_5"] = $data["priority_5"];
-
-
-// Planning being and end
-$cfg_features["planning_begin"] = $data["planning_begin"];
-$cfg_features["planning_end"] = $data["planning_end"];
-
-// Wildcard for AJAX
-// TODO : Add in glpi_config
-$cfg_features["use_ajax"] = $data["use_ajax"];
-$cfg_features["ajax_wildcard"] = $data["ajax_wildcard"];
-$cfg_features["ajax_limit_count"] = $data["ajax_limit_count"];
-$cfg_features["ajax_autocompletion"] = $data["ajax_autocompletion"];
-
-// Droprown string limit size
-$cfg_layout["dropdown_limit"]		= $data["dropdown_limit"];	
-
-// Sizes
-$cfg_layout["dropdown_max"] = $data["dropdown_max"];
-
-//Login text
-$cfg_layout["text_login"] = $data["text_login"];
-
-// Auto update
-$cfg_features["auto_update_check"] = $data["auto_update_check"];
-$cfg_features["last_update_check"] = $data["last_update_check"];
-$cfg_features["founded_new_version"] = $data["founded_new_version"];
-
-// Auto add users from auth ext
-$cfg_features["auto_add_users"] = $data["auto_add_users"];
-
-// Post-only users can add followups ?
-$cfg_features["post_only_followup"] = $data["post_only_followup"];
-
-// Date Format
-$cfg_layout["dateformat"] = $data["dateformat"];
-
-// Affichage ID
-$cfg_layout["view_ID"] = $data["view_ID"];
-
-// Next Prev 
-$cfg_layout["nextprev_item"] = $data["nextprev_item"];
+	//// AJOUTER CA DANS LA CONFIG POST INSTALL
+	$cfg_glpi['ldap_fields'] = array( "name" => $cfg_glpi['ldap_field_name'], 
+					"email" => $cfg_glpi['ldap_field_email'], 
+					"location" => $cfg_glpi['ldap_field_location'], 
+					"phone" => $cfg_glpi['ldap_field_phone'], 
+					"realname" => $cfg_glpi['ldap_field_realname']
+					);
+}
 
 }
 

@@ -50,7 +50,7 @@ include ($phproot."/glpi/includes_phones.php");
 checkAuthentication("admin");
 commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
 
-$cfg_features["use_ajax"] = 1; 
+$cfg_glpi["use_ajax"] = 1; 
 
 if (isset($_SESSION["ocs_link"])){
 	if ($count=count($_SESSION["ocs_link"])){

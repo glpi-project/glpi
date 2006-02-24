@@ -69,21 +69,21 @@ else if (isset($_POST["delete"]))
 	checkAuthentication("admin");
 	deleteEnterprise($_POST);
 	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
-	glpi_header($cfg_install["root"]."/enterprises/");
+	glpi_header($cfg_glpi["root_doc"]."/enterprises/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreEnterprise($_POST);
 	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_install["root"]."/enterprises/");
+	glpi_header($cfg_glpi["root_doc"]."/enterprises/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
 	deleteEnterprise($_POST,1);
 	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_install["root"]."/enterprises/");
+	glpi_header($cfg_glpi["root_doc"]."/enterprises/");
 }
 else if (isset($_POST["addcontact"])){
 	checkAuthentication("admin");

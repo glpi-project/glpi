@@ -118,7 +118,7 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 
 		//Pour chaque lieu on affiche
 		//for each location displays
-		for ($i=$_GET['start'];$i< $numrows && $i<($_GET['start']+$cfg_features["list_limit"]);$i++){
+		for ($i=$_GET['start'];$i< $numrows && $i<($_GET['start']+$cfg_glpi["list_limit"]);$i++){
 			$query="SELECT count(*) FROM glpi_computers WHERE $champ='".$type[$i]["ID"]."'";
 
 			if ($result=$db->query($query))
@@ -179,7 +179,7 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 	echo "<table class='tab_cadre_fixe' cellpadding='5' >";
 	echo "<tr><th>&nbsp;</th><th>&nbsp;</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
 	
-	for ($i=$_GET['start'];$i< $numrows && $i<($_GET['start']+$cfg_features["list_limit"]);$i++) {
+	for ($i=$_GET['start'];$i< $numrows && $i<($_GET['start']+$cfg_glpi["list_limit"]);$i++) {
 		
 		//select computers IDs that are using this device;
 		$query2 = "SELECT distinct(glpi_computers.ID) as compid FROM glpi_computers INNER JOIN glpi_computer_device ON ( glpi_computers.ID = glpi_computer_device.FK_computers AND glpi_computer_device.device_type = '".$device_type."' AND glpi_computer_device.FK_device = '".$tab[$i]["ID"]."') WHERE glpi_computers.is_template <> '1'";

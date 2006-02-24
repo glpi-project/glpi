@@ -76,23 +76,23 @@ else if (isset($tab["delete"])) {
 	else deleteComputer($tab);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
-		glpi_header($cfg_install["root"]."/setup/setup-templates.php");
+		glpi_header($cfg_glpi["root_doc"]."/setup/setup-templates.php");
 	 else 
-		glpi_header($cfg_install["root"]."/computers/");
+		glpi_header($cfg_glpi["root_doc"]."/computers/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreComputer($_POST);
 	logEvent($tab["ID"],"computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_install["root"]."/computers/");
+	glpi_header($cfg_glpi["root_doc"]."/computers/");
 }
 else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
 	deleteComputer($tab,1);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_install["root"]."/computers/");
+	glpi_header($cfg_glpi["root_doc"]."/computers/");
 }
 //update a computer
 else if (isset($tab["update"])) {
@@ -192,7 +192,7 @@ if (isset($_GET['onglet'])) {
 					showPortsAdd($tab["ID"],COMPUTER_TYPE);
 				break;					
 			case 4 :
-				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",COMPUTER_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+				showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",COMPUTER_TYPE,$tab["ID"],1,$tab["withtemplate"]);
 				showContractAssociated(COMPUTER_TYPE,$tab["ID"],$tab["withtemplate"]);
 				break;
 			case 5 :
@@ -220,7 +220,7 @@ if (isset($_GET['onglet'])) {
 				showConnections($_SERVER["PHP_SELF"],$tab["ID"]);
 				showPorts($tab["ID"], COMPUTER_TYPE);
 				showPortsAdd($tab["ID"],COMPUTER_TYPE);
-				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",COMPUTER_TYPE,$tab["ID"]);
+				showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",COMPUTER_TYPE,$tab["ID"]);
 				showContractAssociated(COMPUTER_TYPE,$tab["ID"]);
 				showDocumentAssociated(COMPUTER_TYPE,$tab["ID"]);
 				showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
@@ -236,7 +236,7 @@ if (isset($_GET['onglet'])) {
 				showPortsAdd($tab["ID"],COMPUTER_TYPE);
 				break;
 			case 4 :
-				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",COMPUTER_TYPE,$tab["ID"]);
+				showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",COMPUTER_TYPE,$tab["ID"]);
 				showContractAssociated(COMPUTER_TYPE,$tab["ID"]);
 				break;
 			case 5 :

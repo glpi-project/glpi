@@ -47,7 +47,7 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 if(empty($tab["device_type"])) {
-	 glpi_header($cfg_install['root'] . "/devices/");
+	 glpi_header($cfg_glpi["root_doc"] . "/devices/");
 }
 
 if (isset($_SERVER["HTTP_REFERER"])) $REFERER=$_SERVER["HTTP_REFERER"];
@@ -63,13 +63,13 @@ if (isset($_POST["add"])) {
 	checkAuthentication("admin");
 	addDevice($_POST);
 	logEvent(0, "devices", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]." ".$_POST["designation"].".");
-	glpi_header($cfg_install["root"]."/devices/index.php?device_type=".$_POST["device_type"]);
+	glpi_header($cfg_glpi["root_doc"]."/devices/index.php?device_type=".$_POST["device_type"]);
 }
 else if (isset($tab["delete"])) {
 	checkAuthentication("admin");
 	deleteDevice($tab);
 	logEvent($tab["ID"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
-	glpi_header($cfg_install["root"]."/devices/index.php?device_type=".$tab["device_type"]);
+	glpi_header($cfg_glpi["root_doc"]."/devices/index.php?device_type=".$tab["device_type"]);
 }
 else if (isset($_POST["update"])) {
 	checkAuthentication("admin");

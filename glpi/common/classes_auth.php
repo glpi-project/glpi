@@ -126,7 +126,7 @@ class Identification
 	*/
   function connection_ldap($host,$basedn,$login,$pass,$condition,$port)
   {
-	global $cfg_login;
+	global $cfg_glpi;
 	
 		// we prevent some delay...
 		if (empty($host)) {
@@ -134,14 +134,14 @@ class Identification
 		}
   	error_reporting(16);
   	
-	$dn = $cfg_login['ldap']['login'] ."=" . $login . "," . $basedn;
+	$dn = $cfg_glpi["ldap_login"] ."=" . $login . "," . $basedn;
   	$rv = false;
   	if ( $ds = ldap_connect($host,$port) )
   	{
   		// switch to protocol version 3 to make ssl work
   		ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
 
-		if ($cfg_login['ldap']['use_tls']){
+		if ($cfg_glpi["ldap_use_tls"]){
 			if (!ldap_start_tls($ds)) {
 				$this->err .= ldap_error($ds)."<br>";
 				return false;
@@ -149,7 +149,7 @@ class Identification
 		}
 
   		if (ldap_bind($ds, $dn, $pass) ) {
-                     $filter="(".$cfg_login['ldap']['login']."=$login)";
+                     $filter="(".$cfg_glpi["ldap_login"]."=$login)";
                      if ($condition!="") $filter="(& $filter $condition)";
                      $sr=ldap_search($ds, $basedn, $filter);
                      $info = ldap_get_entries ( $ds, $sr );
@@ -193,13 +193,13 @@ class Identification
 	*/
  function ldap_get_dn($host,$ldap_base_dn,$login,$rdn,$rpass,$port)
  {
-	global $cfg_login;
+	global $cfg_glpi;
   // we prevent some delay...
   if (empty($host)) {
 	return false;
   }
   $ldap_server=$host;
-  $ldap_login_attr = $cfg_login['ldap']['login'];
+  $ldap_login_attr = $cfg_glpi["ldap_login"];
   $ldap_dn ="";
   error_reporting(16);
   $ds = ldap_connect ($ldap_server,$port);
@@ -212,7 +212,7 @@ class Identification
     }
   ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
 
-if ($cfg_login['ldap']['use_tls']){
+if ($cfg_glpi["ldap_use_tls"]){
 	if (!ldap_start_tls($ds)) {
 		$this->err.=ldap_error($ds)."<br>";
 		return false;
@@ -269,7 +269,7 @@ if ($cfg_login['ldap']['use_tls']){
 	*/
   function connection_ldap_active_directory($host,$basedn,$login,$pass,$condition,$port)
   {
-	global $cfg_login;
+	global $cfg_glpi;
 
 	// we prevent some delay...
 	if (empty($host)) {
@@ -284,7 +284,7 @@ if ($cfg_login['ldap']['use_tls']){
   		// switch to protocol version 3 to make ssl work
   		ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
 
-		if ($cfg_login['ldap']['use_tls']){
+		if ($cfg_glpi["ldap_use_tls"]){
 			if (!ldap_start_tls($ds)) {
        				$this->err .= ldap_error($ds)."<br>";
 				return false;
@@ -344,7 +344,7 @@ if ($cfg_login['ldap']['use_tls']){
 	*/
  function ldap_get_dn_active_directory($host,$ldap_base_dn,$login,$rdn,$rpass,$port)
  {
-global $cfg_login;
+global $cfg_glpi;
 
   // we prevent some delay...
   if (empty($host)) {
@@ -365,7 +365,7 @@ global $cfg_login;
   ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
   ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
 
-	if ($cfg_login['ldap']['use_tls']){
+	if ($cfg_glpi["ldap_use_tls"]){
 		if (!ldap_start_tls($ds)) {
 			$this->err .= ldap_error($ds)."<br>";
 			return false;
@@ -479,7 +479,7 @@ global $cfg_login;
 	// Set Cookie for this user
 	function setCookies()
 	{
-		global $cfg_install,$cfg_features;
+		global $cfg_glpi;
 
 		$ID = $this->user->fields['ID'];
 		$name = $this->user->fields['name'];
@@ -501,8 +501,8 @@ global $cfg_login;
 		$_SESSION["extauth"] = $this->extauth;
 		$_SESSION["glpisearchcount"] = array();
 		$_SESSION["glpisearchcount2"] = array();
-		$_SESSION["root"] = $cfg_install["root"];
-		$_SESSION["list_limit"] = $cfg_features["list_limit"];
+		$_SESSION["root"] = $cfg_glpi["root_doc"];
+		$_SESSION["list_limit"] = $cfg_glpi["list_limit"];
 	}
 
 	function eraseCookies()

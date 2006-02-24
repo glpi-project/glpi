@@ -76,7 +76,7 @@ echo "<td  align='center'><a href=\"setup-config.php?next=mailing\"><b>".$lang["
 echo " </tr>";
 
 echo "<tr class='tab_bg_1'><td align='center'>";
-if ($cfg_features["ocs_mode"])
+if ($cfg_glpi["ocs_mode"])
 	echo "<a href=\"setup-config.php?next=ocsng\"><b>".$lang["setup"][134]."</b></a>";
 else echo "&nbsp;";
 echo "</td>";

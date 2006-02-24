@@ -58,21 +58,21 @@ else if (isset($_POST["delete"]))
 	checkAuthentication("admin");
 	deleteConsumableType($_POST);
 	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
-	glpi_header($cfg_install["root"]."/consumables/");
+	glpi_header($cfg_glpi["root_doc"]."/consumables/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreConsumableType($_POST);
 	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_install["root"]."/consumables/");
+	glpi_header($cfg_glpi["root_doc"]."/consumables/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
 	deleteConsumableType($_POST,1);
 	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_install["root"]."/consumables/");
+	glpi_header($cfg_glpi["root_doc"]."/consumables/");
 }
 else if (isset($_POST["update"]))
 {
@@ -106,12 +106,12 @@ else
 			showConsumableAdd($tab["ID"]);
 			showConsumables($tab["ID"]);
 			showConsumables($tab["ID"],1);
-			showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",CONSUMABLE_TYPE,$tab["ID"],1);
+			showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",CONSUMABLE_TYPE,$tab["ID"],1);
 			showDocumentAssociated(CONSUMABLE_TYPE,$tab["ID"]);
 			showLinkOnDevice(CONSUMABLE_TYPE,$tab["ID"]);
 			break;
 		case 4 :
-			showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",CONSUMABLE_TYPE,$tab["ID"],1);
+			showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",CONSUMABLE_TYPE,$tab["ID"],1);
 			break;
 			
 		case 5 :

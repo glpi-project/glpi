@@ -77,7 +77,7 @@ function showDocumentOnglets($target,$withtemplate,$actif){
 function showDocumentForm ($target,$ID) {
 	// Show Document or blank form
 	
-	GLOBAL $cfg_layout,$cfg_install,$lang,$HTMLRel;
+	GLOBAL $cfg_glpi,$lang,$HTMLRel;
 
 	$con = new Document;
 	$con_spotted=false;
@@ -233,33 +233,33 @@ function updateDocument($input) {
 
 
 function moveUploadedDocument($filename,$old_file=''){
-	global $cfg_install,$phproot,$lang;
+	global $cfg_glpi,$phproot,$lang;
 
 	$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
 
-	if (is_dir($cfg_install["doc_dir"]."/UPLOAD")){
-		if (is_file($cfg_install["doc_dir"]."/UPLOAD/".$filename)){
+	if (is_dir($cfg_glpi["doc_dir"]."/UPLOAD")){
+		if (is_file($cfg_glpi["doc_dir"]."/UPLOAD/".$filename)){
 			$dir=isValidDoc($filename);
 			$new_path=getUploadFileValidLocationName($dir,$filename,0);
 			if (!empty($new_path)){
 
 				// Delete old file
-				if(!empty($old_file)&& is_file($cfg_install["doc_dir"]."/".$old_file)&& !is_dir($cfg_install["doc_dir"]."/".$old_file)) {
-					if (unlink($cfg_install["doc_dir"]."/".$old_file))
-						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][24].$cfg_install["doc_dir"]."/".$old_file."<br>";
+				if(!empty($old_file)&& is_file($cfg_glpi["doc_dir"]."/".$old_file)&& !is_dir($cfg_glpi["doc_dir"]."/".$old_file)) {
+					if (unlink($cfg_glpi["doc_dir"]."/".$old_file))
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][24].$cfg_glpi["doc_dir"]."/".$old_file."<br>";
 					else 
-						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][25].$cfg_install["doc_dir"]."/".$old_file."<br>";
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][25].$cfg_glpi["doc_dir"]."/".$old_file."<br>";
 				}
 				
 				// Déplacement si droit
-				if (is_writable ($cfg_install["doc_dir"]."/UPLOAD/".$filename)){
-					if (rename($cfg_install["doc_dir"]."/UPLOAD/".$filename,$cfg_install["doc_dir"]."/".$new_path)){
+				if (is_writable ($cfg_glpi["doc_dir"]."/UPLOAD/".$filename)){
+					if (rename($cfg_glpi["doc_dir"]."/UPLOAD/".$filename,$cfg_glpi["doc_dir"]."/".$new_path)){
 						$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][39]."<br>";
 						return $new_path;
 						}
 					else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][40]."<br>";
 				} else { // Copi sinon
-					if (copy($cfg_install["doc_dir"]."/UPLOAD/".$filename,$cfg_install["doc_dir"]."/".$new_path)){
+					if (copy($cfg_glpi["doc_dir"]."/UPLOAD/".$filename,$cfg_glpi["doc_dir"]."/".$new_path)){
 						$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][41]."<br>";
 						return $new_path;
 						}
@@ -267,7 +267,7 @@ function moveUploadedDocument($filename,$old_file=''){
 				}
 			}
 		
-		} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][38].": ".$cfg_install["doc_dir"]."/UPLOAD/".$filename."<br>";
+		} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][38].": ".$cfg_glpi["doc_dir"]."/UPLOAD/".$filename."<br>";
 
 	} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][35]."<br>";
 
@@ -275,7 +275,7 @@ return "";
 }
 
 function uploadDocument($FILEDESC,$old_file=''){
-	global $cfg_install,$phproot,$lang;
+	global $cfg_glpi,$phproot,$lang;
 
 	$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
 	// Is a file uploaded ?
@@ -291,15 +291,15 @@ function uploadDocument($FILEDESC,$old_file=''){
 
 		if (!empty($new_path)){
 			// Delete old file
-			if(!empty($old_file)&& is_file($cfg_install["doc_dir"]."/".$old_file)&& !is_dir($cfg_install["doc_dir"]."/".$old_file)) {
-				if (unlink($cfg_install["doc_dir"]."/".$old_file))
-					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][24].$cfg_install["doc_dir"]."/".$old_file."<br>";
+			if(!empty($old_file)&& is_file($cfg_glpi["doc_dir"]."/".$old_file)&& !is_dir($cfg_glpi["doc_dir"]."/".$old_file)) {
+				if (unlink($cfg_glpi["doc_dir"]."/".$old_file))
+					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][24].$cfg_glpi["doc_dir"]."/".$old_file."<br>";
 				else 
-					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][25].$cfg_install["doc_dir"]."/".$old_file."<br>";
+					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][25].$cfg_glpi["doc_dir"]."/".$old_file."<br>";
 			}
 					
 			// Move uploaded file
-			if (move_uploaded_file($FILEDESC['tmp_name'],$cfg_install["doc_dir"]."/".$new_path)) {
+			if (move_uploaded_file($FILEDESC['tmp_name'],$cfg_glpi["doc_dir"]."/".$new_path)) {
 	   			$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][26]."<br>";
 				return $new_path;
 			} else {
@@ -315,24 +315,24 @@ return "";
 
 function getUploadFileValidLocationName($dir,$filename,$force){
 
-	global $cfg_install,$lang;
+	global $cfg_glpi,$lang;
 
 		if (!empty($dir)){
 			// Test existance repertoire DOCS
-			if (is_dir($cfg_install["doc_dir"])){
+			if (is_dir($cfg_glpi["doc_dir"])){
 			// Test existance sous-repertoire type dans DOCS -> sinon création
-			if (!is_dir($cfg_install["doc_dir"]."/".$dir)){
-				$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][34]." ".$cfg_install["doc_dir"]."/".$dir."<br>";
-				@mkdir($cfg_install["doc_dir"]."/".$dir);
+			if (!is_dir($cfg_glpi["doc_dir"]."/".$dir)){
+				$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][34]." ".$cfg_glpi["doc_dir"]."/".$dir."<br>";
+				@mkdir($cfg_glpi["doc_dir"]."/".$dir);
 			}
 			// Copy du fichier uploadé si répertoire existe
-			if (is_dir($cfg_install["doc_dir"]."/".$dir)){
+			if (is_dir($cfg_glpi["doc_dir"]."/".$dir)){
 				if (!$force){
 					// Rename file if exists
 					$NB_CHAR_MORE=10;
 					$i=0;
 					$tmpfilename=$filename;
-					while ($i<$NB_CHAR_MORE&&is_file($cfg_install["doc_dir"]."/".$dir."/".$filename)){
+					while ($i<$NB_CHAR_MORE&&is_file($cfg_glpi["doc_dir"]."/".$dir."/".$filename)){
 						$filename="_".$filename;
 						$i++;
 					}
@@ -340,27 +340,27 @@ function getUploadFileValidLocationName($dir,$filename,$force){
 					if ($i==$NB_CHAR_MORE){
 						$i=0;
 						$filename=$tmpfilename;
-						while ($i<$NB_CHAR_MORE&&is_file($cfg_install["doc_dir"]."/".$dir."/".$filename)){
+						while ($i<$NB_CHAR_MORE&&is_file($cfg_glpi["doc_dir"]."/".$dir."/".$filename)){
 							$filename="-".$filename;
 							$i++;
 						}
 						if ($i==$NB_CHAR_MORE){
 							$i=0;
 							$filename=$tmpfilename;
-							while ($i<$NB_CHAR_MORE&&is_file($cfg_install["doc_dir"]."/".$dir."/".$filename)){
+							while ($i<$NB_CHAR_MORE&&is_file($cfg_glpi["doc_dir"]."/".$dir."/".$filename)){
 								$filename="0".$filename;
 								$i++;
 							}
 						}
 					}
 				}
-				if ($force||!is_file($cfg_install["doc_dir"]."/".$dir."/".$filename)){
+				if ($force||!is_file($cfg_glpi["doc_dir"]."/".$dir."/".$filename)){
 					return $dir."/".$filename;
 				} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][28]."<br>";
 			
-			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][29]." ".$cfg_install["doc_dir"]."/".$dir." ".$lang["document"][30]."<br>";
+			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][29]." ".$cfg_glpi["doc_dir"]."/".$dir." ".$lang["document"][30]."<br>";
 			
-			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][31]." ".$cfg_install["doc_dir"]."<br>";
+			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][31]." ".$cfg_glpi["doc_dir"]."<br>";
 		
 		} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][32]."<br>";
 
@@ -413,7 +413,7 @@ function restoreDocument($input) {
 
 
 function showDeviceDocument($instID,$search='') {
-	GLOBAL $db,$cfg_layout,$cfg_install, $lang;
+	GLOBAL $db,$cfg_glpi, $lang;
 
     
 	$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by device_type, FK_device";
@@ -422,7 +422,7 @@ function showDeviceDocument($instID,$search='') {
 	$number = $db->numrows($result);
 	$i = 0;
 	
-	echo "<form method='post' action=\"".$cfg_install["root"]."/documents/documents-info-form.php\">";
+	echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/documents/documents-info-form.php\">";
 	
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='3'>".$lang["document"][19].":</th></tr>";
@@ -477,7 +477,7 @@ $result = $db->query($query);
 // $withtemplate==3 -> visu via le helpdesk -> plus aucun lien
 function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
-	GLOBAL $db,$cfg_layout,$cfg_install, $lang,$HTMLRel;
+	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel;
 
     
 	$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '$ID' AND glpi_doc_device.device_type = '$device_type' ";
@@ -487,7 +487,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	$number = $db->numrows($result);
 	$i = 0;
 	
-    if ($withtemplate!=2) echo "<form method='post' action=\"".$cfg_install["root"]."/documents/documents-info-form.php\">";
+    if ($withtemplate!=2) echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/documents/documents-info-form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='7'>".$lang["document"][21].":</th></tr>";
 	echo "<tr><th>".$lang["common"][16]."</th>";
@@ -507,11 +507,11 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
 	if ($withtemplate!=3){
 		echo "<td align='center'><a href='".$HTMLRel."documents/documents-info-form.php?ID=$cID'><b>".$con->fields["name"];
-		if ($cfg_layout["view_ID"]) echo " (".$con->fields["ID"].")";
+		if ($cfg_glpi["view_ID"]) echo " (".$con->fields["ID"].")";
 		echo "</b></a></td>";
 	} else {
 		echo "<td align='center'><b>".$con->fields["name"];
-		if ($cfg_layout["view_ID"]) echo " (".$con->fields["ID"].")";
+		if ($cfg_glpi["view_ID"]) echo " (".$con->fields["ID"].")";
 		echo "</b></td>";
 	}
 	
@@ -554,7 +554,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 }
 
 function getDocumentLink($filename){
-global $db,$HTMLRel,$cfg_install;	
+global $db,$HTMLRel,$cfg_glpi;	
 	if (empty($filename))
 		return "&nbsp;";
 	$out="";
@@ -569,7 +569,7 @@ global $db,$HTMLRel,$cfg_install;
 		$result=$db->query($query);
 		if ($db->numrows($result)>0){
 			$icon=$db->result($result,0,'icon');
-			$out="<a href=\"".$HTMLRel."documents/send-document.php?file=$filename\" target=\"_blank\">&nbsp;<img style=\"vertical-align:middle; margin-left:3px; margin-right:6px;\" alt='".$fileout."' title='".$fileout."' src=\"./".$HTMLRel.$cfg_install["typedoc_icon_dir"]."/$icon\" ></a>";				
+			$out="<a href=\"".$HTMLRel."documents/send-document.php?file=$filename\" target=\"_blank\">&nbsp;<img style=\"vertical-align:middle; margin-left:3px; margin-right:6px;\" alt='".$fileout."' title='".$fileout."' src=\"./".$HTMLRel.$cfg_glpi["typedoc_icon_dir"]."/$icon\" ></a>";				
 			}
 	
 	}
@@ -585,12 +585,12 @@ return preg_replace("/[^a-zA-Z0-9\-_\.]/","_",$name);
 }
 
 function showUploadedFilesDropdown($myname){
-	global $cfg_install,$lang;
+	global $cfg_glpi,$lang;
 
 
-	if (is_dir($cfg_install["doc_dir"]."/UPLOAD")){
+	if (is_dir($cfg_glpi["doc_dir"]."/UPLOAD")){
 		$uploaded_files=array();
-		if ($handle = opendir($cfg_install["doc_dir"]."/UPLOAD")) {
+		if ($handle = opendir($cfg_glpi["doc_dir"]."/UPLOAD")) {
    			while (false !== ($file = readdir($handle))) {
        				if ($file != "." && $file != "..") {
 					$dir=isValidDoc($file);

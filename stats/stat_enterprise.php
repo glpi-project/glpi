@@ -104,7 +104,7 @@ echo "<tr><th>".$lang["stats"][44]."</th><th>&nbsp;</th><th>".$lang["stats"][13]
 //Pour chacun de ces utilisateurs on affiche
 //foreach these users display
 
-  for ($i=$_GET['start'];$i< $numrows && $i<($_GET['start']+$cfg_features["list_limit"]);$i++)
+  for ($i=$_GET['start'];$i< $numrows && $i<($_GET['start']+$cfg_glpi["list_limit"]);$i++)
   {
 	echo "<tr class='tab_bg_2'>";
 	echo "<td>".$val[$i]['link']."</td><td><a href='graph_item.php?ID=".$val[$i]['assign_ent']."&amp;type=enterprise'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";

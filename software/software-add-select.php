@@ -41,7 +41,7 @@ checkAuthentication("admin");
 
 commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 
-      GLOBAL $cfg_install, $cfg_layout, $layout, $lang;
+      GLOBAL $cfg_glpi,  $lang;
 
 
 echo "<div align='center'><table border='0' cellpadding=5 class='tab_cadre'>";

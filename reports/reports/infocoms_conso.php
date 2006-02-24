@@ -80,7 +80,7 @@ $valeurgraphtot=array();
 
 
 function display_infocoms_report($device_type,$begin,$end){
-	global $db,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$lang,$cfg_install;
+	global $db,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$lang,$cfg_glpi;
 
 	$query="SELECT * FROM glpi_infocoms WHERE device_type='".$device_type."'";
 
@@ -111,8 +111,8 @@ function display_infocoms_report($device_type,$begin,$end){
 
 				if ($line["value"]>0) $valeursoustot+=$line["value"];	
 
-				$valeurnette=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$cfg_install["date_fiscale"],"n");
-				$tmp=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$cfg_install["date_fiscale"],"all");
+				$valeurnette=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$cfg_glpi["date_fiscale"],"n");
+				$tmp=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$cfg_glpi["date_fiscale"],"all");
 
 				if (is_array($tmp)&&count($tmp)>0)
 				foreach ($tmp["annee"] as $key => $val){

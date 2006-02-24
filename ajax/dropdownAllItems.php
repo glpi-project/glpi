@@ -62,7 +62,7 @@ if (isset($LINK_ID_TABLE[$_POST["idtable"]])){
 	echo "<script type='text/javascript' >";
 	echo "   new Form.Element.Observer('search_".$_POST['myname']."$rand', 1, ";
 	echo "      function(element, value) {";
-	echo "      	new Ajax.Updater('results_ID$rand','".$cfg_install["root"]."/ajax/$link',{asynchronous:true, evalScripts:true, ";
+	echo "      	new Ajax.Updater('results_ID$rand','".$cfg_glpi["root_doc"]."/ajax/$link',{asynchronous:true, evalScripts:true, ";
 	echo "           onComplete:function(request)";
 	echo "            {Element.hide('search_spinner$rand');}, ";
 	echo "           onLoading:function(request)";
@@ -78,14 +78,14 @@ if (isset($LINK_ID_TABLE[$_POST["idtable"]])){
 	echo "</span>";	
 
 $nb=0;
-if ($cfg_features["use_ajax"])
+if ($cfg_glpi["use_ajax"])
 	$nb=countElementsInTable($table);
 
-if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
+if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner$rand').style.visibility='hidden';";
 	echo "Element.hide('search_".$_POST['myname']."$rand');";
-	echo "document.getElementById('search_".$_POST['myname']."$rand').value='".$cfg_features["ajax_wildcard"]."';";
+	echo "document.getElementById('search_".$_POST['myname']."$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
 	echo "</script>\n";
 }
 
@@ -93,7 +93,7 @@ if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 if(isset($_POST['value'])&&$_POST['value']>0){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner$rand').style.visibility='hidden';";
-	echo "document.getElementById('search_".$_POST['myname']."$rand').value='".$cfg_features["ajax_wildcard"]."';";
+	echo "document.getElementById('search_".$_POST['myname']."$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
 	echo "</script>\n";
 }
 

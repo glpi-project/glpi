@@ -55,7 +55,7 @@
 function dropdown($table,$myname) {
 
 
-	global $HTMLRel,$cfg_install,$cfg_features;
+	global $HTMLRel,$cfg_glpi;
 
 	$rand=mt_rand();
 	
@@ -64,7 +64,7 @@ function dropdown($table,$myname) {
 echo "<script type='text/javascript' >\n";
 echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
 echo "      function(element, value) {\n";
-echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdown.php',{asynchronous:true, evalScripts:true, \n";
+echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_glpi["root_doc"]."/ajax/dropdown.php',{asynchronous:true, evalScripts:true, \n";
 echo "           onComplete:function(request)\n";
 echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 echo "           onLoading:function(request)\n";
@@ -77,14 +77,14 @@ echo "</script>\n";
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>\n";
 
 $nb=0;
-if ($cfg_features["use_ajax"])
+if ($cfg_glpi["use_ajax"])
 	$nb=countElementsInTable($table);
 
-if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
+if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
-	echo "document.getElementById('search_$myname$rand').value='".$cfg_features["ajax_wildcard"]."';";
+	echo "document.getElementById('search_$myname$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
 	echo "</script>\n";
 }
 
@@ -110,28 +110,28 @@ echo "</span>\n";
 */
 function dropdownValue($table,$myname,$value,$display_comments=1) {
 	
-	global $HTMLRel,$cfg_install,$cfg_features,$cfg_layout,$lang;
+	global $HTMLRel,$cfg_glpi,$lang;
 
 	$rand=mt_rand();
 	
 	displaySearchTextAjaxDropdown($myname.$rand);
 $name="------";
 $comments="";
-$limit_length=$cfg_layout["dropdown_limit"];
+$limit_length=$cfg_glpi["dropdown_limit"];
 if (empty($value)) $value=0;
 if ($value>0){
 	$tmpname=getDropdownName($table,$value,1);
 	if ($tmpname["name"]!="&nbsp;"){
 		$name=$tmpname["name"];
 		$comments=$tmpname["comments"];
-		$limit_length=max(strlen($name),$cfg_layout["dropdown_limit"]);
+		$limit_length=max(strlen($name),$cfg_glpi["dropdown_limit"]);
 	}
 }
 
 echo "<script type='text/javascript' >\n";
 echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
 echo "      function(element, value) {\n";
-echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdownValue.php',{asynchronous:true, evalScripts:true, \n";
+echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownValue.php',{asynchronous:true, evalScripts:true, \n";
 echo "           onComplete:function(request)\n";
 echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 echo "           onLoading:function(request)\n";
@@ -143,14 +143,14 @@ echo "</script>\n";
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
 $nb=0;
-if ($cfg_features["use_ajax"])
+if ($cfg_glpi["use_ajax"])
 	$nb=countElementsInTable($table);
 
-if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
+if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
-	echo "document.getElementById('search_$myname$rand').value='".$cfg_features["ajax_wildcard"]."';";
+	echo "document.getElementById('search_$myname$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
 	echo "</script>\n";
 }
 
@@ -231,7 +231,7 @@ function dropdownNoValue($table,$myname,$value) {
 function dropdownUsers($myname,$value,$all=0,$display_comments=1) {
 	// Make a select box with all glpi users
 
-	global $HTMLRel,$cfg_install,$cfg_features,$cfg_layout,$lang;
+	global $HTMLRel,$cfg_glpi,$lang;
 
 	$rand=mt_rand();
 	
@@ -240,7 +240,7 @@ function dropdownUsers($myname,$value,$all=0,$display_comments=1) {
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
 	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdownUsers.php',{asynchronous:true, evalScripts:true, \n";
+	echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownUsers.php',{asynchronous:true, evalScripts:true, \n";
 	echo "           onComplete:function(request)\n";
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
@@ -252,14 +252,14 @@ function dropdownUsers($myname,$value,$all=0,$display_comments=1) {
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
 $nb=0;
-if ($cfg_features["use_ajax"])
+if ($cfg_glpi["use_ajax"])
 	$nb=countElementsInTable("glpi_users");
 
-if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
+if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
-	echo "document.getElementById('search_$myname$rand').value='".$cfg_features["ajax_wildcard"]."';";
+	echo "document.getElementById('search_$myname$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
 	echo "</script>\n";
 }
 
@@ -267,7 +267,7 @@ if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 	echo "<span id='results_$myname$rand'>\n";
 	if (!empty($value)&&$value>0){
 		$user=getUserName($value,2);
-		echo "<select name='$myname'><option value='$value'>".substr($user["name"],0,$cfg_layout["dropdown_limit"])."</option></select>\n";
+		echo "<select name='$myname'><option value='$value'>".substr($user["name"],0,$cfg_glpi["dropdown_limit"])."</option></select>\n";
 
 		if (!empty($user["comments"])&&$display_comments) {
 			echo "<a href='".$user["link"]."'>";
@@ -300,7 +300,7 @@ function dropdownAllUsers($myname,$value,$display_comments=1) {
 	global $lang;
 	// Make a select box with all glpi users
 
-	global $HTMLRel,$cfg_install,$cfg_features,$cfg_layout;
+	global $HTMLRel,$cfg_glpi;
 
 	$rand=mt_rand();
 	
@@ -309,7 +309,7 @@ function dropdownAllUsers($myname,$value,$display_comments=1) {
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
 	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdownAllUsers.php',{asynchronous:true, evalScripts:true, \n";
+	echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownAllUsers.php',{asynchronous:true, evalScripts:true, \n";
 	echo "           onComplete:function(request)\n";
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
@@ -321,21 +321,21 @@ function dropdownAllUsers($myname,$value,$display_comments=1) {
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
 $nb=0;
-if ($cfg_features["use_ajax"])
+if ($cfg_glpi["use_ajax"])
 	$nb=countElementsInTable("glpi_users");
 
-if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
+if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
-	echo "document.getElementById('search_$myname$rand').value='".$cfg_features["ajax_wildcard"]."';";
+	echo "document.getElementById('search_$myname$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
 	echo "</script>\n";
 }
 
 	echo "<span id='results_$myname$rand'>\n";
 	if (!empty($value)&&$value>0){
 		$user=getUserName($value,2);
-		echo "<select name='$myname'><option value='$value'>".substr($user["name"],0,$cfg_layout["dropdown_limit"])."</option></select>\n";
+		echo "<select name='$myname'><option value='$value'>".substr($user["name"],0,$cfg_glpi["dropdown_limit"])."</option></select>\n";
 
 		if (!empty($user["comments"])&&$display_comments) {
 			echo "<a href='".$user["link"]."'>";
@@ -380,7 +380,7 @@ function dropdownUsersID($myname,$value) {
 * @return string the value of the dropdown or &nbsp; if not exists
 */
 function getDropdownName($table,$id,$withcomments=0) {
-	global $db,$cfg_install,$dropdowntree_tables;
+	global $db,$cfg_glpi,$dropdowntree_tables;
 	
 	if (in_array($table,$dropdowntree_tables)){
 		return getTreeValueCompleteName($table,$id,$withcomments);
@@ -419,7 +419,7 @@ function getDropdownName($table,$id,$withcomments=0) {
 */
 
 function dropdownUsersTracking($myname,$value,$champ,$display_comments=1) {
-	global $HTMLRel,$cfg_install,$lang,$cfg_features,$cfg_layout;
+	global $HTMLRel,$cfg_glpi,$lang;
 
 	$rand=mt_rand();
 	
@@ -428,7 +428,7 @@ function dropdownUsersTracking($myname,$value,$champ,$display_comments=1) {
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
 	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdownUsersTracking.php',{asynchronous:true, evalScripts:true, \n";
+	echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownUsersTracking.php',{asynchronous:true, evalScripts:true, \n";
 	echo "           onComplete:function(request)\n";
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
@@ -440,21 +440,21 @@ function dropdownUsersTracking($myname,$value,$champ,$display_comments=1) {
 	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
 $nb=0;
-if ($cfg_features["use_ajax"])
+if ($cfg_glpi["use_ajax"])
 	$nb=countElementsInTable("glpi_users");
 
-if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
+if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
-	echo "document.getElementById('search_$myname$rand').value='".$cfg_features["ajax_wildcard"]."';";
+	echo "document.getElementById('search_$myname$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
 	echo "</script>\n";
 }
 
 	echo "<span id='results_$myname$rand'>\n";
 	if (!empty($value)&&$value>0){
 		$user=getUserName($value,2);
-		echo "<select name='$myname'><option value='$value'>".substr($user["name"],0,$cfg_layout["dropdown_limit"])."</option></select>\n";
+		echo "<select name='$myname'><option value='$value'>".substr($user["name"],0,$cfg_glpi["dropdown_limit"])."</option></select>\n";
 
 		if (!empty($user["comments"])&&$display_comments) {
 			echo "<a href='".$user["link"]."'>";
@@ -563,7 +563,7 @@ echo "<select name='$name'>\n";
 * @return nothing (print out an HTML select box)
 */
 function dropdownAllItems($myname,$value_type=0,$value=0,$withenterprise=0,$withcartridge=0,$withconsumable=0,$withcontracts=0) {
-	global $db,$lang,$HTMLRel,$cfg_install;
+	global $db,$lang,$HTMLRel,$cfg_glpi;
 	
 	$items=array(
 	COMPUTER_TYPE=>"glpi_computers",
@@ -602,7 +602,7 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$withenterprise=0,$with
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('item_type$rand', 1, \n";
 	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('show_$myname$rand','".$cfg_install["root"]."/ajax/dropdownAllItems.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
+	echo "      	new Ajax.Updater('show_$myname$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownAllItems.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_$myname$rand');},\n";
@@ -651,7 +651,7 @@ function dropdownYesNo($name,$value){
 * @return nothing (print out an HTML select box)
 */
 function dropdownTrackingDeviceType($myname,$value){
-	global $lang,$HTMLRel,$cfg_install;
+	global $lang,$HTMLRel,$cfg_glpi;
 	
 	$rand=mt_rand();
 	
@@ -670,7 +670,7 @@ function dropdownTrackingDeviceType($myname,$value){
 echo "<script type='text/javascript' >\n";
 echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
 echo "      function(element, value) {\n";
-echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdownTrackingDeviceType.php',{asynchronous:true, evalScripts:true, \n";
+echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownTrackingDeviceType.php',{asynchronous:true, evalScripts:true, \n";
 echo "           onComplete:function(request)\n";
 echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 echo "           onLoading:function(request)\n";
@@ -713,7 +713,7 @@ echo "</div>";
 function dropdownConnect($type,$myname) {
 
 
-	global $HTMLRel,$cfg_install,$cfg_features;
+	global $HTMLRel,$cfg_glpi;
 
 		$items=array(
 			COMPUTER_TYPE=>"glpi_computers",
@@ -730,7 +730,7 @@ function dropdownConnect($type,$myname) {
 echo "<script type='text/javascript' >\n";
 echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
 echo "      function(element, value) {\n";
-echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdownConnect.php',{asynchronous:true, evalScripts:true, \n";
+echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownConnect.php',{asynchronous:true, evalScripts:true, \n";
 echo "           onComplete:function(request)\n";
 echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 echo "           onLoading:function(request)\n";
@@ -742,14 +742,14 @@ echo "</script>\n";
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>\n";
 
 $nb=0;
-if ($cfg_features["use_ajax"])
+if ($cfg_glpi["use_ajax"])
 	$nb=countElementsInTable($items[$type]);
 
-if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
+if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
-	echo "document.getElementById('search_$myname$rand').value='".$cfg_features["ajax_wildcard"]."';";
+	echo "document.getElementById('search_$myname$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
 	echo "</script>\n";
 }
 
@@ -772,7 +772,7 @@ echo "</span>\n";
 function dropdownConnectPort($ID,$type,$myname) {
 
 
-	global $db,$lang,$HTMLRel,$cfg_install;
+	global $db,$lang,$HTMLRel,$cfg_glpi;
 	
 	$items=array(
 	COMPUTER_TYPE=>"glpi_computers",
@@ -797,7 +797,7 @@ function dropdownConnectPort($ID,$type,$myname) {
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('item_type$rand', 1, \n";
 	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('show_$myname$rand','".$cfg_install["root"]."/ajax/dropdownConnectPortDeviceType.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
+	echo "      	new Ajax.Updater('show_$myname$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownConnectPortDeviceType.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_$myname$rand');Element.hide('not_connected_display$ID');},\n";
@@ -820,7 +820,7 @@ function dropdownConnectPort($ID,$type,$myname) {
 * @return nothing (print out an HTML select box)
 */
 function dropdownSoftwareToInstall($myname,$withtemplate) {
-	global $db,$lang,$HTMLRel,$cfg_install,$cfg_features;
+	global $db,$lang,$HTMLRel,$cfg_glpi;
 	
 	$rand=mt_rand();
 
@@ -829,7 +829,7 @@ function dropdownSoftwareToInstall($myname,$withtemplate) {
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
 	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_install["root"]."/ajax/dropdownSelectSoftware.php',{asynchronous:true, evalScripts:true, \n";
+	echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownSelectSoftware.php',{asynchronous:true, evalScripts:true, \n";
 	echo "           onComplete:function(request)\n";
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
@@ -842,14 +842,14 @@ function dropdownSoftwareToInstall($myname,$withtemplate) {
 
 
 	$nb=0;
-	if ($cfg_features["use_ajax"])
+	if ($cfg_glpi["use_ajax"])
 		$nb=countElementsInTable("glpi_software");
 
-	if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
+	if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 		echo "<script type='text/javascript' >\n";
 		echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 		echo "Element.hide('search_$myname$rand');";
-		echo "document.getElementById('search_$myname$rand').value='".$cfg_features["ajax_wildcard"]."';";
+		echo "document.getElementById('search_$myname$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
 		echo "</script>\n";
 	}
 
@@ -874,9 +874,9 @@ function dropdownSoftwareToInstall($myname,$withtemplate) {
 * @return nothing (print out an HTML div)
 */
 function autocompletionTextField($myname,$table,$field,$value='',$size=20,$option=''){
-	global $HTMLRel,$cfg_features;
+	global $HTMLRel,$cfg_glpi;
 
-	if ($cfg_features["use_ajax"]&&$cfg_features["ajax_autocompletion"]){
+	if ($cfg_glpi["use_ajax"]&&$cfg_glpi["ajax_autocompletion"]){
 		$rand=mt_rand();
 		echo "<input $option id='textfield_$myname$rand' type='text' name='$myname' value=\"".ereg_replace("\"","''",$value)."\" size='$size'>\n";
 		echo "<div id='textfieldupdate_$myname$rand' style='display:none;border:1px solid black;background-color:white;'></div>\n";
@@ -899,7 +899,7 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=20,$optio
 * @return nothing (print out an HTML select box)
 */
 function device_selecter($target,$cID,$withtemplate='') {
-	global $lang,$HTMLRel,$cfg_install;
+	global $lang,$HTMLRel,$cfg_glpi;
 
 	if(!empty($withtemplate) && $withtemplate == 2) {
 	//do nothing
@@ -933,7 +933,7 @@ function device_selecter($target,$cID,$withtemplate='') {
 		echo "<script type='text/javascript' >\n";
 		echo "   new Form.Element.Observer('device$rand', 1, \n";
 		echo "      function(element, value) {\n";
-		echo "      	new Ajax.Updater('showdevice$rand','".$cfg_install["root"]."/ajax/dropdownDevice.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
+		echo "      	new Ajax.Updater('showdevice$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownDevice.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
 		echo "            {Element.hide('search_spinner_device$rand');}, \n";
 		echo "           onLoading:function(request)\n";
 		echo "            {Element.show('search_spinner_device$rand');},\n";
@@ -957,13 +957,13 @@ function device_selecter($target,$cID,$withtemplate='') {
 
 
 function displaySearchTextAjaxDropdown($id){
-	global $cfg_features;
-	echo "<input type='text' ondblclick=\"document.getElementById('search_$id').value='".$cfg_features["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='4'>\n";
+	global $cfg_glpi;
+	echo "<input type='text' ondblclick=\"document.getElementById('search_$id').value='".$cfg_glpi["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='4'>\n";
 
 }
 
 function dropdownMassiveAction($device_type,$deleted){
-	global $lang,$HTMLRel,$cfg_install;
+	global $lang,$HTMLRel,$cfg_glpi;
 
 		echo "<select name=\"massiveaction\" id='massiveaction'>";
 		
@@ -980,7 +980,7 @@ function dropdownMassiveAction($device_type,$deleted){
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('massiveaction', 1, \n";
 	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('show_massiveaction','".$cfg_install["root"]."/ajax/dropdownMassiveAction.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
+	echo "      	new Ajax.Updater('show_massiveaction','".$cfg_glpi["root_doc"]."/ajax/dropdownMassiveAction.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
 	echo "            {Element.hide('search_spinner_massiveaction');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_massiveaction');},\n";

@@ -71,23 +71,23 @@ else if (isset($tab["delete"]))
 
 	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
-		glpi_header($cfg_install["root"]."/setup/setup-templates.php");
+		glpi_header($cfg_glpi["root_doc"]."/setup/setup-templates.php");
 	 else 
-	glpi_header($cfg_install["root"]."/software/");
+	glpi_header($cfg_glpi["root_doc"]."/software/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreSoftware($_POST);
 	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_install["root"]."/software/");
+	glpi_header($cfg_glpi["root_doc"]."/software/");
 }
 else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
 	deleteSoftware($tab,1);
 	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_install["root"]."/software/");
+	glpi_header($cfg_glpi["root_doc"]."/software/");
 }
 else if (isset($_POST["update"]))
 {
@@ -120,7 +120,7 @@ else
 		if (!empty($tab["ID"])){
 		switch($_SESSION['glpi_onglet']){
 				case 4 :
-					showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+					showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"],1,$tab["withtemplate"]);
 					showContractAssociated(SOFTWARE_TYPE,$tab["ID"],$tab["withtemplate"]);
 					break;
 				case 5 :
@@ -146,7 +146,7 @@ else
 				case -1:
 					showLicensesAdd($tab["ID"]);
 					showLicenses($tab["ID"]);
-					showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"]);
+					showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"]);
 					showContractAssociated(SOFTWARE_TYPE,$tab["ID"]);
 					showDocumentAssociated(SOFTWARE_TYPE,$tab["ID"]);
 					showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
@@ -158,7 +158,7 @@ else
 					showLicenses($tab["ID"],1);
 					break;
 				case 4 :
-					showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"]);
+					showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"]);
 					showContractAssociated(SOFTWARE_TYPE,$tab["ID"]);
 					break;
 				case 5 :

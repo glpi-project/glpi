@@ -69,23 +69,23 @@ else if (isset($tab["delete"]))
 
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"] ." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
-		glpi_header($cfg_install["root"]."/setup/setup-templates.php");
+		glpi_header($cfg_glpi["root_doc"]."/setup/setup-templates.php");
 	 else 
-	glpi_header($cfg_install["root"]."/networking/");
+	glpi_header($cfg_glpi["root_doc"]."/networking/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
 	restoreNetdevice($_POST);
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_install["root"]."/networking/");
+	glpi_header($cfg_glpi["root_doc"]."/networking/");
 }
 else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
 	deleteNetdevice($tab,1);
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_install["root"]."/networking/");
+	glpi_header($cfg_glpi["root_doc"]."/networking/");
 }
 else if (isset($_POST["update"]))
 {
@@ -116,7 +116,7 @@ else
 		if (!empty($tab["ID"])){
 			switch($_SESSION['glpi_onglet']){
 			case 4 :
-				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",NETWORKING_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+				showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",NETWORKING_TYPE,$tab["ID"],1,$tab["withtemplate"]);
 				showContractAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
 				break;
 			case 5 :
@@ -149,7 +149,7 @@ else
 			case -1:
 				showPorts($tab["ID"],NETWORKING_TYPE);
 				showPortsAdd($tab["ID"],NETWORKING_TYPE);
-				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",NETWORKING_TYPE,$tab["ID"]);
+				showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",NETWORKING_TYPE,$tab["ID"]);
 				showContractAssociated(NETWORKING_TYPE,$tab["ID"]);
 				showDocumentAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
 				showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
@@ -157,7 +157,7 @@ else
 				showLinkOnDevice(NETWORKING_TYPE,$tab["ID"]);
 				break;
 			case 4 :
-				showInfocomForm($cfg_install["root"]."/infocoms/infocoms-info-form.php",NETWORKING_TYPE,$tab["ID"]);
+				showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",NETWORKING_TYPE,$tab["ID"]);
 				showContractAssociated(NETWORKING_TYPE,$tab["ID"]);
 				break;
 			case 5 :
