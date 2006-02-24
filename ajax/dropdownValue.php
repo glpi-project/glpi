@@ -42,7 +42,9 @@
 	checkAuthentication("post-only");
 
 	// Make a select box with preselected values
-
+	if (!isset($_POST["limit"])) $_POST["limit"]=$cfg_glpi["dropdown_limit"];
+	if (!isset($_POST["display_comments"])) $_POST["display_comments"]=0;
+	
 	if($_POST['table'] == "glpi_dropdown_netpoint") {
 
 		$where="";
