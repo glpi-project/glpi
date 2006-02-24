@@ -206,7 +206,7 @@ function showCentralJobList($target,$start,$status="process") {
 	{
 		echo "<br><div align='center'>";
 		echo "<table class='tab_cadrehov'>";
-		echo "<tr><th>".$lang["joblist"][8]."</th></tr>";
+		echo "<tr><th>".$title."</th></tr>";
 
 		echo "</table>";
 		echo "</div><br>";
