@@ -245,7 +245,7 @@ $cfg_glpi["typedoc_icon_dir"] = "pics/icones";
 // *********************************************************************************
 
 // Mode debug ou traduction
-$cfg_glpi["debug"]=2;
+//$cfg_glpi["debug"]=2;
 $cfg_glpi["debug_sql"]=($cfg_glpi["debug"]==2?1:0); // affiche les requetes
 $cfg_glpi["debug_vars"]=($cfg_glpi["debug"]==2?1:0); // affiche les variables
 $cfg_glpi["debug_profile"]=($cfg_glpi["debug"]==2?1:0); // Profile les requetes
