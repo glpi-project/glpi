@@ -289,7 +289,7 @@ $items=array("CD","CD-RW","DVD-R","DVD+R","DVD-RW","DVD+RW","ramette papier","di
 for ($i=0;$i<$max['consumable_type'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="type de consommable $i";
-	$query="INSERT INTO glpi_dropdown_consumable_type VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_consumable_type VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -297,14 +297,14 @@ $items=array();
 for ($i=0;$i<$max['budget'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="budget $i";
-	$query="INSERT INTO glpi_dropdown_budget VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_budget VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 $items=array();
 for ($i=0;$i<$max['phone_power'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="power $i";
-	$query="INSERT INTO glpi_dropdown_phone_power VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_phone_power VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -312,7 +312,7 @@ $items=array("Laser","Jet-Encre","Encre Solide");
 for ($i=0;$i<$max['cartridge_type'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="type de cartouche $i";
-	$query="INSERT INTO glpi_dropdown_cartridge_type VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_cartridge_type VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -320,7 +320,7 @@ $items=array("Technicien","Commercial","Technico-Commercial","President","Secret
 for ($i=0;$i<$max['contact_type'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="type de contact $i";
-	$query="INSERT INTO glpi_dropdown_contact_type VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_contact_type VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -328,7 +328,7 @@ $items=array("SP2MI","CAMPUS","IUT86","PRESIDENCE","CEAT");
 for ($i=0;$i<$max['domain'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="domain $i";
-	$query="INSERT INTO glpi_dropdown_domain VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_domain VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -336,7 +336,7 @@ $items=array("Fournisseur","Transporteur","SSII","Revendeur","Assembleur","SSLL"
 for ($i=0;$i<$max['enttype'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="type entreprise $i";
-	$query="INSERT INTO glpi_dropdown_enttype VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_enttype VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -344,7 +344,7 @@ $items=array("H.07.02","I.07.56","P51","P52","1.60","4.06","43-4071299","1.0.14"
 for ($i=0;$i<$max['firmware'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="firmware $i";
-	$query="INSERT INTO glpi_dropdown_firmware VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_firmware VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -352,7 +352,7 @@ $items=array("USB","Firewire");
 for ($i=0;$i<$max['hdd_type'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="type de disque dur $i";
-	$query="INSERT INTO glpi_dropdown_hdd_type VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_hdd_type VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -360,7 +360,7 @@ $items=array("100 Base TX","100 Base T4","10 base T","1000 Base SX","1000 Base L
 for ($i=0;$i<$max['iface'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="type carte reseau $i";
-	$query="INSERT INTO glpi_dropdown_iface VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_iface VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -368,7 +368,7 @@ $items=array("Non","Oui - generique","Oui - specifique entite");
 for ($i=0;$i<$max['auto_update'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="type de mise à jour $i";
-	$query="INSERT INTO glpi_dropdown_auto_update VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_auto_update VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -376,7 +376,7 @@ $items=array("Assemble","Latitude C600","Latitude C700","VAIO FX601","VAIO FX905
 for ($i=0;$i<$max['model'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="Modele $i";
-	$query="INSERT INTO glpi_dropdown_model VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_model VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -384,7 +384,7 @@ $items=array("4200 DTN","4200 DN","4200 N","8400 ADP","7300 ADP","5550 DN","PIXM
 for ($i=0;$i<$max['model_printers'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="modele imprimante $i";
-	$query="INSERT INTO glpi_dropdown_model_printers VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_model_printers VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -392,7 +392,7 @@ $items=array("LS902UTG","MA203DT","P97F+SB","G220F","10-30-75","PLE438S-B0S","PL
 for ($i=0;$i<$max['model_monitors'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="modele moniteur $i";
-	$query="INSERT INTO glpi_dropdown_model_monitors VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_model_monitors VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -400,7 +400,7 @@ $items=array("HP 4108GL","HP 2524","HP 5308","7600","Catalyst 4500","Catalyst 29
 for ($i=0;$i<$max['model_networking'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="modele materiel reseau $i";
-	$query="INSERT INTO glpi_dropdown_model_networking VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_model_networking VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -408,7 +408,7 @@ $items=array("DCS-2100+","DCS-2100G","KD-P35B","Optical 5000","Cordless","ASR 60
 for ($i=0;$i<$max['model_peripherals'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="modele peripherique $i";
-	$query="INSERT INTO glpi_dropdown_model_peripherals VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_model_peripherals VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -416,14 +416,14 @@ $items=array();
 for ($i=0;$i<$max['model_phones'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="modele phone $i";
-	$query="INSERT INTO glpi_dropdown_model_phones VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_model_phones VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 $items=array("SIC","LMS","LMP","LEA","SP2MI","STIC","MATH","ENS-MECA","POUBELLE","WIFI");
 for ($i=0;$i<$max['network'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="reseau $i";
-	$query="INSERT INTO glpi_dropdown_network VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_network VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -431,7 +431,7 @@ $items=array("Windows XP Pro SP2","Linux (Debian)","Mac OS X","Linux (Mandriva 2
 for ($i=0;$i<$max['os'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="os $i";
-	$query="INSERT INTO glpi_dropdown_os VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_os VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -439,7 +439,7 @@ $items=array("XP Pro","XP Home","10.0","10.1","10.2","2006","Sarge");
 for ($i=0;$i<$max['os_version'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="osversion $i";
-	$query="INSERT INTO glpi_dropdown_os_version VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_os_version VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -447,7 +447,7 @@ $items=array("Service Pack 1","Service Pack 2","Service Pack 3","Service Pack 4"
 for ($i=0;$i<$max['os_sp'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="ossp $i";
-	$query="INSERT INTO glpi_dropdown_os_sp VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_os_sp VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -455,7 +455,7 @@ $items=array("DDR2");
 for ($i=0;$i<$max['ram_type'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="type de ram $i";
-	$query="INSERT INTO glpi_dropdown_ram_type VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_ram_type VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -463,7 +463,7 @@ $items=array("Documentation","Facture","Bon Livraison","Bon commande","Capture E
 for ($i=0;$i<$max['rubdocs'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="rubrique $i";
-	$query="INSERT INTO glpi_dropdown_rubdocs VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_rubdocs VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -471,7 +471,7 @@ $items=array("Reparation","En stock","En fonction","Retour SAV","En attente");
 for ($i=0;$i<$max['state'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="Etat $i";
-	$query="INSERT INTO glpi_dropdown_state VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_state VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -479,7 +479,7 @@ $items=array("Maintenance Materielle","Maintenance Logicielle","Accueil personne
 for ($i=0;$i<$max['tracking_category'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="Categorie $i";
-	$query="INSERT INTO glpi_dropdown_tracking_category VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_tracking_category VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -487,7 +487,7 @@ $items=array("SIC","LMS","LMP","LEA","SP2MI","STIC","MATH","ENS-MECA","POUBELLE"
 for ($i=0;$i<$max['vlan'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="VLAN $i";
-	$query="INSERT INTO glpi_dropdown_vlan VALUES ('','$val')";
+	$query="INSERT INTO glpi_dropdown_vlan VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -495,7 +495,7 @@ $items=array("Portable","Desktop","Tour");
 for ($i=0;$i<$max['type_computers'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="type ordinateur $i";
-	$query="INSERT INTO glpi_type_computers VALUES ('','$val')";
+	$query="INSERT INTO glpi_type_computers VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -503,7 +503,7 @@ $items=array("Laser A4","Jet-Encre","Laser A3","Encre Solide A4","Encre Solide A
 for ($i=0;$i<$max['type_printers'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="type imprimante $i";
-	$query="INSERT INTO glpi_type_printers VALUES ('','$val')";
+	$query="INSERT INTO glpi_type_printers VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -511,7 +511,7 @@ $items=array("TFT 17","TFT 19","TFT 21","CRT 17","CRT 19","CRT 21","CRT 15");
 for ($i=0;$i<$max['type_monitors'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="type ecran $i";
-	$query="INSERT INTO glpi_type_monitors VALUES ('','$val')";
+	$query="INSERT INTO glpi_type_monitors VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -519,7 +519,7 @@ $items=array("Switch","Routeur","Hub","Borne Wifi");
 for ($i=0;$i<$max['type_networking'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="type de materiel reseau $i";
-	$query="INSERT INTO glpi_type_networking VALUES ('','$val')";
+	$query="INSERT INTO glpi_type_networking VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -527,7 +527,7 @@ $items=array("Clavier","Souris","Webcam","Enceintes","Scanner","Clef USB");
 for ($i=0;$i<$max['type_peripherals'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="type de peripheriques $i";
-	$query="INSERT INTO glpi_type_peripherals VALUES ('','$val')";
+	$query="INSERT INTO glpi_type_peripherals VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -535,22 +535,22 @@ $items=array();
 for ($i=0;$i<$max['type_phones'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="type de phone $i";
-	$query="INSERT INTO glpi_type_phones VALUES ('','$val')";
+	$query="INSERT INTO glpi_type_phones VALUES ('','$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
 optimize_tables ();
 
 for ($i=0;$i<max(1,pow($max['kbcategories'],1/3));$i++){
-	$query="INSERT INTO glpi_dropdown_kbcategories VALUES ('','0','categorie $i','')";
+	$query="INSERT INTO glpi_dropdown_kbcategories VALUES ('','0','categorie $i','','comment categorie $i')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$newID=$db->insert_id();
 	for ($j=0;$j<mt_rand(0,pow($max['kbcategories'],1/2));$j++){
-		$query="INSERT INTO glpi_dropdown_kbcategories VALUES ('','$newID','s-categorie $j','')";
+		$query="INSERT INTO glpi_dropdown_kbcategories VALUES ('','$newID','s-categorie $j','','comment s-categorie $j')";
 		$db->query($query) or die("PB REQUETE ".$query);
 		$newID2=$db->insert_id();
 		for ($k=0;$k<mt_rand(0,pow($max['kbcategories'],1/2));$k++){
-			$query="INSERT INTO glpi_dropdown_kbcategories VALUES ('','$newID2','ss-categorie $k','')";
+			$query="INSERT INTO glpi_dropdown_kbcategories VALUES ('','$newID2','ss-categorie $k','','comment categorie $i')";
 			$db->query($query) or die("PB REQUETE ".$query);
 		}	
 	}
@@ -602,23 +602,23 @@ for ($i=0;$i<$max['contract'];$i++){
 
 // LOCATIONS
 for ($i=0;$i<pow($max['locations'],1/5);$i++){
-	$query="INSERT INTO glpi_dropdown_locations VALUES ('','lieu $i','0','')";
+	$query="INSERT INTO glpi_dropdown_locations VALUES ('','lieu $i','0','','comment lieu $i')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$newID=$db->insert_id();
 	for ($j=0;$j<mt_rand(0,pow($max['locations'],1/4));$j++){
-		$query="INSERT INTO glpi_dropdown_locations VALUES ('','s-lieu $j','$newID','')";
+		$query="INSERT INTO glpi_dropdown_locations VALUES ('','s-lieu $j','$newID','','comment s-lieu $j')";
 		$db->query($query) or die("PB REQUETE ".$query);
 		$newID2=$db->insert_id();
 		for ($k=0;$k<mt_rand(0,pow($max['locations'],1/4));$k++){
-			$query="INSERT INTO glpi_dropdown_locations VALUES ('','ss-lieu $k','$newID2','')";
+			$query="INSERT INTO glpi_dropdown_locations VALUES ('','ss-lieu $k','$newID2','','comment ss-lieu $k')";
 			$db->query($query) or die("PB REQUETE ".$query);
 			$newID3=$db->insert_id();
 			for ($l=0;$l<mt_rand(0,pow($max['locations'],1/4));$l++){
-				$query="INSERT INTO glpi_dropdown_locations VALUES ('','sss-lieu $l','$newID3','')";
+				$query="INSERT INTO glpi_dropdown_locations VALUES ('','sss-lieu $l','$newID3','','comment sss-lieu $l')";
 				$db->query($query) or die("PB REQUETE ".$query);
 				$newID4=$db->insert_id();
 				for ($m=0;$m<mt_rand(0,pow($max['locations'],1/4));$m++){
-					$query="INSERT INTO glpi_dropdown_locations VALUES ('','ssss-lieu $m','$newID4','')";
+					$query="INSERT INTO glpi_dropdown_locations VALUES ('','ssss-lieu $m','$newID4','','comment ssss-lieu $m')";
 					$db->query($query) or die("PB REQUETE ".$query);
 				}	
 			}	
@@ -793,7 +793,7 @@ while ($data=$db->fetch_array($result)){
 	// Link with father 
 	if ($data['parentID']>0){
 		//insert netpoint
-		$query="INSERT INTO glpi_dropdown_netpoint VALUES ('','".$data['ID']."','".getNextNETPOINT()."')";
+		$query="INSERT INTO glpi_dropdown_netpoint VALUES ('','".$data['ID']."','".getNextNETPOINT()."','comment netpoint')";
 		$db->query($query) or die("PB REQUETE ".$query);
 		$netpointID=$db->insert_id();
 	
@@ -820,7 +820,7 @@ while ($data=$db->fetch_array($result)){
 	
 	// Ajout imprimantes reseaux : 1 par loc + connexion à un matos reseau + ajout de cartouches
 	//insert netpoint
-	$query="INSERT INTO glpi_dropdown_netpoint VALUES ('','".$data['ID']."','".getNextNETPOINT()."')";
+	$query="INSERT INTO glpi_dropdown_netpoint VALUES ('','".$data['ID']."','".getNextNETPOINT()."','comment netpoint')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$netpointID=$db->insert_id();
 
@@ -1051,7 +1051,7 @@ for ($i=0;$i<$max['computers'];$i++){
 	
 		
 	//insert netpoint
-	$query="INSERT INTO glpi_dropdown_netpoint VALUES ('','$loc','".getNextNETPOINT()."')";
+	$query="INSERT INTO glpi_dropdown_netpoint VALUES ('','$loc','".getNextNETPOINT()."','comment netpoint')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$netpointID=$db->insert_id();
 

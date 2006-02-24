@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-02-23 04:38
+#GLPI Dump database on 2006-02-24 00:44
 
 ### Dump table glpi_cartridges
 
@@ -192,7 +192,7 @@ CREATE TABLE `glpi_config` (
     `url_in_mail` enum('0','1') DEFAULT '0' NOT NULL,
     `text_login` text,
     `auto_update_check` smallint(6) DEFAULT '0' NOT NULL,
-    `last_update_check` date DEFAULT '2006-02-23' NOT NULL,
+    `last_update_check` date DEFAULT '2006-02-24' NOT NULL,
     `founded_new_version` varchar(10),
     `dropdown_max` int(11) DEFAULT '100' NOT NULL,
     `ajax_wildcard` char(1) DEFAULT '*' NOT NULL,
@@ -210,7 +210,7 @@ CREATE TABLE `glpi_config` (
    PRIMARY KEY (`ID`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','1','1','255','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','1','0','0','0','0','0','0','0','0','1','0','0','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','0','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi','0','','0','2006-02-23','','100','*','0','50','1','1','0','name','0','50','1','0','0');
+INSERT INTO glpi_config VALUES ('1','389','10','1','1','255','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','1','0','0','0','0','0','0','0','0','1','0','0','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','0','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi','0','','0','2006-02-24','','100','*','0','50','1','1','0','name','0','50','1','0','0');
 
 ### Dump table glpi_connect_wire
 
@@ -713,6 +713,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_auto_update`;
 CREATE TABLE `glpi_dropdown_auto_update` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -724,6 +725,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_budget`;
 CREATE TABLE `glpi_dropdown_budget` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -735,6 +737,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_cartridge_type`;
 CREATE TABLE `glpi_dropdown_cartridge_type` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -746,6 +749,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_consumable_type`;
 CREATE TABLE `glpi_dropdown_consumable_type` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -757,6 +761,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_contact_type`;
 CREATE TABLE `glpi_dropdown_contact_type` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -768,17 +773,18 @@ DROP TABLE IF EXISTS `glpi_dropdown_contract_type`;
 CREATE TABLE `glpi_dropdown_contract_type` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_dropdown_contract_type VALUES ('1','Pr&#234;t');
-INSERT INTO glpi_dropdown_contract_type VALUES ('2','Location');
-INSERT INTO glpi_dropdown_contract_type VALUES ('3','Leasing');
-INSERT INTO glpi_dropdown_contract_type VALUES ('4','Assurances');
-INSERT INTO glpi_dropdown_contract_type VALUES ('5','Maintenance Hardware');
-INSERT INTO glpi_dropdown_contract_type VALUES ('6','Maintenance Software');
-INSERT INTO glpi_dropdown_contract_type VALUES ('7','Prestation');
+INSERT INTO glpi_dropdown_contract_type VALUES ('1','Pr&#234;t',NULL);
+INSERT INTO glpi_dropdown_contract_type VALUES ('2','Location',NULL);
+INSERT INTO glpi_dropdown_contract_type VALUES ('3','Leasing',NULL);
+INSERT INTO glpi_dropdown_contract_type VALUES ('4','Assurances',NULL);
+INSERT INTO glpi_dropdown_contract_type VALUES ('5','Maintenance Hardware',NULL);
+INSERT INTO glpi_dropdown_contract_type VALUES ('6','Maintenance Software',NULL);
+INSERT INTO glpi_dropdown_contract_type VALUES ('7','Prestation',NULL);
 
 ### Dump table glpi_dropdown_domain
 
@@ -786,6 +792,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_domain`;
 CREATE TABLE `glpi_dropdown_domain` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -797,6 +804,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_enttype`;
 CREATE TABLE `glpi_dropdown_enttype` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -808,6 +816,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_firmware`;
 CREATE TABLE `glpi_dropdown_firmware` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -819,13 +828,14 @@ DROP TABLE IF EXISTS `glpi_dropdown_hdd_type`;
 CREATE TABLE `glpi_dropdown_hdd_type` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_dropdown_hdd_type VALUES ('1','IDE');
-INSERT INTO glpi_dropdown_hdd_type VALUES ('2','SATA');
-INSERT INTO glpi_dropdown_hdd_type VALUES ('3','SCSI');
+INSERT INTO glpi_dropdown_hdd_type VALUES ('1','IDE',NULL);
+INSERT INTO glpi_dropdown_hdd_type VALUES ('2','SATA',NULL);
+INSERT INTO glpi_dropdown_hdd_type VALUES ('3','SCSI',NULL);
 
 ### Dump table glpi_dropdown_iface
 
@@ -833,6 +843,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_iface`;
 CREATE TABLE `glpi_dropdown_iface` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255),
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -846,6 +857,7 @@ CREATE TABLE `glpi_dropdown_kbcategories` (
     `parentID` int(11) DEFAULT '0' NOT NULL,
     `name` varchar(255) NOT NULL,
     `completename` text NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    UNIQUE parentID_2 (`parentID`, `name`),
    KEY parentID (`parentID`),
@@ -861,6 +873,7 @@ CREATE TABLE `glpi_dropdown_locations` (
     `name` varchar(255) NOT NULL,
     `parentID` int(11) DEFAULT '0' NOT NULL,
     `completename` text NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    UNIQUE name (`name`, `parentID`),
    KEY parentID (`parentID`)
@@ -873,6 +886,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_model`;
 CREATE TABLE `glpi_dropdown_model` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255),
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -884,6 +898,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_model_monitors`;
 CREATE TABLE `glpi_dropdown_model_monitors` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -895,6 +910,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_model_networking`;
 CREATE TABLE `glpi_dropdown_model_networking` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -906,6 +922,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_model_peripherals`;
 CREATE TABLE `glpi_dropdown_model_peripherals` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -917,7 +934,9 @@ DROP TABLE IF EXISTS `glpi_dropdown_model_phones`;
 CREATE TABLE `glpi_dropdown_model_phones` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
-   PRIMARY KEY (`ID`)
+    `comments` text,
+   PRIMARY KEY (`ID`),
+   KEY name (`name`)
 ) TYPE=MyISAM;
 
 
@@ -927,6 +946,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_model_printers`;
 CREATE TABLE `glpi_dropdown_model_printers` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -939,6 +959,7 @@ CREATE TABLE `glpi_dropdown_netpoint` (
     `ID` int(11) NOT NULL auto_increment,
     `location` int(11) DEFAULT '0' NOT NULL,
     `name` varchar(255) NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY location (`location`),
    KEY name (`name`)
@@ -951,6 +972,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_network`;
 CREATE TABLE `glpi_dropdown_network` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -962,6 +984,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_os`;
 CREATE TABLE `glpi_dropdown_os` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255),
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -973,6 +996,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_os_sp`;
 CREATE TABLE `glpi_dropdown_os_sp` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -984,6 +1008,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_os_version`;
 CREATE TABLE `glpi_dropdown_os_version` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -995,7 +1020,9 @@ DROP TABLE IF EXISTS `glpi_dropdown_phone_power`;
 CREATE TABLE `glpi_dropdown_phone_power` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
-   PRIMARY KEY (`ID`)
+    `comments` text,
+   PRIMARY KEY (`ID`),
+   KEY name (`name`)
 ) TYPE=MyISAM;
 
 
@@ -1005,14 +1032,15 @@ DROP TABLE IF EXISTS `glpi_dropdown_ram_type`;
 CREATE TABLE `glpi_dropdown_ram_type` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_dropdown_ram_type VALUES ('1','EDO');
-INSERT INTO glpi_dropdown_ram_type VALUES ('2','DDR');
-INSERT INTO glpi_dropdown_ram_type VALUES ('3','SDRAM');
-INSERT INTO glpi_dropdown_ram_type VALUES ('4','SDRAM-2');
+INSERT INTO glpi_dropdown_ram_type VALUES ('1','EDO',NULL);
+INSERT INTO glpi_dropdown_ram_type VALUES ('2','DDR',NULL);
+INSERT INTO glpi_dropdown_ram_type VALUES ('3','SDRAM',NULL);
+INSERT INTO glpi_dropdown_ram_type VALUES ('4','SDRAM-2',NULL);
 
 ### Dump table glpi_dropdown_rubdocs
 
@@ -1020,6 +1048,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_rubdocs`;
 CREATE TABLE `glpi_dropdown_rubdocs` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255),
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -1031,6 +1060,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_state`;
 CREATE TABLE `glpi_dropdown_state` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255),
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -1042,6 +1072,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_tracking_category`;
 CREATE TABLE `glpi_dropdown_tracking_category` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255),
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -1053,6 +1084,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_vlan`;
 CREATE TABLE `glpi_dropdown_vlan` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -1097,7 +1129,7 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('2','-1','system','2006-02-23 04:12:36','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('2','-1','system','2006-02-24 00:44:29','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1543,28 +1575,26 @@ CREATE TABLE `glpi_printers` (
 
 INSERT INTO glpi_printers VALUES ('3','','0000-00-00 00:00:00','','','0','','','0','0','0','','','0','0','0',NULL,NULL,'0','0','N','1','Blank Template','0',NULL);
 
-
 ### Dump table glpi_reminder
 
 DROP TABLE IF EXISTS `glpi_reminder`;
 CREATE TABLE `glpi_reminder` (
-  `ID` int(11) NOT NULL auto_increment,
-  `date` datetime default NULL,
-  `author` int(11) NOT NULL default '0',
-  `title` text,
-  `text` text,
-  `type` varchar(50) NOT NULL default 'private',
-  `begin` datetime default NULL,
-  `end` datetime default NULL,
-  `rv` enum('0','1') NOT NULL default '0',
-  `date_mod` datetime default NULL,
-  PRIMARY KEY  (`ID`),
-  KEY `date` (`date`),
-  KEY `author` (`author`),
-  KEY `rv` (`rv`),
-  KEY `type` (`type`)
-) ENGINE=MyISAM ;
-
+    `ID` int(11) NOT NULL auto_increment,
+    `date` datetime,
+    `author` int(11) DEFAULT '0' NOT NULL,
+    `title` text,
+    `text` text,
+    `type` varchar(50) DEFAULT 'private' NOT NULL,
+    `begin` datetime,
+    `end` datetime,
+    `rv` enum('0','1') DEFAULT '0' NOT NULL,
+    `date_mod` datetime,
+   PRIMARY KEY (`ID`),
+   KEY date (`date`),
+   KEY author (`author`),
+   KEY rv (`rv`),
+   KEY type (`type`)
+) TYPE=MyISAM;
 
 
 ### Dump table glpi_repair_item
@@ -1716,11 +1746,12 @@ DROP TABLE IF EXISTS `glpi_type_computers`;
 CREATE TABLE `glpi_type_computers` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_type_computers VALUES ('1','Serveur');
+INSERT INTO glpi_type_computers VALUES ('1','Serveur',NULL);
 
 ### Dump table glpi_type_docs
 
@@ -1813,6 +1844,7 @@ DROP TABLE IF EXISTS `glpi_type_monitors`;
 CREATE TABLE `glpi_type_monitors` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255),
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -1824,6 +1856,7 @@ DROP TABLE IF EXISTS `glpi_type_networking`;
 CREATE TABLE `glpi_type_networking` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255),
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -1835,6 +1868,7 @@ DROP TABLE IF EXISTS `glpi_type_peripherals`;
 CREATE TABLE `glpi_type_peripherals` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255),
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -1846,7 +1880,9 @@ DROP TABLE IF EXISTS `glpi_type_phones`;
 CREATE TABLE `glpi_type_phones` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255) NOT NULL,
-   PRIMARY KEY (`ID`)
+    `comments` text,
+   PRIMARY KEY (`ID`),
+   KEY name (`name`)
 ) TYPE=MyISAM;
 
 
@@ -1856,6 +1892,7 @@ DROP TABLE IF EXISTS `glpi_type_printers`;
 CREATE TABLE `glpi_type_printers` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255),
+    `comments` text,
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;

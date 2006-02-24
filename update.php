@@ -3844,10 +3844,11 @@ if(!isIndex("glpi_$t","name")) {
 
 $result=$db->list_tables();
 while ($line = $db->fetch_array($result))
-if (ereg("glpi_dropdown",$line[0])||ereg("glpi_type",$line[0]))
-if(!isIndex($line[0],"name")) {	
-	$query="ALTER TABLE `".$line[0]."` ADD INDEX ( `name` ) ";
-	$db->query($query) or die("0.65 add index in name field ".$line[0]." ".$lang["update"][90].$db->error());
+if (ereg("glpi_dropdown",$line[0])||ereg("glpi_type",$line[0])){
+	if(!isIndex($line[0],"name")) {	
+		$query="ALTER TABLE `".$line[0]."` ADD INDEX ( `name` ) ";
+		$db->query($query) or die("0.65 add index in name field ".$line[0]." ".$lang["update"][90].$db->error());
+	}
 }
 
 if(!isIndex("glpi_reservation_item","device_type_2")) {	
@@ -3861,7 +3862,8 @@ if(!TableExists("glpi_dropdown_model_phones")) {
 $query = "CREATE TABLE `glpi_dropdown_model_phones` (
   `ID` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
-  PRIMARY KEY  (`ID`)
+  PRIMARY KEY  (`ID`),
+  KEY `name` (`name`)
 ) ENGINE=MyISAM;";
 	$db->query($query) or die("0.65 add dropdown_model_phones ".$lang["update"][90].$db->error());
 }
@@ -3871,7 +3873,8 @@ if(!TableExists("glpi_type_phones")) {
 $query = "CREATE TABLE `glpi_type_phones` (
   `ID` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
-  PRIMARY KEY  (`ID`)
+  PRIMARY KEY  (`ID`),
+  KEY `name` (`name`)
 ) ENGINE=MyISAM;";
 	$db->query($query) or die("0.65 add type_phones ".$lang["update"][90].$db->error());
 }
@@ -3882,7 +3885,8 @@ if(!TableExists("glpi_dropdown_phone_power")) {
 $query = "CREATE TABLE `glpi_dropdown_phone_power` (
   `ID` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
-  PRIMARY KEY  (`ID`)
+  PRIMARY KEY  (`ID`),
+  KEY `name` (`name`)
 ) ENGINE=MyISAM;";
 	$db->query($query) or die("0.65 add dropdown_phone_power ".$lang["update"][90].$db->error());
 }
@@ -3951,8 +3955,15 @@ $query="CREATE TABLE `glpi_reminder` (
 ) ENGINE=MyISAM ;";
 
 $db->query($query) or die("0.65 add reminder ".$lang["update"][90].$db->error());
+}
 
-
+$result=$db->list_tables();
+while ($line = $db->fetch_array($result))
+if (ereg("glpi_dropdown",$line[0])||ereg("glpi_type",$line[0])){
+	if ($line[0]!="glpi_type_docs"){
+		$query="ALTER TABLE `".$line[0]."` ADD `comments` TEXT NULL ";
+		$db->query($query) or die("0.65 add comments field in ".$line[0]." ".$lang["update"][90].$db->error());
+	}
 }
 
 

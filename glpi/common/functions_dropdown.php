@@ -108,20 +108,22 @@ echo "</span>\n";
 * @return nothing (display the select box)
 *
 */
-function dropdownValue($table,$myname,$value) {
+function dropdownValue($table,$myname,$value,$display_comments=1) {
 	
-	global $HTMLRel,$cfg_install,$cfg_features,$cfg_layout;
+	global $HTMLRel,$cfg_install,$cfg_features,$cfg_layout,$lang;
 
 	$rand=mt_rand();
 	
 	displaySearchTextAjaxDropdown($myname.$rand);
 $name="------";
+$comments="";
 $limit_length=$cfg_layout["dropdown_limit"];
 if (empty($value)) $value=0;
 if ($value>0){
-	$tmpname=getDropdownName($table,$value);
-	if ($tmpname!="&nbsp;"){
-		$name=$tmpname;
+	$tmpname=getDropdownName($table,$value,1);
+	if ($tmpname["name"]!="&nbsp;"){
+		$name=$tmpname["name"];
+		$comments=$tmpname["comments"];
 		$limit_length=max(strlen($name),$cfg_layout["dropdown_limit"]);
 	}
 }
@@ -134,7 +136,7 @@ echo "           onComplete:function(request)\n";
 echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 echo "           onLoading:function(request)\n";
 echo "            {Element.show('search_spinner_$myname$rand');},\n";
-echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=$table&myname=$myname&limit=$limit_length'\n";
+echo "           method:'post', parameters:'searchText='+value+'&value=$value&table=$table&myname=$myname&limit=$limit_length&display_comments=$display_comments'\n";
 echo "})})\n";
 echo "</script>\n";
 
@@ -156,6 +158,10 @@ if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 
 echo "<span id='results_$myname$rand'>\n";
 echo "<select name='$myname'><option value='$value'>$name</option></select>\n";
+if ($display_comments&&!empty($comments)) {
+	echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."/pics/aide.png' onmouseout=\"setdisplay(getElementById('comments_$rand'),'none')\" onmouseover=\"setdisplay(getElementById('comments_$rand'),'block')\">";
+	echo "<span class='over_link' id='comments_$rand'>".nl2br($comments)."</span>";
+}
 echo "</span>\n";	
 
 if ($table=="glpi_enterprises")
@@ -224,10 +230,10 @@ function dropdownNoValue($table,$myname,$value) {
 *
 */
 // $all =0 -> Nobody $all=1 -> All $all=-1-> nothing
-function dropdownUsers($myname,$value,$all=0) {
+function dropdownUsers($myname,$value,$all=0,$display_comments=1) {
 	// Make a select box with all glpi users
 
-	global $HTMLRel,$cfg_install,$cfg_features,$cfg_layout;
+	global $HTMLRel,$cfg_install,$cfg_features,$cfg_layout,$lang;
 
 	$rand=mt_rand();
 	
@@ -241,7 +247,7 @@ function dropdownUsers($myname,$value,$all=0) {
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=glpi_users&myname=$myname&all=$all'\n";
+	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=glpi_users&myname=$myname&all=$all&display_comments=$display_comments'\n";
 	echo "})})\n";
 	echo "</script>\n";
 
@@ -261,10 +267,24 @@ if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 
 
 	echo "<span id='results_$myname$rand'>\n";
-	if (!empty($value)&&$value>0)
-		echo "<select name='$myname'><option value='$value'>".substr(getDropdownName("glpi_users",$value),0,$cfg_layout["dropdown_limit"])."</option></select>\n";
-	else 
-		echo "<select name='$myname'><option value='0'>[ Nobody ]</option></select>\n";
+	if (!empty($value)&&$value>0){
+		$user=getUserName($value,2);
+		echo "<select name='$myname'><option value='$value'>".substr($user["name"],0,$cfg_layout["dropdown_limit"])."</option></select>\n";
+
+		if (!empty($user["comments"])&&$display_comments) {
+			echo "<a href='".$user["link"]."'>";
+			echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."/pics/aide.png' onmouseout=\"setdisplay(getElementById('comments_$rand'),'none')\" onmouseover=\"setdisplay(getElementById('comments_$rand'),'block')\">";
+			echo "</a>";
+			echo "<span class='over_link' id='comments_$rand'>".$user["comments"]."</span>";
+		}
+
+		}
+	else {
+		if ($all)
+			echo "<select name='$myname'><option value='0'>[ ".$lang["search"][7]." ]</option></select>\n";
+		else 
+			echo "<select name='$myname'><option value='0'>[ Nobody ]</option></select>\n";
+	}
 	echo "</span>\n";	
 }
 
@@ -278,7 +298,7 @@ if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 * @return nothing (print out an HTML select box)
 * 
 */
-function dropdownAllUsers($myname,$value) {
+function dropdownAllUsers($myname,$value,$display_comments=1) {
 	global $lang;
 	// Make a select box with all glpi users
 
@@ -296,7 +316,7 @@ function dropdownAllUsers($myname,$value) {
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=glpi_users&myname=$myname'\n";
+	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=glpi_users&myname=$myname&display_comments=$display_comments'\n";
 	echo "})})\n";
 	echo "</script>\n";
 
@@ -315,10 +335,21 @@ if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 }
 
 	echo "<span id='results_$myname$rand'>\n";
-	if (!empty($value)&&$value>0)
-		echo "<select name='$myname'><option value='$value'>".substr(getDropdownName("glpi_users",$value),0,$cfg_layout["dropdown_limit"])."</option></select>\n";
-	else 
-		echo "<select name='$myname'><option value='0'>[ Nobody ]</option></select>\n";
+	if (!empty($value)&&$value>0){
+		$user=getUserName($value,2);
+		echo "<select name='$myname'><option value='$value'>".substr($user["name"],0,$cfg_layout["dropdown_limit"])."</option></select>\n";
+
+		if (!empty($user["comments"])&&$display_comments) {
+			echo "<a href='".$user["link"]."'>";
+			echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."/pics/aide.png' onmouseout=\"setdisplay(getElementById('comments_$rand'),'none')\" onmouseover=\"setdisplay(getElementById('comments_$rand'),'block')\">";
+			echo "</a>";
+			echo "<span class='over_link' id='comments_$rand'>".$user["comments"]."</span>";
+		}
+
+		}
+	else {
+			echo "<select name='$myname'><option value='0'>[ Nobody ]</option></select>\n";
+	}
 	echo "</span>\n";	
 
 }
@@ -347,29 +378,35 @@ function dropdownUsersID($myname,$value) {
 *
 * @param $table
 * @param $id
+* @param $withcomments
 * @return string the value of the dropdown or &nbsp; if not exists
 */
-function getDropdownName($table,$id) {
+function getDropdownName($table,$id,$withcomments=0) {
 	global $cfg_install,$dropdowntree_tables;
 	
 	if (in_array($table,$dropdowntree_tables)){
-		$name=getTreeValueCompleteName($table,$id);
+		return getTreeValueCompleteName($table,$id,$withcomments);
 
 	} else	{
 	
 		$db = new DB;
 		$name = "";
+		$comments = "";
 		$query = "select * from ". $table ." where ID = '". $id ."'";
 		if ($result = $db->query($query))
 		if($db->numrows($result) != 0) {
-			$name = $db->result($result,0,"name");
+			$data=$db->fetch_assoc($result);
+			$name = $data["name"];
+			if (isset($data["comments"]))
+				$comments = $data["comments"];
 			if ($table=="glpi_dropdown_netpoint")
 				$name .= " (".getDropdownName("glpi_dropdown_locations",$db->result($result,0,"location")).")";
 			
 		}
 	}
-	if (empty($name)) return "&nbsp;";
-	return $name;
+	if (empty($name)) $name="&nbsp;";
+	if ($withcomments) return array("name"=>$name,"comments"=>$comments);
+	else return $name;
 }
 
 /**
@@ -380,11 +417,12 @@ function getDropdownName($table,$id) {
 * @param $value
 * @param $myname
 * @param $champ
+* @param $display_comments
 * @return nothing (print out an HTML select box)
 */
 
-function dropdownUsersTracking($myname,$value,$champ) {
-	global $HTMLRel,$cfg_install,$lang,$cfg_features;
+function dropdownUsersTracking($myname,$value,$champ,$display_comments=1) {
+	global $HTMLRel,$cfg_install,$lang,$cfg_features,$cfg_layout;
 
 	$rand=mt_rand();
 	
@@ -398,7 +436,7 @@ function dropdownUsersTracking($myname,$value,$champ) {
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&champ=$champ&myname=$myname'\n";
+	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&champ=$champ&myname=$myname&display_comments=$display_comments'\n";
 	echo "})})\n";
 	echo "</script>\n";
 
@@ -417,10 +455,21 @@ if (!$cfg_features["use_ajax"]||$nb<$cfg_features["ajax_limit_count"]){
 }
 
 	echo "<span id='results_$myname$rand'>\n";
-	if (!empty($value)&&$value>0)
-		echo "<select name='$myname'><option value='$value'>".substr(getDropdownName("glpi_users",$value),0,$cfg_layout["dropdown_limit"])."</option></select>\n";
-	else 
+	if (!empty($value)&&$value>0){
+		$user=getUserName($value,2);
+		echo "<select name='$myname'><option value='$value'>".substr($user["name"],0,$cfg_layout["dropdown_limit"])."</option></select>\n";
+
+		if (!empty($user["comments"])&&$display_comments) {
+			echo "<a href='".$user["link"]."'>";
+			echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."/pics/aide.png' onmouseout=\"setdisplay(getElementById('comments_$rand'),'none')\" onmouseover=\"setdisplay(getElementById('comments_$rand'),'block')\">";
+			echo "</a>";
+			echo "<span class='over_link' id='comments_$rand'>".$user["comments"]."</span>";
+		}
+
+		}
+	else {
 		echo "<select name='$myname'><option value='0'>[ ".$lang["search"][7]." ]</option></select>\n";
+	}
 	echo "</span>\n";	
 	
 }

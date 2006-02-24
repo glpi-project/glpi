@@ -83,21 +83,26 @@ return $ligne['cpt'];
 *
 * @param $table : Dropdown Tree table
 * @param $ID : ID of the element
+* @param $withcomments : 1 if you want to give the array with the comments
 * @return string : name of the element
 * @see getTreeValueCompleteName
 */
-function getTreeLeafValueName($table,$ID)
+function getTreeLeafValueName($table,$ID,$withcomments=0)
 {
 	$query = "select * from $table where (ID = $ID)";
 	$db=new DB;
 	$name="";
+	$comments="";
 	if ($result=$db->query($query)){
 		if ($db->numrows($result)==1){
 			$name=$db->result($result,0,"name");
+			$comments=$db->result($result,0,"comments");
 		}
 		
 	}
-return $name;
+if ($withcomments)
+	return array("name"=>$name,"comments"=>$comments);
+else return $name;
 }
 
 /**
@@ -105,10 +110,11 @@ return $name;
 *
 * @param $table : Dropdown Tree table
 * @param $ID : ID of the element
+* @param $withcomments : 1 if you want to give the array with the comments
 * @return string : completename of the element
 * @see getTreeLeafValueName
 */
-function getTreeValueCompleteName($table,$ID)
+function getTreeValueCompleteName($table,$ID,$withcomments=0)
 {
 	$query = "select * from $table where (ID = $ID)";
 	$db=new DB;
@@ -116,10 +122,14 @@ function getTreeValueCompleteName($table,$ID)
 	if ($result=$db->query($query)){
 		if ($db->numrows($result)==1){
 			$name=$db->result($result,0,"completename");
+			$comments=$db->result($result,0,"completename");
 		}
 		
 	}
-return $name;
+if (empty($name)) $name="&nbsp;";
+if ($withcomments) 
+	return array("name"=>$name,"comments"=>$comments);
+else return $name;
 }
 
 /**
@@ -436,27 +446,40 @@ else return -1;
 * Get name of the user with ID=$ID (optional with link to users-info.php)
 *
 *@param $ID int : ID of the user.
-*@param $link int : Show link to users-info.php
+*@param $link int : 1 = Show link to users-info.php 2 = return array with comments and link
 *
 *@return string : username string (realname if not empty and name if realname is empty).
 *
 **/
 function getUserName($ID,$link=0){
-	global $cfg_install;
+	global $cfg_install,$lang;
 	$db=new DB;
 	$query="SELECT * from glpi_users WHERE ID='$ID'";
 	$result=$db->query($query);
+	$user="";
+	if ($link==2) $user=array("name"=>"","comments"=>"","link"=>"");
 	if ($db->numrows($result)==1){
+		$data=$db->fetch_assoc($result);
 		$before="";
 		$after="";
-		if ($link){
+		if ($link==1){
 			$before="<a href=\"".$cfg_install["root"]."/users/users-info.php?ID=".$ID."\">";
 			$after="</a>";
 		}
-		if (strlen($db->result($result,0,"realname"))>0) return $before.$db->result($result,0,"realname").$after;
-		else return $before.$db->result($result,0,"name").$after;
+		if (strlen($data["realname"])>0) $username=$before.$data["realname"].$after;
+		else $username=$before.$data["name"].$after;
+
+		if ($link==2){
+			$user["name"]=$username;
+			$user["link"]=$cfg_install["root"]."/users/users-info.php?ID=".$ID;
+			$user["comments"]=$lang["common"][16].": ".$username."<br>";
+			$user["comments"].=$lang["setup"][14].": ".$data["email"]."<br>";
+			$user["comments"].=$lang["setup"][15].": ".$data["phone"]."<br>";
+			$user["comments"].=$lang["common"][15].": ".getDropdownName("glpi_dropdown_locations",$data["location"],0)."<br>";
+		} else $user=$username;
 	}
-	else return "";		
+
+	return $user;		
 }
 
 /**
