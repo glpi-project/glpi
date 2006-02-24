@@ -326,7 +326,7 @@ function showCentralReminder($type="private"){
 				$tab=split(" ",$data["begin"]);
 				$date_url=$tab[0];
 			
-				echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$cfg_install["root"]."/planning/index.php?date=".$date_url."&amp;type=day\"><img src=\"".$HTMLRel."pics/rdv.png\" alt='".$lang["planning"][3]."' title='".convDateTime($data["begin"])."=>".convDateTime($data["end"])."'></a></span>";
+				echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$cfg_glpi["root_doc"]."/planning/index.php?date=".$date_url."&amp;type=day\"><img src=\"".$HTMLRel."pics/rdv.png\" alt='".$lang["planning"][3]."' title='".convDateTime($data["begin"])."=>".convDateTime($data["end"])."'></a></span>";
 
 
 
