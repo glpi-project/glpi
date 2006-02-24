@@ -225,6 +225,13 @@ class baseFunctions {
 
 }
 
+$deleted_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_cartridges_type","glpi_contracts","glpi_contacts","glpi_enterprises","glpi_docs","glpi_phones");
+
+$template_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_phones");
+
+$dropdowntree_tables=array("glpi_dropdown_locations","glpi_dropdown_kbcategories");
+
+
 //Options g�� dynamiquement, ne pas toucher cette partie.
 //Options from DB, do not touch this part.
 
@@ -233,29 +240,24 @@ $query = "select * from glpi_config";
 $result = $db->query($query);
 if($result)
 {
-
-$deleted_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_cartridges_type","glpi_contracts","glpi_contacts","glpi_enterprises","glpi_docs","glpi_phones");
-
-$template_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_phones");
-
-$dropdowntree_tables=array("glpi_dropdown_locations","glpi_dropdown_kbcategories");
+$data=$db->fetch_assoc($result);
 
 //root document
 //document root
-$cfg_install["root"] = $db->result($result,0,"root_doc");
+$cfg_install["root"] = $data["root_doc"];
 
 // Path for icon of document type
 $cfg_install["typedoc_icon_dir"] = "pics/icones";
 
 // Default language
-$cfg_install["default_language"] = $db->result($result,0,"default_language");
+$cfg_install["default_language"] = $data["default_language"];
 
 // *************************** Mode NORMAL / TRALATION /DEBUG  **********************
 // *********************************************************************************
 
 
 // Mode debug ou traduction
-$cfg_debug["active"]=$db->result($result,0,"debug"); // 0 inactif , 1 traduction , 2 debug complet
+$cfg_debug["active"]=$data["debug"]; // 0 inactif , 1 traduction , 2 debug complet
 $cfg_debug["sql"]=($cfg_debug["active"]==2); // affiche les requetes
 $cfg_debug["vars"]=($cfg_debug["active"]==2); // affiche les variables
 $cfg_debug["profile"]=($cfg_debug["active"]==2); // Profile les requetes
@@ -282,25 +284,25 @@ error_reporting(0);
 // sur la source alternative, l'utilisateur est ajout�ou son mot de passe
 // est modifi�// Si plusieurs sources alternatives sont d�inies, seule la premi�e
 // fournissant un login correct est utilis�
-$cfg_login['imap']['auth_server'] = $db->result($result,0,"imap_auth_server");
-$cfg_login['imap']['host'] = $db->result($result,0,"imap_host");
+$cfg_login['imap']['auth_server'] = $data["imap_auth_server"];
+$cfg_login['imap']['host'] = $data["imap_host"];
 
 // LDAP setup.
 // We can use LDAP both for authentication and for user information
 
-$cfg_login['ldap']['host'] = $db->result($result,0,"ldap_host");
-$cfg_login['ldap']['basedn'] = utf8_decode($db->result($result,0,"ldap_basedn"));
+$cfg_login['ldap']['host'] = $data["ldap_host"];
+$cfg_login['ldap']['basedn'] = utf8_decode($data["ldap_basedn"]);
 
-$cfg_login['ldap']['rootdn'] = utf8_decode($db->result($result,0,"ldap_rootdn"));
-$cfg_login['ldap']['pass'] = utf8_decode($db->result($result,0,"ldap_pass"));
-$cfg_login['ldap']['login'] = $db->result($result,0,"ldap_login");
-$cfg_login['ldap']['port'] = $db->result($result,0,"ldap_port");
+$cfg_login['ldap']['rootdn'] = utf8_decode($data["ldap_rootdn"]);
+$cfg_login['ldap']['pass'] = utf8_decode($data["ldap_pass"]);
+$cfg_login['ldap']['login'] = $data["ldap_login"];
+$cfg_login['ldap']['port'] = $data["ldap_port"];
 
 // Log in filter A AJOUTER DANS LA DB
-$cfg_login['ldap']['condition'] = utf8_decode($db->result($result,0,"ldap_condition"));
+$cfg_login['ldap']['condition'] = utf8_decode($data["ldap_condition"]);
 
 // Use LDAP TLS
-$cfg_login['ldap']['use_tls'] = utf8_decode($db->result($result,0,"ldap_use_tls"));
+$cfg_login['ldap']['use_tls'] = utf8_decode($data["ldap_use_tls"]);
 
 // some lDAP server (eg, M$ Active Directory) does not like anonymous
 // bind
@@ -309,15 +311,15 @@ $cfg_login['ldap']['use_tls'] = utf8_decode($db->result($result,0,"ldap_use_tls"
 // relation between the GLPI users table field and the LDAP field
 
 //// AJOUTER CA DANS LA CONFIG POST INSTALL
-$cfg_login['ldap']['fields'] = array( "name" => $db->result($result,0,"ldap_field_name"), 
-									"email" => $db->result($result,0,"ldap_field_email"), 
-									"location" => $db->result($result,0,"ldap_field_location"), 
-									"phone" => $db->result($result,0,"ldap_field_phone"), 
-									"realname" => $db->result($result,0,"ldap_field_realname"));
+$cfg_login['ldap']['fields'] = array( "name" => $data["ldap_field_name"], 
+					"email" => $data["ldap_field_email"], 
+					"location" => $data["ldap_field_location"], 
+					"phone" => $data["ldap_field_phone"], 
+					"realname" => $data["ldap_field_realname"]);
 // CAS authentification method
-$cfg_login["cas"]["host"]=$db->result($result,0,"cas_host");
-$cfg_login["cas"]["port"]=$db->result($result,0,"cas_port");
-$cfg_login["cas"]["uri"]=$db->result($result,0,"cas_uri");
+$cfg_login["cas"]["host"]=$data["cas_host"];
+$cfg_login["cas"]["port"]=$data["cas_port"];
+$cfg_login["cas"]["uri"]=$data["cas_uri"];
 
 //other sources
 //$cfg_login['other_source']...
@@ -326,13 +328,13 @@ $cfg_login["cas"]["uri"]=$db->result($result,0,"cas_uri");
 // Utilisation des fonctions mailing ou non, mettez 1 si vous voulez utiliser les 
 //notifications par mail.
 //Necessite que votre fonction mail() fonctionne.
-$cfg_features["mailing"]	= $db->result($result,0,"mailing");	
+$cfg_features["mailing"]	= $data["mailing"];	
 // Addresse de l'administrateur (obligatoire si mailing activ�
 
-$cfg_mailing["admin_email"]	= $db->result($result,0,"admin_email");
+$cfg_mailing["admin_email"]	= $data["admin_email"];
 
 // Signature for automatic generated E-Mails
-$cfg_mailing["signature"]	= $db->result($result,0,"mailing_signature");
+$cfg_mailing["signature"]	= $data["mailing_signature"];
 
 // A utiliser  uniquement si $cfg_features["mailing"] = 1;
 // D�inition des envois des mails d'informations
@@ -343,36 +345,36 @@ $cfg_mailing["signature"]	= $db->result($result,0,"mailing_signature");
 // user : utilisateur demandeur
 // 1 pour l'envoi et 0 dans le cas contraire 
 
-$cfg_mailing["new"]["admin"]= $db->result($result,0,"mailing_new_admin");
-$cfg_mailing["update"]["admin"]= $db->result($result,0,"mailing_update_admin");
-$cfg_mailing["followup"]["admin"]=$db->result($result,0,"mailing_followup_admin");
-$cfg_mailing["finish"]["admin"]=$db->result($result,0,"mailing_finish_admin");
+$cfg_mailing["new"]["admin"]= $data["mailing_new_admin"];
+$cfg_mailing["update"]["admin"]= $data["mailing_update_admin"];
+$cfg_mailing["followup"]["admin"]=$data["mailing_followup_admin"];
+$cfg_mailing["finish"]["admin"]=$data["mailing_finish_admin"];
 
-$cfg_mailing["new"]["all_admin"]=$db->result($result,0,"mailing_new_all_admin");
-$cfg_mailing["update"]["all_admin"]=$db->result($result,0,"mailing_update_all_admin");
-$cfg_mailing["followup"]["all_admin"]=$db->result($result,0,"mailing_followup_all_admin");
-$cfg_mailing["finish"]["all_admin"]=$db->result($result,0,"mailing_finish_all_admin");
+$cfg_mailing["new"]["all_admin"]=$data["mailing_new_all_admin"];
+$cfg_mailing["update"]["all_admin"]=$data["mailing_update_all_admin"];
+$cfg_mailing["followup"]["all_admin"]=$data["mailing_followup_all_admin"];
+$cfg_mailing["finish"]["all_admin"]=$data["mailing_finish_all_admin"];
 
 
-$cfg_mailing["new"]["all_normal"]=$db->result($result,0,"mailing_new_all_normal");
-$cfg_mailing["update"]["all_normal"]=$db->result($result,0,"mailing_update_all_normal");
-$cfg_mailing["followup"]["all_normal"]=$db->result($result,0,"mailing_followup_all_normal");
-$cfg_mailing["finish"]["all_normal"]=$db->result($result,0,"mailing_finish_all_normal");
+$cfg_mailing["new"]["all_normal"]=$data["mailing_new_all_normal"];
+$cfg_mailing["update"]["all_normal"]=$data["mailing_update_all_normal"];
+$cfg_mailing["followup"]["all_normal"]=$data["mailing_followup_all_normal"];
+$cfg_mailing["finish"]["all_normal"]=$data["mailing_finish_all_normal"];
 
-$cfg_mailing["new"]["attrib"] = $db->result($result,0,"mailing_new_attrib");
-$cfg_mailing["update"]["attrib"] = $db->result($result,0,"mailing_update_attrib");
-$cfg_mailing["followup"]["attrib"]=$db->result($result,0,"mailing_followup_attrib");
-$cfg_mailing["finish"]["attrib"]=$db->result($result,0,"mailing_finish_attrib");
-$cfg_mailing["attrib"]["attrib"] = $db->result($result,0,"mailing_attrib_attrib");
+$cfg_mailing["new"]["attrib"] = $data["mailing_new_attrib"];
+$cfg_mailing["update"]["attrib"] = $data["mailing_update_attrib"];
+$cfg_mailing["followup"]["attrib"]=$data["mailing_followup_attrib"];
+$cfg_mailing["finish"]["attrib"]=$data["mailing_finish_attrib"];
+$cfg_mailing["attrib"]["attrib"] = $data["mailing_attrib_attrib"];
 
-$cfg_mailing["new"]["user"]=$db->result($result,0,"mailing_new_user");
-$cfg_mailing["update"]["user"]=$db->result($result,0,"mailing_update_user");
-$cfg_mailing["followup"]["user"]=$db->result($result,0,"mailing_followup_user");
-$cfg_mailing["finish"]["user"]=$db->result($result,0,"mailing_finish_user");
+$cfg_mailing["new"]["user"]=$data["mailing_new_user"];
+$cfg_mailing["update"]["user"]=$data["mailing_update_user"];
+$cfg_mailing["followup"]["user"]=$data["mailing_followup_user"];
+$cfg_mailing["finish"]["user"]=$data["mailing_finish_user"];
 
-$cfg_mailing["resa"]["admin"]=$db->result($result,0,"mailing_resa_admin");
-$cfg_mailing["resa"]["all_admin"]=$db->result($result,0,"mailing_resa_all_admin");
-$cfg_mailing["resa"]["user"]=$db->result($result,0,"mailing_resa_user");
+$cfg_mailing["resa"]["admin"]=$data["mailing_resa_admin"];
+$cfg_mailing["resa"]["all_admin"]=$data["mailing_resa_all_admin"];
+$cfg_mailing["resa"]["user"]=$data["mailing_resa_user"];
 
 
 // Features configuration
@@ -385,115 +387,115 @@ $cfg_mailing["resa"]["user"]=$db->result($result,0,"mailing_resa_user");
 // 3 - Important - (sucessfull logins)  |  importants (loging r�ssis)
 // 4 - Notice (updates, adds, deletes, tracking) | classique
 // 5 - Junk (i.e., setup dropdown fields, update users or templates) | log tout (ou presque)
-$cfg_features["event_loglevel"]	= $db->result($result,0,"event_loglevel");
+$cfg_features["event_loglevel"]	= $data["event_loglevel"];
 
 // Show jobs at login.
 // Montrer les interventions au loging (1 = oui | 0 = non)
-$cfg_features["jobs_at_login"]	= $db->result($result,0,"jobs_at_login");
+$cfg_features["jobs_at_login"]	= $data["jobs_at_login"];
 
 // Show last num_of_events on login.
 // Nombre des derniers evenements presents dans le tableau au loging
-$cfg_features["num_of_events"]	= $db->result($result,0,"num_of_events");
+$cfg_features["num_of_events"]	= $data["num_of_events"];
 
 //++ not on the config
 // Send Expire Headers and set Meta-Tags for proper content expiration.
-$cfg_features["sendexpire"]		= $db->result($result,0,"sendexpire");
+$cfg_features["sendexpire"]		= $data["sendexpire"];
 
 // In listings, cut long text fields after cut characters.
-$cfg_features["cut"]			= $db->result($result,0,"cut");	
+$cfg_features["cut"]			= $data["cut"];	
 
 // Expire events older than this days at every login
 // (only admin-level login, set to 0 to disable expiration).
 // Temps en jours durant lequel on log les actions ayant eu lieu
 // mettez cette variable a 0 pour conserver tous les logs (prend beaucoup de place dans la bdd)
-$cfg_features["expire_events"]	= $db->result($result,0,"expire_events");
+$cfg_features["expire_events"]	= $data["expire_events"];
 
 // Threshold for long listings, activates pager.
 //Nombre d'occurence (ordinateurs, imprimantes etc etc...) qui apparaitrons dans
 //la liste de recherche par page.
 
-$cfg_features["list_limit"]		= $db->result($result,0,"list_limit");	
+$cfg_features["list_limit"]		= $data["list_limit"];	
 
 //use helpdesk.html or not
 //utilisation du helpdesk.html ou pas
-$cfg_features["permit_helpdesk"] = $db->result($result,0,"permit_helpdesk");
+$cfg_features["permit_helpdesk"] = $data["permit_helpdesk"];
 
 
 //show alarm when number of unused cartridges if under the threshold 
-$cfg_features["cartridges_alarm"] = $db->result($result,0,"cartridges_alarm");
+$cfg_features["cartridges_alarm"] = $data["cartridges_alarm"];
 
 
 // Auto Assign tracking
-$cfg_features["auto_assign"] = $db->result($result,0,"auto_assign");
+$cfg_features["auto_assign"] = $data["auto_assign"];
 
 // OCS MODE
-$cfg_features["ocs_mode"] = $db->result($result,0,"ocs_mode");
+$cfg_features["ocs_mode"] = $data["ocs_mode"];
 
 // Authorized anonymous knowledgebase consultation
-$cfg_features["public_faq"] = $db->result($result,0,"public_faq");
+$cfg_features["public_faq"] = $data["public_faq"];
 
 // Base URL for the URL view in mail
-$cfg_features["url_base"] = $db->result($result,0,"url_base");
+$cfg_features["url_base"] = $data["url_base"];
 // Enable the URL view in mail
-$cfg_features["url_in_mail"] = $db->result($result,0,"url_in_mail");
+$cfg_features["url_in_mail"] = $data["url_in_mail"];
 
 // version number
 // numero de version
 
-$cfg_install["version"]		= $db->result($result,0,"version");
+$cfg_install["version"]		= $data["version"];
 
 //Date fiscale
-$cfg_install["date_fiscale"]		= $db->result($result,0,"date_fiscale");
+$cfg_install["date_fiscale"]		= $data["date_fiscale"];
 
-$cfg_layout["logotxt"]		= $db->result($result,0,"logotxt");
+$cfg_layout["logotxt"]		= $data["logotxt"];
 
 // Priority colors
-$cfg_layout["priority_1"] = $db->result($result,0,"priority_1");
-$cfg_layout["priority_2"] = $db->result($result,0,"priority_2");
-$cfg_layout["priority_3"] = $db->result($result,0,"priority_3");
-$cfg_layout["priority_4"] = $db->result($result,0,"priority_4");
-$cfg_layout["priority_5"] = $db->result($result,0,"priority_5");
+$cfg_layout["priority_1"] = $data["priority_1"];
+$cfg_layout["priority_2"] = $data["priority_2"];
+$cfg_layout["priority_3"] = $data["priority_3"];
+$cfg_layout["priority_4"] = $data["priority_4"];
+$cfg_layout["priority_5"] = $data["priority_5"];
 
 
 // Planning being and end
-$cfg_features["planning_begin"] = $db->result($result,0,"planning_begin");
-$cfg_features["planning_end"] = $db->result($result,0,"planning_end");
+$cfg_features["planning_begin"] = $data["planning_begin"];
+$cfg_features["planning_end"] = $data["planning_end"];
 
 // Wildcard for AJAX
 // TODO : Add in glpi_config
-$cfg_features["use_ajax"] = $db->result($result,0,"use_ajax");
-$cfg_features["ajax_wildcard"] = $db->result($result,0,"ajax_wildcard");
-$cfg_features["ajax_limit_count"] = $db->result($result,0,"ajax_limit_count");
-$cfg_features["ajax_autocompletion"] = $db->result($result,0,"ajax_autocompletion");
+$cfg_features["use_ajax"] = $data["use_ajax"];
+$cfg_features["ajax_wildcard"] = $data["ajax_wildcard"];
+$cfg_features["ajax_limit_count"] = $data["ajax_limit_count"];
+$cfg_features["ajax_autocompletion"] = $data["ajax_autocompletion"];
 
 // Droprown string limit size
-$cfg_layout["dropdown_limit"]		= $db->result($result,0,"dropdown_limit");	
+$cfg_layout["dropdown_limit"]		= $data["dropdown_limit"];	
 
 // Sizes
-$cfg_layout["dropdown_max"] = $db->result($result,0,"dropdown_max");
+$cfg_layout["dropdown_max"] = $data["dropdown_max"];
 
 //Login text
-$cfg_layout["text_login"] = $db->result($result,0,"text_login");
+$cfg_layout["text_login"] = $data["text_login"];
 
 // Auto update
-$cfg_features["auto_update_check"] = $db->result($result,0,"auto_update_check");
-$cfg_features["last_update_check"] = $db->result($result,0,"last_update_check");
-$cfg_features["founded_new_version"] = $db->result($result,0,"founded_new_version");
+$cfg_features["auto_update_check"] = $data["auto_update_check"];
+$cfg_features["last_update_check"] = $data["last_update_check"];
+$cfg_features["founded_new_version"] = $data["founded_new_version"];
 
 // Auto add users from auth ext
-$cfg_features["auto_add_users"] = $db->result($result,0,"auto_add_users");
+$cfg_features["auto_add_users"] = $data["auto_add_users"];
 
 // Post-only users can add followups ?
-$cfg_features["post_only_followup"] = $db->result($result,0,"post_only_followup");
+$cfg_features["post_only_followup"] = $data["post_only_followup"];
 
 // Date Format
-$cfg_layout["dateformat"] = $db->result($result,0,"dateformat");
+$cfg_layout["dateformat"] = $data["dateformat"];
 
 // Affichage ID
-$cfg_layout["view_ID"] = $db->result($result,0,"view_ID");
+$cfg_layout["view_ID"] = $data["view_ID"];
 
 // Next Prev 
-$cfg_layout["nextprev_item"] = $db->result($result,0,"nextprev_item");
+$cfg_layout["nextprev_item"] = $data["nextprev_item"];
 
 }
 
