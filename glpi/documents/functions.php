@@ -413,10 +413,10 @@ function restoreDocument($input) {
 
 
 function showDeviceDocument($instID,$search='') {
-	GLOBAL $db,$cfg_glpi, $lang;
+	GLOBAL $db,$cfg_glpi, $lang,$INFOFORM_PAGES,$LINK_ID_TABLE;
 
     
-	$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by device_type, FK_device";
+	$query = "SELECT DISTINCT device_type FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by device_type, FK_device";
 
 	$result = $db->query($query);
 	$number = $db->numrows($result);
@@ -429,17 +429,27 @@ function showDeviceDocument($instID,$search='') {
 	echo "<tr><th>".$lang["common"][17]."</th>";
 	echo "<th>".$lang["common"][16]."</th>";
 	echo "<th>&nbsp;</th></tr>";
-
+	$ci=new CommonItem();
 	while ($i < $number) {
-		$device_ID=$db->result($result, $i, "FK_device");
-		$ID=$db->result($result, $i, "ID");
 		$type=$db->result($result, $i, "device_type");
-		$con=new CommonItem;
-		$con->getFromDB($type,$device_ID);
-	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>".$con->getType()."</td>";
-	echo "<td align='center' ".(isset($con->obj->fields['deleted'])&&$con->obj->fields['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$con->getLink()."</td>";
-	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+		$query = "SELECT DISTINCT ".$LINK_ID_TABLE[$type].".name, ".$LINK_ID_TABLE[$type].".ID, glpi_doc_device.ID AS IDD  FROM glpi_doc_device INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device) WHERE glpi_doc_device.device_type='$type' AND glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by ".$LINK_ID_TABLE[$type].".name";
+		$result_linked=$db->query($query);
+		if ($db->numrows($result_linked)){
+			$ci->setType($type);
+			while ($data=$db->fetch_assoc($result_linked)){
+				$ID="";
+				if($cfg_glpi["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
+				$name= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
+
+				
+				echo "<tr class='tab_bg_1'>";
+				echo "<td align='center'>".$ci->getType()."</td>";
+
+				echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$name."</td>";
+				echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+			}
+		}
+	
 	$i++;
 	}
 	
