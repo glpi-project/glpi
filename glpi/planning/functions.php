@@ -464,7 +464,7 @@ foreach ($interv as $key => $val){
 		}else{  // show Reminder
 			
 				if ($val["type"]=="public"){
-					$author="<br>Par ".getUserName($val["author"]);
+					$author="<br>".$lang["planning"][9]." : ".getUserName($val["author"]);
 					$img="rdv_public.png";
 				} 
 			echo "<div style=' margin:auto; text-align:center; border:1px dashed #cccccc; background-color: #d7d7d2; font-size:9px; width:80%;'><img src='$HTMLRel/pics/".$img."' alt=''>&nbsp;";
@@ -836,11 +836,11 @@ function ShowPlanningCentral($who){
 				echo "<td>".$val["device"]."<a href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
 				echo ": ".resume_text($val["content"],125);
 			}else{
-				echo "<td>".$val["title"]."<a href='".$HTMLRel."reminder/reminder-info-form.php?ID=".$val["id_reminder"]."'>";
-				echo ": ".resume_text($val["text"],125);
+				echo "<td><a href='".$HTMLRel."reminder/reminder-info-form.php?ID=".$val["id_reminder"]."'>".$val["title"]."";
+				echo "</a>: ".resume_text($val["text"],125);
 			}
 	
-			echo "</a></td></tr>";
+			echo "</td></tr>";
 							
 			}
 		
