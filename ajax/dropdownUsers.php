@@ -68,17 +68,27 @@
 	else if($_POST['all']==1) echo "<option value=\"0\">[ ".$lang["search"][7]." ]</option>";
 	
 	if (isset($_POST['value'])){
-		$output=getUserName($_POST['value']);
-		if (!empty($output)&&$output!="&nbsp;")
-		echo "<option selected value='".$_POST['value']."'>".$output."</option>";
+		$output=getUserName($_POST['value'],2);
+		if (!empty($output["name"])&&$output["name"]!="&nbsp;")
+		echo "<option selected value='".$_POST['value']."'>".$output["name"]."</option>";
 	}		
 	
 	if ($db->numrows($result)) {
 		while ($data=$db->fetch_array($result)) {
-			if (!empty($data["realname"])) $output = $data["realname"];
-			else $output = $data["name"];
-			echo "<option value=\"".$data["ID"]."\" title=\"$output\">".substr($output,0,$cfg_layout["dropdown_limit"])."</option>";
+			if (!empty($data["realname"])) $display = $data["realname"];
+			else $display = $data["name"];
+			echo "<option value=\"".$data["ID"]."\" title=\"$display\">".substr($display,0,$cfg_layout["dropdown_limit"])."</option>";
    		}
 	}
 	echo "</select>";
+
+	if (isset($_POST['value'])&&$_POST["display_comments"]&&!empty($output["comments"])) {
+		$rand=mt_rand();
+		echo "<a href='".$output["link"]."'>";
+		echo "<img src='".$HTMLRel."/pics/aide.png' onmouseout=\"setdisplay(getElementById('comments_$rand'),'none')\" onmouseover=\"setdisplay(getElementById('comments_$rand'),'block')\">";
+		echo "</a>";
+		echo "<span class='over_link' id='comments_$rand'>".nl2br($output["comments"])."</span>";
+	}
+
+
 ?>

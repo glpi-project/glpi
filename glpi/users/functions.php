@@ -96,7 +96,7 @@ function showUserinfo($target,$ID) {
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td>".$user->fields["email"]."</td></tr>";
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td>".$user->fields["phone"]."</td></tr>";
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
-				echo getDropdownName("glpi_dropdown_locations",$user->fields["location"]);
+			echo getDropdownName("glpi_dropdown_locations",$user->fields["location"]);
 			echo "</td></tr>";
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][400]."</td><td>".($user->fields["active"]?$lang["choice"][1]:$lang["choice"][0])."</td></tr>";
 	echo "</table></div>";

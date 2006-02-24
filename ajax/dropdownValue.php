@@ -68,9 +68,9 @@
 		echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
 		else echo "<option value=\"0\">-----</option>";
 		
-		$output=getDropdownName($_POST['table'],$_POST['value']);
-		if (!empty($output)&&$output!="&nbsp;")
-		echo "<option selected value='".$_POST['value']."'>".$output."</option>";
+		$output=getDropdownName($_POST['table'],$_POST['value'],1);
+		if (!empty($output["name"])&&$output["name"]!="&nbsp;")
+		echo "<option selected value='".$_POST['value']."'>".$output["name"]."</option>";
 		
 				
 		if ($db->numrows($result)) {
@@ -122,20 +122,24 @@ $where.=")";
 	echo "<option value=\"0\">--".$lang["knowbase"][12]."--</option>";
 	else echo "<option value=\"0\">-----</option>";
 
-	$output=getDropdownName($_POST['table'],$_POST['value']);
-	if (!empty($output)&&$output!="&nbsp;")
-	echo "<option selected value='".$_POST['value']."'>".$output."</option>";
+	$output=getDropdownName($_POST['table'],$_POST['value'],1);
+	if (!empty($output["name"])&&$output["name"]!="&nbsp;")
+	echo "<option selected value='".$_POST['value']."'>".$output["name"]."</option>";
 	
 	if ($db->numrows($result)) {
 		while ($data =$db->fetch_array($result)) {
-			$output = $data['name'];
+			$display = $data['name'];
 			$ID = $data['ID'];
-			if (empty($output)) $output="($ID)";
-				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$_POST["limit"])."</option>";
+			if (empty($display)) $display="($ID)";
+				echo "<option value=\"$ID\" title=\"$display\">".substr($display,0,$_POST["limit"])."</option>";
 		}
 	}
 	echo "</select>";
-	
+	if ($_POST["display_comments"]&&!empty($output["comments"])) {
+		$rand=mt_rand();
+		echo "<img src='".$HTMLRel."/pics/aide.png' onmouseout=\"setdisplay(getElementById('comments_$rand'),'none')\" onmouseover=\"setdisplay(getElementById('comments_$rand'),'block')\">";
+		echo "<span class='over_link' id='comments_$rand'>".nl2br($output["comments"])."</span>";
+	}
 
 	}
 
