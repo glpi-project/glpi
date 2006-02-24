@@ -432,7 +432,7 @@ function showDeviceDocument($instID,$search='') {
 	$ci=new CommonItem();
 	while ($i < $number) {
 		$type=$db->result($result, $i, "device_type");
-		$query = "SELECT DISTINCT ".$LINK_ID_TABLE[$type].".name, ".$LINK_ID_TABLE[$type].".ID, glpi_doc_device.ID AS IDD  FROM glpi_doc_device INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device) WHERE glpi_doc_device.device_type='$type' AND glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by ".$LINK_ID_TABLE[$type].".name";
+		$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_doc_device.ID AS IDD  FROM glpi_doc_device INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device) WHERE glpi_doc_device.device_type='$type' AND glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by ".$LINK_ID_TABLE[$type].".name";
 		$result_linked=$db->query($query);
 		if ($db->numrows($result_linked)){
 			$ci->setType($type);
