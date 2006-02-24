@@ -545,7 +545,7 @@ function ocsCleanLinks(){
 
 
 function ocsShowUpdateComputer($check,$start){
-global $dbocs,$lang,$HTMLRel,$cfg_features;
+global $db,$dbocs,$lang,$HTMLRel,$cfg_features;
 
 $cfg_ocs=getOcsConf(1);
 
