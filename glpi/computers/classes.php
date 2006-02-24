@@ -124,7 +124,7 @@ class Computer {
 					if ($resultnum>0) {
 						for ($j=0; $j < $resultnum; $j++) {
 							$tID = $db->result($result, $j, "end1");
-							$ci->obj->getfromDB($type,$tID);
+							$ci->getfromDB($type,$tID);
 							if (!$ci->obj->fields['is_global']){
 								$ci->obj->fields['contact']=$this->fields['contact'];
 								$ci->obj->fields['contact_num']=$this->fields['contact_num'];
@@ -148,13 +148,15 @@ class Computer {
 			
 			foreach ($items as $type){
 				$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".$type."'";
+				
 				if ($result=$db->query($query)) {
 					$resultnum = $db->numrows($result);
+					
 					if ($resultnum>0) {
 						for ($j=0; $j < $resultnum; $j++) {
 							$tID = $db->result($result, $j, "end1");
 
-							$ci->obj->getfromDB($type,$tID);
+							$ci->getfromDB($type,$tID);
 							if (!$ci->obj->fields['is_global']){
 								$ci->obj->fields['location']=$this->fields['location'];
 								$ci->obj->updateInDB($updates2);
